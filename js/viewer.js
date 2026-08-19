@@ -6,6 +6,7 @@ import {
   parsePhrase,
   mnemonicToEntropy,
   randomMnemonic,
+  entropyToMnemonic,
   wordCountToEntropyBits,
   keyspaceDecimal,
   indicesOf,
@@ -33,6 +34,7 @@ const state = {
   embed: "scatter",
   curve: "hilbert",
   scatterCache: null,
+  src: "csprng",
 };
 
 let scene, camera, renderer, controls;
@@ -342,6 +344,8 @@ function renderAnalysis(words, analysis) {
     drawBitPlane(null, 0, []);
     renderTape([], [], 0);
     renderScale(0);
+    renderHoles([], [], 0);
+    updateLiveStats(null);
     return;
   }
   status.className = "status " + (analysis.ok ? "ok" : "bad");
@@ -349,6 +353,8 @@ function renderAnalysis(words, analysis) {
 
   const idxs = analysis.indices || indicesOf(words);
   renderTape(words, idxs, analysis.checksumBits || 0);
+  renderHoles(words, idxs, analysis.checksumBits || 0);
+  updateLiveStats(analysis.entropy);
   drawSlice(analysis.entropy, analysis.entropyBits || 0);
   drawBitPlane(analysis.entropy, analysis.checksumBits, analysis.checksumObserved);
   renderScale(analysis.entropyBits || 0);
@@ -445,7 +451,9 @@ async function shareChat() {
 
 async function main() {
   initThree();
+  startTicker();
   bindSheet();
+  syncSourceUI();
   $("wl").textContent = `${WORDLIST.length}`;
   $("wcNote").textContent = `12 words → ${wordCountToEntropyBits(12)} bits · not 2048¹²`;
 
@@ -463,6 +471,18 @@ async function main() {
       $("model").textContent = `${state.words.length} × 11-bit · ${state.curve} slice · ${state.embed}`;
     }
   });
+
+  $("srcSeg").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-src]");
+    if (!btn) return;
+    state.src = btn.dataset.src;
+    [...$("srcSeg").querySelectorAll(".seg-btn")].forEach((b) =>
+      b.classList.toggle("on", b === btn)
+    );
+    syncSourceUI();
+  });
+  $("rolls").addEventListener("input", updateRollNeed);
+  $("commitRolls").onclick = commitRolls;
 
   $("apply").onclick = () => applyPhrase($("phrase").value);
   $("gen").onclick = generate;

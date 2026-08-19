@@ -13,11 +13,12 @@
 </head>
 <body>
   <canvas id="stage"></canvas>
+  <canvas id="ticker" class="ticker" width="320" height="72" aria-hidden="true"></canvas>
 
   <header class="topbar">
     <div>
       <h1>Keyspace Viewer</h1>
-      <p>Hilbert slice · bit plane · 11-bit tape</p>
+      <p>Live entropy · Frozen-style plates · on-air CSPRNG</p>
     </div>
   </header>
 
@@ -46,6 +47,27 @@
       <textarea id="phrase" spellcheck="false" autocomplete="off" autocapitalize="none" enterkeyhint="done" placeholder="enter or generate a phrase"></textarea>
       <div id="status" class="status warn">Loading engine…</div>
       <div id="chips" class="chips"></div>
+
+      <h2 class="step">0 · Live entropy</h2>
+      <div class="onair" id="onair"><span class="dot"></span> ON AIR · CSPRNG peek (not your seed)</div>
+      <div class="live-stats">
+        <span>H₈ <b id="shan">—</b></span>
+        <span>ones <b id="ones">—</b></span>
+        <span>pool <b id="poolBits">0</b> bits</span>
+      </div>
+      <div class="seg" id="srcSeg">
+        <button type="button" class="seg-btn on" data-src="csprng">CSPRNG</button>
+        <button type="button" class="seg-btn" data-src="dice6">Dice 1–6</button>
+        <button type="button" class="seg-btn" data-src="dice10">Dice 0–9</button>
+        <button type="button" class="seg-btn" data-src="coin">Coin 0/1</button>
+      </div>
+      <textarea id="rolls" spellcheck="false" inputmode="numeric" placeholder="type rolls live: 415263… or flip 0101…" hidden></textarea>
+      <p class="legend" id="rollNeed">Browser CSPRNG fills entropy on Sample. Physical rolls use base conversion only — no hash mix.</p>
+      <div class="row">
+        <button class="act" id="commitRolls" type="button" hidden>Commit rolls → phrase</button>
+      </div>
+      <div id="holes" class="holes" aria-label="11-bit hole plates"></div>
+      <p class="legend">Hole plate: filled = 1. Same 11-bit index Frozen-style plates encode. Last row includes checksum bits.</p>
 
       <h2 class="step">1 · Hilbert / Morton slice</h2>
       <div class="seg" id="curveSeg">
