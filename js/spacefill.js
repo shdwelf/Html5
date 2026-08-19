@@ -96,6 +96,31 @@ export const SCALE_MARKS = [
   { bits: 256, label: "2²⁵⁶", note: "24-word / secp scalar" },
 ];
 
+/** Last 11-bit group: leftover entropy bits then checksum bits. */
+export function lastWordSplit(entropyBits, checksumBits) {
+  const leftover = 11 - checksumBits;
+  return { leftover, checksumBits, entropyBits };
+}
+
+const curveCache = new Map();
+
+export function curveTable(kind, order) {
+  const key = `${kind}:${order}`;
+  if (curveCache.has(key)) return curveCache.get(key);
+  const n = 1 << order;
+  const map = kind === "morton" ? mortonXY : hilbertXY;
+  const xs = new Uint16Array(n * n);
+  const ys = new Uint16Array(n * n);
+  for (let i = 0; i < n * n; i++) {
+    const p = map(i, order);
+    xs[i] = p.x;
+    ys[i] = p.y;
+  }
+  const pack = { n, xs, ys };
+  curveCache.set(key, pack);
+  return pack;
+}
+
 export function analogForBits(bits) {
   if (bits <= 40) return "Small enough that dedicated hardware has searched similar bands (puzzles).";
   if (bits <= 64) return "On the edge of massive parallel search; not a BIP-39 CSPRNG sample.";

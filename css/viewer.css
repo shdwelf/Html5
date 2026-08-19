@@ -249,7 +249,12 @@ button.act:active { transform: scale(0.98); }
 .tape th, .tape td { padding: 6px 8px; text-align: left; border-bottom: 1px solid rgba(120, 200, 255, 0.08); }
 .tape th { color: var(--muted); font-weight: 500; position: sticky; top: 0; background: #0b1018; }
 .tape td.bin { letter-spacing: 0.06em; color: #b7d4ea; }
+.tape td.bin .csb { color: var(--warn); }
 .tape tr.cs td { color: var(--warn); }
+
+@media (min-width: 1100px) {
+  .sheet { width: min(440px, 36vw); }
+}
 
 .scale {
   position: relative;

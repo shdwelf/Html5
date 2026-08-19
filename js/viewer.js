@@ -13,17 +13,17 @@ import {
 import {
   bytesToBits,
   prefixBits,
-  hilbertXY,
-  mortonXY,
   fibonacciSphere,
   polarIndexEmbedding,
   SCALE_MARKS,
   analogForBits,
+  lastWordSplit,
+  curveTable,
 } from "./spacefill.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
-const SLICE_ORDER = 8; // 256×256 from top 16 bits
+const SLICE_ORDER = 7; // 128×128 from top 14 bits
 const SLICE_BITS = SLICE_ORDER * 2;
 
 const state = {
@@ -210,12 +210,42 @@ function drawSlice(entropy, totalBits) {
   const cv = $("slice");
   const ctx = cv.getContext("2d");
   const w = cv.width;
-  const n = 1 << SLICE_ORDER;
-  ctx.fillStyle = "#05070c";
-  ctx.fillRect(0, 0, w, w);
+  const order = SLICE_ORDER;
+  const bits = SLICE_BITS;
+  const { n, xs, ys } = curveTable(state.curve, order);
+  const img = ctx.createImageData(n, n);
+  const data = img.data;
+  const total = n * n;
+  for (let i = 0; i < total; i++) {
+    const x = xs[i];
+    const y = ys[i];
+    const o = (y * n + x) * 4;
+    const t = i / total;
+    data[o] = 12 + t * 40;
+    data[o + 1] = 40 + t * 140;
+    data[o + 2] = 60 + t * 160;
+    data[o + 3] = 255;
+  }
 
-  const map = state.curve === "morton" ? mortonXY : hilbertXY;
-  const cell = w / n;
+  let mark = { x: 0, y: 0 };
+  let idx = 0;
+  if (entropy) {
+    idx = prefixBits(entropy, bits);
+    mark = { x: xs[idx], y: ys[idx] };
+    const lo = Math.max(0, idx - 48);
+    const hi = Math.min(total - 1, idx + 48);
+    for (let i = lo; i <= hi; i++) {
+      const o = (ys[i] * n + xs[i]) * 4;
+      const near = 1 - Math.abs(i - idx) / 48;
+      data[o] = 61;
+      data[o + 1] = 255 * near;
+      data[o + 2] = 176;
+    }
+  }
+
+  ctx.imageSmoothingEnabled = false;
+  ctx.putImageData(img, 0, 0);
+  ctx.drawImage(cv, 0, 0, n, n, 0, 0, w, w);
 
   if (!entropy) {
     $("sliceNote").textContent = "Load a phrase to mark a cell.";
@@ -223,27 +253,17 @@ function drawSlice(entropy, totalBits) {
     return;
   }
 
-  const idx = prefixBits(entropy, SLICE_BITS);
-  const { x, y } = map(idx, SLICE_ORDER);
+  const cell = w / n;
+  ctx.strokeStyle = "#3dffb0";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(mark.x * cell - 2, mark.y * cell - 2, cell + 4, cell + 4);
 
-  ctx.fillStyle = "#12202c";
-  for (let i = 0; i < 64; i++) {
-    const s = ((idx >>> 2) + i * 9973) & (n * n - 1);
-    const p = map(s, SLICE_ORDER);
-    ctx.fillRect(p.x * cell, p.y * cell, Math.max(1, cell), Math.max(1, cell));
-  }
-
-  ctx.fillStyle = "#3dffb0";
-  ctx.fillRect(x * cell - 1, y * cell - 1, Math.max(3, cell + 2), Math.max(3, cell + 2));
-
-  const remain = Math.max(0, totalBits - SLICE_BITS);
+  const remain = Math.max(0, totalBits - bits);
   $("sliceNote").textContent =
-    `${state.curve} cell (${x},${y}) from top ${SLICE_BITS} bits. ` +
-    `This cell still holds 2^${remain} keys — the plane is not the space.`;
+    `${state.curve} d=${idx} → (${mark.x},${mark.y}) from top ${bits} bits. ` +
+    `Cell still holds 2^${remain} keys — the plane is not the space.`;
 
-  const nx = (x / n) * 6 - 3;
-  const nz = (y / n) * 6 - 3;
-  sliceMarker.position.set(nx, -3.05, nz);
+  sliceMarker.position.set((mark.x / n) * 6 - 3, -3.05, (mark.y / n) * 6 - 3);
   sliceMarker.visible = true;
 }
 
@@ -272,14 +292,22 @@ function drawBitPlane(entropy, csBits, csObserved) {
 }
 
 function renderTape(words, indices, checksumBits) {
+  const split = lastWordSplit(0, checksumBits || 0);
   const rows = words
     .map((w, i) => {
       const idx = indices[i] ?? -1;
-      const bin = idx < 0 ? "-----------" : idx.toString(2).padStart(11, "0");
-      const cs = i === words.length - 1;
+      const raw = idx < 0 ? "-----------" : idx.toString(2).padStart(11, "0");
+      const cs = i === words.length - 1 && checksumBits;
+      let bin = raw;
+      if (cs && idx >= 0) {
+        const cut = 11 - checksumBits;
+        bin = `${raw.slice(0, cut)}<span class="csb">${raw.slice(cut)}</span>`;
+      }
       return `<tr class="${cs ? "cs" : ""}"><td>${i + 1}</td><td>${w}</td><td>${
         idx < 0 ? "—" : idx
-      }</td><td class="bin">${bin}</td><td>${cs ? `+${checksumBits} cs` : "ENT"}</td></tr>`;
+      }</td><td class="bin">${bin}</td><td>${
+        cs ? `${split.leftover} ENT + ${checksumBits} CS` : "ENT"
+      }</td></tr>`;
     })
     .join("");
   $("tape").innerHTML =
