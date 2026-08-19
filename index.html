@@ -47,32 +47,32 @@
       <div id="status" class="status warn">Loading engine…</div>
       <div id="chips" class="chips"></div>
 
-      <label>Word embedding</label>
+      <h2 class="step">1 · Hilbert / Morton slice</h2>
+      <div class="seg" id="curveSeg">
+        <button type="button" class="seg-btn on" data-curve="hilbert">Hilbert</button>
+        <button type="button" class="seg-btn" data-curve="morton">Morton / Z</button>
+      </div>
+      <canvas id="slice" class="slice" width="256" height="256" aria-label="Space-filling keyspace slice"></canvas>
+      <p class="legend" id="sliceNote">Top 16 entropy bits. Cell is still 2ⁿ⁻¹⁶ remaining — the plane is not the space.</p>
+
+      <h2 class="step">2 · Bit plane</h2>
+      <canvas id="bits" class="bitplane" width="256" height="128" aria-label="Entropy and checksum bits"></canvas>
+      <p class="legend">16 columns. Cyan = entropy. Amber = checksum.</p>
+
+      <h2 class="step">3 · 11-bit tape</h2>
+      <div class="tape-wrap"><table class="tape" id="tape"></table></div>
+
+      <h2 class="step">4 · Scale</h2>
+      <div class="scale" id="scale"></div>
+      <p class="legend" id="scaleNote"></p>
+
+      <h2 class="step">5 · Word embedding</h2>
       <div class="seg" id="embedSeg" role="tablist">
         <button type="button" class="seg-btn on" data-embed="scatter">WASM scatter</button>
         <button type="button" class="seg-btn" data-embed="fibonacci">Fibonacci sphere</button>
         <button type="button" class="seg-btn" data-embed="polar">11-bit polar</button>
       </div>
       <p class="legend" id="embedNote">Random mixer — nearby indices are not nearby in space.</p>
-
-      <label>Keyspace slice (top 16 bits)</label>
-      <div class="seg" id="curveSeg">
-        <button type="button" class="seg-btn on" data-curve="hilbert">Hilbert</button>
-        <button type="button" class="seg-btn" data-curve="morton">Morton / Z</button>
-      </div>
-      <canvas id="slice" class="slice" width="256" height="256" aria-label="Space-filling keyspace slice"></canvas>
-      <p class="legend" id="sliceNote">Cell is still 2ⁿ⁻¹⁶ remaining entropy — the plane is not the space.</p>
-
-      <label>Bit plane</label>
-      <canvas id="bits" class="bitplane" width="256" height="128" aria-label="Entropy and checksum bits"></canvas>
-      <p class="legend">Cyan = entropy. Amber = checksum. 16 columns.</p>
-
-      <label>11-bit groups</label>
-      <div class="tape-wrap"><table class="tape" id="tape"></table></div>
-
-      <label>Scale</label>
-      <div class="scale" id="scale"></div>
-      <p class="legend" id="scaleNote"></p>
 
       <div class="metric-grid">
         <div class="metric"><span>Wordlist</span><b id="wl">—</b></div>

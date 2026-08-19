@@ -198,6 +198,15 @@ button.act:active { transform: scale(0.98); }
 }
 .chip.cs { border-color: rgba(255, 176, 32, 0.5); color: var(--warn); }
 
+.step {
+  margin: 18px 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 650;
+}
+
 .legend { color: var(--muted); font-size: 11px; margin: 8px 0 0; line-height: 1.4; }
 
 .seg { display: flex; gap: 6px; flex-wrap: wrap; }
