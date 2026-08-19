@@ -31,6 +31,13 @@ import {
 } from "./entropy-live.js";
 import { INDEX } from "./bip39.js";
 import { searchWords, wordFromBits, bitsFromIndex } from "./lexicon.js";
+import {
+  binaryReflectedGray,
+  flipEntropyBit,
+  hypercubeLayout,
+  indexChanged,
+  bitsToInt,
+} from "./mathvis.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
@@ -46,6 +53,8 @@ const state = {
   scatterCache: null,
   src: "coin",
   decodeBits: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  cubeN: 5,
+  flipBit: 0,
 };
 
 let scene, camera, renderer, controls;
@@ -435,6 +444,150 @@ function renderTape(words, indices, checksumBits) {
     `<thead><tr><th>#</th><th>Word</th><th>Index</th><th>11 bits</th><th></th></tr></thead><tbody>${rows}</tbody>`;
 }
 
+function drawParallel(indices, changed = []) {
+  const cv = $("parallel");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const w = cv.width;
+  const h = cv.height;
+  ctx.fillStyle = "#05070c";
+  ctx.fillRect(0, 0, w, h);
+  const n = Math.max(1, indices.length);
+  const pad = 18;
+  const xs = (i) => pad + (i / Math.max(1, n - 1)) * (w - pad * 2);
+  ctx.strokeStyle = "#163246";
+  ctx.lineWidth = 1;
+  for (let i = 0; i < n; i++) {
+    ctx.beginPath();
+    ctx.moveTo(xs(i), 10);
+    ctx.lineTo(xs(i), h - 16);
+    ctx.stroke();
+  }
+  if (!indices.length) return;
+  ctx.beginPath();
+  ctx.strokeStyle = "#3dffb0";
+  ctx.lineWidth = 1.5;
+  indices.forEach((idx, i) => {
+    const y = 10 + (1 - Math.max(0, idx) / 2047) * (h - 28);
+    if (i === 0) ctx.moveTo(xs(i), y);
+    else ctx.lineTo(xs(i), y);
+  });
+  ctx.stroke();
+  indices.forEach((idx, i) => {
+    const y = 10 + (1 - Math.max(0, idx) / 2047) * (h - 28);
+    ctx.fillStyle = changed.includes(i) ? "#ffb020" : "#5ce1ff";
+    ctx.beginPath();
+    ctx.arc(xs(i), y, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawFiber(csBits, observed) {
+  const cv = $("fiber");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const n = Math.max(1, 1 << (csBits || 0));
+  ctx.fillStyle = "#05070c";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  const cols = Math.min(n, 16);
+  const rows = Math.ceil(n / cols);
+  const cw = cv.width / cols;
+  const ch = cv.height / rows;
+  const lit = observed && observed.length ? bitsToInt(observed) : -1;
+  for (let i = 0; i < n; i++) {
+    const c = i % cols;
+    const r = Math.floor(i / cols);
+    ctx.fillStyle = i === lit ? "#ffb020" : "#163246";
+    ctx.fillRect(c * cw + 2, r * ch + 2, cw - 4, ch - 4);
+  }
+  $("fiberNote").textContent =
+    `${n} checksum cells (2^${csBits}). Lit cell = SHA-256(ENT) prefix. Graph of a hash, not a linear subspace.`;
+}
+
+function drawGray(indices) {
+  const cv = $("gray");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const w = cv.width;
+  const h = cv.height;
+  ctx.fillStyle = "#05070c";
+  ctx.fillRect(0, 0, w, h);
+  const cx = w / 2;
+  const cy = h / 2;
+  const R = Math.min(w, h) * 0.42;
+  ctx.strokeStyle = "#12202c";
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.stroke();
+  const step = 8;
+  ctx.fillStyle = "#163246";
+  for (let i = 0; i < 2048; i += step) {
+    const g = binaryReflectedGray(i);
+    const a = (g / 2048) * Math.PI * 2;
+    ctx.fillRect(cx + Math.cos(a) * R - 0.6, cy + Math.sin(a) * R - 0.6, 1.4, 1.4);
+  }
+  (indices || []).forEach((idx, k) => {
+    if (idx < 0) return;
+    const a = (binaryReflectedGray(idx) / 2048) * Math.PI * 2;
+    ctx.fillStyle = k === indices.length - 1 ? "#ffb020" : "#3dffb0";
+    ctx.beginPath();
+    ctx.arc(cx + Math.cos(a) * R, cy + Math.sin(a) * R, 4, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawCube(entropy) {
+  const cv = $("cube");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const { n, pts, edges } = hypercubeLayout(state.cubeN);
+  ctx.fillStyle = "#05070c";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  const W = cv.width;
+  const H = cv.height;
+  ctx.strokeStyle = "#1a3040";
+  ctx.lineWidth = 1;
+  for (const [a, b] of edges) {
+    ctx.beginPath();
+    ctx.moveTo(pts[a].x * W, pts[a].y * H);
+    ctx.lineTo(pts[b].x * W, pts[b].y * H);
+    ctx.stroke();
+  }
+  let here = 0;
+  if (entropy) here = prefixBits(entropy, n);
+  pts.forEach((p) => {
+    ctx.fillStyle = p.i === here ? "#3dffb0" : "#5ce1ff55";
+    ctx.beginPath();
+    ctx.arc(p.x * W, p.y * H, p.i === here ? 5 : 2.2, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  $("cubeNote").textContent = `Q_${n} face of C (first ${n} ENT bits). Vertex still contains 2^{ENT−${n}} keys.`;
+}
+
+function drawMath(analysis) {
+  const idxs = analysis?.indices || [];
+  drawParallel(idxs);
+  drawFiber(analysis?.checksumBits || 0, analysis?.checksumExpected);
+  drawGray(idxs);
+  drawCube(analysis?.entropy);
+  const max = (analysis?.entropyBits || 128) - 1;
+  $("flipBit").max = String(max);
+}
+
+async function previewAvalanche() {
+  const a = state.analysis;
+  if (!a?.entropy) return;
+  const bit = Number($("flipBit").value);
+  state.flipBit = bit;
+  const flipped = flipEntropyBit(a.entropy, bit);
+  const words = await entropyToMnemonic(flipped);
+  const next = indicesOf(words);
+  const hit = indexChanged(a.indices, next);
+  drawParallel(a.indices, hit);
+  const names = hit.map((i) => `${i + 1}:${state.words[i]}→${words[i]}`).join(" · ");
+  $("avalancheNote").textContent = `Bit ${bit} flipped. Chunks that jumped: ${names || "none (shouldn't happen)"}. Last word usually moves (checksum avalanche).`;
+}
+
 function renderScale(bits) {
   const el = $("scale");
   const max = 256;
@@ -465,6 +618,7 @@ function renderAnalysis(words, analysis) {
     renderScale(0);
     renderHoles([], [], 0);
     updateLiveStats(null);
+    drawMath(null);
     return;
   }
   status.className = "status " + (analysis.ok ? "ok" : "bad");
@@ -477,6 +631,7 @@ function renderAnalysis(words, analysis) {
   drawSlice(analysis.entropy, analysis.entropyBits || 0);
   drawBitPlane(analysis.entropy, analysis.checksumBits, analysis.checksumObserved);
   renderScale(analysis.entropyBits || 0);
+  drawMath(analysis);
 
   if (analysis.entropy) {
     const bits = analysis.entropyBits;
