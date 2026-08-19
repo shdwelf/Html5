@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mnemonic Keyspace Viewer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/viewer.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="stage"></canvas>
+  <div class="hud">
+    <header class="panel brand">
+      <h1>Keyspace Viewer</h1>
+      <p>Dedicated BIP-39 mnemonic manifold. Entropy is modeled as 11-bit symbols on a 2048-word sphere, projected by a WASM mixer and drawn in WebGL / Three.js.</p>
+    </header>
+
+    <section class="panel controls">
+      <label>Phrase length</label>
+      <div class="row">
+        <select id="wc">
+          <option value="12" selected>12 words · 128-bit</option>
+          <option value="15">15 words · 160-bit</option>
+          <option value="18">18 words · 192-bit</option>
+          <option value="21">21 words · 224-bit</option>
+          <option value="24">24 words · 256-bit</option>
+        </select>
+        <button id="gen" type="button">Sample entropy</button>
+      </div>
+      <p class="legend" id="wcNote"></p>
+
+      <label>Mnemonic phrase</label>
+      <textarea id="phrase" spellcheck="false" placeholder="enter or generate a phrase"></textarea>
+      <div class="row">
+        <button id="apply" type="button">Project phrase</button>
+      </div>
+      <div id="status" class="status warn">Loading WASM engine…</div>
+      <div id="chips" class="chips"></div>
+      <p class="legend">Last chip is checksum-bearing. This viewer maps keyspace geometry; it does not derive wallet keys or search the space.</p>
+    </section>
+
+    <aside class="panel stats">
+      <div class="metric">
+        <span>Wordlist</span>
+        <b id="wl">—</b>
+      </div>
+      <div class="metric">
+        <span>Entropy</span>
+        <b id="entBits">—</b>
+      </div>
+      <div class="metric">
+        <span>Checksum</span>
+        <b id="csBits">—</b>
+      </div>
+      <div class="metric">
+        <span>Keyspace cardinality</span>
+        <b id="space">—</b>
+      </div>
+      <label>Entropy hex</label>
+      <div class="bits" id="hex">—</div>
+      <label>Entropy bits</label>
+      <div class="bits" id="bin">—</div>
+      <label>Engine model</label>
+      <div class="bits" id="model">WASM · WebGL · Three.js</div>
+    </aside>
+
+    <footer class="panel phrase-bar">
+      <span class="legend">Cyan points = 2048-word keyspace · green path = phrase trajectory · amber cloud = entropy-conditioned field</span>
+    </footer>
+  </div>
+  <script type="module" src="./js/viewer.js"></script>
+</body>
+</html>
