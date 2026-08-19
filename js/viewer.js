@@ -10,14 +10,33 @@ import {
   keyspaceDecimal,
   indicesOf,
 } from "./bip39.js";
+import {
+  bytesToBits,
+  prefixBits,
+  hilbertXY,
+  mortonXY,
+  fibonacciSphere,
+  polarIndexEmbedding,
+  SCALE_MARKS,
+  analogForBits,
+} from "./spacefill.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
+const SLICE_ORDER = 8; // 256×256 from top 16 bits
+const SLICE_BITS = SLICE_ORDER * 2;
 
-const state = { engine: null, words: [], analysis: null, applyingRemote: false };
+const state = {
+  engine: null,
+  words: [],
+  analysis: null,
+  embed: "scatter",
+  curve: "hilbert",
+  scatterCache: null,
+};
 
 let scene, camera, renderer, controls;
-let wordCloud, fieldPts, pathLine, pathGlow;
+let wordCloud, fieldPts, pathLine, pathGlow, sliceMarker;
 
 function viewSize() {
   const vv = window.visualViewport;
@@ -77,6 +96,13 @@ function initThree() {
   grid.position.y = -3.2;
   scene.add(grid);
 
+  sliceMarker = new THREE.Mesh(
+    new THREE.SphereGeometry(0.08, 12, 12),
+    new THREE.MeshBasicMaterial({ color: 0xffb020 })
+  );
+  sliceMarker.visible = false;
+  scene.add(sliceMarker);
+
   resize();
   addEventListener("resize", resize);
   visualViewport?.addEventListener("resize", resize);
@@ -84,7 +110,7 @@ function initThree() {
 
   const tick = () => {
     controls.update();
-    if (wordCloud) wordCloud.rotation.y += 0.0004;
+    if (wordCloud && state.embed === "scatter") wordCloud.rotation.y += 0.0004;
     renderer.render(scene, camera);
     requestAnimationFrame(tick);
   };
@@ -161,6 +187,117 @@ function hex(bytes) {
   return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+function applyEmbedding() {
+  let pos;
+  if (state.embed === "fibonacci") pos = fibonacciSphere(2048);
+  else if (state.embed === "polar") pos = polarIndexEmbedding(2048);
+  else pos = state.scatterCache || state.engine.scatterWords(2048);
+  state.engine.setWordPositions(pos);
+  makeCloud(pos);
+  if (state.words.length) {
+    const idxs = indicesOf(state.words).map((i) => (i < 0 ? 0 : i));
+    makePath(state.engine.phrasePath(idxs));
+  }
+  const notes = {
+    scatter: "Random WASM mixer — nearby indices are not nearby in space.",
+    fibonacci: "Even sphere packing in index order — consecutive words walk the spiral.",
+    polar: "64×32 lattice of the 11-bit index — adjacent words share a meridian.",
+  };
+  $("embedNote").textContent = notes[state.embed];
+}
+
+function drawSlice(entropy, totalBits) {
+  const cv = $("slice");
+  const ctx = cv.getContext("2d");
+  const w = cv.width;
+  const n = 1 << SLICE_ORDER;
+  ctx.fillStyle = "#05070c";
+  ctx.fillRect(0, 0, w, w);
+
+  const map = state.curve === "morton" ? mortonXY : hilbertXY;
+  const cell = w / n;
+
+  if (!entropy) {
+    $("sliceNote").textContent = "Load a phrase to mark a cell.";
+    sliceMarker.visible = false;
+    return;
+  }
+
+  const idx = prefixBits(entropy, SLICE_BITS);
+  const { x, y } = map(idx, SLICE_ORDER);
+
+  ctx.fillStyle = "#12202c";
+  for (let i = 0; i < 64; i++) {
+    const s = ((idx >>> 2) + i * 9973) & (n * n - 1);
+    const p = map(s, SLICE_ORDER);
+    ctx.fillRect(p.x * cell, p.y * cell, Math.max(1, cell), Math.max(1, cell));
+  }
+
+  ctx.fillStyle = "#3dffb0";
+  ctx.fillRect(x * cell - 1, y * cell - 1, Math.max(3, cell + 2), Math.max(3, cell + 2));
+
+  const remain = Math.max(0, totalBits - SLICE_BITS);
+  $("sliceNote").textContent =
+    `${state.curve} cell (${x},${y}) from top ${SLICE_BITS} bits. ` +
+    `This cell still holds 2^${remain} keys — the plane is not the space.`;
+
+  const nx = (x / n) * 6 - 3;
+  const nz = (y / n) * 6 - 3;
+  sliceMarker.position.set(nx, -3.05, nz);
+  sliceMarker.visible = true;
+}
+
+function drawBitPlane(entropy, csBits, csObserved) {
+  const cv = $("bits");
+  const ctx = cv.getContext("2d");
+  const cols = 16;
+  const entBits = entropy ? bytesToBits(entropy) : [];
+  const all = entBits.concat(csObserved || []);
+  const rows = Math.max(8, Math.ceil(all.length / cols) || 8);
+  cv.height = Math.max(64, rows * 16);
+  const cw = cv.width / cols;
+  const ch = cv.height / rows;
+  ctx.fillStyle = "#05070c";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  for (let i = 0; i < rows * cols; i++) {
+    const r = Math.floor(i / cols);
+    const c = i % cols;
+    const bit = all[i];
+    const isCs = i >= entBits.length && i < all.length;
+    if (bit === undefined) ctx.fillStyle = "#0b1018";
+    else if (isCs) ctx.fillStyle = bit ? "#ffb020" : "#4a3208";
+    else ctx.fillStyle = bit ? "#5ce1ff" : "#163246";
+    ctx.fillRect(c * cw + 1, r * ch + 1, cw - 2, ch - 2);
+  }
+}
+
+function renderTape(words, indices, checksumBits) {
+  const rows = words
+    .map((w, i) => {
+      const idx = indices[i] ?? -1;
+      const bin = idx < 0 ? "-----------" : idx.toString(2).padStart(11, "0");
+      const cs = i === words.length - 1;
+      return `<tr class="${cs ? "cs" : ""}"><td>${i + 1}</td><td>${w}</td><td>${
+        idx < 0 ? "—" : idx
+      }</td><td class="bin">${bin}</td><td>${cs ? `+${checksumBits} cs` : "ENT"}</td></tr>`;
+    })
+    .join("");
+  $("tape").innerHTML =
+    `<thead><tr><th>#</th><th>Word</th><th>Index</th><th>11 bits</th><th></th></tr></thead><tbody>${rows}</tbody>`;
+}
+
+function renderScale(bits) {
+  const el = $("scale");
+  const max = 256;
+  const logPos = (b) => (b / max) * 100;
+  el.innerHTML =
+    `<span class="here" style="left:${logPos(bits || 0)}%"></span>` +
+    SCALE_MARKS.map(
+      (m) => `<span class="mark" style="left:${logPos(m.bits)}%"><i></i>${m.label}</span>`
+    ).join("");
+  $("scaleNote").textContent = bits ? analogForBits(bits) : "";
+}
+
 function renderAnalysis(words, analysis) {
   $("chips").innerHTML = words
     .map((w, i) => {
@@ -173,10 +310,20 @@ function renderAnalysis(words, analysis) {
   if (!analysis) {
     status.className = "status warn";
     status.textContent = "No phrase loaded";
+    drawSlice(null, 0);
+    drawBitPlane(null, 0, []);
+    renderTape([], [], 0);
+    renderScale(0);
     return;
   }
   status.className = "status " + (analysis.ok ? "ok" : "bad");
   status.textContent = analysis.reason;
+
+  const idxs = analysis.indices || indicesOf(words);
+  renderTape(words, idxs, analysis.checksumBits || 0);
+  drawSlice(analysis.entropy, analysis.entropyBits || 0);
+  drawBitPlane(analysis.entropy, analysis.checksumBits, analysis.checksumObserved);
+  renderScale(analysis.entropyBits || 0);
 
   if (analysis.entropy) {
     const bits = analysis.entropyBits;
@@ -184,7 +331,7 @@ function renderAnalysis(words, analysis) {
     $("csBits").textContent = `${analysis.checksumBits} bits`;
     $("space").textContent = `2^${bits} ≈ ${keyspaceDecimal(bits)}`;
     $("hex").textContent = hex(analysis.entropy);
-    $("model").textContent = `${words.length} × 11-bit symbols · WASM scatter · SHA-256 checksum`;
+    $("model").textContent = `${words.length} × 11-bit · ${state.curve} ${SLICE_BITS}-bit slice · ${state.embed}`;
   }
 }
 
@@ -227,6 +374,19 @@ async function generate() {
   await applyPhrase(words.join(" "));
 }
 
+function bindSeg(id, key, onChange) {
+  $(id).addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-" + (key === "embed" ? "embed" : "curve") + "]");
+    if (!btn) return;
+    const attr = key === "embed" ? "embed" : "curve";
+    state[key] = btn.dataset[attr];
+    [...$(id).querySelectorAll(".seg-btn")].forEach((b) =>
+      b.classList.toggle("on", b === btn)
+    );
+    onChange();
+  });
+}
+
 function bindSheet() {
   const sheet = $("sheet");
   const toggle = $("sheetToggle");
@@ -249,7 +409,7 @@ async function shareChat() {
       await window.webxdc.sendToChat({ text });
       return;
     } catch {
-      /* user cancelled */
+      /* cancelled */
     }
   }
   await applyPhrase(text, { broadcast: true });
@@ -259,16 +419,28 @@ async function main() {
   initThree();
   bindSheet();
   $("wl").textContent = `${WORDLIST.length}`;
-  $("wcNote").textContent = `12 words → ${wordCountToEntropyBits(12)} bits`;
+  $("wcNote").textContent = `12 words → ${wordCountToEntropyBits(12)} bits · not 2048¹²`;
 
   state.engine = await loadEngine("./wasm/entropy.wasm");
-  makeCloud(state.engine.scatterWords(2048));
+  state.scatterCache = state.engine.scatterWords(2048);
+  applyEmbedding();
+
+  bindSeg("embedSeg", "embed", () => {
+    applyEmbedding();
+    if (state.analysis) renderAnalysis(state.words, state.analysis);
+  });
+  bindSeg("curveSeg", "curve", () => {
+    if (state.analysis) {
+      drawSlice(state.analysis.entropy, state.analysis.entropyBits || 0);
+      $("model").textContent = `${state.words.length} × 11-bit · ${state.curve} slice · ${state.embed}`;
+    }
+  });
 
   $("apply").onclick = () => applyPhrase($("phrase").value);
   $("gen").onclick = generate;
   $("share").onclick = shareChat;
   $("wc").onchange = () => {
-    $("wcNote").textContent = `${$("wc").value} words → ${wordCountToEntropyBits(Number($("wc").value))} bits`;
+    $("wcNote").textContent = `${$("wc").value} words → ${wordCountToEntropyBits(Number($("wc").value))} bits · checksum is not free entropy`;
   };
   $("phrase").addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {

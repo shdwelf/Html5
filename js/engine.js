@@ -41,5 +41,9 @@ function wrap(ex) {
     return ex.mix(a >>> 0, b >>> 0) >>> 0;
   }
 
-  return { scatterWords, phrasePath, entropyField, mix, raw: ex };
+  function setWordPositions(xyz) {
+    new Float32Array(mem(), OFFSETS.words, xyz.length).set(xyz);
+  }
+
+  return { scatterWords, phrasePath, entropyField, mix, setWordPositions, raw: ex };
 }

@@ -17,7 +17,7 @@
   <header class="topbar">
     <div>
       <h1>Keyspace Viewer</h1>
-      <p>BIP-39 manifold · WASM entropy · WebGL</p>
+      <p>Hilbert slice · bit plane · 11-bit tape</p>
     </div>
   </header>
 
@@ -47,6 +47,33 @@
       <div id="status" class="status warn">Loading engine…</div>
       <div id="chips" class="chips"></div>
 
+      <label>Word embedding</label>
+      <div class="seg" id="embedSeg" role="tablist">
+        <button type="button" class="seg-btn on" data-embed="scatter">WASM scatter</button>
+        <button type="button" class="seg-btn" data-embed="fibonacci">Fibonacci sphere</button>
+        <button type="button" class="seg-btn" data-embed="polar">11-bit polar</button>
+      </div>
+      <p class="legend" id="embedNote">Random mixer — nearby indices are not nearby in space.</p>
+
+      <label>Keyspace slice (top 16 bits)</label>
+      <div class="seg" id="curveSeg">
+        <button type="button" class="seg-btn on" data-curve="hilbert">Hilbert</button>
+        <button type="button" class="seg-btn" data-curve="morton">Morton / Z</button>
+      </div>
+      <canvas id="slice" class="slice" width="256" height="256" aria-label="Space-filling keyspace slice"></canvas>
+      <p class="legend" id="sliceNote">Cell is still 2ⁿ⁻¹⁶ remaining entropy — the plane is not the space.</p>
+
+      <label>Bit plane</label>
+      <canvas id="bits" class="bitplane" width="256" height="128" aria-label="Entropy and checksum bits"></canvas>
+      <p class="legend">Cyan = entropy. Amber = checksum. 16 columns.</p>
+
+      <label>11-bit groups</label>
+      <div class="tape-wrap"><table class="tape" id="tape"></table></div>
+
+      <label>Scale</label>
+      <div class="scale" id="scale"></div>
+      <p class="legend" id="scaleNote"></p>
+
       <div class="metric-grid">
         <div class="metric"><span>Wordlist</span><b id="wl">—</b></div>
         <div class="metric"><span>Entropy</span><b id="entBits">—</b></div>
@@ -56,8 +83,8 @@
       <label>Entropy hex</label>
       <div class="bits" id="hex">—</div>
       <label>Engine</label>
-      <div class="bits" id="model">WASM · WebGL · Three.js (vendored)</div>
-      <p class="legend">Cyan = 2048-word keyspace. Green = phrase path. Amber = entropy field. Last chip carries checksum bits. Geometry only — no wallet derivation.</p>
+      <div class="bits" id="model">WASM · Hilbert/Morton · bit plane</div>
+      <p class="legend">Geometry only — no wallet derivation, no search.</p>
     </div>
   </section>
 

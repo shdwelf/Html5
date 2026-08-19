@@ -200,6 +200,84 @@ button.act:active { transform: scale(0.98); }
 
 .legend { color: var(--muted); font-size: 11px; margin: 8px 0 0; line-height: 1.4; }
 
+.seg { display: flex; gap: 6px; flex-wrap: wrap; }
+.seg-btn {
+  flex: 1 1 auto;
+  min-height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #0b1018;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.seg-btn.on {
+  color: var(--accent);
+  border-color: rgba(92, 225, 255, 0.45);
+  background: #12202c;
+}
+
+.slice, .bitplane {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #05070c;
+  image-rendering: pixelated;
+  touch-action: none;
+}
+.bitplane { max-height: 160px; }
+
+.tape-wrap { overflow: auto; max-height: 220px; border: 1px solid var(--line); border-radius: 10px; }
+.tape {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.tape th, .tape td { padding: 6px 8px; text-align: left; border-bottom: 1px solid rgba(120, 200, 255, 0.08); }
+.tape th { color: var(--muted); font-weight: 500; position: sticky; top: 0; background: #0b1018; }
+.tape td.bin { letter-spacing: 0.06em; color: #b7d4ea; }
+.tape tr.cs td { color: var(--warn); }
+
+.scale {
+  position: relative;
+  height: 36px;
+  margin: 8px 0 28px;
+  background: linear-gradient(90deg, #163246, #5ce1ff 40%, #3dffb0 70%, #ffb020);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+.scale .mark {
+  position: absolute;
+  top: 100%;
+  transform: translateX(-50%);
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.scale .mark i {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 1px;
+  height: 10px;
+  background: var(--text);
+}
+.scale .here {
+  position: absolute;
+  top: -3px;
+  width: 8px;
+  height: 42px;
+  margin-left: -4px;
+  background: var(--bg);
+  border: 2px solid var(--ok);
+  border-radius: 4px;
+}
+
 @media (min-width: 860px) {
   .sheet {
     left: auto;
