@@ -38,6 +38,8 @@ import {
   indexChanged,
   bitsToInt,
 } from "./mathvis.js";
+import { buildForm, FORMS } from "./forms3d.js";
+import { pathTemplate, PIPELINE } from "./hdtopo.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
@@ -56,7 +58,10 @@ const state = {
   cubeN: 5,
   flipBit: 0,
   mathStep: 1,
+  form: "hd",
 };
+
+let formGroup = null;
 
 let scene, camera, renderer, controls;
 let wordCloud, fieldPts, pathLine, pathGlow, sliceMarker;
@@ -316,6 +321,47 @@ function renderLex(q = "") {
       return `<div class="lex-item"><b>${e.word}</b> #${e.index} 0x${e.hex} ${e.bin} · ${e.prefix}${near}</div>`;
     })
     .join("");
+}
+
+function clearForm() {
+  if (!formGroup) return;
+  scene.remove(formGroup);
+  formGroup.traverse((o) => {
+    o.geometry?.dispose?.();
+    o.material?.dispose?.();
+  });
+  formGroup = null;
+}
+
+function setCloudVisible(v) {
+  if (wordCloud) wordCloud.visible = v;
+  if (fieldPts) fieldPts.visible = v;
+  if (pathLine) pathLine.visible = v;
+  if (pathGlow) pathGlow.visible = v;
+}
+
+function applyForm() {
+  if (!scene) return;
+  clearForm();
+  const name = state.form;
+  const a = state.analysis;
+  formGroup = buildForm(name, {
+    entropy: a?.entropy,
+    indices: a?.indices || indicesOf(state.words),
+    checksumBits: a?.checksumBits,
+  });
+  scene.add(formGroup);
+  setCloudVisible(name === "lattice" || name === "hilbert" ? false : false);
+  const label = FORMS.find((f) => f[0] === name)?.[1] || name;
+  const extra =
+    name === "hd"
+      ? ` ${pathTemplate(84, 0)} · ${PIPELINE.join(" → ")}`
+      : name === "torus"
+        ? " PBKDF2-HMAC-SHA512 ×2048 → 512 bits = IL∥IR (shown as torus, not printed)."
+        : name === "curve"
+          ? " Real Weierstrass sketch y²=x³+7 — not secp256k1 / Fp."
+          : "";
+  if ($("formNote")) $("formNote").textContent = `${label}.${extra} Art only.`;
 }
 
 function applyEmbedding() {
@@ -742,6 +788,13 @@ async function main() {
   paintDecode();
   renderLex("");
   $("wl").textContent = `${WORDLIST.length}`;
+  const sel = $("formSel");
+  sel.innerHTML = FORMS.map((f) => `<option value="${f[0]}">${f[1]}</option>`).join("");
+  sel.value = state.form;
+  sel.onchange = () => {
+    state.form = sel.value;
+    applyForm();
+  };
   $("wcNote").textContent = `12 words → ${wordCountToEntropyBits(12)} bits · not 2048¹²`;
 
   state.engine = await loadEngine("./wasm/entropy.wasm");

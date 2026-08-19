@@ -273,6 +273,15 @@ button.act:active { transform: scale(0.98); }
 }
 .math-step { display: none; }
 .math-step.on { display: block; }
+.plot {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #05070c;
+}
+input[type="range"] { flex: 1; min-width: 120px; }
   display: block;
   width: 100%;
   max-width: 360px;
