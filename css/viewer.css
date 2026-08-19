@@ -140,7 +140,32 @@ textarea, select {
   font-family: var(--mono);
   font-size: 16px; /* iOS zoom guard */
 }
-textarea { min-height: 88px; resize: vertical; }
+input[type="text"], input[type="search"] {
+  width: 100%;
+  background: #0b1018;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  font-family: var(--mono);
+  font-size: 16px;
+}
+
+.decode .pip { width: 22px; height: 22px; cursor: pointer; }
+.lex {
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.lex-item {
+  padding: 8px;
+  border-bottom: 1px solid rgba(120, 200, 255, 0.08);
+}
+.lex-item b { color: var(--accent); }
+.lex-item .near { color: var(--warn); }
 
 .row { display: flex; gap: 8px; flex-wrap: wrap; }
 button.act {

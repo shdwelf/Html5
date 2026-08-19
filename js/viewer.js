@@ -21,6 +21,16 @@ import {
   lastWordSplit,
   curveTable,
 } from "./spacefill.js";
+import {
+  SOURCES,
+  rollsNeeded,
+  rollsToEntropy,
+  parseRolls,
+  shannonBits,
+  onesRatio,
+} from "./entropy-live.js";
+import { INDEX } from "./bip39.js";
+import { searchWords, wordFromBits, bitsFromIndex } from "./lexicon.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
@@ -34,7 +44,8 @@ const state = {
   embed: "scatter",
   curve: "hilbert",
   scatterCache: null,
-  src: "csprng",
+  src: "coin",
+  decodeBits: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 };
 
 let scene, camera, renderer, controls;
@@ -187,6 +198,114 @@ function makePath(positions) {
 
 function hex(bytes) {
   return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function startTicker() {
+  const cv = $("ticker");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const buf = new Uint8Array(48);
+  const tick = () => {
+    crypto.getRandomValues(buf);
+    ctx.fillStyle = "rgba(7,8,13,0.35)";
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.font = "11px ui-monospace, monospace";
+    ctx.fillStyle = "#5ce1ff";
+    for (let row = 0; row < 3; row++) {
+      let line = "";
+      for (let i = 0; i < 16; i++) line += buf[row * 16 + i].toString(16).padStart(2, "0") + " ";
+      ctx.fillText(line, 6, 18 + row * 18);
+    }
+    requestAnimationFrame(tick);
+  };
+  tick();
+}
+
+function renderHoles(words, indices, checksumBits) {
+  const host = $("holes");
+  if (!host) return;
+  if (!words.length) {
+    host.innerHTML = "";
+    return;
+  }
+  host.innerHTML = words
+    .map((w, i) => {
+      const idx = indices[i] ?? 0;
+      const last = i === words.length - 1;
+      const pips = [];
+      for (let b = 10; b >= 0; b--) {
+        const on = (idx >> b) & 1;
+        const cs = last && checksumBits && b < checksumBits;
+        pips.push(`<i class="pip${on ? " on" : ""}${cs ? " cs" : ""}"></i>`);
+      }
+      return `<div class="hole-row"><span class="w">${String(i + 1).padStart(2, "0")} ${w}</span><div class="pips">${pips.join("")}</div></div>`;
+    })
+    .join("");
+}
+
+function updateLiveStats(entropy) {
+  if (!entropy) {
+    $("shan").textContent = "—";
+    $("ones").textContent = "—";
+    return;
+  }
+  $("shan").textContent = shannonBits(entropy).toFixed(3);
+  $("ones").textContent = `${(onesRatio(entropy) * 100).toFixed(1)}%`;
+}
+
+function updateRollNeed() {
+  const src = SOURCES[state.src] || SOURCES.coin;
+  const bits = wordCountToEntropyBits(Number($("wc").value)) || 128;
+  const need = rollsNeeded(bits, src.bits);
+  const have = parseRolls($("rolls").value, state.src).length;
+  $("poolBits").textContent = (have * src.bits).toFixed(1);
+  $("rollNeed").textContent = `${have}/${need} ${src.label} · ${src.bits.toFixed(3)} bits/event · ${bits}-bit target`;
+}
+
+async function commitRolls() {
+  const src = SOURCES[state.src];
+  if (!src) return;
+  const bits = wordCountToEntropyBits(Number($("wc").value));
+  const values = parseRolls($("rolls").value, state.src);
+  const need = rollsNeeded(bits, src.bits);
+  if (values.length < need) {
+    $("status").className = "status warn";
+    $("status").textContent = `Need ${need - values.length} more ${src.label} events`;
+    return;
+  }
+  const entropy = rollsToEntropy(values.slice(0, need), src.base, bits / 8);
+  const words = await entropyToMnemonic(entropy);
+  await applyPhrase(words.join(" "));
+}
+
+function paintDecode() {
+  const host = $("decodePips");
+  host.innerHTML = state.decodeBits
+    .map((b, i) => `<button type="button" class="pip${b ? " on" : ""}" data-bit="${i}"></button>`)
+    .join("");
+  const { index, word } = wordFromBits(state.decodeBits);
+  $("decodeWord").value = word;
+  $("decodeOut").textContent = `${word} · index ${index} · 0x${index.toString(16).padStart(3, "0")} · ${index.toString(2).padStart(11, "0")}`;
+}
+
+function setDecodeFromWord(text) {
+  const w = text.trim().toLowerCase();
+  if (!INDEX.has(w)) {
+    $("decodeOut").textContent = w ? `Not in BIP-39 list: ${w}` : "Toggle 11 bits ↔ word.";
+    return;
+  }
+  state.decodeBits = bitsFromIndex(INDEX.get(w));
+  paintDecode();
+}
+
+function renderLex(q = "") {
+  const rows = searchWords(q, 28);
+  $("lex").innerHTML = rows
+    .map((e) => {
+      const near = e.near.length ? ` · near <span class="near">${e.near.join(", ")}</span>` : "";
+      return `<div class="lex-item"><b>${e.word}</b> #${e.index} 0x${e.hex} ${e.bin} · ${e.prefix}${near}</div>`;
+    })
+    .join("");
 }
 
 function applyEmbedding() {
@@ -365,7 +484,6 @@ function renderAnalysis(words, analysis) {
     $("csBits").textContent = `${analysis.checksumBits} bits`;
     $("space").textContent = `2^${bits} ≈ ${keyspaceDecimal(bits)}`;
     $("hex").textContent = hex(analysis.entropy);
-    $("model").textContent = `${words.length} × 11-bit · ${state.curve} ${SLICE_BITS}-bit slice · ${state.embed}`;
   }
 }
 
@@ -453,7 +571,9 @@ async function main() {
   initThree();
   startTicker();
   bindSheet();
-  syncSourceUI();
+  updateRollNeed();
+  paintDecode();
+  renderLex("");
   $("wl").textContent = `${WORDLIST.length}`;
   $("wcNote").textContent = `12 words → ${wordCountToEntropyBits(12)} bits · not 2048¹²`;
 
@@ -468,7 +588,6 @@ async function main() {
   bindSeg("curveSeg", "curve", () => {
     if (state.analysis) {
       drawSlice(state.analysis.entropy, state.analysis.entropyBits || 0);
-      $("model").textContent = `${state.words.length} × 11-bit · ${state.curve} slice · ${state.embed}`;
     }
   });
 
@@ -479,16 +598,32 @@ async function main() {
     [...$("srcSeg").querySelectorAll(".seg-btn")].forEach((b) =>
       b.classList.toggle("on", b === btn)
     );
-    syncSourceUI();
+    updateRollNeed();
   });
   $("rolls").addEventListener("input", updateRollNeed);
   $("commitRolls").onclick = commitRolls;
+  $("decodePips").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-bit]");
+    if (!btn) return;
+    const i = Number(btn.dataset.bit);
+    state.decodeBits[i] = state.decodeBits[i] ? 0 : 1;
+    paintDecode();
+  });
+  $("decodeWord").addEventListener("input", (e) => setDecodeFromWord(e.target.value));
+  $("decodeAdd").onclick = () => {
+    const w = $("decodeWord").value.trim().toLowerCase();
+    if (!INDEX.has(w)) return;
+    const next = [...state.words, w].join(" ");
+    applyPhrase(next);
+  };
+  $("lexQ").addEventListener("input", (e) => renderLex(e.target.value));
 
   $("apply").onclick = () => applyPhrase($("phrase").value);
   $("gen").onclick = generate;
   $("share").onclick = shareChat;
   $("wc").onchange = () => {
     $("wcNote").textContent = `${$("wc").value} words → ${wordCountToEntropyBits(Number($("wc").value))} bits · checksum is not free entropy`;
+    updateRollNeed();
   };
   $("phrase").addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {

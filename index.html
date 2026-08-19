@@ -18,77 +18,91 @@
   <header class="topbar">
     <div>
       <h1>Keyspace Viewer</h1>
-      <p>Live entropy · Frozen-style plates · on-air CSPRNG</p>
+      <p>1 CSPRNG · 2 dice · 3 plates · 4 decoder · 5 lexicon</p>
     </div>
   </header>
 
   <section class="sheet" id="sheet">
     <div class="handle" aria-hidden="true"></div>
-    <button type="button" class="sheet-toggle" id="sheetToggle" aria-expanded="false">Phrase &amp; entropy</button>
+    <button type="button" class="sheet-toggle" id="sheetToggle" aria-expanded="false">Live entropy suite</button>
     <div class="sheet-body">
-      <label for="wc">Phrase length</label>
-      <div class="row">
-        <select id="wc">
-          <option value="12" selected>12 words · 128-bit</option>
-          <option value="15">15 words · 160-bit</option>
-          <option value="18">18 words · 192-bit</option>
-          <option value="21">21 words · 224-bit</option>
-          <option value="24">24 words · 256-bit</option>
-        </select>
+
+      <h2 class="step">1 · CSPRNG mnemonic</h2>
+      <div class="onair" id="onair"><span class="dot"></span> ON AIR · peek only — not the seed</div>
+      <div class="live-stats">
+        <span>H₈ <b id="shan">—</b></span>
+        <span>ones <b id="ones">—</b></span>
       </div>
+      <label for="wc">Strength</label>
+      <select id="wc">
+        <option value="12" selected>12 words · 128-bit</option>
+        <option value="15">15 words · 160-bit</option>
+        <option value="18">18 words · 192-bit</option>
+        <option value="21">21 words · 224-bit</option>
+        <option value="24">24 words · 256-bit</option>
+      </select>
       <div class="row" style="margin-top:8px">
-        <button class="act" id="gen" type="button">Sample entropy</button>
+        <button class="act" id="gen" type="button">Sample CSPRNG</button>
         <button class="act" id="apply" type="button">Project</button>
         <button class="act" id="share" type="button">Share in chat</button>
       </div>
       <p class="legend" id="wcNote"></p>
-
-      <label for="phrase">Mnemonic phrase</label>
-      <textarea id="phrase" spellcheck="false" autocomplete="off" autocapitalize="none" enterkeyhint="done" placeholder="enter or generate a phrase"></textarea>
+      <label for="phrase">Mnemonic</label>
+      <textarea id="phrase" spellcheck="false" autocomplete="off" autocapitalize="none" enterkeyhint="done" placeholder="generated or pasted phrase"></textarea>
       <div id="status" class="status warn">Loading engine…</div>
       <div id="chips" class="chips"></div>
 
-      <h2 class="step">0 · Live entropy</h2>
-      <div class="onair" id="onair"><span class="dot"></span> ON AIR · CSPRNG peek (not your seed)</div>
-      <div class="live-stats">
-        <span>H₈ <b id="shan">—</b></span>
-        <span>ones <b id="ones">—</b></span>
-        <span>pool <b id="poolBits">0</b> bits</span>
-      </div>
+      <h2 class="step">2 · Dice / coin</h2>
       <div class="seg" id="srcSeg">
-        <button type="button" class="seg-btn on" data-src="csprng">CSPRNG</button>
         <button type="button" class="seg-btn" data-src="dice6">Dice 1–6</button>
         <button type="button" class="seg-btn" data-src="dice10">Dice 0–9</button>
-        <button type="button" class="seg-btn" data-src="coin">Coin 0/1</button>
+        <button type="button" class="seg-btn on" data-src="coin">Coin 0/1</button>
       </div>
-      <textarea id="rolls" spellcheck="false" inputmode="numeric" placeholder="type rolls live: 415263… or flip 0101…" hidden></textarea>
-      <p class="legend" id="rollNeed">Browser CSPRNG fills entropy on Sample. Physical rolls use base conversion only — no hash mix.</p>
+      <textarea id="rolls" spellcheck="false" inputmode="numeric" placeholder="live rolls: 415263… or flips 010011…"></textarea>
+      <p class="legend" id="rollNeed"></p>
+      <span class="legend">Pool <b id="poolBits">0</b> bits · base conversion only, no hash mix</span>
       <div class="row">
-        <button class="act" id="commitRolls" type="button" hidden>Commit rolls → phrase</button>
+        <button class="act" id="commitRolls" type="button">Commit rolls → phrase</button>
       </div>
-      <div id="holes" class="holes" aria-label="11-bit hole plates"></div>
-      <p class="legend">Hole plate: filled = 1. Same 11-bit index Frozen-style plates encode. Last row includes checksum bits.</p>
 
-      <h2 class="step">1 · Hilbert / Morton slice</h2>
+      <h2 class="step">3 · Seed visualizer</h2>
+      <div id="holes" class="holes" aria-label="11-bit hole plates"></div>
+      <p class="legend">Filled pip = 1. Last row’s amber pips are checksum bits.</p>
+
+      <h2 class="step">4 · Hole decoder</h2>
+      <div class="decode-row">
+        <div id="decodePips" class="pips decode"></div>
+      </div>
+      <div class="row">
+        <input type="text" id="decodeWord" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="type a word" />
+        <button class="act" id="decodeAdd" type="button">Append word</button>
+      </div>
+      <p class="legend" id="decodeOut">Toggle 11 bits ↔ word. Bidirectional plate decode.</p>
+
+      <h2 class="step">5 · Word encyclopedia</h2>
+      <input type="search" id="lexQ" placeholder="search word, prefix, or index" />
+      <div id="lex" class="lex"></div>
+
+      <h2 class="step">6 · Hilbert / Morton slice</h2>
       <div class="seg" id="curveSeg">
         <button type="button" class="seg-btn on" data-curve="hilbert">Hilbert</button>
         <button type="button" class="seg-btn" data-curve="morton">Morton / Z</button>
       </div>
       <canvas id="slice" class="slice" width="256" height="256" aria-label="Space-filling keyspace slice"></canvas>
-      <p class="legend" id="sliceNote">Top 14 entropy bits on a 128×128 Hilbert/Morton map. The cell is still 2ⁿ⁻¹⁴ keys.</p>
+      <p class="legend" id="sliceNote">Top 14 entropy bits. The cell is still 2ⁿ⁻¹⁴ keys.</p>
 
-      <h2 class="step">2 · Bit plane</h2>
+      <h2 class="step">7 · Bit plane</h2>
       <canvas id="bits" class="bitplane" width="256" height="128" aria-label="Entropy and checksum bits"></canvas>
       <p class="legend">16 columns. Cyan = entropy. Amber = checksum.</p>
 
-      <h2 class="step">3 · 11-bit tape</h2>
+      <h2 class="step">8 · 11-bit tape</h2>
       <div class="tape-wrap"><table class="tape" id="tape"></table></div>
 
-      <h2 class="step">4 · Scale</h2>
+      <h2 class="step">9 · Scale</h2>
       <div class="scale" id="scale"></div>
       <p class="legend" id="scaleNote"></p>
 
-      <h2 class="step">5 · Word embedding</h2>
+      <h2 class="step">10 · Word embedding</h2>
       <div class="seg" id="embedSeg" role="tablist">
         <button type="button" class="seg-btn on" data-embed="scatter">WASM scatter</button>
         <button type="button" class="seg-btn" data-embed="fibonacci">Fibonacci sphere</button>
@@ -104,9 +118,7 @@
       </div>
       <label>Entropy hex</label>
       <div class="bits" id="hex">—</div>
-      <label>Engine</label>
-      <div class="bits" id="model">WASM · Hilbert/Morton · bit plane</div>
-      <p class="legend">Geometry only — no wallet derivation, no search.</p>
+      <p class="legend">Geometry only — no wallet derivation, no last-word sweep, no search of the space.</p>
     </div>
   </section>
 
