@@ -49,10 +49,19 @@
         <span>ones <b id="ones">—</b></span>
       </div>
 
+      <div class="pager">
+        <button class="act" id="mathPrev" type="button">Back</button>
+        <span id="mathPos">1 / 5</span>
+        <button class="act" id="mathNext" type="button">Next</button>
+      </div>
+
+      <section class="math-step on" data-math="1">
       <h2 class="step">1 · Parallel coordinates</h2>
       <canvas id="parallel" class="plot" width="360" height="180" aria-label="Parallel coordinates of word indices"></canvas>
       <p class="legend">One axis per word, 0–2047. Product space Aⁿ — not a sphere.</p>
+      </section>
 
+      <section class="math-step" data-math="2">
       <h2 class="step">2 · Avalanche</h2>
       <label for="flipBit">Flip entropy bit</label>
       <div class="row">
@@ -60,15 +69,21 @@
         <button class="act" id="doFlip" type="button">Preview flip</button>
       </div>
       <p class="legend" id="avalancheNote">Discrete derivative of Φ: which 11-bit chunks jump when one ENT bit flips.</p>
+      </section>
 
+      <section class="math-step" data-math="3">
       <h2 class="step">3 · Checksum fiber</h2>
       <canvas id="fiber" class="plot" width="256" height="80" aria-label="Checksum fiber"></canvas>
       <p class="legend" id="fiberNote">2^CS cells. One cell is SHA-256(ENT). Not a linear code. Not a last-word list.</p>
+      </section>
 
+      <section class="math-step" data-math="4">
       <h2 class="step">4 · Gray tour of Q₁₁</h2>
       <canvas id="gray" class="plot" width="280" height="280" aria-label="Gray-coded 11-cube"></canvas>
       <p class="legend">Binary-reflected Gray order. Adjacent on the ring = Hamming distance 1 on the 11-cube.</p>
+      </section>
 
+      <section class="math-step" data-math="5">
       <h2 class="step">5 · Hypercube face</h2>
       <div class="seg" id="cubeSeg">
         <button type="button" class="seg-btn" data-cube="4">Q₄</button>
@@ -77,6 +92,7 @@
       </div>
       <canvas id="cube" class="plot" width="280" height="280" aria-label="Entropy hypercube face"></canvas>
       <p class="legend" id="cubeNote">A real face of C: first n entropy bits. Remaining bits still live in the vertex.</p>
+      </section>
 
       <h2 class="step">6 · CSPRNG / dice</h2>
       <div class="onair" id="onair"><span class="dot"></span> ON AIR · peek only — not the seed</div>

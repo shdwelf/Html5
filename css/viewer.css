@@ -252,7 +252,27 @@ button.act:active { transform: scale(0.98); }
   background: #12202c;
 }
 
-.plot {
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 8px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--panel);
+  padding: 4px 0;
+}
+.pager span {
+  flex: 1;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+.math-step { display: none; }
+.math-step.on { display: block; }
   display: block;
   width: 100%;
   max-width: 360px;

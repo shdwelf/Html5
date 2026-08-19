@@ -55,6 +55,7 @@ const state = {
   decodeBits: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   cubeN: 5,
   flipBit: 0,
+  mathStep: 1,
 };
 
 let scene, camera, renderer, controls;
@@ -444,6 +445,17 @@ function renderTape(words, indices, checksumBits) {
     `<thead><tr><th>#</th><th>Word</th><th>Index</th><th>11 bits</th><th></th></tr></thead><tbody>${rows}</tbody>`;
 }
 
+function setMathStep(n) {
+  state.mathStep = Math.min(5, Math.max(1, n));
+  document.querySelectorAll(".math-step").forEach((el) => {
+    el.classList.toggle("on", Number(el.dataset.math) === state.mathStep);
+  });
+  $("mathPos").textContent = `${state.mathStep} / 5`;
+  $("mathPrev").disabled = state.mathStep <= 1;
+  $("mathNext").disabled = state.mathStep >= 5;
+  drawMath(state.analysis);
+}
+
 function drawParallel(indices, changed = []) {
   const cv = $("parallel");
   if (!cv) return;
@@ -772,6 +784,19 @@ async function main() {
     applyPhrase(next);
   };
   $("lexQ").addEventListener("input", (e) => renderLex(e.target.value));
+  $("doFlip").onclick = previewAvalanche;
+  $("mathPrev").onclick = () => setMathStep(state.mathStep - 1);
+  $("mathNext").onclick = () => setMathStep(state.mathStep + 1);
+  $("cubeSeg").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-cube]");
+    if (!btn) return;
+    state.cubeN = Number(btn.dataset.cube);
+    [...$("cubeSeg").querySelectorAll(".seg-btn")].forEach((b) =>
+      b.classList.toggle("on", b === btn)
+    );
+    drawCube(state.analysis?.entropy);
+  });
+  setMathStep(1);
 
   $("apply").onclick = () => applyPhrase($("phrase").value);
   $("gen").onclick = generate;
