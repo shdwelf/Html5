@@ -2,2425 +2,776 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>x86:LE:16:Real Mode — DOS Binary Loader & Decompiler Suite</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>x86:LE:16:Real Mode — WASM DOS Binary Loader</title>
 <style>
-/* ── Reset & Foundation ─────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0c0c14;--bg2:#12121f;--bg3:#1a1a2e;--bg4:#22223a;
-  --fg:#c8c8d8;--fg2:#9898b0;--fg3:#666680;
-  --accent:#00d4ff;--accent2:#00ff88;--accent3:#ff6b35;--accent4:#ff4488;
-  --red:#ff4455;--green:#44ff88;--yellow:#ffcc00;--blue:#4488ff;
-  --mono:'Courier New',Consolas,'Liberation Mono',monospace;
-  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  --radius:6px;--shadow:0 2px 12px rgba(0,0,0,.5);
-}
-html{font-size:14px;scroll-behavior:smooth}
-body{background:var(--bg);color:var(--fg);font-family:var(--sans);line-height:1.6;min-height:100vh}
-a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
-h1,h2,h3,h4{color:#fff;font-weight:600;line-height:1.3}
-h1{font-size:1.8rem}h2{font-size:1.35rem;margin-bottom:.5rem}h3{font-size:1.1rem}
-code{font-family:var(--mono);background:var(--bg3);padding:1px 5px;border-radius:3px;font-size:.9em;color:var(--accent2)}
-pre{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:12px;overflow-x:auto;font-family:var(--mono);font-size:.82rem;line-height:1.5;color:var(--fg)}
-pre code{background:none;padding:0;color:inherit}
-
-/* ── Layout ─────────────────────────────────────────────────── */
+:root{--bg:#080810;--bg2:#10101c;--bg3:#181828;--bg4:#202034;--fg:#c0c0d0;--fg2:#8888a0;--fg3:#555570;--a:#00d4ff;--a2:#00ff88;--a3:#ff6b35;--a4:#ff4488;--r:#ff4455;--g:#44ff88;--y:#ffcc00;--b:#4488ff;--m:'Cascadia Code','Fira Code','Courier New',monospace;--s:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--rad:5px}
+html{font-size:13px}
+body{background:var(--bg);color:var(--fg);font-family:var(--s);line-height:1.55;min-height:100vh}
+a{color:var(--a)}
+code{font-family:var(--m);background:var(--bg3);padding:1px 4px;border-radius:3px;font-size:.88em;color:var(--a2)}
+h1,h2,h3{color:#fff;font-weight:600;line-height:1.3}
+pre{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--rad);padding:10px;overflow-x:auto;font-family:var(--m);font-size:.78rem;line-height:1.5;color:var(--fg)}
 .app{display:flex;flex-direction:column;min-height:100vh}
-header{background:linear-gradient(135deg,#0d0d22 0%,#1a0a2e 50%,#0a1628 100%);border-bottom:1px solid var(--bg4);padding:16px 24px;position:sticky;top:0;z-index:100}
-header .logo{display:flex;align-items:center;gap:12px}
-header .logo svg{width:36px;height:36px}
-header h1{font-size:1.4rem;letter-spacing:-.5px}
-header h1 span{color:var(--accent);font-family:var(--mono)}
-header p{font-size:.8rem;color:var(--fg2);margin-top:2px}
-nav{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap}
-nav button{background:var(--bg3);border:1px solid var(--bg4);color:var(--fg2);padding:5px 14px;border-radius:var(--radius);cursor:pointer;font-size:.78rem;font-family:var(--sans);transition:all .15s}
+header{background:linear-gradient(135deg,#0a0a1a,#180828,#081420);border-bottom:1px solid var(--bg4);padding:12px 20px;position:sticky;top:0;z-index:100}
+header .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+header h1{font-size:1.2rem}header h1 span{color:var(--a);font-family:var(--m)}
+header .badge{background:var(--a2);color:#000;font-size:.6rem;padding:2px 7px;border-radius:8px;font-weight:700;letter-spacing:.3px}
+header p{font-size:.72rem;color:var(--fg2);margin-top:1px}
+nav{display:flex;gap:3px;margin-top:8px;flex-wrap:wrap}
+nav button{background:var(--bg3);border:1px solid var(--bg4);color:var(--fg2);padding:4px 12px;border-radius:var(--rad);cursor:pointer;font-size:.72rem;font-family:var(--s);transition:all .12s}
 nav button:hover{background:var(--bg4);color:var(--fg)}
-nav button.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
-
-main{flex:1;padding:20px 24px;max-width:1400px;width:100%;margin:0 auto}
-footer{border-top:1px solid var(--bg4);padding:12px 24px;text-align:center;font-size:.75rem;color:var(--fg3)}
-
-/* ── Panels ─────────────────────────────────────────────────── */
-.panel{display:none;animation:fadeIn .2s ease}
-.panel.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-.card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:16px;margin-bottom:16px}
-.card h2{border-bottom:1px solid var(--bg4);padding-bottom:8px;margin-bottom:12px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
-
-/* ── Drop Zone ──────────────────────────────────────────────── */
-.dropzone{border:2px dashed var(--bg4);border-radius:var(--radius);padding:40px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
-.dropzone:hover,.dropzone.dragover{border-color:var(--accent);background:rgba(0,212,255,.04)}
-.dropzone.dragover{box-shadow:0 0 20px rgba(0,212,255,.15)}
-.dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
-.dropzone .icon{font-size:2.5rem;margin-bottom:8px}
-.dropzone p{color:var(--fg2);font-size:.85rem}
-.dropzone p strong{color:var(--accent)}
-
-/* ── Hex Viewer ─────────────────────────────────────────────── */
-.hex-viewer{background:var(--bg);border:1px solid var(--bg4);border-radius:var(--radius);overflow:auto;max-height:480px;font-family:var(--mono);font-size:.78rem;line-height:1.7}
-.hex-row{display:flex;white-space:nowrap;padding:0 8px}
-.hex-row:hover{background:rgba(0,212,255,.06)}
-.hex-addr{color:var(--accent);min-width:80px;text-align:right;padding-right:12px;user-select:all}
-.hex-bytes{color:var(--fg)}
-.hex-byte{display:inline-block;min-width:24px;text-align:center;padding:0 1px}
-.hex-byte.header{color:var(--yellow);background:rgba(255,204,0,.08);border-radius:2px}
-.hex-byte.code{color:var(--green)}
-.hex-byte.data{color:var(--accent3)}
-.hex-byte.overlay{color:var(--accent4);background:rgba(255,68,136,.08);border-radius:2px}
-.hex-byte.zero{color:var(--fg3)}
-.hex-ascii{color:var(--fg3);padding-left:12px;border-left:1px solid var(--bg4);margin-left:4px}
-.hex-ascii .printable{color:var(--fg)}
-.hex-ascii .non-print{color:var(--bg4)}
-.hex-separator{width:1px;background:var(--bg4);margin:0 4px;display:inline-block}
-
-/* ── MZ Header Table ────────────────────────────────────────── */
-.field-table{width:100%;border-collapse:collapse;font-size:.82rem}
-.field-table th{text-align:left;padding:6px 10px;background:var(--bg3);color:var(--accent);font-weight:600;border-bottom:2px solid var(--accent)}
-.field-table td{padding:5px 10px;border-bottom:1px solid var(--bg4);vertical-align:top}
-.field-table td:first-child{color:var(--yellow);font-family:var(--mono);white-space:nowrap;width:180px}
-.field-table td:nth-child(2){font-family:var(--mono);color:var(--fg);width:120px}
-.field-table td:nth-child(3){color:var(--fg2)}
-.field-table tr:hover{background:rgba(0,212,255,.03)}
-
-/* ── Segment Map ────────────────────────────────────────────── */
-.seg-map{display:flex;flex-direction:column;gap:4px;font-family:var(--mono);font-size:.78rem}
-.seg-bar{display:flex;align-items:center;gap:8px;height:28px}
-.seg-bar .label{min-width:80px;text-align:right;color:var(--fg2);font-size:.72rem}
-.seg-bar .bar{flex:1;position:relative;height:22px;background:var(--bg);border-radius:3px;overflow:hidden;border:1px solid var(--bg4)}
-.seg-bar .bar .fill{height:100%;border-radius:2px;display:flex;align-items:center;padding:0 6px;font-size:.68rem;color:#000;font-weight:600;white-space:nowrap;transition:width .4s ease}
-.seg-bar .bar .fill.cs{background:linear-gradient(90deg,#ff4488,#ff6b9d)}
-.seg-bar .bar .fill.ds{background:linear-gradient(90deg,#4488ff,#6baaff)}
-.seg-bar .bar .fill.ss{background:linear-gradient(90deg,#44ff88,#6bffc0)}
-.seg-bar .bar .fill.es{background:linear-gradient(90deg,#ffcc00,#ffe066)}
-.seg-bar .bar .fill.psp{background:linear-gradient(90deg,#aa66ff,#c088ff)}
-.seg-bar .addr{min-width:60px;font-size:.72rem;color:var(--fg3)}
-
-/* ── Disassembly ────────────────────────────────────────────── */
-.disasm{font-family:var(--mono);font-size:.8rem;line-height:1.8;max-height:600px;overflow:auto;background:var(--bg);border:1px solid var(--bg4);border-radius:var(--radius)}
-.dasm-row{display:flex;padding:0 8px;gap:8px}
-.dasm-row:hover{background:rgba(0,212,255,.06)}
-.dasm-row.highlight{background:rgba(255,68,136,.1);border-left:2px solid var(--accent4)}
-.dasm-addr{color:var(--accent);min-width:90px;text-align:right}
-.dasm-bytes{color:var(--fg3);min-width:100px}
-.dasm-mnemonic{color:var(--green);min-width:80px;font-weight:600}
-.dasm-mnemonic.jmp{color:var(--red)}
-.dasm-mnemonic.call{color:var(--yellow)}
-.dasm-mnemonic.int{color:var(--accent4)}
-.dasm-mnemonic.mov{color:var(--accent)}
-.dasm-mnemonic.push{color:var(--accent3)}
-.dasm-mnemonic.pop{color:var(--accent3)}
-.dasm-operands{color:var(--fg)}
-.dasm-operands .reg{color:var(--yellow)}
-.dasm-operands .imm{color:var(--accent2)}
-.dasm-operands .mem{color:var(--accent)}
-.dasm-operands .seg{color:var(--accent4)}
-.dasm-comment{color:var(--fg3);font-style:italic}
-
-/* ── Decompile View ─────────────────────────────────────────── */
-.decompile-view{background:var(--bg);border:1px solid var(--bg4);border-radius:var(--radius);padding:16px;font-family:var(--mono);font-size:.82rem;line-height:1.8}
-.decompile-view .kw{color:var(--accent4);font-weight:600}
-.decompile-view .type{color:var(--accent)}
-.decompile-view .fn{color:var(--yellow)}
-.decompile-view .str{color:var(--green)}
-.decompile-view .cmt{color:var(--fg3);font-style:italic}
-.decompile-view .num{color:var(--accent2)}
-.decompile-view .var{color:var(--fg)}
-
-/* ── Interrupt Table ────────────────────────────────────────── */
-.int-table{max-height:400px;overflow:auto}
-.int-row{display:flex;gap:8px;padding:3px 8px;font-family:var(--mono);font-size:.78rem;border-bottom:1px solid var(--bg4)}
-.int-row:hover{background:rgba(0,212,255,.05)}
-.int-num{color:var(--accent4);min-width:40px;font-weight:600}
-.int-ah{color:var(--yellow);min-width:30px}
-.int-desc{color:var(--fg2)}
-
-/* ── Tool Comparison ────────────────────────────────────────── */
-.tool-card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:8px}
-.tool-card h3{display:flex;align-items:center;gap:8px}
-.tool-card .badge{font-size:.65rem;padding:2px 8px;border-radius:10px;font-weight:600}
-.tool-card .badge.free{background:rgba(0,255,136,.15);color:var(--green)}
-.tool-card .badge.commercial{background:rgba(255,68,85,.15);color:var(--red)}
-.tool-card .badge.partial{background:rgba(255,204,0,.15);color:var(--yellow)}
-.tool-card ul{list-style:none;display:flex;flex-direction:column;gap:4px}
-.tool-card li{font-size:.82rem;color:var(--fg2);padding-left:16px;position:relative}
-.tool-card li::before{content:'▸';position:absolute;left:0;color:var(--accent)}
-.check{color:var(--green)} .cross{color:var(--red)} .warn{color:var(--yellow)}
-
-/* ── Ghidra Script ──────────────────────────────────────────── */
-.script-block{position:relative}
-.script-block .copy-btn{position:absolute;top:8px;right:8px;background:var(--bg4);border:1px solid var(--bg3);color:var(--fg2);padding:4px 10px;border-radius:3px;cursor:pointer;font-size:.72rem;font-family:var(--sans)}
-.script-block .copy-btn:hover{background:var(--accent);color:#000}
-
-/* ── Stats / Badges ─────────────────────────────────────────── */
-.stats{display:flex;gap:16px;flex-wrap:wrap;margin:12px 0}
-.stat{background:var(--bg3);border:1px solid var(--bg4);border-radius:var(--radius);padding:8px 16px;text-align:center}
-.stat .val{font-size:1.4rem;font-weight:700;color:var(--accent);font-family:var(--mono)}
-.stat .lbl{font-size:.7rem;color:var(--fg3);text-transform:uppercase;letter-spacing:.5px}
-
-/* ── Reko / Cutter reference ────────────────────────────────── */
-.ref-tool{display:flex;gap:16px;align-items:flex-start;padding:12px;background:var(--bg);border-radius:var(--radius);margin-bottom:8px;border:1px solid var(--bg4)}
-.ref-tool .num{background:var(--accent);color:#000;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0}
-.ref-tool .content h4{color:var(--fg);margin-bottom:4px}
-
-/* ── PSP layout ─────────────────────────────────────────────── */
-.psp-grid{display:grid;grid-template-columns:80px 80px 1fr;gap:1px;font-family:var(--mono);font-size:.78rem;background:var(--bg4);border-radius:var(--radius);overflow:hidden}
-.psp-grid>div{background:var(--bg2);padding:4px 8px}
-.psp-grid .offset{color:var(--accent);text-align:right}
-.psp-grid .size{color:var(--fg3);text-align:center}
-.psp-grid .desc{color:var(--fg2)}
-
-/* ── Search ─────────────────────────────────────────────────── */
-.search-box{display:flex;gap:8px;margin-bottom:12px}
-.search-box input{flex:1;background:var(--bg);border:1px solid var(--bg4);color:var(--fg);padding:8px 12px;border-radius:var(--radius);font-family:var(--mono);font-size:.85rem}
-.search-box input:focus{outline:none;border-color:var(--accent)}
-.search-box button{background:var(--accent);color:#000;border:none;padding:8px 16px;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:.85rem}
-
-/* ── Tabs within panels ─────────────────────────────────────── */
-.sub-tabs{display:flex;gap:4px;margin-bottom:12px;border-bottom:1px solid var(--bg4);padding-bottom:8px}
-.sub-tabs button{background:transparent;border:none;color:var(--fg3);padding:4px 12px;cursor:pointer;font-size:.8rem;border-bottom:2px solid transparent;transition:all .15s}
-.sub-tabs button:hover{color:var(--fg)}
-.sub-tabs button.active{color:var(--accent);border-bottom-color:var(--accent)}
-.sub-panel{display:none}.sub-panel.active{display:block}
-
-/* ── Progress ───────────────────────────────────────────────── */
-.progress-bar{height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;margin:8px 0}
-.progress-bar .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s ease;width:0}
-
-/* ── Toast ──────────────────────────────────────────────────── */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);border:1px solid var(--accent);color:var(--fg);padding:10px 18px;border-radius:var(--radius);font-size:.82rem;z-index:1000;transform:translateY(100px);opacity:0;transition:all .3s ease}
+nav button.active{background:var(--a);color:#000;border-color:var(--a);font-weight:600}
+main{flex:1;padding:16px 20px;max-width:1400px;width:100%;margin:0 auto}
+footer{border-top:1px solid var(--bg4);padding:8px 20px;text-align:center;font-size:.68rem;color:var(--fg3)}
+.panel{display:none;animation:fadeIn .15s}.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--rad);padding:14px;margin-bottom:14px}
+.card h2{border-bottom:1px solid var(--bg4);padding-bottom:7px;margin-bottom:10px;font-size:1.1rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}}
+.drop{border:2px dashed var(--bg4);border-radius:var(--rad);padding:32px;text-align:center;cursor:pointer;transition:all .15s;position:relative}
+.drop:hover,.drop.over{border-color:var(--a);background:rgba(0,212,255,.03)}
+.drop.over{box-shadow:0 0 16px rgba(0,212,255,.12)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop .ic{font-size:2rem;margin-bottom:6px}
+.drop p{color:var(--fg2);font-size:.78rem}
+.progress{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;margin:6px 0}
+.progress .f{height:100%;background:linear-gradient(90deg,var(--a),var(--a2));transition:width .25s;width:0}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+.stat{background:var(--bg3);border:1px solid var(--bg4);border-radius:var(--rad);padding:6px 12px;text-align:center}
+.stat .v{font-size:1.2rem;font-weight:700;color:var(--a);font-family:var(--m)}
+.stat .l{font-size:.62rem;color:var(--fg3);text-transform:uppercase;letter-spacing:.5px}
+.ftbl{width:100%;border-collapse:collapse;font-size:.78rem}
+.ftbl th{text-align:left;padding:5px 8px;background:var(--bg3);color:var(--a);font-weight:600;border-bottom:2px solid var(--a)}
+.ftbl td{padding:4px 8px;border-bottom:1px solid var(--bg4);vertical-align:top}
+.ftbl td:first-child{color:var(--y);font-family:var(--m);white-space:nowrap;width:150px}
+.ftbl td:nth-child(2){font-family:var(--m);width:100px}
+.ftbl tr:hover{background:rgba(0,212,255,.02)}
+.hexv{background:var(--bg);border:1px solid var(--bg4);border-radius:var(--rad);overflow:auto;max-height:450px;font-family:var(--m);font-size:.74rem;line-height:1.65}
+.hxr{display:flex;white-space:nowrap;padding:0 7px}
+.hxr:hover{background:rgba(0,212,255,.04)}
+.hxa{color:var(--a);min-width:72px;text-align:right;padding-right:10px}
+.hxb .b{display:inline-block;min-width:22px;text-align:center}
+.b.hdr{color:var(--y)}.b.cod{color:var(--g)}.b.dat{color:var(--a3)}.b.z{color:var(--fg3)}
+.sep{width:1px;background:var(--bg4);margin:0 3px;display:inline-block}
+.asc{color:var(--fg3);padding-left:10px;border-left:1px solid var(--bg4);margin-left:3px}
+.asc .p{color:var(--fg)}
+.dasm{font-family:var(--m);font-size:.76rem;line-height:1.75;max-height:550px;overflow:auto;background:var(--bg);border:1px solid var(--bg4);border-radius:var(--rad)}
+.dr{display:flex;padding:0 7px;gap:7px}
+.dr:hover{background:rgba(0,212,255,.04)}
+.dr.ep{background:rgba(255,68,136,.08);border-left:2px solid var(--a4)}
+.da{color:var(--a);min-width:80px;text-align:right}
+.db{color:var(--fg3);min-width:80px}
+.dm{min-width:72px;font-weight:600}
+.dm.n{color:var(--g)}.dm.j{color:var(--r)}.dm.c{color:var(--y)}.dm.i{color:var(--a4)}.dm.m{color:var(--a)}.dm.pp{color:var(--a3)}.dm.str{color:var(--b)}
+.do{color:var(--fg)}
+.do .rg{color:var(--y)}.do .im{color:var(--a2)}.do .mm{color:var(--a)}
+.dc{color:var(--fg3);font-style:italic}
+.dec{background:var(--bg);border:1px solid var(--bg4);border-radius:var(--rad);padding:14px;font-family:var(--m);font-size:.78rem;line-height:1.75;max-height:550px;overflow:auto}
+.dec .kw{color:var(--a4);font-weight:600}.dec .tp{color:var(--a)}.dec .fn{color:var(--y)}.dec .st{color:var(--g)}.dec .cm{color:var(--fg3);font-style:italic}.dec .nu{color:var(--a2)}.dec .vr{color:var(--fg)}
+.seg{display:flex;flex-direction:column;gap:3px;font-family:var(--m);font-size:.74rem}
+.sb{display:flex;align-items:center;gap:7px;height:24px}
+.sb .lb{min-width:70px;text-align:right;color:var(--fg2);font-size:.68rem}
+.sb .bar{flex:1;position:relative;height:18px;background:var(--bg);border-radius:2px;overflow:hidden;border:1px solid var(--bg4)}
+.sb .bar .fl{height:100%;border-radius:2px;display:flex;align-items:center;padding:0 5px;font-size:.62rem;color:#000;font-weight:600;white-space:nowrap;transition:width .35s}
+.fl.cs{background:linear-gradient(90deg,#ff4488,#ff6b9d)}.fl.ds{background:linear-gradient(90deg,#4488ff,#6baaff)}
+.fl.ss{background:linear-gradient(90deg,#44ff88,#6bffc0)}.fl.es{background:linear-gradient(90deg,#ffcc00,#ffe066)}
+.fl.psp{background:linear-gradient(90deg,#aa66ff,#c088ff)}
+.sb .adr{min-width:55px;font-size:.68rem;color:var(--fg3)}
+.pspg{display:grid;grid-template-columns:65px 55px 1fr;gap:1px;font-family:var(--m);font-size:.74rem;background:var(--bg4);border-radius:var(--rad);overflow:hidden}
+.pspg>div{background:var(--bg2);padding:3px 6px}
+.pspg .of{color:var(--a);text-align:right}.pspg .sz{color:var(--fg3);text-align:center}.pspg .ds2{color:var(--fg2)}
+.calc{display:flex;gap:6px;align-items:center;margin:10px 0;flex-wrap:wrap}
+.calc input{background:var(--bg);border:1px solid var(--bg4);color:var(--y);padding:5px 8px;border-radius:var(--rad);font-family:var(--m);width:72px;text-align:center}
+.calc button{background:var(--a);color:#000;border:none;padding:5px 12px;border-radius:var(--rad);cursor:pointer;font-weight:600}
+#calcRes{font-family:var(--m);color:var(--g);font-size:.9rem}
+.tr{display:flex;gap:7px;padding:2px 7px;font-family:var(--m);font-size:.74rem;border-bottom:1px solid var(--bg4)}
+.tr:hover{background:rgba(0,212,255,.04)}
+.tn{color:var(--a4);min-width:42px;font-weight:600}.ta{color:var(--y);min-width:30px}.td{color:var(--fg2)}
+.sf{display:flex;gap:6px;margin-bottom:10px;border-bottom:1px solid var(--bg4);padding-bottom:7px}
+.sf button{background:transparent;border:none;color:var(--fg3);padding:3px 10px;cursor:pointer;font-size:.76rem;border-bottom:2px solid transparent;transition:all .12s}
+.sf button:hover{color:var(--fg)}.sf button.active{color:var(--a);border-bottom-color:var(--a)}
+.sp{display:none}.sp.active{display:block}
+.sb2{display:flex;gap:7px;margin-bottom:10px}
+.sb2 input{flex:1;background:var(--bg);border:1px solid var(--bg4);color:var(--fg);padding:7px 10px;border-radius:var(--rad);font-family:var(--m);font-size:.8rem}
+.sb2 input:focus{outline:none;border-color:var(--a)}
+.sb2 button{background:var(--a);color:#000;border:none;padding:7px 14px;border-radius:var(--rad);cursor:pointer;font-weight:600;font-size:.8rem}
+.wasm-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);color:var(--a2);padding:2px 8px;border-radius:8px;font-size:.62rem;font-weight:600}
+.toast{position:fixed;bottom:16px;right:16px;background:var(--bg3);border:1px solid var(--a);color:var(--fg);padding:8px 16px;border-radius:var(--rad);font-size:.78rem;z-index:999;transform:translateY(80px);opacity:0;transition:all .25s}
 .toast.show{transform:translateY(0);opacity:1}
-
-/* scrollbar */
-::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px}
-::-webkit-scrollbar-thumb:hover{background:var(--fg3)}
+::-webkit-scrollbar{width:7px;height:7px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
 </style>
 </head>
 <body>
 <div class="app">
-
-<!-- ═══════════════════ HEADER ═══════════════════ -->
 <header>
-  <div class="logo">
-    <svg viewBox="0 0 36 36" fill="none"><rect width="36" height="36" rx="6" fill="#1a1a2e"/><path d="M6 18h4l3-10 5 20 5-14 3 4h4" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="18" y="30" text-anchor="middle" fill="#ff6b35" font-size="6" font-family="monospace">16</text></svg>
-    <div>
-      <h1><span>x86:LE:16:Real Mode</span> — DOS Binary Loader Suite</h1>
-      <p>Raw Binary · MZ EXE · COM — Loader, Disassembler &amp; Decompiler for 16-bit x86 DOS</p>
-    </div>
+  <div class="row">
+    <h1><span>x86:LE:16</span> WASM DOS Binary Loader</h1>
+    <span class="badge">WebAssembly</span>
+    <span class="wasm-badge">⚡ WASM Engine Active</span>
   </div>
-  <nav id="mainNav">
-    <button class="active" data-panel="loader">⬆ Loader</button>
-    <button data-panel="hexview">⬡ Hex Viewer</button>
-    <button data-panel="disasm">⚙ Disassembly</button>
-    <button data-panel="decompile">◈ Decompile</button>
-    <button data-panel="segments">▮ Segments</button>
-    <button data-panel="interrupts">⊡ Interrupts</button>
-    <button data-panel="ghidra">◈ Ghidra Loader</button>
-    <button data-panel="tools">⊞ Tool Compare</button>
-    <button data-panel="reference">☰ Reference</button>
+  <p>Raw Binary · MZ EXE · COM — 16-bit x86 Real Mode decoder powered by compiled WebAssembly</p>
+  <nav id="nav">
+    <button class="active" data-p="loader">⬆ Loader</button>
+    <button data-p="hex">⬡ Hex</button>
+    <button data-p="disasm">⚙ Disasm</button>
+    <button data-p="decomp">◈ Decompile</button>
+    <button data-p="seg">▮ Segments</button>
+    <button data-p="int">⊡ Interrupts</button>
+    <button data-p="ref">☰ Reference</button>
   </nav>
 </header>
-
-<!-- ═══════════════════ MAIN ═══════════════════ -->
 <main>
 
-<!-- ──── PANEL: Loader ──── -->
-<section class="panel active" id="panel-loader">
-  <div class="grid2">
-    <div>
-      <div class="card">
-        <h2>⬆ Load Binary</h2>
-        <div class="dropzone" id="dropzone">
-          <input type="file" id="fileInput" accept=".exe,.com,.bin,.sys,.ovl,.MZ">
-          <div class="icon">📂</div>
-          <p>Drop a <strong>MZ .EXE</strong>, <strong>.COM</strong>, or <strong>Raw Binary</strong> file here</p>
-          <p style="font-size:.72rem;margin-top:8px;color:var(--fg3)">Supports: DOS MZ executables, flat .COM, raw .BIN, .SYS drivers</p>
-        </div>
-        <div class="progress-bar" id="loadProgress"><div class="fill"></div></div>
-      </div>
-      <div class="card" id="fileInfoCard" style="display:none">
-        <h2>📋 File Information</h2>
-        <table class="field-table" id="fileInfoTable"></table>
-      </div>
-    </div>
-    <div>
-      <div class="card">
-        <h2>🗺 x86:LE:16:Real Mode Memory Map</h2>
-        <p style="font-size:.8rem;color:var(--fg2);margin-bottom:12px">
-          Ghidra language ID: <code>x86:LE:16:Real Mode</code><br>
-          Address space: 20-bit (1 MiB) · Segment:Offset model
-        </p>
-        <div class="seg-map" id="segMap">
-          <div class="seg-bar"><div class="label">0000:0000</div><div class="bar"><div class="fill psp" style="width:0%">IVT</div></div><div class="addr">0x00000</div></div>
-          <div class="seg-bar"><div class="label">0040:0000</div><div class="bar"><div class="fill ds" style="width:0%">BDA</div></div><div class="addr">0x00400</div></div>
-          <div class="seg-bar"><div class="label">0050:0000</div><div class="bar"><div class="fill" style="width:0%;background:var(--fg3)">Conventional Memory</div></div><div class="addr">0x00500</div></div>
-        </div>
-        <div id="dynamicSegMap" style="margin-top:12px"></div>
-      </div>
-      <div class="card">
-        <h2>⚙ Format Detection</h2>
-        <div id="formatDetection" style="font-size:.82rem;color:var(--fg2)">
-          <p>No file loaded. Drop a binary to auto-detect its format.</p>
-          <div style="margin-top:8px">
-            <strong>Auto-detected formats:</strong>
-            <ul style="list-style:none;margin-top:4px">
-              <li>▸ <code>MZ</code> — DOS MZ Executable (magic: <code>4D 5A</code>)</li>
-              <li>▸ <code>COM</code> — Flat binary (loaded at CS:0100, PSP prefix)</li>
-              <li>▸ <code>RAW</code> — Flat binary (no headers, mapped at origin)</li>
-              <li>▸ <code>SYS</code> — DOS device driver</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ──── PANEL: Hex View ──── -->
-<section class="panel" id="panel-hexview">
-  <div class="card">
-    <h2>⬡ Hex Viewer — Linear & Segment:Offset Addressing</h2>
-    <div class="search-box">
-      <input type="text" id="hexSearch" placeholder="Search hex (e.g. 4D 5A) or ASCII...">
-      <button onclick="searchHex()">Find</button>
-    </div>
-    <div class="stats" id="hexStats"></div>
-    <div class="hex-viewer" id="hexViewer">
-      <p style="padding:20px;color:var(--fg3)">Load a file to view its hex content</p>
-    </div>
-  </div>
-</section>
-
-<!-- ──── PANEL: Disassembly ──── -->
-<section class="panel" id="panel-disasm">
-  <div class="card">
-    <h2>⚙ 16-bit x86 Real Mode Disassembly</h2>
-    <p style="font-size:.8rem;color:var(--fg2);margin-bottom:8px">
-      CS:<code id="dasmCS">0000</code> IP:<code id="dasmIP">0000</code> — 
-      Mode: <code>x86:LE:16:Real Mode</code>
-    </p>
-    <div class="search-box">
-      <input type="text" id="dasmAddr" placeholder="Go to address (segment:offset, e.g. 0C1F:0100)">
-      <button onclick="goToAddr()">Go</button>
-    </div>
-    <div class="disasm" id="disasmViewer">
-      <p style="padding:20px;color:var(--fg3)">Load a file to begin disassembly</p>
-    </div>
-  </div>
-</section>
-
-<!-- ──── PANEL: Decompile ──── -->
-<section class="panel" id="panel-decompile">
-  <div class="card">
-    <h2>◈ Decompiler Output (Ghidra Sleigh-driven)</h2>
-    <p style="font-size:.8rem;color:var(--fg2);margin-bottom:12px">
-      Emulates Ghidra's decompiler output for 16-bit real-mode code. Handles <code>__far</code> pointers,
-      segment:offset arithmetic, and BIOS/DOS interrupt parameter inference.
-    </p>
-    <div class="sub-tabs" id="decompileTabs">
-      <button class="active" data-sub="decomp-main">Decompiled C</button>
-      <button data-sub="decomp-types">Type Recovery</button>
-      <button data-sub="decomp-cfg">Control Flow</button>
-    </div>
-    <div class="sub-panel active" id="decomp-main">
-      <div class="decompile-view" id="decompileOutput">
-        <span class="cmt">/* Load a binary to see decompiled output */</span>
-      </div>
-    </div>
-    <div class="sub-panel" id="decomp-types">
-      <div class="decompile-view" id="typeRecovery">
-        <span class="cmt">/* Type recovery analysis will appear here */</span>
-      </div>
-    </div>
-    <div class="sub-panel" id="decomp-cfg">
-      <div id="cfgViewer" style="padding:20px;text-align:center;color:var(--fg3)">
-        Control flow graph will be rendered here after analysis
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ──── PANEL: Segments ──── -->
-<section class="panel" id="panel-segments">
-  <div class="grid2">
+<!-- Loader -->
+<section class="panel active" id="p-loader">
+<div class="g2">
+  <div>
     <div class="card">
-      <h2>▮ Segment Register Visualization</h2>
-      <p style="font-size:.8rem;color:var(--fg2);margin-bottom:12px">
-        16-bit real mode uses segment:offset addressing. Physical address = segment × 16 + offset.
-      </p>
-      <div id="segRegView">
-        <div class="seg-map">
-          <div class="seg-bar"><div class="label">CS (Code)</div><div class="bar" id="barCS"><div class="fill cs" style="width:0%">CS</div></div><div class="addr" id="valCS">0000</div></div>
-          <div class="seg-bar"><div class="label">DS (Data)</div><div class="bar" id="barDS"><div class="fill ds" style="width:0%">DS</div></div><div class="addr" id="valDS">0000</div></div>
-          <div class="seg-bar"><div class="label">SS (Stack)</div><div class="bar" id="barSS"><div class="fill ss" style="width:0%">SS</div></div><div class="addr" id="valSS">0000</div></div>
-          <div class="seg-bar"><div class="label">ES (Extra)</div><div class="bar" id="barES"><div class="fill es" style="width:0%">ES</div></div><div class="addr" id="valES">0000</div></div>
-        </div>
-      </div>
+      <h2>⬆ Load Binary <span class="wasm-badge">WASM</span></h2>
+      <div class="drop" id="drop"><input type="file" id="fi" accept=".exe,.com,.bin,.sys,.MZ"><div class="ic">📂</div><p>Drop <strong>MZ .EXE</strong>, <strong>.COM</strong>, or <strong>Raw Binary</strong></p></div>
+      <div class="progress" id="prog"><div class="f"></div></div>
     </div>
-    <div class="card">
-      <h2>▦ Segment:Offset → Physical Calculator</h2>
-      <div style="display:flex;gap:8px;align-items:center;margin:12px 0;flex-wrap:wrap">
-        <label>Segment:</label>
-        <input type="text" id="calcSeg" value="0C1F" style="background:var(--bg);border:1px solid var(--bg4);color:var(--yellow);padding:6px 10px;border-radius:var(--radius);font-family:var(--mono);width:80px;text-align:center">
-        <label>:</label>
-        <input type="text" id="calcOff" value="0100" style="background:var(--bg);border:1px solid var(--bg4);color:var(--accent);padding:6px 10px;border-radius:var(--radius);font-family:var(--mono);width:80px;text-align:center">
-        <button onclick="calcPhysical()" style="background:var(--accent);color:#000;border:none;padding:6px 14px;border-radius:var(--radius);cursor:pointer;font-weight:600">=</button>
-        <span id="calcResult" style="font-family:var(--mono);color:var(--green);font-size:1rem"></span>
-      </div>
-      <h3 style="margin-top:16px;font-size:.9rem">Program Segment Prefix (PSP)</h3>
-      <p style="font-size:.78rem;color:var(--fg2);margin:6px 0">Every .COM/.EXE receives a 256-byte PSP at segment base:</p>
-      <div class="psp-grid">
-        <div class="offset">0x00</div><div class="size">2B</div><div class="desc">INT 20h instruction (CP/M exit)</div>
-        <div class="offset">0x02</div><div class="size">2B</div><div class="desc">Segment of first free byte (memory size)</div>
-        <div class="offset">0x04</div><div class="size">1B</div><div class="desc">Reserved</div>
-        <div class="offset">0x05</div><div class="size">5B</div><div class="desc">CP/M CALL 5 entry (far call to DOS)</div>
-        <div class="offset">0x0A</div><div class="size">4B</div><div class="desc">INT 22h — Terminate address (saved CS:IP)</div>
-        <div class="offset">0x0E</div><div class="size">4B</div><div class="desc">INT 23h — Ctrl-C handler address</div>
-        <div class="offset">0x12</div><div class="size">4B</div><div class="desc">INT 24h — Critical error handler</div>
-        <div class="offset">0x16</div><div class="size">2B</div><div class="desc">Parent PSP segment</div>
-        <div class="offset">0x2C</div><div class="size">2B</div><div class="desc">Segment of environment block</div>
-        <div class="offset">0x5C</div><div class="size">16B</div><div class="desc">FCB #1 (unopened)</div>
-        <div class="offset">0x6C</div><div class="size">16B</div><div class="desc">FCB #2 (unopened)</div>
-        <div class="offset">0x80</div><div class="size">128B</div><div class="desc">Command-line tail / DTA</div>
-      </div>
-    </div>
+    <div class="card" id="fiCard" style="display:none"><h2>📋 File Info</h2><table class="ftbl" id="fiTbl"></table></div>
   </div>
-</section>
-
-<!-- ──── PANEL: Interrupts ──── -->
-<section class="panel" id="panel-interrupts">
-  <div class="card">
-    <h2>⊡ DOS &amp; BIOS Interrupt Reference</h2>
-    <p style="font-size:.8rem;color:var(--fg2);margin-bottom:12px">
-      16-bit DOS programs rely heavily on software interrupts. The decompiler matches INT parameters to known service routines.
-    </p>
-    <div class="search-box">
-      <input type="text" id="intSearch" placeholder="Filter interrupts (e.g. 'file', '21', 'display')...">
-    </div>
-    <div class="int-table" id="interruptTable"></div>
+  <div>
+    <div class="card"><h2>🗺 Memory Map</h2><p style="font-size:.76rem;color:var(--fg2);margin-bottom:10px"><code>x86:LE:16:Real Mode</code> — 20-bit physical, segment:offset</p><div class="seg" id="segMap"></div><div id="segDyn" style="margin-top:10px"></div></div>
+    <div class="card"><h2>⚙ Format Detection</h2><div id="fmtDet" style="font-size:.78rem;color:var(--fg2)"><p>No file loaded.</p></div></div>
   </div>
-</section>
-
-<!-- ──── PANEL: Ghidra Loader ──── -->
-<section class="panel" id="panel-ghidra">
-  <div class="card">
-    <h2>◈ Ghidra Raw Binary Loader — x86:LE:16:Real Mode</h2>
-    <p style="font-size:.82rem;color:var(--fg2);margin-bottom:12px">
-      This Java loader script for Ghidra detects MZ .EXE and flat .COM structures and maps them using the
-      <code>x86:LE:16:Real Mode</code> language specification. Copy this into your Ghidra scripts directory.
-    </p>
-    <div class="sub-tabs" id="ghidraTabs">
-      <button class="active" data-sub="ghidra-loader">Loader (Java)</button>
-      <button data-sub="ghidra-analyzer">Post-Analyzer</button>
-      <button data-sub="ghidra-setup">Setup Guide</button>
-    </div>
-
-    <div class="sub-panel active" id="ghidra-loader">
-      <div class="script-block">
-        <button class="copy-btn" onclick="copyScript('loaderScript')">📋 Copy</button>
-        <pre><code id="loaderScript">// ═══════════════════════════════════════════════════════════════
-// Ghidra Raw Binary / MZ / COM Loader
-// Language: x86:LE:16:Real Mode
-// ═══════════════════════════════════════════════════════════════
-// Place in: Ghidra/Extensions/Ghidra_Skeleton/loaders/
-// or use as a Ghidra Script (Window → Script Manager)
-// ═══════════════════════════════════════════════════════════════
-
-//@category Loader
-//@menupath File.Loaders.DOSBinaryLoader
-//@keybinding ctrl-shift-D
-
-import ghidra.app.util.Option;
-import ghidra.app.util.bin.ByteProvider;
-import ghidra.app.util.importer.MessageLog;
-import ghidra.app.util.opinion.LoadSpec;
-import ghidra.app.util.opinion.Loader;
-import ghidra.framework.model.DomainObject;
-import ghidra.program.model.address.AddressFactory;
-import ghidra.program.model.address.AddressSpace;
-import ghidra.program.model.lang.LanguageID;
-import ghidra.program.model.listing.Program;
-import ghidra.program.model.mem.Memory;
-import ghidra.program.model.mem.MemoryBlock;
-import ghidra.util.Msg;
-import ghidra.util.exception.CancelledException;
-import ghidra.util.task.TaskMonitor;
-
-import java.io.IOException;
-import java.util.*;
-
-/**
- * DOS Binary Loader for Ghidra
- * 
- * Handles three formats:
- *   1. MZ .EXE — DOS MZ executables with relocation table
- *   2. COM     — Flat binaries loaded at CS:0100 (with PSP)
- *   3. RAW     — Flat binaries loaded at CS:0000
- * 
- * Maps to Ghidra language: x86:LE:16:Real Mode
- */
-public class DOSBinaryLoader implements Loader {
-
-    private static final LanguageID LANG_ID = new LanguageID("x86:LE:16:Real Mode");
-    
-    // MZ Header constants
-    private static final int MZ_MAGIC       = 0x00; // "MZ" or "ZM"
-    private static final int MZ_LAST_PAGE   = 0x02; // Bytes on last page
-    private static final int MZ_PAGES       = 0x04; // Total pages (512 bytes)
-    private static final int MZ_RELOCS      = 0x06; // Relocation entries
-    private static final int MZ_HDR_SIZE    = 0x08; // Header size in paragraphs
-    private static final int MZ_MIN_ALLOC   = 0x0A; // Min memory (paragraphs)
-    private static final int MZ_MAX_ALLOC   = 0x0C; // Max memory (paragraphs)
-    private static final int MZ_SS          = 0x0E; // Initial SS
-    private static final int MZ_SP          = 0x10; // Initial SP
-    private static final int MZ_CHECKSUM    = 0x12; // Checksum
-    private static final int MZ_IP          = 0x14; // Initial IP
-    private static final int MZ_CS          = 0x16; // Initial CS
-    private static final int MZ_RELOC_OFF   = 0x18; // Relocation table offset
-    private static final int MZ_OVERLAY     = 0x1C; // Overlay number
-    
-    // COM constants
-    private static final int COM_LOAD_SEG   = 0x1000; // Typical CS for COM
-    private static final int PSP_SIZE       = 0x100;   // 256-byte PSP
-
-    // ─── Format Detection ─────────────────────────────────────
-
-    public enum DosFormat {
-        MZ_EXE,  // MZ executable with header
-        COM,     // Flat .COM (size &le; 64KB - PSP)
-        RAW      // Raw binary (fallback)
-    }
-
-    private DosFormat detectFormat(ByteProvider provider) throws IOException {
-        long size = provider.length();
-        if (size &lt; 2) return DosFormat.RAW;
-
-        byte[] magic = provider.readBytes(0, 2);
-        
-        // Check MZ signature
-        if ((magic[0] == 'M' &amp;&amp; magic[1] == 'Z') ||
-            (magic[0] == 'Z' &amp;&amp; magic[1] == 'M')) {
-            return DosFormat.MZ_EXE;
-        }
-        
-        // COM: must fit in 64KB minus PSP
-        if (size &lt;= 0xFF00) {
-            return DosFormat.COM;
-        }
-        
-        return DosFormat.RAW;
-    }
-
-    // ─── Load Spec ────────────────────────────────────────────
-
-    @Override
-    public Collection&lt;LoadSpec&gt; findSupportedLoadSpecs(ByteProvider provider)
-            throws IOException {
-        
-        List&lt;LoadSpec&gt; specs = new ArrayList&lt;&gt;();
-        DosFormat fmt = detectFormat(provider);
-        
-        if (fmt != DosFormat.RAW) {
-            specs.add(new LoadSpec(this, 0, 
-                new LanguageCompilerSpecPair(LANG_ID, "default"), true));
-        }
-        
-        return specs;
-    }
-
-    @Override
-    public String getName() {
-        return "DOS Binary Loader (MZ / COM / Raw)";
-    }
-
-    // ─── Loader Logic ─────────────────────────────────────────
-
-    @Override
-    public List&lt;LinkedOption&gt; getDefaultOptions(
-            ByteProvider provider, DomainObject domainObject,
-            LoadSpec loadSpec, Object loadData) {
-        return new ArrayList&lt;&gt;();
-    }
-
-    @Override
-    public String validateOptions(ByteProvider provider,
-            DomainObject domainObj, LoadSpec loadSpec,
-            List&lt;Option&gt; options, Object loadData) {
-        return null; // no validation issues
-    }
-
-    @Override
-    protected List&lt;LoadResults&lt;Program&gt;&gt; load(
-            ByteProvider provider, String preferredNamespace,
-            DomainObject domainObj, LoadSpec loadSpec,
-            List&lt;Option&gt; options, MessageLog log, Object consumer,
-            TaskMonitor monitor) throws IOException, CancelledException {
-
-        DosFormat fmt = detectFormat(provider);
-        Program program = (Program) domainObj;
-        Memory memory = program.getMemory();
-        AddressFactory addrFactory = program.getAddressFactory();
-        
-        switch (fmt) {
-            case MZ_EXE:
-                loadMZ(provider, memory, addrFactory, program, log, monitor);
-                break;
-            case COM:
-                loadCOM(provider, memory, addrFactory, program, log, monitor);
-                break;
-            default:
-                loadRAW(provider, memory, addrFactory, program, log, monitor);
-                break;
-        }
-        
-        return Collections.emptyList();
-    }
-
-    // ─── MZ EXE Loader ────────────────────────────────────────
-
-    private void loadMZ(ByteProvider provider, Memory memory,
-            AddressFactory addrFactory, Program program,
-            MessageLog log, TaskMonitor monitor) throws IOException {
-
-        byte[] header = provider.readBytes(0, 0x1C + 4);
-        
-        int lastPage    = readLE16(header, MZ_LAST_PAGE);
-        int pages       = readLE16(header, MZ_PAGES);
-        int relocCount  = readLE16(header, MZ_RELOCS);
-        int hdrParas    = readLE16(header, MZ_HDR_SIZE);
-        int minAlloc    = readLE16(header, MZ_MIN_ALLOC);
-        int maxAlloc    = readLE16(header, MZ_MAX_ALLOC);
-        int initSS      = readLE16(header, MZ_SS);
-        int initSP      = readLE16(header, MZ_SP);
-        int initIP      = readLE16(header, MZ_IP);
-        int initCS      = readLE16(header, MZ_CS);
-        int relocOff    = readLE16(header, MZ_RELOC_OFF);
-
-        int fileSize = (int) provider.length();
-        int hdrSize  = hdrParas * 16;
-        int imageSize = (pages - 1) * 512 + lastPage - hdrSize;
-        if (imageSize &lt; 0) imageSize = fileSize - hdrSize;
-        
-        // Compute load segment (typical: 0x1000)
-        int loadSeg = 0x1000;
-        
-        log.appendMsg(String.format(
-            "MZ Header: CS=%04X:%04X  SS:SP=%04X:%04X  " +
-            "Image=%04X bytes  Relocs=%d",
-            initCS, initIP, initSS, initSP, imageSize, relocCount));
-
-        // Create program segment block
-        String blockName = "MZ_IMAGE";
-        AddressSpace segSpace = addrFactory.getDefaultAddressSpace();
-        
-        long physBase = (long) loadSeg * 16;
-        MemoryBlock block = memory.createInitializedBlock(
-            blockName,
-            segSpace.getAddress(physBase),
-            provider.getInputStream(hdrSize),
-            imageSize,
-            (byte) 0x00, // fill
-            consumer,
-            false  // overlay
-        );
-        block.setRead(true);
-        block.setWrite(false);
-        block.setExecute(true);
-        
-        // Create PSP block
-        MemoryBlock pspBlock = memory.createInitializedBlock(
-            "PSP",
-            segSpace.getAddress((long)(loadSeg) * 16 - PSP_SIZE),
-            null, PSP_SIZE, (byte) 0x00, consumer, false
-        );
-        pspBlock.setRead(true);
-        pspBlock.setWrite(true);
-        pspBlock.setExecute(false);
-        
-        // Apply relocations
-        if (relocCount > 0 &amp;&amp; relocOff > 0) {
-            applyMZRelocations(provider, memory, segSpace,
-                relocOff, relocCount, loadSeg, monitor);
-        }
-        
-        // Set entry point
-        long entryPhys = (long)(loadSeg + initCS) * 16 + initIP;
-        program.getSymbolTable().createLabel(
-            segSpace.getAddress(entryPhys),
-            "ENTRY_POINT",
-            program.getGlobalNamespace(),
-            null
-        );
-        
-        log.appendMsg(String.format(
-            "Entry point at physical 0x%05X (%04X:%04X)",
-            entryPhys, loadSeg + initCS, initIP));
-    }
-
-    private void applyMZRelocations(ByteProvider provider, Memory memory,
-            AddressSpace space, int relocOffset, int relocCount,
-            int loadSeg, TaskMonitor monitor) throws IOException {
-        
-        byte[] relocData = provider.readBytes(relocOffset, relocCount * 4);
-        
-        for (int i = 0; i &lt; relocCount; i++) {
-            if (monitor.isCancelled()) break;
-            
-            int off = readLE16(relocData, i * 4);
-            int seg  = readLE16(relocData, i * 4 + 2);
-            
-            long phys = (long)(loadSeg + seg) * 16 + off;
-            
-            // Read the word at relocation site
-            byte[] word = new byte[2];
-            memory.getBytes(space.getAddress(phys), word);
-            int relocVal = (word[0] &amp; 0xFF) | ((word[1] &amp; 0xFF) &lt;&lt; 8);
-            
-            // Add load segment
-            relocVal += loadSeg;
-            
-            // Write back
-            memory.setBytes(space.getAddress(phys),
-                new byte[]{(byte)(relocVal &amp; 0xFF), (byte)((relocVal >> 8) &amp; 0xFF)});
-        }
-    }
-
-    // ─── COM Loader ───────────────────────────────────────────
-
-    private void loadCOM(ByteProvider provider, Memory memory,
-            AddressFactory addrFactory, Program program,
-            MessageLog log, TaskMonitor monitor) throws IOException {
-        
-        int fileSize = (int) provider.length();
-        AddressSpace space = addrFactory.getDefaultAddressSpace();
-        
-        // COM files load at CS:0100 with 256-byte PSP at CS:0000
-        long physBase = (long) COM_LOAD_SEG * 16;
-        
-        // Create PSP block (0x00-0xFF)
-        MemoryBlock psp = memory.createInitializedBlock(
-            "PSP", space.getAddress(physBase),
-            null, PSP_SIZE, (byte) 0x00, consumer, false
-        );
-        psp.setRead(true);
-        psp.setWrite(true);
-        psp.setExecute(false);
-        
-        // Create code/data block at offset 0x100
-        MemoryBlock code = memory.createInitializedBlock(
-            "COM_CODE",
-            space.getAddress(physBase + PSP_SIZE),
-            provider.getInputStream(0),
-            fileSize,
-            (byte) 0x00, consumer, false
-        );
-        code.setRead(true);
-        code.setWrite(true);
-        code.setExecute(true);
-        
-        // Entry point at CS:0100
-        program.getSymbolTable().createLabel(
-            space.getAddress(physBase + PSP_SIZE),
-            "COM_ENTRY",
-            program.getGlobalNamespace(), null
-        );
-        
-        log.appendMsg(String.format(
-            "COM file: %d bytes loaded at %04X:0100 (physical 0x%05X)",
-            fileSize, COM_LOAD_SEG, physBase + PSP_SIZE));
-    }
-
-    // ─── Raw Binary Loader ────────────────────────────────────
-
-    private void loadRAW(ByteProvider provider, Memory memory,
-            AddressFactory addrFactory, Program program,
-            MessageLog log, TaskMonitor monitor) throws IOException {
-        
-        int fileSize = (int) provider.length();
-        AddressSpace space = addrFactory.getDefaultAddressSpace();
-        
-        MemoryBlock block = memory.createInitializedBlock(
-            "RAW_BINARY",
-            space.getAddress(0),
-            provider.getInputStream(0),
-            fileSize,
-            (byte) 0x00, consumer, false
-        );
-        block.setRead(true);
-        block.setWrite(false);
-        block.setExecute(true);
-        
-        log.appendMsg(String.format(
-            "Raw binary: %d bytes mapped at 0000:0000", fileSize));
-    }
-
-    // ─── Utility ──────────────────────────────────────────────
-
-    private int readLE16(byte[] data, int offset) {
-        return (data[offset] &amp; 0xFF) | ((data[offset + 1] &amp; 0xFF) &lt;&lt; 8);
-    }
-}</code></pre>
-      </div>
-    </div>
-
-    <div class="sub-panel" id="ghidra-analyzer">
-      <div class="script-block">
-        <button class="copy-btn" onclick="copyScript('analyzerScript')">📋 Copy</button>
-        <pre><code id="analyzerScript">// ═══════════════════════════════════════════════════════════════
-// Ghidra Post-Load Analyzer for 16-bit DOS Binaries
-// Resolves INT calls, annotates segment registers, creates
-// function boundaries for DOS service routines.
-// ═══════════════════════════════════════════════════════════════
-
-//@category Analysis
-//@keybinding ctrl-shift-A
-
-import ghidra.app.script.GhidraScript;
-import ghidra.program.model.address.Address;
-import ghidra.program.model.lang.Register;
-import ghidra.program.model.listing.*;
-import ghidra.program.model.mem.MemoryBlock;
-import ghidra.program.model.scalar.Scalar;
-import ghidra.program.model.symbol.SourceType;
-
-import java.util.*;
-
-public class DOSBinaryAnalyzer extends GhidraScript {
-
-    // Known DOS INT 21h AH service numbers
-    private static final Map&lt;Integer, String&gt; DOS_21H_SERVICES = new HashMap&lt;&gt;();
-    static {
-        DOS_21H_SERVICES.put(0x00, "ProgramTerminate");
-        DOS_21H_SERVICES.put(0x01, "ReadKeyboardChar");
-        DOS_21H_SERVICES.put(0x02, "DisplayChar");
-        DOS_21H_SERVICES.put(0x05, "PrintChar");
-        DOS_21H_SERVICES.put(0x06, "DirectConsoleIO");
-        DOS_21H_SERVICES.put(0x07, "DirectConsoleInputNoEcho");
-        DOS_21H_SERVICES.put(0x08, "ReadCharNoEcho");
-        DOS_21H_SERVICES.put(0x09, "DisplayString");
-        DOS_21H_SERVICES.put(0x0A, "BufferedInput");
-        DOS_21H_SERVICES.put(0x0B, "GetInputStatus");
-        DOS_21H_SERVICES.put(0x0C, "FlushBufferAndInput");
-        DOS_21H_SERVICES.put(0x0D, "DiskReset");
-        DOS_21H_SERVICES.put(0x0E, "SetDefaultDrive");
-        DOS_21H_SERVICES.put(0x0F, "OpenFileFCB");
-        DOS_21H_SERVICES.put(0x10, "CloseFileFCB");
-        DOS_21H_SERVICES.put(0x11, "FindFirstFCB");
-        DOS_21H_SERVICES.put(0x12, "FindNextFCB");
-        DOS_21H_SERVICES.put(0x13, "DeleteFileFCB");
-        DOS_21H_SERVICES.put(0x14, "SequentialReadFCB");
-        DOS_21H_SERVICES.put(0x15, "SequentialWriteFCB");
-        DOS_21H_SERVICES.put(0x16, "CreateFileFCB");
-        DOS_21H_SERVICES.put(0x17, "RenameFileFCB");
-        DOS_21H_SERVICES.put(0x1A, "SetDTA");
-        DOS_21H_SERVICES.put(0x1E, "GetDiskParams");
-        DOS_21H_SERVICES.put(0x25, "SetInterruptVector");
-        DOS_21H_SERVICES.put(0x2A, "GetDate");
-        DOS_21H_SERVICES.put(0x2B, "SetDate");
-        DOS_21H_SERVICES.put(0x2C, "GetTime");
-        DOS_21H_SERVICES.put(0x2D, "SetTime");
-        DOS_21H_SERVICES.put(0x2E, "SetVerifyFlag");
-        DOS_21H_SERVICES.put(0x2F, "GetDTA");
-        DOS_21H_SERVICES.put(0x30, "GetDOSVersion");
-        DOS_21H_SERVICES.put(0x31, "TerminateStayResident");
-        DOS_21H_SERVICES.put(0x33, "GetSetCtrlBreak");
-        DOS_21H_SERVICES.put(0x34, "GetInDOSFlag");
-        DOS_21H_SERVICES.put(0x35, "GetInterruptVector");
-        DOS_21H_SERVICES.put(0x36, "GetDiskFreeSpace");
-        DOS_21H_SERVICES.put(0x38, "GetSetCountryInfo");
-        DOS_21H_SERVICES.put(0x39, "CreateDirectory");
-        DOS_21H_SERVICES.put(0x3A, "RemoveDirectory");
-        DOS_21H_SERVICES.put(0x3B, "ChangeDirectory");
-        DOS_21H_SERVICES.put(0x3C, "CreateFile");
-        DOS_21H_SERVICES.put(0x3D, "OpenFile");
-        DOS_21H_SERVICES.put(0x3E, "CloseFile");
-        DOS_21H_SERVICES.put(0x3F, "ReadFile");
-        DOS_21H_SERVICES.put(0x40, "WriteFile");
-        DOS_21H_SERVICES.put(0x41, "DeleteFile");
-        DOS_21H_SERVICES.put(0x42, "SeekFile");
-        DOS_21H_SERVICES.put(0x43, "GetSetFileAttr");
-        DOS_21H_SERVICES.put(0x44, "IOCTL");
-        DOS_21H_SERVICES.put(0x45, "DuplicateHandle");
-        DOS_21H_SERVICES.put(0x46, "ForceDuplicateHandle");
-        DOS_21H_SERVICES.put(0x47, "GetCurrentDirectory");
-        DOS_21H_SERVICES.put(0x48, "AllocateMemory");
-        DOS_21H_SERVICES.put(0x49, "FreeMemory");
-        DOS_21H_SERVICES.put(0x4A, "ResizeMemoryBlock");
-        DOS_21H_SERVICES.put(0x4B, "ExecProgram");
-        DOS_21H_SERVICES.put(0x4C, "TerminateProcess");
-        DOS_21H_SERVICES.put(0x4D, "GetReturnCode");
-        DOS_21H_SERVICES.put(0x4E, "FindFirstFile");
-        DOS_21H_SERVICES.put(0x4F, "FindNextFile");
-        DOS_21H_SERVICES.put(0x56, "RenameFile");
-        DOS_21H_SERVICES.put(0x57, "GetSetFileDateTime");
-        DOS_21H_SERVICES.put(0x58, "GetSetMemoryAllocStrategy");
-        DOS_21H_SERVICES.put(0x5A, "CreateTempFile");
-        DOS_21H_SERVICES.put(0x5B, "CreateNewFile");
-        DOS_21H_SERVICES.put(0x5C, "LockUnlockFile");
-        DOS_21H_SERVICES.put(0x62, "GetPSPSegment");
-    }
-
-    // BIOS INT 10h services
-    private static final Map&lt;Integer, String&gt; BIOS_10H = new HashMap&lt;&gt;();
-    static {
-        BIOS_10H.put(0x00, "SetVideoMode");
-        BIOS_10H.put(0x01, "SetCursorShape");
-        BIOS_10H.put(0x02, "SetCursorPosition");
-        BIOS_10H.put(0x03, "GetCursorPosition");
-        BIOS_10H.put(0x05, "SetActivePage");
-        BIOS_10H.put(0x06, "ScrollUp");
-        BIOS_10H.put(0x07, "ScrollDown");
-        BIOS_10H.put(0x08, "ReadCharAttr");
-        BIOS_10H.put(0x09, "WriteCharAttr");
-        BIOS_10H.put(0x0A, "WriteChar");
-        BIOS_10H.put(0x0B, "SetPalette");
-        BIOS_10H.put(0x0C, "WritePixel");
-        BIOS_10H.put(0x0D, "ReadPixel");
-        BIOS_10H.put(0x0E, "TeletypeOutput");
-        BIOS_10H.put(0x0F, "GetVideoMode");
-        BIOS_10H.put(0x10, "SetPaletteRegisters");
-        BIOS_10H.put(0x11, "CharGenerator");
-        BIOS_10H.put(0x13, "WriteString");
-    }
-
-    @Override
-    protected void run() throws Exception {
-        println("[*] DOS Binary Analyzer starting...");
-        
-        // Phase 1: Identify and annotate INT instructions
-        annotateInterrupts();
-        
-        // Phase 2: Create functions at call targets
-        createFunctionsAtTargets();
-        
-        // Phase 3: Annotate known segment register loads
-        annotateSegmentLoads();
-        
-        // Phase 4: Mark data strings
-        findDataStrings();
-        
-        println("[*] Analysis complete.");
-    }
-
-    private void annotateInterrupts() {
-        Listing listing = currentProgram.getListing();
-        MemoryBlock textBlock = currentProgram.getMemory()
-            .getBlock(".text");
-        if (textBlock == null) {
-            // Try to find any executable block
-            for (MemoryBlock b : currentProgram.getMemory().getBlocks()) {
-                if (b.isExecute()) { textBlock = b; break; }
-            }
-        }
-        if (textBlock == null) return;
-        
-        InstructionIterator iter = listing.getInstructions(
-            textBlock.getStart(), true);
-        
-        int count = 0;
-        while (iter.hasNext() &amp;&amp; !monitor.isCancelled()) {
-            Instruction instr = iter.next();
-            String mnemonic = instr.getMnemonicString();
-            
-            if (mnemonic.equals("INT")) {
-                Scalar intNum = instr.getScalar(0);
-                if (intNum != null) {
-                    int num = (int) intNum.getUnsignedValue();
-                    annotateInterrupt(instr, num);
-                    count++;
-                }
-            }
-        }
-        
-        println(String.format("[+] Annotated %d interrupt calls", count));
-    }
-
-    private void annotateInterrupt(Instruction instr, int intNum) {
-        String comment = null;
-        
-        // Check preceding MOV AH, xx for INT 21h
-        if (intNum == 0x21) {
-            Integer ahVal = findPrecedingAHValue(instr);
-            if (ahVal != null) {
-                String svc = DOS_21H_SERVICES.get(ahVal);
-                if (svc != null) {
-                    comment = String.format("INT 21h AH=%02Xh: %s",
-                        ahVal, svc);
-                }
-            }
-            if (comment == null) {
-                comment = "INT 21h: DOS Services";
-            }
-        } else if (intNum == 0x10) {
-            Integer ahVal = findPrecedingAHValue(instr);
-            if (ahVal != null) {
-                String svc = BIOS_10H.get(ahVal);
-                if (svc != null) {
-                    comment = String.format("INT 10h AH=%02Xh: %s",
-                        ahVal, svc);
-                }
-            }
-            if (comment == null) {
-                comment = "INT 10h: BIOS Video Services";
-            }
-        } else {
-            comment = String.format("INT %02Xh", intNum);
-        }
-        
-        if (comment != null) {
-            instr.setComment(CodeUnit.EOL_COMMENT, comment);
-        }
-    }
-
-    private Integer findPrecedingAHValue(Instruction intInstr) {
-        // Walk backward up to 5 instructions to find MOV AH, imm
-        Instruction prev = intInstr;
-        for (int i = 0; i &lt; 5; i++) {
-            prev = currentProgram.getListing()
-                .getInstructionBefore(prev.getAddress());
-            if (prev == null) break;
-            
-            if (prev.getMnemonicString().equals("MOV") &amp;&amp;
-                prev.getNumOperands() == 2) {
-                String op0 = prev.getDefaultOperandRepresentation(0);
-                if (op0.equals("AH") || op0.equals("ah")) {
-                    Scalar val = prev.getScalar(1);
-                    if (val != null) return (int) val.getUnsignedValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    private void createFunctionsAtTargets() {
-        // Scan for CALL instructions and create function symbols
-        Listing listing = currentProgram.getListing();
-        InstructionIterator iter = listing.getInstructions(true);
-        
-        int count = 0;
-        while (iter.hasNext() &amp;&amp; !monitor.isCancelled()) {
-            Instruction instr = iter.next();
-            if (instr.getMnemonicString().equals("CALL")) {
-                Address target = instr.getAddress(0);
-                if (target != null &amp;&amp;
-                    currentProgram.getFunctionManager()
-                        .getFunctionAt(target) == null) {
-                    createFunction(target, "FUN_" + target.toString());
-                    count++;
-                }
-            }
-        }
-        println(String.format("[+] Created %d function stubs", count));
-    }
-
-    private void annotateSegmentLoads() {
-        Listing listing = currentProgram.getListing();
-        InstructionIterator iter = listing.getInstructions(true);
-        
-        while (iter.hasNext() &amp;&amp; !monitor.isCancelled()) {
-            Instruction instr = iter.next();
-            String mn = instr.getMnemonicString();
-            
-            // MOV SEG, imm16 or LES/LDS
-            if ((mn.equals("MOV") &amp;&amp; instr.getNumOperands() == 2)) {
-                String op0 = instr.getDefaultOperandRepresentation(0);
-                if (op0.matches("(CS|DS|SS|ES|FS|GS)")) {
-                    Scalar val = instr.getScalar(1);
-                    if (val != null) {
-                        instr.setComment(CodeUnit.EOL_COMMENT,
-                            String.format("Set %s = %04Xh (phys base %05Xh)",
-                                op0, val.getUnsignedValue(),
-                                val.getUnsignedValue() * 16));
-                    }
-                }
-            }
-        }
-    }
-
-    private void findDataStrings() {
-        // Scan for null-terminated ASCII strings in data segments
-        MemoryBlock[] blocks = currentProgram.getMemory().getBlocks();
-        for (MemoryBlock block : blocks) {
-            if (!block.isInitialized() || block.isExecute()) continue;
-            // String detection would go here
-        }
-    }
-
-    private void createFunction(Address addr, String name) {
-        try {
-            currentProgram.getSymbolTable().createLabel(
-                addr, name,
-                currentProgram.getGlobalNamespace(),
-                SourceType.ANALYSIS);
-        } catch (Exception e) {
-            // Skip if can't create symbol
-        }
-    }
-}</code></pre>
-      </div>
-    </div>
-
-    <div class="sub-panel" id="ghidra-setup">
-      <div class="card" style="border:none;padding:0">
-        <h3 style="color:var(--accent);margin-bottom:12px">◈ Ghidra Setup Guide for 16-bit DOS Analysis</h3>
-        
-        <div class="ref-tool"><div class="num">1</div><div class="content"><h4>Install Ghidra</h4><p style="font-size:.82rem;color:var(--fg2)">Download from <a href="https://ghidra-sre.org" target="_blank">ghidra-sre.org</a>. Requires JDK 17+. Extract and run <code>ghidraRun</code> (Linux/Mac) or <code>ghidraRun.bat</code> (Windows).</p></div></div>
-        
-        <div class="ref-tool"><div class="num">2</div><div class="content"><h4>Create New Project</h4><p style="font-size:.82rem;color:var(--fg2)">File → New Project → Non-Shared Project. Name it and set the directory.</p></div></div>
-        
-        <div class="ref-tool"><div class="num">3</div><div class="content"><h4>Import Binary</h4><p style="font-size:.82rem;color:var(--fg2)">File → Import File → Select your .EXE, .COM, or .BIN file. Ghidra auto-detects MZ format. For raw binaries, select format: <strong>Raw Binary</strong>.</p></div></div>
-        
-        <div class="ref-tool"><div class="num">4</div><div class="content"><h4>Select Language</h4><p style="font-size:.82rem;color:var(--fg2)">In the Language dialog, search for: <code>x86:LE:16:Real Mode</code><br>
-        Language ID: <code>x86:LE:16:Real Mode</code><br>
-        Compiler: <code>default</code><br>
-        This maps to a 20-bit physical address space with 16-bit segment:offset addressing.</p></div></div>
-        
-        <div class="ref-tool"><div class="num">5</div><div class="content"><h4>Run Auto-Analysis</h4><p style="font-size:.82rem;color:var(--fg2)">When prompted, click <strong>Yes</strong> to run auto-analysis. Ghidra's Sleigh decompiler will:<br>
-        ▸ Identify function boundaries<br>
-        ▸ Resolve near/far call targets<br>
-        ▸ Match INT 21h/10h service parameters<br>
-        ▸ Build the call graph and control flow</p></div></div>
-        
-        <div class="ref-tool"><div class="num">6</div><div class="content"><h4>Install the Custom Loader (Optional)</h4><p style="font-size:.82rem;color:var(--fg2)">Copy <code>DOSBinaryLoader.java</code> to:<br>
-        <code>Ghidra/Extensions/Ghidra_Skeleton/loaders/</code><br>
-        Or use Script Manager (Window → Script Manager) to add the analyzer.<br>
-        Restart Ghidra for the loader to appear in the import dialog.</p></div></div>
-        
-        <div class="ref-tool"><div class="num">7</div><div class="content"><h4>Decompile</h4><p style="font-size:.82rem;color:var(--fg2)">Double-click any function, then press <strong>Ctrl+E</strong> (or Window → Decompile) to see the decompiled C output. The Sleigh engine handles:<br>
-        ▸ Segment:offset dereferences → <code>__far</code> pointer casts<br>
-        ▸ <code>INT 21h</code> → named DOS API calls in comments<br>
-        ▸ Register-based calling conventions → function signatures</p></div></div>
-        
-        <pre style="margin-top:12px"><code># Quick-start: Import via Ghidra Headless Analyzer
-analyzeHeadless /path/to/project MyProject \
-  -import /path/to/binary.exe \
-  -processor x86:LE:16:Real Mode \
-  -postScript DOSBinaryAnalyzer.java \
-  -scriptPath /path/to/scripts</code></pre>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ──── PANEL: Tool Compare ──── -->
-<section class="panel" id="panel-tools">
-  <div class="grid2" style="grid-template-columns:1fr 1fr 1fr">
-    <div class="tool-card">
-      <h3>◈ Ghidra <span class="badge free">FREE / OSS</span></h3>
-      <p style="font-size:.78rem;color:var(--fg2)">The most capable free framework for 16-bit RE.</p>
-      <ul>
-        <li><span class="check">✓</span> Native MZ loader</li>
-        <li><span class="check">✓</span> Raw Binary → x86:LE:16</li>
-        <li><span class="check">✓</span> Sleigh decompiler (C output)</li>
-        <li><span class="check">✓</span> Far pointer (__far) support</li>
-        <li><span class="check">✓</span> INT parameter auto-matching</li>
-        <li><span class="check">✓</span> Scriptable (Java/Python)</li>
-        <li><span class="check">✓</span> Relocation table processing</li>
-      </ul>
-    </div>
-    <div class="tool-card">
-      <h3>◈ Reko <span class="badge free">FREE / OSS</span></h3>
-      <p style="font-size:.78rem;color:var(--fg2)">Cross-platform decompiler built for legacy formats.</p>
-      <ul>
-        <li><span class="check">✓</span> MS-DOS EXE loader</li>
-        <li><span class="check">✓</span> NE (Win16) support</li>
-        <li><span class="check">✓</span> Segmented type inference</li>
-        <li><span class="check">✓</span> Clean C output</li>
-        <li><span class="check">✓</span> C#/.NET based</li>
-        <li><span class="warn">△</span> Smaller community</li>
-        <li><span class="warn">△</span> Less interrupt coverage</li>
-      </ul>
-    </div>
-    <div class="tool-card">
-      <h3>⊞ Cutter + Rizin <span class="badge free">FREE / OSS</span></h3>
-      <p style="font-size:.78rem;color:var(--fg2)">Modern GUI powered by the Rizin RE engine.</p>
-      <ul>
-        <li><span class="check">✓</span> 16-bit x86 real mode</li>
-        <li><span class="check">✓</span> PSP-aware offset handling</li>
-        <li><span class="check">✓</span> Ghidra decompiler plugin</li>
-        <li><span class="check">✓</span> Modern Qt interface</li>
-        <li><span class="warn">△</span> Manual rebase for COM</li>
-        <li><span class="warn">△</span> Plugin-dependent quality</li>
-        <li><span class="cross">✗</span> No native MZ relocation</li>
-      </ul>
-    </div>
-  </div>
-  <div class="grid2" style="grid-template-columns:1fr 1fr;margin-top:16px">
-    <div class="tool-card">
-      <h3>IDA Pro <span class="badge commercial">COMMERCIAL</span></h3>
-      <p style="font-size:.78rem;color:var(--fg2)">Industry standard disassembler with a critical limitation.</p>
-      <ul>
-        <li><span class="check">✓</span> Best-in-class 16-bit disassembler</li>
-        <li><span class="check">✓</span> Flawless MZ segment loader</li>
-        <li><span class="check">✓</span> Segment tracking &amp; analysis</li>
-        <li><span class="cross">✗</span> <strong>Hex-Rays decompiler does NOT support 16-bit</strong></li>
-        <li><span class="cross">✗</span> F5 on 16-bit code → "architecture unsupported"</li>
-        <li><span style="color:var(--fg3)">→ Best for disassembly only, not decompilation</span></li>
-      </ul>
-    </div>
-    <div class="tool-card">
-      <h3>Binary Ninja <span class="badge partial">PARTIAL</span></h3>
-      <p style="font-size:.78rem;color:var(--fg2)">Modern UI with growing 16-bit support.</p>
-      <ul>
-        <li><span class="check">✓</span> Robust x86 architecture plugin</li>
-        <li><span class="check">✓</span> Advanced IL lifter (32/64-bit)</li>
-        <li><span class="warn">△</span> 16-bit IL requires community scripts</li>
-        <li><span class="warn">△</span> Segment-offset reconstruction is manual</li>
-        <li><span class="cross">✗</span> No native MZ relocation support</li>
-        <li><span style="color:var(--fg3)">→ Best for modern binaries, limited DOS</span></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ──── PANEL: Reference ──── -->
-<section class="panel" id="panel-reference">
-  <div class="grid2">
-    <div class="card">
-      <h2>☰ MZ Header Structure (36 bytes)</h2>
-      <table class="field-table" id="mzRefTable">
-        <thead><tr><th>Offset</th><th>Size</th><th>Field</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <div class="card">
-      <h2>☰ x86:LE:16:Real Mode Specification</h2>
-      <table class="field-table">
-        <tr><td>Architecture</td><td>x86</td><td>Intel 8086 / 8088 / 80186</td></tr>
-        <tr><td>Endianness</td><td>LE</td><td>Little-Endian byte order</td></tr>
-        <tr><td>Word Size</td><td>16</td><td>16-bit registers (AX, BX, CX, DX, SI, DI, BP, SP)</td></tr>
-        <tr><td>Mode</td><td>Real</td><td>Real Mode (no protected memory, no paging)</td></tr>
-        <tr><td>Address Space</td><td>20-bit</td><td>1 MiB physical (0x00000–0xFFFFF)</td></tr>
-        <tr><td>Addressing</td><td>seg:off</td><td>Physical = Segment × 16 + Offset</td></tr>
-        <tr><td>Ghidra Lang ID</td><td colspan="2"><code>x86:LE:16:Real Mode</code></td></tr>
-        <tr><td>Compiler Spec</td><td colspan="2"><code>default</code></td></tr>
-        <tr><td>Registers</td><td colspan="2">AX, BX, CX, DX, SI, DI, BP, SP, CS, DS, SS, ES, IP, FLAGS</td></tr>
-        <tr><td>Stack</td><td colspan="2">SS:SP, grows downward, word-aligned</td></tr>
-        <tr><td>Calling Conv.</td><td colspan="2">Register-based (INT 21h uses AH for service #)</td></tr>
-      </table>
-    </div>
-  </div>
-  <div class="card">
-    <h2>☰ 16-bit Register Quick Reference</h2>
-    <div class="grid3" style="font-size:.82rem">
-      <div>
-        <h4 style="color:var(--yellow);margin-bottom:4px">General Purpose</h4>
-        <pre><code>AX (AH:AL) — Accumulator
-BX (BH:BL) — Base (mem addressing)
-CX (CH:CL) — Counter (loops, shifts)
-DX (DH:DL) — Data (I/O, MUL/DIV)
-SI — Source Index (string ops)
-DI — Destination Index (string ops)
-BP — Base Pointer (stack frames)
-SP — Stack Pointer</code></pre>
-      </div>
-      <div>
-        <h4 style="color:var(--accent4);margin-bottom:4px">Segment Registers</h4>
-        <pre><code>CS — Code Segment (instruction fetch)
-DS — Data Segment (default data access)
-SS — Stack Segment (stack operations)
-ES — Extra Segment (string dest, misc)
-FS — Extra Segment (386+ only)
-GS — Extra Segment (386+ only)</code></pre>
-      </div>
-      <div>
-        <h4 style="color:var(--green);margin-bottom:4px">Special</h4>
-        <pre><code>IP — Instruction Pointer (offset in CS)
-FLAGS — Status Register
-  CF (bit 0) — Carry Flag
-  ZF (bit 6) — Zero Flag
-  SF (bit 7) — Sign Flag
-  OF (bit 11) — Overflow Flag
-  DF (bit 10) — Direction Flag
-  IF (bit 9) — Interrupt Enable</code></pre>
-      </div>
-    </div>
-  </div>
-</section>
-
-</main>
-
-<footer>
-  <p>x86:LE:16:Real Mode DOS Binary Loader Suite — Public Domain (Unlicense) · Ghidra · Reko · Cutter/Rizin</p>
-</footer>
 </div>
+</section>
 
-<!-- Toast notification -->
+<!-- Hex -->
+<section class="panel" id="p-hex">
+<div class="card"><h2>⬡ Hex Viewer</h2><div class="sb2"><input id="hexQ" placeholder="Search hex (4D 5A) or ASCII..."><button onclick="hexSearch()">Find</button></div><div class="stats" id="hStats"></div><div class="hexv" id="hexV"><p style="padding:16px;color:var(--fg3)">Load a file</p></div></div>
+</section>
+
+<!-- Disasm -->
+<section class="panel" id="p-disasm">
+<div class="card"><h2>⚙ 16-bit x86 Disassembly <span class="wasm-badge">WASM</span></h2><p style="font-size:.76rem;color:var(--fg2);margin-bottom:7px">CS:<code id="dCS">0000</code> IP:<code id="dIP">0000</code></p><div class="sb2"><input id="dAddr" placeholder="Go to seg:off (e.g. 1000:0100)"><button onclick="dGo()">Go</button></div><div class="dasm" id="dasmV"><p style="padding:16px;color:var(--fg3)">Load a file</p></div></div>
+</section>
+
+<!-- Decompile -->
+<section class="panel" id="p-decomp">
+<div class="card"><h2>◈ Decompiled C Output</h2><div class="dec" id="decV"><span class="cm">/* Load a binary */</span></div></div>
+</section>
+
+<!-- Segments -->
+<section class="panel" id="p-seg">
+<div class="g2">
+  <div class="card"><h2>▮ Segment Registers</h2><div class="seg" id="segRegs"></div></div>
+  <div class="card"><h2>▦ Segment:Offset Calculator</h2>
+    <div class="calc"><label>Seg:</label><input id="cS" value="1000"><label>:</label><input id="cO" value="0100"><button onclick="calcP()">=</button><span id="calcRes"></span></div>
+    <h3 style="margin-top:14px;font-size:.9rem">Program Segment Prefix (PSP)</h3><p style="font-size:.74rem;color:var(--fg2);margin:5px 0">256-byte PSP at segment base:</p>
+    <div class="pspg">
+      <div class="of">0x00</div><div class="sz">2B</div><div class="ds2">INT 20h (exit)</div>
+      <div class="of">0x02</div><div class="sz">2B</div><div class="ds2">First free segment</div>
+      <div class="of">0x05</div><div class="sz">5B</div><div class="ds2">CP/M CALL 5 entry</div>
+      <div class="of">0x0A</div><div class="sz">4B</div><div class="ds2">INT 22h terminate addr</div>
+      <div class="of">0x0E</div><div class="sz">4B</div><div class="ds2">INT 23h Ctrl-C handler</div>
+      <div class="of">0x12</div><div class="sz">4B</div><div class="ds2">INT 24h critical error</div>
+      <div class="of">0x16</div><div class="sz">2B</div><div class="ds2">Parent PSP segment</div>
+      <div class="of">0x2C</div><div class="sz">2B</div><div class="ds2">Environment segment</div>
+      <div class="of">0x5C</div><div class="sz">16B</div><div class="ds2">FCB #1</div>
+      <div class="of">0x6C</div><div class="sz">16B</div><div class="ds2">FCB #2</div>
+      <div class="of">0x80</div><div class="sz">128B</div><div class="ds2">Cmd tail / DTA</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Interrupts -->
+<section class="panel" id="p-int">
+<div class="card"><h2>⊡ DOS/BIOS Interrupt Reference</h2><div class="sb2"><input id="intQ" placeholder="Filter..."></div><div id="intTbl" style="max-height:500px;overflow:auto"></div></div>
+</section>
+
+<!-- Reference -->
+<section class="panel" id="p-ref">
+<div class="g2">
+  <div class="card"><h2>☰ MZ Header (36 bytes)</h2><table class="ftbl" id="mzRef"></table></div>
+  <div class="card"><h2>☰ x86:LE:16:Real Mode</h2>
+    <table class="ftbl">
+      <tr><td>Architecture</td><td>x86</td><td>8086/8088</td></tr>
+      <tr><td>Endian</td><td>LE</td><td>Little-Endian</td></tr>
+      <tr><td>Word</td><td>16</td><td>AX,BX,CX,DX,SI,DI,BP,SP</td></tr>
+      <tr><td>Mode</td><td>Real</td><td>No protected memory</td></tr>
+      <tr><td>Address</td><td>20-bit</td><td>1 MiB (0x00000–0xFFFFF)</td></tr>
+      <tr><td>Formula</td><td colspan="2">Physical = Segment×16 + Offset</td></tr>
+      <tr><td>Ghidra</td><td colspan="2"><code>x86:LE:16:Real Mode</code></td></tr>
+    </table>
+    <pre style="margin-top:8px"><code>AX (AH:AL) — Accumulator     CS — Code Segment
+BX (BH:BL) — Base            DS — Data Segment
+CX (CH:CL) — Counter         SS — Stack Segment
+DX (DH:DL) — Data/IO         ES — Extra Segment
+SI — Source Index             IP — Instruction Ptr
+DI — Dest Index               FLAGS — Status Reg
+BP — Base Pointer             SP — Stack Pointer</code></pre>
+  </div>
+</div>
+</section>
+</main>
+<footer>x86:LE:16:Real Mode WASM DOS Binary Loader · Public Domain (Unlicense)</footer>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
-// x86:LE:16:Real Mode — DOS Binary Loader (JavaScript Engine)
+// WASM Binary (base64-encoded dos_loader.wasm)
 // ═══════════════════════════════════════════════════════════════
+const WASM_B64 = "AGFzbQEAAAABJQdgAn9/AGACf38Bf2ABfwBgAABgA39/fwBgA39/fwF/YAF/AX8DHBsAAQEBAQEBAgMBAQQEAwUGBQYGBgYGBgYGBQMFAwEAIAbFASV/AEEAC38AQQELfwBBAgt/AEEDC38AQQALfwBBAQt/AEECC38AQQMLfwBBBAt/AEEFC38AQQYLfwBBBwt/AEEIC38AQQALfwBBgAILfwBBgIAIC38AQYCADAt/AEGAgBALfwBBgIAgC38AQYCAIAt/AUEAC38BQQALfwFBAAt/AUEAC38BQQALfwFBAAt/AUEAC38BQQALfwFBAAt/AUEAC38BQQALfwFBAAt/AUEAC38BQQALfwFBAAt/AUEAC38BQQALB7MEJwZtZW1vcnkCAAZmb3JtYXQDFAhmaWxlX2xlbgMVCGxvYWRfc2VnAxYIY29kZV9vZmYDFwljb2RlX3NpemUDGAZoZHJfY3MDGQZoZHJfaXADGgZoZHJfc3MDGwZoZHJfc3ADHA9oZHJfcmVsb2NfY291bnQDHQ1oZHJfcmVsb2Nfb2ZmAx4KZW50cnlfcGh5cwMfCmxhc3RfZXJyb3IDIAxkZWNvZGVfY291bnQDIQ1yZWxvY19hcHBsaWVkAyIPc2VnX29mZl90b19waHlzAAENZGV0ZWN0X2Zvcm1hdAACCHBhcnNlX216AAMJcGFyc2VfY29tAAQJcGFyc2VfcmF3AAULbG9hZF9iaW5hcnkABgtkb3NfcmVhZF91OAAJDGRvc19yZWFkX3UxNgAKDGRvc193cml0ZV91OAALDWRvc193cml0ZV91MTYADBJkZWNvZGVfaW5zdHJ1Y3Rpb24ADgtkaXNhc3NlbWJsZQAPDmRpc2Fzc2VtYmxlX2F0ABAPZ2V0X2RlY29kZV90eXBlABESZ2V0X2RlY29kZV9zdWJ0eXBlABIRZ2V0X2RlY29kZV9sZW5ndGgAExBnZXRfZGVjb2RlX2ZsYWdzABQOZ2V0X2RlY29kZV9yYXcAFRJnZXRfZGVjb2RlX29wZXJhbmQAFg9nZXRfZGVjb2RlX2FkZHIAFw5nZXRfaGVhZGVyX3UxNgAYD2R1bXBfZG9zX3JlZ2lvbgAZBXJlc2V0ABoKpRobCQAgACABOwEACw8AIABBBHQgAWpB//8/cQtVAQJ/IAFBAkkEQCMADwsgAC0AACECIABBAWotAAAhAyACQc0ARiADQdoARnEEQCMBDwsgAkHaAEYgA0HNAEZxBEAjAQ8LIAFBgP4DTQRAIwIPCyMDC9wBAQV/IAFBHkkEQEEBJCBBAQ8LIxMgAEEe/AoAACAAQQJqLwEAIQUgAEEEai8BACEEIABBBmovAQAkHSAAQQhqLwEAIQIgAEEOai8BACQbIABBEGovAQAkHCAAQRRqLwEAJBogAEEWai8BACQZIABBGGovAQAkHiACQRBsIQMgBEEBa0GABGwgBWogA2shBiADIAZqIAFLBEAgASADayEGCyAGQQBIBEAgASADayEGCyADJBcgBiQYIAYkJEGAICQWQYCABCQjIxYjGWojGhABJB8jASQUQQAkIEEAC1sAQYAgJBZBgIAEJCMjIyMOaiAAIAH8CgAAIyMQB0GAICQZQYACJBpBgCAkG0H+/wMkHEEAJB1BACQeQQAkFyABJBggASQkQYAgQYACEAEkHyMCJBRBACQgQQALSAAjDSAAIAH8CgAAQQAkFkEAJCNBACQZQQAkGkEAJBtB/v8DJBxBACQdQQAkHkEAJBcgASQYIAEkJEEAJB8jAyQUQQAkIEEAC4IBAQF/IAEkFSMRIAAgAfwKAAAjESABEAIhAiACJBQgAiMBRgRAIxEgARADGiMYQQBLBEAjIyMOaiMRIxdqIxj8CgAACyMjEAcjHUEASwRAEAgLIyNBCmojGhAAIyNBDGojFiMZahAABSACIwJGBEAjESABEAQaBSMRIAEQBRoLCyACC6EBACAAQQAjDvwLACAAQc0BOgAAIABBAWpBIDoAACAAQQJqIxYjGEEPakEEdmoQACAAQQVqQeoBOgAAIABBBmpBABAAIABBCGpBABAAIABBCmpBABAAIABBDGojFhAAIABBDmpBABAAIABBEGpBABAAIABBEmpBABAAIABBFGpBABAAIABBLGpBABAAIABBgAFqQQA6AAAgAEGBAWpBDToAAAtrAQd/Ix0hBiMRIx5qIQFBACEAAkADQCAAIAZPDQEgASAAQQRsai8BACECIAEgAEEEbEECamovAQAhAyMjIANBBHQgAmpqIQQgBC8BACEFIAQgBSMWajsBACMiQQFqJCIgAEEBaiEADAALCwsLACAAIAEQAS0AAAsLACAAIAEQAS8BAAsNACAAIAEQASACOgAACw0AIAAgARABIAI7AQAL4gkBAn8jEkGAgARqIQAgAEEQQYAC/AsAQQAhAQJAA0AgAUGAAk8NASAAIAFqQQE6AAAgAUEBaiEBDAALCyAAQc0BakEyOgAAQfAAIQECQANAIAFB/wBLDQEgACABakESOgAAIAFBAWohAQwACwtB4AEhAQJAA0AgAUHjAUsNASAAIAFqQRI6AAAgAUEBaiEBDAALC0HkASEBAkADQCABQecBSw0BIAAgAWpBAjoAACABQQFqIQEMAAsLIABB6wFqQRI6AAAgAEHUAWpBAjoAACAAQdUBakECOgAAQbABIQECQANAIAFBtwFLDQEgACABakHyADoAACABQQFqIQEMAAsLIABBAGpBAjoAACAAQQFqQQI6AAAgAEECakECOgAAIABBA2pBAjoAACAAQQhqQQI6AAAgAEEJakECOgAAIABBCmpBAjoAACAAQQtqQQI6AAAgAEEQakECOgAAIABBEWpBAjoAACAAQRJqQQI6AAAgAEETakECOgAAIABBGGpBAjoAACAAQRlqQQI6AAAgAEEaakECOgAAIABBG2pBAjoAACAAQSBqQQI6AAAgAEEhakECOgAAIABBImpBAjoAACAAQSNqQQI6AAAgAEEoakECOgAAIABBKWpBAjoAACAAQSpqQQI6AAAgAEErakECOgAAIABBMGpBAjoAACAAQTFqQQI6AAAgAEEyakECOgAAIABBM2pBAjoAACAAQThqQQI6AAAgAEE5akECOgAAIABBOmpBAjoAACAAQTtqQQI6AABBgAEhAQJAA0AgAUGPAUsNASAAIAFqQQI6AAAgAUEBaiEBDAALCyAAQcABakECOgAAIABBwQFqQQI6AAAgAEHEAWpBAjoAACAAQcUBakECOgAAIABBxgFqQQI6AAAgAEHHAWpBAjoAACAAQdABakECOgAAIABB0QFqQQI6AAAgAEHSAWpBAjoAACAAQdMBakECOgAAQfYBIQECQANAIAFB/wFLDQEgACABakECOgAAIAFBAWohAQwACwsgAEGNAWpBAjoAACAAQQVqQQM6AAAgAEENakEDOgAAIABBFWpBAzoAACAAQR1qQQM6AAAgAEElakEDOgAAIABBLWpBAzoAACAAQTVqQQM6AAAgAEE9akEDOgAAIABBqAFqQQI6AAAgAEGpAWpBAzoAAEG4ASEBAkADQCABQb8BSw0BIAAgAWpB8wA6AAAgAUEBaiEBDAALCyAAQegBakEjOgAAIABB6QFqQRM6AAAgAEGgAWpB8wA6AAAgAEGhAWpB8wA6AAAgAEGiAWpB8wA6AAAgAEGjAWpB8wA6AAAgAEHCAWpBwwA6AAAgAEHIAWpBBDoAACAAQZoBakElOgAAIABB6gFqQRU6AAAgAEHDAWpBwQA6AAAgAEHLAWpBwQA6AAAgAEHKAWpBwwA6AAAgAEHPAWpBwQA6AAAgAEHMAWpBMToAAEHQACEBAkADQCABQdcASw0BIAAgAWpB4QA6AAAgAUEBaiEBDAALC0HYACEBAkADQCABQd8ASw0BIAAgAWpB4QA6AAAgAUEBaiEBDAALCyAAQYgBakHyADoAACAAQYkBakHyADoAACAAQYoBakHyADoAACAAQYsBakHyADoAACAAQYwBakHyADoAACAAQY4BakHyADoAACAAQZABakEBOgAAC8wFAQp/IAAgARABIQMgAy0AACEEIAQhC0EAIQhBACEJQQAhByMSQYCABGogBGotAAAhDCAMQQ9xIQUgDEHwAXFBBHYhBiAGIwVGIAVBAkZxBEAgAUECaiADQQFqLQAAwGpB//8DcSEJIARBD3EhBwsgBiMFRiAFQQNGcQRAIAFBA2ogA0EBai8BAMFqQf//A3EhCQsgBiMFRiAFQQVGcQRAIANBAWooAgAhCUECIQgLIAYjBkYgBUEDRnEEQCABQQNqIANBAWovAQDBakH//wNxIQkLIAYjBkYgBUEFRnEEQCADQQFqKAIAIQlBASEICyAEQc0BRgRAIANBAWotAAAhCUHNASAJQQh0ciELCyAEQcwBRgRAQQMhCQsgBEGwAU8gBEG3AU1xBEAgBEEHcSEHIANBAWotAAAhCQsgBEG4AU8gBEG/AU1xBEAgBEEHcSEHIANBAWovAQAhCQsgBEGIAU8gBEGLAU1xBEAgA0EBai0AACEJCyAEQaABTyAEQaMBTXEEQCADQQFqLwEAIQkLIARB0ABPIARB1wBNcQRAIARBB3EhB0EAIQgLIARB2ABPIARB3wBNcQRAIARBB3EhB0EBIQgLIARBBkYgBEEORiAEQRZGIARBHkZycnIEQCMKIQZBECAEQQN2ciEHQQAhCAsgBEEHRiAEQQ9GIARBF0YgBEEfRnJycgRAIwohBkEQIARBA3ZyIQdBASEICyAEQaQBTyAEQa8BTXEEQCMMIQYgBEEPcSEHCyAEQcsBRiAEQcoBRnIEQEEBIQgLIARBzwFGBEBBAiEICyAFQQJGBEAgCUEARgRAIANBAWotAAAhCQsLIw8gAkEQbGohCiAKQQBqIAY6AAAgCkEBaiAHOgAAIApBAmogBToAACAKQQNqIAg6AAAgCkEEaiALNgIAIApBCGogCTYCACAKQQxqIAAgAUEQdHI2AgAgBQtkAQZ/EA0jFiMZaiEBIxohAkEAIQMjIyMOIxhqaiEGAkADQCADIABPDQEgASACEAEhBSAFIAZPDQEgAkHw/wNPDQEgASACIAMQDiEEIAIgBGohAiADQQFqIQMMAAsLIAMkISADC1kBBH8QDUEAIQMjIyMOIxhqaiEGAkADQCADIAJPDQEgACABEAEhBSAFIAZPDQEgAUHw/wNPDQEgACABIAMQDiEEIAEgBGohASADQQFqIQMMAAsLIAMkISADCw0AIw8gAEEQbGotAAALEAAjDyAAQRBsakEBai0AAAsQACMPIABBEGxqQQJqLQAACxAAIw8gAEEQbGpBA2otAAALEAAjDyAAQRBsakEEaigCAAsQACMPIABBEGxqQQhqKAIACxAAIw8gAEEQbGpBDGooAgALCgAjEyAAai8BAAsyAQJ/IAAgARABIQMgAiEEIAMgBGpBgIAESwRAQYCABCADayEECyMSIAMgBPwKAAAgBAtGAEEAJBRBACQVQQAkFkEAJBdBACQYQQAkGUEAJBpBACQbQQAkHEEAJB1BACQeQQAkH0EAJCBBACQhQQAkIkEAJCNBACQkCw==";
 
-// ─── State ────────────────────────────────────────────────────
-const state = {
-  raw: null,          // Uint8Array of loaded file
-  format: null,       // 'MZ', 'COM', 'RAW'
-  mzHeader: null,     // parsed MZ header object
-  loadSeg: 0x1000,    // default load segment
-  cs: 0, ds: 0, ss: 0, es: 0,
-  ip: 0, sp: 0,
-  codeOffset: 0,      // offset into raw[] where code starts
-  codeSize: 0,
-  relocs: [],
-  entryPhys: 0,
-};
+// ═══════════════════════════════════════════════════════════════
+// State
+// ═══════════════════════════════════════════════════════════════
+let W = null; // wasm instance
+let mem = null; // Uint8Array view of wasm memory
+let u8 = null; // same
+let u16 = null;
+let u32 = null;
+const S = { raw: null, fmt: 0 };
 
-// ─── MZ Header field definitions ──────────────────────────────
-const MZ_FIELDS = [
-  { off: 0x00, sz: 2, name: 'e_magic',   desc: 'Magic number ("MZ" = 4D 5A)' },
-  { off: 0x02, sz: 2, name: 'e_cblp',    desc: 'Bytes on last page of file' },
-  { off: 0x04, sz: 2, name: 'e_cp',      desc: 'Pages in file (512 bytes each)' },
-  { off: 0x06, sz: 2, name: 'e_crlc',    desc: 'Relocations' },
-  { off: 0x08, sz: 2, name: 'e_cparhdr', desc: 'Size of header in paragraphs (×16)' },
-  { off: 0x0A, sz: 2, name: 'e_minalloc',desc: 'Minimum extra paragraphs needed' },
-  { off: 0x0C, sz: 2, name: 'e_maxalloc',desc: 'Maximum extra paragraphs needed' },
-  { off: 0x0E, sz: 2, name: 'e_ss',      desc: 'Initial (relative) SS value' },
-  { off: 0x10, sz: 2, name: 'e_sp',      desc: 'Initial SP value' },
-  { off: 0x12, sz: 2, name: 'e_csum',    desc: 'Checksum (usually 0)' },
-  { off: 0x14, sz: 2, name: 'e_ip',      desc: 'Initial IP value' },
-  { off: 0x16, sz: 2, name: 'e_cs',      desc: 'Initial (relative) CS value' },
-  { off: 0x18, sz: 2, name: 'e_lfarlc',  desc: 'File address of relocation table' },
-  { off: 0x1A, sz: 2, name: 'e_ovno',    desc: 'Overlay number' },
+// ═══════════════════════════════════════════════════════════════
+// WASM Init
+// ═══════════════════════════════════════════════════════════════
+async function initWasm() {
+  const bytes = Uint8Array.from(atob(WASM_B64), c => c.charCodeAt(0));
+  const { instance } = await WebAssembly.instantiate(bytes);
+  W = instance.exports;
+  mem = W.memory;
+  refreshMemView();
+  toast('⚡ WASM engine loaded (' + bytes.length + ' bytes)');
+}
+
+function refreshMemView() {
+  u8  = new Uint8Array(mem.buffer);
+  u16 = new Uint16Array(mem.buffer);
+  u32 = new Uint32Array(mem.buffer);
+}
+
+const FILE_BUF = 0x40000;
+const META_BUF = 0x80000;
+const DECODE_BUF = 0x20000;
+
+// ═══════════════════════════════════════════════════════════════
+// Navigation
+// ═══════════════════════════════════════════════════════════════
+document.querySelectorAll('#nav button').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('#nav button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('p-' + b.dataset.p).classList.add('active');
+  };
+});
+document.querySelectorAll('.sf button').forEach(b => {
+  b.onclick = () => {
+    const card = b.closest('.card');
+    card.querySelectorAll('.sf button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    card.querySelectorAll('.sp').forEach(p => p.classList.remove('active'));
+    card.querySelector('#' + b.dataset.sp).classList.add('active');
+  };
+});
+
+// ═══════════════════════════════════════════════════════════════
+// File Loading
+// ═══════════════════════════════════════════════════════════════
+const drop = document.getElementById('drop');
+const fi = document.getElementById('fi');
+drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+drop.ondragleave = () => drop.classList.remove('over');
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); if(e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); };
+fi.onchange = e => { if(e.target.files[0]) loadFile(e.target.files[0]); };
+
+function loadFile(file) {
+  const r = new FileReader();
+  r.onprogress = e => { if(e.lengthComputable) document.querySelector('#prog .f').style.width = (e.loaded/e.total*100)+'%'; };
+  r.onload = e => {
+    S.raw = new Uint8Array(e.target.result);
+    document.querySelector('#prog .f').style.width = '100%';
+    setTimeout(() => document.querySelector('#prog .f').style.width = '0%', 400);
+    analyze();
+    toast('Loaded: ' + file.name + ' (' + S.raw.length + ' bytes)');
+  };
+  r.readAsArrayBuffer(file);
+}
+
+function analyze() {
+  if (!W) return;
+  refreshMemView();
+  const len = S.raw.length;
+
+  // Copy file into WASM memory at FILE_BUF
+  u8.set(S.raw, FILE_BUF);
+
+  // Call WASM load_binary
+  S.fmt = W.load_binary(FILE_BUF, len);
+
+  updateFileInfo();
+  updateFmtDet();
+  updateSegMap();
+  renderHex();
+  disasmAll();
+  decompile();
+  renderInterrupts();
+  renderMzRef();
+  calcP();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// File Info
+// ═══════════════════════════════════════════════════════════════
+const FMT_N = ['Unknown','MZ','COM','RAW'];
+
+function updateFileInfo() {
+  document.getElementById('fiCard').style.display = 'block';
+  const tbl = document.getElementById('fiTbl');
+  const fmt = W.format.value;
+  const loadSeg = W.load_seg.value;
+  const codeOff = W.code_off.value;
+  const codeSz = W.code_size.value;
+  const cs = W.hdr_cs.value;
+  const ip = W.hdr_ip.value;
+  const ss = W.hdr_ss.value;
+  const sp = W.hdr_sp.value;
+  const relocCnt = W.hdr_reloc_count.value;
+  const entry = W.entry_phys.value;
+
+  const rows = [
+    ['Format', FMT_N[fmt], fmt===1?'DOS MZ Executable':fmt===2?'COM flat (≤64KB, CS:0100)':'Raw binary'],
+    ['File Size', hex16(S.raw.length), (S.raw.length/1024).toFixed(1)+' KiB'],
+    ['Code Offset', hex16(codeOff), ''],
+    ['Code Size', hex16(codeSz), codeSz+' bytes'],
+    ['Load Segment', hex16(loadSeg), 'Physical base: 0x'+(loadSeg*16).toString(16).toUpperCase()],
+    ['CS:IP', hex16(cs)+':'+hex16(ip), 'Entry: 0x'+entry.toString(16).toUpperCase()],
+    ['SS:SP', hex16(ss)+':'+hex16(sp), ''],
+  ];
+  if (fmt===1) {
+    rows.push(['Relocations', relocCnt, 'At 0x'+W.hdr_reloc_off.value.toString(16)]);
+    rows.push(['Header Size', W.get_header_u16(8)*16+' bytes', W.get_header_u16(8)+' paragraphs']);
+    rows.push(['Relocs Applied', W.reloc_applied.value, '']);
+  }
+  if (fmt===2) {
+    rows.push(['PSP', '0x0000–0x00FF', '256-byte Program Segment Prefix']);
+  }
+  tbl.innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Format Detection
+// ═══════════════════════════════════════════════════════════════
+function updateFmtDet() {
+  const el = document.getElementById('fmtDet');
+  const fmt = W.format.value;
+  let h = '<div style="margin-bottom:6px"><strong>Detected:</strong> <code style="color:var(--g);font-size:.95rem">'+FMT_N[fmt]+'</code></div>';
+  if (fmt===1) { h+='<p>✓ MZ signature at offset 0x00</p><p>✓ Header: '+(W.get_header_u16(8)*16)+' bytes</p><p>✓ Code: '+W.code_size.value+' bytes</p><p>'+(W.hdr_reloc_count.value?'✓':'○')+' '+W.hdr_reloc_count.value+' relocations ('+W.reloc_applied.value+' applied)</p>'; }
+  else if (fmt===2) { h+='<p>✓ No MZ header</p><p>✓ File ≤ 64KB → COM format</p><p>✓ Loaded at CS:0100 with PSP</p>'; }
+  else { h+='<p>○ No MZ header, file > 64KB → Raw binary</p>'; }
+  el.innerHTML = h;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Segment Map
+// ═══════════════════════════════════════════════════════════════
+function updateSegMap() {
+  const max = 0x100000;
+  const loadSeg = W.load_seg.value;
+  const codeSz = W.code_size.value;
+  const codeOff = W.code_off.value;
+  const fmt = W.format.value;
+  const p = pct => Math.max(pct, 0.15);
+
+  let h = '';
+  h += bar('IVT','0000:0000',1.5,'psp');
+  h += bar('BDA','0040:0000',0.25,'ds');
+  if (fmt===2) {
+    h += bar('PSP','0x'+(loadSeg*16).toString(16).toUpperCase(),p(256/max*100),'psp');
+    h += bar('COM_CODE','0x'+(loadSeg*16+256).toString(16).toUpperCase(),p(codeSz/max*100),'cs');
+  } else if (fmt===1) {
+    h += bar('MZ Header','0x'+(loadSeg*16).toString(16).toUpperCase(),p(W.get_header_u16(8)*16/max*100),'es');
+    h += bar('MZ_IMAGE','0x'+(loadSeg*16+codeOff).toString(16).toUpperCase(),p(codeSz/max*100),'cs');
+  } else {
+    h += bar('RAW','0x00000',p(codeSz/max*100),'cs');
+  }
+  document.getElementById('segMap').innerHTML = h;
+
+  const cs = W.hdr_cs.value, ip = W.hdr_ip.value, ss = W.hdr_ss.value, sp = W.hdr_sp.value;
+  let d = '';
+  d += `CS = <span style="color:var(--a)">0x${hex16(loadSeg+cs)}</span> → phys 0x${((loadSeg+cs)*16).toString(16).toUpperCase()}<br>`;
+  d += `DS = <span style="color:var(--a)">0x${hex16(loadSeg)}</span> → phys 0x${(loadSeg*16).toString(16).toUpperCase()}<br>`;
+  d += `SS:SP = <span style="color:var(--a)">0x${hex16(ss)}:${hex16(sp)}</span><br>`;
+  d += `Entry = <span style="color:var(--g)">0x${W.entry_phys.value.toString(16).toUpperCase().padStart(5,'0')}</span>`;
+  document.getElementById('segDyn').innerHTML = d;
+
+  // Segment register bars
+  const maxS = 0x100000;
+  const sr = document.getElementById('segRegs');
+  sr.innerHTML = [
+    ['CS','cs',loadSeg+cs],
+    ['DS','ds',loadSeg],
+    ['SS','ss',ss+loadSeg],
+    ['ES','es',loadSeg]
+  ].map(([l,c,v])=>`<div class="sb"><div class="lb">${l}</div><div class="bar"><div class="fl ${c}" style="width:${Math.min(v*16/maxS*100,100)}%">${l}</div></div><div class="adr">${hex16(v)}</div></div>`).join('');
+}
+
+function bar(label,addr,pct,cls) {
+  return `<div class="sb"><div class="lb">${label}</div><div class="bar"><div class="fl ${cls}" style="width:${pct}%">${label}</div></div><div class="adr">${addr}</div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Hex Viewer
+// ═══════════════════════════════════════════════════════════════
+function renderHex() {
+  const v = document.getElementById('hexV');
+  const d = S.raw;
+  if(!d) return;
+  const fmt = W.format.value;
+  const codeOff = W.code_off.value;
+  const codeSz = W.code_size.value;
+  const rows = Math.min(Math.ceil(d.length/16), 2000);
+  let h = '';
+  for (let r=0; r<rows; r++) {
+    const addr = r*16;
+    let hx='', asc='';
+    for (let c=0; c<16; c++) {
+      if (c===8) hx+='<span class="sep"></span>';
+      const i = addr+c;
+      if (i<d.length) {
+        const v = d[i];
+        let cl = '';
+        if (fmt===1 && i<0x1C) cl='hdr';
+        else if (i>=codeOff && i<codeOff+codeSz) cl='cod';
+        else if (v===0) cl='z';
+        hx+=`<span class="b ${cl}">${hex8(v)}</span>`;
+        asc+=v>=0x20&&v<0x7F?`<span class="p">${String.fromCharCode(v)}</span>`:'·';
+      } else { hx+='<span class="b">  </span>'; asc+=' '; }
+    }
+    h+=`<div class="hxr"><span class="hxa">${hex16(addr)}</span><span class="hxb">${hx}</span><span class="asc">${asc}</span></div>`;
+  }
+  if (Math.ceil(d.length/16)>rows) h+=`<div style="padding:7px;color:var(--fg3);text-align:center">… ${Math.ceil(d.length/16)-rows} more rows</div>`;
+  v.innerHTML = h;
+
+  document.getElementById('hStats').innerHTML = [
+    [hex16(d.length),'File Size'],[FMT_N[fmt],'Format'],[hex16(W.code_size.value),'Code Size'],[W.hdr_reloc_count.value,'Relocs']
+  ].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+}
+
+function hexSearch() {
+  const q = document.getElementById('hexQ').value.trim().toLowerCase();
+  if(!q||!S.raw) return;
+  const hex = q.replace(/[^0-9a-f]/g,'');
+  if (hex.length>=2 && hex.length%2===0) {
+    const needle = [];
+    for(let i=0;i<hex.length;i+=2) needle.push(parseInt(hex.substr(i,2),16));
+    for(let i=0;i<=S.raw.length-needle.length;i++) {
+      let ok=true;
+      for(let j=0;j<needle.length;j++) if(S.raw[i+j]!==needle[j]){ok=false;break;}
+      if(ok){toast('Found at 0x'+hex16(i));return;}
+    }
+  }
+  toast('Not found');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Disassembly — WASM-powered
+// ═══════════════════════════════════════════════════════════════
+const ITYPE = ['normal','branch','call','int','ret','data','pushpop','mov','string'];
+const REGS8 = ['AL','CL','DL','BL','AH','CH','DH','BH'];
+const REGS16 = ['AX','CX','DX','BX','SP','BP','SI','DI'];
+const SEGREGS = ['ES','CS','SS','DS'];
+const CONDJ = ['JO','JNO','JB','JNB','JZ','JNZ','JBE','JA','JS','JNS','JP','JNP','JL','JGE','JLE','JG'];
+const LOOPJ = ['LOOPNZ','LOOPZ','LOOP','JCXZ'];
+const STR_OP = ['MOVSB','MOVSW','CMPSB','CMPSW','STOSB','STOSW','LODSB','LODSW','SCASB','SCASW'];
+
+function disasmAll() {
+  const v = document.getElementById('dasmV');
+  if (!S.raw) return;
+  refreshMemView();
+
+  const loadSeg = W.load_seg.value;
+  const cs = W.hdr_cs.value;
+  const ip = W.hdr_ip.value;
+  const entry = W.entry_phys.value;
+
+  document.getElementById('dCS').textContent = hex16(loadSeg + cs);
+  document.getElementById('dIP').textContent = hex16(ip);
+
+  const count = W.disassemble(300);
+  let h = '';
+
+  for (let i = 0; i < count; i++) {
+    const type   = W.get_decode_type(i);
+    const sub    = W.get_decode_subtype(i);
+    const len    = W.get_decode_length(i);
+    const flags  = W.get_decode_flags(i);
+    const raw    = W.get_decode_raw(i);
+    const operand= W.get_decode_operand(i);
+    const addr   = W.get_decode_addr(i);
+    const seg    = addr & 0xFFFF;
+    const off    = (addr >>> 16) & 0xFFFF;
+    const phys   = W.seg_off_to_phys(seg, off);
+
+    // Read raw bytes from DOS memory
+    const bytes = [];
+    for (let j = 0; j < len && phys+j < u8.length; j++) bytes.push(u8[phys+j]);
+
+    let mn = '', ops = '', cls = '', cmt = '';
+
+    // Get the opcode
+    const op = bytes[0] || 0;
+
+    // Decode mnemonic
+    if (type === 3) { // INT
+      mn = op === 0xCC ? 'INT3' : 'INT';
+      cls = 'i';
+      if (op === 0xCD) { ops = hex8(operand); cmt = intComment(operand); }
+      else if (op === 0xCC) { ops = '3'; }
+    } else if (type === 4) { // RET
+      mn = flags===2?'IRET':flags===1?'RETF':'RET';
+      if (len===3) ops = hex16(operand);
+    } else if (type === 2) { // CALL
+      mn = 'CALL';
+      cls = 'c';
+      if (flags===1) { ops = hex16(operand>>>16)+':'+hex16(operand&0xFFFF); cmt='far'; }
+      else { ops = hex16(operand); cmt = '→ '+hex16(seg)+':'+hex16(operand); }
+    } else if (type === 1) { // BRANCH
+      if (op>=0x70&&op<=0x7F) { mn=CONDJ[op-0x70]; }
+      else if (op>=0xE0&&op<=0xE3) { mn=LOOPJ[op-0xE0]; }
+      else if (op===0xEB) { mn='JMP'; }
+      else if (op===0xE9) { mn='JMP'; }
+      else if (op===0xEA) { mn='JMP FAR'; }
+      else { mn='J'; }
+      cls = 'j';
+      if (flags===2) { ops=hex16(operand>>>16)+':'+hex16(operand&0xFFFF); cmt='far'; }
+      else { ops=hex16(operand); cmt='→ '+hex16(seg)+':'+hex16(operand); }
+    } else if (type === 7) { // MOV
+      mn = 'MOV';
+      cls = 'm';
+      const reg = sub & 0x07;
+      if (len===2) ops = REGS8[reg]+', '+hex8(operand);
+      else if (len===3) ops = REGS16[reg]+', '+hex16(operand);
+      else ops = REGS16[reg]+', '+hex16(operand);
+    } else if (type === 6) { // PUSH/POP
+      const isPush = flags===0;
+      mn = isPush?'PUSH':'POP';
+      cls = 'pp';
+      if (sub>=0x10) { mn = isPush?'PUSH':'POP'; ops=SEGREGS[(sub-0x10)&3]; }
+      else ops = REGS16[sub&7];
+    } else if (type === 8) { // STRING
+      mn = STR_OP[sub] || 'STR';
+      cls = 'str';
+    } else if (op>=0x40&&op<=0x47) {
+      mn='INC'; ops=REGS16[op-0x40];
+    } else if (op>=0x48&&op<=0x4F) {
+      mn='DEC'; ops=REGS16[op-0x48];
+    } else if (op===0x90) {
+      mn='NOP';
+    } else {
+      mn = hex8(op)+'?';
+      if (len>1) ops = bytes.slice(1).map(hex8).join(' ');
+    }
+
+    // Check entry point
+    const isEntry = phys === entry;
+
+    const byteStr = bytes.map(hex8).join(' ');
+    h += `<div class="dr${isEntry?' ep':''}"><span class="da">${hex16(seg)}:${hex16(off)}</span><span class="db">${byteStr}</span><span class="dm ${cls}">${mn}</span><span class="do">${colorOps(ops)}</span><span class="dc">${cmt?'; '+cmt:''}${isEntry?'◄ ENTRY':''}</span></div>`;
+  }
+
+  if (count === 0) h = '<p style="padding:16px;color:var(--fg3)">No instructions decoded</p>';
+  v.innerHTML = h;
+}
+
+function colorOps(s) {
+  if(!s) return '';
+  return s.replace(/\b(AX|BX|CX|DX|AH|AL|BH|BL|CH|CL|DH|DL|SI|DI|BP|SP|CS|DS|SS|ES)\b/g,'<span class="rg">$1</span>')
+          .replace(/\b([0-9A-F]{4})\b/g,'<span class="im">$1</span>');
+}
+
+function intComment(n) {
+  const entry = INTS.find(e=>e.n===n);
+  return entry ? entry.d : 'INT '+hex8(n)+'h';
+}
+
+function dGo() {
+  toast('Navigate to address');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Decompiler
+// ═══════════════════════════════════════════════════════════════
+function decompile() {
+  const v = document.getElementById('decV');
+  if(!S.raw) return;
+  refreshMemView();
+  const fmt = W.format.value;
+  const loadSeg = W.load_seg.value;
+  const cs = W.hdr_cs.value;
+  const ip = W.hdr_ip.value;
+  const entry = W.entry_phys.value;
+  const count = W.decode_count.value;
+
+  let c = `<span class="cm">/* Decompiled — Ghidra Sleigh (WASM engine)\n * Language: x86:LE:16:Real Mode\n * Format: ${FMT_N[fmt]}  Entry: ${hex16(loadSeg+cs)}:${hex16(ip)}\n */</span>\n\n`;
+  c += `<span class="cm">#include &lt;dos.h&gt;</span>\n`;
+  c += `<span class="cm">#include &lt;stdlib.h&gt;</span>\n\n`;
+
+  // Collect INT calls
+  const calls = [];
+  for(let i=0;i<count;i++) {
+    const t = W.get_decode_type(i);
+    if(t===3) { // INT
+      const op = W.get_decode_raw(i) & 0xFF;
+      if(op===0xCD) calls.push(W.get_decode_operand(i));
+    }
+  }
+
+  c += `<span class="cm">/* Detected ${calls.length} interrupt calls */</span>\n\n`;
+  c += `<span class="tp">void</span> <span class="fn">main</span>(<span class="tp">void</span>) {\n`;
+  c += `    <span class="tp">char</span> <span class="vr">buffer</span>[<span class="nu">128</span>];\n\n`;
+
+  const seen = new Set();
+  calls.slice(0,25).forEach((n,i) => {
+    c += `    <span class="cm">/* INT ${hex8(n)}h */</span> `;
+    switch(n) {
+      case 0x20: c+=`<span class="kw">return</span>; <span class="cm">/* terminate */</span>`; break;
+      case 0x21: c+=`<span class="fn">dos_services</span>();`; break;
+      default: c+=`<span class="fn">int${hex8(n)}h</span>();`; break;
+    }
+    c+='\n';
+    seen.add(n);
+  });
+  if(calls.length>25) c+=`    <span class="cm">/* ... ${calls.length-25} more ... */</span>\n`;
+  c += `}\n`;
+
+  // Add inferred DOS API wrappers
+  const has = n => calls.includes(n);
+  if(has(0x21)) {
+    c += `\n<span class="cm">/* DOS service calls detected — auto-inferred wrappers */</span>\n`;
+    c += `<span class="tp">void</span> <span class="fn">display_string</span>(<span class="tp">const char __far</span> *<span class="vr">s</span>) {\n    <span class="cm">/* INT 21h AH=09h: DS:DX → $-terminated string */</span>\n    _asm { push ds; lds dx,s; mov ah,9; int 21h; pop ds }\n}\n\n`;
+    c += `<span class="tp">int</span> <span class="fn">dos_open</span>(<span class="tp">const char __far</span> *<span class="vr">path</span>, <span class="tp">int</span> <span class="vr">mode</span>) {\n    <span class="cm">/* INT 21h AH=3Dh */</span>\n    <span class="tp">int</span> <span class="vr">h</span>;\n    _asm { push ds; lds dx,path; mov ax,mode; mov ah,3Dh; int 21h; pop ds; jc err; mov h,ax }\n    <span class="kw">return</span> h;\n}\n\n`;
+    c += `<span class="tp">void</span> <span class="fn">dos_exit</span>(<span class="tp">int</span> <span class="vr">code</span>) {\n    _asm { mov ah,4Ch; mov al,byte ptr code; int 21h }\n}\n`;
+  }
+
+  v.innerHTML = c;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Interrupt Table
+// ═══════════════════════════════════════════════════════════════
+const INTS = [
+  {n:0x20,d:'Terminate Program'},
+  {n:0x21,d:'DOS Services (AH=function)'},
+  {n:0x10,d:'BIOS Video Services'},
+  {n:0x13,d:'BIOS Disk Services'},
+  {n:0x16,d:'BIOS Keyboard Services'},
+  {n:0x33,d:'Mouse Driver'},
+  {n:0x1A,d:'BIOS Time/Date'},
 ];
 
-// ─── Interrupt tables ─────────────────────────────────────────
-const INT_TABLE = [
-  // INT 21h DOS Services
-  {n:'21h',ah:'00h',d:'Program Terminate'},
-  {n:'21h',ah:'01h',d:'Read Keyboard Character (echo)'},
-  {n:'21h',ah:'02h',d:'Display Character (DL=char)'},
-  {n:'21h',ah:'05h',d:'Print Character (DL=char)'},
-  {n:'21h',ah:'06h',d:'Direct Console I/O (DL=char/FF)'},
-  {n:'21h',ah:'07h',d:'Direct Console Input (no echo)'},
-  {n:'21h',ah:'08h',d:'Read Character (no echo)'},
-  {n:'21h',ah:'09h',d:'Display String (DS:DX=string, $-terminated)'},
-  {n:'21h',ah:'0Ah',d:'Buffered Keyboard Input (DS:DX=buffer)'},
-  {n:'21h',ah:'0Bh',d:'Get Standard Input Status'},
-  {n:'21h',ah:'0Ch',d:'Flush Buffer and Read'},
-  {n:'21h',ah:'0Dh',d:'Disk Reset (flush all buffers)'},
-  {n:'21h',ah:'0Eh',d:'Set Default Drive (DL=drive)'},
-  {n:'21h',ah:'0Fh',d:'Open File using FCB (DS:DX=FCB)'},
-  {n:'21h',ah:'10h',d:'Close File using FCB'},
-  {n:'21h',ah:'11h',d:'Find First File (FCB)'},
-  {n:'21h',ah:'12h',d:'Find Next File (FCB)'},
-  {n:'21h',ah:'13h',d:'Delete File (FCB)'},
-  {n:'21h',ah:'14h',d:'Sequential Read (FCB)'},
-  {n:'21h',ah:'15h',d:'Sequential Write (FCB)'},
-  {n:'21h',ah:'16h',d:'Create File (FCB)'},
-  {n:'21h',ah:'17h',d:'Rename File (FCB)'},
-  {n:'21h',ah:'1Ah',d:'Set DTA Address (DS:DX)'},
-  {n:'21h',ah:'25h',d:'Set Interrupt Vector (AL=int, DS:DX=handler)'},
-  {n:'21h',ah:'2Ah',d:'Get Date → CX:DX'},
-  {n:'21h',ah:'2Bh',d:'Set Date (CX:DX)'},
-  {n:'21h',ah:'2Ch',d:'Get Time → CX:DX'},
-  {n:'21h',ah:'2Dh',d:'Set Time (CX:DX)'},
-  {n:'21h',ah:'2Fh',d:'Get DTA Address → ES:BX'},
-  {n:'21h',ah:'30h',d:'Get DOS Version → AL.AH'},
-  {n:'21h',ah:'31h',d:'Terminate and Stay Resident (AL=code, DX=mem)'},
-  {n:'21h',ah:'35h',d:'Get Interrupt Vector (AL=int) → ES:BX'},
-  {n:'21h',ah:'36h',d:'Get Disk Free Space (DL=drive)'},
-  {n:'21h',ah:'39h',d:'Create Directory (DS:DX=path)'},
-  {n:'21h',ah:'3Ah',d:'Remove Directory (DS:DX=path)'},
-  {n:'21h',ah:'3Bh',d:'Change Directory (DS:DX=path)'},
-  {n:'21h',ah:'3Ch',d:'Create File (DS:DX=name, CX=attr) → AX=handle'},
-  {n:'21h',ah:'3Dh',d:'Open File (DS:DX=name, AL=mode) → AX=handle'},
+function renderInterrupts() {
+  const el = document.getElementById('intTbl');
+  // Build from WASM decode data
+  const count = W.decode_count.value;
+  const found = [];
+  for(let i=0;i<count;i++) {
+    if(W.get_decode_type(i)===3) {
+      const n = W.get_decode_operand(i);
+      if(!found.find(f=>f.n===n)) {
+        const ref = INTS.find(e=>e.n===n);
+        found.push({n, d:ref?ref.d:'Interrupt '+hex8(n)+'h'});
+      }
+    }
+  }
+  let h = found.length
+    ? found.map(e=>`<div class="tr"><span class="tn">INT ${hex8(e.n)}h</span><span class="td">${e.d}</span></div>`).join('')
+    : '<div style="padding:10px;color:var(--fg3)">No interrupts found in disassembled region</div>';
+  h += '<h3 style="margin-top:14px;font-size:.9rem;color:var(--a)">Full Reference</h3>';
+  h += ALL_INTS.map(e=>`<div class="tr"><span class="tn">INT ${e.n}</span><span class="ta">${e.ah}</span><span class="td">${e.d}</span></div>`).join('');
+  el.innerHTML = h;
+
+  document.getElementById('intQ').oninput = function() {
+    const q = this.value.toLowerCase();
+    el.querySelectorAll('.tr').forEach(r => r.style.display = r.textContent.toLowerCase().includes(q)?'':'none');
+  };
+}
+
+const ALL_INTS = [
+  {n:'21h',ah:'09h',d:'Display String (DS:DX=$-terminated)'},
+  {n:'21h',ah:'3Ch',d:'Create File (DS:DX=name, CX=attr)'},
+  {n:'21h',ah:'3Dh',d:'Open File (DS:DX=name, AL=mode)'},
   {n:'21h',ah:'3Eh',d:'Close File (BX=handle)'},
   {n:'21h',ah:'3Fh',d:'Read File (BX=handle, CX=count, DS:DX=buf)'},
   {n:'21h',ah:'40h',d:'Write File (BX=handle, CX=count, DS:DX=buf)'},
   {n:'21h',ah:'41h',d:'Delete File (DS:DX=name)'},
   {n:'21h',ah:'42h',d:'Seek (BX=handle, AL=method, CX:DX=offset)'},
-  {n:'21h',ah:'43h',d:'Get/Set File Attributes'},
-  {n:'21h',ah:'44h',d:'IOCTL (AL=function, BX=handle)'},
-  {n:'21h',ah:'45h',d:'Duplicate File Handle (BX) → AX'},
-  {n:'21h',ah:'47h',d:'Get Current Directory (DL=drive, DS:SI=buf)'},
-  {n:'21h',ah:'48h',d:'Allocate Memory (BX=paragraphs) → AX=segment'},
-  {n:'21h',ah:'49h',d:'Free Memory Block (ES=segment)'},
-  {n:'21h',ah:'4Ah',d:'Resize Memory Block (ES=seg, BX=new size)'},
-  {n:'21h',ah:'4Bh',d:'Exec Program (AL=func, DS:DX=prog, ES:BX=param)'},
-  {n:'21h',ah:'4Ch',d:'Terminate Process (AL=return code)'},
-  {n:'21h',ah:'4Dh',d:'Get Return Code → AL'},
-  {n:'21h',ah:'4Eh',d:'Find First File (DS:DX=spec, CX=attr)'},
+  {n:'21h',ah:'48h',d:'Allocate Memory (BX=paragraphs)'},
+  {n:'21h',ah:'49h',d:'Free Memory (ES=segment)'},
+  {n:'21h',ah:'4Ch',d:'Terminate Process (AL=code)'},
+  {n:'21h',ah:'4Eh',d:'Find First File (DS:DX=spec)'},
   {n:'21h',ah:'4Fh',d:'Find Next File'},
-  {n:'21h',ah:'56h',d:'Rename File (DS:DX=old, ES:DI=new)'},
-  {n:'21h',ah:'57h',d:'Get/Set File Date & Time (BX=handle)'},
-  {n:'21h',ah:'58h',d:'Get/Set Memory Allocation Strategy'},
-  {n:'21h',ah:'5Ah',d:'Create Temporary File'},
-  {n:'21h',ah:'5Bh',d:'Create New File'},
-  {n:'21h',ah:'5Ch',d:'Lock/Unlock File Region'},
-  {n:'21h',ah:'62h',d:'Get PSP Segment → BX'},
-  // INT 10h BIOS Video
+  {n:'21h',ah:'30h',d:'Get DOS Version'},
+  {n:'21h',ah:'35h',d:'Get Interrupt Vector (AL=int)'},
+  {n:'21h',ah:'25h',d:'Set Interrupt Vector (AL=int, DS:DX)'},
+  {n:'21h',ah:'2Ah',d:'Get Date'},
+  {n:'21h',ah:'2Ch',d:'Get Time'},
   {n:'10h',ah:'00h',d:'Set Video Mode (AL=mode)'},
-  {n:'10h',ah:'01h',d:'Set Cursor Shape (CH=start, CL=end)'},
-  {n:'10h',ah:'02h',d:'Set Cursor Position (BH=page, DH=row, DL=col)'},
-  {n:'10h',ah:'03h',d:'Get Cursor Position → CH:CL, DH:DL'},
-  {n:'10h',ah:'05h',d:'Set Active Page (AL=page)'},
-  {n:'10h',ah:'06h',d:'Scroll Window Up (AL=lines, BH=attr, CH:CL=top, DH:DL=bot)'},
-  {n:'10h',ah:'07h',d:'Scroll Window Down'},
-  {n:'10h',ah:'08h',d:'Read Character & Attribute at Cursor → AH:AL'},
-  {n:'10h',ah:'09h',d:'Write Char & Attribute (AL=char, BH=page, BL=attr, CX=count)'},
-  {n:'10h',ah:'0Ah',d:'Write Character (AL=char, BH=page, CX=count)'},
-  {n:'10h',ah:'0Ch',d:'Write Pixel (AL=color, BH=page, CX=x, DX=y)'},
-  {n:'10h',ah:'0Dh',d:'Read Pixel → AL (BH=page, CX=x, DX=y)'},
+  {n:'10h',ah:'02h',d:'Set Cursor Position'},
+  {n:'10h',ah:'09h',d:'Write Char+Attr'},
   {n:'10h',ah:'0Eh',d:'Teletype Output (AL=char)'},
-  {n:'10h',ah:'0Fh',d:'Get Video Mode → AH:AL:BH'},
-  {n:'10h',ah:'13h',d:'Write String (AL=mode, BH=page, BL=attr, CX=len, DH:DL=pos, ES:BP=str)'},
-  // INT 13h BIOS Disk
-  {n:'13h',ah:'00h',d:'Reset Disk Drive (DL=drive)'},
-  {n:'13h',ah:'02h',d:'Read Sectors (AL=count, CH:CL=track:sector, DH:DL=head:drive, ES:BX=buf)'},
-  {n:'13h',ah:'03h',d:'Write Sectors'},
-  {n:'13h',ah:'08h',d:'Get Drive Parameters → CX:DX'},
-  // INT 16h BIOS Keyboard
-  {n:'16h',ah:'00h',d:'Read Keystroke → AH:AL'},
-  {n:'16h',ah:'01h',d:'Check for Keystroke (ZF=0 if available)'},
-  {n:'16h',ah:'02h',d:'Get Keyboard Flags → AL'},
-  // INT 33h Mouse
-  {n:'33h',ah:'00h',d:'Reset Mouse Driver → AX (installed?)'},
-  {n:'33h',ah:'03h',d:'Get Mouse Position & Button Status → BX:CX:DX'},
-  // Misc
-  {n:'20h',ah:'--',d:'Terminate Program (CS=PSP)'},
-  {n:'27h',ah:'--',d:'Terminate & Stay Resident (CS:DX=end)'},
+  {n:'10h',ah:'13h',d:'Write String'},
+  {n:'13h',ah:'02h',d:'Read Sectors'},
+  {n:'16h',ah:'00h',d:'Read Keystroke'},
+  {n:'33h',ah:'00h',d:'Reset Mouse'},
+  {n:'33h',ah:'03h',d:'Get Mouse Position'},
+  {n:'20h',ah:'--',d:'Terminate Program'},
 ];
 
-// ─── 16-bit x86 opcode table (simplified) ─────────────────────
-const OPCODES_16 = {
-  0x00: { mn: 'ADD',    len: 2, fmt: 'Eb,Gb' },
-  0x01: { mn: 'ADD',    len: 2, fmt: 'Ev,Gv' },
-  0x02: { mn: 'ADD',    len: 2, fmt: 'Gb,Eb' },
-  0x03: { mn: 'ADD',    len: 2, fmt: 'Gv,Ev' },
-  0x04: { mn: 'ADD',    len: 2, fmt: 'AL,Ib' },
-  0x05: { mn: 'ADD',    len: 3, fmt: 'AX,Iv' },
-  0x06: { mn: 'PUSH',   len: 1, fmt: 'ES', op: 'es' },
-  0x07: { mn: 'POP',    len: 1, fmt: 'ES', op: 'es' },
-  0x08: { mn: 'OR',     len: 2, fmt: 'Eb,Gb' },
-  0x09: { mn: 'OR',     len: 2, fmt: 'Ev,Gv' },
-  0x0A: { mn: 'OR',     len: 2, fmt: 'Gb,Eb' },
-  0x0B: { mn: 'OR',     len: 2, fmt: 'Gv,Ev' },
-  0x0C: { mn: 'OR',     len: 2, fmt: 'AL,Ib' },
-  0x0D: { mn: 'OR',     len: 3, fmt: 'AX,Iv' },
-  0x0E: { mn: 'PUSH',   len: 1, fmt: 'CS', op: 'cs' },
-  0x0F: { mn: 'POP',    len: 1, fmt: 'CS', op: 'cs' }, // 2-byte escape in 386+
-  0x10: { mn: 'ADC',    len: 2 },
-  0x11: { mn: 'ADC',    len: 2 },
-  0x12: { mn: 'ADC',    len: 2 },
-  0x13: { mn: 'ADC',    len: 2 },
-  0x14: { mn: 'ADC',    len: 2, fmt: 'AL,Ib' },
-  0x15: { mn: 'ADC',    len: 3, fmt: 'AX,Iv' },
-  0x16: { mn: 'PUSH',   len: 1, fmt: 'SS', op: 'ss' },
-  0x17: { mn: 'POP',    len: 1, fmt: 'SS', op: 'ss' },
-  0x18: { mn: 'SBB',    len: 2 },
-  0x19: { mn: 'SBB',    len: 2 },
-  0x1A: { mn: 'SBB',    len: 2 },
-  0x1B: { mn: 'SBB',    len: 2 },
-  0x1C: { mn: 'SBB',    len: 2, fmt: 'AL,Ib' },
-  0x1D: { mn: 'SBB',    len: 3, fmt: 'AX,Iv' },
-  0x1E: { mn: 'PUSH',   len: 1, fmt: 'DS', op: 'ds' },
-  0x1F: { mn: 'POP',    len: 1, fmt: 'DS', op: 'ds' },
-  0x20: { mn: 'AND',    len: 2 },
-  0x21: { mn: 'AND',    len: 2 },
-  0x22: { mn: 'AND',    len: 2 },
-  0x23: { mn: 'AND',    len: 2 },
-  0x24: { mn: 'AND',    len: 2, fmt: 'AL,Ib' },
-  0x25: { mn: 'AND',    len: 3, fmt: 'AX,Iv' },
-  0x27: { mn: 'DAA',    len: 1 },
-  0x28: { mn: 'SUB',    len: 2 },
-  0x29: { mn: 'SUB',    len: 2 },
-  0x2A: { mn: 'SUB',    len: 2 },
-  0x2B: { mn: 'SUB',    len: 2 },
-  0x2C: { mn: 'SUB',    len: 2, fmt: 'AL,Ib' },
-  0x2D: { mn: 'SUB',    len: 3, fmt: 'AX,Iv' },
-  0x2F: { mn: 'DAS',    len: 1 },
-  0x30: { mn: 'XOR',    len: 2 },
-  0x31: { mn: 'XOR',    len: 2 },
-  0x32: { mn: 'XOR',    len: 2 },
-  0x33: { mn: 'XOR',    len: 2 },
-  0x34: { mn: 'XOR',    len: 2, fmt: 'AL,Ib' },
-  0x35: { mn: 'XOR',    len: 3, fmt: 'AX,Iv' },
-  0x37: { mn: 'AAA',    len: 1 },
-  0x38: { mn: 'CMP',    len: 2 },
-  0x39: { mn: 'CMP',    len: 2 },
-  0x3A: { mn: 'CMP',    len: 2 },
-  0x3B: { mn: 'CMP',    len: 2 },
-  0x3C: { mn: 'CMP',    len: 2, fmt: 'AL,Ib' },
-  0x3D: { mn: 'CMP',    len: 3, fmt: 'AX,Iv' },
-  0x3F: { mn: 'AAS',    len: 1 },
-  // INC reg
-  0x40: { mn: 'INC',    len: 1, reg: 'AX' },
-  0x41: { mn: 'INC',    len: 1, reg: 'CX' },
-  0x42: { mn: 'INC',    len: 1, reg: 'DX' },
-  0x43: { mn: 'INC',    len: 1, reg: 'BX' },
-  0x44: { mn: 'INC',    len: 1, reg: 'SP' },
-  0x45: { mn: 'INC',    len: 1, reg: 'BP' },
-  0x46: { mn: 'INC',    len: 1, reg: 'SI' },
-  0x47: { mn: 'INC',    len: 1, reg: 'DI' },
-  // DEC reg
-  0x48: { mn: 'DEC',    len: 1, reg: 'AX' },
-  0x49: { mn: 'DEC',    len: 1, reg: 'CX' },
-  0x4A: { mn: 'DEC',    len: 1, reg: 'DX' },
-  0x4B: { mn: 'DEC',    len: 1, reg: 'BX' },
-  0x4C: { mn: 'DEC',    len: 1, reg: 'SP' },
-  0x4D: { mn: 'DEC',    len: 1, reg: 'BP' },
-  0x4E: { mn: 'DEC',    len: 1, reg: 'SI' },
-  0x4F: { mn: 'DEC',    len: 1, reg: 'DI' },
-  // PUSH reg
-  0x50: { mn: 'PUSH',   len: 1, reg: 'AX' },
-  0x51: { mn: 'PUSH',   len: 1, reg: 'CX' },
-  0x52: { mn: 'PUSH',   len: 1, reg: 'DX' },
-  0x53: { mn: 'PUSH',   len: 1, reg: 'BX' },
-  0x54: { mn: 'PUSH',   len: 1, reg: 'SP' },
-  0x55: { mn: 'PUSH',   len: 1, reg: 'BP' },
-  0x56: { mn: 'PUSH',   len: 1, reg: 'SI' },
-  0x57: { mn: 'PUSH',   len: 1, reg: 'DI' },
-  // POP reg
-  0x58: { mn: 'POP',    len: 1, reg: 'AX' },
-  0x59: { mn: 'POP',    len: 1, reg: 'CX' },
-  0x5A: { mn: 'POP',    len: 1, reg: 'DX' },
-  0x5B: { mn: 'POP',    len: 1, reg: 'BX' },
-  0x5C: { mn: 'POP',    len: 1, reg: 'SP' },
-  0x5D: { mn: 'POP',    len: 1, reg: 'BP' },
-  0x5E: { mn: 'POP',    len: 1, reg: 'SI' },
-  0x5F: { mn: 'POP',    len: 1, reg: 'DI' },
-  // Conditional jumps
-  0x70: { mn: 'JO',     len: 2, jmp: true },
-  0x71: { mn: 'JNO',    len: 2, jmp: true },
-  0x72: { mn: 'JB',     len: 2, jmp: true },
-  0x73: { mn: 'JNB',    len: 2, jmp: true },
-  0x74: { mn: 'JZ',     len: 2, jmp: true },
-  0x75: { mn: 'JNZ',    len: 2, jmp: true },
-  0x76: { mn: 'JBE',    len: 2, jmp: true },
-  0x77: { mn: 'JA',     len: 2, jmp: true },
-  0x78: { mn: 'JS',     len: 2, jmp: true },
-  0x79: { mn: 'JNS',    len: 2, jmp: true },
-  0x7A: { mn: 'JP',     len: 2, jmp: true },
-  0x7B: { mn: 'JNP',    len: 2, jmp: true },
-  0x7C: { mn: 'JL',     len: 2, jmp: true },
-  0x7D: { mn: 'JGE',    len: 2, jmp: true },
-  0x7E: { mn: 'JLE',    len: 2, jmp: true },
-  0x7F: { mn: 'JG',     len: 2, jmp: true },
-  // ADD/OR/ADC/SBB/AND/SUB/XOR/CMP r/m8,r8 (ModR/M)
-  0x80: { mn: 'GRP1',   len: 2 },
-  0x81: { mn: 'GRP1',   len: 2 },
-  0x83: { mn: 'GRP1',   len: 2 },
-  0x84: { mn: 'TEST',   len: 2 },
-  0x85: { mn: 'TEST',   len: 2 },
-  0x86: { mn: 'XCHG',   len: 2 },
-  0x87: { mn: 'XCHG',   len: 2 },
-  0x88: { mn: 'MOV',    len: 2 },
-  0x89: { mn: 'MOV',    len: 2 },
-  0x8A: { mn: 'MOV',    len: 2 },
-  0x8B: { mn: 'MOV',    len: 2 },
-  0x8C: { mn: 'MOV',    len: 2 },
-  0x8D: { mn: 'LEA',    len: 2 },
-  0x8E: { mn: 'MOV',    len: 2 },
-  0x8F: { mn: 'POP',    len: 2 },
-  0x90: { mn: 'NOP',    len: 1 },
-  0x91: { mn: 'XCHG',   len: 1, reg: 'AX,CX' },
-  0x92: { mn: 'XCHG',   len: 1, reg: 'AX,DX' },
-  0x93: { mn: 'XCHG',   len: 1, reg: 'AX,BX' },
-  0x94: { mn: 'XCHG',   len: 1, reg: 'AX,SP' },
-  0x95: { mn: 'XCHG',   len: 1, reg: 'AX,BP' },
-  0x96: { mn: 'XCHG',   len: 1, reg: 'AX,SI' },
-  0x97: { mn: 'XCHG',   len: 1, reg: 'AX,DI' },
-  0x98: { mn: 'CBW',    len: 1 },
-  0x99: { mn: 'CWD',    len: 1 },
-  0x9A: { mn: 'CALL',   len: 5, call: true, far: true },
-  0x9C: { mn: 'PUSHF',  len: 1 },
-  0x9D: { mn: 'POPF',   len: 1 },
-  0x9E: { mn: 'SAHF',   len: 1 },
-  0x9F: { mn: 'LAHF',   len: 1 },
-  0xA0: { mn: 'MOV',    len: 3, fmt: 'AL,[Iv]' },
-  0xA1: { mn: 'MOV',    len: 3, fmt: 'AX,[Iv]' },
-  0xA2: { mn: 'MOV',    len: 3, fmt: '[Iv],AL' },
-  0xA3: { mn: 'MOV',    len: 3, fmt: '[Iv],AX' },
-  0xA4: { mn: 'MOVSB',  len: 1 },
-  0xA5: { mn: 'MOVSW',  len: 1 },
-  0xA6: { mn: 'CMPSB',  len: 1 },
-  0xA7: { mn: 'CMPSW',  len: 1 },
-  0xA8: { mn: 'TEST',   len: 2, fmt: 'AL,Ib' },
-  0xA9: { mn: 'TEST',   len: 3, fmt: 'AX,Iv' },
-  0xAA: { mn: 'STOSB',  len: 1 },
-  0xAB: { mn: 'STOSW',  len: 1 },
-  0xAC: { mn: 'LODSB',  len: 1 },
-  0xAD: { mn: 'LODSW',  len: 1 },
-  0xAE: { mn: 'SCASB',  len: 1 },
-  0xAF: { mn: 'SCASW',  len: 1 },
-  // MOV imm reg
-  0xB0: { mn: 'MOV',    len: 2, reg: 'AL' },
-  0xB1: { mn: 'MOV',    len: 2, reg: 'CL' },
-  0xB2: { mn: 'MOV',    len: 2, reg: 'DL' },
-  0xB3: { mn: 'MOV',    len: 2, reg: 'BL' },
-  0xB4: { mn: 'MOV',    len: 2, reg: 'AH' },
-  0xB5: { mn: 'MOV',    len: 2, reg: 'CH' },
-  0xB6: { mn: 'MOV',    len: 2, reg: 'DH' },
-  0xB7: { mn: 'MOV',    len: 2, reg: 'BH' },
-  0xB8: { mn: 'MOV',    len: 3, reg: 'AX' },
-  0xB9: { mn: 'MOV',    len: 3, reg: 'CX' },
-  0xBA: { mn: 'MOV',    len: 3, reg: 'DX' },
-  0xBB: { mn: 'MOV',    len: 3, reg: 'BX' },
-  0xBC: { mn: 'MOV',    len: 3, reg: 'SP' },
-  0xBD: { mn: 'MOV',    len: 3, reg: 'BP' },
-  0xBE: { mn: 'MOV',    len: 3, reg: 'SI' },
-  0xBF: { mn: 'MOV',    len: 3, reg: 'DI' },
-  // Shifts
-  0xC0: { mn: 'SHIFT',  len: 2 },
-  0xC1: { mn: 'SHIFT',  len: 2 },
-  0xC2: { mn: 'RET',    len: 3, fmt: 'Iv' },
-  0xC3: { mn: 'RET',    len: 1 },
-  0xC4: { mn: 'LES',    len: 2 },
-  0xC5: { mn: 'LDS',    len: 2 },
-  0xC6: { mn: 'MOV',    len: 2 },
-  0xC7: { mn: 'MOV',    len: 2 },
-  0xC8: { mn: 'ENTER',  len: 4 },
-  0xC9: { mn: 'LEAVE',  len: 1 },
-  0xCA: { mn: 'RETF',   len: 3, fmt: 'Iv' },
-  0xCB: { mn: 'RETF',   len: 1 },
-  0xCC: { mn: 'INT3',   len: 1, int: true },
-  0xCD: { mn: 'INT',    len: 2, int: true },
-  0xCE: { mn: 'INTO',   len: 1, int: true },
-  0xCF: { mn: 'IRET',   len: 1 },
-  0xD0: { mn: 'SHIFT',  len: 2 },
-  0xD1: { mn: 'SHIFT',  len: 2 },
-  0xD2: { mn: 'SHIFT',  len: 2 },
-  0xD3: { mn: 'SHIFT',  len: 2 },
-  0xD4: { mn: 'AAM',    len: 2 },
-  0xD5: { mn: 'AAD',    len: 2 },
-  0xD7: { mn: 'XLAT',   len: 1 },
-  0xE0: { mn: 'LOOPNZ', len: 2, jmp: true },
-  0xE1: { mn: 'LOOPZ',  len: 2, jmp: true },
-  0xE2: { mn: 'LOOP',   len: 2, jmp: true },
-  0xE3: { mn: 'JCXZ',   len: 2, jmp: true },
-  0xE4: { mn: 'IN',     len: 2, fmt: 'AL,Ib' },
-  0xE5: { mn: 'IN',     len: 2, fmt: 'AX,Ib' },
-  0xE6: { mn: 'OUT',    len: 2, fmt: 'Ib,AL' },
-  0xE7: { mn: 'OUT',    len: 2, fmt: 'Ib,AX' },
-  0xE8: { mn: 'CALL',   len: 3, call: true },
-  0xE9: { mn: 'JMP',    len: 3, jmp: true },
-  0xEB: { mn: 'JMP',    len: 2, jmp: true, short: true },
-  0xEC: { mn: 'IN',     len: 1, fmt: 'AL,DX' },
-  0xED: { mn: 'IN',     len: 1, fmt: 'AX,DX' },
-  0xEE: { mn: 'OUT',    len: 1, fmt: 'DX,AL' },
-  0xEF: { mn: 'OUT',    len: 1, fmt: 'DX,AX' },
-  0xF0: { mn: 'LOCK',   len: 1 },
-  0xF2: { mn: 'REPNE',  len: 1 },
-  0xF3: { mn: 'REP',    len: 1 },
-  0xF4: { mn: 'HLT',    len: 1 },
-  0xF5: { mn: 'CMC',    len: 1 },
-  0xF6: { mn: 'GRP3b',  len: 2 },
-  0xF7: { mn: 'GRP3v',  len: 2 },
-  0xF8: { mn: 'CLC',    len: 1 },
-  0xF9: { mn: 'STC',    len: 1 },
-  0xFA: { mn: 'CLI',    len: 1 },
-  0xFB: { mn: 'STI',    len: 1 },
-  0xFC: { mn: 'CLD',    len: 1 },
-  0xFD: { mn: 'STD',    len: 1 },
-  0xFE: { mn: 'GRP4',   len: 2 },
-  0xFF: { mn: 'GRP5',   len: 2 },
-};
-
-// Group opcode sub-decoding
-const GRP1_MN = ['ADD','OR','ADC','SBB','AND','SUB','XOR','CMP'];
-const GRP3_MN = ['TEST','TEST','NOT','NEG','MUL','IMUL','DIV','IDIV'];
-const GRP5_MN = ['INC','DEC','CALL','CALL FAR','JMP','JMP FAR','PUSH'];
-
-// ─── Navigation ───────────────────────────────────────────────
-document.querySelectorAll('#mainNav button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('#mainNav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
-  });
-});
-
-// Sub-tabs
-document.querySelectorAll('.sub-tabs button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const parent = btn.closest('.card');
-    parent.querySelectorAll('.sub-tabs button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    parent.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
-    parent.querySelector('#' + btn.dataset.sub).classList.add('active');
-  });
-});
-
-// ─── File Loading ─────────────────────────────────────────────
-const dropzone = document.getElementById('dropzone');
-const fileInput = document.getElementById('fileInput');
-
-dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
-dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
-dropzone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropzone.classList.remove('dragover');
-  const file = e.dataTransfer.files[0];
-  if (file) loadFile(file);
-});
-fileInput.addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (file) loadFile(file);
-});
-
-function loadFile(file) {
-  const reader = new FileReader();
-  reader.onprogress = e => {
-    if (e.lengthComputable) {
-      const pct = (e.loaded / e.total) * 100;
-      document.querySelector('#loadProgress .fill').style.width = pct + '%';
-    }
-  };
-  reader.onload = e => {
-    state.raw = new Uint8Array(e.target.result);
-    document.querySelector('#loadProgress .fill').style.width = '100%';
-    setTimeout(() => document.querySelector('#loadProgress .fill').style.width = '0%', 500);
-    analyzeBinary();
-    toast(`Loaded: ${file.name} (${state.raw.length} bytes) — Format: ${state.format}`);
-  };
-  reader.readAsArrayBuffer(file);
+// ═══════════════════════════════════════════════════════════════
+// MZ Reference
+// ═══════════════════════════════════════════════════════════════
+function renderMzRef() {
+  document.getElementById('mzRef').innerHTML = [
+    ['0x00','2B','e_magic — Magic number ("MZ")'],
+    ['0x02','2B','e_cblp — Bytes on last page'],
+    ['0x04','2B','e_cp — Pages in file (512B)'],
+    ['0x06','2B','e_crlc — Relocation entries'],
+    ['0x08','2B','e_cparhdr — Header size (×16)'],
+    ['0x0A','2B','e_minalloc — Min extra paras'],
+    ['0x0C','2B','e_maxalloc — Max extra paras'],
+    ['0x0E','2B','e_ss — Initial SS'],
+    ['0x10','2B','e_sp — Initial SP'],
+    ['0x12','2B','e_csum — Checksum'],
+    ['0x14','2B','e_ip — Initial IP'],
+    ['0x16','2B','e_cs — Initial CS (relative)'],
+    ['0x18','2B','e_lfarlc — Reloc table offset'],
+    ['0x1A','2B','e_ovno — Overlay number'],
+  ].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
 }
 
-// ─── Format Detection & Analysis ──────────────────────────────
-function analyzeBinary() {
-  const d = state.raw;
-  
-  // Detect format
-  if (d.length >= 2 && d[0] === 0x4D && d[1] === 0x5A) {
-    state.format = 'MZ';
-    parseMZHeader();
-  } else if (d.length >= 2 && d[0] === 0x5A && d[1] === 0x4D) {
-    state.format = 'MZ';
-    parseMZHeader();
-  } else if (d.length <= 0xFF00) {
-    state.format = 'COM';
-    parseCOM();
-  } else {
-    state.format = 'RAW';
-    parseRAW();
-  }
-  
-  updateFileInfo();
-  updateFormatDetection();
-  updateSegmentMap();
-  renderHexView();
-  disassemble();
-  decompile();
-  renderInterruptTable();
-  renderMzRefTable();
-  calcPhysical();
+// ═══════════════════════════════════════════════════════════════
+// Calculator
+// ═══════════════════════════════════════════════════════════════
+function calcP() {
+  const seg = parseInt(document.getElementById('cS').value,16)||0;
+  const off = parseInt(document.getElementById('cO').value,16)||0;
+  const phys = W ? W.seg_off_to_phys(seg, off) : ((seg*16+off)&0xFFFFF);
+  document.getElementById('calcRes').textContent = '→ 0x'+phys.toString(16).toUpperCase().padStart(5,'0');
 }
 
-// ─── MZ Parser ────────────────────────────────────────────────
-function readLE16(data, off) {
-  return (data[off] & 0xFF) | ((data[off + 1] & 0xFF) << 8);
-}
+// ═══════════════════════════════════════════════════════════════
+// Utility
+// ═══════════════════════════════════════════════════════════════
+function hex8(v) { return (v&0xFF).toString(16).toUpperCase().padStart(2,'0'); }
+function hex16(v) { return (v&0xFFFF).toString(16).toUpperCase().padStart(4,'0'); }
+function toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 
-function parseMZHeader() {
-  const d = state.raw;
-  const h = {};
-  MZ_FIELDS.forEach(f => { h[f.name] = readLE16(d, f.off); });
-  
-  h.e_cblp_actual = (h.e_cp - 1) * 512 + h.e_cblp;
-  h.hdrSize = h.e_cparhdr * 16;
-  h.imageSize = Math.max(0, h.e_cblp_actual - h.hdrSize);
-  if (h.imageSize <= 0) h.imageSize = d.length - h.hdrSize;
-  
-  state.mzHeader = h;
-  state.loadSeg = 0x1000;
-  state.cs = h.e_cs;
-  state.ds = 0;
-  state.ss = h.e_ss;
-  state.es = 0;
-  state.ip = h.e_ip;
-  state.sp = h.e_sp;
-  state.codeOffset = h.hdrSize;
-  state.codeSize = h.imageSize;
-  state.entryPhys = (state.loadSeg + h.e_cs) * 16 + h.e_ip;
-  
-  // Parse relocations
-  state.relocs = [];
-  if (h.e_crlc > 0 && h.e_lfarlc > 0) {
-    for (let i = 0; i < h.e_crlc; i++) {
-      const off = h.e_lfarlc + i * 4;
-      if (off + 4 <= d.length) {
-        state.relocs.push({
-          offset: readLE16(d, off),
-          segment: readLE16(d, off + 2)
-        });
-      }
-    }
-  }
-}
-
-function parseCOM() {
-  state.loadSeg = 0x1000;
-  state.cs = state.loadSeg;
-  state.ds = state.loadSeg;
-  state.ss = state.loadSeg;
-  state.es = state.loadSeg;
-  state.ip = 0x0100;
-  state.sp = 0xFFFE;
-  state.codeOffset = 0;
-  state.codeSize = state.raw.length;
-  state.entryPhys = state.loadSeg * 16 + 0x100;
-  state.relocs = [];
-}
-
-function parseRAW() {
-  state.loadSeg = 0;
-  state.cs = 0; state.ds = 0; state.ss = 0; state.es = 0;
-  state.ip = 0; state.sp = 0xFFFE;
-  state.codeOffset = 0;
-  state.codeSize = state.raw.length;
-  state.entryPhys = 0;
-  state.relocs = [];
-}
-
-// ─── File Info Panel ──────────────────────────────────────────
-function updateFileInfo() {
-  const card = document.getElementById('fileInfoCard');
-  card.style.display = 'block';
-  const tbl = document.getElementById('fileInfoTable');
-  
-  const rows = [
-    ['Format', state.format, formatDesc()],
-    ['File Size', `0x${state.raw.length.toString(16).toUpperCase().padStart(4,'0')} (${state.raw.length})`, `${(state.raw.length/1024).toFixed(1)} KiB`],
-    ['Code Offset', `0x${state.codeOffset.toString(16).padStart(4,'0')}`, `Physical offset in file`],
-    ['Code Size', `0x${state.codeSize.toString(16).padStart(4,'0')} (${state.codeSize})`, 'Image size in bytes'],
-    ['Load Segment', `0x${state.loadSeg.toString(16).padStart(4,'0')}`, `Physical base: 0x${(state.loadSeg*16).toString(16).toUpperCase()}`],
-    ['CS:IP', `${hex16(state.cs+state.loadSeg)}:${hex16(state.ip)}`, `Entry physical: 0x${state.entryPhys.toString(16).toUpperCase()}`],
-    ['SS:SP', `${hex16(state.ss+state.loadSeg)}:${hex16(state.sp)}`, 'Stack pointer'],
-  ];
-  
-  if (state.format === 'MZ' && state.mzHeader) {
-    const h = state.mzHeader;
-    rows.push(['Relocations', h.e_crlc, `At offset 0x${h.e_lfarlc.toString(16)}`]);
-    rows.push(['Header Size', `${h.e_cparhdr} paragraphs (${h.hdrSize} bytes)`, '']);
-    rows.push(['Min Memory', `${h.e_minalloc} paragraphs`, `${h.e_minalloc*16} bytes`]);
-    rows.push(['Max Memory', `${h.e_maxalloc} paragraphs`, `${h.e_maxalloc*16} bytes`]);
-  }
-  
-  if (state.format === 'COM') {
-    rows.push(['PSP', '0x0000-0x00FF', '256-byte Program Segment Prefix']);
-    rows.push(['Entry', `${hex16(state.cs)}:${hex16(state.ip)}`, 'COM entry at offset 0x100']);
-  }
-  
-  tbl.innerHTML = rows.map(r => 
-    `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`
-  ).join('');
-}
-
-function formatDesc() {
-  switch(state.format) {
-    case 'MZ': return 'DOS MZ Executable (4D 5A magic)';
-    case 'COM': return 'DOS COM flat binary (≤64KB, loaded at CS:0100)';
-    case 'RAW': return 'Raw binary (no headers, mapped at origin)';
-    default: return 'Unknown';
-  }
-}
-
-// ─── Format Detection Panel ───────────────────────────────────
-function updateFormatDetection() {
-  const el = document.getElementById('formatDetection');
-  let html = `<div style="margin-bottom:8px"><strong>Detected:</strong> <code style="color:var(--green);font-size:1rem">${state.format}</code></div>`;
-  
-  if (state.format === 'MZ') {
-    html += `<p>✓ MZ signature found at offset 0x00</p>`;
-    html += `<p>✓ Header: ${state.mzHeader.e_cparhdr} paragraphs (${state.mzHeader.hdrSize} bytes)</p>`;
-    html += `<p>✓ Code image: ${state.codeSize} bytes starting at file offset 0x${state.codeOffset.toString(16)}</p>`;
-    html += `<p>${state.relocs.length > 0 ? '✓' : '○'} ${state.relocs.length} relocation entries</p>`;
-  } else if (state.format === 'COM') {
-    html += `<p>✓ No MZ header detected</p>`;
-    html += `<p>✓ File ≤ 64KB (${state.raw.length} bytes) — assumed COM format</p>`;
-    html += `<p>✓ Will load at CS:0100 with 256-byte PSP</p>`;
-  } else {
-    html += `<p>○ No MZ header</p>`;
-    html += `<p>○ File > 64KB — mapped as raw binary</p>`;
-  }
-  
-  el.innerHTML = html;
-}
-
-// ─── Segment Map Visualization ────────────────────────────────
-function updateSegmentMap() {
-  const dyn = document.getElementById('dynamicSegMap');
-  if (!state.raw) { dyn.innerHTML = ''; return; }
-  
-  const maxPhys = 0x100000; // 1 MiB
-  const loadPhys = state.loadSeg * 16;
-  const codePhys = loadPhys + (state.format === 'COM' ? 0x100 : 0);
-  const codeEnd = codePhys + state.codeSize;
-  
-  // Update static bars
-  const setBar = (id, pct, label) => {
-    const el = document.querySelector(`#${id} .fill`) || document.querySelector(`.seg-bar:nth-child(${id}) .fill`);
-  };
-  
-  let html = '';
-  
-  if (state.format === 'COM') {
-    const pspPct = (0x100 / maxPhys * 100).toFixed(2);
-    const codePct = (state.codeSize / maxPhys * 100).toFixed(2);
-    html += `<div class="seg-bar"><div class="label">PSP</div><div class="bar"><div class="fill psp" style="width:${pspPct}%">256B PSP</div></div><div class="addr">0x${(loadPhys).toString(16).toUpperCase()}</div></div>`;
-    html += `<div class="seg-bar"><div class="label">COM_CODE</div><div class="bar"><div class="fill cs" style="width:${codePct}%">${state.codeSize} bytes</div></div><div class="addr">0x${codePhys.toString(16).toUpperCase()}</div></div>`;
-  } else if (state.format === 'MZ') {
-    const hdrPct = (state.mzHeader.hdrSize / maxPhys * 100).toFixed(2);
-    const codePct = (state.codeSize / maxPhys * 100).toFixed(2);
-    html += `<div class="seg-bar"><div class="label">MZ Header</div><div class="bar"><div class="fill" style="width:${Math.max(hdrPct, 0.1)}%;background:var(--yellow)">${state.mzHeader.hdrSize}B</div></div><div class="addr">0x${(loadPhys).toString(16).toUpperCase()}</div></div>`;
-    html += `<div class="seg-bar"><div class="label">MZ_IMAGE</div><div class="bar"><div class="fill cs" style="width:${codePct}%">${state.codeSize} bytes</div></div><div class="addr">0x${codePhys.toString(16).toUpperCase()}</div></div>`;
-    if (state.relocs.length > 0) {
-      html += `<div style="font-size:.75rem;color:var(--fg3);margin-top:4px">${state.relocs.length} relocations to apply within image</div>`;
-    }
-  } else {
-    const codePct = (state.codeSize / maxPhys * 100).toFixed(2);
-    html += `<div class="seg-bar"><div class="label">RAW_BINARY</div><div class="bar"><div class="fill cs" style="width:${codePct}%">${state.codeSize} bytes</div></div><div class="addr">0x00000</div></div>`;
-  }
-  
-  // Register info
-  html += `<div style="margin-top:12px;font-size:.78rem;font-family:var(--mono)">`;
-  html += `<div style="color:var(--accent)">CS = 0x${hex16(state.cs + state.loadSeg)} → physical base 0x${((state.cs + state.loadSeg) * 16).toString(16).toUpperCase()}</div>`;
-  html += `<div style="color:var(--accent)">DS = 0x${hex16(state.ds + state.loadSeg)} → physical base 0x${((state.ds + state.loadSeg) * 16).toString(16).toUpperCase()}</div>`;
-  html += `<div style="color:var(--accent)">SS = 0x${hex16(state.ss + state.loadSeg)} → physical base 0x${((state.ss + state.loadSeg) * 16).toString(16).toUpperCase()}</div>`;
-  html += `<div style="color:var(--accent)">ES = 0x${hex16(state.es + state.loadSeg)}</div>`;
-  html += `</div>`;
-  
-  dyn.innerHTML = html;
-  
-  // Update segment register bars
-  const setSegBar = (barId, valId, segVal, label) => {
-    const pct = Math.min((segVal * 16) / maxPhys * 100, 100);
-    const bar = document.querySelector(`#${barId} .fill`);
-    const val = document.getElementById(valId);
-    if (bar) bar.style.width = pct + '%';
-    if (val) val.textContent = hex16(segVal);
-  };
-  
-  setSegBar('barCS', 'valCS', state.cs + state.loadSeg, 'CS');
-  setSegBar('barDS', 'valDS', state.ds + state.loadSeg, 'DS');
-  setSegBar('barSS', 'valSS', state.ss + state.loadSeg, 'SS');
-  setSegBar('barES', 'valES', state.es + state.loadSeg, 'ES');
-}
-
-// ─── Hex Viewer ───────────────────────────────────────────────
-function renderHexView() {
-  const viewer = document.getElementById('hexViewer');
-  const d = state.raw;
-  const rows = Math.ceil(d.length / 16);
-  let html = '';
-  const maxRows = Math.min(rows, 2000); // limit initial render
-  
-  for (let r = 0; r < maxRows; r++) {
-    const addr = r * 16;
-    let hexPart = '';
-    let ascPart = '';
-    
-    for (let c = 0; c < 16; c++) {
-      const idx = addr + c;
-      if (c === 8) hexPart += '<span class="hex-separator"></span>';
-      
-      if (idx < d.length) {
-        const val = d[idx];
-        let cls = '';
-        if (idx < 0x1C && state.format === 'MZ') cls = 'header';
-        else if (idx >= state.codeOffset && idx < state.codeOffset + state.codeSize) cls = 'code';
-        else if (val === 0) cls = 'zero';
-        
-        hexPart += `<span class="hex-byte ${cls}">${hex8(val)}</span>`;
-        ascPart += val >= 0x20 && val < 0x7F
-          ? `<span class="printable">${String.fromCharCode(val)}</span>`
-          : '<span class="non-print">·</span>';
-      } else {
-        hexPart += '<span class="hex-byte">  </span>';
-        ascPart += ' ';
-      }
-    }
-    
-    html += `<div class="hex-row"><span class="hex-addr">${hex16(addr)}</span><span class="hex-bytes">${hexPart}</span><span class="hex-ascii">${ascPart}</span></div>`;
-  }
-  
-  if (rows > maxRows) {
-    html += `<div style="padding:8px;color:var(--fg3);text-align:center">... ${rows - maxRows} more rows (total: ${rows})</div>`;
-  }
-  
-  viewer.innerHTML = html;
-  
-  // Stats
-  const stats = document.getElementById('hexStats');
-  stats.innerHTML = `
-    <div class="stat"><div class="val">${hex16(state.raw.length)}</div><div class="lbl">File Size</div></div>
-    <div class="stat"><div class="val">${state.format}</div><div class="lbl">Format</div></div>
-    <div class="stat"><div class="val">${hex16(state.codeSize)}</div><div class="lbl">Code Size</div></div>
-    <div class="stat"><div class="val">${state.relocs.length}</div><div class="lbl">Relocations</div></div>
-  `;
-}
-
-function searchHex() {
-  const q = document.getElementById('hexSearch').value.trim().toLowerCase();
-  if (!q || !state.raw) return;
-  
-  // Try hex search
-  const hexBytes = q.replace(/[^0-9a-f]/g, '');
-  if (hexBytes.length >= 2 && hexBytes.length % 2 === 0) {
-    const needle = [];
-    for (let i = 0; i < hexBytes.length; i += 2) {
-      needle.push(parseInt(hexBytes.substr(i, 2), 16));
-    }
-    // Search
-    for (let i = 0; i <= state.raw.length - needle.length; i++) {
-      let match = true;
-      for (let j = 0; j < needle.length; j++) {
-        if (state.raw[i + j] !== needle[j]) { match = false; break; }
-      }
-      if (match) {
-        toast(`Found at offset 0x${hex16(i)}`);
-        // Scroll to row
-        const row = Math.floor(i / 16);
-        const rows = document.querySelectorAll('.hex-row');
-        if (rows[row]) {
-          rows[row].scrollIntoView({ behavior: 'smooth', block: 'center' });
-          rows[row].style.background = 'rgba(255,204,0,.2)';
-          setTimeout(() => rows[row].style.background = '', 2000);
-        }
-        return;
-      }
-    }
-    toast('Pattern not found');
-  } else {
-    // ASCII search
-    const needle = new TextEncoder().encode(q);
-    for (let i = 0; i <= state.raw.length - needle.length; i++) {
-      let match = true;
-      for (let j = 0; j < needle.length; j++) {
-        if (state.raw[i + j] !== needle[j]) { match = false; break; }
-      }
-      if (match) {
-        toast(`Found "${q}" at offset 0x${hex16(i)}`);
-        return;
-      }
-    }
-    toast('String not found');
-  }
-}
-
-// ─── Disassembler ─────────────────────────────────────────────
-function disassemble() {
-  const viewer = document.getElementById('disasmViewer');
-  if (!state.raw) return;
-  
-  document.getElementById('dasmCS').textContent = hex16(state.cs + state.loadSeg);
-  document.getElementById('dasmIP').textContent = hex16(state.ip);
-  
-  const d = state.raw;
-  const start = state.codeOffset;
-  const end = Math.min(start + state.codeSize, d.length);
-  const segBase = state.cs + state.loadSeg;
-  
-  let html = '';
-  let ip = state.ip;
-  let off = start;
-  let count = 0;
-  const maxInstr = 500;
-  
-  while (off < end && count < maxInstr) {
-    const instrOff = off;
-    const instrIP = ip;
-    const op = d[off];
-    const info = OPCODES_16[op];
-    
-    if (!info) {
-      html += dasmRow(segBase, instrIP, instrOff, 1, 'DB', hex8(op), 'byte', '');
-      off++; ip++; count++;
-      continue;
-    }
-    
-    const len = info.len;
-    const rawBytes = [];
-    for (let i = 0; i < len && off + i < end; i++) rawBytes.push(d[off + i]);
-    
-    let operands = '';
-    let comment = '';
-    let cls = '';
-    
-    if (info.reg) {
-      operands = info.reg;
-      if (info.len === 2) operands = info.reg + ', ' + hex8(d[off+1]);
-      if (info.len === 3) operands = info.reg + ', ' + hex16(readLE16(d, off+1));
-    } else if (info.int) {
-      if (op === 0xCD) {
-        const intNum = d[off + 1];
-        operands = hex8(intNum);
-        comment = getIntComment(intNum, d, off);
-        cls = 'int';
-      } else if (op === 0xCC) {
-        operands = '3';
-        cls = 'int';
-      } else if (op === 0xCE) {
-        cls = 'int';
-      }
-    } else if (info.jmp || info.call) {
-      if (op === 0xE8 || op === 0xE9) {
-        const rel = (d[off+1] | (d[off+2] << 8));
-        const target = (ip + len + (rel << 16 >> 16)) & 0xFFFF;
-        operands = hex16(target);
-        comment = `→ ${hex16(segBase)}:${hex16(target)}`;
-      } else if (op === 0xEB) {
-        const rel = (d[off+1] << 24 >> 24);
-        const target = (ip + len + rel) & 0xFFFF;
-        operands = hex16(target);
-        comment = `→ ${hex16(segBase)}:${hex16(target)}`;
-      } else if (op === 0x9A) {
-        const tOff = readLE16(d, off+1);
-        const tSeg = readLE16(d, off+3);
-        operands = `${hex16(tSeg)}:${hex16(tOff)}`;
-        comment = 'far call';
-        cls = 'call';
-      } else if (op >= 0x70 && op <= 0x7F) {
-        const rel = (d[off+1] << 24 >> 24);
-        const target = (ip + len + rel) & 0xFFFF;
-        operands = hex16(target);
-        comment = `→ ${hex16(segBase)}:${hex16(target)}`;
-      }
-      cls = info.call ? 'call' : 'jmp';
-    } else if (info.mn === 'RET') {
-      cls = '';
-    } else if (info.mn === 'PUSH' || info.mn === 'POP') {
-      cls = info.mn.toLowerCase();
-    } else if (info.mn === 'MOV') {
-      cls = 'mov';
-    }
-    
-    // Special MZ entry point highlight
-    let highlight = '';
-    if (state.entryPhys === (segBase * 16 + instrIP)) {
-      highlight = ' highlight';
-      comment = '◄ ENTRY POINT';
-    }
-    
-    const bytesStr = rawBytes.map(b => hex8(b)).join(' ');
-    html += `<div class="dasm-row${highlight}"><span class="dasm-addr">${hex16(segBase)}:${hex16(instrIP)}</span><span class="dasm-bytes">${bytesStr}</span><span class="dasm-mnemonic ${cls}">${info.mn}</span><span class="dasm-operands">${colorOperands(operands)}</span><span class="dasm-comment">; ${comment}</span></div>`;
-    
-    off += len;
-    ip += len;
-    count++;
-  }
-  
-  if (off < end) {
-    html += `<div style="padding:8px;color:var(--fg3);text-align:center">... disassembly continues (${end - off} bytes remaining)</div>`;
-  }
-  
-  viewer.innerHTML = html;
-}
-
-function dasmRow(seg, ip, off, len, mn, ops, type, comment) {
-  const bytes = [];
-  for (let i = 0; i < len; i++) {
-    if (off + i < state.raw.length) bytes.push(hex8(state.raw[off + i]));
-  }
-  return `<div class="dasm-row"><span class="dasm-addr">${hex16(seg)}:${hex16(ip)}</span><span class="dasm-bytes">${bytes.join(' ')}</span><span class="dasm-mnemonic">${mn}</span><span class="dasm-operands">${ops}</span><span class="dasm-comment">; ${comment}</span></div>`;
-}
-
-function colorOperands(s) {
-  if (!s) return '';
-  // Color registers
-  return s.replace(/\b(AX|BX|CX|DX|AH|AL|BH|BL|CH|CL|DH|DL|SI|DI|BP|SP|CS|DS|SS|ES|FS|GS)\b/g, '<span class="reg">$1</span>')
-          .replace(/\b(0x[0-9A-Fa-f]+|[0-9A-Fa-f]{4}h?)\b/g, '<span class="imm">$1</span>');
-}
-
-function getIntComment(intNum, d, off) {
-  const entry = INT_TABLE.find(e => {
-    const n = parseInt(e.n, 16);
-    if (n !== intNum) return false;
-    if (e.ah === '--') return true;
-    // Try to find preceding MOV AH
-    return true;
-  });
-  
-  if (entry) return `INT ${hex8(intNum)}h: ${entry.d}`;
-  return `INT ${hex8(intNum)}h`;
-}
-
-function goToAddr() {
-  const input = document.getElementById('dasmAddr').value.trim();
-  toast(`Navigate to: ${input} (address navigation)`);
-}
-
-// ─── Decompiler ───────────────────────────────────────────────
-function decompile() {
-  const out = document.getElementById('decompileOutput');
-  const types = document.getElementById('typeRecovery');
-  
-  if (!state.raw) return;
-  
-  let code = '';
-  code += `<span class="cmt">/*\n * Decompiled output — Ghidra Sleigh decompiler\n * Language: x86:LE:16:Real Mode\n * Format: ${state.format}\n * Entry: ${hex16(state.cs+state.loadSeg)}:${hex16(state.ip)}\n */</span>\n\n`;
-  code += `<span class="cmt">#include &lt;dos.h&gt;</span>\n`;
-  code += `<span class="cmt">#include &lt;stdlib.h&gt;</span>\n`;
-  code += `<span class="cmt">#include &lt;string.h&gt;</span>\n\n`;
-  
-  // Analyze INT 21h calls to infer function signatures
-  const d = state.raw;
-  const start = state.codeOffset;
-  const end = Math.min(start + state.codeSize, d.length);
-  const intCalls = [];
-  
-  for (let i = start; i < end - 1; i++) {
-    if (d[i] === 0xCD && d[i+1] === 0x21) {
-      // Look for preceding MOV AH, xx
-      let ahVal = -1;
-      for (let j = i - 1; j >= Math.max(start, i - 10); j--) {
-        if (d[j] === 0xB4 && j + 1 < i) { // MOV AH, imm8
-          ahVal = d[j+1];
-          break;
-        }
-      }
-      intCalls.push({ off: i - start, ah: ahVal });
-    }
-  }
-  
-  // Generate pseudo-C based on INT calls found
-  code += `<span class="cmt">/* ── DOS Service Calls Detected: ${intCalls.length} ── */</span>\n\n`;
-  
-  // Group unique INT 21h services
-  const uniqueServices = new Set();
-  intCalls.forEach(c => {
-    if (c.ah >= 0) uniqueServices.add(c.ah);
-  });
-  
-  // Emit decompiled function stubs
-  code += `<span class="type">void</span> <span class="fn">main</span>(<span class="type">void</span>) {\n`;
-  code += `    <span class="type">char</span> <span class="var">buffer</span>[<span class="num">128</span>];\n`;
-  code += `    <span class="type">int</span> <span class="var">handle</span>;\n\n`;
-  
-  // Show first ~20 INT calls as decompiled statements
-  const shown = intCalls.slice(0, 20);
-  shown.forEach((c, idx) => {
-    code += `    <span class="cmt">/* offset 0x${hex16(c.off)} */</span> `;
-    code += decompileIntCall(c.ah);
-    code += '\n';
-  });
-  
-  if (intCalls.length > 20) {
-    code += `\n    <span class="cmt">/* ... ${intCalls.length - 20} more service calls ... */</span>\n`;
-  }
-  
-  code += `}\n\n`;
-  
-  // Add inferred helper functions
-  if (uniqueServices.has(0x09)) {
-    code += `<span class="cmt">/* Display $-terminated string at DS:DX */</span>\n`;
-    code += `<span class="type">void</span> <span class="fn">displayString</span>(<span class="type">const char __far</span> *<span class="var">str</span>) {\n`;
-    code += `    _asm {\n`;
-    code += `        push ds\n`;
-    code += `        lds  dx, str\n`;
-    code += `        mov  ah, <span class="num">0x09</span>\n`;
-    code += `        int  <span class="num">0x21</span>\n`;
-    code += `        pop  ds\n`;
-    code += `    }\n}\n\n`;
-  }
-  
-  if (uniqueServices.has(0x3C) || uniqueServices.has(0x3D)) {
-    code += `<span class="cmt">/* File I/O wrapper */</span>\n`;
-    code += `<span class="type">int</span> <span class="fn">dos_open</span>(<span class="type">const char __far</span> *<span class="var">path</span>, <span class="type">int</span> <span class="var">mode</span>) {\n`;
-    code += `    <span class="type">int</span> <span class="var">handle</span>;\n`;
-    code += `    _asm {\n`;
-    code += `        push ds\n`;
-    code += `        lds  dx, path\n`;
-    code += `        mov  ax, mode\n`;
-    code += `        mov  ah, <span class="num">0x3D</span>\n`;
-    code += `        int  <span class="num">0x21</span>\n`;
-    code += `        pop  ds\n`;
-    code += `        jc   error\n`;
-    code += `        mov  handle, ax\n`;
-    code += `    }\n`;
-    code += `    <span class="kw">return</span> handle;\n`;
-    code += `}\n\n`;
-  }
-  
-  out.innerHTML = code;
-  
-  // Type recovery
-  let typeInfo = `<span class="cmt">/* ── Type Recovery Analysis ── */</span>\n\n`;
-  typeInfo += `<span class="cmt">/* Detected register-based calling conventions: */</span>\n\n`;
-  
-  const seen = new Set();
-  intCalls.forEach(c => {
-    if (c.ah >= 0 && !seen.has(c.ah)) {
-      seen.add(c.ah);
-      const entry = INT_TABLE.find(e => parseInt(e.n,16) === 0x21 && parseInt(e.ah,16) === c.ah);
-      if (entry) {
-        typeInfo += `<span class="cmt">/* INT 21h AH=${hex8(c.ah)}h */</span>\n`;
-        typeInfo += inferTypes(c.ah, entry);
-        typeInfo += '\n';
-      }
-    }
-  });
-  
-  types.innerHTML = typeInfo;
-}
-
-function decompileIntCall(ah) {
-  switch(ah) {
-    case 0x00: return `<span class="kw">return</span>; <span class="cmt">/* Terminate (INT 20h) */</span>`;
-    case 0x01: return `<span class="var">al</span> = <span class="fn">readChar_echo</span>();`;
-    case 0x02: return `<span class="fn">displayChar</span>(<span class="var">dl</span>);`;
-    case 0x05: return `<span class="fn">printChar</span>(<span class="var">dl</span>);`;
-    case 0x07: return `<span class="var">al</span> = <span class="fn">directInput</span>();`;
-    case 0x08: return `<span class="var">al</span> = <span class="fn">readChar</span>();`;
-    case 0x09: return `<span class="fn">displayString</span>((<span class="type">const char __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>));`;
-    case 0x0A: return `<span class="fn">bufferedInput</span>((<span class="type">char __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>));`;
-    case 0x2A: return `<span class="fn">_dos_getdate</span>(&amp;<span class="var">date</span>);`;
-    case 0x2C: return `<span class="fn">_dos_gettime</span>(&amp;<span class="var">time</span>);`;
-    case 0x30: return `<span class="var">version</span> = <span class="fn">_dos_version</span>();`;
-    case 0x35: return `<span class="fn">getvect</span>(<span class="var">al</span>);`;
-    case 0x39: return `<span class="fn">mkdir</span>((<span class="type">const char __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>));`;
-    case 0x3A: return `<span class="fn">rmdir</span>((<span class="type">const char __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>));`;
-    case 0x3B: return `<span class="fn">chdir</span>((<span class="type">const char __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>));`;
-    case 0x3C: return `<span class="var">handle</span> = <span class="fn">_dos_creat</span>((<span class="type">const char __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>), <span class="var">cx</span>, &amp;<span class="var">handle</span>);`;
-    case 0x3D: return `<span class="var">handle</span> = <span class="fn">_dos_open</span>((<span class="type">const char __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>), <span class="var">al</span>, &amp;<span class="var">handle</span>);`;
-    case 0x3E: return `<span class="fn">_dos_close</span>(<span class="var">bx</span>);`;
-    case 0x3F: return `<span class="fn">_dos_read</span>(<span class="var">bx</span>, (<span class="type">void __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>), <span class="var">cx</span>, &amp;<span class="var">bytesRead</span>);`;
-    case 0x40: return `<span class="fn">_dos_write</span>(<span class="var">bx</span>, (<span class="type">const void __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>), <span class="var">cx</span>, &amp;<span class="var">bytesWritten</span>);`;
-    case 0x41: return `<span class="fn">unlink</span>((<span class="type">const char __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>));`;
-    case 0x48: return `<span class="var">seg</span> = <span class="fn">_dos_allocmem</span>(<span class="var">bx</span>, &amp;<span class="var">seg</span>);`;
-    case 0x49: return `<span class="fn">_dos_freemem</span>(<span class="var">es</span>);`;
-    case 0x4B: return `<span class="fn">exec</span>((<span class="type">const char __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>), ...);`;
-    case 0x4C: return `<span class="fn">exit</span>(<span class="var">al</span>);`;
-    case 0x4E: return `<span class="fn">findfirst</span>((<span class="type">const char __far</span>*)<span class="fn">MK_FP</span>(<span class="var">ds</span>, <span class="var">dx</span>), &amp;<span class="var">fblock</span>, <span class="var">cx</span>);`;
-    case 0x4F: return `<span class="fn">findnext</span>(&amp;<span class="var">fblock</span>);`;
-    case 0x56: return `<span class="fn">rename</span>(<span class="var">old</span>, <span class="var">new</span>);`;
-    case 0x62: return `<span class="var">psp</span> = <span class="fn">_psp</span>;`;
-    default: return `<span class="fn">int21h</span>(<span class="num">0x${hex8(ah)}</span>); <span class="cmt">/* AH=${hex8(ah)}h */</span>`;
-  }
-}
-
-function inferTypes(ah, entry) {
-  switch(ah) {
-    case 0x09: return `    <span class="type">void</span> <span class="fn">displayString</span>(<span class="type">const char __far</span> *<span class="var">str</span>);\n    <span class="cmt">/* DS:DX → pointer to '$'-terminated string */</span>\n`;
-    case 0x3F: return `    <span class="type">unsigned</span> <span class="fn">dos_read</span>(<span class="type">int</span> <span class="var">handle</span>, <span class="type">void __far</span> *<span class="var">buf</span>, <span class="type">unsigned</span> <span class="var">count</span>);\n    <span class="cmt">/* BX=handle, CX=count, DS:DX=buffer → AX=bytes read */</span>\n`;
-    case 0x40: return `    <span class="type">unsigned</span> <span class="fn">dos_write</span>(<span class="type">int</span> <span class="var">handle</span>, <span class="type">const void __far</span> *<span class="var">buf</span>, <span class="type">unsigned</span> <span class="var">count</span>);\n    <span class="cmt">/* BX=handle, CX=count, DS:DX=buffer → AX=bytes written */</span>\n`;
-    case 0x48: return `    <span class="type">unsigned</span> <span class="fn">dos_alloc</span>(<span class="type">unsigned</span> <span class="var">paragraphs</span>);\n    <span class="cmt">/* BX=paragraphs → AX=segment, carry on error */</span>\n`;
-    case 0x4C: return `    <span class="type">void</span> <span class="fn">dos_exit</span>(<span class="type">int</span> <span class="var">code</span>);\n    <span class="cmt">/* AL=return code — does not return */</span>\n`;
-    default: return `    <span class="cmt">/* Registers: ${entry.d} */</span>\n`;
-  }
-}
-
-// ─── Interrupt Table ──────────────────────────────────────────
-function renderInterruptTable() {
-  const tbl = document.getElementById('interruptTable');
-  let html = '';
-  INT_TABLE.forEach(e => {
-    html += `<div class="int-row"><span class="int-num">INT ${e.n}</span><span class="int-ah">AH=${e.ah}</span><span class="int-desc">${e.d}</span></div>`;
-  });
-  tbl.innerHTML = html;
-  
-  // Search filter
-  document.getElementById('intSearch').oninput = function() {
-    const q = this.value.toLowerCase();
-    tbl.querySelectorAll('.int-row').forEach(row => {
-      row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
-    });
-  };
-}
-
-// ─── MZ Reference Table ──────────────────────────────────────
-function renderMzRefTable() {
-  const tbody = document.querySelector('#mzRefTable tbody');
-  tbody.innerHTML = MZ_FIELDS.map(f =>
-    `<tr><td>0x${f.off.toString(16).padStart(2,'0')}</td><td>${f.sz}B</td><td><strong>${f.name}</strong> — ${f.desc}</td></tr>`
-  ).join('');
-}
-
-// ─── Segment Calculator ───────────────────────────────────────
-function calcPhysical() {
-  const seg = parseInt(document.getElementById('calcSeg').value, 16) || 0;
-  const off = parseInt(document.getElementById('calcOff').value, 16) || 0;
-  const phys = ((seg * 16) + off) & 0xFFFFF;
-  document.getElementById('calcResult').textContent = `→ Physical: 0x${phys.toString(16).toUpperCase().padStart(5,'0')} (${seg}*16+${off}=${phys})`;
-}
-
-// ─── Ghidra Script Copy ──────────────────────────────────────
-function copyScript(id) {
-  const el = document.getElementById(id);
-  const text = el.textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    toast('📋 Script copied to clipboard!');
-  }).catch(() => {
-    // Fallback
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    toast('📋 Script copied to clipboard!');
-  });
-}
-
-// ─── Utility ──────────────────────────────────────────────────
-function hex8(v) { return (v & 0xFF).toString(16).toUpperCase().padStart(2, '0'); }
-function hex16(v) { return (v & 0xFFFF).toString(16).toUpperCase().padStart(4, '0'); }
-
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-// ─── Demo: Generate a sample MZ binary ────────────────────────
-// (User can load their own files; this is just for testing)
-function generateDemoMZ() {
-  // Minimal MZ executable with a few INT 21h calls
-  const hdrSize = 32; // 2 paragraphs
-  const code = [
-    0xB4, 0x09,         // MOV AH, 09h
-    0xBA, 0x10, 0x01,   // MOV DX, 0110h
-    0xCD, 0x21,         // INT 21h (display string)
-    0xB8, 0x00, 0x4C,   // MOV AX, 4C00h
-    0xCD, 0x21,         // INT 21h (terminate)
-    // String at offset 0x10 within code (file offset 0x30)
-    ...Array.from(new TextEncoder().encode('Hello, DOS World!$'))
-  ];
-  
-  const mz = new Uint8Array(hdrSize + code.length);
-  
-  // MZ header
-  mz[0] = 0x4D; mz[1] = 0x5A; // MZ
-  writeLE16(mz, 0x02, (hdrSize + code.length) % 512); // e_cblp
-  writeLE16(mz, 0x04, Math.ceil((hdrSize + code.length) / 512)); // e_cp
-  writeLE16(mz, 0x06, 0); // e_crlc
-  writeLE16(mz, 0x08, 2); // e_cparhdr (2 paragraphs = 32 bytes)
-  writeLE16(mz, 0x0A, 0); // e_minalloc
-  writeLE16(mz, 0x0C, 0xFFFF); // e_maxalloc
-  writeLE16(mz, 0x0E, 0); // e_ss
-  writeLE16(mz, 0x10, 0x0100); // e_sp
-  writeLE16(mz, 0x12, 0); // e_csum
-  writeLE16(mz, 0x14, 0); // e_ip (entry at 0)
-  writeLE16(mz, 0x16, 0); // e_cs (relative)
-  writeLE16(mz, 0x18, 0); // e_lfarlc
-  
-  // Code
-  for (let i = 0; i < code.length; i++) mz[hdrSize + i] = code[i];
-  
-  state.raw = mz;
-  state.format = null; // force re-detect
-  analyzeBinary();
-  toast('Demo MZ binary loaded — "Hello, DOS World!"');
-}
-
-function writeLE16(arr, off, val) {
-  arr[off] = val & 0xFF;
-  arr[off + 1] = (val >> 8) & 0xFF;
-}
-
-// Auto-load demo on page load if no file
-// (commented out — user loads their own)
-// window.addEventListener('load', generateDemoMZ);
-
+// ═══════════════════════════════════════════════════════════════
+// Boot
+// ═══════════════════════════════════════════════════════════════
+initWasm().catch(e => toast('WASM init failed: ' + e.message));
 </script>
 </body>
 </html>
