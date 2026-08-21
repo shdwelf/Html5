@@ -59,6 +59,12 @@ python3 tools/exe_triage.py artifacts/disk/SNEAKERS.EXE
 
 It writes a hash, entropy score, and offsets of likely embedded image/archive signatures. It does **not** execute, decrypt, or automatically carve data. Use the original disk’s separate files first, and use Ghidra’s 16-bit x86 DOS loader for manual disassembly/decompilation.
 
+### HTML5 local inspector
+
+`analyzer.html` is the no-dependency HTML5 counterpart for the first inspection pass. Open it locally, select a local `SNEAKERS.EXE`, and it performs header parsing, SHA-256, entropy, signature scanning, and printable-string extraction entirely in the browser. The selected program is never uploaded or executed. It is included in the `.xdc` package as well.
+
+This is deliberately not presented as a browser conversion of [Ghidra](https://github.com/NationalSecurityAgency/ghidra): Ghidra is a substantial Java desktop application, and full decompilation requires its native analysis infrastructure. The HTML5 inspector supplies a safe, portable triage stage before using Ghidra locally.
+
 ## Runtime notes
 
 - Outside webxdc, `js-dos` and its DOSBox runtime are loaded on demand from `v8.js-dos.com`; its runtime includes WebAssembly.

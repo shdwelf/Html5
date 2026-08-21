@@ -1,5 +1,5 @@
 XDC_NAME := dist/sneakers-press-kit.xdc
-XDC_FILES := index.html styles.css app.js manifest.toml icon.png README.md
+XDC_FILES := index.html analyzer.html styles.css app.js analyzer.js manifest.toml icon.png README.md
 
 .PHONY: webxdc clean
 
