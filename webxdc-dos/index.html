@@ -553,6 +553,17 @@ DI — Dest Index               FLAGS — Status Reg</code></pre>
       mem8.set(rawFile, FILE_BUF);
 
       const fmt = W.load_binary(FILE_BUF, len);
+      // PCX LSB Easter egg
+      try{
+        let lsb = extractPCXLSB(S.raw);
+        if(lsb){
+          console.log("PCX LSB hidden:", lsb);
+          setTimeout(()=>{
+            let dec = document.getElementById('decV');
+            if(dec) dec.innerHTML += `<div style="margin-top:10px;padding:8px;background:rgba(0,212,255,0.08);border:1px solid var(--a);border-radius:4px"><b style="color:var(--a)">🔍 PCX LSB Steganography (palette, 768 bytes):</b><br><span style="color:var(--y)">${lsb.replace(/</g,'&lt;').slice(0,300)}</span><br><span style="color:var(--fg3);font-size:0.7rem">Extracted via LSB of palette bytes (see README §16). Bytes 0x${(S.raw.length-768).toString(16)}+</span></div>`;
+          }, 400);
+        }
+      }catch(e){}
       updateFileInfo(fmt);
       renderHex();
       disasmAll();
@@ -578,6 +589,16 @@ DI — Dest Index               FLAGS — Status Reg</code></pre>
       ];
       if (fmt===1) {
         rows.push(['Relocations', W.hdr_reloc_count.value, W.reloc_applied.value+' applied']);
+        try{
+          let cs = W.get_header_u16(0x12).toString(16).padStart(4,'0');
+          let ov = W.get_header_u16(0x1A).toString(16).padStart(4,'0');
+          let p1 = W.get_header_u16(0x1C).toString(16).padStart(4,'0');
+          let p2 = W.get_header_u16(0x1E).toString(16).padStart(4,'0');
+          let bytes = [cs.slice(2,4), cs.slice(0,2), ov.slice(2,4), ov.slice(0,2), p1.slice(2,4), p1.slice(0,2), p2.slice(2,4), p2.slice(0,2)].map(h=>String.fromCharCode(parseInt(h,16))).join('');
+          if(bytes.includes("SETEC")){
+            rows.push(['MZ Stego', bytes.trim(), 'e_csum/e_ovno/padding ASCII (little-endian) → "SETEC AS"']);
+          }
+        }catch(e){}
       }
       document.getElementById('fiTbl').innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
     }
@@ -970,6 +991,27 @@ const CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*!?<> {}[]|/^`";
   }
   tryPatch();
 })();
+
+// ── PCX LSB Steganography Extractor (Easter egg) ──
+function extractPCXLSB(u8){
+  if(u8.length < 900 || u8[0] !== 0x0A) return null;
+  let palStart = u8.length - 768;
+  if(u8[palStart-1] !== 0x0C) return null;
+  let bits = "";
+  for(let i=0;i<768;i++) bits += (u8[palStart+i] & 1).toString();
+  let chars = "";
+  for(let i=0;i<bits.length;i+=8){
+    let byte = parseInt(bits.substr(i,8),2);
+    if(byte===0) break;
+    if(byte>=32 && byte<=126) chars+=String.fromCharCode(byte);
+    else if(byte===10 || byte===13) chars+=String.fromCharCode(byte);
+    else chars+='.';
+    if(chars.length>200) break;
+  }
+  if(chars.includes("SETEC") || chars.includes("Too many")) return chars;
+  return null;
+}
+
 </script>
 
 </body>

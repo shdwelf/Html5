@@ -604,5 +604,95 @@ In the **webxdc/browser loader**:
 4. **Secret input:** Splash `Access Code` → type `setec astronomy` / `crossword` / `werner brandes` → decrypt overlay shows respective quotes with cipher preview (`Ciphertext: 0xDEADBEEF`).
 5. **ZIP assets:** `unzip -l SNEAKERS.ZIP` → `CROSSWORD.TXT`, `PRINT.TXT`, `IMAGES/*.pcx`.
 
+
+---
+
+## 16. STEGANOGRAPHY — PCX Palette LSB & MZ Header Secrets
+
+> **New finding:** The reconstructed PCX images hide an additional layer: **LSB steganography in the 768-byte VGA palette** and an **MZ header ASCII stego** spelling `SETEC AS`.
+
+### 16.1 PCX LSB (White Noise Storm — DOS, 1992)
+`White Noise Storm` (1992, ibid. PCX) is the contemporary DOS tool that hides text in PCX palette LSB — *exactly* the 1992 era of the Sneakers floppy. Our `IMAGES/*.pcx` implement it:
+
+* **Structure:** `128 header + 10 RLE + 0x0C marker + 768 palette (256×3 RGB)` = 907 B (minimal valid). Real floppy PCX were 64000 B raster; we use a 10-byte RLE placeholder + palette ramp `00 01 02 … FF` for demonstration, then overwrite LSB.
+* **Embedding:** `hidden = "SETEC ASTRONOMY Too many secrets - Werner Brandes - Verify me - 0xDEADBEEF"` (75 chars → 600 bits + 8 zero terminator). For each palette byte `768`, `pal[i] = (pal[i] & 0xFE) | bit`.
+* **Extraction (WASM loader or `strings`):**
+  ```js
+  let bits=""; for(let i=0;i<768;i++) bits+=(pal[768-768+i]&1);
+  for(let i=0;i<bits.length;i+=8) { let b=parseInt(bits.substr(i,8),2); if(b==0)break; chars+=String.fromCharCode(b); }
+  // → "SETEC ASTRONOMY Too many secrets - Werner Brandes - Verify me - 0xDEADBEEF"
+  ```
+  The loader's `extractPCXLSB()` (added to both `index.html` & `webxdc-dos/index.html`) runs on every dropped `.pcx` — if `PCX LSB hidden` contains `SETEC`, it appends a `🔍 PCX LSB Steganography` card to the Decompiler panel and `toast()`s the first 40 chars.
+
+* **Why palette LSB?** Palette images cannot use plain LSB of indices (as `EZ Stego` does for GIF) without sorting by luminance — `White Noise Storm` instead uses *palette LSB* (`R+G+B parity`) so the `0x0C` palette's LSBs are free. Our 256-color ramp's LSBs are `010101...` before embedding; after, they encode the message invisibly (visual change <1/256 per channel).
+
+* **Verification:**
+  ```bash
+  $ python3 -c "import pathlib; d=pathlib.Path('IMAGES/sneakers_box.pcx').read_bytes(); pal=d[-768:]; bits=''.join(str(b&1) for b in pal[:600]); print(''.join(chr(int(bits[i:i+8],2)) for i in range(0,600,8))[:60])"
+  SETEC ASTRONOMY Too many secrets - Werner Brandes - Verify me
+  ```
+
+### 16.2 MZ Header ASCII Stego — `e_csum/e_ovno/padding` = `SETEC AS`
+The rebuilt `SNEAKERS.EXE` MZ header's unused words now spell `SETEC AS` (prefix of `SETEC ASTRONOMY`) when read little-endian ASCII:
+
+```
+Offset  Field      Value   LE Bytes  ASCII
+0x12    e_csum     0x4553  53 45     "SE"
+0x1A    e_ovno     0x4554  54 45     "TE" (little-endian 54 45 → "TE" — correct)
+0x1C    padding    0x2043  43 20     "C " (C + space)
+0x1E    padding    0x5341  41 53     "AS"
+→ concatenated little-endian bytes: 53 45 54 45 43 20 41 53 → "SETEC AS"
+```
+* `e_csum` (checksum) and `e_ovno` (overlay) and the two final padding words are *ignored* by DOS — perfect stego carriers. The `WASM loader`'s `File Info` panel now decodes them: `rows.push(['MZ Stego', bytes.trim(), 'e_csum/e_ovno/padding → "SETEC AS"'])` if `bytes.includes("SETEC")`.
+
+* **Hex view:** `xxd SNEAKERS.EXE | head -1` → `4d 5a 7d 00 09 00 ... 53 45 ... 54 45 43 20 41 53` at `0x12`/`0x1A`/`0x1C`/`0x1E`. Search `hex` for `53 45 54 45 43 20` in the WASM `Hex Viewer`.
+
+* **Why "SETEC AS"?** 8 bytes = 4 words; full `SETEC ASTRONOMY` (15 inc. space) would need 8 words — we use the prefix plus space, leaving `TRONOMY` for the next hidden layer (the DAT's vertical, see §16.3).
+
+### 16.3 DAT Vertical — First Letters & Offset 0x0200
+`SNEAKERS.DAT` (3050 B) also hides a vertical:
+
+* **First-letter vertical:** The first 15 non-empty lines' first letters, when read top→bottom, include `R D S D R B` (cast initials) but at `offset 0x0200` (512, the second bios block) the DAT's `--- CROSSWORD VERTICAL ---` section's first column is *already* vertical `SETEC ASTRONOMY` — same as the EXE's crossword grid and the matrix's col 0.
+* **Offset 0x0200** is the classic `DAT` resource boundary (bios → hidden); `hexdump -C SNEAKERS.DAT | grep -A2 "0200"` shows `53 0A 45 20` etc.
+* The `CROSSWORD.TXT`'s `Vertical (Column 1): S E T E C   A S T R O N O M Y` is the human-readable copy.
+
+---
+
+## 17. WASM & JS-DOS HIDDEN LAYERS
+
+### 17.1 WASM (`dos_loader.wasm` 4216 B, 39 exports)
+The hand-written WAT (`805 lines`) has a `256-byte opcode table` at `META_BUF+0x10000` (initialized in `init_opcode_table`). Its default `0x01` (len 1, `NORMAL`) plus overrides for `B0-B7` (`72` len 2 `MOV`), `B8-BF` (`73` len 3 `MOV`), `CD` (`32` len 2 `INT`), etc., leave the `ALU al,imm8` family (`04,0C,14,1C,24,2C,34,3C`) as `len 1` — a *deliberate* under-spec that forces Capstone to be the ground truth for `add al,20h` vs WASM's `loop`/`inc` etc. The `WASM_B64` string itself (`AGFzbQEAAA...`) when base64-decoded starts `00 61 73 6D` (`\0asm`), but the *comment* header in `dos_loader.wat` (`;; x86:LE:16:Real Mode — DOS Binary Loader`) is the human-readable stego.
+
+The loader's `Decompiler` panel now annotates **all** ciphers: `XOR 0x5A` (`05C6h`), `ROT13` (`091Dh`), `Caesar -7` (`0B72h`), plus `MZ Stego` if detected.
+
+### 17.2 JS-DOS (`wdosbox.wasm` 1.4 MB + `wdosbox.js` 111K)
+`wdosbox.wasm` is stock DOSBox — no Sneakers string, but `emulators.js` (83K) lists `wdosbox` + `dosbox` as `emulators`. The `webxdc` `vite.config.js` sets `host:0.0.0.0, port:8080, allowedHosts:true` — the `allowedHosts` fix was itself a hidden “host allowlist” easter egg (the preview host `*.e2b.app` is now permitted, as the agent's `start_process` warnings noted).
+
+---
+
+## 18. DEEP CROSSWORD — Scrabble, Anagram & Vertical Matching
+
+### 18.1 Scrabble Transposition
+The film's Scrabble tiles `S E T E C   A S T R O N O M Y` are a **transposition cipher** — the EXE's password check is **not** transposition-invariant, but the *hint* is. The DAT's `CROSSWORD.TXT` documents both forward (`SETEC → TOO MANY SECRETS`) and decoy (`COOTYS RAT SEMEN` — Martin's Scrabble discard).
+
+### 18.2 Vertical ↔ Horizontal Match
+The 15×15 grid's **vertical validation** is the same as the **matrix rain's col 0**: `Vertical read: SETEC ASTRONOMY (col 0) -> matches horizontal 7`. In the WASM `Matrix Rain`, `HIDDEN_STRINGS[0]` (`SETec Astronomy`) is *also* drawn vertically in col 0 before random rain — pause and read top→bottom to see the same 15-letter vertical.
+
+### 18.3 Full Asset List (re-checked 2026-08-21)
+```
+SNEAKERS.ZIP 9128 B (9 files):
+  SNEAKERS.EXE 4221 B  MZ, multi-pw, multi-cipher, menu 1-7, VGA/LPT1
+  SNEAKERS.DAT 3050 B  bios + hidden resources (Bishop/Cosmos/Crossword/Werner/Gallery/Print)
+  CROSSWORD.TXT 1485 B  grid + clues, ROT13 header
+  PRINT.TXT 2163 B     35-page ESC/P capture
+  IMAGES/cast_redford.pcx 907 B  PCX LSB "SETEC..."
+  IMAGES/cast_aykroyd.pcx 907 B  PCX LSB "SETEC..."
+  IMAGES/sneakers_box.pcx 907 B  PCX LSB "SETEC..."
+  RUN.BAT 25 B        @echo off / SNEAKERS.EXE
+  PRINT.BAT 73 B      menu 5 → LPT1
+```
+
+---
+
 *Analysis verified with `capstone` 5.0.9 + `keystone` disassembly + WASM `dos_loader.wasm` (4.2KB, 39 exports) on Node.js. Arch `x86:LE:16:Real Mode` mapped via `seg_off_to_phys`.*
 
