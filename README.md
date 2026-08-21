@@ -65,6 +65,19 @@ It writes a hash, entropy score, and offsets of likely embedded image/archive si
 
 This is deliberately not presented as a browser conversion of [Ghidra](https://github.com/NationalSecurityAgency/ghidra): Ghidra is a substantial Java desktop application, and full decompilation requires its native analysis infrastructure. The HTML5 inspector supplies a safe, portable triage stage before using Ghidra locally.
 
+### Raw Binary / `x86:LE:16:Real Mode` import plan
+
+For a repeatable raw-loader experiment, `tools/prepare_ghidra_raw.py` removes the MZ header, applies the MZ relocation table to a modeled DOS load segment, and writes a raw image plus an import-plan JSON file:
+
+```sh
+python3 tools/prepare_ghidra_raw.py artifacts/disk/SNEAKERS.EXE
+# writes SNEAKERS.raw.bin and SNEAKERS.raw.bin.ghidra.json
+```
+
+In Ghidra, import the generated `.raw.bin` with **Raw Binary**, select language **`x86:LE:16:Real Mode`**, set the image base to the JSON `raw_base_address` (the default is `1000:0000`), then create a function at `entry_address`. The JSON also records the initial `CS:IP`, `SS:SP`, each relocation, and input mapping. The default `0x1000` load segment is a model, not a claim about the original DOS runtime location.
+
+For ordinary analysis, prefer Ghidra’s native MS-DOS MZ executable loader: it understands the container directly. Raw mode is useful for inspecting the normalized load module or comparing other tools, but it cannot by itself model a PSP, overlays, interrupt services, unpacking stubs, or self-modifying code.
+
 ## Runtime notes
 
 - Outside webxdc, `js-dos` and its DOSBox runtime are loaded on demand from `v8.js-dos.com`; its runtime includes WebAssembly.
