@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SNEAKERS // Computer Press Kit</title>
+  <meta name="description" content="A browser-hosted DOS/WASM preservation player for the 1992 Sneakers Computer Press Kit." />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://v8.js-dos.com/latest/js-dos.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <p class="eyebrow">UNIVERSAL CITY STUDIOS / 1992 / PRESERVATION ACCESS</p>
+      <h1>SNEAKERS<span>_</span></h1>
+      <p class="subtitle">COMPUTER PRESS KIT <b>·</b> DOS IN WEBASSEMBLY</p>
+    </header>
+
+    <section class="terminal" aria-label="Sneakers DOS player">
+      <div class="terminal-bar"><span class="led"></span><span>SECURE TERMINAL / DOSBOX-WASM</span><span id="state">STANDBY</span></div>
+      <div id="dos" class="dos-stage">
+        <div class="boot-copy">
+          <p class="prompt">C:\&gt; <span class="cursor">_</span></p>
+          <h2>Ready to mount the press disk.</h2>
+          <p>The original ZIP is streamed from Internet Archive when you launch it.</p>
+          <button id="launch" type="button">LAUNCH ORIGINAL DISK</button>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="launch-secondary" type="button">▶ Run WASM player</button>
+        <button id="fullscreen" type="button" disabled>⛶ Full screen</button>
+        <a href="https://archive.org/details/Sneakers_Film_Promotional_Floppy" target="_blank" rel="noreferrer">View source item ↗</a>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article>
+        <h2>PLAY THE DISK</h2>
+        <p>This is the unmodified 1992 DOS press kit, launched in a browser through js-dos’ WebAssembly DOSBox runtime. Click inside the display to send keyboard input.</p>
+        <p class="small">If a network or browser policy prevents the remote disk from loading, open the source item and download <code>Sneakers_Promotional_Diskette.zip</code>, then serve it as <code>public/Sneakers_Promotional_Diskette.zip</code>.</p>
+      </article>
+      <article>
+        <h2>GRAPHICS → GIF</h2>
+        <p>The reproducible extraction recipe in this repository inventories every graphics file present in the disk image and renders a contact-sheet animation. It does not alter the original disk.</p>
+        <a class="text-link" href="README.md">Read extraction instructions →</a>
+      </article>
+      <article>
+        <h2>SCREEN SAVER</h2>
+        <p>The player preserves the screen-saver behavior as authored. This project does not bypass passwords, copy protection, or access controls; it records only publicly available program behavior and assets.</p>
+        <button id="saver" type="button" disabled>Start from running program</button>
+      </article>
+    </section>
+
+    <footer>Source: <a href="https://archive.org/details/Sneakers_Film_Promotional_Floppy" target="_blank" rel="noreferrer">Internet Archive · Sneakers Computer Press Kit</a>. Rights in the film and its promotional materials remain with their respective owners.</footer>
+  </main>
+</body>
+</html>
