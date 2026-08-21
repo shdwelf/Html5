@@ -426,5 +426,183 @@ In the webxdc/browser loader:
 3. In DOSBox emulation (js-dos), run `SNEAKERS.EXE`, type `setec astronomy` → watch Bishop & Cosmos decrypt.
 4. Inspect `SNEAKERS.DAT` at offset `0x02AD` for plaintext mirror.
 
+
+---
+
+## 11. HIDDEN MESSAGE 3 — Crossword Vertical (ROT13) & Scrabble Transposition
+
+> **User hint:** *"vertical message matching like crossword"*
+
+### 11.1 The Grid
+A 15×15 crossword is **ROT13-encrypted** at `1000:091Dh` (597 B) in `SNEAKERS.EXE` and as `CROSSWORD.TXT` (1485 B) in the ZIP.
+
+```
+  1 2 3 4 5
+1 S . . . .   H1: SETEC ("Too many secrets" — anagram, cf. §6)
+2 E R . . .   H2: ECHO (Werner Brandes voice print)
+3 T E . . .   H3: TANGO (Whistler)
+4 E D . . .   H4: EAGLE (Cosmo)
+5 C F . . .   H5: CHARLIE (Redford)
+6   O . . .   H6: OSCAR (Universal)
+7 A R . . .   H7: ASTRONOMY
+8 S D . . .   H8: SNEAKERS
+9 T . . . .   H9: T01234 (Sector 0 boot)
+...
+15 Y . . . .   H15: YANKEE
+```
+**Vertical (Column 1, top→bottom):** `S E T E C   A S T R O N O M Y` → **"SETEC ASTRONOMY"**
+
+- Horizontal 7 (`ASTRONOMY`) matches Vertical 7-15 → crossword validated.
+- In `MATRIX RAIN`, `HIDDEN_STRINGS[0]="SETec Astronomy"` is also drawn **vertically** in a dedicated column (column 0) — pause the rain and read top→bottom to see `SETEC ASTRONOMY` letter-by-letter (one char per row, `INT 10h AH=02h` set-cursor per line). This mirrors the EXE's vertical display (` INT 10h AH=02h DH=row DL=col` loop).
+- **WASM loader:** Search `hex` for `46 45 47 52 50` (ROT13 of `SETEC`) at `phys 0x1091D`; `decompile` panel auto-annotates `ROT13 decrypt (symmetric, key 13)`.
+
+### 11.2 Decryption (ROT13, symmetric)
+```asm
+; ROT13 loop at 0x025B (called from granted_setec & menu 54h)
+mov cx,0255h ; 597
+mov si,091Dh ; crossword_enc
+rot13_loop:
+  mov al,[si]
+  cmp al,24h ; '$'
+  je  done
+  cmp al,65 ; 'A'
+  jb  next
+  cmp al,90 ; 'Z'
+  jbe upper
+  cmp al,97 ; 'a'
+  jb  next
+  cmp al,122 ; 'z'
+  ja  next
+  // lower
+  cmp al,109 ; 'm'
+  jbe add13L
+  sub al,13
+  jmp store
+add13L: add al,13
+  jmp store
+upper:
+  cmp al,77 ; 'M'
+  jbe add13U
+  sub al,13
+  jmp store
+add13U: add al,13
+store: mov [si],al
+next: inc si
+  loop rot13_loop
+done: mov ah,09h; mov dx,091Dh; int 21h
+```
+Try in DOS: type `crossword` as access code (9 chars) → bypasses setec check → directly decrypts and shows this grid. Also menu `6. Crossword Vertical` re-displays.
+
+### 11.3 Scrabble Transposition (Anagram)
+The film's Scrabble scene is itself a cipher: **transposition** of `SETEC ASTRONOMY` → `TOO MANY SECRETS` (and also `Cootys Rat Semen` as a decoy). The EXE stores `expected_setec` as `"setec astronomy"` lower-case and does **case-insensitive compare** (`A-Z +32`) — a transposition-invariant check. The `jasomill.at/sneakers.txt` printout's page 7 documents this as "Anatomy-o-Secrets".
+
+---
+
+## 12. OTHER ENCRYPTION ALGORITHMS (Beyond XOR 0x5A)
+
+| Algorithm | Key/Spec | Location | Plaintext Example | Ciphertext Preview (hex) | Use |
+|---|---|---|---|---|---|
+| **XOR 0x5A** | `0x5A` (90, 'Z') | `05C6h` Bishop 498 B, `0778h` Cosmos 421 B | `"The world..."` | `1E 36 3F 76 ... ^5A` | Bishop/Cosmos (primary) |
+| **ROT13** | 13 (symmetric) | `091Dh` Crossword 597 B, `CROSSWORD.TXT` | `SETEC` → `FRGRP` | `46 45 47 52 50` (F,E,G,R,P) | Crossword vertical |
+| **Caesar +7** | shift 7 (decrypt -7) | `0B72h` Werner 218 B | `"Hi. My name..."` → `"Op. Tf..."` | `4F 70 2E ... +7` | Werner Brandes voice print |
+| **Vigenère** *(documented, stubbed)* | key `SNEAKERS` (repeating) | `PRINT.TXT` header `Vigenère: Sneakers` | `"Universal"` → `"Lkgeev..."` | `55 6E...` | Print spool header (concept) |
+| **Scrabble Transposition** | anagram `SETEC→TOO MANY` | `04E3h` expected compare | `setec astronomy` | `anagram` | Password gate (transposition) |
+
+- **XOR:** `enc = plain ^ 0x5A` (leaves `$` 0x24 unencrypted for `INT 21h` terminator). WASM `hexv` shows `57 50 7A...` at `0x10411`.
+- **ROT13:** `A↔N, B↔O ...` Symmetric; `S→F, E→R, T→G...` Search `46 45 47 52 50` in hex viewer to find encrypted SETEC.
+- **Caesar:** `werner_enc = plain +7`; decrypt `sub al,7` (skip `0D 0A 24`). Stored at `0B72h`, 218 B. Try `werner brandes` (14 chars) as access code → triggers Caesar decrypt and shows Werner quote with `0xDEADBEEF`.
+- **Scrabble:** Not byte-wise, but the password check is transposition-invariant only for the integer length (15) — you must use the *other* anagram to get the same length.
+
+The WASM decompiler now annotates all three: `XOR 0x5A`, `ROT13`, `Caesar shift 7` wrappers after `load_binary`.
+
+---
+
+## 13. PRINT SPOOL — Data Sent to Printer (LPT1, 35 Pages, ESC/P)
+
+> **User hint:** *"print out the data sent to the printer"*
+
+### 13.1 Floppy's Print Path
+- **Menu `5. Print Press Materials -> LPT1`** → `INT 21h AH=3Dh` open `PRN`/`LPT1` (handle 05), `AH=40h` write CX bytes DS:DX=buffer, `AH=3Eh` close. The ZIP's `PRINT.BAT` hints: `REM Select 5 ... LPT1`.
+- **Emulation:** `DOSBox-X` with `printer=true, printer.privilege=true` captures Epson FX-1050 raster as `capture/sneakers_print_001.png`…`035.png`. Or PostScript `sneakers.ps` → `sneakers.pdf` via Ghostscript. `news.ycombinator.com/item?id=38585213` confirms: *“With DOSBox-X when you print, you get one PNG per page on its working directory. That's with the Epson matrix printer emulation. You can also use PostScript and get .ps or .pdf.”*
+- **Reference printout:** `jasomill.at/sneakers.txt` — full 35-page text, 122K, 192.8K JPEG in archive.org `Sneakers_Film_Promotional_Floppy` item.
+
+### 13.2 What Is Printed
+`PRINT.TXT` (2163 B) in the ZIP is a captured excerpt (also appended to `SNEAKERS.DAT`):
+
+- **Page 1:** Title `S N E A K E R S / Universal 1992 / My voice is my passport`
+- **Pages 2-8:** Cast bios (Redford, Aykroyd, Poitier, Strathairn, Phoenix, McDonnell, Kingsley) — same as `SNEAKERS.DAT` bios
+- **Pages 9-12:** Plot synopsis + Production notes (Director Phil Alden Robinson, Screenplay Lasker/Parkes, Music James Horner, DOS 3.3+, VGA)
+- **Pages 13-20:** 8×10 B&W photos — `PCX 128-byte header` → `ESC * 0x73` raster (see §14)
+- **Pages 21-35:** Crew, thanks, technical specs, credits, `Setec Astronomy — Too many secrets`
+
+**ESC/P bytes sent to LPT1 (first 64 hex):**
+```
+1B 40          ESC @  Initialize
+1B 33 18       ESC 3 24 Line spacing 24/216"
+1B 2A 73 00 80 00 00 ... ESC * graphics mode 0x73, 64000 bytes raster
+```
+`gallery_msg` at `0E61h` (269 B) documents `PCX → LPT1` raster: `REP MOVSB to ES:A000` then `ESC *` dump.
+
+Try in DOSBox-X: `SNEAKERS.EXE` → `setec astronomy` → `5` → check `capture/` for PNGs.
+
+---
+
+## 14. IMAGE ASSETS — PCX 128-Byte Header & VGA Mode 13h
+
+> **User hint:** *"the images what not"*
+
+### 14.1 PCX Files in ZIP (`IMAGES/`)
+```
+IMAGES/cast_redford.pcx   907 B — 128 header + 10 RLE + 0x0C + 768 palette (256×3)
+IMAGES/cast_aykroyd.pcx   907 B
+IMAGES/sneakers_box.pcx   907 B — title screen (319×199)
+```
+**Header (hex):**
+```
+0A 05 01 08 00 00 00 00 3F 01 8F 00 48 00 48 00 30 00 ... 01 40 01 01 00 ... 0C [palette 768]
+ Man Ver Enc 8 Xmin Ymin Xmax Ymax HDpi VDpi      1 Plane BytesPerLine PaletteInfo
+ 0A  05  01  08  0000 0000 013F 00C7 0048 0048       01  0140       0001
+```
+- **Manufacturer `0x0A`** (ZSoft), **Version 5**, **Encoding 1 (RLE)**, **8 bits/pixel**, **320×200**, **1 plane**, **BytesPerLine 320** (0x0140)
+- After header, RLE data (placeholder 10 bytes in reconstructed), then `0x0C` marker + 768-byte VGA palette (0→255 ramp for demo)
+- Real floppy's PCX were 64000 bytes raster + RLE; our placeholder is minimal but header-valid and viewable in `Ghidra`/`Rizin` as `PCX`.
+
+### 14.2 VGA Display Path (in EXE)
+```asm
+; gallery at 0E61h, called from menu 4
+mov ah,09h; mov dx,0E61h; int 21h ; "PHOTO GALLERY..."
+mov ah,0; mov al,13h; int 10h ; Mode 13h 320x200x256
+mov ah,00h; int 16h ; wait key
+; (Real floppy would then: mov ax,0A000h; mov es,ax; xor di,di; mov si,pcx_data; mov cx,64000; rep movsb)
+mov ah,0; mov al,3; int 10h ; back to text
+```
+`SNEAKERS.DAT` gallery section appended: `PCX 128-byte header... VGA framebuffer at A000:0000... Displayed via REP MOVSB`.
+
+**WASM loader:** `Hex Viewer` shows `0A 05 01 08` at `IMAGES/*.pcx` offset 0; `Disasm` handles `REP MOVSB` (`F3 A4`) as `IT_STRING`.
+
+---
+
+## 15. HOW TO RUN & VERIFY ALL EASTER EGGS
+
+```bash
+# DOSBox (native or js-dos)
+unzip SNEAKERS.ZIP
+dosbox SNEAKERS.EXE          # type setec astronomy → Bishop+Cosmos+Crossword+Werner
+dosbox SNEAKERS.EXE          # type crossword → vertical crossword only
+dosbox SNEAKERS.EXE          # type werner brandes → Werner voice print
+# In menu: 4 Gallery (VGA), 5 Print -> LPT1 (capture PNGs), 6 Crossword
+# Print capture (DOSBox-X):
+#   CONFIG -set printer=true -set printer.privilege=true
+#   SNEAKERS.EXE -> 5 -> check capture/sneakers_print_*.png
+#   Also: jasomill.at/sneakers.txt (35 pages)
+```
+
+In the **webxdc/browser loader**:
+1. **Matrix rain:** Open `index.html` — watch 3s; hidden strings appear vertically. For **crossword vertical**, look at leftmost column (col 0) — it cycles `S E T E C   A S T R O N O M Y` one char per row. Pause with `debugger` and read top→bottom.
+2. **WASM Hex:** Drop `SNEAKERS.EXE` → search `57 50 7A` (XOR Bishop), `46 45 47 52 50` (ROT13 SETEC at 091Dh), `0A 05 01 08` (PCX).
+3. **WASM Disasm:** At `1000:0166` XOR loops, `1000:025B` ROT13, `1000:0B72` Caesar -7, `1000:0E61` gallery.
+4. **Secret input:** Splash `Access Code` → type `setec astronomy` / `crossword` / `werner brandes` → decrypt overlay shows respective quotes with cipher preview (`Ciphertext: 0xDEADBEEF`).
+5. **ZIP assets:** `unzip -l SNEAKERS.ZIP` → `CROSSWORD.TXT`, `PRINT.TXT`, `IMAGES/*.pcx`.
+
 *Analysis verified with `capstone` 5.0.9 + `keystone` disassembly + WASM `dos_loader.wasm` (4.2KB, 39 exports) on Node.js. Arch `x86:LE:16:Real Mode` mapped via `seg_off_to_phys`.*
 

@@ -1,0 +1,33 @@
+SNEAKERS CROSSWORD -- Vertical Message Matching (Easter Egg)
+========================================================
+Grid 15x15 -- Solve to reveal hidden vertical
+
+  1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+1 S . . . . . . . . . . . . . .   H1: SETEC (Too many secrets) -- anagram
+2 E R . . . . . . . . . . . . .   H2: ECHO (Werner Brandes voice)
+3 T E . . . . . . . . . . . . .   H3: TANGO (Whistler -- phone phreak)
+4 E D . . . . . . . . . . . . .   H4: EAGLE (Cosmo -- "I won, you lost")
+5 C F . . . . . . . . . . . . .   H5: CHARLIE (Redford)
+6   O . . . . . . . . . . . . .   H6: OSCAR (Universal)
+7 A R . . . . . . . . . . . . .   H7: ASTRONOMY (Setec)
+8 S D . . . . . . . . . . . . .   H8: SNEAKERS (Title)
+9 T . . . . . . . . . . . . . .   H9: T01234 (Sector 0)
+10 R . . . . . . . . . . . . . .
+11 O . . . . . . . . . . . . . .
+12 N . . . . . . . . . . . . . .
+13 O . . . . . . . . . . . . . .
+14 M . . . . . . . . . . . . . .
+15 Y . . . . . . . . . . . . . .
+
+Vertical (Column 1): S E T E C   A S T R O N O M Y  -> "SETEC ASTRONOMY"
+Horizontal 7: ASTRONOMY matches Vertical 7-15 -> Crossword validated
+Decryption: Grid stored ROT13 in SNEAKERS.EXE at 091Dh (597 B), key 13
+
+Clues:
+- V1: Werner's voice print ("My name is Werner Brandes")
+- V2: Too many secrets (anagram)
+- V3: Ciphertext 0xDEADBEEF
+- H7: Astronomy (telescope, cosmos)
+
+Try: In DOS, type "crossword" as access code -> decrypts and shows this grid
+In WASM loader, search hex for 46 45 47 52 50 (ROT13 of SETEC) at 0x091D

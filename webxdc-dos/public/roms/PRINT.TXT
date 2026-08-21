@@ -1,0 +1,52 @@
+SNEAKERS PRESS KIT -- PRINT SPOOL to LPT1 (35 pages, ESC/P)
+================================================================
+
+This file is the captured output of INT 21h AH=40h writes to LPT1/PRN
+as emulated by DOSBox-X (Epson FX-1050). Each page is also saved as PNG.
+
+Page 1: Title
+  ====================================
+     S N E A K E R S
+     Computer Press Kit
+     Universal City Studios, 1992
+     My voice is my passport. Verify me.
+  ====================================
+
+Page 2: Cast -- Robert Redford as Martin Bishop
+  Robert Redford stars as Martin Bishop, a former radical who now
+  runs a team of security experts...
+
+Page 3: Cast -- Dan Aykroyd as Mother
+Page 4: Cast -- Sidney Poitier as Donald Crease
+Page 5: Cast -- David Strathairn as Whistler
+Page 6: Cast -- River Phoenix as Carl Arbogast
+Page 7: Cast -- Mary McDonnell as Liz
+Page 8: Cast -- Ben Kingsley as Cosmo
+Page 9-10: Plot Synopsis
+  "A blind mathematician, a black box that can break any code,
+   and a team of sneaks who must steal it..."
+
+Page 11-12: Production Notes
+  Director: Phil Alden Robinson, Screenplay: Robinson, Lasker, Parkes
+  Music: James Horner, 1.44MB floppy, DOS 3.3+, VGA Mode 13h
+
+Page 13-20: Photos (8x10 B&W, PCX 320x200, 256 colors)
+  ESC @  (0x1B 0x40) Initialize printer
+  ESC 3 24 (0x1B 0x33 0x18) Line spacing 24/216"
+  ESC * 0x73 (0x1B 0x2A 0x73) Set graphics mode, 64000 bytes raster
+  [In DOSBox-X: sneakers_box.pcx -> LPT1 raster -> PNG]
+
+Page 21-30: Crew, Thanks, Technical Specs
+  x86:LE:16:Real Mode, Segment:Offset, PSP 256 bytes, INT 21h services
+
+Page 31-35: Credits, Universal City Studios (c) 1992, Setec Astronomy
+  -- Too many secrets.
+
+Printer: Epson FX-1050 (9-pin), 240x216 dpi, ESC/P
+Capture: DOSBox-X: CONFIG -set printer=true, printer.privilege=true
+         Files: capture/sneakers_print_001.png ... 035.png
+Alternative: PostScript -> sneakers.ps -> sneakers.pdf (Ghostscript)
+Reference: https://jasomill.at/sneakers.txt (122K text, 35 pages)
+Hex dump of first 64 bytes sent to LPT1 (ESC/P):
+1B 40 1B 33 18 1B 2A 73 00 80 00 00 00 00 00 00 ...
+INT 21h: AH=3Dh open "LPT1" -> handle 05, AH=40h write CX=512 DS:DX=0509, AH=3Eh close

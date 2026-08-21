@@ -803,7 +803,8 @@ DI — Dest Index               FLAGS — Status Reg</code></pre>
 
 <script>
 // ── Matrix Rain with 17 hidden strings (splash screen easter egg) ──
-const HIDDEN_STRINGS = [
+const HIDDEN_STRINGS = [ // + crossword vertical col 0
+
   "SETec Astronomy",
   "Too many secrets",
   "My name is Werner Brandes",
@@ -845,6 +846,17 @@ const CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*!?<> {}[]|/^`";
     ctx.fillRect(0,0,w,h);
     ctx.font = fontSize+"px 'Cascadia Code','Fira Code',monospace";
     for(let i=0;i<cols;i++){
+      // Dedicated crossword vertical column (col 0) — always spells SETEC ASTRONOMY vertically (like crossword)
+      if(i===0){
+        const vMsg = "SETEC ASTRONOMY";
+        let ch = vMsg[drops[i] % vMsg.length];
+        if(ch===" ") ch = String.fromCharCode(160); // keep spacing
+        ctx.fillStyle = "#00d4ff";
+        ctx.fillText(ch, i*fontSize, drops[i]*fontSize);
+        if(drops[i]*fontSize > h && Math.random() > 0.975) drops[i]=0;
+        drops[i]++;
+        continue;
+      }
       // maybe start hidden string
       if(!hiddenActive[i] && Math.random() < 0.003){
         hiddenActive[i] = HIDDEN_STRINGS[Math.floor(Math.random()*HIDDEN_STRINGS.length)];

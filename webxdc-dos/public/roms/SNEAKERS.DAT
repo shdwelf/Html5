@@ -26,11 +26,50 @@ Ben Kingsley plays the villain.
 
 
 --- HIDDEN DECRYPTED RESOURCE ---
-BISHOP: "The world isn't run by weapons anymore, or energy, or money. It's run by little ones and zeroes." -- Cosmo (Sneakers)
-BISHOP: "We are the United States Government! We don't do that sort of thing." -- Abbott (Sneakers)
-BISHOP: "No more secrets, Marty." -- Cosmo to Bishop (Sneakers)
+BISHOP: "The world isn't run by weapons anymore, or energy, or money. It's run by little ones and zeroes." -- Cosmo
+BISHOP: "We are the United States Government! We don't do that sort of thing." -- Abbott
+BISHOP: "No more secrets, Marty." -- Cosmo to Bishop
 BISHOP: "Do your little bit of good where you are; it's those little bits of good put together that overwhelm the world." -- Desmond Tutu
-COSMOS: "The Cosmos is all that is or was or ever will be." -- Carl Sagan, Cosmos
+COSMOS: "The Cosmos is all that is or was or ever will be." -- Sagan
 COSMOS: "The cosmos is within us. We are made of star-stuff. We are a way for the cosmos to know itself." -- Sagan
 COSMOS: "For small creatures such as we the vastness is bearable only through love." -- Sagan
-Setec Astronomy -- Too many secrets. (XOR 0x5A encrypted, decrypted after password)
+Setec Astronomy -- Too many secrets. (XOR 0x5A)
+
+--- CROSSWORD VERTICAL (ROT13) ---
+Grid 15x15: first column vertical = SETEC ASTRONOMY
+S . . . .   H: SETEC (Too many secrets)
+E R . . .   H: ECHO (Werner)
+T E . . .   H: TANGO (Whistler)
+E D . . .   H: EAGLE (Cosmo)
+C F . . .   H: CHARLIE
+  O . . .
+A R . . .   H: ASTRONOMY
+S D . . .   H: SNEAKERS
+T . . . .
+R . . . .
+O . . . .
+N . . . .
+O . . . .
+M . . . .
+Y . . . .
+Vertical read: SETEC ASTRONOMY (col 0) -> matches horizontal 7
+Decrypted via ROT13 (symmetric)
+
+--- WERNER BRANDES (Caesar +7) ---
+"Hi. My name is Werner Brandes."  "My voice is my passport. Verify me." -- Werner Brandes
+Voice print: 0xDEADBEEF, Private Key: [REDACTED]
+Decrypted with Caesar shift 7 (subtract 7)
+
+--- PHOTO GALLERY (VGA Mode 13h, 320x200x256, PCX) ---
+PCX 128-byte header: Manufacturer 0x0A, Version 5, Encoding 1, BitsPerPixel 8
+Images: cast_redford.pcx (320x200, RLE), cast_aykroyd.pcx, cast_poitier.pcx, sneakers_box.pcx
+VGA framebuffer at A000:0000, Mode 13h (INT 10h AH=00h AL=13h)
+Displayed via REP MOVSB to ES:A000, 64000 bytes per image
+
+--- PRINT SPOOL -> LPT1 (ESC/P, 35 pages) ---
+INT 21h AH=3Dh open "PRN" / "LPT1", H=handle, AH=40h write CX=bytes DS:DX=buffer, H=handle
+ESC @ (init), ESC 3 24 (line spacing 24/216"), ESC * 0x73 (set graphics mode)
+Pages: 1 Title, 2-5 Cast bios, 6-10 Plot/Production, 11-20 8x10 Photos (raster), 21-35 Credits
+DOSBox-X captures as PNG per page (Epson FX-1050 emulation) or PostScript .ps/.pdf
+Reference: jasomill.at/sneakers.txt (35 pages, 122K text, 192.8K JPEG)
+Sent to LPT1: captured as sneakers_print.pcl / sneakers.pdf
