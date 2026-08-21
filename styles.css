@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Orbitron:wght@500;700;900&display=swap');
+/* Local system fonts keep the webxdc package usable in its isolated web view. */
 :root { --acid:#c8ff00; --cyan:#18d7df; --ink:#071117; --panel:#0a1d25; --muted:#8ba3aa; }
 * { box-sizing:border-box; } body { margin:0; color:#e9f7f3; background:radial-gradient(circle at 72% 10%,#17313b 0,transparent 29rem), linear-gradient(125deg,#020809,#0b1a21 60%,#061015); font:15px/1.65 'DM Mono',monospace; min-height:100vh; }
 .shell { max-width:1120px; margin:auto; padding:62px 28px 38px; }.masthead { border-left:4px solid var(--acid); padding-left:20px; margin-bottom:30px; }.eyebrow,.subtitle { color:var(--cyan); letter-spacing:.16em; font-size:11px; margin:0; }.masthead h1 { font:900 clamp(52px,13vw,125px)/.85 Orbitron,sans-serif; margin:9px 0 16px; letter-spacing:-.09em; color:#e8fff2; text-shadow:4px 4px 0 #173e39; }.masthead h1 span { color:var(--acid); }.subtitle b { color:var(--acid); padding:0 9px; }

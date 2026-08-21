@@ -12,6 +12,7 @@
   const saver = document.querySelector("#saver");
   let player = null;
   let loading = false;
+  const isWebxdc = typeof window.webxdc === "object";
 
   function setState(message, bad = false) {
     state.textContent = message;
@@ -48,6 +49,15 @@
     } finally {
       loading = false;
     }
+  }
+
+  if (isWebxdc) {
+    // webxdc runs in an isolated viewer, where external Archive/CDN requests are
+    // intentionally unavailable. The .xdc therefore remains a portable, safe
+    // project card rather than silently attempting a network fetch.
+    stage.innerHTML = '<div class="boot-copy"><p class="prompt">WEBXDC / OFFLINE CATALOG</p><h2>Original media is not bundled.</h2><p>This package contains the launcher source and preservation notes, but not the third-party disk image or DOSBox runtime. Open the project source outside the webxdc sandbox to run the WASM player.</p></div>';
+    launchers.forEach((button) => (button.disabled = true));
+    setState("ARCHIVE MODE");
   }
 
   launchers.forEach((button) => button.addEventListener("click", launch));

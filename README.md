@@ -32,6 +32,17 @@ python3 tools/extract_assets.py source/Sneakers_Promotional_Diskette.zip
 
 Optional dependencies for visual conversion: ImageMagick (`magick`) and a build with PCX support. The script still writes its inventory without them. Output is ignored by Git because it may contain third-party copyrighted promotional graphics.
 
+## webxdc package
+
+Build a shareable `.xdc` container with:
+
+```sh
+make webxdc
+# dist/sneakers-press-kit.xdc
+```
+
+The result is a validated deflated ZIP containing `index.html`, `manifest.toml`, an icon, and the project’s source/documentation. It is intentionally network-safe in webxdc’s isolated viewer: the original third-party disk ZIP and external WASM runtime are **not** bundled. When opened in a webxdc messenger it presents an offline project card rather than attempting an unavailable network fetch. Use the regular browser build to launch the preserved disk, or separately add media you have the right to distribute.
+
 ## Screen saver and access controls
 
 The original release is described by the archive as locked via passwords. This project **does not decrypt, crack, defeat, or publish a bypass for passwords, encryption, copy protection, or access restrictions**. The screen saver is preserved by running the original program in the WASM player. Use the program’s own documented menus/credentials, or obtain permission from the rightsholder, to access protected portions.
