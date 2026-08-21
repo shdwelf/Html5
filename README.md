@@ -47,9 +47,23 @@ The result is a validated deflated ZIP containing `index.html`, `manifest.toml`,
 
 The original release is described by the archive as locked via passwords. This project **does not decrypt, crack, defeat, or publish a bypass for passwords, encryption, copy protection, or access restrictions**. The screen saver is preserved by running the original program in the WASM player. Use the program’s own documented menus/credentials, or obtain permission from the rightsholder, to access protected portions.
 
+## EXE triage and the QBasic request
+
+A compiled DOS `MZ` executable is native x86 machine code, not a QBasic source container. There is no reliable automatic conversion from `SNEAKERS.EXE` to QBasic: compilation discards source names, comments, BASIC line layout, and much of the original program structure. A decompiler can produce assembly or imperfect C-like pseudocode, which must then be manually ported for a QBasic-style rewrite.
+
+Once you have a legally obtained local copy of the program, run the included conservative triage pass:
+
+```sh
+python3 tools/exe_triage.py artifacts/disk/SNEAKERS.EXE
+```
+
+It writes a hash, entropy score, and offsets of likely embedded image/archive signatures. It does **not** execute, decrypt, or automatically carve data. Use the original disk’s separate files first, and use Ghidra’s 16-bit x86 DOS loader for manual disassembly/decompilation.
+
 ## Runtime notes
 
-- `js-dos` and its DOSBox runtime are loaded from `v8.js-dos.com`; its runtime includes WebAssembly.
+- Outside webxdc, `js-dos` and its DOSBox runtime are loaded on demand from `v8.js-dos.com`; its runtime includes WebAssembly.
+- The player keeps the js-dos control sidebar and configures a large soft keyboard, 4:3 rendering, soft fullscreen, and no automatic mouse capture for mobile use.
+- Use js-dos’ keyboard/sidebar icon to show the touch keyboard. The page has both enter and exit fullscreen controls; the exit control uses js-dos’ fullscreen API rather than relying on browser keyboard shortcuts.
 - The user-facing application talks only to the public Archive URL, not to localhost.
 - If a browser blocks the cross-origin ZIP, use the offline-copy option above.
 - The source item’s metadata names `SNEAKERS.EXE` as its startup program.
