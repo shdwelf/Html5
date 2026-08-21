@@ -236,9 +236,36 @@
       nav button { font-size: 0.64rem; padding: 3px 7px; }
       main { padding: 8px 10px; }
     }
-  </style>
+  
+/* Matrix rain — hidden messages easter egg */
+#matrixRain{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.13}
+#matrixSplash{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;pointer-events:none;transition:opacity 0.8s}
+#matrixSplash.hide{opacity:0}
+.matrixHint{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);font-family:var(--m);font-size:0.68rem;color:var(--fg3);z-index:6;pointer-events:none;opacity:0.6}
+.decryptOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);display:none;align-items:center;justify-content:center;z-index:100;flex-direction:column;gap:12px;padding:20px}
+.decryptOverlay.show{display:flex}
+.decryptBox{background:var(--bg2);border:1px solid var(--a);border-radius:var(--rad);padding:18px;max-width:720px;width:90%;font-family:var(--m);font-size:0.78rem;line-height:1.6;white-space:pre-wrap;max-height:80vh;overflow:auto}
+
+</style>
 </head>
 <body>
+
+<canvas id="matrixRain"></canvas>
+<div id="matrixSplash">
+  <div style="text-align:center;pointer-events:auto">
+    <div style="font-family:var(--m);font-size:1.4rem;color:var(--a);text-shadow:0 0 12px var(--a);margin-bottom:6px">SETec Astronomy</div>
+    <div style="font-family:var(--m);font-size:0.72rem;color:var(--fg2)">watch the falling code… 17 secrets hidden</div>
+    <div style="margin-top:14px"><input id="secretInput" placeholder="Access Code: ______" style="background:var(--bg);border:1px solid var(--bg4);color:var(--y);padding:6px 10px;border-radius:var(--rad);font-family:var(--m);text-align:center;width:200px" /></div>
+    <div style="font-size:0.62rem;color:var(--fg3);margin-top:4px">Hint: Think like a hacker. (Try: Sneakers)</div>
+  </div>
+</div>
+<div class="matrixHint">Characters: A-Z 0-9 $#@%&amp;*!?&lt;&gt;{}[]|/^` · 17 hidden strings in the rain</div>
+<div id="decryptOverlay" class="decryptOverlay">
+  <div style="color:var(--a);font-family:var(--m);font-size:1.1rem">ACCESS GRANTED — Decrypting…</div>
+  <div id="decryptBox" class="decryptBox"></div>
+  <button onclick="document.getElementById('decryptOverlay').classList.remove('show')" style="background:var(--a);color:#000;border:none;padding:7px 16px;border-radius:var(--rad);cursor:pointer;font-weight:600">Close</button>
+</div>
+
   <div class="app">
     <header>
       <div class="hdr-row">
@@ -773,5 +800,165 @@ DI — Dest Index               FLAGS — Status Reg</code></pre>
     // Boot
     initWasm();
   </script>
+
+<script>
+// ── Matrix Rain with 17 hidden strings (splash screen easter egg) ──
+const HIDDEN_STRINGS = [
+  "SETec Astronomy",
+  "Too many secrets",
+  "My name is Werner Brandes",
+  "We are the United States Government",
+  "The only truly secure system is one that is powered off",
+  "No one ever thinks they are the bad guy",
+  "Security",
+  "Ciphertext: 0xDEADBEEF",
+  "Private Key: [REDACTED]",
+  "v86.wasm | 2.7MB | Rust compile target",
+  "DOS 6.22 | FAT12 | 2880 sectors",
+  "ISA bus | PS/2 keyboard | VGA 720x400",
+  "Sector 0: Bootstrap code",
+  "Cluster chain: 2->3->4->...->EOF",
+  "BIOS INT 13h: Read sectors",
+  "INT 21h: DOS services",
+  "AX=4C00h: Terminate process"
+];
+const CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*!?<> {}[]|/^`";
+(function(){
+  const canvas = document.getElementById('matrixRain');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, cols, fontSize=13, drops, hiddenActive;
+  let hiddenPos;
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    cols = Math.floor(w / fontSize);
+    drops = Array(cols).fill(0).map(()=> Math.floor(Math.random()* -h/fontSize));
+    hiddenActive = Array(cols).fill(null);
+    hiddenPos = Array(cols).fill(0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  let frame=0;
+  function draw(){
+    ctx.fillStyle = "rgba(8,8,16,0.14)";
+    ctx.fillRect(0,0,w,h);
+    ctx.font = fontSize+"px 'Cascadia Code','Fira Code',monospace";
+    for(let i=0;i<cols;i++){
+      // maybe start hidden string
+      if(!hiddenActive[i] && Math.random() < 0.003){
+        hiddenActive[i] = HIDDEN_STRINGS[Math.floor(Math.random()*HIDDEN_STRINGS.length)];
+        hiddenPos[i]=0;
+      }
+      let char, color;
+      if(hiddenActive[i]){
+        char = hiddenActive[i][hiddenPos[i]] || " ";
+        color = hiddenPos[i]===0 ? "#00d4ff" : "#ffcc00";
+        hiddenPos[i]++;
+        if(hiddenPos[i] >= hiddenActive[i].length){
+          hiddenActive[i]=null;
+          hiddenPos[i]=0;
+          // leave gap after hidden
+          drops[i] += 6;
+        }
+      } else {
+        char = CHARSET[Math.floor(Math.random()*CHARSET.length)];
+        color = Math.random()<0.02 ? "#ffffff" : (Math.random()<0.1 ? "#44ff88" : "#00ff66");
+      }
+      ctx.fillStyle = color;
+      ctx.fillText(char, i*fontSize, drops[i]*fontSize);
+      // occasionally brighter head
+      if(Math.random()<0.08){
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(char, i*fontSize, drops[i]*fontSize);
+      }
+      if(drops[i]*fontSize > h && Math.random() > 0.975) drops[i]=0;
+      drops[i]++;
+    }
+    frame++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+  // Auto-hide splash after 6s
+  setTimeout(()=>{ const s=document.getElementById('matrixSplash'); if(s) s.classList.add('hide'); }, 6000);
+  // Secret input handler — mirrors SNEAKERS.EXE password gate (bishop & cosmos decrypt)
+  const input = document.getElementById('secretInput');
+  const overlay = document.getElementById('decryptOverlay');
+  const box = document.getElementById('decryptBox');
+  const bishop = `--- DECRYPTED: BISHOP ---\n  "The world isn't run by weapons anymore, or energy, or money."\n  "It's run by little ones and zeroes, little bits of data."\n  "It's all just electrons." -- Cosmo (Ben Kingsley)\n  "We are the United States Government! We don't do that sort of thing." -- Abbott\n  "No more secrets, Marty." -- Cosmo to Bishop\n\n  // Bishop Desmond Tutu: "Do your little bit of good where you are; "\n  // "It's those little bits of good put together that overwhelm the world."`;
+  const cosmos = `--- DECRYPTED: COSMOS ---\n  "The Cosmos is all that is or was or ever will be." -- Carl Sagan, Cosmos\n  "The cosmos is within us. We are made of star-stuff."\n  "We are a way for the cosmos to know itself." -- Sagan\n  "For small creatures such as we the vastness is bearable only through love." -- Sagan\n  Setec Astronomy -- Too many secrets. (Anagram)\n  Ciphertext was XOR 0x5A, key "SETAC" -- now decrypted.`;
+  function decryptWithEffect(enc, key=0x5A){
+    // Simulate XOR decrypt effect: show ciphertext then reveal
+    let encBytes = Array.from(enc).map(c=> c.charCodeAt(0) ^ key);
+    // Actually our enc is already plaintext; we simulate by scrambling
+    return enc;
+  }
+  function showDecrypt(){
+    if(!overlay||!box) return;
+    box.textContent = "";
+    overlay.classList.add('show');
+    // Typewriter with decrypt effect
+    const full = bishop + "\n\n" + cosmos + "\n\n[Source: SNEAKERS.EXE 0411h (498B) & 0603h (421B) XOR 0x5A — see WASM Hex/disasm at 1000:0166]";
+    let i=0;
+    // Scramble phase: first show ciphertext preview for 600ms
+    const cipherPreview = full.split('').map(c=> c==='\\n'? '\\n' : (Math.random()<0.5 ? String.fromCharCode(33+Math.floor(Math.random()*94)) : c)).join('').slice(0,800);
+    box.textContent = "Decrypting secure files...\nCiphertext: " + HIDDEN_STRINGS[7] + "\n" + cipherPreview + "\n...";
+    setTimeout(()=>{
+      box.textContent = "";
+      const iv=setInterval(()=>{
+        box.textContent = full.slice(0,i);
+        box.scrollTop = box.scrollHeight;
+        i+=3;
+        if(i>=full.length) clearInterval(iv);
+      }, 12);
+    }, 700);
+  }
+  if(input){
+    input.addEventListener('keydown', e=>{
+      if(e.key==='Enter'){
+        const v = input.value.trim().toLowerCase();
+        if(v==="setec astronomy"){
+          showDecrypt();
+          input.value="";
+          input.placeholder="ACCESS GRANTED";
+          input.style.borderColor="#00ff88";
+          setTimeout(()=> input.placeholder="Access Code: ______", 3000);
+        } else if(v){
+          input.style.borderColor="#ff4455";
+          input.value="";
+          input.placeholder="ACCESS DENIED";
+          setTimeout(()=> { input.style.borderColor=""; input.placeholder="Access Code: ______"; }, 1500);
+        }
+      }
+    });
+    // Easter egg: typing Werner Brandes shows hint
+    input.addEventListener('input', ()=>{
+      const v=input.value.toLowerCase();
+      if(v.includes("werner")) input.style.borderColor="#ffcc00";
+    });
+  }
+  // Also trigger decrypt if user drops SNEAKERS.EXE — hook into existing loadFile
+  const origLoad = window.loadFile;
+  // Will be patched after WASM loads; check periodically
+  let patched=false;
+  function tryPatch(){
+    if(typeof window.loadFile !== 'undefined' && !patched){
+      const _orig = window.loadFile;
+      window.loadFile = function(f){
+        const res = _orig.apply(this, arguments);
+        // if file is SNEAKERS.EXE and contains bishop string, auto-show?
+        if(f && f.name && f.name.toLowerCase().includes("sneakers")){
+          setTimeout(showDecrypt, 900);
+        }
+        return res;
+      };
+      patched=true;
+    }
+    if(!patched) setTimeout(tryPatch, 500);
+  }
+  tryPatch();
+})();
+</script>
+
 </body>
 </html>
