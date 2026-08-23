@@ -2,7 +2,7 @@
   "id": "./index.html",
   "name": "SITE-K Parish Control",
   "short_name": "SITE-K",
-  "description": "HTML5 topographic command deck — USGS terrain, NOAA weather terrariums, Terraink line art.",
+  "description": "Offline SITE-K toolkit with a local BIP-39 mnemonic validator.",
   "start_url": "./index.html#grid",
   "scope": "./",
   "display": "standalone",
@@ -40,6 +40,13 @@
       "short_name": "KEYSPACE",
       "description": "BIP-39 keyspace viewer",
       "url": "./index.html#keyspace",
+      "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mnemonic Validator",
+      "short_name": "VALIDATOR",
+      "description": "Verify a BIP-39 phrase locally",
+      "url": "./index.html#validator",
       "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
     }
   ]

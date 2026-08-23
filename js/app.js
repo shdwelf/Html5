@@ -1,4 +1,4 @@
-/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace */
+/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator */
 import { initWm } from "./wm.js";
 
 document.documentElement.dataset.shell = "1";
@@ -7,7 +7,7 @@ const $ = (id) => document.getElementById(id);
 
 function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
-  if (raw === "terrarium" || raw === "keyspace" || raw === "grid") return raw;
+  if (raw === "terrarium" || raw === "keyspace" || raw === "validator" || raw === "grid") return raw;
   return "grid";
 }
 
@@ -98,10 +98,11 @@ let started = null;
 async function start(mode) {
   markDock(mode);
 
-  if (mode === "keyspace") {
+  if (mode === "keyspace" || mode === "validator") {
     const frame = $("keyframe");
-    if (frame && !frame.getAttribute("src")) frame.src = "./keyspace.html";
-    document.title = "SITE-K · Keyspace";
+    const view = mode === "validator" ? "./validator.html" : "./keyspace.html";
+    if (frame && frame.getAttribute("src") !== view) frame.src = view;
+    document.title = mode === "validator" ? "BIP-39 Mnemonic Validator" : "SITE-K · Keyspace";
     return;
   }
 

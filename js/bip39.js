@@ -63,7 +63,8 @@ export async function randomMnemonic(wordCount = 12) {
 }
 
 export function parsePhrase(text) {
-  return text
+  return String(text ?? "")
+    .normalize("NFKD")
     .trim()
     .toLowerCase()
     .split(/[\s,]+/)

@@ -1,9 +1,10 @@
 /* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v2";
+const CACHE = "sitek-html5-v3";
 const PRECACHE = [
   "./",
   "./index.html",
   "./keyspace.html",
+  "./validator.html",
   "./louisiana.html",
   "./terrarium.html",
   "./manifest.webmanifest",
@@ -33,6 +34,7 @@ const PRECACHE = [
   "./js/stx-plot.js",
   "./js/ca-plot.js",
   "./js/viewer.js",
+  "./js/validator.js",
   "./js/bip39.js",
   "./js/bip39-en.js",
   "./vendor/three.module.min.js",
@@ -85,11 +87,11 @@ self.addEventListener("fetch", (event) => {
         .then((res) => {
           if (res && res.ok) {
             const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put("./index.html", copy));
+            caches.open(CACHE).then((c) => c.put(req, copy));
           }
           return res;
         })
-        .catch(() => caches.match("./index.html"))
+        .catch(() => caches.match(req).then((hit) => hit || caches.match("./index.html")))
     );
     return;
   }
