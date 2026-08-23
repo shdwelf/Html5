@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>x86:LE:16:Real Mode — WASM DOS Binary Loader</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#080810;--bg2:#10101c;--bg3:#181828;--bg4:#202034;--fg:#c0c0d0;--fg2:#8888a0;--fg3:#555570;--a:#00d4ff;--a2:#00ff88;--a3:#ff6b35;--a4:#ff4488;--r:#ff4455;--g:#44ff88;--y:#ffcc00;--b:#4488ff;--m:'Cascadia Code','Fira Code','Courier New',monospace;--s:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--rad:5px}
+html{font-size:13px}
+body{background:var(--bg);color:var(--fg);font-family:var(--s);line-height:1.55;min-height:100vh}
+a{color:var(--a)}
+code{font-family:var(--m);background:var(--bg3);padding:1px 4px;border-radius:3px;font-size:.88em;color:var(--a2)}
+h1,h2,h3{color:#fff;font-weight:600;line-height:1.3}
+pre{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--rad);padding:10px;overflow-x:auto;font-family:var(--m);font-size:.78rem;line-height:1.5;color:var(--fg)}
+.app{display:flex;flex-direction:column;min-height:100vh}
+header{background:linear-gradient(135deg,#0a0a1a,#180828,#081420);border-bottom:1px solid var(--bg4);padding:12px 20px;position:sticky;top:0;z-index:100}
+header .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+header h1{font-size:1.2rem}header h1 span{color:var(--a);font-family:var(--m)}
+header .badge{background:var(--a2);color:#000;font-size:.6rem;padding:2px 7px;border-radius:8px;font-weight:700;letter-spacing:.3px}
+header p{font-size:.72rem;color:var(--fg2);margin-top:1px}
+nav{display:flex;gap:3px;margin-top:8px;flex-wrap:wrap}
+nav button{background:var(--bg3);border:1px solid var(--bg4);color:var(--fg2);padding:4px 12px;border-radius:var(--rad);cursor:pointer;font-size:.72rem;font-family:var(--s);transition:all .12s}
+nav button:hover{background:var(--bg4);color:var(--fg)}
+nav button.active{background:var(--a);color:#000;border-color:var(--a);font-weight:600}
+main{flex:1;padding:16px 20px;max-width:1400px;width:100%;margin:0 auto}
+footer{border-top:1px solid var(--bg4);padding:8px 20px;text-align:center;font-size:.68rem;color:var(--fg3)}
+.panel{display:none;animation:fadeIn .15s}.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--rad);padding:14px;margin-bottom:14px}
+.card h2{border-bottom:1px solid var(--bg4);padding-bottom:7px;margin-bottom:10px;font-size:1.1rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}}
+.drop{border:2px dashed var(--bg4);border-radius:var(--rad);padding:32px;text-align:center;cursor:pointer;transition:all .15s;position:relative}
+.drop:hover,.drop.over{border-color:var(--a);background:rgba(0,212,255,.03)}
+.drop.over{box-shadow:0 0 16px rgba(0,212,255,.12)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop .ic{font-size:2rem;margin-bottom:6px}
+.drop p{color:var(--fg2);font-size:.78rem}
+.progress{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;margin:6px 0}
+.progress .f{height:100%;background:linear-gradient(90deg,var(--a),var(--a2));transition:width .25s;width:0}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+.stat{background:var(--bg3);border:1px solid var(--bg4);border-radius:var(--rad);padding:6px 12px;text-align:center}
+.stat .v{font-size:1.2rem;font-weight:700;color:var(--a);font-family:var(--m)}
+.stat .l{font-size:.62rem;color:var(--fg3);text-transform:uppercase;letter-spacing:.5px}
+.ftbl{width:100%;border-collapse:collapse;font-size:.78rem}
+.ftbl th{text-align:left;padding:5px 8px;background:var(--bg3);color:var(--a);font-weight:600;border-bottom:2px solid var(--a)}
+.ftbl td{padding:4px 8px;border-bottom:1px solid var(--bg4);vertical-align:top}
+.ftbl td:first-child{color:var(--y);font-family:var(--m);white-space:nowrap;width:150px}
+.ftbl td:nth-child(2){font-family:var(--m);width:100px}
+.ftbl tr:hover{background:rgba(0,212,255,.02)}
+.hexv{background:var(--bg);border:1px solid var(--bg4);border-radius:var(--rad);overflow:auto;max-height:450px;font-family:var(--m);font-size:.74rem;line-height:1.65}
+.hxr{display:flex;white-space:nowrap;padding:0 7px}
+.hxr:hover{background:rgba(0,212,255,.04)}
+.hxa{color:var(--a);min-width:72px;text-align:right;padding-right:10px}
+.hxb .b{display:inline-block;min-width:22px;text-align:center}
+.b.hdr{color:var(--y)}.b.cod{color:var(--g)}.b.dat{color:var(--a3)}.b.z{color:var(--fg3)}
+.sep{width:1px;background:var(--bg4);margin:0 3px;display:inline-block}
+.asc{color:var(--fg3);padding-left:10px;border-left:1px solid var(--bg4);margin-left:3px}
+.asc .p{color:var(--fg)}
+.dasm{font-family:var(--m);font-size:.76rem;line-height:1.75;max-height:550px;overflow:auto;background:var(--bg);border:1px solid var(--bg4);border-radius:var(--rad)}
+.dr{display:flex;padding:0 7px;gap:7px}
+.dr:hover{background:rgba(0,212,255,.04)}
+.dr.ep{background:rgba(255,68,136,.08);border-left:2px solid var(--a4)}
+.da{color:var(--a);min-width:80px;text-align:right}
+.db{color:var(--fg3);min-width:80px}
+.dm{min-width:72px;font-weight:600}
+.dm.n{color:var(--g)}.dm.j{color:var(--r)}.dm.c{color:var(--y)}.dm.i{color:var(--a4)}.dm.m{color:var(--a)}.dm.pp{color:var(--a3)}.dm.str{color:var(--b)}
+.do{color:var(--fg)}
+.do .rg{color:var(--y)}.do .im{color:var(--a2)}.do .mm{color:var(--a)}
+.dc{color:var(--fg3);font-style:italic}
+.dec{background:var(--bg);border:1px solid var(--bg4);border-radius:var(--rad);padding:14px;font-family:var(--m);font-size:.78rem;line-height:1.75;max-height:550px;overflow:auto}
+.dec .kw{color:var(--a4);font-weight:600}.dec .tp{color:var(--a)}.dec .fn{color:var(--y)}.dec .st{color:var(--g)}.dec .cm{color:var(--fg3);font-style:italic}.dec .nu{color:var(--a2)}.dec .vr{color:var(--fg)}
+.seg{display:flex;flex-direction:column;gap:3px;font-family:var(--m);font-size:.74rem}
+.sb{display:flex;align-items:center;gap:7px;height:24px}
+.sb .lb{min-width:70px;text-align:right;color:var(--fg2);font-size:.68rem}
+.sb .bar{flex:1;position:relative;height:18px;background:var(--bg);border-radius:2px;overflow:hidden;border:1px solid var(--bg4)}
+.sb .bar .fl{height:100%;border-radius:2px;display:flex;align-items:center;padding:0 5px;font-size:.62rem;color:#000;font-weight:600;white-space:nowrap;transition:width .35s}
+.fl.cs{background:linear-gradient(90deg,#ff4488,#ff6b9d)}.fl.ds{background:linear-gradient(90deg,#4488ff,#6baaff)}
+.fl.ss{background:linear-gradient(90deg,#44ff88,#6bffc0)}.fl.es{background:linear-gradient(90deg,#ffcc00,#ffe066)}
+.fl.psp{background:linear-gradient(90deg,#aa66ff,#c088ff)}
+.sb .adr{min-width:55px;font-size:.68rem;color:var(--fg3)}
+.pspg{display:grid;grid-template-columns:65px 55px 1fr;gap:1px;font-family:var(--m);font-size:.74rem;background:var(--bg4);border-radius:var(--rad);overflow:hidden}
+.pspg>div{background:var(--bg2);padding:3px 6px}
+.pspg .of{color:var(--a);text-align:right}.pspg .sz{color:var(--fg3);text-align:center}.pspg .ds2{color:var(--fg2)}
+.calc{display:flex;gap:6px;align-items:center;margin:10px 0;flex-wrap:wrap}
+.calc input{background:var(--bg);border:1px solid var(--bg4);color:var(--y);padding:5px 8px;border-radius:var(--rad);font-family:var(--m);width:72px;text-align:center}
+.calc button{background:var(--a);color:#000;border:none;padding:5px 12px;border-radius:var(--rad);cursor:pointer;font-weight:600}
+#calcRes{font-family:var(--m);color:var(--g);font-size:.9rem}
+.tr{display:flex;gap:7px;padding:2px 7px;font-family:var(--m);font-size:.74rem;border-bottom:1px solid var(--bg4)}
+.tr:hover{background:rgba(0,212,255,.04)}
+.tn{color:var(--a4);min-width:42px;font-weight:600}.ta{color:var(--y);min-width:30px}.td{color:var(--fg2)}
+.sf{display:flex;gap:6px;margin-bottom:10px;border-bottom:1px solid var(--bg4);padding-bottom:7px}
+.sf button{background:transparent;border:none;color:var(--fg3);padding:3px 10px;cursor:pointer;font-size:.76rem;border-bottom:2px solid transparent;transition:all .12s}
+.sf button:hover{color:var(--fg)}.sf button.active{color:var(--a);border-bottom-color:var(--a)}
+.sp{display:none}.sp.active{display:block}
+.sb2{display:flex;gap:7px;margin-bottom:10px}
+.sb2 input{flex:1;background:var(--bg);border:1px solid var(--bg4);color:var(--fg);padding:7px 10px;border-radius:var(--rad);font-family:var(--m);font-size:.8rem}
+.sb2 input:focus{outline:none;border-color:var(--a)}
+.sb2 button{background:var(--a);color:#000;border:none;padding:7px 14px;border-radius:var(--rad);cursor:pointer;font-weight:600;font-size:.8rem}
+.wasm-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);color:var(--a2);padding:2px 8px;border-radius:8px;font-size:.62rem;font-weight:600}
+.toast{position:fixed;bottom:16px;right:16px;background:var(--bg3);border:1px solid var(--a);color:var(--fg);padding:8px 16px;border-radius:var(--rad);font-size:.78rem;z-index:999;transform:translateY(80px);opacity:0;transition:all .25s}
+.toast.show{transform:translateY(0);opacity:1}
+::-webkit-scrollbar{width:7px;height:7px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+
+/* Matrix rain — hidden messages easter egg */
+#matrixRain{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.13}
+#matrixSplash{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;pointer-events:none;transition:opacity 0.8s}
+#matrixSplash.hide{opacity:0}
+.matrixHint{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);font-family:var(--m);font-size:0.68rem;color:var(--fg3);z-index:6;pointer-events:none;opacity:0.6}
+.decryptOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);display:none;align-items:center;justify-content:center;z-index:100;flex-direction:column;gap:12px;padding:20px}
+.decryptOverlay.show{display:flex}
+.decryptBox{background:var(--bg2);border:1px solid var(--a);border-radius:var(--rad);padding:18px;max-width:720px;width:90%;font-family:var(--m);font-size:0.78rem;line-height:1.6;white-space:pre-wrap;max-height:80vh;overflow:auto}
+
+</style>
+</head>
+<body>
+
+<canvas id="matrixRain"></canvas>
+<div id="matrixSplash">
+  <div style="text-align:center;pointer-events:auto">
+    <div style="font-family:var(--m);font-size:1.4rem;color:var(--a);text-shadow:0 0 12px var(--a);margin-bottom:6px">SETec Astronomy</div>
+    <div style="font-family:var(--m);font-size:0.72rem;color:var(--fg2)">watch the falling code… 17 secrets hidden</div>
+    <div style="margin-top:14px"><input id="secretInput" placeholder="Access Code: ______" style="background:var(--bg);border:1px solid var(--bg4);color:var(--y);padding:6px 10px;border-radius:var(--rad);font-family:var(--m);text-align:center;width:200px" /></div>
+    <div style="font-size:0.62rem;color:var(--fg3);margin-top:4px">Hint: Think like a hacker. (Try: Sneakers)</div>
+  </div>
+</div>
+<div class="matrixHint">Characters: A-Z 0-9 $#@%&amp;*!?&lt;&gt;{}[]|/^` · 17 hidden strings in the rain</div>
+<div id="decryptOverlay" class="decryptOverlay">
+  <div style="color:var(--a);font-family:var(--m);font-size:1.1rem">ACCESS GRANTED — Decrypting…</div>
+  <div id="decryptBox" class="decryptBox"></div>
+  <button onclick="document.getElementById('decryptOverlay').classList.remove('show')" style="background:var(--a);color:#000;border:none;padding:7px 16px;border-radius:var(--rad);cursor:pointer;font-weight:600">Close</button>
+</div>
+
+<div class="app">
+<header>
+  <div class="row">
+    <h1><span>x86:LE:16</span> WASM DOS Binary Loader</h1>
+    <span class="badge">WebAssembly</span>
+    <span class="wasm-badge">⚡ WASM Engine Active</span>
+  </div>
+  <p>Raw Binary · MZ EXE · COM — 16-bit x86 Real Mode decoder powered by compiled WebAssembly</p>
+  <nav id="nav">
+    <button class="active" data-p="loader">⬆ Loader</button>
+    <button data-p="hex">⬡ Hex</button>
+    <button data-p="disasm">⚙ Disasm</button>
+    <button data-p="decomp">◈ Decompile</button>
+    <button data-p="seg">▮ Segments</button>
+    <button data-p="int">⊡ Interrupts</button>
+    <button data-p="ref">☰ Reference</button>
+  </nav>
+</header>
+<main>
+
+<!-- Loader -->
+<section class="panel active" id="p-loader">
+<div class="g2">
+  <div>
+    <div class="card">
+      <h2>⬆ Load Binary <span class="wasm-badge">WASM</span></h2>
+      <div class="drop" id="drop"><input type="file" id="fi" accept=".exe,.com,.bin,.sys,.MZ"><div class="ic">📂</div><p>Drop <strong>MZ .EXE</strong>, <strong>.COM</strong>, or <strong>Raw Binary</strong></p></div>
+      <div class="progress" id="prog"><div class="f"></div></div>
+    </div>
+    <div class="card" id="fiCard" style="display:none"><h2>📋 File Info</h2><table class="ftbl" id="fiTbl"></table></div>
+  </div>
+  <div>
+    <div class="card"><h2>🗺 Memory Map</h2><p style="font-size:.76rem;color:var(--fg2);margin-bottom:10px"><code>x86:LE:16:Real Mode</code> — 20-bit physical, segment:offset</p><div class="seg" id="segMap"></div><div id="segDyn" style="margin-top:10px"></div></div>
+    <div class="card"><h2>⚙ Format Detection</h2><div id="fmtDet" style="font-size:.78rem;color:var(--fg2)"><p>No file loaded.</p></div></div>
+  </div>
+</div>
+</section>
+
+<!-- Hex -->
+<section class="panel" id="p-hex">
+<div class="card"><h2>⬡ Hex Viewer</h2><div class="sb2"><input id="hexQ" placeholder="Search hex (4D 5A) or ASCII..."><button onclick="hexSearch()">Find</button></div><div class="stats" id="hStats"></div><div class="hexv" id="hexV"><p style="padding:16px;color:var(--fg3)">Load a file</p></div></div>
+</section>
+
+<!-- Disasm -->
+<section class="panel" id="p-disasm">
+<div class="card"><h2>⚙ 16-bit x86 Disassembly <span class="wasm-badge">WASM</span></h2><p style="font-size:.76rem;color:var(--fg2);margin-bottom:7px">CS:<code id="dCS">0000</code> IP:<code id="dIP">0000</code></p><div class="sb2"><input id="dAddr" placeholder="Go to seg:off (e.g. 1000:0100)"><button onclick="dGo()">Go</button></div><div class="dasm" id="dasmV"><p style="padding:16px;color:var(--fg3)">Load a file</p></div></div>
+</section>
+
+<!-- Decompile -->
+<section class="panel" id="p-decomp">
+<div class="card"><h2>◈ Decompiled C Output</h2><div class="dec" id="decV"><span class="cm">/* Load a binary */</span></div></div>
+</section>
+
+<!-- Segments -->
+<section class="panel" id="p-seg">
+<div class="g2">
+  <div class="card"><h2>▮ Segment Registers</h2><div class="seg" id="segRegs"></div></div>
+  <div class="card"><h2>▦ Segment:Offset Calculator</h2>
+    <div class="calc"><label>Seg:</label><input id="cS" value="1000"><label>:</label><input id="cO" value="0100"><button onclick="calcP()">=</button><span id="calcRes"></span></div>
+    <h3 style="margin-top:14px;font-size:.9rem">Program Segment Prefix (PSP)</h3><p style="font-size:.74rem;color:var(--fg2);margin:5px 0">256-byte PSP at segment base:</p>
+    <div class="pspg">
+      <div class="of">0x00</div><div class="sz">2B</div><div class="ds2">INT 20h (exit)</div>
+      <div class="of">0x02</div><div class="sz">2B</div><div class="ds2">First free segment</div>
+      <div class="of">0x05</div><div class="sz">5B</div><div class="ds2">CP/M CALL 5 entry</div>
+      <div class="of">0x0A</div><div class="sz">4B</div><div class="ds2">INT 22h terminate addr</div>
+      <div class="of">0x0E</div><div class="sz">4B</div><div class="ds2">INT 23h Ctrl-C handler</div>
+      <div class="of">0x12</div><div class="sz">4B</div><div class="ds2">INT 24h critical error</div>
+      <div class="of">0x16</div><div class="sz">2B</div><div class="ds2">Parent PSP segment</div>
+      <div class="of">0x2C</div><div class="sz">2B</div><div class="ds2">Environment segment</div>
+      <div class="of">0x5C</div><div class="sz">16B</div><div class="ds2">FCB #1</div>
+      <div class="of">0x6C</div><div class="sz">16B</div><div class="ds2">FCB #2</div>
+      <div class="of">0x80</div><div class="sz">128B</div><div class="ds2">Cmd tail / DTA</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Interrupts -->
+<section class="panel" id="p-int">
+<div class="card"><h2>⊡ DOS/BIOS Interrupt Reference</h2><div class="sb2"><input id="intQ" placeholder="Filter..."></div><div id="intTbl" style="max-height:500px;overflow:auto"></div></div>
+</section>
+
+<!-- Reference -->
+<section class="panel" id="p-ref">
+<div class="g2">
+  <div class="card"><h2>☰ MZ Header (36 bytes)</h2><table class="ftbl" id="mzRef"></table></div>
+  <div class="card"><h2>☰ x86:LE:16:Real Mode</h2>
+    <table class="ftbl">
+      <tr><td>Architecture</td><td>x86</td><td>8086/8088</td></tr>
+      <tr><td>Endian</td><td>LE</td><td>Little-Endian</td></tr>
+      <tr><td>Word</td><td>16</td><td>AX,BX,CX,DX,SI,DI,BP,SP</td></tr>
+      <tr><td>Mode</td><td>Real</td><td>No protected memory</td></tr>
+      <tr><td>Address</td><td>20-bit</td><td>1 MiB (0x00000–0xFFFFF)</td></tr>
+      <tr><td>Formula</td><td colspan="2">Physical = Segment×16 + Offset</td></tr>
+      <tr><td>Ghidra</td><td colspan="2"><code>x86:LE:16:Real Mode</code></td></tr>
+    </table>
+    <pre style="margin-top:8px"><code>AX (AH:AL) — Accumulator     CS — Code Segment
+BX (BH:BL) — Base            DS — Data Segment
+CX (CH:CL) — Counter         SS — Stack Segment
+DX (DH:DL) — Data/IO         ES — Extra Segment
+SI — Source Index             IP — Instruction Ptr
+DI — Dest Index               FLAGS — Status Reg
+BP — Base Pointer             SP — Stack Pointer</code></pre>
+  </div>
+</div>
+</section>
+</main>
+<footer>x86:LE:16:Real Mode WASM DOS Binary Loader · Public Domain (Unlicense)</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// WASM Binary (base64-encoded dos_loader.wasm)
+// ═══════════════════════════════════════════════════════════════
+const WASM_B64 = "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IAI7AQAL4gkBAn8jEkGAgARqIQAgAEEQQYAC/AsAQQAhAQJAA0AgAUGAAk8NASAAIAFqQQE6AAAgAUEBaiEBDAALCyAAQc0BakEyOgAAQfAAIQECQANAIAFB/wBLDQEgACABakESOgAAIAFBAWohAQwACwtB4AEhAQJAA0AgAUHjAUsNASAAIAFqQRI6AAAgAUEBaiEBDAALC0HkASEBAkADQCABQecBSw0BIAAgAWpBAjoAACABQQFqIQEMAAsLIABB6wFqQRI6AAAgAEHUAWpBAjoAACAAQdUBakECOgAAQbABIQECQANAIAFBtwFLDQEgACABakHyADoAACABQQFqIQEMAAsLIABBAGpBAjoAACAAQQFqQQI6AAAgAEECakECOgAAIABBA2pBAjoAACAAQQhqQQI6AAAgAEEJakECOgAAIABBCmpBAjoAACAAQQtqQQI6AAAgAEEQakECOgAAIABBEWpBAjoAACAAQRJqQQI6AAAgAEETakECOgAAIABBGGpBAjoAACAAQRlqQQI6AAAgAEEaakECOgAAIABBG2pBAjoAACAAQSBqQQI6AAAgAEEhakECOgAAIABBImpBAjoAACAAQSNqQQI6AAAgAEEoakECOgAAIABBKWpBAjoAACAAQSpqQQI6AAAgAEErakECOgAAIABBMGpBAjoAACAAQTFqQQI6AAAgAEEyakECOgAAIABBM2pBAjoAACAAQThqQQI6AAAgAEE5akECOgAAIABBOmpBAjoAACAAQTtqQQI6AABBgAEhAQJAA0AgAUGPAUsNASAAIAFqQQI6AAAgAUEBaiEBDAALCyAAQcABakECOgAAIABBwQFqQQI6AAAgAEHEAWpBAjoAACAAQcUBakECOgAAIABBxgFqQQI6AAAgAEHHAWpBAjoAACAAQdABakECOgAAIABB0QFqQQI6AAAgAEHSAWpBAjoAACAAQdMBakECOgAAQfYBIQECQANAIAFB/wFLDQEgACABakECOgAAIAFBAWohAQwACwsgAEGNAWpBAjoAACAAQQVqQQM6AAAgAEENakEDOgAAIABBFWpBAzoAACAAQR1qQQM6AAAgAEElakEDOgAAIABBLWpBAzoAACAAQTVqQQM6AAAgAEE9akEDOgAAIABBqAFqQQI6AAAgAEGpAWpBAzoAAEG4ASEBAkADQCABQb8BSw0BIAAgAWpB8wA6AAAgAUEBaiEBDAALCyAAQegBakEjOgAAIABB6QFqQRM6AAAgAEGgAWpB8wA6AAAgAEGhAWpB8wA6AAAgAEGiAWpB8wA6AAAgAEGjAWpB8wA6AAAgAEHCAWpBwwA6AAAgAEHIAWpBBDoAACAAQZoBakElOgAAIABB6gFqQRU6AAAgAEHDAWpBwQA6AAAgAEHLAWpBwQA6AAAgAEHKAWpBwwA6AAAgAEHPAWpBwQA6AAAgAEHMAWpBMToAAEHQACEBAkADQCABQdcASw0BIAAgAWpB4QA6AAAgAUEBaiEBDAALC0HYACEBAkADQCABQd8ASw0BIAAgAWpB4QA6AAAgAUEBaiEBDAALCyAAQYgBakHyADoAACAAQYkBakHyADoAACAAQYoBakHyADoAACAAQYsBakHyADoAACAAQYwBakHyADoAACAAQY4BakHyADoAACAAQZABakEBOgAAC8wFAQp/IAAgARABIQMgAy0AACEEIAQhC0EAIQhBACEJQQAhByMSQYCABGogBGotAAAhDCAMQQ9xIQUgDEHwAXFBBHYhBiAGIwVGIAVBAkZxBEAgAUECaiADQQFqLQAAwGpB//8DcSEJIARBD3EhBwsgBiMFRiAFQQNGcQRAIAFBA2ogA0EBai8BAMFqQf//A3EhCQsgBiMFRiAFQQVGcQRAIANBAWooAgAhCUECIQgLIAYjBkYgBUEDRnEEQCABQQNqIANBAWovAQDBakH//wNxIQkLIAYjBkYgBUEFRnEEQCADQQFqKAIAIQlBASEICyAEQc0BRgRAIANBAWotAAAhCUHNASAJQQh0ciELCyAEQcwBRgRAQQMhCQsgBEGwAU8gBEG3AU1xBEAgBEEHcSEHIANBAWotAAAhCQsgBEG4AU8gBEG/AU1xBEAgBEEHcSEHIANBAWovAQAhCQsgBEGIAU8gBEGLAU1xBEAgA0EBai0AACEJCyAEQaABTyAEQaMBTXEEQCADQQFqLwEAIQkLIARB0ABPIARB1wBNcQRAIARBB3EhB0EAIQgLIARB2ABPIARB3wBNcQRAIARBB3EhB0EBIQgLIARBBkYgBEEORiAEQRZGIARBHkZycnIEQCMKIQZBECAEQQN2ciEHQQAhCAsgBEEHRiAEQQ9GIARBF0YgBEEfRnJycgRAIwohBkEQIARBA3ZyIQdBASEICyAEQaQBTyAEQa8BTXEEQCMMIQYgBEEPcSEHCyAEQcsBRiAEQcoBRnIEQEEBIQgLIARBzwFGBEBBAiEICyAFQQJGBEAgCUEARgRAIANBAWotAAAhCQsLIw8gAkEQbGohCiAKQQBqIAY6AAAgCkEBaiAHOgAAIApBAmogBToAACAKQQNqIAg6AAAgCkEEaiALNgIAIApBCGogCTYCACAKQQxqIAAgAUEQdHI2AgAgBQtkAQZ/EA0jFiMZaiEBIxohAkEAIQMjIyMOIxhqaiEGAkADQCADIABPDQEgASACEAEhBSAFIAZPDQEgAkHw/wNPDQEgASACIAMQDiEEIAIgBGohAiADQQFqIQMMAAsLIAMkISADC1kBBH8QDUEAIQMjIyMOIxhqaiEGAkADQCADIAJPDQEgACABEAEhBSAFIAZPDQEgAUHw/wNPDQEgACABIAMQDiEEIAEgBGohASADQQFqIQMMAAsLIAMkISADCw0AIw8gAEEQbGotAAALEAAjDyAAQRBsakEBai0AAAsQACMPIABBEGxqQQJqLQAACxAAIw8gAEEQbGpBA2otAAALEAAjDyAAQRBsakEEaigCAAsQACMPIABBEGxqQQhqKAIACxAAIw8gAEEQbGpBDGooAgALCgAjEyAAai8BAAsyAQJ/IAAgARABIQMgAiEEIAMgBGpBgIAESwRAQYCABCADayEECyMSIAMgBPwKAAAgBAtGAEEAJBRBACQVQQAkFkEAJBdBACQYQQAkGUEAJBpBACQbQQAkHEEAJB1BACQeQQAkH0EAJCBBACQhQQAkIkEAJCNBACQkCw==";
+
+// ═══════════════════════════════════════════════════════════════
+// State
+// ═══════════════════════════════════════════════════════════════
+let W = null; // wasm instance
+let mem = null; // Uint8Array view of wasm memory
+let u8 = null; // same
+let u16 = null;
+let u32 = null;
+const S = { raw: null, fmt: 0 };
+
+// ═══════════════════════════════════════════════════════════════
+// WASM Init
+// ═══════════════════════════════════════════════════════════════
+async function initWasm() {
+  const bytes = Uint8Array.from(atob(WASM_B64), c => c.charCodeAt(0));
+  const { instance } = await WebAssembly.instantiate(bytes);
+  W = instance.exports;
+  mem = W.memory;
+  refreshMemView();
+  toast('⚡ WASM engine loaded (' + bytes.length + ' bytes)');
+}
+
+function refreshMemView() {
+  u8  = new Uint8Array(mem.buffer);
+  u16 = new Uint16Array(mem.buffer);
+  u32 = new Uint32Array(mem.buffer);
+}
+
+const FILE_BUF = 0x40000;
+const META_BUF = 0x80000;
+const DECODE_BUF = 0x20000;
+
+// ═══════════════════════════════════════════════════════════════
+// Navigation
+// ═══════════════════════════════════════════════════════════════
+document.querySelectorAll('#nav button').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('#nav button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('p-' + b.dataset.p).classList.add('active');
+  };
+});
+document.querySelectorAll('.sf button').forEach(b => {
+  b.onclick = () => {
+    const card = b.closest('.card');
+    card.querySelectorAll('.sf button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    card.querySelectorAll('.sp').forEach(p => p.classList.remove('active'));
+    card.querySelector('#' + b.dataset.sp).classList.add('active');
+  };
+});
+
+// ═══════════════════════════════════════════════════════════════
+// File Loading
+// ═══════════════════════════════════════════════════════════════
+const drop = document.getElementById('drop');
+const fi = document.getElementById('fi');
+drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+drop.ondragleave = () => drop.classList.remove('over');
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); if(e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); };
+fi.onchange = e => { if(e.target.files[0]) loadFile(e.target.files[0]); };
+
+function loadFile(file) {
+  const r = new FileReader();
+  r.onprogress = e => { if(e.lengthComputable) document.querySelector('#prog .f').style.width = (e.loaded/e.total*100)+'%'; };
+  r.onload = e => {
+    S.raw = new Uint8Array(e.target.result);
+    document.querySelector('#prog .f').style.width = '100%';
+    setTimeout(() => document.querySelector('#prog .f').style.width = '0%', 400);
+    analyze();
+    toast('Loaded: ' + file.name + ' (' + S.raw.length + ' bytes)');
+  };
+  r.readAsArrayBuffer(file);
+}
+
+
+// ── PCX LSB Steganography Extractor (Easter egg) ──
+function extractPCXLSB(u8){
+  // PCX 128 header + 0x0C marker + 768 palette; palette LSB hides ASCII
+  if(u8.length < 900 || u8[0] !== 0x0A) return null;
+  // Find palette: last 768 bytes after 0x0C
+  let palStart = u8.length - 768;
+  // Verify marker 0x0C at palStart-1
+  if(u8[palStart-1] !== 0x0C) return null;
+  let bits = "";
+  for(let i=0;i<768;i++) bits += (u8[palStart+i] & 1).toString();
+  let chars = "";
+  for(let i=0;i<bits.length;i+=8){
+    let byte = parseInt(bits.substr(i,8),2);
+    if(byte===0) break;
+    if(byte>=32 && byte<=126) chars+=String.fromCharCode(byte);
+    else if(byte===10 || byte===13) chars+=String.fromCharCode(byte);
+    else chars+='.';
+    if(chars.length>200) break;
+  }
+  // Check if decoded contains readable
+  if(chars.includes("SETEC") || chars.includes("Too many")){
+    return chars;
+  }
+  return null;
+}
+
+function analyze() {
+  if (!W) return;
+  refreshMemView();
+  const len = S.raw.length;
+
+  // Copy file into WASM memory at FILE_BUF
+  u8.set(S.raw, FILE_BUF);
+
+  // Call WASM load_binary
+  S.fmt = W.load_binary(FILE_BUF, len);
+  // PCX LSB Easter egg: if PCX, try to extract hidden message
+  try{
+    let lsb = extractPCXLSB(S.raw);
+    if(lsb){
+      console.log("PCX LSB hidden:", lsb);
+      // Show in decompiler panel as stego note
+      setTimeout(()=> {
+        let dec = document.getElementById('decV');
+        if(dec) dec.innerHTML += `<div style="margin-top:10px;padding:8px;background:rgba(0,212,255,0.08);border:1px solid var(--a);border-radius:4px"><b style="color:var(--a)">🔍 PCX LSB Steganography (palette, 768 bytes):</b><br><span style="color:var(--y)">${lsb.replace(/</g,'&lt;').slice(0,300)}</span><br><span style="color:var(--fg3);font-size:0.7rem">Extracted via LSB of palette bytes (see README §16). Bytes 0x${(S.raw.length-768).toString(16)}+</span></div>`;
+      }, 400);
+      toast('🔍 PCX LSB hidden: '+lsb.slice(0,40));
+    }
+  } catch(e){}
+
+  updateFileInfo();
+  updateFmtDet();
+  updateSegMap();
+  renderHex();
+  disasmAll();
+  decompile();
+  renderInterrupts();
+  renderMzRef();
+  calcP();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// File Info
+// ═══════════════════════════════════════════════════════════════
+const FMT_N = ['Unknown','MZ','COM','RAW'];
+
+function updateFileInfo() {
+  document.getElementById('fiCard').style.display = 'block';
+  const tbl = document.getElementById('fiTbl');
+  const fmt = W.format.value;
+  const loadSeg = W.load_seg.value;
+  const codeOff = W.code_off.value;
+  const codeSz = W.code_size.value;
+  const cs = W.hdr_cs.value;
+  const ip = W.hdr_ip.value;
+  const ss = W.hdr_ss.value;
+  const sp = W.hdr_sp.value;
+  const relocCnt = W.hdr_reloc_count.value;
+  const entry = W.entry_phys.value;
+
+  const rows = [
+    ['Format', FMT_N[fmt], fmt===1?'DOS MZ Executable':fmt===2?'COM flat (≤64KB, CS:0100)':'Raw binary'],
+    ['File Size', hex16(S.raw.length), (S.raw.length/1024).toFixed(1)+' KiB'],
+    ['Code Offset', hex16(codeOff), ''],
+    ['Code Size', hex16(codeSz), codeSz+' bytes'],
+    ['Load Segment', hex16(loadSeg), 'Physical base: 0x'+(loadSeg*16).toString(16).toUpperCase()],
+    ['CS:IP', hex16(cs)+':'+hex16(ip), 'Entry: 0x'+entry.toString(16).toUpperCase()],
+    ['SS:SP', hex16(ss)+':'+hex16(sp), ''],
+  ];
+  if (fmt===1) {
+    rows.push(['Relocations', relocCnt, 'At 0x'+W.hdr_reloc_off.value.toString(16)]);
+    rows.push(['Header Size', W.get_header_u16(8)*16+' bytes', W.get_header_u16(8)+' paragraphs']);
+    rows.push(['Relocs Applied', W.reloc_applied.value, '']);
+    // MZ header stego: e_csum/e_ovno/padding encode "SETEC AS" (see README §16)
+    try{
+      let cs = W.get_header_u16(0x12).toString(16).padStart(4,'0');
+      let ov = W.get_header_u16(0x1A).toString(16).padStart(4,'0');
+      let p1 = W.get_header_u16(0x1C).toString(16).padStart(4,'0');
+      let p2 = W.get_header_u16(0x1E).toString(16).padStart(4,'0');
+      let bytes = [cs.slice(2,4), cs.slice(0,2), ov.slice(2,4), ov.slice(0,2), p1.slice(2,4), p1.slice(0,2), p2.slice(2,4), p2.slice(0,2)].map(h=>String.fromCharCode(parseInt(h,16))).join('');
+      if(bytes.includes("SETEC")){
+        rows.push(['MZ Stego', bytes.trim(), 'e_csum/e_ovno/padding ASCII (little-endian) → "SETEC AS"']);
+      }
+    }catch(e){}
+  }
+  if (fmt===2) {
+    rows.push(['PSP', '0x0000–0x00FF', '256-byte Program Segment Prefix']);
+  }
+  tbl.innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Format Detection
+// ═══════════════════════════════════════════════════════════════
+function updateFmtDet() {
+  const el = document.getElementById('fmtDet');
+  const fmt = W.format.value;
+  let h = '<div style="margin-bottom:6px"><strong>Detected:</strong> <code style="color:var(--g);font-size:.95rem">'+FMT_N[fmt]+'</code></div>';
+  if (fmt===1) { h+='<p>✓ MZ signature at offset 0x00</p><p>✓ Header: '+(W.get_header_u16(8)*16)+' bytes</p><p>✓ Code: '+W.code_size.value+' bytes</p><p>'+(W.hdr_reloc_count.value?'✓':'○')+' '+W.hdr_reloc_count.value+' relocations ('+W.reloc_applied.value+' applied)</p>'; }
+  else if (fmt===2) { h+='<p>✓ No MZ header</p><p>✓ File ≤ 64KB → COM format</p><p>✓ Loaded at CS:0100 with PSP</p>'; }
+  else { h+='<p>○ No MZ header, file > 64KB → Raw binary</p>'; }
+  el.innerHTML = h;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Segment Map
+// ═══════════════════════════════════════════════════════════════
+function updateSegMap() {
+  const max = 0x100000;
+  const loadSeg = W.load_seg.value;
+  const codeSz = W.code_size.value;
+  const codeOff = W.code_off.value;
+  const fmt = W.format.value;
+  const p = pct => Math.max(pct, 0.15);
+
+  let h = '';
+  h += bar('IVT','0000:0000',1.5,'psp');
+  h += bar('BDA','0040:0000',0.25,'ds');
+  if (fmt===2) {
+    h += bar('PSP','0x'+(loadSeg*16).toString(16).toUpperCase(),p(256/max*100),'psp');
+    h += bar('COM_CODE','0x'+(loadSeg*16+256).toString(16).toUpperCase(),p(codeSz/max*100),'cs');
+  } else if (fmt===1) {
+    h += bar('MZ Header','0x'+(loadSeg*16).toString(16).toUpperCase(),p(W.get_header_u16(8)*16/max*100),'es');
+    h += bar('MZ_IMAGE','0x'+(loadSeg*16+codeOff).toString(16).toUpperCase(),p(codeSz/max*100),'cs');
+  } else {
+    h += bar('RAW','0x00000',p(codeSz/max*100),'cs');
+  }
+  document.getElementById('segMap').innerHTML = h;
+
+  const cs = W.hdr_cs.value, ip = W.hdr_ip.value, ss = W.hdr_ss.value, sp = W.hdr_sp.value;
+  let d = '';
+  d += `CS = <span style="color:var(--a)">0x${hex16(loadSeg+cs)}</span> → phys 0x${((loadSeg+cs)*16).toString(16).toUpperCase()}<br>`;
+  d += `DS = <span style="color:var(--a)">0x${hex16(loadSeg)}</span> → phys 0x${(loadSeg*16).toString(16).toUpperCase()}<br>`;
+  d += `SS:SP = <span style="color:var(--a)">0x${hex16(ss)}:${hex16(sp)}</span><br>`;
+  d += `Entry = <span style="color:var(--g)">0x${W.entry_phys.value.toString(16).toUpperCase().padStart(5,'0')}</span>`;
+  document.getElementById('segDyn').innerHTML = d;
+
+  // Segment register bars
+  const maxS = 0x100000;
+  const sr = document.getElementById('segRegs');
+  sr.innerHTML = [
+    ['CS','cs',loadSeg+cs],
+    ['DS','ds',loadSeg],
+    ['SS','ss',ss+loadSeg],
+    ['ES','es',loadSeg]
+  ].map(([l,c,v])=>`<div class="sb"><div class="lb">${l}</div><div class="bar"><div class="fl ${c}" style="width:${Math.min(v*16/maxS*100,100)}%">${l}</div></div><div class="adr">${hex16(v)}</div></div>`).join('');
+}
+
+function bar(label,addr,pct,cls) {
+  return `<div class="sb"><div class="lb">${label}</div><div class="bar"><div class="fl ${cls}" style="width:${pct}%">${label}</div></div><div class="adr">${addr}</div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Hex Viewer
+// ═══════════════════════════════════════════════════════════════
+function renderHex() {
+  const v = document.getElementById('hexV');
+  const d = S.raw;
+  if(!d) return;
+  const fmt = W.format.value;
+  const codeOff = W.code_off.value;
+  const codeSz = W.code_size.value;
+  const rows = Math.min(Math.ceil(d.length/16), 2000);
+  let h = '';
+  for (let r=0; r<rows; r++) {
+    const addr = r*16;
+    let hx='', asc='';
+    for (let c=0; c<16; c++) {
+      if (c===8) hx+='<span class="sep"></span>';
+      const i = addr+c;
+      if (i<d.length) {
+        const v = d[i];
+        let cl = '';
+        if (fmt===1 && i<0x1C) cl='hdr';
+        else if (i>=codeOff && i<codeOff+codeSz) cl='cod';
+        else if (v===0) cl='z';
+        hx+=`<span class="b ${cl}">${hex8(v)}</span>`;
+        asc+=v>=0x20&&v<0x7F?`<span class="p">${String.fromCharCode(v)}</span>`:'·';
+      } else { hx+='<span class="b">  </span>'; asc+=' '; }
+    }
+    h+=`<div class="hxr"><span class="hxa">${hex16(addr)}</span><span class="hxb">${hx}</span><span class="asc">${asc}</span></div>`;
+  }
+  if (Math.ceil(d.length/16)>rows) h+=`<div style="padding:7px;color:var(--fg3);text-align:center">… ${Math.ceil(d.length/16)-rows} more rows</div>`;
+  v.innerHTML = h;
+
+  document.getElementById('hStats').innerHTML = [
+    [hex16(d.length),'File Size'],[FMT_N[fmt],'Format'],[hex16(W.code_size.value),'Code Size'],[W.hdr_reloc_count.value,'Relocs']
+  ].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+}
+
+function hexSearch() {
+  const q = document.getElementById('hexQ').value.trim().toLowerCase();
+  if(!q||!S.raw) return;
+  const hex = q.replace(/[^0-9a-f]/g,'');
+  if (hex.length>=2 && hex.length%2===0) {
+    const needle = [];
+    for(let i=0;i<hex.length;i+=2) needle.push(parseInt(hex.substr(i,2),16));
+    for(let i=0;i<=S.raw.length-needle.length;i++) {
+      let ok=true;
+      for(let j=0;j<needle.length;j++) if(S.raw[i+j]!==needle[j]){ok=false;break;}
+      if(ok){toast('Found at 0x'+hex16(i));return;}
+    }
+  }
+  toast('Not found');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Disassembly — WASM-powered
+// ═══════════════════════════════════════════════════════════════
+const ITYPE = ['normal','branch','call','int','ret','data','pushpop','mov','string'];
+const REGS8 = ['AL','CL','DL','BL','AH','CH','DH','BH'];
+const REGS16 = ['AX','CX','DX','BX','SP','BP','SI','DI'];
+const SEGREGS = ['ES','CS','SS','DS'];
+const CONDJ = ['JO','JNO','JB','JNB','JZ','JNZ','JBE','JA','JS','JNS','JP','JNP','JL','JGE','JLE','JG'];
+const LOOPJ = ['LOOPNZ','LOOPZ','LOOP','JCXZ'];
+const STR_OP = ['MOVSB','MOVSW','CMPSB','CMPSW','STOSB','STOSW','LODSB','LODSW','SCASB','SCASW'];
+
+function disasmAll() {
+  const v = document.getElementById('dasmV');
+  if (!S.raw) return;
+  refreshMemView();
+
+  const loadSeg = W.load_seg.value;
+  const cs = W.hdr_cs.value;
+  const ip = W.hdr_ip.value;
+  const entry = W.entry_phys.value;
+
+  document.getElementById('dCS').textContent = hex16(loadSeg + cs);
+  document.getElementById('dIP').textContent = hex16(ip);
+
+  const count = W.disassemble(300);
+  let h = '';
+
+  for (let i = 0; i < count; i++) {
+    const type   = W.get_decode_type(i);
+    const sub    = W.get_decode_subtype(i);
+    const len    = W.get_decode_length(i);
+    const flags  = W.get_decode_flags(i);
+    const raw    = W.get_decode_raw(i);
+    const operand= W.get_decode_operand(i);
+    const addr   = W.get_decode_addr(i);
+    const seg    = addr & 0xFFFF;
+    const off    = (addr >>> 16) & 0xFFFF;
+    const phys   = W.seg_off_to_phys(seg, off);
+
+    // Read raw bytes from DOS memory
+    const bytes = [];
+    for (let j = 0; j < len && phys+j < u8.length; j++) bytes.push(u8[phys+j]);
+
+    let mn = '', ops = '', cls = '', cmt = '';
+
+    // Get the opcode
+    const op = bytes[0] || 0;
+
+    // Decode mnemonic
+    if (type === 3) { // INT
+      mn = op === 0xCC ? 'INT3' : 'INT';
+      cls = 'i';
+      if (op === 0xCD) { ops = hex8(operand); cmt = intComment(operand); }
+      else if (op === 0xCC) { ops = '3'; }
+    } else if (type === 4) { // RET
+      mn = flags===2?'IRET':flags===1?'RETF':'RET';
+      if (len===3) ops = hex16(operand);
+    } else if (type === 2) { // CALL
+      mn = 'CALL';
+      cls = 'c';
+      if (flags===1) { ops = hex16(operand>>>16)+':'+hex16(operand&0xFFFF); cmt='far'; }
+      else { ops = hex16(operand); cmt = '→ '+hex16(seg)+':'+hex16(operand); }
+    } else if (type === 1) { // BRANCH
+      if (op>=0x70&&op<=0x7F) { mn=CONDJ[op-0x70]; }
+      else if (op>=0xE0&&op<=0xE3) { mn=LOOPJ[op-0xE0]; }
+      else if (op===0xEB) { mn='JMP'; }
+      else if (op===0xE9) { mn='JMP'; }
+      else if (op===0xEA) { mn='JMP FAR'; }
+      else { mn='J'; }
+      cls = 'j';
+      if (flags===2) { ops=hex16(operand>>>16)+':'+hex16(operand&0xFFFF); cmt='far'; }
+      else { ops=hex16(operand); cmt='→ '+hex16(seg)+':'+hex16(operand); }
+    } else if (type === 7) { // MOV
+      mn = 'MOV';
+      cls = 'm';
+      const reg = sub & 0x07;
+      if (len===2) ops = REGS8[reg]+', '+hex8(operand);
+      else if (len===3) ops = REGS16[reg]+', '+hex16(operand);
+      else ops = REGS16[reg]+', '+hex16(operand);
+    } else if (type === 6) { // PUSH/POP
+      const isPush = flags===0;
+      mn = isPush?'PUSH':'POP';
+      cls = 'pp';
+      if (sub>=0x10) { mn = isPush?'PUSH':'POP'; ops=SEGREGS[(sub-0x10)&3]; }
+      else ops = REGS16[sub&7];
+    } else if (type === 8) { // STRING
+      mn = STR_OP[sub] || 'STR';
+      cls = 'str';
+    } else if (op>=0x40&&op<=0x47) {
+      mn='INC'; ops=REGS16[op-0x40];
+    } else if (op>=0x48&&op<=0x4F) {
+      mn='DEC'; ops=REGS16[op-0x48];
+    } else if (op===0x90) {
+      mn='NOP';
+    } else {
+      mn = hex8(op)+'?';
+      if (len>1) ops = bytes.slice(1).map(hex8).join(' ');
+    }
+
+    // Check entry point
+    const isEntry = phys === entry;
+
+    const byteStr = bytes.map(hex8).join(' ');
+    h += `<div class="dr${isEntry?' ep':''}"><span class="da">${hex16(seg)}:${hex16(off)}</span><span class="db">${byteStr}</span><span class="dm ${cls}">${mn}</span><span class="do">${colorOps(ops)}</span><span class="dc">${cmt?'; '+cmt:''}${isEntry?'◄ ENTRY':''}</span></div>`;
+  }
+
+  if (count === 0) h = '<p style="padding:16px;color:var(--fg3)">No instructions decoded</p>';
+  v.innerHTML = h;
+}
+
+function colorOps(s) {
+  if(!s) return '';
+  return s.replace(/\b(AX|BX|CX|DX|AH|AL|BH|BL|CH|CL|DH|DL|SI|DI|BP|SP|CS|DS|SS|ES)\b/g,'<span class="rg">$1</span>')
+          .replace(/\b([0-9A-F]{4})\b/g,'<span class="im">$1</span>');
+}
+
+function intComment(n) {
+  const entry = INTS.find(e=>e.n===n);
+  return entry ? entry.d : 'INT '+hex8(n)+'h';
+}
+
+function dGo() {
+  toast('Navigate to address');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Decompiler
+// ═══════════════════════════════════════════════════════════════
+function decompile() {
+  const v = document.getElementById('decV');
+  if(!S.raw) return;
+  refreshMemView();
+  const fmt = W.format.value;
+  const loadSeg = W.load_seg.value;
+  const cs = W.hdr_cs.value;
+  const ip = W.hdr_ip.value;
+  const entry = W.entry_phys.value;
+  const count = W.decode_count.value;
+
+  let c = `<span class="cm">/* Decompiled — Ghidra Sleigh (WASM engine)\n * Language: x86:LE:16:Real Mode\n * Format: ${FMT_N[fmt]}  Entry: ${hex16(loadSeg+cs)}:${hex16(ip)}\n */</span>\n\n`;
+  c += `<span class="cm">#include &lt;dos.h&gt;</span>\n`;
+  c += `<span class="cm">#include &lt;stdlib.h&gt;</span>\n\n`;
+
+  // Collect INT calls
+  const calls = [];
+  for(let i=0;i<count;i++) {
+    const t = W.get_decode_type(i);
+    if(t===3) { // INT
+      const op = W.get_decode_raw(i) & 0xFF;
+      if(op===0xCD) calls.push(W.get_decode_operand(i));
+    }
+  }
+
+  c += `<span class="cm">/* Detected ${calls.length} interrupt calls */</span>\n\n`;
+  c += `<span class="tp">void</span> <span class="fn">main</span>(<span class="tp">void</span>) {\n`;
+  c += `    <span class="tp">char</span> <span class="vr">buffer</span>[<span class="nu">128</span>];\n\n`;
+
+  const seen = new Set();
+  calls.slice(0,25).forEach((n,i) => {
+    c += `    <span class="cm">/* INT ${hex8(n)}h */</span> `;
+    switch(n) {
+      case 0x20: c+=`<span class="kw">return</span>; <span class="cm">/* terminate */</span>`; break;
+      case 0x21: c+=`<span class="fn">dos_services</span>();`; break;
+      default: c+=`<span class="fn">int${hex8(n)}h</span>();`; break;
+    }
+    c+='\n';
+    seen.add(n);
+  });
+  if(calls.length>25) c+=`    <span class="cm">/* ... ${calls.length-25} more ... */</span>\n`;
+  c += `}\n`;
+
+  // Add inferred DOS API wrappers
+  const has = n => calls.includes(n);
+  if(has(0x21)) {
+    c += `\n<span class="cm">/* DOS service calls detected — auto-inferred wrappers */</span>\n`;
+    c += `<span class="tp">void</span> <span class="fn">display_string</span>(<span class="tp">const char __far</span> *<span class="vr">s</span>) {\n    <span class="cm">/* INT 21h AH=09h: DS:DX → $-terminated string */</span>\n    _asm { push ds; lds dx,s; mov ah,9; int 21h; pop ds }\n}\n\n`;
+    c += `<span class="tp">int</span> <span class="fn">dos_open</span>(<span class="tp">const char __far</span> *<span class="vr">path</span>, <span class="tp">int</span> <span class="vr">mode</span>) {\n    <span class="cm">/* INT 21h AH=3Dh */</span>\n    <span class="tp">int</span> <span class="vr">h</span>;\n    _asm { push ds; lds dx,path; mov ax,mode; mov ah,3Dh; int 21h; pop ds; jc err; mov h,ax }\n    <span class="kw">return</span> h;\n}\n\n`;
+    c += `<span class="tp">void</span> <span class="fn">dos_exit</span>(<span class="tp">int</span> <span class="vr">code</span>) {\n    _asm { mov ah,4Ch; mov al,byte ptr code; int 21h }\n}\n`;
+  }
+
+  v.innerHTML = c;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Interrupt Table
+// ═══════════════════════════════════════════════════════════════
+const INTS = [
+  {n:0x20,d:'Terminate Program'},
+  {n:0x21,d:'DOS Services (AH=function)'},
+  {n:0x10,d:'BIOS Video Services'},
+  {n:0x13,d:'BIOS Disk Services'},
+  {n:0x16,d:'BIOS Keyboard Services'},
+  {n:0x33,d:'Mouse Driver'},
+  {n:0x1A,d:'BIOS Time/Date'},
+];
+
+function renderInterrupts() {
+  const el = document.getElementById('intTbl');
+  // Build from WASM decode data
+  const count = W.decode_count.value;
+  const found = [];
+  for(let i=0;i<count;i++) {
+    if(W.get_decode_type(i)===3) {
+      const n = W.get_decode_operand(i);
+      if(!found.find(f=>f.n===n)) {
+        const ref = INTS.find(e=>e.n===n);
+        found.push({n, d:ref?ref.d:'Interrupt '+hex8(n)+'h'});
+      }
+    }
+  }
+  let h = found.length
+    ? found.map(e=>`<div class="tr"><span class="tn">INT ${hex8(e.n)}h</span><span class="td">${e.d}</span></div>`).join('')
+    : '<div style="padding:10px;color:var(--fg3)">No interrupts found in disassembled region</div>';
+  h += '<h3 style="margin-top:14px;font-size:.9rem;color:var(--a)">Full Reference</h3>';
+  h += ALL_INTS.map(e=>`<div class="tr"><span class="tn">INT ${e.n}</span><span class="ta">${e.ah}</span><span class="td">${e.d}</span></div>`).join('');
+  el.innerHTML = h;
+
+  document.getElementById('intQ').oninput = function() {
+    const q = this.value.toLowerCase();
+    el.querySelectorAll('.tr').forEach(r => r.style.display = r.textContent.toLowerCase().includes(q)?'':'none');
+  };
+}
+
+const ALL_INTS = [
+  {n:'21h',ah:'09h',d:'Display String (DS:DX=$-terminated)'},
+  {n:'21h',ah:'3Ch',d:'Create File (DS:DX=name, CX=attr)'},
+  {n:'21h',ah:'3Dh',d:'Open File (DS:DX=name, AL=mode)'},
+  {n:'21h',ah:'3Eh',d:'Close File (BX=handle)'},
+  {n:'21h',ah:'3Fh',d:'Read File (BX=handle, CX=count, DS:DX=buf)'},
+  {n:'21h',ah:'40h',d:'Write File (BX=handle, CX=count, DS:DX=buf)'},
+  {n:'21h',ah:'41h',d:'Delete File (DS:DX=name)'},
+  {n:'21h',ah:'42h',d:'Seek (BX=handle, AL=method, CX:DX=offset)'},
+  {n:'21h',ah:'48h',d:'Allocate Memory (BX=paragraphs)'},
+  {n:'21h',ah:'49h',d:'Free Memory (ES=segment)'},
+  {n:'21h',ah:'4Ch',d:'Terminate Process (AL=code)'},
+  {n:'21h',ah:'4Eh',d:'Find First File (DS:DX=spec)'},
+  {n:'21h',ah:'4Fh',d:'Find Next File'},
+  {n:'21h',ah:'30h',d:'Get DOS Version'},
+  {n:'21h',ah:'35h',d:'Get Interrupt Vector (AL=int)'},
+  {n:'21h',ah:'25h',d:'Set Interrupt Vector (AL=int, DS:DX)'},
+  {n:'21h',ah:'2Ah',d:'Get Date'},
+  {n:'21h',ah:'2Ch',d:'Get Time'},
+  {n:'10h',ah:'00h',d:'Set Video Mode (AL=mode)'},
+  {n:'10h',ah:'02h',d:'Set Cursor Position'},
+  {n:'10h',ah:'09h',d:'Write Char+Attr'},
+  {n:'10h',ah:'0Eh',d:'Teletype Output (AL=char)'},
+  {n:'10h',ah:'13h',d:'Write String'},
+  {n:'13h',ah:'02h',d:'Read Sectors'},
+  {n:'16h',ah:'00h',d:'Read Keystroke'},
+  {n:'33h',ah:'00h',d:'Reset Mouse'},
+  {n:'33h',ah:'03h',d:'Get Mouse Position'},
+  {n:'20h',ah:'--',d:'Terminate Program'},
+];
+
+// ═══════════════════════════════════════════════════════════════
+// MZ Reference
+// ═══════════════════════════════════════════════════════════════
+function renderMzRef() {
+  document.getElementById('mzRef').innerHTML = [
+    ['0x00','2B','e_magic — Magic number ("MZ")'],
+    ['0x02','2B','e_cblp — Bytes on last page'],
+    ['0x04','2B','e_cp — Pages in file (512B)'],
+    ['0x06','2B','e_crlc — Relocation entries'],
+    ['0x08','2B','e_cparhdr — Header size (×16)'],
+    ['0x0A','2B','e_minalloc — Min extra paras'],
+    ['0x0C','2B','e_maxalloc — Max extra paras'],
+    ['0x0E','2B','e_ss — Initial SS'],
+    ['0x10','2B','e_sp — Initial SP'],
+    ['0x12','2B','e_csum — Checksum'],
+    ['0x14','2B','e_ip — Initial IP'],
+    ['0x16','2B','e_cs — Initial CS (relative)'],
+    ['0x18','2B','e_lfarlc — Reloc table offset'],
+    ['0x1A','2B','e_ovno — Overlay number'],
+  ].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Calculator
+// ═══════════════════════════════════════════════════════════════
+function calcP() {
+  const seg = parseInt(document.getElementById('cS').value,16)||0;
+  const off = parseInt(document.getElementById('cO').value,16)||0;
+  const phys = W ? W.seg_off_to_phys(seg, off) : ((seg*16+off)&0xFFFFF);
+  document.getElementById('calcRes').textContent = '→ 0x'+phys.toString(16).toUpperCase().padStart(5,'0');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Utility
+// ═══════════════════════════════════════════════════════════════
+function hex8(v) { return (v&0xFF).toString(16).toUpperCase().padStart(2,'0'); }
+function hex16(v) { return (v&0xFFFF).toString(16).toUpperCase().padStart(4,'0'); }
+function toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+
+// ═══════════════════════════════════════════════════════════════
+// Boot
+// ═══════════════════════════════════════════════════════════════
+initWasm().catch(e => toast('WASM init failed: ' + e.message));
+</script>
+
+<script>
+// ── Matrix Rain with 17 hidden strings (splash screen easter egg) ──
+const HIDDEN_STRINGS = [ // + crossword vertical col 0
+
+  "SETec Astronomy",
+  "Too many secrets",
+  "My name is Werner Brandes",
+  "We are the United States Government",
+  "The only truly secure system is one that is powered off",
+  "No one ever thinks they are the bad guy",
+  "Security",
+  "Ciphertext: 0xDEADBEEF",
+  "Private Key: [REDACTED]",
+  "v86.wasm | 2.7MB | Rust compile target",
+  "DOS 6.22 | FAT12 | 2880 sectors",
+  "ISA bus | PS/2 keyboard | VGA 720x400",
+  "Sector 0: Bootstrap code",
+  "Cluster chain: 2->3->4->...->EOF",
+  "BIOS INT 13h: Read sectors",
+  "INT 21h: DOS services",
+  "AX=4C00h: Terminate process"
+];
+const CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*!?<> {}[]|/^`";
+(function(){
+  const canvas = document.getElementById('matrixRain');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, cols, fontSize=13, drops, hiddenActive;
+  let hiddenPos;
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    cols = Math.floor(w / fontSize);
+    drops = Array(cols).fill(0).map(()=> Math.floor(Math.random()* -h/fontSize));
+    hiddenActive = Array(cols).fill(null);
+    hiddenPos = Array(cols).fill(0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  let frame=0;
+  function draw(){
+    ctx.fillStyle = "rgba(8,8,16,0.14)";
+    ctx.fillRect(0,0,w,h);
+    ctx.font = fontSize+"px 'Cascadia Code','Fira Code',monospace";
+    for(let i=0;i<cols;i++){
+      // Dedicated crossword vertical column (col 0) — always spells SETEC ASTRONOMY vertically (like crossword)
+      if(i===0){
+        const vMsg = "SETEC ASTRONOMY";
+        let ch = vMsg[drops[i] % vMsg.length];
+        if(ch===" ") ch = String.fromCharCode(160); // keep spacing
+        ctx.fillStyle = "#00d4ff";
+        ctx.fillText(ch, i*fontSize, drops[i]*fontSize);
+        if(drops[i]*fontSize > h && Math.random() > 0.975) drops[i]=0;
+        drops[i]++;
+        continue;
+      }
+      // maybe start hidden string
+      if(!hiddenActive[i] && Math.random() < 0.003){
+        hiddenActive[i] = HIDDEN_STRINGS[Math.floor(Math.random()*HIDDEN_STRINGS.length)];
+        hiddenPos[i]=0;
+      }
+      let char, color;
+      if(hiddenActive[i]){
+        char = hiddenActive[i][hiddenPos[i]] || " ";
+        color = hiddenPos[i]===0 ? "#00d4ff" : "#ffcc00";
+        hiddenPos[i]++;
+        if(hiddenPos[i] >= hiddenActive[i].length){
+          hiddenActive[i]=null;
+          hiddenPos[i]=0;
+          // leave gap after hidden
+          drops[i] += 6;
+        }
+      } else {
+        char = CHARSET[Math.floor(Math.random()*CHARSET.length)];
+        color = Math.random()<0.02 ? "#ffffff" : (Math.random()<0.1 ? "#44ff88" : "#00ff66");
+      }
+      ctx.fillStyle = color;
+      ctx.fillText(char, i*fontSize, drops[i]*fontSize);
+      // occasionally brighter head
+      if(Math.random()<0.08){
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(char, i*fontSize, drops[i]*fontSize);
+      }
+      if(drops[i]*fontSize > h && Math.random() > 0.975) drops[i]=0;
+      drops[i]++;
+    }
+    frame++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+  // Auto-hide splash after 6s
+  setTimeout(()=>{ const s=document.getElementById('matrixSplash'); if(s) s.classList.add('hide'); }, 6000);
+  // Secret input handler — mirrors SNEAKERS.EXE password gate (bishop & cosmos decrypt)
+  const input = document.getElementById('secretInput');
+  const overlay = document.getElementById('decryptOverlay');
+  const box = document.getElementById('decryptBox');
+  const bishop = `--- DECRYPTED: BISHOP ---\n  "The world isn't run by weapons anymore, or energy, or money."\n  "It's run by little ones and zeroes, little bits of data."\n  "It's all just electrons." -- Cosmo (Ben Kingsley)\n  "We are the United States Government! We don't do that sort of thing." -- Abbott\n  "No more secrets, Marty." -- Cosmo to Bishop\n\n  // Bishop Desmond Tutu: "Do your little bit of good where you are; "\n  // "It's those little bits of good put together that overwhelm the world."`;
+  const cosmos = `--- DECRYPTED: COSMOS ---\n  "The Cosmos is all that is or was or ever will be." -- Carl Sagan, Cosmos\n  "The cosmos is within us. We are made of star-stuff."\n  "We are a way for the cosmos to know itself." -- Sagan\n  "For small creatures such as we the vastness is bearable only through love." -- Sagan\n  Setec Astronomy -- Too many secrets. (Anagram)\n  Ciphertext was XOR 0x5A, key "SETAC" -- now decrypted.`;
+  function decryptWithEffect(enc, key=0x5A){
+    // Simulate XOR decrypt effect: show ciphertext then reveal
+    let encBytes = Array.from(enc).map(c=> c.charCodeAt(0) ^ key);
+    // Actually our enc is already plaintext; we simulate by scrambling
+    return enc;
+  }
+  function showDecrypt(){
+    if(!overlay||!box) return;
+    box.textContent = "";
+    overlay.classList.add('show');
+    // Typewriter with decrypt effect
+    const full = bishop + "\n\n" + cosmos + "\n\n[Source: SNEAKERS.EXE 0411h (498B) & 0603h (421B) XOR 0x5A — see WASM Hex/disasm at 1000:0166]";
+    let i=0;
+    // Scramble phase: first show ciphertext preview for 600ms
+    const cipherPreview = full.split('').map(c=> c==='\\n'? '\\n' : (Math.random()<0.5 ? String.fromCharCode(33+Math.floor(Math.random()*94)) : c)).join('').slice(0,800);
+    box.textContent = "Decrypting secure files...\nCiphertext: " + HIDDEN_STRINGS[7] + "\n" + cipherPreview + "\n...";
+    setTimeout(()=>{
+      box.textContent = "";
+      const iv=setInterval(()=>{
+        box.textContent = full.slice(0,i);
+        box.scrollTop = box.scrollHeight;
+        i+=3;
+        if(i>=full.length) clearInterval(iv);
+      }, 12);
+    }, 700);
+  }
+  if(input){
+    input.addEventListener('keydown', e=>{
+      if(e.key==='Enter'){
+        const v = input.value.trim().toLowerCase();
+        if(v==="setec astronomy"){
+          showDecrypt();
+          input.value="";
+          input.placeholder="ACCESS GRANTED";
+          input.style.borderColor="#00ff88";
+          setTimeout(()=> input.placeholder="Access Code: ______", 3000);
+        } else if(v){
+          input.style.borderColor="#ff4455";
+          input.value="";
+          input.placeholder="ACCESS DENIED";
+          setTimeout(()=> { input.style.borderColor=""; input.placeholder="Access Code: ______"; }, 1500);
+        }
+      }
+    });
+    // Easter egg: typing Werner Brandes shows hint
+    input.addEventListener('input', ()=>{
+      const v=input.value.toLowerCase();
+      if(v.includes("werner")) input.style.borderColor="#ffcc00";
+    });
+  }
+  // Also trigger decrypt if user drops SNEAKERS.EXE — hook into existing loadFile
+  const origLoad = window.loadFile;
+  // Will be patched after WASM loads; check periodically
+  let patched=false;
+  function tryPatch(){
+    if(typeof window.loadFile !== 'undefined' && !patched){
+      const _orig = window.loadFile;
+      window.loadFile = function(f){
+        const res = _orig.apply(this, arguments);
+        // if file is SNEAKERS.EXE and contains bishop string, auto-show?
+        if(f && f.name && f.name.toLowerCase().includes("sneakers")){
+          setTimeout(showDecrypt, 900);
+        }
+        return res;
+      };
+      patched=true;
+    }
+    if(!patched) setTimeout(tryPatch, 500);
+  }
+  tryPatch();
+})();
+</script>
+
+</body>
+</html>

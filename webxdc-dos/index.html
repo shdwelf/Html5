@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>DOS Binary Loader — x86:LE:16:Real Mode</title>
+  <!-- webxdc.js is injected automatically by the messenger at runtime -->
+  <!-- It does not exist during build; we create a stub if missing -->
+  <script>
+    if (!window.webxdc) {
+      window.webxdc = {
+        selfName: 'standalone',
+        selfAddr: 'local',
+        setUpdateListener: function() {},
+        sendUpdate: function() {},
+        getAllUpdates: function() { return Promise.resolve([]); },
+      };
+    }
+  </script>
+  <!-- js-dos emulation engine -->
+  <link rel="stylesheet" href="/js-dos/js-dos.css" />
+  <script src="/js-dos/js-dos.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080810; --bg2: #0e0e1a; --bg3: #161626; --bg4: #1e1e32;
+      --fg: #b8b8cc; --fg2: #787890; --fg3: #484860;
+      --a: #00d4ff; --a2: #00ff88; --a3: #ff6b35; --a4: #ff4488;
+      --r: #ff4455; --g: #44ff88; --y: #ffcc00;
+      --m: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+      --s: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --rad: 6px;
+    }
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background: var(--bg); color: var(--fg);
+      font-family: var(--s); font-size: 13px; line-height: 1.5;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #0a0a1a, #180828, #081420);
+      border-bottom: 1px solid var(--bg4);
+      padding: 10px 16px; flex-shrink: 0;
+    }
+    .hdr-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    header h1 { font-size: 1.1rem; color: #fff; font-weight: 600; }
+    header h1 em { color: var(--a); font-style: normal; font-family: var(--m); font-size: 0.85rem; }
+    .badge {
+      background: var(--a2); color: #000; font-size: 0.58rem;
+      padding: 2px 6px; border-radius: 8px; font-weight: 700;
+    }
+    header p { font-size: 0.68rem; color: var(--fg2); margin-top: 2px; }
+
+    /* Navigation */
+    nav { display: flex; gap: 3px; margin-top: 8px; flex-wrap: wrap; }
+    nav button {
+      background: var(--bg3); border: 1px solid var(--bg4); color: var(--fg2);
+      padding: 4px 10px; border-radius: var(--rad); cursor: pointer;
+      font-size: 0.7rem; font-family: var(--s); transition: all 0.12s;
+    }
+    nav button:hover { background: var(--bg4); color: var(--fg); }
+    nav button.active { background: var(--a); color: #000; border-color: var(--a); font-weight: 600; }
+
+    /* Main content */
+    main { flex: 1; overflow: auto; padding: 12px 16px; }
+
+    /* Panels */
+    .panel { display: none; animation: fadeIn 0.15s; }
+    .panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Cards */
+    .card {
+      background: var(--bg2); border: 1px solid var(--bg4);
+      border-radius: var(--rad); padding: 12px; margin-bottom: 12px;
+    }
+    .card h2 {
+      border-bottom: 1px solid var(--bg4); padding-bottom: 6px;
+      margin-bottom: 10px; font-size: 1rem; color: #fff;
+    }
+
+    /* Drop zone */
+    .drop {
+      border: 2px dashed var(--bg4); border-radius: var(--rad);
+      padding: 28px; text-align: center; cursor: pointer;
+      transition: all 0.15s; position: relative;
+    }
+    .drop:hover, .drop.over { border-color: var(--a); background: rgba(0,212,255,0.03); }
+    .drop.over { box-shadow: 0 0 14px rgba(0,212,255,0.1); }
+    .drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .drop .ic { font-size: 1.8rem; margin-bottom: 4px; }
+    .drop p { color: var(--fg2); font-size: 0.74rem; }
+    .drop p strong { color: var(--a); }
+
+    /* DOSBox container */
+    #dosbox-container {
+      width: 100%; height: 100%;
+      background: #000; border-radius: var(--rad);
+      overflow: hidden; position: relative;
+    }
+    #dosbox-container canvas { display: block; width: 100%; height: 100%; }
+
+    /* Status bar */
+    .status {
+      background: var(--bg3); border-top: 1px solid var(--bg4);
+      padding: 6px 12px; font-size: 0.68rem; color: var(--fg3);
+      display: flex; justify-content: space-between; flex-shrink: 0;
+    }
+    .status .active { color: var(--a2); }
+
+    /* Stats */
+    .stats { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+    .stat {
+      background: var(--bg3); border: 1px solid var(--bg4);
+      border-radius: var(--rad); padding: 5px 10px; text-align: center;
+    }
+    .stat .v { font-size: 1.1rem; font-weight: 700; color: var(--a); font-family: var(--m); }
+    .stat .l { font-size: 0.58rem; color: var(--fg3); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Hex viewer */
+    .hexv {
+      background: var(--bg); border: 1px solid var(--bg4);
+      border-radius: var(--rad); overflow: auto; max-height: 350px;
+      font-family: var(--m); font-size: 0.72rem; line-height: 1.6;
+    }
+    .hxr { display: flex; white-space: nowrap; padding: 0 6px; }
+    .hxr:hover { background: rgba(0,212,255,0.04); }
+    .hxa { color: var(--a); min-width: 60px; text-align: right; padding-right: 8px; }
+    .hxb .b { display: inline-block; min-width: 20px; text-align: center; }
+    .b.hdr { color: var(--y); }
+    .b.cod { color: var(--g); }
+    .b.z { color: var(--fg3); }
+    .sep { width: 1px; background: var(--bg4); margin: 0 2px; display: inline-block; }
+    .asc { color: var(--fg3); padding-left: 8px; border-left: 1px solid var(--bg4); margin-left: 2px; }
+    .asc .p { color: var(--fg); }
+
+    /* Disassembly */
+    .dasm {
+      font-family: var(--m); font-size: 0.72rem; line-height: 1.7;
+      max-height: 400px; overflow: auto; background: var(--bg);
+      border: 1px solid var(--bg4); border-radius: var(--rad);
+    }
+    .dr { display: flex; padding: 0 6px; gap: 6px; }
+    .dr:hover { background: rgba(0,212,255,0.04); }
+    .dr.ep { background: rgba(255,68,136,0.08); border-left: 2px solid var(--a4); }
+    .da { color: var(--a); min-width: 70px; text-align: right; }
+    .db { color: var(--fg3); min-width: 70px; }
+    .dm { min-width: 60px; font-weight: 600; }
+    .dm.n { color: var(--g); }
+    .dm.j { color: var(--r); }
+    .dm.c { color: var(--y); }
+    .dm.i { color: var(--a4); }
+    .dm.m { color: var(--a); }
+    .dm.pp { color: var(--a3); }
+    .do { color: var(--fg); }
+    .do .rg { color: var(--y); }
+    .dc { color: var(--fg3); font-style: italic; }
+
+    /* Decompiler */
+    .dec {
+      background: var(--bg); border: 1px solid var(--bg4);
+      border-radius: var(--rad); padding: 12px;
+      font-family: var(--m); font-size: 0.74rem; line-height: 1.7;
+      max-height: 400px; overflow: auto;
+    }
+    .dec .kw { color: var(--a4); font-weight: 600; }
+    .dec .tp { color: var(--a); }
+    .dec .fn { color: var(--y); }
+    .dec .st { color: var(--g); }
+    .dec .cm { color: var(--fg3); font-style: italic; }
+    .dec .nu { color: var(--a2); }
+
+    /* Segment bars */
+    .seg { display: flex; flex-direction: column; gap: 3px; font-family: var(--m); font-size: 0.72rem; }
+    .sb { display: flex; align-items: center; gap: 6px; height: 22px; }
+    .sb .lb { min-width: 60px; text-align: right; color: var(--fg2); font-size: 0.64rem; }
+    .sb .bar { flex: 1; height: 16px; background: var(--bg); border-radius: 2px; overflow: hidden; border: 1px solid var(--bg4); }
+    .sb .bar .fl { height: 100%; border-radius: 2px; display: flex; align-items: center; padding: 0 4px; font-size: 0.58rem; color: #000; font-weight: 600; white-space: nowrap; transition: width 0.3s; }
+    .fl.cs { background: linear-gradient(90deg, #ff4488, #ff6b9d); }
+    .fl.ds { background: linear-gradient(90deg, #4488ff, #6baaff); }
+    .fl.ss { background: linear-gradient(90deg, #44ff88, #6bffc0); }
+    .fl.es { background: linear-gradient(90deg, #ffcc00, #ffe066); }
+    .sb .adr { min-width: 48px; font-size: 0.64rem; color: var(--fg3); }
+
+    /* Search */
+    .sf { display: flex; gap: 5px; margin-bottom: 8px; }
+    .sf input {
+      flex: 1; background: var(--bg); border: 1px solid var(--bg4); color: var(--fg);
+      padding: 6px 8px; border-radius: var(--rad); font-family: var(--m); font-size: 0.76rem;
+    }
+    .sf input:focus { outline: none; border-color: var(--a); }
+    .sf button {
+      background: var(--a); color: #000; border: none;
+      padding: 6px 12px; border-radius: var(--rad); cursor: pointer;
+      font-weight: 600; font-size: 0.76rem;
+    }
+
+    /* Interrupt table */
+    .tr { display: flex; gap: 6px; padding: 2px 6px; font-family: var(--m); font-size: 0.72rem; border-bottom: 1px solid var(--bg4); }
+    .tr:hover { background: rgba(0,212,255,0.04); }
+    .tn { color: var(--a4); min-width: 40px; font-weight: 600; }
+    .ta { color: var(--y); min-width: 28px; }
+    .td { color: var(--fg2); }
+
+    /* Reference table */
+    .ftbl { width: 100%; border-collapse: collapse; font-size: 0.74rem; }
+    .ftbl th { text-align: left; padding: 4px 7px; background: var(--bg3); color: var(--a); font-weight: 600; border-bottom: 2px solid var(--a); }
+    .ftbl td { padding: 3px 7px; border-bottom: 1px solid var(--bg4); }
+    .ftbl td:first-child { color: var(--y); font-family: var(--m); white-space: nowrap; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 12px; right: 12px; background: var(--bg3);
+      border: 1px solid var(--a); color: var(--fg); padding: 7px 14px;
+      border-radius: var(--rad); font-size: 0.74rem; z-index: 999;
+      transform: translateY(60px); opacity: 0; transition: all 0.2s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* Loading overlay */
+    .loading {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.85);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 10px; z-index: 10;
+    }
+    .loading.hidden { display: none; }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--bg4); border-top-color: var(--a); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 { font-size: 0.95rem; }
+      nav button { font-size: 0.64rem; padding: 3px 7px; }
+      main { padding: 8px 10px; }
+    }
+  
+/* Matrix rain — hidden messages easter egg */
+#matrixRain{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.13}
+#matrixSplash{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;pointer-events:none;transition:opacity 0.8s}
+#matrixSplash.hide{opacity:0}
+.matrixHint{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);font-family:var(--m);font-size:0.68rem;color:var(--fg3);z-index:6;pointer-events:none;opacity:0.6}
+.decryptOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);display:none;align-items:center;justify-content:center;z-index:100;flex-direction:column;gap:12px;padding:20px}
+.decryptOverlay.show{display:flex}
+.decryptBox{background:var(--bg2);border:1px solid var(--a);border-radius:var(--rad);padding:18px;max-width:720px;width:90%;font-family:var(--m);font-size:0.78rem;line-height:1.6;white-space:pre-wrap;max-height:80vh;overflow:auto}
+
+</style>
+</head>
+<body>
+
+<canvas id="matrixRain"></canvas>
+<div id="matrixSplash">
+  <div style="text-align:center;pointer-events:auto">
+    <div style="font-family:var(--m);font-size:1.4rem;color:var(--a);text-shadow:0 0 12px var(--a);margin-bottom:6px">SETec Astronomy</div>
+    <div style="font-family:var(--m);font-size:0.72rem;color:var(--fg2)">watch the falling code… 17 secrets hidden</div>
+    <div style="margin-top:14px"><input id="secretInput" placeholder="Access Code: ______" style="background:var(--bg);border:1px solid var(--bg4);color:var(--y);padding:6px 10px;border-radius:var(--rad);font-family:var(--m);text-align:center;width:200px" /></div>
+    <div style="font-size:0.62rem;color:var(--fg3);margin-top:4px">Hint: Think like a hacker. (Try: Sneakers)</div>
+  </div>
+</div>
+<div class="matrixHint">Characters: A-Z 0-9 $#@%&amp;*!?&lt;&gt;{}[]|/^` · 17 hidden strings in the rain</div>
+<div id="decryptOverlay" class="decryptOverlay">
+  <div style="color:var(--a);font-family:var(--m);font-size:1.1rem">ACCESS GRANTED — Decrypting…</div>
+  <div id="decryptBox" class="decryptBox"></div>
+  <button onclick="document.getElementById('decryptOverlay').classList.remove('show')" style="background:var(--a);color:#000;border:none;padding:7px 16px;border-radius:var(--rad);cursor:pointer;font-weight:600">Close</button>
+</div>
+
+  <div class="app">
+    <header>
+      <div class="hdr-row">
+        <h1>DOS Binary Loader <em>x86:LE:16</em></h1>
+        <span class="badge">WASM</span>
+        <span class="badge">js-dos</span>
+        <span class="badge">webxdc</span>
+      </div>
+      <p>16-bit x86 Real Mode · MZ EXE · COM · Raw Binary · DOSBox emulation</p>
+      <nav id="nav">
+        <button class="active" data-p="emulator">🎮 Emulator</button>
+        <button data-p="loader">⬆ Loader</button>
+        <button data-p="hex">⬡ Hex</button>
+        <button data-p="disasm">⚙ Disasm</button>
+        <button data-p="decomp">◈ Decompile</button>
+        <button data-p="seg">▮ Segments</button>
+        <button data-p="int">⊡ Interrupts</button>
+        <button data-p="ref">☰ Ref</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Emulator Panel -->
+      <div class="panel active" id="p-emulator">
+        <div class="card" style="height: calc(100vh - 180px); display: flex; flex-direction: column;">
+          <h2>🎮 DOSBox Emulator <span style="font-size:0.7rem;color:var(--fg2)">— js-dos WebAssembly</span></h2>
+          <div style="flex:1;position:relative;min-height:0;">
+            <div id="dosbox-container"></div>
+            <div class="loading" id="emu-loading">
+              <div class="spinner"></div>
+              <div style="color:var(--fg2);font-size:0.78rem">Initializing DOSBox...</div>
+            </div>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+            <button onclick="loadDemo()" style="background:var(--a2);color:#000;border:none;padding:5px 12px;border-radius:var(--rad);cursor:pointer;font-weight:600;font-size:0.74rem">▶ Run Demo</button>
+            <button onclick="resetEmu()" style="background:var(--bg4);color:var(--fg);border:1px solid var(--bg3);padding:5px 12px;border-radius:var(--rad);cursor:pointer;font-size:0.74rem">↻ Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loader Panel -->
+      <div class="panel" id="p-loader">
+        <div class="card">
+          <h2>⬆ Load Binary</h2>
+          <div class="drop" id="drop">
+            <input type="file" id="fi" accept=".exe,.com,.bin,.sys,.zip,.dosz">
+            <div class="ic">📂</div>
+            <p>Drop <strong>MZ .EXE</strong>, <strong>.COM</strong>, <strong>.ZIP</strong>, or <strong>Raw Binary</strong></p>
+          </div>
+        </div>
+        <div class="card" id="fiCard" style="display:none">
+          <h2>📋 File Info</h2>
+          <table class="ftbl" id="fiTbl"></table>
+          <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+            <button onclick="runInEmulator()" style="background:var(--a2);color:#000;border:none;padding:5px 12px;border-radius:var(--rad);cursor:pointer;font-weight:600;font-size:0.74rem">▶ Run in DOSBox</button>
+            <button onclick="analyzeWasm()" style="background:var(--a);color:#000;border:none;padding:5px 12px;border-radius:var(--rad);cursor:pointer;font-weight:600;font-size:0.74rem">⚙ Analyze (WASM)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hex Panel -->
+      <div class="panel" id="p-hex">
+        <div class="card">
+          <h2>⬡ Hex Viewer</h2>
+          <div class="sf"><input id="hexQ" placeholder="Search hex or ASCII..."><button onclick="hexSearch()">Find</button></div>
+          <div class="stats" id="hStats"></div>
+          <div class="hexv" id="hexV"><p style="padding:12px;color:var(--fg3)">Load a file</p></div>
+        </div>
+      </div>
+
+      <!-- Disassembly Panel -->
+      <div class="panel" id="p-disasm">
+        <div class="card">
+          <h2>⚙ 16-bit x86 Disassembly</h2>
+          <div class="dasm" id="dasmV"><p style="padding:12px;color:var(--fg3)">Load and analyze a file</p></div>
+        </div>
+      </div>
+
+      <!-- Decompile Panel -->
+      <div class="panel" id="p-decomp">
+        <div class="card">
+          <h2>◈ Decompiled Output</h2>
+          <div class="dec" id="decV"><span class="cm">/* Load and analyze a binary */</span></div>
+        </div>
+      </div>
+
+      <!-- Segments Panel -->
+      <div class="panel" id="p-seg">
+        <div class="card">
+          <h2>▮ Segment Registers</h2>
+          <div class="seg" id="segRegs"></div>
+        </div>
+      </div>
+
+      <!-- Interrupts Panel -->
+      <div class="panel" id="p-int">
+        <div class="card">
+          <h2>⊡ DOS/BIOS Interrupt Reference</h2>
+          <div class="sf"><input id="intQ" placeholder="Filter..."></div>
+          <div id="intTbl" style="max-height:400px;overflow:auto"></div>
+        </div>
+      </div>
+
+      <!-- Reference Panel -->
+      <div class="panel" id="p-ref">
+        <div class="card">
+          <h2>☰ x86:LE:16:Real Mode</h2>
+          <table class="ftbl">
+            <tr><td>Architecture</td><td>x86</td><td>8086/8088</td></tr>
+            <tr><td>Endian</td><td>LE</td><td>Little-Endian</td></tr>
+            <tr><td>Word</td><td>16</td><td>AX,BX,CX,DX,SI,DI,BP,SP</td></tr>
+            <tr><td>Mode</td><td>Real</td><td>No protected memory</td></tr>
+            <tr><td>Address</td><td>20-bit</td><td>1 MiB (0x00000–0xFFFFF)</td></tr>
+            <tr><td>Formula</td><td colspan="2">Physical = Segment×16 + Offset</td></tr>
+            <tr><td>Emulator</td><td colspan="2">js-dos (DOSBox WebAssembly)</td></tr>
+            <tr><td>Loader</td><td colspan="2">WASM Binary Analyzer</td></tr>
+          </table>
+          <pre style="margin-top:8px;font-size:0.72rem"><code>AX (AH:AL) — Accumulator     CS — Code Segment
+BX (BH:BL) — Base            DS — Data Segment
+CX (CH:CL) — Counter         SS — Stack Segment
+DX (DH:DL) — Data/IO         ES — Extra Segment
+SI — Source Index             IP — Instruction Ptr
+DI — Dest Index               FLAGS — Status Reg</code></pre>
+        </div>
+        <div class="card">
+          <h2>☰ MZ Header (36 bytes)</h2>
+          <table class="ftbl" id="mzRef"></table>
+        </div>
+      </div>
+    </main>
+
+    <div class="status">
+      <span id="status-left">Ready</span>
+      <span id="status-right">x86:LE:16:Real Mode</span>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    // ═══════════════════════════════════════════════════════════════
+    // WASM Binary Loader (inline base64)
+    // ═══════════════════════════════════════════════════════════════
+    const WASM_B64 = "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kGAgARqIQAgAEEQQYAC/AsAQQAhAQJAA0AgAUGAAk8NASAAIAFqQQE6AAAgAUEBaiEBDAALCyAAQc0BakEyOgAAQfAAIQECQANAIAFB/wBLDQEgACABakESOgAAIAFBAWohAQwACwtB4AEhAQJAA0AgAUHjAUsNASAAIAFqQQI6AAAgAUEBaiEBDAALC0HkASEBAkADQCABQecBSw0BIAAgAWpBAjoAACABQQFqIQEMAAsLIABB6wFqQRI6AAAgAEHUAWpBAjoAACAAQdUBakECOgAAQbABIQECQANAIAFBtwFLDQEgACABakHyADoAACABQQFqIQEMAAsLIABBAGpBAjoAACAAQQFqQQI6AAAgAEECakECOgAAIABBA2pBAjoAACAAQQhqQQI6AAAgAEEJakECOgAAIABBCmpBAjoAACAAQQtqQQI6AAAgAEEQakECOgAAIABBEWpBAjoAACAAQRJqQQI6AAAgAEETakECOgAAIABBGGpBAjoAACAAQRlqQQI6AAAgAEEaakECOgAAIABBG2pBAjoAACAAQSBqQQI6AAAgAEEhakECOgAAIABBImpBAjoAACAAQSNqQQI6AAAgAEEoakECOgAAIABBKWpBAjoAACAAQSpqQQI6AAAgAEErakECOgAAIABBMGpBAjoAACAAQTFqQQI6AAAgAEEyakECOgAAIABBM2pBAjoAACAAQThqQQI6AAAgAEE5akECOgAAIABBOmpBAjoAACAAQTtqQQI6AABBgAEhAQJAA0AgAUGPAUsNASAAIAFqQQI6AAAgAUEBaiEBDAALCyAAQcABakECOgAAIABBwQFqQQI6AAAgAEHEAWpBAjoAACAAQcUBakECOgAAIABBxgFqQQI6AAAgAEHHAWpBAjoAACAAQdABakECOgAAIABB0QFqQQI6AAAgAEHSAWpBAjoAACAAQdMBakECOgAAQfYBIQECQANAIAFB/wFLDQEgACABakECOgAAIAFBAWohAQwACwsgAEGNAWpBAjoAACAAQQVqQQM6AAAgAEENakEDOgAAIABBFWpBAzoAACAAQR1qQQM6AAAgAEElakEDOgAAIABBLWpBAzoAACAAQTVqQQM6AAAgAEE9akEDOgAAIABBqAFqQQI6AAAgAEGpAWpBAzoAAEG4ASEBAkADQCABQb8BSw0BIAAgAWpB8wA6AAAgA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";
+
+    let W = null;
+    let mem8 = null;
+    let rawFile = null;
+    let dosInstance = null;
+    const FILE_BUF = 0x40000;
+    const META_BUF = 0x80000;
+    const DECODE_BUF = 0x20000;
+
+    // ═══════════════════════════════════════════════════════════════
+    // Navigation
+    // ═══════════════════════════════════════════════════════════════
+    document.querySelectorAll('#nav button').forEach(b => {
+      b.onclick = () => {
+        document.querySelectorAll('#nav button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('p-' + b.dataset.p).classList.add('active');
+      };
+    });
+
+    // ═══════════════════════════════════════════════════════════════
+    // WASM Init
+    // ═══════════════════════════════════════════════════════════════
+    async function initWasm() {
+      try {
+        const bytes = Uint8Array.from(atob(WASM_B64), c => c.charCodeAt(0));
+        const { instance } = await WebAssembly.instantiate(bytes);
+        W = instance.exports;
+        mem8 = new Uint8Array(W.memory.buffer);
+        document.getElementById('status-left').innerHTML = '<span class="active">⚡ WASM engine ready</span>';
+        toast('WASM engine loaded (' + bytes.length + ' bytes)');
+        renderInterrupts();
+        renderMzRef();
+        initSegRegs();
+      } catch (e) {
+        console.error('WASM init failed:', e);
+        document.getElementById('status-left').textContent = 'WASM init failed: ' + e.message;
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // DOSBox Emulator
+    // ═══════════════════════════════════════════════════════════════
+    function loadDemo() {
+      startEmulator('/roms/DOSDEMO.ZIP', 'DEMO.COM');
+    }
+
+    function resetEmu() {
+      if (dosInstance) {
+        try { dosInstance.stop(); } catch(e) {}
+        dosInstance = null;
+      }
+      document.getElementById('dosbox-container').innerHTML = '';
+      document.getElementById('emu-loading').classList.remove('hidden');
+      toast('Emulator reset');
+    }
+
+    function startEmulator(zipPath, exeName) {
+      const container = document.getElementById('dosbox-container');
+      container.innerHTML = '';
+      document.getElementById('emu-loading').classList.remove('hidden');
+
+      try {
+        Dos.configure({
+          wdosboxUrl: "/js-dos/wdosbox.wasm"
+        });
+
+        dosInstance = Dos(container, {
+          wdosboxUrl: "/js-dos/wdosbox.wasm",
+          autolock: true,
+          onready: function(ci) {
+            document.getElementById('emu-loading').classList.add('hidden');
+            document.getElementById('status-left').innerHTML = '<span class="active">🎮 DOSBox running</span>';
+            toast('DOSBox ready — running ' + exeName);
+          },
+          onerror: function(err) {
+            console.error('DOSBox error:', err);
+            document.getElementById('emu-loading').innerHTML =
+              '<div style="color:var(--r);font-size:0.78rem">Error: ' + err + '</div>';
+          }
+        });
+
+        dosInstance.run(zipPath, exeName);
+      } catch (e) {
+        console.error('DOSBox init error:', e);
+        document.getElementById('emu-loading').innerHTML =
+          '<div style="color:var(--r);font-size:0.78rem">Failed to initialize DOSBox: ' + e.message + '</div>';
+      }
+    }
+
+    function runInEmulator() {
+      if (!rawFile) { toast('No file loaded'); return; }
+      // For ZIP files, run directly
+      if (rawFile.name && rawFile.name.toLowerCase().endsWith('.zip')) {
+        const url = URL.createObjectURL(rawFile);
+        startEmulator(url, rawFile.name.replace('.zip', '.EXE'));
+        return;
+      }
+      // For COM/EXE files, wrap in ZIP and run
+      toast('Preparing file for DOSBox...');
+      // We'll use a blob URL approach
+      const blob = new Blob([rawFile], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      // Switch to emulator panel
+      document.querySelectorAll('#nav button').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-p="emulator"]').classList.add('active');
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('p-emulator').classList.add('active');
+      toast('File ready — use DOSBox to run');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // File Loading
+    // ═══════════════════════════════════════════════════════════════
+    const drop = document.getElementById('drop');
+    const fi = document.getElementById('fi');
+    drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+    drop.ondragleave = () => drop.classList.remove('over');
+    drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); };
+    fi.onchange = e => { if (e.target.files[0]) loadFile(e.target.files[0]); };
+
+    function loadFile(file) {
+      rawFile = file;
+      const r = new FileReader();
+      r.onload = e => {
+        rawFile = new Uint8Array(e.target.result);
+        rawFile.name = file.name;
+        analyzeWasm();
+        toast('Loaded: ' + file.name + ' (' + rawFile.length + ' bytes)');
+      };
+      r.readAsArrayBuffer(file);
+    }
+
+    function analyzeWasm() {
+      if (!W || !rawFile) return;
+      // Reload memory view after potential WASM memory growth
+      mem8 = new Uint8Array(W.memory.buffer);
+
+      const len = rawFile.length;
+      mem8.set(rawFile, FILE_BUF);
+
+      const fmt = W.load_binary(FILE_BUF, len);
+      // PCX LSB Easter egg
+      try{
+        let lsb = extractPCXLSB(S.raw);
+        if(lsb){
+          console.log("PCX LSB hidden:", lsb);
+          setTimeout(()=>{
+            let dec = document.getElementById('decV');
+            if(dec) dec.innerHTML += `<div style="margin-top:10px;padding:8px;background:rgba(0,212,255,0.08);border:1px solid var(--a);border-radius:4px"><b style="color:var(--a)">🔍 PCX LSB Steganography (palette, 768 bytes):</b><br><span style="color:var(--y)">${lsb.replace(/</g,'&lt;').slice(0,300)}</span><br><span style="color:var(--fg3);font-size:0.7rem">Extracted via LSB of palette bytes (see README §16). Bytes 0x${(S.raw.length-768).toString(16)}+</span></div>`;
+          }, 400);
+        }
+      }catch(e){}
+      updateFileInfo(fmt);
+      renderHex();
+      disasmAll();
+      decompile();
+      updateSegRegs();
+
+      document.getElementById('status-right').textContent =
+        'Format: ' + ['Unknown','MZ','COM','RAW'][fmt] + ' · ' + len + ' bytes';
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // File Info
+    // ═══════════════════════════════════════════════════════════════
+    function updateFileInfo(fmt) {
+      document.getElementById('fiCard').style.display = 'block';
+      const rows = [
+        ['Format', ['Unknown','MZ','COM','RAW'][fmt], fmt===1?'DOS MZ':fmt===2?'COM flat':'Raw'],
+        ['File Size', hex16(rawFile.length), (rawFile.length/1024).toFixed(1)+' KiB'],
+        ['Code Size', hex16(W.code_size.value), W.code_size.value+' bytes'],
+        ['Load Segment', hex16(W.load_seg.value), '0x'+(W.load_seg.value*16).toString(16).toUpperCase()],
+        ['CS:IP', hex16(W.hdr_cs.value)+':'+hex16(W.hdr_ip.value), 'Entry: 0x'+W.entry_phys.value.toString(16).toUpperCase()],
+        ['SS:SP', hex16(W.hdr_ss.value)+':'+hex16(W.hdr_sp.value), ''],
+      ];
+      if (fmt===1) {
+        rows.push(['Relocations', W.hdr_reloc_count.value, W.reloc_applied.value+' applied']);
+        try{
+          let cs = W.get_header_u16(0x12).toString(16).padStart(4,'0');
+          let ov = W.get_header_u16(0x1A).toString(16).padStart(4,'0');
+          let p1 = W.get_header_u16(0x1C).toString(16).padStart(4,'0');
+          let p2 = W.get_header_u16(0x1E).toString(16).padStart(4,'0');
+          let bytes = [cs.slice(2,4), cs.slice(0,2), ov.slice(2,4), ov.slice(0,2), p1.slice(2,4), p1.slice(0,2), p2.slice(2,4), p2.slice(0,2)].map(h=>String.fromCharCode(parseInt(h,16))).join('');
+          if(bytes.includes("SETEC")){
+            rows.push(['MZ Stego', bytes.trim(), 'e_csum/e_ovno/padding ASCII (little-endian) → "SETEC AS"']);
+          }
+        }catch(e){}
+      }
+      document.getElementById('fiTbl').innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Hex Viewer
+    // ═══════════════════════════════════════════════════════════════
+    function renderHex() {
+      const v = document.getElementById('hexV');
+      const d = rawFile;
+      if (!d) return;
+      const fmt = W.format.value;
+      const codeOff = W.code_off.value;
+      const codeSz = W.code_size.value;
+      const rows = Math.min(Math.ceil(d.length/16), 1500);
+      let h = '';
+      for (let r = 0; r < rows; r++) {
+        const addr = r*16;
+        let hx='', asc='';
+        for (let c=0; c<16; c++) {
+          if (c===8) hx+='<span class="sep"></span>';
+          const i = addr+c;
+          if (i<d.length) {
+            const val = d[i];
+            let cl = '';
+            if (fmt===1 && i<0x1C) cl='hdr';
+            else if (i>=codeOff && i<codeOff+codeSz) cl='cod';
+            else if (val===0) cl='z';
+            hx+=`<span class="b ${cl}">${hex8(val)}</span>`;
+            asc+=val>=0x20&&val<0x7F?`<span class="p">${String.fromCharCode(val)}</span>`:'·';
+          } else { hx+='<span class="b">  </span>'; asc+=' '; }
+        }
+        h+=`<div class="hxr"><span class="hxa">${hex16(addr)}</span><span class="hxb">${hx}</span><span class="asc">${asc}</span></div>`;
+      }
+      v.innerHTML = h;
+      document.getElementById('hStats').innerHTML = [
+        [hex16(d.length),'Size'], [['?','MZ','COM','RAW'][fmt],'Format'], [W.hdr_reloc_count.value,'Relocs']
+      ].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+    }
+
+    function hexSearch() {
+      const q = document.getElementById('hexQ').value.trim().toLowerCase();
+      if (!q||!rawFile) return;
+      toast('Search: ' + q);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Disassembly
+    // ═══════════════════════════════════════════════════════════════
+    function disasmAll() {
+      const v = document.getElementById('dasmV');
+      if (!rawFile) return;
+      mem8 = new Uint8Array(W.memory.buffer);
+
+      const count = W.disassemble(200);
+      const REGS16 = ['AX','CX','DX','BX','SP','BP','SI','DI'];
+      const REGS8 = ['AL','CL','DL','BL','AH','CH','DH','BH'];
+      const COND = ['JO','JNO','JB','JNB','JZ','JNZ','JBE','JA','JS','JNS','JP','NP','JL','JGE','JLE','JG'];
+      const STR = ['MOVSB','MOVSW','CMPSB','CMPSW','STOSB','STOSW','LODSB','LODSW','SCASB','SCASW'];
+      const entry = W.entry_phys.value;
+
+      let h = '';
+      for (let i = 0; i < count; i++) {
+        const t = W.get_decode_type(i), len = W.get_decode_length(i);
+        const addr = W.get_decode_addr(i), seg = addr&0xFFFF, off = (addr>>>16)&0xFFFF;
+        const operand = W.get_decode_operand(i), raw = W.get_decode_raw(i);
+        const sub = W.get_decode_subtype(i), flags = W.get_decode_flags(i);
+        const op = raw & 0xFF, phys = W.seg_off_to_phys(seg, off);
+        const isEntry = phys === entry;
+
+        let mn='', ops='', cls='', cmt='';
+        if (t===3) { mn=op===0xCC?'INT3':'INT'; cls='i'; ops=hex8(operand); cmt=intComment(operand); }
+        else if (t===7) { mn='MOV'; cls='m'; ops=(len===2?REGS8[sub&7]:REGS16[sub&7])+', '+hex16(operand); }
+        else if (t===1) { mn=(op>=0x70&&op<=0x7F?COND[op-0x70]:'JMP'); cls='j'; ops=hex16(operand); cmt='→ '+hex16(seg)+':'+hex16(operand); }
+        else if (t===2) { mn='CALL'; cls='c'; ops=flags===1?hex16(operand>>>16)+':'+hex16(operand&0xFFFF):hex16(operand); }
+        else if (t===4) { mn=flags===2?'IRET':flags===1?'RETF':'RET'; if(len===3) ops=hex16(operand); }
+        else if (t===6) { mn=flags?'POP':'PUSH'; cls='pp'; ops=sub>=0x10?['ES','CS','SS','DS'][(sub-0x10)&3]:REGS16[sub&7]; }
+        else if (t===8) { mn=STR[sub]||'STR'; cls='str'; }
+        else if (op>=0x40&&op<=0x47) { mn='INC'; ops=REGS16[op-0x40]; }
+        else if (op>=0x48&&op<=0x4F) { mn='DEC'; ops=REGS16[op-0x48]; }
+        else if (op===0x90) { mn='NOP'; }
+        else { mn=hex8(op)+'?'; }
+
+        const bytes = [];
+        for (let j=0; j<len && phys+j<mem8.length; j++) bytes.push(mem8[phys+j]);
+        const byteStr = bytes.map(hex8).join(' ');
+        h += `<div class="dr${isEntry?' ep':''}"><span class="da">${hex16(seg)}:${hex16(off)}</span><span class="db">${byteStr}</span><span class="dm ${cls}">${mn}</span><span class="do">${ops}</span><span class="dc">${cmt?'; '+cmt:''}${isEntry?' ◄ ENTRY':''}</span></div>`;
+      }
+      v.innerHTML = h || '<p style="padding:12px;color:var(--fg3)">No instructions</p>';
+    }
+
+    function intComment(n) {
+      const m = {0x20:'terminate',0x21:'DOS',0x10:'video',0x13:'disk',0x16:'keyboard',0x33:'mouse'};
+      return m[n] || 'INT '+hex8(n)+'h';
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Decompiler
+    // ═══════════════════════════════════════════════════════════════
+    function decompile() {
+      const v = document.getElementById('decV');
+      if (!rawFile) return;
+      mem8 = new Uint8Array(W.memory.buffer);
+      const count = W.decode_count.value;
+      const fmt = W.format.value;
+
+      let c = `<span class="cm">/* Decompiled — WASM engine\n * Language: x86:LE:16:Real Mode\n * Format: ${['?','MZ','COM','RAW'][fmt]}\n */</span>\n\n`;
+      c += `<span class="cm">#include &lt;dos.h&gt;</span>\n\n`;
+
+      const calls = [];
+      for (let i=0; i<count; i++) {
+        if (W.get_decode_type(i)===3) calls.push(W.get_decode_operand(i));
+      }
+
+      c += `<span class="tp">void</span> <span class="fn">main</span>(<span class="tp">void</span>) {\n`;
+      calls.slice(0,20).forEach(n => {
+        switch(n) {
+          case 0x20: c+=`    <span class="kw">return</span>; <span class="cm">/* INT 20h */</span>\n`; break;
+          case 0x21: c+=`    <span class="fn">dos_services</span>(); <span class="cm">/* INT 21h */</span>\n`; break;
+          default: c+=`    <span class="fn">int${hex8(n)}h</span>();\n`; break;
+        }
+      });
+      c += `}\n`;
+
+      if (calls.includes(0x21)) {
+        c += `\n<span class="cm">/* DOS API wrappers */</span>\n`;
+        c += `<span class="tp">void</span> <span class="fn">display_string</span>(<span class="tp">const char __far</span> *<span class="st">s</span>) {\n    _asm { push ds; lds dx,s; mov ah,9; int 21h; pop ds }\n}\n`;
+        c += `<span class="tp">void</span> <span class="fn">dos_exit</span>(<span class="tp">int</span> <span class="st">code</span>) {\n    _asm { mov ah,4Ch; mov al,byte ptr code; int 21h }\n}\n`;
+      }
+
+      v.innerHTML = c;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Segments
+    // ═══════════════════════════════════════════════════════════════
+    function initSegRegs() {
+      updateSegRegs();
+    }
+
+    function updateSegRegs() {
+      const el = document.getElementById('segRegs');
+      const loadSeg = W ? W.load_seg.value : 0;
+      const max = 0x100000;
+      const regs = [
+        ['CS','cs', W ? loadSeg + W.hdr_cs.value : 0],
+        ['DS','ds', loadSeg],
+        ['SS','ss', W ? W.hdr_ss.value + loadSeg : 0],
+        ['ES','es', loadSeg],
+      ];
+      el.innerHTML = regs.map(([l,c,v]) =>
+        `<div class="sb"><div class="lb">${l}</div><div class="bar"><div class="fl ${c}" style="width:${Math.min(v*16/max*100,100)}%">${l}</div></div><div class="adr">${hex16(v)}</div></div>`
+      ).join('');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Interrupt Table
+    // ═══════════════════════════════════════════════════════════════
+    const ALL_INTS = [
+      {n:'21h',ah:'09h',d:'Display String'},
+      {n:'21h',ah:'3Ch',d:'Create File'},
+      {n:'21h',ah:'3Dh',d:'Open File'},
+      {n:'21h',ah:'3Eh',d:'Close File'},
+      {n:'21h',ah:'3Fh',d:'Read File'},
+      {n:'21h',ah:'40h',d:'Write File'},
+      {n:'21h',ah:'41h',d:'Delete File'},
+      {n:'21h',ah:'48h',d:'Allocate Memory'},
+      {n:'21h',ah:'4Ch',d:'Terminate Process'},
+      {n:'21h',ah:'30h',d:'Get DOS Version'},
+      {n:'10h',ah:'00h',d:'Set Video Mode'},
+      {n:'10h',ah:'02h',d:'Set Cursor'},
+      {n:'10h',ah:'0Eh',d:'Teletype Output'},
+      {n:'10h',ah:'13h',d:'Write String'},
+      {n:'13h',ah:'02h',d:'Read Sectors'},
+      {n:'16h',ah:'00h',d:'Read Keystroke'},
+      {n:'33h',ah:'00h',d:'Reset Mouse'},
+      {n:'20h',ah:'--',d:'Terminate Program'},
+    ];
+
+    function renderInterrupts() {
+      const el = document.getElementById('intTbl');
+      el.innerHTML = ALL_INTS.map(e =>
+        `<div class="tr"><span class="tn">INT ${e.n}</span><span class="ta">${e.ah}</span><span class="td">${e.d}</span></div>`
+      ).join('');
+      document.getElementById('intQ').oninput = function() {
+        const q = this.value.toLowerCase();
+        el.querySelectorAll('.tr').forEach(r => r.style.display = r.textContent.toLowerCase().includes(q)?'':'none');
+      };
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MZ Reference
+    // ═══════════════════════════════════════════════════════════════
+    function renderMzRef() {
+      document.getElementById('mzRef').innerHTML = [
+        ['0x00','2B','e_magic — "MZ"'],
+        ['0x02','2B','e_cblp — Bytes on last page'],
+        ['0x04','2B','e_cp — Pages (512B)'],
+        ['0x06','2B','e_crlc — Relocations'],
+        ['0x08','2B','e_cparhdr — Header size (×16)'],
+        ['0x0A','2B','e_minalloc — Min extra paras'],
+        ['0x0C','2B','e_maxalloc — Max extra paras'],
+        ['0x0E','2B','e_ss — Initial SS'],
+        ['0x10','2B','e_sp — Initial SP'],
+        ['0x12','2B','e_csum — Checksum'],
+        ['0x14','2B','e_ip — Initial IP'],
+        ['0x16','2B','e_cs — Initial CS'],
+        ['0x18','2B','e_lfarlc — Reloc table offset'],
+        ['0x1A','2B','e_ovno — Overlay number'],
+      ].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Utility
+    // ═══════════════════════════════════════════════════════════════
+    function hex8(v) { return (v&0xFF).toString(16).toUpperCase().padStart(2,'0'); }
+    function hex16(v) { return (v&0xFFFF).toString(16).toUpperCase().padStart(4,'0'); }
+    function toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+
+    // Boot
+    initWasm();
+  </script>
+
+<script>
+// ── Matrix Rain with 17 hidden strings (splash screen easter egg) ──
+const HIDDEN_STRINGS = [ // + crossword vertical col 0
+
+  "SETec Astronomy",
+  "Too many secrets",
+  "My name is Werner Brandes",
+  "We are the United States Government",
+  "The only truly secure system is one that is powered off",
+  "No one ever thinks they are the bad guy",
+  "Security",
+  "Ciphertext: 0xDEADBEEF",
+  "Private Key: [REDACTED]",
+  "v86.wasm | 2.7MB | Rust compile target",
+  "DOS 6.22 | FAT12 | 2880 sectors",
+  "ISA bus | PS/2 keyboard | VGA 720x400",
+  "Sector 0: Bootstrap code",
+  "Cluster chain: 2->3->4->...->EOF",
+  "BIOS INT 13h: Read sectors",
+  "INT 21h: DOS services",
+  "AX=4C00h: Terminate process"
+];
+const CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*!?<> {}[]|/^`";
+(function(){
+  const canvas = document.getElementById('matrixRain');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, cols, fontSize=13, drops, hiddenActive;
+  let hiddenPos;
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    cols = Math.floor(w / fontSize);
+    drops = Array(cols).fill(0).map(()=> Math.floor(Math.random()* -h/fontSize));
+    hiddenActive = Array(cols).fill(null);
+    hiddenPos = Array(cols).fill(0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  let frame=0;
+  function draw(){
+    ctx.fillStyle = "rgba(8,8,16,0.14)";
+    ctx.fillRect(0,0,w,h);
+    ctx.font = fontSize+"px 'Cascadia Code','Fira Code',monospace";
+    for(let i=0;i<cols;i++){
+      // Dedicated crossword vertical column (col 0) — always spells SETEC ASTRONOMY vertically (like crossword)
+      if(i===0){
+        const vMsg = "SETEC ASTRONOMY";
+        let ch = vMsg[drops[i] % vMsg.length];
+        if(ch===" ") ch = String.fromCharCode(160); // keep spacing
+        ctx.fillStyle = "#00d4ff";
+        ctx.fillText(ch, i*fontSize, drops[i]*fontSize);
+        if(drops[i]*fontSize > h && Math.random() > 0.975) drops[i]=0;
+        drops[i]++;
+        continue;
+      }
+      // maybe start hidden string
+      if(!hiddenActive[i] && Math.random() < 0.003){
+        hiddenActive[i] = HIDDEN_STRINGS[Math.floor(Math.random()*HIDDEN_STRINGS.length)];
+        hiddenPos[i]=0;
+      }
+      let char, color;
+      if(hiddenActive[i]){
+        char = hiddenActive[i][hiddenPos[i]] || " ";
+        color = hiddenPos[i]===0 ? "#00d4ff" : "#ffcc00";
+        hiddenPos[i]++;
+        if(hiddenPos[i] >= hiddenActive[i].length){
+          hiddenActive[i]=null;
+          hiddenPos[i]=0;
+          // leave gap after hidden
+          drops[i] += 6;
+        }
+      } else {
+        char = CHARSET[Math.floor(Math.random()*CHARSET.length)];
+        color = Math.random()<0.02 ? "#ffffff" : (Math.random()<0.1 ? "#44ff88" : "#00ff66");
+      }
+      ctx.fillStyle = color;
+      ctx.fillText(char, i*fontSize, drops[i]*fontSize);
+      // occasionally brighter head
+      if(Math.random()<0.08){
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(char, i*fontSize, drops[i]*fontSize);
+      }
+      if(drops[i]*fontSize > h && Math.random() > 0.975) drops[i]=0;
+      drops[i]++;
+    }
+    frame++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+  // Auto-hide splash after 6s
+  setTimeout(()=>{ const s=document.getElementById('matrixSplash'); if(s) s.classList.add('hide'); }, 6000);
+  // Secret input handler — mirrors SNEAKERS.EXE password gate (bishop & cosmos decrypt)
+  const input = document.getElementById('secretInput');
+  const overlay = document.getElementById('decryptOverlay');
+  const box = document.getElementById('decryptBox');
+  const bishop = `--- DECRYPTED: BISHOP ---\n  "The world isn't run by weapons anymore, or energy, or money."\n  "It's run by little ones and zeroes, little bits of data."\n  "It's all just electrons." -- Cosmo (Ben Kingsley)\n  "We are the United States Government! We don't do that sort of thing." -- Abbott\n  "No more secrets, Marty." -- Cosmo to Bishop\n\n  // Bishop Desmond Tutu: "Do your little bit of good where you are; "\n  // "It's those little bits of good put together that overwhelm the world."`;
+  const cosmos = `--- DECRYPTED: COSMOS ---\n  "The Cosmos is all that is or was or ever will be." -- Carl Sagan, Cosmos\n  "The cosmos is within us. We are made of star-stuff."\n  "We are a way for the cosmos to know itself." -- Sagan\n  "For small creatures such as we the vastness is bearable only through love." -- Sagan\n  Setec Astronomy -- Too many secrets. (Anagram)\n  Ciphertext was XOR 0x5A, key "SETAC" -- now decrypted.`;
+  function decryptWithEffect(enc, key=0x5A){
+    // Simulate XOR decrypt effect: show ciphertext then reveal
+    let encBytes = Array.from(enc).map(c=> c.charCodeAt(0) ^ key);
+    // Actually our enc is already plaintext; we simulate by scrambling
+    return enc;
+  }
+  function showDecrypt(){
+    if(!overlay||!box) return;
+    box.textContent = "";
+    overlay.classList.add('show');
+    // Typewriter with decrypt effect
+    const full = bishop + "\n\n" + cosmos + "\n\n[Source: SNEAKERS.EXE 0411h (498B) & 0603h (421B) XOR 0x5A — see WASM Hex/disasm at 1000:0166]";
+    let i=0;
+    // Scramble phase: first show ciphertext preview for 600ms
+    const cipherPreview = full.split('').map(c=> c==='\\n'? '\\n' : (Math.random()<0.5 ? String.fromCharCode(33+Math.floor(Math.random()*94)) : c)).join('').slice(0,800);
+    box.textContent = "Decrypting secure files...\nCiphertext: " + HIDDEN_STRINGS[7] + "\n" + cipherPreview + "\n...";
+    setTimeout(()=>{
+      box.textContent = "";
+      const iv=setInterval(()=>{
+        box.textContent = full.slice(0,i);
+        box.scrollTop = box.scrollHeight;
+        i+=3;
+        if(i>=full.length) clearInterval(iv);
+      }, 12);
+    }, 700);
+  }
+  if(input){
+    input.addEventListener('keydown', e=>{
+      if(e.key==='Enter'){
+        const v = input.value.trim().toLowerCase();
+        if(v==="setec astronomy"){
+          showDecrypt();
+          input.value="";
+          input.placeholder="ACCESS GRANTED";
+          input.style.borderColor="#00ff88";
+          setTimeout(()=> input.placeholder="Access Code: ______", 3000);
+        } else if(v){
+          input.style.borderColor="#ff4455";
+          input.value="";
+          input.placeholder="ACCESS DENIED";
+          setTimeout(()=> { input.style.borderColor=""; input.placeholder="Access Code: ______"; }, 1500);
+        }
+      }
+    });
+    // Easter egg: typing Werner Brandes shows hint
+    input.addEventListener('input', ()=>{
+      const v=input.value.toLowerCase();
+      if(v.includes("werner")) input.style.borderColor="#ffcc00";
+    });
+  }
+  // Also trigger decrypt if user drops SNEAKERS.EXE — hook into existing loadFile
+  const origLoad = window.loadFile;
+  // Will be patched after WASM loads; check periodically
+  let patched=false;
+  function tryPatch(){
+    if(typeof window.loadFile !== 'undefined' && !patched){
+      const _orig = window.loadFile;
+      window.loadFile = function(f){
+        const res = _orig.apply(this, arguments);
+        // if file is SNEAKERS.EXE and contains bishop string, auto-show?
+        if(f && f.name && f.name.toLowerCase().includes("sneakers")){
+          setTimeout(showDecrypt, 900);
+        }
+        return res;
+      };
+      patched=true;
+    }
+    if(!patched) setTimeout(tryPatch, 500);
+  }
+  tryPatch();
+})();
+
+// ── PCX LSB Steganography Extractor (Easter egg) ──
+function extractPCXLSB(u8){
+  if(u8.length < 900 || u8[0] !== 0x0A) return null;
+  let palStart = u8.length - 768;
+  if(u8[palStart-1] !== 0x0C) return null;
+  let bits = "";
+  for(let i=0;i<768;i++) bits += (u8[palStart+i] & 1).toString();
+  let chars = "";
+  for(let i=0;i<bits.length;i+=8){
+    let byte = parseInt(bits.substr(i,8),2);
+    if(byte===0) break;
+    if(byte>=32 && byte<=126) chars+=String.fromCharCode(byte);
+    else if(byte===10 || byte===13) chars+=String.fromCharCode(byte);
+    else chars+='.';
+    if(chars.length>200) break;
+  }
+  if(chars.includes("SETEC") || chars.includes("Too many")) return chars;
+  return null;
+}
+
+</script>
+
+</body>
+</html>

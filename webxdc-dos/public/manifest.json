@@ -1,0 +1,7 @@
+{
+  "name": "DOS Binary Loader",
+  "description": "WebAssembly-powered 16-bit x86 DOS binary loader with real mode segment:offset addressing. Loads MZ .EXE, .COM, and raw binaries via the x86:LE:16:Real Mode language specification.",
+  "icon": "icons/icon.png",
+  "source_code_url": "https://github.com/shdwelf/Html5",
+  "min_api": 1
+}
