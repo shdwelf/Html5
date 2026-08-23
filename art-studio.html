@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#08090d" />
+  <meta name="description" content="Ensō & Haiku Wallet Forging Engine — local BIP-39 validation, keyspace art, poetry, and collectible minting." />
+  <title>Ensō &amp; Haiku Wallet Forging Engine · Art Studio</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="stylesheet" href="./css/studio.css" />
+  <script src="./webxdc.js"></script>
+</head>
+<body>
+  <div class="studio-shell">
+    <header class="studio-header">
+      <a class="studio-brand" href="./index.html#grid" target="_top" aria-label="Back to SITE-K">
+        <span class="studio-mark" aria-hidden="true"><i></i><i></i><i></i><b></b></span>
+        <span><strong>ART STUDIO</strong><small>LOCAL KEYSPACE WORKBENCH</small></span>
+      </a>
+      <div class="studio-header-right">
+        <span class="local-pill"><i></i>LOCAL ONLY</span>
+        <a class="grid-link" href="./index.html#grid" target="_top">SITE-K GRID <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="studio-intro" aria-labelledby="studio-title">
+        <div class="intro-copy">
+          <div class="eyebrow"><span>STUDIO / 01</span><b></b>ENSŌ &amp; HAIKU WALLET FORGING ENGINE</div>
+          <h1 id="studio-title">Art from<br /><em>entropy.</em></h1>
+          <p>One private workbench for checking a BIP-39 phrase, seeing its keyspace geometry, composing seasonal poetry, and forging a unique Enso collectible from the same local source.</p>
+        </div>
+        <div class="intro-badge" aria-label="Art Studio features">
+          <span class="orbit orbit-a"></span><span class="orbit orbit-b"></span><span class="orbit-core">ENSO<br /><small>FORGE</small></span>
+          <span class="badge-caption">A quiet circle<br />for a noisy space</span>
+        </div>
+      </section>
+
+      <nav class="studio-tabs" aria-label="Art Studio tools" role="tablist">
+        <button type="button" class="studio-tab active" role="tab" aria-selected="true" aria-controls="forgePanel" data-panel="forgePanel"><span>01</span>ENSO FORGE</button>
+        <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="poetryPanel" data-panel="poetryPanel"><span>02</span>POETRY LAB</button>
+        <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="viewerPanel" data-panel="viewerPanel"><span>03</span>KEY VIEWER</button>
+        <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="validatorPanel" data-panel="validatorPanel"><span>04</span>VALIDATOR</button>
+        <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="catalogPanel" data-panel="catalogPanel"><span>05</span>PATTERN LIBRARY</button>
+        <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="mintPanel" data-panel="mintPanel"><span>06</span>MINT CARD</button>
+      </nav>
+      <div class="wm4d-bar" id="wm4dBar" aria-label="4D window manager">
+        <div class="wm4d-brand"><span>4Dwm</span><b id="wm4dState">FLOATING</b></div>
+        <span class="wm4d-help">drag titlebars · z-depth · time cursor</span>
+        <button type="button" class="wm4d-action primary" id="wm4dToggle">DOCK WINDOWS</button>
+        <button type="button" class="wm4d-action" id="wm4dReset">RESET LAYOUT</button>
+        <button type="button" class="wm4d-action" id="wm4dSnap" aria-pressed="true">SNAP 8PX</button>
+        <label class="wm4d-time" for="wm4dTime">T <input id="wm4dTime" type="range" min="0" max="99" value="0" /></label>
+        <div class="wm4d-tray" id="wm4dTray" aria-label="Window tray"></div>
+      </div>
+
+      <div class="workbench wm-floating" data-wm-root>
+        <aside class="source-column" data-wm-window="source" data-wm-label="SOURCE" data-wm-short="SRC">
+          <section class="source-card" aria-labelledby="source-heading">
+            <div class="panel-heading">
+              <div><span class="panel-index">SOURCE</span><h2 id="source-heading">Mnemonic input</h2></div>
+              <span class="source-lock" title="Input stays in this browser">⌁ LOCAL</span>
+            </div>
+            <p class="panel-description">The same private phrase powers every studio view. The phrase is never stored or sent; minted cards save metadata only.</p>
+            <div class="source-field-head"><label for="studioInput">Recovery phrase</label><span id="studioWordCount">0 words</span></div>
+            <div class="source-textarea-wrap">
+              <textarea id="studioInput" rows="6" spellcheck="false" autocomplete="off" autocapitalize="none" placeholder="Enter 12, 15, 18, 21, or 24 words…" aria-describedby="sourceHint"></textarea>
+              <span class="source-corner" aria-hidden="true">PRIVATE SOURCE</span>
+            </div>
+            <div class="source-actions">
+              <button type="button" class="small-button" id="studioPaste">PASTE</button>
+              <button type="button" class="small-button" id="studioClear">CLEAR</button>
+              <button type="button" class="small-button sample" id="studioSample">DEMO</button>
+            </div>
+            <p class="source-hint" id="sourceHint">English BIP-39 · spaces, commas, or line breaks</p>
+            <div id="studioStatus" class="studio-status ready" role="status" aria-live="polite"><span class="status-dot"></span><div><b>READY</b><p>Waiting for a phrase to enter the studio.</p></div></div>
+          </section>
+
+          <section class="source-metrics" aria-label="Mnemonic metrics">
+            <div><span>WORDS</span><b id="metricWords">—</b></div>
+            <div><span>ENTROPY</span><b id="metricEntropy">—</b></div>
+            <div><span>CHECKSUM</span><b id="metricChecksum">—</b></div>
+          </section>
+
+          <div class="privacy-rail"><span aria-hidden="true">▣</span><p><b>Private by design.</b> This studio performs wordlist lookup, SHA-256, and art rendering in your browser.</p></div>
+        </aside>
+
+        <section class="studio-stage" data-wm-window="canvas" data-wm-label="CANVAS" data-wm-short="CAN" aria-label="Art Studio canvas">
+          <section id="forgePanel" class="studio-panel active" role="tabpanel" aria-labelledby="forgeTab" data-panel-view>
+            <div class="stage-toolbar">
+              <div><span class="stage-label">ENSO FORGE</span><h2>Entropy, brushed into one breath.</h2></div>
+              <span id="forgeState" class="stage-state">DEMO SEED</span>
+            </div>
+            <div class="enso-frame"><canvas id="ensoCanvas" width="900" height="620" aria-label="Generated Enso artwork"></canvas><div class="canvas-crosshair" aria-hidden="true"></div><span class="canvas-coord top-left">0x / 00</span><span class="canvas-coord bottom-right">ENSO // 001</span></div>
+            <div class="forge-deck" aria-label="Enso Forge controls">
+              <div class="palette-control"><span class="deck-label">PALETTE</span><div id="paletteControls" class="palette-controls" role="group" aria-label="Color palette"><button type="button" class="palette-button active" data-palette="mineral" aria-label="Mineral palette" title="Mineral"><i></i><i></i><i></i></button><button type="button" class="palette-button" data-palette="ember" aria-label="Ember palette" title="Ember"><i></i><i></i><i></i></button><button type="button" class="palette-button" data-palette="moon" aria-label="Moon palette" title="Moon"><i></i><i></i><i></i></button></div><b id="paletteName">MINERAL</b></div>
+              <label class="range-control" for="inkLoadRange"><span>INK LOAD <output id="inkLoadValue" for="inkLoadRange">08</output></span><input id="inkLoadRange" type="range" min="1" max="10" value="8" /></label>
+              <label class="range-control" for="roughnessRange"><span>GRAIN <output id="roughnessValue" for="roughnessRange">50</output></span><input id="roughnessRange" type="range" min="0" max="100" value="50" /></label>
+              <label class="range-control" for="openingRange"><span>OPENING <output id="openingValue" for="openingRange">24°</output></span><input id="openingRange" type="range" min="4" max="48" value="24" /></label>
+              <button type="button" class="control-toggle" id="guidesButton" aria-pressed="true">GUIDES ON</button>
+            </div>
+            <details class="advanced-forge" open>
+              <summary><span>FORGE PARAMETERS</span><b>10 MAPS / PRIVATE</b></summary>
+              <div class="parameter-grid">
+                <div class="collectible-id"><span>COLLECTIBLE SEED ID (MAP / ART)</span><b id="collectibleSeedId">003F6B0F</b></div>
+                <label class="parameter-control" for="batchSizeRange"><span>BATCH SIZE / MINE MULTI <output id="batchSizeValue" for="batchSizeRange">01</output></span><input id="batchSizeRange" type="range" min="1" max="10" value="1" /></label>
+                <label class="parameter-control" for="brushSizeRange"><span>BRUSH DIMENSION <output id="brushSizeValue" for="brushSizeRange">05</output></span><input id="brushSizeRange" type="range" min="1" max="10" value="5" /></label>
+                <label class="parameter-control" for="fluidDensityRange"><span>INK FLUID DENSITY <output id="fluidDensityValue" for="fluidDensityRange">01</output></span><input id="fluidDensityRange" type="range" min="1" max="5" value="1" /></label>
+                <label class="parameter-control" for="fiberGrainRange"><span>PAPER FIBER GRAIN <output id="fiberGrainValue" for="fiberGrainRange">01</output></span><input id="fiberGrainRange" type="range" min="0" max="5" value="1" /></label>
+                <label class="parameter-control" for="bristleSplitRange"><span>BRISTLE SPLITTING <output id="bristleSplitValue" for="bristleSplitRange">01</output></span><input id="bristleSplitRange" type="range" min="0" max="5" value="1" /></label>
+                <label class="parameter-control" for="rotationRange"><span>ENTRY ROTATION <output id="rotationValue" for="rotationRange">353°</output></span><input id="rotationRange" type="range" min="0" max="359" value="353" /></label>
+                <label class="parameter-select" for="strokeDirection"><span>STROKE DIRECTION</span><select id="strokeDirection"><option value="ccw" selected>COUNTER-CLOCKWISE</option><option value="cw">CLOCKWISE</option></select></label>
+                <label class="parameter-select" for="paperHue"><span>PAPER HUE / BACKGROUND</span><select id="paperHue"><option value="cyan" selected>CYAN · #E0F2FE</option><option value="ivory">IVORY · #FFF7E8</option><option value="rose">ROSE · #FFE4E6</option><option value="slate">DARK SLATE · #CBD5E1</option><option value="night">NIGHT · #111827</option></select></label>
+                <label class="parameter-select" for="aspectProportion"><span>X / Y ASPECT</span><select id="aspectProportion"><option value="organic" selected>UNEQUAL · ORGANIC OVAL</option><option value="equal">EQUAL · TRUE CIRCLE</option><option value="wide">WIDE · HORIZONTAL</option><option value="tall">TALL · VERTICAL</option></select></label>
+                <label class="parameter-select" for="dynamicMode"><span>BRUSHSTROKE DYNAMIC</span><select id="dynamicMode"><option value="balanced" selected>BALANCED / MEDIUM</option><option value="calm">CALM / LOW PRESSURE</option><option value="wild">WILD / HIGH PRESSURE</option></select></label>
+                <label class="parameter-select" for="hankoStyle"><span>HANKO SIGNATURE SEAL</span><select id="hankoStyle"><option value="slate" selected>DARK SLATE SEAL</option><option value="vermilion">VERMILION SEAL</option><option value="indigo">INDIGO SEAL</option><option value="custom">CUSTOM HANKO</option></select></label>
+                <label class="parameter-control custom-hanko-text" for="hankoText"><span>CUSTOM HANKO TEXT</span><input id="hankoText" type="text" maxlength="4" value="印" /></label>
+                <label class="parameter-control custom-hanko-color" for="hankoColor"><span>SEAL INK</span><input id="hankoColor" type="color" value="#1f2937" /></label>
+              </div>
+            </details>
+            <div class="forge-controls">
+              <div class="control-copy"><span id="forgeNote">A calm default mark is ready. Load a phrase to forge a private variation.</span><div class="forge-swatches"><i></i><i></i><i></i><i></i></div></div>
+              <div class="button-row"><button type="button" class="forge-button" id="forgeButton">FORGE ENSO <b aria-hidden="true">↗</b></button><button type="button" class="outline-button" id="randomizeButton">RANDOMIZE</button><button type="button" class="outline-button" id="resetButton">RESET</button><button type="button" class="outline-button" id="pngButton">EXPORT PNG</button><button type="button" class="outline-button" id="svgButton">EXPORT SVG</button></div>
+            </div>
+            <div class="pack-actions"><button type="button" class="pack-button" id="poeticMintButton">FORGE POETIC ASSET COLLECTIBLE <b aria-hidden="true">↗</b></button><div class="pack-stack"><button type="button" class="pack-link" id="quineButton">QUINE / SFX INSTALLER</button><a class="pack-link" id="xdcButton" href="./sitek.xdc" download="sitek-art-studio.xdc">DOWNLOAD WEBXDC</a></div><button type="button" class="pack-link" id="shareButton">SHARE TO ARCANECHAT</button></div>
+          </section>
+
+          <section id="viewerPanel" class="studio-panel" role="tabpanel" aria-labelledby="viewerTab" data-panel-view hidden>
+            <div class="stage-toolbar">
+              <div><span class="stage-label">KEY VIEWER</span><h2>Walk the 11-bit word field.</h2></div>
+              <span id="viewerState" class="stage-state">NO SOURCE</span>
+            </div>
+            <div class="viewer-frame"><canvas id="keyCanvas" width="900" height="430" tabindex="0" aria-label="BIP-39 word index field. Move over a point to inspect its word index."></canvas><div class="viewer-overlay"><span>2048 WORD INDICES</span><span id="viewerOverlayValue">—</span></div><div id="viewerTooltip" class="viewer-tooltip" hidden><span>WORD INDEX</span><b id="tooltipIndex">—</b><small id="tooltipWord">—</small></div></div>
+            <div class="coin-geometry"><div class="coin-toolbar"><div><span>COIN KEYSPACE ART</span><b id="coinGeometryNote">BTC · radial field</b></div><div id="coinControls" class="coin-controls" role="group" aria-label="Coin keyspace model"><button type="button" class="coin-button active" data-coin="btc">BTC</button><button type="button" class="coin-button" data-coin="eth">ETH</button><button type="button" class="coin-button" data-coin="ltc">LTC</button><button type="button" class="coin-button" data-coin="xmr">XMR</button><button type="button" class="coin-button" data-coin="sol">SOL</button><button type="button" class="coin-button" data-coin="ada">ADA</button></div></div><canvas id="coinCanvas" width="900" height="170" aria-label="Coin-specific mnemonic keyspace geometry"></canvas></div>
+            <div class="viewer-lower">
+              <div class="bit-card"><div class="mini-heading"><span>ENTROPY TAPE</span><b id="bitCount">—</b></div><canvas id="bitCanvas" width="900" height="120" aria-label="Entropy and checksum bit tape"></canvas></div>
+              <div class="viewer-note"><span class="note-icon">+</span><p><b>Projected, not derived.</b> The field shows word indices and entropy bits. It never generates an address or private key.</p></div>
+            </div>
+          </section>
+
+          <section id="validatorPanel" class="studio-panel" role="tabpanel" aria-labelledby="validatorTab" data-panel-view hidden>
+            <div class="stage-toolbar">
+              <div><span class="stage-label">VALIDATOR</span><h2>Read the phrase, word by word.</h2></div>
+              <span id="validatorState" class="stage-state">NO SOURCE</span>
+            </div>
+            <div class="diagnostic-summary"><div><span>WORDLIST</span><b>ENGLISH · 2048</b></div><div><span>ALLOWED LENGTHS</span><b>12 · 15 · 18 · 21 · 24</b></div><div><span>METHOD</span><b>SHA-256 CHECKSUM</b></div></div>
+            <div class="validator-readout"><div><span>VALIDATION</span><b id="validatorReadout">NO SOURCE</b></div><div><span>CHECKSUM BITS</span><b id="validatorChecksumBits">—</b></div><div><span>ENTROPY</span><b id="validatorEntropyBits">—</b></div></div>
+            <div id="derivationPaths" class="derivation-paths" hidden><div class="paths-heading"><span>DERIVATION REFERENCES</span><b>VALID SOURCE</b></div><div><span>BIP-44 · LEGACY</span><code>m/44'/0'/0'/0/0</code></div><div><span>BIP-84 · NATIVE SEGWIT</span><code>m/84'/0'/0'/0/0</code></div><p>Standard paths shown for reference only. No address or wallet key is derived here.</p></div>
+            <div class="diagnostic-head"><span>POSITION</span><span>WORD</span><span>INDEX</span><span>ROLE</span></div>
+            <ol id="studioWordList" class="studio-word-list"><li class="studio-empty"><span>—</span><p>Diagnostics will appear when a phrase is entered.</p></li></ol>
+            <div class="validator-explainer"><span>i</span><p>All words must be recognized. The last word carries the checksum bits; a recognized phrase can still fail that final comparison.</p></div>
+          </section>
+
+          <section id="catalogPanel" class="studio-panel" role="tabpanel" aria-labelledby="catalogTab" data-panel-view hidden>
+            <div class="stage-toolbar">
+              <div><span class="stage-label">PATTERN LIBRARY</span><h2>Curated words, checksum-complete.</h2></div>
+              <span id="catalogStatus" class="stage-state">100 ENTRIES</span>
+            </div>
+            <p class="catalog-intro">Browse repeated-word studies and poetic stems. Every displayed entry is locally generated and checksum-valid; they are demonstrations, never wallet seeds.</p>
+            <div class="catalog-tools"><label for="catalogFilter"><span>COLLECTION</span><select id="catalogFilter"><option value="all">ALL PATTERNS</option><option value="repeat12">11 / 12 REPEATED</option><option value="repeat15">14 / 15 REPEATED</option><option value="repeat24">23 / 24 REPEATED</option><option value="haiku">HAIKU / POETIC</option></select></label><label for="catalogSearch"><span>SEARCH</span><input id="catalogSearch" type="search" autocomplete="off" placeholder="word or phrase…" /></label><span id="catalogCount" class="catalog-count">100 / 100</span></div>
+            <div id="catalogList" class="catalog-list" aria-live="polite"></div>
+            <div class="catalog-note"><span>i</span><p>Pattern density is part of the study. Repeated-word phrases have much less human-created variety than a real randomly generated wallet mnemonic.</p></div>
+          </section>
+
+          <section id="poetryPanel" class="studio-panel" role="tabpanel" aria-labelledby="poetryTab" data-panel-view hidden>
+            <div class="stage-toolbar">
+              <div><span class="stage-label">POETRY LAB</span><h2>Let the source take a seasonal breath.</h2></div>
+              <span id="poetryState" class="stage-state">READY</span>
+            </div>
+            <div class="poetry-controls"><label for="poemForm"><span>FORM</span><select id="poemForm"><option value="hokku">HOKKU · 5 / 7 / 5</option><option value="zappai">ZAPPAI · playful 5 / 7 / 5</option><option value="haiku" selected>HAIKU · 5 / 7 / 5</option><option value="micro">MICRO-POETRY · one breath</option><option value="tanka">TANKA · 5 / 7 / 5 / 7 / 7</option><option value="renga">RENGA · linked verse</option><option value="haiga">HAIGA · poem + image</option><option value="haibun">HAIBUN · prose + haiku</option><option value="saijiki">SAIJIKI · season index</option></select></label><label for="seasonSelect"><span>SEASON WORDS</span><select id="seasonSelect"><option value="spring">SPRING / 春</option><option value="summer">SUMMER / 夏</option><option value="autumn" selected>AUTUMN / 秋</option><option value="winter">WINTER / 冬</option></select></label><button type="button" class="forge-button poetry-generate" id="generatePoemButton">GENERATE POEM ↗</button></div>
+            <div class="poetry-board"><div id="magnetField" class="magnet-field"><span class="fridge-label">FRIDGE / SEASON INDEX</span><div id="fridgeMagnet" class="fridge-magnet" aria-hidden="true"><b>POEM</b><span>PINNED</span></div><div id="poemOutput" class="poem-output"><span class="poem-kicker">READY TO COMPOSE</span><p>Choose a form, then let the magnet find a line.</p></div><span class="magnet-screw screw-a" aria-hidden="true"></span><span class="magnet-screw screw-b" aria-hidden="true"></span></div><aside class="poetry-info"><div class="form-readout"><span id="poemFormLabel">HAIKU</span><b id="poemMeter">5 · 7 · 5</b><p id="poemDescription">A concise seasonal image with a turn or cutting pause.</p></div><div class="saijiki-readout"><span>SAIJIKI / <b id="seasonLabel">AUTUMN</b></span><div id="saijikiList" class="saijiki-list"></div></div><div class="anagram-readout"><span>ANAGRAM THREAD</span><p id="anagramOutput">Enter a source to look for exact word anagrams.</p></div></aside></div>
+          </section>
+
+          <section id="mintPanel" class="studio-panel" role="tabpanel" aria-labelledby="mintTab" data-panel-view hidden>
+            <div class="stage-toolbar">
+              <div><span class="stage-label">FANTASY TRADING CARD MINT</span><h2>Forge the poem into a collectible.</h2></div>
+              <span id="mintState" class="stage-state">DRAFT READY</span>
+            </div>
+            <div class="mint-workspace"><div class="mint-card-frame"><canvas id="mintCanvas" width="720" height="920" aria-label="Fantasy trading card preview"></canvas><div class="mint-frame-label">ENSO FORGE / ARTIFACT</div></div><div class="mint-controls"><div class="mint-match" id="mintMatch"><span class="match-icon">×</span><div><b id="mappingStatus">VALID SOURCE REQUIRED</b><p id="mappingNote">Validate a phrase to evaluate the ten local mapping solvers.</p></div></div><div class="solver-block"><div class="solver-heading"><span>CRYPTOGRAPHIC MAPS</span><b id="solverSummary">10 MAPPINGS</b></div><div id="solverGrid" class="solver-grid"></div></div><label class="mint-field" for="cardTitle"><span>CARD TITLE</span><input id="cardTitle" type="text" maxlength="34" value="ENSŌ / FIRST BREATH" /></label><div class="mint-select-row"><label class="mint-field" for="mintCoin"><span>COIN GEOMETRY</span><select id="mintCoin"><option value="btc">BTC · radial field</option><option value="eth">ETH · orbit lattice</option><option value="ltc">LTC · silver braid</option><option value="xmr">XMR · ring braid</option><option value="sol">SOL · drift mesh</option><option value="ada">ADA · epoch flower</option></select></label><label class="mint-field" for="foilTreatment"><span>FOIL TREATMENT</span><select id="foilTreatment"><option value="none">NO FOIL</option><option value="aurora" selected>AURORA FOIL</option><option value="ember">EMBER FOIL</option><option value="moon">MOON FOIL</option></select></label></div><div class="mint-meta"><div><span>SEED ID</span><b id="mintSeedId">003F6B0F</b></div><div><span>BATCH</span><b id="mintBatchValue">1 ASSET</b></div><div><span>FORM</span><b id="mintFormValue">HAIKU</b></div></div><div class="mint-actions"><button type="button" class="forge-button" id="mintButton">MINT TO GALLERY ↗</button><button type="button" class="outline-button" id="mintPngButton">EXPORT CARD PNG</button><button type="button" class="outline-button" id="mintShareButton">SHARE CARD</button></div></div></div>
+            <div class="gallery-heading"><div><span class="stage-label">LOCAL GALLERY</span><h3>Forged artifacts</h3></div><button type="button" class="small-button" id="clearGalleryButton">CLEAR GALLERY</button></div>
+            <div id="galleryList" class="gallery-list"><div class="gallery-empty">No artifacts minted in this browser yet.</div></div>
+            <div class="mint-note"><span>i</span><p>Gallery storage contains artwork metadata only — never the mnemonic. The seed ID is a public fingerprint, not a private key.</p></div>
+          </section>
+        </section>
+
+        <aside class="inspector-column" data-wm-window="inspector" data-wm-label="INSPECTOR" data-wm-short="INS">
+          <section class="inspector-card" id="inspectorCard" aria-labelledby="inspector-heading">
+            <div class="panel-heading"><div><span class="panel-index">INSPECTOR</span><h2 id="inspector-heading">Enso Forge</h2></div><span class="inspector-number">A</span></div>
+            <p id="inspectorCopy" class="panel-description">A generative brush study seeded by the phrase entropy. Each mark is deterministic, local, and intentionally imperfect.</p>
+            <dl class="inspector-list">
+              <div><dt>INPUT</dt><dd id="inspectorInput">DEMO SEED</dd></div>
+              <div><dt>BRUSH</dt><dd id="inspectorBrush">DRY / 05 PASS</dd></div>
+              <div><dt>GAP</dt><dd id="inspectorGap">UNSET</dd></div>
+              <div><dt>VARIANT</dt><dd id="inspectorVariant">00 / DEMO</dd></div>
+              <div><dt>PALETTE</dt><dd id="inspectorPalette">MINERAL</dd></div>
+            </dl>
+            <div class="inspector-rule"></div>
+            <div class="legend-row"><i class="legend-mark entropy"></i><span>entropy source</span></div>
+            <div class="legend-row"><i class="legend-mark checksum"></i><span>checksum edge</span></div>
+            <div class="legend-row"><i class="legend-mark field"></i><span>keyspace field</span></div>
+          </section>
+          <section class="quote-card"><span>ENSO</span><p>“The circle is complete<br />when nothing is added.”</p><small>— studio principle</small></section>
+          <a class="explorer-link" href="./keyspace.html" target="_top"><span>OPEN FULL KEYSPACE EXPLORER</span><b aria-hidden="true">↗</b></a>
+        </aside>
+      </div>
+
+      <section class="studio-footer-note"><span class="footer-mark">ART / KEY / LOCAL</span><p>Art Studio is a visual instrument, not a wallet. Never enter a live recovery phrase on a shared or untrusted computer.</p></section>
+    </main>
+    <footer class="studio-footer"><span>ENSO FORGE · ART STUDIO</span><span>NO PHRASE STORAGE · NO TRANSMISSION · NO ADDRESS DERIVATION</span></footer>
+  </div>
+  <script type="module" src="./js/studio.js"></script>
+</body>
+</html>
+html>
