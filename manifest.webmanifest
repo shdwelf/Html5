@@ -2,7 +2,7 @@
   "id": "./index.html",
   "name": "SITE-K Parish Control",
   "short_name": "SITE-K",
-  "description": "Offline SITE-K toolkit with a local BIP-39 mnemonic validator.",
+  "description": "Offline SITE-K toolkit with Art Studio, Enso Forge, and local BIP-39 tools.",
   "start_url": "./index.html#grid",
   "scope": "./",
   "display": "standalone",
@@ -36,17 +36,10 @@
       "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Keyspace",
-      "short_name": "KEYSPACE",
-      "description": "BIP-39 keyspace viewer",
-      "url": "./index.html#keyspace",
-      "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Mnemonic Validator",
-      "short_name": "VALIDATOR",
-      "description": "Verify a BIP-39 phrase locally",
-      "url": "./index.html#validator",
+      "name": "Art Studio",
+      "short_name": "ART STUDIO",
+      "description": "Enso Forge, key viewer, and local validator",
+      "url": "./index.html#studio",
       "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
     }
   ]

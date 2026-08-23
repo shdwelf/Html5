@@ -1,4 +1,4 @@
-/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator */
+/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator | #studio */
 import { initWm } from "./wm.js";
 
 document.documentElement.dataset.shell = "1";
@@ -7,7 +7,7 @@ const $ = (id) => document.getElementById(id);
 
 function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
-  if (raw === "terrarium" || raw === "keyspace" || raw === "validator" || raw === "grid") return raw;
+  if (raw === "terrarium" || raw === "keyspace" || raw === "validator" || raw === "studio" || raw === "grid") return raw;
   return "grid";
 }
 
@@ -98,11 +98,11 @@ let started = null;
 async function start(mode) {
   markDock(mode);
 
-  if (mode === "keyspace" || mode === "validator") {
+  if (mode === "keyspace" || mode === "validator" || mode === "studio") {
     const frame = $("keyframe");
-    const view = mode === "validator" ? "./validator.html" : "./keyspace.html";
+    const view = mode === "studio" ? "./art-studio.html" : mode === "validator" ? "./validator.html" : "./keyspace.html";
     if (frame && frame.getAttribute("src") !== view) frame.src = view;
-    document.title = mode === "validator" ? "BIP-39 Mnemonic Validator" : "SITE-K · Keyspace";
+    document.title = mode === "studio" ? "Art Studio · Enso Forge" : mode === "validator" ? "BIP-39 Mnemonic Validator" : "SITE-K · Keyspace";
     return;
   }
 

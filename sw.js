@@ -1,10 +1,11 @@
 /* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v3";
+const CACHE = "sitek-html5-v4";
 const PRECACHE = [
   "./",
   "./index.html",
   "./keyspace.html",
   "./validator.html",
+  "./art-studio.html",
   "./louisiana.html",
   "./terrarium.html",
   "./manifest.webmanifest",
@@ -14,6 +15,8 @@ const PRECACHE = [
   "./css/jp-grid.css",
   "./css/terrarium.css",
   "./css/viewer.css",
+  "./css/validator.css",
+  "./css/studio.css",
   "./css/wm.css",
   "./js/app.js",
   "./js/wm.js",
@@ -35,6 +38,7 @@ const PRECACHE = [
   "./js/ca-plot.js",
   "./js/viewer.js",
   "./js/validator.js",
+  "./js/studio.js",
   "./js/bip39.js",
   "./js/bip39-en.js",
   "./vendor/three.module.min.js",

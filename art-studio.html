@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#08090d" />
+  <meta name="description" content="Art Studio — local BIP-39 validation, keyspace viewing, and Enso Forge generative art." />
+  <title>Art Studio · Enso Forge</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="stylesheet" href="./css/studio.css" />
+</head>
+<body>
+  <div class="studio-shell">
+    <header class="studio-header">
+      <a class="studio-brand" href="./index.html#grid" target="_top" aria-label="Back to SITE-K">
+        <span class="studio-mark" aria-hidden="true"><i></i><i></i><i></i><b></b></span>
+        <span><strong>ART STUDIO</strong><small>LOCAL KEYSPACE WORKBENCH</small></span>
+      </a>
+      <div class="studio-header-right">
+        <span class="local-pill"><i></i>LOCAL ONLY</span>
+        <a class="grid-link" href="./index.html#grid" target="_top">SITE-K GRID <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="studio-intro" aria-labelledby="studio-title">
+        <div class="intro-copy">
+          <div class="eyebrow"><span>STUDIO / 01</span><b></b>MNEMONIC → FORM</div>
+          <h1 id="studio-title">Art from<br /><em>entropy.</em></h1>
+          <p>One private workbench for checking a BIP-39 phrase, seeing its keyspace geometry, and forging a unique Enso mark from the same local source.</p>
+        </div>
+        <div class="intro-badge" aria-label="Art Studio features">
+          <span class="orbit orbit-a"></span><span class="orbit orbit-b"></span><span class="orbit-core">ENSO<br /><small>FORGE</small></span>
+          <span class="badge-caption">A quiet circle<br />for a noisy space</span>
+        </div>
+      </section>
+
+      <nav class="studio-tabs" aria-label="Art Studio tools" role="tablist">
+        <button type="button" class="studio-tab active" role="tab" aria-selected="true" aria-controls="forgePanel" data-panel="forgePanel"><span>01</span>ENSO FORGE</button>
+        <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="viewerPanel" data-panel="viewerPanel"><span>02</span>KEY VIEWER</button>
+        <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="validatorPanel" data-panel="validatorPanel"><span>03</span>VALIDATOR</button>
+      </nav>
+
+      <div class="workbench">
+        <aside class="source-column">
+          <section class="source-card" aria-labelledby="source-heading">
+            <div class="panel-heading">
+              <div><span class="panel-index">SOURCE</span><h2 id="source-heading">Mnemonic input</h2></div>
+              <span class="source-lock" title="Input stays in this browser">⌁ LOCAL</span>
+            </div>
+            <p class="panel-description">The same private phrase powers every studio view. Nothing is saved or sent.</p>
+            <div class="source-field-head"><label for="studioInput">Recovery phrase</label><span id="studioWordCount">0 words</span></div>
+            <div class="source-textarea-wrap">
+              <textarea id="studioInput" rows="6" spellcheck="false" autocomplete="off" autocapitalize="none" placeholder="Enter 12, 15, 18, 21, or 24 words…" aria-describedby="sourceHint"></textarea>
+              <span class="source-corner" aria-hidden="true">PRIVATE SOURCE</span>
+            </div>
+            <div class="source-actions">
+              <button type="button" class="small-button" id="studioPaste">PASTE</button>
+              <button type="button" class="small-button" id="studioClear">CLEAR</button>
+              <button type="button" class="small-button sample" id="studioSample">DEMO</button>
+            </div>
+            <p class="source-hint" id="sourceHint">English BIP-39 · spaces, commas, or line breaks</p>
+            <div id="studioStatus" class="studio-status ready" role="status" aria-live="polite"><span class="status-dot"></span><div><b>READY</b><p>Waiting for a phrase to enter the studio.</p></div></div>
+          </section>
+
+          <section class="source-metrics" aria-label="Mnemonic metrics">
+            <div><span>WORDS</span><b id="metricWords">—</b></div>
+            <div><span>ENTROPY</span><b id="metricEntropy">—</b></div>
+            <div><span>CHECKSUM</span><b id="metricChecksum">—</b></div>
+          </section>
+
+          <div class="privacy-rail"><span aria-hidden="true">▣</span><p><b>Private by design.</b> This studio performs wordlist lookup, SHA-256, and art rendering in your browser.</p></div>
+        </aside>
+
+        <section class="studio-stage" aria-label="Art Studio canvas">
+          <section id="forgePanel" class="studio-panel active" role="tabpanel" aria-labelledby="forgeTab" data-panel-view>
+            <div class="stage-toolbar">
+              <div><span class="stage-label">ENSO FORGE</span><h2>Entropy, brushed into one breath.</h2></div>
+              <span id="forgeState" class="stage-state">DEMO SEED</span>
+            </div>
+            <div class="enso-frame"><canvas id="ensoCanvas" width="900" height="620" aria-label="Generated Enso artwork"></canvas><div class="canvas-crosshair" aria-hidden="true"></div><span class="canvas-coord top-left">0x / 00</span><span class="canvas-coord bottom-right">ENSO // 001</span></div>
+            <div class="forge-controls">
+              <div class="control-copy"><span id="forgeNote">A calm default mark is ready. Load a phrase to forge a private variation.</span><div class="forge-swatches"><i></i><i></i><i></i><i></i></div></div>
+              <div class="button-row"><button type="button" class="forge-button" id="forgeButton">FORGE ENSO <b aria-hidden="true">↗</b></button><button type="button" class="outline-button" id="pngButton">EXPORT PNG</button><button type="button" class="outline-button" id="svgButton">EXPORT SVG</button></div>
+            </div>
+          </section>
+
+          <section id="viewerPanel" class="studio-panel" role="tabpanel" aria-labelledby="viewerTab" data-panel-view hidden>
+            <div class="stage-toolbar">
+              <div><span class="stage-label">KEY VIEWER</span><h2>Walk the 11-bit word field.</h2></div>
+              <span id="viewerState" class="stage-state">NO SOURCE</span>
+            </div>
+            <div class="viewer-frame"><canvas id="keyCanvas" width="900" height="430" aria-label="BIP-39 word index field"></canvas><div class="viewer-overlay"><span>2048 WORD INDICES</span><span id="viewerOverlayValue">—</span></div></div>
+            <div class="viewer-lower">
+              <div class="bit-card"><div class="mini-heading"><span>ENTROPY TAPE</span><b id="bitCount">—</b></div><canvas id="bitCanvas" width="900" height="120" aria-label="Entropy and checksum bit tape"></canvas></div>
+              <div class="viewer-note"><span class="note-icon">+</span><p><b>Projected, not derived.</b> The field shows word indices and entropy bits. It never generates an address or private key.</p></div>
+            </div>
+          </section>
+
+          <section id="validatorPanel" class="studio-panel" role="tabpanel" aria-labelledby="validatorTab" data-panel-view hidden>
+            <div class="stage-toolbar">
+              <div><span class="stage-label">VALIDATOR</span><h2>Read the phrase, word by word.</h2></div>
+              <span id="validatorState" class="stage-state">NO SOURCE</span>
+            </div>
+            <div class="diagnostic-summary"><div><span>WORDLIST</span><b>ENGLISH · 2048</b></div><div><span>ALLOWED LENGTHS</span><b>12 · 15 · 18 · 21 · 24</b></div><div><span>METHOD</span><b>SHA-256 CHECKSUM</b></div></div>
+            <div class="diagnostic-head"><span>POSITION</span><span>WORD</span><span>INDEX</span><span>ROLE</span></div>
+            <ol id="studioWordList" class="studio-word-list"><li class="studio-empty"><span>—</span><p>Diagnostics will appear when a phrase is entered.</p></li></ol>
+            <div class="validator-explainer"><span>i</span><p>All words must be recognized. The last word carries the checksum bits; a recognized phrase can still fail that final comparison.</p></div>
+          </section>
+        </section>
+
+        <aside class="inspector-column">
+          <section class="inspector-card" id="inspectorCard" aria-labelledby="inspector-heading">
+            <div class="panel-heading"><div><span class="panel-index">INSPECTOR</span><h2 id="inspector-heading">Enso Forge</h2></div><span class="inspector-number">A</span></div>
+            <p id="inspectorCopy" class="panel-description">A generative brush study seeded by the phrase entropy. Each mark is deterministic, local, and intentionally imperfect.</p>
+            <dl class="inspector-list">
+              <div><dt>INPUT</dt><dd id="inspectorInput">DEMO SEED</dd></div>
+              <div><dt>BRUSH</dt><dd id="inspectorBrush">DRY / 05 PASS</dd></div>
+              <div><dt>GAP</dt><dd id="inspectorGap">UNSET</dd></div>
+            </dl>
+            <div class="inspector-rule"></div>
+            <div class="legend-row"><i class="legend-mark entropy"></i><span>entropy source</span></div>
+            <div class="legend-row"><i class="legend-mark checksum"></i><span>checksum edge</span></div>
+            <div class="legend-row"><i class="legend-mark field"></i><span>keyspace field</span></div>
+          </section>
+          <section class="quote-card"><span>ENSO</span><p>“The circle is complete<br />when nothing is added.”</p><small>— studio principle</small></section>
+          <a class="explorer-link" href="./keyspace.html" target="_top"><span>OPEN FULL KEYSPACE EXPLORER</span><b aria-hidden="true">↗</b></a>
+        </aside>
+      </div>
+
+      <section class="studio-footer-note"><span class="footer-mark">ART / KEY / LOCAL</span><p>Art Studio is a visual instrument, not a wallet. Never enter a live recovery phrase on a shared or untrusted computer.</p></section>
+    </main>
+    <footer class="studio-footer"><span>ENSO FORGE · ART STUDIO</span><span>NO STORAGE · NO TRANSMISSION · NO ADDRESS DERIVATION</span></footer>
+  </div>
+  <script type="module" src="./js/studio.js"></script>
+</body>
+</html>
