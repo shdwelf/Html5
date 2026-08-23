@@ -1,0 +1,157 @@
+@import url("./jp-grid.css");
+@import url("./terrarium.css");
+
+.app-dock {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(10px + var(--safe-b));
+  z-index: 20;
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  background: rgba(6, 12, 8, 0.88);
+  border: 1px solid #2c4c30;
+  pointer-events: auto;
+}
+.app-dock a {
+  min-width: 88px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  border: 1px solid #1d3a24;
+  padding: 0 10px;
+}
+.app-dock a.on {
+  color: var(--amber);
+  border-color: #6a4a18;
+  background: #1a1408;
+}
+
+body[data-mode="grid"] .ui-ter,
+body[data-mode="terrarium"] .ui-grid,
+body[data-mode="keyspace"] .ui-grid,
+body[data-mode="keyspace"] .ui-ter,
+body[data-mode="keyspace"] #stage,
+body[data-mode="keyspace"] .labels,
+body[data-mode="keyspace"] .phase-chip,
+body[data-mode="keyspace"] .glass-note,
+body[data-mode="keyspace"] .hud-coords,
+body[data-mode="keyspace"] .help,
+body[data-mode="keyspace"] .cmdbar { display: none !important; }
+
+body[data-mode="terrarium"] .cmdbar,
+body[data-mode="terrarium"] .hud-coords,
+body[data-mode="terrarium"] .phase-chip { display: none !important; }
+
+#keyframe {
+  display: none;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #07080d;
+  z-index: 4;
+}
+body[data-mode="keyspace"] #keyframe { display: block; }
+body[data-mode="terrarium"] #boot,
+body[data-mode="keyspace"] #boot { display: none !important; }
+
+body[data-mode="grid"] .cmdbar,
+body[data-mode="grid"] .hud-coords {
+  bottom: calc(64px + var(--safe-b));
+}
+body[data-mode="grid"] .help {
+  bottom: calc(112px + var(--safe-b));
+}
+
+.wx-chip {
+  position: fixed;
+  top: calc(118px + var(--safe-t));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--cyan);
+  border: 1px solid #245050;
+  background: rgba(4, 16, 18, 0.82);
+  padding: 5px 12px;
+  pointer-events: auto;
+  cursor: pointer;
+  font-family: inherit;
+  text-transform: uppercase;
+}
+.wx-chip:hover { border-color: #5ce1ff; }
+
+.install-chip {
+  position: fixed;
+  top: calc(12px + var(--safe-t));
+  right: calc(12px + var(--safe-r));
+  z-index: 22;
+  min-height: 36px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--amber);
+  background: rgba(26, 20, 8, 0.92);
+  border: 1px solid #6a4a18;
+  cursor: pointer;
+}
+.install-tip {
+  position: fixed;
+  top: calc(52px + var(--safe-t));
+  right: calc(12px + var(--safe-r));
+  z-index: 22;
+  max-width: 28ch;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  background: rgba(6, 12, 8, 0.94);
+  border: 1px solid #2c4c30;
+  padding: 8px 10px;
+}
+.net-chip {
+  position: fixed;
+  top: calc(12px + var(--safe-t));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 22;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--red);
+  border: 1px solid #5a2024;
+  background: rgba(20, 8, 10, 0.92);
+  padding: 6px 12px;
+}
+
+body[data-display="standalone"] .install-chip,
+body[data-display="standalone"] .install-tip { display: none !important; }
+
+body[data-mode="grid"] .left-dock {
+  max-height: calc(100dvh - 170px);
+  overflow: auto;
+}
+
+@media (max-width: 980px) {
+  body[data-mode="grid"] .left-dock,
+  body[data-mode="grid"] .right-dock,
+  body[data-mode="terrarium"] .left-dock,
+  body[data-mode="terrarium"] .right-dock {
+    bottom: calc(68px + var(--safe-b));
+  }
+  .app-dock a { min-width: 72px; font-size: 9px; }
+  .install-chip { top: auto; bottom: calc(62px + var(--safe-b)); right: calc(10px + var(--safe-r)); }
+  .wx-chip { font-size: 9px; padding: 4px 8px; }
+}
+
+@media (display-mode: standalone) {
+  .install-chip, .install-tip { display: none !important; }
+}
