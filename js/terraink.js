@@ -150,6 +150,19 @@ function svgPath(pairs, bbox, w, h) {
   return d;
 }
 
+export function extractTerrainkLayers(dem, bbox, opts = {}) {
+  const { lo, hi, step, levels } = autoLevels(dem, opts.levels || 16);
+  return {
+    lo,
+    hi,
+    step,
+    levels,
+    contours: contours(dem, bbox, levels),
+    hachures: hachures(dem, bbox, opts.hachureEvery || 3),
+    drainage: drainage(dem, bbox, opts.drainSeeds || 90),
+  };
+}
+
 export function renderTerraink(dem, bbox, opts = {}) {
   const w = opts.width || 1600;
   const h = opts.height || 1000;

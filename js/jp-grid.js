@@ -1,7 +1,9 @@
 import * as THREE from "../vendor/three.module.min.js";
 import { OrbitControls } from "../vendor/OrbitControls.js";
 import { resolveSite, CATALOG } from "./site-id.js";
-import { loadWeather, ecosystemFromWx, wxHudMarkup, wxChipText } from "./wx-live.js";
+import { loadWeather, ecosystemFromWx, wxHudBody, wxChipText } from "./wx-live.js";
+import { open as wmOpen, nudge as wmNudge, toggle as wmToggle, isPhone as wmPhone } from "./wm.js";
+import { bindSfxPanel, autoPack, downloadWrl, downloadSfx, readLayers } from "./vrml-pack.js";
 
 const SITE_ID = resolveSite();
 
@@ -477,6 +479,7 @@ function clockStr(t) {
 
 function logLine(lvl, msg, t = state.time) {
   const el = $("term");
+  if (!el) return;
   const row = document.createElement("div");
   row.className = `ln ${lvl}`;
   row.innerHTML = `<span class="ts">${clockStr(t)}</span>${msg}`;
@@ -589,7 +592,7 @@ function sparkline(filings) {
   return `<img id="spark" alt="990 revenue" src="${cv.toDataURL("image/png")}" />`;
 }
 
-function openPip(node) {
+function openPip(node, opts = {}) {
   state.selectedNode = node;
   $("rightDock")?.classList.add("open");
   if (!node) {
@@ -626,6 +629,8 @@ function openPip(node) {
   `;
   logLine("sys", `open  /990/${node.id}   ${node.short}   EIN ${node.ein}`);
   beep(880, 0.06, 0.025, "triangle");
+  if (opts.force || !wmPhone()) wmOpen("pip");
+  else wmNudge("pip");
 }
 
 function updateLabels(t) {
@@ -686,7 +691,7 @@ function selectParish(id) {
     "ok",
     `select  ${p.name} ${SITE.unit}   ${p.fips}   seat ${p.seat}   pop ${p.pop.toLocaleString()}   ${nodes.length} node(s)`
   );
-  if (nodes[0]) openPip(nodes[0]);
+  if (nodes[0]) openPip(nodes[0], { force: false });
 }
 
 function pick(ev) {
@@ -702,7 +707,7 @@ function pick(ev) {
       const s = o.userData.sanctuary;
       const p = parishByName(s.parish);
       if (p) selectParish(p.index);
-      openPip(s);
+      openPip(s, { force: true });
       flyTo(s.lon, s.lat, 7);
       return;
     }
@@ -724,40 +729,60 @@ function execCommand(raw) {
   const c = cmd.toLowerCase();
   logLine("sys", `# ${line}`);
   if (c === "help" || c === "?") {
+    wmOpen("syslog");
     logLine(
       "ok",
-      `cmds: list · nodes · open <name> · track <org> · fly <tract> · storm · wx · site ww|dalton|iv|stx|la · pause · access security`
+      `cmds: list · nodes · open <name> · track <org> · fly <tract> · storm · wx · sfx · vrml · wm · site ww|dalton|iv|stx|la · pause · access security`
     );
   } else if (c === "list") {
+    wmOpen("syslog");
     PARISHES.forEach((p) => {
       if (parishStatus(p, state.time) !== "OFFLINE") {
         logLine("ok", `${p.sector}  ${p.name.padEnd(22)}  ${p.seat}`);
       }
     });
   } else if (c === "nodes") {
+    wmOpen("syslog");
     liveNodes(state.time).forEach((s) => logLine("ok", `${s.short.padEnd(10)}  ${s.name}  ${s.city}`));
   } else if (c === "open" || c === "fly" || c === "track") {
     const node = findSanctuary(arg);
     const p = parishByName(arg) || (node ? parishByName(node.parish) : null);
     if (node) {
-      openPip(node);
+      openPip(node, { force: true });
       flyTo(node.lon, node.lat, 7);
       if (p) selectParish(p.index);
     } else if (p) {
       selectParish(p.index);
       flyTo(p.lon, p.lat, 10);
     } else logLine("bad", `not in phone book: ${arg}`);
+  } else if (c === "sfx" || c === "pack" || c === "vrml") {
+    wmOpen("sfx");
+    const pack = autoPack(gridPackSource(), readLayers());
+    if (c === "sfx" || arg.toLowerCase() === "sfx" || arg.toLowerCase() === "html") {
+      if (pack) downloadSfx(pack);
+      logLine("ok", "sfx  installer written  ·  map + layer selector inside");
+    } else if (pack) {
+      downloadWrl(pack);
+      logLine("ok", "vrml  extracted  " + pack.site + "-terrarium.wrl");
+    }
+  } else if (c === "wm" || c === "view" || c === "4dwm") {
+    if (arg.toLowerCase() === "clear") window.SITEK_WM?.clearView();
+    else window.SITEK_WM?.toggleDesk();
+    logLine("sys", "4Dwm  collapse chrome to see the terrain");
   } else if (c === "wx" || c === "weather") {
     if (arg.toLowerCase() === "refresh") bootWx(true);
-    else if (!state.wx) logLine("warn", "wx  still probing NOAA / Open-Meteo / WU");
     else {
-      const w = state.wx;
-      logLine(
-        w.live ? "ok" : "warn",
-        `wx  ${w.source}  ${w.station}  ${w.tempF != null ? w.tempF.toFixed(1) : "—"}F  RH ${
-          w.rh != null ? w.rh.toFixed(0) : "—"
-        }  ${w.windMph != null ? w.windMph.toFixed(0) : "—"} mph  ${w.text}`
-      );
+      wmOpen("wx");
+      if (!state.wx) logLine("warn", "wx  still probing NOAA / Open-Meteo / WU");
+      else {
+        const w = state.wx;
+        logLine(
+          w.live ? "ok" : "warn",
+          `wx  ${w.source}  ${w.station}  ${w.tempF != null ? w.tempF.toFixed(1) : "—"}F  RH ${
+            w.rh != null ? w.rh.toFixed(0) : "—"
+          }  ${w.windMph != null ? w.windMph.toFixed(0) : "—"} mph  ${w.text}`
+        );
+      }
     }
   } else if (c === "storm") {
     const { phase, r } = stormRadiusNorm(state.time);
@@ -795,7 +820,7 @@ function pumpEvents(prev, now) {
     }
     if (e.type === "pip") {
       const n = findSanctuary(e.id);
-      if (n) openPip(n);
+      if (n) openPip(n, { force: !wmPhone() });
     }
   });
 }
@@ -913,10 +938,13 @@ function bindUi() {
   $("btnPause").onclick = () => {
     state.paused = !state.paused;
     $("btnPause").textContent = state.paused ? "RESUME" : "PAUSE";
+    const top = $("btnPauseTop");
+    if (top) top.textContent = state.paused ? "RUN" : "PAUSE";
     logLine("sys", state.paused ? "clock hold" : "clock run");
   };
   $("btnPip").onclick = () => {
-    $("rightDock").classList.toggle("open");
+    $("rightDock").classList.add("open");
+    wmToggle("pip");
   };
   addEventListener("keydown", (e) => {
     if (e.target === $("cmd")) return;
@@ -925,6 +953,8 @@ function bindUi() {
       $("btnPause").click();
     }
   });
+  $("wxChip")?.addEventListener("click", () => bootWx(true));
+  $("gridWx")?.addEventListener("click", () => bootWx(true));
   $("sectors").addEventListener("click", (e) => {
     const b = e.target.closest("b");
     if (!b) return;
@@ -941,13 +971,13 @@ function bindUi() {
 function applyChrome() {
   const h1 = document.querySelector(".topbar h1");
   const sub = document.querySelector(".topbar p");
-  const meta = document.querySelector(".topbar .meta");
   if (h1) h1.textContent = SITE.title;
   if (sub) sub.textContent = SITE.subtitle;
-  if (meta) meta.innerHTML = `<b id="clock">08:00:00</b>${SITE.gridLabel}`;
+  const clock = $("clock");
+  if (clock) clock.textContent = "08:00:00";
   document.title = SITE.title;
   const help = document.querySelector(".help");
-  if (help) help.textContent = `drag orbit · wheel zoom · click ${SITE.unit.toLowerCase()} / HQ · type HELP · TERRARIUM`;
+  if (help) help.textContent = `4Dwm collapse · drag orbit · click ${SITE.unit.toLowerCase()} / HQ · type HELP`;
   const cmd = $("cmd");
   if (cmd) {
     const ph = {
@@ -971,7 +1001,9 @@ function applyChrome() {
 function paintGridWx() {
   const panel = $("gridWx");
   const chip = $("wxChip");
-  if (panel) panel.innerHTML = wxHudMarkup(state.wx);
+  const src = $("gridWxSrc");
+  if (panel) panel.innerHTML = `<div class="body">${wxHudBody(state.wx)}</div>`;
+  if (src && state.wx) src.textContent = state.wx.source;
   if (chip) chip.textContent = wxChipText(state.wx);
 }
 
@@ -1000,6 +1032,24 @@ async function bootWx(force) {
   }
 }
 
+function gridPackSource() {
+  return {
+    geo: {
+      SITE,
+      BBOX,
+      WORLD,
+      LA_OUTLINE,
+      ROADS,
+      project,
+      sampleDem,
+    },
+    dem,
+    getWx: () => state.wx,
+    getNodes: () => SANCTUARIES,
+    onLog: (lvl, msg) => logLine(lvl, msg),
+  };
+}
+
 async function main() {
   await loadSite();
   applyChrome();
@@ -1010,6 +1060,7 @@ async function main() {
   bindUi();
   logLine("sys", `${SITE.code} control online.  type HELP.  source ${SITE.source}`);
   bootWx(false);
+  bindSfxPanel(gridPackSource());
   requestAnimationFrame(tick);
 }
 

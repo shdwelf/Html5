@@ -1,9 +1,10 @@
 import * as THREE from "../vendor/three.module.min.js";
 import { OrbitControls } from "../vendor/OrbitControls.js";
 import { resolveSite, CATALOG } from "./site-id.js";
-import { loadWeather, ecosystemFromWx, STATIONS, wxHudMarkup } from "./wx-live.js";
+import { loadWeather, ecosystemFromWx, STATIONS, wxHudBody } from "./wx-live.js";
 import { renderTerraink, paintTerraink } from "./terraink.js";
 import { demToVrml, downloadText } from "./vrml-export.js";
+import { bindSfxPanel, autoPack, downloadWrl, readLayers } from "./vrml-pack.js";
 
 const SITE_ID = resolveSite();
 const PACKS = {
@@ -290,7 +291,9 @@ function stepWeather(dt) {
 function paintWxHud() {
   const el = $("wxHud");
   if (!el || !wx) return;
-  el.innerHTML = wxHudMarkup(wx);
+  el.innerHTML = `<div class="body">${wxHudBody(wx)}</div>`;
+  const src = $("wxTerSrc");
+  if (src) src.textContent = wx.source;
 }
 
 async function drawLineart() {
@@ -309,8 +312,12 @@ async function drawLineart() {
 const state = { lastSvg: "" };
 
 function exportVrml() {
-  const wrl = demToVrml(dem, geo.WORLD, wx, geo.SITE.title);
-  downloadText(`${geo.SITE.id}-terrarium.wrl`, wrl, "model/vrml");
+  const pack = autoPack({ geo, dem, wx, nodes: [] }, readLayers());
+  if (pack) downloadWrl(pack);
+  else {
+    const wrl = demToVrml(dem, geo.WORLD, wx, geo.SITE.title);
+    downloadText(`${geo.SITE.id}-terrarium.wrl`, wrl, "model/vrml");
+  }
 }
 
 function exportSvg() {
@@ -356,7 +363,8 @@ function bind() {
   $("btnVrml").onclick = exportVrml;
   $("btnSvg").onclick = exportSvg;
   $("btnWx").onclick = async () => {
-    $("wxHud").querySelector(".title i").textContent = "refresh…";
+    const src = $("wxTerSrc");
+    if (src) src.textContent = "refresh…";
     wx = await loadWeather(SITE_ID);
     eco = ecosystemFromWx(wx);
     paintWxHud();
@@ -390,6 +398,12 @@ async function main() {
   paintWxHud();
   initThree();
   drawLineart();
+  bindSfxPanel({
+    geo,
+    dem,
+    getWx: () => wx,
+    getNodes: () => [],
+  });
   requestAnimationFrame(tick);
 }
 

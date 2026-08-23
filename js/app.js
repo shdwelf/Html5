@@ -1,4 +1,6 @@
 /** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace */
+import { initWm } from "./wm.js";
+
 document.documentElement.dataset.shell = "1";
 
 const $ = (id) => document.getElementById(id);
@@ -25,6 +27,7 @@ function markDock(mode) {
     a.classList.toggle("on", a.dataset.mode === mode);
     a.setAttribute("href", `#${a.dataset.mode}`);
   });
+  window.SITEK_WM?.sync?.();
   const net = $("netChip");
   if (net) net.hidden = navigator.onLine;
   const flag = $("displayFlag");
@@ -129,6 +132,7 @@ function bootHash() {
 async function boot() {
   bootHash();
   markDock(currentMode());
+  initWm();
   bindInstall();
   addEventListener("online", () => markDock(currentMode()));
   addEventListener("offline", () => markDock(currentMode()));

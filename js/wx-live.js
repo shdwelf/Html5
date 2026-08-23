@@ -238,10 +238,8 @@ function esc(s) {
   );
 }
 
-export function wxHudMarkup(wx) {
-  if (!wx) {
-    return `<div class="title">WX LIVE <i>offline</i></div><div class="body">no observation</div>`;
-  }
+export function wxHudBody(wx) {
+  if (!wx) return "no observation";
   const t = wx.tempF != null ? wx.tempF.toFixed(1) : "—";
   const rh = wx.rh != null ? wx.rh.toFixed(0) : "—";
   const wind = wx.windMph != null ? wx.windMph.toFixed(0) : "—";
@@ -250,15 +248,20 @@ export function wxHudMarkup(wx) {
   const cloud = wx.cloud != null ? wx.cloud.toFixed(0) : "—";
   const precip = wx.precipIn != null ? wx.precipIn.toFixed(2) : "—";
   const err = wx.errors?.length ? `<div class="muted">tried: ${esc(wx.errors.join(" · "))}</div>` : "";
-  return `
-    <div class="title">WX LIVE <i>${esc(wx.source)}</i></div>
-    <div class="body">
-      <b>${esc(wx.station)}</b> · ${esc(wx.name)}<br/>
+  return `<b>${esc(wx.station)}</b> · ${esc(wx.name)}<br/>
       ${t}°F · RH ${rh}% · ${wind} mph ${dir}<br/>
       ${p} · cloud ${cloud}% · precip ${precip} in<br/>
       <span class="muted">${esc(wx.text)} · ${esc(wx.at)}</span>
-      ${err}
-    </div>`;
+      ${err}`;
+}
+
+export function wxHudMarkup(wx) {
+  if (!wx) {
+    return `<div class="title">WX LIVE <i>offline</i></div><div class="body">no observation</div>`;
+  }
+  return `
+    <div class="title">WX LIVE <i>${esc(wx.source)}</i></div>
+    <div class="body">${wxHudBody(wx)}</div>`;
 }
 
 export function wxChipText(wx) {

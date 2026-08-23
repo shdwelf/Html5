@@ -67,7 +67,8 @@ button, input { font-family: inherit; }
   top: 0;
   left: 0;
   right: 0;
-  z-index: 8;
+  z-index: 21;
+  overflow: visible;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -134,7 +135,7 @@ button, input { font-family: inherit; }
   background: rgba(40, 24, 4, 0.65);
 }
 @media (max-width: 980px) {
-  .site-nav { max-width: 46vw; }
+  .site-nav { max-width: none; }
 }
 
 .motif {
@@ -367,18 +368,6 @@ button, input { font-family: inherit; }
 }
 
 @media (max-width: 980px) {
-  .left-dock, .right-dock {
-    width: min(280px, 86vw);
-    top: auto;
-    bottom: calc(58px + var(--safe-b));
-    max-height: 38vh;
-  }
-  .left-dock { left: calc(8px + var(--safe-l)); }
-  .right-dock { right: calc(8px + var(--safe-r)); display: none; }
-  .right-dock.open { display: flex; }
-  .left-dock .motif, .right-dock .motif { max-height: 38vh; overflow: hidden; }
-  #term { height: 22vh; }
-  .topbar .meta { display: none; }
   .help { display: none; }
 }
 
