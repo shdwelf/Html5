@@ -971,7 +971,7 @@ function setPanel(panelId) {
 }
 
 const TAB_IDS = { forgePanel: "forgeTab", viewerPanel: "viewerTab", validatorPanel: "validatorTab", catalogPanel: "catalogTab", poetryPanel: "poetryTab", mintPanel: "mintTab" };
-const PANEL_KEYS = ["forgePanel", "viewerPanel", "validatorPanel", "catalogPanel", "poetryPanel", "mintPanel"];
+const PANEL_KEYS = ["forgePanel", "poetryPanel", "viewerPanel", "validatorPanel", "catalogPanel", "mintPanel"];
 
 document.querySelectorAll(".studio-tab").forEach((button) => {
   button.id = TAB_IDS[button.dataset.panel];
