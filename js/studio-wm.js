@@ -1,7 +1,7 @@
 // Lightweight 4Dwm for the Art Studio workspace.
 // 4D here means position (x/y), depth (z), and interaction time (t):
 // a visual window model, not a cryptographic primitive.
-const STORAGE_KEY = "art-studio-wm-v1";
+const STORAGE_KEY = "art-studio-wm-v2";
 const $ = (id) => document.getElementById(id);
 
 function isTouchLayout() {
@@ -54,6 +54,8 @@ export function initStudioWm() {
   const tray = $("wm4dTray");
   const toggle = $("wm4dToggle");
   const reset = $("wm4dReset");
+  const snapButton = $("wm4dSnap");
+  const timeSlider = $("wm4dTime");
   if (!workbench || !bar || !tray || !toggle || !reset) return null;
 
   const windows = [...workbench.querySelectorAll("[data-wm-window]")];
@@ -61,12 +63,20 @@ export function initStudioWm() {
   windows.forEach((win) => {
     win.classList.add("wm-window");
     ensureTitlebar(win);
+    if (!win.querySelector(":scope > .wm4d-resize")) {
+      const resizeHandle = document.createElement("span");
+      resizeHandle.className = "wm4d-resize";
+      resizeHandle.title = "Resize window";
+      resizeHandle.setAttribute("aria-hidden", "true");
+      win.append(resizeHandle);
+    }
   });
 
   let layout = readLayout();
   let floating = isTouchLayout() ? false : layout.mode !== "docked";
+  let snap = layout.snap !== false;
   let z = Math.max(3, ...windows.map((win) => toNumber(win.dataset.wmZ, 0)));
-  let tick = 0;
+  let tick = Math.max(0, Math.min(99, toNumber(layout.time, 0)));
   const defaults = initialPositions(workbench);
   const state = new Map();
 
@@ -78,6 +88,7 @@ export function initStudioWm() {
       x: toNumber(saved.x, defaults[id]?.x || 0),
       y: toNumber(saved.y, defaults[id]?.y || 0),
       width: toNumber(saved.width, defaults[id]?.width || 240),
+      height: toNumber(saved.height, 0),
       z: toNumber(saved.z, ++z),
     });
   });
@@ -88,7 +99,7 @@ export function initStudioWm() {
       const item = state.get(win.dataset.wmWindow);
       windowsState[win.dataset.wmWindow] = item;
     }
-    writeLayout({ mode: floating ? "floating" : "docked", windows: windowsState });
+    writeLayout({ mode: floating ? "floating" : "docked", snap, time: tick, windows: windowsState });
   }
 
   function updateCoords(win) {
@@ -115,11 +126,13 @@ export function initStudioWm() {
       win.style.left = `${Math.round(item.x)}px`;
       win.style.top = `${Math.round(item.y)}px`;
       win.style.width = `${Math.round(item.width)}px`;
+      win.style.height = item.height > 0 ? `${Math.round(item.height)}px` : "";
       win.style.zIndex = String(item.z);
     } else {
       win.style.left = "";
       win.style.top = "";
       win.style.width = "";
+      win.style.height = "";
       win.style.zIndex = "";
     }
     updateCoords(win);
@@ -144,7 +157,9 @@ export function initStudioWm() {
     bar.classList.toggle("is-touch", isTouchLayout());
     toggle.textContent = isTouchLayout() ? "STACKED ON TOUCH" : floating ? "DOCK WINDOWS" : "FLOAT WINDOWS";
     toggle.disabled = isTouchLayout();
-    $("wm4dState").textContent = isTouchLayout() ? "TOUCH STACK" : floating ? "FLOATING" : "DOCKED";
+    if (snapButton) { snapButton.textContent = snap ? "SNAP 8PX" : "FREE PIXELS"; snapButton.setAttribute("aria-pressed", String(snap)); snapButton.disabled = isTouchLayout(); }
+    if (timeSlider) timeSlider.value = String(tick);
+    $("wm4dState").textContent = isTouchLayout() ? "TOUCH STACK" : floating ? `FLOATING · T${String(tick).padStart(2, "0")}` : "DOCKED";
     if (isTouchLayout()) for (const item of state.values()) item.state = "open";
     for (const win of windows) applyWindow(win);
     renderTray();
@@ -191,6 +206,10 @@ export function initStudioWm() {
     });
   }
 
+  function snapValue(value) {
+    return snap ? Math.round(value / 8) * 8 : value;
+  }
+
   function setState(win, next) {
     const item = state.get(win.dataset.wmWindow);
     if (!item) return;
@@ -211,8 +230,8 @@ export function initStudioWm() {
       bringToFront(win);
       title.setPointerCapture?.(event.pointerId);
       const move = (moveEvent) => {
-        item.x = Math.max(0, Math.min(workbench.clientWidth - 80, start.left + moveEvent.clientX - start.x));
-        item.y = Math.max(0, Math.min(Math.max(0, workbench.clientHeight - 80), start.top + moveEvent.clientY - start.y));
+        item.x = snapValue(Math.max(0, Math.min(workbench.clientWidth - 80, start.left + moveEvent.clientX - start.x)));
+        item.y = snapValue(Math.max(0, Math.min(Math.max(0, workbench.clientHeight - 80), start.top + moveEvent.clientY - start.y)));
         tick = (tick + 1) % 100;
         applyWindow(win);
         updateWorkbenchHeight();
@@ -229,9 +248,41 @@ export function initStudioWm() {
       if (action === "close") setState(win, "closed");
       if (!action && floating && !isTouchLayout()) bringToFront(win);
     });
-    win.addEventListener("pointerdown", (event) => {
-      if (floating && !isTouchLayout() && !event.target.closest(".wm4d-title")) bringToFront(win);
+    const resizeHandle = win.querySelector(":scope > .wm4d-resize");
+    resizeHandle?.addEventListener("pointerdown", (event) => {
+      if (!floating || isTouchLayout()) return;
+      const item = state.get(win.dataset.wmWindow);
+      const start = { x: event.clientX, y: event.clientY, width: item.width || win.offsetWidth, height: item.height || win.offsetHeight };
+      bringToFront(win);
+      resizeHandle.setPointerCapture?.(event.pointerId);
+      const move = (moveEvent) => {
+        const maxWidth = Math.max(220, workbench.clientWidth - item.x - 10);
+        item.width = snapValue(Math.min(maxWidth, Math.max(220, start.width + moveEvent.clientX - start.x)));
+        item.height = snapValue(Math.max(120, start.height + moveEvent.clientY - start.y));
+        tick = (tick + 1) % 100;
+        applyWindow(win);
+        updateWorkbenchHeight();
+      };
+      const up = () => { resizeHandle.removeEventListener("pointermove", move); resizeHandle.removeEventListener("pointerup", up); persist(); };
+      resizeHandle.addEventListener("pointermove", move);
+      resizeHandle.addEventListener("pointerup", up, { once: true });
+      event.preventDefault(); event.stopPropagation();
     });
+    win.addEventListener("pointerdown", (event) => {
+      if (floating && !isTouchLayout() && !event.target.closest(".wm4d-title") && !event.target.closest(".wm4d-resize")) bringToFront(win);
+    });
+  });
+
+  snapButton?.addEventListener("click", () => {
+    if (isTouchLayout()) return;
+    snap = !snap;
+    applyAll(); persist();
+  });
+  timeSlider?.addEventListener("input", (event) => {
+    tick = Math.max(0, Math.min(99, Number(event.target.value)));
+    windows.forEach(updateCoords);
+    $("wm4dState").textContent = isTouchLayout() ? "TOUCH STACK" : floating ? `FLOATING · T${String(tick).padStart(2, "0")}` : "DOCKED";
+    persist();
   });
 
   toggle.addEventListener("click", () => {
@@ -254,9 +305,11 @@ export function initStudioWm() {
     windows.forEach((win) => {
       const item = state.get(win.dataset.wmWindow);
       const base = fallback[win.dataset.wmWindow];
-      Object.assign(item, { state: "open", x: base.x, y: base.y, width: base.width, z: ++z });
+      Object.assign(item, { state: "open", x: base.x, y: base.y, width: base.width, height: 0, z: ++z });
     });
     floating = isTouchLayout() ? false : true;
+    snap = true;
+    tick = 0;
     applyAll(); persist();
   });
 

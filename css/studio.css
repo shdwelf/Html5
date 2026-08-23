@@ -92,7 +92,7 @@ main { padding: 69px 0 37px; }
 .studio-tab.active span { color: var(--violet); }
 
 .workbench { display: grid; grid-template-columns: 286px minmax(450px, 1fr) 235px; gap: 15px; align-items: start; padding-top: 15px; }
-.wm4d-bar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto minmax(100px, .65fr); gap: 8px; align-items: center; min-height: 38px; margin-top: 10px; padding: 5px 7px; border: 1px solid rgba(190,199,230,.15); border-radius: 7px; background: rgba(11,14,22,.7); }
+.wm4d-bar { display: grid; grid-template-columns: auto minmax(0, 1fr) repeat(3, auto) auto minmax(120px, .65fr); gap: 8px; align-items: center; min-height: 38px; margin-top: 10px; padding: 5px 7px; border: 1px solid rgba(190,199,230,.15); border-radius: 7px; background: rgba(11,14,22,.7); }
 .wm4d-brand { display: flex; align-items: center; gap: 8px; padding: 0 5px; }
 .wm4d-brand > span { color: var(--amber); font: 600 9px var(--mono); letter-spacing: .12em; }
 .wm4d-brand > b { color: var(--cyan); font: 7px var(--mono); font-weight: 500; letter-spacing: .1em; }
@@ -101,6 +101,8 @@ main { padding: 69px 0 37px; }
 .wm4d-action:hover { border-color: var(--blue); color: var(--text); }
 .wm4d-action.primary { color: var(--cyan); border-color: rgba(140,232,220,.35); }
 .wm4d-action:disabled { cursor: not-allowed; opacity: .55; }
+.wm4d-time { display: flex; align-items: center; gap: 5px; color: var(--faint); font: 7px var(--mono); letter-spacing: .08em; white-space: nowrap; }
+.wm4d-time input { width: 72px; height: 3px; margin: 0; accent-color: var(--violet); cursor: pointer; }
 .wm4d-tray { display: flex; justify-content: flex-end; gap: 4px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
 .wm4d-tray::-webkit-scrollbar { display: none; }
 .wm4d-tray-item { display: flex; align-items: center; gap: 5px; min-width: 0; padding: 5px 6px; border: 1px solid rgba(242,201,132,.25); border-radius: 4px; color: var(--amber); background: rgba(242,201,132,.04); cursor: pointer; font: 7px var(--mono); white-space: nowrap; }
@@ -116,6 +118,9 @@ main { padding: 69px 0 37px; }
 .wm4d-buttons button:hover { color: var(--text); border-color: var(--cyan); }
 .wm-window.wm-minimized > :not(.wm4d-title) { display: none !important; }
 .wm-window.wm-iconified, .wm-window.wm-closed { display: none !important; }
+.wm4d-resize { display: none; position: absolute; right: 4px; bottom: 4px; z-index: 4; width: 13px; height: 13px; border-right: 2px solid rgba(140,232,220,.55); border-bottom: 2px solid rgba(140,232,220,.55); cursor: nwse-resize; touch-action: none; }
+.workbench.wm-floating > .wm-window > .wm4d-resize { display: block; }
+.workbench.wm-docked .wm4d-title { cursor: default; }
 .workbench.wm-floating { position: relative; display: block; min-height: 760px; overflow: visible; }
 .workbench.wm-floating > .wm-window { position: absolute; margin: 0; }
 .workbench.wm-floating > .wm-window[data-wm-window="source"] { left: 0; top: 0; width: 286px; }
@@ -443,7 +448,7 @@ textarea::placeholder { color: #4f5362; }
   .studio-tabs { gap: 2px; overflow-x: auto; }
   .studio-tab { flex: 1 0 auto; min-height: 43px; padding: 0 11px; font-size: 8px; }
   .wm4d-bar { grid-template-columns: auto 1fr auto; gap: 5px; }
-  .wm4d-help { display: none; }
+  .wm4d-help, .wm4d-time, #wm4dSnap { display: none; }
   .wm4d-tray { grid-column: 1 / -1; justify-content: flex-start; min-height: 25px; }
   .workbench.wm-floating { display: flex; flex-direction: column; min-height: 0; gap: 12px; }
   .workbench.wm-floating > .wm-window { position: static !important; width: 100% !important; }

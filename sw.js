@@ -1,5 +1,5 @@
 /* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v11";
+const CACHE = "sitek-html5-v12";
 const PRECACHE = [
   "./",
   "./index.html",
