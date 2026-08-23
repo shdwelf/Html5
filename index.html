@@ -4,159 +4,150 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#07080d" />
+  <meta name="theme-color" content="#050806" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>Keyspace Viewer</title>
-  <link rel="stylesheet" href="./css/viewer.css" />
-  <link rel="icon" href="./icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SITE-K" />
+  <meta name="application-name" content="SITE-K" />
+  <title>SITE-K</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./css/app.css" />
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="icon" href="./img/app-512.png" sizes="512x512" />
+  <link rel="apple-touch-icon" href="./img/apple-touch.png" sizes="180x180" />
   <script src="./webxdc.js"></script>
 </head>
-<body>
+<body class="crt" data-mode="grid" data-net="on" data-display="browser" data-wm="clear">
   <canvas id="stage"></canvas>
-  <canvas id="ticker" class="ticker" width="320" height="72" aria-hidden="true"></canvas>
+  <div class="labels ui-grid" id="labels"></div>
+  <iframe id="keyframe" title="Keyspace"></iframe>
+  <div id="wmCatch" class="wm-catch" hidden></div>
+
+  <div id="boot">
+    <img src="./img/site-x-badge.png" alt="SITE-K" />
+    <pre id="bootLog"></pre>
+    <div class="bar"><i id="bootBar"></i></div>
+  </div>
 
   <header class="topbar">
+    <img class="badge" src="./img/site-x-badge.png" alt="" />
     <div>
-      <h1>Keyspace Viewer</h1>
-      <p>1 parallel · 2 avalanche · 3 fiber · 4 Gray · 5 cube</p>
+      <h1 id="headTitle">SITE-K</h1>
+      <p id="headSub">HTML5 app · USGS · NOAA · Terraink</p>
     </div>
+    <div class="meta">
+      <b id="clock">08:00:00</b>
+      <span id="phaseChip">GRID ARMED</span>
+    </div>
+    <div class="top-actions">
+      <button type="button" id="btnPads" class="wm-top-btn">PAD</button>
+      <button type="button" id="btnPauseTop" class="wm-top-btn hot">PAUSE</button>
+      <button type="button" id="btnWmTop" class="wm-top-btn">4Dwm</button>
+    </div>
+    <nav class="site-nav" id="siteNav"></nav>
   </header>
 
-  <section class="sheet" id="sheet">
-    <div class="handle" aria-hidden="true"></div>
-    <button type="button" class="sheet-toggle" id="sheetToggle" aria-expanded="false">Math keyspace</button>
-    <div class="sheet-body">
+  <button type="button" class="wx-chip ui-grid" id="wxChip">WX · probing</button>
+  <div class="glass-note ui-ter">GLASS PAD · LIVE WX ECOSYSTEM · LINE ART HD</div>
 
-      <label for="wc">Phrase</label>
-      <select id="wc">
-        <option value="12" selected>12 words · 128-bit</option>
-        <option value="15">15 words · 160-bit</option>
-        <option value="18">18 words · 192-bit</option>
-        <option value="21">21 words · 224-bit</option>
-        <option value="24">24 words · 256-bit</option>
-      </select>
-      <div class="row" style="margin-top:8px">
-        <button class="act" id="gen" type="button">Sample CSPRNG</button>
-        <button class="act" id="apply" type="button">Project</button>
-        <button class="act" id="share" type="button">Share in chat</button>
+  <aside class="left-dock ui-grid">
+    <section class="motif" data-win="syslog" data-win-label="SYSLOG" data-win-short="SYS">
+      <div class="title">SYSLOG <i>/var/park/grid</i></div>
+      <div id="term"></div>
+    </section>
+    <section class="motif" data-win="sectors" data-win-label="SECTORS" data-win-short="SEC">
+      <div class="title">SECTORS A1–H8 <i id="liveCount">—</i></div>
+      <div id="sectors"></div>
+    </section>
+    <section class="motif" data-win="wx" data-win-label="WX LIVE" data-win-short="WX">
+      <div class="title">WX LIVE <i id="gridWxSrc">NOAA</i></div>
+      <div class="win-body wx-panel" id="gridWx">
+        <div class="body">probing NOAA / Open-Meteo / WU…</div>
       </div>
-      <p class="legend" id="wcNote"></p>
-      <textarea id="phrase" spellcheck="false" autocomplete="off" autocapitalize="none" enterkeyhint="done" placeholder="generated or pasted phrase"></textarea>
-      <div id="status" class="status warn">Loading engine…</div>
-      <div id="chips" class="chips"></div>
-      <div class="live-stats">
-        <span>H₈ <b id="shan">—</b></span>
-        <span>ones <b id="ones">—</b></span>
+    </section>
+  </aside>
+
+  <aside class="left-dock ui-ter">
+    <section class="motif" data-win="wxter" data-win-label="WX LIVE" data-win-short="WX">
+      <div class="title">WX LIVE <i id="wxTerSrc">loading</i></div>
+      <div class="win-body wx-panel" id="wxHud">
+        <div class="body">probing NOAA / Open-Meteo / WU…</div>
       </div>
-      <label for="formSel">3D engine</label>
-      <select id="formSel"></select>
-      <p class="legend" id="formNote">Schematic WebGL art. Not BIP-32 HMAC, not Q=kG over Fp, not an address.</p>
-
-      <div class="pager">
-        <button class="act" id="mathPrev" type="button">Back</button>
-        <span id="mathPos">1 / 5</span>
-        <button class="act" id="mathNext" type="button">Next</button>
+    </section>
+    <section class="motif" data-win="export" data-win-label="EXPORT" data-win-short="XPT">
+      <div class="title">EXPORT</div>
+      <div class="ter-actions">
+        <button type="button" id="btnVrml">VRML</button>
+        <button type="button" id="btnSvg">SVG</button>
+        <button type="button" id="btnWx">REFRESH WX</button>
       </div>
+    </section>
+  </aside>
 
-      <section class="math-step on" data-math="1">
-      <h2 class="step">1 · Parallel coordinates</h2>
-      <canvas id="parallel" class="plot" width="360" height="180" aria-label="Parallel coordinates of word indices"></canvas>
-      <p class="legend">One axis per word, 0–2047. Product space Aⁿ — not a sphere.</p>
-      </section>
-
-      <section class="math-step" data-math="2">
-      <h2 class="step">2 · Avalanche</h2>
-      <label for="flipBit">Flip entropy bit</label>
-      <div class="row">
-        <input type="range" id="flipBit" min="0" max="127" value="0" />
-        <button class="act" id="doFlip" type="button">Preview flip</button>
+  <aside class="left-dock ui-pack">
+    <section class="motif" data-win="sfx" data-win-label="TERRAINK SFX" data-win-short="SFX">
+      <div class="title">TERRAINK SFX <i id="sfxNote">auto VRML · installer</i></div>
+      <div class="win-body sfx-panel">
+        <div class="sfx-label">MAP</div>
+        <div class="sfx-maps" id="sfxMaps"></div>
+        <div class="sfx-label">LAYERS</div>
+        <div class="sfx-layers" id="sfxLayers"></div>
+        <canvas id="sfxPrev" width="720" height="320" aria-label="VRML preview"></canvas>
+        <div class="ter-actions">
+          <button type="button" id="btnSfxAuto">AUTO</button>
+          <button type="button" id="btnSfxWrl">WRL</button>
+          <button type="button" id="btnSfxHtml" class="hot">SFX.HTML</button>
+        </div>
       </div>
-      <p class="legend" id="avalancheNote">Discrete derivative of Φ: which 11-bit chunks jump when one ENT bit flips.</p>
-      </section>
+    </section>
+  </aside>
 
-      <section class="math-step" data-math="3">
-      <h2 class="step">3 · Checksum fiber</h2>
-      <canvas id="fiber" class="plot" width="256" height="80" aria-label="Checksum fiber"></canvas>
-      <p class="legend" id="fiberNote">2^CS cells. One cell is SHA-256(ENT). Not a linear code. Not a last-word list.</p>
-      </section>
-
-      <section class="math-step" data-math="4">
-      <h2 class="step">4 · Gray tour of Q₁₁</h2>
-      <canvas id="gray" class="plot" width="280" height="280" aria-label="Gray-coded 11-cube"></canvas>
-      <p class="legend">Binary-reflected Gray order. Adjacent on the ring = Hamming distance 1 on the 11-cube.</p>
-      </section>
-
-      <section class="math-step" data-math="5">
-      <h2 class="step">5 · Hypercube face</h2>
-      <div class="seg" id="cubeSeg">
-        <button type="button" class="seg-btn" data-cube="4">Q₄</button>
-        <button type="button" class="seg-btn on" data-cube="5">Q₅</button>
-        <button type="button" class="seg-btn" data-cube="6">Q₆</button>
+  <aside class="right-dock ui-grid" id="rightDock">
+    <section class="motif" id="pip" data-win="pip" data-win-label="990 PIP" data-win-short="990">
+      <div class="title">PIP · 990 FILE <i>click a node</i></div>
+      <div class="body" id="pipBody">
+        <p class="note">Select a sanctuary node for Form 990 history and contact. Rounded public extracts — not IRS transcripts.</p>
       </div>
-      <canvas id="cube" class="plot" width="280" height="280" aria-label="Entropy hypercube face"></canvas>
-      <p class="legend" id="cubeNote">A real face of C: first n entropy bits. Remaining bits still live in the vertex.</p>
-      </section>
+    </section>
+    <section class="motif" data-win="mini" data-win-label="MINIMAP" data-win-short="MAP">
+      <div class="title">VECTOR MINIMAP <i>3DEP</i></div>
+      <canvas id="mini" width="360" height="200"></canvas>
+    </section>
+  </aside>
 
-      <h2 class="step">6 · CSPRNG / dice</h2>
-      <div class="onair" id="onair"><span class="dot"></span> ON AIR · peek only — not the seed</div>
-      <div class="seg" id="srcSeg">
-        <button type="button" class="seg-btn" data-src="dice6">Dice 1–6</button>
-        <button type="button" class="seg-btn" data-src="dice10">Dice 0–9</button>
-        <button type="button" class="seg-btn on" data-src="coin">Coin 0/1</button>
-      </div>
-      <textarea id="rolls" spellcheck="false" inputmode="numeric" placeholder="live rolls: 415263… or flips 010011…"></textarea>
-      <p class="legend" id="rollNeed"></p>
-      <span class="legend">Pool <b id="poolBits">0</b> bits · base conversion only</span>
-      <div class="row">
-        <button class="act" id="commitRolls" type="button">Commit rolls → phrase</button>
-      </div>
+  <aside class="right-dock open ui-ter">
+    <section class="motif" data-win="lineart" data-win-label="TERRAINK" data-win-short="TK">
+      <div class="title">TERRAINK HD <i id="lineNote">map → line art</i></div>
+      <canvas id="lineart" width="1600" height="1000"></canvas>
+    </section>
+  </aside>
 
-      <h2 class="step">7 · Hole plates</h2>
-      <div id="holes" class="holes" aria-label="11-bit hole plates"></div>
-      <div class="decode-row">
-        <div id="decodePips" class="pips decode"></div>
-      </div>
-      <div class="row">
-        <input type="text" id="decodeWord" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="type a word" />
-        <button class="act" id="decodeAdd" type="button">Append word</button>
-      </div>
-      <p class="legend" id="decodeOut">Toggle 11 bits ↔ word.</p>
-      <input type="search" id="lexQ" placeholder="search word, prefix, or index" />
-      <div id="lex" class="lex"></div>
+  <div class="hud-coords ui-grid" id="coords">—</div>
+  <p class="help">HTML5 app · 4Dwm collapse · orbit · type HELP</p>
 
-      <h2 class="step">8 · Hilbert / Morton</h2>
-      <div class="seg" id="curveSeg">
-        <button type="button" class="seg-btn on" data-curve="hilbert">Hilbert</button>
-        <button type="button" class="seg-btn" data-curve="morton">Morton / Z</button>
-      </div>
-      <canvas id="slice" class="slice" width="256" height="256" aria-label="Space-filling keyspace slice"></canvas>
-      <p class="legend" id="sliceNote">Top 14 entropy bits. The cell is still 2ⁿ⁻¹⁴ keys.</p>
+  <form class="cmdbar ui-grid" id="cmdForm" data-win="cmd" data-win-label="COMMAND" data-win-short="#" data-win-desktop="pinned">
+    <label for="cmd">#</label>
+    <input id="cmd" autocomplete="off" spellcheck="false" placeholder="access security  ·  open  ·  site ww" />
+    <button type="button" id="btnPip">990</button>
+    <button type="button" id="btnPause" class="hot">PAUSE</button>
+    <button type="submit">EXEC</button>
+  </form>
 
-      <h2 class="step">9 · Bit plane + tape</h2>
-      <canvas id="bits" class="bitplane" width="256" height="128" aria-label="Entropy and checksum bits"></canvas>
-      <div class="tape-wrap"><table class="tape" id="tape"></table></div>
-      <div class="scale" id="scale"></div>
-      <p class="legend" id="scaleNote"></p>
-
-      <h2 class="step">10 · Word embedding</h2>
-      <div class="seg" id="embedSeg" role="tablist">
-        <button type="button" class="seg-btn on" data-embed="scatter">WASM scatter</button>
-        <button type="button" class="seg-btn" data-embed="fibonacci">Fibonacci sphere</button>
-        <button type="button" class="seg-btn" data-embed="polar">11-bit polar</button>
-      </div>
-      <p class="legend" id="embedNote">Random mixer — nearby indices are not nearby in space.</p>
-
-      <div class="metric-grid">
-        <div class="metric"><span>Wordlist</span><b id="wl">—</b></div>
-        <div class="metric"><span>Entropy</span><b id="entBits">—</b></div>
-        <div class="metric"><span>Checksum</span><b id="csBits">—</b></div>
-        <div class="metric"><span>Keyspace</span><b id="space">—</b></div>
-      </div>
-      <label>Entropy hex</label>
-      <div class="bits" id="hex">—</div>
+  <nav class="wm-desk" id="wmDesk" aria-label="Window manager">
+    <button type="button" id="btnWm" class="wm-view">4Dwm</button>
+    <div class="wm-tray" id="wmTray"></div>
+    <div class="app-dock" aria-label="App">
+      <a data-mode="grid" href="#grid">GRID</a>
+      <a data-mode="terrarium" href="#terrarium">TERRARIUM</a>
+      <a data-mode="keyspace" href="#keyspace">KEYSPACE</a>
     </div>
-  </section>
+  </nav>
 
-  <script type="module" src="./js/viewer.js"></script>
+  <button type="button" id="installChip" class="install-chip" hidden>INSTALL APP</button>
+  <div id="installTip" class="install-tip" hidden></div>
+  <div id="netChip" class="net-chip" hidden>LINK DOWN · CLIMO WX</div>
+
+  <script type="module" src="./js/app.js"></script>
 </body>
 </html>

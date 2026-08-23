@@ -1,0 +1,46 @@
+{
+  "id": "./index.html",
+  "name": "SITE-K Parish Control",
+  "short_name": "SITE-K",
+  "description": "HTML5 topographic command deck — USGS terrain, NOAA weather terrariums, Terraink line art.",
+  "start_url": "./index.html#grid",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#050806",
+  "theme_color": "#050806",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["navigation", "utilities", "education"],
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "./img/app-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./img/app-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./img/app-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "./img/app-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Parish Grid",
+      "short_name": "GRID",
+      "description": "Containment grid and 990 PIP",
+      "url": "./index.html#grid",
+      "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Terrarium",
+      "short_name": "TERRARIUM",
+      "description": "Live NOAA / WU ecosystem glass",
+      "url": "./index.html#terrarium",
+      "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Keyspace",
+      "short_name": "KEYSPACE",
+      "description": "BIP-39 keyspace viewer",
+      "url": "./index.html#keyspace",
+      "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
