@@ -44,9 +44,16 @@
         <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="catalogPanel" data-panel="catalogPanel"><span>05</span>PATTERN LIBRARY</button>
         <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="mintPanel" data-panel="mintPanel"><span>06</span>MINT CARD</button>
       </nav>
+      <div class="wm4d-bar" id="wm4dBar" aria-label="4D window manager">
+        <div class="wm4d-brand"><span>4Dwm</span><b id="wm4dState">FLOATING</b></div>
+        <span class="wm4d-help">drag titlebars · z-depth · time cursor</span>
+        <button type="button" class="wm4d-action primary" id="wm4dToggle">DOCK WINDOWS</button>
+        <button type="button" class="wm4d-action" id="wm4dReset">RESET LAYOUT</button>
+        <div class="wm4d-tray" id="wm4dTray" aria-label="Window tray"></div>
+      </div>
 
-      <div class="workbench">
-        <aside class="source-column">
+      <div class="workbench wm-floating" data-wm-root>
+        <aside class="source-column" data-wm-window="source" data-wm-label="SOURCE" data-wm-short="SRC">
           <section class="source-card" aria-labelledby="source-heading">
             <div class="panel-heading">
               <div><span class="panel-index">SOURCE</span><h2 id="source-heading">Mnemonic input</h2></div>
@@ -76,7 +83,7 @@
           <div class="privacy-rail"><span aria-hidden="true">▣</span><p><b>Private by design.</b> This studio performs wordlist lookup, SHA-256, and art rendering in your browser.</p></div>
         </aside>
 
-        <section class="studio-stage" aria-label="Art Studio canvas">
+        <section class="studio-stage" data-wm-window="canvas" data-wm-label="CANVAS" data-wm-short="CAN" aria-label="Art Studio canvas">
           <section id="forgePanel" class="studio-panel active" role="tabpanel" aria-labelledby="forgeTab" data-panel-view>
             <div class="stage-toolbar">
               <div><span class="stage-label">ENSO FORGE</span><h2>Entropy, brushed into one breath.</h2></div>
@@ -174,7 +181,7 @@
           </section>
         </section>
 
-        <aside class="inspector-column">
+        <aside class="inspector-column" data-wm-window="inspector" data-wm-label="INSPECTOR" data-wm-short="INS">
           <section class="inspector-card" id="inspectorCard" aria-labelledby="inspector-heading">
             <div class="panel-heading"><div><span class="panel-index">INSPECTOR</span><h2 id="inspector-heading">Enso Forge</h2></div><span class="inspector-number">A</span></div>
             <p id="inspectorCopy" class="panel-description">A generative brush study seeded by the phrase entropy. Each mark is deterministic, local, and intentionally imperfect.</p>
@@ -202,3 +209,4 @@
   <script type="module" src="./js/studio.js"></script>
 </body>
 </html>
+html>

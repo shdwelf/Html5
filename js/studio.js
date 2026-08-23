@@ -2,6 +2,7 @@ import { INDEX, parsePhrase, mnemonicToEntropy, wordCountToEntropyBits } from ".
 import { CATALOG } from "./haiku-catalog.js";
 import { COIN_MODELS, FOIL_TREATMENTS, HANKO_STYLES, PAPER_HUES, POETRY_FORMS, SAIJIKI, SEASONS, SOLVERS } from "./studio-data.js";
 import { clearGallery, deleteGalleryCard, listGallery, saveGalleryCard } from "./studio-fs.js";
+import { initStudioWm } from "./studio-wm.js";
 
 const DEMO_VECTOR = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 const DEMO_SEED = new Uint8Array([0x45, 0x4e, 0x53, 0x4f, 0x2d, 0x46, 0x4f, 0x52, 0x47, 0x45, 0x2d, 0x30, 0x31, 0x2e, 0x30, 0x31]);
@@ -1282,4 +1283,5 @@ bindCatalog();
 bindCoinControls();
 bindPoetry();
 bindMint();
+initStudioWm();
 renderAll();

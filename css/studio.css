@@ -92,6 +92,35 @@ main { padding: 69px 0 37px; }
 .studio-tab.active span { color: var(--violet); }
 
 .workbench { display: grid; grid-template-columns: 286px minmax(450px, 1fr) 235px; gap: 15px; align-items: start; padding-top: 15px; }
+.wm4d-bar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto minmax(100px, .65fr); gap: 8px; align-items: center; min-height: 38px; margin-top: 10px; padding: 5px 7px; border: 1px solid rgba(190,199,230,.15); border-radius: 7px; background: rgba(11,14,22,.7); }
+.wm4d-brand { display: flex; align-items: center; gap: 8px; padding: 0 5px; }
+.wm4d-brand > span { color: var(--amber); font: 600 9px var(--mono); letter-spacing: .12em; }
+.wm4d-brand > b { color: var(--cyan); font: 7px var(--mono); font-weight: 500; letter-spacing: .1em; }
+.wm4d-help { overflow: hidden; color: var(--faint); font: 7px var(--mono); text-overflow: ellipsis; white-space: nowrap; }
+.wm4d-action { min-height: 27px; padding: 0 8px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); background: rgba(255,255,255,.025); cursor: pointer; font: 7px var(--mono); letter-spacing: .07em; white-space: nowrap; }
+.wm4d-action:hover { border-color: var(--blue); color: var(--text); }
+.wm4d-action.primary { color: var(--cyan); border-color: rgba(140,232,220,.35); }
+.wm4d-action:disabled { cursor: not-allowed; opacity: .55; }
+.wm4d-tray { display: flex; justify-content: flex-end; gap: 4px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.wm4d-tray::-webkit-scrollbar { display: none; }
+.wm4d-tray-item { display: flex; align-items: center; gap: 5px; min-width: 0; padding: 5px 6px; border: 1px solid rgba(242,201,132,.25); border-radius: 4px; color: var(--amber); background: rgba(242,201,132,.04); cursor: pointer; font: 7px var(--mono); white-space: nowrap; }
+.wm4d-tray-item:hover { border-color: var(--amber); background: rgba(242,201,132,.09); }
+.wm4d-tray-item b { color: var(--cyan); font-weight: 500; }
+.wm4d-title { position: relative; z-index: 3; display: flex; align-items: center; gap: 6px; min-height: 29px; padding: 0 8px; border-bottom: 1px solid rgba(190,199,230,.11); color: var(--muted); background: linear-gradient(90deg, rgba(140,232,220,.06), transparent); cursor: grab; user-select: none; touch-action: none; }
+.wm4d-title:active { cursor: grabbing; }
+.wm4d-grip { color: var(--faint); font-size: 10px; letter-spacing: -4px; transform: rotate(90deg); }
+.wm4d-name { overflow: hidden; color: var(--cyan); font: 7px var(--mono); letter-spacing: .14em; text-overflow: ellipsis; white-space: nowrap; }
+.wm4d-coords { overflow: hidden; margin-left: auto; color: var(--faint); font: 7px var(--mono); letter-spacing: .06em; text-overflow: ellipsis; white-space: nowrap; }
+.wm4d-buttons { display: flex; gap: 3px; flex: none; }
+.wm4d-buttons button { width: 20px; height: 19px; padding: 0; border: 1px solid rgba(190,199,230,.16); border-radius: 3px; color: var(--muted); background: rgba(255,255,255,.025); cursor: pointer; font: 11px/1 var(--mono); }
+.wm4d-buttons button:hover { color: var(--text); border-color: var(--cyan); }
+.wm-window.wm-minimized > :not(.wm4d-title) { display: none !important; }
+.wm-window.wm-iconified, .wm-window.wm-closed { display: none !important; }
+.workbench.wm-floating { position: relative; display: block; min-height: 760px; overflow: visible; }
+.workbench.wm-floating > .wm-window { position: absolute; margin: 0; }
+.workbench.wm-floating > .wm-window[data-wm-window="source"] { left: 0; top: 0; width: 286px; }
+.workbench.wm-floating > .wm-window[data-wm-window="canvas"] { left: 301px; top: 0; right: 250px; }
+.workbench.wm-floating > .wm-window[data-wm-window="inspector"] { top: 0; right: 0; width: 235px; }
 .source-column, .inspector-column { display: grid; gap: 12px; }
 .source-card, .inspector-card, .source-metrics, .quote-card { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025); }
 .source-card, .inspector-card { padding: 19px; }
@@ -413,6 +442,11 @@ textarea::placeholder { color: #4f5362; }
   .intro-badge { display: none; }
   .studio-tabs { gap: 2px; overflow-x: auto; }
   .studio-tab { flex: 1 0 auto; min-height: 43px; padding: 0 11px; font-size: 8px; }
+  .wm4d-bar { grid-template-columns: auto 1fr auto; gap: 5px; }
+  .wm4d-help { display: none; }
+  .wm4d-tray { grid-column: 1 / -1; justify-content: flex-start; min-height: 25px; }
+  .workbench.wm-floating { display: flex; flex-direction: column; min-height: 0; gap: 12px; }
+  .workbench.wm-floating > .wm-window { position: static !important; width: 100% !important; }
   .workbench { display: flex; flex-direction: column; gap: 12px; padding-top: 12px; }
   .source-column, .studio-stage, .inspector-column { width: 100%; }
   .source-card textarea, .poetry-controls select, .catalog-tools select, .catalog-tools input, .mint-field input, .mint-field select, .parameter-select select, .parameter-control input[type="text"] { font-size: 16px; }
