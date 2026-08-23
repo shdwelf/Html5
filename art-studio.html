@@ -79,9 +79,16 @@
               <span id="forgeState" class="stage-state">DEMO SEED</span>
             </div>
             <div class="enso-frame"><canvas id="ensoCanvas" width="900" height="620" aria-label="Generated Enso artwork"></canvas><div class="canvas-crosshair" aria-hidden="true"></div><span class="canvas-coord top-left">0x / 00</span><span class="canvas-coord bottom-right">ENSO // 001</span></div>
+            <div class="forge-deck" aria-label="Enso Forge controls">
+              <div class="palette-control"><span class="deck-label">PALETTE</span><div id="paletteControls" class="palette-controls" role="group" aria-label="Color palette"><button type="button" class="palette-button active" data-palette="mineral" aria-label="Mineral palette" title="Mineral"><i></i><i></i><i></i></button><button type="button" class="palette-button" data-palette="ember" aria-label="Ember palette" title="Ember"><i></i><i></i><i></i></button><button type="button" class="palette-button" data-palette="moon" aria-label="Moon palette" title="Moon"><i></i><i></i><i></i></button></div><b id="paletteName">MINERAL</b></div>
+              <label class="range-control" for="brushRange"><span>BRUSH <output id="brushValue" for="brushRange">05</output></span><input id="brushRange" type="range" min="1" max="9" value="5" /></label>
+              <label class="range-control" for="roughnessRange"><span>GRAIN <output id="roughnessValue" for="roughnessRange">50</output></span><input id="roughnessRange" type="range" min="0" max="100" value="50" /></label>
+              <label class="range-control" for="openingRange"><span>OPENING <output id="openingValue" for="openingRange">24°</output></span><input id="openingRange" type="range" min="4" max="48" value="24" /></label>
+              <button type="button" class="control-toggle" id="guidesButton" aria-pressed="true">GUIDES ON</button>
+            </div>
             <div class="forge-controls">
               <div class="control-copy"><span id="forgeNote">A calm default mark is ready. Load a phrase to forge a private variation.</span><div class="forge-swatches"><i></i><i></i><i></i><i></i></div></div>
-              <div class="button-row"><button type="button" class="forge-button" id="forgeButton">FORGE ENSO <b aria-hidden="true">↗</b></button><button type="button" class="outline-button" id="pngButton">EXPORT PNG</button><button type="button" class="outline-button" id="svgButton">EXPORT SVG</button></div>
+              <div class="button-row"><button type="button" class="forge-button" id="forgeButton">FORGE ENSO <b aria-hidden="true">↗</b></button><button type="button" class="outline-button" id="resetButton">RESET</button><button type="button" class="outline-button" id="pngButton">EXPORT PNG</button><button type="button" class="outline-button" id="svgButton">EXPORT SVG</button></div>
             </div>
           </section>
 
@@ -90,7 +97,7 @@
               <div><span class="stage-label">KEY VIEWER</span><h2>Walk the 11-bit word field.</h2></div>
               <span id="viewerState" class="stage-state">NO SOURCE</span>
             </div>
-            <div class="viewer-frame"><canvas id="keyCanvas" width="900" height="430" aria-label="BIP-39 word index field"></canvas><div class="viewer-overlay"><span>2048 WORD INDICES</span><span id="viewerOverlayValue">—</span></div></div>
+            <div class="viewer-frame"><canvas id="keyCanvas" width="900" height="430" tabindex="0" aria-label="BIP-39 word index field. Move over a point to inspect its word index."></canvas><div class="viewer-overlay"><span>2048 WORD INDICES</span><span id="viewerOverlayValue">—</span></div><div id="viewerTooltip" class="viewer-tooltip" hidden><span>WORD INDEX</span><b id="tooltipIndex">—</b><small id="tooltipWord">—</small></div></div>
             <div class="viewer-lower">
               <div class="bit-card"><div class="mini-heading"><span>ENTROPY TAPE</span><b id="bitCount">—</b></div><canvas id="bitCanvas" width="900" height="120" aria-label="Entropy and checksum bit tape"></canvas></div>
               <div class="viewer-note"><span class="note-icon">+</span><p><b>Projected, not derived.</b> The field shows word indices and entropy bits. It never generates an address or private key.</p></div>
@@ -103,6 +110,7 @@
               <span id="validatorState" class="stage-state">NO SOURCE</span>
             </div>
             <div class="diagnostic-summary"><div><span>WORDLIST</span><b>ENGLISH · 2048</b></div><div><span>ALLOWED LENGTHS</span><b>12 · 15 · 18 · 21 · 24</b></div><div><span>METHOD</span><b>SHA-256 CHECKSUM</b></div></div>
+            <div class="validator-readout"><div><span>VALIDATION</span><b id="validatorReadout">NO SOURCE</b></div><div><span>CHECKSUM BITS</span><b id="validatorChecksumBits">—</b></div><div><span>ENTROPY</span><b id="validatorEntropyBits">—</b></div></div>
             <div class="diagnostic-head"><span>POSITION</span><span>WORD</span><span>INDEX</span><span>ROLE</span></div>
             <ol id="studioWordList" class="studio-word-list"><li class="studio-empty"><span>—</span><p>Diagnostics will appear when a phrase is entered.</p></li></ol>
             <div class="validator-explainer"><span>i</span><p>All words must be recognized. The last word carries the checksum bits; a recognized phrase can still fail that final comparison.</p></div>
@@ -117,6 +125,8 @@
               <div><dt>INPUT</dt><dd id="inspectorInput">DEMO SEED</dd></div>
               <div><dt>BRUSH</dt><dd id="inspectorBrush">DRY / 05 PASS</dd></div>
               <div><dt>GAP</dt><dd id="inspectorGap">UNSET</dd></div>
+              <div><dt>VARIANT</dt><dd id="inspectorVariant">00 / DEMO</dd></div>
+              <div><dt>PALETTE</dt><dd id="inspectorPalette">MINERAL</dd></div>
             </dl>
             <div class="inspector-rule"></div>
             <div class="legend-row"><i class="legend-mark entropy"></i><span>entropy source</span></div>
