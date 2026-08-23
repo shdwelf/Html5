@@ -39,6 +39,7 @@
         <button type="button" class="studio-tab active" role="tab" aria-selected="true" aria-controls="forgePanel" data-panel="forgePanel"><span>01</span>ENSO FORGE</button>
         <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="viewerPanel" data-panel="viewerPanel"><span>02</span>KEY VIEWER</button>
         <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="validatorPanel" data-panel="validatorPanel"><span>03</span>VALIDATOR</button>
+        <button type="button" class="studio-tab" role="tab" aria-selected="false" aria-controls="catalogPanel" data-panel="catalogPanel"><span>04</span>PATTERN LIBRARY</button>
       </nav>
 
       <div class="workbench">
@@ -111,9 +112,21 @@
             </div>
             <div class="diagnostic-summary"><div><span>WORDLIST</span><b>ENGLISH · 2048</b></div><div><span>ALLOWED LENGTHS</span><b>12 · 15 · 18 · 21 · 24</b></div><div><span>METHOD</span><b>SHA-256 CHECKSUM</b></div></div>
             <div class="validator-readout"><div><span>VALIDATION</span><b id="validatorReadout">NO SOURCE</b></div><div><span>CHECKSUM BITS</span><b id="validatorChecksumBits">—</b></div><div><span>ENTROPY</span><b id="validatorEntropyBits">—</b></div></div>
+            <div id="derivationPaths" class="derivation-paths" hidden><div class="paths-heading"><span>DERIVATION REFERENCES</span><b>VALID SOURCE</b></div><div><span>BIP-44 · LEGACY</span><code>m/44'/0'/0'/0/0</code></div><div><span>BIP-84 · NATIVE SEGWIT</span><code>m/84'/0'/0'/0/0</code></div><p>Standard paths shown for reference only. No address or wallet key is derived here.</p></div>
             <div class="diagnostic-head"><span>POSITION</span><span>WORD</span><span>INDEX</span><span>ROLE</span></div>
             <ol id="studioWordList" class="studio-word-list"><li class="studio-empty"><span>—</span><p>Diagnostics will appear when a phrase is entered.</p></li></ol>
             <div class="validator-explainer"><span>i</span><p>All words must be recognized. The last word carries the checksum bits; a recognized phrase can still fail that final comparison.</p></div>
+          </section>
+
+          <section id="catalogPanel" class="studio-panel" role="tabpanel" aria-labelledby="catalogTab" data-panel-view hidden>
+            <div class="stage-toolbar">
+              <div><span class="stage-label">PATTERN LIBRARY</span><h2>Curated words, checksum-complete.</h2></div>
+              <span id="catalogStatus" class="stage-state">100 ENTRIES</span>
+            </div>
+            <p class="catalog-intro">Browse repeated-word studies and poetic stems. Every displayed entry is locally generated and checksum-valid; they are demonstrations, never wallet seeds.</p>
+            <div class="catalog-tools"><label for="catalogFilter"><span>COLLECTION</span><select id="catalogFilter"><option value="all">ALL PATTERNS</option><option value="repeat12">11 / 12 REPEATED</option><option value="repeat15">14 / 15 REPEATED</option><option value="repeat24">23 / 24 REPEATED</option><option value="haiku">HAIKU / POETIC</option></select></label><label for="catalogSearch"><span>SEARCH</span><input id="catalogSearch" type="search" autocomplete="off" placeholder="word or phrase…" /></label><span id="catalogCount" class="catalog-count">100 / 100</span></div>
+            <div id="catalogList" class="catalog-list" aria-live="polite"></div>
+            <div class="catalog-note"><span>i</span><p>Pattern density is part of the study. Repeated-word phrases have much less human-created variety than a real randomly generated wallet mnemonic.</p></div>
           </section>
         </section>
 

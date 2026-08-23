@@ -1,4 +1,5 @@
 import { INDEX, parsePhrase, mnemonicToEntropy, wordCountToEntropyBits } from "./bip39.js";
+import { CATALOG } from "./haiku-catalog.js";
 
 const DEMO_VECTOR = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 const DEMO_SEED = new Uint8Array([0x45, 0x4e, 0x53, 0x4f, 0x2d, 0x46, 0x4f, 0x52, 0x47, 0x45, 0x2d, 0x30, 0x31, 0x2e, 0x30, 0x31]);
@@ -54,6 +55,56 @@ let validationTimer = null;
 
 function countLabel(n) {
   return `${n} word${n === 1 ? "" : "s"}`;
+}
+
+function catalogMatches(item, filter, query) {
+  const type = item.type.toLowerCase();
+  const matchesFilter =
+    filter === "all" ||
+    (filter === "repeat12" && type.includes("11 / 12")) ||
+    (filter === "repeat15" && type.includes("14 / 15")) ||
+    (filter === "repeat24" && type.includes("23 / 24")) ||
+    (filter === "haiku" && type.includes("haiku"));
+  if (!matchesFilter) return false;
+  if (!query) return true;
+  return `${item.type} ${item.pattern} ${item.text}`.toLowerCase().includes(query);
+}
+
+function renderCatalog() {
+  const host = $("catalogList");
+  if (!host) return;
+  const filter = $("catalogFilter")?.value || "all";
+  const query = ($("catalogSearch")?.value || "").trim().toLowerCase();
+  const matches = CATALOG.filter((item) => catalogMatches(item, filter, query));
+  host.replaceChildren();
+  matches.forEach((item) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "catalog-card";
+    card.title = "Load this checksum-valid pattern into the studio";
+    const head = document.createElement("span"); head.className = "catalog-card-head";
+    const type = document.createElement("b"); type.textContent = item.type.toUpperCase();
+    const badge = document.createElement("i"); badge.textContent = "VALID";
+    head.append(type, badge);
+    const pattern = document.createElement("span"); pattern.className = "catalog-card-pattern"; pattern.textContent = item.pattern;
+    const phrase = document.createElement("span"); phrase.className = "catalog-card-phrase"; phrase.textContent = item.text;
+    const foot = document.createElement("span"); foot.className = "catalog-card-foot"; foot.textContent = `LOAD SPECIMEN ${String(CATALOG.indexOf(item) + 1).padStart(3, "0")}  →`;
+    card.append(head, pattern, phrase, foot);
+    card.addEventListener("click", () => {
+      $("studioInput").value = item.text;
+      $("sourceHint").textContent = "Catalog specimen loaded · checksum-valid demonstration, not a wallet seed.";
+      clearTimeout(validationTimer);
+      validateStudio();
+      setPanel("validatorPanel");
+      $("studioInput").focus();
+    });
+    host.append(card);
+  });
+  $("catalogCount").textContent = `${matches.length} / ${CATALOG.length}`;
+  $("catalogStatus").textContent = query || filter !== "all" ? `${matches.length} MATCHES` : `${CATALOG.length} ENTRIES`;
+  if (!matches.length) {
+    const empty = document.createElement("div"); empty.className = "catalog-empty"; empty.textContent = "No specimens match this filter."; host.append(empty);
+  }
 }
 
 function toHex(bytes, length = bytes.length) {
@@ -400,6 +451,11 @@ function renderWordDiagnostics() {
   $("validatorEntropyBits").textContent = state.analysis?.entropyBits ? `${state.analysis.entropyBits} bits` : validCount ? `${wordCountToEntropyBits(words.length)} bits` : "—";
 }
 
+function renderDerivationPaths() {
+  const paths = $("derivationPaths");
+  if (paths) paths.hidden = !state.analysis?.ok;
+}
+
 function renderStatus(kind, label, message) {
   const el = $("studioStatus");
   el.className = `studio-status ${kind}`;
@@ -439,6 +495,7 @@ function syncForgeControls() {
 function renderAll() {
   renderMetrics();
   renderWordDiagnostics();
+  renderDerivationPaths();
   syncForgeControls();
   drawEnso();
   drawKeyField();
@@ -461,16 +518,18 @@ function setPanel(panelId) {
   if (panelId === "forgePanel") drawEnso();
 }
 
+const TAB_IDS = { forgePanel: "forgeTab", viewerPanel: "viewerTab", validatorPanel: "validatorTab", catalogPanel: "catalogTab" };
+const PANEL_KEYS = ["forgePanel", "viewerPanel", "validatorPanel", "catalogPanel"];
+
 document.querySelectorAll(".studio-tab").forEach((button) => {
-  button.id = button.dataset.panel === "forgePanel" ? "forgeTab" : button.dataset.panel === "viewerPanel" ? "viewerTab" : "validatorTab";
+  button.id = TAB_IDS[button.dataset.panel];
   button.addEventListener("click", () => setPanel(button.dataset.panel));
 });
 
 document.addEventListener("keydown", (event) => {
   if (["TEXTAREA", "INPUT", "BUTTON"].includes(event.target?.tagName)) return;
-  const panels = ["forgePanel", "viewerPanel", "validatorPanel"];
   const index = Number(event.key) - 1;
-  if (index >= 0 && index < panels.length) setPanel(panels[index]);
+  if (index >= 0 && index < PANEL_KEYS.length) setPanel(PANEL_KEYS[index]);
   if (event.key.toLowerCase() === "f") { state.variant = (state.variant + 1) % 100; renderMetrics(); drawEnso(); }
 });
 
@@ -518,6 +577,12 @@ function bindViewerInspection() {
   canvas.addEventListener("pointermove", inspectViewerPoint);
   canvas.addEventListener("pointerleave", hideViewerTooltip);
   canvas.addEventListener("blur", hideViewerTooltip);
+}
+
+function bindCatalog() {
+  $("catalogFilter").addEventListener("change", renderCatalog);
+  $("catalogSearch").addEventListener("input", renderCatalog);
+  renderCatalog();
 }
 
 async function validateStudio() {
@@ -646,4 +711,5 @@ addEventListener("resize", () => {
 
 bindForgeControls();
 bindViewerInspection();
+bindCatalog();
 renderAll();

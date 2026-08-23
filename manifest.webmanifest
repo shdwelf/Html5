@@ -2,7 +2,7 @@
   "id": "./index.html",
   "name": "SITE-K Parish Control",
   "short_name": "SITE-K",
-  "description": "Offline SITE-K toolkit with Art Studio, Enso Forge, and local BIP-39 tools.",
+  "description": "Offline SITE-K toolkit with Art Studio, Enso Forge, BIP-39 patterns, and local validation.",
   "start_url": "./index.html#grid",
   "scope": "./",
   "display": "standalone",
