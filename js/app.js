@@ -7,7 +7,8 @@ const $ = (id) => document.getElementById(id);
 
 function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
-  if (raw === "terrarium" || raw === "keyspace" || raw === "validator" || raw === "studio" || raw === "grid") return raw;
+  const normalized = raw === "artstudio" || raw === "art-studio" ? "studio" : raw;
+  if (normalized === "terrarium" || normalized === "keyspace" || normalized === "validator" || normalized === "studio" || normalized === "grid") return normalized;
   return "grid";
 }
 
@@ -102,7 +103,7 @@ async function start(mode) {
     const frame = $("keyframe");
     const view = mode === "studio" ? "./art-studio.html" : mode === "validator" ? "./validator.html" : "./keyspace.html";
     if (frame && frame.getAttribute("src") !== view) frame.src = view;
-    document.title = mode === "studio" ? "Art Studio · Enso Forge" : mode === "validator" ? "BIP-39 Mnemonic Validator" : "SITE-K · Keyspace";
+    document.title = mode === "studio" ? "Ensō & Haiku Wallet Forging Engine · Art Studio" : mode === "validator" ? "BIP-39 Mnemonic Validator" : "SITE-K · Keyspace";
     return;
   }
 
