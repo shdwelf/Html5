@@ -41,6 +41,13 @@
       "description": "Enso Forge, key viewer, and local validator",
       "url": "./index.html#studio",
       "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "God's Eye View",
+      "short_name": "GODSEYE",
+      "description": "Live globe console — satellites, aircraft, quakes (public feeds)",
+      "url": "./godseye.html",
+      "icons": [{ "src": "./img/godseye-icon.png", "sizes": "512x512" }]
     }
   ]
 }
