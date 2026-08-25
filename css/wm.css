@@ -148,8 +148,14 @@ body[data-mode="grid"] .wm-desk {
   bottom: calc(58px + var(--safe-b));
 }
 body[data-mode="keyspace"] .wm-desk,
+body[data-mode="validator"] .wm-desk,
+body[data-mode="studio"] .wm-desk,
 body[data-mode="keyspace"] .wm-catch,
-body[data-mode="keyspace"] .top-actions { display: none !important; }
+body[data-mode="validator"] .wm-catch,
+body[data-mode="studio"] .wm-catch,
+body[data-mode="keyspace"] .top-actions,
+body[data-mode="validator"] .top-actions,
+body[data-mode="studio"] .top-actions { display: none !important; }
 
 body[data-wm="clear"] .wm-tray { display: none; }
 

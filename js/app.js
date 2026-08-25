@@ -1,4 +1,4 @@
-/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace */
+/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator | #studio */
 import { initWm } from "./wm.js";
 
 document.documentElement.dataset.shell = "1";
@@ -7,7 +7,8 @@ const $ = (id) => document.getElementById(id);
 
 function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
-  if (raw === "terrarium" || raw === "keyspace" || raw === "grid") return raw;
+  const normalized = raw === "artstudio" || raw === "art-studio" ? "studio" : raw;
+  if (normalized === "terrarium" || normalized === "keyspace" || normalized === "validator" || normalized === "studio" || normalized === "grid") return normalized;
   return "grid";
 }
 
@@ -98,10 +99,11 @@ let started = null;
 async function start(mode) {
   markDock(mode);
 
-  if (mode === "keyspace") {
+  if (mode === "keyspace" || mode === "validator" || mode === "studio") {
     const frame = $("keyframe");
-    if (frame && !frame.getAttribute("src")) frame.src = "./keyspace.html";
-    document.title = "SITE-K · Keyspace";
+    const view = mode === "studio" ? "./art-studio.html" : mode === "validator" ? "./validator.html" : "./keyspace.html";
+    if (frame && frame.getAttribute("src") !== view) frame.src = view;
+    document.title = mode === "studio" ? "Ensō & Haiku Wallet Forging Engine · Art Studio" : mode === "validator" ? "BIP-39 Mnemonic Validator" : "SITE-K · Keyspace";
     return;
   }
 

@@ -1,9 +1,11 @@
 /* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v3";
+const CACHE = "sitek-html5-v13";
 const PRECACHE = [
   "./",
   "./index.html",
   "./keyspace.html",
+  "./validator.html",
+  "./art-studio.html",
   "./louisiana.html",
   "./terrarium.html",
   "./godseye.html",
@@ -17,6 +19,8 @@ const PRECACHE = [
   "./css/jp-grid.css",
   "./css/terrarium.css",
   "./css/viewer.css",
+  "./css/validator.css",
+  "./css/studio.css",
   "./css/wm.css",
   "./js/app.js",
   "./js/wm.js",
@@ -37,6 +41,12 @@ const PRECACHE = [
   "./js/stx-plot.js",
   "./js/ca-plot.js",
   "./js/viewer.js",
+  "./js/validator.js",
+  "./js/studio.js",
+  "./js/studio-data.js",
+  "./js/studio-fs.js",
+  "./js/studio-wm.js",
+  "./js/haiku-catalog.js",
   "./js/bip39.js",
   "./js/bip39-en.js",
   "./vendor/three.module.min.js",
@@ -106,11 +116,11 @@ self.addEventListener("fetch", (event) => {
         .then((res) => {
           if (res && res.ok) {
             const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put("./index.html", copy));
+            caches.open(CACHE).then((c) => c.put(req, copy));
           }
           return res;
         })
-        .catch(() => caches.match("./index.html"))
+        .catch(() => caches.match(req).then((hit) => hit || caches.match("./index.html")))
     );
     return;
   }
