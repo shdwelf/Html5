@@ -1,4 +1,4 @@
-import { WORDLIST } from "./bip39-en.js";
+import { WORDLIST, BIP39_SYMBOLS } from "./keyspace-en.js";
 
 export function prefix4(word) {
   return word.slice(0, 4);
@@ -64,6 +64,7 @@ export function entry(word, index) {
   return {
     word,
     index,
+    extra: index >= BIP39_SYMBOLS,
     hex: index.toString(16).padStart(3, "0"),
     bin: index.toString(2).padStart(11, "0"),
     prefix: prefix4(word),
