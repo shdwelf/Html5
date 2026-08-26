@@ -2,7 +2,6 @@ import * as THREE from "../vendor/three.module.min.js";
 import { OrbitControls } from "../vendor/OrbitControls.js";
 import { loadEngine } from "./engine.js";
 import {
-  WORDLIST,
   parsePhrase,
   mnemonicToEntropy,
   randomMnemonic,
@@ -11,6 +10,13 @@ import {
   keyspaceDecimal,
   indicesOf,
 } from "./bip39.js";
+import {
+  INDEX as KEYS_INDEX,
+  BIP39_SYMBOLS,
+  LAMBDA_EXTRAS,
+  LAMBDA_INDEX,
+  WORDLIST,
+} from "./keyspace-en.js";
 import {
   bytesToBits,
   prefixBits,
@@ -29,7 +35,6 @@ import {
   shannonBits,
   onesRatio,
 } from "./entropy-live.js";
-import { INDEX } from "./bip39.js";
 import { searchWords, wordFromBits, bitsFromIndex } from "./lexicon.js";
 import {
   binaryReflectedGray,
@@ -249,7 +254,7 @@ function renderHoles(words, indices, checksumBits) {
       const last = i === words.length - 1;
       const pips = [];
       for (let b = 10; b >= 0; b--) {
-        const on = (idx >> b) & 1;
+        const on = idx >= 0 && ((idx >> b) & 1);
         const cs = last && checksumBits && b < checksumBits;
         pips.push(`<i class="pip${on ? " on" : ""}${cs ? " cs" : ""}"></i>`);
       }
@@ -305,11 +310,17 @@ function paintDecode() {
 
 function setDecodeFromWord(text) {
   const w = text.trim().toLowerCase();
-  if (!INDEX.has(w)) {
+  if (!KEYS_INDEX.has(w)) {
     $("decodeOut").textContent = w ? `Not in BIP-39 list: ${w}` : "Toggle 11 bits ↔ word.";
     return;
   }
-  state.decodeBits = bitsFromIndex(INDEX.get(w));
+  const idx = KEYS_INDEX.get(w);
+  if (idx >= BIP39_SYMBOLS) {
+    $("decodeOut").textContent =
+      `λ-extra — ${w} is index ${idx}, beyond the 11-bit symbol space (0–${BIP39_SYMBOLS - 1}); 11 pips cannot reach it.`;
+    return;
+  }
+  state.decodeBits = bitsFromIndex(idx);
   paintDecode();
 }
 
@@ -318,9 +329,59 @@ function renderLex(q = "") {
   $("lex").innerHTML = rows
     .map((e) => {
       const near = e.near.length ? ` · near <span class="near">${e.near.join(", ")}</span>` : "";
-      return `<div class="lex-item"><b>${e.word}</b> #${e.index} 0x${e.hex} ${e.bin} · ${e.prefix}${near}</div>`;
+      const lam = e.extra ? ` <span class="lam-tag">λ-extra</span>` : "";
+      return `<div class="lex-item"><b>${e.word}</b> #${e.index} 0x${e.hex} ${e.bin} · ${e.prefix}${lam}${near}</div>`;
     })
     .join("");
+}
+
+const LAMBDA_CALCULI = [
+  { label: "λ-calculus", phrase: "lambda calculus" },
+  { label: "untyped λ-calculus", phrase: "untyped lambda calculus" },
+  { label: "typed λ-calculus", phrase: "typed lambda calculus" },
+  { label: "simply typed λ-calculus", phrase: "simply typed lambda calculus" },
+  { label: "differential calculus", phrase: "differential calculus" },
+  { label: "integral calculus", phrase: "integral calculus" },
+  { label: "propositional calculus", phrase: "propositional calculus" },
+  { label: "predicate calculus", phrase: "predicate calculus" },
+  { label: "relational calculus", phrase: "relational calculus" },
+  { label: "sequent calculus", phrase: "sequent calculus" },
+  { label: "situation calculus", phrase: "situation calculus" },
+  { label: "event calculus", phrase: "event calculus" },
+  { label: "vector calculus", phrase: "vector calculus" },
+  { label: "tensor calculus", phrase: "tensor calculus" },
+  { label: "stochastic calculus", phrase: "stochastic calculus" },
+  { label: "fractional calculus", phrase: "fractional calculus" },
+  { label: "umbral calculus", phrase: "umbral calculus" },
+  { label: "Boolean calculus", phrase: "boolean calculus" },
+  { label: "π-calculus", phrase: "pi calculus" },
+  { label: "modal μ-calculus", phrase: "modal mu calculus" },
+  { label: "duration calculus", phrase: "duration calculus" },
+  { label: "Itô calculus", phrase: "ito calculus" },
+  { label: "Ricci calculus", phrase: "ricci calculus" },
+  { label: "influence calculus", phrase: "influence calculus" },
+  { label: "process calculus", phrase: "process calculus" },
+];
+
+function renderLamFamily() {
+  const host = $("lamFamily");
+  if (!host) return;
+  host.innerHTML = LAMBDA_CALCULI.map((c) => {
+    const words = c.phrase
+      .split(" ")
+      .map((w) => `<span class="${LAMBDA_INDEX.has(w) ? "lam-word" : ""}">${w}</span>`)
+      .join(" · ");
+    return `<button type="button" class="lam-chip" data-phrase="${c.phrase}"><b>${c.label}</b><span>${words}</span></button>`;
+  }).join("");
+  host.querySelectorAll(".lam-chip").forEach((b) => {
+    b.onclick = () => applyPhrase(b.dataset.phrase);
+  });
+  const note = $("lamNote");
+  if (note) {
+    note.innerHTML =
+      `Click a chip to load its words into the phrase box. Highlighted <span class="lam-word">λ-extra</span> words (indices ${BIP39_SYMBOLS}–${BIP39_SYMBOLS + LAMBDA_EXTRAS.length - 1}) are new in the lexicon, ` +
+      `but an 11-bit symbol only reaches 0–${BIP39_SYMBOLS - 1} — a phrase containing one is not BIP-39-encodable.`;
+  }
 }
 
 function clearForm() {
@@ -710,6 +771,23 @@ async function applyPhrase(text, { broadcast = false } = {}) {
     makePath([]);
     return;
   }
+  const extras = words.filter((w) => LAMBDA_INDEX.has(w));
+  if (extras.length) {
+    state.analysis = {
+      ok: false,
+      reason:
+        `λ-extra word(s) outside the 11-bit symbol space: ${extras.join(", ")} — in the lexicon, but not BIP-39-encodable.`,
+      indices: indicesOf(words),
+      entropy: null,
+      entropyBits: 0,
+      checksumBits: 0,
+      checksumObserved: [],
+      checksumExpected: [],
+    };
+    renderAnalysis(words, state.analysis);
+    makePath([]);
+    return;
+  }
   const analysis = await mnemonicToEntropy(words);
   state.analysis = analysis;
   renderAnalysis(words, analysis);
@@ -787,7 +865,8 @@ async function main() {
   updateRollNeed();
   paintDecode();
   renderLex("");
-  $("wl").textContent = `${WORDLIST.length}`;
+  renderLamFamily();
+  $("wl").textContent = `${BIP39_SYMBOLS} + ${WORDLIST.length - BIP39_SYMBOLS} λ`;
   const sel = $("formSel");
   sel.innerHTML = FORMS.map((f) => `<option value="${f[0]}">${f[1]}</option>`).join("");
   sel.value = state.form;
@@ -832,7 +911,7 @@ async function main() {
   $("decodeWord").addEventListener("input", (e) => setDecodeFromWord(e.target.value));
   $("decodeAdd").onclick = () => {
     const w = $("decodeWord").value.trim().toLowerCase();
-    if (!INDEX.has(w)) return;
+    if (!KEYS_INDEX.has(w)) return;
     const next = [...state.words, w].join(" ");
     applyPhrase(next);
   };
