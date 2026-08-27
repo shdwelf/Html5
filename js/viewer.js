@@ -15,7 +15,9 @@ import {
   BIP39_SYMBOLS,
   LAMBDA_EXTRAS,
   LAMBDA_INDEX,
-  WORDLIST,
+  ALGEBRA_EXTRAS,
+  ALGEBRA_INDEX,
+  ALGEBRA_START,
 } from "./keyspace-en.js";
 import {
   bytesToBits,
@@ -316,8 +318,9 @@ function setDecodeFromWord(text) {
   }
   const idx = KEYS_INDEX.get(w);
   if (idx >= BIP39_SYMBOLS) {
+    const fam = ALGEBRA_INDEX.has(w) ? "algebra-extra" : "λ-extra";
     $("decodeOut").textContent =
-      `λ-extra — ${w} is index ${idx}, beyond the 11-bit symbol space (0–${BIP39_SYMBOLS - 1}); 11 pips cannot reach it.`;
+      `${fam} — ${w} is index ${idx}, beyond the 11-bit symbol space (0–${BIP39_SYMBOLS - 1}); 11 pips cannot reach it.`;
     return;
   }
   state.decodeBits = bitsFromIndex(idx);
@@ -329,8 +332,12 @@ function renderLex(q = "") {
   $("lex").innerHTML = rows
     .map((e) => {
       const near = e.near.length ? ` · near <span class="near">${e.near.join(", ")}</span>` : "";
-      const lam = e.extra ? ` <span class="lam-tag">λ-extra</span>` : "";
-      return `<div class="lex-item"><b>${e.word}</b> #${e.index} 0x${e.hex} ${e.bin} · ${e.prefix}${lam}${near}</div>`;
+      const tag = e.extra
+        ? ALGEBRA_INDEX.has(e.word)
+          ? ` <span class="alg-tag">A-extra</span>`
+          : ` <span class="lam-tag">λ-extra</span>`
+        : "";
+      return `<div class="lex-item"><b>${e.word}</b> #${e.index} 0x${e.hex} ${e.bin} · ${e.prefix}${tag}${near}</div>`;
     })
     .join("");
 }
@@ -380,6 +387,65 @@ function renderLamFamily() {
   if (note) {
     note.innerHTML =
       `Click a chip to load its words into the phrase box. Highlighted <span class="lam-word">λ-extra</span> words (indices ${BIP39_SYMBOLS}–${BIP39_SYMBOLS + LAMBDA_EXTRAS.length - 1}) are new in the lexicon, ` +
+      `but an 11-bit symbol only reaches 0–${BIP39_SYMBOLS - 1} — a phrase containing one is not BIP-39-encodable.`;
+  }
+}
+
+const ALGEBRA_FAMILY = [
+  { label: "algebra", phrase: "algebra" },
+  { label: "abstract algebra", phrase: "abstract algebra" },
+  { label: "linear algebra", phrase: "linear algebra" },
+  { label: "boolean algebra", phrase: "boolean algebra" },
+  { label: "relational algebra", phrase: "relational algebra" },
+  { label: "process algebra", phrase: "process algebra" },
+  { label: "universal algebra", phrase: "universal algebra" },
+  { label: "homological algebra", phrase: "homological algebra" },
+  { label: "commutative algebra", phrase: "commutative algebra" },
+  { label: "associative algebra", phrase: "associative algebra" },
+  { label: "Lie algebra", phrase: "lie algebra" },
+  { label: "Jordan algebra", phrase: "jordan algebra" },
+  { label: "differential algebra", phrase: "differential algebra" },
+  { label: "geometric algebra", phrase: "geometric algebra" },
+  { label: "Clifford algebra", phrase: "clifford algebra" },
+  { label: "exterior algebra", phrase: "exterior algebra" },
+  { label: "tensor algebra", phrase: "tensor algebra" },
+  { label: "symmetric algebra", phrase: "symmetric algebra" },
+  { label: "division algebra", phrase: "division algebra" },
+  { label: "group algebra", phrase: "group algebra" },
+  { label: "enveloping algebra", phrase: "enveloping algebra" },
+  { label: "Hopf algebra", phrase: "hopf algebra" },
+  { label: "Frobenius algebra", phrase: "frobenius algebra" },
+  { label: "Banach algebra", phrase: "banach algebra" },
+  { label: "C* algebra", phrase: "star algebra" },
+  { label: "von Neumann algebra", phrase: "von neumann algebra" },
+  { label: "Heyting algebra", phrase: "heyting algebra" },
+  { label: "Kleene algebra", phrase: "kleene algebra" },
+  { label: "σ-algebra", phrase: "sigma algebra" },
+];
+
+function extraWordClass(w) {
+  if (ALGEBRA_INDEX.has(w)) return "alg-word";
+  if (LAMBDA_INDEX.has(w)) return "lam-word";
+  return "";
+}
+
+function renderAlgebraFamily() {
+  const host = $("algFamily");
+  if (!host) return;
+  host.innerHTML = ALGEBRA_FAMILY.map((c) => {
+    const words = c.phrase
+      .split(" ")
+      .map((w) => `<span class="${extraWordClass(w)}">${w}</span>`)
+      .join(" · ");
+    return `<button type="button" class="alg-chip" data-phrase="${c.phrase}"><b>${c.label}</b><span>${words}</span></button>`;
+  }).join("");
+  host.querySelectorAll(".alg-chip").forEach((b) => {
+    b.onclick = () => applyPhrase(b.dataset.phrase);
+  });
+  const note = $("algNote");
+  if (note) {
+    note.innerHTML =
+      `Click a chip to load its words into the phrase box. Highlighted <span class="alg-word">algebra-extra</span> words (indices ${ALGEBRA_START}–${ALGEBRA_START + ALGEBRA_EXTRAS.length - 1}) are new in the lexicon, ` +
       `but an 11-bit symbol only reaches 0–${BIP39_SYMBOLS - 1} — a phrase containing one is not BIP-39-encodable.`;
   }
 }
@@ -771,12 +837,16 @@ async function applyPhrase(text, { broadcast = false } = {}) {
     makePath([]);
     return;
   }
-  const extras = words.filter((w) => LAMBDA_INDEX.has(w));
-  if (extras.length) {
+  const lamExtras = words.filter((w) => LAMBDA_INDEX.has(w));
+  const algExtras = words.filter((w) => ALGEBRA_INDEX.has(w));
+  if (lamExtras.length || algExtras.length) {
+    const parts = [];
+    if (lamExtras.length) parts.push(`λ-extra: ${lamExtras.join(", ")}`);
+    if (algExtras.length) parts.push(`algebra-extra: ${algExtras.join(", ")}`);
     state.analysis = {
       ok: false,
       reason:
-        `λ-extra word(s) outside the 11-bit symbol space: ${extras.join(", ")} — in the lexicon, but not BIP-39-encodable.`,
+        `${parts.join(" · ")} — outside the 11-bit symbol space (0–${BIP39_SYMBOLS - 1}); in the lexicon, but not BIP-39-encodable.`,
       indices: indicesOf(words),
       entropy: null,
       entropyBits: 0,
@@ -866,7 +936,9 @@ async function main() {
   paintDecode();
   renderLex("");
   renderLamFamily();
-  $("wl").textContent = `${BIP39_SYMBOLS} + ${WORDLIST.length - BIP39_SYMBOLS} λ`;
+  renderAlgebraFamily();
+  $("wl").textContent =
+    `${BIP39_SYMBOLS} + ${LAMBDA_EXTRAS.length} λ + ${ALGEBRA_EXTRAS.length} alg`;
   const sel = $("formSel");
   sel.innerHTML = FORMS.map((f) => `<option value="${f[0]}">${f[1]}</option>`).join("");
   sel.value = state.form;
