@@ -223,6 +223,35 @@ button.act:active { transform: scale(0.98); }
 }
 .chip.cs { border-color: rgba(255, 176, 32, 0.5); color: var(--warn); }
 
+.lam-family { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.lam-chip {
+  flex: 1 1 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 176, 32, 0.28);
+  background: #0b1018;
+  padding: 8px 10px;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+.lam-chip:active { transform: scale(0.98); }
+.lam-chip b { color: var(--warn); font-size: 12px; letter-spacing: 0.04em; }
+.lam-chip span { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.lam-chip .lam-word { color: var(--accent); }
+.lam-tag {
+  color: var(--warn);
+  font-size: 10px;
+  border: 1px solid rgba(255, 176, 32, 0.35);
+  border-radius: 999px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+.legend .lam-word { color: var(--accent); }
+
 .step {
   margin: 18px 0 8px;
   font-size: 12px;
