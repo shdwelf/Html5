@@ -18,7 +18,7 @@
   <header class="topbar">
     <div>
       <h1>Keyspace Viewer</h1>
-      <p>1 parallel · 2 avalanche · 3 fiber · 4 Gray · 5 cube</p>
+      <p>1 parallel · 2 avalanche · 3 fiber · 4 Gray · 5 cube · layers: invert A↔B + formal-system lenses</p>
     </div>
     <div style="display:flex;align-items:center;gap:8px;pointer-events:auto">
       <a href="./index.html#studio" target="_top" style="color:#8eacff;font-size:10px;letter-spacing:.12em;text-decoration:none;border:1px solid rgba(142,172,255,.35);padding:8px 10px;border-radius:8px">ART STUDIO</a>
@@ -33,12 +33,26 @@
 
       <label for="wc">Phrase</label>
       <select id="wc">
-        <option value="12" selected>12 words · 128-bit</option>
-        <option value="15">15 words · 160-bit</option>
-        <option value="18">18 words · 192-bit</option>
-        <option value="21">21 words · 224-bit</option>
-        <option value="24">24 words · 256-bit</option>
+        <optgroup label="BIP-39 standard ladder · CS = ENT/32">
+          <option value="12" selected>12 words · 128-bit ENT · CS 4</option>
+          <option value="15">15 words · 160-bit ENT · CS 5</option>
+          <option value="18">18 words · 192-bit ENT · CS 6</option>
+          <option value="21">21 words · 224-bit ENT · CS 7</option>
+          <option value="24">24 words · 256-bit ENT · CS 8</option>
+        </optgroup>
+        <optgroup label="generalised rule · largest CS ≤ 11 that closes 11n bits">
+          <option value="25">25 words · 264-bit ENT · CS 11</option>
+          <option value="27">27 words · 288-bit ENT · CS 9</option>
+          <option value="30">30 words · 320-bit ENT · CS 10</option>
+          <option value="33">33 words · 352-bit ENT · CS 11</option>
+          <option value="56">56 words · 608-bit ENT · CS 8</option>
+          <option value="custom">custom words or bit length…</option>
+        </optgroup>
       </select>
+      <div class="row custom-row" id="customRow" hidden>
+        <input type="number" id="customWords" min="2" max="512" step="1" placeholder="words (2–512)" />
+        <input type="number" id="customBits" min="8" step="8" placeholder="or ENT bits (e.g. 56)" />
+      </div>
       <div class="row" style="margin-top:8px">
         <button class="act" id="gen" type="button">Sample CSPRNG</button>
         <button class="act" id="apply" type="button">Project</button>
@@ -128,14 +142,6 @@
       <input type="search" id="lexQ" placeholder="search word, prefix, or index" />
       <div id="lex" class="lex"></div>
 
-      <h2 class="step">λ · Lambda-calculus family</h2>
-      <div id="lamFamily" class="lam-family"></div>
-      <p class="legend" id="lamNote"></p>
-
-      <h2 class="step">A · Algebra family</h2>
-      <div id="algFamily" class="alg-family"></div>
-      <p class="legend" id="algNote"></p>
-
       <h2 class="step">8 · Hilbert / Morton</h2>
       <div class="seg" id="curveSeg">
         <button type="button" class="seg-btn on" data-curve="hilbert">Hilbert</button>
@@ -157,6 +163,48 @@
         <button type="button" class="seg-btn" data-embed="polar">11-bit polar</button>
       </div>
       <p class="legend" id="embedNote">Random mixer — nearby indices are not nearby in space.</p>
+
+      <h2 class="step">11 · Invert keyspace A ↔ B</h2>
+      <label for="phraseB">Key B · second phrase</label>
+      <textarea id="phraseB" spellcheck="false" autocomplete="off" autocapitalize="none" placeholder="second phrase to invert against"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="act" id="genB" type="button">Sample B</button>
+        <button class="act" id="notA" type="button">B ← phrase of ¬A</button>
+      </div>
+      <div id="statusB" class="status warn">No key B — the invert layers need two keys.</div>
+      <canvas id="invertPlot" class="plot" width="340" height="188" aria-label="Invert keyspace between A and B"></canvas>
+      <div class="metric-grid">
+        <div class="metric"><span>d(A,B)</span><b id="invHam">—</b></div>
+        <div class="metric"><span>subcube |S|</span><b id="invSub">—</b></div>
+        <div class="metric"><span>d(¬A,B)</span><b id="invComp">—</b></div>
+        <div class="metric"><span>geodesics</span><b id="invGeo">—</b></div>
+      </div>
+      <p class="legend" id="invertNote">S(A,B) = { A ⊕ (m ⊙ s) : s ∈ {0,1}^d }, m = A⊕B — the affine subcube between the two keys.</p>
+
+      <h2 class="step">12 · Formal-system lenses</h2>
+      <label for="lensFilter">Family</label>
+      <select id="lensFilter">
+        <option value="all" selected>all families</option>
+        <option value="invert">invert keyspace</option>
+        <option value="λ">λ-calculus</option>
+        <option value="analysis">analysis</option>
+        <option value="logic">logic</option>
+        <option value="algebra">algebra</option>
+        <option value="time">time</option>
+        <option value="stochastic">stochastic</option>
+        <option value="process">process</option>
+      </select>
+      <p class="legend">Dot = add / remove that layer in the 3D scene (turning one on opens its panel). Name = open its readout. Cards are marked — no fake geometry.</p>
+      <div class="rack" id="lensRack"></div>
+      <div class="lens-panel" id="lensPanel">
+        <div class="lens-head"><b id="lensName">—</b><span class="tag" id="lensKind"></span></div>
+        <p class="legend" id="lensTag"></p>
+        <canvas id="lensCanvas" class="plot" width="340" height="172" aria-label="focused lens rendering"></canvas>
+        <table class="lens-rows" id="lensRows"></table>
+        <p class="legend" id="lensDescribe"></p>
+        <p class="legend" id="lensExplain"></p>
+        <p class="legend lens-predict" id="lensPredict"></p>
+      </div>
 
       <div class="metric-grid">
         <div class="metric"><span>Wordlist</span><b id="wl">—</b></div>

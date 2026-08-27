@@ -1,5 +1,5 @@
 /* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v15";
+const CACHE = "sitek-html5-v13";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -49,7 +49,6 @@ const PRECACHE = [
   "./js/haiku-catalog.js",
   "./js/bip39.js",
   "./js/bip39-en.js",
-  "./js/keyspace-en.js",
   "./vendor/three.module.min.js",
   "./vendor/OrbitControls.js",
   "./vendor/world/countries.geo.json",
