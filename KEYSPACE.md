@@ -70,10 +70,11 @@ Predict** readout. The dot adds or removes the layer in the 3-D scene (turning
 one on opens its panel); the name opens the readout without touching the scene.
 
 Where a system has real geometry or real measurement behind it, it gets a
-renderer. Where it does not, the entry is marked `card` and says why — there is
-exactly one today: **typed λ-calculus**, because stating Φ's type precisely
-needs a dependent type (`Φ : (e : Bit^ENT) → Bit^(ENT/32)`), and there is no
-keyspace geometry to draw from that.
+renderer. Where it does not, the entry is marked `card` and says why — for
+example **typed λ-calculus** (stating Φ's type precisely needs a dependent
+type, `Φ : (e : Bit^ENT) → Bit^(ENT/32)`, with no keyspace geometry to draw)
+and most of the abstract-algebra entries (their content is a structure census,
+not a picture).
 
 Measurement-backed examples:
 
@@ -92,6 +93,31 @@ Measurement-backed examples:
   Hamming cube is flat, Γⁱⱼₖ = 0 and R = 0. Any lens claiming curvature here
   would be wrong.
 
+### Algebra family
+
+After the calculus families (λ, analysis, logic, time, stochastic, process)
+comes the **algebra** family — 30 layers covering the named algebras, each
+computed from the key's own bits and indices:
+
+- measured: **linear** (GF(2) rank of the 12×11 index matrix), **Lie** (Jacobi
+  residual of the cross product), **division** (‖pq‖ = ‖p‖‖q‖ on key
+  quaternions), **exterior** (Gram determinant of the first two word vectors),
+  **Banach** (spectral radius of the self-adjoint Gram operator), **σ-algebra**
+  and **homological** (atoms and Betti numbers of the flip-response graph),
+  **Clifford** / **tensor** / **symmetric** / **Boolean** / **Heyting** (graded
+  dimensions of Cl(ℝ¹¹), T(V), Sym(V), B₁₁).
+- structure census (cards): **abstract** (the symbol group (ℤ₂)¹¹ and
+  |GL(11,2)|), **universal**, **associative** (M₂(GF(2))), **commutative** and
+  **differential** (the checksum's Zhegalkin ring and its derivation),
+  **geometric**, **Jordan**, **group**, **enveloping**, **Hopf**, **Frobenius**,
+  **C***, **von Neumann**, **relational**, **process**, and **Kleene** — each
+  with an exact number and a note on why it is a card rather than a picture.
+
+The running motif: the 11-bit symbol space is 2048 = 2¹¹, which is also
+|(ℤ₂)¹¹|, dim Cl(ℝ¹¹), |B₁₁| and the number of multivector/subset basis labels —
+so a BIP-39 index reads naturally as a group element, a multivector, or a
+subset of bits.
+
 ## Checks
 
 Run from the repo root (Node ≥ 18, no dependencies for 1–4; suite 5 needs
@@ -103,10 +129,10 @@ Run from the repo root (Node ≥ 18, no dependencies for 1–4; suite 5 needs
 | 2 | every lens `compute()` on a real 25-word key, plus known-answer maths (GL coefficients, Möbius involution, eigenvalues, Hamming balls, Itô determinism) | 81 |
 | 3 | every 2-D renderer with an instrumented canvas context, plus empty-data resilience | 35 |
 | 4 | every 3-D layer builder: vertex counts, non-finite coordinates, determinism | 18 |
-| 5 | the real `js/viewer.js` boot and UI events in jsdom: 29 rack rows, 25-word switch, invert invariants, 264-bit flip sweep, card behaviour, custom bit length | 39 |
+| 5 | the real `js/viewer.js` boot and UI events in jsdom: 57 rack rows, 25-word switch, invert invariants, 264-bit flip sweep, card behaviour, custom bit length | 39 |
 
 Two extremes are asserted separately: at 512 words (5632-bit ENT) the flip sweep
-takes ~0.8 s, the influence matrix is ~22 MB, all 29 lens computes stay clean,
+takes ~0.8 s, the influence matrix is ~22 MB, all 57 lens computes stay clean,
 and every renderer emits finite coordinates (charts carry log₁₀ magnitudes
 because 2^5624 is not a `Number`).
 
