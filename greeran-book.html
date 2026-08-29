@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#efe7d5" />
+  <meta name="description" content="An HTML5 book lab for a source-balanced biography of Steven Thomas Greeran. Includes 50 randomized style combinations, notebook paper selectors, and a local browser vault for saving draft files while you work." />
+  <title>Steven Thomas Greeran — Book Lab</title>
+  <link rel="icon" href="./icon.png" />
+  <link rel="stylesheet" href="./css/greeran-book.css" />
+</head>
+<body data-paper="field-notebook">
+  <div id="progress" aria-hidden="true"></div>
+
+  <header class="studio-bar">
+    <div class="brand-block">
+      <div class="eyebrow">HTML5 BOOK LAB · source-balanced life file</div>
+      <h1>Steven Thomas Greeran · Book Model</h1>
+      <p>
+        A book-like reconstruction built from published sources: official U.S. Virgin Islands
+        records plus a later-located self-published resume. It is <em>not</em> a first-person
+        autobiography written by the subject; it is an editorial model that keeps verified facts,
+        self-published claims, and unsourced memory prompts separate.
+      </p>
+    </div>
+
+    <div class="control-cluster">
+      <button type="button" class="btn primary" id="rollStyle">🎲 Random style</button>
+      <label>
+        <span>Paper</span>
+        <select id="paperSelect" aria-label="Select notebook paper style"></select>
+      </label>
+      <button type="button" class="btn" id="storeStyle">Store style</button>
+      <a class="btn ghost" href="./greeran.html">Open dossier</a>
+      <a class="btn ghost" href="./book-builder.html">Open book builder</a>
+      <a class="btn ghost" href="./index.html" target="_top">SITE-K</a>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="rail">
+      <section class="panel">
+        <h2>Book map</h2>
+        <nav class="book-map" aria-label="Chapter navigation">
+          <a href="#premise">I. Premise</a>
+          <a href="#early-years">II. Southern California trail</a>
+          <a href="#ucsb-years">III. UCSB &amp; Santa Barbara years</a>
+          <a href="#work-service">IV. Work, service, and technical roles</a>
+          <a href="#public-record">V. Official legal record</a>
+          <a href="#open-questions">VI. Gaps &amp; private prompts</a>
+          <a href="#book-sources">VII. Sources</a>
+        </nav>
+      </section>
+
+      <section class="panel status-panel">
+        <h2>Style deck</h2>
+        <div class="theme-readout">
+          <div>
+            <span class="k">Theme</span>
+            <strong id="themeNumber">01 / 50</strong>
+          </div>
+          <div>
+            <span class="k">Palette</span>
+            <strong id="paletteName">Desert brass</strong>
+          </div>
+          <div>
+            <span class="k">Paper</span>
+            <strong id="paperName">Field notebook</strong>
+          </div>
+        </div>
+        <p class="tiny">
+          Fifty combinations are generated from five color palettes and ten notebook/paper textures,
+          inspired by the spirit of CSS experimentation rather than copied from any external design.
+        </p>
+      </section>
+
+      <section class="panel evidence-panel">
+        <h2>Evidence ladder</h2>
+        <ol>
+          <li><b>Official record:</b> VIDOJ releases and court reporting establish the conviction, registration history, wanted notice, arrest, charge, and bail.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a></li>
+          <li><b>Self-published record:</b> the public resume supplies education, work, volunteer roles, and several place references.<a class="cite" href="#src-9">9</a></li>
+          <li><b>Private prompts:</b> additional memories can be drafted in the vault, but they should remain unpublished until verified or intentionally labeled personal recollection.</li>
+        </ol>
+      </section>
+    </aside>
+
+    <article class="book" id="book">
+      <section class="page cover" id="premise">
+        <div class="chapter-no">I</div>
+        <div class="page-kicker">Editorial premise</div>
+        <h2>How to make a balanced book from an uneven record</h2>
+        <p>
+          The public record around Steven Thomas Greeran is uneven. Officially, the strongest and
+          clearest documentation concerns a California conviction later referenced by Virgin Islands
+          authorities, his registration history in the U.S. Virgin Islands, and the 2025 charge for
+          alleged registration noncompliance.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a>
+          Separately, a self-published web resume supplies a much broader but less authoritative map of
+          schooling, work, and volunteer activity across Southern California and Santa Barbara County.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          This book model treats those two evidence classes differently. Official records anchor the
+          legal chronology. Resume material fills out the earlier life-and-work trail without pretending
+          to know motives, feelings, or unwritten episodes. The result is not a traditional memoir, but
+          it is a more balanced timeline than a dossier limited only to the 2025 case.<a class="cite" href="#src-9">9</a>
+        </p>
+        <blockquote>
+          The point of this edition is not to romanticize or to flatten the record. It is to keep the
+          whole available timeline in view while labeling what is official, what is self-published, and
+          what remains unverified.
+        </blockquote>
+      </section>
+
+      <section class="page" id="early-years">
+        <div class="chapter-no">II</div>
+        <div class="page-kicker">Southern California trail</div>
+        <h2>Glendora, Duarte, San Dimas, and Pomona in the published record</h2>
+        <p>
+          The earliest biographical trail now located comes from the self-published resume. It lists
+          <b>Glendora High School</b> for 1997–2001, a <b>Citrus Community College</b> summer-school entry in
+          2001, and a <b>California State Polytechnic Institute Pomona</b> summer-school entry in 1998.<a class="cite" href="#src-9">9</a>
+          Those entries establish a Southern California academic geography before the UCSB years.
+        </p>
+        <p>
+          The same resume ties Greeran to multiple nearby place references: a canned-food-drive project
+          linked to <b>Duarte</b>; health-care volunteer listings associated with <b>San Dimas</b>; and later
+          lodge and fair-related items in <b>Pomona</b> and the broader Inland Empire.<a class="cite" href="#src-9">9</a>
+          In other words, the public resume sketches a regional trail rather than a single hometown-only narrative.
+        </p>
+        <div class="margin-grid">
+          <div class="mini-card"><span>Glendora</span><small>High school, city recreation service, local fundraising and lodge references.<a class="cite" href="#src-9">9</a></small></div>
+          <div class="mini-card"><span>Duarte</span><small>Access Duarte canned-food-drive project reference.<a class="cite" href="#src-9">9</a></small></div>
+          <div class="mini-card"><span>San Dimas</span><small>Facility names in volunteer health-care listings.<a class="cite" href="#src-9">9</a></small></div>
+          <div class="mini-card"><span>Pomona</span><small>Cal Poly Pomona coursework and Pomona lodge volunteering.<a class="cite" href="#src-9">9</a></small></div>
+        </div>
+      </section>
+
+      <section class="page" id="ucsb-years">
+        <div class="chapter-no">III</div>
+        <div class="page-kicker">Campus &amp; coast</div>
+        <h2>UCSB, Santa Barbara, and Goleta</h2>
+        <p>
+          The resume lists <b>University of California, Santa Barbara</b> in CMPSCI / the College of
+          Engineering from 2001 to 2004.<a class="cite" href="#src-9">9</a> Around that period it also claims student-programmer
+          work at the Davidson Library's Alexandria Digital Library and a 2005 digitization role related
+          to the library's wax-cylinder project.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          These UCSB-linked entries are important because they broaden the biography beyond school alone.
+          They place Greeran within campus technical work, digital archiving, and library systems, while
+          nearby volunteer listings place him in the Santa Barbara area through the <b>Santa Barbara Food Bank</b>,
+          the <b>Santa Barbara Botanic Garden</b>, and a renaissance-faire role at <b>Live Oak Camp in Goleta</b>.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          The available sources do not verify every specific dorm, apartment, or class schedule requested
+          for this project, so those details are intentionally left out of the published narrative unless the
+          user later supplies direct documentation. The vault on this page is where such material can be kept
+          privately while the sourced edition stays cleanly labeled.
+        </p>
+      </section>
+
+      <section class="page" id="work-service">
+        <div class="chapter-no">IV</div>
+        <div class="page-kicker">Work, service, and craft</div>
+        <h2>A technical and volunteer record before the 2025 case</h2>
+        <p>
+          Greeran's self-published resume describes a varied early-adult work history: <b>Channel Data Systems</b>
+          as Computer Shop Manager in 2004; <b>Novacoast</b> as a programmer in 2004–2005; university library programming;
+          volunteer work for the <b>Santa Barbara Food Bank</b> and <b>Santa Barbara Botanic Garden</b>; and later civic,
+          religious, and service roles ranging from meditation centers to election work and local fundraising.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          The significance of this material is not that every line can be independently confirmed today, but that it
+          complicates any biography reduced to one chapter. A balanced life file needs to show education, labor,
+          volunteerism, and geography alongside the later legal record, while remaining honest about the fact that
+          most of this broader life trail presently survives as self-description rather than institutional biography.<a class="cite" href="#src-9">9</a>
+        </p>
+        <ul class="thread-list">
+          <li><b>Technical work:</b> Channel Data Systems, library programming, Novacoast, and other computing-adjacent roles.<a class="cite" href="#src-9">9</a></li>
+          <li><b>Service work:</b> food-bank, botanic-garden, health-care, and city-recreation volunteer listings.<a class="cite" href="#src-9">9</a></li>
+          <li><b>Spiritual / civic line:</b> Dhammakaya and Sunnataram entries, fraternal-lodge visits, elections work, and child-ID volunteering.<a class="cite" href="#src-9">9</a></li>
+        </ul>
+      </section>
+
+      <section class="page" id="public-record">
+        <div class="chapter-no">V</div>
+        <div class="page-kicker">Official legal record</div>
+        <h2>Registration, wanted notice, arrest, and pending charge in the Virgin Islands</h2>
+        <p>
+          The official record states that Greeran was convicted in California of <b>child pornography with intent to sell or distribute</b>
+          and later registered in the U.S. Virgin Islands after moving to St. Croix. His initial registration date was
+          <b>October 28, 2022</b>, with the most recent published update dated <b>October 27, 2023</b>.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a>
+        </p>
+        <p>
+          VIDOJ says he did not appear for the required annual update on <b>October 28, 2024</b>. A wanted notice followed on
+          <b>February 21, 2025</b>, and he was detained on <b>February 23, 2025</b> near Midre Cummings Park in Frederiksted,
+          then arrested at the Wilbur H. Francis Command Police Station by the SORNA unit.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a><a class="cite" href="#src-7">7</a><a class="cite" href="#src-8">8</a>
+        </p>
+        <p>
+          On <b>February 24, 2025</b>, he appeared before Magistrate Judge Venetia H. Velasquez on a charge under
+          <b>14 V.I.C. § 1724(b)(1)</b> for Failure to Register as a Sex Offender; bail was set at <b>$5,500</b> and the public release
+          said he remained in custody when unable to post it.<a class="cite" href="#src-2">2</a> This charge is an accusation, not a conviction.
+          No further public disposition had been located for this book as of August 28, 2026.
+        </p>
+        <div class="legal-band">
+          <span>Official-source chapter</span>
+          <small>Use this section as the factual anchor when expanding the book; do not let unsupported memoir material override the court/public-record chronology.</small>
+        </div>
+      </section>
+
+      <section class="page" id="open-questions">
+        <div class="chapter-no">VI</div>
+        <div class="page-kicker">Gaps &amp; private prompts</div>
+        <h2>What remains outside the published edition</h2>
+        <p>
+          Several details requested for expansion — such as named dorm residents, apartment anecdotes, exact class schedules,
+          specific social stories, and many travel memories — were not verified in the public sources reviewed for this project.
+          Publishing them as fact would blur the line between biography and invention, and in some cases would identify third parties
+          who are not public figures.
+        </p>
+        <p>
+          For that reason, this app separates <b>public book pages</b> from a <b>private embedded vault</b>. Use the vault to capture
+          reminders, chapter fragments, timelines, and personal prompts while the published book remains sourced. If supporting material
+          is later provided, those details can be promoted from private notes into the visible book with clear labeling.
+        </p>
+        <div class="warning-box">
+          <h3>Recommended workflow</h3>
+          <ol>
+            <li>Keep verified life facts in the visible book pages.</li>
+            <li>Keep unsourced memories in the vault until documented or intentionally labeled personal recollection.</li>
+            <li>Export the vault JSON periodically as a backup while you work.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="page sources-page" id="book-sources">
+        <div class="chapter-no">VII</div>
+        <div class="page-kicker">Source register</div>
+        <h2>Sources used in the book model</h2>
+        <ol class="source-list">
+          <li id="src-1"><b>U.S. Virgin Islands Department of Justice</b>, “DOJ: Steven Thomas Greeran Wanted for Failure to Register as Sex Offender,” Feb. 21, 2025. <a href="https://usvidoj.com/doj-steven-thomas-greeran-wanted-for-failure-to-register-as-sex-offender/" rel="noopener" target="_blank">Official press release</a></li>
+          <li id="src-2"><b>U.S. Virgin Islands Department of Justice</b>, “AG Gordon C. Rhea: Steven Thomas Greeran Arrested and Advised of His Rights for Registration Noncompliance,” Feb. 28, 2025. <a href="https://usvidoj.com/ag-gordon-c-rhea-steven-thomas-greeran-arrested-and-advised-of-his-rights-for-registration-noncompliance/" rel="noopener" target="_blank">Official press release</a></li>
+          <li id="src-3"><b>Virgin Islands Consortium</b>, Feb. 23, 2025. <a href="https://viconsortium.com/vi-crime/virgin-islands-v-i--department-of-justice-issues-arrest-warrant-for-sex-offender-who-failed-to-register" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-4"><b>Virgin Islands Free Press</b>, Feb. 21, 2025 / updated Feb. 23, 2025. <a href="https://vifreepress.com/2025/02/help-doj-find-wanted-pedophile-steven-thomas-greeran-of-california/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-5"><b>Virgin Islands News Online</b>, Feb. 23, 2025. <a href="https://www.virginislandsnewsonline.com/en/news/usvi-arrest-warrant-issued-for-sex-offender-who-failed-to-register" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-6"><b>St. Thomas Source</b>, Feb. 28, 2025. <a href="https://stthomassource.com/content/2025/02/28/man-arrested-for-failing-to-comply-with-sex-offender-registration-requirements/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-7"><b>St. John Source</b>, Feb. 23, 2025 / updated Feb. 28, 2025. <a href="https://stjohnsource.com/2025/02/23/update-sex-offender-wanted-in-usvi-now-in-custody/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-8"><b>St. Croix Source</b>, Feb. 23, 2025. <a href="https://stcroixsource.com/2025/02/23/update-sex-offender-wanted-in-usvi-now-in-custody/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-9"><b>Standard Resume</b>, “Steven Greeran's Resume,” accessed Aug. 28, 2026. <a href="https://standardresume.co/r/sgreeran" rel="noopener" target="_blank">Self-published resume</a></li>
+        </ol>
+      </section>
+    </article>
+
+    <aside class="vault" id="vault">
+      <section class="panel vault-head">
+        <h2>Embedded vault</h2>
+        <p>Local browser storage with a faux file system for drafts, notes, snapshots, and style settings.</p>
+      </section>
+
+      <section class="panel vault-actions">
+        <button type="button" class="btn small" id="newFileBtn">New file</button>
+        <button type="button" class="btn small" id="saveFileBtn">Save</button>
+        <button type="button" class="btn small ghost" id="deleteFileBtn">Delete</button>
+        <button type="button" class="btn small ghost" id="snapshotBtn">Snapshot chapter</button>
+        <button type="button" class="btn small ghost" id="exportBtn">Export vault</button>
+        <label class="btn small ghost import-label">
+          Import
+          <input type="file" id="importInput" accept="application/json" hidden />
+        </label>
+      </section>
+
+      <section class="panel vault-browser">
+        <div class="vault-column">
+          <div class="label-row">Files</div>
+          <ul id="fileList" class="file-list" aria-label="Vault file list"></ul>
+        </div>
+        <div class="vault-column grow">
+          <label class="label-row" for="filePathInput">Path</label>
+          <input id="filePathInput" class="path-input" spellcheck="false" />
+          <textarea id="fileEditor" spellcheck="false" aria-label="Vault editor"></textarea>
+        </div>
+      </section>
+
+      <section class="panel vault-status">
+        <div id="vaultStatus">Vault ready.</div>
+        <small>
+          Files live only in this browser until exported. Great for drafting unverified memories,
+          chapter outlines, and source-to-do notes without placing them in the public text yet.
+        </small>
+      </section>
+    </aside>
+  </main>
+
+  <script src="./js/greeran-book.js"></script>
+</body>
+</html>
