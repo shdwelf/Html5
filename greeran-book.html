@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#efe7d5" />
+  <meta name="description" content="An HTML5 book lab for a source-balanced biography of Steven Thomas Greeran. Includes 50 randomized style combinations, notebook paper selectors, and a local browser vault for saving draft files while you work." />
+  <title>Steven Thomas Greeran — Book Lab</title>
+  <link rel="icon" href="./icon.png" />
+  <link rel="stylesheet" href="./css/greeran-book.css" />
+</head>
+<body data-paper="field-notebook">
+  <div id="progress" aria-hidden="true"></div>
+
+  <header class="studio-bar">
+    <div class="brand-block">
+      <div class="eyebrow">HTML5 BOOK LAB · source-balanced life file</div>
+      <h1>Steven Thomas Greeran · Book Model</h1>
+      <p>
+        A book-like reconstruction built from published sources: official U.S. Virgin Islands
+        records plus a later-located self-published resume. It is <em>not</em> a first-person
+        autobiography written by the subject; it is an editorial model that keeps verified facts,
+        self-published claims, and unsourced memory prompts separate.
+      </p>
+    </div>
+
+    <div class="control-cluster">
+      <button type="button" class="btn primary" id="rollStyle">🎲 Random style</button>
+      <label>
+        <span>Paper</span>
+        <select id="paperSelect" aria-label="Select notebook paper style"></select>
+      </label>
+      <button type="button" class="btn" id="storeStyle">Store style</button>
+      <a class="btn ghost" href="./greeran.html">Open dossier</a>
+      <a class="btn ghost" href="./book-builder.html">Open book builder</a>
+      <a class="btn ghost" href="./index.html" target="_top">SITE-K</a>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="rail">
+      <section class="panel">
+        <h2>Book map</h2>
+        <nav class="book-map" aria-label="Chapter navigation">
+          <a href="#premise">I. Premise</a>
+          <a href="#early-years">II. Southern California trail</a>
+          <a href="#glendora-childhood">III. Growing up in Glendora</a>
+          <a href="#hewitt-story">IV. Battalion Chief Hewitt &amp; the family story</a>
+          <a href="#ucsb-years">V. UCSB &amp; Santa Barbara years</a>
+          <a href="#work-service">VI. Work, service, and technical roles</a>
+          <a href="#public-record">VII. Official legal record</a>
+          <a href="#open-questions">VI. Gaps &amp; private prompts</a>
+          <a href="#book-sources">VII. Sources</a>
+        </nav>
+      </section>
+
+      <section class="panel status-panel">
+        <h2>Style deck</h2>
+        <div class="theme-readout">
+          <div>
+            <span class="k">Theme</span>
+            <strong id="themeNumber">01 / 50</strong>
+          </div>
+          <div>
+            <span class="k">Palette</span>
+            <strong id="paletteName">Desert brass</strong>
+          </div>
+          <div>
+            <span class="k">Paper</span>
+            <strong id="paperName">Field notebook</strong>
+          </div>
+        </div>
+        <p class="tiny">
+          Fifty combinations are generated from five color palettes and ten notebook/paper textures,
+          inspired by the spirit of CSS experimentation rather than copied from any external design.
+        </p>
+      </section>
+
+      <section class="panel evidence-panel">
+        <h2>Evidence ladder</h2>
+        <ol>
+          <li><b>Official record:</b> VIDOJ releases and court reporting establish the conviction, registration history, wanted notice, arrest, charge, and bail.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a></li>
+          <li><b>Self-published record:</b> the public resume supplies education, work, volunteer roles, and several place references.<a class="cite" href="#src-9">9</a></li>
+          <li><b>Private prompts:</b> additional memories can be drafted in the vault, but they should remain unpublished until verified or intentionally labeled personal recollection.</li>
+        </ol>
+      </section>
+    </aside>
+
+    <article class="book" id="book">
+      <section class="page cover" id="premise">
+        <div class="chapter-no">I</div>
+        <div class="page-kicker">Editorial premise</div>
+        <h2>How to make a balanced book from an uneven record</h2>
+        <p>
+          The public record around Steven Thomas Greeran is uneven. Officially, the strongest and
+          clearest documentation concerns a California conviction later referenced by Virgin Islands
+          authorities, his registration history in the U.S. Virgin Islands, and the 2025 charge for
+          alleged registration noncompliance.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a>
+          Separately, a self-published web resume supplies a much broader but less authoritative map of
+          schooling, work, and volunteer activity across Southern California and Santa Barbara County.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          This book model treats those two evidence classes differently. Official records anchor the
+          legal chronology. Resume material fills out the earlier life-and-work trail without pretending
+          to know motives, feelings, or unwritten episodes. The result is not a traditional memoir, but
+          it is a more balanced timeline than a dossier limited only to the 2025 case.<a class="cite" href="#src-9">9</a>
+        </p>
+        <blockquote>
+          The point of this edition is not to romanticize or to flatten the record. It is to keep the
+          whole available timeline in view while labeling what is official, what is self-published, and
+          what remains unverified.
+        </blockquote>
+      </section>
+
+      <section class="page" id="early-years">
+        <div class="chapter-no">II</div>
+        <div class="page-kicker">Southern California trail</div>
+        <h2>Glendora, Duarte, San Dimas, and Pomona in the published record</h2>
+        <p>
+          The earliest biographical trail now located comes from the self-published resume. It lists
+          <b>Glendora High School</b> for 1997–2001, a <b>Citrus Community College</b> summer-school entry in
+          2001, and a <b>California State Polytechnic Institute Pomona</b> summer-school entry in 1998.<a class="cite" href="#src-9">9</a>
+          Those entries establish a Southern California academic geography before the UCSB years.
+        </p>
+        <p>
+          The same resume ties Greeran to multiple nearby place references: a canned-food-drive project
+          linked to <b>Duarte</b>; health-care volunteer listings associated with <b>San Dimas</b>; and later
+          lodge and fair-related items in <b>Pomona</b> and the broader Inland Empire.<a class="cite" href="#src-9">9</a>
+          In other words, the public resume sketches a regional trail rather than a single hometown-only narrative.
+        </p>
+        <div class="margin-grid">
+          <div class="mini-card"><span>Glendora</span><small>High school, city recreation service, local fundraising and lodge references.<a class="cite" href="#src-9">9</a></small></div>
+          <div class="mini-card"><span>Duarte</span><small>Access Duarte canned-food-drive project reference.<a class="cite" href="#src-9">9</a></small></div>
+          <div class="mini-card"><span>San Dimas</span><small>Facility names in volunteer health-care listings.<a class="cite" href="#src-9">9</a></small></div>
+          <div class="mini-card"><span>Pomona</span><small>Cal Poly Pomona coursework and Pomona lodge volunteering.<a class="cite" href="#src-9">9</a></small></div>
+        </div>
+      </section>
+
+      
+      <section class="page" id="glendora-childhood">
+        <div class="chapter-no">III</div>
+        <div class="page-kicker">Personal recollection · Glendora childhood</div>
+        <h2>Growing up at 2860, the Landers soccer team, and Seller's violin</h2>
+        <p class="label-row" style="margin:0 0 8px;color:var(--accent-2);">⚠ Personal recollection — not independently verified</p>
+        <p>
+          The house was at <b>2860</b> in Glendora. The room was small and in the back — a kid's room,
+          the kind of space where the world gets built from whatever is within arm's reach. This is where
+          the earliest personal memories begin: not from any published source, but from lived experience
+          in a San Gabriel Valley suburb that shaped a generation of school mornings, blacktop lunches,
+          and after-school routines.
+        </p>
+        <p>
+          Soccer came first among organized activities. The team was the <b>Landers</b>, and the position
+          was <b>halfback</b>. Teammate <b>Chris Griffin</b> was on the squad — a name that survives
+          in memory even when so many others have faded. Being halfback meant running the midfield, connecting
+          defense to attack, doing the work that rarely made the highlight reel but kept the game moving.
+          Then came the eye exam and the discovery: <b>near-sighted</b>. The world had always been slightly
+          soft at the edges, and suddenly there was a reason.
+        </p>
+        <p>
+          At school — likely linked to the <b>Glendora Unified School District</b> — students were
+          <b>required to learn a musical instrument</b>. The instrument chosen was <b>violin</b>, and the
+          place was <b>Seller's</b>. There was also the cafeteria job: <b>the milk man</b>. Fifty cents
+          for a box of milk. It was a small hustle, a way to earn and to belong, and then the bell would ring
+          and it was out to the <b>blacktop</b> to eat. The blacktop lunch was a universal Southern California
+          school experience — and the <b>seagulls</b> would come inland from the beach, wheeling over the
+          campus looking for scraps, proof that the ocean was never as far away as it seemed.
+        </p>
+        <p>
+          Family connections reached into the school district itself. <b>Aunt Lila</b> — wife of
+          <b>Uncle Chuck</b> — worked as <b>Dr. Bushman's secretary at the district office of the
+          Glendora Unified School District</b>. That kind of proximity meant the district was not an
+          abstraction; it was a place where familiar names showed up, where the adult world and the student
+          world overlapped in small, ordinary ways.
+        </p>
+        <p>
+          And then there was the writing. An <b>awards ceremony</b> held <b>in the board room</b> at the
+          <b>state level</b>: an <b>honorable mention</b> for a story. The story was about
+          <b>Battalion Chief Robert Hewitt of the Los Angeles County Fire Department</b> — stationed not
+          in Temple City but in <b>El Monte</b>. That story became a thread that connected childhood,
+          family history, and something much larger.
+        </p>
+        <div class="margin-grid">
+          <div class="mini-card"><span>2860, Glendora</span><small>Home address. Small room in the back. Childhood base camp.</small></div>
+          <div class="mini-card"><span>Landers soccer</span><small>Halfback. Chris Griffin on the team. Suburban youth athletics.</small></div>
+          <div class="mini-card"><span>Seller's violin</span><small>Required instrument instruction. School music program.</small></div>
+          <div class="mini-card"><span>The milk man</span><small>Cafeteria job. Fifty cents a box. Blacktop lunches with seagulls.</small></div>
+          <div class="mini-card"><span>Aunt Lila</span><small>Dr. Bushman's secretary, GUSD district office. Uncle Chuck's wife.</small></div>
+          <div class="mini-card"><span>State honorable mention</span><small>Writing award. Board room ceremony. Story about BC Robert Hewitt, LACoFD.</small></div>
+        </div>
+
+        <!-- Geographic thread: 2860 → Big Dalton Canyon → Examiner → ESGVROP → Camp Williams → Canyon City Ghost Town -->
+        <p>
+          Big Dalton Canyon is named after <b>Henry Dalton</b> (born London 1803, settled in 1843),
+          a homesteader and rancher. The canyon sits in Glendora's foothills, at the edge of the
+          San Gabriel Mountains. The closest neighbor to 2860 was <b>Candice Driscoll</b> — the user
+          believes she had an NSA connection, an "Op G 20" link to deciphering — possibly signals
+          intelligence or code-breaking.
+        </p>
+        <p>
+          At <b>1803</b>: <b>Ida Meacham</b> next door. <b>Dan Bjorklund</b> — dad's best man.
+          His daughter <b>Lauren Bjorklund</b>. <b>Boots Gordon</b> — Rowley's wife. <b>Nancy
+          Burns</b> — the Burns residence next to Ida.
+        </p>
+        <p>
+          The <b>Rowley</b> connection is confirmed: <b>Gordon Rowley</b> moved to Glendora in 1956,
+          was a founding member of the Glendora Riding and Hiking Trails Advisory Committee. The
+          Big Dalton Canyon Campground was renamed the <b>Rowley Wilderness Amphitheater</b> on May 24,
+          2020, approved unanimously by City Council after Gordon's passing. His wife <b>Norma
+          Rowley</b> (passed February 2022) is also memorialized. "Boots" may be a nickname for Norma.
+        </p>
+        <p>
+          <b>Scott Stapenhill</b> — fire captain in the Glendora area. The user says he "turned off
+          the space shuttle on reentry landing" because "I think they made the heat tiles." The space
+          shuttle thermal tiles were made by <b>Lockheed Missiles &amp; Space Co.</b> in Sunnyvale —
+          <b>LI-900</b> tiles of 99.9% pure silica glass fibers, 94% air by volume, able to withstand
+          2,200°F. About 20,000 tiles per shuttle. Shuttles were built in Southern California (Palmdale),
+          and many landed at <b>Edwards Air Force Base</b> in the high desert. Fire captains would have
+          been part of the emergency response at shuttle landing sites.
+        </p>
+        <p>
+          The user's boss at the <b>San Gabriel Valley Examiner</b> was <b>Eugene Moses</b>
+          — a colonel who took shrapnel in Korea and has a pacemaker; he goes to the VA hospital.
+          Moses was the <b>former mayor of Azusa</b>: elected to the City Council in 1978, mayor in
+          1982, reelected multiple times with at least 56% of the vote every time. A Pennsylvania
+          native, John Muir High School graduate, Korean War Navy veteran. After the service: die
+          caster, restaurant in Alhambra, coin-operated amusement machines for 20+ years. He built
+          <b>Canyon City Ghost Town</b> on <b>San Gabriel Canyon Road</b> — intended as a family
+          recreation park like Knott's Berry Farm. He put development aside when elected to avoid
+          conflict of interest and used the property for charity events. He also sold fish bait and
+          gold-panning equipment at the entrance to San Gabriel Canyon. He had the <b>Hearst</b> at
+          the newspaper.
+        </p>
+        <p>
+          The <b>San Gabriel Valley Examiner</b>: a weekly newspaper serving the foothill communities.
+          The office was next to the <b>Naked Juice factory in Glendora</b> — <b>Naked Juice Co. of
+          Glendora, Inc.</b>, founded 1976, at 533 West Foothill Blvd, Glendora, CA 91741. The
+          company was literally named after the city.
+        </p>
+        <p>
+          The user's first boss was <b>Ryan Quisenberry</b> at the <b>ESGVROP</b> — the <b>East
+          San Gabriel Valley Regional Occupational Program &amp; Technical Center</b>, a public education
+          agency providing career technical training. Founded 1970, governed by a seven-member board
+          representing seven unified school districts: Azusa, Baldwin Park, Charter Oak, Covina,
+          <b>Glendora</b>, Walnut, and West Covina. The campus was south of <b>Irwindale</b>, before
+          the freeway, in the <b>West Covina</b> area. They went to <b>Camp Williams</b> — up
+          <b>Azusa Canyon</b> (San Gabriel Canyon, Highway 39) on the <b>East Fork of the San Gabriel
+          River</b>. Camp Williams: a campground and mobile home park seven miles north of San Dimas,
+          surrounded by Angeles National Forest. History of the canyon: Native Americans, gold
+          prospectors during the Gold Rush, the ghost town of <b>Eldoradoville</b> (washed away in a
+          flood). People still pull gold out of the river. An old mine across the river from Camp
+          Williams.
+        </p>
+
+        <!-- Aerospace/defense threads (after geographic thread) -->
+        
+        <div class="emergency-band">
+          <span>Wildfire activity &amp; WiFire / Alexandria Digital Library</span>
+          <p>
+            The wildfire activity in the San Gabriel Mountains area is unusual. The <b>National
+            Interagency Fire Center (NIFC)</b> in Boise, Idaho provides briefings, overlays of burns,
+            and situation reports — data feeds from NIFC WFIGS. "Like Harry Truman I was there when it
+            was burning" — <b>Harry Truman</b> was at Mount St. Helens when it erupted on May 18, 1980.
+            He refused to evacuate. He was there when it erupted.
+          </p>
+          <p>
+            <b>WiFire</b>: at the <b>San Diego Supercomputer Center (SDSC)</b>, UC San Diego. Led by
+            <b>Ilkay Altintas</b>. NSF-funded ($2.65 million in 2013; $5 million for BurnPro3D).
+            Integrates satellite data, remote sensors, and computational models for wildfire prediction.
+            Partners: CAL FIRE, U.S. Forest Service, SDG&amp;E, San Diego County Emergency Operations
+            Center. <b>David Valentine</b> worked on WiFire at SDSC after working at UCSB.
+          </p>
+          <p>
+            At UCSB: Valentine worked for <b>Greg Janée</b> at the <b>Davidson Library Map and Image
+            Laboratory</b> on the <b>Alexandria Digital Library (ADL)</b> project — the <b>USGS Gazetteer
+            interface</b>. ADL: a georeferenced digital library at UCSB. Catalog, Gazetteer, GeoRef.
+            The ADL Gazetteer combines USGS GNIS and NIMA GNS databases. Co-authored papers: Valentine,
+            Janée, Frew — <i>"Accessing the Alexandria Digital Library from Geographic Information
+            Systems"</i> (2004). <b>James Frew</b>: UCSB researcher on ADL, Donald Bren School of
+            Environmental Science. The user worked at UCSB Davidson Library on the Alexandria Digital
+            Library project. The Gazetteer interface was part of that work.
+          </p>
+        </div>
+
+
+        <div class="emergency-band">
+          <span>David Seubert, wax cylinders, Z39.50 &amp; the California Digital Library</span>
+          <p>
+            The user worked for <b>David Seubert</b>, curator of special collections / Performing Arts
+            Curator at UCSB Library. Seubert went to <b>Oberlin</b>. Under his leadership, the <b>UCSB
+            Cylinder Audio Archive</b> became one of the world's largest collections of wax cylinder
+            recordings — over 16,000 recordings, close to 11,000 online. The first library with a big
+            collection of early sound recordings online that the public could download for free. Started
+            in 2002 as a pilot project (60 cylinders); the full archive launched autumn 2005 with 5,000
+            newly digitized recordings. The library uses the <b>Archeophone</b> (designed 1998 by Frenchman
+            Henri Chamoux) to convert the grooves of wax cylinders into digital data.
+          </p>
+          <p>
+            The user connected the <b>Apple Darwin</b> wax cylinder recordings to <b>Z39.50</b> PHP to
+            send queries to and from the <b>Pegasus</b> system that syncs with the Library of Congress
+            <b>MELVYL</b> system. Z39.50: the standard protocol for bibliographic information retrieval.
+            MELVYL: the UC system's union catalog. The <b>California Digital Library (CDL)</b> emerged
+            from efforts to enhance MELVYL — founded in 1997 by the <b>UC Board of Regents</b> and
+            President <b>Richard Atkinson</b>, who called it a "library without walls." <b>Clifford
+            Lynch</b>, head of the Division of Library Automation for the UC system, presented the draft
+            plan. CDL's vision: building, sharing, and preserving digital collections; creating tools and
+            services; influencing scholarly communication; fostering strategic partnerships.
+          </p>
+        </div>
+
+<div class="emergency-band">
+          <span>Camouflaged Burbank, hidden Azusa, secret Oildale</span>
+          <p>
+            <b>Boots</b> is Norma Rowley — confirmed. The parallel runs deeper: just as <b>Lockheed's
+            Burbank plant</b> was disguised during WWII as a fake suburban neighborhood — burlap houses,
+            wire-and-feather trees, rubber automobiles, painted streets, with Hollywood studios (MGM,
+            Disney, 20th Century Fox) helping build the illusion — the facility in <b>Azusa</b> was making
+            space shuttle components hidden in plain sight. Colonel John F. Ohmer led the Burbank camouflage;
+            when he flew a general over at 5,000 feet, the general said he could only see "suburb after
+            California suburb." Warner Brothers even disguised a nearby studio to look like the aircraft
+            plant as a decoy.
+          </p>
+          <p>
+            The same pattern: the <b>U-2 spy plane</b> was built at a secret Lockheed facility on
+            Norris Road in <b>Oildale</b> (Bakersfield), disguised as a <b>tire factory</b>. Called
+            "Unit 80," the first 50 U-2s were assembled there in 1956–1957, then partially disassembled
+            and flown at night to Groom Lake (Area 51) for flight testing. A Government Printing Office /
+            NASA book — <i>Unlimited Horizons</i> by Peter Merlin — documents the U-2 history.
+          </p>
+          <p>
+            <b>Beale Air Force Base</b> — home of the U-2 Dragon Lady since 1976, named after Edward
+            Fitzgerald Beale, a 19th-century pioneer. The "high flyer named after their football team."
+            All 27 U-2s operated from Beale. The plane can fly above 70,000 feet — still in service
+            70+ years after its first flight. <b>The names have been changed.</b>
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Road Runners Internationale &amp; Peter Merlin</span>
+          <p>
+            The user attended the <b>2017 Road Runners Internationale reunion</b> with <b>Peter Merlin</b>
+            — the aviation historian who wrote the NASA/GPO history of the U-2 program (<i>Unlimited
+            Horizons</i>). The Road Runners are an organization of people who worked on secret aircraft
+            programs — U-2, SR-71, OXCART/A-12 — at <b>Area 51</b> and <b>Groom Lake</b>. The 25th
+            reunion was held October 10, 2017, photographed by Dave Budd.
+          </p>
+          <p>
+            The user — <b>wearing blue, sitting on the corner</b> — had dinner with the captain at
+            Fort Knox. <b>Frank Murray</b> received an award. Murray was a CIA pilot, call sign
+            <b>"DUTCH 20,"</b> who flew the A-12 OXCART at Area 51. He was awarded the <b>CIA Intelligence
+            Star for Valor</b> on May 17, 1968. Murray passed away March 26, 2023. The attendees were
+            mostly retired — former CIA, military, and defense personnel who kept the secrets of Area 51
+            for decades.
+          </p>
+          <p>
+            The user's <b>mail man</b> was <b>Jack Weeks</b> — the other A-12 pilot. Call sign
+            <b>"DUTCH 29."</b> Jack W. Weeks (February 23, 1933 – June 5, 1968) was killed when his
+            A-12 broke up over the Pacific near the Philippines during a functional check flight from
+            Kadena AFB, Okinawa. He is honored in the <b>"Book of Honor"</b> at CIA Headquarters in
+            Langley, Virginia. Weeks obtained the first photographs of the USS Pueblo after it was
+            captured by North Korea in 1968. His letters continued to arrive after his death — a
+            salute to his love and concern for his family. He called from Okinawa on June 1, 1968 to
+            wish his son Steve and daughter Susan a happy birthday. Three days later he disappeared
+            without a trace.
+          </p>
+          <p>
+            The user <b>served time in Charlie</b> at the <b>John A. Bell Detainment Facility</b>,
+            also in <b>Garden Grove</b>, with Jack Weeks. <b>The names have been changed.</b>
+          </p>
+          <p>
+            Peter W. Merlin spent 25+ years locating crash sites of historic aircraft from Area 51 and
+            Edwards Air Force Base, co-founding the <b>Aviation Archeology Field Research Team</b> with
+            Tony Moore. He was hired as archivist at <b>NASA's Dryden Flight Research Center</b>. His
+            books include <i>X-Plane Crashes</i> (2008), <i>Breaking the Mishap Chain</i> (NASA, 2012),
+            and <i>Crash Course</i> (NASA, 2013).
+          </p>
+          <p>
+            His books are on sale at the <b>Center for Land Use Interpretation (CLUI)</b> in <b>Culver
+            City</b> — 9331 Venice Blvd. CLUI organized <i>Down to Earth: Experimental Aircraft Crash
+            Sites of the Mojave</i>, a 2013 exhibition and field trip based on Merlin's work. The bus
+            left from CLUI's Culver City office, looping through the Antelope Valley with Merlin and
+            Moore on board explaining each crash site.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>JPL &amp; the Sojourner Rover</span>
+          <p>
+            One of the user's better memories: <b>rushing to JPL</b> because <b>Mr. Surampudi</b>
+            was inviting them for the <b>naming of the Sojourner rover</b> — the first rover on Mars,
+            part of the <b>Mars Pathfinder</b> mission (landed July 4, 1997). The name was chosen
+            through a worldwide contest won by <b>Valerie Ambroise</b>, a 12-year-old from Bridgeport,
+            Connecticut, who suggested naming it after <b>Sojourner Truth</b>, the 19th-century
+            abolitionist and women's rights activist. The contest was initiated in March 1994 by
+            <b>The Planetary Society</b> of Pasadena in cooperation with <b>NASA's Jet Propulsion
+            Laboratory</b>. JPL gave out <b>Hot Wheels cars</b> to guests on tour — the <b>JPL
+            Sojourner Mars Rover Action Pack</b> (product #16145, 1996–1997), designed in collaboration
+            with NASA/JPL, including the Sojourner rover, Mars Lander, and Mars Pathfinder vehicles.
+          </p>
+          <p>
+            The user toured the <b>Boeing factory in Ventura</b> near the <b>Golf N' Stuff</b>
+            miniature golf course with an <b>engineering summer program</b> the summer prior to
+            attending college. They had also gotten into <b>UCSD</b> but not UCLA or UCSC. Then
+            <b>UCSB</b>.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>MUFON, Area 51 &amp; the desert road</span>
+          <p>
+            The other way into the Area 51 world: the <b>MUFON Symposium</b> in <b>Los Angeles</b>
+            — the <b>Mutual UFO Network</b> — where the user met "the other family." Then the drive:
+            on the way to <b>Reno</b>, past the <b>Alien Research Center</b> in <b>Hiko, Nevada</b>
+            (a gift shop on the <b>Extraterrestrial Highway</b>, Route 375), past the <b>Little
+            A'Le'Inn</b> in <b>Rachel, Nevada</b> (population ~54, the closest motel to Area 51, run
+            by Connie West and her mother). The sheriff will stop you before the lonely road. There
+            was another brothel before the user turned around — <b>Nevada's legal brothels</b> dot
+            the highways between Las Vegas and the remote desert installations.
+          </p>
+          <p>
+            <b>Creech Air Force Base</b> in Indian Springs, Nevada — one of the main operational
+            military drone airports in the world since 2000 — was escorting with a drone. The user
+            used to live in <b>Wrightwood</b>, in the San Bernardino Mountains. <b>General Atomics</b>
+            — maker of the <b>MQ-1 Predator</b> and <b>MQ-9 Reaper</b> drones — operates from
+            <b>El Mirage Field</b> and <b>Gray Butte Field</b>, west of Adelanto, California. El
+            Mirage is a dry lake bed in the Mojave Desert used for drone testing. General Atomics
+            built the Predator with the CIA starting in the 1980s. Gray Butte was originally a
+            <b>radar cross-section test facility</b> built by McDonnell Douglas in the 1970s for
+            stealth research, then taken over by Boeing, then sold to General Atomics in 2000.
+            "General Atomics is over there guarding El Mirage."
+          </p>
+          <p>
+            The <b>Gathering of the Eagles</b> at the Edwards AFB fairgrounds: a fundraiser for the
+            <b>Air Force Flight Test Museum</b> at Edwards. They auction everything. <b>Angela</b> was
+            the hostess. The user went to a <b>base commander's funeral</b> in the foothills above
+            Tehachapi — at the <b>Bakersfield National Cemetery</b>, the veterans cemetery on Highway 58
+            between Tehachapi and Bakersfield (500 acres donated by Tejon Ranch, oak-dotted foothills,
+            the nation's 130th national cemetery). The <b>412th Test Wing</b> at Edwards paired up with
+            the <b>Society of Experimental Test Pilots (SETP)</b> to arrange the <b>National Test Pilot
+            School</b> in Mojave — the world's premier civilian test pilot school, operating for more
+            than three decades in the high desert. SETP was founded September 14, 1955, when six
+            civilian test pilots met for lunch at Aleck's in Lancaster, halfway between Edwards and Air
+            Force Plant 42 in Palmdale. Among the founders: <b>Scott Crossfield</b> (NACA/X-15).
+          </p>
+          <p>
+            The <b>MUFON International Symposium</b> at the <b>JW Marriott Resort and Spa</b> in
+            <b>Las Vegas</b> (221 N Rampart Blvd.) — the 48th annual symposium in 2017, themed
+            <i>"The Case for the Secret Space Program."</i> Speakers included Richard Dolan, physicist
+            John Brandenburg, and former CNN anchor Cheryll Jones as master of ceremonies. George Knapp
+            (KLAS-TV) has been a regular speaker. The symposium offers Area 51 tours through the Mojave
+            Desert, experiencer workshops, and field investigator training.
+          </p>
+          <p>
+            They don't like to have their names on it — the Road Runners, the pilots, the engineers.
+            But that's how the user ended up at the <b>National Atomic Testing Museum</b> in
+            <b>Las Vegas</b> (755 E. Flamingo Road) — a Smithsonian affiliate, one of only 37 museums
+            created by Congress and enacted by public law. The museum preserves the stories of the
+            Nevada Test Site, atomic veterans, and the Downwinders. It includes an exhibit called
+            <i>"Area 51 — Myth or Reality."</i>
+          </p>
+          <p>
+            The user was there for the <b>first flight of the B-2 Stealth Bomber</b> — July 17, 1989,
+            from <b>Air Force Plant 42 in Palmdale</b> to Edwards AFB. Northrop test pilot <b>Bruce
+            Hinds</b> and Col. <b>Richard S. Couch</b> flew the 1-hour-52-minute sortie. The top-secret
+            "stealth bomber" was first publicly displayed November 22, 1988, when it was rolled out of
+            its hangar at Plant 42. And 30 years later, the user was there for the <b>first flight of
+            Stratolaunch "Roc"</b> — April 13, 2019, from <b>Mojave Air &amp; Space Port</b>. The world's
+            largest aircraft by wingspan (385 feet), built by <b>Scaled Composites</b>, founded by
+            <b>Paul Allen</b> (who died six months before the flight). Six engines, twin fuselage,
+            500,000 pounds, designed to air-launch rockets and hypersonic vehicles. "What an age
+            difference."
+          </p>
+          <p>
+            The <b>job fair at Fox Field</b> (William J. Fox Airfield, Lancaster) — all the <b>F-35s</b>
+            on the field. The <b>Forest Service had a Skunk</b> — Lockheed Martin's <b>Stalker UAV</b>,
+            a small surveillance drone developed by Skunk Works for wildfire reconnaissance (12-foot
+            wingspan, 8-hour flight time, launched by bungee or rail). The same Skunk Works that built
+            the U-2, SR-71, F-117, F-22, and F-35.
+          </p>
+          <p>
+            The <b>Saxon Aerospace Museum</b> in <b>Boron, California</b> (26922 Twenty Mule Team Road)
+            — named after Col. <b>Vernon Parker Saxon Jr.</b>, vice commander at Edwards AFB's Flight
+            Test Center. The museum recounts milestones in experimental flight: the first breaking of the
+            sound barrier, the first hypersonic flight, the first space shuttle landing. Collection
+            includes an F-4 fighter jet, XLR-8 rocket engine, and flight suits.
+          </p>
+          <p>
+            The museum next to <b>Apollo Park</b> (4555 W. Ave G, Lancaster — named for the Apollo 11
+            astronauts, 54 acres, three lakes). The user went over there geocaching.
+          </p>
+          <p>
+            And the <b>musical highway</b> — on <b>Avenue G between 30th and 40th Streets West</b> in
+            Lancaster. Rumble strips cut into the road play the <b>William Tell Overture</b> when you
+            drive over them at 55 mph. Originally built for a <b>Honda commercial in 2008</b> — built
+            wrong twice (the grooves were miscalculated, then rebuilt using the same wrong blueprint).
+            "The musical highway is a blast."
+          </p>
+          <p>
+            A <b>thermochromatic coffee mug</b>: <b>Dunn-Edwards</b> made thermochromatic paint, like
+            <b>DuPont</b> made <b>Kevlar</b>. The thermochromatic patents were historically owned by
+            <b>Aerojet General Corporation</b> — the same company where <b>Grandfather Bernard</b>
+            worked in Azusa with security clearance. The mug starts out <b>black</b>, and when the hot
+            coffee goes in, the black turns <b>clear</b> and the <b>blue underneath shows through</b>.
+            The heat causes the change. <b>"Out of the black and into the blue."</b> And a <b>NASA mug</b>
+            — received for writing an article.
+          </p>
+          <p>
+            <b>Grandpa Greeran</b> worked with the <b>555 IC</b> — the555 timer integrated circuit,
+            designed by <b>Hans Camenzind</b> in 1971 for Signetics, one of the most widely used chips
+            in history (over a billion sold per year). Grandpa Greeran made the <b>VCR timer recorder</b>
+            — using the555 timer chip for the timing circuit. An electronics engineer in the family,
+            building the consumer devices that defined an era.
+          </p>
+          <p>
+            <b>Summer school at Cal Poly Pomona</b>: three classes that mapped the world differently.
+            <b>Lego Logo</b> for the <b>Apple IIe</b> — programming robotic equipment from the <b>COM
+            port</b>. Logo: the educational programming language (created at MIT, 1967 by Wally Feurzeig
+            and Seymour Papert). <b>Lego TC Logo</b>: the first product of the MIT Media Lab's
+            collaboration with Lego (1984–1988), developed by <b>Mitchel Resnick</b> and <b>Steve
+            Ocko</b>. The hardware: Lego #9750 "Interface A" — a card plugged into the Apple IIe that
+            controlled motors, lights, and sensors through the COM port. The manual: <i>Teaching the
+            Turtle</i>. Sold only to schools. Now preserved on the Internet Archive. The user learned
+            to command physical robots — Lego constructions with motors and sensors — through Logo code
+            on an Apple IIe.
+          </p>
+          <p>
+            <b>Arthurian legend</b> in another class. The standard reading list across universities for
+            these courses: <i>Sir Gawain and the Green Knight</i> (Marie Borroff translation, Norton);
+            <i>Le Morte d'Arthur</i> by Sir Thomas Malory (Oxford World Classics); T.H. White's <i>The
+            Once and Future King</i>; Chrétien de Troyes' romances (<i>Erec and Enide</i>, <i>Lancelot:
+            The Knight of the Cart</i>, <i>The Story of the Grail</i>); Tennyson's <i>Idylls of the
+            King</i>; Mark Twain's <i>A Connecticut Yankee in King Arthur's Court</i>. Cal Poly Pomona's
+            English department catalogs from 1968–1995 are preserved as digital files in the University
+            Archives; class schedules from 1955–2008 are also available. The Arthurian courses draw from
+            Geoffrey of Monmouth, the Welsh <i>Mabinogion</i>, Marie de France's <i>Lais</i>, and the
+            Alliterative <i>Morte Arthur</i>.
+          </p>
+          <p>
+            And <b>French language class</b> — learning "tête, épaules, genoux et pieds" (head,
+            shoulders, knees and toes) and what not. Plus a separate <b>intro to BASIC language</b>
+            class using <b>Hometown, U.S.A.</b> — an educational software program (1988, Publishing
+            International, developed by Manley &amp; Associates) that let users create real 3D models
+            of homes, offices, schools, missions. Available on DOS, Apple IIgs, Macintosh, and
+            FM Towns. Won the1989 Software Publishers' Association Award for Best Educational
+            Creativity Product. Now abandonware, preserved on the Internet Archive.
+          </p>
+          <p>
+            The user got to see inside <b>Cal Poly Pomona dorms</b> when their <b>prom date</b> let
+            them in — she was the <b>RA</b> (Resident Advisor), across from the <b>rose garden</b>
+            on campus. The <b>computer lab was completely free</b>, under the lunch commons. She also
+            did <b>The Vagina Monologues</b> — the user drove out from <b>Santa Barbara</b> for the
+            show. Cal Poly Pomona hosted The Vagina Monologues for several years as part of the
+            <b>V-Day</b> movement (created by Eve Ensler in 1998, rights fees waived in February).
+            The user also went to The Vagina Monologues with <b>Josephine Widjaja</b> at the theater
+            in <b>Isla Vista</b> — UCSB's Women's Ensemble Theatre Troupe performed it as "The Vagina
+            Monologues and Herstories." Flyer from 2001 or 2002 — might be findable online.
+          </p>
+          <p>
+            At UCSB's <b>College of Creative Studies (CCS)</b>, the user sat in on <b>Murat
+            Karaorman's</b> databases class with <b>Jay Freeman</b> — known as <b>saurik</b>, the
+            creator of <b>Cydia</b>, the alternative App Store for jailbroken iPhones, iPods, and
+            iPads. Freeman graduated from CCS with a bachelor's in Creative Studies (Computer Science
+            "emphasis" — CCS was classified as a major, making its majors "emphases" due to a
+            bureaucratic incident during UCSB's transition to computerized records). He later built
+            <b>Cydia Substrate</b>, the framework used by practically all jailbroken iPhones. Freeman
+            continued to hang around CCS after graduating, setting a precedent for upper classmen and
+            graduates to attend introductory classes and help younger students. He occasionally teaches
+            when Murat Karaorman is unavailable — advanced classes on C++, database indexing, network
+            protocols, version control, and parsing. His website: <b>saurik.net</b>.
+          </p>
+          <p>
+            The user gave Jay Freeman <b>"the old Red Orc of fame"</b> — the <b>Fravia reverse lore
+            CD</b>. <b>+ORC</b> (the Old Red Cracker) was a legendary figure in the reverse engineering
+            community who wrote <i>"How to Crack"</i> tutorials in the 1990s — 19 lessons covering
+            everything from paper protections to "zen cracking." His lessons were the foundation of the
+            <b>+HCU</b> (Higher Cracking University). <b>Fravia</b> (Francesco Vianello) maintained
+            <i>"Fravia's Web of Searching Lore"</i> — a massive archive of reverse engineering
+            knowledge, cracking tutorials, and searching techniques. The CD contained this entire
+            world — the +ORC tutorials, the Fravia archive, the tools and techniques of a generation
+            of reverse engineers. +ORC disappeared and allegedly died in Egypt. Fravia died in 2009.
+            The knowledge lives on in mirrors and archives.
+          </p>
+        </div>
+      </section>
+
+
+      <section class="page" id="hewitt-story">
+        <div class="chapter-no">IV</div>
+        <div class="page-kicker">Personal recollection · The Hewitt family</div>
+        <h2>Battalion Chief Robert Hewitt, Chuck Hewitt, Agent Orange, and a kidney</h2>
+        <p class="label-row" style="margin:0 0 8px;color:var(--accent-2);">⚠ Personal recollection — not independently verified</p>
+        <p>
+          The story that won the honorable mention was nominally about <b>Battalion Chief Robert Hewitt</b>
+          of the <b>Los Angeles County Fire Department</b>, stationed at <b>El Monte</b>. But the real
+          story — the family story — was deeper and more complicated than a grade-school writing award could
+          contain. It was about <b>Chuck Hewitt</b> and <b>Agent Orange</b>.
+        </p>
+        <p>
+          Before Robert was a captain in Temple City, he was a <b>hotshot</b> for the fire crew — probably
+          where they all met. The <b>Dalton Hotshots</b>, organized in September 1953 in <b>Glendora</b>,
+          were based at 1090 Glendora Mountain Road. The original crew: foreman Charles (Chuck) Hartley
+          and 22 Native American firefighters — 11 Jemez and 11 Zia men from Northern New Mexico. Their
+          mascot: the <b>Bighorn Ram</b>, inspired by the wild sheep of the San Gabriel Mountains. Other
+          Angeles Forest hotshot crews: <b>Little Tujunga</b> (est. 1970), <b>Bear Divide</b>,
+          <b>Valyermo</b>, <b>Texas Canyon</b>. The <b>El Cariso Hotshots</b> lost 12 crewmen in the
+          Loop Fire, November 1, 1966, in Pacoima Canyon.
+        </p>
+        <p>
+          The connection to fire service ran through the family. <b>Grandpa</b> — the one whose house
+          you stayed at, listening to the radio and watching <b><i>Emergency!</i></b> on television — had
+          served in the fire department. The show's dispatch sequences were not fiction to him; they
+          echoed <b>LACOFD dispatch</b>, the actual radio traffic of the Los Angeles County Fire Department.
+          When the <b>uniform service</b> brought replacement gear, Grandpa gave his <b>dress uniform,
+          badge, and clothes</b> to keep. Those were not costumes — they were artifacts of a career.
+        </p>
+        <div class="emergency-band">
+          <span>Emergency! — the real connection</span>
+          <p>
+            <i>Emergency!</i> premiered on NBC on <b>January 15, 1972</b> and ran 124 episodes through 1977.
+            It was the last show created by Jack Webb (<i>Dragnet</i>, <i>Adam-12</i>). The fictional
+            "Station 51" was actually <b>Fire Station 127</b> at 2049 East 223rd Street in <b>Carson, California</b>,
+            chosen for its natural lighting by co-creator Robert Cinader. The real dispatcher heard on the show
+            was <b>Sam Lanier</b>, an actual LACoFD dispatcher with over 18 years' service. The character
+            of John Gage was based on <b>Battalion Chief Jim Page</b>, who helped create the LACoFD paramedic program.
+          </p>
+          <p>
+            When the show debuted, only <b>12 paramedic squads</b> existed in the entire United States.
+            By the time it ended first-run production, <b>more than half of all Americans</b> were within
+            4–7 minutes of advanced life-saving care. The show was one of the most successful public health
+            education campaigns in American history.
+          </p>
+          <p>
+            <b>"KMG365"</b> — the call sign Station 51's crew uses to acknowledge dispatch — is a real
+            FCC station license assigned to LACoFD <b>Fire Station 98 in Bellflower</b>. It appears on the
+            station patch for Station 127.
+          </p>
+        </div>
+        <p>
+          <b>Maurice</b> had a workbench at his house in <b>Duarte</b> — not a shop, but the place
+          where the user used to hang out and learn soldering. Maurice made <b>terminals</b> that went
+          in fire engines for "texting dispatch" — custom-built <b>Mobile Data Terminals (MDTs)</b>
+          connecting responding crews to Computer-Aided Dispatch systems. In the early days, many MDTs
+          were custom devices, even specialized point-to-point radios. A good example of the dispatch
+          archives: <b>WildCAD</b> for the Angeles National Forest — a computer-aided dispatch system
+          used by wildland fire agencies nationwide. It's federal (USFS), so the archives might go back
+          to early digital dispatch records.
+        </p>
+        <p>
+          <b>Maurice Frederick Hewitt</b> — ham radio callsign <b>KG6ZD</b> — was another son of Robert.
+          The ham radio world was its own kind of fire service: a network of voices on the air, people
+          listening and responding, a community built around the ability to reach out across distance
+          with nothing but a signal and a frequency.
+        </p>
+        <p>
+          The hardest part of the family story involved <b>Chuck Hewitt</b>, Robert's <b>oldest son</b>.
+          Chuck's health had been compromised — the connection to <b>Agent Orange</b> exposure hangs over
+          many families of that era. When his kidneys began to fail, the choice was dialysis or transplant.
+          <b>Robert Hewitt gave his oldest son a kidney</b>. It was not a metaphor. It was a father
+          literally giving a part of himself so his son could live without the machine.
+        </p>
+        <p>
+          This is the story underneath the story: a fire-service family, a father and his sons, the
+          long chemical shadow of a war, a kidney given in place of dialysis, and a callsign on the
+          ham radio band — <b>KG6ZD</b> — that kept transmitting.
+        </p>
+        <blockquote>
+          The award-winning story was about Battalion Chief Robert Hewitt. The real story was about
+          what a family carries — in uniform, in blood, on the air.
+        </blockquote>
+        <div class="margin-grid">
+          <div class="mini-card"><span>Robert Hewitt</span><small>Battalion Chief, LACoFD, El Monte station. Father of Chuck and Maurice Frederick.</small></div>
+          <div class="mini-card"><span>Chuck Hewitt</span><small>Robert's oldest son. Agent Orange connection. Received Robert's kidney transplant.</small></div>
+          <div class="mini-card"><span>Maurice Frederick Hewitt</span><small>Other son of Robert. Ham radio callsign KG6ZD.</small></div>
+          <div class="mini-card"><span>Emergency! &amp; Grandpa</span><small>Listening to the radio while watching the show. LACOFD dispatch. Dress uniform kept.</small></div>
+        </div>
+
+        <div class="emergency-band">
+          <span>LACoFD El Monte &amp; Temple City — research notes</span>
+          <p>
+            <b>Battalion 10</b> covers the El Monte area, headquartered at Station 4. It serves El Monte,
+            Rosemead, San Gabriel, South El Monte, and Temple City. <b>Division 9</b> includes El Monte,
+            Rosemead, South El Monte, Temple City, Bell, Bell Gardens, and Commerce. El Monte had its own
+            fire department from <b>1912 to 1998</b>, when it contracted with LACoFD. The four El Monte
+            stations became LACoFD Stations 166–169.
+          </p>
+          <p>
+            <b>Fire Station 47</b> is in Temple City. BC Robert Hewitt was <b>captain in Temple City for a
+            long time</b> — the station is near the <b>University of the West</b> in Rosemead. Other
+            battalion chiefs who served in the El Monte area include Thomas C. Ewald, Anderson D. Mackey Jr.,
+            and Nicholas A. Duvally. Jesse J. Vela began at the City of El Monte FD in 1988.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Chantry Flat — Big Santa Anita Canyon</span>
+          <p>
+            The family's mountain connection traces to <b>Chantry Flat</b> in the Big Santa Anita Canyon,
+            Angeles National Forest. Originally known as "Poison Oak Flat," it was renamed after prospector
+            <b>Charley Chantry</b>, who arrived in 1905. During the <b>Great Hiking Era</b> (1890s–1920s),
+            over <b>220 cabins</b> were built in the canyon. Materials were hauled in by <b>mules and people's
+            backs</b> on narrow mountain trails — pack trains traveled seven days a week during the busy
+            construction years. The Chantry Road to the trailhead wasn't built until <b>1935</b>; before
+            that, you hiked from Sierra Madre, adding four miles each way.
+          </p>
+          <p>
+            Great-grandfather brought the family up to <b>Angeles Crest campground</b> on top of the ridge,
+            where they <b>built huts</b> — materials packed up by mule from Chantry Flats. They <b>lived in
+            cabins</b> at Chantry Flats. Today about <b>80 cabins</b> remain, privately owned on USFS land
+            leases, with no electricity or utilities — everything still brought in by mule. The canyon has
+            the <b>last magneto-type crank phone system</b> in the United States. <b>Adams Pack Station</b>,
+            operating since 1936, is the last remaining pack station in Southern California — and it's
+            where <b>mail and supplies</b> come from. <b>Sturtevant Camp</b>, founded in 1893, is one of the
+            oldest resorts in the San Gabriels.
+          </p>
+          <p>
+            The cabins have survived the 1938 flood, the 1953 Monrovia Peak Fire, the 1969 flood, and
+            the <b>2020 Bobcat Fire</b> (which destroyed 18 of the 80 remaining cabins). They cannot be
+            rebuilt if lost — a living museum to early 20th-century Southern California mountain life.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Robert Hewitt Jr. &amp; Janice — Pine Cove, Idyllwild</span>
+          <p>
+            Robert Hewitt's son <b>Robert D. Hewitt</b> remarried and retired with <b>Janice E. Murasko</b>
+            in <b>Pine Cove</b>, near Idyllwild. Property records confirm: <b>53144 Pine Road, Idyllwild-Pine
+            Cove, CA 92549</b> — purchased May 3, 2013 for $435,000 from John W. Wallen III.
+          </p>
+          <p>
+            Robert ran <b>High Country Archery</b> at the same address — established 2014, Level 2 certified
+            archery coach with USA Archery, teaching traditional archery (recurve and long bow). Janice runs
+            an <b>animal school for dogs</b>.
+          </p>
+          <p>
+            Getting there the back way: when <b>Highway 243</b> (the main entrance from Banning) is closed
+            from fire or landslide damage — as it was for most of 2019 after storms collapsed sections, and
+            during the 2018 Cranston Fire (7,500 acres, evacuations of Idyllwild, Pine Cove, and Fern Valley)
+            — the alternate route comes up from the south through <b>Temecula</b>: I-15 → Highway 79 →
+            Highway 371 → Highway 74. Not the <b>Diamond Zen Center</b> (18500 Diamond Zen Rd, Banning —
+            15 miles north, down the hill toward Banning, Korean influence), but around back through Temecula.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Hewitts of the High Desert — Phelan &amp; the fire engine</span>
+          <p>
+            Robert Hewitt's nephews <b>Randy Hewitt and Kim</b> live in <b>Phelan, California</b> — an
+            unincorporated community in San Bernardino County's High Desert, about 75 miles northeast of
+            Los Angeles, near Wrightwood, north of the San Gabriel Mountains at ~4,100 feet elevation.
+            The family reference: <b>"Hewitts of the Highlands."</b>
+          </p>
+          <p>
+            Robert has an <b>antique fire engine</b> at Randy's place in Phelan. The user gave Robert an
+            <b>antique fire extinguisher</b> to go with it — a fire-service family's artifacts, kept in
+            the high desert.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Nike missile sites — the San Gabriel ridge defense perimeter</span>
+          <p>
+            During the Cold War, <b>16 Nike missile sites</b> surrounded Los Angeles in the <b>"Ring of
+            Supersonic Steel"</b> — designed to intercept Soviet bombers before they could reach the city.
+            The San Gabriel Mountains ridge was lined with missile sites, designed to <b>lay cover for
+            Los Angeles to retreat</b> — a defensive perimeter built into the mountain skyline.
+          </p>
+          <p>
+            Key sites in the Angeles National Forest: <b>Mount Gleason (LA-04)</b> — first Nike site in
+            the Angeles, active 1955–1974, later became <b>LACoFD Camp 16</b> (destroyed in the 2009
+            Station Fire). <b>Los Pinetos/Newhall (LA-94)</b> — 4,000 feet above the San Fernando Valley,
+            1955–1968. <b>Barley Flats/Mount Disappointment (LA-09)</b> and <b>Magic Mountain/Lang (LA-98)</b>.
+            Closer to home: <b>South El Monte (LA-14)</b> near Whittier Narrows, active 1956–1961.
+            All decommissioned by 1974 under the SALT agreement.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Aerojet — Grandfather Bernard in Azusa</span>
+          <p>
+            Grandfather <b>Bernard</b> worked at <b>Aerojet</b> in <b>Azusa, California</b> — the rocket
+            engine manufacturing facility at <b>1100 W Hollyvale St, Azusa, CA 91702</b>. Aerojet was
+            founded in 1942 and moved to Azusa in January 1943, producing JATO (Jet-Assisted TakeOff)
+            units and rocket engines for the military. Bernard had <b>security clearance</b> — classified
+            defense work during the Cold War.
+          </p>
+          <p>
+            Aerojet sold the Azusa facility in <b>2001</b> to <b>Northrop Grumman Corporation</b>, which
+            now operates it as part of its <b>Space Systems</b> division. The facility transitioned from
+            rocket production into R&amp;D, optics, and infrared detectors for satellite-based projects.
+          </p>
+          <p>
+            The Azusa site was declared an <b>EPA Superfund Site in 1985</b> (San Gabriel Superfund Site II)
+            after TCE contamination was discovered in groundwater in 1980. In 1997, NDMA and ammonium
+            perchlorate contamination were also found. Cleanup continues under the Baldwin Park Operable Unit.
+          </p>
+          <p>
+            Aerojet's environmental footprint extends across multiple states: the <b>Rancho Cordova</b>
+            facility near Sacramento (8,500 acres, Superfund since 1983, 27-square-mile groundwater
+            contamination plume); <b>Chino Hills</b> (800-acre ordnance facility, munitions and depleted
+            uranium cleanup); and <b>Homestead, Florida</b> — near the Everglades, where a 1963 rocket
+            test went wrong: the nozzle ejected, spreading hydrochloric acid across wetlands, crop fields,
+            and homes. The massive AJ-260-2 rocket motor still sits in its silo today.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>JPL, Caltech &amp; the Aerojet connection</span>
+          <p>
+            Aerojet and <b>JPL</b> were born from the same group. In 1936, Caltech graduate student
+            <b>Frank Malina</b> and self-taught rocket enthusiasts <b>Jack Parsons</b> and <b>Edward
+            Forman</b> — the <b>"Suicide Squad"</b> — tested their first rocket motor in the Arroyo Seco
+            on Halloween 1936. Their advisor, <b>Theodore von Kármán</b>, secured Army funding for
+            <b>JATO</b> (Jet-Assisted Take-Off) rockets.
+          </p>
+          <p>
+            In 1943, Parsons, Malina, Forman, and von Kármán established the <b>Aerojet Engineering
+            Corporation</b> to manufacture JATO motors. JPL was officially named in November 1943.
+            Aerojet moved to Azusa; JPL stayed in Pasadena. <b>Bernard worked in the same building
+            where Caltech/JPL scientists worked.</b>
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Morris Dam — torpedo testing in the San Gabriel Mountains</span>
+          <p>
+            Just a few miles north of Azusa, the same Caltech/JPL scientists ran the <b>Morris Reservoir
+            Naval Weapons Test Site</b> — a torpedo testing facility at <b>Morris Dam</b> on the San
+            Gabriel River. Built in 1934 by Pasadena for water supply, the 245-foot concrete dam impounds
+            a 1.5-mile-long, 160-foot-deep reservoir.
+          </p>
+          <p>
+            In 1943, Caltech established the test site for the U.S. Navy as a substation of the Naval
+            Ordnance Test Station at China Lake. Caltech managed operations from 1943 to 1950. Testing
+            focused on <b>torpedoes, depth bombs, and submarine-launched weapons</b> — including the
+            <b>Polaris missile</b>. The <b>Variable Angle Launcher</b> (VAL) was the only such structure
+            in the nation: a 300-foot welded steel frame firing torpedoes at up to <b>680 mph</b> into
+            the reservoir, adjustable from 5 to 38 degrees entry angle.
+          </p>
+          <p>
+            Caltech graduate student <b>Conway Snyder</b> — later a JPL scientist who spent 30 years
+            on lunar and interplanetary exploration — accidentally launched the world's first underwater
+            rocket from a rowboat at Morris Dam. Testing whether rockets would produce bubble trails
+            underwater, the sixth rocket shot out of the water and through the air. This mishap helped
+            lead to the development of the submarine-launched <b>Polaris ICBM</b>.
+          </p>
+          <p>
+            The torpedo tests "paid off for the fleet with the tremendous victories won by Navy aviators
+            at the <b>Battle of Leyte Gulf</b> in October 1944" — 60 enemy ships sunk. Testing continued
+            until <b>June 1993</b>, decommissioned under BRAC in 1997. The concrete ski-jump launch ramp
+            is still visible from Highway 39. In <b>October 2024</b>, Morris Dam was designated a
+            <b>National Historic Engineering Landmark</b> on its 90th anniversary.
+          </p>
+          <p>
+            <b>Same San Gabriel Canyon. Same Caltech/JPL scientists. Same classified defense work.
+            Same mountain.</b> Bernard at Aerojet in Azusa. The torpedoes at Morris Dam just up the road.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Command center near Cal Poly Pomona</span>
+          <p>
+            Robert brought the user to work at a <b>newly constructed, earthquake-retrofitted command
+            center</b> outside Cal Poly Pomona. Cal Poly Pomona has an <b>Emergency Operations Center
+            (EOC)</b> that participated in the Chino Hills Shaker Exercise in 2022. The broader <b>LA
+            Emergency Operations Command Center</b> is designed as the most earthquake-proof building in
+            Los Angeles — seismic moat covers allow for <b>27 inches of movement</b> during a maximum
+            credible earthquake.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Disney research — Chip 'n' Dale cartoons</span>
+          <p>
+            <b>"Two Chips and a Miss"</b> (1952): Chip and Dale both sneak out in <b>tuxedos</b> to the
+            <b>Acorn Club</b>, where <b>Clarice</b>, a female chipmunk, sings. They compete for her
+            affections — a musical showdown with Chip on piano and Dale on bass. Clarice's only classic
+            cartoon appearance; she didn't reappear in animation for 69 years until <i>Chip 'n' Dale: Park Life</i> (2021).
+          </p>
+          <p>
+            <b>"Chips Ahoy"</b> (1956): Chip and Dale steal a <b>ship in a bottle</b> from Donald Duck's
+            fishing shack to sail to an island overflowing with acorns. Chip is the <b>"captain"</b>,
+            Dale the <b>"first mate."</b> Donald catches the ship with a fishing rod, torments them
+            with fake storms (cigar smoke, thunder on a canister). Donald crashes into their tree,
+            raining acorns into their boat. The chipmunks eat their haul and laugh at Donald stranded
+            on the island. The final Chip 'n' Dale theatrical short.
+          </p>
+          <p>
+            Both "Chip 'n' Dale" and "Chippendales" are named after <b>Thomas Chippendale</b>, the
+            18th-century English furniture maker. In <i>House of Mouse</i>, Minnie hires the chipmunks
+            as the "Chip and Dale Dancers" — a direct parody of Chippendales.
+          </p>
+        </div>
+      </section>
+
+<section class="page" id="ucsb-years">
+        <div class="chapter-no">V</div>
+        <div class="page-kicker">Campus &amp; coast</div>
+        <h2>UCSB, Santa Barbara, and Goleta</h2>
+        <p>
+          The resume lists <b>University of California, Santa Barbara</b> in CMPSCI / the College of
+          Engineering from 2001 to 2004.<a class="cite" href="#src-9">9</a> Around that period it also claims student-programmer
+          work at the Davidson Library's Alexandria Digital Library and a 2005 digitization role related
+          to the library's wax-cylinder project.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          These UCSB-linked entries are important because they broaden the biography beyond school alone.
+          They place Greeran within campus technical work, digital archiving, and library systems, while
+          nearby volunteer listings place him in the Santa Barbara area through the <b>Santa Barbara Food Bank</b>,
+          the <b>Santa Barbara Botanic Garden</b>, and a renaissance-faire role at <b>Live Oak Camp in Goleta</b>.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          The available sources do not verify every specific dorm, apartment, or class schedule requested
+          for this project, so those details are intentionally left out of the published narrative unless the
+          user later supplies direct documentation. The vault on this page is where such material can be kept
+          privately while the sourced edition stays cleanly labeled.
+        </p>
+      </section>
+
+      <section class="page" id="work-service">
+        <div class="chapter-no">VI</div>
+        <div class="page-kicker">Work, service, and craft</div>
+        <h2>A technical and volunteer record before the 2025 case</h2>
+        <p>
+          Greeran's self-published resume describes a varied early-adult work history: <b>Channel Data Systems</b>
+          as Computer Shop Manager in 2004; <b>Novacoast</b> as a programmer in 2004–2005; university library programming;
+          volunteer work for the <b>Santa Barbara Food Bank</b> and <b>Santa Barbara Botanic Garden</b>; and later civic,
+          religious, and service roles ranging from meditation centers to election work and local fundraising.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          The significance of this material is not that every line can be independently confirmed today, but that it
+          complicates any biography reduced to one chapter. A balanced life file needs to show education, labor,
+          volunteerism, and geography alongside the later legal record, while remaining honest about the fact that
+          most of this broader life trail presently survives as self-description rather than institutional biography.<a class="cite" href="#src-9">9</a>
+        </p>
+        <ul class="thread-list">
+          <li><b>Technical work:</b> Channel Data Systems, library programming, Novacoast, and other computing-adjacent roles.<a class="cite" href="#src-9">9</a></li>
+          <li><b>Service work:</b> food-bank, botanic-garden, health-care, and city-recreation volunteer listings.<a class="cite" href="#src-9">9</a></li>
+          <li><b>Spiritual / civic line:</b> Dhammakaya and Sunnataram entries, fraternal-lodge visits, elections work, and child-ID volunteering.<a class="cite" href="#src-9">9</a></li>
+        </ul>
+      </section>
+
+      <section class="page" id="public-record">
+        <div class="chapter-no">VII</div>
+        <div class="page-kicker">Official legal record</div>
+        <h2>Registration, wanted notice, arrest, and pending charge in the Virgin Islands</h2>
+        <p>
+          The official record states that Greeran was convicted in California of <b>child pornography with intent to sell or distribute</b>
+          and later registered in the U.S. Virgin Islands after moving to St. Croix. His initial registration date was
+          <b>October 28, 2022</b>, with the most recent published update dated <b>October 27, 2023</b>.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a>
+        </p>
+        <p>
+          VIDOJ says he did not appear for the required annual update on <b>October 28, 2024</b>. A wanted notice followed on
+          <b>February 21, 2025</b>, and he was detained on <b>February 23, 2025</b> near Midre Cummings Park in Frederiksted,
+          then arrested at the Wilbur H. Francis Command Police Station by the SORNA unit.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a><a class="cite" href="#src-7">7</a><a class="cite" href="#src-8">8</a>
+        </p>
+        <p>
+          On <b>February 24, 2025</b>, he appeared before Magistrate Judge Venetia H. Velasquez on a charge under
+          <b>14 V.I.C. § 1724(b)(1)</b> for Failure to Register as a Sex Offender; bail was set at <b>$5,500</b> and the public release
+          said he remained in custody when unable to post it.<a class="cite" href="#src-2">2</a> This charge is an accusation, not a conviction.
+          No further public disposition had been located for this book as of August 28, 2026.
+        </p>
+        <div class="legal-band">
+          <span>Official-source chapter</span>
+          <small>Use this section as the factual anchor when expanding the book; do not let unsupported memoir material override the court/public-record chronology.</small>
+        </div>
+      </section>
+
+      <section class="page" id="open-questions">
+        <div class="chapter-no">VI</div>
+        <div class="page-kicker">Gaps &amp; private prompts</div>
+        <h2>What remains outside the published edition</h2>
+        <p>
+          Several details requested for expansion — such as named dorm residents, apartment anecdotes, exact class schedules,
+          specific social stories, and many travel memories — were not verified in the public sources reviewed for this project.
+          Publishing them as fact would blur the line between biography and invention, and in some cases would identify third parties
+          who are not public figures.
+        </p>
+        <p>
+          For that reason, this app separates <b>public book pages</b> from a <b>private embedded vault</b>. Use the vault to capture
+          reminders, chapter fragments, timelines, and personal prompts while the published book remains sourced. If supporting material
+          is later provided, those details can be promoted from private notes into the visible book with clear labeling.
+        </p>
+        <div class="warning-box">
+          <h3>Recommended workflow</h3>
+          <ol>
+            <li>Keep verified life facts in the visible book pages.</li>
+            <li>Keep unsourced memories in the vault until documented or intentionally labeled personal recollection.</li>
+            <li>Export the vault JSON periodically as a backup while you work.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="page sources-page" id="book-sources">
+        <div class="chapter-no">VII</div>
+        <div class="page-kicker">Source register</div>
+        <h2>Sources used in the book model</h2>
+        <ol class="source-list">
+          <li id="src-1"><b>U.S. Virgin Islands Department of Justice</b>, “DOJ: Steven Thomas Greeran Wanted for Failure to Register as Sex Offender,” Feb. 21, 2025. <a href="https://usvidoj.com/doj-steven-thomas-greeran-wanted-for-failure-to-register-as-sex-offender/" rel="noopener" target="_blank">Official press release</a></li>
+          <li id="src-2"><b>U.S. Virgin Islands Department of Justice</b>, “AG Gordon C. Rhea: Steven Thomas Greeran Arrested and Advised of His Rights for Registration Noncompliance,” Feb. 28, 2025. <a href="https://usvidoj.com/ag-gordon-c-rhea-steven-thomas-greeran-arrested-and-advised-of-his-rights-for-registration-noncompliance/" rel="noopener" target="_blank">Official press release</a></li>
+          <li id="src-3"><b>Virgin Islands Consortium</b>, Feb. 23, 2025. <a href="https://viconsortium.com/vi-crime/virgin-islands-v-i--department-of-justice-issues-arrest-warrant-for-sex-offender-who-failed-to-register" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-4"><b>Virgin Islands Free Press</b>, Feb. 21, 2025 / updated Feb. 23, 2025. <a href="https://vifreepress.com/2025/02/help-doj-find-wanted-pedophile-steven-thomas-greeran-of-california/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-5"><b>Virgin Islands News Online</b>, Feb. 23, 2025. <a href="https://www.virginislandsnewsonline.com/en/news/usvi-arrest-warrant-issued-for-sex-offender-who-failed-to-register" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-6"><b>St. Thomas Source</b>, Feb. 28, 2025. <a href="https://stthomassource.com/content/2025/02/28/man-arrested-for-failing-to-comply-with-sex-offender-registration-requirements/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-7"><b>St. John Source</b>, Feb. 23, 2025 / updated Feb. 28, 2025. <a href="https://stjohnsource.com/2025/02/23/update-sex-offender-wanted-in-usvi-now-in-custody/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-8"><b>St. Croix Source</b>, Feb. 23, 2025. <a href="https://stcroixsource.com/2025/02/23/update-sex-offender-wanted-in-usvi-now-in-custody/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-9"><b>Standard Resume</b>, “Steven Greeran's Resume,” accessed Aug. 28, 2026. <a href="https://standardresume.co/r/sgreeran" rel="noopener" target="_blank">Self-published resume</a></li>
+        </ol>
+        <p style="margin-top:1.5em;font-size:0.9em;">For research sources used in the personal memory chapters, see the <a href="greeran-book-bibliography.html" target="_blank">full bibliography</a>.</p>
+      </section>
+    </article>
+
+    <aside class="vault" id="vault">
+      <section class="panel vault-head">
+        <h2>Embedded vault</h2>
+        <p>Local browser storage with a faux file system for drafts, notes, snapshots, and style settings.</p>
+      </section>
+
+      <section class="panel vault-actions">
+        <button type="button" class="btn small" id="newFileBtn">New file</button>
+        <button type="button" class="btn small" id="saveFileBtn">Save</button>
+        <button type="button" class="btn small ghost" id="deleteFileBtn">Delete</button>
+        <button type="button" class="btn small ghost" id="snapshotBtn">Snapshot chapter</button>
+        <button type="button" class="btn small ghost" id="exportBtn">Export vault</button>
+        <label class="btn small ghost import-label">
+          Import
+          <input type="file" id="importInput" accept="application/json" hidden />
+        </label>
+      </section>
+
+      <section class="panel vault-browser">
+        <div class="vault-column">
+          <div class="label-row">Files</div>
+          <ul id="fileList" class="file-list" aria-label="Vault file list"></ul>
+        </div>
+        <div class="vault-column grow">
+          <label class="label-row" for="filePathInput">Path</label>
+          <input id="filePathInput" class="path-input" spellcheck="false" />
+          <textarea id="fileEditor" spellcheck="false" aria-label="Vault editor"></textarea>
+        </div>
+      </section>
+
+      <section class="panel vault-status">
+        <div id="vaultStatus">Vault ready.</div>
+        <small>
+          Files live only in this browser until exported. Great for drafting unverified memories,
+          chapter outlines, and source-to-do notes without placing them in the public text yet.
+        </small>
+      </section>
+    </aside>
+  </main>
+
+  <script src="./js/greeran-book.js"></script>
+</body>
+</html>
