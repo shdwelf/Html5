@@ -1,7 +1,7 @@
 # Resource Archive — The Greeran Book
 
 Content extracts of the subject-supplied resources cited in the source register
-of `greeran-book.html` (entries **src-10 through src-53**).
+of `greeran-book.html` (entries **src-10 through src-63**).
 
 ## Why this archive exists
 
@@ -69,6 +69,16 @@ Extracted: **30 August 2026**. Original URLs are recorded in each file.
 | src-51 | `src-51-webtools-hub-quine-build1.md` | WebTools Hub — Standalone (Quine Edition), build 1 | extracted |
 | src-52 | `src-52-webtools-hub-quine-build2.md` | WebTools Hub — Standalone (Quine Edition), build 2 | extracted |
 | src-53 | — | Unidentified resource (bashupload.app/5h8cmz.htm) | **unavailable** — HTTP 500 on every access attempt; no content could be extracted |
+| src-54 | `src-54-enso-generator.md` | Procedural Ensō Generator | extracted |
+| src-55 | `src-55-enso-generator-custom-seed.md` | Procedural Ensō Generator (custom-seed build) | extracted |
+| src-56 | `src-56-bip39-haiku-enso-forge.md` | BIP-39 Haiku Wallet & Ensō Forge | extracted |
+| src-57 | `src-57-enso-haiku-wallet-forge.md` | Ensō Haiku Wallet Forge | extracted |
+| src-58 | `src-58-bip39-haiku-wallet-engine.md` | BIP-39 Haiku Wallet Engine — Poetic Wallet Suite | extracted |
+| src-59 | `src-59-banano-scanned-wallets-report.md` | 🍌 Banano Scanned Wallets Report (100 wallets) | extracted — **private seeds redacted** |
+| src-60 | `src-60-purple-team-training-suite.md` | Purple Team Training Suite — SecOps Simulation Lab v4.2 | extracted |
+| src-61 | `src-61-adsb-radar-scope.md` | ADS-B Radar Scope | extracted |
+| src-62 | `src-62-rodger-ramrod-html5-app.md` | Rodger Ramrod — HTML5 App (browser DOSBox) | extracted |
+| src-63 | `src-63-rodger-ramrod-quine-build.md` | Rodger Ramrod — HTML5 App (quine build) | extracted |
 
 ## Attribution notes
 
@@ -84,5 +94,15 @@ Extracted: **30 August 2026**. Original URLs are recorded in each file.
   Generator and the subject's own github.com/sgreeran/pim.
 - **src-45** is a second, conflicting seize quartiers; it is preserved unmerged
   alongside the proven research file (src-10) — see Chapters VII and XI of the book.
+- **src-59** is a scan report listing 100 Banano wallets together with their
+  **private seeds**. The statistics the book cites are preserved here in full, but the
+  seeds are deliberately **not** reproduced in this public archive — publishing 100
+  private keys would turn a bibliography entry into a drain waiting to happen. The
+  original link carries the key material for whoever generated and controls it.
+- **src-62 / src-63** are preservation wrappers, not content: they stream an
+  already-public Internet Archive package (eXoDOS) into a browser DOSBox runtime and
+  boot the original launcher unmodified. Only the wrapper is described here.
+- **src-54 … src-58** are a single motif traced across five builds — the Zen brush
+  circle first as a drawing, then as an encoding for a key. See Chapter X of the book.
 - All other entries are author-attributed works of the workshop, cited as
   artifacts rather than third-party verification.
