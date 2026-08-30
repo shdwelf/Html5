@@ -1721,7 +1721,7 @@ body[data-paper="postcard-stock"] .page {
           technical record into the 2020s: a shelf of <b>standalone HTML5 applications</b>, each distributed as a
           single file that runs offline in any browser — no API keys, no server, no build step — the same design
           ethos as this book lab itself.<a class="cite" href="#src-12">12</a> Posted to a public file host, each
-          tool is individually citable as an artifact. The shelf now runs past a dozen tools, several posted in
+          tool is individually citable as an artifact. The shelf now numbers some twenty tools, several posted in
           successive builds as they evolved — the workshop iterates in public.
         </p>
         <ul class="thread-list">
@@ -1735,6 +1735,13 @@ body[data-paper="postcard-stock"] .page {
           <li><b>ACME Labs HTML5 Software Suite:</b> Jef Poskanzer's legendary ACME Labs catalog — thirty years of Unix stream filters, X11 root-window animations, the thttpd web server, and bignum algorithms — remastered as 23 interactive HTML5 sandbox components across Unix utilities, X11 visuals and toys, math and time, text and data modders, web and HTTP servers, and PostScript hacks; <i>phoon</i>/<i>xphoon</i> (1988) draws the current phase of the moon and <i>globe</i> (1994) the sunlit face of the Earth. Client-side, zero bloat, with a ⌘K quick-launch palette.<a class="cite" href="#src-24">24</a></li>
           <li><b>AURA SoundStudio Pro:</b> a browser DSP studio that models signature hardware profiles — THX Spatial Studio (Deep Note glissando, TruSurround 3D), Dolby Atmos 3D (9.1.4 object panning, height channels, dialogue leveler, night-mode compression), Bose ANC (phase-inversion cancellation to a −34 dB floor, SoundTrue high-frequency restoration), IMAX Enhanced (15 Hz sub-bass LFE, 12-channel point source), Real3D HRTF binaural, and a manual studio master — feeding a 10-band EQ, convolution-reverb rooms (cinema hall, cathedral, IMAX theater, anechoic chamber), an interactive 3D soundstage panner, and 60 FPS spectrum/oscilloscope/spectrogram analysis. Two builds were posted, at 48 kHz and 96 kHz pipelines.<a class="cite" href="#src-25">25</a><a class="cite" href="#src-28">28</a></li>
           <li><b>Image Format Encyclopedia:</b> a 90-format reference — 56 active, 13 legacy, 14 deprecated, 6 experimental, 20 animated — from JPEG, AVIF, and JPEG XL back through ILBM, Targa, and DjVu, plus camera RAW, HDR and scientific formats, the binary encoding methods (UUencode, yEnc, Base64, BinHex), and PAR/PAR2 parity recovery files. Includes a use-case format advisor, an eight-question decision tree, browser-support matrices, and a quine generator that turns self-replicating code into an image.<a class="cite" href="#src-30">30</a></li>
+          <li><b>BIP-39 Haiku Wallet Generator:</b> the Haiku Workbench's sibling flips the lesson into a mining rig — it grinds seed phrases until one forms an exact 5-7-5 syllable haiku that still carries a valid BIP-39 checksum, for Bitcoin (BIP-44), Ethereum, Litecoin, or Bitcoin Cash wallets. Saved wallets export AES-256-encrypted, the wordlist is embedded, and the tool runs fully offline from local storage.<a class="cite" href="#src-40">40</a></li>
+          <li><b>Standalone Offline Decryptor:</b> the vault's companion key. A first-run ritual installs the 2048-word dictionary into local storage so the tool can validate and decrypt the generator's encrypted JSON exports with the network permanently off; it accepts a file or pasted text, warns about browser memory limits, and can wipe the local dictionary on reset.<a class="cite" href="#src-42">42</a></li>
+          <li><b>Ian Coleman BIP39 Mnemonic Code Converter (standalone copy, v0.5.6):</b> the canonical cold-storage workhorse, posted alongside the workshop's own tools — entropy entry in binary, base-6, dice rolls, decimal, hex, or playing cards; PBKDF2 rounds from 2048 (compatibility) to custom; eleven mnemonic languages; BIP32/BIP44/BIP49/BIP84/BIP141 derivation with account extended keys; BIP38 key encryption and BIP85 child keys; split mnemonic backup cards; and a "hide all private info" switch. A hosted copy of Ian Coleman's open-source converter, shelved for the offline toolkit.<a class="cite" href="#src-35">35</a></li>
+          <li><b>Cipher Machines &amp; Cryptology — Interactive Simulator Suite:</b> a working Enigma — M3 and M4 (Kriegsmarine) models, rotors I–VIII with ring settings, UKW-A/B/C reflectors, the Steckerbrett plugboard, lampboard and QWERTZ keyboard, a paper-tape teleprinter log, batch message encryption, U-Boat Kurzsignale short-signal presets, and a live electrical circuit tracer that lights the signal's path through rotors and reflector as you type.<a class="cite" href="#src-37">37</a></li>
+          <li><b>Crypto Attack Lab:</b> a portable, self-contained quine that teaches cryptanalysis by doing — known-plaintext attack sessions across AES-ECB/CBC/CFB/OFB/CTR/GCM/CCM and RSA, where an attacker who knows even one plaintext block can recover matching ciphertext blocks "without ever knowing the key" (the ECB Penguin); a timeline of real-world breaks from Bleichenbacher's 1998 padding oracle through BEAST, Lucky 13, POODLE, CRIME, GCM nonce reuse, ROBOT, EFAIL, and the 2024 AES-GCM collision result; the full NIST SP 800-38 modes table; and the post-quantum panel — ML-KEM (FIPS 203), ML-DSA (204), SLH-DSA (205), FN-DSA (206).<a class="cite" href="#src-38">38</a></li>
+          <li><b>CryptoFountain BBS:</b> autonomous peer-to-peer microblogging built on erasure coding — every post checksummed Adler-32 and Fletcher-16, hashed FNV-1a, encodable into LT fountain-code packets (any sufficient subset of packets reconstructs the data), delta-synced in the manner of rsync, and anchorable on-chain via OP_RETURN. Ships as a quine and opens its feed with the Genesis-block headline: "Chancellor on brink of second bailout for banks."<a class="cite" href="#src-39">39</a></li>
+          <li><b>Cryptopoly:</b> the workshop's game night — a Monopoly-style board where the twenty-two properties are live-priced tokens (LTC on the cheap side of the board, BTC at the top) with per-player ledgers, a community vault of NFTs, chance and chest cards, and a real-time action log.<a class="cite" href="#src-41">41</a></li>
           <li><b>The workshop keeps re-stocking itself:</b> later builds of the Banano paper-wallet generator, the Renovated Kitchen, and CensorBench were reposted alongside the new tools — versioning handled by simply shipping the next file.<a class="cite" href="#src-31">31</a><a class="cite" href="#src-32">32</a><a class="cite" href="#src-33">33</a></li>
         </ul>
         <div class="emergency-band">
@@ -1754,13 +1761,30 @@ body[data-paper="postcard-stock"] .page {
             and the master's own cipher locking the resume on the other — the workshop auditing itself.
           </p>
         </div>
+        <div class="emergency-band">
+          <span>The Vault — CyberVault Members WebOS: the shelf becomes a portal</span>
+          <p>
+            The third batch's capstone is <i>The Vault — a Members Only Encrypted WebOS Portal</i>: a
+            self-described "secure air-gapped shell" that demands a master PIN or passphrase — YubiKey FIDO and
+            biometric entrances are offered in demo form — before admitting the member to the platform.<a class="cite" href="#src-36">36</a>
+            Inside, the shelf is bundled as one portal of "12 Standalone Apps," mixing third-party classics with
+            original pieces: <b>GCHQ's CyberChef</b> and the <b>Ian Coleman cold-storage bundle</b> stand beside
+            <b>real RSS CORS proxies</b> feeding a <b>geocoded news globe</b>, and a <b>Graphviz-driven GEDCOM
+            "visual genetics"</b> engine for family trees.<a class="cite" href="#src-36">36</a> The architecture
+            is the same hub-and-single-file-apps pattern as this repository's own SITE-K hub — the workshop's
+            tools and this book lab are members of one family. And the shell states the workshop's philosophy
+            plainly: nothing phones home, and the door only opens for the member who holds the key.
+          </p>
+        </div>
         <p>
           The workshop and the family file are two halves of one habit. The Seize Quartiers project produced a
           90,542-line GEDCOM; the GEDCOM converter in the same toolbox exists to turn exactly such files into
           standalone reports and route plans.<a class="cite" href="#src-10">10</a><a class="cite" href="#src-18">18</a>
           The military service map of Chapter VIII is itself one of these single-file artifacts.<a class="cite" href="#src-11">11</a>
+          The Vault's Graphviz "visual genetics" closes the loop a second time: family file in, family tree out.<a class="cite" href="#src-36">36</a>
           The Haiku Workbench grew directly out of the Crypto Recovery OS and the haiku-mnemonic operation in the
-          Renovated Kitchen — seed-phrase checksums taught three different ways.<a class="cite" href="#src-16">16</a><a class="cite" href="#src-20">20</a>
+          Renovated Kitchen — seed-phrase checksums taught three different ways — and the Haiku Wallet Generator
+          then grinds the lesson until poetry and checksums agree.<a class="cite" href="#src-16">16</a><a class="cite" href="#src-20">20</a><a class="cite" href="#src-40">40</a>
           The through-line from Chapter III is continuous: the kid who sold milk on the blacktop and soldered at
           Maurice's workbench in Duarte grew into a builder of tools that anyone can run, air-gapped, for free.
         </p>
@@ -1776,6 +1800,14 @@ body[data-paper="postcard-stock"] .page {
           <div class="mini-card"><span>AURA SoundStudio</span><small>THX, Atmos, Bose ANC, IMAX profiles; 10-band EQ; convolution reverb.</small></div>
           <div class="mini-card"><span>Image Format Encyclopedia</span><small>90 formats, encodings, PAR recovery, format advisor, quine generator.</small></div>
           <div class="mini-card"><span>ACME Audit Workstation</span><small>The RC4-locked portfolio. Key hint: sgreeran / alt255.motd.org.</small></div>
+          <div class="mini-card"><span>Haiku Wallet Generator</span><small>Mines 5-7-5 haiku mnemonics with valid checksums. AES-256 export.</small></div>
+          <div class="mini-card"><span>Offline Decryptor</span><small>First-run dictionary install; decrypts vaults with the network off.</small></div>
+          <div class="mini-card"><span>Ian Coleman BIP39</span><small>The canonical converter, v0.5.6: card/dice/hex entropy; BIP32/44/49/84/85.</small></div>
+          <div class="mini-card"><span>Enigma Simulator</span><small>M3/M4, rotors I-VIII, Steckerbrett, Kurzsignale, live circuit tracer.</small></div>
+          <div class="mini-card"><span>Crypto Attack Lab</span><small>KPA sessions, the ECB Penguin, attack timeline 1998-2024, PQC panel.</small></div>
+          <div class="mini-card"><span>CryptoFountain BBS</span><small>LT fountain codes, Adler/Fletcher checksums, OP_RETURN anchors.</small></div>
+          <div class="mini-card"><span>Cryptopoly</span><small>Monopoly with 22 live-priced tokens and an NFT community vault.</small></div>
+          <div class="mini-card"><span>The Vault WebOS</span><small>Members-only encrypted portal bundling the whole shelf.</small></div>
         </div>
       </section>
 
@@ -1876,12 +1908,21 @@ body[data-paper="postcard-stock"] .page {
           <li id="src-32"><b>CyberChef — HTML5 (Renovated Kitchen)</b>, self-published standalone HTML5 tool (later build). <a href="https://bashupload.app/c7gtou.htm" rel="noopener" target="_blank">Tool</a></li>
           <li id="src-33"><b>CensorBench — Censorship Testing &amp; Sorting Benchmark Suite</b>, self-published standalone HTML5 tool (later build). <a href="https://bashupload.app/52xohl.htm" rel="noopener" target="_blank">Tool</a></li>
           <li id="src-34"><b>Unidentified resource</b> (bashupload.app/ph6y66.htm), supplied with the second resource batch; the host returned a server error (HTTP 500) on every access attempt, so its contents could not be reviewed or cited. <a href="https://bashupload.app/ph6y66.htm" rel="noopener" target="_blank">Unavailable link</a></li>
+          <li id="src-35"><b>Ian Coleman, BIP39 — Mnemonic Code Converter</b> v0.5.6, standalone hosted copy of the open-source cold-storage tool (iancoleman.io/bip39), posted with the workshop collection. <a href="https://bashupload.app/8laxnd.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-36"><b>The Vault — CyberVault Members WebOS</b>, self-published standalone HTML5 portal; members-only encrypted WebOS bundling 12 standalone apps (GCHQ CyberChef, Ian Coleman cold-storage bundle, RSS CORS proxies &amp; geocoded news globe, Graphviz GEDCOM visual genetics). <a href="https://bashupload.app/5d8n7t.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-37"><b>Cipher Machines &amp; Cryptology — Interactive Simulator Suite</b>, self-published standalone HTML5 tool; Enigma M3/M4 simulator with Steckerbrett, Kurzsignale presets, and live circuit tracer. <a href="https://bashupload.app/tp6vnt.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-38"><b>Crypto Attack Lab — Portable Self-Contained Quine</b>, self-published standalone HTML5 tool; known-plaintext and oracle attack laboratory across AES modes and RSA, with attack timeline and post-quantum panel. <a href="https://bashupload.app/l0yuie.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-39"><b>CryptoFountain BBS — P2P Microblogging with Erasure Codes &amp; On-Chain Sync</b>, self-published standalone HTML5 tool; LT fountain codes, Adler-32/Fletcher-16 checksums, FNV-1a hashing, rsync-style deltas, OP_RETURN anchoring. <a href="https://bashupload.app/ctmmo0.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-40"><b>BIP-39 Haiku Wallet Generator</b>, self-published standalone HTML5 tool; mines exact 5-7-5 haiku mnemonics with valid checksums, AES-256 encrypted export. <a href="https://bashupload.app/gqfgyv.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-41"><b>Cryptopoly — The Crypto &amp; NFT Board Game</b>, self-published standalone HTML5 tool; Monopoly-style board with 22 live-priced tokens and NFT community vault. <a href="https://bashupload.app/mobx5b.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-42"><b>Standalone Offline Decryptor</b>, self-published standalone HTML5 tool; offline vault decryptor with first-run BIP39 dictionary install to local storage. <a href="https://bashupload.app/xwn4c0.htm" rel="noopener" target="_blank">Tool</a></li>
         </ol>
         <p style="margin-top:1.5em;font-size:0.9em;">
-          Sources 10–33 are hosted on a temporary file-sharing service and may expire — source 34 was already
+          Sources 10–42 are hosted on a temporary file-sharing service and may expire — source 34 was already
           unreachable at access time — so archive copies should be kept in the vault or mirrored to this
-          repository before the links lapse. Entries 12–33 are author-attributed works and are cited as
-          artifacts, not as third-party verification.
+          repository before the links lapse. Entries 12–33 and 36–42 are author-attributed works (entry 35 is a
+          hosted copy of Ian Coleman's open-source converter, and entry 36 bundles GCHQ's open-source CyberChef);
+          all are cited as artifacts, not as third-party verification.
         </p>
         <p style="margin-top:1.5em;font-size:0.9em;">For research sources used in the personal memory chapters, see the <a href="greeran-book-bibliography.html" target="_blank">full bibliography</a>.</p>
       </section>
@@ -1954,6 +1995,12 @@ body[data-paper="postcard-stock"] .page {
     { text: "Clark's Nutcracker caches 30,000+ pine seeds across 5,000-6,000 locations and recovers them nine months later using geometric landmark relationships.", cite: "Chapter IX — Audubon Bird Brain Research" },
     { text: "Thirty years of ACME Labs — Unix stream filters, X11 root-window animations, thttpd, bignums — remastered as 23 components that run in a browser tab.", cite: "Chapter IX — ACME Labs HTML5 Software Suite" },
     { text: "A browser DSP studio modeling THX Deep Notes, Dolby Atmos object panning, Bose phase-inversion cancellation, and IMAX 15 Hz sub-bass — 60 frames a second, zero installs.", cite: "Chapter IX — AURA SoundStudio Pro" },
+    { text: "An attacker who knows even one block of plaintext can match identical ciphertext blocks and recover the plaintext — without ever knowing the key. That is why the ECB Penguin keeps its outline.", cite: "Chapter IX — Crypto Attack Lab" },
+    { text: "Any sufficient subset of packets reconstructs the data — LT fountain codes are why the BBS can lose packets on the way and still deliver the post.", cite: "Chapter IX — CryptoFountain BBS" },
+    { text: "Rotors I through VIII, the Steckerbrett, the Kurzsignale presets — and a circuit tracer that lights the signal's path through the machine as you type.", cite: "Chapter IX — The Enigma Simulator" },
+    { text: "Mine long enough and poetry and checksums agree: a 5-7-5 haiku that is also a valid BIP-39 seed phrase.", cite: "Chapter IX — The Haiku Wallet Generator" },
+    { text: "Monopoly, but the properties are live-priced tokens: LTC on the cheap side of the board, BTC at the top, an NFT vault in the middle.", cite: "Chapter IX — Cryptopoly" },
+    { text: "Behind the members-only shell, twelve standalone apps wait — the whole workshop behind one locked door, nothing phoning home.", cite: "Chapter IX — The Vault WebOS" },
     { text: "The show's dispatch sequences were not fiction to Grandpa; they echoed LACOFD dispatch, the actual radio traffic of the Los Angeles County Fire Department.", cite: "Chapter IV — Personal Recollection" },
     { text: "Being halfback meant running the midfield, connecting defense to attack, doing the work that rarely made the highlight reel but kept the game moving.", cite: "Chapter III — Glendora Childhood" },
     { text: "Those were not costumes — they were artifacts of a career.", cite: "On Grandpa's dress uniform" },
