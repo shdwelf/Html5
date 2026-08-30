@@ -113,7 +113,13 @@
     { text: "I worked for David Seubert, curator of special collections at UCSB. He went to Oberlin. I connected the Apple Darwin wax cylinder recordings to Z39.50 PHP to send queries to the Pegasus system that syncs with MELVYL.", cite: "Personal Reclection \u2014 UCSB Davidson Library" },
     { text: "The California Digital Library was founded in 1997 by the UC Board of Regents. A library without walls. It emerged from efforts to enhance MELVYL, the UC system\u2019s union catalog.", cite: "California Digital Library / UC Board of Regents" },
     { text: "Lego Logo for the Apple IIe at Cal Poly Pomona. Programming robotic equipment from the COM port. Arthurian legend. French with Hometown U.S.A.", cite: "Summer School, Cal Poly Pomona" },
-    { text: "Hometown, U.S.A. \u2014 1988 software for building 3D models of homes and schools. Now abandonware on the Internet Archive. Won the 1989 SPA Award.", cite: "Hometown U.S.A., Publishing International" }
+    { text: "Hometown, U.S.A. \u2014 1988 software for building 3D models of homes and schools. Now abandonware on the Internet Archive. Won the 1989 SPA Award.", cite: "Hometown U.S.A., Publishing International" },
+    { text: "Download Self is a quine of this page. No external loads.", cite: "CyberChef Renovated Kitchen \u2014 SFX Installer" },
+    { text: "First login creates your account automatically.", cite: "The Vault \u2014 Members Only (katakana build)" },
+    { text: "A self-replicating HTML file that can download itself.", cite: "WebTools Hub \u2014 Quine Edition" },
+    { text: "Zero Document-Tag Gold Standard: a Vite or React project becomes one inlined HTML file, a webxdc app, or an offline PWA \u2014 with two compilers checking each other's work before anything ships.", cite: "ViteReact \u2192 Inlined Suite v15.0" },
+    { text: "Two quine builds, stamped thirty-four seconds apart on the same day this expanded edition was assembled. The workshop was shipping while the book was being written.", cite: "Chapter IX \u2014 The HTML5 Workshop" },
+    { text: "The research file keeps the book's confidence; the workbench's unique claims are leads to verify, not facts. Let the certificates decide which file survives.", cite: "Chapter VII \u2014 A Second Seize Quartiers" }
   ];
 
   let qotdIndex = Math.floor(Math.random() * QOTD_QUOTES.length);

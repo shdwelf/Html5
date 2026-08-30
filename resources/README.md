@@ -1,7 +1,7 @@
 # Resource Archive — The Greeran Book
 
 Content extracts of the subject-supplied resources cited in the source register
-of `greeran-book.html` (entries **src-10 through src-42**).
+of `greeran-book.html` (entries **src-10 through src-53**).
 
 ## Why this archive exists
 
@@ -58,12 +58,31 @@ Extracted: **30 August 2026**. Original URLs are recorded in each file.
 | src-40 | `src-40-bip39-haiku-wallet-generator.md` | BIP-39 Haiku Wallet Generator | extracted |
 | src-41 | `src-41-cryptopoly.md` | Cryptopoly — The Crypto & NFT Board Game | extracted |
 | src-42 | `src-42-offline-decryptor.md` | Standalone Offline Decryptor | extracted |
+| src-43 | `src-43-cyberchef-grand-expansion.md` | CyberChef — Renovated Kitchen: Grand Expansion | extracted |
+| src-44 | `src-44-vault-members-only-katakana.md` | The Vault — Members Only (katakana build) | extracted |
+| src-45 | `src-45-seize-quartiers-workbench.md` | Seize Quartiers — Family Tree Visualization & Query Workbench | extracted |
+| src-46 | `src-46-unified-utility-suite.md` | Unified HTML5 Cryptography & Utility Suite | extracted |
+| src-47 | `src-47-vitereact-converter-v15.md` | ViteReact → Inlined HTML5/Webxdc/PWA Suite v15.0 | extracted |
+| src-48 | `src-48-vitereact-converter-v63.md` | ViteReact → Inlined HTML5/Webxdc/PWA Suite v6.3 (Quine) | extracted |
+| src-49 | `src-49-zip-audit-repair-viewer.md` | HTML5 Offline ZIP Audit & Repair Viewer | extracted |
+| src-50 | `src-50-bip39-haiku-wallet-engine.md` | BIP-39 Haiku Wallet Engine | extracted |
+| src-51 | `src-51-webtools-hub-quine-build1.md` | WebTools Hub — Standalone (Quine Edition), build 1 | extracted |
+| src-52 | `src-52-webtools-hub-quine-build2.md` | WebTools Hub — Standalone (Quine Edition), build 2 | extracted |
+| src-53 | — | Unidentified resource (bashupload.app/5h8cmz.htm) | **unavailable** — HTTP 500 on every access attempt; no content could be extracted |
 
 ## Attribution notes
 
 - **src-35** is a hosted standalone copy of Ian Coleman's open-source
   BIP39 Mnemonic Code Converter (iancoleman.io/bip39), not an original work.
+  It was re-listed at a second URL (bashupload.app/8laxnd.htm) with the fourth
+  resource batch — no separate register entry.
 - **src-36** bundles third-party open-source tools (GCHQ CyberChef, the Ian
   Coleman converter) alongside original pieces.
+- **src-46** curates open-source apps credited to their GitHub projects
+  (S-Man42/GCWizard, colaclanth/sstv, TiddlyWiki5, BananoCoin/bananojs,
+  iancoleman/bip39, gchq/CyberChef, and others), alongside the original Ensō
+  Generator and the subject's own github.com/sgreeran/pim.
+- **src-45** is a second, conflicting seize quartiers; it is preserved unmerged
+  alongside the proven research file (src-10) — see Chapters VII and XI of the book.
 - All other entries are author-attributed works of the workshop, cited as
   artifacts rather than third-party verification.

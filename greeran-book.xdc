@@ -1658,6 +1658,35 @@ body[data-paper="postcard-stock"] .page {
           certificate, or her 1989 California death certificate — and the French-Canadian <b>Morin parents of
           Biddeford, Maine</b>, which require Maine vital records.<a class="cite" href="#src-10">10</a>
         </p>
+        <div class="emergency-band">
+          <span>A second seize quartiers — and a disagreement worth keeping</span>
+          <p>
+            A later subject-supplied artifact, the <b>Seize Quartiers — Family Tree Visualization &amp; Query
+            Workbench</b>, draws the same sixteen quarters as a strict ahnentafel matrix and reports all sixteen
+            known — generations one through five at one hundred percent.<a class="cite" href="#src-45">45</a>
+            It agrees with the research file where it matters most — the core Greeran line stays in
+            <b>Dechomet, Drumgooland</b>, with <b>Bernard Greeran born 18 July 1860</b> married to a Co. Down
+            Mary — and it <b>names the Morin line</b> the research file left blank: <b>François Morin</b>
+            (~1868, Beauce, Québec / Maine) × <b>Eugénie Bérubé</b> and <b>Alfred Houle</b> (~1870) ×
+            <b>Eugénie Tremblay</b>, French-Canadian couples sitting exactly where the Biddeford, Maine
+            families belong.<a class="cite" href="#src-45">45</a> It also traces a Texas Carey line to Pasadena
+            — <b>George Daniel Carey</b> (b. 18 May 1865, Kildare/Kerry) × <b>Ann Sophia Bailey</b> (b. 20 Nov 1870),
+            and <b>William C. Carey Jr.</b> (b. 14 Dec 1875) × <b>Sally LeGendre</b> (b. 8 Mar 1880).<a class="cite" href="#src-45">45</a>
+          </p>
+          <p>
+            But the two files <b>disagree on several identifications</b>. The workbench's William Hewitt (~1858,
+            Down/England) × Sarah Jane Taylor sits where the research file proves <b>Fred Leslie Hewett</b>
+            (San Francisco, 1856) × <b>Addie Inez Worth</b> from FamilySearch records; its George Daniel Carey and
+            William C. Carey Jr. sit where the file carries <b>Luther Gordon Carey × Millie Ruth Bickford</b> and
+            <b>Joel Thornburg Carey × Elizabeth Stanley</b>; and its James Greeran × Mary Hillen sits where the
+            file proves <b>John Hillan × Catherine Dogherty</b>.<a class="cite" href="#src-10">10</a><a class="cite" href="#src-45">45</a>
+            The book does not adjudicate. The research file's slots are proven from primary sources; the
+            workbench's matrix is a visualization whose quarters carry almost no citations. So the sourced file
+            keeps the book's confidence, the workbench's unique claims — above all the named Morin couples —
+            are recorded as <b>leads to verify, not facts</b>, and the disagreement itself is filed as an open
+            research task in Chapter XI. That is the evidence ladder working as designed.
+          </p>
+        </div>
         <blockquote>
           Ten sessions, one day, free public records only — and the King hypothesis, held from the first session
           to the last, turned out to be true all along.
@@ -1721,7 +1750,7 @@ body[data-paper="postcard-stock"] .page {
           technical record into the 2020s: a shelf of <b>standalone HTML5 applications</b>, each distributed as a
           single file that runs offline in any browser — no API keys, no server, no build step — the same design
           ethos as this book lab itself.<a class="cite" href="#src-12">12</a> Posted to a public file host, each
-          tool is individually citable as an artifact. The shelf now numbers some twenty tools, several posted in
+          tool is individually citable as an artifact. The shelf now holds more than two dozen tools, several posted in
           successive builds as they evolved — the workshop iterates in public.
         </p>
         <ul class="thread-list">
@@ -1743,6 +1772,11 @@ body[data-paper="postcard-stock"] .page {
           <li><b>CryptoFountain BBS:</b> autonomous peer-to-peer microblogging built on erasure coding — every post checksummed Adler-32 and Fletcher-16, hashed FNV-1a, encodable into LT fountain-code packets (any sufficient subset of packets reconstructs the data), delta-synced in the manner of rsync, and anchorable on-chain via OP_RETURN. Ships as a quine and opens its feed with the Genesis-block headline: "Chancellor on brink of second bailout for banks."<a class="cite" href="#src-39">39</a></li>
           <li><b>Cryptopoly:</b> the workshop's game night — a Monopoly-style board where the twenty-two properties are live-priced tokens (LTC on the cheap side of the board, BTC at the top) with per-player ledgers, a community vault of NFTs, chance and chest cards, and a real-time action log.<a class="cite" href="#src-41">41</a></li>
           <li><b>The workshop keeps re-stocking itself:</b> later builds of the Banano paper-wallet generator, the Renovated Kitchen, and CensorBench were reposted alongside the new tools — versioning handled by simply shipping the next file.<a class="cite" href="#src-31">31</a><a class="cite" href="#src-32">32</a><a class="cite" href="#src-33">33</a></li>
+          <li><b>ViteReact → Inlined HTML5 / Webxdc / PWA Suite (v6.3 → v15.0):</b> the machine that builds the workshop — a converter that takes a Vite/React project (built dist or raw JSX source) and emits a single inlined <b>.html</b> file, a Delta Chat <b>.xdc</b> webxdc app, or an offline <b>PWA</b> bundle. A dual-engine compiler (Sucrase in WebAssembly and Babel Standalone) transpiles the JSX, and a comparator verifies both engines against each other — "JSX tree valid, DOM root mount clean" — before the output ships; a webxdc multiplayer simulator, archive explorer with live editor, and bundle-size analytics ride along.<a class="cite" href="#src-47">47</a><a class="cite" href="#src-48">48</a> The pipeline is the same one this book lab uses for its own inlined edition and .xdc package — the tool on the shelf and the book in your hands are products of one process. Its quality-control companion, the <b>HTML5 Offline ZIP Audit &amp; Repair Viewer</b>, loads any workspace ZIP, audits it for HTML5 doctype, charset, viewport, external dependencies and offline blockers, and exports a repaired standalone HTML with assets inlined as data URLs.<a class="cite" href="#src-49">49</a></li>
+          <li><b>The Renovated Kitchen's grand expansion:</b> a later build roughly doubles the menu. New: fuzzy hash matching, byte diff &amp; patch, and hash-type probing; BIP84 SegWit wallets and BIP44/BIP39 recovery for <i>missing mnemonic words</i>; steganography by whitespace, image LSB, and acrostic; a <b>GCWizard wing</b> (Polybius squares, Pigpen, Dancing Men, the Zodiac's homophonic cipher, resistor color codes, T9, Roman chronograms, GPS/Haversine) that swells into a full symbol-table catalog — Braille systems, raised type, telegraph and barcode, and constructed alphabets from Klingon and Tengwar to Sitelen Pona, Atlantean, and the Visitor alphabet from <i>V</i>; classical hardware (M-209, Enigma I, the Spartan scytale) and a wall of block ciphers from CAST5 and SEED to TEA, RC5/RC6, SAFER+, and Bluetooth's E-series; a <b>FIDO &amp; hardware-keys bench</b> (WebAuthn authData and CTAP2 CBOR parsers, Yubico modhex and YubiKey PIV APDU builder, OnlyKey, SoloKeys, privacyIDEA tokens); a coin-address directory from Nano to Kaspa with market-ticker reference and a portfolio simulator; Saltpack armor (multi-recipient) and NaCl secretbox; Gödel-Escher-Bach formal systems (the MIU puzzle, typographical number theory); Project Gutenberg telegraph codebooks; magnet↔torrent conversion; RSS/Atom and OPML; Geohash, Plus Codes, and Maidenhead locators; the Sneakers "Setec Astronomy" chip; the Nimitz Graybook vector plot; and a scientific calculator, unit converter, and world clock under the same roof. Operations stack into a <b>recipe</b> that bakes top-to-bottom, an SFX installer packs chosen recipe packs into a brand-new standalone kitchen, and "Download Self is a quine of this page. No external loads."<a class="cite" href="#src-43">43</a></li>
+          <li><b>BIP-39 Haiku Wallet Engine:</b> the second-generation haiku miner — paste the 2048-word dictionary once and it lives in local storage forever after; an AES-256-GCM encrypted vault behind a master password; grammar heuristics that reject awkward poetic line-breaks; and a "Mine Poetic Wallet" engine that exports as a secure .TXT.<a class="cite" href="#src-50">50</a></li>
+          <li><b>WebTools Hub — Quine Edition:</b> the quine concept distilled to its purest form — "a self-replicating HTML file that can download itself." Two builds were posted, stamped <b>17:37:21.406Z and 17:37:21.734Z on 30 August 2026</b> — thirty-four seconds apart, and the same day this expanded edition was assembled. The workshop was shipping while the book was being written.<a class="cite" href="#src-51">51</a><a class="cite" href="#src-52">52</a></li>
+          <li><b>Unified HTML5 Cryptography &amp; Utility Suite:</b> a curated shelf of open-source classics and originals under one launcher — an Ensō Zen-circle painter, GCWizard, an SSTV slow-scan television suite, Wiki-in-a-Jar, TiddlyWiki5, the Underbite BBS, a Waves wallet client, a Banano miner that folds proteins for Folding@home, BIP-39 keys, GCHQ's CyberChef, and a quine/native runner — every ported app linked to its GitHub source, including <b>PIM Manager at github.com/sgreeran</b>: the subject's own repository, and the first appearance of the workshop's GitHub identity in the cited artifacts.<a class="cite" href="#src-46">46</a></li>
         </ul>
         <div class="emergency-band">
           <span>The ACME Cryptographic Audit Workstation — the workshop's most autobiographical artifact</span>
@@ -1773,7 +1807,9 @@ body[data-paper="postcard-stock"] .page {
             "visual genetics"</b> engine for family trees.<a class="cite" href="#src-36">36</a> The architecture
             is the same hub-and-single-file-apps pattern as this repository's own SITE-K hub — the workshop's
             tools and this book lab are members of one family. And the shell states the workshop's philosophy
-            plainly: nothing phones home, and the door only opens for the member who holds the key.
+            plainly: nothing phones home, and the door only opens for the member who holds the key. A second
+            build hides the same members-only screen behind a wall of katakana — the login page itself
+            encrypted to the eye — where "first login creates your account automatically."<a class="cite" href="#src-36">36</a><a class="cite" href="#src-44">44</a>
           </p>
         </div>
         <p>
@@ -1808,6 +1844,11 @@ body[data-paper="postcard-stock"] .page {
           <div class="mini-card"><span>CryptoFountain BBS</span><small>LT fountain codes, Adler/Fletcher checksums, OP_RETURN anchors.</small></div>
           <div class="mini-card"><span>Cryptopoly</span><small>Monopoly with 22 live-priced tokens and an NFT community vault.</small></div>
           <div class="mini-card"><span>The Vault WebOS</span><small>Members-only encrypted portal bundling the whole shelf.</small></div>
+          <div class="mini-card"><span>ViteReact Build Suite</span><small>React projects → inlined HTML5, .xdc, or PWA. Dual-engine compiler, verified mounts.</small></div>
+          <div class="mini-card"><span>ZIP Audit &amp; Repair</span><small>HTML5/offline audits of workspace ZIPs; repaired standalone exports.</small></div>
+          <div class="mini-card"><span>Haiku Wallet Engine</span><small>AES-256-GCM vault, grammar heuristics, poetic-wallet mining.</small></div>
+          <div class="mini-card"><span>WebTools Hub</span><small>The pure quine: an HTML file that downloads itself. Two builds, 34 seconds apart.</small></div>
+          <div class="mini-card"><span>Unified Suite</span><small>Curated open-source shelf — Ensō, GCWizard, SSTV, TiddlyWiki — plus github.com/sgreeran.</small></div>
         </div>
       </section>
 
@@ -1853,6 +1894,17 @@ body[data-paper="postcard-stock"] .page {
           certificate (California marriage ~1921–22, Texas birth 1904, California death 1989, Maine vital records) that would close
           it.<a class="cite" href="#src-10">10</a> Locate the record, cite it, and the slot moves from evidenced to proven. That is the
           same workflow this book asks of every other memory.
+        </p>
+        <p>
+          One disagreement is deliberately left standing rather than resolved: a second, later seize quartiers —
+          the Family Tree Visualization &amp; Query Workbench — agrees with the research file on the Dechomet
+          core but swaps several other slots (a Down/England William Hewitt for the proven San Francisco Fred
+          Leslie Hewett; a Texas Carey line for Luther Gordon and Joel Thornburg Carey; James Greeran × Mary
+          Hillen for the proven John Hillan × Catherine Dogherty) while uniquely naming the Morin couples of
+          Biddeford — François Morin × Eugénie Bérubé and Alfred Houle × Eugénie Tremblay.<a class="cite" href="#src-10">10</a><a class="cite" href="#src-45">45</a>
+          <b>The open task:</b> pull the Maine vital records and the Texas/California certificates, test each
+          contested slot against primary documents, and let the certificates decide which file survives — both
+          are preserved verbatim in the resource archive so the comparison can be rerun at any time.
         </p>
         <p>
           For that reason, this app separates <b>public book pages</b> from a <b>private embedded vault</b>. Use the vault to capture
@@ -1916,16 +1968,28 @@ body[data-paper="postcard-stock"] .page {
           <li id="src-40"><b>BIP-39 Haiku Wallet Generator</b>, self-published standalone HTML5 tool; mines exact 5-7-5 haiku mnemonics with valid checksums, AES-256 encrypted export. <a href="https://bashupload.app/gqfgyv.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-40-bip39-haiku-wallet-generator.md">Local extract</a></li>
           <li id="src-41"><b>Cryptopoly — The Crypto &amp; NFT Board Game</b>, self-published standalone HTML5 tool; Monopoly-style board with 22 live-priced tokens and NFT community vault. <a href="https://bashupload.app/mobx5b.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-41-cryptopoly.md">Local extract</a></li>
           <li id="src-42"><b>Standalone Offline Decryptor</b>, self-published standalone HTML5 tool; offline vault decryptor with first-run BIP39 dictionary install to local storage. <a href="https://bashupload.app/xwn4c0.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-42-offline-decryptor.md">Local extract</a></li>
+          <li id="src-43"><b>CyberChef Renovated Kitchen — Grand Expansion</b>, self-published standalone HTML5 tool; a major expansion of the kitchen adding fuzzy hash matching, BIP84/BIP44 wallet recovery, steganography, GCWizard and FIDO/hardware-key benches, a coin-address directory, GEB formal systems, classical ciphers, and the Nimitz Graybook plot. <a href="https://bashupload.app/3xn6et.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-43-cyberchef-grand-expansion.md">Local extract</a></li>
+          <li id="src-44"><b>The Vault — Members Only (katakana build)</b>, self-published standalone HTML5 tool; the members-only portal with its login screen hidden behind a wall of katakana glyphs, accounts created on first login. <a href="https://bashupload.app/xzbcs5.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-44-vault-members-only-katakana.md">Local extract</a></li>
+          <li id="src-45"><b>Seize Quartiers — Family Tree Visualization &amp; Query Workbench</b>, self-published standalone HTML5 tool; a strict ahnentafel matrix of the sixteen quarters reporting generations 1–5 at 100%, agreeing with the research file on the Dechomet core while swapping several slots and uniquely naming the Morin couples. Cited in Chapter VII as a second, conflicting seize quartiers preserved unmerged. <a href="https://bashupload.app/3i938k.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-45-seize-quartiers-workbench.md">Local extract</a></li>
+          <li id="src-46"><b>Unified HTML5 Cryptography &amp; Utility Suite</b>, self-published standalone HTML5 portal; a curated launcher of open-source apps (GCWizard, SSTV Suite, TiddlyWiki5, CyberChef, and others) each linked to its GitHub source, including PIM Manager at github.com/sgreeran — the subject's own repository. <a href="https://bashupload.app/z5kj6u.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-46-unified-utility-suite.md">Local extract</a></li>
+          <li id="src-47"><b>ViteReact → Inlined HTML5/Webxdc/PWA Suite v15.0</b>, self-published standalone HTML5 tool; converts Vite/React projects to single inlined HTML, .xdc webxdc apps, or PWAs with a dual-engine JSX compiler and comparator, webxdc simulator, and manifest.toml settings. <a href="https://bashupload.app/jg2zgi.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-47-vitereact-converter-v15.md">Local extract</a></li>
+          <li id="src-48"><b>ViteReact → Inlined HTML5/Webxdc/PWA Suite v6.3</b>, self-published standalone HTML5 tool; the earlier "Quine" build of the same converter, before the dual-engine comparator. <a href="https://bashupload.app/ajemjd.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-48-vitereact-converter-v63.md">Local extract</a></li>
+          <li id="src-49"><b>HTML5 Offline ZIP Audit &amp; Repair Viewer</b>, self-published standalone HTML5 tool; loads workspace ZIPs, audits HTML5 doctype/charset/viewport, external dependencies and offline blockers, and exports repaired standalone HTML with assets inlined. <a href="https://bashupload.app/qkhr0t.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-49-zip-audit-repair-viewer.md">Local extract</a></li>
+          <li id="src-50"><b>BIP-39 Haiku Wallet Engine</b>, self-published standalone HTML5 tool; second-generation haiku miner with a localStorage wordlist, AES-256-GCM encrypted vault, grammar heuristics, and secure .TXT export. <a href="https://bashupload.app/ya0iaz.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-50-bip39-haiku-wallet-engine.md">Local extract</a></li>
+          <li id="src-51"><b>WebTools Hub — Standalone (Quine Edition)</b>, self-published standalone HTML5 tool; "a self-replicating HTML file that can download itself," build generated 2026-08-30T17:37:21.406Z. <a href="https://bashupload.app/e0bi4s.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-51-webtools-hub-quine-build1.md">Local extract</a></li>
+          <li id="src-52"><b>WebTools Hub — Standalone (Quine Edition), build 2</b>, self-published standalone HTML5 tool; the same quine hub re-generated 2026-08-30T17:37:21.734Z, thirty-four seconds after build 1. <a href="https://bashupload.app/ohfd4n.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-52-webtools-hub-quine-build2.md">Local extract</a></li>
+          <li id="src-53"><b>Unidentified resource</b> (bashupload.app/5h8cmz.htm), supplied with the fourth resource batch; the host returned a server error (HTTP 500) on every access attempt, so its contents could not be reviewed or cited. <a href="https://bashupload.app/5h8cmz.htm" rel="noopener" target="_blank">Unavailable link</a></li>
         </ol>
         <p style="margin-top:1.5em;font-size:0.9em;">
-          Sources 10–42 are hosted on a temporary file-sharing service and may expire — source 34 was already
-          unreachable at access time — so content extracts of every available resource have been mirrored to
-          this repository under <a href="./resources/README.md">./resources/</a> (one extract per register
-          entry, indexed in its README). The extracts preserve the cited data and feature inventories; for
-          byte-perfect copies, download the original links in a browser and store them in the vault or that
-          directory. Entries 12–33 and 36–42 are author-attributed works (entry 35 is a hosted copy of Ian
-          Coleman's open-source converter, and entry 36 bundles GCHQ's open-source CyberChef); all are cited
-          as artifacts, not as third-party verification.
+          Sources 10–53 are hosted on a temporary file-sharing service and may expire — sources 34 and 53 were
+          already unreachable at access time — so content extracts of every available resource have been
+          mirrored to this repository under <a href="./resources/README.md">./resources/</a> (one extract per
+          register entry, indexed in its README). The extracts preserve the cited data and feature inventories;
+          for byte-perfect copies, download the original links in a browser and store them in the vault or that
+          directory. Entries 12–33, 36–42, and 44–52 are author-attributed works (entry 35 is a hosted copy of
+          Ian Coleman's open-source converter, re-listed at a second URL in the fourth batch; entry 36 bundles
+          GCHQ's open-source CyberChef; entry 46 curates open-source apps credited to their GitHub projects);
+          all are cited as artifacts, not as third-party verification.
         </p>
         <p style="margin-top:1.5em;font-size:0.9em;">For research sources used in the personal memory chapters, see the <a href="greeran-book-bibliography.html" target="_blank">full bibliography</a>.</p>
       </section>
@@ -2087,7 +2151,13 @@ body[data-paper="postcard-stock"] .page {
     { text: "I worked for David Seubert, curator of special collections at UCSB. He went to Oberlin. I connected the Apple Darwin wax cylinder recordings to Z39.50 PHP to send queries to the Pegasus system that syncs with MELVYL.", cite: "Personal Reclection \u2014 UCSB Davidson Library" },
     { text: "The California Digital Library was founded in 1997 by the UC Board of Regents. A library without walls. It emerged from efforts to enhance MELVYL, the UC system\u2019s union catalog.", cite: "California Digital Library / UC Board of Regents" },
     { text: "Lego Logo for the Apple IIe at Cal Poly Pomona. Programming robotic equipment from the COM port. Arthurian legend. French with Hometown U.S.A.", cite: "Summer School, Cal Poly Pomona" },
-    { text: "Hometown, U.S.A. \u2014 1988 software for building 3D models of homes and schools. Now abandonware on the Internet Archive. Won the 1989 SPA Award.", cite: "Hometown U.S.A., Publishing International" }
+    { text: "Hometown, U.S.A. \u2014 1988 software for building 3D models of homes and schools. Now abandonware on the Internet Archive. Won the 1989 SPA Award.", cite: "Hometown U.S.A., Publishing International" },
+    { text: "Download Self is a quine of this page. No external loads.", cite: "CyberChef Renovated Kitchen \u2014 SFX Installer" },
+    { text: "First login creates your account automatically.", cite: "The Vault \u2014 Members Only (katakana build)" },
+    { text: "A self-replicating HTML file that can download itself.", cite: "WebTools Hub \u2014 Quine Edition" },
+    { text: "Zero Document-Tag Gold Standard: a Vite or React project becomes one inlined HTML file, a webxdc app, or an offline PWA \u2014 with two compilers checking each other's work before anything ships.", cite: "ViteReact \u2192 Inlined Suite v15.0" },
+    { text: "Two quine builds, stamped thirty-four seconds apart on the same day this expanded edition was assembled. The workshop was shipping while the book was being written.", cite: "Chapter IX \u2014 The HTML5 Workshop" },
+    { text: "The research file keeps the book's confidence; the workbench's unique claims are leads to verify, not facts. Let the certificates decide which file survives.", cite: "Chapter VII \u2014 A Second Seize Quartiers" }
   ];
 
   let qotdIndex = Math.floor(Math.random() * QOTD_QUOTES.length);
