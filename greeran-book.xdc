@@ -757,8 +757,9 @@ body[data-paper="postcard-stock"] .page {
           research record — the Seize Quartiers genealogy file and an interactive military-service map —
           extends the book backward across seven generations and two countries, from Drumgooland in
           County Down to Revolutionary Pennsylvania.<a class="cite" href="#src-10">10</a><a class="cite" href="#src-11">11</a>
-          And a set of self-published standalone HTML5 tools extends it forward, documenting a working
-          cryptography, censorship-analysis, and genealogy toolset of the 2020s.<a class="cite" href="#src-12">12</a>
+          And a growing shelf of self-published standalone HTML5 tools extends it forward, documenting a working
+          cryptography, censorship-analysis, audio-DSP, naturalist, and genealogy toolset of the 2020s —
+          including one artifact that presents the resume itself as an RC4-encrypted puzzle.<a class="cite" href="#src-12">12</a><a class="cite" href="#src-20">20</a><a class="cite" href="#src-26">26</a>
           Both arrive labeled as self-published or research-file material, and both are kept on their own
           rung of the evidence ladder.
         </p>
@@ -1717,10 +1718,11 @@ body[data-paper="postcard-stock"] .page {
         <p class="label-row" style="margin:0 0 8px;color:var(--accent-2);">◆ Self-published works — author-attributed; listed as citable artifacts, not third-party verified</p>
         <p>
           The resume trail of Chapter VI ends in the 2000s. A later body of self-published work extends the
-          technical record into the 2020s: a set of <b>standalone HTML5 applications</b>, each distributed as a
+          technical record into the 2020s: a shelf of <b>standalone HTML5 applications</b>, each distributed as a
           single file that runs offline in any browser — no API keys, no server, no build step — the same design
           ethos as this book lab itself.<a class="cite" href="#src-12">12</a> Posted to a public file host, each
-          tool is individually citable as an artifact.
+          tool is individually citable as an artifact. The shelf now runs past a dozen tools, several posted in
+          successive builds as they evolved — the workshop iterates in public.
         </p>
         <ul class="thread-list">
           <li><b>Crypto Recovery OS | Vanity Miner:</b> a BIP39 recovery workbench. An anagram/typo fixer for scrambled mnemonic phrases (optionally pinned to a target address so the solver only accepts candidates that derive to it), address brute force, a BIP39 explorer, and a vanity miner — across Ethereum, Bitcoin, Banano, Nostr (NIP-06), Solana, Cardano, Litecoin, Dogecoin, and Waves, with an interactive HD-path builder (BIP44/49/84/86), BIP39 passphrase support, checksum validation, an air-gapped execution mode, four interface themes, and a "Cryptographic Identity Void" that turns any derivation into a character stat card. At least three builds were posted as the tool evolved.<a class="cite" href="#src-12">12</a><a class="cite" href="#src-13">13</a><a class="cite" href="#src-14">14</a></li>
@@ -1728,12 +1730,37 @@ body[data-paper="postcard-stock"] .page {
           <li><b>CyberChef — HTML5 (Renovated Kitchen):</b> a single-file kitchen of 100+ operations — classical ciphers (Caesar, Vigenère, Gronsfeld, VIC, Playfair, Hill, rail fence, columnar transposition, one-time pad), hashes (SHA-1/2/3, MD5, CRC-16/32, Adler-32, FNV-1a, djb2, HMAC), symmetric crypto (AES-CBC/GCM/CCM, ChaCha20, RC4, Rabbit, DES, 3DES, Camellia), modern curves (X25519, Ed25519, secp256k1 ECDH), educational post-quantum ML-KEM (FIPS 203) and ML-DSA (FIPS 204), Shamir secret sharing, steganography, barcodes (Code 39/128, EAN-13), electronics (IC gates, binary adder, 7-segment decoder, truth tables), Turing-complete toys (Brainfuck, Rule 110, Game of Life), autostereograms, and BIP39/BIP44 wallet operations including a haiku-mnemonic variant.<a class="cite" href="#src-16">16</a></li>
           <li><b>CensorBench:</b> a censorship testing and bypass suite of 31 probes — DNS poisoning, sinkholes, and NXDOMAIN hijacking; HTTP header injection, keyword filtering, TCP RST injection, and redirect injection; TLS SNI filtering, certificate interception, and downgrade; deep packet inspection; IP, port, and throttling tests; and protocol obfuscation (obfs4, domain fronting, VLESS+REALITY, Shadowsocks active-probing defense, ECH). An encoding-bypass lab demonstrates keyword-filter evasion with Base64, ROT13, homoglyphs, zero-width characters, and leetspeak, alongside an atlas of regional censorship techniques.<a class="cite" href="#src-17">17</a></li>
           <li><b>GEDCOM → HTML5 + Melissa Geocoding + TSP Route Planner:</b> a genealogy converter that parses GEDCOM files, tables people, events, and places, builds geocoder lookup URLs (Melissa and alternatives), draws an offline SVG map preview, solves a traveling-salesman route across ancestral places, and exports a self-contained HTML5 report plus travel list, route CSV, and GeoJSON — with a quine-style source download.<a class="cite" href="#src-18">18</a><a class="cite" href="#src-19">19</a></li>
+          <li><b>BIP-39 Haiku Workbench · Mnemonic Validator &amp; Derivation Explorer:</b> a checksum-first teaching tool for seed phrases. A live checksum engine over the 2048-word list (SHA-256 checksum, PBKDF2-HMAC-SHA512 × 2048) with the 11-bits-per-word binary encoding laid out word by word, and a checksum solver that enumerates the 128 legal final words for a given eleven-word prefix — "the last word is not free poetry: its first bits complete the entropy and its final 4 bits are forced by SHA-256." Derivation paths stay locked until the checksum passes, exactly like a real wallet, and a catalogue of 120 curated phrases (13 valid, 107 invalid) pairs repeated-word patterns that show why a checksum cannot be guessed with poetic phrases that show why memorable entropy is almost never valid. Everything computes in-tab on audited @scure libraries — no network calls, no storage.<a class="cite" href="#src-20">20</a><a class="cite" href="#src-21">21</a><a class="cite" href="#src-22">22</a></li>
+          <li><b>Audubon Bird Brain Research:</b> an ornithology-cognition companion covering 23 species across five research categories — nesting, collective social behavior, survival, intelligence, and brood parasitism. The Killdeer's broken-wing display and ungulate redirect, the Emperor Penguin's rotating winter huddle, the Clark's Nutcracker caching 30,000+ pine seeds across 5,000–6,000 locations and recovering them nine months later, the Superb Fairy-wren teaching embryos a vocal password before hatching, the New Caledonian crow crafting hooked tools, the Sociable Weaver's communal megastructure, the cuckoo–host arms race — with animated defense-pattern demonstrations.<a class="cite" href="#src-23">23</a></li>
+          <li><b>ACME Labs HTML5 Software Suite:</b> Jef Poskanzer's legendary ACME Labs catalog — thirty years of Unix stream filters, X11 root-window animations, the thttpd web server, and bignum algorithms — remastered as 23 interactive HTML5 sandbox components across Unix utilities, X11 visuals and toys, math and time, text and data modders, web and HTTP servers, and PostScript hacks; <i>phoon</i>/<i>xphoon</i> (1988) draws the current phase of the moon and <i>globe</i> (1994) the sunlit face of the Earth. Client-side, zero bloat, with a ⌘K quick-launch palette.<a class="cite" href="#src-24">24</a></li>
+          <li><b>AURA SoundStudio Pro:</b> a browser DSP studio that models signature hardware profiles — THX Spatial Studio (Deep Note glissando, TruSurround 3D), Dolby Atmos 3D (9.1.4 object panning, height channels, dialogue leveler, night-mode compression), Bose ANC (phase-inversion cancellation to a −34 dB floor, SoundTrue high-frequency restoration), IMAX Enhanced (15 Hz sub-bass LFE, 12-channel point source), Real3D HRTF binaural, and a manual studio master — feeding a 10-band EQ, convolution-reverb rooms (cinema hall, cathedral, IMAX theater, anechoic chamber), an interactive 3D soundstage panner, and 60 FPS spectrum/oscilloscope/spectrogram analysis. Two builds were posted, at 48 kHz and 96 kHz pipelines.<a class="cite" href="#src-25">25</a><a class="cite" href="#src-28">28</a></li>
+          <li><b>Image Format Encyclopedia:</b> a 90-format reference — 56 active, 13 legacy, 14 deprecated, 6 experimental, 20 animated — from JPEG, AVIF, and JPEG XL back through ILBM, Targa, and DjVu, plus camera RAW, HDR and scientific formats, the binary encoding methods (UUencode, yEnc, Base64, BinHex), and PAR/PAR2 parity recovery files. Includes a use-case format advisor, an eight-question decision tree, browser-support matrices, and a quine generator that turns self-replicating code into an image.<a class="cite" href="#src-30">30</a></li>
+          <li><b>The workshop keeps re-stocking itself:</b> later builds of the Banano paper-wallet generator, the Renovated Kitchen, and CensorBench were reposted alongside the new tools — versioning handled by simply shipping the next file.<a class="cite" href="#src-31">31</a><a class="cite" href="#src-32">32</a><a class="cite" href="#src-33">33</a></li>
         </ul>
+        <div class="emergency-band">
+          <span>The ACME Cryptographic Audit Workstation — the workshop's most autobiographical artifact</span>
+          <p>
+            One tool names its author in its own title bar: <i>ACME Cryptographic Audit Workstation // Steven
+            Greeran Portfolio</i>.<a class="cite" href="#src-26">26</a> It presents the portfolio itself as an
+            RC4-encrypted stream — "streaming-encrypted via Jef Poskanzer's RC4 cipher (acme.com/software)" — and
+            asks the auditor to break it, with a key hint pointing at the subject's username <b>sgreeran</b> or
+            personal domain <b>alt255.motd.org</b> (Alt+255: the non-breaking space).<a class="cite" href="#src-26">26</a>
+            A live grid visualizes the 256-byte RC4 S-box as the KSA and PRGA swap bytes into high entropy, and
+            the workstation doubles as a <b>Darwin C-to-HTML5 transpilation auditor</b> with a quine
+            self-replication mode — a deliberate callback to the Apple Darwin wax-cylinder work of the UCSB
+            years in Chapter V. A companion quine source package publishes the full React/Vite/Tailwind
+            source.<a class="cite" href="#src-27">27</a><a class="cite" href="#src-29">29</a> The ACME theme runs
+            both ways: a tribute suite to Poskanzer's catalog<a class="cite" href="#src-24">24</a> on one shelf,
+            and the master's own cipher locking the resume on the other — the workshop auditing itself.
+          </p>
+        </div>
         <p>
           The workshop and the family file are two halves of one habit. The Seize Quartiers project produced a
           90,542-line GEDCOM; the GEDCOM converter in the same toolbox exists to turn exactly such files into
           standalone reports and route plans.<a class="cite" href="#src-10">10</a><a class="cite" href="#src-18">18</a>
           The military service map of Chapter VIII is itself one of these single-file artifacts.<a class="cite" href="#src-11">11</a>
+          The Haiku Workbench grew directly out of the Crypto Recovery OS and the haiku-mnemonic operation in the
+          Renovated Kitchen — seed-phrase checksums taught three different ways.<a class="cite" href="#src-16">16</a><a class="cite" href="#src-20">20</a>
           The through-line from Chapter III is continuous: the kid who sold milk on the blacktop and soldered at
           Maurice's workbench in Duarte grew into a builder of tools that anyone can run, air-gapped, for free.
         </p>
@@ -1743,6 +1770,12 @@ body[data-paper="postcard-stock"] .page {
           <div class="mini-card"><span>Renovated Kitchen</span><small>100+ operations: ciphers to post-quantum ML-KEM/ML-DSA, one file.</small></div>
           <div class="mini-card"><span>CensorBench</span><small>31 censorship probes plus an encoding-bypass laboratory.</small></div>
           <div class="mini-card"><span>GEDCOM → HTML5</span><small>Family files to maps, routes, and standalone reports.</small></div>
+          <div class="mini-card"><span>BIP-39 Haiku Workbench</span><small>Checksum engine, 128-word solver, 120-phrase catalogue. Locked until valid.</small></div>
+          <div class="mini-card"><span>Bird Brain Research</span><small>23 species: nutcracker caches, fairy-wren passwords, cuckoo arms races.</small></div>
+          <div class="mini-card"><span>ACME Labs Suite</span><small>Poskanzer's Unix/X11 classics — phoon, globe, thttpd — in a browser tab.</small></div>
+          <div class="mini-card"><span>AURA SoundStudio</span><small>THX, Atmos, Bose ANC, IMAX profiles; 10-band EQ; convolution reverb.</small></div>
+          <div class="mini-card"><span>Image Format Encyclopedia</span><small>90 formats, encodings, PAR recovery, format advisor, quine generator.</small></div>
+          <div class="mini-card"><span>ACME Audit Workstation</span><small>The RC4-locked portfolio. Key hint: sgreeran / alt255.motd.org.</small></div>
         </div>
       </section>
 
@@ -1828,11 +1861,27 @@ body[data-paper="postcard-stock"] .page {
           <li id="src-17"><b>CensorBench — Censorship Testing &amp; Sorting Benchmark Suite</b>, self-published standalone HTML5 tool. <a href="https://bashupload.app/ak3q2l.htm" rel="noopener" target="_blank">Tool</a></li>
           <li id="src-18"><b>GEDCOM → HTML5 + Melissa Geocoding + TSP Route Planner</b>, self-published standalone HTML5 tool. <a href="https://bashupload.app/pb9mq7.htm" rel="noopener" target="_blank">Tool</a></li>
           <li id="src-19"><b>GEDCOM → HTML5 + Melissa Geocoding + TSP Route Planner</b>, self-published standalone HTML5 tool (build with quine/source download). <a href="https://bashupload.app/l6tqe2.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-20"><b>BIP-39 Haiku Workbench · Mnemonic Validator &amp; Derivation Explorer</b>, self-published standalone HTML5 tool. <a href="https://bashupload.app/58mcz5.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-21"><b>BIP-39 Haiku Workbench</b>, self-published standalone HTML5 tool (second build). <a href="https://bashupload.app/7qczei.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-22"><b>BIP-39 Haiku Workbench</b>, self-published standalone HTML5 tool (third build). <a href="https://bashupload.app/7h0ek8.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-23"><b>Audubon Bird Brain Research</b>, self-published standalone HTML5 tool; 23 species of bird-cognition research. <a href="https://bashupload.app/pk33fl.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-24"><b>ACME Labs HTML5 Software Suite — Classic Unix &amp; X11 Utilities Remastered</b>, self-published standalone HTML5 tool; ports of Jef Poskanzer's ACME Labs catalog. <a href="https://bashupload.app/wuhyr5.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-25"><b>AURA SoundStudio Pro — THX, Dolby Atmos, Bose ANC, Real3D &amp; IMAX Audio Processing</b>, self-published standalone HTML5 tool (48 kHz build). <a href="https://bashupload.app/391g0c.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-26"><b>ACME Cryptographic Audit Workstation // Steven Greeran Portfolio</b>, self-published standalone HTML5 tool; RC4-encrypted portfolio stream with Darwin C-to-HTML5 transpiler and quine mode. <a href="https://bashupload.app/u31toy.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-27"><b>ACME Cryptographic Audit Workstation</b>, self-published standalone HTML5 tool (second build). <a href="https://bashupload.app/zit8jd.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-28"><b>AURA SoundStudio Pro</b>, self-published standalone HTML5 tool (96 kHz build). <a href="https://bashupload.app/sho5yp.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-29"><b>ACME Cryptographic Workstation — Quine Source Package</b>, self-published source listing (React/Vite/Tailwind). <a href="https://bashupload.app/uqrop7.htm" rel="noopener" target="_blank">Source package</a></li>
+          <li id="src-30"><b>Image Format Encyclopedia — All Formats, Encodings &amp; Transfer Protocols</b>, self-published standalone HTML5 tool; 90 image formats. <a href="https://bashupload.app/s9w034.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-31"><b>Banano Paper Wallet Generator &amp; Rare MonKey Scanner</b>, self-published standalone HTML5 tool (later build). <a href="https://bashupload.app/wowc3v.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-32"><b>CyberChef — HTML5 (Renovated Kitchen)</b>, self-published standalone HTML5 tool (later build). <a href="https://bashupload.app/c7gtou.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-33"><b>CensorBench — Censorship Testing &amp; Sorting Benchmark Suite</b>, self-published standalone HTML5 tool (later build). <a href="https://bashupload.app/52xohl.htm" rel="noopener" target="_blank">Tool</a></li>
+          <li id="src-34"><b>Unidentified resource</b> (bashupload.app/ph6y66.htm), supplied with the second resource batch; the host returned a server error (HTTP 500) on every access attempt, so its contents could not be reviewed or cited. <a href="https://bashupload.app/ph6y66.htm" rel="noopener" target="_blank">Unavailable link</a></li>
         </ol>
         <p style="margin-top:1.5em;font-size:0.9em;">
-          Sources 10–19 are hosted on a temporary file-sharing service and may expire; archive copies should be
-          kept in the vault or mirrored to this repository before the links lapse. Entries 12–19 are author-attributed
-          works and are cited as artifacts, not as third-party verification.
+          Sources 10–33 are hosted on a temporary file-sharing service and may expire — source 34 was already
+          unreachable at access time — so archive copies should be kept in the vault or mirrored to this
+          repository before the links lapse. Entries 12–33 are author-attributed works and are cited as
+          artifacts, not as third-party verification.
         </p>
         <p style="margin-top:1.5em;font-size:0.9em;">For research sources used in the personal memory chapters, see the <a href="greeran-book-bibliography.html" target="_blank">full bibliography</a>.</p>
       </section>
@@ -1898,6 +1947,13 @@ body[data-paper="postcard-stock"] .page {
     { text: "The family's service timeline runs 1780 to 1972: the Plumstead militia, four veterans of the Second World War across two theaters, and a Marine corporal at Da Nang, Hue, and Khe Sanh.", cite: "Chapter VIII — The Family Uniform" },
     { text: "Every tool in the workshop obeys one rule: a single HTML file, no keys, no server, no build step — run it anywhere, even air-gapped.", cite: "Chapter IX — The HTML5 Workshop" },
     { text: "The workshop and the family file are two halves of one habit: the research produced a 90,542-line GEDCOM, and the converter that turns such files into maps and reports sits in the same toolbox.", cite: "Chapter IX — The HTML5 Workshop" },
+    { text: "The last word is not free poetry: its first bits complete the entropy and its final 4 bits are forced by SHA-256. Only 128 of the 2048 words can close the phrase.", cite: "Chapter IX — The BIP-39 Haiku Workbench" },
+    { text: "Derivation paths stay locked until the checksum passes. A wallet refuses invalid mnemonics — so does the page.", cite: "Chapter IX — The BIP-39 Haiku Workbench" },
+    { text: "120 curated phrases — 13 valid, 107 invalid. Repeated-word patterns show why a checksum can't be guessed; poetic phrases show why memorable entropy is almost never valid.", cite: "Chapter IX — The Haiku Catalogue" },
+    { text: "The portfolio presents itself as an RC4-encrypted stream, and the key hint points at the subject's own username — a workshop that asks to be audited.", cite: "Chapter IX — ACME Cryptographic Audit Workstation" },
+    { text: "Clark's Nutcracker caches 30,000+ pine seeds across 5,000-6,000 locations and recovers them nine months later using geometric landmark relationships.", cite: "Chapter IX — Audubon Bird Brain Research" },
+    { text: "Thirty years of ACME Labs — Unix stream filters, X11 root-window animations, thttpd, bignums — remastered as 23 components that run in a browser tab.", cite: "Chapter IX — ACME Labs HTML5 Software Suite" },
+    { text: "A browser DSP studio modeling THX Deep Notes, Dolby Atmos object panning, Bose phase-inversion cancellation, and IMAX 15 Hz sub-bass — 60 frames a second, zero installs.", cite: "Chapter IX — AURA SoundStudio Pro" },
     { text: "The show's dispatch sequences were not fiction to Grandpa; they echoed LACOFD dispatch, the actual radio traffic of the Los Angeles County Fire Department.", cite: "Chapter IV — Personal Recollection" },
     { text: "Being halfback meant running the midfield, connecting defense to attack, doing the work that rarely made the highlight reel but kept the game moving.", cite: "Chapter III — Glendora Childhood" },
     { text: "Those were not costumes — they were artifacts of a career.", cite: "On Grandpa's dress uniform" },
