@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>Dalton Race 4Dwm</title>
+  <link rel="stylesheet" href="./css/dalton-race-4dwm.css" />
+</head>
+<body>
+  <canvas id="stage"></canvas>
+  <div id="labels" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div>
+      <h1>DALTON RACE 4Dwm</h1>
+      <p>Big Dalton / Little Dalton terrain with pips, route pointers, and VRML export</p>
+    </div>
+    <div class="top-actions">
+      <button type="button" id="btnReset">RESET VIEW</button>
+      <button type="button" id="btnTerrain">WIREFRAME</button>
+      <button type="button" id="btnVrml">DOWNLOAD WRL</button>
+    </div>
+  </header>
+
+  <aside class="panel panel-left">
+    <section class="card">
+      <h2>Legend</h2>
+      <ul class="legend">
+        <li><span class="swatch swatch-official"></span> official/public anchor</li>
+        <li><span class="swatch swatch-community"></span> public/community terrain context</li>
+        <li><span class="swatch swatch-local"></span> local-only memory pointer</li>
+        <li><span class="swatch swatch-route-official"></span> official race corridor near GMR</li>
+        <li><span class="swatch swatch-route-community"></span> Lower Monroe / Little Dalton corridor</li>
+        <li><span class="swatch swatch-route-local"></span> local-only remembered race pointer</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>What this shows</h2>
+      <p>This pass uses the repo's existing <strong>USGS 3DEP-style Dalton terrain model</strong> and adds pips so you can point at the canyon geometry you meant.</p>
+      <p>The orange line is an <strong>official Amgen Tour of California corridor near Glendora Mountain Road</strong>. The blue line is <strong>public/community Lower Monroe / Little Dalton trail context</strong>. The magenta line is a <strong>local-only memory pointer</strong> so the remembered Monroe/Little Dalton connection stays separate from verified race-route evidence.</p>
+      <p class="small">The house-front bike-staging pip is now pinned to the <strong>1803</strong> scene you selected, while still labeled as a local-only memory layer unless corroborated.</p>
+    </section>
+
+    <section class="card">
+      <h2>Research anchors</h2>
+      <ol class="sources">
+        <li>AEG / Amgen Tour of California 2019 route announcement: riders went through the outskirts of Glendora and turned left onto Glendora Mountain Road toward Mt. Baldy.</li>
+        <li>USGS Water Data station 11086500: <em>LITTLE DALTON C NR GLENDORA CA</em>.</li>
+        <li>Public/community hike directions place the Lower Monroe Motorway along the Little Dalton stream bottom toward Mystic Canyon.</li>
+      </ol>
+    </section>
+  </aside>
+
+  <aside class="panel panel-right">
+    <section class="card info-card">
+      <h2 id="infoTitle">Scene notes</h2>
+      <div id="infoBody">
+        <p>Click a pip to inspect what it stands for.</p>
+        <p class="small">Orbit to see how Big Dalton, Little Dalton, GMR, and the lower canyon sit relative to each other.</p>
+      </div>
+    </section>
+
+    <section class="card jump-card">
+      <h2>Jump to pip</h2>
+      <div id="jumpList" class="jump-list"></div>
+    </section>
+  </aside>
+
+  <div class="statusbar">
+    <span id="coords">Hover the terrain for coordinates</span>
+    <span id="status">4Dwm pips online</span>
+  </div>
+
+  <script type="module" src="./js/dalton-race-4dwm.js"></script>
+</body>
+</html>

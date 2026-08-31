@@ -1,0 +1,1218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Enso Wallet Generator</title>
+  <style>
+    :root{
+      --bg:#070b14;
+      --bg2:#0b1020;
+      --panel:rgba(14,20,39,.72);
+      --panel-2:rgba(18,26,49,.82);
+      --line:rgba(148,163,184,.18);
+      --text:#eef4ff;
+      --muted:#9fb0d0;
+      --accent:#7c3aed;
+      --accent2:#22c55e;
+      --accent3:#38bdf8;
+      --danger:#ef4444;
+      --shadow:0 24px 80px rgba(0,0,0,.42);
+      --radius:24px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 500px at 10% 10%, rgba(124,58,237,.24), transparent 55%),
+        radial-gradient(800px 500px at 90% 15%, rgba(56,189,248,.18), transparent 50%),
+        radial-gradient(900px 600px at 50% 100%, rgba(34,197,94,.10), transparent 45%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    body::before, body::after{
+      content:"";
+      position:fixed;
+      inset:auto;
+      width:360px;
+      height:360px;
+      border-radius:50%;
+      filter:blur(80px);
+      opacity:.16;
+      pointer-events:none;
+      z-index:0;
+      animation: float 16s ease-in-out infinite;
+    }
+    body::before{ left:-90px; top:120px; background:#7c3aed; }
+    body::after{ right:-110px; top:40%; background:#38bdf8; animation-delay:-7s; }
+
+    @keyframes float{
+      0%,100%{ transform:translate3d(0,0,0) scale(1); }
+      50%{ transform:translate3d(0,-18px,0) scale(1.05); }
+    }
+
+    .app{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      min-height:100vh;
+    }
+
+    .sidebar{
+      padding:24px;
+      border-right:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(13,18,34,.84), rgba(10,14,27,.65));
+      backdrop-filter: blur(18px);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:24px;
+    }
+    .brand-mark{
+      width:46px;height:46px;
+      border-radius:16px;
+      background:
+        radial-gradient(circle at 30% 30%, #fff, #c4b5fd 14%, #7c3aed 42%, #312e81 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 14px 30px rgba(124,58,237,.25);
+      position:relative;
+    }
+    .brand-mark::after{
+      content:"";
+      position:absolute;
+      inset:12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.25);
+    }
+    .brand h1{
+      margin:0;
+      font-size:20px;
+      line-height:1.1;
+      letter-spacing:.2px;
+    }
+    .brand p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .nav{
+      display:grid;
+      gap:10px;
+      margin:18px 0 22px;
+    }
+    .nav button{
+      appearance:none;
+      border:1px solid transparent;
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      padding:13px 14px;
+      border-radius:16px;
+      text-align:left;
+      font-weight:600;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .nav button:hover{
+      background:rgba(255,255,255,.07);
+      transform:translateY(-1px);
+    }
+    .nav button.active{
+      background:linear-gradient(135deg, rgba(124,58,237,.26), rgba(56,189,248,.16));
+      border-color:rgba(124,58,237,.35);
+      box-shadow:0 12px 30px rgba(124,58,237,.12);
+    }
+
+    .sidebar-card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .sidebar-card + .sidebar-card{ margin-top:14px; }
+
+    .mini-title{
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      margin:0 0 10px;
+    }
+
+    .stat-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .stat{
+      padding:12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .stat .label{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:6px;
+    }
+    .stat .value{
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+
+    .main{
+      padding:24px;
+      min-width:0;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:20px;
+    }
+
+    .title-wrap h2{
+      margin:0;
+      font-size:30px;
+      line-height:1.1;
+      letter-spacing:-.02em;
+    }
+    .title-wrap p{
+      margin:8px 0 0;
+      color:var(--muted);
+      max-width:760px;
+    }
+
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--line);
+      color:var(--text);
+      white-space:nowrap;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(12px);
+      font-weight:600;
+      font-size:14px;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background:var(--accent2);
+      box-shadow:0 0 0 6px rgba(34,197,94,.14);
+      flex:0 0 auto;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.35fr .9fr;
+      gap:20px;
+      margin-bottom:20px;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(18,26,49,.82), rgba(12,18,34,.75));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-left{
+      padding:28px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero-left::after{
+      content:"";
+      position:absolute;
+      inset:auto -60px -80px auto;
+      width:240px;
+      height:240px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(124,58,237,.36), transparent 64%);
+      filter:blur(10px);
+      pointer-events:none;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(124,58,237,.32);
+      background:rgba(124,58,237,.12);
+      color:#d8c7ff;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .hero-left h3{
+      margin:16px 0 10px;
+      font-size:34px;
+      line-height:1.05;
+      letter-spacing:-.03em;
+      max-width:14ch;
+    }
+
+    .hero-left p{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+      max-width:64ch;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:22px;
+    }
+
+    button, input, select{
+      font:inherit;
+    }
+
+    .btn{
+      appearance:none;
+      border:0;
+      border-radius:16px;
+      padding:13px 16px;
+      cursor:pointer;
+      font-weight:700;
+      transition:.2s ease;
+    }
+    .btn:hover{ transform:translateY(-1px); }
+    .btn-primary{
+      color:white;
+      background:linear-gradient(135deg, var(--accent), #5b21b6);
+      box-shadow:0 16px 32px rgba(124,58,237,.22);
+    }
+    .btn-secondary{
+      color:var(--text);
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+    }
+    .btn-danger{
+      color:#ffd7d7;
+      background:rgba(239,68,68,.10);
+      border:1px solid rgba(239,68,68,.22);
+    }
+
+    .hero-right{
+      padding:22px;
+      display:grid;
+      gap:14px;
+    }
+
+    .preview-card{
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.07);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      padding:16px;
+    }
+    .preview-row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      margin-bottom:12px;
+    }
+    .preview-row h4{
+      margin:0;
+      font-size:15px;
+    }
+    .preview-row span{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .summary-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+
+    .summary-box{
+      padding:12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .summary-box .k{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:6px;
+    }
+    .summary-box .v{
+      font-weight:700;
+      font-size:14px;
+      word-break:break-word;
+    }
+
+    .content-grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:20px;
+      align-items:start;
+    }
+
+    .panel{
+      padding:22px;
+    }
+
+    .panel h3{
+      margin:0 0 16px;
+      font-size:20px;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .field{
+      min-width:0;
+    }
+
+    .field label{
+      display:block;
+      margin:0 0 8px;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .input, .select, .textarea{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.16);
+      background:rgba(7,11,20,.55);
+      color:var(--text);
+      padding:12px 14px;
+      outline:none;
+      transition:.2s ease;
+    }
+    .input:focus, .select:focus, .textarea:focus{
+      border-color:rgba(124,58,237,.5);
+      box-shadow:0 0 0 4px rgba(124,58,237,.14);
+    }
+
+    .row{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .slider-wrap{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color:var(--accent);
+    }
+    .range-value{
+      min-width:44px;
+      text-align:right;
+      color:#d8c7ff;
+      font-weight:700;
+    }
+
+    .toggles{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+      margin-bottom:16px;
+    }
+
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .toggle input{
+      width:18px;height:18px;
+      accent-color:var(--accent);
+    }
+    .toggle .t-text{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .toggle .t-text strong{
+      font-size:14px;
+    }
+    .toggle .t-text span{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .results{
+      display:grid;
+      gap:14px;
+      margin-top:18px;
+      max-height: 560px;
+      overflow:auto;
+      padding-right:4px;
+    }
+
+    .wallet-card{
+      padding:16px;
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.07);
+    }
+
+    .wallet-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .wallet-top h4{
+      margin:8px 0 0;
+      font-size:16px;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(56,189,248,.10);
+      border:1px solid rgba(56,189,248,.18);
+      color:#cbefff;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .meta{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .addr{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:13px;
+      line-height:1.5;
+      word-break:break-all;
+      padding:12px;
+      border-radius:16px;
+      background:rgba(7,11,20,.48);
+      border:1px solid rgba(255,255,255,.06);
+      margin-bottom:12px;
+    }
+
+    .seed{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:12px;
+      line-height:1.6;
+      word-break:break-word;
+      color:#b9c7ef;
+      padding:12px;
+      border-radius:16px;
+      background:rgba(7,11,20,.42);
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .seed.masked{
+      letter-spacing:.02em;
+    }
+
+    .card-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .mini-btn{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      border-radius:12px;
+      padding:9px 11px;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:700;
+      transition:.2s ease;
+    }
+    .mini-btn:hover{ transform:translateY(-1px); }
+
+    .side-stack{
+      display:grid;
+      gap:20px;
+    }
+
+    .activity-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .activity-item{
+      display:flex;
+      gap:12px;
+      padding:12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .activity-dot{
+      width:10px;height:10px;
+      border-radius:50%;
+      margin-top:6px;
+      background:var(--accent3);
+      box-shadow:0 0 0 6px rgba(56,189,248,.10);
+      flex:0 0 auto;
+    }
+
+    .activity-item strong{
+      display:block;
+      margin-bottom:3px;
+      font-size:13px;
+    }
+    .activity-item span{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .footer-note{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+    }
+
+    .sr-only{
+      position:absolute;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);
+      border:0;
+    }
+
+    @media (max-width: 1100px){
+      .app{ grid-template-columns:1fr; }
+      .sidebar{ border-right:0; border-bottom:1px solid var(--line); }
+      .hero, .content-grid{ grid-template-columns:1fr; }
+    }
+
+    @media (max-width: 720px){
+      .main, .sidebar{ padding:16px; }
+      .topbar{ flex-direction:column; align-items:flex-start; }
+      .hero-left h3{ font-size:28px; }
+      .form-grid{ grid-template-columns:1fr; }
+      .summary-grid{ grid-template-columns:1fr; }
+      .stat-grid{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <h1>Enso Wallet</h1>
+          <p>Generator preview</p>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Primary">
+        <button class="active" type="button">Generate</button>
+        <button type="button">Import</button>
+        <button type="button">Backup</button>
+        <button type="button">Activity</button>
+      </nav>
+
+      <div class="sidebar-card">
+        <div class="mini-title">Local stats</div>
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="label">Generated</div>
+            <div class="value" id="statGenerated">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Copies</div>
+            <div class="value" id="statCopies">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Network</div>
+            <div class="value" id="statNetwork">Ethereum</div>
+          </div>
+          <div class="stat">
+            <div class="label">Mode</div>
+            <div class="value">Demo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="mini-title">Security note</div>
+        <div class="footer-note">
+          This is a front-end HTML5 mockup that generates demo wallet data locally in the browser.
+          Replace the demo logic with your real wallet engine if you need production behavior.
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="title-wrap">
+          <h2>Wallet workspace</h2>
+          <p>Modern responsive single-file HTML5 interface for generating, reviewing, and exporting demo wallet records.</p>
+        </div>
+        <div class="status-pill"><span class="dot"></span> Local only • No server sync</div>
+      </div>
+
+      <section class="hero">
+        <div class="card hero-left">
+          <div class="badge">HTML5 source preview</div>
+          <h3>Create and manage demo wallets in your browser</h3>
+          <p>
+            A polished, glass-style dashboard with generation controls, wallet cards, copy actions, export support,
+            and a live activity feed. Everything is self-contained in one HTML file.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="generateBtn" type="button">Generate Wallets</button>
+            <button class="btn btn-secondary" id="exportBtn" type="button">Export JSON</button>
+            <button class="btn btn-secondary" id="copyFirstBtn" type="button">Copy First Address</button>
+          </div>
+        </div>
+
+        <div class="card hero-right">
+          <div class="preview-card">
+            <div class="preview-row">
+              <div>
+                <h4>Live preview</h4>
+                <span id="liveLabel">No wallets generated yet</span>
+              </div>
+              <span class="chip" id="liveNetwork">Ethereum</span>
+            </div>
+            <div class="summary-grid">
+              <div class="summary-box">
+                <div class="k">Address</div>
+                <div class="v" id="liveAddress">—</div>
+              </div>
+              <div class="summary-box">
+                <div class="k">Created</div>
+                <div class="v" id="liveCreated">—</div>
+              </div>
+              <div class="summary-box">
+                <div class="k">Seed</div>
+                <div class="v" id="liveSeed">—</div>
+              </div>
+              <div class="summary-box">
+                <div class="k">Count</div>
+                <div class="v" id="liveCount">1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <div class="card panel">
+          <h3>Generator settings</h3>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="walletName">Wallet label</label>
+              <input class="input" id="walletName" type="text" value="Main Wallet" />
+            </div>
+
+            <div class="field">
+              <label for="network">Network</label>
+              <select class="select" id="network">
+                <option>Ethereum</option>
+                <option>Bitcoin</option>
+                <option>Solana</option>
+                <option>Polygon</option>
+                <option>Base</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="count">Quantity</label>
+              <div class="slider-wrap">
+                <input id="count" type="range" min="1" max="10" value="1" />
+                <div class="range-value" id="countValue">1</div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="note">Note</label>
+              <input class="input" id="note" type="text" value="Generated locally in browser" />
+            </div>
+          </div>
+
+          <div class="toggles">
+            <label class="toggle">
+              <input id="showSeed" type="checkbox" />
+              <div class="t-text">
+                <strong>Show demo seed</strong>
+                <span>Reveal the generated mnemonic-style phrase in the cards.</span>
+              </div>
+            </label>
+
+            <label class="toggle">
+              <input id="autoCopy" type="checkbox" checked />
+              <div class="t-text">
+                <strong>Auto-copy first address</strong>
+                <span>Copies the first address after generation.</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="generateBtn2" type="button">Generate</button>
+            <button class="btn btn-secondary" id="refreshBtn" type="button">Refresh view</button>
+            <button class="btn btn-danger" id="clearBtn" type="button">Clear results</button>
+          </div>
+
+          <div class="results" id="results" aria-live="polite"></div>
+        </div>
+
+        <div class="side-stack">
+          <div class="card panel">
+            <h3>Recent activity</h3>
+            <div class="activity-list" id="activity"></div>
+          </div>
+
+          <div class="card panel">
+            <h3>Output summary</h3>
+            <div class="summary-grid">
+              <div class="summary-box">
+                <div class="k">Latest network</div>
+                <div class="v" id="summaryNetwork">Ethereum</div>
+              </div>
+              <div class="summary-box">
+                <div class="k">Wallet label</div>
+                <div class="v" id="summaryLabel">Main Wallet</div>
+              </div>
+              <div class="summary-box">
+                <div class="k">Results</div>
+                <div class="v" id="summaryResults">1</div>
+              </div>
+              <div class="summary-box">
+                <div class="k">Clipboard</div>
+                <div class="v" id="summaryClipboard">Ready</div>
+              </div>
+            </div>
+            <div class="footer-note">
+              Tip: send a screenshot of your actual preview if you want me to match the layout exactly.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const WORDS = [
+      "apple","angle","atlas","autumn","bamboo","basic","beacon","berry","binary","blue",
+      "bridge","cactus","candy","carbon","castle","celery","charm","cinder","cobalt","comet",
+      "crystal","daisy","delta","drift","ember","echo","ember","ever","falcon","fable",
+      "forest","frost","glow","harbor","harmony","island","jelly","jet","jungle","kite",
+      "lunar","matrix","mint","nexus","nova","olive","onyx","orbit","pearl","pixel",
+      "quantum","rain","raven","river","solar","spark","stone","tiger","token","ultra",
+      "vapor","velvet","wave","xenon","yellow","zen"
+    ];
+
+    const BASE58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    const HEX = "0123456789abcdef";
+    const networks = {
+      Ethereum: { prefix: "0x", len: 40 },
+      Polygon:  { prefix: "0x", len: 40 },
+      Base:     { prefix: "0x", len: 40 },
+      Bitcoin:  { prefix: "bc1q", len: 32, alphabet: "023456789acdefghjklmnpqrstuvwxyz" },
+      Solana:   { prefix: "", len: 44, alphabet: BASE58 }
+    };
+
+    const els = {
+      walletName: document.getElementById("walletName"),
+      network: document.getElementById("network"),
+      count: document.getElementById("count"),
+      countValue: document.getElementById("countValue"),
+      note: document.getElementById("note"),
+      showSeed: document.getElementById("showSeed"),
+      autoCopy: document.getElementById("autoCopy"),
+      generateBtn: document.getElementById("generateBtn"),
+      generateBtn2: document.getElementById("generateBtn2"),
+      refreshBtn: document.getElementById("refreshBtn"),
+      clearBtn: document.getElementById("clearBtn"),
+      exportBtn: document.getElementById("exportBtn"),
+      copyFirstBtn: document.getElementById("copyFirstBtn"),
+      results: document.getElementById("results"),
+      activity: document.getElementById("activity"),
+      statGenerated: document.getElementById("statGenerated"),
+      statCopies: document.getElementById("statCopies"),
+      statNetwork: document.getElementById("statNetwork"),
+      liveLabel: document.getElementById("liveLabel"),
+      liveNetwork: document.getElementById("liveNetwork"),
+      liveAddress: document.getElementById("liveAddress"),
+      liveCreated: document.getElementById("liveCreated"),
+      liveSeed: document.getElementById("liveSeed"),
+      liveCount: document.getElementById("liveCount"),
+      summaryNetwork: document.getElementById("summaryNetwork"),
+      summaryLabel: document.getElementById("summaryLabel"),
+      summaryResults: document.getElementById("summaryResults"),
+      summaryClipboard: document.getElementById("summaryClipboard"),
+      activityList: document.getElementById("activity")
+    };
+
+    let wallets = [];
+    let totalGenerated = 0;
+    let copyCount = 0;
+    let lastClipboard = "Ready";
+
+    function randInt(max){
+      const x = new Uint32Array(1);
+      crypto.getRandomValues(x);
+      return x[0] % max;
+    }
+
+    function pick(arr){
+      return arr[randInt(arr.length)];
+    }
+
+    function randHex(len){
+      let out = "";
+      const bytes = new Uint8Array(Math.ceil(len / 2));
+      crypto.getRandomValues(bytes);
+      for (const b of bytes) out += b.toString(16).padStart(2,"0");
+      return out.slice(0, len);
+    }
+
+    function randFromAlphabet(len, alphabet){
+      let out = "";
+      for (let i = 0; i < len; i++) out += alphabet[randInt(alphabet.length)];
+      return out;
+    }
+
+    function demoSeed(words = 12){
+      const list = [];
+      for (let i = 0; i < words; i++) list.push(pick(WORDS));
+      return list.join(" ");
+    }
+
+    function genAddress(network){
+      const cfg = networks[network] || networks.Ethereum;
+      const alphabet = cfg.alphabet || HEX;
+      if (cfg.prefix === "0x") return "0x" + randHex(cfg.len);
+      return cfg.prefix + randFromAlphabet(cfg.len, alphabet);
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+
+    function formatTime(date){
+      return new Intl.DateTimeFormat([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }).format(date);
+    }
+
+    function maskSeed(seed, show){
+      if (show) return seed;
+      const parts = seed.split(" ");
+      return parts.map((w, i) => (i < 2 || i > parts.length - 3) ? w : "•••").join(" ");
+    }
+
+    function log(message){
+      const item = {
+        message,
+        time: formatTime(new Date())
+      };
+      activity.unshift(item);
+      activity = activity.slice(0, 5);
+      renderActivity();
+    }
+
+    let activity = [
+      { message: "Dashboard ready. Generate demo wallets locally.", time: formatTime(new Date()) },
+      { message: "No network requests are made from this page.", time: formatTime(new Date()) }
+    ];
+
+    function renderActivity(){
+      els.activityList.innerHTML = activity.map(a => `
+        <div class="activity-item">
+          <div class="activity-dot"></div>
+          <div>
+            <strong>${escapeHtml(a.message)}</strong>
+            <span>${escapeHtml(a.time)}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderStats(){
+      els.statGenerated.textContent = totalGenerated;
+      els.statCopies.textContent = copyCount;
+      els.statNetwork.textContent = els.network.value;
+      els.summaryResults.textContent = wallets.length;
+      els.summaryNetwork.textContent = els.network.value;
+      els.summaryLabel.textContent = els.walletName.value.trim() || "Untitled";
+      els.countValue.textContent = els.count.value;
+    }
+
+    function renderLive(){
+      if (!wallets.length){
+        els.liveLabel.textContent = "No wallets generated yet";
+        els.liveNetwork.textContent = els.network.value;
+        els.liveAddress.textContent = "—";
+        els.liveCreated.textContent = "—";
+        els.liveSeed.textContent = "—";
+        els.liveCount.textContent = els.count.value;
+        return;
+      }
+      const w = wallets[0];
+      els.liveLabel.textContent = w.label;
+      els.liveNetwork.textContent = w.network;
+      els.liveAddress.textContent = w.address;
+      els.liveCreated.textContent = w.created;
+      els.liveSeed.textContent = maskSeed(w.seed, els.showSeed.checked).split(" ").slice(0,4).join(" ") + "…";
+      els.liveCount.textContent = wallets.length;
+    }
+
+    function renderResults(){
+      if (!wallets.length){
+        els.results.innerHTML = `
+          <div class="wallet-card">
+            <div class="meta">No results yet.</div>
+            <div style="margin-top:8px;color:var(--muted);line-height:1.6">
+              Use <strong>Generate</strong> to create demo wallet cards.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      els.results.innerHTML = wallets.map((w, index) => `
+        <article class="wallet-card">
+          <div class="wallet-top">
+            <div>
+              <div class="chip">${escapeHtml(w.network)}</div>
+              <h4>${escapeHtml(w.label)}</h4>
+              <div class="meta">${escapeHtml(w.note)} • ${escapeHtml(w.created)}</div>
+            </div>
+            <div class="meta">#${index + 1}</div>
+          </div>
+
+          <div class="addr">${escapeHtml(w.address)}</div>
+
+          <div class="seed ${els.showSeed.checked ? "" : "masked"}">
+            ${escapeHtml(maskSeed(w.seed, els.showSeed.checked))}
+          </div>
+
+          <div class="card-actions">
+            <button class="mini-btn" type="button" data-copy-address="${escapeHtml(w.address)}">Copy address</button>
+            <button class="mini-btn" type="button" data-copy-seed="${escapeHtml(w.seed)}">Copy seed</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderAll(){
+      renderStats();
+      renderLive();
+      renderResults();
+      renderActivity();
+    }
+
+    async function copyText(text){
+      try{
+        await navigator.clipboard.writeText(text);
+        copyCount++;
+        lastClipboard = "Copied";
+        els.summaryClipboard.textContent = "Copied";
+        renderStats();
+        log("Copied text to clipboard.");
+        return true;
+      }catch(err){
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        try{
+          document.execCommand("copy");
+          copyCount++;
+          lastClipboard = "Copied";
+          els.summaryClipboard.textContent = "Copied";
+          renderStats();
+          log("Copied text to clipboard.");
+          return true;
+        }catch(e){
+          lastClipboard = "Copy failed";
+          els.summaryClipboard.textContent = "Copy failed";
+          log("Clipboard copy failed.");
+          return false;
+        }finally{
+          ta.remove();
+        }
+      }
+    }
+
+    function generateWallets(){
+      const count = Math.max(1, Math.min(10, Number(els.count.value) || 1));
+      const network = els.network.value;
+      const labelBase = els.walletName.value.trim() || "Wallet";
+      const note = els.note.value.trim() || "Generated locally in browser";
+
+      wallets = Array.from({ length: count }, (_, i) => ({
+        label: count === 1 ? labelBase : `${labelBase} ${i + 1}`,
+        network,
+        address: genAddress(network),
+        seed: demoSeed(12),
+        created: formatTime(new Date()),
+        note
+      }));
+
+      totalGenerated += count;
+      els.summaryClipboard.textContent = lastClipboard;
+      renderAll();
+      log(`Generated ${count} ${network} wallet${count > 1 ? "s" : ""}.`);
+
+      if (els.autoCopy.checked && wallets[0]){
+        copyText(wallets[0].address);
+      }
+    }
+
+    function exportJSON(){
+      if (!wallets.length){
+        log("Nothing to export.");
+        return;
+      }
+      const payload = JSON.stringify(wallets, null, 2);
+      const blob = new Blob([payload], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "enso-wallets-demo.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      log("Exported JSON file.");
+    }
+
+    function clearResults(){
+      wallets = [];
+      renderAll();
+      log("Results cleared.");
+    }
+
+    document.addEventListener("click", async (e) => {
+      const addressBtn = e.target.closest("[data-copy-address]");
+      const seedBtn = e.target.closest("[data-copy-seed]");
+      if (addressBtn){
+        await copyText(addressBtn.dataset.copyAddress);
+      }
+      if (seedBtn){
+        await copyText(seedBtn.dataset.copySeed);
+      }
+    });
+
+    els.count.addEventListener("input", () => {
+      els.countValue.textContent = els.count.value;
+      renderLive();
+      renderStats();
+    });
+
+    ["walletName","network","note","showSeed"].forEach(id => {
+      els[id].addEventListener("input", () => {
+        renderStats();
+        renderLive();
+        renderResults();
+      });
+      els[id].addEventListener("change", () => {
+        renderStats();
+        renderLive();
+        renderResults();
+      });
+    });
+
+    els.generateBtn.addEventListener("click", generateWallets);
+    els.generateBtn2.addEventListener("click", generateWallets);
+    els.refreshBtn.addEventListener("click", () => {
+      renderAll();
+      log("View refreshed.");
+    });
+    els.clearBtn.addEventListener("click", clearResults);
+    els.exportBtn.addEventListener("click", exportJSON);
+    els.copyFirstBtn.addEventListener("click", () => {
+      if (!wallets.length){
+        log("No address available to copy.");
+        return;
+      }
+      copyText(wallets[0].address);
+    });
+
+    // Subtle nav highlight only
+    document.querySelectorAll(".nav button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        log(`${btn.textContent.trim()} tab selected.`);
+      });
+    });
+
+    // Initial state
+    generateWallets();
+  </script>
+</body>
+</html>

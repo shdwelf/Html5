@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedural Ensō Generator</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #eee;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        canvas {
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            margin-top: 20px;
+        }
+        .controls {
+            background: #333;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            font-family: monospace;
+            width: 340px;
+            text-align: center;
+            border: 1px solid #555;
+            background: #111;
+            color: #0f0;
+        }
+        button {
+            padding: 8px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #555;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        button:hover { background: #777; }
+        #seedDisplay {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Ensogen ID Engine</h2>
+    <div class="controls">
+        <label>Seed ID:</label>
+        <input type="text" id="ensogenInput" value="4-CW-C-06-03-U-04-05-D-M-216">
+        <button onclick="render()">Generate Ensō</button>
+        <button onclick="randomize()">Random Seed</button>
+    </div>
+
+    <div id="seedDisplay"></div>
+
+    <canvas id="ensoCanvas" width="600" height="600"></canvas>
+
+    <script>
+        // --- 1. SEEDED RNG ENGINE ---
+        function xmur3(str) {
+            let h = 1779033703 ^ str.length;
+            for (let i = 0; i < str.length; i++) {
+                h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+                h = h << 13 | h >>> 19;
+            }
+            return function () {
+                h = Math.imul(h ^ h >>> 16, 2246822507);
+                h = Math.imul(h ^ h >>> 13, 3266489909);
+                return (h ^= h >>> 16) >>> 0;
+            }
+        }
+
+        function mulberry32(a) {
+            return function () {
+                var t = a += 0x6D2B79F5;
+                t = Math.imul(t ^ t >>> 15, t | 1);
+                t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            }
+        }
+
+        let rng;
+
+        function randomRange(min, max) { return min + rng() * (max - min); }
+
+        // --- 2. PARSE ENSOGEN NUMBER ---
+        function parseEnsogen(id) {
+            const parts = id.split('-');
+            return {
+                inkLoad: Math.min(10, Math.max(1, parseInt(parts[0]) || 4)),
+                direction: parts[1] === 'CW' ? 1 : -1,
+                paperHue: parts[2] || 'C',
+                brushSize: Math.min(10, Math.max(1, parseInt(parts[3]) || 6)),
+                inkDensity: Math.min(10, Math.max(1, parseInt(parts[4]) || 3)),
+                stretch: parts[5] || 'U',
+                texture: Math.min(10, Math.max(1, parseInt(parts[6]) || 4)),
+                bristles: Math.min(10, Math.max(1, parseInt(parts[7]) || 5)),
+                sigStyle: parts[8] || 'D',
+                strokeSize: parts[9] || 'M',
+                startRot: parseInt(parts[10]) || 216
+            };
+        }
+
+        // --- 3. RANDOM ENSOGEN ID GENERATOR ---
+        function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function pad2(n) { return String(n).padStart(2, '0'); }
+
+        function generateRandomEnsogen() {
+            const inkLoad    = randInt(1, 10);
+            const direction  = pick(['CW', 'CCW']);
+            const paperHue   = pick(['C', 'W']);
+            const brushSize  = pad2(randInt(1, 10));
+            const inkDensity = pad2(randInt(1, 10));
+            const stretch    = pick(['U', 'E']);
+            const texture    = pad2(randInt(1, 10));
+            const bristles   = pad2(randInt(1, 10));
+            const sigStyle   = pick(['D', 'L']);
+            const strokeSize = pick(['S', 'M', 'L']);
+            const startRot   = randInt(0, 360);
+
+            return `${inkLoad}-${direction}-${paperHue}-${brushSize}-${inkDensity}-${stretch}-${texture}-${bristles}-${sigStyle}-${strokeSize}-${startRot}`;
+        }
+
+        function randomize() {
+            const newId = generateRandomEnsogen();
+            document.getElementById('ensogenInput').value = newId;
+            document.getElementById('seedDisplay').textContent = 'Random seed: ' + newId;
+            render();
+        }
+
+        // --- 4. RENDERING ENGINE ---
+        function render() {
+            const id = document.getElementById('ensogenInput').value.toUpperCase();
+            const canvas = document.getElementById('ensoCanvas');
+            const ctx = canvas.getContext('2d');
+            const params = parseEnsogen(id);
+
+            // Initialize Deterministic Randomness with the ID
+            const seed = xmur3(id)();
+            rng = mulberry32(seed);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // A. Paper Hue & Texture
+            ctx.fillStyle = params.paperHue === 'C' ? '#E0FFFF' : '#F5F5DC';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = `rgba(0,0,0,${params.texture * 0.01})`;
+            for (let i = 0; i < 10000; i++) {
+                ctx.fillRect(rng() * canvas.width, rng() * canvas.height, 2, 2);
+            }
+
+            // B. Geometry Setup
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            let baseR = 150;
+            if (params.strokeSize === 'S') baseR = 100;
+            if (params.strokeSize === 'L') baseR = 200;
+
+            const stretchX = params.stretch === 'U' ? randomRange(0.8, 1.2) : 1;
+            const stretchY = params.stretch === 'U' ? randomRange(0.8, 1.2) : 1;
+
+            const startAngle = params.startRot * (Math.PI / 180);
+            const sweepAmount = Math.PI * 2 * (params.inkLoad / 5) * randomRange(0.8, 1.1);
+
+            // C. Drawing the Ensō
+            const steps = 300;
+            const maxBristles = params.bristles * 5;
+            const bristleOffsets = [];
+
+            for (let b = 0; b < maxBristles; b++) {
+                bristleOffsets.push({
+                    x: randomRange(-params.brushSize * 3, params.brushSize * 3),
+                    y: randomRange(-params.brushSize * 3, params.brushSize * 3),
+                    size: randomRange(1, params.brushSize)
+                });
+            }
+
+            for (let i = 0; i < steps; i++) {
+                let progress = i / steps;
+                let currentAngle = startAngle + (progress * sweepAmount * params.direction);
+
+                let rNoise = randomRange(-5, 5);
+                let R = baseR + rNoise;
+
+                let x = cx + (R * Math.cos(currentAngle)) * stretchX;
+                let y = cy + (R * Math.sin(currentAngle)) * stretchY;
+
+                // Ink running out toward the end
+                let alpha = (1 - progress) * (params.inkDensity / 3);
+                if (alpha < 0) alpha = 0;
+
+                // Signature style: dark or light ink
+                let inkR = 0, inkG = 0, inkB = 0;
+                if (params.sigStyle === 'L') { inkR = 80; inkG = 80; inkB = 80; }
+
+                ctx.fillStyle = `rgba(${inkR}, ${inkG}, ${inkB}, ${alpha})`;
+
+                // Draw bristles
+                bristleOffsets.forEach(offset => {
+                    let jitterX = randomRange(-2, 2);
+                    let jitterY = randomRange(-2, 2);
+
+                    ctx.beginPath();
+                    ctx.arc(x + offset.x + jitterX, y + offset.y + jitterY, offset.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+
+            // D. Ink Splatter (extra character)
+            const splatterCount = params.inkDensity * 3;
+            for (let s = 0; s < splatterCount; s++) {
+                let sAngle = rng() * Math.PI * 2;
+                let sDist = baseR * randomRange(0.85, 1.3);
+                let sx = cx + (sDist * Math.cos(sAngle)) * stretchX;
+                let sy = cy + (sDist * Math.sin(sAngle)) * stretchY;
+                let sSize = randomRange(0.5, 2.5);
+                ctx.fillStyle = `rgba(0, 0, 0, ${randomRange(0.1, 0.4)})`;
+                ctx.beginPath();
+                ctx.arc(sx, sy, sSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // E. Zen Seal / Stamp (bottom-right)
+            const sealSize = 18;
+            const sealX = cx + baseR * 0.55;
+            const sealY = cy + baseR * 0.65;
+            ctx.fillStyle = params.sigStyle === 'D' ? 'rgba(180, 30, 30, 0.7)' : 'rgba(180, 30, 30, 0.4)';
+            ctx.fillRect(sealX - sealSize / 2, sealY - sealSize / 2, sealSize, sealSize);
+            ctx.strokeStyle = 'rgba(120, 10, 10, 0.6)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(sealX - sealSize / 2 + 2, sealY - sealSize / 2 + 2, sealSize - 4, sealSize - 4);
+
+            // F. Display the Ensogen number below canvas
+            document.getElementById('seedDisplay').textContent = 'Ensogen ID: ' + id;
+        }
+
+        // Auto-render on load
+        window.addEventListener('DOMContentLoaded', () => {
+            render();
+        });
+    </script>
+
+</body>
+</html>

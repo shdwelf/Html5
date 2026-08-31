@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#08090d" />
+  <meta name="description" content="Art Studio book builder for a source-balanced autobiography model, with templates, live viewer preview, self-extracting installer export, quine download, and local snapshots." />
+  <title>Art Studio · Book Builder</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="stylesheet" href="./css/book-builder.css" />
+  <script src="./webxdc.js"></script>
+</head>
+<body>
+  <div class="builder-shell">
+    <header class="builder-header">
+      <a class="builder-brand" href="./index.html#studio" target="_top" aria-label="Back to SITE-K">
+        <span class="builder-mark" aria-hidden="true"><i></i><i></i><i></i><b></b></span>
+        <span><strong>ART STUDIO</strong><small>BOOK BUILDER · TEMPLATE LAB</small></span>
+      </a>
+      <div class="builder-title">
+        <div class="eyebrow">STUDIO / 07 · autobiography workbook / editorial tool</div>
+        <h1>Book Builder</h1>
+        <p>
+          A fill-in book workshop for building a balanced life file: template-driven chapters,
+          evidence labels, live viewer preview, a self-extracting installer, and a quine-style
+          download that can re-download itself after opening.
+        </p>
+      </div>
+      <div class="builder-links">
+        <a href="./greeran-book.html">BOOK LAB</a>
+        <a href="./greeran.html">DOSSIER</a>
+        <a href="./index.html" target="_top">SITE-K</a>
+      </div>
+    </header>
+
+    <main class="builder-grid">
+      <aside class="template-rail">
+        <section class="panel">
+          <div class="panel-head">
+            <span class="panel-tag">Template shelf</span>
+            <h2>Autobiography frameworks</h2>
+          </div>
+          <p class="panel-copy">
+            Inspired by fill-in autobiography workbooks: choose a structure, then tune prompts,
+            paper, viewer style, and export packaging.
+          </p>
+          <div id="templateList" class="template-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <span class="panel-tag">Design</span>
+            <h2>Book materials</h2>
+          </div>
+          <div class="form-grid compact">
+            <label>
+              <span>Paper</span>
+              <select id="paperTheme">
+                <option value="field-notes">Field notes</option>
+                <option value="ambassador-ledger">Ambassador ledger</option>
+                <option value="rag-paper">Rag paper</option>
+                <option value="blueprint">Blueprint</option>
+                <option value="night-reader">Night reader</option>
+              </select>
+            </label>
+            <label>
+              <span>Viewer chrome</span>
+              <select id="viewerChrome">
+                <option value="folio">Folio</option>
+                <option value="minimal">Minimal</option>
+                <option value="console">Console</option>
+              </select>
+            </label>
+            <label>
+              <span>Cover stamp</span>
+              <input id="coverStamp" type="text" maxlength="24" value="WORKING EDITION" />
+            </label>
+            <label class="toggle-row">
+              <input id="showPrompts" type="checkbox" checked />
+              <span>Show prompts in viewer</span>
+            </label>
+            <label class="toggle-row">
+              <input id="showEvidence" type="checkbox" checked />
+              <span>Show evidence labels</span>
+            </label>
+            <label class="toggle-row">
+              <input id="includeSources" type="checkbox" checked />
+              <span>Include sources appendix</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel export-panel">
+          <div class="panel-head">
+            <span class="panel-tag">Packaging</span>
+            <h2>Quine / SFX export</h2>
+          </div>
+          <div class="form-grid compact">
+            <label>
+              <span>SFX mode</span>
+              <select id="sfxPrivacyMode">
+                <option value="autobiography">Autobiography / source-facing edition</option>
+                <option value="fiction">Fiction veil / privacy-rights edition</option>
+              </select>
+            </label>
+          </div>
+          <div class="button-stack">
+            <button type="button" id="downloadViewerBtn">Download viewer HTML</button>
+            <button type="button" id="downloadInstallerBtn">Download SFX installer</button>
+            <button type="button" id="downloadQuineBtn" class="hot">Quine / self SFX</button>
+            <button type="button" id="downloadProjectBtn">Export project JSON</button>
+            <label class="import-button">
+              Import project JSON
+              <input id="importProjectInput" type="file" accept="application/json" hidden />
+            </label>
+            <button type="button" id="shareWebxdcBtn">Share to webxdc</button>
+          </div>
+          <p class="fine-print">
+            The generated installer contains its own viewer, its own project data, and a button to
+            download the installer itself again from inside the file. Local-only scratchpad and private
+            map notes are intentionally excluded. Fiction veil mode applies the local alias legend and
+            nom de plume without exporting the real-name legend itself.
+          </p>
+        </section>
+      </aside>
+
+      <section class="studio-stage">
+        <nav class="stage-tabs" aria-label="Book Builder views">
+          <button type="button" class="stage-tab active" data-panel="workshop">01 · Workshop</button>
+          <button type="button" class="stage-tab" data-panel="viewer">02 · Viewer</button>
+          <button type="button" class="stage-tab" data-panel="sfx">03 · SFX Viewer</button>
+          <button type="button" class="stage-tab" data-panel="map">04 · Research Map</button>
+          <button type="button" class="stage-tab" data-panel="project">05 · Project JSON</button>
+        </nav>
+
+        <section class="stage-panel active" id="workshop">
+          <div class="panel hero-panel">
+            <div class="panel-head wide">
+              <div>
+                <span class="panel-tag">Workbook</span>
+                <h2>Fill-out autobiography builder</h2>
+              </div>
+              <button type="button" id="snapshotBtn" class="pill-button">Save snapshot</button>
+            </div>
+            <div class="form-grid meta-grid">
+              <label>
+                <span>Book title</span>
+                <input id="bookTitle" type="text" value="Steven Thomas Greeran — Working Book Model" />
+              </label>
+              <label>
+                <span>Subtitle</span>
+                <input id="bookSubtitle" type="text" value="A source-balanced autobiography template" />
+              </label>
+              <label>
+                <span>Author line</span>
+                <input id="authorLine" type="text" value="Compiled from official records, self-published resume material, and private drafting prompts" />
+              </label>
+              <label>
+                <span>Edition note</span>
+                <input id="editionNote" type="text" value="Working edition · distinguish official record, self-published material, and unverified recollection" />
+              </label>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-tag">Method</span>
+              <h2>Editorial guardrails</h2>
+            </div>
+            <textarea id="methodNote" rows="5">This builder does not invent a first-person autobiography where none exists. Instead it models a balanced book using three lanes: official public records, self-published resume material, and private recollection prompts that should remain labeled or unpublished until verified.</textarea>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-tag">Local-only intake</span>
+              <h2>Research scratchpad</h2>
+            </div>
+            <p class="panel-copy">
+              Use this area for source leads, apartment names, people, events, and memory prompts that are
+              not ready for publication. These notes stay in this browser only and are excluded from the
+              viewer, SFX installer, quine download, and webxdc share until you manually move verified text
+              into a chapter.
+            </p>
+            <div class="form-grid">
+              <label>
+                <span>Public-source leads</span>
+                <textarea id="publicLeadPad" rows="4" placeholder="IVTV&#10;Daily Nexus&#10;Daily Flush&#10;science.edu / International Academy of Science"></textarea>
+              </label>
+              <label>
+                <span>Private people / places scratchpad</span>
+                <textarea id="privateLeadPad" rows="7" placeholder="Local-only draft notes. Keep third-party names and unverified anecdotes here until sourced or intentionally kept private."></textarea>
+              </label>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-tag">Local-only DNA helper</span>
+              <h2>DNA match notes</h2>
+            </div>
+            <p class="panel-copy">
+              Track autosomal matches privately with optional shared percent, shared cM, side flags, and working
+              relationship notes. Side labels are planning aids only; overlapping ranges can happen across more
+              than one family relationship.
+            </p>
+            <div class="form-grid compact artifact-form">
+              <div class="cast-row">
+                <label>
+                  <span>Match name</span>
+                  <input id="dnaMatchName" type="text" placeholder="Cousin / tester name" />
+                </label>
+                <label>
+                  <span>Side flag</span>
+                  <select id="dnaMatchSide">
+                    <option value="unknown">Unknown</option>
+                    <option value="maternal">Maternal</option>
+                    <option value="paternal">Paternal</option>
+                    <option value="both">Both / mixed</option>
+                  </select>
+                </label>
+              </div>
+              <div class="cast-row">
+                <label>
+                  <span>Shared %</span>
+                  <input id="dnaMatchPercent" type="number" min="0" max="100" step="0.1" placeholder="12.5" />
+                </label>
+                <label>
+                  <span>Shared cM</span>
+                  <input id="dnaMatchCm" type="number" min="0" step="1" placeholder="850" />
+                </label>
+              </div>
+              <div class="cast-row">
+                <label>
+                  <span>Working relationship</span>
+                  <input id="dnaMatchRelation" type="text" placeholder="first cousin, cousin line through great-grandfather's other son, etc." />
+                </label>
+                <label>
+                  <span>Linked family-tree person</span>
+                  <input id="dnaMatchLinkedPerson" type="text" placeholder="Jean B Hewitt, Gerard T Greeran, etc." />
+                </label>
+              </div>
+              <label>
+                <span>Private note</span>
+                <textarea id="dnaMatchNote" rows="4" placeholder="Autosomal overlap note, donor clue, branch mix, source app, or uncertainty."></textarea>
+              </label>
+              <div class="map-pin-actions">
+                <button type="button" id="addDnaMatchBtn">Add DNA match</button>
+                <button type="button" id="clearDnaMatchBtn">Clear DNA helper</button>
+              </div>
+            </div>
+            <div id="dnaMatchList" class="dna-match-list"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-tag">Local-only objects lane</span>
+              <h2>Vehicles / objects / markings</h2>
+            </div>
+            <p class="panel-copy">
+              Track private recollections like vehicles, license plates, bumper text, props, clothing, or found
+              objects without sending them into viewer, SFX, project JSON, or webxdc exports.
+            </p>
+            <div class="form-grid compact artifact-form">
+              <div class="cast-row">
+                <label>
+                  <span>Label</span>
+                  <input id="artifactTitle" type="text" placeholder="Gray 4-door 2003 Corolla S-type" />
+                </label>
+                <label>
+                  <span>Type</span>
+                  <select id="artifactKind">
+                    <option value="vehicle">Vehicle</option>
+                    <option value="object">Object</option>
+                    <option value="document">Document</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="symbol">Symbol / marking</option>
+                  </select>
+                </label>
+              </div>
+              <div class="cast-row">
+                <label>
+                  <span>Era / year</span>
+                  <input id="artifactEra" type="text" placeholder="2003, UCSB years, childhood, etc." />
+                </label>
+                <label>
+                  <span>Place / route context</span>
+                  <input id="artifactPlace" type="text" placeholder="Wrightwood, Calico Ghost Town, Hwy 154, etc." />
+                </label>
+              </div>
+              <label>
+                <span>Marking / plate / text</span>
+                <input id="artifactMarking" type="text" placeholder="5BZZ601 · GRYGHST / GRYGHOST · plate frame text" />
+              </label>
+              <label>
+                <span>Private note</span>
+                <textarea id="artifactNote" rows="4" placeholder="Local-only memory note, provenance, story cue, or uncertainty."></textarea>
+              </label>
+              <div class="map-pin-actions">
+                <button type="button" id="addArtifactBtn">Add item</button>
+                <button type="button" id="clearArtifactBtn">Clear objects lane</button>
+              </div>
+            </div>
+            <div id="artifactLaneList" class="artifact-list"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-tag">Local-only story atlas</span>
+              <h2>Private story clusters by location</h2>
+            </div>
+            <p class="panel-copy">
+              This browser-only view groups scratchpad notes and object-lane items by place. Use formats like
+              <code>Calico Ghost Town :: trailer electrical fire</code> when a remembered place is not yet part of
+              the public map.
+            </p>
+            <div id="privateStoryClusterList" class="story-cluster-list"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-tag">Local-only milestone lane</span>
+              <h2>School / dance / graduation cards</h2>
+            </div>
+            <p class="panel-copy">
+              Keep school-era memories like dances, graduations, ceremonies, companions, and date notes here.
+              These cards stay browser-local and can feed the private timeline lane without entering public exports.
+            </p>
+            <div class="form-grid compact artifact-form">
+              <div class="cast-row">
+                <label>
+                  <span>Event label</span>
+                  <input id="privateMilestoneTitle" type="text" placeholder="Glendora High School graduation" />
+                </label>
+                <label>
+                  <span>Era / year</span>
+                  <input id="privateMilestoneEra" type="text" placeholder="2001, senior year, spring 2001" />
+                </label>
+              </div>
+              <div class="cast-row">
+                <label>
+                  <span>Place</span>
+                  <input id="privateMilestonePlace" type="text" placeholder="Glendora, California" />
+                </label>
+                <label>
+                  <span>People / companion</span>
+                  <input id="privateMilestonePeople" type="text" placeholder="Stacy Hall, Stefanie Maroun" />
+                </label>
+              </div>
+              <div class="cast-row">
+                <label>
+                  <span>Category</span>
+                  <select id="privateMilestoneCategory">
+                    <option value="">Auto-detect from title / note</option>
+                    <option value="wedding-ceremony">Weddings / ceremonies</option>
+                    <option value="school-dance-reunion">School dances / reunions</option>
+                    <option value="other">Other local-only memory</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Linked cast people (optional)</span>
+                  <input id="privateMilestoneLinks" type="text" placeholder="Comma-separated cast-lane names to link privately" />
+                </label>
+              </div>
+              <label>
+                <span>Private note</span>
+                <textarea id="privateMilestoneNote" rows="4" placeholder="Local-only note, uncertainty, memory cue, or provenance detail."></textarea>
+              </label>
+              <div class="map-pin-actions">
+                <button type="button" id="addPrivateMilestoneBtn">Add milestone</button>
+                <button type="button" id="clearPrivateMilestoneBtn">Clear milestone lane</button>
+              </div>
+            </div>
+            <div id="privateMilestoneList" class="private-milestone-list"></div>
+            <input id="privateMilestonePhotoInput" type="file" accept="image/*" hidden />
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-tag">Local-only fiction lab</span>
+              <h2>Alias legend / refrigerator magnets</h2>
+            </div>
+            <p class="panel-copy">
+              Build a separate fiction-side legend that swaps real names and places, gives the story a
+              nom de plume, and lets you move phrase magnets around when you hit writer's block. This
+              legend stays in this browser unless you intentionally export a fiction-veil SFX.
+            </p>
+            <div class="form-grid compact fiction-grid">
+              <label>
+                <span>Fiction title</span>
+                <input id="fictionStoryTitle" type="text" placeholder="The Atlas of Borrowed Names" />
+              </label>
+              <label>
+                <span>Nom de plume</span>
+                <input id="fictionNomDePlume" type="text" placeholder="S. Vale" />
+              </label>
+              <label>
+                <span>Protagonist alias</span>
+                <input id="fictionProtagonistAlias" type="text" placeholder="Rowan Vale" />
+              </label>
+              <label>
+                <span>Fiction subtitle</span>
+                <input id="fictionStorySubtitle" type="text" placeholder="A privacy-veil story draft built from altered names and places" />
+              </label>
+              <label class="toggle-row">
+                <input id="fictionSeparateTimeline" type="checkbox" checked />
+                <span>Keep the primary timeline separate from the protagonist in fiction export</span>
+              </label>
+            </div>
+            <div class="form-grid compact fiction-legend-grid">
+              <label>
+                <span>Real name / place</span>
+                <input id="fictionRealName" type="text" placeholder="Goleta" />
+              </label>
+              <label>
+                <span>Fiction alias</span>
+                <input id="fictionAliasName" type="text" placeholder="Gull Point" />
+              </label>
+              <label>
+                <span>Type</span>
+                <select id="fictionAliasKind">
+                  <option value="person">Person</option>
+                  <option value="place">Place</option>
+                  <option value="thing">Thing</option>
+                  <option value="group">Group</option>
+                </select>
+              </label>
+              <div class="fiction-legend-actions">
+                <button type="button" id="addFictionAliasBtn">Add alias</button>
+                <button type="button" id="clearFictionLegendBtn">Clear legend</button>
+              </div>
+            </div>
+            <div id="fictionLegendList" class="fiction-legend-list"></div>
+            <div class="fiction-magnet-lab">
+              <section class="fiction-magnet-panel">
+                <div class="map-block-head">
+                  <b>Magnet tray</b>
+                  <small>click a token to add it</small>
+                </div>
+                <div id="magnetTray" class="magnet-tray"></div>
+              </section>
+              <section class="fiction-magnet-panel">
+                <div class="map-block-head">
+                  <b>Fridge board</b>
+                  <small>drag to reorder · click to remove</small>
+                </div>
+                <div id="magnetBoard" class="magnet-board"></div>
+                <div class="fiction-legend-actions">
+                  <button type="button" id="clearMagnetBoardBtn">Clear magnets</button>
+                </div>
+                <label>
+                  <span>Scene scratch line</span>
+                  <textarea id="magnetScenePad" rows="4" placeholder="Compose a fiction-side scene from the board or type freely."></textarea>
+                </label>
+              </section>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head wide">
+              <div>
+                <span class="panel-tag">Chapters</span>
+                <h2>Template pages to fill out</h2>
+              </div>
+              <button type="button" id="addChapterBtn" class="pill-button">Add chapter</button>
+            </div>
+            <p class="panel-copy">Use the Map button to focus linked places, set page type per chapter, or drag cards to reorder the book.</p>
+            <div id="chapterList" class="chapter-list"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-tag">Scrapbook</span>
+              <h2>Photo / scan slots</h2>
+            </div>
+            <p class="panel-copy">
+              Local-only image slots for scans, snapshots, yearbook clippings, flyers, or chapter art.
+              These stay in this browser and are excluded from viewer, SFX, quine, and webxdc export.
+            </p>
+            <div id="photoGrid" class="photo-grid"></div>
+            <input id="photoInput" type="file" accept="image/*" hidden />
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-tag">Local-only cast lane</span>
+              <h2>Private family tree / cast of characters</h2>
+            </div>
+            <p class="panel-copy">
+              Build a private cast list or family tree for your working draft. Names stored here never
+              enter exported book files unless you manually rewrite them into a chapter yourself.
+            </p>
+            <div class="form-grid compact cast-form">
+              <div class="cast-row">
+                <label>
+                  <span>Name</span>
+                  <input id="castName" type="text" placeholder="Name" />
+                </label>
+                <label>
+                  <span>Relation</span>
+                  <select id="castRelation">
+                    <option value="family">Family</option>
+                    <option value="friend">Friend</option>
+                    <option value="mentor">Mentor</option>
+                    <option value="roommate">Roommate</option>
+                    <option value="neighbor">Neighbor</option>
+                    <option value="other">Other</option>
+                  </select>
+                </label>
+              </div>
+              <div class="cast-row">
+                <label>
+                  <span>Era / location</span>
+                  <input id="castEra" type="text" placeholder="UCSB years, Glendora, St. Croix, etc." />
+                </label>
+                <label>
+                  <span>Branch</span>
+                  <input id="castBranch" type="text" placeholder="Immediate family, dorm, work, neighborhood" />
+                </label>
+              </div>
+              <label>
+                <span>Connected to</span>
+                <input id="castLinks" type="text" placeholder="Comma-separated names, or labels like child: self, spouse: Alex, parent: Jean" />
+              </label>
+              <p class="google-timeline-note">Edge labels support parent, child, sibling, spouse, family, friend, mentor, roommate, and neighbor. Write them from the selected person's point of view, for example: child: self, spouse: Alex, parent: Jean.</p>
+              <label>
+                <span>Private note</span>
+                <textarea id="castNote" rows="4" placeholder="Local-only notes, relationships, reminders, or follow-up research prompts."></textarea>
+              </label>
+              <div class="map-pin-actions">
+                <button type="button" id="addCastBtn">Add person</button>
+                <button type="button" id="clearCastBtn">Clear cast</button>
+              </div>
+              <div class="cast-row">
+                <label>
+                  <span>GEDCOM import scope</span>
+                  <select id="castTreeImportScope">
+                    <option value="full">Full connected tree</option>
+                    <option value="direct">Direct relatives only</option>
+                  </select>
+                </label>
+                <label class="google-timeline-upload">
+                  <span>Family tree text import</span>
+                  <input id="castTreeImportInput" type="file" accept=".txt,.csv,.ged,.gedcom,text/plain" />
+                </label>
+              </div>
+              <p class="google-timeline-note">Use a local text file or GEDCOM export such as Greeran Family Tree.txt to seed the private cast lane. GEDCOM imports can stay tight to direct relatives or expand to the full connected tree. The import runs in your browser and stays local-only.</p>
+            </div>
+            <div id="castTree" class="cast-tree"></div>
+            <section class="genealogy-panel">
+              <div class="map-block-head">
+                <b>Genealogy view</b>
+                <small>generations / parents / children</small>
+              </div>
+              <p class="google-timeline-note">Autosomal DNA ranges can overlap across cousins and other close matches, so branch colors and relationship labels are structural clues, not proof by themselves.</p>
+              <div id="genealogyView" class="genealogy-view"></div>
+            </section>
+            <div class="cast-graph-wrap">
+              <canvas id="castGraph" width="900" height="520" aria-label="Private relationship graph"></canvas>
+              <article id="castGraphDetail" class="map-detail">
+                <b>Relationship graph</b>
+                <p>Select a person card or click a graph node to inspect local-only family-tree and cast connections.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="stage-panel" id="viewer" hidden>
+          <div class="panel preview-panel">
+            <div class="panel-head wide">
+              <div>
+                <span class="panel-tag">Viewer</span>
+                <h2>Live reading edition</h2>
+              </div>
+              <button type="button" id="refreshViewerBtn" class="pill-button">Refresh preview</button>
+            </div>
+            <iframe id="viewerFrame" title="Book viewer preview"></iframe>
+          </div>
+        </section>
+
+        <section class="stage-panel" id="sfx" hidden>
+          <div class="panel preview-panel">
+            <div class="panel-head wide">
+              <div>
+                <span class="panel-tag">SFX Viewer</span>
+                <h2>Self-extracting installer preview</h2>
+              </div>
+              <button type="button" id="refreshSfxBtn" class="pill-button">Refresh preview</button>
+            </div>
+            <iframe id="sfxFrame" title="SFX installer preview"></iframe>
+          </div>
+        </section>
+
+        <section class="stage-panel" id="map" hidden>
+          <div class="panel preview-panel">
+            <div class="panel-head wide">
+              <div>
+                <span class="panel-tag">Research atlas</span>
+                <h2>Interactive map of published and private-lane places</h2>
+              </div>
+              <div class="chapter-tools">
+                <button type="button" id="mapFilterAll">All</button>
+                <button type="button" id="mapFilterOfficial">Official</button>
+                <button type="button" id="mapFilterResume">Resume</button>
+                <button type="button" id="mapFilterPrivate">Private lane</button>
+              </div>
+            </div>
+            <div class="map-stage">
+              <canvas id="researchMap" width="1200" height="700" aria-label="Interactive research map"></canvas>
+              <div class="map-aside">
+                <div id="mapLegend" class="map-legend"></div>
+
+                <section class="map-block">
+                  <div class="map-block-head">
+                    <b>Chapter links</b>
+                    <button type="button" id="clearChapterFocus">Clear</button>
+                  </div>
+                  <div id="chapterLinkList" class="chapter-link-list"></div>
+                </section>
+
+                <div id="mapPlaceList" class="map-place-list"></div>
+
+                <section class="map-block">
+                  <div class="map-block-head">
+                    <b>Private origin timeline</b>
+                    <small>local-only lane</small>
+                  </div>
+                  <div id="timelineLane" class="timeline-lane"></div>
+                </section>
+
+                <section class="map-block google-timeline-block">
+                  <div class="map-block-head">
+                    <b>Google Timeline import</b>
+                    <small>local-only alternative</small>
+                  </div>
+                  <p class="google-timeline-note">Import exported Google Maps Timeline JSON as a local-only alternative to hand-entered pins. Parsed places and visit notes stay in this browser and remain excluded from viewer, SFX, project export, and webxdc sharing unless you manually promote them into chapter text.</p>
+                  <label class="google-timeline-upload">
+                    <span>Timeline JSON file(s)</span>
+                    <input id="googleTimelineInput" type="file" accept=".json,application/json" multiple />
+                  </label>
+                  <div class="map-pin-actions">
+                    <button type="button" id="exportGoogleTimelineCsvBtn">Export CSV</button>
+                    <button type="button" id="exportGoogleTimelineKmlBtn">Export KML</button>
+                    <button type="button" id="clearGoogleTimelineBtn">Clear Google Timeline</button>
+                  </div>
+                  <div id="googleTimelineMeta" class="google-timeline-meta"></div>
+                  <div id="googleTimelineList" class="timeline-lane google-timeline-list"></div>
+                </section>
+
+                <section class="map-block map-pin-editor">
+                  <div class="map-block-head">
+                    <b>Manual pin editor</b>
+                    <small>stored in this browser</small>
+                  </div>
+                  <div class="form-grid compact map-pin-form">
+                    <label>
+                      <span>Pin label</span>
+                      <input id="pinName" type="text" placeholder="Custom place or person" />
+                    </label>
+                    <div class="map-pin-coords">
+                      <label>
+                        <span>Latitude</span>
+                        <input id="pinLat" type="text" placeholder="34.1478" />
+                      </label>
+                      <label>
+                        <span>Longitude</span>
+                        <input id="pinLon" type="text" placeholder="-118.1445" />
+                      </label>
+                    </div>
+                    <label>
+                      <span>Lane color</span>
+                      <select id="pinLane">
+                        <option value="private">Private</option>
+                        <option value="self-published">Resume</option>
+                        <option value="official">Official</option>
+                      </select>
+                    </label>
+                    <label>
+                      <span>Note</span>
+                      <textarea id="pinSummary" rows="4" placeholder="Local-only note. Manual pins are not exported or shared."></textarea>
+                    </label>
+                    <div class="map-pin-actions">
+                      <button type="button" id="addPinBtn">Add pin</button>
+                      <button type="button" id="clearPinsBtn">Clear manual pins</button>
+                    </div>
+                  </div>
+                  <div id="manualPinList" class="manual-pin-list"></div>
+                </section>
+
+                <article id="mapDetail" class="map-detail">
+                  <b>Select a place</b>
+                  <p>Click a marker or a place chip to inspect its note, lane, and source class.</p>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="stage-panel" id="project" hidden>
+          <div class="panel preview-panel">
+            <div class="panel-head">
+              <span class="panel-tag">Project file</span>
+              <h2>Current JSON</h2>
+            </div>
+            <pre id="projectDump" class="project-dump"></pre>
+          </div>
+        </section>
+      </section>
+
+      <aside class="inspector-rail">
+        <section class="panel">
+          <div class="panel-head">
+            <span class="panel-tag">Inspector</span>
+            <h2>Project stats</h2>
+          </div>
+          <dl class="stat-grid" id="statGrid">
+            <div><dt>Template</dt><dd id="statTemplate">—</dd></div>
+            <div><dt>Chapters</dt><dd id="statChapters">0</dd></div>
+            <div><dt>Words</dt><dd id="statWords">0</dd></div>
+            <div><dt>Snapshots</dt><dd id="statSnapshots">0</dd></div>
+          </dl>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head wide">
+            <div>
+              <span class="panel-tag">Snapshots</span>
+              <h2>Restore points</h2>
+            </div>
+            <button type="button" id="clearSnapshotsBtn" class="pill-button danger">Clear</button>
+          </div>
+          <div id="snapshotList" class="snapshot-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <span class="panel-tag">webxdc</span>
+            <h2>Chat / viewer log</h2>
+          </div>
+          <div id="xdcLog" class="xdc-log"></div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script src="./js/book-builder.js"></script>
+</body>
+</html>

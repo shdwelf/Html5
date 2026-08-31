@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Authentic Ensō Generator</title>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #dcd7ca; font-family: sans-serif; }
+        #canvasContainer { position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        canvas { background: #fdfaf0; display: block; }
+        .controls { margin-top: 20px; display: flex; gap: 10px; }
+        button { padding: 10px 20px; cursor: pointer; border: none; background: #333; color: white; border-radius: 4px; font-weight: bold; }
+        button:hover { background: #555; }
+    </style>
+</head>
+<body>
+
+<div id="canvasContainer">
+    <canvas id="ensoCanvas" width="600" height="600"></canvas>
+</div>
+
+<div class="controls">
+    <button onclick="generateNew()">Generate New Ensō</button>
+    <button onclick="downloadPNG()">Export as PNG</button>
+</div>
+
+<script>
+    const canvas = document.getElementById('ensoCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Adds a subtle paper grain texture to the canvas
+    function applyPaperTexture() {
+        const imageData = ctx.createImageData(600, 600);
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            const val = 240 + Math.random() * 15;
+            imageData.data[i] = val;     // R
+            imageData.data[i+1] = val;   // G
+            imageData.data[i+2] = val;   // B
+            imageData.data[i+3] = 255;   // A
+        }
+        ctx.putImageData(imageData, 0, 0);
+    }
+
+    function generateNew() {
+        ctx.clearRect(0, 0, 600, 600);
+        applyPaperTexture();
+
+        const centerX = 300, centerY = 300, radius = 200;
+        ctx.beginPath();
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = 'rgba(20, 20, 20, 0.9)';
+
+        let startAngle = Math.random() * Math.PI * 2;
+        let prevX, prevY;
+
+        for (let i = 0; i <= 360; i++) {
+            let angle = (i * Math.PI / 180) + startAngle;
+            // The "uninhibited" nature: random variations in radius and position
+            let jitter = (Math.random() - 0.5) * 12;
+            let r = radius + jitter;
+
+            let x = centerX + r * Math.cos(angle);
+            let y = centerY + r * Math.sin(angle);
+
+            // Variable thickness mimics brush pressure
+            ctx.lineWidth = 8 + (Math.sin(i * 0.05) * 15) + (Math.random() * 5);
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+    }
+
+    function downloadPNG() {
+        const link = document.createElement('a');
+        link.download = 'enso-circle.png';
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    }
+
+    generateNew();
+</script>
+</body>
+</html>
