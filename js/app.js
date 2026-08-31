@@ -7,7 +7,7 @@ const $ = (id) => document.getElementById(id);
 
 function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
-  if (raw === "terrarium" || raw === "keyspace" || raw === "grid") return raw;
+  if (raw === "terrarium" || raw === "keyspace" || raw === "cylinders" || raw === "grid") return raw;
   return "grid";
 }
 
@@ -98,10 +98,11 @@ let started = null;
 async function start(mode) {
   markDock(mode);
 
-  if (mode === "keyspace") {
-    const frame = $("keyframe");
-    if (frame && !frame.getAttribute("src")) frame.src = "./keyspace.html";
-    document.title = "SITE-K · Keyspace";
+  if (mode === "keyspace" || mode === "cylinders") {
+    const frame = mode === "keyspace" ? $("keyframe") : $("syncframe");
+    const src = mode === "keyspace" ? "./keyspace.html" : "./cylinder-sync.html";
+    if (frame && !frame.getAttribute("src")) frame.src = src;
+    document.title = mode === "keyspace" ? "SITE-K · Keyspace" : "Cylinder Sync · UCSB Library";
     return;
   }
 

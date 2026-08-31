@@ -145,3 +145,29 @@ body[data-display="standalone"] .install-tip { display: none !important; }
 @media (display-mode: standalone) {
   .install-chip, .install-tip { display: none !important; }
 }
+
+/* Catalog reconciliation app surface */
+#syncframe {
+  display: none;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #eef0f1;
+  z-index: 24;
+}
+body[data-mode="cylinders"] #syncframe { display: block; }
+body[data-mode="cylinders"] #stage,
+body[data-mode="cylinders"] .labels,
+body[data-mode="cylinders"] .topbar,
+body[data-mode="cylinders"] .left-dock,
+body[data-mode="cylinders"] .right-dock,
+body[data-mode="cylinders"] .phase-chip,
+body[data-mode="cylinders"] .glass-note,
+body[data-mode="cylinders"] .hud-coords,
+body[data-mode="cylinders"] .help,
+body[data-mode="cylinders"] .cmdbar,
+body[data-mode="cylinders"] .ui-pack,
+body[data-mode="cylinders"] .wm-desk,
+body[data-mode="cylinders"] #boot { display: none !important; }
