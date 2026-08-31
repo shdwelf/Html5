@@ -1,0 +1,2310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERIS: Highly Optimized 3D Ahnentafel Doughnut & ZPE Module</title>
+  <style>
+    :root {
+      --bg-color: #020205;
+      --bg-gradient: radial-gradient(circle at center, #060612 0%, #010103 100%);
+      --panel-bg: rgba(6, 8, 16, 0.82);
+      --panel-border: rgba(0, 243, 255, 0.12);
+      --text-main: #f0f4f8;
+      --text-muted: #7e94b2;
+      
+      /* Lineage Quadrant Glowing Colors */
+      --color-target: #ffb700;
+      --color-pat-gf: #00f3ff; /* Paternal Grandfather - Electric Cyan */
+      --color-pat-gm: #00f5a0; /* Paternal Grandmother - Neon Green/Teal */
+      --color-mat-gf: #a044ff; /* Maternal Grandfather - Biotech Purple */
+      --color-mat-gm: #ff00a0; /* Maternal Grandmother - Hot Pink */
+      --color-unknown: #424a61;
+      --color-active: #00ff66;
+      
+      --font-sans: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: var(--bg-gradient);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* ----------------------------------------------------
+       LAYOUT: SIDEBAR CONTROL PANEL
+       ---------------------------------------------------- */
+    .sidebar {
+      width: 420px;
+      height: 100vh;
+      background: var(--panel-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid var(--panel-border);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      box-shadow: 10px 0 35px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--panel-border);
+      position: relative;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      stroke: var(--color-pat-gf);
+      fill: none;
+      filter: drop-shadow(0 0 8px var(--color-pat-gf));
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fff 0%, var(--color-pat-gf) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px rgba(0, 243, 255, 0.25);
+    }
+
+    .subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Webkit scrollbar optimizations */
+    .sidebar-content::-webkit-scrollbar, .pedigree-list::-webkit-scrollbar {
+      width: 5px;
+    }
+    .sidebar-content::-webkit-scrollbar-track, .pedigree-list::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.1);
+    }
+    .sidebar-content::-webkit-scrollbar-thumb, .pedigree-list::-webkit-scrollbar-thumb {
+      background: rgba(0, 243, 255, 0.15);
+      border-radius: 3px;
+    }
+    .sidebar-content::-webkit-scrollbar-thumb:hover, .pedigree-list::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 243, 255, 0.3);
+    }
+
+    .panel-section {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--color-pat-gf);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .file-input {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 10px 16px;
+      background: rgba(0, 243, 255, 0.05);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn:hover {
+      background: rgba(0, 243, 255, 0.12);
+      border-color: rgba(0, 243, 255, 0.45);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.18);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      color: #fff;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    select:focus, input[type="text"]:focus {
+      border-color: var(--color-pat-gf);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      padding: 0;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-pat-gf);
+      box-shadow: 0 0 8px var(--color-pat-gf);
+      transition: transform 0.1s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slider-val {
+      font-size: 11px;
+      font-family: monospace;
+      color: var(--text-muted);
+      width: 38px;
+      text-align: right;
+    }
+
+    /* ----------------------------------------------------
+       UX FOCUS: DOUGHNUT TIER SELECTOR BAR
+       ---------------------------------------------------- */
+    .tier-focus-container {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .tier-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      padding: 6px 0;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .tier-btn:hover {
+      background: rgba(0, 243, 255, 0.08);
+      border-color: rgba(0, 243, 255, 0.25);
+      color: #fff;
+    }
+
+    .tier-btn.active {
+      background: rgba(0, 243, 255, 0.14);
+      border-color: var(--color-pat-gf);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.22);
+    }
+
+    /* Color Legends */
+    .legend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .legend-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    /* Full Pedigree search lists */
+    .pedigree-list {
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 6px;
+    }
+
+    .list-item {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .list-item:hover {
+      background: rgba(0, 243, 255, 0.04);
+    }
+
+    .list-item-name {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 250px;
+    }
+
+    .list-item-num {
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    /* ----------------------------------------------------
+       3D VIEWPORT CANVAS SPACE
+       ---------------------------------------------------- */
+    .viewport {
+      flex: 1;
+      height: 100vh;
+      position: relative;
+      outline: none;
+    }
+
+    .scene {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1200px;
+      overflow: hidden;
+      cursor: grab;
+    }
+
+    .scene:active {
+      cursor: grabbing;
+    }
+
+    /* Starry holographic floors */
+    .grid-floor {
+      position: absolute;
+      width: 2600px;
+      height: 2600px;
+      top: 50%;
+      left: 50%;
+      margin-left: -1300px;
+      margin-top: -1300px;
+      background-image: 
+        linear-gradient(rgba(0, 243, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 243, 255, 0.035) 1px, transparent 1px);
+      background-size: 60px 60px;
+      background-position: center;
+      transform: rotateX(90deg) translateZ(-340px);
+      transform-style: preserve-3d;
+      pointer-events: none;
+      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 65%);
+      -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 65%);
+    }
+
+    .radial-glow {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 243, 255, 0.04) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+      transform: translate3d(0, 0, -330px);
+    }
+
+    /* 3D Platform rotating container */
+    .tree-container {
+      position: relative;
+      width: 500px;
+      height: 500px;
+      transform-style: preserve-3d;
+      transform: rotateX(65deg) rotateZ(0deg);
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tree-container.auto-spin {
+      animation: spinPlatform 45s linear infinite;
+    }
+
+    @keyframes spinPlatform {
+      from { transform: rotateX(var(--rx, 65deg)) rotateZ(var(--rz, 0deg)); }
+      to { transform: rotateX(var(--rx, 65deg)) rotateZ(calc(var(--rz, 0deg) + 360deg)); }
+    }
+
+    /* ----------------------------------------------------
+       3D SOLID DOUGHNUT WEDGE GEOMETRY (PREMIUM CHUNKY)
+       ---------------------------------------------------- */
+    .wedge-block-3d {
+      position: absolute;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15), filter 0.3s, opacity 0.4s ease;
+      filter: brightness(0.7) drop-shadow(0 0 2px rgba(0,0,0,0.4));
+    }
+
+    .wedge-block-3d:hover {
+      filter: brightness(1.25) drop-shadow(0 0 15px var(--glow-color));
+    }
+
+    /* Dimming of inactive tiers in doughnut focus mode */
+    .wedge-block-3d.dimmed {
+      opacity: 0.12 !important;
+      filter: brightness(0.3) saturate(0.4) grayscale(0.5);
+      pointer-events: none;
+    }
+
+    .wedge-block-3d.focused-tier {
+      opacity: 1 !important;
+      filter: brightness(1.3) drop-shadow(0 0 20px var(--glow-color));
+    }
+
+    /* Highly Optimized Frosted Neon Glass Prism Faces */
+    .wedge-face {
+      position: absolute;
+      transform-style: preserve-3d;
+      backface-visibility: hidden; /* Optimization: avoids redundant double render */
+      
+      /* Doughnut Wedge Tapered Trapezoid leaving a clean 35% center hole */
+      clip-path: polygon(32.5% 65%, 0% 0%, 100% 0%, 67.5% 65%);
+      background: radial-gradient(ellipse at bottom, 
+        rgba(var(--color-rgb), 0.16) 0%, 
+        rgba(var(--color-rgb), 0.45) 100%
+      );
+      border: 1.5px solid rgba(var(--color-rgb), 0.72);
+      box-shadow: 
+        0 0 10px rgba(var(--color-rgb), 0.25),
+        inset 0 0 10px rgba(var(--color-rgb), 0.2);
+    }
+
+    .wedge-face.bottom {
+      transform: translateZ(0px);
+    }
+
+    .wedge-face.top {
+      /* translateZ is set dynamically to TOWER_THICKNESS in JS */
+    }
+
+    /* Outer cylindrical rim wall block connector */
+    .wedge-rim {
+      position: absolute;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      background: linear-gradient(to top, 
+        rgba(var(--color-rgb), 0.35) 0%, 
+        rgba(var(--color-rgb), 0.7) 100%
+      );
+      border: 1.5px solid rgba(var(--color-rgb), 0.82);
+      box-shadow: 
+        0 0 12px rgba(var(--color-rgb), 0.3),
+        inset 0 0 6px rgba(255, 255, 255, 0.22);
+      transform-origin: 50% 0%;
+      transform: rotateX(-90deg); /* Fold upright */
+    }
+
+    /* Active Highlight States during Radial Drawer Fly-Out */
+    .wedge-block-3d.active .wedge-face {
+      background: radial-gradient(ellipse at bottom, 
+        rgba(0, 255, 102, 0.25) 0%, 
+        rgba(0, 255, 102, 0.6) 100%
+      ) !important;
+      border-color: #00ff66 !important;
+      box-shadow: 
+        0 0 15px rgba(0, 255, 102, 0.5),
+        inset 0 0 10px rgba(0, 255, 102, 0.4) !important;
+    }
+
+    .wedge-block-3d.active .wedge-rim {
+      background: linear-gradient(to top, 
+        rgba(0, 255, 102, 0.4) 0%, 
+        rgba(0, 255, 102, 0.8) 100%
+      ) !important;
+      border-color: #00ff66 !important;
+      box-shadow: 0 0 18px rgba(0, 255, 102, 0.6) !important;
+    }
+
+    /* Horizontal text labels positioned inside the doughnut wedge tops */
+    .hud-label {
+      position: absolute;
+      color: #fff;
+      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      pointer-events: none;
+      text-align: center;
+      width: 100%;
+      bottom: 22px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 5px var(--glow-color);
+    }
+
+    /* ----------------------------------------------------
+       THE 3D ZERO POINT ENERGY MODULE (ZPE BRANCHES)
+       ---------------------------------------------------- */
+    .pipe-window {
+      position: absolute;
+      top: 100%; /* Centered radially relative to the center of the torus */
+      left: 50%;
+      transform-style: preserve-3d;
+      pointer-events: none;
+      display: none;
+      opacity: 0;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+    }
+
+    .pipe-window.visible {
+      opacity: 1;
+    }
+
+    .pipe-branch-node {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform-origin: 50% 100%;
+      transform-style: preserve-3d;
+      pointer-events: auto;
+      
+      /* Staggered unfolding animation */
+      animation: unfoldZPE 0.8s cubic-bezier(0.25, 1, 0.5, 1) both;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes unfoldZPE {
+      0% {
+        opacity: 0;
+        transform: rotateZ(var(--local-angle)) scale3d(0, 0, 0);
+        filter: brightness(3);
+      }
+      40% {
+        opacity: 0.5;
+        filter: brightness(2);
+      }
+      100% {
+        opacity: 1;
+        transform: rotateZ(var(--local-angle)) scale3d(1, 1, 1);
+        filter: brightness(1);
+      }
+    }
+
+    /* Glowing fiber-optic conduits */
+    .pipe-connector-line {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      transform-style: preserve-3d;
+      background: linear-gradient(to top, 
+        rgba(255, 255, 255, 0.05) 0%, 
+        rgba(255, 255, 255, 0.25) 20%, 
+        var(--line-color) 50%, 
+        rgba(255, 255, 255, 0.8) 85%, 
+        #ffffff 100%
+      );
+      border-radius: 4px;
+      box-shadow: 
+        0 0 10px var(--line-color), 
+        0 0 20px var(--line-color), 
+        inset 0 0 4px #ffffff;
+      opacity: 0.9;
+    }
+
+    .pipe-connector-line::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 35px;
+      background: linear-gradient(to top, transparent, #ffffff 50%, transparent);
+      bottom: 0;
+      left: 0;
+      opacity: 0.9;
+      animation: pulseZPE 1.8s infinite linear;
+      box-shadow: 0 0 15px #ffffff;
+    }
+
+    @keyframes pulseZPE {
+      0% { bottom: -20%; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { bottom: 110%; opacity: 0; }
+    }
+
+    /* Orbital ZPE magnetic stabilizing collars */
+    .energy-ring {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate3d(-50%, -50%, 0) rotateX(90deg); /* Lies flat horizontally! */
+      transform-style: preserve-3d;
+      border: 1.5px solid var(--node-color);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.45) 100%);
+      box-shadow: 
+        0 0 12px var(--node-color), 
+        inset 0 0 12px var(--node-color);
+      pointer-events: none;
+      animation: rotateRing 4s linear infinite, hoverRing 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes rotateRing {
+      0% { transform: translate3d(-50%, -50%, 0) rotateX(90deg) rotateZ(0deg); }
+      100% { transform: translate3d(-50%, -50%, 0) rotateX(90deg) rotateZ(360deg); }
+    }
+
+    @keyframes hoverRing {
+      0% { margin-top: -3px; filter: brightness(0.85); }
+      100% { margin-top: 3px; filter: brightness(1.2); }
+    }
+
+    .pipe-ancestor-dot {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #000;
+      border: 2px solid var(--node-color);
+      transform: translate3d(-50%, -50%, 5px);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--node-color);
+      transition: all 0.3s;
+      z-index: 10;
+    }
+
+    .pipe-ancestor-dot:hover {
+      width: 18px;
+      height: 18px;
+      background: var(--node-color);
+      box-shadow: 0 0 20px #fff, 0 0 12px var(--node-color);
+      transform: translate3d(-50%, -50%, 15px) scale(1.2);
+    }
+
+    .pipe-branch-label {
+      position: absolute;
+      left: 18px;
+      top: -6px;
+      white-space: nowrap;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.95);
+      background: rgba(4, 5, 12, 0.85);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--node-color);
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .pipe-children-container {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform-style: preserve-3d;
+      width: 0;
+      height: 0;
+    }
+
+    /* ----------------------------------------------------
+       HUD OVERLAYS & SCENE BUTTONS
+       ---------------------------------------------------- */
+    .viewport-controls {
+      position: absolute;
+      right: 24px;
+      top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 8;
+    }
+
+    .control-btn {
+      width: 44px;
+      height: 44px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.2s;
+    }
+
+    .control-btn:hover {
+      background: rgba(0, 243, 255, 0.12);
+      border-color: rgba(0, 243, 255, 0.4);
+      color: var(--color-pat-gf);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+    }
+
+    .control-btn.active {
+      background: rgba(0, 255, 102, 0.1);
+      border-color: rgba(0, 255, 102, 0.4);
+      color: #00ff66;
+    }
+
+    .floating-hud {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      width: 320px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 16px;
+      z-index: 8;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .floating-hud.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .floating-hud-header {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--color-active);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .details-card {
+      border-left: 3px solid var(--color-pat-gf);
+      padding-left: 12px;
+    }
+
+    .details-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .details-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .details-stats {
+      font-size: 11px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .toast {
+      position: absolute;
+      top: 24px;
+      left: calc(50% + 210px);
+      transform: translateX(-50%) translateY(-50px);
+      background: rgba(8, 12, 24, 0.92);
+      border: 1px solid #00ff66;
+      border-radius: 8px;
+      padding: 12px 24px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 5px 25px rgba(0, 255, 102, 0.25);
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ----------------------------------------------------
+       MOBILE RESPONSIVE LAYOUTS & TOUCH INTEGRATIONS
+       ---------------------------------------------------- */
+    .sidebar-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(2, 2, 5, 0.7);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 99;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .sidebar-backdrop.visible {
+      display: block;
+      opacity: 1;
+    }
+
+    .mobile-menu-trigger {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      z-index: 15;
+      display: none;
+      width: 44px;
+      height: 44px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.2s;
+    }
+    .mobile-menu-trigger:hover {
+      background: rgba(0, 243, 255, 0.12);
+      border-color: rgba(0, 243, 255, 0.4);
+      color: var(--color-pat-gf);
+    }
+
+    .mobile-close-btn {
+      position: absolute;
+      right: 16px;
+      top: 20px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .mobile-close-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        position: relative;
+      }
+      
+      .sidebar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 320px;
+        max-width: 85vw;
+        height: 100vh;
+        transform: translateX(-100%);
+        z-index: 100;
+        box-shadow: 15px 0 40px rgba(0,0,0,0.6);
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .mobile-menu-trigger {
+        display: flex;
+      }
+
+      .mobile-close-btn {
+        display: flex;
+      }
+
+      .sidebar-header {
+        padding: 16px 56px 16px 16px;
+      }
+
+      .sidebar-content {
+        padding: 16px;
+        gap: 16px;
+      }
+
+      .viewport-controls {
+        right: 16px;
+        top: 16px;
+      }
+
+      .floating-hud {
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+        width: auto;
+        max-width: none;
+      }
+
+      .toast {
+        left: 50% !important;
+        transform: translateX(-50%) translateY(-50px) !important;
+        width: calc(100% - 32px);
+        max-width: 380px;
+        text-align: center;
+      }
+      .toast.visible {
+        transform: translateX(-50%) translateY(0) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Sample GEDCOM loaded successfully!</div>
+
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Left Sidebar Panel -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <svg class="logo-icon" viewBox="0 0 24 24">
+          <polygon points="12,2 2,12 5,12 5,22 19,22 19,12 22,12"/>
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12,5 L12,9"/>
+        </svg>
+        <h1>Aetheris 3D</h1>
+      </div>
+      <div class="subtitle">3D Ahnentafel Doughnut & ZPE Tree</div>
+      <!-- Mobile Close Button -->
+      <button class="mobile-close-btn" id="mobileCloseBtn" title="Close Control Panel">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="sidebar-content">
+      <!-- Upload & Sample Panel -->
+      <div class="panel-section">
+        <div class="section-title">Genealogical Data</div>
+        <div class="file-input-wrapper">
+          <button class="btn">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            Upload GEDCOM file
+          </button>
+          <input type="file" id="gedcomFile" class="file-input" accept=".ged">
+        </div>
+        <button class="btn btn-secondary" id="btnLoadSample">
+          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Load 8-Gen Royal Sample
+        </button>
+      </div>
+
+      <!-- Target Selection and Wedge Config -->
+      <div class="panel-section">
+        <div class="section-title">Visual Configuration</div>
+        <div class="form-group">
+          <label for="targetSelect">Target Individual (Ahnentafel #1)</label>
+          <select id="targetSelect">
+            <option value="">No data loaded</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Doughnut Tier Focus (Generation)</label>
+          <div class="tier-focus-container" id="tierFocusBar">
+            <button class="tier-btn active" data-gen="all">All</button>
+            <button class="tier-btn" data-gen="1">G1</button>
+            <button class="tier-btn" data-gen="2">G2</button>
+            <button class="tier-btn" data-gen="3">G3</button>
+            <button class="tier-btn" data-gen="4">G4</button>
+            <button class="tier-btn" data-gen="5">G5</button>
+            <button class="tier-btn" data-gen="6">G6</button>
+            <button class="tier-btn" data-gen="7">G7</button>
+            <button class="tier-btn" data-gen="8">G8</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tierSpacing">Tower Tier Spacing</label>
+          <div class="slider-container">
+            <input type="range" id="tierSpacing" min="20" max="75" value="45">
+            <span class="slider-val" id="tierSpacingVal">45px</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="maxPipeDepth">3D Pipe Render Depth</label>
+          <div class="slider-container">
+            <input type="range" id="maxPipeDepth" min="2" max="6" value="4">
+            <span class="slider-val" id="pipeDepthVal">4 Gen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Camera Settings -->
+      <div class="panel-section">
+        <div class="section-title">3D Camera Adjustments</div>
+        <div class="form-group">
+          <label for="camTilt">Tilt Angle (X-Rotate)</label>
+          <div class="slider-container">
+            <input type="range" id="camTilt" min="15" max="85" value="65">
+            <span class="slider-val" id="camTiltVal">65°</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="camZoom">Scale / Zoom</label>
+          <div class="slider-container">
+            <input type="range" id="camZoom" min="30" max="150" value="95">
+            <span class="slider-val" id="camZoomVal">0.95x</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="panel-section">
+        <div class="section-title">Color Legend</div>
+        <div class="legend-grid">
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--color-target);"></div>
+            <span>Target (#1)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--color-pat-gf);"></div>
+            <span>Paternal M (#4)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--color-pat-gm);"></div>
+            <span>Paternal F (#5)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--color-mat-gf);"></div>
+            <span>Maternal M (#6)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--color-mat-gm);"></div>
+            <span>Maternal F (#7)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--color-unknown);"></div>
+            <span>Unknown Ancestor</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full Pedigree Search List -->
+      <div class="panel-section">
+        <div class="section-title">
+          <span>Search Ahnentafel Nodes</span>
+          <span style="font-size: 10px; color: var(--text-muted);" id="nodeCount">0 loaded</span>
+        </div>
+        <div class="form-group">
+          <input type="text" id="searchNodes" placeholder="Filter by name...">
+        </div>
+        <div class="pedigree-list" id="pedigreeList">
+          <div style="padding: 16px; font-size: 11px; text-align: center; color: var(--text-muted);">
+            No family data parsed. Please load the sample or upload a GEDCOM.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Viewport Canvas -->
+  <div class="viewport" id="viewport">
+    <!-- Floating Hamburger for Mobile -->
+    <button class="mobile-menu-trigger" id="mobileMenuTrigger" title="Open Control Panel">
+      <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+
+    <!-- Overlay Camera HUD Controls -->
+    <div class="viewport-controls">
+      <button class="control-btn" id="btnToggleSpin" title="Toggle Auto-Spin Rotation">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 6H16"/></svg>
+      </button>
+      <button class="control-btn" id="btnResetCam" title="Reset View Angle & Zoom">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+      </button>
+      <button class="control-btn" id="btnToggleFlat" title="Toggle 2D Ortho Layout Mode">
+        <span style="font-size: 11px; font-weight: bold; font-family: monospace;">3D</span>
+      </button>
+    </div>
+
+    <!-- Live Floating HUD displaying hovered/clicked details -->
+    <div class="floating-hud" id="floatingHUD">
+      <div class="floating-hud-header" id="hudHeading">Hovered Ancestor</div>
+      <div class="details-card">
+        <div class="details-name" id="hudName">Johnathan Vance</div>
+        <div class="details-meta" id="hudMeta">Select an ancestor to begin.</div>
+        <div class="details-stats" id="hudStats">Doughnut Ring Selector</div>
+      </div>
+    </div>
+
+    <!-- 3D Scene Viewport -->
+    <div class="scene" id="scene">
+      <div class="grid-floor"></div>
+      <div class="radial-glow"></div>
+
+      <!-- Main rotating tree container -->
+      <div class="tree-container auto-spin" id="treeContainer">
+        <!-- 3D Wedge Tower lives here -->
+        <div id="sunburstBase" style="position: absolute; width: 100%; height: 100%; transform-style: preserve-3d;">
+        </div>
+
+        <!-- 3D Deep Pipe Windows will project out from here -->
+        <div class="pipe-window" id="pipeWindow">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ----------------------------------------------------
+    // HIGH-PERFORMANCE GEDCOM TOKENIZER & PARSER
+    // ----------------------------------------------------
+    
+    function parseGEDCOM(text) {
+      const lines = text.split(/\r?\n/);
+      const individuals = {};
+      const families = {};
+      
+      let currentIndi = null;
+      let currentFam = null;
+      let currentSection = null; 
+      let subLevelTag = null;
+
+      function parseGEDCOMLine(lineStr) {
+        const parts = lineStr.split(/\s+/);
+        if (parts.length < 2) return null;
+        const level = parseInt(parts[0], 10);
+        if (isNaN(level)) return null;
+        
+        let id = null;
+        let tag = null;
+        let value = "";
+        
+        if (parts[1].startsWith('@') && parts[1].endsWith('@')) {
+          id = parts[1];
+          tag = parts[2];
+          value = parts.slice(3).join(' ');
+        } else {
+          tag = parts[1];
+          value = parts.slice(2).join(' ');
+        }
+        
+        return { level, id, tag, value };
+      }
+      
+      for (let line of lines) {
+        line = line.trim();
+        if (!line) continue;
+        
+        const parsedLine = parseGEDCOMLine(line);
+        if (!parsedLine) continue;
+        
+        const { level, id, tag, value } = parsedLine;
+        
+        if (level === 0) {
+          currentIndi = null;
+          currentFam = null;
+          currentSection = null;
+          
+          if (tag === 'INDI' && id) {
+            currentIndi = { 
+              id: id, 
+              name: '', 
+              sex: '', 
+              bdate: '', 
+              bplace: '', 
+              ddate: '', 
+              dplace: '', 
+              famc: '', 
+              fams: [] 
+            };
+            individuals[id] = currentIndi;
+            currentSection = 'INDI';
+          } else if (tag === 'FAM' && id) {
+            currentFam = { 
+              id: id, 
+              husb: '', 
+              wife: '', 
+              chil: [] 
+            };
+            families[id] = currentFam;
+            currentSection = 'FAM';
+          }
+        } else {
+          if (currentSection === 'INDI' && currentIndi) {
+            if (level === 1) {
+              subLevelTag = tag;
+              if (tag === 'NAME') {
+                currentIndi.name = value.replace(/\//g, '').trim();
+              } else if (tag === 'SEX') {
+                currentIndi.sex = value.trim();
+              } else if (tag === 'FAMC') {
+                currentIndi.famc = value.trim();
+              } else if (tag === 'FAMS') {
+                currentIndi.fams.push(value.trim());
+              }
+            } else if (level === 2) {
+              if (subLevelTag === 'BIRT') {
+                if (tag === 'DATE') currentIndi.bdate = value.trim();
+                if (tag === 'PLAC') currentIndi.bplace = value.trim();
+              } else if (subLevelTag === 'DEAT') {
+                if (tag === 'DATE') currentIndi.ddate = value.trim();
+                if (tag === 'PLAC') currentIndi.dplace = value.trim();
+              }
+            }
+          } else if (currentSection === 'FAM' && currentFam) {
+            if (level === 1) {
+              if (tag === 'HUSB') {
+                currentFam.husb = value.trim();
+              } else if (tag === 'WIFE') {
+                currentFam.wife = value.trim();
+              } else if (tag === 'CHIL') {
+                currentFam.chil.push(value.trim());
+              }
+            }
+          }
+        }
+      }
+      return { individuals, families };
+    }
+
+    function buildAhnentafel(targetId, individuals, families) {
+      const ahnentafel = {};
+      const queue = [{ id: targetId, num: 1 }];
+      
+      while (queue.length > 0) {
+        const { id, num } = queue.shift();
+        if (num > 255) continue; 
+        
+        const indi = individuals[id];
+        if (indi) {
+          ahnentafel[num] = indi;
+          
+          if (indi.famc) {
+            const fam = families[indi.famc];
+            if (fam) {
+              if (fam.husb) {
+                queue.push({ id: fam.husb, num: num * 2 });
+              }
+              if (fam.wife) {
+                queue.push({ id: fam.wife, num: num * 2 + 1 });
+              }
+            }
+          }
+        }
+      }
+      return ahnentafel;
+    }
+
+    // ----------------------------------------------------
+    // COMPREHENSIVE DETAILED ROYAL GEDCOM GENERATOR (8-GEN)
+    // ----------------------------------------------------
+    
+    function generateRoyalGEDCOM() {
+      const baseSurnames = [
+        "Windsor", "Mountbatten", "Bowes-Lyon", "Spencer", "Schleswig-Holstein", "Saxe-Coburg", "Hanover", "Teck",
+        "Guelph", "Romanov", "Habsburg", "Hohenzollern", "Stuart", "Tudor", "Plantagenet", "Bourbon",
+        "Orleans", "Gloucester", "Brunswick", "Wessex", "Anjou", "Aragon", "Navarre", "Castile",
+        "Savoy", "Medici", "Grimaldi", "Bernadotte", "Orange-Nassau", "Wettin", "Oldenburg", "Wittelsbach",
+        "Vance", "Sterling", "Hawthorne", "Caldwell", "Kingsley", "Redwood", "Blackwood", "Sinclair",
+        "Montague", "Duval", "Mercer", "Ashford", "Pemberton", "Gallowglass", "Rothschild", "Fitzgerald",
+        "Kensington", "Cromwell", "Davenport", "Avent", "Belmont", "Chamberlain", "Darcy", "Ellington",
+        "Fairfax", "Garrison", "Hargreaves", "Ingram", "Jernigan", "Lockwood", "Montgomery", "Nightingale",
+        "Orion", "Prescott", "Quincy", "Rowland", "Sutton", "Talbot", "Upton", "Valerius", "Waverly",
+        "Yarborough", "Zane", "Alden", "Barrington", "Copeland", "Donovan", "Everhart", "Falconer",
+        "Gideon", "Halifax", "Ives", "Julian", "Kendrick", "Langley", "Marlowe", "Northrop", "Oakley",
+        "Pendleton", "Radcliffe", "Sheridan", "Thornton", "Vane", "Westbrook", "Ainsley", "Beckett",
+        "Carrington", "Delaney", "Emerson", "Finley", "Grayson", "Huxley", "Irving", "Jude", "Keats",
+        "Lennox", "Monroe", "Nash", "Oliver", "Penn", "Reed", "Stirling", "Tate", "Vaughn", "Wyatt",
+        "Yeats", "Zachary", "Abbott", "Ballard", "Collier", "Drake", "Eldridge", "Frost", "Glover",
+        "Hobbs", "Inman", "Jarvis", "Keene", "Loomis"
+      ];
+
+      const maleFirstNames = [
+        "William", "Charles", "Philip", "George", "Albert", "Edward", "Andrew", "Henry", "John", "David",
+        "Arthur", "Frederick", "Louis", "Alexander", "Nicholas", "Richard", "James", "Robert", "Francis", "Michael",
+        "Christian", "Ernst", "Adolphus", "Leopold", "Augustus", "Rupert", "Gustaf", "Paul", "Peter", "Victor",
+        "Benjamin", "Alfred", "Patrick", "Timothy", "Daniel", "Thomas", "Samuel", "Walter", "Harold", "Ernest"
+      ];
+
+      const femaleFirstNames = [
+        "Elizabeth", "Diana", "Camilla", "Catherine", "Anne", "Margaret", "Victoria", "Mary", "Alexandra", "Alice",
+        "Louise", "Maud", "Helena", "Beatrice", "Sophia", "Adelaide", "Charlotte", "Augusta", "Caroline", "Louisa",
+        "Cecilia", "Frances", "Dorothy", "Helen", "Florence", "Marion", "Evelyn", "Mildred", "Ruth", "Esther"
+      ];
+
+      const locations = [
+        "London, England", "Windsor, Berkshire, England", "Aberdeenshire, Scotland", "Sandringham, Norfolk, England",
+        "Gloucestershire, England", "Darmstadt, Germany", "St. Petersburg, Russia", "Copenhagen, Denmark",
+        "Athens, Greece", "Oslo, Norway", "Stockholm, Sweden", "Coburg, Germany", "Hanover, Germany"
+      ];
+
+      const realRoyals = {
+        1: { name: "William /Windsor/ (Prince of Wales)", sex: "M", bdate: "21 JUN 1982", bplace: "London, England" },
+        2: { name: "Charles III /Windsor/ (King of UK)", sex: "M", bdate: "14 NOV 1948", bplace: "London, England" },
+        3: { name: "Diana /Spencer/ (Princess of Wales)", sex: "F", bdate: "1 JUL 1961", bplace: "Sandringham, Norfolk, England", ddate: "31 AUG 1997", dplace: "Paris, France" },
+        4: { name: "Philip /Mountbatten/ (Prince Consort)", sex: "M", bdate: "10 JUN 1921", bplace: "Corfu, Greece", ddate: "9 APR 2021", dplace: "Windsor, England" },
+        5: { name: "Elizabeth II /Windsor/ (Queen of UK)", sex: "F", bdate: "21 APR 1926", bplace: "London, England", ddate: "8 SEP 2022", dplace: "Aberdeenshire, Scotland" },
+        6: { name: "John /Spencer/ (8th Earl Spencer)", sex: "M", bdate: "24 JAN 1924", bplace: "London, England", ddate: "29 MAR 1992", dplace: "London, England" },
+        7: { name: "Frances /Burke Roche/ (Honourable)", sex: "F", bdate: "20 JAN 1936", bplace: "Sandringham, England", ddate: "3 JUN 2004", dplace: "Argyll, Scotland" },
+        8: { name: "Andrew /Schleswig-Holstein/ (Prince of Greece)", sex: "M", bdate: "2 FEB 1882", bplace: "Athens, Greece", ddate: "3 DEC 1944", dplace: "Monte Carlo, Monaco" },
+        9: { name: "Alice /Mountbatten/ (Princess of Battenberg)", sex: "F", bdate: "25 FEB 1885", bplace: "Windsor, England", ddate: "5 DEC 1969", dplace: "London, England" },
+        10: { name: "George VI /Windsor/ (King of UK)", sex: "M", bdate: "14 DEC 1895", bplace: "Sandringham, England", ddate: "6 FEB 1952", dplace: "Sandringham, England" },
+        11: { name: "Elizabeth /Bowes-Lyon/ (Queen Mother)", sex: "F", bdate: "4 AUG 1900", bplace: "London, England", ddate: "30 MAR 2002", dplace: "Windsor, England" },
+        12: { name: "Albert /Spencer/ (7th Earl Spencer)", sex: "M", bdate: "15 DEC 1892", bplace: "London, England", ddate: "9 JUN 1975", dplace: "Northampton, England" },
+        13: { name: "Cynthia /Hamilton/ (Countess Spencer)", sex: "F", bdate: "16 AUG 1897", bplace: "London, England", ddate: "17 SEP 1972", dplace: "Althorp, England" },
+        14: { name: "Maurice /Burke Roche/ (4th Baron Fermoy)", sex: "M", bdate: "15 MAY 1885", bplace: "Chelsea, London", ddate: "8 JUL 1955", dplace: "Norfolk, England" },
+        15: { name: "Ruth /Gill/ (Baroness Fermoy)", sex: "F", bdate: "17 SEP 1908", bplace: "Aberdeenshire, Scotland", ddate: "6 JUL 1993", dplace: "London, England" }
+      };
+
+      let gedcomLines = [];
+      gedcomLines.push("0 HEAD");
+      gedcomLines.push("1 CHAR UTF-8");
+      gedcomLines.push("1 SOUR Aetheris3D");
+
+      for (let n = 1; n <= 255; n++) {
+        let name, sex, bdate, bplace, ddate = null, dplace = null;
+        
+        if (realRoyals[n]) {
+          const r = realRoyals[n];
+          name = r.name;
+          sex = r.sex;
+          bdate = r.bdate;
+          bplace = r.bplace;
+          ddate = r.ddate;
+          dplace = r.dplace;
+        } else {
+          const gen = Math.floor(Math.log2(n)) + 1;
+          sex = (n % 2 === 0) ? "M" : "F";
+          
+          let patId = n;
+          while (patId < 128) {
+            patId = patId * 2;
+          }
+          const sname = baseSurnames[patId - 128];
+          
+          const fname = (sex === "M") ? 
+            maleFirstNames[n % maleFirstNames.length] : 
+            femaleFirstNames[n % femaleFirstNames.length];
+            
+          name = `${fname} /${sname}/`;
+          
+          const baseBirthYear = 1982 - (gen - 1) * 29 + (n % 13) - 6;
+          bdate = `15 MAY ${baseBirthYear}`;
+          bplace = locations[n % locations.length];
+          
+          const lifespan = 65 + (n % 22);
+          const baseDeathYear = baseBirthYear + lifespan;
+          
+          if (baseDeathYear <= 2026) {
+            ddate = `12 OCT ${baseDeathYear}`;
+            dplace = locations[(n + 5) % locations.length];
+          }
+        }
+
+        gedcomLines.push(`0 @I${n}@ INDI`);
+        gedcomLines.push(`1 NAME ${name}`);
+        gedcomLines.push(`1 SEX ${sex}`);
+        gedcomLines.push("1 BIRT");
+        gedcomLines.push(`2 DATE ${bdate}`);
+        gedcomLines.push(`2 PLAC ${bplace}`);
+        
+        if (ddate) {
+          gedcomLines.push("1 DEAT");
+          gedcomLines.push(`2 DATE ${ddate}`);
+          gedcomLines.push(`2 PLAC ${dplace}`);
+        }
+        
+        if (n > 1) {
+          const parentFamId = Math.floor(n / 2);
+          gedcomLines.push(`1 FAMC @F${parentFamId}@`);
+        }
+      }
+
+      for (let n = 1; n <= 127; n++) {
+        gedcomLines.push(`0 @F${n}@ FAM`);
+        gedcomLines.push(`1 HUSB @I${n * 2}@`);
+        gedcomLines.push(`1 WIFE @I${n * 2 + 1}@`);
+        gedcomLines.push(`1 CHIL @I${n}@`);
+      }
+
+      return gedcomLines.join("\n");
+    }
+
+    // ----------------------------------------------------
+    // STATE & VIEWPORT CAMERA MANAGEMENT
+    // ----------------------------------------------------
+    
+    let individuals = {};
+    let families = {};
+    let activeAhnentafel = {};
+    let activeTargetId = "";
+    
+    let rx = 65; 
+    let rz = 0;  
+    let zoom = 0.95; 
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let startRx = 65;
+    let startRz = 0;
+    let autoSpinEnabled = true;
+
+    const scene = document.getElementById('scene');
+    const treeContainer = document.getElementById('treeContainer');
+    const sunburstBase = document.getElementById('sunburstBase');
+    const pipeWindow = document.getElementById('pipeWindow');
+    const floatingHUD = document.getElementById('floatingHUD');
+    const pedigreeList = document.getElementById('pedigreeList');
+
+    const fileInput = document.getElementById('gedcomFile');
+    const btnLoadSample = document.getElementById('btnLoadSample');
+    const targetSelect = document.getElementById('targetSelect');
+    const maxPipeDepthSlider = document.getElementById('maxPipeDepth');
+    const pipeDepthVal = document.getElementById('pipeDepthVal');
+    const camTiltSlider = document.getElementById('camTilt');
+    const camTiltVal = document.getElementById('camTiltVal');
+    const camZoomSlider = document.getElementById('camZoom');
+    const camZoomVal = document.getElementById('camZoomVal');
+    const toast = document.getElementById('toast');
+
+    const btnToggleSpin = document.getElementById('btnToggleSpin');
+    const btnResetCam = document.getElementById('btnResetCam');
+    const btnToggleFlat = document.getElementById('btnToggleFlat');
+    const searchNodes = document.getElementById('searchNodes');
+    const nodeCountLabel = document.getElementById('nodeCount');
+
+    function updateCamera() {
+      treeContainer.style.setProperty('--rx', `${rx}deg`);
+      treeContainer.style.setProperty('--rz', `${rz}deg`);
+      
+      if (autoSpinEnabled) {
+        treeContainer.style.transform = `scale3d(${zoom}, ${zoom}, ${zoom})`;
+        treeContainer.classList.add('auto-spin');
+      } else {
+        treeContainer.classList.remove('auto-spin');
+        treeContainer.style.transform = `scale3d(${zoom}, ${zoom}, ${zoom}) rotateX(${rx}deg) rotateZ(${rz}deg)`;
+      }
+    }
+
+    // ----------------------------------------------------
+    // GEOMETRIC SOLID CHUNKY DOUGHNUT TOWER BUILDER
+    // ----------------------------------------------------
+
+    // Premium chunky dimensions
+    const TOWER_THICKNESS = 30; // Premium thickness for extremely heavy solid look
+    let towerSpacing = 45;      // Generous tier vertical spacing along the hollow core
+
+    function renderTower() {
+      // Clear existing blocks with highly optimized batch removal
+      while (sunburstBase.firstChild) {
+        sunburstBase.removeChild(sunburstBase.firstChild);
+      }
+
+      // Optimization: utilize a single DocumentFragment to trigger exactly ONE layout reflow!
+      const fragment = document.createDocumentFragment();
+
+      for (let g = 1; g <= 8; g++) {
+        const totalSlices = Math.pow(2, g - 1);
+        const Z_G = (8 - g) * towerSpacing; 
+        const R_G = g * 28; 
+
+        const alpha = 360 / totalSlices;
+        const halfAlphaRad = (alpha / 2) * (Math.PI / 180);
+
+        // Bypass mathematical singularities for G1 and G2
+        let W_half;
+        if (g === 1) {
+          W_half = R_G; 
+        } else if (g === 2) {
+          W_half = R_G * 1.15; 
+        } else {
+          W_half = R_G * Math.tan(halfAlphaRad);
+        }
+
+        for (let i = 0; i < totalSlices; i++) {
+          const ahnNum = totalSlices + i;
+          const angle = alpha * i;
+
+          const block = document.createElement('div');
+          block.className = 'wedge-block-3d';
+          block.setAttribute('data-ahn', ahnNum);
+          block.setAttribute('data-gen', g);
+          block.setAttribute('data-angle', angle);
+          block.setAttribute('data-radius', R_G);
+          block.setAttribute('data-z', Z_G);
+
+          block.style.width = `${W_half * 2}px`;
+          block.style.height = `${R_G}px`;
+          block.style.left = `${250 - W_half}px`;
+          block.style.top = `${250 - R_G}px`;
+          block.style.transformOrigin = `50% 100%`;
+
+          // Stacking height and local rotation
+          block.style.setProperty('--default-transform', `translateZ(${Z_G}px) rotateZ(${angle}deg)`);
+          block.style.transform = `translateZ(${Z_G}px) rotateZ(${angle}deg)`;
+
+          const theme = getColorByAhnentafel(ahnNum);
+          block.style.setProperty('--glow-color', theme.color);
+
+          const person = activeAhnentafel[ahnNum];
+          const hasPerson = !!person;
+
+          let colorRGB = "110, 115, 130"; 
+          if (hasPerson) {
+            if (theme.color.includes('target')) colorRGB = "255, 183, 0";
+            else if (theme.color.includes('pat-gf')) colorRGB = "0, 243, 255";
+            else if (theme.color.includes('pat-gm')) colorRGB = "0, 245, 160";
+            else if (theme.color.includes('mat-gf')) colorRGB = "160, 68, 255";
+            else if (theme.color.includes('mat-gm')) colorRGB = "255, 0, 160";
+          }
+          block.style.setProperty('--color-rgb', colorRGB);
+
+          // Face 1: Bottom Face
+          const bottomFace = document.createElement('div');
+          bottomFace.className = 'wedge-face bottom';
+          bottomFace.style.width = '100%';
+          bottomFace.style.height = '100%';
+          if (g === 1) bottomFace.style.borderRadius = "50%";
+          block.appendChild(bottomFace);
+
+          // Face 2: Top Face
+          const topFace = document.createElement('div');
+          topFace.className = 'wedge-face top';
+          topFace.style.width = '100%';
+          topFace.style.height = '100%';
+          topFace.style.transform = `translateZ(${TOWER_THICKNESS}px)`;
+          if (g === 1) topFace.style.borderRadius = "50%";
+
+          // Labels inside top faces
+          if (hasPerson) {
+            const label = document.createElement('div');
+            label.className = 'hud-label';
+            label.style.setProperty('--glow-color', theme.color);
+            
+            if (g <= 3) {
+              label.textContent = person.name.split(' ')[0];
+            } else if (g <= 5) {
+              const parts = person.name.split(' ');
+              const initials = parts.map(p => p[0]).join('').replace(/[^a-zA-Z]/g, '');
+              label.textContent = initials.slice(0, 3);
+            } else {
+              label.textContent = ''; 
+            }
+            topFace.appendChild(label);
+          }
+          block.appendChild(topFace);
+
+          // Face 3: Chunky Outer Wall (folded upright)
+          if (g > 1) {
+            const rim = document.createElement('div');
+            rim.className = 'wedge-rim';
+            rim.style.width = '100%';
+            rim.style.height = `${TOWER_THICKNESS}px`;
+            block.appendChild(rim);
+          }
+
+          block.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectWedge(block, ahnNum, R_G, Z_G, angle);
+          });
+          block.addEventListener('mouseenter', () => updateHUD(ahnNum));
+          block.addEventListener('mouseleave', clearHUD);
+
+          fragment.appendChild(block);
+        }
+      }
+
+      sunburstBase.appendChild(fragment); // Render everything in exactly ONE reflow!
+    }
+
+    // ----------------------------------------------------
+    // RADIAL FLY-OUT & NESTED ZPE PIP ACTIVATION
+    // ----------------------------------------------------
+
+    function selectNode(ahnNum) {
+      const block = sunburstBase.querySelector(`.wedge-block-3d[data-ahn="${ahnNum}"]`);
+      if (block) {
+        const R_G = parseFloat(block.getAttribute('data-radius'));
+        const Z_G = parseFloat(block.getAttribute('data-z'));
+        const angle = parseFloat(block.getAttribute('data-angle'));
+        selectWedge(block, ahnNum, R_G, Z_G, angle);
+      }
+    }
+
+    function selectWedge(blockElement, ahnNum, R_G, Z_G, angle) {
+      if (window.innerWidth <= 768) {
+        closeSidebar();
+      }
+
+      // Reset the generation selection focus bar back to "All"
+      const tierFocusBar = document.getElementById('tierFocusBar');
+      if (tierFocusBar) {
+        tierFocusBar.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active'));
+        const btnAll = tierFocusBar.querySelector('.tier-btn[data-gen="all"]');
+        if (btnAll) btnAll.classList.add('active');
+      }
+
+      // Animate camera back to 3D perspective to reveal vertical pipes
+      rx = 62;
+      autoSpinEnabled = false;
+      btnToggleSpin.classList.remove('active');
+
+      // Clear any dimmer/focused-tier classes to restore all levels back to perspective
+      const allBlocks = sunburstBase.querySelectorAll('.wedge-block-3d');
+      allBlocks.forEach(b => {
+        b.classList.remove('dimmed', 'focused-tier');
+        const originalZ = b.getAttribute('data-z');
+        const originalAngle = b.getAttribute('data-angle');
+        b.style.transform = `translateZ(${originalZ}px) rotateZ(${originalAngle}deg)`;
+      });
+
+      // Clear previous active states
+      const activeBlocks = sunburstBase.querySelectorAll('.wedge-block-3d.active');
+      activeBlocks.forEach(b => {
+        b.classList.remove('active');
+        const originalZ = b.getAttribute('data-z');
+        const originalAngle = b.getAttribute('data-angle');
+        b.style.transform = `translateZ(${originalZ}px) rotateZ(${originalAngle}deg)`;
+      });
+
+      // Add active state and trigger chunky radial fly-out drawer slide-out!
+      blockElement.classList.add('active');
+      const flyOutDistance = 45; 
+      const liftHeight = 22;     
+      blockElement.style.transform = `translateZ(${Z_G + liftHeight}px) rotateZ(${angle}deg) translateY(${-flyOutDistance}px)`;
+
+      updateDetailPanel(ahnNum);
+      updateHUD(ahnNum);
+
+      // Append Pipe Window directly inside the clicked wedge block!
+      blockElement.appendChild(pipeWindow);
+      pipeWindow.style.display = 'block';
+      
+      // Pivot and shoot vertical ZPE conduits straight up from top face of flown-out drawer block
+      pipeWindow.classList.remove('visible');
+      pipeWindow.style.transform = `translateY(${-R_G / 2}px) translateZ(${TOWER_THICKNESS}px) rotateX(-90deg) scale3d(0.1, 0.1, 0.1)`;
+      
+      void pipeWindow.offsetWidth; // Force layout sync
+      
+      pipeWindow.classList.add('visible');
+      pipeWindow.style.transform = `translateY(${-R_G / 2}px) translateZ(${TOWER_THICKNESS}px) rotateX(-90deg) scale3d(1, 1, 1)`;
+
+      if (!isDragging) {
+        autoSpinEnabled = false;
+        btnToggleSpin.classList.remove('active');
+        rz = -angle - 90;
+        updateCamera();
+      }
+
+      const maxDepth = parseInt(maxPipeDepthSlider.value, 10);
+      pipeWindow.innerHTML = ''; 
+
+      buildBranchingTree(pipeWindow, ahnNum, 0, maxDepth, 0);
+      showToast(`Chunky Radial Fly-Out for Ancestor #${ahnNum}`);
+    }
+
+    // ----------------------------------------------------
+    // RECURSIVE HIERARCHICAL 3D BRANCH BUILDER
+    // ----------------------------------------------------
+    
+    function buildBranchingTree(parentElement, ahnNum, currentDepth, maxDepth, cumulativeAngle) {
+      if (currentDepth >= maxDepth) return;
+
+      const person = activeAhnentafel[ahnNum];
+      const hasPerson = !!person;
+      const theme = getColorByAhnentafel(ahnNum);
+
+      const segmentLength = Math.max(25, 95 * Math.pow(0.78, currentDepth));
+      const segmentWidth = Math.max(1, 6 * Math.pow(0.72, currentDepth));
+      const splitAngle = Math.max(5, 24 - currentDepth * 4); 
+
+      const branchContainer = document.createElement('div');
+      branchContainer.className = 'pipe-branch-node';
+      branchContainer.style.height = `${segmentLength}px`;
+      branchContainer.style.setProperty('--node-color', theme.color);
+
+      let localAngle = 0;
+      if (currentDepth > 0) {
+        localAngle = (ahnNum % 2 === 0) ? -splitAngle : splitAngle;
+      }
+      
+      branchContainer.style.setProperty('--local-angle', `${localAngle}deg`);
+      branchContainer.style.setProperty('--delay', `${currentDepth * 0.16}s`);
+
+      const connectorLine = document.createElement('div');
+      connectorLine.className = 'pipe-connector-line';
+      connectorLine.style.width = `${segmentWidth}px`;
+      connectorLine.style.height = `${segmentLength}px`;
+      connectorLine.style.setProperty('--line-color', theme.color);
+      branchContainer.appendChild(connectorLine);
+
+      // Orbital stabilizing collar
+      const energyRing = document.createElement('div');
+      energyRing.className = 'energy-ring';
+      const ringSize = Math.max(18, 48 - currentDepth * 6); 
+      energyRing.style.width = `${ringSize}px`;
+      energyRing.style.height = `${ringSize}px`;
+      energyRing.style.setProperty('--node-color', theme.color);
+      branchContainer.appendChild(energyRing);
+
+      const nodeDot = document.createElement('div');
+      nodeDot.className = 'pipe-ancestor-dot';
+      nodeDot.style.top = '0px'; 
+      nodeDot.style.left = '50%';
+      
+      const label = document.createElement('div');
+      label.className = 'pipe-branch-label';
+      label.style.setProperty('--node-color', theme.color);
+      label.textContent = hasPerson ? person.name.split(' ')[0] : `Unknown`;
+      
+      const parentTotAngle = cumulativeAngle + localAngle;
+      label.style.transform = `rotateZ(${-parentTotAngle}deg)`;
+      
+      nodeDot.appendChild(label);
+      branchContainer.appendChild(nodeDot);
+
+      nodeDot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectNode(ahnNum);
+      });
+      nodeDot.addEventListener('mouseenter', () => updateHUD(ahnNum));
+      nodeDot.addEventListener('mouseleave', clearHUD);
+
+      const childrenBox = document.createElement('div');
+      childrenBox.className = 'pipe-children-container';
+      childrenBox.style.transform = `translate3d(0, -${segmentLength}px, 0)`; 
+
+      buildBranchingTree(childrenBox, ahnNum * 2, currentDepth + 1, maxDepth, parentTotAngle);
+      buildBranchingTree(childrenBox, ahnNum * 2 + 1, currentDepth + 1, maxDepth, parentTotAngle);
+
+      branchContainer.appendChild(childrenBox);
+      parentElement.appendChild(branchContainer);
+    }
+
+    // ----------------------------------------------------
+    // TIER DOUGHNUT FOCUS LOGIC & TILT TRANSITIONS
+    // ----------------------------------------------------
+
+    const tierFocusBar = document.getElementById('tierFocusBar');
+    if (tierFocusBar) {
+      tierFocusBar.addEventListener('click', (e) => {
+        const btn = e.target.closest('.tier-btn');
+        if (!btn) return;
+        
+        tierFocusBar.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const selectedGen = btn.getAttribute('data-gen');
+        focusGeneration(selectedGen);
+      });
+    }
+
+    function focusGeneration(gen) {
+      const blocks = sunburstBase.querySelectorAll('.wedge-block-3d');
+      pipeWindow.style.display = 'none';
+      
+      const activeBlocks = sunburstBase.querySelectorAll('.wedge-block-3d.active');
+      activeBlocks.forEach(b => {
+        b.classList.remove('active');
+        const originalZ = b.getAttribute('data-z');
+        const originalAngle = b.getAttribute('data-angle');
+        b.style.transform = `translateZ(${originalZ}px) rotateZ(${originalAngle}deg)`;
+      });
+
+      if (gen === 'all') {
+        blocks.forEach(b => {
+          b.classList.remove('dimmed', 'focused-tier');
+          const originalZ = b.getAttribute('data-z');
+          const originalAngle = b.getAttribute('data-angle');
+          b.style.transform = `translateZ(${originalZ}px) rotateZ(${originalAngle}deg)`;
+        });
+        
+        rx = 65;
+        autoSpinEnabled = true;
+        btnToggleSpin.classList.add('active');
+        updateCamera();
+        
+        showToast("Full Stacked Tower - Perspective View");
+      } else {
+        const targetGen = parseInt(gen, 10);
+        
+        blocks.forEach(b => {
+          const g = parseInt(b.getAttribute('data-gen'), 10);
+          if (g === targetGen) {
+            b.classList.add('focused-tier');
+            b.classList.remove('dimmed');
+            
+            const zVal = b.getAttribute('data-z');
+            const angleVal = b.getAttribute('data-angle');
+            b.style.transform = `translateZ(${zVal}px) rotateZ(${angleVal}deg) scale3d(1.08, 1.08, 1.08)`;
+          } else {
+            b.classList.add('dimmed');
+            b.classList.remove('focused-tier');
+            
+            const zVal = b.getAttribute('data-z');
+            const angleVal = b.getAttribute('data-angle');
+            b.style.transform = `translateZ(${zVal}px) rotateZ(${angleVal}deg)`;
+          }
+        });
+        
+        // Tilt camera flat looking straight down through central empty doughnut core!
+        rx = 0; 
+        autoSpinEnabled = false;
+        btnToggleSpin.classList.remove('active');
+        updateCamera();
+        
+        showToast(`Doughnut View Gen ${targetGen} - Tap a Wedge!`);
+      }
+    }
+
+    // ----------------------------------------------------
+    // CONDUITS: INTERACTIVE SYSTEM CONTROLS
+    // ----------------------------------------------------
+
+    const tierSpacingSlider = document.getElementById('tierSpacing');
+    const tierSpacingVal = document.getElementById('tierSpacingVal');
+
+    tierSpacingSlider.addEventListener('input', (e) => {
+      towerSpacing = parseInt(e.target.value, 10);
+      tierSpacingVal.textContent = `${towerSpacing}px`;
+      
+      renderTower();
+      
+      const activeBlock = sunburstBase.querySelector('.wedge-block-3d.active');
+      if (activeBlock) {
+        const ahnNum = parseInt(activeBlock.getAttribute('data-ahn'), 10);
+        selectNode(ahnNum);
+      }
+    });
+
+    scene.addEventListener('click', () => {
+      pipeWindow.style.display = 'none';
+      const activeBlocks = sunburstBase.querySelectorAll('.wedge-block-3d.active');
+      activeBlocks.forEach(b => {
+        b.classList.remove('active');
+        const originalZ = b.getAttribute('data-z');
+        const originalAngle = b.getAttribute('data-angle');
+        b.style.transform = `translateZ(${originalZ}px) rotateZ(${originalAngle}deg)`;
+      });
+      clearHUD();
+    });
+
+    // ----------------------------------------------------
+    // FLOATING HUD DATA CARDS
+    // ----------------------------------------------------
+
+    function updateHUD(ahnNum) {
+      const person = activeAhnentafel[ahnNum];
+      const relation = getRelationLabel(ahnNum);
+      const theme = getColorByAhnentafel(ahnNum);
+
+      floatingHUD.classList.add('visible');
+      document.getElementById('hudHeading').textContent = `Ahnentafel #${ahnNum}`;
+      document.getElementById('hudHeading').style.color = theme.color;
+
+      if (person) {
+        document.getElementById('hudName').textContent = person.name;
+        document.getElementById('hudMeta').innerHTML = `
+          <strong>${relation}</strong><br>
+          Born: ${person.bdate || 'Unknown'} (${person.bplace || 'N/A'})<br>
+          ${person.ddate ? `Died: ${person.ddate} (${person.dplace || 'N/A'})` : 'Still living or unknown'}
+        `;
+        document.getElementById('hudStats').innerHTML = `
+          🧬 Genetic Contribution: ${(100 / Math.pow(2, Math.floor(Math.log2(ahnNum)))).toFixed(4)}%
+        `;
+      } else {
+        document.getElementById('hudName').textContent = "Unknown Ancestor";
+        document.getElementById('hudMeta').innerHTML = `
+          <strong>${relation}</strong><br>
+          No record found in GEDCOM file.
+        `;
+        document.getElementById('hudStats').textContent = "Segment empty in tree.";
+      }
+    }
+
+    function clearHUD() {
+      floatingHUD.classList.remove('visible');
+    }
+
+    function updateDetailPanel(ahnNum) {
+      const person = activeAhnentafel[ahnNum];
+      if (!person) return;
+      const theme = getColorByAhnentafel(ahnNum);
+      const panel = document.querySelector('.details-card');
+      panel.style.borderLeftColor = theme.color;
+      document.getElementById('hudName').textContent = person.name; 
+    }
+
+    // Relation names mappings
+    function getRelationLabel(ahnNum) {
+      if (ahnNum === 1) return "Target Individual";
+      if (ahnNum === 2) return "Father";
+      if (ahnNum === 3) return "Mother";
+      if (ahnNum === 4) return "Paternal Grandfather";
+      if (ahnNum === 5) return "Paternal Grandmother";
+      if (ahnNum === 6) return "Maternal Grandfather";
+      if (ahnNum === 7) return "Maternal Grandmother";
+      
+      const gen = Math.floor(Math.log2(ahnNum)) + 1;
+      const isFemale = (ahnNum % 2 !== 0);
+      const prefix = "Great ".repeat(Math.max(0, gen - 3)) + (isFemale ? "Grandmother" : "Grandfather");
+      return prefix;
+    }
+
+    function getColorByAhnentafel(ahnNum) {
+      if (ahnNum === 1) return { color: 'var(--color-target)', glow: 'rgba(255, 183, 0, 0.5)' };
+      if (ahnNum === 2) return { color: 'var(--color-pat-gf)', glow: 'rgba(0, 243, 255, 0.5)' };
+      if (ahnNum === 3) return { color: 'var(--color-mat-gm)', glow: 'rgba(255, 0, 160, 0.5)' };
+      
+      let ancestorInGen3 = ahnNum;
+      while (ancestorInGen3 >= 8) {
+        ancestorInGen3 = Math.floor(ancestorInGen3 / 2);
+      }
+      
+      if (ancestorInGen3 === 4) return { color: 'var(--color-pat-gf)', glow: 'rgba(0, 243, 255, 0.5)' };
+      if (ancestorInGen3 === 5) return { color: 'var(--color-pat-gm)', glow: 'rgba(0, 245, 160, 0.5)' };
+      if (ancestorInGen3 === 6) return { color: 'var(--color-mat-gf)', glow: 'rgba(160, 68, 255, 0.5)' };
+      if (ancestorInGen3 === 7) return { color: 'var(--color-mat-gm)', glow: 'rgba(255, 0, 160, 0.5)' };
+      
+      return { color: 'var(--color-unknown)', glow: 'rgba(74, 85, 104, 0.5)' };
+    }
+
+    // ----------------------------------------------------
+    // USER FILE IMPORTS & DRAG/TOUCH CAMERA EVENT DRIVERS
+    // ----------------------------------------------------
+
+    function loadGEDCOMData(text) {
+      const parsed = parseGEDCOM(text);
+      individuals = parsed.individuals;
+      families = parsed.families;
+
+      targetSelect.innerHTML = '';
+      const sortedIndis = Object.values(individuals).sort((a,b) => a.name.localeCompare(b.name));
+
+      if (sortedIndis.length === 0) {
+        targetSelect.innerHTML = '<option value="">No individuals found</option>';
+        return;
+      }
+
+      sortedIndis.forEach(indi => {
+        const option = document.createElement('option');
+        option.value = indi.id;
+        option.textContent = `${indi.name} (${indi.id})`;
+        targetSelect.appendChild(option);
+      });
+
+      const firstTarget = sortedIndis[0];
+      targetSelect.value = firstTarget.id;
+      changeTarget(firstTarget.id);
+    }
+
+    function changeTarget(targetId) {
+      activeTargetId = targetId;
+      activeAhnentafel = buildAhnentafel(targetId, individuals, families);
+
+      renderTower();
+      rebuildPedigreeSearchList();
+      pipeWindow.style.display = 'none';
+      nodeCountLabel.textContent = `${Object.keys(activeAhnentafel).length} Direct Ancestors`;
+    }
+
+    function rebuildPedigreeSearchList() {
+      pedigreeList.innerHTML = '';
+      const activeEntries = Object.entries(activeAhnentafel).sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
+      
+      if (activeEntries.length === 0) {
+        pedigreeList.innerHTML = `<div style="padding:16px; font-size:11px; text-align:center; color:var(--text-muted);">No data loaded.</div>`;
+        return;
+      }
+
+      activeEntries.forEach(([numStr, person]) => {
+        const num = parseInt(numStr, 10);
+        const item = document.createElement('div');
+        item.className = 'list-item';
+        
+        const relation = getRelationLabel(num);
+        const theme = getColorByAhnentafel(num);
+        const sexSymbol = person.sex === 'M' ? '♂' : '♀';
+        
+        item.innerHTML = `
+          <div>
+            <div class="list-item-name" style="color: ${theme.color}">
+              <span style="font-weight:bold; margin-right:4px;">${sexSymbol}</span>${person.name}
+            </div>
+            <div style="font-size:10px; color: var(--text-muted);">${relation}</div>
+          </div>
+          <span class="list-item-num">#${num}</span>
+        `;
+        
+        item.addEventListener('click', () => {
+          selectNode(num);
+        });
+        
+        pedigreeList.appendChild(item);
+      });
+    }
+
+    // Drag-to-rotate mouse events
+    scene.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.control-btn') || e.target.closest('.pipe-ancestor-dot') || e.target.closest('.wedge-block-3d')) return;
+      isDragging = true;
+      scene.style.cursor = 'grabbing';
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      startRx = rx;
+      startRz = rz;
+      
+      if (autoSpinEnabled) {
+        autoSpinEnabled = false;
+        btnToggleSpin.classList.remove('active');
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - dragStartX;
+      const dy = e.clientY - dragStartY;
+      rz = startRz - dx * 0.35;
+      rx = Math.max(15, Math.min(85, startRx + dy * 0.35));
+      
+      camTiltSlider.value = Math.round(rx);
+      camTiltVal.textContent = `${Math.round(rx)}°`;
+      updateCamera();
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        scene.style.cursor = 'grab';
+      }
+    });
+
+    // Touch Support for mobile finger-drag rotation
+    scene.addEventListener('touchstart', (e) => {
+      if (e.target.closest('.control-btn') || e.target.closest('.pipe-ancestor-dot') || e.target.closest('.wedge-block-3d')) return;
+      isDragging = true;
+      const touch = e.touches[0];
+      dragStartX = touch.clientX;
+      dragStartY = touch.clientY;
+      startRx = rx;
+      startRz = rz;
+      
+      if (autoSpinEnabled) {
+        autoSpinEnabled = false;
+        btnToggleSpin.classList.remove('active');
+      }
+    }, { passive: true });
+
+    scene.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      const dx = touch.clientX - dragStartX;
+      const dy = touch.clientY - dragStartY;
+      rz = startRz - dx * 0.35;
+      rx = Math.max(15, Math.min(85, startRx + dy * 0.35));
+      
+      camTiltSlider.value = Math.round(rx);
+      camTiltVal.textContent = `${Math.round(rx)}°`;
+      updateCamera();
+    }, { passive: true });
+
+    scene.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    // Zooming triggers
+    scene.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY * -0.0005;
+      zoom = Math.max(0.3, Math.min(2.5, zoom + zoomFactor));
+      
+      camZoomSlider.value = Math.round(zoom * 100);
+      camZoomVal.textContent = `${zoom.toFixed(2)}x`;
+      updateCamera();
+    }, { passive: false });
+
+    // Inputs bindings
+    targetSelect.addEventListener('change', (e) => {
+      if (e.target.value) {
+        changeTarget(e.target.value);
+        showToast("Switched Target Individual");
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        loadGEDCOMData(evt.target.result);
+        showToast("Parsed Custom GEDCOM Successfully!");
+      };
+      reader.readAsText(file);
+    });
+
+    btnLoadSample.addEventListener('click', () => {
+      const sampleText = generateRoyalGEDCOM();
+      loadGEDCOMData(sampleText);
+      targetSelect.value = "@I1@";
+      changeTarget("@I1@");
+      showToast("Loaded 8-Generation British Royal Pedigree!");
+    });
+
+    searchNodes.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const items = pedigreeList.querySelectorAll('.list-item');
+      
+      items.forEach(item => {
+        const name = item.querySelector('.list-item-name').textContent.toLowerCase();
+        if (name.includes(query)) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
+
+    // Cam Sliders inputs
+    camTiltSlider.addEventListener('input', (e) => {
+      rx = parseInt(e.target.value, 10);
+      camTiltVal.textContent = `${rx}°`;
+      autoSpinEnabled = false;
+      btnToggleSpin.classList.remove('active');
+      updateCamera();
+    });
+
+    camZoomSlider.addEventListener('input', (e) => {
+      zoom = parseInt(e.target.value, 10) / 100;
+      camZoomVal.textContent = `${zoom.toFixed(2)}x`;
+      updateCamera();
+    });
+
+    maxPipeDepthSlider.addEventListener('input', (e) => {
+      const val = e.target.value;
+      pipeDepthVal.textContent = `${val} Gen`;
+      const activeBlock = sunburstBase.querySelector('.wedge-block-3d.active');
+      if (activeBlock) {
+        const ahnNum = parseInt(activeBlock.getAttribute('data-ahn'), 10);
+        selectNode(ahnNum);
+      }
+    });
+
+    // Control buttons triggers
+    btnToggleSpin.addEventListener('click', () => {
+      autoSpinEnabled = !autoSpinEnabled;
+      btnToggleSpin.classList.toggle('active', autoSpinEnabled);
+      if (autoSpinEnabled) {
+        rz = 0; 
+      }
+      updateCamera();
+    });
+
+    btnResetCam.addEventListener('click', () => {
+      rx = 65;
+      rz = 0;
+      zoom = 0.95;
+      autoSpinEnabled = true;
+      
+      btnToggleSpin.classList.add('active');
+      camTiltSlider.value = rx;
+      camTiltVal.textContent = `${rx}°`;
+      camZoomSlider.value = Math.round(zoom * 100);
+      camZoomVal.textContent = `${zoom}x`;
+      
+      updateCamera();
+      showToast("Camera View Reset");
+    });
+
+    let isOrtho = false;
+    btnToggleFlat.addEventListener('click', () => {
+      isOrtho = !isOrtho;
+      btnToggleFlat.classList.toggle('active', isOrtho);
+      
+      if (isOrtho) {
+        rx = 15; 
+        autoSpinEnabled = false;
+        btnToggleSpin.classList.remove('active');
+        btnToggleFlat.innerHTML = `<span style="font-size: 11px; font-weight: bold; font-family: monospace;">2D</span>`;
+        showToast("Orthographic View");
+      } else {
+        rx = 65;
+        autoSpinEnabled = true;
+        btnToggleSpin.classList.add('active');
+        btnToggleFlat.innerHTML = `<span style="font-size: 11px; font-weight: bold; font-family: monospace;">3D</span>`;
+        showToast("Holographic 3D View");
+      }
+      
+      camTiltSlider.value = rx;
+      camTiltVal.textContent = `${rx}°`;
+      updateCamera();
+    });
+
+    // Mobile Sidebar controls
+    const mobileMenuTrigger = document.getElementById('mobileMenuTrigger');
+    const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const sidebar = document.querySelector('.sidebar');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      sidebarBackdrop.classList.add('visible');
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      sidebarBackdrop.classList.remove('visible');
+    }
+
+    if (mobileMenuTrigger) mobileMenuTrigger.addEventListener('click', openSidebar);
+    if (mobileCloseBtn) mobileCloseBtn.addEventListener('click', closeSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('visible');
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 3000);
+    }
+
+    function checkResponsiveScale() {
+      if (window.innerWidth <= 768) {
+        zoom = 0.58;
+        camZoomSlider.value = 58;
+        camZoomVal.textContent = "0.58x";
+        
+        towerSpacing = 24;
+        tierSpacingSlider.value = 24;
+        tierSpacingVal.textContent = "24px";
+      }
+    }
+
+    // ----------------------------------------------------
+    // INITIALIZATION
+    // ----------------------------------------------------
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      checkResponsiveScale();
+      btnLoadSample.click();
+      updateCamera();
+    });
+
+  </script>
+</body>
+</html>
