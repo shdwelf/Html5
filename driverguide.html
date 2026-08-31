@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07090e" />
+  <meta name="description" content="DriverGuide — read Windows registry exports, find your driver's version and every older/newer release, and fix missing DLL files. 100% offline HTML5." />
+  <title>DriverGuide · Registry → DLL → Download</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="stylesheet" href="./css/driverguide.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html#grid" target="_top" aria-label="Back to SITE-K">
+        <span class="brand-mark" aria-hidden="true">DG</span>
+        <span class="brand-copy">
+          <strong>DRIVERGUIDE</strong>
+          <small>REGISTRY → DLL → DOWNLOAD</small>
+        </span>
+      </a>
+      <div class="header-right">
+        <span class="local-status"><i></i>LOCAL ONLY</span>
+        <a class="back-link" href="./index.html#grid" target="_top">SITE-K <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span>01</span><b></b>WINDOWS DRIVER &amp; RUNTIME CONSOLE</div>
+        <h1 id="page-title">Driver<br /><em>Guide</em></h1>
+        <p class="hero-copy">
+          Load a Windows registry export (<code>.reg</code>) to see which drivers are installed,
+          match the version against <em>every</em> release, and resolve missing <code>.dll</code>
+          files — including a zip reader that cannot hang.
+        </p>
+        <div class="trust-strip" aria-label="Features">
+          <span class="chip"><i></i>READS .REG EXPORTS</span>
+          <span class="chip"><i></i>ALL VERSIONS TABLE</span>
+          <span class="chip"><i></i>MISSING-DLL FINDER</span>
+          <span class="chip hang"><i></i>HANG-PROOF ZIP READER</span>
+          <span class="chip"><i></i>NO SERVER · NO KEYS</span>
+        </div>
+      </section>
+
+      <nav class="tabs" aria-label="Sections">
+        <button type="button" class="dg-tab-btn" data-tab="reg"><span class="num">01</span>REGISTRY</button>
+        <button type="button" class="dg-tab-btn" data-tab="zip"><span class="num">02</span>ZIP READER</button>
+        <button type="button" class="dg-tab-btn" data-tab="dll"><span class="num">03</span>DLL LIBRARY</button>
+        <button type="button" class="dg-tab-btn" data-tab="guide"><span class="num">04</span>DRIVER GUIDE</button>
+      </nav>
+
+      <!-- ============================== REGISTRY ============================== -->
+      <section id="tab-reg" data-tab="reg" class="dg-tab">
+        <div class="section-head">
+          <div>
+            <h2>Read the Windows registry</h2>
+            <p>
+              A browser cannot reach <code>regedit</code> directly, but it can read the export file.
+              On the Windows machine, run <code>regedit</code> → right-click the branch below →
+              <b>Export</b> (REGEDIT5 format), then drop the <code>.reg</code> here.
+            </p>
+          </div>
+          <span class="hint">RECOMMENDED EXPORTS</span>
+        </div>
+        <div class="results-grid">
+          <div class="card">
+            <h3>SYSTEM / OS <i>HKLM\…\Windows NT\CurrentVersion</i></h3>
+            <div id="regSystem"><p class="empty">Export this branch to see Windows build + edition.</p></div>
+          </div>
+          <div class="card">
+            <h3>DRIVER REGISTRY <i>HKLM\SYSTEM\…\Control\Class</i></h3>
+            <p class="empty" style="margin:0">Export <code>HKLM\SYSTEM\CurrentControlSet\Control\Class</code> (and <code>…\Uninstall</code>) to detect graphics, audio and network drivers.</p>
+          </div>
+        </div>
+
+        <div class="dropzone" id="regDrop" role="button" tabindex="0" aria-label="Load a .reg file">
+          <div class="dz-title">DROP .REG EXPORT HERE — OR CLICK</div>
+          <div class="dz-sub">Handles REGEDIT4 + “Windows Registry Editor Version 5.00”, multi-line hex, dword, REG_EXPAND_SZ, REG_MULTI_SZ.</div>
+          <div class="dz-limits">UP TO 96 MB · PARSED IN BATCHES · UI NEVER BLOCKS</div>
+        </div>
+        <input type="file" id="regFile" accept=".reg,.txt,text/plain" hidden />
+        <div class="btn-row">
+          <button type="button" class="btn hot" id="regSample">LOAD SAMPLE .REG</button>
+        </div>
+        <div class="status" id="regStatus">Waiting for a registry export…</div>
+
+        <div class="section-head" style="margin-top:34px">
+          <div><h2>Detected drivers</h2><p>Installed version vs. the full release list — the registry <code>DriverVersion</code> is matched to every published build.</p></div>
+          <span class="hint" id="regCounts">—</span>
+        </div>
+        <div id="regDrivers"></div>
+
+        <div class="results-grid" style="margin-top:10px">
+          <div class="card">
+            <h3>DRIVERS32 / DLL REFERENCES <i>classic multimedia section</i></h3>
+            <div id="regDllRefs"></div>
+          </div>
+          <div class="card">
+            <h3>MISSING-DLL ERROR SCANNER <i>paste the error text</i></h3>
+            <div class="search-box">
+              <textarea id="dllErrorText" rows="3" spellcheck="false" placeholder="Paste an error like: “The code execution cannot proceed because msvcp140.dll was not found…”"></textarea>
+            </div>
+            <button type="button" class="btn" id="dllErrorScan">SCAN FOR KNOWN DLLs</button>
+            <div id="dllErrorResults"></div>
+          </div>
+        </div>
+
+        <div class="section-head" style="margin-top:34px">
+          <div><h2>Registry tree</h2><p>Browse every parsed key and value.</p></div>
+          <div class="search-box" style="margin:0; min-width:340px">
+            <input id="regSearch" type="search" placeholder="Search keys and values…" />
+          </div>
+        </div>
+        <div id="regSearchResults"></div>
+        <div class="tree-wrap" id="regTree"><p class="empty">Nothing parsed yet.</p></div>
+      </section>
+
+      <!-- ============================== ZIP READER ============================== -->
+      <section id="tab-zip" data-tab="zip" class="dg-tab" hidden>
+        <div class="section-head">
+          <div>
+            <h2>Hang-proof ZIP reader</h2>
+            <p>
+              Drop a driver / game / app archive. It is decompressed in 256 KB slices with a live
+              progress bar, a size budget, a per-entry cap and a 120 s watchdog — a stuck or
+              malicious archive is aborted instead of freezing the tab. There is no endless
+              character loop: the reader either finishes, shows progress, or stops.
+            </p>
+          </div>
+          <span class="hint">CAPS: 384 MB IN · 256 MB OUT · 64 MB / FILE · 12 000 ENTRIES</span>
+        </div>
+
+        <div class="dropzone" id="zipDrop" role="button" tabindex="0" aria-label="Load a zip file">
+          <div class="dz-title">DROP .ZIP HERE — OR CLICK</div>
+          <div class="dz-sub">List entries, preview text, read <code>.dll</code> version resources (PE), download individual files, and check which runtime DLLs are missing.</div>
+          <div class="dz-limits">SFX SUPPORTED · CANCEL ALWAYS WORKS · WATCHDOG AUTO-ABORT</div>
+        </div>
+        <input type="file" id="zipFile" accept=".zip,application/zip" hidden />
+
+        <div class="btn-row">
+          <button type="button" class="btn hot" id="zipCancel">■ CANCEL READ</button>
+          <button type="button" class="btn" id="zipSelfTest">RUN READER SELF-TEST</button>
+        </div>
+        <div class="self-log" id="zipSelfLog" hidden></div>
+
+        <div class="progress-wrap" id="zipProgressWrap" hidden>
+          <div class="progress-track"><div class="progress-fill" id="zipProgressBar"></div></div>
+          <div class="progress-meta"><span id="zipProgressNote"></span><span class="pct" id="zipProgressPct">0%</span></div>
+        </div>
+        <div class="status" id="zipStatus">Waiting for an archive…</div>
+
+        <div class="section-head" style="margin-top:34px">
+          <div><h2>Entries</h2><p>Click <b>OPEN</b> to preview a file. Text previews are capped at 120 KB; PE binaries show their version resource.</p></div>
+          <div class="search-box" style="margin:0; min-width:300px">
+            <input id="zipFilter" type="search" placeholder="Filter entries…" />
+          </div>
+        </div>
+        <div id="zipDllCheck"></div>
+        <div id="zipEntries"><p class="empty">No archive loaded yet.</p></div>
+        <div class="card" style="margin-top:18px">
+          <div id="zipPreview"><p class="empty">Select an entry to preview it here.</p></div>
+        </div>
+      </section>
+
+      <!-- ============================== DLL LIBRARY ============================== -->
+      <section id="tab-dll" data-tab="dll" class="dg-tab" hidden>
+        <div class="section-head">
+          <div>
+            <h2>DLL library — every version</h2>
+            <p>
+              The classic missing-<code>.dll</code> files with the full list of redistributable
+              builds, and the one official installer that fixes each family. Install <b>both</b>
+              the x64 and x86 copies when both links exist.
+            </p>
+          </div>
+          <span class="hint" id="dllCountHint">LIBRARY · 2026-08-31</span>
+        </div>
+        <div class="dll-tools">
+          <input id="dllSearch" type="search" placeholder="Search DLLs — e.g. msvcp140, d3dx9_43, xinput…" />
+          <select id="dllPkgFilter" aria-label="Filter by package">
+            <option value="">ALL PACKAGES</option>
+            <option value="vcpp2022">VC++ 2015–2022</option>
+            <option value="vcpp2013">VC++ 2013</option>
+            <option value="vcpp2012">VC++ 2012</option>
+            <option value="vcpp2010">VC++ 2010</option>
+            <option value="vcpp2008">VC++ 2008</option>
+            <option value="vcpp2005">VC++ 2005</option>
+            <option value="vcpp2003">VC++ 2003 / legacy</option>
+            <option value="vb6">VB6 runtime</option>
+            <option value="dxruntime">DirectX End-User Runtime</option>
+            <option value="dx11">DirectX 11 DLLs</option>
+            <option value="ucrt">Universal CRT</option>
+            <option value="openal">OpenAL</option>
+            <option value="physx">PhysX</option>
+          </select>
+        </div>
+        <div id="dllTable"><p class="empty">Loading library…</p></div>
+      </section>
+
+      <!-- ============================== DRIVER GUIDE ============================== -->
+      <section id="tab-guide" data-tab="guide" class="dg-tab" hidden>
+        <div class="section-head">
+          <div>
+            <h2>Driver guide — all versions</h2>
+            <p>The current releases plus the full history per vendor. The registry tab cross-references these tables automatically.</p>
+          </div>
+          <span class="hint" id="guideAsOf"></span>
+        </div>
+        <div class="latest-grid" id="guideLatest"></div>
+
+        <div class="section-head" style="margin-top:40px">
+          <div><h2>Install steps that end the missing-DLL loop</h2></div>
+        </div>
+        <ol class="steps">
+          <li><b>Read the registry.</b> On the Windows PC run <code>regedit</code>, export <code>HKLM\SYSTEM\CurrentControlSet\Control\Class</code> and <code>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall</code>, then load both into the <b>REGISTRY</b> tab. It shows the exact installed driver and Windows build.</li>
+          <li><b>Compare with all versions.</b> The driver card lists every published build — yours, the <span class="tag tag-latest">LATEST</span>, and what changed. Download from the vendor page (never from random “driver updater” sites).</li>
+          <li><b>Refresh the runtimes once.</b> Most “missing DLL” errors are fixed by the <b>VC++ 2015–2022 redist</b> (x64 <em>and</em> x86) plus the <b>DirectX End-User Runtime</b>. Both are on the DLL LIBRARY tab with official links.</li>
+          <li><b>Check the game folder.</b> Drop the game's <code>.zip</code> into the ZIP READER — it verifies which known runtime DLLs are present and which package supplies the rest.</li>
+          <li><b>Never copy DLLs from the web.</b> System DLLs (<code>xinput1_4</code>, <code>dinput8</code>, <code>msvcrt</code>) belong to Windows — restore them with <code>sfc /scannow</code> or <code>DISM /Online /Cleanup-Image /RestoreHealth</code> instead.</li>
+        </ol>
+
+        <div class="section-head" style="margin-top:40px">
+          <div><h2>How the registry tab resolves versions</h2></div>
+        </div>
+        <p class="guide-copy">
+          NVIDIA writes an internal file version like <code>32.0.16.1656</code> or
+          <code>31.0.15.5949</code>. DriverGuide translates the last four digits using the
+          standard mapping (<code>61 56 → 616.56</code>, <code>59 49 → 596.49</code>) and matches
+          them against the release table. AMD Adrenalin and Intel Arc versions match their
+          <code>DisplayVersion</code> strings directly; Realtek matches the <code>6.0.9xxx</code>
+          UAD numbering. Unmatched builds are flagged with the nearest catalog entry so you can
+          still tell whether the machine is current.
+        </p>
+        <p class="asof">OFFLINE DATA · NEVER SENDS YOUR .REG OR .ZIP ANYWHERE · LINKS OPEN THE OFFICIAL VENDOR PAGES</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="row">
+        <span>DriverGuide · HTML5 app · SITE-K family — registry reader, hang-proof zip reader, DLL library, driver version tables.</span>
+        <span>Vendor data as of 2026-08-31 · verify current builds on vendor pages · Windows is a trademark of Microsoft.</span>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/driverguide.js"></script>
+</body>
+</html>

@@ -43,6 +43,13 @@
       "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
     },
     {
+      "name": "DriverGuide",
+      "short_name": "DRIVERGUIDE",
+      "description": "Registry reader, all-versions driver tables, missing-DLL fixes and a hang-proof zip reader.",
+      "url": "./driverguide.html",
+      "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
+    },
+    {
       "name": "God's Eye View",
       "short_name": "GODSEYE",
       "description": "Live globe console — satellites, aircraft, quakes (public feeds)",
