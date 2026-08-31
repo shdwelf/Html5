@@ -40,6 +40,15 @@ import {
   symmetricGraded,
   sigmaAtoms,
   flipGraph,
+  hammingBytes,
+  notBytes,
+  convexHull,
+  segmentsCross,
+  dftAmplitudes,
+  fitSinusoid,
+  gf256Inv,
+  gf256Mul,
+  divisors,
 } from "./formal.js";
 
 export const C = {
@@ -446,6 +455,31 @@ function drawInvert(ctx, w, h, data, mode) {
 /* ------------------------------------------------------------------ *
  * per-lens renderers
  * ------------------------------------------------------------------ */
+
+
+/* small shared geometry renderers for the new families */
+function triPath(ctx, pts, color) {
+  ctx.strokeStyle = color; ctx.lineWidth = 1.4; ctx.beginPath();
+  pts.forEach((q, i) => (i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])));
+  ctx.closePath(); ctx.stroke();
+}
+function dots(ctx, pts, color, r = 2.4) {
+  ctx.fillStyle = color;
+  pts.forEach((q) => { ctx.beginPath(); ctx.arc(q[0], q[1], r, 0, Math.PI * 2); ctx.fill(); });
+}
+function polyPath(ctx, pts, color) {
+  ctx.strokeStyle = color; ctx.lineWidth = 1.4; ctx.beginPath();
+  pts.forEach((q, i) => (i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])));
+  ctx.stroke();
+}
+function norm2d(pts, w, h, pad = 18) {
+  const xs = pts.map((q) => q[0]), ys = pts.map((q) => q[1]);
+  const mx = Math.max(...xs), mn = Math.min(...xs), my = Math.max(...ys), myn = Math.min(...ys);
+  return pts.map((q) => [
+    pad + ((q[0] - mn) / (mx - mn || 1)) * (w - pad * 2),
+    h - pad - ((q[1] - myn) / (my - myn || 1)) * (h - pad * 2),
+  ]);
+}
 
 const DRAW = {
   "inv-subcube": (ctx, w, h, d) => drawInvert(ctx, w, h, d, "box"),
@@ -948,6 +982,165 @@ const DRAW = {
     const spec = ev.map((e) => e.lambda).sort((a, b) => b - a);
     plot(ctx, w, h, { series: [{ data: spec, color: C.accent, label: "σ(G)" }] });
     text(ctx, `ρ(G) = ${Math.max(...spec).toFixed(2)}`, 8, h - 12, C.muted, 9);
+  },
+  /* ---- algebra ---- */
+  "alg-group": (ctx, w, h, d) => {
+    const idx = (d.indices || []).filter((i) => i >= 0);
+    if (idx.length < 2) return;
+    const order = idx.map((_, i) => i).sort((a, b) => idx[a] - idx[b] || a - b);
+    const perm = new Array(idx.length); order.forEach((s2, dst) => (perm[s2] = dst));
+    const seen = new Array(idx.length).fill(false); let cx = 20, cy = h / 2, rad = 0;
+    let placed = 0;
+    for (let i = 0; i < idx.length; i++) {
+      if (seen[i]) continue;
+      const cyc = []; let j = i;
+      while (!seen[j]) { seen[j] = true; cyc.push(j); j = perm[j]; }
+      const r = 10 + cyc.length * 5;
+      const ox = 26 + (placed % 4) * ((w - 40) / 4) + 20;
+      const oy = 24 + Math.floor(placed / 4) * 46;
+      cyc.forEach((node, k) => {
+        const a = (k / cyc.length) * Math.PI * 2;
+        const x = ox + Math.cos(a) * r * 0.5, y = oy + Math.sin(a) * r * 0.5;
+        ctx.fillStyle = C.accent; ctx.beginPath(); ctx.arc(x, y, 2.6, 0, Math.PI * 2); ctx.fill();
+        const nk = cyc[(k + 1) % cyc.length];
+        const a2 = (cyc.indexOf(nk) / cyc.length) * Math.PI * 2;
+        ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(x, y);
+        ctx.lineTo(ox + Math.cos(a2) * r * 0.5, oy + Math.sin(a2) * r * 0.5); ctx.stroke();
+      });
+      placed++;
+    }
+    text(ctx, `cycle decomposition of the sorting permutation`, 8, h - 12, C.muted, 9);
+    void cx; void cy; void rad;
+  },
+  "alg-linear": (ctx, w, h, d) => {
+    const idx = (d.indices || []).filter((i) => i >= 0);
+    if (!idx.length) return;
+    const rows = Math.min(16, idx.length);
+    const values = [];
+    for (let r = 0; r < rows; r++) for (let cix = 0; cix < 11; cix++) values.push((idx[r] >> (10 - cix)) & 1);
+    heat(ctx, w, h - 18, { rows, cols: 11, values, max: 1, tint: [92, 225, 255] });
+    text(ctx, `word-bit matrix over GF(2) · ${rows}×11`, 8, h - 12, C.muted, 9);
+  },
+  "alg-field": (ctx, w, h, d) => {
+    const e = d.entropy;
+    if (!e?.length) return;
+    const rows = Math.min(8, e.length);
+    const tbl = [];
+    for (let i = 0; i < rows; i++) tbl.push([`0x${e[i].toString(16).padStart(2, "0")}`, `0x${gf256Inv(e[i]).toString(16).padStart(2, "0")}`, `0x${gf256Mul(e[i], gf256Inv(e[i])).toString(16)}`]);
+    table(ctx, w, h, { head: ["a", "a⁻¹", "a·a⁻¹"], rows: tbl });
+  },
+  "alg-lattice": (ctx, w, h, d) => {
+    const n = d.layout?.words ?? (d.words?.length || 0);
+    if (!n) return;
+    const divs = divisors(n);
+    const byId = new Map(divs.map((v, i) => [v, i]));
+    const node = (v) => {
+      const kids = [];
+      for (const p of [2, 3, 5, 7, 11, 13]) if (v % p === 0 && v / p >= 1 && byId.has(v / p)) kids.push(node(v / p));
+      return { label: String(v), ok: true, children: kids };
+    };
+    tree(ctx, w, h, node(n));
+  },
+  "alg-poly": (ctx, w, h, d) => {
+    const idx = (d.indices || []).filter((i) => i >= 0);
+    if (!idx.length) return;
+    bars(ctx, w, h, { items: idx.slice(0, 16).map((v, i) => ({ label: `x${i}`, v, tag: String(v), color: C.accent })) });
+  },
+
+  /* ---- geometry ---- */
+  "geom-metric": (ctx, w, h, d) => {
+    const A = d.entropy, B = d.pairEntropy; if (!A || !B) return;
+    const nA = notBytes(A);
+    const a = hammingBytes(A, B), b = hammingBytes(nA, B), c = hammingBytes(A, nA);
+    const P = [[w * 0.2, h * 0.7], [w * 0.8, h * 0.7], [w * 0.5, h * 0.2]];
+    triPath(ctx, P, C.ok); dots(ctx, P, C.accent, 3);
+    text(ctx, `A`, P[0][0] - 12, P[0][1], C.text); text(ctx, `B`, P[1][0] + 4, P[1][1], C.text); text(ctx, `¬A`, P[2][0] - 4, P[2][1] - 8, C.text);
+    text(ctx, `d(A,B)=${a}`, (P[0][0] + P[1][0]) / 2 - 20, P[0][1] + 6, C.muted, 9);
+    text(ctx, `d(A,¬A)=${c}`, P[2][0] + 6, (P[0][1] + P[2][1]) / 2, C.muted, 9);
+    text(ctx, `d(¬A,B)=${b}`, P[0][0] - 40, (P[0][1] + P[2][1]) / 2, C.muted, 9);
+  },
+  "geom-euclidean": (ctx, w, h, d) => {
+    const P = d.path; if (!P || P.length < 3) return;
+    const segs = [];
+    for (let i = 1; i < P.length; i++) segs.push(Math.hypot(P[i][0]-P[i-1][0], P[i][1]-P[i-1][1], P[i][2]-P[i-1][2]));
+    bars(ctx, w, h, { items: segs.slice(0, 20).map((v, i) => ({ label: `s${i + 1}`, v, tag: v.toFixed(2), color: C.accent })) });
+  },
+  "geom-spherical": (ctx, w, h, d) => {
+    const P = (d.path || []).slice(0, 3);
+    if (P.length < 3) return;
+    const cx2 = w / 2, cy2 = h / 2, R = Math.min(w, h) / 2 - 12;
+    ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.arc(cx2, cy2, R, 0, Math.PI * 2); ctx.stroke();
+    const pts = norm2d(P, w, h, 20);
+    triPath(ctx, pts, C.ok); dots(ctx, pts, C.warn, 3);
+    text(ctx, "spherical triangle on the projected sphere", 8, h - 12, C.muted, 9);
+  },
+  "geom-projective": (ctx, w, h, d) => {
+    const idx = (d.indices || []).filter((i) => i >= 0).slice(0, 4);
+    if (idx.length < 4) return;
+    const y = h / 2;
+    ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(10, y); ctx.lineTo(w - 10, y); ctx.stroke();
+    idx.forEach((v, i) => {
+      const x = 16 + (v / 2047) * (w - 32);
+      ctx.fillStyle = C.accent; ctx.beginPath(); ctx.arc(x, y, 3.4, 0, Math.PI * 2); ctx.fill();
+      text(ctx, `x${i + 1}`, x - 5, y + 8, C.muted, 9);
+    });
+    text(ctx, "cross-ratio of four points on a line", 8, 6, C.muted, 9);
+  },
+  "geom-convex": (ctx, w, h, d) => {
+    const P = d.path; if (!P || P.length < 3) return;
+    const pts2 = P.map((q) => [q[0], q[1]]);
+    const hull = convexHull(pts2);
+    const pts = norm2d(pts2, w, h);
+    const hullSet = new Set(hull.map((q) => q.join(",")));
+    dots(ctx, pts.filter((_, i) => !hullSet.has(pts2[i].join(","))), C.muted, 1.8);
+    const hullPts = norm2d(hull, w, h);
+    polyPath(ctx, hullPts, C.ok); ctx.strokeStyle = C.ok; ctx.closePath();
+    dots(ctx, hullPts, C.warn, 2.6);
+  },
+  "geom-topology": (ctx, w, h, d) => {
+    const P3 = (d.path || []).slice(0, 120); if (P3.length < 4) return;
+    const Q = P3.map((q) => [q[0], q[1]]);
+    let crossings = 0;
+    for (let i = 0; i + 1 < Q.length; i++) for (let j = i + 2; j + 1 < Q.length; j++) if (segmentsCross(Q[i], Q[i+1], Q[j], Q[j+1])) crossings++;
+    const pts = norm2d(Q, w, h);
+    polyPath(ctx, pts, C.accent); dots(ctx, pts, C.muted, 1.6);
+    text(ctx, `self-intersections: ${crossings}`, 8, h - 12, C.warn, 9);
+  },
+
+  /* ---- trigonometry ---- */
+  "trig-unit": (ctx, w, h, d) => {
+    const idx = (d.indices || []).filter((i) => i >= 0); if (!idx.length) return;
+    const th = idx.map((i) => (i / 2048) * 2 * Math.PI);
+    const cx2 = w / 2, cy2 = h / 2, R = Math.min(w, h) / 2 - 10;
+    ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.arc(cx2, cy2, R, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx2 - R, cy2); ctx.lineTo(cx2 + R, cy2); ctx.moveTo(cx2, cy2 - R); ctx.lineTo(cx2, cy2 + R); ctx.stroke();
+    th.forEach((t, i) => {
+      const x = cx2 + Math.cos(t) * R, y = cy2 - Math.sin(t) * R;
+      ctx.fillStyle = i === 0 ? C.warn : C.accent; ctx.beginPath(); ctx.arc(x, y, i === 0 ? 3 : 1.8, 0, Math.PI * 2); ctx.fill();
+    });
+  },
+  "trig-dft": (ctx, w, h, d) => {
+    const seq = (d.indices || []).filter((i) => i >= 0); if (seq.length < 4) return;
+    const amp = dftAmplitudes(seq);
+    let dom = 1; for (let k = 1; k < amp.length; k++) if (amp[k] > amp[dom]) dom = k;
+    bars(ctx, w, h, { items: amp.slice(0, 16).map((v, i) => ({ label: `k${i}`, v, tag: i === d.dom ? "dom" : "", color: i === d.dom ? C.warn : C.accent })) });
+  },
+  "trig-law": (ctx, w, h, d) => {
+    const P = (d.path || []).slice(0, 3);
+    if (P.length < 3) return;
+    triPath(ctx, norm2d(P, w, h), C.ok); dots(ctx, norm2d(P, w, h), C.warn, 3);
+    text(ctx, "each corner solved by law of cosines AND by dot product", 8, h - 12, C.muted, 9);
+  },
+  "trig-harmonic": (ctx, w, h, d) => {
+    const seq = (d.indices || []).filter((i) => i >= 0); if (seq.length < 6) return;
+    const amp = dftAmplitudes(seq);
+    let dom = 1; for (let k = 1; k < amp.length; k++) if (amp[k] > amp[dom]) dom = k;
+    const fit = fitSinusoid(seq, dom);
+    const n = seq.length;
+    const w2 = (2 * Math.PI * dom) / n;
+    const mean = seq.reduce((a, b) => a + b, 0) / n;
+    const fitted = seq.map((_, t) => mean + fit.amp * Math.cos(w2 * t + fit.phase));
+    plot(ctx, w, h, { series: [{ data: seq, color: C.accent, label: "indices" }, { data: fitted, color: C.warn, label: "fit" }], yMin: 0, yMax: 2048 });
   },
 };
 

@@ -69,12 +69,22 @@ computes numbers from the loaded key and writes a **Describe / Explain /
 Predict** readout. The dot adds or removes the layer in the 3-D scene (turning
 one on opens its panel); the name opens the readout without touching the scene.
 
+Ten families, 44 lenses: invert (4), λ-calculus (4), analysis (7), logic (5),
+algebra (7), geometry (6), trigonometry (4), time (3), stochastic (2), process
+(2). The **algebra** group keeps the lenses it already had (`boolean`, `umbral`)
+and merges in group theory (the sorting permutation's cycle type / order / sign),
+linear algebra over GF(2) (rank of the word-bit matrix), finite fields
+(GF(2⁸) byte arithmetic + inverses), the divisor lattice of the word count, and
+the index sequence as a polynomial over Z. **Geometry** adds metric, Euclidean,
+spherical, projective (cross-ratio), convex (hull/shoelace) and topological
+(Euler / Betti) readings. **Trigonometry** adds the unit circle, the DFT with
+Parseval, the laws of sines/cosines, and harmonic regression.
+
 Where a system has real geometry or real measurement behind it, it gets a
-renderer. Where it does not, the entry is marked `card` and says why — for
-example **typed λ-calculus** (stating Φ's type precisely needs a dependent
-type, `Φ : (e : Bit^ENT) → Bit^(ENT/32)`, with no keyspace geometry to draw)
-and most of the abstract-algebra entries (their content is a structure census,
-not a picture).
+renderer. Where it does not, the entry is marked `card` and says why — there is
+exactly one today: **typed λ-calculus**, because stating Φ's type precisely
+needs a dependent type (`Φ : (e : Bit^ENT) → Bit^(ENT/32)`), and there is no
+keyspace geometry to draw from that.
 
 Measurement-backed examples:
 
@@ -93,52 +103,34 @@ Measurement-backed examples:
   Hamming cube is flat, Γⁱⱼₖ = 0 and R = 0. Any lens claiming curvature here
   would be wrong.
 
-### Algebra family
-
-After the calculus families (λ, analysis, logic, time, stochastic, process)
-comes the **algebra** family — 30 layers covering the named algebras, each
-computed from the key's own bits and indices:
-
-- measured: **linear** (GF(2) rank of the 12×11 index matrix), **Lie** (Jacobi
-  residual of the cross product), **division** (‖pq‖ = ‖p‖‖q‖ on key
-  quaternions), **exterior** (Gram determinant of the first two word vectors),
-  **Banach** (spectral radius of the self-adjoint Gram operator), **σ-algebra**
-  and **homological** (atoms and Betti numbers of the flip-response graph),
-  **Clifford** / **tensor** / **symmetric** / **Boolean** / **Heyting** (graded
-  dimensions of Cl(ℝ¹¹), T(V), Sym(V), B₁₁).
-- structure census (cards): **abstract** (the symbol group (ℤ₂)¹¹ and
-  |GL(11,2)|), **universal**, **associative** (M₂(GF(2))), **commutative** and
-  **differential** (the checksum's Zhegalkin ring and its derivation),
-  **geometric**, **Jordan**, **group**, **enveloping**, **Hopf**, **Frobenius**,
-  **C***, **von Neumann**, **relational**, **process**, and **Kleene** — each
-  with an exact number and a note on why it is a card rather than a picture.
-
-The running motif: the 11-bit symbol space is 2048 = 2¹¹, which is also
-|(ℤ₂)¹¹|, dim Cl(ℝ¹¹), |B₁₁| and the number of multivector/subset basis labels —
-so a BIP-39 index reads naturally as a group element, a multivector, or a
-subset of bits.
-
 ## Checks
 
-Run from the repo root (Node ≥ 18, no dependencies for 1–4; suite 5 needs
-`npm i jsdom` and a resolve hook that stubs the WebGL backend):
+```sh
+sh tests/run.sh          # suites 01-04 and 06 need nothing but Node >= 18
+npm i --no-save jsdom puppeteer-core @sparticuz/chromium   # optional: enables 05 and 07
+```
 
 | suite | covers | assertions |
 |------:|--------|-----------:|
-| 1 | generalised layout both directions, encode/decode round trip, tamper detection at 12/24/25/33/56 words and 56-bit ENT | 64 |
-| 2 | every lens `compute()` on a real 25-word key, plus known-answer maths (GL coefficients, Möbius involution, eigenvalues, Hamming balls, Itô determinism) | 81 |
-| 3 | every 2-D renderer with an instrumented canvas context, plus empty-data resilience | 35 |
-| 4 | every 3-D layer builder: vertex counts, non-finite coordinates, determinism | 18 |
-| 5 | the real `js/viewer.js` boot and UI events in jsdom: 57 rack rows, 25-word switch, invert invariants, 264-bit flip sweep, card behaviour, custom bit length | 39 |
+| 01 | generalised layout both directions, mutual invertibility, encode/decode round trips, deterministic checksum corruption, and the measured false-accept rate of a random 12-word phrase | 73 |
+| 02 | every lens `compute()` on a real 25-word key, plus known-answer maths (Grünwald–Letnikov coefficients, Möbius involution, eigenvalues, Hamming balls, Itô determinism, AES field multiply, GF(2) rank, spherical excess, cross-ratio invariance, Parseval) and the differential prediction checked against the real hash | 120 |
+| 03 | every 2-D renderer (all 44 lenses) through an instrumented canvas context that reports non-finite coordinates, plus empty-data resilience | 100 |
+| 04 | every 3-D layer builder: vertex counts, non-finite coordinates, determinism, null-not-throw with no key | 20 |
+| 05 | the real `js/viewer.js` booted in jsdom: 44 rack rows, the 25-word switch, invert invariants through the buttons, the 264-bit flip sweep, card behaviour, toggle-vs-focus, custom bit length | 38 |
+| 06 | the extreme the custom box allows — 512 words / 5632-bit ENT: sweep cost, matrix size, and all 44 lenses computing *and* drawing without NaN | 95 |
+| 07 | the real thing: headless Chromium (from `@sparticuz/chromium`, whose tarball supplies the browser *and* the three NSS libs this sandbox lacks) with SwiftShader for WebGL, driving the live page — boot, 25-word switch, invert invariants, the measured flip sweep, and pixel-decoded proof that the stage rasterises | 20 |
 
-Two extremes are asserted separately: at 512 words (5632-bit ENT) the flip sweep
-takes ~0.8 s, the influence matrix is ~22 MB, all 57 lens computes stay clean,
-and every renderer emits finite coordinates (charts carry log₁₀ magnitudes
-because 2^5624 is not a `Number`).
+Suite 05 stubs only the WebGL backend (a module-resolve hook) and the canvas
+rasteriser; viewer.js, formal.js, lens-draw.js, bip39.js and
+`wasm/entropy.wasm` all run for real.
 
-Not covered: actual WebGL rasterisation and OrbitControls interaction in a real
-browser — no headless Chrome is reachable in this environment. Everything up to
-the GL boundary is executed by the suites above.
+Suite 07 closes the browser gap: the Chrome-for-Testing CDN is unreachable here,
+but the `@sparticuz/chromium` npm tarball (registry.npmjs.org *is* reachable)
+ships the browser plus its missing `libnspr4/libnss3/libnssutil3` in
+`al2023.tar.br` and a software WebGL stack in `swiftshader.tar.br`. With those
+extracted, headless Chromium boots the page and renders the 3-D scene
+(≈4×10⁵ lit pixels decoded from the stage screenshot). Not covered: interactive
+OrbitControls gestures and a hardware GPU path.
 
 ## Packaging
 

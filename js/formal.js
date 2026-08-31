@@ -1186,6 +1186,118 @@ export function hopfCheck(n) {
   };
 }
 
+/* ------------------------------------------------------------------ *
+ * algebra / geometry / trigonometry helpers
+ * ------------------------------------------------------------------ */
+
+export function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a; }
+export function lcm(a, b) { return Math.abs(a * b) / (gcd(a, b) || 1); }
+
+/** Permutation (array mapping i -> p[i]) to disjoint cycles + order + sign. */
+export function permutationCycles(p) {
+  const n = p.length; const seen = new Array(n).fill(false); const cycles = [];
+  for (let i = 0; i < n; i++) {
+    if (seen[i]) continue;
+    const cyc = []; let j = i;
+    while (!seen[j]) { seen[j] = true; cyc.push(j); j = p[j]; }
+    if (cyc.length) cycles.push(cyc);
+  }
+  const order = cycles.reduce((o, c) => lcm(o, c.length), 1);
+  const sign = cycles.reduce((sg, c) => sg * ((c.length - 1) % 2 ? -1 : 1), 1);
+  return { cycles, order, sign, transpositions: cycles.reduce((t, c) => t + c.length - 1, 0) };
+}
+
+/** Rank over GF(2) of a matrix given as an array of bigint row bitmasks. */
+export function gf256Mul(a, b) { let r = 0; a &= 255; b &= 255; while (b) { if (b & 1) r ^= a; a <<= 1; if (a & 256) a ^= 0x11b; b >>= 1; } return r & 255; }
+export function gf256Inv(a) { let r = 1, base = a & 255, e = 254; while (e) { if (e & 1) r = gf256Mul(r, base); base = gf256Mul(base, base); e >>= 1; } return a ? r : 0; }
+
+/** Real DFT amplitude spectrum of a numeric sequence. */
+export function dftAmplitudes(seq) {
+  const n = seq.length; const out = [];
+  const half = Math.floor(n / 2) + 1;
+  for (let k = 0; k < half; k++) {
+    let re = 0, im = 0;
+    for (let t = 0; t < n; t++) { const a = (2 * Math.PI * k * t) / n; re += seq[t] * Math.cos(a); im -= seq[t] * Math.sin(a); }
+    out.push(Math.hypot(re, im));
+  }
+  return out;
+}
+
+export function parseval(seq) {
+  const n = seq.length;
+  const time = seq.reduce((a, v) => a + v * v, 0);
+  const amp = dftAmplitudes(seq);
+  let freq = amp[0] * amp[0];
+  for (let k = 1; k < amp.length - (n % 2 === 0 ? 1 : 0); k++) freq += 2 * amp[k] * amp[k];
+  if (n % 2 === 0) freq += amp[amp.length - 1] ** 2; // Nyquist counted once
+  return { time, freq: freq / n };
+}
+
+export function crossRatio(x1, x2, x3, x4) {
+  return ((x1 - x3) * (x2 - x4)) / ((x1 - x4) * (x2 - x3));
+}
+
+/** Monotone-chain convex hull; returns the hull vertices in order. */
+export function convexHull(pts) {
+  const P = pts.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lower = []; for (const q of P) { while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], q) <= 0) lower.pop(); lower.push(q); }
+  const upper = []; for (let i = P.length - 1; i >= 0; i--) { const q = P[i]; while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], q) <= 0) upper.pop(); upper.push(q); }
+  return lower.slice(0, -1).concat(upper.slice(0, -1));
+}
+
+export function shoelace(pts) {
+  let a = 0; for (let i = 0; i < pts.length; i++) { const [x1, y1] = pts[i]; const [x2, y2] = pts[(i + 1) % pts.length]; a += x1 * y2 - x2 * y1; }
+  return Math.abs(a) / 2;
+}
+
+export function segmentsCross(p1, p2, p3, p4) {
+  const d = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+  const d1 = d(p3, p4, p1), d2 = d(p3, p4, p2), d3 = d(p1, p2, p3), d4 = d(p1, p2, p4);
+  return ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0));
+}
+
+export function greatCircle(u, v) {
+  const du = Math.hypot(...u), dv = Math.hypot(...v);
+  const cos = Math.max(-1, Math.min(1, (u[0] * v[0] + u[1] * v[1] + u[2] * v[2]) / (du * dv || 1)));
+  return Math.acos(cos);
+}
+
+export function sphericalAngle(a, b, c) {
+  // angle at vertex a of spherical triangle abc (unit vectors)
+  const ab = greatCircle(a, b), ac = greatCircle(a, c), bc = greatCircle(b, c);
+  const cos = (Math.cos(bc) - Math.cos(ab) * Math.cos(ac)) / (Math.sin(ab) * Math.sin(ac) || 1);
+  return Math.acos(Math.max(-1, Math.min(1, cos)));
+}
+
+export function lawOfCosinesAngle(a, b, c) {
+  // angle opposite side c
+  const cos = (a * a + b * b - c * c) / (2 * a * b || 1);
+  return Math.acos(Math.max(-1, Math.min(1, cos)));
+}
+
+/** Least-squares single-sinusoid fit at a fixed frequency. */
+export function fitSinusoid(seq, freq) {
+  const n = seq.length; const w = (2 * Math.PI * freq) / n;
+  let sc = 0, ss = 0, yc = 0, ys = 0;
+  for (let t = 0; t < n; t++) { const c = Math.cos(w * t), si = Math.sin(w * t); sc += c * c; ss += si * si; yc += seq[t] * c; ys += seq[t] * si; }
+  const A = yc / (sc || 1), Bv = ys / (ss || 1);
+  const amp = Math.hypot(A, Bv), phase = Math.atan2(-Bv, A);
+  const mean = seq.reduce((a, b) => a + b, 0) / n;
+  let ssr = 0, sst = 0;
+  for (let t = 0; t < n; t++) { const f = mean + A * Math.cos(w * t) + Bv * Math.sin(w * t); ssr += (seq[t] - f) ** 2; sst += (seq[t] - mean) ** 2; }
+  return { amp, phase, r2: 1 - ssr / (sst || 1) };
+}
+
+export function divisors(n) { const out = []; for (let d = 1; d <= n; d++) if (n % d === 0) out.push(d); return out; }
+export function mobiusFn(n) {
+  let k = 0; let m = n;
+  for (let p = 2; p * p <= m; p++) if (m % p === 0) { if ((m / p) % p === 0) return 0; k++; m /= p; }
+  if (m > 1) k++;
+  return k % 2 ? -1 : 1;
+}
+
+
 export const LENSES = [
   /* ---- invert keyspace: A ↔ B ---- */
   {
@@ -2599,6 +2711,379 @@ export const LENSES = [
       };
     },
   },
+  /* ---- algebra (expanded; boolean + umbral were already here) ---- */
+  {
+    id: "alg-group", name: "group theory", group: "algebra", kind: "lens",
+    tagline: "The sorting permutation of your word indices",
+    compute: (c) => {
+      const idx = c.indices.filter((i) => i >= 0);
+      if (idx.length < 2) return null;
+      const order = idx.map((_, i) => i).sort((a, b) => idx[a] - idx[b] || a - b);
+      const perm = new Array(idx.length); order.forEach((src, dst) => (perm[src] = dst));
+      const g = permutationCycles(perm);
+      return {
+        rows: [
+          ["S_n", `S_${idx.length} on word positions`],
+          ["cycle type", g.cycles.map((cy) => cy.length).sort((a, b) => b - a).join("·") || "1"],
+          ["order", g.order],
+          ["sign", g.sign === 1 ? "+1 (even)" : "−1 (odd)"],
+          ["transpositions", g.transpositions],
+        ],
+        describe: `Sort the words by index; the rearrangement is a permutation in the symmetric group S_${idx.length}.`,
+        explain: `Every permutation factors into disjoint cycles; its order is the lcm of the cycle lengths and its sign is (−1)^(#transpositions) — the two invariants that classify it up to conjugacy and parity.`,
+        predict: `Applying the permutation ${g.order} times returns the identity (that is the order); the sign is ${g.sign === 1 ? "even" : "odd"}.`,
+        cycles: g.cycles,
+      };
+    },
+  },
+  {
+    id: "alg-linear", name: "linear algebra over GF(2)", group: "algebra", kind: "lens",
+    tagline: "Rank of the word-bit matrix",
+    compute: (c) => {
+      const idx = c.indices.filter((i) => i >= 0);
+      if (!idx.length) return null;
+      const rows = bitMatrix(idx);
+      const rank = gf2Rank(rows).rank;
+      return {
+        rows: [
+          ["matrix", `${idx.length} words × 11 bits over GF(2)`],
+          ["rank", rank],
+          ["nullity", idx.length - rank],
+          ["full column rank", rank === Math.min(idx.length, 11) ? "yes" : "no"],
+        ],
+        describe: `Read each 11-bit word index as a row vector over GF(2) and row-reduce.`,
+        explain: `Rank is the size of the largest independent set of word-rows; nullity counts linear relations among them. For a random mnemonic the rows are ~uniform, so rank saturates at min(n,11).`,
+        predict: `rank + nullity = n = ${idx.length}; measured ${rank} + ${idx.length - rank} = ${idx.length}.`,
+        matrix: idx, rank,
+      };
+    },
+  },
+  {
+    id: "alg-field", name: "finite fields", group: "algebra", kind: "lens",
+    tagline: "GF(2^8) structure of the entropy bytes",
+    compute: (c) => {
+      const e = c.entropy;
+      if (!e?.length) return null;
+      const first = [...e].find((b) => b !== 0) ?? 0;
+      const inv = gf256Inv(first);
+      return {
+        rows: [
+          ["field", "GF(2^8), x^8+x^4+x^3+x+1"],
+          ["characteristic", 2],
+          ["order", 256],
+          [`a = 0x${first.toString(16)}`, `a⁻¹ = 0x${inv.toString(16)}`],
+          ["a·a⁻¹", `0x${gf256Mul(first, inv).toString(16)} (=1)`],
+          ["additive group", `(Z/2)^8, byte ⊕ byte`],
+        ],
+        describe: `Treat each entropy byte as an element of the field with 256 elements; addition is XOR, multiplication is polynomial multiplication mod the AES polynomial.`,
+        explain: `A field needs every nonzero element invertible; exponentiation a^254 gives the inverse by Fermat. The additive group is elementary abelian — that is exactly why byte XOR is the checksum's natural addition.`,
+        predict: `a·a⁻¹ = 1 for the first nonzero byte: got 0x${gf256Mul(first, inv).toString(16)}.`,
+      };
+    },
+  },
+  {
+    id: "alg-lattice", name: "lattice of divisors", group: "algebra", kind: "lens",
+    tagline: "The divisibility poset of the word count",
+    compute: (c) => {
+      const n = c.layout?.words ?? c.words.length;
+      if (!n) return null;
+      const divs = divisors(n);
+      return {
+        rows: [
+          ["n", n],
+          ["divisors", divs.join(", ")],
+          ["τ(n)", divs.length],
+          ["σ(n)", divs.reduce((a, b) => a + b, 0)],
+          ["μ(n)", mobiusFn(n)],
+          ["structure", mobiusFn(n) === 0 ? "has a squared factor" : "square-free"],
+        ],
+        describe: `The divisors of the word count ordered by divisibility form a lattice under gcd (meet) and lcm (join).`,
+        explain: `Möbius μ(n) is 0 exactly when n has a squared prime factor; otherwise (−1)^(#primes). The lattice is boolean precisely when n is square-free.`,
+        predict: `μ(${n}) = ${mobiusFn(n)}; the lattice has ${divs.length} elements.`,
+        divisors: divs,
+      };
+    },
+  },
+  {
+    id: "alg-poly", name: "polynomial ring", group: "algebra", kind: "lens",
+    tagline: "The index sequence as P(x) over Z",
+    compute: (c) => {
+      const idx = c.indices.filter((i) => i >= 0);
+      if (!idx.length) return null;
+      const p1 = idx.reduce((a, b) => a + b, 0);
+      const pm1 = idx.reduce((a, b, i) => a + (i % 2 ? -b : b), 0);
+      const content = idx.reduce((g, v) => gcd(g, v), 0);
+      return {
+        rows: [
+          ["deg P", idx.length - 1],
+          ["P(1)", p1],
+          ["P(−1)", pm1],
+          ["content gcd", content],
+          ["primitive", content === 1 ? "yes" : "no"],
+        ],
+        describe: `Read the index sequence as P(x) = Σ idx_i x^i with integer coefficients.`,
+        explain: `P(1) is the coefficient sum and P(−1) the alternating sum; the content is the gcd of the coefficients, and P is primitive iff it is 1 — Gauss's lemma says primitive polynomials factor the same over Z and Q.`,
+        predict: `content = ${content}, so the polynomial is ${content === 1 ? "primitive" : "not primitive"}.`,
+      };
+    },
+  },
+
+  /* ---- geometry ---- */
+  {
+    id: "geom-metric", name: "metric geometry", group: "geometry", kind: "lens",
+    tagline: "The four metric axioms on Hamming distance",
+    compute: (c) => {
+      const A = c.entropy, B = c.pairEntropy;
+      if (!A || !B) return null;
+      const notA = notBytes(A);
+      const dAB = hammingBytes(A, B), dAnA = hammingBytes(A, notA), dAnB = hammingBytes(notA, B);
+      const tri = dAB + dAnB >= dAnA;
+      return {
+        rows: [
+          ["d(A,B)", dAB],
+          ["d(A,¬A)", dAnA],
+          ["d(¬A,B)", dAnB],
+          ["identity d(x,x)=0", "holds"],
+          ["symmetry", "holds (XOR)"],
+          [`triangle d(A,B)+d(¬A,B)≥d(A,¬A)`, `${dAB}+${dAnB}=${dAB + dAnB} ≥ ${dAnA} ${tri ? "✓" : "✗"}`],
+        ],
+        describe: `Hamming distance makes the keyspace a metric space; the axioms are checked on the loaded keys.`,
+        explain: `Non-negativity and identity come from popcount; symmetry from XOR's commutativity; the triangle inequality from the fact that a bit changed twice can be changed once.`,
+        predict: `Triangle inequality must hold: ${dAB}+${dAnB}=${dAB + dAnB} ≥ ${dAnA} — ${tri ? "confirmed" : "VIOLATED (impossible)"}.`,
+        tri: [dAB, dAnB, dAnA],
+      };
+    },
+  },
+  {
+    id: "geom-euclidean", name: "euclidean geometry", group: "geometry", kind: "lens",
+    tagline: "Segment lengths and perimeter of the path",
+    compute: (c) => {
+      const P = c.path;
+      if (!P || P.length < 3) return null;
+      const segs = [];
+      for (let i = 1; i < P.length; i++) segs.push(Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1], P[i][2] - P[i - 1][2]));
+      const per = segs.reduce((a, b) => a + b, 0);
+      const chord = Math.hypot(...P[P.length - 1].map((v, k) => v - P[0][k]));
+      return {
+        rows: [
+          ["segments", segs.length],
+          ["perimeter", per.toFixed(4)],
+          ["chord", chord.toFixed(4)],
+          ["perimeter/chord", (per / (chord || 1)).toFixed(4)],
+          ["centroid", P.reduce((acc, q) => [acc[0] + q[0] / P.length, acc[1] + q[1] / P.length, acc[2] + q[2] / P.length], [0, 0, 0]).map((v) => v.toFixed(2)).join(", ")],
+        ],
+        describe: `The phrase path as a Euclidean polygonal curve in R^3.`,
+        explain: `Perimeter ≥ chord always (triangle inequality applied inductively); the ratio measures how far the curve strays from the straight line between its endpoints.`,
+        predict: `perimeter/chord ≥ 1; measured ${(per / (chord || 1)).toFixed(3)}.`,
+        segs,
+      };
+    },
+  },
+  {
+    id: "geom-spherical", name: "spherical geometry", group: "geometry", kind: "lens",
+    tagline: "Great-circle triangle + spherical excess",
+    compute: (c) => {
+      const P = c.path;
+      if (!P || P.length < 3) return null;
+      const u = P[0], v = P[1], w = P[2];
+      const A = sphericalAngle(u, v, w), B = sphericalAngle(v, u, w), Cc = sphericalAngle(w, u, v);
+      const excess = A + B + Cc - Math.PI;
+      return {
+        rows: [
+          ["angles (rad)", `${A.toFixed(3)}, ${B.toFixed(3)}, ${Cc.toFixed(3)}`],
+          ["Σ angles", (A + B + Cc).toFixed(4)],
+          ["spherical excess E", excess.toFixed(4)],
+          ["area (unit sphere)", excess.toFixed(4)],
+          ["flat would give", `π = ${Math.PI.toFixed(4)}`],
+        ],
+        describe: `Project the first three path points to the unit sphere and solve the spherical triangle.`,
+        explain: `On a sphere the angles of a triangle sum to more than π; the excess equals the area (Girard). A nonzero excess is the local signature of positive curvature.`,
+        predict: `Σ angles − π = area on the unit sphere: E = ${excess.toFixed(4)}.`,
+      };
+    },
+  },
+  {
+    id: "geom-projective", name: "projective geometry", group: "geometry", kind: "lens",
+    tagline: "The cross-ratio, the projective invariant",
+    compute: (c) => {
+      const idx = c.indices.filter((i) => i >= 0);
+      if (idx.length < 4) return null;
+      const x = idx.slice(0, 4).map((i) => i / 2047);
+      const cr = crossRatio(x[0], x[1], x[2], x[3]);
+      const mob = (t) => (2 * t + 1) / (t + 3); // a projective transform
+      const cr2 = crossRatio(...x.map(mob));
+      return {
+        rows: [
+          ["4 points", idx.slice(0, 4).join(", ")],
+          ["cross-ratio", cr.toFixed(6)],
+          ["under a Möbius map", cr2.toFixed(6)],
+          ["invariant", Math.abs(cr - cr2) < 1e-6 ? "yes" : "no"],
+        ],
+        describe: `The cross-ratio of four collinear points is the single invariant of projective geometry.`,
+        explain: `Any projective (Möbius) transformation preserves the cross-ratio; distances and ratios of two do not. That is why it, not length, is the projective notion of 'shape'.`,
+        predict: `Cross-ratio is unchanged by the Möbius map: ${cr.toFixed(5)} ≈ ${cr2.toFixed(5)}.`,
+      };
+    },
+  },
+  {
+    id: "geom-convex", name: "convex geometry", group: "geometry", kind: "lens",
+    tagline: "Convex hull of the projected path",
+    compute: (c) => {
+      const P = c.path;
+      if (!P || P.length < 3) return null;
+      const pts2 = P.map((q) => [q[0], q[1]]);
+      const hull = convexHull(pts2);
+      const area = shoelace(hull);
+      return {
+        rows: [
+          ["points", pts2.length],
+          ["hull vertices", hull.length],
+          ["hull area", area.toFixed(4)],
+          ["interior points", pts2.length - hull.length],
+        ],
+        describe: `The convex hull of the path's (x,y) projection, by the monotone-chain algorithm.`,
+        explain: `The hull is the smallest convex set containing the points; its area (shoelace) bounds every convex functional of the path. Interior points are the ones the path 'doubles back' over.`,
+        predict: `hull vertices ≤ n; area computed by shoelace = ${area.toFixed(3)}.`,
+        pts: pts2, hull,
+      };
+    },
+  },
+  {
+    id: "geom-topology", name: "topology of the path", group: "geometry", kind: "lens",
+    tagline: "Self-intersections, cycles, Euler characteristic",
+    compute: (c) => {
+      const P = (c.path || []).slice(0, 120).map((q) => [q[0], q[1]]);
+      if (P.length < 4) return null;
+      let crossings = 0;
+      for (let i = 0; i + 1 < P.length; i++)
+        for (let j = i + 2; j + 1 < P.length; j++)
+          if (segmentsCross(P[i], P[i + 1], P[j], P[j + 1])) crossings++;
+      const V = P.length + crossings;
+      const E = P.length - 1 + 2 * crossings;
+      const F = E - V + 2; // planar Euler: V - E + F = 2
+      return {
+        rows: [
+          ["vertices V", V],
+          ["edges E", E],
+          ["self-intersections", crossings],
+          ["faces F", F],
+          ["V−E+F", V - E + F],
+          ["first Betti b₁", E - V + 1],
+        ],
+        describe: `Close the polyline into a planar graph by counting its self-intersections as vertices.`,
+        explain: `Euler's formula V−E+F=2 fixes the face count; the first Betti number b₁=E−V+1 counts independent cycles — the topological 'loops' the path traces.`,
+        predict: `V−E+F must equal 2 for a connected planar graph: got ${V - E + F}.`,
+        pts: P, crossings,
+      };
+    },
+  },
+
+  /* ---- trigonometry ---- */
+  {
+    id: "trig-unit", name: "unit circle", group: "trigonometry", kind: "lens",
+    tagline: "Word indices as angles + circular concentration",
+    compute: (c) => {
+      const idx = c.indices.filter((i) => i >= 0);
+      if (!idx.length) return null;
+      const th = idx.map((i) => (i / 2048) * 2 * Math.PI);
+      let sx = 0, sy = 0;
+      for (const t of th) { sx += Math.cos(t); sy += Math.sin(t); }
+      const R = Math.hypot(sx, sy) / th.length;
+      const ident = Math.sin(th[0]) ** 2 + Math.cos(th[0]) ** 2;
+      return {
+        rows: [
+          ["θ₁", `${th[0].toFixed(4)} rad`],
+          ["sin θ₁, cos θ₁", `${Math.sin(th[0]).toFixed(4)}, ${Math.cos(th[0]).toFixed(4)}`],
+          ["sin²+cos²", ident.toFixed(6)],
+          ["mean resultant R", R.toFixed(4)],
+          ["interpretation", R < 0.2 ? "angles ~uniform on the circle" : "angles concentrated"],
+        ],
+        describe: `Map each 11-bit index to an angle θ = idx/2048·2π and place it on the unit circle.`,
+        explain: `sin²+cos²=1 is the Pythagorean identity; the mean resultant length R (|Σe^{iθ}|/n) is circular statistics' measure of concentration — uniform random words give R≈0.`,
+        predict: `R should be near 0 for random words: ${R.toFixed(3)}; identity holds to ${ident.toFixed(5)}.`,
+        th,
+      };
+    },
+  },
+  {
+    id: "trig-dft", name: "Fourier / harmonics", group: "trigonometry", kind: "lens",
+    tagline: "Amplitude spectrum + Parseval's theorem",
+    compute: (c) => {
+      const seq = c.indices.filter((i) => i >= 0);
+      if (seq.length < 4) return null;
+      const amp = dftAmplitudes(seq);
+      let dom = 1; for (let k = 1; k < amp.length; k++) if (amp[k] > amp[dom]) dom = k;
+      const pv = parseval(seq);
+      const ratio = pv.freq / (pv.time || 1);
+      return {
+        rows: [
+          ["harmonics", amp.length],
+          ["dominant k", dom],
+          ["|X₀| (DC)", amp[0].toFixed(1)],
+          ["Σ|x|² (time)", pv.time.toFixed(1)],
+          ["(1/n)Σ|X|² (freq)", pv.freq.toFixed(1)],
+          ["Parseval ratio", ratio.toFixed(6)],
+        ],
+        describe: `The index sequence decomposed into sinusoids by the discrete Fourier transform.`,
+        explain: `Parseval's theorem says energy is the same in time and frequency domains; the ratio must be 1. The dominant harmonic is the frequency carrying the most variance.`,
+        predict: `Parseval ratio = 1; measured ${ratio.toFixed(5)}.`,
+        amp, dom,
+      };
+    },
+  },
+  {
+    id: "trig-law", name: "laws of sines & cosines", group: "trigonometry", kind: "lens",
+    tagline: "Solve each path triangle two ways",
+    compute: (c) => {
+      const P = c.path;
+      if (!P || P.length < 3) return null;
+      const d = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+      let worst = 0;
+      for (let i = 0; i + 2 < P.length; i++) {
+        const a = d(P[i + 1], P[i + 2]), b = d(P[i], P[i + 2]), cc = d(P[i], P[i + 1]);
+        const byCos = lawOfCosinesAngle(a, b, cc);
+        const dot = ((P[i + 1][0] - P[i][0]) * (P[i + 2][0] - P[i][0]) + (P[i + 1][1] - P[i][1]) * (P[i + 2][1] - P[i][1]) + (P[i + 1][2] - P[i][2]) * (P[i + 2][2] - P[i][2])) / ((b * a) || 1);
+        const byDot = Math.acos(Math.max(-1, Math.min(1, dot)));
+        worst = Math.max(worst, Math.abs(byCos - byDot));
+      }
+      return {
+        rows: [
+          ["triangles", Math.max(0, P.length - 2)],
+          ["method", "law of cosines vs dot product"],
+          ["max disagreement", worst.toExponential(2)],
+          ["verdict", worst < 1e-6 ? "the law holds" : "disagreement!"],
+        ],
+        describe: `For every consecutive triple, compute the corner angle with the law of cosines and independently with the dot product.`,
+        explain: `The law of cosines c²=a²+b²−2ab·cos(C) is the Pythagorean theorem corrected by the cosine term; agreement with the coordinate (dot-product) angle is a self-check of the trigonometry.`,
+        predict: `Max |law − dot| ≈ 0; measured ${worst.toExponential(2)}.`,
+      };
+    },
+  },
+  {
+    id: "trig-harmonic", name: "harmonic regression", group: "trigonometry", kind: "lens",
+    tagline: "Best-fit sinusoid of the index sequence",
+    compute: (c) => {
+      const seq = c.indices.filter((i) => i >= 0);
+      if (seq.length < 6) return null;
+      const amp = dftAmplitudes(seq);
+      let dom = 1; for (let k = 1; k < amp.length; k++) if (amp[k] > amp[dom]) dom = k;
+      const fit = fitSinusoid(seq, dom);
+      return {
+        rows: [
+          ["frequency k", dom],
+          ["amplitude", fit.amp.toFixed(2)],
+          ["phase", fit.phase.toFixed(3)],
+          ["R²", fit.r2.toFixed(4)],
+          ["fit quality", fit.r2 < 0.3 ? "noise — no sinusoid" : "some periodic structure"],
+        ],
+        describe: `Least-squares fit of a single sinusoid at the dominant DFT frequency to the index sequence.`,
+        explain: `R² is the fraction of variance explained. A random mnemonic is white noise, so a single sinusoid should explain little (low R²) — a high R² would betray non-random structure.`,
+        predict: `R² should be small for random words: ${fit.r2.toFixed(3)}.`,
+        seq, fit, dom,
+      };
+    },
+  },
+
 ];
 
 export const LENS_BY_ID = new Map(LENSES.map((l) => [l.id, l]));
@@ -2612,4 +3097,6 @@ export const LENS_GROUPS = [
   ["stochastic", "stochastic"],
   ["process", "process"],
   ["algebra", "algebra"],
+  ["geometry", "geometry"],
+  ["trigonometry", "trigonometry"],
 ];
