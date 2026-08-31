@@ -2,7 +2,7 @@
 
 Content extracts of the subject-supplied resources cited in the source register
 of `greeran-book.html` (entries **src-10 through src-63**), plus the archivist
-research logs for entries **src-64 through src-67**.
+research logs for entries **src-64 through src-68**.
 
 ## Why this archive exists
 
@@ -85,11 +85,12 @@ Extracted: **30 August 2026**. Original URLs are recorded in each file.
 
 The `src-NN-*.md` files above mirror resources the subject supplied. The files below are
 different in kind: they record what an archivist found when testing the leads those resources
-left open. They are cited in the book's source register as **src-64 through src-67**.
+left open. They are cited in the book's source register as **src-64 through src-68**.
 
 | File | Register | Session | Subject |
 |---|---|---|---|
-| `session-11-biddeford-and-daisy.md` | src-64, src-65, src-66, src-67 | 31 Aug 2026 | Ahn. 22–23 (the Morins of Biddeford, Maine) and Ahn. 28–29 (Daisy Beatrice's Texas parents) |
+| `session-11-biddeford-and-daisy.md` | src-64, src-65, src-66, src-67 | 31 Aug 2026 | Ahn. 22–23 (the Morins of Biddeford, Maine) and Ahn. 28–29 (Daisy Beatrice's Texas parents) — Biddeford city directories, Find A Grave negatives, Maine vital-records finding aid |
+| `session-12-independent-verification.md` | src-68 | 31 Aug 2026 | Independent re-check of the **contested quarters** — Hewett (Fred Leslie Hewett × Addie Inez Worth, via FamilySearch census/vitals) and Carey (Luther Gordon Carey × Millie Ruth Bickford; Joel Thornburg Carey × Elizabeth Stanley, via Find a Grave + Rootsweb), with the Revolutionary anchor confirmed in the official NSDAR database (Samuel Carey #A020262); immediate family confirmed via the Louise Hewitt obituary/guest book |
 
 Session 11 result in one line: the free **Biddeford and Saco Directory 1920–1921** on the Internet
 Archive corroborated the workbench's *Alfred Houle* as a real Biddeford policeman at 12 George
