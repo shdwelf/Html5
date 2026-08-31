@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PIM – Peer Instant Messaging</title>
+<!--
+  ============================================================
+  PIM – Peer Instant Messaging  |  HTML5 / WebSocket Port
+  Original Java source authors:
+      Ryan Beck · Shervin Delband · Steven Greeran · Sergey Sarnavskiy
+  ============================================================
+  CHANGES FROM ORIGINAL JAVA SOURCE
+  ----------------------------------
+  PimTest.java  – GUI (JFrame / Swing) constructor block COMMENTED OUT.
+                  CLI command loop (BufferedReader / while loop) ACTIVE.
+  CmdProcessor  – identifyType() fully ported; /irc command added.
+  Network.java  – TCP sockets replaced with WebSocket transport.
+                  periodicBroadcast thread → setInterval(30 s).
+                  listen / listenBroadcast threads → ws.onmessage handler.
+  MsgGui.java   – Swing JFrame COMMENTED OUT; ChatPane replaces it.
+  Voice.java    – stub; browser WebRTC note.
+  AddToChat.java– modal dialog replaces JFrame.
+  NEW: IRCClient – connects to Libera.Chat via WebSocket IRC bridge.
+  ============================================================
+-->
+<style>
+/* ── reset ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--panel:#161b22;--surface:#21262d;--border:#30363d;
+  --accent:#58a6ff;--accent2:#7c3aed;--green:#2ea043;--red:#da3633;
+  --yellow:#d29922;--text:#e6edf3;--muted:#8b949e;--irc:#f0883e;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--ui)}
+a{color:var(--accent);text-decoration:none}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ── login ── */
+#login-screen{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at center,#1a2233 0%,#0d1117 70%);z-index:9999
+}
+#login-box{
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  padding:36px 40px;width:360px;box-shadow:0 16px 48px rgba(0,0,0,.6)
+}
+#login-box h1{font-size:1.3rem;color:var(--accent);margin-bottom:4px;text-align:center;letter-spacing:1px}
+#login-box .sub{font-size:.72rem;color:var(--muted);text-align:center;margin-bottom:24px}
+.lf{margin-bottom:14px}
+.lf label{display:block;font-size:.76rem;color:var(--muted);margin-bottom:5px}
+.lf input{
+  width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;
+  color:var(--text);padding:8px 11px;font-size:.88rem;font-family:var(--ui);outline:none
+}
+.lf input:focus{border-color:var(--accent)}
+#login-btn{
+  width:100%;background:var(--accent);border:none;border-radius:6px;color:#0d1117;
+  padding:10px;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:6px
+}
+#login-btn:hover{opacity:.88}
+
+/* ── app shell ── */
+#app{display:none;height:100%;flex-direction:column}
+#app.show{display:flex}
+
+/* titlebar */
+#titlebar{
+  background:var(--panel);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;padding:0 14px;height:40px;flex-shrink:0
+}
+#titlebar .logo{font-weight:700;color:var(--accent);font-size:.95rem;letter-spacing:1px}
+#vis-badge{
+  font-size:.68rem;padding:2px 8px;border-radius:10px;
+  background:var(--green);color:#fff;font-weight:700;cursor:pointer
+}
+#vis-badge.inv{background:var(--muted)}
+#wb-status{
+  font-size:.7rem;padding:2px 8px;border-radius:10px;
+  background:var(--red);color:#fff
+}
+#wb-status.ok{background:var(--green)}
+#title-user{margin-left:auto;font-size:.76rem;color:var(--muted)}
+#title-user span{color:var(--text);font-weight:600}
+
+/* menubar */
+#menubar{
+  background:var(--panel);border-bottom:1px solid var(--border);
+  display:flex;flex-shrink:0;user-select:none
+}
+.mn{position:relative;padding:5px 13px;font-size:.8rem;color:var(--muted);cursor:pointer}
+.mn:hover{background:var(--surface);color:var(--text)}
+.mn-drop{
+  display:none;position:absolute;top:100%;left:0;background:var(--panel);
+  border:1px solid var(--border);border-radius:0 0 6px 6px;min-width:170px;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:400
+}
+.mn:hover .mn-drop,.mn.open .mn-drop{display:block}
+.mn-item{padding:8px 15px;font-size:.8rem;cursor:pointer;color:var(--text);white-space:nowrap}
+.mn-item:hover{background:var(--surface);color:var(--accent)}
+.mn-sep{border-top:1px solid var(--border)}
+
+/* main layout */
+#main{display:flex;flex:1;overflow:hidden}
+
+/* buddy panel */
+#buddy-panel{
+  width:210px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+}
+#buddy-panel h2{
+  font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);padding:9px 12px 6px;border-bottom:1px solid var(--border);flex-shrink:0
+}
+#buddy-list{flex:1;overflow-y:auto;padding:3px 0}
+.bl-hdr{
+  font-size:.65rem;text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted);padding:7px 10px 3px;cursor:pointer;display:flex;align-items:center;gap:4px
+}
+.bl-hdr:hover{color:var(--text)}
+.peer-row{
+  display:flex;align-items:center;gap:7px;padding:5px 14px;cursor:pointer;
+  font-size:.82rem;border-radius:4px;margin:1px 6px;transition:background .12s
+}
+.peer-row:hover{background:var(--surface)}
+.peer-row.sel{background:var(--accent2)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot.on{background:var(--green)}.dot.off{background:var(--muted)}.dot.blk{background:var(--red)}
+
+/* context menu */
+#ctx{
+  display:none;position:fixed;background:var(--panel);border:1px solid var(--border);
+  border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:900;overflow:hidden;min-width:145px
+}
+.ctx-i{padding:8px 14px;font-size:.8rem;cursor:pointer;color:var(--text)}
+.ctx-i:hover{background:var(--surface);color:var(--accent)}
+.ctx-sep{border-top:1px solid var(--border)}
+
+/* center */
+#center{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* tabbar */
+#tabbar{
+  display:flex;background:var(--panel);border-bottom:1px solid var(--border);
+  overflow-x:auto;flex-shrink:0
+}
+#tabbar::-webkit-scrollbar{height:3px}
+.tab{
+  padding:8px 14px;font-size:.78rem;cursor:pointer;border-right:1px solid var(--border);
+  white-space:nowrap;color:var(--muted);display:flex;align-items:center;gap:5px;
+  transition:background .12s;flex-shrink:0
+}
+.tab:hover{background:var(--surface);color:var(--text)}
+.tab.active{background:var(--bg);color:var(--accent);border-bottom:2px solid var(--accent)}
+.tab .xtab{opacity:.45;font-size:.8rem}
+.tab .xtab:hover{opacity:1;color:var(--red)}
+.tab .badge{
+  background:var(--red);color:#fff;border-radius:9px;
+  font-size:.6rem;padding:1px 5px;font-weight:700
+}
+
+/* pane container */
+#pane-wrap{flex:1;overflow:hidden;position:relative}
+.pane{display:none;height:100%;flex-direction:column}
+.pane.active{display:flex}
+
+/* ── CLI pane ── */
+#cli-pane{background:#0a0f1a}
+#cli-out{
+  flex:1;overflow-y:auto;padding:10px 13px;font-family:var(--mono);font-size:.82rem;line-height:1.55
+}
+.ln{margin-bottom:1px;word-break:break-all}
+.ln.sys{color:var(--accent)}.ln.ok{color:var(--green)}.ln.warn{color:var(--yellow)}
+.ln.err{color:var(--red)}.ln.msg{color:var(--text)}.ln.rx{color:#79c0ff}
+.ln.prm{color:#cdd6f4}.ln.irc{color:var(--irc)}.ln.irc-sys{color:#e2b36e}
+.ln.ws{color:#a5f3fc}
+.hl-cmd{color:var(--accent)}.hl-desc{color:var(--muted)}
+#cli-bar{
+  display:flex;border-top:1px solid var(--border);background:#0d1117;
+  align-items:center;padding:6px 10px;gap:8px;flex-shrink:0
+}
+#cli-prompt{color:var(--accent);font-family:var(--mono);font-size:.82rem;white-space:nowrap}
+#cli-in{
+  flex:1;background:transparent;border:none;outline:none;color:var(--text);
+  font-family:var(--mono);font-size:.82rem;caret-color:var(--accent)
+}
+#cli-go{
+  background:var(--accent);border:none;border-radius:4px;color:#0d1117;
+  padding:4px 11px;font-size:.78rem;cursor:pointer;font-weight:700
+}
+#cli-go:hover{opacity:.88}
+
+/* ── chat pane ── */
+.chat-pane{background:var(--bg)}
+.chat-hdr{
+  padding:7px 13px;background:var(--panel);border-bottom:1px solid var(--border);
+  font-size:.8rem;color:var(--muted);flex-shrink:0
+}
+.chat-hdr span{color:var(--text);font-weight:600}
+.chat-msgs{flex:1;overflow-y:auto;padding:10px 13px;display:flex;flex-direction:column;gap:5px}
+.bubble{
+  max-width:68%;padding:7px 11px;border-radius:10px;font-size:.84rem;
+  line-height:1.4;word-break:break-word
+}
+.bubble.us{background:var(--accent2);color:var(--text);align-self:flex-end;border-bottom-right-radius:2px}
+.bubble.them{background:var(--surface);color:var(--text);align-self:flex-start;border-bottom-left-radius:2px}
+.bsender{font-size:.68rem;color:var(--muted);margin-bottom:2px}
+.chat-input-row{
+  display:flex;padding:7px 9px;gap:7px;border-top:1px solid var(--border);
+  background:#0d1117;align-items:flex-end;flex-shrink:0
+}
+.emoji-strip{display:flex;gap:2px;align-items:center;flex-wrap:wrap;max-width:200px}
+.ebtn{
+  font-size:1rem;background:none;border:none;cursor:pointer;
+  padding:1px 2px;border-radius:3px;line-height:1
+}
+.ebtn:hover{background:var(--surface)}
+.chat-tin{
+  flex:1;background:var(--panel);border:1px solid var(--border);border-radius:6px;
+  color:var(--text);padding:6px 9px;font-size:.84rem;font-family:var(--ui);
+  outline:none;resize:none;min-height:34px;max-height:90px
+}
+.chat-tin:focus{border-color:var(--accent2)}
+.chat-sbtn{
+  background:var(--accent);border:none;border-radius:6px;color:#0d1117;
+  padding:7px 14px;font-size:.84rem;cursor:pointer;font-weight:700;flex-shrink:0
+}
+.chat-sbtn:hover{opacity:.88}
+
+/* ── IRC pane ── */
+#irc-pane{background:#0a0f1a}
+#irc-hdr{
+  display:flex;align-items:center;gap:8px;padding:7px 13px;
+  background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0
+}
+#irc-hdr h3{font-size:.82rem;color:var(--irc);font-weight:700}
+#irc-topic{font-size:.72rem;color:var(--muted);flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#irc-status-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0}
+#irc-status-dot.on{background:var(--green)}
+#irc-body{display:flex;flex:1;overflow:hidden}
+#irc-out{
+  flex:1;overflow-y:auto;padding:9px 12px;font-family:var(--mono);font-size:.8rem;line-height:1.5
+}
+#irc-users-panel{
+  width:130px;flex-shrink:0;border-left:1px solid var(--border);
+  background:var(--panel);overflow-y:auto;padding:4px 0
+}
+#irc-users-panel h4{
+  font-size:.65rem;text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted);padding:6px 10px 3px;border-bottom:1px solid var(--border)
+}
+.irc-user-row{padding:4px 10px;font-size:.78rem;color:var(--text)}
+.irc-user-row.op{color:var(--yellow)}.irc-user-row.voice{color:var(--green)}
+#irc-bar{
+  display:flex;border-top:1px solid var(--border);background:#0d1117;
+  align-items:center;padding:6px 9px;gap:7px;flex-shrink:0
+}
+#irc-chan-label{font-size:.76rem;color:var(--irc);font-family:var(--mono);white-space:nowrap}
+#irc-in{
+  flex:1;background:transparent;border:none;outline:none;color:var(--text);
+  font-family:var(--mono);font-size:.8rem;caret-color:var(--irc)
+}
+#irc-go{
+  background:var(--irc);border:none;border-radius:4px;color:#0d1117;
+  padding:4px 11px;font-size:.78rem;cursor:pointer;font-weight:700
+}
+#irc-go:hover{opacity:.88}
+
+/* ── generic modal ── */
+.modal-bg{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);
+  z-index:800;align-items:center;justify-content:center
+}
+.modal-bg.show{display:flex}
+.modal-box{
+  background:var(--panel);border:1px solid var(--border);border-radius:8px;
+  padding:26px 30px;min-width:310px;box-shadow:0 16px 48px rgba(0,0,0,.6)
+}
+.modal-box h2{font-size:.95rem;color:var(--accent);margin-bottom:14px}
+.mf{margin-bottom:12px}
+.mf label{display:block;font-size:.73rem;color:var(--muted);margin-bottom:4px}
+.mf input,.mf textarea{
+  width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;
+  color:var(--text);padding:7px 9px;font-size:.84rem;outline:none;font-family:var(--ui)
+}
+.mf input:focus,.mf textarea:focus{border-color:var(--accent)}
+.mf textarea{resize:vertical;min-height:55px}
+.mbtns{display:flex;gap:9px;margin-top:4px}
+.mbtns button{flex:1;padding:8px;border:none;border-radius:5px;cursor:pointer;font-size:.82rem;font-weight:700}
+.mbtn-ok{background:var(--accent);color:#0d1117}
+.mbtn-cancel{background:var(--surface);color:var(--text)}
+
+/* statusbar */
+#statusbar{
+  background:var(--panel);border-top:1px solid var(--border);
+  padding:3px 13px;font-size:.68rem;color:var(--muted);display:flex;gap:16px;flex-shrink:0
+}
+#statusbar span{color:var(--text)}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════
+     LOGIN SCREEN
+     (replaces PimTest constructor: JOptionPane.showInputDialog username/password)
+     ══════════════════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div id="login-box">
+    <h1>◈ PIM</h1>
+    <p class="sub">Peer Instant Messaging · Ryan Beck · Shervin Delband · Steven Greeran · Sergey Sarnavskiy</p>
+    <div class="lf"><label>Username</label><input id="l-user" type="text" autocomplete="off" placeholder="your alias"></div>
+    <div class="lf"><label>Password</label><input id="l-pass" type="password" placeholder="password"></div>
+    <div class="lf"><label>WebSocket Server <small style="color:var(--muted)">(ws://host:port or leave blank)</small></label>
+      <input id="l-ws" type="text" placeholder="ws://localhost:8080"></div>
+    <button id="login-btn">Connect →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     APP SHELL
+     ══════════════════════════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- titlebar -->
+  <div id="titlebar">
+    <span class="logo">◈ PIM</span>
+    <span id="vis-badge">● Visible</span>
+    <span id="wb-status">WS: disconnected</span>
+    <span id="title-user">Signed in as: <span id="t-alias">—</span></span>
+  </div>
+
+  <!-- menubar  (replaces JMenuBar / JMenu / JMenuItems + ActionListener) -->
+  <div id="menubar">
+    <div class="mn">Options
+      <div class="mn-drop">
+        <div class="mn-item" id="mn-addip">Add User By IP</div>
+        <div class="mn-item" id="mn-visible">Visible Toggle</div>
+        <div class="mn-item mn-sep" id="mn-irc">IRC Chat</div>
+        <div class="mn-item mn-sep" id="mn-sms">SMS</div>
+        <div class="mn-item" id="mn-email">Email</div>
+        <div class="mn-item mn-sep" id="mn-quit">Quit</div>
+      </div>
+    </div>
+    <div class="mn">Network
+      <div class="mn-drop">
+        <div class="mn-item" id="mn-wsconn">Connect WebSocket</div>
+        <div class="mn-item" id="mn-wsdisconn">Disconnect WebSocket</div>
+      </div>
+    </div>
+    <div class="mn">Help
+      <div class="mn-drop">
+        <div class="mn-item" id="mn-help">CLI Help</div>
+        <div class="mn-item" id="mn-about">About</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- main -->
+  <div id="main">
+
+    <!-- buddy panel  (replaces JList friendsArea + JPopupMenu popup) -->
+    <div id="buddy-panel">
+      <h2>Buddy List</h2>
+      <div id="buddy-list"></div>
+    </div>
+
+    <!-- center -->
+    <div id="center">
+      <!-- tabbar -->
+      <div id="tabbar">
+        <div class="tab active" data-pane="cli-pane" id="tab-cli">⌨ Terminal</div>
+        <div class="tab" data-pane="irc-pane" id="tab-irc">💬 IRC</div>
+      </div>
+
+      <div id="pane-wrap">
+
+        <!-- ══ CLI PANE ══════════════════════════════════════════════
+             ACTIVE (was commented out in PimTest.main()):
+               nerd = new InputStreamReader(System.in);
+               nerdSister = new BufferedReader(nerd);
+               while(1!=0){ text=nerdSister.readLine();
+                 if(cp.identifyType(text)==1) break; }
+             GUI new PimTest() / mainFrame.setVisible(true) COMMENTED OUT below.
+             ══════════════════════════════════════════════════════════ -->
+        <div class="pane active" id="cli-pane">
+          <div id="cli-out"></div>
+          <div id="cli-bar">
+            <span id="cli-prompt">--&lt;-@&nbsp;</span>
+            <input id="cli-in" spellcheck="false" autocomplete="off" placeholder="type /help …">
+            <button id="cli-go">Enter</button>
+          </div>
+        </div>
+
+        <!-- ══ IRC PANE ══════════════════════════════════════════════
+             New feature: IRC client via WebSocket IRC bridge
+             (Libera.Chat, OFTC, etc. via wss://irc-ws.libera.chat)
+             ══════════════════════════════════════════════════════════ -->
+        <div class="pane" id="irc-pane">
+          <div id="irc-hdr">
+            <span id="irc-status-dot"></span>
+            <h3 id="irc-hdr-chan">#lobby</h3>
+            <span id="irc-topic">Not connected. Use /irc connect [server] or the IRC menu.</span>
+          </div>
+          <div id="irc-body">
+            <div id="irc-out"></div>
+            <div id="irc-users-panel">
+              <h4>Users</h4>
+              <div id="irc-user-list"></div>
+            </div>
+          </div>
+          <div id="irc-bar">
+            <span id="irc-chan-label">#lobby&nbsp;›&nbsp;</span>
+            <input id="irc-in" spellcheck="false" autocomplete="off" placeholder="message or /join #chan …">
+            <button id="irc-go">Send</button>
+          </div>
+        </div>
+
+        <!-- chat panes injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <div id="statusbar">
+    <span id="sb-peers">Peers: 0</span>
+    <span id="sb-ws">WS: —</span>
+    <span id="sb-irc">IRC: —</span>
+    <span id="sb-mode">Mode: CLI (active)</span>
+  </div>
+</div>
+
+<!-- right-click context menu -->
+<div id="ctx">
+  <div class="ctx-i" data-a="msg">💬 Open Chat</div>
+  <div class="ctx-i ctx-sep" data-a="block">🚫 Block / Unblock</div>
+  <div class="ctx-i" data-a="del">🗑 Delete</div>
+  <div class="ctx-i ctx-sep" data-a="file">📁 Send File</div>
+  <div class="ctx-i" data-a="voice">🎤 Voice</div>
+  <div class="ctx-i ctx-sep" data-a="multi">➕ Add to Chat</div>
+</div>
+
+<!-- generic modals -->
+<div class="modal-bg" id="m-ip">
+  <div class="modal-box">
+    <h2>Add User By IP</h2>
+    <div class="mf"><label>IP Address</label><input id="m-ip-val" placeholder="192.168.1.x"></div>
+    <div class="mbtns"><button class="mbtn-ok" id="m-ip-ok">Add</button><button class="mbtn-cancel" id="m-ip-cancel">Cancel</button></div>
+  </div>
+</div>
+<div class="modal-bg" id="m-sms">
+  <div class="modal-box">
+    <h2 id="m-sms-title">Send SMS</h2>
+    <div class="mf"><label id="m-sms-tolbl">Phone # (e.g. 8055551212)</label><input id="m-sms-to"></div>
+    <div class="mf" id="m-smtp-wrap" style="display:none"><label>SMTP Server</label><input id="m-smtp"></div>
+    <div class="mf"><label>Message</label><textarea id="m-sms-msg"></textarea></div>
+    <div class="mbtns"><button class="mbtn-ok" id="m-sms-ok">Send</button><button class="mbtn-cancel" id="m-sms-cancel">Cancel</button></div>
+  </div>
+</div>
+<div class="modal-bg" id="m-ws">
+  <div class="modal-box">
+    <h2>WebSocket Server</h2>
+    <div class="mf"><label>URL (ws:// or wss://)</label><input id="m-ws-url" placeholder="ws://localhost:8080"></div>
+    <div class="mbtns"><button class="mbtn-ok" id="m-ws-ok">Connect</button><button class="mbtn-cancel" id="m-ws-cancel">Cancel</button></div>
+  </div>
+</div>
+<div class="modal-bg" id="m-irc">
+  <div class="modal-box">
+    <h2>IRC Connection</h2>
+    <div class="mf"><label>IRC WebSocket Bridge URL</label><input id="m-irc-url" value="wss://irc-ws.libera.chat:443" placeholder="wss://…"></div>
+    <div class="mf"><label>Channel (e.g. #pim)</label><input id="m-irc-chan" value="#pim"></div>
+    <div class="mf"><label>Nick (leave blank = use PIM username)</label><input id="m-irc-nick" placeholder="auto"></div>
+    <div class="mbtns"><button class="mbtn-ok" id="m-irc-ok">Connect</button><button class="mbtn-cancel" id="m-irc-cancel">Cancel</button></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     JAVASCRIPT  –  Full PIM port
+     ══════════════════════════════════════════════════════════════════
+
+  FILE MAP (original Java → JS class/function)
+  ─────────────────────────────────────────────
+  data/UserInfo.java          → class UserInfo
+  data/Msg.java               → class Msg
+  data/TextMsg.java           → class TextMsg
+  data/Peer.java              → class Peer
+  data/Peerlist.java          → class Peerlist
+  data/MsgBuffers.java        → class MsgBuffers
+  data/SMSMsg.java            → class SMSMsg  (simulated)
+  data/FileMsg.java           → (file API, no server needed for read)
+  presentation/Display.java   → class Display
+  presentation/CmdProcessor.java → class CmdProcessor  (CLI ACTIVE)
+  presentation/MsgGui.java    → class ChatPane   (Swing COMMENTED OUT)
+  presentation/AddToChat.java → addToChatModal() (Swing COMMENTED OUT)
+  network/Network.java        → class PimNetwork (TCP→WebSocket)
+  network/Voice.java          → stub  (WebRTC note)
+  PimTest.java GUI            → COMMENTED OUT
+  PimTest.java CLI main()     → ACTIVE (boot() + cliSubmit())
+  NEW: IRCClient              → class IRCClient
+  ══════════════════════════════════════════════════════════════════ -->
+<script>
+"use strict";
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  DATA LAYER                                                  ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+// ── UserInfo ──────────────────────────────────────────────────────────────
+// mirrors: pim/data/UserInfo.java
+class UserInfo {
+  constructor(alias, ip, publicKey) {
+    this.myAlias     = (alias     || "").trim();
+    this.myPublicKey = (publicKey || "").trim();
+    this.myIP        = this._parseIP(ip || "");
+  }
+  static fromStr(s) {               // mirrors UserInfo(String stuff)
+    const p = s.split("|");
+    if (p.length >= 3) return new UserInfo(p[0], p[1], p[2]);
+    const u = new UserInfo(p[0] || "", "", ""); u.myPublicKey = "QUIT"; return u;
+  }
+  _parseIP(raw) {
+    if (raw.includes("/")) { const p = raw.split("/"); return p[p.length-1]; }
+    return raw;
+  }
+  toString()        { return `${this.myAlias}|${this.myIP}|${this.myPublicKey}`; }
+  getAlias()        { return this.myAlias; }
+  getIP()           { return this.myIP; }
+  getPublicKey()    { return this.myPublicKey; }
+  setAlias(a)       { this.myAlias = a; }
+  setIP(ip)         { this.myIP = this._parseIP(ip); }
+  setPublicKey(k)   { this.myPublicKey = k; }
+  equals(b)         { return this.myAlias===b.myAlias&&this.myIP===b.myIP&&this.myPublicKey===b.myPublicKey; }
+  equalsIgnoreIP(b) { return this.myAlias===b.myAlias&&this.myPublicKey===b.myPublicKey; }
+}
+
+// ── Msg / TextMsg ─────────────────────────────────────────────────────────
+class Msg {
+  constructor() { this.type=0; this.sender=null; this.receiver=null; }
+  getType()    { return this.type; }
+  getSender()  { return this.sender; }
+  getReceiver(){ return this.receiver; }
+  setSender(s) { this.sender=s; }
+  setReceiver(r){ this.receiver=r; }
+}
+class TextMsg extends Msg {           // mirrors: pim/data/TextMsg.java
+  constructor(sender, receiver, text) {
+    super(); this.type=0; this.sender=sender; this.receiver=receiver; this.text=text;
+  }
+  getText()  { return this.text; }
+  setText(t) { this.text=t; }
+}
+
+// ── Peer ──────────────────────────────────────────────────────────────────
+// mirrors: pim/data/Peer.java
+class Peer {
+  constructor(a, origAlias, ip, pubKey, block) {
+    if (a instanceof UserInfo) {
+      this.info=a; this.myNewAlias=a.getAlias();
+    } else {
+      this.info=new UserInfo(origAlias||"",ip||"",pubKey||"");
+      this.myNewAlias=a||"";
+    }
+    this.onlineStatus=false; this.myBlockStatus=block||false;
+    this.myAwayStatus=false; this.myLMT="0";
+  }
+  equals(b)         { return this.info.equalsIgnoreIP(b.getUserInfo()); }
+  toString()        { return "   "+this.myNewAlias; }
+  setOrigAlias(a)   { this.info.setAlias(a); }
+  setPublicKey(k)   { this.info.setPublicKey(k); }
+  setIP(ip)         { this.info.setIP(ip); }
+  setIsOnline(b)    { this.onlineStatus=b; }
+  setNewAlias(a)    { this.myNewAlias=a; }
+  setBlock(b)       { this.myBlockStatus=b; }
+  setAway(b)        { this.myAwayStatus=b; }
+  setLastMsgTime(t) { this.myLMT=t; }
+  getOrigAlias()    { return this.info.getAlias(); }
+  getPublicKey()    { return this.info.getPublicKey(); }
+  getIP()           { return this.info.getIP(); }
+  getNewAlias()     { return this.myNewAlias; }
+  isOnline()        { return this.onlineStatus; }
+  getBlock()        { return this.myBlockStatus; }
+  getAway()         { return this.myAwayStatus; }
+  getLastMsgTime()  { return this.myLMT; }
+  getUserInfo()     { return this.info; }
+}
+
+// ── Peerlist ──────────────────────────────────────────────────────────────
+// mirrors: pim/data/Peerlist.java
+class Peerlist {
+  constructor() {
+    this.list=[]; this.savedList=[];
+    this.collapse1=false; this.collapse2=false;
+    this.collapse3=true;  this.collapse4=true;
+    this.d=null; this.nw=null;
+  }
+  addD(d)    { this.d=d; }
+  setNW(nw)  { this.nw=nw; }
+
+  saveInfo() {           // mirrors: writeObject to peerlist.dat
+    let s="";
+    for (const p of this.savedList) {
+      p.setIsOnline(false);
+      s+=`${p.getNewAlias()}|${p.getOrigAlias()}|${p.getPublicKey()}|${p.getBlock()?"true":"false"}|`;
+    }
+    return s;
+  }
+  addSaves(info) {        // mirrors: readObject from peerlist.dat
+    if (!info) return;
+    const tok = info.split("|").filter(Boolean);
+    for (let i=0;i+3<tok.length;i+=4) {
+      const p=new Peer(tok[i],tok[i+1],"2.2.2.2",tok[i+2],tok[i+3]==="true");
+      this.savedList.push(p);
+    }
+  }
+
+  _inSaved(ui)      { return this.savedList.some(p=>p.getUserInfo().equalsIgnoreIP(ui)); }
+  _savedIdx(ui)     { return this.savedList.findIndex(p=>p.getUserInfo().equalsIgnoreIP(ui)); }
+  updateAlias(ui) {
+    const chk=arr=>{ for(const p of arr) if(p.getUserInfo().getAlias()===ui.getAlias()&&!p.getUserInfo().equalsIgnoreIP(ui)) ui.setAlias(ui.getAlias()+"Anon"); };
+    chk(this.list); chk(this.savedList);
+  }
+
+  _insertSorted(arr, a) {
+    let i=arr.findIndex(p=>p.getNewAlias()>a.getNewAlias());
+    if(i===-1) i=arr.length;
+    if(arr[i]&&arr[i].getUserInfo().equalsIgnoreIP(a.getUserInfo())) return 0;
+    arr.splice(i,0,a); return 1;
+  }
+
+  _addPeerObj(a) {
+    if (this._inSaved(a.getUserInfo())) {
+      const p=this.savedList[this._savedIdx(a.getUserInfo())];
+      if(p.isOnline()) return 0;
+      p.setIsOnline(true); p.setIP(a.getIP()); return 1;
+    }
+    this.updateAlias(a.getUserInfo());
+    a.setNewAlias(a.getUserInfo().getAlias());
+    const target = this._inSaved(a.getUserInfo()) ? this.savedList : this.list;
+    return this._insertSorted(target,a);
+  }
+
+  addPeer(alias, ip) {    // overloaded: (UserInfo) | (String) | (String,String)
+    if (alias instanceof UserInfo) {
+      const ui=alias;
+      const ex=this.findPeerIgnoreAlias(ui);
+      if(ex && ex.getNewAlias()!==ui.getAlias()) ui.setAlias(ex.getNewAlias());
+      if(this._addPeerObj(new Peer(ui))===1) this.displayPeers();
+    } else {
+      const p=new Peer(new UserInfo(alias,ip||"",""));
+      p.setIsOnline(true);
+      if(this._addPeerObj(p)===1) this.displayPeers();
+    }
+  }
+  findPeer(arg) {
+    if (typeof arg==="string") {
+      for(const p of this.list)      if(p.getNewAlias()===arg) return p;
+      for(const p of this.savedList) if(p.getNewAlias()===arg) return p;
+      return null;
+    }
+    const ui=arg;
+    for(const p of this.list)      if(p.getUserInfo().equalsIgnoreIP(ui)) return p;
+    for(const p of this.savedList) if(p.getUserInfo().equalsIgnoreIP(ui)) return p;
+    const t=this.findPeerIgnoreAlias(ui);
+    if(t) ui.setAlias(t.getNewAlias());
+    return t;
+  }
+  findPeerIgnoreAlias(ui) {
+    const k=ui.getPublicKey();
+    for(const p of this.list)      if(p.getUserInfo().getPublicKey()===k) return p;
+    for(const p of this.savedList) if(p.getUserInfo().getPublicKey()===k) return p;
+    return null;
+  }
+  removePeer(arg) {
+    const ui = typeof arg==="string" ? new UserInfo(arg,"","") : arg;
+    this.updateAlias(ui);
+    if(this._inSaved(ui)) { this.savedList[this._savedIdx(ui)].setIsOnline(false); }
+    else {
+      const i=this.list.findIndex(p=>p.getUserInfo().equalsIgnoreIP(ui));
+      if(i!==-1) this.list.splice(i,1);
+    }
+    this.displayPeers();
+  }
+  deletePeer(p) {
+    if(this._inSaved(p.getUserInfo())) { this.savedList.splice(this._savedIdx(p.getUserInfo()),1); }
+    else { const i=this.list.findIndex(x=>x.equals(p)); if(i!==-1)this.list.splice(i,1); }
+    this.displayPeers();
+  }
+  moveToSavedList(a) {
+    if(this._inSaved(a.getUserInfo())) return;
+    const i=this.list.findIndex(x=>x.equals(a));
+    if(i!==-1) this.list.splice(i,1);
+    a.setIsOnline(true);
+    this._insertSorted(this.savedList,a);
+    this.displayPeers();
+  }
+  blockPeer(alias) {
+    const p=this.findPeer(alias);
+    if(p){ p.setBlock(!p.getBlock()); this.displayPeers(); return !p.getBlock(); }
+    return false;
+  }
+  getSize()          { return this.list.length+this.savedList.length; }
+  checkStatus(alias) { const p=this.findPeer(alias); return p?p.isOnline():false; }
+
+  displayPeers() { UI.renderBuddyList(this); updateSB(); }
+}
+
+// ── Display ───────────────────────────────────────────────────────────────
+// mirrors: pim/presentation/Display.java  (System.out.println → CLI)
+class Display {
+  putMessage(msg) {
+    const name=msg.getSender().getAlias(), text=msg.getText();
+    CLI.print(`${name}: ${text}`,"rx");
+    // also route to open chat pane if one exists
+    const cp=UI.chatPanes[name];
+    if(cp) cp.addMsg(name, text, false);
+  }
+  putPeer(person) {
+    if(person.isOnline()) CLI.print((person.getBlock()?"* ":"")+person.getOrigAlias(),"ok");
+  }
+  signedOn(person) {
+    if(person.isOnline()) CLI.print(`${person.getBlock()?"* ":""}${person.getOrigAlias()} just signed on.`,"ok");
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  NETWORK LAYER  (TCP → WebSocket)                            ║
+// ║  mirrors: pim/network/Network.java                           ║
+// ╚══════════════════════════════════════════════════════════════╝
+/*
+  Original Java Network inner classes and their HTML5 equivalents:
+  ─────────────────────────────────────────────────────────────────
+  listen (ServerSocket port 1024)         → ws.onmessage (type=MSG)
+  listenBroadcast (MulticastSocket 2345)  → ws.onmessage (type=BROADCAST)
+  listenExit (MulticastSocket 2555)       → ws.onmessage (type=EXIT)
+  FileListen (ServerSocket port 2048)     → ws.onmessage (type=FILE)
+  periodicBroadcast (Thread sleep 30 s)  → setInterval 30 000 ms
+  MsgThread (Socket to peer port 1024)    → ws.send JSON
+  Crypto encrypt/decrypt                  → base64 XOR stub (visual only)
+  CaptureAudio / PlayAudio                → WebRTC placeholder
+*/
+class PimNetwork {
+  constructor(peerlist, display, userInfo) {
+    this.pl=peerlist; this.d=display; this.ui=userInfo;
+    this.ws=null; this.wsUrl=""; this.connected=false;
+    this.openChats=[];   // vector of open ChatPane (mirrors msgs Vector in Network)
+    this.c=true;         // broadcast flag
+    // periodicBroadcast thread → every 30 s
+    setInterval(()=>{ if(this.c) this.broadcast(true); }, 30000);
+  }
+
+  // ── WebSocket transport ──────────────────────────────────────────────
+  wsConnect(url) {
+    if(this.ws) try{this.ws.close()}catch(e){}
+    this.wsUrl=url;
+    CLI.print(`[ws] Connecting to ${url} …`,"ws");
+    try {
+      this.ws=new WebSocket(url);
+      this.ws.onopen    = ()=>this._onOpen();
+      this.ws.onmessage = e=>this._onWsMsg(e);
+      this.ws.onclose   = ()=>this._onClose();
+      this.ws.onerror   = ()=>CLI.print("[ws] Connection error.","err");
+    } catch(e) { CLI.print(`[ws] Cannot connect: ${e.message}`,"err"); }
+  }
+  wsDisconnect() {
+    if(this.ws) this.ws.close();
+  }
+  _onOpen() {
+    this.connected=true;
+    CLI.print(`[ws] Connected to ${this.wsUrl}`,"ws");
+    document.getElementById("wb-status").textContent="WS: connected";
+    document.getElementById("wb-status").className="ok";
+    document.getElementById("sb-ws").textContent=`WS: ${this.wsUrl}`;
+    this.broadcast(true);
+  }
+  _onClose() {
+    this.connected=false;
+    CLI.print("[ws] Disconnected.","warn");
+    document.getElementById("wb-status").textContent="WS: disconnected";
+    document.getElementById("wb-status").className="";
+    document.getElementById("sb-ws").textContent="WS: disconnected";
+  }
+  // mirrors: Connect.run() — incoming message dispatcher
+  _onWsMsg(e) {
+    let pkt;
+    try { pkt=JSON.parse(e.data); } catch(_){ return; }
+    switch(pkt.type) {
+      case "MSG":       this._handleMsg(pkt);       break;
+      case "BROADCAST": this._handleBroadcast(pkt); break;
+      case "EXIT":      this._handleExit(pkt);      break;
+      case "FILE":      this._handleFile(pkt);      break;
+      case "AUDIO":     this._handleAudio(pkt);     break;
+    }
+  }
+  // mirrors: Connect.run() body (decrypt, route, protocol msgs)
+  _handleMsg(pkt) {
+    const senderUI=new UserInfo(pkt.fromAlias, pkt.fromIP, pkt.fromKey);
+    const tm=new TextMsg(senderUI, this.ui, this._decrypt(pkt.text));
+    // block check
+    const peer=this.pl.findPeer(senderUI);
+    if(peer&&peer.getBlock()) {
+      this.sendTxtMsg(new TextMsg(this.ui,senderUI,"Sorry, this user has blocked you."));
+      return;
+    }
+    const txt=tm.getText();
+    if(txt==="!ONLINE") {
+      this.pl.addPeer(senderUI);
+      this.sendTxtMsg(new TextMsg(this.ui,senderUI,"!ISON")); return;
+    }
+    if(txt==="!ISON") { this.pl.addPeer(senderUI); return; }
+    // route to chat pane or Display
+    const cp=UI.chatPanes[senderUI.getAlias()];
+    if(cp) cp.addMsg(senderUI.getAlias(), txt, false);
+    else this.d.putMessage(tm);
+  }
+  _handleBroadcast(pkt) {
+    const senderUI=new UserInfo(pkt.alias, pkt.ip, pkt.key);
+    this.pl.addPeer(senderUI);
+  }
+  _handleExit(pkt) {
+    const senderUI=new UserInfo(pkt.alias, pkt.ip, pkt.key);
+    this.pl.removePeer(senderUI);
+  }
+  _handleFile(pkt) {
+    CLI.print(`[file] Incoming file "${pkt.name}" from ${pkt.fromAlias} (${pkt.size} bytes)`,"ok");
+    // In Java: FileMsg.writeFile() → saves to disk. Here: offer download.
+    if(pkt.data) {
+      const a=document.createElement("a");
+      a.href="data:application/octet-stream;base64,"+pkt.data;
+      a.download=pkt.name||"received_file";
+      a.click();
+    }
+  }
+  _handleAudio(pkt) {
+    CLI.print(`[voice] Audio request from ${pkt.fromAlias}. (WebRTC not implemented in this build)`,"warn");
+  }
+
+  // ── send ─────────────────────────────────────────────────────────────
+  // mirrors: sendTxtMsg → crypto.encrypt(a) → new MsgThread(a)
+  sendTxtMsg(tm) {
+    const pkt={
+      type:"MSG",
+      toAlias:tm.getReceiver().getAlias(),
+      toIP:tm.getReceiver().getIP(),
+      fromAlias:tm.getSender().getAlias(),
+      fromIP:tm.getSender().getIP(),
+      fromKey:tm.getSender().getPublicKey(),
+      text:this._encrypt(tm.getText()),
+      ts:Date.now()
+    };
+    if(this.connected && this.ws && this.ws.readyState===1) {
+      this.ws.send(JSON.stringify(pkt));
+    } else {
+      // fallback: localStorage cross-tab (simulated LAN)
+      const k=`pim_in_${tm.getReceiver().getAlias()}`;
+      localStorage.setItem(k, JSON.stringify(pkt));
+    }
+    this._localEcho(tm);
+  }
+  // mirrors: broadcast(boolean) — sends multicast UDP (now broadcast JSON over WS)
+  broadcast(b) {
+    this.c=b;
+    const pkt={
+      type: b?"BROADCAST":"EXIT",
+      alias:this.ui.getAlias(), ip:this.ui.getIP(), key:this.ui.getPublicKey()
+    };
+    if(this.connected && this.ws && this.ws.readyState===1)
+      this.ws.send(JSON.stringify(pkt));
+    CLI.print(`[net] ${b?"Broadcast: visible":"Broadcast: going offline"}`,"ws");
+  }
+  // mirrors: sendFile → new MsgThread(tm, file)
+  sendFile(them, file) {
+    CLI.print(`[file] Sending "${file.name}" to ${them.getAlias()} …`,"ws");
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const data=btoa(reader.result);
+      const pkt={type:"FILE",fromAlias:this.ui.getAlias(),fromIP:this.ui.getIP(),
+        fromKey:this.ui.getPublicKey(),toAlias:them.getAlias(),
+        name:file.name,size:file.size,data};
+      if(this.connected && this.ws && this.ws.readyState===1) this.ws.send(JSON.stringify(pkt));
+      else CLI.print("[file] No WS connection — file not sent.","warn");
+    };
+    reader.readAsBinaryString(file);
+  }
+  // mirrors: doAudio → new MsgThread(them) type=3
+  doAudio(them) {
+    CLI.print(`[voice] Voice call to ${them.getAlias()} — requires WebRTC server bridge.`,"warn");
+    const pkt={type:"AUDIO",fromAlias:this.ui.getAlias(),fromIP:this.ui.getIP(),
+      fromKey:this.ui.getPublicKey(),toAlias:them.getAlias()};
+    if(this.connected && this.ws && this.ws.readyState===1) this.ws.send(JSON.stringify(pkt));
+  }
+  saveKeys() {
+    localStorage.setItem("pim_user", JSON.stringify({
+      alias:this.ui.getAlias(), ip:this.ui.getIP(), key:this.ui.getPublicKey()
+    }));
+  }
+
+  _localEcho(tm) {
+    const txt=tm.getText();
+    if(txt==="!ONLINE"||txt==="!ISON") return;
+    const cp=UI.chatPanes[tm.getReceiver().getAlias()];
+    if(cp) cp.addMsg(tm.getSender().getAlias(), txt, true);
+    else CLI.print(`→ [${tm.getReceiver().getAlias()}] ${txt}`,"msg");
+  }
+
+  // simple XOR-base64 stub (mirrors Crypto class placeholder)
+  _encrypt(s) { return btoa(unescape(encodeURIComponent(s))); }
+  _decrypt(s) { try{return decodeURIComponent(escape(atob(s)));}catch(_){return s;} }
+
+  // Poll localStorage for cross-tab simulation
+  _startLocalPoll() {
+    setInterval(()=>{
+      const k=`pim_in_${this.ui.getAlias()}`;
+      const raw=localStorage.getItem(k);
+      if(!raw) return;
+      localStorage.removeItem(k);
+      try{ this._handleMsg(JSON.parse(raw)); }catch(_){}
+    }, 1500);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  COMMAND PROCESSOR  (CLI ACTIVE)                             ║
+// ║  mirrors: pim/presentation/CmdProcessor.java                 ║
+// ╚══════════════════════════════════════════════════════════════╝
+/*
+  Original Java main() had the CLI loop commented out:
+    //nerd = new InputStreamReader(System.in);
+    //nerdSister = new BufferedReader(nerd);
+    //while(1!=0){ text=nerdSister.readLine();
+    //  if(cp.identifyType(text)==1) break; }
+
+  That loop is now ACTIVE here via cliSubmit().
+  The GUI new PimTest() / mainFrame.setVisible(true) is COMMENTED OUT below.
+*/
+class CmdProcessor {
+  constructor(network, peerlist, userInfo) {
+    this.nw=network; this.pl=peerlist; this.us=userInfo;
+    this.lastMsg=null;   // private Peer lastMsg; — last peer messaged
+  }
+
+  // mirrors: public int identifyType(String text)
+  identifyType(text) {
+    if(!text||text.length<1) return -1;
+
+    if(text.charAt(0)==="/") {
+      const toks=text.trim().split(/\s+/);
+      const cmd=toks[0], alias=toks[1]||"";
+
+      // /add alias [ip]
+      if(cmd==="/add") {
+        if(toks[2]) this.pl.addPeer(alias,toks[2]); else this.pl.addPeer(alias);
+        CLI.print(`Added ${alias}.`,"ok");
+
+      // /block alias
+      } else if(cmd==="/block") {
+        this.pl.blockPeer(alias);
+        CLI.print(`Block toggled on ${alias}.`,"ok");
+
+      // /unblock alias  (same as block — toggles)
+      } else if(cmd==="/unblock") {
+        this.pl.blockPeer(alias);
+        CLI.print(`Unblock toggled on ${alias}.`,"ok");
+
+      // /msg alias message...
+      } else if(cmd==="/msg") {
+        this.lastMsg=this.pl.findPeer(alias);
+        if(this.lastMsg) {
+          const body=toks.slice(2).join(" ");
+          this.nw.sendTxtMsg(new TextMsg(this.us,this.lastMsg.getUserInfo(),body));
+        } else CLI.print(`User not found: ${alias}`,"warn");
+
+      // /remove alias
+      } else if(cmd==="/remove") {
+        this.pl.removePeer(alias);
+        CLI.print(`Removed ${alias}.`,"ok");
+
+      // /list
+      } else if(cmd==="/list") {
+        this.pl.displayPeers();
+        for(const p of [...this.pl.list,...this.pl.savedList])
+          this.pl.d.putPeer(p);
+
+      // /status alias
+      } else if(cmd==="/status") {
+        const on=this.pl.checkStatus(alias);
+        CLI.print(`${alias} is ${on?"online":"offline"}.`,on?"ok":"warn");
+
+      // /quit
+      } else if(cmd==="/quit") {
+        this.nw.broadcast(false);
+        CLI.print("Goodbye.","sys");
+        setTimeout(()=>{ localStorage.setItem("pim_peerlist",this.pl.saveInfo()); this.nw.saveKeys(); },400);
+        return 1;
+
+      // /help  — mirrors System.out.println("Commands Format: …")
+      } else if(cmd==="/help") {
+        CLI.print("Commands Format:  /<cmd> <alias> [extra]","sys");
+        const cmds=[
+          ["/msg <alias> <text>",   "send a direct message"],
+          ["/add <alias> [ip]",     "add peer to list"],
+          ["/remove <alias>",       "remove peer"],
+          ["/block <alias>",        "toggle block on peer"],
+          ["/unblock <alias>",      "toggle unblock on peer"],
+          ["/list",                 "display peer list in terminal"],
+          ["/status <alias>",       "check if peer is online"],
+          ["/chat <alias>",         "open GUI chat tab with peer"],
+          ["/irc [connect|join|part|nick|me] …", "IRC commands"],
+          ["/sms",                  "open SMS dialog"],
+          ["/email",                "open email dialog"],
+          ["/addip",                "add user by IP address"],
+          ["/visible",              "toggle visibility (broadcast on/off)"],
+          ["/ws <url>",             "connect WebSocket server"],
+          ["/quit",                 "quit PIM"],
+        ];
+        for(const[c,d] of cmds)
+          CLI.raw(`<span class="hl-cmd">${c}</span>  <span class="hl-desc">– ${d}</span>`);
+
+      // /chat alias  — open GUI chat pane
+      } else if(cmd==="/chat") {
+        const p=this.pl.findPeer(alias);
+        if(p) UI.openChat(p);
+        else CLI.print(`User not found: ${alias}`,"warn");
+
+      // /sms
+      } else if(cmd==="/sms")   { openSmsModal(false);
+      // /email
+      } else if(cmd==="/email") { openSmsModal(true);
+      // /addip
+      } else if(cmd==="/addip") { showModal("m-ip");
+      // /visible
+      } else if(cmd==="/visible") { toggleVisible();
+
+      // /ws <url>  — connect websocket
+      } else if(cmd==="/ws") {
+        if(alias) net.wsConnect(alias);
+        else showModal("m-ws");
+
+      // /irc — IRC commands
+      } else if(cmd==="/irc") {
+        this._ircCmd(toks.slice(1));
+
+      } else {
+        CLI.print(`Bad command, try /help`,"err"); // mirrors System.out.println("Bad command…")
+      }
+
+    } else {
+      // bare text — send to lastMsg peer (mirrors CmdProcessor else branch)
+      if(!this.lastMsg)
+        CLI.print("No default recipient. Use /msg <alias> <text> first, or /help.","warn");
+      else
+        this.nw.sendTxtMsg(new TextMsg(this.us, this.lastMsg.getUserInfo(), text));
+    }
+    return 0;
+  }
+
+  // /irc sub-commands
+  _ircCmd(args) {
+    const sub=args[0]||"";
+    switch(sub) {
+      case "connect": IRC.connect(args[1]||"wss://irc-ws.libera.chat:443", args[2]||null); break;
+      case "join":    IRC.join(args[1]||"#pim"); break;
+      case "part":    IRC.part(args[1]||IRC.channel); break;
+      case "nick":    IRC.sendRaw(`NICK ${args[1]}`); break;
+      case "me":      IRC.sendAction(args.slice(1).join(" ")); break;
+      case "msg":     IRC.sendMsg(args[1], args.slice(2).join(" ")); break;
+      case "raw":     IRC.sendRaw(args.slice(1).join(" ")); break;
+      default:        showModal("m-irc"); break;
+    }
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  IRC CLIENT                                                  ║
+// ║  New feature: connects to IRC via WebSocket IRC bridge        ║
+// ║  (Libera.Chat: wss://irc-ws.libera.chat:443)                 ║
+// ╚══════════════════════════════════════════════════════════════╝
+const IRC = {
+  ws:       null,
+  nick:     "",
+  channel:  "#pim",
+  users:    {},        // nick → mode ('', '@', '+')
+  connected:false,
+  identified:false,
+  PONG_RE:  /^PING :(.+)$/,
+
+  connect(url, nick) {
+    if(this.ws) try{this.ws.close()}catch(e){}
+    this.nick = nick || myAlias || "PIMuser";
+    IRCpaint(`Connecting to ${url} as ${this.nick} …`,"irc-sys");
+    try {
+      this.ws = new WebSocket(url, ["irc"]);
+      this.ws.onopen    = ()=>this._onOpen();
+      this.ws.onmessage = e=>this._onMsg(e.data);
+      this.ws.onclose   = ()=>this._onClose();
+      this.ws.onerror   = ()=>IRCpaint("IRC WebSocket error.","err");
+    } catch(e) { IRCpaint(`Cannot open IRC WebSocket: ${e.message}`,"err"); }
+  },
+  _onOpen() {
+    this.connected=true;
+    document.getElementById("irc-status-dot").className="on";
+    document.getElementById("sb-irc").textContent=`IRC: ${this.nick}`;
+    // RFC 1459 registration sequence
+    this.sendRaw("CAP LS 302");
+    this.sendRaw(`NICK ${this.nick}`);
+    this.sendRaw(`USER ${this.nick} 0 * :PIM User`);
+    IRCpaint("IRC WebSocket open — registering …","irc-sys");
+  },
+  _onClose() {
+    this.connected=false; this.identified=false; this.users={};
+    document.getElementById("irc-status-dot").className="";
+    document.getElementById("sb-irc").textContent="IRC: disconnected";
+    this._renderUsers();
+    IRCpaint("IRC disconnected.","irc-sys");
+  },
+  _onMsg(raw) {
+    // handle multi-line (IRC sometimes sends multiple lines at once)
+    for(const line of raw.split(/\r?\n/)) {
+      if(!line.trim()) continue;
+      this._parseLine(line);
+    }
+  },
+  _parseLine(line) {
+    // PING
+    if(this.PONG_RE.test(line)) {
+      this.sendRaw("PONG :"+this.PONG_RE.exec(line)[1]); return;
+    }
+    // CAP ACK/NAK/END
+    if(line.includes("CAP") && line.includes("END")) { this.sendRaw("CAP END"); }
+    if(line.match(/CAP \* ACK/)) this.sendRaw("CAP END");
+
+    // Parse: [:prefix] COMMAND [params] [:trailing]
+    let prefix="", cmd="", params=[];
+    let rest=line;
+    if(rest.startsWith(":")) {
+      const sp=rest.indexOf(" ");
+      prefix=rest.slice(1,sp); rest=rest.slice(sp+1).trim();
+    }
+    const trail=rest.indexOf(" :");
+    let trailing="";
+    if(trail!==-1) { trailing=rest.slice(trail+2); rest=rest.slice(0,trail); }
+    const parts=rest.trim().split(" ");
+    cmd=parts[0]; params=parts.slice(1); if(trailing) params.push(trailing);
+
+    const nick=(prefix.includes("!"))?prefix.split("!")[0]:prefix;
+
+    switch(cmd) {
+      case "001": // RPL_WELCOME
+        this.identified=true;
+        IRCpaint(`Connected as ${this.nick} on ${prefix}`,"irc-sys");
+        this.join(this.channel);
+        break;
+      case "332": // RPL_TOPIC
+        document.getElementById("irc-topic").textContent=params[params.length-1]||"";
+        break;
+      case "353": { // RPL_NAMREPLY
+        const names=params[params.length-1].split(" ");
+        for(const n of names) {
+          let mode="",name=n;
+          if(n.startsWith("@")){mode="@";name=n.slice(1);}
+          else if(n.startsWith("+")){mode="+";name=n.slice(1);}
+          this.users[name]=mode;
+        }
+        this._renderUsers(); break;
+      }
+      case "366": break; // RPL_ENDOFNAMES
+      case "JOIN": {
+        const ch=params[0]||trailing;
+        if(nick===this.nick) {
+          this.channel=ch;
+          document.getElementById("irc-hdr-chan").textContent=ch;
+          document.getElementById("irc-chan-label").textContent=ch+" › ";
+          IRCpaint(`Joined ${ch}`,"irc-sys");
+        } else {
+          this.users[nick]=""; this._renderUsers();
+          IRCpaint(`» ${nick} joined ${ch}`,"irc-sys");
+        }
+        break;
+      }
+      case "PART": {
+        const ch=params[0]||trailing;
+        delete this.users[nick]; this._renderUsers();
+        if(nick===this.nick) IRCpaint(`Left ${ch}.`,"irc-sys");
+        else IRCpaint(`« ${nick} left ${ch}`,"irc-sys");
+        break;
+      }
+      case "QUIT":
+        delete this.users[nick]; this._renderUsers();
+        IRCpaint(`«« ${nick} quit (${trailing})`,"irc-sys");
+        break;
+      case "NICK": {
+        const newNick=trailing||params[0];
+        if(this.users[nick]!==undefined){ this.users[newNick]=this.users[nick]; delete this.users[nick]; this._renderUsers(); }
+        if(nick===this.nick) this.nick=newNick;
+        IRCpaint(`${nick} is now known as ${newNick}`,"irc-sys");
+        break;
+      }
+      case "PRIVMSG": {
+        const target=params[0], msg=trailing||params[1]||"";
+        // ACTION (/me)
+        const action=/^\x01ACTION (.+)\x01$/.exec(msg);
+        if(action) { IRCpaint(`* ${nick} ${action[1]}`,"irc"); break; }
+        if(target===this.channel) {
+          IRCpaint(`<${nick}> ${escHtml(msg)}`,nick===this.nick?"irc-sys":"irc");
+          // notify CLI tab with badge if IRC tab not active
+          if(!document.getElementById("irc-pane").classList.contains("active"))
+            bumpTabBadge("tab-irc");
+        } else {
+          // PM
+          IRCpaint(`[PM from ${nick}] ${escHtml(msg)}`,"warn");
+        }
+        break;
+      }
+      case "NOTICE":
+        IRCpaint(`-${nick}- ${escHtml(trailing||params[1]||"")}`,"irc-sys");
+        break;
+      case "MODE": {
+        const ch=params[0], modeStr=params[1]||"", modeNick=params[2]||"";
+        IRCpaint(`Mode ${modeStr} set on ${modeNick||ch} by ${nick}`,"irc-sys");
+        break;
+      }
+      case "KICK": {
+        const ch=params[0],kicked=params[1]||"",reason=trailing||"";
+        IRCpaint(`${nick} kicked ${kicked} from ${ch} (${reason})`,"irc-sys");
+        if(kicked===this.nick) { delete this.users[kicked]; this._renderUsers(); }
+        break;
+      }
+      case "TOPIC":
+        document.getElementById("irc-topic").textContent=trailing;
+        IRCpaint(`${nick} set topic: ${escHtml(trailing)}`,"irc-sys");
+        break;
+      case "ERROR":
+        IRCpaint(`IRC ERROR: ${trailing}`,"err"); break;
+      default:
+        // numeric replies: 4xx/5xx errors, MOTD etc.
+        if(/^\d{3}$/.test(cmd)) {
+          const n=parseInt(cmd);
+          if(n>=400) IRCpaint(`[${cmd}] ${escHtml(trailing||params.join(" "))}`,"err");
+          else if(n<=004||n===372||n===375||n===376) IRCpaint(trailing||params.join(" "),"irc-sys");
+        }
+    }
+  },
+  join(chan)   { this.sendRaw(`JOIN ${chan}`); },
+  part(chan)   { this.sendRaw(`PART ${chan} :leaving`); },
+  sendMsg(target, msg) {
+    this.sendRaw(`PRIVMSG ${target} :${msg}`);
+    IRCpaint(`<${this.nick}> ${escHtml(msg)}`,"irc-sys");
+  },
+  sendAction(text) {
+    this.sendRaw(`PRIVMSG ${this.channel} :\x01ACTION ${text}\x01`);
+    IRCpaint(`* ${this.nick} ${escHtml(text)}`,"irc");
+  },
+  sendRaw(line) {
+    if(this.ws && this.ws.readyState===1) this.ws.send(line+"\r\n");
+    else IRCpaint("IRC not connected.","warn");
+  },
+  sendToChannel(text) {
+    if(text.startsWith("/")) {
+      const toks=text.trim().split(/\s+/);
+      switch(toks[0]) {
+        case "/join":  this.join(toks[1]||"#pim"); break;
+        case "/part":  this.part(toks[1]||this.channel); break;
+        case "/nick":  this.sendRaw(`NICK ${toks[1]}`); break;
+        case "/me":    this.sendAction(toks.slice(1).join(" ")); break;
+        case "/msg":   this.sendMsg(toks[1],toks.slice(2).join(" ")); break;
+        case "/raw":   this.sendRaw(toks.slice(1).join(" ")); break;
+        case "/clear": document.getElementById("irc-out").innerHTML=""; break;
+        case "/quit":  this.sendRaw("QUIT :PIM bye"); this.ws.close(); break;
+        default: IRCpaint(`Unknown IRC command: ${toks[0]}`,"warn");
+      }
+    } else {
+      if(!this.connected){ IRCpaint("Not connected to IRC.","warn"); return; }
+      this.sendMsg(this.channel, text);
+    }
+  },
+  _renderUsers() {
+    const ul=document.getElementById("irc-user-list");
+    const nicks=Object.keys(this.users).sort((a,b)=>{
+      const rank=m=>m==="@"?0:m==="+"?1:2;
+      return rank(this.users[a])-rank(this.users[b])||a.localeCompare(b);
+    });
+    ul.innerHTML=nicks.map(n=>{
+      const m=this.users[n];
+      const cls=m==="@"?"op":m==="+"?"voice":"";
+      return `<div class="irc-user-row ${cls}">${m}${escHtml(n)}</div>`;
+    }).join("");
+  }
+};
+
+// ──────────────────────────────────────────────────────────────────────────
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  UI LAYER                                                    ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+// ── Emoji map  (mirrors $token$ system in MsgGui.java) ───────────────────
+const EMOJIS={
+  eyes:"👀",happy:"😊",eek:"😱",mad:"😠",glasses:"🤓",devil:"😈",
+  ohwell:"🤷",smile:"🙂",sick:"🤢",tongue:"😛",smokin:"😎",tired:"😴",
+  frown:"🙁",nerd:"🧐",laugh:"😂",embarassed:"😳",wink:"😉",
+  indifferent:"😐",grin:"😁",alien:"👽",pimp:"😏",roll:"🙄"
+};
+function parseEmoji(t) {
+  return t.replace(/\$([a-zA-Z]+)\$/g,(_,n)=>EMOJIS[n]||`$${n}$`);
+}
+
+// ── ChatPane  (replaces MsgGui.java Swing JFrame) ────────────────────────
+/*
+  GUI COMMENTED OUT:
+  // public class MsgGui extends JFrame {           ← Swing – commented out
+  //   private JPanel nickel, dime, penny;          ← Swing – commented out
+  //   private JTextField talkIn;                   ← Swing – commented out
+  //   private JButton hello, eyes, happy, ...;     ← Swing – commented out
+  //   private ImageIcon eyesIcon, happyIcon, ...;  ← Swing – commented out
+  //   cont.add(nickel); cont.add(dime); cont.add(penny); ← Swing – commented out
+  //   setSize(600,500); setVisible(true);           ← Swing – commented out
+  // }
+*/
+class ChatPane {
+  constructor(alias, peerUI) {
+    this.alias=alias; this.peerUI=peerUI;
+    this.others=[peerUI];  // mirrors Vector others in MsgGui
+    this._build();
+  }
+  _build() {
+    const id="cp-"+this.alias.replace(/\W/g,"_");
+    this.id=id;
+    // tab
+    const tab=document.createElement("div");
+    tab.className="tab"; tab.dataset.pane=id; tab.id="tab-"+id;
+    tab.innerHTML=`💬 ${escHtml(this.alias)} <span class="xtab" data-alias="${this.alias}">✕</span>`;
+    tab.querySelector(".xtab").addEventListener("click",e=>{e.stopPropagation();this.close();});
+    tab.addEventListener("click",()=>UI.switchTab(id));
+    document.getElementById("tabbar").appendChild(tab);
+    // pane
+    const pane=document.createElement("div");
+    pane.className="pane chat-pane"; pane.id=id;
+    pane.innerHTML=`
+      <div class="chat-hdr">Chat with <span id="chdr-${id}">${escHtml(this.alias)}</span></div>
+      <div class="chat-msgs" id="cm-${id}"></div>
+      <div class="chat-input-row">
+        <div class="emoji-strip">${Object.entries(EMOJIS).map(([k,v])=>`<button class="ebtn" title="${k}" data-ek="${k}">${v}</button>`).join("")}</div>
+        <textarea class="chat-tin" id="cin-${id}" rows="2" placeholder="Message ${escHtml(this.alias)}…"></textarea>
+        <button class="chat-sbtn" id="csend-${id}">Send</button>
+      </div>`;
+    document.getElementById("pane-wrap").appendChild(pane);
+    // emoji buttons → insert $tag$  (mirrors JButton action listeners in MsgGui)
+    pane.querySelectorAll(".ebtn").forEach(b=>b.addEventListener("click",()=>{
+      const inp=document.getElementById("cin-"+id);
+      inp.value+=`$${b.dataset.ek}$ `; inp.focus();
+    }));
+    // send button  (mirrors hello.addActionListener in MsgGui)
+    const doSend=()=>{
+      const inp=document.getElementById("cin-"+id);
+      const txt=inp.value.trim(); if(!txt) return;
+      for(const ui of this.others)
+        net.sendTxtMsg(new TextMsg(myUI, ui, txt));
+      inp.value="";
+    };
+    document.getElementById("csend-"+id).addEventListener("click",doSend);
+    document.getElementById("cin-"+id).addEventListener("keydown",e=>{
+      if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();doSend();}
+    });
+    UI.switchTab(id);
+  }
+  addMsg(fromAlias, text, isUs) {
+    const c=document.getElementById("cm-"+this.id); if(!c) return;
+    const parsed=escHtml(parseEmoji(text));
+    const d=document.createElement("div");
+    d.className="bubble "+(isUs?"us":"them");
+    d.innerHTML=`<div class="bsender">${escHtml(fromAlias)}</div>${parsed}`;
+    c.appendChild(d); c.scrollTop=c.scrollHeight;
+    if(!document.getElementById(this.id).classList.contains("active")) bumpTabBadge("tab-"+this.id);
+  }
+  // mirrors MsgGui.addUser(UserInfo)
+  addUser(ui) {
+    this.others.push(ui);
+    const names=this.others.map(u=>u.getAlias()).join(", ");
+    const h=document.getElementById("chdr-"+this.id);
+    if(h) h.textContent=names;
+  }
+  getID() { return this.others; }  // mirrors public Vector getID()
+  close() {
+    delete UI.chatPanes[this.alias];
+    document.getElementById("tab-"+this.id)?.remove();
+    document.getElementById(this.id)?.remove();
+    UI.switchTab("cli-pane");
+  }
+}
+
+// ── UI controller ─────────────────────────────────────────────────────────
+const UI = {
+  chatPanes:{},
+  openChat(peer) {
+    const alias=peer.getNewAlias();
+    if(this.chatPanes[alias]){ this.switchTab(this.chatPanes[alias].id); return; }
+    this.chatPanes[alias]=new ChatPane(alias, peer.getUserInfo());
+  },
+  switchTab(id) {
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    document.querySelectorAll(".pane").forEach(p=>p.classList.remove("active"));
+    document.querySelector(`[data-pane="${id}"]`)?.classList.add("active");
+    document.getElementById(id)?.classList.add("active");
+    // clear badge
+    const tab=document.querySelector(`[data-pane="${id}"]`);
+    const b=tab?.querySelector(".badge"); if(b) b.remove();
+  },
+  renderBuddyList(pl) {
+    const c=document.getElementById("buddy-list"); c.innerHTML="";
+    const sec=(label,key,collapsed)=>{
+      const h=document.createElement("div"); h.className="bl-hdr";
+      h.innerHTML=`<span>${collapsed?"▶":"▼"}</span>${label}`;
+      h.addEventListener("click",()=>{pl[key]=!pl[key];pl.displayPeers();});
+      c.appendChild(h); return !collapsed;
+    };
+    if(sec("Online Buddies","collapse1",pl.collapse1))
+      pl.savedList.filter(p=>!p.getBlock()&&p.isOnline()).forEach(p=>this._peerRow(c,p,"on"));
+    if(sec("Broadcast","collapse2",pl.collapse2))
+      pl.list.forEach(p=>this._peerRow(c,p,"on"));
+    if(sec("Offline Buddies","collapse3",pl.collapse3))
+      pl.savedList.filter(p=>!p.getBlock()&&!p.isOnline()).forEach(p=>this._peerRow(c,p,"off"));
+    if(sec("Blocked","collapse4",pl.collapse4))
+      pl.savedList.filter(p=>p.getBlock()).forEach(p=>this._peerRow(c,p,"blk"));
+  },
+  _peerRow(c, peer, state) {
+    const r=document.createElement("div"); r.className="peer-row"; r.dataset.alias=peer.getNewAlias();
+    r.innerHTML=`<div class="dot ${state}"></div>${escHtml(peer.getNewAlias())}`;
+    // dblclick → open chat  (mirrors mouseClicked double-click in PimTest)
+    r.addEventListener("dblclick",()=>{ if(peer.isOnline()&&!peer.getBlock()) this.openChat(peer); });
+    // right-click → popup  (mirrors JPopupMenu)
+    r.addEventListener("contextmenu",e=>{ e.preventDefault(); ctxPeer=peer; showCtx(e.clientX,e.clientY); });
+    c.appendChild(r);
+  }
+};
+
+// ── CLI terminal ──────────────────────────────────────────────────────────
+const CLI = {
+  print(text,cls="msg") {
+    const o=document.getElementById("cli-out");
+    const d=document.createElement("div"); d.className="ln "+cls; d.textContent=text;
+    o.appendChild(d); o.scrollTop=o.scrollHeight;
+  },
+  raw(html) {
+    const o=document.getElementById("cli-out");
+    const d=document.createElement("div"); d.className="ln"; d.innerHTML=html;
+    o.appendChild(d); o.scrollTop=o.scrollHeight;
+  }
+};
+
+// ── IRC output ────────────────────────────────────────────────────────────
+function IRCpaint(text, cls="irc") {
+  const o=document.getElementById("irc-out");
+  const d=document.createElement("div"); d.className="ln "+cls;
+  d.innerHTML=`<span style="color:var(--muted);font-size:.7rem">[${ts()}]</span> `+text;
+  o.appendChild(d); o.scrollTop=o.scrollHeight;
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────
+function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function ts() { return new Date().toTimeString().slice(0,8); }
+function bumpTabBadge(tabId) {
+  const tab=document.getElementById(tabId); if(!tab) return;
+  let b=tab.querySelector(".badge");
+  if(!b){ b=document.createElement("span"); b.className="badge"; b.textContent="1"; tab.appendChild(b); }
+  else b.textContent=String(parseInt(b.textContent||"0")+1);
+}
+function updateSB() {
+  document.getElementById("sb-peers").textContent=`Peers: ${friends.getSize()}`;
+}
+function showModal(id)  { document.getElementById(id).classList.add("show"); }
+function closeModal(id) { document.getElementById(id).classList.remove("show"); }
+
+// ── Context menu  (replaces JPopupMenu + actionPerformed) ─────────────────
+let ctxPeer=null;
+function showCtx(x,y) {
+  const m=document.getElementById("ctx"); m.style.left=x+"px"; m.style.top=y+"px"; m.style.display="block";
+}
+document.addEventListener("click",()=>document.getElementById("ctx").style.display="none");
+document.getElementById("ctx").addEventListener("click",e=>{
+  const item=e.target.closest(".ctx-i"); if(!item||!ctxPeer) return;
+  const p=ctxPeer; ctxPeer=null;
+  switch(item.dataset.a) {
+    case "msg":   if(p.isOnline()&&!p.getBlock()) UI.openChat(p); break;
+    case "block":
+      if(p.getBlock()) p.setBlock(false); else p.setBlock(true);
+      friends.moveToSavedList(p); friends.displayPeers();
+      CLI.print(`${p.getNewAlias()} block: ${p.getBlock()}`,"ok"); break;
+    case "del":   friends.deletePeer(p); break;
+    case "file":  { const fi=document.createElement("input"); fi.type="file";
+                    fi.onchange=()=>{ if(fi.files[0]) net.sendFile(p.getUserInfo(),fi.files[0]); };
+                    fi.click(); break; }
+    case "voice": net.doAudio(p.getUserInfo()); break;
+    case "multi": addToChatModal(p); break;
+  }
+});
+
+// ── AddToChat modal  (replaces AddToChat.java Swing JFrame) ───────────────
+/*
+  GUI COMMENTED OUT:
+  // public class AddToChat extends JFrame {   ← Swing – commented out
+  //   private JList jl;                       ← Swing – commented out
+  //   setSize(150, 30+allGuis.size()*15);     ← Swing – commented out
+  // }
+*/
+function addToChatModal(peer) {
+  const panes=Object.values(UI.chatPanes);
+  if(panes.length===0){ CLI.print("No open chats to add to.","warn"); return; }
+  const opts=panes.map((p,i)=>`${i+1}: ${p.alias}`).join("\n");
+  const ch=prompt(`Add ${peer.getNewAlias()} to which open chat?\n${opts}\n(enter number)`);
+  if(!ch) return;
+  const idx=parseInt(ch)-1;
+  if(idx>=0&&idx<panes.length) { panes[idx].addUser(peer.getUserInfo()); CLI.print(`Added ${peer.getNewAlias()} to chat.`,"ok"); }
+}
+
+// ── SMS/Email modal  (mirrors SMSMsg.java) ────────────────────────────────
+let smsIsEmail=false;
+function openSmsModal(isEmail) {
+  smsIsEmail=isEmail;
+  document.getElementById("m-sms-title").textContent=isEmail?"Send Email":"Send SMS";
+  document.getElementById("m-sms-tolbl").textContent=isEmail?"Recipient email":"Phone # (e.g. 8055551212)";
+  document.getElementById("m-smtp-wrap").style.display=isEmail?"block":"none";
+  document.getElementById("m-sms-to").value="";
+  document.getElementById("m-sms-msg").value="";
+  document.getElementById("m-smtp").value="";
+  showModal("m-sms");
+}
+document.getElementById("m-sms-ok").addEventListener("click",()=>{
+  const to=document.getElementById("m-sms-to").value.trim();
+  const msg=document.getElementById("m-sms-msg").value.trim();
+  if(!to||!msg){ CLI.print("Fill in all fields.","warn"); return; }
+  if(smsIsEmail) {
+    const smtp=document.getElementById("m-smtp").value.trim();
+    // mirrors SMSMsg.sendEmail() SMTP dialogue
+    CLI.print(`[email] HELO ${smtp}`,"sys");
+    CLI.print(`[email] MAIL FROM: ${myAlias}@pim.com`,"sys");
+    CLI.print(`[email] RCPT TO: ${to}`,"sys");
+    CLI.print(`[email] Message queued (browser cannot open raw SMTP).`,"ok");
+  } else {
+    // mirrors SMSMsg.sendSMS() loop over carriers
+    const carriers=["voicestream.net","cingular.com","vtext.com","mobile.att.net"];
+    for(const c of carriers) CLI.print(`[sms] RCPT TO: ${to}@${c}`,"sys");
+    CLI.print("[sms] SMS queued (browser cannot open raw SMTP).","ok");
+  }
+  closeModal("m-sms");
+});
+document.getElementById("m-sms-cancel").addEventListener("click",()=>closeModal("m-sms"));
+
+// ── Add-by-IP modal ───────────────────────────────────────────────────────
+document.getElementById("m-ip-ok").addEventListener("click",()=>{
+  const ip=document.getElementById("m-ip-val").value.trim(); if(!ip) return;
+  const rec=new UserInfo("",ip,"");
+  net.sendTxtMsg(new TextMsg(myUI, rec, "!ONLINE"));
+  CLI.print(`Sent !ONLINE probe to ${ip}`,"ws");
+  closeModal("m-ip");
+});
+document.getElementById("m-ip-cancel").addEventListener("click",()=>closeModal("m-ip"));
+document.getElementById("m-ip-val").addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("m-ip-ok").click(); });
+
+// ── WebSocket modal ───────────────────────────────────────────────────────
+document.getElementById("m-ws-ok").addEventListener("click",()=>{
+  const url=document.getElementById("m-ws-url").value.trim(); if(!url) return;
+  net.wsConnect(url); closeModal("m-ws");
+});
+document.getElementById("m-ws-cancel").addEventListener("click",()=>closeModal("m-ws"));
+
+// ── IRC modal ─────────────────────────────────────────────────────────────
+document.getElementById("m-irc-ok").addEventListener("click",()=>{
+  const url=document.getElementById("m-irc-url").value.trim();
+  const chan=document.getElementById("m-irc-chan").value.trim()||"#pim";
+  const nick=document.getElementById("m-irc-nick").value.trim()||myAlias;
+  IRC.channel=chan; IRC.connect(url, nick);
+  UI.switchTab("irc-pane"); closeModal("m-irc");
+});
+document.getElementById("m-irc-cancel").addEventListener("click",()=>closeModal("m-irc"));
+
+// ── IRC input bar ─────────────────────────────────────────────────────────
+function ircSend() {
+  const inp=document.getElementById("irc-in");
+  const txt=inp.value.trim(); if(!txt) return;
+  inp.value=""; IRC.sendToChannel(txt);
+}
+document.getElementById("irc-go").addEventListener("click",ircSend);
+document.getElementById("irc-in").addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); ircSend(); } });
+
+// ── Menu actions ──────────────────────────────────────────────────────────
+document.getElementById("mn-addip").addEventListener("click",()=>showModal("m-ip"));
+document.getElementById("mn-visible").addEventListener("click",toggleVisible);
+document.getElementById("mn-irc").addEventListener("click",()=>{showModal("m-irc");UI.switchTab("irc-pane");});
+document.getElementById("mn-sms").addEventListener("click",()=>openSmsModal(false));
+document.getElementById("mn-email").addEventListener("click",()=>openSmsModal(true));
+document.getElementById("mn-quit").addEventListener("click",doQuit);
+document.getElementById("mn-wsconn").addEventListener("click",()=>showModal("m-ws"));
+document.getElementById("mn-wsdisconn").addEventListener("click",()=>net.wsDisconnect());
+document.getElementById("mn-help").addEventListener("click",()=>{ if(cp) cp.identifyType("/help"); UI.switchTab("cli-pane"); });
+document.getElementById("mn-about").addEventListener("click",showAbout);
+
+// tabs
+document.getElementById("tabbar").addEventListener("click",e=>{
+  const tab=e.target.closest(".tab[data-pane]"); if(!tab) return;
+  UI.switchTab(tab.dataset.pane);
+});
+
+// visible badge
+document.getElementById("vis-badge").addEventListener("click",toggleVisible);
+
+// ── Global state ──────────────────────────────────────────────────────────
+let myAlias="", myUI=null, friends=null, d=null, net=null, cp=null;
+let isVisible=true;
+
+function toggleVisible() {
+  isVisible=!isVisible;
+  net.broadcast(isVisible);
+  const badge=document.getElementById("vis-badge");
+  badge.textContent=isVisible?"● Visible":"● Invisible";
+  badge.className=isVisible?"":"inv";
+  CLI.print(`You are now ${isVisible?"visible":"invisible"}.`,"ok");
+}
+
+function showAbout() {
+  UI.switchTab("cli-pane");
+  CLI.print("*******************************","sys");
+  CLI.print("* PIM: Peer Instant Messaging *","sys");
+  CLI.print("* By: Ryan Beck               *","sys");
+  CLI.print("*    Shervin Delband          *","sys");
+  CLI.print("*    Steven Greeran           *","sys");
+  CLI.print("*    Sergey Sarnavskiy        *","sys");
+  CLI.print("*******************************","sys");
+}
+
+function doQuit() {
+  // mirrors windowClosing / Quit menu item
+  net.broadcast(false);
+  localStorage.setItem("pim_peerlist", friends.saveInfo());
+  net.saveKeys();
+  CLI.print("Peer list saved. Goodbye.","sys");
+}
+
+// ── CLI submit  (ACTIVE CLI loop — was commented out in PimTest.main()) ──
+function cliSubmit() {
+  const inp=document.getElementById("cli-in");
+  const txt=inp.value.trim(); if(!txt) return;
+  CLI.print(`--<-@ ${txt}`,"prm");
+  inp.value="";
+  if(cp) { const r=cp.identifyType(txt); if(r===1) return; }
+}
+document.getElementById("cli-go").addEventListener("click",cliSubmit);
+document.getElementById("cli-in").addEventListener("keydown",e=>{ if(e.key==="Enter") cliSubmit(); });
+
+// ──────────────────────────────────────────────────────────────────────────
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  BOOT / LOGIN                                                ║
+// ║                                                              ║
+// ║  ACTIVE (CLI):                                               ║
+// ║    nerd = new InputStreamReader(System.in);     ← NOW ACTIVE ║
+// ║    nerdSister = new BufferedReader(nerd);       ← NOW ACTIVE ║
+// ║    while(1!=0){                                 ← NOW ACTIVE ║
+// ║      text = nerdSister.readLine();              ← NOW ACTIVE ║
+// ║      if(cp.identifyType(text)==1) break;        ← NOW ACTIVE ║
+// ║    }                                            ← NOW ACTIVE ║
+// ║                                                              ║
+// ║  GUI COMMENTED OUT:                                          ║
+// ║    //PimTest mainFrame = new PimTest();         ← GUI OUT    ║
+// ║    //mainFrame.setVisible(true);                ← GUI OUT    ║
+// ║    //mainFrame.pack();                          ← GUI OUT    ║
+// ╚══════════════════════════════════════════════════════════════╝
+function boot() {
+  let userName=document.getElementById("l-user").value.trim();
+  let userPass=document.getElementById("l-pass").value;
+  const wsUrl=document.getElementById("l-ws").value.trim();
+  if(!userName){ document.getElementById("l-user").focus(); return; }
+  if(!userPass) userPass="a1";   // mirrors: if(userPass.equals("")) userPass="a1";
+  myAlias=userName;
+
+  // hide login, show app  (replaces: setVisible(true); pack(); )
+  document.getElementById("login-screen").style.display="none";
+  document.getElementById("app").classList.add("show");
+  document.getElementById("t-alias").textContent=userName;
+
+  // ── mirrors PimTest constructor body ─────────────────────────────────
+  // friends = new Peerlist();
+  friends = new Peerlist();
+  // d = new Display();
+  d = new Display();
+  // fbiFile = new UserInfo(userName, userPass);
+  myUI = new UserInfo(userName, userPass);
+  myUI.setPublicKey(btoa(userName+userPass)); // simple key (no RSA in browser)
+  friends.addD(d);
+
+  // Load saved peerlist (mirrors: ObjectInputStream ois = new ObjectInputStream(new FileInputStream("peerlist.dat")))
+  const saved=localStorage.getItem("pim_peerlist");
+  if(saved) friends.addSaves(saved);
+
+  // net = new Network(friends, d, fbiFile);
+  net = new PimNetwork(friends, d, myUI);
+  friends.setNW(net);
+  net._startLocalPoll();   // cross-tab simulation
+
+  // cp = new CmdProcessor(net, friends, fbiFile);
+  cp = new CmdProcessor(net, friends, myUI);
+
+  // Set IRC nick default
+  IRC.nick=userName;
+  document.getElementById("m-irc-nick").value=userName;
+
+  // initial broadcast  (mirrors periodicBroadcast start)
+  net.broadcast(true);
+
+  // render buddy list
+  friends.displayPeers();
+
+  // print splash  (mirrors JOptionPane.showMessageDialog(null, a) — CLI version)
+  showAbout();
+  CLI.print(`Welcome, ${userName}! Type /help for commands.`,"ok");
+  CLI.print("Double-click a buddy to open a chat. Right-click for options.","sys");
+  CLI.print("Use /irc to connect to IRC (Libera.Chat, OFTC, etc.).","sys");
+  CLI.print("WebSocket server enables real peer-to-peer messaging.","sys");
+  CLI.print("─────────────────────────────────────────────────────","sys");
+
+  // connect WebSocket if provided
+  if(wsUrl) net.wsConnect(wsUrl);
+  else CLI.print("No WS server set — using localStorage simulation. Use /ws <url> to connect.","warn");
+
+  document.getElementById("cli-in").focus();
+
+  // save on unload  (mirrors windowClosing listener)
+  window.addEventListener("beforeunload",()=>{
+    net.broadcast(false);
+    localStorage.setItem("pim_peerlist",friends.saveInfo());
+    net.saveKeys();
+  });
+  // periodic save
+  setInterval(()=>localStorage.setItem("pim_peerlist",friends.saveInfo()),60000);
+}
+
+document.getElementById("login-btn").addEventListener("click",boot);
+document.getElementById("l-pass").addEventListener("keydown",e=>{ if(e.key==="Enter") boot(); });
+document.getElementById("l-user").addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("l-pass").focus(); });
+
+/* ════════════════════════════════════════════════════════════════
+   GUI COMMENTED OUT BLOCK
+   ────────────────────────────────────────────────────────────────
+   All of the following Swing/AWT GUI code from PimTest.java and
+   associated files is preserved here in comments but NOT executed.
+
+   From PimTest.java constructor (COMMENTED OUT):
+   // public PimTest() {
+   //   super("PIM");                        // JFrame title
+   //   addWindowListener(…windowClosing…);  // save peerlist, System.exit(0)
+   //   contentPane = getContentPane();
+   //   menuBar = new JMenuBar();
+   //   setJMenuBar(menuBar);
+   //   menu = new JMenu("Options");
+   //     menu.add(new JMenuItem("Add User By IP"));
+   //     menu.add(new JMenuItem("Visible Toggle"));
+   //     menu.add(new JMenuItem("SMS"));
+   //     menu.add(new JMenuItem("Email"));
+   //     menu.add(new JMenuItem("Quit"));
+   //   grid1 = new GridBagLayout();
+   //   container.setLayout(grid1);
+   //   JOptionPane.showMessageDialog(null, a);  // splash dialog
+   //   friendsArea = new JList(data);
+   //   friendsArea.setPrototypeCellValue("12345678901234567890");
+   //   friendsArea.addMouseListener(mouseListener);
+   //   popup = new JPopupMenu("PeerPopup");
+   //     popup.add(new JMenuItem("Block"));
+   //     popup.add(new JMenuItem("Delete"));
+   //     popup.add(new JMenuItem("Multiple Msgs"));
+   //     popup.add(new JMenuItem("Send File"));
+   //     popup.add(new JMenuItem("Voice"));
+   //   userName = JOptionPane.showInputDialog(null, "Please enter your user name:");
+   //   // password JLabel + TextField with setEchoChar('*')
+   //   d = new Display();
+   //   fbiFile = new UserInfo(userName, userPass);
+   //   net = new Network(friends, d, fbiFile);
+   //   cp = new CmdProcessor(net, friends, fbiFile);
+   //   allMsgGuis = new Vector();
+   //   net.setMsgVector(allMsgGuis);
+   //   setSize(…); setLocation(…); setVisible(true);
+   // }
+   //
+   // From PimTest.main() (GUI path COMMENTED OUT):
+   // public static void main(String[] args) throws Exception {
+   //   PimTest mainFrame = new PimTest();   // ← GUI COMMENTED OUT
+   //   mainFrame.setVisible(true);           // ← GUI COMMENTED OUT
+   //   mainFrame.pack();                     // ← GUI COMMENTED OUT
+   //
+   //   // CLI LOOP (was commented out, now ACTIVE in JS):
+   //   InputStreamReader nerd = new InputStreamReader(System.in);
+   //   BufferedReader nerdSister = new BufferedReader(nerd);
+   //   String text;
+   //   while(1 != 0) {
+   //     System.out.print(">");
+   //     text = nerdSister.readLine();
+   //     if(cp.identifyType(text) == 1) break;
+   //   }
+   //   net.broadcast(false);
+   //   System.exit(0);
+   // }
+   //
+   // MsgGui.java (SWING COMMENTED OUT — replaced by ChatPane above):
+   // public class MsgGui extends JFrame {
+   //   private JPanel nickel(msgs), dime(emoji grid), penny(input+send);
+   //   private JTextField talkIn;
+   //   private JButton hello (send), eyes, happy, eek, mad, glasses,
+   //                   devil, ohwell, smile, sick, tongue, smokin, tired,
+   //                   frown, nerd, laugh, embarassed, wink, indifferent,
+   //                   grin, alien, pimp, roll;
+   //   private ImageIcon eyesIcon, happyIcon, …;
+   //   // setSize(600, 500); setVisible(true);
+   // }
+   //
+   // AddToChat.java (SWING COMMENTED OUT — replaced by addToChatModal()):
+   // public class AddToChat extends JFrame {
+   //   private JList jl;
+   //   // setSize(150, 30+allGuis.size()*15); setVisible(true);
+   // }
+   //
+   // Voice.java (SWING COMMENTED OUT — replaced by net.doAudio() stub):
+   // public class Voice extends JFrame {
+   //   private Network.CaptureAudio it;
+   //   // "Click to stop voice."
+   //   // it.end(); dispose();
+   // }
+   //
+   // Network.java inner classes (TCP COMMENTED OUT — replaced by WebSocket):
+   // class listen          extends Thread  { ServerSocket port 1024  }
+   // class listenBroadcast extends Thread  { MulticastSocket 2345    }
+   // class listenExit      extends Thread  { MulticastSocket 2555    }
+   // class FileListen      extends Thread  { ServerSocket port 2048  }
+   // class periodicBroadcast extends Thread { sleep(30000)           }
+   // class MsgThread       extends Thread  { Socket → writeObject    }
+   // class CaptureAudio                   { TargetDataLine + OOS     }
+   // class PlayAudio                      { SourceDataLine + OIS     }
+   // class Crypto                         { RSA encrypt/decrypt      }
+   ════════════════════════════════════════════════════════════════ */
+</script>
+</body>
+</html>

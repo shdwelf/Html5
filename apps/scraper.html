@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Standalone Page Scraper</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #181b22;
+    --border: #2a2f3a;
+    --text: #e6e8ee;
+    --muted: #8b93a7;
+    --accent: #4f9dff;
+    --accent-2: #7ee787;
+    --danger: #ff6b6b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .container { max-width: 880px; margin: 0 auto; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  input[type=text], input[type=url], select, textarea {
+    width: 100%;
+    background: #10131a;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  textarea { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; min-height: 220px; resize: vertical; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; }
+  .row > * { flex: 1 1 200px; }
+  .checks { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; font-size: 13px; }
+  .checks label { display: inline-flex; align-items: center; gap: 6px; color: var(--text); margin: 0; }
+  button {
+    background: var(--accent);
+    color: #fff;
+    border: 0;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  button.secondary { background: #2a2f3a; color: var(--text); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .status {
+    font-size: 12px;
+    color: var(--muted);
+    min-height: 18px;
+    margin-top: 10px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+  .status.ok { color: var(--accent-2); }
+  .status.err { color: var(--danger); }
+  .tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .tab {
+    background: none; color: var(--muted); padding: 8px 12px;
+    border: 0; border-bottom: 2px solid transparent; cursor: pointer; font-size: 13px;
+    border-radius: 0;
+  }
+  .tab.active { color: var(--text); border-bottom-color: var(--accent); }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  code { background: #10131a; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Standalone Page Scraper</h1>
+  <div class="sub">Fetch a page, inline its assets, and download a single self-contained HTML file.</div>
+
+  <div class="panel">
+    <div class="row">
+      <div style="flex: 3 1 400px;">
+        <label for="url">Page URL</label>
+        <input id="url" type="url" placeholder="https://example.com/" value="https://example.com/">
+      </div>
+      <div style="flex: 2 1 240px;">
+        <label for="proxy">CORS proxy (prefix)</label>
+        <select id="proxy">
+          <option value="direct">Direct (no proxy)</option>
+          <option value="https://api.allorigins.win/raw?url=" selected>allorigins.win/raw</option>
+          <option value="https://corsproxy.io/?">corsproxy.io</option>
+          <option value="custom">Custom…</option>
+        </select>
+        <input id="proxyCustom" type="text" placeholder="https://your-proxy/?url=" style="margin-top:6px; display:none;">
+      </div>
+    </div>
+
+    <div class="checks">
+      <label><input type="checkbox" id="inlineCss" checked> Inline CSS</label>
+      <label><input type="checkbox" id="inlineImg" checked> Inline images (data URI)</label>
+      <label><input type="checkbox" id="inlineJs"> Inline JS</label>
+      <label><input type="checkbox" id="extractJs"> Extract JS to separate file</label>
+      <label><input type="checkbox" id="stripJs"> Strip all &lt;script&gt;</label>
+    </div>
+
+    <div class="actions">
+      <button id="scrapeBtn">Scrape</button>
+      <button id="downloadBtn" class="secondary" disabled>Download HTML</button>
+      <button id="downloadJsBtn" class="secondary" disabled>Download JS</button>
+      <button id="clearBtn" class="secondary">Clear</button>
+    </div>
+    <div id="status" class="status"></div>
+  </div>
+
+  <div class="panel">
+    <div class="tabs">
+      <button class="tab active" data-tab="html">HTML output</button>
+      <button class="tab" data-tab="js">Extracted JS</button>
+    </div>
+    <div id="tab-html"><textarea id="htmlOut" spellcheck="false" placeholder="Scraped HTML will appear here…"></textarea></div>
+    <div id="tab-js" style="display:none;"><textarea id="jsOut" spellcheck="false" placeholder="Extracted JavaScript will appear here…"></textarea></div>
+    <div class="hint">
+      Notes: browsers enforce CORS, so direct fetches usually fail — use a proxy. Sites that require login,
+      run heavy client-side rendering, or block bots may not scrape cleanly.
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---- Element refs ----
+  const $ = (id) => document.getElementById(id);
+  const urlEl = $('url');
+  const proxyEl = $('proxy');
+  const proxyCustomEl = $('proxyCustom');
+  const htmlOut = $('htmlOut');
+  const jsOut = $('jsOut');
+  const statusEl = $('status');
+  const scrapeBtn = $('scrapeBtn');
+  const downloadBtn = $('downloadBtn');
+  const downloadJsBtn = $('downloadJsBtn');
+  const clearBtn = $('clearBtn');
+
+  // ---- Blob URL registry (avoid leaks: revoke previous URL before creating new) ----
+  // Memory note: every URL.createObjectURL() pins its blob in memory until revoked.
+  // Repeated large blob downloads without revoking will grow heap and have historically
+  // caused crashes in some browser/OS combinations when converting big HTML/JS to UTF-8.
+  const blobUrls = new Map(); // key -> url
+  function setBlobUrl(key, blob) {
+    const prev = blobUrls.get(key);
+    if (prev) { try { URL.revokeObjectURL(prev); } catch (_) {} }
+    const url = URL.createObjectURL(blob);
+    blobUrls.set(key, url);
+    return url;
+  }
+  function revokeAll() {
+    for (const [k, u] of blobUrls) { try { URL.revokeObjectURL(u); } catch (_) {} }
+    blobUrls.clear();
+  }
+  window.addEventListener('beforeunload', revokeAll);
+
+  // ---- UI helpers ----
+  function setStatus(msg, kind = '') {
+    statusEl.className = 'status ' + kind;
+    statusEl.textContent = msg;
+  }
+
+  proxyEl.addEventListener('change', () => {
+    proxyCustomEl.style.display = proxyEl.value === 'custom' ? 'block' : 'none';
+  });
+
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      const which = t.dataset.tab;
+      $('tab-html').style.display = which === 'html' ? '' : 'none';
+      $('tab-js').style.display = which === 'js' ? '' : 'none';
+    });
+  });
+
+  // ---- Fetch helpers ----
+  function proxify(u) {
+    const v = proxyEl.value;
+    if (v === 'direct') return u;
+    if (v === 'custom') return (proxyCustomEl.value || '') + encodeURIComponent(u);
+    // allorigins/corsproxy both accept the URL appended
+    if (v.includes('allorigins')) return v + encodeURIComponent(u);
+    return v + encodeURIComponent(u);
+  }
+
+  // Always decode as UTF-8 explicitly. response.text() respects Content-Type charset,
+  // which is often wrong/missing on proxied responses — leading to mojibake. We read
+  // the bytes and decode with TextDecoder('utf-8', {fatal:false}) instead.
+  async function fetchText(u) {
+    const res = await fetch(proxify(u), { redirect: 'follow' });
+    if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + u);
+    const buf = await res.arrayBuffer();
+    return new TextDecoder('utf-8', { fatal: false, ignoreBOM: true }).decode(buf);
+  }
+
+  async function fetchDataUri(u) {
+    const res = await fetch(proxify(u));
+    if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + u);
+    const blob = await res.blob();
+    // FileReader -> data URL. Wrapped so the underlying blob can be released ASAP.
+    const dataUri = await new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = () => reject(fr.error);
+      fr.readAsDataURL(blob);
+    });
+    return dataUri;
+  }
+
+  function absUrl(rel, base) {
+    try { return new URL(rel, base).href; } catch (_) { return null; }
+  }
+
+  // ---- Main scrape pipeline ----
+  async function scrape() {
+    const target = urlEl.value.trim();
+    if (!target) { setStatus('Enter a URL.', 'err'); return; }
+
+    scrapeBtn.disabled = true;
+    downloadBtn.disabled = true;
+    downloadJsBtn.disabled = true;
+    setStatus('Fetching page…');
+
+    try {
+      const html = await fetchText(target);
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      // Inject <base> so relative URLs resolve when viewing the offline file.
+      if (!doc.querySelector('base')) {
+        const base = doc.createElement('base');
+        base.href = target;
+        doc.head && doc.head.insertBefore(base, doc.head.firstChild);
+      }
+
+      // ---- Inline CSS ----
+      if ($('inlineCss').checked) {
+        setStatus('Inlining stylesheets…');
+        const links = [...doc.querySelectorAll('link[rel~="stylesheet"][href]')];
+        for (const link of links) {
+          const href = absUrl(link.getAttribute('href'), target);
+          if (!href) continue;
+          try {
+            const css = await fetchText(href);
+            const style = doc.createElement('style');
+            style.textContent = css;
+            link.replaceWith(style);
+          } catch (e) { console.warn('css fail', href, e); }
+        }
+      }
+
+      // ---- Inline images ----
+      if ($('inlineImg').checked) {
+        setStatus('Inlining images…');
+        const imgs = [...doc.querySelectorAll('img[src]')];
+        for (const img of imgs) {
+          const src = absUrl(img.getAttribute('src'), target);
+          if (!src || src.startsWith('data:')) continue;
+          try {
+            img.src = await fetchDataUri(src);
+            img.removeAttribute('srcset');
+          } catch (e) { console.warn('img fail', src, e); }
+        }
+      }
+
+      // ---- Extract JS ----
+      const extractedParts = [];
+      const scriptEls = [...doc.querySelectorAll('script')];
+
+      if ($('extractJs').checked || $('inlineJs').checked || $('stripJs').checked) {
+        setStatus('Processing scripts…');
+        for (const s of scriptEls) {
+          const src = s.getAttribute('src');
+          let code = '';
+          let label = '';
+          if (src) {
+            const abs = absUrl(src, target);
+            label = '/* ' + abs + ' */';
+            if ($('inlineJs').checked || $('extractJs').checked) {
+              try { code = await fetchText(abs); } catch (e) { code = '/* fetch failed: ' + e.message + ' */'; }
+            }
+          } else {
+            label = '/* inline script */';
+            code = s.textContent || '';
+          }
+
+          if ($('extractJs').checked && code) {
+            extractedParts.push(label + '\n' + code);
+          }
+
+          if ($('stripJs').checked) {
+            s.remove();
+          } else if ($('inlineJs').checked && src) {
+            const inline = doc.createElement('script');
+            inline.textContent = code;
+            s.replaceWith(inline);
+          }
+        }
+      }
+
+      // ---- Serialize ----
+      // Ensure a charset meta exists so the offline file is read as UTF-8.
+      if (!doc.querySelector('meta[charset]')) {
+        const m = doc.createElement('meta');
+        m.setAttribute('charset', 'utf-8');
+        doc.head && doc.head.insertBefore(m, doc.head.firstChild);
+      }
+      const serialized = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+
+      htmlOut.value = serialized;
+      jsOut.value = extractedParts.join('\n\n');
+
+      downloadBtn.disabled = false;
+      downloadJsBtn.disabled = !jsOut.value;
+
+      setStatus(`Done. HTML: ${serialized.length.toLocaleString()} chars` +
+                (jsOut.value ? `, JS: ${jsOut.value.length.toLocaleString()} chars` : ''), 'ok');
+    } catch (e) {
+      console.error(e);
+      setStatus('Error: ' + e.message, 'err');
+    } finally {
+      scrapeBtn.disabled = false;
+    }
+  }
+
+  // ---- Download (UTF-8 safe, with explicit BOM-less Blob and prompt revoke) ----
+  function download(filename, text, mime) {
+    // Encode text -> UTF-8 bytes explicitly. Passing a string directly to Blob also
+    // produces UTF-8, but creating the Uint8Array first lets us free the intermediate
+    // string reference sooner and avoids one class of Safari/WebKit large-blob crashes
+    // that has been reported when round-tripping multi-MB HTML.
+    const bytes = new TextEncoder().encode(text);
+    const blob = new Blob([bytes], { type: (mime || 'text/plain') + ';charset=utf-8' });
+    const url = setBlobUrl(filename, blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    // Revoke shortly after click so the browser has time to start the download
+    // but we don't pin the blob forever.
+    setTimeout(() => {
+      const cur = blobUrls.get(filename);
+      if (cur === url) { try { URL.revokeObjectURL(url); } catch (_) {} blobUrls.delete(filename); }
+    }, 4000);
+  }
+
+  function safeName() {
+    try {
+      const u = new URL(urlEl.value);
+      return (u.hostname + u.pathname).replace(/[^a-z0-9.-]+/gi, '_').replace(/_+/g, '_').replace(/^_|_$/g, '') || 'page';
+    } catch (_) { return 'page'; }
+  }
+
+  scrapeBtn.addEventListener('click', scrape);
+  downloadBtn.addEventListener('click', () => download(safeName() + '.html', htmlOut.value, 'text/html'));
+  downloadJsBtn.addEventListener('click', () => download(safeName() + '.js', jsOut.value, 'application/javascript'));
+  clearBtn.addEventListener('click', () => {
+    htmlOut.value = '';
+    jsOut.value = '';
+    setStatus('');
+    downloadBtn.disabled = true;
+    downloadJsBtn.disabled = true;
+    revokeAll();
+  });
+})();
+</script>
+</body>
+</html>

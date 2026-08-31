@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Legacy & Genetic Mapping</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --paternal: #3498db;
+            --maternal: #e74c3c;
+            --highlight: #f1c40f;
+            --success: #27ae60;
+        }
+        body { font-family: 'Inter', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        h1, h2 { color: var(--primary); text-align: center; }
+        
+        /* Pedigree Chart Styling */
+        .pedigree-view {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+        .branch-box {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 250px;
+            background: #fff;
+        }
+        .branch-box.morin { border-color: var(--paternal); background: #ebf5fb; }
+        .branch-box.hewitt { border-color: var(--maternal); background: #fdf2f2; }
+        .branch-box.bojoh { border-color: #9b59b6; background: #f5eef8; }
+        
+        .person { margin-bottom: 10px; padding: 8px; border-bottom: 1px solid #eee; }
+        .person:last-child { border-bottom: none; }
+        .person span { display: block; font-size: 0.85rem; color: #666; }
+        .person strong { color: var(--primary); font-size: 1rem; }
+        
+        /* Table Styling */
+        .dna-table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: var(--primary); color: white; font-size: 0.85rem; text-transform: uppercase; }
+        tr:hover { background: #f9f9f9; }
+        
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: white; }
+        .b-y { background: var(--paternal); }
+        .b-mt { background: var(--maternal); }
+        .b-auto { background: var(--success); }
+        .b-double { background: var(--highlight); color: #333; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Family Legacy & Genetic Mapping</h1>
+        <p style="text-align: center; color: #7f8c8d;">Comprehensive view of the Greeran, Hewitt, Morin, and Bojoh lineages.</p>
+
+        <h2>Visual Tree Branches</h2>
+        <div class="pedigree-view">
+            <!-- MORIN BRANCH -->
+            <div class="branch-box morin">
+                <h3>The Morin Line</h3>
+                <div class="person">
+                    <strong>Amedee J. Morin</strong>
+                    <span>1900 – 1966 | Painter (Nassau, NY)</span>
+                </div>
+                <div class="person">
+                    <strong>Lena D. Morin</strong>
+                    <span>1902 – 1976 | Mother of 8 (Central Falls, RI)</span>
+                </div>
+                <div class="person" style="background: #fff; border-radius: 5px;">
+                    <strong>Jeanette Mabel Morin</strong>
+                    <span>1935 – 2007 | m. Bernard Greeran</span>
+                </div>
+                <div class="person" style="background: #fff; border-radius: 5px;">
+                    <strong>Gloria A. Morin</strong>
+                    <span>b. 1937 | m. Jacques Bojoh Sr.</span>
+                </div>
+            </div>
+
+            <!-- HEWITT BRANCH -->
+            <div class="branch-box hewitt">
+                <h3>The Hewitt Line</h3>
+                <div class="person">
+                    <strong>Maurice Frederick Hewitt</strong>
+                    <span>1913 – 2007 | Duarte, CA</span>
+                </div>
+                <div class="person">
+                    <strong>Louise Francis Carey</strong>
+                    <span>1923 – 2005 | Pasadena, CA</span>
+                </div>
+                <div class="person" style="background: #fff; border-radius: 5px;">
+                    <strong>Jean Belle Hewitt</strong>
+                    <span>b. ~1951 | m. Gerard Greeran</span>
+                </div>
+                <div class="person" style="background: #fff; border-radius: 5px;">
+                    <strong>Robert David Hewitt</strong>
+                    <span>b. ~1945 | m. Nancy Daines (1st), Janice (2nd)</span>
+                </div>
+            </div>
+
+            <!-- BOJOH BRANCH -->
+            <div class="branch-box bojoh">
+                <h3>The Bojoh Line (Minahasa)</h3>
+                <div class="person">
+                    <strong>Jacques Bojoh Sr.</strong>
+                    <span>b. ~1928, Indonesia | m. Gloria Morin</span>
+                </div>
+                <div class="person">
+                    <strong>Jacques J. Bojoh Jr.</strong>
+                    <span>1951 – 2021 | Corona, CA</span>
+                </div>
+                <div class="person">
+                    <strong>Debbie Bojoh</strong>
+                    <span>Cousin of Gerard Greeran</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>Genetic Inheritance Chart</h2>
+        <div class="dna-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Family Member</th>
+                        <th>Relation</th>
+                        <th>Genetic %</th>
+                        <th>DNA Marker</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Gerard T. Greeran</strong></td>
+                        <td>Father</td>
+                        <td>50%</td>
+                        <td><span class="badge b-y">Y-DNA</span></td>
+                        <td>Direct Paternal Legacy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jean Belle Hewitt</strong></td>
+                        <td>Mother</td>
+                        <td>50%</td>
+                        <td><span class="badge b-mt">mtDNA</span></td>
+                        <td>Direct Maternal Legacy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Debbie Bojoh</strong></td>
+                        <td>1st Cousin</td>
+                        <td>~12.5%</td>
+                        <td><span class="badge b-auto">Autosomal</span></td>
+                        <td>Daughter of Gloria Morin</td>
+                    </tr>
+                    <tr>
+                        <td><strong>John King (b. 1911)</strong></td>
+                        <td>Double Cousin</td>
+                        <td>~12.5%</td>
+                        <td><span class="badge b-double">Double Shared</span></td>
+                        <td>King-Greeran Sibling Exchange</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Danielle & Casey Hewitt</strong></td>
+                        <td>1st Cousins</td>
+                        <td>~12.5%</td>
+                        <td><span class="badge b-auto">Autosomal</span></td>
+                        <td>Daughters of Robert Hewitt</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

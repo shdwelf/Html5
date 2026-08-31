@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Page Scraper</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        input[type="url"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 100px;
+            font-family: monospace;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .checkbox-group {
+            margin: 20px 0;
+        }
+        .checkbox-group label {
+            display: inline;
+            font-weight: normal;
+            margin-left: 5px;
+        }
+        .output {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        .download-btn {
+            margin-top: 10px;
+            background-color: #2ecc71;
+        }
+        .download-btn:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Web Page Scraper</h1>
+
+        <div class="form-group">
+            <label for="url-input">Enter URL to scrape:</label>
+            <input type="url" id="url-input" placeholder="https://example.com" required>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="extract-js" checked>
+            <label for="extract-js">Extract JavaScript from page</label>
+        </div>
+
+        <button id="scrape-btn">Scrape Page</button>
+
+        <div class="status" id="status"></div>
+
+        <div class="output">
+            <h3>Scraped Content:</h3>
+            <textarea id="scraped-content" readonly></textarea>
+            <button id="download-btn" class="download-btn" disabled>Download Standalone HTML</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlInput = document.getElementById('url-input');
+            const extractJsCheckbox = document.getElementById('extract-js');
+            const scrapeBtn = document.getElementById('scrape-btn');
+            const scrapedContent = document.getElementById('scraped-content');
+            const downloadBtn = document.getElementById('download-btn');
+            const statusDiv = document.getElementById('status');
+
+            let scrapedData = {
+                html: '',
+                js: ''
+            };
+
+            scrapeBtn.addEventListener('click', async function() {
+                const url = urlInput.value.trim();
+                const extractJs = extractJsCheckbox.checked;
+
+                if (!url) {
+                    showStatus('Please enter a valid URL', 'error');
+                    return;
+                }
+
+                try {
+                    showStatus('Scraping page...', 'status');
+                    const result = await scrapePage(url, extractJs);
+
+                    scrapedData.html = result.html;
+                    scrapedData.js = extractJs ? result.js : '';
+
+                    scrapedContent.value = result.html;
+
+                    showStatus('Page scraped successfully!', 'success');
+                    downloadBtn.disabled = false;
+
+                    if (extractJs) {
+                        console.log('Extracted JavaScript:', result.js);
+                    }
+                } catch (error) {
+                    showStatus(`Error: ${error.message}`, 'error');
+                    console.error('Scraping error:', error);
+                }
+            });
+
+            downloadBtn.addEventListener('click', function() {
+                if (!scrapedData.html) return;
+
+                // Create a standalone HTML file with extracted JS if available
+                let standaloneHtml = scrapedData.html;
+
+                if (scrapedData.js) {
+                    // Add the extracted JS to the HTML
+                    standaloneHtml = standaloneHtml.replace('</body>', `
+                        <script>
+                            // Extracted JavaScript from ${urlInput.value}
+                            ${scrapedData.js}
+                        </script>
+                    </body>`);
+                }
+
+                // Create download link
+                const blob = new Blob([standaloneHtml], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'scraped-page.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+
+            function showStatus(message, type) {
+                statusDiv.textContent = message;
+                statusDiv.className = type;
+            }
+
+            async function scrapePage(url, extractJs) {
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        // Use a CORS proxy to avoid same-origin policy issues
+                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+
+                        const response = await fetch(proxyUrl);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        if (data.contents) {
+                            let html = data.contents;
+
+                            // Extract JavaScript if requested
+                            let js = '';
+                            if (extractJs) {
+                                const parser = new DOMParser();
+                                const doc = parser.parseFromString(html, 'text/html');
+
+                                // Extract inline scripts
+                                const scripts = doc.querySelectorAll('script:not([src])');
+                                js = Array.from(scripts).map(script => script.textContent).join('\n\n');
+
+                                // Extract external scripts (we'll just note their URLs)
+                                const externalScripts = doc.querySelectorAll('script[src]');
+                                if (externalScripts.length > 0) {
+                                    console.warn('External scripts found but not included in extraction:', Array.from(externalScripts).map(s => s.src));
+                                }
+
+                                // Remove scripts from HTML to make it standalone
+                                scripts.forEach(script => script.remove());
+                                externalScripts.forEach(script => script.remove());
+
+                                // Update HTML with scripts removed
+                                const serializer = new XMLSerializer();
+                                html = serializer.serializeToString(doc);
+                            }
+
+                            resolve({ html, js });
+                        } else {
+                            throw new Error('Failed to fetch page content');
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

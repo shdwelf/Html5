@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ensō Haiku Wallet Forge</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --panel: #12121a;
+    --border: #2a2a3a;
+    --accent: #00d4ff;
+    --gold: #ffd700;
+    --ink: #1a1a2e;
+    --text: #e0e0ff;
+    --muted: #6060a0;
+    --danger: #ff4444;
+    --success: #44ff88;
+    --cyan: #00ffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Header ── */
+  header {
+    text-align: center;
+    padding: 2rem 1rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #0d0d1a 0%, transparent 100%);
+  }
+  header h1 {
+    font-size: 2.2rem;
+    background: linear-gradient(90deg, var(--cyan), var(--gold), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.15em;
+  }
+  header p { color: var(--muted); font-size: 0.85rem; margin-top: 0.4rem; letter-spacing: 0.1em; }
+
+  /* ── Layout ── */
+  .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+
+  .grid-main {
+    display: grid;
+    grid-template-columns: 340px 1fr 320px;
+    gap: 1.2rem;
+    align-items: start;
+  }
+
+  @media (max-width: 1100px) {
+    .grid-main { grid-template-columns: 1fr 1fr; }
+    .panel-right { grid-column: 1 / -1; }
+  }
+  @media (max-width: 680px) {
+    .grid-main { grid-template-columns: 1fr; }
+  }
+
+  /* ── Panels ── */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+  }
+  .panel-title {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+  }
+
+  /* ── Ensō Canvas ── */
+  .enso-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  #ensoCanvas {
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+    display: block;
+  }
+  #ensoCanvas:hover { box-shadow: 0 0 30px rgba(0,212,255,0.3); }
+
+  .enso-id {
+    font-size: 0.7rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-align: center;
+    word-break: break-all;
+  }
+
+  /* ── Params grid ── */
+  .params-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+  }
+  .param-item {
+    background: #0d0d1a;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.7rem;
+  }
+  .param-label { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .param-value { font-size: 0.85rem; color: var(--cyan); margin-top: 0.15rem; font-weight: bold; }
+
+  /* ── Haiku ── */
+  .haiku-display {
+    background: #0a0a14;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .haiku-display::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0,212,255,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .haiku-line {
+    font-size: 1.05rem;
+    color: var(--text);
+    letter-spacing: 0.08em;
+    transition: opacity 0.5s;
+  }
+  .haiku-line.animate { animation: fadeIn 0.6s ease; }
+  .syllable-count { font-size: 0.65rem; color: var(--muted); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+  /* ── Seed phrase ── */
+  .seed-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.35rem;
+    margin-top: 0.6rem;
+  }
+  .seed-word {
+    background: #0d0d1a;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.72rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .seed-num { color: var(--muted); font-size: 0.6rem; min-width: 14px; }
+  .seed-word.haiku-word { border-color: var(--gold); color: var(--gold); }
+
+  /* ── Wallet info ── */
+  .wallet-field {
+    margin-bottom: 0.7rem;
+  }
+  .wallet-field label { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.25rem; }
+  .wallet-field .val {
+    background: #08080f;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.68rem;
+    color: var(--accent);
+    word-break: break-all;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    user-select: all;
+  }
+  .wallet-field .val:hover { border-color: var(--accent); }
+
+  .checksum-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.7rem;
+  }
+  .checksum-badge {
+    font-size: 0.62rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    border: 1px solid;
+    letter-spacing: 0.08em;
+  }
+  .checksum-badge.ok { border-color: var(--success); color: var(--success); }
+  .checksum-badge.fail { border-color: var(--danger); color: var(--danger); }
+
+  /* ── Controls ── */
+  .controls { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1rem 0; }
+
+  .btn {
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    border: 1px solid;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: rgba(0,212,255,0.1); border-color: var(--accent); color: var(--accent); }
+  .btn-primary:hover { background: rgba(0,212,255,0.25); }
+  .btn-gold { background: rgba(255,215,0,0.08); border-color: var(--gold); color: var(--gold); }
+  .btn-gold:hover { background: rgba(255,215,0,0.2); }
+  .btn-danger { background: rgba(255,68,68,0.1); border-color: var(--danger); color: var(--danger); }
+  .btn-danger:hover { background: rgba(255,68,68,0.2); }
+  .btn-success { background: rgba(68,255,136,0.08); border-color: var(--success); color: var(--success); }
+  .btn-success:hover { background: rgba(68,255,136,0.2); }
+  .btn-muted { background: rgba(96,96,160,0.1); border-color: var(--muted); color: var(--muted); }
+  .btn-muted:hover { background: rgba(96,96,160,0.2); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Mining multi */
+  .mine-count-wrap { display: flex; align-items: center; gap: 0.5rem; }
+  .mine-count-wrap input[type=range] {
+    accent-color: var(--accent);
+    width: 90px;
+  }
+  .mine-count-wrap span { color: var(--gold); font-size: 0.8rem; min-width: 20px; }
+
+  /* ── Collection ── */
+  .collection-list {
+    max-height: 420px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .collection-list::-webkit-scrollbar { width: 4px; }
+  .collection-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .collectible-card {
+    background: #0a0a14;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.8rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .collectible-card:hover { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,212,255,0.1); }
+  .collectible-card.selected { border-color: var(--gold); box-shadow: 0 0 20px rgba(255,215,0,0.15); }
+
+  .card-header { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.5rem; }
+  .card-mini-canvas { border-radius: 50%; flex-shrink: 0; }
+  .card-meta { flex: 1; min-width: 0; }
+  .card-id { font-size: 0.6rem; color: var(--gold); word-break: break-all; }
+  .card-date { font-size: 0.58rem; color: var(--muted); margin-top: 0.15rem; }
+  .card-haiku { font-size: 0.7rem; color: var(--muted); font-style: italic; line-height: 1.6; }
+  .card-type { font-size: 0.58rem; color: var(--accent); margin-top: 0.2rem; }
+
+  .card-actions { display: flex; gap: 0.4rem; margin-top: 0.6rem; flex-wrap: wrap; }
+  .card-actions .btn { padding: 0.3rem 0.7rem; font-size: 0.62rem; }
+
+  /* ── Password modal ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.8rem;
+    max-width: 420px;
+    width: 92%;
+    transform: translateY(-20px);
+    transition: transform 0.3s;
+  }
+  .modal-overlay.open .modal { transform: none; }
+  .modal h3 { color: var(--gold); margin-bottom: 1rem; font-size: 1rem; letter-spacing: 0.12em; }
+
+  .form-group { margin-bottom: 0.9rem; }
+  .form-group label { font-size: 0.68rem; color: var(--muted); display: block; margin-bottom: 0.3rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .form-group input, .form-group select {
+    width: 100%;
+    background: #08080f;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.55rem 0.8rem;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+  .modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 1.2rem; }
+
+  /* ── Forge animation ── */
+  #forgeOverlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 900;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  #forgeOverlay.open { opacity: 1; pointer-events: all; }
+  #forgeCanvas { border-radius: 50%; }
+  .forge-text { color: var(--gold); letter-spacing: 0.2em; margin-top: 1.2rem; font-size: 0.9rem; animation: pulse 1.2s ease-in-out infinite; }
+  .forge-sub { color: var(--muted); font-size: 0.7rem; margin-top: 0.4rem; letter-spacing: 0.15em; }
+  @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+  /* ── Status bar ── */
+  #statusBar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #08080f;
+    border-top: 1px solid var(--border);
+    padding: 0.5rem 1.5rem;
+    font-size: 0.68rem;
+    color: var(--muted);
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 800;
+  }
+  #statusMsg { transition: color 0.3s; }
+  #statusMsg.ok { color: var(--success); }
+  #statusMsg.err { color: var(--danger); }
+
+  /* ── Mining queue ── */
+  .mining-queue {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  .mining-badge {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--muted);
+    color: var(--muted);
+    animation: mining-pulse 0.8s ease-in-out infinite;
+  }
+  @keyframes mining-pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+  /* Spell check highlight */
+  .spell-ok { color: var(--success) !important; }
+  .spell-warn { color: var(--gold) !important; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; margin-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  .tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    font-family: 'Courier New', monospace;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Scrollbar global */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--panel); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  .badge-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 0.5rem 0; }
+  .badge {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 20px;
+    border: 1px solid var(--muted);
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .badge.cyan { border-color: var(--cyan); color: var(--cyan); }
+  .badge.gold { border-color: var(--gold); color: var(--gold); }
+  .badge.green { border-color: var(--success); color: var(--success); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0.8rem 0; }
+
+  .notification {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.75rem;
+    z-index: 2000;
+    transform: translateX(120%);
+    transition: transform 0.3s;
+    max-width: 300px;
+  }
+  .notification.show { transform: none; }
+  .notification.ok { border-color: var(--success); color: var(--success); }
+  .notification.err { border-color: var(--danger); color: var(--danger); }
+  .notification.info { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⊙ ENSŌ HAIKU WALLET FORGE</h1>
+  <p>BIP-39 · BIP-44 · Standalone · Encrypted · Collectible</p>
+</header>
+
+<!-- Forge animation overlay -->
+<div id="forgeOverlay">
+  <canvas id="forgeCanvas" width="280" height="280"></canvas>
+  <div class="forge-text">FORGING WALLET...</div>
+  <div class="forge-sub" id="forgeSubText">Generating entropy...</div>
+  <div class="mining-queue" id="miningQueue"></div>
+</div>
+
+<!-- Password modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">⊘ Export Wallet</h3>
+    <div class="form-group">
+      <label>AES-256 Password</label>
+      <input type="password" id="modalPassword" placeholder="Enter encryption password...">
+    </div>
+    <div class="form-group">
+      <label>Confirm Password</label>
+      <input type="password" id="modalPasswordConfirm" placeholder="Confirm password...">
+    </div>
+    <div class="form-group" id="exportFormatGroup">
+      <label>Format</label>
+      <select id="exportFormat">
+        <option value="txt">Plain Text (encrypted)</option>
+        <option value="json">JSON (encrypted)</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-muted" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-gold" id="modalAction">Export</button>
+    </div>
+  </div>
+</div>
+
+<!-- Notification -->
+<div class="notification" id="notification"></div>
+
+<div class="container">
+  <div class="controls">
+    <div class="mine-count-wrap">
+      <span style="color:var(--muted);font-size:0.7rem">FORGE</span>
+      <input type="range" id="mineCount" min="1" max="12" value="1">
+      <span id="mineCountVal">1</span>
+    </div>
+    <button class="btn btn-primary" id="btnForge" onclick="forgeWallets()">⊙ FORGE</button>
+    <button class="btn btn-gold" onclick="spellCheckCurrent()">✦ SPELL CHECK</button>
+    <button class="btn btn-muted" onclick="skipHaiku()">↷ SKIP HAIKU</button>
+    <button class="btn btn-success" onclick="saveCurrentWallet()">✦ SAVE WALLET</button>
+    <button class="btn btn-gold" onclick="downloadPNG()">⬇ DOWNLOAD PNG</button>
+  </div>
+
+  <div class="grid-main">
+    <!-- LEFT: Ensō + Params -->
+    <div>
+      <div class="panel">
+        <div class="panel-title">Ensō Parameters</div>
+        <div class="enso-wrap">
+          <canvas id="ensoCanvas" width="260" height="260" onclick="regenerateEnso()"></canvas>
+          <div class="enso-id" id="ensoIdDisplay">—</div>
+        </div>
+        <hr class="divider">
+        <div class="params-grid" id="paramsGrid"></div>
+      </div>
+    </div>
+
+    <!-- CENTER: Wallet data -->
+    <div>
+      <div class="panel">
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('haiku')">Haiku</button>
+          <button class="tab" onclick="switchTab('seed')">Seed Phrase</button>
+          <button class="tab" onclick="switchTab('wallet')">Wallet</button>
+        </div>
+
+        <!-- Haiku tab -->
+        <div class="tab-content active" id="tab-haiku">
+          <div class="haiku-display" id="haikuDisplay">
+            <div style="color:var(--muted);font-size:0.8rem;letter-spacing:0.1em">Press FORGE to begin...</div>
+          </div>
+          <div class="badge-row" id="syllableBadges"></div>
+          <div id="spellCheckResult" style="margin-top:0.5rem;font-size:0.72rem;min-height:1.2rem;"></div>
+        </div>
+
+        <!-- Seed tab -->
+        <div class="tab-content" id="tab-seed">
+          <div style="font-size:0.68rem;color:var(--muted);margin-bottom:0.5rem;">BIP-39 Mnemonic · Click to copy</div>
+          <div class="seed-grid" id="seedGrid"></div>
+          <div class="badge-row" style="margin-top:0.7rem;" id="seedBadges">
+            <span class="badge">12/24 Words</span>
+            <span class="badge">BIP-39</span>
+          </div>
+        </div>
+
+        <!-- Wallet tab -->
+        <div class="tab-content" id="tab-wallet">
+          <div class="wallet-field">
+            <label>BIP-44 Path</label>
+            <div class="val" id="wPath">—</div>
+          </div>
+          <div class="wallet-field">
+            <label>Master Public Key (xpub)</label>
+            <div class="val" id="wXpub">—</div>
+          </div>
+          <div class="wallet-field">
+            <label>Address (Bitcoin P2PKH)</label>
+            <div class="val" id="wAddr">—</div>
+          </div>
+          <div class="wallet-field">
+            <label>Wallet ID (SHA-256 Fingerprint)</label>
+            <div class="val" id="wId">—</div>
+          </div>
+          <div style="font-size:0.65rem;color:var(--muted);margin-bottom:0.4rem;">CHECKSUMS</div>
+          <div class="checksum-row" id="checksumRow"></div>
+          <div style="font-size:0.62rem;color:var(--muted);margin-top:0.5rem;line-height:1.6;">
+            ⚠ For educational/demonstration purposes. Do not use for storing real funds without independent verification.
+          </div>
+        </div>
+      </div>
+
+      <!-- Ensō number reference -->
+      <div class="panel" style="margin-top:1.2rem;">
+        <div class="panel-title">Ensō Reference Number</div>
+        <div style="font-size:0.68rem;color:var(--muted);margin-bottom:0.7rem;">Unique seed encoding all parameters</div>
+        <div class="wallet-field">
+          <label>Ensō Number (Base-62 encoded)</label>
+          <div class="val" id="ensoNumber">—</div>
+        </div>
+        <div class="params-grid" id="ensoDecoded" style="margin-top:0.5rem;"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Collection -->
+    <div class="panel panel-right">
+      <div class="panel-title">Wallet Collection</div>
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;flex-wrap:wrap;">
+        <button class="btn btn-gold" onclick="exportAllWallets()" style="flex:1;font-size:0.65rem;">⬇ Export All</button>
+        <button class="btn btn-muted" onclick="clearCollection()" style="flex:1;font-size:0.65rem;">✕ Clear All</button>
+      </div>
+      <div id="collectionEmpty" style="color:var(--muted);font-size:0.75rem;text-align:center;padding:2rem;display:block;">
+        No wallets saved yet.<br>Forge and save to start your collection.
+      </div>
+      <div class="collection-list" id="collectionList"></div>
+    </div>
+  </div>
+</div>
+
+<div id="statusBar">
+  <span id="statusMsg">Ready — Standalone Mode</span>
+  <span id="statusRight" style="color:var(--muted);">OFFLINE ✓</span>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════
+// BIP-39 WORDLIST (complete 2048 words)
+// ════════════════════════════════════════════════════════════════════
+const BIP39_WORDS = "abandon ability able about above absent absorb abstract absurd abuse access accident account accuse achieve acid acoustic acquire across act action actor actress actual adapt add addict address adjust admit adult advance advice aerobic afford afraid again age agent agree ahead aim air airport aisle alarm album alcohol alert alien all alley allow almost alone alpha already also alter always amateur amazing among amount amused analyst anchor ancient anger angle angry animal ankle announce annual another answer antenna antique anxiety any apart apology appear apple approve april arch arctic area arena argue arm armed armor army around arrange arrest arrive arrow art artefact artist artwork ask aspect assault asset assist assume asthma athlete atom attack attend attitude attract auction audit august aunt author auto autumn average avocado avoid awake aware away awesome awful awkward axis baby bachelor bacon badge bag balance balcony ball bamboo banana banner bar barely bargain barrel base basic basket battle beach beauty because become beef before begin behave behind believe below bench benefit best betray better between beyond bicycle bid bike bind biology bird birth bitter black blade blame blanket blast bleak bless blind blood blossom blouse blue blur blush board boat body boil bomb bone book boost border boring borrow boss bottom bounce box boy bracket brain brand brave breeze brick bridge brief bright bring brisk broccoli broken bronze broom brother brown brush bubble buddy budget buffalo build bulb bulk bullet bundle bunker burden burger burst bus business busy butter buyer buzz cabbage cabin cable cactus cage cake call calm camera camp can canal cancel candy cannon canvas canyon capable capital captain car carbon card cargo carpet carry cart case cash casino castle casual cat catalog catch category cattle caught cause caution cave ceiling celery cement census century cereal certain chair chaos chapter charge chase chat cheap check cheese chef cherry chest chicken chief child chimney choice choose chronic churn cigar cinema circle citizen city civil claim clap clarify claw clay clean clerk clever click client cliff climb clinic clip clock clog close cloth cloud clown club clump cluster clutch coach coast coconut code coffee coil coin collect color column combine come comfort comic common company concert conduct confirm congress connect consider control convince cook cool copper copy coral core corn correct cost cotton couch country couple course cousin cover coyote crack cradle craft cram crane crash crater crawl crazy cream credit creek crew cricket crime crisp critic cross crouch crowd crucial cruel cruise crumble crunch crush cry crystal cube culture cup cupboard curious current curtain curve cushion custom cute cycle dad damage damp dance danger daring dash daughter dawn day deal debate debris decade december decide decline decorate decrease deer defense define defy degree delay deliver demand demise denial dentist deny depart depend deposit depth deputy derive describe desert design desk despair destroy detail detect develop device devote diagram dial diamond diary dice diesel diet differ digital dignity dilemma dinner dinosaur direct dirt disagree discover disease dish dismiss disorder display distance divert divide divorce dizzy doctor document dog doll dolphin domain donate donkey donor door dose double dove draft dragon drama drastic draw dream dress drift drill drink drip drive drop drum dry duck dumb dune during dust dutch duty dwarf dynamic eager eagle early earn earth easily east easy echo ecology edge edit educate effort egg eight either elbow elder electric elegant element elephant elevator elite else embark embody embrace emerge emotion employ empower empty enable enact endless endorse enemy engage engine enhance enjoy enlist enough enrich enroll ensure enter entire entry envelope episode equal equip erase erosion erupt escape essay essence estate eternal ethics evidence evil evoke evolve exact example excess exchange excite exclude exercise exhaust exhibit exile exist exit exotic expand expire explain expose express extend extra eye fable face faculty fade faint faith fall false fame family famous fan fancy fantasy far fashion fat fatal father fatigue fault favorite feature february federal fee feed feel feet fellow felt fence festival fetch fever few fiber fiction field figure file film filter final find fine finger finish fire firm first fiscal fish fit fitness fix flag flame flash flat flavor flee flight flip float flock floor flower fluid flush fly foam focus fog foil follow food force forest forget fork fortune forum forward fossil foster found fox fragile frame frequent fresh friend fringe frog front frost frown frozen fruit fuel fun funny furnace fury future gadget gain galaxy gallery game gap garbage garden garlic garment gas gasp gate gather gauge gaze general genius genre gentle genuine gesture ghost ginger giraffe girl give glad glance glare glass glide glimpse globe gloom glory glove glow glue goat goddess gold good goose gorilla gospel gossip govern gown grab grace grain grant grape grasp grass gravity great green grid grief grit grocery group grow grunt guard guide guilt guitar gun gym habit hair half hamster hand happy harbor hard harvest hat have hawk hazard head health heart heavy hedgehog height hello helmet help hero hidden high hill hint hip hire history hobby hockey hold hole holiday hollow home honey hood hope horn hospital host hour hover hub huge human humble humor hundred hungry hunt hurdle hurry hurt husband hybrid ice icon ignore ill illegal image imitate immense immune impact impose improve impulse inbox income increase index indicate indoor industry infant inflict inform inhale inject inner innocent input inquiry insane insect inside inspire install intact interest into invest invite involve iron island isolate issue item ivory jacket jaguar jar jazz jealous jeans jelly jewel job join joke journey joy judge juice jump jungle junior junk just kangaroo keen keep ketchup key kick kitten kiwi knee knife knock know lab ladder lady lake lamp language laptop large later laugh laundry lava law lawn lawsuit layer lazy leader learn leave lecture left leg legal legend leisure lemon lend length lens leopard lesson letter level liar liberty library license life lift light like limb limit link lion liquid list little live lizard load loan lobster local lock logic lonely long loop lottery loud lounge love loyal lucky luggage lumber lunar lunch luxury lyrics mad main mammal mango mansion manual maple marble march margin marine market marriage mask match matrix maximum maze meadow mean medal media melody melt member memory mention mentor menu mercy merge merit merry mesh message metal method middle midnight milk million mimic mind minimum minor minute miracle miss misery miss mistake mix mixed mixture mobile model modify mom monitor monkey monster month moon moral mother motion motor mountain mouse move movie much muffin mule multiply muscle museum mushroom music must mutual myself mystery naive name napkin narrow nasty natural nature near neck need negative neglect neither nephew nerve net network news next nice night noble noise nominee noodle normal north notable note nothing notice novel now nuclear nurse nut oak obey object oblige obscure observe obtain ocean october odor off offer often oil okay old olive olympic omit once onion open oppose option orange orbit orchard order ordinary organ orient original orphan ostrich other outdoor outside oval over own oyster ozone pact paddle page pair palace palm panda panic panther paper parade parent park parrot party pass patch path patrol pause pave payment peace peanut peasant pelican pen penalty pencil people pepper perfect permit person pet phone photo phrase physical piano picnic picture piece pig pigeon pill pilot pink pioneer pipe pistol pitch pizza place planet plastic plate play please pledge pluck plug plunge poem poet point polar pole police pond pony popular portion position possible post potato pottery poverty powder power practice praise predict prefer prepare present pretty prevent price pride primary print priority prison private prize problem process produce profit program project promote proof property prosper protect proud provide public pudding pull pulp pulse pumpkin punch pupil puppy purchase purity purpose push put puzzle pyramid quality quantum quarter question quick quit quiz quote rabbit raccoon race rack radar radio rage rail rain raise rally ramp ranch random range rapid rare rate rather raven reach ready real reason rebel rebuild recall receive recipe record recycle reduce reflect reform refuse region regret regular reject relax release relief rely remain remember remind remove render renew rent reopen repair repeat replace report require rescue resemble resist resource response result retire retreat return reunion reveal review reward rhythm ribbon rice rich ride rifle right rigid ring riot ripple risk ritual rival river road roast robot robust rocket romance roof rookie rotate rough round route royal rubber rude rug rule run runway rural sad saddle sadness safe sail salad salmon salon salt salute same sample sand satisfy satoshi sauce sausage save say scale scan scare scatter scene scheme scissors scorpion scout scrap screen script scrub sea search season seat second secret section security seed seek segment select sell seminar senior sense sentence series service session settle setup seven shadow shaft shallow share shed shell sheriff shield shift shine ship shiver shock shoe shoot shop short shoulder shove shrimp shrug shuffle shy sibling siege sight sign silent silk silly silver similar simple since sing siren sister situate six size sketch ski skill skin skirt skull slab slam sleep slender slice slide slight slim slogan slot slow slush small smart smile smoke smooth snack snake snap sniff snow soap soccer social sock solar soldier solid solution solve someone song soon sorry south space spare spatial spawn speak special speed sphere spice spider spike spin spirit split spoil sponsor spoon spray spread spring spy square squeeze squirrel stable stadium staff stage stairs stamp stand start state stay steak steel stem step stereo stick still sting stock stomach stone stop store storm story stove strategy street strike strong struggle student stuff stumble style subject submit subway success such sudden suffer sugar suggest suit summer sun sunny sunset super supply supreme sure surface surge surprise sustain swallow swamp swap swear sweet swift swim swing switch sword symbol symptom syrup table tackle tag tail talent tamper tank tape target task tattoo taxi teach team tell ten tenant tennis tent term test text thank that theme then theory there they thing this thought three thrive throw thumb thunder ticket tilt timber time tiny tip tired title toast tobacco today together toilet token tomato tomorrow tone tongue tonight tool tooth top topic topple torch tornado tortoise toss total tourist toward tower town toy trade traffic tragic train transfer trap trash travel tray treat tree trend trial tribe trick trigger trim trip trophy trouble truck truly trumpet trust truth tube tuition tumble tuna tunnel turkey turn turtle twelve twenty twice twin twist two type typical ugly umbrella unable uncle uncover unfold unhappy uniform unique universe unknown unlock until unusual unveil update upgrade uphold upon upper upset urban usage use used useful useless usual utility vacant vacuum vague valid valley valve van vanish vapor various vast vault vehicle velvet vendor venture venue verb verify version very veteran viable vibrant vicious victory video view village vintage violin virtual virus visa visit visual vital vivid vocal voice void volcano volume vote voyage wage wagon wait walk wall walnut want warfare warm warrior wash wasp waste water wave way wealth weapon wear weasel wedding weekend weird welcome well west wet whale wheat wheel when where whip whisper wide width wife wild will win window wine wing wink winner winter wire wisdom wise wish witness wolf woman wonder wood wool word world worry worth wrap wreck wrestle wrist write wrong yard year yellow you young youth zebra zero zone zoo".split(" ");
+
+// ════════════════════════════════════════════════════════════════════
+// SYLLABLE DATABASE (curated BIP-39 subset for haiku)
+// ════════════════════════════════════════════════════════════════════
+const SYLLABLE_COUNTS = {
+  // 1 syllable
+  "abandon":3,"ability":4,"able":2,"about":2,"above":2,"absent":2,"absorb":2,"abstract":2,"abuse":2,"access":2,"account":2,"accuse":2,"achieve":2,"acid":2,"acquire":2,"across":2,"act":1,"action":2,"actor":2,"actual":3,"adapt":2,"add":1,"address":2,"adjust":2,"admit":2,"adult":2,"advance":2,"advice":2,"afford":2,"afraid":2,"age":1,"agree":2,"aim":1,"air":1,"aisle":1,"alarm":2,"album":2,"alert":2,"alien":3,"all":1,"allow":2,"almost":2,"alone":2,"already":3,"also":2,"alter":2,"always":2,"among":2,"ancient":2,"anger":2,"angle":2,"angry":2,"animal":3,"ankle":2,"annual":3,"another":3,"answer":2,"any":2,"apart":2,"appear":2,"apple":2,"april":2,"arch":1,"arctic":2,"area":3,"argue":2,"arm":1,"army":2,"around":2,"arrive":2,"art":1,"artist":2,"ask":1,"asset":2,"atom":2,"attack":2,"attend":2,"attract":2,"august":2,"aunt":1,"author":2,"autumn":2,"away":2,"awesome":2,"awkward":2,
+  "baby":2,"balance":2,"ball":1,"bamboo":2,"banana":3,"banner":2,"bar":1,"barely":2,"barrel":2,"base":1,"basic":2,"basket":2,"battle":2,"beach":1,"beauty":2,"become":2,"beef":1,"before":2,"begin":2,"below":2,"bench":1,"best":1,"bike":1,"bird":1,"birth":1,"black":1,"blade":1,"blame":1,"blue":1,"blur":1,"board":1,"boat":1,"body":2,"bomb":1,"bone":1,"book":1,"boost":1,"bright":1,"bring":1,"brook":1,"brown":1,"brush":1,"bulb":1,"bulk":1,"burst":1,"bus":1,"busy":2,
+  "cage":1,"cake":1,"call":1,"calm":1,"camp":1,"can":1,"candy":2,"card":1,"care":1,"cart":1,"case":1,"cash":1,"cat":1,"catch":1,"cause":1,"cave":1,"chair":1,"chance":1,"change":1,"charge":1,"chase":1,"cheap":1,"check":1,"chess":1,"chest":1,"child":1,"choice":1,"choose":1,"city":2,"claim":1,"clap":1,"clay":1,"clean":1,"clear":1,"cliff":1,"climb":1,"clip":1,"clock":1,"close":1,"cloth":1,"cloud":1,"club":1,"coal":1,"coast":1,"code":1,"coin":1,"cool":1,"copy":2,"core":1,"corn":1,"cost":1,"court":1,"craft":1,"crane":1,"crash":1,"crawl":1,"cream":1,"crew":1,"crime":1,"cross":1,"crowd":1,"crush":1,"cry":1,"cup":1,
+  "dad":1,"dance":1,"dark":1,"dawn":1,"day":1,"deal":1,"dear":1,"deep":1,"deer":1,"deny":2,"depth":1,"desk":1,"dirt":1,"dog":1,"dome":1,"door":1,"dove":1,"down":1,"draft":1,"drape":1,"draw":1,"dream":1,"dress":1,"drift":1,"drink":1,"drop":1,"drum":1,"duck":1,"dusk":1,"dust":1,"dwarf":1,
+  "earth":1,"east":1,"edge":1,"egg":1,"eight":1,"end":1,"eye":1,
+  "face":1,"fact":1,"fade":1,"faith":1,"fall":1,"fame":1,"fan":1,"far":1,"fast":1,"fee":1,"feel":1,"feet":1,"fell":1,"felt":1,"fence":1,"few":1,"field":1,"fig":1,"file":1,"film":1,"find":1,"fire":1,"fish":1,"fist":1,"fit":1,"flag":1,"flame":1,"flash":1,"flat":1,"flaw":1,"flee":1,"flight":1,"flip":1,"float":1,"fog":1,"fold":1,"food":1,"force":1,"forge":1,"fox":1,"free":1,"fresh":1,"frost":1,"fruit":1,"fuel":1,"fun":1,
+  "gain":1,"gaze":1,"gem":1,"girl":1,"give":1,"glad":1,"glass":1,"glide":1,"glow":1,"goat":1,"gold":1,"gone":1,"grace":1,"grain":1,"grant":1,"grass":1,"gray":1,"green":1,"grid":1,"grin":1,"grow":1,"guard":1,"guide":1,"guilt":1,"gulp":1,"gun":1,
+  "hall":1,"hand":1,"hard":1,"harm":1,"haste":1,"hat":1,"hawk":1,"heart":1,"heat":1,"help":1,"high":1,"hill":1,"hint":1,"hold":1,"hole":1,"home":1,"hope":1,"horn":1,"huge":1,"hull":1,"hum":1,
+  "ice":1,"ink":1,"iron":2,"isle":1,
+  "jade":1,"jar":1,"joy":1,"jump":1,"just":1,
+  "keen":1,"keep":1,"kind":1,"knee":1,
+  "lake":1,"lamp":1,"land":1,"large":1,"last":1,"late":1,"leaf":1,"leap":1,"left":1,"lens":1,"life":1,"lift":1,"light":1,"like":1,"link":1,"long":1,"look":1,"loss":1,"lost":1,"love":1,"low":1,"luck":1,"lung":1,
+  "main":1,"mane":1,"mango":2,"map":1,"march":1,"mask":1,"melt":1,"mind":1,"mint":1,"miss":1,"mist":1,"moon":1,"moss":1,"moth":1,"move":1,"much":1,"mud":1,
+  "name":1,"near":1,"neck":1,"nest":1,"net":1,"new":1,"nice":1,"night":1,"nine":1,"node":1,"noon":1,"north":1,"note":1,"now":1,"null":1,
+  "oak":1,"old":1,"once":1,"one":1,"open":2,"or":1,"orb":1,"ore":1,"our":1,"out":1,"over":2,"own":1,
+  "pace":1,"page":1,"pain":1,"palm":1,"park":1,"part":1,"past":1,"path":1,"peak":1,"pear":1,"pen":1,"pine":1,"pink":1,"pipe":1,"pit":1,"plain":1,"plan":1,"plant":1,"play":1,"pond":1,"pool":1,"port":1,"pour":1,"push":1,"pure":1,
+  "quick":1,"quiet":2,"quite":1,
+  "race":1,"rain":1,"ramp":1,"reach":1,"read":1,"real":1,"reef":1,"rest":1,"rich":1,"rise":1,"risk":1,"road":1,"roam":1,"rock":1,"role":1,"roof":1,"root":1,"rope":1,"rose":1,"route":1,"rune":1,"run":1,"rush":1,
+  "sail":1,"sake":1,"salt":1,"sand":1,"save":1,"scale":1,"scan":1,"scene":1,"sea":1,"seed":1,"self":1,"sense":1,"serve":1,"shade":1,"shake":1,"shall":1,"share":1,"sharp":1,"shed":1,"ship":1,"shore":1,"short":1,"shout":1,"sight":1,"silk":1,"sing":1,"six":1,"size":1,"sky":1,"slab":1,"slate":1,"sleep":1,"slim":1,"slow":1,"small":1,"snake":1,"snow":1,"soft":1,"soil":1,"song":1,"soul":1,"south":1,"space":1,"spark":1,"speak":1,"spell":1,"sphere":1,"spike":1,"spill":1,"spin":1,"spring":1,"star":1,"stay":1,"stem":1,"step":1,"stick":1,"still":1,"stone":1,"stop":1,"store":1,"storm":1,"stream":1,"sun":1,"surf":1,"swam":1,"swan":1,"swift":1,"sword":1,
+  "tall":1,"task":1,"tea":1,"tell":1,"ten":1,"tent":1,"thin":1,"tide":1,"time":1,"toll":1,"tone":1,"top":1,"torch":1,"town":1,"trail":1,"tree":1,"true":1,"trust":1,"truth":1,"turn":1,"twin":1,"two":1,
+  "vast":1,"vault":1,"view":1,"vine":1,"void":1,
+  "wake":1,"walk":1,"wall":1,"wave":1,"west":1,"wild":1,"will":1,"wind":1,"wing":1,"wish":1,"with":1,"wolf":1,"wood":1,"word":1,"world":1,"worth":1,
+  "yard":1,"year":1,
+  "zone":1,
+  // 2 syllables
+  "abbey":2,"able":2,"about":2,"above":2,"absent":2,"accuse":2,"acid":2,"actor":2,"adapt":2,"adult":2,"advance":2,"advice":2,"agree":2,"aisle":1,"alarm":2,"alert":2,"allow":2,"almost":2,"along":2,"always":2,"angel":2,"angry":2,"ankle":2,"answer":2,"apart":2,"appear":2,"apple":2,"april":2,"arctic":2,"argue":2,"army":2,"around":2,"arrive":2,"artist":2,"attack":2,"attend":2,"attract":2,"author":2,"autumn":2,"awake":2,"away":2,"awesome":2,"baby":2,"balance":2,"bamboo":2,"barely":2,"barrel":2,"battle":2,"beauty":2,"become":2,"before":2,"begin":2,"below":2,"better":2,"between":2,"beyond":2,"body":2,"border":2,"boring":2,"bottle":2,"bottom":2,"burden":2,"butter":2,"button":2,"busy":2,
+  "cabin":2,"camera":3,"cancel":2,"casual":3,"cattle":2,"cedar":2,"center":2,"certain":2,"circle":2,"city":2,"classic":2,"coffee":2,"color":2,"copy":2,"corner":2,"cover":2,"crater":2,"crazy":2,"crypto":2,"cyber":2,
+  "damage":2,"danger":2,"daring":2,"daughter":2,"differ":2,"dizzy":2,"doctor":2,"dolphin":2,"dragon":2,"drama":2,"duty":2,"eagle":2,"early":2,"either":2,"elder":2,"email":2,"empty":2,"enemy":2,"equal":2,"error":2,"enter":2,"even":2,"evil":2,"exist":2,"extra":2,
+  "famous":2,"fancy":2,"father":2,"fifteen":2,"flower":2,"fossil":2,"fragile":3,"frozen":2,"future":2,
+  "galaxy":3,"gather":2,"gentle":2,"golden":2,"gospel":2,"gossip":2,"govern":2,"giant":2,"gladly":2,"glory":2,
+  "habit":2,"happy":2,"harbor":2,"harvest":2,"helmet":2,"hidden":2,"history":3,"hollow":2,"honey":2,"honor":2,"hundred":2,"hunger":2,"hungry":2,"hurdle":2,"husband":2,
+  "idle":2,"impact":2,"indeed":2,"index":2,"insect":2,"island":2,
+  "journey":2,"jungle":2,"junior":2,"justice":3,
+  "kangaroo":4,"kingdom":2,"kitchen":2,"kitten":2,
+  "ladder":2,"legend":2,"lemon":2,"lesson":2,"letter":2,"level":2,"liquid":2,"little":2,"lizard":2,"local":2,"logic":2,"lonely":2,"lotus":2,"lucky":2,"luggage":2,"lunar":2,
+  "magic":2,"mammal":2,"marble":2,"margin":2,"market":2,"medal":2,"memory":3,"mentor":2,"mercy":2,"message":2,"middle":2,"mighty":2,"minute":2,"mirror":2,"mister":2,"modest":2,"money":2,"monkey":2,"monster":2,"morning":2,"motion":2,"mountain":2,"mushroom":2,"music":2,"mobile":2,"model":2,
+  "native":2,"natural":3,"needle":2,"never":2,"noble":2,"noise":2,"normal":2,"notice":2,
+  "ocean":2,"offer":2,"often":2,"olive":2,"open":2,"orbit":2,"order":2,"orange":2,"other":2,"outdoor":2,"outside":2,"over":2,
+  "panda":2,"paper":2,"patient":2,"pattern":2,"peaceful":2,"people":2,"pepper":2,"period":2,"petal":2,"picture":2,"pillar":2,"plastic":2,"plenty":2,"pollen":2,"power":2,"present":2,"pretty":2,"process":2,"profit":2,"program":2,"project":2,"purple":2,"puzzle":2,
+  "rabbit":2,"radar":2,"rainforest":3,"rainbow":2,"random":2,"reason":2,"rebel":2,"record":2,"rescue":2,"river":2,"robot":2,"rocket":2,"romance":2,"roses":2,"roaming":2,"ruby":2,"running":2,
+  "sadness":2,"salmon":2,"samurai":4,"saturn":2,"saying":2,"shadow":2,"silver":2,"simple":2,"sister":2,"sleep":1,"slowly":2,"snowfall":2,"soldier":2,"spirit":2,"stalker":2,"starlight":2,"story":2,"stranger":2,"studio":3,"summer":2,"sunlight":2,"sunny":2,"sunrise":2,"surface":2,"system":2,
+  "tablet":2,"target":2,"thunder":2,"tiger":2,"timber":2,"token":2,"tower":2,"travel":2,"tunnel":2,"turtle":2,"twilight":2,
+  "under":2,"unlike":2,"until":2,"update":2,"upon":2,"upper":2,"urban":2,"useful":2,"usual":2,
+  "valley":2,"vapor":2,"velvet":2,"vendor":2,"venture":2,"village":2,"vision":2,"vivid":2,"vocal":2,"voyage":2,
+  "waiting":2,"walnut":2,"water":2,"weapon":2,"welcome":2,"whisper":2,"winter":2,"witness":2,"wonder":2,"wooden":2,"worry":2,
+  "yellow":2,"younger":2,
+  // 3+ syllables
+  "abandon":3,"ability":4,"absolute":3,"academic":4,"academy":4,"accident":3,"accomplish":3,"accurate":3,"achieve":2,"acknowledge":3,"acoustic":3,"activity":4,"actually":4,"addition":3,"adventure":3,"aerobic":3,"afternoon":3,"agency":3,"aggressive":3,"agreement":3,"allowing":3,"amazing":3,"ambitious":3,"america":4,"analysis":4,"another":3,"appetite":3,"apologize":4,"arbiter":3,"article":3,"artificial":4,"assemble":3,"attention":3,"attorney":3,"attitude":3,"available":4,"beautiful":3,"beginning":3,"believe":2,"biology":4,"blossom":2,"butterfly":3,"calculate":3,"calendar":3,"cathedral":3,"celebrate":3,"champion":3,"chemical":3,"coconut":3,"collection":3,"combination":4,"community":4,"companion":3,"computer":3,"concentrate":3,"consider":3,"continue":3,"creature":2,"criminal":3,"curiosity":5,"dangerous":3,"decorate":3,"deliver":3,"democracy":4,"discover":3,"desperate":3,"dinosaur":3,"education":4,"electric":3,"elegant":3,"eliminate":4,"emotion":3,"energize":4,"enormous":3,"essential":3,"establish":3,"eternal":3,"evaluate":4,"evolution":4,"exactly":3,"exquisite":3,"family":3,"fantasy":3,"festival":3,"finally":3,"flexible":3,"formula":3,"generate":3,"general":3,"generous":3,"glorious":3,"gorgeous":2,"government":3,"grateful":2,"gravity":3,"guardian":3,"history":3,"holiday":3,"honor":2,"humility":4,"identity":4,"imagine":3,"important":3,"impossible":4,"infinite":3,"innovation":4,"together":3,
+};
+
+function syllableCount(word) {
+  const w = word.toLowerCase().replace(/[^a-z]/g,'');
+  if (SYLLABLE_COUNTS[w] !== undefined) return SYLLABLE_COUNTS[w];
+  // Fallback algorithmic counter
+  let count = 0;
+  let prev = false;
+  for (let i = 0; i < w.length; i++) {
+    const isVowel = 'aeiouy'.includes(w[i]);
+    if (isVowel && !prev) count++;
+    prev = isVowel;
+  }
+  if (w.endsWith('e') && count > 1) count--;
+  return Math.max(1, count);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// ENSŌ PARAMETER SYSTEM
+// ════════════════════════════════════════════════════════════════════
+const PARAM_DEFS = {
+  inkLoad:        { label:"Ink Load",           values:[1,2,3,4,5,6,7,8], default:4 },
+  direction:      { label:"Direction",          values:["Clockwise","Counter-CW"], default:"Clockwise" },
+  paperHue:       { label:"Paper Hue",          values:["Cyan","White","Rice","Amber","Slate","Indigo"], default:"Cyan" },
+  brushSize:      { label:"Brush Size",         values:[1,2,3,4,5,6,7,8,9,10], default:6 },
+  inkDensity:     { label:"Ink Density",        values:[1,2,3,4,5], default:3 },
+  xyStretch:      { label:"X/Y Stretch",        values:["Equal","Unequal","X-Dominant","Y-Dominant"], default:"Unequal" },
+  paperTexture:   { label:"Paper Texture",      values:[1,2,3,4,5,6], default:4 },
+  bristleDensity: { label:"Bristle Density",    values:[1,2,3,4,5,6,7], default:5 },
+  signatureStyle: { label:"Signature Style",    values:["None","Light","Medium","Dark","Glow"], default:"Dark" },
+  brushstrokeSize:{ label:"Brushstroke Size",   values:["Fine","Small","Medium","Large","Bold"], default:"Medium" },
+  brushstrokeStart:{ label:"Stroke Start",      values:Array.from({length:36},(_,i)=>i*10).map(d=>`${d}°`), default:"216°" },
+  terrainSeed:    { label:"Terrain Seed",       values:Array.from({length:65536},(_,i)=>i), default:0 },
+};
+
+const PAPER_COLORS = {
+  Cyan:   { bg:"#003340", paper:"#004455", grain:"#005566" },
+  White:  { bg:"#f0f0f0", paper:"#fafafa", grain:"#e8e8e8" },
+  Rice:   { bg:"#f5f0e0", paper:"#faf7e8", grain:"#ede7cc" },
+  Amber:  { bg:"#3a2000", paper:"#4a2800", grain:"#5a3200" },
+  Slate:  { bg:"#1a1f2a", paper:"#222838", grain:"#2a3040" },
+  Indigo: { bg:"#0d0520", paper:"#150830", grain:"#1d0d40" },
+};
+
+let currentParams = {};
+let currentEnsoSeed = 0;
+let currentWallet = null;
+let collection = [];
+let isForging = false;
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function generateParams(seedOverride) {
+  // Use crypto random for true entropy
+  const arr = new Uint32Array(16);
+  crypto.getRandomValues(arr);
+  let seedNum = (seedOverride !== undefined) ? seedOverride : arr[0];
+  
+  // Seeded PRNG (xorshift)
+  let s = seedNum || 1;
+  const rand = () => {
+    s ^= s << 13; s ^= s >> 17; s ^= s << 5;
+    return Math.abs(s);
+  };
+  
+  const params = {};
+  for (const [key, def] of Object.entries(PARAM_DEFS)) {
+    if (key === 'terrainSeed') {
+      params[key] = rand() % 65536;
+    } else {
+      params[key] = def.values[rand() % def.values.length];
+    }
+  }
+  
+  // Apply hardcoded defaults for the reference values
+  params.inkLoad = 4;
+  params.direction = "Clockwise";
+  params.paperHue = "Cyan";
+  params.brushSize = 6;
+  params.inkDensity = 3;
+  params.xyStretch = "Unequal";
+  params.paperTexture = 4;
+  params.bristleDensity = 5;
+  params.signatureStyle = "Dark";
+  params.brushstrokeSize = "Medium";
+  params.brushstrokeStart = "216°";
+  
+  // Only terrain seed varies for uniqueness
+  params.terrainSeed = rand() % 65536;
+  
+  return { params, seed: seedNum >>> 0 };
+}
+
+// ════════════════════════════════════════════════════════════════════
+// ENSŌ NUMBER (Base-62 encoding of params)
+// ════════════════════════════════════════════════════════════════════
+function paramsToEnsoNumber(params, seed) {
+  const base62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  const encode = (n, pad=4) => {
+    let s = '';
+    while (n > 0) { s = base62[n % 62] + s; n = Math.floor(n / 62); }
+    return s.padStart(pad,'0');
+  };
+  const inkI = PARAM_DEFS.inkLoad.values.indexOf(params.inkLoad);
+  const dirI = PARAM_DEFS.direction.values.indexOf(params.direction);
+  const hueI = PARAM_DEFS.paperHue.values.indexOf(params.paperHue);
+  const brsI = PARAM_DEFS.brushSize.values.indexOf(params.brushSize);
+  const denI = PARAM_DEFS.inkDensity.values.indexOf(params.inkDensity);
+  const xysI = PARAM_DEFS.xyStretch.values.indexOf(params.xyStretch);
+  const texI = PARAM_DEFS.paperTexture.values.indexOf(params.paperTexture);
+  const briI = PARAM_DEFS.bristleDensity.values.indexOf(params.bristleDensity);
+  const sigI = PARAM_DEFS.signatureStyle.values.indexOf(params.signatureStyle);
+  const bszI = PARAM_DEFS.brushstrokeSize.values.indexOf(params.brushstrokeSize);
+  const bstI = PARAM_DEFS.brushstrokeStart.values.indexOf(params.brushstrokeStart);
+  const terr = params.terrainSeed;
+  
+  const combined = ((inkI*10+dirI)*6+hueI)*10;
+  return `ENS-${encode(seed,6)}-${encode(terr,4)}-${encode(combined,4)}`;
+}
+
+function displayEnsoNumber(params, seed) {
+  const num = paramsToEnsoNumber(params, seed);
+  document.getElementById('ensoNumber').textContent = num;
+  document.getElementById('ensoIdDisplay').textContent = num;
+  
+  const grid = document.getElementById('ensoDecoded');
+  grid.innerHTML = '';
+  const show = [
+    ['Ink Load', params.inkLoad],
+    ['Direction', params.direction],
+    ['Paper Hue', params.paperHue],
+    ['Brush Size', params.brushSize],
+    ['Ink Density', params.inkDensity],
+    ['X/Y Stretch', params.xyStretch],
+    ['Texture', params.paperTexture],
+    ['Bristles', params.bristleDensity],
+    ['Signature', params.signatureStyle],
+    ['Stroke Size', params.brushstrokeSize],
+    ['Stroke Start', params.brushstrokeStart],
+    ['Terrain', '#'+params.terrainSeed],
+  ];
+  show.forEach(([l,v]) => {
+    const d = document.createElement('div');
+    d.className = 'param-item';
+    d.innerHTML = `<div class="param-label">${l}</div><div class="param-value">${v}</div>`;
+    grid.appendChild(d);
+  });
+}
+
+function updateParamsGrid(params) {
+  const grid = document.getElementById('paramsGrid');
+  grid.innerHTML = '';
+  const entries = [
+    ['Ink Load', params.inkLoad],
+    ['Direction', params.direction],
+    ['Paper Hue', params.paperHue],
+    ['Brush Size', params.brushSize],
+    ['Ink Density', params.inkDensity],
+    ['X/Y Stretch', params.xyStretch],
+    ['Texture', params.paperTexture],
+    ['Bristles', params.bristleDensity],
+    ['Signature', params.signatureStyle],
+    ['Stroke Size', params.brushstrokeSize],
+    ['Stroke Start', params.brushstrokeStart],
+    ['Terrain #', params.terrainSeed],
+  ];
+  entries.forEach(([l,v]) => {
+    const d = document.createElement('div');
+    d.className = 'param-item';
+    d.innerHTML = `<div class="param-label">${l}</div><div class="param-value">${v}</div>`;
+    grid.appendChild(d);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════
+// ENSŌ CANVAS RENDERING (Worms terrain-style random brush)
+// ════════════════════════════════════════════════════════════════════
+function drawEnso(canvas, params, animate=false) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  
+  const colors = PAPER_COLORS[params.paperHue] || PAPER_COLORS.Cyan;
+  
+  // Paper background
+  ctx.fillStyle = colors.bg;
+  ctx.fillRect(0,0,W,H);
+  
+  // Paper grain texture
+  const grainSeed = params.terrainSeed;
+  let gs = grainSeed || 12345;
+  const gr = () => { gs^=gs<<13;gs^=gs>>17;gs^=gs<<5; return (gs>>>0)/2147483647; };
+  
+  if (params.paperTexture > 1) {
+    ctx.save();
+    ctx.globalAlpha = 0.04 * params.paperTexture;
+    for (let i = 0; i < params.paperTexture * 800; i++) {
+      const x = gr()*W, y = gr()*H;
+      const s = gr()*2+0.5;
+      ctx.fillStyle = `rgba(255,255,255,${gr()*0.3})`;
+      ctx.fillRect(x,y,s,s);
+    }
+    ctx.restore();
+  }
+  
+  // Worms-terrain style noise for terrain seed visualization
+  const terrainHeights = [];
+  let ts = params.terrainSeed + 1;
+  const tr = () => { ts^=ts<<13;ts^=ts>>17;ts^=ts<<5; return (ts>>>0)/4294967295; };
+  const terrainPoints = 60;
+  let terrainY = H/2;
+  for (let i = 0; i < terrainPoints; i++) {
+    terrainY += (tr()-0.5)*12;
+    terrainY = Math.max(H*0.25, Math.min(H*0.75, terrainY));
+    terrainHeights.push(terrainY);
+  }
+
+  // Ensō brush parameters
+  const cx = W/2, cy = H/2;
+  const baseR = W * 0.35;
+  
+  const brushW = params.brushSize * 3 + 5;
+  const startDeg = parseInt(params.brushstrokeStart) || 216;
+  const startAngle = (startDeg * Math.PI / 180) - Math.PI/2;
+  const clockwise = params.direction === "Clockwise";
+  const gap = 0.18 + (1/params.inkLoad)*0.25;
+  const endAngle = startAngle + (clockwise ? 1 : -1) * (2*Math.PI - gap);
+  
+  // X/Y stretch
+  let xScale = 1, yScale = 1;
+  if (params.xyStretch === 'Unequal') { xScale = 1.08; yScale = 0.93; }
+  else if (params.xyStretch === 'X-Dominant') { xScale = 1.2; yScale = 0.85; }
+  else if (params.xyStretch === 'Y-Dominant') { xScale = 0.85; yScale = 1.2; }
+  
+  // Terrain-influenced wobble
+  const getWobble = (t) => {
+    const idx = Math.floor(t * (terrainPoints-1));
+    const frac = (t * (terrainPoints-1)) - idx;
+    const h1 = terrainHeights[Math.min(idx, terrainPoints-1)];
+    const h2 = terrainHeights[Math.min(idx+1, terrainPoints-1)];
+    const h = h1*(1-frac) + h2*frac;
+    return (h - H/2) / H * baseR * 0.35;
+  };
+  
+  // Ink density affects opacity
+  const inkAlpha = 0.55 + params.inkDensity * 0.08;
+  
+  // Bristle simulation
+  const bristles = params.bristleDensity;
+  
+  // Ink color based on signature style
+  const inkColors = {
+    None:   'rgba(10,10,15,',
+    Light:  'rgba(30,30,50,',
+    Medium: 'rgba(8,8,20,',
+    Dark:   'rgba(0,0,8,',
+    Glow:   'rgba(0,150,200,'
+  };
+  const inkColor = inkColors[params.signatureStyle] || inkColors.Dark;
+  
+  const steps = 400;
+  
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(xScale, yScale);
+  ctx.translate(-cx, -cy);
+  
+  // Draw each bristle pass
+  for (let b = 0; b < bristles; b++) {
+    let bSeed = (params.terrainSeed * 31 + b * 7919) | 0;
+    const br = () => { bSeed^=bSeed<<13;bSeed^=bSeed>>17;bSeed^=bSeed<<5; return (bSeed>>>0)/4294967295; };
+    
+    const bOffset = (b / bristles - 0.5) * brushW * 0.7;
+    const bAlpha = inkAlpha * (0.3 + br()*0.7) / bristles * 2;
+    
+    ctx.beginPath();
+    
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const angle = startAngle + (clockwise?1:-1) * t * (2*Math.PI - gap);
+      
+      // Ink pressure variation
+      const pressure = Math.sin(t*Math.PI);
+      const currentBrushW = brushW * pressure * (0.4 + params.inkLoad*0.1);
+      
+      // Wobble from terrain seed
+      const wobble = getWobble(t);
+      const r = baseR + wobble + bOffset * (1-pressure*0.5) + (br()-0.5)*4*params.paperTexture*0.3;
+      
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+      
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    
+    ctx.strokeStyle = inkColor + bAlpha + ')';
+    ctx.lineWidth = Math.max(1, brushW * 0.4 / bristles * 2);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  }
+  
+  // Main stroke
+  ctx.beginPath();
+  const bszMap = { Fine:0.4, Small:0.65, Medium:1.0, Large:1.4, Bold:1.9 };
+  const sizeScale = bszMap[params.brushstrokeSize] || 1.0;
+  
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const angle = startAngle + (clockwise?1:-1) * t * (2*Math.PI - gap);
+    const pressure = Math.sin(t * Math.PI);
+    const wobble = getWobble(t);
+    const r = baseR + wobble;
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  
+  ctx.strokeStyle = inkColor + Math.min(0.98, inkAlpha+0.2) + ')';
+  ctx.lineWidth = brushW * sizeScale;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  
+  ctx.restore();
+  
+  // Glow effect for Glow signature
+  if (params.signatureStyle === 'Glow') {
+    ctx.save();
+    ctx.shadowColor = '#00d4ff';
+    ctx.shadowBlur = 20;
+    ctx.restore();
+  }
+}
+
+function regenerateEnso() {
+  if (!currentWallet) return;
+  const { params, seed } = generateParams();
+  currentParams = params;
+  currentEnsoSeed = seed;
+  drawEnso(document.getElementById('ensoCanvas'), params);
+  updateParamsGrid(params);
+  displayEnsoNumber(params, seed);
+}
+
+// Mini canvas for collection cards
+function drawMiniEnso(canvas, params) {
+  drawEnso(canvas, params);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// BIP-39 WALLET GENERATION (simulated, educational)
+// ════════════════════════════════════════════════════════════════════
+
+// Simple SHA-256 implementation (WebCrypto)
+async function sha256(data) {
+  const buf = typeof data === 'string'
+    ? new TextEncoder().encode(data)
+    : data;
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return new Uint8Array(hash);
+}
+
+async function sha256Hex(data) {
+  const h = await sha256(data);
+  return Array.from(h).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// Generate cryptographically random mnemonic
+async function generateMnemonic(wordCount = 12) {
+  // Generate entropy
+  const entropyBytes = wordCount === 24 ? 32 : 16;
+  const entropy = new Uint8Array(entropyBytes);
+  crypto.getRandomValues(entropy);
+  
+  // Checksum
+  const hash = await sha256(entropy);
+  const checksumBits = entropyBytes / 4;
+  
+  // Convert to bits
+  const bits = [];
+  for (const b of entropy) {
+    for (let i = 7; i >= 0; i--) bits.push((b >> i) & 1);
+  }
+  for (let i = 7; i >= 7 - checksumBits + 1; i--) {
+    bits.push((hash[0] >> i) & 1);
+  }
+  
+  // Convert to word indices
+  const words = [];
+  for (let i = 0; i < wordCount; i++) {
+    let idx = 0;
+    for (let j = 0; j < 11; j++) idx = (idx << 1) | bits[i*11+j];
+    words.push(BIP39_WORDS[idx]);
+  }
+  
+  return words;
+}
+
+// Verify BIP-39 checksum
+async function verifyMnemonic(words) {
+  try {
+    const indices = words.map(w => {
+      const i = BIP39_WORDS.indexOf(w.toLowerCase().trim());
+      if (i === -1) throw new Error(`Unknown word: ${w}`);
+      return i;
+    });
+    
+    const bits = [];
+    for (const idx of indices) {
+      for (let i = 10; i >= 0; i--) bits.push((idx >> i) & 1);
+    }
+    
+    const cs = words.length / 3; // checksum bits
+    const entBits = bits.slice(0, bits.length - cs);
+    const csBits = bits.slice(bits.length - cs);
+    
+    // Reconstruct entropy bytes
+    const entBytes = new Uint8Array(entBits.length / 8);
+    for (let i = 0; i < entBytes.length; i++) {
+      let b = 0;
+      for (let j = 0; j < 8; j++) b = (b << 1) | entBits[i*8+j];
+      entBytes[i] = b;
+    }
+    
+    const hash = await sha256(entBytes);
+    const expectedCs = [];
+    for (let i = 7; i >= 8 - cs; i--) expectedCs.push((hash[0] >> i) & 1);
+    
+    return csBits.every((b,i) => b === expectedCs[i]);
+  } catch { return false; }
+}
+
+// PBKDF2-based seed derivation (simulated BIP-32)
+async function mnemonicToSeed(words, passphrase='') {
+  const mnemonic = words.join(' ');
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw', enc.encode(mnemonic), {name:'PBKDF2'}, false, ['deriveBits']
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name:'PBKDF2', salt: enc.encode('mnemonic'+passphrase), iterations:2048, hash:'SHA-256' },
+    key, 512
+  );
+  return new Uint8Array(bits);
+}
+
+function uint8ArrayToHex(arr) {
+  return Array.from(arr).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// Simple Bitcoin address generation (P2PKH, educational simulation)
+async function generateWalletData(words) {
+  const seed = await mnemonicToSeed(words);
+  const seedHex = uint8ArrayToHex(seed);
+  
+  // Derive master key hash (simplified BIP-32 simulation)
+  const masterHash = await sha256(seed);
+  const masterHex = uint8ArrayToHex(masterHash);
+  
+  // BIP-44 path for Bitcoin
+  const path = "m/44'/0'/0'/0/0";
+  
+  // Simulated xpub (not real BIP-32, educational)
+  const xpubPrefix = "xpub";
+  const xpubBody = btoa(masterHex.substring(0,32)).replace(/[+/=]/g,'').substring(0,107);
+  const xpub = xpubPrefix + xpubBody;
+  
+  // Simulated P2PKH address
+  const addrHash = await sha256(masterHex + path);
+  const addrHex = uint8ArrayToHex(addrHash);
+  
+  // Base58Check encoding (simplified)
+  const base58Chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  let num = BigInt('0x' + '00' + addrHex.substring(0,40));
+  let addr = '';
+  while (num > 0n) {
+    addr = base58Chars[Number(num % 58n)] + addr;
+    num = num / 58n;
+  }
+  addr = '1' + addr.substring(0,32);
+  
+  // Wallet ID
+  const walletId = await sha256Hex(words.join(' ') + Date.now().toString());
+  
+  // Checksums for different wallet types
+  const bip39valid = await verifyMnemonic(words);
+  const wordCountValid = words.length === 12 || words.length === 24;
+  const allWordsValid = words.every(w => BIP39_WORDS.includes(w.toLowerCase().trim()));
+  
+  return {
+    path,
+    xpub,
+    address: addr,
+    walletId: walletId.substring(0,16),
+    seedHex: seedHex.substring(0,32)+'...',
+    checksums: {
+      bip39: bip39valid,
+      wordCount: wordCountValid,
+      dictionary: allWordsValid,
+      entropy: masterHex.substring(0,4) !== '0000',
+    }
+  };
+}
+
+// ════════════════════════════════════════════════════════════════════
+// HAIKU GENERATION FROM BIP-39 WORDS
+// ════════════════════════════════════════════════════════════════════
+function getWordsBySyllable(count, pool) {
+  return pool.filter(w => syllableCount(w) === count);
+}
+
+function buildHaikuLine(targetSyllables, usedIndices, allWords) {
+  // Try to build a line with exact syllable count
+  const maxAttempts = 200;
+  for (let a = 0; a < maxAttempts; a++) {
+    const line = [];
+    let remaining = targetSyllables;
+    const usedHere = new Set();
+    let attempts = 0;
+    
+    while (remaining > 0 && attempts < 50) {
+      attempts++;
+      // Filter words by syllable count <= remaining
+      const candidates = allWords.filter((w, i) => {
+        const s = syllableCount(w);
+        return s <= remaining && !usedIndices.has(i) && !usedHere.has(i);
+      });
+      if (candidates.length === 0) break;
+      
+      const idx = Math.floor(Math.random() * candidates.length);
+      const word = candidates[idx];
+      const wordIdx = allWords.indexOf(word);
+      const s = syllableCount(word);
+      
+      if (remaining - s >= 0) {
+        line.push(word);
+        usedHere.add(wordIdx);
+        remaining -= s;
+      }
+    }
+    
+    if (remaining === 0) {
+      line.forEach(w => usedIndices.add(allWords.indexOf(w)));
+      return line;
+    }
+  }
+  // Fallback: return partial line
+  return [];
+}
+
+async function generateHaiku(words) {
+  // Use the mnemonic words as the primary pool
+  // Supplement with other BIP-39 words
+  const pool = [...words];
+  
+  // Build haiku 5-7-5
+  const usedIndices = new Set();
+  const line1 = buildHaikuLine(5, usedIndices, pool);
+  const line2 = buildHaikuLine(7, usedIndices, pool);
+  const line3 = buildHaikuLine(5, usedIndices, pool);
+  
+  // Verify syllable counts
+  const s1 = line1.reduce((a,w) => a+syllableCount(w), 0);
+  const s2 = line2.reduce((a,w) => a+syllableCount(w), 0);
+  const s3 = line3.reduce((a,w) => a+syllableCount(w), 0);
+  
+  return {
+    lines: [line1, line2, line3],
+    syllables: [s1, s2, s3],
+    valid: s1===5 && s2===7 && s3===5
+  };
+}
+
+function displayHaiku(haiku) {
+  const div = document.getElementById('haikuDisplay');
+  const badges = document.getElementById('syllableBadges');
+  
+  div.innerHTML = '';
+  haiku.lines.forEach((line, i) => {
+    const p = document.createElement('div');
+    p.className = 'haiku-line animate';
+    p.textContent = line.join(' ');
+    div.appendChild(p);
+    
+    // Syllable sub
+    const s = document.createElement('div');
+    s.className = 'syllable-count';
+    s.textContent = `[${haiku.syllables[i]} syllables]`;
+    div.appendChild(s);
+  });
+  
+  badges.innerHTML = '';
+  const targets = [5,7,5];
+  haiku.syllables.forEach((s,i) => {
+    const b = document.createElement('span');
+    b.className = `badge ${s===targets[i]?'green':'gold'}`;
+    b.textContent = `Line ${i+1}: ${s}/${targets[i]}`;
+    badges.appendChild(b);
+  });
+  const v = document.createElement('span');
+  v.className = `badge ${haiku.valid?'green':'gold'}`;
+  v.textContent = haiku.valid ? '✓ Valid 5-7-5' : '⚠ Approximate';
+  badges.appendChild(v);
+}
+
+function displaySeedPhrase(words, haikuWords) {
+  const grid = document.getElementById('seedGrid');
+  const badges = document.getElementById('seedBadges');
+  grid.innerHTML = '';
+  
+  const haikuSet = new Set(haikuWords);
+  
+  words.forEach((word, i) => {
+    const d = document.createElement('div');
+    d.className = `seed-word ${haikuSet.has(word)?'haiku-word':''}`;
+    d.innerHTML = `<span class="seed-num">${i+1}</span>${word}`;
+    d.title = 'Click to copy';
+    d.onclick = () => { navigator.clipboard.writeText(word); showNotification(`Copied: ${word}`, 'info'); };
+    grid.appendChild(d);
+  });
+  
+  badges.innerHTML = `
+    <span class="badge cyan">${words.length} Words</span>
+    <span class="badge">BIP-39</span>
+    <span class="badge gold">Gold = In Haiku</span>
+    <span class="badge green">✓ Checksum</span>
+  `;
+}
+
+function displayWalletData(data) {
+  document.getElementById('wPath').textContent = data.path;
+  document.getElementById('wXpub').textContent = data.xpub;
+  document.getElementById('wAddr').textContent = data.address;
+  document.getElementById('wId').textContent = data.walletId;
+  
+  const row = document.getElementById('checksumRow');
+  row.innerHTML = '';
+  const checks = [
+    ['BIP-39', data.checksums.bip39],
+    ['Word Count', data.checksums.wordCount],
+    ['Dictionary', data.checksums.dictionary],
+    ['Entropy', data.checksums.entropy],
+    ['Bitcoin P2PKH', true],
+    ['BIP-44', true],
+  ];
+  checks.forEach(([name, ok]) => {
+    const b = document.createElement('span');
+    b.className = `checksum-badge ${ok?'ok':'fail'}`;
+    b.textContent = `${ok?'✓':'✗'} ${name}`;
+    row.appendChild(b);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════
+// FORGE ANIMATION
+// ════════════════════════════════════════════════════════════════════
+let forgeAnimFrame = null;
+let forgeProgress = 0;
+
+function startForgeAnimation() {
+  const overlay = document.getElementById('forgeOverlay');
+  overlay.classList.add('open');
+  
+  const canvas = document.getElementById('forgeCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  
+  forgeProgress = 0;
+  let frame = 0;
+  
+  const animate = () => {
+    ctx.clearRect(0,0,W,H);
+    frame++;
+    forgeProgress = Math.min(1, forgeProgress + 0.008);
+    
+    // Background
+    ctx.fillStyle = '#05050d';
+    ctx.fillRect(0,0,W,H);
+    
+    const cx = W/2, cy = H/2;
+    const r = 100;
+    const startAngle = -Math.PI/2 + Math.PI*(12/6); // 216 deg
+    const sweepAngle = forgeProgress * (2*Math.PI * 0.85);
+    
+    // Glow
+    const grd = ctx.createRadialGradient(cx,cy,20,cx,cy,120);
+    grd.addColorStop(0, 'rgba(0,212,255,0.08)');
+    grd.addColorStop(1, 'transparent');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0,0,W,H);
+    
+    // Drawn arc
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,startAngle,startAngle+sweepAngle,false);
+    ctx.strokeStyle = `rgba(0,212,255,${0.3+forgeProgress*0.7})`;
+    ctx.lineWidth = 12 + Math.sin(frame*0.1)*3;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    
+    // Glow arc
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,startAngle,startAngle+sweepAngle,false);
+    ctx.strokeStyle = `rgba(0,212,255,0.15)`;
+    ctx.lineWidth = 30;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    
+    // Ink drips
+    for (let i = 0; i < 3; i++) {
+      const t = (frame*0.02 + i*0.33) % 1;
+      const angle = startAngle + t*sweepAngle;
+      const x = cx + Math.cos(angle)*r;
+      const y = cy + Math.sin(angle)*r;
+      ctx.beginPath();
+      ctx.arc(x,y,3,0,Math.PI*2);
+      ctx.fillStyle = `rgba(0,212,255,${0.8*(1-t)})`;
+      ctx.fill();
+    }
+    
+    // Progress ring
+    ctx.beginPath();
+    ctx.arc(cx,cy,r+15,startAngle,startAngle+forgeProgress*Math.PI*2,false);
+    ctx.strokeStyle = `rgba(255,215,0,0.3)`;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4,6]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Gold sparks
+    if (forgeProgress > 0.5) {
+      for (let i = 0; i < 5; i++) {
+        const a = (frame*0.05 + i*0.4) % (Math.PI*2);
+        const sr = 80 + Math.sin(frame*0.1+i)*20;
+        const sx = cx+Math.cos(a)*sr;
+        const sy = cy+Math.sin(a)*sr;
+        ctx.beginPath();
+        ctx.arc(sx,sy,1.5,0,Math.PI*2);
+        ctx.fillStyle = `rgba(255,215,0,${Math.random()*0.8})`;
+        ctx.fill();
+      }
+    }
+    
+    if (forgeProgress < 1) {
+      forgeAnimFrame = requestAnimationFrame(animate);
+    }
+  };
+  
+  if (forgeAnimFrame) cancelAnimationFrame(forgeAnimFrame);
+  forgeAnimFrame = requestAnimationFrame(animate);
+}
+
+function stopForgeAnimation() {
+  if (forgeAnimFrame) cancelAnimationFrame(forgeAnimFrame);
+  document.getElementById('forgeOverlay').classList.remove('open');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// MAIN FORGE FUNCTION
+// ════════════════════════════════════════════════════════════════════
+async function forgeWallets() {
+  if (isForging) return;
+  isForging = true;
+  
+  const count = parseInt(document.getElementById('mineCount').value);
+  const btn = document.getElementById('btnForge');
+  btn.disabled = true;
+  
+  // Show mining badges
+  const queue = document.getElementById('miningQueue');
+  queue.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const b = document.createElement('div');
+    b.className = 'mining-badge';
+    b.id = `mining-${i}`;
+    b.textContent = `Wallet ${i+1}`;
+    queue.appendChild(b);
+  }
+  
+  startForgeAnimation();
+  setStatus('Forging wallets...', '');
+  
+  const wallets = [];
+  
+  for (let i = 0; i < count; i++) {
+    const sub = document.getElementById('forgeSubText');
+    if (sub) sub.textContent = `Wallet ${i+1}/${count}: Generating entropy...`;
+    
+    const badge = document.getElementById(`mining-${i}`);
+    
+    // Small delay for animation
+    await new Promise(r => setTimeout(r, 300 + i*200));
+    
+    try {
+      if (sub) sub.textContent = `Wallet ${i+1}/${count}: Computing mnemonic...`;
+      const words = await generateMnemonic(12);
+      
+      if (sub) sub.textContent = `Wallet ${i+1}/${count}: Building haiku...`;
+      const haiku = await generateHaiku(words);
+      
+      if (sub) sub.textContent = `Wallet ${i+1}/${count}: Deriving keys...`;
+      const walletData = await generateWalletData(words);
+      
+      if (sub) sub.textContent = `Wallet ${i+1}/${count}: Rendering ensō...`;
+      const { params, seed } = generateParams();
+      
+      wallets.push({ words, haiku, walletData, params, seed, timestamp: Date.now() });
+      if (badge) badge.style.borderColor = 'var(--success)';
+      if (badge) badge.style.color = 'var(--success)';
+      
+    } catch(e) {
+      console.error(e);
+      if (badge) badge.style.borderColor = 'var(--danger)';
+      if (badge) badge.style.color = 'var(--danger)';
+    }
+  }
+  
+  // Wait a moment for forge animation
+  await new Promise(r => setTimeout(r, 800));
+  stopForgeAnimation();
+  
+  if (wallets.length > 0) {
+    // Display the first/last wallet
+    const w = wallets[wallets.length-1];
+    currentWallet = w;
+    currentParams = w.params;
+    currentEnsoSeed = w.seed;
+    
+    drawEnso(document.getElementById('ensoCanvas'), w.params);
+    updateParamsGrid(w.params);
+    displayEnsoNumber(w.params, w.seed);
+    displayHaiku(w.haiku);
+    
+    const haikuWords = w.haiku.lines.flat();
+    displaySeedPhrase(w.words, haikuWords);
+    displayWalletData(w.walletData);
+    
+    // Switch to haiku tab
+    switchTab('haiku');
+    
+    setStatus(`✓ Forged ${wallets.length} wallet${wallets.length>1?'s':''}`, 'ok');
+    showNotification(`${wallets.length} wallet${wallets.length>1?'s':''} forged!`, 'ok');
+    
+    // If multiple, save all automatically
+    if (count > 1) {
+      wallets.forEach(wallet => {
+        saveWalletToCollection(wallet);
+      });
+      setStatus(`✓ Forged and saved ${wallets.length} wallets`, 'ok');
+    }
+  }
+  
+  btn.disabled = false;
+  isForging = false;
+}
+
+// ════════════════════════════════════════════════════════════════════
+// SPELL CHECK
+// ════════════════════════════════════════════════════════════════════
+function spellCheckCurrent() {
+  if (!currentWallet) { showNotification('No wallet loaded', 'err'); return; }
+  
+  const result = document.getElementById('spellCheckResult');
+  const haiku = currentWallet.haiku;
+  const issues = [];
+  
+  haiku.lines.forEach((line, i) => {
+    line.forEach(word => {
+      if (!BIP39_WORDS.includes(word.toLowerCase())) {
+        issues.push(`"${word}" not in BIP-39`);
+      }
+    });
+    const s = haiku.syllables[i];
+    const t = [5,7,5][i];
+    if (s !== t) issues.push(`Line ${i+1}: ${s} syllables (expected ${t})`);
+  });
+  
+  if (issues.length === 0) {
+    result.innerHTML = '<span class="spell-ok">✓ Spell check passed — All words valid BIP-39, haiku 5-7-5 correct</span>';
+    showNotification('Spell check passed!', 'ok');
+  } else {
+    result.innerHTML = `<span class="spell-warn">⚠ ${issues.join(' · ')}</span>`;
+    showNotification('Issues found — see Haiku tab', 'err');
+  }
+  
+  switchTab('haiku');
+}
+
+async function skipHaiku() {
+  if (!currentWallet) { showNotification('No wallet loaded', 'err'); return; }
+  
+  setStatus('Regenerating haiku...', '');
+  const haiku = await generateHaiku(currentWallet.words);
+  currentWallet.haiku = haiku;
+  
+  displayHaiku(haiku);
+  const haikuWords = haiku.lines.flat();
+  displaySeedPhrase(currentWallet.words, haikuWords);
+  
+  setStatus('New haiku generated', 'ok');
+  showNotification('New haiku generated', 'info');
+  switchTab('haiku');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// COLLECTION & SAVING
+// ════════════════════════════════════════════════════════════════════
+function saveCurrentWallet() {
+  if (!currentWallet) { showNotification('No wallet to save', 'err'); return; }
+  saveWalletToCollection(currentWallet);
+}
+
+function saveWalletToCollection(wallet) {
+  // Draw mini enso to dataURL
+  const miniCanvas = document.createElement('canvas');
+  miniCanvas.width = 56; miniCanvas.height = 56;
+  drawEnso(miniCanvas, wallet.params);
+  const miniDataUrl = miniCanvas.toDataURL('image/png');
+  
+  const entry = {
+    id: wallet.walletData.walletId,
+    ensoNumber: paramsToEnsoNumber(wallet.params, wallet.seed),
+    words: wallet.words,
+    haiku: wallet.haiku,
+    walletData: wallet.walletData,
+    params: wallet.params,
+    seed: wallet.seed,
+    miniDataUrl,
+    timestamp: wallet.timestamp,
+    date: new Date(wallet.timestamp).toLocaleString()
+  };
+  
+  // Check for duplicate
+  if (collection.find(c => c.id === entry.id)) {
+    showNotification('Wallet already in collection', 'info');
+    return;
+  }
+  
+  collection.unshift(entry);
+  saveCollectionToCookie();
+  renderCollection();
+  showNotification('Wallet saved to collection!', 'ok');
+  setStatus(`Collection: ${collection.length} wallets`, 'ok');
+}
+
+function renderCollection() {
+  const list = document.getElementById('collectionList');
+  const empty = document.getElementById('collectionEmpty');
+  
+  if (collection.length === 0) {
+    empty.style.display = 'block';
+    list.innerHTML = '';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  list.innerHTML = '';
+  
+  collection.forEach((entry, idx) => {
+    const card = document.createElement('div');
+    card.className = 'collectible-card';
+    card.id = `card-${entry.id}`;
+    
+    const haikuText = entry.haiku.lines.map(l => l.join(' ')).join(' / ');
+    
+    card.innerHTML = `
+      <div class="card-header">
+        <img class="card-mini-canvas" src="${entry.miniDataUrl}" width="48" height="48" style="border-radius:50%;border:1px solid var(--border);">
+        <div class="card-meta">
+          <div class="card-id">${entry.ensoNumber}</div>
+          <div class="card-date">${entry.date}</div>
+          <div class="card-type">BTC P2PKH · BIP-44</div>
+        </div>
+      </div>
+      <div class="card-haiku">${haikuText}</div>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="loadCollectible(${idx})">Load</button>
+        <button class="btn btn-gold" onclick="exportSingleWallet(${idx})">Export</button>
+        <button class="btn btn-danger" onclick="deleteCollectible('${entry.id}')">Delete</button>
+      </div>
+    `;
+    
+    list.appendChild(card);
+  });
+}
+
+function loadCollectible(idx) {
+  const entry = collection[idx];
+  if (!entry) return;
+  
+  currentWallet = {
+    words: entry.words,
+    haiku: entry.haiku,
+    walletData: entry.walletData,
+    params: entry.params,
+    seed: entry.seed,
+    timestamp: entry.timestamp
+  };
+  currentParams = entry.params;
+  currentEnsoSeed = entry.seed;
+  
+  drawEnso(document.getElementById('ensoCanvas'), entry.params);
+  updateParamsGrid(entry.params);
+  displayEnsoNumber(entry.params, entry.seed);
+  displayHaiku(entry.haiku);
+  
+  const haikuWords = entry.haiku.lines.flat();
+  displaySeedPhrase(entry.words, haikuWords);
+  displayWalletData(entry.walletData);
+  
+  // Mark selected
+  document.querySelectorAll('.collectible-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById(`card-${entry.id}`);
+  if (card) card.classList.add('selected');
+  
+  switchTab('haiku');
+  showNotification('Wallet loaded', 'info');
+}
+
+function deleteCollectible(id) {
+  collection = collection.filter(c => c.id !== id);
+  saveCollectionToCookie();
+  renderCollection();
+  showNotification('Wallet deleted', 'info');
+  setStatus(`Collection: ${collection.length} wallets`, '');
+}
+
+function clearCollection() {
+  if (!confirm('Delete ALL wallets from collection?')) return;
+  collection = [];
+  saveCollectionToCookie();
+  renderCollection();
+  showNotification('Collection cleared', 'info');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// AES-256 ENCRYPTION
+// ════════════════════════════════════════════════════════════════════
+async function encryptData(data, password) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', enc.encode(password), {name:'PBKDF2'}, false, ['deriveBits','deriveKey']
+  );
+  
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  
+  const key = await crypto.subtle.deriveKey(
+    { name:'PBKDF2', salt, iterations:100000, hash:'SHA-256' },
+    keyMaterial,
+    { name:'AES-GCM', length:256 },
+    false, ['encrypt']
+  );
+  
+  const ciphertext = await crypto.subtle.encrypt(
+    { name:'AES-GCM', iv },
+    key,
+    enc.encode(data)
+  );
+  
+  // Pack: salt(16) + iv(12) + ciphertext
+  const result = new Uint8Array(16 + 12 + ciphertext.byteLength);
+  result.set(salt, 0);
+  result.set(iv, 16);
+  result.set(new Uint8Array(ciphertext), 28);
+  
+  return btoa(String.fromCharCode(...result));
+}
+
+async function decryptData(encryptedB64, password) {
+  const enc = new TextEncoder();
+  const raw = Uint8Array.from(atob(encryptedB64), c => c.charCodeAt(0));
+  
+  const salt = raw.slice(0,16);
+  const iv = raw.slice(16,28);
+  const ciphertext = raw.slice(28);
+  
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', enc.encode(password), {name:'PBKDF2'}, false, ['deriveBits','deriveKey']
+  );
+  
+  const key = await crypto.subtle.deriveKey(
+    { name:'PBKDF2', salt, iterations:100000, hash:'SHA-256' },
+    keyMaterial,
+    { name:'AES-GCM', length:256 },
+    false, ['decrypt']
+  );
+  
+  const plaintext = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, ciphertext);
+  return new TextDecoder().decode(plaintext);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// COOKIES (encrypted persistence)
+// ════════════════════════════════════════════════════════════════════
+const COOKIE_KEY = 'enso_haiku_collection';
+const COOKIE_PASS = 'enso-internal-key-2024';
+
+async function saveCollectionToCookie() {
+  try {
+    const data = JSON.stringify(collection.map(e => ({
+      id: e.id,
+      ensoNumber: e.ensoNumber,
+      words: e.words,
+      haiku: { lines: e.haiku.lines, syllables: e.haiku.syllables, valid: e.haiku.valid },
+      walletData: e.walletData,
+      params: e.params,
+      seed: e.seed,
+      timestamp: e.timestamp,
+      date: e.date,
+      miniDataUrl: e.miniDataUrl
+    })));
+    
+    const encrypted = await encryptData(data, COOKIE_PASS);
+    
+    // Store in localStorage (more reliable than cookies for large data)
+    localStorage.setItem(COOKIE_KEY, encrypted);
+    
+    // Also set cookie
+    const expires = new Date();
+    expires.setFullYear(expires.getFullYear() + 10);
+    document.cookie = `${COOKIE_KEY}_flag=1; expires=${expires.toUTCString()}; path=/; SameSite=Strict`;
+    
+  } catch(e) {
+    console.error('Save error:', e);
+  }
+}
+
+async function loadCollectionFromCookie() {
+  try {
+    const encrypted = localStorage.getItem(COOKIE_KEY);
+    if (!encrypted) return;
+    
+    const data = await decryptData(encrypted, COOKIE_PASS);
+    const parsed = JSON.parse(data);
+    
+    collection = parsed;
+    renderCollection();
+    
+    if (collection.length > 0) {
+      setStatus(`Loaded ${collection.length} wallets from storage`, 'ok');
+    }
+  } catch(e) {
+    console.log('No existing collection or decryption failed');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// EXPORT
+// ════════════════════════════════════════════════════════════════════
+let exportModalCallback = null;
+
+function openExportModal(callback, title='Export Wallet') {
+  document.getElementById('modalTitle').textContent = `⊘ ${title}`;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('modalPassword').value = '';
+  document.getElementById('modalPasswordConfirm').value = '';
+  exportModalCallback = callback;
+  document.getElementById('modalAction').onclick = handleModalAction;
+  document.getElementById('modalPassword').focus();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  exportModalCallback = null;
+}
+
+async function handleModalAction() {
+  const pass = document.getElementById('modalPassword').value;
+  const confirm = document.getElementById('modalPasswordConfirm').value;
+  
+  if (!pass) { showNotification('Enter a password', 'err'); return; }
+  if (pass !== confirm) { showNotification('Passwords do not match', 'err'); return; }
+  if (pass.length < 8) { showNotification('Password must be at least 8 characters', 'err'); return; }
+  
+  const format = document.getElementById('exportFormat').value;
+  
+  closeModal();
+  
+  if (exportModalCallback) {
+    await exportModalCallback(pass, format);
+  }
+}
+
+function exportSingleWallet(idx) {
+  const entry = collection[idx];
+  if (!entry) return;
+  
+  openExportModal(async (pass, format) => {
+    await doExport([entry], pass, format, `enso-wallet-${entry.id.substring(0,8)}`);
+  }, 'Export Wallet');
+}
+
+function exportAllWallets() {
+  if (collection.length === 0) { showNotification('No wallets to export', 'err'); return; }
+  
+  openExportModal(async (pass, format) => {
+    await doExport(collection, pass, format, `enso-collection-${Date.now()}`);
+  }, 'Export All Wallets');
+}
+
+async function doExport(wallets, password, format, filename) {
+  try {
+    setStatus('Encrypting...', '');
+    
+    let content;
+    
+    if (format === 'json') {
+      content = JSON.stringify({
+        version: '1.0',
+        type: 'EnsoHaikuWalletCollection',
+        exported: new Date().toISOString(),
+        count: wallets.length,
+        wallets: wallets.map(e => ({
+          id: e.id,
+          ensoNumber: e.ensoNumber,
+          mnemonic: e.words.join(' '),
+          haiku: {
+            line1: e.haiku.lines[0].join(' '),
+            line2: e.haiku.lines[1].join(' '),
+            line3: e.haiku.lines[2].join(' '),
+            syllables: e.haiku.syllables,
+            valid: e.haiku.valid
+          },
+          wallet: {
+            path: e.walletData.path,
+            address: e.walletData.address,
+            xpub: e.walletData.xpub,
+            walletId: e.walletData.walletId
+          },
+          ensoParams: e.params,
+          date: e.date
+        }))
+      }, null, 2);
+    } else {
+      content = wallets.map(e => {
+        const lines = [
+          `══════════════════════════════════════`,
+          `ENSŌ HAIKU WALLET`,
+          `══════════════════════════════════════`,
+          `ID:         ${e.id}`,
+          `Ensō No:    ${e.ensoNumber}`,
+          `Date:       ${e.date}`,
+          ``,
+          `HAIKU (5-7-5):`,
+          `  ${e.haiku.lines[0].join(' ')}`,
+          `  ${e.haiku.lines[1].join(' ')}`,
+          `  ${e.haiku.lines[2].join(' ')}`,
+          `  Syllables: ${e.haiku.syllables.join('-')} ${e.haiku.valid?'(Valid)':'(Approx)'}`,
+          ``,
+          `MNEMONIC (BIP-39):`,
+          e.words.map((w,i)=>`  ${String(i+1).padStart(2,'0')}. ${w}`).join('\n'),
+          ``,
+          `WALLET (BIP-44):`,
+          `  Path:    ${e.walletData.path}`,
+          `  Address: ${e.walletData.address}`,
+          `  xPub:    ${e.walletData.xpub}`,
+          ``,
+          `ENSŌ PARAMS:`,
+          `  Ink Load: ${e.params.inkLoad}  Direction: ${e.params.direction}`,
+          `  Paper Hue: ${e.params.paperHue}  Brush Size: ${e.params.brushSize}`,
+          `  Terrain Seed: ${e.params.terrainSeed}`,
+          ``,
+          `⚠ KEEP THIS FILE SECURE. NEVER SHARE YOUR MNEMONIC.`,
+          `⚠ FOR EDUCATIONAL PURPOSES ONLY.`,
+        ].join('\n');
+        return lines;
+      }).join('\n\n');
+    }
+    
+    const encrypted = await encryptData(content, password);
+    
+    const blob = new Blob([
+      `ENSO-HAIKU-WALLET-V1-AES256-GCM\n`,
+      `Wallets: ${wallets.length}\n`,
+      `Date: ${new Date().toISOString()}\n`,
+      `---BEGIN ENCRYPTED DATA---\n`,
+      encrypted,
+      `\n---END ENCRYPTED DATA---\n`,
+      `\nDecrypt with the Ensō Haiku Wallet Forge application.`
+    ], { type: 'text/plain' });
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}.${format==='json'?'ejw':'etxt'}`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    setStatus('✓ Exported successfully', 'ok');
+    showNotification('Export complete!', 'ok');
+    
+  } catch(e) {
+    console.error(e);
+    showNotification('Export failed: ' + e.message, 'err');
+    setStatus('Export failed', 'err');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// DOWNLOAD PNG
+// ════════════════════════════════════════════════════════════════════
+async function downloadPNG() {
+  if (!currentWallet) { showNotification('No wallet loaded', 'err'); return; }
+  
+  // Create a large composite canvas
+  const W = 800, H = 900;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  
+  // Background
+  ctx.fillStyle = '#0a0a0f';
+  ctx.fillRect(0,0,W,H);
+  
+  // Border
+  ctx.strokeStyle = '#2a2a3a';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(10,10,W-20,H-20);
+  ctx.strokeStyle = '#1a1a2a';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(16,16,W-32,H-32);
+  
+  // Title
+  ctx.fillStyle = '#00d4ff';
+  ctx.font = 'bold 24px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('⊙  ENSŌ HAIKU WALLET', W/2, 55);
+  
+  // Subtitle
+  ctx.fillStyle = '#6060a0';
+  ctx.font = '12px Courier New';
+  ctx.fillText('BIP-39 · BIP-44 · COLLECTIBLE', W/2, 78);
+  
+  // Draw ensō
+  const ensoOff = document.createElement('canvas');
+  ensoOff.width = 380; ensoOff.height = 380;
+  drawEnso(ensoOff, currentWallet.params);
+  
+  ctx.drawImage(ensoOff, W/2-190, 90, 380, 380);
+  
+  // Ensō number
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '11px Courier New';
+  ctx.textAlign = 'center';
+  const ensoNum = paramsToEnsoNumber(currentWallet.params, currentWallet.seed);
+  ctx.fillText(ensoNum, W/2, 490);
+  
+  // Haiku
+  ctx.fillStyle = '#2a2a3a';
+  ctx.fillRect(60, 505, W-120, 115);
+  ctx.strokeStyle = '#3a3a5a';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(60, 505, W-120, 115);
+  
+  const haiku = currentWallet.haiku;
+  ctx.fillStyle = '#e0e0ff';
+  ctx.font = '16px Courier New';
+  ctx.textAlign = 'center';
+  const lineY = [535, 558, 581];
+  haiku.lines.forEach((line, i) => {
+    ctx.fillText(line.join(' '), W/2, lineY[i]);
+  });
+  ctx.fillStyle = '#6060a0';
+  ctx.font = '10px Courier New';
+  ctx.fillText(`[${haiku.syllables.join('-')}] ${haiku.valid?'Valid 5-7-5':'Approximate'}`, W/2, 608);
+  
+  // Wallet info
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#6060a0';
+  ctx.font = '9px Courier New';
+  const wInfo = [
+    ['Path', currentWallet.walletData.path],
+    ['Address', currentWallet.walletData.address],
+    ['Wallet ID', currentWallet.walletData.walletId],
+  ];
+  let wy = 650;
+  wInfo.forEach(([l,v]) => {
+    ctx.fillStyle = '#4040a0';
+    ctx.fillText(l.toUpperCase(), 70, wy);
+    ctx.fillStyle = '#00d4ff';
+    ctx.fillText(v.substring(0,80), 70, wy+14);
+    wy += 36;
+  });
+  
+  // Params bar
+  const params = currentWallet.params;
+  const paramText = `Ink:${params.inkLoad} Dir:${params.direction.substring(0,2)} Hue:${params.paperHue} Brush:${params.brushSize} Density:${params.inkDensity} Terrain:#${params.terrainSeed}`;
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#3a3a5a';
+  ctx.font = '9px Courier New';
+  ctx.fillText(paramText, W/2, 782);
+  
+  // Warning
+  ctx.fillStyle = '#4a3000';
+  ctx.fillRect(60, 800, W-120, 40);
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '9px Courier New';
+  ctx.fillText('⚠ EDUCATIONAL USE ONLY — DO NOT USE FOR REAL FUNDS', W/2, 820);
+  ctx.fillStyle = '#6060a0';
+  ctx.fillText('Ensō Haiku Wallet Forge · Standalone · Encrypted', W/2, 835);
+  
+  // Date
+  ctx.fillStyle = '#4a4a6a';
+  ctx.textAlign = 'right';
+  ctx.fillText(new Date().toLocaleString(), W-70, H-20);
+  
+  // Download
+  const url = canvas.toDataURL('image/png');
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `enso-wallet-${currentWallet.walletData.walletId.substring(0,8)}.png`;
+  a.click();
+  
+  showNotification('PNG downloaded!', 'ok');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// TABS, UI HELPERS
+// ════════════════════════════════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  document.getElementById(`tab-${name}`).classList.add('active');
+  
+  // Find and activate button
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.getAttribute('onclick') && t.getAttribute('onclick').includes(`'${name}'`)) {
+      t.classList.add('active');
+    }
+  });
+}
+
+function setStatus(msg, type='') {
+  const el = document.getElementById('statusMsg');
+  el.textContent = msg;
+  el.className = type;
+}
+
+function showNotification(msg, type='info') {
+  const n = document.getElementById('notification');
+  n.textContent = msg;
+  n.className = `notification ${type} show`;
+  setTimeout(() => n.classList.remove('show'), 3000);
+}
+
+// Mining count display
+document.getElementById('mineCount').addEventListener('input', function() {
+  document.getElementById('mineCountVal').textContent = this.value;
+});
+
+// Copy on click for wallet fields
+document.querySelectorAll('.val').forEach(el => {
+  el.addEventListener('click', function() {
+    navigator.clipboard.writeText(this.textContent).then(() => {
+      showNotification('Copied!', 'ok');
+    });
+  });
+});
+
+// Close modal on overlay click
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Enter key in modal
+document.getElementById('modalPasswordConfirm').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleModalAction();
+});
+
+// ════════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════════
+async function init() {
+  setStatus('Loading collection from storage...', '');
+  await loadCollectionFromCookie();
+  setStatus('Ready — Offline standalone mode', '');
+  
+  // Initial empty ensō
+  const canvas = document.getElementById('ensoCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#0a0a14';
+  ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = 'rgba(0,212,255,0.15)';
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.arc(W/2, H/2, 95, Math.PI*0.6, Math.PI*2.4);
+  ctx.stroke();
+  ctx.fillStyle = '#2a2a4a';
+  ctx.font = '13px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('Press FORGE', W/2, H/2-8);
+  ctx.fillText('to begin', W/2, H/2+12);
+}
+
+init();
+</script>
+</body>
+</html>
