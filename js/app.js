@@ -7,7 +7,7 @@ const $ = (id) => document.getElementById(id);
 
 function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
-  if (raw === "terrarium" || raw === "keyspace" || raw === "grid") return raw;
+  if (raw === "terrarium" || raw === "keyspace" || raw === "grid" || raw === "adl") return raw;
   return "grid";
 }
 
@@ -97,6 +97,17 @@ let started = null;
 
 async function start(mode) {
   markDock(mode);
+
+  if (mode === "adl") {
+    const frame = $("keyframe");
+    if (frame) {
+      if (frame.getAttribute("src") !== "./adl.html") frame.src = "./adl.html";
+      document.title = "SITE-K · ADL Gazetteer";
+      return;
+    }
+    location.href = "./adl.html";
+    return;
+  }
 
   if (mode === "keyspace") {
     const frame = $("keyframe");

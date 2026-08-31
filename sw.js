@@ -1,8 +1,9 @@
 /* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v2";
+const CACHE = "sitek-html5-v3";
 const PRECACHE = [
   "./",
   "./index.html",
+  "./adl.html",
   "./keyspace.html",
   "./louisiana.html",
   "./terrarium.html",
@@ -10,11 +11,16 @@ const PRECACHE = [
   "./webxdc.js",
   "./icon.png",
   "./css/app.css",
+  "./css/adl.css",
   "./css/jp-grid.css",
   "./css/terrarium.css",
   "./css/viewer.css",
   "./css/wm.css",
   "./js/app.js",
+  "./js/adl-studio.js",
+  "./js/adl-map.js",
+  "./js/adl-data.js",
+  "./src/gazbean/gazbean.js",
   "./js/wm.js",
   "./js/jp-grid.js",
   "./js/terrarium.js",

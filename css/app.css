@@ -53,9 +53,22 @@ body[data-mode="terrarium"] .phase-chip { display: none !important; }
   background: #07080d;
   z-index: 4;
 }
-body[data-mode="keyspace"] #keyframe { display: block; }
+body[data-mode="keyspace"] #keyframe,
+body[data-mode="adl"] #keyframe { display: block; }
 body[data-mode="terrarium"] #boot,
+body[data-mode="adl"] #boot,
 body[data-mode="keyspace"] #boot { display: none !important; }
+
+body[data-mode="adl"] .ui-grid,
+body[data-mode="adl"] .ui-ter,
+body[data-mode="adl"] #stage,
+body[data-mode="adl"] .labels,
+body[data-mode="adl"] .phase-chip,
+body[data-mode="adl"] .glass-note,
+body[data-mode="adl"] .hud-coords,
+body[data-mode="adl"] .help,
+body[data-mode="adl"] .cmdbar,
+body[data-mode="adl"] .ui-pack { display: none !important; }
 
 body[data-mode="grid"] .cmdbar {
   bottom: 0;
