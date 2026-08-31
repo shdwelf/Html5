@@ -1,4 +1,4 @@
-/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace */
+/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator | #studio */
 import { initWm } from "./wm.js";
 
 document.documentElement.dataset.shell = "1";
@@ -7,7 +7,8 @@ const $ = (id) => document.getElementById(id);
 
 function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
-  if (raw === "terrarium" || raw === "keyspace" || raw === "cylinders" || raw === "grid") return raw;
+  const normalized = raw === "artstudio" || raw === "art-studio" ? "studio" : raw;
+  if (normalized === "terrarium" || normalized === "keyspace" || normalized === "validator" || normalized === "studio" || normalized === "cylinders" || normalized === "grid") return normalized;
   return "grid";
 }
 
@@ -98,11 +99,18 @@ let started = null;
 async function start(mode) {
   markDock(mode);
 
-  if (mode === "keyspace" || mode === "cylinders") {
-    const frame = mode === "keyspace" ? $("keyframe") : $("syncframe");
-    const src = mode === "keyspace" ? "./keyspace.html" : "./cylinder-sync.html";
-    if (frame && !frame.getAttribute("src")) frame.src = src;
-    document.title = mode === "keyspace" ? "SITE-K · Keyspace" : "Cylinder Sync · UCSB Library";
+  if (mode === "cylinders") {
+    const frame = $("syncframe");
+    if (frame && !frame.getAttribute("src")) frame.src = "./cylinder-sync.html";
+    document.title = "Cylinder Sync · UCSB Library";
+    return;
+  }
+
+  if (mode === "keyspace" || mode === "validator" || mode === "studio") {
+    const frame = $("keyframe");
+    const view = mode === "studio" ? "./art-studio.html" : mode === "validator" ? "./validator.html" : "./keyspace.html";
+    if (frame && frame.getAttribute("src") !== view) frame.src = view;
+    document.title = mode === "studio" ? "Ensō & Haiku Wallet Forging Engine · Art Studio" : mode === "validator" ? "BIP-39 Mnemonic Validator" : "SITE-K · Keyspace";
     return;
   }
 

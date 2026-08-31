@@ -2,7 +2,7 @@
   "id": "./index.html",
   "name": "SITE-K Parish Control",
   "short_name": "SITE-K",
-  "description": "HTML5 topographic command deck — USGS terrain, NOAA weather terrariums, Terraink line art.",
+  "description": "Offline SITE-K toolkit with the Ensō & Haiku Wallet Forging Engine, poetic forms, BIP-39 patterns, and local validation.",
   "start_url": "./index.html#grid",
   "scope": "./",
   "display": "standalone",
@@ -36,10 +36,10 @@
       "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Keyspace",
-      "short_name": "KEYSPACE",
-      "description": "BIP-39 keyspace viewer",
-      "url": "./index.html#keyspace",
+      "name": "Art Studio",
+      "short_name": "ART STUDIO",
+      "description": "Enso Forge, key viewer, and local validator",
+      "url": "./index.html#studio",
       "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
     },
     {
@@ -48,6 +48,13 @@
       "description": "UCSB Cylinder Audio Archive MARC reconciliation workspace",
       "url": "./index.html#cylinders",
       "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "God's Eye View",
+      "short_name": "GODSEYE",
+      "description": "Live globe console — satellites, aircraft, quakes (public feeds)",
+      "url": "./godseye.html",
+      "icons": [{ "src": "./img/godseye-icon.png", "sizes": "512x512" }]
     }
   ]
 }

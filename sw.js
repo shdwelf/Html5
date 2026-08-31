@@ -1,21 +1,29 @@
 /* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v4";
+const CACHE = "sitek-html5-v16";
 const PRECACHE = [
   "./",
   "./index.html",
   "./keyspace.html",
   "./cylinder-sync.html",
   "./config/cylinder-z3950.json",
+  "./validator.html",
+  "./art-studio.html",
   "./louisiana.html",
   "./terrarium.html",
+  "./godseye.html",
   "./manifest.webmanifest",
   "./webxdc.js",
   "./icon.png",
+  "./img/godseye-icon.png",
   "./css/app.css",
   "./css/cylinder-sync.css",
+  "./css/godseye.css",
+  "./js/godseye.js",
   "./css/jp-grid.css",
   "./css/terrarium.css",
   "./css/viewer.css",
+  "./css/validator.css",
+  "./css/studio.css",
   "./css/wm.css",
   "./js/app.js",
   "./js/cylinder-sync.js",
@@ -37,10 +45,36 @@ const PRECACHE = [
   "./js/stx-plot.js",
   "./js/ca-plot.js",
   "./js/viewer.js",
+  "./js/validator.js",
+  "./js/studio.js",
+  "./js/studio-data.js",
+  "./js/studio-fs.js",
+  "./js/studio-wm.js",
+  "./js/haiku-catalog.js",
   "./js/bip39.js",
   "./js/bip39-en.js",
+  "./js/formal.js",
+  "./js/lens-draw.js",
+  "./js/lens-3d.js",
   "./vendor/three.module.min.js",
   "./vendor/OrbitControls.js",
+  "./vendor/world/countries.geo.json",
+  "./vendor/satellite/index.js",
+  "./vendor/satellite/constants.js",
+  "./vendor/satellite/dopplerFactor.js",
+  "./vendor/satellite/ext.js",
+  "./vendor/satellite/io.js",
+  "./vendor/satellite/propagation.js",
+  "./vendor/satellite/transforms.js",
+  "./vendor/satellite/propagation/dpper.js",
+  "./vendor/satellite/propagation/dscom.js",
+  "./vendor/satellite/propagation/dsinit.js",
+  "./vendor/satellite/propagation/dspace.js",
+  "./vendor/satellite/propagation/gstime.js",
+  "./vendor/satellite/propagation/initl.js",
+  "./vendor/satellite/propagation/propagate.js",
+  "./vendor/satellite/propagation/sgp4.js",
+  "./vendor/satellite/propagation/sgp4init.js",
   "./wasm/entropy.wasm",
   "./img/site-x-badge.png",
   "./img/cylinder-tops.jpg",
@@ -90,11 +124,11 @@ self.addEventListener("fetch", (event) => {
         .then((res) => {
           if (res && res.ok) {
             const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put("./index.html", copy));
+            caches.open(CACHE).then((c) => c.put(req, copy));
           }
           return res;
         })
-        .catch(() => caches.match("./index.html"))
+        .catch(() => caches.match(req).then((hit) => hit || caches.match("./index.html")))
     );
     return;
   }

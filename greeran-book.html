@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#efe7d5" />
+  <meta name="description" content="An HTML5 book lab for a source-balanced biography of Steven Thomas Greeran. Expanded edition with Seize Quartiers family-history chapters (Drumgooland to Boston, 1780-1972 service map) and the standalone HTML5 workshop tools. Includes 50 randomized style combinations, notebook paper selectors, and a local browser vault for saving draft files while you work." />
+  <title>Steven Thomas Greeran — Book Lab</title>
+  <link rel="icon" href="./icon.png" />
+  <link rel="stylesheet" href="./css/greeran-book.css" />
+</head>
+<body data-paper="field-notebook">
+  <div id="progress" aria-hidden="true"></div>
+
+  <header class="studio-bar">
+    <div class="brand-block">
+      <div class="eyebrow">HTML5 BOOK LAB · source-balanced life file</div>
+      <h1>Steven Thomas Greeran · Book Model</h1>
+      <p>
+        A book-like reconstruction built from published sources: official U.S. Virgin Islands
+        records, a later-located self-published resume, a subject-supplied family-history research
+        file, and a set of self-published HTML5 tools. It is <em>not</em> a first-person
+        autobiography written by the subject; it is an editorial model that keeps verified facts,
+        self-published claims, and unsourced memory prompts separate.
+      </p>
+    </div>
+
+    <div class="control-cluster">
+      <button type="button" class="btn primary" id="rollStyle">🎲 Random style</button>
+      <label>
+        <span>Paper</span>
+        <select id="paperSelect" aria-label="Select notebook paper style"></select>
+      </label>
+      <button type="button" class="btn" id="storeStyle">Store style</button>
+      <a class="btn ghost" href="./greeran.html">Open dossier</a>
+      <a class="btn ghost" href="./book-builder.html">Open book builder</a>
+      <a class="btn ghost" href="./index.html" target="_top">SITE-K</a>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="rail">
+      <section class="panel">
+        <h2>Book map</h2>
+        <nav class="book-map" aria-label="Chapter navigation">
+          <a href="#premise">I. Premise</a>
+          <a href="#early-years">II. Southern California trail</a>
+          <a href="#glendora-childhood">III. Growing up in Glendora</a>
+          <a href="#hewitt-story">IV. Battalion Chief Hewitt &amp; the family story</a>
+          <a href="#ucsb-years">V. UCSB &amp; Santa Barbara years</a>
+          <a href="#work-service">VI. Work, service, and technical roles</a>
+          <a href="#family-roots">VII. Deep roots — the Seize Quartiers</a>
+          <a href="#family-service">VIII. The family uniform, 1780–1972</a>
+          <a href="#html5-workshop">IX. The HTML5 workshop</a>
+          <a href="#enso-line">X. The ensō line</a>
+          <a href="#public-record">XI. Official legal record</a>
+          <a href="#open-questions">XII. Gaps &amp; private prompts</a>
+          <a href="#book-sources">XIII. Sources</a>
+        </nav>
+      </section>
+
+      <section class="panel status-panel">
+        <h2>Style deck</h2>
+        <div class="theme-readout">
+          <div>
+            <span class="k">Theme</span>
+            <strong id="themeNumber">01 / 50</strong>
+          </div>
+          <div>
+            <span class="k">Palette</span>
+            <strong id="paletteName">Desert brass</strong>
+          </div>
+          <div>
+            <span class="k">Paper</span>
+            <strong id="paperName">Field notebook</strong>
+          </div>
+        </div>
+        <p class="tiny">
+          Fifty combinations are generated from five color palettes and ten notebook/paper textures,
+          inspired by the spirit of CSS experimentation rather than copied from any external design.
+        </p>
+      </section>
+
+      <section class="panel evidence-panel">
+        <h2>Evidence ladder</h2>
+        <ol>
+          <li><b>Official record:</b> VIDOJ releases and court reporting establish the conviction, registration history, wanted notice, arrest, charge, and bail.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a></li>
+          <li><b>Self-published record:</b> the public resume supplies education, work, volunteer roles, and several place references.<a class="cite" href="#src-9">9</a></li>
+          <li><b>Subject-supplied research files:</b> the Seize Quartiers genealogy file and the family military-service map contribute family history built on primary sources (FamilySearch PRF, GRO civil records, Find A Grave); they are reproduced as research findings, not re-verified here.<a class="cite" href="#src-10">10</a><a class="cite" href="#src-11">11</a></li>
+          <li><b>Self-published works:</b> the standalone HTML5 tools of Chapters IX and X extend the technical record — cryptography, genealogy, aviation, security training, software preservation, and a line of ensō-and-haiku generators; each is citable as an artifact but remains author-attributed.<a class="cite" href="#src-12">12</a><a class="cite" href="#src-54">54</a></li>
+          <li><b>Independent verification:</b> a 31 August 2026 pass re-checked the family-history slots against free public primary sources — the Louise Hewitt obituary and guest book, FamilySearch census/vitals, Find a Grave, the Rootsweb Carey database, and the official NSDAR database. The Hewett and Carey quarters, the Revolutionary patriot, and the immediate family are now independently confirmed; Daisy Beatrice’s parents and the Morin/Houle couples remain open.<a class="cite" href="#src-68">68</a></li>
+          <li><b>Private prompts:</b> additional memories can be drafted in the vault, but they should remain unpublished until verified or intentionally labeled personal recollection.</li>
+        </ol>
+      </section>
+    </aside>
+
+    <article class="book" id="book">
+      <section class="page cover" id="premise">
+        <div class="chapter-no">I</div>
+        <div class="page-kicker">Editorial premise</div>
+        <h2>How to make a balanced book from an uneven record</h2>
+        <p>
+          The public record around Steven Thomas Greeran is uneven. Officially, the strongest and
+          clearest documentation concerns a California conviction later referenced by Virgin Islands
+          authorities, his registration history in the U.S. Virgin Islands, and the 2025 charge for
+          alleged registration noncompliance.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a>
+          Separately, a self-published web resume supplies a much broader but less authoritative map of
+          schooling, work, and volunteer activity across Southern California and Santa Barbara County.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          A third and fourth body of material now joins the file. A subject-supplied family-history
+          research record — the Seize Quartiers genealogy file and an interactive military-service map —
+          extends the book backward across seven generations and two countries, from Drumgooland in
+          County Down to Revolutionary Pennsylvania.<a class="cite" href="#src-10">10</a><a class="cite" href="#src-11">11</a>
+          And a growing shelf of self-published standalone HTML5 tools extends it forward, documenting a working
+          cryptography, censorship-analysis, audio-DSP, naturalist, and genealogy toolset of the 2020s —
+          including one artifact that presents the resume itself as an RC4-encrypted puzzle.<a class="cite" href="#src-12">12</a><a class="cite" href="#src-20">20</a><a class="cite" href="#src-26">26</a>
+          Both arrive labeled as self-published or research-file material, and both are kept on their own
+          rung of the evidence ladder.
+        </p>
+        <p>
+          This book model treats those two evidence classes differently. Official records anchor the
+          legal chronology. Resume material fills out the earlier life-and-work trail without pretending
+          to know motives, feelings, or unwritten episodes. The result is not a traditional memoir, but
+          it is a more balanced timeline than a dossier limited only to the 2025 case.<a class="cite" href="#src-9">9</a>
+        </p>
+        <blockquote>
+          The point of this edition is not to romanticize or to flatten the record. It is to keep the
+          whole available timeline in view while labeling what is official, what is self-published, and
+          what remains unverified.
+        </blockquote>
+      </section>
+
+      <section class="page" id="early-years">
+        <div class="chapter-no">II</div>
+        <div class="page-kicker">Southern California trail</div>
+        <h2>Glendora, Duarte, San Dimas, and Pomona in the published record</h2>
+        <p>
+          The earliest biographical trail now located comes from the self-published resume. It lists
+          <b>Glendora High School</b> for 1997–2001, a <b>Citrus Community College</b> summer-school entry in
+          2001, and a <b>California State Polytechnic Institute Pomona</b> summer-school entry in 1998.<a class="cite" href="#src-9">9</a>
+          Those entries establish a Southern California academic geography before the UCSB years.
+        </p>
+        <p>
+          The same resume ties Greeran to multiple nearby place references: a canned-food-drive project
+          linked to <b>Duarte</b>; health-care volunteer listings associated with <b>San Dimas</b>; and later
+          lodge and fair-related items in <b>Pomona</b> and the broader Inland Empire.<a class="cite" href="#src-9">9</a>
+          In other words, the public resume sketches a regional trail rather than a single hometown-only narrative.
+        </p>
+        <div class="margin-grid">
+          <div class="mini-card"><span>Glendora</span><small>High school, city recreation service, local fundraising and lodge references.<a class="cite" href="#src-9">9</a></small></div>
+          <div class="mini-card"><span>Duarte</span><small>Access Duarte canned-food-drive project reference.<a class="cite" href="#src-9">9</a></small></div>
+          <div class="mini-card"><span>San Dimas</span><small>Facility names in volunteer health-care listings.<a class="cite" href="#src-9">9</a></small></div>
+          <div class="mini-card"><span>Pomona</span><small>Cal Poly Pomona coursework and Pomona lodge volunteering.<a class="cite" href="#src-9">9</a></small></div>
+        </div>
+      </section>
+
+      
+      <section class="page" id="glendora-childhood">
+        <div class="chapter-no">III</div>
+        <div class="page-kicker">Personal recollection · Glendora childhood</div>
+        <h2>Growing up at 2860, the Landers soccer team, and Seller's violin</h2>
+        <p class="label-row" style="margin:0 0 8px;color:var(--accent-2);">⚠ Personal recollection — not independently verified</p>
+        <p>
+          The house was at <b>2860</b> in Glendora. The room was small and in the back — a kid's room,
+          the kind of space where the world gets built from whatever is within arm's reach. This is where
+          the earliest personal memories begin: not from any published source, but from lived experience
+          in a San Gabriel Valley suburb that shaped a generation of school mornings, blacktop lunches,
+          and after-school routines.
+        </p>
+        <p>
+          Soccer came first among organized activities. The team was the <b>Landers</b>, and the position
+          was <b>halfback</b>. Teammate <b>Chris Griffin</b> was on the squad — a name that survives
+          in memory even when so many others have faded. Being halfback meant running the midfield, connecting
+          defense to attack, doing the work that rarely made the highlight reel but kept the game moving.
+          Then came the eye exam and the discovery: <b>near-sighted</b>. The world had always been slightly
+          soft at the edges, and suddenly there was a reason.
+        </p>
+        <p>
+          At school — likely linked to the <b>Glendora Unified School District</b> — students were
+          <b>required to learn a musical instrument</b>. The instrument chosen was <b>violin</b>, and the
+          place was <b>Seller's</b>. There was also the cafeteria job: <b>the milk man</b>. Fifty cents
+          for a box of milk. It was a small hustle, a way to earn and to belong, and then the bell would ring
+          and it was out to the <b>blacktop</b> to eat. The blacktop lunch was a universal Southern California
+          school experience — and the <b>seagulls</b> would come inland from the beach, wheeling over the
+          campus looking for scraps, proof that the ocean was never as far away as it seemed.
+        </p>
+        <p>
+          Family connections reached into the school district itself. <b>Aunt Lila</b> — wife of
+          <b>Uncle Chuck</b> — worked as <b>Dr. Bushman's secretary at the district office of the
+          Glendora Unified School District</b>. That kind of proximity meant the district was not an
+          abstraction; it was a place where familiar names showed up, where the adult world and the student
+          world overlapped in small, ordinary ways.
+        </p>
+        <p>
+          And then there was the writing. An <b>awards ceremony</b> held <b>in the board room</b> at the
+          <b>state level</b>: an <b>honorable mention</b> for a story. The story was about
+          <b>Battalion Chief Robert Hewitt of the Los Angeles County Fire Department</b> — stationed not
+          in Temple City but in <b>El Monte</b>. That story became a thread that connected childhood,
+          family history, and something much larger.
+        </p>
+        <div class="margin-grid">
+          <div class="mini-card"><span>2860, Glendora</span><small>Home address. Small room in the back. Childhood base camp.</small></div>
+          <div class="mini-card"><span>Landers soccer</span><small>Halfback. Chris Griffin on the team. Suburban youth athletics.</small></div>
+          <div class="mini-card"><span>Seller's violin</span><small>Required instrument instruction. School music program.</small></div>
+          <div class="mini-card"><span>The milk man</span><small>Cafeteria job. Fifty cents a box. Blacktop lunches with seagulls.</small></div>
+          <div class="mini-card"><span>Aunt Lila</span><small>Dr. Bushman's secretary, GUSD district office. Uncle Chuck's wife.</small></div>
+          <div class="mini-card"><span>State honorable mention</span><small>Writing award. Board room ceremony. Story about BC Robert Hewitt, LACoFD.</small></div>
+        </div>
+
+        <!-- Geographic thread: 2860 → Big Dalton Canyon → Examiner → ESGVROP → Camp Williams → Canyon City Ghost Town -->
+        <p>
+          Big Dalton Canyon is named after <b>Henry Dalton</b> (born London 1803, settled in 1843),
+          a homesteader and rancher. The canyon sits in Glendora's foothills, at the edge of the
+          San Gabriel Mountains. The closest neighbor to 2860 was <b>Candice Driscoll</b> — the user
+          believes she had an NSA connection, an "Op G 20" link to deciphering — possibly signals
+          intelligence or code-breaking.
+        </p>
+        <p>
+          At <b>1803</b>: <b>Ida Meacham</b> next door. <b>Dan Bjorklund</b> — dad's best man.
+          His daughter <b>Lauren Bjorklund</b>. <b>Boots Gordon</b> — Rowley's wife. <b>Nancy
+          Burns</b> — the Burns residence next to Ida.
+        </p>
+        <p>
+          The <b>Rowley</b> connection is confirmed: <b>Gordon Rowley</b> moved to Glendora in 1956,
+          was a founding member of the Glendora Riding and Hiking Trails Advisory Committee. The
+          Big Dalton Canyon Campground was renamed the <b>Rowley Wilderness Amphitheater</b> on May 24,
+          2020, approved unanimously by City Council after Gordon's passing. His wife <b>Norma
+          Rowley</b> (passed February 2022) is also memorialized. "Boots" may be a nickname for Norma.
+        </p>
+        <p>
+          <b>Scott Stapenhill</b> — fire captain in the Glendora area. The user says he "turned off
+          the space shuttle on reentry landing" because "I think they made the heat tiles." The space
+          shuttle thermal tiles were made by <b>Lockheed Missiles &amp; Space Co.</b> in Sunnyvale —
+          <b>LI-900</b> tiles of 99.9% pure silica glass fibers, 94% air by volume, able to withstand
+          2,200°F. About 20,000 tiles per shuttle. Shuttles were built in Southern California (Palmdale),
+          and many landed at <b>Edwards Air Force Base</b> in the high desert. Fire captains would have
+          been part of the emergency response at shuttle landing sites.
+        </p>
+        <p>
+          The user's boss at the <b>San Gabriel Valley Examiner</b> was <b>Eugene Moses</b>
+          — a colonel who took shrapnel in Korea and has a pacemaker; he goes to the VA hospital.
+          Moses was the <b>former mayor of Azusa</b>: elected to the City Council in 1978, mayor in
+          1982, reelected multiple times with at least 56% of the vote every time. A Pennsylvania
+          native, John Muir High School graduate, Korean War Navy veteran. After the service: die
+          caster, restaurant in Alhambra, coin-operated amusement machines for 20+ years. He built
+          <b>Canyon City Ghost Town</b> on <b>San Gabriel Canyon Road</b> — intended as a family
+          recreation park like Knott's Berry Farm. He put development aside when elected to avoid
+          conflict of interest and used the property for charity events. He also sold fish bait and
+          gold-panning equipment at the entrance to San Gabriel Canyon. He had the <b>Hearst</b> at
+          the newspaper.
+        </p>
+        <p>
+          The <b>San Gabriel Valley Examiner</b>: a weekly newspaper serving the foothill communities.
+          The office was next to the <b>Naked Juice factory in Glendora</b> — <b>Naked Juice Co. of
+          Glendora, Inc.</b>, founded 1976, at 533 West Foothill Blvd, Glendora, CA 91741. The
+          company was literally named after the city.
+        </p>
+        <p>
+          The user's first boss was <b>Ryan Quisenberry</b> at the <b>ESGVROP</b> — the <b>East
+          San Gabriel Valley Regional Occupational Program &amp; Technical Center</b>, a public education
+          agency providing career technical training. Founded 1970, governed by a seven-member board
+          representing seven unified school districts: Azusa, Baldwin Park, Charter Oak, Covina,
+          <b>Glendora</b>, Walnut, and West Covina. The campus was south of <b>Irwindale</b>, before
+          the freeway, in the <b>West Covina</b> area. They went to <b>Camp Williams</b> — up
+          <b>Azusa Canyon</b> (San Gabriel Canyon, Highway 39) on the <b>East Fork of the San Gabriel
+          River</b>. Camp Williams: a campground and mobile home park seven miles north of San Dimas,
+          surrounded by Angeles National Forest. History of the canyon: Native Americans, gold
+          prospectors during the Gold Rush, the ghost town of <b>Eldoradoville</b> (washed away in a
+          flood). People still pull gold out of the river. An old mine across the river from Camp
+          Williams.
+        </p>
+
+        <!-- Aerospace/defense threads (after geographic thread) -->
+        
+        <div class="emergency-band">
+          <span>Wildfire activity &amp; WiFire / Alexandria Digital Library</span>
+          <p>
+            The wildfire activity in the San Gabriel Mountains area is unusual. The <b>National
+            Interagency Fire Center (NIFC)</b> in Boise, Idaho provides briefings, overlays of burns,
+            and situation reports — data feeds from NIFC WFIGS. "Like Harry Truman I was there when it
+            was burning" — <b>Harry Truman</b> was at Mount St. Helens when it erupted on May 18, 1980.
+            He refused to evacuate. He was there when it erupted.
+          </p>
+          <p>
+            <b>WiFire</b>: at the <b>San Diego Supercomputer Center (SDSC)</b>, UC San Diego. Led by
+            <b>Ilkay Altintas</b>. NSF-funded ($2.65 million in 2013; $5 million for BurnPro3D).
+            Integrates satellite data, remote sensors, and computational models for wildfire prediction.
+            Partners: CAL FIRE, U.S. Forest Service, SDG&amp;E, San Diego County Emergency Operations
+            Center. <b>David Valentine</b> worked on WiFire at SDSC after working at UCSB.
+          </p>
+          <p>
+            At UCSB: Valentine worked for <b>Greg Janée</b> at the <b>Davidson Library Map and Image
+            Laboratory</b> on the <b>Alexandria Digital Library (ADL)</b> project — the <b>USGS Gazetteer
+            interface</b>. ADL: a georeferenced digital library at UCSB. Catalog, Gazetteer, GeoRef.
+            The ADL Gazetteer combines USGS GNIS and NIMA GNS databases. Co-authored papers: Valentine,
+            Janée, Frew — <i>"Accessing the Alexandria Digital Library from Geographic Information
+            Systems"</i> (2004). <b>James Frew</b>: UCSB researcher on ADL, Donald Bren School of
+            Environmental Science. The user worked at UCSB Davidson Library on the Alexandria Digital
+            Library project. The Gazetteer interface was part of that work.
+          </p>
+        </div>
+
+
+        <div class="emergency-band">
+          <span>David Seubert, wax cylinders, Z39.50 &amp; the California Digital Library</span>
+          <p>
+            The user worked for <b>David Seubert</b>, curator of special collections / Performing Arts
+            Curator at UCSB Library. Seubert went to <b>Oberlin</b>. Under his leadership, the <b>UCSB
+            Cylinder Audio Archive</b> became one of the world's largest collections of wax cylinder
+            recordings — over 16,000 recordings, close to 11,000 online. The first library with a big
+            collection of early sound recordings online that the public could download for free. Started
+            in 2002 as a pilot project (60 cylinders); the full archive launched autumn 2005 with 5,000
+            newly digitized recordings. The library uses the <b>Archeophone</b> (designed 1998 by Frenchman
+            Henri Chamoux) to convert the grooves of wax cylinders into digital data.
+          </p>
+          <p>
+            The user connected the <b>Apple Darwin</b> wax cylinder recordings to <b>Z39.50</b> PHP to
+            send queries to and from the <b>Pegasus</b> system that syncs with the Library of Congress
+            <b>MELVYL</b> system. Z39.50: the standard protocol for bibliographic information retrieval.
+            MELVYL: the UC system's union catalog. The <b>California Digital Library (CDL)</b> emerged
+            from efforts to enhance MELVYL — founded in 1997 by the <b>UC Board of Regents</b> and
+            President <b>Richard Atkinson</b>, who called it a "library without walls." <b>Clifford
+            Lynch</b>, head of the Division of Library Automation for the UC system, presented the draft
+            plan. CDL's vision: building, sharing, and preserving digital collections; creating tools and
+            services; influencing scholarly communication; fostering strategic partnerships.
+          </p>
+        </div>
+
+<div class="emergency-band">
+          <span>Camouflaged Burbank, hidden Azusa, secret Oildale</span>
+          <p>
+            <b>Boots</b> is Norma Rowley — confirmed. The parallel runs deeper: just as <b>Lockheed's
+            Burbank plant</b> was disguised during WWII as a fake suburban neighborhood — burlap houses,
+            wire-and-feather trees, rubber automobiles, painted streets, with Hollywood studios (MGM,
+            Disney, 20th Century Fox) helping build the illusion — the facility in <b>Azusa</b> was making
+            space shuttle components hidden in plain sight. Colonel John F. Ohmer led the Burbank camouflage;
+            when he flew a general over at 5,000 feet, the general said he could only see "suburb after
+            California suburb." Warner Brothers even disguised a nearby studio to look like the aircraft
+            plant as a decoy.
+          </p>
+          <p>
+            The same pattern: the <b>U-2 spy plane</b> was built at a secret Lockheed facility on
+            Norris Road in <b>Oildale</b> (Bakersfield), disguised as a <b>tire factory</b>. Called
+            "Unit 80," the first 50 U-2s were assembled there in 1956–1957, then partially disassembled
+            and flown at night to Groom Lake (Area 51) for flight testing. A Government Printing Office /
+            NASA book — <i>Unlimited Horizons</i> by Peter Merlin — documents the U-2 history.
+          </p>
+          <p>
+            <b>Beale Air Force Base</b> — home of the U-2 Dragon Lady since 1976, named after Edward
+            Fitzgerald Beale, a 19th-century pioneer. The "high flyer named after their football team."
+            All 27 U-2s operated from Beale. The plane can fly above 70,000 feet — still in service
+            70+ years after its first flight. <b>The names have been changed.</b>
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Road Runners Internationale &amp; Peter Merlin</span>
+          <p>
+            The user attended the <b>2017 Road Runners Internationale reunion</b> with <b>Peter Merlin</b>
+            — the aviation historian who wrote the NASA/GPO history of the U-2 program (<i>Unlimited
+            Horizons</i>). The Road Runners are an organization of people who worked on secret aircraft
+            programs — U-2, SR-71, OXCART/A-12 — at <b>Area 51</b> and <b>Groom Lake</b>. The 25th
+            reunion was held October 10, 2017, photographed by Dave Budd.
+          </p>
+          <p>
+            The user — <b>wearing blue, sitting on the corner</b> — had dinner with the captain at
+            Fort Knox. <b>Frank Murray</b> received an award. Murray was a CIA pilot, call sign
+            <b>"DUTCH 20,"</b> who flew the A-12 OXCART at Area 51. He was awarded the <b>CIA Intelligence
+            Star for Valor</b> on May 17, 1968. Murray passed away March 26, 2023. The attendees were
+            mostly retired — former CIA, military, and defense personnel who kept the secrets of Area 51
+            for decades.
+          </p>
+          <p>
+            The user's <b>mail man</b> was <b>Jack Weeks</b> — the other A-12 pilot. Call sign
+            <b>"DUTCH 29."</b> Jack W. Weeks (February 23, 1933 – June 5, 1968) was killed when his
+            A-12 broke up over the Pacific near the Philippines during a functional check flight from
+            Kadena AFB, Okinawa. He is honored in the <b>"Book of Honor"</b> at CIA Headquarters in
+            Langley, Virginia. Weeks obtained the first photographs of the USS Pueblo after it was
+            captured by North Korea in 1968. His letters continued to arrive after his death — a
+            salute to his love and concern for his family. He called from Okinawa on June 1, 1968 to
+            wish his son Steve and daughter Susan a happy birthday. Three days later he disappeared
+            without a trace.
+          </p>
+          <p>
+            The user <b>served time in Charlie</b> at the <b>John A. Bell Detainment Facility</b>,
+            also in <b>Garden Grove</b>, with Jack Weeks. <b>The names have been changed.</b>
+          </p>
+          <p>
+            Peter W. Merlin spent 25+ years locating crash sites of historic aircraft from Area 51 and
+            Edwards Air Force Base, co-founding the <b>Aviation Archeology Field Research Team</b> with
+            Tony Moore. He was hired as archivist at <b>NASA's Dryden Flight Research Center</b>. His
+            books include <i>X-Plane Crashes</i> (2008), <i>Breaking the Mishap Chain</i> (NASA, 2012),
+            and <i>Crash Course</i> (NASA, 2013).
+          </p>
+          <p>
+            His books are on sale at the <b>Center for Land Use Interpretation (CLUI)</b> in <b>Culver
+            City</b> — 9331 Venice Blvd. CLUI organized <i>Down to Earth: Experimental Aircraft Crash
+            Sites of the Mojave</i>, a 2013 exhibition and field trip based on Merlin's work. The bus
+            left from CLUI's Culver City office, looping through the Antelope Valley with Merlin and
+            Moore on board explaining each crash site.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>JPL &amp; the Sojourner Rover</span>
+          <p>
+            One of the user's better memories: <b>rushing to JPL</b> because <b>Mr. Surampudi</b>
+            was inviting them for the <b>naming of the Sojourner rover</b> — the first rover on Mars,
+            part of the <b>Mars Pathfinder</b> mission (landed July 4, 1997). The name was chosen
+            through a worldwide contest won by <b>Valerie Ambroise</b>, a 12-year-old from Bridgeport,
+            Connecticut, who suggested naming it after <b>Sojourner Truth</b>, the 19th-century
+            abolitionist and women's rights activist. The contest was initiated in March 1994 by
+            <b>The Planetary Society</b> of Pasadena in cooperation with <b>NASA's Jet Propulsion
+            Laboratory</b>. JPL gave out <b>Hot Wheels cars</b> to guests on tour — the <b>JPL
+            Sojourner Mars Rover Action Pack</b> (product #16145, 1996–1997), designed in collaboration
+            with NASA/JPL, including the Sojourner rover, Mars Lander, and Mars Pathfinder vehicles.
+          </p>
+          <p>
+            The user toured the <b>Boeing factory in Ventura</b> near the <b>Golf N' Stuff</b>
+            miniature golf course with an <b>engineering summer program</b> the summer prior to
+            attending college. They had also gotten into <b>UCSD</b> but not UCLA or UCSC. Then
+            <b>UCSB</b>.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>MUFON, Area 51 &amp; the desert road</span>
+          <p>
+            The other way into the Area 51 world: the <b>MUFON Symposium</b> in <b>Los Angeles</b>
+            — the <b>Mutual UFO Network</b> — where the user met "the other family." Then the drive:
+            on the way to <b>Reno</b>, past the <b>Alien Research Center</b> in <b>Hiko, Nevada</b>
+            (a gift shop on the <b>Extraterrestrial Highway</b>, Route 375), past the <b>Little
+            A'Le'Inn</b> in <b>Rachel, Nevada</b> (population ~54, the closest motel to Area 51, run
+            by Connie West and her mother). The sheriff will stop you before the lonely road. There
+            was another brothel before the user turned around — <b>Nevada's legal brothels</b> dot
+            the highways between Las Vegas and the remote desert installations.
+          </p>
+          <p>
+            <b>Creech Air Force Base</b> in Indian Springs, Nevada — one of the main operational
+            military drone airports in the world since 2000 — was escorting with a drone. The user
+            used to live in <b>Wrightwood</b>, in the San Bernardino Mountains. <b>General Atomics</b>
+            — maker of the <b>MQ-1 Predator</b> and <b>MQ-9 Reaper</b> drones — operates from
+            <b>El Mirage Field</b> and <b>Gray Butte Field</b>, west of Adelanto, California. El
+            Mirage is a dry lake bed in the Mojave Desert used for drone testing. General Atomics
+            built the Predator with the CIA starting in the 1980s. Gray Butte was originally a
+            <b>radar cross-section test facility</b> built by McDonnell Douglas in the 1970s for
+            stealth research, then taken over by Boeing, then sold to General Atomics in 2000.
+            "General Atomics is over there guarding El Mirage."
+          </p>
+          <p>
+            The <b>Gathering of the Eagles</b> at the Edwards AFB fairgrounds: a fundraiser for the
+            <b>Air Force Flight Test Museum</b> at Edwards. They auction everything. <b>Angela</b> was
+            the hostess. The user went to a <b>base commander's funeral</b> in the foothills above
+            Tehachapi — at the <b>Bakersfield National Cemetery</b>, the veterans cemetery on Highway 58
+            between Tehachapi and Bakersfield (500 acres donated by Tejon Ranch, oak-dotted foothills,
+            the nation's 130th national cemetery). The <b>412th Test Wing</b> at Edwards paired up with
+            the <b>Society of Experimental Test Pilots (SETP)</b> to arrange the <b>National Test Pilot
+            School</b> in Mojave — the world's premier civilian test pilot school, operating for more
+            than three decades in the high desert. SETP was founded September 14, 1955, when six
+            civilian test pilots met for lunch at Aleck's in Lancaster, halfway between Edwards and Air
+            Force Plant 42 in Palmdale. Among the founders: <b>Scott Crossfield</b> (NACA/X-15).
+          </p>
+          <p>
+            The <b>MUFON International Symposium</b> at the <b>JW Marriott Resort and Spa</b> in
+            <b>Las Vegas</b> (221 N Rampart Blvd.) — the 48th annual symposium in 2017, themed
+            <i>"The Case for the Secret Space Program."</i> Speakers included Richard Dolan, physicist
+            John Brandenburg, and former CNN anchor Cheryll Jones as master of ceremonies. George Knapp
+            (KLAS-TV) has been a regular speaker. The symposium offers Area 51 tours through the Mojave
+            Desert, experiencer workshops, and field investigator training.
+          </p>
+          <p>
+            They don't like to have their names on it — the Road Runners, the pilots, the engineers.
+            But that's how the user ended up at the <b>National Atomic Testing Museum</b> in
+            <b>Las Vegas</b> (755 E. Flamingo Road) — a Smithsonian affiliate, one of only 37 museums
+            created by Congress and enacted by public law. The museum preserves the stories of the
+            Nevada Test Site, atomic veterans, and the Downwinders. It includes an exhibit called
+            <i>"Area 51 — Myth or Reality."</i>
+          </p>
+          <p>
+            The user was there for the <b>first flight of the B-2 Stealth Bomber</b> — July 17, 1989,
+            from <b>Air Force Plant 42 in Palmdale</b> to Edwards AFB. Northrop test pilot <b>Bruce
+            Hinds</b> and Col. <b>Richard S. Couch</b> flew the 1-hour-52-minute sortie. The top-secret
+            "stealth bomber" was first publicly displayed November 22, 1988, when it was rolled out of
+            its hangar at Plant 42. And 30 years later, the user was there for the <b>first flight of
+            Stratolaunch "Roc"</b> — April 13, 2019, from <b>Mojave Air &amp; Space Port</b>. The world's
+            largest aircraft by wingspan (385 feet), built by <b>Scaled Composites</b>, founded by
+            <b>Paul Allen</b> (who died six months before the flight). Six engines, twin fuselage,
+            500,000 pounds, designed to air-launch rockets and hypersonic vehicles. "What an age
+            difference."
+          </p>
+          <p>
+            The <b>job fair at Fox Field</b> (William J. Fox Airfield, Lancaster) — all the <b>F-35s</b>
+            on the field. The <b>Forest Service had a Skunk</b> — Lockheed Martin's <b>Stalker UAV</b>,
+            a small surveillance drone developed by Skunk Works for wildfire reconnaissance (12-foot
+            wingspan, 8-hour flight time, launched by bungee or rail). The same Skunk Works that built
+            the U-2, SR-71, F-117, F-22, and F-35.
+          </p>
+          <p>
+            The <b>Saxon Aerospace Museum</b> in <b>Boron, California</b> (26922 Twenty Mule Team Road)
+            — named after Col. <b>Vernon Parker Saxon Jr.</b>, vice commander at Edwards AFB's Flight
+            Test Center. The museum recounts milestones in experimental flight: the first breaking of the
+            sound barrier, the first hypersonic flight, the first space shuttle landing. Collection
+            includes an F-4 fighter jet, XLR-8 rocket engine, and flight suits.
+          </p>
+          <p>
+            The museum next to <b>Apollo Park</b> (4555 W. Ave G, Lancaster — named for the Apollo 11
+            astronauts, 54 acres, three lakes). The user went over there geocaching.
+          </p>
+          <p>
+            And the <b>musical highway</b> — on <b>Avenue G between 30th and 40th Streets West</b> in
+            Lancaster. Rumble strips cut into the road play the <b>William Tell Overture</b> when you
+            drive over them at 55 mph. Originally built for a <b>Honda commercial in 2008</b> — built
+            wrong twice (the grooves were miscalculated, then rebuilt using the same wrong blueprint).
+            "The musical highway is a blast."
+          </p>
+          <p>
+            A <b>thermochromatic coffee mug</b>: <b>Dunn-Edwards</b> made thermochromatic paint, like
+            <b>DuPont</b> made <b>Kevlar</b>. The thermochromatic patents were historically owned by
+            <b>Aerojet General Corporation</b> — the same company where <b>Grandfather Bernard</b>
+            worked in Azusa with security clearance. The mug starts out <b>black</b>, and when the hot
+            coffee goes in, the black turns <b>clear</b> and the <b>blue underneath shows through</b>.
+            The heat causes the change. <b>"Out of the black and into the blue."</b> And a <b>NASA mug</b>
+            — received for writing an article.
+          </p>
+          <p>
+            <b>Grandpa Greeran</b> worked with the <b>555 IC</b> — the555 timer integrated circuit,
+            designed by <b>Hans Camenzind</b> in 1971 for Signetics, one of the most widely used chips
+            in history (over a billion sold per year). Grandpa Greeran made the <b>VCR timer recorder</b>
+            — using the555 timer chip for the timing circuit. An electronics engineer in the family,
+            building the consumer devices that defined an era.
+          </p>
+          <p>
+            <b>Summer school at Cal Poly Pomona</b>: three classes that mapped the world differently.
+            <b>Lego Logo</b> for the <b>Apple IIe</b> — programming robotic equipment from the <b>COM
+            port</b>. Logo: the educational programming language (created at MIT, 1967 by Wally Feurzeig
+            and Seymour Papert). <b>Lego TC Logo</b>: the first product of the MIT Media Lab's
+            collaboration with Lego (1984–1988), developed by <b>Mitchel Resnick</b> and <b>Steve
+            Ocko</b>. The hardware: Lego #9750 "Interface A" — a card plugged into the Apple IIe that
+            controlled motors, lights, and sensors through the COM port. The manual: <i>Teaching the
+            Turtle</i>. Sold only to schools. Now preserved on the Internet Archive. The user learned
+            to command physical robots — Lego constructions with motors and sensors — through Logo code
+            on an Apple IIe.
+          </p>
+          <p>
+            <b>Arthurian legend</b> in another class. The standard reading list across universities for
+            these courses: <i>Sir Gawain and the Green Knight</i> (Marie Borroff translation, Norton);
+            <i>Le Morte d'Arthur</i> by Sir Thomas Malory (Oxford World Classics); T.H. White's <i>The
+            Once and Future King</i>; Chrétien de Troyes' romances (<i>Erec and Enide</i>, <i>Lancelot:
+            The Knight of the Cart</i>, <i>The Story of the Grail</i>); Tennyson's <i>Idylls of the
+            King</i>; Mark Twain's <i>A Connecticut Yankee in King Arthur's Court</i>. Cal Poly Pomona's
+            English department catalogs from 1968–1995 are preserved as digital files in the University
+            Archives; class schedules from 1955–2008 are also available. The Arthurian courses draw from
+            Geoffrey of Monmouth, the Welsh <i>Mabinogion</i>, Marie de France's <i>Lais</i>, and the
+            Alliterative <i>Morte Arthur</i>.
+          </p>
+          <p>
+            And <b>French language class</b> — learning "tête, épaules, genoux et pieds" (head,
+            shoulders, knees and toes) and what not. Plus a separate <b>intro to BASIC language</b>
+            class using <b>Hometown, U.S.A.</b> — an educational software program (1988, Publishing
+            International, developed by Manley &amp; Associates) that let users create real 3D models
+            of homes, offices, schools, missions. Available on DOS, Apple IIgs, Macintosh, and
+            FM Towns. Won the1989 Software Publishers' Association Award for Best Educational
+            Creativity Product. Now abandonware, preserved on the Internet Archive.
+          </p>
+          <p>
+            The user got to see inside <b>Cal Poly Pomona dorms</b> when their <b>prom date</b> let
+            them in — she was the <b>RA</b> (Resident Advisor), across from the <b>rose garden</b>
+            on campus. The <b>computer lab was completely free</b>, under the lunch commons. She also
+            did <b>The Vagina Monologues</b> — the user drove out from <b>Santa Barbara</b> for the
+            show. Cal Poly Pomona hosted The Vagina Monologues for several years as part of the
+            <b>V-Day</b> movement (created by Eve Ensler in 1998, rights fees waived in February).
+            The user also went to The Vagina Monologues with <b>Josephine Widjaja</b> at the theater
+            in <b>Isla Vista</b> — UCSB's Women's Ensemble Theatre Troupe performed it as "The Vagina
+            Monologues and Herstories." Flyer from 2001 or 2002 — might be findable online.
+          </p>
+          <p>
+            At UCSB's <b>College of Creative Studies (CCS)</b>, the user sat in on <b>Murat
+            Karaorman's</b> databases class with <b>Jay Freeman</b> — known as <b>saurik</b>, the
+            creator of <b>Cydia</b>, the alternative App Store for jailbroken iPhones, iPods, and
+            iPads. Freeman graduated from CCS with a bachelor's in Creative Studies (Computer Science
+            "emphasis" — CCS was classified as a major, making its majors "emphases" due to a
+            bureaucratic incident during UCSB's transition to computerized records). He later built
+            <b>Cydia Substrate</b>, the framework used by practically all jailbroken iPhones. Freeman
+            continued to hang around CCS after graduating, setting a precedent for upper classmen and
+            graduates to attend introductory classes and help younger students. He occasionally teaches
+            when Murat Karaorman is unavailable — advanced classes on C++, database indexing, network
+            protocols, version control, and parsing. His website: <b>saurik.net</b>.
+          </p>
+          <p>
+            The user gave Jay Freeman <b>"the old Red Orc of fame"</b> — the <b>Fravia reverse lore
+            CD</b>. <b>+ORC</b> (the Old Red Cracker) was a legendary figure in the reverse engineering
+            community who wrote <i>"How to Crack"</i> tutorials in the 1990s — 19 lessons covering
+            everything from paper protections to "zen cracking." His lessons were the foundation of the
+            <b>+HCU</b> (Higher Cracking University). <b>Fravia</b> (Francesco Vianello) maintained
+            <i>"Fravia's Web of Searching Lore"</i> — a massive archive of reverse engineering
+            knowledge, cracking tutorials, and searching techniques. The CD contained this entire
+            world — the +ORC tutorials, the Fravia archive, the tools and techniques of a generation
+            of reverse engineers. +ORC disappeared and allegedly died in Egypt. Fravia died in 2009.
+            The knowledge lives on in mirrors and archives.
+          </p>
+        </div>
+      </section>
+
+
+      <section class="page" id="hewitt-story">
+        <div class="chapter-no">IV</div>
+        <div class="page-kicker">Personal recollection · The Hewitt family</div>
+        <h2>Battalion Chief Robert Hewitt, Chuck Hewitt, Agent Orange, and a kidney</h2>
+        <p class="label-row" style="margin:0 0 8px;color:var(--accent-2);">⚠ Personal recollection — not independently verified</p>
+        <p>
+          The story that won the honorable mention was nominally about <b>Battalion Chief Robert Hewitt</b>
+          of the <b>Los Angeles County Fire Department</b>, stationed at <b>El Monte</b>. But the real
+          story — the family story — was deeper and more complicated than a grade-school writing award could
+          contain. It was about <b>Chuck Hewitt</b> and <b>Agent Orange</b>.
+        </p>
+        <p>
+          Before Robert was a captain in Temple City, he was a <b>hotshot</b> for the fire crew — probably
+          where they all met. The <b>Dalton Hotshots</b>, organized in September 1953 in <b>Glendora</b>,
+          were based at 1090 Glendora Mountain Road. The original crew: foreman Charles (Chuck) Hartley
+          and 22 Native American firefighters — 11 Jemez and 11 Zia men from Northern New Mexico. Their
+          mascot: the <b>Bighorn Ram</b>, inspired by the wild sheep of the San Gabriel Mountains. Other
+          Angeles Forest hotshot crews: <b>Little Tujunga</b> (est. 1970), <b>Bear Divide</b>,
+          <b>Valyermo</b>, <b>Texas Canyon</b>. The <b>El Cariso Hotshots</b> lost 12 crewmen in the
+          Loop Fire, November 1, 1966, in Pacoima Canyon.
+        </p>
+        <p>
+          The connection to fire service ran through the family. <b>Grandpa</b> — the one whose house
+          you stayed at, listening to the radio and watching <b><i>Emergency!</i></b> on television — had
+          served in the fire department. The show's dispatch sequences were not fiction to him; they
+          echoed <b>LACOFD dispatch</b>, the actual radio traffic of the Los Angeles County Fire Department.
+          When the <b>uniform service</b> brought replacement gear, Grandpa gave his <b>dress uniform,
+          badge, and clothes</b> to keep. Those were not costumes — they were artifacts of a career.
+        </p>
+        <div class="emergency-band">
+          <span>Emergency! — the real connection</span>
+          <p>
+            <i>Emergency!</i> premiered on NBC on <b>January 15, 1972</b> and ran 124 episodes through 1977.
+            It was the last show created by Jack Webb (<i>Dragnet</i>, <i>Adam-12</i>). The fictional
+            "Station 51" was actually <b>Fire Station 127</b> at 2049 East 223rd Street in <b>Carson, California</b>,
+            chosen for its natural lighting by co-creator Robert Cinader. The real dispatcher heard on the show
+            was <b>Sam Lanier</b>, an actual LACoFD dispatcher with over 18 years' service. The character
+            of John Gage was based on <b>Battalion Chief Jim Page</b>, who helped create the LACoFD paramedic program.
+          </p>
+          <p>
+            When the show debuted, only <b>12 paramedic squads</b> existed in the entire United States.
+            By the time it ended first-run production, <b>more than half of all Americans</b> were within
+            4–7 minutes of advanced life-saving care. The show was one of the most successful public health
+            education campaigns in American history.
+          </p>
+          <p>
+            <b>"KMG365"</b> — the call sign Station 51's crew uses to acknowledge dispatch — is a real
+            FCC station license assigned to LACoFD <b>Fire Station 98 in Bellflower</b>. It appears on the
+            station patch for Station 127.
+          </p>
+        </div>
+        <p>
+          <b>Maurice</b> had a workbench at his house in <b>Duarte</b> — not a shop, but the place
+          where the user used to hang out and learn soldering. Maurice made <b>terminals</b> that went
+          in fire engines for "texting dispatch" — custom-built <b>Mobile Data Terminals (MDTs)</b>
+          connecting responding crews to Computer-Aided Dispatch systems. In the early days, many MDTs
+          were custom devices, even specialized point-to-point radios. A good example of the dispatch
+          archives: <b>WildCAD</b> for the Angeles National Forest — a computer-aided dispatch system
+          used by wildland fire agencies nationwide. It's federal (USFS), so the archives might go back
+          to early digital dispatch records.
+        </p>
+        <p>
+          <b>Maurice Frederick Hewitt</b> — ham radio callsign <b>KG6ZD</b> — was another son of Robert.
+          The ham radio world was its own kind of fire service: a network of voices on the air, people
+          listening and responding, a community built around the ability to reach out across distance
+          with nothing but a signal and a frequency.
+        </p>
+        <p>
+          The hardest part of the family story involved <b>Chuck Hewitt</b>, Robert's <b>oldest son</b>.
+          Chuck's health had been compromised — the connection to <b>Agent Orange</b> exposure hangs over
+          many families of that era. When his kidneys began to fail, the choice was dialysis or transplant.
+          <b>Robert Hewitt gave his oldest son a kidney</b>. It was not a metaphor. It was a father
+          literally giving a part of himself so his son could live without the machine.
+        </p>
+        <p>
+          This is the story underneath the story: a fire-service family, a father and his sons, the
+          long chemical shadow of a war, a kidney given in place of dialysis, and a callsign on the
+          ham radio band — <b>KG6ZD</b> — that kept transmitting.
+        </p>
+        <blockquote>
+          The award-winning story was about Battalion Chief Robert Hewitt. The real story was about
+          what a family carries — in uniform, in blood, on the air.
+        </blockquote>
+        <div class="margin-grid">
+          <div class="mini-card"><span>Robert Hewitt</span><small>Battalion Chief, LACoFD, El Monte station. Father of Chuck and Maurice Frederick.</small></div>
+          <div class="mini-card"><span>Chuck Hewitt</span><small>Robert's oldest son. Agent Orange connection. Received Robert's kidney transplant.</small></div>
+          <div class="mini-card"><span>Maurice Frederick Hewitt</span><small>Other son of Robert. Ham radio callsign KG6ZD.</small></div>
+          <div class="mini-card"><span>Emergency! &amp; Grandpa</span><small>Listening to the radio while watching the show. LACOFD dispatch. Dress uniform kept.</small></div>
+        </div>
+
+        <div class="emergency-band">
+          <span>LACoFD El Monte &amp; Temple City — research notes</span>
+          <p>
+            <b>Battalion 10</b> covers the El Monte area, headquartered at Station 4. It serves El Monte,
+            Rosemead, San Gabriel, South El Monte, and Temple City. <b>Division 9</b> includes El Monte,
+            Rosemead, South El Monte, Temple City, Bell, Bell Gardens, and Commerce. El Monte had its own
+            fire department from <b>1912 to 1998</b>, when it contracted with LACoFD. The four El Monte
+            stations became LACoFD Stations 166–169.
+          </p>
+          <p>
+            <b>Fire Station 47</b> is in Temple City. BC Robert Hewitt was <b>captain in Temple City for a
+            long time</b> — the station is near the <b>University of the West</b> in Rosemead. Other
+            battalion chiefs who served in the El Monte area include Thomas C. Ewald, Anderson D. Mackey Jr.,
+            and Nicholas A. Duvally. Jesse J. Vela began at the City of El Monte FD in 1988.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Chantry Flat — Big Santa Anita Canyon</span>
+          <p>
+            The family's mountain connection traces to <b>Chantry Flat</b> in the Big Santa Anita Canyon,
+            Angeles National Forest. Originally known as "Poison Oak Flat," it was renamed after prospector
+            <b>Charley Chantry</b>, who arrived in 1905. During the <b>Great Hiking Era</b> (1890s–1920s),
+            over <b>220 cabins</b> were built in the canyon. Materials were hauled in by <b>mules and people's
+            backs</b> on narrow mountain trails — pack trains traveled seven days a week during the busy
+            construction years. The Chantry Road to the trailhead wasn't built until <b>1935</b>; before
+            that, you hiked from Sierra Madre, adding four miles each way.
+          </p>
+          <p>
+            Great-grandfather brought the family up to <b>Angeles Crest campground</b> on top of the ridge,
+            where they <b>built huts</b> — materials packed up by mule from Chantry Flats. They <b>lived in
+            cabins</b> at Chantry Flats. Today about <b>80 cabins</b> remain, privately owned on USFS land
+            leases, with no electricity or utilities — everything still brought in by mule. The canyon has
+            the <b>last magneto-type crank phone system</b> in the United States. <b>Adams Pack Station</b>,
+            operating since 1936, is the last remaining pack station in Southern California — and it's
+            where <b>mail and supplies</b> come from. <b>Sturtevant Camp</b>, founded in 1893, is one of the
+            oldest resorts in the San Gabriels.
+          </p>
+          <p>
+            The cabins have survived the 1938 flood, the 1953 Monrovia Peak Fire, the 1969 flood, and
+            the <b>2020 Bobcat Fire</b> (which destroyed 18 of the 80 remaining cabins). They cannot be
+            rebuilt if lost — a living museum to early 20th-century Southern California mountain life.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Robert Hewitt Jr. &amp; Janice — Pine Cove, Idyllwild</span>
+          <p>
+            Robert Hewitt's son <b>Robert D. Hewitt</b> remarried and retired with <b>Janice E. Murasko</b>
+            in <b>Pine Cove</b>, near Idyllwild. Property records confirm: <b>53144 Pine Road, Idyllwild-Pine
+            Cove, CA 92549</b> — purchased May 3, 2013 for $435,000 from John W. Wallen III.
+          </p>
+          <p>
+            Robert ran <b>High Country Archery</b> at the same address — established 2014, Level 2 certified
+            archery coach with USA Archery, teaching traditional archery (recurve and long bow). Janice runs
+            an <b>animal school for dogs</b>.
+          </p>
+          <p>
+            Getting there the back way: when <b>Highway 243</b> (the main entrance from Banning) is closed
+            from fire or landslide damage — as it was for most of 2019 after storms collapsed sections, and
+            during the 2018 Cranston Fire (7,500 acres, evacuations of Idyllwild, Pine Cove, and Fern Valley)
+            — the alternate route comes up from the south through <b>Temecula</b>: I-15 → Highway 79 →
+            Highway 371 → Highway 74. Not the <b>Diamond Zen Center</b> (18500 Diamond Zen Rd, Banning —
+            15 miles north, down the hill toward Banning, Korean influence), but around back through Temecula.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Hewitts of the High Desert — Phelan &amp; the fire engine</span>
+          <p>
+            Robert Hewitt's nephews <b>Randy Hewitt and Kim</b> live in <b>Phelan, California</b> — an
+            unincorporated community in San Bernardino County's High Desert, about 75 miles northeast of
+            Los Angeles, near Wrightwood, north of the San Gabriel Mountains at ~4,100 feet elevation.
+            The family reference: <b>"Hewitts of the Highlands."</b>
+          </p>
+          <p>
+            Robert has an <b>antique fire engine</b> at Randy's place in Phelan. The user gave Robert an
+            <b>antique fire extinguisher</b> to go with it — a fire-service family's artifacts, kept in
+            the high desert.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Nike missile sites — the San Gabriel ridge defense perimeter</span>
+          <p>
+            During the Cold War, <b>16 Nike missile sites</b> surrounded Los Angeles in the <b>"Ring of
+            Supersonic Steel"</b> — designed to intercept Soviet bombers before they could reach the city.
+            The San Gabriel Mountains ridge was lined with missile sites, designed to <b>lay cover for
+            Los Angeles to retreat</b> — a defensive perimeter built into the mountain skyline.
+          </p>
+          <p>
+            Key sites in the Angeles National Forest: <b>Mount Gleason (LA-04)</b> — first Nike site in
+            the Angeles, active 1955–1974, later became <b>LACoFD Camp 16</b> (destroyed in the 2009
+            Station Fire). <b>Los Pinetos/Newhall (LA-94)</b> — 4,000 feet above the San Fernando Valley,
+            1955–1968. <b>Barley Flats/Mount Disappointment (LA-09)</b> and <b>Magic Mountain/Lang (LA-98)</b>.
+            Closer to home: <b>South El Monte (LA-14)</b> near Whittier Narrows, active 1956–1961.
+            All decommissioned by 1974 under the SALT agreement.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Aerojet — Grandfather Bernard in Azusa</span>
+          <p>
+            Grandfather <b>Bernard</b> worked at <b>Aerojet</b> in <b>Azusa, California</b> — the rocket
+            engine manufacturing facility at <b>1100 W Hollyvale St, Azusa, CA 91702</b>. Aerojet was
+            founded in 1942 and moved to Azusa in January 1943, producing JATO (Jet-Assisted TakeOff)
+            units and rocket engines for the military. Bernard had <b>security clearance</b> — classified
+            defense work during the Cold War.
+          </p>
+          <p>
+            Aerojet sold the Azusa facility in <b>2001</b> to <b>Northrop Grumman Corporation</b>, which
+            now operates it as part of its <b>Space Systems</b> division. The facility transitioned from
+            rocket production into R&amp;D, optics, and infrared detectors for satellite-based projects.
+          </p>
+          <p>
+            The Azusa site was declared an <b>EPA Superfund Site in 1985</b> (San Gabriel Superfund Site II)
+            after TCE contamination was discovered in groundwater in 1980. In 1997, NDMA and ammonium
+            perchlorate contamination were also found. Cleanup continues under the Baldwin Park Operable Unit.
+          </p>
+          <p>
+            Aerojet's environmental footprint extends across multiple states: the <b>Rancho Cordova</b>
+            facility near Sacramento (8,500 acres, Superfund since 1983, 27-square-mile groundwater
+            contamination plume); <b>Chino Hills</b> (800-acre ordnance facility, munitions and depleted
+            uranium cleanup); and <b>Homestead, Florida</b> — near the Everglades, where a 1963 rocket
+            test went wrong: the nozzle ejected, spreading hydrochloric acid across wetlands, crop fields,
+            and homes. The massive AJ-260-2 rocket motor still sits in its silo today.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>JPL, Caltech &amp; the Aerojet connection</span>
+          <p>
+            Aerojet and <b>JPL</b> were born from the same group. In 1936, Caltech graduate student
+            <b>Frank Malina</b> and self-taught rocket enthusiasts <b>Jack Parsons</b> and <b>Edward
+            Forman</b> — the <b>"Suicide Squad"</b> — tested their first rocket motor in the Arroyo Seco
+            on Halloween 1936. Their advisor, <b>Theodore von Kármán</b>, secured Army funding for
+            <b>JATO</b> (Jet-Assisted Take-Off) rockets.
+          </p>
+          <p>
+            In 1943, Parsons, Malina, Forman, and von Kármán established the <b>Aerojet Engineering
+            Corporation</b> to manufacture JATO motors. JPL was officially named in November 1943.
+            Aerojet moved to Azusa; JPL stayed in Pasadena. <b>Bernard worked in the same building
+            where Caltech/JPL scientists worked.</b>
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Morris Dam — torpedo testing in the San Gabriel Mountains</span>
+          <p>
+            Just a few miles north of Azusa, the same Caltech/JPL scientists ran the <b>Morris Reservoir
+            Naval Weapons Test Site</b> — a torpedo testing facility at <b>Morris Dam</b> on the San
+            Gabriel River. Built in 1934 by Pasadena for water supply, the 245-foot concrete dam impounds
+            a 1.5-mile-long, 160-foot-deep reservoir.
+          </p>
+          <p>
+            In 1943, Caltech established the test site for the U.S. Navy as a substation of the Naval
+            Ordnance Test Station at China Lake. Caltech managed operations from 1943 to 1950. Testing
+            focused on <b>torpedoes, depth bombs, and submarine-launched weapons</b> — including the
+            <b>Polaris missile</b>. The <b>Variable Angle Launcher</b> (VAL) was the only such structure
+            in the nation: a 300-foot welded steel frame firing torpedoes at up to <b>680 mph</b> into
+            the reservoir, adjustable from 5 to 38 degrees entry angle.
+          </p>
+          <p>
+            Caltech graduate student <b>Conway Snyder</b> — later a JPL scientist who spent 30 years
+            on lunar and interplanetary exploration — accidentally launched the world's first underwater
+            rocket from a rowboat at Morris Dam. Testing whether rockets would produce bubble trails
+            underwater, the sixth rocket shot out of the water and through the air. This mishap helped
+            lead to the development of the submarine-launched <b>Polaris ICBM</b>.
+          </p>
+          <p>
+            The torpedo tests "paid off for the fleet with the tremendous victories won by Navy aviators
+            at the <b>Battle of Leyte Gulf</b> in October 1944" — 60 enemy ships sunk. Testing continued
+            until <b>June 1993</b>, decommissioned under BRAC in 1997. The concrete ski-jump launch ramp
+            is still visible from Highway 39. In <b>October 2024</b>, Morris Dam was designated a
+            <b>National Historic Engineering Landmark</b> on its 90th anniversary.
+          </p>
+          <p>
+            <b>Same San Gabriel Canyon. Same Caltech/JPL scientists. Same classified defense work.
+            Same mountain.</b> Bernard at Aerojet in Azusa. The torpedoes at Morris Dam just up the road.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Command center near Cal Poly Pomona</span>
+          <p>
+            Robert brought the user to work at a <b>newly constructed, earthquake-retrofitted command
+            center</b> outside Cal Poly Pomona. Cal Poly Pomona has an <b>Emergency Operations Center
+            (EOC)</b> that participated in the Chino Hills Shaker Exercise in 2022. The broader <b>LA
+            Emergency Operations Command Center</b> is designed as the most earthquake-proof building in
+            Los Angeles — seismic moat covers allow for <b>27 inches of movement</b> during a maximum
+            credible earthquake.
+          </p>
+        </div>
+
+        <div class="emergency-band">
+          <span>Disney research — Chip 'n' Dale cartoons</span>
+          <p>
+            <b>"Two Chips and a Miss"</b> (1952): Chip and Dale both sneak out in <b>tuxedos</b> to the
+            <b>Acorn Club</b>, where <b>Clarice</b>, a female chipmunk, sings. They compete for her
+            affections — a musical showdown with Chip on piano and Dale on bass. Clarice's only classic
+            cartoon appearance; she didn't reappear in animation for 69 years until <i>Chip 'n' Dale: Park Life</i> (2021).
+          </p>
+          <p>
+            <b>"Chips Ahoy"</b> (1956): Chip and Dale steal a <b>ship in a bottle</b> from Donald Duck's
+            fishing shack to sail to an island overflowing with acorns. Chip is the <b>"captain"</b>,
+            Dale the <b>"first mate."</b> Donald catches the ship with a fishing rod, torments them
+            with fake storms (cigar smoke, thunder on a canister). Donald crashes into their tree,
+            raining acorns into their boat. The chipmunks eat their haul and laugh at Donald stranded
+            on the island. The final Chip 'n' Dale theatrical short.
+          </p>
+          <p>
+            Both "Chip 'n' Dale" and "Chippendales" are named after <b>Thomas Chippendale</b>, the
+            18th-century English furniture maker. In <i>House of Mouse</i>, Minnie hires the chipmunks
+            as the "Chip and Dale Dancers" — a direct parody of Chippendales.
+          </p>
+        </div>
+      </section>
+
+<section class="page" id="ucsb-years">
+        <div class="chapter-no">V</div>
+        <div class="page-kicker">Campus &amp; coast</div>
+        <h2>UCSB, Santa Barbara, and Goleta</h2>
+        <p>
+          The resume lists <b>University of California, Santa Barbara</b> in CMPSCI / the College of
+          Engineering from 2001 to 2004.<a class="cite" href="#src-9">9</a> Around that period it also claims student-programmer
+          work at the Davidson Library's Alexandria Digital Library and a 2005 digitization role related
+          to the library's wax-cylinder project.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          These UCSB-linked entries are important because they broaden the biography beyond school alone.
+          They place Greeran within campus technical work, digital archiving, and library systems, while
+          nearby volunteer listings place him in the Santa Barbara area through the <b>Santa Barbara Food Bank</b>,
+          the <b>Santa Barbara Botanic Garden</b>, and a renaissance-faire role at <b>Live Oak Camp in Goleta</b>.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          The available sources do not verify every specific dorm, apartment, or class schedule requested
+          for this project, so those details are intentionally left out of the published narrative unless the
+          user later supplies direct documentation. The vault on this page is where such material can be kept
+          privately while the sourced edition stays cleanly labeled.
+        </p>
+      </section>
+
+      <section class="page" id="work-service">
+        <div class="chapter-no">VI</div>
+        <div class="page-kicker">Work, service, and craft</div>
+        <h2>A technical and volunteer record before the 2025 case</h2>
+        <p>
+          Greeran's self-published resume describes a varied early-adult work history: <b>Channel Data Systems</b>
+          as Computer Shop Manager in 2004; <b>Novacoast</b> as a programmer in 2004–2005; university library programming;
+          volunteer work for the <b>Santa Barbara Food Bank</b> and <b>Santa Barbara Botanic Garden</b>; and later civic,
+          religious, and service roles ranging from meditation centers to election work and local fundraising.<a class="cite" href="#src-9">9</a>
+        </p>
+        <p>
+          The significance of this material is not that every line can be independently confirmed today, but that it
+          complicates any biography reduced to one chapter. A balanced life file needs to show education, labor,
+          volunteerism, and geography alongside the later legal record, while remaining honest about the fact that
+          most of this broader life trail presently survives as self-description rather than institutional biography.<a class="cite" href="#src-9">9</a>
+        </p>
+        <ul class="thread-list">
+          <li><b>Technical work:</b> Channel Data Systems, library programming, Novacoast, and other computing-adjacent roles.<a class="cite" href="#src-9">9</a></li>
+          <li><b>Service work:</b> food-bank, botanic-garden, health-care, and city-recreation volunteer listings.<a class="cite" href="#src-9">9</a></li>
+          <li><b>Spiritual / civic line:</b> Dhammakaya and Sunnataram entries, fraternal-lodge visits, elections work, and child-ID volunteering.<a class="cite" href="#src-9">9</a></li>
+        </ul>
+      </section>
+
+      <section class="page" id="family-roots">
+        <div class="chapter-no">VII</div>
+        <div class="page-kicker">Family history · subject-supplied research file</div>
+        <h2>Deep roots: the Seize Quartiers, from Drumgooland to Boston</h2>
+        <p class="label-row" style="margin:0 0 8px;color:var(--accent-2);">◆ Subject-supplied research file — built from primary sources; not independently re-verified for this edition</p>
+        <p>
+          On <b>27 June 2026</b>, a research file titled <i>Greeran Seize Quartiers — Complete</i> recorded the
+          results of ten genealogical research sessions, all completed in a single day, using only free public
+          record sources: the FamilySearch Pedigree Resource File, Irish civil registration (GRO) certificates
+          through irishgenealogy.ie, National Library of Ireland registers, Find A Grave, and the Rootsweb
+          Carey database.<a class="cite" href="#src-10">10</a> The working product is a GEDCOM family tree of
+          <b>90,542 lines</b>, with more than forty new individuals added across the sessions.<a class="cite" href="#src-10">10</a>
+          The organizing device is the <b>seize quartiers</b> — sixteen numbered ancestral slots — and the file
+          closes with <b>fourteen slots proven from primary sources</b>, two strongly evidenced, and none left unknown.<a class="cite" href="#src-10">10</a>
+        </p>
+        <p>
+          The <b>Irish paternal line</b> is now documented across seven generations. It runs from Steven Greeran
+          through <b>Gerard T. Greeran</b> to <b>Bernard Patrick Greeran (1924–2017)</b>, son of <b>Hugh Greeran
+          (1896–1978)</b> and <b>Catherine King (1898–2001)</b>. Hugh's parents were <b>Bernard Greeran Jr.
+          (~1860)</b> and <b>Mary Hillan (~1859)</b>; Bernard Jr.'s parents were <b>Bernard Greeran (~1831–1908)</b>,
+          a farmer of <b>Drumgooland, County Down</b>, and <b>Mary Conalty (~1835–1913)</b>, married there on
+          <b>28 April 1854</b>.<a class="cite" href="#src-10">10</a>
+        </p>
+        <p>
+          The longest-running question of the project — the <b>King hypothesis</b>, held across all ten sessions —
+          was confirmed in the final session. <b>Catherine King</b> was the daughter of <b>Hugh King (1849–1920)</b>
+          and <b>Bridget Doyle (1867–1900)</b>, married <b>4 May 1894</b> at <b>Dechomet</b> in Drumgooland; Hugh King
+          was the son of James King (~1816) and Mary McManus, and Bridget Doyle the daughter of John Doyle and
+          Margaret Sawey Doyle. Bridget died in 1900, when Catherine was about two. Catherine emigrated to
+          <b>Boston</b>, where she married Hugh Greeran on <b>28 August 1923</b>.<a class="cite" href="#src-10">10</a>
+          The complete Hugh × Catherine family is now named: <b>Bernard Patrick</b> (1924–2017), <b>James Thomas</b>
+          (1925–2012), <b>John Joseph</b> (1928–1989), <b>Vincent Hugh</b> and <b>Warren Patrick</b> (twins, 1933,
+          both died in infancy), <b>Thomas Patrick</b> (1934–2005), and <b>Kathleen</b> (m. Scott), named in Bernard
+          Patrick's obituary.<a class="cite" href="#src-10">10</a>
+        </p>
+        <p>
+          The <b>American maternal line</b> runs from <b>Jeanie Belle Hewitt</b> through <b>Louise Frances Carey</b>
+          (b. 1923) and <b>Francis Gray Carey</b> (1897) — who married <b>Daisy Beatrice</b> (1904–1989) — back
+          through <b>Luther Gordon Carey (1867–1897)</b> × <b>Millie Ruth Bickford (1868–1937)</b> and
+          <b>Joel Thornburg Carey (1832)</b> × <b>Elizabeth Stanley (1831–1927)</b> of Indiana, to Benjamin Carey
+          (1806), Jonathan Carey (1781), and <b>Samuel Carey (1752)</b>.<a class="cite" href="#src-10">10</a>
+          Samuel Carey served in the <b>Plumstead Township (Bucks County, Pennsylvania) Militia in 1780–81</b> and
+          is a recognized Revolutionary War ancestor — <b>NSDAR Ancestor #A020262</b> — which, per the research
+          file, makes all Greeran descendants eligible for DAR/SAR lineage-society membership.<a class="cite" href="#src-10">10</a>
+        </p>
+        <p>
+          The file is candid about its own corrections, which is why it earns a rung on the evidence ladder:
+          slot 19 was corrected from Mary McGivern to <b>Catherine Dogherty</b> (the 1866 McGivern marriage
+          belonged to a different John Hillan); Mary Hillan had earlier been misread as a Conalty; Millie Ruth
+          Bickford had been carried as a Carey; and Bernard Greeran's birth year moved from ~1846 to ~1831.<a class="cite" href="#src-10">10</a>
+          What remains open is precise: the parents of <b>Daisy Beatrice</b> (b. 19 Sep 1904, Texas; d. 20 Jan 1989,
+          Monrovia, California) — closable with a California marriage certificate (~1921–22), a Texas birth
+          certificate, or her 1989 California death certificate — and the French-Canadian <b>Morin parents of
+          Biddeford, Maine</b>, which require Maine vital records.<a class="cite" href="#src-10">10</a>
+        </p>
+        <div class="emergency-band">
+          <span>A second seize quartiers — and a disagreement worth keeping</span>
+          <p>
+            A later subject-supplied artifact, the <b>Seize Quartiers — Family Tree Visualization &amp; Query
+            Workbench</b>, draws the same sixteen quarters as a strict ahnentafel matrix and reports all sixteen
+            known — generations one through five at one hundred percent.<a class="cite" href="#src-45">45</a>
+            It agrees with the research file where it matters most — the core Greeran line stays in
+            <b>Dechomet, Drumgooland</b>, with <b>Bernard Greeran born 18 July 1860</b> married to a Co. Down
+            Mary — and it <b>names the Morin line</b> the research file left blank: <b>François Morin</b>
+            (~1868, Beauce, Québec / Maine) × <b>Eugénie Bérubé</b> and <b>Alfred Houle</b> (~1870) ×
+            <b>Eugénie Tremblay</b>, French-Canadian couples sitting exactly where the Biddeford, Maine
+            families belong.<a class="cite" href="#src-45">45</a> It also traces a Texas Carey line to Pasadena
+            — <b>George Daniel Carey</b> (b. 18 May 1865, Kildare/Kerry) × <b>Ann Sophia Bailey</b> (b. 20 Nov 1870),
+            and <b>William C. Carey Jr.</b> (b. 14 Dec 1875) × <b>Sally LeGendre</b> (b. 8 Mar 1880).<a class="cite" href="#src-45">45</a>
+          </p>
+          <p>
+            But the two files <b>disagree on several identifications</b>. The workbench's William Hewitt (~1858,
+            Down/England) × Sarah Jane Taylor sits where the research file proves <b>Fred Leslie Hewett</b>
+            (San Francisco, 1856) × <b>Addie Inez Worth</b> from FamilySearch records; its George Daniel Carey and
+            William C. Carey Jr. sit where the file carries <b>Luther Gordon Carey × Millie Ruth Bickford</b> and
+            <b>Joel Thornburg Carey × Elizabeth Stanley</b>; and its James Greeran × Mary Hillen sits where the
+            file proves <b>John Hillan × Catherine Dogherty</b>.<a class="cite" href="#src-10">10</a><a class="cite" href="#src-45">45</a>
+            The book does not adjudicate. The research file's slots are proven from primary sources; the
+            workbench's matrix is a visualization whose quarters carry almost no citations. So the sourced file
+            keeps the book's confidence, the workbench's unique claims — above all the named Morin couples —
+            are recorded as <b>leads to verify, not facts</b>, and the disagreement itself is filed as an open
+            research task in Chapter XII. That is the evidence ladder working as designed.
+          </p>
+        </div>
+        <div class="legal-band">
+          <span>Session 11 — 31 August 2026: the Biddeford leads, tested</span>
+          <p>
+            The open task was worked, not just restated. The <b>Biddeford and Saco Directory
+            1920–1921</b> turns out to be digitised, free, and full-text searchable on the
+            Internet Archive — a Dyer Library / Saco Museum scan of 381 pages under a Public
+            Domain Mark.<a class="cite" href="#src-64">64</a> Inside it, the workbench's
+            <b>Alfred Houle</b> stops being an uncited name: the surname listing carries
+            <b>“Houle Alfred policeman h 12 George,”</b> and the Biddeford Police Department's own
+            roster names him among the regular officers under Chief Thomas Stone and Captain
+            Ernest H. Robbins.<a class="cite" href="#src-64">64</a> A young Edna Houle boards at
+            12 George in the same listing — the pattern a directory uses for a daughter at home.
+            Existence, residence, and occupation are now primary-source facts; parentage and a
+            wife named <b>Eugénie Tremblay</b> are not, because a directory lists heads of
+            household only.
+          </p>
+          <p>
+            The Morin half produced a useful negative. The same volume lists roughly
+            <b>thirty Morins</b> in Biddeford, among them <b>three different men named “Morin
+            Frank”</b> — a marble worker, a quarryman, and a weaver — plus a Morin Drug Company on
+            Main Street.<a class="cite" href="#src-64">64</a> So the surname is dense in exactly
+            the town the workbench names, but “François Morin of Biddeford” cannot be promoted on
+            directory evidence: the name does not resolve to one man. A separate, unsourced
+            community-tree record offers a rival candidate — <b>François Morin, b. 29 Oct 1883
+            at Saint-Jude, Québec, d. March 1963 at Biddeford</b>, son of François Morin and
+            Célanire Couture — which puts his birth fifteen years later than the workbench's
+            ~1868.<a class="cite" href="#src-67">67</a> Two uncited claims disagreeing by fifteen
+            years is the exact case Chapter XII refuses to merge by preference. One lookup settles
+            it: a 1963 Biddeford death falls inside the <b>Maine death index, 1960–1996</b>, and
+            the certificate names the parents.<a class="cite" href="#src-66">66</a>
+          </p>
+          <p>
+            <b>Daisy Beatrice's</b> slots lost a route. Find A Grave, which proved three other
+            slots in this book, returns <b>no memorial</b> for her — the only “Daisy Carey” dying
+            within five years of 1989 is <b>Daisy Hope Morgan Carey (1920–1989) of Goulburn, New
+            South Wales</b>, a namesake trap recorded here so no one imports an Australian family
+            into a Texas line.<a class="cite" href="#src-65">65</a> Nor is there a Maine grave for
+            an Alfred Houle of that generation.<a class="cite" href="#src-65">65</a> Slots 28–29
+            therefore rest entirely on certificates, as the research file predicted.
+          </p>
+          <p class="tiny">
+            Full log, including the negative results and the reproduction commands:
+            <a href="./resources/session-11-biddeford-and-daisy.md">Session 11 research log</a>.
+            Still 14 of 16 slots proven; nothing was demoted, one lead added, one route closed.
+          </p>
+        </div>
+        <div class="emergency-band">
+          <span>Independent verification — 31 August 2026: the contested quarters, tested</span>
+          <p>
+            A separate pass pulled free public records <em>independently</em> of both seize-quartiers files and
+            put the contested quarters to the test Chapter XII prescribes. The published obituary of
+            <b>Louise Francis Carey Hewitt</b> (b. 9 April 1923, Pasadena; d. 27 August 2005) names her husband of
+            sixty-six years, <b>Maurice Frederick Hewitt</b>, and her five children — including <b>Jean Belle
+            Greeran</b>; a guest-book entry signed by “<b>Jerry and Jeanie Glendora</b>” places <b>Steven</b>
+            with them. The immediate family no longer rests on the resume or the research file alone.
+          </p>
+          <p>
+            The <b>Hewett quarter is confirmed against the workbench’s claim.</b> FamilySearch’s census-and-vitals
+            record for <b>Clifford LeRoy Hewitt</b> (b. 21 July 1880, <b>San Francisco</b>) states his parents as
+            <b>Fred Leslie Hewett × Addie Inez Worth</b> and his wife (Maurice’s mother) as <b>Leslie May
+            McFarland</b> — refuting the workbench’s “William Hewitt × Sarah Jane Taylor,” and showing the
+            French-Canadian quarter does <b>not</b> enter through Maurice’s parents.
+          </p>
+          <p>
+            The <b>Carey quarter and the patriot are independently confirmed.</b> Find a Grave links <b>PVT Francis
+            Gray Carey</b> (1897–1976, Forest Lawn Covina) to parents <b>Luther G. Carey × Millie Ruth Bickford</b>,
+            and Luther to parents <b>Joel Thornburg Carey × Elizabeth Stanley</b>; the Rootsweb Carey (PAF) database
+            carries the same Indiana Quaker generations — refuting the workbench’s “George Daniel Carey” and
+            “William C. Carey Jr.” The <b>official NSDAR Ancestor Database</b> returns the patriot himself:
+            <b>Samuel Carey/Cary, Ancestor #A020262</b> — Pennsylvania private under Capt. Robert Gibson, Plumstead
+            Township, 1780; spouse Rachel Doane.
+          </p>
+          <p class="tiny">
+            Full research file with citations, the per-slot scoreboard, and the remaining open items: <a href="./resources/session-12-independent-verification.md">resources/session-12-independent-verification.md</a>.
+            Two slots stayed open — Daisy Beatrice’s Texas parents (CA birth-index maiden-name field or her 1989
+            death certificate) and the Biddeford Morin/Houle couples (Maine parish/vital record); this pass adds no
+            French-Canadian evidence and points the verified line away from the Morins.
+          </p>
+        </div>
+        <blockquote>
+          Ten sessions, one day, free public records only — and the King hypothesis, held from the first session
+          to the last, turned out to be true all along.
+        </blockquote>
+        <div class="margin-grid">
+          <div class="mini-card"><span>Drumgooland, Co. Down</span><small>Ancestral townland. Dechomet church, King × Doyle marriage 1894.</small></div>
+          <div class="mini-card"><span>Boston, 28 Aug 1923</span><small>Hugh Greeran × Catherine King marry in Massachusetts.</small></div>
+          <div class="mini-card"><span>Samuel Carey, 1752</span><small>Plumstead Twp PA Militia 1780–81. NSDAR Ancestor #A020262.</small></div>
+          <div class="mini-card"><span>90,542 lines</span><small>The working GEDCOM after ten research sessions.</small></div>
+          <div class="mini-card"><span>14 / 16 proven</span><small>Seize quartiers slots proven from primary sources; two evidenced, none unknown.</small></div>
+          <div class="mini-card"><span>12 George St, 1920</span><small>Alfred Houle — Biddeford policeman, on the department's regular-officer roster. City directory, free.</small></div>
+          <div class="mini-card"><span>Three "Frank Morin"</span><small>Biddeford 1920–21 lists thirty Morins and three men named Frank — a surname is not an identity.</small></div>
+          <div class="mini-card"><span>Two slots left</span><small>Daisy Beatrice's Texas parents (certificates only now); the Morins of Biddeford, Maine.</small></div>
+        </div>
+      </section>
+
+      <section class="page" id="family-service">
+        <div class="chapter-no">VIII</div>
+        <div class="page-kicker">Family history · subject-supplied research artifact</div>
+        <h2>The family uniform: a service map, 1780–1972</h2>
+        <p class="label-row" style="margin:0 0 8px;color:var(--accent-2);">◆ Subject-supplied research artifact — an interactive HTML5 map of documented family service</p>
+        <p>
+          The same family-history work produced a second artifact: an interactive <b>Greeran Family Military
+          Service Map</b> — a standalone HTML5 world map that plots the family's uniformed service across
+          <b>nearly two hundred years</b>, from the Revolution to Vietnam, with a service timeline running
+          <b>1780–1972</b>.<a class="cite" href="#src-11">11</a>
+        </p>
+        <p>
+          The map's clusters and deployment routes tell the story at a glance. The ancestral home marker sits at
+          <b>County Down, Ireland</b>. The Revolutionary War marker belongs to <b>Samuel Carey</b> of
+          <b>Bucks County, Pennsylvania</b> — Plumstead Township Militia, <b>1780–81</b>.<a class="cite" href="#src-11">11</a>
+          The Second World War spreads across two theaters and four veterans: <b>James T. Greeran</b> of
+          <b>Queens, New York</b> (US Navy), <b>Bernard Patrick Greeran</b> of <b>Queens → California</b> (US Navy,
+          whose Pacific route is traced through <b>Pearl Harbor 1941–42, Guam, Okinawa</b>, and the <b>1945
+          Pacific</b>), <b>Ralph Dunn</b> of <b>San Pedro, California</b> (US Navy), and <b>PVT Francis Gray
+          Carey</b> of <b>Pasadena → Europe</b> (US Army, <b>France and Germany</b>).<a class="cite" href="#src-11">11</a>
+        </p>
+        <p>
+          Vietnam belongs to <b>CPL Greeran, USMC</b>: the map places <b>I Corps Headquarters at Đà Nẵng</b>,
+          <b>Huế during Tet 1968</b>, and the <b>siege of Khe Sanh in 1968</b>, inside the I Corps Tactical Zone,
+          across a <b>1965–72</b> service window.<a class="cite" href="#src-11">11</a> Read against Chapter IV,
+          the map completes a picture the Hewitt fire-service story began: this is a family that wore the uniform
+          at home — county fire apparatus, hotshot crews, ham-radio dispatch — and abroad, in every major American
+          war from the Revolution through Vietnam.
+        </p>
+        <div class="margin-grid">
+          <div class="mini-card"><span>Samuel Carey</span><small>Revolutionary War 1780–81. Bucks Co. PA, Plumstead Twp Militia.</small></div>
+          <div class="mini-card"><span>James T. Greeran</span><small>US Navy, WWII. Queens, New York.</small></div>
+          <div class="mini-card"><span>Bernard Patrick Greeran</span><small>US Navy, WWII. Queens → CA. Pearl Harbor, Guam, Okinawa, Pacific 1945.</small></div>
+          <div class="mini-card"><span>Ralph Dunn</span><small>US Navy, WWII. San Pedro, California.</small></div>
+          <div class="mini-card"><span>Francis Gray Carey</span><small>PVT, US Army, WWII. Pasadena → France and Germany.</small></div>
+          <div class="mini-card"><span>CPL Greeran, USMC</span><small>Vietnam 1965–72. I Corps HQ Đà Nẵng; Huế, Tet 1968; Khe Sanh siege, 1968.</small></div>
+        </div>
+      </section>
+
+      <section class="page" id="html5-workshop">
+        <div class="chapter-no">IX</div>
+        <div class="page-kicker">Self-published works · the 2020s</div>
+        <h2>The HTML5 workshop: standalone tools that run anywhere</h2>
+        <p class="label-row" style="margin:0 0 8px;color:var(--accent-2);">◆ Self-published works — author-attributed; listed as citable artifacts, not third-party verified</p>
+        <p>
+          The resume trail of Chapter VI ends in the 2000s. A later body of self-published work extends the
+          technical record into the 2020s: a shelf of <b>standalone HTML5 applications</b>, each distributed as a
+          single file that runs offline in any browser — no API keys, no server, no build step — the same design
+          ethos as this book lab itself.<a class="cite" href="#src-12">12</a> Posted to a public file host, each
+          tool is individually citable as an artifact. The shelf now holds more than two dozen tools, several posted in
+          successive builds as they evolved — the workshop iterates in public.
+        </p>
+        <ul class="thread-list">
+          <li><b>Crypto Recovery OS | Vanity Miner:</b> a BIP39 recovery workbench. An anagram/typo fixer for scrambled mnemonic phrases (optionally pinned to a target address so the solver only accepts candidates that derive to it), address brute force, a BIP39 explorer, and a vanity miner — across Ethereum, Bitcoin, Banano, Nostr (NIP-06), Solana, Cardano, Litecoin, Dogecoin, and Waves, with an interactive HD-path builder (BIP44/49/84/86), BIP39 passphrase support, checksum validation, an air-gapped execution mode, four interface themes, and a "Cryptographic Identity Void" that turns any derivation into a character stat card. At least three builds were posted as the tool evolved.<a class="cite" href="#src-12">12</a><a class="cite" href="#src-13">13</a><a class="cite" href="#src-14">14</a></li>
+          <li><b>Banano Paper Wallet Generator &amp; Rare MonKey Scanner:</b> offline paper wallets with a procedural SVG "MonKey" renderer that keeps working with the network down, a rare-trait engine that draws the collectible accessories — Crown (1.1%), Joint (1.0%), Monocle (0.77%), Flamethrower (0.1%), Jester Hat (0.07%) — and the mythic tier: Cyber Plasma Blade (0.03%), Diamond Hands (0.02%), Alien Symbiote (0.01%), Cosmic Galaxy (0.005%). An auto brute-forcer grinds fresh addresses until a chosen accessory appears.<a class="cite" href="#src-15">15</a></li>
+          <li><b>CyberChef — HTML5 (Renovated Kitchen):</b> a single-file kitchen of 100+ operations — classical ciphers (Caesar, Vigenère, Gronsfeld, VIC, Playfair, Hill, rail fence, columnar transposition, one-time pad), hashes (SHA-1/2/3, MD5, CRC-16/32, Adler-32, FNV-1a, djb2, HMAC), symmetric crypto (AES-CBC/GCM/CCM, ChaCha20, RC4, Rabbit, DES, 3DES, Camellia), modern curves (X25519, Ed25519, secp256k1 ECDH), educational post-quantum ML-KEM (FIPS 203) and ML-DSA (FIPS 204), Shamir secret sharing, steganography, barcodes (Code 39/128, EAN-13), electronics (IC gates, binary adder, 7-segment decoder, truth tables), Turing-complete toys (Brainfuck, Rule 110, Game of Life), autostereograms, and BIP39/BIP44 wallet operations including a haiku-mnemonic variant.<a class="cite" href="#src-16">16</a></li>
+          <li><b>CensorBench:</b> a censorship testing and bypass suite of 31 probes — DNS poisoning, sinkholes, and NXDOMAIN hijacking; HTTP header injection, keyword filtering, TCP RST injection, and redirect injection; TLS SNI filtering, certificate interception, and downgrade; deep packet inspection; IP, port, and throttling tests; and protocol obfuscation (obfs4, domain fronting, VLESS+REALITY, Shadowsocks active-probing defense, ECH). An encoding-bypass lab demonstrates keyword-filter evasion with Base64, ROT13, homoglyphs, zero-width characters, and leetspeak, alongside an atlas of regional censorship techniques.<a class="cite" href="#src-17">17</a></li>
+          <li><b>GEDCOM → HTML5 + Melissa Geocoding + TSP Route Planner:</b> a genealogy converter that parses GEDCOM files, tables people, events, and places, builds geocoder lookup URLs (Melissa and alternatives), draws an offline SVG map preview, solves a traveling-salesman route across ancestral places, and exports a self-contained HTML5 report plus travel list, route CSV, and GeoJSON — with a quine-style source download.<a class="cite" href="#src-18">18</a><a class="cite" href="#src-19">19</a></li>
+          <li><b>BIP-39 Haiku Workbench · Mnemonic Validator &amp; Derivation Explorer:</b> a checksum-first teaching tool for seed phrases. A live checksum engine over the 2048-word list (SHA-256 checksum, PBKDF2-HMAC-SHA512 × 2048) with the 11-bits-per-word binary encoding laid out word by word, and a checksum solver that enumerates the 128 legal final words for a given eleven-word prefix — "the last word is not free poetry: its first bits complete the entropy and its final 4 bits are forced by SHA-256." Derivation paths stay locked until the checksum passes, exactly like a real wallet, and a catalogue of 120 curated phrases (13 valid, 107 invalid) pairs repeated-word patterns that show why a checksum cannot be guessed with poetic phrases that show why memorable entropy is almost never valid. Everything computes in-tab on audited @scure libraries — no network calls, no storage.<a class="cite" href="#src-20">20</a><a class="cite" href="#src-21">21</a><a class="cite" href="#src-22">22</a></li>
+          <li><b>Audubon Bird Brain Research:</b> an ornithology-cognition companion covering 23 species across five research categories — nesting, collective social behavior, survival, intelligence, and brood parasitism. The Killdeer's broken-wing display and ungulate redirect, the Emperor Penguin's rotating winter huddle, the Clark's Nutcracker caching 30,000+ pine seeds across 5,000–6,000 locations and recovering them nine months later, the Superb Fairy-wren teaching embryos a vocal password before hatching, the New Caledonian crow crafting hooked tools, the Sociable Weaver's communal megastructure, the cuckoo–host arms race — with animated defense-pattern demonstrations.<a class="cite" href="#src-23">23</a></li>
+          <li><b>ACME Labs HTML5 Software Suite:</b> Jef Poskanzer's legendary ACME Labs catalog — thirty years of Unix stream filters, X11 root-window animations, the thttpd web server, and bignum algorithms — remastered as 23 interactive HTML5 sandbox components across Unix utilities, X11 visuals and toys, math and time, text and data modders, web and HTTP servers, and PostScript hacks; <i>phoon</i>/<i>xphoon</i> (1988) draws the current phase of the moon and <i>globe</i> (1994) the sunlit face of the Earth. Client-side, zero bloat, with a ⌘K quick-launch palette.<a class="cite" href="#src-24">24</a></li>
+          <li><b>AURA SoundStudio Pro:</b> a browser DSP studio that models signature hardware profiles — THX Spatial Studio (Deep Note glissando, TruSurround 3D), Dolby Atmos 3D (9.1.4 object panning, height channels, dialogue leveler, night-mode compression), Bose ANC (phase-inversion cancellation to a −34 dB floor, SoundTrue high-frequency restoration), IMAX Enhanced (15 Hz sub-bass LFE, 12-channel point source), Real3D HRTF binaural, and a manual studio master — feeding a 10-band EQ, convolution-reverb rooms (cinema hall, cathedral, IMAX theater, anechoic chamber), an interactive 3D soundstage panner, and 60 FPS spectrum/oscilloscope/spectrogram analysis. Two builds were posted, at 48 kHz and 96 kHz pipelines.<a class="cite" href="#src-25">25</a><a class="cite" href="#src-28">28</a></li>
+          <li><b>Image Format Encyclopedia:</b> a 90-format reference — 56 active, 13 legacy, 14 deprecated, 6 experimental, 20 animated — from JPEG, AVIF, and JPEG XL back through ILBM, Targa, and DjVu, plus camera RAW, HDR and scientific formats, the binary encoding methods (UUencode, yEnc, Base64, BinHex), and PAR/PAR2 parity recovery files. Includes a use-case format advisor, an eight-question decision tree, browser-support matrices, and a quine generator that turns self-replicating code into an image.<a class="cite" href="#src-30">30</a></li>
+          <li><b>BIP-39 Haiku Wallet Generator:</b> the Haiku Workbench's sibling flips the lesson into a mining rig — it grinds seed phrases until one forms an exact 5-7-5 syllable haiku that still carries a valid BIP-39 checksum, for Bitcoin (BIP-44), Ethereum, Litecoin, or Bitcoin Cash wallets. Saved wallets export AES-256-encrypted, the wordlist is embedded, and the tool runs fully offline from local storage.<a class="cite" href="#src-40">40</a></li>
+          <li><b>Standalone Offline Decryptor:</b> the vault's companion key. A first-run ritual installs the 2048-word dictionary into local storage so the tool can validate and decrypt the generator's encrypted JSON exports with the network permanently off; it accepts a file or pasted text, warns about browser memory limits, and can wipe the local dictionary on reset.<a class="cite" href="#src-42">42</a></li>
+          <li><b>Ian Coleman BIP39 Mnemonic Code Converter (standalone copy, v0.5.6):</b> the canonical cold-storage workhorse, posted alongside the workshop's own tools — entropy entry in binary, base-6, dice rolls, decimal, hex, or playing cards; PBKDF2 rounds from 2048 (compatibility) to custom; eleven mnemonic languages; BIP32/BIP44/BIP49/BIP84/BIP141 derivation with account extended keys; BIP38 key encryption and BIP85 child keys; split mnemonic backup cards; and a "hide all private info" switch. A hosted copy of Ian Coleman's open-source converter, shelved for the offline toolkit.<a class="cite" href="#src-35">35</a></li>
+          <li><b>Cipher Machines &amp; Cryptology — Interactive Simulator Suite:</b> a working Enigma — M3 and M4 (Kriegsmarine) models, rotors I–VIII with ring settings, UKW-A/B/C reflectors, the Steckerbrett plugboard, lampboard and QWERTZ keyboard, a paper-tape teleprinter log, batch message encryption, U-Boat Kurzsignale short-signal presets, and a live electrical circuit tracer that lights the signal's path through rotors and reflector as you type.<a class="cite" href="#src-37">37</a></li>
+          <li><b>Crypto Attack Lab:</b> a portable, self-contained quine that teaches cryptanalysis by doing — known-plaintext attack sessions across AES-ECB/CBC/CFB/OFB/CTR/GCM/CCM and RSA, where an attacker who knows even one plaintext block can recover matching ciphertext blocks "without ever knowing the key" (the ECB Penguin); a timeline of real-world breaks from Bleichenbacher's 1998 padding oracle through BEAST, Lucky 13, POODLE, CRIME, GCM nonce reuse, ROBOT, EFAIL, and the 2024 AES-GCM collision result; the full NIST SP 800-38 modes table; and the post-quantum panel — ML-KEM (FIPS 203), ML-DSA (204), SLH-DSA (205), FN-DSA (206).<a class="cite" href="#src-38">38</a></li>
+          <li><b>CryptoFountain BBS:</b> autonomous peer-to-peer microblogging built on erasure coding — every post checksummed Adler-32 and Fletcher-16, hashed FNV-1a, encodable into LT fountain-code packets (any sufficient subset of packets reconstructs the data), delta-synced in the manner of rsync, and anchorable on-chain via OP_RETURN. Ships as a quine and opens its feed with the Genesis-block headline: "Chancellor on brink of second bailout for banks."<a class="cite" href="#src-39">39</a></li>
+          <li><b>Cryptopoly:</b> the workshop's game night — a Monopoly-style board where the twenty-two properties are live-priced tokens (LTC on the cheap side of the board, BTC at the top) with per-player ledgers, a community vault of NFTs, chance and chest cards, and a real-time action log.<a class="cite" href="#src-41">41</a></li>
+          <li><b>The workshop keeps re-stocking itself:</b> later builds of the Banano paper-wallet generator, the Renovated Kitchen, and CensorBench were reposted alongside the new tools — versioning handled by simply shipping the next file.<a class="cite" href="#src-31">31</a><a class="cite" href="#src-32">32</a><a class="cite" href="#src-33">33</a></li>
+          <li><b>ViteReact → Inlined HTML5 / Webxdc / PWA Suite (v6.3 → v15.0):</b> the machine that builds the workshop — a converter that takes a Vite/React project (built dist or raw JSX source) and emits a single inlined <b>.html</b> file, a Delta Chat <b>.xdc</b> webxdc app, or an offline <b>PWA</b> bundle. A dual-engine compiler (Sucrase in WebAssembly and Babel Standalone) transpiles the JSX, and a comparator verifies both engines against each other — "JSX tree valid, DOM root mount clean" — before the output ships; a webxdc multiplayer simulator, archive explorer with live editor, and bundle-size analytics ride along.<a class="cite" href="#src-47">47</a><a class="cite" href="#src-48">48</a> The pipeline is the same one this book lab uses for its own inlined edition and .xdc package — the tool on the shelf and the book in your hands are products of one process. Its quality-control companion, the <b>HTML5 Offline ZIP Audit &amp; Repair Viewer</b>, loads any workspace ZIP, audits it for HTML5 doctype, charset, viewport, external dependencies and offline blockers, and exports a repaired standalone HTML with assets inlined as data URLs.<a class="cite" href="#src-49">49</a></li>
+          <li><b>The Renovated Kitchen's grand expansion:</b> a later build roughly doubles the menu. New: fuzzy hash matching, byte diff &amp; patch, and hash-type probing; BIP84 SegWit wallets and BIP44/BIP39 recovery for <i>missing mnemonic words</i>; steganography by whitespace, image LSB, and acrostic; a <b>GCWizard wing</b> (Polybius squares, Pigpen, Dancing Men, the Zodiac's homophonic cipher, resistor color codes, T9, Roman chronograms, GPS/Haversine) that swells into a full symbol-table catalog — Braille systems, raised type, telegraph and barcode, and constructed alphabets from Klingon and Tengwar to Sitelen Pona, Atlantean, and the Visitor alphabet from <i>V</i>; classical hardware (M-209, Enigma I, the Spartan scytale) and a wall of block ciphers from CAST5 and SEED to TEA, RC5/RC6, SAFER+, and Bluetooth's E-series; a <b>FIDO &amp; hardware-keys bench</b> (WebAuthn authData and CTAP2 CBOR parsers, Yubico modhex and YubiKey PIV APDU builder, OnlyKey, SoloKeys, privacyIDEA tokens); a coin-address directory from Nano to Kaspa with market-ticker reference and a portfolio simulator; Saltpack armor (multi-recipient) and NaCl secretbox; Gödel-Escher-Bach formal systems (the MIU puzzle, typographical number theory); Project Gutenberg telegraph codebooks; magnet↔torrent conversion; RSS/Atom and OPML; Geohash, Plus Codes, and Maidenhead locators; the Sneakers "Setec Astronomy" chip; the Nimitz Graybook vector plot; and a scientific calculator, unit converter, and world clock under the same roof. Operations stack into a <b>recipe</b> that bakes top-to-bottom, an SFX installer packs chosen recipe packs into a brand-new standalone kitchen, and "Download Self is a quine of this page. No external loads."<a class="cite" href="#src-43">43</a></li>
+          <li><b>BIP-39 Haiku Wallet Engine:</b> the second-generation haiku miner — paste the 2048-word dictionary once and it lives in local storage forever after; an AES-256-GCM encrypted vault behind a master password; grammar heuristics that reject awkward poetic line-breaks; and a "Mine Poetic Wallet" engine that exports as a secure .TXT.<a class="cite" href="#src-50">50</a></li>
+          <li><b>WebTools Hub — Quine Edition:</b> the quine concept distilled to its purest form — "a self-replicating HTML file that can download itself." Two builds were posted, stamped <b>17:37:21.406Z and 17:37:21.734Z on 30 August 2026</b> — thirty-four seconds apart, and the same day this expanded edition was assembled. The workshop was shipping while the book was being written.<a class="cite" href="#src-51">51</a><a class="cite" href="#src-52">52</a></li>
+          <li><b>Unified HTML5 Cryptography &amp; Utility Suite:</b> a curated shelf of open-source classics and originals under one launcher — an Ensō Zen-circle painter, GCWizard, an SSTV slow-scan television suite, Wiki-in-a-Jar, TiddlyWiki5, the Underbite BBS, a Waves wallet client, a Banano miner that folds proteins for Folding@home, BIP-39 keys, GCHQ's CyberChef, and a quine/native runner — every ported app linked to its GitHub source, including <b>PIM Manager at github.com/sgreeran</b>: the subject's own repository, and the first appearance of the workshop's GitHub identity in the cited artifacts.<a class="cite" href="#src-46">46</a></li>
+                  <li><b>Procedural Ensō Generator:</b> a seed-driven brush circle with a random-terrain mode and PNG export; a second build adds an optional <b>custom seed</b> field, so any phrase can determine the stroke. Five artifacts of this batch carry the ensō motif from drawing to key — they are gathered in Chapter X.<a class="cite" href="#src-54">54</a><a class="cite" href="#src-55">55</a></li>
+          <li><b>Banano Scanned Wallets Report:</b> the output side of the paper-wallet generator — 100 generated wallets scanned against the MonKey accessory tables, returning <b>23 rare hits (23.0%)</b>, among them a Flamethrower (0.1% overall) and a Jester Hat (0.07% overall). The archive copy of this report reproduces the statistics but not the 100 private seeds the original table prints.<a class="cite" href="#src-59">59</a></li>
+          <li><b>Purple Team Training Suite — SecOps Simulation Lab:</b> a defensive-training console built entirely from synthetic data: a red-vs-blue scoreboard (Red 1,260 / Blue 1,385; detections 7/7; MTTR 4.2 min), a MITRE ATT&amp;CK kill-chain navigator, simulated RF spectrum and BLE surveys, three synthetic PCAPs, and NIST CSF 2.0-aligned blue-team playbooks. Every panel repeats the same disclaimer — no live capture, no offensive tooling, authorized lab use only.<a class="cite" href="#src-60">60</a></li>
+          <li><b>ADS-B Radar Scope:</b> a radar-scope view of live aircraft traffic drawn from public aggregators (OpenSky, ads.fi, airplanes.live, adsb.lol) with classic, military, ATC, retro, and stealth display modes, a 100 NM range ring, and full target records — ICAO24, squawk, baro/geo altitude, vertical rate. The adsb.lol feed is the same source this repository's GODSEYE globe uses for its aircraft layer: the flat panel to that sphere.<a class="cite" href="#src-61">61</a></li>
+          <li><b>Rodger Ramrod — HTML5 App:</b> a preservation wrapper rather than a game: a single-file page that loads the eXoDOS package for a 1996 MS-DOS title from the Internet Archive into a browser DOSBox runtime, extracts it locally, and boots the original <span class="k">RRR.BAT</span>. The page prints the package manifest (RRR.DAT 22.2 MB, MAIN.EXE 642 KB) and states that it "does not alter the DOS binaries." A second build adds a quine download and a "What is a Quine?" explainer.<a class="cite" href="#src-62">62</a><a class="cite" href="#src-63">63</a></li>
+        </ul>
+        <div class="emergency-band">
+          <span>The ACME Cryptographic Audit Workstation — the workshop's most autobiographical artifact</span>
+          <p>
+            One tool names its author in its own title bar: <i>ACME Cryptographic Audit Workstation // Steven
+            Greeran Portfolio</i>.<a class="cite" href="#src-26">26</a> It presents the portfolio itself as an
+            RC4-encrypted stream — "streaming-encrypted via Jef Poskanzer's RC4 cipher (acme.com/software)" — and
+            asks the auditor to break it, with a key hint pointing at the subject's username <b>sgreeran</b> or
+            personal domain <b>alt255.motd.org</b> (Alt+255: the non-breaking space).<a class="cite" href="#src-26">26</a>
+            A live grid visualizes the 256-byte RC4 S-box as the KSA and PRGA swap bytes into high entropy, and
+            the workstation doubles as a <b>Darwin C-to-HTML5 transpilation auditor</b> with a quine
+            self-replication mode — a deliberate callback to the Apple Darwin wax-cylinder work of the UCSB
+            years in Chapter V. A companion quine source package publishes the full React/Vite/Tailwind
+            source.<a class="cite" href="#src-27">27</a><a class="cite" href="#src-29">29</a> The ACME theme runs
+            both ways: a tribute suite to Poskanzer's catalog<a class="cite" href="#src-24">24</a> on one shelf,
+            and the master's own cipher locking the resume on the other — the workshop auditing itself.
+          </p>
+        </div>
+        <div class="emergency-band">
+          <span>The Vault — CyberVault Members WebOS: the shelf becomes a portal</span>
+          <p>
+            The third batch's capstone is <i>The Vault — a Members Only Encrypted WebOS Portal</i>: a
+            self-described "secure air-gapped shell" that demands a master PIN or passphrase — YubiKey FIDO and
+            biometric entrances are offered in demo form — before admitting the member to the platform.<a class="cite" href="#src-36">36</a>
+            Inside, the shelf is bundled as one portal of "12 Standalone Apps," mixing third-party classics with
+            original pieces: <b>GCHQ's CyberChef</b> and the <b>Ian Coleman cold-storage bundle</b> stand beside
+            <b>real RSS CORS proxies</b> feeding a <b>geocoded news globe</b>, and a <b>Graphviz-driven GEDCOM
+            "visual genetics"</b> engine for family trees.<a class="cite" href="#src-36">36</a> The architecture
+            is the same hub-and-single-file-apps pattern as this repository's own SITE-K hub — the workshop's
+            tools and this book lab are members of one family. And the shell states the workshop's philosophy
+            plainly: nothing phones home, and the door only opens for the member who holds the key. A second
+            build hides the same members-only screen behind a wall of katakana — the login page itself
+            encrypted to the eye — where "first login creates your account automatically."<a class="cite" href="#src-36">36</a><a class="cite" href="#src-44">44</a>
+          </p>
+        </div>
+        <p>
+          The workshop and the family file are two halves of one habit. The Seize Quartiers project produced a
+          90,542-line GEDCOM; the GEDCOM converter in the same toolbox exists to turn exactly such files into
+          standalone reports and route plans.<a class="cite" href="#src-10">10</a><a class="cite" href="#src-18">18</a>
+          The military service map of Chapter VIII is itself one of these single-file artifacts.<a class="cite" href="#src-11">11</a>
+          The Vault's Graphviz "visual genetics" closes the loop a second time: family file in, family tree out.<a class="cite" href="#src-36">36</a>
+          The Haiku Workbench grew directly out of the Crypto Recovery OS and the haiku-mnemonic operation in the
+          Renovated Kitchen — seed-phrase checksums taught three different ways — and the Haiku Wallet Generator
+          then grinds the lesson until poetry and checksums agree.<a class="cite" href="#src-16">16</a><a class="cite" href="#src-20">20</a><a class="cite" href="#src-40">40</a>
+          The through-line from Chapter III is continuous: the kid who sold milk on the blacktop and soldered at
+          Maurice's workbench in Duarte grew into a builder of tools that anyone can run, air-gapped, for free.
+        </p>
+        <div class="margin-grid">
+          <div class="mini-card"><span>Crypto Recovery OS</span><small>Scrambled-mnemonic solver, brute force, BIP39 explorer, vanity miner. Multi-coin, air-gapped.</small></div>
+          <div class="mini-card"><span>Banano paper wallets</span><small>Offline wallets, procedural MonKeys, mythic-trait brute-forcer.</small></div>
+          <div class="mini-card"><span>Renovated Kitchen</span><small>100+ operations: ciphers to post-quantum ML-KEM/ML-DSA, one file.</small></div>
+          <div class="mini-card"><span>CensorBench</span><small>31 censorship probes plus an encoding-bypass laboratory.</small></div>
+          <div class="mini-card"><span>GEDCOM → HTML5</span><small>Family files to maps, routes, and standalone reports.</small></div>
+          <div class="mini-card"><span>BIP-39 Haiku Workbench</span><small>Checksum engine, 128-word solver, 120-phrase catalogue. Locked until valid.</small></div>
+          <div class="mini-card"><span>Bird Brain Research</span><small>23 species: nutcracker caches, fairy-wren passwords, cuckoo arms races.</small></div>
+          <div class="mini-card"><span>ACME Labs Suite</span><small>Poskanzer's Unix/X11 classics — phoon, globe, thttpd — in a browser tab.</small></div>
+          <div class="mini-card"><span>AURA SoundStudio</span><small>THX, Atmos, Bose ANC, IMAX profiles; 10-band EQ; convolution reverb.</small></div>
+          <div class="mini-card"><span>Image Format Encyclopedia</span><small>90 formats, encodings, PAR recovery, format advisor, quine generator.</small></div>
+          <div class="mini-card"><span>ACME Audit Workstation</span><small>The RC4-locked portfolio. Key hint: sgreeran / alt255.motd.org.</small></div>
+          <div class="mini-card"><span>Haiku Wallet Generator</span><small>Mines 5-7-5 haiku mnemonics with valid checksums. AES-256 export.</small></div>
+          <div class="mini-card"><span>Offline Decryptor</span><small>First-run dictionary install; decrypts vaults with the network off.</small></div>
+          <div class="mini-card"><span>Ian Coleman BIP39</span><small>The canonical converter, v0.5.6: card/dice/hex entropy; BIP32/44/49/84/85.</small></div>
+          <div class="mini-card"><span>Enigma Simulator</span><small>M3/M4, rotors I-VIII, Steckerbrett, Kurzsignale, live circuit tracer.</small></div>
+          <div class="mini-card"><span>Crypto Attack Lab</span><small>KPA sessions, the ECB Penguin, attack timeline 1998-2024, PQC panel.</small></div>
+          <div class="mini-card"><span>CryptoFountain BBS</span><small>LT fountain codes, Adler/Fletcher checksums, OP_RETURN anchors.</small></div>
+          <div class="mini-card"><span>Cryptopoly</span><small>Monopoly with 22 live-priced tokens and an NFT community vault.</small></div>
+          <div class="mini-card"><span>The Vault WebOS</span><small>Members-only encrypted portal bundling the whole shelf.</small></div>
+          <div class="mini-card"><span>ViteReact Build Suite</span><small>React projects → inlined HTML5, .xdc, or PWA. Dual-engine compiler, verified mounts.</small></div>
+          <div class="mini-card"><span>ZIP Audit &amp; Repair</span><small>HTML5/offline audits of workspace ZIPs; repaired standalone exports.</small></div>
+          <div class="mini-card"><span>Haiku Wallet Engine</span><small>AES-256-GCM vault, grammar heuristics, poetic-wallet mining.</small></div>
+          <div class="mini-card"><span>WebTools Hub</span><small>The pure quine: an HTML file that downloads itself. Two builds, 34 seconds apart.</small></div>
+          <div class="mini-card"><span>Unified Suite</span><small>Curated open-source shelf — Ensō, GCWizard, SSTV, TiddlyWiki — plus github.com/sgreeran.</small></div>
+          <div class="mini-card"><span>Ensō Line</span><small>Five builds: circle → seed → haiku → key. See Chapter X.<a class="cite" href="#src-54">54</a></small></div>
+          <div class="mini-card"><span>Banano Scan Report</span><small>100 wallets scanned, 23 rare (23.0%). Seeds redacted in the archive.<a class="cite" href="#src-59">59</a></small></div>
+          <div class="mini-card"><span>Purple Team Lab</span><small>Synthetic SecOps range — ATT&amp;CK navigator, sim RF/PCAP, NIST playbooks.<a class="cite" href="#src-60">60</a></small></div>
+          <div class="mini-card"><span>ADS-B Scope</span><small>Live traffic on a radar; shares the GODSEYE feed.<a class="cite" href="#src-61">61</a></small></div>
+          <div class="mini-card"><span>Rodger Ramrod</span><small>eXoDOS → browser DOSBox, unmodified binaries. Quine build.<a class="cite" href="#src-62">62</a></small></div>
+        </div>
+      </section>
+
+      <section class="page" id="enso-line">
+        <div class="chapter-no">X</div>
+        <div class="page-kicker">Self-published works · a motif and what it became</div>
+        <h2>The ensō line: a brushstroke that became a key</h2>
+        <p class="label-row" style="margin:0 0 8px;color:var(--accent-2);">◆ Self-published works — author-attributed. The artifacts are citable; the reading of them below is editorial, not a sourced claim about the subject's beliefs.</p>
+        <p>
+          Five artifacts supplied with the fifth resource batch share one figure. The <b>ensō</b> — the
+          circle brushed in a single stroke in Zen calligraphy, traditionally left open, the gap part of
+          the form rather than a flaw in it — appears first as a drawing and ends as a
+          key.<a class="cite" href="#src-54">54</a><a class="cite" href="#src-55">55</a><a class="cite" href="#src-56">56</a><a class="cite" href="#src-57">57</a><a class="cite" href="#src-58">58</a>
+        </p>
+        <p>
+          The progression is visible build by build. The first generator draws a circle from a
+          <b>seed ID</b> and exports it as a PNG; a "random terrain" control sets the same stroke against
+          a generated landscape.<a class="cite" href="#src-54">54</a> The second build adds one field —
+          <b>custom seed (optional)</b> — and with it the ensō stops being only an image: any phrase can
+          now determine the circle.<a class="cite" href="#src-55">55</a> That is the hinge of the whole
+          line.
+        </p>
+        <p>
+          The next three builds walk through the opened door. <b>BIP-39 Haiku Wallet &amp; Ensō Forge</b>
+          mines for a seed phrase that is simultaneously a checksum-valid BIP-39 mnemonic and a
+          metrically exact 5-7-5 haiku, and draws the ensō from the same parameters — "mining ensures
+          exact 5-7-5 syllables with a valid BIP39 SHA-256 checksum."<a class="cite" href="#src-56">56</a>
+          <b>Ensō Haiku Wallet Forge</b> instruments every variable — haiku, mnemonic, BIP-44 path, xpub,
+          P2PKH address, SHA-256 wallet fingerprint, ensō parameters — and collapses the whole set into
+          a single printable <b>Ensō Reference Number, base-62 encoded</b>: "unique seed encoding all
+          parameters." The circle becomes the record.<a class="cite" href="#src-57">57</a> The last build
+          makes the line offline: rather than fetching the wordlist, the user pastes the official 2048
+          words once and they are "permanently committed to your browser's local sandbox storage so that
+          all cryptographic operations can run fully offline," behind an AES-256-GCM vault and a batch
+          miner with a grammar filter that "automatically skips awkward poetic line
+          breaks."<a class="cite" href="#src-58">58</a>
+        </p>
+        <div class="margin-grid">
+          <div class="mini-card"><span>src-54 · Ensō Generator</span><small>Seed ID → circle. Random terrain. PNG export.<a class="cite" href="#src-54">54</a></small></div>
+          <div class="mini-card"><span>src-55 · Custom-seed build</span><small>Any phrase can drive the stroke — the hinge of the line.<a class="cite" href="#src-55">55</a></small></div>
+          <div class="mini-card"><span>src-56 · Haiku &amp; Ensō Forge</span><small>5-7-5 haiku that is also a valid BIP-39 phrase; AES-256 local storage.<a class="cite" href="#src-56">56</a></small></div>
+          <div class="mini-card"><span>src-57 · Ensō Haiku Wallet Forge</span><small>Base-62 Ensō Reference Number encodes every parameter.<a class="cite" href="#src-57">57</a></small></div>
+          <div class="mini-card"><span>src-58 · Poetic Wallet Suite</span><small>Offline wordlist, AES-256-GCM vault, batch mine, grammar filter.<a class="cite" href="#src-58">58</a></small></div>
+        </div>
+        <p>
+          Two readings are available and the record does not settle between them. The first is
+          mechanical: a workshop that needed a deterministic, offline, human-memorable seed found that
+          poetry — five, seven, five syllables — makes a better mnemonic than twelve arbitrary words,
+          and that a brush circle makes a better fingerprint than a hex string. The second is
+          temperamental, and it has a thread back through this book: Chapter VI records volunteer
+          entries at meditation centers — <b>Dhammakaya</b>, <b>Sunnataram</b> — and the same subject who
+          put that practice on a resume later spent five builds on the signature figure of Zen
+          calligraphy.<a class="cite" href="#src-9">9</a><a class="cite" href="#src-54">54</a> This
+          edition states the first as artifact and the second as interpretation; it does not claim the
+          tools were made as practice, because nothing published says so. The motif's persistence across
+          five independent builds is the only evidence offered here.
+        </p>
+        <p>
+          The same figure runs through the workshop's other output: the repository this book ships in
+          carries an art studio whose own build name is <b>Ensō Forge</b>, and the Unified Utility Suite
+          catalogues an Ensō generator alongside the open-source tools it
+          curates.<a class="cite" href="#src-46">46</a> Like everything in Chapters IX and X, these are
+          artifacts, not endorsements: the cryptographic properties are as-implemented and unaudited,
+          and the tools say so themselves — "for educational/demonstration purposes. Do not use for
+          storing real funds without independent verification."<a class="cite" href="#src-57">57</a>
+        </p>
+        <blockquote>
+          The stroke that is not closed is still the stroke. In this workshop the circle with a gap in
+          it became the thing that closes a key.
+        </blockquote>
+      </section>
+
+      <section class="page" id="public-record">
+        <div class="chapter-no">XI</div>
+        <div class="page-kicker">Official legal record</div>
+        <h2>Registration, wanted notice, arrest, and pending charge in the Virgin Islands</h2>
+        <p>
+          The official record states that Greeran was convicted in California of <b>child pornography with intent to sell or distribute</b>
+          and later registered in the U.S. Virgin Islands after moving to St. Croix. His initial registration date was
+          <b>October 28, 2022</b>, with the most recent published update dated <b>October 27, 2023</b>.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a>
+        </p>
+        <p>
+          VIDOJ says he did not appear for the required annual update on <b>October 28, 2024</b>. A wanted notice followed on
+          <b>February 21, 2025</b>, and he was detained on <b>February 23, 2025</b> near Midre Cummings Park in Frederiksted,
+          then arrested at the Wilbur H. Francis Command Police Station by the SORNA unit.<a class="cite" href="#src-1">1</a><a class="cite" href="#src-2">2</a><a class="cite" href="#src-7">7</a><a class="cite" href="#src-8">8</a>
+        </p>
+        <p>
+          On <b>February 24, 2025</b>, he appeared before Magistrate Judge Venetia H. Velasquez on a charge under
+          <b>14 V.I.C. § 1724(b)(1)</b> for Failure to Register as a Sex Offender; bail was set at <b>$5,500</b> and the public release
+          said he remained in custody when unable to post it.<a class="cite" href="#src-2">2</a> This charge is an accusation, not a conviction.
+          No further public disposition had been located for this book as of August 28, 2026.
+        </p>
+        <div class="legal-band">
+          <span>Official-source chapter</span>
+          <small>Use this section as the factual anchor when expanding the book; do not let unsupported memoir material override the court/public-record chronology.</small>
+        </div>
+      </section>
+
+      <section class="page" id="open-questions">
+        <div class="chapter-no">XII</div>
+        <div class="page-kicker">Gaps &amp; private prompts</div>
+        <h2>What remains outside the published edition</h2>
+        <p>
+          Several details requested for expansion — such as named dorm residents, apartment anecdotes, exact class schedules,
+          specific social stories, and many travel memories — were not verified in the public sources reviewed for this project.
+          Publishing them as fact would blur the line between biography and invention, and in some cases would identify third parties
+          who are not public figures.
+        </p>
+        <p>
+          The family-history chapters show how promotion works when documents do arrive: the Seize Quartiers file left exactly two
+          ancestral slots open — the Texas parents of Daisy Beatrice and the Morin parents of Biddeford, Maine — each with a named
+          certificate (California marriage ~1921–22, Texas birth 1904, California death 1989, Maine vital records) that would close
+          it.<a class="cite" href="#src-10">10</a> Locate the record, cite it, and the slot moves from evidenced to proven. That is the
+          same workflow this book asks of every other memory.
+        </p>
+        <p>
+          One disagreement is deliberately left standing rather than resolved: a second, later seize quartiers —
+          the Family Tree Visualization &amp; Query Workbench — agrees with the research file on the Dechomet
+          core but swaps several other slots (a Down/England William Hewitt for the proven San Francisco Fred
+          Leslie Hewett; a Texas Carey line for Luther Gordon and Joel Thornburg Carey; James Greeran × Mary
+          Hillen for the proven John Hillan × Catherine Dogherty) while uniquely naming the Morin couples of
+          Biddeford — François Morin × Eugénie Bérubé and Alfred Houle × Eugénie Tremblay.<a class="cite" href="#src-10">10</a><a class="cite" href="#src-45">45</a>
+          <b>The open task:</b> pull the Maine vital records and the Texas/California certificates, test each
+          contested slot against primary documents, and let the certificates decide which file survives — both
+          are preserved verbatim in the resource archive so the comparison can be rerun at any time.
+        </p>
+        <p>
+          <b>Status after Session 11 (31 August 2026).</b> The task is now partly worked, and the queue is
+          shorter and sharper. The free <b>Biddeford and Saco Directory 1920–1921</b> on the Internet Archive
+          corroborated the workbench's <b>Alfred Houle</b> as a real Biddeford resident and city policeman at
+          <b>12 George Street</b>, named on the department's regular-officer roster — but a directory lists
+          heads of household only, so his wife <b>Eugénie Tremblay</b> is still unproven.<a class="cite" href="#src-64">64</a>
+          The Morin half produced the opposite result: thirty Biddeford Morins and three separate men named
+          “Morin Frank” mean the surname cannot be promoted on directory evidence, and a rival community-tree
+          candidate — <b>François Morin, b. 1883 Saint-Jude, d. 1963 Biddeford</b> — disagrees with the
+          workbench's ~1868 by fifteen years.<a class="cite" href="#src-64">64</a><a class="cite" href="#src-67">67</a>
+          <b>Daisy Beatrice</b>'s slots lost their cheapest route: Find A Grave has no memorial for her, and the
+          only near match is an Australian namesake.<a class="cite" href="#src-65">65</a>
+        </p>
+        <p>
+          <b>Status after the independent verification (31 August 2026).</b> A second pass tested the quarters
+          themselves and <b>decided two of the disagreements</b> in favor of the research file: the Hewett quarter is
+          Fred Leslie Hewett × Addie Inez Worth (not the workbench’s William Hewitt × Sarah Jane Taylor; Maurice’s
+          mother is Leslie May McFarland), and the Carey quarter is Luther Gordon Carey × Millie Ruth Bickford and
+          Joel Thornburg Carey × Elizabeth Stanley (not George Daniel Carey or William C. Carey Jr.), with the
+          Revolutionary anchor confirmed in the official NSDAR database as Samuel Carey, #A020262.<a class="cite" href="#src-68">68</a>
+          That pass found <b>no</b> French-Canadian evidence and points the verified line away from the Morins, while
+          leaving Daisy’s maiden name to the California birth-index / death-certificate records named in the queue
+          below.<a class="cite" href="#src-68">68</a>
+        </p>
+        <div class="warning-box">
+          <h3>Session 12 queue — each item is one lookup with a decidable answer</h3>
+          <ol>
+            <li><b>Maine death index, 1960–1996</b> (free on the Maine State Archives site): François Morin, d. March 1963, Biddeford. The certificate names his parents and birthplace, and decides whether the community tree or the workbench survives.<a class="cite" href="#src-66">66</a><a class="cite" href="#src-67">67</a></li>
+            <li><b>Maine marriage index, 1892–1996</b>: Alfred Houle × Eugénie, Biddeford or Saco. Tests the Tremblay surname directly.<a class="cite" href="#src-66">66</a></li>
+            <li><b>Biddeford and Saco Directory 1929–1930</b> (free): a widow entry of the form “Houle Eugene, widow of Alfred” would confirm the wife's given name and date his death between 1921 and 1930.<a class="cite" href="#src-64">64</a></li>
+            <li><b>Biddeford and Saco Directory 1913</b> (free): brackets Alfred's residence and shows him before police service.<a class="cite" href="#src-64">64</a></li>
+            <li><b>Los Angeles County marriage index, ~1921–22</b>: Francis Gray Carey × Daisy — the cheapest Daisy route, since a marriage record names both sets of parents' surnames.</li>
+            <li><b>California death certificate, 20 Jan 1989, Monrovia</b>: names Daisy's parents outright, but is the slowest and costliest route, so it stays last.</li>
+          </ol>
+          <p class="tiny" style="margin:8px 0 0;">
+            Working log, negative results, and the exact search commands used to reproduce the directory
+            hits: <a href="./resources/session-11-biddeford-and-daisy.md">resources/session-11-biddeford-and-daisy.md</a>.
+          </p>
+        </div>
+        <p>
+          For that reason, this app separates <b>public book pages</b> from a <b>private embedded vault</b>. Use the vault to capture
+          reminders, chapter fragments, timelines, and personal prompts while the published book remains sourced. If supporting material
+          is later provided, those details can be promoted from private notes into the visible book with clear labeling.
+        </p>
+        <div class="warning-box">
+          <h3>Recommended workflow</h3>
+          <ol>
+            <li>Keep verified life facts in the visible book pages.</li>
+            <li>Keep unsourced memories in the vault until documented or intentionally labeled personal recollection.</li>
+            <li>Export the vault JSON periodically as a backup while you work.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="page sources-page" id="book-sources">
+        <div class="chapter-no">XIII</div>
+        <div class="page-kicker">Source register</div>
+        <h2>Sources used in the book model</h2>
+        <ol class="source-list">
+          <li id="src-1"><b>U.S. Virgin Islands Department of Justice</b>, “DOJ: Steven Thomas Greeran Wanted for Failure to Register as Sex Offender,” Feb. 21, 2025. <a href="https://usvidoj.com/doj-steven-thomas-greeran-wanted-for-failure-to-register-as-sex-offender/" rel="noopener" target="_blank">Official press release</a></li>
+          <li id="src-2"><b>U.S. Virgin Islands Department of Justice</b>, “AG Gordon C. Rhea: Steven Thomas Greeran Arrested and Advised of His Rights for Registration Noncompliance,” Feb. 28, 2025. <a href="https://usvidoj.com/ag-gordon-c-rhea-steven-thomas-greeran-arrested-and-advised-of-his-rights-for-registration-noncompliance/" rel="noopener" target="_blank">Official press release</a></li>
+          <li id="src-3"><b>Virgin Islands Consortium</b>, Feb. 23, 2025. <a href="https://viconsortium.com/vi-crime/virgin-islands-v-i--department-of-justice-issues-arrest-warrant-for-sex-offender-who-failed-to-register" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-4"><b>Virgin Islands Free Press</b>, Feb. 21, 2025 / updated Feb. 23, 2025. <a href="https://vifreepress.com/2025/02/help-doj-find-wanted-pedophile-steven-thomas-greeran-of-california/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-5"><b>Virgin Islands News Online</b>, Feb. 23, 2025. <a href="https://www.virginislandsnewsonline.com/en/news/usvi-arrest-warrant-issued-for-sex-offender-who-failed-to-register" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-6"><b>St. Thomas Source</b>, Feb. 28, 2025. <a href="https://stthomassource.com/content/2025/02/28/man-arrested-for-failing-to-comply-with-sex-offender-registration-requirements/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-7"><b>St. John Source</b>, Feb. 23, 2025 / updated Feb. 28, 2025. <a href="https://stjohnsource.com/2025/02/23/update-sex-offender-wanted-in-usvi-now-in-custody/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-8"><b>St. Croix Source</b>, Feb. 23, 2025. <a href="https://stcroixsource.com/2025/02/23/update-sex-offender-wanted-in-usvi-now-in-custody/" rel="noopener" target="_blank">News report</a></li>
+          <li id="src-9"><b>Standard Resume</b>, “Steven Greeran's Resume,” accessed Aug. 28, 2026. <a href="https://standardresume.co/r/sgreeran" rel="noopener" target="_blank">Self-published resume</a></li>
+          <li id="src-10"><b>Greeran Seize Quartiers — Complete</b>, subject-supplied research file, compiled 27 June 2026. Sources cited within: FamilySearch PRF QVVM-QLY (Brian O'Hare), GRO civil records, irishgenealogy.ie, NLI registers, Find A Grave, Rootsweb Carey DB. <a href="https://bashupload.app/jche3t.htm" rel="noopener" target="_blank">Research file</a> · <a href="./resources/src-10-seize-quartiers.md">Local extract</a></li>
+          <li id="src-11"><b>Greeran Family — Military Service Map</b>, subject-supplied interactive HTML5 artifact, service timeline 1780–1972. <a href="https://bashupload.app/fyj5e9.htm" rel="noopener" target="_blank">Service map</a> · <a href="./resources/src-11-military-service-map.md">Local extract</a></li>
+          <li id="src-12"><b>Crypto Recovery OS | Vanity Miner</b>, self-published standalone HTML5 tool (themed edition). <a href="https://bashupload.app/zxl3am.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-12-crypto-recovery-os-themed.md">Local extract</a></li>
+          <li id="src-13"><b>Crypto Recovery OS</b>, self-published standalone HTML5 tool (recovery-suite edition: anagram/typo fixer, address brute force, BIP39 explorer, vanity miner). <a href="https://bashupload.app/78twi8.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-13-crypto-recovery-os-recovery-suite.md">Local extract</a></li>
+          <li id="src-14"><b>Crypto Recovery OS</b>, self-published standalone HTML5 tool (earlier build). <a href="https://bashupload.app/ezpv7u.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-14-crypto-recovery-os-early-build.md">Local extract</a></li>
+          <li id="src-15"><b>Banano Paper Wallet Generator &amp; Rare MonKey Scanner</b>, self-published standalone HTML5 tool. <a href="https://bashupload.app/rpl4p7.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-15-banano-paper-wallet.md">Local extract</a></li>
+          <li id="src-16"><b>CyberChef — HTML5 (Renovated Kitchen)</b>, self-published standalone HTML5 tool. <a href="https://bashupload.app/e5wpaz.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-16-cyberchef-renovated-kitchen.md">Local extract</a></li>
+          <li id="src-17"><b>CensorBench — Censorship Testing &amp; Sorting Benchmark Suite</b>, self-published standalone HTML5 tool. <a href="https://bashupload.app/ak3q2l.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-17-censorbench.md">Local extract</a></li>
+          <li id="src-18"><b>GEDCOM → HTML5 + Melissa Geocoding + TSP Route Planner</b>, self-published standalone HTML5 tool. <a href="https://bashupload.app/pb9mq7.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-18-gedcom-html5-tsp.md">Local extract</a></li>
+          <li id="src-19"><b>GEDCOM → HTML5 + Melissa Geocoding + TSP Route Planner</b>, self-published standalone HTML5 tool (build with quine/source download). <a href="https://bashupload.app/l6tqe2.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-19-gedcom-html5-quine-build.md">Local extract</a></li>
+          <li id="src-20"><b>BIP-39 Haiku Workbench · Mnemonic Validator &amp; Derivation Explorer</b>, self-published standalone HTML5 tool. <a href="https://bashupload.app/58mcz5.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-20-bip39-haiku-workbench.md">Local extract</a></li>
+          <li id="src-21"><b>BIP-39 Haiku Workbench</b>, self-published standalone HTML5 tool (second build). <a href="https://bashupload.app/7qczei.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-21-bip39-haiku-workbench-build2.md">Local extract</a></li>
+          <li id="src-22"><b>BIP-39 Haiku Workbench</b>, self-published standalone HTML5 tool (third build). <a href="https://bashupload.app/7h0ek8.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-22-bip39-haiku-workbench-build3.md">Local extract</a></li>
+          <li id="src-23"><b>Audubon Bird Brain Research</b>, self-published standalone HTML5 tool; 23 species of bird-cognition research. <a href="https://bashupload.app/pk33fl.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-23-audubon-bird-brain.md">Local extract</a></li>
+          <li id="src-24"><b>ACME Labs HTML5 Software Suite — Classic Unix &amp; X11 Utilities Remastered</b>, self-published standalone HTML5 tool; ports of Jef Poskanzer's ACME Labs catalog. <a href="https://bashupload.app/wuhyr5.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-24-acme-labs-suite.md">Local extract</a></li>
+          <li id="src-25"><b>AURA SoundStudio Pro — THX, Dolby Atmos, Bose ANC, Real3D &amp; IMAX Audio Processing</b>, self-published standalone HTML5 tool (48 kHz build). <a href="https://bashupload.app/391g0c.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-25-aura-soundstudio-48k.md">Local extract</a></li>
+          <li id="src-26"><b>ACME Cryptographic Audit Workstation // Steven Greeran Portfolio</b>, self-published standalone HTML5 tool; RC4-encrypted portfolio stream with Darwin C-to-HTML5 transpiler and quine mode. <a href="https://bashupload.app/u31toy.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-26-acme-crypto-audit-workstation.md">Local extract</a></li>
+          <li id="src-27"><b>ACME Cryptographic Audit Workstation</b>, self-published standalone HTML5 tool (second build). <a href="https://bashupload.app/zit8jd.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-27-acme-crypto-audit-workstation-build2.md">Local extract</a></li>
+          <li id="src-28"><b>AURA SoundStudio Pro</b>, self-published standalone HTML5 tool (96 kHz build). <a href="https://bashupload.app/sho5yp.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-28-aura-soundstudio-96k.md">Local extract</a></li>
+          <li id="src-29"><b>ACME Cryptographic Workstation — Quine Source Package</b>, self-published source listing (React/Vite/Tailwind). <a href="https://bashupload.app/uqrop7.htm" rel="noopener" target="_blank">Source package</a> · <a href="./resources/src-29-acme-workstation-quine-source.md">Local extract</a></li>
+          <li id="src-30"><b>Image Format Encyclopedia — All Formats, Encodings &amp; Transfer Protocols</b>, self-published standalone HTML5 tool; 90 image formats. <a href="https://bashupload.app/s9w034.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-30-image-format-encyclopedia.md">Local extract</a></li>
+          <li id="src-31"><b>Banano Paper Wallet Generator &amp; Rare MonKey Scanner</b>, self-published standalone HTML5 tool (later build). <a href="https://bashupload.app/wowc3v.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-31-banano-paper-wallet-later-build.md">Local extract</a></li>
+          <li id="src-32"><b>CyberChef — HTML5 (Renovated Kitchen)</b>, self-published standalone HTML5 tool (later build). <a href="https://bashupload.app/c7gtou.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-32-cyberchef-renovated-later-build.md">Local extract</a></li>
+          <li id="src-33"><b>CensorBench — Censorship Testing &amp; Sorting Benchmark Suite</b>, self-published standalone HTML5 tool (later build). <a href="https://bashupload.app/52xohl.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-33-censorbench-later-build.md">Local extract</a></li>
+          <li id="src-34"><b>Unidentified resource</b> (bashupload.app/ph6y66.htm), supplied with the second resource batch; the host returned a server error (HTTP 500) on every access attempt, so its contents could not be reviewed or cited. <a href="https://bashupload.app/ph6y66.htm" rel="noopener" target="_blank">Unavailable link</a></li>
+          <li id="src-35"><b>Ian Coleman, BIP39 — Mnemonic Code Converter</b> v0.5.6, standalone hosted copy of the open-source cold-storage tool (iancoleman.io/bip39), posted with the workshop collection. <a href="https://bashupload.app/8laxnd.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-35-ian-coleman-bip39-converter.md">Local extract</a></li>
+          <li id="src-36"><b>The Vault — CyberVault Members WebOS</b>, self-published standalone HTML5 portal; members-only encrypted WebOS bundling 12 standalone apps (GCHQ CyberChef, Ian Coleman cold-storage bundle, RSS CORS proxies &amp; geocoded news globe, Graphviz GEDCOM visual genetics). <a href="https://bashupload.app/5d8n7t.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-36-vault-cybervault-webos.md">Local extract</a></li>
+          <li id="src-37"><b>Cipher Machines &amp; Cryptology — Interactive Simulator Suite</b>, self-published standalone HTML5 tool; Enigma M3/M4 simulator with Steckerbrett, Kurzsignale presets, and live circuit tracer. <a href="https://bashupload.app/tp6vnt.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-37-enigma-simulator.md">Local extract</a></li>
+          <li id="src-38"><b>Crypto Attack Lab — Portable Self-Contained Quine</b>, self-published standalone HTML5 tool; known-plaintext and oracle attack laboratory across AES modes and RSA, with attack timeline and post-quantum panel. <a href="https://bashupload.app/l0yuie.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-38-crypto-attack-lab.md">Local extract</a></li>
+          <li id="src-39"><b>CryptoFountain BBS — P2P Microblogging with Erasure Codes &amp; On-Chain Sync</b>, self-published standalone HTML5 tool; LT fountain codes, Adler-32/Fletcher-16 checksums, FNV-1a hashing, rsync-style deltas, OP_RETURN anchoring. <a href="https://bashupload.app/ctmmo0.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-39-cryptofountain-bbs.md">Local extract</a></li>
+          <li id="src-40"><b>BIP-39 Haiku Wallet Generator</b>, self-published standalone HTML5 tool; mines exact 5-7-5 haiku mnemonics with valid checksums, AES-256 encrypted export. <a href="https://bashupload.app/gqfgyv.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-40-bip39-haiku-wallet-generator.md">Local extract</a></li>
+          <li id="src-41"><b>Cryptopoly — The Crypto &amp; NFT Board Game</b>, self-published standalone HTML5 tool; Monopoly-style board with 22 live-priced tokens and NFT community vault. <a href="https://bashupload.app/mobx5b.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-41-cryptopoly.md">Local extract</a></li>
+          <li id="src-42"><b>Standalone Offline Decryptor</b>, self-published standalone HTML5 tool; offline vault decryptor with first-run BIP39 dictionary install to local storage. <a href="https://bashupload.app/xwn4c0.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-42-offline-decryptor.md">Local extract</a></li>
+          <li id="src-43"><b>CyberChef Renovated Kitchen — Grand Expansion</b>, self-published standalone HTML5 tool; a major expansion of the kitchen adding fuzzy hash matching, BIP84/BIP44 wallet recovery, steganography, GCWizard and FIDO/hardware-key benches, a coin-address directory, GEB formal systems, classical ciphers, and the Nimitz Graybook plot. <a href="https://bashupload.app/3xn6et.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-43-cyberchef-grand-expansion.md">Local extract</a></li>
+          <li id="src-44"><b>The Vault — Members Only (katakana build)</b>, self-published standalone HTML5 tool; the members-only portal with its login screen hidden behind a wall of katakana glyphs, accounts created on first login. <a href="https://bashupload.app/xzbcs5.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-44-vault-members-only-katakana.md">Local extract</a></li>
+          <li id="src-45"><b>Seize Quartiers — Family Tree Visualization &amp; Query Workbench</b>, self-published standalone HTML5 tool; a strict ahnentafel matrix of the sixteen quarters reporting generations 1–5 at 100%, agreeing with the research file on the Dechomet core while swapping several slots and uniquely naming the Morin couples. Cited in Chapter VII as a second, conflicting seize quartiers preserved unmerged. <a href="https://bashupload.app/3i938k.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-45-seize-quartiers-workbench.md">Local extract</a></li>
+          <li id="src-46"><b>Unified HTML5 Cryptography &amp; Utility Suite</b>, self-published standalone HTML5 portal; a curated launcher of open-source apps (GCWizard, SSTV Suite, TiddlyWiki5, CyberChef, and others) each linked to its GitHub source, including PIM Manager at github.com/sgreeran — the subject's own repository. <a href="https://bashupload.app/z5kj6u.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-46-unified-utility-suite.md">Local extract</a></li>
+          <li id="src-47"><b>ViteReact → Inlined HTML5/Webxdc/PWA Suite v15.0</b>, self-published standalone HTML5 tool; converts Vite/React projects to single inlined HTML, .xdc webxdc apps, or PWAs with a dual-engine JSX compiler and comparator, webxdc simulator, and manifest.toml settings. <a href="https://bashupload.app/jg2zgi.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-47-vitereact-converter-v15.md">Local extract</a></li>
+          <li id="src-48"><b>ViteReact → Inlined HTML5/Webxdc/PWA Suite v6.3</b>, self-published standalone HTML5 tool; the earlier "Quine" build of the same converter, before the dual-engine comparator. <a href="https://bashupload.app/ajemjd.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-48-vitereact-converter-v63.md">Local extract</a></li>
+          <li id="src-49"><b>HTML5 Offline ZIP Audit &amp; Repair Viewer</b>, self-published standalone HTML5 tool; loads workspace ZIPs, audits HTML5 doctype/charset/viewport, external dependencies and offline blockers, and exports repaired standalone HTML with assets inlined. <a href="https://bashupload.app/qkhr0t.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-49-zip-audit-repair-viewer.md">Local extract</a></li>
+          <li id="src-50"><b>BIP-39 Haiku Wallet Engine</b>, self-published standalone HTML5 tool; second-generation haiku miner with a localStorage wordlist, AES-256-GCM encrypted vault, grammar heuristics, and secure .TXT export. <a href="https://bashupload.app/ya0iaz.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-50-bip39-haiku-wallet-engine.md">Local extract</a></li>
+          <li id="src-51"><b>WebTools Hub — Standalone (Quine Edition)</b>, self-published standalone HTML5 tool; "a self-replicating HTML file that can download itself," build generated 2026-08-30T17:37:21.406Z. <a href="https://bashupload.app/e0bi4s.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-51-webtools-hub-quine-build1.md">Local extract</a></li>
+          <li id="src-52"><b>WebTools Hub — Standalone (Quine Edition), build 2</b>, self-published standalone HTML5 tool; the same quine hub re-generated 2026-08-30T17:37:21.734Z, thirty-four seconds after build 1. <a href="https://bashupload.app/ohfd4n.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-52-webtools-hub-quine-build2.md">Local extract</a></li>
+          <li id="src-53"><b>Unidentified resource</b> (bashupload.app/5h8cmz.htm), supplied with the fourth resource batch; the host returned a server error (HTTP 500) on every access attempt, so its contents could not be reviewed or cited. <a href="https://bashupload.app/5h8cmz.htm" rel="noopener" target="_blank">Unavailable link</a></li>
+          <li id="src-54"><b>Procedural Ensō Generator</b>, self-published standalone HTML5 tool; seed-ID brush circle with random-terrain mode and PNG export. <a href="https://bashupload.app/x1ymbo.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-54-enso-generator.md">Local extract</a></li>
+          <li id="src-55"><b>Procedural Ensō Generator (custom-seed build)</b>, self-published standalone HTML5 tool; adds an optional custom-seed field so any phrase can determine the stroke. <a href="https://bashupload.app/ynkc9c.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-55-enso-generator-custom-seed.md">Local extract</a></li>
+          <li id="src-56"><b>BIP-39 Haiku Wallet &amp; Ensō Forge</b>, self-published standalone HTML5 tool; mines 5-7-5 haiku that are also checksum-valid BIP-39 phrases and draws the ensō from the same parameters, with AES-256 encrypted local storage behind a master password. <a href="https://bashupload.app/lcagd1.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-56-bip39-haiku-enso-forge.md">Local extract</a></li>
+          <li id="src-57"><b>Ensō Haiku Wallet Forge</b>, self-published standalone HTML5 tool; full parameter readout (haiku, mnemonic, BIP-44 path, xpub, P2PKH address, SHA-256 fingerprint) collapsed into a base-62 Ensō Reference Number, with spell-check and skip-haiku controls. <a href="https://bashupload.app/lahh89.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-57-enso-haiku-wallet-forge.md">Local extract</a></li>
+          <li id="src-58"><b>BIP-39 Haiku Wallet Engine — Poetic Wallet Suite</b>, self-published standalone HTML5 tool; user-supplied 2048-word list committed to browser storage so operations run offline, AES-256-GCM vault, batch mining, grammar filter. <a href="https://bashupload.app/7zv3d1.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-58-bip39-haiku-wallet-engine.md">Local extract</a></li>
+          <li id="src-59"><b>Banano Scanned Wallets Report</b>, self-published HTML5 scan output; 100 generated paper wallets scanned for rare MonKey accessories — 23 rare found (23.0% hit rate). <b>The 100 private seeds printed in the original are deliberately omitted from the local extract.</b> <a href="https://bashupload.app/6r478t.htm" rel="noopener" target="_blank">Report</a> · <a href="./resources/src-59-banano-scanned-wallets-report.md">Local extract</a></li>
+          <li id="src-60"><b>Purple Team Training Suite — SecOps Simulation Lab</b>, self-published standalone HTML5 tool (v4.2, build ptl-sim-4.2.1); defensive-training console built from synthetic data — MITRE ATT&amp;CK navigator, simulated RF/PCAP, NIST CSF 2.0 playbooks; no live capture and no offensive tooling included. <a href="https://bashupload.app/tmkcep.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-60-purple-team-training-suite.md">Local extract</a></li>
+          <li id="src-61"><b>ADS-B Radar Scope</b>, self-published standalone HTML5 tool; live aircraft traffic on a radar scope from public aggregators (OpenSky, ads.fi, airplanes.live, adsb.lol) with five display modes and full target records. <a href="https://bashupload.app/fexily.htm" rel="noopener" target="_blank">Tool</a> · <a href="./resources/src-61-adsb-radar-scope.md">Local extract</a></li>
+          <li id="src-62"><b>Rodger Ramrod — HTML5 App</b>, self-published standalone HTML5 preservation wrapper; loads the eXoDOS package for a 1996 MS-DOS title from the Internet Archive into a browser DOSBox runtime and boots the original launcher unmodified. <a href="https://bashupload.app/2tv852.htm" rel="noopener" target="_blank">App</a> · <a href="./resources/src-62-rodger-ramrod-html5-app.md">Local extract</a></li>
+          <li id="src-63"><b>Rodger Ramrod — HTML5 App (quine build)</b>, self-published standalone HTML5 preservation wrapper; second build adding a quine download and a "What is a Quine?" explainer. <a href="https://bashupload.app/u891yp.htm" rel="noopener" target="_blank">App</a> · <a href="./resources/src-63-rodger-ramrod-quine-build.md">Local extract</a></li>
+          <li id="src-64"><b>Internet Archive</b>, <i>Biddeford and Saco Directory 1920–1921</i> — Dyer Library / Saco Museum scan, 381 pp., Public Domain Mark 1.0, full-text searchable. Surname listing (scanned p. 129): “Houle Alfred policeman h 12 George”; Biddeford Police Department regular-officer roster naming Alfred Houle (scanned p. 264); Morin listing from scanned p. 162, ~30 entries including three men named “Morin Frank.” Consulted 31 Aug. 2026. <a href="https://archive.org/details/biddeford-and-saco-directory-1920-1921" rel="noopener" target="_blank">Volume</a> · <a href="./resources/session-11-biddeford-and-daisy.md">Session 11 log</a></li>
+          <li id="src-65"><b>Find A Grave</b>, memorial search, 31 Aug. 2026 — two negative results. (a) <i>Daisy / Beatrice / Carey</i>, died 1989: no matches; broadened to <i>Daisy / Carey</i>, died 1989 ±5 years: one match, Daisy Hope Morgan Carey (1920–1989), Goulburn, New South Wales, Australia, memorial 201871127 — a namesake, not the subject's Daisy Beatrice (1904–1989). (b) <i>Houle</i>, b. 1870 ±10, d. before 1940: two matches, both in Canada (memorials 218342527, 233742939). <a href="https://www.findagrave.com/memorial/search" rel="noopener" target="_blank">Search</a> · <a href="./resources/session-11-biddeford-and-daisy.md">Session 11 log</a></li>
+          <li id="src-66"><b>Maine State Archives</b> holdings, as described in the RootsWeb <i>Maine Vital Records</i> finding aid and Ancestry's Maine place page — the Archives holds original 1892–1922 birth, death, and marriage records, with searchable indexes of marriages (1892–1996, excluding 1967–76) and deaths (1960–1996) on its website; post-1922 certificates come from the Office of Data, Research and Vital Statistics. Read 31 Aug. 2026 as a finding aid — <b>no Maine index was queried this session</b>. <a href="https://wiki.rootsweb.com/wiki/index.php/Maine_Vital_Records" rel="noopener" target="_blank">Finding aid</a> · <a href="./resources/session-11-biddeford-and-daisy.md">Session 11 log</a></li>
+          <li id="src-67"><b>Ancestry</b> public community-tree aggregation for “Francois Morin” — candidate record: b. 29 Oct. 1883, Saint-Jude, Québec; d. Mar. 1963, Biddeford, York, Maine; father François Morin, mother Célanire Couture. <b>Unsourced community tree, cited as a lead only</b>; conflicts with src-45's ~1868 birth estimate by fifteen years. <a href="https://www.ancestry.com/genealogy/records/results?firstName=francois&amp;lastName=morin" rel="noopener" target="_blank">Record</a> · <a href="./resources/session-11-biddeford-and-daisy.md">Session 11 log</a></li>
+          <li id="src-68"><b>Independent verification session</b>, research performed for this book on 31 August 2026 — free public records pulled independently of the subject-supplied files: the San Gabriel Valley Tribune / Legacy obituary of Louise Francis Carey Hewitt (incl. the family-signed guest book), FamilySearch public person pages (U.S. census and California county birth/marriage/death records) for Clifford LeRoy Hewitt, Find a Grave memorials #94384623 / #181036078 / #7945411 with cited vital records, the Rootsweb Carey (PAF) database, and the official NSDAR Ancestor Database (patriot A020262). Independently confirms the Hewett quarter (Fred Leslie Hewett × Addie Inez Worth; Maurice’s mother Leslie May McFarland), the Indiana Carey line and the Revolutionary patriot, and the immediate family; leaves Daisy Beatrice’s Texas parents and the Morin/Houle couples open. <a href="./resources/session-12-independent-verification.md">Research file</a></li>
+        </ol>
+        <p style="margin-top:1.5em;font-size:0.9em;">
+          Sources 10–63 are hosted on a temporary file-sharing service and may expire — sources 34 and 53 were
+          already unreachable at access time — so content extracts of every available resource have been
+          mirrored to this repository under <a href="./resources/README.md">./resources/</a> (one extract per
+          register entry, indexed in its README). The extracts preserve the cited data and feature inventories;
+          for byte-perfect copies, download the original links in a browser and store them in the vault or that
+          directory. Entries 12–33, 36–42, 44–52, and 54–63 are author-attributed works (entry 35 is a hosted copy of
+          Ian Coleman's open-source converter, re-listed at a second URL in the fourth batch; entry 36 bundles
+          GCHQ's open-source CyberChef; entry 46 curates open-source apps credited to their GitHub projects);
+          all are cited as artifacts, not as third-party verification. Entry 59's extract omits the 100 private seeds printed in the original table: the statistics the book cites are preserved, the keys are not.
+        </p>
+        <p style="margin-top:1em;font-size:0.9em;">
+          Sources 64–67 are of a different kind: they are <b>archivist research sources</b> consulted on
+          31 August 2026 while working the open task in Chapter XII, and two of them are recorded because they
+          returned <i>nothing</i> — a closed route is a result worth keeping. Their working log, with the exact
+          queries, the negative findings, and the commands needed to reproduce the directory hits, lives at
+          <a href="./resources/session-11-biddeford-and-daisy.md">resources/session-11-biddeford-and-daisy.md</a>
+          alongside the resource extracts. Entry 67 is an unsourced community tree and is cited as a lead only.
+        </p>
+        <p style="margin-top:1em;font-size:0.9em;">
+          <b>Entry 68</b> is a separate independent-verification pass, also run 31 August 2026: it tests the
+          <i>contested quarters</i> (Hewett, Carey) against primary public records rather than the Biddeford
+          directory leads Session 11 pursued. It confirms those quarters from FamilySearch census/vitals, the Find a
+          Grave parent chains, and the official NSDAR patriot database, and it independently places Steven in the
+          immediate family via a published obituary. Its open items agree with Session 11’s: Daisy Beatrice’s
+          parents and the Morin/Houle couples are still unproven. Working file:
+          <a href="./resources/session-12-independent-verification.md">resources/session-12-independent-verification.md</a>.
+        </p>
+        <p style="margin-top:1.5em;font-size:0.9em;">For research sources used in the personal memory chapters, see the <a href="greeran-book-bibliography.html" target="_blank">full bibliography</a>.</p>
+      </section>
+    </article>
+
+    <aside class="vault" id="vault">
+      <section class="panel vault-head">
+        <h2>Embedded vault</h2>
+        <p>Local browser storage with a faux file system for drafts, notes, snapshots, and style settings.</p>
+      </section>
+
+      <section class="panel vault-actions">
+        <button type="button" class="btn small" id="newFileBtn">New file</button>
+        <button type="button" class="btn small" id="saveFileBtn">Save</button>
+        <button type="button" class="btn small ghost" id="deleteFileBtn">Delete</button>
+        <button type="button" class="btn small ghost" id="snapshotBtn">Snapshot chapter</button>
+        <button type="button" class="btn small ghost" id="exportBtn">Export vault</button>
+        <label class="btn small ghost import-label">
+          Import
+          <input type="file" id="importInput" accept="application/json" hidden />
+        </label>
+      </section>
+
+      <section class="panel vault-browser">
+        <div class="vault-column">
+          <div class="label-row">Files</div>
+          <ul id="fileList" class="file-list" aria-label="Vault file list"></ul>
+        </div>
+        <div class="vault-column grow">
+          <label class="label-row" for="filePathInput">Path</label>
+          <input id="filePathInput" class="path-input" spellcheck="false" />
+          <textarea id="fileEditor" spellcheck="false" aria-label="Vault editor"></textarea>
+        </div>
+      </section>
+
+      <section class="panel vault-status">
+        <div id="vaultStatus">Vault ready.</div>
+        <small>
+          Files live only in this browser until exported. Great for drafting unverified memories,
+          chapter outlines, and source-to-do notes without placing them in the public text yet.
+        </small>
+      </section>
+    </aside>
+  </main>
+
+  <script src="./js/greeran-book.js"></script>
+</body>
+</html>
