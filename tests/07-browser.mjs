@@ -143,7 +143,7 @@ try {
 
   check("boots to a valid phrase", /Checksum valid/.test(boot.status), boot.status);
   check("12 chips rendered", boot.chips === 12, boot.chips);
-  check("44 rack rows", boot.rackRows === 44, boot.rackRows);
+  check("72 rack rows", boot.rackRows === 72, boot.rackRows);
   check("13 3-D forms", boot.forms === 13, boot.forms);
   check("layout note correct", /132 bits = 128 ENT \+ 4 CS/.test(boot.wcNote), boot.wcNote);
   check("WebGL context live", boot.webgl);

@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Greeran Family Tree — DNA Heatmap (root: Steven Greeran)</title>
+<style>
+  :root {
+    --bg: #0c1320;
+    --panel: rgba(14,22,38,0.9);
+    --edge: rgba(150,180,220,0.18);
+    --text: #e7eef7;
+    --muted: #8aa0bd;
+    --accent: #ffd166;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:
+      radial-gradient(ellipse at 30% 20%, #142240 0%, #0c1320 60%, #05080f 100%);
+    color:var(--text); font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Inter, sans-serif;
+    overflow:hidden;
+  }
+  header {
+    position: fixed; top:0; left:0; right:0; height:54px; z-index:10;
+    display:flex; align-items:center; gap:14px; padding:0 18px;
+    background: linear-gradient(180deg, rgba(8,14,24,0.95), rgba(8,14,24,0.55));
+    border-bottom: 1px solid var(--edge);
+  }
+  header .logo { font-weight:700; letter-spacing:.4px; }
+  header .sub { color:var(--muted); font-size:12px; }
+  header .spacer { flex:1; }
+  header button {
+    background: rgba(255,255,255,0.05); color:var(--text);
+    border: 1px solid var(--edge); border-radius: 8px;
+    padding: 6px 10px; cursor:pointer; font-size:12px;
+  }
+  header button:hover { background: rgba(255,255,255,0.12); }
+
+  #stage { position:fixed; inset:54px 0 0 0; overflow:hidden; cursor:grab; }
+  #stage:active { cursor:grabbing; }
+  svg { display:block; width:100%; height:100%; }
+
+  /* Tooltip */
+  #tt {
+    position: fixed; pointer-events:none; z-index:20;
+    background: rgba(8,14,24,0.95); color:var(--text);
+    border:1px solid var(--edge); border-radius:10px;
+    padding:10px 12px; font-size:12px; line-height:1.5;
+    max-width: 280px; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    opacity:0; transition: opacity .12s;
+  }
+  #tt b { color: var(--accent); }
+  #tt .rel { color: #ffd1a8; font-weight:600; }
+  #tt .cm { color:#9bdcff; font-weight:600; }
+
+  /* Legend */
+  #legend {
+    position: fixed; left: 14px; bottom: 14px; z-index:10;
+    background: var(--panel); border:1px solid var(--edge); border-radius:10px;
+    padding:10px 12px; font-size:11px; color:var(--text); min-width: 240px;
+  }
+  #legend .bar {
+    height:10px; border-radius:5px; margin: 6px 0 4px 0;
+    background: linear-gradient(to right,
+      #2b3a8c 0%, #2a86c9 18%, #4ec8c1 36%, #f5d96b 56%, #f08a3a 75%, #c5283d 100%);
+  }
+  #legend .ticks { display:flex; justify-content:space-between; color:var(--muted); font-size:10px; }
+  #legend .row { display:flex; align-items:center; gap:6px; margin-top:6px; color:var(--muted); }
+  #legend .swatch { width:12px; height:12px; border-radius:3px; border:1px solid var(--edge); }
+
+  /* Selection */
+  .person rect.bg { transition: stroke-width .15s; }
+  .person:hover rect.bg { stroke-width: 2.5; }
+  .person.root rect.bg { stroke:#fff; stroke-width:3; filter: drop-shadow(0 0 8px #fff8); }
+  .person.dim { opacity: 0.32; }
+  .edge { fill:none; }
+  .edge.dim { opacity: 0.12; }
+  .couple { stroke:#ffd166; stroke-dasharray: 4 3; stroke-width:1.2; opacity:0.55; }
+  .gen-label {
+    fill: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  #info {
+    position: fixed; right: 14px; top: 70px; width: 280px; z-index:10;
+    background: var(--panel); border:1px solid var(--edge); border-radius:10px;
+    padding:12px 14px; font-size:12px; color:var(--text); display:none;
+  }
+  #info h3 { margin:0 0 6px 0; font-size:14px; color:var(--accent); }
+  #info .pill { display:inline-block; padding:2px 8px; border-radius:999px;
+    background: rgba(255,209,102,0.15); color:#ffd166; font-size:10px; margin-right:4px; }
+  #info .close { float:right; cursor:pointer; color:var(--muted); }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">🧬 Greeran Family Tree</div>
+    <div class="sub">DNA heatmap relative to <b id="root-name">—</b></div>
+    <div class="spacer"></div>
+    <button id="btn-fit">⤢ Fit</button>
+    <button id="btn-reset">↺ Reset zoom</button>
+  </header>
+
+  <div id="stage">
+    <svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+
+  <div id="tt"></div>
+
+  <div id="info">
+    <span class="close" onclick="document.getElementById('info').style.display='none'">×</span>
+    <h3 id="info-name">—</h3>
+    <div id="info-pills"></div>
+    <div style="margin-top:8px;" id="info-detail"></div>
+  </div>
+
+  <div id="legend">
+    <div style="font-weight:600; color:var(--text);">Shared DNA with root (cM)</div>
+    <div class="bar"></div>
+    <div class="ticks"><span>0</span><span>50</span><span>200</span><span>850</span><span>1750</span><span>3485</span></div>
+    <div class="row"><span class="swatch" style="background:#9aa6b8;"></span> in-law / no shared DNA</div>
+    <div class="row"><span class="swatch" style="background:#fff; border-color:#fff;"></span> root (you)</div>
+    <div style="margin-top:6px; color:var(--muted);">Drag to pan · scroll to zoom · click a person for details</div>
+  </div>
+
+<script>
+/* ============================================================
+   GREERAN FAMILY TREE — single-file HTML5
+   Pipeline: DOT → nodes/edges → MRCA-based relationships
+            → expected shared cM → generation layout → SVG
+   ============================================================ */
+
+/* --------- 1. INPUT GRAPH (DOT) --------- */
+const DOT = String.raw`
+digraph FamilyTree {
+"I142778829395" [label="Steven Greeran"];
+"I142778829404" [label="Jeanie Hewitt"];
+"I142778829446" [label="Gerard T Greeran"];
+"I142778829531" [label="Bernard Patrick Greeran"];
+"I142778829536" [label="Jeanette Mabel Morin"];
+"I142778829721" [label="Louise Frances Carey"];
+"I142778829726" [label="Maurice Frderick Hewitt"];
+"I142778829728" [label="Francis G Carey"];
+"I142778829729" [label="Daisy Beatrice Carey"];
+"I142778829932" [label="Hugh Greeran"];
+"I142778830820" [label="Michael Patrick Greeran"];
+"I142778831422" [label="Bernard Greeran"];
+"I142778831424" [label="Mary Conalty"];
+"I142778832166" [label="Catherine Dogherty"];
+"I142780053263" [label="Tommy Greeran"];
+"I142780053311" [label="Patricia Greeran"];
+"I142780053320" [label="Terry Greeran"];
+"I142780053381" [label="Donald R Dunn"];
+"I142780053414" [label="Nathan Dunn"];
+"I142780053429" [label="Jordan Dunn"];
+"I142780053447" [label="Lindsay Dunn"];
+"I142780053491" [label="Lacey Dunn"];
+"I142780053556" [label="Mindi"];
+"I142780053670" [label="Ashley Hoover"];
+"I142780053767" [label="Charles Hewitt"];
+"I142780053778" [label="Robert Hewitt"];
+"I142780053800" [label="Linda Hewitt"];
+"I142780053809" [label="Terry Hewitt"];
+"I142780053848" [label="Gary Milwood"];
+"I142780054364" [label="Lila Jean Crandall"];
+"I142780054421" [label="Randy Hewitt"];
+"I142780054462" [label="Kimberly Yount"];
+"I142780054651" [label="Danny L Crandall"];
+"I142780054652" [label="Cheryl L Crandall"];
+"I142780054653" [label="Bernard Lewis Crandell"];
+"I142780054654" [label="Thelma Irene Crandell"];
+"I142780054865" [label="Wellington Lake Crandell"];
+"I142780054867" [label="Caroline Margaret Crandell"];
+"I142780055089" [label="Judy"];
+"I142780055133" [label="Michelle Greeran"];
+"I142780057645" [label="Jim Eislein"];
+"I142780057677" [label="Kelee Eislein"];
+"I142780057732" [label="Kristen Eislein"];
+"I142780057803" [label="Samantha Eislein"];
+"I142780057833" [label="Corey Berryhill"];
+"I142780057879" [label="Crystal Berryhill"];
+"I142780067589" [label="Carolyn L Dunn"];
+"I142780067590" [label="Ralph Dunn"];
+"I142780067591" [label="Dorothy Louise Dunn"];
+"I142780067877" [label="Ralph Vernon Dunn Sr"];
+"I142780067878" [label="Pearl Louise Dunn"];
+"I142780135752" [label="Catherine Greeran"];
+"I142780135796" [label="James T Greeran"];
+"I142780135797" [label="John J Greeran"];
+"I142780135798" [label="Thomas Patrick Greeran"];
+"I142780135799" [label="Kathleen Greeran"];
+"I142780135958" [label="Ruthchaneporn Pichatwatana"];
+"I142780135970" [label="Joesphine Widjaja"];
+"I142780135987" [label="Rebecca Cravitz"];
+"I142780136013" [label="Jerrad Kozloff"];
+"I142780136038" [label="Erez Kelbaker"];
+"I142780053381" -> "I142780053414";
+"I142780053311" -> "I142780053414";
+"I142780053381" -> "I142780053429";
+"I142780053311" -> "I142780053429";
+"I142780053381" -> "I142780053447";
+"I142780053311" -> "I142780053447";
+"I142780053381" -> "I142780053491";
+"I142780053311" -> "I142780053491";
+"I142778829932" -> "I142778829531";
+"I142780135752" -> "I142778829531";
+"I142778829932" -> "I142780135796";
+"I142780135752" -> "I142780135796";
+"I142778829932" -> "I142780135797";
+"I142780135752" -> "I142780135797";
+"I142778829932" -> "I142780135798";
+"I142780135752" -> "I142780135798";
+"I142778829932" -> "I142780135799";
+"I142780135752" -> "I142780135799";
+"I142780054653" -> "I142780054364";
+"I142780054654" -> "I142780054364";
+"I142780054653" -> "I142780054651";
+"I142780054654" -> "I142780054651";
+"I142780054653" -> "I142780054652";
+"I142780054654" -> "I142780054652";
+"I142778829728" -> "I142778829721";
+"I142778829729" -> "I142778829721";
+"I142778829531" -> "I142778830820";
+"I142778829536" -> "I142778830820";
+"I142778829531" -> "I142778829446";
+"I142778829536" -> "I142778829446";
+"I142778829531" -> "I142780053263";
+"I142778829536" -> "I142780053263";
+"I142778829531" -> "I142780053311";
+"I142778829536" -> "I142780053311";
+"I142778829531" -> "I142780053320";
+"I142778829536" -> "I142780053320";
+"I142778830820" -> "I142780055133";
+"I142780055089" -> "I142780055133";
+"I142780057833" -> "I142780057803";
+"I142780057732" -> "I142780057803";
+"I142780057645" -> "I142780057677";
+"I142780053800" -> "I142780057677";
+"I142780057645" -> "I142780057732";
+"I142780053800" -> "I142780057732";
+"I142778831422" -> "I142778829932";
+"I142778831424" -> "I142778829932";
+"I142780067877" -> "I142780067590";
+"I142780067878" -> "I142780067590";
+"I142780053767" -> "I142780054421";
+"I142780054364" -> "I142780054421";
+"I142780054865" -> "I142780054653";
+"I142780054867" -> "I142780054653";
+"I142778829446" -> "I142778829395";
+"I142778829404" -> "I142778829395";
+"I142778829726" -> "I142780053809";
+"I142778829721" -> "I142780053809";
+"I142778829726" -> "I142780053767";
+"I142778829721" -> "I142780053767";
+"I142778829726" -> "I142780053800";
+"I142778829721" -> "I142780053800";
+"I142778829726" -> "I142778829404";
+"I142778829721" -> "I142778829404";
+"I142778829726" -> "I142780053778";
+"I142778829721" -> "I142780053778";
+"I142780067590" -> "I142780067589";
+"I142780067591" -> "I142780067589";
+"I142780067590" -> "I142780053381";
+"I142780067591" -> "I142780053381";
+"I142778832166" -> "I142778831424";
+"I142780057833" -> "I142780057879";
+}
+`;
+
+const ROOT_ID = "I142778829395"; // Steven Greeran
+
+/* --------- 2. DOT PARSER (tiny, for this format) --------- */
+function parseDOT(src) {
+  const nodes = new Map(); // id -> {id, label}
+  const edges = [];        // {parent, child}
+  const nodeRe = /"([^"]+)"\s*\[label="([^"]*)"\]\s*;/g;
+  const edgeRe = /"([^"]+)"\s*->\s*"([^"]+)"\s*;/g;
+  let m;
+  while ((m = nodeRe.exec(src))) nodes.set(m[1], { id: m[1], label: m[2] });
+  while ((m = edgeRe.exec(src))) edges.push({ parent: m[1], child: m[2] });
+  return { nodes, edges };
+}
+
+const { nodes, edges } = parseDOT(DOT);
+
+/* --------- 3. BUILD PARENT / CHILD INDEXES --------- */
+const parentsOf = new Map();  // child -> [parent, parent]
+const childrenOf = new Map(); // parent -> [child, ...]
+nodes.forEach((_, id) => { parentsOf.set(id, []); childrenOf.set(id, []); });
+edges.forEach(({ parent, child }) => {
+  parentsOf.get(child).push(parent);
+  childrenOf.get(parent).push(child);
+});
+
+/* --------- 4. COUPLES (people who share a child) --------- */
+const couples = new Map(); // "idA|idB" sorted -> {a,b}
+nodes.forEach((_, child) => {
+  const p = parentsOf.get(child);
+  if (p.length === 2) {
+    const key = [p[0], p[1]].sort().join("|");
+    couples.set(key, { a: p[0], b: p[1] });
+  }
+});
+function spouseOf(id) {
+  const out = [];
+  couples.forEach((c) => {
+    if (c.a === id) out.push(c.b);
+    else if (c.b === id) out.push(c.a);
+  });
+  return out;
+}
+
+/* --------- 5. RELATIONSHIP / cM ENGINE -----------------
+   Method: For each person P, find the Most Recent Common
+   Ancestor with root R. Track distance from R (a) and
+   from P (b) up to the MRCA. The (a,b) pair determines
+   the relationship and expected shared cM.
+   For non-blood (in-laws), mark sharedCm = 0 and rel = "in-law".
+-------------------------------------------------------- */
+
+// BFS up ancestors, returning Map<ancestorId, distance>
+function ancestorDistances(startId) {
+  const dist = new Map();
+  const queue = [[startId, 0]];
+  while (queue.length) {
+    const [id, d] = queue.shift();
+    if (dist.has(id) && dist.get(id) <= d) continue;
+    dist.set(id, d);
+    for (const p of parentsOf.get(id) || []) queue.push([p, d + 1]);
+  }
+  return dist;
+}
+
+// BFS down descendants from a list of starts, returning Map<descId, minDist>
+function descendantDistances(startIds) {
+  const dist = new Map();
+  const queue = startIds.map((id) => [id, 0]);
+  while (queue.length) {
+    const [id, d] = queue.shift();
+    if (dist.has(id) && dist.get(id) <= d) continue;
+    dist.set(id, d);
+    for (const c of childrenOf.get(id) || []) queue.push([c, d + 1]);
+  }
+  return dist;
+}
+
+// Average shared autosomal cM by (a, b) where a,b = steps from each person to MRCA
+// Source: standard ISOGG / Shared cM Project averages (rounded)
+//   a=0,b=0  same person (3485 reported as full DNA)
+//   a=0,b=1  parent/child (3485)
+//   a=1,b=1  full sibling (2613) — but siblings DON'T go through MRCA in (0,1) sense; treat specially
+//   a=1,b=1  if single common ancestor → half-sibling (1759). Full siblings share TWO parents.
+//   a=0,b=2  grandparent/grandchild (1765)
+//   a=1,b=2  aunt/uncle / niece/nephew (1740)
+//   a=2,b=2  first cousin (866)
+//   a=0,b=3  gg-grandparent (881)
+//   a=1,b=3  great-aunt/uncle, grand-niece/nephew (894)
+//   a=2,b=3  1C1R (433)
+//   a=3,b=3  2nd cousin (229)
+//   a=2,b=4  1C2R (221)
+//   a=3,b=4  2C1R (122)
+//   a=4,b=4  3rd cousin (73)
+//   a=3,b=5  2C2R (71)
+//   a=4,b=5  3C1R (48)
+//   a=5,b=5  4th cousin (35)
+// Two-MRCA relationships (full sibling, full cousin) get DOUBLE the half-version cM.
+
+const REL_TABLE = {
+  // key "a,b" with a<=b ; returns [cm, label] for a HALF (single-MRCA) relationship
+  "0,0": [3485, "self"],
+  "0,1": [3485, "parent"],
+  "1,1": [1759, "half-sibling"],
+  "0,2": [1765, "grandparent"],
+  "1,2": [1740, "aunt/uncle"],
+  "2,2": [449,  "half 1st cousin"],
+  "0,3": [881,  "great-grandparent"],
+  "1,3": [894,  "great-aunt/uncle"],
+  "2,3": [224,  "half 1C1R"],
+  "3,3": [117,  "half 2nd cousin"],
+  "0,4": [440,  "2x great-grandparent"],
+  "1,4": [443,  "2x great-aunt/uncle"],
+  "2,4": [114,  "half 1C2R"],
+  "3,4": [62,   "half 2C1R"],
+  "4,4": [38,   "half 3rd cousin"],
+  "0,5": [220,  "3x great-grandparent"],
+  "1,5": [220,  "3x great-aunt/uncle"],
+  "2,5": [57,   "half 1C3R"],
+  "3,5": [36,   "half 2C2R"],
+  "4,5": [25,   "half 3C1R"],
+  "5,5": [18,   "half 4th cousin"],
+};
+
+function ordinal(n) {
+  const s = ["th","st","nd","rd"], v = n % 100;
+  return n + (s[(v-20)%10] || s[v] || s[0]);
+}
+function removed(r) { return r === 0 ? "" : ` ${r}R`; }
+
+function fullLabel(a, b, isFull) {
+  // Generate human-readable relationship name from (a,b) and whether both common ancestors are shared
+  if (a > b) [a,b] = [b,a];
+  if (a === 0 && b === 0) return "self";
+  if (a === 0) {
+    if (b === 1) return "parent";
+    if (b === 2) return "grandparent";
+    return ("great-".repeat(b-2)) + "grandparent";
+  }
+  if (a === 1 && b === 1) return isFull ? "sibling" : "half-sibling";
+  if (a === 1) {
+    const greats = b - 2;
+    const prefix = greats > 0 ? ("great-".repeat(greats)) : "";
+    return (isFull ? "" : "half-") + prefix + "aunt/uncle";
+  }
+  // cousin land
+  const cousinDeg = a - 1; // a<=b, so cousin degree based on closer side
+  const r = b - a;
+  return (isFull ? "" : "half-") + ordinal(cousinDeg) + " cousin" + removed(r);
+}
+
+function expectedCm(a, b, isFull) {
+  if (a > b) [a,b] = [b,a];
+  const key = `${a},${b}`;
+  const entry = REL_TABLE[key];
+  if (!entry) {
+    const distance = a + b;
+    return Math.max(6, Math.round(2200 / Math.pow(2, distance - 2)));
+  }
+  const halfCm = entry[0];
+  // "Full" vs "half" doubling applies to sibling and cousin relationships
+  // (a >= 2 always, or a == b == 1 for siblings). It does NOT apply to direct
+  // lineage (a == 0) or aunt/uncle / niece-nephew (a == 1, b > 1) where the
+  // descendant only inherits through a single chain from the MRCA couple.
+  const cousinLike = (a >= 2) || (a === 1 && b === 1);
+  if (isFull && cousinLike) return Math.round(halfCm * 2);
+  return halfCm;
+}
+
+// Inverse relationship label for descendants (when root is the ancestor side)
+function descendantLabel(b) {
+  if (b === 1) return "child";
+  if (b === 2) return "grandchild";
+  return ("great-".repeat(b-2)) + "grandchild";
+}
+
+// Down-leg label for nephews/nieces, grand-nieces, etc.
+function downLabel(a, b, isFull) {
+  // a = steps from ROOT up to MRCA (so root is on the descendant side)
+  // b = steps from PERSON up to MRCA (person is descendant of MRCA)
+  // a < b means person is in a younger generation than root
+  if (a === 1) {
+    const greats = b - 2; // grand-, great-grand-, etc.
+    const prefix = greats >= 1 ? ("great-".repeat(greats-1) + "grand-") : "";
+    return (isFull ? "" : "half-") + prefix + "niece/nephew";
+  }
+  // otherwise fall through to cousin labeling
+  return fullLabel(a, b, isFull);
+}
+
+/* --------- 6. COMPUTE RELATIONSHIP FOR EVERY PERSON --------- */
+const rootAncs = ancestorDistances(ROOT_ID); // MRCA candidates for root side
+
+function relationshipTo(personId) {
+  if (personId === ROOT_ID) {
+    return { rel: "self (root)", cm: 3485, mrca: [ROOT_ID], a: 0, b: 0 };
+  }
+  const pAncs = ancestorDistances(personId);
+
+  // 1) Direct lineage check: is person an ancestor or descendant of root?
+  // Direct lineage is a single-MRCA relationship (the person IS the MRCA, or root is),
+  // so we pass isFull=false (no doubling).
+  if (rootAncs.has(personId)) {
+    const b = rootAncs.get(personId);
+    return {
+      rel: fullLabel(0, b, false),
+      cm: expectedCm(0, b, false),
+      mrca: [personId],
+      a: 0, b,
+    };
+  }
+  if (pAncs.has(ROOT_ID)) {
+    const b = pAncs.get(ROOT_ID);
+    return {
+      rel: descendantLabel(b),
+      cm: expectedCm(0, b, false),
+      mrca: [ROOT_ID],
+      a: 0, b,
+    };
+  }
+
+  // 2) Find common ancestors and pick the closest set
+  let bestSum = Infinity, bestPair = null;
+  const sharedAncs = [];
+  rootAncs.forEach((dr, anc) => {
+    if (pAncs.has(anc)) {
+      const dp = pAncs.get(anc);
+      sharedAncs.push({ anc, dr, dp });
+      if (dr + dp < bestSum) { bestSum = dr + dp; bestPair = { dr, dp }; }
+    }
+  });
+  if (sharedAncs.length === 0) {
+    // No blood relation — leave as "unknown"; the in-law pass below will refine it.
+    return { rel: "no known relation", cm: 0, mrca: [], a: null, b: null };
+  }
+
+  // 3) Check for double-MRCA (full relationship) — two MRCAs at same minimal sum
+  // typical for full siblings (both parents shared) or full cousins (both grandparents)
+  const closest = sharedAncs.filter((s) => s.dr + s.dp === bestSum);
+  const isFull = closest.length >= 2;
+
+  const { dr, dp } = bestPair;
+  // Decide label direction: if root closer (dr<dp), person is "down"; else "up"
+  let rel;
+  if (dr === dp) {
+    rel = fullLabel(dr, dp, isFull);
+  } else if (dr < dp) {
+    rel = downLabel(dr, dp, isFull);
+  } else {
+    rel = fullLabel(dr, dp, isFull);
+  }
+
+  return {
+    rel,
+    cm: expectedCm(dr, dp, isFull),
+    mrca: closest.map((s) => s.anc),
+    a: dr,
+    b: dp,
+    isFull,
+  };
+}
+
+const rel = new Map();
+// Pass 1 — compute blood relationships (or "no known relation") for everyone.
+nodes.forEach((_, id) => rel.set(id, relationshipTo(id)));
+
+// Pass 2 — upgrade "no known relation" people to in-laws if they share a child
+// with a blood relative (uses results from pass 1; no recursion).
+nodes.forEach((_, id) => {
+  const r = rel.get(id);
+  if (r.cm > 0 || id === ROOT_ID) return;
+  // Find any spouse with a known blood relationship
+  let best = null;
+  for (const sp of spouseOf(id)) {
+    const sr = rel.get(sp);
+    if (sr && sr.cm > 0) {
+      if (!best || sr.cm > best.cm) best = { sp, sr };
+    }
+  }
+  if (best) {
+    rel.set(id, {
+      rel: `in-law (spouse of ${best.sr.rel})`,
+      cm: 0,
+      mrca: [],
+      a: null, b: null,
+      inLawOf: best.sp,
+    });
+  }
+});
+
+/* --------- 7. GENERATION ASSIGNMENT --------- */
+// gen 0 = root. Parents = +1, children = -1.
+// Propagate via BFS across edges; for in-laws (no path), use spouse's generation.
+const generation = new Map();
+generation.set(ROOT_ID, 0);
+const q = [ROOT_ID];
+while (q.length) {
+  const id = q.shift();
+  const g = generation.get(id);
+  for (const p of parentsOf.get(id) || []) {
+    if (!generation.has(p)) { generation.set(p, g + 1); q.push(p); }
+  }
+  for (const c of childrenOf.get(id) || []) {
+    if (!generation.has(c)) { generation.set(c, g - 1); q.push(c); }
+  }
+}
+// In-laws: assign generation based on their spouse (or child) if missing
+nodes.forEach((_, id) => {
+  if (generation.has(id)) return;
+  for (const sp of spouseOf(id)) {
+    if (generation.has(sp)) { generation.set(id, generation.get(sp)); return; }
+  }
+  // Otherwise infer from a child
+  for (const c of childrenOf.get(id) || []) {
+    if (generation.has(c)) { generation.set(id, generation.get(c) + 1); return; }
+  }
+  generation.set(id, 0);
+});
+
+/* --------- 8. COLOR HEATMAP --------- */
+// cM → color via a log-scaled gradient
+const STOPS = [
+  [0,    [154, 166, 184]],  // in-law / no DNA → grey
+  [25,   [43,  58,  140]],  // deep blue
+  [75,   [42,  134, 201]],  // blue
+  [200,  [78,  200, 193]],  // teal
+  [600,  [245, 217, 107]],  // yellow
+  [1200, [240, 138, 58]],   // orange
+  [1800, [212, 67,  90]],   // red
+  [3485, [197, 40,  61]],   // deep red
+];
+function lerp(a, b, t) { return a + (b - a) * t; }
+function colorForCm(cm) {
+  if (cm <= 0) return "rgb(154,166,184)";
+  for (let i = 0; i < STOPS.length - 1; i++) {
+    const [c0, rgb0] = STOPS[i];
+    const [c1, rgb1] = STOPS[i+1];
+    if (cm >= c0 && cm <= c1) {
+      const t = (cm - c0) / (c1 - c0);
+      const r = Math.round(lerp(rgb0[0], rgb1[0], t));
+      const g = Math.round(lerp(rgb0[1], rgb1[1], t));
+      const b = Math.round(lerp(rgb0[2], rgb1[2], t));
+      return `rgb(${r},${g},${b})`;
+    }
+  }
+  const last = STOPS[STOPS.length-1][1];
+  return `rgb(${last[0]},${last[1]},${last[2]})`;
+}
+
+/* --------- 9. LAYOUT --------- */
+// Group people by generation, sort within each row by family/couple proximity.
+const byGen = new Map();
+generation.forEach((g, id) => {
+  if (!byGen.has(g)) byGen.set(g, []);
+  byGen.get(g).push(id);
+});
+
+// Order within a generation: keep couples adjacent, and group siblings together
+function orderGen(idsInGen) {
+  // Start by grouping people who are couples; then group by shared parents
+  const placed = new Set();
+  const result = [];
+  function place(id) {
+    if (placed.has(id) || !idsInGen.includes(id)) return;
+    placed.add(id);
+    result.push(id);
+    // place spouses next to them
+    for (const sp of spouseOf(id)) {
+      if (!placed.has(sp) && idsInGen.includes(sp)) {
+        placed.add(sp);
+        result.push(sp);
+      }
+    }
+  }
+  // Start with root or closest-to-root, then siblings, etc.
+  const sorted = [...idsInGen].sort((a, b) => {
+    const ra = rel.get(a).cm || 0;
+    const rb = rel.get(b).cm || 0;
+    return rb - ra;
+  });
+  for (const id of sorted) {
+    // place siblings together: walk to parents, then back to children
+    const ps = parentsOf.get(id) || [];
+    if (ps.length) {
+      const sibs = new Set();
+      for (const p of ps) (childrenOf.get(p) || []).forEach((c) => sibs.add(c));
+      [...sibs].filter((s) => idsInGen.includes(s)).forEach(place);
+    }
+    place(id);
+  }
+  // Add any stragglers
+  idsInGen.forEach(place);
+  return result;
+}
+
+const orderedGen = new Map();
+byGen.forEach((ids, g) => orderedGen.set(g, orderGen(ids)));
+
+// Coordinates
+const W_PER_PERSON = 170;
+const ROW_HEIGHT   = 130;
+const PERSON_W = 150, PERSON_H = 64;
+
+const pos = new Map(); // id -> {x, y}
+let minX = 0, maxX = 0;
+orderedGen.forEach((ids, g) => {
+  const y = -g * ROW_HEIGHT; // higher generation = higher up (smaller y)
+  const totalW = ids.length * W_PER_PERSON;
+  const startX = -totalW / 2 + W_PER_PERSON / 2;
+  ids.forEach((id, i) => {
+    const x = startX + i * W_PER_PERSON;
+    pos.set(id, { x, y });
+    if (x < minX) minX = x;
+    if (x > maxX) maxX = x;
+  });
+});
+
+const gens = [...orderedGen.keys()].sort((a, b) => a - b);
+const minY = -gens[gens.length - 1] * ROW_HEIGHT;
+const maxY = -gens[0] * ROW_HEIGHT;
+
+/* --------- 10. RENDER SVG --------- */
+const svg = document.getElementById("svg");
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+const root = document.createElementNS(SVG_NS, "g");
+root.setAttribute("id", "viewport");
+svg.appendChild(root);
+
+// Generation labels on the left
+const labelX = minX - 140;
+gens.forEach((g) => {
+  const y = -g * ROW_HEIGHT;
+  const t = document.createElementNS(SVG_NS, "text");
+  t.setAttribute("class", "gen-label");
+  t.setAttribute("x", labelX);
+  t.setAttribute("y", y + 4);
+  let lbl;
+  if (g === 0) lbl = "ROOT (you)";
+  else if (g > 0) lbl = `+${g}  gen up`;
+  else lbl = `${g}  gen down`;
+  t.textContent = lbl;
+  root.appendChild(t);
+});
+
+// Parent-child edges (curved)
+const edgeLayer = document.createElementNS(SVG_NS, "g");
+root.appendChild(edgeLayer);
+edges.forEach(({ parent, child }) => {
+  const a = pos.get(parent), b = pos.get(child);
+  if (!a || !b) return;
+  const p = document.createElementNS(SVG_NS, "path");
+  const x1 = a.x, y1 = a.y + PERSON_H/2;
+  const x2 = b.x, y2 = b.y - PERSON_H/2;
+  const my = (y1 + y2) / 2;
+  const d = `M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`;
+  p.setAttribute("d", d);
+  p.setAttribute("class", "edge");
+  // edge color: blend of the two endpoints' colors, mostly the child's
+  const cmChild = rel.get(child).cm;
+  p.setAttribute("stroke", colorForCm(cmChild));
+  p.setAttribute("stroke-opacity", "0.55");
+  p.setAttribute("stroke-width", "1.6");
+  p.dataset.parent = parent;
+  p.dataset.child = child;
+  edgeLayer.appendChild(p);
+});
+
+// Couple connectors (horizontal dashed lines)
+const coupleLayer = document.createElementNS(SVG_NS, "g");
+root.appendChild(coupleLayer);
+couples.forEach(({ a, b }) => {
+  const pa = pos.get(a), pb = pos.get(b);
+  if (!pa || !pb) return;
+  if (Math.abs(pa.y - pb.y) > 5) return; // only same row
+  const line = document.createElementNS(SVG_NS, "line");
+  line.setAttribute("x1", Math.min(pa.x, pb.x) + PERSON_W/2);
+  line.setAttribute("x2", Math.max(pa.x, pb.x) - PERSON_W/2);
+  line.setAttribute("y1", pa.y);
+  line.setAttribute("y2", pa.y);
+  line.setAttribute("class", "couple");
+  coupleLayer.appendChild(line);
+});
+
+// Person nodes
+const personLayer = document.createElementNS(SVG_NS, "g");
+root.appendChild(personLayer);
+nodes.forEach((n) => {
+  const p = pos.get(n.id);
+  if (!p) return;
+  const g = document.createElementNS(SVG_NS, "g");
+  g.setAttribute("class", "person" + (n.id === ROOT_ID ? " root" : ""));
+  g.setAttribute("transform", `translate(${p.x - PERSON_W/2}, ${p.y - PERSON_H/2})`);
+  g.dataset.id = n.id;
+
+  const r = rel.get(n.id);
+  const fill = colorForCm(r.cm);
+
+  const bg = document.createElementNS(SVG_NS, "rect");
+  bg.setAttribute("class", "bg");
+  bg.setAttribute("width", PERSON_W);
+  bg.setAttribute("height", PERSON_H);
+  bg.setAttribute("rx", 10);
+  bg.setAttribute("fill", fill);
+  bg.setAttribute("stroke", "rgba(0,0,0,0.25)");
+  bg.setAttribute("stroke-width", "1");
+  g.appendChild(bg);
+
+  // Name (auto-wrap to 2 lines)
+  const name = n.label;
+  const words = name.split(" ");
+  let line1 = name, line2 = "";
+  if (name.length > 18) {
+    // break roughly in half
+    let acc = "";
+    for (const w of words) {
+      if ((acc + " " + w).trim().length <= 16) acc = (acc + " " + w).trim();
+      else { line1 = acc; line2 = name.slice(acc.length + 1); break; }
+    }
+  } else {
+    line1 = name; line2 = "";
+  }
+  const t1 = document.createElementNS(SVG_NS, "text");
+  t1.setAttribute("x", PERSON_W/2);
+  t1.setAttribute("y", line2 ? 22 : 28);
+  t1.setAttribute("text-anchor", "middle");
+  t1.setAttribute("font-size", "13");
+  t1.setAttribute("font-weight", "600");
+  t1.setAttribute("fill", contrastText(fill));
+  t1.textContent = line1;
+  g.appendChild(t1);
+  if (line2) {
+    const t2 = document.createElementNS(SVG_NS, "text");
+    t2.setAttribute("x", PERSON_W/2);
+    t2.setAttribute("y", 36);
+    t2.setAttribute("text-anchor", "middle");
+    t2.setAttribute("font-size", "13");
+    t2.setAttribute("font-weight", "600");
+    t2.setAttribute("fill", contrastText(fill));
+    t2.textContent = line2;
+    g.appendChild(t2);
+  }
+  // Relationship strapline
+  const t3 = document.createElementNS(SVG_NS, "text");
+  t3.setAttribute("x", PERSON_W/2);
+  t3.setAttribute("y", PERSON_H - 8);
+  t3.setAttribute("text-anchor", "middle");
+  t3.setAttribute("font-size", "10");
+  t3.setAttribute("fill", contrastText(fill, 0.75));
+  let strap;
+  if (r.cm > 0) strap = `${r.rel} · ${r.cm.toLocaleString()} cM`;
+  else strap = r.rel;
+  t3.textContent = strap.length > 30 ? strap.slice(0,28)+"…" : strap;
+  g.appendChild(t3);
+
+  g.addEventListener("mouseenter", (e) => showTooltip(e, n.id));
+  g.addEventListener("mousemove", (e) => moveTooltip(e));
+  g.addEventListener("mouseleave", hideTooltip);
+  g.addEventListener("click", (e) => { e.stopPropagation(); showInfo(n.id); });
+  personLayer.appendChild(g);
+});
+
+function contrastText(rgbStr, alpha = 1) {
+  const m = rgbStr.match(/\d+/g);
+  if (!m) return "#000";
+  const [r,g,b] = m.map(Number);
+  const lum = (0.299*r + 0.587*g + 0.114*b);
+  const base = lum > 160 ? "0,0,0" : "255,255,255";
+  return `rgba(${base},${alpha})`;
+}
+
+/* --------- 11. TOOLTIP + INFO --------- */
+const tt = document.getElementById("tt");
+function showTooltip(e, id) {
+  const n = nodes.get(id);
+  const r = rel.get(id);
+  const g = generation.get(id);
+  const cmStr = r.cm > 0
+    ? `<span class="cm">${r.cm.toLocaleString()} cM</span> shared`
+    : `<span class="cm">0 cM</span> (no blood relation)`;
+  let mrcaStr = "";
+  if (r.mrca && r.mrca.length) {
+    mrcaStr = `<div style="margin-top:4px;color:var(--muted)">via ${r.mrca.map(m => nodes.get(m).label).join(" &amp; ")}</div>`;
+  }
+  tt.innerHTML = `
+    <b>${n.label}</b><br/>
+    <span class="rel">${r.rel}</span><br/>
+    ${cmStr}<br/>
+    <span style="color:var(--muted)">generation ${g >= 0 ? "+"+g : g} · gen layer</span>
+    ${mrcaStr}
+  `;
+  tt.style.opacity = 1;
+}
+function moveTooltip(e) {
+  const pad = 14;
+  let x = e.clientX + pad, y = e.clientY + pad;
+  const r = tt.getBoundingClientRect();
+  if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
+  if (y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
+  tt.style.left = x + "px";
+  tt.style.top  = y + "px";
+}
+function hideTooltip() { tt.style.opacity = 0; }
+
+function showInfo(id) {
+  const n = nodes.get(id);
+  const r = rel.get(id);
+  const ps = (parentsOf.get(id) || []).map((p) => nodes.get(p).label);
+  const cs = (childrenOf.get(id) || []).map((c) => nodes.get(c).label);
+  const sps = spouseOf(id).map((s) => nodes.get(s).label);
+  const info = document.getElementById("info");
+  info.style.display = "block";
+  document.getElementById("info-name").textContent = n.label;
+  document.getElementById("info-pills").innerHTML = `
+    <span class="pill">${r.rel}</span>
+    <span class="pill">${r.cm.toLocaleString()} cM</span>
+    <span class="pill">gen ${generation.get(id) >= 0 ? "+" + generation.get(id) : generation.get(id)}</span>
+  `;
+  document.getElementById("info-detail").innerHTML = `
+    ${ps.length ? `<div><b>Parents:</b> ${ps.join(", ")}</div>` : ""}
+    ${sps.length ? `<div><b>Spouse(s):</b> ${sps.join(", ")}</div>` : ""}
+    ${cs.length ? `<div><b>Children:</b> ${cs.join(", ")}</div>` : ""}
+    ${r.mrca && r.mrca.length ? `<div style="margin-top:8px;color:var(--muted)"><b>MRCA with root:</b> ${r.mrca.map((m) => nodes.get(m).label).join(", ")}</div>` : ""}
+  `;
+  // Highlight lineage path on tree
+  highlightLineage(id);
+}
+function highlightLineage(id) {
+  document.querySelectorAll(".person").forEach((p) => p.classList.add("dim"));
+  document.querySelectorAll(".edge").forEach((p) => p.classList.add("dim"));
+  // Path from id to root: walk up to MRCA then down to root
+  const r = rel.get(id);
+  const path = new Set([id, ROOT_ID]);
+  if (r.mrca && r.mrca.length) {
+    r.mrca.forEach((m) => path.add(m));
+    // ancestors of id up to mrca
+    const visit = (start, target) => {
+      const q = [[start, [start]]];
+      while (q.length) {
+        const [cur, way] = q.shift();
+        if (cur === target) { way.forEach((w) => path.add(w)); return; }
+        for (const p of parentsOf.get(cur) || []) q.push([p, [...way, p]]);
+      }
+    };
+    r.mrca.forEach((m) => { visit(id, m); visit(ROOT_ID, m); });
+  } else {
+    // could be in-law: include spouse path
+    spouseOf(id).forEach((sp) => path.add(sp));
+  }
+  path.forEach((pid) => {
+    const el = document.querySelector(`.person[data-id="${pid}"]`);
+    if (el) el.classList.remove("dim");
+  });
+  document.querySelectorAll(".edge").forEach((e) => {
+    if (path.has(e.dataset.parent) && path.has(e.dataset.child)) e.classList.remove("dim");
+  });
+}
+document.getElementById("stage").addEventListener("click", () => {
+  // Click empty area clears highlight
+  document.querySelectorAll(".person, .edge").forEach((p) => p.classList.remove("dim"));
+});
+
+/* --------- 12. PAN + ZOOM --------- */
+let view = { x: 0, y: 0, k: 1 };
+function applyView() {
+  root.setAttribute("transform", `translate(${view.x}, ${view.y}) scale(${view.k})`);
+}
+function fit() {
+  const stage = document.getElementById("stage");
+  const sw = stage.clientWidth, sh = stage.clientHeight;
+  const treeW = (maxX - minX) + PERSON_W + 200;
+  const treeH = (maxY - minY) + PERSON_H + 80;
+  const k = Math.min(sw / treeW, sh / treeH) * 0.9;
+  view.k = k;
+  view.x = sw/2 - ((minX + maxX) / 2) * k;
+  view.y = sh/2 - ((minY + maxY) / 2) * k;
+  applyView();
+}
+window.addEventListener("resize", fit);
+window.addEventListener("DOMContentLoaded", fit);
+setTimeout(fit, 0);
+
+// Drag to pan
+let dragging = false, last = null;
+const stage = document.getElementById("stage");
+stage.addEventListener("pointerdown", (e) => {
+  if (e.target.closest(".person")) return;
+  dragging = true; last = [e.clientX, e.clientY];
+  stage.setPointerCapture(e.pointerId);
+});
+stage.addEventListener("pointermove", (e) => {
+  if (!dragging) return;
+  view.x += e.clientX - last[0];
+  view.y += e.clientY - last[1];
+  last = [e.clientX, e.clientY];
+  applyView();
+});
+stage.addEventListener("pointerup", () => { dragging = false; });
+stage.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  const stageRect = stage.getBoundingClientRect();
+  const mx = e.clientX - stageRect.left, my = e.clientY - stageRect.top;
+  const factor = e.deltaY < 0 ? 1.12 : 1/1.12;
+  const newK = Math.max(0.15, Math.min(4, view.k * factor));
+  // zoom around mouse
+  view.x = mx - (mx - view.x) * (newK / view.k);
+  view.y = my - (my - view.y) * (newK / view.k);
+  view.k = newK;
+  applyView();
+}, { passive: false });
+
+document.getElementById("btn-fit").addEventListener("click", fit);
+document.getElementById("btn-reset").addEventListener("click", () => { view = {x:0,y:0,k:1}; fit(); });
+
+/* --------- 13. HEADER --------- */
+document.getElementById("root-name").textContent = nodes.get(ROOT_ID).label;
+</script>
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptopoly - The Crypto & NFT Board Game</title>
+    <style>
+        :root {
+            --bg-color: #1a1c23;
+            --panel-color: #242835;
+            --text-color: #f1f5f9;
+            --accent-color: #3b82f6;
+            --board-bg: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: var(--bg-color); color: var(--text-color); display: flex; height: 100vh; overflow: hidden; padding: 20px; gap: 20px; }
+
+        /* Left Side: Game Stats and Controls */
+        #control-panel { width: 350px; display: flex; flex-direction: column; gap: 15px; height: 100%; overflow-y: auto; }
+        .card { background: var(--panel-color); padding: 15px; border-radius: 8px; border: 1px solid #334155; }
+        h2 { font-size: 1.2rem; margin-bottom: 10px; color: #94a3b8; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+
+        .btn { background: var(--accent-color); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; text-transform: uppercase; margin-top: 5px; }
+        .btn:hover { filter: brightness(1.1); }
+        .btn:disabled { background: #475569; cursor: not-allowed; }
+
+        /* Market Ticker Styling */
+        .ticker-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px; }
+        .up { color: #10b981; }
+        .down { color: #ef4444; }
+
+        /* Center/Right: The Board Container */
+        #game-container { flex: 1; display: flex; justify-content: center; align-items: center; background: #0f172a; border-radius: 12px; padding: 10px; position: relative; }
+
+        /* CSS Grid Monopoly Board */
+        #board {
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            grid-template-rows: repeat(11, 1fr);
+            width: 90vh;
+            height: 90vh;
+            max-width: 750px;
+            max-height: 750px;
+            background: var(--board-bg);
+            border: 4px solid #0f172a;
+            gap: 2px;
+            position: relative;
+        }
+
+        .space {
+            background: #ffffff;
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 2px;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .space .color-bar { width: 100%; height: 12px; position: absolute; top: 0; }
+        .space .price-label { font-size: 0.55rem; color: #475569; margin-top: auto; }
+
+        /* Rotations for sidebar items to mimic real game */
+        .row-left { transform: rotate(90deg); }
+        .row-right { transform: rotate(-90deg); }
+        .row-top { transform: rotate(180deg); }
+
+        /* Corners */
+        .corner { background: #cbd5e1; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; font-weight: 900; z-index: 2; }
+
+        /* Player Tokens visually layered */
+        .token {
+            width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;
+            position: absolute; bottom: 15px; shadow: 0 2px 4px rgba(0,0,0,0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10;
+        }
+        #p1-token { background: #e11d48; left: 15%; }
+        #p2-token { background: #2563eb; right: 15%; }
+
+        /* Center Area elements */
+        #board-center {
+            grid-column: 2 / 11;
+            grid-row: 2 / 11;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 20px;
+        }
+        .center-title { font-size: 2.5rem; font-weight: 900; letter-spacing: 2px; color: #1e293b; transform: rotate(-45deg); opacity: 0.15; position: absolute; }
+
+        #dice-area { display: flex; gap: 15px; margin-bottom: 15px; z-index: 5; }
+        .die { width: 45px; height: 45px; background: white; border: 2px solid #1e293b; color: #1e293b; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+
+        /* Console log list styling */
+        #game-log { height: 120px; overflow-y: auto; font-size: 0.8rem; line-height: 1.3; color: #cbd5e1; }
+
+        /* NFT Gallery item box */
+        .nft-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 5px; margin-top: 5px; }
+        .nft-art { width: 100%; aspect-ratio: 1; border-radius: 4px; border: 1px solid #475569; position: relative; }
+    </style>
+</head>
+<body>
+
+    <!-- CONTROL PANEL CONTAINER -->
+    <div id="control-panel">
+        <div class="card">
+            <h2 id="turn-indicator">Player 1's Turn</h2>
+            <div id="dice-container" style="display: flex; gap: 10px; align-items: center; justify-content: space-between;">
+                <button class="btn" id="roll-btn" onclick="playTurn()">Roll Dice</button>
+                <button class="btn" id="action-btn" onclick="handleAction()" style="background:#10b981;" disabled>Action</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Live Crypto Index</h2>
+            <div id="crypto-ticker">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Ledger Ecosystems</h2>
+            <div id="player-ledgers">
+                <!-- Track capital balances & asset listings -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Real-time Action Log</h2>
+            <div id="game-log">Game initialized. Player 1 starts on GO.</div>
+        </div>
+    </div>
+
+    <!-- MAIN GAME GRAPHIC INTERFACE -->
+    <div id="game-container">
+        <div id="board">
+            <!-- Center Board Graphic elements -->
+            <div id="board-center">
+                <div class="center-title">CRYPTOPOLY</div>
+                <div id="dice-area">
+                    <div class="die" id="die1">1</div>
+                    <div class="die" id="die2">1</div>
+                </div>
+                <div id="center-status-msg" style="color:#475569; font-weight:bold; font-size:0.9rem;">Roll to verify protocol.</div>
+            </div>
+
+            <!-- Tokens positioned relative to board framework -->
+            <div id="p1-token" class="token"></div>
+            <div id="p2-token" class="token"></div>
+
+            <!-- Row 1: Top Row (Grid Layout Inverse Coordinates Mapping) -->
+            <div class="corner" style="grid-column: 1; grid-row: 1;">FREE PARKING</div>
+            <div class="space" id="space21" style="grid-column: 2; grid-row: 1;"><div class="color-bar" style="background:#ef4444"></div><div style="margin-top:14px;">RED</div><div class="price-label"></div></div>
+            <div class="space" id="space22" style="grid-column: 3; grid-row: 1;"><div>CHANCE</div></div>
+            <div class="space" id="space23" style="grid-column: 4; grid-row: 1;"><div class="color-bar" style="background:#ef4444"></div><div style="margin-top:14px;">LINK</div><div class="price-label"></div></div>
+            <div class="space" id="space24" style="grid-column: 5; grid-row: 1;"><div class="color-bar" style="background:#ef4444"></div><div style="margin-top:14px;">UNI</div><div class="price-label"></div></div>
+            <div class="space" id="space25" style="grid-column: 6; grid-row: 1;"><div>B&O RAIL</div><div class="price-label">$200</div></div>
+            <div class="space" id="space26" style="grid-column: 7; grid-row: 1;"><div class="color-bar" style="background:#eab308"></div><div style="margin-top:14px;">XRP</div><div class="price-label"></div></div>
+            <div class="space" id="space27" style="grid-column: 8; grid-row: 1;"><div class="color-bar" style="background:#eab308"></div><div style="margin-top:14px;">ADA</div><div class="price-label"></div></div>
+            <div class="space" id="space28" style="grid-column: 9; grid-row: 1;"><div>WATER DATA</div><div class="price-label">$150</div></div>
+            <div class="space" id="space29" style="grid-column: 10; grid-row: 1;"><div class="color-bar" style="background:#eab308"></div><div style="margin-top:14px;">DOGE</div><div class="price-label"></div></div>
+            <div class="corner" style="grid-column: 11; grid-row: 1;">GO TO JAIL</div>
+
+            <!-- Row 2-10: Sidebars Grid Allocation -->
+            <!-- Left Column -->
+            <div class="space row-left" id="space19" style="grid-column: 1; grid-row: 2;"><div class="color-bar" style="background:#f97316"></div><div>DOT</div><div class="price-label"></div></div>
+            <div class="space row-left" id="space18" style="grid-column: 1; grid-row: 3;"><div class="color-bar" style="background:#f97316"></div><div>AVAX</div><div class="price-label"></div></div>
+            <div class="space row-left" id="space17" style="grid-column: 1; grid-row: 4;"><div>CHEST</div></div>
+            <div class="space row-left" id="space16" style="grid-column: 1; grid-row: 5;"><div class="color-bar" style="background:#f97316"></div><div>MATIC</div><div class="price-label"></div></div>
+            <div class="space row-left" id="space15" style="grid-column: 1; grid-row: 6;"><div>PENN RAIL</div><div class="price-label">$200</div></div>
+            <div class="space row-left" id="space14" style="grid-column: 1; grid-row: 7;"><div class="color-bar" style="background:#ec4899"></div><div>SHIB</div><div class="price-label"></div></div>
+            <div class="space row-left" id="space13" style="grid-column: 1; grid-row: 8;"><div class="color-bar" style="background:#ec4899"></div><div>LEO</div><div class="price-label"></div></div>
+            <div class="space row-left" id="space12" style="grid-column: 1; grid-row: 9;"><div>POW GRID</div><div class="price-label">$150</div></div>
+            <div class="space row-left" id="space11" style="grid-column: 1; grid-row: 10;"><div class="color-bar" style="background:#ec4899"></div><div>DAI</div><div class="price-label"></div></div>
+
+            <!-- Right Column -->
+            <div class="space row-right" id="space31" style="grid-column: 11; grid-row: 2;"><div class="color-bar" style="background:#22c55e"></div><div>SOL</div><div class="price-label"></div></div>
+            <div class="space row-right" id="space32" style="grid-column: 11; grid-row: 3;"><div class="color-bar" style="background:#22c55e"></div><div>BNB</div><div class="price-label"></div></div>
+            <div class="space row-right" id="space33" style="grid-column: 11; grid-row: 4;"><div>CHEST</div></div>
+            <div class="space row-right" id="space34" style="grid-column: 11; grid-row: 5;"><div class="color-bar" style="background:#22c55e"></div><div>ETH</div><div class="price-label"></div></div>
+            <div class="space row-right" id="space35" style="grid-column: 11; grid-row: 6;"><div>SHORT LINE</div><div class="price-label">$200</div></div>
+            <div class="space row-right" id="space36" style="grid-column: 11; grid-row: 7;"><div>CHANCE</div></div>
+            <div class="space row-right" id="space37" style="grid-column: 11; grid-row: 8;"><div class="color-bar" style="background:#1d4ed8"></div><div>STETH</div><div class="price-label"></div></div>
+            <div class="space row-right" id="space38" style="grid-column: 11; grid-row: 9;"><div>GAS TAX</div><div class="price-label">$100</div></div>
+            <div class="space row-right" id="space39" style="grid-column: 11; grid-row: 10;"><div class="color-bar" style="background:#1d4ed8"></div><div>BTC</div><div class="price-label"></div></div>
+
+            <!-- Row 11: Bottom Row -->
+            <div class="corner" style="grid-column: 1; grid-row: 11;">IN JAIL</div>
+            <div class="space" id="space9" style="grid-column: 2; grid-row: 11;"><div class="color-bar" style="background:#60a5fa"></div><div style="margin-top:14px;">ATOM</div><div class="price-label"></div></div>
+            <div class="space" id="space8" style="grid-column: 3; grid-row: 11;"><div class="color-bar" style="background:#60a5fa"></div><div style="margin-top:14px;">XLM</div><div class="price-label"></div></div>
+            <div class="space" id="space7" style="grid-column: 4; grid-row: 11;"><div>CHANCE</div></div>
+            <div class="space" id="space6" style="grid-column: 5; grid-row: 11;"><div class="color-bar" style="background:#60a5fa"></div><div style="margin-top:14px;">BCH</div><div class="price-label"></div></div>
+            <div class="space" id="space5" style="grid-column: 6; grid-row: 11;"><div>READ RAIL</div><div class="price-label">$200</div></div>
+            <div class="space" id="space4" style="grid-column: 7; grid-row: 11;"><div>FEE TAX</div><div class="price-label">$200</div></div>
+            <div class="space" id="space3" style="grid-column: 8; grid-row: 11;"><div class="color-bar" style="background:#78350f"></div><div style="margin-top:14px;">ETC</div><div class="price-label"></div></div>
+            <div class="space" id="space2" style="grid-column: 9; grid-row: 11;"><div>CHEST</div></div>
+            <div class="space" id="space1" style="grid-column: 10; grid-row: 11;"><div class="color-bar" style="background:#78350f"></div><div style="margin-top:14px;">LTC</div><div class="price-label"></div></div>
+            <div class="corner" id="space0" style="grid-column: 11; grid-row: 11;">GO<br><span style="font-size:0.5rem;color:green">+$200</span></div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT ARCHITECTURE -->
+    <script>
+        // Real-Time Simulator System Base Asset Multipliers
+        const marketRates = {
+            LTC: { base: 60, current: 60, change: 0, group: 'brown' },
+            ETC: { base: 60, current: 60, change: 0, group: 'brown' },
+            BCH: { base: 100, current: 100, change: 0, group: 'lightblue' },
+            XLM: { base: 100, current: 100, change: 0, group: 'lightblue' },
+            ATOM: { base: 120, current: 120, change: 0, group: 'lightblue' },
+            DAI: { base: 140, current: 140, change: 0, group: 'pink' },
+            LEO: { base: 140, current: 140, change: 0, group: 'pink' },
+            SHIB: { base: 160, current: 160, change: 0, group: 'pink' },
+            MATIC: { base: 180, current: 180, change: 0, group: 'orange' },
+            AVAX: { base: 180, current: 180, change: 0, group: 'orange' },
+            DOT: { base: 200, current: 200, change: 0, group: 'orange' },
+            RED: { base: 220, current: 220, change: 0, group: 'red' },
+            LINK: { base: 220, current: 220, change: 0, group: 'red' },
+            UNI: { base: 240, current: 240, change: 0, group: 'red' },
+            DOGE: { base: 260, current: 260, change: 0, group: 'yellow' },
+            ADA: { base: 260, current: 260, change: 0, group: 'yellow' },
+            XRP: { base: 280, current: 280, change: 0, group: 'yellow' },
+            SOL: { base: 300, current: 300, change: 0, group: 'green' },
+            BNB: { base: 300, current: 300, change: 0, group: 'green' },
+            ETH: { base: 320, current: 320, change: 0, group: 'green' },
+            STETH: { base: 350, current: 350, change: 0, group: 'darkblue' },
+            BTC: { base: 400, current: 400, change: 0, group: 'darkblue' }
+        };
+
+        // Complete Structural Mapping of Board Fields
+        const boardSpaces = {
+            0: { name: "GO", type: "special" },
+            1: { name: "LTC", type: "property", asset: "LTC" },
+            2: { name: "Community Chest", type: "chest" },
+            3: { name: "ETC", type: "property", asset: "ETC" },
+            4: { name: "FEE TAX", type: "tax", amount: 200 },
+            5: { name: "READ RAIL", type: "railroad", basePrice: 200 },
+            6: { name: "BCH", type: "property", asset: "BCH" },
+            7: { name: "Chance", type: "chance" },
+            8: { name: "XLM", type: "property", asset: "XLM" },
+            9: { name: "ATOM", type: "property", asset: "ATOM" },
+            10: { name: "Just Visiting / Jail", type: "special" },
+            11: { name: "DAI", type: "property", asset: "DAI" },
+            12: { name: "POW GRID", type: "utility", basePrice: 150 },
+            13: { name: "LEO", type: "property", asset: "LEO" },
+            14: { name: "SHIB", type: "property", asset: "SHIB" },
+            15: { name: "PENN RAIL", type: "railroad", basePrice: 200 },
+            16: { name: "MATIC", type: "property", asset: "MATIC" },
+            17: { name: "Community Chest", type: "chest" },
+            18: { name: "AVAX", type: "property", asset: "AVAX" },
+            19: { name: "DOT", type: "property", asset: "DOT" },
+            20: { name: "Free Parking", type: "special" },
+            21: { name: "RED", type: "property", asset: "RED" },
+            22: { name: "Chance", type: "chance" },
+            23: { name: "LINK", type: "property", asset: "LINK" },
+            24: { name: "UNI", type: "property", asset: "UNI" },
+            25: { name: "B&O RAIL", type: "railroad", basePrice: 200 },
+            26: { name: "XRP", type: "property", asset: "XRP" },
+            27: { name: "ADA", type: "property", asset: "ADA" },
+            28: { name: "WATER DATA", type: "utility", basePrice: 150 },
+            29: { name: "DOGE", type: "property", asset: "DOGE" },
+            30: { name: "Go To Jail", type: "special" },
+            31: { name: "SOL", type: "property", asset: "SOL" },
+            32: { name: "BNB", type: "property", asset: "BNB" },
+            33: { name: "Community Chest", type: "chest" },
+            34: { name: "ETH", type: "property", asset: "ETH" },
+            35: { name: "SHORT LINE", type: "railroad", basePrice: 200 },
+            36: { name: "Chance", type: "chance" },
+            37: { name: "STETH", type: "property", asset: "STETH" },
+            38: { name: "GAS TAX", type: "tax", amount: 100 },
+            39: { name: "BTC", type: "property", asset: "BTC" }
+        };
+
+        // Game State Core Engine Variable Records
+        let gameSession = {
+            activeTurn: 1,
+            rolled: false,
+            players: {
+                1: { cash: 1500, position: 0, assets: [], nfts: [], elementId: "p1-token" },
+                2: { cash: 1500, position: 0, assets: [], nfts: [], elementId: "p2-token" }
+            }
+        };
+
+        // Generates Algorithmic SVG Hex Matrix Strings as Mock NFTs
+        function mintUniqueNFT() {
+            const hexChars = "0123456789ABCDEF";
+            let structuralColor = "#";
+            for (let i = 0; i < 6; i++) structuralColor += hexChars[Math.floor(Math.random() * 16)];
+            const tokenID = Math.floor(Math.random() * 9000 + 1000);
+            return { id: tokenID, color: structuralColor };
+        }
+
+        // Live Market Volatility Loop Tracker
+        function updateLiveTickers() {
+            let tickerHTML = '';
+            for (const [ticker, data] of Object.entries(marketRates)) {
+                // Generates bounded random walk fluctuations (-4.5% to +5.0%)
+                const changePct = (Math.random() * 9.5 - 4.5) / 100;
+                data.current = Math.max(10, Math.round(data.current * (1 + changePct)));
+                data.change = (((data.current - data.base) / data.base) * 100).toFixed(1);
+
+                const colorClass = data.change >= 0 ? 'up' : 'down';
+                const trendIndicator = data.change >= 0 ? '▲' : '▼';
+                tickerHTML += `
+                    <div class="ticker-row">
+                        <span><b>${ticker}</b> (${data.group.toUpperCase()})</span>
+                        <span class="${colorClass}">${trendIndicator} $${data.current} (${data.change}%)</span>
+                    </div>
+                `;
+
+                // Live inject price properties back onto the DOM grid board fields
+                for (const [id, space] of Object.entries(boardSpaces)) {
+                    if (space.type === 'property' && space.asset === ticker) {
+                        const spaceDOM = document.getElementById(`space${id}`);
+                        if (spaceDOM) {
+                            const priceTag = spaceDOM.querySelector('.price-label');
+                            if (priceTag) priceTag.innerText = `$${data.current}`;
+                        }
+                    }
+                }
+            }
+            document.getElementById('crypto-ticker').innerHTML = tickerHTML;
+            renderLedgers();
+        }
+
+        // Render Global Balances and Portfolio Assets
+        function renderLedgers() {
+            let ledgerHTML = '';
+            for (const [id, player] of Object.entries(gameSession.players)) {
+                let nftThumbnails = '';
+                player.nfts.forEach(nft => {
+                    nftThumbnails += `<div class="nft-art" style="background:${nft.color};" title="NFT ID: #${nft.id}"></div>`;
+                });
+
+                ledgerHTML += `
+                    <div style="margin-bottom: 12px; border-bottom: 1px dashed #475569; padding-bottom:8px;">
+                        <div style="display:flex; justify-content:space-between; font-weight:bold;">
+                            <span style="color:${id == 1 ? '#e11d48':'#2563eb'}">Player ${id} Ledger</span>
+                            <span>Liquid: $${player.cash}</span>
+                        </div>
+                        <div style="font-size:0.75rem; color:#cbd5e1; margin-top:4px;">
+                            <b>Tokens Held:</b> ${player.assets.length > 0 ? player.assets.join(', ') : 'None'}
+                        </div>
+                        <div style="font-size:0.75rem; font-weight:bold; color:#94a3b8; margin-top:4px;">Community Vault NFTs:</div>
+                        <div class="nft-grid">${nftThumbnails}</div>
+                    </div>
+                `;
+            }
+            document.getElementById('player-ledgers').innerHTML = ledgerHTML;
+        }
+
+        function pushLog(text) {
+            const logBox = document.getElementById('game-log');
+            logBox.innerHTML += `<br>• ${text}`;
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        // Token Relocation Matrix System
+        function renderTokenPositions() {
+            for (const [id, player] of Object.entries(gameSession.players)) {
+                const spaceElement = document.getElementById(`space${player.position}`);
+                const tokenDOM = document.getElementById(player.elementId);
+                if (spaceElement && tokenDOM) {
+                    spaceElement.appendChild(tokenDOM);
+                    // Adjust horizontal token pairing configurations inside DOM layouts
+                    tokenDOM.style.bottom = "4px";
+                    if (id == 1) tokenDOM.style.left = "4px";
+                    else tokenDOM.style.right = "4px";
+                }
+            }
+        }
+
+        // Base Game Turn Execution Mechanics
+        function playTurn() {
+            if (gameSession.rolled) return;
+
+            const d1 = Math.floor(Math.random() * 6) + 1;
+            const d2 = Math.floor(Math.random() * 6) + 1;
+            const totalRoll = d1 + d2;
+
+            document.getElementById('die1').innerText = d1;
+            document.getElementById('die2').innerText = d2;
+
+            let activeUser = gameSession.players[gameSession.activeTurn];
+            let initialPos = activeUser.position;
+            activeUser.position = (activeUser.position + totalRoll) % 40;
+
+            pushLog(`Player ${gameSession.activeTurn} rolled a ${totalRoll}.`);
+
+            // Standard Monopoly Rule: Verify passing through the start sector
+            if (activeUser.position < initialPos) {
+                activeUser.cash += 200;
+                pushLog(`Passed GO protocol node. Hard fork bonus yield +$200 credited.`);
+            }
+
+            renderTokenPositions();
+            gameSession.rolled = true;
+            document.getElementById('roll-btn').disabled = true;
+
+            // Analyze Landing Grid Target Properties Data
+            evaluateLandedSpace(activeUser, activeUser.position, totalRoll);
+        }
+
+        function evaluateLandedSpace(player, position, roll) {
+            const dataData = boardSpaces[position];
+            const actionBtn = document.getElementById('action-btn');
+            const statusMsg = document.getElementById('center-status-msg');
+
+            actionBtn.disabled = true;
+            actionBtn.innerText = "Action";
+
+            if (dataData.type === "property") {
+                const currentCost = marketRates[dataData.asset].current;
+                const owner = getAssetOwner(dataData.asset);
+
+                if (!owner) {
+                    statusMsg.innerText = `Landed on ${dataData.asset}. Cost: $${currentCost}`;
+                    actionBtn.innerText = `Buy ${dataData.asset} ($${currentCost})`;
+                    actionBtn.disabled = false;
+                } else if (owner !== gameSession.activeTurn) {
+                    // Original proportional rent mapping rules: ~10% of standard dynamic cost asset
+                    const variableRent = Math.round(currentCost * 0.1);
+                    player.cash -= variableRent;
+                    gameSession.players[owner].cash += variableRent;
+                    pushLog(`Asset owned by Player ${owner}. Paid network gas rent of $${variableRent}.`);
+                    statusMsg.innerText = `Paid $${variableRent} rent to Player ${owner}`;
+                    toggleNextTurn();
+                } else {
+                    statusMsg.innerText = `You are hosting nodes on ${dataData.asset}.`;
+                    toggleNextTurn();
+                }
+            } else if (dataData.type === "chest") {
+                // Implement requested custom integration rules for Community Chest NFTs
+                const mintedToken = mintUniqueNFT();
+                player.nfts.push(mintedToken);
+                pushLog(`Community Chest validation reward: Minted rare structural Hash NFT #${mintedToken.id}.`);
+                statusMsg.innerText = `Minted unique Vault NFT #${mintedToken.id}!`;
+                toggleNextTurn();
+            } else if (dataData.type === "chance") {
+                // Dynamic randomized chance matrix implementation
+                const variations = [
+                    { msg: "Gas fees spike. Pay $50.", impact: -50 },
+                    { msg: "Liquidity mining yield drop. Collect $100.", impact: 100 }
+                ];
+                const activeVariation = variations[Math.floor(Math.random() * variations.length)];
+                player.cash += activeVariation.impact;
+                pushLog(`Chance protocol event: ${activeVariation.msg}`);
+                statusMsg.innerText = activeVariation.msg;
+                toggleNextTurn();
+            } else if (dataData.type === "tax") {
+                player.cash -= dataData.amount;
+                pushLog(`Landed on Treasury Protocol. Liquidated $${dataData.amount} in taxes.`);
+                statusMsg.innerText = `Paid $${dataData.amount} Network Fees.`;
+                toggleNextTurn();
+            } else if (dataData.name === "Go To Jail") {
+                player.position = 10; // Instantly move token index to Jail sector
+                pushLog(`Malicious exploit identified. Transferred to Jail quarantine sandbox.`);
+                statusMsg.innerText = "Quarantined in Jail!";
+                renderTokenPositions();
+                toggleNextTurn();
+            } else {
+                statusMsg.innerText = `Safe sector: ${dataData.name}`;
+                toggleNextTurn();
+            }
+            renderLedgers();
+        }
+
+        function getAssetOwner(assetName) {
+            for (const [id, player] of Object.entries(gameSession.players)) {
+                if (player.assets.includes(assetName)) return parseInt(id);
+            }
+            return null;
+        }
+
+        // Asset Purchase Execution Action Code
+        function handleAction() {
+            const player = gameSession.players[gameSession.activeTurn];
+            const space = boardSpaces[player.position];
+
+            if (space.type === "property") {
+                const assetPrice = marketRates[space.asset].current;
+                if (player.cash >= assetPrice) {
+                    player.cash -= assetPrice;
+                    player.assets.push(space.asset);
+                    pushLog(`Player ${gameSession.activeTurn} purchased node space ${space.asset} for $${assetPrice}.`);
+                    document.getElementById('action-btn').disabled = true;
+                    toggleNextTurn();
+                } else {
+                    pushLog(`Transaction reverted: Insufficient liquid asset pool availability.`);
+                }
+            }
+            renderLedgers();
+        }
+
+        function toggleNextTurn() {
+            gameSession.activeTurn = gameSession.activeTurn === 1 ? 2 : 1;
+            gameSession.rolled = false;
+
+            // Allow state interpolation buffer window 
+            setTimeout(() => {
+                document.getElementById('turn-indicator').innerText = `Player ${gameSession.activeTurn}'s Turn`;
+                document.getElementById('roll-btn').disabled = false;
+            }, 1800);
+        }
+
+        // Initialize App Systems Logic Execution Engine Loops
+        setInterval(updateLiveTickers, 4000);
+        updateLiveTickers();
+        renderTokenPositions();
+    </script>
+</body>
+</html>

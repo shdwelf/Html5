@@ -77,7 +77,7 @@ console.log("\n[1] boot state");
 s.ok("status: " + $("status").textContent.slice(0, 40), /Checksum valid/.test($("status").textContent));
 s.eq("chips rendered", $("chips").querySelectorAll(".chip").length, 12);
 s.ok("wcNote states the layout", /132 bits = 128 ENT \+ 4 CS/.test($("wcNote").textContent), $("wcNote").textContent);
-s.eq("rack rows = all lenses", $("lensRack").querySelectorAll("[data-lens]").length, 44);
+s.eq("rack rows = all lenses", $("lensRack").querySelectorAll("[data-lens]").length, 72);
 s.ok("default focus", $("lensName").textContent === "Invert · affine subcube", $("lensName").textContent);
 s.eq("3-D forms listed", $("formSel").options.length, 13);
 s.eq("tape rows", $("tape").querySelectorAll("tbody tr").length, 12);

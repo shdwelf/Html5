@@ -12,6 +12,7 @@ import {
   fractionalDerivative,
   influenceMatrix,
   gramMatrix,
+  eigenSymmetric,
   reachabilityFixpoint,
   truthTable,
   wellFormedAtoms,
@@ -28,15 +29,26 @@ import {
   popcountBytes,
   xorBytes,
   fmtBig,
-  gf256Inv,
-  gf256Mul,
-  divisors,
+  bitMatrix,
+  gf2Rank,
+  cross3,
+  quatFromBytes,
+  quatMul,
+  quatNorm,
+  gradeDims,
+  tensorGraded,
+  symmetricGraded,
+  sigmaAtoms,
+  flipGraph,
   hammingBytes,
   notBytes,
   convexHull,
   segmentsCross,
   dftAmplitudes,
   fitSinusoid,
+  gf256Inv,
+  gf256Mul,
+  divisors,
 } from "./formal.js";
 
 export const C = {
@@ -468,6 +480,7 @@ function norm2d(pts, w, h, pad = 18) {
     h - pad - ((q[1] - myn) / (my - myn || 1)) * (h - pad * 2),
   ]);
 }
+
 const DRAW = {
   "inv-subcube": (ctx, w, h, d) => drawInvert(ctx, w, h, d, "box"),
   "inv-geodesic": (ctx, w, h, d) => drawInvert(ctx, w, h, d, "geodesic"),
@@ -797,6 +810,179 @@ const DRAW = {
     text(ctx, `${l.count} states · ${l.transitions} τ transitions · ${l.traces} maximal trace`, 8, h - 12, C.muted, 9);
   },
 
+  /* ---- algebra family ---- */
+  linear: (ctx, w, h, d) => {
+    const rows = bitMatrix(d.indices || []);
+    if (!rows.length) return;
+    heat(ctx, w, h, { rows: rows.length, cols: 11, values: rows.flat(), max: 1, pad: { l: 8, r: 8, t: 16, b: 8 } });
+    const r = gf2Rank(rows);
+    text(ctx, `GF(2) rank ${r.rank} · nullity ${r.nullity} · ${rows.length}×11`, 8, 4, C.muted, 9);
+  },
+
+  lie: (ctx, w, h, d) => {
+    const bytes = d.entropy || new Uint8Array(16);
+    const vec = (i) => [
+      (bytes[i % 16] - 127.5) / 127.5,
+      (bytes[(i + 3) % 16] - 127.5) / 127.5,
+      (bytes[(i + 6) % 16] - 127.5) / 127.5,
+    ];
+    const u = vec(0);
+    const vv = vec(1);
+    const br = cross3(u, vv);
+    const cx = w * 0.5;
+    const cy = h * 0.52;
+    const s = 52;
+    const proj = (a) => [cx + a[0] * s, cy - a[1] * s];
+    const line = (a, b, col) => {
+      const p = proj(a);
+      const q = proj(b);
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(p[0], p[1]);
+      ctx.lineTo(q[0], q[1]);
+      ctx.stroke();
+    };
+    line([0, 0, 0], u, C.accent);
+    line([0, 0, 0], vv, C.ok);
+    line([0, 0, 0], br, C.warn);
+    text(ctx, "u · w · [u,w] = u×w (so(3))", 8, 4, C.muted, 9);
+  },
+
+  division: (ctx, w, h, d) => {
+    const bytes = d.entropy || new Uint8Array(16);
+    const p = quatFromBytes(bytes, 0);
+    const q = quatFromBytes(bytes, 4);
+    const pq = quatMul(p, q);
+    const lhs = quatNorm(pq);
+    const rhs = quatNorm(p) * quatNorm(q);
+    bars(ctx, w, h, {
+      items: [
+        { label: "p₀", v: p[0], color: C.accent },
+        { label: "p₁", v: p[1], color: C.accent },
+        { label: "p₂", v: p[2], color: C.accent },
+        { label: "p₃", v: p[3], color: C.accent },
+        { label: "q₀", v: q[0], color: C.ok },
+        { label: "q₁", v: q[1], color: C.ok },
+        { label: "q₂", v: q[2], color: C.ok },
+        { label: "q₃", v: q[3], color: C.ok },
+      ],
+      pad: { l: 30, r: 8, t: 16, b: 22 },
+    });
+    text(ctx, `‖pq‖=${lhs.toFixed(4)} = ‖p‖‖q‖=${rhs.toFixed(4)}`, 8, 4, C.muted, 9);
+  },
+
+  clifford: (ctx, w, h) => {
+    const dims = gradeDims(11).slice(0, 8);
+    bars(ctx, w, h, {
+      items: dims.map((v, i) => ({ label: `g${i}`, v: Number(v), tag: v.toString(), color: C.accent })),
+      yLog: true,
+      pad: { l: 34, r: 8, t: 16, b: 20 },
+    });
+    text(ctx, "Cl(ℝ¹¹) grades C(11,k) · Σ = 2048", 8, 4, C.muted, 9);
+  },
+
+  exterior: (ctx, w, h, d) => {
+    const rows = bitMatrix(d.indices || []);
+    if (rows.length < 2) return;
+    const u = rows[0].map(Number);
+    const v = rows[1].map(Number);
+    const dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
+    const area = Math.sqrt(Math.max(0, dot(u, u) * dot(v, v) - dot(u, v) ** 2));
+    const sx = 44;
+    const sy = 22;
+    const ox = 30;
+    const oy = h - 30;
+    const P = (a) => [ox + (a[0] + a[1] * 0.35) * sx, oy - (a[1] - a[0] * 0.2) * sy];
+    const o = P([0, 0]);
+    const pu = P([u[0], u[1]]);
+    const pv = P([v[0], v[1]]);
+    const puv = P([u[0] + v[0], u[1] + v[1]]);
+    ctx.fillStyle = "rgba(92,225,255,0.12)";
+    ctx.strokeStyle = C.grid;
+    ctx.beginPath();
+    ctx.moveTo(o[0], o[1]);
+    ctx.lineTo(pu[0], pu[1]);
+    ctx.lineTo(puv[0], puv[1]);
+    ctx.lineTo(pv[0], pv[1]);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    text(ctx, `‖u∧v‖ = ${area.toFixed(2)} (schematic projection)`, 8, 4, C.muted, 9);
+  },
+
+  "tensor-algebra": (ctx, w, h) => {
+    const dims = [0, 1, 2, 3, 4, 5, 6].map((k) => tensorGraded(11, k));
+    bars(ctx, w, h, {
+      items: dims.map((v, i) => ({ label: `${i}`, v: Number(v), tag: v.toString(), color: C.accent })),
+      yLog: true,
+      pad: { l: 34, r: 8, t: 16, b: 20 },
+    });
+    text(ctx, "T(V) graded dim 11ᵏ", 8, 4, C.muted, 9);
+  },
+
+  "symmetric-algebra": (ctx, w, h) => {
+    const dims = [0, 1, 2, 3, 4, 5, 6].map((k) => symmetricGraded(11, k));
+    bars(ctx, w, h, {
+      items: dims.map((v, i) => ({ label: `${i}`, v: Number(v), tag: v.toString(), color: C.ok })),
+      yLog: true,
+      pad: { l: 34, r: 8, t: 16, b: 20 },
+    });
+    text(ctx, "Sym(V) graded dim C(11+k−1,k)", 8, 4, C.muted, 9);
+  },
+
+  "boolean-algebra": (ctx, w, h) => {
+    const levels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((k) => binomBig(11, k));
+    bars(ctx, w, h, {
+      items: levels.map((v, i) => ({ label: `${i}`, v: Number(v), tag: v.toString(), color: C.accent })),
+      pad: { l: 30, r: 8, t: 16, b: 20 },
+    });
+    text(ctx, "B₁₁ levels C(11,k) · Σ = 2048", 8, 4, C.muted, 9);
+  },
+
+  heyting: (ctx, w, h) => {
+    const levels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((k) => binomBig(11, k));
+    bars(ctx, w, h, {
+      items: levels.map((v, i) => ({ label: `${i}`, v: Number(v), tag: v.toString(), color: C.warn })),
+      pad: { l: 30, r: 8, t: 16, b: 20 },
+    });
+    text(ctx, "B₁₁ as Heyting lattice · 2048 elements", 8, 4, C.muted, 9);
+  },
+
+  sigma: (ctx, w, h, d) => {
+    const s = sigmaAtoms(d.flips, d.layout?.words || 12);
+    if (!s) return;
+    bars(ctx, w, h, {
+      items: s.atoms.slice(0, 10).map(([mask, cnt], i) => ({ label: `a${i}`, v: cnt, tag: `${cnt}`, color: C.accent })),
+      pad: { l: 30, r: 8, t: 16, b: 20 },
+    });
+    text(ctx, `${s.k} atoms · |σ| = 2^${s.k}`, 8, 4, C.muted, 9);
+  },
+
+  homological: (ctx, w, h, d) => {
+    const g = flipGraph(d.flips, d.layout?.words || 12);
+    if (!g) return;
+    bars(ctx, w, h, {
+      items: [
+        { label: "β₀", v: g.betti0, tag: `${g.betti0}`, color: C.ok },
+        { label: "β₁", v: g.betti1, tag: `${g.betti1}`, color: C.warn },
+        { label: "V", v: g.vertices, tag: `${g.vertices}`, color: C.accent },
+        { label: "E", v: g.edges, tag: `${g.edges}`, color: C.muted },
+      ],
+      pad: { l: 30, r: 8, t: 16, b: 20 },
+    });
+    text(ctx, `H₀=ℤ^${g.betti0} · H₁=ℤ^${g.betti1}`, 8, 4, C.muted, 9);
+  },
+
+  banach: (ctx, w, h, d) => {
+    const rows = bitMatrix(d.indices || []);
+    if (rows.length < 2) return;
+    const G = gramMatrix(rows.map((r) => r.map(Number)));
+    const ev = eigenSymmetric(G, Math.min(4, G.length));
+    const spec = ev.map((e) => e.lambda).sort((a, b) => b - a);
+    plot(ctx, w, h, { series: [{ data: spec, color: C.accent, label: "σ(G)" }] });
+    text(ctx, `ρ(G) = ${Math.max(...spec).toFixed(2)}`, 8, h - 12, C.muted, 9);
+  },
   /* ---- algebra ---- */
   "alg-group": (ctx, w, h, d) => {
     const idx = (d.indices || []).filter((i) => i >= 0);

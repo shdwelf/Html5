@@ -1,0 +1,2519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>News Globe — Live RSS on an Earth</title>
+<style>
+  :root {
+    --bg: #04070d;
+    --panel: rgba(10,18,32,0.78);
+    --panel-edge: rgba(120,180,255,0.18);
+    --text: #e6edf6;
+    --muted: #8aa0bd;
+    --accent: #ffd166;
+    --pink: #ff5e7a;
+    --green: #6ee7a0;
+    --warn: #f9c74f;
+    --err: #ff7a8a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:radial-gradient(ellipse at 50% 30%, #0a1830 0%, #04070d 70%); color:var(--text); font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif; overflow:hidden; }
+  body { display:grid; grid-template-columns: 320px 1fr 360px; grid-template-rows: 56px 1fr; grid-template-areas: "head head head" "left stage right"; }
+
+  /* Header */
+  header { grid-area: head; display:flex; align-items:center; gap:18px; padding:0 18px; background:linear-gradient(180deg, rgba(10,20,40,0.95), rgba(10,20,40,0.6)); border-bottom:1px solid var(--panel-edge); z-index:5; }
+  header .logo { font-weight:700; letter-spacing:.5px; font-size:16px; }
+  header .logo .dot { color:var(--pink); }
+  header .stats { display:flex; gap:14px; margin-left:auto; font-size:12px; color:var(--muted); }
+  header .stats b { color:var(--text); font-weight:600; }
+  header .controls button { background:rgba(255,255,255,0.05); color:var(--text); border:1px solid var(--panel-edge); padding:6px 10px; border-radius:8px; font-size:12px; cursor:pointer; margin-left:6px; }
+  header .controls button:hover { background:rgba(255,255,255,0.1); }
+
+  /* Self-update status pill in the header */
+  .upd-pill {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 10px; border-radius:999px; font-size:11px; font-weight:600;
+    border:1px solid var(--panel-edge); background:rgba(255,255,255,0.04);
+    color:var(--muted); cursor:pointer; margin-right:8px;
+    transition: background .15s, color .15s;
+  }
+  .upd-pill:hover { background:rgba(255,255,255,0.1); color:var(--text); }
+  .upd-pill .dot { width:8px; height:8px; border-radius:50%; background:var(--muted); }
+  .upd-pill.online  .dot { background:var(--green); box-shadow:0 0 6px var(--green); }
+  .upd-pill.offline .dot { background:var(--err);   box-shadow:0 0 6px var(--err); }
+  .upd-pill.update  .dot { background:var(--accent); box-shadow:0 0 6px var(--accent); animation:pulseDot 1.5s infinite; }
+  @keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.5; transform:scale(1.4); } }
+  .upd-pill.online  { color:var(--green); }
+  .upd-pill.offline { color:var(--err); }
+  .upd-pill.update  { color:var(--accent); }
+
+  /* Update banner */
+  #upd-banner {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    display:none; align-items:center; gap:14px;
+    background: linear-gradient(90deg, #ffd166 0%, #ff9f43 100%);
+    color:#1a1305; padding:12px 18px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.4);
+    animation: slideDown .3s ease-out;
+  }
+  @keyframes slideDown { from { transform:translateY(-100%); } to { transform:translateY(0); } }
+  #upd-banner.visible { display:flex; }
+  #upd-banner .msg { flex:1; font-weight:600; font-size:14px; }
+  #upd-banner button { border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:600; font-size:13px; }
+  #upd-banner .apply { background:#1a1305; color:#ffd166; }
+  #upd-banner .apply:hover { background:#000; }
+  #upd-banner .dismiss { background:rgba(0,0,0,0.1); color:#1a1305; }
+  #upd-banner .dismiss:hover { background:rgba(0,0,0,0.2); }
+
+  /* Update settings modal (reuses #detail-backdrop styling pattern) */
+  #upd-settings-bd {
+    position:fixed; inset:0; background:rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px); z-index:60;
+    display:none; align-items:center; justify-content:center; padding:20px;
+  }
+  #upd-settings-bd.open { display:flex; }
+  #upd-settings {
+    width:min(540px, 100%); background:#0c1422; color:var(--text);
+    border:1px solid var(--panel-edge); border-radius:14px; padding:22px;
+    position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.7);
+  }
+  #upd-settings h2 { margin:0 0 16px 0; color:var(--accent); font-size:16px; }
+  #upd-settings .close { position:absolute; top:10px; right:14px; cursor:pointer; color:var(--muted); font-size:22px; }
+  #upd-settings label { display:block; margin:12px 0 4px; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+  #upd-settings input[type=url], #upd-settings input[type=text] {
+    background:rgba(0,0,0,0.3); color:var(--text);
+    border:1px solid var(--panel-edge); border-radius:6px;
+    padding:8px 10px; font-size:12px; width:100%;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+  #upd-settings .row { display:flex; gap:10px; margin-top:6px; }
+  #upd-settings .info-grid { background:rgba(0,0,0,0.25); border-radius:8px; padding:10px 12px; margin:6px 0; font-size:11px; }
+  #upd-settings .info-grid div { display:flex; gap:8px; padding:2px 0; }
+  #upd-settings .info-grid .k { color:var(--muted); min-width:120px; }
+  #upd-settings .info-grid .v { color:var(--text); font-family:ui-monospace,Menlo,Consolas,monospace; }
+  #upd-settings .actions { margin-top:18px; display:flex; gap:8px; flex-wrap:wrap; }
+  #upd-settings .btn { background:var(--accent); color:#1a1305; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px; }
+  #upd-settings .btn.secondary { background:transparent; color:var(--text); border:1px solid var(--panel-edge); }
+  #upd-settings .btn.danger { background:transparent; color:var(--err); border:1px solid rgba(255,122,138,0.4); }
+  #upd-settings .btn:hover { filter: brightness(1.1); }
+
+  /* Left panel: log */
+  aside.left { grid-area:left; background:var(--panel); border-right:1px solid var(--panel-edge); display:flex; flex-direction:column; min-width:0; }
+  aside.left .panel-title { padding:10px 14px; font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); border-bottom:1px solid var(--panel-edge); }
+  #log { flex:1; overflow:auto; padding:8px 12px; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size:11px; line-height:1.5; min-height:0; }
+
+  /* Feed filter panel */
+  #filter-panel { padding:10px 12px 12px; }
+  .filter-master { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text); margin-bottom:8px; cursor:pointer; }
+  .filter-master input { accent-color: var(--accent); }
+  .filter-section { font-size:9px; color:var(--muted); letter-spacing:1.5px; margin:8px 0 4px; font-weight:600; }
+  .filter-grid { display:grid; grid-template-columns: 1fr 1fr; gap:4px 6px; }
+  .filter-chip {
+    display:flex; align-items:center; gap:6px; padding:4px 6px;
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);
+    border-radius:6px; cursor:pointer; font-size:11px; color:var(--text);
+    transition: background .15s;
+  }
+  .filter-chip:hover { background:rgba(255,255,255,0.07); }
+  .filter-chip input { accent-color: var(--accent); width:12px; height:12px; }
+  .filter-chip em { color: var(--muted); font-style:normal; font-size:9px; margin-left:auto; }
+  .log-line { padding:2px 0; color:var(--muted); border-bottom:1px dashed rgba(120,180,255,0.05); }
+  .log-ok { color: var(--green); }
+  .log-warn { color: var(--warn); }
+  .log-err { color: var(--err); }
+  .log-event { color: var(--text); }
+
+  /* Globe stage */
+  main { grid-area:stage; position:relative; min-width:0; min-height:0; }
+  #globe-stage { width:100%; height:100%; position:absolute; inset:0; cursor:grab; }
+  #globe-stage:active { cursor:grabbing; }
+  .hint { position:absolute; left:14px; bottom:12px; font-size:11px; color:var(--muted); background:rgba(0,0,0,0.4); padding:6px 10px; border-radius:8px; border:1px solid var(--panel-edge); }
+  .stage-watermark { position:absolute; right:14px; top:14px; font-size:10px; color:var(--muted); text-align:right; line-height:1.5; }
+  .stage-watermark a { color:var(--muted); text-decoration:underline; }
+
+  /* Right panel: article feed */
+  aside.right { grid-area:right; background:var(--panel); border-left:1px solid var(--panel-edge); display:flex; flex-direction:column; min-width:0; }
+  aside.right .panel-title { padding:10px 14px; font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); border-bottom:1px solid var(--panel-edge); display:flex; justify-content:space-between; align-items:center; }
+  #articles { flex:1; overflow:auto; padding:10px; }
+  .card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 12px; margin-bottom:8px; cursor:pointer; transition:all .2s; }
+  .card:hover { background:rgba(255,255,255,0.06); border-color:var(--accent); }
+  .card-place { font-size:11px; color:var(--accent); margin-bottom:4px; display:flex; justify-content:space-between; gap:6px; }
+  .card-src { color:var(--muted); font-weight:500; text-align:right; }
+  .card-title { color:var(--text); font-size:13px; line-height:1.4; text-decoration:none; display:block; }
+  .card-title:hover { color:var(--accent); text-decoration:underline; }
+  .card-meta { font-size:10px; color:var(--muted); margin-top:6px; }
+
+  /* Empty state hint inside articles */
+  #articles:empty::before { content: "Waiting for first geocoded article…"; display:block; color:var(--muted); font-size:12px; padding:20px; text-align:center; }
+
+  /* SVG event styles */
+  .event .ring { pointer-events:none; }
+  .event .dot { pointer-events:auto; cursor:pointer; filter: drop-shadow(0 0 4px var(--accent)); transition: r .15s; }
+  .event .halo { pointer-events:none; fill:none; stroke:#fff; stroke-width:1.2; opacity:0; transition: opacity .15s; }
+  .event.hover .halo, .event.selected .halo { opacity: 0.95; }
+  .event.selected .dot { fill:#fff !important; filter: drop-shadow(0 0 10px #fff) drop-shadow(0 0 18px var(--accent)); }
+  .event.selected .ring { stroke:#fff !important; }
+
+  /* Pick-list for overlapping dots */
+  #pick-list {
+    position:absolute; z-index:6; min-width:240px; max-width:320px;
+    background:rgba(10,18,32,0.96); border:1px solid var(--panel-edge);
+    border-radius:10px; padding:6px; display:none;
+    box-shadow:0 10px 30px rgba(0,0,0,0.6);
+    font-size:12px;
+  }
+  #pick-list .pick-head {
+    padding:6px 10px; color:var(--muted); font-size:10px;
+    text-transform:uppercase; letter-spacing:1.5px;
+    border-bottom:1px solid var(--panel-edge);
+  }
+  #pick-list .pick-row {
+    display:flex; gap:8px; padding:8px 10px; cursor:pointer;
+    border-radius:6px; align-items:center;
+  }
+  #pick-list .pick-row:hover { background:rgba(255,255,255,0.08); }
+  #pick-list .pick-thumb {
+    width:36px; height:36px; flex:0 0 36px; border-radius:6px;
+    background:#0a1422 center/cover no-repeat;
+  }
+  #pick-list .pick-text { flex:1; min-width:0; }
+  #pick-list .pick-src {
+    color:var(--accent); font-size:9px; text-transform:uppercase;
+    letter-spacing:1px; font-weight:700;
+  }
+  #pick-list .pick-title {
+    color:var(--text); font-size:12px; line-height:1.3;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+
+  /* ===== Thumbnail popups anchored to globe ===== */
+  #popups { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:3; }
+  .popup {
+    position:absolute; pointer-events:auto; cursor:pointer;
+    width: 220px;
+    background: rgba(10,18,32,0.92);
+    border: 1px solid var(--panel-edge);
+    border-radius: 10px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,209,102,0.15);
+    overflow:hidden;
+    transform-origin: var(--anchor-x, 50%) var(--anchor-y, 100%);
+    animation: popIn .35s cubic-bezier(.2,.9,.3,1.2) both;
+    transition: opacity .5s, transform .5s;
+    will-change: transform, opacity, left, top;
+  }
+  .popup.fade-out { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  .popup.hidden-side { display:none; } /* point is on far side of globe */
+  @keyframes popIn {
+    from { opacity:0; transform: translateY(8px) scale(0.85); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
+  .popup .thumb {
+    width:100%; height:90px; background:#0a1422 center/cover no-repeat;
+    display:flex; align-items:flex-end; position:relative;
+  }
+  .popup .thumb::after {
+    content:""; position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(10,18,32,0.85) 100%);
+  }
+  .popup .thumb .src-chip {
+    position:absolute; top:6px; left:6px; z-index:2;
+    background: rgba(0,0,0,0.65); color: var(--accent);
+    font-size:9px; text-transform:uppercase; letter-spacing:1px;
+    padding: 2px 6px; border-radius: 4px; font-weight:600;
+  }
+  .popup .thumb .place-chip {
+    position:absolute; bottom:6px; left:6px; right:6px; z-index:2;
+    color: #fff; font-size:10px;
+  }
+  .popup .body {
+    padding: 8px 10px 10px;
+  }
+  .popup .body .ptitle {
+    font-size: 12px; line-height: 1.35; color: var(--text); font-weight:600;
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .popup .body .pmeta {
+    margin-top:6px; font-size:10px; color: var(--muted);
+    display:flex; justify-content:space-between; gap:4px;
+  }
+  /* Leader line drawn as a thin div */
+  .leader {
+    position:absolute; pointer-events:none; z-index:2;
+    height:1px; transform-origin: 0 50%;
+    background: linear-gradient(90deg, var(--accent) 0%, rgba(255,209,102,0) 100%);
+    opacity: 0.7;
+  }
+
+  /* ===== Bottom ticker ===== */
+  #ticker-bar {
+    position:absolute; left:0; right:0; bottom:0; height:34px; z-index:4;
+    background: linear-gradient(180deg, rgba(10,18,32,0.5), rgba(10,18,32,0.95));
+    border-top: 1px solid var(--panel-edge);
+    display:flex; align-items:center; overflow:hidden;
+  }
+  #ticker-bar .ticker-label {
+    flex:0 0 auto; padding: 0 14px; height:100%;
+    display:flex; align-items:center;
+    background: var(--pink); color:#fff;
+    font-size:10px; font-weight:700; letter-spacing:2px;
+    text-transform:uppercase;
+  }
+  #ticker {
+    flex:1; overflow:hidden; white-space:nowrap; position:relative; height:100%;
+  }
+  #ticker-track {
+    display:inline-block; padding-left: 100%;
+    animation: scrollTicker linear infinite;
+    animation-duration: 80s;
+    will-change: transform;
+  }
+  #ticker-track.paused { animation-play-state: paused; }
+  @keyframes scrollTicker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-100%); }
+  }
+  .tick-item {
+    display:inline-block; padding: 0 22px; height:34px; line-height:34px;
+    font-size: 12px; color: var(--text); cursor:pointer;
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+  .tick-item:hover { color: var(--accent); }
+  .tick-item .tick-src { color: var(--accent); font-weight:600; margin-right:8px; font-size:10px; text-transform:uppercase; letter-spacing:1px; }
+  .tick-item .tick-place { color: #9bdcff; margin-right:8px; font-size:11px; }
+  .tick-item .tick-dot { color: var(--muted); margin: 0 8px; }
+
+  /* push the hint up so it doesn't sit on the ticker */
+  .hint { bottom: 44px !important; }
+
+  /* ===== Detail modal ===== */
+  #detail-backdrop {
+    position:fixed; inset:0; z-index:50; display:none;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    align-items:center; justify-content:center; padding:20px;
+  }
+  #detail-backdrop.open { display:flex; animation: fadeIn .2s; }
+  @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+  #detail {
+    width: min(640px, 100%); max-height: 90vh; overflow:auto;
+    background: #0c1422; border:1px solid var(--panel-edge);
+    border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    color: var(--text); position:relative;
+    animation: popIn .25s;
+  }
+  #detail .hero {
+    width:100%; height: 240px; background:#0a1422 center/cover no-repeat;
+    border-radius: 14px 14px 0 0; position:relative;
+  }
+  #detail .hero::after {
+    content:""; position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(12,20,34,1) 100%);
+    border-radius: 14px 14px 0 0;
+  }
+  #detail .nohero { display:none; }
+  #detail .close-x {
+    position:absolute; top:10px; right:12px; z-index:5;
+    width:32px; height:32px; border-radius:50%;
+    background: rgba(0,0,0,0.6); color:#fff; border:1px solid rgba(255,255,255,0.2);
+    cursor:pointer; font-size:18px; line-height:30px; text-align:center;
+  }
+  #detail .close-x:hover { background:rgba(255,255,255,0.15); }
+  #detail .content { padding: 20px 24px 24px; }
+  #detail .src-chip {
+    display:inline-block; background: rgba(255,209,102,0.15); color: var(--accent);
+    font-size:10px; text-transform:uppercase; letter-spacing:2px; font-weight:700;
+    padding:4px 10px; border-radius: 999px; margin-bottom: 10px;
+  }
+  #detail .place-chip {
+    display:inline-block; background: rgba(155,220,255,0.12); color: #9bdcff;
+    font-size:11px; padding:4px 10px; border-radius: 999px; margin: 0 0 10px 6px;
+  }
+  #detail h2 { margin: 6px 0 12px 0; font-size: 22px; line-height: 1.3; }
+  #detail .desc { color: var(--muted); font-size: 14px; line-height: 1.6; }
+  #detail .meta { margin-top: 14px; font-size: 11px; color: var(--muted); display:flex; gap:14px; flex-wrap:wrap; }
+  #detail .actions { margin-top: 18px; display:flex; gap:10px; flex-wrap:wrap; }
+  #detail .actions a, #detail .actions button {
+    background: var(--accent); color:#0c1422; border:none; cursor:pointer;
+    padding: 10px 16px; border-radius: 8px; font-weight:600; font-size:13px;
+    text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+  }
+  #detail .actions .secondary {
+    background:transparent; color:var(--text); border:1px solid var(--panel-edge);
+  }
+  #detail .actions a:hover { filter:brightness(1.1); }
+
+  @media (max-width: 1100px) {
+    body { grid-template-columns: 1fr; grid-template-rows: 56px 50vh 1fr; grid-template-areas: "head" "stage" "right"; }
+    aside.left { display:none; }
+    .popup { width: 180px; }
+  }
+</style>
+</head>
+<body>
+  <!-- Update banner (shown when a newer version is detected) -->
+  <div id="upd-banner">
+    <span class="msg">⬆️ <span id="upd-banner-msg">A new version is available</span></span>
+    <button class="apply" onclick="SelfUpdate.applyPending()">Reload now</button>
+    <button class="dismiss" onclick="SelfUpdate.dismiss()">Later</button>
+  </div>
+
+  <header>
+    <div class="logo">🌐 News<span class="dot">·</span>Globe <span style="font-weight:400;color:var(--muted);font-size:12px;margin-left:8px;">live OPML → RSS → geocode → globe</span></div>
+    <div class="stats">
+      <span>feeds: <b id="stat-feeds">0</b></span>
+      <span>articles seen: <b id="stat-articles">0</b></span>
+      <span>events on globe: <b id="stat-events">0</b></span>
+    </div>
+    <div class="controls">
+      <div class="upd-pill" id="upd-status" onclick="SelfUpdate.openSettings()" title="Click for update settings">
+        <span class="dot"></span><span id="upd-status-text">init…</span>
+      </div>
+      <button id="btn-shadows" title="Show real-time day/night terminator + sun and moon positions">☀️🌙 Shadows: ON</button>
+      <button id="btn-rotate">🌐 Auto-rotate: ON</button>
+      <button id="btn-pause">⏸ Pause</button>
+      <button id="btn-clear">🧹 Clear</button>
+    </div>
+  </header>
+
+  <!-- Self-update settings modal -->
+  <div id="upd-settings-bd" onclick="if(event.target===this)SelfUpdate.closeSettings()">
+    <div id="upd-settings">
+      <span class="close" onclick="SelfUpdate.closeSettings()">×</span>
+      <h2>🔄 Self-update settings</h2>
+      <div class="info-grid">
+        <div><span class="k">Current version</span><span class="v" id="upd-info-version">—</span></div>
+        <div><span class="k">Built</span><span class="v" id="upd-info-built">—</span></div>
+        <div><span class="k">Self hash</span><span class="v" id="upd-info-hash">—</span></div>
+        <div><span class="k">File size</span><span class="v" id="upd-info-size">—</span></div>
+        <div><span class="k">Last check</span><span class="v" id="upd-info-checked">never</span></div>
+        <div><span class="k">Offline cache</span><span class="v" id="upd-info-cache">none</span></div>
+      </div>
+      <label>Update URL (raw HTML file)</label>
+      <input type="url" id="upd-set-url" placeholder="https://raw.githubusercontent.com/you/repo/main/news-globe.html"/>
+      <label>Check every (minutes)</label>
+      <input type="text" id="upd-set-interval" placeholder="60"/>
+      <label style="text-transform:none; letter-spacing:0; color:var(--text); font-size:12px;">
+        <input type="checkbox" id="upd-set-auto"/> Auto-apply updates without prompting
+      </label>
+      <div class="actions">
+        <button class="btn" onclick="SelfUpdate.saveSettings()">Save</button>
+        <button class="btn secondary" onclick="SelfUpdate.checkNow()">Check now</button>
+        <button class="btn danger" onclick="SelfUpdate.clearCache()">Clear all cache</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="left">
+    <div class="panel-title">Feed Sources</div>
+    <div id="filter-panel"></div>
+    <div class="panel-title" style="border-top:1px solid var(--panel-edge);">Activity Log</div>
+    <div id="log"></div>
+    <div class="panel-title" style="border-top:1px solid var(--panel-edge); border-bottom:0;">Currently polling</div>
+    <div id="stat-polling" style="padding:8px 14px; font-size:11px; color:var(--muted); border-top:1px solid var(--panel-edge); min-height:32px;">—</div>
+  </aside>
+
+  <main>
+    <div id="globe-stage"></div>
+    <div id="popups"></div>
+    <div id="pick-list"></div>
+    <div class="hint">Drag to rotate · Scroll to zoom · Hover ticker to pause · Click any article for details</div>
+    <div class="stage-watermark">
+      OPML: <a href="https://github.com/plenaryapp/awesome-rss-feeds" target="_blank">plenaryapp/awesome-rss-feeds</a><br/>
+      Topology: world-atlas · Geocoding: gazetteer + OSM Nominatim
+    </div>
+    <div id="ticker-bar">
+      <div class="ticker-label">● Live</div>
+      <div id="ticker"><div id="ticker-track"></div></div>
+    </div>
+  </main>
+
+  <!-- Full-screen article detail modal -->
+  <div id="detail-backdrop" onclick="if(event.target===this)closeDetail()">
+    <div id="detail">
+      <div class="close-x" onclick="closeDetail()">×</div>
+      <div class="hero" id="detail-hero"></div>
+      <div class="content">
+        <div>
+          <span class="src-chip" id="detail-src">SOURCE</span>
+          <span class="place-chip" id="detail-place">📍 Place</span>
+        </div>
+        <h2 id="detail-title">Title</h2>
+        <div class="desc" id="detail-desc"></div>
+        <div class="meta" id="detail-meta"></div>
+        <div class="actions">
+          <a id="detail-link" href="#" target="_blank" rel="noopener">Read full article →</a>
+          <button class="secondary" onclick="flyToDetail()">🌐 Fly globe here</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="right">
+    <div class="panel-title">
+      <span>Live Articles</span>
+      <span style="color:var(--accent); font-size:10px;">● live</span>
+    </div>
+    <div id="articles"></div>
+  </aside>
+
+  <!-- External libs from CDN (inlining them would bloat the file to ~600 KB) -->
+  <script src="https://unpkg.com/d3@7"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+  <script>
+    // Fail gracefully if CDNs are blocked (e.g. inside a sandboxed iframe).
+    window.addEventListener('load', () => {
+      if (typeof d3 === 'undefined' || typeof topojson === 'undefined') {
+        const stage = document.getElementById('globe-stage');
+        if (stage) stage.innerHTML =
+          '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#8aa0bd;font-size:13px;line-height:1.6;">' +
+          '⚠️ Could not load d3 / topojson from unpkg.com.<br/>' +
+          'This usually means you opened the file in a sandboxed preview without network access.<br/>' +
+          'Open <code style="color:#ffd166">news-globe.html</code> directly in a browser tab to see the live globe.' +
+          '</div>';
+      }
+    });
+  </script>
+  <script>
+/* ============ Inlined gazetteer.js ============ */
+// Gazetteer: a curated list of countries + major world cities with [lon, lat].
+// Used for fast in-browser geocoding of news headlines.
+// Order matters: longer/more specific names first so substring matching prefers them.
+window.GAZETTEER = (function () {
+  const raw = [
+    // ---- Countries / regions (lat/lon = capital or centroid) ----
+    ["United States", -98.5, 39.8],["United Kingdom", -1.5, 52.5],["Saudi Arabia", 45.0, 24.0],
+    ["South Korea", 127.7, 36.5],["North Korea", 127.5, 40.0],["South Africa", 25.0, -29.0],
+    ["New Zealand", 174.0, -41.0],["Czech Republic", 15.5, 49.8],["Sri Lanka", 80.7, 7.9],
+    ["Costa Rica", -84.0, 9.7],["El Salvador", -88.9, 13.7],["Puerto Rico", -66.6, 18.2],
+    ["Hong Kong", 114.17, 22.32],["Ivory Coast", -5.5, 7.5],["Cote d'Ivoire", -5.5, 7.5],
+    ["Dominican Republic", -70.16, 18.7],["United Arab Emirates", 54.0, 24.0],
+    ["Bosnia", 17.7, 44.0],["Vatican", 12.45, 41.9],["Palestine", 35.2, 31.9],
+    ["Russia", 105.0, 61.5],["China", 104.0, 35.0],["India", 78.9, 21.0],["Japan", 138.0, 36.2],
+    ["Germany", 10.4, 51.2],["France", 2.2, 46.6],["Italy", 12.6, 41.9],["Spain", -3.7, 40.5],
+    ["Portugal", -8.2, 39.4],["Greece", 22.0, 39.0],["Turkey", 35.2, 39.0],["Iran", 53.7, 32.4],
+    ["Iraq", 43.7, 33.2],["Syria", 38.0, 35.0],["Israel", 34.85, 31.05],["Lebanon", 35.8, 33.9],
+    ["Jordan", 36.2, 30.6],["Yemen", 47.5, 15.5],["Egypt", 30.8, 26.8],["Libya", 17.2, 26.3],
+    ["Tunisia", 9.5, 33.9],["Algeria", 1.7, 28.0],["Morocco", -7.1, 31.8],["Sudan", 30.2, 12.9],
+    ["Ethiopia", 40.5, 9.1],["Kenya", 37.9, -0.0],["Nigeria", 8.7, 9.1],["Ghana", -1.0, 7.9],
+    ["Senegal", -14.4, 14.5],["Mali", -3.9, 17.6],["Niger", 8.1, 17.6],["Chad", 18.7, 15.5],
+    ["Cameroon", 12.4, 7.4],["Angola", 17.9, -11.2],["Congo", 21.8, -4.0],["Tanzania", 34.9, -6.4],
+    ["Uganda", 32.3, 1.4],["Rwanda", 29.9, -2.0],["Zambia", 27.8, -13.1],["Zimbabwe", 29.2, -19.0],
+    ["Mozambique", 35.5, -18.7],["Madagascar", 46.9, -18.8],["Mexico", -102.5, 23.6],
+    ["Canada", -106.3, 56.1],["Brazil", -51.9, -14.2],["Argentina", -63.6, -38.4],
+    ["Chile", -71.5, -35.7],["Peru", -75.0, -9.2],["Colombia", -74.3, 4.6],["Venezuela", -66.6, 6.4],
+    ["Ecuador", -78.2, -1.8],["Bolivia", -63.6, -16.3],["Paraguay", -58.4, -23.4],
+    ["Uruguay", -55.8, -32.5],["Cuba", -77.8, 21.5],["Haiti", -72.3, 18.9],["Jamaica", -77.3, 18.1],
+    ["Panama", -80.8, 8.5],["Honduras", -86.2, 15.2],["Guatemala", -90.2, 15.8],["Nicaragua", -85.2, 12.9],
+    ["Australia", 133.8, -25.3],["Indonesia", 113.9, -0.8],["Philippines", 121.8, 12.9],
+    ["Vietnam", 108.3, 14.1],["Thailand", 100.0, 15.9],["Malaysia", 101.9, 4.2],["Singapore", 103.82, 1.35],
+    ["Cambodia", 104.9, 12.6],["Laos", 102.5, 19.9],["Myanmar", 95.9, 21.9],["Bangladesh", 90.4, 23.7],
+    ["Pakistan", 69.3, 30.4],["Afghanistan", 67.7, 33.9],["Nepal", 84.1, 28.4],["Bhutan", 90.4, 27.5],
+    ["Mongolia", 103.8, 46.9],["Taiwan", 121.0, 23.7],["Kazakhstan", 66.9, 48.0],
+    ["Uzbekistan", 64.6, 41.4],["Turkmenistan", 59.6, 38.97],["Kyrgyzstan", 74.8, 41.2],
+    ["Tajikistan", 71.3, 38.9],["Azerbaijan", 47.6, 40.1],["Armenia", 45.0, 40.1],["Georgia", 43.4, 42.3],
+    ["Ukraine", 31.2, 48.4],["Belarus", 28.0, 53.7],["Poland", 19.1, 51.9],["Romania", 25.0, 45.9],
+    ["Hungary", 19.5, 47.2],["Austria", 14.6, 47.5],["Switzerland", 8.2, 46.8],["Belgium", 4.5, 50.5],
+    ["Netherlands", 5.3, 52.1],["Denmark", 9.5, 56.3],["Sweden", 18.6, 60.1],["Norway", 8.5, 60.5],
+    ["Finland", 26.0, 64.0],["Ireland", -8.2, 53.4],["Iceland", -19.0, 64.96],["Estonia", 25.0, 58.6],
+    ["Latvia", 24.6, 56.9],["Lithuania", 23.9, 55.2],["Slovakia", 19.7, 48.7],["Slovenia", 14.99, 46.15],
+    ["Croatia", 15.2, 45.1],["Serbia", 21.0, 44.0],["Bulgaria", 25.5, 42.7],["Albania", 20.2, 41.2],
+    ["Montenegro", 19.4, 42.7],["Macedonia", 21.7, 41.6],["Moldova", 28.4, 47.4],["Cyprus", 33.4, 35.1],
+    ["Malta", 14.4, 35.9],["Luxembourg", 6.1, 49.8],
+    // ---- Major Cities ----
+    ["New York", -74.0, 40.71],["Los Angeles", -118.24, 34.05],["Chicago", -87.65, 41.85],
+    ["Houston", -95.37, 29.76],["Phoenix", -112.07, 33.45],["Philadelphia", -75.16, 39.95],
+    ["San Antonio", -98.5, 29.42],["San Diego", -117.16, 32.71],["Dallas", -96.8, 32.78],
+    ["San Jose", -121.89, 37.34],["Austin", -97.74, 30.27],["Jacksonville", -81.66, 30.33],
+    ["San Francisco", -122.42, 37.77],["Seattle", -122.33, 47.6],["Denver", -104.99, 39.74],
+    ["Boston", -71.06, 42.36],["Washington", -77.04, 38.91],["Atlanta", -84.39, 33.75],
+    ["Miami", -80.19, 25.76],["Detroit", -83.05, 42.33],["Minneapolis", -93.27, 44.98],
+    ["New Orleans", -90.07, 29.95],["Las Vegas", -115.14, 36.17],["Portland", -122.68, 45.52],
+    ["Honolulu", -157.86, 21.31],["Anchorage", -149.9, 61.22],
+    ["Toronto", -79.38, 43.65],["Montreal", -73.57, 45.5],["Vancouver", -123.12, 49.28],
+    ["Ottawa", -75.7, 45.42],["Calgary", -114.07, 51.05],["Edmonton", -113.49, 53.55],
+    ["Mexico City", -99.13, 19.43],["Guadalajara", -103.35, 20.66],["Monterrey", -100.32, 25.68],
+    ["Tijuana", -117.04, 32.51],["Havana", -82.36, 23.13],["Kingston", -76.79, 17.97],
+    ["Port-au-Prince", -72.33, 18.54],["Santo Domingo", -69.93, 18.47],["San Juan", -66.1, 18.46],
+    ["San Salvador", -89.19, 13.69],["Tegucigalpa", -87.2, 14.07],["Managua", -86.27, 12.13],
+    ["San Jose Costa Rica", -84.08, 9.93],["Panama City", -79.52, 8.98],["Guatemala City", -90.51, 14.62],
+    ["Bogota", -74.07, 4.71],["Caracas", -66.9, 10.48],["Quito", -78.46, -0.18],["Lima", -77.04, -12.05],
+    ["La Paz", -68.15, -16.5],["Santiago", -70.65, -33.45],["Buenos Aires", -58.38, -34.6],
+    ["Montevideo", -56.16, -34.9],["Asuncion", -57.58, -25.27],["Sao Paulo", -46.63, -23.55],
+    ["Rio de Janeiro", -43.17, -22.91],["Brasilia", -47.93, -15.78],["Salvador", -38.5, -12.97],
+    ["Belo Horizonte", -43.94, -19.92],["Recife", -34.88, -8.05],["Fortaleza", -38.54, -3.73],
+    ["Manaus", -60.02, -3.12],["Medellin", -75.57, 6.24],["Cali", -76.53, 3.45],
+    ["London", -0.13, 51.51],["Manchester", -2.24, 53.48],["Birmingham", -1.9, 52.48],
+    ["Liverpool", -2.99, 53.41],["Glasgow", -4.25, 55.86],["Edinburgh", -3.19, 55.95],
+    ["Belfast", -5.93, 54.6],["Dublin", -6.27, 53.35],["Cardiff", -3.18, 51.48],
+    ["Paris", 2.35, 48.86],["Marseille", 5.37, 43.3],["Lyon", 4.83, 45.76],["Toulouse", 1.44, 43.6],
+    ["Nice", 7.27, 43.7],["Berlin", 13.4, 52.52],["Munich", 11.58, 48.14],["Hamburg", 9.99, 53.55],
+    ["Frankfurt", 8.68, 50.11],["Cologne", 6.96, 50.94],["Stuttgart", 9.18, 48.78],
+    ["Madrid", -3.7, 40.42],["Barcelona", 2.17, 41.39],["Valencia", -0.38, 39.47],
+    ["Seville", -5.98, 37.39],["Lisbon", -9.14, 38.72],["Porto", -8.61, 41.15],
+    ["Rome", 12.49, 41.9],["Milan", 9.19, 45.46],["Naples", 14.27, 40.85],["Turin", 7.69, 45.07],
+    ["Florence", 11.26, 43.77],["Venice", 12.32, 45.44],["Vatican City", 12.45, 41.9],
+    ["Athens", 23.73, 37.98],["Thessaloniki", 22.94, 40.64],
+    ["Amsterdam", 4.9, 52.37],["Rotterdam", 4.48, 51.92],["The Hague", 4.3, 52.07],
+    ["Brussels", 4.35, 50.85],["Antwerp", 4.4, 51.22],["Luxembourg City", 6.13, 49.61],
+    ["Zurich", 8.54, 47.37],["Geneva", 6.14, 46.2],["Bern", 7.45, 46.95],
+    ["Vienna", 16.37, 48.21],["Salzburg", 13.05, 47.81],
+    ["Copenhagen", 12.57, 55.68],["Oslo", 10.75, 59.91],["Stockholm", 18.07, 59.33],
+    ["Helsinki", 24.94, 60.17],["Reykjavik", -21.93, 64.13],
+    ["Warsaw", 21.01, 52.23],["Krakow", 19.94, 50.06],["Prague", 14.42, 50.08],
+    ["Budapest", 19.04, 47.5],["Bucharest", 26.1, 44.43],["Sofia", 23.32, 42.7],
+    ["Belgrade", 20.46, 44.81],["Zagreb", 15.98, 45.81],["Sarajevo", 18.41, 43.86],
+    ["Ljubljana", 14.51, 46.06],["Skopje", 21.43, 41.99],["Tirana", 19.82, 41.33],
+    ["Podgorica", 19.26, 42.44],["Pristina", 21.16, 42.66],["Bratislava", 17.11, 48.15],
+    ["Vilnius", 25.28, 54.69],["Riga", 24.11, 56.95],["Tallinn", 24.75, 59.44],
+    ["Moscow", 37.62, 55.75],["Saint Petersburg", 30.31, 59.93],["Novosibirsk", 82.92, 55.04],
+    ["Yekaterinburg", 60.61, 56.84],["Vladivostok", 131.89, 43.12],["Kazan", 49.12, 55.79],
+    ["Kyiv", 30.52, 50.45],["Kiev", 30.52, 50.45],["Kharkiv", 36.23, 49.99],["Odesa", 30.73, 46.48],
+    ["Lviv", 24.03, 49.84],["Mariupol", 37.55, 47.1],["Donetsk", 37.8, 48.0],
+    ["Minsk", 27.57, 53.9],["Chisinau", 28.86, 47.01],
+    ["Istanbul", 28.98, 41.01],["Ankara", 32.86, 39.93],["Izmir", 27.14, 38.42],
+    ["Tehran", 51.39, 35.69],["Isfahan", 51.67, 32.65],["Tabriz", 46.29, 38.08],
+    ["Baghdad", 44.36, 33.31],["Basra", 47.78, 30.51],["Mosul", 43.13, 36.34],
+    ["Damascus", 36.29, 33.51],["Aleppo", 37.16, 36.21],["Beirut", 35.5, 33.89],
+    ["Jerusalem", 35.21, 31.77],["Tel Aviv", 34.78, 32.08],["Gaza", 34.46, 31.5],
+    ["Ramallah", 35.21, 31.9],["Amman", 35.94, 31.95],["Riyadh", 46.71, 24.71],
+    ["Jeddah", 39.17, 21.49],["Mecca", 39.83, 21.42],["Dubai", 55.27, 25.2],
+    ["Abu Dhabi", 54.37, 24.45],["Doha", 51.53, 25.29],["Kuwait City", 47.98, 29.38],
+    ["Manama", 50.59, 26.23],["Muscat", 58.4, 23.59],["Sanaa", 44.21, 15.37],
+    ["Cairo", 31.24, 30.04],["Alexandria", 29.92, 31.2],["Tripoli", 13.18, 32.89],
+    ["Tunis", 10.18, 36.81],["Algiers", 3.05, 36.75],["Casablanca", -7.59, 33.57],
+    ["Rabat", -6.84, 34.02],["Marrakech", -7.98, 31.63],["Khartoum", 32.55, 15.5],
+    ["Addis Ababa", 38.74, 9.03],["Nairobi", 36.82, -1.29],["Mogadishu", 45.34, 2.05],
+    ["Dar es Salaam", 39.28, -6.79],["Kampala", 32.58, 0.35],["Kigali", 30.06, -1.94],
+    ["Lagos", 3.39, 6.45],["Abuja", 7.49, 9.06],["Accra", -0.19, 5.6],["Dakar", -17.45, 14.69],
+    ["Bamako", -8.0, 12.65],["Niamey", 2.11, 13.51],["Ndjamena", 15.05, 12.13],
+    ["Yaounde", 11.5, 3.87],["Kinshasa", 15.27, -4.44],["Brazzaville", 15.28, -4.27],
+    ["Luanda", 13.23, -8.84],["Lusaka", 28.32, -15.39],["Harare", 31.05, -17.83],
+    ["Maputo", 32.58, -25.97],["Antananarivo", 47.52, -18.88],
+    ["Cape Town", 18.42, -33.92],["Johannesburg", 28.05, -26.2],["Pretoria", 28.19, -25.75],
+    ["Durban", 31.04, -29.86],
+    ["Beijing", 116.41, 39.9],["Shanghai", 121.47, 31.23],["Guangzhou", 113.26, 23.13],
+    ["Shenzhen", 114.06, 22.54],["Chengdu", 104.07, 30.67],["Chongqing", 106.55, 29.56],
+    ["Wuhan", 114.31, 30.59],["Xian", 108.94, 34.34],["Tianjin", 117.36, 39.34],
+    ["Nanjing", 118.78, 32.06],["Hangzhou", 120.15, 30.27],["Suzhou", 120.62, 31.3],
+    ["Qingdao", 120.38, 36.07],["Dalian", 121.61, 38.91],["Harbin", 126.64, 45.75],
+    ["Urumqi", 87.62, 43.83],["Lhasa", 91.13, 29.65],["Macau", 113.54, 22.2],
+    ["Tokyo", 139.69, 35.69],["Yokohama", 139.64, 35.44],["Osaka", 135.5, 34.69],
+    ["Nagoya", 136.91, 35.18],["Sapporo", 141.35, 43.06],["Fukuoka", 130.4, 33.59],
+    ["Kyoto", 135.77, 35.01],["Hiroshima", 132.46, 34.39],["Sendai", 140.87, 38.27],
+    ["Seoul", 126.98, 37.57],["Busan", 129.08, 35.18],["Incheon", 126.71, 37.46],
+    ["Pyongyang", 125.75, 39.04],
+    ["Taipei", 121.57, 25.03],["Kaohsiung", 120.31, 22.63],
+    ["New Delhi", 77.21, 28.61],["Delhi", 77.1, 28.7],["Mumbai", 72.88, 19.08],
+    ["Kolkata", 88.36, 22.57],["Chennai", 80.27, 13.08],["Bangalore", 77.59, 12.97],
+    ["Bengaluru", 77.59, 12.97],["Hyderabad", 78.49, 17.39],["Ahmedabad", 72.57, 23.02],
+    ["Pune", 73.86, 18.52],["Jaipur", 75.79, 26.91],["Lucknow", 80.95, 26.85],
+    ["Kanpur", 80.35, 26.45],["Nagpur", 79.09, 21.15],["Surat", 72.83, 21.17],
+    ["Karachi", 67.0, 24.86],["Lahore", 74.34, 31.55],["Islamabad", 73.05, 33.69],
+    ["Rawalpindi", 73.04, 33.6],["Peshawar", 71.58, 34.01],["Quetta", 67.0, 30.18],
+    ["Kabul", 69.18, 34.53],["Kandahar", 65.7, 31.61],["Herat", 62.2, 34.34],
+    ["Dhaka", 90.41, 23.81],["Chittagong", 91.78, 22.36],
+    ["Kathmandu", 85.32, 27.71],["Thimphu", 89.64, 27.47],["Colombo", 79.86, 6.93],
+    ["Yangon", 96.16, 16.87],["Naypyidaw", 96.13, 19.76],
+    ["Bangkok", 100.5, 13.76],["Chiang Mai", 98.99, 18.79],
+    ["Hanoi", 105.83, 21.03],["Ho Chi Minh", 106.66, 10.82],["Saigon", 106.66, 10.82],
+    ["Phnom Penh", 104.92, 11.56],["Vientiane", 102.6, 17.97],
+    ["Kuala Lumpur", 101.69, 3.14],["Jakarta", 106.85, -6.21],["Surabaya", 112.75, -7.25],
+    ["Bandung", 107.61, -6.91],["Bali", 115.19, -8.41],["Medan", 98.67, 3.59],
+    ["Manila", 120.98, 14.6],["Quezon City", 121.04, 14.68],["Cebu", 123.89, 10.32],
+    ["Sydney", 151.21, -33.87],["Melbourne", 144.96, -37.81],["Brisbane", 153.03, -27.47],
+    ["Perth", 115.86, -31.95],["Adelaide", 138.6, -34.93],["Canberra", 149.13, -35.28],
+    ["Auckland", 174.76, -36.85],["Wellington", 174.78, -41.29],["Christchurch", 172.64, -43.53],
+    ["Suva", 178.42, -18.14],["Port Moresby", 147.18, -9.44],
+    ["Almaty", 76.95, 43.26],["Astana", 71.43, 51.16],["Nur-Sultan", 71.43, 51.16],
+    ["Tashkent", 69.24, 41.31],["Bishkek", 74.59, 42.87],["Dushanbe", 68.78, 38.54],
+    ["Ashgabat", 58.38, 37.95],["Baku", 49.87, 40.41],["Yerevan", 44.51, 40.18],
+    ["Tbilisi", 44.79, 41.72],["Ulaanbaatar", 106.92, 47.92],
+  ];
+  // Sort by length descending so we match longer names first
+  return raw
+    .map(([name, lon, lat]) => ({ name, lon, lat, key: name.toLowerCase() }))
+    .sort((a, b) => b.name.length - a.name.length);
+})();
+
+/* ============ Extra feeds — extracted from javalc6/rssreader FeedsDB.java ============
+   Only the raw URL list (facts, not the file's code/structure) is reused.
+   See: https://github.com/javalc6/rssreader (GPL-2.0)
+============ */
+window.EXTRA_FEEDS = [
+  {t:"Grüne Geschäfte",u:"https://blog.zeit.de/gruenegeschaefte/feed/",c:"b",l:"de"},
+  {t:"Mehr Geschäft!",u:"https://mehr-geschaeft.com/feed/",c:"b",l:"de"},
+  {t:"Verkaufen an Geschäftskunden - Vertrieb & Verkauf - Mit Stephan Heinrich",u:"https://salesupcall.libsyn.com/rss",c:"b",l:"de"},
+  {t:"Aktuell - FAZ.NET",u:"https://www.faz.net/s/Rub/Tpl~Epartner~SRss_.xml",c:"n",l:"de"},
+  {t:"Alle Meldungen - SZ.de",u:"https://rss.sueddeutsche.de/app/service/rss/alles/index.rss?output=rss",c:"n",l:"de"},
+  {t:"BILDblog",u:"https://feeds.feedburner.com/Bildblog",c:"n",l:"de"},
+  {t:"Der Postillon",u:"https://www.der-postillon.com/feeds/posts/default",c:"n",l:"de"},
+  {t:"derStandard.at",u:"https://derstandard.at/?page=rss",c:"n",l:"de"},
+  {t:"DW.de - News",u:"https://partner.dw-world.de/syndication/feeds/RSS_deu_Feedly_News.10729-mrss.xml",c:"n",l:"de"},
+  {t:"Fefes Blog",u:"https://blog.fefe.de/rss.xml?html",c:"n",l:"de"},
+  {t:"FOCUS Online - News",u:"https://rss.focus.de/fol/XML/rss_folnews.xml",c:"n",l:"de"},
+  {t:"n-tv.de - Politik",u:"https://www.n-tv.de/23.rss",c:"n",l:"de"},
+  {t:"Nachrichten - WELT",u:"https://www.welt.de/?service=Rss",c:"n",l:"de"},
+  {t:"netzpolitik.org",u:"https://netzpolitik.org/feed/",c:"n",l:"de"},
+  {t:"NZZ News – Aktuelle Nachrichten - Neue Zürcher Zeitung",u:"https://www.nzz.ch/rss/index.xml",c:"n",l:"de"},
+  {t:"SPIEGEL ONLINE - Schlagzeilen",u:"https://www.spiegel.de/schlagzeilen/rss/0,5291,,00.xml",c:"n",l:"de"},
+  {t:"STERN.DE RSS-Feed - Der Tag im Überblick",u:"https://www.stern.de/feed/standard/all/",c:"n",l:"de"},
+  {t:"tagesschau.de - Die Nachrichten der ARD",u:"https://www.tagesschau.de/xml/rss2",c:"n",l:"de"},
+  {t:"taz.de - taz, die tageszeitung",u:"https://www.taz.de/rss.xml",c:"n",l:"de"},
+  {t:"Telepolis",u:"https://www.heise.de/tp/news-atom.xml",c:"n",l:"de"},
+  {t:"Wirtschaft - Neuigkeiten von der Börse und aus Unternehmen",u:"https://newsfeed.zeit.de/wirtschaft/index",c:"n",l:"de"},
+  {t:"Alternativlos",u:"https://alternativlos.org/alternativlos.rss",c:"p",l:"de"},
+  {t:"der Freitag",u:"https://www.freitag.de/rss",c:"p",l:"de"},
+  {t:"Politik - aktuelle Nachrichten und Reportagen",u:"https://newsfeed.zeit.de/politik/index",c:"p",l:"de"},
+  {t:"Politik - FAZ.NET",u:"https://www.faz.net/aktuell/politik/?rssview=1",c:"p",l:"de"},
+  {t:"Politik - SZ.de",u:"https://rss.sueddeutsche.de/rss/Politik",c:"p",l:"de"},
+  {t:"Politik - WELT",u:"https://www.welt.de/politik/?service=Rss",c:"p",l:"de"},
+  {t:"SPIEGEL ONLINE - Politik",u:"https://www.spiegel.de/schlagzeilen/rss/0,5291,20,00.xml",c:"p",l:"de"},
+  {t:"SPRENGSATZ _Das Politik-Blog aus Berlin",u:"https://www.sprengsatz.de/?feed=rss2",c:"p",l:"de"},
+  {t:"Astrodicticum Simplex",u:"https://scienceblogs.de/astrodicticum-simplex/feed/",c:"s",l:"de"},
+  {t:"astronews.com",u:"https://www.astronews.com/_rss/rss091.xml",c:"s",l:"de"},
+  {t:"Deutsches Ärzteblatt - Aktuelles",u:"https://www.aerzteblatt.de/v4/news/rss.asp",c:"s",l:"de"},
+  {t:"Digitalistan",u:"https://wdrblog.de/raumfahrt/atom.xml",c:"s",l:"de"},
+  {t:"Quarks",u:"https://podcast.wdr.de/quarks.xml",c:"s",l:"de"},
+  {t:"ScienceBlogs auf Deutsch",u:"https://scienceblogs.de/feed/",c:"s",l:"de"},
+  {t:"Scienceticker – tagesaktuelle Nachrichten aus Wissenschaft und Technik",u:"https://www.scienceticker.info/feed/",c:"s",l:"de"},
+  {t:"SciLogs",u:"https://www.scilogs.de/wblogs/feed/rss.php",c:"s",l:"de"},
+  {t:"scinexx | Das Wissensmagazin",u:"https://feeds.feedburner.com/scinexx",c:"s",l:"de"},
+  {t:"Spektrum.de RSS-Feed",u:"https://www.spektrum.de/alias/rss/spektrum-de-rss-feed/996406",c:"s",l:"de"},
+  {t:"SPIEGEL ONLINE - Wissenschaft",u:"https://www.spiegel.de/schlagzeilen/rss/0,5291,24,00.xml",c:"s",l:"de"},
+  {t:"Technology Review",u:"https://www.heise.de/tr/news-atom.xml",c:"s",l:"de"},
+  {t:"Wissen & Technik - Google News",u:"https://www.google.com/news?output=rss&topic=t&ned=de&cf=all&num=20",c:"s",l:"de"},
+  {t:"Wissen - FAZ.NET",u:"https://www.faz.net/aktuell/wissen/?rssview=1",c:"s",l:"de"},
+  {t:"Wissen - SZ.de",u:"https://www.sueddeutsche.de/app/service/rss/ressort/wissen/rss.xml",c:"s",l:"de"},
+  {t:"Wissen - Wissenschaft und Forschung",u:"https://newsfeed.zeit.de/wissen/index",c:"s",l:"de"},
+  {t:"Wissenschaft - WELT",u:"https://www.welt.de/wissenschaft/?service=Rss",c:"s",l:"de"},
+  {t:"Wissenschaft im Brennpunkt - Deutschlandfunk",u:"https://www.dradio.de/rss/podcast/sendungen/wib/",c:"s",l:"de"},
+  {t:"Alles rund um Technik: News, Tests, Deals und mehr",u:"https://www.nextpit.de/feed/main.xml",c:"t",l:"de"},
+  {t:"BASIC thinking",u:"https://www.basicthinking.de/blog/feed/",c:"t",l:"de"},
+  {t:"Caschys Blog",u:"https://stadt-bremerhaven.de/feed/",c:"t",l:"de"},
+  {t:"ComputerBase",u:"https://www.computerbase.de/rss/news.xml",c:"t",l:"de"},
+  {t:"Golem.de",u:"https://www.golem.de/rss.php?feed=RSS1.0",c:"t",l:"de"},
+  {t:"heise online News",u:"https://www.heise.de/newsticker/heise.rdf",c:"t",l:"de"},
+  {t:"SPIEGEL ONLINE - Netzwelt",u:"https://www.spiegel.de/schlagzeilen/rss/0,5291,23,00.xml",c:"t",l:"de"},
+  {t:"t3n – digital pioneers",u:"https://t3n.de/news/feed/",c:"t",l:"de"},
+  {t:"Главные темы дня",u:"https://www.forbes.ru/newrss.xml",c:"b",l:"ru"},
+  {t:"kraynov.com",u:"https://feeds.feedburner.com/MaxKraynov",c:"b",l:"ru"},
+  {t:"RT на русском",u:"https://russian.rt.com/rss/",c:"b",l:"ru"},
+  {t:"SPARK: Блоги",u:"https://spark.ru/rss",c:"b",l:"ru"},
+  {t:"свежее",u:"https://feeds.feedburner.com/siliconrus",c:"b",l:"ru"},
+  {t:"Бизнес - Google News",u:"https://www.google.com/news?output=rss&topic=b&ned=ru_ru&cf=all&num=20",c:"b",l:"ru"},
+  {t:"БИЗНЕС В УМНЫХ ТОНАХ",u:"https://eduardk.livejournal.com/data/rss",c:"b",l:"ru"},
+  {t:"Бизнес-линч",u:"https://www.artlebedev.ru/kovodstvo/business-lynch/business-lynch.rdf",c:"b",l:"ru"},
+  {t:"Журнал о бизнесе «Секрет фирмы»",u:"https://secretmag.ru/rss/rambler.xml",c:"b",l:"ru"},
+  {t:"Идеономика – Умные о главном",u:"https://ideanomics.ru/?feed=rss2",c:"b",l:"ru"},
+  {t:"Полезное чтение",u:"https://bigplans.megaplan.ru/feed",c:"b",l:"ru"},
+  {t:"Радислав Гандапас",u:"https://feeds.feedburner.com/RadislavGandapas",c:"b",l:"ru"},
+  {t:"РБК - Все материалы",u:"https://static.feed.rbc.ru/rbc/internal/rss.rbc.ru/rbc.ru/news.rss",c:"b",l:"ru"},
+  {t:"РБК - Главные новости",u:"https://static.feed.rbc.ru/rbc/internal/rss.rbc.ru/rbc.ru/mainnews.rss",c:"b",l:"ru"},
+  {t:"Т—Ж",u:"https://journal.tinkoff.ru/feed/",c:"b",l:"ru"},
+  {t:"новости",u:"https://www.ixbt.com/export/hardnews.rss",c:"n",l:"ru"},
+  {t:"статьи",u:"https://www.ixbt.com/export/articles.rss",c:"n",l:"ru"},
+  {t:"Новости",u:"https://lenta.ru/rss/",c:"n",l:"ru"},
+  {t:"Meduza.io",u:"https://meduza.io/feed/all",c:"n",l:"ru"},
+  {t:"все новости и статьи",u:"https://tjournal.ru/rss",c:"n",l:"ru"},
+  {t:"ВЕСТИ",u:"https://www.vesti.ru/vesti.rss",c:"n",l:"ru"},
+  {t:"Все материалы Republic",u:"https://slon.ru/rss/all.php",c:"n",l:"ru"},
+  {t:"Газета.Ru - Первая полоса",u:"https://www.gazeta.ru/export/rss/first.xml",c:"n",l:"ru"},
+  {t:"ИноСМИ - Все, что достойно перевода",u:"https://www.inosmi.ru/misc/export/xml/rss/translation.xml",c:"n",l:"ru"},
+  {t:"Лайфхакер",u:"https://lifehacker.ru/feed/",c:"n",l:"ru"},
+  {t:"Наука и техника - Google News",u:"https://www.google.com/news?output=rss&topic=t&ned=ru_ru&cf=all&num=20",c:"n",l:"ru"},
+  {t:"Новости",u:"https://www.nkj.ru/rss/iblock_rss_31.xml",c:"n",l:"ru"},
+  {t:"Новости IT-индустрии | THG.RU",u:"https://www.thg.ru/technews/news_rss.xml",c:"n",l:"ru"},
+  {t:"НОВОСТИ, КОТОРЫЕ МЫ ЗАСЛУЖИЛИ",u:"https://feeds.feedburner.com/bigpictures",c:"n",l:"ru"},
+  {t:"Colonel Cassad",u:"https://colonelcassad.livejournal.com/data/rss",c:"p",l:"ru"},
+  {t:"Inopressa",u:"https://www.inopressa.ru/rss/",c:"p",l:"ru"},
+  {t:"Алексей Навальный",u:"https://navalny.com/blog/post.rss",c:"p",l:"ru"},
+  {t:"Анатолий Вассерман",u:"https://awas1952.livejournal.com/data/rss",c:"p",l:"ru"},
+  {t:"Андрей Илларионов",u:"https://aillarionov.livejournal.com/data/rss",c:"p",l:"ru"},
+  {t:"Взгляд",u:"https://www.vz.ru/rss.xml",c:"p",l:"ru"},
+  {t:"Военное обозрение",u:"https://topwar.ru/rss.xml",c:"p",l:"ru"},
+  {t:"Делай, что должен, и будь, что будет",u:"https://kungurov.livejournal.com/data/rss",c:"p",l:"ru"},
+  {t:"Дорога без конца",u:"https://putnik1.livejournal.com/data/rss",c:"p",l:"ru"},
+  {t:"Ежедневный Журнал",u:"https://www.ej.ru/xml",c:"p",l:"ru"},
+  {t:"Если ты ненавидишь — значит тебя победили ©",u:"https://yurasumy.livejournal.com/data/rss",c:"p",l:"ru"},
+  {t:"Записки мизантропа",u:"https://avmalgin.livejournal.com/data/rss",c:"p",l:"ru"},
+  {t:"Место для дискуссий",u:"https://fritzmorgen.livejournal.com/data/rss",c:"p",l:"ru"},
+  {t:"Эль Мюрид",u:"https://el-murid.livejournal.com/data/rss",c:"p",l:"ru"},
+  {t:"\"Элементы\": новости науки",u:"https://elementy.ru/rss/news",c:"s",l:"ru"},
+  {t:"Antropogenez.ru: Портал об эволюции человека",u:"https://antropogenez.ru/rss/",c:"s",l:"ru"},
+  {t:"DailyTechInfo - Новости науки и технологий, новинки техники.",u:"https://www.dailytechinfo.org/engine/rss.php",c:"s",l:"ru"},
+  {t:"iScience.ru — Будущее уже здесь, в наших новостях",u:"https://feeds.feedburner.com/iscience",c:"s",l:"ru"},
+  {t:"Lenta.ru : Новости : Наука и техника",u:"https://lenta.ru/rss/news/science/",c:"s",l:"ru"},
+  {t:"N+1: научные статьи, новости, открытия",u:"https://nplus1.ru/rss",c:"s",l:"ru"},
+  {t:"Naked Science",u:"https://naked-science.ru/feedrss.xml",c:"s",l:"ru"},
+  {t:"Planetarium",u:"https://scinquisitor.livejournal.com/data/rss",c:"s",l:"ru"},
+  {t:"Газета.Ru - Наука",u:"https://www.gazeta.ru/export/rss/science.xml",c:"s",l:"ru"},
+  {t:"Новости HPC.ru: КПК и коммуникаторы",u:"https://www.hpc.ru/exp/hpcru_news.rss",c:"s",l:"ru"},
+  {t:"Популярная механика",u:"https://www.popmech.ru/rss/",c:"s",l:"ru"},
+  {t:"ПостНаука",u:"https://postnauka.ru/feed",c:"s",l:"ru"},
+  {t:"Теории и практики: статьи",u:"https://theoryandpractice.ru/rss/posts.rss",c:"s",l:"ru"},
+  {t:"3DNews: Новости Hardware",u:"https://www.3dnews.ru/news/rss/",c:"t",l:"ru"},
+  {t:"android.mobile-review.com",u:"https://android.mobile-review.com/feed/",c:"t",l:"ru"},
+  {t:"CNews.ru",u:"https://www.cnews.ru/news.xml",c:"t",l:"ru"},
+  {t:"нескучный сайт о технике",u:"https://gagadget.com/rss.xml",c:"t",l:"ru"},
+  {t:"Новости высоких технологий.",u:"https://feeds.feedburner.com/hi-news_ru",c:"t",l:"ru"},
+  {t:"Публикации",u:"https://hi-tech.mail.ru/rss/all/",c:"t",l:"ru"},
+  {t:"internetno.net",u:"https://feeds.feedburner.com/internetno",c:"t",l:"ru"},
+  {t:"ITC.ua",u:"https://itc.ua/rss/news.xml",c:"t",l:"ru"},
+  {t:"Все о мобильной технике и технологиях",u:"https://www.mobile-review.com/rss-review.xml",c:"t",l:"ru"},
+  {t:"Общая лента",u:"https://www.overclockers.ru/rss/all.rss",c:"t",l:"ru"},
+  {t:"Компьютерные новости",u:"https://www.ferra.ru/export/news-rss.xml",c:"t",l:"ru"},
+  {t:"Economia & Negócios",u:"https://economia.estadao.com.br/EN/rss/economia.xml",c:"b",l:"pt"},
+  {t:"Endeavor",u:"https://endeavor.org.br/feed/",c:"b",l:"pt"},
+  {t:"Estadão PME - Pequenas e Médias Empresas",u:"https://pme.estadao.com.br/rss/ultimas.xml",c:"b",l:"pt"},
+  {t:"EXAME.com - Negócios",u:"https://feeds.feedburner.com/Exame-Negocios",c:"b",l:"pt"},
+  {t:"Forbes Brasil",u:"https://www.forbes.com.br/feed/",c:"b",l:"pt"},
+  {t:"InfoMoney : Negócios",u:"https://www.infomoney.com.br/negocios/rss",c:"b",l:"pt"},
+  {t:"Jornal de Negócios",u:"https://www.jornaldenegocios.pt/funcionalidades/rss/generarRSS.php",c:"b",l:"pt"},
+  {t:"Jornal do Empreendedor",u:"https://feeds.feedburner.com/jornalempreendedor",c:"b",l:"pt"},
+  {t:"OGlobo",u:"https://oglobo.globo.com/rss/plantao.xml",c:"b",l:"pt"},
+  {t:"Revista Época Negócios",u:"https://epocanegocios.globo.com/Revista/Common/Rss/0,,DMI0-16419,00.xml",c:"b",l:"pt"},
+  {t:"Sobre Administração",u:"https://www.sobreadministracao.com/feed/",c:"b",l:"pt"},
+  {t:"Valor Econômico - Empresas",u:"https://www.valor.com.br/empresas/rss",c:"b",l:"pt"},
+  {t:"Brasil",u:"https://rss.terra.com.br/0,,EI1,00.xml",c:"n",l:"pt"},
+  {t:"Estadao.com.br",u:"https://www.estadao.com.br/rss/ultimas.xml",c:"n",l:"pt"},
+  {t:"Expresso",u:"https://feeds.feedburner.com/expresso-geral",c:"n",l:"pt"},
+  {t:"Jornal de Notícias - Últimas Notícias",u:"https://feeds.jn.pt/JN-ULTIMAS",c:"n",l:"pt"},
+  {t:"Notícias Automotivas",u:"https://www.noticiasautomotivas.com.br/feed",c:"n",l:"pt"},
+  {t:"Novidades do TecMundo",u:"https://www.baixaki.com.br/rss/tecnologia.xml",c:"n",l:"pt"},
+  {t:"O Jornal Económico",u:"https://economico.sapo.pt/rss/ultimas",c:"n",l:"pt"},
+  {t:"Pplware",u:"https://pplware.sapo.pt/feed/",c:"n",l:"pt"},
+  {t:"Techtudo",u:"https://www.techtudo.com.br/plantao/rss2.xml",c:"n",l:"pt"},
+  {t:"Tecnoblog",u:"https://feeds.feedburner.com/tecnoblog",c:"n",l:"pt"},
+  {t:"UOL Noticias",u:"https://rss.uol.com.br/feed/noticias.xml",c:"n",l:"pt"},
+  {t:"Valor Econômico - Últimas notícias",u:"https://www.valor.com.br/rss",c:"n",l:"pt"},
+  {t:"VEJA.com: Revista VEJA, acervo digital, notícias, blogs, colunistas, vídeos",u:"https://feeds.feedburner.com/noticiasveja",c:"n",l:"pt"},
+  {t:"Câmara Notícias - Câmara dos Deputados",u:"https://www.camara.gov.br/agenciarss/noticias.aspx",c:"p",l:"pt"},
+  {t:"Diário do Centro do Mundo",u:"https://www.diariodocentrodomundo.com.br/feed/",c:"p",l:"pt"},
+  {t:"Edição Brasil no EL PAÍS",u:"https://brasil.elpais.com/arc/outboundfeeds/rss/tags_slug/brasil-a/?outputType=xml",c:"p",l:"pt"},
+  {t:"Folha Política",u:"https://www.folhapolitica.org/feeds/posts/default",c:"p",l:"pt"},
+  {t:"Nexo Jornal",u:"https://nexojornal.s3.amazonaws.com/www/rss/feed.xml",c:"p",l:"pt"},
+  {t:"Pragmatismo Político",u:"https://feeds.feedburner.com/PragmatismoPolitico",c:"p",l:"pt"},
+  {t:"Radar – VEJA.com",u:"https://feeds.feedburner.com/radar-on-line",c:"p",l:"pt"},
+  {t:"Ceticismo.net",u:"https://feedproxy.google.com/Ceticismonet",c:"s",l:"pt"},
+  {t:"Galileu",u:"https://revistagalileu.globo.com/rss/ultimas/feed.xml",c:"s",l:"pt"},
+  {t:"HypeScience",u:"https://hypescience.com/feed/",c:"s",l:"pt"},
+  {t:"Pós-Graduando – Tudo sobre a Pós-Graduação",u:"https://www.posgraduando.com/feed",c:"s",l:"pt"},
+  {t:"RSS Feed do Site Inovação Tecnológica",u:"https://www.inovacaotecnologica.com.br/boletim/rss.xml",c:"s",l:"pt"},
+  {t:"Superinteressante",u:"https://super.abril.com.br/feed/",c:"s",l:"pt"},
+  {t:"B9",u:"https://feeds.feedburner.com/brainstorm9",c:"t",l:"pt"},
+  {t:"Business Insider",u:"https://feeds2.feedburner.com/businessinsider",c:"b",l:"en"},
+  {t:"Fast Company",u:"https://www.fastcompany.com/rss.xml",c:"b",l:"en"},
+  {t:"The Wall Street Journal",u:"https://feeds.a.dj.com/rss/RSSWorldNews.xml",c:"b",l:"en"},
+  {t:"Yahoo! Business News",u:"https://rss.news.yahoo.com/rss/business",c:"b",l:"en"},
+  {t:"Fast Company",u:"https://feeds.feedburner.com/fastcompany/headlines",c:"b",l:"en"},
+  {t:"Copyblogger",u:"https://copyblogger.com/blog/feed",c:"b",l:"en"},
+  {t:"Entrepreneur",u:"https://feeds.feedburner.com/entrepreneur/latest",c:"b",l:"en"},
+  {t:"Finance and economics",u:"https://www.economist.com/rss/finance_and_economics_rss.xml",c:"b",l:"en"},
+  {t:"Harvard Business Review ",u:"https://feeds.harvardbusiness.org/harvardbusiness/",c:"b",l:"en"},
+  {t:"Neil Patel",u:"https://feeds.feedburner.com/KISSmetrics",c:"b",l:"en"},
+  {t:"Seth Godin",u:"https://feeds.feedblitz.com/sethsblog&x=1",c:"b",l:"en"},
+  {t:"The Atlantic - Business",u:"https://feeds.feedburner.com/AtlanticBusinessChannel",c:"b",l:"en"},
+  {t:"The Economist",u:"https://www.economist.com/rss/the_world_this_week_rss.xml",c:"b",l:"en"},
+  {t:"VentureBeat",u:"https://venturebeat.com/feed/",c:"b",l:"en"},
+  {t:"Yahoo News - Latest News & Headlines",u:"https://rss.news.yahoo.com/rss/topstories",c:"b",l:"en"},
+  {t:"ABC News",u:"https://feeds.abcnews.com/abcnews/topstories",c:"n",l:"en"},
+  {t:"BBC",u:"https://feeds.bbci.co.uk/news/rss.xml",c:"n",l:"en"},
+  {t:"CNN Top Stories",u:"https://rss.cnn.com/rss/cnn_topstories.rss",c:"n",l:"en"},
+  {t:"CNN Europe",u:"https://rss.cnn.com/rss/edition_europe.rss",c:"n",l:"en"},
+  {t:"MSNBC",u:"https://www.msnbc.com/feeds/latest",c:"n",l:"en"},
+  {t:"Reuters",u:"https://www.reutersagency.com/feed/?taxonomy=best-topics&post_type=best",c:"n",l:"en"},
+  {t:"The New York Times",u:"https://www.nytimes.com/services/xml/rss/nyt/HomePage.xml",c:"n",l:"en"},
+  {t:"BBC",u:"https://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml",c:"n",l:"en"},
+  {t:"FOX News",u:"https://feeds.foxnews.com/foxnews/scitech",c:"n",l:"en"},
+  {t:"More Top Stories - Google News",u:"https://news.google.com/rss?hl=en",c:"n",l:"en"},
+  {t:"MTV News",u:"https://feeds.feedburner.com/MTVNewsLatest",c:"n",l:"en"},
+  {t:"NPR News",u:"https://feeds.npr.org/1001/rss.xml",c:"n",l:"en"},
+  {t:"Reuters",u:"https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com&ceid=US:en&hl=en-US&gl=US",c:"n",l:"en"},
+  {t:"Science current issue",u:"https://www.sciencemag.org/rss/current.xml",c:"n",l:"en"},
+  {t:"The Atlantic ",u:"https://feeds.feedburner.com/TheAtlantic",c:"n",l:"en"},
+  {t:"The Boston Globe",u:"https://www.bostonglobe.com/rss/feedly.xml",c:"n",l:"en"},
+  {t:"The Guardian",u:"https://www.theguardian.com/world/rss",c:"n",l:"en"},
+  {t:"Crooks and Liars",u:"https://feeds.feedburner.com/crooksandliars/YaCP",c:"p",l:"en"},
+  {t:"Fox News: Politics",u:"https://feeds.foxnews.com/foxnews/politics",c:"p",l:"en"},
+  {t:"Hot Air",u:"https://feeds.feedburner.com/hotair/main",c:"p",l:"en"},
+  {t:"Politico",u:"https://www.politico.com/rss/politicopicks.xml",c:"p",l:"en"},
+  {t:"American Thinker",u:"https://feeds.feedburner.com/americanthinker",c:"p",l:"en"},
+  {t:"Drudge Report Feed",u:"https://feedpress.me/drudgereportfeed",c:"p",l:"en"},
+  {t:"Features - FiveThirtyEight",u:"https://fivethirtyeight.com/features/feed/",c:"p",l:"en"},
+  {t:"Hot Air TV",u:"https://feeds.feedburner.com/hotair/vent",c:"p",l:"en"},
+  {t:"Michelle Malkin",u:"https://feeds.feedburner.com/michellemalkin/posts",c:"p",l:"en"},
+  {t:"Slate",u:"https://feeds.slate.com/slate-101526",c:"p",l:"en"},
+  {t:"The Agenda",u:"https://www.nationalreview.com/feed/",c:"p",l:"en"},
+  {t:"The Atlantic - Politics",u:"https://feeds.feedburner.com/AtlanticPoliticsChannel",c:"p",l:"en"},
+  {t:"The Intercept",u:"https://firstlook.org/theintercept/feed/",c:"p",l:"en"},
+  {t:"Think Progress",u:"https://thinkprogress.org/feed/",c:"p",l:"en"},
+  {t:"Astronomy Picture of the Day",u:"https://apod.nasa.gov/apod.rss",c:"s",l:"en"},
+  {t:"Discover Magazine",u:"https://feeds.feedburner.com/DiscoverMag",c:"s",l:"en"},
+  {t:"KQED Quest",u:"https://www.kqed.org/quest/blog/feed/",c:"s",l:"en"},
+  {t:"Nature Latest Research",u:"https://www.nature.com/nature.rss",c:"s",l:"en"},
+  {t:"PhysOrg.com",u:"https://www.physorg.com/rss-feed/",c:"s",l:"en"},
+  {t:"Reuters",u:"https://www.reutersagency.com/feed/?best-topics=tech&post_type=best",c:"s",l:"en"},
+  {t:"Yahoo! Science News",u:"https://rss.news.yahoo.com/rss/science",c:"s",l:"en"},
+  {t:"BBC News - Science & Environment",u:"https://newsrss.bbc.co.uk/rss/newsonline_world_edition/science/nature/rss.xml",c:"s",l:"en"},
+  {t:"FlowingData",u:"https://feeds.feedburner.com/FlowingData",c:"s",l:"en"},
+  {t:"Futurity",u:"https://www.futurity.org/feed/",c:"s",l:"en"},
+  {t:"Information is Beautiful",u:"https://feeds.feedburner.com/InformationIsBeautiful",c:"s",l:"en"},
+  {t:"NPR",u:"https://feeds.npr.org/1007/rss.xml",c:"s",l:"en"},
+  {t:"NYT > Science",u:"https://www.nytimes.com/services/xml/rss/nyt/Science.xml",c:"s",l:"en"},
+  {t:"Science and technology",u:"https://www.economist.com/rss/science_and_technology_rss.xml",c:"s",l:"en"},
+  {t:"ScienceDaily ",u:"https://www.sciencedaily.com/newsfeed.xml",c:"s",l:"en"},
+  {t:"Space.com",u:"https://www.space.com/syn/space.xml",c:"s",l:"en"},
+  {t:"TED Talks Daily (SD video)",u:"https://feeds.feedburner.com/tedtalks_video",c:"s",l:"en"},
+  {t:"Ars Technica",u:"https://feeds.arstechnica.com/arstechnica/index",c:"t",l:"en"},
+  {t:"Boing Boing",u:"https://feeds.boingboing.net/boingboing/iBag",c:"t",l:"en"},
+  {t:"Engadget",u:"https://www.engadget.com/rss-full.xml",c:"t",l:"en"},
+  {t:"GigaOM",u:"https://gigaom.com/feed/",c:"t",l:"en"},
+  {t:"Gizmodo",u:"https://gizmodo.com/vip.xml",c:"t",l:"en"},
+  {t:"Mac Rumors",u:"https://feeds.macrumors.com/MacRumors-All",c:"t",l:"en"},
+  {t:"Macworld",u:"https://rss.macworld.com/macworld/feeds/main",c:"t",l:"en"},
+  {t:"Mashable",u:"https://feeds.mashable.com/Mashable",c:"t",l:"en"},
+  {t:"Slashgear",u:"https://www.slashgear.com/feed/",c:"t",l:"en"},
+  {t:"Techcrunch",u:"https://feeds.feedburner.com/TechCrunch",c:"t",l:"en"},
+  {t:"Techmeme",u:"https://www.techmeme.com/index.xml",c:"t",l:"en"},
+  {t:"The Loop",u:"https://feeds.loopinsight.com/loopinsight/KqJb",c:"t",l:"en"},
+  {t:"Yahoo! Technology News",u:"https://rss.news.yahoo.com/rss/tech",c:"t",l:"en"},
+  {t:"Ars Technica",u:"https://feeds.arstechnica.com/arstechnica/index/",c:"t",l:"en"},
+  {t:"MacRumors",u:"https://www.macrumors.com/macrumors.xml",c:"t",l:"en"},
+  {t:"Tom's Hardware",u:"https://www.tomshardware.com/feeds/all",c:"t",l:"en"},
+  {t:"Adnkronos - Finanza",u:"https://www.adnkronos.com/RSS_Finanza.xml",c:"b",l:"it"},
+  {t:"Corriere.it - Economia",u:"https://www.corriere.it/rss/economia.xml",c:"b",l:"it"},
+  {t:"Economia - Google News",u:"https://www.google.com/news?output=rss&topic=b&ned=it&cf=all&num=20",c:"b",l:"it"},
+  {t:"FinanzaOnline",u:"https://www.finanzaonline.com/rss/index.php",c:"b",l:"it"},
+  {t:"Il Sole 24 ORE - Commenti e Idee",u:"https://www.ilsole24ore.com/rss/commenti.xml",c:"b",l:"it"},
+  {t:"Il Sole 24 ORE - Finanza e Mercati",u:"https://www.ilsole24ore.com/rss/finanza-mercati.xml",c:"b",l:"it"},
+  {t:"Il Sole 24 ORE - index",u:"https://www.ilsole24ore.com/rss/primapagina.xml",c:"b",l:"it"},
+  {t:"LeoniBlog",u:"https://www.chicago-blog.it/feed/",c:"b",l:"it"},
+  {t:"Phastidio.net",u:"https://feeds2.feedburner.com/phastidio/lhrg",c:"b",l:"it"},
+  {t:"Repubblica.it > Economia",u:"https://www.repubblica.it/rss/economia/rss2.0.xml",c:"b",l:"it"},
+  {t:"Rischio Calcolato",u:"https://feeds.feedburner.com/blogspot/HAzvd",c:"b",l:"it"},
+  {t:"RSS di Economia  - ANSA.it",u:"https://www.ansa.it/sito/notizie/economia/economia_rss.xml",c:"b",l:"it"},
+  {t:"Trend Online",u:"https://www.trend-online.com/rssfeed/generali.xml",c:"b",l:"it"},
+  {t:"Adnkronos - ultimora",u:"https://www.adnkronos.com/RSS_Ultimora.xml",c:"n",l:"it"},
+  {t:"Corriere.it - Homepage",u:"https://www.corriere.it/rss/homepage.xml",c:"n",l:"it"},
+  {t:"Il Fatto Quotidiano",u:"https://www.ilfattoquotidiano.it/feed/",c:"n",l:"it"},
+  {t:"Il Post",u:"https://rsshub.app/telegram/channel/ilpost_official",c:"n",l:"it"},
+  {t:"Il Sole 24 ORE - Notizie",u:"https://www.ilsole24ore.com/rss/italia.xml",c:"n",l:"it"},
+  {t:"ilmessaggero.it - Home",u:"https://www.ilmessaggero.it/rss/home.xml",c:"n",l:"it"},
+  {t:"Internazionale",u:"https://www.internazionale.it/subscribe/backstage/",c:"n",l:"it"},
+  {t:"lastampa.it - La Stampa",u:"https://www.lastampa.it/redazione/rss_home.xml",c:"n",l:"it"},
+  {t:"Marco Travaglio – Il Fatto Quotidiano",u:"https://www.ilfattoquotidiano.it/blog/mtravaglio/feed/",c:"n",l:"it"},
+  {t:"Micromega Online",u:"https://www.micromega.net/feed",c:"n",l:"it"},
+  {t:"Collettiva",u:"https://rsshub.app/telegram/channel/collettiva_news",c:"n",l:"it"},
+  {t:"Repubblica.it > Homepage",u:"https://www.repubblica.it/rss/homepage/rss2.0.xml",c:"n",l:"it"},
+  {t:"Corriere.it - Politica",u:"https://www.corriere.it/rss/politica.xml",c:"p",l:"it"},
+  {t:"Giap",u:"https://feeds.feedburner.com/giap",c:"p",l:"it"},
+  {t:"Giornalettismo",u:"https://www.giornalettismo.com/feed/",c:"p",l:"it"},
+  {t:"Lavoce.info",u:"https://www.lavoce.info/feed/",c:"p",l:"it"},
+  {t:"Limes",u:"https://temi.repubblica.it/limes/feed",c:"p",l:"it"},
+  {t:"manteblog",u:"https://feeds.feedburner.com/mantellini/feed",c:"p",l:"it"},
+  {t:"micromega-online",u:"https://temi.repubblica.it/micromega-online/feed/",c:"p",l:"it"},
+  {t:"noiseFromAmerika",u:"https://feeds.feedburner.com/noisefromamerika",c:"p",l:"it"},
+  {t:"Piovono rane",u:"https://gilioli.blogautore.espresso.repubblica.it/feed/",c:"p",l:"it"},
+  {t:"Polisblog.it",u:"https://feeds.blogo.it/polisblog/it",c:"p",l:"it"},
+  {t:"Repubblica.it > Politica",u:"https://www.repubblica.it/rss/politica/rss2.0.xml",c:"p",l:"it"},
+  {t:"Spinoza",u:"https://feeds.feedburner.com/Spinoza",c:"p",l:"it"},
+  {t:"Wittgenstein",u:"https://www.wittgenstein.it/feed/",c:"p",l:"it"},
+  {t:"Corriere.it - Scienze e Tecnologie",u:"https://www.corriere.it/rss/scienze.xml",c:"s",l:"it"},
+  {t:"Ecoblog.it",u:"https://www.ecoblog.it/rss2.xml",c:"s",l:"it"},
+  {t:"Fantascienza.com",u:"https://www.fantascienza.com/magazine/rss/fantascienza_com_home.rss",c:"s",l:"it"},
+  {t:"Galileo",u:"https://www.galileonet.it/rss/",c:"s",l:"it"},
+  {t:"Gravità Zero",u:"https://www.gravita-zero.org/feeds/posts/default",c:"s",l:"it"},
+  {t:"Il Disinformatico",u:"https://attivissimo.blogspot.com/atom.xml",c:"s",l:"it"},
+  {t:"Il Sole 24 ORE - Tecnologie",u:"https://www.ilsole24ore.com/rss/tecnologie.xml",c:"s",l:"it"},
+  {t:"Le Scienze",u:"https://www.lescienze.it/rss/all/rss2.0.xml",c:"s",l:"it"},
+  {t:"Le Scienze > Rss",u:"https://www.lescienze.it/rss/argomento/neuroscienze/rss2.0.xml",c:"s",l:"it"},
+  {t:"Lega Nerd",u:"https://feeds.feedburner.com/LegaNerd",c:"s",l:"it"},
+  {t:"Oggi Scienza",u:"https://oggiscienza.wordpress.com/feed/",c:"s",l:"it"},
+  {t:"Repubblica.it > Scienze",u:"https://www.repubblica.it/rss/scienze/rss2.0.xml",c:"s",l:"it"},
+  {t:"Repubblica.it > Tecnologia",u:"https://www.repubblica.it/rss/scienza_e_tecnologia/rss2.0.xml",c:"s",l:"it"},
+  {t:"RSS di Tecnologia  - ANSA.it",u:"https://www.ansa.it/web/notizie/rubriche/scienza/scienza_rss.xml",c:"s",l:"it"},
+  {t:"Scienza e tecnologia - Google News",u:"https://www.google.com/news?output=rss&topic=t&ned=it&cf=all&num=20",c:"s",l:"it"},
+  {t:"Scienza in cucina",u:"https://bressanini-lescienze.blogautore.espresso.repubblica.it/feed/",c:"s",l:"it"},
+  {t:"AndroidWorld.it",u:"https://www.androidworld.it/feed/",c:"t",l:"it"},
+  {t:"Geekissimo",u:"https://feeds2.feedburner.com/Geekissimo",c:"t",l:"it"},
+  {t:"HDblog.it",u:"https://feeds.feedburner.com/hd-blog",c:"t",l:"it"},
+  {t:"IlSoftware.it",u:"https://www.ilsoftware.it/rss.asp",c:"t",l:"it"},
+  {t:"Macity",u:"https://www.macitynet.it/macity/rss.xml",c:"t",l:"it"},
+  {t:"Motoricerca",u:"https://feeds.feedburner.com/motoricerca",c:"t",l:"it"},
+  {t:"Tom's Hardware",u:"https://www.tomshw.it/feed",c:"t",l:"it"},
+  {t:"Challenges en temps réel : accueil",u:"https://www.challenges.fr/rss.xml",c:"b",l:"fr"},
+  {t:"Démystifier la finance",u:"https://finance.blog.lemonde.fr/feed/",c:"b",l:"fr"},
+  {t:"Les-Crises.fr",u:"https://feeds.feedburner.com/les-crises-fr",c:"b",l:"fr"},
+  {t:"Économie",u:"https://www.latribune.fr/rss/rubriques/actualite.html",c:"b",l:"fr"},
+  {t:"Économie : Toute lactualité sur Le Monde.fr.",u:"https://www.lemonde.fr/rss/tag/economie.xml",c:"b",l:"fr"},
+  {t:"Fil de presse - Le Devoir",u:"https://www.ledevoir.com/rss/ledevoir.xml",c:"n",l:"fr"},
+  {t:"GNT - actualités",u:"https://www.generation-nt.com/export/rss.xml",c:"n",l:"fr"},
+  {t:"Manchettes - Le Devoir",u:"https://www.ledevoir.com/rss/manchettes.xml",c:"n",l:"fr"},
+  {t:"Nouvelles de jeuxlibres.net",u:"https://jeuxlibres.net/rss/news",c:"n",l:"fr"},
+  {t:"Radio-Canada | Grands titres",u:"https://ici.radio-canada.ca/rss/4159",c:"n",l:"fr"},
+  {t:"Radio-Canada | Technologie",u:"https://ici.radio-canada.ca/rss/4169",c:"n",l:"fr"},
+  {t:"UsineNouvelle - Actualités A la une",u:"https://rss.usinenouvelle.com/a-la-une",c:"n",l:"fr"},
+  {t:"Acrimed | Action Critique Médias",u:"https://www.acrimed.org/spip.php?page=backend",c:"p",l:"fr"},
+  {t:"AgoraVox le média citoyen",u:"https://feeds.feedburner.com/agoravox/gEOF",c:"p",l:"fr"},
+  {t:"Basta !",u:"https://www.bastamag.net/spip.php?page=backend",c:"p",l:"fr"},
+  {t:"bruxelles.blogs.liberation.fr - Derniers articles",u:"https://bruxelles.blogs.liberation.fr/coulisses/atom.xml",c:"p",l:"fr"},
+  {t:"Le Figaro - Politique",u:"https://www.lefigaro.fr/rss/figaro_politique.xml",c:"p",l:"fr"},
+  {t:"Le Monde diplomatique",u:"https://www.monde-diplomatique.fr/recents.xml",c:"p",l:"fr"},
+  {t:"Mediapart",u:"https://www.mediapart.fr/articles/feed",c:"p",l:"fr"},
+  {t:"Politique : Toute lactualité sur Le Monde.fr.",u:"https://www.lemonde.fr/rss/tag/politique.xml",c:"p",l:"fr"},
+  {t:"Reflets.info",u:"https://feeds.feedburner.com/refletsinfo",c:"p",l:"fr"},
+  {t:"Passeur de sciences",u:"https://passeurdesciences.blog.lemonde.fr/feed/",c:"s",l:"fr"},
+  {t:"Sciences : Toute lactualité sur Le Monde.fr.",u:"https://www.lemonde.fr/rss/tag/sciences.xml",c:"s",l:"fr"},
+  {t:"Sciences et Avenir en temps réel : accueil",u:"https://www.sciencesetavenir.fr/rss.xml",c:"s",l:"fr"},
+  {t:"Techno-Science.net",u:"https://www.techno-science.net/include/news.xml",c:"s",l:"fr"},
+  {t:"Flux toutes les actualités - 01net",u:"https://www.01net.com/rss/actus.xml",c:"t",l:"fr"},
+  {t:"FrAndroid",u:"https://feeds.feedburner.com/frandroid",c:"t",l:"fr"},
+  {t:"ITespresso.fr ",u:"https://www.itespresso.fr/feed",c:"t",l:"fr"},
+  {t:"Korben",u:"https://feeds.feedburner.com/KorbensBlog-UpgradeYourMind",c:"t",l:"fr"},
+  {t:"Le Monde.fr - Actualités et Infos en France et dans le monde",u:"https://www.lemonde.fr/rss/en_continu.xml",c:"t",l:"fr"},
+  {t:"Les Numériques",u:"https://www.lesnumeriques.com/rss.xml",c:"t",l:"fr"},
+  {t:"Next INpact – Actualités",u:"https://www.pcinpact.com/include/news.xml",c:"t",l:"fr"},
+  {t:"TechCrunch",u:"https://feeds.feedburner.com/francaistechcrunch",c:"t",l:"fr"},
+  {t:"Ubergizmo",u:"https://www.ubergizmo.com/fr/index.xml",c:"t",l:"fr"},
+  {t:"Tom's Hardware",u:"https://www.tomshardware.fr/feed",c:"t",l:"fr"},
+  {t:"1000 Ideas de Negocios",u:"https://www.1000ideasdenegocios.com/feeds/posts/default",c:"b",l:"es"},
+  {t:"Con Tu Negocio",u:"https://www.contunegocio.es/feed/",c:"b",l:"es"},
+  {t:"El Blog Salmón",u:"https://www.elblogsalmon.com/index.xml",c:"b",l:"es"},
+  {t:"Emprendedores.News",u:"https://www.emprendedoresnews.com/feed",c:"b",l:"es"},
+  {t:"Emprenderalia",u:"https://feeds.feedburner.com/Emprenderalia",c:"b",l:"es"},
+  {t:"Emprendices",u:"https://negociosyemprendimiento.com/feed/",c:"b",l:"es"},
+  {t:"GurusBlog",u:"https://feeds.feedburner.com/gurusblog/ocIz",c:"b",l:"es"},
+  {t:"Loogic Startups",u:"https://feeds.feedburner.com/Loogiccom",c:"b",l:"es"},
+  {t:"MuyPymes",u:"https://www.muypymes.com/feed",c:"b",l:"es"},
+  {t:"Negocios y Emprendimiento",u:"https://www.negociosyemprendimiento.org/feeds/posts/default",c:"b",l:"es"},
+  {t:"Noticias de AméricaEconomía.com",u:"https://feeds.feedburner.com/america-economia",c:"b",l:"es"},
+  {t:"Pymes y Autonomos",u:"https://feeds.weblogssl.com/pymesyautonomos",c:"b",l:"es"},
+  {t:"Site",u:"https://www.emprendedores.es/rss/feed/site",c:"b",l:"es"},
+  {t:"Todostartups",u:"https://www.todostartups.com/feed",c:"b",l:"es"},
+  {t:"20minutos.es",u:"https://www.20minutos.es/rss/",c:"n",l:"es"},
+  {t:"CNN",u:"https://cnnespanol.cnn.com/feed/",c:"n",l:"es"},
+  {t:"DW.de - Noticias",u:"https://partner.dw-world.de/syndication/feeds/RSS_sp_Feedly_News.10727-mrss.xml",c:"n",l:"es"},
+  {t:"eldiario.es - eldiario.es",u:"https://www.eldiario.es/rss/",c:"n",l:"es"},
+  {t:"España // elmundo",u:"https://rss.elmundo.es/rss/descarga.htm?data2=8",c:"n",l:"es"},
+  {t:"Menéame: publicadas",u:"https://www.meneame.net/rss2.php",c:"n",l:"es"},
+  {t:"Noticias destacadas de ElComercio.pe",u:"https://elcomercio.pe/arcio/rss/",c:"n",l:"es"},
+  {t:"Noticias – CINEMANÍA",u:"https://cinemania.es/noticias/feed/",c:"n",l:"es"},
+  {t:"Portada // elmundo",u:"https://rss.elmundo.es/rss/descarga.htm?data2=4",c:"n",l:"es"},
+  {t:"Portada de EL PAÍS",u:"https://www.elpais.com/rss/feed.html?feedId=1022",c:"n",l:"es"},
+  {t:"RT en Español",u:"https://actualidad.rt.com/feeds/all.rss",c:"n",l:"es"},
+  {t:"Sociedad - lanacion.com",u:"https://contenidos.lanacion.com.ar/herramientas/rss-origen=2",c:"n",l:"es"},
+  {t:"Última Hora",u:"https://www.abc.es/rss/feeds/abc_ultima.xml",c:"n",l:"es"},
+  {t:"Últimas noticias | EL PAÍS",u:"https://www.elpais.com/rss/feed.html?feedId=17046",c:"n",l:"es"},
+  {t:"TecnoMagazine.net | Noticias de Tecnología",u:"https://tecnomagazine.net/feed/",c:"n",l:"es"},
+  {t:"ATTAC España",u:"https://www.attac.es/feed/",c:"p",l:"es"},
+  {t:"Clarin.com - Política",u:"https://www.clarin.com/rss/politica/",c:"p",l:"es"},
+  {t:"eldiario.es - Escolar.net",u:"https://www.eldiario.es/rss/section/8001/",c:"p",l:"es"},
+  {t:"eldiario.es - Zona Crítica",u:"https://www.eldiario.es/zonacritica/feed/",c:"p",l:"es"},
+  {t:"Entradas – Artepolítica",u:"https://feeds.feedburner.com/artepolitica",c:"p",l:"es"},
+  {t:"Guerra Eterna",u:"https://www.guerraeterna.com/atom.xml",c:"p",l:"es"},
+  {t:"Hay Derecho",u:"https://hayderecho.com/feed/",c:"p",l:"es"},
+  {t:"lamarea.com",u:"https://www.lamarea.com/feed/",c:"p",l:"es"},
+  {t:"Malaprensa",u:"https://feeds.feedburner.com/Malaprensa",c:"p",l:"es"},
+  {t:"Política - lanacion.com",u:"https://contenidos.lanacion.com.ar/herramientas/rss/categoria_id=30",c:"p",l:"es"},
+  {t:"Portada de Política | EL PAÍS",u:"https://www.elpais.com/rss/rss_section.html?anchor=elppornac",c:"p",l:"es"},
+  {t:"Proceso",u:"https://feeds.feedburner.com/proceso",c:"p",l:"es"},
+  {t:"Ciencia de la NASA",u:"https://ciencia.nasa.gov/rss.xml",c:"s",l:"es"},
+  {t:"FayerWayer",u:"https://feeds.feedburner.com/FayerWayer",c:"s",l:"es"},
+  {t:"Gizmodo en Español",u:"https://es.gizmodo.com/rss",c:"s",l:"es"},
+  {t:"Historias de la Historia",u:"https://historiasdelahistoria.com/feed/",c:"s",l:"es"},
+  {t:"La Ciencia y sus Demonios",u:"https://lacienciaysusdemonios.com/feed/",c:"s",l:"es"},
+  {t:"Materia",u:"https://feeds.feedburner.com/materia/noticias",c:"s",l:"es"},
+  {t:"Microsiervos",u:"https://www.microsiervos.com/index.xml",c:"s",l:"es"},
+  {t:"MuyInteresante.es",u:"https://feeds.feedburner.com/Muyinteresantees",c:"s",l:"es"},
+  {t:"Omicrono",u:"https://www.omicrono.com/feed/",c:"s",l:"es"},
+  {t:"SCIENTIA",u:"https://scientiablog.com/feed/",c:"s",l:"es"},
+  {t:"Tecnología Obsoleta",u:"https://www.alpoma.net/tecob/?feed=rss2",c:"s",l:"es"},
+  {t:"Tendencias 21",u:"https://www.tendencias21.net/xml/syndication.rss",c:"s",l:"es"},
+  {t:"Xataka Ciencia",u:"https://www.xatakaciencia.com/index.xml",c:"s",l:"es"},
+  {t:"Applesfera",u:"https://feeds.weblogssl.com/applesfera",c:"t",l:"es"},
+  {t:"El Androide Libre",u:"https://www.elandroidelibre.com/feed/",c:"t",l:"es"},
+  {t:"Genbeta",u:"https://www.genbeta.com/index.xml",c:"t",l:"es"},
+  {t:"Vidaextra",u:"https://feeds.weblogssl.com/vidaextra",c:"t",l:"es"},
+  {t:"Wwwhats new?",u:"https://feeds2.feedburner.com/Wwwhatsnew",c:"t",l:"es"},
+  {t:"Xataka Android",u:"https://www.xatakandroid.com/index.xml",c:"t",l:"es"},
+  {t:"Xataka Móvil",u:"https://www.xatakamovil.com/atom.xml",c:"t",l:"es"},
+];
+
+/* ============================================================================
+   SelfUpdate — offline-first self-update machinery
+   ============================================================================
+   On boot, periodically fetches a configurable URL and replaces this file
+   when a newer version is found. Caches OPML + topology + last-seen articles
+   in localStorage so the app remains usable offline. Configurable via the
+   ⚙ status pill in the header.
+   ============================================================================ */
+const NG_BUILD_VERSION = '2.0.0';
+const NG_BUILD_DATE = '2026-06-15';
+const NG_STORAGE_KEY = 'news-globe';
+const NG_DEFAULT_UPDATE_URL = '';   // user-set in settings
+const NG_DEFAULT_CHECK_MIN = 60;
+
+const SelfUpdate = (() => {
+  function store() {
+    try { return JSON.parse(localStorage.getItem(NG_STORAGE_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function save(obj) {
+    try { localStorage.setItem(NG_STORAGE_KEY, JSON.stringify(obj)); }
+    catch (e) { console.warn('[SelfUpdate] localStorage write failed:', e.message); }
+  }
+  function patch(updates) { const s = store(); Object.assign(s, updates); save(s); }
+
+  function getSettings() {
+    const s = store();
+    return {
+      updateUrl: s.updateUrl ?? NG_DEFAULT_UPDATE_URL,
+      checkIntervalMin: s.checkIntervalMin ?? NG_DEFAULT_CHECK_MIN,
+      autoApply: !!s.autoApply,
+    };
+  }
+
+  async function hashOf(text) {
+    const enc = new TextEncoder().encode(text);
+    const buf = await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
+  async function selfHash() { return hashOf(document.documentElement.outerHTML); }
+
+  function log(msg, type = 'info') {
+    // Delegate to app's logger if available
+    if (typeof window.ngLog === 'function') window.ngLog('[upd] ' + msg, type);
+    else console.log('[SelfUpdate]', msg);
+  }
+
+  function setStatus(state, text) {
+    const pill = document.getElementById('upd-status');
+    if (!pill) return;
+    pill.classList.remove('online', 'offline', 'update');
+    if (state) pill.classList.add(state);
+    const el = document.getElementById('upd-status-text');
+    if (el) el.textContent = text;
+  }
+
+  function showBanner(ver) {
+    document.getElementById('upd-banner-msg').textContent =
+      `Version ${ver} is available (you have ${NG_BUILD_VERSION})`;
+    document.getElementById('upd-banner').classList.add('visible');
+  }
+  function dismiss() {
+    document.getElementById('upd-banner').classList.remove('visible');
+    patch({ bannerDismissedFor: store().pendingVersion });
+  }
+
+  async function checkForUpdate() {
+    const { updateUrl } = getSettings();
+    if (!updateUrl) {
+      log('No update URL configured.', 'warn');
+      setStatus('online', '⚙ set URL');
+      return null;
+    }
+    setStatus(null, '⌛ checking…');
+    log('Checking ' + updateUrl);
+    try {
+      const bust = updateUrl + (updateUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+      const res = await fetch(bust);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const remoteHtml = await res.text();
+      patch({ lastCheckedAt: Date.now() });
+
+      if (!/<html/i.test(remoteHtml)) throw new Error('not HTML');
+
+      const ourHash = await selfHash();
+      const remoteHash = await hashOf(remoteHtml);
+      if (ourHash === remoteHash) {
+        log('✓ Up-to-date.', 'ok');
+        setStatus('online', `v${NG_BUILD_VERSION} ✓`);
+        return null;
+      }
+
+      const verMatch = remoteHtml.match(/NG_BUILD_VERSION\s*=\s*['"]([^'"]+)['"]/);
+      const remoteVer = verMatch ? verMatch[1] : '(unknown)';
+      log(`⬆ Update available: v${remoteVer} (${(remoteHtml.length/1024).toFixed(1)} KB)`, 'ok');
+
+      patch({
+        pendingHtml: remoteHtml,
+        pendingVersion: remoteVer,
+        pendingFoundAt: Date.now(),
+      });
+
+      if (getSettings().autoApply) {
+        log('Auto-applying update…', 'ok');
+        applyPending();
+      } else {
+        const s = store();
+        // Don't re-show banner if user already dismissed THIS version
+        if (s.bannerDismissedFor !== remoteVer) {
+          showBanner(remoteVer);
+        }
+        setStatus('update', `⬆ v${remoteVer}`);
+      }
+      return { remoteVer };
+    } catch (e) {
+      log('Update check failed: ' + e.message, 'err');
+      setStatus(navigator.onLine ? 'online' : 'offline', navigator.onLine ? `v${NG_BUILD_VERSION}` : '⚡ offline');
+      return null;
+    }
+  }
+
+  function applyPending() {
+    const s = store();
+    if (!s.pendingHtml) { log('No pending update.', 'warn'); return; }
+    log(`Applying update v${s.pendingVersion}…`, 'ok');
+    try {
+      const blob = new Blob([s.pendingHtml], { type: 'text/html' });
+      const blobUrl = URL.createObjectURL(blob);
+      patch({
+        lastAppliedVersion: s.pendingVersion,
+        lastAppliedAt: Date.now(),
+        pendingHtml: null,
+        pendingVersion: null,
+        bannerDismissedFor: null,
+      });
+      window.location.replace(blobUrl);
+    } catch (e) { log('Apply failed: ' + e.message, 'err'); }
+  }
+
+  function openSettings() {
+    const s = getSettings();
+    document.getElementById('upd-set-url').value = s.updateUrl;
+    document.getElementById('upd-set-interval').value = s.checkIntervalMin;
+    document.getElementById('upd-set-auto').checked = s.autoApply;
+    refreshInfo();
+    document.getElementById('upd-settings-bd').classList.add('open');
+  }
+  function closeSettings() {
+    document.getElementById('upd-settings-bd').classList.remove('open');
+  }
+  function saveSettings() {
+    const url = document.getElementById('upd-set-url').value.trim();
+    const interval = parseInt(document.getElementById('upd-set-interval').value, 10) || NG_DEFAULT_CHECK_MIN;
+    const auto = document.getElementById('upd-set-auto').checked;
+    patch({ updateUrl: url, checkIntervalMin: interval, autoApply: auto });
+    log(`Settings saved: URL=${url || '(none)'}, every ${interval}min, auto=${auto}`, 'ok');
+    closeSettings();
+    schedule();
+  }
+  function clearCache() {
+    if (!confirm('Clear all cached data, settings, pending updates, and offline state?')) return;
+    localStorage.removeItem(NG_STORAGE_KEY);
+    log('All cache cleared.', 'ok');
+    refreshInfo();
+  }
+
+  async function refreshInfo() {
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('upd-info-version', NG_BUILD_VERSION);
+    set('upd-info-built', NG_BUILD_DATE);
+    set('upd-info-size', (document.documentElement.outerHTML.length / 1024).toFixed(1) + ' KB');
+    try { set('upd-info-hash', (await selfHash()).slice(0, 16) + '…'); }
+    catch (e) { set('upd-info-hash', '(crypto unavailable)'); }
+    const s = store();
+    set('upd-info-checked', s.lastCheckedAt ? new Date(s.lastCheckedAt).toLocaleString() : 'never');
+    const cacheBits = [];
+    if (s.cachedOpml) cacheBits.push(`OPML (${s.cachedOpml.feeds.length} feeds)`);
+    if (s.cachedTopology) cacheBits.push('topology');
+    if (s.cachedArticles) cacheBits.push(`${s.cachedArticles.length} articles`);
+    set('upd-info-cache', cacheBits.length ? cacheBits.join(' · ') : 'none');
+  }
+
+  let timer = null;
+  function schedule() {
+    if (timer) clearTimeout(timer);
+    const ms = Math.max(1, getSettings().checkIntervalMin) * 60_000;
+    timer = setTimeout(() => checkForUpdate().finally(schedule), ms);
+  }
+
+  function bindOnlineEvents() {
+    window.addEventListener('online', () => {
+      log('Network back online.', 'ok');
+      setStatus('online', `v${NG_BUILD_VERSION}`);
+      checkForUpdate();
+    });
+    window.addEventListener('offline', () => {
+      log('Network offline — using cached data.', 'warn');
+      setStatus('offline', '⚡ offline');
+    });
+  }
+
+  // -------- Offline cache helpers (used by the news app) --------
+  function cacheOpml(feeds)        { patch({ cachedOpml: { feeds, ts: Date.now() } }); }
+  function getCachedOpml()         { return store().cachedOpml; }
+  function cacheTopology(topo)     { patch({ cachedTopology: { topo, ts: Date.now() } }); }
+  function getCachedTopology()     { return store().cachedTopology; }
+  function cacheArticles(arts)     {
+    // Trim to lightweight summary (no big thumbnails) for storage
+    const lite = arts.slice(0, 100).map((a) => ({
+      id: a.id, title: a.title, description: (a.description || '').slice(0, 300),
+      link: a.link, source: a.source, ts: a.ts, lat: a.lat, lon: a.lon,
+      place: a.place, source_geo: a.source_geo, thumbnail: a.thumbnail,
+    }));
+    patch({ cachedArticles: lite, cachedArticlesAt: Date.now() });
+  }
+  function getCachedArticles() {
+    const s = store();
+    return { items: s.cachedArticles || [], at: s.cachedArticlesAt };
+  }
+
+  async function boot() {
+    bindOnlineEvents();
+    await refreshInfo();
+    const s = store();
+    if (s.lastAppliedAt && Date.now() - s.lastAppliedAt < 30000) {
+      log(`✓ Update v${s.lastAppliedVersion} applied successfully.`, 'ok');
+    }
+    if (navigator.onLine) setStatus('online', `v${NG_BUILD_VERSION}`);
+    else setStatus('offline', '⚡ offline');
+    if (s.pendingHtml && s.pendingVersion && s.bannerDismissedFor !== s.pendingVersion) {
+      showBanner(s.pendingVersion);
+      setStatus('update', `⬆ v${s.pendingVersion}`);
+    }
+    // First check after 8s (let the app start polling first)
+    if (navigator.onLine && getSettings().updateUrl) {
+      setTimeout(() => checkForUpdate().finally(schedule), 8000);
+    } else {
+      schedule();
+    }
+  }
+
+  return {
+    boot, checkNow: () => checkForUpdate().finally(schedule),
+    applyPending, dismiss, openSettings, closeSettings, saveSettings, clearCache,
+    // Offline-cache API used by the app:
+    cacheOpml, getCachedOpml,
+    cacheTopology, getCachedTopology,
+    cacheArticles, getCachedArticles,
+  };
+})();
+window.SelfUpdate = SelfUpdate;
+
+/* ============ Inlined app.js ============ */
+/* News Globe — live OPML → RSS → geocode → orthographic D3 globe */
+(() => {
+  'use strict';
+
+  // ====== CONFIG ======
+  const OPML_URL =
+    'https://raw.githubusercontent.com/plenaryapp/awesome-rss-feeds/master/recommended/with_category/News.opml';
+
+  // CORS strategy:
+  //   - GitHub raw, api.rss2json.com, and nominatim.openstreetmap.org all serve
+  //     `Access-Control-Allow-Origin: *`, so we can fetch them DIRECTLY from
+  //     the browser — no proxy needed for the primary pipeline.
+  //   - For any URL that DOES need a proxy (e.g. a few odd RSS feeds), we fall
+  //     back through this list of public CORS proxies in order.
+  // (corsproxy.io was removed — it started requiring an API key in 2024 and
+  //  now returns 403 to anonymous traffic, which is why no articles were
+  //  appearing in earlier builds of this file.)
+  const CORS_PROXIES = [
+    (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+    (u) => 'https://api.cors.lol/?url=' + encodeURIComponent(u),
+    (u) => 'https://corsproxy.io/?url=' + encodeURIComponent(u),  // last resort
+  ];
+
+  // Helper: try a direct fetch first, then walk the proxy chain on failure.
+  async function fetchWithFallback(url, { asJson = false, asText = false } = {}) {
+    const attempts = [url, ...CORS_PROXIES.map((p) => p(url))];
+    let lastErr;
+    for (const target of attempts) {
+      try {
+        const res = await fetch(target);
+        if (!res.ok) { lastErr = new Error('HTTP ' + res.status); continue; }
+        if (asJson) return await res.json();
+        if (asText) return await res.text();
+        return res;
+      } catch (e) {
+        lastErr = e;
+        continue;
+      }
+    }
+    throw lastErr || new Error('All fetches failed for ' + url);
+  }
+
+  const RSS2JSON = (u) =>
+    'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(u);
+  const NOMINATIM = (q) =>
+    'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' +
+    encodeURIComponent(q);
+
+  const POLL_INTERVAL_MS = 90_000; // refresh each feed every 90s
+  const FEEDS_PARALLEL = 4;        // concurrent feed fetches
+  const NOMINATIM_GAP_MS = 1100;   // be polite (1 req/sec)
+  const MAX_EVENT_AGE_MS = 1000 * 60 * 60 * 6; // 6h trail
+  const MAX_FEED_PARSE_PER_TICK = 6;
+
+  // ====== STATE ======
+  const state = {
+    feeds: [],            // {title, url}
+    seenIds: new Set(),   // de-dup article guids
+    events: [],           // {lat, lon, title, link, source, ts, place}
+    feedCursor: 0,
+    nominatimQueue: [],
+    nominatimBusy: false,
+    rotation: [0, -15],   // [lambda, phi]
+    autoRotate: true,
+    paused: false,
+    shadows: true,
+  };
+
+  // ====== UI HELPERS ======
+  const $ = (s) => document.querySelector(s);
+  const log = (msg, type = 'info') => {
+    const el = $('#log');
+    if (!el) return;
+    const line = document.createElement('div');
+    line.className = 'log-line log-' + type;
+    const t = new Date().toLocaleTimeString();
+    line.textContent = `[${t}] ${msg}`;
+    el.prepend(line);
+    while (el.children.length > 60) el.removeChild(el.lastChild);
+  };
+  // Expose so SelfUpdate can write into the same activity log
+  window.ngLog = log;
+  const setStat = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+
+  // ====== OPML LOADING ======
+  async function loadOPML() {
+    // Try the live URL first; on failure, fall back to the offline cache.
+    try {
+      log('Fetching OPML from GitHub (direct, no proxy)…');
+      const txt = await fetchWithFallback(OPML_URL, { asText: true });
+      const doc = new DOMParser().parseFromString(txt, 'text/xml');
+      const nodes = doc.querySelectorAll('outline[xmlUrl]');
+      const feeds = [];
+      nodes.forEach((n) => {
+        const url = n.getAttribute('xmlUrl');
+        const title = n.getAttribute('title') || n.getAttribute('text') || url;
+        if (url) feeds.push({ title, url });
+      });
+      log(`Loaded ${feeds.length} feeds from OPML`, 'ok');
+      // Cache for offline use
+      try { SelfUpdate.cacheOpml(feeds); } catch (e) {}
+      return feeds;
+    } catch (err) {
+      const cached = SelfUpdate.getCachedOpml();
+      if (cached && cached.feeds) {
+        const ageMin = Math.round((Date.now() - cached.ts) / 60000);
+        log(`OPML fetch failed; using cached copy (${cached.feeds.length} feeds, ${ageMin} min old)`, 'warn');
+        return cached.feeds;
+      }
+      throw err;
+    }
+  }
+
+  // ====== RSS POLLING ======
+  state.feedStats = { ok: 0, fail: 0, articles: 0 };
+  async function fetchFeed(feed) {
+    try {
+      const res = await fetch(RSS2JSON(feed.url));
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (data.status !== 'ok' || !data.items) {
+        // rss2json reports its own error in data.message
+        const msg = (data && data.message) ? data.message.slice(0, 80) : 'no items';
+        log(`⚠ ${feed.title}: ${msg}`, 'warn');
+        state.feedStats.fail++;
+        return [];
+      }
+      state.feedStats.ok++;
+      state.feedStats.articles += data.items.length;
+      return data.items.map((it) => ({
+        id: it.guid || it.link,
+        title: it.title || '',
+        description: stripHtml(it.description || ''),
+        link: it.link,
+        source: feed.title,
+        ts: Date.parse(it.pubDate) || Date.now(),
+        thumbnail: pickThumb(it),
+      }));
+    } catch (e) {
+      log(`✗ ${feed.title}: ${String(e.message || e).slice(0, 80)}`, 'err');
+      state.feedStats.fail++;
+      return [];
+    }
+  }
+
+  function stripHtml(s) {
+    const d = document.createElement('div');
+    d.innerHTML = s;
+    return (d.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+
+  // Extract a thumbnail URL from various RSS shapes (rss2json normalizes some of these)
+  function pickThumb(it) {
+    if (it.thumbnail && /^https?:/.test(it.thumbnail)) return it.thumbnail;
+    if (it.enclosure && it.enclosure.link && /\.(jpe?g|png|webp|gif)/i.test(it.enclosure.link)) {
+      return it.enclosure.link;
+    }
+    // Try the description HTML
+    if (it.description) {
+      const m = String(it.description).match(/<img[^>]+src=["']([^"']+)["']/i);
+      if (m) return m[1];
+    }
+    if (it.content) {
+      const m = String(it.content).match(/<img[^>]+src=["']([^"']+)["']/i);
+      if (m) return m[1];
+    }
+    return null;
+  }
+
+  async function pollTick() {
+    if (state.paused) return;
+    const batch = [];
+    for (let i = 0; i < MAX_FEED_PARSE_PER_TICK; i++) {
+      if (!state.feeds.length) break;
+      const f = state.feeds[state.feedCursor % state.feeds.length];
+      state.feedCursor++;
+      batch.push(f);
+    }
+    setStat('stat-polling', batch.map((b) => b.title).join(' · ').slice(0, 80) + '…');
+
+    // run in small parallel groups
+    for (let i = 0; i < batch.length; i += FEEDS_PARALLEL) {
+      const slice = batch.slice(i, i + FEEDS_PARALLEL);
+      const results = await Promise.all(slice.map(fetchFeed));
+      results.flat().forEach(processArticle);
+    }
+  }
+
+  function processArticle(item) {
+    if (!item || !item.id) return;
+    if (state.seenIds.has(item.id)) return;
+    state.seenIds.add(item.id);
+    if (state.seenIds.size > 5000) {
+      // bound the set
+      const arr = Array.from(state.seenIds);
+      state.seenIds = new Set(arr.slice(-3000));
+    }
+    setStat('stat-articles', state.seenIds.size);
+
+    const haystack = (item.title + ' ' + item.description).toLowerCase();
+    const hit = gazetteerMatch(haystack);
+    if (hit) {
+      addEvent({ ...item, lat: hit.lat, lon: hit.lon, place: hit.name, source_geo: 'gazetteer' });
+    } else {
+      // queue Nominatim fallback on title only
+      enqueueNominatim(item);
+    }
+  }
+
+  // ====== GEOCODING ======
+  function gazetteerMatch(text) {
+    // GAZETTEER is sorted longest first
+    for (const g of window.GAZETTEER) {
+      // word-ish boundary check (allow punctuation/space around the key)
+      const k = g.key;
+      const idx = text.indexOf(k);
+      if (idx === -1) continue;
+      const before = idx === 0 ? ' ' : text[idx - 1];
+      const after = idx + k.length >= text.length ? ' ' : text[idx + k.length];
+      if (/[a-z0-9]/.test(before) || /[a-z0-9]/.test(after)) continue;
+      return g;
+    }
+    return null;
+  }
+
+  function enqueueNominatim(item) {
+    // pick capitalized phrases as candidate place names
+    const cand = extractCandidates(item.title);
+    if (!cand.length) return;
+    state.nominatimQueue.push({ item, candidates: cand });
+    if (state.nominatimQueue.length > 60) state.nominatimQueue.shift();
+    processNominatim();
+  }
+
+  function extractCandidates(s) {
+    if (!s) return [];
+    // Find sequences of Capitalized Words (length 1-3)
+    const re = /\b([A-Z][a-zA-Z\u00C0-\u017F]{2,}(?:\s+[A-Z][a-zA-Z\u00C0-\u017F]{2,}){0,2})\b/g;
+    const out = [];
+    let m;
+    const stop = new Set([
+      'The','New','Breaking','News','Live','Update','Report','Reuters','AP','BBC','CNN','Guardian',
+      'World','International','Today','Yesterday','President','Minister','Prime','First','Last',
+    ]);
+    while ((m = re.exec(s)) && out.length < 3) {
+      const v = m[1].trim();
+      const first = v.split(' ')[0];
+      if (stop.has(first)) continue;
+      out.push(v);
+    }
+    return out;
+  }
+
+  async function processNominatim() {
+    if (state.nominatimBusy) return;
+    if (!state.nominatimQueue.length) return;
+    state.nominatimBusy = true;
+    while (state.nominatimQueue.length) {
+      const job = state.nominatimQueue.shift();
+      let found = null;
+      for (const c of job.candidates) {
+        try {
+          // Nominatim has Access-Control-Allow-Origin: * — fetch directly.
+          const j = await fetchWithFallback(NOMINATIM(c), { asJson: true });
+          if (j && j.length) {
+            found = { lat: parseFloat(j[0].lat), lon: parseFloat(j[0].lon), name: j[0].display_name };
+            break;
+          }
+        } catch (e) { /* ignore — many candidates won't match */ }
+        await sleep(NOMINATIM_GAP_MS);
+      }
+      if (found) {
+        addEvent({ ...job.item, lat: found.lat, lon: found.lon, place: found.name.split(',')[0], source_geo: 'nominatim' });
+      }
+      await sleep(NOMINATIM_GAP_MS);
+    }
+    state.nominatimBusy = false;
+  }
+
+  function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
+
+  // ====== EVENTS ======
+  // Active on-globe popups: each is { ev, el, leader, expires }
+  state.activePopups = [];
+  const MAX_POPUPS = 4;
+  const POPUP_LIFE_MS = 14000;
+
+  function addEvent(ev) {
+    ev.added = performance.now();
+    state.events.unshift(ev);
+    if (state.events.length > 400) state.events.length = 400;
+    setStat('stat-events', state.events.length);
+    addArticleCard(ev);
+    addTickerItem(ev);
+    spawnPopup(ev);
+    log(`📍 ${ev.place} — ${ev.title.slice(0, 60)}…`, 'event');
+    if (state.autoRotate) flyTo(ev.lon, ev.lat);
+    scheduleArticleCache();
+  }
+
+  // Debounced offline-cache writer (writes every 10s if there have been events)
+  let _cacheTimer = null;
+  function scheduleArticleCache() {
+    if (_cacheTimer) return;
+    _cacheTimer = setTimeout(() => {
+      _cacheTimer = null;
+      try { SelfUpdate.cacheArticles(state.events); } catch (e) {}
+    }, 10_000);
+  }
+
+  function addArticleCard(ev) {
+    const feed = $('#articles');
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.dataset.lat = ev.lat;
+    card.dataset.lon = ev.lon;
+    card.innerHTML = `
+      <div class="card-place">📍 ${escapeHtml(ev.place)} <span class="card-src">${escapeHtml(ev.source)}</span></div>
+      <a class="card-title" href="${ev.link}" target="_blank" rel="noopener" onclick="event.preventDefault(); event.stopPropagation();">${escapeHtml(ev.title)}</a>
+      <div class="card-meta">${new Date(ev.ts).toLocaleString()} · ${ev.source_geo}</div>
+    `;
+    card.addEventListener('click', () => openDetail(ev));
+    feed.prepend(card);
+    while (feed.children.length > 80) feed.removeChild(feed.lastChild);
+  }
+
+  // ----- Bottom ticker -----
+  function addTickerItem(ev) {
+    const track = $('#ticker-track');
+    if (!track) return;
+    const item = document.createElement('span');
+    item.className = 'tick-item';
+    item.innerHTML = `
+      <span class="tick-src">${escapeHtml(ev.source)}</span>
+      <span class="tick-place">📍 ${escapeHtml(ev.place)}</span>
+      <span>${escapeHtml(ev.title)}</span>
+      <span class="tick-dot">•</span>`;
+    item.addEventListener('click', () => openDetail(ev));
+    // newest items prepend so they appear at the right edge first
+    track.appendChild(item);
+    // cap to ~30 items
+    while (track.children.length > 30) track.removeChild(track.firstChild);
+    // re-trigger animation so total width is reused smoothly
+    // (browsers handle marquee width automatically since track is inline-block)
+  }
+  // Pause/resume on hover
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.getElementById('ticker-bar');
+    if (!bar) return;
+    bar.addEventListener('mouseenter', () => $('#ticker-track').classList.add('paused'));
+    bar.addEventListener('mouseleave', () => $('#ticker-track').classList.remove('paused'));
+  });
+
+  // ----- On-globe thumbnail popups -----
+  function spawnPopup(ev) {
+    const layer = document.getElementById('popups');
+    if (!layer) return;
+    // Cap active popups: drop the oldest if needed
+    while (state.activePopups.length >= MAX_POPUPS) {
+      const oldest = state.activePopups.shift();
+      removePopup(oldest);
+    }
+    const el = document.createElement('div');
+    el.className = 'popup';
+    const thumb = ev.thumbnail
+      ? `<div class="thumb" style="background-image:url('${ev.thumbnail.replace(/'/g, "&apos;")}')">
+           <div class="src-chip">${escapeHtml(ev.source).slice(0,22)}</div>
+           <div class="place-chip">📍 ${escapeHtml(ev.place)}</div>
+         </div>`
+      : `<div class="thumb" style="background:linear-gradient(135deg,#1b3a6b,#0a1830); height:54px">
+           <div class="src-chip">${escapeHtml(ev.source).slice(0,22)}</div>
+           <div class="place-chip">📍 ${escapeHtml(ev.place)}</div>
+         </div>`;
+    el.innerHTML = thumb + `
+      <div class="body">
+        <div class="ptitle">${escapeHtml(ev.title)}</div>
+        <div class="pmeta">
+          <span>${timeAgo(ev.ts)}</span>
+          <span>Click for details →</span>
+        </div>
+      </div>`;
+    el.addEventListener('click', () => openDetail(ev));
+    layer.appendChild(el);
+
+    const leader = document.createElement('div');
+    leader.className = 'leader';
+    layer.appendChild(leader);
+
+    const popup = { ev, el, leader, expires: performance.now() + POPUP_LIFE_MS, pinned: false };
+    el.addEventListener('mouseenter', () => { popup.pinned = true; });
+    el.addEventListener('mouseleave', () => { popup.pinned = false; popup.expires = performance.now() + 4000; });
+    state.activePopups.push(popup);
+    positionPopup(popup);
+  }
+
+  function removePopup(p) {
+    if (!p || !p.el) return;
+    p.el.classList.add('fade-out');
+    p.leader.style.opacity = 0;
+    setTimeout(() => {
+      if (p.el && p.el.parentNode) p.el.parentNode.removeChild(p.el);
+      if (p.leader && p.leader.parentNode) p.leader.parentNode.removeChild(p.leader);
+    }, 500);
+  }
+
+  function positionPopup(p) {
+    if (!projection) return;
+    const c = projection([p.ev.lon, p.ev.lat]);
+    const visible = isVisible(p.ev.lon, p.ev.lat);
+    if (!c || !visible) {
+      p.el.classList.add('hidden-side');
+      p.leader.style.display = 'none';
+      return;
+    }
+    p.el.classList.remove('hidden-side');
+    p.leader.style.display = '';
+    const stageRect = document.getElementById('globe-stage').getBoundingClientRect();
+    const popupRect = document.getElementById('popups').getBoundingClientRect();
+    // c is relative to the SVG (which fills globe-stage)
+    const px = c[0] + (stageRect.left - popupRect.left);
+    const py = c[1] + (stageRect.top - popupRect.top);
+    // Decide which quadrant to place the popup in (so it doesn't overlap the dot)
+    const stageW = popupRect.width, stageH = popupRect.height;
+    const goRight = px < stageW / 2;
+    const goDown  = py < stageH / 2;
+    const offX = goRight ? 36 : -36 - 220;  // 220 = popup width
+    const offY = goDown  ? 16 : -16 - 130;  // ~130 = popup approx height
+    let x = px + offX;
+    let y = py + offY;
+    // clamp inside stage
+    x = Math.max(6, Math.min(stageW - 226, x));
+    y = Math.max(6, Math.min(stageH - 140, y));
+    p.el.style.left = x + 'px';
+    p.el.style.top  = y + 'px';
+    // leader line from dot to popup edge
+    const lx0 = px, ly0 = py;
+    const lx1 = goRight ? x : x + 220;
+    const ly1 = y + (goDown ? 12 : 118);
+    const dx = lx1 - lx0, dy = ly1 - ly0;
+    const len = Math.hypot(dx, dy);
+    const ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    p.leader.style.left = lx0 + 'px';
+    p.leader.style.top  = ly0 + 'px';
+    p.leader.style.width = len + 'px';
+    p.leader.style.transform = `rotate(${ang}deg)`;
+  }
+
+  function updateAllPopups() {
+    const now = performance.now();
+    for (let i = state.activePopups.length - 1; i >= 0; i--) {
+      const p = state.activePopups[i];
+      positionPopup(p);
+      if (!p.pinned && now > p.expires) {
+        state.activePopups.splice(i, 1);
+        removePopup(p);
+      }
+    }
+  }
+
+  function timeAgo(ts) {
+    const s = Math.max(1, Math.round((Date.now() - ts) / 1000));
+    if (s < 60) return s + 's ago';
+    if (s < 3600) return Math.round(s / 60) + 'm ago';
+    if (s < 86400) return Math.round(s / 3600) + 'h ago';
+    return Math.round(s / 86400) + 'd ago';
+  }
+
+  // ----- Detail modal -----
+  let currentDetail = null;
+  function openDetail(ev) {
+    currentDetail = ev;
+    const bd = document.getElementById('detail-backdrop');
+    const hero = document.getElementById('detail-hero');
+    if (ev.thumbnail) {
+      hero.style.backgroundImage = `url('${ev.thumbnail.replace(/'/g,"&apos;")}')`;
+      hero.classList.remove('nohero');
+      hero.style.display = '';
+    } else {
+      hero.style.display = 'none';
+    }
+    document.getElementById('detail-src').textContent = ev.source;
+    document.getElementById('detail-place').textContent = '📍 ' + ev.place;
+    document.getElementById('detail-title').textContent = ev.title;
+    const desc = ev.description && ev.description.length > 0
+      ? ev.description.slice(0, 700) + (ev.description.length > 700 ? '…' : '')
+      : '(No description provided by feed. Click "Read full article" to view the original.)';
+    document.getElementById('detail-desc').textContent = desc;
+    document.getElementById('detail-meta').innerHTML = `
+      <span>🕒 ${new Date(ev.ts).toLocaleString()}</span>
+      <span>🛰️ geo: ${ev.source_geo}</span>
+      <span>🌐 ${ev.lat.toFixed(2)}°, ${ev.lon.toFixed(2)}°</span>
+    `;
+    document.getElementById('detail-link').href = ev.link || '#';
+    bd.classList.add('open');
+  }
+  window.closeDetail = function() {
+    document.getElementById('detail-backdrop').classList.remove('open');
+    currentDetail = null;
+  };
+  window.flyToDetail = function() {
+    if (currentDetail) {
+      state.autoRotate = false;
+      flyTo(currentDetail.lon, currentDetail.lat, false);
+    }
+    closeDetail();
+  };
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeDetail(); hidePickList(); } });
+
+  // ====== HIT TESTING FOR OVERLAPPING DOTS ======
+  // Browsers report a click on whichever SVG element is topmost; when two event
+  // dots sit on the same pixel, the lower one becomes unclickable. We bypass
+  // that by hit-testing ALL events ourselves against the click position.
+  const HIT_RADIUS = 12;       // pixels — anything within this is a "candidate"
+  const HOVER_RADIUS = 14;
+  let selectedId = null;
+
+  function eventsAtPoint(stageX, stageY, radius) {
+    if (!projection) return [];
+    const out = [];
+    for (const ev of state.events) {
+      if (!isVisible(ev.lon, ev.lat)) continue;
+      const c = projection([ev.lon, ev.lat]);
+      if (!c) continue;
+      const d = Math.hypot(c[0] - stageX, c[1] - stageY);
+      if (d <= radius) out.push({ ev, dist: d });
+    }
+    out.sort((a, b) => a.dist - b.dist);
+    return out;
+  }
+
+  function stageXY(clientEvent) {
+    const r = document.getElementById('globe-stage').getBoundingClientRect();
+    return [clientEvent.clientX - r.left, clientEvent.clientY - r.top];
+  }
+
+  function setSelected(id) {
+    selectedId = id;
+    document.querySelectorAll('.event').forEach((g) => g.classList.remove('selected'));
+    if (!id) return;
+    // d3-data id is stored implicitly — find by matching position in state.events
+    svg.selectAll('g.event').each(function(d) {
+      if (d && d.id === id) d3.select(this).classed('selected', true);
+    });
+  }
+
+  function setHovered(ids) {
+    document.querySelectorAll('.event').forEach((g) => g.classList.remove('hover'));
+    if (!ids || !ids.length) return;
+    const set = new Set(ids);
+    svg.selectAll('g.event').each(function(d) {
+      if (d && set.has(d.id)) d3.select(this).classed('hover', true);
+    });
+  }
+
+  function showPickList(x, y, hits) {
+    const el = document.getElementById('pick-list');
+    el.innerHTML =
+      `<div class="pick-head">${hits.length} stories at this location</div>` +
+      hits.slice(0, 8).map(({ ev }) => `
+        <div class="pick-row" data-id="${ev.id.replace(/"/g, '&quot;')}">
+          <div class="pick-thumb" style="${ev.thumbnail
+            ? `background-image:url('${ev.thumbnail.replace(/'/g,"&apos;")}')`
+            : `background:linear-gradient(135deg,#1b3a6b,#0a1830)`}"></div>
+          <div class="pick-text">
+            <div class="pick-src">${escapeHtml(ev.source)} · 📍 ${escapeHtml(ev.place)}</div>
+            <div class="pick-title">${escapeHtml(ev.title)}</div>
+          </div>
+        </div>
+      `).join('');
+    // Position relative to main (stage container)
+    const stageRect = document.getElementById('globe-stage').getBoundingClientRect();
+    const mainRect = document.querySelector('main').getBoundingClientRect();
+    // x,y are in stage coords; need to add stageRect offset relative to main
+    let left = x + (stageRect.left - mainRect.left) + 18;
+    let top  = y + (stageRect.top - mainRect.top) + 8;
+    el.style.display = 'block';
+    const elRect = el.getBoundingClientRect();
+    if (left + elRect.width > mainRect.width - 8) left = x + (stageRect.left - mainRect.left) - elRect.width - 18;
+    if (top + elRect.height > mainRect.height - 8) top  = mainRect.height - elRect.height - 8;
+    el.style.left = Math.max(8, left) + 'px';
+    el.style.top  = Math.max(8, top) + 'px';
+    el.querySelectorAll('.pick-row').forEach((row) => {
+      row.addEventListener('click', () => {
+        const id = row.dataset.id;
+        const found = state.events.find((e) => e.id === id);
+        if (found) {
+          setSelected(id);
+          openDetail(found);
+        }
+        hidePickList();
+      });
+    });
+  }
+  function hidePickList() {
+    const el = document.getElementById('pick-list');
+    if (el) el.style.display = 'none';
+  }
+
+  // Wire stage events. Use 'click' (after the drag handler decides whether it was a drag).
+  // The drag handler in enableDrag suppresses click implicitly because we only
+  // open the detail on the hit-test logic below — we detect drag distance manually.
+  let downXY = null, downAt = 0;
+  function bindStageHitTesting() {
+    const stage = document.getElementById('globe-stage');
+    stage.addEventListener('pointerdown', (e) => {
+      downXY = stageXY(e);
+      downAt = performance.now();
+    });
+    stage.addEventListener('pointerup', (e) => {
+      if (!downXY) return;
+      const up = stageXY(e);
+      const moved = Math.hypot(up[0] - downXY[0], up[1] - downXY[1]);
+      const dt = performance.now() - downAt;
+      downXY = null;
+      if (moved > 5 || dt > 600) return; // it was a drag, not a click
+      const hits = eventsAtPoint(up[0], up[1], HIT_RADIUS);
+      if (hits.length === 0) {
+        hidePickList();
+        setSelected(null);
+        return;
+      }
+      if (hits.length === 1) {
+        setSelected(hits[0].ev.id);
+        openDetail(hits[0].ev);
+        hidePickList();
+        return;
+      }
+      // Multiple candidates → show pick list
+      showPickList(up[0], up[1], hits);
+      setHovered(hits.map((h) => h.ev.id));
+    });
+
+    stage.addEventListener('pointermove', (e) => {
+      // hovering — highlight all dots within radius (and show a halo cluster)
+      if (downXY) return; // mid-drag
+      const xy = stageXY(e);
+      const hits = eventsAtPoint(xy[0], xy[1], HOVER_RADIUS);
+      setHovered(hits.map((h) => h.ev.id));
+      stage.style.cursor = hits.length ? 'pointer' : 'grab';
+    });
+    stage.addEventListener('pointerleave', () => setHovered([]));
+
+    // Click outside the pick list closes it
+    document.addEventListener('pointerdown', (e) => {
+      const pl = document.getElementById('pick-list');
+      if (pl && pl.style.display === 'block' && !pl.contains(e.target) && !document.getElementById('globe-stage').contains(e.target)) {
+        hidePickList();
+      }
+    });
+  }
+
+  function escapeHtml(s) {
+    return (s || '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  }
+
+  // ====== D3 GLOBE ======
+  let svg, projection, path, width, height;
+  let landFeatures, countryFeatures;
+
+  async function initGlobe() {
+    const stage = $('#globe-stage');
+    width = stage.clientWidth;
+    height = stage.clientHeight;
+    svg = d3.select(stage).append('svg').attr('width', width).attr('height', height);
+
+    // gradient background sphere
+    const defs = svg.append('defs');
+    const grad = defs.append('radialGradient').attr('id', 'oceanGrad').attr('cx', '50%').attr('cy', '40%').attr('r', '70%');
+    grad.append('stop').attr('offset', '0%').attr('stop-color', '#1b3a6b');
+    grad.append('stop').attr('offset', '100%').attr('stop-color', '#04101f');
+
+    const glow = defs.append('radialGradient').attr('id', 'glow').attr('cx', '50%').attr('cy', '50%').attr('r', '55%');
+    glow.append('stop').attr('offset', '85%').attr('stop-color', 'rgba(80,160,255,0)');
+    glow.append('stop').attr('offset', '100%').attr('stop-color', 'rgba(80,160,255,0.35)');
+
+    projection = d3.geoOrthographic()
+      .scale(Math.min(width, height) / 2.2)
+      .translate([width / 2, height / 2])
+      .clipAngle(90)
+      .rotate(state.rotation);
+    path = d3.geoPath(projection);
+
+    // outer glow
+    svg.append('circle').attr('cx', width/2).attr('cy', height/2)
+      .attr('r', projection.scale() + 18).attr('fill', 'url(#glow)');
+
+    // ocean
+    svg.append('path').datum({ type: 'Sphere' })
+      .attr('class', 'sphere').attr('d', path).attr('fill', 'url(#oceanGrad)');
+
+    // graticule
+    const graticule = d3.geoGraticule().step([20, 20]);
+    svg.append('path').datum(graticule).attr('class', 'graticule').attr('d', path)
+      .attr('fill', 'none').attr('stroke', 'rgba(120,180,255,0.12)').attr('stroke-width', 0.6);
+
+    // landmass placeholder layer (drawn after data loads)
+    svg.append('g').attr('class', 'land-layer');
+    svg.append('g').attr('class', 'country-layer');
+    // Day/night shadow layers (above land, below events)
+    svg.append('g').attr('class', 'shadow-layer');
+    svg.append('g').attr('class', 'event-layer');
+
+    // Gradients for the night shadow and moonlight
+    const nightGrad = defs.append('radialGradient').attr('id', 'nightGrad')
+      .attr('cx', '50%').attr('cy', '50%').attr('r', '50%');
+    nightGrad.append('stop').attr('offset', '0%').attr('stop-color', 'rgba(0,0,15,0.78)');
+    nightGrad.append('stop').attr('offset', '70%').attr('stop-color', 'rgba(0,0,15,0.78)');
+    nightGrad.append('stop').attr('offset', '100%').attr('stop-color', 'rgba(80,60,40,0.0)');
+    // Twilight band (terminator glow)
+    const twilightGrad = defs.append('radialGradient').attr('id', 'twilightGrad')
+      .attr('cx', '50%').attr('cy', '50%').attr('r', '50%');
+    twilightGrad.append('stop').attr('offset', '90%').attr('stop-color', 'rgba(255,140,60,0)');
+    twilightGrad.append('stop').attr('offset', '98%').attr('stop-color', 'rgba(255,170,90,0.35)');
+    twilightGrad.append('stop').attr('offset', '100%').attr('stop-color', 'rgba(255,210,140,0)');
+    // Sun glow (bright spot at sub-solar point)
+    const sunGrad = defs.append('radialGradient').attr('id', 'sunGlow')
+      .attr('cx', '50%').attr('cy', '50%').attr('r', '50%');
+    sunGrad.append('stop').attr('offset', '0%').attr('stop-color', 'rgba(255,230,170,0.55)');
+    sunGrad.append('stop').attr('offset', '100%').attr('stop-color', 'rgba(255,230,170,0)');
+    // Moon glow (soft silver patch on night side)
+    const moonGrad = defs.append('radialGradient').attr('id', 'moonGlow')
+      .attr('cx', '50%').attr('cy', '50%').attr('r', '50%');
+    moonGrad.append('stop').attr('offset', '0%').attr('stop-color', 'rgba(200,220,255,0.32)');
+    moonGrad.append('stop').attr('offset', '100%').attr('stop-color', 'rgba(200,220,255,0)');
+
+    // load world topojson (Natural Earth via unpkg) — cache it for offline use
+    let world = null;
+    try {
+      world = await fetch('https://unpkg.com/world-atlas@2/countries-110m.json').then((r) => r.json());
+      try { SelfUpdate.cacheTopology(world); } catch (e) {}
+      log('Globe topology loaded (live)', 'ok');
+    } catch (e) {
+      const cached = SelfUpdate.getCachedTopology();
+      if (cached && cached.topo) {
+        world = cached.topo;
+        const ageH = Math.round((Date.now() - cached.ts) / 3600000);
+        log(`Topology fetch failed; using cached copy (${ageH}h old)`, 'warn');
+      } else {
+        log('Could not load world topology (offline, no cache)', 'err');
+      }
+    }
+    if (world) {
+      try {
+        landFeatures = topojson.feature(world, world.objects.land);
+        countryFeatures = topojson.feature(world, world.objects.countries);
+        drawWorld();
+      } catch (e) { log('Topology parse error: ' + e.message, 'err'); }
+    }
+
+    enableDrag();
+    window.addEventListener('resize', onResize);
+    d3.timer(tick);
+  }
+
+  function drawWorld() {
+    if (!landFeatures) return;
+    svg.select('.land-layer').selectAll('path').remove();
+    svg.select('.land-layer').append('path').datum(landFeatures)
+      .attr('class', 'land').attr('d', path)
+      .attr('fill', '#1f4a2a').attr('stroke', '#2c6b3d').attr('stroke-width', 0.4);
+    svg.select('.country-layer').selectAll('path').remove();
+    svg.select('.country-layer').selectAll('path').data(countryFeatures.features).enter()
+      .append('path').attr('class', 'country').attr('d', path)
+      .attr('fill', 'none').attr('stroke', 'rgba(255,255,255,0.08)').attr('stroke-width', 0.4);
+  }
+
+  function onResize() {
+    const stage = $('#globe-stage');
+    width = stage.clientWidth; height = stage.clientHeight;
+    svg.attr('width', width).attr('height', height);
+    projection.scale(Math.min(width, height) / 2.2).translate([width/2, height/2]);
+    svg.selectAll('circle.glow').attr('cx', width/2).attr('cy', height/2);
+    redrawStatic();
+  }
+
+  function redrawStatic() {
+    svg.select('.sphere').attr('d', path);
+    svg.select('.graticule').attr('d', path);
+    svg.selectAll('.land').attr('d', path);
+    svg.selectAll('.country').attr('d', path);
+  }
+
+  function enableDrag() {
+    // Clean trackball drag. For an orthographic projection rotated on
+    // [lambda, phi], the simplest accurate model is:
+    //   each screen-pixel of horizontal motion → degrees of longitude
+    //   each screen-pixel of vertical motion   → degrees of latitude
+    // scaled by 90° / scale (so the conversion is exact at the center of
+    // the globe and feels right near the limb).
+    const svgEl = svg.node();
+    let dragging = false;
+    let startXY = null;
+    let startRot = null;
+
+    function getXY(event) {
+      const rect = svgEl.getBoundingClientRect();
+      return [event.clientX - rect.left, event.clientY - rect.top];
+    }
+
+    svgEl.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0 && event.button !== undefined && event.pointerType !== 'touch') return;
+      // Let dot clicks pass through to the dot handler
+      if (event.target && event.target.classList && event.target.classList.contains('dot')) return;
+      dragging = true;
+      state.autoRotate = false;
+      startXY = getXY(event);
+      startRot = projection.rotate();
+      svgEl.setPointerCapture(event.pointerId);
+      svgEl.style.cursor = 'grabbing';
+    });
+
+    svgEl.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      const cur = getXY(event);
+      const dx = cur[0] - startXY[0];
+      const dy = cur[1] - startXY[1];
+      const k = 90 / projection.scale();   // deg per pixel
+      const newLambda = startRot[0] + dx * k;
+      // clamp phi to keep the camera from flipping upside-down
+      const newPhi    = Math.max(-89, Math.min(89, startRot[1] - dy * k));
+      projection.rotate([newLambda, newPhi, 0]);
+      state.rotation = projection.rotate();
+    });
+
+    function endDrag(event) {
+      if (!dragging) return;
+      dragging = false;
+      svgEl.style.cursor = 'grab';
+      try { svgEl.releasePointerCapture(event.pointerId); } catch (e) {}
+    }
+    svgEl.addEventListener('pointerup', endDrag);
+    svgEl.addEventListener('pointercancel', endDrag);
+
+    // Wheel zoom around the cursor
+    svgEl.addEventListener('wheel', (event) => {
+      event.preventDefault();
+      const s = projection.scale();
+      const factor = event.deltaY < 0 ? 1.1 : 0.9;
+      const ns = Math.max(150, Math.min(s * factor, 1800));
+      projection.scale(ns);
+      // keep the outer glow ring matched (it's the first <circle> in svg)
+      svg.select('circle').attr('r', ns + 18);
+    }, { passive: false });
+  }
+
+  // ====== SUN & MOON POSITION (astronomy) ======
+  // Returns [lon, lat] (degrees) of the sub-solar point at a given Date.
+  // Accuracy ≈ ±1° — fine for visualization.
+  function subSolarPoint(date) {
+    const jd = date.getTime() / 86400000 + 2440587.5;       // Julian Day
+    const n = jd - 2451545.0;                               // days since J2000.0
+    const L = (280.460 + 0.9856474 * n) % 360;              // mean longitude of Sun
+    const g = ((357.528 + 0.9856003 * n) % 360) * Math.PI / 180; // mean anomaly
+    const lambda = (L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * Math.PI / 180; // ecliptic lon
+    const epsilon = (23.439 - 0.0000004 * n) * Math.PI / 180;  // obliquity
+    const dec = Math.asin(Math.sin(epsilon) * Math.sin(lambda)) * 180 / Math.PI;
+    // Equation of time (in minutes)
+    const y = Math.tan(epsilon / 2) ** 2;
+    const Lrad = L * Math.PI / 180;
+    const eot = 4 * (180 / Math.PI) * (
+      y * Math.sin(2 * Lrad) - 2 * 0.0167 * Math.sin(g) +
+      4 * 0.0167 * y * Math.sin(g) * Math.cos(2 * Lrad) -
+      0.5 * y * y * Math.sin(4 * Lrad) - 1.25 * 0.0167 * 0.0167 * Math.sin(2 * g)
+    );
+    const utHours = (date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600);
+    const lon = -((utHours - 12) * 15 + eot / 4);
+    // normalize lon to [-180, 180]
+    let nlon = ((lon + 180) % 360 + 360) % 360 - 180;
+    return [nlon, dec];
+  }
+
+  // Sub-lunar point — much rougher approximation but enough to show a soft
+  // moonlight patch. Uses the Moon's mean longitude/latitude and current GMST
+  // to convert to (sub-lunar lon, lat).
+  function subLunarPoint(date) {
+    const jd = date.getTime() / 86400000 + 2440587.5;
+    const T = (jd - 2451545.0) / 36525;
+    // Mean ecliptic longitude of Moon (degrees)
+    const Lp = (218.316 + 481267.881 * T) % 360;
+    // Mean anomaly of Moon
+    const M = ((134.963 + 477198.867 * T) % 360) * Math.PI / 180;
+    // Approx ecliptic longitude/latitude
+    const lambda = (Lp + 6.289 * Math.sin(M)) * Math.PI / 180;
+    const beta   = (5.128 * Math.sin(((93.272 + 483202.018 * T) % 360) * Math.PI / 180)) * Math.PI / 180;
+    const eps    = 23.439 * Math.PI / 180;
+    // Equatorial coords
+    const ra = Math.atan2(Math.sin(lambda) * Math.cos(eps) - Math.tan(beta) * Math.sin(eps), Math.cos(lambda));
+    const dec = Math.asin(Math.sin(beta) * Math.cos(eps) + Math.cos(beta) * Math.sin(eps) * Math.sin(lambda)) * 180 / Math.PI;
+    // GMST in hours
+    const utHours = (date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600);
+    const gmst = (6.697375 + 0.0657098242 * (jd - 2451545.0) + utHours) % 24;
+    const subLunarLon = (((ra * 180 / Math.PI) - gmst * 15 + 540) % 360) - 180;
+    return [subLunarLon, dec];
+  }
+
+  function drawShadows(now) {
+    const layer = svg.select('.shadow-layer');
+    if (layer.empty()) return;
+    layer.selectAll('*').remove();
+    if (!state.shadows) return;
+
+    const date = new Date();
+    const [sunLon, sunLat] = subSolarPoint(date);
+    const [moonLon, moonLat] = subLunarPoint(date);
+
+    // Night = antipode of sub-solar point, projected as a 90° great-circle cap
+    const nightCenterLon = sunLon + 180;
+    const nightCircle = d3.geoCircle().center([nightCenterLon, -sunLat]).radius(90)();
+    layer.append('path').datum(nightCircle).attr('d', path)
+      .attr('fill', 'rgba(0,4,18,0.55)')
+      .attr('pointer-events', 'none');
+
+    // Slightly larger soft-edged twilight cap for a glow on the terminator
+    const twilightCircle = d3.geoCircle().center([nightCenterLon, -sunLat]).radius(92)();
+    layer.append('path').datum(twilightCircle).attr('d', path)
+      .attr('fill', 'rgba(0,4,18,0.18)')
+      .attr('pointer-events', 'none');
+
+    // Sun glow disk (only when sub-solar point is on the visible hemisphere)
+    if (isVisible(sunLon, sunLat)) {
+      const c = projection([sunLon, sunLat]);
+      if (c) {
+        const r = projection.scale() * 0.45;
+        layer.append('circle')
+          .attr('cx', c[0]).attr('cy', c[1]).attr('r', r)
+          .attr('fill', 'url(#sunGlow)')
+          .attr('pointer-events', 'none');
+        // Tiny "sun pin" — a bright dot showing the sub-solar point
+        layer.append('circle')
+          .attr('cx', c[0]).attr('cy', c[1]).attr('r', 3)
+          .attr('fill', '#ffe89a')
+          .attr('stroke', '#fff9da').attr('stroke-width', 0.8)
+          .attr('opacity', 0.85)
+          .attr('pointer-events', 'none');
+      }
+    }
+
+    // Moon glow — only render if moon is on the visible hemisphere
+    if (isVisible(moonLon, moonLat)) {
+      const c = projection([moonLon, moonLat]);
+      if (c) {
+        const r = projection.scale() * 0.30;
+        layer.append('circle')
+          .attr('cx', c[0]).attr('cy', c[1]).attr('r', r)
+          .attr('fill', 'url(#moonGlow)')
+          .attr('pointer-events', 'none');
+        layer.append('circle')
+          .attr('cx', c[0]).attr('cy', c[1]).attr('r', 2.5)
+          .attr('fill', '#e6ecff')
+          .attr('stroke', '#fff').attr('stroke-width', 0.6)
+          .attr('opacity', 0.8)
+          .attr('pointer-events', 'none');
+      }
+    }
+  }
+
+  // ====== ANIMATION ======
+  let lastT = performance.now();
+  let flyTarget = null;
+  function flyTo(lon, lat, instant=false) {
+    flyTarget = { lon, lat, started: performance.now(), duration: instant ? 0 : 1200, from: projection.rotate().slice() };
+  }
+
+  function tick(elapsed) {
+    const now = performance.now();
+    const dt = (now - lastT) / 1000;
+    lastT = now;
+
+    if (flyTarget) {
+      const t = flyTarget.duration === 0 ? 1 : Math.min(1, (now - flyTarget.started) / flyTarget.duration);
+      const e = easeInOut(t);
+      const from = flyTarget.from;
+      const targetLambda = -flyTarget.lon;
+      const targetPhi = -flyTarget.lat;
+      const lam = from[0] + shortestArc(from[0], targetLambda) * e;
+      const phi = from[1] + (targetPhi - from[1]) * e;
+      projection.rotate([lam, phi, 0]);
+      state.rotation = projection.rotate();
+      if (t >= 1) flyTarget = null;
+    } else if (state.autoRotate) {
+      const r = projection.rotate();
+      projection.rotate([r[0] + dt * 6, r[1], r[2]]);
+      state.rotation = projection.rotate();
+    }
+    redrawStatic();
+    drawShadows(now);
+    drawEvents(now);
+    updateAllPopups();
+  }
+
+  function easeInOut(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
+  function shortestArc(a, b) {
+    let d = ((b - a) % 360 + 540) % 360 - 180;
+    return d;
+  }
+
+  function drawEvents(now) {
+    const layer = svg.select('.event-layer');
+    // prune
+    state.events = state.events.filter((e) => (now - e.added) < MAX_EVENT_AGE_MS);
+    const data = state.events;
+    const sel = layer.selectAll('g.event').data(data, (d) => d.id);
+    const enter = sel.enter().append('g').attr('class', 'event');
+    enter.append('circle').attr('class', 'halo').attr('r', 10);
+    enter.append('circle').attr('class', 'ring').attr('r', 0).attr('fill', 'none').attr('stroke', '#ff5e7a').attr('stroke-width', 1.5);
+    enter.append('circle').attr('class', 'dot').attr('r', 4).attr('fill', '#ffd166').attr('stroke', '#fff').attr('stroke-width', 0.8);
+    sel.exit().remove();
+
+    layer.selectAll('g.event').each(function(d) {
+      const g = d3.select(this);
+      // visibility: only show if on visible hemisphere
+      const c = projection([d.lon, d.lat]);
+      const visible = isVisible(d.lon, d.lat);
+      if (!c || !visible) { g.style('display', 'none'); return; }
+      g.style('display', null).attr('transform', `translate(${c[0]},${c[1]})`);
+      const age = (now - d.added) / 1000; // seconds
+      // pulsing ring (resets every 3s)
+      const phase = (age % 3) / 3;
+      const r = 4 + phase * 22;
+      const opacity = 1 - phase;
+      g.select('.ring').attr('r', r).attr('stroke-opacity', opacity * 0.9);
+      // fade dot as it ages over hours
+      const ageHours = age / 3600;
+      g.select('.dot').attr('fill-opacity', Math.max(0.3, 1 - ageHours / 6));
+    });
+  }
+
+  function isVisible(lon, lat) {
+    const r = projection.rotate();
+    const lambda = -r[0] * Math.PI / 180;
+    const phi = -r[1] * Math.PI / 180;
+    const cx = Math.cos(phi) * Math.cos(lambda);
+    const cy = Math.cos(phi) * Math.sin(lambda);
+    const cz = Math.sin(phi);
+    const a = lon * Math.PI / 180, b = lat * Math.PI / 180;
+    const x = Math.cos(b) * Math.cos(a), y = Math.cos(b) * Math.sin(a), z = Math.sin(b);
+    return (x*cx + y*cy + z*cz) > 0.05;
+  }
+
+  // ====== EXTRA FEEDS FROM FeedsDB.java ======
+  // Categories: n=News  p=Politics  b=Business  s=Science  t=Technology
+  // Languages : en, de, fr, es, it, pt, ru
+  const CAT_LABEL = { n: 'News', p: 'Politics', b: 'Business', s: 'Science', t: 'Technology' };
+  const LANG_LABEL = { en: 'English', de: 'Deutsch', fr: 'Français', es: 'Español', it: 'Italiano', pt: 'Português', ru: 'Русский' };
+
+  // Restore saved filter or default to English News+Politics+Tech
+  function defaultFilter() {
+    return {
+      enabled: true,
+      cats: { n: true, p: true, b: false, s: false, t: true },
+      langs: { en: true, de: false, fr: false, es: false, it: false, pt: false, ru: false },
+    };
+  }
+  function loadFilter() {
+    try {
+      const j = JSON.parse(localStorage.getItem('newsGlobeFilter') || 'null');
+      if (j && j.cats && j.langs) return j;
+    } catch (e) {}
+    return defaultFilter();
+  }
+  function saveFilter(f) {
+    try { localStorage.setItem('newsGlobeFilter', JSON.stringify(f)); } catch (e) {}
+  }
+  state.filter = loadFilter();
+  state.opmlFeeds = null;  // remember what came from OPML
+
+  function applyFeedFilter() {
+    // Snapshot the OPML feeds once
+    if (state.opmlFeeds === null) state.opmlFeeds = state.feeds.slice();
+
+    let extras = [];
+    if (state.filter.enabled && Array.isArray(window.EXTRA_FEEDS)) {
+      const seen = new Set(state.opmlFeeds.map((f) => f.url));
+      for (const ef of window.EXTRA_FEEDS) {
+        if (!state.filter.cats[ef.c]) continue;
+        if (!state.filter.langs[ef.l]) continue;
+        if (seen.has(ef.u)) continue;
+        seen.add(ef.u);
+        extras.push({ title: ef.t, url: ef.u, cat: ef.c, lang: ef.l });
+      }
+    }
+    state.feeds = state.opmlFeeds.concat(extras);
+    state.feedCursor = 0;
+    setStat('stat-feeds', state.feeds.length);
+    log(`Active feeds: ${state.opmlFeeds.length} from OPML + ${extras.length} from FeedsDB = ${state.feeds.length} total`, 'ok');
+    renderFilterUI();
+  }
+
+  function renderFilterUI() {
+    const panel = document.getElementById('filter-panel');
+    if (!panel) return;
+    // Count available extras by category + language
+    const catCount = { n:0, p:0, b:0, s:0, t:0 };
+    const langCount = { en:0, de:0, fr:0, es:0, it:0, pt:0, ru:0 };
+    if (Array.isArray(window.EXTRA_FEEDS)) {
+      window.EXTRA_FEEDS.forEach((f) => {
+        if (catCount[f.c] !== undefined) catCount[f.c]++;
+        if (langCount[f.l] !== undefined) langCount[f.l]++;
+      });
+    }
+    const html = [];
+    html.push(`<label class="filter-master"><input type="checkbox" id="filter-enabled" ${state.filter.enabled ? 'checked':''}/> <span>Include extra feeds (${(window.EXTRA_FEEDS||[]).length})</span></label>`);
+    html.push('<div class="filter-section">CATEGORIES</div>');
+    html.push('<div class="filter-grid">');
+    for (const c of ['n','p','b','s','t']) {
+      html.push(`<label class="filter-chip"><input type="checkbox" data-cat="${c}" ${state.filter.cats[c]?'checked':''}/> <span>${CAT_LABEL[c]} <em>${catCount[c]}</em></span></label>`);
+    }
+    html.push('</div>');
+    html.push('<div class="filter-section">LANGUAGES</div>');
+    html.push('<div class="filter-grid">');
+    for (const l of ['en','de','fr','es','it','pt','ru']) {
+      html.push(`<label class="filter-chip"><input type="checkbox" data-lang="${l}" ${state.filter.langs[l]?'checked':''}/> <span>${LANG_LABEL[l]} <em>${langCount[l]}</em></span></label>`);
+    }
+    html.push('</div>');
+    panel.innerHTML = html.join('');
+    panel.querySelector('#filter-enabled').addEventListener('change', (e) => {
+      state.filter.enabled = e.target.checked;
+      saveFilter(state.filter); applyFeedFilter();
+    });
+    panel.querySelectorAll('input[data-cat]').forEach((cb) => {
+      cb.addEventListener('change', (e) => {
+        state.filter.cats[e.target.dataset.cat] = e.target.checked;
+        saveFilter(state.filter); applyFeedFilter();
+      });
+    });
+    panel.querySelectorAll('input[data-lang]').forEach((cb) => {
+      cb.addEventListener('change', (e) => {
+        state.filter.langs[e.target.dataset.lang] = e.target.checked;
+        saveFilter(state.filter); applyFeedFilter();
+      });
+    });
+  }
+
+  // ====== BOOT ======
+  async function boot() {
+    log(`Booting News Globe v${NG_BUILD_VERSION} (${navigator.onLine ? 'online' : 'OFFLINE'})…`);
+    await initGlobe();
+    bindStageHitTesting();
+
+    // Restore cached articles immediately so the globe isn't empty while we
+    // wait for the first poll (or if we're entirely offline).
+    try {
+      const cached = SelfUpdate.getCachedArticles();
+      if (cached && cached.items && cached.items.length) {
+        const ageMin = cached.at ? Math.round((Date.now() - cached.at) / 60000) : '?';
+        log(`Restoring ${cached.items.length} cached articles (${ageMin} min old)…`, 'ok');
+        cached.items.forEach((c) => {
+          // Re-seed seenIds so duplicates from the next poll don't double up
+          if (c.id) state.seenIds.add(c.id);
+          addEvent({ ...c, added: 0 });
+        });
+        setStat('stat-articles', state.seenIds.size);
+      }
+    } catch (e) { log('Could not restore cached articles: ' + e.message, 'warn'); }
+
+    try {
+      state.feeds = await loadOPML();
+      setStat('stat-feeds', state.feeds.length);
+    } catch (e) {
+      log('OPML fetch failed and no cached copy: ' + e.message, 'err');
+      // tiny fallback
+      state.feeds = [
+        { title: 'BBC World', url: 'http://feeds.bbci.co.uk/news/world/rss.xml' },
+        { title: 'Reuters World', url: 'https://feeds.reuters.com/Reuters/worldNews' },
+        { title: 'Al Jazeera', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
+        { title: 'Guardian World', url: 'https://www.theguardian.com/world/rss' },
+      ];
+      setStat('stat-feeds', state.feeds.length);
+    }
+    // Merge in extra feeds extracted from javalc6/rssreader (filterable by user)
+    applyFeedFilter();
+
+    // Wire UI
+    $('#btn-pause').addEventListener('click', () => {
+      state.paused = !state.paused;
+      $('#btn-pause').textContent = state.paused ? '▶ Resume' : '⏸ Pause';
+    });
+    $('#btn-rotate').addEventListener('click', () => {
+      state.autoRotate = !state.autoRotate;
+      $('#btn-rotate').textContent = state.autoRotate ? '🌐 Auto-rotate: ON' : '🌐 Auto-rotate: OFF';
+    });
+    $('#btn-clear').addEventListener('click', () => {
+      state.events = []; $('#articles').innerHTML = '';
+      setStat('stat-events', 0);
+    });
+    $('#btn-shadows').addEventListener('click', () => {
+      state.shadows = !state.shadows;
+      $('#btn-shadows').textContent = state.shadows ? '☀️🌙 Shadows: ON' : '☀️🌙 Shadows: OFF';
+    });
+
+    // Pipeline self-test (online only)
+    if (navigator.onLine) {
+      log('Running pipeline self-test…');
+      const testFeed = { title: 'BBC World (self-test)', url: 'http://feeds.bbci.co.uk/news/world/rss.xml' };
+      const testItems = await fetchFeed(testFeed);
+      if (testItems.length === 0) {
+        log('⚠ Self-test got 0 articles. The free RSS-to-JSON service may be rate-limiting you. Articles will still appear if other feeds succeed.', 'warn');
+      } else {
+        log(`✓ Self-test OK — fetched ${testItems.length} live BBC articles. Pipeline is healthy.`, 'ok');
+        testItems.forEach(processArticle);
+      }
+    } else {
+      log('⚡ Offline — skipping live self-test. Showing cached articles only.', 'warn');
+    }
+
+    // Start polling (only useful online, but harmless to schedule offline)
+    pollTick();
+    setInterval(() => {
+      pollTick();
+      if ((state.feedStats.ok + state.feedStats.fail) > 0 && (state.feedStats.ok + state.feedStats.fail) % 12 === 0) {
+        log(`Feed health: ${state.feedStats.ok} OK / ${state.feedStats.fail} failed · ${state.feedStats.articles} articles seen`, 'info');
+      }
+    }, 15_000);
+
+    // Kick off the self-update machinery
+    try { SelfUpdate.boot(); }
+    catch (e) { log('SelfUpdate boot error: ' + e.message, 'err'); }
+  }
+
+  boot();
+})();
+
+  </script>
+</body>
+</html>

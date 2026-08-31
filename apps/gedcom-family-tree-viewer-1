@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEDCOM Family Tree Viewer</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#1a2230; --panel2:#222d3f; --ink:#e6edf3;
+    --muted:#8b98a9; --accent:#58a6ff; --accent2:#3fb950;
+    --male:#4a90d9; --female:#d96b8f; --unk:#8b98a9;
+    --line:#2d3a4f; --border:#2d3a4f;
+    --shadow:0 8px 30px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  header{
+    display:flex; align-items:center; gap:14px; padding:10px 16px;
+    background:var(--panel); border-bottom:1px solid var(--border); z-index:30; flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;white-space:nowrap}
+  .brand .logo{width:30px;height:30px;flex:none}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto}
+  .btn{
+    background:var(--panel2); color:var(--ink); border:1px solid var(--border);
+    padding:8px 14px; border-radius:8px; cursor:pointer; font-size:13px;
+    display:inline-flex; align-items:center; gap:6px; transition:.15s;
+  }
+  .btn:hover{border-color:var(--accent);color:#fff}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#04101f;font-weight:600}
+  .btn.primary:hover{filter:brightness(1.1)}
+  .stat{font-size:12px;color:var(--muted);background:var(--panel2);padding:6px 10px;border-radius:8px;border:1px solid var(--border);white-space:nowrap}
+  .search-wrap{position:relative;display:flex;align-items:center}
+  .search-wrap input{
+    background:var(--panel2); border:1px solid var(--border); color:var(--ink);
+    padding:8px 12px 8px 34px; border-radius:8px; width:240px; font-size:13px;
+  }
+  .search-wrap input:focus{outline:none;border-color:var(--accent)}
+  .search-wrap .ico{position:absolute;left:10px;color:var(--muted);pointer-events:none}
+  main{flex:1;display:flex;min-height:0}
+
+  /* Splash */
+  #splash{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
+  #dropzone{
+    border:2px dashed var(--border); border-radius:18px; padding:60px 50px; max-width:560px;
+    width:100%; transition:.2s; cursor:pointer; background:var(--panel);
+  }
+  #dropzone.drag{border-color:var(--accent);background:#16202e;transform:scale(1.01)}
+  #dropzone .big{font-size:52px;margin-bottom:14px}
+  #dropzone h2{font-size:20px;margin-bottom:8px}
+  #dropzone p{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:18px}
+  #dropzone .formats{font-size:12px;color:var(--muted);margin-top:14px}
+  .features{display:flex;gap:18px;margin-top:26px;flex-wrap:wrap;justify-content:center}
+  .feature{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--muted);font-size:12px;max-width:120px;text-align:center}
+  .feature .fi{font-size:22px;color:var(--accent)}
+
+  #progress{display:none;margin-top:24px;width:100%;max-width:480px}
+  #progress.show{display:block}
+  .pbar{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden}
+  .pbar > div{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:width .15s}
+  .ptxt{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
+
+  /* Canvas */
+  #canvas-area{flex:1;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 50%, #16202e 0%, var(--bg) 70%);}
+  #tree-svg{width:100%;height:100%;display:block;cursor:grab}
+  #tree-svg.grabbing{cursor:grabbing}
+  .zoom-ctrls{position:absolute;bottom:16px;left:16px;display:flex;flex-direction:column;gap:6px;z-index:10}
+  .zoom-ctrls button{
+    width:38px;height:38px;border-radius:8px;background:var(--panel);color:var(--ink);
+    border:1px solid var(--border);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;
+  }
+  .zoom-ctrls button:hover{border-color:var(--accent);color:#fff}
+  .zoom-lbl{position:absolute;bottom:16px;left:64px;font-size:11px;color:var(--muted);background:var(--panel);padding:8px 10px;border-radius:8px;border:1px solid var(--border)}
+
+  /* Detail panel */
+  #detail{width:340px;flex:none;background:var(--panel);border-left:1px solid var(--border);overflow-y:auto;padding:0}
+  #detail.empty{display:none}
+  .d-header{padding:18px;border-bottom:1px solid var(--border)}
+  .d-name{font-size:20px;font-weight:700;line-height:1.2}
+  .d-id{font-size:11px;color:var(--muted);margin-top:3px;font-family:monospace}
+  .d-life{color:var(--accent);font-size:13px;margin-top:8px}
+  .d-sex{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;margin-top:8px;font-weight:600}
+  .d-sex.M{background:rgba(74,144,217,.18);color:#7fb5ec}
+  .d-sex.F{background:rgba(217,107,143,.18);color:#e89bb3}
+  .d-sex.U{background:rgba(139,152,169,.18);color:#aeb9c6}
+  .d-body{padding:14px 18px}
+  .d-section{margin-bottom:16px}
+  .d-section h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+  .d-event{margin-bottom:10px}
+  .d-event .el{font-size:12px;color:var(--accent);font-weight:600}
+  .d-event .ed{font-size:13px}
+  .d-event .ep{font-size:12px;color:var(--muted)}
+  .d-rel{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--panel2);border-radius:8px;margin-bottom:6px;cursor:pointer;border:1px solid transparent}
+  .d-rel:hover{border-color:var(--accent)}
+  .d-rel .rn{font-size:13px}
+  .d-rel .rl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+
+  /* Search results */
+  #results{
+    position:absolute; top:8px; left:50%; transform:translateX(-50%); width:380px; max-height:60%;
+    background:var(--panel); border:1px solid var(--border); border-radius:10px; overflow-y:auto;
+    z-index:20; box-shadow:var(--shadow); display:none;
+  }
+  #results.show{display:block}
+  .res-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-size:13px}
+  .res-item:hover{background:var(--panel2)}
+  .res-item .rl{font-size:11px;color:var(--muted)}
+  .res-empty{padding:16px;text-align:center;color:var(--muted);font-size:13px}
+
+  /* SVG */
+  .node{cursor:pointer}
+  .node rect{transition:.12s}
+  .node:hover rect{stroke:var(--accent);stroke-width:2}
+  .node.active rect{stroke:#ffd33d;stroke-width:2.5}
+  .node text{pointer-events:none;font-size:12px;fill:var(--ink)}
+  .node .nm{font-weight:600}
+  .node .dt{font-size:10px;fill:var(--muted)}
+  .link{fill:none;stroke:var(--line);stroke-width:1.5}
+  .link.spouse{stroke:var(--accent);stroke-dasharray:5 4}
+
+  #focusbar{position:absolute;top:10px;left:16px;z-index:10;display:flex;align-items:center;gap:8px;background:var(--panel);padding:7px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;max-width:50%;overflow:hidden}
+  #focusbar b{color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .legend{position:absolute;top:10px;right:16px;z-index:10;background:var(--panel);padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:11px;display:flex;gap:14px}
+  .legend span{display:flex;align-items:center;gap:5px;color:var(--muted)}
+  .legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+  .view-tabs{display:flex;gap:4px;background:var(--panel2);padding:4px;border-radius:8px;border:1px solid var(--border)}
+  .view-tabs button{background:transparent;color:var(--muted);border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+  .view-tabs button.active{background:var(--accent);color:#04101f;font-weight:600}
+
+  @media(max-width:820px){
+    #detail{width:280px}
+    .search-wrap input{width:140px}
+    .stat{display:none}
+    .legend{display:none}
+  }
+  @media(max-width:620px){
+    #detail{position:absolute;right:0;top:0;bottom:0;z-index:25;box-shadow:var(--shadow)}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 32 32"><path d="M16 2 L28 9 V23 L16 30 L4 23 V9 Z" fill="none" stroke="#58a6ff" stroke-width="2"/><circle cx="16" cy="11" r="3" fill="#3fb950"/><circle cx="10" cy="21" r="2.4" fill="#58a6ff"/><circle cx="22" cy="21" r="2.4" fill="#d96b8f"/><path d="M16 14 V18 M10 19 V18 H22 V19" stroke="#8b98a9" stroke-width="1.5" fill="none"/></svg>
+    GEDCOM Family Tree
+  </div>
+  <div class="toolbar">
+    <span class="stat" id="stat-indi">0 people</span>
+    <span class="stat" id="stat-fam">0 families</span>
+    <div class="search-wrap">
+      <span class="ico"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <input id="search" type="text" placeholder="Search people…" autocomplete="off" disabled>
+    </div>
+    <div class="view-tabs" id="view-tabs" style="display:none">
+      <button data-view="desc" class="active">Descendants</button>
+      <button data-view="anc">Ancestors</button>
+    </div>
+    <button class="btn" id="btn-load" title="Open another file"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 11v2a1 1 0 001 1h8a1 1 0 001-1v-2M8 2v8m0-8L5 5m3-3l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Open</button>
+    <button class="btn" id="btn-sample" title="Load a demo tree">Demo</button>
+    <button class="btn" id="btn-export" style="display:none">PNG</button>
+  </div>
+</header>
+
+<main>
+  <section id="splash">
+    <div id="dropzone">
+      <div class="big">🌳</div>
+      <h2>Open a GEDCOM file</h2>
+      <p>Drag &amp; drop your <b>.ged</b> / <b>.gedcom</b> file here, or click to browse.<br>
+      Files are parsed <b>entirely in your browser</b> — nothing is uploaded to any server.</p>
+      <button class="btn primary" id="btn-browse">Choose file…</button>
+      <div class="progress" id="progress">
+        <div class="pbar"><div id="pbar-fill"></div></div>
+        <div class="ptxt" id="pbar-txt">Reading…</div>
+      </div>
+      <div class="formats">Supports GEDCOM 5.5 / 5.5.1 / 7.0 · handles very large files via streaming</div>
+    </div>
+    <div class="features">
+      <div class="feature"><span class="fi">⚡</span>Streaming parser for huge files</div>
+      <div class="feature"><span class="fi">🔍</span>Search across every person</div>
+      <div class="feature"><span class="fi">🔗</span>Click relatives to navigate</div>
+      <div class="feature"><span class="fi">🖱️</span>Pan, zoom &amp; export</div>
+    </div>
+  </section>
+
+  <section id="canvas-area" style="display:none">
+    <svg id="tree-svg" xmlns="http://www.w3.org/2000/svg">
+      <g id="viewport">
+        <g id="links-layer"></g>
+        <g id="nodes-layer"></g>
+      </g>
+    </svg>
+    <div id="focusbar">Focused: <b id="focus-name">—</b></div>
+    <div class="legend">
+      <span><i style="background:var(--male)"></i>Male</span>
+      <span><i style="background:var(--female)"></i>Female</span>
+      <span><i style="background:var(--unk)"></i>Other</span>
+    </div>
+    <div id="results"></div>
+    <div class="zoom-ctrls">
+      <button id="zin" title="Zoom in">＋</button>
+      <button id="zout" title="Zoom out">－</button>
+      <button id="zfit" title="Fit to screen">⊡</button>
+    </div>
+    <div class="zoom-lbl" id="zoom-lbl">100%</div>
+  </section>
+
+  <aside id="detail" class="empty"></aside>
+</main>
+
+<input type="file" id="file-input" accept=".ged,.gedcom,.txt,text/plain" hidden>
+
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs) => { const e=document.createElementNS(SVG_NS,tag); if(attrs) for(const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+
+/* ---------- State ---------- */
+const DB = { people:new Map(), families:new Map(), list:[], byName:[] };
+let focusXref=null, viewMode='desc', isBusy=false;
+let renderedNodes=[];            // [{node, px, py, personBox, spouseBox}]
+let MAX_DEPTH=6, NODE_CAP=900;
+
+/* ---------- Geometry ---------- */
+const BOX_W=158, BOX_H=56, COUPLE_GAP=18, COL_SPACING=26, ROW_SPACING=118;
+
+/* ---------- DOM refs ---------- */
+const splash=$('splash'), canvasArea=$('canvas-area');
+const svg=$('tree-svg'), viewport=$('viewport'), linksLayer=$('links-layer'), nodesLayer=$('nodes-layer');
+const detail=$('detail'), results=$('results'), viewTabs=$('view-tabs');
+let vx=0, vy=0, vscale=1;
+
+/* =========================================================
+   WORKER (streaming GEDCOM parser)
+   ========================================================= */
+let worker;
+function ensureWorker(){
+  if(worker) return;
+  const src=$('worker-src').textContent;
+  worker=new Worker(URL.createObjectURL(new Blob([src],{type:'application/javascript'})));
+  worker.onmessage=onWorkerMsg;
+}
+function onWorkerMsg(e){
+  const m=e.data;
+  if(m.type==='progress'){ setProgress(m.value); }
+  else if(m.type==='done'){ setProgress(100); ingest(m.individuals, m.families, m.meta); }
+}
+
+/* =========================================================
+   FILE LOADING
+   ========================================================= */
+const fileInput=$('file-input');
+$('btn-browse').onclick=()=>fileInput.click();
+$('btn-load').onclick=()=>fileInput.click();
+$('dropzone').onclick=(e)=>{ if(e.target.tagName!=='BUTTON') fileInput.click(); };
+fileInput.onchange=()=>{ if(fileInput.files[0]) loadFile(fileInput.files[0]); };
+
+let dragDepth=0;
+window.addEventListener('dragover',e=>{ e.preventDefault(); });
+window.addEventListener('dragenter',e=>{ e.preventDefault(); dragDepth++; $('dropzone').classList.add('drag'); });
+window.addEventListener('dragleave',e=>{ dragDepth--; if(dragDepth<=0) $('dropzone').classList.remove('drag'); });
+window.addEventListener('drop',e=>{
+  e.preventDefault(); dragDepth=0; $('dropzone').classList.remove('drag');
+  const f=e.dataTransfer.files[0]; if(f) loadFile(f);
+});
+
+function loadFile(file){
+  if(isBusy) return;
+  const ok=/\.(ged|gedcom|txt)$/i.test(file.name) || file.type==='' || /text/i.test(file.type);
+  if(!ok){ alert('Please choose a .ged or .gedcom file.'); return; }
+  isBusy=true;
+  showProgress(true); setProgressText('Reading "'+file.name+'" ('+fmtSize(file.size)+')…');
+  setProgress(2);
+  const reader=new FileReader();
+  reader.onprogress=ev=>{ if(ev.lengthComputable) setProgress(4+Math.round(ev.loaded/ev.total*20)); };
+  reader.onload=()=>{
+    setProgressText('Parsing '+(reader.result.length>1e6? fmtSize(reader.result.length):reader.result.split(/\n/).length+' lines')+'…');
+    ensureWorker();
+    worker.postMessage({cmd:'parse', text:reader.result});
+  };
+  reader.onerror=()=>{ isBusy=false; showProgress(false); alert('Could not read the file.'); };
+  reader.readAsText(file);
+}
+
+/* =========================================================
+   INGEST parsed data
+   ========================================================= */
+function ingest(individuals, families, meta){
+  DB.people.clear(); DB.families.clear();
+  individuals.forEach(p=>{ p._years=yearsOf(p); DB.people.set(p.xref, p); });
+  families.forEach(f=> DB.families.set(f.xref, f));
+  DB.list=individuals.slice();
+  DB.byName=DB.list.slice().sort((a,b)=> (a.name||'').localeCompare(b.name||''));
+
+  $('stat-indi').textContent=meta.indi+' people';
+  $('stat-fam').textContent=meta.fam+' families';
+  $('search').disabled=false;
+  viewTabs.style.display='flex';
+  $('btn-export').style.display='inline-flex';
+
+  isBusy=false; showProgress(false);
+  splash.style.display='none';
+  canvasArea.style.display='block';
+  detail.classList.remove('empty');
+
+  const root=pickRoot();
+  focusOn(root);
+}
+
+/* =========================================================
+   RELATIONSHIP HELPERS
+   ========================================================= */
+function parentsOf(xref){
+  const p=DB.people.get(xref); if(!p) return [];
+  const famc=p.famc&&p.famc[0]; if(!famc) return [];
+  const f=DB.families.get(famc); if(!f) return [];
+  return [f.husb,f.wife].filter(Boolean).filter(x=>DB.people.has(x));
+}
+function spouseOf(xref){
+  const p=DB.people.get(xref); if(!p||!p.fams||!p.fams.length) return null;
+  const f=DB.families.get(p.fams[0]); if(!f) return null;
+  const sp=(f.husb===xref)?f.wife:f.husb;
+  return sp && DB.people.has(sp) ? sp : null;
+}
+function childrenOfPerson(xref){
+  const p=DB.people.get(xref); if(!p||!p.fams) return [];
+  const out=[];
+  for(const fid of p.fams){ const f=DB.families.get(fid); if(f) out.push(...f.children.filter(c=>DB.people.has(c))); }
+  return out;
+}
+function siblingsOf(xref){
+  const p=DB.people.get(xref); if(!p||!p.famc||!p.famc.length) return [];
+  const f=DB.families.get(p.famc[0]); if(!f) return [];
+  return f.children.filter(c=>c!==xref && DB.people.has(c));
+}
+function unionChildren(xref){
+  // children of the (first) family where xref is a spouse
+  const p=DB.people.get(xref); if(!p||!p.fams||!p.fams.length) return [];
+  const f=DB.families.get(p.fams[0]); if(!f) return f?[]:[];
+  return f.children.filter(c=>DB.people.has(c));
+}
+
+/* =========================================================
+   TREE BUILDING
+   ========================================================= */
+function buildDescendants(xref){
+  const visited=new Set(); let count=0;
+  function rec(x, depth){
+    if(count>NODE_CAP) return null;
+    const p=DB.people.get(x); if(!p) return null;
+    const node={ kind:'couple', person:x, spouse:null, kids:[], depth };
+    count++;
+    const sp=spouseOf(x);
+    if(sp){ node.spouse=sp; count++; }
+    const kids=unionChildren(x);
+    for(const c of kids){
+      if(visited.has(c)) continue; visited.add(c);
+      const cn=rec(c, depth+1);
+      if(cn) node.kids.push(cn);
+    }
+    if(!node.spouse && node.kids.length===0) node.kind='single';
+    else if(!node.spouse) node.kind='single';
+    return node;
+  }
+  visited.add(xref);
+  return rec(xref,0);
+}
+function buildAncestors(xref){
+  const visited=new Set(); let count=0;
+  function rec(x, depth){
+    if(count>NODE_CAP) return null;
+    const p=DB.people.get(x); if(!p) return null;
+    count++;
+    const node={ kind:'single', person:x, spouse:null, kids:[], depth };
+    if(depth<MAX_DEPTH){
+      for(const par of parentsOf(x)){
+        if(visited.has(par)) continue; visited.add(par);
+        const pn=rec(par, depth+1);
+        if(pn) node.kids.push(pn);
+      }
+    }
+    return node;
+  }
+  visited.add(xref);
+  return rec(xref,0);
+}
+
+/* =========================================================
+   LAYOUT (post-order width, then x assignment)
+   ========================================================= */
+function unitWidth(node){ return node.kind==='couple'? 2*BOX_W+COUPLE_GAP : BOX_W; }
+function layoutTree(root){
+  // 1. subtree widths
+  (function widths(n){
+    if(n.kids.length===0){ n.subw=unitWidth(n); return; }
+    let w=0; n.kids.forEach((c,i)=>{ widths(c); w+=c.subw + (i?COL_SPACING:0); });
+    n.subw=Math.max(unitWidth(n), w);
+  })(root);
+  // 2. assign x (left edge of subtree region) + center
+  (function place(n, left){
+    const uw=unitWidth(n);
+    if(n.kids.length===0){ n.region=[left,left+n.subw]; n.cx=left+n.subw/2; return; }
+    let childW=0; n.kids.forEach((c,i)=> childW += c.subw + (i?COL_SPACING:0));
+    let cl=left+(n.subw-childW)/2;
+    n.kids.forEach((c,i)=>{ place(c,cl); cl+=c.subw+(i?COL_SPACING:0); });
+    n.region=[left,left+n.subw];
+    const f=n.kids[0], l=n.kids[n.kids.length-1];
+    n.cx=(f.cx+l.cx)/2;
+  })(root,0);
+  // 3. y by depth
+  (function sety(n){ n.py=n.depth*ROW_SPACING; n.kids.forEach(sety); })(root);
+  return root;
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function render(){
+  linksLayer.innerHTML=''; nodesLayer.innerHTML=''; renderedNodes=[];
+  let tree;
+  if(viewMode==='desc') tree=buildDescendants(focusXref);
+  else tree=buildAncestors(focusXref);
+  if(!tree){ nodesLayer.textContent='No data.'; return; }
+  layoutTree(tree);
+  const links=[];
+  function walk(n){
+    renderedNodes.push(n);
+    // links to kids
+    n.kids.forEach(k=>{
+      links.push({p:n, c:k});
+      walk(k);
+    });
+  }
+  walk(tree);
+
+  // draw links first
+  links.forEach(L=> drawLink(L, linksLayer));
+  // draw nodes
+  renderedNodes.forEach(n=> drawNode(n, nodesLayer));
+
+  fitView();
+}
+
+function drawLink(L, layer){
+  const parent=L.p, child=L.c;
+  const pBtmY=parent.py+BOX_H;
+  const cTopY=child.py;
+  // couple midpoint x
+  const pCx=parent.cx, cCx=child.cx;
+  if(viewMode==='desc'){
+    // descendant: parent at top, child below
+    const midY=(pBtmY+cTopY)/2;
+    const d=el('path',{class:'link', d:`M ${pCx} ${pBtmY} V ${midY} H ${cCx} V ${cTopY}`});
+    layer.appendChild(d);
+  } else {
+    // ancestor: parent(person) at top, parents below — same geometry
+    const midY=(pBtmY+cTopY)/2;
+    const d=el('path',{class:'link', d:`M ${pCx} ${pBtmY} V ${midY} H ${cCx} V ${cTopY}`});
+    layer.appendChild(d);
+  }
+  // spouse link
+  if(parent.kind==='couple'){
+    const pX=parent.cx-(unitWidth(parent)/2)+BOX_W;       // right edge of person box
+    const sX=parent.cx+(unitWidth(parent)/2)-BOX_W;       // left edge of spouse box
+    layer.appendChild(el('path',{class:'link spouse', d:`M ${pX} ${parent.py+BOX_H/2} H ${sX}`}));
+  }
+}
+
+function drawNode(n, layer){
+  const uw=unitWidth(n);
+  const g=el('g',{class:'node'});
+  g.dataset.xref=n.person;
+  const personX=n.cx-uw/2;
+  drawBox(g, n.person, personX, n.py, true);
+  if(n.kind==='couple' && n.spouse){
+    const spouseX=n.cx+uw/2-BOX_W;
+    drawBox(g, n.spouse, spouseX, n.py, false);
+  }
+  g.addEventListener('click', ev=>{ ev.stopPropagation(); focusOn(n.person); });
+  layer.appendChild(g);
+}
+function drawBox(g, xref, x, y, isPrimary){
+  const p=DB.people.get(xref); if(!p) return;
+  const col = p.sex==='M'?'var(--male)':p.sex==='F'?'var(--female)':'var(--unk)';
+  const r=el('rect',{x,y,width:BOX_W,height:BOX_H,rx:9,ry:9,
+    fill:'var(--panel)', stroke:col, 'stroke-width':2, filter:'url(#soft)'});
+  g.appendChild(r);
+  const name=p.name||'Unknown';
+  const tName=el('text',{class:'nm', x:x+12, y:y+22});
+  tName.textContent=truncate(name,20);
+  g.appendChild(tName);
+  const tDate=el('text',{class:'dt', x:x+12, y:y+40});
+  tDate.textContent=lifetime(p);
+  g.appendChild(tDate);
+  // sex dot
+  g.appendChild(el('circle',{cx:x+BOX_W-12, cy:y+12, r:4, fill:col}));
+}
+function truncate(s,n){ s=String(s); return s.length>n? s.slice(0,n-1)+'…': s; }
+function lifetime(p){ const b=p._years&&p._years.b, d=p._years&&p._years.d; if(b&&d) return b+' – '+d; if(b) return 'b. '+b; if(d) return 'd. '+d; return ''; }
+
+/* =========================================================
+   FOCUS + DETAIL PANEL
+   ========================================================= */
+function focusOn(xref){
+  if(!xref || !DB.people.has(xref)) return;
+  focusXref=xref;
+  render();
+  $('focus-name').textContent=DB.people.get(xref).name||'Unknown';
+  renderDetail(xref);
+  // highlight active
+  document.querySelectorAll('.node.active').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.node').forEach(n=>{ if(n.dataset.xref===xref) n.classList.add('active'); });
+}
+
+function renderDetail(xref){
+  const p=DB.people.get(xref); if(!p){ detail.innerHTML=''; return; }
+  const yrs=p._years||{};
+  const life=yrs.b||yrs.d? `${yrs.b||'?'} – ${yrs.d||'?'}` : '';
+  let h='<div class="d-header">';
+  h+='<div class="d-name">'+esc(p.name||'Unknown')+'</div>';
+  h+='<div class="d-id">'+esc(p.xref)+'</div>';
+  if(life) h+='<div class="d-life">'+esc(life)+'</div>';
+  const sx=p.sex==='M'?'Male':p.sex==='F'?'Female':'Unknown';
+  h+='<span class="d-sex '+p.sex+'">'+sx+'</span>';
+  h+='</div><div class="d-body">';
+
+  // events
+  const events=[];
+  if(p.birth) events.push(['Birth', p.birth]);
+  if(p.death) events.push(['Death', p.death]);
+  (p.events||[]).forEach(e=> events.push([e.type, e]));
+  if(events.length){
+    h+='<div class="d-section"><h4>Events</h4>';
+    events.forEach(([label,e])=>{
+      h+='<div class="d-event"><div class="el">'+esc(label)+'</div>';
+      if(e.date) h+='<div class="ed">'+esc(e.date)+'</div>';
+      if(e.place) h+='<div class="ep">'+esc(e.place)+'</div>';
+      if(e.note) h+='<div class="ep">Note: '+esc(e.note)+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+  // relatives
+  const parents=parentsOf(xref), sp=spouseOf(xref), kids=childrenOfPerson(xref), sib=siblingsOf(xref);
+  const relSection=(label,arr,kind)=>{
+    if(!arr.length) return '';
+    let s='<div class="d-section"><h4>'+label+'</h4>';
+    arr.forEach(x=>{
+      const pp=DB.people.get(x); if(!pp) return;
+      s+='<div class="d-rel" data-xref="'+esc(x)+'"><span class="rn">'+esc(pp.name||'Unknown')+'</span><span class="rl">'+kind+'</span></div>';
+    });
+    return s+'</div>';
+  };
+  h+=relSection('Parents', parents, 'parent');
+  h+=relSection((viewMode==='desc'?'Spouse':'Partner'), sp?[sp]:[], 'spouse');
+  h+=relSection('Children', kids, 'child');
+  h+=relSection('Siblings', sib, 'sibling');
+  h+='</div>';
+  detail.innerHTML=h;
+  // wire relative clicks
+  detail.querySelectorAll('.d-rel').forEach(r=>{
+    r.onclick=()=>{ focusOn(r.dataset.xref); };
+  });
+}
+
+/* =========================================================
+   PICK initial root
+   ========================================================= */
+function pickRoot(){
+  let best=null, bestScore=-1;
+  for(const p of DB.list){
+    const kc=childrenOfPerson(p.xref).length;
+    const pc=parentsOf(p.xref).length;
+    let score=kc*3+pc;
+    if(kc>0 && pc>0) score+=5; // bridge generation
+    if(score>bestScore){ bestScore=score; best=p.xref; }
+  }
+  return best || (DB.list[0]&&DB.list[0].xref);
+}
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+const searchInput=$('search');
+let searchTimer=null;
+searchInput.addEventListener('input', ()=>{
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(doSearch, 140);
+});
+searchInput.addEventListener('focus', doSearch);
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.search-wrap') && !e.target.closest('#results')) results.classList.remove('show');
+});
+function doSearch(){
+  const q=searchInput.value.trim().toLowerCase();
+  if(!q){ results.classList.remove('show'); return; }
+  const found=[];
+  for(const p of DB.byName){
+    if((p.name||'').toLowerCase().includes(q)){ found.push(p); if(found.length>=40) break; }
+  }
+  if(!found.length){ results.innerHTML='<div class="res-empty">No matches</div>'; results.classList.add('show'); return; }
+  results.innerHTML=found.map(p=>'<div class="res-item" data-xref="'+esc(p.xref)+'"><div>'+esc(p.name||'Unknown')+'</div><div class="rl">'+esc(lifetime(p))+'</div></div>').join('');
+  results.classList.add('show');
+  results.querySelectorAll('.res-item').forEach(it=>{
+    it.onclick=()=>{ focusOn(it.dataset.xref); results.classList.remove('show'); searchInput.value=''; };
+  });
+}
+
+/* =========================================================
+   PAN / ZOOM
+   ========================================================= */
+let dragging=false, dragStart=null;
+svg.addEventListener('mousedown', e=>{ dragging=true; svg.classList.add('grabbing'); dragStart={x:e.clientX-vx, y:e.clientY-vy}; });
+window.addEventListener('mousemove', e=>{ if(!dragging) return; vx=e.clientX-dragStart.x; vy=e.clientY-dragStart.y; applyTransform(); });
+window.addEventListener('mouseup', ()=>{ dragging=false; svg.classList.remove('grabbing'); });
+svg.addEventListener('wheel', e=>{
+  e.preventDefault();
+  const rect=svg.getBoundingClientRect();
+  const mx=e.clientX-rect.left, my=e.clientY-rect.top;
+  const factor=e.deltaY<0?1.12:0.89;
+  const ns=Math.max(0.15, Math.min(3, vscale*factor));
+  vx=mx-(mx-vx)*(ns/vscale); vy=my-(my-vy)*(ns/vscale);
+  vscale=ns; applyTransform();
+},{passive:false});
+function applyTransform(){ viewport.setAttribute('transform',`translate(${vx},${vy}) scale(${vscale})`); $('zoom-lbl').textContent=Math.round(vscale*100)+'%'; }
+function fitView(){
+  if(!renderedNodes.length){ vx=0; vy=0; vscale=1; applyTransform(); return; }
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  renderedNodes.forEach(n=>{
+    const uw=unitWidth(n);
+    minX=Math.min(minX,n.cx-uw/2); maxX=Math.max(maxX,n.cx+uw/2);
+    minY=Math.min(minY,n.py); maxY=Math.max(maxY,n.py+BOX_H);
+  });
+  const pad=60, w=maxX-minX+pad*2, h=maxY-minY+pad*2;
+  const cw=svg.clientWidth, ch=svg.clientHeight;
+  const s=Math.min(cw/w, ch/h, 1.4);
+  vscale=s;
+  vx=(cw-w*s)/2 - (minX-pad)*s;
+  vy=(ch-h*s)/2 - (minY-pad)*s;
+  applyTransform();
+}
+$('zin').onclick=()=>{ zoomBy(1.2); };
+$('zout').onclick=()=>{ zoomBy(0.83); };
+$('zfit').onclick=fitView;
+function zoomBy(f){ const cw=svg.clientWidth,ch=svg.clientHeight; const mx=cw/2,my=ch/2; const ns=Math.max(0.15,Math.min(3,vscale*f)); vx=mx-(mx-vx)*(ns/vscale); vy=my-(my-vy)*(ns/vscale); vscale=ns; applyTransform(); }
+
+/* view tabs */
+viewTabs.querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{ viewTabs.querySelectorAll('button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); viewMode=b.dataset.view; focusOn(focusXref); };
+});
+
+/* =========================================================
+   EXPORT PNG
+   ========================================================= */
+$('btn-export').onclick=()=>{
+  const clone=svg.cloneNode(true);
+  clone.setAttribute('width',svg.clientWidth); clone.setAttribute('height',svg.clientHeight);
+  const xml=new XMLSerializer().serializeToString(clone);
+  const img=new Image();
+  img.onload=()=>{
+    const c=document.createElement('canvas'); c.width=svg.clientWidth; c.height=svg.clientHeight;
+    const ctx=c.getContext('2d'); ctx.fillStyle='#0f1419'; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(img,0,0);
+    c.toBlob(b=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='family-tree.png'; a.click(); });
+  };
+  img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(xml)));
+};
+
+/* =========================================================
+   DEMO button — synthetic GEDCOM
+   ========================================================= */
+$('btn-sample').onclick=()=>{ const ged=makeSampleGedcom(); ensureWorker(); isBusy=true; showProgress(true); setProgressText('Loading demo…'); worker.postMessage({cmd:'parse', text:ged}); };
+
+function makeSampleGedcom(){
+  const L=[];
+  const HEAD=`0 HEAD
+1 SOUR GEDCOMViewer
+2 NAME Demo
+1 GEDC
+2 VERS 5.5.1
+2 FORM LINEAGE-LINKED
+1 CHAR UTF-8
+1 SUBM @SUB1@
+0 @SUB1@ SUBM
+1 NAME Demo User`;
+  L.push(HEAD);
+  const P=(id,name,sex,b,d,famc,fams)=>{ L.push(`0 @${id}@ INDI`); L.push(`1 NAME ${name}`); L.push(`1 SEX ${sex}`); if(b){L.push(`1 BIRT`);L.push(`2 DATE ${b}`);L.push(`2 PLACE ${'Boston, MA'}`);} if(d){L.push(`1 DEAT`);L.push(`2 DATE ${d}`);L.push(`2 PLACE ${'Boston, MA'}`);} if(famc)L.push(`1 FAMC @${famc}@`); (fams||[]).forEach(f=>L.push(`1 FAMS @${f}@`)); };
+  const F=(id,h,w,ch)=>{ L.push(`0 @${id}@ FAM`); if(h)L.push(`1 HUSB @${h}@`); if(w)L.push(`1 WIFE @${w}@`); if(h&&w){L.push(`1 MARR`);L.push(`2 DATE 1920`);} ch.forEach(c=>L.push(`1 CHIL @${c}@`)); };
+  // 4 generations
+  P('I1','William Hayward','M','1880','1950',null,['F1']);
+  P('I2','Margaret Clark','F','1885','1955',null,['F1']);
+  P('I3','Arthur Bell','M','1878','1948',null,['F2']);
+  P('I4','Alice Moore','F','1882','1952',null,['F2']);
+  F('F1','I1','I2',['I5','I6']);
+  F('F2','I3','I4',['I7']);
+  P('I5','Robert Hayward','M','1910','1985','F1',['F3']);
+  P('I6','Dorothy Hayward','F','1912','1990','F1',['F4']);
+  P('I7','Helen Bell','F','1915','2000','F2',['F3']);
+  P('I8','Frank Wright','M','1908','1982',null,['F4']);
+  F('F3','I5','I7',['I9','I10']);
+  F('F4','I8','I6',['I11']);
+  P('I9','James Hayward','M','1940',null,'F3',['F5']);
+  P('I10','Susan Hayward','F','1942',null,'F3',[]);
+  P('I11','Carol Wright','F','1944',null,'F4',['F5']);
+  P('I12','Patrick Stone','M','1938',null,null,['F5']);
+  F('F5','I9','I11',['I13','I14']);
+  P('I13','Michael Hayward','M','1968',null,'F5',[]);
+  P('I14','Laura Hayward','F','1971',null,'F5',[]);
+  L.push('0 TRLR');
+  return L.join('\n');
+}
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+function yearsOf(p){
+  const out={};
+  const by=p.birth&&p.birth.date, dy=p.death&&p.death.date;
+  const yb=extractYear(by), yd=extractYear(dy);
+  if(yb) out.b=yb; if(yd) out.d=yd;
+  return out;
+}
+function extractYear(s){ if(!s) return null; const m=String(s).match(/(\d{4})/); return m? m[1]: null; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtSize(b){ if(b<1024) return b+' B'; if(b<1048576) return (b/1024).toFixed(0)+' KB'; return (b/1048576).toFixed(1)+' MB'; }
+function showProgress(on){ $('progress').classList.toggle('show',on); }
+function setProgress(v){ $('pbar-fill').style.width=Math.max(0,Math.min(100,v))+'%'; }
+function setProgressText(t){ $('pbar-txt').textContent=t; }
+
+/* resize */
+window.addEventListener('resize', ()=>{ /* keep current view */ });
+
+})();
+</script>
+
+<script id="worker-src" type="javascript/worker">
+"use strict";
+/* Streaming GEDCOM parser running in a Web Worker.
+   Handles arbitrarily large files off the main thread. */
+self.onmessage = function(e){
+  if(e.data.cmd === 'parse') parseFile(e.data.text);
+};
+
+function parseFile(text){
+  const t0 = performance.now();
+  const lines = text.split(/\r\n|\r|\n/);
+  const total = lines.length;
+  const reportEvery = Math.max(2000, Math.floor(total/120));
+
+  const individuals = Object.create(null);
+  const families    = Object.create(null);
+
+  let cur = null, curType = null;   // current top-level record
+  let subObj = null;                // current level-1 event container (BIRT/DEAT/MARR...)
+  let subLevel = 0;                 // level of subObj
+
+  function newEvent(type){ return { type:type, date:'', place:'' }; }
+
+  for(let i=0;i<total;i++){
+    const raw = lines[i];
+    if(raw==='') continue;
+
+    // parse level
+    let k=0, level=0;
+    while(k<raw.length && raw.charCodeAt(k)>=48 && raw.charCodeAt(k)<=57){ level=level*10+(raw.charCodeAt(k)-48); k++; }
+    while(k<raw.length && raw.charCodeAt(k)===32) k++;
+    const rest = raw.slice(k);
+
+    // split into tag + value, with possible leading @XREF@
+    let tag, val='', xref='';
+    if(rest.charAt(0)==='@'){
+      const end = rest.indexOf('@',1);
+      xref = rest.slice(1,end);
+      const after = rest.slice(end+1).trim();
+      const sp = after.indexOf(' ');
+      tag = sp===-1 ? after : after.slice(0,sp);
+      val  = sp===-1 ? '' : after.slice(sp+1).trim();
+    } else {
+      const sp = rest.indexOf(' ');
+      tag = sp===-1 ? rest : rest.slice(0,sp);
+      val  = sp===-1 ? '' : rest.slice(sp+1).trim();
+    }
+
+    if(level===0){
+      cur=null; curType=null; subObj=null; subLevel=0;
+      if(xref){
+        if(tag==='INDI'){
+          cur = { xref:xref, name:'', sex:'U', birth:null, death:null, events:[], fams:[], famc:[], notes:[] };
+          individuals[xref]=cur; curType='INDI';
+        } else if(tag==='FAM'){
+          cur = { xref:xref, husb:'', wife:'', children:[], events:[] };
+          families[xref]=cur; curType='FAM';
+        } else { cur={xref:xref}; curType='OTHER'; }
+      }
+      continue;
+    }
+
+    if(!cur) continue;
+
+    // Reset subObj when we go back to level 1
+    if(level===1){
+      subObj=null; subLevel=0;
+      if(curType==='INDI') subObj = handleIndiL1(cur, tag, val);
+      else if(curType==='FAM') subObj = handleFamL1(cur, tag, val);
+    } else if(level===2 && subObj){
+      if(tag==='DATE') subObj.date = val.trim();
+      else if(tag==='PLAC') subObj.place = val.trim();
+    }
+    // level>=3 (e.g. source citation text) ignored for compactness
+
+    if((i % reportEvery)===0){
+      self.postMessage({type:'progress', value:Math.round(i/total*100)});
+    }
+  }
+  self.postMessage({type:'progress', value:100});
+
+  const indiArr = Object.keys(individuals).map(k=>{
+    const p=individuals[k];
+    return { xref:p.xref, name:p.name, sex:p.sex, birth:p.birth, death:p.death,
+             events:p.events, fams:p.fams, famc:p.famc, notes:p.notes };
+  });
+  const famArr = Object.keys(families).map(k=>{
+    const f=families[k];
+    return { xref:f.xref, husb:f.husb, wife:f.wife, children:f.children, events:f.events };
+  });
+
+  self.postMessage({type:'done', individuals:indiArr, families:famArr,
+    meta:{ parseMs:Math.round(performance.now()-t0), lines:total, indi:indiArr.length, fam:famArr.length }});
+}
+
+function handleIndiL1(cur, tag, val){
+  switch(tag){
+    case 'NAME': cur.name = cleanName(val); return null;
+    case 'SEX':  cur.sex = (val||'U').toUpperCase().charAt(0); return null;
+    case 'BIRT': cur.birth = newEvent('Birth'); return cur.birth;
+    case 'DEAT': cur.death = newEvent('Death'); return cur.death;
+    case 'CHR':  case 'BAPM': { const e=newEvent(tag); cur.events.push(e); return e; }
+    case 'OCCU': { const e=newEvent('Occupation'); e.date=val; cur.events.push(e); return e; }
+    case 'RESI': { const e=newEvent('Residence'); e.date=val; cur.events.push(e); return e; }
+    case 'FAMS': if(val) cur.fams.push(val); return null;
+    case 'FAMC': if(val) cur.famc.push(val); return null;
+    case 'NOTE': cur.notes.push(stripAt(val)); return null;
+  }
+  return null;
+}
+function handleFamL1(cur, tag, val){
+  switch(tag){
+    case 'HUSB': cur.husb=val; return null;
+    case 'WIFE': cur.wife=val; return null;
+    case 'CHIL': if(val) cur.children.push(val); return null;
+    case 'MARR': { const e=newEvent('Marriage'); cur.events.push(e); return e; }
+    case 'DIV':  { const e=newEvent('Divorce'); cur.events.push(e); return e; }
+  }
+  return null;
+}
+
+function cleanName(v){ return v? v.replace(/\//g,' ').replace(/\s+/g,' ').trim()||'Unknown' : 'Unknown'; }
+function stripAt(v){ return v? v.replace(/^@|@$/g,'') : ''; }
