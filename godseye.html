@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#020604" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="GOD'S EYE" />
+  <meta
+    name="description"
+    content="God's Eye View — HTML5 / webxdc conversion. Live satellites, aircraft, earthquakes and simulated shipping on a vector Earth. Public feeds only, no API keys."
+  />
+  <title>God's Eye View · HTML5</title>
+  <link rel="stylesheet" href="./css/godseye.css" />
+  <link rel="icon" href="./img/godseye-icon.png" sizes="512x512" />
+  <link rel="apple-touch-icon" href="./img/godseye-icon.png" sizes="512x512" />
+  <script src="./webxdc.js"></script>
+</head>
+<body data-style="standard">
+  <canvas id="stage"></canvas>
+  <div id="scanfx" aria-hidden="true"></div>
+
+  <div id="boot">
+    <img src="./img/godseye-icon.png" alt="God's Eye View" />
+    <pre id="bootLog"></pre>
+    <div class="bar"><i id="bootBar"></i></div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="./img/godseye-icon.png" alt="" />
+      <div>
+        <h1>GOD'S EYE VIEW</h1>
+        <p>HTML5 · webxdc · public signal only</p>
+      </div>
+    </div>
+    <div class="meta">
+      <b id="clock">--:--:--Z</b>
+      <span id="styleChip">STANDARD</span>
+      <span id="srcChip">VECTOR EARTH</span>
+    </div>
+    <div class="actions">
+      <button type="button" id="btnStyles" title="Sensor style (keys 1-6)">STYLE</button>
+      <button type="button" id="btnShare" title="Broadcast this view to the chat (webxdc)">SHARE</button>
+      <button type="button" id="btnReset" class="hot" title="Back to full Earth">RESET GLOBE</button>
+      <a class="home" href="./index.html" title="Back to SITE-K">SITE-K</a>
+    </div>
+  </header>
+
+  <aside class="dock" id="dock">
+    <section class="panel">
+      <div class="p-title">LAYERS</div>
+      <div id="layerList"></div>
+    </section>
+    <section class="panel" id="trackPanel" hidden>
+      <div class="p-title">TRACK <button type="button" id="btnRelease" class="mini">RELEASE</button></div>
+      <div id="trackCard" class="track-card"></div>
+    </section>
+    <section class="panel">
+      <div class="p-title">EYES <i id="eyesCount">0</i></div>
+      <div id="eyesList" class="eyes-list"><p class="dim">no shared views yet</p></div>
+    </section>
+    <section class="panel grow">
+      <div class="p-title">SYSLOG</div>
+      <div id="syslog"></div>
+    </section>
+  </aside>
+
+  <div class="hud-bl" id="hudBL">
+    <span id="hudLat">LAT ——</span>
+    <span id="hudLon">LON ——</span>
+    <span id="hudAlt">ALT ——</span>
+  </div>
+
+  <form class="cmdbar" id="cmdbar" autocomplete="off">
+    <span class="prompt">GEV&gt;</span>
+    <input
+      id="cmd"
+      type="text"
+      enterkeyhint="done"
+      spellcheck="false"
+      autocapitalize="off"
+      placeholder='try: go tokyo · track ISS · flights on · style flir · help'
+    />
+    <button type="submit" class="go">RUN</button>
+  </form>
+
+  <div class="credits" id="credits">
+    USGS · Celestrak · adsb.lol · Natural Earth · satellite.js · three.js — shipping lanes SIMULATED
+  </div>
+
+  <script type="module" src="./js/godseye.js"></script>
+</body>
+</html>
