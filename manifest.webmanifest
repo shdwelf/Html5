@@ -41,6 +41,13 @@
       "description": "BIP-39 keyspace viewer",
       "url": "./index.html#keyspace",
       "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "ADL Gazetteer",
+      "short_name": "ADL",
+      "description": "Alexandria Digital Library Gazetteer & GazBean Workbench",
+      "url": "./adl.html",
+      "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
     }
   ]
 }
