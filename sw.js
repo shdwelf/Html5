@@ -1,9 +1,11 @@
 /* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v15";
+const CACHE = "sitek-html5-v16";
 const PRECACHE = [
   "./",
   "./index.html",
   "./keyspace.html",
+  "./cylinder-sync.html",
+  "./config/cylinder-z3950.json",
   "./validator.html",
   "./art-studio.html",
   "./louisiana.html",
@@ -14,6 +16,7 @@ const PRECACHE = [
   "./icon.png",
   "./img/godseye-icon.png",
   "./css/app.css",
+  "./css/cylinder-sync.css",
   "./css/godseye.css",
   "./js/godseye.js",
   "./css/jp-grid.css",
@@ -23,6 +26,7 @@ const PRECACHE = [
   "./css/studio.css",
   "./css/wm.css",
   "./js/app.js",
+  "./js/cylinder-sync.js",
   "./js/wm.js",
   "./js/jp-grid.js",
   "./js/terrarium.js",
@@ -73,6 +77,7 @@ const PRECACHE = [
   "./vendor/satellite/propagation/sgp4init.js",
   "./wasm/entropy.wasm",
   "./img/site-x-badge.png",
+  "./img/cylinder-tops.jpg",
   "./img/site-l-badge.png",
   "./img/ingen-stripe.jpg",
   "./img/app-192.png",
