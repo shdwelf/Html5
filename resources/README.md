@@ -1,7 +1,8 @@
 # Resource Archive — The Greeran Book
 
 Content extracts of the subject-supplied resources cited in the source register
-of `greeran-book.html` (entries **src-10 through src-63**).
+of `greeran-book.html` (entries **src-10 through src-63**), plus the archivist
+research logs for entries **src-64 through src-67**.
 
 ## Why this archive exists
 
@@ -80,6 +81,22 @@ Extracted: **30 August 2026**. Original URLs are recorded in each file.
 | src-62 | `src-62-rodger-ramrod-html5-app.md` | Rodger Ramrod — HTML5 App (browser DOSBox) | extracted |
 | src-63 | `src-63-rodger-ramrod-quine-build.md` | Rodger Ramrod — HTML5 App (quine build) | extracted |
 
+## Research logs (archivist work, not subject-supplied extracts)
+
+The `src-NN-*.md` files above mirror resources the subject supplied. The files below are
+different in kind: they record what an archivist found when testing the leads those resources
+left open. They are cited in the book's source register as **src-64 through src-67**.
+
+| File | Register | Session | Subject |
+|---|---|---|---|
+| `session-11-biddeford-and-daisy.md` | src-64, src-65, src-66, src-67 | 31 Aug 2026 | Ahn. 22–23 (the Morins of Biddeford, Maine) and Ahn. 28–29 (Daisy Beatrice's Texas parents) |
+
+Session 11 result in one line: the free **Biddeford and Saco Directory 1920–1921** on the Internet
+Archive corroborated the workbench's *Alfred Houle* as a real Biddeford policeman at 12 George
+Street (src-64), but the same volume lists thirty Morins — three of them named Frank — so the
+Morin slot stays open (src-64), and Find A Grave has no memorial for Daisy Beatrice, closing her
+cheapest route (src-65). Two of the four sources are recorded **because they returned nothing**.
+
 ## Attribution notes
 
 - **src-35** is a hosted standalone copy of Ian Coleman's open-source
@@ -104,5 +121,12 @@ Extracted: **30 August 2026**. Original URLs are recorded in each file.
   boot the original launcher unmodified. Only the wrapper is described here.
 - **src-54 … src-58** are a single motif traced across five builds — the Zen brush
   circle first as a drawing, then as an encoding for a key. See Chapter X of the book.
+- **src-67** is an unsourced community-tree record surfaced by a public search. It
+  is cited in the book **as a lead only** and is deliberately not merged with the
+  subject-supplied files: it places François Morin's birth fifteen years later than
+  `src-45` does. A Maine death certificate would settle it — see the Session 11 log.
+- **src-66** is a finding aid, not a record set. It was read on 31 August 2026 to
+  establish where Maine vital records live; no Maine index had been queried when the
+  log was written, and the log says so.
 - All other entries are author-attributed works of the workshop, cited as
   artifacts rather than third-party verification.
