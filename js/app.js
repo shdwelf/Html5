@@ -8,7 +8,7 @@ const $ = (id) => document.getElementById(id);
 function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
   const normalized = raw === "artstudio" || raw === "art-studio" ? "studio" : raw;
-  if (normalized === "terrarium" || normalized === "keyspace" || normalized === "validator" || normalized === "studio" || normalized === "grid") return normalized;
+  if (normalized === "terrarium" || normalized === "keyspace" || normalized === "validator" || normalized === "studio" || normalized === "cylinders" || normalized === "grid") return normalized;
   return "grid";
 }
 
@@ -98,6 +98,13 @@ let started = null;
 
 async function start(mode) {
   markDock(mode);
+
+  if (mode === "cylinders") {
+    const frame = $("syncframe");
+    if (frame && !frame.getAttribute("src")) frame.src = "./cylinder-sync.html";
+    document.title = "Cylinder Sync · UCSB Library";
+    return;
+  }
 
   if (mode === "keyspace" || mode === "validator" || mode === "studio") {
     const frame = $("keyframe");

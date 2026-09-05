@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Spinning News Globe – Standalone Offline</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{background:#020617;color:#f1f5f9;font-family:system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+header{background:#0f172a;border-bottom:1px solid #1e293b;padding:16px 24px;display:flex;justify-content:space-between;align-items:center}
+h1{font-size:18px;font-weight:900;color:#fff}.badge{background:#065f46;color:#34d399;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;padding:24px;flex:1;overflow-y:auto}
+.card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px;transition:.2s}
+.card:hover{border-color:#06b6d4;background:#0f172a}.card h3{font-size:14px;font-weight:800;color:#fff;margin-bottom:6px}
+.card p{font-size:12px;color:#94a3b8;line-height:1.5}.meta{display:flex;justify-content:space-between;margin-top:12px;font-size:11px;color:#64748b}
+.meta a{color:#06b6d4;text-decoration:none;font-weight:700}.meta a:hover{text-decoration:underline}
+.loc{color:#f59e0b;font-weight:700}
+footer{background:#0f172a;border-top:1px solid #1e293b;padding:12px 24px;text-align:center;font-size:11px;color:#475569}
+</style></head><body>
+<header><h1>🌐 Spinning News Globe (Offline)</h1><span class="badge">Standalone HTML5</span></header>
+<div class="grid" id="grid"></div>
+<footer>Exported from CyberVault WebOS • 6/17/2026 • 0 cached articles</footer>
+<script>
+const articles=[];
+const grid=document.getElementById('grid');
+articles.forEach(a=>{
+const card=document.createElement('div');card.className='card';
+card.innerHTML='<h3>'+a.title+'</h3><p>'+a.contentSnippet+'</p><div class="meta"><span class="loc">📍 '+a.locationName+'</span><span>'+a.sourceFeed+'</span><a href="'+a.link+'" target="_blank" rel="noreferrer">Read ↗</a></div>';
+grid.appendChild(card);
+});
+</script></body></html>

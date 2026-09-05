@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>News Globe — Live RSS on an Earth</title>
+<style>
+  :root {
+    --bg: #04070d;
+    --panel: rgba(10,18,32,0.78);
+    --panel-edge: rgba(120,180,255,0.18);
+    --text: #e6edf6;
+    --muted: #8aa0bd;
+    --accent: #ffd166;
+    --pink: #ff5e7a;
+    --green: #6ee7a0;
+    --warn: #f9c74f;
+    --err: #ff7a8a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:radial-gradient(ellipse at 50% 30%, #0a1830 0%, #04070d 70%); color:var(--text); font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif; overflow:hidden; }
+  body { display:grid; grid-template-columns: 320px 1fr 360px; grid-template-rows: 56px 1fr; grid-template-areas: "head head head" "left stage right"; }
+
+  /* Header */
+  header { grid-area: head; display:flex; align-items:center; gap:18px; padding:0 18px; background:linear-gradient(180deg, rgba(10,20,40,0.95), rgba(10,20,40,0.6)); border-bottom:1px solid var(--panel-edge); z-index:5; }
+  header .logo { font-weight:700; letter-spacing:.5px; font-size:16px; }
+  header .logo .dot { color:var(--pink); }
+  header .stats { display:flex; gap:14px; margin-left:auto; font-size:12px; color:var(--muted); }
+  header .stats b { color:var(--text); font-weight:600; }
+  header .controls button { background:rgba(255,255,255,0.05); color:var(--text); border:1px solid var(--panel-edge); padding:6px 10px; border-radius:8px; font-size:12px; cursor:pointer; margin-left:6px; }
+  header .controls button:hover { background:rgba(255,255,255,0.1); }
+
+  /* Left panel: log */
+  aside.left { grid-area:left; background:var(--panel); border-right:1px solid var(--panel-edge); display:flex; flex-direction:column; min-width:0; }
+  aside.left .panel-title { padding:10px 14px; font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); border-bottom:1px solid var(--panel-edge); }
+  #log { flex:1; overflow:auto; padding:8px 12px; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size:11px; line-height:1.5; }
+  .log-line { padding:2px 0; color:var(--muted); border-bottom:1px dashed rgba(120,180,255,0.05); }
+  .log-ok { color: var(--green); }
+  .log-warn { color: var(--warn); }
+  .log-err { color: var(--err); }
+  .log-event { color: var(--text); }
+
+  /* Globe stage */
+  main { grid-area:stage; position:relative; min-width:0; min-height:0; }
+  #globe-stage { width:100%; height:100%; position:absolute; inset:0; cursor:grab; }
+  #globe-stage:active { cursor:grabbing; }
+  .hint { position:absolute; left:14px; bottom:12px; font-size:11px; color:var(--muted); background:rgba(0,0,0,0.4); padding:6px 10px; border-radius:8px; border:1px solid var(--panel-edge); }
+  .stage-watermark { position:absolute; right:14px; top:14px; font-size:10px; color:var(--muted); text-align:right; line-height:1.5; }
+  .stage-watermark a { color:var(--muted); text-decoration:underline; }
+
+  /* Right panel: article feed */
+  aside.right { grid-area:right; background:var(--panel); border-left:1px solid var(--panel-edge); display:flex; flex-direction:column; min-width:0; }
+  aside.right .panel-title { padding:10px 14px; font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); border-bottom:1px solid var(--panel-edge); display:flex; justify-content:space-between; align-items:center; }
+  #articles { flex:1; overflow:auto; padding:10px; }
+  .card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 12px; margin-bottom:8px; cursor:pointer; transition:all .2s; }
+  .card:hover { background:rgba(255,255,255,0.06); border-color:var(--accent); }
+  .card-place { font-size:11px; color:var(--accent); margin-bottom:4px; display:flex; justify-content:space-between; gap:6px; }
+  .card-src { color:var(--muted); font-weight:500; text-align:right; }
+  .card-title { color:var(--text); font-size:13px; line-height:1.4; text-decoration:none; display:block; }
+  .card-title:hover { color:var(--accent); text-decoration:underline; }
+  .card-meta { font-size:10px; color:var(--muted); margin-top:6px; }
+
+  /* Empty state hint inside articles */
+  #articles:empty::before { content: "Waiting for first geocoded article…"; display:block; color:var(--muted); font-size:12px; padding:20px; text-align:center; }
+
+  /* SVG event styles */
+  .event .ring { pointer-events:none; }
+  .event .dot { pointer-events:none; filter: drop-shadow(0 0 4px var(--accent)); }
+
+  @media (max-width: 1100px) {
+    body { grid-template-columns: 1fr; grid-template-rows: 56px 50vh 1fr; grid-template-areas: "head" "stage" "right"; }
+    aside.left { display:none; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">🌐 News<span class="dot">·</span>Globe <span style="font-weight:400;color:var(--muted);font-size:12px;margin-left:8px;">live OPML → RSS → geocode → globe</span></div>
+    <div class="stats">
+      <span>feeds: <b id="stat-feeds">0</b></span>
+      <span>articles seen: <b id="stat-articles">0</b></span>
+      <span>events on globe: <b id="stat-events">0</b></span>
+    </div>
+    <div class="controls">
+      <button id="btn-rotate">🌐 Auto-rotate: ON</button>
+      <button id="btn-pause">⏸ Pause</button>
+      <button id="btn-clear">🧹 Clear</button>
+    </div>
+  </header>
+
+  <aside class="left">
+    <div class="panel-title">Activity Log</div>
+    <div id="log"></div>
+    <div class="panel-title" style="border-top:1px solid var(--panel-edge); border-bottom:0;">Currently polling</div>
+    <div id="stat-polling" style="padding:8px 14px; font-size:11px; color:var(--muted); border-top:1px solid var(--panel-edge); min-height:32px;">—</div>
+  </aside>
+
+  <main>
+    <div id="globe-stage"></div>
+    <div class="hint">Drag to rotate · Scroll to zoom · Click an article to fly to it</div>
+    <div class="stage-watermark">
+      OPML: <a href="https://github.com/plenaryapp/awesome-rss-feeds" target="_blank">plenaryapp/awesome-rss-feeds</a><br/>
+      Topology: world-atlas · Geocoding: gazetteer + OSM Nominatim
+    </div>
+  </main>
+
+  <aside class="right">
+    <div class="panel-title">
+      <span>Live Articles</span>
+      <span style="color:var(--accent); font-size:10px;">● live</span>
+    </div>
+    <div id="articles"></div>
+  </aside>
+
+  <!-- Libraries (CDN). In the in-app preview these won't load (no network in iframe),
+       but the file works fully when opened in a browser. -->
+  <script src="https://unpkg.com/d3@7"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+  <script src="https://unpkg.com/versor@0.2.0/build/versor.min.js"></script>
+  <script src="gazetteer.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -128,3 +128,24 @@ export function analogForBits(bits) {
   if (bits <= 128) return "≈ 3.4×10³⁸. Age of universe × 10²⁰+ at a trillion guesses/s.";
   return "≈ 1.16×10⁷⁷. Larger than atoms in the observable universe (~10⁸⁰ is close in log-space; 2²⁵⁶ is 10⁷⁷).";
 }
+
+/** 3-D Morton (Z-order) de-interleave: 3k bits → (x,y,z) on a 2^k grid. */
+export function morton3(index, order = 7) {
+  let x = 0;
+  let y = 0;
+  let z = 0;
+  for (let i = 0; i < order; i++) {
+    x |= ((index >>> (3 * i)) & 1) << i;
+    y |= ((index >>> (3 * i + 1)) & 1) << i;
+    z |= ((index >>> (3 * i + 2)) & 1) << i;
+  }
+  return { x, y, z };
+}
+
+/** Canonical keyspace projection: top 21 ENT bits → Morton cell in a 128³ grid. */
+export function keyProjection(bytes, order = 7) {
+  const idx = prefixBits(bytes, order * 3);
+  const m = morton3(idx, order);
+  const max = (1 << order) - 1;
+  return { x: m.x / max, y: m.y / max, z: m.z / max, index: idx };
+}

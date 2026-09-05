@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NFT On-Chain Viewer</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121933;
+      --panel-2: #192247;
+      --text: #e8ecff;
+      --muted: #a9b3d9;
+      --line: #2b376d;
+      --accent: #6ea8fe;
+      --accent-2: #8b5cf6;
+      --good: #2dd4bf;
+      --warn: #fbbf24;
+      --bad: #f87171;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, #18245e 0, var(--bg) 36%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(110,168,254,.12);
+      color: #cfe0ff;
+      border: 1px solid rgba(110,168,254,.24);
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      line-height: 1.05;
+    }
+
+    .sub {
+      margin: 0;
+      color: var(--muted);
+      max-width: 850px;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.015);
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .card-body { padding: 20px; }
+
+    .form {
+      display: grid;
+      gap: 16px;
+    }
+
+    label {
+      display: grid;
+      gap: 8px;
+      font-size: 14px;
+      color: #dce5ff;
+    }
+
+    input, select, button, textarea {
+      font: inherit;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      color: var(--text);
+      padding: 12px 14px;
+      outline: none;
+      transition: .18s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(110,168,254,.12);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 540px) {
+      .row { grid-template-columns: 1fr; }
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: transform .08s ease, opacity .18s ease, box-shadow .18s ease;
+      font-weight: 600;
+    }
+
+    button:hover { opacity: .96; }
+    button:active { transform: translateY(1px); }
+    button:disabled { opacity: .6; cursor: not-allowed; }
+
+    .primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      box-shadow: 0 10px 24px rgba(111, 136, 255, .24);
+    }
+
+    .secondary {
+      background: #202b58;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .result {
+      display: grid;
+      gap: 18px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      min-height: 48px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--muted);
+      flex: 0 0 auto;
+    }
+
+    .dot.good { background: var(--good); }
+    .dot.warn { background: var(--warn); }
+    .dot.bad { background: var(--bad); }
+
+    .nft-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .nft-grid { grid-template-columns: 1fr; }
+    }
+
+    .preview {
+      background: linear-gradient(180deg, #101735, #0f1530);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      min-height: 340px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #0b1124;
+    }
+
+    .preview-empty {
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 700px) {
+      .meta-grid { grid-template-columns: 1fr; }
+    }
+
+    .field {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .field .k {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .field .v {
+      word-break: break-word;
+      line-height: 1.55;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: .92rem;
+    }
+
+    .pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .pill {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(45,212,191,.1);
+      border: 1px solid rgba(45,212,191,.25);
+      color: #cbfff4;
+      font-size: 12px;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #0d1329;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      overflow: auto;
+      max-height: 420px;
+      color: #dbe7ff;
+    }
+
+    a {
+      color: #9cc3ff;
+      text-decoration: none;
+    }
+
+    a:hover { text-decoration: underline; }
+
+    .footnote {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="badge">Standalone EVM NFT Viewer · No external JS libraries</div>
+      <h1>View NFT details directly from chain</h1>
+      <p class="sub">
+        Enter an EVM RPC URL, NFT contract address, and token ID to read ERC-721 or ERC-1155 details on-chain.
+        The app calls JSON-RPC directly using <span class="mono">eth_call</span>, then resolves metadata from the returned token URI.
+      </p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="card-head"><h2>Lookup</h2></div>
+        <div class="card-body">
+          <div class="form">
+            <label>
+              Network preset
+              <select id="preset">
+                <option value="custom">Custom RPC URL</option>
+                <option value="https://ethereum-rpc.publicnode.com">Ethereum</option>
+                <option value="https://polygon-rpc.com">Polygon</option>
+                <option value="https://mainnet.base.org">Base</option>
+                <option value="https://arb1.arbitrum.io/rpc">Arbitrum</option>
+                <option value="https://mainnet.optimism.io">Optimism</option>
+              </select>
+            </label>
+
+            <label>
+              RPC URL
+              <input id="rpcUrl" placeholder="https://ethereum-rpc.publicnode.com" value="https://ethereum-rpc.publicnode.com" />
+            </label>
+
+            <label>
+              NFT contract address
+              <input id="contract" placeholder="0x..." />
+            </label>
+
+            <label>
+              Token ID
+              <input id="tokenId" placeholder="e.g. 1" value="1" />
+            </label>
+
+            <div class="actions">
+              <button id="loadBtn" class="primary">Load NFT</button>
+              <button id="exampleBtn" class="secondary" type="button">Load example</button>
+              <button id="clearBtn" class="secondary" type="button">Clear</button>
+            </div>
+
+            <div class="hint">
+              Works best with ERC-721 and ERC-1155 contracts on Ethereum-compatible chains.
+              If metadata uses <span class="mono">ipfs://</span> or <span class="mono">ar://</span>, the viewer converts it to a public gateway URL.
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head"><h2>Result</h2></div>
+        <div class="card-body result">
+          <div id="status" class="status"><span class="dot"></span><span>Ready.</span></div>
+
+          <div class="nft-grid">
+            <div>
+              <div id="preview" class="preview">
+                <div class="preview-empty">
+                  NFT image or animation preview will appear here after a successful lookup.
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div id="summary" class="meta-grid"></div>
+              <div id="standards" class="pills"></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="k">Resolved metadata URI</div>
+            <div id="metadataUri" class="v mono">—</div>
+          </div>
+
+          <div class="field">
+            <div class="k">Metadata JSON</div>
+            <pre id="metadataJson">{}</pre>
+          </div>
+
+          <div class="footnote">
+            Note: the Arena preview iframe blocks network access, so live blockchain lookups may not work inside the in-app preview.
+            Open the file in a normal browser to use the app normally.
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+
+  <script>
+    const ERC165_ID = '0x01ffc9a7';
+    const ERC721_ID = '0x80ac58cd';
+    const ERC1155_ID = '0xd9b67a26';
+
+    const el = {
+      preset: document.getElementById('preset'),
+      rpcUrl: document.getElementById('rpcUrl'),
+      contract: document.getElementById('contract'),
+      tokenId: document.getElementById('tokenId'),
+      loadBtn: document.getElementById('loadBtn'),
+      exampleBtn: document.getElementById('exampleBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      status: document.getElementById('status'),
+      preview: document.getElementById('preview'),
+      summary: document.getElementById('summary'),
+      standards: document.getElementById('standards'),
+      metadataUri: document.getElementById('metadataUri'),
+      metadataJson: document.getElementById('metadataJson')
+    };
+
+    el.preset.addEventListener('change', () => {
+      if (el.preset.value !== 'custom') {
+        el.rpcUrl.value = el.preset.value;
+      }
+    });
+
+    el.exampleBtn.addEventListener('click', () => {
+      el.rpcUrl.value = 'https://ethereum-rpc.publicnode.com';
+      el.preset.value = 'https://ethereum-rpc.publicnode.com';
+      el.contract.value = '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d';
+      el.tokenId.value = '1';
+      setStatus('Example loaded. Click “Load NFT”.', 'warn');
+    });
+
+    el.clearBtn.addEventListener('click', clearResult);
+    el.loadBtn.addEventListener('click', onLoad);
+
+    function setStatus(text, tone = '') {
+      const toneClass = tone ? `dot ${tone}` : 'dot';
+      el.status.innerHTML = `<span class="${toneClass}"></span><span>${escapeHtml(text)}</span>`;
+    }
+
+    function clearResult() {
+      setStatus('Ready.');
+      el.summary.innerHTML = '';
+      el.standards.innerHTML = '';
+      el.metadataUri.textContent = '—';
+      el.metadataJson.textContent = '{}';
+      el.preview.innerHTML = '<div class="preview-empty">NFT image or animation preview will appear here after a successful lookup.</div>';
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function normalizeAddress(addr) {
+      if (!addr) return '';
+      const v = addr.trim();
+      if (!/^0x[a-fA-F0-9]{40}$/.test(v)) throw new Error('Invalid contract address.');
+      return v;
+    }
+
+    function normalizeTokenId(value) {
+      const v = value.trim();
+      if (!/^\d+$/.test(v)) throw new Error('Token ID must be a non-negative integer in decimal form.');
+      return BigInt(v);
+    }
+
+    function toHexNoPrefix(value) {
+      return value.toString(16);
+    }
+
+    function pad64(hexNoPrefix) {
+      return hexNoPrefix.padStart(64, '0');
+    }
+
+    function encodeUint256(value) {
+      return pad64(toHexNoPrefix(BigInt(value)));
+    }
+
+    function encodeBytes4(bytes4) {
+      const clean = bytes4.replace(/^0x/, '');
+      if (clean.length !== 8) throw new Error('Invalid bytes4 value.');
+      return clean.padEnd(64, '0');
+    }
+
+    function dataFor(selector, encodedArgs = '') {
+      return selector + encodedArgs;
+    }
+
+    function hexToBytes(hex) {
+      const clean = hex.replace(/^0x/, '');
+      if (clean.length % 2 !== 0) throw new Error('Invalid hex length.');
+      const bytes = new Uint8Array(clean.length / 2);
+      for (let i = 0; i < clean.length; i += 2) {
+        bytes[i / 2] = parseInt(clean.slice(i, i + 2), 16);
+      }
+      return bytes;
+    }
+
+    function decodeBool(hex) {
+      const clean = hex.replace(/^0x/, '');
+      if (clean.length < 64) return false;
+      return BigInt('0x' + clean.slice(clean.length - 64)) !== 0n;
+    }
+
+    function decodeAddress(hex) {
+      const clean = hex.replace(/^0x/, '');
+      if (clean.length < 64) throw new Error('Invalid ABI address response.');
+      return '0x' + clean.slice(clean.length - 40);
+    }
+
+    function decodeUint(hex) {
+      const clean = hex.replace(/^0x/, '');
+      if (clean.length < 64) throw new Error('Invalid ABI uint response.');
+      return BigInt('0x' + clean.slice(0, 64));
+    }
+
+    function decodeString(hex) {
+      const clean = hex.replace(/^0x/, '');
+      if (!clean) return '';
+      if (clean.length < 128) {
+        const bytes = hexToBytes('0x' + clean);
+        return new TextDecoder().decode(bytes).replace(/\0+$/g, '');
+      }
+      const offsetWords = Number(BigInt('0x' + clean.slice(0, 64)) / 32n);
+      const lenStart = offsetWords * 64;
+      const len = Number(BigInt('0x' + clean.slice(lenStart, lenStart + 64)));
+      const dataStart = lenStart + 64;
+      const dataHex = clean.slice(dataStart, dataStart + len * 2);
+      return new TextDecoder().decode(hexToBytes('0x' + dataHex));
+    }
+
+    function ipfsToHttp(uri) {
+      return uri.replace(/^ipfs:\/\//i, 'https://ipfs.io/ipfs/');
+    }
+
+    function arToHttp(uri) {
+      return uri.replace(/^ar:\/\//i, 'https://arweave.net/');
+    }
+
+    function resolveUri(uri) {
+      if (!uri) return '';
+      let out = uri.trim();
+      if (out.startsWith('ipfs://')) out = ipfsToHttp(out);
+      if (out.startsWith('ar://')) out = arToHttp(out);
+      return out;
+    }
+
+    function resolve1155UriTemplate(uri, tokenId) {
+      const hexId = tokenId.toString(16).padStart(64, '0');
+      return uri.replace(/\{id\}/g, hexId);
+    }
+
+    async function rpcRequest(rpcUrl, method, params) {
+      const res = await fetch(rpcUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: Date.now(), method, params })
+      });
+      const json = await res.json();
+      if (json.error) {
+        throw new Error(json.error.message || 'RPC error');
+      }
+      return json.result;
+    }
+
+    async function ethCall(rpcUrl, to, data) {
+      return rpcRequest(rpcUrl, 'eth_call', [{ to, data }, 'latest']);
+    }
+
+    async function getCode(rpcUrl, address) {
+      return rpcRequest(rpcUrl, 'eth_getCode', [address, 'latest']);
+    }
+
+    async function safeRead(rpcUrl, address, selector, args = '', decoder = x => x) {
+      try {
+        const raw = await ethCall(rpcUrl, address, dataFor(selector, args));
+        if (!raw || raw === '0x') return null;
+        return decoder(raw);
+      } catch {
+        return null;
+      }
+    }
+
+    async function supportsInterface(rpcUrl, address, ifaceId) {
+      const result = await safeRead(rpcUrl, address, ERC165_ID, encodeBytes4(ifaceId), decodeBool);
+      return Boolean(result);
+    }
+
+    async function onLoad() {
+      clearResult();
+      try {
+        const rpcUrl = el.rpcUrl.value.trim();
+        const contract = normalizeAddress(el.contract.value);
+        const tokenId = normalizeTokenId(el.tokenId.value);
+
+        if (!rpcUrl) throw new Error('RPC URL is required.');
+
+        setStatus('Checking contract code...', 'warn');
+        el.loadBtn.disabled = true;
+
+        const code = await getCode(rpcUrl, contract);
+        if (!code || code === '0x') throw new Error('No contract code found at that address on the selected network.');
+
+        setStatus('Detecting NFT standard...', 'warn');
+
+        const [is721, is1155] = await Promise.all([
+          supportsInterface(rpcUrl, contract, ERC721_ID),
+          supportsInterface(rpcUrl, contract, ERC1155_ID)
+        ]);
+
+        const name = await safeRead(rpcUrl, contract, '0x06fdde03', '', decodeString);
+        const symbol = await safeRead(rpcUrl, contract, '0x95d89b41', '', decodeString);
+        const owner = is721
+          ? await safeRead(rpcUrl, contract, '0x6352211e', encodeUint256(tokenId), decodeAddress)
+          : null;
+
+        let tokenUri = null;
+        let standard = 'Unknown / custom NFT';
+
+        if (is721) {
+          standard = 'ERC-721';
+          tokenUri = await safeRead(rpcUrl, contract, '0xc87b56dd', encodeUint256(tokenId), decodeString);
+        }
+
+        if (!tokenUri && is1155) {
+          standard = is721 ? 'ERC-721 + ERC-1155' : 'ERC-1155';
+          const raw1155 = await safeRead(rpcUrl, contract, '0x0e89341c', encodeUint256(tokenId), decodeString);
+          if (raw1155) tokenUri = resolve1155UriTemplate(raw1155, tokenId);
+        }
+
+        const resolvedTokenUri = resolveUri(tokenUri || '');
+
+        setStatus('Fetching metadata...', 'warn');
+        let metadata = null;
+        if (resolvedTokenUri) {
+          const response = await fetch(resolvedTokenUri);
+          if (!response.ok) throw new Error(`Metadata request failed: ${response.status} ${response.statusText}`);
+          metadata = await response.json();
+        }
+
+        renderResult({
+          rpcUrl,
+          contract,
+          tokenId: tokenId.toString(),
+          standard,
+          is721,
+          is1155,
+          name,
+          symbol,
+          owner,
+          tokenUri,
+          resolvedTokenUri,
+          metadata
+        });
+
+        setStatus('NFT loaded successfully.', 'good');
+      } catch (err) {
+        console.error(err);
+        setStatus(err.message || 'Failed to load NFT.', 'bad');
+      } finally {
+        el.loadBtn.disabled = false;
+      }
+    }
+
+    function formatValue(value) {
+      if (value === null || value === undefined || value === '') return '—';
+      return escapeHtml(String(value));
+    }
+
+    function linkIfUrl(value) {
+      if (!value) return '—';
+      const safe = escapeHtml(String(value));
+      if (/^https?:\/\//i.test(value)) {
+        return `<a href="${safe}" target="_blank" rel="noreferrer">${safe}</a>`;
+      }
+      return safe;
+    }
+
+    function addField(label, value, opts = {}) {
+      const div = document.createElement('div');
+      div.className = 'field';
+      div.innerHTML = `
+        <div class="k">${escapeHtml(label)}</div>
+        <div class="v ${opts.mono ? 'mono' : ''}">${opts.html ? value : formatValue(value)}</div>
+      `;
+      el.summary.appendChild(div);
+    }
+
+    function renderPreview(metadata) {
+      if (!metadata) {
+        el.preview.innerHTML = '<div class="preview-empty">No metadata image found for this token.</div>';
+        return;
+      }
+
+      const image = resolveUri(metadata.image || metadata.image_url || metadata.imageUrl || '');
+      const animation = resolveUri(metadata.animation_url || metadata.animationUrl || '');
+
+      if (image) {
+        el.preview.innerHTML = `<img alt="NFT preview" src="${escapeHtml(image)}" />`;
+        return;
+      }
+
+      if (animation) {
+        el.preview.innerHTML = `
+          <div class="preview-empty">
+            Animation URL found.<br />
+            <a href="${escapeHtml(animation)}" target="_blank" rel="noreferrer">Open animation</a>
+          </div>
+        `;
+        return;
+      }
+
+      el.preview.innerHTML = '<div class="preview-empty">No image or animation URL found in metadata.</div>';
+    }
+
+    function renderResult(data) {
+      el.summary.innerHTML = '';
+      el.standards.innerHTML = '';
+
+      addField('Network RPC', data.rpcUrl, { mono: true });
+      addField('Contract', data.contract, { mono: true });
+      addField('Token ID', data.tokenId, { mono: true });
+      addField('Detected standard', data.standard);
+      addField('Collection name', data.name || '—');
+      addField('Symbol', data.symbol || '—');
+      addField('Owner', data.owner || '—', { mono: true });
+      addField('Token URI', data.tokenUri || '—', { mono: true });
+
+      if (data.metadata) {
+        addField('Metadata name', data.metadata.name || '—');
+        addField('Metadata description', data.metadata.description || '—');
+        addField('External URL', linkIfUrl(resolveUri(data.metadata.external_url || data.metadata.externalUrl || '')), { html: true });
+      }
+
+      const pills = [];
+      if (data.is721) pills.push('ERC-721 supported');
+      if (data.is1155) pills.push('ERC-1155 supported');
+      if (!pills.length) pills.push('No ERC-165 NFT interface detected');
+      el.standards.innerHTML = pills.map(p => `<span class="pill">${escapeHtml(p)}</span>`).join('');
+
+      el.metadataUri.innerHTML = data.resolvedTokenUri ? linkIfUrl(data.resolvedTokenUri) : '—';
+      el.metadataJson.textContent = JSON.stringify(data.metadata || {}, null, 2);
+      renderPreview(data.metadata);
+    }
+  </script>
+</body>
+</html>

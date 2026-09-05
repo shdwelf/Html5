@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banano Paper Wallet Generator & Rare MonKey Scanner</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Libraries (Local Fallbacks for Sandbox Iframe Preview) -->
+  <script src="qrious.min.js"></script>
+  <script src="bananocoin-bananojs.js"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background-color: #fefcf0;
+    }
+    
+    .font-fredoka {
+      font-family: 'Fredoka One', cursive;
+    }
+    
+    /* Printable Card Styling - exact layout for print */
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      
+      .print-hidden {
+        display: none !important;
+      }
+      
+      .print-page-break {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        page-break-after: always;
+        break-after: always;
+      }
+      
+      .print-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+      }
+      
+      .print-card-row {
+        display: table !important;
+        width: 100% !important;
+        margin-bottom: 20px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border-bottom: 1px dashed #ccc;
+        padding-bottom: 20px;
+      }
+    }
+    
+    /* Animation for scanning and hitting a rare wallet */
+    @keyframes gold-glow {
+      0%, 100% { box-shadow: 0 0 5px rgba(250, 204, 21, 0.4); }
+      50% { box-shadow: 0 0 25px rgba(250, 204, 21, 0.9); }
+    }
+    .rare-glow {
+      animation: gold-glow 2s infinite;
+      border: 3px solid #facc15 !important;
+    }
+    
+    @keyframes flame-glow {
+      0%, 100% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.5); }
+      50% { box-shadow: 0 0 25px rgba(249, 115, 22, 1); }
+    }
+    .flame-glow {
+      animation: flame-glow 1.5s infinite;
+      border: 3px solid #f97316 !important;
+      background: linear-gradient(to right, #ffffff, #fff7ed) !important;
+    }
+    
+    @keyframes jester-glow {
+      0%, 100% { box-shadow: 0 0 8px rgba(168, 85, 247, 0.5); }
+      50% { box-shadow: 0 0 25px rgba(236, 72, 153, 1); }
+    }
+    .jester-glow {
+      animation: jester-glow 1.8s infinite;
+      border: 3px solid #ec4899 !important;
+      background: linear-gradient(to right, #ffffff, #fdf2f8) !important;
+    }
+
+    @keyframes royal-glow {
+      0%, 100% { box-shadow: 0 0 8px rgba(234, 179, 8, 0.5); }
+      50% { box-shadow: 0 0 25px rgba(250, 204, 21, 1); }
+    }
+    .royal-glow {
+      animation: royal-glow 2s infinite;
+      border: 3px solid #eab308 !important;
+      background: linear-gradient(to right, #ffffff, #fefce8) !important;
+    }
+    
+    /* Custom Scrollbar for list */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #fefce8;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #fef08a;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #fde047;
+    }
+  </style>
+</head>
+<body class="text-gray-800 selection:bg-yellow-200 selection:text-yellow-900">
+
+  <!-- Print-only Header -->
+  <div class="hidden print:block text-center mb-6">
+    <h1 class="text-2xl font-bold font-fredoka text-yellow-600">BANANO PAPER WALLETS</h1>
+    <p class="text-xs text-gray-500">Keep your private seed secret! Use Kalium or BananoNault to sweep/import funds.</p>
+  </div>
+
+  <div class="min-h-screen flex flex-col print:p-0">
+    
+    <!-- Navbar -->
+    <nav class="bg-yellow-400 border-b-4 border-yellow-500 shadow-md print:hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <span class="text-4xl">🍌</span>
+          <div>
+            <span class="text-2xl font-fredoka tracking-wider text-yellow-950 block leading-tight">BANANO</span>
+            <span class="text-xs font-bold text-yellow-800 uppercase tracking-widest">Paper Wallet Generator & Scanner</span>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="scanned_wallets.html" target="_blank" class="text-sm font-semibold text-yellow-950 bg-yellow-200/50 hover:bg-yellow-200 px-4 py-2 rounded-xl transition border border-yellow-300">
+            📊 View Scan Report
+          </a>
+          <span class="bg-yellow-900 text-yellow-100 text-xs px-2.5 py-1 rounded-full font-bold uppercase tracking-wide">v1.0 - HTML5</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 print:p-0 print:m-0 print:max-w-full">
+      
+      <!-- Top Alert / Network Status -->
+      <div id="offline-alert" class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-xl mb-6 flex items-start print:hidden">
+        <span class="text-xl mr-3">🔌</span>
+        <div>
+          <h3 class="text-sm font-bold text-blue-800">Secure Offline Sandbox Mode</h3>
+          <p class="text-xs text-blue-700 mt-0.5 leading-relaxed">
+            Generating cryptographic keys and QR codes is 100% local, offline, and secure. 
+            <span class="font-semibold">Live MonKeys</span> and <span class="font-semibold">accessory details</span> require a network connection. 
+            If opened in an offline sandbox, a beautiful, unique procedural MonKey fallback will render instead!
+          </p>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 print:block">
+        
+        <!-- Left Sidebar: Controls -->
+        <div class="lg:col-span-4 space-y-6 print:hidden">
+          
+          <!-- Generator Card -->
+          <div class="bg-white rounded-3xl p-6 border-2 border-gray-100 shadow-xl shadow-gray-100/50">
+            <h2 class="text-xl font-fredoka text-yellow-950 mb-4 flex items-center">
+              <span class="mr-2">🎛️</span> Generator Settings
+            </h2>
+            
+            <div class="space-y-4">
+              <!-- Design Option -->
+              <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Wallet Design</label>
+                <div class="grid grid-cols-2 gap-2" id="design-picker">
+                  <!-- Design buttons populated dynamically by JS -->
+                </div>
+              </div>
+              
+              <!-- Quantity Option -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Quantity</label>
+                  <span id="qty-badge" class="bg-yellow-100 text-yellow-900 font-bold px-2.5 py-0.5 rounded-lg text-xs">100</span>
+                </div>
+                <input id="qty-slider" type="range" min="1" max="250" value="100" class="w-full h-2 bg-yellow-100 rounded-lg appearance-none cursor-pointer accent-yellow-400">
+                <div class="flex justify-between text-[10px] text-gray-400 font-bold mt-1">
+                  <span>1 Wallet</span>
+                  <span>100</span>
+                  <span>250 Wallets</span>
+                </div>
+                <div class="grid grid-cols-4 gap-1.5 mt-2">
+                  <button onclick="setQty(1)" class="bg-gray-50 hover:bg-gray-100 py-1 rounded text-xs font-bold text-gray-600 transition">1</button>
+                  <button onclick="setQty(5)" class="bg-gray-50 hover:bg-gray-100 py-1 rounded text-xs font-bold text-gray-600 transition">5</button>
+                  <button onclick="setQty(25)" class="bg-gray-50 hover:bg-gray-100 py-1 rounded text-xs font-bold text-gray-600 transition">25</button>
+                  <button onclick="setQty(100)" class="bg-gray-50 hover:bg-gray-100 py-1 rounded text-xs font-bold text-gray-600 transition">100</button>
+                </div>
+              </div>
+              
+              <!-- Action Button -->
+              <button id="btn-generate" onclick="generateBatch()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-yellow-950 font-fredoka py-4 rounded-2xl shadow-lg shadow-yellow-400/20 active:scale-95 transition flex items-center justify-center space-x-2 text-lg">
+                <span>🍌</span>
+                <span>Generate Wallets</span>
+              </button>
+              
+              <button onclick="window.print()" class="w-full bg-gray-900 hover:bg-gray-950 text-white font-bold py-3.5 rounded-2xl shadow-lg active:scale-95 transition flex items-center justify-center space-x-2 text-sm">
+                <span>🖨️</span>
+                <span>Print All Generated</span>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Rare Attribute Scanner & Stats -->
+          <div class="bg-white rounded-3xl p-6 border-2 border-gray-100 shadow-xl shadow-gray-100/50">
+            <h2 class="text-xl font-fredoka text-yellow-950 mb-4 flex items-center">
+              <span class="mr-2">🔍</span> Rare Attribute Scanner
+            </h2>
+            
+            <div class="grid grid-cols-2 gap-3 mb-6">
+              <div class="bg-amber-50/50 p-3 rounded-2xl border border-amber-100">
+                <span class="text-xs text-gray-400 font-bold uppercase block tracking-wider">Total Scanned</span>
+                <span id="stat-scanned" class="text-2xl font-bold text-gray-800 font-mono">0</span>
+              </div>
+              <div class="bg-yellow-50 p-3 rounded-2xl border border-yellow-100">
+                <span class="text-xs text-yellow-600 font-bold uppercase block tracking-wider">Rare Found</span>
+                <span id="stat-rare" class="text-2xl font-bold text-yellow-600 font-mono">0</span>
+              </div>
+              <div class="bg-orange-50 p-3 rounded-2xl border border-orange-100 col-span-2">
+                <span class="text-xs text-orange-600 font-bold uppercase block tracking-wider">Flamethrowers Found</span>
+                <span id="stat-flamethrower" class="text-2xl font-bold text-orange-600 font-fredoka">0</span>
+              </div>
+            </div>
+            
+            <!-- Brute Force Auto-Scanner -->
+            <div class="border-t border-gray-100 pt-4">
+              <h3 class="text-sm font-bold text-gray-800 mb-2 flex items-center justify-between">
+                <span>⚡ Auto-Brute-Forcer</span>
+                <span class="bg-red-100 text-red-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider" id="brute-status">IDLE</span>
+              </h3>
+              <p class="text-xs text-gray-500 mb-4 leading-relaxed">
+                Want a Flamethrower, Jester Hat, or Crown? Select your target, turn on auto-scanner, and we will brute force addresses until we strike potassium gold!
+              </p>
+              
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Target accessory</label>
+                  <select id="brute-target" class="w-full text-xs font-bold bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-gray-700 focus:outline-none focus:border-yellow-400">
+                    <option value="flamethrower">🔥 Flamethrower (0.1% chance)</option>
+                    <option value="jester">🃏 Jester Hat (0.07% chance)</option>
+                    <option value="crown">👑 Crown (1.1% chance)</option>
+                    <option value="monocle">🧐 Monocle (0.77% chance)</option>
+                    <option value="joint">🚬 Joint (1.0% chance)</option>
+                  </select>
+                </div>
+                
+                <button id="btn-brute" onclick="toggleBruteForce()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-yellow-950 font-bold py-2.5 rounded-xl text-xs tracking-wider transition uppercase flex items-center justify-center space-x-1">
+                  <span>🚀</span>
+                  <span id="brute-btn-text">Start Auto-Scanning</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        
+        <!-- Right Column: Results & Wallets -->
+        <div class="lg:col-span-8 space-y-6 print:block">
+          
+          <!-- Action controls for results list -->
+          <div class="flex items-center justify-between flex-wrap gap-4 print:hidden bg-white px-6 py-4 rounded-2xl border-2 border-gray-100 shadow-sm">
+            <h3 class="text-lg font-fredoka text-yellow-950">
+              Generated List (<span id="results-count">0</span> Wallets)
+            </h3>
+            <div class="flex items-center space-x-2">
+              <label class="text-xs font-bold text-gray-500 uppercase">Filter:</label>
+              <select id="filter-select" onchange="renderResults()" class="text-xs font-bold bg-gray-50 border border-gray-200 rounded-lg p-2 text-gray-700 focus:outline-none">
+                <option value="all">Show All</option>
+                <option value="rare">Show Rare Only</option>
+                <option value="flamethrower">Show Flamethrowers Only</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="empty-state" class="bg-white rounded-3xl p-12 text-center border-2 border-dashed border-yellow-200 shadow-sm print:hidden">
+            <span class="text-6xl block mb-4">🍌</span>
+            <h3 class="text-xl font-bold text-yellow-950 font-fredoka">No Wallets Generated Yet</h3>
+            <p class="text-sm text-gray-500 mt-2 max-w-md mx-auto">
+              Select your design and quantity on the left sidebar, and click "Generate Wallets" to create secure cryptographic keys with matching custom MonKeys!
+            </p>
+          </div>
+
+          <!-- Wallets Container -->
+          <div id="wallets-list" class="space-y-6 print:block">
+            <!-- Wallets list items populated by JS -->
+          </div>
+          
+        </div>
+        
+      </div>
+      
+    </div>
+    
+  </div>
+
+  <!-- Script logic -->
+  <script>
+    // Config and variables
+    const DESIGNS = [
+      { name: "Yellow & Gray", slug: "gray-yellow", listNumber: 1, qrMarginClasses: "mt-[32.8%] mr-[16.43%]" },
+      { name: "Green & White", slug: "green-white", listNumber: 2, qrMarginClasses: "mt-[32.8%] mr-[18.25%]" },
+      { name: "Green & Gray", slug: "gray-green", listNumber: 3, qrMarginClasses: "mt-[32.8%] mr-[16.43%]" },
+      { name: "Christmas", slug: "christmas", listNumber: 4, qrMarginClasses: "mt-[20.7%] mr-[15.47%]" }
+    ];
+    
+    let activeDesignIndex = 0;
+    let generatedWallets = [{"index":1,"seed":"0E388C59C6C13EFFFBACC82226B0B5D30EFA69A1E4A089960132B03CD5D5134E","address":"ban_1uixawoyazjacutku3dj7yyg7x989fgcp11iejj5nwxpo1mebzr3qr754n66","accessories":{"background_color":"#f2cdef","color_arms-[fur-color][shadow-fur].svg":"#fc63bc","color_body-upper-[fur-color][shadow-fur].svg":"#fc63bc","color_eyes-[eye-color][shadow-iris].svg":"#14d6b2","color_face-[fur-color][shadow-fur].svg":"#fc63bc","color_legs-[fur-color][shadow-fur].svg":"#fc63bc","color_tail-[fur-color][shadow-fur-dark].svg":"#fc63bc","glasses":"none","hat":"none","misc":"camera-[above-shirts-pants][w-1].svg","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":2,"seed":"02FEA4AE738B648AA2374270620AE945111F980A76F54B45FB2BF25CBBBB5125","address":"ban_1ie3ww4zjojxb5gbmytcz6iw4qkmjs1yjg9g16ardyhdtrixror88dws9cji","accessories":{"background_color":"#bef2d8","color_arms-[fur-color][shadow-fur].svg":"#117867","color_body-upper-[fur-color][shadow-fur].svg":"#117867","color_eyes-[eye-color][shadow-iris].svg":"#de8732","color_face-[fur-color][shadow-fur].svg":"#117867","color_legs-[fur-color][shadow-fur].svg":"#117867","color_tail-[fur-color][shadow-fur-dark].svg":"#117867","glasses":"none","hat":"fedora-[w-1].svg","misc":"banana-right-hand-[above-hands][removes-hand-right][w-1].svg","mouth":"cigar-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":["Cigar (Uncommon Mouth)"],"isRare":true,"designIndex":2},{"index":3,"seed":"4CB5382590E53ABC6A12261894F0D1D3B3EA95B453C79D7648035A8F25102583","address":"ban_1h8e41h75iinzgse1s79myghe3hhnd4at6b7d6knu6nxkfkenia8dy53iczt","accessories":{"background_color":"#c4bdf2","color_arms-[fur-color][shadow-fur].svg":"#370e67","color_body-upper-[fur-color][shadow-fur].svg":"#370e67","color_eyes-[eye-color][shadow-iris].svg":"#a97f24","color_face-[fur-color][shadow-fur].svg":"#370e67","color_legs-[fur-color][shadow-fur].svg":"#370e67","color_tail-[fur-color][shadow-fur-dark].svg":"#370e67","glasses":"none","hat":"cap-[w-0.8].svg","misc":"camera-[above-shirts-pants][w-1].svg","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":3},{"index":4,"seed":"5660F9570A5F13FB8AB3BD67B957E0F9A25576EB77E74DF66607A0B00C4DCB32","address":"ban_341m6zymewbhix94gzemfb59mqdj359169m8w69bi6tefei5tothkuhj6er4","accessories":{"background_color":"#f2ddc9","color_arms-[fur-color][shadow-fur].svg":"#f2d551","color_body-upper-[fur-color][shadow-fur].svg":"#f2d551","color_eyes-[eye-color][shadow-iris].svg":"#f18b59","color_face-[fur-color][shadow-fur].svg":"#f2d551","color_legs-[fur-color][shadow-fur].svg":"#f2d551","color_tail-[fur-color][shadow-fur-dark].svg":"#f2d551","glasses":"glasses-nerd-cyan-[w-1].svg","hat":"none","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":5,"seed":"1214584D10B2C149D546C11B46ADAD16139A5EBC400559E200D2574F15B32193","address":"ban_34h9y7so58k9ckqaumafiubkm7kwur4on8o8ab7w1rc5bq3ai3ajwgnaiz41","accessories":{"background_color":"#b8f2bc","color_arms-[fur-color][shadow-fur].svg":"#0df668","color_body-upper-[fur-color][shadow-fur].svg":"#0df668","color_eyes-[eye-color][shadow-iris].svg":"#3c5243","color_face-[fur-color][shadow-fur].svg":"#0df668","color_legs-[fur-color][shadow-fur].svg":"#0df668","color_tail-[fur-color][shadow-fur-dark].svg":"#0df668","glasses":"none","hat":"none","misc":"club-[above-hands][removes-hands][w-1].svg","mouth":"smile-tongue-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":6,"seed":"47C619F00B6AA580705FF20D5878F363FD15EAA6AE18E747520E77A9672E1EC6","address":"ban_359xp1zgeh8ziech3s3tm5j83rgznyyjq5ng98y68bxzz9gj3pinn131qh5d","accessories":{"background_color":"#bbd3f2","color_arms-[fur-color][shadow-fur].svg":"#1123be","color_body-upper-[fur-color][shadow-fur].svg":"#1123be","color_eyes-[eye-color][shadow-iris].svg":"#b6e102","color_face-[fur-color][shadow-fur].svg":"#1123be","color_legs-[fur-color][shadow-fur].svg":"#1123be","color_tail-[fur-color][shadow-fur-dark].svg":"#1123be","glasses":"sunglasses-aviator-yellow-[removes-eyes][w-1].svg","hat":"none","misc":"camera-[above-shirts-pants][w-1].svg","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":7,"seed":"1C37401F22942CBF500F9285CDC395FDCAE8ED69AB35C29E06A2CE82314EADDD","address":"ban_1j4ihrgxpxfartuuzg3gfeytz84r1gbxsdxyyfx5qwurxd7g7jmuygjib8i6","accessories":{"background_color":"#f2c9d0","color_arms-[fur-color][shadow-fur].svg":"#eb664c","color_body-upper-[fur-color][shadow-fur].svg":"#eb664c","color_eyes-[eye-color][shadow-iris].svg":"#1249df","color_face-[fur-color][shadow-fur].svg":"#eb664c","color_legs-[fur-color][shadow-fur].svg":"#eb664c","color_tail-[fur-color][shadow-fur-dark].svg":"#eb664c","glasses":"none","hat":"crown-[unique][w-0.225].svg","misc":"none","mouth":"cigar-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":["Crown (Rare Hat - 1.1% overall)","Cigar (Uncommon Mouth)"],"isRare":true,"designIndex":3},{"index":8,"seed":"4622E31CB4467FCC4C8E07B7DC52C18CBEDA3A90473413350327FCA45FA9B0B1","address":"ban_1afa8ajfrt6z9o7f3puhm7but17k6k35xen3zu7p49rpuhpx3y3oikaqcxpi","accessories":{"background_color":"#c3eaf2","color_arms-[fur-color][shadow-fur].svg":"#2972b9","color_body-upper-[fur-color][shadow-fur].svg":"#2972b9","color_eyes-[eye-color][shadow-iris].svg":"#d8da17","color_face-[fur-color][shadow-fur].svg":"#2972b9","color_legs-[fur-color][shadow-fur].svg":"#2972b9","color_tail-[fur-color][shadow-fur-dark].svg":"#2972b9","glasses":"none","hat":"none","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"pants-flower-[removes-legs][w-1].svg","shoes":"sneakers-swagger-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":9,"seed":"0143B5B454C3DFE709D3450D66D9EB550A935C8229F265C1D35775D13514ECF9","address":"ban_3fxkgjjeu5tbszt7u8nkf8gn8xzf5oeygoodxnqguughj9dmra1uzskn9xmq","accessories":{"background_color":"#f2f2d8","color_arms-[fur-color][shadow-fur].svg":"#b2d076","color_body-upper-[fur-color][shadow-fur].svg":"#b2d076","color_eyes-[eye-color][shadow-iris].svg":"#c558be","color_face-[fur-color][shadow-fur].svg":"#b2d076","color_legs-[fur-color][shadow-fur].svg":"#b2d076","color_tail-[fur-color][shadow-fur-dark].svg":"#b2d076","glasses":"none","hat":"helmet-viking-[w-1].svg","misc":"banana-right-hand-[above-hands][removes-hand-right][w-1].svg","mouth":"cigar-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":["Cigar (Uncommon Mouth)"],"isRare":true,"designIndex":1},{"index":10,"seed":"F693CF70F645A11DFF8E84BAE7243CA676655FE63C45150DA05A0BA809A8665A","address":"ban_1enhtipbsaz74ee7cp16uqa1wssksjmntc4q1cuytqhj1htdbo4nxdgxcm57","accessories":{"background_color":"#e5f2c1","color_arms-[fur-color][shadow-fur].svg":"#72db29","color_body-upper-[fur-color][shadow-fur].svg":"#72db29","color_eyes-[eye-color][shadow-iris].svg":"#de71bb","color_face-[fur-color][shadow-fur].svg":"#72db29","color_legs-[fur-color][shadow-fur].svg":"#72db29","color_tail-[fur-color][shadow-fur-dark].svg":"#72db29","color_tail-sock-[colorable-random][w-1].svg":"#862a16","glasses":"glasses-nerd-pink-[w-1].svg","hat":"none","misc":"none","mouth":"smile-tongue-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":2},{"index":11,"seed":"DD280306AAE4D7D12124976C18A6738F733F5011C30EEA6C9F976F16CED23D91","address":"ban_3xx59p1p8gqjmfz86iddpp55shfrwjaz7fc7na3nt8njiohm8japqmh64zk9","accessories":{"background_color":"#d9f2d1","color_arms-[fur-color][shadow-fur].svg":"#5ac764","color_body-upper-[fur-color][shadow-fur].svg":"#5ac764","color_eyes-[eye-color][shadow-iris].svg":"#2df523","color_face-[fur-color][shadow-fur].svg":"#5ac764","color_legs-[fur-color][shadow-fur].svg":"#5ac764","color_tail-[fur-color][shadow-fur-dark].svg":"#5ac764","glasses":"none","hat":"bandana-[w-1].svg","misc":"banana-hands-[above-hands][removes-hands][w-1].svg","mouth":"cigar-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":["Cigar (Uncommon Mouth)"],"isRare":true,"designIndex":3},{"index":12,"seed":"ACF96EF96054C0E8F1D31C6F3FEFF9DAB635DA0C1C2CDE5A093FA939AC1DA1B6","address":"ban_3x5ddyierm6u73fqhpwa6poai1py7pk3m78gf3kn935e5ksh9foe5wg9om5w","accessories":{"background_color":"#f2dbb8","color_arms-[fur-color][shadow-fur].svg":"#e7da0c","color_body-upper-[fur-color][shadow-fur].svg":"#e7da0c","color_eyes-[eye-color][shadow-iris].svg":"#6f0bb3","color_face-[fur-color][shadow-fur].svg":"#e7da0c","color_legs-[fur-color][shadow-fur].svg":"#e7da0c","color_tail-[fur-color][shadow-fur-dark].svg":"#e7da0c","glasses":"none","hat":"none","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":13,"seed":"CC4E3282AB8A2F5D7E431B21AABCE99AEAEA3DBE65A39A0CA8006142DCBA3F19","address":"ban_1iwdi166qajccdbriczb3gqtm1r7cdodt3boqjej93srpum1x439uewz8jor","accessories":{"background_color":"#daf2e1","color_arms-[fur-color][shadow-fur].svg":"#cff7e9","color_body-upper-[fur-color][shadow-fur].svg":"#cff7e9","color_eyes-[eye-color][shadow-iris].svg":"#8395fc","color_face-[fur-color][shadow-fur].svg":"#cff7e9","color_legs-[fur-color][shadow-fur].svg":"#cff7e9","color_tail-[fur-color][shadow-fur-dark].svg":"#cff7e9","glasses":"none","hat":"none","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":14,"seed":"D22818932AADAFD3F0E6E1D09523081E429CF36049F7A86A8EA43F022785A4F3","address":"ban_1wtafzc77mjuefs9jyrfg51m8xonjm5p6agkqnj18dzqd9iwamfcms19j8h9","accessories":{"background_color":"#b8f2be","color_arms-[fur-color][shadow-fur].svg":"#0ae469","color_body-upper-[fur-color][shadow-fur].svg":"#0ae469","color_eyes-[eye-color][shadow-iris].svg":"#0ffa10","color_face-[fur-color][shadow-fur].svg":"#0ae469","color_legs-[fur-color][shadow-fur].svg":"#0ae469","color_tail-[fur-color][shadow-fur-dark].svg":"#0ae469","color_tail-sock-[colorable-random][w-1].svg":"#ecbeff","glasses":"none","hat":"cap-bebe-[w-0.8].svg","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"pants-flower-[removes-legs][w-1].svg","shoes":"sneakers-red-[removes-feet][w-1].svg","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":2},{"index":15,"seed":"0DEF1EF1FB4FD666DF88262EEB57143AC8196655309BB09E77A0A8A917A04081","address":"ban_3z1e14x1nhiq77bz9o1dehiqq4pxf4fxuppxh6zr8tcb387rursea6izap86","accessories":{"background_color":"#f2efbe","color_arms-[fur-color][shadow-fur].svg":"#b0ea21","color_body-upper-[fur-color][shadow-fur].svg":"#b0ea21","color_eyes-[eye-color][shadow-iris].svg":"#c3c790","color_face-[fur-color][shadow-fur].svg":"#b0ea21","color_legs-[fur-color][shadow-fur].svg":"#b0ea21","color_tail-[fur-color][shadow-fur-dark].svg":"#b0ea21","glasses":"glasses-nerd-green-[w-1].svg","hat":"none","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":3},{"index":16,"seed":"BC0CFCAADA29B31683A6C5E0E18A858B142297ACDA552C2256DB5D331E198D2F","address":"ban_3pmc1x7jeahequns134rtdm1j5cf5edxcr3xkepigphm8b5azojoh56nake6","accessories":{"background_color":"#e4daf2","color_arms-[fur-color][shadow-fur].svg":"#4a444c","color_body-upper-[fur-color][shadow-fur].svg":"#4a444c","color_eyes-[eye-color][shadow-iris].svg":"#bbe118","color_face-[fur-color][shadow-fur].svg":"#4a444c","color_legs-[fur-color][shadow-fur].svg":"#4a444c","color_tail-[fur-color][shadow-fur-dark].svg":"#4a444c","glasses":"none","hat":"none","misc":"necklace-boss-[above-shirts-pants][w-0.75].svg","mouth":"meh-[w-1].svg","shirt_pants":"pants-business-blue-[removes-legs][w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":17,"seed":"1307B61E140059F614426CC213171336AA7D6DD347817C5C07551C3F4985E8E3","address":"ban_376u1g1pw6qbnu9j8rdtksaefi1qxiftkp47m34aptxxfy9igdgs4bxbhkqi","accessories":{"background_color":"#f2daed","color_arms-[fur-color][shadow-fur].svg":"#f9c2dd","color_body-upper-[fur-color][shadow-fur].svg":"#f9c2dd","color_eyes-[eye-color][shadow-iris].svg":"#62ab66","color_face-[fur-color][shadow-fur].svg":"#f9c2dd","color_legs-[fur-color][shadow-fur].svg":"#f9c2dd","color_tail-[fur-color][shadow-fur-dark].svg":"#f9c2dd","glasses":"none","hat":"cap-smug-[w-0.8].svg","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":18,"seed":"DBFCC34C596BCF960ECFA8403321996EDC1B065D16EBEFEE6240C8FC8B3E790D","address":"ban_17y1mfiuy1t3191eafib5br457u5wnuf1zz8877ebsdhgx7cr7nictbdquap","accessories":{"background_color":"#b6f2e0","color_arms-[fur-color][shadow-fur].svg":"#01b8bf","color_body-upper-[fur-color][shadow-fur].svg":"#01b8bf","color_eyes-[eye-color][shadow-iris].svg":"#79da72","color_face-[fur-color][shadow-fur].svg":"#01b8bf","color_legs-[fur-color][shadow-fur].svg":"#01b8bf","color_tail-[fur-color][shadow-fur-dark].svg":"#01b8bf","glasses":"glasses-nerd-pink-[w-1].svg","hat":"none","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":19,"seed":"07E7E9181B9C54DE0085E64FB3C77CD3446DA26DF704F7954775E9E5C2E4334A","address":"ban_1dofd3bzofpf6bwn9sub7haj6kwmup15s6m4f76oxms9tcamr4mmusemswwc","accessories":{"background_color":"#e6f2c7","color_arms-[fur-color][shadow-fur].svg":"#85eb47","color_body-upper-[fur-color][shadow-fur].svg":"#85eb47","color_eyes-[eye-color][shadow-iris].svg":"#809b96","color_face-[fur-color][shadow-fur].svg":"#85eb47","color_legs-[fur-color][shadow-fur].svg":"#85eb47","color_tail-[fur-color][shadow-fur-dark].svg":"#85eb47","color_tail-sock-[colorable-random][w-1].svg":"#40bb37","glasses":"sunglasses-thug-[removes-eyes][w-1].svg","hat":"cap-backwards-[w-1].svg","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"sneakers-blue-[removes-feet][w-1].svg","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":3},{"index":20,"seed":"D8D83F1C2BCACB44B279967B6AE16FBA0FEF22FDE341DB6CCF955AAEF78BC6AA","address":"ban_13wxjgqgm8t6qe1ssmzdizw9bfkgiymd4s9jc8gsdq6nacoxo7cx6x983spd","accessories":{"background_color":"#c1f2e4","color_arms-[fur-color][shadow-fur].svg":"#29c7d0","color_body-upper-[fur-color][shadow-fur].svg":"#29c7d0","color_eyes-[eye-color][shadow-iris].svg":"#18f829","color_face-[fur-color][shadow-fur].svg":"#29c7d0","color_legs-[fur-color][shadow-fur].svg":"#29c7d0","color_tail-[fur-color][shadow-fur-dark].svg":"#29c7d0","glasses":"none","hat":"beanie-banano-[w-1].svg","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":21,"seed":"491713069D1877127D0858DC001968C0591B3966E177A7CA6F3E7A11834FA8B3","address":"ban_35beuk57z1cr89xbjrs7xrqft3u69exe7ytym5amjha3w36srauii83m7dn4","accessories":{"background_color":"#cef2c4","color_arms-[fur-color][shadow-fur].svg":"#2dba3e","color_body-upper-[fur-color][shadow-fur].svg":"#2dba3e","color_eyes-[eye-color][shadow-iris].svg":"#0a5a37","color_face-[fur-color][shadow-fur].svg":"#2dba3e","color_legs-[fur-color][shadow-fur].svg":"#2dba3e","color_tail-[fur-color][shadow-fur-dark].svg":"#2dba3e","glasses":"none","hat":"none","misc":"none","mouth":"cigar-[w-0.5].svg","shirt_pants":"none","shoes":"sneakers-green-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":["Cigar (Uncommon Mouth)"],"isRare":true,"designIndex":1},{"index":22,"seed":"CD29520E1B65B5FB7F71D63C927D4124375AB36EA2AB89E9795928E88D9F0DC9","address":"ban_17fh38dm35wkptdarexis1p5yuctsnprx81151x334gxxfpkxtsf1eweuzz6","accessories":{"background_color":"#f2dcda","color_arms-[fur-color][shadow-fur].svg":"#d6b39a","color_body-upper-[fur-color][shadow-fur].svg":"#d6b39a","color_eyes-[eye-color][shadow-iris].svg":"#da5030","color_face-[fur-color][shadow-fur].svg":"#d6b39a","color_legs-[fur-color][shadow-fur].svg":"#d6b39a","color_tail-[fur-color][shadow-fur-dark].svg":"#d6b39a","glasses":"none","hat":"none","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":23,"seed":"01DBAA7337F64947B329582F512AF0C7D976842B46583C4D06F007CA223CEEB1","address":"ban_1x3azwowzjrqfrssrqt4mfb91r6sry5xmmzat83w6dm4ewsei7ihyzct7jpo","accessories":{"background_color":"#d2f2d0","color_arms-[fur-color][shadow-fur].svg":"#4fb16a","color_body-upper-[fur-color][shadow-fur].svg":"#4fb16a","color_eyes-[eye-color][shadow-iris].svg":"#c3b94e","color_face-[fur-color][shadow-fur].svg":"#4fb16a","color_legs-[fur-color][shadow-fur].svg":"#4fb16a","color_tail-[fur-color][shadow-fur-dark].svg":"#4fb16a","color_tail-sock-[colorable-random][w-1].svg":"#ac82f6","glasses":"sunglasses-aviator-green-[removes-eyes][w-1].svg","hat":"none","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":3},{"index":24,"seed":"9A510197EF7E7C2480A4A60472190BB5BC1DC052993D917C5D6D74620EAA2192","address":"ban_141xfsiw3gawecy8fku3j74k3du855mmfkqek3rygsj93t5nzu911sroia58","accessories":{"background_color":"#b7c1f2","color_arms-[fur-color][shadow-fur].svg":"#2506cb","color_body-upper-[fur-color][shadow-fur].svg":"#2506cb","color_eyes-[eye-color][shadow-iris].svg":"#79027a","color_face-[fur-color][shadow-fur].svg":"#2506cb","color_legs-[fur-color][shadow-fur].svg":"#2506cb","color_tail-[fur-color][shadow-fur-dark].svg":"#2506cb","glasses":"none","hat":"fedora-[w-1].svg","misc":"tie-cyan-[above-shirts-pants][w-1].svg","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":25,"seed":"63FB8E206D05F7D767585779BA27C9FAC1E4B77D7D6BD72E949775ADF1326003","address":"ban_1mg34kmrhzp3e7g9i1ftesztrp874fo9to7mzan9xnpnmx3ntgw4xeha9m6f","accessories":{"background_color":"#c1c8f2","color_arms-[fur-color][shadow-fur].svg":"#2b187d","color_body-upper-[fur-color][shadow-fur].svg":"#2b187d","color_eyes-[eye-color][shadow-iris].svg":"#5e04d0","color_face-[fur-color][shadow-fur].svg":"#2b187d","color_legs-[fur-color][shadow-fur].svg":"#2b187d","color_tail-[fur-color][shadow-fur-dark].svg":"#2b187d","glasses":"none","hat":"cap-hng-[w-0.8].svg","misc":"gloves-white-[above-hands][removes-hands][w-1].svg","mouth":"meh-[w-1].svg","shirt_pants":"pants-flower-[removes-legs][w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":26,"seed":"DF6C4468F826337FFA405F3B98DF47434A349DCA66BC33933DBB81B4B0E06649","address":"ban_1ykwid5ut61ts3fii1ja4rks9bfufsojfs5e6g9xoejc8wei1t3kwup7d5xr","accessories":{"background_color":"#c3f0f2","color_arms-[fur-color][shadow-fur].svg":"#287daf","color_body-upper-[fur-color][shadow-fur].svg":"#287daf","color_eyes-[eye-color][shadow-iris].svg":"#064bd8","color_face-[fur-color][shadow-fur].svg":"#287daf","color_legs-[fur-color][shadow-fur].svg":"#287daf","color_tail-[fur-color][shadow-fur-dark].svg":"#287daf","color_tail-sock-[colorable-random][w-1].svg":"#8f4cd3","glasses":"none","hat":"none","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":2},{"index":27,"seed":"083AA0E154ADC08CAB7D8CE59920791F677E80383BFEE8C2590784AEBAA38C4E","address":"ban_1iwt967j6wmuhtux6tufdcyy4t4ttct9ddiqtjatjwc16cbamnbdwafnjie8","accessories":{"background_color":"#bcf2ce","color_arms-[fur-color][shadow-fur].svg":"#17d495","color_body-upper-[fur-color][shadow-fur].svg":"#17d495","color_eyes-[eye-color][shadow-iris].svg":"#e69ce6","color_face-[fur-color][shadow-fur].svg":"#17d495","color_legs-[fur-color][shadow-fur].svg":"#17d495","color_tail-[fur-color][shadow-fur-dark].svg":"#17d495","glasses":"eye-patch-[w-0.5].svg","hat":"helmet-viking-[w-1].svg","misc":"none","mouth":"smile-tongue-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":3},{"index":28,"seed":"A75FF167C154C1E45D57F36BD6E2AF8C61FCA50D2523F5B0D6889EA26E4F2D1A","address":"ban_1z65a8jno6ixznoynhu5e5r513n5ih5p9h967foyx8egrfifb5rydqqmw94z","accessories":{"background_color":"#d9f2b7","color_arms-[fur-color][shadow-fur].svg":"#42fb06","color_body-upper-[fur-color][shadow-fur].svg":"#42fb06","color_eyes-[eye-color][shadow-iris].svg":"#3c0cd8","color_face-[fur-color][shadow-fur].svg":"#42fb06","color_legs-[fur-color][shadow-fur].svg":"#42fb06","color_tail-[fur-color][shadow-fur-dark].svg":"#42fb06","glasses":"none","hat":"none","misc":"none","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":29,"seed":"9B085E8DE8ED2A5ADB909584701FC9C8D2102CC4BEB0B82344B18B50CCBEE902","address":"ban_3jrqxkqdmpusfa1s7p4ctncqnnueroj6ya1g8t4bd33ws8ekf1xcnemjsy91","accessories":{"background_color":"#f2e2d5","color_arms-[fur-color][shadow-fur].svg":"#d9c571","color_body-upper-[fur-color][shadow-fur].svg":"#d9c571","color_eyes-[eye-color][shadow-iris].svg":"#42df7f","color_face-[fur-color][shadow-fur].svg":"#d9c571","color_legs-[fur-color][shadow-fur].svg":"#d9c571","color_tail-[fur-color][shadow-fur-dark].svg":"#d9c571","glasses":"none","hat":"none","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"tshirt-short-white[w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":30,"seed":"99713B2B9874BC0BC024971092BBB5B2A9DDA5E062A8995500CFF1248590793B","address":"ban_1696r3b7cqyca5bgkxh97txhx7spscdr5sn319a7bkrkt6zfj136rssot3i9","accessories":{"background_color":"#f1f2da","color_arms-[fur-color][shadow-fur].svg":"#a3a89b","color_body-upper-[fur-color][shadow-fur].svg":"#a3a89b","color_eyes-[eye-color][shadow-iris].svg":"#4ccd0f","color_face-[fur-color][shadow-fur].svg":"#a3a89b","color_legs-[fur-color][shadow-fur].svg":"#a3a89b","color_tail-[fur-color][shadow-fur-dark].svg":"#a3a89b","glasses":"none","hat":"cap-smug-green-[w-0.8].svg","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":31,"seed":"AEAC0A16AF1894B9588DA8B6B0C6C3E42D20C6D680AB39242AE2750E02D46D9D","address":"ban_3jreseehfxgugszyijskaorosowohedx4mbz5i4jn66c7wkbzicgdy9ztfpk","accessories":{"background_color":"#dcb9f2","color_arms-[fur-color][shadow-fur].svg":"#86098c","color_body-upper-[fur-color][shadow-fur].svg":"#86098c","color_eyes-[eye-color][shadow-iris].svg":"#f6944f","color_face-[fur-color][shadow-fur].svg":"#86098c","color_legs-[fur-color][shadow-fur].svg":"#86098c","color_tail-[fur-color][shadow-fur-dark].svg":"#86098c","glasses":"sunglasses-aviator-green-[removes-eyes][w-1].svg","hat":"none","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"overalls-blue[w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":3},{"index":32,"seed":"CAC150F8390E66CF3BC8ACF2B72DE49EB0C306C48A6462F250044E929CFB406D","address":"ban_1jc4hofcrdnpco9ccmkg79xpgwxqo96o19xh9dqq1gry38nwzdxxa7d3ze9a","accessories":{"background_color":"#e1daf2","color_arms-[fur-color][shadow-fur].svg":"#a285b3","color_body-upper-[fur-color][shadow-fur].svg":"#a285b3","color_eyes-[eye-color][shadow-iris].svg":"#88fb83","color_face-[fur-color][shadow-fur].svg":"#a285b3","color_legs-[fur-color][shadow-fur].svg":"#a285b3","color_tail-[fur-color][shadow-fur-dark].svg":"#a285b3","glasses":"glasses-nerd-cyan-[w-1].svg","hat":"cap-[w-0.8].svg","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":33,"seed":"48B088BA28BC742FE4FC8D0818A2A7F8BF44858E35DBEF480C752C8711BBBC71","address":"ban_3b981tfhfjj74r6593n6sydkdb6pu3xqnwihuh8zfm3aotn61ecc4kmpo4jj","accessories":{"background_color":"#f2bee5","color_arms-[fur-color][shadow-fur].svg":"#b81a5d","color_body-upper-[fur-color][shadow-fur].svg":"#b81a5d","color_eyes-[eye-color][shadow-iris].svg":"#55b1f9","color_face-[fur-color][shadow-fur].svg":"#b81a5d","color_legs-[fur-color][shadow-fur].svg":"#b81a5d","color_tail-[fur-color][shadow-fur-dark].svg":"#b81a5d","color_tail-sock-[colorable-random][w-1].svg":"#4d77a5","color_tshirt-long-stripes-[colorable-random][w-1].svg":"#c0d562","glasses":"none","hat":"fedora-long-[w-1].svg","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"tshirt-long-stripes-[colorable-random][w-1].svg","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":1},{"index":34,"seed":"4555B2A0E20B1C8F8F6AD691D827182919D3E935D9B82621BFFCD16B8017FD68","address":"ban_16czggqo6a7dgybodyetdhh41udtb3wfhijdjidhu1hu6c6yeoeb57xpmpge","accessories":{"background_color":"#dae1f2","color_arms-[fur-color][shadow-fur].svg":"#7f7cc3","color_body-upper-[fur-color][shadow-fur].svg":"#7f7cc3","color_eyes-[eye-color][shadow-iris].svg":"#6752dc","color_face-[fur-color][shadow-fur].svg":"#7f7cc3","color_legs-[fur-color][shadow-fur].svg":"#7f7cc3","color_tail-[fur-color][shadow-fur-dark].svg":"#7f7cc3","color_tail-sock-[colorable-random][w-1].svg":"#956f28","glasses":"none","hat":"cap-carlos-[w-0.8].svg","misc":"gloves-white-[above-hands][removes-hands][w-1].svg","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":2},{"index":35,"seed":"BC9093759978FF84E28EA09F5F448921C3D3C2B82EE12DE80E8C6B3C7D34C328","address":"ban_1cdkhdb681minpdpbsrzksnt7ujbyhz6761djsu6ptnbbbngdegr19d79xxc","accessories":{"background_color":"#e3f2c8","color_arms-[fur-color][shadow-fur].svg":"#6ed03f","color_body-upper-[fur-color][shadow-fur].svg":"#6ed03f","color_eyes-[eye-color][shadow-iris].svg":"#cf1abe","color_face-[fur-color][shadow-fur].svg":"#6ed03f","color_legs-[fur-color][shadow-fur].svg":"#6ed03f","color_socks-v-stripe-[colorable-random][removes-feet][w-1].svg":"#f2dcbd","color_tail-[fur-color][shadow-fur-dark].svg":"#6ed03f","glasses":"none","hat":"none","misc":"flamethrower-[removes-hands][above-hands][w-0.04].svg","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"socks-v-stripe-[colorable-random][removes-feet][w-1].svg","tail_accessory":"none"},"rarities":["Flamethrower (Ultra Rare Misc - 0.1% overall)"],"isRare":true,"designIndex":3},{"index":36,"seed":"9B0E72B2A6173E20D1B03E56D11589E31E6C8E9D5628E589CEDA756804E4350B","address":"ban_3mdh4drzyyj8xkpbhb844kuqumhn6yfujxus3mkmguxuf8h3x5injt3hed49","accessories":{"background_color":"#bfc6f2","color_arms-[fur-color][shadow-fur].svg":"#5028f3","color_body-upper-[fur-color][shadow-fur].svg":"#5028f3","color_eyes-[eye-color][shadow-iris].svg":"#8ec24e","color_face-[fur-color][shadow-fur].svg":"#5028f3","color_legs-[fur-color][shadow-fur].svg":"#5028f3","color_tail-[fur-color][shadow-fur-dark].svg":"#5028f3","color_tail-sock-[colorable-random][w-1].svg":"#520ca5","glasses":"none","hat":"cap-smug-[w-0.8].svg","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":0},{"index":37,"seed":"80927F51A8F8D9AC99F4C247C121A36DB65DFEA1D0DBC193DFC69906DE90236C","address":"ban_3fk9r44xrzpcjsem1kyzso8oi5gnjf61ny6znmkh3zfd9ojk6pbqtd9kp47q","accessories":{"background_color":"#eef2ce","color_arms-[fur-color][shadow-fur].svg":"#b6f565","color_body-upper-[fur-color][shadow-fur].svg":"#b6f565","color_eyes-[eye-color][shadow-iris].svg":"#a0296d","color_face-[fur-color][shadow-fur].svg":"#b6f565","color_legs-[fur-color][shadow-fur].svg":"#b6f565","color_tail-[fur-color][shadow-fur-dark].svg":"#b6f565","glasses":"glasses-nerd-cyan-[w-1].svg","hat":"none","misc":"tie-pink-[above-shirts-pants][w-1].svg","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":38,"seed":"2EF4EBCE65CE3A773672957BA6CFC75664164F0D2F1028B55CDEA1EC4046D094","address":"ban_3pts1gtzn91cb5mje6hxymra7m1kgndk3jtehj4oyqdjmh3kk9izuiz5bemc","accessories":{"background_color":"#f2dfb8","color_arms-[fur-color][shadow-fur].svg":"#cfcf0b","color_body-upper-[fur-color][shadow-fur].svg":"#cfcf0b","color_eyes-[eye-color][shadow-iris].svg":"#c25dd4","color_face-[fur-color][shadow-fur].svg":"#cfcf0b","color_legs-[fur-color][shadow-fur].svg":"#cfcf0b","color_tail-[fur-color][shadow-fur-dark].svg":"#cfcf0b","glasses":"none","hat":"none","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"sneakers-green-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":39,"seed":"5732F35EC503A123D6964BEFD61C442BF3E623F8FE0C82B6FA30620A70171165","address":"ban_3smnoxrppgtr6hdgzm47x3i9gtbcqedkyk39sg69kfhsmsqd7e7z9cin6bbh","accessories":{"background_color":"#dfc0f2","color_arms-[fur-color][shadow-fur].svg":"#f52dfc","color_body-upper-[fur-color][shadow-fur].svg":"#f52dfc","color_eyes-[eye-color][shadow-iris].svg":"#0fe6d1","color_face-[fur-color][shadow-fur].svg":"#f52dfc","color_legs-[fur-color][shadow-fur].svg":"#f52dfc","color_tail-[fur-color][shadow-fur-dark].svg":"#f52dfc","color_tail-sock-[colorable-random][w-1].svg":"#87cbe4","glasses":"sunglasses-aviator-yellow-[removes-eyes][w-1].svg","hat":"none","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":3},{"index":40,"seed":"8A4B8D8EB7E10B6532AF51318453D9F6DB1296BB867E3214345705416DC04381","address":"ban_3kqihie7qw5s8zxw8nhpi9szedg3pmh3b1q7rjfjkj361ci9kd37cx3fuora","accessories":{"background_color":"#f2e0cf","color_arms-[fur-color][shadow-fur].svg":"#f6db6a","color_body-upper-[fur-color][shadow-fur].svg":"#f6db6a","color_eyes-[eye-color][shadow-iris].svg":"#71f49d","color_face-[fur-color][shadow-fur].svg":"#f6db6a","color_legs-[fur-color][shadow-fur].svg":"#f6db6a","color_tail-[fur-color][shadow-fur-dark].svg":"#f6db6a","glasses":"none","hat":"cap-rick-[w-0.8].svg","misc":"none","mouth":"pipe-[w-0.5].svg","shirt_pants":"overalls-blue[w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":["Pipe (Uncommon Mouth)"],"isRare":true,"designIndex":0},{"index":41,"seed":"5D81670B1B9F0A6B493280CF427D33F7A9D1EB74F8304B85A7E07C9787DB8E5C","address":"ban_34keu6pos3z4qtgfhqozshn6esfc87xe6ndihmarm3u4s8y7o4t3tsjozm4t","accessories":{"background_color":"#f2d9e7","color_arms-[fur-color][shadow-fur].svg":"#8e5360","color_beanie-long-banano-[colorable-random][w-1].svg":"#39d5fe","color_body-upper-[fur-color][shadow-fur].svg":"#8e5360","color_eyes-[eye-color][shadow-iris].svg":"#c19ee3","color_face-[fur-color][shadow-fur].svg":"#8e5360","color_legs-[fur-color][shadow-fur].svg":"#8e5360","color_tail-[fur-color][shadow-fur-dark].svg":"#8e5360","color_tail-sock-[colorable-random][w-1].svg":"#813f52","glasses":"sunglasses-aviator-cyan-[removes-eyes][w-1].svg","hat":"beanie-long-banano-[colorable-random][w-1].svg","misc":"none","mouth":"cigar-[w-0.5].svg","shirt_pants":"none","shoes":"socks-h-stripe-[removes-feet][w-1].svg","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":["Cigar (Uncommon Mouth)"],"isRare":true,"designIndex":1},{"index":42,"seed":"335025BD5ACAB6FBD8E460D83F499FFDB737DCA6DA31E9728460682604783FB1","address":"ban_1apd7fbsomtpyu3p4ny58n5zcikqoyg5n83zrqr98b8enz7csizr3hhwfrzi","accessories":{"background_color":"#f2d5dc","color_arms-[fur-color][shadow-fur].svg":"#d27970","color_beanie-long-banano-[colorable-random][w-1].svg":"#3bed7e","color_body-upper-[fur-color][shadow-fur].svg":"#d27970","color_eyes-[eye-color][shadow-iris].svg":"#8a39f4","color_face-[fur-color][shadow-fur].svg":"#d27970","color_legs-[fur-color][shadow-fur].svg":"#d27970","color_tail-[fur-color][shadow-fur-dark].svg":"#d27970","glasses":"none","hat":"beanie-long-banano-[colorable-random][w-1].svg","misc":"microphone-[above-hands][removes-hand-right][w-1].svg","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":43,"seed":"CF3EEE6DF0A7981472A0C1190DA2F8A49A02FF8473ABE3B06E12FB448228EBFF","address":"ban_3htbkwbj1fhw5rrkm54god1osaj4mohktwnwcybmrh13qt9kpe46eeogpptx","accessories":{"background_color":"#f2f0d8","color_arms-[fur-color][shadow-fur].svg":"#5e693d","color_body-upper-[fur-color][shadow-fur].svg":"#5e693d","color_eyes-[eye-color][shadow-iris].svg":"#4c637d","color_face-[fur-color][shadow-fur].svg":"#5e693d","color_legs-[fur-color][shadow-fur].svg":"#5e693d","color_socks-v-stripe-[colorable-random][removes-feet][w-1].svg":"#f6b4a5","color_tail-[fur-color][shadow-fur-dark].svg":"#5e693d","color_tail-sock-[colorable-random][w-1].svg":"#d27c58","glasses":"none","hat":"beanie-hippie-[unique][w-0.125].svg","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"socks-v-stripe-[colorable-random][removes-feet][w-1].svg","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":3},{"index":44,"seed":"93B6989023010541A8C71665718DC90B2BF7D0321E5F8670460FB903DE0D387A","address":"ban_1gui3ohrkpy4jpmbpwdyxw87n6pp1whxchbwff3z8c4abyytnwddser37p3c","accessories":{"background_color":"#f2bec0","color_arms-[fur-color][shadow-fur].svg":"#e25921","color_body-upper-[fur-color][shadow-fur].svg":"#e25921","color_eyes-[eye-color][shadow-iris].svg":"#db64e1","color_face-[fur-color][shadow-fur].svg":"#e25921","color_legs-[fur-color][shadow-fur].svg":"#e25921","color_tail-[fur-color][shadow-fur-dark].svg":"#e25921","glasses":"none","hat":"none","misc":"none","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":45,"seed":"31DB2BBC539E91BC36B087BCAB5C9804E77BCD91C5BD4BADACF1E2BA84B6C53A","address":"ban_1uzu9xceudyy7xshaxzbduiudoa1xn4afcek8du61cwspo7xkrwt9jh76m9z","accessories":{"background_color":"#daf2f0","color_arms-[fur-color][shadow-fur].svg":"#aae5fb","color_body-upper-[fur-color][shadow-fur].svg":"#aae5fb","color_eyes-[eye-color][shadow-iris].svg":"#0c93a2","color_face-[fur-color][shadow-fur].svg":"#aae5fb","color_legs-[fur-color][shadow-fur].svg":"#aae5fb","color_tail-[fur-color][shadow-fur-dark].svg":"#aae5fb","color_tail-sock-[colorable-random][w-1].svg":"#599c30","glasses":"none","hat":"none","misc":"banana-hands-[above-hands][removes-hands][w-1].svg","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":1},{"index":46,"seed":"5920D323264984F34245EE47324AA8184DEDCB2A367D3F5A68C9B668D1DE6571","address":"ban_3dky3yhmskb1ase9fx8daws9wm81kgu9tqy1kywyrkx9uokspktqsgxcksjx","accessories":{"background_color":"#f2dadb","color_arms-[fur-color][shadow-fur].svg":"#9b8a83","color_body-upper-[fur-color][shadow-fur].svg":"#9b8a83","color_eyes-[eye-color][shadow-iris].svg":"#f7c1fa","color_face-[fur-color][shadow-fur].svg":"#9b8a83","color_legs-[fur-color][shadow-fur].svg":"#9b8a83","color_tail-[fur-color][shadow-fur-dark].svg":"#9b8a83","glasses":"sunglasses-aviator-yellow-[removes-eyes][w-1].svg","hat":"none","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":47,"seed":"DAA4FB5CDFE596D4F496FEF7BDD5C46DD8C8BFFA88D68EC8C8432185F05A1647","address":"ban_398bpihqkmzy7hxu3tdbdfktgu9as3nhhuyrkfr3i1pbbro7zcnbpw171qrr","accessories":{"background_color":"#f2b8b9","color_arms-[fur-color][shadow-fur].svg":"#d94b0a","color_body-upper-[fur-color][shadow-fur].svg":"#d94b0a","color_eyes-[eye-color][shadow-iris].svg":"#3c39b8","color_face-[fur-color][shadow-fur].svg":"#d94b0a","color_legs-[fur-color][shadow-fur].svg":"#d94b0a","color_tail-[fur-color][shadow-fur-dark].svg":"#d94b0a","color_tail-sock-[colorable-random][w-1].svg":"#8236ce","glasses":"none","hat":"none","misc":"microphone-[above-hands][removes-hand-right][w-1].svg","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":3},{"index":48,"seed":"363A2FE09678A671EA2CA510C35789451EA7BD94846B10BE249712DD5E109418","address":"ban_19pbk6ata3uo8fxu4hp5bp1qc7gxapyrf6q8efkdkmjbuejqtqpyqmq561qi","accessories":{"background_color":"#daf2ec","color_arms-[fur-color][shadow-fur].svg":"#b4f1f8","color_body-upper-[fur-color][shadow-fur].svg":"#b4f1f8","color_eyes-[eye-color][shadow-iris].svg":"#981ba2","color_face-[fur-color][shadow-fur].svg":"#b4f1f8","color_legs-[fur-color][shadow-fur].svg":"#b4f1f8","color_tail-[fur-color][shadow-fur-dark].svg":"#b4f1f8","glasses":"none","hat":"none","misc":"none","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"overalls-blue[w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":49,"seed":"CDBF16522893BFD435F1679967B1769162FC2FA8CA964919C5A29D0AB090547C","address":"ban_1q9y5ikejw91rzkw7gugkfd8aksi6cqm3xgmejkjd4mujeq1w577nyrwcxqj","accessories":{"background_color":"#bce5f2","color_arms-[fur-color][shadow-fur].svg":"#0c356b","color_body-upper-[fur-color][shadow-fur].svg":"#0c356b","color_eyes-[eye-color][shadow-iris].svg":"#026540","color_face-[fur-color][shadow-fur].svg":"#0c356b","color_legs-[fur-color][shadow-fur].svg":"#0c356b","color_tail-[fur-color][shadow-fur-dark].svg":"#0c356b","glasses":"none","hat":"none","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":50,"seed":"95EEBBBBED3346CB3D3DFE411D785D09F8DA43198DC9A123F797725730779D90","address":"ban_3p51sum788mqwzyzhyo76z89q1i3ff6txc5xbqa9igkghodoqfsz69oox7t5","accessories":{"background_color":"#dabbf2","color_arms-[fur-color][shadow-fur].svg":"#df19f6","color_body-upper-[fur-color][shadow-fur].svg":"#df19f6","color_eyes-[eye-color][shadow-iris].svg":"#b7de09","color_face-[fur-color][shadow-fur].svg":"#df19f6","color_legs-[fur-color][shadow-fur].svg":"#df19f6","color_tail-[fur-color][shadow-fur-dark].svg":"#df19f6","glasses":"none","hat":"none","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"socks-h-stripe-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":51,"seed":"D109A10F99566D50D8DFB61778319FCC8655AB3431CEBBF3439A5FF3B4B26267","address":"ban_1ou1hztgbtg95ku9gp8uf8859yha56rz4eya4peczwxb1hoahuuff865kycu","accessories":{"background_color":"#efcff2","color_arms-[fur-color][shadow-fur].svg":"#de5fbc","color_body-upper-[fur-color][shadow-fur].svg":"#de5fbc","color_eyes-[eye-color][shadow-iris].svg":"#8791b2","color_face-[fur-color][shadow-fur].svg":"#de5fbc","color_legs-[fur-color][shadow-fur].svg":"#de5fbc","color_tail-[fur-color][shadow-fur-dark].svg":"#de5fbc","glasses":"none","hat":"none","misc":"none","mouth":"cigar-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":["Cigar (Uncommon Mouth)"],"isRare":true,"designIndex":3},{"index":52,"seed":"920360CF81E2EC34095A3D663EAA261FBF9F9F872A4BE93185DF5BF1ABDF65A5","address":"ban_17foxtahtdbjm4erx95mxqfw5iun9cu94s5jbj91j7zeqazgbtuy43odu113","accessories":{"background_color":"#becdf2","color_arms-[fur-color][shadow-fur].svg":"#221cbd","color_body-upper-[fur-color][shadow-fur].svg":"#221cbd","color_eyes-[eye-color][shadow-iris].svg":"#17f672","color_face-[fur-color][shadow-fur].svg":"#221cbd","color_legs-[fur-color][shadow-fur].svg":"#221cbd","color_tail-[fur-color][shadow-fur-dark].svg":"#221cbd","glasses":"none","hat":"none","misc":"none","mouth":"pipe-[w-0.5].svg","shirt_pants":"pants-business-blue-[removes-legs][w-1].svg","shoes":"sneakers-red-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":["Pipe (Uncommon Mouth)"],"isRare":true,"designIndex":0},{"index":53,"seed":"8D686DFE53CAC33E418342E30DB494FAB1A3FB9679342742371FADFB35A598D8","address":"ban_3r4uxtu5gubi13u7m7r9whkd14oucrzsy33n7sq1tkwkq6ebhfxonut5xemf","accessories":{"background_color":"#f2bdc2","color_arms-[fur-color][shadow-fur].svg":"#fe5822","color_body-upper-[fur-color][shadow-fur].svg":"#fe5822","color_eyes-[eye-color][shadow-iris].svg":"#6b7233","color_face-[fur-color][shadow-fur].svg":"#fe5822","color_legs-[fur-color][shadow-fur].svg":"#fe5822","color_tail-[fur-color][shadow-fur-dark].svg":"#fe5822","glasses":"none","hat":"cap-hng-plus-[unique][w-0.125].svg","misc":"gloves-white-[above-hands][removes-hands][w-1].svg","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":54,"seed":"144329313D906FA2F67F62ED6E57CAD34EE8EF033B486E9CA9331F53D89980CB","address":"ban_3x1swwn6bksc5ywtuzuxi9ddt63uchthb51xwmon85iiu38opq75yqud5hep","accessories":{"background_color":"#ccbdf2","color_arms-[fur-color][shadow-fur].svg":"#951de0","color_body-upper-[fur-color][shadow-fur].svg":"#951de0","color_eyes-[eye-color][shadow-iris].svg":"#815a46","color_face-[fur-color][shadow-fur].svg":"#951de0","color_legs-[fur-color][shadow-fur].svg":"#951de0","color_tail-[fur-color][shadow-fur-dark].svg":"#951de0","color_tail-sock-[colorable-random][w-1].svg":"#239aa9","glasses":"none","hat":"cap-kappa-[w-0.8].svg","misc":"gloves-white-[above-hands][removes-hands][w-1].svg","mouth":"meh-[w-1].svg","shirt_pants":"tshirt-short-white[w-1].svg","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":2},{"index":55,"seed":"4C08CA7647C15949731F9489D313F6C424319D9E5EC36F98C04F334C267D732A","address":"ban_3ho1fqte9kpjmrp9knttiyjd4o4rqg4fo7rczs8wza9iwba3n69adcudkium","accessories":{"background_color":"#def2c1","color_arms-[fur-color][shadow-fur].svg":"#52c528","color_body-upper-[fur-color][shadow-fur].svg":"#52c528","color_eyes-[eye-color][shadow-iris].svg":"#bb4ad4","color_face-[fur-color][shadow-fur].svg":"#52c528","color_legs-[fur-color][shadow-fur].svg":"#52c528","color_tail-[fur-color][shadow-fur-dark].svg":"#52c528","color_tail-sock-[colorable-random][w-1].svg":"#a9d374","glasses":"none","hat":"none","misc":"none","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":3},{"index":56,"seed":"661A9FEE79C7C66AB7FC89B65617F097D4AAF1B04725742458448B11DF5A0EE5","address":"ban_1341roe1t9gowk9sqdyfpdx5hpnkz4cn4aetmgmzi3c3xr5r7upxd4monpq1","accessories":{"background_color":"#eff2da","color_arms-[fur-color][shadow-fur].svg":"#96af76","color_body-upper-[fur-color][shadow-fur].svg":"#96af76","color_eyes-[eye-color][shadow-iris].svg":"#b52c15","color_face-[fur-color][shadow-fur].svg":"#96af76","color_legs-[fur-color][shadow-fur].svg":"#96af76","color_tail-[fur-color][shadow-fur-dark].svg":"#96af76","glasses":"sunglasses-aviator-green-[removes-eyes][w-1].svg","hat":"cap-backwards-[w-1].svg","misc":"necklace-boss-[above-shirts-pants][w-0.75].svg","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"none","shoes":"sneakers-green-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":57,"seed":"A7B646DFE9DB0CC0A503BE658C36B58E5A3111A3D47392F8E32A5C2E3BFCF5CE","address":"ban_3i5p34gapshfy7mgbcymtcoh3eawkkjpur5scxgd41ojiupdenuryyk4zpmu","accessories":{"background_color":"#f2bbcc","color_arms-[fur-color][shadow-fur].svg":"#ec1e18","color_body-upper-[fur-color][shadow-fur].svg":"#ec1e18","color_eyes-[eye-color][shadow-iris].svg":"#f5908a","color_face-[fur-color][shadow-fur].svg":"#ec1e18","color_legs-[fur-color][shadow-fur].svg":"#ec1e18","color_tail-[fur-color][shadow-fur-dark].svg":"#ec1e18","glasses":"glasses-nerd-green-[w-1].svg","hat":"none","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":58,"seed":"D79539EA5680EFE1E4E7342BB1D639B101FED51596469983D3CD2ED95FFD39D6","address":"ban_1z9br7san4pq57hn7quabsmaifkrta9gqacq867ctojthxwo16ap8poixuzc","accessories":{"background_color":"#f2bcc1","color_arms-[fur-color][shadow-fur].svg":"#a63412","color_body-upper-[fur-color][shadow-fur].svg":"#a63412","color_eyes-[eye-color][shadow-iris].svg":"#1ea57c","color_face-[fur-color][shadow-fur].svg":"#a63412","color_legs-[fur-color][shadow-fur].svg":"#a63412","color_tail-[fur-color][shadow-fur-dark].svg":"#a63412","color_tail-sock-[colorable-random][w-1].svg":"#89bc77","glasses":"none","hat":"none","misc":"none","mouth":"smile-tongue-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":2},{"index":59,"seed":"5AD91FE51C6ECE98CA6D6F94A32C20B491250662166227A54D301397D71F1271","address":"ban_3w4zhzjk4u918n1fiqbsue4zo8nf1t4o9pfwzghm87mdomnxq31cqd4kmbpw","accessories":{"background_color":"#f2dadc","color_arms-[fur-color][shadow-fur].svg":"#7d584d","color_body-upper-[fur-color][shadow-fur].svg":"#7d584d","color_eyes-[eye-color][shadow-iris].svg":"#6a4d4a","color_face-[fur-color][shadow-fur].svg":"#7d584d","color_legs-[fur-color][shadow-fur].svg":"#7d584d","color_tail-[fur-color][shadow-fur-dark].svg":"#7d584d","color_tail-sock-[colorable-random][w-1].svg":"#7a373e","glasses":"none","hat":"none","misc":"none","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":3},{"index":60,"seed":"23EF244471B96EE31558C3EF551AC4B34D1EB0F16F30663B29BFF63E566C9940","address":"ban_1k9aqjaqpqua4ubm3s9hqm3wbm5gms76wsyeonu46gfu7z4yuhp8a6u9g3fw","accessories":{"background_color":"#f2edc6","color_arms-[fur-color][shadow-fur].svg":"#4b5919","color_body-upper-[fur-color][shadow-fur].svg":"#4b5919","color_eyes-[eye-color][shadow-iris].svg":"#a6e838","color_face-[fur-color][shadow-fur].svg":"#4b5919","color_legs-[fur-color][shadow-fur].svg":"#4b5919","color_tail-[fur-color][shadow-fur-dark].svg":"#4b5919","glasses":"none","hat":"none","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":61,"seed":"F000F84A3ED138A4930BE71050ED53C96C00A9D45A97D7E5C067BFE476F696EA","address":"ban_1au31ywm58n3omor9tk1wj13n53fiubfz1ju7jnmmd7e5i8pg8sqj68gqb9y","accessories":{"background_color":"#dff2d5","color_arms-[fur-color][shadow-fur].svg":"#539a51","color_body-upper-[fur-color][shadow-fur].svg":"#539a51","color_eyes-[eye-color][shadow-iris].svg":"#ee7876","color_face-[fur-color][shadow-fur].svg":"#539a51","color_legs-[fur-color][shadow-fur].svg":"#539a51","color_tail-[fur-color][shadow-fur-dark].svg":"#539a51","glasses":"none","hat":"fedora-long-[w-1].svg","misc":"camera-[above-shirts-pants][w-1].svg","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":62,"seed":"6C24FC7E4229AF801D84120DC6B7C845C4C3FE5707C9D82F5812B495A20D8F35","address":"ban_1sun5ndn5b4uuqcoy6mkd8qyefdtthxi8r7mzbnfxc6cxnqdepf7f5inpq16","accessories":{"background_color":"#c9f2f0","color_arms-[fur-color][shadow-fur].svg":"#54cbfb","color_body-upper-[fur-color][shadow-fur].svg":"#54cbfb","color_eyes-[eye-color][shadow-iris].svg":"#f27a0c","color_face-[fur-color][shadow-fur].svg":"#54cbfb","color_legs-[fur-color][shadow-fur].svg":"#54cbfb","color_tail-[fur-color][shadow-fur-dark].svg":"#54cbfb","color_tail-sock-[colorable-random][w-1].svg":"#c114a8","glasses":"none","hat":"cap-hng-plus-[unique][w-0.125].svg","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":2},{"index":63,"seed":"3F9CB3C101DFF0AB811B6508CF219136F1DEBE741C10C219B6DF01CBE4F9D8AB","address":"ban_1c7f5f3im733msrjgk9m6fk8qqjjh69d17aquzuwddgqxg9r3ien7tknxmmn","accessories":{"background_color":"#cef2c1","color_arms-[fur-color][shadow-fur].svg":"#32f73f","color_body-upper-[fur-color][shadow-fur].svg":"#32f73f","color_eyes-[eye-color][shadow-iris].svg":"#d5c23d","color_face-[fur-color][shadow-fur].svg":"#32f73f","color_legs-[fur-color][shadow-fur].svg":"#32f73f","color_tail-[fur-color][shadow-fur-dark].svg":"#32f73f","glasses":"sunglasses-aviator-cyan-[removes-eyes][w-1].svg","hat":"none","misc":"tie-pink-[above-shirts-pants][w-1].svg","mouth":"cigar-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":["Cigar (Uncommon Mouth)"],"isRare":true,"designIndex":3},{"index":64,"seed":"83774B5A8BCC444EEE385F93097C1C4B0FCC526CCC5D4C29412F82ED3C9233E8","address":"ban_335nb1k8r3sqokxhoxjqrfysiumuxafspa85txa146aqfj4qmdbwrreb4i6k","accessories":{"background_color":"#f2e4c4","color_arms-[fur-color][shadow-fur].svg":"#f2f83e","color_body-upper-[fur-color][shadow-fur].svg":"#f2f83e","color_eyes-[eye-color][shadow-iris].svg":"#261a91","color_face-[fur-color][shadow-fur].svg":"#f2f83e","color_legs-[fur-color][shadow-fur].svg":"#f2f83e","color_tail-[fur-color][shadow-fur-dark].svg":"#f2f83e","glasses":"none","hat":"cap-thonk-[w-0.8].svg","misc":"tie-cyan-[above-shirts-pants][w-1].svg","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":65,"seed":"6662203F09E33CA9BCB5ED383AA8F898B6E6AEFFC4939C27E98C4F7551CBD804","address":"ban_1abhaz84pg9yokzcx375eu1znnos4d1uci67645km3ho8q4fbhx8qi4pakpc","accessories":{"background_color":"#d5d6f2","color_arms-[fur-color][shadow-fur].svg":"#46386c","color_body-upper-[fur-color][shadow-fur].svg":"#46386c","color_eyes-[eye-color][shadow-iris].svg":"#105720","color_face-[fur-color][shadow-fur].svg":"#46386c","color_legs-[fur-color][shadow-fur].svg":"#46386c","color_tail-[fur-color][shadow-fur-dark].svg":"#46386c","glasses":"none","hat":"cap-banano-[w-0.8].svg","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":66,"seed":"F0817C97E1A85A6D261F24956183D1AE6EBBADC4A6D887A26D23C4C8CBA507C7","address":"ban_1khd7dwg3d1eom69eh6gbgp11pp4inrzi951x73e8xmd3wbwegtty4sfr3ci","accessories":{"background_color":"#b9f2f1","color_arms-[fur-color][shadow-fur].svg":"#06425f","color_body-upper-[fur-color][shadow-fur].svg":"#06425f","color_eyes-[eye-color][shadow-iris].svg":"#71870d","color_face-[fur-color][shadow-fur].svg":"#06425f","color_legs-[fur-color][shadow-fur].svg":"#06425f","color_tail-[fur-color][shadow-fur-dark].svg":"#06425f","glasses":"none","hat":"none","misc":"guitar-[above-hands][removes-left-hand][w-1].svg","mouth":"meh-[w-1].svg","shirt_pants":"tshirt-short-white[w-1].svg","shoes":"sneakers-swagger-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":["Guitar (Uncommon Misc)"],"isRare":true,"designIndex":2},{"index":67,"seed":"CA05D3C03F72F9D830DAB2BDFF2FA10EBF5BA27BB59838699C0E6C5C0FF2791F","address":"ban_1kapfs3yxjfhsffnpf4qp679m8f5p6os44tznckd87f8yhney5q1b4ybx9dw","accessories":{"background_color":"#dbbcf2","color_arms-[fur-color][shadow-fur].svg":"#c319d5","color_body-upper-[fur-color][shadow-fur].svg":"#c319d5","color_eyes-[eye-color][shadow-iris].svg":"#5c5598","color_face-[fur-color][shadow-fur].svg":"#c319d5","color_legs-[fur-color][shadow-fur].svg":"#c319d5","color_tail-[fur-color][shadow-fur-dark].svg":"#c319d5","glasses":"none","hat":"none","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"sneakers-red-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":3},{"index":68,"seed":"20A225C4CCAD9586A2293225137CF915776CFB16AE5F066AB7F530D6E70A501C","address":"ban_3zwdr6yibh5kuzntayum9r6fwnj5mhp44gdgqshh5n4ra69dtz7h6o97rytz","accessories":{"background_color":"#c6cef2","color_arms-[fur-color][shadow-fur].svg":"#6146f5","color_body-upper-[fur-color][shadow-fur].svg":"#6146f5","color_eyes-[eye-color][shadow-iris].svg":"#0f09ae","color_face-[fur-color][shadow-fur].svg":"#6146f5","color_legs-[fur-color][shadow-fur].svg":"#6146f5","color_tail-[fur-color][shadow-fur-dark].svg":"#6146f5","glasses":"none","hat":"none","misc":"tie-cyan-[above-shirts-pants][w-1].svg","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"sneakers-red-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":69,"seed":"4C4622B7AE82740551CECAB6ABA81FA77CDB985E932250511CD7D60C2368C1AF","address":"ban_3tqdqxc8km5cwdcuwcppktqitgeyed3h6z7seoysrzu9feagaqe3m9s1ej5k","accessories":{"background_color":"#f2d0b7","color_arms-[fur-color][shadow-fur].svg":"#684f03","color_body-upper-[fur-color][shadow-fur].svg":"#684f03","color_eyes-[eye-color][shadow-iris].svg":"#a41352","color_face-[fur-color][shadow-fur].svg":"#684f03","color_legs-[fur-color][shadow-fur].svg":"#684f03","color_tail-[fur-color][shadow-fur-dark].svg":"#684f03","color_tail-sock-[colorable-random][w-1].svg":"#e2f367","glasses":"none","hat":"none","misc":"banana-hands-[above-hands][removes-hands][w-1].svg","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"sneakers-green-[removes-feet][w-1].svg","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":1},{"index":70,"seed":"6DAF6F91DB0F448359D76F0CFC02F78E31628FB9F0B3C566FDB6A5B007FD7703","address":"ban_34oqgunzxtjue9s7tsii4fph6wejuh87897cxckrixeqfrojuje9kc5e9muw","accessories":{"background_color":"#c1f2d8","color_arms-[fur-color][shadow-fur].svg":"#33fed5","color_body-upper-[fur-color][shadow-fur].svg":"#33fed5","color_eyes-[eye-color][shadow-iris].svg":"#3c928a","color_face-[fur-color][shadow-fur].svg":"#33fed5","color_legs-[fur-color][shadow-fur].svg":"#33fed5","color_socks-v-stripe-[colorable-random][removes-feet][w-1].svg":"#da2341","color_tail-[fur-color][shadow-fur-dark].svg":"#33fed5","glasses":"none","hat":"none","misc":"tie-pink-[above-shirts-pants][w-1].svg","mouth":"smile-tongue-[w-0.5].svg","shirt_pants":"none","shoes":"socks-v-stripe-[colorable-random][removes-feet][w-1].svg","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":71,"seed":"ECA990B2451FFCADAB9472268B5B1D38CE7ADCDDE8BC325F75E839BDB5D6B27F","address":"ban_1yasmnhkj1f9m77mmbgnbba7goi3rdcbxt56fdgfrim3j85xpj1upp14icxz","accessories":{"background_color":"#d1f2d4","color_arms-[fur-color][shadow-fur].svg":"#28563b","color_body-upper-[fur-color][shadow-fur].svg":"#28563b","color_eyes-[eye-color][shadow-iris].svg":"#e7d9b7","color_face-[fur-color][shadow-fur].svg":"#28563b","color_legs-[fur-color][shadow-fur].svg":"#28563b","color_tail-[fur-color][shadow-fur-dark].svg":"#28563b","glasses":"none","hat":"none","misc":"none","mouth":"pipe-[w-0.5].svg","shirt_pants":"none","shoes":"sneakers-blue-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":["Pipe (Uncommon Mouth)"],"isRare":true,"designIndex":3},{"index":72,"seed":"03E86450101A65DEEE9E0910C8FB80B1E1CB342EE14115A641789DD2CB1C7084","address":"ban_15rsyks35pdjk7pkjgfyb9j8t5fobpjej99pwbd3u7sb1mq84sk4qupqmqii","accessories":{"background_color":"#f2b7d8","color_arms-[fur-color][shadow-fur].svg":"#e7063a","color_beanie-long-[colorable-random][w-1].svg":"#31ecf1","color_body-upper-[fur-color][shadow-fur].svg":"#e7063a","color_eyes-[eye-color][shadow-iris].svg":"#0325b1","color_face-[fur-color][shadow-fur].svg":"#e7063a","color_legs-[fur-color][shadow-fur].svg":"#e7063a","color_tail-[fur-color][shadow-fur-dark].svg":"#e7063a","glasses":"none","hat":"beanie-long-[colorable-random][w-1].svg","misc":"none","mouth":"pipe-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":["Pipe (Uncommon Mouth)"],"isRare":true,"designIndex":0},{"index":73,"seed":"01B608A0953792389BB174686242075F98E86BD0BC78D4A629D7B9FA43966049","address":"ban_3br6fyoius5cwtkdsewbemhi3kjpyzkf6qswwwqjju9rjkg8og46n7qjr6y1","accessories":{"background_color":"#f2bdb8","color_arms-[fur-color][shadow-fur].svg":"#eb6a09","color_body-upper-[fur-color][shadow-fur].svg":"#eb6a09","color_eyes-[eye-color][shadow-iris].svg":"#9e55cc","color_face-[fur-color][shadow-fur].svg":"#eb6a09","color_legs-[fur-color][shadow-fur].svg":"#eb6a09","color_tail-[fur-color][shadow-fur-dark].svg":"#eb6a09","glasses":"none","hat":"none","misc":"none","mouth":"smile-tongue-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":74,"seed":"22686EA016E05ECFE6D06FCF9C3E777606C2A2583DF5BC498A312AB19ABE0AB5","address":"ban_3jeoc5icgji5ufdrfcicsgw4wk7ouu54xo6yj5w5sp7b6s3trkrq4ir46k7z","accessories":{"background_color":"#f2c6cf","color_arms-[fur-color][shadow-fur].svg":"#b23f30","color_body-upper-[fur-color][shadow-fur].svg":"#b23f30","color_eyes-[eye-color][shadow-iris].svg":"#2eeba5","color_face-[fur-color][shadow-fur].svg":"#b23f30","color_legs-[fur-color][shadow-fur].svg":"#b23f30","color_tail-[fur-color][shadow-fur-dark].svg":"#b23f30","glasses":"none","hat":"none","misc":"none","mouth":"pipe-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":["Pipe (Uncommon Mouth)"],"isRare":true,"designIndex":2},{"index":75,"seed":"7E6E98032AE918D387AF739E99B2BF40D231E56150551E6D9D554336E859D337","address":"ban_19s8cttk17q9dzeq1699jkx37shwaqm1mfh843at6qmqzp6h3tzkk1y6nt41","accessories":{"background_color":"#f2d1e1","color_arms-[fur-color][shadow-fur].svg":"#d36173","color_body-upper-[fur-color][shadow-fur].svg":"#d36173","color_eyes-[eye-color][shadow-iris].svg":"#4404c3","color_face-[fur-color][shadow-fur].svg":"#d36173","color_legs-[fur-color][shadow-fur].svg":"#d36173","color_tail-[fur-color][shadow-fur-dark].svg":"#d36173","glasses":"none","hat":"none","misc":"camera-[above-shirts-pants][w-1].svg","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":3},{"index":76,"seed":"D5A03FC3F3AEA6FEEFC17783B29A9639221C2FC6875889089D20D2354FCDDE84","address":"ban_3jjyuha47rebgiowndpxm461gghd6mx7ssbq633d5z7zr9zan19zi45s4met","accessories":{"background_color":"#daf2e7","color_arms-[fur-color][shadow-fur].svg":"#d4fbf7","color_body-upper-[fur-color][shadow-fur].svg":"#d4fbf7","color_eyes-[eye-color][shadow-iris].svg":"#7c0c49","color_face-[fur-color][shadow-fur].svg":"#d4fbf7","color_legs-[fur-color][shadow-fur].svg":"#d4fbf7","color_tail-[fur-color][shadow-fur-dark].svg":"#d4fbf7","glasses":"eye-patch-[w-0.5].svg","hat":"none","misc":"none","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":77,"seed":"D869972799D7B7CE5FB913B2201C7DD4ADC720EC0772DEBCAD16CD07539FE971","address":"ban_1ytfso79m9u8q3wsp194jswet4oaru4z76m8szuwurf1uz61kupmsyqufh17","accessories":{"background_color":"#f2f1bb","color_arms-[fur-color][shadow-fur].svg":"#6f9e0e","color_body-upper-[fur-color][shadow-fur].svg":"#6f9e0e","color_eyes-[eye-color][shadow-iris].svg":"#3a6ba2","color_face-[fur-color][shadow-fur].svg":"#6f9e0e","color_legs-[fur-color][shadow-fur].svg":"#6f9e0e","color_tail-[fur-color][shadow-fur-dark].svg":"#6f9e0e","glasses":"none","hat":"none","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":78,"seed":"1735058E23BDEE3A8976B3D02547926756742A982574F0FAF9CD061C1D1034F7","address":"ban_1fz5bs6ich3gg8671brww739a7kdpcjd7a1tq9tpm8yx6bify4y7wbecpjrd","accessories":{"background_color":"#f0b6f2","color_arms-[fur-color][shadow-fur].svg":"#ef02a6","color_body-upper-[fur-color][shadow-fur].svg":"#ef02a6","color_eyes-[eye-color][shadow-iris].svg":"#a099b5","color_face-[fur-color][shadow-fur].svg":"#ef02a6","color_legs-[fur-color][shadow-fur].svg":"#ef02a6","color_tail-[fur-color][shadow-fur-dark].svg":"#ef02a6","glasses":"none","hat":"none","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"sneakers-green-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":79,"seed":"3426F20A055AC3251C6A5D49929267081DFFB86AFE8D59C65CFAD4AF75D8A96F","address":"ban_1ong3ysocudg9rzbhjp6rm5whpygikiot61mwxkbfpw1r8oeipmgm7jcdya8","accessories":{"background_color":"#c0bbf2","color_arms-[fur-color][shadow-fur].svg":"#5c12bd","color_body-upper-[fur-color][shadow-fur].svg":"#5c12bd","color_eyes-[eye-color][shadow-iris].svg":"#ed69d9","color_face-[fur-color][shadow-fur].svg":"#5c12bd","color_legs-[fur-color][shadow-fur].svg":"#5c12bd","color_tail-[fur-color][shadow-fur-dark].svg":"#5c12bd","glasses":"none","hat":"none","misc":"microphone-[above-hands][removes-hand-right][w-1].svg","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":3},{"index":80,"seed":"0D7AAE25DD1088DB4C48F1F3A3C06896B38234247FE997865896B0EBA3BEE2F0","address":"ban_39xtfe7yky4y93fztsjgra6i59u7huykg7rbzs1xudi6ae66my349m65ukun","accessories":{"background_color":"#e6b8f2","color_arms-[fur-color][shadow-fur].svg":"#be09a7","color_body-upper-[fur-color][shadow-fur].svg":"#be09a7","color_eyes-[eye-color][shadow-iris].svg":"#dda0e5","color_face-[fur-color][shadow-fur].svg":"#be09a7","color_legs-[fur-color][shadow-fur].svg":"#be09a7","color_tail-[fur-color][shadow-fur-dark].svg":"#be09a7","glasses":"none","hat":"none","misc":"guitar-[above-hands][removes-left-hand][w-1].svg","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":["Guitar (Uncommon Misc)"],"isRare":true,"designIndex":0},{"index":81,"seed":"D469CEB8A22A3165C5A2D1ECFDDD64DE984E17769606C840DD423B18624E39F5","address":"ban_1c8k53cqz68xeogsxjiua1x7bhn9xgrtzxharrcgch6a6g4p8je1dej9j8s9","accessories":{"background_color":"#f1bcf2","color_arms-[fur-color][shadow-fur].svg":"#851060","color_body-upper-[fur-color][shadow-fur].svg":"#851060","color_eyes-[eye-color][shadow-iris].svg":"#94ee61","color_face-[fur-color][shadow-fur].svg":"#851060","color_legs-[fur-color][shadow-fur].svg":"#851060","color_tail-[fur-color][shadow-fur-dark].svg":"#851060","glasses":"none","hat":"none","misc":"none","mouth":"pipe-[w-0.5].svg","shirt_pants":"overalls-blue[w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":["Pipe (Uncommon Mouth)"],"isRare":true,"designIndex":1},{"index":82,"seed":"E78355DC281204AED4B8803B236B2A627D3D69EF9079AA0F25C9E27259EAF3F1","address":"ban_1u66acxhuh3sf87d4zsfiatujeu3rr551iuoktu6xj835qgb3jipe4bwemyz","accessories":{"background_color":"#c8f2d7","color_arms-[fur-color][shadow-fur].svg":"#38b18a","color_body-upper-[fur-color][shadow-fur].svg":"#38b18a","color_eyes-[eye-color][shadow-iris].svg":"#8d9991","color_face-[fur-color][shadow-fur].svg":"#38b18a","color_legs-[fur-color][shadow-fur].svg":"#38b18a","color_tail-[fur-color][shadow-fur-dark].svg":"#38b18a","glasses":"none","hat":"none","misc":"none","mouth":"pipe-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":["Pipe (Uncommon Mouth)"],"isRare":true,"designIndex":2},{"index":83,"seed":"EB60B508288BFFF3236E846A7C1C36A6EF2FE1D912C0DFDC2076777D5AE31FCD","address":"ban_1an3rhd1zwt9h11ccr7jgu15hmzt91rwe15sqjai4dtqisq6chpthp8g1n9m","accessories":{"background_color":"#e0b7f2","color_arms-[fur-color][shadow-fur].svg":"#f507ed","color_body-upper-[fur-color][shadow-fur].svg":"#f507ed","color_eyes-[eye-color][shadow-iris].svg":"#43ae29","color_face-[fur-color][shadow-fur].svg":"#f507ed","color_legs-[fur-color][shadow-fur].svg":"#f507ed","color_tail-[fur-color][shadow-fur-dark].svg":"#f507ed","glasses":"none","hat":"fedora-long-[w-1].svg","misc":"none","mouth":"cigar-[w-0.5].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":["Cigar (Uncommon Mouth)"],"isRare":true,"designIndex":3},{"index":84,"seed":"A24F2800C3B758FA0F9C7DC36FB32ADBD202E6E294154B757C5F7E7BB651D325","address":"ban_1xrup64pyzfe3p973sksmgy5gsggsjwn66u59pt6fmdq5kh5mgw7kx6yf6id","accessories":{"background_color":"#f2edda","color_arms-[fur-color][shadow-fur].svg":"#e0e7ba","color_body-upper-[fur-color][shadow-fur].svg":"#e0e7ba","color_eyes-[eye-color][shadow-iris].svg":"#36f4a9","color_face-[fur-color][shadow-fur].svg":"#e0e7ba","color_legs-[fur-color][shadow-fur].svg":"#e0e7ba","color_tail-[fur-color][shadow-fur-dark].svg":"#e0e7ba","glasses":"none","hat":"none","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":85,"seed":"265EF6E2F64627A71E6906F89D3F0538BE76871E16D848B353F7A725B55352C8","address":"ban_353zf91dmkeypde5cdhhyt7i9ad5mz7u9fjrm1n7689rsrwf7tfotysqfwu3","accessories":{"background_color":"#c2e8f2","color_arms-[fur-color][shadow-fur].svg":"#2c78d0","color_body-upper-[fur-color][shadow-fur].svg":"#2c78d0","color_eyes-[eye-color][shadow-iris].svg":"#2512a6","color_face-[fur-color][shadow-fur].svg":"#2c78d0","color_legs-[fur-color][shadow-fur].svg":"#2c78d0","color_tail-[fur-color][shadow-fur-dark].svg":"#2c78d0","glasses":"none","hat":"none","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"overalls-red[w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":86,"seed":"4219B383059084F15EA843CB7110CF9D0C1FD8411363D8502EC35B1935BE48A6","address":"ban_3mpp6qmd7tuh5r3fnfbca3ntf6rxfppqr8kwf4h7s86sdaoe4j65xonbzshh","accessories":{"background_color":"#f2ceec","color_arms-[fur-color][shadow-fur].svg":"#7f3459","color_body-upper-[fur-color][shadow-fur].svg":"#7f3459","color_eyes-[eye-color][shadow-iris].svg":"#104c29","color_face-[fur-color][shadow-fur].svg":"#7f3459","color_legs-[fur-color][shadow-fur].svg":"#7f3459","color_tail-[fur-color][shadow-fur-dark].svg":"#7f3459","glasses":"none","hat":"cap-pepe-[w-0.8].svg","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"pants-flower-[removes-legs][w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":87,"seed":"F93E39344B93FAD5D134E19B02F95EBA37C44AF22B213AC1218B6A2D8C8520F7","address":"ban_3gijai8qp4y9ih7jpj65h973xk1q8wm5x6am9chhm6eayz1xouzdzaxpms16","accessories":{"background_color":"#f2dbd3","color_arms-[fur-color][shadow-fur].svg":"#cca265","color_body-upper-[fur-color][shadow-fur].svg":"#cca265","color_eyes-[eye-color][shadow-iris].svg":"#9b1a3b","color_face-[fur-color][shadow-fur].svg":"#cca265","color_legs-[fur-color][shadow-fur].svg":"#cca265","color_tail-[fur-color][shadow-fur-dark].svg":"#cca265","glasses":"none","hat":"none","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"overalls-blue[w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":3},{"index":88,"seed":"91470E2E9129AF036C735718AA12D7F5465FFBA52747131BF6A8CD2FC1C93495","address":"ban_1j1ydwjsjxd49pkqfzz787eay3c8tqreut1kuyx6d14d5nj7dbmgnbcxmfic","accessories":{"background_color":"#f2ebb9","color_arms-[fur-color][shadow-fur].svg":"#bae80d","color_body-upper-[fur-color][shadow-fur].svg":"#bae80d","color_eyes-[eye-color][shadow-iris].svg":"#fd3cfb","color_face-[fur-color][shadow-fur].svg":"#bae80d","color_legs-[fur-color][shadow-fur].svg":"#bae80d","color_tail-[fur-color][shadow-fur-dark].svg":"#bae80d","glasses":"none","hat":"none","misc":"guitar-[above-hands][removes-left-hand][w-1].svg","mouth":"meh-[w-1].svg","shirt_pants":"pants-flower-[removes-legs][w-1].svg","shoes":"sneakers-red-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":["Guitar (Uncommon Misc)"],"isRare":true,"designIndex":0},{"index":89,"seed":"761AA4F73A9690051954A2D3FA7184BCAF7DF9AD3F4E688721940B2A901E7D72","address":"ban_3ogj5ekj4w3z3tszth995rmuuz64hd9khcnufuf8d6dqxenccuzw3nzzaqt3","accessories":{"background_color":"#f2e1da","color_arms-[fur-color][shadow-fur].svg":"#b3ab9c","color_body-upper-[fur-color][shadow-fur].svg":"#b3ab9c","color_eyes-[eye-color][shadow-iris].svg":"#22b334","color_face-[fur-color][shadow-fur].svg":"#b3ab9c","color_legs-[fur-color][shadow-fur].svg":"#b3ab9c","color_tail-[fur-color][shadow-fur-dark].svg":"#b3ab9c","color_tail-sock-[colorable-random][w-1].svg":"#222c31","glasses":"none","hat":"none","misc":"tie-cyan-[above-shirts-pants][w-1].svg","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":1},{"index":90,"seed":"43B735957F5AA92FA60C10D6E8484174C60189095F194ADD4892EC133E69088D","address":"ban_3wzyw41o7ajuu87mbdctefssffu1868bce8ci1n7pz9n95ahc1irwsyyk8hx","accessories":{"background_color":"#f2dfbe","color_arms-[fur-color][shadow-fur].svg":"#fef824","color_body-upper-[fur-color][shadow-fur].svg":"#fef824","color_eyes-[eye-color][shadow-iris].svg":"#6fdc2b","color_face-[fur-color][shadow-fur].svg":"#fef824","color_legs-[fur-color][shadow-fur].svg":"#fef824","color_tail-[fur-color][shadow-fur-dark].svg":"#fef824","glasses":"none","hat":"none","misc":"none","mouth":"cigar-[w-0.5].svg","shirt_pants":"pants-flower-[removes-legs][w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":["Cigar (Uncommon Mouth)"],"isRare":true,"designIndex":2},{"index":91,"seed":"DD6A09FFE2A1617F6AD9FD09E44FA853863D46EEAA4CF96622461CBDEC6CCBEB","address":"ban_3x9kh9jzyr1n3miztwd5cmbyyt4t76axgzo51qbr4ucs7aaca48bdmhakiro","accessories":{"background_color":"#cebbf2","color_arms-[fur-color][shadow-fur].svg":"#a915ef","color_body-upper-[fur-color][shadow-fur].svg":"#a915ef","color_eyes-[eye-color][shadow-iris].svg":"#0efbd0","color_face-[fur-color][shadow-fur].svg":"#a915ef","color_legs-[fur-color][shadow-fur].svg":"#a915ef","color_tail-[fur-color][shadow-fur-dark].svg":"#a915ef","color_tail-sock-[colorable-random][w-1].svg":"#ee9a4c","glasses":"none","hat":"hat-jester-[unique][w-0.125].svg","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"overalls-red[w-1].svg","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":["Jester Hat (Ultra Rare Hat - 0.07% overall)"],"isRare":true,"designIndex":3},{"index":92,"seed":"94CCFBAE923A1CC51E3E0BC6C42F11B2C201A3B44C6B7583FAFB9C0D73BAA908","address":"ban_3gxxb46q6hfuk5x16dg9e8pxnzak4knce6hq9cen5d64u483pcbiowyjntnc","accessories":{"background_color":"#d3f2bd","color_arms-[fur-color][shadow-fur].svg":"#13600d","color_body-upper-[fur-color][shadow-fur].svg":"#13600d","color_eyes-[eye-color][shadow-iris].svg":"#bd53bf","color_face-[fur-color][shadow-fur].svg":"#13600d","color_legs-[fur-color][shadow-fur].svg":"#13600d","color_socks-v-stripe-[colorable-random][removes-feet][w-1].svg":"#eedd12","color_tail-[fur-color][shadow-fur-dark].svg":"#13600d","glasses":"none","hat":"none","misc":"microphone-[above-hands][removes-hand-right][w-1].svg","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"tshirt-short-white[w-1].svg","shoes":"socks-v-stripe-[colorable-random][removes-feet][w-1].svg","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0},{"index":93,"seed":"4F5CF902608541B4A340FDDCDD78F3D45260FDD365EB832807D887AC20C38650","address":"ban_1pdi57ueq7hqsbkmh9aacu8qkrua1tq1c1ei978attqcaq7x38xah8ncwkxf","accessories":{"background_color":"#b7e5f2","color_arms-[fur-color][shadow-fur].svg":"#0866d8","color_body-upper-[fur-color][shadow-fur].svg":"#0866d8","color_eyes-[eye-color][shadow-iris].svg":"#f67797","color_face-[fur-color][shadow-fur].svg":"#0866d8","color_legs-[fur-color][shadow-fur].svg":"#0866d8","color_tail-[fur-color][shadow-fur-dark].svg":"#0866d8","glasses":"none","hat":"none","misc":"none","mouth":"meh-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":94,"seed":"A0C2DBCCE856A0692C31D476F7A99EE0F59F15A686DBF11CCEE9B4E6712E3543","address":"ban_13e9sijwtqnuq7gc4r71ijdd943odn86m1bmyientqzp1eymxu88rat6msky","accessories":{"background_color":"#cef2de","color_arms-[fur-color][shadow-fur].svg":"#276154","color_body-upper-[fur-color][shadow-fur].svg":"#276154","color_eyes-[eye-color][shadow-iris].svg":"#b955e7","color_face-[fur-color][shadow-fur].svg":"#276154","color_legs-[fur-color][shadow-fur].svg":"#276154","color_tail-[fur-color][shadow-fur-dark].svg":"#276154","glasses":"none","hat":"none","misc":"tie-pink-[above-shirts-pants][w-1].svg","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":2},{"index":95,"seed":"F0F385A2997FA84C0D2D90115D79BB40559339306FACE19FF85073B75EEB9993","address":"ban_1xn4ekd8r3enhfzdpjwu39mh8zs668ar6itwtzyejwizf3gxbgkegt9kb5xb","accessories":{"background_color":"#b8cdf2","color_arms-[fur-color][shadow-fur].svg":"#0c12fd","color_body-upper-[fur-color][shadow-fur].svg":"#0c12fd","color_eyes-[eye-color][shadow-iris].svg":"#493566","color_face-[fur-color][shadow-fur].svg":"#0c12fd","color_legs-[fur-color][shadow-fur].svg":"#0c12fd","color_tail-[fur-color][shadow-fur-dark].svg":"#0c12fd","glasses":"glasses-nerd-green-[w-1].svg","hat":"none","misc":"none","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"pants-business-blue-[removes-legs][w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":3},{"index":96,"seed":"577601E2DEF21BE74CD721A852E50512FB466C40EDC088990A3BA40AC6B95276","address":"ban_1bqxqe3u5he117cwi1h995wka4ydpygfomusuc7qxpkwkjfuef8pi4s3ph8u","accessories":{"background_color":"#f2d6dc","color_arms-[fur-color][shadow-fur].svg":"#995e54","color_body-upper-[fur-color][shadow-fur].svg":"#995e54","color_eyes-[eye-color][shadow-iris].svg":"#33f4cc","color_face-[fur-color][shadow-fur].svg":"#995e54","color_legs-[fur-color][shadow-fur].svg":"#995e54","color_tail-[fur-color][shadow-fur-dark].svg":"#995e54","color_tail-sock-[colorable-random][w-1].svg":"#80fbfe","glasses":"none","hat":"none","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"tail-sock-[colorable-random][w-1].svg"},"rarities":[],"isRare":false,"designIndex":0},{"index":97,"seed":"214306AA1AD479EC1D90EB2C1F746FA27E3F7641073E0198ACDE589FCA8D4A70","address":"ban_1jerqoh73496uyw1nygjge9xcmr5ei3x9iqcxi34hwcu5qcka83rd5447npj","accessories":{"background_color":"#f2dae6","color_arms-[fur-color][shadow-fur].svg":"#f196a7","color_body-upper-[fur-color][shadow-fur].svg":"#f196a7","color_eyes-[eye-color][shadow-iris].svg":"#87468b","color_face-[fur-color][shadow-fur].svg":"#f196a7","color_legs-[fur-color][shadow-fur].svg":"#f196a7","color_tail-[fur-color][shadow-fur-dark].svg":"#f196a7","glasses":"none","hat":"hat-cowboy-[w-1].svg","misc":"none","mouth":"confused-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":1},{"index":98,"seed":"1A5BAA1C51B55C46A1A3E914E3C4551C9C4148B4B5E1BDCFA835133D62825FAF","address":"ban_11yjr9s8wcf68hgpkztn6fz8uihb3o9nfwebrnpruwu9mxqtb4uwaanbeep4","accessories":{"background_color":"#d2f2c0","color_arms-[fur-color][shadow-fur].svg":"#2de728","color_body-upper-[fur-color][shadow-fur].svg":"#2de728","color_eyes-[eye-color][shadow-iris].svg":"#03247c","color_face-[fur-color][shadow-fur].svg":"#2de728","color_legs-[fur-color][shadow-fur].svg":"#2de728","color_tail-[fur-color][shadow-fur-dark].svg":"#2de728","glasses":"none","hat":"none","misc":"none","mouth":"cigar-[w-0.5].svg","shirt_pants":"overalls-blue[w-1].svg","shoes":"none","tail_accessory":"none"},"rarities":["Cigar (Uncommon Mouth)"],"isRare":true,"designIndex":2},{"index":99,"seed":"B7E425DDDB8B4AAA0B07950882F2F82DAE6A5CA96591D61B21F30EA230F9EEA1","address":"ban_3g1pam4whp8jfp9srcxsydw5es11zxucz7kjrn5pmez8g8n914chf5h73qgs","accessories":{"background_color":"#bcf2bf","color_arms-[fur-color][shadow-fur].svg":"#0d7938","color_body-upper-[fur-color][shadow-fur].svg":"#0d7938","color_eyes-[eye-color][shadow-iris].svg":"#cf7ebd","color_face-[fur-color][shadow-fur].svg":"#0d7938","color_legs-[fur-color][shadow-fur].svg":"#0d7938","color_tail-[fur-color][shadow-fur-dark].svg":"#0d7938","glasses":"none","hat":"none","misc":"none","mouth":"smile-normal-[w-1].svg","shirt_pants":"overalls-blue[w-1].svg","shoes":"socks-h-stripe-[removes-feet][w-1].svg","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":3},{"index":100,"seed":"89255C3FD7CBEB7CB9CE9D5CB01EE50E742E857AEA02582A78DB66E0D01373C2","address":"ban_1m9rq34rkker6epe38z1nmtqtkorgbnqhinuyjddwe6ssb87c8hkq4cx4173","accessories":{"background_color":"#d4bef2","color_arms-[fur-color][shadow-fur].svg":"#be21ef","color_body-upper-[fur-color][shadow-fur].svg":"#be21ef","color_eyes-[eye-color][shadow-iris].svg":"#e00455","color_face-[fur-color][shadow-fur].svg":"#be21ef","color_legs-[fur-color][shadow-fur].svg":"#be21ef","color_tail-[fur-color][shadow-fur-dark].svg":"#be21ef","glasses":"none","hat":"none","misc":"none","mouth":"smile-big-teeth-[w-1].svg","shirt_pants":"none","shoes":"none","tail_accessory":"none"},"rarities":[],"isRare":false,"designIndex":0}];
+    let isBruteForceActive = false;
+    let bruteForceInterval = null;
+    let totalAddressesScanned = 0;
+    let rareCount = 0;
+    let flamethrowersFound = 0;
+    
+    // Check if bananojs is available
+    const bananojs = window.bananocoinBananojs || null;
+    const QRiousLib = window.QRious || null;
+
+    // Load initial configuration
+    window.addEventListener('DOMContentLoaded', () => {
+      renderDesignPicker();
+      
+      // Setup Quantity Slider listener
+      const qtySlider = document.getElementById('qty-slider');
+      const qtyBadge = document.getElementById('qty-badge');
+      qtySlider.addEventListener('input', (e) => {
+        qtyBadge.textContent = e.target.value;
+      });
+      
+      // Check network status to update offline label
+      if (navigator.onLine) {
+        document.getElementById('offline-alert').classList.add('hidden');
+      }
+      
+      // Let us generate a single sample wallet on load so the screen is not empty
+      setQty(100);
+      // Initialize stats from preloaded wallets
+      totalAddressesScanned = generatedWallets.length;
+      rareCount = generatedWallets.filter(w => w.isRare).length;
+      flamethrowersFound = generatedWallets.filter(w => JSON.stringify(w.accessories).includes('flamethrower')).length;
+      document.getElementById('stat-scanned').textContent = totalAddressesScanned;
+      document.getElementById('stat-rare').textContent = rareCount;
+      document.getElementById('stat-flamethrower').textContent = flamethrowersFound;
+      renderResults();
+    });
+
+    // Helper to set quantity slider
+    function setQty(val) {
+      document.getElementById('qty-slider').value = val;
+      document.getElementById('qty-badge').textContent = val;
+    }
+
+    // Render design cards picker
+    function renderDesignPicker() {
+      const picker = document.getElementById('design-picker');
+      picker.innerHTML = DESIGNS.map((d, index) => {
+        return `
+          <button onclick="selectDesign(${index})" id="design-btn-${index}" class="border-2 ${index === activeDesignIndex ? 'border-yellow-400 bg-yellow-50/50' : 'border-gray-100 hover:border-gray-200'} p-2 rounded-xl transition text-left flex flex-col items-center">
+            <img src="paper-wallet-${d.slug}.svg" class="w-20 h-12 object-cover rounded-lg shadow-sm mb-1" onerror="this.style.display='none'">
+            <span class="text-[10px] font-bold text-gray-700 text-center leading-tight">${d.name}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectDesign(index) {
+      activeDesignIndex = index;
+      renderDesignPicker();
+    }
+
+    // Generate local fallback MonKey procedurally to guarantee preview loads offline
+    function getProceduralFallbackMonKey(address) {
+      // Use address characters to seed color values
+      let seed = 0;
+      for (let i = 0; i < address.length; i++) {
+        seed += address.charCodeAt(i);
+      }
+      const hue = seed % 360;
+      const eyeHue = (seed * 2) % 360;
+      const faceColor = `hsl(${hue}, 85%, 65%)`;
+      const bodyColor = `hsl(${hue}, 80%, 45%)`;
+      const eyeColor = `hsl(${eyeHue}, 90%, 50%)`;
+      
+      // Procedural accessory
+      const accIndex = seed % 4;
+      let accessoryMarkup = '';
+      if (accIndex === 1) { // Crown
+        accessoryMarkup = `<path d="M25 15 L32 28 L40 18 L48 28 L55 15 L50 35 L30 35 Z" fill="#FACC15" stroke="#333" stroke-width="2"/>`;
+      } else if (accIndex === 2) { // Sunglasses
+        accessoryMarkup = `<rect x="25" y="38" width="14" height="8" rx="3" fill="#222"/><rect x="41" y="38" width="14" height="8" rx="3" fill="#222"/><line x1="39" y1="42" x2="41" y2="42" stroke="#222" stroke-width="2"/>`;
+      } else if (accIndex === 3) { // Pipe
+        accessoryMarkup = `<path d="M48 55 L58 55 L62 48 L65 48" stroke="#78350F" stroke-width="3" fill="none"/><circle cx="63.5" cy="48" r="2.5" fill="#EF4444"/>`;
+      }
+      
+      return `
+        <svg viewBox="0 0 80 80" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" class="bg-gray-50">
+          <!-- Ears -->
+          <circle cx="20" cy="40" r="8" fill="${bodyColor}" stroke="#333" stroke-width="2"/>
+          <circle cx="20" cy="40" r="4" fill="#FCA5A5"/>
+          <circle cx="60" cy="40" r="8" fill="${bodyColor}" stroke="#333" stroke-width="2"/>
+          <circle cx="60" cy="40" r="4" fill="#FCA5A5"/>
+          
+          <!-- Head/Face -->
+          <circle cx="40" cy="44" r="20" fill="${bodyColor}" stroke="#333" stroke-width="2"/>
+          <ellipse cx="40" cy="48" rx="15" ry="12" fill="${faceColor}" stroke="#333" stroke-width="1.5"/>
+          
+          <!-- Eyes -->
+          <circle cx="32" cy="40" r="5" fill="#fff" stroke="#333" stroke-width="1.5"/>
+          <circle cx="32" cy="40" r="2.5" fill="${eyeColor}"/>
+          <circle cx="48" cy="40" r="5" fill="#fff" stroke="#333" stroke-width="1.5"/>
+          <circle cx="48" cy="40" r="2.5" fill="${eyeColor}"/>
+          
+          <!-- Mouth -->
+          <path d="M35 52 Q40 57 45 52" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          
+          <!-- Nose -->
+          <ellipse cx="40" cy="46" rx="3" ry="2" fill="#E11D48"/>
+          
+          <!-- Accessory overlay -->
+          ${accessoryMarkup}
+        </svg>
+      `;
+    }
+
+    // Generate random secure Banano keys local-side
+    async function generateLocalWallet() {
+      // Use crypto random bytes
+      const randomArr = new Uint8Array(32);
+      window.crypto.getRandomValues(randomArr);
+      
+      // Convert to hex string
+      let hexSeed = "";
+      for (let i = 0; i < randomArr.length; i++) {
+        let hex = randomArr[i].toString(16);
+        if (hex.length === 1) hex = "0" + hex;
+        hexSeed += hex;
+      }
+      hexSeed = hexSeed.toUpperCase();
+      
+      // Derive Banano address using local bananojs bundle
+      let address = "";
+      if (bananojs) {
+        const privateKey = bananojs.getPrivateKey(hexSeed, 0);
+        const publicKey = await bananojs.getPublicKey(privateKey);
+        address = bananojs.getBananoAccount(publicKey);
+      } else {
+        // Fallback placeholder address if bundle failed to load
+        address = "ban_1dummy" + hexSeed.slice(0, 52).toLowerCase();
+      }
+      
+      return { seed: hexSeed, address };
+    }
+
+    // Main Generate action trigger
+    async function generateBatch() {
+      const qty = parseInt(document.getElementById('qty-slider').value);
+      const btn = document.getElementById('btn-generate');
+      
+      btn.disabled = true;
+      btn.innerHTML = `<span>⏳</span> <span>Generating ${qty}...</span>`;
+      
+      const newWallets = [];
+      for (let i = 0; i < qty; i++) {
+        const w = await generateLocalWallet();
+        newWallets.push({
+          seed: w.seed,
+          address: w.address,
+          designIndex: activeDesignIndex,
+          createdAt: Date.now(),
+          accessories: null,
+          rarities: [],
+          isRare: false
+        });
+      }
+      
+      // Insert new wallets at the start of our list
+      generatedWallets = [...newWallets, ...generatedWallets];
+      
+      // Scan their MonKey attributes in real time from API (if connection is available)
+      scanBatch(newWallets);
+      
+      btn.disabled = false;
+      btn.innerHTML = `<span>🍌</span> <span>Generate Wallets</span>`;
+      
+      renderResults();
+    }
+
+    // Scan accessories of wallets in batches of 100
+    async function scanBatch(walletsList) {
+      const addresses = walletsList.map(w => w.address);
+      totalAddressesScanned += addresses.length;
+      document.getElementById('stat-scanned').textContent = totalAddressesScanned;
+      
+      try {
+        const res = await fetch('https://monkey.banano.cc/api/v1/monkey/dtl', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ addresses })
+        });
+        
+        if (!res.ok) throw new Error('API offline');
+        
+        const data = await res.json();
+        
+        // Match scanned data back to generated wallets list
+        walletsList.forEach(w => {
+          const info = data[w.address];
+          if (info) {
+            w.accessories = info;
+            w.rarities = [];
+            
+            const infoStr = JSON.stringify(info);
+            if (infoStr.includes('flamethrower')) {
+              w.rarities.push('🔥 Flamethrower (Ultra Rare Misc - 0.1%)');
+              flamethrowersFound++;
+              document.getElementById('stat-flamethrower').textContent = flamethrowersFound;
+            }
+            if (infoStr.includes('jester')) {
+              w.rarities.push('🃏 Jester Hat (Ultra Rare Hat - 0.07%)');
+            }
+            if (infoStr.includes('crown')) {
+              w.rarities.push('👑 Crown (Rare Hat - 1.1%)');
+            }
+            if (infoStr.includes('joint')) {
+              w.rarities.push('🚬 Joint (Rare Mouth - 1%)');
+            }
+            if (infoStr.includes('monocle')) {
+              w.rarities.push('🧐 Monocle (Rare Glasses - 0.77%)');
+            }
+            if (infoStr.includes('halo')) {
+              w.rarities.push('😇 Halo (Rare Hat)');
+            }
+            if (infoStr.includes('cigar')) {
+              w.rarities.push('🚬 Cigar (Uncommon Mouth)');
+            }
+            if (infoStr.includes('pipe')) {
+              w.rarities.push('🪵 Pipe (Uncommon Mouth)');
+            }
+            if (infoStr.includes('guitar')) {
+              w.rarities.push('🎸 Guitar (Uncommon Misc)');
+            }
+            
+            if (w.rarities.length > 0) {
+              w.isRare = true;
+              rareCount++;
+              document.getElementById('stat-rare').textContent = rareCount;
+              
+              // Trigger a small browser notification/toast if something awesome was scanned!
+              showToast(`🎯 Found rare MonKey accessory: ${w.rarities[0]}`);
+            }
+          }
+        });
+        
+        // Refresh UI list to render live MonKey SVGs and details
+        renderResults();
+        
+      } catch (err) {
+        console.warn('MonKey API scan failed (either offline or sandboxed). Fallbacks are active.');
+      }
+    }
+
+    // Render results on screen
+    function renderResults() {
+      const listContainer = document.getElementById('wallets-list');
+      const emptyState = document.getElementById('empty-state');
+      const filter = document.getElementById('filter-select').value;
+      
+      let filtered = [...generatedWallets];
+      if (filter === 'rare') {
+        filtered = filtered.filter(w => w.isRare);
+      } else if (filter === 'flamethrower') {
+        filtered = filtered.filter(w => JSON.stringify(w.accessories).includes('flamethrower'));
+      }
+      
+      document.getElementById('results-count').textContent = filtered.length;
+      
+      if (filtered.length === 0) {
+        listContainer.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      
+      emptyState.classList.add('hidden');
+      
+      listContainer.innerHTML = filtered.map((w, index) => {
+        const d = DESIGNS[w.designIndex];
+        
+        // Address splitting exactly like banano.cc
+        const xe = 14; // Prefix ban_ (4) + first 10
+        const ne_len = 5; // End last 5
+        const firstPart = w.address.slice(0, xe);
+        const middlePart = w.address.slice(xe, w.address.length - ne_len);
+        const lastPart = w.address.slice(w.address.length - ne_len);
+        
+                // Rarities display badge
+        let glowClass = '';
+        let rareBadge = '';
+        if (w.isRare) {
+          const infoStr = JSON.stringify(w.accessories);
+          if (infoStr.includes('flamethrower')) {
+            glowClass = 'flame-glow';
+            rareBadge = `<div class="bg-orange-500 text-white text-[10px] font-fredoka py-1.5 px-3.5 rounded-full uppercase tracking-wider mb-2 flex items-center justify-center shadow-lg shadow-orange-500/20">
+                           <span>🔥</span> <span class="ml-1.5">ULTRA RARE FLAMETHROWER</span>
+                         </div>`;
+          } else if (infoStr.includes('jester')) {
+            glowClass = 'jester-glow';
+            rareBadge = `<div class="bg-pink-500 text-white text-[10px] font-fredoka py-1.5 px-3.5 rounded-full uppercase tracking-wider mb-2 flex items-center justify-center shadow-lg shadow-pink-500/20">
+                           <span>🃏</span> <span class="ml-1.5">ULTRA RARE JESTER HAT</span>
+                         </div>`;
+          } else if (infoStr.includes('crown')) {
+            glowClass = 'royal-glow';
+            rareBadge = `<div class="bg-yellow-500 text-yellow-950 text-[10px] font-fredoka py-1.5 px-3.5 rounded-full uppercase tracking-wider mb-2 flex items-center justify-center shadow-lg shadow-yellow-500/20">
+                           <span>👑</span> <span class="ml-1.5">ROYAL CROWN MONKEY</span>
+                         </div>`;
+          } else {
+            glowClass = 'rare-glow';
+            rareBadge = `<div class="bg-amber-400 text-amber-950 text-[10px] font-fredoka py-1 px-3 rounded-full uppercase tracking-wider mb-2 flex items-center justify-center">
+                           <span>🏆</span> <span class="ml-1">${w.rarities.join(', ')}</span>
+                         </div>`;
+          }
+        }
+          
+        const accessoriesList = w.accessories 
+          ? `<div class="text-[10px] text-gray-500 bg-gray-50/50 p-2 rounded-xl mt-2 border border-gray-100 flex flex-wrap gap-1.5 justify-center">
+               <span class="font-bold">Hat:</span> <span>${w.accessories.hat.replace('.svg','').split('-[')[0]}</span> |
+               <span class="font-bold">Glasses:</span> <span>${w.accessories.glasses.replace('.svg','').split('-[')[0]}</span> |
+               <span class="font-bold">Mouth:</span> <span>${w.accessories.mouth.replace('.svg','').split('-[')[0]}</span> |
+               <span class="font-bold">Misc:</span> <span>${w.accessories.misc.replace('.svg','').split('-[')[0]}</span>
+             </div>`
+          : `<div class="text-[10px] text-gray-400 bg-gray-50/50 p-2 rounded-xl mt-2 border border-gray-100">Accessories scanning...</div>`;
+          
+        return `
+          <!-- Card row wrapper -->
+          <div class="print-card-row bg-white rounded-3xl p-6 border-2 border-gray-100 shadow-md flex flex-col md:flex-row items-center gap-6 ${glowClass}">
+            
+            <!-- Left Panel: Address, QR, and MonKey Image -->
+            <div class="flex flex-col items-center text-center w-full md:w-1/3 min-w-[240px] border-r-0 md:border-r border-gray-100 pr-0 md:pr-6 print:border-none print:w-[30%]">
+              
+              <!-- MonKey representation -->
+              <div class="relative h-20 w-20 rounded-full border border-gray-100 bg-gray-50 overflow-hidden mb-3">
+                <!-- Direct Live monKey API endpoint with SVG procedural local fallback -->
+                <div class="h-full w-full relative z-0 flex items-center justify-center">
+                  <img class="h-full w-full object-contain" src="https://monkey.banano.cc/api/v1/monkey/${w.address}" alt="MonKey" onerror="this.outerHTML='${getProceduralFallbackMonKey(w.address).replace(/\n/g, '')}'">
+                </div>
+              </div>
+              
+              <!-- Address Details with stylized spans -->
+              <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 print:hidden">BANANO Address</div>
+              <div class="font-mono text-xs text-gray-700 leading-relaxed mb-4 break-all max-w-[24ch]">
+                <span class="text-yellow-600 font-bold">${firstPart}</span>${middlePart}<span class="text-yellow-600 font-bold">${lastPart}</span>
+              </div>
+              
+              <!-- Address QR code (Receive) -->
+              <div class="relative w-28 h-28 bg-yellow-50 p-1.5 rounded-2xl border border-yellow-100">
+                <canvas id="qr-addr-${index}" class="w-full h-full"></canvas>
+              </div>
+              <span class="text-[9px] font-bold text-gray-400 mt-1">SCAN TO LOAD FUNDS</span>
+              
+              <!-- Rarities or details list -->
+              ${rareBadge}
+              ${accessoriesList}
+            </div>
+            
+            <!-- Right Panel: Original Card background image with overlayed Seed QR code (Sweep) -->
+            <div class="flex-1 relative w-full h-auto print:w-[68%]">
+              <div class="relative max-w-[430px] mx-auto overflow-hidden rounded-2xl shadow-xl shadow-gray-200/50 print:shadow-none">
+                
+                <!-- Background templates local card SVGs we downloaded -->
+                <img src="paper-wallet-${d.slug}.svg" alt="Template" class="w-full h-auto relative z-0">
+                
+                <!-- Absolute overlayed Seed QR code container matching card margin -->
+                <div class="absolute right-0 top-0 z-10 w-[15%] ${d.qrMarginClasses}">
+                  <canvas id="qr-seed-${index}" class="w-full h-full rounded-sm shadow-sm bg-white p-0.5"></canvas>
+                </div>
+                
+                <!-- Absolute seed visual tag -->
+                <div class="absolute bottom-2.5 left-4 z-10 text-[7px] text-white/50 font-mono truncate max-w-[32ch] font-bold select-all print:hidden" title="Private Seed">
+                  SEED: ${w.seed}
+                </div>
+              </div>
+              
+              <!-- Wallet Actions -->
+              <div class="mt-4 flex items-center justify-center space-x-2 print:hidden">
+                <button onclick="revealSeed('${w.seed}')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-3 py-1.5 rounded-lg text-xs transition">Reveal Seed</button>
+                <button onclick="copyToClipboard('${w.address}', 'Address copied!')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-3 py-1.5 rounded-lg text-xs transition">Copy Address</button>
+                <button onclick="copyToClipboard('${w.seed}', 'Private seed copied!')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-3 py-1.5 rounded-lg text-xs transition">Copy Seed</button>
+              </div>
+            </div>
+            
+          </div>
+        `;
+      }).join('');
+      
+      // Generate QR codes for all lists
+      filtered.forEach((w, index) => {
+        generateQr(`qr-addr-${index}`, w.address);
+        generateQr(`qr-seed-${index}`, w.seed);
+      });
+    }
+
+    // Helper to generate QR code canvas locally
+    function generateQr(elementId, value) {
+      const el = document.getElementById(elementId);
+      if (!el || !QRiousLib) return;
+      new QRiousLib({
+        element: el,
+        value: value,
+        size: 150,
+        level: 'H',
+        background: '#ffffff',
+        foreground: '#000000'
+      });
+    }
+
+    // Toast browser helper
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.className = "fixed bottom-5 right-5 bg-yellow-900 text-yellow-50 text-sm font-bold py-3 px-6 rounded-2xl shadow-xl z-50 animate-bounce transition border-2 border-yellow-400 flex items-center space-x-2";
+      t.innerHTML = `<span>🎯</span> <span>${msg}</span>`;
+      document.body.appendChild(t);
+      setTimeout(() => {
+        t.classList.add('opacity-0');
+        setTimeout(() => t.remove(), 500);
+      }, 3500);
+    }
+
+    function revealSeed(seed) {
+      alert(`⚠️ KEEP THIS PRIVATE!\nIf anyone gets this seed, they can steal all your funds.\n\nSeed: ${seed}`);
+    }
+
+    function copyToClipboard(text, msg) {
+      navigator.clipboard.writeText(text);
+      showToast(msg);
+    }
+
+    // Brute Force Auto-scanner trigger
+    function toggleBruteForce() {
+      const bruteBtn = document.getElementById('btn-brute');
+      const bruteBtnText = document.getElementById('brute-btn-text');
+      const bruteStatus = document.getElementById('brute-status');
+      const target = document.getElementById('brute-target').value;
+      
+      if (isBruteForceActive) {
+        // Stop
+        clearInterval(bruteForceInterval);
+        isBruteForceActive = false;
+        bruteBtn.classList.remove('bg-red-500', 'hover:bg-red-600', 'text-white');
+        bruteBtn.classList.add('bg-yellow-500', 'hover:bg-yellow-600', 'text-yellow-950');
+        bruteBtnText.textContent = 'Start Auto-Scanning';
+        bruteStatus.textContent = 'IDLE';
+        bruteStatus.className = "bg-red-100 text-red-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider";
+      } else {
+        // Start
+        isBruteForceActive = true;
+        bruteBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600', 'text-yellow-950');
+        bruteBtn.classList.add('bg-red-500', 'hover:bg-red-600', 'text-white');
+        bruteBtnText.textContent = 'Stop Scanning';
+        bruteStatus.textContent = 'SCANNING...';
+        bruteStatus.className = "bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse";
+        
+        bruteForceInterval = setInterval(async () => {
+          // Generate 10 local wallets
+          const chunk = [];
+          for (let i = 0; i < 15; i++) {
+            const w = await generateLocalWallet();
+            chunk.push({
+              seed: w.seed,
+              address: w.address,
+              designIndex: activeDesignIndex,
+              createdAt: Date.now(),
+              accessories: null,
+              rarities: [],
+              isRare: false
+            });
+          }
+          
+          const addresses = chunk.map(w => w.address);
+          totalAddressesScanned += addresses.length;
+          document.getElementById('stat-scanned').textContent = totalAddressesScanned;
+          
+          try {
+            const res = await fetch('https://monkey.banano.cc/api/v1/monkey/dtl', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ addresses })
+            });
+            const data = await res.json();
+            
+            for (const w of chunk) {
+              const info = data[w.address];
+              if (!info) continue;
+              
+              const infoStr = JSON.stringify(info);
+              if (infoStr.includes(target)) {
+                // Hit target!
+                w.accessories = info;
+                w.isRare = true;
+                w.rarities.push(`✨ Targeted hit: ${target}!`);
+                
+                // Add to generated list and refresh
+                generatedWallets = [w, ...generatedWallets];
+                rareCount++;
+                document.getElementById('stat-rare').textContent = rareCount;
+                if (target === 'flamethrower') {
+                  flamethrowersFound++;
+                  document.getElementById('stat-flamethrower').textContent = flamethrowersFound;
+                }
+                
+                // Alert hit and pause brute force
+                showToast(`🎯 Auto-Scanned and FOUND a ${target} MonKey wallet!`);
+                toggleBruteForce(); // stop automatic scan so user can see it!
+                renderResults();
+                return;
+              }
+            }
+          } catch (err) {
+            console.warn('API error in brute forcing batch. Continuing...');
+          }
+        }, 1200); // query interval to respect API limits
+      }
+    }
+  </script>
+</body>
+</html>
