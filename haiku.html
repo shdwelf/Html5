@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#08090d" />
+  <meta name="description" content="Offline BIP-39 haiku workbench: Ensō ID, 5-7-5 seed mining, inspector, and piped inbox. Vanilla HTML5 port of shdwelf/bip39-haiku-workbench — not a React/Vite tree." />
+  <title>BIP-39 Haiku Workbench</title>
+  <link rel="icon" href="./img/haiku-icon.png" />
+  <link rel="stylesheet" href="./css/haiku.css" />
+  <script src="./webxdc.js"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <a class="brand" href="./index.html#grid" target="_top" aria-label="Back to SITE-K">
+        <img src="./img/haiku-icon.png" alt="" width="36" height="36" />
+        <span>
+          <strong>HAIKU WORKBENCH</strong>
+          <small>BIP-39 · 5-7-5 · ENSŌ ID · WEBXDC</small>
+        </span>
+      </a>
+      <div class="top-right">
+        <span class="local"><i></i>LOCAL ONLY</span>
+        <span class="vault-chip">VAULT <b id="vaultKeyChip">—</b></span>
+        <a class="jump" data-site-only href="./index.html#studio" target="_top">ART STUDIO</a>
+        <a class="jump" data-site-only href="./haiku.xdc" download="bip39-haiku.xdc">WEBXDC</a>
+      </div>
+    </header>
+
+    <p class="lede">
+      Standalone HTML5 port of
+      <a href="https://github.com/shdwelf/bip39-haiku-workbench">shdwelf/bip39-haiku-workbench</a>.
+      Mines 12-word BIP-39 phrases that partition as 5-7-5 haiku and packs every brush setting into an Ensō ID
+      (the vault password). No React, no Vite — one page, one webxdc.
+    </p>
+    <p id="bootError" class="boot-error" hidden></p>
+
+    <nav class="studio-tabs" aria-label="Workbench tools" role="tablist">
+      <button type="button" class="studio-tab active" role="tab" aria-selected="true" data-panel="enso"><span>01</span>ENSŌ FORGE</button>
+      <button type="button" class="studio-tab" role="tab" aria-selected="false" data-panel="wallet"><span>02</span>HAIKU MINE</button>
+      <button type="button" class="studio-tab" role="tab" aria-selected="false" data-panel="inspector"><span>03</span>INSPECTOR</button>
+      <button type="button" class="studio-tab" role="tab" aria-selected="false" data-panel="inbox"><span>04</span>PIPE INBOX <b id="inboxBadge">0</b></button>
+    </nav>
+
+    <section id="ensoPanel" class="panel active" data-panel-view>
+      <div class="grid-2">
+        <div>
+          <div class="enso-frame">
+            <canvas id="ensoCanvas" width="560" height="560" aria-label="Ensō brushstroke"></canvas>
+          </div>
+          <div class="id-card">
+            <span>ENSŌGEN ID · TERRAIN SEED · MASTER VAULT KEY</span>
+            <b id="ensoIdPretty">—</b>
+            <code id="ensoIdRaw">—</code>
+            <p>This mixed-radix ID encodes every setting (like a Worms terrain seed) and unlocks the AES-256-GCM vault.</p>
+          </div>
+          <p id="ensoFlash" class="flash" hidden></p>
+          <div class="row">
+            <button type="button" class="primary" id="randomSeed">RANDOM SEED</button>
+            <button type="button" class="ghost" id="rerollTerrain">REROLL TERRAIN</button>
+            <button type="button" class="ghost" id="pngButton">PNG</button>
+          </div>
+          <div class="row">
+            <input id="idInput" type="text" spellcheck="false" placeholder="Paste Ensō ID to load…" />
+            <button type="button" class="ghost" id="loadId">LOAD</button>
+          </div>
+        </div>
+        <div>
+          <h2>Manual settings</h2>
+          <div class="controls">
+            <label>Ink load <output id="inkLoadValue">4</output><input id="inkLoad" type="range" min="1" max="8" value="4" /></label>
+            <label>Direction
+              <select id="direction">
+                <option value="0">Clockwise</option>
+                <option value="1">Counter-clockwise</option>
+              </select>
+            </label>
+            <label>Paper hue <select id="paperHue"></select></label>
+            <label>Brush size <output id="brushSizeValue">6</output><input id="brushSize" type="range" min="1" max="12" value="6" /></label>
+            <label>Ink density <output id="inkDensityValue">3</output><input id="inkDensity" type="range" min="1" max="9" value="3" /></label>
+            <label>X/Y stretch <output id="stretchValue">Unequal</output><input id="stretch" type="range" min="0" max="4" value="3" /></label>
+            <label>Paper texture <output id="paperTextureValue">4</output><input id="paperTexture" type="range" min="0" max="9" value="4" /></label>
+            <label>Bristle density <output id="bristleDensityValue">5</output><input id="bristleDensity" type="range" min="1" max="9" value="5" /></label>
+            <label>Signature
+              <select id="signatureStyle">
+                <option value="0">Dark</option>
+                <option value="1">Light</option>
+              </select>
+            </label>
+            <label>Brushstroke size
+              <select id="brushstrokeSize">
+                <option value="0">Small</option>
+                <option value="1" selected>Medium</option>
+                <option value="2">Large</option>
+              </select>
+            </label>
+            <label>Start rotation <output id="startRotationValue">216°</output><input id="startRotation" type="range" min="0" max="359" value="216" /></label>
+            <label>Terrain seed <output id="terrainSeedValue">1337</output><input id="terrainSeed" type="range" min="0" max="65535" value="1337" /></label>
+          </div>
+          <div class="summary" id="ensoSummary"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="walletPanel" class="panel" data-panel-view hidden>
+      <div class="grid-2">
+        <aside class="forge-card">
+          <h2>Forge haiku wallet</h2>
+          <p>Real 128-bit BIP-39 mnemonics. We keep the ones whose twelve words cut cleanly into 5-7-5. Entertainment only — do not store real funds.</p>
+          <label class="inline">Mine at once
+            <input id="mineCount" type="number" min="1" max="20" value="1" />
+          </label>
+          <label class="check">
+            <input id="requireGrammar" type="checkbox" checked />
+            Spell / grammar gate (skip awkward haiku)
+          </label>
+          <label id="grammarWrap">Min readability <output id="grammarValue">70</output>
+            <input id="grammarThreshold" type="range" min="40" max="95" value="70" />
+          </label>
+          <button type="button" class="primary wide" id="forgeButton">FORGE WALLET</button>
+          <div id="mineAnim" class="mine-anim" hidden>
+            <div class="spin" aria-hidden="true"></div>
+            <p id="mineStatus">Forging…</p>
+            <div class="bar"><i id="mineProgress"></i></div>
+          </div>
+          <div class="row wrap">
+            <button type="button" class="ghost" id="exportAes">Export AES-GCM</button>
+            <button type="button" class="ghost" id="exportPlain">Export plain</button>
+            <button type="button" class="ghost" id="pipeInWallet">Pull from pipe</button>
+            <button type="button" class="ghost danger" id="clearVault">Clear vault</button>
+          </div>
+        </aside>
+        <div>
+          <div class="section-head">
+            <h2>Collection (<span id="collectionCount">0</span>)</h2>
+          </div>
+          <p id="walletFlash" class="flash" hidden></p>
+          <p id="collectionEmpty" class="empty">No wallets yet. Forge your first 5-7-5 mnemonic.</p>
+          <div id="collectionList" class="cards"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="inspectorPanel" class="panel" data-panel-view hidden>
+      <div class="inspect-card">
+        <div class="section-head">
+          <div>
+            <h2>Mnemonic inspector</h2>
+            <p>Paste or pipe a phrase. Checks the BIP-39 checksum and the 5-7-5 shape. Does not derive a spendable key.</p>
+          </div>
+          <div class="row">
+            <button type="button" class="ghost" id="pipeInInspect">Pull from pipe</button>
+            <button type="button" class="ghost" id="pipeOutInspect">Pipe phrase</button>
+          </div>
+        </div>
+        <p id="inspectFlash" class="flash" hidden></p>
+        <textarea id="inspectInput" rows="3" spellcheck="false" autocomplete="off" autocapitalize="none" placeholder="abandon ability able about above absent…"></textarea>
+      </div>
+      <div id="inspectResult" class="grid-2" hidden>
+        <article class="forge-card">
+          <h2>Validity</h2>
+          <dl class="kv">
+            <div><dt>Words</dt><dd id="inspectWords">—</dd></div>
+            <div><dt>Total syllables</dt><dd id="inspectSyl">—</dd></div>
+            <div><dt>BIP-39 checksum</dt><dd id="inspectChecksum">—</dd></div>
+            <div><dt>5-7-5 haiku</dt><dd id="inspectHaiku">—</dd></div>
+          </dl>
+          <p id="inspectUnknown" class="flash bad" hidden></p>
+        </article>
+        <article class="forge-card">
+          <h2>Haiku shape</h2>
+          <div id="inspectLines" class="lines"></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="inboxPanel" class="panel" data-panel-view hidden>
+      <article class="forge-card">
+        <h2>Piped inbox</h2>
+        <p>Any tool can park a value here. Push delivers it to a target even if that tab has not been opened yet. Queue + localStorage — back-to-back sends no longer clobber each other.</p>
+        <div id="inboxList"></div>
+      </article>
+    </section>
+
+    <footer>
+      <span>BIP-39 HAIKU WORKBENCH · VANILLA HTML5 · WEBXDC</span>
+      <span>FOR ENTERTAINMENT / EDUCATION · DO NOT STORE REAL FUNDS</span>
+    </footer>
+  </div>
+  <script type="module" src="./js/haiku-workbench.js"></script>
+</body>
+</html>
