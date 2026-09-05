@@ -1,4 +1,4 @@
-/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator | #studio | #haiku */
+/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator | #studio | #haiku | #cylinders */
 import { initWm } from "./wm.js";
 
 document.documentElement.dataset.shell = "1";
@@ -8,7 +8,7 @@ const $ = (id) => document.getElementById(id);
 function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
   const normalized = raw === "artstudio" || raw === "art-studio" ? "studio" : raw;
-  if (normalized === "terrarium" || normalized === "keyspace" || normalized === "validator" || normalized === "studio" || normalized === "haiku" || normalized === "grid") return normalized;
+  if (normalized === "terrarium" || normalized === "keyspace" || normalized === "validator" || normalized === "studio" || normalized === "haiku" || normalized === "cylinders" || normalized === "grid") return normalized;
   return "grid";
 }
 
@@ -26,7 +26,7 @@ function markDock(mode) {
   document.body.dataset.net = navigator.onLine ? "on" : "off";
   document.querySelectorAll(".app-dock a").forEach((a) => {
     a.classList.toggle("on", a.dataset.mode === mode);
-    a.setAttribute("href", `#${a.dataset.mode}`);
+    if (a.dataset.mode) a.setAttribute("href", `#${a.dataset.mode}`);
   });
   window.SITEK_WM?.sync?.();
   const net = $("netChip");
@@ -98,6 +98,13 @@ let started = null;
 
 async function start(mode) {
   markDock(mode);
+
+  if (mode === "cylinders") {
+    const frame = $("syncframe");
+    if (frame && !frame.getAttribute("src")) frame.src = "./cylinder-sync.html";
+    document.title = "Cylinder Sync · UCSB Library";
+    return;
+  }
 
   if (mode === "keyspace" || mode === "validator" || mode === "studio" || mode === "haiku") {
     const frame = $("keyframe");

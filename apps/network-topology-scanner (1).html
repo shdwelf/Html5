@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Topology Scanner & Subnet Detective</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-dark: #0a0e17;
+            --bg-card: #111827;
+            --bg-input: #1f2937;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.3);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #e5e7eb;
+            --text-dim: #9ca3af;
+            --border: #374151;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+        
+        header {
+            text-align: center;
+            padding: 25px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 25px;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--accent), #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle { color: var(--text-dim); font-size: 0.9rem; margin-top: 5px; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .card:hover { border-color: var(--accent); }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .card-icon {
+            width: 36px; height: 36px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+        
+        .card-title { font-size: 1.1rem; font-weight: 600; }
+        
+        .full-width { grid-column: 1 / -1; }
+        
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 600;
+            margin-left: auto;
+        }
+        
+        .status-success { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .status-warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .status-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .status-neutral { background: rgba(156, 163, 175, 0.15); color: var(--text-dim); }
+        
+        .status-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: currentColor;
+        }
+        
+        .status-dot.pulse { animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .info-item {
+            background: var(--bg-input);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+        
+        .info-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        
+        .info-value {
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+            word-break: break-all;
+        }
+        
+        .info-value.highlight { color: var(--accent); }
+        .info-value.success { color: var(--success); }
+        .info-value.warning { color: var(--warning); }
+        .info-value.danger { color: var(--danger); }
+        
+        .problem-item {
+            background: var(--bg-input);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--danger);
+        }
+        
+        .problem-item.warning { border-left-color: var(--warning); }
+        .problem-item.success { border-left-color: var(--success); }
+        
+        .problem-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .problem-desc { font-size: 0.85rem; color: var(--text-dim); }
+        
+        .solution-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+        
+        .solution-title {
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+        
+        .solution-code {
+            font-family: 'Consolas', monospace;
+            font-size: 0.8rem;
+            background: var(--bg-dark);
+            padding: 8px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        input, select, button {
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+        
+        input:focus, select:focus { outline: none; border-color: var(--accent); }
+        
+        button {
+            background: var(--accent);
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        button:hover { background: #2563eb; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        button.secondary { background: var(--bg-input); border: 1px solid var(--border); }
+        button.secondary:hover { background: var(--border); }
+        
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        
+        .results {
+            background: var(--bg-input);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.8rem;
+        }
+        
+        .result-line {
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .result-line:last-child { border-bottom: none; }
+        
+        .host-item {
+            background: var(--bg-input);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        
+        .host-item:hover { background: var(--border); }
+        
+        .host-info { flex: 1; }
+        
+        .host-ip { font-weight: 600; color: var(--accent); }
+        .host-mac { font-size: 0.75rem; color: var(--text-dim); }
+        .host-status { 
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .host-status.up { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .host-status.down { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .host-status.unknown { background: rgba(156, 163, 175, 0.15); color: var(--text-dim); }
+        
+        /* Topology Map Styles */
+        .topology-map {
+            background: var(--bg-input);
+            border-radius: 12px;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
+        
+        .topo-layer {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .topo-layer-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+        
+        .topo-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .topo-node {
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+            min-width: 140px;
+            transition: all 0.3s;
+        }
+        
+        .topo-node:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        
+        .topo-node.isp { border-color: var(--danger); }
+        .topo-node.firewall { border-color: var(--warning); }
+        .topo-node.router { border-color: var(--accent); }
+        .topo-node.switch { border-color: var(--text-dim); }
+        .topo-node.server { border-color: var(--success); }
+        .topo-node.client { border-color: var(--accent); }
+        .topo-node.vpn { border-color: #8b5cf6; }
+        .topo-node.captive { border-color: var(--warning); background: rgba(245, 158, 11, 0.1); }
+        .topo-node.you { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
+        
+        .topo-icon { font-size: 24px; margin-bottom: 5px; }
+        .topo-label { font-weight: 600; font-size: 0.85rem; }
+        .topo-detail { font-size: 0.7rem; color: var(--text-dim); margin-top: 4px; }
+        
+        .topo-arrow {
+            font-size: 20px;
+            color: var(--text-dim);
+            padding: 0 10px;
+        }
+        
+        .connection-line {
+            position: absolute;
+            background: var(--accent);
+            opacity: 0.3;
+        }
+        
+        .problem-marker {
+            position: absolute;
+            width: 20px; height: 20px;
+            background: var(--danger);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            animation: pulse 1s infinite;
+        }
+        
+        /* Settings Panel */
+        .settings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .settings-table th, .settings-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .settings-table th {
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        
+        .settings-table td:first-child {
+            font-family: monospace;
+            color: var(--accent);
+            width: 35%;
+        }
+        
+        .copy-btn {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            background: var(--bg-dark);
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            height: 4px;
+            background: var(--bg-dark);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+        
+        /* Bypass Options */
+        .bypass-card {
+            background: var(--bg-input);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .bypass-card:hover { border-color: var(--accent); }
+        .bypass-card.expanded { border-color: var(--success); }
+        
+        .bypass-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .bypass-title { font-weight: 600; margin-bottom: 5px; }
+        .bypass-desc { font-size: 0.8rem; color: var(--text-dim); }
+        .bypass-risk { 
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .bypass-risk.low { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .bypass-risk.medium { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .bypass-risk.high { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        
+        .bypass-content { display: none; margin-top: 15px; }
+        .bypass-card.expanded .bypass-content { display: block; }
+        
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .info-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗺️ Network Topology Scanner & Subnet Detective</h1>
+            <p class="subtitle">Nmap-style scanning • DHCP Debugging • Subnet Detection • IPv6 Bypass • DPI Evasion</p>
+        </header>
+        
+        <div class="grid">
+            <!-- Network Discovery Status -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-icon">🔍</div>
+                    <h2 class="card-title">Network Discovery</h2>
+                    <span class="status-badge status-neutral" id="scanStatus">
+                        <span class="status-dot"></span>
+                        Ready
+                    </span>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="scanRange" placeholder="IP Range (e.g., 192.168.1.1-254)" value="">
+                    <select id="scanType">
+                        <option value="quick">Quick Scan</option>
+                        <option value="full">Full Scan</option>
+                        <option value="stealth">Stealth Scan</option>
+                    </select>
+                    <button onclick="startNetworkScan()">Start Scan</button>
+                </div>
+                <div class="progress-bar" id="scanProgress" style="display:none;">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div id="scanInfo" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-dim);"></div>
+            </div>
+            
+            <!-- Current Network Info -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-icon">📡</div>
+                    <h2 class="card-title">Current Network Configuration</h2>
+                </div>
+                <div class="info-grid" id="currentNetworkInfo">
+                    <div class="info-item">
+                        <div class="info-label">Local IPv4</div>
+                        <div class="info-value" id="localIPv4">Detecting...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Local IPv6</div>
+                        <div class="info-value" id="localIPv6">Detecting...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Gateway</div>
+                        <div class="info-value highlight" id="gatewayIP">Detecting...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Subnet Mask</div>
+                        <div class="info-value" id="subnetMask">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">DHCP Server</div>
+                        <div class="info-value" id="dhcpServer">Detecting...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">DNS Servers</div>
+                        <div class="info-value" id="dnsServers">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Detected Subnet</div>
+                        <div class="info-value highlight" id="detectedSubnet">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Network Class</div>
+                        <div class="info-value" id="networkClass">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Network Topology Map -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-icon">🗺️</div>
+                    <h2 class="card-title">Network Topology Map</h2>
+                    <button class="secondary" onclick="refreshTopology()">↻ Refresh</button>
+                </div>
+                <div class="topology-map" id="topologyMap">
+                    <!-- Dynamically generated -->
+                </div>
+            </div>
+            
+            <!-- Discovered Hosts -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-icon">🖥️</div>
+                    <h2 class="card-title">Discovered Hosts</h2>
+                    <span class="status-badge status-neutral" id="hostsCount">
+                        <span class="status-dot"></span>
+                        0 hosts
+                    </span>
+                </div>
+                <div class="results" id="hostsList" style="max-height: 300px;">
+                    <div style="color: var(--text-dim); text-align: center; padding: 20px;">
+                        Run a scan to discover hosts on your network
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Detected Problems -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-icon">⚠️</div>
+                    <h2 class="card-title">Detected Problems & Solutions</h2>
+                </div>
+                <div id="problemsList">
+                    <div style="color: var(--text-dim); text-align: center; padding: 20px;">
+                        Run network scan to detect problems
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recommended Settings -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-icon">⚙️</div>
+                    <h2 class="card-title">Recommended Network Settings</h2>
+                </div>
+                <table class="settings-table" id="settingsTable">
+                    <thead>
+                        <tr>
+                            <th>Setting</th>
+                            <th>Current Value</th>
+                            <th>Recommended</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="settingsBody">
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-dim);">
+                                Run scan to get recommendations
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Bypass Options -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-icon">🔓</div>
+                    <h2 class="card-title">Bypass Options</h2>
+                </div>
+                <div id="bypassOptions">
+                    <!-- Bypass cards will be inserted here -->
+                </div>
+            </div>
+            
+            <!-- Subnet Calculator & Detective -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧮</div>
+                    <h2 class="card-title">Subnet Detective</h2>
+                </div>
+                <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 15px;">
+                    Enter any IP to calculate subnet and check if it matches your network.
+                </p>
+                <div class="input-group">
+                    <input type="text" id="subnetIP" placeholder="IP Address">
+                    <input type="number" id="subnetCIDR" placeholder="/24" min="1" max="32" value="24" style="max-width: 70px;">
+                </div>
+                <button onclick="analyzeSubnet()" style="width: 100%;">Analyze Subnet</button>
+                <div class="results" id="subnetResults"></div>
+            </div>
+            
+            <!-- DHCP Debug -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📋</div>
+                    <h2 class="card-title">DHCP Debugger</h2>
+                </div>
+                <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 15px;">
+                    Diagnose why DHCP isn't working and get static IP settings.
+                </p>
+                <button onclick="debugDHCP()" style="width: 100%; margin-bottom: 15px;">Run DHCP Diagnostic</button>
+                <div class="results" id="dhcpResults"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // ==================== STATE ====================
+        let networkState = {
+            localIPv4: null,
+            localIPv6: [],
+            gateway: null,
+            subnetMask: null,
+            cidr: null,
+            dhcpServer: null,
+            dnsServers: [],
+            discoveredHosts: [],
+            isScanning: false,
+            problems: []
+        };
+        
+        // ==================== INITIALIZATION ====================
+        window.addEventListener('load', async () => {
+            await detectCurrentNetwork();
+            await scanNetwork();
+            initializeBypassOptions();
+        });
+        
+        // ==================== NETWORK DETECTION ====================
+        async function detectCurrentNetwork() {
+            updateStatus('Detecting network configuration...', 'warning');
+            
+            // Get local IP via WebRTC
+            const localIPs = await getLocalIPs();
+            networkState.localIPv4 = localIPs.ipv4[0] || null;
+            networkState.localIPv6 = localIPs.ipv6;
+            
+            document.getElementById('localIPv4').textContent = networkState.localIPv4 || 'Not detected';
+            
+            // Try to parse IPv6
+            const ipv6Display = networkState.localIPv6.length > 0 ? 
+                networkState.localIPv6[0].substring(0, 30) + '...' : 'Not detected';
+            document.getElementById('localIPv6').textContent = ipv6Display;
+            
+            // Try to get gateway via fetch timing
+            await detectGateway();
+            
+            // Try to get DHCP info via various methods
+            await detectDHCPServer();
+            
+            // Get DNS servers
+            await detectDNSServers();
+            
+            // Calculate subnet from local IP
+            if (networkState.localIPv4) {
+                calculateSubnetFromIP(networkState.localIPv4);
+            }
+            
+            updateUI();
+        }
+        
+        async function getLocalIPs() {
+            return new Promise((resolve) => {
+                const ips = { ipv4: [], ipv6: [] };
+                
+                try {
+                    const pc = new RTCPeerConnection({
+                        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+                    });
+                    
+                    pc.createDataChannel('');
+                    
+                    pc.onicecandidate = (e) => {
+                        if (!e.candidate) {
+                            pc.close();
+                            resolve(ips);
+                            return;
+                        }
+                        
+                        const cand = e.candidate.candidate;
+                        const match = cand.match(/(\d+\.\d+\.\d+\.\d+)/);
+                        const match6 = cand.match(/([0-9a-fA-F:]+)/);
+                        
+                        if (match) {
+                            const ip = match[1];
+                            if (!ips.ipv4.includes(ip) && ip !== '0.0.0.0' && !ip.startsWith('127.')) {
+                                ips.ipv4.push(ip);
+                            }
+                        } else if (match6) {
+                            const ip = match6[1].split('%')[0];
+                            if (!ips.ipv6.includes(ip) && ip !== '::' && !ip.startsWith('fe80') && ip.length > 5) {
+                                ips.ipv6.push(ip);
+                            }
+                        }
+                    };
+                    
+                    pc.createOffer().then(offer => pc.setLocalDescription(offer));
+                    
+                    setTimeout(() => {
+                        pc.close();
+                        resolve(ips);
+                    }, 3000);
+                    
+                } catch (e) {
+                    resolve(ips);
+                }
+            });
+        }
+        
+        async function detectGateway() {
+            // Gateway is typically .1 or .254 in the subnet
+            if (!networkState.localIPv4) return;
+            
+            const parts = networkState.localIPv4.split('.');
+            const base = `${parts[0]}.${parts[1]}.${parts[2]}`;
+            
+            // Try common gateway IPs
+            const candidates = [`${base}.1`, `${base}.254`, `${base}.2`];
+            
+            for (const gateway of candidates) {
+                try {
+                    const start = Date.now();
+                    await fetch(`https://${gateway}/`, {
+                        method: 'HEAD',
+                        mode: 'no-cors',
+                        cache: 'no-store',
+                        signal: AbortSignal.timeout(1000)
+                    });
+                    const latency = Date.now() - start;
+                    
+                    if (latency < 500) {
+                        networkState.gateway = gateway;
+                        document.getElementById('gatewayIP').textContent = gateway;
+                        document.getElementById('gatewayIP').className = 'info-value success';
+                        return;
+                    }
+                } catch (e) {}
+            }
+            
+            // If no response, guess based on subnet
+            networkState.gateway = `${base}.1`;
+            document.getElementById('gatewayIP').textContent = `${networkState.gateway} (guessed)`;
+            document.getElementById('gatewayIP').className = 'info-value warning';
+        }
+        
+        async function detectDHCPServer() {
+            // DHCP servers typically at gateway
+            if (networkState.gateway) {
+                networkState.dhcpServer = networkState.gateway;
+                document.getElementById('dhcpServer').textContent = networkState.gateway + ' (likely)';
+            } else {
+                document.getElementById('dhcpServer').textContent = 'Not detected';
+            }
+        }
+        
+        async function detectDNSServers() {
+            // Try to get DNS from browser (limited)
+            networkState.dnsServers = ['8.8.8.8', '8.8.4.4']; // Fallback
+            
+            try {
+                // Test if Google DNS works
+                const res = await fetch('https://dns.google/resolve?name=test&type=A', {
+                    signal: AbortSignal.timeout(5000)
+                });
+                if (res.ok) {
+                    document.getElementById('dnsServers').textContent = '8.8.8.8, 8.8.4.4';
+                }
+            } catch (e) {
+                document.getElementById('dnsServers').textContent = 'Using system default';
+            }
+        }
+        
+        function calculateSubnetFromIP(ip) {
+            const parts = ip.split('.');
+            const base = `${parts[0]}.${parts[1]}.${parts[2]}`;
+            
+            // Assume /24 (most common) if not detected
+            networkState.cidr = 24;
+            networkState.subnetMask = '255.255.255.0';
+            
+            document.getElementById('subnetMask').textContent = networkState.subnetMask;
+            document.getElementById('detectedSubnet').textContent = `${base}.0/24`;
+            
+            // Determine network class
+            const firstOctet = parseInt(parts[0]);
+            let netClass = 'Unknown';
+            
+            if (firstOctet >= 1 && firstOctet <= 126) netClass = 'Class A';
+            else if (firstOctet >= 128 && firstOctet <= 191) netClass = 'Class B';
+            else if (firstOctet >= 192 && firstOctet <= 223) netClass = 'Class C';
+            else if (firstOctet >= 224 && firstOctet <= 239) netClass = 'Class D (Multicast)';
+            else if (firstOctet >= 240) netClass = 'Class E (Reserved)';
+            
+            document.getElementById('networkClass').textContent = netClass;
+            
+            // Auto-fill scan range
+            document.getElementById('scanRange').value = `${base}.1-${base}.254`;
+        }
+        
+        // ==================== NETWORK SCANNING (Nmap-style) ====================
+        async function startNetworkScan() {
+            if (networkState.isScanning) return;
+            
+            const range = document.getElementById('scanRange').value;
+            const scanType = document.getElementById('scanType').value;
+            
+            if (!range) {
+                alert('Please enter an IP range');
+                return;
+            }
+            
+            networkState.isScanning = true;
+            networkState.discoveredHosts = [];
+            
+            const statusBadge = document.getElementById('scanStatus');
+            statusBadge.className = 'status-badge status-warning';
+            statusBadge.innerHTML = '<span class="status-dot pulse"></span>Scanning';
+            
+            const progressBar = document.getElementById('scanProgress');
+            const progressFill = document.getElementById('progressFill');
+            const scanInfo = document.getElementById('scanInfo');
+            
+            progressBar.style.display = 'block';
+            
+            // Parse IP range
+            const { startIP, endIP } = parseIPRange(range);
+            const targets = generateIPList(startIP, endIP);
+            
+            scanInfo.textContent = `Scanning ${targets.length} targets...`;
+            
+            // Batch size depends on scan type
+            const batchSize = scanType === 'quick' ? 25 : scanType === 'stealth' ? 5 : 15;
+            const delay = scanType === 'stealth' ? 200 : scanType === 'quick' ? 50 : 100;
+            
+            for (let i = 0; i < targets.length; i += batchSize) {
+                if (!networkState.isScanning) break;
+                
+                const batch = targets.slice(i, i + batchSize);
+                await scanBatch(batch, scanType);
+                
+                const progress = Math.round((i + batch.length) / targets.length * 100);
+                progressFill.style.width = `${progress}%`;
+                scanInfo.textContent = `Scanned ${i + batch.length}/${targets.length} (${progress}%)`;
+                
+                await sleep(delay);
+            }
+            
+            // Finish
+            progressFill.style.width = '100%';
+            scanInfo.textContent = `Scan complete. Found ${networkState.discoveredHosts.length} hosts.`;
+            
+            statusBadge.className = 'status-badge status-success';
+            statusBadge.innerHTML = '<span class="status-dot"></span>Complete';
+            
+            networkState.isScanning = false;
+            
+            // Update UI
+            updateHostList();
+            detectProblems();
+            generateSettingsRecommendations();
+            refreshTopology();
+            
+            setTimeout(() => {
+                progressBar.style.display = 'none';
+                progressFill.style.width = '0%';
+            }, 2000);
+        }
+        
+        async function scanBatch(targets, scanType) {
+            const promises = targets.map(async (ip) => {
+                const host = { ip, mac: null, hostname: null, status: 'unknown', ports: [] };
+                
+                try {
+                    // Test connectivity via fetch timing
+                    const start = Date.now();
+                    await fetch(`https://${ip}/`, {
+                        method: 'HEAD',
+                        mode: 'no-cors',
+                        cache: 'no-store',
+                        signal: AbortSignal.timeout(2000)
+                    });
+                    const latency = Date.now() - start;
+                    
+                    host.status = 'up';
+                    host.latency = latency;
+                    
+                    // Try common ports
+                    if (scanType !== 'quick') {
+                        host.ports = await scanPorts(ip, scanType);
+                    }
+                    
+                } catch (e) {
+                    // Try HTTP (sometimes HTTPS fails but HTTP works)
+                    try {
+                        const start = Date.now();
+                        await fetch(`http://${ip}/`, {
+                            mode: 'no-cors',
+                            cache: 'no-store',
+                            signal: AbortSignal.timeout(1500)
+                        });
+                        host.status = 'up';
+                        host.latency = Date.now() - start;
+                    } catch (e2) {
+                        host.status = 'down';
+                    }
+                }
+                
+                // Try to determine hostname from IP patterns
+                host.hostname = guessHostname(ip);
+                
+                // If this is our gateway, mark it
+                if (ip === networkState.gateway) {
+                    host.type = 'gateway';
+                }
+                
+                // If this is our local IP, mark it
+                if (ip === networkState.localIPv4) {
+                    host.type = 'local';
+                }
+                
+                networkState.discoveredHosts.push(host);
+                return host;
+            });
+            
+            await Promise.all(promises);
+        }
+        
+        async function scanPorts(ip, scanType) {
+            const commonPorts = [
+                { port: 80, name: 'HTTP' },
+                { port: 443, name: 'HTTPS' },
+                { port: 22, name: 'SSH' },
+                { port: 21, name: 'FTP' },
+                { port: 23, name: 'Telnet' },
+                { port: 53, name: 'DNS' },
+                { port: 445, name: 'SMB' },
+                { port: 3389, name: 'RDP' },
+                { port: 8080, name: 'HTTP-Alt' },
+                { port: 8443, name: 'HTTPS-Alt' }
+            ];
+            
+            // Full scan adds more ports
+            const fullPorts = scanType === 'full' ? [
+                { port: 25, name: 'SMTP' },
+                { port: 110, name: 'POP3' },
+                { port: 143, name: 'IMAP' },
+                { port: 1194, name: 'OpenVPN' },
+                { port: 51820, name: 'WireGuard' },
+                { port: 500, name: 'IKEv2' },
+                { port: 4500, name: 'IKEv2-NAT' }
+            ] : [];
+            
+            const portsToScan = [...commonPorts, ...fullPorts];
+            
+            const results = [];
+            
+            for (const p of portsToScan) {
+                try {
+                    const protocol = p.port === 443 || p.port === 8443 ? 'https' : 'http';
+                    const res = await fetch(`${protocol}://${ip}:${p.port}/`, {
+                        method: 'HEAD',
+                        mode: 'no-cors',
+                        cache: 'no-store',
+                        signal: AbortSignal.timeout(500)
+                    });
+                    results.push({ port: p.port, name: p.name, status: 'open' });
+                } catch (e) {}
+            }
+            
+            return results;
+        }
+        
+        function parseIPRange(range) {
+            // Handle formats: "192.168.1.1-254", "192.168.1.0/24", "192.168.1.1"
+            const cidrMatch = range.match(/(\d+\.\d+\.\d+\.\d+)\/(\d+)/);
+            if (cidrMatch) {
+                const ip = cidrMatch[1];
+                const bits = parseInt(cidrMatch[2]);
+                const parts = ip.split('.').map(Number);
+                const mask = (0xFFFFFFFF << (32 - bits)) >>> 0;
+                const network = (parts[0] << 24 | parts[1] << 16 | parts[2] << 8 | parts[3]) & mask;
+                const broadcast = network | (~mask >>> 0);
+                
+                return {
+                    startIP: intToIP(network + 1),
+                    endIP: intToIP(broadcast - 1)
+                };
+            }
+            
+            const rangeMatch = range.match(/(\d+\.\d+\.\d+\.)(\d+)-(\d+)/);
+            if (rangeMatch) {
+                return {
+                    startIP: rangeMatch[1] + rangeMatch[2],
+                    endIP: rangeMatch[1] + rangeMatch[3]
+                };
+            }
+            
+            // Single IP
+            return { startIP: range, endIP: range };
+        }
+        
+        function generateIPList(start, end) {
+            const startNum = ipToInt(start);
+            const endNum = ipToInt(end);
+            const ips = [];
+            
+            for (let i = startNum; i <= endNum && ips.length < 256; i++) {
+                ips.push(intToIP(i));
+            }
+            
+            return ips;
+        }
+        
+        function ipToInt(ip) {
+            const parts = ip.split('.').map(Number);
+            return (parts[0] << 24 | parts[1] << 16 | parts[2] << 8 | parts[3]) >>> 0;
+        }
+        
+        function intToIP(num) {
+            return [
+                (num >>> 24) & 255,
+                (num >>> 16) & 255,
+                (num >>> 8) & 255,
+                num & 255
+            ].join('.');
+        }
+        
+        function guessHostname(ip) {
+            // Try to guess based on common patterns
+            const parts = ip.split('.');
+            const last = parseInt(parts[3]);
+            
+            if (last === 1) return 'Router/Gateway';
+            if (last === 254) return 'Router/Gateway';
+            if (last === 100) return 'Common DHCP Range';
+            if (last >= 1 && last <= 20) return 'Device/Server';
+            
+            return null;
+        }
+        
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        // ==================== UI UPDATES ====================
+        function updateUI() {
+            // Already handled in detection functions
+        }
+        
+        function updateHostList() {
+            const hostsList = document.getElementById('hostsList');
+            const hostsCount = document.getElementById('hostsCount');
+            
+            const activeHosts = networkState.discoveredHosts.filter(h => h.status === 'up');
+            
+            hostsCount.innerHTML = `<span class="status-dot"></span>${activeHosts.length} hosts`;
+            
+            if (activeHosts.length === 0) {
+                hostsList.innerHTML = `
+                    <div style="color: var(--text-dim); text-align: center; padding: 20px;">
+                        No active hosts found on this subnet
+                    </div>
+                `;
+                return;
+            }
+            
+            hostsList.innerHTML = activeHosts.map(host => {
+                const typeClass = host.type === 'gateway' ? 'gateway' : 
+                                  host.type === 'local' ? 'local' : '';
+                const statusClass = host.status === 'up' ? 'up' : 'down';
+                const latencyStr = host.latency ? `${host.latency}ms` : '';
+                
+                const portsStr = host.ports && host.ports.length > 0 ?
+                    `<span style="font-size: 0.7rem; color: var(--text-dim);">Ports: ${host.ports.map(p => p.port).join(', ')}</span>` : '';
+                
+                return `
+                    <div class="host-item ${typeClass}">
+                        <div class="host-info">
+                            <div class="host-ip">${host.ip}</div>
+                            <div class="host-mac">${host.hostname || 'Unknown device'}</div>
+                            ${portsStr}
+                        </div>
+                        <div class="host-status ${statusClass}">${latencyStr || 'Active'}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // ==================== PROBLEM DETECTION ====================
+        function detectProblems() {
+            networkState.problems = [];
+            
+            // Check DHCP
+            if (!networkState.dhcpServer) {
+                networkState.problems.push({
+                    severity: 'danger',
+                    title: 'DHCP Server Not Detected',
+                    description: 'Your DHCP server is not responding. This is why you may need a static IP.',
+                    solution: {
+                        text: 'Set a static IP address in the same subnet as the gateway.',
+                        commands: generateStaticIPSettings()
+                    }
+                });
+            }
+            
+            // Check subnet configuration
+            if (networkState.localIPv4 && networkState.gateway) {
+                const localParts = networkState.localIPv4.split('.').map(Number);
+                const gwParts = networkState.gateway.split('.').map(Number);
+                
+                const sameSubnet = localParts[0] === gwParts[0] && 
+                                   localParts[1] === gwParts[1] && 
+                                   localParts[2] === gwParts[2];
+                
+                if (!sameSubnet) {
+                    networkState.problems.push({
+                        severity: 'danger',
+                        title: 'IP Address on Different Subnet',
+                        description: `Your IP (${networkState.localIPv4}) is not on the same subnet as the gateway (${networkState.gateway}). This will prevent communication.`,
+                        solution: {
+                            text: 'Move your IP to the correct subnet.',
+                            commands: [
+                                `Set IP to: ${gwParts[0]}.${gwParts[1]}.${gwParts[2]}.${Math.max(2, localParts[3])}`,
+                                `Subnet mask: 255.255.255.0`,
+                                `Gateway: ${networkState.gateway}`
+                            ]
+                        }
+                    });
+                }
+            }
+            
+            // Check for captive portal
+            networkState.problems.push({
+                severity: 'warning',
+                title: 'Possible Captive Portal',
+                description: 'Your network may require authentication before internet access is granted.',
+                solution: {
+                    text: 'Try opening a browser and navigating to any HTTP (not HTTPS) website to trigger the captive portal login.',
+                    commands: ['Try: http://neverssl.com', 'Or: http://captive.apple.com']
+                }
+            });
+            
+            // Check IPv6
+            if (networkState.localIPv6.length === 0) {
+                networkState.problems.push({
+                    severity: 'info',
+                    title: 'IPv6 Not Detected',
+                    description: 'Your network does not have IPv6 connectivity.',
+                    solution: {
+                        text: 'This is usually fine for now, but IPv6 adoption is growing.',
+                        commands: []
+                    }
+                });
+            }
+            
+            renderProblems();
+        }
+        
+        function renderProblems() {
+            const problemsList = document.getElementById('problemsList');
+            
+            if (networkState.problems.length === 0) {
+                problemsList.innerHTML = `
+                    <div class="problem-item success">
+                        <div class="problem-title">✓ No Major Problems Detected</div>
+                        <div class="problem-desc">Your network configuration looks healthy.</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            problemsList.innerHTML = networkState.problems.map(p => `
+                <div class="problem-item ${p.severity}">
+                    <div class="problem-title">
+                        ${p.severity === 'danger' ? '❌' : p.severity === 'warning' ? '⚠️' : 'ℹ️'}
+                        ${p.title}
+                    </div>
+                    <div class="problem-desc">${p.description}</div>
+                    ${p.solution ? `
+                        <div class="solution-box">
+                            <div class="solution-title">💡 Solution</div>
+                            <div style="font-size: 0.85rem; margin-bottom: 8px;">${p.solution.text}</div>
+                            ${p.solution.commands.length > 0 ? `
+                                <div class="solution-code">
+                                    ${p.solution.commands.map(c => c).join('<br>')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+        
+        // ==================== SETTINGS RECOMMENDATIONS ====================
+        function generateSettingsRecommendations() {
+            const tbody = document.getElementById('settingsBody');
+            
+            const localIP = networkState.localIPv4 || '192.168.1.100';
+            const gateway = networkState.gateway || '192.168.1.1';
+            const subnet = networkState.subnetMask || '255.255.255.0';
+            
+            const ipParts = localIP.split('.');
+            const suggestedIP = `${ipParts[0]}.${ipParts[1]}.${ipParts[2]}.${Math.min(254, Math.max(2, parseInt(ipParts[3]) + 1))}`;
+            
+            const settings = [
+                {
+                    name: 'IP Address',
+                    current: localIP,
+                    recommended: suggestedIP,
+                    note: 'Pick any unused IP in the subnet'
+                },
+                {
+                    name: 'Subnet Mask',
+                    current: subnet,
+                    recommended: subnet,
+                    note: 'Standard /24 network'
+                },
+                {
+                    name: 'Default Gateway',
+                    current: gateway,
+                    recommended: gateway,
+                    note: 'Your router\'s IP'
+                },
+                {
+                    name: 'Preferred DNS',
+                    current: 'System Default',
+                    recommended: '8.8.8.8',
+                    note: 'Google DNS'
+                },
+                {
+                    name: 'Alternate DNS',
+                    current: 'System Default',
+                    recommended: '8.8.4.4',
+                    note: 'Google DNS Secondary'
+                }
+            ];
+            
+            tbody.innerHTML = settings.map(s => `
+                <tr>
+                    <td>${s.name}</td>
+                    <td style="color: var(--text-dim);">${s.current}</td>
+                    <td style="color: var(--success);">${s.recommended}</td>
+                    <td>
+                        <button class="secondary copy-btn" onclick="copyToClipboard('${s.recommended}')">Copy</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            showToast('Copied: ' + text);
+        }
+        
+        // ==================== TOPOLOGY MAP ====================
+        function refreshTopology() {
+            const map = document.getElementById('topologyMap');
+            
+            const hosts = networkState.discoveredHosts.filter(h => h.status === 'up');
+            const gateway = hosts.find(h => h.type === 'gateway') || { ip: networkState.gateway, hostname: 'Router/Gateway' };
+            const local = hosts.find(h => h.type === 'local') || { ip: networkState.localIPv4, hostname: 'This Device' };
+            
+            map.innerHTML = `
+                <div class="topo-layer">
+                    <div class="topo-layer-label">🌐 Internet / ISP</div>
+                    <div class="topo-row">
+                        <div class="topo-node isp">
+                            <div class="topo-icon">🌐</div>
+                            <div class="topo-label">ISP Network</div>
+                            <div class="topo-detail">Upstream Provider</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="topo-layer">
+                    <div class="topo-layer-label">🔥 Perimeter Security</div>
+                    <div class="topo-row">
+                        <div class="topo-node ${networkState.problems.some(p => p.title.includes('Captive')) ? 'captive' : 'firewall'}">
+                            <div class="topo-icon">${networkState.problems.some(p => p.title.includes('Captive')) ? '⚠️' : '🔥'}</div>
+                            <div class="topo-label">${networkState.problems.some(p => p.title.includes('Captive')) ? 'Captive Portal' : 'Firewall'}</div>
+                            <div class="topo-detail">${networkState.problems.some(p => p.title.includes('Captive')) ? 'Auth Required' : 'Network Security'}</div>
+                        </div>
+                        <div class="topo-node router">
+                            <div class="topo-icon">📡</div>
+                            <div class="topo-label">${gateway.ip}</div>
+                            <div class="topo-detail">${gateway.hostname || 'Gateway'}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="topo-layer">
+                    <div class="topo-layer-label">🔧 Local Network (${networkState.cidr ? networkState.cidr + ' Subnet' : '/24'})</div>
+                    <div class="topo-row" style="flex-wrap: wrap;">
+                        ${hosts.slice(0, 8).map(h => `
+                            <div class="topo-node ${h.type === 'local' ? 'you' : h.type === 'gateway' ? 'router' : 'client'}">
+                                <div class="topo-icon">${h.type === 'local' ? '💻' : '🖥️'}</div>
+                                <div class="topo-label">${h.ip.split('.').slice(-1)[0]}</div>
+                                <div class="topo-detail">${h.hostname || 'Device'}</div>
+                            </div>
+                        `).join('')}
+                        ${hosts.length > 8 ? `<div class="topo-node">+${hosts.length - 8} more</div>` : ''}
+                    </div>
+                </div>
+                
+                <div class="topo-layer">
+                    <div class="topo-layer-label">🔐 VPN Tunnel (if active)</div>
+                    <div class="topo-row">
+                        <div class="topo-node vpn" id="vpnTopoNode" style="display: none;">
+                            <div class="topo-icon">🔒</div>
+                            <div class="topo-label">VPN Server</div>
+                            <div class="topo-detail">Encrypted Tunnel</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="topo-layer">
+                    <div class="topo-layer-label" style="color: var(--accent);">📍 You Are Here</div>
+                    <div class="topo-row">
+                        <div class="topo-node you">
+                            <div class="topo-icon">💻</div>
+                            <div class="topo-label">${local.ip}</div>
+                            <div class="topo-detail">This Device ${networkState.localIPv6.length ? '+ IPv6' : ''}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ==================== SUBNET ANALYSIS ====================
+        function analyzeSubnet() {
+            const ipInput = document.getElementById('subnetIP').value;
+            const cidr = parseInt(document.getElementById('subnetCIDR').value) || 24;
+            const resultsDiv = document.getElementById('subnetResults');
+            
+            if (!ipInput) return;
+            
+            const parts = ipInput.split('.').map(Number);
+            if (parts.length !== 4 || parts.some(p => isNaN(p) || p < 0 || p > 255)) {
+                resultsDiv.innerHTML = '<div style="color: var(--danger);">Invalid IP address</div>';
+                return;
+            }
+            
+            // Calculate subnet details
+            const mask = [];
+            for (let i = 0; i < 4; i++) {
+                const bits = Math.min(8, Math.max(0, cidr - i * 8));
+                mask.push(bits === 0 ? 0 : 256 - Math.pow(2, 8 - bits));
+            }
+            
+            const networkAddr = parts.map((p, i) => p & mask[i]);
+            const broadcastAddr = networkAddr.map((p, i) => p | (255 - mask[i]));
+            const firstHost = [...networkAddr];
+            firstHost[3] += 1;
+            const lastHost = [...broadcastAddr];
+            lastHost[3] -= 1;
+            const totalHosts = Math.pow(2, 32 - cidr) - 2;
+            
+            // Check if current IP is in this subnet
+            const isInSubnet = networkState.localIPv4 ? (() => {
+                const localParts = networkState.localIPv4.split('.').map(Number);
+                return localParts.every((p, i) => (p & mask[i]) === networkAddr[i]);
+            })() : false;
+            
+            let html = `
+                <div style="margin-bottom: 10px;">
+                    <strong>Subnet Analysis:</strong>
+                </div>
+                <div style="margin-bottom: 5px;">Network: <span style="color: var(--accent);">${networkAddr.join('.')}</span>/${cidr}</div>
+                <div style="margin-bottom: 5px;">Subnet Mask: ${mask.join('.')}</div>
+                <div style="margin-bottom: 5px;">Broadcast: ${broadcastAddr.join('.')}</div>
+                <div style="margin-bottom: 5px;">First Host: ${firstHost.join('.')}</div>
+                <div style="margin-bottom: 5px;">Last Host: ${lastHost.join('.')}</div>
+                <div style="margin-bottom: 10px;">Total Hosts: ${totalHosts > 0 ? totalHosts.toLocaleString() : 'N/A'}</div>
+            `;
+            
+            if (isInSubnet) {
+                html += `<div style="color: var(--success); padding: 10px; background: rgba(16,185,129,0.1); border-radius: 6px;">
+                    ✓ This subnet matches your current network!
+                </div>`;
+            } else if (networkState.localIPv4) {
+                html += `<div style="color: var(--warning); padding: 10px; background: rgba(245,158,11,0.1); border-radius: 6px;">
+                    ⚠️ Different subnet than current network<br>
+                    <small>Your current network: ${networkState.localIPv4.split('.').slice(0,3).join('.')}.0/24</small>
+                </div>`;
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        // ==================== DHCP DEBUGGER ====================
+        async function debugDHCP() {
+            const resultsDiv = document.getElementById('dhcpResults');
+            resultsDiv.innerHTML = '<div style="color: var(--text-dim);">Running DHCP diagnostics...</div>';
+            
+            let html = '';
+            
+            // Check 1: Is DHCP server responding?
+            html += '<div style="margin-bottom: 10px;"><strong>DHCP Server Status:</strong></div>';
+            
+            if (networkState.dhcpServer) {
+                html += `<div style="color: var(--success);">✓ DHCP server detected at ${networkState.dhcpServer}</div>`;
+            } else {
+                html += `<div style="color: var(--danger);">✗ No DHCP server detected on the network</div>`;
+            }
+            
+            // Check 2: IP lease info
+            html += '<div style="margin-top: 15px; margin-bottom: 10px;"><strong>Possible Causes:</strong></div>';
+            html += `
+                <div style="font-size: 0.85rem; color: var(--text-dim);">
+                    <div style="margin-bottom: 8px;">• DHCP server is offline or unreachable</div>
+                    <div style="margin-bottom: 8px;">• DHCP address pool is exhausted</div>
+                    <div style="margin-bottom: 8px;">• Your device was assigned a static IP conflicting with DHCP</div>
+                    <div style="margin-bottom: 8px;">• Firewall blocking DHCP Discover/Request packets (UDP 67/68)</div>
+                    <div style="margin-bottom: 8px;">• Captive portal requiring authentication before DHCP works</div>
+                </div>
+            `;
+            
+            // Static IP recommendation
+            html += '<div style="margin-top: 15px; margin-bottom: 10px;"><strong>Recommended Static IP Settings:</strong></div>';
+            
+            const gateway = networkState.gateway || '192.168.1.1';
+            const gwParts = gateway.split('.');
+            const suggestedIP = `${gwParts[0]}.${gwParts[1]}.${gwParts[2]}.150`;
+            
+            html += `
+                <div class="solution-code">
+                    IP Address: ${suggestedIP}<br>
+                    Subnet Mask: 255.255.255.0<br>
+                    Gateway: ${gateway}<br>
+                    DNS: 8.8.8.8, 8.8.4.4
+                </div>
+            `;
+            
+            // Try to detect DHCP using captive portal endpoint
+            html += '<div style="margin-top: 15px; margin-bottom: 10px;"><strong>Testing Connectivity:</strong></div>';
+            
+            try {
+                const res = await fetch('http://captive.apple.com/', { mode: 'no-cors' });
+                html += '<div style="color: var(--success);">✓ HTTP connectivity works (captive portal may be present)</div>';
+            } catch (e) {
+                html += '<div style="color: var(--danger);">✗ No HTTP connectivity (possible network isolation)</div>';
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        // ==================== BYPASS OPTIONS ====================
+        function initializeBypassOptions() {
+            const container = document.getElementById('bypassOptions');
+            
+            const bypassOptions = [
+                {
+                    id: 'static-ip',
+                    title: '🖥️ Static IP Configuration',
+                    desc: 'Bypass DHCP by manually setting network parameters',
+                    risk: 'low',
+                    content: generateStaticIPBypass()
+                },
+                {
+                    id: 'ipv6-tunnel',
+                    title: '🌍 IPv6 Tunnel Bypass',
+                    desc: 'Use IPv6 to bypass IPv4-only captive portals (your situation!)',
+                    risk: 'medium',
+                    content: generateIPv6Bypass()
+                },
+                {
+                    id: 'dns-tunnel',
+                    title: '📡 DNS Tunneling (Iodine)',
+                    desc: 'Tunnel ALL traffic through DNS queries - slow but works',
+                    risk: 'medium',
+                    content: generateDNSBypass()
+                },
+                {
+                    id: 'mac-spoof',
+                    title: '🕵️ MAC Spoofing',
+                    desc: 'Clone an authenticated device\'s MAC address (80%+ success)',
+                    risk: 'high',
+                    content: generateMACBypass()
+                },
+                {
+                    id: 'vpn-tcp',
+                    title: '🔐 VPN over TCP 443',
+                    desc: 'OpenVPN over TCP port 443 mimics HTTPS - hard to block',
+                    risk: 'low',
+                    content: generateVPNBypass()
+                },
+                {
+                    id: 'wg-obfuscate',
+                    title: '🐉 WireGuard Obfuscation',
+                    desc: 'Wrap WireGuard in udp2raw or Shadowsocks to hide signature',
+                    risk: 'medium',
+                    content: generateWGBypass()
+                },
+                {
+                    id: 'dpi-evasion',
+                    title: '🔥 DPI Evasion (GoodbyeDPI)',
+                    desc: 'Use GoodbyeDPI to confuse Deep Packet Inspection',
+                    risk: 'low',
+                    content: generateDPIEvasion()
+                },
+                {
+                    id: 'doh',
+                    title: '🔒 DNS over HTTPS (DoH)',
+                    desc: 'Bypass DNS-level censorship with encrypted DNS',
+                    risk: 'low',
+                    content: generateDoHBypass()
+                }
+            ];
+            
+            container.innerHTML = bypassOptions.map(opt => `
+                <div class="bypass-card" id="bypass-${opt.id}" onclick="toggleBypass('${opt.id}')">
+                    <div class="bypass-header">
+                        <div>
+                            <div class="bypass-title">${opt.title}</div>
+                            <div class="bypass-desc">${opt.desc}</div>
+                        </div>
+                        <span class="bypass-risk ${opt.risk}">${opt.risk.toUpperCase()} RISK</span>
+                    </div>
+                    <div class="bypass-content">
+                        ${opt.content}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function toggleBypass(id) {
+            const card = document.getElementById(`bypass-${id}`);
+            card.classList.toggle('expanded');
+        }
+        
+        function generateStaticIPBypass() {
+            const gateway = networkState.gateway || '192.168.1.1';
+            const gwParts = gateway.split('.');
+            const suggestedIP = `${gwParts[0]}.${gwParts[1]}.${gwParts[2]}.150`;
+            
+            return `
+                <div class="solution-code">
+                    <strong>Windows:</strong><br>
+                    1. Settings → Network → Ethernet/WiFi<br>
+                    2. Edit IP Settings → Manual<br>
+                    3. Enter:<br>
+                    &nbsp;&nbsp;IP: ${suggestedIP}<br>
+                    &nbsp;&nbsp;Mask: 255.255.255.0<br>
+                    &nbsp;&nbsp;Gateway: ${gateway}<br>
+                    &nbsp;&nbsp;DNS: 8.8.8.8, 8.8.4.4<br><br>
+                    <strong>Linux (nmcli):</strong><br>
+                    nmcli con mod "Wired Connection" ipv4.addresses ${suggestedIP}/24<br>
+                    nmcli con mod "Wired Connection" ipv4.gateway ${gateway}<br>
+                    nmcli con mod "Wired Connection" ipv4.dns 8.8.8.8<br>
+                    nmcli con mod "Wired Connection" ipv4.method manual<br>
+                    nmcli con up "Wired Connection"
+                </div>
+            `;
+        }
+        
+        function generateIPv6Bypass() {
+            return `
+                <div class="solution-code">
+                    <strong>✅ THIS IS YOUR BEST OPTION!</strong><br>
+                    Since IPv6 UDP DNS works, your static IPv6 bypasses the captive portal.<br><br>
+                    <strong>Step 1: Test if IPv6 works completely:</strong><br>
+                    ping6 -c 4 2001:4860:4860::8888<br>
+                    curl -6 https://ifconfig.co<br><br>
+                    <strong>Step 2: Configure your static IPv6 properly:</strong><br>
+                    # Your IPv6 must match the delegated prefix from router<br>
+                    # Check router's IPv6 prefix with:<br>
+                    ip -6 addr show | grep "inet6"<br>
+                    radvdump (Linux)<br><br>
+                    <strong>Step 3: Use IPv6-only VPN tunnel:</strong><br>
+                    # Register at tunnelbroker.net (free)<br>
+                    # Create tunnel using YOUR IPv4 (for tunnel endpoint)<br>
+                    # All traffic will route through IPv6 tunnel<br><br>
+                    <strong>Step 4: Set IPv6 as preferred:</strong><br>
+                    # In your OS, prefer IPv6 for all connections<br>
+                    # Force applications to use IPv6<br><br>
+                    <strong>Result:</strong> All traffic bypasses IPv4-only captive portal!
+                </div>
+            `;
+        }
+        
+        function generateDNSBypass() {
+            return `
+                <div class="solution-code">
+                    <strong>Requires: VPS with static IP + domain</strong><br><br>
+                    <strong>Server (VPS):</strong><br>
+                    apt install iodine<br>
+                    iodined -c -p 53 -P password 10.0.0.1 tunnel.example.com<br><br>
+                    <strong>Client:</strong><br>
+                    apt install iodine<br>
+                    iodine -f -P password tunnel.example.com<br><br>
+                    <strong>SSH Tunnel Alternative (if port 22 is open):</strong><br>
+                    ssh -p 22 -D 1080 user@vps-server<br>
+                    # Configure browser SOCKS proxy to localhost:1080
+                </div>
+            `;
+        }
+        
+        function generateMACBypass() {
+            return `
+                <div class="solution-code">
+                    <strong>⚠️ WARNING: Requires monitor mode-capable adapter for WiFi</strong><br><br>
+                    <strong>Linux - Find authenticated MACs:</strong><br>
+                    sudo airodump-ng wlan0  # For WiFi<br>
+                    sudo arp-scan -l         # For wired<br><br>
+                    <strong>Linux - Change your MAC:</strong><br>
+                    sudo ip link set dev eth0 down<br>
+                    sudo macchanger -m AA:BB:CC:DD:EE:FF eth0<br>
+                    sudo ip link set dev eth0 up<br><br>
+                    <strong>Windows - Use TMAC tool:</strong><br>
+                    Download Technitium MAC Address Changer<br>
+                    Select adapter, enter new MAC, click Change Now<br><br>
+                    <strong>⚠️ Risks:</strong><br>
+                    • MAC conflicts if original device is active<br>
+                    • May violate network policies<br>
+                    • Illegal in some jurisdictions if malicious
+                </div>
+            `;
+        }
+        
+        function generateWGBypass() {
+            return `
+                <div class="solution-code">
+                    <strong>Problem:</strong> WireGuard has fixed byte signature (0x01000000)<br>
+                    DPI detects it regardless of port.<br><br>
+                    <strong>Solution 1: WireGuard over UDP 443</strong><br>
+                    # Still detectable by DPI but less likely<br>
+                    # Most firewalls don't block all UDP<br><br>
+                    <strong>Solution 2: Wrap in udp2raw</strong><br>
+                    # Wraps WireGuard in fake TCP to mimic HTTP<br>
+                    udp2raw -c -l 127.0.0.1:3333 -r SERVER_IP:4096 -k password<br>
+                    # Then connect WireGuard to localhost:3333<br><br>
+                    <strong>Solution 3: Use OpenVPN TCP 443 instead</strong><br>
+                    # Best for restrictive networks<br>
+                    proto tcp-client<br>
+                    port 443<br><br>
+                    <strong>Solution 4: Shadowsocks + WireGuard</strong><br>
+                    # Run WireGuard inside Shadowsocks tunnel<br>
+                    ss-local -s 127.0.0.1 -p 8388 -l 51820 -m chacha20<br>
+                    # Connect WireGuard to localhost:51820
+                </div>
+            `;
+        }
+        
+        function generateDPIEvasion() {
+            return `
+                <div class="solution-code">
+                    <strong>GoodbyeDPI (Windows):</strong><br>
+                    # Download from github.com/ValdikSS/goodbyeDPI<br>
+                    goodbyedpi.exe -1          # Safe mode<br>
+                    goodbyedpi.exe -2          # Aggressive<br><br>
+                    <strong>Linux - zapret:</strong><br>
+                    # github.com/bol-van/zapret<br>
+                    ./install_bin.sh<br>
+                    ./config<br><br>
+                    <strong>How they work:</strong><br>
+                    • Sends fake packets with wrong TTL/checksum<br>
+                    • Splits HTTP headers to confuse DPI<br>
+                    • Drops fake RST packets from DPI<br><br>
+                    <strong>For Russian networks:</strong><br>
+                    goodbyedpi.exe -1 -o<br>
+                    # Includes DNS redirection to Yandex 77.88.8.8:1253
+                </div>
+            `;
+        }
+        
+        function generateVPNBypass() {
+            return `
+                <div class="solution-code">
+                    <strong>OpenVPN TCP 443 Configuration:</strong><br><br>
+                    # OpenVPN config (.ovpn)<br>
+                    proto tcp-client<br>
+                    port 443<br>
+                    dev tun<br><br>
+                    <strong>WireGuard doesn't support TCP</strong><br>
+                    Use OpenVPN instead when behind strict firewalls<br><br>
+                    <strong>Providers with obfuscation:</strong><br>
+                    • NordVPN (Obfuscated servers)<br>
+                    • Mullvad (WireGuard + Shadowsocks bridges)<br>
+                    • ExpressVPN (Lightway protocol)<br>
+                    • ProtonVPN (Stealth protocol)<br><br>
+                    <strong>Tip:</strong> TCP 443 mimics HTTPS and is rarely blocked
+                </div>
+            `;
+        }
+        
+        function generateDoHBypass() {
+            return `
+                <div class="solution-code">
+                    <strong>Browser-based DoH:</strong><br><br>
+                    <strong>Firefox:</strong><br>
+                    Settings → Network Settings → Enable DoH<br>
+                    Provider: Cloudflare or Google<br><br>
+                    <strong>Chrome/Edge:</strong><br>
+                    Settings → Security → Use Secure DNS<br>
+                    Select Cloudflare or Google<br><br>
+                    <strong>System-wide (Windows 11):</strong><br>
+                    Settings → Network → DNS Server → Edit<br>
+                    Enter: 1.1.1.1 (Cloudflare)<br><br>
+                    <strong>Test:</strong><br>
+                    Visit https://browserleaks.com/dns<br>
+                    Should show "Cloudflare" or "Google"
+                </div>
+            `;
+        }
+        
+        function generateStaticIPSettings() {
+            const gateway = networkState.gateway || '192.168.1.1';
+            const gwParts = gateway.split('.');
+            const suggestedIP = `${gwParts[0]}.${gwParts[1]}.${gwParts[2]}.150`;
+            
+            return [
+                `IP: ${suggestedIP}`,
+                `Subnet: 255.255.255.0`,
+                `Gateway: ${gateway}`,
+                `DNS: 8.8.8.8, 8.8.4.4`
+            ];
+        }
+        
+        // ==================== HELPERS ====================
+        function updateStatus(msg, type) {
+            const statusBadge = document.getElementById('scanStatus');
+            const statusMap = {
+                'warning': 'status-warning',
+                'success': 'status-success',
+                'danger': 'status-danger',
+                'neutral': 'status-neutral'
+            };
+            
+            statusBadge.className = `status-badge ${statusMap[type] || 'status-neutral'}`;
+            statusBadge.innerHTML = `<span class="status-dot ${type === 'warning' ? 'pulse' : ''}"></span>${msg}`;
+        }
+        
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed; bottom: 20px; right: 20px;
+                padding: 12px 20px; background: var(--bg-card);
+                border: 1px solid var(--accent); border-radius: 8px;
+                color: var(--text); z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        async function scanNetwork() {
+            // Quick initial scan when page loads
+            document.getElementById('scanRange').value = networkState.localIPv4 ?
+                `${networkState.localIPv4.split('.').slice(0,3).join('.')}.1-254` : '192.168.1.1-254';
+            
+            // Auto-run quick scan
+            setTimeout(() => {
+                if (networkState.localIPv4) {
+                    document.getElementById('scanType').value = 'quick';
+                    startNetworkScan();
+                }
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

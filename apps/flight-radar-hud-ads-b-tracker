@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Radar HUD - ADS-B Tracker</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main Map Container -->
+    <div id="map"></div>
+
+    <!-- HUD Overlay -->
+    <div class="hud-overlay">
+        <!-- Top Bar -->
+        <div class="hud-top-bar">
+            <div class="hud-title">
+                <span class="scan-line"></span>
+                <h1>✈ FLIGHT RADAR HUD</h1>
+                <span class="status-indicator" id="connectionStatus">●</span>
+                <span class="status-text" id="connectionText">CONNECTING...</span>
+            </div>
+            <div class="hud-coords">
+                <span>LAT: <em id="centerLat">00.0000</em></span>
+                <span>LON: <em id="centerLon">00.0000</em></span>
+                <span>ZOOM: <em id="zoomLevel">10</em></span>
+            </div>
+            <div class="hud-time">
+                <span id="hudTime">00:00:00</span>
+                <span id="hudDate">00/00/0000</span>
+            </div>
+        </div>
+
+        <!-- Left Panel - Stats -->
+        <div class="hud-panel hud-left-panel">
+            <div class="panel-header">
+                <h2>◈ AIRCRAFT STATS</h2>
+                <div class="panel-corner tl"></div>
+                <div class="panel-corner tr"></div>
+                <div class="panel-corner bl"></div>
+                <div class="panel-corner br"></div>
+            </div>
+            <div class="panel-content">
+                <div class="stat-row">
+                    <span class="stat-label">TOTAL TRACKED:</span>
+                    <span class="stat-value" id="totalAircraft">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">COMMERCIAL:</span>
+                    <span class="stat-value commercial" id="commercialCount">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">PRIVATE:</span>
+                    <span class="stat-value private" id="privateCount">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">MILITARY:</span>
+                    <span class="stat-value military" id="militaryCount">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">ON GROUND:</span>
+                    <span class="stat-value" id="groundCount">0</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-row">
+                    <span class="stat-label">HIGHEST ALT:</span>
+                    <span class="stat-value altitude" id="highestAlt">0 ft</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">FASTEST:</span>
+                    <span class="stat-value speed" id="fastestSpeed">0 kts</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-row">
+                    <span class="stat-label">REFRESH:</span>
+                    <span class="stat-value" id="refreshTimer">10s</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">LAST UPDATE:</span>
+                    <span class="stat-value" id="lastUpdate">--:--:--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Selected Aircraft Details -->
+        <div class="hud-panel hud-right-panel" id="detailsPanel">
+            <div class="panel-header">
+                <h2>◈ TARGET DATA</h2>
+                <div class="panel-corner tl"></div>
+                <div class="panel-corner tr"></div>
+                <div class="panel-corner bl"></div>
+                <div class="panel-corner br"></div>
+            </div>
+            <div class="panel-content" id="aircraftDetails">
+                <div class="no-selection">
+                    <span class="crosshair">+</span>
+                    <p>CLICK AIRCRAFT FOR<br>TARGET ACQUISITION</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Panel - Controls -->
+        <div class="hud-bottom-bar">
+            <div class="hud-controls">
+                <button class="hud-btn" id="btnSearch" title="Search Aircraft">🔍 SEARCH</button>
+                <button class="hud-btn" id="btnFilter" title="Filter Options">⚙ FILTERS</button>
+                <button class="hud-btn" id="btnTrails" title="Toggle Flight Trails">〰 TRAILS</button>
+                <button class="hud-btn" id="btnLabels" title="Toggle Labels">🏷 LABELS</button>
+                <button class="hud-btn" id="btnRefresh" title="Manual Refresh">↻ REFRESH</button>
+                <button class="hud-btn" id="btnMyLocation" title="Center on My Location">◎ MY LOC</button>
+            </div>
+            <div class="hud-legend">
+                <span class="legend-item"><span class="legend-dot commercial"></span>Commercial</span>
+                <span class="legend-item"><span class="legend-dot private"></span>Private</span>
+                <span class="legend-item"><span class="legend-dot military"></span>Military</span>
+                <span class="legend-item"><span class="legend-dot unknown"></span>Unknown</span>
+            </div>
+        </div>
+
+        <!-- Search Modal -->
+        <div class="hud-modal" id="searchModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>◈ SEARCH AIRCRAFT</h3>
+                    <button class="modal-close" id="closeSearch">×</button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="searchInput" placeholder="Callsign, ICAO24, or Registration..." autocomplete="off">
+                    <div id="searchResults" class="search-results"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Modal -->
+        <div class="hud-modal" id="filterModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>◈ FILTER OPTIONS</h3>
+                    <button class="modal-close" id="closeFilter">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="filter-group">
+                        <label>Aircraft Type:</label>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="filterCommercial" checked> Commercial
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="filterPrivate" checked> Private
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="filterMilitary" checked> Military
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="filterUnknown" checked> Unknown
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Minimum Altitude (ft):</label>
+                        <input type="range" id="minAltitude" min="0" max="45000" value="0" step="1000">
+                        <span id="minAltValue">0</span> ft
+                    </div>
+                    <div class="filter-group">
+                        <label>Minimum Speed (kts):</label>
+                        <input type="range" id="minSpeed" min="0" max="600" value="0" step="10">
+                        <span id="minSpeedValue">0</span> kts
+                    </div>
+                    <div class="filter-group">
+                        <label>Refresh Interval (seconds):</label>
+                        <input type="range" id="refreshInterval" min="5" max="60" value="10" step="5">
+                        <span id="refreshIntervalValue">10</span> s
+                    </div>
+                    <button class="hud-btn apply-btn" id="applyFilters">APPLY FILTERS</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scanning Effect -->
+        <div class="scan-effect" id="scanEffect"></div>
+
+        <!-- Corner Decorations -->
+        <div class="corner-decoration top-left"></div>
+        <div class="corner-decoration top-right"></div>
+        <div class="corner-decoration bottom-left"></div>
+        <div class="corner-decoration bottom-right"></div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

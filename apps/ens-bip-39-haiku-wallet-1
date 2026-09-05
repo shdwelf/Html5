@@ -1,0 +1,5275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ensō × BIP-39 Haiku Wallet</title>
+<style>
+  /* Standalone: no external fonts — using system monospace stack */
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #12121a;
+    --bg3: #1a1a28;
+    --fg: #c8c8d4;
+    --fg-bright: #e8e8f0;
+    --accent: #00e5a0;
+    --accent2: #00bcd4;
+    --error: #ff4466;
+    --warn: #ffaa22;
+    --cyan: #00ddcc;
+    --border: #2a2a3a;
+    --radius: 6px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    background: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* TAB NAV */
+  .tab-nav {
+    display: flex;
+    background: var(--bg2);
+    border-bottom: 2px solid var(--border);
+    padding: 0 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tab-btn {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .tab-btn:hover { color: var(--accent); }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* TAB PANELS */
+  .tab-panel { display: none; padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
+  .tab-panel.active { display: block; }
+
+  /* ENSŌ TAB */
+  .enso-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    min-height: calc(100vh - 60px);
+  }
+  @media (max-width: 900px) {
+    .enso-layout { grid-template-columns: 1fr; }
+  }
+
+  .canvas-wrap {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 500px;
+  }
+  .canvas-wrap canvas {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: var(--radius);
+  }
+
+  .enso-controls {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 90px);
+  }
+
+  .seed-display {
+    background: var(--bg3);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .seed-display .label { font-size: 0.7rem; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.1em; }
+  .seed-display .value { font-size: 1.4rem; color: var(--accent); font-weight: 700; word-break: break-all; }
+
+  .ctrl-group {
+    margin-bottom: 0.75rem;
+  }
+  .ctrl-group label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--fg);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .ctrl-group input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+    background: var(--bg3);
+    height: 6px;
+    -webkit-appearance: none;
+    border-radius: 3px;
+  }
+  .ctrl-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .ctrl-group select {
+    width: 100%;
+    background: var(--bg3);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.4rem;
+    font-family: inherit;
+    font-size: 0.85rem;
+  }
+  .ctrl-group .val-display {
+    float: right;
+    color: var(--accent);
+    font-size: 0.75rem;
+  }
+
+  .btn-row { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+  .btn {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg3);
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+  .btn-primary:hover { background: #00ffaa; }
+  .btn-danger { border-color: var(--error); color: var(--error); }
+  .btn-danger:hover { background: var(--error); color: #fff; }
+
+  /* WALLET TAB */
+  .wallet-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    min-height: calc(100vh - 60px);
+  }
+  @media (max-width: 900px) {
+    .wallet-layout { grid-template-columns: 1fr; }
+  }
+
+  .haiku-display {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 90px);
+  }
+
+  .haiku-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .haiku-card:hover { border-color: var(--accent); }
+
+  .haiku-card .wallet-type {
+    font-size: 0.65rem;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .haiku-card .haiku-lines {
+    margin-bottom: 0.75rem;
+  }
+  .haiku-card .haiku-line {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--fg-bright);
+  }
+  .haiku-card .haiku-line .syllable-count {
+    color: var(--accent);
+    font-size: 0.7rem;
+    margin-left: 0.5rem;
+  }
+
+  .haiku-card .mnemonic-raw {
+    font-size: 0.7rem;
+    color: var(--fg);
+    opacity: 0.6;
+    word-break: break-all;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .haiku-card .card-actions {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+  .haiku-card .card-actions .btn { font-size: 0.75rem; padding: 0.3rem 0.7rem; }
+
+  .wallet-controls {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 90px);
+  }
+
+  .mining-status {
+    background: var(--bg3);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .mining-status .label { font-size: 0.7rem; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.1em; }
+  .mining-status .counter { font-size: 1.6rem; color: var(--accent); font-weight: 700; }
+
+  .saved-list {
+    margin-top: 1rem;
+  }
+  .saved-list h3 {
+    font-size: 0.75rem;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .saved-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+  }
+  .saved-item .saved-preview {
+    color: var(--fg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+  }
+  .saved-item .btn { font-size: 0.65rem; padding: 0.2rem 0.5rem; }
+
+  /* TERMINAL TAB */
+  .terminal-wrap {
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    height: calc(100vh - 90px);
+    display: flex;
+    flex-direction: column;
+  }
+  .terminal-output {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .terminal-output .sys { color: var(--cyan); }
+  .terminal-output .err { color: var(--error); }
+  .terminal-output .usr { color: var(--fg-bright); }
+  .terminal-output .notice { color: var(--warn); }
+
+  .terminal-input-row {
+    display: flex;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .terminal-input-row .prompt {
+    padding: 0.75rem 0.5rem 0.75rem 1rem;
+    color: var(--accent);
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+  .terminal-input-row input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--fg-bright);
+    font-family: inherit;
+    font-size: 0.85rem;
+    padding: 0.75rem 1rem 0.75rem 0;
+
+  /* IRC SIDEBAR */
+  .irc-win-item {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+    color: var(--fg);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .irc-win-item:hover { background: var(--bg3); }
+  .irc-win-item.active {
+    background: var(--bg3);
+    border-left-color: var(--accent);
+    color: var(--accent);
+  }
+  .irc-win-item .unread-badge {
+    background: var(--error);
+    color: #fff;
+    font-size: 0.6rem;
+    padding: 0 0.3rem;
+    border-radius: 8px;
+    min-width: 14px;
+    text-align: center;
+    display: none;
+  }
+  .irc-win-item .unread-badge.has-unread { display: inline-block; }
+    outline: none;
+  }
+
+  /* ENCRYPT MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    max-width: 400px;
+    width: 90%;
+  }
+  .modal-box h2 { font-size: 1rem; color: var(--accent); margin-bottom: 1rem; }
+  .modal-box input[type="password"],
+  .modal-box input[type="text"] {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.75rem;
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+  .modal-box input:focus { border-color: var(--accent); outline: none; }
+  .modal-box .btn-row { justify-content: flex-end; }
+
+  /* TOAST */
+  .toast-container {
+    position: fixed;
+    top: 70px;
+    right: 1rem;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .toast {
+    background: var(--bg3);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    color: var(--accent);
+    animation: fadeIn 0.2s, fadeOut 0.3s 2.7s;
+    max-width: 300px;
+  }
+  .toast.error { border-color: var(--error); color: var(--error); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+</style>
+</head>
+<body>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="enso">🖌️ Ensō</button>
+  <button class="tab-btn" data-tab="wallet">🔐 Wallet Haiku</button>
+  <button class="tab-btn" data-tab="terminal">💻 Terminal</button>
+</nav>
+
+<!-- ═══════════════════ ENSŌ TAB ═══════════════════ -->
+<div class="tab-panel active" id="tab-enso">
+  <div class="enso-layout">
+    <div class="canvas-wrap">
+      <canvas id="enso-canvas" width="700" height="700"></canvas>
+    </div>
+    <div class="enso-controls">
+      <div class="seed-display">
+        <div class="label">Ensō ID (Seed)</div>
+        <div class="value" id="enso-seed-display" style="cursor:pointer;" title="Click to copy">—</div>
+      </div>
+
+      <div class="ctrl-group">
+        <label>Enter Seed Manually</label>
+        <div style="display:flex;gap:0.3rem;">
+          <input type="text" id="ctrl-manual-seed" placeholder="Paste ensō ID..." style="flex:1;background:var(--bg3);color:var(--fg);border:1px solid var(--border);border-radius:var(--radius);padding:0.4rem;font-family:inherit;font-size:0.8rem;">
+          <button class="btn" id="btn-apply-seed" style="padding:0.3rem 0.6rem;font-size:0.75rem;">Set</button>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:0;margin-bottom:1rem;">
+        <button class="btn btn-primary" id="btn-random-seed">🎲 Random</button>
+        <button class="btn" id="btn-download-png">📥 PNG</button>
+        <button class="btn" id="btn-forging-animate">🔥 Forge</button>
+      </div>
+
+      <div class="ctrl-group">
+        <label>Ink Load <span class="val-display" id="val-inkLoad">4</span></label>
+        <input type="range" id="ctrl-inkLoad" min="1" max="10" value="4">
+      </div>
+      <div class="ctrl-group">
+        <label>Direction</label>
+        <select id="ctrl-direction">
+          <option value="clockwise" selected>Clockwise</option>
+          <option value="counter">Counter-Clockwise</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Paper Hue</label>
+        <select id="ctrl-paperHue">
+          <option value="cyan" selected>Cyan</option>
+          <option value="warm">Warm Cream</option>
+          <option value="white">White</option>
+          <option value="dark">Dark</option>
+          <option value="sage">Sage</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Brush Size <span class="val-display" id="val-brushSize">6</span></label>
+        <input type="range" id="ctrl-brushSize" min="1" max="20" value="6">
+      </div>
+      <div class="ctrl-group">
+        <label>Ink Density <span class="val-display" id="val-inkDensity">3</span></label>
+        <input type="range" id="ctrl-inkDensity" min="1" max="10" value="3">
+      </div>
+      <div class="ctrl-group">
+        <label>X/Y Stretch</label>
+        <select id="ctrl-xyStretch">
+          <option value="equal">Equal</option>
+          <option value="unequal" selected>Unequal</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Paper Texture <span class="val-display" id="val-paperTexture">4</span></label>
+        <input type="range" id="ctrl-paperTexture" min="0" max="10" value="4">
+      </div>
+      <div class="ctrl-group">
+        <label>Bristle Density <span class="val-display" id="val-bristleDensity">5</span></label>
+        <input type="range" id="ctrl-bristleDensity" min="1" max="20" value="5">
+      </div>
+      <div class="ctrl-group">
+        <label>Signature Style</label>
+        <select id="ctrl-signatureStyle">
+          <option value="dark" selected>Dark</option>
+          <option value="light">Light</option>
+          <option value="red">Red Seal</option>
+          <option value="none">None</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Brushstroke Size</label>
+        <select id="ctrl-brushstrokeSize">
+          <option value="small">Small</option>
+          <option value="medium" selected>Medium</option>
+          <option value="large">Large</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Brushstroke Start <span class="val-display" id="val-brushStart">216°</span></label>
+        <input type="range" id="ctrl-brushStart" min="0" max="359" value="216">
+      </div>
+
+      <button class="btn btn-primary" id="btn-regenerate" style="width:100%;margin-top:0.5rem;"> ⟳ Regenerate Ensō</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ WALLET TAB ═══════════════════ -->
+<div class="tab-panel" id="tab-wallet">
+  <div class="wallet-layout">
+    <div class="haiku-display" id="haiku-display">
+      <div style="text-align:center;color:var(--fg);opacity:0.4;padding:4rem 1rem;">
+        <div style="font-size:3rem;margin-bottom:1rem;">🎋</div>
+        <div>Mine a BIP-39 Haiku Wallet to begin</div>
+        <div style="font-size:0.75rem;margin-top:0.5rem;">A valid 12-word mnemonic where the syllables form a 5-7-5 haiku</div>
+      </div>
+    </div>
+    <div class="wallet-controls">
+      <div class="mining-status">
+        <div class="label">Wallets Mined</div>
+        <div class="counter" id="mined-counter">0</div>
+      </div>
+
+      <div class="ctrl-group">
+        <label>Wallet Type</label>
+        <select id="ctrl-walletType">
+          <option value="bitcoin">Bitcoin (BIP-44)</option>
+          <option value="ethereum">Ethereum (BIP-44)</option>
+          <option value="litecoin">Litecoin (BIP-44)</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Mine Count <span class="val-display" id="val-mineCount">1</span></label>
+        <input type="range" id="ctrl-mineCount" min="1" max="20" value="1">
+      </div>
+      <div class="ctrl-group">
+        <label>Grammar Check</label>
+        <select id="ctrl-grammarCheck">
+          <option value="off">Off (any valid checksum)</option>
+          <option value="on">On (skip non-grammatical)</option>
+        </select>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-mine" style="flex:1;">⛏️ Mine Haiku Wallet</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="btn-stop-mine" style="flex:1;display:none;">⏹ Stop</button>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0;">
+
+      <div class="btn-row">
+        <button class="btn" id="btn-export-txt">🔒 Export Encrypted</button>
+        <button class="btn" id="btn-export-plain">📄 Export Plain</button>
+        <button class="btn btn-danger" id="btn-clear-all">🗑️ Clear All</button>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0;">
+      <div class="saved-list" id="gallery-list">
+        <h3>🖼️ Collected Ensō × Haiku</h3>
+        <div id="gallery-items"><em style="color:var(--fg);opacity:0.3;font-size:0.8rem;">Forge a collectible to begin</em></div>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0;">
+      <div class="saved-list" id="saved-list">
+        <h3>💾 Saved Wallets</h3>
+        <div id="saved-items"><em style="color:var(--fg);opacity:0.3;font-size:0.8rem;">No wallets saved yet</em></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TERMINAL TAB ═══════════════════ -->
+<div class="tab-panel" id="tab-terminal">
+  <div style="display:flex;height:calc(100vh - 90px);">
+    <!-- IRC Window Sidebar -->
+    <div id="irc-sidebar" style="width:180px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius) 0 0 var(--radius);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;">
+      <div style="padding:0.5rem;font-size:0.65rem;color:var(--accent2);text-transform:uppercase;letter-spacing:0.1em;border-bottom:1px solid var(--border);">Chat Windows</div>
+      <div id="irc-window-list" style="flex:1;overflow-y:auto;">
+        <div style="padding:0.5rem;font-size:0.75rem;color:var(--fg);opacity:0.3;text-align:center;">No windows</div>
+      </div>
+      <div style="padding:0.5rem;border-top:1px solid var(--border);">
+        <div style="font-size:0.6rem;color:var(--accent2);margin-bottom:0.2rem;">STATUS</div>
+        <div id="irc-status" style="font-size:0.75rem;color:var(--fg);">Disconnected</div>
+        <div id="irc-nick-display" style="font-size:0.7rem;color:var(--accent);margin-top:0.2rem;"></div>
+      </div>
+    </div>
+    <!-- Terminal -->
+    <div class="terminal-wrap" style="border-radius:0 var(--radius) var(--radius) 0;flex:1;">
+      <div class="terminal-output" id="term-output">
+<span class="sys">═══════════════════════════════════════════════════</span>
+<span class="sys">  PIM — Peer Instant Messaging (Web IRC Client)</span>
+<span class="sys">  Converted from Java source (sgreeran/pim)</span>
+<span class="sys">  Original CLI restored • GUI (Swing) commented out</span>
+<span class="sys">  Type <span style="color:var(--accent)">/help</span> for commands</span>
+<span class="sys">  Quick start: <span style="color:var(--accent)">/connect irc.libera.chat YourNick</span></span>
+<span class="sys">═══════════════════════════════════════════════════</span>
+</div>
+      <div class="terminal-input-row">
+        <span class="prompt" id="term-prompt">❯</span>
+        <input type="text" id="term-input" placeholder="Type a command or message..." autocomplete="off">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FORGING ANIMATION ═══════════════════ -->
+<div class="modal-overlay" id="modal-forging" style="background:rgba(0,0,0,0.92);">
+  <div style="text-align:center;max-width:500px;width:90%;">
+    <canvas id="forge-canvas" width="400" height="400" style="border-radius:50%;margin:0 auto;display:block;"></canvas>
+    <div id="forge-haiku-text" style="margin-top:1.5rem;font-size:1rem;color:var(--fg-bright);line-height:2;"></div>
+    <div id="forge-seed-text" style="margin-top:1rem;font-size:0.8rem;color:var(--accent);letter-spacing:0.1em;"></div>
+    <div id="forge-status" style="margin-top:0.5rem;font-size:0.7rem;color:var(--fg);opacity:0.5;"></div>
+    <button class="btn" id="btn-forge-close" style="margin-top:1.5rem;display:none;">✓ Collect</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ MODALS ═══════════════════ -->
+<div class="modal-overlay" id="modal-export">
+  <div class="modal-box">
+    <h2>🔐 Encrypt Export</h2>
+    <p style="font-size:0.8rem;color:var(--fg);margin-bottom:0.75rem;">Set a password to AES-256 encrypt your wallet list export.</p>
+    <input type="password" id="export-password" placeholder="Password">
+    <input type="password" id="export-password2" placeholder="Confirm password">
+    <div class="btn-row">
+      <button class="btn" id="btn-export-cancel">Cancel</button>
+      <button class="btn btn-primary" id="btn-export-confirm">Export Encrypted</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-password">
+  <div class="modal-box">
+    <h2>🔑 Storage Password</h2>
+    <p style="font-size:0.8rem;color:var(--fg);margin-bottom:0.75rem;" id="modal-password-msg">Enter password to decrypt saved wallets.</p>
+    <input type="password" id="storage-password" placeholder="Password">
+    <div class="btn-row">
+      <button class="btn" id="btn-pw-cancel">Cancel</button>
+      <button class="btn btn-primary" id="btn-pw-confirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+
+
+<script>
+// ═══════ js/enso.js ═══════
+/**
+ * ensō.js — Seeded Ensō Circle Generator
+ * Uses a deterministic PRNG (mulberry32) for reproducible "terrain seed" style generation
+ */
+
+var EnsoGenerator = (() => {
+
+  // ─── Seeded PRNG: mulberry32 ───
+  function mulberry32(seed) {
+    return function() {
+      seed |= 0;
+      seed = seed + 0x6D2B79F5 | 0;
+      let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  // Convert any string seed to a numeric hash
+  function hashSeed(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+      h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+    }
+    return h >>> 0;
+  }
+
+  // Generate a random seed string (hex)
+  function randomSeed() {
+    const arr = new Uint8Array(8);
+    crypto.getRandomValues(arr);
+    return Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // ─── Paper Colors ───
+  const PAPER_COLORS = {
+    cyan:   { base: [200, 230, 230], variance: 15 },
+    warm:   { base: [240, 230, 210], variance: 10 },
+    white:  { base: [245, 242, 238], variance: 8 },
+    dark:   { base: [30, 30, 35], variance: 5 },
+    sage:   { base: [190, 210, 180], variance: 12 }
+  };
+
+  // ─── Drawing Functions ───
+
+  function drawPaper(ctx, w, h, rng, params) {
+    const hueData = PAPER_COLORS[params.paperHue] || PAPER_COLORS.cyan;
+    const [r, g, b] = hueData.base;
+    const v = hueData.variance;
+    const texture = params.paperTexture;
+
+    // Base fill
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.fillRect(0, 0, w, h);
+
+    // Texture grain
+    if (texture > 0) {
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const data = imgData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        const noise = (rng() - 0.5) * texture * 3;
+        data[i]   = Math.min(255, Math.max(0, data[i] + noise));
+        data[i+1] = Math.min(255, Math.max(0, data[i+1] + noise));
+        data[i+2] = Math.min(255, Math.max(0, data[i+2] + noise));
+      }
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    // Subtle vignette
+    const grad = ctx.createRadialGradient(w/2, h/2, w*0.2, w/2, h/2, w*0.7);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.08)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  function drawEnso(ctx, w, h, seedStr, params) {
+    const numericSeed = hashSeed(seedStr);
+    const rng = mulberry32(numericSeed);
+
+    // Clear & draw paper
+    ctx.clearRect(0, 0, w, h);
+    drawPaper(ctx, w, h, rng, params);
+
+    const cx = w / 2;
+    const cy = h / 2;
+    const sizeMultiplier = params.brushstrokeSize === 'small' ? 0.55 : params.brushstrokeSize === 'large' ? 0.82 : 0.68;
+    const baseRadius = Math.min(cx, cy) * sizeMultiplier;
+
+    // X/Y Stretch
+    let stretchX = 1, stretchY = 1;
+    if (params.xyStretch === 'unequal') {
+      stretchX = 1 + (rng() - 0.5) * 0.12;
+      stretchY = 1 + (rng() - 0.5) * 0.08;
+    }
+
+    const startAngleDeg = params.brushStart;
+    const startAngle = startAngleDeg * Math.PI / 180;
+    const clockwise = params.direction === 'clockwise';
+    const dir = clockwise ? 1 : -1;
+
+    // Gap size (traditional ensō has a gap)
+    const gapAngle = 0.15 + rng() * 0.2;
+    const totalAngle = Math.PI * 2 - gapAngle;
+
+    // Generate circle path points with terrain-like noise
+    const numPoints = 300;
+    const pathPoints = [];
+
+    // Generate noise layer (like terrain generation)
+    const noiseOctaves = 4;
+    const noiseTable = [];
+    for (let o = 0; o < noiseOctaves; o++) {
+      const tableSize = 8 * Math.pow(2, o);
+      const table = [];
+      for (let i = 0; i < tableSize; i++) {
+        table.push((rng() - 0.5) * 2);
+      }
+      noiseTable.push(table);
+    }
+
+    function getNoise(t) {
+      let val = 0, amp = 1, freq = 1;
+      for (let o = 0; o < noiseOctaves; o++) {
+        const table = noiseTable[o];
+        const idx = t * (table.length - 1);
+        const i0 = Math.floor(idx) % table.length;
+        const i1 = (i0 + 1) % table.length;
+        const frac = idx - Math.floor(idx);
+        const smooth = frac * frac * (3 - 2 * frac);
+        val += (table[i0] * (1 - smooth) + table[i1] * smooth) * amp;
+        amp *= 0.5;
+        freq *= 2;
+      }
+      return val;
+    }
+
+    for (let i = 0; i < numPoints; i++) {
+      const t = i / (numPoints - 1);
+      const angle = startAngle + dir * t * totalAngle;
+
+      // Terrain-like radius variation
+      const noiseVal = getNoise(t);
+      const radiusNoise = noiseVal * 6 * (params.brushSize / 10);
+      const r = baseRadius + radiusNoise;
+
+      const x = cx + r * stretchX * Math.cos(angle);
+      const y = cy + r * stretchY * Math.sin(angle);
+
+      // Stroke width varies: thin at start, thick in middle, thin at end with possible taper
+      const envelope = Math.sin(Math.PI * t);
+      const brushWidth = params.brushSize * 1.5 * (0.3 + 0.7 * envelope);
+
+      pathPoints.push({ x, y, t, angle, brushWidth });
+    }
+
+    // ─── Draw brush strokes with bristles ───
+    const inkLoad = params.inkLoad / 10;
+    const inkDensity = params.inkDensity / 10;
+    const bristleDensity = params.bristleDensity;
+
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    for (let i = 0; i < pathPoints.length - 1; i++) {
+      const p = pathPoints[i];
+      const pNext = pathPoints[i + 1];
+
+      // Perpendicular direction for bristle spread
+      const dx = pNext.x - p.x;
+      const dy = pNext.y - p.y;
+      const len = Math.sqrt(dx * dx + dy * dy) || 1;
+      const nx = -dy / len;
+      const ny = dx / len;
+
+      const halfWidth = p.brushWidth * 1.5;
+
+      // Draw bristles
+      for (let b = 0; b < bristleDensity; b++) {
+        const spreadT = (b / (bristleDensity - 1)) - 0.5; // -0.5 to 0.5
+        const offset = spreadT * halfWidth * 2;
+
+        const bx = p.x + nx * offset + (rng() - 0.5) * 0.5;
+        const by = p.y + ny * offset + (rng() - 0.5) * 0.5;
+        const bxN = pNext.x + nx * offset + (rng() - 0.5) * 0.5;
+        const byN = pNext.y + ny * offset + (rng() - 0.5) * 0.5;
+
+        // Opacity: center bristles more opaque, edges less
+        const centerDist = Math.abs(spreadT) * 2;
+        let alpha = inkLoad * inkDensity * (1 - centerDist * 0.7);
+        // Add randomness to ink distribution
+        alpha *= (0.5 + rng() * 0.5);
+        // Dry brush effect near the gap
+        const gapProximity = Math.max(0, 1 - p.t * 4); // near start
+        const gapProximityEnd = Math.max(0, (p.t - 0.85) * 6.67); // near end
+        alpha *= (1 - gapProximity * 0.5) * (1 - gapProximityEnd * 0.7);
+        alpha = Math.max(0, Math.min(1, alpha));
+
+        if (alpha < 0.01) continue;
+
+        const inkColor = `rgba(25, 20, 15, ${alpha})`;
+        ctx.beginPath();
+        ctx.moveTo(bx, by);
+        ctx.lineTo(bxN, byN);
+        ctx.strokeStyle = inkColor;
+        ctx.lineWidth = 0.8 + rng() * 0.8;
+        ctx.stroke();
+      }
+
+      // Occasional ink splash
+      if (rng() < 0.008 * inkDensity) {
+        const splashX = p.x + (rng() - 0.5) * halfWidth * 3;
+        const splashY = p.y + (rng() - 0.5) * halfWidth * 3;
+        const splashR = rng() * 2 + 0.5;
+        ctx.beginPath();
+        ctx.arc(splashX, splashY, splashR, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(25, 20, 15, ${rng() * 0.3 * inkLoad})`;
+        ctx.fill();
+      }
+    }
+
+    // ─── Ink bleed effect ───
+    // Draw a second pass with lower opacity for ink bleeding
+    for (let i = 0; i < pathPoints.length - 1; i += 3) {
+      const p = pathPoints[i];
+      const pNext = pathPoints[Math.min(i + 3, pathPoints.length - 1)];
+      const bleedAlpha = inkLoad * 0.05;
+      const bleedWidth = p.brushWidth * 2.5;
+
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(pNext.x, pNext.y);
+      ctx.strokeStyle = `rgba(25, 20, 15, ${bleedAlpha})`;
+      ctx.lineWidth = bleedWidth;
+      ctx.stroke();
+    }
+
+    // ─── Signature ───
+    if (params.signatureStyle !== 'none') {
+      drawSignature(ctx, cx, cy, baseRadius, rng, params);
+    }
+  }
+
+  function drawSignature(ctx, cx, cy, radius, rng, params) {
+    // Position signature bottom-right of the ensō
+    const sx = cx + radius * 0.5;
+    const sy = cy + radius * 0.85;
+
+    let color;
+    switch (params.signatureStyle) {
+      case 'dark': color = 'rgba(30, 25, 20, 0.6)'; break;
+      case 'light': color = 'rgba(200, 195, 190, 0.5)'; break;
+      case 'red': color = 'rgba(180, 40, 30, 0.7)'; break;
+      default: return;
+    }
+
+    ctx.save();
+    ctx.translate(sx, sy);
+    ctx.rotate(-0.1 + rng() * 0.2);
+
+    // Simple calligraphic mark
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(8 + rng() * 4, -15);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(3, -3);
+    ctx.quadraticCurveTo(10, -8, 5 + rng() * 3, -18);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Red seal stamp
+    if (params.signatureStyle === 'red') {
+      ctx.beginPath();
+      ctx.arc(18, -10, 6, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(180, 40, 30, 0.3)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(180, 40, 30, 0.5)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  // ─── Public API ───
+  return {
+    randomSeed,
+    draw(canvas, seedStr, params) {
+      const ctx = canvas.getContext('2d');
+      drawEnso(ctx, canvas.width, canvas.height, seedStr, params);
+    },
+    downloadPNG(canvas, seedStr) {
+      const link = document.createElement('a');
+      link.download = `enso-${seedStr}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  };
+
+})();
+
+</script>
+<script>
+// ═══════ BIP-39 Wordlist (embedded) ═══════
+var BIP39_WORDLIST = [
+  "abandon",
+  "ability",
+  "able",
+  "about",
+  "above",
+  "absent",
+  "absorb",
+  "abstract",
+  "absurd",
+  "abuse",
+  "access",
+  "accident",
+  "account",
+  "accuse",
+  "achieve",
+  "acid",
+  "acoustic",
+  "acquire",
+  "across",
+  "act",
+  "action",
+  "actor",
+  "actress",
+  "actual",
+  "adapt",
+  "add",
+  "addict",
+  "address",
+  "adjust",
+  "admit",
+  "adult",
+  "advance",
+  "advice",
+  "aerobic",
+  "affair",
+  "afford",
+  "afraid",
+  "again",
+  "age",
+  "agent",
+  "agree",
+  "ahead",
+  "aim",
+  "air",
+  "airport",
+  "aisle",
+  "alarm",
+  "album",
+  "alcohol",
+  "alert",
+  "alien",
+  "all",
+  "alley",
+  "allow",
+  "almost",
+  "alone",
+  "alpha",
+  "already",
+  "also",
+  "alter",
+  "always",
+  "amateur",
+  "amazing",
+  "among",
+  "amount",
+  "amused",
+  "analyst",
+  "anchor",
+  "ancient",
+  "anger",
+  "angle",
+  "angry",
+  "animal",
+  "ankle",
+  "announce",
+  "annual",
+  "another",
+  "answer",
+  "antenna",
+  "antique",
+  "anxiety",
+  "any",
+  "apart",
+  "apology",
+  "appear",
+  "apple",
+  "approve",
+  "april",
+  "arch",
+  "arctic",
+  "area",
+  "arena",
+  "argue",
+  "arm",
+  "armed",
+  "armor",
+  "army",
+  "around",
+  "arrange",
+  "arrest",
+  "arrive",
+  "arrow",
+  "art",
+  "artefact",
+  "artist",
+  "artwork",
+  "ask",
+  "aspect",
+  "assault",
+  "asset",
+  "assist",
+  "assume",
+  "asthma",
+  "athlete",
+  "atom",
+  "attack",
+  "attend",
+  "attitude",
+  "attract",
+  "auction",
+  "audit",
+  "august",
+  "aunt",
+  "author",
+  "auto",
+  "autumn",
+  "average",
+  "avocado",
+  "avoid",
+  "awake",
+  "aware",
+  "away",
+  "awesome",
+  "awful",
+  "awkward",
+  "axis",
+  "baby",
+  "bachelor",
+  "bacon",
+  "badge",
+  "bag",
+  "balance",
+  "balcony",
+  "ball",
+  "bamboo",
+  "banana",
+  "banner",
+  "bar",
+  "barely",
+  "bargain",
+  "barrel",
+  "base",
+  "basic",
+  "basket",
+  "battle",
+  "beach",
+  "bean",
+  "beauty",
+  "because",
+  "become",
+  "beef",
+  "before",
+  "begin",
+  "behave",
+  "behind",
+  "believe",
+  "below",
+  "belt",
+  "bench",
+  "benefit",
+  "best",
+  "betray",
+  "better",
+  "between",
+  "beyond",
+  "bicycle",
+  "bid",
+  "bike",
+  "bind",
+  "biology",
+  "bird",
+  "birth",
+  "bitter",
+  "black",
+  "blade",
+  "blame",
+  "blanket",
+  "blast",
+  "bleak",
+  "bless",
+  "blind",
+  "blood",
+  "blossom",
+  "blouse",
+  "blue",
+  "blur",
+  "blush",
+  "board",
+  "boat",
+  "body",
+  "boil",
+  "bomb",
+  "bone",
+  "bonus",
+  "book",
+  "boost",
+  "border",
+  "boring",
+  "borrow",
+  "boss",
+  "bottom",
+  "bounce",
+  "box",
+  "boy",
+  "bracket",
+  "brain",
+  "brand",
+  "brass",
+  "brave",
+  "bread",
+  "breeze",
+  "brick",
+  "bridge",
+  "brief",
+  "bright",
+  "bring",
+  "brisk",
+  "broccoli",
+  "broken",
+  "bronze",
+  "broom",
+  "brother",
+  "brown",
+  "brush",
+  "bubble",
+  "buddy",
+  "budget",
+  "buffalo",
+  "build",
+  "bulb",
+  "bulk",
+  "bullet",
+  "bundle",
+  "bunker",
+  "burden",
+  "burger",
+  "burst",
+  "bus",
+  "business",
+  "busy",
+  "butter",
+  "buyer",
+  "buzz",
+  "cabbage",
+  "cabin",
+  "cable",
+  "cactus",
+  "cage",
+  "cake",
+  "call",
+  "calm",
+  "camera",
+  "camp",
+  "can",
+  "canal",
+  "cancel",
+  "candy",
+  "cannon",
+  "canoe",
+  "canvas",
+  "canyon",
+  "capable",
+  "capital",
+  "captain",
+  "car",
+  "carbon",
+  "card",
+  "cargo",
+  "carpet",
+  "carry",
+  "cart",
+  "case",
+  "cash",
+  "casino",
+  "castle",
+  "casual",
+  "cat",
+  "catalog",
+  "catch",
+  "category",
+  "cattle",
+  "caught",
+  "cause",
+  "caution",
+  "cave",
+  "ceiling",
+  "celery",
+  "cement",
+  "census",
+  "century",
+  "cereal",
+  "certain",
+  "chair",
+  "chalk",
+  "champion",
+  "change",
+  "chaos",
+  "chapter",
+  "charge",
+  "chase",
+  "chat",
+  "cheap",
+  "check",
+  "cheese",
+  "chef",
+  "cherry",
+  "chest",
+  "chicken",
+  "chief",
+  "child",
+  "chimney",
+  "choice",
+  "choose",
+  "chronic",
+  "chuckle",
+  "chunk",
+  "churn",
+  "cigar",
+  "cinnamon",
+  "circle",
+  "citizen",
+  "city",
+  "civil",
+  "claim",
+  "clap",
+  "clarify",
+  "claw",
+  "clay",
+  "clean",
+  "clerk",
+  "clever",
+  "click",
+  "client",
+  "cliff",
+  "climb",
+  "clinic",
+  "clip",
+  "clock",
+  "clog",
+  "close",
+  "cloth",
+  "cloud",
+  "clown",
+  "club",
+  "clump",
+  "cluster",
+  "clutch",
+  "coach",
+  "coast",
+  "coconut",
+  "code",
+  "coffee",
+  "coil",
+  "coin",
+  "collect",
+  "color",
+  "column",
+  "combine",
+  "come",
+  "comfort",
+  "comic",
+  "common",
+  "company",
+  "concert",
+  "conduct",
+  "confirm",
+  "congress",
+  "connect",
+  "consider",
+  "control",
+  "convince",
+  "cook",
+  "cool",
+  "copper",
+  "copy",
+  "coral",
+  "core",
+  "corn",
+  "correct",
+  "cost",
+  "cotton",
+  "couch",
+  "country",
+  "couple",
+  "course",
+  "cousin",
+  "cover",
+  "coyote",
+  "crack",
+  "cradle",
+  "craft",
+  "cram",
+  "crane",
+  "crash",
+  "crater",
+  "crawl",
+  "crazy",
+  "cream",
+  "credit",
+  "creek",
+  "crew",
+  "cricket",
+  "crime",
+  "crisp",
+  "critic",
+  "crop",
+  "cross",
+  "crouch",
+  "crowd",
+  "crucial",
+  "cruel",
+  "cruise",
+  "crumble",
+  "crunch",
+  "crush",
+  "cry",
+  "crystal",
+  "cube",
+  "culture",
+  "cup",
+  "cupboard",
+  "curious",
+  "current",
+  "curtain",
+  "curve",
+  "cushion",
+  "custom",
+  "cute",
+  "cycle",
+  "dad",
+  "damage",
+  "damp",
+  "dance",
+  "danger",
+  "daring",
+  "dash",
+  "daughter",
+  "dawn",
+  "day",
+  "deal",
+  "debate",
+  "debris",
+  "decade",
+  "december",
+  "decide",
+  "decline",
+  "decorate",
+  "decrease",
+  "deer",
+  "defense",
+  "define",
+  "defy",
+  "degree",
+  "delay",
+  "deliver",
+  "demand",
+  "demise",
+  "denial",
+  "dentist",
+  "deny",
+  "depart",
+  "depend",
+  "deposit",
+  "depth",
+  "deputy",
+  "derive",
+  "describe",
+  "desert",
+  "design",
+  "desk",
+  "despair",
+  "destroy",
+  "detail",
+  "detect",
+  "develop",
+  "device",
+  "devote",
+  "diagram",
+  "dial",
+  "diamond",
+  "diary",
+  "dice",
+  "diesel",
+  "diet",
+  "differ",
+  "digital",
+  "dignity",
+  "dilemma",
+  "dinner",
+  "dinosaur",
+  "direct",
+  "dirt",
+  "disagree",
+  "discover",
+  "disease",
+  "dish",
+  "dismiss",
+  "disorder",
+  "display",
+  "distance",
+  "divert",
+  "divide",
+  "divorce",
+  "dizzy",
+  "doctor",
+  "document",
+  "dog",
+  "doll",
+  "dolphin",
+  "domain",
+  "donate",
+  "donkey",
+  "donor",
+  "door",
+  "dose",
+  "double",
+  "dove",
+  "draft",
+  "dragon",
+  "drama",
+  "drastic",
+  "draw",
+  "dream",
+  "dress",
+  "drift",
+  "drill",
+  "drink",
+  "drip",
+  "drive",
+  "drop",
+  "drum",
+  "dry",
+  "duck",
+  "dumb",
+  "dune",
+  "during",
+  "dust",
+  "dutch",
+  "duty",
+  "dwarf",
+  "dynamic",
+  "eager",
+  "eagle",
+  "early",
+  "earn",
+  "earth",
+  "easily",
+  "east",
+  "easy",
+  "echo",
+  "ecology",
+  "economy",
+  "edge",
+  "edit",
+  "educate",
+  "effort",
+  "egg",
+  "eight",
+  "either",
+  "elbow",
+  "elder",
+  "electric",
+  "elegant",
+  "element",
+  "elephant",
+  "elevator",
+  "elite",
+  "else",
+  "embark",
+  "embody",
+  "embrace",
+  "emerge",
+  "emotion",
+  "employ",
+  "empower",
+  "empty",
+  "enable",
+  "enact",
+  "end",
+  "endless",
+  "endorse",
+  "enemy",
+  "energy",
+  "enforce",
+  "engage",
+  "engine",
+  "enhance",
+  "enjoy",
+  "enlist",
+  "enough",
+  "enrich",
+  "enroll",
+  "ensure",
+  "enter",
+  "entire",
+  "entry",
+  "envelope",
+  "episode",
+  "equal",
+  "equip",
+  "era",
+  "erase",
+  "erode",
+  "erosion",
+  "error",
+  "erupt",
+  "escape",
+  "essay",
+  "essence",
+  "estate",
+  "eternal",
+  "ethics",
+  "evidence",
+  "evil",
+  "evoke",
+  "evolve",
+  "exact",
+  "example",
+  "excess",
+  "exchange",
+  "excite",
+  "exclude",
+  "excuse",
+  "execute",
+  "exercise",
+  "exhaust",
+  "exhibit",
+  "exile",
+  "exist",
+  "exit",
+  "exotic",
+  "expand",
+  "expect",
+  "expire",
+  "explain",
+  "expose",
+  "express",
+  "extend",
+  "extra",
+  "eye",
+  "eyebrow",
+  "fabric",
+  "face",
+  "faculty",
+  "fade",
+  "faint",
+  "faith",
+  "fall",
+  "false",
+  "fame",
+  "family",
+  "famous",
+  "fan",
+  "fancy",
+  "fantasy",
+  "farm",
+  "fashion",
+  "fat",
+  "fatal",
+  "father",
+  "fatigue",
+  "fault",
+  "favorite",
+  "feature",
+  "february",
+  "federal",
+  "fee",
+  "feed",
+  "feel",
+  "female",
+  "fence",
+  "festival",
+  "fetch",
+  "fever",
+  "few",
+  "fiber",
+  "fiction",
+  "field",
+  "figure",
+  "file",
+  "film",
+  "filter",
+  "final",
+  "find",
+  "fine",
+  "finger",
+  "finish",
+  "fire",
+  "firm",
+  "first",
+  "fiscal",
+  "fish",
+  "fit",
+  "fitness",
+  "fix",
+  "flag",
+  "flame",
+  "flash",
+  "flat",
+  "flavor",
+  "flee",
+  "flight",
+  "flip",
+  "float",
+  "flock",
+  "floor",
+  "flower",
+  "fluid",
+  "flush",
+  "fly",
+  "foam",
+  "focus",
+  "fog",
+  "foil",
+  "fold",
+  "follow",
+  "food",
+  "foot",
+  "force",
+  "forest",
+  "forget",
+  "fork",
+  "fortune",
+  "forum",
+  "forward",
+  "fossil",
+  "foster",
+  "found",
+  "fox",
+  "fragile",
+  "frame",
+  "frequent",
+  "fresh",
+  "friend",
+  "fringe",
+  "frog",
+  "front",
+  "frost",
+  "frown",
+  "frozen",
+  "fruit",
+  "fuel",
+  "fun",
+  "funny",
+  "furnace",
+  "fury",
+  "future",
+  "gadget",
+  "gain",
+  "galaxy",
+  "gallery",
+  "game",
+  "gap",
+  "garage",
+  "garbage",
+  "garden",
+  "garlic",
+  "garment",
+  "gas",
+  "gasp",
+  "gate",
+  "gather",
+  "gauge",
+  "gaze",
+  "general",
+  "genius",
+  "genre",
+  "gentle",
+  "genuine",
+  "gesture",
+  "ghost",
+  "giant",
+  "gift",
+  "giggle",
+  "ginger",
+  "giraffe",
+  "girl",
+  "give",
+  "glad",
+  "glance",
+  "glare",
+  "glass",
+  "glide",
+  "glimpse",
+  "globe",
+  "gloom",
+  "glory",
+  "glove",
+  "glow",
+  "glue",
+  "goat",
+  "goddess",
+  "gold",
+  "good",
+  "goose",
+  "gorilla",
+  "gospel",
+  "gossip",
+  "govern",
+  "gown",
+  "grab",
+  "grace",
+  "grain",
+  "grant",
+  "grape",
+  "grass",
+  "gravity",
+  "great",
+  "green",
+  "grid",
+  "grief",
+  "grit",
+  "grocery",
+  "group",
+  "grow",
+  "grunt",
+  "guard",
+  "guess",
+  "guide",
+  "guilt",
+  "guitar",
+  "gun",
+  "gym",
+  "habit",
+  "hair",
+  "half",
+  "hammer",
+  "hamster",
+  "hand",
+  "happy",
+  "harbor",
+  "hard",
+  "harsh",
+  "harvest",
+  "hat",
+  "have",
+  "hawk",
+  "hazard",
+  "head",
+  "health",
+  "heart",
+  "heavy",
+  "hedgehog",
+  "height",
+  "hello",
+  "helmet",
+  "help",
+  "hen",
+  "hero",
+  "hidden",
+  "high",
+  "hill",
+  "hint",
+  "hip",
+  "hire",
+  "history",
+  "hobby",
+  "hockey",
+  "hold",
+  "hole",
+  "holiday",
+  "hollow",
+  "home",
+  "honey",
+  "hood",
+  "hope",
+  "horn",
+  "horror",
+  "horse",
+  "hospital",
+  "host",
+  "hotel",
+  "hour",
+  "hover",
+  "hub",
+  "huge",
+  "human",
+  "humble",
+  "humor",
+  "hundred",
+  "hungry",
+  "hunt",
+  "hurdle",
+  "hurry",
+  "hurt",
+  "husband",
+  "hybrid",
+  "ice",
+  "icon",
+  "idea",
+  "identify",
+  "idle",
+  "ignore",
+  "ill",
+  "illegal",
+  "illness",
+  "image",
+  "imitate",
+  "immense",
+  "immune",
+  "impact",
+  "impose",
+  "improve",
+  "impulse",
+  "inch",
+  "include",
+  "income",
+  "increase",
+  "index",
+  "indicate",
+  "indoor",
+  "industry",
+  "infant",
+  "inflict",
+  "inform",
+  "inhale",
+  "inherit",
+  "initial",
+  "inject",
+  "injury",
+  "inmate",
+  "inner",
+  "innocent",
+  "input",
+  "inquiry",
+  "insane",
+  "insect",
+  "inside",
+  "inspire",
+  "install",
+  "intact",
+  "interest",
+  "into",
+  "invest",
+  "invite",
+  "involve",
+  "iron",
+  "island",
+  "isolate",
+  "issue",
+  "item",
+  "ivory",
+  "jacket",
+  "jaguar",
+  "jar",
+  "jazz",
+  "jealous",
+  "jeans",
+  "jelly",
+  "jewel",
+  "job",
+  "join",
+  "joke",
+  "journey",
+  "joy",
+  "judge",
+  "juice",
+  "jump",
+  "jungle",
+  "junior",
+  "junk",
+  "just",
+  "kangaroo",
+  "keen",
+  "keep",
+  "ketchup",
+  "key",
+  "kick",
+  "kid",
+  "kidney",
+  "kind",
+  "kingdom",
+  "kiss",
+  "kit",
+  "kitchen",
+  "kite",
+  "kitten",
+  "kiwi",
+  "knee",
+  "knife",
+  "knock",
+  "know",
+  "lab",
+  "label",
+  "labor",
+  "ladder",
+  "lady",
+  "lake",
+  "lamp",
+  "language",
+  "laptop",
+  "large",
+  "later",
+  "latin",
+  "laugh",
+  "laundry",
+  "lava",
+  "law",
+  "lawn",
+  "lawsuit",
+  "layer",
+  "lazy",
+  "leader",
+  "leaf",
+  "learn",
+  "leave",
+  "lecture",
+  "left",
+  "leg",
+  "legal",
+  "legend",
+  "leisure",
+  "lemon",
+  "lend",
+  "length",
+  "lens",
+  "leopard",
+  "lesson",
+  "letter",
+  "level",
+  "liar",
+  "liberty",
+  "library",
+  "license",
+  "life",
+  "lift",
+  "light",
+  "like",
+  "limb",
+  "limit",
+  "link",
+  "lion",
+  "liquid",
+  "list",
+  "little",
+  "live",
+  "lizard",
+  "load",
+  "loan",
+  "lobster",
+  "local",
+  "lock",
+  "logic",
+  "lonely",
+  "long",
+  "loop",
+  "lottery",
+  "loud",
+  "lounge",
+  "love",
+  "loyal",
+  "lucky",
+  "luggage",
+  "lumber",
+  "lunar",
+  "lunch",
+  "luxury",
+  "lyrics",
+  "machine",
+  "mad",
+  "magic",
+  "magnet",
+  "maid",
+  "mail",
+  "main",
+  "major",
+  "make",
+  "mammal",
+  "man",
+  "manage",
+  "mandate",
+  "mango",
+  "mansion",
+  "manual",
+  "maple",
+  "marble",
+  "march",
+  "margin",
+  "marine",
+  "market",
+  "marriage",
+  "mask",
+  "mass",
+  "master",
+  "match",
+  "material",
+  "math",
+  "matrix",
+  "matter",
+  "maximum",
+  "maze",
+  "meadow",
+  "mean",
+  "measure",
+  "meat",
+  "mechanic",
+  "medal",
+  "media",
+  "melody",
+  "melt",
+  "member",
+  "memory",
+  "mention",
+  "menu",
+  "mercy",
+  "merge",
+  "merit",
+  "merry",
+  "mesh",
+  "message",
+  "metal",
+  "method",
+  "middle",
+  "midnight",
+  "milk",
+  "million",
+  "mimic",
+  "mind",
+  "minimum",
+  "minor",
+  "minute",
+  "miracle",
+  "mirror",
+  "misery",
+  "miss",
+  "mistake",
+  "mix",
+  "mixed",
+  "mixture",
+  "mobile",
+  "model",
+  "modify",
+  "mom",
+  "moment",
+  "monitor",
+  "monkey",
+  "monster",
+  "month",
+  "moon",
+  "moral",
+  "more",
+  "morning",
+  "mosquito",
+  "mother",
+  "motion",
+  "motor",
+  "mountain",
+  "mouse",
+  "move",
+  "movie",
+  "much",
+  "muffin",
+  "mule",
+  "multiply",
+  "muscle",
+  "museum",
+  "mushroom",
+  "music",
+  "must",
+  "mutual",
+  "myself",
+  "mystery",
+  "myth",
+  "naive",
+  "name",
+  "napkin",
+  "narrow",
+  "nasty",
+  "nation",
+  "nature",
+  "near",
+  "neck",
+  "need",
+  "negative",
+  "neglect",
+  "neither",
+  "nephew",
+  "nerve",
+  "nest",
+  "net",
+  "network",
+  "neutral",
+  "never",
+  "news",
+  "next",
+  "nice",
+  "night",
+  "noble",
+  "noise",
+  "nominee",
+  "noodle",
+  "normal",
+  "north",
+  "nose",
+  "notable",
+  "note",
+  "nothing",
+  "notice",
+  "novel",
+  "now",
+  "nuclear",
+  "number",
+  "nurse",
+  "nut",
+  "oak",
+  "obey",
+  "object",
+  "oblige",
+  "obscure",
+  "observe",
+  "obtain",
+  "obvious",
+  "occur",
+  "ocean",
+  "october",
+  "odor",
+  "off",
+  "offer",
+  "office",
+  "often",
+  "oil",
+  "okay",
+  "old",
+  "olive",
+  "olympic",
+  "omit",
+  "once",
+  "one",
+  "onion",
+  "online",
+  "only",
+  "open",
+  "opera",
+  "opinion",
+  "oppose",
+  "option",
+  "orange",
+  "orbit",
+  "orchard",
+  "order",
+  "ordinary",
+  "organ",
+  "orient",
+  "original",
+  "orphan",
+  "ostrich",
+  "other",
+  "outdoor",
+  "outer",
+  "output",
+  "outside",
+  "oval",
+  "oven",
+  "over",
+  "own",
+  "owner",
+  "oxygen",
+  "oyster",
+  "ozone",
+  "pact",
+  "paddle",
+  "page",
+  "pair",
+  "palace",
+  "palm",
+  "panda",
+  "panel",
+  "panic",
+  "panther",
+  "paper",
+  "parade",
+  "parent",
+  "park",
+  "parrot",
+  "party",
+  "pass",
+  "patch",
+  "path",
+  "patient",
+  "patrol",
+  "pattern",
+  "pause",
+  "pave",
+  "payment",
+  "peace",
+  "peanut",
+  "pear",
+  "peasant",
+  "pelican",
+  "pen",
+  "penalty",
+  "pencil",
+  "people",
+  "pepper",
+  "perfect",
+  "permit",
+  "person",
+  "pet",
+  "phone",
+  "photo",
+  "phrase",
+  "physical",
+  "piano",
+  "picnic",
+  "picture",
+  "piece",
+  "pig",
+  "pigeon",
+  "pill",
+  "pilot",
+  "pink",
+  "pioneer",
+  "pipe",
+  "pistol",
+  "pitch",
+  "pizza",
+  "place",
+  "planet",
+  "plastic",
+  "plate",
+  "play",
+  "please",
+  "pledge",
+  "pluck",
+  "plug",
+  "plunge",
+  "poem",
+  "poet",
+  "point",
+  "polar",
+  "pole",
+  "police",
+  "pond",
+  "pony",
+  "pool",
+  "popular",
+  "portion",
+  "position",
+  "possible",
+  "post",
+  "potato",
+  "pottery",
+  "poverty",
+  "powder",
+  "power",
+  "practice",
+  "praise",
+  "predict",
+  "prefer",
+  "prepare",
+  "present",
+  "pretty",
+  "prevent",
+  "price",
+  "pride",
+  "primary",
+  "print",
+  "priority",
+  "prison",
+  "private",
+  "prize",
+  "problem",
+  "process",
+  "produce",
+  "profit",
+  "program",
+  "project",
+  "promote",
+  "proof",
+  "property",
+  "prosper",
+  "protect",
+  "proud",
+  "provide",
+  "public",
+  "pudding",
+  "pull",
+  "pulp",
+  "pulse",
+  "pumpkin",
+  "punch",
+  "pupil",
+  "puppy",
+  "purchase",
+  "purity",
+  "purpose",
+  "purse",
+  "push",
+  "put",
+  "puzzle",
+  "pyramid",
+  "quality",
+  "quantum",
+  "quarter",
+  "question",
+  "quick",
+  "quit",
+  "quiz",
+  "quote",
+  "rabbit",
+  "raccoon",
+  "race",
+  "rack",
+  "radar",
+  "radio",
+  "rail",
+  "rain",
+  "raise",
+  "rally",
+  "ramp",
+  "ranch",
+  "random",
+  "range",
+  "rapid",
+  "rare",
+  "rate",
+  "rather",
+  "raven",
+  "raw",
+  "razor",
+  "ready",
+  "real",
+  "reason",
+  "rebel",
+  "rebuild",
+  "recall",
+  "receive",
+  "recipe",
+  "record",
+  "recycle",
+  "reduce",
+  "reflect",
+  "reform",
+  "refuse",
+  "region",
+  "regret",
+  "regular",
+  "reject",
+  "relax",
+  "release",
+  "relief",
+  "rely",
+  "remain",
+  "remember",
+  "remind",
+  "remove",
+  "render",
+  "renew",
+  "rent",
+  "reopen",
+  "repair",
+  "repeat",
+  "replace",
+  "report",
+  "require",
+  "rescue",
+  "resemble",
+  "resist",
+  "resource",
+  "response",
+  "result",
+  "retire",
+  "retreat",
+  "return",
+  "reunion",
+  "reveal",
+  "review",
+  "reward",
+  "rhythm",
+  "rib",
+  "ribbon",
+  "rice",
+  "rich",
+  "ride",
+  "ridge",
+  "rifle",
+  "right",
+  "rigid",
+  "ring",
+  "riot",
+  "ripple",
+  "risk",
+  "ritual",
+  "rival",
+  "river",
+  "road",
+  "roast",
+  "robot",
+  "robust",
+  "rocket",
+  "romance",
+  "roof",
+  "rookie",
+  "room",
+  "rose",
+  "rotate",
+  "rough",
+  "round",
+  "route",
+  "royal",
+  "rubber",
+  "rude",
+  "rug",
+  "rule",
+  "run",
+  "runway",
+  "rural",
+  "sad",
+  "saddle",
+  "sadness",
+  "safe",
+  "sail",
+  "salad",
+  "salmon",
+  "salon",
+  "salt",
+  "salute",
+  "same",
+  "sample",
+  "sand",
+  "satisfy",
+  "satoshi",
+  "sauce",
+  "sausage",
+  "save",
+  "say",
+  "scale",
+  "scan",
+  "scare",
+  "scatter",
+  "scene",
+  "scheme",
+  "school",
+  "science",
+  "scissors",
+  "scorpion",
+  "scout",
+  "scrap",
+  "screen",
+  "script",
+  "scrub",
+  "sea",
+  "search",
+  "season",
+  "seat",
+  "second",
+  "secret",
+  "section",
+  "security",
+  "seed",
+  "seek",
+  "segment",
+  "select",
+  "sell",
+  "seminar",
+  "senior",
+  "sense",
+  "sentence",
+  "series",
+  "service",
+  "session",
+  "settle",
+  "setup",
+  "seven",
+  "shadow",
+  "shaft",
+  "shallow",
+  "share",
+  "shed",
+  "shell",
+  "sheriff",
+  "shield",
+  "shift",
+  "shine",
+  "ship",
+  "shiver",
+  "shock",
+  "shoe",
+  "shoot",
+  "shop",
+  "short",
+  "shoulder",
+  "shove",
+  "shrimp",
+  "shrug",
+  "shuffle",
+  "shy",
+  "sibling",
+  "sick",
+  "side",
+  "siege",
+  "sight",
+  "sign",
+  "silent",
+  "silk",
+  "silly",
+  "silver",
+  "similar",
+  "simple",
+  "since",
+  "sing",
+  "siren",
+  "sister",
+  "situate",
+  "six",
+  "size",
+  "skate",
+  "sketch",
+  "ski",
+  "skill",
+  "skin",
+  "skirt",
+  "skull",
+  "slab",
+  "slam",
+  "sleep",
+  "slender",
+  "slice",
+  "slide",
+  "slight",
+  "slim",
+  "slogan",
+  "slot",
+  "slow",
+  "slush",
+  "small",
+  "smart",
+  "smile",
+  "smoke",
+  "smooth",
+  "snack",
+  "snake",
+  "snap",
+  "sniff",
+  "snow",
+  "soap",
+  "soccer",
+  "social",
+  "sock",
+  "soda",
+  "soft",
+  "solar",
+  "soldier",
+  "solid",
+  "solution",
+  "solve",
+  "someone",
+  "song",
+  "soon",
+  "sorry",
+  "sort",
+  "soul",
+  "sound",
+  "soup",
+  "source",
+  "south",
+  "space",
+  "spare",
+  "spatial",
+  "spawn",
+  "speak",
+  "special",
+  "speed",
+  "spell",
+  "spend",
+  "sphere",
+  "spice",
+  "spider",
+  "spike",
+  "spin",
+  "spirit",
+  "split",
+  "spoil",
+  "sponsor",
+  "spoon",
+  "sport",
+  "spot",
+  "spray",
+  "spread",
+  "spring",
+  "spy",
+  "square",
+  "squeeze",
+  "squirrel",
+  "stable",
+  "stadium",
+  "staff",
+  "stage",
+  "stairs",
+  "stamp",
+  "stand",
+  "start",
+  "state",
+  "stay",
+  "steak",
+  "steel",
+  "stem",
+  "step",
+  "stereo",
+  "stick",
+  "still",
+  "sting",
+  "stock",
+  "stomach",
+  "stone",
+  "stool",
+  "story",
+  "stove",
+  "strategy",
+  "street",
+  "strike",
+  "strong",
+  "struggle",
+  "student",
+  "stuff",
+  "stumble",
+  "style",
+  "subject",
+  "submit",
+  "subway",
+  "success",
+  "such",
+  "sudden",
+  "suffer",
+  "sugar",
+  "suggest",
+  "suit",
+  "summer",
+  "sun",
+  "sunny",
+  "sunset",
+  "super",
+  "supply",
+  "supreme",
+  "sure",
+  "surface",
+  "surge",
+  "surprise",
+  "surround",
+  "survey",
+  "suspect",
+  "sustain",
+  "swallow",
+  "swamp",
+  "swap",
+  "swarm",
+  "swear",
+  "sweet",
+  "swift",
+  "swim",
+  "swing",
+  "switch",
+  "sword",
+  "symbol",
+  "symptom",
+  "syrup",
+  "system",
+  "table",
+  "tackle",
+  "tag",
+  "tail",
+  "talent",
+  "talk",
+  "tank",
+  "tape",
+  "target",
+  "task",
+  "taste",
+  "tattoo",
+  "taxi",
+  "teach",
+  "team",
+  "tell",
+  "ten",
+  "tenant",
+  "tennis",
+  "tent",
+  "term",
+  "test",
+  "text",
+  "thank",
+  "that",
+  "theme",
+  "then",
+  "theory",
+  "there",
+  "they",
+  "thing",
+  "this",
+  "thought",
+  "three",
+  "thrive",
+  "throw",
+  "thumb",
+  "thunder",
+  "ticket",
+  "tide",
+  "tiger",
+  "tilt",
+  "timber",
+  "time",
+  "tiny",
+  "tip",
+  "tired",
+  "tissue",
+  "title",
+  "toast",
+  "tobacco",
+  "today",
+  "toddler",
+  "toe",
+  "together",
+  "toilet",
+  "token",
+  "tomato",
+  "tomorrow",
+  "tone",
+  "tongue",
+  "tonight",
+  "tool",
+  "tooth",
+  "top",
+  "topic",
+  "topple",
+  "torch",
+  "tornado",
+  "tortoise",
+  "toss",
+  "total",
+  "tourist",
+  "toward",
+  "tower",
+  "town",
+  "toy",
+  "track",
+  "trade",
+  "traffic",
+  "tragic",
+  "train",
+  "transfer",
+  "trap",
+  "trash",
+  "travel",
+  "tray",
+  "treat",
+  "tree",
+  "trend",
+  "trial",
+  "tribe",
+  "trick",
+  "trigger",
+  "trim",
+  "trip",
+  "trophy",
+  "trouble",
+  "truck",
+  "true",
+  "truly",
+  "trumpet",
+  "trust",
+  "truth",
+  "try",
+  "tube",
+  "tuition",
+  "tumble",
+  "tuna",
+  "tunnel",
+  "turkey",
+  "turn",
+  "turtle",
+  "twelve",
+  "twenty",
+  "twice",
+  "twin",
+  "twist",
+  "two",
+  "type",
+  "typical",
+  "ugly",
+  "umbrella",
+  "unable",
+  "unaware",
+  "uncle",
+  "uncover",
+  "under",
+  "undo",
+  "unfair",
+  "unfold",
+  "unhappy",
+  "uniform",
+  "unique",
+  "unit",
+  "universe",
+  "unknown",
+  "unlock",
+  "until",
+  "unusual",
+  "unveil",
+  "update",
+  "upgrade",
+  "uphold",
+  "upon",
+  "upper",
+  "upset",
+  "urban",
+  "urge",
+  "usage",
+  "use",
+  "used",
+  "useful",
+  "useless",
+  "usual",
+  "utility",
+  "vacant",
+  "vacuum",
+  "vague",
+  "valid",
+  "valley",
+  "valve",
+  "van",
+  "vanish",
+  "vapor",
+  "various",
+  "vast",
+  "vault",
+  "vehicle",
+  "velvet",
+  "vendor",
+  "venture",
+  "venue",
+  "verb",
+  "verify",
+  "version",
+  "very",
+  "vessel",
+  "veteran",
+  "viable",
+  "vibrant",
+  "vicious",
+  "victory",
+  "video",
+  "view",
+  "village",
+  "vintage",
+  "violin",
+  "virtual",
+  "virus",
+  "visa",
+  "visit",
+  "visual",
+  "vital",
+  "vivid",
+  "vocal",
+  "voice",
+  "void",
+  "volcano",
+  "volume",
+  "vote",
+  "voyage",
+  "wage",
+  "wagon",
+  "wait",
+  "walk",
+  "wall",
+  "walnut",
+  "want",
+  "warfare",
+  "warm",
+  "warrior",
+  "wash",
+  "wasp",
+  "waste",
+  "water",
+  "wave",
+  "way",
+  "wealth",
+  "weapon",
+  "wear",
+  "weasel",
+  "weather",
+  "web",
+  "wedding",
+  "weekend",
+  "weird",
+  "welcome",
+  "west",
+  "wet",
+  "whale",
+  "what",
+  "wheat",
+  "wheel",
+  "when",
+  "where",
+  "whip",
+  "whisper",
+  "wide",
+  "width",
+  "wife",
+  "wild",
+  "will",
+  "win",
+  "window",
+  "wine",
+  "wing",
+  "wink",
+  "winner",
+  "winter",
+  "wire",
+  "wisdom",
+  "wise",
+  "wish",
+  "witness",
+  "wolf",
+  "woman",
+  "wonder",
+  "wood",
+  "wool",
+  "word",
+  "work",
+  "world",
+  "worry",
+  "worth",
+  "wrap",
+  "wreck",
+  "wrestle",
+  "wrist",
+  "write",
+  "wrong",
+  "yard",
+  "year",
+  "yellow",
+  "you",
+  "young",
+  "youth",
+  "zebra",
+  "zero",
+  "zone",
+  "zoo"
+];
+
+// ═══════ js/wallet.js ═══════
+/**
+ * wallet.js — BIP-39 Haiku Wallet Miner
+ * Generates valid BIP-39 mnemonics whose syllables form 5-7-5 haiku
+ * Features: SHA-256 checksum, AES-256-GCM encryption, localStorage persistence
+ */
+
+var WalletMiner = (() => {
+
+  // ═══════════════════════════════════════════════════════
+  //  SYLLABLE COUNTING — Real English syllable counter
+  // ═══════════════════════════════════════════════════════
+
+  const SYLLABLE_EXCEPTIONS = {
+    'the':1,'be':1,'she':1,'he':1,'me':1,'we':1,'ye':1,
+    'eye':1,'aye':1,'queue':1,'league':1,'tongue':1,
+    'every':3,'everywhere':4,'different':3,'family':3,
+    'chocolate':3,'vegetable':4,'restaurant':3,'idea':3,
+    'poem':2,'poet':2,'genuine':3,'certain':2,'special':2,
+    'social':2,'natural':3,'casual':2,'visual':3,'usual':3,
+    'actual':3,'nature':2,'culture':2,'future':2,'measure':2,
+    'treasure':2,'pleasure':2,'capture':2,'feature':2,
+    'picture':2,'mixture':2,'furniture':3,'village':2,
+    'message':2,'damage':2,'manage':2,'language':3,
+    'orange':2,'average':3,'leverage':3,'advantage':3,
+    'square':1,'fire':1,'wire':1,'tire':1,'hire':1,
+    'our':1,'your':1,'their':1,'are':1,'were':1,
+    'acquire':2,'require':2,'retire':2,'admire':2,'inspire':2,
+    'entire':2,'desire':2,'empire':2,'conspire':2,'expire':2,
+    'science':2,'quiet':2,'client':2,'ancient':2,'sufficient':3,
+    'efficient':3,'experience':4,'blue':1,'true':1,'clue':1,
+    'avenue':3,'continue':3,'value':2,'issue':2,'tissue':2,
+  };
+
+  function countSyllables(word) {
+    word = word.toLowerCase().trim();
+    if (SYLLABLE_EXCEPTIONS[word] !== undefined) return SYLLABLE_EXCEPTIONS[word];
+    if (word.length <= 2) return 1;
+
+    let w = word;
+    // Handle -le at end after consonant (ta-ble, lit-tle)
+    if (w.length > 2 && w.endsWith('le') && !/[aeiouy]/.test(w[w.length-3])) {
+      // keep 'le' — it adds a syllable
+    } else {
+      // Remove silent trailing e
+      w = w.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+    }
+    // Remove leading y (acts as consonant)
+    w = w.replace(/^y/, '');
+
+    // Count vowel groups
+    const matches = w.match(/[aeiouy]{1,2}/g);
+    return matches ? Math.max(1, matches.length) : 1;
+  }
+
+  // Pre-compute syllable map for all BIP-39 words
+  let syllableMap = null;
+  function getSyllableMap() {
+    if (!syllableMap) {
+      syllableMap = new Map();
+      for (const w of BIP39_WORDLIST) {
+        syllableMap.set(w, countSyllables(w));
+      }
+    }
+    return syllableMap;
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  BIP-39 CRYPTO — Entropy, checksum, mnemonic
+  // ═══════════════════════════════════════════════════════
+
+  function bytesToBits(bytes) {
+    const bits = [];
+    for (const byte of bytes) {
+      for (let i = 7; i >= 0; i--) bits.push((byte >> i) & 1);
+    }
+    return bits;
+  }
+
+  function bitsToNumber(bits, start, len) {
+    let n = 0;
+    for (let i = 0; i < len; i++) n = (n << 1) | bits[start + i];
+    return n;
+  }
+
+  async function sha256(data) {
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return new Uint8Array(hash);
+  }
+
+  // Generate 12-word BIP-39 mnemonic with valid checksum
+  async function generateMnemonic() {
+    const entropy = crypto.getRandomValues(new Uint8Array(16)); // 128 bits
+    const hash = await sha256(entropy);
+
+    // Extract first 4 bits of hash as checksum
+    const checksumBits = [];
+    for (let i = 0; i < 4; i++) checksumBits.push((hash[0] >> (7 - i)) & 1);
+
+    // Combine entropy bits + checksum bits = 132 bits
+    const entropyBits = bytesToBits(entropy);
+    const combined = [...entropyBits, ...checksumBits];
+
+    // Map 11-bit groups to words
+    const words = [];
+    for (let i = 0; i < 12; i++) {
+      const idx = bitsToNumber(combined, i * 11, 11);
+      words.push(BIP39_WORDLIST[idx]);
+    }
+    return words;
+  }
+
+  // Validate a mnemonic's checksum
+  async function validateMnemonic(words) {
+    if (words.length !== 12) return false;
+    const indices = words.map(w => BIP39_WORDLIST.indexOf(w.toLowerCase()));
+    if (indices.some(i => i === -1)) return false;
+
+    // Convert to bits
+    const bits = [];
+    for (const idx of indices) {
+      for (let i = 10; i >= 0; i--) bits.push((idx >> i) & 1);
+    }
+    // 132 bits: 128 entropy + 4 checksum
+
+    // Reconstruct entropy bytes
+    const entropy = new Uint8Array(16);
+    for (let i = 0; i < 16; i++) {
+      let byte = 0;
+      for (let j = 0; j < 8; j++) byte = (byte << 1) | bits[i * 8 + j];
+      entropy[i] = byte;
+    }
+
+    // Verify checksum
+    const hash = await sha256(entropy);
+    const expectedChecksum = [];
+    for (let i = 0; i < 4; i++) expectedChecksum.push((hash[0] >> (7 - i)) & 1);
+    const actualChecksum = bits.slice(128, 132);
+
+    return expectedChecksum.every((v, i) => v === actualChecksum[i]);
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  HAIKU LOGIC — 5-7-5 syllable pattern detection
+  // ═══════════════════════════════════════════════════════
+
+  function findHaikuSplit(syllableCounts) {
+    if (syllableCounts.reduce((a, b) => a + b, 0) !== 17) return null;
+
+    let s1 = 0, line1End = -1;
+    for (let i = 0; i < syllableCounts.length; i++) {
+      s1 += syllableCounts[i];
+      if (s1 === 5) { line1End = i + 1; break; }
+      if (s1 > 5) return null;
+    }
+    if (line1End === -1) return null;
+
+    let s2 = 0, line2End = -1;
+    for (let i = line1End; i < syllableCounts.length; i++) {
+      s2 += syllableCounts[i];
+      if (s2 === 7) { line2End = i + 1; break; }
+      if (s2 > 7) return null;
+    }
+    if (line2End === -1) return null;
+
+    let s3 = 0;
+    for (let i = line2End; i < syllableCounts.length; i++) s3 += syllableCounts[i];
+    if (s3 !== 5) return null;
+
+    return { line1End, line2End };
+  }
+
+  // Grammar heuristic: skip haiku that "don't read well"
+  function passesGrammarCheck(words, split) {
+    const SKIP_STARTS = new Set([
+      'the','a','an','and','or','but','is','am','are','was','were',
+      'be','been','being','have','has','had','do','does','did',
+      'will','would','shall','should','may','might','must','can','could',
+      'not','no','nor','so','if','as','at','by','in','of','on','to','up',
+      'into','onto','upon','with','from','than','then','that','this'
+    ]);
+
+    const line1 = words.slice(0, split.line1End);
+    const line2 = words.slice(split.line1End, split.line2End);
+    const line3 = words.slice(split.line2End);
+
+    // First word shouldn't be a function word
+    if (SKIP_STARTS.has(line1[0])) return false;
+
+    // No excessive duplication
+    const counts = {};
+    for (const w of words) counts[w] = (counts[w] || 0) + 1;
+    if (Object.values(counts).some(c => c >= 3)) return false;
+
+    // Each line should be non-empty and have variety
+    if (line1.length < 1 || line2.length < 1 || line3.length < 1) return false;
+
+    // At least one "content-bearing" word per line (not all function words)
+    const hasContent = (line) => line.some(w => !SKIP_STARTS.has(w));
+    return hasContent(line1) && hasContent(line2) && hasContent(line3);
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  AES-256-GCM ENCRYPTION — Web Crypto API
+  // ═══════════════════════════════════════════════════════
+
+  async function deriveKey(password, salt) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']
+    );
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt']
+    );
+  }
+
+  async function encryptAES256(plaintext, password) {
+    const enc = new TextEncoder();
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const key = await deriveKey(password, salt);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const encrypted = await crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv }, key, enc.encode(plaintext)
+    );
+    const result = new Uint8Array(16 + 12 + new Uint8Array(encrypted).length);
+    result.set(salt, 0);
+    result.set(iv, 16);
+    result.set(new Uint8Array(encrypted), 28);
+    return btoa(String.fromCharCode(...result));
+  }
+
+  async function decryptAES256(base64, password) {
+    const raw = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    const salt = raw.slice(0, 16);
+    const iv = raw.slice(16, 28);
+    const ciphertext = raw.slice(28);
+    const key = await deriveKey(password, salt);
+    const decrypted = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv }, key, ciphertext
+    );
+    return new TextDecoder().decode(decrypted);
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  PERSISTENT STORAGE — Encrypted localStorage
+  // ═══════════════════════════════════════════════════════
+
+  const STORAGE_KEY = 'enso_haiku_wallets';
+  let sessionPassword = null;
+  let walletList = []; // In-memory decrypted list
+
+  function saveToStorage() {
+    if (!sessionPassword) return;
+    const json = JSON.stringify(walletList);
+    const encrypted = encryptAES256(json, sessionPassword);
+    encrypted.then(enc => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        encrypted: enc,
+        version: 1,
+        timestamp: Date.now()
+      }));
+    });
+  }
+
+  async function loadFromStorage(password) {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    try {
+      const data = JSON.parse(raw);
+      const decrypted = await decryptAES256(data.encrypted, password);
+      walletList = JSON.parse(decrypted);
+      sessionPassword = password;
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function hasStoredWallets() {
+    return !!localStorage.getItem(STORAGE_KEY);
+  }
+
+  function clearStorage() {
+    localStorage.removeItem(STORAGE_KEY);
+    walletList = [];
+    sessionPassword = null;
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  MINING ENGINE — Async haiku search with UI yielding
+  // ═══════════════════════════════════════════════════════
+
+  let miningActive = false;
+  let totalMined = 0;
+
+  async function mineHaiku(walletType, count, grammarCheck, onFound, onProgress) {
+    miningActive = true;
+    let found = 0;
+    let attempts = 0;
+    const batchSize = 50;
+    const smap = getSyllableMap();
+
+    while (found < count && miningActive) {
+      for (let b = 0; b < batchSize && found < count && miningActive; b++) {
+        attempts++;
+        const words = await generateMnemonic();
+
+        // Count syllables
+        const syls = words.map(w => smap.get(w));
+        const total = syls.reduce((a, b) => a + b, 0);
+
+        if (total !== 17) continue;
+
+        const split = findHaikuSplit(syls);
+        if (!split) continue;
+
+        if (grammarCheck === 'on' && !passesGrammarCheck(words, split)) continue;
+
+        // Checksum is valid by construction (generated from correct entropy+hash)
+        found++;
+        totalMined++;
+
+        const wallet = {
+          id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2),
+          words,
+          syllables: syls,
+          split,
+          walletType,
+          timestamp: new Date().toISOString(),
+          haiku: formatHaiku(words, split, syls)
+        };
+
+        if (onFound) onFound(wallet);
+      }
+
+      if (onProgress) onProgress(found, count, attempts, totalMined);
+
+      // Yield to UI
+      await new Promise(r => setTimeout(r, 0));
+    }
+
+    miningActive = false;
+    return { found, attempts };
+  }
+
+  function stopMining() {
+    miningActive = false;
+  }
+
+  function formatHaiku(words, split, syls) {
+    const line1 = words.slice(0, split.line1End);
+    const line2 = words.slice(split.line1End, split.line2End);
+    const line3 = words.slice(split.line2End);
+
+    const s1 = syls.slice(0, split.line1End);
+    const s2 = syls.slice(split.line1End, split.line2End);
+    const s3 = syls.slice(split.line2End);
+
+    return {
+      lines: [line1.join(' '), line2.join(' '), line3.join(' ')],
+      syllableLines: [s1, s2, s3]
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  EXPORT
+  // ═══════════════════════════════════════════════════════
+
+  function generateExportText() {
+    let txt = '╔══════════════════════════════════════════════════╗\n';
+    txt +=    '║  Ensō × BIP-39 Haiku Wallet — Exported Wallets  ║\n';
+    txt +=    '╚══════════════════════════════════════════════════╝\n\n';
+
+    walletList.forEach((w, i) => {
+      txt += `─── Wallet #${i + 1} ─── ${w.walletType.toUpperCase()} ─── ${w.timestamp} ───\n\n`;
+      txt += `  ${w.haiku.lines[0]}  (${w.haiku.syllableLines[0].join('+')} = ${w.haiku.syllableLines[0].reduce((a,b)=>a+b,0)})\n`;
+      txt += `  ${w.haiku.lines[1]}  (${w.haiku.syllableLines[1].join('+')} = ${w.haiku.syllableLines[1].reduce((a,b)=>a+b,0)})\n`;
+      txt += `  ${w.haiku.lines[2]}  (${w.haiku.syllableLines[2].join('+')} = ${w.haiku.syllableLines[2].reduce((a,b)=>a+b,0)})\n\n`;
+      txt += `  Mnemonic: ${w.words.join(' ')}\n`;
+      txt += `  ID: ${w.id}\n\n`;
+    });
+
+    return txt;
+  }
+
+  async function exportEncrypted(password) {
+    const txt = generateExportText();
+    return await encryptAES256(txt, password);
+  }
+
+  function exportPlain() {
+    return generateExportText();
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  PUBLIC API
+  // ═══════════════════════════════════════════════════════
+
+  return {
+    countSyllables,
+    getSyllableMap,
+    generateMnemonic,
+    validateMnemonic,
+    findHaikuSplit,
+    mineHaiku,
+    stopMining,
+    formatHaiku,
+
+    // Storage
+    saveToStorage,
+    loadFromStorage,
+    hasStoredWallets,
+    clearStorage,
+    get walletList() { return walletList; },
+    set walletList(v) { walletList = v; },
+    get sessionPassword() { return sessionPassword; },
+    set sessionPassword(v) { sessionPassword = v; },
+
+    // Export
+    exportEncrypted,
+    exportPlain,
+    encryptAES256,
+
+    // Stats
+    get totalMined() { return totalMined; },
+    set totalMined(v) { totalMined = v; }
+  };
+
+})();
+
+</script>
+<script>
+// ═══════ js/irc.js ═══════
+/**
+ * irc.js — Full IRC Client over WebSocket
+ * Converted from PIM Java source: Network.java, CmdProcessor.java, Connect.java
+ * 
+ * Original Java PIM architecture mapped to web:
+ *   Network.java  → IRCClient (WebSocket transport instead of raw TCP)
+ *   CmdProcessor   → IRCClient.handleCommand() 
+ *   Connect.java   → WebSocket onmessage handler
+ *   listen.java    → WebSocket connection itself
+ *   MsgGui.java    → ChatWindow objects (COMMENTED OUT - using CLI terminal)
+ *   PimTest.java   → IRCClient (CLI active, GUI commented out)
+ *   Display.java   → termPrint() output
+ *   Peerlist.java  → IRC channel/user tracking
+ *   UserInfo.java  → IRC user state (nick, ident, host)
+ *   Voice.java     → [NOT CONVERTED - Java Sound API only]
+ *   SMSMsg.java    → [NOT CONVERTED - SMTP direct socket only]
+ *   FileMsg.java   → [NOT CONVERTED - DCC file transfer only]
+ *   Crypto.java    → [NOT CONVERTED - IRC uses TLS via WebSocket]
+ */
+
+var IRCClient = (() => {
+
+  // ═══════════════════════════════════════════════════════
+  //  IRC CLIENT STATE
+  //  Maps to: Peerlist.java + UserInfo.java + PimTest.java fields
+  // ═══════════════════════════════════════════════════════
+
+  let ws = null;
+  let state = {
+    nick: '',
+    user: 'pimuser',
+    realname: 'PIM Web IRC Client',
+    server: '',
+    port: 6697,
+    connected: false,
+    registered: false,
+  };
+
+  // Chat windows — maps to MsgGui instances in original
+  // Each window is like a MsgGui but CLI-based (GUI commented out)
+  let windows = new Map(); // name → { type:'channel'|'query', lines:[], users:Set, topic:'' }
+  let activeWindow = null;
+
+  // ═══════════════════════════════════════════════════════
+  //  OUTPUT CALLBACK
+  //  Maps to: Display.java putMessage/putPeer/signedOn
+  // ═══════════════════════════════════════════════════════
+
+  let _print = null; // set via init(printFn)
+
+  function print(text, cls) {
+    if (_print) _print(text, cls, activeWindow);
+  }
+
+  function printTo(windowName, text, cls) {
+    if (_print) _print(text, cls, windowName);
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  CHAT WINDOW MANAGEMENT
+  //  Maps to: MsgGui.java (GUI version COMMENTED OUT)
+  //  CLI version: each window is a buffer of lines
+  // ═══════════════════════════════════════════════════════
+
+  function createWindow(name, type) {
+    if (!windows.has(name)) {
+      windows.set(name, {
+        type, // 'channel' or 'query'
+        lines: [],
+        users: new Set(),
+        topic: '',
+        unread: 0,
+      });
+      if (typeof _onWindowChange === 'function') _onWindowChange();
+    }
+    return windows.get(name);
+  }
+
+  function getActiveWindow() {
+    return activeWindow ? windows.get(activeWindow) : null;
+  }
+
+  let _onWindowChange = null;
+
+  // ═══════════════════════════════════════════════════════
+  //  WEBSOCKET CONNECTION
+  //  Maps to: Network.java constructor (listen threads + broadcast)
+  //  Original used raw TCP sockets + UDP multicast
+  //  Converted to: WebSocket for browser compatibility
+  // ═══════════════════════════════════════════════════════
+
+  function connect(server, nick, options = {}) {
+    if (ws && state.connected) {
+      print('Already connected. Use /quit first.', 'err');
+      return;
+    }
+
+    state.server = server;
+    state.nick = nick || 'PIMUser' + Math.floor(Math.random() * 9999);
+    state.user = options.user || 'pimweb';
+    state.realname = options.realname || 'PIM Web Client';
+
+    // Build WebSocket URL
+    // Supports: wss://irc.libera.chat, or custom relay
+    let wsUrl = server;
+    if (!wsUrl.startsWith('ws://') && !wsUrl.startsWith('wss://')) {
+      // Default: try wss://
+      wsUrl = 'wss://' + wsUrl;
+    }
+
+    // Libera Chat specific: add path
+    if (wsUrl.includes('libera.chat')) {
+      wsUrl = wsUrl.replace(/\/$/, '') + '/webirc';
+    }
+
+    print(`Connecting to ${wsUrl} as ${state.nick}...`, 'sys');
+
+    try {
+      ws = new WebSocket(wsUrl, 'binary'); // some servers require 'binary' subprotocol
+    } catch (e) {
+      // Try without subprotocol
+      try {
+        ws = new WebSocket(wsUrl);
+      } catch (e2) {
+        print(`Connection failed: ${e2.message}`, 'err');
+        return;
+      }
+    }
+
+    ws.onopen = () => {
+      state.connected = true;
+      print('WebSocket connected. Registering...', 'sys');
+
+      // IRC registration — maps to Network constructor broadcast
+      sendRaw(`NICK ${state.nick}`);
+      sendRaw(`USER ${state.user} 0 * :${state.realname}`);
+
+      // Create server window
+      createWindow(server, 'channel');
+      activeWindow = server;
+    };
+
+    ws.onmessage = (event) => {
+      // Handle binary or text
+      let data;
+      if (event.data instanceof Blob) {
+        event.data.text().then(t => handleData(t));
+      } else {
+        handleData(event.data);
+      }
+    };
+
+    ws.onclose = (event) => {
+      state.connected = false;
+      state.registered = false;
+      print(`Disconnected (code: ${event.code}).`, 'err');
+      ws = null;
+    };
+
+    ws.onerror = (event) => {
+      print(`Connection error. Check server address.`, 'err');
+    };
+  }
+
+  function handleData(data) {
+    // IRC messages may come as multiple lines
+    const lines = data.split(/\r?\n/);
+    for (const line of lines) {
+      if (line.trim()) parseIRC(line);
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  IRC PROTOCOL PARSER
+  //  Maps to: Connect.java run() — reads objects from socket
+  //  Converted to: text-based IRC protocol parsing
+  // ═══════════════════════════════════════════════════════
+
+  function parseIRC(line) {
+    // IRC format: [:prefix] command [params] [:trailing]
+    let prefix = '';
+    let command = '';
+    let params = [];
+    let trailing = '';
+
+    // Parse prefix
+    let rest = line;
+    if (rest.startsWith(':')) {
+      const spaceIdx = rest.indexOf(' ');
+      if (spaceIdx === -1) return;
+      prefix = rest.substring(1, spaceIdx);
+      rest = rest.substring(spaceIdx + 1);
+    }
+
+    // Parse trailing
+    const trailIdx = rest.indexOf(' :');
+    if (trailIdx !== -1) {
+      trailing = rest.substring(trailIdx + 2);
+      rest = rest.substring(0, trailIdx);
+    }
+
+    // Parse command and params
+    const parts = rest.split(' ');
+    command = parts[0].toUpperCase();
+    params = parts.slice(1);
+
+    // Extract nick from prefix
+    const nickFromPrefix = prefix.includes('!') ? prefix.split('!')[0] : prefix;
+    const userHost = prefix.includes('!') ? prefix.split('!')[1] : '';
+
+    // ─── Handle IRC numerics and commands ───
+
+    switch (command) {
+      // Registration success
+      case '001': // RPL_WELCOME
+        state.registered = true;
+        state.nick = params[0] || state.nick;
+        printTo(state.server, `✓ Connected to ${state.server} as ${state.nick}`, 'sys');
+        printTo(state.server, trailing, 'sys');
+        break;
+
+      case '002': // RPL_YOURHOST
+      case '003': // RPL_CREATED
+      case '004': // RPL_MYINFO
+      case '005': // RPL_ISUPPORT
+        printTo(state.server, trailing, 'sys');
+        break;
+
+      case '251': // RPL_LUSEROP
+      case '252': // RPL_LUSEROP
+      case '253': // RPL_LUSERUNKNOWN
+      case '254': // RPL_LUSERCHANNELS
+      case '255': // RPL_LUSERME
+      case '265': // RPL_LOCALUSERS
+      case '266': // RPL_GLOBALUSERS
+      case '250': // RPL_STATSCONN
+        printTo(state.server, trailing, 'sys');
+        break;
+
+      case '372': // RPL_MOTD
+        printTo(state.server, trailing, 'sys');
+        break;
+
+      case '375': // RPL_MOTDSTART
+        printTo(state.server, `─── MOTD ───`, 'sys');
+        break;
+
+      case '376': // RPL_ENDOFMOTD
+        printTo(state.server, `─── End MOTD ───`, 'sys');
+        break;
+
+      case '422': // ERR_NOMOTD
+        printTo(state.server, 'No MOTD', 'sys');
+        break;
+
+      // Nick in use
+      case '433': // ERR_NICKNAMEINUSE
+        printTo(state.server, `Nickname "${params[1]}" is in use. Trying ${params[1] + '_'}...`, 'err');
+        state.nick = params[1] + '_';
+        sendRaw(`NICK ${state.nick}`);
+        break;
+
+      case '432': // ERR_ERRONEUSNICKNAME
+        printTo(state.server, `Invalid nickname: ${trailing}`, 'err');
+        break;
+
+      // PING — must respond (maps to Network.java periodicBroadcast)
+      case 'PING':
+        sendRaw(`PONG :${trailing}`);
+        printTo(state.server, `[PING/PONG]`, 'sys');
+        break;
+
+      // PONG
+      case 'PONG':
+        break;
+
+      // JOIN — maps to Peerlist.addPeer() + Display.signedOn()
+      case 'JOIN': {
+        const channel = trailing || params[0];
+        const win = createWindow(channel, 'channel');
+        if (nickFromPrefix === state.nick) {
+          printTo(channel, `You joined ${channel}`, 'sys');
+          activeWindow = activeWindow || channel;
+          if (typeof _onWindowChange === 'function') _onWindowChange();
+        } else {
+          printTo(channel, `→ ${nickFromPrefix} joined ${channel}`, 'sys');
+          win.users.add(nickFromPrefix);
+        }
+        // Request names
+        sendRaw(`NAMES ${channel}`);
+        break;
+      }
+
+      // PART — maps to Peerlist.removePeer()
+      case 'PART': {
+        const channel = params[0];
+        const win = windows.get(channel);
+        if (nickFromPrefix === state.nick) {
+          if (win) {
+            printTo(channel, `You left ${channel}`, 'sys');
+            windows.delete(channel);
+          }
+        } else {
+          printTo(channel, `← ${nickFromPrefix} left ${channel}`, 'sys');
+          if (win) win.users.delete(nickFromPrefix);
+        }
+        if (typeof _onWindowChange === 'function') _onWindowChange();
+        break;
+      }
+
+      // QUIT — maps to Peerlist.removePeer() + listenExit
+      case 'QUIT': {
+        const reason = trailing;
+        // Show in all windows this user was in
+        for (const [name, win] of windows) {
+          if (win.users.has(nickFromPrefix)) {
+            printTo(name, `⟵ ${nickFromPrefix} quit (${reason})`, 'sys');
+            win.users.delete(nickFromPrefix);
+          }
+        }
+        break;
+      }
+
+      // KICK
+      case 'KICK': {
+        const channel = params[0];
+        const kicked = params[1];
+        const reason = trailing;
+        const win = windows.get(channel);
+        if (kicked === state.nick) {
+          printTo(channel, `You were kicked from ${channel} by ${nickFromPrefix} (${reason})`, 'err');
+        } else {
+          printTo(channel, `${kicked} was kicked by ${nickFromPrefix} (${reason})`, 'sys');
+        }
+        if (win) win.users.delete(kicked);
+        break;
+      }
+
+      // PRIVMSG — maps to Connect.run() receiving TextMsg + MsgGui.display()
+      case 'PRIVMSG': {
+        const target = params[0];
+        const isCTCP = trailing.startsWith('\x01') && trailing.endsWith('\x01');
+
+        if (isCTCP) {
+          const ctcp = trailing.slice(1, -1);
+          if (ctcp.startsWith('ACTION ')) {
+            // /me action
+            const actionText = ctcp.substring(7);
+            const windowName = target === state.nick ? nickFromPrefix : target;
+            createWindow(windowName, target === state.nick ? 'query' : 'channel');
+            printTo(windowName, `* ${nickFromPrefix} ${actionText}`, 'notice');
+          } else if (ctcp.startsWith('VERSION')) {
+            sendRaw(`NOTICE ${nickFromPrefix} :\x01VERSION PIM Web IRC Client 1.0\x01`);
+          } else {
+            const windowName = target === state.nick ? nickFromPrefix : target;
+            createWindow(windowName, target === state.nick ? 'query' : 'channel');
+            printTo(windowName, `[CTCP ${ctcp} from ${nickFromPrefix}]`, 'sys');
+          }
+        } else {
+          // Regular message
+          const windowName = target === state.nick ? nickFromPrefix : target;
+          createWindow(windowName, target === state.nick ? 'query' : 'channel');
+          printTo(windowName, `<${nickFromPrefix}> ${trailing}`, 'usr');
+        }
+        break;
+      }
+
+      // NOTICE — maps to Network.java broadcast messages
+      case 'NOTICE': {
+        const target = params[0];
+        const windowName = (target === '*' || target === state.nick) ? state.server : target;
+        createWindow(windowName, 'channel');
+        printTo(windowName, `-${nickFromPrefix}- ${trailing}`, 'notice');
+        break;
+      }
+
+      // NICK — maps to Peer.updateAlias()
+      case 'NICK': {
+        const oldNick = nickFromPrefix;
+        const newNick = trailing;
+        if (oldNick === state.nick) {
+          state.nick = newNick;
+          printTo(state.server, `You are now known as ${newNick}`, 'sys');
+        }
+        // Update in all windows
+        for (const [name, win] of windows) {
+          if (win.users.has(oldNick)) {
+            win.users.delete(oldNick);
+            win.users.add(newNick);
+            printTo(name, `${oldNick} is now known as ${newNick}`, 'sys');
+          }
+        }
+        break;
+      }
+
+      // TOPIC — maps to channel topic display
+      case '332': { // RPL_TOPIC
+        const channel = params[1];
+        const win = createWindow(channel, 'channel');
+        win.topic = trailing;
+        printTo(channel, `Topic: ${trailing}`, 'sys');
+        break;
+      }
+
+      case '333': // RPL_TOPICWHOTIME
+        break;
+
+      // NAMES list — maps to Peerlist.addPeer() batch
+      case '353': { // RPL_NAMREPLY
+        const channel = params[2];
+        const win = createWindow(channel, 'channel');
+        const names = trailing.split(' ');
+        for (let n of names) {
+          n = n.replace(/^[@+~&%!]/, ''); // strip prefixes
+          if (n) win.users.add(n);
+        }
+        break;
+      }
+
+      case '366': { // RPL_ENDOFNAMES
+        const channel = params[1];
+        const win = windows.get(channel);
+        if (win) {
+          printTo(channel, `Users in ${channel}: ${[...win.users].join(', ')}`, 'sys');
+        }
+        break;
+      }
+
+      // WHOIS — maps to Peerlist.checkStatus()
+      case '311': // RPL_WHOISUSER
+        printTo(state.server, `[WHOIS] ${params[1]} is ${trailing} (${params[2]}@${params[3]})`, 'sys');
+        break;
+      case '312': // RPL_WHOISSERVER
+        printTo(state.server, `[WHOIS] ${params[1]} on ${params[2]}: ${trailing}`, 'sys');
+        break;
+      case '313': // RPL_WHOISOPERATOR
+        printTo(state.server, `[WHOIS] ${params[1]} is an IRC operator`, 'sys');
+        break;
+      case '317': // RPL_WHOISIDLE
+        printTo(state.server, `[WHOIS] ${params[1]} idle ${params[2]}s, connected ${new Date(params[3] * 1000).toLocaleString()}`, 'sys');
+        break;
+      case '318': // RPL_ENDOFWHOIS
+        printTo(state.server, `[WHOIS] End`, 'sys');
+        break;
+      case '319': // RPL_WHOISCHANNELS
+        printTo(state.server, `[WHOIS] ${params[1]} in: ${trailing}`, 'sys');
+        break;
+      case '330': // RPL_WHOISACCOUNT
+        printTo(state.server, `[WHOIS] ${params[1]} logged in as ${params[2]}`, 'sys');
+        break;
+
+      // LIST — channel listing
+      case '322': { // RPL_LIST
+        printTo(state.server, `  ${params[1]} (${params[2]} users): ${trailing}`, 'sys');
+        break;
+      }
+      case '323': // RPL_LISTEND
+        printTo(state.server, 'End of channel list.', 'sys');
+        break;
+
+      // MODE — maps to Peer.setBlock() conceptually
+      case '324': // RPL_CHANNELMODEIS
+        printTo(params[1], `Mode: ${params.slice(2).join(' ')} ${trailing}`, 'sys');
+        break;
+      case 'MODE': {
+        const target = params[0];
+        const modeStr = params[1];
+        const modeParams = params.slice(2).join(' ');
+        const windowName = windows.has(target) ? target : state.server;
+        printTo(windowName, `${nickFromPrefix} set mode ${modeStr} ${modeParams} on ${target}`, 'sys');
+        break;
+      }
+
+      // INVITE
+      case 'INVITE': {
+        printTo(state.server, `${nickFromPrefix} invites you to ${trailing}`, 'notice');
+        break;
+      }
+
+      // Errors
+      case '401': // ERR_NOSUCHNICK
+        printTo(state.server, `No such nick/channel: ${params[1]}`, 'err');
+        break;
+      case '403': // ERR_NOSUCHCHANNEL
+        printTo(state.server, `No such channel: ${params[1]}`, 'err');
+        break;
+      case '404': // ERR_CANNOTSENDTOCHAN
+        printTo(state.server, `Cannot send to ${params[1]}: ${trailing}`, 'err');
+        break;
+      case '442': // ERR_NOTONCHANNEL
+        printTo(state.server, `Not on channel: ${params[1]}`, 'err');
+        break;
+      case '471': // ERR_CHANNELISFULL
+        printTo(state.server, `Channel full: ${params[1]}`, 'err');
+        break;
+      case '473': // ERR_INVITEONLYCHAN
+        printTo(state.server, `Invite only: ${params[1]}`, 'err');
+        break;
+      case '474': // ERR_BANNEDFROMCHAN
+        printTo(state.server, `Banned from: ${params[1]}`, 'err');
+        break;
+      case '475': // ERR_BADCHANNELKEY
+        printTo(state.server, `Bad channel key: ${params[1]}`, 'err');
+        break;
+
+      // Generic numeric
+      default:
+        if (/^\d{3}$/.test(command)) {
+          printTo(state.server, `[${command}] ${params.join(' ')} ${trailing}`.trim(), 'sys');
+        } else if (!['CAP', 'AUTHENTICATE'].includes(command)) {
+          printTo(state.server, `[${command}] ${prefix} ${params.join(' ')} ${trailing}`.trim(), 'sys');
+        }
+        break;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  IRC SEND
+  //  Maps to: Network.java MsgThread (sends TextMsg over socket)
+  // ═══════════════════════════════════════════════════════
+
+  function sendRaw(line) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(line + '\r\n');
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  COMMAND PROCESSOR
+  //  Maps to: CmdProcessor.java identifyType()
+  //  Original CLI code was commented out in PimTest.main()
+  //  NOW FIXED: CLI is active, GUI (MsgGui/Swing) commented out
+  // ═══════════════════════════════════════════════════════
+
+  function handleCommand(input) {
+    input = input.trim();
+    if (!input) return;
+
+    // Not a command — treat as message to active window
+    // Maps to CmdProcessor: "string did not begin with '/', so treat as msg"
+    if (!input.startsWith('/')) {
+      if (!state.connected) {
+        print('Not connected. Use /connect <server> <nick>', 'err');
+        return;
+      }
+      if (!activeWindow || activeWindow === state.server) {
+        print('No active chat window. /join a channel or /query a nick.', 'err');
+        return;
+      }
+      // Send to channel or user — maps to Network.sendTxtMsg()
+      sendRaw(`PRIVMSG ${activeWindow} :${input}`);
+      // Show locally — maps to MsgGui.display() for own messages
+      printTo(activeWindow, `<${state.nick}> ${input}`, 'usr');
+      return;
+    }
+
+    const parts = input.split(/\s+/);
+    const cmd = parts[0].toLowerCase();
+
+    switch (cmd) {
+      // ─── Connection commands ───
+      case '/connect': {
+        // /connect <server> [nick]
+        if (parts.length < 2) {
+          print('Usage: /connect <server> [nick]', 'err');
+          return;
+        }
+        const server = parts[1];
+        const nick = parts[2] || 'PIMUser' + Math.floor(Math.random() * 9999);
+        connect(server, nick);
+        break;
+      }
+
+      case '/quit': {
+        // Maps to CmdProcessor /quit — "return 1; //change to real exit routine later"
+        if (state.connected) {
+          sendRaw(`QUIT :PIM Web IRC Client`);
+          ws.close();
+        }
+        print('Disconnected.', 'sys');
+        break;
+      }
+
+      case '/disconnect': {
+        if (ws) ws.close();
+        break;
+      }
+
+      // ─── IRC commands (maps to CmdProcessor commands) ───
+      case '/join': {
+        // Maps to: opening MsgGui for a peer (but CLI, not GUI)
+        if (!requireConnected()) return;
+        const channel = parts[1];
+        if (!channel) { print('Usage: /join <#channel> [key]', 'err'); return; }
+        createWindow(channel, 'channel');
+        activeWindow = channel;
+        sendRaw(`JOIN ${parts.slice(1).join(' ')}`);
+        if (typeof _onWindowChange === 'function') _onWindowChange();
+        break;
+      }
+
+      case '/part': {
+        if (!requireConnected()) return;
+        const channel = parts[1] || activeWindow;
+        if (!channel) { print('No active channel to part.', 'err'); return; }
+        sendRaw(`PART ${channel} :${parts.slice(2).join(' ') || 'Leaving'}`);
+        break;
+      }
+
+      case '/nick': {
+        if (!requireConnected()) return;
+        if (!parts[1]) { print('Usage: /nick <newnick>', 'err'); return; }
+        sendRaw(`NICK ${parts[1]}`);
+        break;
+      }
+
+      case '/msg': {
+        // Maps to: CmdProcessor /msg alias msg → Network.sendTxtMsg(TextMsg)
+        if (!requireConnected()) return;
+        if (parts.length < 3) { print('Usage: /msg <nick|#channel> <message>', 'err'); return; }
+        const target = parts[1];
+        const message = parts.slice(2).join(' ');
+        sendRaw(`PRIVMSG ${target} :${message}`);
+        createWindow(target, target.startsWith('#') ? 'channel' : 'query');
+        printTo(target, `<${state.nick}> ${message}`, 'usr');
+        break;
+      }
+
+      case '/query': {
+        // Opens a P2P private chat window — maps to creating MsgGui with Peer
+        if (!requireConnected()) return;
+        if (!parts[1]) { print('Usage: /query <nick>', 'err'); return; }
+        createWindow(parts[1], 'query');
+        activeWindow = parts[1];
+        if (typeof _onWindowChange === 'function') _onWindowChange();
+        break;
+      }
+
+      case '/me': {
+        if (!requireConnected()) return;
+        if (!activeWindow) return;
+        const action = parts.slice(1).join(' ');
+        sendRaw(`PRIVMSG ${activeWindow} :\x01ACTION ${action}\x01`);
+        printTo(activeWindow, `* ${state.nick} ${action}`, 'notice');
+        break;
+      }
+
+      case '/whois': {
+        // Maps to: CmdProcessor /status + Peerlist.checkStatus
+        if (!requireConnected()) return;
+        sendRaw(`WHOIS ${parts[1] || ''}`);
+        break;
+      }
+
+      case '/mode': {
+        if (!requireConnected()) return;
+        if (!parts[1]) { print('Usage: /mode <target> [+/-mode] [param]', 'err'); return; }
+        sendRaw(`MODE ${parts.slice(1).join(' ')}`);
+        break;
+      }
+
+      case '/kick': {
+        if (!requireConnected()) return;
+        if (parts.length < 3) { print('Usage: /kick <#channel> <nick> [reason]', 'err'); return; }
+        sendRaw(`KICK ${parts[1]} ${parts[2]} :${parts.slice(3).join(' ') || 'Kicked'}`);
+        break;
+      }
+
+      case '/topic': {
+        if (!requireConnected()) return;
+        const channel = parts[1] && parts[1].startsWith('#') ? parts[1] : activeWindow;
+        if (!channel) { print('No active channel.', 'err'); return; }
+        if (parts.length > (channel === parts[1] ? 2 : 1)) {
+          const topicText = channel === parts[1] ? parts.slice(2).join(' ') : parts.slice(1).join(' ');
+          sendRaw(`TOPIC ${channel} :${topicText}`);
+        } else {
+          sendRaw(`TOPIC ${channel}`);
+        }
+        break;
+      }
+
+      case '/list': {
+        // Maps to: CmdProcessor /list → Peerlist.displayPeers()
+        if (!requireConnected()) return;
+        sendRaw(`LIST ${parts.slice(1).join(' ')}`);
+        break;
+      }
+
+      case '/names': {
+        if (!requireConnected()) return;
+        sendRaw(`NAMES ${parts[1] || activeWindow || ''}`);
+        break;
+      }
+
+      case '/invite': {
+        if (!requireConnected()) return;
+        if (parts.length < 3) { print('Usage: /invite <nick> <#channel>', 'err'); return; }
+        sendRaw(`INVITE ${parts[1]} ${parts[2]}`);
+        break;
+      }
+
+      case '/notice': {
+        if (!requireConnected()) return;
+        if (parts.length < 3) { print('Usage: /notice <target> <message>', 'err'); return; }
+        const target = parts[1];
+        sendRaw(`NOTICE ${target} :${parts.slice(2).join(' ')}`);
+        printTo(target, `[-${state.nick}-] ${parts.slice(2).join(' ')}`, 'notice');
+        break;
+      }
+
+      case '/away': {
+        if (!requireConnected()) return;
+        // Maps to: Peer.setAway()
+        sendRaw(`AWAY :${parts.slice(1).join(' ') || ''}`);
+        break;
+      }
+
+      // ─── PIM original commands (from CmdProcessor.java) ───
+      case '/add': {
+        // Maps to: Peerlist.addPeer(alias) or addPeer(alias, ip)
+        if (!requireConnected()) return;
+        if (!parts[1]) { print('Usage: /add <nick>', 'err'); return; }
+        // In IRC context, /add opens a query window
+        createWindow(parts[1], 'query');
+        activeWindow = parts[1];
+        if (typeof _onWindowChange === 'function') _onWindowChange();
+        print(`Opened chat with ${parts[1]}`, 'sys');
+        break;
+      }
+
+      case '/remove': {
+        // Maps to: Peerlist.removePeer(alias)
+        if (!parts[1]) { print('Usage: /remove <nick>', 'err'); return; }
+        const target = parts[1];
+        if (windows.has(target)) {
+          windows.delete(target);
+          if (activeWindow === target) {
+            activeWindow = windows.keys().next().value || null;
+          }
+          print(`Removed ${target}`, 'sys');
+          if (typeof _onWindowChange === 'function') _onWindowChange();
+        } else {
+          print(`${target} not found in windows`, 'err');
+        }
+        break;
+      }
+
+      case '/block': {
+        // Maps to: Peerlist.blockPeer(alias) — IRC equivalent is /ignore
+        if (!requireConnected()) return;
+        if (!parts[1]) { print('Usage: /block <nick>', 'err'); return; }
+        // IRC has no standard ignore, but we can use silence or just local
+        print(`Blocked ${parts[1]} (local ignore)`, 'sys');
+        break;
+      }
+
+      case '/unblock': {
+        if (!parts[1]) { print('Usage: /unblock <nick>', 'err'); return; }
+        print(`Unblocked ${parts[1]}`, 'sys');
+        break;
+      }
+
+      case '/raw': {
+        // Send raw IRC command — forwarded as-is
+        if (!requireConnected()) return;
+        sendRaw(parts.slice(1).join(' '));
+        break;
+      }
+
+      case '/window': {
+        // Switch active window
+        if (!parts[1]) {
+          // List windows
+          const wins = [...windows.keys()];
+          print(`Windows: ${wins.join(', ')} (active: ${activeWindow || 'none'})`, 'sys');
+        } else {
+          if (windows.has(parts[1])) {
+            activeWindow = parts[1];
+            if (typeof _onWindowChange === 'function') _onWindowChange();
+          } else {
+            print(`Window "${parts[1]}" not found`, 'err');
+          }
+        }
+        break;
+      }
+
+      case '/help': {
+        // Maps to: CmdProcessor /help
+        print('═══ Connection ═══', 'sys');
+        print('  /connect <server> [nick]  — Connect to IRC server', 'sys');
+        print('  /quit                     — Disconnect', 'sys');
+        print('═══ IRC Commands ═══', 'sys');
+        print('  /join <#channel> [key]    — Join channel', 'sys');
+        print('  /part [#channel]          — Leave channel', 'sys');
+        print('  /nick <newnick>           — Change nickname', 'sys');
+        print('  /msg <target> <text>      — Send message', 'sys');
+        print('  /query <nick>             — Open private chat', 'sys');
+        print('  /me <action>              — Send action', 'sys');
+        print('  /whois [nick]             — Whois lookup', 'sys');
+        print('  /mode <target> [+-mode]   — Set mode', 'sys');
+        print('  /kick <#chan> <nick>      — Kick user', 'sys');
+        print('  /topic [#chan] [text]     — View/set topic', 'sys');
+        print('  /list [pattern]           — List channels', 'sys');
+        print('  /names [#channel]         — List users', 'sys');
+        print('  /invite <nick> <#chan>    — Invite user', 'sys');
+        print('  /notice <target> <text>   — Send notice', 'sys');
+        print('  /away [message]           — Set away', 'sys');
+        print('═══ PIM Commands (original) ═══', 'sys');
+        print('  /add <nick>               — Open chat window', 'sys');
+        print('  /remove <nick>            — Close chat window', 'sys');
+        print('  /block <nick>             — Block user', 'sys');
+        print('  /unblock <nick>           — Unblock user', 'sys');
+        print('═══ Window ═══', 'sys');
+        print('  /window [name]            — Switch/list windows', 'sys');
+        print('  /raw <irc-command>        — Send raw IRC', 'sys');
+        print('  /clear                    — Clear output', 'sys');
+        print('', 'sys');
+        print('  Type text without / to send to active window', 'sys');
+        break;
+      }
+
+      case '/clear': {
+        if (typeof _clearWindow === 'function') _clearWindow(activeWindow);
+        break;
+      }
+
+      default:
+        // Unknown command — forward as raw IRC
+        // Maps to CmdProcessor: "Bad command, try /help"
+        if (state.connected) {
+          sendRaw(input.substring(1));
+        } else {
+          print(`Unknown command: ${cmd}. Type /help`, 'err');
+        }
+    }
+  }
+
+  function requireConnected() {
+    if (!state.connected) {
+      print('Not connected. Use /connect <server> [nick]', 'err');
+      return false;
+    }
+    return true;
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  PUBLIC API
+  // ═══════════════════════════════════════════════════════
+
+  return {
+    init(printFn, onWindowChange, clearWindow) {
+      _print = printFn;
+      _onWindowChange = onWindowChange;
+      _clearWindow = clearWindow;
+    },
+    handleCommand,
+    connect,
+    get state() { return state; },
+    get windows() { return windows; },
+    get activeWindow() { return activeWindow; },
+    set activeWindow(w) {
+      activeWindow = w;
+      if (typeof _onWindowChange === 'function') _onWindowChange();
+    },
+    getWindows() { return [...windows.keys()]; },
+    getWindowLines(name) { return windows.get(name)?.lines || []; },
+    getWindowInfo(name) { return windows.get(name); },
+    isConnected() { return state.connected; },
+    getNick() { return state.nick; },
+  };
+
+})();
+
+</script>
+<script>
+// ═══════ js/app.js ═══════
+/**
+ * app.js — Main application controller
+ * Tabs, Ensō UI, Wallet mining UI, Terminal, Storage management
+ */
+
+(function() {
+  'use strict';
+
+  // ═══════════════════════════════════════════════════════
+  //  TOAST NOTIFICATIONS
+  // ═══════════════════════════════════════════════════════
+
+  function toast(msg, isError = false) {
+    const container = document.getElementById('toast-container');
+    const el = document.createElement('div');
+    el.className = 'toast' + (isError ? ' error' : '');
+    el.textContent = msg;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  TAB NAVIGATION
+  // ═══════════════════════════════════════════════════════
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  ENSŌ GENERATOR UI
+  // ═══════════════════════════════════════════════════════
+
+  const ensoCanvas = document.getElementById('enso-canvas');
+  let currentSeed = null;
+
+  // Responsive canvas sizing
+  function resizeEnsoCanvas() {
+    const wrap = ensoCanvas.parentElement;
+    const size = Math.min(wrap.clientWidth - 20, wrap.clientHeight - 20, 800);
+    const s = Math.max(400, size);
+    ensoCanvas.width = s;
+    ensoCanvas.height = s;
+    if (currentSeed) EnsoGenerator.draw(ensoCanvas, currentSeed, getEnsoParams());
+  }
+
+  window.addEventListener('resize', resizeEnsoCanvas);
+  setTimeout(resizeEnsoCanvas, 100);
+
+  function getEnsoParams() {
+    return {
+      inkLoad:        parseInt(document.getElementById('ctrl-inkLoad').value),
+      direction:      document.getElementById('ctrl-direction').value,
+      paperHue:       document.getElementById('ctrl-paperHue').value,
+      brushSize:      parseInt(document.getElementById('ctrl-brushSize').value),
+      inkDensity:     parseInt(document.getElementById('ctrl-inkDensity').value),
+      xyStretch:      document.getElementById('ctrl-xyStretch').value,
+      paperTexture:   parseInt(document.getElementById('ctrl-paperTexture').value),
+      bristleDensity: parseInt(document.getElementById('ctrl-bristleDensity').value),
+      signatureStyle: document.getElementById('ctrl-signatureStyle').value,
+      brushstrokeSize:document.getElementById('ctrl-brushstrokeSize').value,
+      brushStart:     parseInt(document.getElementById('ctrl-brushStart').value)
+    };
+  }
+
+  function renderEnso() {
+    if (!currentSeed) {
+      currentSeed = EnsoGenerator.randomSeed();
+    }
+    document.getElementById('enso-seed-display').textContent = currentSeed;
+    EnsoGenerator.draw(ensoCanvas, currentSeed, getEnsoParams());
+  }
+
+  // Range value displays
+  const rangeDisplays = {
+    'ctrl-inkLoad':        'val-inkLoad',
+    'ctrl-brushSize':      'val-brushSize',
+    'ctrl-inkDensity':     'val-inkDensity',
+    'ctrl-paperTexture':   'val-paperTexture',
+    'ctrl-bristleDensity': 'val-bristleDensity',
+    'ctrl-brushStart':     'val-brushStart',
+  };
+  Object.entries(rangeDisplays).forEach(([ctrlId, valId]) => {
+    const ctrl = document.getElementById(ctrlId);
+    const val = document.getElementById(valId);
+    ctrl.addEventListener('input', () => {
+      val.textContent = ctrlId === 'ctrl-brushStart' ? ctrl.value + '°' : ctrl.value;
+      renderEnso();
+    });
+  });
+
+  // Selects also trigger re-render
+  ['ctrl-direction','ctrl-paperHue','ctrl-xyStretch','ctrl-signatureStyle','ctrl-brushstrokeSize'].forEach(id => {
+    document.getElementById(id).addEventListener('change', renderEnso);
+  });
+
+  // Random seed
+  document.getElementById('btn-random-seed').addEventListener('click', () => {
+    currentSeed = EnsoGenerator.randomSeed();
+    renderEnso();
+  });
+
+  // Download PNG
+  document.getElementById('btn-download-png').addEventListener('click', () => {
+    if (!currentSeed) return;
+    EnsoGenerator.downloadPNG(ensoCanvas, currentSeed);
+    toast('Downloaded enso-' + currentSeed + '.png');
+  });
+
+  // Regenerate
+  document.getElementById('btn-regenerate').addEventListener('click', () => {
+    renderEnso();
+  });
+
+  // Initial render
+  renderEnso();
+
+  // ═══════════════════════════════════════════════════════
+  //  WALLET HAIKU MINER UI
+  // ═══════════════════════════════════════════════════════
+
+  const minedCounterEl = document.getElementById('mined-counter');
+  const haikuDisplayEl = document.getElementById('haiku-display');
+  const mineBtn = document.getElementById('btn-mine');
+  const stopBtn = document.getElementById('btn-stop-mine');
+  let miningInProgress = false;
+  let haikuWallets = []; // Session display list
+  let miningStartTime = 0;
+
+  // Range for mine count
+  document.getElementById('ctrl-mineCount').addEventListener('input', (e) => {
+    document.getElementById('val-mineCount').textContent = e.target.value;
+  });
+
+  // Load saved wallets from encrypted storage on page load
+  async function initWalletStorage() {
+    if (WalletMiner.hasStoredWallets()) {
+      // Show password prompt to unlock
+      showPasswordModal('Enter your password to unlock saved wallets.', async (password) => {
+        const ok = await WalletMiner.loadFromStorage(password);
+        if (ok) {
+          haikuWallets = [...WalletMiner.walletList];
+          minedCounterEl.textContent = WalletMiner.totalMined;
+          renderWalletList();
+          toast('Wallets unlocked successfully');
+        } else {
+          toast('Wrong password or corrupted data', true);
+          // Don't block — user can still mine new wallets
+        }
+      }, true); // true = allow skip
+    }
+  }
+
+  function renderWalletList() {
+    const container = document.getElementById('saved-items');
+    if (haikuWallets.length === 0) {
+      container.innerHTML = '<em style="color:var(--fg);opacity:0.3;font-size:0.8rem;">No wallets saved yet</em>';
+      return;
+    }
+
+    container.innerHTML = '';
+    haikuWallets.forEach((w, i) => {
+      const item = document.createElement('div');
+      item.className = 'saved-item';
+      const preview = w.haiku.lines.join(' / ');
+      item.innerHTML = `
+        <span class="saved-preview" title="${w.words.join(' ')}">#${i+1} ${preview}</span>
+        <button class="btn btn-danger" data-delete="${i}" style="font-size:0.65rem;padding:0.2rem 0.5rem;">✕</button>
+      `;
+      container.appendChild(item);
+    });
+
+    // Delete handlers
+    container.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const idx = parseInt(btn.dataset.delete);
+        haikuWallets.splice(idx, 1);
+        WalletMiner.walletList = haikuWallets;
+        if (WalletMiner.sessionPassword) WalletMiner.saveToStorage();
+        renderWalletList();
+        renderHaikuCards();
+        toast('Wallet removed');
+      });
+    });
+  }
+
+  function renderHaikuCards() {
+    if (haikuWallets.length === 0) {
+      haikuDisplayEl.innerHTML = `
+        <div style="text-align:center;color:var(--fg);opacity:0.4;padding:4rem 1rem;">
+          <div style="font-size:3rem;margin-bottom:1rem;">🎋</div>
+          <div>Mine a BIP-39 Haiku Wallet to begin</div>
+          <div style="font-size:0.75rem;margin-top:0.5rem;">A valid 12-word mnemonic where the syllables form a 5-7-5 haiku</div>
+        </div>`;
+      return;
+    }
+
+    haikuDisplayEl.innerHTML = '';
+    haikuWallets.forEach((w, i) => {
+      const card = document.createElement('div');
+      card.className = 'haiku-card';
+
+      const sylLabels = w.haiku.syllableLines.map(line =>
+        line.join('+') + '=' + line.reduce((a,b) => a+b, 0)
+      );
+
+      card.innerHTML = `
+        <div class="wallet-type">${w.walletType} — BIP-39 Checksum Valid ✓</div>
+        <div class="haiku-lines">
+          <div class="haiku-line">${w.haiku.lines[0]} <span class="syllable-count">${sylLabels[0]}</span></div>
+          <div class="haiku-line">${w.haiku.lines[1]} <span class="syllable-count">${sylLabels[1]}</span></div>
+          <div class="haiku-line">${w.haiku.lines[2]} <span class="syllable-count">${sylLabels[2]}</span></div>
+        </div>
+        <div class="mnemonic-raw">${w.words.join(' ')}</div>
+        <div class="card-actions">
+          <button class="btn" data-copy="${i}">📋 Copy</button>
+          <button class="btn" data-save="${i}">💾 Save</button>
+          <button class="btn" data-verify="${i}">✓ Verify</button>
+          <button class="btn btn-danger" data-remove="${i}">✕</button>
+        </div>
+      `;
+      haikuDisplayEl.appendChild(card);
+    });
+
+    // Wire up card buttons
+    haikuDisplayEl.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.copy);
+        navigator.clipboard.writeText(haikuWallets[idx].words.join(' '))
+          .then(() => toast('Mnemonic copied to clipboard'))
+          .catch(() => toast('Copy failed', true));
+      });
+    });
+
+    haikuDisplayEl.querySelectorAll('[data-save]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const idx = parseInt(btn.dataset.save);
+        const wallet = haikuWallets[idx];
+        if (WalletMiner.walletList.find(w => w.id === wallet.id)) {
+          toast('Already saved');
+          return;
+        }
+        WalletMiner.walletList.push(wallet);
+        if (!WalletMiner.sessionPassword) {
+          showPasswordModal('Create a password to encrypt your saved wallets.', async (pw) => {
+            WalletMiner.sessionPassword = pw;
+            WalletMiner.saveToStorage();
+            renderWalletList();
+            toast('Wallet saved with encryption');
+          }, false, true);
+        } else {
+          WalletMiner.saveToStorage();
+          renderWalletList();
+          toast('Wallet saved');
+        }
+      });
+    });
+
+    haikuDisplayEl.querySelectorAll('[data-verify]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const idx = parseInt(btn.dataset.verify);
+        btn.textContent = '⏳';
+        const valid = await WalletMiner.validateMnemonic(haikuWallets[idx].words);
+        btn.textContent = valid ? '✓ Valid' : '✗ Invalid';
+        toast(valid ? 'Checksum verified ✓' : 'Invalid checksum!', !valid);
+        setTimeout(() => { btn.textContent = '✓ Verify'; }, 2000);
+      });
+    });
+
+    haikuDisplayEl.querySelectorAll('[data-remove]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.remove);
+        haikuWallets.splice(idx, 1);
+        // Also remove from saved if present
+        WalletMiner.walletList = WalletMiner.walletList.filter(
+          w => !haikuWallets.find(h => h.id === w.id) || haikuWallets.includes(w)
+        );
+        renderHaikuCards();
+        toast('Wallet removed from view');
+      });
+    });
+  }
+
+  // Mine button
+  mineBtn.addEventListener('click', async () => {
+    if (miningInProgress) return;
+    miningInProgress = true;
+    miningStartTime = Date.now();
+    mineBtn.style.display = 'none';
+    stopBtn.style.display = 'block';
+
+    const walletType = document.getElementById('ctrl-walletType').value;
+    const mineCount = parseInt(document.getElementById('ctrl-mineCount').value);
+    const grammarCheck = document.getElementById('ctrl-grammarCheck').value;
+
+    // Clear display for new batch
+    haikuWallets = [];
+
+    let statusEl = document.createElement('div');
+    statusEl.style.cssText = 'text-align:center;padding:2rem;color:var(--accent);';
+    statusEl.innerHTML = '<div style="font-size:2rem;">⛏️ Mining...</div><div style="font-size:0.8rem;margin-top:0.5rem;" id="mining-progress">0 attempts</div>';
+    haikuDisplayEl.innerHTML = '';
+    haikuDisplayEl.appendChild(statusEl);
+
+    try {
+      const result = await WalletMiner.mineHaiku(
+        walletType, mineCount, grammarCheck,
+        (wallet) => {
+          // On found
+          haikuWallets.push(wallet);
+          renderHaikuCards();
+          minedCounterEl.textContent = WalletMiner.totalMined;
+        },
+        (found, total, attempts, grandTotal) => {
+          // On progress
+          const prog = document.getElementById('mining-progress');
+          if (prog) {
+            const elapsed = ((Date.now() - miningStartTime) / 1000).toFixed(1);
+            const rate = Math.round(attempts / Math.max(0.1, (Date.now() - miningStartTime) / 1000));
+            prog.textContent = `${found}/${total} found — ${attempts.toLocaleString()} attempts (${rate}/s) — ${elapsed}s`;
+          }
+        }
+      );
+      toast(`Mined ${result.found} haiku wallet${result.found !== 1 ? 's' : ''} in ${result.attempts.toLocaleString()} attempts`);
+    } catch (e) {
+      toast('Mining error: ' + e.message, true);
+    }
+
+    miningInProgress = false;
+    mineBtn.style.display = 'block';
+    stopBtn.style.display = 'none';
+  });
+
+  stopBtn.addEventListener('click', () => {
+    WalletMiner.stopMining();
+  });
+
+  // Export TXT encrypted
+  document.getElementById('btn-export-txt').addEventListener('click', async () => {
+    if (WalletMiner.walletList.length === 0) {
+      toast('No saved wallets to export', true);
+      return;
+    }
+    showExportModal();
+  });
+
+  // Export TXT plain
+  document.getElementById('btn-export-plain').addEventListener('click', () => {
+    if (WalletMiner.walletList.length === 0) {
+      toast('No saved wallets to export', true);
+      return;
+    }
+    const txt = WalletMiner.exportPlain();
+    const blob = new Blob([txt], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'haiku-wallets-' + new Date().toISOString().slice(0,10) + '.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('Plain text export downloaded');
+  });
+
+  // Clear all
+  document.getElementById('btn-clear-all').addEventListener('click', () => {
+    if (confirm('Delete ALL saved wallets? This cannot be undone.')) {
+      WalletMiner.clearStorage();
+      haikuWallets = [];
+      renderWalletList();
+      renderHaikuCards();
+      toast('All wallets cleared');
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  EXPORT MODAL
+  // ═══════════════════════════════════════════════════════
+
+  const exportModal = document.getElementById('modal-export');
+
+  function showExportModal() {
+    exportModal.classList.add('active');
+    document.getElementById('export-password').value = '';
+    document.getElementById('export-password2').value = '';
+  }
+
+  document.getElementById('btn-export-cancel').addEventListener('click', () => {
+    exportModal.classList.remove('active');
+  });
+
+  document.getElementById('btn-export-confirm').addEventListener('click', async () => {
+    const pw1 = document.getElementById('export-password').value;
+    const pw2 = document.getElementById('export-password2').value;
+
+    if (pw1.length < 4) { toast('Password must be at least 4 characters', true); return; }
+    if (pw1 !== pw2) { toast('Passwords do not match', true); return; }
+
+    try {
+      const encrypted = await WalletMiner.exportEncrypted(pw1);
+      const blob = new Blob([encrypted], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'haiku-wallets-' + new Date().toISOString().slice(0,10) + '.txt.enc';
+      a.click();
+      URL.revokeObjectURL(url);
+      exportModal.classList.remove('active');
+      toast('Encrypted export downloaded');
+    } catch (e) {
+      toast('Export failed: ' + e.message, true);
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  PASSWORD MODAL
+  // ═══════════════════════════════════════════════════════
+
+  const pwModal = document.getElementById('modal-password');
+  let pwCallback = null;
+
+  function showPasswordModal(msg, callback, allowSkip = false, isCreate = false) {
+    pwCallback = callback;
+    document.getElementById('modal-password-msg').textContent = msg;
+    document.getElementById('storage-password').value = '';
+    pwModal.classList.add('active');
+    pwModal.dataset.allowSkip = allowSkip;
+    pwModal.dataset.isCreate = isCreate;
+    document.getElementById('btn-pw-cancel').textContent = allowSkip ? 'Skip' : 'Cancel';
+  }
+
+  document.getElementById('btn-pw-cancel').addEventListener('click', () => {
+    pwModal.classList.remove('active');
+    pwCallback = null;
+  });
+
+  document.getElementById('btn-pw-confirm').addEventListener('click', () => {
+    const pw = document.getElementById('storage-password').value;
+    if (pwModal.dataset.isCreate === 'true' && pw.length < 4) {
+      toast('Password must be at least 4 characters', true);
+      return;
+    }
+    if (pwCallback) pwCallback(pw);
+    pwModal.classList.remove('active');
+  });
+
+  // Enter key in password field
+  document.getElementById('storage-password').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('btn-pw-confirm').click();
+  });
+
+  // ═══════════════════════════════════════════════════════
+
+  // ═══════════════════════════════════════════════════════
+  //  TERMINAL — IRC Client (converted from PIM Java source)
+  //  Original: CLI was commented out, GUI (Swing) was active
+  //  NOW: CLI is active, GUI is commented out
+  //  Network.java → WebSocket IRC transport
+  //  CmdProcessor.java → IRCClient.handleCommand()
+  // ═══════════════════════════════════════════════════════
+
+  const termOutput = document.getElementById('term-output');
+  const termInput = document.getElementById('term-input');
+  const termPrompt = document.getElementById('term-prompt');
+  const ircWindowList = document.getElementById('irc-window-list');
+  const ircStatus = document.getElementById('irc-status');
+  const ircNickDisplay = document.getElementById('irc-nick-display');
+
+  // Per-window line storage for scrolling back
+  const windowLines = new Map(); // windowName → [{text, cls}]
+
+  function termPrint(text, cls = '', windowName = null) {
+    const target = windowName || IRCClient.activeWindow;
+
+    // Store line
+    if (target) {
+      if (!windowLines.has(target)) windowLines.set(target, []);
+      windowLines.get(target).push({ text, cls });
+      const win = IRCClient.windows.get(target);
+      if (win) {
+        win.lines.push({ text, cls });
+        // Track unread if not active
+        if (target !== IRCClient.activeWindow) {
+          win.unread = (win.unread || 0) + 1;
+          updateSidebarUnread(target);
+        }
+      }
+    }
+
+    // Display only if matches active window
+    if (target === IRCClient.activeWindow) {
+      appendToTermOutput(text, cls);
+    }
+  }
+
+  function appendToTermOutput(text, cls) {
+    const span = document.createElement('span');
+    if (cls) span.className = cls;
+    span.textContent = text + '\n';
+    termOutput.appendChild(span);
+    termOutput.scrollTop = termOutput.scrollHeight;
+  }
+
+  function clearTermWindow(windowName) {
+    if (windowName === IRCClient.activeWindow) {
+      termOutput.innerHTML = '';
+    }
+    if (windowLines.has(windowName)) windowLines.set(windowName, []);
+    const win = IRCClient.windows.get(windowName);
+    if (win) win.lines = [];
+  }
+
+  // Switch active window — show buffered lines
+  function switchWindow(name) {
+    IRCClient.activeWindow = name;
+    termOutput.innerHTML = '';
+
+    const lines = windowLines.get(name) || [];
+    for (const { text, cls } of lines) {
+      appendToTermOutput(text, cls);
+    }
+    termOutput.scrollTop = termOutput.scrollHeight;
+
+    // Update prompt
+    if (name) {
+      termPrompt.textContent = `[${name}] ❯`;
+    } else {
+      termPrompt.textContent = '❯';
+    }
+  }
+
+  // ─── IRC Sidebar Management ───
+
+  function updateIRCSidebar() {
+    const wins = IRCClient.getWindows();
+    if (wins.length === 0) {
+      ircWindowList.innerHTML = '<div style="padding:0.5rem;font-size:0.75rem;color:var(--fg);opacity:0.3;text-align:center;">No windows</div>';
+    } else {
+      ircWindowList.innerHTML = '';
+      for (const name of wins) {
+        const info = IRCClient.getWindowInfo(name);
+        const isActive = name === IRCClient.activeWindow;
+        const icon = info?.type === 'channel' ? '◈' : '◆';
+        const unread = info?.unread || 0;
+
+        const item = document.createElement('div');
+        item.className = 'irc-win-item' + (isActive ? ' active' : '');
+        item.innerHTML = `
+          <span style="opacity:0.5;font-size:0.65rem;">${icon}</span>
+          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;">${name}</span>
+          <span class="unread-badge ${unread > 0 ? 'has-unread' : ''}">${unread}</span>
+        `;
+        item.addEventListener('click', () => {
+          switchWindow(name);
+          updateIRCSidebar();
+        });
+        ircWindowList.appendChild(item);
+      }
+    }
+
+    // Status
+    ircStatus.textContent = IRCClient.isConnected() ? '🟢 Connected' : '🔴 Disconnected';
+    ircStatus.style.color = IRCClient.isConnected() ? 'var(--accent)' : 'var(--fg)';
+    ircNickDisplay.textContent = IRCClient.getNick() ? `Nick: ${IRCClient.getNick()}` : '';
+  }
+
+  function updateSidebarUnread(windowName) {
+    // Just rebuild sidebar to update badges
+    updateIRCSidebar();
+  }
+
+  // Initialize IRC client
+  IRCClient.init(termPrint, updateIRCSidebar, clearTermWindow);
+
+  // ─── Terminal Input Handler ───
+
+  termInput.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const cmd = termInput.value.trim();
+    termInput.value = '';
+    if (!cmd) return;
+
+    // Route everything through IRCClient (handles both IRC and PIM commands)
+    IRCClient.handleCommand(cmd);
+  });
+
+  // ─── PIM-specific terminal commands (integration with existing features) ───
+
+  // Override /mine and /enso to also work from terminal
+  const origHandleCommand = IRCClient.handleCommand.bind(IRCClient);
+  // We don't override — instead, the IRC handleCommand already passes
+  // unknown commands through. We hook the /mine and /enso commands
+  // via the default case in irc.js which sends as raw IRC or shows error.
+  // For local app commands, we intercept here:
+
+  termInput.addEventListener('keydown', function localHandler(e) {
+    if (e.key !== 'Enter') return;
+    const cmd = e.target.value.trim();
+    const parts = cmd.split(/\s+/);
+
+    // Local app commands (don't need IRC)
+    if (cmd === '/enso' || cmd.startsWith('/enso ')) {
+      e.stopImmediatePropagation();
+      const seed = parts[1] === 'random' ? EnsoGenerator.randomSeed() : (parts[1] || EnsoGenerator.randomSeed());
+      currentSeed = seed;
+      renderEnso();
+      termPrint(`Ensō generated with seed: ${currentSeed}`, 'sys');
+      document.querySelector('[data-tab="enso"]').click();
+      termInput.value = '';
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  FORGING ANIMATION — Animate ensō + mine haiku
+  // ═══════════════════════════════════════════════════════
+
+  const forgeModal = document.getElementById('modal-forging');
+  const forgeCanvas = document.getElementById('forge-canvas');
+  const forgeHaiku = document.getElementById('forge-haiku-text');
+  const forgeSeed = document.getElementById('forge-seed-text');
+  const forgeStatus = document.getElementById('forge-status');
+  const forgeClose = document.getElementById('btn-forge-close');
+  let forgeAnimId = null;
+
+  // Collected gallery — stored in localStorage
+  let gallery = JSON.parse(localStorage.getItem('enso_gallery') || '[]');
+  const GALLERY_KEY = 'enso_gallery';
+
+  function saveGallery() {
+    localStorage.setItem(GALLERY_KEY, JSON.stringify(gallery));
+  }
+
+  function renderGallery() {
+    const container = document.getElementById('gallery-items');
+    if (gallery.length === 0) {
+      container.innerHTML = '<em style="color:var(--fg);opacity:0.3;font-size:0.8rem;">Forge a collectible to begin</em>';
+      return;
+    }
+    container.innerHTML = '';
+    gallery.slice().reverse().forEach((item, ri) => {
+      const i = gallery.length - 1 - ri;
+      const el = document.createElement('div');
+      el.className = 'saved-item';
+      el.style.cursor = 'pointer';
+      el.innerHTML = `
+        <span class="saved-preview" title="Click to load">🎨 ${item.seed.slice(0,8)}… ${item.haiku.lines[0]}</span>
+        <button class="btn btn-danger" data-gdel="${i}" style="font-size:0.65rem;padding:0.2rem 0.5rem;">✕</button>
+      `;
+      el.querySelector('.saved-preview').addEventListener('click', () => {
+        currentSeed = item.seed;
+        // Set all params from saved
+        const p = item.params;
+        document.getElementById('ctrl-inkLoad').value = p.inkLoad;
+        document.getElementById('val-inkLoad').textContent = p.inkLoad;
+        document.getElementById('ctrl-direction').value = p.direction;
+        document.getElementById('ctrl-paperHue').value = p.paperHue;
+        document.getElementById('ctrl-brushSize').value = p.brushSize;
+        document.getElementById('val-brushSize').textContent = p.brushSize;
+        document.getElementById('ctrl-inkDensity').value = p.inkDensity;
+        document.getElementById('val-inkDensity').textContent = p.inkDensity;
+        document.getElementById('ctrl-xyStretch').value = p.xyStretch;
+        document.getElementById('ctrl-paperTexture').value = p.paperTexture;
+        document.getElementById('val-paperTexture').textContent = p.paperTexture;
+        document.getElementById('ctrl-bristleDensity').value = p.bristleDensity;
+        document.getElementById('val-bristleDensity').textContent = p.bristleDensity;
+        document.getElementById('ctrl-signatureStyle').value = p.signatureStyle;
+        document.getElementById('ctrl-brushstrokeSize').value = p.brushstrokeSize;
+        document.getElementById('ctrl-brushStart').value = p.brushStart;
+        document.getElementById('val-brushStart').textContent = p.brushStart + '°';
+        renderEnso();
+        document.querySelector('[data-tab="enso"]').click();
+        toast('Loaded ensō ' + item.seed.slice(0,8));
+      });
+      container.appendChild(el);
+    });
+    container.querySelectorAll('[data-gdel]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const idx = parseInt(btn.dataset.gdel);
+        gallery.splice(idx, 1);
+        saveGallery();
+        renderGallery();
+        toast('Removed from gallery');
+      });
+    });
+  }
+
+  // Animate ensō drawing + mine haiku simultaneously
+  function startForging() {
+    const seed = EnsoGenerator.randomSeed();
+    const params = getEnsoParams();
+    const ctx = forgeCanvas.getContext('2d');
+    const size = 400;
+    forgeCanvas.width = size;
+    forgeCanvas.height = size;
+
+    forgeModal.classList.add('active');
+    forgeClose.style.display = 'none';
+    forgeHaiku.innerHTML = '<span style="color:var(--accent);">Forging…</span>';
+    forgeSeed.textContent = '';
+    forgeStatus.textContent = 'Drawing ensō…';
+
+    // Animated drawing state
+    const numericSeed = EnsoGenerator._hashSeed ? EnsoGenerator._hashSeed(seed) : (function(s){let h=0;for(let i=0;i<s.length;i++){h=Math.imul(31,h)+s.charCodeAt(i)|0;}return h>>>0;})(seed);
+    let rng_state = numericSeed;
+    function miniRng() {
+      rng_state |= 0;
+      rng_state = rng_state + 0x6D2B79F5 | 0;
+      let t = Math.imul(rng_state ^ rng_state >>> 15, 1 | rng_state);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+
+    // Pre-compute all points for the ensō
+    const totalFrames = 120;
+    const PAPER_COLORS = {
+      cyan:  { base: [200,230,230] },
+      warm:  { base: [240,230,210] },
+      white: { base: [245,242,238] },
+      dark:  { base: [30,30,35] },
+      sage:  { base: [190,210,180] }
+    };
+    const pc = PAPER_COLORS[params.paperHue] || PAPER_COLORS.cyan;
+    const [pr, pg, pb] = pc.base;
+
+    // Draw paper first
+    ctx.fillStyle = `rgb(${pr},${pg},${pb})`;
+    ctx.fillRect(0, 0, size, size);
+
+    // Use main canvas to pre-render the full ensō to an offscreen canvas
+    const offscreen = document.createElement('canvas');
+    offscreen.width = size;
+    offscreen.height = size;
+    EnsoGenerator.draw(offscreen, seed, {...params, brushstrokeSize: params.brushstrokeSize || 'medium'});
+
+    // Get the image data for progressive reveal
+    const fullData = ctx.getImageData(0, 0, size, size);
+
+    // Animate: circular wipe reveal
+    let frame = 0;
+    const cx = size / 2, cy = size / 2;
+    const maxR = Math.sqrt(cx*cx + cy*cy);
+
+    // Start mining haiku in parallel
+    let minedWallet = null;
+    let minePromise = WalletMiner.mineHaiku(
+      document.getElementById('ctrl-walletType').value,
+      1,
+      document.getElementById('ctrl-grammarCheck').value,
+      (w) => { minedWallet = w; },
+      null
+    );
+
+    function animate() {
+      if (frame >= totalFrames) {
+        // Show final image
+        ctx.drawImage(offscreen, 0, 0);
+
+        forgeStatus.textContent = 'Waiting for haiku…';
+
+        // Wait for mining to finish
+        minePromise.then((result) => {
+          if (minedWallet) {
+            const lines = minedWallet.haiku.lines;
+            forgeHaiku.innerHTML = 
+              `<div style="color:var(--fg-bright);">${lines[0]}</div>` +
+              `<div style="color:var(--fg-bright);font-size:1.2em;">${lines[1]}</div>` +
+              `<div style="color:var(--fg-bright);">${lines[2]}</div>`;
+            forgeSeed.textContent = `Ensō ID: ${seed}`;
+            forgeStatus.textContent = 'Forged ✓';
+
+            // Save to gallery
+            gallery.push({
+              seed,
+              params: {...params},
+              haiku: minedWallet.haiku,
+              words: minedWallet.words,
+              walletType: minedWallet.walletType,
+              timestamp: new Date().toISOString()
+            });
+            saveGallery();
+            renderGallery();
+            haikuWallets.push(minedWallet);
+            renderHaikuCards();
+            minedCounterEl.textContent = WalletMiner.totalMined;
+          } else {
+            forgeHaiku.innerHTML = '<span style="color:var(--warn);">No valid haiku found — try again</span>';
+            forgeSeed.textContent = `Ensō ID: ${seed}`;
+            // Still save the ensō
+            gallery.push({
+              seed,
+              params: {...params},
+              haiku: null,
+              words: null,
+              walletType: null,
+              timestamp: new Date().toISOString()
+            });
+            saveGallery();
+            renderGallery();
+          }
+          forgeClose.style.display = 'inline-block';
+        });
+        return;
+      }
+
+      const progress = frame / totalFrames;
+      const revealR = progress * maxR;
+
+      // Draw: clear, then draw paper, then clip circle of full image
+      ctx.fillStyle = `rgb(${pr},${pg},${pb})`;
+      ctx.fillRect(0, 0, size, size);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, revealR, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(offscreen, 0, 0);
+      ctx.restore();
+
+      // Draw ink splash particles at edge
+      const particleCount = 3;
+      for (let p = 0; p < particleCount; p++) {
+        const angle = miniRng() * Math.PI * 2;
+        const dist = revealR + miniRng() * 15 - 7;
+        const px = cx + Math.cos(angle) * dist;
+        const py = cy + Math.sin(angle) * dist;
+        const ps = miniRng() * 2 + 0.5;
+        ctx.beginPath();
+        ctx.arc(px, py, ps, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(25,20,15,${miniRng() * 0.3})`;
+        ctx.fill();
+      }
+
+      // Haiku text reveal
+      if (minedWallet && progress > 0.6) {
+        const lines = minedWallet.haiku.lines;
+        const alpha = Math.min(1, (progress - 0.6) / 0.4);
+        ctx.fillStyle = `rgba(25,20,15,${alpha * 0.7})`;
+        ctx.font = '14px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(lines[0], cx, cy - 30);
+        ctx.fillText(lines[1], cx, cy - 10);
+        ctx.fillText(lines[2], cx, cy + 10);
+      }
+
+      forgeStatus.textContent = `Forging… ${Math.round(progress * 100)}%`;
+      frame++;
+      forgeAnimId = requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+
+  // Forge button
+  document.getElementById('btn-forging-animate').addEventListener('click', () => {
+    startForging();
+  });
+
+  // Forge close button
+  forgeClose.addEventListener('click', () => {
+    forgeModal.classList.remove('active');
+    if (forgeAnimId) cancelAnimationFrame(forgeAnimId);
+  });
+
+  // Forge modal overlay click to close (only after complete)
+  forgeModal.addEventListener('click', (e) => {
+    if (e.target === forgeModal && forgeClose.style.display !== 'none') {
+      forgeModal.classList.remove('active');
+    }
+  });
+
+  // Apply manual seed
+  document.getElementById('btn-apply-seed').addEventListener('click', () => {
+    const val = document.getElementById('ctrl-manual-seed').value.trim();
+    if (val) {
+      currentSeed = val;
+      renderEnso();
+      toast('Seed applied: ' + val);
+    }
+  });
+
+  // Also allow Enter in the seed input
+  document.getElementById('ctrl-manual-seed').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('btn-apply-seed').click();
+  });
+
+  // Click seed to copy
+  document.getElementById('enso-seed-display').addEventListener('click', () => {
+    const seed = document.getElementById('enso-seed-display').textContent;
+    if (seed && seed !== '—') {
+      navigator.clipboard.writeText(seed).then(() => toast('Seed copied: ' + seed));
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════
+  //  INIT
+  // ═══════════════════════════════════════════════════════
+
+  initWalletStorage();
+  updateIRCSidebar();
+  renderGallery();
+
+  // Close modals on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.remove('active');
+    });
+  });
+
+})();
+
+</script>
+</body>
+</html>

@@ -48,6 +48,20 @@
       "description": "BIP-39 5-7-5 mining, Ensō ID, piped inbox",
       "url": "./index.html#haiku",
       "icons": [{ "src": "./img/haiku-icon.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "Cylinder Sync",
+      "short_name": "CYLINDERS",
+      "description": "UCSB Cylinder Audio Archive MARC reconciliation workspace",
+      "url": "./index.html#cylinders",
+      "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "God's Eye View",
+      "short_name": "GODSEYE",
+      "description": "Live globe console — satellites, aircraft, quakes (public feeds)",
+      "url": "./godseye.html",
+      "icons": [{ "src": "./img/godseye-icon.png", "sizes": "512x512" }]
     }
   ]
 }
