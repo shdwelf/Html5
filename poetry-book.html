@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a1422" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="description" content="Blue Squirrel BPS-7 Poetry Book Driver — type-set and print a chapbook of haikus from BIP-39 word phrases." />
+  <title>Blue Squirrel · BPS-7 Poetry Book Driver</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="stylesheet" href="./css/poetry-book.css" />
+  <script src="./webxdc.js"></script>
+</head>
+<body>
+  <main class="driver">
+    <!-- Top driver bar (strips on print) -->
+    <header class="driver-bar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 22 Q6 14 12 11 Q19 8 22 13 Q24 18 19 22 Q14 24 8 22 Z" fill="#5ce1ff" opacity=".22"/>
+            <path d="M8 22 Q6 14 12 11 Q19 8 22 13 Q24 18 19 22 Q14 24 8 22 Z" stroke="#5ce1ff" stroke-width="1.4" fill="none"/>
+            <path d="M9 19 Q4 13 8 7 Q14 2 19 6" stroke="#5ce1ff" stroke-width="1.4" fill="none"/>
+            <circle cx="17" cy="15" r="1" fill="#f4c87a"/>
+            <circle cx="20" cy="15" r="1" fill="#f4c87a"/>
+            <path d="M16 18 Q18 19 20 18" stroke="#f4c87a" stroke-width="1.2" fill="none"/>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <strong>Blue Squirrel</strong>
+          <small>BPS-7 · Poetry Book Driver</small>
+        </span>
+      </div>
+
+      <div class="driver-job">
+        <span class="dot" aria-hidden="true"></span>
+        <span>JOB</span>
+        <b id="jobTitle">Dawn Coffee Castle · first edition</b>
+        <span>·</span>
+        <b id="jobPages">—</b>
+        <span>·</span>
+        <b id="jobPaper">6 × 9 in</b>
+        <span>·</span>
+        <b id="jobInk">Brown</b>
+      </div>
+
+      <div class="driver-actions">
+        <a class="btn ghost" href="./index.html#grid" target="_top" rel="noopener">PARISH GRID</a>
+        <button class="btn" id="btnReload" type="button" title="Re-typeset with current settings">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8a5 5 0 0 1 9-3M13 8a5 5 0 0 1-9 3M12 5V2h-3M4 11v3h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          RE-TYPESET
+        </button>
+        <button class="btn primary" id="btnPrint" type="button">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M4 6V2h8v4M4 12H2V7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v5h-2M4 10h8v4H4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          PRINT BOOK
+        </button>
+      </div>
+    </header>
+
+    <div class="driver-body">
+      <!-- Sidebar: paper / ink / type / source -->
+      <aside class="driver-side" aria-label="Driver settings">
+        <section class="panel">
+          <h2><span class="num">01</span> PAPER <span class="rule"></span></h2>
+          <div class="seg" id="paperSeg" role="radiogroup" aria-label="Paper size">
+            <button type="button" class="on" data-val="six-nine">6 × 9</button>
+            <button type="button" data-val="a5">A5</button>
+            <button type="button" data-val="pocket">Pocket</button>
+          </div>
+          <p class="hint" id="paperHint">6 × 9 in · US trade · single-sided</p>
+        </section>
+
+        <section class="panel">
+          <h2><span class="num">02</span> INK <span class="rule"></span></h2>
+          <div class="seg" id="inkSeg" role="radiogroup" aria-label="Ink colour">
+            <button type="button" class="on" data-val="brown">Brown</button>
+            <button type="button" data-val="black">Black</button>
+            <button type="button" data-val="blue">Indigo</button>
+          </div>
+          <p class="hint">Brown is the printer's house ink. Indigo is for night runs.</p>
+        </section>
+
+        <section class="panel">
+          <h2><span class="num">03</span> TYPE <span class="rule"></span></h2>
+          <div class="range-row">
+            <label>POEM SIZE <span class="v" id="typeVal">22px</span></label>
+            <input type="range" id="typeSize" min="14" max="32" step="1" value="22" />
+          </div>
+          <p class="hint">Sets the verse body. Headings auto-scale.</p>
+        </section>
+
+        <section class="panel">
+          <h2><span class="num">04</span> LAYOUT <span class="rule"></span></h2>
+          <div class="seg" id="densitySeg" role="radiogroup" aria-label="Density">
+            <button type="button" class="on" data-val="0">One / page</button>
+            <button type="button" data-val="1">Spread</button>
+          </div>
+          <div class="toggle on" id="togglePhrase" role="button" tabindex="0" aria-pressed="true">
+            <span>Show recovery-phrase footer</span>
+            <span class="switch"><i></i></span>
+          </div>
+          <div class="toggle on" id="toggleRunning" role="button" tabindex="0" aria-pressed="true">
+            <span>Show running headers</span>
+            <span class="switch"><i></i></span>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2><span class="num">05</span> SOURCE <span class="rule"></span></h2>
+          <div class="seg" id="sourceSeg" role="radiogroup" aria-label="Source">
+            <button type="button" class="on" data-val="all">All</button>
+            <button type="button" data-val="user">First edition</button>
+            <button type="button" data-val="catalog">Catalog</button>
+          </div>
+          <p class="hint">Click a row in the list to scroll the book to that poem.</p>
+          <input type="search" id="sourceSearch" placeholder="filter phrases…" style="
+            width: 100%; margin-top: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--line);
+            color: var(--text);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.04em;
+            outline: 0;
+          " />
+          <div class="source-list" id="sourceList" aria-label="Source phrases"></div>
+        </section>
+      </aside>
+
+      <!-- Stage: the book itself -->
+      <section class="stage" aria-label="Book preview">
+        <div class="stage-head">
+          <span>PREVIEW</span>
+          <span class="spine" aria-hidden="true"></span>
+          <span>SCROLL TO TURN · PRINT TO BIND</span>
+        </div>
+        <div id="stage" role="document"></div>
+      </section>
+    </div>
+
+    <footer class="driver-foot">
+      <span>BLUE SQUIRREL · BPS-7</span>
+      <span class="sep"></span>
+      <span>HTML5 · NO NETWORK</span>
+      <span class="sep"></span>
+      <a href="./art-studio.html" target="_top">ART STUDIO</a>
+      <span class="sep"></span>
+      <a href="./validator.html" target="_top">VALIDATOR</a>
+      <span class="sep"></span>
+      <a href="./greeran.html" target="_top">DOSSIER · SEC. 01B</a>
+      <span class="sep"></span>
+      <span>PHRASES · BIP-39 ENGLISH</span>
+    </footer>
+  </main>
+
+  <script type="module" src="./js/poetry-book.js"></script>
+</body>
+</html>

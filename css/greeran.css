@@ -680,6 +680,152 @@ footer.colophon {
   gap: 8px;
 }
 
+/* ---- self-published verse (SEC. 01B) ---- */
+.verse-group-head {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  margin: 30px 0 4px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+.verse-group-intro {
+  margin: 0 0 18px;
+  color: var(--ink-soft);
+  font-size: 14.5px;
+  max-width: 64ch;
+}
+.verse-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+.verse-card {
+  position: relative;
+  border: 1px solid var(--rule);
+  background: var(--paper-card);
+  padding: 16px 18px 18px;
+  display: grid;
+  gap: 12px;
+}
+.verse-card-flag {
+  border-color: var(--stamp);
+  background:
+    linear-gradient(180deg, rgba(138, 31, 31, 0.045), transparent 60%),
+    var(--paper-card);
+}
+.verse-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px dotted var(--rule);
+  padding-bottom: 8px;
+}
+.verse-id {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .2em;
+  color: var(--paper);
+  background: var(--ink);
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+.verse-card-flag .verse-id { background: var(--stamp); }
+.verse-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border: 1px solid var(--rule);
+  padding: 2px 8px;
+  background: var(--paper);
+}
+.verse-flag {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  margin-left: auto;
+  white-space: nowrap;
+}
+.verse-raw {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  letter-spacing: .01em;
+  color: var(--ink);
+  background: var(--paper-deep);
+  border-left: 3px solid var(--ink-soft);
+  padding: 10px 12px;
+  word-spacing: 0.04em;
+  border-radius: 0 2px 2px 0;
+}
+.verse-card-flag .verse-raw {
+  border-left-color: var(--stamp);
+}
+.verse-render {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+  padding: 0 4px;
+}
+.verse-render > div + div { margin-top: 2px; }
+.verse-ledger {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px 12px;
+  margin: 0;
+  padding: 8px 0 0;
+  border-top: 1px solid var(--rule-soft);
+  font-family: var(--sans);
+  font-size: 12.5px;
+}
+.verse-ledger > div {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 8px;
+  align-items: baseline;
+  padding: 2px 0;
+}
+.verse-ledger dt {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0;
+}
+.verse-ledger dd {
+  margin: 0;
+  color: var(--ink-soft);
+}
+.verse-analysis {
+  font-family: var(--serif);
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule-soft);
+  padding: 10px 12px;
+  border-radius: 2px;
+}
+.verse-analysis b {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  display: block;
+  margin-bottom: 4px;
+}
+
 /* ---- responsive ---- */
 @media (max-width: 760px) {
   .subject-grid { grid-template-columns: 1fr; }
@@ -688,6 +834,7 @@ footer.colophon {
   .stamp { position: static; transform: rotate(-3deg); display: inline-block; margin-top: 14px; }
   .field-row { grid-template-columns: 120px 1fr; }
   .topbar nav { display: none; }
+  .verse-grid { grid-template-columns: 1fr; }
 }
 
 /* ---- print ---- */
@@ -695,7 +842,7 @@ footer.colophon {
   body { background: #fff; font-size: 12pt; }
   #progress, .topbar, .tl-controls, .actions { display: none !important; }
   .shell { max-width: 100%; padding: 0; }
-  .masthead, .tl-card, .law-card, .sources ol, .subject-grid, .chip-card, .notice, .notes {
+  .masthead, .tl-card, .law-card, .sources ol, .subject-grid, .chip-card, .notice, .notes, .verse-card {
     break-inside: avoid;
     border-color: #999;
   }
