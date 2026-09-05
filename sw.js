@@ -1,11 +1,12 @@
 /* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v12";
+const CACHE = "sitek-html5-v13";
 const PRECACHE = [
   "./",
   "./index.html",
   "./keyspace.html",
   "./validator.html",
   "./art-studio.html",
+  "./haiku.html",
   "./louisiana.html",
   "./terrarium.html",
   "./manifest.webmanifest",
@@ -17,6 +18,7 @@ const PRECACHE = [
   "./css/viewer.css",
   "./css/validator.css",
   "./css/studio.css",
+  "./css/haiku.css",
   "./css/wm.css",
   "./js/app.js",
   "./js/wm.js",
@@ -42,6 +44,9 @@ const PRECACHE = [
   "./js/studio-data.js",
   "./js/studio-fs.js",
   "./js/studio-wm.js",
+  "./js/haiku-workbench.js",
+  "./js/enso-id.js",
+  "./js/syllables.js",
   "./js/haiku-catalog.js",
   "./js/bip39.js",
   "./js/bip39-en.js",
@@ -54,6 +59,7 @@ const PRECACHE = [
   "./img/app-192.png",
   "./img/app-512.png",
   "./img/apple-touch.png",
+  "./img/haiku-icon.png",
 ];
 
 async function precache() {

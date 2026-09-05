@@ -41,6 +41,13 @@
       "description": "Enso Forge, key viewer, and local validator",
       "url": "./index.html#studio",
       "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Haiku Workbench",
+      "short_name": "HAIKU",
+      "description": "BIP-39 5-7-5 mining, Ensō ID, piped inbox",
+      "url": "./index.html#haiku",
+      "icons": [{ "src": "./img/haiku-icon.png", "sizes": "512x512" }]
     }
   ]
 }
