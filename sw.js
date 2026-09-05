@@ -1,11 +1,12 @@
 /* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v12";
+const CACHE = "sitek-html5-v13";
 const PRECACHE = [
   "./",
   "./index.html",
   "./keyspace.html",
   "./validator.html",
   "./art-studio.html",
+  "./poetry-book.html",
   "./louisiana.html",
   "./terrarium.html",
   "./manifest.webmanifest",
@@ -17,6 +18,7 @@ const PRECACHE = [
   "./css/viewer.css",
   "./css/validator.css",
   "./css/studio.css",
+  "./css/poetry-book.css",
   "./css/wm.css",
   "./js/app.js",
   "./js/wm.js",
@@ -38,6 +40,7 @@ const PRECACHE = [
   "./js/ca-plot.js",
   "./js/viewer.js",
   "./js/validator.js",
+  "./js/poetry-book.js",
   "./js/studio.js",
   "./js/studio-data.js",
   "./js/studio-fs.js",
