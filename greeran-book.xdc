@@ -2092,19 +2092,30 @@ body[data-paper="postcard-stock"] .page {
           leaving Daisy’s maiden name to the California birth-index / death-certificate records named in the queue
           below.<a class="cite" href="#src-68">68</a>
         </p>
+        <p>
+          <b>Status after Session 13 (7 September 2026).</b> The 1929–1930 directory supplies the
+          missing spouse field: <b>“Alfred (Cordelia) h 12 George”</b>, at the identical address as
+          the 1920–1921 policeman. It separately lists Alfred (Agnes) at 24 Acorn, making address-level
+          disambiguation essential.<a class="cite" href="#src-69">69</a> Obituary-derived memorials identify
+          the 12 George couple as <b>Alfred Houle × Cordelia Chicoine</b>, married in 1892; after Cordelia's
+          1932 death, Alfred married <b>Georgianna Doyon on 26 June 1933</b>.<a class="cite" href="#src-70">70</a><a class="cite" href="#src-71">71</a>
+          Their son Marcel's obituary independently names Alfred and Cordelia and records Marcel's 1944
+          marriage to Lois Jackson.<a class="cite" href="#src-72">72</a> This <b>contradicts Eugénie Tremblay
+          for the 12 George household</b>, but it does not prove that this household belongs in the Greeran line;
+          the bridge to Jeanette Morin remains absent.
+        </p>
         <div class="warning-box">
-          <h3>Session 12 queue — each item is one lookup with a decidable answer</h3>
+          <h3>Revised queue — each item is one lookup with a decidable answer</h3>
           <ol>
-            <li><b>Maine death index, 1960–1996</b> (free on the Maine State Archives site): François Morin, d. March 1963, Biddeford. The certificate names his parents and birthplace, and decides whether the community tree or the workbench survives.<a class="cite" href="#src-66">66</a><a class="cite" href="#src-67">67</a></li>
-            <li><b>Maine marriage index, 1892–1996</b>: Alfred Houle × Eugénie, Biddeford or Saco. Tests the Tremblay surname directly.<a class="cite" href="#src-66">66</a></li>
-            <li><b>Biddeford and Saco Directory 1929–1930</b> (free): a widow entry of the form “Houle Eugene, widow of Alfred” would confirm the wife's given name and date his death between 1921 and 1930.<a class="cite" href="#src-64">64</a></li>
-            <li><b>Biddeford and Saco Directory 1913</b> (free): brackets Alfred's residence and shows him before police service.<a class="cite" href="#src-64">64</a></li>
+            <li><b>Original Maine marriage return, 1892</b>: Alfred Houle × Cordelia Chicoine. Confirms the exact date, residences, birthplaces and parents behind the index-derived memorial note.<a class="cite" href="#src-73">73</a></li>
+            <li><b>Bridge record</b>: a birth, baptism, marriage or death record connecting a child of the 12 George household to Jeanette Morin. Without it, the newly identified Houle family remains a collateral candidate, not an ancestral fact.</li>
+            <li><b>Maine death index, 1960–1996</b>: François Morin, d. March 1963, Biddeford. The certificate names his parents and birthplace.<a class="cite" href="#src-66">66</a><a class="cite" href="#src-67">67</a></li>
             <li><b>Los Angeles County marriage index, ~1921–22</b>: Francis Gray Carey × Daisy — the cheapest Daisy route, since a marriage record names both sets of parents' surnames.</li>
-            <li><b>California death certificate, 20 Jan 1989, Monrovia</b>: names Daisy's parents outright, but is the slowest and costliest route, so it stays last.</li>
+            <li><b>California death certificate, 20 Jan 1989, Monrovia</b>: names Daisy's parents outright.</li>
           </ol>
           <p class="tiny" style="margin:8px 0 0;">
-            Working log, negative results, and the exact search commands used to reproduce the directory
-            hits: <a href="./resources/session-11-biddeford-and-daisy.md">resources/session-11-biddeford-and-daisy.md</a>.
+            Full proxy research, evidence grading, links, and reproducible Internet Archive query:
+            <a href="./resources/session-13-houle-marriages.md">resources/session-13-houle-marriages.md</a>.
           </p>
         </div>
         <p>
@@ -2195,6 +2206,11 @@ body[data-paper="postcard-stock"] .page {
           <li id="src-66"><b>Maine State Archives</b> holdings, as described in the RootsWeb <i>Maine Vital Records</i> finding aid and Ancestry's Maine place page — the Archives holds original 1892–1922 birth, death, and marriage records, with searchable indexes of marriages (1892–1996, excluding 1967–76) and deaths (1960–1996) on its website; post-1922 certificates come from the Office of Data, Research and Vital Statistics. Read 31 Aug. 2026 as a finding aid — <b>no Maine index was queried this session</b>. <a href="https://wiki.rootsweb.com/wiki/index.php/Maine_Vital_Records" rel="noopener" target="_blank">Finding aid</a> · <a href="./resources/session-11-biddeford-and-daisy.md">Session 11 log</a></li>
           <li id="src-67"><b>Ancestry</b> public community-tree aggregation for “Francois Morin” — candidate record: b. 29 Oct. 1883, Saint-Jude, Québec; d. Mar. 1963, Biddeford, York, Maine; father François Morin, mother Célanire Couture. <b>Unsourced community tree, cited as a lead only</b>; conflicts with src-45's ~1868 birth estimate by fifteen years. <a href="https://www.ancestry.com/genealogy/records/results?firstName=francois&amp;lastName=morin" rel="noopener" target="_blank">Record</a> · <a href="./resources/session-11-biddeford-and-daisy.md">Session 11 log</a></li>
           <li id="src-68"><b>Independent verification session</b>, research performed for this book on 31 August 2026 — free public records pulled independently of the subject-supplied files: the San Gabriel Valley Tribune / Legacy obituary of Louise Francis Carey Hewitt (incl. the family-signed guest book), FamilySearch public person pages (U.S. census and California county birth/marriage/death records) for Clifford LeRoy Hewitt, Find a Grave memorials #94384623 / #181036078 / #7945411 with cited vital records, the Rootsweb Carey (PAF) database, and the official NSDAR Ancestor Database (patriot A020262). Independently confirms the Hewett quarter (Fred Leslie Hewett × Addie Inez Worth; Maurice’s mother Leslie May McFarland), the Indiana Carey line and the Revolutionary patriot, and the immediate family; leaves Daisy Beatrice’s Texas parents and the Morin/Houle couples open. <a href="./resources/session-12-independent-verification.md">Research file</a></li>
+          <li id="src-69"><b>Internet Archive</b>, <i>Biddeford and Saco Directory 1929–1930</i>, Dyer Library / Saco Museum upload, Public Domain Mark 1.0 — scanned leaf 172 names “Alfred (Cordelia) h 12 George,” continuing the exact address of the policeman in src-64; a separate Alfred (Agnes) lives at 24 Acorn. <a href="https://archive.org/details/biddeford-and-saco-directory-1929-1930" rel="noopener" target="_blank">Volume</a> · <a href="./resources/session-13-houle-marriages.md">Session 13 log</a></li>
+          <li id="src-70"><b>Find a Grave #108246408</b>, Alfred Houle (1872–1948), Saint Joseph’s Cemetery, Biddeford — obituary transcription records fifteen years with Biddeford police, first wife Cordelia Chicoine (1892 marriage record), and second wife Georgianna Doyon, married 26 June 1933. The stated Lowell birthplace is explicitly uncorroborated. <a href="https://www.findagrave.com/memorial/108246408/alfred-houle" rel="noopener" target="_blank">Memorial</a></li>
+          <li id="src-71"><b>Find a Grave #108246504</b>, Cordelia Chicoine Houle (1873–1932), Saint Joseph’s Cemetery, Biddeford — obituary transcription names husband Alfred, parents Antoine Chicoine × Aurelie Morissette, and surviving children. <a href="https://www.findagrave.com/memorial/108246504/cordelia-houle" rel="noopener" target="_blank">Memorial</a></li>
+          <li id="src-72"><b>Find a Grave #206886041</b>, Dr Paul Marcel Houle (1918–2002) — obituary transcription names him the youngest child of Alfred and Cordelia Chicone Houle and dates his marriage to Lois Marie Jackson to 19 September 1944. <a href="https://www.findagrave.com/memorial/206886041/paul-marcel-houle" rel="noopener" target="_blank">Memorial</a></li>
+          <li id="src-73"><b>Maine record guides</b>: Maine Genealogy, <i>Maine Marriage Records, 1892–1966, 1977–2009</i> (987,098-entry transcription of the former Maine State Archives/DHS index, with an error warning), and Library of Congress, <i>Maine: Local History &amp; Genealogy — Vital Records</i> (1892–1922 state returns held by Maine State Archives). The proxy exposed collection scope but not a submitted result; the original 1892 return remains to be pulled. <a href="https://www.mainegenealogy.net/marriage_search.asp" rel="noopener" target="_blank">Index</a> · <a href="https://guides.loc.gov/maine-local-history-genealogy/vital-records" rel="noopener" target="_blank">LOC guide</a></li>
         </ol>
         <p style="margin-top:1.5em;font-size:0.9em;">
           Sources 10–63 are hosted on a temporary file-sharing service and may expire — sources 34 and 53 were
@@ -2208,12 +2224,14 @@ body[data-paper="postcard-stock"] .page {
           all are cited as artifacts, not as third-party verification. Entry 59's extract omits the 100 private seeds printed in the original table: the statistics the book cites are preserved, the keys are not.
         </p>
         <p style="margin-top:1em;font-size:0.9em;">
-          Sources 64–67 are of a different kind: they are <b>archivist research sources</b> consulted on
-          31 August 2026 while working the open task in Chapter XII, and two of them are recorded because they
-          returned <i>nothing</i> — a closed route is a result worth keeping. Their working log, with the exact
-          queries, the negative findings, and the commands needed to reproduce the directory hits, lives at
-          <a href="./resources/session-11-biddeford-and-daisy.md">resources/session-11-biddeford-and-daisy.md</a>
-          alongside the resource extracts. Entry 67 is an unsourced community tree and is cited as a lead only.
+          Sources 64–73 are of a different kind: they are <b>archivist research sources</b> consulted while
+          working the open task in Chapter XII. Two Session 11 sources are recorded because they returned
+          <i>nothing</i> — a closed route is a result worth keeping — and entry 67 is an unsourced community tree,
+          cited as a lead only. Session 13 follows Alfred Houle across the same 12 George Street address, records
+          the newly identified 1892 and 1933 marriages, and rejects Eugénie Tremblay for that household without
+          promoting the household into the ancestral line. Working logs and exact proxy queries live at
+          <a href="./resources/session-11-biddeford-and-daisy.md">Session 11</a> and
+          <a href="./resources/session-13-houle-marriages.md">Session 13</a>.
         </p>
         <p style="margin-top:1em;font-size:0.9em;">
           <b>Entry 68</b> is a separate independent-verification pass, also run 31 August 2026: it tests the
