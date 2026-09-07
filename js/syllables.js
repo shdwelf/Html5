@@ -1,27 +1,52 @@
 // Heuristic English syllable counter for BIP-39 5-7-5 mining.
-// Ported from shdwelf/bip39-haiku-workbench (src/lib/syllables.ts).
+// Kept in sync with shdwelf/bip39-haiku-workbench (src/lib/syllables.ts).
 
-const EXCEPTIONS = {
+export const SYLLABLE_EXCEPTIONS = {
   abandon: 3, area: 3, idea: 3, video: 3, radio: 3, audio: 3, ratio: 3,
-  poem: 2, poet: 2, lion: 2, quiet: 2, science: 2, fire: 1, hour: 1,
+  poem: 2, poet: 2, poetry: 3, lion: 2, quiet: 2, science: 2, fire: 1, hour: 1,
   iron: 2, every: 2, evening: 2, family: 3, vegetable: 4, chocolate: 3,
   business: 2, average: 3, different: 3, interest: 3, camera: 3, favorite: 3,
   orange: 2, people: 2, little: 2, simple: 2, table: 2, able: 2, apple: 2,
   bicycle: 3, animal: 3, energy: 3, enemy: 3, melody: 3, memory: 3,
   ocean: 2, create: 2, react: 2, riot: 2, diet: 2, giant: 2, client: 2,
   society: 4, real: 1, really: 2,
+
+  // Poetry-engine vocabulary whose inflections or vowel groups fool the
+  // fallback heuristic. Values match the canonical Gen2 Poetry repair.
+  "108": 4, advances: 3, agitated: 4, approaches: 3, beautiful: 3,
+  camellia: 4, changes: 2, closes: 2, condenses: 3, creates: 2,
+  darkens: 2, dragonfly: 3, drying: 2, era: 2, freezes: 2,
+  ginkgo: 2, graceful: 2, hateful: 2, hellebore: 3, hototogisu: 5,
+  hydrangea: 3, kotatsu: 3, merges: 2, mixes: 2, "morning-glory": 4,
+  pauses: 2, peaceful: 2, peony: 3, prayer: 1, precipitates: 4,
+  progresses: 3, purifies: 3, radiates: 3, regresses: 3, resumes: 2,
+  rises: 2, snowdrop: 2, sublimates: 3, threshing: 2, touches: 2,
+  violent: 3, violet: 3, watches: 2, "winter-peony": 5,
+
+  // Japanese cutting words emitted by Hokku.
+  ya: 1, kana: 2, keri: 2, nu: 1, zu: 1, re: 1, tsu: 1, shi: 1, mo: 1, ka: 1,
 };
 
 export function countSyllables(word) {
-  let w = String(word || "").toLowerCase().trim().replace(/[^a-z]/g, "");
+  let w = String(word || "").toLowerCase().trim().replace(/[^a-z0-9-]/g, "");
   if (!w) return 0;
-  if (EXCEPTIONS[w] != null) return EXCEPTIONS[w];
+  if (SYLLABLE_EXCEPTIONS[w] != null) return SYLLABLE_EXCEPTIONS[w];
+
+  // Sum spoken components unless a complete compound has an explicit
+  // pronunciation above.
+  if (w.includes("-")) {
+    return w.split("-").reduce((sum, part) => sum + countSyllables(part), 0);
+  }
   if (w.length <= 3) return 1;
-  w = w.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, "");
+
+  const original = w;
+  // Remove silent endings. A consonant + "le" ending loses its silent e here;
+  // the spoken "le" syllable is restored exactly once below.
+  w = w.replace(/(?:[^laeiouy]es|ed|[^aeiouy]e)$/, "");
   w = w.replace(/^y/, "");
   const groups = w.match(/[aeiouy]{1,2}/g);
   let count = groups ? groups.length : 1;
-  if (/[^aeiouy]le$/.test(String(word).toLowerCase())) count += 1;
+  if (/[^aeiouy]le$/.test(original)) count += 1;
   return Math.max(1, count);
 }
 
@@ -82,19 +107,23 @@ export function grammarScore(words) {
   return Math.max(0, Math.min(100, Math.round(score)));
 }
 
-/** Greedy 5/7/5 split used by the inspector when a phrase is not a clean partition. */
+/** Greedy 5/7/5 split used by the inspector when no clean partition exists. */
 export function greedy575(words) {
   const syllables = words.map(countSyllables);
   const lines = [[], [], []];
   const targets = [5, 7, 5];
   let li = 0;
   let acc = 0;
-  for (let i = 0; i < words.length && li < 3; i++) {
-    lines[li].push(words[i]);
-    acc += syllables[i];
-    if (acc >= targets[li]) {
-      li += 1;
-      acc = 0;
+  for (let i = 0; i < words.length; i++) {
+    // Preserve overflow on line three instead of silently dropping words.
+    const line = Math.min(li, 2);
+    lines[line].push(words[i]);
+    if (li < 2) {
+      acc += syllables[i];
+      if (acc >= targets[li]) {
+        li += 1;
+        acc = 0;
+      }
     }
   }
   const counts = lines.map((line) => line.reduce((s, w) => s + countSyllables(w), 0));

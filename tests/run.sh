@@ -22,5 +22,8 @@ echo "────────────────────────�
 node tests/07-browser.mjs "${KEYSPACE_URL:-http://127.0.0.1:8000/keyspace.html}" || status=1
 
 echo "──────────────────────────────────────────────"
+node tests/08-syllables.mjs || status=1
+
+echo "──────────────────────────────────────────────"
 [ "$status" -eq 0 ] && echo "all suites passed" || echo "FAILURES — see above"
 exit "$status"
