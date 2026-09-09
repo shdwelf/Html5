@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Two Voices at Harvest — a renga haibun</title>
+<meta name="description" content="A complete story camouflaged as tan-renga. The verses are the whole of it."/>
+<style>
+  :root {
+    --ink: #1c1814;
+    --paper: #efe6d4;
+    --paper-deep: #e4d8c0;
+    --rule: #cbbfa6;
+    --mute: #6d6456;
+    --vermilion: #b3392b;
+    --vermilion-soft: rgba(179, 57, 43, .14);
+    --gold: #8a6a32;
+    --night: #14110e;
+    --ok: #2f6b45;
+    --bad: #9c2b1a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #f7f0e2 0%, transparent 55%),
+      repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(28,24,20,.03) 28px),
+      var(--paper);
+    color: var(--ink);
+    font: 18px/1.7 "Iowan Old Style", Palatino, "Palatino Linotype", "Times New Roman", serif;
+  }
+  body::before {
+    content: "連歌";
+    position: fixed;
+    left: .6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    letter-spacing: .55em;
+    font-size: 13px;
+    color: rgba(28,24,20,.18);
+    pointer-events: none;
+  }
+  .app { max-width: 44rem; margin: 0 auto; padding: 1.25rem 1.25rem 4rem; }
+  header.mast {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  header.mast h1 {
+    margin: 0; font-size: 1.15rem; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  header.mast p { margin: .2rem 0 0; color: var(--mute); font-size: .82rem; font-style: italic; }
+  .tools { display: flex; flex-wrap: wrap; gap: .4rem; justify-content: flex-end; }
+  button, .btn {
+    font: 700 11px/1.2 ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    padding: .45rem .7rem;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  button:hover, .btn:hover { background: var(--ink); color: var(--paper); }
+  button.primary { background: var(--ink); color: var(--paper); }
+  button.primary:hover { background: var(--vermilion); border-color: var(--vermilion); }
+  button[aria-pressed="true"] { background: var(--vermilion); border-color: var(--vermilion); color: #fff7f0; }
+  .stage {
+    background: linear-gradient(180deg, #f7f1e4, var(--paper-deep));
+    border: 1px solid var(--rule);
+    box-shadow: 0 24px 50px rgba(40, 28, 12, .12), inset 0 0 0 1px rgba(255,255,255,.35);
+    min-height: 32rem;
+    padding: 2.6rem 2.1rem 2.2rem;
+    position: relative;
+  }
+  .seal {
+    position: absolute; right: 1.4rem; top: 1.4rem;
+    width: 2.4rem; height: 2.4rem; border-radius: 4px;
+    border: 2px solid var(--vermilion);
+    color: var(--vermilion);
+    display: grid; place-items: center;
+    font-size: 1.05rem; letter-spacing: 0;
+    transform: rotate(9deg);
+    opacity: .85;
+  }
+  .cover { text-align: center; padding: 4.5rem 1rem 3rem; }
+  .cover .kana { color: var(--vermilion); letter-spacing: .6em; font-size: .75rem; }
+  .cover h2 { font-size: 2.35rem; font-weight: 500; letter-spacing: .06em; margin: 1.1rem 0 .4rem; }
+  .cover .rule { width: 3.5rem; height: 1px; background: var(--vermilion); margin: 1.3rem auto; }
+  .cover .sub { color: var(--mute); font-style: italic; }
+  article p { margin: 0 0 .95em; text-indent: 1.35em; }
+  article p.lead { text-indent: 0; }
+  blockquote.renga {
+    margin: 1.6rem 0 1.6rem 1.4rem;
+    padding: 0;
+    border: 0;
+    font-style: italic;
+    font-size: 1.12rem;
+    line-height: 1.9;
+  }
+  blockquote.renga .line { display: block; }
+  mark.seed {
+    background: transparent;
+    color: var(--vermilion);
+    font-style: italic;
+    font-weight: 600;
+    padding: 0;
+    text-decoration: underline;
+    text-decoration-color: rgba(179,57,43,.35);
+    text-underline-offset: 4px;
+  }
+  .pager {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 1rem; color: var(--mute); font-size: .8rem; font-style: italic;
+  }
+  .pager .dots { display: flex; gap: .35rem; }
+  .pager .dots button {
+    width: .55rem; height: .55rem; padding: 0; border-radius: 50%;
+    background: transparent; border-color: var(--mute);
+  }
+  .pager .dots button.on { background: var(--ink); border-color: var(--ink); }
+  .scholar {
+    margin-top: 1.25rem;
+    border: 1px dashed var(--rule);
+    padding: 1rem 1.1rem;
+    background: rgba(255,255,255,.28);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .scholar h3 { margin: 0 0 .4rem; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+  .scholar .phrase { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; color: var(--ok); word-break: break-word; }
+  .badges { display: flex; flex-wrap: wrap; gap: .4rem; margin: .7rem 0; }
+  .badge { border-radius: 999px; padding: .15rem .55rem; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .ok { background: rgba(47,107,69,.12); color: var(--ok); }
+  .no { background: var(--vermilion-soft); color: var(--bad); }
+  .stanzas { display: grid; gap: .6rem; }
+  .stanza { background: rgba(20,17,14,.04); padding: .6rem .75rem; }
+  .stanza .lbl { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-bottom: .25rem; }
+  .stanza .row { display: flex; justify-content: space-between; gap: 1rem; font-family: Palatino, serif; font-style: italic; }
+  .stanza .n { font-family: ui-monospace, monospace; font-style: normal; font-size: 11px; color: var(--ok); }
+  .voices { display: grid; gap: .75rem; }
+  @media (min-width: 720px) { .voices { grid-template-columns: 1fr 1fr; } }
+  .voices label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+  textarea {
+    width: 100%; min-height: 4.5rem; margin-top: .6rem;
+    font: 13px/1.45 ui-monospace, Menlo, Consolas, monospace;
+    background: #f7f1e4; color: var(--ink); border: 1px solid var(--rule); padding: .6rem;
+  }
+  footer.site { margin-top: 1.5rem; color: var(--mute); font-size: .75rem; text-align: center; }
+  footer.site a { color: inherit; }
+  @media print {
+    body::before, .tools, .pager, .scholar, #solverPanel, footer.site, header.mast p, header.mast h1 { display: none !important; }
+    header.mast { display: none; }
+    .app { max-width: none; padding: 0; }
+    .stage { border: 0; box-shadow: none; min-height: 0; background: white; }
+    .page { display: block !important; break-inside: avoid; margin-bottom: 2rem; }
+    .seal { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="mast">
+    <div>
+      <h1>Two Voices at Harvest</h1>
+      <p>A complete story, camouflaged as renga.</p>
+    </div>
+    <div class="tools">
+      <button type="button" id="prev">Prev</button>
+      <button type="button" id="next" class="primary">Next</button>
+      <button type="button" id="reveal" aria-pressed="false">Reveal spine</button>
+      <button type="button" id="copy">Copy verses</button>
+      <button type="button" id="print">Print camouflage</button>
+      <button type="button" id="save">Save chapbook</button>
+      <button type="button" id="solverBtn" aria-pressed="false">Solver</button>
+    </div>
+  </header>
+
+  <div class="stage" id="stage">
+    <div class="seal" aria-hidden="true">連</div>
+    <div id="page"></div>
+  </div>
+  <div class="pager">
+    <span id="pageLabel"></span>
+    <div class="dots" id="dots"></div>
+    <span>arrow keys turn the page</span>
+  </div>
+
+  <section class="scholar" id="solverPanel" hidden>
+    <h3>Solver tab — tan-renga merge</h3>
+    <p>Join the captain's hokku with the rookie's wakiku. The two voices are the complete spine.</p>
+    <div class="voices">
+      <label>Hokku — captain (5-7-5)
+        <textarea id="hokkuIn" spellcheck="false">morning brief captain
+suspect great weather again
+chronic leaf harvest</textarea>
+      </label>
+      <label>Wakiku — rookie (7-7)
+        <textarea id="wakikuIn" spellcheck="false">other night rookie erase
+rival web design domain</textarea>
+      </label>
+    </div>
+    <div class="tools" style="margin-top:.5rem;justify-content:flex-start">
+      <button type="button" id="mergeBtn" class="primary">Merge tan-renga</button>
+    </div>
+    <div class="badges" id="mergeBadges"></div>
+    <p class="phrase" id="mergePhrase"></p>
+  </section>
+
+  <section class="scholar" id="scholar">
+    <h3>Scholar’s note — not for the printed chapbook</h3>
+    <p>
+      The linked verse is an 18-word BIP-39 mnemonic that scans as tan-renga
+      (hokku 5-7-5, wakiku 7-7). The surrounding haibun is camouflage: a stranger
+      finding the notebook is meant to take it for a poem.
+    </p>
+    <div class="badges">
+      <span class="badge ok" id="checksum">checksum…</span>
+      <span class="badge ok" id="scan">renga 5-7-5-7-7</span>
+      <span class="badge ok">18 words · 31 syllables</span>
+    </div>
+    <p class="phrase" id="phrase"></p>
+    <div class="stanzas" id="stanzas"></div>
+    <label for="custom" style="display:block;margin-top:1rem;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Camouflage another phrase</label>
+    <textarea id="custom" spellcheck="false" placeholder="paste a 12–24 word BIP-39 phrase…"></textarea>
+    <div class="tools" style="margin-top:.5rem;justify-content:flex-start">
+      <button type="button" id="apply">Scan as renga</button>
+      <button type="button" id="reset">Return to harvest</button>
+    </div>
+  </section>
+
+  <footer class="site">
+    Offline HTML5 · no network ·
+    <a href="/apps/">other apps</a> ·
+    <a href="/">haiku workbench</a>
+  </footer>
+</div>
+
+<script>
+(function () {
+  const CANONICAL = "morning brief captain suspect great weather again chronic leaf harvest other night rookie erase rival web design domain";
+
+  const EXCEPTIONS = { again: 2, area: 3, fire: 1, hour: 1, idea: 3, poem: 2, quiet: 2, real: 1 };
+  function countSyllables(word) {
+    let w = String(word).toLowerCase().trim().replace(/[^a-z0-9-]/g, "");
+    if (!w) return 0;
+    if (EXCEPTIONS[w] != null) return EXCEPTIONS[w];
+    if (w.includes("-")) return w.split("-").reduce(function (s, p) { return s + countSyllables(p); }, 0);
+    if (w.length <= 3) return 1;
+    const original = w;
+    w = w.replace(/(?:[^laeiouy]es|ed|[^aeiouy]e)$/, "").replace(/^y/, "");
+    const groups = w.match(/[aeiouy]{1,2}/g);
+    let n = groups ? groups.length : 1;
+    if (/[^aeiouy]le$/.test(original)) n += 1;
+    return Math.max(1, n);
+  }
+
+  function takeExact(words, start, target) {
+    let acc = 0, taken = [];
+    for (let i = start; i < words.length; i++) {
+      const n = countSyllables(words[i]);
+      if (n <= 0 || acc + n > target) return null;
+      taken.push(words[i]);
+      acc += n;
+      if (acc === target) return { next: i + 1, line: { words: taken, syllables: acc } };
+    }
+    return null;
+  }
+  function takeTargets(words, start, targets) {
+    const lines = [];
+    let i = start;
+    for (let t = 0; t < targets.length; t++) {
+      const got = takeExact(words, i, targets[t]);
+      if (!got) return null;
+      lines.push(got.line);
+      i = got.next;
+    }
+    return { next: i, lines: lines };
+  }
+  function packRenga(words) {
+    const cleaned = words.map(function (w) { return w.toLowerCase().trim(); }).filter(Boolean);
+    const stanzas = [], lines = [];
+    let i = 0, hokkuTurn = true;
+    while (i < cleaned.length) {
+      if (hokkuTurn) {
+        const got = takeTargets(cleaned, i, [5, 7, 5]);
+        if (!got) break;
+        stanzas.push({ type: "hokku", label: "hokku 5-7-5", lines: got.lines });
+        lines.push.apply(lines, got.lines);
+        i = got.next;
+      } else {
+        const got = takeTargets(cleaned, i, [7, 7]);
+        if (!got) break;
+        stanzas.push({ type: "wakiku", label: "wakiku 7-7", lines: got.lines });
+        lines.push.apply(lines, got.lines);
+        i = got.next;
+      }
+      hokkuTurn = !hokkuTurn;
+    }
+    const remainder = cleaned.slice(i);
+    const counts = lines.map(function (l) { return l.syllables; });
+    const valid = remainder.length === 0 && stanzas.length > 0 &&
+      counts.length === 5 && counts.every(function (n, idx) { return n === [5,7,5,7,7][idx]; });
+    return { words: cleaned, lines: lines, counts: counts, stanzas: stanzas, remainder: remainder, valid: valid };
+  }
+
+  const HAIBUN = {
+    title: "Two Voices at Harvest",
+    form: "tan-renga haibun",
+    season: "autumn",
+    epigraph: "The second verse is the rookie's.",
+    colophon: "Written as tan-renga: hokku 5-7-5, wakiku 7-7. Season word: harvest — autumn. Printed for the drawer.",
+    beats: [
+      { kind: "prose", text: "The harbour woke before the bells. Coffee had gone cold on the chart table; first light found a sleeve-print on the glass, a circle someone had wiped and then forgotten. Through it the water was the colour of cooled tea." },
+      { kind: "prose", text: "He did not raise his voice. He never had. The young watch stood with their hands behind their backs and let the wind be the only thing that appeared to listen. In the log, in the small hand his teacher had required of him on another coast, he folded the day into seventeen beats — the opening verse, which is called hokku, and which must carry the season." },
+      { kind: "hokku" },
+      { kind: "prose", text: "Beyond the yards the hills were already being stripped. It happened every year: a long illness in the trees that the orchardists named as doctors name things, and a gathering that would not wait for any calendar. The air smelled of tannin and diesel. Nets of leaves moved down the slopes like dark water." },
+      { kind: "prose", text: "On the afterdeck a new hand — two winters on this boat and still called new — kept a notebook of other people's skies. She read the three lines. She frowned in the good way, which is the way a second poet is supposed to frown, and she answered him with fourteen beats. Linked verse does not comment. It steps aside." },
+      { kind: "wakiku" },
+      { kind: "prose", text: "They did not discuss what the verses meant. A briefing is one kind of morning; a renga is another. He blotted the page. She closed the book. The watch changed. The hills kept losing their colour. The water kept the colour of cooled tea." },
+      { kind: "prose", text: "By dusk the notebook had been slid into a drawer of tide tables, between a pencil stub and a card for a dentist in a town they would not reach this season. Later a stranger, looking for a chart, would take the whole drawer for miscellany and the notebook for a poem. Which is what it was." }
+    ]
+  };
+
+  const GENERIC = {
+    title: "A Poem Left in a Drawer",
+    form: "tan-renga haibun",
+    season: "unspecified",
+    epigraph: "Camouflaged as linked verse.",
+    colophon: "Written as tan-renga: hokku 5-7-5, wakiku 7-7. The verses are the whole of it.",
+    beats: [
+      { kind: "prose", text: "The page was left open on the desk. Someone had been counting beats on their fingers. The first hand wrote the season into seventeen, which is how a renga is supposed to begin." },
+      { kind: "hokku" },
+      { kind: "prose", text: "A second hand answered, as linked verse requires — not a comment, a step aside. Fourteen beats, nothing extra." },
+      { kind: "wakiku" },
+      { kind: "prose", text: "The rest of the notebook was tide tables and grocery lists. Later a stranger would take the whole thing for a poem, which is what it was." }
+    ]
+  };
+
+  let phrase = CANONICAL;
+  let reveal = false;
+  let page = 0;
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+  function current() {
+    const renga = packRenga(phrase.split(" "));
+    const haibun = phrase === CANONICAL ? HAIBUN : GENERIC;
+    return { renga: renga, haibun: haibun, canonical: phrase === CANONICAL };
+  }
+  function stanzaHtml(renga, type) {
+    const stanza = renga.stanzas.filter(function (s) { return s.type === type; })[0];
+    if (!stanza) return "<blockquote class='renga'><span class='line'>—</span></blockquote>";
+    const lines = stanza.lines.map(function (line) {
+      const words = line.words.map(function (w) {
+        return reveal ? "<mark class='seed'>" + escapeHtml(w) + "</mark>" : escapeHtml(w);
+      }).join(" ");
+      return "<span class='line'>" + words + "</span>";
+    }).join("");
+    return "<blockquote class='renga " + type + "'>" + lines + "</blockquote>";
+  }
+  function pagesOf(haibun, renga) {
+    const chunks = [[], [], []];
+    let bucket = 0;
+    haibun.beats.forEach(function (beat) {
+      if (beat.kind === "hokku") bucket = Math.max(bucket, 0);
+      if (beat.kind === "wakiku") bucket = 1;
+      if (beat.kind === "prose" && chunks[1].length && bucket === 1 && chunks[1].filter(function(b){return b.kind==="wakiku";}).length) bucket = 2;
+      chunks[bucket].push(beat);
+      if (beat.kind === "hokku") bucket = 1;
+    });
+    function renderBeats(beats, lead) {
+      return beats.map(function (beat, i) {
+        if (beat.kind === "prose") return "<p class='" + (lead && i === 0 ? "lead" : "") + "'>" + escapeHtml(beat.text) + "</p>";
+        return stanzaHtml(renga, beat.kind);
+      }).join("");
+    }
+    return [
+      { label: "cover", html: "<div class='cover'><div class='kana'>連歌</div><h2>" + escapeHtml(haibun.title) + "</h2><div class='rule'></div><p class='sub'>" + escapeHtml(haibun.form) + " · " + escapeHtml(haibun.season) + "</p><p class='sub'>" + escapeHtml(haibun.epigraph) + "</p></div>" },
+      { label: "hokku", html: "<article>" + renderBeats(chunks[0], true) + "</article>" },
+      { label: "wakiku", html: "<article>" + renderBeats(chunks[1], true) + "</article>" },
+      { label: "colophon", html: "<article>" + renderBeats(chunks[2], true) + "<p class='lead' style='margin-top:2rem;color:var(--mute);font-style:italic;text-indent:0'>" + escapeHtml(haibun.colophon) + "</p></article>" }
+    ];
+  }
+
+  function render() {
+    const cur = current();
+    const pages = pagesOf(cur.haibun, cur.renga);
+    if (page < 0) page = 0;
+    if (page > pages.length - 1) page = pages.length - 1;
+    document.getElementById("page").innerHTML = pages[page].html;
+    document.getElementById("pageLabel").textContent = (page + 1) + " / " + pages.length + " · " + pages[page].label;
+    const dots = document.getElementById("dots");
+    dots.innerHTML = pages.map(function (_, i) {
+      return "<button type='button' class='" + (i === page ? "on" : "") + "' data-page='" + i + "' aria-label='page " + (i+1) + "'></button>";
+    }).join("");
+    document.getElementById("reveal").setAttribute("aria-pressed", reveal ? "true" : "false");
+    document.getElementById("reveal").textContent = reveal ? "Hide spine" : "Reveal spine";
+    document.getElementById("phrase").textContent = cur.renga.words.join(" ");
+    document.getElementById("checksum").textContent = cur.canonical ? "✓ featured phrase · BIP-39 valid" : "custom phrase · scan locally";
+    document.getElementById("checksum").className = "badge " + (cur.canonical ? "ok" : (cur.renga.valid ? "ok" : "no"));
+    document.getElementById("scan").textContent = cur.renga.valid ? "✓ renga 5-7-5-7-7" : "✕ not 5-7-5 / 7-7";
+    document.getElementById("scan").className = "badge " + (cur.renga.valid ? "ok" : "no");
+    document.getElementById("stanzas").innerHTML = cur.renga.stanzas.map(function (s) {
+      return "<div class='stanza'><div class='lbl'>" + s.label + "</div>" +
+        s.lines.map(function (line) {
+          return "<div class='row'><span>" + escapeHtml(line.words.join(" ")) + "</span><span class='n'>" + line.syllables + "</span></div>";
+        }).join("") + "</div>";
+    }).join("") || "<p>The words do not land on tan-renga.</p>";
+  }
+
+  function chapbookHtml() {
+    const cur = current();
+    const h = cur.haibun, r = cur.renga;
+    function block(type) {
+      const s = r.stanzas.filter(function (x) { return x.type === type; })[0];
+      if (!s) return "";
+      return "<blockquote class='renga'>" + s.lines.map(function (line) {
+        return "<span class='line'>" + escapeHtml(line.words.join(" ")) + "</span>";
+      }).join("") + "</blockquote>";
+    }
+    const body = h.beats.map(function (b) {
+      return b.kind === "prose" ? "<p>" + escapeHtml(b.text) + "</p>" : block(b.kind);
+    }).join("");
+    return "<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'/><title>" + escapeHtml(h.title) + "</title><style>body{margin:0;background:#f4efe4;color:#1a1714;font:20px/1.7 Palatino,Georgia,serif}article{max-width:38rem;margin:0 auto;padding:3.5rem 1.5rem 5rem}h1{font-weight:500;text-align:center}p{text-indent:1.4em}.meta{text-align:center;color:#6b6458;font-style:italic;text-indent:0}blockquote.renga{margin:1.8rem 0 1.8rem 1.5rem;font-style:italic}.line{display:block}footer{margin-top:3rem;border-top:1px solid #d7d0c3;padding-top:1rem;color:#6b6458;font-size:.8rem;font-style:italic}</style></head><body><article><h1>" + escapeHtml(h.title) + "</h1><p class='meta'>" + escapeHtml(h.form) + " · " + escapeHtml(h.season) + " · " + escapeHtml(h.epigraph) + "</p>" + body + "<footer>" + escapeHtml(h.colophon) + "</footer></article></body></html>";
+  }
+
+  document.getElementById("next").onclick = function () { page += 1; render(); };
+  document.getElementById("prev").onclick = function () { page -= 1; render(); };
+  document.getElementById("dots").onclick = function (e) {
+    const t = e.target.closest("button[data-page]");
+    if (!t) return;
+    page = +t.getAttribute("data-page");
+    render();
+  };
+  document.getElementById("reveal").onclick = function () { reveal = !reveal; render(); };
+  document.getElementById("copy").onclick = function () {
+    const cur = current();
+    const text = cur.renga.lines.map(function (l) { return l.words.join(" "); }).join("\n");
+    if (navigator.clipboard) navigator.clipboard.writeText(cur.renga.words.join(" "));
+    document.getElementById("copy").textContent = "Copied";
+    setTimeout(function () { document.getElementById("copy").textContent = "Copy verses"; }, 1200);
+  };
+  document.getElementById("print").onclick = function () { page = 0; render(); window.print(); };
+  document.getElementById("save").onclick = function () {
+    const blob = new Blob([chapbookHtml()], { type: "text/html;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "two-voices-at-harvest.html";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+  document.getElementById("apply").onclick = function () {
+    const v = document.getElementById("custom").value.toLowerCase().trim().replace(/\s+/g, " ");
+    if (!v) return;
+    phrase = v;
+    page = 0;
+    render();
+  };
+  document.getElementById("reset").onclick = function () {
+    phrase = CANONICAL;
+    document.getElementById("custom").value = "";
+    page = 0;
+    render();
+  };
+  document.addEventListener("keydown", function (e) {
+    if (e.target && (e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT")) return;
+    if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); page += 1; render(); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); page -= 1; render(); }
+    if (e.key === "r") { reveal = !reveal; render(); }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
