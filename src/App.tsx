@@ -9,6 +9,7 @@ import MonkeyMiner from "./components/MonkeyMiner";
 import Book from "./components/Book";
 import Cookbook from "./components/Cookbook";
 import RengaCamouflage from "./components/RengaCamouflage";
+import RengaSolver from "./components/RengaSolver";
 import Terminal from "./components/Terminal";
 import WavesExchange from "./components/WavesExchange";
 import MarketData from "./components/MarketData";
@@ -30,6 +31,7 @@ const NAV: NavItem[] = [
   { id: "recovery", label: "Recovery Lab", icon: "🧩" },
   { id: "gallery", label: "Art Gallery", icon: "🖼" },
   { id: "renga", label: "Renga Camouflage", icon: "連" },
+  { id: "solver", label: "Solver", icon: "⚙" },
   { id: "monkey", label: "MonKey Miner", icon: "🐒" },
   { id: "book", label: "Autobiography", icon: "📖" },
   { id: "cookbook", label: "Crypto Cookbook", icon: "📚" },
@@ -72,6 +74,7 @@ function Workbench() {
       {activeTab === "recovery" && <RecoveryLab />}
       {activeTab === "gallery" && <ArtGallery />}
       {activeTab === "renga" && <RengaCamouflage />}
+      {activeTab === "solver" && <RengaSolver />}
       {activeTab === "monkey" && <MonkeyMiner />}
       {activeTab === "book" && <Book />}
       {activeTab === "cookbook" && <Cookbook />}
