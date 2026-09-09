@@ -141,6 +141,9 @@
   .stanza .lbl { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-bottom: .25rem; }
   .stanza .row { display: flex; justify-content: space-between; gap: 1rem; font-family: Palatino, serif; font-style: italic; }
   .stanza .n { font-family: ui-monospace, monospace; font-style: normal; font-size: 11px; color: var(--ok); }
+  .voices { display: grid; gap: .75rem; }
+  @media (min-width: 720px) { .voices { grid-template-columns: 1fr 1fr; } }
+  .voices label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
   textarea {
     width: 100%; min-height: 4.5rem; margin-top: .6rem;
     font: 13px/1.45 ui-monospace, Menlo, Consolas, monospace;
@@ -149,7 +152,7 @@
   footer.site { margin-top: 1.5rem; color: var(--mute); font-size: .75rem; text-align: center; }
   footer.site a { color: inherit; }
   @media print {
-    body::before, .tools, .pager, .scholar, footer.site, header.mast p, header.mast h1 { display: none !important; }
+    body::before, .tools, .pager, .scholar, #solverPanel, footer.site, header.mast p, header.mast h1 { display: none !important; }
     header.mast { display: none; }
     .app { max-width: none; padding: 0; }
     .stage { border: 0; box-shadow: none; min-height: 0; background: white; }
@@ -172,6 +175,7 @@
       <button type="button" id="copy">Copy verses</button>
       <button type="button" id="print">Print camouflage</button>
       <button type="button" id="save">Save chapbook</button>
+      <button type="button" id="solverBtn" aria-pressed="false">Solver</button>
     </div>
   </header>
 
@@ -184,6 +188,27 @@
     <div class="dots" id="dots"></div>
     <span>arrow keys turn the page</span>
   </div>
+
+  <section class="scholar" id="solverPanel" hidden>
+    <h3>Solver tab — tan-renga merge</h3>
+    <p>Join the captain's hokku with the rookie's wakiku. The two voices are the complete spine.</p>
+    <div class="voices">
+      <label>Hokku — captain (5-7-5)
+        <textarea id="hokkuIn" spellcheck="false">morning brief captain
+suspect great weather again
+chronic leaf harvest</textarea>
+      </label>
+      <label>Wakiku — rookie (7-7)
+        <textarea id="wakikuIn" spellcheck="false">other night rookie erase
+rival web design domain</textarea>
+      </label>
+    </div>
+    <div class="tools" style="margin-top:.5rem;justify-content:flex-start">
+      <button type="button" id="mergeBtn" class="primary">Merge tan-renga</button>
+    </div>
+    <div class="badges" id="mergeBadges"></div>
+    <p class="phrase" id="mergePhrase"></p>
+  </section>
 
   <section class="scholar" id="scholar">
     <h3>Scholar’s note — not for the printed chapbook</h3>

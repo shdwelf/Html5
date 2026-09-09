@@ -16,6 +16,14 @@ describe("HTML5 renga camouflage app", () => {
     expect(html).toContain("Two Voices at Harvest");
   });
 
+  it("embeds a solver tab that merges hokku and wakiku", () => {
+    expect(html).toContain("Solver tab — tan-renga merge");
+    expect(html).toContain("Merge tan-renga");
+    expect(html).toContain("id=\"hokkuIn\"");
+    expect(html).toContain("id=\"wakikuIn\"");
+    expect(html).toContain("#solver");
+  });
+
   it("embeds the harvest mnemonic as tan-renga and can hide the scholar note in print", () => {
     expect(html).toContain(CANONICAL_RENGA_MNEMONIC);
     expect(html).toContain("morning brief captain");

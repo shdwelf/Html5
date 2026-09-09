@@ -5,6 +5,7 @@ import RecoveryLab from "../src/components/RecoveryLab";
 import ArtGallery from "../src/components/ArtGallery";
 import HaikuWallet from "../src/components/HaikuWallet";
 import RengaCamouflage from "../src/components/RengaCamouflage";
+import RengaSolver from "../src/components/RengaSolver";
 
 beforeEach(() => localStorage.clear());
 
@@ -44,6 +45,19 @@ describe("new tabs render", () => {
     expect(screen.getByText(/featured harvest phrase/)).toBeTruthy();
     expect(screen.getByText(/harbour woke before the bells/)).toBeTruthy();
     expect(screen.getByText(/✓ renga 5-7-5-7-7/)).toBeTruthy();
+  });
+
+  it("Solver merges the harvest tan-renga voices", () => {
+    render(
+      <PipeProvider initialTab="solver">
+        <RengaSolver />
+      </PipeProvider>
+    );
+    expect(screen.getByText(/tan-renga merge/i)).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: "Hokku stanza" })).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: "Wakiku stanza" })).toBeTruthy();
+    expect(screen.getByText(/harvest merge/)).toBeTruthy();
+    expect(screen.getByText(/✓ BIP-39 checksum/)).toBeTruthy();
   });
 
   it("Haiku Wallet offers the vault-file export, decryptor and import", () => {

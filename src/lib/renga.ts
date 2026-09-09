@@ -1,4 +1,5 @@
 import { countSyllables } from "./syllables";
+import { validateMnemonic, WORDLIST } from "./wallet";
 
 /** Gen2 Poetry engine treats renga as a five-line 5-7-5-7-7 (hokku + wakiku). */
 export const RENGA_PATTERN = [5, 7, 5, 7, 7] as const;
@@ -274,4 +275,130 @@ export function escapeHtml(value: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+export const CANONICAL_HOKKU =
+  "morning brief captain\nsuspect great weather again\nchronic leaf harvest";
+export const CANONICAL_WAKIKU =
+  "other night rookie erase\nrival web design domain";
+
+export function tokenizeWords(text: string): string[] {
+  return (text.toLowerCase().match(/\?|[a-z]+/g) ?? []).filter(Boolean);
+}
+
+export interface TanRengaMerge {
+  hokkuWords: string[];
+  wakikuWords: string[];
+  mnemonic: string;
+  renga: RengaSplit;
+  meterValid: boolean;
+  checksumValid: boolean;
+  blanks: number;
+}
+
+function stanzaWords(text: string): string[] {
+  return tokenizeWords(text).filter((w) => w === "?" || WORDLIST.includes(w) || /^[a-z]+$/.test(w));
+}
+
+/**
+ * Merge a hokku (5-7-5) with its wakiku (7-7) — the two voices of a tan-renga —
+ * into a single spine. Meter and BIP-39 checksum are checked independently.
+ */
+export function mergeTanRenga(hokkuText: string, wakikuText: string): TanRengaMerge {
+  const hokkuWords = stanzaWords(hokkuText).filter((w) => w !== "?");
+  const wakikuTokens = stanzaWords(wakikuText);
+  const wakikuWords = wakikuTokens.filter((w) => w !== "?");
+  const combined = [...stanzaWords(hokkuText), ...wakikuTokens];
+  const known = combined.filter((w) => w !== "?");
+  const renga = packRenga(known);
+  const mnemonic = known.join(" ");
+  const blanks = combined.filter((w) => w === "?").length;
+  return {
+    hokkuWords,
+    wakikuWords,
+    mnemonic,
+    renga,
+    meterValid: renga.valid,
+    checksumValid: blanks === 0 && mnemonic.length > 0 && validateMnemonic(mnemonic),
+    blanks,
+  };
+}
+
+export function splitVoices(mnemonic: string): { hokku: string; wakiku: string } | null {
+  const renga = packRenga(tokenizeWords(mnemonic));
+  const hokku = renga.stanzas.find((s) => s.type === "hokku");
+  const wakiku = renga.stanzas.find((s) => s.type === "wakiku");
+  if (!hokku || !wakiku) return null;
+  return {
+    hokku: hokku.lines.map(lineText).join("\n"),
+    wakiku: wakiku.lines.map(lineText).join("\n"),
+  };
+}
+
+function lineSyllables(words: string[]): number {
+  return words.reduce((sum, w) => sum + countSyllables(w), 0);
+}
+
+/**
+ * Pull a tan-renga out of camouflage: consecutive lines whose BIP-39 words
+ * land on 5-7-5 / 7-7, or a piped five-line verse.
+ */
+export function extractTanRenga(text: string): TanRengaMerge | null {
+  const stripped = text.replace(/<[^>]+>/g, "\n");
+  const rows = stripped
+    .split(/\r?\n/)
+    .map((line) => tokenizeWords(line).filter((w) => WORDLIST.includes(w)))
+    .filter((words) => words.length > 0);
+
+  const wordlistOnly = rows.filter((words) => lineSyllables(words) === 5 || lineSyllables(words) === 7);
+  for (let i = 0; i <= wordlistOnly.length - 5; i++) {
+    const counts = wordlistOnly.slice(i, i + 5).map(lineSyllables);
+    if (counts[0] === 5 && counts[1] === 7 && counts[2] === 5 && counts[3] === 7 && counts[4] === 7) {
+      const hokku = wordlistOnly
+        .slice(i, i + 3)
+        .map((w) => w.join(" "))
+        .join("\n");
+      const wakiku = wordlistOnly
+        .slice(i + 3, i + 5)
+        .map((w) => w.join(" "))
+        .join("\n");
+      return mergeTanRenga(hokku, wakiku);
+    }
+  }
+
+  const voices = splitVoices(stripped);
+  if (voices) {
+    const merged = mergeTanRenga(voices.hokku, voices.wakiku);
+    if (merged.meterValid) return merged;
+  }
+  return null;
+}
+
+/**
+ * Fill a single unread (`?`) slot so the merged voices both scan as tan-renga
+ * and carry a valid BIP-39 checksum — the rookie's closing word is the usual case.
+ */
+export function solveTanRengaChecksum(hokkuText: string, wakikuText: string): TanRengaMerge[] {
+  const hokkuTokens = stanzaWords(hokkuText);
+  const wakikuTokens = stanzaWords(wakikuText);
+  const tokens = [...hokkuTokens, ...wakikuTokens];
+  const blanks = tokens.map((w, i) => (w === "?" ? i : -1)).filter((i) => i >= 0);
+  if (blanks.length === 0) {
+    const merged = mergeTanRenga(hokkuText, wakikuText);
+    return merged.checksumValid && merged.meterValid ? [merged] : [];
+  }
+  if (blanks.length > 1) return [];
+
+  const idx = blanks[0];
+  const hits: TanRengaMerge[] = [];
+  for (const word of WORDLIST) {
+    const next = [...tokens];
+    next[idx] = word;
+    const merged = mergeTanRenga(
+      next.slice(0, hokkuTokens.length).join(" "),
+      next.slice(hokkuTokens.length).join(" "),
+    );
+    if (merged.meterValid && merged.checksumValid) hits.push(merged);
+  }
+  return hits;
 }

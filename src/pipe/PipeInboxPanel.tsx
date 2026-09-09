@@ -16,6 +16,7 @@ const TOOL_TARGETS: { id: string; label: string; accepts: PipeContentType[] }[] 
     accepts: ["mnemonic", "haiku", "address", "xpub", "json", "text"],
   },
   { id: "renga", label: "Renga Camouflage", accepts: ["mnemonic", "haiku", "text"] },
+  { id: "solver", label: "Solver", accepts: ["mnemonic", "haiku", "text"] },
 ];
 
 /**
