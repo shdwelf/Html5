@@ -4,6 +4,7 @@ import { PipeProvider } from "../src/pipe/PipeProvider";
 import RecoveryLab from "../src/components/RecoveryLab";
 import ArtGallery from "../src/components/ArtGallery";
 import HaikuWallet from "../src/components/HaikuWallet";
+import RengaCamouflage from "../src/components/RengaCamouflage";
 
 beforeEach(() => localStorage.clear());
 
@@ -30,6 +31,19 @@ describe("new tabs render", () => {
     // filter chips exist for every catalog type
     expect(screen.getByText(/11 \/ 12 pattern \(40\)/)).toBeTruthy();
     expect(screen.getByText(/haiku \/ poetic \(30\)/)).toBeTruthy();
+  });
+
+  it("Renga Camouflage loads the harvest haibun", () => {
+    render(
+      <PipeProvider initialTab="renga">
+        <RengaCamouflage />
+      </PipeProvider>
+    );
+    expect(screen.getByText(/Renga Camouflage/)).toBeTruthy();
+    expect(screen.getByText(/Two Voices at Harvest/)).toBeTruthy();
+    expect(screen.getByText(/featured harvest phrase/)).toBeTruthy();
+    expect(screen.getByText(/harbour woke before the bells/)).toBeTruthy();
+    expect(screen.getByText(/✓ renga 5-7-5-7-7/)).toBeTruthy();
   });
 
   it("Haiku Wallet offers the vault-file export, decryptor and import", () => {
