@@ -122,7 +122,7 @@ export default function RengaSolver() {
               onReceive={(content) => applyPhrase(content, setHokku, setWakiku)}
             />
             <a
-              href="/apps/renga-camouflage/#solver"
+              href="./apps/renga-camouflage/#solver"
               target="_blank"
               rel="noreferrer"
               className="rounded-lg bg-cyan-500 px-3 py-1.5 text-[10px] font-bold text-zinc-950 transition hover:bg-cyan-400"
