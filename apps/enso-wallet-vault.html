@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensō Poetic Cryptographic Forging Engine</title>
+    <style>
+        :root {
+            --bg-main: #090d16;
+            --bg-card: #111726;
+            --bg-input: #040811;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #10b981;
+            --success-hover: #059669;
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #1e293b;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 950px;
+            width: 100%;
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border: 1px solid var(--border);
+            box-sizing: border-box;
+        }
+        h1, h2, h3 { text-align: center; margin-top: 0; }
+        h1 { font-size: 1.8rem; color: #f1f5f9; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+
+        .setup-box { background: #1e293b; padding: 15px; border-radius: 8px; font-size: 14px; margin-bottom: 20px; border-left: 4px solid var(--primary); line-height: 1.5; }
+
+        textarea, input[type="text"], input[type="password"], input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background: var(--bg-input);
+            color: #4ade80;
+            font-size: 14px;
+            box-sizing: border-box;
+            font-family: monospace;
+        }
+        textarea { height: 100px; resize: vertical; }
+
+        .grid-config { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 15px; }
+        .control-group { display: flex; flex-direction: column; }
+        .control-group label { font-size: 11px; color: var(--text-muted); font-weight: bold; margin-bottom: 4px; text-transform: uppercase; }
+
+        .flex-row { display: flex; gap: 12px; margin-bottom: 15px; align-items: center; }
+
+        button {
+            background-color: var(--primary); color: #fff; border: none; padding: 12px 20px;
+            font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.2s; flex: 1;
+        }
+        button:hover { background-color: var(--primary-hover); }
+        button:disabled { background-color: #475569; cursor: not-allowed; opacity: 0.6; }
+
+        .danger-btn { background-color: var(--danger); }
+        .danger-btn:hover { background-color: #dc2626; }
+        .success-btn { background-color: var(--success); }
+        .success-btn:hover { background-color: var(--success-hover); }
+
+        #viewSetup, #viewAuth, #viewDashboard { display: none; }
+
+        #statusLog { text-align: center; margin: 15px 0; font-size: 14px; color: #38bdf8; font-weight: bold; min-height: 20px; }
+
+        .workspace { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 25px; margin-top: 20px; }
+        .canvas-area { display: flex; flex-direction: column; align-items: center; }
+
+        canvas { background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); max-width: 100%; height: auto; }
+
+        .collectible-card { background: #0b0f19; border: 1px solid var(--border); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+        .haiku-display { font-family: "Georgia", serif; font-size: 1.25rem; font-style: italic; line-height: 1.6; white-space: pre-wrap; margin-bottom: 15px; text-align: center; color: #f8fafc; }
+        .seed-box { font-family: monospace; color: #34d399; font-size: 0.85rem; background: #000; padding: 10px; border-radius: 4px; border: 1px solid var(--border); word-break: break-all; text-align: center; }
+
+        .saved-section { margin-top: 40px; border-top: 2px solid var(--border); padding-top: 25px; width: 100%; }
+        .saved-item { background: #0f1524; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
+        .saved-meta { font-family: monospace; font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+
+        .checkbox-container { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); user-select: none; }
+        .checkbox-container input { width: auto; margin: 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎨 Ensō & Haiku Wallet Forging Engine</h1>
+
+    <div id="viewSetup">
+        <div class="setup-box">
+            <strong>BIP-39 Dictionary Engine Cache:</strong> To permit standalone, non-networked processing execution, paste the valid 2048 English wordlist sequence inside the space provided below.
+        </div>
+        <textarea id="wordlistInput" placeholder="Paste standard 2048 word recovery catalog..."></textarea>
+        <button onclick="commitWordlistToLocalStorage()">Initialize Wordlist Engine</button>
+    </div>
+
+    <div id="viewAuth">
+        <div class="setup-box">
+            Cryptographic kernel operational. Supply a master execution password to unlock or provision your encrypted persistence matrix (AES-256-GCM Protected Cookie Ledger).
+        </div>
+        <input type="password" id="vaultPassword" placeholder="Set/Enter Cryptographic Vault Password" />
+        <button onclick="unlockSecureVault()">Authenticate & Initialize Device</button>
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="danger-btn" style="max-width: 200px;" onclick="wipeCachedWordlist()">Purge Wordlist Data</button>
+        </div>
+    </div>
+
+    <div id="viewDashboard">
+        <div class="grid-config">
+            <div class="control-group">
+                <label>Collectible Seed ID (Map/Art)</label>
+                <input type="text" id="cfgSeed" placeholder="Type custom seed code or generate randomly..." value="837291">
+            </div>
+            <div class="control-group">
+                <label>Batch Size (Mine Multi)</label>
+                <input type="number" id="cfgBatch" min="1" max="5" value="1">
+            </div>
+            <div class="control-group">
+                <label>Ink Load (1 - 10)</label>
+                <input type="number" id="cfgInkLoad" min="1" max="10" value="4">
+            </div>
+            <div class="control-group">
+                <label>Stroke Direction</label>
+                <select id="cfgDirection">
+                    <option value="CW" selected>Clockwise</option>
+                    <option value="CCW">Counter-Clockwise</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Paper Hue Background</label>
+                <select id="cfgHue">
+                    <option value="Cyan" selected>Cyan (#E0F2FE)</option>
+                    <option value="Washi">Traditional Washi Cream</option>
+                    <option value="Sepia">Vintage Sepia</option>
+                    <option value="Charcoal">Monochrome Charcoal</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Brush Dimension Size</label>
+                <input type="number" id="cfgBrushSize" min="1" max="10" value="6">
+            </div>
+            <div class="control-group">
+                <label>Ink Fluid Density</label>
+                <input type="number" id="cfgInkDensity" min="1" max="10" value="3">
+            </div>
+            <div class="control-group">
+                <label>X / Y Aspect Proportion</label>
+                <select id="cfgStretch">
+                    <option value="Unequal" selected>Unequal (Organic Oval)</option>
+                    <option value="Equal">Equal (Geometric Sphere)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Paper Fiber Grain Profile</label>
+                <input type="number" id="cfgTexture" min="1" max="5" value="4">
+            </div>
+            <div class="control-group">
+                <label>Bristle Splitting Profile</label>
+                <input type="number" id="cfgBristle" min="1" max="10" value="5">
+            </div>
+            <div class="control-group">
+                <label>Hanko Signature Seal Style</label>
+                <select id="cfgSignature">
+                    <option value="Dark" selected>Dark Slate Seal</option>
+                    <option value="Crimson">Imperial Crimson Seal</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Brushstroke Dynamic Mod</label>
+                <select id="cfgStrokeSize">
+                    <option value="Small">Delicate / Fine</option>
+                    <option value="Medium" selected>Balanced / Medium</option>
+                    <option value="Large">Robust / Heavy</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Stroke Entry Rotation</label>
+                <input type="number" id="cfgRotation" min="0" max="359" value="216">
+            </div>
+        </div>
+
+        <div class="flex-row" style="justify-content: space-between;">
+            <label class="checkbox-container">
+                <input type="checkbox" id="cfgGrammar" checked>
+                Heuristic Grammar Filter (Excludes dangling connectives at end of poetic phrases)
+            </label>
+            <button onclick="randomizeInputsToSeed()">Randomize Seed & Config</button>
+        </div>
+
+        <button class="success-btn" id="forgeActionBtn" style="width:100%; height:48px; font-size:16px;" onclick="triggerForgingOperation()">Forge Poetic Asset Collectible</button>
+
+        <div id="statusLog">System standing by... Ready to process state variables.</div>
+
+        <div class="workspace">
+            <div class="canvas-area">
+                <h3 style="color:var(--text-muted); margin-bottom:10px;">Ensō Calligraphy Rendering</h3>
+                <canvas id="renderCanvas" width="500" height="500"></canvas>
+                <div class="flex-row" style="width:100%; margin-top:12px;">
+                    <button onclick="downloadEnsoPNG()">Export Art PNG</button>
+                </div>
+            </div>
+            <div class="collectible-card">
+                <div>
+                    <h3 style="color:var(--text-muted); margin-top:0;">Forged Haiku Wallet Meta</h3>
+                    <div id="activeHaikuDisplay" class="haiku-display">Poetic matrix not yet compiled. Click "Forge" to execute continuous search loop.</div>
+                    <div style="font-size:10px; font-weight:bold; color:var(--text-muted); margin-bottom:4px;">VALID RECOVERY MNEMONIC (128-BIT ENTROPY + 4-BIT CHECKSUM):</div>
+                    <div id="activeSeedDisplay" class="seed-box">... awaiting mining search completion ...</div>
+                </div>
+                <div style="margin-top:15px; display:flex; gap:10px;">
+                    <button class="success-btn" id="commitVaultBtn" disabled onclick="saveActiveAssetToVault()">Commit Asset Token to Vault</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="saved-section" id="vaultRegistrySection" style="display:none;">
+            <div class="flex-row" style="justify-content: space-between; border-bottom:1px solid var(--border); padding-bottom:10px;">
+                <h3 style="margin:0; color:var(--text-muted);">Encrypted Local Storage Registry</h3>
+                <button class="success-btn" style="flex:none;" onclick="exportEncryptedBackupTxt()">Export Secure Cipher Bundle (.TXT)</button>
+            </div>
+            <div id="vaultWarningLabel" style="color:var(--danger); font-size:11px; font-weight:bold; text-align:center; margin:8px 0;"></div>
+            <div id="vaultListContainer"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // System Constants
+    const STORAGE_KEY_WORDS = "enso_bip39_cached_words";
+    const VAULT_COOKIE_NAME = "secure_enso_vault_v2";
+
+    // Rejection rules checking structure layout of haiku sentence boundaries
+    const DANGLING_CONNECTIVES = new Set(["the", "a", "an", "and", "or", "but", "if", "of", "with", "at", "by", "for", "to", "from", "in", "on", "as", "is", "are", "it", "that", "this", "my", "your", "his", "her", "its", "our", "their", "because", "than", "then"]);
+
+    // State Elements
+    let wordsDB = [];
+    let secureVaultData = [];
+    let encryptionPhraseKey = "";
+    let activelyCompiledWallet = null;
+    let targetAnimationProgress = 0;
+    let canvasAnimationLoopId = null;
+
+    // Standard Multi-Syllable Heuristic Mapping Engine (True Syllable Evaluation)
+    function lookupWordSyllableCount(word) {
+        word = word.toLowerCase().trim();
+        if (word.length <= 3) return 1;
+        // Basic linguistic syllable isolation rule processing
+        word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+        word = word.replace(/^y/, '');
+        const segments = word.match(/[aeiouy]{1,2}/g);
+        return segments ? Math.max(1, segments.length) : 1;
+    }
+
+    // --- VIEW LAYER MANAGER ---
+    window.onload = function() {
+        verifySystemEnvironment();
+    };
+
+    function verifySystemEnvironment() {
+        const payload = localStorage.getItem(STORAGE_KEY_WORDS);
+        if (payload) {
+            try {
+                const parsed = JSON.parse(payload);
+                if (parsed.length === 2048) {
+                    wordsDB = parsed;
+                    toggleAppViews("viewAuth");
+                    return;
+                }
+            } catch (err) {}
+        }
+        toggleAppViews("viewSetup");
+    }
+
+    function toggleAppViews(viewId) {
+        document.getElementById("viewSetup").style.display = viewId === "viewSetup" ? "block" : "none";
+        document.getElementById("viewAuth").style.display = viewId === "viewAuth" ? "block" : "none";
+        document.getElementById("viewDashboard").style.display = viewId === "viewDashboard" ? "block" : "none";
+    }
+
+    function commitWordlistToLocalStorage() {
+        const text = document.getElementById("wordlistInput").value.trim();
+        const words = text.split(/\s+/).filter(w => w.length > 0).map(w => w.toLowerCase());
+        if (words.length !== 2048) {
+            alert(`Execution Aborted: BIP-39 recovery configurations require precisely 2048 words. Supplied raw configuration contained: ${words.length}`);
+            return;
+        }
+        localStorage.setItem(STORAGE_KEY_WORDS, JSON.stringify(words));
+        verifySystemEnvironment();
+    }
+
+    function wipeCachedWordlist() {
+        if(confirm("Confirm destructive wipe of local offline word cache?")) {
+            localStorage.removeItem(STORAGE_KEY_WORDS);
+            verifySystemEnvironment();
+        }
+    }
+
+    // --- CRYPTOGRAPHIC KERNEL SUITE (AES-256-GCM + PBKDF2) ---
+    async function transformPasswordToKey(passwordString, saltBuffer) {
+        const encoder = new TextEncoder();
+        const structuralBase = await window.crypto.subtle.importKey(
+            "raw", encoder.encode(passwordString), { name: "PBKDF2" }, false, ["deriveBits", "deriveKey"]
+        );
+        return window.crypto.subtle.deriveKey(
+            { name: "PBKDF2", salt: saltBuffer, iterations: 100000, hash: "SHA-256" },
+            structuralBase, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+        );
+    }
+
+    async function executeLocalEncryption(plaintextPayload) {
+        const encoder = new TextEncoder();
+        const salt = window.crypto.getRandomValues(new Uint8Array(16));
+        const initializationVector = window.crypto.getRandomValues(new Uint8Array(12));
+        const derivedKey = await transformPasswordToKey(encryptionPhraseKey, salt);
+
+        const cipherBuffer = await window.crypto.subtle.encrypt(
+            { name: "AES-GCM", iv: initializationVector }, derivedKey, encoder.encode(plaintextPayload)
+        );
+
+        return JSON.stringify({
+            scheme: "AES-256-GCM-PBKDF2",
+            salt: btoa(String.fromCharCode(...salt)),
+            iv: btoa(String.fromCharCode(...initializationVector)),
+            ciphertext: btoa(String.fromCharCode(...new Uint8Array(cipherBuffer)))
+        });
+    }
+
+    async function executeLocalDecryption(ciphertextJsonString) {
+        try {
+            const structure = JSON.parse(ciphertextJsonString);
+            const salt = new Uint8Array(atob(structure.salt).split('').map(c => c.charCodeAt(0)));
+            const initializationVector = new Uint8Array(atob(structure.iv).split('').map(c => c.charCodeAt(0)));
+            const binaryCiphertext = new Uint8Array(atob(structure.ciphertext).split('').map(c => c.charCodeAt(0)));
+
+            const derivedKey = await transformPasswordToKey(encryptionPhraseKey, salt);
+            const clearBuffer = await window.crypto.subtle.decrypt(
+                { name: "AES-GCM", iv: initializationVector }, derivedKey, binaryCiphertext
+            );
+            return new TextDecoder().decode(clearBuffer);
+        } catch (err) {
+            throw new Error("Validation cipher key mismatch.");
+        }
+    }
+
+    // --- COOKIE CONTROL MATRIX ---
+    function storeEncryptedCookie(encryptedStringData) {
+        const dateObj = new Date();
+        dateObj.setTime(dateObj.getTime() + (365 * 24 * 60 * 60 * 1000)); // Persistent expiration: 1 Year
+        const finalCookieString = `${VAULT_COOKIE_NAME}=${encodeURIComponent(encryptedStringData)};expires=${dateObj.toUTCString()};path=/;SameSite=Strict`;
+
+        const warningIndicator = document.getElementById("vaultWarningLabel");
+        if(finalCookieString.length > 3800) {
+            warningIndicator.innerText = "⚠️ SYSTEM WARNING: Cookie space limit thresholds reached (~4KB Browser Limit). Backup data immediately via .TXT Export file allocation.";
+        } else {
+            warningIndicator.innerText = "";
+        }
+
+        if(finalCookieString.length > 4080) {
+            alert("Local storage runtime configuration error: Exceeded cookie max bounds buffer. Please utilize the persistent raw secure TXT backup utility option instead.");
+            return false;
+        }
+        document.cookie = finalCookieString;
+        return true;
+    }
+
+    function extractEncryptedCookie() {
+        const keyMatch = VAULT_COOKIE_NAME + "=";
+        const matrix = decodeURIComponent(document.cookie).split(';');
+        for (let segment of matrix) {
+            segment = segment.trim();
+            if (segment.indexOf(keyMatch) === 0) {
+                return segment.substring(keyMatch.length, segment.length);
+            }
+        }
+        return "";
+    }
+
+    async function unlockSecureVault() {
+        const rawInput = document.getElementById("vaultPassword").value;
+        if (!rawInput) {
+            alert("Access Denied: Master cryptographic password authorization cannot be null.");
+            return;
+        }
+        encryptionPhraseKey = rawInput;
+
+        const retrievedCookie = extractEncryptedCookie();
+        if (retrievedCookie) {
+            try {
+                const decString = await executeLocalDecryption(retrievedCookie);
+                secureVaultData = JSON.parse(decString);
+            } catch (err) {
+                alert("Decryption validation exception: Check master passphrase integrity parameters.");
+                return;
+            }
+        }
+        toggleAppViews("viewDashboard");
+        refreshVaultRegistryUI();
+    }
+
+    // --- PROCEDURAL INPUT GENERATOR (WORMS ARMAGEDDON SEED MODEL) ---
+    function seedStringPRNG(seedStr) {
+        let numericHash = 0;
+        for (let charIdx = 0; charIdx < seedStr.length; charIdx++) {
+            numericHash = (numericHash << 5) - numericHash + seedStr.charCodeAt(charIdx);
+            numericHash |= 0;
+        }
+        return function() {
+            let valueMod = Math.sin(numericHash++) * 10000;
+            return valueMod - Math.floor(valueMod);
+        };
+    }
+
+    function randomizeInputsToSeed() {
+        const generationBuffer = "0123456789ABCDEF";
+        let builtSeedStr = "";
+        for (let i = 0; i < 8; i++) {
+            builtSeedStr += generationBuffer.charAt(Math.floor(Math.random() * 16));
+        }
+        document.getElementById("cfgSeed").value = builtSeedStr;
+
+        // Instantiate isolated execution instance using newly synthesized unique string code hash
+        const localPrng = seedStringPRNG(builtSeedStr);
+
+        // Map randomized procedural states explicitly into the parameter view matrices
+        document.getElementById("cfgInkLoad").value = Math.floor(localPrng() * 10) + 1;
+        document.getElementById("cfgDirection").value = localPrng() > 0.5 ? "CW" : "CCW";
+
+        const hueArr = ["Cyan", "Washi", "Sepia", "Charcoal"];
+        document.getElementById("cfgHue").value = hueArr[Math.floor(localPrng() * hueArr.length)];
+
+        document.getElementById("cfgBrushSize").value = Math.floor(localPrng() * 10) + 1;
+        document.getElementById("cfgInkDensity").value = Math.floor(localPrng() * 10) + 1;
+        document.getElementById("cfgStretch").value = localPrng() > 0.4 ? "Unequal" : "Equal";
+        document.getElementById("cfgTexture").value = Math.floor(localPrng() * 5) + 1;
+        document.getElementById("cfgBristle").value = Math.floor(localPrng() * 10) + 1;
+        document.getElementById("cfgSignature").value = localPrng() > 0.5 ? "Dark" : "Crimson";
+
+        const strokeArr = ["Small", "Medium", "Large"];
+        document.getElementById("cfgStrokeSize").value = strokeArr[Math.floor(localPrng() * strokeArr.length)];
+        document.getElementById("cfgRotation").value = Math.floor(localPrng() * 360);
+    }
+
+    // --- POETIC STRUCTURAL METRICS RULES ENGINE ---
+    function performPoeticAnalysis(wordArray, strictGrammarFiltering) {
+        const profileSyllables = wordArray.map(lookupWordSyllableCount);
+        const absoluteSum = profileSyllables.reduce((a, b) => a + b, 0);
+        if (absoluteSum !== 17) return false;
+
+        // Trace and slice sequence matrix constraints tracking valid 5 - 7 - 5 spacing targets
+        for (let outer = 1; outer < wordArray.length - 1; outer++) {
+            const headCount = profileSyllables.slice(0, outer).reduce((a, b) => a + b, 0);
+            if (headCount === 5) {
+                for (let inner = outer + 1; inner < wordArray.length; inner++) {
+                    const midCount = profileSyllables.slice(outer, inner).reduce((a, b) => a + b, 0);
+                    const tailCount = profileSyllables.slice(inner).reduce((a, b) => a + b, 0);
+
+                    if (midCount === 7 && tailCount === 5) {
+                        const compiledLines = [
+                            wordArray.slice(0, outer).join(" "),
+                            wordArray.slice(outer, inner).join(" "),
+                            wordArray.slice(inner).join(" ")
+                        ];
+
+                        if (strictGrammarFiltering) {
+                            // Enforce rule checking: drop structures leaving hanging conjunction modifiers at phrase terminal frames
+                            for (let individualLine of compiledLines) {
+                                const segments = individualLine.split(" ");
+                                if (DANGLING_CONNECTIVES.has(segments[segments.length - 1])) {
+                                    return false; 
+                                }
+                            }
+                        }
+                        return compiledLines;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // --- CRYPTOGRAPHIC BIP-39 VALIDATION ENGINE ---
+    // Mathematically guarantees valid 12-word checksum sequence matching wallet profiles (Ledger/Trezor)
+    async function generateValidBIP39Mnemonic() {
+        const sourceEntropy = window.crypto.getRandomValues(new Uint8Array(16)); // 128 Bits Internal Entropy
+        const targetHashBuffer = await window.crypto.subtle.digest('SHA-256', sourceEntropy);
+        const byteMatrix = new Uint8Array(targetHashBuffer);
+
+        // Extract required trailing standard 4-bit cryptographic validation checksum index
+        const validationBits = byteMatrix[0].toString(2).padStart(8, '0').substring(0, 4);
+
+        let parsingBitStream = '';
+        for (let offset = 0; offset < sourceEntropy.length; offset++) {
+            parsingBitStream += sourceEntropy[offset].toString(2).padStart(8, '0');
+        }
+
+        const absoluteBitSequence = parsingBitStream + validationBits; // Total 132-bit validation array structure
+        const wordArrDestination = [];
+
+        for (let sliceOffset = 0; sliceOffset < 132; sliceOffset += 11) {
+            const indexInt = parseInt(absoluteBitSequence.substring(sliceOffset, sliceOffset + 11), 2);
+            wordArrDestination.push(wordsDB[indexInt]);
+        }
+        return wordArrDestination;
+    }
+
+    // --- FORGING CONTROLLER PIPELINE ENGINE ---
+    async function triggerForgingOperation() {
+        if(canvasAnimationLoopId) cancelAnimationFrame(canvasAnimationLoopId);
+
+        const userSelectedBatch = Math.min(Math.max(parseInt(document.getElementById("cfgBatch").value) || 1, 1), 5);
+        const enforceGrammar = document.getElementById("cfgGrammar").checked;
+        const currentExecutionStatusLabel = document.getElementById("statusLog");
+
+        document.getElementById("forgeActionBtn").disabled = true;
+        let evaluationIterations = 0;
+        let localBatchCollector = [];
+
+        currentExecutionStatusLabel.innerText = "Brute-forcing compliant cryptographic entropy...";
+
+        const loopSearchIteration = async () => {
+            // Segment checking chunks via batch slices to ensure window frames continue processing paint updates
+            for (let slice = 0; slice < 150; slice++) {
+                evaluationIterations++;
+                const samplePhrase = await generateValidBIP39Mnemonic();
+                const validationOutputLines = performPoeticAnalysis(samplePhrase, enforceGrammar);
+
+                if (validationOutputLines) {
+                    localBatchCollector.push({
+                        haiku: validationOutputLines.join("\n"),
+                        mnemonic: samplePhrase.join(" ")
+                    });
+
+                    if (localBatchCollector.length >= userSelectedBatch) {
+                        currentExecutionStatusLabel.innerText = `Valid Match Formed! Evaluated ${evaluationIterations} distinct cryptographic mappings.`;
+
+                        // Select target terminal instance array object to project to workspace view frames
+                        const activeFocusToken = localBatchCollector[localBatchCollector.length - 1];
+                        activelyCompiledWallet = {
+                            id: document.getElementById("cfgSeed").value,
+                            haiku: activeFocusToken.haiku,
+                            seed: activeFocusToken.mnemonic,
+                            params: captureUIConfigState()
+                        };
+
+                        document.getElementById("activeHaikuDisplay").innerText = activelyCompiledWallet.haiku;
+                        document.getElementById("activeSeedDisplay").innerText = activelyCompiledWallet.seed;
+                        document.getElementById("commitVaultBtn").disabled = false;
+                        document.getElementById("forgeActionBtn").disabled = false;
+
+                        // Initialize real-time calligraphy canvas assembly scene
+                        targetAnimationProgress = 0;
+                        animateCalligraphyBrushstroke();
+                        return;
+                    }
+                }
+            }
+            currentExecutionStatusLabel.innerText = `Parsing Entropy ... [Discovered: ${localBatchCollector.length}/${userSelectedBatch}] (Passes checked: ${evaluationIterations})`;
+            await new Promise(res => setTimeout(res, 0));
+            loopSearchIteration();
+        };
+
+        loopSearchIteration();
+    }
+
+    function captureUIConfigState() {
+        return {
+            inkLoad: document.getElementById("cfgInkLoad").value,
+            direction: document.getElementById("cfgDirection").value,
+            hue: document.getElementById("cfgHue").value,
+            brushSize: document.getElementById("cfgBrushSize").value,
+            inkDensity: document.getElementById("cfgInkDensity").value,
+            stretch: document.getElementById("cfgStretch").value,
+            texture: document.getElementById("cfgTexture").value,
+            bristle: document.getElementById("cfgBristle").value,
+            signature: document.getElementById("cfgSignature").value,
+            strokeSize: document.getElementById("cfgStrokeSize").value,
+            rotation: document.getElementById("cfgRotation").value
+        };
+    }
+
+    // --- DETERMINISTIC ENSO CANVAS CALLIGRAPHY RENDER PIPELINE ---
+    function animateCalligraphyBrushstroke() {
+        if (!activelyCompiledWallet) return;
+        const canvas = document.getElementById("renderCanvas");
+        const ctx = canvas.getContext("2d");
+        const state = activelyCompiledWallet.params;
+
+        // Initialize Pseudorandom generator using specific unique token seed context state
+        const localArtPrng = seedStringPRNG(activelyCompiledWallet.id);
+
+        targetAnimationProgress += 0.015; // Set incremental paint timeline frame speed constants
+        if (targetAnimationProgress > 1.0) targetAnimationProgress = 1.0;
+
+        ctx.clearRect(0, 0, 500, 500);
+
+        // 1. Process Background Base Canvas Paper Materials Texture Layers
+        if (state.hue === "Cyan") ctx.fillStyle = "#e0f2fe";
+        else if (state.hue === "Washi") ctx.fillStyle = "#fafaf9";
+        else if (state.hue === "Sepia") ctx.fillStyle = "#f4f0e6";
+        else ctx.fillStyle = "#262626";
+        ctx.fillRect(0, 0, 500, 500);
+
+        // Inject paper noise parameters matching requested grain index profiles
+        const intensityLimiter = parseInt(state.texture) * 4;
+        const structureImageBuffer = ctx.createImageData(500, 500);
+        const dataLength = structureImageBuffer.data.length;
+        for (let px = 0; px < dataLength; px += 4) {
+            const factorNoise = (localArtPrng() - 0.5) * intensityLimiter;
+            structureImageBuffer.data[px] = factorNoise;
+            structureImageBuffer.data[px+1] = factorNoise;
+            structureImageBuffer.data[px+2] = factorNoise;
+            structureImageBuffer.data[px+3] = 16; // Maintain alpha blending parameters safely
+        }
+        // Project alpha transparency adjustments on texture mapping configurations
+        const canvasCacheNode = document.createElement("canvas");
+        canvasCacheNode.width = 500; canvasCacheNode.height = 500;
+        canvasCacheNode.getContext("2d").putImageData(structureImageBuffer, 0, 0);
+        ctx.drawImage(canvasCacheNode, 0, 0);
+
+        // 2. Compute Structural Circle Math Metrics Arrays
+        const cX = 250, cY = 240;
+        const radiusValX = 160;
+        const radiusValY = state.stretch === "Unequal" ? 135 : 160;
+
+        const entryStartingAngleOffset = (parseInt(state.rotation) * Math.PI) / 180;
+        const totalLineStrokeSweepAngle = 360 * targetAnimationProgress;
+
+        ctx.lineCap = "round";
+
+        // Define theme spectrum based on background choice profiles
+        const inkTone = state.hue === "Charcoal" ? "rgba(240,240,240," : "rgba(15,15,17,";
+
+        // Draw overlapping organic bristle clusters to construct realistic fluid ink flow
+        const bristleCount = parseInt(state.bristle);
+        const configurationBaseBrushWidth = parseInt(state.brushSize);
+        const localFluidDensityScalar = parseInt(state.inkDensity);
+
+        for (let bristleIndex = 0; bristleIndex < bristleCount; bristleIndex++) {
+            ctx.beginPath();
+
+            // Adjust transparency matching active structural parameters
+            const opacityMap = (0.35 + (localArtPrng() * 0.45)) * (parseInt(state.inkLoad) / 10);
+            ctx.strokeStyle = `${inkTone}${opacityMap})`;
+
+            let trackingLastX = null, trackingLastY = null;
+
+            for (let deg = 0; deg <= totalLineStrokeSweepAngle; deg += 1) {
+                // Determine layout calculation vector paths tracking clockwise/counter configurations
+                let adjustedDegree = state.direction === "CW" ? deg : -deg;
+                let finalAngleRads = ((adjustedDegree * Math.PI) / 180) + entryStartingAngleOffset;
+
+                // Implement continuous organic radius fluctuation mapping
+                let rippleVariation = Math.sin(deg * 0.04) * (12 + localArtPrng() * 8);
+                let noiseJitterOffset = (localArtPrng() - 0.5) * localFluidDensityScalar;
+
+                // Track dimensional properties mapping custom dynamic modification profiles
+                let currentScaleModifier = 1.0;
+                if(state.strokeSize === "Small") currentScaleModifier = 0.5;
+                if(state.strokeSize === "Large") currentScaleModifier = 1.6;
+
+                let rX = (radiusValX + rippleVariation + noiseJitterOffset + (bristleIndex * 2)) * currentScaleModifier;
+                let rY = (radiusValY + rippleVariation + noiseJitterOffset + (bristleIndex * 1.5)) * currentScaleModifier;
+
+                let evalX = cX + rX * Math.cos(finalAngleRads);
+                let evalY = cY + rY * Math.sin(finalAngleRads);
+
+                // Dynamically simulate tapering ink coverage lines across the lifespan arc
+                let lifespanTaperScale = Math.sin((deg / 360) * Math.PI);
+                ctx.lineWidth = Math.max(0.5, (configurationBaseBrushWidth * lifespanTaperScale) + (localArtPrng() * 2));
+
+                if (deg === 0) {
+                    ctx.moveTo(evalX, evalY);
+                } else {
+                    ctx.lineTo(evalX, evalY);
+                }
+            }
+            ctx.stroke();
+        }
+
+        // 3. Render Procedural Hanko Signature Seal Artwork Elements
+        if (targetAnimationProgress === 1.0) {
+            ctx.fillStyle = state.signature === "Crimson" ? "#b91c1c" : "#334155";
+            ctx.fillRect(410, 400, 32, 32);
+            ctx.fillStyle = state.hue === "Charcoal" ? "#262626" : "#fafaf9";
+            ctx.font = "bold 9px monospace";
+            // Print shortened hash variant directly into structural artifact signature block
+            ctx.fillText(activelyCompiledWallet.id.substring(0, 4), 414, 420);
+        }
+
+        if (targetAnimationProgress < 1.0) {
+            canvasAnimationLoopId = requestAnimationFrame(animateCalligraphyBrushstroke);
+        }
+    }
+
+    function downloadEnsoPNG() {
+        if(!activelyCompiledWallet) return alert("Generation pipeline trace uninitialized.");
+        const canvas = document.getElementById("renderCanvas");
+        const elementAnchor = document.createElement("a");
+        elementAnchor.download = `enso_collectible_${activelyCompiledWallet.id}.png`;
+        elementAnchor.href = canvas.toDataURL("image/png");
+        elementAnchor.click();
+    }
+
+    // --- LOCAL VAULT PERSISTENCE SUBSYSTEMS ---
+    async function saveActiveAssetToVault() {
+        if (!activelyCompiledWallet) return;
+
+        secureVaultData.push({
+            id: activelyCompiledWallet.id,
+            haiku: activelyCompiledWallet.haiku,
+            seed: activelyCompiledWallet.seed,
+            timestamp: new Date().toISOString()
+        });
+
+        const compressedString = JSON.stringify(secureVaultData);
+        const encryptedPayload = await executeLocalEncryption(compressedString);
+
+        if (storeEncryptedCookie(encryptedPayload)) {
+            document.getElementById("commitVaultBtn").disabled = true;
+            document.getElementById("commitVaultBtn").innerText = "Token Committed";
+            refreshVaultRegistryUI();
+        } else {
+            secureVaultData.pop(); // Revert mutation states on cookie writing failure
+        }
+    }
+
+    async function deleteVaultItem(indexPosition) {
+        if(!confirm("Permanently erase this wallet token record from browser cookies?")) return;
+        secureVaultData.splice(indexPosition, 1);
+
+        if (secureVaultData.length === 0) {
+            document.cookie = `${VAULT_COOKIE_NAME}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+        } else {
+            const encryptedPayload = await executeLocalEncryption(JSON.stringify(secureVaultData));
+            storeEncryptedCookie(encryptedPayload);
+        }
+        refreshVaultRegistryUI();
+    }
+
+    function refreshVaultRegistryUI() {
+        const rootSection = document.getElementById("vaultRegistrySection");
+        const listWrapper = document.getElementById("vaultListContainer");
+
+        if (secureVaultData.length === 0) {
+            rootSection.style.display = "none";
+            return;
+        }
+
+        rootSection.style.display = "block";
+        listWrapper.innerHTML = "";
+
+        secureVaultData.forEach((item, index) => {
+            const row = document.createElement("div");
+            row.className = "saved-item";
+            row.innerHTML = `
+                <div>
+                    <div style="font-family:'Georgia', serif; font-style:italic; color:#fff; font-size:1.05rem; white-space:pre-wrap;">${item.haiku}</div>
+                    <div class="saved-meta">SEED ID: <strong>#${item.id}</strong> | RECOVERY MAP: <span style="color:#4ade80;">${item.seed}</span></div>
+                    <div class="saved-meta">TIMESTAMP: ${item.timestamp}</div>
+                </div>
+                <button class="danger-btn" style="flex:none; padding:8px 14px; font-size:12px;" onclick="deleteVaultItem(${index})">Delete</button>
+            `;
+            listWrapper.appendChild(row);
+        });
+    }
+
+    async function exportEncryptedBackupTxt() {
+        if(secureVaultData.length === 0) return;
+
+        let outputBuffer = `=======================================================\n`;
+        outputBuffer += `   SECURE POETIC WALLET BACKUP VAULT LEDGER EXPORT     \n`;
+        outputBuffer += `   GENERATED COMPILATION TIMESTAMP: ${new Date().toLocaleString()}\n`;
+        outputBuffer += `=======================================================\n\n`;
+
+        secureVaultData.forEach((wallet, index) => {
+            outputBuffer += `[RECORD ID TOKEN NO: #${wallet.id}]\n`;
+            outputBuffer += `-------------------------------------------------------\n`;
+            outputBuffer += `${wallet.haiku}\n\n`;
+            outputBuffer += `BIP-39 Crypto Seed Phrase:\n${wallet.seed}\n`;
+            outputBuffer += `-------------------------------------------------------\n\n`;
+        });
+
+        try {
+            const cipherWrappedRawString = await executeLocalEncryption(outputBuffer);
+            const dataBlob = new Blob([cipherWrappedRawString], { type: "text/plain;charset=utf-8" });
+            const temporaryObjectUrl = URL.createObjectURL(dataBlob);
+
+            const dummyAnchor = document.createElement("a");
+            dummyAnchor.href = temporaryObjectUrl;
+            dummyAnchor.download = `enso_secure_vault_export_${new Date().getTime()}.txt`;
+            document.body.appendChild(dummyAnchor);
+            dummyAnchor.click();
+
+            document.body.removeChild(dummyAnchor);
+            URL.revokeObjectURL(temporaryObjectUrl);
+        } catch (err) {
+            alert("Export error occurred during file pipeline preparation.");
+        }
+    }
+</script>
+
+</body>
+</html>

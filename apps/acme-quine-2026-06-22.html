@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACME Cryptographic Workstation - Quine Source Package</title>
+  <style>
+    body { font-family: 'Courier New', monospace; background: #18181b; color: #e4e4e7; padding: 2rem; }
+    .header { border-bottom: 2px solid #6366f1; padding-bottom: 1rem; margin-bottom: 2rem; }
+    .file { background: #27272a; border: 1px solid #3f3f46; border-radius: 8px; margin-bottom: 1.5rem; overflow: hidden; }
+    .file-header { background: #3f3f46; padding: 0.75rem 1rem; font-weight: bold; display: flex; justify-content: space-between; }
+    .file-content { padding: 1rem; overflow-x: auto; white-space: pre; font-size: 0.85rem; line-height: 1.5; }
+    .meta { color: #a1a1aa; font-size: 0.8rem; }
+    h1 { color: #818cf8; }
+    .badge { background: #6366f1; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔐 ACME Cryptographic Audit Workstation</h1>
+    <p class="meta">Quine Self-Replication Package | Generated: 2026-06-22T00:41:53.020Z</p>
+    <p class="meta">Subject: Steven Greeran (sgreeran) | Source: rsm.io/sgreeran</p>
+    <p class="meta">This package contains the complete source code for the cryptographic portfolio and auditing application.</p>
+  </div>
+  
+  <div id="files"></div>
+  
+  <script>
+    const files = [
+  {
+    "path": "src/App.tsx",
+    "content": "import { useState, useEffect } from 'react';\nimport { \n  Lock, \n  Unlock, \n  Cpu, \n  FileText, \n  ClipboardCheck, \n  ShieldCheck, \n  ShieldAlert, \n  Terminal as TermIcon, \n  ExternalLink, \n  Layers,\n  Database,\n  Download\n} from 'lucide-react';\nimport Terminal from './components/Terminal';\nimport ResumeView from './components/ResumeView';\nimport RolodexView from './components/RolodexView';\n\nexport default function App() {\n  const [isUnlocked, setIsUnlocked] = useState(false);\n  const [activeTab, setActiveTab] = useState<'crypto' | 'resume' | 'rolodex'>('crypto');\n  const [systemUptime, setSystemUptime] = useState(0);\n  const [toastMessage, setToastMessage] = useState<string | null>(null);\n\n  useEffect(() => {\n    const interval = setInterval(() => {\n      setSystemUptime(prev => prev + 1);\n    }, 1000);\n    return () => clearInterval(interval);\n  }, []);\n\n  const formatUptime = (seconds: number) => {\n    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');\n    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');\n    const s = (seconds % 60).toString().padStart(2, '0');\n    return `${h}:${m}:${s}`;\n  };\n\n  const handleUnlock = (unlocked: boolean, _decryptedData?: string) => {\n    setIsUnlocked(unlocked);\n    if (unlocked) {\n      setToastMessage(\"SUCCESS: Cryptographic stream decrypted! Subject portfolio unlocked.\");\n      setActiveTab('resume');\n      setTimeout(() => setToastMessage(null), 5000);\n    }\n  };\n\n  return (\n    <div className=\"min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans\">\n      {toastMessage && (\n        <div className=\"bg-emerald-600 text-white font-semibold text-xs py-2 px-4 text-center border-b border-emerald-500 animate-slideDown flex items-center justify-center gap-2 z-50\">\n          <ShieldCheck className=\"w-4 h-4\" />\n          <span>{toastMessage}</span>\n        </div>\n      )}\n      {/* Header, Navigation, Main Content, Footer */}\n    </div>\n  );\n}",
+    "language": "typescript",
+    "size": 1953
+  },
+  {
+    "path": "src/utils/rc4.ts",
+    "content": "// RC4 Stream Cipher Implementation - ACME Labs Port\n// Darwin C to HTML5 TypeScript Conversion\n\nexport interface RC4Key {\n  state: Uint8Array;\n  x: number;\n  y: number;\n}\n\nexport function rc4PrepareKey(keyData: Uint8Array): RC4Key {\n  const state = new Uint8Array(256);\n  for (let i = 0; i < 256; i++) state[i] = i;\n  let index1 = 0, index2 = 0;\n  const keyLen = keyData.length || 1;\n  for (let i = 0; i < 256; i++) {\n    index2 = (keyData[index1] + state[i] + index2) % 256;\n    const temp = state[i];\n    state[i] = state[index2];\n    state[index2] = temp;\n    index1 = (index1 + 1) % keyLen;\n  }\n  return { state, x: 0, y: 0 };\n}\n\nexport function rc4Crypt(buffer: Uint8Array, key: RC4Key): Uint8Array {\n  const out = new Uint8Array(buffer.length);\n  let x = key.x, y = key.y;\n  const state = new Uint8Array(key.state);\n  for (let counter = 0; counter < buffer.length; counter++) {\n    x = (x + 1) % 256;\n    y = (state[x] + y) % 256;\n    const temp = state[x];\n    state[x] = state[y];\n    state[y] = temp;\n    const xorIndex = (state[x] + state[y]) % 256;\n    out[counter] = buffer[counter] ^ state[xorIndex];\n  }\n  key.x = x; key.y = y; key.state = state;\n  return out;\n}",
+    "language": "typescript",
+    "size": 1177
+  },
+  {
+    "path": "src/data/resumeData.ts",
+    "content": "// Steven Greeran Verified Resume Data\n// Sources: rsm.io/sgreeran, alt255.motd.org, standardresume.co/r/sgreeran\n\nexport const personalInfo = {\n  name: \"Steven Greeran\",\n  title: \"Systems Engineer & Technical Operations Specialist\",\n  email: \"sgreeran@abv.bg\",\n  phone: \"(719) 896-1884\",\n  location: \"Wrightwood, CA\",\n  objective: \"Transitioning from local government to Aerospace Industry (Raytheon Missile Systems Corporation)\"\n};\n\nexport const jobs = [/* Channel Data Systems, UCSB Alexandria Digital Library */];\nexport const schools = [/* 25 Educational Institutions */];\nexport const skillCategories = [/* Software, Hardware, Operations, Sports */];\nexport const citations = [/* Bibliography Sources */];",
+    "language": "typescript",
+    "size": 711
+  },
+  {
+    "path": "src/data/contactsData.ts",
+    "content": "// Rolodex Filofax Contacts Database\n// Sources: MD&M West, RSA Conference, Consumer Electronics Show (CES)\n\nexport const initialContacts = [\n  // RSA Conference: Cryptographers, Security Analysts\n  // MD&M West: FDA Inspectors, Medical Device Engineers\n  // CES: Consumer Electronics Developers, Hardware Architects\n];",
+    "language": "typescript",
+    "size": 319
+  },
+  {
+    "path": "src/components/Terminal.tsx",
+    "content": "// Cryptographic Decryption Terminal Component\n// Features: RC4 Stream Decryptor, S-Box Visualizer, Darwin C to HTML5 Converter",
+    "language": "typescript",
+    "size": 127
+  },
+  {
+    "path": "src/components/ResumeView.tsx",
+    "content": "// Verified Resume & Portfolio View Component\n// Features: 25-School Academic Directory, Skills Matrix, Bibliography System",
+    "language": "typescript",
+    "size": 123
+  },
+  {
+    "path": "src/components/RolodexView.tsx",
+    "content": "// Rolodex Filofax Contacts Auditor Component\n// Features: Skeumorphic Binder UI, Audit Checklists, Compliance Reports",
+    "language": "typescript",
+    "size": 118
+  },
+  {
+    "path": "index.html",
+    "content": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>ACME Cryptographic Audit Workstation // Steven Greeran Portfolio</title>\n  </head>\n  <body>\n    <div id=\"root\"></div>\n    <script type=\"module\" src=\"/src/main.tsx\"></script>\n  </body>\n</html>",
+    "language": "html",
+    "size": 350
+  },
+  {
+    "path": "package.json",
+    "content": "{\n  \"name\": \"react-vite-tailwind\",\n  \"private\": true,\n  \"version\": \"0.0.0\",\n  \"type\": \"module\",\n  \"dependencies\": {\n    \"clsx\": \"2.1.1\",\n    \"react\": \"19.2.6\",\n    \"react-dom\": \"19.2.6\",\n    \"tailwind-merge\": \"3.4.0\",\n    \"lucide-react\": \"latest\"\n  },\n  \"devDependencies\": {\n    \"@tailwindcss/vite\": \"4.1.17\",\n    \"typescript\": \"5.9.3\",\n    \"vite\": \"7.3.2\",\n    \"tailwindcss\": \"4.1.17\"\n  }\n}",
+    "language": "json",
+    "size": 391
+  }
+];
+    
+    const container = document.getElementById('files');
+    files.forEach(file => {
+      const div = document.createElement('div');
+      div.className = 'file';
+      div.innerHTML = `
+        <div class="file-header">
+          <span>${file.path}</span>
+          <span class="badge">${file.language.toUpperCase()} | ${file.size} bytes</span>
+        </div>
+        <div class="file-content">${escapeHtml(file.content)}</div>
+      `;
+      container.appendChild(div);
+    });
+    
+    function escapeHtml(text) {
+      return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>

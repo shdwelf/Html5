@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedural Ensō Generator</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #eee;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        canvas {
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            margin-top: 20px;
+        }
+        .controls {
+            background: #333;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            font-family: monospace;
+            width: 300px;
+            text-align: center;
+            border: 1px solid #555;
+            background: #111;
+            color: #0f0;
+        }
+        button {
+            padding: 8px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #555;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover { background: #777; }
+        button:disabled { background: #444; cursor: not-allowed; }
+        .download-container {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Ensogen ID Engine</h2>
+    <div class="controls">
+        <label>Seed ID:</label>
+        <input type="text" id="ensogenInput" value="4-CW-C-06-03-U-04-05-D-M-216">
+        <button onclick="render()">Generate Ensō</button>
+        <button onclick="randomize()">Random Terrain</button>
+        <button id="downloadBtn" onclick="downloadPNG()" disabled>Download PNG</button>
+    </div>
+
+    <!-- 600x600 Canvas for drawing the Ensō -->
+    <canvas id="ensoCanvas" width="600" height="600"></canvas>
+
+    <div class="download-container" id="downloadContainer" style="display: none;">
+        <button onclick="downloadPNG()">Download PNG</button>
+        <span id="seedDisplay"></span>
+    </div>
+
+    <script>
+        // --- 1. SEEDED RNG ENGINE (Like Worms Armageddon) ---
+        // Converts a string into a 32-bit seed
+        function xmur3(str) {
+            let h = 1779033703 ^ str.length;
+            for(let i = 0; i < str.length; i++) {
+                h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+                h = h << 13 | h >>> 19;
+            }
+            return function() {
+                h = Math.imul(h ^ h >>> 16, 2246822507);
+                h = Math.imul(h ^ h >>> 13, 3266489909);
+                return (h ^= h >>> 16) >>> 0;
+            }
+        }
+        // Mulberry32 RNG using the seed
+        function mulberry32(a) {
+            return function() {
+              var t = a += 0x6D2B79F5;
+              t = Math.imul(t ^ t >>> 15, t | 1);
+              t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+              return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            }
+        }
+
+        let rng; // Global RNG function
+        let currentSeed = 0;
+        let currentImageData = null;
+
+        function randomRange(min, max) { return min + rng() * (max - min); }
+
+        // --- 2. PARSE ENSOGEN NUMBER ---
+        function parseEnsogen(id) {
+            const parts = id.split('-');
+            return {
+                inkLoad: parseInt(parts[0]) || 4,            // 1-10 (Stroke length)
+                direction: parts[1] === 'CW' ? 1 : -1,       // 1 = Clockwise, -1 = CCW
+                paperHue: parts[2] || 'C',                   // C = Cyan, W = White
+                brushSize: parseInt(parts[3]) || 6,          // 1-10
+                inkDensity: parseInt(parts[4]) || 3,         // 1-10 (Opacity/Splatters)
+                stretch: parts[5] || 'U',                    // U = Unequal, E = Equal
+                texture: parseInt(parts[6]) || 4,            // 1-10 (Paper grain)
+                bristles: parseInt(parts[7]) || 5,           // 1-10 (Number of sub-strokes)
+                sigStyle: parts[8] || 'D',                   // D = Dark, L = Light
+                strokeSize: parts[9] || 'M',                 // S, M, L (Radius)
+                startRot: parseInt(parts[10]) || 216         // 0-360 degrees
+            };
+        }
+
+        // --- 3. RENDERING ENGINE ---
+        function render() {
+            const id = document.getElementById('ensogenInput').value.toUpperCase();
+            const canvas = document.getElementById('ensoCanvas');
+            const ctx = canvas.getContext('2d');
+            const params = parseEnsogen(id);
+
+            // Initialize Deterministic Randomness with the ID
+            currentSeed = xmur3(id)();
+            rng = mulberry32(currentSeed);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // A. Paper Hue & Texture
+            ctx.fillStyle = params.paperHue === 'C' ? '#E0FFFF' : '#F5F5DC'; // Cyan or Parchment
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = `rgba(0,0,0,${params.texture * 0.01})`; // Grain
+            for(let i=0; i<10000; i++) {
+                ctx.fillRect(rng() * canvas.width, rng() * canvas.height, 2, 2);
+            }
+
+            // B. Geometry Setup
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            // Stroke Size (Radius)
+            let baseR = 150;
+            if (params.strokeSize === 'S') baseR = 100;
+            if (params.strokeSize === 'L') baseR = 200;
+
+            // X/Y Stretch (Unequal = Ellipse, Equal = Circle)
+            const stretchX = params.stretch === 'U' ? randomRange(0.8, 1.2) : 1;
+            const stretchY = params.stretch === 'U' ? randomRange(0.8, 1.2) : 1;
+
+            // Angles
+            const startAngle = params.startRot * (Math.PI / 180);
+            // Ink Load dictates how much of a full circle is drawn (4 = approx 80%)
+            const sweepAmount = Math.PI * 2 * (params.inkLoad / 5) * randomRange(0.8, 1.1);
+            currentImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+            // C. Drawing the Ensō
+            const steps = 300;
+            const maxBristles = params.bristles * 5;
+            const bristleOffsets = [];
+
+            // Pre-calculate bristles for the brush
+            for(let b=0; b<maxBristles; b++) {
+                bristleOffsets.push({
+                    x: randomRange(-params.brushSize*3, params.brushSize*3),
+                    y: randomRange(-params.brushSize*3, params.brushSize*3),
+                    size: randomRange(1, params.brushSize)
+                });
+            }
+
+            // Iterate along the circular path
+            for(let i=0; i<steps; i++) {
+                let progress = i / steps;
+                let currentAngle = startAngle + (progress * sweepAmount * params.direction);
+
+                // Procedural noise for human imperfection
+                let rNoise = randomRange(-5, 5);
+                let R = baseR + rNoise;
+
+                let x = cx + (R * Math.cos(currentAngle)) * stretchX;
+                let y = cy + (R * Math.sin(currentAngle)) * stretchY;
+
+                // Ink running out toward the end
+                let alpha = (1 - progress) * (params.inkDensity / 3);
+                if (alpha < 0) alpha = 0;
+                ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+
+                // Draw bristles
+                bristleOffsets.forEach(offset => {
+                    // Slight scattering of bristles based on step
+                    let jitterX = randomRange(-2, 2);
+                    let jitterY = randomRange(-2, 2);
+
+                    ctx.beginPath();
+                    ctx.arc(x + offset.x + jitterX, y + offset.y + jitterY, offset.size, 0, Math.PI*2);
+                    ctx.fill();
+                });
+            }
+
+            // Enable download button
+            document.getElementById('downloadBtn').disabled = false;
+            document.getElementById('downloadContainer').style.display = 'flex';
+            document.getElementById('seedDisplay').textContent = `Seed: ${id}`;
+        }
+
+        // --- 4. RANDOM SEED GENERATION ---
+        function randomize() {
+            // Generate a random 12-character alphanumeric string
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-';
+            let randomId = '';
+            for (let i = 0; i < 12; i++) {
+                randomId += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+
+            // Insert dashes at specific positions to match the Ensogen format
+            randomId = randomId.substring(0, 1) + '-' +
+                      randomId.substring(1, 3) + '-' +
+                      randomId.substring(3, 4) + '-' +
+                      randomId.substring(4, 6) + '-' +
+                      randomId.substring(6, 7) + '-' +
+                      randomId.substring(7, 8) + '-' +
+                      randomId.substring(8, 9) + '-' +
+                      randomId.substring(9, 11) + '-' +
+                      randomId.substring(11, 12);
+
+            document.getElementById('ensogenInput').value = randomId;
+            render();
+        }
+
+        // --- 5. PNG DOWNLOAD FUNCTION ---
+        function downloadPNG() {
+            const canvas = document.getElementById('ensoCanvas');
+            const link = document.createElement('a');
+            link.download = `enso_${document.getElementById('ensogenInput').value}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ensō Vault — Haiku BIP-39/44 Wallet Forge</title>
+<style>
+  :root{
+    --bg:#0d0f12; --panel:#15181d; --panel2:#1d2128; --ink:#e8e6e1;
+    --muted:#8a8f99; --accent:#33d6c0; --accent2:#c0a062; --danger:#e2604a;
+    --line:#2a2f38; --good:#5fd17a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',Roboto,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+  header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,#14171c,#0d0f12)}
+  header h1{font-size:18px;margin:0;font-weight:600;letter-spacing:.5px}
+  header .sumi{font-size:26px;color:var(--ink)}
+  header .tag{color:var(--muted);font-size:12px}
+  nav{display:flex;gap:2px;padding:0 12px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+  nav button{background:none;border:none;color:var(--muted);padding:12px 16px;cursor:pointer;font-size:13px;border-bottom:2px solid transparent}
+  nav button:hover{color:var(--ink)}
+  nav button.active{color:var(--accent);border-bottom-color:var(--accent)}
+  main{padding:18px;max-width:1200px;margin:0 auto}
+  .tabpane{display:none} .tabpane.active{display:block}
+  .grid{display:grid;grid-template-columns:320px 1fr;gap:18px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+  .card h2{margin:0 0 12px;font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--accent2)}
+  label{display:block;margin:10px 0 4px;font-size:12px;color:var(--muted)}
+  input[type=range]{width:100%}
+  select,input[type=text],input[type=number],input[type=password]{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:8px;border-radius:6px;font-size:13px}
+  .rowval{display:flex;justify-content:space-between;align-items:center}
+  .rowval b{color:var(--ink)}
+  button.act{background:var(--accent);color:#05201c;border:none;padding:10px 14px;border-radius:7px;cursor:pointer;font-weight:600;font-size:13px}
+  button.act:hover{filter:brightness(1.1)}
+  button.ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line);padding:9px 13px;border-radius:7px;cursor:pointer;font-size:13px}
+  button.ghost:hover{border-color:var(--accent)}
+  button.danger{background:none;border:1px solid var(--danger);color:var(--danger);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  canvas{background:#f4efe3;border-radius:8px;display:block;width:100%;max-width:520px;margin:0 auto}
+  .enso-id{font-family:'Courier New',monospace;font-size:15px;color:var(--accent);word-break:break-all;background:var(--panel2);padding:8px;border-radius:6px;border:1px solid var(--line)}
+  .haiku{font-size:18px;line-height:1.9;font-family:Georgia,serif;color:#f0ece2;padding:14px;background:var(--panel2);border-radius:8px;border-left:3px solid var(--accent2);white-space:pre-line}
+  .mnemonic{font-family:'Courier New',monospace;background:var(--panel2);padding:10px;border-radius:6px;color:var(--good);word-spacing:4px;line-height:1.7}
+  .muted{color:var(--muted)}
+  .small{font-size:12px}
+  .wallet-item{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:10px}
+  .wallet-item .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .badge{display:inline-block;background:var(--panel);border:1px solid var(--line);padding:2px 8px;border-radius:20px;font-size:11px;color:var(--muted)}
+  .ok{color:var(--good)} .bad{color:var(--danger)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:500;font-size:11px;text-transform:uppercase}
+  #term{background:#06080a;border:1px solid var(--line);border-radius:8px;height:380px;overflow-y:auto;padding:10px;font-family:'Courier New',monospace;font-size:13px;color:#9fe8c0;white-space:pre-wrap}
+  #termin{width:100%;background:#06080a;border:1px solid var(--line);color:#9fe8c0;font-family:'Courier New',monospace;padding:9px;border-radius:6px;margin-top:8px}
+  .pill{padding:3px 9px;border-radius:20px;font-size:11px}
+  .locked{filter:blur(5px);pointer-events:none;user-select:none}
+  .lockmsg{text-align:center;padding:30px;color:var(--muted)}
+  .swatch{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:middle;margin-right:6px;border:1px solid #0006}
+  .flash{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#05201c;padding:10px 18px;border-radius:8px;font-weight:600;opacity:0;transition:.3s;z-index:99}
+  .flash.show{opacity:1}
+  a{color:var(--accent)}
+  .iframewrap{border:1px solid var(--line);border-radius:8px;overflow:hidden;height:600px}
+  iframe{width:100%;height:100%;border:none;background:#fff}
+</style>
+</head>
+<body>
+<div class="flash" id="flash"></div>
+<header>
+  <span class="sumi">◯</span>
+  <div>
+    <h1>Ensō Vault</h1>
+    <div class="tag">Seeded Ensō art · Haiku BIP-39/44 wallet forge · standalone</div>
+  </div>
+</header>
+<nav id="nav">
+  <button data-tab="enso" class="active">Ensō Forge</button>
+  <button data-tab="wallet">Haiku Wallet</button>
+  <button data-tab="vault">Vault List</button>
+  <button data-tab="terminal">Terminal / IRC</button>
+  <button data-tab="waves">Waves</button>
+  <button data-tab="market">Market Data</button>
+  <button data-tab="about">About</button>
+</nav>
+<main>
+
+<!-- ============ ENSO ============ -->
+<section class="tabpane active" id="tab-enso">
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>Ensō Parameters</h2>
+        <div class="rowval"><label>Ink Load</label><b id="v_inkLoad">4</b></div>
+        <input type="range" id="inkLoad" min="0" max="9" value="4">
+        <label>Direction</label>
+        <select id="direction"><option>Clockwise</option><option>Counterclockwise</option></select>
+        <label>Paper Hue</label>
+        <select id="paperHue"><option>Cyan</option><option>Sumi White</option><option>Sepia</option><option>Indigo</option><option>Crimson</option><option>Jade</option></select>
+        <div class="rowval"><label>Brush Size</label><b id="v_brushSize">6</b></div>
+        <input type="range" id="brushSize" min="1" max="12" value="6">
+        <div class="rowval"><label>Ink Density</label><b id="v_inkDensity">3</b></div>
+        <input type="range" id="inkDensity" min="0" max="9" value="3">
+        <label>X/Y Stretch</label>
+        <select id="stretch"><option>Unequal</option><option>Equal</option></select>
+        <div class="rowval"><label>Paper Texture</label><b id="v_paperTexture">4</b></div>
+        <input type="range" id="paperTexture" min="0" max="9" value="4">
+        <div class="rowval"><label>Bristle Density</label><b id="v_bristleDensity">5</b></div>
+        <input type="range" id="bristleDensity" min="1" max="9" value="5">
+        <label>Signature Style</label>
+        <select id="signature"><option>Dark</option><option>Light</option><option>None</option></select>
+        <label>Brushstroke Size</label>
+        <select id="strokeSize"><option>Small</option><option selected>Medium</option><option>Large</option></select>
+        <div class="rowval"><label>Brushstroke Start Rotation (°)</label><b id="v_startRot">216</b></div>
+        <input type="range" id="startRot" min="0" max="359" value="216">
+        <div class="btnrow">
+          <button class="act" id="randBtn">🎲 Randomize Seed</button>
+          <button class="ghost" id="drawBtn">Render</button>
+          <button class="ghost" id="dlPng">⬇ PNG</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <h2>Forged Ensō</h2>
+        <canvas id="enso" width="520" height="520"></canvas>
+        <label>Ensō ID (terrain seed / master vault key derivation)</label>
+        <div class="enso-id" id="ensoId">—</div>
+        <div class="btnrow">
+          <button class="ghost" id="loadIdBtn">Load Ensō ID…</button>
+          <button class="ghost" id="copyIdBtn">Copy ID</button>
+        </div>
+        <p class="small muted">The Ensō ID deterministically encodes all 11 parameters + seed (like Worms terrain seeds). The same ID always re-forges the same ensō, and is used to unlock the Haiku Wallet vault.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WALLET ============ -->
+<section class="tabpane" id="tab-wallet">
+  <div class="card" id="vaultGate">
+    <h2>🔒 Vault Locked</h2>
+    <p class="muted small">Enter your Ensō ID (and optional passphrase) to unlock the haiku wallet forge. The ID+passphrase derive the AES-256 master key used to encrypt saved wallets.</p>
+    <label>Ensō ID</label><input type="text" id="gateId" placeholder="paste ensō id">
+    <label>Passphrase (optional but recommended)</label><input type="password" id="gatePass" placeholder="extra secret">
+    <div class="btnrow"><button class="act" id="unlockBtn">Unlock Vault</button>
+    <button class="ghost" id="useCurrentId">Use current forged ID</button></div>
+  </div>
+
+  <div id="walletArea" class="locked">
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>Forge Settings</h2>
+          <label>Mnemonic Length</label>
+          <select id="mlen"><option value="12">12 words (128-bit)</option><option value="24">24 words (256-bit)</option></select>
+          <label>Wallet Type (checksum/format)</label>
+          <select id="wtype">
+            <option value="btc44">Bitcoin BIP-44 (m/44'/0'/0'/0/0)</option>
+            <option value="btc84">Bitcoin Native SegWit BIP-84 (m/84'/0'/0'/0/0)</option>
+            <option value="eth">Ethereum BIP-44 (m/44'/60'/0'/0/0)</option>
+            <option value="ltc">Litecoin BIP-44 (m/44'/2'/0'/0/0)</option>
+            <option value="waves">Waves (m/44'/5741564'/0'/0/0)</option>
+          </select>
+          <label>Batch (mine N at once)</label>
+          <input type="number" id="batch" min="1" max="50" value="1">
+          <label><input type="checkbox" id="spellOnly" style="width:auto"> Only keep haiku that pass spell/grammar heuristic (else auto-skip to next)</label>
+          <div class="btnrow">
+            <button class="act" id="forgeBtn">⚒ Forge Haiku Wallet</button>
+            <button class="ghost" id="forgeAnim">✨ Forge w/ Animation</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h2>Forged Wallet</h2>
+          <canvas id="forgeCanvas" width="300" height="160" style="max-width:300px;display:none"></canvas>
+          <div id="haikuOut" class="haiku">Forge a wallet to see its haiku…</div>
+          <label>Mnemonic (BIP-39)</label>
+          <div class="mnemonic" id="mnemOut">—</div>
+          <div id="checkOut" class="small" style="margin-top:8px"></div>
+          <label>Derivation path</label>
+          <div class="enso-id small" id="pathOut">—</div>
+          <div class="btnrow">
+            <button class="act" id="saveWallet">💾 Save to Vault</button>
+            <button class="ghost" id="spellChk">🔤 Spell Check</button>
+            <button class="ghost" id="nextWallet">⏭ Next</button>
+          </div>
+          <div id="spellResult" class="small" style="margin-top:8px"></div>
+        </div>
+        <div class="card" id="batchOut" style="display:none">
+          <h2>Batch Results</h2>
+          <div id="batchList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VAULT LIST ============ -->
+<section class="tabpane" id="tab-vault">
+  <div class="card">
+    <h2>Saved Wallets (encrypted, persisted)</h2>
+    <p class="small muted">Stored AES-256 encrypted in an encrypted cookie + localStorage. Unlock the vault (Wallet tab) to decrypt.</p>
+    <div class="btnrow">
+      <button class="ghost" id="exportTxt">⬇ Export encrypted .txt</button>
+      <button class="ghost" id="importTxt">⬆ Import .txt</button>
+      <button class="danger" id="clearAll">Delete ALL</button>
+      <input type="file" id="importFile" style="display:none" accept=".txt">
+    </div>
+    <div id="vaultList" style="margin-top:14px"><p class="muted">Unlock vault to view.</p></div>
+  </div>
+</section>
+
+<!-- ============ TERMINAL / IRC ============ -->
+<section class="tabpane" id="tab-terminal">
+  <div class="card">
+    <h2>Terminal / IRC Chat</h2>
+    <p class="small muted">PIM-style command terminal with a real IRC client over a WebSocket gateway (requires internet; will not connect in the offline preview). Type <code>/help</code>.</p>
+    <div class="btnrow" style="margin-bottom:8px">
+      <input type="text" id="ircServer" placeholder="wss gateway" value="wss://web.libera.chat/webirc/websocket/" style="flex:1;min-width:200px">
+      <input type="text" id="ircNick" placeholder="nick" value="enso-guest" style="width:140px">
+      <input type="text" id="ircChan" placeholder="#channel" value="#bitcoin" style="width:140px">
+      <button class="act" id="ircConnect">Connect</button>
+    </div>
+    <div id="term"></div>
+    <input type="text" id="termin" placeholder="type a command or message, Enter to send">
+  </div>
+</section>
+
+<!-- ============ WAVES ============ -->
+<section class="tabpane" id="tab-waves">
+  <div class="card">
+    <h2>Waves Lite Client</h2>
+    <p class="small muted">Waves is a cryptocurrency / blockchain platform. The embedded client below is the referenced Waves Lite client (loads live; blank in offline preview).</p>
+    <div class="iframewrap"><iframe src="https://username1565.github.io/waves-lite-client/" title="Waves Lite Client" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe></div>
+    <p class="small"><a href="https://username1565.github.io/waves-lite-client/" target="_blank">Open Waves Lite Client in new tab ↗</a></p>
+  </div>
+</section>
+
+<!-- ============ MARKET ============ -->
+<section class="tabpane" id="tab-market">
+  <div class="card">
+    <h2>Market Data</h2>
+    <div class="btnrow"><button class="act" id="refreshMkt">↻ Refresh</button><span class="muted small" id="mktStatus"></span></div>
+    <table id="mktTable" style="margin-top:12px">
+      <thead><tr><th>Asset</th><th>Price (USD)</th><th>24h %</th></tr></thead>
+      <tbody><tr><td colspan="3" class="muted">Click refresh (needs internet).</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="tabpane" id="tab-about">
+  <div class="card">
+    <h2>About & Notes</h2>
+    <div class="small" style="line-height:1.7">
+      <p>Single-file, offline-capable HTML5 app. Embeds the official BIP-39 English 2048-word list with precomputed syllable counts for real 5-7-5 haiku composition.</p>
+      <ul>
+        <li><b>Ensō Forge:</b> seeded randomized brush ensō → PNG; Ensō ID encodes all parameters (Worms-terrain-style seed).</li>
+        <li><b>Haiku Wallet:</b> valid BIP-39 entropy + checksum, BIP-44/84 paths, batch mining, spell-check, forging animation, collectible IDs.</li>
+        <li><b>Vault:</b> AES-256 (WebCrypto AES-GCM) encrypted save/export/delete + encrypted-cookie persistence, key derived from Ensō ID + passphrase (PBKDF2).</li>
+        <li><b>Terminal/IRC:</b> command shell + IRC over WebSocket gateway.</li>
+        <li><b>Waves & Market:</b> embedded Waves Lite client + live price table.</li>
+      </ul>
+      <p class="bad"><b>Security warning:</b> This is a demo/educational tool. Mnemonics are generated with <code>crypto.getRandomValues</code> but you should never store real funds in a browser-generated, cookie-persisted wallet. Verify any seed in trusted offline software before use.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+<script>
+// BIP-39 English wordlist (2048 words) + precomputed syllable counts.
+// Generated offline; embedded for standalone use.
+window.BIP39_WORDS = ["abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd", "abuse", "access", "accident", "account", "accuse", "achieve", "acid", "acoustic", "acquire", "across", "act", "action", "actor", "actress", "actual", "adapt", "add", "addict", "address", "adjust", "admit", "adult", "advance", "advice", "aerobic", "affair", "afford", "afraid", "again", "age", "agent", "agree", "ahead", "aim", "air", "airport", "aisle", "alarm", "album", "alcohol", "alert", "alien", "all", "alley", "allow", "almost", "alone", "alpha", "already", "also", "alter", "always", "amateur", "amazing", "among", "amount", "amused", "analyst", "anchor", "ancient", "anger", "angle", "angry", "animal", "ankle", "announce", "annual", "another", "answer", "antenna", "antique", "anxiety", "any", "apart", "apology", "appear", "apple", "approve", "april", "arch", "arctic", "area", "arena", "argue", "arm", "armed", "armor", "army", "around", "arrange", "arrest", "arrive", "arrow", "art", "artefact", "artist", "artwork", "ask", "aspect", "assault", "asset", "assist", "assume", "asthma", "athlete", "atom", "attack", "attend", "attitude", "attract", "auction", "audit", "august", "aunt", "author", "auto", "autumn", "average", "avocado", "avoid", "awake", "aware", "away", "awesome", "awful", "awkward", "axis", "baby", "bachelor", "bacon", "badge", "bag", "balance", "balcony", "ball", "bamboo", "banana", "banner", "bar", "barely", "bargain", "barrel", "base", "basic", "basket", "battle", "beach", "bean", "beauty", "because", "become", "beef", "before", "begin", "behave", "behind", "believe", "below", "belt", "bench", "benefit", "best", "betray", "better", "between", "beyond", "bicycle", "bid", "bike", "bind", "biology", "bird", "birth", "bitter", "black", "blade", "blame", "blanket", "blast", "bleak", "bless", "blind", "blood", "blossom", "blouse", "blue", "blur", "blush", "board", "boat", "body", "boil", "bomb", "bone", "bonus", "book", "boost", "border", "boring", "borrow", "boss", "bottom", "bounce", "box", "boy", "bracket", "brain", "brand", "brass", "brave", "bread", "breeze", "brick", "bridge", "brief", "bright", "bring", "brisk", "broccoli", "broken", "bronze", "broom", "brother", "brown", "brush", "bubble", "buddy", "budget", "buffalo", "build", "bulb", "bulk", "bullet", "bundle", "bunker", "burden", "burger", "burst", "bus", "business", "busy", "butter", "buyer", "buzz", "cabbage", "cabin", "cable", "cactus", "cage", "cake", "call", "calm", "camera", "camp", "can", "canal", "cancel", "candy", "cannon", "canoe", "canvas", "canyon", "capable", "capital", "captain", "car", "carbon", "card", "cargo", "carpet", "carry", "cart", "case", "cash", "casino", "castle", "casual", "cat", "catalog", "catch", "category", "cattle", "caught", "cause", "caution", "cave", "ceiling", "celery", "cement", "census", "century", "cereal", "certain", "chair", "chalk", "champion", "change", "chaos", "chapter", "charge", "chase", "chat", "cheap", "check", "cheese", "chef", "cherry", "chest", "chicken", "chief", "child", "chimney", "choice", "choose", "chronic", "chuckle", "chunk", "churn", "cigar", "cinnamon", "circle", "citizen", "city", "civil", "claim", "clap", "clarify", "claw", "clay", "clean", "clerk", "clever", "click", "client", "cliff", "climb", "clinic", "clip", "clock", "clog", "close", "cloth", "cloud", "clown", "club", "clump", "cluster", "clutch", "coach", "coast", "coconut", "code", "coffee", "coil", "coin", "collect", "color", "column", "combine", "come", "comfort", "comic", "common", "company", "concert", "conduct", "confirm", "congress", "connect", "consider", "control", "convince", "cook", "cool", "copper", "copy", "coral", "core", "corn", "correct", "cost", "cotton", "couch", "country", "couple", "course", "cousin", "cover", "coyote", "crack", "cradle", "craft", "cram", "crane", "crash", "crater", "crawl", "crazy", "cream", "credit", "creek", "crew", "cricket", "crime", "crisp", "critic", "crop", "cross", "crouch", "crowd", "crucial", "cruel", "cruise", "crumble", "crunch", "crush", "cry", "crystal", "cube", "culture", "cup", "cupboard", "curious", "current", "curtain", "curve", "cushion", "custom", "cute", "cycle", "dad", "damage", "damp", "dance", "danger", "daring", "dash", "daughter", "dawn", "day", "deal", "debate", "debris", "decade", "december", "decide", "decline", "decorate", "decrease", "deer", "defense", "define", "defy", "degree", "delay", "deliver", "demand", "demise", "denial", "dentist", "deny", "depart", "depend", "deposit", "depth", "deputy", "derive", "describe", "desert", "design", "desk", "despair", "destroy", "detail", "detect", "develop", "device", "devote", "diagram", "dial", "diamond", "diary", "dice", "diesel", "diet", "differ", "digital", "dignity", "dilemma", "dinner", "dinosaur", "direct", "dirt", "disagree", "discover", "disease", "dish", "dismiss", "disorder", "display", "distance", "divert", "divide", "divorce", "dizzy", "doctor", "document", "dog", "doll", "dolphin", "domain", "donate", "donkey", "donor", "door", "dose", "double", "dove", "draft", "dragon", "drama", "drastic", "draw", "dream", "dress", "drift", "drill", "drink", "drip", "drive", "drop", "drum", "dry", "duck", "dumb", "dune", "during", "dust", "dutch", "duty", "dwarf", "dynamic", "eager", "eagle", "early", "earn", "earth", "easily", "east", "easy", "echo", "ecology", "economy", "edge", "edit", "educate", "effort", "egg", "eight", "either", "elbow", "elder", "electric", "elegant", "element", "elephant", "elevator", "elite", "else", "embark", "embody", "embrace", "emerge", "emotion", "employ", "empower", "empty", "enable", "enact", "end", "endless", "endorse", "enemy", "energy", "enforce", "engage", "engine", "enhance", "enjoy", "enlist", "enough", "enrich", "enroll", "ensure", "enter", "entire", "entry", "envelope", "episode", "equal", "equip", "era", "erase", "erode", "erosion", "error", "erupt", "escape", "essay", "essence", "estate", "eternal", "ethics", "evidence", "evil", "evoke", "evolve", "exact", "example", "excess", "exchange", "excite", "exclude", "excuse", "execute", "exercise", "exhaust", "exhibit", "exile", "exist", "exit", "exotic", "expand", "expect", "expire", "explain", "expose", "express", "extend", "extra", "eye", "eyebrow", "fabric", "face", "faculty", "fade", "faint", "faith", "fall", "false", "fame", "family", "famous", "fan", "fancy", "fantasy", "farm", "fashion", "fat", "fatal", "father", "fatigue", "fault", "favorite", "feature", "february", "federal", "fee", "feed", "feel", "female", "fence", "festival", "fetch", "fever", "few", "fiber", "fiction", "field", "figure", "file", "film", "filter", "final", "find", "fine", "finger", "finish", "fire", "firm", "first", "fiscal", "fish", "fit", "fitness", "fix", "flag", "flame", "flash", "flat", "flavor", "flee", "flight", "flip", "float", "flock", "floor", "flower", "fluid", "flush", "fly", "foam", "focus", "fog", "foil", "fold", "follow", "food", "foot", "force", "forest", "forget", "fork", "fortune", "forum", "forward", "fossil", "foster", "found", "fox", "fragile", "frame", "frequent", "fresh", "friend", "fringe", "frog", "front", "frost", "frown", "frozen", "fruit", "fuel", "fun", "funny", "furnace", "fury", "future", "gadget", "gain", "galaxy", "gallery", "game", "gap", "garage", "garbage", "garden", "garlic", "garment", "gas", "gasp", "gate", "gather", "gauge", "gaze", "general", "genius", "genre", "gentle", "genuine", "gesture", "ghost", "giant", "gift", "giggle", "ginger", "giraffe", "girl", "give", "glad", "glance", "glare", "glass", "glide", "glimpse", "globe", "gloom", "glory", "glove", "glow", "glue", "goat", "goddess", "gold", "good", "goose", "gorilla", "gospel", "gossip", "govern", "gown", "grab", "grace", "grain", "grant", "grape", "grass", "gravity", "great", "green", "grid", "grief", "grit", "grocery", "group", "grow", "grunt", "guard", "guess", "guide", "guilt", "guitar", "gun", "gym", "habit", "hair", "half", "hammer", "hamster", "hand", "happy", "harbor", "hard", "harsh", "harvest", "hat", "have", "hawk", "hazard", "head", "health", "heart", "heavy", "hedgehog", "height", "hello", "helmet", "help", "hen", "hero", "hidden", "high", "hill", "hint", "hip", "hire", "history", "hobby", "hockey", "hold", "hole", "holiday", "hollow", "home", "honey", "hood", "hope", "horn", "horror", "horse", "hospital", "host", "hotel", "hour", "hover", "hub", "huge", "human", "humble", "humor", "hundred", "hungry", "hunt", "hurdle", "hurry", "hurt", "husband", "hybrid", "ice", "icon", "idea", "identify", "idle", "ignore", "ill", "illegal", "illness", "image", "imitate", "immense", "immune", "impact", "impose", "improve", "impulse", "inch", "include", "income", "increase", "index", "indicate", "indoor", "industry", "infant", "inflict", "inform", "inhale", "inherit", "initial", "inject", "injury", "inmate", "inner", "innocent", "input", "inquiry", "insane", "insect", "inside", "inspire", "install", "intact", "interest", "into", "invest", "invite", "involve", "iron", "island", "isolate", "issue", "item", "ivory", "jacket", "jaguar", "jar", "jazz", "jealous", "jeans", "jelly", "jewel", "job", "join", "joke", "journey", "joy", "judge", "juice", "jump", "jungle", "junior", "junk", "just", "kangaroo", "keen", "keep", "ketchup", "key", "kick", "kid", "kidney", "kind", "kingdom", "kiss", "kit", "kitchen", "kite", "kitten", "kiwi", "knee", "knife", "knock", "know", "lab", "label", "labor", "ladder", "lady", "lake", "lamp", "language", "laptop", "large", "later", "latin", "laugh", "laundry", "lava", "law", "lawn", "lawsuit", "layer", "lazy", "leader", "leaf", "learn", "leave", "lecture", "left", "leg", "legal", "legend", "leisure", "lemon", "lend", "length", "lens", "leopard", "lesson", "letter", "level", "liar", "liberty", "library", "license", "life", "lift", "light", "like", "limb", "limit", "link", "lion", "liquid", "list", "little", "live", "lizard", "load", "loan", "lobster", "local", "lock", "logic", "lonely", "long", "loop", "lottery", "loud", "lounge", "love", "loyal", "lucky", "luggage", "lumber", "lunar", "lunch", "luxury", "lyrics", "machine", "mad", "magic", "magnet", "maid", "mail", "main", "major", "make", "mammal", "man", "manage", "mandate", "mango", "mansion", "manual", "maple", "marble", "march", "margin", "marine", "market", "marriage", "mask", "mass", "master", "match", "material", "math", "matrix", "matter", "maximum", "maze", "meadow", "mean", "measure", "meat", "mechanic", "medal", "media", "melody", "melt", "member", "memory", "mention", "menu", "mercy", "merge", "merit", "merry", "mesh", "message", "metal", "method", "middle", "midnight", "milk", "million", "mimic", "mind", "minimum", "minor", "minute", "miracle", "mirror", "misery", "miss", "mistake", "mix", "mixed", "mixture", "mobile", "model", "modify", "mom", "moment", "monitor", "monkey", "monster", "month", "moon", "moral", "more", "morning", "mosquito", "mother", "motion", "motor", "mountain", "mouse", "move", "movie", "much", "muffin", "mule", "multiply", "muscle", "museum", "mushroom", "music", "must", "mutual", "myself", "mystery", "myth", "naive", "name", "napkin", "narrow", "nasty", "nation", "nature", "near", "neck", "need", "negative", "neglect", "neither", "nephew", "nerve", "nest", "net", "network", "neutral", "never", "news", "next", "nice", "night", "noble", "noise", "nominee", "noodle", "normal", "north", "nose", "notable", "note", "nothing", "notice", "novel", "now", "nuclear", "number", "nurse", "nut", "oak", "obey", "object", "oblige", "obscure", "observe", "obtain", "obvious", "occur", "ocean", "october", "odor", "off", "offer", "office", "often", "oil", "okay", "old", "olive", "olympic", "omit", "once", "one", "onion", "online", "only", "open", "opera", "opinion", "oppose", "option", "orange", "orbit", "orchard", "order", "ordinary", "organ", "orient", "original", "orphan", "ostrich", "other", "outdoor", "outer", "output", "outside", "oval", "oven", "over", "own", "owner", "oxygen", "oyster", "ozone", "pact", "paddle", "page", "pair", "palace", "palm", "panda", "panel", "panic", "panther", "paper", "parade", "parent", "park", "parrot", "party", "pass", "patch", "path", "patient", "patrol", "pattern", "pause", "pave", "payment", "peace", "peanut", "pear", "peasant", "pelican", "pen", "penalty", "pencil", "people", "pepper", "perfect", "permit", "person", "pet", "phone", "photo", "phrase", "physical", "piano", "picnic", "picture", "piece", "pig", "pigeon", "pill", "pilot", "pink", "pioneer", "pipe", "pistol", "pitch", "pizza", "place", "planet", "plastic", "plate", "play", "please", "pledge", "pluck", "plug", "plunge", "poem", "poet", "point", "polar", "pole", "police", "pond", "pony", "pool", "popular", "portion", "position", "possible", "post", "potato", "pottery", "poverty", "powder", "power", "practice", "praise", "predict", "prefer", "prepare", "present", "pretty", "prevent", "price", "pride", "primary", "print", "priority", "prison", "private", "prize", "problem", "process", "produce", "profit", "program", "project", "promote", "proof", "property", "prosper", "protect", "proud", "provide", "public", "pudding", "pull", "pulp", "pulse", "pumpkin", "punch", "pupil", "puppy", "purchase", "purity", "purpose", "purse", "push", "put", "puzzle", "pyramid", "quality", "quantum", "quarter", "question", "quick", "quit", "quiz", "quote", "rabbit", "raccoon", "race", "rack", "radar", "radio", "rail", "rain", "raise", "rally", "ramp", "ranch", "random", "range", "rapid", "rare", "rate", "rather", "raven", "raw", "razor", "ready", "real", "reason", "rebel", "rebuild", "recall", "receive", "recipe", "record", "recycle", "reduce", "reflect", "reform", "refuse", "region", "regret", "regular", "reject", "relax", "release", "relief", "rely", "remain", "remember", "remind", "remove", "render", "renew", "rent", "reopen", "repair", "repeat", "replace", "report", "require", "rescue", "resemble", "resist", "resource", "response", "result", "retire", "retreat", "return", "reunion", "reveal", "review", "reward", "rhythm", "rib", "ribbon", "rice", "rich", "ride", "ridge", "rifle", "right", "rigid", "ring", "riot", "ripple", "risk", "ritual", "rival", "river", "road", "roast", "robot", "robust", "rocket", "romance", "roof", "rookie", "room", "rose", "rotate", "rough", "round", "route", "royal", "rubber", "rude", "rug", "rule", "run", "runway", "rural", "sad", "saddle", "sadness", "safe", "sail", "salad", "salmon", "salon", "salt", "salute", "same", "sample", "sand", "satisfy", "satoshi", "sauce", "sausage", "save", "say", "scale", "scan", "scare", "scatter", "scene", "scheme", "school", "science", "scissors", "scorpion", "scout", "scrap", "screen", "script", "scrub", "sea", "search", "season", "seat", "second", "secret", "section", "security", "seed", "seek", "segment", "select", "sell", "seminar", "senior", "sense", "sentence", "series", "service", "session", "settle", "setup", "seven", "shadow", "shaft", "shallow", "share", "shed", "shell", "sheriff", "shield", "shift", "shine", "ship", "shiver", "shock", "shoe", "shoot", "shop", "short", "shoulder", "shove", "shrimp", "shrug", "shuffle", "shy", "sibling", "sick", "side", "siege", "sight", "sign", "silent", "silk", "silly", "silver", "similar", "simple", "since", "sing", "siren", "sister", "situate", "six", "size", "skate", "sketch", "ski", "skill", "skin", "skirt", "skull", "slab", "slam", "sleep", "slender", "slice", "slide", "slight", "slim", "slogan", "slot", "slow", "slush", "small", "smart", "smile", "smoke", "smooth", "snack", "snake", "snap", "sniff", "snow", "soap", "soccer", "social", "sock", "soda", "soft", "solar", "soldier", "solid", "solution", "solve", "someone", "song", "soon", "sorry", "sort", "soul", "sound", "soup", "source", "south", "space", "spare", "spatial", "spawn", "speak", "special", "speed", "spell", "spend", "sphere", "spice", "spider", "spike", "spin", "spirit", "split", "spoil", "sponsor", "spoon", "sport", "spot", "spray", "spread", "spring", "spy", "square", "squeeze", "squirrel", "stable", "stadium", "staff", "stage", "stairs", "stamp", "stand", "start", "state", "stay", "steak", "steel", "stem", "step", "stereo", "stick", "still", "sting", "stock", "stomach", "stone", "stool", "story", "stove", "strategy", "street", "strike", "strong", "struggle", "student", "stuff", "stumble", "style", "subject", "submit", "subway", "success", "such", "sudden", "suffer", "sugar", "suggest", "suit", "summer", "sun", "sunny", "sunset", "super", "supply", "supreme", "sure", "surface", "surge", "surprise", "surround", "survey", "suspect", "sustain", "swallow", "swamp", "swap", "swarm", "swear", "sweet", "swift", "swim", "swing", "switch", "sword", "symbol", "symptom", "syrup", "system", "table", "tackle", "tag", "tail", "talent", "talk", "tank", "tape", "target", "task", "taste", "tattoo", "taxi", "teach", "team", "tell", "ten", "tenant", "tennis", "tent", "term", "test", "text", "thank", "that", "theme", "then", "theory", "there", "they", "thing", "this", "thought", "three", "thrive", "throw", "thumb", "thunder", "ticket", "tide", "tiger", "tilt", "timber", "time", "tiny", "tip", "tired", "tissue", "title", "toast", "tobacco", "today", "toddler", "toe", "together", "toilet", "token", "tomato", "tomorrow", "tone", "tongue", "tonight", "tool", "tooth", "top", "topic", "topple", "torch", "tornado", "tortoise", "toss", "total", "tourist", "toward", "tower", "town", "toy", "track", "trade", "traffic", "tragic", "train", "transfer", "trap", "trash", "travel", "tray", "treat", "tree", "trend", "trial", "tribe", "trick", "trigger", "trim", "trip", "trophy", "trouble", "truck", "true", "truly", "trumpet", "trust", "truth", "try", "tube", "tuition", "tumble", "tuna", "tunnel", "turkey", "turn", "turtle", "twelve", "twenty", "twice", "twin", "twist", "two", "type", "typical", "ugly", "umbrella", "unable", "unaware", "uncle", "uncover", "under", "undo", "unfair", "unfold", "unhappy", "uniform", "unique", "unit", "universe", "unknown", "unlock", "until", "unusual", "unveil", "update", "upgrade", "uphold", "upon", "upper", "upset", "urban", "urge", "usage", "use", "used", "useful", "useless", "usual", "utility", "vacant", "vacuum", "vague", "valid", "valley", "valve", "van", "vanish", "vapor", "various", "vast", "vault", "vehicle", "velvet", "vendor", "venture", "venue", "verb", "verify", "version", "very", "vessel", "veteran", "viable", "vibrant", "vicious", "victory", "video", "view", "village", "vintage", "violin", "virtual", "virus", "visa", "visit", "visual", "vital", "vivid", "vocal", "voice", "void", "volcano", "volume", "vote", "voyage", "wage", "wagon", "wait", "walk", "wall", "walnut", "want", "warfare", "warm", "warrior", "wash", "wasp", "waste", "water", "wave", "way", "wealth", "weapon", "wear", "weasel", "weather", "web", "wedding", "weekend", "weird", "welcome", "west", "wet", "whale", "what", "wheat", "wheel", "when", "where", "whip", "whisper", "wide", "width", "wife", "wild", "will", "win", "window", "wine", "wing", "wink", "winner", "winter", "wire", "wisdom", "wise", "wish", "witness", "wolf", "woman", "wonder", "wood", "wool", "word", "work", "world", "worry", "worth", "wrap", "wreck", "wrestle", "wrist", "write", "wrong", "yard", "year", "yellow", "you", "young", "youth", "zebra", "zero", "zone", "zoo"];
+window.BIP39_SYLLABLES = [3, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 3, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 3, 2, 2, 1, 2, 2, 2, 2, 2, 3, 2, 2, 2, 3, 3, 2, 2, 2, 3, 2, 2, 2, 2, 2, 3, 2, 2, 2, 3, 2, 3, 3, 3, 1, 2, 4, 2, 2, 2, 2, 1, 2, 2, 3, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 3, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 1, 2, 2, 2, 3, 4, 2, 2, 2, 2, 3, 2, 2, 2, 2, 3, 2, 1, 1, 2, 3, 1, 2, 3, 2, 1, 3, 2, 2, 1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1, 1, 3, 1, 2, 2, 2, 1, 3, 1, 1, 1, 3, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 2, 1, 1, 2, 1, 1, 2, 2, 2, 3, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 3, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 3, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 2, 1, 2, 1, 2, 2, 2, 1, 1, 1, 3, 2, 2, 1, 3, 1, 4, 2, 1, 1, 2, 1, 2, 3, 2, 2, 3, 2, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 2, 1, 1, 2, 3, 2, 3, 2, 2, 1, 1, 3, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 3, 1, 2, 1, 1, 2, 2, 2, 2, 1, 2, 2, 2, 3, 2, 2, 2, 2, 2, 3, 2, 2, 1, 1, 2, 2, 2, 1, 1, 2, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2, 1, 2, 2, 1, 2, 1, 2, 1, 1, 2, 2, 1, 2, 1, 1, 1, 2, 2, 2, 3, 2, 2, 3, 2, 1, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 3, 1, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 2, 2, 2, 1, 2, 2, 1, 2, 1, 2, 3, 3, 3, 2, 3, 2, 1, 3, 3, 2, 1, 2, 3, 2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 2, 2, 2, 2, 2, 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 3, 2, 2, 2, 1, 1, 3, 1, 2, 2, 4, 4, 1, 2, 3, 2, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 2, 1, 2, 3, 2, 2, 3, 2, 3, 2, 3, 2, 1, 2, 2, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 2, 2, 1, 2, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 3, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 3, 3, 2, 3, 3, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 1, 3, 1, 1, 1, 1, 1, 1, 3, 2, 1, 2, 3, 1, 2, 1, 2, 2, 3, 1, 3, 2, 3, 3, 1, 1, 1, 3, 1, 3, 1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 1, 3, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 3, 3, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 3, 2, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 3, 2, 2, 1, 2, 3, 2, 1, 2, 1, 1, 1, 2, 1, 3, 1, 2, 1, 2, 1, 1, 2, 2, 2, 1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 4, 2, 2, 1, 3, 2, 2, 3, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 2, 3, 2, 2, 2, 3, 3, 3, 2, 3, 2, 2, 3, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 2, 3, 2, 2, 1, 1, 2, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 3, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 1, 3, 3, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1, 1, 2, 2, 1, 2, 3, 1, 1, 3, 1, 1, 1, 1, 2, 2, 2, 2, 1, 3, 2, 2, 1, 2, 2, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 1, 1, 2, 1, 3, 1, 2, 2, 3, 1, 2, 1, 2, 1, 3, 2, 2, 3, 1, 2, 3, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 1, 3, 2, 2, 3, 2, 3, 1, 2, 1, 1, 2, 3, 2, 3, 1, 2, 3, 2, 2, 1, 1, 2, 1, 2, 3, 2, 2, 2, 2, 1, 1, 2, 1, 2, 2, 3, 2, 2, 2, 2, 1, 2, 2, 3, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 3, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 1, 3, 2, 2, 1, 1, 3, 1, 2, 2, 2, 1, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 1, 2, 2, 2, 1, 2, 1, 2, 3, 2, 1, 1, 2, 2, 2, 2, 3, 3, 2, 2, 2, 2, 2, 2, 4, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 3, 2, 2, 1, 2, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 1, 2, 1, 2, 3, 1, 3, 2, 2, 2, 2, 2, 2, 1, 1, 2, 1, 3, 2, 2, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 2, 1, 3, 2, 3, 3, 1, 3, 3, 3, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1, 1, 3, 1, 3, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 3, 2, 2, 1, 2, 2, 2, 1, 1, 1, 2, 1, 2, 2, 2, 3, 2, 1, 1, 1, 2, 3, 3, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 2, 2, 1, 2, 1, 2, 1, 3, 3, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 2, 2, 4, 1, 1, 2, 2, 1, 3, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 2, 3, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 2, 2, 2, 3, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 3, 1, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 2, 1, 2, 1, 1, 2, 2, 1, 3, 2, 2, 1, 3, 2, 2, 3, 3, 1, 2, 2, 1, 1, 1, 2, 2, 1, 3, 2, 1, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 3, 2, 3, 3, 3, 2, 3, 2, 2, 2, 2, 3, 3, 3, 2, 3, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 2, 4, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1, 3, 2, 2, 2, 2, 1, 3, 2, 2, 2, 3, 2, 2, 2, 3, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 3, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 1];
+</script>
+<script>
+"use strict";
+/* ============ Embedded data is injected here as window.BIP39_WORDS / BIP39_SYLLABLES ============ */
+const WORDS = window.BIP39_WORDS, SYL = window.BIP39_SYLLABLES;
+
+/* ---------- tiny helpers ---------- */
+const $=id=>document.getElementById(id);
+function flash(msg){const f=$('flash');f.textContent=msg;f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1800);}
+const enc=new TextEncoder(), dec=new TextDecoder();
+function hex(buf){return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+function b64(buf){return btoa(String.fromCharCode(...new Uint8Array(buf)));}
+function unb64(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
+
+/* ---------- seeded RNG (mulberry32) ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function strHash(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+
+/* ---------- Ensō parameter model ---------- */
+const HUES={'Cyan':'#0aa6a0','Sumi White':'#222','Sepia':'#5b4327','Indigo':'#2b3a8f','Crimson':'#9c2a2a','Jade':'#1f7a4d'};
+const PAPER={'Cyan':'#dff7f4','Sumi White':'#f6f3ec','Sepia':'#efe3cf','Indigo':'#e6e9f7','Crimson':'#f7e6e6','Jade':'#e3f3e9'};
+const HUE_LIST=Object.keys(HUES);
+function readParams(){
+  return {
+    inkLoad:+$('inkLoad').value, direction:$('direction').value, paperHue:$('paperHue').value,
+    brushSize:+$('brushSize').value, inkDensity:+$('inkDensity').value, stretch:$('stretch').value,
+    paperTexture:+$('paperTexture').value, bristleDensity:+$('bristleDensity').value,
+    signature:$('signature').value, strokeSize:$('strokeSize').value, startRot:+$('startRot').value,
+    seed: currentSeed
+  };
+}
+function applyParams(p){
+  $('inkLoad').value=p.inkLoad; $('direction').value=p.direction; $('paperHue').value=p.paperHue;
+  $('brushSize').value=p.brushSize; $('inkDensity').value=p.inkDensity; $('stretch').value=p.stretch;
+  $('paperTexture').value=p.paperTexture; $('bristleDensity').value=p.bristleDensity;
+  $('signature').value=p.signature; $('strokeSize').value=p.strokeSize; $('startRot').value=p.startRot;
+  currentSeed=p.seed; syncLabels();
+}
+function syncLabels(){
+  v_inkLoad.textContent=$('inkLoad').value; v_brushSize.textContent=$('brushSize').value;
+  v_inkDensity.textContent=$('inkDensity').value; v_paperTexture.textContent=$('paperTexture').value;
+  v_bristleDensity.textContent=$('bristleDensity').value; v_startRot.textContent=$('startRot').value;
+}
+let currentSeed = (Math.random()*0xFFFFFFFF)>>>0;
+
+/* ---------- Ensō ID: encode all params + seed into a compact base32 string ---------- */
+const B32='0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+function toB32(num,len){let s='';for(let i=0;i<len;i++){s=B32[num&31]+s;num=Math.floor(num/32);}return s;}
+function fromB32(s){let n=0;for(const c of s)n=n*32+B32.indexOf(c);return n;}
+function encodeEnsoId(p){
+  const dir=p.direction==='Clockwise'?0:1;
+  const hue=HUE_LIST.indexOf(p.paperHue);
+  const str=p.stretch==='Unequal'?0:1;
+  const sig=['Dark','Light','None'].indexOf(p.signature);
+  const ss=['Small','Medium','Large'].indexOf(p.strokeSize);
+  // pack small fields into one 32-bit number
+  let pack=0;
+  pack=(pack*10)+p.inkLoad; pack=(pack*2)+dir; pack=(pack*6)+hue; pack=(pack*13)+p.brushSize;
+  pack=(pack*10)+p.inkDensity; pack=(pack*2)+str; pack=(pack*10)+p.paperTexture;
+  pack=(pack*10)+p.bristleDensity; pack=(pack*3)+sig; pack=(pack*3)+ss; pack=(pack*360)+p.startRot;
+  const a=toB32(pack>>>0,7);
+  const b=toB32(p.seed>>>0,7);
+  // checksum
+  const ck=(strHash(a+b)&31);
+  return 'ENSO-'+a+'-'+b+'-'+B32[ck];
+}
+function decodeEnsoId(id){
+  const m=id.trim().toUpperCase().match(/^ENSO-([0-9A-HJKMNP-TV-Z]{7})-([0-9A-HJKMNP-TV-Z]{7})-([0-9A-HJKMNP-TV-Z])$/);
+  if(!m) throw new Error('Malformed Ensō ID');
+  if(B32[strHash(m[1]+m[2])&31]!==m[3]) throw new Error('Ensō ID checksum failed');
+  let pack=fromB32(m[1]); const seed=fromB32(m[2]);
+  const startRot=pack%360;pack=Math.floor(pack/360);
+  const ss=pack%3;pack=Math.floor(pack/3);
+  const sig=pack%3;pack=Math.floor(pack/3);
+  const bristleDensity=pack%10;pack=Math.floor(pack/10);
+  const paperTexture=pack%10;pack=Math.floor(pack/10);
+  const str=pack%2;pack=Math.floor(pack/2);
+  const inkDensity=pack%10;pack=Math.floor(pack/10);
+  const brushSize=pack%13;pack=Math.floor(pack/13);
+  const hue=pack%6;pack=Math.floor(pack/6);
+  const dir=pack%2;pack=Math.floor(pack/2);
+  const inkLoad=pack%10;
+  return {inkLoad,direction:dir?'Counterclockwise':'Clockwise',paperHue:HUE_LIST[hue],brushSize,
+    inkDensity,stretch:str?'Equal':'Unequal',paperTexture,bristleDensity,
+    signature:['Dark','Light','None'][sig],strokeSize:['Small','Medium','Large'][ss],startRot,seed};
+}
+
+/* ---------- Ensō rendering (seeded, brush-like) ---------- */
+function drawEnso(canvas,p){
+  const ctx=canvas.getContext('2d'), W=canvas.width, H=canvas.height;
+  const rnd=mulberry32(p.seed ^ strHash(JSON.stringify([p.inkLoad,p.brushSize,p.startRot])));
+  // paper
+  ctx.fillStyle=PAPER[p.paperHue]||'#f4efe3'; ctx.fillRect(0,0,W,H);
+  // paper texture (fibers)
+  const tex=p.paperTexture;
+  for(let i=0;i<tex*180;i++){
+    ctx.globalAlpha=0.03+rnd()*0.04; ctx.strokeStyle=rnd()<.5?'#0002':'#fff3';
+    const x=rnd()*W,y=rnd()*H,l=2+rnd()*10,a=rnd()*Math.PI;
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+Math.cos(a)*l,y+Math.sin(a)*l);ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+  const cx=W/2, cy=H/2;
+  const sizeMul={'Small':0.72,'Medium':0.88,'Large':1.04}[p.strokeSize];
+  let rx=W*0.30*sizeMul, ry=H*0.30*sizeMul;
+  if(p.stretch==='Unequal'){ rx*=0.84+rnd()*0.22; ry*=0.84+rnd()*0.22; }
+  const baseW=p.brushSize*2.2;
+  const ink=HUES[p.paperHue]||'#111';
+  const cw=p.direction==='Clockwise'?1:-1;
+  const start=(p.startRot*Math.PI)/180;
+  // the ring is slightly open (ensō), with a gap
+  const gap=0.18+rnd()*0.25;
+  const total=Math.PI*2 - gap;
+  const steps=520;
+  const bristles=Math.max(2,p.bristleDensity);
+  const alphaBase=0.10+p.inkDensity*0.05;
+  for(let b=0;b<bristles;b++){
+    const off=(b-(bristles-1)/2)*(baseW/bristles)*0.9;
+    ctx.beginPath();
+    for(let i=0;i<=steps;i++){
+      const t=i/steps;
+      const ang=start + cw*total*t;
+      // taper: thick in middle, thin at ends; ink load adds wobble
+      const taper=Math.sin(Math.PI*t);
+      const wob=(rnd()-0.5)*(10-p.inkLoad)*0.4;
+      const r1=rx+off*taper+wob, r2=ry+off*taper+wob;
+      const x=cx+Math.cos(ang)*r1, y=cy+Math.sin(ang)*r2;
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle=ink;
+    ctx.globalAlpha=Math.min(0.9,alphaBase*(0.6+rnd()*0.8));
+    ctx.lineWidth=baseW*(0.25+rnd()*0.5)*0.5;
+    ctx.lineCap='round';
+    ctx.stroke();
+  }
+  // ink splatter from ink load
+  ctx.fillStyle=ink;
+  for(let i=0;i<p.inkLoad*14;i++){
+    const t=rnd(); const ang=start+cw*total*t;
+    const x=cx+Math.cos(ang)*(rx+(rnd()-.5)*baseW*2);
+    const y=cy+Math.sin(ang)*(ry+(rnd()-.5)*baseW*2);
+    ctx.globalAlpha=0.15+rnd()*0.3;
+    ctx.beginPath();ctx.arc(x,y,rnd()*2.2,0,7);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  // signature stamp
+  if(p.signature!=='None'){
+    const sx=W-70, sy=H-70;
+    ctx.fillStyle=p.signature==='Dark'?'#8a1f1f':'#c44';
+    ctx.globalAlpha=0.85;
+    roundRect(ctx,sx,sy,44,44,6);ctx.fill();
+    ctx.globalAlpha=1;ctx.fillStyle='#f4efe3';ctx.font='bold 20px serif';
+    ctx.textAlign='center';ctx.fillText('縁',sx+22,sy+30);ctx.textAlign='start';
+  }
+}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+function renderEnso(){
+  const p=readParams();
+  drawEnso($('enso'),p);
+  $('ensoId').textContent=encodeEnsoId(p);
+}
+
+/* ---------- BIP-39 generation with REAL SHA-256 checksum ---------- */
+async function sha256(bytes){return new Uint8Array(await crypto.subtle.digest('SHA-256',bytes));}
+function bytesToBits(bytes){let s='';for(const b of bytes)s+=b.toString(2).padStart(8,'0');return s;}
+async function generateMnemonic(wordCount){
+  const entBits = wordCount===24?256:128;
+  const entBytes=entBits/8;
+  const ent=crypto.getRandomValues(new Uint8Array(entBytes));
+  const hash=await sha256(ent);
+  const csLen=entBits/32; // checksum bits
+  const bits=bytesToBits(ent)+bytesToBits(hash).slice(0,csLen);
+  const idx=[]; for(let i=0;i<bits.length;i+=11) idx.push(parseInt(bits.slice(i,i+11),2));
+  return idx.map(i=>WORDS[i]);
+}
+/* verify checksum of an arbitrary mnemonic (validity for popular wallet types) */
+async function verifyMnemonic(words){
+  if(![12,15,18,21,24].includes(words.length)) return false;
+  let bits='';
+  for(const w of words){const i=WORDS.indexOf(w);if(i<0)return false;bits+=i.toString(2).padStart(11,'0');}
+  const csLen=words.length*11/33; const entBits=words.length*11-csLen;
+  const entBytes=entBits/8; const arr=new Uint8Array(entBytes);
+  for(let i=0;i<entBytes;i++)arr[i]=parseInt(bits.slice(i*8,i*8+8),2);
+  const hash=await sha256(arr);
+  return bytesToBits(hash).slice(0,csLen)===bits.slice(entBits);
+}
+
+/* ---------- Derivation paths per wallet type ---------- */
+const PATHS={btc44:"m/44'/0'/0'/0/0",btc84:"m/84'/0'/0'/0/0",eth:"m/44'/60'/0'/0/0",ltc:"m/44'/2'/0'/0/0",waves:"m/44'/5741564'/0'/0/0"};
+
+/* ---------- Real syllable counting + 5-7-5 haiku arrangement ----------
+   Words from the mnemonic are arranged (in order) into lines totalling 5,7,5.
+   We keep every mnemonic word (so the seed is recoverable) but may need extra
+   filler words for syllable padding — instead, we pick from the mnemonic words
+   themselves and, if 5-7-5 can't be hit exactly, we report closest + mark. */
+function sylOf(word){const i=WORDS.indexOf(word);return i>=0?SYL[i]:1;}
+function arrangeHaiku(words){
+  // Try every pair of split points (i<j) to find lines that sum to 5,7,5.
+  // Preserves word order so the full mnemonic is recoverable from the haiku.
+  const n=words.length;
+  const cum=[0]; for(let k=0;k<n;k++)cum.push(cum[k]+sylOf(words[k]));
+  const targets=[5,7,5];
+  let best=null, bestErr=1e9;
+  for(let i=1;i<n-1;i++){
+    for(let j=i+1;j<n;j++){
+      const c=[cum[i]-cum[0], cum[j]-cum[i], cum[n]-cum[j]];
+      const err=Math.abs(c[0]-5)+Math.abs(c[1]-7)+Math.abs(c[2]-5);
+      if(err<bestErr){bestErr=err;best=[i,j,c];}
+      if(err===0)break;
+    }
+    if(bestErr===0)break;
+  }
+  if(!best)best=[Math.ceil(n/3),Math.ceil(2*n/3),[0,0,0]];
+  const [i,j]=best;
+  const lines=[words.slice(0,i),words.slice(i,j),words.slice(j)];
+  const counts=lines.map(l=>l.reduce((a,w)=>a+sylOf(w),0));
+  const perfect = counts[0]===5&&counts[1]===7&&counts[2]===5;
+  return {lines,counts,perfect};
+}
+function haikuText(arr){return arr.lines.map(l=>l.join(' ')).join('\n');}
+
+/* ---------- spell / grammar heuristic ---------- */
+/* All BIP-39 words are valid dictionary words, so "spelling" always passes.
+   We add a light grammar/readability heuristic: penalize lines that are all
+   nouns-of-same-class etc. Here we approximate: a line "reads" better if it
+   contains at least one short connective-ish word and isn't all 1-syllable. */
+const CONNECTIVE=new Set(['above','across','after','again','among','around','before','below','between','during','toward','under','upon','within','about','beyond']);
+function grammarScore(arr){
+  let score=0;
+  for(const line of arr.lines){
+    const hasConn=line.some(w=>CONNECTIVE.has(w));
+    const varied=new Set(line.map(sylOf)).size>1;
+    if(hasConn)score++; if(varied)score++;
+  }
+  return score; // 0..6
+}
+function spellCheck(words){
+  const bad=words.filter(w=>WORDS.indexOf(w)<0);
+  return {ok:bad.length===0, bad};
+}
+
+/* ---------- AES-256 (WebCrypto AES-GCM) + PBKDF2 from Ensō ID + passphrase ---------- */
+let MASTER_KEY=null;            // CryptoKey for AES-GCM
+let UNLOCK_SECRET=null;         // string used (id+pass)
+async function deriveKey(idStr,pass){
+  const salt=await sha256(enc.encode('enso-vault-salt|'+idStr));
+  const base=await crypto.subtle.importKey('raw',enc.encode(idStr+'|'+(pass||'')),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey(
+    {name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},
+    base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+async function aesEncrypt(key,plainStr){
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(plainStr));
+  return b64(iv)+'.'+b64(ct);
+}
+async function aesDecrypt(key,blob){
+  const [ivb,ctb]=blob.split('.');
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(ivb)},key,unb64(ctb));
+  return dec.decode(pt);
+}
+
+/* ---------- encrypted cookie + localStorage persistence ---------- */
+const STORE_KEY='enso_vault_v1';
+function setCookie(name,val,days){
+  const d=new Date();d.setTime(d.getTime()+days*864e5);
+  try{document.cookie=name+'='+encodeURIComponent(val)+';expires='+d.toUTCString()+';path=/;SameSite=Strict';}catch(e){}
+}
+function getCookie(name){
+  const m=document.cookie.match('(?:^|; )'+name+'=([^;]*)');return m?decodeURIComponent(m[1]):null;
+}
+async function saveVault(list){
+  if(!MASTER_KEY)throw new Error('locked');
+  const blob=await aesEncrypt(MASTER_KEY,JSON.stringify(list));
+  try{localStorage.setItem(STORE_KEY,blob);}catch(e){}
+  // cookies are size-limited (~4KB); store there only if it fits
+  if(blob.length<3800) setCookie(STORE_KEY,blob,3650);
+}
+async function loadVault(){
+  if(!MASTER_KEY)return [];
+  let blob=null;
+  try{blob=localStorage.getItem(STORE_KEY);}catch(e){}
+  if(!blob)blob=getCookie(STORE_KEY);
+  if(!blob)return [];
+  try{return JSON.parse(await aesDecrypt(MASTER_KEY,blob));}
+  catch(e){throw new Error('Decryption failed — wrong Ensō ID / passphrase?');}
+}
+let VAULT=[];
+
+/* ---------- forging animation ---------- */
+function forgeAnimation(wallet){
+  const c=$('forgeCanvas');c.style.display='block';
+  const p=wallet.ensoParams; let f=0;
+  const id=setInterval(()=>{
+    f++;
+    const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);
+    ctx.fillStyle='#f4efe3';ctx.fillRect(0,0,c.width,c.height);
+    const cx=c.width/2,cy=c.height/2;
+    const prog=Math.min(1,f/30);
+    ctx.strokeStyle=HUES[p.paperHue]||'#111';ctx.lineWidth=6;ctx.lineCap='round';
+    ctx.beginPath();
+    ctx.arc(cx,cy,52,(p.startRot*Math.PI/180),(p.startRot*Math.PI/180)+Math.PI*2*0.85*prog);
+    ctx.stroke();
+    ctx.fillStyle='#333';ctx.font='11px serif';ctx.textAlign='center';
+    if(prog>=1){ctx.fillText('◯ collectible forged ◯',cx,cy+78);clearInterval(id);}
+    ctx.textAlign='start';
+  },40);
+}
+
+/* ============ UI WIRING ============ */
+/* tabs */
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tabpane').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); $('tab-'+b.dataset.tab).classList.add('active');
+  if(b.dataset.tab==='vault')renderVaultList();
+});
+
+/* ensō controls */
+['inkLoad','brushSize','inkDensity','paperTexture','bristleDensity','startRot','direction','paperHue','stretch','signature','strokeSize'].forEach(idn=>{
+  $(idn).addEventListener('input',()=>{syncLabels();renderEnso();});
+});
+$('randBtn').onclick=()=>{
+  currentSeed=(Math.random()*0xFFFFFFFF)>>>0;
+  // also randomize visual params for variety (Worms-terrain style)
+  const r=mulberry32(currentSeed);
+  $('inkLoad').value=Math.floor(r()*10);$('brushSize').value=1+Math.floor(r()*12);
+  $('inkDensity').value=Math.floor(r()*10);$('paperTexture').value=Math.floor(r()*10);
+  $('bristleDensity').value=1+Math.floor(r()*9);$('startRot').value=Math.floor(r()*360);
+  $('direction').value=r()<.5?'Clockwise':'Counterclockwise';
+  $('paperHue').value=HUE_LIST[Math.floor(r()*HUE_LIST.length)];
+  $('stretch').value=r()<.5?'Unequal':'Equal';
+  $('signature').value=['Dark','Light','None'][Math.floor(r()*3)];
+  $('strokeSize').value=['Small','Medium','Large'][Math.floor(r()*3)];
+  syncLabels();renderEnso();flash('New random ensō seed: '+currentSeed);
+};
+$('drawBtn').onclick=renderEnso;
+$('dlPng').onclick=()=>{
+  const a=document.createElement('a');
+  a.download=$('ensoId').textContent.replace(/[^A-Z0-9-]/g,'_')+'.png';
+  a.href=$('enso').toDataURL('image/png');a.click();flash('PNG downloaded');
+};
+$('copyIdBtn').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText($('ensoId').textContent);flash('Ensō ID copied');};
+$('loadIdBtn').onclick=()=>{
+  const id=prompt('Paste an Ensō ID to re-forge it:');if(!id)return;
+  try{applyParams(decodeEnsoId(id));renderEnso();flash('Ensō re-forged from ID');}
+  catch(e){alert(e.message);}
+};
+
+/* ---------- vault unlock ---------- */
+$('useCurrentId').onclick=()=>{$('gateId').value=$('ensoId').textContent;};
+$('unlockBtn').onclick=async()=>{
+  const id=$('gateId').value.trim();if(!id){alert('Enter an Ensō ID');return;}
+  try{decodeEnsoId(id);}catch(e){if(!confirm('That does not look like a valid Ensō ID. Use it anyway as a raw key?'))return;}
+  MASTER_KEY=await deriveKey(id,$('gatePass').value);UNLOCK_SECRET=id;
+  try{VAULT=await loadVault();}catch(e){alert(e.message);MASTER_KEY=null;return;}
+  $('vaultGate').style.display='none';$('walletArea').classList.remove('locked');
+  flash('Vault unlocked · '+VAULT.length+' wallet(s)');renderVaultList();
+};
+
+/* ---------- forge haiku wallet ---------- */
+let CURRENT=null;
+async function forgeOne(){
+  const len=+$('mlen').value, wtype=$('wtype').value;
+  const onlyGood=$('spellOnly').checked;
+  let words, arr, tries=0;
+  // For 24 words an exact 5-7-5 is effectively impossible (too many syllables),
+  // so "only good" targets the closest arrangement; 12 words can hit exact 5-7-5.
+  const wantExact = (len===12);
+  do{
+    words=await generateMnemonic(len);
+    arr=arrangeHaiku(words);
+    tries++;
+    if(!onlyGood) break;
+    const good = wantExact ? (arr.perfect && grammarScore(arr)>=1)
+                           : (arr.counts.reduce((a,c,i)=>a+Math.abs(c-[5,7,5][i]),0) <= 4);
+    if(good) break;
+  }while(tries<400);
+  const valid=await verifyMnemonic(words);
+  const collectibleId='HAIKU-'+toB32(strHash(words.join(' '))>>>0,7);
+  return {words,arr,wtype,path:PATHS[wtype],valid,
+    ensoParams:readParams(),collectibleId,ts:Date.now(),
+    grammar:grammarScore(arr),perfect:arr.perfect};
+}
+function showWallet(w){
+  CURRENT=w;
+  $('haikuOut').textContent=haikuText(w.arr)+'\n\n— '+w.arr.counts.join('-')+(w.perfect?' ✓ (5-7-5)':' (approx)');
+  $('mnemOut').textContent=w.words.join(' ');
+  $('pathOut').textContent=w.path+'   ·   collectible '+w.collectibleId;
+  $('checkOut').innerHTML='Checksum: '+(w.valid?'<span class=ok>VALID ✓</span>':'<span class=bad>INVALID ✗</span>')
+    +' · grammar score '+w.grammar+'/6 · syllables '+w.arr.counts.join('-');
+}
+$('forgeBtn').onclick=async()=>{
+  const n=Math.max(1,Math.min(50,+$('batch').value||1));
+  if(n===1){showWallet(await forgeOne());flash('Wallet forged');return;}
+  const results=[];for(let i=0;i<n;i++)results.push(await forgeOne());
+  showWallet(results[0]);renderBatch(results);flash(n+' wallets mined');
+};
+$('forgeAnim').onclick=async()=>{const w=await forgeOne();showWallet(w);forgeAnimation(w);flash('Forging…');};
+$('nextWallet').onclick=async()=>{showWallet(await forgeOne());};
+$('spellChk').onclick=()=>{
+  if(!CURRENT)return;
+  const r=spellCheck(CURRENT.words);
+  $('spellResult').innerHTML=r.ok
+    ?'<span class=ok>All words are valid BIP-39 dictionary words ✓</span> · readability '+CURRENT.grammar+'/6'
+    :'<span class=bad>Invalid words: '+r.bad.join(', ')+'</span>';
+};
+$('saveWallet').onclick=async()=>{
+  if(!CURRENT){flash('Forge a wallet first');return;}
+  if(!MASTER_KEY){flash('Unlock vault first');return;}
+  VAULT.push(CURRENT);await saveVault(VAULT);flash('Saved to vault ('+VAULT.length+')');renderVaultList();
+};
+function renderBatch(results){
+  $('batchOut').style.display='block';
+  $('batchList').innerHTML=results.map((w,i)=>
+    `<div class="wallet-item"><div class="top"><b>#${i+1} ${w.collectibleId}</b>
+     <span class="badge">${w.valid?'<span class=ok>valid</span>':'<span class=bad>invalid</span>'} · ${w.arr.counts.join('-')}</span></div>
+     <div class="haiku" style="margin:6px 0;font-size:14px">${haikuText(w.arr)}</div>
+     <button class="ghost" data-bi="${i}">Save this</button></div>`).join('');
+  $('batchList').querySelectorAll('button[data-bi]').forEach(b=>b.onclick=async()=>{
+    if(!MASTER_KEY){flash('Unlock vault first');return;}
+    VAULT.push(results[+b.dataset.bi]);await saveVault(VAULT);flash('Saved');renderVaultList();
+  });
+}
+
+/* ---------- vault list rendering / export / import / delete ---------- */
+function renderVaultList(){
+  const el=$('vaultList');
+  if(!MASTER_KEY){el.innerHTML='<p class="muted">Unlock vault (Wallet tab) to view.</p>';return;}
+  if(!VAULT.length){el.innerHTML='<p class="muted">No saved wallets yet.</p>';return;}
+  el.innerHTML=VAULT.map((w,i)=>
+    `<div class="wallet-item"><div class="top">
+      <b>${w.collectibleId||'wallet'}</b>
+      <span class="badge">${w.wtype} · ${w.valid?'<span class=ok>valid</span>':'<span class=bad>invalid</span>'}</span></div>
+      <div class="haiku" style="margin:6px 0;font-size:14px">${haikuText(w.arr)}</div>
+      <div class="mnemonic" style="font-size:12px">${w.words.join(' ')}</div>
+      <div class="small muted" style="margin:4px 0">${w.path} · ${new Date(w.ts).toLocaleString()}</div>
+      <button class="danger" data-del="${i}">Delete</button></div>`).join('');
+  el.querySelectorAll('button[data-del]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('Delete this wallet?'))return;
+    VAULT.splice(+b.dataset.del,1);await saveVault(VAULT);renderVaultList();flash('Deleted');
+  });
+}
+$('clearAll').onclick=async()=>{
+  if(!MASTER_KEY){flash('Unlock first');return;}
+  if(!confirm('Delete ALL saved wallets?'))return;
+  VAULT=[];await saveVault(VAULT);renderVaultList();flash('Vault cleared');
+};
+$('exportTxt').onclick=async()=>{
+  if(!MASTER_KEY){flash('Unlock first');return;}
+  const blob=await aesEncrypt(MASTER_KEY,JSON.stringify(VAULT));
+  const payload='ENSO-VAULT-AES256-GCM\n'+blob+'\n';
+  const a=document.createElement('a');
+  a.download='enso-vault-'+Date.now()+'.txt';
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(payload);a.click();
+  flash('Encrypted .txt exported');
+};
+$('importTxt').onclick=()=>$('importFile').click();
+$('importFile').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=async()=>{
+    if(!MASTER_KEY){flash('Unlock vault first');return;}
+    const lines=r.result.trim().split('\n');const blob=lines[lines.length-1];
+    try{const imp=JSON.parse(await aesDecrypt(MASTER_KEY,blob));
+      VAULT=VAULT.concat(imp);await saveVault(VAULT);renderVaultList();flash('Imported '+imp.length);}
+    catch(err){alert('Import failed (wrong key or corrupt file)');}
+  };r.readAsText(f);
+};
+
+/* ---------- TERMINAL / IRC ---------- */
+const term=$('term');
+function tlog(s,cls){const d=document.createElement('div');if(cls)d.style.color=cls;d.textContent=s;term.appendChild(d);term.scrollTop=term.scrollHeight;}
+let irc=null;
+function ircSend(line){if(irc&&irc.readyState===1){irc.send(line+'\r\n');}}
+function connectIRC(){
+  const url=$('ircServer').value.trim(),nick=$('ircNick').value.trim()||'enso-guest',chan=$('ircChan').value.trim();
+  tlog('* connecting to '+url+' ...','#c0a062');
+  try{irc=new WebSocket(url);}catch(e){tlog('! '+e.message,'#e2604a');return;}
+  irc.onopen=()=>{tlog('* socket open, registering as '+nick,'#5fd17a');
+    ircSend('NICK '+nick);ircSend('USER '+nick+' 0 * :Enso Vault user');};
+  irc.onmessage=ev=>{
+    const data=typeof ev.data==='string'?ev.data:'';
+    data.split('\r\n').forEach(line=>{
+      if(!line)return;
+      if(line.startsWith('PING')){ircSend('PONG'+line.slice(4));return;}
+      tlog(line);
+      if(/ 00[1-4] /.test(line)&&chan){ircSend('JOIN '+chan);tlog('* joining '+chan,'#5fd17a');}
+    });
+  };
+  irc.onerror=()=>tlog('! socket error (gateway may require specific protocol / be offline)','#e2604a');
+  irc.onclose=()=>tlog('* disconnected','#c0a062');
+}
+$('ircConnect').onclick=connectIRC;
+function termCommand(raw){
+  tlog('> '+raw,'#33d6c0');
+  if(raw.startsWith('/')){
+    const [cmd,...rest]=raw.slice(1).split(' ');const arg=rest.join(' ');
+    switch(cmd){
+      case 'help':tlog('PIM terminal commands:\n /connect  /nick <n>  /join #chan  /msg <text>  /raw <irc>  /id  /wallets  /clear  /help');break;
+      case 'connect':connectIRC();break;
+      case 'nick':$('ircNick').value=arg;ircSend('NICK '+arg);break;
+      case 'join':ircSend('JOIN '+arg);tlog('* joining '+arg);break;
+      case 'msg':ircSend('PRIVMSG '+$('ircChan').value+' :'+arg);tlog('<'+$('ircNick').value+'> '+arg,'#9fe8c0');break;
+      case 'raw':ircSend(arg);break;
+      case 'id':tlog('Ensō ID: '+$('ensoId').textContent);break;
+      case 'wallets':tlog(MASTER_KEY?('Saved wallets: '+VAULT.length):'(vault locked)');break;
+      case 'clear':term.innerHTML='';break;
+      default:tlog('unknown command: '+cmd,'#e2604a');
+    }
+  } else {
+    // plain text → send to channel
+    ircSend('PRIVMSG '+$('ircChan').value+' :'+raw);
+    tlog('<'+$('ircNick').value+'> '+raw,'#9fe8c0');
+  }
+}
+$('termin').addEventListener('keydown',e=>{if(e.key==='Enter'){termCommand(e.target.value);e.target.value='';}});
+
+/* ---------- market data ---------- */
+$('refreshMkt').onclick=async()=>{
+  $('mktStatus').textContent='loading…';
+  try{
+    const ids='bitcoin,ethereum,litecoin,waves';
+    const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+ids+'&vs_currencies=usd&include_24hr_change=true');
+    const j=await r.json();
+    const rows=[['Bitcoin','bitcoin'],['Ethereum','ethereum'],['Litecoin','litecoin'],['Waves','waves']]
+      .map(([n,k])=>{const d=j[k]||{};const ch=d.usd_24h_change||0;
+        return `<tr><td>${n}</td><td>$${(d.usd||0).toLocaleString()}</td><td class="${ch>=0?'ok':'bad'}">${ch.toFixed(2)}%</td></tr>`;}).join('');
+    $('mktTable').querySelector('tbody').innerHTML=rows;$('mktStatus').textContent='updated '+new Date().toLocaleTimeString();
+  }catch(e){$('mktStatus').textContent='failed (needs internet): '+e.message;}
+};
+
+/* ---------- INIT ---------- */
+syncLabels(); renderEnso();
+tlog('Ensō Vault PIM terminal. Type /help','#c0a062');
+tlog('IRC needs internet + a compatible WebSocket gateway.','#8a8f99');
+</script>
+</body>
+</html>

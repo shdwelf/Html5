@@ -5,11 +5,11 @@ import {
   WORDLIST,
   parsePhrase,
   mnemonicToEntropy,
-  randomMnemonic,
   entropyToMnemonic,
-  wordCountToEntropyBits,
   keyspaceDecimal,
   indicesOf,
+  layoutForWords,
+  layoutForEntropyBits,
 } from "./bip39.js";
 import {
   bytesToBits,
@@ -40,6 +40,9 @@ import {
 } from "./mathvis.js";
 import { buildForm, FORMS } from "./forms3d.js";
 import { pathTemplate, PIPELINE } from "./hdtopo.js";
+import { LENSES, LENS_BY_ID, invertReport, notBytes } from "./formal.js";
+import { drawLens } from "./lens-draw.js";
+import { buildLensLayer, LENS_3D } from "./lens-3d.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
@@ -59,9 +62,25 @@ const state = {
   flipBit: 0,
   mathStep: 1,
   form: "hd",
+  /* layers: invert keyspace A↔B + formal-system lenses */
+  wordsB: [],
+  analysisB: null,
+  pair: null,
+  lens: "inv-subcube",
+  layers: new Set(["inv-subcube"]),
+  layerObjs: new Map(),
+  flips: null,
+  flipsKey: null,
+  anf: null,
+  anfKey: null,
+  pathPts: [],
+  actions: [],
+  timings: [],
+  seed: 12345,
 };
 
 let formGroup = null;
+let lensGroup = null;
 
 let scene, camera, renderer, controls;
 let wordCloud, fieldPts, pathLine, pathGlow, sliceMarker;
@@ -130,6 +149,10 @@ function initThree() {
   );
   sliceMarker.visible = false;
   scene.add(sliceMarker);
+
+  lensGroup = new THREE.Group();
+  lensGroup.name = "lensLayers";
+  scene.add(lensGroup);
 
   resize();
   addEventListener("resize", resize);
@@ -270,7 +293,7 @@ function updateLiveStats(entropy) {
 
 function updateRollNeed() {
   const src = SOURCES[state.src] || SOURCES.coin;
-  const bits = wordCountToEntropyBits(Number($("wc").value)) || 128;
+  const bits = currentLayout()?.entBits || 128;
   const need = rollsNeeded(bits, src.bits);
   const have = parseRolls($("rolls").value, state.src).length;
   $("poolBits").textContent = (have * src.bits).toFixed(1);
@@ -280,7 +303,13 @@ function updateRollNeed() {
 async function commitRolls() {
   const src = SOURCES[state.src];
   if (!src) return;
-  const bits = wordCountToEntropyBits(Number($("wc").value));
+  const layout = currentLayout();
+  const bits = layout?.entBits;
+  if (!bits) {
+    $("status").className = "status warn";
+    $("status").textContent = "Pick a valid length first";
+    return;
+  }
   const values = parseRolls($("rolls").value, state.src);
   const need = rollsNeeded(bits, src.bits);
   if (values.length < need) {
@@ -543,12 +572,15 @@ function drawParallel(indices, changed = []) {
 function drawFiber(csBits, observed) {
   const cv = $("fiber");
   if (!cv) return;
-  const ctx = cv.getContext("2d");
   const n = Math.max(1, 1 << (csBits || 0));
+  const cols = n <= 256 ? Math.min(n, 16) : 32;
+  const rows = Math.ceil(n / cols);
+  const cell = n <= 256 ? 14 : 4;
+  cv.width = 256;
+  cv.height = Math.max(64, rows * cell);
+  const ctx = cv.getContext("2d");
   ctx.fillStyle = "#05070c";
   ctx.fillRect(0, 0, cv.width, cv.height);
-  const cols = Math.min(n, 16);
-  const rows = Math.ceil(n / cols);
   const cw = cv.width / cols;
   const ch = cv.height / rows;
   const lit = observed && observed.length ? bitsToInt(observed) : -1;
@@ -644,6 +676,7 @@ async function previewAvalanche() {
   drawParallel(a.indices, hit);
   const names = hit.map((i) => `${i + 1}:${state.words[i]}→${words[i]}`).join(" · ");
   $("avalancheNote").textContent = `Bit ${bit} flipped. Chunks that jumped: ${names || "none (shouldn't happen)"}. Last word usually moves (checksum avalanche).`;
+  logAction("flip", a.ok);
 }
 
 function renderScale(bits) {
@@ -708,6 +741,8 @@ async function applyPhrase(text, { broadcast = false } = {}) {
     state.analysis = null;
     renderAnalysis([], null);
     makePath([]);
+    state.pathPts = [];
+    updatePair();
     return;
   }
   const analysis = await mnemonicToEntropy(words);
@@ -715,11 +750,21 @@ async function applyPhrase(text, { broadcast = false } = {}) {
   renderAnalysis(words, analysis);
 
   const idxs = indicesOf(words).map((i) => (i < 0 ? 0 : i));
-  makePath(state.engine.phrasePath(idxs));
+  const t0 = performance.now();
+  const raw = state.engine.phrasePath(idxs);
+  pushTiming("phrasePath", performance.now() - t0);
+  state.pathPts = [];
+  for (let i = 0; i < raw.length; i += 3) state.pathPts.push([raw[i], raw[i + 1], raw[i + 2]]);
+  makePath(raw);
 
   const seed = analysis.entropy ?? new TextEncoder().encode(words.join(" "));
   const fieldN = isCoarse ? 2200 : 5000;
+  const t1 = performance.now();
   makeField(state.engine.entropyField(seed, fieldN));
+  pushTiming(`entropyField ×${fieldN}`, performance.now() - t1);
+  logAction("project", analysis.ok);
+  updatePair();
+  await refreshLens();
 
   if (broadcast && window.webxdc?.sendUpdate) {
     window.webxdc.sendUpdate(
@@ -734,8 +779,18 @@ async function applyPhrase(text, { broadcast = false } = {}) {
 }
 
 async function generate() {
-  const n = Number($("wc").value);
-  const { words } = await randomMnemonic(n);
+  const layout = currentLayout();
+  if (!layout) {
+    $("status").className = "status bad";
+    $("status").textContent = "Pick a valid length: 2–512 words, or entropy in whole bytes.";
+    return;
+  }
+  const t0 = performance.now();
+  const entropy = new Uint8Array(layout.entBytes);
+  crypto.getRandomValues(entropy);
+  const words = await entropyToMnemonic(entropy);
+  pushTiming(`sample+encode ${layout.entBits}b`, performance.now() - t0);
+  logAction("sample", true);
   await applyPhrase(words.join(" "));
 }
 
@@ -780,6 +835,275 @@ async function shareChat() {
   await applyPhrase(text, { broadcast: true });
 }
 
+/* ------------------------------------------------------------------ *
+ * layers — invert keyspace A↔B and the formal-system lenses
+ * ------------------------------------------------------------------ */
+
+function pushTiming(label, ms) {
+  state.timings = [...state.timings.filter((t) => t.label !== label), { label, ms }].slice(-6);
+}
+
+function logAction(kind, ok) {
+  state.actions.push({ kind, at: performance.now(), ok });
+  if (state.actions.length > 80) state.actions.shift();
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+/** Everything a lens is allowed to look at. */
+function sessionCtx() {
+  const a = state.analysis;
+  return {
+    words: state.words,
+    indices: a?.indices || indicesOf(state.words),
+    entropy: a?.entropy,
+    layout: a?.layout || layoutForWords(state.words.length) || layoutForWords(12),
+    analysis: a,
+    path: state.pathPts,
+    flips: state.flips,
+    anf: state.anf,
+    pair: state.pair,
+    pairEntropy: state.analysisB?.entropy,
+    actions: state.actions,
+    timings: state.timings,
+    seed: state.seed,
+  };
+}
+
+/** Which key length the controls currently ask for. */
+function currentLayout() {
+  const v = $("wc").value;
+  if (v === "custom") {
+    const bits = Number($("customBits").value);
+    if (bits) return layoutForEntropyBits(bits);
+    return layoutForWords(Number($("customWords").value));
+  }
+  return layoutForWords(Number(v));
+}
+
+function describeLayout(layout) {
+  if (!layout) return "no valid layout — words must be 2–512, entropy a multiple of 8";
+  const rule = layout.standard ? "BIP-39 ladder (CS = ENT/32)" : "generalised rule (largest CS ≤ 11)";
+  return `${layout.words} words × 11 = ${layout.totalBits} bits = ${layout.entBits} ENT + ${layout.csBits} CS · ${rule} · keyspace 2^${layout.entBits}`;
+}
+
+/** Flip every entropy bit once and re-run Φ — the measured derivative. */
+async function runFlipSweep() {
+  const a = state.analysis;
+  if (!a?.entropy) return;
+  const key = hex(a.entropy);
+  if (state.flipsKey === key && state.flips) return;
+  const t0 = performance.now();
+  const baseIdx = a.indices;
+  const out = [];
+  const entBits = a.entropyBits;
+  for (let b = 0; b < entBits; b++) {
+    const words = await entropyToMnemonic(flipEntropyBit(a.entropy, b));
+    const idx = indicesOf(words);
+    let changed = 0;
+    const deltas = [];
+    for (let i = 0; i < idx.length; i++) {
+      if (idx[i] !== baseIdx[i]) {
+        changed++;
+        deltas.push([i, Math.abs(idx[i] - baseIdx[i])]);
+      }
+    }
+    out.push({ bit: b, changed, deltas, lastChanged: idx[idx.length - 1] !== baseIdx[idx.length - 1] });
+    if ((b & 63) === 63) await new Promise((r) => setTimeout(r, 0));
+  }
+  state.flips = out;
+  state.flipsKey = key;
+  pushTiming(`flip sweep ×${entBits}`, performance.now() - t0);
+}
+
+/** 16 preimages: the checksum word's LSB as a Boolean function of 4 ENT bits. */
+async function runAnfProbe() {
+  const a = state.analysis;
+  if (!a?.entropy || state.anfKey === hex(a.entropy)) return;
+  const t0 = performance.now();
+  const table = [];
+  for (let m = 0; m < 16; m++) {
+    const e = new Uint8Array(a.entropy);
+    for (let i = 0; i < 4; i++) if ((m >> i) & 1) e[0] ^= 1 << (7 - i);
+    const words = await entropyToMnemonic(e);
+    table.push((INDEX.get(words[words.length - 1]) ?? 0) & 1);
+  }
+  state.anf = table;
+  state.anfKey = hex(a.entropy);
+  pushTiming("ANF probe ×16", performance.now() - t0);
+}
+
+async function ensureLensData(lens) {
+  const needs = lens.needs || [];
+  if (needs.includes("flips")) {
+    if (!state.flips || state.flipsKey !== hex(state.analysis?.entropy ?? new Uint8Array(0))) {
+      $("lensPredict").textContent = `Measuring ∂Φ over ${state.analysis?.entropyBits ?? 0} bits…`;
+      await runFlipSweep();
+    }
+  }
+  if (needs.includes("anf")) await runAnfProbe();
+}
+
+function renderLensPanel(lens) {
+  const ctx = sessionCtx();
+  let res = null;
+  try {
+    res = lens.compute(ctx);
+  } catch (err) {
+    console.error(`lens ${lens.id} failed`, err);
+  }
+  const rows = res?.rows || [];
+  $("lensRows").innerHTML = rows
+    .map(([k, v]) => `<tr><th>${escapeHtml(k)}</th><td>${escapeHtml(v)}</td></tr>`)
+    .join("");
+  $("lensDescribe").textContent = res?.describe ? `Describe · ${res.describe}` : "";
+  $("lensExplain").textContent = res?.explain ? `Explain · ${res.explain}` : "";
+  $("lensPredict").textContent = res
+    ? `Predict · ${res.predict}`
+    : lens.needs?.includes("pair") && !ctx.pair
+      ? "Needs a second key — load key B above."
+      : "No data yet — project a phrase first.";
+  const drew = lens.kind !== "card" && drawLens(lens.id, $("lensCanvas"), ctx);
+  $("lensCanvas").hidden = !drew;
+}
+
+function disposeGroup(g) {
+  g.traverse((o) => {
+    o.geometry?.dispose?.();
+    if (Array.isArray(o.material)) o.material.forEach((m) => m.dispose());
+    else o.material?.dispose?.();
+  });
+}
+
+function rebuildLensLayers() {
+  if (!lensGroup) return;
+  for (const [, g] of state.layerObjs) {
+    lensGroup.remove(g);
+    disposeGroup(g);
+  }
+  state.layerObjs.clear();
+  const ctx = sessionCtx();
+  for (const id of state.layers) {
+    if (!LENS_3D.includes(id)) continue;
+    let g = null;
+    try {
+      g = buildLensLayer(id, ctx);
+    } catch (err) {
+      console.error(`3D layer ${id} failed`, err);
+    }
+    if (g) {
+      lensGroup.add(g);
+      state.layerObjs.set(id, g);
+    }
+  }
+}
+
+async function focusLens(id) {
+  const lens = LENS_BY_ID.get(id);
+  if (!lens) return;
+  state.lens = id;
+  $("lensName").textContent = lens.name;
+  $("lensKind").textContent = lens.kind === "card" ? "card" : "lens";
+  $("lensKind").className = lens.kind === "card" ? "tag card" : "tag";
+  $("lensTag").textContent = lens.tagline;
+  await ensureLensData(lens);
+  renderLensPanel(lens);
+  renderRack();
+  rebuildLensLayers();
+}
+
+async function refreshLens() {
+  if (state.lens) await focusLens(state.lens);
+}
+
+function renderRack() {
+  const filter = $("lensFilter").value;
+  const host = $("lensRack");
+  host.innerHTML = LENSES.filter((l) => filter === "all" || l.group === filter)
+    .map((l) => {
+      const on = state.layers.has(l.id);
+      const card = l.kind === "card";
+      const st = on ? (card ? "CARD" : LENS_3D.includes(l.id) ? "3D" : "2D") : "off";
+      // Two intents, two targets: the dot toggles the layer, the name focuses the panel.
+      return `<div class="layer-row${on ? " on" : ""}${
+        state.lens === l.id ? " focus" : ""
+      }" data-lens="${l.id}">
+        <button type="button" class="dot-btn" data-act="toggle" aria-pressed="${on}"
+          title="${on ? "remove this layer from the scene" : "add this layer to the scene"}"><span class="dot"></span></button>
+        <button type="button" class="nm-btn" data-act="focus">${escapeHtml(l.name)}</button>
+        <span class="grp">${escapeHtml(l.group)}</span>
+        <span class="st${card ? " card" : ""}">${st}</span></div>`;
+    })
+    .join("");
+}
+
+function updatePair() {
+  const A = state.analysis?.entropy;
+  const B = state.analysisB?.entropy;
+  state.pair = A && B ? invertReport(A, B) : null;
+  const r = state.pair;
+  $("invHam").textContent = r ? `${r.d} / ${r.entBits}` : "—";
+  $("invSub").textContent = r ? (r.d <= 20 ? String(2 ** r.d) : `2^${r.d}`) : "—";
+  $("invComp").textContent = r ? `${r.complementAToB}` : "—";
+  $("invGeo").textContent = r ? `${r.d}!` : "—";
+  $("invertNote").textContent = !r
+    ? "S(A,B) = { A ⊕ (m ⊙ s) : s ∈ {0,1}^d }, m = A⊕B — load key B to open the invert layers."
+    : `d(A,B) = ${r.d} bits → the subcube S(A,B) holds 2^${r.d} keys = 2^${r.measureLog2} of the space. ` +
+      `d(¬A,B) = ${r.complementAToB} = ${r.entBits} − ${r.d}. ${
+        r.equalLength ? "" : "(lengths differ — shorter key left-padded with zero bytes)"
+      }`;
+  drawInvertCanvas();
+}
+
+function drawInvertCanvas() {
+  const mode = state.layers.has("inv-geodesic")
+    ? "inv-geodesic"
+    : state.layers.has("inv-complement")
+      ? "inv-complement"
+      : state.layers.has("inv-shell")
+        ? "inv-shell"
+        : "inv-subcube";
+  drawLens(mode, $("invertPlot"), sessionCtx());
+}
+
+async function applyPhraseB(text) {
+  const words = parsePhrase(text);
+  $("phraseB").value = words.join(" ");
+  state.wordsB = words;
+  if (!words.length) {
+    state.analysisB = null;
+    $("statusB").className = "status warn";
+    $("statusB").textContent = "No key B — the invert layers need two keys.";
+    updatePair();
+    return;
+  }
+  const analysis = await mnemonicToEntropy(words);
+  state.analysisB = analysis;
+  $("statusB").className = `status ${analysis.ok ? "ok" : "bad"}`;
+  $("statusB").textContent = `B · ${analysis.reason}`;
+  logAction("load-b", analysis.ok);
+  updatePair();
+  await refreshLens();
+}
+
+async function sampleB() {
+  const layout = state.analysis?.layout || currentLayout() || layoutForWords(12);
+  const entropy = new Uint8Array(layout.entBytes);
+  crypto.getRandomValues(entropy);
+  const words = await entropyToMnemonic(entropy);
+  await applyPhraseB(words.join(" "));
+}
+
+/** B = the well-formed phrase whose entropy is the bitwise complement of A's. */
+async function bFromNotA() {
+  const A = state.analysis?.entropy;
+  if (!A) return;
+  const words = await entropyToMnemonic(notBytes(A));
+  await applyPhraseB(words.join(" "));
+}
+
 async function main() {
   initThree();
   startTicker();
@@ -795,7 +1119,7 @@ async function main() {
     state.form = sel.value;
     applyForm();
   };
-  $("wcNote").textContent = `12 words → ${wordCountToEntropyBits(12)} bits · not 2048¹²`;
+  $("wcNote").textContent = describeLayout(currentLayout());
 
   state.engine = await loadEngine("./wasm/entropy.wasm");
   state.scatterCache = state.engine.scatterWords(2048);
@@ -854,10 +1178,50 @@ async function main() {
   $("apply").onclick = () => applyPhrase($("phrase").value);
   $("gen").onclick = generate;
   $("share").onclick = shareChat;
-  $("wc").onchange = () => {
-    $("wcNote").textContent = `${$("wc").value} words → ${wordCountToEntropyBits(Number($("wc").value))} bits · checksum is not free entropy`;
+  const syncWc = () => {
+    $("customRow").hidden = $("wc").value !== "custom";
+    const layout = currentLayout();
+    $("wcNote").textContent = describeLayout(layout);
     updateRollNeed();
   };
+  $("wc").onchange = syncWc;
+  $("customWords").addEventListener("input", syncWc);
+  $("customBits").addEventListener("input", syncWc);
+  syncWc();
+
+  /* layers: invert keyspace + formal-system lenses */
+  $("genB").onclick = sampleB;
+  $("notA").onclick = bFromNotA;
+  $("phraseB").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      applyPhraseB($("phraseB").value);
+      $("phraseB").blur();
+    }
+  });
+  $("lensFilter").onchange = renderRack;
+  $("lensRack").addEventListener("click", (e) => {
+    const row = e.target.closest("[data-lens]");
+    if (!row) return;
+    const id = row.dataset.lens;
+    const act = e.target.closest("[data-act]")?.dataset.act ?? "focus";
+    if (act === "toggle") {
+      // dot: add/remove the layer. Turning one on also opens its panel.
+      if (state.layers.has(id)) state.layers.delete(id);
+      else {
+        state.layers.add(id);
+        focusLens(id);
+      }
+      renderRack();
+      rebuildLensLayers();
+      drawInvertCanvas();
+      return;
+    }
+    // name (or anywhere else on the row): focus the readout, leave layers alone
+    focusLens(id);
+  });
+  renderRack();
+  focusLens(state.lens);
   $("phrase").addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();

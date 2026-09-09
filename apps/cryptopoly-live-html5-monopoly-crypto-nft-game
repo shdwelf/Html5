@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptopoly Live - HTML5 Monopoly Crypto NFT Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        :root {
+            --ink: #e5eefb;
+            --muted: #94a3b8;
+            --panel: #101827;
+            --panel-2: #172033;
+            --line: #26344d;
+            --board: #dbeafe;
+            --paper: #f8fafc;
+            --dark: #07111f;
+        }
+
+        * { box-sizing: border-box; }
+        html, body { min-height: 100%; }
+        body {
+            margin: 0;
+            background: radial-gradient(circle at 30% 10%, #1e3a8a 0, transparent 34%), #07111f;
+            color: var(--ink);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            overflow: hidden;
+        }
+
+        .shell {
+            display: grid;
+            grid-template-columns: 370px minmax(680px, 1fr);
+            gap: 18px;
+            height: 100vh;
+            padding: 18px;
+        }
+
+        .panel {
+            background: rgba(16, 24, 39, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 18px;
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.28);
+        }
+
+        .left-rail {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .brand {
+            padding: 18px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.28), rgba(20, 184, 166, 0.12));
+            border: 1px solid rgba(96, 165, 250, 0.35);
+        }
+
+        .section { padding: 14px; }
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #cbd5e1;
+            font-size: 0.83rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .btn {
+            width: 100%;
+            border: 0;
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: white;
+            background: #2563eb;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 180ms ease, filter 180ms ease, opacity 180ms ease;
+        }
+
+        .btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.12); }
+        .btn:disabled { cursor: not-allowed; opacity: 0.45; }
+        .btn.buy { background: #059669; }
+        .btn.skip { background: #475569; }
+
+        .board-wrap {
+            display: grid;
+            place-items: center;
+            min-width: 0;
+            background: rgba(7, 17, 31, 0.68);
+            border-radius: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .board-wrap::before {
+            content: "";
+            position: absolute;
+            inset: -20%;
+            background: conic-gradient(from 90deg, transparent, rgba(20, 184, 166, 0.18), transparent, rgba(59, 130, 246, 0.24), transparent);
+            animation: slowSpin 22s linear infinite;
+        }
+
+        #board {
+            width: min(88vh, calc(100vw - 440px));
+            height: min(88vh, calc(100vw - 440px));
+            min-width: 650px;
+            min-height: 650px;
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            grid-template-rows: repeat(11, 1fr);
+            gap: 2px;
+            padding: 4px;
+            background: #07111f;
+            border: 4px solid #07111f;
+            border-radius: 8px;
+            position: relative;
+            z-index: 1;
+            animation: boardIn 700ms cubic-bezier(.2,.8,.2,1) both;
+        }
+
+        .space {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2px;
+            padding: 4px 3px;
+            background: var(--paper);
+            color: #0f172a;
+            font-size: 0.58rem;
+            line-height: 1.05;
+            text-align: center;
+            font-weight: 900;
+        }
+
+        .space.corner {
+            justify-content: center;
+            background: #bfdbfe;
+            font-size: 0.72rem;
+            letter-spacing: 0.02em;
+        }
+
+        .band {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 12px;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.25);
+        }
+
+        .space-name { margin-top: 13px; max-width: 100%; }
+        .space.special .space-name { margin-top: 0; }
+        .price { color: #334155; font-size: 0.55rem; font-weight: 800; }
+        .owner-mark { width: 42%; height: 4px; border-radius: 999px; background: transparent; margin-bottom: 1px; }
+        .owner-p1 { background: #e11d48; }
+        .owner-p2 { background: #2563eb; }
+        .coin-logo { width: 20px; height: 20px; object-fit: contain; margin: 2px auto; display: block; background: white; border-radius: 50%; padding: 1px; }
+        .ticker-logo { width: 16px; height: 16px; vertical-align: middle; margin-right: 6px; border-radius: 50%; background: white; padding: 1px; }
+
+        .side-left .inner { transform: rotate(90deg); width: 72px; }
+        .side-right .inner { transform: rotate(-90deg); width: 72px; }
+        .top-row .inner { transform: rotate(180deg); }
+
+        #center {
+            grid-column: 2 / 11;
+            grid-row: 2 / 11;
+            background:
+                linear-gradient(135deg, rgba(248, 250, 252, 0.88), rgba(219, 234, 254, 0.9)),
+                radial-gradient(circle at 50% 35%, rgba(20, 184, 166, 0.25), transparent 38%);
+            color: #0f172a;
+            position: relative;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .watermark {
+            position: absolute;
+            transform: rotate(-35deg);
+            font-size: clamp(2.6rem, 7vw, 5.8rem);
+            font-weight: 1000;
+            letter-spacing: 0.06em;
+            color: rgba(15, 23, 42, 0.1);
+            animation: breathe 4.8s ease-in-out infinite;
+        }
+
+        .center-card {
+            width: min(72%, 420px);
+            padding: 28px;
+            border: 1px solid rgba(15, 23, 42, 0.14);
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(14px);
+            border-radius: 24px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15);
+        }
+
+        .dice-row { display: flex; justify-content: center; gap: 12px; margin: 16px 0; }
+        .die {
+            width: 56px;
+            height: 56px;
+            display: grid;
+            place-items: center;
+            background: white;
+            color: #0f172a;
+            border: 2px solid #0f172a;
+            border-radius: 14px;
+            font-size: 1.6rem;
+            font-weight: 1000;
+            box-shadow: 0 8px 0 #cbd5e1;
+        }
+
+        .die.roll { animation: diceRoll 480ms ease; }
+
+        .token {
+            width: 16px;
+            height: 16px;
+            border-radius: 999px;
+            border: 2px solid white;
+            position: absolute;
+            bottom: 4px;
+            z-index: 8;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+            transition: all 420ms cubic-bezier(.2,1.4,.4,1);
+        }
+
+        #token-1 { background: #e11d48; left: 4px; }
+        #token-2 { background: #2563eb; right: 4px; }
+
+        .ticker-row, .player-row, .log-line {
+            border-top: 1px solid rgba(148, 163, 184, 0.12);
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        .ticker-row {
+            display: grid;
+            grid-template-columns: 54px 1fr auto;
+            gap: 8px;
+            align-items: center;
+            font-size: 0.78rem;
+        }
+
+        .change-up { color: #34d399; }
+        .change-down { color: #fb7185; }
+        .muted { color: var(--muted); }
+        .nft-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 6px; margin-top: 8px; }
+        .nft { width: 100%; aspect-ratio: 1; border-radius: 10px; border: 1px solid rgba(148,163,184,0.38); animation: mintIn 500ms ease both; overflow: hidden; background: #020617; }
+        .nft svg { display: block; width: 100%; height: 100%; }
+        #log { max-height: 160px; overflow-y: auto; font-size: 0.78rem; line-height: 1.35; color: #cbd5e1; }
+
+        @keyframes slowSpin { to { transform: rotate(360deg); } }
+        @keyframes boardIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+        @keyframes breathe { 0%, 100% { opacity: 0.65; } 50% { opacity: 1; } }
+        @keyframes diceRoll { 0% { transform: translateY(0) rotate(0); } 40% { transform: translateY(-14px) rotate(18deg); } 100% { transform: translateY(0) rotate(0); } }
+        @keyframes mintIn { from { opacity: 0; transform: scale(0.55) rotate(-10deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+
+        @media (max-width: 1120px) {
+            body { overflow: auto; }
+            .shell { height: auto; min-height: 100vh; grid-template-columns: 1fr; }
+            .left-rail { order: 2; overflow: visible; }
+            .board-wrap { order: 1; min-height: 720px; }
+            #board { width: 680px; height: 680px; min-width: 680px; min-height: 680px; }
+        }
+
+        @media (max-width: 760px) {
+            .shell { padding: 10px; gap: 10px; }
+            .board-wrap { min-height: calc(100vw - 20px); overflow-x: auto; }
+            #board { width: calc(100vw - 28px); height: calc(100vw - 28px); min-width: 0; min-height: 0; }
+            .space { font-size: 0.45rem; padding: 2px 1px; }
+            .price { font-size: 0.42rem; }
+            .center-card { width: 78%; padding: 14px; }
+            .die { width: 40px; height: 40px; font-size: 1.15rem; border-radius: 10px; }
+            .token { width: 12px; height: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <main class="shell">
+        <aside class="left-rail">
+            <section class="panel brand">
+                <p class="text-xs uppercase tracking-[0.35em] text-cyan-200 font-black">HTML5 Board Game</p>
+                <h1 class="text-4xl font-black mt-2 leading-none">Cryptopoly Live</h1>
+                <p class="mt-3 text-sm text-slate-300">A Monopoly-style crypto property game. Purchase prices scale from the original board values using live market movement from the start of this session.</p>
+            </section>
+
+            <section class="panel section">
+                <div class="section-title"><span id="turnTitle">Player 1 Turn</span><span id="turnState" class="muted">Roll</span></div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="btn" id="rollBtn">Roll Dice</button>
+                    <button class="btn buy" id="buyBtn" disabled>Buy</button>
+                </div>
+                <button class="btn skip mt-2" id="skipBtn" disabled>Skip Purchase</button>
+            </section>
+
+            <section class="panel section">
+                <div class="section-title"><span>Live Market Feed</span><span id="feedStatus" class="muted">Connecting</span></div>
+                <div id="ticker"></div>
+            </section>
+
+            <section class="panel section">
+                <div class="section-title"><span>Player Ledgers</span><span class="muted">Assets + NFTs</span></div>
+                <div id="ledgers"></div>
+            </section>
+
+            <section class="panel section">
+                <div class="section-title"><span>Action Log</span><span class="muted">Rules Engine</span></div>
+                <div id="log"></div>
+            </section>
+        </aside>
+
+        <section class="board-wrap">
+            <div id="board">
+                <div id="center">
+                    <div class="watermark">CRYPTOPOLY</div>
+                    <div class="center-card">
+                        <div class="text-xs uppercase tracking-[0.28em] font-black text-blue-700">Live Market Edition</div>
+                        <div class="dice-row">
+                            <div class="die" id="die1">1</div>
+                            <div class="die" id="die2">1</div>
+                        </div>
+                        <div id="centerStatus" class="font-black text-lg">Roll to start the chain.</div>
+                        <div id="centerHint" class="mt-2 text-xs font-bold text-slate-600">Community Chest mints a generative NFT into your ledger.</div>
+                    </div>
+                </div>
+                <div class="token" id="token-1" title="Player 1"></div>
+                <div class="token" id="token-2" title="Player 2"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const coinIds = {
+            BTC: "bitcoin", ETH: "ethereum", BNB: "binancecoin", SOL: "solana", XRP: "ripple", ADA: "cardano", DOGE: "dogecoin", AVAX: "avalanche-2",
+            DOT: "polkadot", LINK: "chainlink", TRX: "tron", MATIC: "matic-network", LTC: "litecoin", BCH: "bitcoin-cash", UNI: "uniswap", ATOM: "cosmos",
+            ETC: "ethereum-classic", XLM: "stellar", NEAR: "near", ICP: "internet-computer", APT: "aptos", FIL: "filecoin", ARB: "arbitrum", OP: "optimism",
+            AAVE: "aave", MKR: "maker", SUI: "sui", INJ: "injective-protocol"
+        };
+
+        const coinLogos = {
+            BTC: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png",
+            ETH: "https://assets.coingecko.com/coins/images/279/small/ethereum.png",
+            BNB: "https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png",
+            SOL: "https://assets.coingecko.com/coins/images/4128/small/solana.png",
+            XRP: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png",
+            ADA: "https://assets.coingecko.com/coins/images/975/small/cardano.png",
+            DOGE: "https://assets.coingecko.com/coins/images/5/small/dogecoin.png",
+            AVAX: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png",
+            DOT: "https://assets.coingecko.com/coins/images/12171/small/polkadot.png",
+            LINK: "https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png",
+            TRX: "https://assets.coingecko.com/coins/images/1094/small/tron-logo.png",
+            MATIC: "https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png",
+            LTC: "https://assets.coingecko.com/coins/images/2/small/litecoin.png",
+            BCH: "https://assets.coingecko.com/coins/images/1/small/bitcoin-cash-circle.png",
+            UNI: "https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png",
+            ATOM: "https://assets.coingecko.com/coins/images/1481/small/cosmos_hub.png",
+            ETC: "https://assets.coingecko.com/coins/images/453/small/ethereum-classic-logo.png",
+            XLM: "https://assets.coingecko.com/coins/images/100/small/Stellar_symbol_black_RGB.png",
+            NEAR: "https://assets.coingecko.com/coins/images/10365/small/near_icon.png",
+            ICP: "https://assets.coingecko.com/coins/images/14495/small/Internet_Computer_logo.png",
+            APT: "https://assets.coingecko.com/coins/images/26455/small/aptos_round.png",
+            FIL: "https://assets.coingecko.com/coins/images/12817/small/filecoin.png",
+            ARB: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg",
+            OP: "https://assets.coingecko.com/coins/images/25244/small/Optimism.png",
+            AAVE: "https://assets.coingecko.com/coins/images/12645/small/AAVE.png",
+            MKR: "https://assets.coingecko.com/coins/images/1364/small/Mark_Maker.png",
+            SUI: "https://assets.coingecko.com/coins/images/26375/small/sui_logo.jpeg",
+            INJ: "https://assets.coingecko.com/coins/images/12882/small/Injective_Logo.png"
+        };
+
+        const groups = {
+            brown: "#92400e", lightblue: "#7dd3fc", pink: "#ec4899", orange: "#f97316", red: "#ef4444", yellow: "#eab308", green: "#22c55e", blue: "#1d4ed8",
+            rail: "#111827", utility: "#0f766e"
+        };
+
+        const spaces = [
+            { name: "GO", type: "go" },
+            { name: "LTC", type: "property", coin: "LTC", basePrice: 60, baseRent: 2, group: "brown" },
+            { name: "Community Chest", type: "chest" },
+            { name: "ETC", type: "property", coin: "ETC", basePrice: 60, baseRent: 4, group: "brown" },
+            { name: "Income Tax", type: "tax", amount: 200 },
+            { name: "FIL Rail", type: "railroad", coin: "FIL", basePrice: 200, group: "rail" },
+            { name: "BCH", type: "property", coin: "BCH", basePrice: 100, baseRent: 6, group: "lightblue" },
+            { name: "Chance", type: "chance" },
+            { name: "XLM", type: "property", coin: "XLM", basePrice: 100, baseRent: 6, group: "lightblue" },
+            { name: "ATOM", type: "property", coin: "ATOM", basePrice: 120, baseRent: 8, group: "lightblue" },
+            { name: "Jail", type: "jail" },
+            { name: "MATIC", type: "property", coin: "MATIC", basePrice: 140, baseRent: 10, group: "pink" },
+            { name: "AAVE Utility", type: "utility", coin: "AAVE", basePrice: 150, group: "utility" },
+            { name: "TRX", type: "property", coin: "TRX", basePrice: 140, baseRent: 10, group: "pink" },
+            { name: "NEAR", type: "property", coin: "NEAR", basePrice: 160, baseRent: 12, group: "pink" },
+            { name: "ARB Rail", type: "railroad", coin: "ARB", basePrice: 200, group: "rail" },
+            { name: "ICP", type: "property", coin: "ICP", basePrice: 180, baseRent: 14, group: "orange" },
+            { name: "Community Chest", type: "chest" },
+            { name: "AVAX", type: "property", coin: "AVAX", basePrice: 180, baseRent: 14, group: "orange" },
+            { name: "DOT", type: "property", coin: "DOT", basePrice: 200, baseRent: 16, group: "orange" },
+            { name: "Free Parking", type: "free" },
+            { name: "UNI", type: "property", coin: "UNI", basePrice: 220, baseRent: 18, group: "red" },
+            { name: "Chance", type: "chance" },
+            { name: "LINK", type: "property", coin: "LINK", basePrice: 220, baseRent: 18, group: "red" },
+            { name: "APT", type: "property", coin: "APT", basePrice: 240, baseRent: 20, group: "red" },
+            { name: "OP Rail", type: "railroad", coin: "OP", basePrice: 200, group: "rail" },
+            { name: "DOGE", type: "property", coin: "DOGE", basePrice: 260, baseRent: 22, group: "yellow" },
+            { name: "ADA", type: "property", coin: "ADA", basePrice: 260, baseRent: 22, group: "yellow" },
+            { name: "MKR Utility", type: "utility", coin: "MKR", basePrice: 150, group: "utility" },
+            { name: "XRP", type: "property", coin: "XRP", basePrice: 280, baseRent: 24, group: "yellow" },
+            { name: "Go To Jail", type: "goToJail" },
+            { name: "SUI", type: "property", coin: "SUI", basePrice: 300, baseRent: 26, group: "green" },
+            { name: "BNB", type: "property", coin: "BNB", basePrice: 300, baseRent: 26, group: "green" },
+            { name: "Community Chest", type: "chest" },
+            { name: "SOL", type: "property", coin: "SOL", basePrice: 320, baseRent: 28, group: "green" },
+            { name: "INJ Rail", type: "railroad", coin: "INJ", basePrice: 200, group: "rail" },
+            { name: "Chance", type: "chance" },
+            { name: "ETH", type: "property", coin: "ETH", basePrice: 350, baseRent: 35, group: "blue" },
+            { name: "Luxury Tax", type: "tax", amount: 100 },
+            { name: "BTC", type: "property", coin: "BTC", basePrice: 400, baseRent: 50, group: "blue" }
+        ];
+
+        const market = {};
+        const game = {
+            active: 1,
+            waitingToBuy: null,
+            lastRoll: 0,
+            players: {
+                1: { cash: 1500, position: 0, owned: [], nfts: [], tokenId: "token-1" },
+                2: { cash: 1500, position: 0, owned: [], nfts: [], tokenId: "token-2" }
+            }
+        };
+
+        const els = {
+            board: document.getElementById("board"),
+            ticker: document.getElementById("ticker"),
+            ledgers: document.getElementById("ledgers"),
+            log: document.getElementById("log"),
+            rollBtn: document.getElementById("rollBtn"),
+            buyBtn: document.getElementById("buyBtn"),
+            skipBtn: document.getElementById("skipBtn"),
+            turnTitle: document.getElementById("turnTitle"),
+            turnState: document.getElementById("turnState"),
+            feedStatus: document.getElementById("feedStatus"),
+            centerStatus: document.getElementById("centerStatus"),
+            centerHint: document.getElementById("centerHint"),
+            die1: document.getElementById("die1"),
+            die2: document.getElementById("die2")
+        };
+
+        function gridFor(index) {
+            if (index === 0) return { col: 11, row: 11, side: "corner" };
+            if (index > 0 && index < 10) return { col: 11 - index, row: 11, side: "bottom-row" };
+            if (index === 10) return { col: 1, row: 11, side: "corner" };
+            if (index > 10 && index < 20) return { col: 1, row: 21 - index, side: "side-left" };
+            if (index === 20) return { col: 1, row: 1, side: "corner" };
+            if (index > 20 && index < 30) return { col: index - 19, row: 1, side: "top-row" };
+            if (index === 30) return { col: 11, row: 1, side: "corner" };
+            return { col: 11, row: index - 29, side: "side-right" };
+        }
+
+        function buildBoard() {
+            spaces.forEach((space, index) => {
+                const grid = gridFor(index);
+                const div = document.createElement("div");
+                div.id = `space-${index}`;
+                div.className = `space ${grid.side} ${space.type}`;
+                if (grid.side === "corner") div.classList.add("corner");
+                div.style.gridColumn = grid.col;
+                div.style.gridRow = grid.row;
+
+                const purchasable = ["property", "railroad", "utility"].includes(space.type);
+                const color = purchasable ? groups[space.group] : null;
+                const logoUrl = space.coin ? coinLogos[space.coin] : null;
+                div.innerHTML = `
+                    ${color ? `<div class="band" style="background:${color}"></div>` : ""}
+                    <div class="inner">
+                        ${logoUrl ? `<img class="coin-logo" src="${logoUrl}" alt="${space.coin}" onerror="this.style.display='none'">` : ""}
+                        <div class="space-name">${space.name}</div>
+                        <div class="price" data-price-for="${index}">${purchasable ? "$" + space.basePrice : labelForSpecial(space)}</div>
+                        <div class="owner-mark" data-owner-for="${index}"></div>
+                    </div>
+                `;
+                els.board.appendChild(div);
+            });
+        }
+
+        function labelForSpecial(space) {
+            if (space.type === "go") return "+$200";
+            if (space.type === "tax") return "$" + space.amount;
+            if (space.type === "chest") return "NFT Drop";
+            return "";
+        }
+
+        async function fetchLiveMarket() {
+            const uniqueIds = [...new Set(Object.values(coinIds))].join(",");
+            const url = `https://api.coingecko.com/api/v3/simple/price?ids=${uniqueIds}&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true`;
+            try {
+                const response = await fetch(url, { cache: "no-store" });
+                if (!response.ok) throw new Error("Market request failed");
+                const data = await response.json();
+                Object.entries(coinIds).forEach(([symbol, id]) => {
+                    const live = data[id];
+                    if (!live || !live.usd) return;
+                    if (!market[symbol]) market[symbol] = { anchor: live.usd, usd: live.usd, change24h: live.usd_24h_change || 0, fallback: false };
+                    market[symbol].usd = live.usd;
+                    market[symbol].change24h = live.usd_24h_change || 0;
+                    market[symbol].lastUpdated = live.last_updated_at;
+                    market[symbol].fallback = false;
+                });
+                els.feedStatus.textContent = "Live";
+                renderAll();
+            } catch (error) {
+                runFallbackMarket();
+                els.feedStatus.textContent = "Sim fallback";
+                pushLog("Live market feed unavailable; using local volatility until the next refresh succeeds.");
+            }
+        }
+
+        function runFallbackMarket() {
+            Object.keys(coinIds).forEach(symbol => {
+                if (!market[symbol]) market[symbol] = { anchor: 100, usd: 100, change24h: 0, fallback: true };
+                const drift = 1 + ((Math.random() * 8) - 3.8) / 100;
+                market[symbol].usd = Math.max(0.000001, market[symbol].usd * drift);
+                market[symbol].change24h = ((market[symbol].usd - market[symbol].anchor) / market[symbol].anchor) * 100;
+                market[symbol].fallback = true;
+            });
+            renderAll();
+        }
+
+        function marketRatio(symbol) {
+            const item = market[symbol];
+            if (!item || !item.anchor) return 1;
+            return Math.max(0.5, Math.min(1.8, item.usd / item.anchor));
+        }
+
+        function currentPrice(space) {
+            return Math.max(1, Math.round(space.basePrice * marketRatio(space.coin)));
+        }
+
+        function currentRent(space, rollTotal) {
+            if (space.type === "property") return Math.max(1, Math.round(space.baseRent * marketRatio(space.coin)));
+            if (space.type === "railroad") {
+                const owner = ownerOfSpace(spaces.indexOf(space));
+                const count = game.players[owner].owned.filter(i => spaces[i].type === "railroad").length;
+                return [0, 25, 50, 100, 200][count] || 25;
+            }
+            if (space.type === "utility") {
+                const owner = ownerOfSpace(spaces.indexOf(space));
+                const count = game.players[owner].owned.filter(i => spaces[i].type === "utility").length;
+                return rollTotal * (count === 2 ? 10 : 4);
+            }
+            return 0;
+        }
+
+        function renderMarket() {
+            const usedCoins = spaces.filter(s => s.coin).map(s => s.coin);
+            els.ticker.innerHTML = usedCoins.map(symbol => {
+                const item = market[symbol] || { usd: 0, change24h: 0 };
+                const moveClass = item.change24h >= 0 ? "change-up" : "change-down";
+                const sign = item.change24h >= 0 ? "+" : "";
+                const logoUrl = coinLogos[symbol] || "";
+                return `<div class="ticker-row"><img class="ticker-logo" src="${logoUrl}" alt="${symbol}" onerror="this.style.display='none'"><b>${symbol}</b><span class="muted">$${formatUsd(item.usd)}</span><span class="${moveClass}">${sign}${item.change24h.toFixed(2)}%</span></div>`;
+            }).join("");
+        }
+
+        function renderPricesAndOwners() {
+            spaces.forEach((space, index) => {
+                if (!["property", "railroad", "utility"].includes(space.type)) return;
+                const tag = document.querySelector(`[data-price-for="${index}"]`);
+                if (tag) tag.textContent = "$" + currentPrice(space);
+                const mark = document.querySelector(`[data-owner-for="${index}"]`);
+                if (mark) {
+                    mark.className = "owner-mark";
+                    const owner = ownerOfSpace(index);
+                    if (owner) mark.classList.add(owner === 1 ? "owner-p1" : "owner-p2");
+                }
+            });
+        }
+
+        function renderLedgers() {
+            els.ledgers.innerHTML = Object.entries(game.players).map(([id, player]) => {
+                const assets = player.owned.map(i => spaces[i].coin).join(", ") || "None";
+                const nfts = player.nfts.map(nft => `<div class="nft" title="NFT #${nft.id}">${nft.svg}</div>`).join("");
+                return `
+                    <div class="player-row">
+                        <div class="flex items-center justify-between gap-3 font-black">
+                            <span style="color:${id === "1" ? "#fb7185" : "#60a5fa"}">Player ${id}</span>
+                            <span>$${player.cash}</span>
+                        </div>
+                        <div class="text-xs muted mt-1"><b>Crypto deeds:</b> ${assets}</div>
+                        <div class="text-xs muted mt-1"><b>NFTs:</b> ${player.nfts.length}</div>
+                        <div class="nft-grid">${nfts}</div>
+                    </div>`;
+            }).join("");
+        }
+
+        function renderTokens() {
+            Object.entries(game.players).forEach(([id, player]) => {
+                const token = document.getElementById(player.tokenId);
+                const target = document.getElementById(`space-${player.position}`);
+                if (!token || !target) return;
+                target.appendChild(token);
+                token.style.left = id === "1" ? "4px" : "auto";
+                token.style.right = id === "2" ? "4px" : "auto";
+            });
+        }
+
+        function renderTurn() {
+            els.turnTitle.textContent = `Player ${game.active} Turn`;
+            els.turnState.textContent = game.waitingToBuy === null ? "Roll" : "Buy or skip";
+            els.rollBtn.disabled = game.waitingToBuy !== null;
+        }
+
+        function renderAll() {
+            renderMarket();
+            renderPricesAndOwners();
+            renderLedgers();
+            renderTokens();
+            renderTurn();
+        }
+
+        function rollDice() {
+            if (game.waitingToBuy !== null) return;
+            const player = game.players[game.active];
+            const d1 = Math.floor(Math.random() * 6) + 1;
+            const d2 = Math.floor(Math.random() * 6) + 1;
+            const total = d1 + d2;
+            game.lastRoll = total;
+            animateDice(d1, d2);
+
+            const previous = player.position;
+            player.position = (player.position + total) % 40;
+            if (player.position < previous) {
+                player.cash += 200;
+                pushLog(`Player ${game.active} passed GO and collected $200.`);
+            }
+
+            pushLog(`Player ${game.active} rolled ${d1} + ${d2} and landed on ${spaces[player.position].name}.`);
+            renderTokens();
+            evaluateSpace();
+        }
+
+        function animateDice(d1, d2) {
+            els.die1.textContent = d1;
+            els.die2.textContent = d2;
+            els.die1.classList.remove("roll");
+            els.die2.classList.remove("roll");
+            void els.die1.offsetWidth;
+            els.die1.classList.add("roll");
+            els.die2.classList.add("roll");
+        }
+
+        function evaluateSpace() {
+            const player = game.players[game.active];
+            const space = spaces[player.position];
+            els.buyBtn.disabled = true;
+            els.skipBtn.disabled = true;
+
+            if (["property", "railroad", "utility"].includes(space.type)) {
+                const owner = ownerOfSpace(player.position);
+                if (!owner) {
+                    const price = currentPrice(space);
+                    game.waitingToBuy = player.position;
+                    els.buyBtn.disabled = player.cash < price;
+                    els.buyBtn.textContent = `Buy $${price}`;
+                    els.skipBtn.disabled = false;
+                    els.centerStatus.textContent = `${space.name} is unowned.`;
+                    els.centerHint.textContent = `Original price $${space.basePrice}; live adjusted price $${price}.`;
+                } else if (owner !== game.active) {
+                    const rent = currentRent(space, game.lastRoll);
+                    player.cash -= rent;
+                    game.players[owner].cash += rent;
+                    pushLog(`Player ${game.active} paid Player ${owner} $${rent} rent for ${space.name}.`);
+                    els.centerStatus.textContent = `Rent paid: $${rent}`;
+                    els.centerHint.textContent = "Rent follows classic Monopoly rent logic, adjusted for crypto movement where applicable.";
+                    endTurn();
+                } else {
+                    els.centerStatus.textContent = `Player ${game.active} owns ${space.name}.`;
+                    els.centerHint.textContent = "No rent due on your own deed.";
+                    endTurn();
+                }
+            } else if (space.type === "chest") {
+                const nft = mintNft();
+                player.nfts.push(nft);
+                pushLog(`Community Chest minted NFT #${nft.id} for Player ${game.active}.`);
+                els.centerStatus.textContent = `NFT #${nft.id} minted.`;
+                els.centerHint.textContent = "The NFT is stored permanently in this player's in-game ledger.";
+                endTurn();
+            } else if (space.type === "chance") {
+                const cards = [
+                    { text: "Advance to GO. Collect $200.", run: () => { player.position = 0; player.cash += 200; } },
+                    { text: "Bank pays you dividend of $50.", run: () => { player.cash += 50; } },
+                    { text: "Pay poor smart-contract audit fees of $50.", run: () => { player.cash -= 50; } },
+                    { text: "Go back 3 spaces.", run: () => { player.position = (player.position + 37) % 40; } }
+                ];
+                const card = cards[Math.floor(Math.random() * cards.length)];
+                card.run();
+                pushLog(`Chance: ${card.text}`);
+                els.centerStatus.textContent = "Chance card resolved.";
+                els.centerHint.textContent = card.text;
+                endTurn();
+            } else if (space.type === "tax") {
+                player.cash -= space.amount;
+                pushLog(`Player ${game.active} paid $${space.amount} tax.`);
+                els.centerStatus.textContent = `Tax paid: $${space.amount}`;
+                els.centerHint.textContent = "Classic tax spaces remain fixed.";
+                endTurn();
+            } else if (space.type === "goToJail") {
+                player.position = 10;
+                pushLog(`Player ${game.active} went directly to Jail.`);
+                els.centerStatus.textContent = "Go directly to Jail.";
+                els.centerHint.textContent = "Do not pass GO. Do not collect $200.";
+                endTurn();
+            } else {
+                els.centerStatus.textContent = space.name;
+                els.centerHint.textContent = space.type === "go" ? "Collect $200 when passing or landing here." : "No payment due.";
+                endTurn();
+            }
+            renderAll();
+        }
+
+        function buyCurrentSpace() {
+            if (game.waitingToBuy === null) return;
+            const player = game.players[game.active];
+            const index = game.waitingToBuy;
+            const space = spaces[index];
+            const price = currentPrice(space);
+            if (player.cash < price) return;
+            player.cash -= price;
+            player.owned.push(index);
+            pushLog(`Player ${game.active} bought ${space.name} for $${price}.`);
+            els.centerStatus.textContent = `${space.name} acquired.`;
+            els.centerHint.textContent = "Future rent is paid to this player.";
+            game.waitingToBuy = null;
+            endTurn();
+        }
+
+        function skipPurchase() {
+            if (game.waitingToBuy === null) return;
+            pushLog(`Player ${game.active} skipped ${spaces[game.waitingToBuy].name}.`);
+            game.waitingToBuy = null;
+            endTurn();
+        }
+
+        function endTurn() {
+            els.buyBtn.disabled = true;
+            els.skipBtn.disabled = true;
+            els.buyBtn.textContent = "Buy";
+            game.active = game.active === 1 ? 2 : 1;
+            renderAll();
+        }
+
+        function ownerOfSpace(index) {
+            if (game.players[1].owned.includes(index)) return 1;
+            if (game.players[2].owned.includes(index)) return 2;
+            return null;
+        }
+
+        function mintNft() {
+            const id = Math.floor(100000 + Math.random() * 900000);
+            const hue = Math.floor(Math.random() * 360);
+            const alt = (hue + 120 + Math.floor(Math.random() * 80)) % 360;
+            const cells = Array.from({ length: 16 }, (_, i) => {
+                const x = (i % 4) * 25;
+                const y = Math.floor(i / 4) * 25;
+                const opacity = (0.38 + Math.random() * 0.55).toFixed(2);
+                const fill = i % 2 ? `hsl(${hue} 92% 58%)` : `hsl(${alt} 90% 55%)`;
+                return `<rect x="${x}" y="${y}" width="25" height="25" fill="${fill}" opacity="${opacity}"/>`;
+            }).join("");
+            const svg = `<svg viewBox="0 0 100 100" role="img" aria-label="Generative NFT ${id}"><rect width="100" height="100" fill="#020617"/>${cells}<circle cx="50" cy="50" r="23" fill="none" stroke="white" stroke-width="5" opacity="0.75"/><text x="50" y="56" text-anchor="middle" font-size="16" fill="white" font-weight="900">${String(id).slice(-3)}</text></svg>`;
+            return { id, svg };
+        }
+
+        function pushLog(text) {
+            const line = document.createElement("div");
+            line.className = "log-line";
+            line.textContent = text;
+            els.log.appendChild(line);
+            els.log.scrollTop = els.log.scrollHeight;
+        }
+
+        function formatUsd(value) {
+            if (!value) return "--";
+            if (value >= 1000) return value.toLocaleString(undefined, { maximumFractionDigits: 0 });
+            if (value >= 1) return value.toLocaleString(undefined, { maximumFractionDigits: 2 });
+            return value.toPrecision(3);
+        }
+
+        els.rollBtn.addEventListener("click", rollDice);
+        els.buyBtn.addEventListener("click", buyCurrentSpace);
+        els.skipBtn.addEventListener("click", skipPurchase);
+
+        buildBoard();
+        pushLog("Game initialized. Player 1 starts on GO with $1500.");
+        fetchLiveMarket();
+        setInterval(fetchLiveMarket, 60000);
+        setInterval(() => {
+            if (els.feedStatus.textContent !== "Live") runFallbackMarket();
+        }, 8000);
+        renderAll();
+    </script>
+</body>
+</html>
