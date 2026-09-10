@@ -103,14 +103,57 @@ Findings for these two apps:
   (with an `isComposing` guard), plus a `max-width` clamp so it never overflows
   narrow viewports.
 
-## 5. Regression guard
+## 5. Render-engine audit (three.js / WebGL / wasm) — all inline, no network assets
+
+The request was to make sure the engines (three.js, wasm, WebGL) are **inlined
+and working** so the installations actually render.
+
+Audit results:
+
+- **No wasm at all.** Neither app contains `WebAssembly` or references a `.wasm`
+  file (the site-k *keyspace* app uses `wasm/entropy.wasm`, but these two Sanborn
+  apps do not — and do not need one). "Inlining wasm" is therefore a non-goal
+  here: there is nothing to inline.
+- **three.js is fully bundled.** The Sanborn Codex single file contains the
+  entire three.js runtime (`WebGLRenderer`, `WebGL2RenderingContext`,
+  `glslVersion`, `isWebGL2`, `MeshReflectorMaterial`, EXR/GLTF loader code, the
+  full GLSL shader-library strings, etc.). The only external `<script>` in either
+  app is `./webxdc.js` (the messenger shim) — there are zero CDN/network
+  references in the HTML.
+- **WebGL is the only real runtime dependency.** Kryptos VRML uses raw WebGL 1
+  (custom GLSL shaders, no three.js — it doesn't need it); Sanborn Codex renders
+  through three.js' `WebGLRenderer` (WebGL 2 when available, WebGL 1 fallback).
+- **No GLTF/HDR/EXR/KTX2 network fetches.** The Sanborn bundle carries a stray
+  drei HDRI *preset* string but never fetches it (offline build), and troika
+  font loading is satisfied by the injected fetch shim. The 30 exhibits are
+  procedural geometry, not external `.glb`/`.hdr` assets.
+
+Hardening applied so the engines fail visibly rather than silently:
+
+- **Kryptos VRML** now acquires WebGL via `webgl` → `experimental-webgl`
+  fallback (with `powerPreference: 'high-performance'`), shows a clear
+  "WEBGL UNAVAILABLE" panel if no context exists, handles
+  `webglcontextlost`/`webglcontextrestored`, guards `upload()`/`render()` so a
+  missing context stops cleanly instead of throwing, and stops the render loop
+  when there is no context.
+- **Sanborn Codex** gained a WebGL capability pre-flight that logs "engine
+  inlined, WebGL ready" or shows an immediate "WebGL unavailable" banner (the
+  React boot watchdog remains as the backstop).
+
+Regression tests now assert both apps have no external scripts other than
+`./webxdc.js`, contain no `.wasm`/`WebAssembly` references, and carry the WebGL
+fallback markers.
+
+## 6. Regression guard
 
 `test/sanborn-codex.test.ts` was extended to assert: manifest `name` /
 `orientation` / `source_code_url` for both apps, a square 256×256 PNG icon
-(within the spec's band), and the kryptos info-panel fix markers
-(`selectSculpture('kryptos')`, `function openPanel()`, `wasOpen`, `id="toast"`).
+(within the spec's band), the kryptos info-panel fix markers
+(`selectSculpture('kryptos')`, `function openPanel()`, `wasOpen`, `id="toast"`),
+that neither app has an external script beyond `./webxdc.js`, that neither
+references `.wasm`/`WebAssembly`, and that both carry the WebGL fallback markers.
 
-## 6. Open items for further research
+## 7. Open items for further research
 
 - Implement real WebXR present (render loop + `WebXRManager`) in Kryptos VRML if
   headset support is wanted; today it gracefully declines.

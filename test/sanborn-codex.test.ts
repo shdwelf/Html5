@@ -64,4 +64,28 @@ describe("Jim Sanborn exhibits and VRML apps", () => {
     // broken WebXR session replaced with a graceful notice
     expect(html).toContain('id="toast"');
   });
+
+  it("inlines the render engines (three.js + WebGL) with no external scripts or wasm", () => {
+    for (const p of ["public/apps/sanborn-codex/index.html", "public/apps/kryptos-vrml/index.html"]) {
+      const html = readFileSync(path.resolve(p), "utf8");
+      // the only external script is the webxdc shim; everything else is inline
+      const srcs = [...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map((m) => m[1]);
+      expect(srcs).toEqual(["./webxdc.js"]);
+      // no runtime dependency on a separate wasm blob — engines are pure JS + WebGL
+      expect(html).not.toMatch(/\.wasm\b/);
+      expect(html).not.toMatch(/WebAssembly/);
+    }
+    // three.js (WebGL renderer) is bundled into the single-file sanborn build
+    const codex = readFileSync(path.resolve("public/apps/sanborn-codex/index.html"), "utf8");
+    expect(codex).toContain("WebGLRenderer");
+  });
+
+  it("degrades gracefully when WebGL is unavailable instead of crashing", () => {
+    const kryptos = readFileSync(path.resolve("public/apps/kryptos-vrml/index.html"), "utf8");
+    expect(kryptos).toContain("experimental-webgl");
+    expect(kryptos).toContain("WEBGL UNAVAILABLE");
+    expect(kryptos).toContain("webglcontextlost");
+    const codex = readFileSync(path.resolve("public/apps/sanborn-codex/index.html"), "utf8");
+    expect(codex).toContain("WebGL unavailable");
+  });
 });

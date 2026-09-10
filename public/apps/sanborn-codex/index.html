@@ -4771,6 +4771,29 @@ html[data-zg="silver"] body { background: #0d0d0f !important; }
     if (e.key === "ArrowRight") { step(1); return; }
   });
 
+  /* WebGL capability pre-flight — the 3D galleries are rendered by the inlined
+     three.js engine; if WebGL is missing, say so immediately instead of relying
+     on the React boot watchdog below. */
+  (function () {
+    function hasWebGL() {
+      try {
+        var c = document.createElement("canvas");
+        return !!(window.WebGLRenderingContext &&
+          (c.getContext("webgl2") || c.getContext("webgl") || c.getContext("experimental-webgl")));
+      } catch (e) { return false; }
+    }
+    if (hasWebGL()) {
+      try { console.info("[sanborn-codex] WebGL ready — three.js engine is inlined (no network assets)."); } catch (e) {}
+    } else {
+      var d = document.createElement("div");
+      d.style.cssText = "position:fixed;left:12px;right:12px;top:12px;z-index:2147483647;"
+        + "background:#18181b;color:#fca5a5;border:1px solid #7f1d1d;border-radius:10px;"
+        + "padding:10px 12px;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace";
+      d.textContent = "WebGL unavailable \u2014 the 3D installations cannot render. Enable hardware acceleration / WebGL, then reload.";
+      document.body.appendChild(d);
+    }
+  })();
+
   /* boot watchdog — if React never mounts, say why instead of a silent blank page */
   var last = "";
   window.addEventListener("error", function (e) {
