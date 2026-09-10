@@ -77,6 +77,14 @@ const PRECACHE = [
   "./img/app-192.png",
   "./img/app-512.png",
   "./img/apple-touch.png",
+  "./driverguide.html",
+  "./css/driverguide.css",
+  "./js/driverguide.js",
+  "./js/regparse.js",
+  "./js/dll-catalog.js",
+  "./js/driver-catalog.js",
+  "./js/pe-version.js",
+  "./vendor/fflate/index.mjs",
 ];
 
 async function precache() {
