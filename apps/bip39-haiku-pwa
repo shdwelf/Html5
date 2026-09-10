@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIP39 Haiku PWA</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --error: #e74c3c;
+            --bg: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        #install-banner {
+            display: none;
+            width: 100%;
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .install-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        h1 { margin-top: 0; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        .description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn-generate { background: var(--accent); color: white; }
+        .btn-verify { background: var(--primary); color: white; }
+        button:hover { opacity: 0.9; }
+        button:active { transform: scale(0.98); }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: monospace;
+        }
+
+        .haiku-card {
+            background: #fff;
+            border-left: 5px solid var(--accent);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .haiku-text {
+            font-style: italic;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+            color: #34495e;
+            line-height: 1.4;
+        }
+
+        .mnemonic-list {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 0.95em;
+            word-break: break-all;
+            border: 1px solid #eee;
+        }
+
+        .status {
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .valid { color: var(--success); }
+        .invalid { color: var(--error); }
+
+        #results-list { width: 100%; }
+
+        @media (max-width: 600px) {
+            .controls { flex-direction: column; }
+            input[type="text"] { width: 100%; box-sizing: border-box; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="install-banner">
+    Add this app to your home screen for offline use!
+    <button class="install-btn" id="btnInstall">Install App</button>
+</div>
+
+<div class="container">
+    <h1>BIP39 Haiku Pro</h1>
+    <p class="description">
+        Generates grammatically structured haikus that are valid 12-word BIP39 mnemonics. 
+        Works offline once installed.
+    </p>
+
+    <div class="controls">
+        <button class="btn-generate" onclick="generateHaiku()">Generate Haiku</button>
+        <input type="text" id="manual-input" placeholder="Paste 12 words to verify...">
+        <button class="btn-verify" onclick="verifyManual()">Verify</button>
+    </div>
+
+    <div id="results-list"></div>
+</div>
+
+<script>
+    // --- PWA Logic ---
+    let deferredPrompt;
+    const btnInstall = document.getElementById('btnInstall');
+    const installBanner = document.getElementById('install-banner');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBanner.style.display = 'block';
+    });
+
+    btnInstall.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to install: ${outcome}`);
+            deferredPrompt = null;
+            installBanner.style.display = 'none';
+        }
+    });
+
+    window.addEventListener('appinstalled', () => {
+        installBanner.style.display = 'none';
+        console.log('PWA installed');
+    });
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('SW Registered', reg))
+                .catch(err => console.log('SW Failed', err));
+        });
+    }
+
+    // --- Haiku Logic ---
+    let wordlist = [];
+    const WORDLIST_URL = 'https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/english.txt';
+
+    async function init() {
+        try {
+            const response = await fetch(WORDLIST_URL);
+            const text = await response.text();
+            wordlist = text.split('\n').map(w => w.trim()).filter(w => w.length > 0);
+        } catch (e) {
+            console.error("Failed to fetch wordlist", e);
+        }
+    }
+
+    const data = {
+        nouns: [
+            {w: 'ocean', s: 2}, {w: 'mountain', s: 2}, {w: 'river', s: 2}, {w: 'forest', s: 2},
+            {w: 'bird', s: 1}, {w: 'fish', s: 1}, {w: 'flower', s: 2}, {w: 'leaf', s: 1},
+            {w: 'ice', s: 1}, {w: 'cloud', s: 1}, {w: 'sea', s: 1}, {w: 'morning', s: 2},
+            {w: 'night', s: 1}, {w: 'sunset', s: 2}, {w: 'winter', s: 2}, {w: 'summer', s: 2},
+            {w: 'autumn', s: 2}, {w: 'spring', s: 2}, {w: 'desert', s: 2}, {w: 'island', s: 2}
+        ],
+        adjectives: [
+            {w: 'blue', s: 1}, {w: 'green', s: 1}, {w: 'bright', s: 1}, {w: 'silent', s: 2},
+            {w: 'frozen', s: 2}, {w: 'inner', s: 2}, {w: 'open', s: 2}, {w: 'black', s: 1},
+            {w: 'white', s: 1}, {w: 'heavy', s: 2}, {w: 'hollow', s: 2}, {w: 'vivid', s: 2}
+        ],
+        verbs: [
+            {w: 'run', s: 1}, {w: 'fly', s: 1}, {w: 'gaze', s: 1}, {w: 'glance', s: 1},
+            {w: 'fall', s: 1}, {w: 'drift', s: 1}, {w: 'glow', s: 1}, {w: 'stay', s: 1}
+        ],
+        prepositions: [
+            {w: 'above', s: 2}, {w: 'across', s: 2}, {w: 'among', s: 2}, {w: 'near', s: 1},
+            {w: 'under', s: 2}, {w: 'away', s: 2}, {w: 'around', s: 2}, {w: 'beyond', s: 2}
+        ]
+    };
+
+    function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function buildLine(target, cats) {
+        let line = [], cur = 0;
+        for (let cat of cats) {
+            let options = data[cat].filter(i => cur + i.s <= target);
+            if (!options.length) break;
+            let p = getRandom(options);
+            line.push(p); cur += p.s;
+        }
+        while (cur < target) {
+            let options = [...data.nouns, ...data.adjectives].filter(i => cur + i.s <= target);
+            if (!options.length) break;
+            let p = getRandom(options);
+            line.push(p); cur += p.s;
+        }
+        return line;
+    }
+
+    async function checkBIP39(words) {
+        if (words.length !== 12) return false;
+        try {
+            const indices = words.map(w => {
+                const idx = wordlist.indexOf(w);
+                if (idx === -1) throw 'err';
+                return idx;
+            });
+            let bits = "";
+            for (let idx of indices) bits += idx.toString(2).padStart(11, '0');
+            const entropyBytes = new Uint8Array(16);
+            for (let i = 0; i < 16; i++) entropyBytes[i] = parseInt(bits.slice(i*8, i*8+8), 2);
+            const hash = await crypto.subtle.digest('SHA-256', entropyBytes);
+            const check = new Uint8Array(hash)[0].toString(2).padStart(8, '0').slice(0, 4);
+            return bits.slice(128) === check;
+        } catch (e) { return false; }
+    }
+
+    async function generateHaiku() {
+        if (!wordlist.length) await init();
+        const l1 = buildLine(5, ['adjectives', 'nouns']);
+        const l2 = buildLine(7, ['verbs', 'prepositions', 'adjectives', 'nouns']);
+        const l3_pre = buildLine(4, ['nouns', 'adjectives']);
+        const first11 = [...l1, ...l2, ...l3_pre].map(i => i.w);
+        
+        for (let word of wordlist) {
+            if (await checkBIP39([...first11, word])) {
+                renderHaiku(l1.map(i=>i.w), l2.map(i=>i.w), [...l3_pre.map(i=>i.w), word], [...first11, word]);
+                return;
+            }
+        }
+    }
+
+    function renderHaiku(l1, l2, l3, full) {
+        const container = document.getElementById('results-list');
+        const div = document.createElement('div');
+        div.className = 'haiku-card';
+        div.innerHTML = `
+            <div class="haiku-text">${l1.join(' ')}\n${l2.join(' ')}\n${l3.join(' ')}</div>
+            <div class="mnemonic-list">${full.join(' ')}</div>
+            <div class="status valid">✓ Valid BIP39 Mnemonic</div>
+        `;
+        container.prepend(div);
+    }
+
+    async function verifyManual() {
+        if (!wordlist.length) await init();
+        const words = document.getElementById('manual-input').value.trim().toLowerCase().split(/\s+/);
+        if (words.length !== 12) return alert("Requires 12 words");
+        const isValid = await checkBIP39(words);
+        const container = document.getElementById('results-list');
+        const div = document.createElement('div');
+        div.className = 'haiku-card';
+        div.style.borderLeftColor = isValid ? 'var(--success)' : 'var(--error)';
+        div.innerHTML = `
+            <div class="mnemonic-list">${words.join(' ')}</div>
+            <div class="status ${isValid ? 'valid' : 'invalid'}">
+                ${isValid ? '✓ Valid Checksum' : '✗ Invalid Checksum/Words'}
+            </div>
+        `;
+        container.prepend(div);
+    }
+
+    init();
+</script>
+
+</body>
+</html>

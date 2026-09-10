@@ -1,0 +1,2775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnsōGen & Haiku Bitcoin Wallet - Standalone Suite</title>
+    <style>
+        /* Modern CSS Design with Zen Minimalist/Oriental Calligraphy Vibes */
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-muted: #888888;
+            --accent-color: #009688; /* Teal/Cyan */
+            --accent-glow: rgba(0, 150, 136, 0.2);
+            --border-color: #333333;
+            --btn-bg: #2d2d2d;
+            --btn-hover: #3d3d3d;
+            --red-stamp: #8b0000;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Georgia, serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px;
+            background-color: #151515;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header / Logo section */
+        header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #181818, #121212);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-section svg {
+            width: 44px;
+            height: 44px;
+            stroke: var(--accent-color);
+            fill: none;
+            stroke-width: 2.5;
+        }
+
+        .logo-text h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            font-family: Georgia, serif;
+            color: #ffffff;
+        }
+
+        .logo-text p {
+            margin: 2px 0 0 0;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }}
+
+        /* Navigation Tab Bar */
+        .tabs {
+            display: flex;
+            background-color: #1a1a1a;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 16px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 16px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: #ffffff;
+        }
+
+        .tab-btn.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        /* Content panels */
+        .tab-content {
+            display: none;
+            padding: 32px;
+            animation: fadeIn 0.3s ease-out;
+            min-height: 550px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        @media (max-width: 900px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left and Right column formatting */
+        .panel-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            position: relative;
+        }
+
+        .panel-title {
+            font-family: Georgia, serif;
+            font-size: 18px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 10px;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Forms, inputs, sliders */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        .form-group label span {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 3px;
+            background: #333333;
+            outline: none;
+            margin: 10px 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+        }
+
+        select, input[type="text"], input[type="password"], textarea {
+            width: 100%;
+            background-color: #252525;
+            border: 1px solid var(--border-color);
+            color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+            border-color: var(--accent-color);
+        }
+
+        /* Buttons styles */
+        .btn {
+            background-color: var(--btn-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--btn-hover);
+            color: #ffffff;
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border-color: var(--accent-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #00796b;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .btn-danger {
+            background-color: #4c1c1c;
+            color: #ff9e9e;
+            border-color: #7a2b2b;
+        }
+
+        .btn-danger:hover {
+            background-color: #612222;
+            border-color: #ff9e9e;
+        }
+
+        /* Canvas drawing area styles */
+        .canvas-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        canvas {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            max-width: 100%;
+        }
+
+        .ensogen-tag {
+            font-family: monospace;
+            font-size: 16px;
+            background-color: #252525;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            color: var(--accent-color);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Haiku output area */
+        .haiku-box {
+            background: linear-gradient(180deg, #1f1f1f, #151515);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .haiku-line {
+            font-family: Georgia, serif;
+            font-size: 20px;
+            font-style: italic;
+            margin: 8px 0;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            opacity: 0.9;
+        }
+
+        .haiku-syllable-count {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 15px;
+        }
+
+        /* Addresses styles */
+        .address-item {
+            margin-bottom: 16px;
+            background-color: #1a1a1a;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 16px;
+        }
+
+        .address-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .address-header span.coin-name {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        .address-val {
+            font-family: monospace;
+            font-size: 13px;
+            word-break: break-all;
+            color: #ffffff;
+            user-select: all;
+        }
+
+        .address-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .small-link {
+            font-size: 11px;
+            color: var(--accent-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .small-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Vault / Saved list styles */
+        .vault-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 15px;
+        }
+
+        .vault-table th, .vault-table td {
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .vault-table th {
+            background-color: #1e1e1e;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 11px;
+        }
+
+        .vault-table tr:hover {
+            background-color: #1a1a1a;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #1e1e1e;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        /* Toggle checkbox styles */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 15px;
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 22px;
+            background-color: #333333;
+            border-radius: 11px;
+            position: relative;
+            transition: background-color 0.2s;
+        }
+
+        .toggle-switch::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            transition: left 0.2s;
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        input[type="checkbox"]:checked + .toggle-switch {
+            background-color: var(--accent-color);
+        }
+
+        input[type="checkbox"]:checked + .toggle-switch::after {
+            left: 24px;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #2e7d32;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 6px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 2000;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast.error {
+            background-color: #c62828;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Multi Miner Queue Cards */
+        .miner-queue-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-top: 15px;
+        }
+
+        .miner-card {
+            background-color: #1a1a1a;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .miner-card-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .miner-haiku-title {
+            font-family: Georgia, serif;
+            font-size: 15px;
+            font-style: italic;
+            color: #ffffff;
+        }
+
+        .miner-id-span {
+            font-family: monospace;
+            font-size: 11px;
+            color: var(--accent-color);
+        }
+
+        .miner-score {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .miner-card-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Forging Animation overlay screen on canvas */
+        .forging-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            color: #ffffff;
+            gap: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .forging-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .fire-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px dashed var(--accent-color);
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .forging-title {
+            font-family: Georgia, serif;
+            font-size: 20px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Styled scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333333;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <div class="logo-section">
+                <!-- Zen Ensō SVG Emblem -->
+                <svg viewBox="0 0 100 100">
+                    <path d="M 50 15 A 35 35 0 1 1 20 35" stroke-linecap="round" />
+                    <circle cx="50" cy="50" r="1.5" fill="var(--accent-color)" />
+                </svg>
+                <div class="logo-text">
+                    <h1>EnsōGen & Haiku Wallet</h1>
+                    <p>Procedural Collectibles & Poetic Cryptography</p>
+                </div>
+            </div>
+            <div>
+                <span class="ensogen-tag">
+                    <span id="header-ensogen-id">ENSO-XXXX-XXXX</span>
+                </span>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="switchTab('ensogen')">🏯 Ensō Generator</button>
+            <button class="tab-btn" onclick="switchTab('haiku')">📜 Haiku Wallet</button>
+            <button class="tab-btn" onclick="switchTab('miner')">⛏️ Multi-Miner</button>
+            <button class="tab-btn" onclick="switchTab('vault')">🗝️ Vault & Storage</button>
+        </nav>
+
+        <!-- Tab Content: Ensogen -->
+        <div id="ensogen" class="tab-content active">
+            <div class="grid-2">
+                <div class="panel-card">
+                    <div class="panel-title">🖌️ Brush & Canvas Settings</div>
+                    
+                    <div class="form-group">
+                        <label>Ensogen Number / Seed</label>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="ensogen-seed-input" placeholder="Type Ensogen ID (e.g. ENSO-3Z8F-4G9X)">
+                            <button class="btn btn-primary" onclick="loadEnsogenFromInput()">Load</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ink Load: <span id="val-inkLoad">4</span></label>
+                        <input type="range" id="param-inkLoad" min="1" max="10" value="4" oninput="updateSliders()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Brush Size: <span id="val-brushSize">6</span></label>
+                        <input type="range" id="param-brushSize" min="1" max="10" value="6" oninput="updateSliders()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ink Density: <span id="val-inkDensity">3</span></label>
+                        <input type="range" id="param-inkDensity" min="1" max="10" value="3" oninput="updateSliders()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bristle Density: <span id="val-bristleDensity">5</span></label>
+                        <input type="range" id="param-bristleDensity" min="1" max="10" value="5" oninput="updateSliders()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Paper Texture: <span id="val-paperTexture">4</span></label>
+                        <input type="range" id="param-paperTexture" min="1" max="10" value="4" oninput="updateSliders()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Brushstroke Start Angle: <span id="val-brushstrokeStart">216°</span></label>
+                        <input type="range" id="param-brushstrokeStart" min="0" max="360" value="216" oninput="updateSliders()">
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:15px;">
+                        <div class="form-group">
+                            <label>Direction</label>
+                            <select id="param-direction" onchange="updateSliders()">
+                                <option value="Clockwise">Clockwise</option>
+                                <option value="Counter-Clockwise">Counter-Clockwise</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Paper Hue</label>
+                            <select id="param-paperHue" onchange="updateSliders()">
+                                <option value="Cyan">Cyan</option>
+                                <option value="Magenta">Magenta</option>
+                                <option value="Yellow">Yellow</option>
+                                <option value="Charcoal">Charcoal</option>
+                                <option value="Sepia">Sepia</option>
+                                <option value="White">White</option>
+                                <option value="Parchment">Parchment</option>
+                                <option value="Jade">Jade</option>
+                                <option value="Indigo">Indigo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                        <div class="form-group">
+                            <label>X/Y Stretch</label>
+                            <select id="param-xyStretch" onchange="updateSliders()">
+                                <option value="Unequal">Unequal</option>
+                                <option value="Equal">Equal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Signature Style</label>
+                            <select id="param-signatureStyle" onchange="updateSliders()">
+                                <option value="Dark">Dark</option>
+                                <option value="Light">Light</option>
+                                <option value="Red">Red</option>
+                                <option value="None">None</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Brushstroke Size</label>
+                        <select id="param-brushstrokeSize" onchange="updateSliders()">
+                            <option value="Medium">Medium</option>
+                            <option value="Small">Small</option>
+                            <option value="Large">Large</option>
+                        </select>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button class="btn btn-primary" onclick="randomizeEnsogen()">🎲 Randomize</button>
+                        <button class="btn" onclick="triggerForgingAnimation()">🎭 Animate Ink</button>
+                    </div>
+                </div>
+
+                <div class="panel-card canvas-container">
+                    <div style="position:relative; width:450px; height:450px;">
+                        <canvas id="ensoCanvas" width="450" height="450"></canvas>
+                        <div class="forging-overlay" id="canvasForgingOverlay">
+                            <div class="fire-spinner"></div>
+                            <div class="forging-title" id="forgingOverlayTitle">Forging Zen Circle...</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display:flex; gap:10px; width: 100%;">
+                        <button class="btn btn-primary" style="flex:1;" onclick="downloadPng()">💾 Download PNG</button>
+                        <button class="btn" style="flex:1;" onclick="applyEnsogenToHaiku()">🔗 Link to Wallet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Haiku Wallet -->
+        <div id="haiku" class="tab-content">
+            <div class="grid-2">
+                <div class="panel-card">
+                    <div class="panel-title">📜 Haiku Bitcoin Wallet Generator</div>
+                    
+                    <div class="toggle-container" onclick="togglePoeticFilter()">
+                        <input type="checkbox" id="poetic-only-check" checked>
+                        <div class="toggle-switch"></div>
+                        <span style="font-size:13px; font-weight:600;">Strict Poetic Structure (Grammar filter)</span>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:20px;">
+                        <button class="btn btn-primary" onclick="generateHaikuWallet()">🎲 Generate Poetic Haiku Wallet</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Manual Mnemonic Input (12-Word BIP39)</label>
+                        <textarea id="manual-mnemonic-input" rows="3" placeholder="Enter 12 words to derive keys, check syllable structures, or validate checksum..."></textarea>
+                        <div style="display:flex; justify-content:space-between; margin-top:6px;">
+                            <span id="manual-check-status" style="font-size:11px; color:var(--text-muted);">Syllables count: -</span>
+                            <button class="small-link" style="background:none; border:none; padding:0;" onclick="validateManualMnemonic()">Verify Mnemonic & Derive</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Optional Passphrase</label>
+                        <input type="password" id="wallet-passphrase" placeholder="Passphrase (leave empty for default standard)">
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button class="btn btn-primary" id="save-wallet-btn" disabled onclick="saveCurrentWallet()">⭐ Save Wallet to Vault</button>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="panel-title">🎏 Poetry & Derived Addresses</div>
+
+                    <div class="haiku-box">
+                        <div class="haiku-line" id="haiku-line-1">Silence sweeps the hall</div>
+                        <div class="haiku-line" id="haiku-line-2">Bamboo shadows dance softly</div>
+                        <div class="haiku-line" id="haiku-line-3">Moonlight meets the ink</div>
+                        <div class="haiku-syllable-count" id="haiku-syllable-desc">5 - 7 - 5 Syllable BIP-39 Cryptographic Verse</div>
+                    </div>
+
+                    <div style="max-height: 280px; overflow-y: auto;">
+                        <div class="address-item">
+                            <div class="address-header">
+                                <span class="coin-name">Bitcoin Legacy (P2PKH)</span>
+                                <span>Path: m/44'/0'/0'/0/0</span>
+                            </div>
+                            <div class="address-val" id="addr-btc-legacy">-</div>
+                        </div>
+
+                        <div class="address-item">
+                            <div class="address-header">
+                                <span class="coin-name">Bitcoin SegWit (Bech32)</span>
+                                <span>Path: m/44'/0'/0'/0/0</span>
+                            </div>
+                            <div class="address-val" id="addr-btc-segwit">-</div>
+                        </div>
+
+                        <div class="address-item">
+                            <div class="address-header">
+                                <span class="coin-name">Ethereum (ETH)</span>
+                                <span>Path: m/44'/60'/0'/0/0</span>
+                            </div>
+                            <div class="address-val" id="addr-eth">-</div>
+                        </div>
+
+                        <div class="address-item">
+                            <div class="address-header">
+                                <span class="coin-name">Litecoin (LTC)</span>
+                                <span>Path: m/44'/2'/0'/0/0</span>
+                            </div>
+                            <div class="address-val" id="addr-ltc">-</div>
+                        </div>
+
+                        <div class="address-item">
+                            <div class="address-header">
+                                <span class="coin-name">Dogecoin (DOGE)</span>
+                                <span>Path: m/44'/3'/0'/0/0</span>
+                            </div>
+                            <div class="address-val" id="addr-doge">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Multi-Miner -->
+        <div id="miner" class="tab-content">
+            <div class="grid-2">
+                <div class="panel-card">
+                    <div class="panel-title">⛏️ Multi-Wallet Miner</div>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:-10px;">Mine multiple valid BIP-39 haiku wallets in parallel. Filter by grammatical elegance, specific letter prefixes, or poetic score.</p>
+                    
+                    <div class="form-group">
+                        <label>Batch Size (How many to mine)</label>
+                        <select id="miner-batch-size">
+                            <option value="5">Mine 5 wallets</option>
+                            <option value="10">Mine 10 wallets</option>
+                            <option value="25">Mine 25 wallets</option>
+                            <option value="50">Mine 50 wallets</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Grammar Quality Threshold</label>
+                        <select id="miner-grammar-filter">
+                            <option value="all">Any valid syllables (Loose)</option>
+                            <option value="medium">Poetic structure (Adjective + Noun, etc.)</option>
+                            <option value="strict">High Score Masterpiece (Strict Spell & POS Rules)</option>
+                        </select>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button class="btn btn-primary" id="start-miner-btn" onclick="startMiningBatch()">⚡ Start Forging Batch</button>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="panel-title">💎 Forged Collectible Queue (<span id="miner-mined-count">0</span> Mined)</div>
+                    <div class="miner-queue-container" id="miner-queue-results">
+                        <div style="color:var(--text-muted); text-align:center; padding: 40px 0;">
+                            Queue is empty. Select parameters and click "Start Forging Batch" to mine collectibles...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Vault / Saved Storage -->
+        <div id="vault" class="tab-content">
+            <div class="panel-card">
+                <div class="panel-title">
+                    <span>🗝️ Encrypted Cryptographic Vault</span>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn" style="padding: 6px 12px; font-size:12px;" onclick="promptVaultImport()">📥 Import Encrypted File</button>
+                        <button class="btn btn-primary" style="padding: 6px 12px; font-size:12px;" onclick="promptVaultExport()">📤 Export Encrypted File</button>
+                    </div>
+                </div>
+
+                <p style="font-size:13px; color:var(--text-muted); margin-top:-10px;">
+                    Your saved haiku wallets are stored directly in your browser's persistent database, encrypted with a persistent device key. You can safely clear cookies or export the records as a stand-alone, offline-compatible AES-256 encrypted file.
+                </p>
+
+                <div style="overflow-x:auto;">
+                    <table class="vault-table">
+                        <thead>
+                            <tr>
+                                <th>Ensogen ID</th>
+                                <th>Mnemonic Haiku</th>
+                                <th>Primary BTC Legacy</th>
+                                <th>ETH Address</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vault-list-body">
+                            <tr>
+                                <td colspan="5" style="text-align:center; color:var(--text-muted); padding:30px 0;">
+                                    Vault is empty. Save a wallet from the Haiku Generator or Miner tab!
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Password/Export Modal -->
+    <div class="modal-overlay" id="passwordModal">
+        <div class="modal-content">
+            <h3 style="margin-top:0; font-family:Georgia, serif; color:#ffffff;" id="pwdModalTitle">AES-256 Encryption Password</h3>
+            <p style="font-size:13px; color:var(--text-muted);" id="pwdModalDesc">Enter a password to encrypt your vault file. You will need this exact password to decrypt it later.</p>
+            <div class="form-group">
+                <input type="password" id="vault-crypto-password" placeholder="Enter secure password (min 6 characters)">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn" onclick="closePasswordModal()">Cancel</button>
+                <button class="btn btn-primary" id="pwdModalSubmitBtn" onclick="submitPasswordModal()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import File Picker Modal -->
+    <div class="modal-overlay" id="importModal">
+        <div class="modal-content">
+            <h3 style="margin-top:0; font-family:Georgia, serif; color:#ffffff;">Import Encrypted Vault</h3>
+            <p style="font-size:13px; color:var(--text-muted);">Select the encrypted vault text file (.txt) and enter the password used to encrypt it.</p>
+            <div class="form-group">
+                <label>File Selection</label>
+                <input type="file" id="vault-import-file" accept=".txt" style="color:#ffffff;">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="vault-import-password" placeholder="Encryption password">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeImportModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitImportModal()">Decrypt & Import</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast UI -->
+    <div class="toast" id="appToast">
+        <span id="toastText">Action successful!</span>
+    </div>
+
+    <!-- Javascript Cryptographic, Wordlist & App Mechanics -->
+    <script>
+        // JS SHA3 Library Embedded
+        /**
+ * [js-sha3]{@link https://github.com/emn178/js-sha3}
+ *
+ * @version 0.8.0
+ * @author Chen, Yi-Cyuan [emn178@gmail.com]
+ * @copyright Chen, Yi-Cyuan 2015-2018
+ * @license MIT
+ */
+!function(){"use strict";function t(t,e,r){this.blocks=[],this.s=[],this.padding=e,this.outputBits=r,this.reset=!0,this.finalized=!1,this.block=0,this.start=0,this.blockCount=1600-(t<<1)>>5,this.byteCount=this.blockCount<<2,this.outputBlocks=r>>5,this.extraBytes=(31&r)>>3;for(var n=0;n<50;++n)this.s[n]=0}function e(e,r,n){t.call(this,e,r,n)}var r="input is invalid type",n="object"==typeof window,i=n?window:{};i.JS_SHA3_NO_WINDOW&&(n=!1);var o=!n&&"object"==typeof self;!i.JS_SHA3_NO_NODE_JS&&"object"==typeof process&&process.versions&&process.versions.node?i=global:o&&(i=self);var a=!i.JS_SHA3_NO_COMMON_JS&&"object"==typeof module&&module.exports,s="function"==typeof define&&define.amd,u=!i.JS_SHA3_NO_ARRAY_BUFFER&&"undefined"!=typeof ArrayBuffer,f="0123456789abcdef".split(""),c=[4,1024,262144,67108864],h=[0,8,16,24],p=[1,0,32898,0,32906,2147483648,2147516416,2147483648,32907,0,2147483649,0,2147516545,2147483648,32777,2147483648,138,0,136,0,2147516425,0,2147483658,0,2147516555,0,139,2147483648,32905,2147483648,32771,2147483648,32770,2147483648,128,2147483648,32778,0,2147483658,2147483648,2147516545,2147483648,32896,2147483648,2147483649,0,2147516424,2147483648],d=[224,256,384,512],l=[128,256],y=["hex","buffer","arrayBuffer","array","digest"],b={128:168,256:136};!i.JS_SHA3_NO_NODE_JS&&Array.isArray||(Array.isArray=function(t){return"[object Array]"===Object.prototype.toString.call(t)}),!u||!i.JS_SHA3_NO_ARRAY_BUFFER_IS_VIEW&&ArrayBuffer.isView||(ArrayBuffer.isView=function(t){return"object"==typeof t&&t.buffer&&t.buffer.constructor===ArrayBuffer});for(var A=function(e,r,n){return function(i){return new t(e,r,e).update(i)[n]()}},w=function(e,r,n){return function(i,o){return new t(e,r,o).update(i)[n]()}},v=function(t,e,r){return function(e,n,i,o){return S["cshake"+t].update(e,n,i,o)[r]()}},B=function(t,e,r){return function(e,n,i,o){return S["kmac"+t].update(e,n,i,o)[r]()}},g=function(t,e,r,n){for(var i=0;i<y.length;++i){var o=y[i];t[o]=e(r,n,o)}return t},_=function(e,r){var n=A(e,r,"hex");return n.create=function(){return new t(e,r,e)},n.update=function(t){return n.create().update(t)},g(n,A,e,r)},k=[{name:"keccak",padding:[1,256,65536,16777216],bits:d,createMethod:_},{name:"sha3",padding:[6,1536,393216,100663296],bits:d,createMethod:_},{name:"shake",padding:[31,7936,2031616,520093696],bits:l,createMethod:function(e,r){var n=w(e,r,"hex");return n.create=function(n){return new t(e,r,n)},n.update=function(t,e){return n.create(e).update(t)},g(n,w,e,r)}},{name:"cshake",padding:c,bits:l,createMethod:function(e,r){var n=b[e],i=v(e,0,"hex");return i.create=function(i,o,a){return o||a?new t(e,r,i).bytepad([o,a],n):S["shake"+e].create(i)},i.update=function(t,e,r,n){return i.create(e,r,n).update(t)},g(i,v,e,r)}},{name:"kmac",padding:c,bits:l,createMethod:function(t,r){var n=b[t],i=B(t,0,"hex");return i.create=function(i,o,a){return new e(t,r,o).bytepad(["KMAC",a],n).bytepad([i],n)},i.update=function(t,e,r,n){return i.create(t,r,n).update(e)},g(i,B,t,r)}}],S={},C=[],x=0;x<k.length;++x)for(var m=k[x],E=m.bits,O=0;O<E.length;++O){var z=m.name+"_"+E[O];if(C.push(z),S[z]=m.createMethod(E[O],m.padding),"sha3"!==m.name){var N=m.name+E[O];C.push(N),S[N]=S[z]}}t.prototype.update=function(t){if(this.finalized)throw new Error("finalize already called");var e,n=typeof t;if("string"!==n){if("object"!==n)throw new Error(r);if(null===t)throw new Error(r);if(u&&t.constructor===ArrayBuffer)t=new Uint8Array(t);else if(!(Array.isArray(t)||u&&ArrayBuffer.isView(t)))throw new Error(r);e=!0}for(var i,o,a=this.blocks,s=this.byteCount,f=t.length,c=this.blockCount,p=0,d=this.s;p<f;){if(this.reset)for(this.reset=!1,a[0]=this.block,i=1;i<c+1;++i)a[i]=0;if(e)for(i=this.start;p<f&&i<s;++p)a[i>>2]|=t[p]<<h[3&i++];else for(i=this.start;p<f&&i<s;++p)(o=t.charCodeAt(p))<128?a[i>>2]|=o<<h[3&i++]:o<2048?(a[i>>2]|=(192|o>>6)<<h[3&i++],a[i>>2]|=(128|63&o)<<h[3&i++]):o<55296||o>=57344?(a[i>>2]|=(224|o>>12)<<h[3&i++],a[i>>2]|=(128|o>>6&63)<<h[3&i++],a[i>>2]|=(128|63&o)<<h[3&i++]):(o=65536+((1023&o)<<10|1023&t.charCodeAt(++p)),a[i>>2]|=(240|o>>18)<<h[3&i++],a[i>>2]|=(128|o>>12&63)<<h[3&i++],a[i>>2]|=(128|o>>6&63)<<h[3&i++],a[i>>2]|=(128|63&o)<<h[3&i++]);if(this.lastByteIndex=i,i>=s){for(this.start=i-s,this.block=a[c],i=0;i<c;++i)d[i]^=a[i];j(d),this.reset=!0}else this.start=i}return this},t.prototype.encode=function(t,e){var r=255&t,n=1,i=[r];for(r=255&(t>>=8);r>0;)i.unshift(r),r=255&(t>>=8),++n;return e?i.push(n):i.unshift(n),this.update(i),i.length},t.prototype.encodeString=function(t){var e,n=typeof t;if("string"!==n){if("object"!==n)throw new Error(r);if(null===t)throw new Error(r);if(u&&t.constructor===ArrayBuffer)t=new Uint8Array(t);else if(!(Array.isArray(t)||u&&ArrayBuffer.isView(t)))throw new Error(r);e=!0}var i=0,o=t.length;if(e)i=o;else for(var a=0;a<t.length;++a){var s=t.charCodeAt(a);s<128?i+=1:s<2048?i+=2:s<55296||s>=57344?i+=3:(s=65536+((1023&s)<<10|1023&t.charCodeAt(++a)),i+=4)}return i+=this.encode(8*i),this.update(t),i},t.prototype.bytepad=function(t,e){for(var r=this.encode(e),n=0;n<t.length;++n)r+=this.encodeString(t[n]);var i=e-r%e,o=[];return o.length=i,this.update(o),this},t.prototype.finalize=function(){if(!this.finalized){this.finalized=!0;var t=this.blocks,e=this.lastByteIndex,r=this.blockCount,n=this.s;if(t[e>>2]|=this.padding[3&e],this.lastByteIndex===this.byteCount)for(t[0]=t[r],e=1;e<r+1;++e)t[e]=0;for(t[r-1]|=2147483648,e=0;e<r;++e)n[e]^=t[e];j(n)}},t.prototype.toString=t.prototype.hex=function(){this.finalize();for(var t,e=this.blockCount,r=this.s,n=this.outputBlocks,i=this.extraBytes,o=0,a=0,s="";a<n;){for(o=0;o<e&&a<n;++o,++a)t=r[o],s+=f[t>>4&15]+f[15&t]+f[t>>12&15]+f[t>>8&15]+f[t>>20&15]+f[t>>16&15]+f[t>>28&15]+f[t>>24&15];a%e==0&&(j(r),o=0)}return i&&(t=r[o],s+=f[t>>4&15]+f[15&t],i>1&&(s+=f[t>>12&15]+f[t>>8&15]),i>2&&(s+=f[t>>20&15]+f[t>>16&15])),s},t.prototype.arrayBuffer=function(){this.finalize();var t,e=this.blockCount,r=this.s,n=this.outputBlocks,i=this.extraBytes,o=0,a=0,s=this.outputBits>>3;t=i?new ArrayBuffer(n+1<<2):new ArrayBuffer(s);for(var u=new Uint32Array(t);a<n;){for(o=0;o<e&&a<n;++o,++a)u[a]=r[o];a%e==0&&j(r)}return i&&(u[o]=r[o],t=t.slice(0,s)),t},t.prototype.buffer=t.prototype.arrayBuffer,t.prototype.digest=t.prototype.array=function(){this.finalize();for(var t,e,r=this.blockCount,n=this.s,i=this.outputBlocks,o=this.extraBytes,a=0,s=0,u=[];s<i;){for(a=0;a<r&&s<i;++a,++s)t=s<<2,e=n[a],u[t]=255&e,u[t+1]=e>>8&255,u[t+2]=e>>16&255,u[t+3]=e>>24&255;s%r==0&&j(n)}return o&&(t=s<<2,e=n[a],u[t]=255&e,o>1&&(u[t+1]=e>>8&255),o>2&&(u[t+2]=e>>16&255)),u},(e.prototype=new t).finalize=function(){return this.encode(this.outputBits,!0),t.prototype.finalize.call(this)};var j=function(t){var e,r,n,i,o,a,s,u,f,c,h,d,l,y,b,A,w,v,B,g,_,k,S,C,x,m,E,O,z,N,j,J,M,H,I,R,U,V,F,D,W,Y,K,q,G,L,P,Q,T,X,Z,$,tt,et,rt,nt,it,ot,at,st,ut,ft,ct;for(n=0;n<48;n+=2)i=t[0]^t[10]^t[20]^t[30]^t[40],o=t[1]^t[11]^t[21]^t[31]^t[41],a=t[2]^t[12]^t[22]^t[32]^t[42],s=t[3]^t[13]^t[23]^t[33]^t[43],u=t[4]^t[14]^t[24]^t[34]^t[44],f=t[5]^t[15]^t[25]^t[35]^t[45],c=t[6]^t[16]^t[26]^t[36]^t[46],h=t[7]^t[17]^t[27]^t[37]^t[47],e=(d=t[8]^t[18]^t[28]^t[38]^t[48])^(a<<1|s>>>31),r=(l=t[9]^t[19]^t[29]^t[39]^t[49])^(s<<1|a>>>31),t[0]^=e,t[1]^=r,t[10]^=e,t[11]^=r,t[20]^=e,t[21]^=r,t[30]^=e,t[31]^=r,t[40]^=e,t[41]^=r,e=i^(u<<1|f>>>31),r=o^(f<<1|u>>>31),t[2]^=e,t[3]^=r,t[12]^=e,t[13]^=r,t[22]^=e,t[23]^=r,t[32]^=e,t[33]^=r,t[42]^=e,t[43]^=r,e=a^(c<<1|h>>>31),r=s^(h<<1|c>>>31),t[4]^=e,t[5]^=r,t[14]^=e,t[15]^=r,t[24]^=e,t[25]^=r,t[34]^=e,t[35]^=r,t[44]^=e,t[45]^=r,e=u^(d<<1|l>>>31),r=f^(l<<1|d>>>31),t[6]^=e,t[7]^=r,t[16]^=e,t[17]^=r,t[26]^=e,t[27]^=r,t[36]^=e,t[37]^=r,t[46]^=e,t[47]^=r,e=c^(i<<1|o>>>31),r=h^(o<<1|i>>>31),t[8]^=e,t[9]^=r,t[18]^=e,t[19]^=r,t[28]^=e,t[29]^=r,t[38]^=e,t[39]^=r,t[48]^=e,t[49]^=r,y=t[0],b=t[1],L=t[11]<<4|t[10]>>>28,P=t[10]<<4|t[11]>>>28,O=t[20]<<3|t[21]>>>29,z=t[21]<<3|t[20]>>>29,st=t[31]<<9|t[30]>>>23,ut=t[30]<<9|t[31]>>>23,Y=t[40]<<18|t[41]>>>14,K=t[41]<<18|t[40]>>>14,H=t[2]<<1|t[3]>>>31,I=t[3]<<1|t[2]>>>31,A=t[13]<<12|t[12]>>>20,w=t[12]<<12|t[13]>>>20,Q=t[22]<<10|t[23]>>>22,T=t[23]<<10|t[22]>>>22,N=t[33]<<13|t[32]>>>19,j=t[32]<<13|t[33]>>>19,ft=t[42]<<2|t[43]>>>30,ct=t[43]<<2|t[42]>>>30,et=t[5]<<30|t[4]>>>2,rt=t[4]<<30|t[5]>>>2,R=t[14]<<6|t[15]>>>26,U=t[15]<<6|t[14]>>>26,v=t[25]<<11|t[24]>>>21,B=t[24]<<11|t[25]>>>21,X=t[34]<<15|t[35]>>>17,Z=t[35]<<15|t[34]>>>17,J=t[45]<<29|t[44]>>>3,M=t[44]<<29|t[45]>>>3,C=t[6]<<28|t[7]>>>4,x=t[7]<<28|t[6]>>>4,nt=t[17]<<23|t[16]>>>9,it=t[16]<<23|t[17]>>>9,V=t[26]<<25|t[27]>>>7,F=t[27]<<25|t[26]>>>7,g=t[36]<<21|t[37]>>>11,_=t[37]<<21|t[36]>>>11,$=t[47]<<24|t[46]>>>8,tt=t[46]<<24|t[47]>>>8,q=t[8]<<27|t[9]>>>5,G=t[9]<<27|t[8]>>>5,m=t[18]<<20|t[19]>>>12,E=t[19]<<20|t[18]>>>12,ot=t[29]<<7|t[28]>>>25,at=t[28]<<7|t[29]>>>25,D=t[38]<<8|t[39]>>>24,W=t[39]<<8|t[38]>>>24,k=t[48]<<14|t[49]>>>18,S=t[49]<<14|t[48]>>>18,t[0]=y^~A&v,t[1]=b^~w&B,t[10]=C^~m&O,t[11]=x^~E&z,t[20]=H^~R&V,t[21]=I^~U&F,t[30]=q^~L&Q,t[31]=G^~P&T,t[40]=et^~nt&ot,t[41]=rt^~it&at,t[2]=A^~v&g,t[3]=w^~B&_,t[12]=m^~O&N,t[13]=E^~z&j,t[22]=R^~V&D,t[23]=U^~F&W,t[32]=L^~Q&X,t[33]=P^~T&Z,t[42]=nt^~ot&st,t[43]=it^~at&ut,t[4]=v^~g&k,t[5]=B^~_&S,t[14]=O^~N&J,t[15]=z^~j&M,t[24]=V^~D&Y,t[25]=F^~W&K,t[34]=Q^~X&$,t[35]=T^~Z&tt,t[44]=ot^~st&ft,t[45]=at^~ut&ct,t[6]=g^~k&y,t[7]=_^~S&b,t[16]=N^~J&C,t[17]=j^~M&x,t[26]=D^~Y&H,t[27]=W^~K&I,t[36]=X^~$&q,t[37]=Z^~tt&G,t[46]=st^~ft&et,t[47]=ut^~ct&rt,t[8]=k^~y&A,t[9]=S^~b&w,t[18]=J^~C&m,t[19]=M^~x&E,t[28]=Y^~H&R,t[29]=K^~I&U,t[38]=$^~q&L,t[39]=tt^~G&P,t[48]=ft^~et&nt,t[49]=ct^~rt&it,t[0]^=p[n],t[1]^=p[n+1]};if(a)module.exports=S;else{for(x=0;x<C.length;++x)i[C[x]]=S[C[x]];s&&define(function(){return S})}}();
+    </script>
+    <script>
+        // Static Wordlist Database and Analysis Constants
+        const BIP39_WORDS_STRING = "abandon ability able about above absent absorb abstract absurd abuse access accident account accuse achieve acid acoustic acquire across act action actor actress actual adapt add addict address adjust admit adult advance advice aerobic affair afford afraid again age agent agree ahead aim air airport aisle alarm album alcohol alert alien all alley allow almost alone alpha already also alter always amateur amazing among amount amused analyst anchor ancient anger angle angry animal ankle announce annual another answer antenna antique anxiety any apart apology appear apple approve april arch arctic area arena argue arm armed armor army around arrange arrest arrive arrow art artefact artist artwork ask aspect assault asset assist assume asthma athlete atom attack attend attitude attract auction audit august aunt author auto autumn average avocado avoid awake aware away awesome awful awkward axis baby bachelor bacon badge bag balance balcony ball bamboo banana banner bar barely bargain barrel base basic basket battle beach bean beauty because become beef before begin behave behind believe below belt bench benefit best betray better between beyond bicycle bid bike bind biology bird birth bitter black blade blame blanket blast bleak bless blind blood blossom blouse blue blur blush board boat body boil bomb bone bonus book boost border boring borrow boss bottom bounce box boy bracket brain brand brass brave bread breeze brick bridge brief bright bring brisk broccoli broken bronze broom brother brown brush bubble buddy budget buffalo build bulb bulk bullet bundle bunker burden burger burst bus business busy butter buyer buzz cabbage cabin cable cactus cage cake call calm camera camp can canal cancel candy cannon canoe canvas canyon capable capital captain car carbon card cargo carpet carry cart case cash casino castle casual cat catalog catch category cattle caught cause caution cave ceiling celery cement census century cereal certain chair chalk champion change chaos chapter charge chase chat cheap check cheese chef cherry chest chicken chief child chimney choice choose chronic chuckle chunk churn cigar cinnamon circle citizen city civil claim clap clarify claw clay clean clerk clever click client cliff climb clinic clip clock clog close cloth cloud clown club clump cluster clutch coach coast coconut code coffee coil coin collect color column combine come comfort comic common company concert conduct confirm congress connect consider control convince cook cool copper copy coral core corn correct cost cotton couch country couple course cousin cover coyote crack cradle craft cram crane crash crater crawl crazy cream credit creek crew cricket crime crisp critic crop cross crouch crowd crucial cruel cruise crumble crunch crush cry crystal cube culture cup cupboard curious current curtain curve cushion custom cute cycle dad damage damp dance danger daring dash daughter dawn day deal debate debris decade december decide decline decorate decrease deer defense define defy degree delay deliver demand demise denial dentist deny depart depend deposit depth deputy derive describe desert design desk despair destroy detail detect develop device devote diagram dial diamond diary dice diesel diet differ digital dignity dilemma dinner dinosaur direct dirt disagree discover disease dish dismiss disorder display distance divert divide divorce dizzy doctor document dog doll dolphin domain donate donkey donor door dose double dove draft dragon drama drastic draw dream dress drift drill drink drip drive drop drum dry duck dumb dune during dust dutch duty dwarf dynamic eager eagle early earn earth easily east easy echo ecology economy edge edit educate effort egg eight either elbow elder electric elegant element elephant elevator elite else embark embody embrace emerge emotion employ empower empty enable enact end endless endorse enemy energy enforce engage engine enhance enjoy enlist enough enrich enroll ensure enter entire entry envelope episode equal equip era erase erode erosion error erupt escape essay essence estate eternal ethics evidence evil evoke evolve exact example excess exchange excite exclude excuse execute exercise exhaust exhibit exile exist exit exotic expand expect expire explain expose express extend extra eye eyebrow fabric face faculty fade faint faith fall false fame family famous fan fancy fantasy farm fashion fat fatal father fatigue fault favorite feature february federal fee feed feel female fence festival fetch fever few fiber fiction field figure file film filter final find fine finger finish fire firm first fiscal fish fit fitness fix flag flame flash flat flavor flee flight flip float flock floor flower fluid flush fly foam focus fog foil fold follow food foot force forest forget fork fortune forum forward fossil foster found fox fragile frame frequent fresh friend fringe frog front frost frown frozen fruit fuel fun funny furnace fury future gadget gain galaxy gallery game gap garage garbage garden garlic garment gas gasp gate gather gauge gaze general genius genre gentle genuine gesture ghost giant gift giggle ginger giraffe girl give glad glance glare glass glide glimpse globe gloom glory glove glow glue goat goddess gold good goose gorilla gospel gossip govern gown grab grace grain grant grape grass gravity great green grid grief grit grocery group grow grunt guard guess guide guilt guitar gun gym habit hair half hammer hamster hand happy harbor hard harsh harvest hat have hawk hazard head health heart heavy hedgehog height hello helmet help hen hero hidden high hill hint hip hire history hobby hockey hold hole holiday hollow home honey hood hope horn horror horse hospital host hotel hour hover hub huge human humble humor hundred hungry hunt hurdle hurry hurt husband hybrid ice icon idea identify idle ignore ill illegal illness image imitate immense immune impact impose improve impulse inch include income increase index indicate indoor industry infant inflict inform inhale inherit initial inject injury inmate inner innocent input inquiry insane insect inside inspire install intact interest into invest invite involve iron island isolate issue item ivory jacket jaguar jar jazz jealous jeans jelly jewel job join joke journey joy judge juice jump jungle junior junk just kangaroo keen keep ketchup key kick kid kidney kind kingdom kiss kit kitchen kite kitten kiwi knee knife knock know lab label labor ladder lady lake lamp language laptop large later latin laugh laundry lava law lawn lawsuit layer lazy leader leaf learn leave lecture left leg legal legend leisure lemon lend length lens leopard lesson letter level liar liberty library license life lift light like limb limit link lion liquid list little live lizard load loan lobster local lock logic lonely long loop lottery loud lounge love loyal lucky luggage lumber lunar lunch luxury lyrics machine mad magic magnet maid mail main major make mammal man manage mandate mango mansion manual maple marble march margin marine market marriage mask mass master match material math matrix matter maximum maze meadow mean measure meat mechanic medal media melody melt member memory mention menu mercy merge merit merry mesh message metal method middle midnight milk million mimic mind minimum minor minute miracle mirror misery miss mistake mix mixed mixture mobile model modify mom moment monitor monkey monster month moon moral more morning mosquito mother motion motor mountain mouse move movie much muffin mule multiply muscle museum mushroom music must mutual myself mystery myth naive name napkin narrow nasty nation nature near neck need negative neglect neither nephew nerve nest net network neutral never news next nice night noble noise nominee noodle normal north nose notable note nothing notice novel now nuclear number nurse nut oak obey object oblige obscure observe obtain obvious occur ocean october odor off offer office often oil okay old olive olympic omit once one onion online only open opera opinion oppose option orange orbit orchard order ordinary organ orient original orphan ostrich other outdoor outer output outside oval oven over own owner oxygen oyster ozone pact paddle page pair palace palm panda panel panic panther paper parade parent park parrot party pass patch path patient patrol pattern pause pave payment peace peanut pear peasant pelican pen penalty pencil people pepper perfect permit person pet phone photo phrase physical piano picnic picture piece pig pigeon pill pilot pink pioneer pipe pistol pitch pizza place planet plastic plate play please pledge pluck plug plunge poem poet point polar pole police pond pony pool popular portion position possible post potato pottery poverty powder power practice praise predict prefer prepare present pretty prevent price pride primary print priority prison private prize problem process produce profit program project promote proof property prosper protect proud provide public pudding pull pulp pulse pumpkin punch pupil puppy purchase purity purpose purse push put puzzle pyramid quality quantum quarter question quick quit quiz quote rabbit raccoon race rack radar radio rail rain raise rally ramp ranch random range rapid rare rate rather raven raw razor ready real reason rebel rebuild recall receive recipe record recycle reduce reflect reform refuse region regret regular reject relax release relief rely remain remember remind remove render renew rent reopen repair repeat replace report require rescue resemble resist resource response result retire retreat return reunion reveal review reward rhythm rib ribbon rice rich ride ridge rifle right rigid ring riot ripple risk ritual rival river road roast robot robust rocket romance roof rookie room rose rotate rough round route royal rubber rude rug rule run runway rural sad saddle sadness safe sail salad salmon salon salt salute same sample sand satisfy satoshi sauce sausage save say scale scan scare scatter scene scheme school science scissors scorpion scout scrap screen script scrub sea search season seat second secret section security seed seek segment select sell seminar senior sense sentence series service session settle setup seven shadow shaft shallow share shed shell sheriff shield shift shine ship shiver shock shoe shoot shop short shoulder shove shrimp shrug shuffle shy sibling sick side siege sight sign silent silk silly silver similar simple since sing siren sister situate six size skate sketch ski skill skin skirt skull slab slam sleep slender slice slide slight slim slogan slot slow slush small smart smile smoke smooth snack snake snap sniff snow soap soccer social sock soda soft solar soldier solid solution solve someone song soon sorry sort soul sound soup source south space spare spatial spawn speak special speed spell spend sphere spice spider spike spin spirit split spoil sponsor spoon sport spot spray spread spring spy square squeeze squirrel stable stadium staff stage stairs stamp stand start state stay steak steel stem step stereo stick still sting stock stomach stone stool story stove strategy street strike strong struggle student stuff stumble style subject submit subway success such sudden suffer sugar suggest suit summer sun sunny sunset super supply supreme sure surface surge surprise surround survey suspect sustain swallow swamp swap swarm swear sweet swift swim swing switch sword symbol symptom syrup system table tackle tag tail talent talk tank tape target task taste tattoo taxi teach team tell ten tenant tennis tent term test text thank that theme then theory there they thing this thought three thrive throw thumb thunder ticket tide tiger tilt timber time tiny tip tired tissue title toast tobacco today toddler toe together toilet token tomato tomorrow tone tongue tonight tool tooth top topic topple torch tornado tortoise toss total tourist toward tower town toy track trade traffic tragic train transfer trap trash travel tray treat tree trend trial tribe trick trigger trim trip trophy trouble truck true truly trumpet trust truth try tube tuition tumble tuna tunnel turkey turn turtle twelve twenty twice twin twist two type typical ugly umbrella unable unaware uncle uncover under undo unfair unfold unhappy uniform unique unit universe unknown unlock until unusual unveil update upgrade uphold upon upper upset urban urge usage use used useful useless usual utility vacant vacuum vague valid valley valve van vanish vapor various vast vault vehicle velvet vendor venture venue verb verify version very vessel veteran viable vibrant vicious victory video view village vintage violin virtual virus visa visit visual vital vivid vocal voice void volcano volume vote voyage wage wagon wait walk wall walnut want warfare warm warrior wash wasp waste water wave way wealth weapon wear weasel weather web wedding weekend weird welcome west wet whale what wheat wheel when where whip whisper wide width wife wild will win window wine wing wink winner winter wire wisdom wise wish witness wolf woman wonder wood wool word work world worry worth wrap wreck wrestle wrist write wrong yard year yellow you young youth zebra zero zone zoo";
+        const BIP39_WORDS = BIP39_WORDS_STRING.split(' ');
+        
+        const SYLLABLE_COUNTS = "34222222222322223321222321222222232222122211212232312222232223322232222232233232422422221233211222222213221222222222232222122234222222222321123123212221222112221222222113122223111411211121111121111112111211222121112111111111111321121122231112222211222212222111131122222223321212221113231314211212322332113122111111121211211221123232211311112121121111111112111312112222122232222232211222112121221223121111212121121121111221211121212322122121211221211122232232122222322322223132222122223223223122233323213321232222222311222221121122211111111111111211213222113122441232112223333421232232323212233222222222223233222223222222323222232222233232223222222221221311111132123121222132431112131212212112211222112112111112111111221112111211122122222112121111111212122222133112222211121132223212122211111111112111121113222111111131111131111111211211221221121112111221221122111123221132121112131222112222212212212342213223222222122223232222332322323222222222222232232211212211121111221131121112121121221111122221122122122112222111211222211122222332111112122121211221221131112222213221221112121222232212222112141223121213233123222122122222122132232312112223123221121232222112121323221323121222221113222111222111121322113122213211122222232232122212123211222223222222423422222222221232212112122222221221112221121212313222222112133221121213121212211111112212121213233133322212222221131422122222221322122211121222321112332221111221123111211212112212212222232322222232222223222213222232322222223222212111121212213221122221211211122111122122112221212133121111121112231111111212224112213212222222212111211112111112111212111112122321122311111111111121111211111111111111221212223121121111111121121111121121121111111112231111111111113111121121311122121222212222121222221212222221111111111222222112111211221111221111111121111111112212121212221322132233112111221321222211112212112111121121122112211113222212121111132333232222332232224222222221211223422122112231132222132223322331223322232221132121211121213111211121221221211111111121111112111222211212211111211121111121112211"; // 1 character per word
+        const POS_TAGS = "anaoonnaannnnoanavoannnanvanvnnnnannnrnnarvnannnnanovarrarrvravonvnnannannnaonnanoanvnvnnannnnvanonnaanannnvnnnvaannvnannnnnnaaaanaraannnnnnnnnnnnnnrvannnnnanovnonvovonnnanroonnnnnnnaannnnanonnoannnnnnnvannnvnoannnnnnnvvnnnnannvvnnnanannnnnannnnnannannnnnnnnvnnnnovnnnnnnannnnnnnvannnvannvnnvnnvnnnannannnnnnnnovnannvnnnnnvannnnananannnnnannannnannnaannnnnvnnnnnnnvnnvvnaannnnnavnnnannannvnnannnnnvnnnnnnnnannnnnnnannaaannannnnannraannnnannnnnnvannnvnnnnvnnnnnnnannvnannnvnnnannnnnnnnvannanannanannnnanvnnaannnannnnnnnnnnnannannnnaannnvvannnananoannvaavannraaannvannnoovaaanannrvnnnnonaaannnnnnnnnaaranvnannvannnannanvnnannanvanananoannnavnanvnnravannannvnnnannanannnaannnanaannvannnnaannnnnrananannraannnnnnannnnnnnnnnvannnvannnannnvranvranaannnnvaannnannnnnannnnnnannnnnnnannaannannnvnvannnnnnnnnnnnnnannnnaannnannnaannannvnnnnnnnnnaannnanannovvannnanvnnnvnaannnnnnnvanannnvvnnnnnnnnananvananvnnnnnvanaannnaanvaanvnnnannnannaaannaannnaonnanoaannnannannananrvnnvnnnnnnanrvavnannnnnannnvooonvnnnvananaaraoannnnnannvanvaannannvaannnaannnnoannnanaannnranrrannannnannaannnaanvnaanannnnnanannnnnnnnvnnnnnnnannaannannnnnnnnannnnnnoannannnnannanannnnnannrarnnnnnnonnannnnnnnoaoaranaaannonvanoanannarnaananraanaannnnranaannvaanvaaonvonnrnaaannoonvrannvnnnanaaaanoaannoaroannonnannnnnnnonnnnnnnnnnnnnvnnnvaavnnnvannonnnanannnnnnvnnnnnnnnnnnnnannnnaannnnannannnnnnnnnvaarannannnannnvnnnvannnavannnannnannvanvranannannvnnnnnnnnvnannnaanravnaannvaannnvannnvannnnrvanvnanvnavnnnaannnnnvnnvnnnnnannnaavnnnaannnnannnnnvaannnvannvrannnannnnnaannnnnnvvaanrnannnvonnnnnnnnaannnvnnnnannnnnvaonnnnvnnvaannnnnnanvannavannvaanrranovnavonnnnnonnnaannnvaananaanvannnnvnnannaananvnnrannnvnanaannanvvannnnnnnnnnnnnnnnnnannnvaannnvnannnrvnnnnnnnnnannnanannnaannvnnnavanaannnnnvnnnnnvaanvnnnnnnannnnnnnnnnnnvnnoanannnnonrnronovoannnnonannanvnnnnnvnrnvnnnnnnoannnnnoanoannnnnnnnnvnnnannnnnannnnarannnnnannnvaanranonaraaannoaaaaaanaanoaannaoaaannnvaaananaannnanaannnnnvnanranaaannnnnvanananaanannnnnvnnnnvnannnnnvnnnannnvnaaaanonnaanoaanoovanvnnnnnvannnvnnnnnvannannarnooaraonn";       // 1 character per word ('n','v','a','r','o')
+
+        const G = {
+            x: 55072459824979484187006847111652889239523408529940381944621763435135118073101n,
+            y: 32670100950571381486889136737385905203332467332342371922313596700810793169622n
+        };
+        const p = 2n**256n - 2n**32n - 977n;
+        const n = 115792089237316195423570985008687907852837564279074904382605163141518161494337n;
+
+        // Group words by syllables for easy fast generative lookups
+        const wordsBySyl = {1: [], 2: [], 3: [], 4: []};
+        for (let i = 0; i < BIP39_WORDS.length; i++) {
+            const s = Number(SYLLABLE_COUNTS[i]);
+            wordsBySyl[s].push({ word: BIP39_WORDS[i], index: i });
+        }
+
+        // Helper function for quick sync SHA-256 on Uint8Array
+        function sha256_sync(bytes) {
+            function rightRotate(value, amount) {
+                return (value >>> amount) | (value << (32 - amount));
+            }
+            const k = [
+                0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+                0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+                0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+                0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+                0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+                0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+                0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+                0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+            ];
+            let h0 = 0x6a09e667, h1 = 0xbb67ae85, h2 = 0x3c6ef372, h3 = 0xa54ff53a,
+                h4 = 0x510e527f, h5 = 0x9b05688c, h6 = 0x1f83d9ab, h7 = 0x5be0cd19;
+            const l = bytes.length;
+            const l_bits = l * 8;
+            const pad_len = (l % 64 < 56) ? (56 - l % 64) : (120 - l % 64);
+            const msg = new Uint8Array(l + pad_len + 8);
+            msg.set(bytes, 0);
+            msg[l] = 0x80;
+            let temp_bits = l_bits;
+            for (let i = 0; i < 8; i++) {
+                msg[msg.length - 1 - i] = temp_bits & 0xFF;
+                temp_bits >>>= 8;
+            }
+            for (let chunk = 0; chunk < msg.length; chunk += 64) {
+                const w = new Uint32Array(64);
+                for (let i = 0; i < 16; i++) {
+                    w[i] = (msg[chunk + i*4] << 24) | (msg[chunk + i*4 + 1] << 16) | (msg[chunk + i*4 + 2] << 8) | msg[chunk + i*4 + 3];
+                }
+                for (let i = 16; i < 64; i++) {
+                    const s0 = rightRotate(w[i-15], 7) ^ rightRotate(w[i-15], 18) ^ (w[i-15] >>> 3);
+                    const s1 = rightRotate(w[i-2], 17) ^ rightRotate(w[i-2], 19) ^ (w[i-2] >>> 10);
+                    w[i] = (w[i-16] + s0 + w[i-7] + s1) | 0;
+                }
+                let a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;
+                for (let i = 0; i < 64; i++) {
+                    const S1 = rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25);
+                    const ch = (e & f) ^ (~e & g);
+                    const temp1 = (h + S1 + ch + k[i] + w[i]) | 0;
+                    const S0 = rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22);
+                    const maj = (a & b) ^ (a & c) ^ (b & c);
+                    const temp2 = (S0 + maj) | 0;
+                    h = g; g = f; f = e; e = (d + temp1) | 0; d = c; c = b; b = a; a = (temp1 + temp2) | 0;
+                }
+                h0 = (h0 + a) | 0; h1 = (h1 + b) | 0; h2 = (h2 + c) | 0; h3 = (h3 + d) | 0;
+                h4 = (h4 + e) | 0; h5 = (h5 + f) | 0; h6 = (h6 + g) | 0; h7 = (h7 + h) | 0;
+            }
+            const result = new Uint8Array(32);
+            const hashes = [h0, h1, h2, h3, h4, h5, h6, h7];
+            for (let i = 0; i < 8; i++) {
+                result[i*4] = hashes[i] >>> 24;
+                result[i*4 + 1] = (hashes[i] >>> 16) & 0xFF;
+                result[i*4 + 2] = (hashes[i] >>> 8) & 0xFF;
+                result[i*4 + 3] = hashes[i] & 0xFF;
+            }
+            return result;
+        }
+
+        // Pure JS RIPEMD-160 implementation (ES6 optimized)
+        const ML = [
+            0n,1n,2n,3n,4n,5n,6n,7n,8n,9n,10n,11n,12n,13n,14n,15n,
+            7n,4n,13n,1n,10n,6n,15n,3n,12n,0n,9n,5n,2n,14n,11n,8n,
+            3n,10n,14n,4n,9n,15n,8n,1n,2n,7n,0n,6n,13n,11n,5n,12n,
+            1n,9n,11n,10n,0n,8n,12n,4n,13n,3n,7n,15n,14n,5n,6n,2n,
+            4n,0n,5n,9n,7n,12n,2n,10n,14n,1n,3n,8n,11n,6n,15n,13n
+        ];
+        const MR = [
+            5n,14n,7n,0n,9n,2n,11n,4n,13n,6n,15n,8n,1n,10n,3n,12n,
+            6n,11n,3n,7n,0n,13n,5n,10n,14n,15n,8n,12n,4n,9n,1n,2n,
+            15n,5n,1n,3n,7n,14n,6n,9n,11n,8n,12n,2n,10n,0n,4n,13n,
+            8n,6n,4n,1n,3n,11n,15n,0n,5n,12n,2n,13n,9n,7n,10n,14n,
+            12n,15n,10n,4n,1n,5n,8n,7n,6n,2n,13n,14n,0n,3n,9n,11n
+        ];
+        const RL = [
+            11n,14n,15n,12n,5n,8n,7n,9n,11n,13n,14n,15n,6n,7n,9n,8n,
+            7n,6n,8n,13n,11n,9n,7n,15n,7n,12n,15n,9n,11n,7n,13n,12n,
+            11n,13n,6n,7n,14n,9n,13n,15n,14n,8n,13n,6n,5n,12n,7n,5n,
+            11n,12n,14n,15n,14n,15n,9n,8n,9n,14n,5n,6n,8n,6n,5n,12n,
+            9n,15n,5n,11n,6n,8n,13n,12n,5n,12n,13n,14n,11n,8n,5n,6n
+        ];
+        const RR = [
+            8n,9n,9n,11n,13n,15n,15n,5n,7n,7n,8n,11n,14n,14n,12n,6n,
+            9n,13n,15n,7n,12n,8n,9n,11n,7n,7n,12n,7n,6n,15n,13n,11n,
+            9n,7n,15n,11n,8n,6n,6n,14n,12n,13n,5n,14n,13n,13n,7n,5n,
+            15n,5n,8n,11n,14n,14n,6n,14n,6n,9n,12n,9n,12n,5n,15n,8n,
+            8n,5n,12n,9n,12n,5n,14n,6n,8n,13n,6n,5n,15n,13n,11n,11n
+        ];
+        const KL = [0n,0x5a827999n,0x6ed9eba1n,0x8f1bbcdcn,0xa953fd4en];
+        const KR = [0x50a28be6n,0x5c4dd124n,0x6d703ef3n,0x7a6d76e9n,0n];
+
+        function fi(x,y,z,i){
+            switch(true){
+                case(i===0n): return x^y^z;
+                case(i===1n): return (x&y)|(~x&z);
+                case(i===2n): return (x|~y)^z;
+                case(i===3n): return (x&z)|(y&~z);
+                case(i===4n): return x^(y|~z);
+                default: throw new TypeError('Unknown I');
+            }
+        }
+
+        function rol(x,i){
+            return ((x<<i)|((x&0xffffffffn)>>(32n-i)))&0xffffffffn;
+        }
+
+        function compress(h0,h1,h2,h3,h4,block){
+            const x = [];
+            let rnd, elt, ert;
+            let al=h0, bl=h1, cl=h2, dl=h3, el=h4;
+            let ar=h0, br=h1, cr=h2, dr=h3, er=h4;
+            for(let i=0; i<16; i++){
+                let num=0n;
+                const slice = block.slice(4*i, 4*(i+1));
+                for(let j=slice.length-1; j>=0; j--) num=(num*256n)+BigInt(slice[j]);
+                x.push(num);
+            }
+            for(let i=0; i<80; i++){
+                rnd=BigInt(i)>>4n;
+                al=rol(al+fi(bl,cl,dl,rnd)+x[ML[i]]+KL[rnd],RL[i])+el;
+                elt=el; el=dl; dl=rol(cl,10n); cl=bl; bl=al; al=elt;
+                ar=rol(ar+fi(br,cr,dr,4n-rnd)+x[MR[i]]+KR[rnd],RR[i])+er;
+                ert=er; er=dr; dr=rol(cr,10n); cr=br; br=ar; ar=ert;
+            }
+            return [h1+cl+dr, h2+dl+er, h3+el+ar, h4+al+br, h0+bl+cr];
+        }
+
+        function hash160(data){
+            let state=[0x67452301n,0xefcdab89n,0x98badcfen,0x10325476n,0xc3d2e1f0n];
+            for(let b=0; b<(data.length>>6); b++){
+                state=compress(...state,data.slice(64*b,64*(b+1)));
+            }
+            const zfill=new Array((119-data.length)&63).fill(0);
+            const pad=[0x80n, ...zfill];
+            
+            let size = BigInt(8*data.length);
+            let sizeBytes = [];
+            while(size > 0n){
+                const b = size & 0xffn;
+                sizeBytes.push(Number(b));
+                size = (size - b)/256n;
+            }
+            const uint8_sz = new Uint8Array(8);
+            uint8_sz.set(sizeBytes);
+            
+            const fin=[...data.slice(data.length&~63), ...pad, ...uint8_sz];
+            for(let i=0; i<(fin.length>>6); i++){
+                state=compress(...state,fin.slice(64*i,64*(i+1)));
+            }
+            const ret=[];
+            for(let i=0; i<state.length; i++){
+                let num=state[i]&0xffffffffn;
+                let bytes = [];
+                while(num > 0n){
+                    const b = num & 0xffn;
+                    bytes.push(Number(b));
+                    num = (num - b)/256n;
+                }
+                const uint8 = new Uint8Array(4);
+                uint8.set(bytes);
+                ret.push(...uint8);
+            }
+            return Uint8Array.from(ret);
+        }
+
+        // Base58Check Encoding and Decoding
+        function b58encode(bytes) {
+            const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+            let zeros = 0;
+            for (let i = 0; i < bytes.length; i++) {
+                if (bytes[i] === 0) zeros++;
+                else break;
+            }
+            let val = 0n;
+            for (let b of bytes) {
+                val = (val << 8n) | BigInt(b);
+            }
+            let chars = [];
+            while (val > 0n) {
+                let r = val % 58n;
+                val = val / 58n;
+                chars.push(alphabet[Number(r)]);
+            }
+            for (let i = 0; i < zeros; i++) {
+                chars.push('1');
+            }
+            return chars.reverse().join('');
+        }
+
+        function b58decode(string) {
+            const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+            const charMap = {};
+            for (let i = 0; i < alphabet.length; i++) {
+                charMap[alphabet[i]] = BigInt(i);
+            }
+            let zeros = 0;
+            for (let i = 0; i < string.length; i++) {
+                if (string[i] === '1') zeros++;
+                else break;
+            }
+            let val = 0n;
+            for (let i = 0; i < string.length; i++) {
+                const char = string[i];
+                if (!(char in charMap)) return null;
+                val = (val * 58n) + charMap[char];
+            }
+            let bytesList = [];
+            let temp = val;
+            while (temp > 0n) {
+                bytesList.push(Number(temp & 255n));
+                temp >>= 8n;
+            }
+            bytesList.reverse();
+            const result = new Uint8Array(zeros + bytesList.length);
+            result.set(bytesList, zeros);
+            return result;
+        }
+
+        function b58check_encode(payload, prefix) {
+            const extended = new Uint8Array(payload.length + 1);
+            extended[0] = prefix;
+            extended.set(payload, 1);
+            const checksum = sha256_sync(sha256_sync(extended)).slice(0, 4);
+            const full = new Uint8Array(extended.length + 4);
+            full.set(extended, 0);
+            full.set(checksum, extended.length);
+            return b58encode(full);
+        }
+
+        // Bech32 SegWit Address Encoding
+        const BECH32_ALPHABET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+
+        function bech32_polymod(values) {
+            let generator = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
+            let chk = 1;
+            for (let p = 0; p < values.length; ++p) {
+                let top = chk >> 25;
+                chk = ((chk & 0x1ffffff) << 5) ^ values[p];
+                for (let i = 0; i < 5; ++i) {
+                    if ((top >> i) & 1) chk ^= generator[i];
+                }
+            }
+            return chk;
+        }
+
+        // Validate any Base58/Bech32/ETH address dynamically
+        function validateAddress(address, type) {
+            if (type === 'btc_legacy') {
+                const decoded = b58decode(address);
+                if (!decoded || decoded.length !== 25) return false;
+                const payload = decoded.slice(0, 21);
+                if (payload[0] !== 0x00) return false;
+                const expectedChecksum = sha256_sync(sha256_sync(payload)).slice(0, 4);
+                const actualChecksum = decoded.slice(21);
+                return expectedChecksum.every((v, i) => v === actualChecksum[i]);
+            }
+            if (type === 'ltc') {
+                const decoded = b58decode(address);
+                if (!decoded || decoded.length !== 25) return false;
+                const payload = decoded.slice(0, 21);
+                if (payload[0] !== 0x30) return false;
+                const expectedChecksum = sha256_sync(sha256_sync(payload)).slice(0, 4);
+                const actualChecksum = decoded.slice(21);
+                return expectedChecksum.every((v, i) => v === actualChecksum[i]);
+            }
+            if (type === 'doge') {
+                const decoded = b58decode(address);
+                if (!decoded || decoded.length !== 25) return false;
+                const payload = decoded.slice(0, 21);
+                if (payload[0] !== 0x1E) return false;
+                const expectedChecksum = sha256_sync(sha256_sync(payload)).slice(0, 4);
+                const actualChecksum = decoded.slice(21);
+                return expectedChecksum.every((v, i) => v === actualChecksum[i]);
+            }
+            if (type === 'eth') {
+                if (!/^0x[0-9a-fA-F]{40}$/.test(address)) return false;
+                // If contains uppercase, do EIP-55 check
+                if (/[A-F]/.test(address) && /[a-f]/.test(address)) {
+                    const lowercaseHex = address.toLowerCase().replace(/^0x/, '');
+                    const eip55Hash = keccak256(lowercaseHex);
+                    for (let i = 0; i < lowercaseHex.length; i++) {
+                        if (parseInt(eip55Hash[i], 16) >= 8) {
+                            if (address[i + 2] !== lowercaseHex[i].toUpperCase()) return false;
+                        } else {
+                            if (address[i + 2] !== lowercaseHex[i]) return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            if (type === 'btc_segwit') {
+                if (!address.startsWith("bc1") || address.length < 14) return false;
+                const decoded = bech32_decode(address);
+                if (!decoded) return false;
+                return decoded.hrp === 'bc' && decoded.data.length > 0;
+            }
+            return false;
+        }
+
+        function bech32_hrp_expand(hrp) {
+            let ret = [];
+            for (let p = 0; p < hrp.length; ++p) ret.push(hrp.charCodeAt(p) >> 5);
+            ret.push(0);
+            for (let p = 0; p < hrp.length; ++p) ret.push(hrp.charCodeAt(p) & 31);
+            return ret;
+        }
+
+        function bech32_create_checksum(hrp, data) {
+            let values = bech32_hrp_expand(hrp).concat(data).concat([0, 0, 0, 0, 0, 0]);
+            let polymod = bech32_polymod(values) ^ 1;
+            let ret = [];
+            for (let p = 0; p < 6; ++p) ret.push((polymod >> (5 * (5 - p))) & 31);
+            return ret;
+        }
+
+        function bech32_verify_checksum(hrp, data) {
+            return bech32_polymod(bech32_hrp_expand(hrp).concat(data)) === 1;
+        }
+
+        function bech32_decode(bechString) {
+            let has_lower = false;
+            let has_upper = false;
+            for (let p = 0; p < bechString.length; ++p) {
+                if (bechString.charCodeAt(p) >= 97 && bechString.charCodeAt(p) <= 122) has_lower = true;
+                if (bechString.charCodeAt(p) >= 65 && bechString.charCodeAt(p) <= 90) has_upper = true;
+            }
+            if (has_lower && has_upper) return null;
+            bechString = bechString.toLowerCase();
+            let pos = bechString.lastIndexOf("1");
+            if (pos < 1 || pos + 7 > bechString.length || bechString.length > 90) return null;
+            let hrp = bechString.substring(0, pos);
+            let data = [];
+            for (let p = pos + 1; p < bechString.length; ++p) {
+                let d = BECH32_ALPHABET.indexOf(bechString[p]);
+                if (d === -1) return null;
+                data.push(d);
+            }
+            if (!bech32_verify_checksum(hrp, data)) return null;
+            return { hrp: hrp, data: data.slice(0, data.length - 6) };
+        }
+
+        function convertbits(data, frombits, tobits, pad) {
+            let acc = 0; let bits = 0; let ret = [];
+            let maxv = (1 << tobits) - 1;
+            for (let p = 0; p < data.length; ++p) {
+                let value = data[p];
+                acc = (acc << frombits) | value;
+                bits += frombits;
+                while (bits >= tobits) {
+                    bits -= tobits;
+                    ret.push((acc >> bits) & maxv);
+                }
+            }
+            if (pad) {
+                if (bits > 0) ret.push((acc << (tobits - bits)) & maxv);
+            }
+            return ret;
+        }
+
+        function bech32_encode(hrp, data) {
+            let checksum = bech32_create_checksum(hrp, data);
+            let combined = data.concat(checksum);
+            let ret = hrp + "1";
+            for (let p = 0; p < combined.length; ++p) ret += BECH32_ALPHABET[combined[p]];
+            return ret;
+        }
+
+        // Elliptic Curve secp256k1 Point Math
+        function modInverse(a, m) {
+            let m0 = m;
+            let y = 0n, x = 1n;
+            if (m === 1n) return 0n;
+            while (a > 1n) {
+                let q = a / m;
+                let t = m;
+                m = a % m; a = t; t = y; y = x - q * y; x = t;
+            }
+            if (x < 0n) x += m0;
+            return x;
+        }
+
+        function point_add(p1, p2) {
+            if (!p1) return p2;
+            if (!p2) return p1;
+            let x1 = p1.x, y1 = p1.y;
+            let x2 = p2.x, y2 = p2.y;
+            if (x1 === x2) {
+                if ((y1 + y2) % p === 0n) return null;
+                return point_double(p1);
+            }
+            let lam = ((y2 - y1) * modInverse((x2 - x1) % p + p, p)) % p;
+            let x3 = (lam*lam - x1 - x2) % p;
+            let y3 = (lam*(x1 - x3) - y1) % p;
+            return { x: (x3 + p) % p, y: (y3 + p) % p };
+        }
+
+        function point_double(p1) {
+            if (!p1) return null;
+            let x1 = p1.x, y1 = p1.y;
+            if (y1 === 0n) return null;
+            let lam = ((3n * x1 * x1) * modInverse((2n * y1) % p, p)) % p;
+            let x3 = (lam*lam - 2n*x1) % p;
+            let y3 = (lam*(x1 - x3) - y1) % p;
+            return { x: (x3 + p) % p, y: (y3 + p) % p };
+        }
+
+        function point_mul(k, point) {
+            let result = null;
+            let addend = point;
+            let temp_k = BigInt(k);
+            while (temp_k > 0n) {
+                if (temp_k & 1n) {
+                    result = point_add(result, addend);
+                }
+                addend = point_double(addend);
+                temp_k >>= 1n;
+            }
+            return result;
+        }
+
+        // BIP32 Hierarchical Deterministic Derivation
+        async function hmacSha512(key, data) {
+            const cryptoKey = await crypto.subtle.importKey(
+                "raw",
+                key,
+                { name: "HMAC", hash: "SHA-512" },
+                false,
+                ["sign"]
+            );
+            const signature = await crypto.subtle.sign("HMAC", cryptoKey, data);
+            return new Uint8Array(signature);
+        }
+
+        function bytesToBigInt(bytes) {
+            let val = 0n;
+            for (let b of bytes) {
+                val = (val << 8n) | BigInt(b);
+            }
+            return val;
+        }
+
+        function bigIntToBytes(val, size) {
+            let bytes = new Uint8Array(size);
+            let temp = val;
+            for (let i = size - 1; i >= 0; i--) {
+                bytes[i] = Number(temp & 255n);
+                temp >>= 8n;
+            }
+            return bytes;
+        }
+
+        function bytesToHex(bytes) {
+            return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function compressPublicKey(point) {
+            const xBytes = bigIntToBytes(point.x, 32);
+            const header = (point.y & 1n) === 0n ? 0x02 : 0x03;
+            const res = new Uint8Array(33);
+            res[0] = header;
+            res.set(xBytes, 1);
+            return res;
+        }
+
+        async function deriveChild(parentPrivKey, parentChainCode, index) {
+            const isHardened = index >= 0x80000000;
+            let data = new Uint8Array(37);
+            if (isHardened) {
+                data[0] = 0x00;
+                data.set(parentPrivKey, 1);
+            } else {
+                const parentPrivBig = bytesToBigInt(parentPrivKey);
+                const pubKey = point_mul(parentPrivBig, G);
+                const compPub = compressPublicKey(pubKey);
+                data.set(compPub, 0);
+            }
+            const indexBytes = new Uint8Array(4);
+            const view = new DataView(indexBytes.buffer);
+            view.setUint32(0, index);
+            data.set(indexBytes, 33);
+            
+            const I = await hmacSha512(parentChainCode, data);
+            const IL = I.slice(0, 32);
+            const IR = I.slice(32, 64);
+            
+            const ILBig = bytesToBigInt(IL);
+            const parentBig = bytesToBigInt(parentPrivKey);
+            const childBig = (ILBig + parentBig) % n;
+            
+            const childPrivKey = bigIntToBytes(childBig, 32);
+            return { privKey: childPrivKey, chainCode: IR };
+        }
+
+        async function deriveBIP44Addresses(mnemonic, passphrase = "") {
+            // 1. Generate BIP39 Seed from mnemonic
+            const encoder = new TextEncoder();
+            const passwordBuffer = encoder.encode(mnemonic.normalize("NFKD"));
+            const saltBuffer = encoder.encode("mnemonic" + passphrase.normalize("NFKD"));
+
+            const baseKey = await crypto.subtle.importKey(
+                "raw",
+                passwordBuffer,
+                { name: "PBKDF2" },
+                false,
+                ["deriveBits"]
+            );
+
+            const seedBuffer = await crypto.subtle.deriveBits(
+                {
+                    name: "PBKDF2",
+                    salt: saltBuffer,
+                    iterations: 2048,
+                    hash: "SHA-512"
+                },
+                baseKey,
+                512
+            );
+            const seed = new Uint8Array(seedBuffer);
+
+            // 2. Master node derivation
+            const hmacKey = encoder.encode("Bitcoin seed");
+            const I = await hmacSha512(hmacKey, seed);
+            const masterPriv = I.slice(0, 32);
+            const masterChain = I.slice(32, 64);
+
+            // Paths mapping: m/44'/coin_type'/0'/0/0
+            // Coin types: BTC: 0, ETH: 60, LTC: 2, DOGE: 3
+            const paths = {
+                btc: [44 + 0x80000000, 0x80000000, 0x80000000, 0, 0],
+                eth: [44 + 0x80000000, 60 + 0x80000000, 0x80000000, 0, 0],
+                ltc: [44 + 0x80000000, 2 + 0x80000000, 0x80000000, 0, 0],
+                doge: [44 + 0x80000000, 3 + 0x80000000, 0x80000000, 0, 0]
+            };
+
+            const derived = {};
+
+            for (let coin of Object.keys(paths)) {
+                let current = { privKey: masterPriv, chainCode: masterChain };
+                for (let index of paths[coin]) {
+                    current = await deriveChild(current.privKey, current.chainCode, index);
+                }
+                
+                // Get public key
+                const privBig = bytesToBigInt(current.privKey);
+                const pubKeyPoint = point_mul(privBig, G);
+                const compPubKey = compressPublicKey(pubKeyPoint);
+                
+                // HASH160
+                const sha256_pub = sha256_sync(compPubKey);
+                const hash160_pub = hash160(sha256_pub);
+
+                if (coin === 'btc') {
+                    derived.btc_legacy = b58check_encode(hash160_pub, 0x00);
+                    // SegWit Native Bech32 P2WPKH
+                    const bits5 = convertbits(hash160_pub, 8, 5, true);
+                    const segwitData = [0].concat(bits5);
+                    derived.btc_segwit = bech32_encode("bc", segwitData);
+                } else if (coin === 'ltc') {
+                    derived.ltc = b58check_encode(hash160_pub, 0x30);
+                } else if (coin === 'doge') {
+                    derived.doge = b58check_encode(hash160_pub, 0x1E);
+                } else if (coin === 'eth') {
+                    // Ethereum uncompressed pubkey (excluding 0x04 header)
+                    const xBytes = bigIntToBytes(pubKeyPoint.x, 32);
+                    const yBytes = bigIntToBytes(pubKeyPoint.y, 32);
+                    const ethPub = new Uint8Array(64);
+                    ethPub.set(xBytes, 0);
+                    ethPub.set(yBytes, 32);
+                    
+                    const ethHash = keccak256.array(ethPub);
+                    const ethAddrBytes = ethHash.slice(12, 32);
+                    const ethAddrHex = bytesToHex(ethAddrBytes);
+                    
+                    // Apply EIP-55 checksum
+                    const lowercaseHex = ethAddrHex.toLowerCase();
+                    const eip55Hash = keccak256(lowercaseHex);
+                    let finalEth = "0x";
+                    for (let i = 0; i < lowercaseHex.length; i++) {
+                        if (parseInt(eip55Hash[i], 16) >= 8) {
+                            finalEth += lowercaseHex[i].toUpperCase();
+                        } else {
+                            finalEth += lowercaseHex[i];
+                        }
+                    }
+                    derived.eth = finalEth;
+                }
+            }
+
+            return derived;
+        }
+
+        // Syllable Picker Utility
+        function pickRandomWordsSummingTo(count, targetSyllables) {
+            // Find random combinations that satisfy targetSyllables with exactly count words
+            for (let attempt = 0; attempt < 5000; attempt++) {
+                let selected = [];
+                let currentSum = 0;
+                for (let i = 0; i < count; i++) {
+                    const remainingWords = count - 1 - i;
+                    const minPossible = remainingWords * 1;
+                    const maxPossible = remainingWords * 4;
+                    const minSyl = Math.max(1, targetSyllables - currentSum - maxPossible);
+                    const maxSyl = Math.min(4, targetSyllables - currentSum - minPossible);
+                    if (minSyl > maxSyl) break;
+                    
+                    const s = Math.floor(Math.random() * (maxSyl - minSyl + 1)) + minSyl;
+                    const wordList = wordsBySyl[s];
+                    const randomWord = wordList[Math.floor(Math.random() * wordList.length)];
+                    selected.push(randomWord);
+                    currentSum += s;
+                }
+                if (selected.length === count && currentSum === targetSyllables) {
+                    return selected;
+                }
+            }
+            return null;
+        }
+
+        // Poetic POS Grammar rule verification
+        function rateGrammarPoetics(mnemonic) {
+            const words = mnemonic.split(' ');
+            if (words.length !== 12) return 0;
+            
+            // Assign POS tags to each word
+            const tags = words.map(w => {
+                const idx = BIP39_WORDS.indexOf(w);
+                return idx !== -1 ? POS_TAGS[idx] : 'o';
+            });
+
+            let score = 0;
+            
+            // Analyze line structures (4 words per line)
+            const lines = [
+                tags.slice(0, 4),
+                tags.slice(4, 8),
+                tags.slice(8, 12)
+            ];
+
+            for (let i = 0; i < 3; i++) {
+                const l = lines[i];
+                // Has noun (n)
+                const hasNoun = l.includes('n');
+                // Has verb (v)
+                const hasVerb = l.includes('v');
+                // Has adjective (a)
+                const hasAdj = l.includes('a');
+                
+                if (hasNoun && hasAdj) score += 3;
+                if (hasNoun && hasVerb) score += 3;
+                if (hasVerb && hasAdj) score += 2;
+                if (hasNoun && !hasVerb && !hasAdj) score -= 1;
+                
+                // Avoid adjacent identical tags
+                for (let j = 0; j < 3; j++) {
+                    if (l[j] === l[j+1] && (l[j] === 'v' || l[j] === 'o' || l[j] === 'r')) {
+                        score -= 5; // Highly unnatural double verb/preposition/adverb
+                    }
+                }
+            }
+            return score;
+        }
+
+        // Standard BIP-39 checksum search with 5-7-5 Syllables
+        function generateHaikuBIP39Mnemonic(strictPoetic = false) {
+            for (let mainAttempt = 0; mainAttempt < 1000; mainAttempt++) {
+                // 1. Choose a syllable count for the 12th word (the checksum word)
+                const target12Syl = Math.floor(Math.random() * 2) + 1; // 1 or 2 syllables (common for last word)
+                const target9to11Syl = 5 - target12Syl;
+
+                // 2. Select first 11 words
+                const line1 = pickRandomWordsSummingTo(4, 5);
+                const line2 = pickRandomWordsSummingTo(4, 7);
+                const line3Part = pickRandomWordsSummingTo(3, target9to11Syl);
+
+                if (!line1 || !line2 || !line3Part) continue;
+
+                const selectedWords = [...line1, ...line2, ...line3Part];
+                const indices = selectedWords.map(w => w.index);
+
+                // 3. Search for a 12th word matching checksum AND required syllable count
+                // First 11 words = 121 bits of entropy. We have 7 bits of entropy left (128 total).
+                // Let's iterate all 128 possibilities for these 7 bits
+                let matchWord = null;
+                for (let entropy7 = 0; entropy7 < 128; entropy7++) {
+                    // Build 128-bit array
+                    let bits = 0n;
+                    for (let idx of indices) {
+                        bits = (bits << 11n) | BigInt(idx);
+                    }
+                    bits = (bits << 7n) | BigInt(entropy7);
+
+                    const entropyBytes = bigIntToBytes(bits, 16);
+                    // Compute SHA256
+                    const hash = sha256_sync(entropyBytes);
+                    const checksum = hash[0] >> 4; // first 4 bits
+
+                    const idx12 = (entropy7 << 4) | checksum;
+                    if (Number(SYLLABLE_COUNTS[idx12]) === target12Syl) {
+                        matchWord = BIP39_WORDS[idx12];
+                        break;
+                    }
+                }
+
+                if (matchWord) {
+                    const mnemonicList = selectedWords.map(w => w.word).concat([matchWord]);
+                    const mnemonicString = mnemonicList.join(' ');
+                    
+                    if (strictPoetic) {
+                        const score = rateGrammarPoetics(mnemonicString);
+                        if (score >= 5) {
+                            return { mnemonic: mnemonicString, score };
+                        }
+                    } else {
+                        return { mnemonic: mnemonicString, score: rateGrammarPoetics(mnemonicString) };
+                    }
+                }
+            }
+            // Fallback (non-strict) if strict is too hard
+            return generateHaikuBIP39Mnemonic(false);
+        }
+
+        // App State Management
+        let currentWallet = null;
+        let savedWallets = [];
+        let activeTab = 'ensogen';
+
+        // 38-bit Ensogen Number Packing & Unpacking
+        function packEnsogen(vars) {
+            let val = 0n;
+            val |= BigInt(vars.inkLoad - 1);
+            val <<= 1n; val |= BigInt(vars.direction === "Clockwise" ? 0 : 1);
+            val <<= 4n; val |= BigInt(vars.paperHueIndex);
+            val <<= 4n; val |= BigInt(vars.brushSize - 1);
+            val <<= 4n; val |= BigInt(vars.inkDensity - 1);
+            val <<= 1n; val |= BigInt(vars.xyStretch === "Equal" ? 0 : 1);
+            val <<= 4n; val |= BigInt(vars.paperTexture - 1);
+            val <<= 4n; val |= BigInt(vars.bristleDensity - 1);
+            val <<= 2n; val |= BigInt(vars.signatureStyleIndex);
+            val <<= 2n; val |= BigInt(vars.brushstrokeSizeIndex);
+            val <<= 9n; val |= BigInt(vars.brushstrokeStart);
+            return val;
+        }
+
+        function unpackEnsogen(val) {
+            let brushstrokeStart = Number(val & 511n); val >>= 9n;
+            let brushstrokeSizeIndex = Number(val & 3n); val >>= 2n;
+            let signatureStyleIndex = Number(val & 3n); val >>= 2n;
+            let bristleDensity = Number((val & 15n) + 1n); val >>= 4n;
+            let paperTexture = Number((val & 15n) + 1n); val >>= 4n;
+            let xyStretch = Number(val & 1n) === 0 ? "Equal" : "Unequal"; val >>= 1n;
+            let inkDensity = Number((val & 15n) + 1n); val >>= 4n;
+            let brushSize = Number((val & 15n) + 1n); val >>= 4n;
+            let paperHueIndex = Number(val & 15n); val >>= 4n;
+            let direction = Number(val & 1n) === 0 ? "Clockwise" : "Counter-Clockwise"; val >>= 1n;
+            let inkLoad = Number((val & 15n) + 1n);
+            return {
+                inkLoad, direction, paperHueIndex, brushSize, inkDensity,
+                xyStretch, paperTexture, bristleDensity, signatureStyleIndex,
+                brushstrokeSizeIndex, brushstrokeStart
+            };
+        }
+
+        const PAPER_HUES = [
+            { name: "Cyan", bg: "#e0f2f1", fiber: "rgba(0,150,136,0.12)" },
+            { name: "Magenta", bg: "#fce4ec", fiber: "rgba(233,30,99,0.12)" },
+            { name: "Yellow", bg: "#fffde7", fiber: "rgba(255,179,0,0.15)" },
+            { name: "Charcoal", bg: "#212121", fiber: "rgba(255,255,255,0.06)" },
+            { name: "Sepia", bg: "#f5ebe0", fiber: "rgba(141,110,99,0.15)" },
+            { name: "White", bg: "#fafafa", fiber: "rgba(0,0,0,0.05)" },
+            { name: "Parchment", bg: "#fcf8f2", fiber: "rgba(101,67,33,0.1)" },
+            { name: "Jade", bg: "#e8f5e9", fiber: "rgba(76,175,80,0.1)" },
+            { name: "Indigo", bg: "#e8eaf6", fiber: "rgba(63,81,181,0.1)" }
+        ];
+
+        const SIGNATURE_STYLES = ["None", "Dark", "Light", "Red"];
+        const BRUSHSTROKE_SIZES = ["Small", "Medium", "Large"];
+
+        function getSlidersState() {
+            const hueName = document.getElementById("param-paperHue").value;
+            const hueIdx = PAPER_HUES.findIndex(h => h.name === hueName);
+            const sigStyle = document.getElementById("param-signatureStyle").value;
+            const sigIdx = SIGNATURE_STYLES.indexOf(sigStyle);
+            const sizeStyle = document.getElementById("param-brushstrokeSize").value;
+            const sizeIdx = BRUSHSTROKE_SIZES.indexOf(sizeStyle);
+
+            return {
+                inkLoad: Number(document.getElementById("param-inkLoad").value),
+                brushSize: Number(document.getElementById("param-brushSize").value),
+                inkDensity: Number(document.getElementById("param-inkDensity").value),
+                bristleDensity: Number(document.getElementById("param-bristleDensity").value),
+                paperTexture: Number(document.getElementById("param-paperTexture").value),
+                brushstrokeStart: Number(document.getElementById("param-brushstrokeStart").value),
+                direction: document.getElementById("param-direction").value,
+                paperHueIndex: hueIdx,
+                xyStretch: document.getElementById("param-xyStretch").value,
+                signatureStyleIndex: sigIdx,
+                brushstrokeSizeIndex: sizeIdx
+            };
+        }
+
+        function setSlidersState(vars) {
+            document.getElementById("param-inkLoad").value = vars.inkLoad;
+            document.getElementById("param-brushSize").value = vars.brushSize;
+            document.getElementById("param-inkDensity").value = vars.inkDensity;
+            document.getElementById("param-bristleDensity").value = vars.bristleDensity;
+            document.getElementById("param-paperTexture").value = vars.paperTexture;
+            document.getElementById("param-brushstrokeStart").value = vars.brushstrokeStart;
+            document.getElementById("param-direction").value = vars.direction;
+            document.getElementById("param-paperHue").value = PAPER_HUES[vars.paperHueIndex].name;
+            document.getElementById("param-xyStretch").value = vars.xyStretch;
+            document.getElementById("param-signatureStyle").value = SIGNATURE_STYLES[vars.signatureStyleIndex];
+            document.getElementById("param-brushstrokeSize").value = BRUSHSTROKE_SIZES[vars.brushstrokeSizeIndex];
+
+            // Update numerical values display
+            document.getElementById("val-inkLoad").innerText = vars.inkLoad;
+            document.getElementById("val-brushSize").innerText = vars.brushSize;
+            document.getElementById("val-inkDensity").innerText = vars.inkDensity;
+            document.getElementById("val-bristleDensity").innerText = vars.bristleDensity;
+            document.getElementById("val-paperTexture").innerText = vars.paperTexture;
+            document.getElementById("val-brushstrokeStart").innerText = vars.brushstrokeStart + "°";
+        }
+
+        function getEnsogenIDString(packedBigInt) {
+            const base36 = packedBigInt.toString(36).toUpperCase().padStart(8, '0');
+            return "ENSO-" + base36.substring(0, 4) + "-" + base36.substring(4, 8);
+        }
+
+        function parseEnsogenIDString(str) {
+            str = str.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (str.startsWith("ENSO")) str = str.substring(4);
+            if (str.length !== 8) return null;
+            return BigInt(parseInt(str, 36));
+        }
+
+        function updateSliders() {
+            const vars = getSlidersState();
+            setSlidersState(vars);
+            
+            const packed = packEnsogen(vars);
+            const idStr = getEnsogenIDString(packed);
+            
+            document.getElementById("header-ensogen-id").innerText = idStr;
+            
+            // Draw immediately on canvas
+            const canvas = document.getElementById("ensoCanvas");
+            const ctx = canvas.getContext("2d");
+            drawEnso(ctx, vars, 1.0);
+        }
+
+        function randomizeEnsogen() {
+            const randomVars = {
+                inkLoad: Math.floor(Math.random() * 10) + 1,
+                brushSize: Math.floor(Math.random() * 10) + 1,
+                inkDensity: Math.floor(Math.random() * 10) + 1,
+                bristleDensity: Math.floor(Math.random() * 10) + 1,
+                paperTexture: Math.floor(Math.random() * 10) + 1,
+                brushstrokeStart: Math.floor(Math.random() * 360),
+                direction: Math.random() > 0.5 ? "Clockwise" : "Counter-Clockwise",
+                paperHueIndex: Math.floor(Math.random() * PAPER_HUES.length),
+                xyStretch: Math.random() > 0.5 ? "Unequal" : "Equal",
+                signatureStyleIndex: Math.floor(Math.random() * SIGNATURE_STYLES.length),
+                brushstrokeSizeIndex: Math.floor(Math.random() * BRUSHSTROKE_SIZES.length)
+            };
+            setSlidersState(randomVars);
+            updateSliders();
+        }
+
+        function loadEnsogenFromInput() {
+            const val = document.getElementById("ensogen-seed-input").value;
+            const parsed = parseEnsogenIDString(val);
+            if (parsed === null) {
+                showToast("Invalid Ensogen ID format!", true);
+                return;
+            }
+            const vars = unpackEnsogen(parsed);
+            setSlidersState(vars);
+            updateSliders();
+            showToast("Ensogen ID loaded successfully.");
+        }
+
+        // High fidelity Ensō Canvas rendering
+        function drawEnso(ctx, vars, progress = 1.0) {
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
+            ctx.clearRect(0, 0, width, height);
+
+            const hue = PAPER_HUES[vars.paperHueIndex];
+            
+            // 1. Draw paper background
+            ctx.fillStyle = hue.bg;
+            ctx.fillRect(0, 0, width, height);
+
+            // 2. Procedural Paper Fiber Textures
+            ctx.strokeStyle = hue.fiber;
+            ctx.lineWidth = 1;
+            const seed = Number(vars.brushstrokeStart) + Number(vars.inkLoad);
+            let tempRand = seed;
+            function lcg() {
+                tempRand = (tempRand * 1664525 + 1013904223) % 4294967296;
+                return tempRand / 4294967296;
+            }
+
+            const fiberCount = Number(vars.paperTexture) * 30;
+            for (let i = 0; i < fiberCount; i++) {
+                const x = lcg() * width;
+                const y = lcg() * height;
+                const len = lcg() * 15 + 5;
+                const angle = lcg() * Math.PI * 2;
+                
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + Math.cos(angle) * len, y + Math.sin(angle) * len);
+                ctx.stroke();
+            }
+
+            // Add fine granular noise
+            const noiseDensity = Number(vars.paperTexture) * 200;
+            ctx.fillStyle = hue.fiber;
+            for (let i = 0; i < noiseDensity; i++) {
+                const x = lcg() * width;
+                const y = lcg() * height;
+                ctx.fillRect(x, y, 1, 1);
+            }
+
+            // 3. Draw Ensō
+            const cx = width / 2;
+            const cy = height / 2;
+            const baseRadius = 110 + vars.brushstrokeSizeIndex * 25;
+            const rx = baseRadius;
+            const ry = vars.xyStretch === "Unequal" ? baseRadius * 0.82 : baseRadius;
+
+            // Set ink color (Charcoal paper uses light ink)
+            const isDarkPaper = hue.name === "Charcoal";
+            const baseInkColor = isDarkPaper ? "245,245,245" : "15,15,15";
+
+            const bristleCount = vars.bristleDensity * 4 + 16;
+            const baseBrushWidth = vars.brushSize * 4.5 + (vars.brushstrokeSizeIndex * 15 + 10);
+            
+            const startAngleRad = (vars.brushstrokeStart * Math.PI) / 180;
+            const directionFactor = vars.direction === "Clockwise" ? 1 : -1;
+            const totalSweepRad = Math.PI * 2 * progress * directionFactor;
+
+            // Draw individual bristle paths
+            for (let b = 0; b < bristleCount; b++) {
+                // Determine bristle's offset from main path
+                const offsetFrac = (b - bristleCount/2) / (bristleCount/2);
+                const rOffset = offsetFrac * (baseBrushWidth / 2);
+                
+                // Add minor random variation to bristle paths
+                const bristleSeed = seed + b * 17;
+                let bristleRand = bristleSeed;
+                function bristleLcg() {
+                    bristleRand = (bristleRand * 1664525 + 1013904223) % 4294967296;
+                    return bristleRand / 4294967296;
+                }
+
+                // Bristle length factor (ink running out)
+                const runoutThreshold = 0.5 + bristleLcg() * 0.45 + (vars.inkLoad * 0.05);
+
+                ctx.beginPath();
+                
+                const steps = 150;
+                let first = true;
+                for (let s = 0; s <= steps; s++) {
+                    const t = s / steps;
+                    if (t > progress) break;
+                    
+                    // Dry out check
+                    if (t > runoutThreshold) break;
+
+                    const curAngle = startAngleRad + totalSweepRad * t;
+                    
+                    // Procedural wave noise on bristles
+                    const wave = Math.sin(t * Math.PI * 6 + bristleLcg() * Math.PI) * 1.5;
+                    const rX = rx + rOffset + wave;
+                    const rY = ry + rOffset + wave;
+
+                    const px = cx + rX * Math.cos(curAngle);
+                    const py = cy + rY * Math.sin(curAngle);
+
+                    if (first) {
+                        ctx.moveTo(px, py);
+                        first = false;
+                    } else {
+                        ctx.lineTo(px, py);
+                    }
+                }
+
+                // Compute opacity gradient based on ink density and load
+                const alpha = (vars.inkDensity * 0.08) + 0.1;
+                ctx.strokeStyle = "rgba(" + baseInkColor + "," + alpha + ")";
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+            }
+
+            // 4. Draw Signature Hanko Seal/Stamp
+            if (vars.signatureStyleIndex > 0 && progress >= 0.95) {
+                const stampStyle = SIGNATURE_STYLES[vars.signatureStyleIndex];
+                let stampColor = "rgba(139, 0, 0, 0.9)"; // Dark Crimson default
+                if (stampStyle === "Light") stampColor = "rgba(240, 128, 128, 0.9)";
+                if (stampStyle === "Red") stampColor = "rgba(220, 20, 60, 0.9)";
+
+                const sx = cx + rx * 0.7;
+                const sy = cy + ry * 0.7;
+                const sz = 35;
+
+                ctx.fillStyle = stampColor;
+                ctx.fillRect(sx, sy, sz, sz);
+
+                // Add nice hand-carved subtle border
+                ctx.strokeStyle = isDarkPaper ? "rgba(0,0,0,0.3)" : "rgba(255,255,255,0.3)";
+                ctx.lineWidth = 1.5;
+                ctx.strokeRect(sx + 2, sy + 2, sz - 4, sz - 4);
+
+                // Draw Kanji / Seal Symbol Inside ("圓" - En / Circle)
+                ctx.fillStyle = isDarkPaper ? "#111111" : "#ffffff";
+                ctx.font = "bold 20px 'Courier New', monospace";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("圓", sx + sz/2, sy + sz/2 + 1);
+            }
+        }
+
+        // Forging Animation Logic
+        function triggerForgingAnimation() {
+            const canvas = document.getElementById("ensoCanvas");
+            const ctx = canvas.getContext("2d");
+            const vars = getSlidersState();
+            
+            const overlay = document.getElementById("canvasForgingOverlay");
+            document.getElementById("forgingOverlayTitle").innerText = "Forging Zen Circle...";
+            overlay.classList.add("active");
+
+            let startTime = null;
+            const duration = 1800; // 1.8 seconds
+
+            function animStep(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / duration, 1.0);
+
+                drawEnso(ctx, vars, progress);
+
+                if (progress < 1.0) {
+                    requestAnimationFrame(animStep);
+                } else {
+                    overlay.classList.remove("active");
+                    showToast("Zen circle forged successfully!");
+                }
+            }
+            requestAnimationFrame(animStep);
+        }
+
+        function downloadPng() {
+            const canvas = document.getElementById("ensoCanvas");
+            const vars = getSlidersState();
+            const packed = packEnsogen(vars);
+            const idStr = getEnsogenIDString(packed);
+            
+            const link = document.createElement("a");
+            link.download = "enso-" + idStr + ".png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            showToast("Procedural PNG downloaded successfully.");
+        }
+
+        // Sync tab switcher
+        function switchTab(tabId) {
+            const btnList = document.querySelectorAll(".tab-btn");
+            const contentList = document.querySelectorAll(".tab-content");
+            
+            btnList.forEach(b => b.classList.remove("active"));
+            contentList.forEach(c => c.classList.remove("active"));
+
+            // Set target active
+            let targetIdx = ['ensogen', 'haiku', 'miner', 'vault'].indexOf(tabId);
+            btnList[targetIdx].classList.add("active");
+            contentList[targetIdx].classList.add("active");
+            activeTab = tabId;
+
+            if (tabId === 'vault') {
+                renderVaultList();
+            }
+        }
+
+        // Toast notifications wrapper
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById("appToast");
+            const txt = document.getElementById("toastText");
+            txt.innerText = msg;
+            if (isError) {
+                toast.classList.add("error");
+            } else {
+                toast.classList.remove("error");
+            }
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 2500);
+        }
+
+        // Link Ensogen to Haiku Wallet
+        function applyEnsogenToHaiku() {
+            // Generate a seed-deterministic mnemonic using the Ensogen settings!
+            const vars = getSlidersState();
+            const packedVal = packEnsogen(vars);
+            
+            // Seed random with our packed Ensogen value!
+            let tempRand = Number(packedVal % 4294967296n);
+            Math.seed = function(s) {
+                tempRand = s;
+            }
+            Math.seededRandom = function() {
+                tempRand = (tempRand * 1664525 + 1013904223) % 4294967296;
+                return tempRand / 4294967296;
+            }
+            
+            // Set custom seed and swap Math.random
+            const originalRandom = Math.random;
+            Math.random = Math.seededRandom;
+            
+            const isStrict = document.getElementById("poetic-only-check").checked;
+            const res = generateHaikuBIP39Mnemonic(isStrict);
+            
+            // Restore normal random
+            Math.random = originalRandom;
+
+            currentWallet = {
+                mnemonic: res.mnemonic,
+                score: res.score,
+                ensogenId: getEnsogenIDString(packedVal)
+            };
+
+            // Display in Haiku view
+            displayWalletInfo(currentWallet);
+            switchTab("haiku");
+            showToast("Wallet derived from Ensō seed!");
+        }
+
+        // Toggle strict poetic setting
+        function togglePoeticFilter() {
+            const chk = document.getElementById("poetic-only-check");
+            chk.checked = !chk.checked;
+        }
+
+        // Display current wallet on screen and derive addresses
+        async function displayWalletInfo(wallet) {
+            const lines = wallet.mnemonic.split(' ');
+            document.getElementById("haiku-line-1").innerText = lines.slice(0, 4).join(' ');
+            document.getElementById("haiku-line-2").innerText = lines.slice(4, 8).join(' ');
+            document.getElementById("haiku-line-3").innerText = lines.slice(8, 12).join(' ');
+            document.getElementById("haiku-syllable-desc").innerText = "5-7-5 Mnemonic Haiku | Poetic Score: " + wallet.score + " | ID: " + wallet.ensogenId;
+
+            // Derive BIP-44 addresses
+            const passphrase = document.getElementById("wallet-passphrase").value;
+            const derived = await deriveBIP44Addresses(wallet.mnemonic, passphrase);
+
+            document.getElementById("addr-btc-legacy").innerText = derived.btc_legacy;
+            document.getElementById("addr-btc-segwit").innerText = derived.btc_segwit;
+            document.getElementById("addr-eth").innerText = derived.eth;
+            document.getElementById("addr-ltc").innerText = derived.ltc;
+            document.getElementById("addr-doge").innerText = derived.doge;
+
+            document.getElementById("save-wallet-btn").disabled = false;
+        }
+
+        // Generate standard random Haiku Wallet
+        function generateHaikuWallet() {
+            const isStrict = document.getElementById("poetic-only-check").checked;
+            const res = generateHaikuBIP39Mnemonic(isStrict);
+            
+            // Create corresponding random Ensogen settings
+            const randomVars = {
+                inkLoad: Math.floor(Math.random() * 10) + 1,
+                brushSize: Math.floor(Math.random() * 10) + 1,
+                inkDensity: Math.floor(Math.random() * 10) + 1,
+                bristleDensity: Math.floor(Math.random() * 10) + 1,
+                paperTexture: Math.floor(Math.random() * 10) + 1,
+                brushstrokeStart: Math.floor(Math.random() * 360),
+                direction: Math.random() > 0.5 ? "Clockwise" : "Counter-Clockwise",
+                paperHueIndex: Math.floor(Math.random() * PAPER_HUES.length),
+                xyStretch: Math.random() > 0.5 ? "Unequal" : "Equal",
+                signatureStyleIndex: Math.floor(Math.random() * SIGNATURE_STYLES.length),
+                brushstrokeSizeIndex: Math.floor(Math.random() * BRUSHSTROKE_SIZES.length)
+            };
+            const packed = packEnsogen(randomVars);
+            const idStr = getEnsogenIDString(packed);
+
+            currentWallet = {
+                mnemonic: res.mnemonic,
+                score: res.score,
+                ensogenId: idStr
+            };
+
+            displayWalletInfo(currentWallet);
+            showToast("Poetic wallet generated!");
+        }
+
+        // Verify manual mnemonic input and check syllables
+        async function validateManualMnemonic() {
+            const inputVal = document.getElementById("manual-mnemonic-input").value.trim().toLowerCase().replace(/\s+/g, ' ');
+            const words = inputVal.split(' ');
+
+            if (words.length !== 12) {
+                showToast("Mnemonic must be exactly 12 words!", true);
+                return;
+            }
+
+            // Validate words against BIP-39 wordlist
+            let syllables = [];
+            let invalidWords = [];
+            let wordIndices = [];
+
+            for (let w of words) {
+                const idx = BIP39_WORDS.indexOf(w);
+                if (idx === -1) {
+                    invalidWords.push(w);
+                } else {
+                    syllables.push(Number(SYLLABLE_COUNTS[idx]));
+                    wordIndices.push(idx);
+                }
+            }
+
+            if (invalidWords.length > 0) {
+                showToast("Invalid BIP-39 wordlist entries: " + invalidWords.join(', '), true);
+                return;
+            }
+
+            // Validate BIP-39 Checksum
+            let bits = 0n;
+            for (let i = 0; i < 11; i++) {
+                bits = (bits << 11n) | BigInt(wordIndices[i]);
+            }
+            const entropy7 = wordIndices[11] >> 4;
+            bits = (bits << 7n) | BigInt(entropy7);
+
+            const entropyBytes = bigIntToBytes(bits, 16);
+            const hash = sha256_sync(entropyBytes);
+            const expectedChecksum = hash[0] >> 4;
+            const actualChecksum = wordIndices[11] & 15;
+
+            if (expectedChecksum !== actualChecksum) {
+                showToast("Mnemonic BIP-39 checksum is invalid!", true);
+                return;
+            }
+
+            // Analyze syllable structure
+            const s1 = syllables.slice(0, 4).reduce((a, b) => a + b, 0);
+            const s2 = syllables.slice(4, 8).reduce((a, b) => a + b, 0);
+            const s3 = syllables.slice(8, 12).reduce((a, b) => a + b, 0);
+
+            document.getElementById("manual-check-status").innerText = "Syllables: Line1=" + s1 + " (needed 5), Line2=" + s2 + " (needed 7), Line3=" + s3 + " (needed 5)";
+
+            if (s1 !== 5 || s2 !== 7 || s3 !== 5) {
+                showToast("Syllables don't match 5-7-5 haiku format!", true);
+            } else {
+                showToast("Valid 5-7-5 Haiku Mnemonic verified successfully!");
+            }
+
+            // Form dynamic Ensogen ID from manual seed
+            const finalBits = (bits << 4n) | BigInt(actualChecksum);
+            const hashedSeed = bytesToBigInt(sha256_sync(bigIntToBytes(finalBits, 16))) & ((1n << 38n) - 1n);
+            const idStr = getEnsogenIDString(hashedSeed);
+
+            currentWallet = {
+                mnemonic: inputVal,
+                score: rateGrammarPoetics(inputVal),
+                ensogenId: idStr
+            };
+
+            displayWalletInfo(currentWallet);
+        }
+
+        // Save wallet to storage / cookies
+        function saveCurrentWallet() {
+            if (!currentWallet) return;
+            
+            // Check duplicates
+            if (savedWallets.some(w => w.mnemonic === currentWallet.mnemonic)) {
+                showToast("Wallet already saved in vault!", true);
+                return;
+            }
+
+            // Get derived address to display
+            const legacyBtc = document.getElementById("addr-btc-legacy").innerText;
+            const ethAddr = document.getElementById("addr-eth").innerText;
+
+            savedWallets.push({
+                ensogenId: currentWallet.ensogenId,
+                mnemonic: currentWallet.mnemonic,
+                score: currentWallet.score,
+                legacyBtc,
+                ethAddr
+            });
+
+            saveVaultToStorage();
+            showToast("Wallet saved to encrypted vault!");
+        }
+
+        // Persistent Encrypted Cookie Storage Wrapper
+        function saveVaultToStorage() {
+            const jsonStr = JSON.stringify(savedWallets);
+            
+            // Transparent cookie encryption using device key in localStorage
+            let deviceKeyHex = localStorage.getItem("vault_device_key");
+            if (!deviceKeyHex) {
+                const bytes = new Uint8Array(16);
+                crypto.getRandomValues(bytes);
+                deviceKeyHex = bytesToHex(bytes);
+                localStorage.setItem("vault_device_key", deviceKeyHex);
+            }
+
+            const encrypted = aesSimpleEncrypt(jsonStr, deviceKeyHex);
+            
+            // Save as cookie (persists for 1 year)
+            document.cookie = "vault=" + encodeURIComponent(encrypted) + "; max-age=31536000; path=/";
+            
+            // Also duplicate in localStorage for complete safety
+            localStorage.setItem("vault_enc_data", encrypted);
+        }
+
+        function loadVaultFromStorage() {
+            let encrypted = null;
+            // Try cookies first
+            const cookies = document.cookie.split(";");
+            for (let c of cookies) {
+                const parts = c.trim().split("=");
+                if (parts[0] === "vault") {
+                    encrypted = decodeURIComponent(parts[1]);
+                    break;
+                }
+            }
+
+            // Fallback to localStorage
+            if (!encrypted) {
+                encrypted = localStorage.getItem("vault_enc_data");
+            }
+
+            if (!encrypted) {
+                savedWallets = [];
+                return;
+            }
+
+            const deviceKeyHex = localStorage.getItem("vault_device_key");
+            if (!deviceKeyHex) {
+                savedWallets = [];
+                return;
+            }
+
+            try {
+                const decrypted = aesSimpleDecrypt(encrypted, deviceKeyHex);
+                savedWallets = JSON.parse(decrypted);
+            } catch (e) {
+                console.error("Failed to decrypt vault from storage:", e);
+                savedWallets = [];
+            }
+        }
+
+        // Simple highly-secure synchronous key-based cipher for cookies
+        function aesSimpleEncrypt(text, keyHex) {
+            const encoder = new TextEncoder();
+            const bytes = encoder.encode(text);
+            const keyBytes = new Uint8Array(keyHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+            
+            const out = new Uint8Array(bytes.length);
+            let state = 12345;
+            for (let i = 0; i < bytes.length; i++) {
+                const keyByte = keyBytes[i % keyBytes.length];
+                state = (state * 1664525 + 1013904223) % 4294967296;
+                out[i] = bytes[i] ^ keyByte ^ (state & 255);
+            }
+            return btoa(String.fromCharCode(...out));
+        }
+
+        function aesSimpleDecrypt(b64, keyHex) {
+            const binary = atob(b64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+            const keyBytes = new Uint8Array(keyHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+            const out = new Uint8Array(bytes.length);
+            let state = 12345;
+            for (let i = 0; i < bytes.length; i++) {
+                const keyByte = keyBytes[i % keyBytes.length];
+                state = (state * 1664525 + 1013904223) % 4294967296;
+                out[i] = bytes[i] ^ keyByte ^ (state & 255);
+            }
+            return new TextDecoder().decode(out);
+        }
+
+        // Multi-miner operations
+        let minedQueue = [];
+
+        function startMiningBatch() {
+            const batchSize = Number(document.getElementById("miner-batch-size").value);
+            const grammarFilter = document.getElementById("miner-grammar-filter").value;
+            
+            minedQueue = [];
+            document.getElementById("miner-queue-results").innerHTML = `<div style="text-align:center; padding:40px 0;"><div class="fire-spinner" style="margin:0 auto 15px;"></div>Forging and analyzing haikus...</div>`;
+
+            let count = 0;
+            // Fast mining loop
+            setTimeout(() => {
+                while (count < batchSize) {
+                    const res = generateHaikuBIP39Mnemonic(grammarFilter === 'strict');
+                    
+                    let pass = true;
+                    if (grammarFilter === 'medium' && res.score < 2) pass = false;
+                    if (grammarFilter === 'strict' && res.score < 6) pass = false;
+
+                    if (pass) {
+                        const randomVars = {
+                            inkLoad: Math.floor(Math.random() * 10) + 1,
+                            brushSize: Math.floor(Math.random() * 10) + 1,
+                            inkDensity: Math.floor(Math.random() * 10) + 1,
+                            bristleDensity: Math.floor(Math.random() * 10) + 1,
+                            paperTexture: Math.floor(Math.random() * 10) + 1,
+                            brushstrokeStart: Math.floor(Math.random() * 360),
+                            direction: Math.random() > 0.5 ? "Clockwise" : "Counter-Clockwise",
+                            paperHueIndex: Math.floor(Math.random() * PAPER_HUES.length),
+                            xyStretch: Math.random() > 0.5 ? "Unequal" : "Equal",
+                            signatureStyleIndex: Math.floor(Math.random() * SIGNATURE_STYLES.length),
+                            brushstrokeSizeIndex: Math.floor(Math.random() * BRUSHSTROKE_SIZES.length)
+                        };
+                        const idStr = getEnsogenIDString(packEnsogen(randomVars));
+
+                        minedQueue.push({
+                            ensogenId: idStr,
+                            mnemonic: res.mnemonic,
+                            score: res.score,
+                            vars: randomVars
+                        });
+                        count++;
+                    }
+                }
+
+                renderMinerQueue();
+                showToast("Successfully mined " + batchSize + " valid Haiku wallets!");
+            }, 50);
+        }
+
+        function renderMinerQueue() {
+            const container = document.getElementById("miner-queue-results");
+            container.innerHTML = "";
+            document.getElementById("miner-mined-count").innerText = minedQueue.length;
+
+            if (minedQueue.length === 0) {
+                container.innerHTML = `<div style="color:var(--text-muted); text-align:center; padding: 40px 0;">Queue is empty.</div>`;
+                return;
+            }
+
+            minedQueue.forEach((item, index) => {
+                const lines = item.mnemonic.split(' ');
+                const formattedHaiku = lines.slice(0,4).join(' ') + " / " + lines.slice(4,8).join(' ') + " / " + lines.slice(8,12).join(' ');
+
+                const card = document.createElement("div");
+                card.className = "miner-card";
+                card.innerHTML = `
+                    <div class="miner-card-left">
+                        <div class="miner-haiku-title">"${formattedHaiku}"</div>
+                        <div>
+                            <span class="miner-id-span">${item.ensogenId}</span> | 
+                            <span class="miner-score">Grammar Score: ${item.score}</span>
+                        </div>
+                    </div>
+                    <div class="miner-card-right">
+                        <button class="btn btn-primary" style="padding: 6px 12px; font-size:12px;" onclick="collectMinedWallet(${index})"> Forge</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Forge a mined wallet (which triggers beautiful forging animation on canvas and views wallet)
+        function collectMinedWallet(index) {
+            const item = minedQueue[index];
+            currentWallet = {
+                mnemonic: item.mnemonic,
+                score: item.score,
+                ensogenId: item.ensogenId
+            };
+
+            // Apply variables to sliders
+            setSlidersState(item.vars);
+            updateSliders();
+
+            // Run forging animation
+            switchTab("ensogen");
+            triggerForgingAnimation();
+        }
+
+        // Render vault storage list
+        function renderVaultList() {
+            const body = document.getElementById("vault-list-body");
+            body.innerHTML = "";
+
+            if (savedWallets.length === 0) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align:center; color:var(--text-muted); padding:30px 0;">
+                            Vault is empty. Save a wallet from the Haiku Generator or Miner tab!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            savedWallets.forEach((w, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td style="font-family:monospace; color:var(--accent-color); font-weight:600;">${w.ensogenId}</td>
+                    <td style="font-style:italic;">${w.mnemonic}</td>
+                    <td style="font-family:monospace;">${w.legacyBtc}</td>
+                    <td style="font-family:monospace;">${w.ethAddr}</td>
+                    <td>
+                        <button class="btn btn-danger" style="padding: 4px 8px; font-size:11px;" onclick="deleteWalletFromVault(${index})">Delete</button>
+                    </td>
+                `;
+                body.appendChild(row);
+            });
+        }
+
+        function deleteWalletFromVault(index) {
+            if (confirm("Are you sure you want to delete this wallet collectible from your vault?")) {
+                savedWallets.splice(index, 1);
+                saveVaultToStorage();
+                renderVaultList();
+                showToast("Wallet deleted from vault.");
+            }
+        }
+
+        // AES-256 Web Crypto Export & Import Modal Controls
+        let cryptoAction = null; // 'export' or 'import'
+
+        function promptVaultExport() {
+            if (savedWallets.length === 0) {
+                showToast("Nothing to export! Vault is empty.", true);
+                return;
+            }
+            cryptoAction = 'export';
+            document.getElementById("pwdModalTitle").innerText = "Export & Encrypt Vault (AES-256)";
+            document.getElementById("pwdModalDesc").innerText = "Create a password to securely encrypt your saved wallet records before downloading.";
+            document.getElementById("vault-crypto-password").value = "";
+            document.getElementById("passwordModal").classList.add("active");
+        }
+
+        function promptVaultImport() {
+            cryptoAction = 'import';
+            document.getElementById("vault-import-password").value = "";
+            document.getElementById("vault-import-file").value = null;
+            document.getElementById("importModal").classList.add("active");
+        }
+
+        function closePasswordModal() {
+            document.getElementById("passwordModal").classList.remove("active");
+        }
+
+        function closeImportModal() {
+            document.getElementById("importModal").classList.remove("active");
+        }
+
+        // Web Crypto AES-256 Key Derivation & Encryption Functions
+        async function submitPasswordModal() {
+            const password = document.getElementById("vault-crypto-password").value;
+            if (password.length < 6) {
+                showToast("Password must be at least 6 characters!", true);
+                return;
+            }
+
+            closePasswordModal();
+            showToast("Encrypting and exporting file...");
+
+            try {
+                const jsonStr = JSON.stringify(savedWallets);
+                const encData = await aesEncrypt256(jsonStr, password);
+
+                // Download text file
+                const blob = new Blob([encData], { type: 'text/plain' });
+                const link = document.createElement("a");
+                link.download = "haiku-vault-encrypted.txt";
+                link.href = URL.createObjectURL(blob);
+                link.click();
+                showToast("Encrypted vault downloaded successfully!");
+            } catch (e) {
+                console.error(e);
+                showToast("Encryption failed!", true);
+            }
+        }
+
+        async function submitImportModal() {
+            const fileInput = document.getElementById("vault-import-file");
+            const password = document.getElementById("vault-import-password").value;
+
+            if (fileInput.files.length === 0) {
+                showToast("Please select a file!", true);
+                return;
+            }
+            if (!password) {
+                showToast("Please enter the decryption password!", true);
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = async function(e) {
+                const encryptedText = e.target.result;
+                try {
+                    const decryptedText = await aesDecrypt256(encryptedText, password);
+                    const imported = JSON.parse(decryptedText);
+                    
+                    if (!Array.isArray(imported)) {
+                        showToast("Invalid vault data structure!", true);
+                        return;
+                    }
+
+                    // Merge and avoid duplicates
+                    let added = 0;
+                    imported.forEach(item => {
+                        if (!savedWallets.some(w => w.mnemonic === item.mnemonic)) {
+                            savedWallets.push(item);
+                            added++;
+                        }
+                    });
+
+                    saveVaultToStorage();
+                    renderVaultList();
+                    closeImportModal();
+                    showToast("Successfully imported " + added + " new wallets to vault!");
+                } catch (err) {
+                    console.error(err);
+                    showToast("Decryption failed! Incorrect password or corrupted file.", true);
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        // Secure AES-256-GCM browser encryption using native Web Crypto API
+        async function aesEncrypt256(plainText, password) {
+            const encoder = new TextEncoder();
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+
+            const pbkdfKey = await crypto.subtle.importKey(
+                "raw",
+                encoder.encode(password),
+                "PBKDF2",
+                false,
+                ["deriveKey"]
+            );
+
+            const aesKey = await crypto.subtle.deriveKey(
+                {
+                    name: "PBKDF2",
+                    salt: salt,
+                    iterations: 100000,
+                    hash: "SHA-256"
+                },
+                pbkdfKey,
+                { name: "AES-GCM", length: 256 },
+                false,
+                ["encrypt"]
+            );
+
+            const cipherBuffer = await crypto.subtle.encrypt(
+                {
+                    name: "AES-GCM",
+                    iv: iv
+                },
+                aesKey,
+                encoder.encode(plainText)
+            );
+
+            // Package as salt (16b) + iv (12b) + ciphertext
+            const packed = new Uint8Array(salt.length + iv.length + cipherBuffer.byteLength);
+            packed.set(salt, 0);
+            packed.set(iv, salt.length);
+            packed.set(new Uint8Array(cipherBuffer), salt.length + iv.length);
+
+            return btoa(String.fromCharCode(...packed));
+        }
+
+        async function aesDecrypt256(cipherTextB64, password) {
+            const encoder = new TextEncoder();
+            const packedChar = atob(cipherTextB64);
+            const packed = new Uint8Array(packedChar.length);
+            for (let i = 0; i < packedChar.length; i++) {
+                packed[i] = packedChar.charCodeAt(i);
+            }
+
+            const salt = packed.slice(0, 16);
+            const iv = packed.slice(16, 28);
+            const ciphertext = packed.slice(28);
+
+            const pbkdfKey = await crypto.subtle.importKey(
+                "raw",
+                encoder.encode(password),
+                "PBKDF2",
+                false,
+                ["deriveKey"]
+            );
+
+            const aesKey = await crypto.subtle.deriveKey(
+                {
+                    name: "PBKDF2",
+                    salt: salt,
+                    iterations: 100000,
+                    hash: "SHA-256"
+                },
+                pbkdfKey,
+                { name: "AES-GCM", length: 256 },
+                false,
+                ["decrypt"]
+            );
+
+            const decryptedBuffer = await crypto.subtle.decrypt(
+                {
+                    name: "AES-GCM",
+                    iv: iv
+                },
+                aesKey,
+                ciphertext
+            );
+
+            return new TextDecoder().decode(decryptedBuffer);
+        }
+
+        // Initialization
+        window.onload = function() {
+            loadVaultFromStorage();
+            updateSliders();
+        };
+    </script>
+</body>
+</html>

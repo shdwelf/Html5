@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIP-39 Wallet Haiku Generator</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            background: #1e1e1e;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        button {
+            background-color: #f7931a; /* Bitcoin Orange */
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #e08316;
+        }
+        button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        #haiku {
+            font-family: "Georgia", serif;
+            font-size: 1.5em;
+            font-style: italic;
+            margin: 30px 0;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            color: #fff;
+        }
+        #seedBox {
+            background: #000;
+            padding: 15px;
+            border-radius: 6px;
+            display: none; /* Hidden until generated */
+        }
+        #seed {
+            font-family: monospace;
+            color: #4ade80; /* Crypto Green */
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Secure BIP-39 Haiku Miner</h2>
+    <p>This runs entirely in your browser using the Web Crypto API. It mines valid, checksummed 12-word Bitcoin wallets until it finds one shaped perfectly as a 5-7-5 haiku.</p>
+
+    <button id="generateBtn" onclick="mineHaikuWallet()">Mine Wallet Haiku</button>
+    <div id="status">Ready.</div>
+
+    <div id="haiku"></div>
+
+    <div id="seedBox">
+        <div style="font-size: 12px; color: #888; margin-bottom: 8px;">FULL SEED PHRASE:</div>
+        <div id="seed"></div>
+    </div>
+</div>
+
+<script>
+    const BIP39_URL = "https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/english.txt";
+    let wordlist = [];
+
+    // Heuristic syllable counter optimized for the BIP-39 dictionary
+    function countSyllables(word) {
+        word = word.toLowerCase();
+        if (word.length <= 3) return 1;
+
+        // Remove silent endings
+        word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/i, '');
+        // Remove leading 'y' so it isn't counted as a vowel
+        word = word.replace(/^y/i, '');
+
+        // Match vowel groups
+        const matches = word.match(/[aeiouy]{1,2}/gi);
+        return matches ? Math.max(1, matches.length) : 1;
+    }
+
+    // Check if the 12 words form a 5-7-5 structure
+    function checkHaikuStructure(words) {
+        const syllables = words.map(countSyllables);
+
+        // Quick filter: total must be exactly 17
+        const total = syllables.reduce((a, b) => a + b, 0);
+        if (total !== 17) return false;
+
+        for (let i = 1; i < words.length - 1; i++) {
+            let sum1 = syllables.slice(0, i).reduce((a, b) => a + b, 0);
+            if (sum1 === 5) {
+                for (let j = i + 1; j < words.length; j++) {
+                    let sum2 = syllables.slice(i, j).reduce((a, b) => a + b, 0);
+                    let sum3 = syllables.slice(j).reduce((a, b) => a + b, 0);
+                    if (sum2 === 7 && sum3 === 5) {
+                        return [
+                            words.slice(0, i).join(' '),
+                            words.slice(i, j).join(' '),
+                            words.slice(j).join(' ')
+                        ];
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // Helper to convert Uint8Array to binary string
+    function bufferToBinString(buffer) {
+        return Array.from(buffer).map(b => b.toString(2).padStart(8, '0')).join('');
+    }
+
+    async function mineHaikuWallet() {
+        const btn = document.getElementById('generateBtn');
+        const statusEl = document.getElementById('status');
+        const haikuEl = document.getElementById('haiku');
+        const seedBox = document.getElementById('seedBox');
+        const seedEl = document.getElementById('seed');
+
+        btn.disabled = true;
+        haikuEl.innerText = "";
+        seedBox.style.display = "none";
+
+        // Fetch wordlist once
+        if (wordlist.length === 0) {
+            statusEl.innerText = "Fetching official BIP-39 wordlist...";
+            try {
+                const response = await fetch(BIP39_URL);
+                const text = await response.text();
+                wordlist = text.split('\n').filter(w => w.trim().length > 0);
+            } catch (e) {
+                statusEl.innerText = "Error fetching wordlist. Please check your internet connection.";
+                btn.disabled = false;
+                return;
+            }
+        }
+
+        statusEl.innerText = "Mining... (This usually takes a fraction of a second)";
+
+        let attempts = 0;
+        let haiku = false;
+        let finalWords = [];
+
+        // Mining loop
+        while (!haiku) {
+            attempts++;
+
+            // Yield to the browser UI every 100 attempts so the page doesn't freeze
+            if (attempts % 100 === 0) {
+                statusEl.innerText = `Mining... (Attempt ${attempts})`;
+                await new Promise(r => setTimeout(r, 0));
+            }
+
+            // 1. Generate 16 bytes (128 bits) of secure cryptographic entropy
+            const entropy = new Uint8Array(16);
+            window.crypto.getRandomValues(entropy);
+            const entropyBits = bufferToBinString(entropy);
+
+            // 2. Calculate SHA-256 checksum
+            const hashBuffer = await window.crypto.subtle.digest('SHA-256', entropy);
+            const hashArray = new Uint8Array(hashBuffer);
+
+            // We only need the first 4 bits of the hash for a 12-word seed
+            const firstHashByteBits = hashArray[0].toString(2).padStart(8, '0');
+            const checksumBits = firstHashByteBits.substring(0, 4);
+
+            // 3. Combine entropy and checksum (132 bits)
+            const fullBits = entropyBits + checksumBits;
+
+            // 4. Map to 12 words
+            const words = [];
+            for (let i = 0; i < 132; i += 11) {
+                const chunk = fullBits.substring(i, i + 11);
+                const wordIndex = parseInt(chunk, 2);
+                words.push(wordlist[wordIndex]);
+            }
+
+            // 5. Test against the Haiku constraints
+            haiku = checkHaikuStructure(words);
+            if (haiku) {
+                finalWords = words;
+                break;
+            }
+        }
+
+        // Output results
+        statusEl.innerText = `Success! Mined a valid haiku wallet in ${attempts} attempts.`;
+        haikuEl.innerText = haiku.join('\n');
+        seedEl.innerText = finalWords.join(' ');
+        seedBox.style.display = "block";
+        btn.disabled = false;
+    }
+</script>
+
+</body>
+</html>

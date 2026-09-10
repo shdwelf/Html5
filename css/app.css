@@ -90,6 +90,17 @@ body[data-mode="studio"] .install-chip,
 body[data-mode="studio"] .install-tip,
 body[data-mode="studio"] .net-chip { display: none !important; }
 
+body[data-mode="adl"] .ui-grid,
+body[data-mode="adl"] .ui-ter,
+body[data-mode="adl"] #stage,
+body[data-mode="adl"] .labels,
+body[data-mode="adl"] .phase-chip,
+body[data-mode="adl"] .glass-note,
+body[data-mode="adl"] .hud-coords,
+body[data-mode="adl"] .help,
+body[data-mode="adl"] .cmdbar,
+body[data-mode="adl"] .ui-pack { display: none !important; }
+
 body[data-mode="grid"] .cmdbar {
   bottom: 0;
 }

@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANC Studio Pro — Adaptive Multi-Band FxLMS</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 15% 10%, #312e81 0%, transparent 55%),
+                        radial-gradient(circle at 85% 90%, #0c4a6e 0%, transparent 55%),
+                        #060a17;
+            min-height: 100vh;
+        }
+        
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        .glow-active {
+            box-shadow: 0 0 40px rgba(34, 211, 238, 0.35),
+                        0 0 80px rgba(34, 211, 238, 0.15),
+                        inset 0 0 0 1px rgba(34, 211, 238, 0.2);
+        }
+        
+        .pulse-ring { animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.85); opacity: 0.6; }
+            80%, 100% { transform: scale(1.4); opacity: 0; }
+        }
+        
+        .btn-active { animation: btn-glow 2s ease-in-out infinite; }
+        @keyframes btn-glow {
+            0%, 100% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); }
+            50% { box-shadow: 0 0 45px rgba(239, 68, 68, 0.8); }
+        }
+        
+        .status-dot {
+            width: 9px; height: 9px; border-radius: 50%;
+        }
+        .status-dot.active { animation: blink-active 1s ease-in-out infinite; }
+        @keyframes blink-active {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.25; }
+        }
+        
+        .glass {
+            backdrop-filter: blur(14px);
+            background: rgba(15, 23, 42, 0.55);
+        }
+        
+        /* Slider */
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            height: 5px; border-radius: 3px;
+            background: #1e293b; outline: none; cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 16px; height: 16px; border-radius: 50%;
+            background: linear-gradient(135deg, #22d3ee, #3b82f6);
+            box-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+            transition: transform 0.15s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px; height: 16px; border: none; border-radius: 50%;
+            background: linear-gradient(135deg, #22d3ee, #3b82f6);
+            box-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+        }
+        
+        .chip {
+            transition: all 0.2s ease;
+        }
+        .chip.active {
+            background: linear-gradient(135deg, rgba(8,145,178,0.4), rgba(37,99,235,0.4));
+            border-color: rgba(34,211,238,0.6);
+            color: #e0f2fe;
+        }
+        
+        .tab {
+            transition: all 0.2s ease;
+        }
+        .tab.active {
+            background: rgba(34,211,238,0.15);
+            color: #67e8f9;
+            border-bottom-color: #22d3ee;
+        }
+        
+        .band-slider::-webkit-slider-thumb {
+            background: linear-gradient(135deg, var(--band-color, #22d3ee), var(--band-color-2, #3b82f6));
+        }
+        
+        .ab-btn:active, .ab-btn.held {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            transform: scale(0.98);
+        }
+        
+        .scroll-thin::-webkit-scrollbar { height: 4px; width: 4px; }
+        .scroll-thin::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+    </style>
+</head>
+<body class="text-white overflow-x-hidden">
+
+<div class="min-h-screen flex flex-col items-center p-3 md:p-6">
+    
+    <!-- Header -->
+    <header class="text-center mb-4 mt-2">
+        <div class="flex items-center justify-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+            </div>
+            <div class="text-left">
+                <h1 class="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-cyan-300 via-sky-300 to-blue-300 bg-clip-text text-transparent leading-none">
+                    ANC Studio Pro
+                </h1>
+                <div class="text-[10px] text-cyan-500 font-bold tracking-[0.2em] uppercase mt-1">Multi-Band · FxLMS · Adaptive DSP</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Pipeline Visualization -->
+    <div id="pipelineViz" class="flex items-center gap-1 md:gap-1.5 mb-3 text-[10px] md:text-xs text-slate-500 flex-wrap justify-center">
+        <span class="px-2 py-1 rounded bg-slate-800/60">🎤 MIC</span>
+        <span class="text-slate-700">→</span>
+        <span id="pNodeFilter" class="px-2 py-1 rounded bg-slate-800/60">🎚 4-BAND</span>
+        <span class="text-slate-700">→</span>
+        <span id="pNodeAlgo" class="px-2 py-1 rounded bg-slate-800/60">🔊 PHASE</span>
+        <span class="text-slate-700">→</span>
+        <span class="px-2 py-1 rounded bg-slate-800/60">🛡 LIMITER</span>
+        <span class="text-slate-700">→</span>
+        <span class="px-2 py-1 rounded bg-slate-800/60">🎧 OUT</span>
+    </div>
+
+    <!-- Main Card -->
+    <div id="mainCard" class="glass rounded-3xl p-4 md:p-5 w-full max-w-xl border border-slate-700/50 transition-all duration-500">
+        
+        <!-- Visualizer with Tabs -->
+        <div class="mb-4">
+            <div class="flex gap-1 mb-2 border-b border-slate-700/50">
+                <button class="tab active px-3 py-1.5 text-xs font-semibold border-b-2 border-transparent" data-tab="spectrum">Spectrum</button>
+                <button class="tab px-3 py-1.5 text-xs font-semibold border-b-2 border-transparent text-slate-400" data-tab="waveform">Waveform</button>
+                <button class="tab px-3 py-1.5 text-xs font-semibold border-b-2 border-transparent text-slate-400" data-tab="spectrogram">Spectrogram</button>
+            </div>
+            <div class="relative">
+                <canvas id="visualizer" class="w-full h-40 bg-slate-900/60 rounded-xl"></canvas>
+                <div id="visualizerOverlay" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/80 rounded-xl">
+                    <svg class="w-8 h-8 text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/></svg>
+                    <span class="text-slate-500 text-sm">Tap Start to begin</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mode Selector -->
+        <div class="grid grid-cols-3 gap-1.5 mb-4">
+            <button class="mode-btn chip active border border-slate-600/50 rounded-xl py-2 px-2 text-center" data-mode="phase">
+                <div class="font-bold text-sm">Phase</div>
+                <div class="text-[9px] text-slate-400 mt-0.5">180° invert</div>
+            </button>
+            <button class="mode-btn chip border border-slate-600/50 rounded-xl py-2 px-2 text-center" data-mode="adaptive">
+                <div class="font-bold text-sm">Adaptive</div>
+                <div class="text-[9px] text-slate-400 mt-0.5">LMS learning</div>
+            </button>
+            <button class="mode-btn chip border border-slate-600/50 rounded-xl py-2 px-2 text-center" data-mode="fxlms">
+                <div class="font-bold text-sm">FxLMS</div>
+                <div class="text-[9px] text-slate-400 mt-0.5">Feedback ANC</div>
+            </button>
+        </div>
+
+        <!-- 4-Band Multi-Band Control -->
+        <div class="bg-slate-800/30 rounded-2xl p-3.5 mb-3 border border-slate-700/30">
+            <div class="flex items-center justify-between mb-2.5">
+                <label class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/></svg>
+                    Multi-Band ANC
+                </label>
+                <div class="flex gap-1">
+                    <button id="presetBtn" class="text-[10px] text-cyan-400 hover:text-cyan-300 px-2 py-0.5 rounded border border-cyan-500/30">Presets ▾</button>
+                </div>
+            </div>
+            
+            <!-- 4 Band Sliders (vertical) -->
+            <div class="grid grid-cols-4 gap-2">
+                <div class="flex flex-col items-center">
+                    <div class="text-[9px] text-slate-500 mb-1">SUB</div>
+                    <div class="text-[9px] mono text-cyan-300 mb-1.5">20–200</div>
+                    <div class="h-24 flex flex-col justify-end mb-1">
+                        <input type="range" id="band0" class="band-slider w-20 vertical-slider" style="--band-color:#22d3ee;--band-color-2:#06b6d4; writing-mode: vertical-lr; direction: rtl; transform: rotate(180deg);" min="0" max="100" value="90" orient="vertical">
+                    </div>
+                    <div class="text-[10px] mono text-cyan-400" id="band0Label">90%</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="text-[9px] text-slate-500 mb-1">LOW</div>
+                    <div class="text-[9px] mono text-blue-300 mb-1.5">200–1k</div>
+                    <div class="h-24 flex flex-col justify-end mb-1">
+                        <input type="range" id="band1" class="band-slider w-20" style="--band-color:#3b82f6;--band-color-2:#6366f1; writing-mode: vertical-lr; direction: rtl; transform: rotate(180deg);" min="0" max="100" value="75" orient="vertical">
+                    </div>
+                    <div class="text-[10px] mono text-blue-400" id="band1Label">75%</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="text-[9px] text-slate-500 mb-1">MID</div>
+                    <div class="text-[9px] mono text-purple-300 mb-1.5">1k–4k</div>
+                    <div class="h-24 flex flex-col justify-end mb-1">
+                        <input type="range" id="band2" class="band-slider w-20" style="--band-color:#8b5cf6;--band-color-2:#a855f7; writing-mode: vertical-lr; direction: rtl; transform: rotate(180deg);" min="0" max="100" value="30" orient="vertical">
+                    </div>
+                    <div class="text-[10px] mono text-purple-400" id="band2Label">30%</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="text-[9px] text-slate-500 mb-1">HIGH</div>
+                    <div class="text-[9px] mono text-pink-300 mb-1.5">4k+</div>
+                    <div class="h-24 flex flex-col justify-end mb-1">
+                        <input type="range" id="band3" class="band-slider w-20" style="--band-color:#ec4899;--band-color-2:#f43f5e; writing-mode: vertical-lr; direction: rtl; transform: rotate(180deg);" min="0" max="100" value="0" orient="vertical">
+                    </div>
+                    <div class="text-[10px] mono text-pink-400" id="band3Label">0%</div>
+                </div>
+            </div>
+            
+            <div class="text-[10px] text-slate-500 mt-2 italic">
+                Tip: ANC is most effective below 1 kHz. Disable high-band to avoid latency artifacts.
+            </div>
+        </div>
+
+        <!-- Advanced Controls -->
+        <div class="bg-slate-800/30 rounded-2xl p-3.5 mb-3 border border-slate-700/30">
+            <div class="flex items-center justify-between mb-3">
+                <label class="text-xs font-bold text-slate-200">Advanced DSP</label>
+                <button id="toggleAdv" class="text-[10px] text-slate-500 hover:text-slate-300">▾ Expand</button>
+            </div>
+            <div id="advPanel" class="hidden space-y-2.5">
+                <!-- FxLMS step size -->
+                <div>
+                    <div class="flex justify-between text-[10px] text-slate-400 mb-1">
+                        <span>Learning Rate (μ)</span>
+                        <span id="muLabel" class="text-cyan-400 mono">0.020</span>
+                    </div>
+                    <input type="range" id="muSlider" min="0.001" max="0.1" value="0.02" step="0.001" class="w-full">
+                </div>
+                <!-- Secondary path delay -->
+                <div>
+                    <div class="flex justify-between text-[10px] text-slate-400 mb-1">
+                        <span>Secondary Path Delay</span>
+                        <span id="delayLabel" class="text-cyan-400 mono">0 ms</span>
+                    </div>
+                    <input type="range" id="delaySlider" min="0" max="30" value="0" step="0.5" class="w-full">
+                </div>
+                <!-- Limiter threshold -->
+                <div>
+                    <div class="flex justify-between text-[10px] text-slate-400 mb-1">
+                        <span>Limiter Threshold</span>
+                        <span id="limLabel" class="text-cyan-400 mono">-6 dB</span>
+                    </div>
+                    <input type="range" id="limSlider" min="-30" max="0" value="-6" step="1" class="w-full">
+                </div>
+                <!-- Filter type -->
+                <div>
+                    <div class="text-[10px] text-slate-400 mb-1.5">Pre-filter Shape</div>
+                    <div class="grid grid-cols-4 gap-1 text-[10px]">
+                        <button class="filter-chip chip active py-1 rounded bg-cyan-600/20 border border-cyan-500/40" data-filter="allpass">Flat</button>
+                        <button class="filter-chip chip py-1 rounded bg-slate-700/30 border border-slate-600/30" data-filter="lowpass">LP</button>
+                        <button class="filter-chip chip py-1 rounded bg-slate-700/30 border border-slate-600/30" data-filter="highpass">HP</button>
+                        <button class="filter-chip chip py-1 rounded bg-slate-700/30 border border-slate-600/30" data-filter="notch">Notch</button>
+                    </div>
+                </div>
+                <!-- Filter cutoff -->
+                <div>
+                    <div class="flex justify-between text-[10px] text-slate-400 mb-1">
+                        <span>Pre-filter Cutoff</span>
+                        <span id="cutoffLabel" class="text-cyan-400 mono">1000 Hz</span>
+                    </div>
+                    <input type="range" id="cutoffSlider" min="20" max="8000" value="1000" step="10" class="w-full">
+                </div>
+                <!-- Stereo toggle -->
+                <label class="flex items-center gap-2 text-[10px] text-slate-400 cursor-pointer">
+                    <input type="checkbox" id="stereoCheck" class="accent-cyan-500">
+                    <span>Independent L/R channel processing (stereo)</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-4 gap-2 text-center mb-3">
+            <div class="bg-slate-800/40 rounded-xl py-2">
+                <div id="latencyValue" class="text-sm font-bold text-cyan-400 mono">--</div>
+                <div class="text-[9px] text-slate-500">Latency</div>
+            </div>
+            <div class="bg-slate-800/40 rounded-xl py-2">
+                <div id="freqValue" class="text-sm font-bold text-purple-400 mono">--</div>
+                <div class="text-[9px] text-slate-500">Peak Hz</div>
+            </div>
+            <div class="bg-slate-800/40 rounded-xl py-2">
+                <div id="levelValue" class="text-sm font-bold text-green-400 mono">--</div>
+                <div class="text-[9px] text-slate-500">Input dB</div>
+            </div>
+            <div class="bg-slate-800/40 rounded-xl py-2">
+                <div id="lmsError" class="text-sm font-bold text-amber-400 mono">--</div>
+                <div class="text-[9px] text-slate-500">LMS Err</div>
+            </div>
+        </div>
+
+        <!-- Start/Stop + A/B -->
+        <div class="grid grid-cols-4 gap-2 mb-3">
+            <div class="col-span-3 relative flex justify-center">
+                <div id="pulseEffect" class="absolute w-24 h-24 rounded-full bg-cyan-500 opacity-0 pointer-events-none"></div>
+                <button id="toggleBtn" class="relative z-10 w-full py-3.5 px-6 rounded-full font-bold transition-all duration-300 bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-cyan-500/30">
+                    <span id="btnText">Start ANC</span>
+                </button>
+            </div>
+            <button id="abBtn" class="ab-btn py-3.5 rounded-full font-bold text-sm transition-all bg-slate-700 border border-slate-600 text-slate-300 select-none">
+                A/B
+            </button>
+        </div>
+
+        <!-- Test Tone -->
+        <div class="bg-slate-800/30 rounded-xl p-2.5 mb-3 border border-slate-700/30">
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+                    <span class="text-[11px] font-semibold text-slate-300">Test Tone</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <input type="number" id="toneFreq" value="440" min="20" max="8000" class="w-14 text-xs px-1.5 py-1 rounded bg-slate-900 border border-slate-700 text-cyan-400 mono">
+                    <span class="text-[10px] text-slate-500">Hz</span>
+                    <button id="toneBtn" class="text-[10px] font-bold px-2.5 py-1 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500/30 transition">Play</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div class="flex items-center justify-center gap-2.5">
+            <div id="statusDot" class="status-dot bg-slate-600"></div>
+            <span id="statusText" class="text-slate-400 font-medium text-xs">System Ready</span>
+        </div>
+    </div>
+
+    <!-- Info Panels -->
+    <div class="grid md:grid-cols-3 gap-2.5 mt-3 w-full max-w-xl">
+        <div class="glass rounded-2xl p-3 border border-slate-700/50">
+            <div class="flex items-center gap-1.5 mb-1.5">
+                <div class="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                    <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <h3 class="font-bold text-[11px]">Phase Mode</h3>
+            </div>
+            <p class="text-[10px] text-slate-400 leading-relaxed">Broadband 180° signal inversion. Low-latency, best for steady drone noise.</p>
+        </div>
+        <div class="glass rounded-2xl p-3 border border-slate-700/50">
+            <div class="flex items-center gap-1.5 mb-1.5">
+                <div class="w-6 h-6 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <svg class="w-3 h-3 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </div>
+                <h3 class="font-bold text-[11px]">Adaptive LMS</h3>
+            </div>
+            <p class="text-[10px] text-slate-400 leading-relaxed">Self-learning filter converges on repeating noise patterns over time.</p>
+        </div>
+        <div class="glass rounded-2xl p-3 border border-slate-700/50">
+            <div class="flex items-center gap-1.5 mb-1.5">
+                <div class="w-6 h-6 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                    <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/></svg>
+                </div>
+                <h3 class="font-bold text-[11px]">FxLMS</h3>
+            </div>
+            <p class="text-[10px] text-slate-400 leading-relaxed">Filtered-x LMS models the speaker→mic secondary path. Most advanced.</p>
+        </div>
+    </div>
+
+    <!-- Safety -->
+    <div class="mt-3 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 max-w-xl w-full">
+        <div class="flex gap-2">
+            <svg class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-[10px] text-amber-200/80 leading-relaxed">
+                <span class="font-bold text-amber-400">Hearing Safety:</span> Web-based ANC is not a substitute for certified earplugs. Use hardware ANC or passive protection at loud events. Limiter enabled by default to prevent feedback oscillation.
+            </p>
+        </div>
+    </div>
+
+    <p class="text-[10px] text-slate-600 mt-4 text-center max-w-md">
+        HTTPS required · Microphone permission · Wired headphones recommended · Latency varies by device
+    </p>
+</div>
+
+<script>
+/* ============================================================
+ *  AUDIO WORKLET CODE - Adaptive LMS & FxLMS processors
+ *  Runs on dedicated audio thread (not main thread)
+ * ============================================================ */
+const WORKLET_CODE = `
+/* ---------- Standard LMS adaptive filter ---------- */
+class LMSProcessor extends AudioWorkletProcessor {
+    constructor() {
+        super();
+        this.N = 128;                  // filter length (taps)
+        this.mu = 0.02;                // learning rate
+        this.w = new Float32Array(this.N);
+        this.buf = new Float32Array(this.N);
+        this.smoothError = 0;
+        this.port.onmessage = (e) => {
+            if (e.data.type === 'setMu') this.mu = e.data.mu;
+            else if (e.data.type === 'reset') { this.w.fill(0); this.buf.fill(0); }
+        };
+    }
+    process(inputs, outputs) {
+        const inCh = inputs[0] && inputs[0][0];
+        const outCh = outputs[0] && outputs[0][0];
+        if (!inCh || !outCh) return true;
+        for (let i = 0; i < inCh.length; i++) {
+            const x = inCh[i];
+            // shift buffer
+            for (let j = this.N - 1; j > 0; j--) this.buf[j] = this.buf[j-1];
+            this.buf[0] = x;
+            // compute estimate (dot product)
+            let y = 0;
+            for (let j = 0; j < this.N; j++) y += this.w[j] * this.buf[j];
+            // output inverted estimate (anti-noise)
+            outCh[i] = -y;
+            // LMS update: error = desired - output estimate; desired is the input itself
+            const err = x - y;
+            // Power-normalized update (NLMS-style, more stable)
+            let power = 0;
+            for (let j = 0; j < this.N; j++) power += this.buf[j] * this.buf[j];
+            const norm = 1 / (power + 1e-4);
+            for (let j = 0; j < this.N; j++) {
+                this.w[j] += this.mu * err * this.buf[j] * norm;
+            }
+            this.smoothError = 0.99 * this.smoothError + 0.01 * Math.abs(err);
+        }
+        // report error back to main thread occasionally
+        this.port.postMessage({ type: 'error', value: this.smoothError });
+        return true;
+    }
+}
+registerProcessor('lms-processor', LMSProcessor);
+
+/* ---------- FxLMS: Filtered-x LMS with secondary path estimate ---------- */
+class FxLMSProcessor extends AudioWorkletProcessor {
+    constructor() {
+        super();
+        this.N = 128;              // control filter length
+        this.S = 64;               // secondary path estimate length
+        this.mu = 0.01;            // learning rate (smaller for FxLMS stability)
+        this.w = new Float32Array(this.N);    // control filter W(z)
+        this.sHat = new Float32Array(this.S); // secondary path estimate S^(z)
+        this.xBuf = new Float32Array(this.N); // reference x buffer
+        this.yBuf = new Float32Array(this.S); // output y buffer (for secondary path)
+        this.xPrimeBuf = new Float32Array(this.N); // x' = x filtered by S^(z)
+        this.smoothError = 0;
+
+        // Initialize secondary path estimate as simple decaying impulse
+        // (models a delay + slight resonance — the speaker-to-mic path)
+        for (let i = 0; i < this.S; i++) {
+            this.sHat[i] = 0.5 * Math.exp(-i * 0.05) * (i % 2 === 0 ? 1 : -0.3);
+        }
+
+        this.port.onmessage = (e) => {
+            if (e.data.type === 'setMu') this.mu = e.data.mu;
+            else if (e.data.type === 'reset') { this.w.fill(0); this.xBuf.fill(0); this.yBuf.fill(0); this.xPrimeBuf.fill(0); }
+            else if (e.data.type === 'setDelay') {
+                // re-init secondary path as delayed impulse
+                const d = Math.max(0, Math.min(this.S - 1, Math.round(e.data.delaySamples)));
+                this.sHat.fill(0);
+                this.sHat[d] = 1.0;
+                // add slight ring
+                for (let i = d + 1; i < Math.min(this.S, d + 20); i++) {
+                    this.sHat[i] = 0.3 * Math.exp(-(i - d) * 0.1);
+                }
+            }
+        };
+    }
+    process(inputs, outputs) {
+        const inCh = inputs[0] && inputs[0][0];
+        const outCh = outputs[0] && outputs[0][0];
+        if (!inCh || !outCh) return true;
+        for (let i = 0; i < inCh.length; i++) {
+            const x = inCh[i];
+            // 1) Shift reference buffer
+            for (let j = this.N - 1; j > 0; j--) this.xBuf[j] = this.xBuf[j-1];
+            this.xBuf[0] = x;
+            // 2) Filter x through W(z) to produce y (anti-noise)
+            let y = 0;
+            for (let j = 0; j < this.N; j++) y += this.w[j] * this.xBuf[j];
+            // 3) Output -y (destructive)
+            outCh[i] = -y;
+            // 4) Shift y through secondary path buffer
+            for (let j = this.S - 1; j > 0; j--) this.yBuf[j] = this.yBuf[j-1];
+            this.yBuf[0] = y;
+            // 5) Compute x' = x filtered by S^(z) (the "filtered-x" reference)
+            for (let j = this.N - 1; j > 0; j--) this.xPrimeBuf[j] = this.xPrimeBuf[j-1];
+            let xp = 0;
+            const maxS = Math.min(this.S, this.N);
+            for (let j = 0; j < maxS; j++) {
+                xp += this.sHat[j] * this.xBuf[j];
+            }
+            this.xPrimeBuf[0] = xp;
+            // 6) Compute error: e(n) = d(n) - y'(n), where y' is y filtered by S
+            // In a pure software ANC without error mic, we approximate e(n) ~ x(n)
+            // because the goal is to drive the input itself toward zero (noise estimate).
+            let yp = 0;
+            for (let j = 0; j < this.S; j++) yp += this.sHat[j] * this.yBuf[j];
+            const e = x - yp;
+            // 7) FxLMS update: w += mu * e * x'
+            let power = 0;
+            for (let j = 0; j < this.N; j++) power += this.xPrimeBuf[j] * this.xPrimeBuf[j];
+            const norm = 1 / (power + 1e-4);
+            for (let j = 0; j < this.N; j++) {
+                this.w[j] += this.mu * e * this.xPrimeBuf[j] * norm;
+                // weight leakage to prevent divergence
+                this.w[j] *= 0.99995;
+            }
+            this.smoothError = 0.995 * this.smoothError + 0.005 * Math.abs(e);
+        }
+        this.port.postMessage({ type: 'error', value: this.smoothError });
+        return true;
+    }
+}
+registerProcessor('fxlms-processor', FxLMSProcessor);
+`;
+
+/* ============================================================
+ *  APP STATE
+ * ============================================================ */
+const State = {
+    audioCtx: null,
+    stream: null,
+    micSource: null,
+    analyser: null,
+    preFilter: null,        // BiquadFilterNode (pre-shape)
+    bandFilters: [],        // array of 4 {split, gain, inverter}
+    bandGains: [0.9, 0.75, 0.3, 0.0],
+    bandSplits: null,       // crossovers
+    processor: null,        // AudioWorkletNode
+    outputMixer: null,      // GainNode merging bands
+    limiter: null,          // DynamicsCompressorNode as limiter
+    outputGain: null,
+    stereoSplitter: null,
+    stereoMerger: null,
+    toneOsc: null,
+    toneGain: null,
+    isRunning: false,
+    mode: 'phase',
+    filterType: 'allpass',
+    animId: null,
+    vizTab: 'spectrum',
+    spectroOffset: 0,
+    spectroImage: null,
+    abBypass: false,
+    savedGain: 1,
+};
+
+/* ============================================================
+ *  DOM
+ * ============================================================ */
+const $ = id => document.getElementById(id);
+const toggleBtn = $('toggleBtn'), btnText = $('btnText'), statusText = $('statusText'), statusDot = $('statusDot');
+const mainCard = $('mainCard'), pulseEffect = $('pulseEffect'), overlay = $('visualizerOverlay');
+const canvas = $('visualizer'), ctx2d = canvas.getContext('2d');
+const latencyValue = $('latencyValue'), freqValue = $('freqValue'), levelValue = $('levelValue'), lmsError = $('lmsError');
+const pNodeAlgo = $('pNodeAlgo');
+
+const bandSliders = [0,1,2,3].map(i => $('band'+i));
+const bandLabels = [0,1,2,3].map(i => $('band'+i+'Label'));
+const muSlider = $('muSlider'), muLabel = $('muLabel');
+const delaySlider = $('delaySlider'), delayLabel = $('delayLabel');
+const limSlider = $('limSlider'), limLabel = $('limLabel');
+const cutoffSlider = $('cutoffSlider'), cutoffLabel = $('cutoffLabel');
+const presetBtn = $('presetBtn'), toneBtn = $('toneBtn'), toneFreq = $('toneFreq');
+const abBtn = $('abBtn'), advPanel = $('advPanel'), toggleAdv = $('toggleAdv');
+
+const BAND_COLORS = ['#22d3ee', '#3b82f6', '#a855f7', '#ec4899'];
+
+/* ============================================================
+ *  PRESETS
+ * ============================================================ */
+const PRESETS = {
+    'Crowd Rumble':  { gains: [95, 80, 20, 0],  filter: 'lowpass', cutoff: 500 },
+    'HVAC / Drone':  { gains: [90, 90, 40, 10], filter: 'allpass', cutoff: 1000 },
+    'Bass Only':     { gains: [100, 50, 0, 0],  filter: 'lowpass', cutoff: 250 },
+    'Air Conditioner': { gains: [80, 60, 0, 0], filter: 'notch',   cutoff: 120 },
+    'Speech Mute':   { gains: [30, 40, 80, 40], filter: 'bandpass', cutoff: 2000 },
+    'All Bands':     { gains: [100, 100, 100, 60], filter: 'allpass', cutoff: 1000 },
+};
+
+/* ============================================================
+ *  UI HANDLERS
+ * ============================================================ */
+toggleBtn.addEventListener('click', async () => {
+    if (!State.isRunning) await startSystem();
+    else stopSystem();
+});
+
+// Mode selection
+document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (State.isRunning) return;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        State.mode = btn.dataset.mode;
+        const algoNames = { phase: '🔊 PHASE', adaptive: '🧠 LMS', fxlms: '⚡ FxLMS' };
+        pNodeAlgo.textContent = algoNames[State.mode];
+    });
+});
+
+// Band sliders
+bandSliders.forEach((sl, i) => {
+    sl.addEventListener('input', () => {
+        const v = parseInt(sl.value);
+        bandLabels[i].textContent = v + '%';
+        State.bandGains[i] = v / 100;
+        applyBandGains();
+    });
+});
+
+// Advanced panel
+toggleAdv.addEventListener('click', () => {
+    const open = advPanel.classList.toggle('hidden') === false;
+    toggleAdv.textContent = open ? '▴ Collapse' : '▾ Expand';
+});
+
+muSlider.addEventListener('input', () => {
+    muLabel.textContent = parseFloat(muSlider.value).toFixed(3);
+    if (State.processor) State.processor.port.postMessage({ type: 'setMu', mu: parseFloat(muSlider.value) });
+});
+
+delaySlider.addEventListener('input', () => {
+    delayLabel.textContent = delaySlider.value + ' ms';
+    if (State.processor && State.mode === 'fxlms') {
+        const samples = (parseFloat(delaySlider.value) / 1000) * (State.audioCtx ? State.audioCtx.sampleRate : 48000);
+        State.processor.port.postMessage({ type: 'setDelay', delaySamples: samples });
+    }
+});
+
+limSlider.addEventListener('input', () => {
+    limLabel.textContent = limSlider.value + ' dB';
+    if (State.limiter) State.limiter.threshold.setTargetAtTime(parseFloat(limSlider.value), State.audioCtx.currentTime, 0.01);
+});
+
+cutoffSlider.addEventListener('input', () => {
+    cutoffLabel.textContent = cutoffSlider.value + ' Hz';
+    if (State.preFilter) State.preFilter.frequency.value = parseFloat(cutoffSlider.value);
+});
+
+// Filter type
+document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => {
+            c.classList.remove('active', 'bg-cyan-600/20', 'border-cyan-500/40');
+            c.classList.add('bg-slate-700/30', 'border-slate-600/30');
+        });
+        chip.classList.add('active', 'bg-cyan-600/20', 'border-cyan-500/40');
+        chip.classList.remove('bg-slate-700/30', 'border-slate-600/30');
+        State.filterType = chip.dataset.filter;
+        if (State.preFilter) {
+            State.preFilter.type = State.filterType === 'allpass' ? 'allpass' : State.filterType;
+        }
+    });
+});
+
+// Presets
+presetBtn.addEventListener('click', () => {
+    const keys = Object.keys(PRESETS);
+    const choice = prompt('Choose preset:\n' + keys.map((k,i)=>`${i+1}. ${k}`).join('\n'), '1');
+    const idx = parseInt(choice) - 1;
+    if (idx >= 0 && idx < keys.length) applyPreset(keys[idx]);
+});
+
+function applyPreset(name) {
+    const p = PRESETS[name]; if (!p) return;
+    bandSliders.forEach((sl, i) => {
+        sl.value = p.gains[i];
+        bandLabels[i].textContent = p.gains[i] + '%';
+        State.bandGains[i] = p.gains[i] / 100;
+    });
+    cutoffSlider.value = p.cutoff; cutoffLabel.textContent = p.cutoff + ' Hz';
+    document.querySelectorAll('.filter-chip').forEach(c => {
+        const on = c.dataset.filter === p.filter;
+        c.classList.toggle('active', on);
+        c.classList.toggle('bg-cyan-600/20', on);
+        c.classList.toggle('border-cyan-500/40', on);
+        c.classList.toggle('bg-slate-700/30', !on);
+        c.classList.toggle('border-slate-600/30', !on);
+    });
+    State.filterType = p.filter;
+    if (State.preFilter) {
+        State.preFilter.type = p.filter === 'allpass' ? 'allpass' : p.filter;
+        State.preFilter.frequency.value = p.cutoff;
+    }
+    applyBandGains();
+}
+
+// Visualizer tabs
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        State.vizTab = tab.dataset.tab;
+        State.spectroOffset = 0;
+        // clear canvas when switching
+        const r = canvas.getBoundingClientRect();
+        ctx2d.clearRect(0, 0, r.width, r.height);
+    });
+});
+
+// A/B bypass (hold)
+function setAB(bypassed) {
+    if (!State.isRunning) return;
+    State.abBypass = bypassed;
+    if (bypassed) {
+        State.savedGain = State.outputGain.gain.value;
+        State.outputGain.gain.setTargetAtTime(0.0001, State.audioCtx.currentTime, 0.005);
+        abBtn.classList.add('held');
+    } else {
+        State.outputGain.gain.setTargetAtTime(State.savedGain, State.audioCtx.currentTime, 0.005);
+        abBtn.classList.remove('held');
+    }
+}
+abBtn.addEventListener('mousedown', () => setAB(true));
+abBtn.addEventListener('mouseup', () => setAB(false));
+abBtn.addEventListener('mouseleave', () => setAB(false));
+abBtn.addEventListener('touchstart', (e) => { e.preventDefault(); setAB(true); });
+abBtn.addEventListener('touchend', (e) => { e.preventDefault(); setAB(false); });
+
+// Test tone
+let tonePlaying = false;
+toneBtn.addEventListener('click', () => {
+    if (!State.isRunning) { alert('Start ANC first, then play test tone to verify cancellation.'); return; }
+    if (!tonePlaying) startTone(); else stopTone();
+});
+
+function startTone() {
+    const freq = Math.max(20, Math.min(8000, parseInt(toneFreq.value) || 440));
+    State.toneOsc = State.audioCtx.createOscillator();
+    State.toneGain = State.audioCtx.createGain();
+    State.toneOsc.type = 'sine';
+    State.toneOsc.frequency.value = freq;
+    State.toneGain.gain.value = 0;
+    State.toneOsc.connect(State.toneGain);
+    State.toneGain.connect(State.audioCtx.destination);
+    State.toneOsc.start();
+    State.toneGain.gain.linearRampToValueAtTime(0.15, State.audioCtx.currentTime + 0.05);
+    tonePlaying = true;
+    toneBtn.textContent = 'Stop';
+    toneBtn.classList.replace('bg-amber-500/20', 'bg-red-500/20');
+    toneBtn.classList.replace('border-amber-500/40', 'border-red-500/40');
+    toneBtn.classList.replace('text-amber-300', 'text-red-300');
+}
+function stopTone() {
+    if (!State.toneOsc) return;
+    State.toneGain.gain.linearRampToValueAtTime(0, State.audioCtx.currentTime + 0.05);
+    setTimeout(() => { try { State.toneOsc.stop(); } catch(e){} }, 100);
+    tonePlaying = false;
+    toneBtn.textContent = 'Play';
+    toneBtn.classList.replace('bg-red-500/20', 'bg-amber-500/20');
+    toneBtn.classList.replace('border-red-500/40', 'border-amber-500/40');
+    toneBtn.classList.replace('text-red-300', 'text-amber-300');
+}
+
+/* ============================================================
+ *  CORE AUDIO GRAPH
+ * ============================================================ */
+async function startSystem() {
+    try {
+        statusText.textContent = 'Initializing audio engine...';
+        statusText.className = 'text-cyan-400 font-medium text-xs';
+
+        const AC = window.AudioContext || window.webkitAudioContext;
+        State.audioCtx = new AC({ latencyHint: 'interactive' });
+        if (State.audioCtx.state === 'suspended') await State.audioCtx.resume();
+
+        // Display latency
+        const baseLat = (State.audioCtx.baseLatency || 0) * 1000;
+        const outLat = ((State.audioCtx.outputLatency || 0) * 1000);
+        latencyValue.textContent = (baseLat + outLat).toFixed(1) + 'ms';
+
+        // Load AudioWorklet (required for adaptive/fxlms modes)
+        if (State.mode === 'adaptive' || State.mode === 'fxlms') {
+            try {
+                const blob = new Blob([WORKLET_CODE], { type: 'application/javascript' });
+                const url = URL.createObjectURL(blob);
+                await State.audioCtx.audioWorklet.addModule(url);
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                console.warn('Worklet load failed, fallback to phase:', e);
+                State.mode = 'phase';
+                document.querySelectorAll('.mode-btn').forEach(b => {
+                    b.classList.toggle('active', b.dataset.mode === 'phase');
+                });
+                pNodeAlgo.textContent = '🔊 PHASE';
+            }
+        }
+
+        // Get microphone (raw)
+        State.stream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+                echoCancellation: false, noiseSuppression: false, autoGainControl: false,
+                latency: 0, channelCount: $('stereoCheck').checked ? 2 : 1,
+            }
+        });
+
+        State.micSource = State.audioCtx.createMediaStreamSource(State.stream);
+
+        // Analyser
+        State.analyser = State.audioCtx.createAnalyser();
+        State.analyser.fftSize = 2048;
+        State.analyser.smoothingTimeConstant = 0.75;
+
+        // Pre-shape filter
+        State.preFilter = State.audioCtx.createBiquadFilter();
+        State.preFilter.type = State.filterType === 'allpass' ? 'allpass' : State.filterType;
+        State.preFilter.frequency.value = parseFloat(cutoffSlider.value);
+        State.preFilter.Q.value = 0.7;
+
+        // Build 4-band multi-band splitter using crossover filters
+        // Band 0: 20-200 Hz   (LP at 200)
+        // Band 1: 200-1k Hz   (HP at 200, LP at 1000)
+        // Band 2: 1k-4k Hz    (HP at 1000, LP at 4000)
+        // Band 3: 4k+ Hz      (HP at 4000)
+        const xoverFreqs = [200, 1000, 4000];
+        State.bandSplits = [];
+        State.bandFilters = [];
+        
+        for (let i = 0; i < 4; i++) {
+            const bandGain = State.audioCtx.createGain();
+            bandGain.gain.value = State.bandGains[i];
+            
+            const bandInverter = State.audioCtx.createGain();
+            bandInverter.gain.value = -1.0;
+            
+            bandGain.connect(bandInverter);
+            
+            State.bandFilters.push({ gain: bandGain, inverter: bandInverter });
+        }
+
+        // Build crossover chain: pre -> LP200 -> band0
+        //                              -> HP200 -> LP1k -> band1
+        //                                       -> HP1k -> LP4k -> band2
+        //                                                 -> HP4k -> band3
+        // Using Butterworth-style Linkwitz-Riley approximation (Q=0.707)
+        const makeLP = (f) => { const f_ = State.audioCtx.createBiquadFilter(); f_.type = 'lowpass'; f_.frequency.value = f; f_.Q.value = 0.707; return f_; };
+        const makeHP = (f) => { const f_ = State.audioCtx.createBiquadFilter(); f_.type = 'highpass'; f_.frequency.value = f; f_.Q.value = 0.707; return f_; };
+        
+        const lp200 = makeLP(200);
+        const hp200 = makeHP(200);
+        const lp1k  = makeLP(1000);
+        const hp1k  = makeHP(1000);
+        const lp4k  = makeLP(4000);
+        const hp4k  = makeHP(4000);
+        
+        State.preFilter.connect(lp200);
+        State.preFilter.connect(hp200);
+        
+        // Band 0: LP200 direct
+        lp200.connect(State.bandFilters[0].gain);
+        
+        // Band 1: HP200 -> LP1k
+        hp200.connect(lp1k);
+        hp200.connect(hp1k);
+        lp1k.connect(State.bandFilters[1].gain);
+        
+        // Band 2: HP1k -> LP4k
+        hp1k.connect(lp4k);
+        hp1k.connect(hp4k);
+        lp4k.connect(State.bandFilters[2].gain);
+        
+        // Band 3: HP4k direct
+        hp4k.connect(State.bandFilters[3].gain);
+        
+        State.bandSplits = [lp200, hp200, lp1k, hp1k, lp4k, hp4k];
+
+        // Limiter (DynamicsCompressor as brick-wall)
+        State.limiter = State.audioCtx.createDynamicsCompressor();
+        State.limiter.threshold.value = parseFloat(limSlider.value);
+        State.limiter.knee.value = 0;
+        State.limiter.ratio.value = 20;
+        State.limiter.attack.value = 0.001;
+        State.limiter.release.value = 0.025;
+
+        // Output mixer
+        State.outputMixer = State.audioCtx.createGain();
+        State.outputMixer.gain.value = 1.0;
+        
+        // Output gain (master)
+        State.outputGain = State.audioCtx.createGain();
+        State.outputGain.gain.value = 1.0;
+
+        // Connect depending on mode
+        if (State.mode === 'phase') {
+            // Each band already inverted by bandInverter; route to mixer
+            for (let i = 0; i < 4; i++) {
+                State.bandFilters[i].inverter.connect(State.outputMixer);
+            }
+        } else {
+            // Adaptive/FxLMS: route bands through worklet
+            // We'll use the worklet for the combined signal for simplicity
+            // (true multi-band would need 4 parallel worklets; use one for main band)
+            const ProcessorClass = State.mode === 'fxlms' ? 'fxlms-processor' : 'lms-processor';
+            State.processor = new AudioWorkletNode(State.audioCtx, ProcessorClass);
+            State.processor.port.postMessage({ type: 'setMu', mu: parseFloat(muSlider.value) });
+            if (State.mode === 'fxlms') {
+                const delayMs = parseFloat(delaySlider.value);
+                const samples = (delayMs / 1000) * State.audioCtx.sampleRate;
+                State.processor.port.postMessage({ type: 'setDelay', delaySamples: samples });
+            }
+            State.processor.port.onmessage = (e) => {
+                if (e.data.type === 'error') {
+                    // Update LMS error display (throttle)
+                    if (!State._errThrottle || Date.now() - State._errThrottle > 100) {
+                        State._errThrottle = Date.now();
+                        lmsError.textContent = e.data.value.toFixed(3);
+                    }
+                }
+            };
+
+            // Mix inverted bands, then run through processor as an additional adaptive layer
+            // Simpler: bypass phase inversion for band0 (sub) and use worklet
+            // Let's do: band inverters → mixer → worklet → limiter
+            for (let i = 0; i < 4; i++) {
+                State.bandFilters[i].inverter.connect(State.outputMixer);
+            }
+            State.outputMixer.connect(State.processor);
+            State.processor.connect(State.limiter);
+            State.limiter.connect(State.outputGain);
+            State.outputGain.connect(State.audioCtx.destination);
+        }
+
+        if (State.mode === 'phase') {
+            State.outputMixer.connect(State.limiter);
+            State.limiter.connect(State.outputGain);
+            State.outputGain.connect(State.audioCtx.destination);
+        }
+
+        // Tap for analyser (monitor input only — output would cause feedback loops in visualization)
+        State.micSource.connect(State.analyser);
+        State.micSource.connect(State.preFilter);
+
+        // Update UI
+        State.isRunning = true;
+        btnText.textContent = 'Stop ANC';
+        toggleBtn.classList.remove('from-cyan-600', 'to-blue-500', 'shadow-cyan-500/30');
+        toggleBtn.classList.add('from-red-600', 'to-red-500', 'shadow-red-500/30', 'btn-active');
+        const modeNames = { phase: 'Phase Inversion Active', adaptive: 'Adaptive LMS Learning', fxlms: 'FxLMS Feedback ANC' };
+        statusText.textContent = modeNames[State.mode];
+        statusDot.className = 'status-dot bg-green-400 status-dot active';
+        mainCard.classList.add('glow-active');
+        pulseEffect.classList.add('pulse-ring');
+        overlay.style.display = 'none';
+
+        // Init spectrogram image buffer
+        const rect = canvas.getBoundingClientRect();
+        fitCanvas();
+        State.spectroImage = ctx2d.createImageData(canvas.width, canvas.height);
+        State.spectroOffset = 0;
+
+        visualize();
+
+    } catch (err) {
+        console.error('ANC Error:', err);
+        let msg = err.message || 'Unknown error';
+        if (err.name === 'NotAllowedError') msg = 'Microphone permission denied';
+        else if (err.name === 'SecurityError') msg = 'HTTPS required';
+        else if (err.name === 'NotFoundError') msg = 'No microphone found';
+        statusText.textContent = 'Error: ' + msg;
+        statusText.className = 'text-red-400 font-medium text-xs';
+        statusDot.className = 'status-dot bg-red-500 status-dot active';
+        cleanup();
+    }
+}
+
+function applyBandGains() {
+    if (!State.isRunning || !State.bandFilters) return;
+    State.bandFilters.forEach((b, i) => {
+        b.gain.gain.setTargetAtTime(State.bandGains[i], State.audioCtx.currentTime, 0.01);
+    });
+}
+
+function stopSystem() {
+    State.isRunning = false;
+    if (State.animId) cancelAnimationFrame(State.animId);
+    stopTone();
+    cleanup();
+    
+    btnText.textContent = 'Start ANC';
+    toggleBtn.classList.remove('from-red-600', 'to-red-500', 'shadow-red-500/30', 'btn-active');
+    toggleBtn.classList.add('from-cyan-600', 'to-blue-500', 'shadow-cyan-500/30');
+    statusText.textContent = 'System Ready';
+    statusDot.className = 'status-dot bg-slate-600';
+    mainCard.classList.remove('glow-active');
+    pulseEffect.classList.remove('pulse-ring');
+    overlay.style.display = 'flex';
+    latencyValue.textContent = '--'; freqValue.textContent = '--';
+    levelValue.textContent = '--'; lmsError.textContent = '--';
+    const r = canvas.getBoundingClientRect();
+    ctx2d.clearRect(0, 0, r.width, r.height);
+}
+
+function cleanup() {
+    if (State.stream) { State.stream.getTracks().forEach(t => t.stop()); State.stream = null; }
+    if (State.audioCtx) { State.audioCtx.close().catch(()=>{}); State.audioCtx = null; }
+    State.micSource = State.analyser = State.preFilter = State.processor =
+        State.outputMixer = State.limiter = State.outputGain = State.bandFilters = null;
+}
+
+/* ============================================================
+ *  VISUALIZER
+ * ============================================================ */
+function fitCanvas() {
+    const r = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = r.width * dpr;
+    canvas.height = r.height * dpr;
+    ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function visualize() {
+    fitCanvas();
+    const freqData = new Uint8Array(State.analyser.frequencyBinCount);
+    const floatFreq = new Float32Array(State.analyser.frequencyBinCount);
+    const timeData = new Float32Array(State.analyser.fftSize);
+    
+    function frame() {
+        State.animId = requestAnimationFrame(frame);
+        const r = canvas.getBoundingClientRect();
+        const W = r.width, H = r.height;
+        
+        if (State.vizTab === 'spectrum') {
+            State.analyser.getByteFrequencyData(freqData);
+            ctx2d.fillStyle = 'rgba(10, 15, 30, 0.5)';
+            ctx2d.fillRect(0, 0, W, H);
+            
+            // Draw grid
+            ctx2d.strokeStyle = 'rgba(100, 116, 139, 0.1)';
+            ctx2d.lineWidth = 1;
+            for (let i = 1; i < 4; i++) {
+                const y = H * i / 4;
+                ctx2d.beginPath(); ctx2d.moveTo(0, y); ctx2d.lineTo(W, y); ctx2d.stroke();
+            }
+            
+            // Log-scaled bars
+            const bars = 64;
+            const bw = W / bars;
+            const nyquist = State.audioCtx.sampleRate / 2;
+            for (let i = 0; i < bars; i++) {
+                // Map bar to frequency (log scale)
+                const f1 = 20 * Math.pow(nyquist / 20, i / bars);
+                const f2 = 20 * Math.pow(nyquist / 20, (i + 1) / bars);
+                const b1 = Math.floor(f1 / nyquist * freqData.length);
+                const b2 = Math.ceil(f2 / nyquist * freqData.length);
+                let sum = 0, cnt = 0;
+                for (let j = b1; j < b2 && j < freqData.length; j++) { sum += freqData[j]; cnt++; }
+                const v = cnt > 0 ? (sum / cnt) / 255 : 0;
+                const bh = v * H * 0.85;
+                const x = i * bw;
+                
+                // Color based on band
+                let color;
+                const mid = (f1 + f2) / 2;
+                if (mid < 200) color = '#22d3ee';
+                else if (mid < 1000) color = '#3b82f6';
+                else if (mid < 4000) color = '#a855f7';
+                else color = '#ec4899';
+                
+                const grad = ctx2d.createLinearGradient(0, H - bh, 0, H);
+                grad.addColorStop(0, color);
+                grad.addColorStop(1, color + '22');
+                ctx2d.fillStyle = grad;
+                ctx2d.fillRect(x + 1, H - bh, bw - 2, bh);
+                
+                // Top cap
+                ctx2d.fillStyle = color;
+                ctx2d.fillRect(x + 1, H - bh - 2, bw - 2, 2);
+            }
+            
+            // Frequency labels
+            ctx2d.fillStyle = 'rgba(148, 163, 184, 0.5)';
+            ctx2d.font = '9px "JetBrains Mono", monospace';
+            ctx2d.fillText('20', 4, H - 4);
+            ctx2d.fillText('200', W * 0.33, H - 4);
+            ctx2d.fillText('1k', W * 0.58, H - 4);
+            ctx2d.fillText('8k', W - 20, H - 4);
+            
+        } else if (State.vizTab === 'waveform') {
+            State.analyser.getFloatTimeDomainData(timeData);
+            ctx2d.fillStyle = 'rgba(10, 15, 30, 0.4)';
+            ctx2d.fillRect(0, 0, W, H);
+            
+            // Center line
+            ctx2d.strokeStyle = 'rgba(100, 116, 139, 0.15)';
+            ctx2d.beginPath(); ctx2d.moveTo(0, H/2); ctx2d.lineTo(W, H/2); ctx2d.stroke();
+            
+            // Waveform with gradient
+            ctx2d.lineWidth = 2;
+            const grad = ctx2d.createLinearGradient(0, 0, W, 0);
+            grad.addColorStop(0, '#22d3ee');
+            grad.addColorStop(0.5, '#3b82f6');
+            grad.addColorStop(1, '#a855f7');
+            ctx2d.strokeStyle = grad;
+            ctx2d.beginPath();
+            const slice = W / timeData.length;
+            for (let i = 0; i < timeData.length; i++) {
+                const x = i * slice;
+                const y = (0.5 + timeData[i] / 2) * H;
+                i === 0 ? ctx2d.moveTo(x, y) : ctx2d.lineTo(x, y);
+            }
+            ctx2d.stroke();
+            
+            // Glow
+            ctx2d.shadowColor = '#22d3ee';
+            ctx2d.shadowBlur = 8;
+            ctx2d.stroke();
+            ctx2d.shadowBlur = 0;
+            
+        } else if (State.vizTab === 'spectrogram') {
+            // Spectrogram waterfall (scrolling heat map)
+            State.analyser.getByteFrequencyData(freqData);
+            const dpr = window.devicePixelRatio || 1;
+            const Wpx = Math.floor(W * dpr);
+            const Hpx = Math.floor(H * dpr);
+            
+            if (!State.spectroImage || State.spectroImage.width !== Wpx || State.spectroImage.height !== Hpx) {
+                State.spectroImage = ctx2d.createImageData(Wpx, Hpx);
+                State.spectroOffset = 0;
+            }
+            
+            // Scroll existing down by 1 row
+            const rowBytes = Wpx * 4;
+            State.spectroImage.data.copyWithin(rowBytes, 0, rowBytes * (Hpx - 1));
+            
+            // Draw new row at top (index 0)
+            const nyquist = State.audioCtx.sampleRate / 2;
+            for (let x = 0; x < Wpx; x++) {
+                // Log-scale frequency mapping
+                const f = 20 * Math.pow(nyquist / 20, x / Wpx);
+                const bin = Math.floor(f / nyquist * freqData.length);
+                const v = freqData[Math.min(bin, freqData.length - 1)] / 255;
+                
+                // Viridis-inspired colormap
+                let r, g, b;
+                if (v < 0.25) {
+                    r = v * 4 * 30; g = v * 4 * 20; b = 80 + v * 4 * 80;
+                } else if (v < 0.5) {
+                    const t = (v - 0.25) * 4;
+                    r = 30 + t * 50; g = 20 + t * 150; b = 160 - t * 40;
+                } else if (v < 0.75) {
+                    const t = (v - 0.5) * 4;
+                    r = 80 + t * 150; g = 170 + t * 50; b = 120 - t * 100;
+                } else {
+                    const t = (v - 0.75) * 4;
+                    r = 230 + t * 25; g = 220 - t * 60; b = 20 + t * 50;
+                }
+                
+                const idx = x * 4;
+                State.spectroImage.data[idx] = r;
+                State.spectroImage.data[idx + 1] = g;
+                State.spectroImage.data[idx + 2] = b;
+                State.spectroImage.data[idx + 3] = 255;
+            }
+            
+            ctx2d.save();
+            ctx2d.setTransform(1, 0, 0, 1, 0, 0);
+            ctx2d.putImageData(State.spectroImage, 0, 0);
+            ctx2d.restore();
+            
+            // Overlay frequency labels
+            ctx2d.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx2d.font = '9px "JetBrains Mono", monospace';
+            ctx2d.fillText('20Hz', 4, H - 4);
+            ctx2d.fillText('1kHz', W/2 - 10, H - 4);
+            ctx2d.fillText('8kHz', W - 24, H - 4);
+            ctx2d.fillText('↑ time', 4, 12);
+        }
+        
+        // Update stats (shared across tabs)
+        updateStats(freqData, timeData);
+    }
+    frame();
+}
+
+function updateStats(freqData, timeData) {
+    // Peak freq
+    let maxI = 0, maxV = 0;
+    for (let i = 2; i < freqData.length / 2; i++) {
+        if (freqData[i] > maxV) { maxV = freqData[i]; maxI = i; }
+    }
+    const ny = State.audioCtx.sampleRate / 2;
+    const peak = Math.round((maxI / freqData.length) * ny);
+    freqValue.textContent = peak > 0 ? peak : '--';
+    
+    // RMS from time domain (already populated by spectrogram frame; we reuse)
+    State.analyser.getFloatTimeDomainData(timeData);
+    let sum = 0;
+    for (let i = 0; i < timeData.length; i++) sum += timeData[i] * timeData[i];
+    const rms = Math.sqrt(sum / timeData.length);
+    const db = 20 * Math.log10(Math.max(rms, 1e-5));
+    levelValue.textContent = (db > -80 ? db.toFixed(0) : '-∞') + 'dB';
+}
+
+/* ============================================================
+ *  INIT
+ * ============================================================ */
+fitCanvas();
+window.addEventListener('resize', () => { if (State.isRunning) fitCanvas(); });
+</script>
+</body>
+</html>

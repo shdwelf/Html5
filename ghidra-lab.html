@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0c14" />
+  <meta name="description" content="Disassemble and decompile DOS-era virus samples in the browser with a WASM build of Ghidra's decompiler. Nothing is uploaded; nothing is executed." />
+  <title>Ghidra WASM Lab · Michelangelo and the DOS virology corpus</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="./img/apple-touch.png" sizes="180x180" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./css/validator.css" />
+  <link rel="stylesheet" href="./css/viruslab.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html#grid" aria-label="Back to SITE-K">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-copy">
+          <strong>GHIDRA LAB</strong>
+          <small>WASM REVERSE ENGINEERING</small>
+        </span>
+      </a>
+      <div class="header-right">
+        <span class="local-status"><i></i>CLIENT-SIDE ONLY</span>
+        <a class="back-link" href="./index.html#studio" target="_top">SITE-K <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span>01</span><b></b>GHIDRA DECOMPILER · WEBASSEMBLY · 16-BIT REAL MODE</div>
+        <h1 id="page-title">Virus<br /><em>Analysis Lab</em></h1>
+        <p class="hero-copy">
+          Ghidra's C++ decompiler, compiled to WebAssembly, pointed at the most famous boot sector virus of the
+          DOS era. Every byte is read locally — there is no server, no upload and no execution: the lab disassembles
+          and decompiles, it never runs a sample.
+        </p>
+        <div class="trust-list" aria-label="Lab properties">
+          <div class="trust-item">
+            <span class="trust-icon">01</span>
+            <span><b>Ghidra, in the tab</b><small>SLEIGH <code>x86:LE:16:Real Mode</code> specs drive the real decompiler.</small></span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon">02</span>
+            <span><b>Nothing executed</b><small>Static only. The samples need a BIOS, an IVT and a floppy controller.</small></span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon">03</span>
+            <span><b>Bring your own binary</b><small>Drop in any DOS image, or an ELF/PE for 32- and 64-bit modes.</small></span>
+          </div>
+        </div>
+        <div class="protocol-strip" aria-label="Lab stack">
+          <span>GHIDRA DECOMPILER → WASM</span><span>SLEIGH x86</span><span>8086 DISASSEMBLER</span><span>NO NETWORK</span>
+        </div>
+      </section>
+
+      <section class="lab" aria-label="Analysis workspace">
+        <aside class="rail">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Sample corpus</h2>
+              <span class="panel-tag" id="engineChip">GHIDRA WASM · boot</span>
+            </div>
+            <div id="catalogList" class="catalog"></div>
+            <p class="panel-note">
+              Sources from <a href="https://github.com/ksaj/Ontario1024" target="_blank" rel="noreferrer">ksaj/Ontario1024</a>.
+              Three of them have been reassembled here into real 16-bit binaries; the rest are read as source.
+            </p>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Engine</h2><button type="button" class="mini" id="exportListing">EXPORT LISTING</button></div>
+            <div id="engineLog" class="engine-log" aria-live="polite"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Load a binary</h2></div>
+            <label class="file-drop">
+              <input type="file" id="fileInput" accept=".bin,.com,.exe,.rom,.wasm,.elf,.sys,application/octet-stream" />
+              <span>choose a file…</span>
+            </label>
+            <div class="field-row">
+              <label for="baseInput">base</label>
+              <input id="baseInput" value="0x100" spellcheck="false" />
+              <label for="langSelect">lang</label>
+              <select id="langSelect"></select>
+              <label for="compSelect">compiler</label>
+              <select id="compSelect"></select>
+            </div>
+            <p class="panel-note">Boot sectors want base <code>0x7c00</code> and <code>x86:LE:16:Real Mode</code>; .COM files want <code>0x100</code>. ELF/PE uploads are sniffed automatically.</p>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Symbols</h2><span class="panel-tag dim">recovered</span></div>
+            <div id="symbolList" class="symbols"></div>
+          </section>
+        </aside>
+
+        <section class="work">
+          <div class="tabs" role="tablist" aria-label="Views">
+            <button type="button" class="tab on" data-view="listing" role="tab">DISASSEMBLY</button>
+            <button type="button" class="tab" data-view="c" role="tab">GHIDRA C</button>
+            <button type="button" class="tab" data-view="source" role="tab">SOURCE</button>
+            <button type="button" class="tab" data-view="tech" role="tab">TECHNIQUES</button>
+            <button type="button" class="tab" data-view="hex" role="tab">HEX · ENTROPY</button>
+            <button type="button" class="tab" data-view="research" role="tab">RESEARCH</button>
+          </div>
+
+          <p class="stat-line" id="statLine">—</p>
+          <p class="loading" id="loading" hidden></p>
+
+          <div class="view" data-view="listing" role="tabpanel">
+            <div class="view-bar">
+              <span class="mini-note">click any instruction to send its address to the decompiler</span>
+              <span class="mini-note dim">data rows are dimmed and not clickable</span>
+            </div>
+            <div class="code-scroll" id="listing"></div>
+          </div>
+
+          <div class="view" data-view="c" hidden role="tabpanel">
+            <div class="view-bar">
+              <label for="funcSelect" class="mini-note">function</label>
+              <select id="funcSelect"></select>
+              <input id="funcInput" value="0x7c00" spellcheck="false" aria-label="address to decompile" />
+              <button type="button" class="mini on" id="decompileNow">DECOMPILE</button>
+              <button type="button" class="mini" id="decompileAll">ALL SYMBOLS</button>
+              <button type="button" class="mini" id="copyC">COPY</button>
+              <span class="mini-note dim" id="cStatus">idle</span>
+            </div>
+            <pre class="c-out" id="cOut"><p class="placeholder">Select a sample and hit DECOMPILE — or click an instruction in the disassembly.</p></pre>
+          </div>
+
+          <div class="view" data-view="source" hidden role="tabpanel">
+            <div class="view-bar" id="sourceBar"></div>
+            <div class="code-scroll source-scroll"><pre class="source-out" id="sourceOut"></pre></div>
+          </div>
+
+          <div class="view" data-view="tech" hidden role="tabpanel">
+            <div class="tech-host" id="techTables"></div>
+          </div>
+
+          <div class="view" data-view="hex" hidden role="tabpanel">
+            <div class="view-bar"><span class="mini-note">Shannon entropy in 32-byte windows — flat green is code, red is compressed or encrypted data</span></div>
+            <canvas id="entropyCanvas" class="entropy" height="120"></canvas>
+            <div class="hex-grid">
+              <pre class="hexdump" id="hexDump"></pre>
+              <div class="strings">
+                <h3>Printable runs</h3>
+                <pre class="hexdump" id="stringList"></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="view" data-view="research" hidden role="tabpanel">
+            <div class="research" id="researchBody"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>GHIDRA WASM LAB · STATIC ANALYSIS ONLY</span>
+      <span>DECOMPILER: @mauricelam/ghidra-decompiler-wasm (APACHE-2.0) · SLEIGH SPECS: NSA GHIDRA</span>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/viruslab.js"></script>
+</body>
+</html>
