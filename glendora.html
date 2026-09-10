@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#07100c" />
+  <title>GLENDORA HIGH · VRML campus &amp; conversions</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./css/glendora.css" />
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <script src="./webxdc.js"></script>
+</head>
+<body data-tab="campus">
+  <header class="ghs-head">
+    <a class="ghs-home" href="./index.html#grid">← SITE-K</a>
+    <div>
+      <h1>GLENDORA HIGH SCHOOL</h1>
+      <p>1600 E Foothill Blvd · Glendora, CA 91741 · VRML 2.0 campus model and engine conversions</p>
+    </div>
+    <nav class="ghs-tabs">
+      <button type="button" class="ghs-tab on" data-tab="campus">VRML CAMPUS</button>
+      <button type="button" class="ghs-tab" data-tab="arena">ARENA</button>
+      <button type="button" class="ghs-tab" data-tab="exports">EXPORTS</button>
+      <button type="button" class="ghs-tab" data-tab="data">SURVEY</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="ghs-panel" data-panel="campus">
+      <div class="ghs-stage" id="vrmlStage"></div>
+      <div class="ghs-stage-bar">
+        <b id="vrmlStats">parsing…</b>
+        <span id="wrlHead"></span>
+        <button type="button" id="btnWrlTop">DOWNLOAD .WRL</button>
+        <button type="button" id="btnWrlCopy">COPY</button>
+      </div>
+      <pre class="ghs-src" id="wrlSrc"></pre>
+    </section>
+
+    <section class="ghs-panel" data-panel="arena" hidden>
+      <div class="ghs-stage tall" id="arenaStage"></div>
+      <div class="ghs-stage-bar">
+        <b>Six waves · 24 targets</b>
+        <span>WASD move · Shift run · mouse fire · R reload · Esc release the pointer</span>
+      </div>
+    </section>
+
+    <section class="ghs-panel" data-panel="exports" hidden>
+      <ul class="ghs-exports">
+        <li>
+          <h3>VRML 2.0</h3>
+          <p>The campus as an ISO/IEC 14772 scene: buildings as extruded footprints, terrain as an indexed face set, paths and courts as ribbons.</p>
+          <button type="button" id="btnWrl">BUILD</button>
+          <i id="noteWrl">glendora.wrl</i>
+        </li>
+        <li>
+          <h3>DOOM WAD</h3>
+          <p>PWAD with THINGS through BLOCKMAP, a real BSP node tree and a vanilla-safe 99×103 blockmap. Load in any DOOM source port as a map lump.</p>
+          <button type="button" id="btnWad">BUILD</button>
+          <i id="noteWad">glendora.wad</i>
+        </li>
+        <li>
+          <h3>Duke Nukem 3D total conversion</h3>
+          <p>Build MAP v7 sector geometry plus a generated TILES016.ART, eDuke32 .DEF, .CON and PNG tiles, packed in a KenSilverman GRP.</p>
+          <button type="button" id="btnGrp">BUILD GRP</button>
+          <button type="button" id="btnMap">BUILD MAP</button>
+          <i id="noteGrp">GHSCHOOL.GRP</i>
+          <i id="noteMap">E1L1.MAP</i>
+        </li>
+        <li>
+          <h3>Wolfenstein 3D level</h3>
+          <p>The campus resampled onto Wolf3D's 64×64 grid as a JavaScript level module: wall and thing planes, doors, an elevator exit and procedural wall textures.</p>
+          <button type="button" id="btnWolf">BUILD</button>
+          <i id="noteWolf">glendora-wolf3d.js</i>
+        </li>
+        <li>
+          <h3>webxdc bundle</h3>
+          <p>A .xdc you can send in a Delta Chat group: self-contained orbit viewer, the .wrl, manifest.toml and a README.</p>
+          <button type="button" id="btnXdc">BUILD</button>
+          <i id="noteXdc">glendora.xdc</i>
+        </li>
+      </ul>
+    </section>
+
+    <section class="ghs-panel" data-panel="data" hidden>
+      <table class="ghs-facts" id="facts"></table>
+      <h3>Buildings, tallest first</h3>
+      <ul class="ghs-list" id="ghsBuildings"></ul>
+      <p class="ghs-attr">
+        Geometry © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> contributors, Open Database License.
+        Retrieved 2026-09-10 through the Overpass API. This page is a fan-made 3-D model, not an official
+        Glendora Unified School District product.
+      </p>
+    </section>
+  </main>
+
+  <script type="module" src="./js/glendora-app.js"></script>
+</body>
+</html>
