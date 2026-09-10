@@ -1,0 +1,349 @@
+/* GLENDORA HIGH · campus viewer, arena and export desk */
+
+:root {
+  --bg: #07100c;
+  --panel: #0d1a14;
+  --line: #1d3128;
+  --ink: #d9e8dd;
+  --dim: #7f9c8b;
+  --hot: #ffb43c;
+  --go: #57d98a;
+  --bad: #ff5c47;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+a { color: var(--go); }
+
+.ghs-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, #0c1a13, #07100c);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.ghs-head h1 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: 0.14em;
+  color: var(--hot);
+}
+
+.ghs-head p {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: 0.06em;
+}
+
+.ghs-home {
+  text-decoration: none;
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  color: var(--dim);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.ghs-home:hover { color: var(--ink); border-color: var(--go); }
+
+.ghs-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.ghs-tab {
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--dim);
+  background: #0a1610;
+  border: 1px solid var(--line);
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.ghs-tab:hover { color: var(--ink); }
+.ghs-tab.on { color: #07100c; background: var(--go); border-color: var(--go); }
+
+main { padding: 16px 20px 60px; }
+
+.ghs-panel { display: block; }
+.ghs-panel[hidden] { display: none; }
+
+/* ---- stages ---- */
+
+.ghs-stage {
+  position: relative;
+  width: 100%;
+  height: 58vh;
+  min-height: 380px;
+  border: 1px solid var(--line);
+  background: #050b08;
+  overflow: hidden;
+}
+
+.ghs-stage.tall { height: 74vh; min-height: 460px; }
+.ghs-stage canvas { display: block; width: 100%; height: 100%; }
+
+.ghs-stage-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-top: 0;
+  background: var(--panel);
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: 0.06em;
+}
+
+.ghs-stage-bar b { color: var(--go); font-weight: 600; }
+.ghs-stage-bar span { flex: 1 1 220px; }
+
+.ghs-stage-bar button {
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  background: #12241b;
+  border: 1px solid var(--line);
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.ghs-stage-bar button:hover { border-color: var(--go); color: var(--go); }
+
+.ghs-src {
+  margin: 14px 0 0;
+  padding: 12px;
+  max-height: 320px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  background: #050b08;
+  color: #9fd8b0;
+  font-size: 11px;
+  line-height: 1.45;
+  white-space: pre;
+}
+
+/* ---- exports ---- */
+
+.ghs-exports {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.ghs-exports li {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 14px;
+}
+
+.ghs-exports h3 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--hot);
+}
+
+.ghs-exports p { margin: 0 0 12px; font-size: 12px; color: var(--dim); }
+
+.ghs-exports button {
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #07100c;
+  background: var(--go);
+  border: 1px solid var(--go);
+  padding: 6px 12px;
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+.ghs-exports button:disabled { opacity: 0.5; cursor: progress; }
+.ghs-exports i { display: block; margin-top: 8px; font-style: normal; font-size: 11px; color: var(--dim); }
+
+/* ---- survey ---- */
+
+.ghs-facts { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
+
+.ghs-facts th, .ghs-facts td {
+  text-align: left;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+  vertical-align: top;
+}
+
+.ghs-facts th { width: 190px; color: var(--dim); font-weight: 500; letter-spacing: 0.08em; }
+
+.ghs-list {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 6px;
+}
+
+.ghs-list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.ghs-list i { color: var(--dim); font-style: normal; font-size: 11px; }
+.ghs-list span { color: var(--go); }
+
+.ghs-attr { font-size: 11px; color: var(--dim); max-width: 70ch; }
+
+/* ---- shooter HUD ---- */
+
+.ghs-hud { position: absolute; inset: 0; pointer-events: none; font-family: var(--mono); }
+
+.ghs-cross {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  transform: translate(-50%, -50%);
+}
+
+.ghs-cross i { position: absolute; background: rgba(255, 240, 200, 0.9); }
+.ghs-cross i:first-child { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
+.ghs-cross i:last-child { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
+
+.ghs-stats {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  border: 1px solid rgba(87, 217, 138, 0.35);
+  background: rgba(7, 16, 12, 0.72);
+  padding: 8px 12px;
+  min-width: 168px;
+}
+
+.ghs-row {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.ghs-row span { flex: 1; color: var(--dim); }
+.ghs-row b { color: var(--go); font-size: 15px; }
+.ghs-row i { color: var(--dim); font-style: normal; font-size: 11px; }
+
+.ghs-feed {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  text-align: right;
+  font-size: 12px;
+  color: var(--hot);
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
+.ghs-dmg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(255, 40, 20, 0.85));
+  opacity: 0;
+  transition: opacity 0.18s linear;
+}
+
+.ghs-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(4, 9, 7, 0.82);
+  pointer-events: auto;
+}
+
+.ghs-overlay[hidden] { display: none; }
+
+.ghs-card {
+  border: 1px solid var(--go);
+  background: #08120d;
+  padding: 22px 26px;
+  max-width: 460px;
+  text-align: center;
+}
+
+.ghs-card h2 { margin: 0 0 10px; font-size: 16px; letter-spacing: 0.16em; color: var(--hot); }
+.ghs-card p { margin: 0 0 16px; font-size: 12px; color: var(--dim); }
+
+.ghs-card button {
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: #07100c;
+  background: var(--go);
+  border: 1px solid var(--go);
+  padding: 9px 18px;
+  cursor: pointer;
+}
+
+.ghs-touch { position: absolute; inset: auto 0 0 0; display: flex; justify-content: space-between; padding: 18px; }
+
+.ghs-stick {
+  width: 118px;
+  height: 118px;
+  border: 1px solid rgba(87, 217, 138, 0.4);
+  border-radius: 50%;
+  background: rgba(7, 16, 12, 0.5);
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.ghs-stick i { width: 42px; height: 42px; border-radius: 50%; background: rgba(87, 217, 138, 0.55); }
+
+.ghs-fire {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 1px solid var(--bad);
+  background: rgba(255, 92, 71, 0.25);
+  color: #ffd9d2;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+@media (max-width: 720px) {
+  .ghs-head { grid-template-columns: 1fr; gap: 10px; }
+  .ghs-stage { height: 52vh; }
+  .ghs-stage.tall { height: 68vh; }
+}

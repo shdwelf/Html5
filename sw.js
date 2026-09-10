@@ -1,5 +1,5 @@
 /* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v12";
+const CACHE = "sitek-html5-v13";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -8,6 +8,23 @@ const PRECACHE = [
   "./art-studio.html",
   "./louisiana.html",
   "./terrarium.html",
+  "./glendora.html",
+  "./css/glendora.css",
+  "./js/glendora-app.js",
+  "./js/ghs-data.js",
+  "./js/ghs-model.js",
+  "./js/ghs-vrml.js",
+  "./js/wrl-parse.js",
+  "./js/ghs-viewer-three.js",
+  "./js/ghs-shooter.js",
+  "./js/ghs-shooter-three.js",
+  "./js/ghs-slab.js",
+  "./js/ghs-doom.js",
+  "./js/ghs-build.js",
+  "./js/ghs-wolf.js",
+  "./js/ghs-xdc.js",
+  "./js/binfmt.js",
+  "./js/zip.js",
   "./manifest.webmanifest",
   "./webxdc.js",
   "./icon.png",
