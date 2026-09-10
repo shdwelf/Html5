@@ -27,7 +27,25 @@ const require = createRequire(import.meta.url);
 const PORT = Number(process.argv[2] || process.env.PORT || 8099);
 const BASE = `http://127.0.0.1:${PORT}`;
 
-const GhidraDecompiler = require(join(ROOT, "wasm", "ghidra", "ghidra_decompiler.js"));
+// The vendored bundle is UMD, and it only publishes its factory when it can
+// see a CommonJS `module`/`exports`. The repo root declares "type": "module"
+// for the vite side of the project, so a plain require() here parses the bundle
+// as ESM and the UMD branch that assigns module.exports never runs. Wrapping it
+// in an explicit CJS scope reproduces exactly what the browser's <script> tag
+// achieves, and leaves the vendored file untouched.
+const BUNDLE = join(ROOT, "wasm", "ghidra", "ghidra_decompiler.js");
+function loadUmdBundle(file) {
+  const shell = { exports: {} };
+  const factory = new Function("module", "exports", "require", "__dirname", "__filename", readFileSync(file, "utf8"));
+  factory(shell, shell.exports, require, dirname(file), file);
+  return shell.exports;
+}
+
+const GhidraDecompiler = loadUmdBundle(BUNDLE);
+if (typeof GhidraDecompiler !== "function") {
+  console.error(`could not load the Ghidra wasm factory from ${BUNDLE} (got ${typeof GhidraDecompiler})`);
+  process.exit(1);
+}
 
 const engine = new GhidraWasm({
   root: `${BASE}/wasm/ghidra/`,
