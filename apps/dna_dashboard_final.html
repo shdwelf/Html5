@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genetic Heritage Dashboard - Steven Greeran</title>
+    <style>
+        :root {
+            --primary: #1a2b3c;
+            --secondary: #34495e;
+            --paternal: #3498db;
+            --maternal: #e74c3c;
+            --autosomal: #27ae60;
+            --highlight: #f1c40f;
+            --light: #f8f9fa;
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 10px;
+            color: #2d3436;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #2c3e50 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        header h1 { margin: 0; font-size: 2.2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        header p { margin: 15px 0 0; opacity: 0.9; font-size: 1.1rem; }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 25px;
+            background: #fff;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .stat-item {
+            padding: 20px;
+            border-radius: 15px;
+            background: var(--light);
+            border-bottom: 4px solid var(--primary);
+        }
+        .stat-item h4 { margin: 0; font-size: 0.8rem; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-item .val { margin-top: 8px; font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+        .stat-item.pat { border-bottom-color: var(--paternal); }
+        .stat-item.mat { border-bottom-color: var(--maternal); }
+
+        .content-section { padding: 30px; }
+        h2 { border-left: 5px solid var(--primary); padding-left: 15px; font-size: 1.5rem; margin-bottom: 25px; }
+
+        /* DNA Table */
+        .dna-table-wrapper { overflow-x: auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th { background: #f1f4f8; padding: 18px 20px; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #636e72; }
+        td { padding: 18px 20px; border-bottom: 1px solid #f1f4f8; font-size: 0.95rem; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: #f8fafc; }
+
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: white; display: inline-block; }
+        .badge.y { background: var(--paternal); }
+        .badge.mt { background: var(--maternal); }
+        .badge.auto { background: var(--autosomal); }
+        .badge.double { background: var(--highlight); color: #000; }
+
+        .special-note { font-style: italic; font-size: 0.85rem; color: #e67e22; }
+
+        @media (max-width: 768px) {
+            header { padding: 30px 20px; }
+            header h1 { font-size: 1.6rem; }
+            .content-section { padding: 15px; }
+            th:nth-child(4), td:nth-child(4) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Genetic Inheritance Dashboard</h1>
+            <p>Subject: <b>Steven Greeran</b> | Analyzing Global Sibling Exchanges & Lineage Markers</p>
+        </header>
+
+        <div class="summary-stats">
+            <div class="stat-item pat">
+                <h4>Paternal Haplogroup</h4>
+                <div class="val">Greeran Line (Y-DNA)</div>
+            </div>
+            <div class="stat-item mat">
+                <h4>Maternal Haplogroup</h4>
+                <div class="val">Carey Line (mtDNA)</div>
+            </div>
+            <div class="stat-item">
+                <h4>Brick Wall Status</h4>
+                <div class="val">Solved (Morin/Bojoh)</div>
+            </div>
+            <div class="stat-item">
+                <h4>Special Relationship</h4>
+                <div class="val">Double Cousinships Identified</div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Detailed Genetic Contribution Profile</h2>
+            <div class="dna-table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Relative</th>
+                            <th>Relationship</th>
+                            <th>Genetic %</th>
+                            <th>Avg. Shared DNA</th>
+                            <th>Markers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- PARENTS -->
+                        <tr>
+                            <td><b>Gerard T. Greeran</b></td>
+                            <td>Father</td>
+                            <td>50%</td>
+                            <td>3400 cM</td>
+                            <td><span class="badge y">Y-DNA</span> <span class="badge auto">Auto</span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Jean Belle Hewitt</b></td>
+                            <td>Mother</td>
+                            <td>50%</td>
+                            <td>3400 cM</td>
+                            <td><span class="badge mt">mtDNA</span> <span class="badge auto">Auto</span></td>
+                        </tr>
+                        <!-- UNCLE -->
+                        <tr>
+                            <td>Robert David Hewitt</td>
+                            <td>Uncle</td>
+                            <td>25%</td>
+                            <td>1750 cM</td>
+                            <td><span class="badge auto">Autosomal</span></td>
+                        </tr>
+                        <!-- COUSINS -->
+                        <tr style="background-color: #fff9db;">
+                            <td><b>John King (b. 1911)</b></td>
+                            <td>Double 1st Cousin (1R)</td>
+                            <td>~12.5%</td>
+                            <td>850 cM</td>
+                            <td><span class="badge double">Double Shared</span></td>
+                        </tr>
+                        <tr>
+                            <td>Debbie Bojoh</td>
+                            <td>1st Cousin</td>
+                            <td>~12.5%</td>
+                            <td>880 cM</td>
+                            <td><span class="badge auto">Autosomal</span></td>
+                        </tr>
+                        <tr>
+                            <td>Danielle Hewitt (Zigmont)</td>
+                            <td>1st Cousin</td>
+                            <td>~12.5%</td>
+                            <td>880 cM</td>
+                            <td><span class="badge auto">Autosomal</span></td>
+                        </tr>
+                        <tr>
+                            <td>Casey Nicole Hewitt (Gernon)</td>
+                            <td>1st Cousin</td>
+                            <td>~12.5%</td>
+                            <td>880 cM</td>
+                            <td><span class="badge auto">Autosomal</span></td>
+                        </tr>
+                        <!-- GRANDPARENTS -->
+                        <tr>
+                            <td>Bernard Patrick Greeran</td>
+                            <td>P-Grandfather</td>
+                            <td>25%</td>
+                            <td>1700 cM</td>
+                            <td><span class="badge y">Y-DNA</span></td>
+                        </tr>
+                        <tr>
+                            <td>Jeanette Mabel Morin</td>
+                            <td>P-Grandmother</td>
+                            <td>25%</td>
+                            <td>1700 cM</td>
+                            <td><span class="badge auto">Autosomal</span></td>
+                        </tr>
+                        <tr>
+                            <td>Maurice Frederick Hewitt</td>
+                            <td>M-Grandfather</td>
+                            <td>25%</td>
+                            <td>1700 cM</td>
+                            <td><span class="badge auto">Autosomal</span></td>
+                        </tr>
+                        <tr>
+                            <td>Louise Frances Carey</td>
+                            <td>M-Grandmother</td>
+                            <td>25%</td>
+                            <td>1700 cM</td>
+                            <td><span class="badge mt">mtDNA</span></td>
+                        </tr>
+                        <!-- GREAT-GRANDPARENTS -->
+                        <tr>
+                            <td>Hugh Greeran</td>
+                            <td>P-G-Grandfather</td>
+                            <td>12.5%</td>
+                            <td>850 cM</td>
+                            <td><span class="badge y">Y-DNA</span></td>
+                        </tr>
+                        <tr>
+                            <td>Catherine King</td>
+                            <td>P-G-Grandmother</td>
+                            <td>12.5%</td>
+                            <td>850 cM</td>
+                            <td><span class="badge auto">Autosomal</span></td>
+                        </tr>
+                        <tr>
+                            <td>Amedee J. Morin</td>
+                            <td>P-G-Grandfather</td>
+                            <td>12.5%</td>
+                            <td>850 cM</td>
+                            <td><span class="badge auto">Autosomal</span></td>
+                        </tr>
+                        <tr>
+                            <td>Lena D. Morin</td>
+                            <td>P-G-Grandmother</td>
+                            <td>12.5%</td>
+                            <td>850 cM</td>
+                            <td><span class="badge auto">Autosomal</span></td>
+                        </tr>
+                        <tr>
+                            <td>Francis G. Carey</td>
+                            <td>M-G-Grandfather</td>
+                            <td>12.5%</td>
+                            <td>850 cM</td>
+                            <td><span class="badge auto">Autosomal</span></td>
+                        </tr>
+                        <tr>
+                            <td>Daisy Beatrice Carey</td>
+                            <td>M-G-Grandmother</td>
+                            <td>12.5%</td>
+                            <td>850 cM</td>
+                            <td><span class="badge mt">mtDNA</span></td>
+                        </tr>
+                        <!-- RECENTLY DISCOVERED BRANCHES -->
+                        <tr>
+                            <td>Clifford LeRoy Hewitt</td>
+                            <td>M-2G-Grandfather</td>
+                            <td>6.25%</td>
+                            <td>425 cM</td>
+                            <td><span class="badge auto">Hewitt Patriarch</span></td>
+                        </tr>
+                        <tr>
+                            <td>Leslie May McFarland</td>
+                            <td>M-2G-Grandmother</td>
+                            <td>6.25%</td>
+                            <td>425 cM</td>
+                            <td><span class="badge auto">Autosomal</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 30px; padding: 20px; background: #fff8e1; border-radius: 10px; border-left: 5px solid #ffc107;">
+                <h4 style="margin-top: 0;">Scientific Note on the King-Greeran Exchange:</h4>
+                <p style="margin-bottom: 0; font-size: 0.9rem;">
+                    Because your great-grandparents (Hugh Greeran & Catherine King) were the siblings of their spouses (Catherine Greeran & Hugh King Jr.), the offspring of these two couples are <b>Double First Cousins</b>. 
+                    In genetic testing, your matches in the <b>John King</b> branch will appear significantly stronger than standard second cousins, often sharing as much DNA as a first cousin (~12.5%).
+                </p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

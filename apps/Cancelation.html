@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="NoiseCancel">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="description" content="Real-time HTML5 noise canceling app with phase inversion ANC">
+    
+    <title>NOISE•CANCEL</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+            font-weight: 600;
+        }
+
+        .audio-visualizer {
+            box-shadow: 0 0 25px rgb(0 240 255 / 10%);
+            touch-action: none;
+        }
+
+        .slider {
+            height: 6px;
+            background: #334155;
+            border-radius: 9999px;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #67f6ff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 5px rgba(103, 246, 255, 0.15);
+            cursor: pointer;
+            border: 3px solid #0f172a;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: #67f6ff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 5px rgba(103, 246, 255, 0.15);
+            cursor: pointer;
+            border: 3px solid #0f172a;
+        }
+        
+        .app-container {
+            max-width: 820px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-header {
+            font-size: 0.75rem;
+            letter-spacing: -.5px;
+        }
+
+        .pwa-install-btn {
+            transition: all 0.2s ease;
+        }
+
+        .status-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @media (max-width: 640px) {
+            .main-card {
+                margin: 0;
+                border-radius: 1.25rem 1.25rem 0 0;
+            }
+            
+            .action-btn {
+                height: 54px;
+                font-size: 0.95rem;
+            }
+        }
+        
+        .waveform-glow {
+            box-shadow: 0 0 15px rgb(103 246 255 / 15%);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+    <div class="max-w-[820px] mx-auto min-h-screen pb-4">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between px-5 pt-6 pb-3">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 flex items-center justify-center bg-cyan-500 rounded-2xl shadow-inner">
+                    <i class="fa-solid fa-headset text-white text-3xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-display text-3xl font-extrabold tracking-tighter">NOISE•CANCEL</h1>
+                    <p class="text-[10px] text-slate-400 tracking-[1.25px]">HTML5 PWA</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-x-2">
+                <!-- PWA Install Button -->
+                <button id="install-btn"
+                        onclick="installPWA()"
+                        class="hidden px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 border border-slate-700 text-cyan-300 rounded-3xl items-center gap-x-2 transition-all px-4">
+                    <i class="fa-solid fa-download text-xs"></i>
+                    <span class="font-medium">Install</span>
+                </button>
+                
+                <div class="px-3 py-1 bg-slate-900 border border-slate-800 rounded-3xl flex items-center gap-x-1.5 text-xs">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span class="font-medium text-emerald-300 text-xs">v3.0</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main App Card -->
+        <div class="mx-3 md:mx-4 bg-slate-900 border border-slate-800 shadow-2xl rounded-3xl main-card overflow-hidden">
+            
+            <!-- Status Bar -->
+            <div class="px-5 py-3.5 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-x-2">
+                    <div id="mic-status" class="flex items-center gap-x-2 px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-3xl text-xs">
+                        <div class="w-2.5 h-2.5 bg-red-400 rounded-full flex-shrink-0" id="status-dot"></div>
+                        <span id="status-text" class="font-medium text-slate-300 text-xs">Disconnected</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center text-xs font-medium">
+                    <div class="px-2.5 py-1 bg-slate-900 border border-slate-700 rounded-3xl flex items-center">
+                        <i class="fa-solid fa-microphone mr-1.5 text-emerald-300 text-xs"></i>
+                        <span id="sample-rate" class="text-xs">48 kHz</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visualizer -->
+            <div class="p-4 bg-slate-950">
+                <div class="flex items-center justify-between mb-2 px-1">
+                    <div>
+                        <span class="section-header font-semibold tracking-wider text-cyan-300 text-xs">LIVE WAVEFORM</span>
+                    </div>
+                    <div class="text-[10px] px-2 py-0.5 rounded-2xl bg-slate-900 border border-slate-700 flex items-center">
+                        <span id="db-level" class="font-mono text-emerald-300 font-bold">−42.8</span>
+                        <span class="text-slate-400 text-xs ml-1">dB</span>
+                    </div>
+                </div>
+                
+                <div class="relative rounded-3xl overflow-hidden border border-slate-800 shadow-inner bg-slate-900">
+                    <canvas id="visualizer" width="780" height="115" 
+                            class="w-full h-[115px] audio-visualizer waveform-glow"></canvas>
+                    
+                    <div class="absolute top-3 right-3 px-2 py-0.5 bg-black/40 text-[10px] rounded-2xl flex items-center text-cyan-300 backdrop-blur-sm">
+                        <i class="fa-solid fa-waveform-lines mr-1.5 text-xs"></i>
+                        <span class="font-mono text-xs">LIVE</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Controls -->
+            <div class="px-5 pt-2 pb-5">
+                
+                <!-- ANC Toggle -->
+                <div class="px-4 pt-4 pb-4 bg-slate-900 border border-slate-700 rounded-3xl mb-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="font-semibold text-sm">Active Noise Cancellation</span>
+                        </div>
+                        
+                        <div id="anc-toggle" 
+                             class="w-14 h-8 flex items-center bg-slate-700 rounded-3xl cursor-pointer transition-all px-1 active:scale-95"
+                             onclick="toggleANC()">
+                            <div id="anc-knob" 
+                                 class="w-6 h-6 bg-white rounded-[50%] shadow transition-all flex-shrink-0 flex items-center justify-center ml-0.5">
+                                <i class="fa-solid fa-check text-emerald-400 text-xs hidden" id="anc-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 px-1 flex items-center justify-between">
+                        <div class="flex items-center gap-x-2">
+                            <i class="fa-solid fa-volume-mute text-emerald-300 text-sm"></i>
+                            <span class="font-medium text-xs">Phase inversion</span>
+                        </div>
+                        <div id="anc-status" class="font-mono px-3 py-0.5 text-xs bg-emerald-900 text-emerald-300 rounded-3xl text-center" style="font-size: 0.65rem;">
+                            OFF
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sliders -->
+                <div class="px-4 pt-4 pb-4 bg-slate-900 border border-slate-700 rounded-3xl">
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-4">
+                        
+                        <!-- Gain -->
+                        <div>
+                            <div class="flex justify-between items-baseline px-0.5 mb-1.5">
+                                <span class="control-label text-xs">GAIN</span>
+                                <span id="gain-value" class="font-mono text-sm font-bold">0.85</span>
+                            </div>
+                            <input type="range" id="gain-slider" 
+                                   class="w-full accent-cyan-400 slider" 
+                                   min="0" max="1.5" step="0.01" value="0.85"
+                                   oninput="updateGain()">
+                            <div class="flex justify-between text-[9.5px] px-0.5 text-slate-500 mt-0.5">
+                                <div>0</div>
+                                <div>1.5</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Phase -->
+                        <div>
+                            <div class="flex justify-between items-baseline px-0.5 mb-1.5">
+                                <span class="control-label text-xs">PHASE</span>
+                                <span id="phase-value" class="font-mono text-sm font-bold">180°</span>
+                            </div>
+                            <input type="range" id="phase-slider" 
+                                   class="w-full accent-cyan-400 slider" 
+                                   min="-180" max="180" step="5" value="180"
+                                   oninput="updatePhase()">
+                            <div class="flex justify-between text-[9.5px] px-0.5 text-slate-500 mt-0.5">
+                                <div>−180</div>
+                                <div>+180</div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-5 px-1 flex items-center gap-x-3">
+                    <button onclick="startNoiseCancel()"
+                            class="flex-1 flex items-center justify-center gap-x-2 px-5 py-[15px] text-sm font-semibold bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-600 transition-all text-white shadow-lg shadow-cyan-900/30 rounded-3xl action-btn">
+                        <i class="fa-solid fa-play mr-2"></i> 
+                        <span id="start-btn-text">START MIC</span>
+                    </button>
+                    
+                    <button onclick="stopNoiseCancel()"
+                            class="flex-1 flex items-center justify-center gap-x-2 px-5 py-[15px] text-sm font-semibold bg-slate-700 hover:bg-slate-600 active:bg-slate-800 transition-all rounded-3xl action-btn">
+                        <i class="fa-solid fa-stop mr-2"></i> 
+                        <span>STOP</span>
+                    </button>
+                </div>
+                
+                <!-- Quine Download -->
+                <div class="mt-4 px-1">
+                    <button onclick="downloadSelf()"
+                            class="w-full flex items-center justify-center gap-x-3 text-sm font-semibold transition-all px-5 py-[14px] border border-slate-600 hover:border-cyan-600 hover:bg-slate-900 active:bg-slate-800 rounded-3xl text-cyan-300 action-btn">
+                        <i class="fa-solid fa-download"></i>
+                        <span class="font-bold">DOWNLOAD QUINE</span>
+                    </button>
+                    <div class="px-1 mt-1.5 flex justify-center">
+                        <span class="text-[10px] text-center text-slate-500">Self-contained HTML5 app</span>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+        
+        <!-- Footer -->
+        <div class="px-5 pt-4 flex items-center justify-between text-xs">
+            <div class="text-slate-500 flex items-center gap-x-1.5">
+                <i class="fa-solid fa-info-circle"></i> 
+                <span class="text-xs">Web Audio API • PWA</span>
+            </div>
+            <div onclick="showInfo()" class="cursor-pointer flex items-center text-cyan-300 hover:text-cyan-400 transition-colors">
+                <span class="font-medium text-xs">How it works</span>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Tailwind config
+        function initializeTailwind() {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            'display': ['Space Grotesk', 'system-ui', 'sans-serif']
+                        }
+                    }
+                }
+            };
+        }
+        
+        // Global state
+        let audioContext, mediaStream, sourceNode, processorNode, analyserNode, gainNode;
+        let isANCActive = false, isRunning = false;
+        let phaseShift = 180, gainValue = 0.85;
+        let canvas, ctx, animationFrame;
+        let deferredPrompt = null;
+        
+        // ==================== PWA FUNCTIONALITY ====================
+        
+        // Register Service Worker (for PWA)
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    self.addEventListener('install', () => self.skipWaiting());
+                    self.addEventListener('activate', () => self.clients.claim());
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.open('noisecancel-v3').then(cache => {
+                                return cache.match(event.request).then(response => {
+                                    return response || fetch(event.request).then(fetchResponse => {
+                                        cache.put(event.request, fetchResponse.clone());
+                                        return fetchResponse;
+                                    });
+                                });
+                            })
+                        );
+                    });
+                `;
+                
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                
+                navigator.serviceWorker.register(swUrl)
+                    .then(() => console.log('%c[NOISE•CANCEL] Service Worker registered', 'color:#64748b'))
+                    .catch(err => console.log('SW registration failed', err));
+            }
+        }
+        
+        // Install PWA prompt
+        function installPWA() {
+            if (!deferredPrompt) {
+                alert("This app can be installed from your browser's menu (Add to Home Screen)");
+                return;
+            }
+            
+            deferredPrompt.prompt();
+            
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted PWA install');
+                    document.getElementById('install-btn').classList.add('hidden');
+                }
+                deferredPrompt = null;
+            });
+        }
+        
+        function setupPWA() {
+            // Listen for install prompt
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                const installBtn = document.getElementById('install-btn');
+                installBtn.classList.remove('hidden');
+                installBtn.classList.add('flex');
+            });
+            
+            // Register service worker
+            registerServiceWorker();
+            
+            // iOS install hint
+            if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+                const installBtn = document.getElementById('install-btn');
+                if (installBtn) {
+                    installBtn.onclick = () => {
+                        alert("On iOS: Tap the Share button → 'Add to Home Screen'");
+                    };
+                }
+            }
+        }
+        
+        // ==================== AUDIO & VISUALIZER ====================
+        
+        function initCanvas() {
+            canvas = document.getElementById('visualizer');
+            ctx = canvas.getContext('2d', { alpha: true });
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 250));
+        }
+        
+        function resizeCanvas() {
+            if (!canvas || !ctx) return;
+            
+            const container = canvas.parentElement;
+            const dpr = window.devicePixelRatio || 1;
+            const displayWidth = container.clientWidth;
+            
+            canvas.width = Math.floor(displayWidth * dpr);
+            canvas.height = Math.floor(115 * dpr);
+            ctx.scale(dpr, dpr);
+            
+            // Redraw grid
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+            
+            ctx.strokeStyle = '#1e2937';
+            ctx.lineWidth = 1;
+            
+            const h = canvas.height / dpr;
+            const w = canvas.width / dpr;
+            
+            for (let i = 0; i < 5; i++) {
+                const y = (h / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(w, y);
+                ctx.stroke();
+            }
+        }
+        
+        function drawVisualizer(dataArray) {
+            if (!ctx || !canvas) return;
+            
+            const dpr = window.devicePixelRatio || 1;
+            const w = canvas.width / dpr;
+            const h = canvas.height / dpr;
+            
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
+            ctx.fillRect(0, 0, w, h);
+            
+            ctx.strokeStyle = '#1e2937';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < 5; i++) {
+                const y = (h / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(w, y);
+                ctx.stroke();
+            }
+            
+            ctx.strokeStyle = '#67f6ff';
+            ctx.lineWidth = 2.5;
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = '#00f0ff';
+            
+            ctx.beginPath();
+            const sliceWidth = w / dataArray.length;
+            let x = 0;
+            
+            for (let i = 0; i < dataArray.length; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = v * (h / 2) + (h / 2);
+                
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+                x += sliceWidth;
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+        
+        function updateVisualizer() {
+            if (!analyserNode || !isRunning) return;
+            
+            const bufferLength = analyserNode.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyserNode.getByteTimeDomainData(dataArray);
+            
+            drawVisualizer(dataArray);
+            
+            // dB meter
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                sum += Math.abs(dataArray[i] - 128);
+            }
+            const avg = sum / dataArray.length;
+            const db = Math.round(20 * Math.log10(avg / 128) * 10) / 10 || -60;
+            
+            const dbEl = document.getElementById('db-level');
+            dbEl.textContent = db.toFixed(1);
+            
+            if (db < -40) dbEl.style.color = '#4ade80';
+            else if (db < -20) dbEl.style.color = '#facc15';
+            else dbEl.style.color = '#f87171';
+            
+            animationFrame = requestAnimationFrame(updateVisualizer);
+        }
+        
+        // ==================== AUDIO PROCESSING ====================
+        
+        function updateGain() {
+            const slider = document.getElementById('gain-slider');
+            const valueEl = document.getElementById('gain-value');
+            gainValue = parseFloat(slider.value);
+            valueEl.textContent = gainValue.toFixed(2);
+            
+            if (gainNode) gainNode.gain.value = gainValue;
+        }
+        
+        function updatePhase() {
+            const slider = document.getElementById('phase-slider');
+            const valueEl = document.getElementById('phase-value');
+            phaseShift = parseFloat(slider.value);
+            valueEl.textContent = phaseShift + '°';
+            
+            if (isANCActive && processorNode && isRunning) {
+                applyPhaseInversion();
+            }
+        }
+        
+        function toggleANC() {
+            const toggle = document.getElementById('anc-toggle');
+            const knob = document.getElementById('anc-knob');
+            const icon = document.getElementById('anc-icon');
+            const status = document.getElementById('anc-status');
+            
+            isANCActive = !isANCActive;
+            
+            if (isANCActive) {
+                toggle.style.background = '#166534';
+                knob.style.transform = 'translateX(24px)';
+                knob.style.background = '#4ade80';
+                icon.classList.remove('hidden');
+                status.textContent = 'ON';
+                status.style.background = '#166534';
+                status.style.color = '#4ade80';
+                
+                if (isRunning) applyPhaseInversion();
+            } else {
+                toggle.style.background = '#334155';
+                knob.style.transform = 'translateX(0)';
+                knob.style.background = '#fff';
+                icon.classList.add('hidden');
+                status.textContent = 'OFF';
+                status.style.background = '#166534';
+                status.style.color = '#4ade80';
+                
+                if (processorNode && isRunning) resetAudioChain();
+            }
+        }
+        
+        function applyPhaseInversion() {
+            if (!audioContext || !sourceNode || !isRunning) return;
+            
+            try {
+                if (processorNode) processorNode.disconnect();
+                if (gainNode) gainNode.disconnect();
+            } catch(e){}
+            
+            processorNode = audioContext.createScriptProcessor(4096, 1, 1);
+            
+            processorNode.onaudioprocess = function(e) {
+                const input = e.inputBuffer.getChannelData(0);
+                const output = e.outputBuffer.getChannelData(0);
+                const phaseFactor = phaseShift / 180;
+                
+                for (let i = 0; i < input.length; i++) {
+                    let val = input[i] * -1 * phaseFactor;
+                    val *= gainValue;
+                    output[i] = val;
+                }
+            };
+            
+            sourceNode.connect(processorNode);
+            processorNode.connect(gainNode);
+            gainNode.connect(analyserNode);
+            analyserNode.connect(audioContext.destination);
+        }
+        
+        function resetAudioChain() {
+            if (!audioContext || !sourceNode) return;
+            
+            try {
+                sourceNode.disconnect();
+                if (processorNode) processorNode.disconnect();
+                if (gainNode) gainNode.disconnect();
+                if (analyserNode) analyserNode.disconnect();
+            } catch(e){}
+            
+            gainNode = audioContext.createGain();
+            gainNode.gain.value = gainValue;
+            
+            analyserNode = audioContext.createAnalyser();
+            analyserNode.fftSize = 2048;
+            analyserNode.minDecibels = -90;
+            analyserNode.maxDecibels = -10;
+            analyserNode.smoothingTimeConstant = 0.85;
+            
+            sourceNode.connect(gainNode);
+            gainNode.connect(analyserNode);
+            analyserNode.connect(audioContext.destination);
+            
+            if (isANCActive) applyPhaseInversion();
+        }
+        
+        async function startNoiseCancel() {
+            if (isRunning) return;
+            
+            const startBtnText = document.getElementById('start-btn-text');
+            const originalText = startBtnText.innerHTML;
+            startBtnText.innerHTML = `<span class="flex items-center justify-center"><i class="fa-solid fa-spinner fa-spin mr-2"></i> CONNECTING...</span>`;
+            
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: false,
+                        noiseSuppression: false,
+                        autoGainControl: false,
+                        sampleRate: { ideal: 48000 }
+                    }
+                });
+                
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
+                
+                sourceNode = audioContext.createMediaStreamSource(mediaStream);
+                
+                gainNode = audioContext.createGain();
+                gainNode.gain.value = gainValue;
+                
+                analyserNode = audioContext.createAnalyser();
+                analyserNode.fftSize = 2048;
+                analyserNode.minDecibels = -90;
+                analyserNode.maxDecibels = -10;
+                analyserNode.smoothingTimeConstant = 0.8;
+                
+                sourceNode.connect(gainNode);
+                gainNode.connect(analyserNode);
+                analyserNode.connect(audioContext.destination);
+                
+                isRunning = true;
+                
+                document.getElementById('status-text').innerHTML = 'Connected';
+                document.getElementById('status-dot').classList.remove('bg-red-400');
+                document.getElementById('status-dot').classList.add('bg-emerald-400', 'status-dot');
+                document.getElementById('sample-rate').innerHTML = Math.round(audioContext.sampleRate / 1000) + ' kHz';
+                
+                startBtnText.innerHTML = `RUNNING`;
+                startBtnText.parentElement.style.background = '#166534';
+                startBtnText.parentElement.style.boxShadow = '0 0 15px rgb(16 185 129 / 15%)';
+                
+                initCanvas();
+                updateVisualizer();
+                
+                if (isANCActive) applyPhaseInversion();
+                
+                // Sync sliders
+                document.getElementById('gain-slider').value = gainValue;
+                document.getElementById('phase-slider').value = phaseShift;
+                document.getElementById('gain-value').innerHTML = gainValue.toFixed(2);
+                document.getElementById('phase-value').innerHTML = phaseShift + '°';
+                
+            } catch (err) {
+                console.error(err);
+                alert('Microphone access denied.');
+                startBtnText.innerHTML = originalText;
+            }
+        }
+        
+        function stopNoiseCancel() {
+            if (!isRunning) return;
+            
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            
+            try {
+                if (sourceNode) sourceNode.disconnect();
+                if (gainNode) gainNode.disconnect();
+                if (analyserNode) analyserNode.disconnect();
+                if (processorNode) processorNode.disconnect();
+            } catch(e){}
+            
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+            
+            if (audioContext) {
+                audioContext.close();
+            }
+            
+            isRunning = false;
+            isANCActive = false;
+            
+            document.getElementById('status-text').innerHTML = 'Disconnected';
+            document.getElementById('status-dot').classList.remove('bg-emerald-400', 'status-dot');
+            document.getElementById('status-dot').classList.add('bg-red-400');
+            
+            const startBtn = document.getElementById('start-btn-text');
+            startBtn.innerHTML = 'START MIC';
+            startBtn.parentElement.style.background = '';
+            startBtn.parentElement.style.boxShadow = '';
+            
+            const toggle = document.getElementById('anc-toggle');
+            const knob = document.getElementById('anc-knob');
+            const icon = document.getElementById('anc-icon');
+            const status = document.getElementById('anc-status');
+            
+            toggle.style.background = '#334155';
+            knob.style.transform = 'translateX(0)';
+            knob.style.background = '#fff';
+            icon.classList.add('hidden');
+            status.textContent = 'OFF';
+            status.style.background = '#166534';
+            status.style.color = '#4ade80';
+            
+            if (ctx && canvas) {
+                const dpr = window.devicePixelRatio || 1;
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+            }
+            
+            audioContext = null;
+            mediaStream = null;
+            sourceNode = null;
+            processorNode = null;
+            analyserNode = null;
+            gainNode = null;
+        }
+        
+        function downloadSelf() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'noise-canceler-pwa.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Toast
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;bottom:18px;left:50%;transform:translate(-50%,0);z-index:9999';
+            toast.className = `px-4 py-3 rounded-[3rem] bg-emerald-900 text-emerald-300 border border-emerald-700 text-xs flex items-center gap-x-2 shadow-xl`;
+            toast.innerHTML = `<i class="fa-solid fa-check-double"></i> <span class="font-semibold">Quine downloaded (PWA)</span>`;
+            
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.transition = 'all 0.2s';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.parentNode.removeChild(toast), 200);
+            }, 2200);
+        }
+        
+        function showInfo() {
+            const modal = document.createElement('div');
+            modal.className = `fixed inset-0 bg-black bg-opacity-70 flex items-end justify-center z-50`;
+            modal.innerHTML = `
+                <div onclick="event.target.remove()" class="absolute inset-0"></div>
+                <div class="relative bg-slate-900 border border-slate-700 w-full max-w-md rounded-t-3xl p-5 pb-7">
+                    <div class="px-1">
+                        <div class="flex justify-between items-center mb-5">
+                            <span class="font-bold text-xl">How it works</span>
+                            <button onclick="event.target.closest('.fixed').remove()" class="w-9 h-9 flex items-center justify-center text-2xl text-slate-300">×</button>
+                        </div>
+                        
+                        <div class="space-y-[17px] text-sm">
+                            <div>
+                                <div class="font-semibold text-cyan-300 flex items-center gap-2"><i class="fa-solid fa-microphone fa-fw"></i> <span>Microphone Input</span></div>
+                                <p class="text-xs text-slate-300 mt-1">Real-time audio capture via Web Audio API.</p>
+                            </div>
+                            
+                            <div>
+                                <div class="font-semibold text-cyan-300 flex items-center gap-2"><i class="fa-solid fa-sync fa-fw"></i> <span>Phase Inversion ANC</span></div>
+                                <p class="text-xs text-slate-300 mt-1">Inverts waveform for destructive interference.</p>
+                            </div>
+                            
+                            <div>
+                                <div class="font-semibold text-cyan-300 flex items-center gap-2"><i class="fa-solid fa-download fa-fw"></i> <span>Quine + PWA</span></div>
+                                <p class="text-xs text-slate-300 mt-1">Fully self-contained. Can be installed as a native-like app.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-4 border-t border-slate-700 text-xs text-center text-slate-400">
+                            Works offline after first load. Best with headphones.
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function initializeSliders() {
+            const gainSlider = document.getElementById('gain-slider');
+            const phaseSlider = document.getElementById('phase-slider');
+            
+            gainSlider.value = gainValue;
+            phaseSlider.value = phaseShift;
+            
+            document.getElementById('gain-value').innerHTML = gainValue.toFixed(2);
+            document.getElementById('phase-value').innerHTML = phaseShift + '°';
+            
+            gainSlider.onchange = updateGain;
+            phaseSlider.onchange = updatePhase;
+        }
+        
+        function initializeApp() {
+            initializeTailwind();
+            initCanvas();
+            initializeSliders();
+            setupPWA();
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.key === "?") {
+                    e.preventDefault();
+                    document.getElementById('anc-toggle').click();
+                }
+                if (e.metaKey && e.key === "s") {
+                    e.preventDefault();
+                    downloadSelf();
+                }
+            });
+            
+            // Easter egg
+            const header = document.querySelector('.font-display');
+            if (header) {
+                header.style.cursor = 'pointer';
+                header.onclick = downloadSelf;
+            }
+            
+            console.log('%c[NOISE•CANCEL] HTML5 PWA v3.0 initialized', 'color:#64748b');
+        }
+        
+        window.onload = initializeApp;
+        
+        // Global access
+        window.NOISE_CANCEL = {
+            download: () => downloadSelf(),
+            toggleANC: () => document.getElementById('anc-toggle').click()
+        };
+    </script>
+</body>
+</html>

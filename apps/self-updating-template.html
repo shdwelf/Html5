@@ -1,0 +1,557 @@
+<!doctype html>
+<!--
+  ============================================================================
+  Self-Updating HTML5 Template
+  ============================================================================
+  A single-file HTML5 app that:
+    1) Runs 100% offline (all code + assets inlined; uses localStorage cache)
+    2) Periodically checks a configurable URL for a newer version of itself
+    3) On finding an update, prompts the user; on confirm, swaps in the
+       newer HTML via a Blob URL navigation (no server-side help required).
+    4) Falls back to cached state when offline; shows a clear status pill.
+
+  Drop your app's logic into `runApp()` near the bottom — everything else
+  (update check, banner UI, offline state, version pill) is generic.
+
+  License: MIT — use freely.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#0c1320" />
+<title>Self-Updating HTML5 Template</title>
+<style>
+  :root {
+    --bg:        #0c1320;
+    --panel:     rgba(14,22,38,0.92);
+    --edge:      rgba(150,180,220,0.18);
+    --text:      #e7eef7;
+    --muted:     #8aa0bd;
+    --accent:    #ffd166;
+    --green:     #6ee7a0;
+    --warn:      #f9c74f;
+    --err:       #ff7a8a;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%;
+    background: radial-gradient(ellipse at 30% 20%, #142240 0%, #0c1320 60%, #05080f 100%);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Inter, sans-serif;
+  }
+  header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 18px;
+    background: linear-gradient(180deg, rgba(8,14,24,0.95), rgba(8,14,24,0.55));
+    border-bottom: 1px solid var(--edge);
+  }
+  header h1 { margin: 0; font-size: 18px; }
+  header .spacer { flex: 1; }
+  /* Status pill */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+    border: 1px solid var(--edge);
+    background: rgba(255,255,255,0.04);
+    color: var(--muted);
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .pill:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+  .pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .pill.online   .dot { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .pill.offline  .dot { background: var(--err);   box-shadow: 0 0 6px var(--err); }
+  .pill.update   .dot { background: var(--accent); box-shadow: 0 0 6px var(--accent);
+                        animation: pulseDot 1.5s infinite; }
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(1.4); }
+  }
+  .pill.online   { color: var(--green);  border-color: rgba(110,231,160,0.4); }
+  .pill.offline  { color: var(--err);    border-color: rgba(255,122,138,0.4); }
+  .pill.update   { color: var(--accent); border-color: rgba(255,209,102,0.5); }
+
+  /* Update banner */
+  #update-banner {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: linear-gradient(90deg, #ffd166 0%, #ff9f43 100%);
+    color: #1a1305;
+    padding: 12px 18px;
+    display: none; align-items: center; gap: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    z-index: 1000;
+    animation: slideDown .3s ease-out;
+  }
+  @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+  #update-banner.visible { display: flex; }
+  #update-banner .msg { flex: 1; font-weight: 600; font-size: 14px; }
+  #update-banner button {
+    border: none; padding: 8px 16px; border-radius: 6px;
+    cursor: pointer; font-weight: 600; font-size: 13px;
+  }
+  #update-banner .apply {
+    background: #1a1305; color: #ffd166;
+  }
+  #update-banner .apply:hover { background: #000; }
+  #update-banner .dismiss {
+    background: rgba(0,0,0,0.1); color: #1a1305;
+  }
+  #update-banner .dismiss:hover { background: rgba(0,0,0,0.2); }
+
+  /* App content */
+  main {
+    padding: 24px; max-width: 800px; margin: 0 auto;
+  }
+  .card {
+    background: var(--panel); border: 1px solid var(--edge);
+    border-radius: 12px; padding: 18px; margin-bottom: 14px;
+  }
+  .card h2 { margin: 0 0 10px 0; font-size: 16px; color: var(--accent); }
+  .card .k { color: var(--muted); display: inline-block; min-width: 140px; }
+  .card .v { color: var(--text); font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }
+
+  button.btn {
+    background: var(--accent); color: #1a1305; border: none;
+    padding: 8px 14px; border-radius: 6px; cursor: pointer;
+    font-weight: 600; font-size: 13px; margin-right: 6px;
+  }
+  button.btn:hover { filter: brightness(1.1); }
+  button.btn.secondary {
+    background: transparent; color: var(--text); border: 1px solid var(--edge);
+  }
+  input[type=url], input[type=text] {
+    background: rgba(0,0,0,0.3); color: var(--text);
+    border: 1px solid var(--edge); border-radius: 6px;
+    padding: 6px 10px; font-size: 12px; width: 100%;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  /* Modal */
+  #settings-bd {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px); z-index: 500;
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  #settings-bd.open { display: flex; }
+  #settings {
+    width: min(520px, 100%); background: #0c1422;
+    border: 1px solid var(--edge); border-radius: 14px; padding: 20px;
+    position: relative;
+  }
+  #settings h2 { margin-top: 0; }
+  #settings .close {
+    position: absolute; top: 10px; right: 14px; cursor: pointer;
+    color: var(--muted); font-size: 22px;
+  }
+  #settings label { display: block; margin: 12px 0 4px; font-size: 12px; color: var(--muted); }
+
+  #log {
+    margin-top: 8px; max-height: 200px; overflow: auto;
+    background: rgba(0,0,0,0.3); border-radius: 6px;
+    padding: 8px 12px; font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11px; line-height: 1.5;
+  }
+  .log-line { color: var(--muted); }
+  .log-ok { color: var(--green); }
+  .log-warn { color: var(--warn); }
+  .log-err { color: var(--err); }
+</style>
+</head>
+<body>
+
+<!-- Update banner (hidden until needed) -->
+<div id="update-banner">
+  <span class="msg">⬆️ <span id="update-msg">A new version is available</span></span>
+  <button class="apply" onclick="SelfUpdate.applyPending()">Reload now</button>
+  <button class="dismiss" onclick="SelfUpdate.dismiss()">Later</button>
+</div>
+
+<header>
+  <h1>🔄 Self-Updating Template</h1>
+  <div class="spacer"></div>
+  <div class="pill" id="status-pill" onclick="SelfUpdate.openSettings()">
+    <span class="dot"></span>
+    <span id="status-text">Initialising…</span>
+  </div>
+</header>
+
+<main>
+  <div class="card">
+    <h2>About this file</h2>
+    <p>This is a single-file HTML5 app that <b>updates itself</b> by periodically
+       fetching a newer copy of its own HTML from a URL you configure, then
+       hot-swapping the page when you confirm.</p>
+    <p>Everything runs offline once loaded — there's nothing else to download.
+       Cached state lives in <code>localStorage</code> under the key
+       <code>self-updating-template</code>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Build info</h2>
+    <div><span class="k">Version</span><span class="v" id="info-version">—</span></div>
+    <div><span class="k">Built</span><span class="v" id="info-built">—</span></div>
+    <div><span class="k">Self hash</span><span class="v" id="info-hash">—</span></div>
+    <div><span class="k">Size</span><span class="v" id="info-size">—</span></div>
+    <div><span class="k">Last update check</span><span class="v" id="info-checked">never</span></div>
+    <div style="margin-top: 12px;">
+      <button class="btn" onclick="SelfUpdate.checkNow()">Check for updates now</button>
+      <button class="btn secondary" onclick="SelfUpdate.openSettings()">Settings</button>
+      <button class="btn secondary" onclick="SelfUpdate.clearCache()">Clear cache</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Your app goes here</h2>
+    <p>This template provides:</p>
+    <ul>
+      <li>✅ Periodic self-update check (configurable URL + interval)</li>
+      <li>✅ Offline mode with cached state</li>
+      <li>✅ Online/offline/update status pill</li>
+      <li>✅ Update banner with prompt-to-apply UX</li>
+      <li>✅ Persistent settings in <code>localStorage</code></li>
+      <li>✅ Activity log for debugging</li>
+    </ul>
+    <p>Replace <code>runApp()</code> at the bottom of the file with your own logic.</p>
+  </div>
+
+  <div class="card">
+    <h2>Activity log</h2>
+    <div id="log"></div>
+  </div>
+</main>
+
+<!-- Settings modal -->
+<div id="settings-bd" onclick="if(event.target===this)SelfUpdate.closeSettings()">
+  <div id="settings">
+    <span class="close" onclick="SelfUpdate.closeSettings()">×</span>
+    <h2>⚙ Update settings</h2>
+
+    <label>Update URL (a raw HTML file that overrides this one)</label>
+    <input type="url" id="setting-url" placeholder="https://raw.githubusercontent.com/user/repo/main/app.html"/>
+
+    <label>Check interval (minutes)</label>
+    <input type="text" id="setting-interval" placeholder="60"/>
+
+    <label>
+      <input type="checkbox" id="setting-auto"/>
+      Auto-apply updates without prompting (dangerous: replaces this file silently)
+    </label>
+
+    <div style="margin-top: 16px;">
+      <button class="btn" onclick="SelfUpdate.saveSettings()">Save</button>
+      <button class="btn secondary" onclick="SelfUpdate.closeSettings()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   SelfUpdate — generic offline-first self-update machinery
+   ============================================================================
+   Use:
+     1. Set BUILD_VERSION below to a string you bump each release.
+     2. Set DEFAULT_UPDATE_URL to where the newest HTML lives (raw URL).
+     3. Replace runApp() at the bottom with your own logic.
+     4. Host the file anywhere (or run from file://).
+   ============================================================================ */
+
+const BUILD_VERSION = '1.0.0';
+const BUILD_DATE = '2026-06-15';
+const STORAGE_KEY = 'self-updating-template';
+const DEFAULT_UPDATE_URL = '';   // e.g. 'https://raw.githubusercontent.com/you/repo/main/app.html'
+const DEFAULT_CHECK_MIN = 60;    // minutes between automatic checks
+
+/* ---------- localStorage helpers ---------- */
+function store() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch (e) { return {}; }
+}
+function save(obj) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); }
+  catch (e) { log('localStorage write failed: ' + e.message, 'err'); }
+}
+function patch(updates) {
+  const s = store();
+  Object.assign(s, updates);
+  save(s);
+}
+
+/* ---------- Activity log ---------- */
+function log(msg, type = 'info') {
+  const el = document.getElementById('log');
+  if (!el) return;
+  const line = document.createElement('div');
+  line.className = 'log-line log-' + type;
+  const t = new Date().toLocaleTimeString();
+  line.textContent = `[${t}] ${msg}`;
+  el.prepend(line);
+  while (el.children.length > 50) el.removeChild(el.lastChild);
+}
+
+/* ---------- Self-hash (SHA-256 of own HTML) ---------- */
+async function selfHash() {
+  // Grab the entire HTML of THIS document. The hash is used to detect when a
+  // remote URL is serving the same file we already have.
+  const html = document.documentElement.outerHTML;
+  const enc = new TextEncoder().encode(html);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  const arr = Array.from(new Uint8Array(buf));
+  return arr.map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+async function hashOf(text) {
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  const arr = Array.from(new Uint8Array(buf));
+  return arr.map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* ---------- Settings ---------- */
+function getSettings() {
+  const s = store();
+  return {
+    updateUrl: s.updateUrl ?? DEFAULT_UPDATE_URL,
+    checkIntervalMin: s.checkIntervalMin ?? DEFAULT_CHECK_MIN,
+    autoApply: !!s.autoApply,
+  };
+}
+
+/* ---------- Update check ---------- */
+async function checkForUpdate() {
+  const { updateUrl } = getSettings();
+  if (!updateUrl) {
+    log('No update URL configured — set one in Settings.', 'warn');
+    setStatus('online', 'No update URL set');
+    return null;
+  }
+  setStatus('checking', 'Checking for updates…');
+  log('Checking ' + updateUrl);
+
+  try {
+    // Bust caches with a query param
+    const url = updateUrl + (updateUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const remoteHtml = await res.text();
+    patch({ lastCheckedAt: Date.now() });
+    refreshInfoPanel();
+
+    // Quick sanity: looks like HTML?
+    if (!/^\s*<!doctype html/i.test(remoteHtml) && !/<html/i.test(remoteHtml)) {
+      throw new Error('Remote file does not look like HTML');
+    }
+
+    const ourHash = await selfHash();
+    const remoteHash = await hashOf(remoteHtml);
+    if (ourHash === remoteHash) {
+      log('✓ Already up-to-date.', 'ok');
+      setStatus('online', 'Up-to-date · v' + BUILD_VERSION);
+      return null;
+    }
+
+    // Try to extract a BUILD_VERSION constant from the remote file
+    const verMatch = remoteHtml.match(/BUILD_VERSION\s*=\s*['"]([^'"]+)['"]/);
+    const remoteVer = verMatch ? verMatch[1] : '(unknown)';
+    log(`⬆ Update available: v${remoteVer} (${(remoteHtml.length/1024).toFixed(1)} KB)`, 'ok');
+
+    patch({
+      pendingHtml: remoteHtml,
+      pendingVersion: remoteVer,
+      pendingFoundAt: Date.now(),
+    });
+
+    if (getSettings().autoApply) {
+      log('Auto-applying update…');
+      applyPendingUpdate();
+    } else {
+      showUpdateBanner(remoteVer);
+      setStatus('update', `Update v${remoteVer} ready`);
+    }
+    return { remoteVer, size: remoteHtml.length };
+  } catch (e) {
+    log('Update check failed: ' + e.message, 'err');
+    setStatus('offline', 'Offline / check failed');
+    return null;
+  }
+}
+
+/* ---------- Apply pending update ---------- */
+function applyPendingUpdate() {
+  const s = store();
+  if (!s.pendingHtml) {
+    log('No pending update to apply.', 'warn');
+    return;
+  }
+  log('Applying update v' + (s.pendingVersion || '?') + '…', 'ok');
+  // Use a Blob URL so the browser treats the new file as a fresh document.
+  // (document.open/write also works but breaks back-button + bookmarks.)
+  try {
+    const blob = new Blob([s.pendingHtml], { type: 'text/html' });
+    const blobUrl = URL.createObjectURL(blob);
+    // Mark as installed so the new file knows it was applied via update
+    patch({
+      lastAppliedVersion: s.pendingVersion,
+      lastAppliedAt: Date.now(),
+      pendingHtml: null,
+      pendingVersion: null,
+    });
+    // Navigate.
+    window.location.replace(blobUrl);
+  } catch (e) {
+    log('Failed to apply update: ' + e.message, 'err');
+  }
+}
+
+/* ---------- Banner ---------- */
+function showUpdateBanner(ver) {
+  const banner = document.getElementById('update-banner');
+  document.getElementById('update-msg').textContent =
+    `Version ${ver} is available (you have ${BUILD_VERSION})`;
+  banner.classList.add('visible');
+}
+function dismissBanner() {
+  document.getElementById('update-banner').classList.remove('visible');
+}
+
+/* ---------- Status pill ---------- */
+function setStatus(state, text) {
+  const pill = document.getElementById('status-pill');
+  pill.classList.remove('online', 'offline', 'update', 'checking');
+  if (state !== 'checking') pill.classList.add(state);
+  document.getElementById('status-text').textContent = text;
+}
+
+/* ---------- Settings modal ---------- */
+function openSettings() {
+  const s = getSettings();
+  document.getElementById('setting-url').value = s.updateUrl;
+  document.getElementById('setting-interval').value = s.checkIntervalMin;
+  document.getElementById('setting-auto').checked = s.autoApply;
+  document.getElementById('settings-bd').classList.add('open');
+}
+function closeSettings() {
+  document.getElementById('settings-bd').classList.remove('open');
+}
+function saveSettings() {
+  const url = document.getElementById('setting-url').value.trim();
+  const interval = parseInt(document.getElementById('setting-interval').value, 10) || DEFAULT_CHECK_MIN;
+  const auto = document.getElementById('setting-auto').checked;
+  patch({ updateUrl: url, checkIntervalMin: interval, autoApply: auto });
+  log(`Settings saved: URL=${url || '(none)'}, every ${interval}min, auto=${auto}`, 'ok');
+  closeSettings();
+  scheduleNextCheck();
+  refreshInfoPanel();
+}
+
+/* ---------- Clear cache ---------- */
+function clearCache() {
+  if (!confirm('Clear all cached data, settings, and pending updates?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  log('Cache cleared.', 'ok');
+  refreshInfoPanel();
+}
+
+/* ---------- Scheduled checks ---------- */
+let checkTimer = null;
+function scheduleNextCheck() {
+  if (checkTimer) clearTimeout(checkTimer);
+  const { checkIntervalMin } = getSettings();
+  const ms = Math.max(1, checkIntervalMin) * 60_000;
+  checkTimer = setTimeout(() => {
+    checkForUpdate().finally(scheduleNextCheck);
+  }, ms);
+}
+
+/* ---------- Build info panel ---------- */
+async function refreshInfoPanel() {
+  document.getElementById('info-version').textContent = BUILD_VERSION;
+  document.getElementById('info-built').textContent = BUILD_DATE;
+  document.getElementById('info-size').textContent =
+    (document.documentElement.outerHTML.length / 1024).toFixed(1) + ' KB';
+  document.getElementById('info-hash').textContent = (await selfHash()).slice(0, 16) + '…';
+  const s = store();
+  document.getElementById('info-checked').textContent =
+    s.lastCheckedAt ? new Date(s.lastCheckedAt).toLocaleString() : 'never';
+}
+
+/* ---------- Online/offline events ---------- */
+function bindOnlineEvents() {
+  window.addEventListener('online', () => {
+    log('Network back online.', 'ok');
+    setStatus('online', 'Online · v' + BUILD_VERSION);
+    checkForUpdate();
+  });
+  window.addEventListener('offline', () => {
+    log('Network offline — using cached state.', 'warn');
+    setStatus('offline', 'Offline · cached');
+  });
+}
+
+/* ---------- Public API ---------- */
+window.SelfUpdate = {
+  checkNow: () => checkForUpdate().finally(scheduleNextCheck),
+  applyPending: applyPendingUpdate,
+  dismiss: dismissBanner,
+  openSettings, closeSettings, saveSettings, clearCache,
+  store, getSettings, log,
+};
+
+/* ============================================================================
+   YOUR APP CODE GOES HERE — replace runApp() with your own logic.
+   It runs once on boot, AFTER the self-update infrastructure is initialised.
+   You can call SelfUpdate.log() from anywhere in your app.
+   ============================================================================ */
+function runApp() {
+  log('Demo app started.');
+  log('To use this template:');
+  log('  1. Bump BUILD_VERSION when you ship a new version');
+  log('  2. Host the file at any HTTPS URL');
+  log('  3. Click the status pill → Settings, paste that URL, save');
+  log('  4. The app will check for updates hourly (configurable)');
+  log('  5. When a new version is found, you see the banner at the top');
+}
+
+/* ============================================================================
+   Boot
+   ============================================================================ */
+(async function boot() {
+  bindOnlineEvents();
+  await refreshInfoPanel();
+
+  // Check if we were just hot-loaded from a Blob URL (post-update)
+  const s = store();
+  if (s.lastAppliedAt && Date.now() - s.lastAppliedAt < 30000) {
+    log(`✓ Update v${s.lastAppliedVersion} applied successfully.`, 'ok');
+  }
+
+  // Set initial status
+  if (navigator.onLine) {
+    setStatus('online', 'Online · v' + BUILD_VERSION);
+  } else {
+    setStatus('offline', 'Offline · cached');
+  }
+
+  // Restore any pending update banner from a previous session
+  if (s.pendingHtml && s.pendingVersion) {
+    showUpdateBanner(s.pendingVersion);
+    setStatus('update', `Update v${s.pendingVersion} ready`);
+  }
+
+  // First check on boot (after 5s, so the page renders first)
+  if (navigator.onLine && getSettings().updateUrl) {
+    setTimeout(() => checkForUpdate().finally(scheduleNextCheck), 5000);
+  } else {
+    scheduleNextCheck();
+  }
+
+  // Run user app code
+  try { runApp(); }
+  catch (e) { log('App error: ' + e.message, 'err'); }
+})();
+</script>
+</body>
+</html>
+</content>
+</invoke>

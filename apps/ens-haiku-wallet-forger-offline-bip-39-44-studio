@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ensō · Haiku Wallet Forger — Offline BIP-39/44 Studio</title>
+    <meta
+      name="description"
+      content="Offline BIP-39/BIP-44 wallet studio. Forge an ink ensō whose id is the master vault key, generate authentic 5-7-5 haiku wallets, save them AES-256 encrypted, and trade on the Waves lite-client."
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

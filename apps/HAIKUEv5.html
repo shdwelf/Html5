@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AES-256 Offline Decryptor (Memory Optimized)</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        h2 { text-align: center; margin-top: 0; }
+        .warning {
+            background: #450a0a;
+            color: #fca5a5;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 25px;
+            border: 1px solid #991b1b;
+            text-align: center;
+        }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #aaa; }
+
+        input[type="file"] {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+            color: #fff;
+            border: 1px solid #4a5568;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #4a5568;
+            background: #1a202c;
+            color: #4ade80;
+            font-family: monospace;
+            font-size: 14px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #4a5568;
+            background: #1a202c;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .divider {
+            text-align: center;
+            margin: 15px 0;
+            color: #666;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        button {
+            background-color: #10b981; 
+            color: #fff;
+            border: none;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #059669; }
+        button:disabled { background-color: #555; cursor: not-allowed; }
+
+        #output {
+            margin-top: 20px;
+            background: #000;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            color: #4ade80;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            display: none;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+        .error {
+            color: #ef4444;
+            background: #450a0a;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
+            border: 1px solid #991b1b;
+            font-weight: 500;
+        }
+        .status { margin-top: 10px; text-align: center; color: #aaa; font-size: 14px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Secure Vault Decryptor</h2>
+
+    <div class="warning">
+        <strong>Memory Warning:</strong> If the uploaded file crashes your browser, pasting it into the text area below may cause a deeper freeze due to DOM rendering limits.
+    </div>
+
+    <div class="form-group">
+        <label for="fileInput">Option A: Select Encrypted File</label>
+        <input type="file" id="fileInput" accept=".json,.enc,.txt" />
+    </div>
+
+    <div class="divider">OR</div>
+
+    <div class="form-group">
+        <label for="textInput">Option B: Paste Encrypted JSON Text</label>
+        <textarea id="textInput" placeholder='{"cipher":"AES-256-GCM", "salt":"...", "iv":"...", "ciphertext":"..."}'></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="password">Master Password</label>
+        <input type="password" id="password" placeholder="Enter the exact password used for encryption" />
+    </div>
+
+    <button id="decryptBtn" onclick="handleDecryption()">Decrypt Wallet Data</button>
+
+    <div id="statusMsg" class="status">Processing...</div>
+    <div id="errorMsg" class="error"></div>
+    <pre id="output"></pre>
+</div>
+
+<script>
+    // Convert Base64 string back into a Uint8Array (Memory optimized)
+    function base64ToUint8Array(base64) {
+        try {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes;
+        } catch (e) {
+            throw new Error("Invalid Base64 encoding.");
+        }
+    }
+
+    // Import the raw password into a key format
+    async function getPasswordKey(password) {
+        const enc = new TextEncoder();
+        return await window.crypto.subtle.importKey(
+            "raw", 
+            enc.encode(password), 
+            { name: "PBKDF2" }, 
+            false, 
+            ["deriveKey"]
+        );
+    }
+
+    // Derive the exact AES key using the extracted Salt
+    async function deriveAesKey(passwordKey, salt) {
+        return await window.crypto.subtle.deriveKey(
+            { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+            passwordKey,
+            { name: "AES-GCM", length: 256 },
+            false,
+            ["decrypt"]
+        );
+    }
+
+    // Core decryption engine
+    async function processJsonPayload(jsonString, password) {
+        let encryptedObj = null;
+
+        try {
+            encryptedObj = JSON.parse(jsonString);
+
+            // Force garbage collection on the raw string if it was massive
+            jsonString = null; 
+
+            const b64Salt = encryptedObj.salt || encryptedObj.s;
+            const b64Iv = encryptedObj.iv || encryptedObj.i;
+            const b64Ciphertext = encryptedObj.ciphertext || encryptedObj.c;
+
+            if (!b64Salt || !b64Iv || !b64Ciphertext) {
+                showError("Invalid JSON structure. Missing salt, iv, or ciphertext.");
+                return;
+            }
+
+            const salt = base64ToUint8Array(b64Salt);
+            const iv = base64ToUint8Array(b64Iv);
+            const ciphertext = base64ToUint8Array(b64Ciphertext);
+
+            // Drop object references to free memory
+            encryptedObj = null;
+
+            const passwordKey = await getPasswordKey(password);
+            const aesKey = await deriveAesKey(passwordKey, salt);
+
+            try {
+                const decryptedBuffer = await window.crypto.subtle.decrypt(
+                    { name: "AES-GCM", iv: iv }, 
+                    aesKey, 
+                    ciphertext
+                );
+
+                const decryptedText = new TextDecoder().decode(decryptedBuffer);
+                showSuccess(decryptedText);
+
+            } catch (decryptErr) {
+                showError("Decryption failed! Incorrect password or corrupted data.");
+            }
+
+        } catch (parseErr) {
+            showError("Failed to parse text. Please ensure you pasted valid JSON data.");
+        }
+    }
+
+    // Input handler routing
+    function handleDecryption() {
+        const fileInput = document.getElementById('fileInput');
+        const textInput = document.getElementById('textInput');
+        const passwordInput = document.getElementById('password');
+        const btn = document.getElementById('decryptBtn');
+        const statusMsg = document.getElementById('statusMsg');
+
+        const password = passwordInput.value;
+        const rawText = textInput.value.trim();
+
+        // Reset output UI
+        document.getElementById('output').style.display = 'none';
+        document.getElementById('errorMsg').style.display = 'none';
+
+        if (!password) {
+            showError("Please enter your decryption password.");
+            return;
+        }
+
+        btn.disabled = true;
+        statusMsg.style.display = 'block';
+
+        // Give the UI a brief moment to render the "Processing" state before locking the thread
+        setTimeout(() => {
+            if (fileInput.files.length > 0) {
+                // Option A: Read from file
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    processJsonPayload(e.target.result, password).finally(() => {
+                        btn.disabled = false;
+                        statusMsg.style.display = 'none';
+                    });
+                };
+
+                reader.onerror = function() {
+                    showError("Browser failed to read the file. It may be too large for memory.");
+                    btn.disabled = false;
+                    statusMsg.style.display = 'none';
+                };
+
+                reader.readAsText(file);
+
+            } else if (rawText.length > 0) {
+                // Option B: Read from pasted text
+                processJsonPayload(rawText, password).finally(() => {
+                    btn.disabled = false;
+                    statusMsg.style.display = 'none';
+                });
+            } else {
+                showError("Please either select a file or paste the encrypted JSON text.");
+                btn.disabled = false;
+                statusMsg.style.display = 'none';
+            }
+        }, 50);
+    }
+
+    function showError(msg) {
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.textContent = msg;
+        errorMsg.style.display = 'block';
+    }
+
+    function showSuccess(text) {
+        const output = document.getElementById('output');
+        output.textContent = text;
+        output.style.display = 'block';
+
+        // Clear inputs to protect data and free up DOM memory
+        document.getElementById('password').value = '';
+        document.getElementById('textInput').value = '';
+    }
+</script>
+
+</body>
+</html>

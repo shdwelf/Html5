@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purple Team Training Suite - SecOps Simulation Lab</title>
+<meta name="theme-color" content="#070a12">
+<meta name="application-name" content="Purple Team Lab">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Purple Team Lab">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-512.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #070a12;
+  --bg2: #0d1220;
+  --panel: #121a2b;
+  --panel2: #18223a;
+  --line: #263250;
+  --text: #d7e2f5;
+  --muted: #8a9ab8;
+  --red: #ff4d5a;
+  --red-glow: rgba(255,77,90,0.25);
+  --blue: #3b9cff;
+  --blue-glow: rgba(59,156,255,0.22);
+  --purple: #a76bff;
+  --green: #22d3a8;
+  --amber: #ffbf3c;
+  --cyan: #3ee7ff;
+}
+* { box-sizing: border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: radial-gradient(1200px 800px at 80% -10%, #142040 0%, transparent 60%), var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+a { color: var(--cyan); }
+
+/* Top bar */
+.topbar {
+  position: sticky; top:0; z-index: 50;
+  background: rgba(7,10,18,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 24px;
+  display:flex; align-items:center; gap:24px; flex-wrap:wrap;
+}
+.logo { font-family: 'JetBrains Mono', monospace; font-weight:700; font-size:16px; letter-spacing: 0.5px; }
+.logo span.red { color: var(--red); }
+.logo span.blue { color: var(--blue); }
+.logo span.purple { color: var(--purple); }
+.topbar nav { display:flex; gap:18px; flex-wrap:wrap; font-size:13px; }
+.topbar nav button {
+  background:none; border:none; color:var(--muted); cursor:pointer; font-family:inherit; font-size:13px; font-weight:600;
+  padding: 6px 10px; border-radius: 6px; transition: .15s;
+}
+.topbar nav button.active, .topbar nav button:hover { color: var(--text); background: #1a2338; }
+
+.status-pills { margin-left:auto; display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:11px; font-family:'JetBrains Mono', monospace; }
+.pill { border:1px solid var(--line); background:#101828; padding:5px 10px; border-radius:999px; color: var(--muted); }
+.pill.live { color: var(--green); border-color: rgba(34,211,168,.35); }
+.pill.warn { color: var(--amber); border-color: rgba(255,191,60,.35); }
+
+/* Banner */
+.auth-banner {
+  background: linear-gradient(90deg, rgba(167,107,255,.12), rgba(59,156,255,.12));
+  border-bottom: 1px solid var(--line);
+  text-align:center; padding:9px 16px;
+  font-size:12px; color:#c4ceea; font-weight:600;
+}
+.auth-banner strong { color: var(--amber); }
+
+/* Layout */
+.wrap { max-width: 1280px; margin: 28px auto; padding: 0 22px 80px; }
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+.card {
+  background: linear-gradient(180deg, var(--panel) 0%, #0f1627 100%);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.28);
+  position: relative;
+  overflow: hidden;
+}
+.card h3 {
+  font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted);
+  margin-bottom: 12px; display:flex; align-items:center; gap:8px;
+}
+.card h3 .dot { width:7px; height:7px; border-radius:50%; display:inline-block; }
+h2.section-title { font-size: 22px; margin: 8px 0 18px; font-weight: 800; letter-spacing: -.015em; }
+
+.col-4 { grid-column: span 4; }
+.col-5 { grid-column: span 5; }
+.col-6 { grid-column: span 6; }
+.col-7 { grid-column: span 7; }
+.col-8 { grid-column: span 8; }
+.col-12 { grid-column: span 12; }
+
+@media(max-width: 980px){
+  .col-4,.col-5,.col-6,.col-7,.col-8 { grid-column: span 12; }
+  .topbar nav { gap:8px; }
+}
+
+/* Red vs Blue scoreboard */
+.scoreboard { display:grid; grid-template-columns: 1fr auto 1fr; gap:16px; align-items:center; }
+.team-block { padding:14px; border-radius: 12px; }
+.team-red { background: linear-gradient(180deg, rgba(255,77,90,.08), transparent); border:1px solid rgba(255,77,90,.25); }
+.team-blue { background: linear-gradient(180deg, rgba(59,156,255,.08), transparent); border:1px solid rgba(59,156,255,.25); }
+.team-block .label { font-size: 11px; text-transform:uppercase; letter-spacing:.1em; color: var(--muted); }
+.team-block .score { font-size: 34px; font-weight: 800; font-family:'JetBrains Mono', monospace;}
+.vs { font-family:'JetBrains Mono', monospace; color: var(--purple); font-weight:700; }
+.kpi-row { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; font-size:12px; color: var(--muted); }
+.kpi-row b { color: var(--text); font-family:'JetBrains Mono', monospace; }
+
+/* Attack chain */
+.chain { display:flex; gap:10px; flex-wrap:wrap; }
+.chain-step {
+  flex:1 1 120px;
+  background:#0e1526; border:1px solid var(--line); border-radius:10px; padding:10px;
+  font-size:12px; color: var(--muted); min-width:120px;
+  cursor:pointer; transition:.15s;
+}
+.chain-step:hover { border-color: #3a4a6b; }
+.chain-step.active { border-color: var(--purple); box-shadow: 0 0 18px rgba(167,107,255,.15); color: var(--text); }
+.chain-step strong { display:block; color: var(--text); font-size:13px; margin-bottom:3px; }
+
+/* Network canvas */
+#netCanvas { width:100%; height: 310px; background: radial-gradient(600px 260px at 50% 0%, rgba(59,156,255,.06), transparent 70%), #0a1020; border-radius:10px; border:1px solid var(--line); display:block; }
+
+/* Tables */
+.table { width:100%; border-collapse: collapse; font-size: 12.5px; font-family:'JetBrains Mono', monospace;}
+.table th { text-align:left; color: var(--muted); font-weight:600; padding: 8px 10px; border-bottom:1px solid var(--line); font-family:'Inter', sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:.07em; }
+.table td { padding: 9px 10px; border-bottom:1px solid #1a2338; }
+.table tr:hover td { background: rgba(255,255,255,.02); }
+.tag { font-size:10.5px; padding:3px 7px; border-radius:999px; border:1px solid var(--line); color: var(--muted); }
+.tag.red { color: var(--red); border-color: rgba(255,77,90,.35); background: rgba(255,77,90,.07); }
+.tag.blue { color: var(--blue); border-color: rgba(59,156,255,.35); background: rgba(59,156,255,.07); }
+.tag.green { color: var(--green); border-color: rgba(34,211,168,.35); background: rgba(34,211,168,.07); }
+.tag.amber { color: var(--amber); border-color: rgba(255,191,60,.35); background: rgba(255,191,60,.07); }
+
+/* Packet console */
+.console {
+  background: #070d1a;
+  border:1px solid var(--line);
+  border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  height: 285px;
+  overflow:auto;
+  padding: 12px;
+  color: #b9c9e8;
+}
+.console .p { opacity:.95; white-space:pre; line-height:1.65; }
+.console .dim { color: #6a7a98; }
+
+/* RF Spectrum */
+.spectrum-wrap { background:#090f1c; border:1px solid var(--line); border-radius:10px; padding:12px; }
+#spectrumCanvas { width:100%; height: 150px; display:block; }
+.spectrum-legend { display:flex; gap:16px; font-size:11px; color: var(--muted); margin-top:8px; flex-wrap:wrap;}
+.legend-dot { width:9px; height:9px; border-radius:3px; display:inline-block; margin-right:5px; vertical-align:middle;}
+
+/* Buttons */
+.btn {
+  background:#1b2642; color:var(--text); border:1px solid #2d3b5e;
+  padding:8px 12px; border-radius:9px; cursor:pointer; font-weight:600; font-size:12.5px;
+  transition:.15s;
+}
+.btn:hover { background:#223054; }
+.btn.primary { background: linear-gradient(180deg, #3b73ff, #2d5bcf); border-color: #4a7fff; }
+.btn.red { background: rgba(255,77,90,.09); border-color: rgba(255,77,90,.35); color: #ff9ba3;}
+.btn.ghost { background: transparent; }
+.btn-sm { padding:5px 9px; font-size:12px; border-radius:7px; }
+.toolbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+
+/* Traceroute */
+.trace-map { position:relative; background: radial-gradient(700px 300px at 20% 0%, rgba(34,211,168,.06), transparent), #0b1222; border:1px solid var(--line); border-radius:10px; height: 270px; overflow:hidden; }
+.trace-nodes { position:absolute; inset:0; }
+.tnode {
+  position:absolute; background:#141f35; border:1px solid #2b3a5c; border-radius:10px; padding:7px 10px; font-size:11px;
+  font-family:'JetBrains Mono', monospace; color:#c9d8f3; box-shadow: 0 4px 14px rgba(0,0,0,.3);
+}
+.tnode.hop { border-color: rgba(62,231,255,.4);}
+.trace-svg { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+
+input[type="text"], select {
+  background:#0a1222; border:1px solid #2a3654; color: var(--text);
+  padding:9px 11px; border-radius:9px; font-family:'JetBrains Mono', monospace; font-size:12.5px;
+  outline:none; width:100%;
+}
+input[type="text"]:focus { border-color: #3b6cff; box-shadow: 0 0 0 3px rgba(59,108,255,.15); }
+label.small { font-size:11px; color:var(--muted); display:block; margin-bottom:5px; }
+
+.view { display:none; }
+.view.active { display:block; animation: fade .22s ease; }
+@keyframes fade { from{opacity:.4; transform: translateY(4px);} to{opacity:1; transform:none;} }
+
+.list-tight { font-size:13px; color:#b8c7e3; line-height:1.75; }
+.list-tight li { margin-left: 16px; }
+
+.footer-note {
+  color:#6d7c9b; font-size:12px; text-align:center; margin-top:34px; line-height:1.7;
+  border-top:1px solid var(--line); padding-top:18px;
+}
+hr.soft { border:none; border-top:1px solid var(--line); margin:14px 0; }
+.mono { font-family:'JetBrains Mono', monospace; }
+.right { text-align:right; }
+.small-muted { font-size:12px; color: var(--muted); }
+.scroll-y { max-height: 310px; overflow:auto; }
+
+/* PWA Install UI */
+.install-banner {
+  display:none;
+  background: linear-gradient(90deg, rgba(167,107,255,.14), rgba(59,156,255,.14));
+  border-bottom:1px solid var(--line);
+  padding:10px 22px;
+  align-items:center; justify-content: center; gap:14px;
+  font-size:13px; font-weight:600;
+  color:#d6e2ff;
+}
+.install-banner.show { display:flex; flex-wrap:wrap;}
+.install-banner .btn-install {
+  background: linear-gradient(180deg, #a76bff, #7a45d6);
+  border-color: #b981ff; color: white;
+  padding:7px 14px; border-radius: 999px; font-weight:700; cursor:pointer;
+}
+.btn-install-top {
+  background: linear-gradient(180deg, #a76bff, #7a45d6);
+  border:1px solid #b981ff; color:white;
+  padding:6px 12px; border-radius:999px; font-weight:700; cursor:pointer; font-size:12px;
+}
+.btn-install-top:hover { filter: brightness(1.08); }
+#installBtnTop { display:none; }
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">PURPLE<span class="purple">TEAM</span> LAB <span style="color:#556785"> / SecOps Suite v4.2</span></div>
+  <nav id="mainNav">
+    <button class="active" data-view="ops">Ops Center</button>
+    <button data-view="rf">RF Spectrum Lab</button>
+    <button data-view="packets">Packet Forensics</button>
+    <button data-view="trace">Visual Traceroute</button>
+    <button data-view="playbooks">Playbooks</button>
+  </nav>
+  <div class="status-pills">
+    <button class="btn-install-top" id="installBtnTop">⬇ Install</button>
+    <span class="pill live">● SIMULATION MODE</span>
+    <span class="pill">LAB: PTL-ATL-03</span>
+    <span class="pill warn">NO LIVE RF</span>
+  </div>
+</div>
+
+<div class="auth-banner">
+  <strong>AUTHORIZED TRAINING USE ONLY — SIMULATED DATA</strong> &nbsp;·&nbsp; This is an educational Purple Team UI mockup. No real packet capture, RF transmission, or offensive tooling is included. For use in isolated lab environments with proper authorization only.
+</div>
+<div class="install-banner" id="installBanner" role="region" aria-label="Install app">
+  <span>📲 Install Purple Team Lab as a desktop / mobile app for offline training</span>
+  <button class="btn-install" id="installBtn">Install App</button>
+  <button class="btn btn-sm ghost" id="dismissInstallBtn" style="border-radius:999px">Not now</button>
+  <button class="btn btn-sm ghost" id="downloadStandaloneBtn" style="border-radius:999px" title="Download a single-file offline HTML copy">Download Standalone .html</button>
+</div>
+
+<div class="wrap">
+
+  <!-- OPS CENTER -->
+  <div class="view active" id="view-ops">
+    <h2 class="section-title">Purple Team Operations Center</h2>
+    <div class="grid">
+      <div class="card col-8">
+        <h3><span class="dot" style="background:var(--purple)"></span> Red vs. Blue — Live Exercise Scoreboard</h3>
+        <div class="scoreboard">
+          <div class="team-block team-red">
+            <div class="label">🔴 Red Team</div>
+            <div class="score mono" id="redScore">1260</div>
+            <div class="kpi-row">
+              <span>TTPs: <b>7 / 14</b></span>
+              <span>MTTD Evasion: <b>11.4 min</b></span>
+            </div>
+          </div>
+          <div class="vs">VS</div>
+          <div class="team-block team-blue">
+            <div class="label">🔵 Blue Team</div>
+            <div class="score mono" id="blueScore">1385</div>
+            <div class="kpi-row">
+              <span>Detections: <b>7 / 7</b></span>
+              <span>MTTR: <b>4.2 min</b></span>
+            </div>
+          </div>
+        </div>
+        <hr class="soft">
+        <div class="toolbar">
+          <button class="btn btn-sm primary" id="injectBtn">Inject Simulated TTP</button>
+          <button class="btn btn-sm" id="detectBtn">Blue: Correlate Alert</button>
+          <button class="btn btn-sm ghost" id="resetScoreBtn">Reset Exercise</button>
+          <span class="small-muted" style="margin-left:auto">Scoring: MITRE ATT&CK Emulation · NIST CSF aligned</span>
+        </div>
+        <div style="max-height:205px; overflow:auto">
+        <table class="table" id="eventTable">
+          <thead><tr><th>Time</th><th>Team</th><th>Event</th><th style="text-align:right">Points</th></tr></thead>
+          <tbody>
+            <tr><td>09:12:04</td><td><span class="tag red">RED</span></td><td>TA0001 Initial Access — Phishing Simulation (Auth Lab)</td><td class="right mono">+150</td></tr>
+            <tr><td>09:14:31</td><td><span class="tag blue">BLUE</span></td><td>Detection: EDR email gateway alert correlated</td><td class="right mono">+180</td></tr>
+            <tr><td>09:22:10</td><td><span class="tag red">RED</span></td><td>TA0003 Persistence — Scheduled task emulation</td><td class="right mono">+120</td></tr>
+            <tr><td>09:23:55</td><td><span class="tag blue">BLUE</span></td><td>Response: Host isolated via SOC playbook IR-4</td><td class="right mono">+220</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="card col-4">
+        <h3><span class="dot" style="background:var(--green)"></span> Exercise Health</h3>
+        <ul class="list-tight">
+          <li>Environment: <b>Isolated Purple Range</b></li>
+          <li>ATT&CK Coverage: <b>7 Techniques</b></li>
+          <li>Detection Ratio: <b>100%</b></li>
+          <li>Mean Time to Detect: <b>1m 42s</b></li>
+          <li>Mean Time to Respond: <b>4m 12s</b></li>
+          <li>Log Ingest: <b>All sources healthy</b></li>
+          <li>Containment SLA: <b>Met</b></li>
+        </ul>
+        <hr class="soft">
+        <p class="small-muted">All emulated adversary actions are pre-approved, logged, and reversible. No production systems in scope.</p>
+      </div>
+
+      <div class="card col-12">
+        <h3><span class="dot" style="background:var(--amber)"></span> MITRE ATT&CK Kill Chain Navigator — Training Emulation</h3>
+        <div class="chain" id="killchain">
+          <div class="chain-step active"><strong>Reconnaissance</strong>TA0043 — OSINT simulation</div>
+          <div class="chain-step"><strong>Resource Dev</strong>TA0042 — Lab infra only</div>
+          <div class="chain-step"><strong>Initial Access</strong>TA0001 — Controlled phish</div>
+          <div class="chain-step"><strong>Execution</strong>TA0002 — Sandboxed</div>
+          <div class="chain-step"><strong>Persistence</strong>TA0003 — Monitored</div>
+          <div class="chain-step"><strong>Privilege Esc.</strong>TA0004 — Emulated</div>
+          <div class="chain-step"><strong>Defense Evasion</strong>TA0005</div>
+          <div class="chain-step"><strong>Lateral Move</strong>TA0008 — Segmented lab</div>
+          <div class="chain-step"><strong>Exfiltration</strong>TA0010 — Canary data only</div>
+        </div>
+        <p class="small-muted" style="margin-top:10px">Click a phase to load the associated defensive playbook in the Playbooks tab. This is a training map — not operational instructions.</p>
+      </div>
+
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--blue)"></span> Live Network Topology — Lab Range</h3>
+        <canvas id="netCanvas" width="860" height="310"></canvas>
+        <p class="small-muted" style="margin-top:8px">Simulated LAN. Drag nodes. This is a visualization aid only — no live sniffing.</p>
+      </div>
+
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--cyan)"></span> Blue Team SOC — Detection Queue</h3>
+        <div class="scroll-y">
+        <table class="table">
+          <thead><tr><th>Severity</th><th>Rule</th><th>Asset</th><th>Status</th></tr></thead>
+          <tbody id="socTable">
+            <tr><td><span class="tag amber">Medium</span></td><td>Unusual SMB lateral movement</td><td>ws-lab-07</td><td>Triaged</td></tr>
+            <tr><td><span class="tag green">Low</span></td><td>PowerShell -EncodedCommand (training)</td><td>ws-lab-03</td><td>Benign / Expected</td></tr>
+            <tr><td><span class="tag red">High</span></td><td>Canary token accessed — exfil sim</td><td>fs-lab-01</td><td>Contained</td></tr>
+            <tr><td><span class="tag blue">Info</span></td><td>EDR health heartbeat</td><td>all</td><td>OK</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn btn-sm" onclick="socAck()">Acknowledge All</button>
+          <button class="btn btn-sm ghost" onclick="socAdd()">Simulate New Alert</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RF SPECTRUM LAB -->
+  <div class="view" id="view-rf">
+    <h2 class="section-title">RF Spectrum Lab — Wi-Fi / Bluetooth LE (Simulated)</h2>
+    <div class="grid">
+      <div class="card col-8">
+        <h3><span class="dot" style="background:var(--cyan)"></span> 2.4GHz / 5GHz Spectrum Waterfall — Simulated</h3>
+        <div class="spectrum-wrap">
+          <canvas id="spectrumCanvas" width="900" height="150"></canvas>
+          <div class="spectrum-legend">
+            <span><i class="legend-dot" style="background:#3ee7ff"></i> 2.4 GHz Wi-Fi</span>
+            <span><i class="legend-dot" style="background:#a76bff"></i> Bluetooth LE Adv</span>
+            <span><i class="legend-dot" style="background:#ffbf3c"></i> Co-channel / noise floor</span>
+            <span style="margin-left:auto" class="small-muted">No SDR attached — this is training visualization only.</span>
+          </div>
+        </div>
+        <hr class="soft">
+        <div class="toolbar">
+          <button class="btn btn-sm" id="rfPause">Pause</button>
+          <button class="btn btn-sm ghost" onclick="rfNoise()">Inject Interference</button>
+          <span class="small-muted">For authorized site surveys use proper hardware and local regulations. This panel does not transmit.</span>
+        </div>
+      </div>
+
+      <div class="card col-4">
+        <h3><span class="dot" style="background:var(--green)"></span> Wireless Site Survey — Lab APs</h3>
+        <table class="table" id="wifiTable">
+          <thead><tr><th>SSID</th><th>Ch</th><th>RSSI</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">PTL-LAB-5G</td><td>36</td><td>-42 dBm</td></tr>
+            <tr><td class="mono">PTL-LAB-2G</td><td>6</td><td>-51 dBm</td></tr>
+            <tr><td class="mono">PTL-GUEST-ISO</td><td>11</td><td>-63 dBm</td></tr>
+            <tr><td class="mono">PTL-IOT-SEG</td><td>1</td><td>-68 dBm</td></tr>
+          </tbody>
+        </table>
+        <p class="small-muted" style="margin-top:10px">Scanning is simulated. Real-world wireless assessment requires written authorization, RF regulatory compliance, and must never target networks you do not own.</p>
+      </div>
+
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--purple)"></span> Bluetooth LE Scanner — Training Mode</h3>
+        <table class="table">
+          <thead><tr><th>Device</th><th>Type</th><th>RSSI</th><th>Notes</th></tr></thead>
+          <tbody id="bleTable">
+            <tr><td class="mono">LAB-BEACON-01</td><td>iBeacon</td><td>-58</td><td>Training beacon</td></tr>
+            <tr><td class="mono">PTL-TEST-TAG</td><td>BLE 5.2</td><td>-64</td><td>Randomized MAC</td></tr>
+            <tr><td class="mono">[Redacted]</td><td>—</td><td>—</td><td>Privacy-respecting simulator</td></tr>
+          </tbody>
+        </table>
+        <p class="small-muted" style="margin-top:8px">Browser Web Bluetooth is read-only and user-consent gated. No bruteforcing, deauth, or jamming is supported here.</p>
+      </div>
+
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--amber)"></span> Wireless Hardening Checklist</h3>
+        <ul class="list-tight">
+          <li>WPA3-Enterprise / SAE — enforced on lab SSIDs</li>
+          <li>PMF (Protected Management Frames) — Required</li>
+          <li>Isolated VLANs per SSID — Verified</li>
+          <li>Rogue AP detection enabled — Monitor mode only</li>
+          <li>Bluetooth: Pairing confirm / LE Secure Connections</li>
+          <li>Wi-Fi 6E 6GHz survey completed — Clean</li>
+          <li>No open / captive networks in scope</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PACKET FORENSICS -->
+  <div class="view" id="view-packets">
+    <h2 class="section-title">Packet Forensics Workbench — PCAP Analysis (Simulated)</h2>
+    <div class="grid">
+      <div class="card col-5">
+        <h3><span class="dot" style="background:var(--green)"></span> Load Capture</h3>
+        <label class="small">Sample PCAP (simulated)</label>
+        <select id="pcapSelect">
+          <option value="lab-phish">lab-phish-sim.pcap — 1,240 packets</option>
+          <option value="lab-lateral">lab-lateral-smb.pcap — 3,102 packets</option>
+          <option value="lab-dns">lab-dns-exfil-canary.pcap — 842 packets</option>
+        </select>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn primary btn-sm" onclick="loadPcap()">Load in Viewer</button>
+          <button class="btn btn-sm ghost" onclick="packetFeedStart()">Stream Live (sim)</button>
+        </div>
+        <hr class="soft">
+        <p class="small-muted">Real packet capture requires explicit consent and authorization on all monitored networks. Never analyze third-party traffic without legal basis. This viewer shows synthetic, lab-generated flows only.</p>
+      </div>
+
+      <div class="card col-7">
+        <h3><span class="dot" style="background:var(--cyan)"></span> Packet Console</h3>
+        <div class="console" id="packetConsole">
+<div class="p"><span class="dim"># Purple Team PCAP Viewer — Simulation Mode
+# Loaded: lab-phish-sim.pcap</span>
+00:00:01.124  10.40.1.12:49211 → 198.51.100.22:443  TLSv1.3  ClientHello SNI: mail.lab.local
+00:00:01.231  198.51.100.22:443 → 10.40.1.12:49211  TLSv1.3  ServerHello, ChangeCipherSpec
+00:00:02.441  10.40.1.12 → 10.40.1.5  DNS  A training-phish.lab.local  →  NXDOMAIN (sinkholed)
+00:00:03.012  10.40.1.12:51422 → 10.40.1.2:443  HTTP POST /report  200 OK  [EDR telemetry]
+<span class="dim"># --- Blue Team detection triggered: Email gateway + DNS sinkhole correlation ---</span></div>
+        </div>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn btn-sm" onclick="packetFeedStart()">Stream</button>
+          <button class="btn btn-sm ghost" onclick="packetFeedStop()">Pause</button>
+          <button class="btn btn-sm ghost" onclick="document.getElementById('packetConsole').innerHTML=''">Clear</button>
+        </div>
+      </div>
+
+      <div class="card col-12">
+        <h3><span class="dot" style="background:var(--blue)"></span> Flow Summary</h3>
+        <table class="table">
+          <thead><tr><th>Flow</th><th>Proto</th><th>Packets</th><th>Bytes</th><th>Analysis</th></tr></thead>
+          <tbody>
+            <tr><td>10.40.1.12 → mail.lab.local</td><td>TLS 1.3</td><td>42</td><td>18.2 KB</td><td><span class="tag green">Benign — training phish blocked</span></td></tr>
+            <tr><td>10.40.1.12 → 10.40.1.5</td><td>DNS</td><td>4</td><td>312 B</td><td><span class="tag blue">Sinkholed — good</span></td></tr>
+            <tr><td>ws-lab-03 → fs-lab-01</td><td>SMBv3</td><td>128</td><td>412 KB</td><td><span class="tag amber">Review — lateral sim</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRACEROUTE -->
+  <div class="view" id="view-trace">
+    <h2 class="section-title">Visual Traceroute & Network Path Analysis</h2>
+    <div class="grid">
+      <div class="card col-5">
+        <h3><span class="dot" style="background:var(--green)"></span> Trace Target</h3>
+        <label class="small">Host / IP (lab scope only)</label>
+        <input type="text" id="traceTarget" value="training-target.purplelab.local" />
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn primary btn-sm" onclick="runTrace()">Run Visual Trace</button>
+          <button class="btn btn-sm" onclick="runTrace('slow')">Slow Path Sim</button>
+        </div>
+        <hr class="soft">
+        <ul class="list-tight" id="traceLog">
+          <li>Ready. This is a simulated traceroute map for training.</li>
+        </ul>
+        <p class="small-muted" style="margin-top:10px">Do not scan networks without authorization. Use only in-scope lab targets.</p>
+      </div>
+      <div class="card col-7">
+        <h3><span class="dot" style="background:var(--cyan)"></span> Path Map</h3>
+        <div class="trace-map" id="traceMap">
+          <svg class="trace-svg" id="traceSvg"></svg>
+          <div class="trace-nodes" id="traceNodes"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAYBOOKS -->
+  <div class="view" id="view-playbooks">
+    <h2 class="section-title">Red Team Field Manual & Blue Team Field Manual — Training Extracts</h2>
+    <div class="grid">
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--red)"></span> Red Team — Authorized Adversary Emulation</h3>
+        <p class="small-muted">Training reference only. All TTPs must be executed in isolated, authorized purple ranges with signed Rules of Engagement.</p>
+        <hr class="soft">
+        <ul class="list-tight">
+          <li><b>TA0043 Reconnaissance</b> — Passive OSINT on your own organization, asset inventory validation. No third-party targeting.</li>
+          <li><b>TA0001 Initial Access</b> — Pre-approved phishing simulations with user consent and immediate disclosure.</li>
+          <li><b>TA0002 Execution</b> — Sandboxed, signed test binaries only. EDR in monitor mode.</li>
+          <li><b>TA0003 Persistence</b> — Documented, time-boxed, with auto-revert at exercise end.</li>
+          <li><b>TA0006 Credential Access</b> — Use canary / test accounts only. No production credentials.</li>
+          <li><b>TA0008 Lateral Movement</b> — Segment-restricted lab VLANs. No pivoting to prod.</li>
+          <li><b>TA0010 Exfiltration</b> — Canary / synthetic data only, to controlled sinkhole.</li>
+        </ul>
+        <p class="small-muted" style="margin-top:10px">Full MITRE ATT&CK: attack.mitre.org — always obtain written authorization before any assessment.</p>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn red btn-sm" onclick="alert('Training extract only. For full authorized emulation planning, consult your Purple Team lead and legal.')">View ROE Template</button>
+        </div>
+      </div>
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--blue)"></span> Blue Team — Defensive Operations Field Manual</h3>
+        <p class="small-muted">NIST CSF 2.0 Aligned — Identify / Protect / Detect / Respond / Recover / Govern</p>
+        <hr class="soft">
+        <ul class="list-tight">
+          <li><b>Identify:</b> Asset inventory, risk register, threat modeling — continuous</li>
+          <li><b>Protect:</b> IAM/MFA everywhere, patching SLA &lt;14d critical, EDR 100%, email filtering, WAF</li>
+          <li><b>Detect:</b> SIEM with MITRE-mapped detections, 24/7 monitoring, UEBA baselines, canary tokens</li>
+          <li><b>Respond:</b> IR playbooks IR-1 through IR-9, auto-isolation, forensics timeline preservation</li>
+          <li><b>Recover:</b> Immutable backups tested quarterly, RTO/RPO validated, post-incident review</li>
+          <li><b>Govern:</b> Tabletop exercises quarterly, purple team monthly, metrics to exec board</li>
+          <li><b>Wireless / RF:</b> WPA3-Enterprise, rogue AP detection, BT LE Secure Connections, quarterly site survey</li>
+          <li><b>Packet Analysis:</b> Full PCAP retention 30d for critical segments, Zeek/Suricata, TLS inspection with consent</li>
+        </ul>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn btn-sm primary" onclick="navigator.clipboard.writeText('IR Contacts: soc@purplelab.local | IR Hotline: +1-555-PTL-IR01'); alert('IR contact copied (demo).')">Copy IR Runbook Contact</button>
+        </div>
+      </div>
+
+      <div class="card col-12">
+        <h3><span class="dot" style="background:var(--purple)"></span> Purple Team Collaboration Loop</h3>
+        <table class="table">
+          <thead><tr><th>Step</th><th>Red</th><th>Blue</th><th>Outcome</th></tr></thead>
+          <tbody>
+            <tr><td>1. Plan</td><td>Propose emulated TTP + scope</td><td>Validate logging coverage</td><td><span class="tag green">ROE signed</span></td></tr>
+            <tr><td>2. Emulate</td><td>Execute in lab, timestamped</td><td>Monitor live, no tipping</td><td><span class="tag blue">Detection test</span></td></tr>
+            <tr><td>3. Detect</td><td>Wait for alert / note evasion</td><td>Correlate, triage, contain</td><td><span class="tag amber">MTTD measured</span></td></tr>
+            <tr><td>4. Improve</td><td>Share IOCs / technique notes</td><td>Tune detections, close gaps</td><td><span class="tag green">Coverage +1</span></td></tr>
+          </tbody>
+        </table>
+        <p class="small-muted" style="margin-top:10px">This suite is educational. For operational security testing, engage certified professionals with explicit, written authorization and a defined scope of work.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Purple Team Training Suite — SecOps Simulation Lab<br>
+    All network traffic, RF data, packet captures, and adversary emulation in this UI are <b>synthetic / simulated</b>.<br>
+    No offensive capabilities, exploits, or unauthorized access tools are included.<br>
+    Use only for authorized defensive training, in isolated lab environments, with proper legal approval.<br><br>
+    <span class="mono">build: ptl-sim-4.2.1 | 2025-06-19</span>
+  </div>
+</div>
+
+<script>
+// --- View router ---
+document.querySelectorAll('#mainNav button').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('#mainNav button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-'+b.dataset.view).classList.add('active');
+  }
+});
+
+// --- Red/Blue scoreboard ---
+let red = 1260, blue = 1385;
+const redEl = document.getElementById('redScore');
+const blueEl = document.getElementById('blueScore');
+const eventTable = document.querySelector('#eventTable tbody');
+
+function addEvent(team, text, pts){
+  const tr = document.createElement('tr');
+  const t = new Date().toLocaleTimeString('en-GB', {hour12:false});
+  tr.innerHTML = `<td>${t}</td><td><span class="tag ${team==='RED'?'red':'blue'}">${team}</span></td><td>${text}</td><td class="right mono">+${pts}</td>`;
+  eventTable.prepend(tr);
+}
+document.getElementById('injectBtn').onclick = ()=>{
+  const ttps = [
+    'TA0002 Execution — PowerShell emulation (sandboxed)',
+    'TA0005 Defense Evasion — Obfuscated loader test',
+    'TA0008 Lateral Movement — SMB sim, lab VLAN only',
+    'TA0011 C2 — DNS beacon simulation to sinkhole'
+  ];
+  const ttp = ttps[Math.floor(Math.random()*ttps.length)];
+  const pts = 90 + Math.floor(Math.random()*80);
+  red += pts; redEl.textContent = red;
+  addEvent('RED', ttp, pts);
+};
+document.getElementById('detectBtn').onclick = ()=>{
+  const dets = [
+    'Detection: EDR behavioral alert correlated',
+    'Response: Host auto-isolated — IR-4 playbook',
+    'Detection: SIEM MITRE T1059 rule fired',
+    'Blue: Canary token tripped — exfil blocked'
+  ];
+  const d = dets[Math.floor(Math.random()*dets.length)];
+  const pts = 110 + Math.floor(Math.random()*120);
+  blue += pts; blueEl.textContent = blue;
+  addEvent('BLUE', d, pts);
+};
+document.getElementById('resetScoreBtn').onclick = ()=>{
+  red=1260; blue=1385; redEl.textContent=red; blueEl.textContent=blue;
+  eventTable.innerHTML = `<tr><td>09:12:04</td><td><span class="tag red">RED</span></td><td>TA0001 Initial Access — Phishing Simulation (Auth Lab)</td><td class="right mono">+150</td></tr>
+  <tr><td>09:14:31</td><td><span class="tag blue">BLUE</span></td><td>Detection: EDR email gateway alert correlated</td><td class="right mono">+180</td></tr>`;
+};
+
+// Killchain click
+document.querySelectorAll('.chain-step').forEach(s=>{
+  s.onclick = ()=>{ document.querySelectorAll('.chain-step').forEach(x=>x.classList.remove('active')); s.classList.add('active'); }
+});
+
+// --- Network topology canvas ---
+const netCanvas = document.getElementById('netCanvas');
+const nctx = netCanvas.getContext('2d');
+function resizeNet(){
+  const r = netCanvas.getBoundingClientRect();
+  netCanvas.width = r.width * (window.devicePixelRatio||1);
+  netCanvas.height = 310 * (window.devicePixelRatio||1);
+  nctx.setTransform(window.devicePixelRatio||1,0,0,window.devicePixelRatio||1,0,0);
+}
+resizeNet(); window.addEventListener('resize', resizeNet);
+
+const nodes = [
+  {x:120,y:150,label:'FW\nEDGE', c:'#3b9cff'},
+  {x:280,y:90,label:'SOC\nSIEM', c:'#a76bff'},
+  {x:280,y:210,label:'EDR\nServer', c:'#22d3a8'},
+  {x:470,y:70,label:'WS-LAB-03', c:'#d7e2f5'},
+  {x:470,y:150,label:'WS-LAB-07', c:'#d7e2f5'},
+  {x:470,y:230,label:'FS-LAB-01', c:'#d7e2f5'},
+  {x:660,y:150,label:'ISOLATED\nVLAN', c:'#ffbf3c'},
+];
+const links = [[0,1],[0,2],[1,3],[1,4],[2,4],[2,5],[3,4],[4,5],[4,6],[5,6]];
+let dragN = null;
+netCanvas.addEventListener('mousedown', e=>{
+  const rect = netCanvas.getBoundingClientRect();
+  const mx = e.clientX-rect.left, my = e.clientY-rect.top;
+  dragN = nodes.find(n=>Math.hypot(n.x-mx, n.y-my)<32) || null;
+});
+window.addEventListener('mouseup', ()=>dragN=null);
+netCanvas.addEventListener('mousemove', e=>{
+  if(!dragN) return;
+  const rect = netCanvas.getBoundingClientRect();
+  dragN.x = e.clientX-rect.left; dragN.y = e.clientY-rect.top;
+});
+
+function drawNet(){
+  const w = netCanvas.getBoundingClientRect().width;
+  nctx.clearRect(0,0,w,310);
+  // links
+  nctx.strokeStyle = '#2a385a'; nctx.lineWidth = 1.5;
+  links.forEach(([a,b])=>{
+    nctx.beginPath(); nctx.moveTo(nodes[a].x, nodes[a].y); nctx.lineTo(nodes[b].x, nodes[b].y); nctx.stroke();
+  });
+  // nodes
+  nodes.forEach(n=>{
+    nctx.beginPath(); nctx.arc(n.x, n.y, 30, 0, Math.PI*2);
+    nctx.fillStyle = '#131d32'; nctx.fill();
+    nctx.strokeStyle = n.c; nctx.lineWidth = 1.8; nctx.stroke();
+    nctx.fillStyle = '#cfe0ff';
+    nctx.font = '11px JetBrains Mono';
+    nctx.textAlign='center';
+    n.label.split('\n').forEach((ln,i)=> nctx.fillText(ln, n.x, n.y-4 + i*13));
+  });
+  requestAnimationFrame(drawNet);
+}
+drawNet();
+
+// SOC table helpers
+function socAck(){
+  document.querySelectorAll('#socTable tr').forEach(tr=>{
+    if(tr.children[3]) tr.children[3].textContent = 'Acknowledged';
+  });
+}
+function socAdd(){
+  const severities = [
+    ['<span class="tag amber">Medium</span>', 'Anomalous PowerShell (training)','ws-lab-03'],
+    ['<span class="tag blue">Info</span>', 'Threat intel feed update','all'],
+    ['<span class="tag green">Low</span>', 'New USB device — authorized','ws-lab-07']
+  ];
+  const s = severities[Math.floor(Math.random()*severities.length)];
+  const tbody = document.getElementById('socTable');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td><td>New</td>`;
+  tbody.prepend(tr);
+}
+
+// --- RF Spectrum ---
+const spec = document.getElementById('spectrumCanvas');
+const sctx = spec.getContext('2d');
+let rfRunning = true, rfNoiseLevel = 0;
+function resizeSpec(){
+  const r = spec.getBoundingClientRect();
+  spec.width = r.width * (window.devicePixelRatio||1);
+  spec.height = 150 * (window.devicePixelRatio||1);
+  sctx.setTransform(window.devicePixelRatio||1,0,0,window.devicePixelRatio||1,0,0);
+}
+resizeSpec(); window.addEventListener('resize', resizeSpec);
+document.getElementById('rfPause').onclick = (e)=>{
+  rfRunning = !rfRunning;
+  e.target.textContent = rfRunning ? 'Pause' : 'Resume';
+};
+function rfNoise(){ rfNoiseLevel = Math.min(1, rfNoiseLevel + 0.35); setTimeout(()=>rfNoiseLevel*=0.6, 1800); }
+
+let specT = 0;
+function drawSpec(){
+  const w = spec.getBoundingClientRect().width;
+  const h = 150;
+  sctx.clearRect(0,0,w,h);
+  // grid
+  sctx.strokeStyle = '#1c2842'; sctx.lineWidth=1;
+  for(let i=0;i<6;i++){ sctx.beginPath(); sctx.moveTo(0, i*h/5); sctx.lineTo(w, i*h/5); sctx.stroke(); }
+  // wifi 2.4GHz humps
+  function hump(cx, amp, col){
+    sctx.beginPath();
+    sctx.moveTo(0,h-10);
+    for(let x=0;x<=w;x+=2){
+      const dx = (x - cx)/55;
+      const y = amp * Math.exp(-dx*dx) * (0.82 + 0.18*Math.sin(specT*0.06 + x*0.03));
+      sctx.lineTo(x, h-18 - y*85);
+    }
+    sctx.lineTo(w,h-10);
+    sctx.fillStyle = col;
+    sctx.fill();
+  }
+  if(rfRunning) specT++;
+  hump(w*0.18, 0.9, 'rgba(62,231,255,0.23)');
+  hump(w*0.38, 0.78, 'rgba(62,231,255,0.18)');
+  hump(w*0.62, 0.65, 'rgba(62,231,255,0.17)');
+  // BT LE spikes
+  sctx.strokeStyle = 'rgba(167,107,255,0.9)'; sctx.lineWidth=1.4;
+  for(let i=0;i<18;i++){
+    const x = (i/18 * w + specT*1.7) % w;
+    const ht = 18 + Math.random()*45;
+    sctx.beginPath(); sctx.moveTo(x, h-18); sctx.lineTo(x, h-18-ht); sctx.stroke();
+  }
+  // noise
+  if(rfNoiseLevel>0.01){
+    sctx.fillStyle = `rgba(255,191,60,${0.07+rfNoiseLevel*0.12})`;
+    sctx.fillRect(0, h-80, w, 70);
+    rfNoiseLevel *= 0.985;
+  }
+  // labels
+  sctx.fillStyle = '#7a8aad'; sctx.font='11px JetBrains Mono';
+  sctx.fillText('2.412 GHz  Ch 1', 14, 18);
+  sctx.fillText('2.437 GHz  Ch 6', w*0.36, 18);
+  sctx.fillText('2.462 GHz  Ch 11', w*0.62, 18);
+  sctx.fillText('5 GHz →', w-78, 18);
+  requestAnimationFrame(drawSpec);
+}
+drawSpec();
+
+// --- Packet console ---
+let packetTimer = null;
+const consoleEl = document.getElementById('packetConsole');
+const samplePackets = [
+`00:00:04.881  10.40.1.7:44102 → 10.40.1.2:88  Kerberos  AS-REQ  user: test-red@PURPLELAB.LOCAL`,
+`00:00:05.112  10.40.1.2:88 → 10.40.1.7  Kerberos  AS-REP  [pre-auth required - expected]`,
+`00:00:06.331  10.40.1.12:59811 → 10.40.1.5:53  DNS  TXT canary-7f2a.lab.local`,
+`00:00:06.335  10.40.1.5 → 10.40.1.12  DNS  NXDOMAIN  [sinkholed - Blue Team alert]`,
+`00:00:07.204  10.40.1.7 → 10.40.1.15  SMB2  SessionSetup  Encrypted`,
+`00:00:07.551  10.40.1.15 → 10.40.1.7  SMB2  TreeConnect  IPC$  STATUS_SUCCESS`,
+`00:00:08.119  10.40.1.7:59901 → 198.51.100.44:443  TLSv1.3  Application Data  [EDR telemetry upload]`,
+];
+function packetFeedStart(){
+  if(packetTimer) return;
+  let i=0;
+  packetTimer = setInterval(()=>{
+    const div = document.createElement('div');
+    div.className='p';
+    div.textContent = samplePackets[i % samplePackets.length];
+    consoleEl.appendChild(div);
+    consoleEl.scrollTop = consoleEl.scrollHeight;
+    i++;
+  }, 820);
+}
+function packetFeedStop(){ clearInterval(packetTimer); packetTimer=null; }
+function loadPcap(){
+  const sel = document.getElementById('pcapSelect').value;
+  const names = {
+    'lab-phish': 'lab-phish-sim.pcap — 1,240 packets',
+    'lab-lateral': 'lab-lateral-smb.pcap — 3,102 packets',
+    'lab-dns': 'lab-dns-exfil-canary.pcap — 842 packets'
+  };
+  consoleEl.innerHTML = `<div class="p"><span class="dim"># Purple Team PCAP Viewer — Simulation Mode\n# Loaded: ${names[sel]}\n# All traffic is lab-generated / synthetic</span></div>`;
+}
+
+// --- Visual Traceroute ---
+function runTrace(mode='normal'){
+  const nodesEl = document.getElementById('traceNodes');
+  const svg = document.getElementById('traceSvg');
+  const log = document.getElementById('traceLog');
+  nodesEl.innerHTML=''; svg.innerHTML=''; log.innerHTML='';
+  const hops = mode==='slow' ? [
+    {n:'10.40.0.1', l:'lab-gw.purplelab.local', ms:1.2, x: 60, y:130},
+    {n:'10.50.2.1', l:'core-sw-01', ms:2.8, x:200, y:80},
+    {n:'192.0.2.10', l:'edge-rtr-sim', ms:18.4, x:340, y:130},
+    {n:'203.0.113.44', l:'peer-ix', ms:42.1, x:480, y:80},
+    {n:'198.51.100.22', l:'training-target.purplelab.local', ms:46.7, x:620, y:130},
+  ] : [
+    {n:'10.40.0.1', l:'lab-gw', ms:0.8, x:90, y:130},
+    {n:'10.40.1.254', l:'ids-inline', ms:1.6, x:260, y:130},
+    {n:'198.51.100.22', l:'training-target.purplelab.local', ms:12.4, x:520, y:130},
+  ];
+  let delay=0;
+  hops.forEach((h,i)=>{
+    setTimeout(()=>{
+      const el = document.createElement('div');
+      el.className='tnode hop';
+      el.style.left = h.x+'px'; el.style.top = h.y+'px';
+      el.innerHTML = `Hop ${i+1}<br><b>${h.n}</b><br><span style="color:#7f90b3">${h.l}<br>${h.ms} ms</span>`;
+      nodesEl.appendChild(el);
+      if(i>0){
+        const p = hops[i-1];
+        const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+        line.setAttribute('x1', p.x+70); line.setAttribute('y1', p.y+22);
+        line.setAttribute('x2', h.x); line.setAttribute('y2', h.y+22);
+        line.setAttribute('stroke', '#2f9cff'); line.setAttribute('stroke-width', '2');
+        line.setAttribute('opacity','0.7');
+        svg.appendChild(line);
+      }
+      const li = document.createElement('li');
+      li.textContent = `${i+1}  ${h.n} (${h.l})  ${h.ms} ms`;
+      log.appendChild(li);
+    }, delay);
+    delay += 480;
+  });
+}
+// initial draw
+setTimeout(()=>runTrace(), 600);
+
+
+
+// --- PWA Install / Standalone ---
+let deferredPrompt = null;
+const installBanner = document.getElementById('installBanner');
+const installBtn = document.getElementById('installBtn');
+const installBtnTop = document.getElementById('installBtnTop');
+const dismissInstallBtn = document.getElementById('dismissInstallBtn');
+
+function showInstallUI(show){
+  if(show){
+    if(installBanner) installBanner.classList.add('show');
+    if(installBtnTop) installBtnTop.style.display = 'inline-block';
+  } else {
+    if(installBanner) installBanner.classList.remove('show');
+  }
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallUI(true);
+});
+
+installBtn?.addEventListener('click', async () => {
+  if(!deferredPrompt){
+    // Fallback: offer download
+    downloadStandalone();
+    return;
+  }
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  showInstallUI(false);
+});
+installBtnTop?.addEventListener('click', async () => {
+  if(deferredPrompt) installBtn.click();
+  else downloadStandalone();
+});
+dismissInstallBtn?.addEventListener('click', ()=>{
+  showInstallUI(false);
+  localStorage.setItem('ptl_install_dismissed', Date.now());
+});
+
+// Service Worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=> {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  });
+}
+
+// Already installed? hide
+window.addEventListener('appinstalled', ()=>{ showInstallUI(false); });
+
+// Offer banner on first visit after 2.5s if not installed
+if(!window.matchMedia('(display-mode: standalone)').matches){
+  const dismissed = localStorage.getItem('ptl_install_dismissed');
+  if(!dismissed || Date.now() - Number(dismissed) > 86400000*7){
+    setTimeout(()=>{ if(!deferredPrompt) showInstallUI(true); }, 2500);
+  }
+}
+
+// --- Download Standalone HTML ---
+async function downloadStandalone(){
+  try {
+    const resp = await fetch(location.href, {cache:'no-cache'});
+    let fullHtml = await resp.text();
+    // Inline the manifest as a data URL so the standalone file is truly single-file
+    fullHtml = fullHtml.replace('<link rel="manifest" href="manifest.webmanifest">',
+      '<!-- manifest removed in standalone build -->');
+    const blob = new Blob([fullHtml], {type: 'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'purple-team-lab-standalone.html';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  } catch(e){
+    // Fallback: serialize current document
+    const blob = new Blob([document.documentElement.outerHTML], {type: 'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'purple-team-lab-standalone.html';
+    a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); }, 1000);
+  }
+}
+document.getElementById('downloadStandaloneBtn')?.addEventListener('click', downloadStandalone);
+
+// Keyboard: Ctrl/Cmd+S to download standalone
+window.addEventListener('keydown', e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){
+    e.preventDefault();
+    downloadStandalone();
+  }
+});
+
+</script>
+</body>
+</html>
