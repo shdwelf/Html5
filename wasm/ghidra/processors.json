@@ -1,0 +1,105 @@
+[
+  {
+    "id": "x86:LE:32:default",
+    "description": "Intel/AMD 32-bit x86",
+    "sla": "Processors/x86/data/languages/x86.sla",
+    "pspec": "Processors/x86/data/languages/x86.pspec",
+    "compilers": [
+      {
+        "name": "Visual Studio",
+        "id": "windows",
+        "spec": "Processors/x86/data/languages/x86win.cspec"
+      },
+      {
+        "name": "gcc",
+        "id": "gcc",
+        "spec": "Processors/x86/data/languages/x86gcc.cspec"
+      },
+      {
+        "name": "Borland C++",
+        "id": "borlandcpp",
+        "spec": "Processors/x86/data/languages/x86borland.cspec"
+      },
+      {
+        "name": "Delphi",
+        "id": "borlanddelphi",
+        "spec": "Processors/x86/data/languages/x86delphi.cspec"
+      }
+    ]
+  },
+  {
+    "id": "x86:LE:32:System Management Mode",
+    "description": "Intel/AMD 32-bit x86 System Management Mode",
+    "sla": "Processors/x86/data/languages/x86.sla",
+    "pspec": "Processors/x86/data/languages/x86-16.pspec",
+    "compilers": [
+      {
+        "name": "default",
+        "id": "default",
+        "spec": "Processors/x86/data/languages/x86-16.cspec"
+      }
+    ]
+  },
+  {
+    "id": "x86:LE:16:Real Mode",
+    "description": "Intel/AMD 16-bit x86 Real Mode",
+    "sla": "Processors/x86/data/languages/x86.sla",
+    "pspec": "Processors/x86/data/languages/x86-16-real.pspec",
+    "compilers": [
+      {
+        "name": "default",
+        "id": "default",
+        "spec": "Processors/x86/data/languages/x86-16.cspec"
+      }
+    ]
+  },
+  {
+    "id": "x86:LE:16:Protected Mode",
+    "description": "Intel/AMD 16-bit x86 Protected Mode",
+    "sla": "Processors/x86/data/languages/x86.sla",
+    "pspec": "Processors/x86/data/languages/x86-16.pspec",
+    "compilers": [
+      {
+        "name": "default",
+        "id": "default",
+        "spec": "Processors/x86/data/languages/x86-16.cspec"
+      }
+    ]
+  },
+  {
+    "id": "x86:LE:64:default",
+    "description": "Intel/AMD 64-bit x86",
+    "sla": "Processors/x86/data/languages/x86-64.sla",
+    "pspec": "Processors/x86/data/languages/x86-64.pspec",
+    "compilers": [
+      {
+        "name": "Visual Studio",
+        "id": "windows",
+        "spec": "Processors/x86/data/languages/x86-64-win.cspec"
+      },
+      {
+        "name": "gcc",
+        "id": "gcc",
+        "spec": "Processors/x86/data/languages/x86-64-gcc.cspec"
+      }
+    ]
+  },
+  {
+    "id": "x86:LE:64:compat32",
+    "description": "Intel/AMD 64-bit x86 in 32-bit compatibility mode (long mode off)",
+    "sla": "Processors/x86/data/languages/x86-64.sla",
+    "pspec": "Processors/x86/data/languages/x86-64-compat32.pspec",
+    "compilers": [
+      {
+        "name": "Visual Studio",
+        "id": "windows",
+        "spec": "Processors/x86/data/languages/x86win.cspec"
+      },
+      {
+        "name": "gcc",
+        "id": "gcc",
+        "spec": "Processors/x86/data/languages/x86gcc.cspec"
+      }
+    ]
+  }
+]
