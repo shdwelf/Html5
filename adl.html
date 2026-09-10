@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#070a0e" />
+  <title>Alexandria Digital Library (ADL) Gazetteer Workbench · GazBean & USGS GNIS</title>
+  <link rel="stylesheet" href="./css/adl.css" />
+  <link rel="icon" href="./icon.png" />
+  <script src="./webxdc.js"></script>
+</head>
+<body class="adl-app">
+
+  <!-- Top Navigation Bar -->
+  <header class="adl-topbar">
+    <div class="adl-brand">
+      <span class="adl-logo-badge">ADL · GCS 1.2</span>
+      <div class="adl-title-wrap">
+        <h1>Alexandria Digital Library Gazetteer</h1>
+        <p>GazBean Middleware · USGS GNIS · PostgreSQL / PostGIS Spatial Engine</p>
+      </div>
+    </div>
+
+    <nav class="adl-nav-tabs">
+      <button type="button" class="tab-nav-btn active" data-tab="map">MAP &amp; EXPLORER</button>
+      <button type="button" class="tab-nav-btn" data-tab="query-studio">GAZBEAN STUDIO</button>
+      <button type="button" class="tab-nav-btn" data-tab="sitemap">GEOSPATIAL SITEMAP</button>
+      <button type="button" class="tab-nav-btn" data-tab="db-workbench">USGS GNIS &amp; SQL</button>
+      <button type="button" class="tab-nav-btn" data-tab="source-code">SOURCE CODE</button>
+      <button type="button" class="tab-nav-btn" data-tab="research">DEEP DIVE RESEARCH</button>
+      <button type="button" class="tab-nav-btn" data-tab="export">EXPORT</button>
+    </nav>
+
+    <div class="adl-top-links">
+      <button type="button" id="btnWebxdcStatus" class="btn-link-pill" style="color:var(--adl-emerald);border-color:rgba(16,185,129,0.4);">
+        WEBXDC · <span id="webxdcPeerName">LOCAL</span>
+      </button>
+      <button type="button" id="btnShareChat" class="btn-link-pill" style="color:var(--adl-amber);border-color:rgba(245,158,11,0.4);">
+        SHARE TO CHAT
+      </button>
+      <a href="./index.html" class="btn-link-pill">SITE-K GRID</a>
+      <a href="./terrarium.html" class="btn-link-pill">TERRARIUM</a>
+    </div>
+  </header>
+
+  <!-- Main Multi-Panel Workspace -->
+  <main class="adl-main-container">
+
+    <!-- ================================================================= -->
+    <!-- TAB 1: MAP & GAZETTEER EXPLORER -->
+    <!-- ================================================================= -->
+    <section class="tab-pane active" id="tab-map">
+      <!-- Left Search Sidebar -->
+      <aside class="map-sidebar">
+        <div class="search-box-panel">
+          <div class="search-field">
+            <label for="searchPlacename">PLACENAME / TOPONYM SEARCH</label>
+            <input id="searchPlacename" class="search-input" type="text" placeholder="e.g. Santa Barbara, Yosemite, Whitney…" autocomplete="off" spellcheck="false" />
+          </div>
+
+          <div class="filter-row">
+            <div class="search-field">
+              <label for="searchMatchMode">MATCH MODE</label>
+              <select id="searchMatchMode" class="search-select">
+                <option value="fuzzy">Fuzzy Trigram (pg_trgm)</option>
+                <option value="exact">Exact Placename</option>
+                <option value="prefix">Prefix Match</option>
+                <option value="fts">Full-Text Search</option>
+              </select>
+            </div>
+            <div class="search-field">
+              <label for="searchState">STATE</label>
+              <select id="searchState" class="search-select">
+                <option value="">All US States</option>
+                <option value="CA">California (CA)</option>
+                <option value="AZ">Arizona (AZ)</option>
+                <option value="CO">Colorado (CO)</option>
+                <option value="LA">Louisiana (LA)</option>
+                <option value="NV">Nevada (NV)</option>
+                <option value="OR">Oregon (OR)</option>
+                <option value="UT">Utah (UT)</option>
+                <option value="WA">Washington (WA)</option>
+                <option value="WY">Wyoming (WY)</option>
+                <option value="NY">New York (NY)</option>
+                <option value="FL">Florida (FL)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="search-field">
+            <label for="searchFttCode">ADL FEATURE TYPE THESAURUS (FTT)</label>
+            <select id="searchFttCode" class="search-select">
+              <option value="">All Feature Classifications</option>
+              <option value="phys">Physiographic (All Landforms)</option>
+              <option value="phys.peak">  └─ Peaks &amp; Summits</option>
+              <option value="phys.valley">  └─ Valleys &amp; Canyons</option>
+              <option value="phys.range">  └─ Mountain Ranges</option>
+              <option value="phys.island">  └─ Islands &amp; Reefs</option>
+              <option value="hydro">Hydrographic (Water Bodies)</option>
+              <option value="hydro.stream">  └─ Streams &amp; Rivers</option>
+              <option value="hydro.lake">  └─ Lakes &amp; Reservoirs</option>
+              <option value="hydro.marine">  └─ Marine Bays &amp; Channels</option>
+              <option value="hydro.spring">  └─ Springs &amp; Geysers</option>
+              <option value="pop">Populated Places (Cities &amp; Towns)</option>
+              <option value="admin">Administrative Areas &amp; Parks</option>
+              <option value="manmade">Manmade Structures</option>
+            </select>
+          </div>
+
+          <div class="filter-row">
+            <div class="search-field">
+              <label for="searchMinEle">MIN ELEV (M)</label>
+              <input id="searchMinEle" class="search-input" type="number" placeholder="0" />
+            </div>
+            <div class="search-field">
+              <label for="searchMaxEle">MAX ELEV (M)</label>
+              <input id="searchMaxEle" class="search-input" type="number" placeholder="5000" />
+            </div>
+          </div>
+
+          <div class="quick-presets-row">
+            <span>PRESETS:</span>
+            <button type="button" class="quick-preset-btn" data-preset="ucsb">UCSB / SB</button>
+            <button type="button" class="quick-preset-btn" data-preset="yosemite">Yosemite</button>
+            <button type="button" class="quick-preset-btn" data-preset="peaks">Peaks &gt;3000m</button>
+            <button type="button" class="quick-preset-btn" data-preset="hydro">Waters</button>
+          </div>
+
+          <div class="active-filters-bar">
+            <span id="bboxBadge" class="chip-bbox" hidden>BBOX ACTIVE</span>
+            <button type="button" id="btnClearSearch" class="btn-clear">CLEAR ALL</button>
+          </div>
+        </div>
+
+        <!-- Result List Header -->
+        <div class="results-header">
+          <span id="resultCountBadge" class="badge-count">10 FEATURES FOUND</span>
+          <span id="queryLatencyBadge" class="badge-latency">0.42 ms</span>
+        </div>
+
+        <!-- Feature List Scrollable Area -->
+        <div id="featureListContainer" class="feature-list-scroll"></div>
+      </aside>
+
+      <!-- Right Interactive Canvas Map -->
+      <div class="map-viewport-wrap">
+        <canvas id="adlMapCanvas"></canvas>
+
+        <!-- Floating Map Controls -->
+        <div class="map-controls-floating">
+          <div class="map-tool-group">
+            <button type="button" class="map-tool-btn active" data-tool="navigate" title="Navigate / Pan">PAN</button>
+            <button type="button" class="map-tool-btn" data-tool="bbox" title="Draw Bounding Box">BBOX</button>
+            <button type="button" class="map-tool-btn" data-tool="radial" title="Point-Radius Buffer">RADIAL</button>
+          </div>
+
+          <div class="map-tool-group">
+            <select id="mapStyleSelect" class="search-select" style="background:#0e131a;border:none;color:#5ce1ff;padding:4px 8px;">
+              <option value="usgs-topo">USGS Topo Style</option>
+              <option value="dark-gis">Dark Cyber-GIS</option>
+              <option value="satellite">Earth Satellite</option>
+              <option value="hydro">Hydrographic Vector</option>
+            </select>
+          </div>
+
+          <div class="map-tool-group">
+            <button type="button" id="btnZoomIn" class="map-tool-btn">+</button>
+            <button type="button" id="btnZoomOut" class="map-tool-btn">−</button>
+            <button type="button" id="btnResetView" class="map-tool-btn">HOME</button>
+          </div>
+        </div>
+
+        <!-- Status and Coordinate Readouts -->
+        <div id="toolStatusNote" class="map-status-banner">NAVIGATE: Click &amp; drag to pan, scroll to zoom</div>
+        <div id="mapCoordsHud" class="map-coords-hud">WGS84: 34.4140° N  119.8489° W  ·  ZOOM: 6x</div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 2: GAZBEAN STUDIO & LIVE POSTGIS COMPILER -->
+    <!-- ================================================================= -->
+    <section class="tab-pane" id="tab-query-studio">
+      <div class="studio-layout">
+        <div class="studio-panel">
+          <h3>
+            <span>LIVE POSTGIS SQL GENERATOR</span>
+            <span style="font-size:10px;color:#94a3b8">PostgreSQL 15+ / PostGIS 3.3+</span>
+          </h3>
+          <p style="font-size:11px;color:var(--adl-text-muted)">
+            GazBean dynamically compiles active filter parameters into optimized PostGIS spatial queries with bounding box overlap operators (<code>&amp;&amp;</code>), spatial distance functions (<code>ST_DWithin</code>), and trigram indices.
+          </p>
+          <pre id="livePostGisSql" class="code-block"></pre>
+          <pre id="liveQueryPlan" class="code-block" style="color:#5ce1ff;margin-top:8px;"></pre>
+        </div>
+
+        <div class="studio-panel">
+          <h3>
+            <span>GAZBEAN SERIALIZATION &amp; PROTOCOL PREVIEW</span>
+            <span style="font-size:10px;color:#94a3b8">ADL GCS v1.2 / RFC 7946</span>
+          </h3>
+          <p style="font-size:11px;color:var(--adl-text-muted)">
+            Live GeoJSON FeatureCollection stream marshalled by GazBean from PostgreSQL query result sets:
+          </p>
+          <pre id="liveJsonPreview" class="code-block" style="max-height:500px;"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 3: GEOSPATIAL SITEMAP & DISCOVERY -->
+    <!-- ================================================================= -->
+    <section class="tab-pane" id="tab-sitemap">
+      <div class="sitemap-layout">
+        <div class="studio-panel">
+          <h3>ADL COLLECTION HIERARCHY</h3>
+          <p style="font-size:11px;color:var(--adl-text-muted)">
+            Spatial partitions and USGS Quadrangle index trees for web crawler indexing.
+          </p>
+          <div id="sitemapHierarchyTree" style="overflow-y:auto;max-height:500px;"></div>
+        </div>
+
+        <div class="studio-panel">
+          <h3>
+            <span>GEOSPATIAL XML SITEMAP (SITEMAP.XML)</span>
+            <button type="button" id="btnDownloadSitemapXml" class="btn-primary" style="padding:4px 8px;font-size:10px;">DOWNLOAD XML</button>
+          </h3>
+          <p style="font-size:11px;color:var(--adl-text-muted)">
+            XML Sitemap conforming to Sitemaps XML 0.9 with <code>xmlns:geo="http://www.google.com/geo/schemas/sitemap/1.0"</code> extensions:
+          </p>
+          <pre id="sitemapXmlPreview" class="code-block" style="max-height:500px;"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 4: USGS GNIS & POSTGIS DATABASE WORKBENCH -->
+    <!-- ================================================================= -->
+    <section class="tab-pane" id="tab-db-workbench">
+      <div class="studio-layout">
+        <!-- Interactive SQL Console -->
+        <div class="studio-panel">
+          <h3>
+            <span>POSTGIS SPATIAL SQL CONSOLE</span>
+            <select id="sqlConsolePresets" class="search-select" style="font-size:10px;">
+              <option value="sb_channel">Preset: SB Channel BBox Intersect</option>
+              <option value="high_peaks">Preset: High Summits &gt; 3000m</option>
+              <option value="fuzzy_yosemite">Preset: Trigram Fuzzy Match 'Yosemite'</option>
+              <option value="radial_ucsb">Preset: 30km Radial Buffer around UCSB</option>
+            </select>
+          </h3>
+          <textarea id="consoleSqlInput" class="code-block" rows="6" style="width:100%;resize:vertical;">SELECT primary_name, gnis_feature_class, ST_Y(geom_point) AS lat, ST_X(geom_point) AS lon, ele_in_m
+FROM adl_gazetteer_features
+WHERE geom_point && ST_MakeEnvelope(-120.4, 34.0, -119.2, 34.6, 4326)
+ORDER BY primary_name ASC;</textarea>
+          <div style="display:flex;justify-content:flex-end;">
+            <button type="button" id="btnRunConsoleSql" class="btn-primary">EXECUTE SPATIAL SQL</button>
+          </div>
+          <pre id="consoleSqlOutput" class="code-block" style="min-height:180px;"></pre>
+        </div>
+
+        <!-- USGS GNIS Ingestion ETL Workbench -->
+        <div class="studio-panel">
+          <h3>
+            <span>USGS GNIS INGESTION ETL WORKBENCH</span>
+            <button type="button" id="btnLoadSampleGnis" class="btn-secondary" style="font-size:10px;padding:3px 8px;">LOAD SAMPLE GNIS</button>
+          </h3>
+          <p style="font-size:11px;color:var(--adl-text-muted)">
+            Paste USGS GNIS pipe-delimited records (<code>FEATURE_ID|FEATURE_NAME|FEATURE_CLASS...</code>) to transform into ADL GCS and PostGIS SQL:
+          </p>
+          <textarea id="gnisEtlInput" class="code-block" rows="6" style="width:100%;resize:vertical;" placeholder="Paste USGS GNIS pipe-delimited data here..."></textarea>
+          <div style="display:flex;justify-content:flex-end;">
+            <button type="button" id="btnParseGnisEtl" class="btn-primary">PARSE &amp; MAP TO ADL POSTGIS</button>
+          </div>
+          <pre id="gnisEtlReport" class="code-block" style="min-height:180px;"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 5: SOURCE CODE REPOSITORY -->
+    <!-- ================================================================= -->
+    <section class="tab-pane" id="tab-source-code">
+      <div style="padding:20px;width:100%;max-width:1400px;margin:0 auto;display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--adl-bg-surface);padding:12px 18px;border:1px solid var(--adl-border);border-radius:6px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <label for="sourceFileSelect" style="font-family:var(--adl-font-mono);font-size:11px;color:var(--adl-cyan);">SOURCE FILE:</label>
+            <select id="sourceFileSelect" class="search-select">
+              <option value="GazBean.java">src/gazbean/GazBean.java (JavaBean / JDBC / PostGIS Component)</option>
+              <option value="gazbean.py">src/gazbean/gazbean.py (Python / GeoAlchemy2 / Engine)</option>
+              <option value="gazbean.ts">src/gazbean/gazbean.ts (TypeScript / ES6 Module)</option>
+              <option value="adl_postgis_schema.sql">src/database/adl_postgis_schema.sql (PostgreSQL DDL &amp; Stored Procs)</option>
+              <option value="gnis_to_adl_etl.py">src/etl/gnis_to_adl_etl.py (USGS GNIS Ingestion ETL)</option>
+              <option value="adl_gazetteer_service.py">src/protocol/adl_gazetteer_service.py (ADL Protocol REST Server)</option>
+            </select>
+          </div>
+          <button type="button" id="btnCopySourceCode" class="btn-primary">COPY CODE</button>
+        </div>
+        <pre id="sourceCodeDisplay" class="code-block" style="max-height:600px;font-size:12px;"></pre>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 6: DEEP DIVE RESEARCH DOSSIER -->
+    <!-- ================================================================= -->
+    <section class="tab-pane" id="tab-research">
+      <div class="research-layout">
+        <article class="research-article">
+          <h2>1. Alexandria Digital Library (ADL): Origins &amp; Spatial Paradigm</h2>
+          <p>
+            The <strong>Alexandria Digital Library (ADL)</strong> project was launched in 1994 at the <strong>University of California, Santa Barbara (UCSB)</strong> as part of the joint NSF/NASA/DARPA Digital Libraries Initiative (DLI-1 &amp; DLI-2). Headquartered in the UCSB Map and Imagery Laboratory (MIL), ADL established the foundational framework for <em>georeferenced digital libraries</em>.
+          </p>
+          <p>
+            Prior to ADL, digital libraries indexed information primarily by textual bibliographic metadata (author, title, subject). ADL introduced the paradigm that <strong>geographic footprint</strong> is a primary metadata axis connecting maps, remote sensing imagery (Landsat, DOQQs), digital elevation models (DEMs), and textual scientific reports.
+          </p>
+        </article>
+
+        <article class="research-article">
+          <h2>2. The ADL Gazetteer Content Standard (ADL GCS v1.2)</h2>
+          <p>
+            Published by Linda L. Hill, Greg Janée, and James Frew, the <strong>ADL Gazetteer Content Standard (GCS v1.2)</strong> defines the structural schema for digital gazetteer entries:
+          </p>
+          <ul>
+            <li><strong>Names Set:</strong> Authorized primary toponym, plus historical, vernacular, and multilingual variant names with linguistic tags and temporal bounds.</li>
+            <li><strong>Spatial Footprint:</strong> Geodetic coordinates (WGS84 EPSG:4326), primary label points, bounding boxes (BBoxes), and elevation.</li>
+            <li><strong>Classification (ADL Feature Type Thesaurus):</strong> A faceted hierarchical classification (Physiographic, Hydrographic, Populated Places, Administrative, Manmade).</li>
+          </ul>
+        </article>
+
+        <article class="research-article">
+          <h2>3. GazBean Component Architecture</h2>
+          <p>
+            <strong>GazBean (Gazetteer JavaBean)</strong> serves as the modular middleware tier bridging user interfaces, GIS toolbars, and search applications with backend spatial database management systems (PostgreSQL/PostGIS).
+          </p>
+          <p>
+            GazBean encapsulates spatial query optimization: translating human search terms into bounding box <code>ST_MakeEnvelope</code> operations, geodesic radial distance buffers using PostGIS <code>geography(Point, 4326)</code>, and trigram fuzzy matching with PostgreSQL <code>pg_trgm</code>.
+          </p>
+        </article>
+
+        <article class="research-article">
+          <h2>4. USGS GNIS to PostgreSQL/PostGIS Integration &amp; Indexing</h2>
+          <p>
+            The <strong>USGS Geographic Names Information System (GNIS)</strong> contains &gt;2.8 million cultural and physical features across the United States. Ingesting this data into PostGIS with GiST (Generalized Search Tree) R-Tree indexing delivers sub-millisecond query performance for complex spatial intersections.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 7: EXPORT CENTER -->
+    <!-- ================================================================= -->
+    <section class="tab-pane" id="tab-export">
+      <div style="padding:30px;max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:16px;">
+        <div class="studio-panel">
+          <h3>EXPORT GAZETTEER DATA</h3>
+          <p style="font-size:12px;color:var(--adl-text-muted)">
+            Export the currently filtered dataset or the entire ADL Gazetteer database into standard GIS and digital library interchange formats:
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;">
+            <button type="button" id="btnExportGeoJson" class="btn-primary" style="padding:12px;">DOWNLOAD GEOJSON (RFC 7946)</button>
+            <button type="button" id="btnExportAdlXml" class="btn-secondary" style="padding:12px;">DOWNLOAD ADL GCS XML</button>
+            <button type="button" id="btnExportSqlDump" class="btn-secondary" style="padding:12px;">DOWNLOAD POSTGIS SQL DUMP</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Feature Inspection Modal Dialog -->
+  <div id="featureDetailModal" class="adl-modal-backdrop" hidden>
+    <div class="adl-modal-window">
+      <div class="adl-modal-head">
+        <h3>ADL GAZETTEER RECORD INSPECTOR</h3>
+        <button type="button" id="btnModalClose" class="btn-close-modal">&times;</button>
+      </div>
+      <div id="featureDetailBody" class="adl-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- XML Preview Modal Dialog -->
+  <div id="xmlPreviewModal" class="adl-modal-backdrop" hidden>
+    <div class="adl-modal-window">
+      <div class="adl-modal-head">
+        <h3>ADL GCS v1.2 XML RECORD</h3>
+        <button type="button" id="btnXmlModalClose" class="btn-close-modal">&times;</button>
+      </div>
+      <div class="adl-modal-body">
+        <pre id="xmlModalCode" class="code-block" style="max-height:400px;"></pre>
+        <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+          <button type="button" id="btnXmlModalCopy" class="btn-primary">COPY XML</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Modules -->
+  <script type="module" src="./js/adl-studio.js"></script>
+</body>
+</html>
