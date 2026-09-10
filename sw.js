@@ -1,10 +1,14 @@
-/* SITE-K HTML5 app cache */
-const CACHE = "sitek-html5-v12";
+/* SITE-K HTML5 app cache.
+   The 2.6 MB ghidra_decompiler.wasm is intentionally *not* precached: the
+   service worker caches it on first use, so the lab still works offline after
+   one visit without slowing down install for everyone else. */
+const CACHE = "sitek-html5-v14";
 const PRECACHE = [
   "./",
   "./index.html",
   "./keyspace.html",
   "./validator.html",
+  "./ghidra-lab.html",
   "./art-studio.html",
   "./louisiana.html",
   "./terrarium.html",
@@ -16,6 +20,7 @@ const PRECACHE = [
   "./css/terrarium.css",
   "./css/viewer.css",
   "./css/validator.css",
+  "./css/viruslab.css",
   "./css/studio.css",
   "./css/wm.css",
   "./js/app.js",
@@ -38,6 +43,10 @@ const PRECACHE = [
   "./js/ca-plot.js",
   "./js/viewer.js",
   "./js/validator.js",
+  "./js/viruslab.js",
+  "./js/virus-catalog.js",
+  "./js/x86dis.js",
+  "./js/ghidra-wasm.js",
   "./js/studio.js",
   "./js/studio-data.js",
   "./js/studio-fs.js",
@@ -48,6 +57,14 @@ const PRECACHE = [
   "./vendor/three.module.min.js",
   "./vendor/OrbitControls.js",
   "./wasm/entropy.wasm",
+  "./wasm/ghidra/ghidra_decompiler.js",
+  "./wasm/ghidra/processors.json",
+  "./wasm/ghidra/Processors/x86/data/languages/x86.sla",
+  "./wasm/ghidra/Processors/x86/data/languages/x86-16-real.pspec",
+  "./wasm/ghidra/Processors/x86/data/languages/x86-16.cspec",
+  "./samples/bin/michelangelo.bin",
+  "./samples/bin/malmsey-habitat-13.bin",
+  "./samples/bin/zippy.bin",
   "./img/site-x-badge.png",
   "./img/site-l-badge.png",
   "./img/ingen-stripe.jpg",

@@ -36,6 +36,13 @@
       "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
     },
     {
+      "name": "Ghidra Lab",
+      "short_name": "GHIDRA LAB",
+      "description": "Disassemble and decompile DOS-era virus samples with Ghidra compiled to WebAssembly",
+      "url": "./index.html#ghidra",
+      "icons": [{ "src": "./img/app-192.png", "sizes": "192x192" }]
+    },
+    {
       "name": "Art Studio",
       "short_name": "ART STUDIO",
       "description": "Enso Forge, key viewer, and local validator",
