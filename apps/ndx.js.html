@@ -1,0 +1,432 @@
+/* inline script */
+
+		document.documentElement.className = 'js';
+	
+
+/* inline script */
+
+			let jqueryParams=[],jQuery=function(r){return jqueryParams=[...jqueryParams,r],jQuery},$=function(r){return jqueryParams=[...jqueryParams,r],$};window.jQuery=jQuery,window.$=jQuery;let customHeadScripts=!1;jQuery.fn=jQuery.prototype={},$.fn=jQuery.prototype={},jQuery.noConflict=function(r){if(window.jQuery)return jQuery=window.jQuery,$=window.jQuery,customHeadScripts=!0,jQuery.noConflict},jQuery.ready=function(r){jqueryParams=[...jqueryParams,r]},$.ready=function(r){jqueryParams=[...jqueryParams,r]},jQuery.load=function(r){jqueryParams=[...jqueryParams,r]},$.load=function(r){jqueryParams=[...jqueryParams,r]},jQuery.fn.ready=function(r){jqueryParams=[...jqueryParams,r]},$.fn.ready=function(r){jqueryParams=[...jqueryParams,r]};
+
+/* inline script */
+
+(function(){
+  function parseNumber(str){
+    if (typeof str !== 'string') str = String(str || '');
+    str = str.replace(/[^0-9+\-\.]/g, '');
+    var n = parseFloat(str);
+    return isNaN(n) ? 0 : n;
+  }
+  function decimalsOf(n){
+    n = (typeof n === 'number') ? n : parseNumber(n);
+    var s = String(n);
+    var p = s.split('.');
+    return p.length > 1 ? p[1].length : 0;
+  }
+  function formatNumber(n, dec){
+    if (typeof dec !== 'number') dec = 0;
+    var s = n.toFixed(dec);
+    if (parseFloat(s) === 0) return (dec>0? '0.'+Array(dec+1).join('0') : '0');
+    return s;
+  }
+  function withThousands(s, sep){
+    if (!sep) return s;
+    var parts = s.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+    return parts.join('.');
+  }
+
+  function primeChart(wrapper, start){
+    var attempts = 0;
+    var maxAttempts = 160; // ~8s for Divi 5 (increased for late chart init)
+    var sep = wrapper.getAttribute('data-number-separator') || '';
+    var valueEl = wrapper.querySelector('.percent .percent-value');
+    // Read the target value from the data attribute if present
+    var targetAttr = valueEl ? valueEl.getAttribute('data-divibooster-target-value') : null;
+    var targetValue = targetAttr !== null ? parseNumber(targetAttr) : parseNumber(valueEl ? valueEl.textContent : '0');
+    var dec = Math.max(decimalsOf(start), decimalsOf(targetValue));
+    function tryPrime(){
+      attempts++;
+      var $ = window.jQuery;
+      if ($){
+        var $w = $(wrapper);
+        var chart = $w.data('easyPieChart');
+        if (chart && typeof chart.update === 'function'){
+          // Prime the chart to the initial value WITHOUT animation.
+          var prevAnimate = (chart.options && typeof chart.options === 'object') ? chart.options.animate : undefined;
+          try { if (chart.options) chart.options.animate = false; } catch(e) {}
+          try { chart.update(start); } catch(e) {}
+          try { if (chart.options) chart.options.animate = prevAnimate; } catch(e) {}
+
+          // Reveal the text once primed and mark as primed
+          wrapper.classList.add('dbiv-nciv-ready');
+          if (valueEl) valueEl.style.opacity = '1';
+          try { wrapper.setAttribute('data-dbiv-primed', '1'); } catch(e) {}
+          try { wrapper.__dbiv_canvasPrimed = wrapper.querySelector('canvas'); } catch(e) {}
+
+          // If we have a valid target and it's different to the start, animate to target immediately after a frame.
+          if (!isNaN(targetValue) && targetValue !== start) {
+            var animateToTarget = function(){
+              try { chart.update(targetValue); } catch(e) {}
+            };
+            if (window.requestAnimationFrame) {
+              requestAnimationFrame(function(){ setTimeout(animateToTarget, 0); });
+            } else {
+              setTimeout(animateToTarget, 0);
+            }
+          }
+          return true;
+        }
+      }
+      if (attempts < maxAttempts){
+        setTimeout(tryPrime, 50);
+      } else {
+        // Give up priming; reveal to avoid leaving content hidden. Divi may still handle animation.
+        wrapper.classList.add('dbiv-nciv-ready');
+        if (valueEl) valueEl.style.opacity = '1';
+      }
+      return false;
+    }
+    // set displayed start immediately
+    if (valueEl){
+      var s = formatNumber(start, dec);
+      valueEl.textContent = withThousands(s, sep);
+    }
+    tryPrime();
+  }
+
+  function initInstance(wrapper){
+    if (!wrapper) return;
+    var valueEl = wrapper.querySelector('.percent .percent-value');
+    if (!valueEl) return;
+    var canvasEl = wrapper.querySelector('canvas');
+    if (wrapper.__dbiv_canvasPrimed && wrapper.__dbiv_canvasPrimed === canvasEl) return;
+    var start = parseNumber(valueEl.getAttribute('data-divibooster-initial-value'));
+    if (isNaN(start)) start = 0;
+    // If the element is already showing the target value (e.g., JS ran late or Divi already animated), don't re-prime to avoid flicker.
+    var targetAttr = valueEl.getAttribute('data-divibooster-target-value');
+    var currentVal = parseNumber(valueEl.textContent);
+    if (targetAttr !== null) {
+      var targetVal = parseNumber(targetAttr);
+      if (!isNaN(targetVal) && currentVal === targetVal && wrapper.getAttribute('data-dbiv-primed') === '1') {
+        wrapper.classList.add('dbiv-nciv-ready');
+        valueEl.style.opacity = '1';
+        return;
+      }
+    }
+    // Hide during init only when feature is active for this instance.
+    valueEl.style.opacity = '0';
+    primeChart(wrapper, start);
+    wrapper.__dbiv_init = true;
+  }
+
+  function initAll(root){
+    root = root || document;
+    var nodes = root.querySelectorAll('.dbiv-nciv');
+    nodes.forEach(function(n){ initInstance(n); });
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ initAll(document); });
+  } else {
+    initAll(document);
+  }
+
+  if (window.MutationObserver){
+    var mo = new MutationObserver(function(muts){
+      muts.forEach(function(m){
+        if (m.type === 'childList'){
+          m.addedNodes && m.addedNodes.forEach(function(node){
+            if (node.nodeType === 1){
+              if (node.classList && node.classList.contains('dbiv-nciv')){
+                initInstance(node);
+              }
+              var inner = node.querySelectorAll ? node.querySelectorAll('.dbiv-nciv') : [];
+              inner.forEach(function(n){ initInstance(n); });
+            }
+          });
+        }
+      });
+    });
+    mo.observe(document.documentElement, {childList: true, subtree: true});
+  }
+})();
+//# sourceURL=divibooster_number_counter_initial_value-js-after
+
+
+/* inline script */
+
+	 
+	
+
+/* inline script */
+window.applySliderCounterSeparator = window.applySliderCounterSeparator || function(){ /* stub until plugin JS loads */ };
+
+/* inline script */
+
+			var DGEObj = {"ajaxUrl":"https:\/\/matto.xyz\/wp-admin\/admin-ajax.php","restURL":"https:\/\/matto.xyz\/wp-json\/elicus\/v1\/dge-modules\/","restNonce":"15eebcb3b0"}		
+
+/* inline script */
+
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/Divi/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+
+
+/* inline script */
+
+jQuery(document).ready(function($) {
+    function clearDbdbLightboxOpen() {
+        $('body').removeClass(function(index, className) {
+            return (className.match(/(^|\s)et_pb_gallery_\d+(?:_[^\s]+)?_dbdb_lightbox_open/g) || []).join(' ');
+        });
+    }
+
+    // Add per-instance body class when a gallery image is clicked
+    $(document).on('click', '.et_pb_gallery .et_pb_gallery_image a', function() {
+        clearDbdbLightboxOpen();
+        var $gallery = $(this).closest('.et_pb_gallery');
+        if (!$gallery.length) return;
+        var classes = ($gallery.attr('class') || '').match(/et_pb_gallery_\d+(?:_[^\s]+)?/);
+        if (!classes || !classes[0]) return;
+        var orderClass = classes[0];
+        $('body').addClass(orderClass + '_dbdb_lightbox_open');
+    });
+
+    // Remove class when popup closes
+    $(document).on('click', '.mfp-close, .mfp-bg', function() { clearDbdbLightboxOpen(); });
+    $(document).on('keyup', function(e) { if (e.key === 'Escape') { clearDbdbLightboxOpen(); } });
+});
+
+
+/* inline script */
+
+    (function(){
+        document.querySelectorAll('.et_pb_gallery.et_pb_gallery_grid').forEach(function(gallery){
+            var pagination = gallery.querySelector('.et_pb_gallery_pagination');
+            if (!pagination) return;
+            var displayMode = gallery.getAttribute('data-display-mode') || 'default';
+            var updateLinks = function(){
+                setTimeout(function() {
+                    var prev = pagination.querySelector('a.page-prev');
+                    var next = pagination.querySelector('a.page-next');
+                    if (displayMode === 'icon') {
+                        if (prev) prev.textContent = '';
+                        if (next) next.textContent = '';
+                    } else {
+                        if (prev) prev.textContent = gallery.getAttribute('data-prev-text') || 'Prev';
+                        if (next) next.textContent = gallery.getAttribute('data-next-text') || 'Next';
+                    }
+                    // Show links after update
+                    pagination.style.visibility = 'visible';
+                }, 1000);
+            };
+            updateLinks();
+            var observer = new MutationObserver(function(mutations){
+                updateLinks();
+                observer.disconnect();
+            });
+            observer.observe(pagination, { childList: true });
+        });
+    })();
+    
+
+/* inline script */
+
+        jQuery(document).ready(function($) {
+            $(document).on('click', '.et_pb_gallery .et_pb_gallery_image a', function() {
+
+                // Remove the old class
+                $('body').removeClass(function(index, className) {
+                    return (className.match(/(^|\s)et_pb_gallery_\d+_dbdb_lightbox_open/g) || []).join(' ');
+                });
+
+                // Add the new class
+                var gallery_module_order = $(this).closest('.et_pb_gallery').attr('class').match(/et_pb_gallery_\d+/)[0];
+                $('body').addClass(gallery_module_order + '_dbdb_lightbox_open');
+            });
+        });
+    
+
+/* inline script */
+
+			(function() {
+				var file     = ["https:\/\/matto.xyz\/wp-content\/et-cache\/239278\/et-divi-dynamic-239278-late.css"];
+				var handle   = document.getElementById('divi-style-inline-inline-css');
+				var location = handle.parentNode;
+
+				if (0===document.querySelectorAll('link[href="' + file + '"]').length) {
+					var link  = document.createElement('link');
+					link.rel  = 'stylesheet';
+					link.id   = 'et-dynamic-late-css';
+					link.href = file;
+
+					location.insertBefore(link, handle.nextSibling);
+				}
+			})();
+		
+
+/* inline script */
+
+				var et_animation_data = [{"class":"et_pb_section_0","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_row_0","style":"slideTop","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"3%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_0","style":"slideBottom","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_1","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_2","style":"flipTop","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"20%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_code_0","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_3","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_4","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_5","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_row_2","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_button_0","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_button_1","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_button_2","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_6","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_7","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"el_masonry_gallery_0","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_8","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_video_0","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_9","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_10","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_11","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_12","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_13","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"},{"class":"et_pb_text_14","style":"fade","repeat":"once","duration":"1000ms","delay":"0ms","intensity":"50%","starting_opacity":"0%","speed_curve":"ease-in-out"}];
+				
+
+/* https://matto.xyz/wp-includes/js/jquery/jquery.min.js?ver=3.7.1 */
+/* fetch failed: Failed to fetch */
+
+/* https://matto.xyz/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1 */
+/* fetch failed: Failed to fetch */
+
+/* inline script */
+
+jqueryParams.length&&$.each(jqueryParams,function(e,r){if("function"==typeof r){var n=String(r);n.replace("$","jQuery");var a=new Function("return "+n)();$(document).ready(a)}});
+//# sourceURL=jquery-js-after
+
+
+/* inline script */
+
+var DIVI = {"item_count":"%d Item","items_count":"%d Items"};
+var et_builder_utils_params = {"condition":{"diviTheme":true,"extraTheme":false},"scrollLocations":["app","top"],"builderScrollLocations":{"desktop":"app","tablet":"app","phone":"app"},"onloadScrollLocation":"app","builderType":"fe"};
+var et_frontend_scripts = {"builderCssContainerPrefix":"#et-boc","builderCssLayoutPrefix":"#et-boc .et-l"};
+var et_pb_custom = {"ajaxurl":"https://matto.xyz/wp-admin/admin-ajax.php","images_uri":"https://matto.xyz/wp-content/themes/Divi/images","builder_images_uri":"https://matto.xyz/wp-content/themes/Divi/includes/builder/images","et_frontend_nonce":"994a6dba75","subscription_failed":"Please, check the fields below to make sure you entered the correct information.","et_ab_log_nonce":"b927fd6bff","fill_message":"Please, fill in the following fields:","contact_error_message":"Please, fix the following errors:","invalid":"Invalid email","captcha":"Captcha","prev":"Prev","previous":"Previous","next":"Next","wrong_captcha":"You entered the wrong number in captcha.","wrong_checkbox":"Checkbox","ignore_waypoints":"no","is_divi_theme_used":"1","widget_search_selector":".widget_search","ab_tests":[],"is_ab_testing_active":"","page_id":"239278","unique_test_id":"","ab_bounce_rate":"5","is_cache_plugin_active":"yes","is_shortcode_tracking":"","tinymce_uri":"https://matto.xyz/wp-content/themes/Divi/includes/builder/frontend-builder/assets/vendors","accent_color":"#7EBEC5","waypoints_options":[]};
+var et_pb_box_shadow_elements = [];
+//# sourceURL=divi-custom-script-js-extra
+
+
+/* https://matto.xyz/wp-content/themes/Divi/js/scripts.min.js?ver=4.27.5 */
+/* fetch failed: Failed to fetch */
+
+/* https://matto.xyz/wp-content/themes/Divi/includes/builder/feature/dynamic-assets/assets/js/jquery.fitvids.js?ver=4.27.5 */
+/* fetch failed: Failed to fetch */
+
+/* https://matto.xyz/wp-content/themes/Divi/core/admin/js/common.js?ver=4.27.5 */
+/* fetch failed: Failed to fetch */
+
+/* https://matto.xyz/wp-content/plugins/divi-gallery-extended/scripts/isotope.pkgd.min.js?ver=3.0.6 */
+/* fetch failed: Failed to fetch */
+
+/* https://matto.xyz/wp-content/plugins/divi-gallery-extended/scripts/imagesloaded.pkgd.min.js?ver=4.1.4 */
+/* fetch failed: Failed to fetch */
+
+/* https://matto.xyz/wp-content/plugins/divi-gallery-extended/scripts/magnific_popup.min.js?ver=1.0.0 */
+/* fetch failed: Failed to fetch */
+
+/* https://matto.xyz/wp-content/plugins/divi-gallery-extended/scripts/twbsPagination.min.js?ver=1.4.2 */
+/* fetch failed: Failed to fetch */
+
+/* https://matto.xyz/wp-content/plugins/divi-gallery-extended/divi-5/server/Modules/MasonryGallery/assets/script.min.js?ver=2.0.6 */
+/* fetch failed: Failed to fetch */
+
+/* inline script */
+
+var mejsL10n = {"language":"en","strings":{"mejs.download-file":"Download File","mejs.install-flash":"You are using a browser that does not have Flash player enabled or installed. Please turn on your Flash player plugin or download the latest version from https://get.adobe.com/flashplayer/","mejs.fullscreen":"Fullscreen","mejs.play":"Play","mejs.pause":"Pause","mejs.time-slider":"Time Slider","mejs.time-help-text":"Use Left/Right Arrow keys to advance one second, Up/Down arrows to advance ten seconds.","mejs.live-broadcast":"Live Broadcast","mejs.volume-help-text":"Use Up/Down Arrow keys to increase or decrease volume.","mejs.unmute":"Unmute","mejs.mute":"Mute","mejs.volume-slider":"Volume Slider","mejs.video-player":"Video Player","mejs.audio-player":"Audio Player","mejs.captions-subtitles":"Captions/Subtitles","mejs.captions-chapters":"Chapters","mejs.none":"None","mejs.afrikaans":"Afrikaans","mejs.albanian":"Albanian","mejs.arabic":"Arabic","mejs.belarusian":"Belarusian","mejs.bulgarian":"Bulgarian","mejs.catalan":"Catalan","mejs.chinese":"Chinese","mejs.chinese-simplified":"Chinese (Simplified)","mejs.chinese-traditional":"Chinese (Traditional)","mejs.croatian":"Croatian","mejs.czech":"Czech","mejs.danish":"Danish","mejs.dutch":"Dutch","mejs.english":"English","mejs.estonian":"Estonian","mejs.filipino":"Filipino","mejs.finnish":"Finnish","mejs.french":"French","mejs.galician":"Galician","mejs.german":"German","mejs.greek":"Greek","mejs.haitian-creole":"Haitian Creole","mejs.hebrew":"Hebrew","mejs.hindi":"Hindi","mejs.hungarian":"Hungarian","mejs.icelandic":"Icelandic","mejs.indonesian":"Indonesian","mejs.irish":"Irish","mejs.italian":"Italian","mejs.japanese":"Japanese","mejs.korean":"Korean","mejs.latvian":"Latvian","mejs.lithuanian":"Lithuanian","mejs.macedonian":"Macedonian","mejs.malay":"Malay","mejs.maltese":"Maltese","mejs.norwegian":"Norwegian","mejs.persian":"Persian","mejs.polish":"Polish","mejs.portuguese":"Portuguese","mejs.romanian":"Romanian","mejs.russian":"Russian","mejs.serbian":"Serbian","mejs.slovak":"Slovak","mejs.slovenian":"Slovenian","mejs.spanish":"Spanish","mejs.swahili":"Swahili","mejs.swedish":"Swedish","mejs.tagalog":"Tagalog","mejs.thai":"Thai","mejs.turkish":"Turkish","mejs.ukrainian":"Ukrainian","mejs.vietnamese":"Vietnamese","mejs.welsh":"Welsh","mejs.yiddish":"Yiddish"}};
+//# sourceURL=mediaelement-core-js-before
+
+
+/* https://matto.xyz/wp-includes/js/mediaelement/mediaelement-and-player.min.js?ver=4.2.17 */
+/* fetch failed: Failed to fetch */
+
+/* https://matto.xyz/wp-includes/js/mediaelement/mediaelement-migrate.min.js?ver=7.0 */
+/* fetch failed: Failed to fetch */
+
+/* inline script */
+
+var _wpmejsSettings = {"pluginPath":"/wp-includes/js/mediaelement/","classPrefix":"mejs-","stretching":"responsive","audioShortcodeLibrary":"mediaelement","videoShortcodeLibrary":"mediaelement"};
+//# sourceURL=mediaelement-js-extra
+
+
+/* https://matto.xyz/wp-includes/js/mediaelement/wp-mediaelement.min.js?ver=7.0 */
+/* fetch failed: Failed to fetch */
+
+/* inline script */
+
+(function($){
+    if(!$) return;
+  function getSepFromGallery($gallery){
+    var sep = ($gallery.find('.et_pb_gallery_items').attr('data-dbdb-image-count-separator'));
+    if (typeof sep === 'undefined' || sep === null) sep = ' of ';
+    return sep;
+  }
+  function applySliderCounterSeparator($gallery){
+    var $counter = $gallery.find('.dbdb-slide-counter').first();
+    if (!$counter.length) return;
+    var $active = $counter.find('.dbdb-slide-counter-active').first();
+    var $total  = $counter.find('.dbdb-slide-counter-total').first();
+    if (!$active.length || !$total.length) return;
+        var outer = function($el){
+            var node = ($el && $el[0]) ? $el[0] : null;
+            if (node && typeof node.outerHTML === 'string') return node.outerHTML;
+            return $el ? $el.text() : '';
+        };
+    var s = getSepFromGallery($gallery);
+        $counter.html(outer($active) + s + outer($total));
+    $counter.addClass('dbdb-counter-ready');
+  }
+  $(function(){
+            $('.et_pb_gallery').each(function(){
+                var $g = $(this);
+            applySliderCounterSeparator($g);
+            // One follow-up pass after dynamic slider activation / lazy content
+            setTimeout(function(){ applySliderCounterSeparator($g); }, 80);
+    // Ensure lightbox counter template is updated before first open
+    ensureLightboxTemplate($g);
+        });
+
+        // Helper: set lightbox template if magnificPopup instance available
+        function setLightboxTemplate($gallery){
+            var $items = $gallery.find('.et_pb_gallery_items');
+            if (!$items.length) return false;
+            var mp = $items.data('magnificPopup');
+            if (mp && mp.gallery){
+                mp.gallery.tCounter = '%curr%' + getSepFromGallery($gallery) + '%total%';
+                return true;
+            }
+            return false;
+        }
+        // Ensure template applied with limited retries (covers delayed MP init)
+        function ensureLightboxTemplate($gallery){
+            var attempts = 0, maxAttempts = 12; // ~ < 1s at 60ms
+            (function trySet(){
+                if (setLightboxTemplate($gallery)) return;
+                if (attempts++ < maxAttempts) setTimeout(trySet, 60);
+            })();
+        }
+        // On click attempt immediate + post-init pass (Divi may init on demand)
+        $(document).on('click', '.et_pb_gallery .et_pb_gallery_image a', function(){
+            var $gallery = $(this).closest('.et_pb_gallery');
+            // Try now (in case already initialized)
+            if (!setLightboxTemplate($gallery)) {
+                // Fallback shortly after (after Divi's own handler runs)
+                setTimeout(function(){ setLightboxTemplate($gallery) || ensureLightboxTemplate($gallery); }, 0);
+            }
+        });
+
+    // Re-apply separator after custom slide change events (from related features)
+    $(document).on('divi-booster:gallery-slide-changed', '.et_pb_gallery', function(){ applySliderCounterSeparator($(this)); });
+  });
+    window.applySliderCounterSeparator = applySliderCounterSeparator;
+})(window.jQuery);
+
+
+/* inline script */
+
+(function($){
+    if(!$) return;
+  function findFieldRow(){
+    // VB modal field
+    var $inp = $('input[name="dbdb_image_count_separator"], textarea[name="dbdb_image_count_separator"]');
+    if (!$inp.length) return $();
+    var $row = $inp.closest('.et-fb-form__group');
+    if ($row.length) return $row;
+    // Back-end settings
+    return $inp.closest('.et_pb_option');
+  }
+  function getVal(name){ var $f = $('[name="'+name+'"]').first(); return $f.length ? $f.val() : null; }
+  function updateVisibility(){
+    var $row = findFieldRow(); if (!$row.length) return;
+    var fullwidth = getVal('fullwidth') || 'off';
+    var lightbox  = getVal('dbdb_show_in_lightbox');
+    if (lightbox === null || typeof lightbox === 'undefined') lightbox = 'on'; // assume enabled if control absent
+    var show = (fullwidth === 'on') || (lightbox !== 'off');
+    $row.toggle(!!show);
+  }
+    var iv=null; $(document).on('et_fb_loaded et_fb_setting:change', function(){ updateVisibility(); });
+  $(function(){ updateVisibility(); if (!iv) { iv = setInterval(updateVisibility, 500); } });
+})(window.jQuery);

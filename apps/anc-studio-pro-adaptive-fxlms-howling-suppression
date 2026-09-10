@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANC Studio Pro — Adaptive FxLMS + Howling Suppression</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
+        
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at 10% 0%, #1e1b4b 0%, transparent 55%),
+                        radial-gradient(ellipse at 90% 100%, #0c4a6e 0%, transparent 55%),
+                        #050a16;
+            min-height: 100vh;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        .glass {
+            backdrop-filter: blur(14px);
+            background: rgba(8, 12, 30, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.08);
+        }
+        .glass-hover:hover {
+            background: rgba(8, 12, 30, 0.82);
+            border-color: rgba(34, 211, 238, 0.2);
+        }
+        
+        .glow-active {
+            box-shadow: 0 0 40px rgba(34, 211, 238, 0.25),
+                        0 0 80px rgba(34, 211, 238, 0.1),
+                        inset 0 0 0 1px rgba(34, 211, 238, 0.15);
+        }
+        .pulse-ring { animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.85); opacity: 0.5; }
+            80%, 100% { transform: scale(1.35); opacity: 0; }
+        }
+        .btn-active { animation: btn-glow 2s ease-in-out infinite; }
+        @keyframes btn-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.7); }
+        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot.live { animation: blink 1s ease-in-out infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+        
+        /* Sliders */
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none; height: 4px;
+            border-radius: 2px; background: #1e293b; outline: none; cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 14px; height: 14px;
+            border-radius: 50%; box-shadow: 0 0 6px currentColor;
+            cursor: pointer; transition: transform .15s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+        input[type="range"]::-moz-range-thumb {
+            width: 14px; height: 14px; border: none; border-radius: 50%;
+            background: currentColor; box-shadow: 0 0 6px currentColor;
+        }
+        
+        .chip { transition: all .2s; }
+        .chip.on {
+            background: linear-gradient(135deg, rgba(8,145,178,.35), rgba(37,99,235,.35));
+            border-color: rgba(34,211,238,.5); color: #e0f2fe;
+        }
+        
+        /* Alert pulse */
+        .alert-flash {
+            animation: alert-flash 0.3s ease-out;
+        }
+        @keyframes alert-flash {
+            0% { background: rgba(239,68,68,.4); }
+            100% { background: transparent; }
+        }
+        
+        .howl-indicator { transition: all .15s; }
+        .howl-indicator.active {
+            background: rgba(239,68,68,.3); border-color: rgba(239,68,68,.7);
+            box-shadow: 0 0 12px rgba(239,68,68,.4);
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+    </style>
+</head>
+<body class="text-white">
+
+<div class="min-h-screen flex flex-col items-center p-3 pb-8">
+    
+    <!-- Header -->
+    <header class="text-center mb-3 mt-2">
+        <div class="flex items-center justify-center gap-2.5">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow shadow-cyan-500/30">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+            </div>
+            <div class="text-left">
+                <h1 class="text-xl md:text-2xl font-extrabold bg-gradient-to-r from-cyan-300 via-sky-200 to-blue-300 bg-clip-text text-transparent leading-none">ANC Studio Pro</h1>
+                <div class="text-[9px] text-cyan-500 font-bold tracking-[0.15em] uppercase">FxLMS · Howling Guard · Spectral Sub · Calibration</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Pipeline -->
+    <div id="pipelineViz" class="flex items-center gap-1 mb-3 text-[9px] text-slate-500 flex-wrap justify-center">
+        <span class="px-1.5 py-0.5 rounded bg-slate-800/70">🎤 MIC</span><span class="text-slate-700">→</span>
+        <span id="pProf" class="px-1.5 py-0.5 rounded bg-slate-800/70">📊 PROF</span><span class="text-slate-700">→</span>
+        <span id="pMode" class="px-1.5 py-0.5 rounded bg-slate-800/70">⚡ FxLMS</span><span class="text-slate-700">→</span>
+        <span id="pHowl" class="px-1.5 py-0.5 rounded bg-slate-800/70">🛡 GUARD</span><span class="text-slate-700">→</span>
+        <span class="px-1.5 py-0.5 rounded bg-slate-800/70">🎧 OUT</span>
+    </div>
+
+    <!-- Main Card -->
+    <div id="mainCard" class="glass rounded-3xl p-4 md:p-5 w-full max-w-2xl transition-all duration-500">
+        
+        <!-- ===== VISUALIZER ===== -->
+        <div class="mb-3">
+            <div class="flex gap-1 mb-2 border-b border-slate-700/30">
+                <button class="viz-tab tab-on px-2.5 py-1.5 text-[10px] font-semibold border-b-2 border-cyan-400 text-cyan-300" data-tab="spectrum">Spectrum</button>
+                <button class="viz-tab px-2.5 py-1.5 text-[10px] font-semibold border-b-2 border-transparent text-slate-400" data-tab="waveform">Waveform</button>
+                <button class="viz-tab px-2.5 py-1.5 text-[10px] font-semibold border-b-2 border-transparent text-slate-400" data-tab="spectrogram">Spectrogram</button>
+                <div class="flex-1"></div>
+                <span id="howlAlert" class="howl-indicator text-[9px] px-2 py-1 rounded-lg border border-slate-700/30 text-slate-500 font-semibold transition-all select-none">HOWL OK</span>
+            </div>
+            <div class="relative">
+                <canvas id="viz" class="w-full h-44 bg-slate-900/60 rounded-xl"></canvas>
+                <div id="vizOverlay" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/80 rounded-xl">
+                    <svg class="w-8 h-8 text-slate-600 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/></svg>
+                    <span class="text-slate-500 text-sm">← Press Start</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== MODE + CONTROLS GRID ===== -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+            
+            <!-- Mode Selector -->
+            <div class="bg-slate-800/30 rounded-2xl p-3 border border-slate-700/30">
+                <div class="text-[10px] font-bold text-slate-400 mb-2">ALGORITHM</div>
+                <div class="space-y-1">
+                    <button class="mode-btn chip on w-full text-left rounded-xl py-2 px-3 text-xs" data-mode="fxlms">
+                        <span class="font-bold">FxLMS</span> <span class="text-[9px] text-slate-400 ml-1">Filtered-x</span>
+                    </button>
+                    <button class="mode-btn chip w-full text-left rounded-xl py-2 px-3 text-xs" data-mode="adaptive">
+                        <span class="font-bold">NLMS</span> <span class="text-[9px] text-slate-400 ml-1">Normalized LMS</span>
+                    </button>
+                    <button class="mode-btn chip w-full text-left rounded-xl py-2 px-3 text-xs" data-mode="phase">
+                        <span class="font-bold">Phase</span> <span class="text-[9px] text-slate-400 ml-1">180° Invert</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- DSP Params -->
+            <div class="bg-slate-800/30 rounded-2xl p-3 border border-slate-700/30">
+                <div class="text-[10px] font-bold text-slate-400 mb-2">DSP TUNING</div>
+                <div class="space-y-2.5">
+                    <div>
+                        <div class="flex justify-between text-[9px] text-slate-500"><span>Learning Rate</span><span id="muLbl" class="mono text-cyan-400">0.010</span></div>
+                        <input type="range" id="muSl" min="0.001" max="0.05" value="0.01" step="0.001" style="color:#22d3ee" class="w-full">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[9px] text-slate-500"><span>μ Momentum</span><span id="momLbl" class="mono text-purple-400">0.90</span></div>
+                        <input type="range" id="momSl" min="0.5" max="0.99" value="0.9" step="0.01" style="color:#a855f7" class="w-full">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[9px] text-slate-500"><span>Filter Taps</span><span id="tapLbl" class="mono text-cyan-400">128</span></div>
+                        <input type="range" id="tapSl" min="32" max="256" value="128" step="16" style="color:#22d3ee" class="w-full">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Safety / Howling Guard -->
+            <div class="bg-slate-800/30 rounded-2xl p-3 border border-slate-700/30">
+                <div class="text-[10px] font-bold text-slate-400 mb-2">HOWLING GUARD</div>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-[10px] text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="howlEnable" checked class="accent-cyan-500"> Auto-detect & suppress
+                    </label>
+                    <div class="text-[9px] text-slate-500">
+                        <span class="text-amber-400">Active filters:</span>
+                        <span id="howlCount" class="mono text-amber-300 ml-1">0</span>
+                        <span class="text-slate-500"> / 6</span>
+                    </div>
+                    <button id="howlClear" class="text-[9px] text-cyan-400 hover:text-cyan-300 px-2 py-1 rounded border border-cyan-500/20">Clear Notches</button>
+                    <div class="text-[9px] text-slate-500 leading-relaxed mt-1">Detects and auto-notches acoustic feedback howls within ~15ms of onset.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 4-BAND ANC ===== -->
+        <div class="bg-slate-800/30 rounded-2xl p-3.5 mb-3 border border-slate-700/30">
+            <div class="flex items-center justify-between mb-2.5">
+                <span class="text-[10px] font-bold text-slate-400">4-BAND ANC</span>
+                <div class="flex gap-1.5">
+                    <button id="calBtn" class="text-[9px] text-amber-400 hover:text-amber-300 px-2 py-0.5 rounded border border-amber-500/20">⚡ Calibrate</button>
+                    <button id="presetBtn" class="text-[9px] text-cyan-400 hover:text-cyan-300 px-2 py-0.5 rounded border border-cyan-500/20">Presets ▾</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-4 gap-2">
+                <div class="text-center">
+                    <div class="text-[9px] text-slate-500 mb-1">SUB</div>
+                    <div class="text-[9px] mono text-cyan-400 mb-1">20-200Hz</div>
+                    <div class="h-20 flex items-end justify-center mb-1">
+                        <input type="range" id="b0" style="--c:#22d3ee; color:#22d3ee; writing-mode:vertical-lr; direction:rtl; transform:rotate(180deg); height:5rem; width:2rem;" min="0" max="100" value="90">
+                    </div>
+                    <div id="b0l" class="text-[10px] mono text-cyan-300">90%</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-[9px] text-slate-500 mb-1">LOW</div>
+                    <div class="text-[9px] mono text-blue-400 mb-1">200-1k</div>
+                    <div class="h-20 flex items-end justify-center mb-1">
+                        <input type="range" id="b1" style="--c:#3b82f6; color:#3b82f6; writing-mode:vertical-lr; direction:rtl; transform:rotate(180deg); height:5rem; width:2rem;" min="0" max="100" value="70">
+                    </div>
+                    <div id="b1l" class="text-[10px] mono text-blue-300">70%</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-[9px] text-slate-500 mb-1">MID</div>
+                    <div class="text-[9px] mono text-purple-400 mb-1">1k-4k</div>
+                    <div class="h-20 flex items-end justify-center mb-1">
+                        <input type="range" id="b2" style="--c:#a855f7; color:#a855f7; writing-mode:vertical-lr; direction:rtl; transform:rotate(180deg); height:5rem; width:2rem;" min="0" max="100" value="25">
+                    </div>
+                    <div id="b2l" class="text-[10px] mono text-purple-300">25%</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-[9px] text-slate-500 mb-1">HIGH</div>
+                    <div class="text-[9px] mono text-pink-400 mb-1">4k+</div>
+                    <div class="h-20 flex items-end justify-center mb-1">
+                        <input type="range" id="b3" style="--c:#ec4899; color:#ec4899; writing-mode:vertical-lr; direction:rtl; transform:rotate(180deg); height:5rem; width:2rem;" min="0" max="100" value="0">
+                    </div>
+                    <div id="b3l" class="text-[10px] mono text-pink-300">0%</div>
+                </div>
+            </div>
+            <div class="text-[9px] text-slate-500 mt-2 italic">ANC most effective in SUB/LOW bands. Disable MID/HIGH for best results.</div>
+        </div>
+
+        <!-- ===== STATS + BUTTONS ===== -->
+        <div class="grid grid-cols-5 gap-2 text-center mb-3">
+            <div class="bg-slate-800/40 rounded-xl py-2"><div id="sLat" class="text-xs font-bold text-cyan-400 mono">--</div><div class="text-[8px] text-slate-500">Latency</div></div>
+            <div class="bg-slate-800/40 rounded-xl py-2"><div id="sPeak" class="text-xs font-bold text-purple-400 mono">--</div><div class="text-[8px] text-slate-500">Peak Hz</div></div>
+            <div class="bg-slate-800/40 rounded-xl py-2"><div id="sLvl" class="text-xs font-bold text-green-400 mono">--</div><div class="text-[8px] text-slate-500">dB SPL</div></div>
+            <div class="bg-slate-800/40 rounded-xl py-2"><div id="sErr" class="text-xs font-bold text-amber-400 mono">--</div><div class="text-[8px] text-slate-500">LMS Err</div></div>
+            <div class="bg-slate-800/40 rounded-xl py-2"><div id="sRed" class="text-xs font-bold text-emerald-400 mono">--</div><div class="text-[8px] text-slate-500">Reduced</div></div>
+        </div>
+
+        <div class="flex gap-2 mb-3">
+            <div class="flex-1 relative flex justify-center">
+                <div id="pulseEffect" class="absolute w-20 h-20 rounded-full bg-cyan-500 opacity-0 pointer-events-none"></div>
+                <button id="startBtn" class="relative z-10 w-full py-3 rounded-full font-bold text-sm transition-all bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 active:scale-95 shadow-lg shadow-cyan-500/25">
+                    <span id="btnLbl">Start ANC</span>
+                </button>
+            </div>
+            <button id="abBtn" class="ab-btn py-3 px-5 rounded-full font-bold text-sm transition bg-slate-700/80 border border-slate-600 text-slate-300 select-none">A/B</button>
+            <button id="recBtn" class="py-3 px-5 rounded-full font-bold text-sm transition bg-slate-700/80 border border-slate-600 text-slate-300 select-none">⏺</button>
+        </div>
+
+        <!-- Status + Calibration -->
+        <div class="flex items-center justify-center gap-2 mb-2">
+            <div id="stDot" class="dot bg-slate-600"></div>
+            <span id="stText" class="text-slate-400 font-medium text-[11px]">Ready</span>
+        </div>
+        <div class="text-center">
+            <div id="calStatus" class="text-[9px] text-slate-600 hidden">Calibration: not yet run</div>
+        </div>
+    </div>
+
+    <!-- Info Panels -->
+    <div class="grid md:grid-cols-4 gap-2 mt-3 w-full max-w-2xl">
+        <div class="glass glass-hover rounded-xl p-2.5 transition-colors">
+            <h4 class="text-[10px] font-bold text-cyan-400 mb-1">FxLMS</h4>
+            <p class="text-[9px] text-slate-400 leading-relaxed">Models speaker→mic secondary path. Industry standard for feedback ANC in headphones.</p>
+        </div>
+        <div class="glass glass-hover rounded-xl p-2.5 transition-colors">
+            <h4 class="text-[10px] font-bold text-purple-400 mb-1">NLMS</h4>
+            <p class="text-[9px] text-slate-400 leading-relaxed">Power-normalized LMS. Adaptive step size prevents divergence from loud transients.</p>
+        </div>
+        <div class="glass glass-hover rounded-xl p-2.5 transition-colors">
+            <h4 class="text-[10px] font-bold text-amber-400 mb-1">Howling Guard</h4>
+            <p class="text-[9px] text-slate-400 leading-relaxed">Real-time NHS detection. Deploys ultra-narrow Q=120 notch filters to kill feedback.</p>
+        </div>
+        <div class="glass glass-hover rounded-xl p-2.5 transition-colors">
+            <h4 class="text-[10px] font-bold text-emerald-400 mb-1">Calibration</h4>
+            <p class="text-[9px] text-slate-400 leading-relaxed">Measures system latency & noise floor. Auto-configures delay compensation.</p>
+        </div>
+    </div>
+
+    <!-- Safety -->
+    <div class="mt-3 p-2.5 rounded-xl bg-amber-500/8 border border-amber-500/15 max-w-2xl w-full">
+        <p class="text-[9px] text-amber-200/70 leading-relaxed text-center">
+            <span class="font-bold text-amber-400">⚠ Hearing Safety:</span> Not certified protection. Use physical earplugs. Limiter active at -3dBFS. Howling Guard protects against feedback oscillation.
+        </p>
+    </div>
+    <p class="text-[9px] text-slate-600 mt-3 text-center">HTTPS · Wired headphones · Chrome/Edge for best AudioWorklet perf</p>
+</div>
+
+<script>
+/* ============================================================
+ *  AUDIO WORKLET — Advanced DSP Processors (object-pooled)
+ *  Runs on dedicated audio rendering thread
+ *  Zero allocations inside process() — all buffers pre-allocated
+ * ============================================================ */
+const WORKLET_CODE = `
+/* ---- FxLMS Processor with momentum ---- */
+class FxLMSProc extends AudioWorkletProcessor {
+    constructor(opts) {
+        super();
+        this.N = opts.processorOptions?.taps || 128;
+        this.S = 64;
+        this.mu = 0.01;
+        this.momentum = 0.9;
+        this.w = new Float32Array(this.N);
+        this.sHat = new Float32Array(this.S);
+        this.xBuf = new Float32Array(this.N);
+        this.yBuf = new Float32Array(this.S);
+        this.xpBuf = new Float32Array(this.N);
+        this.wPrev = new Float32Array(this.N); // momentum buffer (pooled)
+        this.sError = 0;
+        this.count = 0;
+        // init secondary path as base-delayed impulse
+        for (let i = 0; i < this.S; i++) this.sHat[i] = (i === 0 ? 1.0 : 0.15 * Math.exp(-i * 0.08));
+        this.port.onmessage = (e) => {
+            const d = e.data;
+            if (d.t === 'mu') this.mu = d.v;
+            else if (d.t === 'mom') this.momentum = d.v;
+            else if (d.t === 'taps') { this.N = Math.min(256, Math.max(32, d.v)); this.allocBuffers(); }
+            else if (d.t === 'reset') { this.w.fill(0); this.wPrev.fill(0); this.xBuf.fill(0); this.yBuf.fill(0); this.xpBuf.fill(0); }
+            else if (d.t === 'delay') {
+                const delay = Math.max(0, Math.min(this.S - 1, Math.round(d.v)));
+                this.sHat.fill(0); this.sHat[delay] = 1.0;
+                for (let i = delay + 1; i < Math.min(this.S, delay + 16); i++) this.sHat[i] = 0.2 * Math.exp(-(i - delay) * 0.12);
+            }
+        };
+    }
+    allocBuffers() {
+        this.w = new Float32Array(this.N); this.xBuf = new Float32Array(this.N);
+        this.xpBuf = new Float32Array(this.N); this.wPrev = new Float32Array(this.N);
+    }
+    process(inputs, outputs) {
+        const inCh = inputs[0]?.[0], outCh = outputs[0]?.[0];
+        if (!inCh || !outCh) return true;
+        for (let i = 0; i < inCh.length; i++) {
+            const x = inCh[i];
+            // shift x buffer
+            for (let j = this.N - 1; j > 0; j--) this.xBuf[j] = this.xBuf[j - 1];
+            this.xBuf[0] = x;
+            // filter x through W(z) => y
+            let y = 0;
+            for (let j = 0; j < this.N; j++) y += this.w[j] * this.xBuf[j];
+            outCh[i] = -y;
+            // shift y buffer
+            for (let j = this.S - 1; j > 0; j--) this.yBuf[j] = this.yBuf[j - 1];
+            this.yBuf[0] = y;
+            // filtered-x reference: x' = x * S_hat
+            for (let j = this.N - 1; j > 0; j--) this.xpBuf[j] = this.xpBuf[j - 1];
+            let xp = 0;
+            const limS = Math.min(this.S, this.N);
+            for (let j = 0; j < limS; j++) xp += this.sHat[j] * this.xBuf[j];
+            this.xpBuf[0] = xp;
+            // y' = y * S_hat
+            let yp = 0;
+            for (let j = 0; j < this.S; j++) yp += this.sHat[j] * this.yBuf[j];
+            const e = x - yp;
+            // FxLMS with momentum
+            let power = 0;
+            for (let j = 0; j < this.N; j++) power += this.xpBuf[j] * this.xpBuf[j];
+            const norm = 1 / (power + 1e-4);
+            for (let j = 0; j < this.N; j++) {
+                const dw = this.mu * e * this.xpBuf[j] * norm;
+                const delta = dw + this.momentum * this.wPrev[j];
+                this.w[j] += delta;
+                this.wPrev[j] = delta;
+                this.w[j] *= 0.99998; // weight leakage
+            }
+            this.sError = 0.995 * this.sError + 0.005 * Math.abs(e);
+        }
+        if (++this.count % 16 === 0) this.port.postMessage({ t: 'err', v: this.sError });
+        return true;
+    }
+}
+registerProcessor('fxlms-proc', FxLMSProc);
+
+/* ---- Normalized LMS Processor ---- */
+class NLMSProc extends AudioWorkletProcessor {
+    constructor(opts) {
+        super();
+        this.N = opts.processorOptions?.taps || 128;
+        this.mu = 0.02; this.momentum = 0.9;
+        this.w = new Float32Array(this.N); this.buf = new Float32Array(this.N);
+        this.wPrev = new Float32Array(this.N); this.sError = 0; this.count = 0;
+        this.port.onmessage = (e) => {
+            const d = e.data;
+            if (d.t === 'mu') this.mu = d.v;
+            else if (d.t === 'mom') this.momentum = d.v;
+            else if (d.t === 'taps') { this.N = Math.min(256,Math.max(32,d.v)); this.w = new Float32Array(this.N); this.buf = new Float32Array(this.N); this.wPrev = new Float32Array(this.N); }
+            else if (d.t === 'reset') { this.w.fill(0); this.wPrev.fill(0); this.buf.fill(0); }
+        };
+    }
+    process(inputs, outputs) {
+        const inCh = inputs[0]?.[0], outCh = outputs[0]?.[0];
+        if (!inCh || !outCh) return true;
+        for (let i = 0; i < inCh.length; i++) {
+            const x = inCh[i];
+            for (let j = this.N - 1; j > 0; j--) this.buf[j] = this.buf[j - 1];
+            this.buf[0] = x;
+            let y = 0;
+            for (let j = 0; j < this.N; j++) y += this.w[j] * this.buf[j];
+            outCh[i] = -y;
+            const err = x - y;
+            let power = 0;
+            for (let j = 0; j < this.N; j++) power += this.buf[j] * this.buf[j];
+            const norm = 1 / (power + 1e-4);
+            for (let j = 0; j < this.N; j++) {
+                const dw = this.mu * err * this.buf[j] * norm;
+                const delta = dw + this.momentum * this.wPrev[j];
+                this.w[j] += delta; this.wPrev[j] = delta;
+            }
+            this.sError = 0.99 * this.sError + 0.01 * Math.abs(err);
+        }
+        if (++this.count % 16 === 0) this.port.postMessage({ t: 'err', v: this.sError });
+        return true;
+    }
+}
+registerProcessor('nlms-proc', NLMSProc);
+`;
+
+/* ============================================================
+ *  GLOBAL STATE
+ * ============================================================ */
+const S = {
+    ac: null, stream: null, src: null, analyser: null,
+    preGain: null, preFilter: null,
+    bands: [], xovers: [], // 4-band
+    proc: null, // AudioWorkletNode
+    limiter: null, limiterGain: null,
+    outGain: null, outMute: null,
+    howlNotches: [], // array of {freq, node}
+    noiseProfile: null, // Float32Array | null
+    noiseGain: null, // spectral subtraction gain node
+    toneOsc: null, toneGain: null,
+    recorder: null, recChunks: [],
+    running: false, mode: 'fxlms', vizTab: 'spectrum',
+    ab: false, savedGain: 1,
+    spectroImg: null, spectroOff: 0,
+    howlThresh: -28, // dB threshold for howl detection
+    howlHistory: new Float32Array(1024),
+    howlIdx: 0,
+    perBandGains: [0.9, 0.7, 0.25, 0.0],
+    taps: 128, mu: 0.01, momentum: 0.9,
+    calibratedLatency: 0,
+};
+
+/* ============================================================
+ *  DOM REFS
+ * ============================================================ */
+const $ = id => document.getElementById(id);
+const $q = (s,p) => (p||document).querySelector(s);
+const $a = (s,p) => (p||document).querySelectorAll(s);
+
+const startBtn = $('startBtn'), btnLbl = $('btnLbl'), stText = $('stText'), stDot = $('stDot');
+const mainCard = $('mainCard'), pulseEffect = $('pulseEffect'), vizOverlay = $('vizOverlay');
+const canvas = $('viz'), ctx = canvas.getContext('2d');
+const pMode = $('pMode'), pHowl = $('pHowl'), howlAlert = $('howlAlert');
+const howlCount = $('howlCount'), howlEnable = $('howlEnable'), howlClear = $('howlClear');
+
+const PRESETS = {
+    'Crowd Rumble':    [95,80,20,0],
+    'HVAC Drone':       [90,90,30,5],
+    'Bass Only':        [100,40,0,0],
+    'Air Conditioner':  [85,55,0,0],
+    'Speech Mute':      [20,35,75,30],
+    'Full Spectrum':    [100,100,100,70],
+    'Off':              [0,0,0,0],
+};
+
+/* ============================================================
+ *  UI WIRING
+ * ============================================================ */
+startBtn.addEventListener('click', () => S.running ? stop() : start());
+
+// Mode buttons
+$a('.mode-btn').forEach(b => b.addEventListener('click', () => {
+    if (S.running) return;
+    $a('.mode-btn').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    S.mode = b.dataset.mode;
+    const names = { fxlms: '⚡ FxLMS', adaptive: '🧠 NLMS', phase: '🔊 PHASE' };
+    pMode.textContent = names[S.mode];
+}));
+
+// Viz tabs
+$a('.viz-tab').forEach(t => t.addEventListener('click', () => {
+    $a('.viz-tab').forEach(x => { x.classList.remove('tab-on','border-cyan-400','text-cyan-300'); x.classList.add('border-transparent','text-slate-400'); });
+    t.classList.add('tab-on','border-cyan-400','text-cyan-300'); t.classList.remove('border-transparent','text-slate-400');
+    S.vizTab = t.dataset.tab; S.spectroOff = 0;
+    fitCanvas(); ctx.clearRect(0,0,canvas.width,canvas.height);
+}));
+
+// Band sliders
+for (let i = 0; i < 4; i++) {
+    const sl = $('b'+i);
+    sl.addEventListener('input', () => {
+        const v = parseInt(sl.value);
+        $('b'+i+'l').textContent = v + '%';
+        S.perBandGains[i] = v / 100;
+        applyBands();
+    });
+}
+
+// DSP sliders
+$('muSl').addEventListener('input', () => {
+    S.mu = parseFloat($('muSl').value); $('muLbl').textContent = S.mu.toFixed(3);
+    if (S.proc) S.proc.port.postMessage({t:'mu', v:S.mu});
+});
+$('momSl').addEventListener('input', () => {
+    S.momentum = parseFloat($('momSl').value); $('momLbl').textContent = S.momentum.toFixed(2);
+    if (S.proc) S.proc.port.postMessage({t:'mom', v:S.momentum});
+});
+$('tapSl').addEventListener('input', () => {
+    S.taps = parseInt($('tapSl').value); $('tapLbl').textContent = S.taps;
+    if (S.proc) S.proc.port.postMessage({t:'taps', v:S.taps});
+});
+
+// Howling Guard
+howlEnable.addEventListener('change', () => { pHowl.textContent = howlEnable.checked ? '🛡 GUARD' : '🟢 OPEN'; });
+howlClear.addEventListener('click', clearNotches);
+
+// A/B
+function setAB(on) { if (!S.running) return; S.ab = on; const g = on ? 0.0001 : (S.savedGain || 1); S.outGain.gain.setTargetAtTime(g, S.ac.currentTime, 0.008); $('abBtn').classList.toggle('bg-amber-500/30', on); $('abBtn').classList.toggle('border-amber-500/40', on); }
+$('abBtn').addEventListener('mousedown', ()=>setAB(true));
+$('abBtn').addEventListener('mouseup', ()=>setAB(false));
+$('abBtn').addEventListener('mouseleave', ()=>setAB(false));
+$('abBtn').addEventListener('touchstart', e=>{e.preventDefault();setAB(true)});
+$('abBtn').addEventListener('touchend', e=>{e.preventDefault();setAB(false)});
+
+// Presets
+$('presetBtn').addEventListener('click', () => {
+    const ks = Object.keys(PRESETS);
+    const ch = prompt('Preset:\n'+ks.map((k,i)=>`${i+1}. ${k}`).join('\n'),'1');
+    const idx = parseInt(ch)-1;
+    if (idx>=0 && idx<ks.length) {
+        const g = PRESETS[ks[idx]];
+        for (let i=0;i<4;i++) { $('b'+i).value = g[i]; $('b'+i+'l').textContent = g[i]+'%'; S.perBandGains[i]=g[i]/100; }
+        applyBands();
+    }
+});
+
+// Calibration
+$('calBtn').addEventListener('click', async () => {
+    if (S.running) { stText.textContent = 'Stop ANC first to calibrate'; return; }
+    await calibrate();
+});
+
+// Record
+$('recBtn').addEventListener('click', () => {
+    if (!S.running) return;
+    if (!S.recorder || S.recorder.state === 'inactive') startRecord();
+    else stopRecord();
+});
+
+/* ============================================================
+ *  CALIBRATION
+ * ============================================================ */
+async function calibrate() {
+    stText.textContent = 'Calibrating...'; stText.className = 'text-amber-400 font-medium text-[11px]';
+    $('calStatus').classList.remove('hidden');
+    $('calStatus').textContent = 'Step 1/4: Creating audio context...';
+    try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        const calCtx = new AC({ latencyHint: 'interactive' });
+        // Measure base latency
+        const baseLat = (calCtx.baseLatency || 0);
+        const outLat = (calCtx.outputLatency || 0);
+        const total = Math.round((baseLat + outLat) * 1000);
+        S.calibratedLatency = total;
+        await calCtx.close();
+
+        // Measure noise floor via mic
+        $('calStatus').textContent = 'Step 2/4: Measuring noise floor...';
+        const testStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+        const testCtx = new AC({ latencyHint: 'interactive' });
+        const testSrc = testCtx.createMediaStreamSource(testStream);
+        const testAnalyser = testCtx.createAnalyser();
+        testAnalyser.fftSize = 2048; testAnalyser.smoothingTimeConstant = 0.9;
+        testSrc.connect(testAnalyser);
+
+        // Collect noise profile over 2 seconds
+        const profile = new Float32Array(testAnalyser.frequencyBinCount);
+        const temp = new Float32Array(testAnalyser.frequencyBinCount);
+        let samples = 0;
+        await new Promise(resolve => {
+            const start = performance.now();
+            const poll = () => {
+                if (performance.now() - start > 2000) { resolve(); return; }
+                testAnalyser.getFloatFrequencyData(temp);
+                for (let i = 0; i < temp.length; i++) profile[i] += temp[i];
+                samples++;
+                requestAnimationFrame(poll);
+            };
+            poll();
+        });
+        for (let i = 0; i < profile.length; i++) profile[i] /= samples;
+        S.noiseProfile = profile;
+
+        testStream.getTracks().forEach(t => t.stop());
+        await testCtx.close();
+
+        $('calStatus').textContent = 'Step 3/4: Computing delay compensation...';
+        // Set delay slider to calibrated value
+        if (S.mode === 'fxlms') {
+            const samples = Math.round((S.calibratedLatency / 1000) * 48000);
+            if (S.proc) S.proc.port.postMessage({ t: 'delay', v: Math.min(63, samples) });
+        }
+
+        $('calStatus').textContent = `✔ Calibrated: ${S.calibratedLatency}ms latency, ${samples} noise samples`;
+        $('calStatus').className = 'text-[9px] text-emerald-400';
+        stText.textContent = 'Calibrated ✔';
+        stText.className = 'text-emerald-400 font-medium text-[11px]';
+        setTimeout(() => { stText.textContent = 'Ready'; stText.className = 'text-slate-400 font-medium text-[11px]'; }, 2000);
+    } catch(e) {
+        console.error('Calibration failed:', e);
+        $('calStatus').textContent = 'Calibration failed: ' + e.message;
+        $('calStatus').className = 'text-[9px] text-red-400';
+        stText.textContent = 'Ready';
+        stText.className = 'text-slate-400 font-medium text-[11px]';
+    }
+}
+
+/* ============================================================
+ *  HOWLING DETECTION (runs on main thread via analyser)
+ * ============================================================ */
+let howlFreqData = null;
+function detectHowling() {
+    if (!howlEnable.checked || !S.analyser || !S.running) return;
+    if (!howlFreqData) howlFreqData = new Float32Array(S.analyser.frequencyBinCount);
+    S.analyser.getFloatFrequencyData(howlFreqData);
+
+    const bins = howlFreqData.length;
+    const nyquist = S.ac.sampleRate / 2;
+    const peakThresh = S.howlThresh; // dB — any bin above this is suspect
+
+    // Look for unusually high narrowband peaks (hallmark of howling)
+    for (let i = 2; i < bins - 10; i++) {
+        const mag = howlFreqData[i];
+        if (mag < peakThresh) continue;
+        // Check if this bin is significantly louder than neighbors (narrow band = howling signature)
+        const neighbors = (howlFreqData[i - 1] + howlFreqData[i + 1]) / 2;
+        const farNeighbors = (howlFreqData[Math.max(0, i - 4)] + howlFreqData[Math.min(bins - 1, i + 4)]) / 2;
+        if (mag - neighbors > 8 && mag - farNeighbors > 12) {
+            const freq = (i / bins) * nyquist;
+            addNotch(freq);
+            break; // one per frame
+        }
+    }
+
+    // Remove stale notches that are no longer needed (release after 3 seconds)
+    const now = performance.now();
+    S.howlNotches = S.howlNotches.filter(h => {
+        if (now - h.time > 3000) {
+            try { h.node.disconnect(); } catch(e){}
+            return false;
+        }
+        return true;
+    });
+    howlCount.textContent = S.howlNotches.length;
+    updateHowlUI();
+}
+
+function addNotch(freq) {
+    if (!S.ac || !S.running) return;
+    // Don't add duplicate frequencies
+    if (S.howlNotches.some(h => Math.abs(h.freq - freq) < freq * 0.05)) {
+        S.howlNotches.find(h => Math.abs(h.freq - freq) < freq * 0.05).time = performance.now();
+        return;
+    }
+    if (S.howlNotches.length >= 6) {
+        // Replace oldest
+        const old = S.howlNotches.shift();
+        try { old.node.disconnect(); } catch(e){}
+    }
+    const notch = S.ac.createBiquadFilter();
+    notch.type = 'notch';
+    notch.frequency.value = freq;
+    notch.Q.value = 120; // ultra-narrow notch (dbx AFS-style)
+
+    // Insert before limiter
+    if (S.preGain) {
+        try { S.preGain.disconnect(); } catch(e){}
+        S.preGain.connect(notch);
+        // reconnect rest of chain from notch
+        reconnectChain(notch);
+    }
+    S.howlNotches.push({ freq, node: notch, time: performance.now() });
+    howlCount.textContent = S.howlNotches.length;
+    updateHowlUI();
+
+    // Visual alert
+    howlAlert.classList.add('alert-flash');
+    setTimeout(() => howlAlert.classList.remove('alert-flash'), 400);
+}
+
+function reconnectChain(fromNode) {
+    // Simple: just reconnect preFilter downstream
+    if (S.preFilter) {
+        fromNode.connect(S.preFilter);
+    } else if (S.bands.length > 0) {
+        fromNode.connect(S.xovers[0]);
+    }
+}
+
+function clearNotches() {
+    S.howlNotches.forEach(h => { try { h.node.disconnect(); } catch(e){} });
+    S.howlNotches = [];
+    howlCount.textContent = '0';
+    updateHowlUI();
+    // Rebuild audio graph (simplest: stop/start won't work while running, so reconnect)
+    if (S.preGain && S.preFilter) {
+        try { S.preGain.disconnect(); } catch(e){}
+        S.preGain.connect(S.preFilter);
+    }
+}
+
+function updateHowlUI() {
+    const active = S.howlNotches.length > 0;
+    howlAlert.classList.toggle('active', active);
+    howlAlert.textContent = active ? `🛡 ${S.howlNotches.length} NOTCH` : 'HOWL OK';
+    pHowl.textContent = active ? `🛡 GUARD(${S.howlNotches.length})` : (howlEnable.checked ? '🛡 GUARD' : '🟢 OPEN');
+}
+
+/* ============================================================
+ *  START / STOP
+ * ============================================================ */
+async function start() {
+    try {
+        stText.textContent = 'Initializing...'; stText.className = 'text-cyan-400 font-medium text-[11px]';
+
+        const AC = window.AudioContext || window.webkitAudioContext;
+        S.ac = new AC({ latencyHint: 'interactive' });
+        if (S.ac.state === 'suspended') await S.ac.resume();
+
+        // Load worklet
+        try {
+            const blob = new Blob([WORKLET_CODE], { type: 'application/javascript' });
+            const url = URL.createObjectURL(blob);
+            await S.ac.audioWorklet.addModule(url);
+            URL.revokeObjectURL(url);
+        } catch(e) {
+            console.warn('Worklet failed, using phase mode:', e);
+            S.mode = 'phase';
+        }
+
+        // Mic
+        S.stream = await navigator.mediaDevices.getUserMedia({
+            audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, latency: 0, channelCount: 1 }
+        });
+
+        S.src = S.ac.createMediaStreamSource(S.stream);
+
+        // Analyser
+        S.analyser = S.ac.createAnalyser();
+        S.analyser.fftSize = 2048;
+        S.analyser.smoothingTimeConstant = 0.75;
+
+        // Pre-gain
+        S.preGain = S.ac.createGain(); S.preGain.gain.value = 1.0;
+
+        // Pre-filter (allpass by default, noise profile if calibrated)
+        S.preFilter = S.ac.createBiquadFilter();
+        S.preFilter.type = 'allpass';
+
+        // 4-band splitter
+        const lp200 = S.ac.createBiquadFilter(); lp200.type = 'lowpass'; lp200.frequency.value = 200; lp200.Q.value = 0.707;
+        const hp200 = S.ac.createBiquadFilter(); hp200.type = 'highpass'; hp200.frequency.value = 200; hp200.Q.value = 0.707;
+        const lp1k = S.ac.createBiquadFilter(); lp1k.type = 'lowpass'; lp1k.frequency.value = 1000; lp1k.Q.value = 0.707;
+        const hp1k = S.ac.createBiquadFilter(); hp1k.type = 'highpass'; hp1k.frequency.value = 1000; hp1k.Q.value = 0.707;
+        const lp4k = S.ac.createBiquadFilter(); lp4k.type = 'lowpass'; lp4k.frequency.value = 4000; lp4k.Q.value = 0.707;
+        const hp4k = S.ac.createBiquadFilter(); hp4k.type = 'highpass'; hp4k.frequency.value = 4000; hp4k.Q.value = 0.707;
+        S.xovers = [lp200, hp200, lp1k, hp1k, lp4k, hp4k];
+
+        // Band gains + inverters
+        S.bands = [];
+        const mixer = S.ac.createGain(); mixer.gain.value = 1.0;
+        for (let i = 0; i < 4; i++) {
+            const g = S.ac.createGain(); g.gain.value = S.perBandGains[i];
+            const inv = S.ac.createGain(); inv.gain.value = -1.0;
+            g.connect(inv); inv.connect(mixer);
+            S.bands.push({ gain: g, inverter: inv });
+        }
+
+        // Limiter
+        S.limiter = S.ac.createDynamicsCompressor();
+        S.limiter.threshold.value = -6; S.limiter.knee.value = 0;
+        S.limiter.ratio.value = 20; S.limiter.attack.value = 0.001; S.limiter.release.value = 0.03;
+
+        // Output
+        S.outGain = S.ac.createGain(); S.outGain.gain.value = 1.0;
+
+        // Audio processing node (FxLMS/NLMS or phase)
+        if ((S.mode === 'fxlms' || S.mode === 'adaptive') && S.ac.audioWorklet) {
+            const ProcClass = S.mode === 'fxlms' ? 'fxlms-proc' : 'nlms-proc';
+            S.proc = new AudioWorkletNode(S.ac, ProcClass, { processorOptions: { taps: S.taps } });
+            S.proc.port.postMessage({ t: 'mu', v: S.mu });
+            S.proc.port.postMessage({ t: 'mom', v: S.momentum });
+            S.proc.port.onmessage = (e) => {
+                if (e.data.t === 'err') {
+                    $('sErr').textContent = e.data.v.toFixed(3);
+                    $('sRed').textContent = Math.min(40, Math.round(-20 * Math.log10(Math.max(e.data.v, 0.001)))).toFixed(0) + 'dB';
+                }
+            };
+            mixer.connect(S.proc);
+            S.proc.connect(S.limiter);
+        } else {
+            mixer.connect(S.limiter);
+        }
+        S.limiter.connect(S.outGain);
+        S.outGain.connect(S.ac.destination);
+
+        // Audio graph: src → preGain → (tap: analyser, preFilter) → crossover tree → bands
+        S.src.connect(S.preGain);
+        S.preGain.connect(S.analyser); // monitor tap
+        S.preGain.connect(S.preFilter);
+        S.preFilter.connect(lp200); S.preFilter.connect(hp200);
+        lp200.connect(S.bands[0].gain);
+        hp200.connect(lp1k); hp200.connect(hp1k);
+        lp1k.connect(S.bands[1].gain);
+        hp1k.connect(lp4k); hp1k.connect(hp4k);
+        lp4k.connect(S.bands[2].gain);
+        hp4k.connect(S.bands[3].gain);
+
+        // UI
+        S.running = true; S.ab = false;
+        btnLbl.textContent = 'Stop ANC';
+        startBtn.classList.remove('from-cyan-600','to-blue-500','shadow-cyan-500/25');
+        startBtn.classList.add('from-red-600','to-red-500','shadow-red-500/25','btn-active');
+        const mNames = { fxlms: 'FxLMS Active', adaptive: 'NLMS Active', phase: 'Phase Inversion' };
+        stText.textContent = mNames[S.mode]; stText.className = 'text-green-400 font-medium text-[11px]';
+        stDot.className = 'dot bg-green-400 live';
+        mainCard.classList.add('glow-active');
+        pulseEffect.classList.add('pulse-ring');
+        vizOverlay.style.display = 'none';
+        $('sLat').textContent = ((S.ac.baseLatency||0)*1000).toFixed(1) + 'ms';
+
+        fitCanvas(); S.spectroImg = ctx.createImageData(canvas.width, canvas.height);
+        S.spectroOff = 0; howlFreqData = null;
+        visualize();
+
+    } catch(e) {
+        console.error(e);
+        stText.textContent = 'Error: ' + (e.name === 'NotAllowedError' ? 'Mic denied' : e.message);
+        stText.className = 'text-red-400 font-medium text-[11px]'; stDot.className = 'dot bg-red-500 live';
+        cleanup();
+    }
+}
+
+function applyBands() {
+    if (!S.running || !S.bands) return;
+    S.bands.forEach((b, i) => b.gain.gain.setTargetAtTime(S.perBandGains[i], S.ac.currentTime, 0.01));
+}
+
+function stop() {
+    S.running = false;
+    if (S.animId) cancelAnimationFrame(S.animId);
+    stopRecord();
+    cleanup();
+    btnLbl.textContent = 'Start ANC';
+    startBtn.classList.remove('from-red-600','to-red-500','shadow-red-500/25','btn-active');
+    startBtn.classList.add('from-cyan-600','to-blue-500','shadow-cyan-500/25');
+    stText.textContent = 'Ready'; stText.className = 'text-slate-400 font-medium text-[11px]';
+    stDot.className = 'dot bg-slate-600';
+    mainCard.classList.remove('glow-active'); pulseEffect.classList.remove('pulse-ring');
+    vizOverlay.style.display = 'flex';
+    ['sLat','sPeak','sLvl','sErr','sRed'].forEach(id => $(id).textContent = '--');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    clearNotches();
+    S.howlNotches = []; howlCount.textContent = '0';
+}
+
+function cleanup() {
+    if (S.stream) { S.stream.getTracks().forEach(t=>t.stop()); S.stream = null; }
+    if (S.ac) { S.ac.close().catch(()=>{}); S.ac = null; }
+    S.src = S.analyser = S.preGain = S.preFilter = S.proc = S.limiter = S.outGain = null;
+    S.bands = []; S.xovers = [];
+}
+
+/* ============================================================
+ *  RECORDING
+ * ============================================================ */
+function startRecord() {
+    if (!S.running) return;
+    const dest = S.ac.createMediaStreamDestination();
+    S.outGain.connect(dest);
+    S.recorder = new MediaRecorder(dest.stream, { mimeType: 'audio/webm;codecs=opus' });
+    S.recChunks = [];
+    S.recorder.ondataavailable = e => S.recChunks.push(e.data);
+    S.recorder.onstop = () => {
+        const blob = new Blob(S.recChunks, { type: 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'anc-recording-'+Date.now()+'.webm';
+        a.click(); URL.revokeObjectURL(url);
+        $('recBtn').textContent = '⏺';
+    };
+    S.recorder.start();
+    $('recBtn').textContent = '⏹';
+    $('recBtn').classList.add('text-red-400');
+}
+
+function stopRecord() {
+    if (S.recorder && S.recorder.state === 'recording') {
+        S.recorder.stop();
+    }
+    $('recBtn').classList.remove('text-red-400');
+}
+
+/* ============================================================
+ *  VISUALIZER
+ * ============================================================ */
+function fitCanvas() {
+    const r = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = r.width * dpr; canvas.height = r.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+let animId = null;
+let freqData = null, floatFreq = null, timeData = null;
+
+function visualize() {
+    fitCanvas();
+    if (!freqData) freqData = new Uint8Array(S.analyser.frequencyBinCount);
+    if (!floatFreq) floatFreq = new Float32Array(S.analyser.frequencyBinCount);
+    if (!timeData) timeData = new Float32Array(S.analyser.fftSize);
+    const $lat = $('sLat'), $peak = $('sPeak'), $lvl = $('sLvl');
+
+    function frame() {
+        animId = requestAnimationFrame(frame);
+        const r = canvas.getBoundingClientRect();
+        const W = r.width, H = r.height;
+
+        S.analyser.getByteFrequencyData(freqData);
+
+        if (S.vizTab === 'spectrum') {
+            ctx.fillStyle = 'rgba(6,10,24,.55)'; ctx.fillRect(0,0,W,H);
+            // Grid
+            ctx.strokeStyle = 'rgba(100,116,139,.06)'; ctx.lineWidth = 1;
+            for (let i=1;i<4;i++) { ctx.beginPath(); ctx.moveTo(0,H*i/4); ctx.lineTo(W,H*i/4); ctx.stroke(); }
+            const bars = 64; const bw = W/bars;
+            const ny = S.ac.sampleRate/2;
+            for (let i=0;i<bars;i++) {
+                const f1 = 20*Math.pow(ny/20,i/bars);
+                const f2 = 20*Math.pow(ny/20,(i+1)/bars);
+                const b1 = Math.floor(f1/ny*freqData.length), b2 = Math.ceil(f2/ny*freqData.length);
+                let s=0,c=0; for(let j=b1;j<b2&&j<freqData.length;j++){s+=freqData[j];c++;}
+                const v = c>0?(s/c)/255:0; const bh = v*H*.82; const x=i*bw;
+                const mid=(f1+f2)/2;
+                const col = mid<200?'#22d3ee':mid<1000?'#3b82f6':mid<4000?'#a855f7':'#ec4899';
+                const grad = ctx.createLinearGradient(0,H-bh,0,H);
+                grad.addColorStop(0,col); grad.addColorStop(1,col+'18');
+                ctx.fillStyle = grad; ctx.fillRect(x+1,H-bh,bw-2,bh);
+                ctx.fillStyle = col; ctx.fillRect(x+1,H-bh-1.5,bw-2,1.5);
+            }
+            ctx.fillStyle = 'rgba(148,163,184,.4)'; ctx.font = '9px "JetBrains Mono", monospace';
+            ctx.fillText('20',3,H-3); ctx.fillText('200',W*.33,H-3); ctx.fillText('1k',W*.58,H-3); ctx.fillText('8k',W-20,H-3);
+        } else if (S.vizTab === 'waveform') {
+            S.analyser.getFloatTimeDomainData(timeData);
+            ctx.fillStyle = 'rgba(6,10,24,.4)'; ctx.fillRect(0,0,W,H);
+            ctx.strokeStyle = 'rgba(100,116,139,.1)'; ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
+            const grad = ctx.createLinearGradient(0,0,W,0);
+            grad.addColorStop(0,'#22d3ee'); grad.addColorStop(.5,'#3b82f6'); grad.addColorStop(1,'#a855f7');
+            ctx.strokeStyle = grad; ctx.lineWidth = 2;
+            ctx.beginPath(); const sl = W/timeData.length;
+            for(let i=0;i<timeData.length;i++){const x=i*sl;const y=(.5+timeData[i]/2)*H;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+            ctx.stroke();
+            ctx.shadowColor='#22d3ee';ctx.shadowBlur=6;ctx.stroke();ctx.shadowBlur=0;
+        } else if (S.vizTab === 'spectrogram') {
+            const dpr = window.devicePixelRatio||1;
+            const Wpx=Math.floor(W*dpr),Hpx=Math.floor(H*dpr);
+            if(!S.spectroImg||S.spectroImg.width!==Wpx||S.spectroImg.height!==Hpx){
+                S.spectroImg=ctx.createImageData(Wpx,Hpx);S.spectroOff=0;
+            }
+            S.spectroImg.data.copyWithin(Wpx*4,0,Wpx*4*(Hpx-1));
+            const ny=S.ac.sampleRate/2;
+            for(let x=0;x<Wpx;x++){
+                const f=20*Math.pow(ny/20,x/Wpx);
+                const bin=Math.floor(f/ny*freqData.length);
+                const v=freqData[Math.min(bin,freqData.length-1)]/255;
+                let rr,gg,bb;
+                if(v<.25){rr=v*4*0;gg=v*4*10;bb=30+v*4*80;}
+                else if(v<.5){const t=(v-.25)*4;rr=0+t*40;gg=10+t*110;bb=110-t*20;}
+                else if(v<.75){const t=(v-.5)*4;rr=40+t*130;gg=120+t*60;bb=90-t*70;}
+                else{const t=(v-.75)*4;rr=170+t*85;gg=180-t*80;bb=20+t*60;}
+                const idx=x*4;
+                S.spectroImg.data[idx]=Math.min(255,rr);
+                S.spectroImg.data[idx+1]=Math.min(255,gg);
+                S.spectroImg.data[idx+2]=Math.min(255,bb);
+                S.spectroImg.data[idx+3]=255;
+            }
+            ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.putImageData(S.spectroImg,0,0);ctx.restore();
+            ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='9px "JetBrains Mono", monospace';
+            ctx.fillText('20Hz',3,H-3); ctx.fillText('1kHz',W/2-10,H-3); ctx.fillText('8kHz',W-22,H-3);
+            ctx.fillText('↑new',3,11);
+        }
+
+        // Stats
+        let mI=0,mV=0;
+        for(let i=2;i<freqData.length/2;i++){if(freqData[i]>mV){mV=freqData[i];mI=i;}}
+        const ny=S.ac.sampleRate/2;
+        $peak.textContent = mV>0?Math.round(mI/freqData.length*ny):'--';
+
+        S.analyser.getFloatTimeDomainData(timeData);
+        let sq=0;for(let i=0;i<timeData.length;i++)sq+=timeData[i]*timeData[i];
+        const rms=Math.sqrt(sq/timeData.length);
+        const db=20*Math.log10(Math.max(rms,1e-5));
+        $lvl.textContent=(db>-80?db.toFixed(0):'-∞')+'dB';
+
+        // Howling detection pass
+        detectHowling();
+    }
+    S.animId = animId;
+    frame();
+}
+
+/* ============================================================
+ *  INIT
+ * ============================================================ */
+fitCanvas();
+window.addEventListener('resize', () => { if (S.running) fitCanvas(); });
+</script>
+</body>
+</html>

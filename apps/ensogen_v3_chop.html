@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedural Ensō Generator</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #eee;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        canvas {
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+        .controls {
+            background: #333;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            font-family: monospace;
+            width: 300px;
+            max-width: 90vw;
+            text-align: center;
+            border: 1px solid #555;
+            background: #111;
+            color: #0f0;
+        }
+        button {
+            padding: 8px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #555;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        button:hover { background: #777; }
+        button:disabled { background: #444; cursor: not-allowed; }
+        .download-container {
+            margin-top: 10px;
+            display: none;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        #seedDisplay { color: #bbb; }
+    </style>
+</head>
+<body>
+
+    <h2>Ensogen ID Engine</h2>
+    <div class="controls">
+        <label for="ensogenInput">Ensogen ID:</label>
+        <input type="text" id="ensogenInput" value="4-CW-C-06-03-U-04-05-D-M-216">
+        <button onclick="render()">Generate Ensō</button>
+        <button onclick="randomize()">Random Terrain</button>
+        <button id="downloadBtn" onclick="downloadPNG()" disabled>Download PNG</button>
+    </div>
+
+    <canvas id="ensoCanvas" width="600" height="600"></canvas>
+
+    <div class="download-container" id="downloadContainer">
+        <button onclick="downloadPNG()">Download PNG</button>
+        <span id="seedDisplay"></span>
+    </div>
+
+    <script>
+        // --- 1. SEEDED RNG ENGINE ---
+        // Same Ensogen ID = same Ensō every time.
+        function xmur3(str) {
+            let h = 1779033703 ^ str.length;
+            for (let i = 0; i < str.length; i++) {
+                h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+                h = h << 13 | h >>> 19;
+            }
+            return function() {
+                h = Math.imul(h ^ h >>> 16, 2246822507);
+                h = Math.imul(h ^ h >>> 13, 3266489909);
+                return (h ^= h >>> 16) >>> 0;
+            };
+        }
+
+        function mulberry32(a) {
+            return function() {
+                let t = a += 0x6D2B79F5;
+                t = Math.imul(t ^ t >>> 15, t | 1);
+                t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        let rng;
+        let hasRendered = false;
+
+        function randomRange(min, max) {
+            return min + rng() * (max - min);
+        }
+
+        // --- 2. PARSE ENSOGEN NUMBER ---
+        function parseEnsogen(id) {
+            const parts = id.split('-');
+            return {
+                inkLoad: parseInt(parts[0]) || 4,              // 1-10
+                direction: parts[1] === 'CW' ? 1 : -1,        // CW or CCW
+                paperHue: parts[2] || 'C',                    // C or W
+                brushSize: parseInt(parts[3]) || 6,           // 1-10
+                inkDensity: parseInt(parts[4]) || 3,          // 1-10
+                stretch: parts[5] || 'U',                     // U or E
+                texture: parseInt(parts[6]) || 4,             // 1-10
+                bristles: parseInt(parts[7]) || 5,            // 1-10
+                sigStyle: parts[8] || 'D',                    // D = dark seal, L = lighter seal
+                strokeSize: parts[9] || 'M',                  // S, M, L
+                startRot: parseInt(parts[10]) || 216          // 0-360
+            };
+        }
+
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, value));
+        }
+
+        // --- 3. CHOP SEAL SIGNATURE ---
+        function chopChunks(text) {
+            const clean = text.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            const chunks = [];
+            for (let i = 0; i < clean.length; i += 3) {
+                chunks.push(clean.slice(i, i + 3));
+            }
+            return chunks.slice(0, 4);
+        }
+
+        function drawChopSeal(ctx, text, x, y, size, sigStyle, paperColor) {
+            ctx.save();
+            ctx.translate(x + size / 2, y + size / 2);
+            ctx.rotate(randomRange(-0.035, 0.035));
+            ctx.translate(-size / 2, -size / 2);
+
+            const darkRed = sigStyle === 'L' ? 'rgba(180, 20, 20, 0.70)' : 'rgba(175, 0, 0, 0.88)';
+            const lightRed = sigStyle === 'L' ? 'rgba(210, 55, 45, 0.32)' : 'rgba(210, 20, 20, 0.40)';
+
+            // Layered uneven ink block for a hand-stamped look.
+            for (let i = 0; i < 34; i++) {
+                const j = size * 0.035;
+                ctx.fillStyle = i % 2 ? darkRed : lightRed;
+                ctx.globalAlpha = randomRange(0.045, 0.09);
+                ctx.fillRect(
+                    randomRange(-j, j),
+                    randomRange(-j, j),
+                    size + randomRange(-j, j),
+                    size + randomRange(-j, j)
+                );
+            }
+            ctx.globalAlpha = 1;
+
+            // Outer and inner seal border.
+            ctx.strokeStyle = darkRed;
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = size * 0.085;
+            ctx.strokeRect(size * 0.06, size * 0.06, size * 0.88, size * 0.88);
+
+            ctx.lineWidth = size * 0.028;
+            ctx.strokeRect(size * 0.17, size * 0.17, size * 0.66, size * 0.66);
+
+            // Carved name: TAE / CHA / TAR / OE for "taechataroe".
+            const chunks = chopChunks(text);
+            ctx.fillStyle = paperColor;
+            ctx.globalAlpha = 0.94;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = `900 ${size * 0.16}px monospace`;
+
+            const lineGap = size * 0.17;
+            const firstY = size * 0.34;
+            chunks.forEach((chunk, index) => {
+                ctx.fillText(chunk, size / 2, firstY + index * lineGap);
+            });
+            ctx.globalAlpha = 1;
+
+            // Small seal-script-like cuts and cross marks.
+            ctx.strokeStyle = paperColor;
+            ctx.globalAlpha = 0.72;
+            ctx.lineWidth = size * 0.025;
+            for (let i = 0; i < 10; i++) {
+                const sx = randomRange(size * 0.24, size * 0.76);
+                const sy = randomRange(size * 0.24, size * 0.76);
+                ctx.beginPath();
+                ctx.moveTo(sx - randomRange(3, 9), sy);
+                ctx.lineTo(sx + randomRange(3, 9), sy + randomRange(-4, 4));
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+
+            // Worn/paper speckles to make the stamp imperfect.
+            ctx.fillStyle = paperColor;
+            for (let i = 0; i < 95; i++) {
+                ctx.globalAlpha = randomRange(0.18, 0.68);
+                const px = randomRange(size * 0.08, size * 0.92);
+                const py = randomRange(size * 0.08, size * 0.92);
+                const pSize = randomRange(0.8, size * 0.035);
+                if (rng() > 0.5) {
+                    ctx.fillRect(px, py, pSize, pSize);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(px, py, pSize, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            ctx.globalAlpha = 1;
+            ctx.restore();
+        }
+
+        // --- 4. RENDERING ENGINE ---
+        function render() {
+            const id = document.getElementById('ensogenInput').value.toUpperCase().trim();
+            const canvas = document.getElementById('ensoCanvas');
+            const ctx = canvas.getContext('2d');
+            const params = parseEnsogen(id);
+
+            // Initialize deterministic randomness from the Ensogen ID only.
+            const seed = xmur3(id)();
+            rng = mulberry32(seed);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // A. Paper hue and texture.
+            const paperColor = params.paperHue === 'C' ? '#E0FFFF' : '#F5F5DC';
+            ctx.fillStyle = paperColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = `rgba(0,0,0,${clamp(params.texture * 0.01, 0, 0.12)})`;
+            for (let i = 0; i < 10000; i++) {
+                ctx.fillRect(rng() * canvas.width, rng() * canvas.height, 2, 2);
+            }
+
+            // B. Geometry setup.
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            let baseR = 150;
+            if (params.strokeSize === 'S') baseR = 100;
+            if (params.strokeSize === 'L') baseR = 200;
+
+            const stretchX = params.stretch === 'U' ? randomRange(0.8, 1.2) : 1;
+            const stretchY = params.stretch === 'U' ? randomRange(0.8, 1.2) : 1;
+
+            const startAngle = params.startRot * (Math.PI / 180);
+            const sweepAmount = Math.PI * 2 * (params.inkLoad / 5) * randomRange(0.8, 1.1);
+
+            // C. Draw Ensō brush stroke.
+            const steps = 300;
+            const maxBristles = params.bristles * 5;
+            const bristleOffsets = [];
+
+            for (let b = 0; b < maxBristles; b++) {
+                bristleOffsets.push({
+                    x: randomRange(-params.brushSize * 3, params.brushSize * 3),
+                    y: randomRange(-params.brushSize * 3, params.brushSize * 3),
+                    size: randomRange(1, params.brushSize)
+                });
+            }
+
+            for (let i = 0; i < steps; i++) {
+                const progress = i / steps;
+                const currentAngle = startAngle + (progress * sweepAmount * params.direction);
+
+                const rNoise = randomRange(-5, 5);
+                const R = baseR + rNoise;
+
+                const x = cx + (R * Math.cos(currentAngle)) * stretchX;
+                const y = cy + (R * Math.sin(currentAngle)) * stretchY;
+
+                const alpha = clamp((1 - progress) * (params.inkDensity / 3), 0, 1);
+                ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+
+                bristleOffsets.forEach(offset => {
+                    const jitterX = randomRange(-2, 2);
+                    const jitterY = randomRange(-2, 2);
+
+                    ctx.beginPath();
+                    ctx.arc(x + offset.x + jitterX, y + offset.y + jitterY, offset.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+
+            // D. Subtle terminal gap/shadow.
+            const gapStart = startAngle + (sweepAmount * params.direction) * 0.95;
+            const gapEnd = startAngle + (sweepAmount * params.direction);
+            ctx.strokeStyle = `rgba(0,0,0,${clamp(params.inkDensity * 0.02, 0, 0.25)})`;
+            ctx.lineWidth = params.brushSize * 0.5;
+            ctx.beginPath();
+            ctx.arc(cx, cy, baseR * Math.min(stretchX, stretchY), gapStart, gapEnd);
+            ctx.stroke();
+
+            // E. Ink splatters.
+            for (let s = 0; s < params.inkDensity * 10; s++) {
+                const splatX = cx + randomRange(-baseR * 1.5, baseR * 1.5);
+                const splatY = cy + randomRange(-baseR * 1.5, baseR * 1.5);
+                const splatSize = randomRange(1, params.brushSize * 0.8);
+                const splatAlpha = clamp(randomRange(0.1, params.inkDensity * 0.1), 0, 0.9);
+                ctx.fillStyle = `rgba(0,0,0,${splatAlpha})`;
+                ctx.beginPath();
+                ctx.arc(splatX, splatY, splatSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // F. Taechataroe chop seal signature.
+            const sealSize = 88;
+            const sealX = canvas.width - sealSize - 54 + randomRange(-8, 8);
+            const sealY = canvas.height - sealSize - 48 + randomRange(-8, 8);
+            drawChopSeal(ctx, 'taechataroe', sealX, sealY, sealSize, params.sigStyle, paperColor);
+
+            hasRendered = true;
+            document.getElementById('downloadBtn').disabled = false;
+            document.getElementById('downloadContainer').style.display = 'flex';
+            document.getElementById('seedDisplay').textContent = `Seed: ${id} | Seal: taechataroe`;
+        }
+
+        // --- 5. RANDOM ID GENERATOR ---
+        function randomize() {
+            const pad2 = n => String(n).padStart(2, '0');
+            const parts = [
+                Math.floor(Math.random() * 10) + 1,                         // Ink Load 1-10
+                Math.random() > 0.5 ? 'CW' : 'CCW',                         // Direction
+                Math.random() > 0.5 ? 'C' : 'W',                            // Paper Hue
+                pad2(Math.floor(Math.random() * 10) + 1),                   // Brush Size 01-10
+                pad2(Math.floor(Math.random() * 10) + 1),                   // Ink Density 01-10
+                Math.random() > 0.5 ? 'U' : 'E',                            // Stretch
+                pad2(Math.floor(Math.random() * 10) + 1),                   // Texture 01-10
+                pad2(Math.floor(Math.random() * 10) + 1),                   // Bristles 01-10
+                Math.random() > 0.5 ? 'D' : 'L',                            // Seal style
+                ['S', 'M', 'L'][Math.floor(Math.random() * 3)],             // Stroke Size
+                Math.floor(Math.random() * 361)                             // Start Rotation 0-360
+            ];
+
+            document.getElementById('ensogenInput').value = parts.join('-');
+            render();
+        }
+
+        // --- 6. PNG DOWNLOAD FUNCTION ---
+        function downloadPNG() {
+            if (!hasRendered) render();
+
+            const canvas = document.getElementById('ensoCanvas');
+            const id = document.getElementById('ensogenInput').value.toUpperCase().trim();
+            const safeId = id.replace(/[^A-Z0-9_-]/g, '_');
+
+            const link = document.createElement('a');
+            link.download = `enso_${safeId}_taechataroe_chop.png`;
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        window.onload = render;
+    </script>
+</body>
+</html>
