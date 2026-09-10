@@ -22,6 +22,7 @@
   .loader-bar{ width:350px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden; }
   .loader-fill{ height:100%;width:0%;background:linear-gradient(90deg,var(--copper),var(--gold));transition:width 0.3s; }
   #loading-status{ margin-top:14px;font-size:0.72em;color:var(--granite);letter-spacing:0.12em; }
+  #loading-hints{ margin-top:26px;font-size:0.6em;color:#5a6572;letter-spacing:0.12em;line-height:2;text-align:center; }
   #app{ display:flex;height:100vh;width:100vw; }
   #canvas-wrap{ flex:1;position:relative;overflow:hidden; }
   canvas#main-canvas{ width:100%;height:100%;display:block;cursor:grab; }
@@ -73,6 +74,8 @@
   #minimap{ position:absolute;bottom:14px;left:14px;z-index:100;width:140px;height:140px;background:var(--panel-bg);border:1px solid rgba(201,168,76,0.18);border-radius:4px;overflow:hidden; }
   #minimap canvas{ width:100%;height:100%; }
   #vr-btn{ position:absolute;bottom:14px;right:14px;z-index:100;background:var(--panel-bg);border:1px solid rgba(201,168,76,0.2);color:var(--gold);padding:7px 16px;font-size:0.65em;letter-spacing:0.1em;cursor:pointer;border-radius:3px;font-family:var(--font-mono);display:none; }
+  #toast{ position:absolute;left:50%;bottom:22px;transform:translate(-50%,20px);z-index:120;background:rgba(10,14,23,0.95);border:1px solid rgba(201,168,76,0.35);color:var(--copper-lt);padding:9px 16px;font-size:0.66em;letter-spacing:0.06em;border-radius:4px;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;max-width:88vw;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.5); }
+  #toast.show{ opacity:1;transform:translate(-50%,0); }
   #coords-display{ position:absolute;top:50%;right:20px;transform:translateY(-50%);z-index:95;font-size:0.6em;color:rgba(201,168,76,0.4);letter-spacing:0.15em;writing-mode:vertical-rl;text-orientation:mixed;pointer-events:none; }
   @media(max-width:900px){ #app{flex-direction:column;} #info-panel{width:100%;min-width:0;max-height:45vh;border-left:none;border-top:1px solid rgba(201,168,76,0.12);} #info-panel.collapsed{transform:translateY(100%);} #minimap{display:none;} }
 </style>
@@ -85,6 +88,7 @@
   <div class="attr">CIA Langley &bull; Jim Sanborn Sculptures &bull; Elonka Dunin Research &bull; K4 2025 Breakthrough</div>
   <div class="loader-bar"><div class="loader-fill" id="loader-fill"></div></div>
   <div id="loading-status">Initializing...</div>
+  <div id="loading-hints">drag orbit &middot; scroll zoom &middot; right-drag pan &middot; <b>I</b> info &middot; <b>R</b> rotate &middot; <b>1-9</b> sculptures &middot; <b>0</b> reset view</div>
 </div>
 
 <div id="app">
@@ -97,17 +101,18 @@
       <div class="hud-sub" id="hud-sub">CIA Langley, VA &mdash; 1990</div>
     </div>
     <div class="hud-right">
-      <button class="hud-btn" id="btn-info" onclick="togglePanel()">INFO</button>
-      <button class="hud-btn" id="btn-cipher" onclick="scrollTo('sec-ciphertext')">CIPHER</button>
-      <button class="hud-btn" id="btn-k4" onclick="scrollTo('sec-k4')">K4</button>
-      <button class="hud-btn" id="btn-research" onclick="scrollTo('sec-elonka')">RESEARCH</button>
-      <button class="hud-btn" id="btn-auto" onclick="toggleAutoRotate()">&#10227;</button>
+      <button class="hud-btn" id="btn-info" aria-label="Toggle information panel" title="Toggle info panel (I)" onclick="togglePanel()">INFO</button>
+      <button class="hud-btn" id="btn-cipher" aria-label="Jump to ciphertext section" title="Jump to ciphertext" onclick="scrollTo('sec-ciphertext')">CIPHER</button>
+      <button class="hud-btn" id="btn-k4" aria-label="Jump to K4 unsolved section" title="Jump to K4" onclick="scrollTo('sec-k4')">K4</button>
+      <button class="hud-btn" id="btn-research" aria-label="Jump to Elonka Dunin research section" title="Jump to research" onclick="scrollTo('sec-elonka')">RESEARCH</button>
+      <button class="hud-btn" id="btn-auto" aria-label="Toggle auto-rotate" aria-pressed="true" title="Toggle auto-rotate (R)" onclick="toggleAutoRotate()">&#10227;</button>
     </div>
   </div>
   <div id="vignette"></div>
   <div id="scanlines"></div>
   <div id="minimap"><canvas id="minimap-canvas"></canvas></div>
-  <button id="vr-btn" onclick="enterVR()">ENTER VR</button>
+  <button id="vr-btn" aria-label="Enter virtual reality" onclick="enterVR()">ENTER VR</button>
+  <div id="toast" role="status" aria-live="polite"></div>
   <div id="coords-display">38&deg;57'06.5"N 77&deg;08'44"W</div>
 </div>
 
@@ -475,8 +480,27 @@ let panelOpen = true;
 
 // ─── WEBGL INIT ───
 const canvas = document.getElementById('main-canvas');
-const gl = canvas.getContext('webgl', {antialias:true, alpha:false});
-if (!gl) { alert('WebGL not supported. Please use a modern browser.'); }
+let gl = null;
+try {
+  gl = canvas.getContext('webgl', {antialias:true, alpha:false, powerPreference:'high-performance'});
+  if (!gl) gl = canvas.getContext('experimental-webgl', {antialias:true, alpha:false});
+} catch (e) { gl = null; }
+if (!gl) {
+  // No WebGL context → fail visibly instead of crashing later on gl.createShader().
+  canvas.style.display = 'none';
+  const fb = document.createElement('div');
+  fb.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#e0d8c0;font:12px/1.7 "Courier New",monospace;padding:24px;text-align:center;';
+  fb.innerHTML = '<div style="font-size:1.5em;color:var(--gold);letter-spacing:0.15em;">WEBGL UNAVAILABLE</div>'
+    + '<div>This experience renders the sculptures with WebGL, which your browser could not start.<br>'
+    + 'Enable hardware acceleration / WebGL, then reload.</div>';
+  document.getElementById('canvas-wrap').appendChild(fb);
+} else {
+  canvas.addEventListener('webglcontextlost', function (e) {
+    e.preventDefault();
+    showToast('WebGL context lost \u2014 reload to restart rendering.');
+  });
+  canvas.addEventListener('webglcontextrestored', function () { location.reload(); });
+}
 
 // ─── SHADERS ───
 const VS_SRC = `
@@ -537,22 +561,26 @@ function compileShader(src, type) {
   if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.error('Shader:', gl.getShaderInfoLog(s)); return null; }
   return s;
 }
-const prog = gl.createProgram();
-gl.attachShader(prog, compileShader(VS_SRC, gl.VERTEX_SHADER));
-gl.attachShader(prog, compileShader(FS_SRC, gl.FRAGMENT_SHADER));
-gl.linkProgram(prog);
-if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) console.error('Link:', gl.getProgramInfoLog(prog));
-gl.useProgram(prog);
+let prog = null, uProj = null, uView = null, uModel = null, uNormalMat = null,
+    uColor = null, uLightDir = null, uEyePos = null, uTime = null, uVerdigris = null;
+if (gl) {
+  prog = gl.createProgram();
+  gl.attachShader(prog, compileShader(VS_SRC, gl.VERTEX_SHADER));
+  gl.attachShader(prog, compileShader(FS_SRC, gl.FRAGMENT_SHADER));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) console.error('Link:', gl.getProgramInfoLog(prog));
+  gl.useProgram(prog);
 
-const uProj = gl.getUniformLocation(prog, 'uProj');
-const uView = gl.getUniformLocation(prog, 'uView');
-const uModel = gl.getUniformLocation(prog, 'uModel');
-const uNormalMat = gl.getUniformLocation(prog, 'uNormalMat');
-const uColor = gl.getUniformLocation(prog, 'uColor');
-const uLightDir = gl.getUniformLocation(prog, 'uLightDir');
-const uEyePos = gl.getUniformLocation(prog, 'uEyePos');
-const uTime = gl.getUniformLocation(prog, 'uTime');
-const uVerdigris = gl.getUniformLocation(prog, 'uVerdigris');
+  uProj = gl.getUniformLocation(prog, 'uProj');
+  uView = gl.getUniformLocation(prog, 'uView');
+  uModel = gl.getUniformLocation(prog, 'uModel');
+  uNormalMat = gl.getUniformLocation(prog, 'uNormalMat');
+  uColor = gl.getUniformLocation(prog, 'uColor');
+  uLightDir = gl.getUniformLocation(prog, 'uLightDir');
+  uEyePos = gl.getUniformLocation(prog, 'uEyePos');
+  uTime = gl.getUniformLocation(prog, 'uTime');
+  uVerdigris = gl.getUniformLocation(prog, 'uVerdigris');
+}
 
 // ─── MATRIX MATH (column-major) ───
 const M4 = {
@@ -631,6 +659,7 @@ function buildGround(s) {
   return {v:new Float32Array([-s,0,-s, s,0,-s, s,0,s, -s,0,s]), n:new Float32Array([0,1,0,0,1,0,0,1,0,0,1,0]), idx:new Uint16Array([0,1,2,0,2,3])};
 }
 function upload(mesh) {
+  if (!gl) return {pb:null, nb:null, ib:null, count:mesh.idx.length};
   const pb=gl.createBuffer(),nb=gl.createBuffer(),ib=gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER,pb); gl.bufferData(gl.ARRAY_BUFFER,mesh.v,gl.STATIC_DRAW);
   gl.bindBuffer(gl.ARRAY_BUFFER,nb); gl.bufferData(gl.ARRAY_BUFFER,mesh.n,gl.STATIC_DRAW);
@@ -846,6 +875,7 @@ window.addEventListener('resize',resize);
 resize();
 
 function render(now){
+  if (!gl) return; // no WebGL context → stop the loop (fallback message is already shown)
   requestAnimationFrame(render);
   const dt=(now-lastT)/1000; lastT=now; time+=dt;
   if(autoRotate) camera.theta+=dt*0.12;
@@ -891,9 +921,29 @@ function render(now){
 }
 
 // ─── UI ───
-function togglePanel(){panelOpen=!panelOpen;document.getElementById('info-panel').classList.toggle('collapsed',!panelOpen);document.getElementById('btn-info').classList.toggle('active',panelOpen);}
-function scrollTo(id){togglePanel();setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});},panelOpen?0:350);}
-function toggleAutoRotate(){autoRotate=!autoRotate;document.getElementById('btn-auto').classList.toggle('active',autoRotate);}
+function setPanel(open){
+  panelOpen=open;
+  document.getElementById('info-panel').classList.toggle('collapsed',!panelOpen);
+  document.getElementById('btn-info').classList.toggle('active',panelOpen);
+  document.getElementById('btn-info').setAttribute('aria-expanded',panelOpen?'true':'false');
+}
+function togglePanel(){setPanel(!panelOpen);}
+function openPanel(){setPanel(true);}
+function scrollTo(id){
+  // "CIPHER"/"K4"/"RESEARCH" jump to a section: make sure the panel is open first
+  // (the old code toggled it, which *closed* an already-open panel and scrolled a hidden list).
+  const wasOpen=panelOpen;
+  openPanel();
+  setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},wasOpen?0:360);
+}
+function toggleAutoRotate(){autoRotate=!autoRotate;document.getElementById('btn-auto').classList.toggle('active',autoRotate);document.getElementById('btn-auto').setAttribute('aria-pressed',autoRotate?'true':'false');}
+let toastTimer=null;
+function showToast(msg){
+  const t=document.getElementById('toast'); if(!t)return;
+  t.textContent=msg; t.classList.add('show');
+  if(toastTimer)clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{t.classList.remove('show');},3600);
+}
 
 function selectSculpture(name){
   currentSculpture=name; const sc=SCULPTURES[name]; if(!sc)return;
@@ -981,8 +1031,16 @@ Use simulator to test your theories!`;
 }
 
 // ─── VR ───
-function checkVR(){if(navigator.xr)navigator.xr.isSessionSupported('immersive-vr').then(s=>{if(s)document.getElementById('vr-btn').style.display='block';});}
-function enterVR(){if(navigator.xr)navigator.xr.requestSession('immersive-vr').then(s=>console.log('VR'));}
+// WebXR VR presentation isn't wired into this build's render loop yet, so requesting
+// a session would strand the user on a black screen. Surface the button only where the
+// platform can do VR, and be honest about the state instead of entering a broken session.
+function checkVR(){
+  const btn=document.getElementById('vr-btn');
+  if(navigator.xr&&navigator.xr.isSessionSupported){
+    navigator.xr.isSessionSupported('immersive-vr').then(s=>{if(s)btn.style.display='block';}).catch(()=>{});
+  }
+}
+function enterVR(){showToast('Immersive WebXR VR is not wired into this build yet \u2014 use the orbit controls (drag / scroll / pinch) instead.');}
 
 // ─── KEYBOARD ───
 window.addEventListener('keydown',e=>{
@@ -1008,7 +1066,9 @@ function startLoading(){
 
 // ─── INIT ───
 populateTabs();
-createScene('kryptos');
+selectSculpture('kryptos'); // fills the info panel (plain createScene() left it stuck on "Loading...")
+setPanel(true);             // reflect initial panelOpen=true in the INFO button + aria-expanded
+document.getElementById('btn-auto').classList.add('active'); // reflect initial autoRotate=true
 startLoading();
 checkVR();
 requestAnimationFrame(render);
