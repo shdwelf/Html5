@@ -1,0 +1,1287 @@
+Here is the complete, single-file HTML5 application. It includes all the necessary UI structure (tabs, canvas, inputs, and modals), a custom CSS theme fitting the "Ensō / Zen Crypto" aesthetic, and your provided JavaScript wired up seamlessly.
+
+I also added a small loader at the beginning of the script to automatically fetch the official BIP-39 English Wordlist from GitHub, which your wallet.js script requires to function correctly.
+
+Save the code below as an index.html file and open it in any modern web browser to run the app.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensō × Haiku Wallet Miner</title>
+    <style>
+        :root {
+            --bg: #121212;
+            --surface: #1e1e24;
+            --surface-light: #2a2a35;
+            --fg: #e0e0e0;
+            --fg-dim: #9aa0a6;
+            --accent: #8fb3a0;
+            --danger: #d46a6a;
+            --border: #333;
+            --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'Courier New', Courier, monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: var(--font-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Layout & Header */
+        header {
+            background-color: var(--surface);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        header h1 { font-size: 1.2rem; font-weight: 500; letter-spacing: 1px; color: var(--accent); }
+
+        .tabs { display: flex; gap: 1rem; }
+        .tab-btn {
+            background: none; border: none; color: var(--fg-dim); cursor: pointer;
+            padding: 0.5rem 1rem; font-size: 0.9rem; border-bottom: 2px solid transparent; transition: all 0.2s;
+        }
+        .tab-btn:hover { color: var(--fg); }
+        .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+        .main-content { flex: 1; position: relative; overflow: hidden; }
+        .tab-panel {
+            display: none; height: 100%; overflow-y: auto; padding: 2rem;
+        }
+        .tab-panel.active { display: flex; gap: 2rem; }
+
+        /* UI Components */
+        .sidebar { flex: 0 0 300px; display: flex; flex-direction: column; gap: 1.5rem; }
+        .content-area { flex: 1; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column;}
+
+        .control-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .control-group label { font-size: 0.8rem; color: var(--fg-dim); display: flex; justify-content: space-between; }
+
+        input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--accent); }
+        select, input[type="password"], input[type="text"] {
+            width: 100%; background: var(--surface-light); color: var(--fg); border: 1px solid var(--border);
+            padding: 0.5rem; border-radius: 4px; font-family: var(--font-main); outline: none;
+        }
+        select:focus, input:focus { border-color: var(--accent); }
+
+        .btn {
+            background: var(--surface-light); color: var(--fg); border: 1px solid var(--border);
+            padding: 0.6rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;
+        }
+        .btn:hover { background: var(--border); }
+        .btn-primary { background: var(--accent); color: #000; border: none; }
+        .btn-primary:hover { background: #7a9c8b; }
+        .btn-danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: #fff; }
+
+        /* Ensō Canvas */
+        .canvas-container { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
+        #enso-canvas { max-width: 100%; max-height: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .seed-badge { position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.5); padding: 0.5rem 1rem; border-radius: 20px; font-family: var(--font-mono); font-size: 0.8rem; }
+
+        /* Wallet Cards */
+        #haiku-display { flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
+        .haiku-card {
+            background: var(--surface-light); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem;
+            position: relative;
+        }
+        .wallet-type { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+        .haiku-lines { font-style: italic; font-size: 1.2rem; line-height: 1.6; margin-bottom: 1.5rem; }
+        .syllable-count { font-size: 0.7rem; color: var(--fg-dim); font-style: normal; margin-left: 1rem; }
+        .mnemonic-raw { font-family: var(--font-mono); background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 4px; font-size: 0.9rem; word-break: break-all; margin-bottom: 1.5rem;}
+        .card-actions { display: flex; gap: 0.5rem; }
+
+        /* Saved Sidebar */
+        .saved-sidebar { flex: 0 0 250px; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto;}
+        .saved-item { background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: 4px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;}
+        .saved-preview { font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: help; }
+
+        /* Terminal */
+        #tab-terminal { flex-direction: column; gap: 0; padding: 0; background: #000; }
+        #term-output { flex: 1; padding: 1rem; overflow-y: auto; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; }
+        .term-input-line { display: flex; padding: 1rem; background: #111; border-top: 1px solid #333; align-items: center; gap: 1rem; }
+        .term-input-line span { color: var(--accent); font-family: var(--font-mono); font-weight: bold; }
+        #term-input { flex: 1; background: transparent; border: none; color: #fff; font-family: var(--font-mono); font-size: 1rem; }
+        .usr { color: #fff; } .sys { color: var(--fg-dim); } .notice { color: var(--accent); } .err { color: var(--danger); }
+
+        /* Modals & Toasts */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--surface); padding: 2rem; border-radius: 8px; border: 1px solid var(--border); width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 1.5rem; }
+
+        #toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; }
+        .toast { background: var(--accent); color: #000; padding: 1rem 1.5rem; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: slideIn 0.3s ease-out forwards; }
+        .toast.error { background: var(--danger); color: #fff; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Ensō × Haiku Miner</h1>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="enso">Ensō Generator</button>
+            <button class="tab-btn" data-tab="wallet">Haiku Miner</button>
+            <button class="tab-btn" data-tab="terminal">Terminal</button>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="tab-panel active" id="tab-enso">
+            <div class="sidebar">
+                <h2>Brush & Paper</h2>
+                <div class="control-group">
+                    <label>Ink Load <span id="val-inkLoad">5</span></label>
+                    <input type="range" id="ctrl-inkLoad" min="1" max="10" value="5">
+                </div>
+                <div class="control-group">
+                    <label>Brush Size <span id="val-brushSize">10</span></label>
+                    <input type="range" id="ctrl-brushSize" min="1" max="20" value="10">
+                </div>
+                <div class="control-group">
+                    <label>Ink Density <span id="val-inkDensity">8</span></label>
+                    <input type="range" id="ctrl-inkDensity" min="1" max="10" value="8">
+                </div>
+                <div class="control-group">
+                    <label>Bristle Density <span id="val-bristleDensity">50</span></label>
+                    <input type="range" id="ctrl-bristleDensity" min="10" max="100" value="50">
+                </div>
+                <div class="control-group">
+                    <label>Brush Start <span id="val-brushStart">90°</span></label>
+                    <input type="range" id="ctrl-brushStart" min="0" max="360" value="90">
+                </div>
+                <div class="control-group">
+                    <label>Paper Texture <span id="val-paperTexture">5</span></label>
+                    <input type="range" id="ctrl-paperTexture" min="0" max="10" value="5">
+                </div>
+                <div class="control-group">
+                    <label>Paper Hue</label>
+                    <select id="ctrl-paperHue">
+                        <option value="warm">Warm</option>
+                        <option value="white">White</option>
+                        <option value="sage">Sage</option>
+                        <option value="cyan">Cyan</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Direction</label>
+                    <select id="ctrl-direction">
+                        <option value="clockwise">Clockwise</option>
+                        <option value="counter">Counter-Clockwise</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Shape & Signature</label>
+                    <select id="ctrl-xyStretch" style="margin-bottom:0.5rem;">
+                        <option value="equal">Perfect Circle</option>
+                        <option value="unequal">Natural Unequal</option>
+                    </select>
+                    <select id="ctrl-brushstrokeSize" style="margin-bottom:0.5rem;">
+                        <option value="medium">Medium Form</option>
+                        <option value="small">Small Form</option>
+                        <option value="large">Large Form</option>
+                    </select>
+                    <select id="ctrl-signatureStyle">
+                        <option value="red">Red Seal</option>
+                        <option value="dark">Dark Calligraphy</option>
+                        <option value="light">Light Calligraphy</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:0.5rem; margin-top: 1rem;">
+                    <button class="btn btn-primary" id="btn-random-seed" style="flex:1;">Random Seed</button>
+                    <button class="btn" id="btn-regenerate" title="Regenerate current seed">↻</button>
+                    <button class="btn" id="btn-download-png" title="Download PNG">↓</button>
+                </div>
+            </div>
+            <div class="content-area canvas-container">
+                <canvas id="enso-canvas"></canvas>
+                <div class="seed-badge" id="enso-seed-display"></div>
+            </div>
+        </div>
+
+        <div class="tab-panel" id="tab-wallet">
+            <div class="sidebar">
+                <h2>Miner Logic</h2>
+                <div class="control-group">
+                    <label>Wallet Tag</label>
+                    <select id="ctrl-walletType">
+                        <option value="BIP-39 Standard">BIP-39 Standard</option>
+                        <option value="Ethereum">Ethereum (ETH)</option>
+                        <option value="Bitcoin">Bitcoin (BTC)</option>
+                        <option value="Solana">Solana (SOL)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Mine Count <span id="val-mineCount">1</span></label>
+                    <input type="range" id="ctrl-mineCount" min="1" max="50" value="1">
+                </div>
+                <div class="control-group">
+                    <label>Grammar Check Heuristic</label>
+                    <select id="ctrl-grammarCheck">
+                        <option value="on">Strict (Readable)</option>
+                        <option value="off">Off (Raw Syllables)</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" id="btn-mine" style="margin-top: 1rem; padding: 1rem; font-weight:bold;">⛏️ Mine Haiku Wallets</button>
+                <button class="btn btn-danger" id="btn-stop-mine" style="display:none; margin-top: 1rem; padding: 1rem; font-weight:bold;">⏹️ Stop Mining</button>
+
+                <div style="margin-top:2rem; padding-top:1.5rem; border-top: 1px solid var(--border);">
+                    <h3 style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--fg-dim);">Export & Manage</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem;">
+                        <button class="btn" id="btn-export-txt">Export (AES)</button>
+                        <button class="btn" id="btn-export-plain">Export (Raw)</button>
+                    </div>
+                    <button class="btn btn-danger" id="btn-clear-all" style="width:100%; margin-top: 0.5rem;">Clear All Local Data</button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div id="haiku-display"></div>
+            </div>
+
+            <div class="saved-sidebar">
+                <h3 style="font-size: 1rem; display: flex; justify-content: space-between;">
+                    Saved Vault 
+                    <span style="color:var(--accent); font-size:0.8rem;">Total: <span id="mined-counter">0</span></span>
+                </h3>
+                <div id="saved-items" style="display:flex; flex-direction:column; gap:0.5rem;">
+                    </div>
+            </div>
+        </div>
+
+        <div class="tab-panel" id="tab-terminal">
+            <div id="term-output">
+                <span class="sys">Ensō OS [Version 1.0.0]</span><br>
+                <span class="sys">Type /help for commands.</span><br>
+            </div>
+            <div class="term-input-line">
+                <span>❯</span>
+                <input type="text" id="term-input" autocomplete="off" spellcheck="false" autofocus>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div class="modal-overlay" id="modal-export">
+        <div class="modal-content">
+            <h3>Export Encrypted Archive</h3>
+            <p style="font-size: 0.9rem; color: var(--fg-dim);">Secure your saved wallets with AES-256-GCM encryption before downloading.</p>
+            <input type="password" id="export-password" placeholder="Encryption Password">
+            <input type="password" id="export-password2" placeholder="Confirm Password">
+            <div style="display:flex; gap:1rem; margin-top: 1rem;">
+                <button class="btn" id="btn-export-cancel" style="flex:1;">Cancel</button>
+                <button class="btn btn-primary" id="btn-export-confirm" style="flex:1;">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-password">
+        <div class="modal-content">
+            <h3>Vault Access</h3>
+            <p id="modal-password-msg" style="font-size: 0.9rem; color: var(--fg-dim);"></p>
+            <input type="password" id="storage-password" placeholder="Password">
+            <div style="display:flex; gap:1rem; margin-top: 1rem;">
+                <button class="btn" id="btn-pw-cancel" style="flex:1;">Cancel</button>
+                <button class="btn btn-primary" id="btn-pw-confirm" style="flex:1;">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ═══════════════════════════════════════════════════════
+    //  INIT LOADER: Fetch BIP-39 Wordlist, then run application
+    // ═══════════════════════════════════════════════════════
+    (async function() {
+        try {
+            const res = await fetch('https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/english.txt');
+            if(!res.ok) throw new Error("Failed to fetch wordlist");
+            window.BIP39_WORDLIST = (await res.text()).trim().split('\n');
+            console.log("BIP-39 Wordlist loaded:", window.BIP39_WORDLIST.length, "words");
+        } catch (err) {
+            console.error("Critical Error: Could not load BIP-39 Wordlist.", err);
+            document.getElementById('toast-container').innerHTML = `<div class="toast error">Failed to load BIP-39 Wordlist. Mining will not work.</div>`;
+            return;
+        }
+
+        // ==========================================
+        //  wallet.js
+        // ==========================================
+        const WalletMiner = (() => {
+
+          const SYLLABLE_EXCEPTIONS = {
+            'the':1,'be':1,'she':1,'he':1,'me':1,'we':1,'ye':1,
+            'eye':1,'aye':1,'queue':1,'league':1,'tongue':1,
+            'every':3,'everywhere':4,'different':3,'family':3,
+            'chocolate':3,'vegetable':4,'restaurant':3,'idea':3,
+            'poem':2,'poet':2,'genuine':3,'certain':2,'special':2,
+            'social':2,'natural':3,'casual':2,'visual':3,'usual':3,
+            'actual':3,'nature':2,'culture':2,'future':2,'measure':2,
+            'treasure':2,'pleasure':2,'capture':2,'feature':2,
+            'picture':2,'mixture':2,'furniture':3,'village':2,
+            'message':2,'damage':2,'manage':2,'language':3,
+            'orange':2,'average':3,'leverage':3,'advantage':3,
+            'square':1,'fire':1,'wire':1,'tire':1,'hire':1,
+            'our':1,'your':1,'their':1,'are':1,'were':1,
+            'acquire':2,'require':2,'retire':2,'admire':2,'inspire':2,
+            'entire':2,'desire':2,'empire':2,'conspire':2,'expire':2,
+            'science':2,'quiet':2,'client':2,'ancient':2,'sufficient':3,
+            'efficient':3,'experience':4,'blue':1,'true':1,'clue':1,
+            'avenue':3,'continue':3,'value':2,'issue':2,'tissue':2,
+          };
+
+          function countSyllables(word) {
+            word = word.toLowerCase().trim();
+            if (SYLLABLE_EXCEPTIONS[word] !== undefined) return SYLLABLE_EXCEPTIONS[word];
+            if (word.length <= 2) return 1;
+
+            let w = word;
+            if (w.length > 2 && w.endsWith('le') && !/[aeiouy]/.test(w[w.length-3])) {
+            } else {
+              w = w.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+            }
+            w = w.replace(/^y/, '');
+
+            const matches = w.match(/[aeiouy]{1,2}/g);
+            return matches ? Math.max(1, matches.length) : 1;
+          }
+
+          let syllableMap = null;
+          function getSyllableMap() {
+            if (!syllableMap) {
+              syllableMap = new Map();
+              for (const w of BIP39_WORDLIST) {
+                syllableMap.set(w, countSyllables(w));
+              }
+            }
+            return syllableMap;
+          }
+
+          function bytesToBits(bytes) {
+            const bits = [];
+            for (const byte of bytes) {
+              for (let i = 7; i >= 0; i--) bits.push((byte >> i) & 1);
+            }
+            return bits;
+          }
+
+          function bitsToNumber(bits, start, len) {
+            let n = 0;
+            for (let i = 0; i < len; i++) n = (n << 1) | bits[start + i];
+            return n;
+          }
+
+          async function sha256(data) {
+            const hash = await crypto.subtle.digest('SHA-256', data);
+            return new Uint8Array(hash);
+          }
+
+          async function generateMnemonic() {
+            const entropy = crypto.getRandomValues(new Uint8Array(16)); 
+            const hash = await sha256(entropy);
+
+            const checksumBits = [];
+            for (let i = 0; i < 4; i++) checksumBits.push((hash[0] >> (7 - i)) & 1);
+
+            const entropyBits = bytesToBits(entropy);
+            const combined = [...entropyBits, ...checksumBits];
+
+            const words = [];
+            for (let i = 0; i < 12; i++) {
+              const idx = bitsToNumber(combined, i * 11, 11);
+              words.push(BIP39_WORDLIST[idx]);
+            }
+            return words;
+          }
+
+          async function validateMnemonic(words) {
+            if (words.length !== 12) return false;
+            const indices = words.map(w => BIP39_WORDLIST.indexOf(w.toLowerCase()));
+            if (indices.some(i => i === -1)) return false;
+
+            const bits = [];
+            for (const idx of indices) {
+              for (let i = 10; i >= 0; i--) bits.push((idx >> i) & 1);
+            }
+
+            const entropy = new Uint8Array(16);
+            for (let i = 0; i < 16; i++) {
+              let byte = 0;
+              for (let j = 0; j < 8; j++) byte = (byte << 1) | bits[i * 8 + j];
+              entropy[i] = byte;
+            }
+
+            const hash = await sha256(entropy);
+            const expectedChecksum = [];
+            for (let i = 0; i < 4; i++) expectedChecksum.push((hash[0] >> (7 - i)) & 1);
+            const actualChecksum = bits.slice(128, 132);
+
+            return expectedChecksum.every((v, i) => v === actualChecksum[i]);
+          }
+
+          function findHaikuSplit(syllableCounts) {
+            if (syllableCounts.reduce((a, b) => a + b, 0) !== 17) return null;
+
+            let s1 = 0, line1End = -1;
+            for (let i = 0; i < syllableCounts.length; i++) {
+              s1 += syllableCounts[i];
+              if (s1 === 5) { line1End = i + 1; break; }
+              if (s1 > 5) return null;
+            }
+            if (line1End === -1) return null;
+
+            let s2 = 0, line2End = -1;
+            for (let i = line1End; i < syllableCounts.length; i++) {
+              s2 += syllableCounts[i];
+              if (s2 === 7) { line2End = i + 1; break; }
+              if (s2 > 7) return null;
+            }
+            if (line2End === -1) return null;
+
+            let s3 = 0;
+            for (let i = line2End; i < syllableCounts.length; i++) s3 += syllableCounts[i];
+            if (s3 !== 5) return null;
+
+            return { line1End, line2End };
+          }
+
+          function passesGrammarCheck(words, split) {
+            const SKIP_STARTS = new Set([
+              'the','a','an','and','or','but','is','am','are','was','were',
+              'be','been','being','have','has','had','do','does','did',
+              'will','would','shall','should','may','might','must','can','could',
+              'not','no','nor','so','if','as','at','by','in','of','on','to','up',
+              'into','onto','upon','with','from','than','then','that','this'
+            ]);
+
+            const line1 = words.slice(0, split.line1End);
+            const line2 = words.slice(split.line1End, split.line2End);
+            const line3 = words.slice(split.line2End);
+
+            if (SKIP_STARTS.has(line1[0])) return false;
+
+            const counts = {};
+            for (const w of words) counts[w] = (counts[w] || 0) + 1;
+            if (Object.values(counts).some(c => c >= 3)) return false;
+
+            if (line1.length < 1 || line2.length < 1 || line3.length < 1) return false;
+
+            const hasContent = (line) => line.some(w => !SKIP_STARTS.has(w));
+            return hasContent(line1) && hasContent(line2) && hasContent(line3);
+          }
+
+          async function deriveKey(password, salt) {
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+              'raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']
+            );
+            return crypto.subtle.deriveKey(
+              { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+              keyMaterial,
+              { name: 'AES-GCM', length: 256 },
+              false,
+              ['encrypt', 'decrypt']
+            );
+          }
+
+          async function encryptAES256(plaintext, password) {
+            const enc = new TextEncoder();
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const key = await deriveKey(password, salt);
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encrypted = await crypto.subtle.encrypt(
+              { name: 'AES-GCM', iv }, key, enc.encode(plaintext)
+            );
+            const result = new Uint8Array(16 + 12 + new Uint8Array(encrypted).length);
+            result.set(salt, 0);
+            result.set(iv, 16);
+            result.set(new Uint8Array(encrypted), 28);
+            return btoa(String.fromCharCode(...result));
+          }
+
+          async function decryptAES256(base64, password) {
+            const raw = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+            const salt = raw.slice(0, 16);
+            const iv = raw.slice(16, 28);
+            const ciphertext = raw.slice(28);
+            const key = await deriveKey(password, salt);
+            const decrypted = await crypto.subtle.decrypt(
+              { name: 'AES-GCM', iv }, key, ciphertext
+            );
+            return new TextDecoder().decode(decrypted);
+          }
+
+          const STORAGE_KEY = 'enso_haiku_wallets';
+          let sessionPassword = null;
+          let walletList = []; 
+
+          function saveToStorage() {
+            if (!sessionPassword) return;
+            const json = JSON.stringify(walletList);
+            const encrypted = encryptAES256(json, sessionPassword);
+            encrypted.then(enc => {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                encrypted: enc,
+                version: 1,
+                timestamp: Date.now()
+              }));
+            });
+          }
+
+          async function loadFromStorage(password) {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return false;
+            try {
+              const data = JSON.parse(raw);
+              const decrypted = await decryptAES256(data.encrypted, password);
+              walletList = JSON.parse(decrypted);
+              sessionPassword = password;
+              return true;
+            } catch {
+              return false;
+            }
+          }
+
+          function hasStoredWallets() { return !!localStorage.getItem(STORAGE_KEY); }
+
+          function clearStorage() {
+            localStorage.removeItem(STORAGE_KEY);
+            walletList = [];
+            sessionPassword = null;
+          }
+
+          let miningActive = false;
+          let totalMined = 0;
+
+          async function mineHaiku(walletType, count, grammarCheck, onFound, onProgress) {
+            miningActive = true;
+            let found = 0;
+            let attempts = 0;
+            const batchSize = 50;
+            const smap = getSyllableMap();
+
+            while (found < count && miningActive) {
+              for (let b = 0; b < batchSize && found < count && miningActive; b++) {
+                attempts++;
+                const words = await generateMnemonic();
+
+                const syls = words.map(w => smap.get(w));
+                const total = syls.reduce((a, b) => a + b, 0);
+
+                if (total !== 17) continue;
+
+                const split = findHaikuSplit(syls);
+                if (!split) continue;
+
+                if (grammarCheck === 'on' && !passesGrammarCheck(words, split)) continue;
+
+                found++;
+                totalMined++;
+
+                const wallet = {
+                  id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2),
+                  words,
+                  syllables: syls,
+                  split,
+                  walletType,
+                  timestamp: new Date().toISOString(),
+                  haiku: formatHaiku(words, split, syls)
+                };
+
+                if (onFound) onFound(wallet);
+              }
+
+              if (onProgress) onProgress(found, count, attempts, totalMined);
+              await new Promise(r => setTimeout(r, 0));
+            }
+
+            miningActive = false;
+            return { found, attempts };
+          }
+
+          function stopMining() { miningActive = false; }
+
+          function formatHaiku(words, split, syls) {
+            const line1 = words.slice(0, split.line1End);
+            const line2 = words.slice(split.line1End, split.line2End);
+            const line3 = words.slice(split.line2End);
+
+            const s1 = syls.slice(0, split.line1End);
+            const s2 = syls.slice(split.line1End, split.line2End);
+            const s3 = syls.slice(split.line2End);
+
+            return {
+              lines: [line1.join(' '), line2.join(' '), line3.join(' ')],
+              syllableLines: [s1, s2, s3]
+            };
+          }
+
+          function generateExportText() {
+            let txt = '╔══════════════════════════════════════════════════╗\n';
+            txt +=    '║  Ensō × BIP-39 Haiku Wallet — Exported Wallets  ║\n';
+            txt +=    '╚══════════════════════════════════════════════════╝\n\n';
+
+            walletList.forEach((w, i) => {
+              txt += `─── Wallet #${i + 1} ─── ${w.walletType.toUpperCase()} ─── ${w.timestamp} ───\n\n`;
+              txt += `  ${w.haiku.lines[0]}  (${w.haiku.syllableLines[0].join('+')} = ${w.haiku.syllableLines[0].reduce((a,b)=>a+b,0)})\n`;
+              txt += `  ${w.haiku.lines[1]}  (${w.haiku.syllableLines[1].join('+')} = ${w.haiku.syllableLines[1].reduce((a,b)=>a+b,0)})\n`;
+              txt += `  ${w.haiku.lines[2]}  (${w.haiku.syllableLines[2].join('+')} = ${w.haiku.syllableLines[2].reduce((a,b)=>a+b,0)})\n\n`;
+              txt += `  Mnemonic: ${w.words.join(' ')}\n`;
+              txt += `  ID: ${w.id}\n\n`;
+            });
+            return txt;
+          }
+
+          async function exportEncrypted(password) { return await encryptAES256(generateExportText(), password); }
+          function exportPlain() { return generateExportText(); }
+
+          return {
+            countSyllables, getSyllableMap, generateMnemonic, validateMnemonic,
+            findHaikuSplit, mineHaiku, stopMining, formatHaiku,
+            saveToStorage, loadFromStorage, hasStoredWallets, clearStorage,
+            get walletList() { return walletList; }, set walletList(v) { walletList = v; },
+            get sessionPassword() { return sessionPassword; }, set sessionPassword(v) { sessionPassword = v; },
+            exportEncrypted, exportPlain, encryptAES256,
+            get totalMined() { return totalMined; }, set totalMined(v) { totalMined = v; }
+          };
+        })();
+
+        // ==========================================
+        //  enso.js
+        // ==========================================
+        const EnsoGenerator = (() => {
+
+          function mulberry32(seed) {
+            return function() {
+              seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+              let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+              t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+              return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+          }
+
+          function hashSeed(str) {
+            let h = 0;
+            for (let i = 0; i < str.length; i++) h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+            return h >>> 0;
+          }
+
+          function randomSeed() {
+            const arr = new Uint8Array(8);
+            crypto.getRandomValues(arr);
+            return Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
+          }
+
+          const PAPER_COLORS = {
+            cyan:   { base: [200, 230, 230], variance: 15 },
+            warm:   { base: [240, 230, 210], variance: 10 },
+            white:  { base: [245, 242, 238], variance: 8 },
+            dark:   { base: [30, 30, 35], variance: 5 },
+            sage:   { base: [190, 210, 180], variance: 12 }
+          };
+
+          function drawPaper(ctx, w, h, rng, params) {
+            const hueData = PAPER_COLORS[params.paperHue] || PAPER_COLORS.cyan;
+            const [r, g, b] = hueData.base;
+            const v = hueData.variance;
+            const texture = params.paperTexture;
+
+            ctx.fillStyle = `rgb(${r},${g},${b})`;
+            ctx.fillRect(0, 0, w, h);
+
+            if (texture > 0) {
+              const imgData = ctx.getImageData(0, 0, w, h);
+              const data = imgData.data;
+              for (let i = 0; i < data.length; i += 4) {
+                const noise = (rng() - 0.5) * texture * 3;
+                data[i]   = Math.min(255, Math.max(0, data[i] + noise));
+                data[i+1] = Math.min(255, Math.max(0, data[i+1] + noise));
+                data[i+2] = Math.min(255, Math.max(0, data[i+2] + noise));
+              }
+              ctx.putImageData(imgData, 0, 0);
+            }
+
+            const grad = ctx.createRadialGradient(w/2, h/2, w*0.2, w/2, h/2, w*0.7);
+            grad.addColorStop(0, 'rgba(0,0,0,0)');
+            grad.addColorStop(1, 'rgba(0,0,0,0.08)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+          }
+
+          function drawEnso(ctx, w, h, seedStr, params) {
+            const numericSeed = hashSeed(seedStr);
+            const rng = mulberry32(numericSeed);
+
+            ctx.clearRect(0, 0, w, h);
+            drawPaper(ctx, w, h, rng, params);
+
+            const cx = w / 2;
+            const cy = h / 2;
+            const sizeMultiplier = params.brushstrokeSize === 'small' ? 0.55 : params.brushstrokeSize === 'large' ? 0.82 : 0.68;
+            const baseRadius = Math.min(cx, cy) * sizeMultiplier;
+
+            let stretchX = 1, stretchY = 1;
+            if (params.xyStretch === 'unequal') {
+              stretchX = 1 + (rng() - 0.5) * 0.12;
+              stretchY = 1 + (rng() - 0.5) * 0.08;
+            }
+
+            const startAngleDeg = params.brushStart;
+            const startAngle = startAngleDeg * Math.PI / 180;
+            const clockwise = params.direction === 'clockwise';
+            const dir = clockwise ? 1 : -1;
+
+            const gapAngle = 0.15 + rng() * 0.2;
+            const totalAngle = Math.PI * 2 - gapAngle;
+
+            const numPoints = 300;
+            const pathPoints = [];
+
+            const noiseOctaves = 4;
+            const noiseTable = [];
+            for (let o = 0; o < noiseOctaves; o++) {
+              const tableSize = 8 * Math.pow(2, o);
+              const table = [];
+              for (let i = 0; i < tableSize; i++) table.push((rng() - 0.5) * 2);
+              noiseTable.push(table);
+            }
+
+            function getNoise(t) {
+              let val = 0, amp = 1, freq = 1;
+              for (let o = 0; o < noiseOctaves; o++) {
+                const table = noiseTable[o];
+                const idx = t * (table.length - 1);
+                const i0 = Math.floor(idx) % table.length;
+                const i1 = (i0 + 1) % table.length;
+                const frac = idx - Math.floor(idx);
+                const smooth = frac * frac * (3 - 2 * frac);
+                val += (table[i0] * (1 - smooth) + table[i1] * smooth) * amp;
+                amp *= 0.5; freq *= 2;
+              }
+              return val;
+            }
+
+            for (let i = 0; i < numPoints; i++) {
+              const t = i / (numPoints - 1);
+              const angle = startAngle + dir * t * totalAngle;
+              const noiseVal = getNoise(t);
+              const radiusNoise = noiseVal * 6 * (params.brushSize / 10);
+              const r = baseRadius + radiusNoise;
+
+              const x = cx + r * stretchX * Math.cos(angle);
+              const y = cy + r * stretchY * Math.sin(angle);
+
+              const envelope = Math.sin(Math.PI * t);
+              const brushWidth = params.brushSize * 1.5 * (0.3 + 0.7 * envelope);
+
+              pathPoints.push({ x, y, t, angle, brushWidth });
+            }
+
+            const inkLoad = params.inkLoad / 10;
+            const inkDensity = params.inkDensity / 10;
+            const bristleDensity = params.bristleDensity;
+
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+            for (let i = 0; i < pathPoints.length - 1; i++) {
+              const p = pathPoints[i];
+              const pNext = pathPoints[i + 1];
+
+              const dx = pNext.x - p.x, dy = pNext.y - p.y;
+              const len = Math.sqrt(dx * dx + dy * dy) || 1;
+              const nx = -dy / len, ny = dx / len;
+
+              const halfWidth = p.brushWidth * 1.5;
+
+              for (let b = 0; b < bristleDensity; b++) {
+                const spreadT = (b / (bristleDensity - 1)) - 0.5; 
+                const offset = spreadT * halfWidth * 2;
+
+                const bx = p.x + nx * offset + (rng() - 0.5) * 0.5;
+                const by = p.y + ny * offset + (rng() - 0.5) * 0.5;
+                const bxN = pNext.x + nx * offset + (rng() - 0.5) * 0.5;
+                const byN = pNext.y + ny * offset + (rng() - 0.5) * 0.5;
+
+                const centerDist = Math.abs(spreadT) * 2;
+                let alpha = inkLoad * inkDensity * (1 - centerDist * 0.7);
+                alpha *= (0.5 + rng() * 0.5);
+                const gapProximity = Math.max(0, 1 - p.t * 4); 
+                const gapProximityEnd = Math.max(0, (p.t - 0.85) * 6.67); 
+                alpha *= (1 - gapProximity * 0.5) * (1 - gapProximityEnd * 0.7);
+                alpha = Math.max(0, Math.min(1, alpha));
+
+                if (alpha < 0.01) continue;
+
+                const inkColor = `rgba(25, 20, 15, ${alpha})`;
+                ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bxN, byN);
+                ctx.strokeStyle = inkColor; ctx.lineWidth = 0.8 + rng() * 0.8; ctx.stroke();
+              }
+
+              if (rng() < 0.008 * inkDensity) {
+                const splashX = p.x + (rng() - 0.5) * halfWidth * 3;
+                const splashY = p.y + (rng() - 0.5) * halfWidth * 3;
+                const splashR = rng() * 2 + 0.5;
+                ctx.beginPath(); ctx.arc(splashX, splashY, splashR, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(25, 20, 15, ${rng() * 0.3 * inkLoad})`; ctx.fill();
+              }
+            }
+
+            for (let i = 0; i < pathPoints.length - 1; i += 3) {
+              const p = pathPoints[i];
+              const pNext = pathPoints[Math.min(i + 3, pathPoints.length - 1)];
+              const bleedAlpha = inkLoad * 0.05;
+              const bleedWidth = p.brushWidth * 2.5;
+
+              ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(pNext.x, pNext.y);
+              ctx.strokeStyle = `rgba(25, 20, 15, ${bleedAlpha})`;
+              ctx.lineWidth = bleedWidth; ctx.stroke();
+            }
+
+            if (params.signatureStyle !== 'none') drawSignature(ctx, cx, cy, baseRadius, rng, params);
+          }
+
+          function drawSignature(ctx, cx, cy, radius, rng, params) {
+            const sx = cx + radius * 0.5, sy = cy + radius * 0.85;
+            let color;
+            switch (params.signatureStyle) {
+              case 'dark': color = 'rgba(30, 25, 20, 0.6)'; break;
+              case 'light': color = 'rgba(200, 195, 190, 0.5)'; break;
+              case 'red': color = 'rgba(180, 40, 30, 0.7)'; break;
+              default: return;
+            }
+
+            ctx.save(); ctx.translate(sx, sy); ctx.rotate(-0.1 + rng() * 0.2);
+
+            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(8 + rng() * 4, -15);
+            ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.stroke();
+
+            ctx.beginPath(); ctx.moveTo(3, -3); ctx.quadraticCurveTo(10, -8, 5 + rng() * 3, -18);
+            ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.stroke();
+
+            if (params.signatureStyle === 'red') {
+              ctx.beginPath(); ctx.arc(18, -10, 6, 0, Math.PI * 2);
+              ctx.fillStyle = 'rgba(180, 40, 30, 0.3)'; ctx.fill();
+              ctx.strokeStyle = 'rgba(180, 40, 30, 0.5)'; ctx.lineWidth = 1; ctx.stroke();
+            }
+            ctx.restore();
+          }
+
+          return {
+            randomSeed,
+            draw(canvas, seedStr, params) {
+              const ctx = canvas.getContext('2d');
+              drawEnso(ctx, canvas.width, canvas.height, seedStr, params);
+            },
+            downloadPNG(canvas, seedStr) {
+              const link = document.createElement('a');
+              link.download = `enso-${seedStr}.png`; link.href = canvas.toDataURL('image/png'); link.click();
+            }
+          };
+        })();
+
+        // ==========================================
+        //  app.js (UI Logic)
+        // ==========================================
+        function toast(msg, isError = false) {
+          const container = document.getElementById('toast-container');
+          const el = document.createElement('div');
+          el.className = 'toast' + (isError ? ' error' : ''); el.textContent = msg;
+          container.appendChild(el);
+          setTimeout(() => el.remove(), 3000);
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+          });
+        });
+
+        const ensoCanvas = document.getElementById('enso-canvas');
+        let currentSeed = null;
+
+        function resizeEnsoCanvas() {
+          const wrap = ensoCanvas.parentElement;
+          const size = Math.min(wrap.clientWidth - 20, wrap.clientHeight - 20, 800);
+          const s = Math.max(400, size);
+          ensoCanvas.width = s; ensoCanvas.height = s;
+          if (currentSeed) EnsoGenerator.draw(ensoCanvas, currentSeed, getEnsoParams());
+        }
+
+        window.addEventListener('resize', resizeEnsoCanvas);
+        setTimeout(resizeEnsoCanvas, 100);
+
+        function getEnsoParams() {
+          return {
+            inkLoad:        parseInt(document.getElementById('ctrl-inkLoad').value),
+            direction:      document.getElementById('ctrl-direction').value,
+            paperHue:       document.getElementById('ctrl-paperHue').value,
+            brushSize:      parseInt(document.getElementById('ctrl-brushSize').value),
+            inkDensity:     parseInt(document.getElementById('ctrl-inkDensity').value),
+            xyStretch:      document.getElementById('ctrl-xyStretch').value,
+            paperTexture:   parseInt(document.getElementById('ctrl-paperTexture').value),
+            bristleDensity: parseInt(document.getElementById('ctrl-bristleDensity').value),
+            signatureStyle: document.getElementById('ctrl-signatureStyle').value,
+            brushstrokeSize:document.getElementById('ctrl-brushstrokeSize').value,
+            brushStart:     parseInt(document.getElementById('ctrl-brushStart').value)
+          };
+        }
+
+        function renderEnso() {
+          if (!currentSeed) currentSeed = EnsoGenerator.randomSeed();
+          document.getElementById('enso-seed-display').textContent = currentSeed;
+          EnsoGenerator.draw(ensoCanvas, currentSeed, getEnsoParams());
+        }
+
+        const rangeDisplays = {
+          'ctrl-inkLoad': 'val-inkLoad', 'ctrl-brushSize': 'val-brushSize', 'ctrl-inkDensity': 'val-inkDensity',
+          'ctrl-paperTexture': 'val-paperTexture', 'ctrl-bristleDensity': 'val-bristleDensity', 'ctrl-brushStart': 'val-brushStart',
+        };
+        Object.entries(rangeDisplays).forEach(([ctrlId, valId]) => {
+          const ctrl = document.getElementById(ctrlId);
+          const val = document.getElementById(valId);
+          ctrl.addEventListener('input', () => {
+            val.textContent = ctrlId === 'ctrl-brushStart' ? ctrl.value + '°' : ctrl.value;
+            renderEnso();
+          });
+        });
+
+        ['ctrl-direction','ctrl-paperHue','ctrl-xyStretch','ctrl-signatureStyle','ctrl-brushstrokeSize'].forEach(id => {
+          document.getElementById(id).addEventListener('change', renderEnso);
+        });
+
+        document.getElementById('btn-random-seed').addEventListener('click', () => { currentSeed = EnsoGenerator.randomSeed(); renderEnso(); });
+        document.getElementById('btn-download-png').addEventListener('click', () => {
+          if (!currentSeed) return; EnsoGenerator.downloadPNG(ensoCanvas, currentSeed); toast('Downloaded enso-' + currentSeed + '.png');
+        });
+        document.getElementById('btn-regenerate').addEventListener('click', renderEnso);
+
+        renderEnso();
+
+        const minedCounterEl = document.getElementById('mined-counter');
+        const haikuDisplayEl = document.getElementById('haiku-display');
+        const mineBtn = document.getElementById('btn-mine');
+        const stopBtn = document.getElementById('btn-stop-mine');
+        let miningInProgress = false, haikuWallets = [], miningStartTime = 0;
+
+        document.getElementById('ctrl-mineCount').addEventListener('input', (e) => {
+          document.getElementById('val-mineCount').textContent = e.target.value;
+        });
+
+        async function initWalletStorage() {
+          if (WalletMiner.hasStoredWallets()) {
+            showPasswordModal('Enter your password to unlock saved wallets.', async (password) => {
+              const ok = await WalletMiner.loadFromStorage(password);
+              if (ok) {
+                haikuWallets = [...WalletMiner.walletList];
+                minedCounterEl.textContent = WalletMiner.totalMined;
+                renderWalletList();
+                toast('Wallets unlocked successfully');
+              } else {
+                toast('Wrong password or corrupted data', true);
+              }
+            }, true); 
+          }
+        }
+
+        function renderWalletList() {
+          const container = document.getElementById('saved-items');
+          if (haikuWallets.length === 0) {
+            container.innerHTML = '<em style="color:var(--fg);opacity:0.3;font-size:0.8rem;">No wallets saved yet</em>';
+            return;
+          }
+          container.innerHTML = '';
+          haikuWallets.forEach((w, i) => {
+            const item = document.createElement('div');
+            item.className = 'saved-item';
+            const preview = w.haiku.lines.join(' / ');
+            item.innerHTML = `
+              <span class="saved-preview" title="${w.words.join(' ')}">#${i+1} ${preview}</span>
+              <button class="btn btn-danger" data-delete="${i}" style="font-size:0.65rem;padding:0.2rem 0.5rem;">✕</button>
+            `;
+            container.appendChild(item);
+          });
+          container.querySelectorAll('[data-delete]').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const idx = parseInt(btn.dataset.delete);
+              haikuWallets.splice(idx, 1);
+              WalletMiner.walletList = haikuWallets;
+              if (WalletMiner.sessionPassword) WalletMiner.saveToStorage();
+              renderWalletList(); renderHaikuCards(); toast('Wallet removed');
+            });
+          });
+        }
+
+        function renderHaikuCards() {
+          if (haikuWallets.length === 0) {
+            haikuDisplayEl.innerHTML = `
+              <div style="text-align:center;color:var(--fg);opacity:0.4;padding:4rem 1rem;">
+                <div style="font-size:3rem;margin-bottom:1rem;">🎋</div>
+                <div>Mine a BIP-39 Haiku Wallet to begin</div>
+                <div style="font-size:0.75rem;margin-top:0.5rem;">A valid 12-word mnemonic where the syllables form a 5-7-5 haiku</div>
+              </div>`;
+            return;
+          }
+          haikuDisplayEl.innerHTML = '';
+          haikuWallets.forEach((w, i) => {
+            const card = document.createElement('div');
+            card.className = 'haiku-card';
+            const sylLabels = w.haiku.syllableLines.map(line => line.join('+') + '=' + line.reduce((a,b) => a+b, 0));
+            card.innerHTML = `
+              <div class="wallet-type">${w.walletType} — BIP-39 Checksum Valid ✓</div>
+              <div class="haiku-lines">
+                <div class="haiku-line">${w.haiku.lines[0]} <span class="syllable-count">${sylLabels[0]}</span></div>
+                <div class="haiku-line">${w.haiku.lines[1]} <span class="syllable-count">${sylLabels[1]}</span></div>
+                <div class="haiku-line">${w.haiku.lines[2]} <span class="syllable-count">${sylLabels[2]}</span></div>
+              </div>
+              <div class="mnemonic-raw">${w.words.join(' ')}</div>
+              <div class="card-actions">
+                <button class="btn" data-copy="${i}">📋 Copy</button>
+                <button class="btn" data-save="${i}">💾 Save</button>
+                <button class="btn" data-verify="${i}">✓ Verify</button>
+                <button class="btn btn-danger" data-remove="${i}">✕</button>
+              </div>
+            `;
+            haikuDisplayEl.appendChild(card);
+          });
+          haikuDisplayEl.querySelectorAll('[data-copy]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const idx = parseInt(btn.dataset.copy);
+              navigator.clipboard.writeText(haikuWallets[idx].words.join(' '))
+                .then(() => toast('Mnemonic copied to clipboard')).catch(() => toast('Copy failed', true));
+            });
+          });
+          haikuDisplayEl.querySelectorAll('[data-save]').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const idx = parseInt(btn.dataset.save);
+              const wallet = haikuWallets[idx];
+              if (WalletMiner.walletList.find(w => w.id === wallet.id)) { toast('Already saved'); return; }
+              WalletMiner.walletList.push(wallet);
+              if (!WalletMiner.sessionPassword) {
+                showPasswordModal('Create a password to encrypt your saved wallets.', async (pw) => {
+                  WalletMiner.sessionPassword = pw; WalletMiner.saveToStorage(); renderWalletList(); toast('Wallet saved with encryption');
+                }, false, true);
+              } else {
+                WalletMiner.saveToStorage(); renderWalletList(); toast('Wallet saved');
+              }
+            });
+          });
+          haikuDisplayEl.querySelectorAll('[data-verify]').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const idx = parseInt(btn.dataset.verify);
+              btn.textContent = '⏳';
+              const valid = await WalletMiner.validateMnemonic(haikuWallets[idx].words);
+              btn.textContent = valid ? '✓ Valid' : '✗ Invalid';
+              toast(valid ? 'Checksum verified ✓' : 'Invalid checksum!', !valid);
+              setTimeout(() => { btn.textContent = '✓ Verify'; }, 2000);
+            });
+          });
+          haikuDisplayEl.querySelectorAll('[data-remove]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const idx = parseInt(btn.dataset.remove);
+              haikuWallets.splice(idx, 1);
+              WalletMiner.walletList = WalletMiner.walletList.filter(w => !haikuWallets.find(h => h.id === w.id) || haikuWallets.includes(w));
+              renderHaikuCards(); toast('Wallet removed from view');
+            });
+          });
+        }
+
+        mineBtn.addEventListener('click', async () => {
+          if (miningInProgress) return;
+          miningInProgress = true; miningStartTime = Date.now();
+          mineBtn.style.display = 'none'; stopBtn.style.display = 'block';
+
+          const walletType = document.getElementById('ctrl-walletType').value;
+          const mineCount = parseInt(document.getElementById('ctrl-mineCount').value);
+          const grammarCheck = document.getElementById('ctrl-grammarCheck').value;
+
+          haikuWallets = [];
+          let statusEl = document.createElement('div');
+          statusEl.style.cssText = 'text-align:center;padding:2rem;color:var(--accent);';
+          statusEl.innerHTML = '<div style="font-size:2rem;">⛏️ Mining...</div><div style="font-size:0.8rem;margin-top:0.5rem;" id="mining-progress">0 attempts</div>';
+          haikuDisplayEl.innerHTML = ''; haikuDisplayEl.appendChild(statusEl);
+
+          try {
+            const result = await WalletMiner.mineHaiku(
+              walletType, mineCount, grammarCheck,
+              (wallet) => {
+                haikuWallets.push(wallet);
+                renderHaikuCards();
+                minedCounterEl.textContent = WalletMiner.totalMined;
+              },
+              (found, total, attempts, grandTotal) => {
+                const prog = document.getElementById('mining-progress');
+                if (prog) {
+                  const elapsed = ((Date.now() - miningStartTime) / 1000).toFixed(1);
+                  const rate = Math.round(attempts / Math.max(0.1, (Date.now() - miningStartTime) / 1000));
+                  prog.textContent = `${found}/${total} found — ${attempts.toLocaleString()} attempts (${rate}/s) — ${elapsed}s`;
+                }
+              }
+            );
+            toast(`Mined ${result.found} haiku wallet${result.found !== 1 ? 's' : ''} in ${result.attempts.toLocaleString()} attempts`);
+          } catch (e) {
+            toast('Mining error: ' + e.message, true);
+          }
+          miningInProgress = false; mineBtn.style.display = 'block'; stopBtn.style.display = 'none';
+        });
+
+        stopBtn.addEventListener('click', () => WalletMiner.stopMining());
+
+        document.getElementById('btn-export-txt').addEventListener('click', async () => {
+          if (WalletMiner.walletList.length === 0) { toast('No saved wallets to export', true); return; }
+          showExportModal();
+        });
+
+        document.getElementById('btn-export-plain').addEventListener('click', () => {
+          if (WalletMiner.walletList.length === 0) { toast('No saved wallets to export', true); return; }
+          const txt = WalletMiner.exportPlain();
+          const blob = new Blob([txt], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a'); a.href = url;
+          a.download = 'haiku-wallets-' + new Date().toISOString().slice(0,10) + '.txt';
+          a.click(); URL.revokeObjectURL(url);
+          toast('Plain text export downloaded');
+        });
+
+        document.getElementById('btn-clear-all').addEventListener('click', () => {
+          if (confirm('Delete ALL saved wallets? This cannot be undone.')) {
+            WalletMiner.clearStorage(); haikuWallets = []; renderWalletList(); renderHaikuCards(); toast('All wallets cleared');
+          }
+        });
+
+        const exportModal = document.getElementById('modal-export');
+        function showExportModal() {
+          exportModal.classList.add('active');
+          document.getElementById('export-password').value = ''; document.getElementById('export-password2').value = '';
+        }
+        document.getElementById('btn-export-cancel').addEventListener('click', () => exportModal.classList.remove('active'));
+        document.getElementById('btn-export-confirm').addEventListener('click', async () => {
+          const pw1 = document.getElementById('export-password').value;
+          const pw2 = document.getElementById('export-password2').value;
+          if (pw1.length < 4) { toast('Password must be at least 4 characters', true); return; }
+          if (pw1 !== pw2) { toast('Passwords do not match', true); return; }
+
+          try {
+            const encrypted = await WalletMiner.exportEncrypted(pw1);
+            const blob = new Blob([encrypted], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url;
+            a.download = 'haiku-wallets-' + new Date().toISOString().slice(0,10) + '.txt.enc';
+            a.click(); URL.revokeObjectURL(url);
+            exportModal.classList.remove('active'); toast('Encrypted export downloaded');
+          } catch (e) { toast('Export failed: ' + e.message, true); }
+        });
+
+        const pwModal = document.getElementById('modal-password');
+        let pwCallback = null;
+        function showPasswordModal(msg, callback, allowSkip = false, isCreate = false) {
+          pwCallback = callback;
+          document.getElementById('modal-password-msg').textContent = msg;
+          document.getElementById('storage-password').value = '';
+          pwModal.classList.add('active'); pwModal.dataset.allowSkip = allowSkip; pwModal.dataset.isCreate = isCreate;
+          document.getElementById('btn-pw-cancel').textContent = allowSkip ? 'Skip' : 'Cancel';
+        }
+        document.getElementById('btn-pw-cancel').addEventListener('click', () => { pwModal.classList.remove('active'); pwCallback = null; });
+        document.getElementById('btn-pw-confirm').addEventListener('click', () => {
+          const pw = document.getElementById('storage-password').value;
+          if (pwModal.dataset.isCreate === 'true' && pw.length < 4) { toast('Password must be at least 4 characters', true); return; }
+          if (pwCallback) pwCallback(pw);
+          pwModal.classList.remove('active');
+        });
+        document.getElementById('storage-password').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('btn-pw-confirm').click(); });
+
+        const termOutput = document.getElementById('term-output');
+        const termInput = document.getElementById('term-input');
+        function termPrint(text, cls = '') {
+          const span = document.createElement('span');
+          if (cls) span.className = cls; span.textContent = text + '\n';
+          termOutput.appendChild(span); termOutput.scrollTop = termOutput.scrollHeight;
+        }
+
+        termInput.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter') return;
+          const cmd = termInput.value.trim(); termInput.value = '';
+          if (!cmd) return;
+          termPrint('❯ ' + cmd, 'usr');
+          const parts = cmd.split(/\s+/); const command = parts[0].toLowerCase();
+
+          switch (command) {
+            case '/help':
+              termPrint('═══ Commands ═══', 'sys');
+              termPrint('/help          — Show this help', 'sys');
+              termPrint('/mine [n]      — Mine n haiku wallets (default 1)', 'sys');
+              termPrint('/enso [seed]   — Generate ensō with seed', 'sys');
+              termPrint('/enso random   — Random ensō', 'sys');
+              termPrint('/wordlist      — Show BIP-39 word count', 'sys');
+              termPrint('/syllable WORD — Count syllables in a word', 'sys');
+              termPrint('/saved         — List saved wallets', 'sys');
+              termPrint('/clear         — Clear terminal', 'sys');
+              break;
+            case '/mine': {
+              const n = parseInt(parts[1]) || 1;
+              termPrint(`Mining ${n} haiku wallet${n > 1 ? 's' : ''}...`, 'sys');
+              const wt = document.getElementById('ctrl-walletType').value;
+              WalletMiner.mineHaiku(wt, n, 'off',
+                (wallet) => {
+                  termPrint(`── Found Wallet ──`, 'sys');
+                  wallet.haiku.lines.forEach((line, li) => { termPrint(`  ${line}  (${wallet.haiku.syllableLines[li].join('+')})`, 'sys'); });
+                  termPrint(`  Mnemonic: ${wallet.words.join(' ')}`, 'notice');
+                  haikuWallets.push(wallet); minedCounterEl.textContent = WalletMiner.totalMined;
+                },
+                (found, total, attempts) => {
+                  if (found === total) termPrint(`Done. ${found} wallet${found > 1 ? 's' : ''} found in ${attempts.toLocaleString()} attempts.`, 'sys');
+                }
+              );
+              break;
+            }
+            case '/enso': {
+              const seed = parts[1] || EnsoGenerator.randomSeed();
+              if (parts[1] === 'random') currentSeed = EnsoGenerator.randomSeed(); else currentSeed = seed;
+              renderEnso(); termPrint(`Ensō generated with seed: ${currentSeed}`, 'sys');
+              document.querySelector('[data-tab="enso"]').click();
+              break;
+            }
+            case '/wordlist':
+              termPrint(`BIP-39 wordlist: ${BIP39_WORDLIST.length} words`, 'sys'); termPrint(`First 10: ${BIP39_WORDLIST.slice(0, 10).join(', ')}`, 'sys');
+              break;
+            case '/syllable': {
+              if (!parts[1]) { termPrint('Usage: /syllable WORD', 'err'); break; }
+              const word = parts.slice(1).join(' '); const count = WalletMiner.countSyllables(word);
+              termPrint(`"${word}" → ${count} syllable${count !== 1 ? 's' : ''}`, 'sys');
+              break;
+            }
+            case '/saved':
+              if (WalletMiner.walletList.length === 0) { termPrint('No saved wallets.', 'notice'); } 
+              else { WalletMiner.walletList.forEach((w, i) => { termPrint(`#${i+1} [${w.walletType}] ${w.haiku.lines.join(' / ')}`, 'sys'); }); }
+              break;
+            case '/clear': termOutput.innerHTML = ''; termPrint('Terminal cleared.', 'sys'); break;
+            default: termPrint(`Unknown command: ${command}. Type /help for available commands.`, 'err');
+          }
+        });
+
+        initWalletStorage();
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+          overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('active'); });
+        });
+
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family DNA Inheritance Dashboard</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --paternal: #3498db;
+            --maternal: #e74c3c;
+            --autosomal: #27ae60;
+            --bg: #f8f9fa;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 10px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        h1 { color: var(--primary); text-align: center; font-size: 1.8rem; margin-bottom: 10px; }
+        .intro { text-align: center; color: #666; margin-bottom: 30px; font-size: 0.95rem; }
+        
+        /* Mobile-Friendly SVG Container */
+        .chart-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 40px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        svg { min-width: 800px; height: auto; }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        tr:hover { background-color: #f1f1f1; }
+        
+        /* DNA Badges */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: white;
+            display: inline-block;
+        }
+        .b-ydna { background-color: var(--paternal); }
+        .b-mtdna { background-color: var(--maternal); }
+        .b-auto { background-color: var(--autosomal); }
+        .b-mixed { background: linear-gradient(90deg, var(--paternal) 50%, var(--maternal) 50%); }
+
+        .paternal-line { color: var(--paternal); font-weight: bold; }
+        .maternal-line { color: var(--maternal); font-weight: bold; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.4rem; }
+            .container { padding: 10px; border-radius: 0; }
+            th, td { padding: 8px 10px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Family DNA Inheritance</h1>
+        <p class="intro">Tracking the genetic contributions across the Greeran-Hewitt-Morin branches.</p>
+
+        <div class="chart-wrapper">
+            <!-- Simplified DNA Path for Mobile Context -->
+            <svg viewBox="0 0 800 400">
+                <!-- Paternal Path -->
+                <path d="M 400 350 L 250 250 L 150 150 L 100 50" fill="none" stroke="#3498db" stroke-width="5" />
+                <!-- Maternal Path -->
+                <path d="M 400 350 L 550 250 L 650 150 L 700 50" fill="none" stroke="#e74c3c" stroke-width="5" />
+                
+                <!-- Nodes -->
+                <circle cx="400" cy="350" r="10" fill="#2c3e50" /> <text x="415" y="355" font-weight="bold">Steven Greeran (Subject)</text>
+                
+                <circle cx="250" cy="250" r="8" fill="#3498db" /> <text x="140" y="255">Gerard Greeran (Father)</text>
+                <circle cx="550" cy="250" r="8" fill="#e74c3c" /> <text x="565" y="255">Jean B. Hewitt (Mother)</text>
+                
+                <circle cx="150" cy="150" r="6" fill="#3498db" /> <text x="30" y="155">B. Patrick Greeran (P-Grandfather)</text>
+                <circle cx="650" cy="150" r="6" fill="#e74c3c" /> <text x="665" y="155">Louise F. Carey (M-Grandmother)</text>
+                
+                <circle cx="100" cy="50" r="5" fill="#3498db" /> <text x="10" y="40">Hugh Greeran (P-Gr-Grandfather)</text>
+                <circle cx="700" cy="50" r="5" fill="#e74c3c" /> <text x="710" y="40">Daisy Carey (M-Gr-Grandmother)</text>
+            </svg>
+        </div>
+
+        <h2>DNA Contribution Register</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Family Member</th>
+                        <th>Relation</th>
+                        <th>DNA Type</th>
+                        <th>Inheritance Path</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Y-DNA & Paternal Line -->
+                    <tr>
+                        <td><b>Steven Greeran</b></td>
+                        <td>Self</td>
+                        <td><span class="badge b-mixed">Y + mt + Auto</span></td>
+                        <td>Direct Subject</td>
+                    </tr>
+                    <tr class="paternal-line">
+                        <td>Gerard T. Greeran</td>
+                        <td>Father</td>
+                        <td><span class="badge b-ydna">Y-DNA</span></td>
+                        <td>Direct Paternal Path</td>
+                    </tr>
+                    <tr class="paternal-line">
+                        <td>Bernard Patrick Greeran</td>
+                        <td>P-Grandfather</td>
+                        <td><span class="badge b-ydna">Y-DNA</span></td>
+                        <td>Direct Paternal Path</td>
+                    </tr>
+                    <tr class="paternal-line">
+                        <td>Hugh Greeran</td>
+                        <td>P-Great Grandfather</td>
+                        <td><span class="badge b-ydna">Y-DNA</span></td>
+                        <td>Direct Paternal Path</td>
+                    </tr>
+                    <tr class="paternal-line">
+                        <td>Bernard Greeran</td>
+                        <td>P-2nd Great Grandfather</td>
+                        <td><span class="badge b-ydna">Y-DNA</span></td>
+                        <td>Direct Paternal Path</td>
+                    </tr>
+
+                    <!-- mtDNA & Maternal Line -->
+                    <tr class="maternal-line">
+                        <td>Jean Belle Hewitt</td>
+                        <td>Mother</td>
+                        <td><span class="badge b-mtdna">mtDNA</span></td>
+                        <td>Direct Maternal Path</td>
+                    </tr>
+                    <tr class="maternal-line">
+                        <td>Louise Frances Carey</td>
+                        <td>M-Grandmother</td>
+                        <td><span class="badge b-mtdna">mtDNA</span></td>
+                        <td>Direct Maternal Path</td>
+                    </tr>
+                    <tr class="maternal-line">
+                        <td>Daisy Beatrice Carey</td>
+                        <td>M-Great Grandmother</td>
+                        <td><span class="badge b-mtdna">mtDNA</span></td>
+                        <td>Direct Maternal Path</td>
+                    </tr>
+                    <tr class="maternal-line">
+                        <td>Unknown (Mother of Daisy)</td>
+                        <td>M-2nd Great Grandmother</td>
+                        <td><span class="badge b-mtdna">mtDNA</span></td>
+                        <td>Direct Maternal Path</td>
+                    </tr>
+
+                    <!-- Autosomal / Biological Ancestors -->
+                    <tr>
+                        <td>Jeanette Mabel Morin</td>
+                        <td>P-Grandmother</td>
+                        <td><span class="badge b-auto">Autosomal</span></td>
+                        <td>Morin Branch</td>
+                    </tr>
+                    <tr>
+                        <td>Maurice Frederick Hewitt</td>
+                        <td>M-Grandfather</td>
+                        <td><span class="badge b-auto">Autosomal</span></td>
+                        <td>Hewitt Branch</td>
+                    </tr>
+                    <tr>
+                        <td>Amedee J. Morin</td>
+                        <td>P-Great Grandfather</td>
+                        <td><span class="badge b-auto">Autosomal</span></td>
+                        <td>Morin Branch</td>
+                    </tr>
+                    <tr>
+                        <td>Lena D. Morin</td>
+                        <td>P-Great Grandmother</td>
+                        <td><span class="badge b-auto">Autosomal</span></td>
+                        <td>Morin Branch</td>
+                    </tr>
+                    <tr>
+                        <td>Francis G. Carey</td>
+                        <td>M-Great Grandfather</td>
+                        <td><span class="badge b-auto">Autosomal</span></td>
+                        <td>Carey Branch</td>
+                    </tr>
+                    <tr>
+                        <td>Catherine King</td>
+                        <td>P-Great Grandmother</td>
+                        <td><span class="badge b-auto">Autosomal</span></td>
+                        <td>King Branch</td>
+                    </tr>
+                    <tr>
+                        <td>Gloria A. Morin</td>
+                        <td>Great Aunt</td>
+                        <td><span class="badge b-auto">Autosomal (Shared)</span></td>
+                        <td>Sibling of Jeanette</td>
+                    </tr>
+                    <tr>
+                        <td>Debbie Bojoh</td>
+                        <td>1st Cousin</td>
+                        <td><span class="badge b-auto">Autosomal (Shared)</span></td>
+                        <td>Daughter of Gloria Morin</td>
+                    </tr>
+                    <tr>
+                        <td>Robert David Hewitt</td>
+                        <td>Uncle</td>
+                        <td><span class="badge b-auto">Autosomal (Shared)</span></td>
+                        <td>Brother of Jean Belle</td>
+                    </tr>
+                    <tr>
+                        <td>Danielle Hewitt</td>
+                        <td>1st Cousin</td>
+                        <td><span class="badge b-auto">Autosomal (Shared)</span></td>
+                        <td>Daughter of Robert Hewitt</td>
+                    </tr>
+                    <tr>
+                        <td>Casey Nicole Hewitt</td>
+                        <td>1st Cousin</td>
+                        <td><span class="badge b-auto">Autosomal (Shared)</span></td>
+                        <td>Daughter of Robert Hewitt</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

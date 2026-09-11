@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genetic Heritage Dashboard - Steven Greeran</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --paternal: #3498db;
+            --maternal: #e74c3c;
+            --autosomal: #27ae60;
+            --accent: #f39c12;
+            --light: #f8f9fa;
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: #eef2f3;
+            margin: 0;
+            padding: 10px;
+            color: #333;
+        }
+        .dashboard {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        header h1 { margin: 0; font-size: 1.8rem; letter-spacing: -0.5px; }
+        header p { margin: 10px 0 0; opacity: 0.8; font-size: 0.9rem; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: var(--light);
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .stat-card h3 { margin: 0; font-size: 0.75rem; color: #7f8c8d; text-transform: uppercase; }
+        .stat-card p { margin: 5px 0 0; font-size: 1.2rem; font-weight: bold; color: var(--primary); }
+        .stat-card.paternal { border-left-color: var(--paternal); }
+        .stat-card.maternal { border-left-color: var(--maternal); }
+
+        .table-container {
+            padding: 0;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th {
+            background: #f1f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--secondary);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+        }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #fafbfc; }
+
+        .name-cell { font-weight: 600; color: var(--primary); }
+        .dna-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+        }
+        .y-dna { background: var(--paternal); }
+        .mt-dna { background: var(--maternal); }
+        .auto-dna { background: var(--autosomal); }
+        
+        @media (max-width: 768px) {
+            header { padding: 20px 15px; }
+            header h1 { font-size: 1.4rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            th:nth-child(4), td:nth-child(4) { display: none; } 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <header>
+            <h1>Genetic Heritage & DNA Dashboard</h1>
+            <p>Subject: <b>Steven Greeran</b> | Analyzing Double Cousinships & Irish Sibling Exchanges</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card paternal">
+                <h3>Direct Paternal (Y)</h3>
+                <p>Greeran Haplotype</p>
+            </div>
+            <div class="stat-card maternal">
+                <h3>Direct Maternal (mt)</h3>
+                <p>Carey Haplotype</p>
+            </div>
+            <div class="stat-card">
+                <h3>Double Cousin Alert</h3>
+                <p>King-Greeran Sibling Exchange</p>
+            </div>
+            <div class="stat-card">
+                <h3>Tree Completeness</h3>
+                <p>~92% (New Irish Branch Added)</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Family Member</th>
+                        <th>Relation</th>
+                        <th>Genetic %</th>
+                        <th>Shared DNA (cM)</th>
+                        <th>DNA Markers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- SUBJECT -->
+                    <tr>
+                        <td class="name-cell">Steven Greeran</td>
+                        <td>Subject</td>
+                        <td>100%</td>
+                        <td>3400 cM</td>
+                        <td><span class="dna-badge y-dna">Y</span> <span class="dna-badge mt-dna">mt</span> <span class="dna-badge auto-dna">Auto</span></td>
+                    </tr>
+                    <!-- PARENTS -->
+                    <tr>
+                        <td class="name-cell">Gerard T. Greeran</td>
+                        <td>Father</td>
+                        <td>50%</td>
+                        <td>3400 cM</td>
+                        <td><span class="dna-badge y-dna">Y</span> <span class="dna-badge auto-dna">Auto</span></td>
+                    </tr>
+                    <tr>
+                        <td class="name-cell">Jean Belle Hewitt</td>
+                        <td>Mother</td>
+                        <td>50%</td>
+                        <td>3400 cM</td>
+                        <td><span class="dna-badge mt-dna">mt</span> <span class="dna-badge auto-dna">Auto</span></td>
+                    </tr>
+                    <!-- GRANDPARENTS -->
+                    <tr>
+                        <td class="name-cell">Bernard Patrick Greeran</td>
+                        <td>P-Grandfather</td>
+                        <td>25%</td>
+                        <td>1700 cM</td>
+                        <td><span class="dna-badge y-dna">Y</span> <span class="dna-badge auto-dna">Auto</span></td>
+                    </tr>
+                    <tr>
+                        <td class="name-cell">Jeanette Mabel Morin</td>
+                        <td>P-Grandmother</td>
+                        <td>25%</td>
+                        <td>1700 cM</td>
+                        <td><span class="dna-badge auto-dna">Auto</span></td>
+                    </tr>
+                    <!-- GREAT GRANDPARENTS (Direct Path) -->
+                    <tr>
+                        <td class="name-cell">Hugh Greeran</td>
+                        <td>P-G-Grandfather</td>
+                        <td>12.5%</td>
+                        <td>850 cM</td>
+                        <td><span class="dna-badge y-dna">Y</span> <span class="dna-badge auto-dna">Auto</span></td>
+                    </tr>
+                    <tr>
+                        <td class="name-cell">Catherine King</td>
+                        <td>P-G-Grandmother</td>
+                        <td>12.5%</td>
+                        <td>850 cM</td>
+                        <td><span class="dna-badge auto-dna">Auto</span></td>
+                    </tr>
+                    <!-- THE DOUBLE COUSIN CONNECTION -->
+                    <tr style="background-color: #fff9db;">
+                        <td class="name-cell">John King (b. 1911)</td>
+                        <td>P-1st Cousin 1x Rem (Double)</td>
+                        <td>~12.5%</td>
+                        <td>850 cM</td>
+                        <td><span class="dna-badge auto-dna">High Shared</span></td>
+                    </tr>
+                    <tr>
+                        <td class="name-cell">Hugh King Jr.</td>
+                        <td>P-G-Granduncle (Sr's Son)</td>
+                        <td>6.25%</td>
+                        <td>425 cM</td>
+                        <td><span class="dna-badge auto-dna">Auto</span></td>
+                    </tr>
+                    <tr>
+                        <td class="name-cell">Catherine Greeran</td>
+                        <td>P-G-Grandaunt (Sr's Daughter)</td>
+                        <td>6.25%</td>
+                        <td>425 cM</td>
+                        <td><span class="dna-badge auto-dna">Auto</span></td>
+                    </tr>
+                    <!-- ROOTS -->
+                    <tr>
+                        <td class="name-cell">Hugh King Sr.</td>
+                        <td>P-2G-Grandfather</td>
+                        <td>6.25%</td>
+                        <td>425 cM</td>
+                        <td><span class="dna-badge auto-dna">King patriarch</span></td>
+                    </tr>
+                    <tr>
+                        <td class="name-cell">Bernard Greeran Sr.</td>
+                        <td>P-2G-Grandfather</td>
+                        <td>6.25%</td>
+                        <td>425 cM</td>
+                        <td><span class="dna-badge y-dna">Y</span> <span class="dna-badge auto-dna">Greeran patriarch</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

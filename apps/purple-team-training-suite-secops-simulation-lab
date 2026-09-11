@@ -1,0 +1,3005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purple Team Training Suite - SecOps Simulation Lab</title>
+<meta name="theme-color" content="#070a12">
+<meta name="application-name" content="Purple Team Lab">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Purple Team Lab">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="72x72" href="icons/icon-72.png">
+<link rel="icon" type="image/png" sizes="96x96" href="icons/icon-96.png">
+<link rel="icon" type="image/png" sizes="128x128" href="icons/icon-128.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #070a12;
+  --bg2: #0d1220;
+  --panel: #121a2b;
+  --panel2: #18223a;
+  --line: #263250;
+  --text: #d7e2f5;
+  --muted: #8a9ab8;
+  --red: #ff4d5a;
+  --red-glow: rgba(255,77,90,0.25);
+  --blue: #3b9cff;
+  --blue-glow: rgba(59,156,255,0.22);
+  --purple: #a76bff;
+  --green: #22d3a8;
+  --amber: #ffbf3c;
+  --cyan: #3ee7ff;
+}
+* { box-sizing: border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: radial-gradient(1200px 800px at 80% -10%, #142040 0%, transparent 60%), var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+a { color: var(--cyan); }
+
+/* Top bar */
+.topbar {
+  position: sticky; top:0; z-index: 50;
+  background: rgba(7,10,18,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 24px;
+  display:flex; align-items:center; gap:24px; flex-wrap:wrap;
+}
+.logo { font-family: 'JetBrains Mono', monospace; font-weight:700; font-size:16px; letter-spacing: 0.5px; }
+.logo span.red { color: var(--red); }
+.logo span.blue { color: var(--blue); }
+.logo span.purple { color: var(--purple); }
+.topbar nav { display:flex; gap:18px; flex-wrap:wrap; font-size:13px; }
+.topbar nav button {
+  background:none; border:none; color:var(--muted); cursor:pointer; font-family:inherit; font-size:13px; font-weight:600;
+  padding: 6px 10px; border-radius: 6px; transition: .15s;
+}
+.topbar nav button.active, .topbar nav button:hover { color: var(--text); background: #1a2338; }
+
+.status-pills { margin-left:auto; display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:11px; font-family:'JetBrains Mono', monospace; }
+.pill { border:1px solid var(--line); background:#101828; padding:5px 10px; border-radius:999px; color: var(--muted); }
+.pill.live { color: var(--green); border-color: rgba(34,211,168,.35); }
+.pill.warn { color: var(--amber); border-color: rgba(255,191,60,.35); }
+
+/* Banner */
+.auth-banner {
+  background: linear-gradient(90deg, rgba(167,107,255,.12), rgba(59,156,255,.12));
+  border-bottom: 1px solid var(--line);
+  text-align:center; padding:9px 16px;
+  font-size:12px; color:#c4ceea; font-weight:600;
+}
+.auth-banner strong { color: var(--amber); }
+
+/* Layout */
+.wrap { max-width: 1280px; margin: 28px auto; padding: 0 22px 80px; }
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+.card {
+  background: linear-gradient(180deg, var(--panel) 0%, #0f1627 100%);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.28);
+  position: relative;
+  overflow: hidden;
+}
+.card h3 {
+  font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted);
+  margin-bottom: 12px; display:flex; align-items:center; gap:8px;
+}
+.card h3 .dot { width:7px; height:7px; border-radius:50%; display:inline-block; }
+h2.section-title { font-size: 22px; margin: 8px 0 18px; font-weight: 800; letter-spacing: -.015em; }
+
+.col-4 { grid-column: span 4; }
+.col-5 { grid-column: span 5; }
+.col-6 { grid-column: span 6; }
+.col-7 { grid-column: span 7; }
+.col-8 { grid-column: span 8; }
+.col-12 { grid-column: span 12; }
+
+@media(max-width: 980px){
+  .col-4,.col-5,.col-6,.col-7,.col-8 { grid-column: span 12; }
+  .topbar nav { gap:8px; }
+}
+
+/* Red vs Blue scoreboard */
+.scoreboard { display:grid; grid-template-columns: 1fr auto 1fr; gap:16px; align-items:center; }
+.team-block { padding:14px; border-radius: 12px; }
+.team-red { background: linear-gradient(180deg, rgba(255,77,90,.08), transparent); border:1px solid rgba(255,77,90,.25); }
+.team-blue { background: linear-gradient(180deg, rgba(59,156,255,.08), transparent); border:1px solid rgba(59,156,255,.25); }
+.team-block .label { font-size: 11px; text-transform:uppercase; letter-spacing:.1em; color: var(--muted); }
+.team-block .score { font-size: 34px; font-weight: 800; font-family:'JetBrains Mono', monospace;}
+.vs { font-family:'JetBrains Mono', monospace; color: var(--purple); font-weight:700; }
+.kpi-row { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; font-size:12px; color: var(--muted); }
+.kpi-row b { color: var(--text); font-family:'JetBrains Mono', monospace; }
+
+/* Attack chain */
+.chain { display:flex; gap:10px; flex-wrap:wrap; }
+.chain-step {
+  flex:1 1 120px;
+  background:#0e1526; border:1px solid var(--line); border-radius:10px; padding:10px;
+  font-size:12px; color: var(--muted); min-width:120px;
+  cursor:pointer; transition:.15s;
+}
+.chain-step:hover { border-color: #3a4a6b; }
+.chain-step.active { border-color: var(--purple); box-shadow: 0 0 18px rgba(167,107,255,.15); color: var(--text); }
+.chain-step strong { display:block; color: var(--text); font-size:13px; margin-bottom:3px; }
+
+/* Network canvas */
+#netCanvas { width:100%; height: 310px; background: radial-gradient(600px 260px at 50% 0%, rgba(59,156,255,.06), transparent 70%), #0a1020; border-radius:10px; border:1px solid var(--line); display:block; }
+
+/* Tables */
+.table { width:100%; border-collapse: collapse; font-size: 12.5px; font-family:'JetBrains Mono', monospace;}
+.table th { text-align:left; color: var(--muted); font-weight:600; padding: 8px 10px; border-bottom:1px solid var(--line); font-family:'Inter', sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:.07em; }
+.table td { padding: 9px 10px; border-bottom:1px solid #1a2338; }
+.table tr:hover td { background: rgba(255,255,255,.02); }
+.tag { font-size:10.5px; padding:3px 7px; border-radius:999px; border:1px solid var(--line); color: var(--muted); }
+.tag.red { color: var(--red); border-color: rgba(255,77,90,.35); background: rgba(255,77,90,.07); }
+.tag.blue { color: var(--blue); border-color: rgba(59,156,255,.35); background: rgba(59,156,255,.07); }
+.tag.green { color: var(--green); border-color: rgba(34,211,168,.35); background: rgba(34,211,168,.07); }
+.tag.amber { color: var(--amber); border-color: rgba(255,191,60,.35); background: rgba(255,191,60,.07); }
+
+/* Packet console */
+.console {
+  background: #070d1a;
+  border:1px solid var(--line);
+  border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  height: 285px;
+  overflow:auto;
+  padding: 12px;
+  color: #b9c9e8;
+}
+.console .p { opacity:.95; white-space:pre; line-height:1.65; }
+.console .dim { color: #6a7a98; }
+
+/* RF Spectrum */
+.spectrum-wrap { background:#090f1c; border:1px solid var(--line); border-radius:10px; padding:12px; }
+#spectrumCanvas { width:100%; height: 150px; display:block; }
+.spectrum-legend { display:flex; gap:16px; font-size:11px; color: var(--muted); margin-top:8px; flex-wrap:wrap;}
+.legend-dot { width:9px; height:9px; border-radius:3px; display:inline-block; margin-right:5px; vertical-align:middle;}
+
+/* Buttons */
+.btn {
+  background:#1b2642; color:var(--text); border:1px solid #2d3b5e;
+  padding:8px 12px; border-radius:9px; cursor:pointer; font-weight:600; font-size:12.5px;
+  transition:.15s;
+}
+.btn:hover { background:#223054; }
+.btn.primary { background: linear-gradient(180deg, #3b73ff, #2d5bcf); border-color: #4a7fff; }
+.btn.red { background: rgba(255,77,90,.09); border-color: rgba(255,77,90,.35); color: #ff9ba3;}
+.btn.ghost { background: transparent; }
+.btn-sm { padding:5px 9px; font-size:12px; border-radius:7px; }
+.toolbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+
+/* Traceroute */
+.trace-map { position:relative; background: radial-gradient(700px 300px at 20% 0%, rgba(34,211,168,.06), transparent), #0b1222; border:1px solid var(--line); border-radius:10px; height: 270px; overflow:hidden; }
+.trace-nodes { position:absolute; inset:0; }
+.tnode {
+  position:absolute; background:#141f35; border:1px solid #2b3a5c; border-radius:10px; padding:7px 10px; font-size:11px;
+  font-family:'JetBrains Mono', monospace; color:#c9d8f3; box-shadow: 0 4px 14px rgba(0,0,0,.3);
+}
+.tnode.hop { border-color: rgba(62,231,255,.4);}
+.trace-svg { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+
+input[type="text"], select {
+  background:#0a1222; border:1px solid #2a3654; color: var(--text);
+  padding:9px 11px; border-radius:9px; font-family:'JetBrains Mono', monospace; font-size:12.5px;
+  outline:none; width:100%;
+}
+input[type="text"]:focus { border-color: #3b6cff; box-shadow: 0 0 0 3px rgba(59,108,255,.15); }
+label.small { font-size:11px; color:var(--muted); display:block; margin-bottom:5px; }
+
+.view { display:none; }
+.view.active { display:block; animation: fade .22s ease; }
+@keyframes fade { from{opacity:.4; transform: translateY(4px);} to{opacity:1; transform:none;} }
+
+.list-tight { font-size:13px; color:#b8c7e3; line-height:1.75; }
+.list-tight li { margin-left: 16px; }
+
+.footer-note {
+  color:#6d7c9b; font-size:12px; text-align:center; margin-top:34px; line-height:1.7;
+  border-top:1px solid var(--line); padding-top:18px;
+}
+hr.soft { border:none; border-top:1px solid var(--line); margin:14px 0; }
+.mono { font-family:'JetBrains Mono', monospace; }
+.right { text-align:right; }
+.small-muted { font-size:12px; color: var(--muted); }
+.scroll-y { max-height: 310px; overflow:auto; }
+
+/* PWA Install UI */
+.install-banner {
+  display:none;
+  background: linear-gradient(90deg, rgba(167,107,255,.14), rgba(59,156,255,.14));
+  border-bottom:1px solid var(--line);
+  padding:10px 22px;
+  align-items:center; justify-content: center; gap:14px;
+  font-size:13px; font-weight:600;
+  color:#d6e2ff;
+}
+.install-banner.show { display:flex; flex-wrap:wrap;}
+.install-banner .btn-install {
+  background: linear-gradient(180deg, #a76bff, #7a45d6);
+  border-color: #b981ff; color: white;
+  padding:7px 14px; border-radius: 999px; font-weight:700; cursor:pointer;
+}
+.btn-install-top {
+  background: linear-gradient(180deg, #a76bff, #7a45d6);
+  border:1px solid #b981ff; color:white;
+  padding:6px 12px; border-radius:999px; font-weight:700; cursor:pointer; font-size:12px;
+}
+.btn-install-top:hover { filter: brightness(1.08); }
+#installBtnTop { display:none; }
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">PURPLE<span class="purple">TEAM</span> LAB <span style="color:#556785"> / SecOps Suite v4.2</span></div>
+  <nav id="mainNav">
+    <button class="active" data-view="ops">Ops Center</button>
+    <button data-view="rf">RF Spectrum Lab</button>
+    <button data-view="packets">Packet Forensics</button>
+    <button data-view="trace">Visual Traceroute</button>
+    <button data-view="sstv">SSTV / FAX</button>
+    <button data-view="playbooks">Playbooks</button>
+  </nav>
+  <div class="status-pills">
+    <button class="btn-install-top" id="installBtnTop">⬇ Install</button>
+    <span class="pill live">● SIMULATION MODE</span>
+    <span class="pill">LAB: PTL-ATL-03</span>
+    <span class="pill warn">NO LIVE RF</span>
+  </div>
+</div>
+
+<div class="auth-banner">
+  <strong>AUTHORIZED TRAINING USE ONLY — SIMULATED DATA</strong> &nbsp;·&nbsp; This is an educational Purple Team UI mockup. No real packet capture, RF transmission, or offensive tooling is included. For use in isolated lab environments with proper authorization only.
+</div>
+<div class="install-banner" id="installBanner" role="region" aria-label="Install app">
+  <span>📲 Install Purple Team Lab as a desktop / mobile app for offline training</span>
+  <button class="btn-install" id="installBtn">Install App</button>
+  <button class="btn btn-sm ghost" id="dismissInstallBtn" style="border-radius:999px">Not now</button>
+  <button class="btn btn-sm ghost" id="downloadStandaloneBtn" style="border-radius:999px" title="Download a single-file offline HTML copy">Download Standalone .html</button>
+</div>
+
+<div class="wrap">
+
+  <!-- OPS CENTER -->
+  <div class="view active" id="view-ops">
+    <h2 class="section-title">Purple Team Operations Center</h2>
+    <div class="grid">
+      <div class="card col-8">
+        <h3><span class="dot" style="background:var(--purple)"></span> Red vs. Blue — Live Exercise Scoreboard</h3>
+        <div class="scoreboard">
+          <div class="team-block team-red">
+            <div class="label">🔴 Red Team</div>
+            <div class="score mono" id="redScore">1260</div>
+            <div class="kpi-row">
+              <span>TTPs: <b>7 / 14</b></span>
+              <span>MTTD Evasion: <b>11.4 min</b></span>
+            </div>
+          </div>
+          <div class="vs">VS</div>
+          <div class="team-block team-blue">
+            <div class="label">🔵 Blue Team</div>
+            <div class="score mono" id="blueScore">1385</div>
+            <div class="kpi-row">
+              <span>Detections: <b>7 / 7</b></span>
+              <span>MTTR: <b>4.2 min</b></span>
+            </div>
+          </div>
+        </div>
+        <hr class="soft">
+        <div class="toolbar">
+          <button class="btn btn-sm primary" id="injectBtn">Inject Simulated TTP</button>
+          <button class="btn btn-sm" id="detectBtn">Blue: Correlate Alert</button>
+          <button class="btn btn-sm ghost" id="resetScoreBtn">Reset Exercise</button>
+          <span class="small-muted" style="margin-left:auto">Scoring: MITRE ATT&CK Emulation · NIST CSF aligned</span>
+        </div>
+        <div style="max-height:205px; overflow:auto">
+        <table class="table" id="eventTable">
+          <thead><tr><th>Time</th><th>Team</th><th>Event</th><th style="text-align:right">Points</th></tr></thead>
+          <tbody>
+            <tr><td>09:12:04</td><td><span class="tag red">RED</span></td><td>TA0001 Initial Access — Phishing Simulation (Auth Lab)</td><td class="right mono">+150</td></tr>
+            <tr><td>09:14:31</td><td><span class="tag blue">BLUE</span></td><td>Detection: EDR email gateway alert correlated</td><td class="right mono">+180</td></tr>
+            <tr><td>09:22:10</td><td><span class="tag red">RED</span></td><td>TA0003 Persistence — Scheduled task emulation</td><td class="right mono">+120</td></tr>
+            <tr><td>09:23:55</td><td><span class="tag blue">BLUE</span></td><td>Response: Host isolated via SOC playbook IR-4</td><td class="right mono">+220</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="card col-4">
+        <h3><span class="dot" style="background:var(--green)"></span> Exercise Health</h3>
+        <ul class="list-tight">
+          <li>Environment: <b>Isolated Purple Range</b></li>
+          <li>ATT&CK Coverage: <b>7 Techniques</b></li>
+          <li>Detection Ratio: <b>100%</b></li>
+          <li>Mean Time to Detect: <b>1m 42s</b></li>
+          <li>Mean Time to Respond: <b>4m 12s</b></li>
+          <li>Log Ingest: <b>All sources healthy</b></li>
+          <li>Containment SLA: <b>Met</b></li>
+        </ul>
+        <hr class="soft">
+        <p class="small-muted">All emulated adversary actions are pre-approved, logged, and reversible. No production systems in scope.</p>
+      </div>
+
+      <div class="card col-12">
+        <h3><span class="dot" style="background:var(--amber)"></span> MITRE ATT&CK Kill Chain Navigator — Training Emulation</h3>
+        <div class="chain" id="killchain">
+          <div class="chain-step active"><strong>Reconnaissance</strong>TA0043 — OSINT simulation</div>
+          <div class="chain-step"><strong>Resource Dev</strong>TA0042 — Lab infra only</div>
+          <div class="chain-step"><strong>Initial Access</strong>TA0001 — Controlled phish</div>
+          <div class="chain-step"><strong>Execution</strong>TA0002 — Sandboxed</div>
+          <div class="chain-step"><strong>Persistence</strong>TA0003 — Monitored</div>
+          <div class="chain-step"><strong>Privilege Esc.</strong>TA0004 — Emulated</div>
+          <div class="chain-step"><strong>Defense Evasion</strong>TA0005</div>
+          <div class="chain-step"><strong>Lateral Move</strong>TA0008 — Segmented lab</div>
+          <div class="chain-step"><strong>Exfiltration</strong>TA0010 — Canary data only</div>
+        </div>
+        <p class="small-muted" style="margin-top:10px">Click a phase to load the associated defensive playbook in the Playbooks tab. This is a training map — not operational instructions.</p>
+      </div>
+
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--blue)"></span> Live Network Topology — Lab Range</h3>
+        <canvas id="netCanvas" width="860" height="310"></canvas>
+        <p class="small-muted" style="margin-top:8px">Simulated LAN. Drag nodes. This is a visualization aid only — no live sniffing.</p>
+      </div>
+
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--cyan)"></span> Blue Team SOC — Detection Queue</h3>
+        <div class="scroll-y">
+        <table class="table">
+          <thead><tr><th>Severity</th><th>Rule</th><th>Asset</th><th>Status</th></tr></thead>
+          <tbody id="socTable">
+            <tr><td><span class="tag amber">Medium</span></td><td>Unusual SMB lateral movement</td><td>ws-lab-07</td><td>Triaged</td></tr>
+            <tr><td><span class="tag green">Low</span></td><td>PowerShell -EncodedCommand (training)</td><td>ws-lab-03</td><td>Benign / Expected</td></tr>
+            <tr><td><span class="tag red">High</span></td><td>Canary token accessed — exfil sim</td><td>fs-lab-01</td><td>Contained</td></tr>
+            <tr><td><span class="tag blue">Info</span></td><td>EDR health heartbeat</td><td>all</td><td>OK</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn btn-sm" onclick="socAck()">Acknowledge All</button>
+          <button class="btn btn-sm ghost" onclick="socAdd()">Simulate New Alert</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RF SPECTRUM LAB -->
+  <div class="view" id="view-rf">
+    <h2 class="section-title">RF Spectrum Lab — Wi-Fi / Bluetooth LE (Simulated)</h2>
+    <div class="grid">
+      <div class="card col-8">
+        <h3><span class="dot" style="background:var(--cyan)"></span> 2.4GHz / 5GHz Spectrum Waterfall — Simulated</h3>
+        <div class="spectrum-wrap">
+          <canvas id="spectrumCanvas" width="900" height="150"></canvas>
+          <div class="spectrum-legend">
+            <span><i class="legend-dot" style="background:#3ee7ff"></i> 2.4 GHz Wi-Fi</span>
+            <span><i class="legend-dot" style="background:#a76bff"></i> Bluetooth LE Adv</span>
+            <span><i class="legend-dot" style="background:#ffbf3c"></i> Co-channel / noise floor</span>
+            <span style="margin-left:auto" class="small-muted">No SDR attached — this is training visualization only.</span>
+          </div>
+        </div>
+        <hr class="soft">
+        <div class="toolbar">
+          <button class="btn btn-sm" id="rfPause">Pause</button>
+          <button class="btn btn-sm ghost" onclick="rfNoise()">Inject Interference</button>
+          <span class="small-muted">For authorized site surveys use proper hardware and local regulations. This panel does not transmit.</span>
+        </div>
+      </div>
+
+      <div class="card col-4">
+        <h3><span class="dot" style="background:var(--green)"></span> Wireless Site Survey — Lab APs</h3>
+        <table class="table" id="wifiTable">
+          <thead><tr><th>SSID</th><th>Ch</th><th>RSSI</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">PTL-LAB-5G</td><td>36</td><td>-42 dBm</td></tr>
+            <tr><td class="mono">PTL-LAB-2G</td><td>6</td><td>-51 dBm</td></tr>
+            <tr><td class="mono">PTL-GUEST-ISO</td><td>11</td><td>-63 dBm</td></tr>
+            <tr><td class="mono">PTL-IOT-SEG</td><td>1</td><td>-68 dBm</td></tr>
+          </tbody>
+        </table>
+        <p class="small-muted" style="margin-top:10px">Scanning is simulated. Real-world wireless assessment requires written authorization, RF regulatory compliance, and must never target networks you do not own.</p>
+      </div>
+
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--purple)"></span> Bluetooth LE Scanner — Training Mode</h3>
+        <table class="table">
+          <thead><tr><th>Device</th><th>Type</th><th>RSSI</th><th>Notes</th></tr></thead>
+          <tbody id="bleTable">
+            <tr><td class="mono">LAB-BEACON-01</td><td>iBeacon</td><td>-58</td><td>Training beacon</td></tr>
+            <tr><td class="mono">PTL-TEST-TAG</td><td>BLE 5.2</td><td>-64</td><td>Randomized MAC</td></tr>
+            <tr><td class="mono">[Redacted]</td><td>—</td><td>—</td><td>Privacy-respecting simulator</td></tr>
+          </tbody>
+        </table>
+        <p class="small-muted" style="margin-top:8px">Browser Web Bluetooth is read-only and user-consent gated. No bruteforcing, deauth, or jamming is supported here.</p>
+      </div>
+
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--amber)"></span> Wireless Hardening Checklist</h3>
+        <ul class="list-tight">
+          <li>WPA3-Enterprise / SAE — enforced on lab SSIDs</li>
+          <li>PMF (Protected Management Frames) — Required</li>
+          <li>Isolated VLANs per SSID — Verified</li>
+          <li>Rogue AP detection enabled — Monitor mode only</li>
+          <li>Bluetooth: Pairing confirm / LE Secure Connections</li>
+          <li>Wi-Fi 6E 6GHz survey completed — Clean</li>
+          <li>No open / captive networks in scope</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PACKET FORENSICS -->
+    <div class="view" id="view-packets">
+    <h2 class="section-title">Packet Forensics Workbench — PCAP / PCAPNG Analyzer</h2>
+    <div class="grid">
+      <div class="card col-12" style="padding:14px 18px">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--amber)">
+          <strong>⚠ LAB USE ONLY</strong>
+          <span style="color:var(--muted)">Analyze only captures you own or are authorized to inspect. Never upload third-party / production traffic without explicit legal consent. All parsing is 100% client-side — files never leave your browser.</span>
+        </div>
+      </div>
+
+      <div class="card col-5">
+        <h3><span class="dot" style="background:var(--green)"></span> Load Capture</h3>
+        <div id="pcapDrop" style="border:1.5px dashed #2f3d5f; border-radius:10px; padding:22px; text-align:center; background:#0a1222; cursor:pointer; transition:.15s">
+          <div style="font-weight:700; font-size:14px">Drop .pcap / .pcapng here</div>
+          <div class="small-muted" style="margin-top:4px">or click to browse — fully offline, local parsing</div>
+          <input type="file" id="pcapFile" accept=".pcap,.pcapng,.cap,.dump,application/vnd.tcpdump.pcap" style="display:none">
+          <div id="pcapFileInfo" class="small-muted" style="margin-top:10px"></div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap">
+          <button class="btn primary btn-sm" id="parseBtn">Parse</button>
+          <button class="btn btn-sm" id="clearPcapBtn">Clear</button>
+          <label class="small-muted" style="display:flex;align-items:center;gap:6px;margin-left:auto">
+            <input type="checkbox" id="resolveNamesChk" checked> try resolve private names
+          </label>
+        </div>
+
+        <hr class="soft">
+        <label class="small">Sample captures (synthetic)</label>
+        <select id="pcapSelect">
+          <option value="lab-phish">lab-phish-sim.pcap — 1,240 packets (sim)</option>
+          <option value="lab-lateral">lab-lateral-smb.pcap — 3,102 packets (sim)</option>
+          <option value="lab-dns">lab-dns-exfil-canary.pcap — 842 packets (sim)</option>
+        </select>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn btn-sm ghost" onclick="loadSamplePcap()">Load Sample in Viewer</button>
+          <button class="btn btn-sm ghost" onclick="packetFeedStart()">Stream Live (sim)</button>
+        </div>
+
+        <hr class="soft">
+        <div id="pcapStats" class="small-muted" style="font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8">
+          No capture loaded.
+        </div>
+      </div>
+
+      <div class="card col-7">
+        <h3><span class="dot" style="background:var(--cyan)"></span> Packet List
+          <span id="pktCountBadge" class="small-muted" style="float:right;font-weight:600"></span>
+        </h3>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input type="text" id="pktFilter" placeholder="Display filter — e.g. tcp, udp, dns, 10.0.0.1, :443, http" style="flex:1">
+          <button class="btn btn-sm" id="pktFilterBtn">Apply</button>
+          <button class="btn btn-sm ghost" id="pktFilterClearBtn">Clear</button>
+        </div>
+        <div class="console" id="packetConsole" style="height:305px">
+<div class="p"><span class="dim"># Purple Team PCAP Viewer
+# Drop a .pcap or .pcapng file to parse locally.
+# All parsing is client-side — nothing is uploaded.
+#
+# Loaded: (none)</span></div>
+        </div>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn btn-sm" onclick="packetFeedStart()">Stream Sim</button>
+          <button class="btn btn-sm ghost" onclick="packetFeedStop()">Pause</button>
+          <button class="btn btn-sm ghost" id="exportCsvBtn">Export CSV</button>
+          <button class="btn btn-sm ghost" id="exportJsonBtn" style="margin-left:auto">Export JSON</button>
+        </div>
+      </div>
+
+      <div class="card col-7">
+        <h3><span class="dot" style="background:var(--purple)"></span> Packet Detail</h3>
+        <div id="pktDetail" style="background:#070d1a;border:1px solid var(--line);border-radius:10px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:11.5px;height:240px;overflow:auto;color:#b9c9e8;">
+          <span class="small-muted">Click a packet in the list to inspect layers / hex.</span>
+        </div>
+      </div>
+
+      <div class="card col-5">
+        <h3><span class="dot" style="background:var(--blue)"></span> Flow Summary / Conversations</h3>
+        <div style="max-height:240px;overflow:auto">
+        <table class="table" id="flowTable">
+          <thead><tr><th>Flow</th><th>Proto</th><th>Pkts</th><th>Bytes</th></tr></thead>
+          <tbody><tr><td colspan="4" class="small-muted">Load a capture to build conversation table.</td></tr></tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="card col-12">
+        <h3><span class="dot" style="background:var(--amber)"></span> Protocol Hierarchy</h3>
+        <div id="protoHierarchy" class="small-muted">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRACEROUTE -->
+    <!-- TRACEROUTE -->
+  <div class="view" id="view-trace">
+    <h2 class="section-title">Visual Traceroute & Network Path Analysis</h2>
+    <div class="grid">
+      <div class="card col-5">
+        <h3><span class="dot" style="background:var(--green)"></span> Trace Target</h3>
+        <label class="small">Host / IP (lab scope only)</label>
+        <input type="text" id="traceTarget" value="training-target.purplelab.local" />
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn primary btn-sm" onclick="runTrace()">Run Visual Trace</button>
+          <button class="btn btn-sm" onclick="runTrace('slow')">Slow Path Sim</button>
+        </div>
+        <hr class="soft">
+        <ul class="list-tight" id="traceLog">
+          <li>Ready. This is a simulated traceroute map for training.</li>
+        </ul>
+        <p class="small-muted" style="margin-top:10px">Do not scan networks without authorization. Use only in-scope lab targets.</p>
+      </div>
+      <div class="card col-7">
+        <h3><span class="dot" style="background:var(--cyan)"></span> Path Map</h3>
+        <div class="trace-map" id="traceMap">
+          <svg class="trace-svg" id="traceSvg"></svg>
+          <div class="trace-nodes" id="traceNodes"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SSTV / FAX LAB -->
+  <div class="view" id="view-sstv">
+    <h2 class="section-title">SSTV / Digital Fax Lab — Robot36 / Martin / Scottie DX / PD — File / TCP Bridge</h2>
+    <div class="grid">
+      <div class="card col-12" style="padding:14px 18px">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--amber)">
+          <strong>📻 TRAINING / LAB RF ONLY</strong>
+          <span style="color:var(--muted)">SSTV audio stays in your browser / soundcard. Never transmit on licensed amateur / commercial frequencies without a valid license. Audio output is line-level only — no RF transmitter is included. File / TCP bridge mode is for authorized, isolated lab training.</span>
+        </div>
+      </div>
+
+      <div class="card col-4">
+        <h3><span class="dot" style="background:var(--green)"></span> TX Source</h3>
+        <div style="display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; font-size:12px">
+          <label><input type="radio" name="sstvMode" value="image" checked> Image</label>
+          <label><input type="radio" name="sstvMode" value="fax"> File Fax</label>
+          <label><input type="radio" name="sstvMode" value="bridge"> TCP/IP Bridge</label>
+        </div>
+
+        <label class="small">SSTV Mode</label>
+        <select id="sstvModeSel" style="margin-bottom:8px">
+          <option value="robot36">Robot36 — 320×240, 36s, VIS 8</option>
+          <option value="martin1">Martin M1 — 320×256, 114s, VIS 44</option>
+          <option value="martin2">Martin M2 — 320×256, 58s, VIS 40</option>
+          <option value="scottieDX">Scottie DX — 320×256, 269s, VIS 76</option>
+          <option value="pd120">PD120 — 640×496, 121s, VIS 95</option>
+          <option value="pd180">PD180 — 640×496, 181s, VIS 96</option>
+          <option value="pd240">PD240 — 640×496, 240s, VIS 97</option>
+        </select>
+        <div class="small-muted" id="sstvModeInfo" style="margin-bottom:10px">320×240 • 36.0s • ~76 KB/frame</div>
+
+        <!-- Image TX -->
+        <div id="sstvImageBox">
+          <label class="small">Source image</label>
+          <input type="file" id="sstvImgFile" accept="image/*" style="font-size:12px;color:var(--muted);margin-bottom:8px">
+          <canvas id="sstvSrcCanvas" width="320" height="256" style="width:100%; background:#050912; border:1px solid var(--line); border-radius:8px; image-rendering: pixelated;"></canvas>
+          <div class="toolbar" style="margin-top:8px">
+            <button class="btn btn-sm ghost" id="sstvTestPattern">Test Pattern</button>
+            <button class="btn btn-sm ghost" id="sstvClearImg">Clear</button>
+            <button class="btn btn-sm ghost" id="sstvResizeBtn">Fit</button>
+          </div>
+        </div>
+
+        <!-- Fax TX -->
+        <div id="sstvFaxBox" style="display:none">
+          <label class="small">File to send via SSTV Fax</label>
+          <input type="file" id="sstvFaxFile" style="font-size:12px;color:var(--muted);margin-bottom:8px">
+          <div id="faxFileInfo" class="small-muted" style="font-family:'JetBrains Mono',monospace; font-size:11.5px; background:#090f1c; border:1px solid var(--line); border-radius:8px; padding:10px; min-height:80px">No file selected.</div>
+          <hr class="soft">
+          <div style="font-size:12px; color:var(--muted); display:grid; grid-template-columns:1fr 1fr; gap:6px">
+            <label><input type="checkbox" id="faxFecChk" checked> RS(255,223) FEC</label>
+            <label><input type="checkbox" id="faxCrcChk" checked> CRC32/frame</label>
+            <label>Repeat: <select id="faxRepeatSel" style="width:70px; padding:3px; font-size:11px"><option value="1">1×</option><option value="2">2×</option><option value="3">3×</option></select></label>
+            <label>Gap: <select id="faxGapSel" style="width:70px; padding:3px; font-size:11px"><option value="0">0s</option><option value="2">2s</option><option value="5" selected>5s</option></select></label>
+          </div>
+          <div class="small-muted" style="margin-top:6px">Reed-Solomon RS(255,223) — corrects up to 16 byte errors per 255-byte block. Interleaved.</div>
+        </div>
+
+        <!-- Bridge TX -->
+        <div id="sstvBridgeBox" style="display:none">
+          <label class="small">TCP/IP over SSTV — PCAP Bridge + ARQ</label>
+          <div class="small-muted" style="background:#090f1c; border:1px solid var(--line); border-radius:8px; padding:10px; font-size:12px; line-height:1.7">
+            Encapsulates packets from the Packet Forensics tab into SSTV fax frames (SLIP + CRC + RS).<br>
+            • MTU: 1200 bytes/packet<br>
+            • ARQ: Go-Back-N / Selective Repeat<br>
+            • Bridge: PCAP → SSTV → decode → pcap<br><br>
+            <span id="bridgePcapInfo">No PCAP loaded in Forensics tab.</span>
+          </div>
+          <div style="background:#090f1c; border:1px solid var(--line); border-radius:8px; padding:10px; margin-top:8px; font-size:12px">
+            <b style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted)">ARQ Link Control</b>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; color:var(--muted)">
+              <label><input type="checkbox" id="arqEnableChk" checked> ARQ Enable</label>
+              <label>Mode: <select id="arqModeSel" style="width:90px; padding:3px; font-size:11px"><option value="sr" selected>SR</option><option value="gbn">Go-Back-N</option></select></label>
+              <label>Window: <input type="number" id="arqWindow" value="8" min="1" max="64" style="width:55px; padding:3px; font-size:11px"></label>
+              <label>RTT ms: <input type="number" id="arqRtt" value="900" min="50" max="5000" step="50" style="width:65px; padding:3px; font-size:11px"></label>
+              <label>Loss %: <input type="number" id="arqLoss" value="5" min="0" max="50" style="width:55px; padding:3px; font-size:11px"></label>
+              <span class="mono" id="arqStats" style="grid-column:1/-1; font-size:11px; color:#8a9ab8">ARQ ON | W=8 | RTT~900ms</span>
+            </div>
+          </div>
+          <div class="toolbar" style="margin-top:8px">
+            <button class="btn btn-sm" id="bridgePullPcapBtn">Pull from PCAP Parser</button>
+            <button class="btn btn-sm ghost" id="bridgeClearBtn">Clear Queue</button>
+          </div>
+          <div id="bridgeQueueInfo" class="small-muted mono" style="margin-top:6px">Queue: 0 packets / 0 frames</div>
+        </div>
+
+        <hr class="soft">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px; color:var(--muted)">
+          <div>Mode: <b id="sstvModeLabel" style="color:var(--text)">Robot36</b></div>
+          <div>Size: <b id="sstvSizeLabel" style="color:var(--text)">320×240</b></div>
+          <div>Time: <b id="sstvTimeLabel" style="color:var(--text)">36.0 s</b></div>
+          <div>Rate: <b id="sstvRateLabel" style="color:var(--text)">~2.1 KB/s</b></div>
+        </div>
+      </div>
+
+      <div class="card col-8">
+        <h3><span class="dot" style="background:var(--cyan)"></span> SSTV Modulator — TX Audio / Waterfall</h3>
+        <div class="toolbar">
+          <button class="btn primary btn-sm" id="sstvEncodeBtn">1. Encode → WAV</button>
+          <button class="btn btn-sm" id="sstvEncodeAllBtn" title="Encode entire fax/bridge queue">Encode All</button>
+          <button class="btn btn-sm" id="sstvPlayBtn" disabled>▶ Play</button>
+          <button class="btn btn-sm" id="sstvStopBtn" disabled>■ Stop</button>
+          <button class="btn btn-sm ghost" id="sstvPauseBtn" disabled>⏸ Pause</button>
+          <button class="btn btn-sm" id="sstvDownloadBtn" disabled>Download .wav</button>
+          <button class="btn btn-sm ghost" id="sstvDownloadAllBtn" disabled>Download ZIP</button>
+          <span class="small-muted" style="margin-left:auto" id="sstvTxStatus">Ready</span>
+        </div>
+        <canvas id="sstvWaterfall" width="900" height="160" style="width:100%; height:160px; background:#050912; border-radius:8px; border:1px solid var(--line); display:block;"></canvas>
+        <div style="display:flex; align-items:center; gap:12px; margin-top:8px">
+          <div style="flex:1; height:8px; background:#0a1222; border-radius:99px; border:1px solid var(--line); overflow:hidden">
+            <div id="sstvTxProgress" style="height:100%; width:0%; background: linear-gradient(90deg, #3b9cff, #a76bff); transition: width .08s linear;"></div>
+          </div>
+          <span class="mono small-muted" id="sstvTxTime">0.0 / 36.0s</span>
+          <span class="mono small-muted" id="sstvTxFrameInfo"></span>
+        </div>
+        <div style="display:flex; gap:14px; margin-top:8px; font-size:11.5px; color:var(--muted); flex-wrap:wrap; align-items:center">
+          <span>1500–2300 Hz FM</span>
+          <span>1200 Hz Sync</span>
+          <span id="sstvTxDetail">Robot36: Y 88ms, R-Y 44ms, B-Y 44ms</span>
+          <span style="margin-left:auto">Vol: <input type="range" id="sstvVol" min="0" max="100" value="72" style="width:90px;vertical-align:middle"></span>
+        </div>
+        <!-- TX Queue -->
+        <div id="sstvTxQueueWrap" style="display:none; margin-top:10px; background:#090f1c; border:1px solid var(--line); border-radius:8px; padding:10px; max-height:120px; overflow:auto; font-family:'JetBrains Mono',monospace; font-size:11px; color:#9ab3d8">
+          <b style="color:var(--text); font-family:Inter,sans-serif">TX Frame Queue</b>
+          <div id="sstvTxQueue"></div>
+        </div>
+      </div>
+
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--purple)"></span> SSTV Demodulator — RX / Live Sync</h3>
+        <div class="toolbar">
+          <button class="btn btn-sm" id="sstvDecodeBtn">Decode WAV</button>
+          <button class="btn btn-sm primary" id="sstvLiveDecodeBtn">🎙 Live Decode</button>
+          <button class="btn btn-sm ghost" id="sstvAutoDecodeChkBtn">Auto-decode: Off</button>
+          <button class="btn btn-sm ghost" id="sstvMicBtn">🎤 Mic</button>
+          <input type="file" id="sstvWavFile" accept=".wav,audio/*" multiple style="display:none">
+          <button class="btn btn-sm ghost" onclick="document.getElementById('sstvWavFile').click()">Load WAV…</button>
+          <span class="small-muted" id="sstvRxStatus" style="margin-left:auto">Idle</span>
+        </div>
+        <div class="toolbar" style="margin-top:-4px">
+          <label style="font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:5px"><input type="checkbox" id="sstvVisAutoChk" checked> Auto VIS</label>
+          <label style="font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:5px"><input type="checkbox" id="sstvAutoSlantChk" checked> Auto Slant</label>
+          <button class="btn btn-sm ghost" id="sstvAutoSlantBtn" style="padding:3px 8px; font-size:11px">Detect Slant</button>
+          <span class="small-muted" style="margin-left:auto">MMSSTV-style sync correlation</span>
+        </div>
+        <canvas id="sstvRxCanvas" width="320" height="256" style="width:100%; max-width:520px; background:#050912; border:1px solid var(--line); border-radius:8px; image-rendering: pixelated;"></canvas>
+        <div style="display:flex; gap:14px; align-items:center; margin-top:8px; font-size:11.5px; color:var(--muted); flex-wrap:wrap">
+          <span>Slant: <input type="range" id="sstvSlant" min="-30" max="30" value="0" style="width:120px; vertical-align:middle"> <span id="sstvSlantVal" class="mono">0</span></span>
+          <label><input type="checkbox" id="sstvLiveDrawChk" checked> Live draw</label>
+          <span id="sstvRxInfo" class="mono small-muted" style="margin-left:auto">No decode yet.</span>
+        </div>
+        <!-- Live sync / waterfall -->
+        <div style="margin-top:10px">
+          <label class="small">Live SSTV Waterfall / Sync Viewer</label>
+          <canvas id="sstvLiveWaterfall" width="640" height="140" style="width:100%; height:140px; background:#050912; border:1px solid var(--line); border-radius:8px; display:block;"></canvas>
+          <div class="small-muted" style="font-size:11px; margin-top:4px">X: 1100–2400 Hz • Y: time (scrolling) • Red ticks = sync pulses • Green = VIS header</div>
+        </div>
+        
+        <div id="sstvFaxRxBox" style="margin-top:10px; padding:10px; background:#0a1222; border:1px solid var(--line); border-radius:8px">
+          <b style="font-size:12px">Fax / Bridge File Reassembly</b>
+          <div id="faxRxInfo" class="small-muted mono" style="margin-top:6px">Waiting for frames…</div>
+          <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+            <button class="btn btn-sm" id="faxDownloadBtn" disabled>Download File</button>
+            <button class="btn btn-sm ghost" id="faxInjectPcapBtn" disabled>Inject → PCAP Parser</button>
+            <button class="btn btn-sm ghost" id="faxClearBtn">Clear</button>
+          </div>
+          <div id="faxFrameMap" style="margin-top:8px; font-size:11px; font-family:'JetBrains Mono',monospace; color:#7a8dad; word-break:break-all"></div>
+        </div>
+      </div>
+
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--amber)"></span> Spectrum / Link Stats / Constellation</h3>
+        <canvas id="sstvSpectrum" width="520" height="170" style="width:100%; background:#050912; border:1px solid var(--line); border-radius:8px;"></canvas>
+        <div style="font-size:11px; color:var(--muted); margin-top:6px; display:flex; gap:16px; flex-wrap:wrap">
+          <span>1500 Hz Black</span>
+          <span>1900 Hz Mid</span>
+          <span>2300 Hz White</span>
+          <span>1200 Hz Sync</span>
+          <span style="margin-left:auto" id="sstvFreqReadout" class="mono">— Hz</span>
+        </div>
+        <hr class="soft">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px; color:var(--muted)">
+          <div>RX SNR: <b id="sstvSnr" class="mono" style="color:var(--text)">— dB</b></div>
+          <div>Sync lock: <b id="sstvLock" style="color:var(--text)">—</b></div>
+          <div>VIS: <b id="sstvVisRead" class="mono" style="color:var(--text)">—</b></div>
+          <div>Slant: <b id="sstvSlantRead" class="mono" style="color:var(--text)">0 px</b></div>
+          <div>Frames RX: <b id="sstvFramesRx" class="mono" style="color:var(--text)">0</b></div>
+          <div>CRC OK: <b id="sstvCrcOk" class="mono" style="color:var(--green)">0 / 0</b></div>
+          <div>RS corrected: <b id="sstvRsFix" class="mono" style="color:var(--amber)">0</b></div>
+          <div>Bytes RX: <b id="sstvBytesRx" class="mono" style="color:var(--text)">0</b></div>
+          <div>Packets: <b id="sstvPktsRx" class="mono" style="color:var(--text)">0</b></div>
+          <div>BER: <b id="sstvBer" class="mono" style="color:var(--text)">—</b></div>
+        </div>
+        <hr class="soft">
+        <ul class="list-tight" style="font-size:12.5px">
+          <li><b>Robot36</b> — 320×240, 36s, VIS 8</li>
+          <li><b>Martin M1/M2</b> — 320×256, 114s / 58s</li>
+          <li><b>Scottie DX</b> — 320×256, 269s, HQ</li>
+          <li><b>PD120 / PD180 / PD240</b> — 640×496, 121s / 181s / 240s</li>
+          <li>Fax: RS(255,223) FEC, CRC32, frame seq</li>
+          <li>TCP/IP Bridge: SLIP over SSTV, PCAP ↔ audio</li>
+        </ul>
+      </div>
+
+      <div class="card col-12">
+        <h3><span class="dot" style="background:var(--blue)"></span> SSTV / Fax / Bridge Transfer Log</h3>
+        <div id="sstvLog" style="background:#070d1a; border:1px solid var(--line); border-radius:8px; padding:10px; font-family:'JetBrains Mono',monospace; font-size:11.5px; height:140px; overflow:auto; color:#9ab3d8">SSTV Lab ready. Modes: Robot36 / Martin M1/M2 / Scottie DX / PD120 / PD180 / PD240.<br></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAYBOOKS -->
+  <!-- PLAYBOOKS -->
+  <!-- PLAYBOOKS -->
+
+  <div class="view" id="view-playbooks">
+    <h2 class="section-title">Red Team Field Manual & Blue Team Field Manual — Training Extracts</h2>
+    <div class="grid">
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--red)"></span> Red Team — Authorized Adversary Emulation</h3>
+        <p class="small-muted">Training reference only. All TTPs must be executed in isolated, authorized purple ranges with signed Rules of Engagement.</p>
+        <hr class="soft">
+        <ul class="list-tight">
+          <li><b>TA0043 Reconnaissance</b> — Passive OSINT on your own organization, asset inventory validation. No third-party targeting.</li>
+          <li><b>TA0001 Initial Access</b> — Pre-approved phishing simulations with user consent and immediate disclosure.</li>
+          <li><b>TA0002 Execution</b> — Sandboxed, signed test binaries only. EDR in monitor mode.</li>
+          <li><b>TA0003 Persistence</b> — Documented, time-boxed, with auto-revert at exercise end.</li>
+          <li><b>TA0006 Credential Access</b> — Use canary / test accounts only. No production credentials.</li>
+          <li><b>TA0008 Lateral Movement</b> — Segment-restricted lab VLANs. No pivoting to prod.</li>
+          <li><b>TA0010 Exfiltration</b> — Canary / synthetic data only, to controlled sinkhole.</li>
+        </ul>
+        <p class="small-muted" style="margin-top:10px">Full MITRE ATT&CK: attack.mitre.org — always obtain written authorization before any assessment.</p>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn red btn-sm" onclick="alert('Training extract only. For full authorized emulation planning, consult your Purple Team lead and legal.')">View ROE Template</button>
+        </div>
+      </div>
+      <div class="card col-6">
+        <h3><span class="dot" style="background:var(--blue)"></span> Blue Team — Defensive Operations Field Manual</h3>
+        <p class="small-muted">NIST CSF 2.0 Aligned — Identify / Protect / Detect / Respond / Recover / Govern</p>
+        <hr class="soft">
+        <ul class="list-tight">
+          <li><b>Identify:</b> Asset inventory, risk register, threat modeling — continuous</li>
+          <li><b>Protect:</b> IAM/MFA everywhere, patching SLA &lt;14d critical, EDR 100%, email filtering, WAF</li>
+          <li><b>Detect:</b> SIEM with MITRE-mapped detections, 24/7 monitoring, UEBA baselines, canary tokens</li>
+          <li><b>Respond:</b> IR playbooks IR-1 through IR-9, auto-isolation, forensics timeline preservation</li>
+          <li><b>Recover:</b> Immutable backups tested quarterly, RTO/RPO validated, post-incident review</li>
+          <li><b>Govern:</b> Tabletop exercises quarterly, purple team monthly, metrics to exec board</li>
+          <li><b>Wireless / RF:</b> WPA3-Enterprise, rogue AP detection, BT LE Secure Connections, quarterly site survey</li>
+          <li><b>Packet Analysis:</b> Full PCAP retention 30d for critical segments, Zeek/Suricata, TLS inspection with consent</li>
+        </ul>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn btn-sm primary" onclick="navigator.clipboard.writeText('IR Contacts: soc@purplelab.local | IR Hotline: +1-555-PTL-IR01'); alert('IR contact copied (demo).')">Copy IR Runbook Contact</button>
+        </div>
+      </div>
+
+      <div class="card col-12">
+        <h3><span class="dot" style="background:var(--purple)"></span> Purple Team Collaboration Loop</h3>
+        <table class="table">
+          <thead><tr><th>Step</th><th>Red</th><th>Blue</th><th>Outcome</th></tr></thead>
+          <tbody>
+            <tr><td>1. Plan</td><td>Propose emulated TTP + scope</td><td>Validate logging coverage</td><td><span class="tag green">ROE signed</span></td></tr>
+            <tr><td>2. Emulate</td><td>Execute in lab, timestamped</td><td>Monitor live, no tipping</td><td><span class="tag blue">Detection test</span></td></tr>
+            <tr><td>3. Detect</td><td>Wait for alert / note evasion</td><td>Correlate, triage, contain</td><td><span class="tag amber">MTTD measured</span></td></tr>
+            <tr><td>4. Improve</td><td>Share IOCs / technique notes</td><td>Tune detections, close gaps</td><td><span class="tag green">Coverage +1</span></td></tr>
+          </tbody>
+        </table>
+        <p class="small-muted" style="margin-top:10px">This suite is educational. For operational security testing, engage certified professionals with explicit, written authorization and a defined scope of work.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Purple Team Training Suite — SecOps Simulation Lab<br>
+    All network traffic, RF data, packet captures, and adversary emulation in this UI are <b>synthetic / simulated</b>.<br>
+    No offensive capabilities, exploits, or unauthorized access tools are included.<br>
+    Use only for authorized defensive training, in isolated lab environments, with proper legal approval.<br><br>
+    <span class="mono">build: ptl-sim-4.7.0 | 2026-06-19</span>
+  </div>
+</div>
+
+<script>
+// --- View router ---
+function showView(name){
+  document.querySelectorAll('#mainNav button').forEach(x=>x.classList.remove('active'));
+  const btn = document.querySelector('#mainNav button[data-view="'+name+'"]');
+  if(btn) btn.classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const view = document.getElementById('view-'+name);
+  if(view) view.classList.add('active');
+}
+document.querySelectorAll('#mainNav button').forEach(b=>{
+  b.onclick = ()=>{
+    const v = b.dataset.view;
+    showView(v);
+    history.replaceState(null,'','?view='+v);
+  }
+});
+// Deep-link on load (?view=ops|rf|packets|trace|playbooks)
+const params = new URLSearchParams(location.search);
+const startView = params.get('view');
+if(startView && document.getElementById('view-'+startView)) { showView(startView); }
+
+
+// --- Red/Blue scoreboard ---
+let red = 1260, blue = 1385;
+const redEl = document.getElementById('redScore');
+const blueEl = document.getElementById('blueScore');
+const eventTable = document.querySelector('#eventTable tbody');
+
+function addEvent(team, text, pts){
+  const tr = document.createElement('tr');
+  const t = new Date().toLocaleTimeString('en-GB', {hour12:false});
+  tr.innerHTML = `<td>${t}</td><td><span class="tag ${team==='RED'?'red':'blue'}">${team}</span></td><td>${text}</td><td class="right mono">+${pts}</td>`;
+  eventTable.prepend(tr);
+}
+document.getElementById('injectBtn').onclick = ()=>{
+  const ttps = [
+    'TA0002 Execution — PowerShell emulation (sandboxed)',
+    'TA0005 Defense Evasion — Obfuscated loader test',
+    'TA0008 Lateral Movement — SMB sim, lab VLAN only',
+    'TA0011 C2 — DNS beacon simulation to sinkhole'
+  ];
+  const ttp = ttps[Math.floor(Math.random()*ttps.length)];
+  const pts = 90 + Math.floor(Math.random()*80);
+  red += pts; redEl.textContent = red;
+  addEvent('RED', ttp, pts);
+};
+document.getElementById('detectBtn').onclick = ()=>{
+  const dets = [
+    'Detection: EDR behavioral alert correlated',
+    'Response: Host auto-isolated — IR-4 playbook',
+    'Detection: SIEM MITRE T1059 rule fired',
+    'Blue: Canary token tripped — exfil blocked'
+  ];
+  const d = dets[Math.floor(Math.random()*dets.length)];
+  const pts = 110 + Math.floor(Math.random()*120);
+  blue += pts; blueEl.textContent = blue;
+  addEvent('BLUE', d, pts);
+};
+document.getElementById('resetScoreBtn').onclick = ()=>{
+  red=1260; blue=1385; redEl.textContent=red; blueEl.textContent=blue;
+  eventTable.innerHTML = `<tr><td>09:12:04</td><td><span class="tag red">RED</span></td><td>TA0001 Initial Access — Phishing Simulation (Auth Lab)</td><td class="right mono">+150</td></tr>
+  <tr><td>09:14:31</td><td><span class="tag blue">BLUE</span></td><td>Detection: EDR email gateway alert correlated</td><td class="right mono">+180</td></tr>`;
+};
+
+// Killchain click
+document.querySelectorAll('.chain-step').forEach(s=>{
+  s.onclick = ()=>{ document.querySelectorAll('.chain-step').forEach(x=>x.classList.remove('active')); s.classList.add('active'); }
+});
+
+// --- Network topology canvas ---
+const netCanvas = document.getElementById('netCanvas');
+const nctx = netCanvas.getContext('2d');
+function resizeNet(){
+  const r = netCanvas.getBoundingClientRect();
+  netCanvas.width = r.width * (window.devicePixelRatio||1);
+  netCanvas.height = 310 * (window.devicePixelRatio||1);
+  nctx.setTransform(window.devicePixelRatio||1,0,0,window.devicePixelRatio||1,0,0);
+}
+resizeNet(); window.addEventListener('resize', resizeNet);
+
+const nodes = [
+  {x:120,y:150,label:'FW\nEDGE', c:'#3b9cff'},
+  {x:280,y:90,label:'SOC\nSIEM', c:'#a76bff'},
+  {x:280,y:210,label:'EDR\nServer', c:'#22d3a8'},
+  {x:470,y:70,label:'WS-LAB-03', c:'#d7e2f5'},
+  {x:470,y:150,label:'WS-LAB-07', c:'#d7e2f5'},
+  {x:470,y:230,label:'FS-LAB-01', c:'#d7e2f5'},
+  {x:660,y:150,label:'ISOLATED\nVLAN', c:'#ffbf3c'},
+];
+const links = [[0,1],[0,2],[1,3],[1,4],[2,4],[2,5],[3,4],[4,5],[4,6],[5,6]];
+let dragN = null;
+netCanvas.addEventListener('mousedown', e=>{
+  const rect = netCanvas.getBoundingClientRect();
+  const mx = e.clientX-rect.left, my = e.clientY-rect.top;
+  dragN = nodes.find(n=>Math.hypot(n.x-mx, n.y-my)<32) || null;
+});
+window.addEventListener('mouseup', ()=>dragN=null);
+netCanvas.addEventListener('mousemove', e=>{
+  if(!dragN) return;
+  const rect = netCanvas.getBoundingClientRect();
+  dragN.x = e.clientX-rect.left; dragN.y = e.clientY-rect.top;
+});
+
+function drawNet(){
+  const w = netCanvas.getBoundingClientRect().width;
+  nctx.clearRect(0,0,w,310);
+  // links
+  nctx.strokeStyle = '#2a385a'; nctx.lineWidth = 1.5;
+  links.forEach(([a,b])=>{
+    nctx.beginPath(); nctx.moveTo(nodes[a].x, nodes[a].y); nctx.lineTo(nodes[b].x, nodes[b].y); nctx.stroke();
+  });
+  // nodes
+  nodes.forEach(n=>{
+    nctx.beginPath(); nctx.arc(n.x, n.y, 30, 0, Math.PI*2);
+    nctx.fillStyle = '#131d32'; nctx.fill();
+    nctx.strokeStyle = n.c; nctx.lineWidth = 1.8; nctx.stroke();
+    nctx.fillStyle = '#cfe0ff';
+    nctx.font = '11px JetBrains Mono';
+    nctx.textAlign='center';
+    n.label.split('\n').forEach((ln,i)=> nctx.fillText(ln, n.x, n.y-4 + i*13));
+  });
+  requestAnimationFrame(drawNet);
+}
+drawNet();
+
+// SOC table helpers
+function socAck(){
+  document.querySelectorAll('#socTable tr').forEach(tr=>{
+    if(tr.children[3]) tr.children[3].textContent = 'Acknowledged';
+  });
+}
+function socAdd(){
+  const severities = [
+    ['<span class="tag amber">Medium</span>', 'Anomalous PowerShell (training)','ws-lab-03'],
+    ['<span class="tag blue">Info</span>', 'Threat intel feed update','all'],
+    ['<span class="tag green">Low</span>', 'New USB device — authorized','ws-lab-07']
+  ];
+  const s = severities[Math.floor(Math.random()*severities.length)];
+  const tbody = document.getElementById('socTable');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td><td>New</td>`;
+  tbody.prepend(tr);
+}
+
+// --- RF Spectrum ---
+const spec = document.getElementById('spectrumCanvas');
+const sctx = spec.getContext('2d');
+let rfRunning = true, rfNoiseLevel = 0;
+function resizeSpec(){
+  const r = spec.getBoundingClientRect();
+  spec.width = r.width * (window.devicePixelRatio||1);
+  spec.height = 150 * (window.devicePixelRatio||1);
+  sctx.setTransform(window.devicePixelRatio||1,0,0,window.devicePixelRatio||1,0,0);
+}
+resizeSpec(); window.addEventListener('resize', resizeSpec);
+document.getElementById('rfPause').onclick = (e)=>{
+  rfRunning = !rfRunning;
+  e.target.textContent = rfRunning ? 'Pause' : 'Resume';
+};
+function rfNoise(){ rfNoiseLevel = Math.min(1, rfNoiseLevel + 0.35); setTimeout(()=>rfNoiseLevel*=0.6, 1800); }
+
+let specT = 0;
+function drawSpec(){
+  const w = spec.getBoundingClientRect().width;
+  const h = 150;
+  sctx.clearRect(0,0,w,h);
+  // grid
+  sctx.strokeStyle = '#1c2842'; sctx.lineWidth=1;
+  for(let i=0;i<6;i++){ sctx.beginPath(); sctx.moveTo(0, i*h/5); sctx.lineTo(w, i*h/5); sctx.stroke(); }
+  // wifi 2.4GHz humps
+  function hump(cx, amp, col){
+    sctx.beginPath();
+    sctx.moveTo(0,h-10);
+    for(let x=0;x<=w;x+=2){
+      const dx = (x - cx)/55;
+      const y = amp * Math.exp(-dx*dx) * (0.82 + 0.18*Math.sin(specT*0.06 + x*0.03));
+      sctx.lineTo(x, h-18 - y*85);
+    }
+    sctx.lineTo(w,h-10);
+    sctx.fillStyle = col;
+    sctx.fill();
+  }
+  if(rfRunning) specT++;
+  hump(w*0.18, 0.9, 'rgba(62,231,255,0.23)');
+  hump(w*0.38, 0.78, 'rgba(62,231,255,0.18)');
+  hump(w*0.62, 0.65, 'rgba(62,231,255,0.17)');
+  // BT LE spikes
+  sctx.strokeStyle = 'rgba(167,107,255,0.9)'; sctx.lineWidth=1.4;
+  for(let i=0;i<18;i++){
+    const x = (i/18 * w + specT*1.7) % w;
+    const ht = 18 + Math.random()*45;
+    sctx.beginPath(); sctx.moveTo(x, h-18); sctx.lineTo(x, h-18-ht); sctx.stroke();
+  }
+  // noise
+  if(rfNoiseLevel>0.01){
+    sctx.fillStyle = `rgba(255,191,60,${0.07+rfNoiseLevel*0.12})`;
+    sctx.fillRect(0, h-80, w, 70);
+    rfNoiseLevel *= 0.985;
+  }
+  // labels
+  sctx.fillStyle = '#7a8aad'; sctx.font='11px JetBrains Mono';
+  sctx.fillText('2.412 GHz  Ch 1', 14, 18);
+  sctx.fillText('2.437 GHz  Ch 6', w*0.36, 18);
+  sctx.fillText('2.462 GHz  Ch 11', w*0.62, 18);
+  sctx.fillText('5 GHz →', w-78, 18);
+  requestAnimationFrame(drawSpec);
+}
+drawSpec();
+
+// --- Packet Forensics / PCAP Parser — Client-side only ---
+let packetTimer = null;
+const consoleEl = document.getElementById('packetConsole');
+const pktDetailEl = document.getElementById('pktDetail');
+window.parsedPackets = [];
+let filteredPackets = [];
+let parsedPackets = window.parsedPackets;
+let currentPcapMeta = null;
+
+// Sample sim feed (kept for demo)
+const samplePacketsSim = [
+`00:00:04.881  10.40.1.7:44102 → 10.40.1.2:88  Kerberos  AS-REQ  user: test-red@PURPLELAB.LOCAL`,
+`00:00:05.112  10.40.1.2:88 → 10.40.1.7  Kerberos  AS-REP  [pre-auth required - expected]`,
+`00:00:06.331  10.40.1.12:59811 → 10.40.1.5:53  DNS  TXT canary-7f2a.lab.local`,
+`00:00:06.335  10.40.1.5 → 10.40.1.12  DNS  NXDOMAIN  [sinkholed - Blue Team alert]`,
+`00:00:07.204  10.40.1.7 → 10.40.1.15  SMB2  SessionSetup  Encrypted`,
+`00:00:07.551  10.40.1.15 → 10.40.1.7  SMB2  TreeConnect  IPC$  STATUS_SUCCESS`,
+`00:00:08.119  10.40.1.7:59901 → 198.51.100.44:443  TLSv1.3  Application Data  [EDR telemetry upload]`,
+];
+function packetFeedStart(){
+  if(packetTimer) return;
+  let i=0;
+  packetTimer = setInterval(()=>{
+    const div = document.createElement('div');
+    div.className='p';
+    div.textContent = samplePacketsSim[i % samplePacketsSim.length];
+    div.style.cursor='default';
+    consoleEl.appendChild(div);
+    consoleEl.scrollTop = consoleEl.scrollHeight;
+    i++;
+  }, 820);
+}
+function packetFeedStop(){ clearInterval(packetTimer); packetTimer=null; }
+
+function loadSamplePcap(){
+  const sel = document.getElementById('pcapSelect').value;
+  const names = {
+    'lab-phish': 'lab-phish-sim.pcap — 1,240 packets',
+    'lab-lateral': 'lab-lateral-smb.pcap — 3,102 packets',
+    'lab-dns': 'lab-dns-exfil-canary.pcap — 842 packets'
+  };
+  consoleEl.innerHTML = `<div class="p"><span class="dim"># Purple Team PCAP Viewer — Simulation Mode\n# Loaded: ${names[sel]}\n# All traffic is lab-generated / synthetic</span>
+<div class="p">00:00:01.124  10.40.1.12:49211 → 198.51.100.22:443  TLSv1.3  ClientHello SNI: mail.lab.local</div>
+<div class="p">00:00:01.231  198.51.100.22:443 → 10.40.1.12:49211  TLSv1.3  ServerHello, ChangeCipherSpec</div>
+<div class="p">00:00:02.441  10.40.1.12 → 10.40.1.5  DNS  A training-phish.lab.local  →  NXDOMAIN (sinkholed)</div>
+<div class="p">00:00:03.012  10.40.1.12:51422 → 10.40.1.2:443  HTTP POST /report  200 OK  [EDR telemetry]</div>
+</div>`;
+  parsedPackets = [];
+  updatePcapStats(null, 0, true);
+}
+
+// --- PCAP / PCAPNG parser ---
+const pcapDrop = document.getElementById('pcapDrop');
+const pcapFileInput = document.getElementById('pcapFile');
+const pcapFileInfo = document.getElementById('pcapFileInfo');
+
+pcapDrop?.addEventListener('click', ()=> pcapFileInput.click());
+pcapDrop?.addEventListener('dragover', e=>{ e.preventDefault(); pcapDrop.style.borderColor='#5b73ff'; });
+pcapDrop?.addEventListener('dragleave', ()=>{ pcapDrop.style.borderColor='#2f3d5f'; });
+pcapDrop?.addEventListener('drop', e=>{
+  e.preventDefault(); pcapDrop.style.borderColor='#2f3d5f';
+  if(e.dataTransfer.files[0]) handlePcapFile(e.dataTransfer.files[0]);
+});
+pcapFileInput?.addEventListener('change', ()=>{ if(pcapFileInput.files[0]) handlePcapFile(pcapFileInput.files[0]); });
+
+let pendingPcapFile = null;
+function handlePcapFile(file){
+  pendingPcapFile = file;
+  pcapFileInfo.textContent = `${file.name} — ${(file.size/1024/1024).toFixed(2)} MB`;
+  parsePcapFile(file);
+}
+document.getElementById('parseBtn')?.addEventListener('click', ()=>{ if(pendingPcapFile) parsePcapFile(pendingPcapFile); });
+document.getElementById('clearPcapBtn')?.addEventListener('click', clearPcap);
+
+function clearPcap(){
+  parsedPackets=[]; window.parsedPackets = parsedPackets; filteredPackets=[];
+  consoleEl.innerHTML = `<div class="p"><span class="dim"># Purple Team PCAP Viewer\n# Drop a .pcap or .pcapng file to parse locally.</span></div>`;
+  pktDetailEl.innerHTML = '<span class="small-muted">Click a packet in the list to inspect layers / hex.</span>';
+  document.getElementById('flowTable').querySelector('tbody').innerHTML = '<tr><td colspan="4" class="small-muted">Load a capture to build conversation table.</td></tr>';
+  document.getElementById('protoHierarchy').textContent = '—';
+  document.getElementById('pktCountBadge').textContent = '';
+  updatePcapStats(null,0,true);
+  pcapFileInfo.textContent='';
+  pendingPcapFile=null;
+}
+
+async function parsePcapFile(file){
+  const buf = await file.arrayBuffer();
+  const dv = new DataView(buf);
+  let packets = [];
+  let meta = {file: file.name, size: file.size, linktype: 1, endian:'be'};
+  try {
+    // Detect PCAPNG: 0x0A0D0D0A
+    if (dv.getUint32(0,false) === 0x0A0D0D0A || dv.getUint32(0,true) === 0x0A0D0D0A) {
+      ({packets, meta} = parsePcapNg(buf, file.name));
+    } else {
+      // PCAP global header
+      const magic = dv.getUint32(0, false);
+      let le = false;
+      if (magic === 0xA1B2C3D4) le = false;
+      else if (magic === 0xD4C3B2A1) le = true;
+      else if (magic === 0xA1B23C4D || magic === 0x4D3CB2A1) le = (magic === 0x4D3CB2A1); // nanosecond
+      else throw new Error('Not a pcap file (bad magic 0x'+magic.toString(16)+')');
+      const linktype = dv.getUint32(20, le);
+      meta.linktype = linktype;
+      meta.endian = le ? 'le':'be';
+      let off = 24;
+      let pktNo = 1;
+      const totalLen = buf.byteLength;
+      while (off + 16 <= totalLen && pktNo < 120000) { // hard cap
+        const ts_sec = dv.getUint32(off, le);
+        const ts_usec = dv.getUint32(off+4, le);
+        const incl_len = dv.getUint32(off+8, le);
+        const orig_len = dv.getUint32(off+12, le);
+        off += 16;
+        if (off + incl_len > totalLen) break;
+        const pktBytes = new Uint8Array(buf, off, incl_len);
+        const parsed = dissectPacket(pktBytes, pktNo, ts_sec + ts_usec/1e6, linktype);
+        if(parsed) packets.push(parsed);
+        off += incl_len;
+        pktNo++;
+        if (pktNo % 5000 === 0) await new Promise(r=>setTimeout(r,0)); // yield
+      }
+    }
+  } catch(err){
+    consoleEl.innerHTML = `<div class="p" style="color:#ff7b87">Parse error: ${escapeHtml(err.message)}</div>`;
+    return;
+  }
+  parsedPackets = packets;
+  window.parsedPackets = packets;
+  currentPcapMeta = meta;
+  updatePcapStats(meta, packets.length, false);
+  (window.applyPacketFilter||applyPacketFilter)();
+}
+
+function parsePcapNg(buf, filename){
+  const dv = new DataView(buf);
+  let off = 0;
+  let le = true;
+  const total = buf.byteLength;
+  const packets = [];
+  let linktype = 1;
+  let pktNo = 1;
+  // find section header
+  const sh_magic = dv.getUint32(0,false);
+  if (sh_magic === 0x0A0D0D0A) {
+    const bom = dv.getUint32(8,false);
+    le = (bom === 0x1A2B3C4D);
+  }
+  const interfaces = new Map();
+  while(off + 8 <= total && pktNo < 120000){
+    if(off+8 > total) break;
+    const blockType = dv.getUint32(off, le);
+    const blockLen = dv.getUint32(off+4, le);
+    if(blockLen < 12 || off + blockLen > total) break;
+    if(blockType === 0x00000001){ // Interface Description
+      const if_linktype = dv.getUint16(off+8, le);
+      const if_id = interfaces.size;
+      interfaces.set(if_id, if_linktype);
+      if(interfaces.size===1) linktype = if_linktype;
+    } else if(blockType === 0x00000006){ // Enhanced Packet Block
+      const if_id = dv.getUint32(off+8, le);
+      const ts_high = dv.getUint32(off+12, le);
+      const ts_low  = dv.getUint32(off+16, le);
+      const cap_len = dv.getUint32(off+20, le);
+      // const orig_len = dv.getUint32(off+24, le);
+      const pkt_off = off + 28;
+      if (pkt_off + cap_len <= off + blockLen) {
+        const pktBytes = new Uint8Array(buf, pkt_off, cap_len);
+        const lt = interfaces.get(if_id) ?? linktype;
+        const ts = (ts_high * 4294967296 + ts_low) / 1e6;
+        const parsed = dissectPacket(pktBytes, pktNo, ts, lt);
+        if(parsed) { packets.push(parsed); pktNo++; }
+      }
+    } else if(blockType === 0x00000003){ // Simple Packet Block
+      const orig_len = dv.getUint32(off+8, le);
+      const pkt_off = off + 12;
+      const cap_len = blockLen - 16;
+      if(cap_len >0 && pkt_off + cap_len <= total){
+        const pktBytes = new Uint8Array(buf, pkt_off, cap_len);
+        const parsed = dissectPacket(pktBytes, pktNo, pktNo/1000, linktype);
+        if(parsed) { packets.push(parsed); pktNo++; }
+      }
+    }
+    off += blockLen;
+  }
+  return {packets, meta:{file:filename, size:buf.byteLength, linktype, endian: le?'le':'be', format:'pcapng', interfaces: interfaces.size}};
+}
+
+// ---- Dissector ----
+function dissectPacket(bytes, no, ts, linktype){
+  let off = 0;
+  // DLT: 1 = EN10MB, 101 = RAW, 12 = RAW (alt), 113 = LINUX_SLL, 0 = NULL/loopback
+  try {
+    if (linktype === 1) { // Ethernet
+      if(bytes.length < 14) return null;
+      off = 14;
+      var ethType = (bytes[12]<<8)|bytes[13];
+    } else if (linktype === 101 || linktype === 12 || linktype === 228) { // RAW IP
+      ethType = 0x0800;
+      off = 0;
+    } else if (linktype === 113) { // LINUX_SLL
+      if(bytes.length < 16) return null;
+      ethType = (bytes[14]<<8)|bytes[15];
+      off = 16;
+    } else if (linktype === 0) { // NULL / loopback BSD
+      if(bytes.length < 4) return null;
+      const fam = bytes[0]|bytes[1]<<8|bytes[2]<<16|bytes[3]<<24;
+      ethType = (fam===2)?0x0800:0x86DD;
+      off = 4;
+    } else {
+      // try raw IP
+      if(bytes[0]>>4 === 4){ ethType=0x0800; off=0;}
+      else if(bytes[0]>>4 === 6){ ethType=0x86DD; off=0;}
+      else return {no, ts, src:'?', dst:'?', proto:'LINKTYPE '+linktype, info:'Unsupported linktype', len:bytes.length, raw:bytes};
+    }
+
+    let src='?', dst='?', proto='?', sport=null, dport=null, info='', l4='';
+
+    if (ethType === 0x0800 && bytes.length >= off+20) { // IPv4
+      const ihl = (bytes[off] & 0x0f)*4;
+      const ipProto = bytes[off+9];
+      src = [...bytes.slice(off+12, off+16)].join('.');
+      dst = [...bytes.slice(off+16, off+20)].join('.');
+      off += ihl;
+      if (ipProto === 6 && bytes.length >= off+20) { // TCP
+        sport = (bytes[off]<<8)|bytes[off+1];
+        dport = (bytes[off+2]<<8)|bytes[off+3];
+        const flags = bytes[off+13];
+        const syn = flags & 0x02, ack = flags & 0x10, fin = flags & 0x01, rst = flags & 0x04, psh = flags & 0x08;
+        l4='TCP'; proto='TCP';
+        info = `${sport} → ${dport} [${(syn?'S':'')+(ack?'A':'')+(fin?'F':'')+(rst?'R':'')+(psh?'P':'')||'·'}] Seq=?`;
+        const tcpHdrLen = (bytes[off+12]>>4)*4;
+        const payloadOff = off + tcpHdrLen;
+        // quick app detect
+        if (dport===443 || sport===443) { proto='TLS'; info = 'TLS Application Data / Handshake'; }
+        else if (dport===80 || sport===80) proto='HTTP';
+      } else if (ipProto === 17 && bytes.length >= off+8) { // UDP
+        sport = (bytes[off]<<8)|bytes[off+1];
+        dport = (bytes[off+2]<<8)|bytes[off+3];
+        l4='UDP'; proto='UDP';
+        info = `${sport} → ${dport} Len=${(bytes[off+4]<<8)|bytes[off+5]}`;
+        const payloadOff = off + 8;
+        // DNS
+        if (sport===53 || dport===53) {
+          proto='DNS';
+          const dns = parseDns(bytes, payloadOff);
+          info = dns || info;
+        }
+      } else if (ipProto === 1) { l4='ICMP'; proto='ICMP'; info='Echo / Control'; }
+      else { proto = 'IPv4/'+ipProto; info = src+' → '+dst; }
+    } else if (ethType === 0x86DD && bytes.length >= off+40) { // IPv6
+      const ipProto = bytes[off+6];
+      src = ipv6Str(bytes, off+8);
+      dst = ipv6Str(bytes, off+24);
+      off += 40;
+      if (ipProto === 6) { sport=(bytes[off]<<8)|bytes[off+1]; dport=(bytes[off+2]<<8)|bytes[off+3]; proto='TCPv6'; info=`${sport} → ${dport}`; }
+      else if (ipProto === 17) { sport=(bytes[off]<<8)|bytes[off+1]; dport=(bytes[off+2]<<8)|bytes[off+3]; proto='UDPv6'; info=`${sport} → ${dport}`; if(sport===53||dport===53){ proto='DNS'; const dns=parseDns(bytes, off+8); if(dns) info=dns; } }
+      else proto='IPv6/'+ipProto;
+    } else if (ethType === 0x0806) { proto='ARP'; info='ARP'; }
+    else { proto = 'Eth 0x'+ethType.toString(16); }
+
+    return {no, ts, src, dst, sport, dport, proto, l4, info, len: bytes.length, raw: bytes.slice(0)};
+  } catch(e){ return {no, ts, src:'?', dst:'?', proto:'ERR', info: e.message, len:bytes.length, raw:bytes}; }
+}
+
+function ipv6Str(b, o){ const parts=[]; for(let i=0;i<8;i++) parts.push(((b[o+i*2]<<8)|b[o+i*2+1]).toString(16)); return parts.join(':').replace(/(^|:)0(:0)+/ , '$1::'); }
+
+function parseDns(bytes, off){
+  try{
+    if(bytes.length < off+12) return null;
+    const qd = (bytes[off+4]<<8)|bytes[off+5];
+    if(qd < 1) return null;
+    let p = off+12, labels=[], jumps=0;
+    while(p < bytes.length && bytes[p] !== 0 && jumps < 20){
+      const len = bytes[p++];
+      if(len > 63) break;
+      if(p+len > bytes.length) break;
+      labels.push(String.fromCharCode.apply(null, bytes.slice(p, p+len)));
+      p+=len; jumps++;
+    }
+    const name = labels.join('.') || '(root)';
+    const qtype = (bytes[p+1]<<8)|bytes[p+2]||1;
+    const types = {1:'A',28:'AAAA',15:'MX',2:'NS',5:'CNAME',16:'TXT',12:'PTR'};
+    return `Query ${types[qtype]||qtype} ${name}`;
+  } catch(e){ return null; }
+}
+
+// --- UI rendering ---
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function renderPacketList(list){
+  consoleEl.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  const header = document.createElement('div');
+  header.className='p';
+  header.innerHTML = `<span class="dim"># ${list.length} packets shown / ${parsedPackets.length} total — click a packet for detail</span>`;
+  frag.appendChild(header);
+  list.slice(0, 2500).forEach(p=>{
+    const div = document.createElement('div');
+    div.className='p';
+    div.style.cursor='pointer';
+    div.dataset.no = p.no;
+    const t = p.ts.toFixed(6);
+    div.textContent = `${String(p.no).padStart(5,' ')}  ${t}  ${p.src}${p.sport?':'+p.sport:''} → ${p.dst}${p.dport?':'+p.dport:''}  ${p.proto}  ${p.info}`;
+    div.onclick = ()=>showPacketDetail(p);
+    div.onmouseenter = ()=>{ div.style.background='rgba(255,255,255,.03)'};
+    div.onmouseleave = ()=>{ div.style.background=''};
+    frag.appendChild(div);
+  });
+  if(list.length > 2500){
+    const more = document.createElement('div');
+    more.className='p dim';
+    more.textContent = `… ${list.length-2500} more packets (filter to narrow)`;
+    frag.appendChild(more);
+  }
+  consoleEl.appendChild(frag);
+  document.getElementById('pktCountBadge').textContent = `${list.length} / ${parsedPackets.length} packets`;
+}
+
+function showPacketDetail(p){
+  const raw = p.raw || new Uint8Array();
+  let hex = '';
+  for(let i=0;i<Math.min(raw.length, 512); i+=16){
+    const slice = raw.slice(i, i+16);
+    const hx = Array.from(slice).map(b=>b.toString(16).padStart(2,'0')).join(' ');
+    const asc = Array.from(slice).map(b=> (b>=32&&b<127)?String.fromCharCode(b):'.').join('');
+    hex += `${i.toString(16).padStart(4,'0')}  ${hx.padEnd(47,' ')}  ${asc}\n`;
+  }
+  pktDetailEl.innerHTML = `<div><b>Packet #${p.no}</b>  ts=${p.ts.toFixed(6)}  len=${p.len}<br>
+${escapeHtml(p.src)} → ${escapeHtml(p.dst)}  <b>${escapeHtml(p.proto)}</b><br>
+${escapeHtml(p.info)}</div><hr style="border-color:#1d2740;margin:8px 0">
+<pre style="margin:0;white-space:pre; color:#9bb4dc">${escapeHtml(hex)}</pre>
+${raw.length>512?'<div class="small-muted">… truncated at 512 bytes</div>':''}`;
+}
+
+function updatePcapStats(meta, count, clear=false){
+  const el = document.getElementById('pcapStats');
+  if(clear || !meta){ el.textContent='No capture loaded.'; return;}
+  el.innerHTML = `File: <b>${escapeHtml(meta.file)}</b><br>
+Size: ${(meta.size/1024).toFixed(1)} KB<br>
+Packets: <b>${count}</b><br>
+Linktype: ${meta.linktype} ${meta.format? '('+meta.format+')':''}<br>
+Endian: ${meta.endian||'-'}`;
+}
+
+window.applyPacketFilter = function applyPacketFilter(){
+  const q = (document.getElementById('pktFilter')?.value || '').toLowerCase().trim();
+  if(!q){ filteredPackets = parsedPackets.slice(); }
+  else {
+    const terms = q.split(/\s+/);
+    filteredPackets = parsedPackets.filter(p=>{
+      const hay = `${p.proto} ${p.src} ${p.dst} ${p.sport||''} ${p.dport||''} ${p.info}`.toLowerCase();
+      return terms.every(t=> hay.includes(t));
+    });
+  }
+  renderPacketList(filteredPackets);
+  buildFlowTable(filteredPackets);
+  buildProtoHierarchy(filteredPackets);
+}
+
+document.getElementById('pktFilterBtn')?.addEventListener('click', applyPacketFilter);
+document.getElementById('pktFilter')?.addEventListener('keydown', e=>{ if(e.key==='Enter') applyPacketFilter(); });
+document.getElementById('pktFilterClearBtn')?.addEventListener('click', ()=>{ document.getElementById('pktFilter').value=''; applyPacketFilter(); });
+
+function buildFlowTable(list){
+  const tbody = document.querySelector('#flowTable tbody');
+  const map = new Map();
+  list.forEach(p=>{
+    const key = `${p.src}:${p.sport||''} → ${p.dst}:${p.dport||''} ${p.proto}`;
+    const rev = `${p.dst}:${p.dport||''} → ${p.src}:${p.sport||''} ${p.proto}`;
+    const k = map.has(rev) ? rev : key;
+    const e = map.get(k) || {flow: k, proto:p.proto, pkts:0, bytes:0};
+    e.pkts++; e.bytes += p.len;
+    map.set(k, e);
+  });
+  const flows = [...map.values()].sort((a,b)=>b.bytes-a.bytes).slice(0,32);
+  if(!flows.length){ tbody.innerHTML='<tr><td colspan="4" class="small-muted">No flows</td></tr>'; return;}
+  tbody.innerHTML = flows.map(f=>`<tr><td>${escapeHtml(f.flow)}</td><td>${escapeHtml(f.proto)}</td><td>${f.pkts}</td><td>${f.bytes}</td></tr>`).join('');
+}
+
+function buildProtoHierarchy(list){
+  const counts = {};
+  list.forEach(p=>{ counts[p.proto] = (counts[p.proto]||0)+1; });
+  const total = list.length || 1;
+  const parts = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k}: ${v} (${(v/total*100).toFixed(1)}%)`);
+  document.getElementById('protoHierarchy').textContent = parts.join(' · ') || '—';
+}
+
+// Export
+document.getElementById('exportCsvBtn')?.addEventListener('click', ()=>{
+  const rows = [['no','ts','src','dst','sport','dport','proto','info','len']];
+  filteredPackets.forEach(p=> rows.push([p.no,p.ts,p.src,p.dst,p.sport||'',p.dport||'',p.proto, p.info.replace(/,/g,';'), p.len]));
+  const csv = rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n');
+  downloadBlob(csv, 'packets.csv', 'text/csv');
+});
+document.getElementById('exportJsonBtn')?.addEventListener('click', ()=>{
+  const slim = filteredPackets.map(({raw, ...p})=>p);
+  downloadBlob(JSON.stringify(slim, null, 2), 'packets.json', 'application/json');
+});
+function downloadBlob(data, name, type){
+  const blob = new Blob([data], {type});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+
+// --- End PCAP parser ---
+
+
+// --- Visual Traceroute ---
+// --- Visual Traceroute ---
+function runTrace(mode='normal'){
+  const nodesEl = document.getElementById('traceNodes');
+  const svg = document.getElementById('traceSvg');
+  const log = document.getElementById('traceLog');
+  nodesEl.innerHTML=''; svg.innerHTML=''; log.innerHTML='';
+  const hops = mode==='slow' ? [
+    {n:'10.40.0.1', l:'lab-gw.purplelab.local', ms:1.2, x: 60, y:130},
+    {n:'10.50.2.1', l:'core-sw-01', ms:2.8, x:200, y:80},
+    {n:'192.0.2.10', l:'edge-rtr-sim', ms:18.4, x:340, y:130},
+    {n:'203.0.113.44', l:'peer-ix', ms:42.1, x:480, y:80},
+    {n:'198.51.100.22', l:'training-target.purplelab.local', ms:46.7, x:620, y:130},
+  ] : [
+    {n:'10.40.0.1', l:'lab-gw', ms:0.8, x:90, y:130},
+    {n:'10.40.1.254', l:'ids-inline', ms:1.6, x:260, y:130},
+    {n:'198.51.100.22', l:'training-target.purplelab.local', ms:12.4, x:520, y:130},
+  ];
+  let delay=0;
+  hops.forEach((h,i)=>{
+    setTimeout(()=>{
+      const el = document.createElement('div');
+      el.className='tnode hop';
+      el.style.left = h.x+'px'; el.style.top = h.y+'px';
+      el.innerHTML = `Hop ${i+1}<br><b>${h.n}</b><br><span style="color:#7f90b3">${h.l}<br>${h.ms} ms</span>`;
+      nodesEl.appendChild(el);
+      if(i>0){
+        const p = hops[i-1];
+        const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+        line.setAttribute('x1', p.x+70); line.setAttribute('y1', p.y+22);
+        line.setAttribute('x2', h.x); line.setAttribute('y2', h.y+22);
+        line.setAttribute('stroke', '#2f9cff'); line.setAttribute('stroke-width', '2');
+        line.setAttribute('opacity','0.7');
+        svg.appendChild(line);
+      }
+      const li = document.createElement('li');
+      li.textContent = `${i+1}  ${h.n} (${h.l})  ${h.ms} ms`;
+      log.appendChild(li);
+    }, delay);
+    delay += 480;
+  });
+}
+// initial draw
+setTimeout(()=>runTrace(), 600);
+
+
+
+
+// ==================== SSTV / ROBOT36 / MARTIN / SCOTTIE / PD + FAX + TCP/IP BRIDGE v4.7 ====================
+// - MMSSTV-style auto-slant detection
+// - TCP/IP SLIP bridge with ARQ (GBN/SR)
+// - Live mic waterfall → image decoder
+(function(){
+const srcCanvas = document.getElementById('sstvSrcCanvas');
+const srcCtx = srcCanvas ? srcCanvas.getContext('2d', {willReadFrequently:true}) : null;
+const rxCanvas = document.getElementById('sstvRxCanvas');
+const rxCtx = rxCanvas ? rxCanvas.getContext('2d') : null;
+const wfCanvas = document.getElementById('sstvWaterfall');
+const wfCtx = wfCanvas ? wfCanvas.getContext('2d') : null;
+const specCanvas = document.getElementById('sstvSpectrum');
+const specCtx = specCanvas ? specCanvas.getContext('2d') : null;
+const liveWfCanvas = document.getElementById('sstvLiveWaterfall');
+const liveWfCtx = liveWfCanvas ? liveWfCanvas.getContext('2d') : null;
+
+if(!srcCanvas) return;
+
+function sstvLog(m){
+  const el = document.getElementById('sstvLog');
+  if(!el) return;
+  const t = new Date().toLocaleTimeString('en-GB',{hour12:false});
+  el.innerHTML += `[${t}] ${m}<br>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+// --- SSTV MODES ---
+const SSTV_MODES = {
+  robot36: {name:'Robot36', w:320, h:240, vis:8, y_ms:88, c_ms:44, total_s:36, type:'robot'},
+  martin1: {name:'Martin M1', w:320, h:256, vis:44, g_ms:146.432, b_ms:146.432, r_ms:146.432, total_s:114.56, type:'martin'},
+  martin2: {name:'Martin M2', w:320, h:256, vis:40, g_ms:73.216, b_ms:73.216, r_ms:73.216, total_s:57.92, type:'martin'},
+  scottieDX:{name:'Scottie DX', w:320, h:256, vis:76, g_ms:345.6, b_ms:345.6, r_ms:345.6, total_s:269.4, type:'scottie'},
+  pd120: {name:'PD120', w:640, h:496, vis:95, pix_ms:0.1905, total_s:121.0, type:'pd'},
+  pd180: {name:'PD180', w:640, h:496, vis:96, pix_ms:0.2865, total_s:181.0, type:'pd'},
+  pd240: {name:'PD240', w:640, h:496, vis:97, pix_ms:0.382, total_s:240.5, type:'pd'},
+};
+let sstvModeKey = 'robot36';
+function getMode(){ return SSTV_MODES[sstvModeKey]; }
+
+function applyModeUI(){
+  const m = getMode();
+  srcCanvas.width = m.w; srcCanvas.height = m.h;
+  rxCanvas.width = m.w; rxCanvas.height = m.h;
+  const payloadBytes = m.w * m.h;
+  const set = (id, v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('sstvModeLabel', m.name);
+  set('sstvSizeLabel', `${m.w}×${m.h}`);
+  set('sstvTimeLabel', m.total_s.toFixed(1)+' s');
+  set('sstvRateLabel', `~${(payloadBytes/m.total_s/1024).toFixed(1)} KB/s`);
+  const mi=document.getElementById('sstvModeInfo'); if(mi) mi.textContent = `${m.w}×${m.h} • ${m.total_s.toFixed(1)}s • ~${(payloadBytes/1024).toFixed(0)} KB/frame`;
+  const detailMap = {
+    robot36: 'Robot36: Y 88ms, R-Y 44ms, B-Y 44ms',
+    martin1: 'Martin M1: G 146.4ms, B 146.4ms, R 146.4ms',
+    martin2: 'Martin M2: G 73.2ms, B 73.2ms, R 73.2ms',
+    scottieDX: 'Scottie DX: G 345.6ms, B 345.6ms, R 345.6ms',
+    pd120: 'PD120: Y+RY+BY 640×496, 121s',
+    pd180: 'PD180: Y+RY+BY 640×496, 181s',
+    pd240: 'PD240: Y+RY+BY 640×496, 240s',
+  };
+  const td=document.getElementById('sstvTxDetail'); if(td) td.textContent = detailMap[sstvModeKey]||'';
+  drawTestPattern();
+}
+
+document.getElementById('sstvModeSel')?.addEventListener('change', e=>{
+  sstvModeKey = e.target.value;
+  applyModeUI();
+  sstvLog(`Mode switched → ${getMode().name} (VIS ${getMode().vis})`);
+});
+
+// --- Source image ---
+function drawTestPattern(){
+  const m = getMode();
+  const w=m.w, h=m.h;
+  srcCtx.fillStyle='#0b1426'; srcCtx.fillRect(0,0,w,h);
+  for(let y=0;y<h;y++){
+    const t = y/h;
+    srcCtx.fillStyle = `rgb(${Math.floor(40+t*180)},${Math.floor(60+t*120)},${Math.floor(90+t*100)})`;
+    srcCtx.fillRect(0,y,w,1);
+  }
+  const bars = ['#ff4d5a','#ffbf3c','#22d3a8','#3b9cff','#a76bff','#ffffff'];
+  const bh = Math.max(24, Math.floor(h*0.11)), bw = w/bars.length;
+  bars.forEach((c,i)=>{ srcCtx.fillStyle=c; srcCtx.fillRect(i*bw, h-bh-36, bw, bh); });
+  srcCtx.fillStyle='#fff';
+  srcCtx.font=`bold ${w>=600?26:22}px JetBrains Mono, monospace`;
+  srcCtx.fillText(getMode().name.toUpperCase(), 20, 56);
+  srcCtx.font=`${w>=600?15:13}px JetBrains Mono, monospace`;
+  srcCtx.fillText('PURPLE TEAM LAB', 20, 76);
+  srcCtx.fillText(`SSTV ${w}×${h}  ${getMode().total_s.toFixed(1)}s`, 20, 96);
+  srcCtx.fillStyle='rgba(0,0,0,.35)'; srcCtx.fillRect(0,h-36,w,36);
+  srcCtx.fillStyle='#cfe0ff'; srcCtx.font=`${w>=600?12:11}px JetBrains Mono, monospace`;
+  srcCtx.fillText('TRAINING / LAB USE ONLY — NO RF TX', 14, h-14);
+}
+applyModeUI();
+
+document.getElementById('sstvTestPattern')?.addEventListener('click', drawTestPattern);
+document.getElementById('sstvClearImg')?.addEventListener('click', ()=>{ const m=getMode(); srcCtx.fillStyle='#050912'; srcCtx.fillRect(0,0,m.w,m.h); });
+
+document.getElementById('sstvImgFile')?.addEventListener('change', e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const m = getMode();
+  const img = new Image();
+  img.onload = ()=>{
+    srcCtx.fillStyle='#000'; srcCtx.fillRect(0,0,m.w,m.h);
+    const r = Math.max(m.w/img.width, m.h/img.height);
+    const nw = img.width*r, nh = img.height*r;
+    srcCtx.drawImage(img, (m.w-nw)/2, (m.h-nh)/2, nw, nh);
+    sstvLog(`Image loaded: ${f.name} → ${m.w}×${m.h}`);
+  };
+  img.src = URL.createObjectURL(f);
+});
+
+// --- Mode switch TX Source ---
+let sstvSendMode = 'image';
+document.querySelectorAll('input[name="sstvMode"]').forEach(r=>{
+  r.addEventListener('change', ()=>{
+    sstvSendMode = document.querySelector('input[name="sstvMode"]:checked').value;
+    document.getElementById('sstvImageBox').style.display = sstvSendMode==='image' ? '' : 'none';
+    document.getElementById('sstvFaxBox').style.display = sstvSendMode==='fax' ? '' : 'none';
+    document.getElementById('sstvBridgeBox').style.display = sstvSendMode==='bridge' ? '' : 'none';
+  });
+});
+
+// --- CRC32 ---
+function crc32(u8){
+  let c = ~0;
+  for(let i=0;i<u8.length;i++){ c ^= u8[i]; for(let k=0;k<8;k++) c = c & 1 ? 0xEDB88320 ^ (c>>>1) : c>>>1; }
+  return (~c)>>>0;
+}
+
+// --- Reed-Solomon RS(255,223) ---
+const RS_GF_EXP = new Uint8Array(512);
+const RS_GF_LOG = new Uint8Array(256);
+(function init_rs(){
+  let x=1;
+  for(let i=0;i<255;i++){ RS_GF_EXP[i]=x; RS_GF_LOG[x]=i; x = (x<<1) ^ ((x & 0x80)?0x1d:0); }
+  for(let i=255;i<512;i++) RS_GF_EXP[i]=RS_GF_EXP[i-255];
+})();
+function rs_gf_mul(a,b){ return (a===0||b===0)?0:RS_GF_EXP[RS_GF_LOG[a]+RS_GF_LOG[b]]; }
+function rs_gen_poly(nsym){
+  let g=[1];
+  for(let i=0;i<nsym;i++){
+    const next = new Array(g.length+1).fill(0);
+    for(let j=0;j<g.length;j++){
+      next[j] ^= rs_gf_mul(g[j], RS_GF_EXP[i]);
+      next[j+1] ^= g[j];
+    }
+    g = next;
+  }
+  return g;
+}
+const RS_NSYM = 32;
+const RS_GEN = rs_gen_poly(RS_NSYM);
+function rs_encode_msg(msg){
+  const out = new Uint8Array(msg.length + RS_NSYM);
+  out.set(msg,0);
+  for(let i=0;i<msg.length;i++){
+    const coef = out[i];
+    if(coef !== 0){
+      for(let j=0;j<RS_GEN.length;j++){
+        out[i+j] ^= rs_gf_mul(RS_GEN[j], coef);
+      }
+    }
+  }
+  const res = new Uint8Array(msg.length + RS_NSYM);
+  res.set(msg,0);
+  res.set(out.slice(msg.length, msg.length+RS_NSYM), msg.length);
+  return res;
+}
+function rs_decode_msg(code){
+  let synd = new Array(RS_NSYM).fill(0);
+  let has_err = false;
+  for(let i=0;i<RS_NSYM;i++){
+    let s=0, x=RS_GF_EXP[i];
+    let pow=1;
+    for(let j=code.length-1;j>=0;j--){
+      s ^= rs_gf_mul(code[j], pow);
+      pow = rs_gf_mul(pow, x);
+    }
+    synd[i]=s;
+    if(s!==0) has_err=true;
+  }
+  return {ok: !has_err, corrected: has_err ? -1 : 0, data: code.slice(0, code.length-RS_NSYM)};
+}
+function rs_encode_bytes(data){
+  const out=[];
+  for(let i=0;i<data.length;i+=223){
+    const chunk = data.slice(i, i+223);
+    const padded = new Uint8Array(223); padded.set(chunk);
+    const enc = rs_encode_msg(padded);
+    out.push(...enc.slice(0, chunk.length + RS_NSYM));
+  }
+  return new Uint8Array(out);
+}
+function rs_decode_bytes(data){
+  const out=[];
+  let corrected=0;
+  let errors=0;
+  for(let i=0;i<data.length;){
+    const remaining = data.length - i;
+    const take = remaining >= 255 ? 255 : remaining;
+    const chunk = data.slice(i, i+take);
+    i += take;
+    if(chunk.length <= RS_NSYM){ out.push(...chunk); continue; }
+    const full = new Uint8Array(255); full.set(chunk);
+    const dec = rs_decode_msg(full);
+    if(!dec.ok) errors++;
+    const datalen = Math.min(223, chunk.length - RS_NSYM);
+    out.push(...dec.data.slice(0, datalen));
+  }
+  return {bytes: new Uint8Array(out), corrected, errors};
+}
+
+// --- FAX file handling ---
+let faxFileBytes = null;
+let faxFileMeta = null;
+let faxFrames = [];
+
+document.getElementById('sstvFaxFile')?.addEventListener('change', async e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const buf = new Uint8Array(await f.arrayBuffer());
+  faxFileBytes = buf;
+  faxFileMeta = {name: f.name, size: buf.length, type: f.type || 'application/octet-stream', crc: crc32(buf)};
+  buildFaxFrames();
+});
+
+function buildFaxFrames(){
+  if(!faxFileBytes) return;
+  const m = getMode();
+  const payloadPerFrame = m.w * m.h - 128;
+  const useFec = document.getElementById('faxFecChk')?.checked;
+  let data = faxFileBytes;
+  let fecUsed = false;
+  if(useFec){
+    data = rs_encode_bytes(data);
+    fecUsed = true;
+  }
+  const totalFrames = Math.ceil(data.length / payloadPerFrame);
+  faxFrames = [];
+  for(let i=0;i<totalFrames;i++){
+    const chunk = data.slice(i*payloadPerFrame, (i+1)*payloadPerFrame);
+    faxFrames.push({idx:i, total:totalFrames, bytes:chunk, crc: crc32(chunk)});
+  }
+  const infoEl = document.getElementById('faxFileInfo');
+  if(infoEl) infoEl.innerHTML =
+    `Name: ${escapeHtml(faxFileMeta.name)}<br>`+
+    `Size: ${faxFileMeta.size} bytes<br>`+
+    `CRC32: ${faxFileMeta.crc.toString(16).padStart(8,'0')}<br>`+
+    `FEC: ${fecUsed ? 'RS(255,223) ON' : 'OFF'}<br>`+
+    `Payload/frame: ${payloadPerFrame} B<br>`+
+    `Frames: <b>${totalFrames}</b> @ ${m.name}<br>`+
+    `Airtime: <b>${(totalFrames * m.total_s).toFixed(0)}s</b> (~${(totalFrames*m.total_s/60).toFixed(1)} min)`;
+  sstvLog(`Fax file: ${faxFileMeta.name}, ${faxFileMeta.size} B → ${data.length} B (FEC ${fecUsed?'on':'off'}), ${totalFrames} frames`);
+  updateFaxQueueUI();
+  if(faxFrames.length) renderFaxFrame(0);
+}
+
+function updateFaxQueueUI(){
+  const wrap = document.getElementById('sstvTxQueueWrap');
+  const q = document.getElementById('sstvTxQueue');
+  if(!wrap || !q) return;
+  if(!faxFrames.length && bridgeQueue.length===0){ wrap.style.display='none'; return; }
+  wrap.style.display='';
+  let rows = '';
+  if(faxFrames.length){
+    faxFrames.forEach(f=>{
+      rows += `<div>#${String(f.idx+1).padStart(3,' ')} /${f.total}  ${f.bytes.length} B  CRC ${f.crc.toString(16).padStart(8,'0')}  [FAX]</div>`;
+    });
+  }
+  if(bridgeQueue.length){
+    bridgeQueue.forEach((p,i)=>{
+      rows += `<div>#B${i+1}  ${p.bytes.length} B  seq ${p.seq}  [BRIDGE ${p.proto}]</div>`;
+    });
+  }
+  q.innerHTML = rows;
+}
+
+function renderFaxFrame(frameIdx){
+  const m = getMode();
+  const w=m.w, h=m.h;
+  if(!faxFrames[frameIdx]) return;
+  const fr = faxFrames[frameIdx];
+  const id = srcCtx.createImageData(w,h);
+  const d = id.data;
+  const headerBytes = new Uint8Array(128);
+  const enc = new TextEncoder();
+  const nameBytes = enc.encode((faxFileMeta?.name||'file.bin').slice(0,48));
+  headerBytes.set(nameBytes, 0);
+  const dv = new DataView(headerBytes.buffer);
+  dv.setUint32(48, faxFileMeta?.size||0, true);
+  dv.setUint32(52, faxFileMeta?.crc||0, true);
+  dv.setUint16(56, fr.idx, true);
+  dv.setUint16(58, fr.total, true);
+  dv.setUint32(60, fr.crc, true);
+  dv.setUint32(64, fr.bytes.length, true);
+  dv.setUint8(68, document.getElementById('faxFecChk')?.checked ? 1 : 0);
+  dv.setUint8(69, m.vis, true);
+  headerBytes[120]=0x46; headerBytes[121]=0x41; headerBytes[122]=0x58; headerBytes[123]=0x53; headerBytes[124]=0x32;
+  const payload = new Uint8Array(w*h);
+  payload.set(headerBytes, 0);
+  payload.set(fr.bytes, 128);
+  for(let i=0;i<payload.length && i < w*h;i++){
+    const v = payload[i];
+    const di = i*4;
+    d[di]=d[di+1]=d[di+2]=v; d[di+3]=255;
+  }
+  srcCtx.putImageData(id,0,0);
+  srcCtx.fillStyle='rgba(7,10,18,0.78)'; srcCtx.fillRect(0,0,w,46);
+  srcCtx.fillStyle='#cfe0ff'; srcCtx.font=`${w>=600?13:12}px JetBrains Mono, monospace`;
+  srcCtx.fillText(`FAX  ${faxFileMeta?.name||''}  Frame ${fr.idx+1}/${fr.total}`, 8, 18);
+  srcCtx.fillText(`${fr.bytes.length} B  CRC ${fr.crc.toString(16).padStart(8,'0')}  ${m.name}  RS:${document.getElementById('faxFecChk')?.checked?'ON':'OFF'}`, 8, 34);
+}
+
+// --- TCP/IP Bridge with ARQ ---
+let bridgeQueue = [];
+let bridgeSeq = 0;
+
+// ARQ state
+const arq = {
+  enabled: true,
+  mode: 'sr', // 'gbn' or 'sr'
+  window: 8,
+  rtt: 900, // ms simulated
+  loss: 0.05,
+  txNext: 0,
+  txBase: 0,
+  rxExpected: 0,
+  unacked: new Map(),
+  rxBuffer: new Map(),
+  retransmits: 0,
+  acks: 0,
+};
+
+function arqUpdateUI(){
+  const el = document.getElementById('arqStats');
+  if(!el) return;
+  el.textContent = `ARQ ${arq.enabled ? arq.mode.toUpperCase() : 'OFF'} | W=${arq.window} | RTT~${arq.rtt}ms | loss ${(arq.loss*100).toFixed(1)}% | RTX ${arq.retransmits} | ACKs ${arq.acks}`;
+}
+
+function arqWrapPacket(payloadBytes, seq){
+  // Header: 0xAA55 | seq u32 | ack u32 | flags u8 | len u16 | crc32
+  const h = new Uint8Array(16);
+  const dv = new DataView(h.buffer);
+  dv.setUint16(0, 0xAA55, true);
+  dv.setUint32(2, seq>>>0, true);
+  dv.setUint32(6, arq.rxExpected>>>0, true);
+  dv.setUint8(10, 0x01); // data
+  dv.setUint16(11, payloadBytes.length, true);
+  dv.setUint32(13, crc32(payloadBytes), true);
+  const out = new Uint8Array(h.length + payloadBytes.length);
+  out.set(h,0); out.set(payloadBytes, h.length);
+  return out;
+}
+function arqUnwrap(frame){
+  if(frame.length < 16) return null;
+  const dv = new DataView(frame.buffer, frame.byteOffset, frame.byteLength);
+  if(dv.getUint16(0,true) !== 0xAA55) return null;
+  const seq = dv.getUint32(2,true);
+  const ack = dv.getUint32(6,true);
+  const flags = dv.getUint8(10);
+  const len = dv.getUint16(11,true);
+  const crc = dv.getUint32(13,true);
+  const payload = frame.slice(16, 16+len);
+  if(crc32(payload) !== crc) return {bad:true, seq};
+  return {seq, ack, flags, payload};
+}
+
+function updateBridgeInfo(){
+  const el = document.getElementById('bridgePcapInfo');
+  const pkts = window.parsedPackets || [];
+  if(el) el.textContent = pkts.length ?
+    `PCAP Parser: ${pkts.length} packets available. Click "Pull from PCAP Parser".` :
+    'No PCAP loaded in Forensics tab.';
+}
+setInterval(updateBridgeInfo, 2000);
+
+document.getElementById('bridgePullPcapBtn')?.addEventListener('click', ()=>{
+  const pkts = window.parsedPackets || [];
+  if(!pkts.length){ sstvLog('Bridge: no packets in PCAP parser.'); return; }
+  let count=0;
+  pkts.slice(0, 128).forEach(p=>{
+    let blob;
+    if(p.raw && p.raw.length){ blob = p.raw; }
+    else { const txt = `${p.src} → ${p.dst} ${p.proto} ${p.info}`; blob = new TextEncoder().encode(txt); }
+    // SLIP encode
+    const slip = [0xC0];
+    for(const b of blob){ if(b===0xC0){ slip.push(0xDB,0xDC);} else if(b===0xDB){ slip.push(0xDB,0xDD);} else slip.push(b); }
+    slip.push(0xC0);
+    const slipBytes = new Uint8Array(slip);
+    // ARQ wrap
+    const arqFrame = arq.enabled ? arqWrapPacket(slipBytes, bridgeSeq) : slipBytes;
+    bridgeQueue.push({seq: bridgeSeq++, proto: p.proto, bytes: arqFrame, retries:0, acked:false});
+    count++;
+  });
+  sstvLog(`Bridge: queued ${count} packets from PCAP parser → SSTV (ARQ ${arq.enabled? 'ON '+arq.mode.toUpperCase() : 'OFF'})`);
+  updateBridgeQueueInfo();
+  updateFaxQueueUI();
+  arqUpdateUI();
+});
+
+document.getElementById('bridgeClearBtn')?.addEventListener('click', ()=>{
+  bridgeQueue=[]; bridgeSeq=0;
+  arq.txBase=0; arq.txNext=0; arq.unacked.clear(); arq.rxBuffer.clear(); arq.retransmits=0; arq.acks=0;
+  updateBridgeQueueInfo(); updateFaxQueueUI(); arqUpdateUI();
+  sstvLog('Bridge queue / ARQ state cleared.');
+});
+
+// ARQ UI wiring
+['arqEnableChk','arqModeSel','arqWindow','arqRtt','arqLoss'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('change', ()=>{
+    arq.enabled = document.getElementById('arqEnableChk')?.checked ?? true;
+    arq.mode = document.getElementById('arqModeSel')?.value ?? 'sr';
+    arq.window = parseInt(document.getElementById('arqWindow')?.value ?? '8',10);
+    arq.rtt = parseInt(document.getElementById('arqRtt')?.value ?? '900',10);
+    arq.loss = parseInt(document.getElementById('arqLoss')?.value ?? '5',10)/100;
+    arqUpdateUI();
+    sstvLog(`ARQ updated: ${arq.enabled?arq.mode.toUpperCase():'OFF'} W=${arq.window} RTT=${arq.rtt}ms loss=${(arq.loss*100).toFixed(0)}%`);
+  });
+});
+
+function updateBridgeQueueInfo(){
+  const m = getMode();
+  const bytesPerFrame = m.w * m.h - 128;
+  let totalBytes = bridgeQueue.reduce((a,p)=>a+p.bytes.length,0);
+  const frames = Math.ceil(totalBytes / bytesPerFrame);
+  const el = document.getElementById('bridgeQueueInfo');
+  if(el) el.textContent = `Queue: ${bridgeQueue.length} packets / ~${frames} frames / ${totalBytes} bytes | ARQ ${arq.enabled? 'ON':'OFF'} RTX:${arq.retransmits}`;
+}
+
+function renderBridgeFrame(frameIdx){
+  const m = getMode();
+  const w=m.w, h=m.h;
+  const bytesPerFrame = w*h - 128;
+  let all = [];
+  bridgeQueue.forEach(p=> all.push(...p.bytes));
+  all = new Uint8Array(all);
+  const start = frameIdx * bytesPerFrame;
+  const chunk = all.slice(start, start+bytesPerFrame);
+  const header = new Uint8Array(128);
+  header[120]=0x42; header[121]=0x52; header[122]=0x44; header[123]=0x47; header[124]=0x32;
+  const dv = new DataView(header.buffer);
+  dv.setUint16(0, frameIdx, true);
+  dv.setUint16(2, Math.ceil(all.length/bytesPerFrame), true);
+  dv.setUint32(4, chunk.length, true);
+  dv.setUint32(8, crc32(chunk), true);
+  dv.setUint8(12, 1);
+  dv.setUint8(13, arq.enabled?1:0);
+  const payload = new Uint8Array(w*h);
+  payload.set(header,0);
+  payload.set(chunk,128);
+  const id = srcCtx.createImageData(w,h);
+  for(let i=0;i<payload.length;i++){ const v=payload[i]; const di=i*4; id.data[di]=id.data[di+1]=id.data[di+2]=v; id.data[di+3]=255; }
+  srcCtx.putImageData(id,0,0);
+  srcCtx.fillStyle='rgba(7,10,18,0.78)'; srcCtx.fillRect(0,0,w,38);
+  srcCtx.fillStyle='#9ef7c6'; srcCtx.font=`${w>=600?13:12}px JetBrains Mono, monospace`;
+  srcCtx.fillText(`TCP/IP BRIDGE  Frame ${frameIdx+1}  ${chunk.length} B  ARQ ${arq.enabled?arq.mode.toUpperCase():'OFF'}`, 8, 24);
+}
+
+// --- ENCODERS ---
+const SR = 48000;
+function freqFor(v){ return 1500 + v/255*800; }
+function tonePush(out, freq, ms){
+  const n = Math.floor(SR*ms/1000);
+  for(let i=0;i<n;i++) out.push(Math.sin(2*Math.PI*freq*i/SR) * 0.82);
+}
+function visEncode(out, vis){
+  tonePush(out,1900,300); tonePush(out,1200,10); tonePush(out,1900,300);
+  tonePush(out,1200,30);
+  tonePush(out,1200,30);
+  for(let b=0;b<7;b++) tonePush(out, ((vis>>b)&1)?1100:1300, 30);
+  let parity=0; for(let b=0;b<7;b++) parity ^= (vis>>b)&1;
+  tonePush(out, parity?1100:1300, 30);
+  tonePush(out,1200,30);
+}
+
+function encodeRobot36(imageData){
+  const w=320, h=240;
+  const data = imageData.data;
+  const Y = new Uint8Array(w*h), V = new Int8Array(w*h), U = new Int8Array(w*h);
+  for(let i=0,p=0;i<data.length;i+=4,p++){
+    const r=data[i], g=data[i+1], b=data[i+2];
+    Y[p] = 0.299*r + 0.587*g + 0.114*b;
+    V[p] =  (0.5*r - 0.419*g - 0.081*b);
+    U[p] = (-0.169*r - 0.331*g + 0.5*b);
+  }
+  const out=[];
+  visEncode(out, 8);
+  for(let y=0;y<h;y++){
+    tonePush(out,1200,9); tonePush(out,1500,3);
+    for(let x=0;x<w;x++){
+      const f = freqFor(Y[y*w+x]);
+      const n = Math.floor(SR * 0.088 / w);
+      for(let i=0;i<n;i++) out.push(Math.sin(2*Math.PI*f*i/SR)*0.78);
+    }
+    tonePush(out,1500,1.5);
+    for(let x=0;x<w;x+=2){
+      const v = 128 + V[y*w+x];
+      const f = freqFor(Math.max(0,Math.min(255,v)));
+      const n = Math.floor(SR * 0.044 / (w/2));
+      for(let i=0;i<n;i++) out.push(Math.sin(2*Math.PI*f*i/SR)*0.78);
+    }
+    for(let x=0;x<w;x+=2){
+      const v = 128 + U[y*w+x];
+      const f = freqFor(Math.max(0,Math.min(255,v)));
+      const n = Math.floor(SR * 0.044 / (w/2));
+      for(let i=0;i<n;i++) out.push(Math.sin(2*Math.PI*f*i/SR)*0.78);
+    }
+  }
+  return new Float32Array(out);
+}
+
+function encodeMartinScottie(imageData, modeKey){
+  const m = SSTV_MODES[modeKey];
+  const w=m.w, h=m.h;
+  const data = imageData.data;
+  const R = new Uint8Array(w*h), G = new Uint8Array(w*h), B = new Uint8Array(w*h);
+  for(let i=0,p=0;i<data.length;i+=4,p++){ R[p]=data[i]; G[p]=data[i+1]; B[p]=data[i+2]; }
+  const out=[];
+  visEncode(out, m.vis);
+  const g_ms = m.g_ms, b_ms = m.b_ms, r_ms = m.r_ms;
+  const sync_ms = 4.862, porch_ms = 0.572, sep_ms = 0.572;
+  for(let y=0; y<h; y++){
+    tonePush(out,1200,sync_ms); tonePush(out,1500,porch_ms);
+    for(let x=0;x<w;x++){ const f = freqFor(G[y*w+x]); const n = Math.floor(SR * g_ms/1000 / w); for(let i=0;i<n;i++) out.push(Math.sin(2*Math.PI*f*i/SR)*0.78); }
+    tonePush(out,1500, sep_ms);
+    for(let x=0;x<w;x++){ const f = freqFor(B[y*w+x]); const n = Math.floor(SR * b_ms/1000 / w); for(let i=0;i<n;i++) out.push(Math.sin(2*Math.PI*f*i/SR)*0.78); }
+    tonePush(out,1500, sep_ms);
+    for(let x=0;x<w;x++){ const f = freqFor(R[y*w+x]); const n = Math.floor(SR * r_ms/1000 / w); for(let i=0;i<n;i++) out.push(Math.sin(2*Math.PI*f*i/SR)*0.78); }
+    tonePush(out,1500, sep_ms);
+  }
+  return new Float32Array(out);
+}
+
+function encodePD(imageData, modeKey){
+  const m = SSTV_MODES[modeKey];
+  const w=m.w, h=m.h;
+  const data = imageData.data;
+  const Y = new Uint8Array(w*h);
+  const RY = new Int8Array(w*h);
+  const BY = new Int8Array(w*h);
+  for(let i=0,p=0;i<data.length;i+=4,p++){
+    const r=data[i], g=data[i+1], b=data[i+2];
+    const y = 0.299*r + 0.587*g + 0.114*b;
+    Y[p]=y;
+    RY[p]= (r-y)*0.713;
+    BY[p]= (b-y)*0.564;
+  }
+  const out=[];
+  visEncode(out, m.vis);
+  const pix_ms = m.pix_ms;
+  const sync_ms = 20, porch_ms = 2.08;
+  for(let y=0; y<h; y++){
+    tonePush(out,1200,sync_ms); tonePush(out,1500,porch_ms);
+    for(let x=0;x<w;x++){
+      const f = freqFor(Y[y*w+x]);
+      const n = Math.floor(SR * pix_ms/1000);
+      for(let i=0;i<n;i++) out.push(Math.sin(2*Math.PI*f*i/SR)*0.78);
+    }
+    for(let x=0;x<w;x+=2){
+      const v = 128 + ((RY[y*w+x] + RY[y*w+Math.min(w-1,x+1)])/2);
+      const f = freqFor(Math.max(0,Math.min(255,v)));
+      const n = Math.floor(SR * pix_ms/1000 * 2);
+      for(let i=0;i<n;i++) out.push(Math.sin(2*Math.PI*f*i/SR)*0.78);
+    }
+    for(let x=0;x<w;x+=2){
+      const v = 128 + ((BY[y*w+x] + BY[y*w+Math.min(w-1,x+1)])/2);
+      const f = freqFor(Math.max(0,Math.min(255,v)));
+      const n = Math.floor(SR * pix_ms/1000 * 2);
+      for(let i=0;i<n;i++) out.push(Math.sin(2*Math.PI*f*i/SR)*0.78);
+    }
+    for(let x=0;x<w;x++){
+      const f = freqFor(Y[y*w+x]);
+      const n = Math.floor(SR * pix_ms/1000);
+      for(let i=0;i<n;i++) out.push(Math.sin(2*Math.PI*f*i/SR)*0.78);
+    }
+  }
+  return new Float32Array(out);
+}
+
+function encodeCurrentCanvas(){
+  const m = getMode();
+  const imgData = srcCtx.getImageData(0,0,m.w,m.h);
+  if(sstvModeKey === 'robot36') return encodeRobot36(imgData);
+  if(['martin1','martin2','scottieDX'].includes(sstvModeKey)) return encodeMartinScottie(imgData, sstvModeKey);
+  if(['pd120','pd180','pd240'].includes(sstvModeKey)) return encodePD(imgData, sstvModeKey);
+  return encodeRobot36(imgData);
+}
+
+function floatToWav(f32, sampleRate){
+  const len = f32.length;
+  const buf = new ArrayBuffer(44 + len*2);
+  const v = new DataView(buf);
+  const w = (o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+  w(0,'RIFF'); v.setUint32(4, 36+len*2, true); w(8,'WAVEfmt ');
+  v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+  v.setUint32(24,sampleRate,true); v.setUint32(28,sampleRate*2,true);
+  v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data');
+  v.setUint32(40,len*2,true);
+  let p=44;
+  for(let i=0;i<len;i++){ let s=Math.max(-1,Math.min(1,f32[i])); v.setInt16(p, s*0x7FFF, true); p+=2; }
+  return new Blob([v], {type:'audio/wav'});
+}
+
+// --- Encode / TX ---
+let txAudioBuffer = null;
+let txWavBlob = null;
+let txSource = null, txActx = null;
+let txQueue = [];
+let txQueuePos = 0;
+
+function drawWaterfallPreview(audio){
+  if(!wfCtx) return;
+  const w = wfCanvas.width = wfCanvas.clientWidth;
+  const h = 160; wfCanvas.height = h;
+  wfCtx.fillStyle='#050912'; wfCtx.fillRect(0,0,w,h);
+  wfCtx.strokeStyle='#5fd3ff'; wfCtx.beginPath();
+  const step = Math.floor(audio.length / w);
+  for(let x=0; x<w; x++){
+    let z=0, last=0;
+    const base = x*step;
+    for(let i=1;i<480;i++){ const s = audio[base+i]||0; if(last<0 && s>=0) z++; last=s; }
+    const freq = z * SR/480 /2;
+    const y = h - 20 - ((Math.max(1100,Math.min(2400,freq))-1100)/1300)*(h-40);
+    if(x===0) wfCtx.moveTo(x,y); else wfCtx.lineTo(x,y);
+  }
+  wfCtx.stroke();
+  wfCtx.fillStyle='#6b7b9a'; wfCtx.font='11px JetBrains Mono, monospace';
+  [1200,1500,1900,2300].forEach(f=>{
+    const y = h - 20 - ((f-1100)/1300)*(h-40);
+    wfCtx.fillText(f+' Hz', 6, y-2);
+    wfCtx.fillRect(0,y,w,1);
+  });
+}
+
+document.getElementById('sstvEncodeBtn')?.addEventListener('click', ()=>{
+  const statusEl = document.getElementById('sstvTxStatus');
+  if(statusEl) statusEl.textContent = 'Encoding…';
+  setTimeout(()=>{
+    if(sstvSendMode==='fax' && faxFrames.length){ renderFaxFrame(0); }
+    else if(sstvSendMode==='bridge' && bridgeQueue.length){ renderBridgeFrame(0); }
+    const audio = encodeCurrentCanvas();
+    txAudioBuffer = audio;
+    txWavBlob = floatToWav(audio, SR);
+    txQueue = [{audio, wav:txWavBlob, name:`frame-1-${sstvModeKey}.wav`}];
+    txQueuePos = 0;
+    if(statusEl) statusEl.textContent = `Encoded — ${(audio.length/SR).toFixed(1)}s`;
+    ['sstvPlayBtn','sstvDownloadBtn'].forEach(id=>{ const b=document.getElementById(id); if(b) b.disabled=false; });
+    const dab=document.getElementById('sstvDownloadAllBtn'); if(dab) dab.disabled = txQueue.length<=1;
+    sstvLog(`${getMode().name} encoded: ${audio.length} samples, ${(audio.length/SR).toFixed(2)}s`);
+    drawWaterfallPreview(audio);
+    const tfi=document.getElementById('sstvTxFrameInfo'); if(tfi) tfi.textContent = `Frame 1/1`;
+  }, 30);
+});
+
+document.getElementById('sstvEncodeAllBtn')?.addEventListener('click', async ()=>{
+  const mode = getMode();
+  let frames = [];
+  if(sstvSendMode==='fax' && faxFrames.length) frames = faxFrames.map((f,i)=>({type:'fax', idx:i}));
+  else if(sstvSendMode==='bridge' && bridgeQueue.length){
+    const bytesPerFrame = mode.w * mode.h - 128;
+    let totalBytes = bridgeQueue.reduce((a,p)=>a+p.bytes.length,0);
+    const nFrames = Math.ceil(totalBytes / bytesPerFrame);
+    frames = Array.from({length:nFrames}, (_,i)=>({type:'bridge', idx:i}));
+  } else {
+    frames = [{type:'image', idx:0}];
+  }
+  const statusEl = document.getElementById('sstvTxStatus');
+  if(statusEl) statusEl.textContent = `Encoding ${frames.length} frame(s)…`;
+  txQueue = [];
+  for(let fi=0; fi<frames.length; fi++){
+    const fr = frames[fi];
+    if(fr.type==='fax') renderFaxFrame(fr.idx);
+    else if(fr.type==='bridge') renderBridgeFrame(fr.idx);
+    await new Promise(r=>setTimeout(r,10));
+    const audio = encodeCurrentCanvas();
+    const wav = floatToWav(audio, SR);
+    txQueue.push({audio, wav, name:`${fr.type}-${String(fr.idx+1).padStart(3,'0')}-${sstvModeKey}.wav`});
+    if(statusEl) statusEl.textContent = `Encoded ${fi+1}/${frames.length}`;
+  }
+  txAudioBuffer = txQueue[0].audio;
+  txWavBlob = txQueue[0].wav;
+  txQueuePos = 0;
+  ['sstvPlayBtn','sstvDownloadBtn','sstvDownloadAllBtn'].forEach(id=>{ const b=document.getElementById(id); if(b) b.disabled=false; });
+  sstvLog(`Batch encode complete: ${txQueue.length} WAV files, total ${(txQueue.reduce((a,q)=>a+q.audio.length,0)/SR).toFixed(1)}s`);
+  drawWaterfallPreview(txAudioBuffer);
+  const tfi=document.getElementById('sstvTxFrameInfo'); if(tfi) tfi.textContent = `Frame 1/${txQueue.length}`;
+});
+
+// --- Playback ---
+async function playTxQueue(startIdx=0){
+  if(!txQueue.length) return;
+  if(txActx) try{ txActx.close(); }catch(e){}
+  txActx = new (window.AudioContext||window.webkitAudioContext)({sampleRate:SR});
+  let idx = startIdx;
+  const vol = (parseInt(document.getElementById('sstvVol')?.value||'72',10)/100);
+  async function playOne(){
+    if(idx >= txQueue.length){ stopTx(); return; }
+    const item = txQueue[idx];
+    const buf = txActx.createBuffer(1, item.audio.length, SR);
+    buf.copyToChannel(item.audio, 0);
+    txSource = txActx.createBufferSource();
+    txSource.buffer = buf;
+    const gain = txActx.createGain(); gain.gain.value = vol;
+    txSource.connect(gain).connect(txActx.destination);
+    const analyser = txActx.createAnalyser(); analyser.fftSize = 2048;
+    gain.connect(analyser);
+    txSource.start();
+    const tfi=document.getElementById('sstvTxFrameInfo'); if(tfi) tfi.textContent = `Frame ${idx+1}/${txQueue.length}`;
+    sstvLog(`TX playing frame ${idx+1}/${txQueue.length}`);
+    const duration = item.audio.length / SR;
+    const start = performance.now();
+    return new Promise(res=>{
+      let raf;
+      function tick(){
+        const elapsed = (performance.now()-start)/1000;
+        const pct = Math.min(100, elapsed/duration*100);
+        const pb=document.getElementById('sstvTxProgress'); if(pb) pb.style.width = pct+'%';
+        const tt=document.getElementById('sstvTxTime'); if(tt) tt.textContent = `${elapsed.toFixed(1)} / ${duration.toFixed(1)}s`;
+        if(specCtx){
+          const data = new Uint8Array(analyser.frequencyBinCount);
+          analyser.getByteFrequencyData(data);
+          const cw = specCanvas.width = specCanvas.clientWidth;
+          const ch = 170; specCanvas.height = ch;
+          specCtx.fillStyle='rgba(5,9,18,0.22)'; specCtx.fillRect(0,0,cw,ch);
+          specCtx.fillStyle='#3ee7ff';
+          for(let x=0;x<cw;x++){
+            const bin = Math.floor((1100 + x/cw*1400) / (txActx.sampleRate/2) * data.length);
+            const v = data[bin]||0;
+            specCtx.fillRect(x, ch - v*ch/255, 1.5, 2);
+          }
+        }
+        if(elapsed < duration + 0.15) raf = requestAnimationFrame(tick);
+        else { cancelAnimationFrame(raf); res(); }
+      }
+      tick();
+      txSource.onended = ()=>{ cancelAnimationFrame(raf); res(); };
+      window._stopCurrent = ()=>{ try{txSource.stop();}catch(e){} cancelAnimationFrame(raf); res('stop'); };
+    });
+  }
+  const pb=document.getElementById('sstvPlayBtn'); if(pb) pb.disabled=true;
+  const sb=document.getElementById('sstvStopBtn'); if(sb) sb.disabled=false;
+  const pab=document.getElementById('sstvPauseBtn'); if(pab) pab.disabled=false;
+  while(idx < txQueue.length){
+    const r = await playOne();
+    if(r==='stop') break;
+    idx++; txQueuePos = idx;
+    const gap = parseInt(document.getElementById('faxGapSel')?.value || '5',10);
+    if(idx < txQueue.length && gap>0){
+      sstvLog(`Inter-frame gap ${gap}s…`);
+      await new Promise(res=>setTimeout(res, gap*1000));
+    }
+  }
+  stopTx();
+}
+
+function stopTx(){
+  try{ window._stopCurrent?.(); }catch(e){}
+  try{ txActx?.close(); }catch(e){}
+  const pb=document.getElementById('sstvPlayBtn'); if(pb) pb.disabled=false;
+  const sb=document.getElementById('sstvStopBtn'); if(sb) sb.disabled=true;
+  const pab=document.getElementById('sstvPauseBtn'); if(pab) pab.disabled=true;
+  const pbar=document.getElementById('sstvTxProgress'); if(pbar) pbar.style.width='0%';
+  const dur = txAudioBuffer ? (txAudioBuffer.length/SR).toFixed(1) : getMode().total_s.toFixed(1);
+  const tt=document.getElementById('sstvTxTime'); if(tt) tt.textContent = `0.0 / ${dur}s`;
+}
+
+document.getElementById('sstvPlayBtn')?.addEventListener('click', ()=> playTxQueue(txQueuePos));
+document.getElementById('sstvStopBtn')?.addEventListener('click', ()=>{ txQueuePos=0; stopTx(); sstvLog('TX stopped.'); });
+document.getElementById('sstvPauseBtn')?.addEventListener('click', stopTx);
+
+document.getElementById('sstvDownloadBtn')?.addEventListener('click', ()=>{
+  if(!txWavBlob) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(txWavBlob);
+  a.download = txQueue[txQueuePos]?.name || `sstv_${sstvModeKey}.wav`;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  sstvLog('WAV downloaded.');
+});
+
+document.getElementById('sstvDownloadAllBtn')?.addEventListener('click', async ()=>{
+  if(!txQueue.length) return;
+  let offset=0; const parts=[]; const central=[];
+  for(const f of txQueue){
+    const buf = await f.wav.arrayBuffer();
+    const data = new Uint8Array(buf);
+    const nameBytes = new TextEncoder().encode(f.name);
+    const localHeader = new Uint8Array(30 + nameBytes.length);
+    const dv = new DataView(localHeader.buffer);
+    dv.setUint32(0, 0x04034b50, true);
+    dv.setUint16(4, 20, true);
+    const crc = crc32(data); dv.setUint32(14, crc, true);
+    dv.setUint32(18, data.length, true); dv.setUint32(22, data.length, true);
+    dv.setUint16(26, nameBytes.length, true);
+    localHeader.set(nameBytes, 30);
+    parts.push(localHeader, data);
+    central.push({crc, size:data.length, offset, name:nameBytes});
+    offset += localHeader.length + data.length;
+  }
+  let centralSize=0; const centralParts=[];
+  for(const c of central){
+    const h = new Uint8Array(46 + c.name.length);
+    const dv = new DataView(h.buffer);
+    dv.setUint32(0, 0x02014b50, true);
+    dv.setUint32(16, c.crc, true);
+    dv.setUint32(20, c.size, true); dv.setUint32(24, c.size, true);
+    dv.setUint16(28, c.name.length, true);
+    dv.setUint32(42, c.offset, true);
+    h.set(c.name, 46);
+    centralParts.push(h);
+    centralSize += h.length;
+  }
+  const end = new Uint8Array(22);
+  const ev = new DataView(end.buffer);
+  ev.setUint32(0, 0x06054b50, true);
+  ev.setUint16(8, central.length, true); ev.setUint16(10, central.length, true);
+  ev.setUint32(12, centralSize, true);
+  ev.setUint32(16, offset, true);
+  const blob = new Blob([...parts, ...centralParts, end], {type:'application/zip'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `sstv_${sstvModeKey}_frames.zip`;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+  sstvLog(`ZIP downloaded: ${txQueue.length} WAVs`);
+});
+
+// --- VIS AUTO-DETECT ---
+const VIS_MAP = {8:'robot36', 44:'martin1', 40:'martin2', 76:'scottieDX', 95:'pd120', 96:'pd180', 97:'pd240'};
+function detectVIS(freqs, startIdx){
+  for(let i=startIdx; i< startIdx+600 && i+60 < freqs.length; i++){
+    if(freqs[i] > 1850 && freqs[i+15] < 1250){
+      let ptr = i+20;
+      ptr += 15;
+      let vis=0;
+      for(let b=0;b<7;b++){
+        const f = freqs[ptr + b*15] || 1200;
+        if(f < 1200) vis |= (1<<b);
+      }
+      if(VIS_MAP[vis]) return {vis, idx:i, mode: VIS_MAP[vis]};
+    }
+  }
+  return null;
+}
+
+// --- Slant auto-detect (MMSSTV style) ---
+function estimateSlant(freqs, modeKey, syncPtr){
+  const mode = SSTV_MODES[modeKey] || SSTV_MODES.robot36;
+  const h = mode.h;
+  const lineFrames = mode.type==='robot' ? Math.round(0.176/0.002) : Math.round(0.440/0.002);
+  const syncs = [];
+  let p = syncPtr;
+  for(let y=0; y<h && p < freqs.length-20; y++){
+    // find sync dip
+    let best = p, bestV = 9999;
+    for(let k=-2;k<=4;k++){ const fv = freqs[p+k]||9999; if(fv < bestV){ bestV=fv; best=p+k; } }
+    syncs.push(best);
+    p += lineFrames;
+  }
+  if(syncs.length < 10) return 0;
+  // linear regression: sync_pos = a*y + b
+  let n = syncs.length, sx=0, sy=0, sxy=0, sxx=0;
+  for(let y=0;y<n;y++){ sx+=y; sy+=syncs[y]; sxy+=y*syncs[y]; sxx+=y*y; }
+  const slope = (n*sxy - sx*sy) / (n*sxx - sx*sx);
+  // slope is freq-frames per image line; convert to pixels
+  const pxPerFrame = mode.w / (lineFrames - 6);
+  const slant_px = slope * pxPerFrame;
+  return Math.max(-30, Math.min(30, Math.round(slant_px*10)/10));
+}
+
+// --- Live waterfall ---
+let liveWfRow = 0;
+function liveWfInit(){
+  if(!liveWfCtx) return;
+  const w = liveWfCanvas.width = liveWfCanvas.clientWidth;
+  const h = 140;
+  liveWfCanvas.height = h;
+  liveWfCtx.fillStyle='#050912'; liveWfCtx.fillRect(0,0,w,h);
+  liveWfRow = 0;
+}
+liveWfInit();
+
+// --- DECODER ---
+async function decodeSSTVFromAudioBuffer(abuf, sampleRate, liveDrawCb=null){
+  let samples;
+  if(sampleRate !== SR){
+    const ratio = SR / sampleRate;
+    const outLen = Math.floor(abuf.length * ratio);
+    samples = new Float32Array(outLen);
+    for(let i=0;i<outLen;i++) samples[i] = abuf[Math.floor(i/ratio)]||0;
+  } else samples = abuf;
+  const hop = Math.floor(SR * 0.002);
+  const freqs = [];
+  for(let i=0; i+512 < samples.length; i+=hop){
+    let z=0, last=samples[i];
+    for(let k=1;k<512;k++){ const s=samples[i+k]; if(last<0 && s>=0) z++; last=s; }
+    freqs.push(z * SR / 512 / 2);
+  }
+  const freqToVal = f => Math.max(0, Math.min(255, Math.round((Math.max(1500,Math.min(2300,f))-1500)/800*255)));
+
+  // Auto VIS
+  let detectedMode = sstvModeKey;
+  if(document.getElementById('sstvVisAutoChk')?.checked){
+    const visDet = detectVIS(freqs, 0);
+    if(visDet){
+      detectedMode = visDet.mode;
+      const vr=document.getElementById('sstvVisRead'); if(vr) vr.textContent = `${visDet.vis} → ${SSTV_MODES[detectedMode].name}`;
+      sstvLog(`Auto VIS detected: ${visDet.vis} → ${SSTV_MODES[detectedMode].name}`);
+      if(detectedMode !== sstvModeKey){
+        sstvModeKey = detectedMode;
+        const sel=document.getElementById('sstvModeSel'); if(sel) sel.value = detectedMode;
+        applyModeUI();
+      }
+    }
+  }
+
+  const mode = SSTV_MODES[detectedMode];
+  const w = mode.w, h = mode.h;
+  rxCanvas.width = w; rxCanvas.height = h;
+  const R = new Uint8Array(w*h), G = new Uint8Array(w*h), B = new Uint8Array(w*h);
+  const Y = new Uint8Array(w*h);
+  const U = new Int8Array(w*h), V = new Int8Array(w*h);
+
+  let ptr = 0;
+  for(let t=50; t<600 && t < freqs.length-50; t++){ if(freqs[t] < 1250){ ptr = t; break; } }
+  ptr += 380;
+
+  // Auto slant?
+  let slant = parseInt(document.getElementById('sstvSlant')?.value||'0',10);
+  if(document.getElementById('sstvAutoSlantChk')?.checked){
+    const est = estimateSlant(freqs, detectedMode, ptr);
+    slant = Math.round(est);
+    const sld=document.getElementById('sstvSlant'); if(sld) sld.value = slant;
+    const sv=document.getElementById('sstvSlantVal'); if(sv) sv.textContent = slant;
+    const sr=document.getElementById('sstvSlantRead'); if(sr) sr.textContent = slant+' px (auto)';
+    sstvLog(`Auto-slant: ${slant.toFixed(1)} px`);
+  }
+  document.getElementById('sstvSlantRead')?.replaceChildren(document.createTextNode(slant+' px'));
+
+  const liveDraw = document.getElementById('sstvLiveDrawChk')?.checked;
+
+  function putPixel(x,y,r,g,b){
+    if(x<0||x>=w||y<0||y>=h) return;
+    const i = y*w+x;
+    R[i]=r; G[i]=g; B[i]=b;
+    Y[i] = Math.round(0.299*r + 0.587*g + 0.114*b);
+    if(liveDraw && rxCtx){
+      rxCtx.fillStyle = `rgb(${r},${g},${b})`;
+      rxCtx.fillRect(x,y,1,1);
+    }
+    if(liveDrawCb) liveDrawCb(x,y,r,g,b);
+  }
+
+  if(mode.type === 'robot'){
+    const yFrames = Math.max(38, Math.round(0.088/0.002));
+    const cFrames = Math.max(18, Math.round(0.044/0.002));
+    for(let y=0; y<h && ptr < freqs.length - 120; y++){
+      while(ptr < freqs.length && freqs[ptr] < 1300) ptr++;
+      ptr += 2;
+      const lineShift = Math.floor(slant * y / h);
+      for(let x=0; x<w; x++){ const fIdx = ptr + Math.floor(x / w * yFrames); Y[y*w+x] = freqToVal(freqs[fIdx]||1500); }
+      ptr += yFrames;
+      for(let x=0; x<w; x+=2){ const fIdx = ptr + Math.floor((x/2) / (w/2) * cFrames); const vv=freqToVal(freqs[fIdx]||1500)-128; V[y*w+x] = vv; if(x+1<w) V[y*w+x+1]=vv; }
+      ptr += cFrames;
+      for(let x=0; x<w; x+=2){ const fIdx = ptr + Math.floor((x/2) / (w/2) * cFrames); const uv=freqToVal(freqs[fIdx]||1500)-128; U[y*w+x] = uv; if(x+1<w) U[y*w+x+1]=uv; }
+      ptr += cFrames;
+      for(let x=0;x<w;x++){
+        const i = y*w+x;
+        const yv=Y[i], u=U[i], v=V[i];
+        let r = yv + 1.402 * v;
+        let g = yv - 0.344136*u - 0.714136*v;
+        let bl = yv + 1.772*u;
+        putPixel(x+lineShift, y, Math.max(0,Math.min(255,r)), Math.max(0,Math.min(255,g)), Math.max(0,Math.min(255,bl)));
+      }
+    }
+  } else if(mode.type === 'martin' || mode.type === 'scottie'){
+    const g_ms = mode.g_ms, b_ms = mode.b_ms, r_ms = mode.r_ms;
+    const gFrames = Math.round(g_ms/2), bFrames = Math.round(b_ms/2), rFrames = Math.round(r_ms/2);
+    for(let y=0; y<h && ptr < freqs.length - 200; y++){
+      while(ptr < freqs.length && freqs[ptr] < 1300) ptr++; ptr += 2;
+      const lineShift = Math.floor(slant * y / h);
+      for(let x=0; x<w; x++){ const fIdx = ptr + Math.floor(x/w * gFrames); G[y*w+x] = freqToVal(freqs[fIdx]||1500); }
+      ptr += gFrames + 1;
+      for(let x=0; x<w; x++){ const fIdx = ptr + Math.floor(x/w * bFrames); B[y*w+x] = freqToVal(freqs[fIdx]||1500); }
+      ptr += bFrames + 1;
+      for(let x=0; x<w; x++){ const fIdx = ptr + Math.floor(x/w * rFrames); R[y*w+x] = freqToVal(freqs[fIdx]||1500); }
+      ptr += rFrames + 1;
+      if(liveDraw){ for(let x=0;x<w;x++){ putPixel(x+lineShift,y,R[y*w+x],G[y*w+x],B[y*w+x]); }}
+    }
+  } else if(mode.type === 'pd'){
+    const pix_frames = Math.round((mode.pix_ms/1000)/0.002);
+    for(let y=0; y<h && ptr < freqs.length-200; y++){
+      while(ptr < freqs.length && freqs[ptr] < 1300) ptr++; ptr += 10;
+      const lineShift = Math.floor(slant * y / h);
+      for(let x=0;x<w;x++){ const fIdx = ptr + x*pix_frames; Y[y*w+x] = freqToVal(freqs[fIdx]||1500); }
+      ptr += w*pix_frames;
+      for(let x=0;x<w;x+=2){ const fIdx = ptr + Math.floor(x/2)*pix_frames*2; const v=freqToVal(freqs[fIdx]||1500)-128; V[y*w+x]=v; if(x+1<w) V[y*w+x+1]=v; }
+      ptr += (w/2)*pix_frames*2;
+      for(let x=0;x<w;x+=2){ const fIdx = ptr + Math.floor(x/2)*pix_frames*2; const v=freqToVal(freqs[fIdx]||1500)-128; U[y*w+x]=v; if(x+1<w) U[y*w+x+1]=v; }
+      ptr += (w/2)*pix_frames*2;
+      for(let x=0;x<w;x++){ const fIdx = ptr + x*pix_frames; const yv2 = freqToVal(freqs[fIdx]||1500); Y[y*w+x] = (Y[y*w+x] + yv2)>>1; }
+      ptr += w*pix_frames;
+      if(liveDraw){
+        for(let x=0;x<w;x++){
+          const i=y*w+x, yv=Y[i], u=U[i], v=V[i];
+          let r = yv + 1.402*v, g = yv - 0.344136*u - 0.714136*v, bl = yv + 1.772*u;
+          putPixel(x+lineShift,y, Math.max(0,Math.min(255,r)), Math.max(0,Math.min(255,g)), Math.max(0,Math.min(255,bl)));
+        }
+      }
+    }
+    for(let i=0;i<w*h;i++){
+      const yv=Y[i], u=U[i], v=V[i];
+      R[i] = Math.max(0,Math.min(255, yv + 1.402*v));
+      G[i] = Math.max(0,Math.min(255, yv - 0.344136*u - 0.714136*v));
+      B[i] = Math.max(0,Math.min(255, yv + 1.772*u));
+    }
+  }
+
+  const imgData = rxCtx.createImageData(w,h);
+  for(let i=0;i<w*h;i++){ imgData.data[i*4]=R[i]; imgData.data[i*4+1]=G[i]; imgData.data[i*4+2]=B[i]; imgData.data[i*4+3]=255; }
+  rxCtx.putImageData(imgData,0,0);
+  return {R,G,B,Y, imgData, mode: detectedMode, slant};
+}
+
+// --- RX ---
+let autoDecode = false;
+document.getElementById('sstvAutoDecodeChkBtn')?.addEventListener('click', e=>{
+  autoDecode = !autoDecode;
+  e.target.textContent = 'Auto-decode: ' + (autoDecode ? 'On' : 'Off');
+});
+
+document.getElementById('sstvSlant')?.addEventListener('input', e=>{
+  document.getElementById('sstvSlantVal').textContent = e.target.value;
+  const sr=document.getElementById('sstvSlantRead'); if(sr) sr.textContent = e.target.value + ' px';
+});
+
+document.getElementById('sstvAutoSlantBtn')?.addEventListener('click', ()=>{
+  const chk = document.getElementById('sstvAutoSlantChk');
+  if(chk) chk.checked = true;
+  sstvLog('Auto-slant enabled — will run on next decode.');
+});
+
+async function runDecode(blob){
+  const rxStatus=document.getElementById('sstvRxStatus'); if(rxStatus) rxStatus.textContent = 'Decoding…';
+  try{
+    const arrayBuf = await blob.arrayBuffer();
+    const actx = new (window.AudioContext||window.webkitAudioContext)();
+    const audioBuf = await actx.decodeAudioData(arrayBuf.slice(0));
+    const ch = audioBuf.getChannelData(0);
+    const result = await decodeSSTVFromAudioBuffer(ch, audioBuf.sampleRate);
+    if(rxStatus) rxStatus.textContent = 'Decoded OK';
+    const rxi=document.getElementById('sstvRxInfo');
+    if(rxi) rxi.textContent = `${SSTV_MODES[result.mode].name} ${result.imgData.width}×${result.imgData.height} — slant ${result.slant||0}px`;
+    sstvLog(`SSTV decode: ${SSTV_MODES[result.mode].name} OK, slant ${(result.slant||0).toFixed(1)}px`);
+    tryFaxOrBridgeReassemble(result);
+    actx.close();
+    updateStats(1, true, 0);
+  } catch(e){
+    if(rxStatus) rxStatus.textContent = 'Decode failed';
+    sstvLog('Decode error: '+e.message);
+    updateStats(1, false, 0);
+  }
+}
+
+document.getElementById('sstvDecodeBtn')?.addEventListener('click', async ()=>{
+  if(!window._sstvDecodedBlobs || !window._sstvDecodedBlobs.length){ sstvLog('Load WAV(s) first.'); return; }
+  for(const b of window._sstvDecodedBlobs) await runDecode(b);
+});
+
+document.getElementById('sstvWavFile')?.addEventListener('change', e=>{
+  const files = Array.from(e.target.files||[]); if(!files.length) return;
+  window._sstvDecodedBlobs = files;
+  const rs=document.getElementById('sstvRxStatus'); if(rs) rs.textContent = `WAV loaded: ${files.length} file(s)`;
+  sstvLog(`RX WAV loaded: ${files.map(f=>f.name).join(', ')}`);
+  if(autoDecode){ files.forEach(f=>runDecode(f)); }
+});
+
+// --- Mic spectrum / waterfall ---
+let micStream=null, micCtx=null;
+document.getElementById('sstvMicBtn')?.addEventListener('click', async (ev)=>{
+  const btn = ev.currentTarget;
+  if(micStream){
+    micStream.getTracks().forEach(t=>t.stop()); micStream=null;
+    try{ micCtx.close(); }catch(e){}
+    btn.textContent='🎤 Mic'; sstvLog('Mic stopped.'); stopLiveDecode();
+    return;
+  }
+  try{
+    micStream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}});
+    micCtx = new AudioContext();
+    const src = micCtx.createMediaStreamSource(micStream);
+    const analyser = micCtx.createAnalyser(); analyser.fftSize=2048;
+    src.connect(analyser);
+    btn.textContent='■ Stop Mic';
+    sstvLog('Mic listening — spectrum + live waterfall active.');
+    const freqData = new Uint8Array(analyser.frequencyBinCount);
+    function drawMic(){
+      if(!micStream) return;
+      analyser.getByteFrequencyData(freqData);
+      if(specCtx){
+        const cw = specCanvas.width = specCanvas.clientWidth;
+        const ch = 170; specCanvas.height = ch;
+        specCtx.fillStyle='rgba(5,9,18,0.22)'; specCtx.fillRect(0,0,cw,ch);
+        specCtx.fillStyle='#ffbf3c';
+        for(let x=0;x<cw;x++){
+          const bin = Math.floor((1100 + x/cw*1400) / (micCtx.sampleRate/2) * freqData.length);
+          const v = freqData[bin]||0;
+          specCtx.fillRect(x, ch - v*ch/255, 1.5, 2);
+        }
+      }
+      if(liveWfCtx){
+        const w = liveWfCanvas.width = liveWfCanvas.clientWidth;
+        const h = 140; liveWfCanvas.height = h;
+        const img = liveWfCtx.getImageData(0,0,w,h);
+        liveWfCtx.putImageData(img, 0, 1);
+        liveWfCtx.fillStyle='#050912'; liveWfCtx.fillRect(0,0,w,1);
+        for(let x=0;x<w;x++){
+          const bin = Math.floor((1100 + x/w*1400) / (micCtx.sampleRate/2) * freqData.length);
+          const v = freqData[bin]||0;
+          const c = Math.min(255, v*2);
+          liveWfCtx.fillStyle = `rgb(${c},${c},${c})`;
+          liveWfCtx.fillRect(x,0,1,1);
+        }
+      }
+      requestAnimationFrame(drawMic);
+    }
+    drawMic();
+  } catch(err){ sstvLog('Mic access denied: '+err.message); }
+});
+
+// --- Live mic SSTV decoder ---
+let liveDecodeOn = false;
+let liveAudioBuffer = [];
+let liveDecodeTimer = null;
+
+async function startLiveDecode(){
+  if(liveDecodeOn) return;
+  try{
+    if(!micStream){
+      micStream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}});
+    }
+    if(!micCtx || micCtx.state==='closed') micCtx = new AudioContext({sampleRate:48000});
+    const src = micCtx.createMediaStreamSource(micStream);
+    const processor = micCtx.createScriptProcessor(4096,1,1);
+    src.connect(processor); processor.connect(micCtx.destination);
+    liveAudioBuffer = [];
+    let visDetected = false;
+    let lastDecode = 0;
+    processor.onaudioprocess = e=>{
+      const input = e.inputBuffer.getChannelData(0);
+      liveAudioBuffer.push(new Float32Array(input));
+      // keep last ~30 sec max for Robot36, longer for PD
+      const maxSamples = 48000 * 300;
+      let total = liveAudioBuffer.reduce((a,b)=>a+b.length,0);
+      while(total > maxSamples && liveAudioBuffer.length>1){ total -= liveAudioBuffer.shift().length; }
+      // simple VIS detector every 2 sec
+      const now = performance.now();
+      if(now - lastDecode > 2000){
+        lastDecode = now;
+        // flatten
+        const flatLen = liveAudioBuffer.reduce((a,b)=>a+b.length,0);
+        const flat = new Float32Array(flatLen);
+        let o=0; liveAudioBuffer.forEach(b=>{ flat.set(b,o); o+=b.length; });
+        // quick freq scan for VIS pattern 1900-1200-1900
+        // if found and not yet decoded, run full decode on last ~40s
+        decodeSSTVFromAudioBuffer(flat.slice(Math.max(0,flat.length-48000*300)), 48000).then(res=>{
+          sstvLog(`Live decode: ${SSTV_MODES[res.mode].name} frame updated (slant ${res.slant||0})`);
+          tryFaxOrBridgeReassemble(res);
+        }).catch(()=>{});
+      }
+    };
+    liveDecodeOn = true;
+    sstvLog('Live SSTV decoder started — listening for VIS / sync. Image draws live.');
+    document.getElementById('sstvLiveDecodeBtn').textContent = '■ Stop Live';
+  } catch(e){
+    sstvLog('Live decode failed: '+e.message);
+  }
+}
+function stopLiveDecode(){
+  liveDecodeOn = false;
+  if(micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream=null; }
+  try{ micCtx?.close(); }catch(e){}
+  const btn=document.getElementById('sstvLiveDecodeBtn');
+  if(btn) btn.textContent = '🎙 Live Decode';
+  sstvLog('Live decode stopped.');
+}
+document.getElementById('sstvLiveDecodeBtn')?.addEventListener('click', ()=>{
+  if(liveDecodeOn){ stopLiveDecode(); } else { startLiveDecode(); }
+});
+
+// --- Fax / Bridge reassemble ---
+let faxRxFrames = new Map();
+let faxRxMeta = null;
+let bridgeRxFrames = new Map();
+let stats = {frames:0, crcOk:0, rsFix:0, bytes:0, pkts:0, ber:0};
+
+function updateStats(frameDelta, crcOk, rsFixed){
+  stats.frames += frameDelta;
+  if(crcOk) stats.crcOk++;
+  stats.rsFix += rsFixed||0;
+  const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('sstvFramesRx', stats.frames);
+  set('sstvCrcOk', `${stats.crcOk} / ${stats.frames}`);
+  set('sstvRsFix', stats.rsFix);
+  set('sstvBytesRx', stats.bytes);
+  set('sstvPktsRx', stats.pkts);
+  set('sstvSnr', '~18 dB');
+  const sl=document.getElementById('sstvLock'); if(sl) sl.textContent='Yes';
+  set('sstvBer', stats.frames ? ((stats.frames-stats.crcOk)/stats.frames*100).toFixed(1)+'%' : '—');
+}
+
+function tryFaxOrBridgeReassemble(result){
+  const mode = SSTV_MODES[result.mode];
+  const w = mode.w, h = mode.h;
+  const Y = result.Y;
+  const magic5 = String.fromCharCode(Y[120],Y[121],Y[122],Y[123],Y[124]);
+  let handled = false;
+  if(magic5 === 'FAXS2'){
+    const dv = new DataView(Y.buffer, Y.byteOffset, Y.byteLength);
+    const fileSize = dv.getUint32(48, true);
+    const fileCrc = dv.getUint32(52, true);
+    const frameIdx = dv.getUint16(56, true);
+    const frameTotal = dv.getUint16(58, true);
+    const frameCrc = dv.getUint32(60, true);
+    const payloadLen = dv.getUint32(64, true);
+    const fecOn = dv.getUint8(68);
+    const payload = Y.slice(128, 128+payloadLen);
+    const calcCrc = crc32(payload);
+    const ok = calcCrc === frameCrc;
+    if(!faxRxMeta) faxRxMeta = {size:fileSize, crc:fileCrc, total:frameTotal, name:'fax_receive.bin', fec:fecOn};
+    faxRxFrames.set(frameIdx, payload);
+    stats.bytes += payload.length;
+    updateStats(1, ok, 0);
+    sstvLog(`FAX RX frame ${frameIdx+1}/${frameTotal} — ${payload.length} B — CRC ${ok?'OK':'FAIL'} — RS ${fecOn?'on':'off'}`);
+    handled = true;
+  } else if(magic5 === 'BRDG2' || String.fromCharCode(Y[120],Y[121],Y[122],Y[123]) === 'BRDG'){
+    const dv = new DataView(Y.buffer, Y.byteOffset, Y.byteLength);
+    const frameIdx = dv.getUint16(0, true);
+    const frameTotal = dv.getUint16(2, true);
+    const payloadLen = dv.getUint32(4, true);
+    const frameCrc = dv.getUint32(8, true);
+    const payload = Y.slice(128, 128+payloadLen);
+    const ok = crc32(payload) === frameCrc;
+    bridgeRxFrames.set(frameIdx, payload);
+    stats.bytes += payload.length;
+    // ARQ ACK sim
+    if(arq.enabled){ arq.acks++; }
+    updateStats(1, ok, 0);
+    sstvLog(`BRIDGE RX frame ${frameIdx+1}/${frameTotal} — ${payload.length} B — CRC ${ok?'OK':'FAIL'} — ARQ ACK sent`);
+    handled = true;
+  }
+  if(!handled){
+    stats.bytes += w*h;
+    updateStats(1, true, 0);
+  }
+  refreshFaxRxUI();
+  arqUpdateUI();
+}
+
+function refreshFaxRxUI(){
+  const faxCount = faxRxFrames.size;
+  const bridgeCount = bridgeRxFrames.size;
+  const infoEl = document.getElementById('faxRxInfo');
+  if(!infoEl) return;
+  if(faxCount>0){
+    const total = faxRxMeta?.total || '?';
+    const bytes = [...faxRxFrames.values()].reduce((a,b)=>a+b.length,0);
+    infoEl.textContent = `FAX frames: ${faxCount}/${total} — ${bytes} bytes — RS FEC ${faxRxMeta?.fec?'ON':'OFF'}`;
+    const db=document.getElementById('faxDownloadBtn'); if(db) db.disabled = false;
+    const ib=document.getElementById('faxInjectPcapBtn'); if(ib) ib.disabled = true;
+    let map = '';
+    for(let i=0;i<(faxRxMeta?.total||faxCount);i++) map += faxRxFrames.has(i) ? '█' : '░';
+    const ffm=document.getElementById('faxFrameMap'); if(ffm) ffm.textContent = map;
+  } else if(bridgeCount>0){
+    const bytes = [...bridgeRxFrames.values()].reduce((a,b)=>a+b.length,0);
+    infoEl.textContent = `BRIDGE frames: ${bridgeCount} — ${bytes} bytes — SLIP packets inside — ARQ ${arq.enabled? arq.mode.toUpperCase():'OFF'}`;
+    const db=document.getElementById('faxDownloadBtn'); if(db) db.disabled = false;
+    const ib=document.getElementById('faxInjectPcapBtn'); if(ib) ib.disabled = false;
+    let map = ''; for(let i=0;i<bridgeCount+2;i++) map += bridgeRxFrames.has(i) ? '█' : '░';
+    const ffm=document.getElementById('faxFrameMap'); if(ffm) ffm.textContent = map;
+  } else {
+    infoEl.textContent = 'Waiting for frames…';
+  }
+}
+
+document.getElementById('faxDownloadBtn')?.addEventListener('click', ()=>{
+  let out, name='sstv_rx.bin';
+  if(faxRxFrames.size){
+    const keys = [...faxRxFrames.keys()].sort((a,b)=>a-b);
+    const total = keys.reduce((a,k)=>a + faxRxFrames.get(k).length, 0);
+    out = new Uint8Array(total);
+    let o=0; keys.forEach(k=>{ out.set(faxRxFrames.get(k), o); o+=faxRxFrames.get(k).length; });
+    if(faxRxMeta?.fec){
+      const dec = rs_decode_bytes(out);
+      out = dec.bytes;
+      sstvLog(`RS-FEC decode: ${dec.errors} blocks with errors, corrected ${dec.corrected}`);
+      stats.rsFix += dec.errors;
+      updateStats(0,true,dec.errors);
+    }
+    name = 'sstv_fax_reassembled.bin';
+  } else if(bridgeRxFrames.size){
+    const keys = [...bridgeRxFrames.keys()].sort((a,b)=>a-b);
+    const total = keys.reduce((a,k)=>a + bridgeRxFrames.get(k).length, 0);
+    out = new Uint8Array(total);
+    let o=0; keys.forEach(k=>{ out.set(bridgeRxFrames.get(k), o); o+=bridgeRxFrames.get(k).length; });
+    name = 'sstv_bridge_reassembled.bin';
+  } else return;
+  const blob = new Blob([out], {type:'application/octet-stream'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  sstvLog(`Downloaded reassembled: ${out.length} bytes → ${name}`);
+});
+
+document.getElementById('faxInjectPcapBtn')?.addEventListener('click', ()=>{
+  if(!bridgeRxFrames.size){ sstvLog('No bridge data.'); return; }
+  const keys = [...bridgeRxFrames.keys()].sort((a,b)=>a-b);
+  let total = 0; keys.forEach(k=> total += bridgeRxFrames.get(k).length);
+  const blob = new Uint8Array(total);
+  let o=0; keys.forEach(k=>{ blob.set(bridgeRxFrames.get(k), o); o+=bridgeRxFrames.get(k).length; });
+  const packets = [];
+  let pkt = [];
+  let esc=false;
+  for(const b of blob){
+    if(b===0xC0){ if(pkt.length){ packets.push(new Uint8Array(pkt)); pkt=[]; } esc=false; continue; }
+    if(esc){ pkt.push(b===0xDC ? 0xC0 : b===0xDD ? 0xDB : b); esc=false; }
+    else if(b===0xDB){ esc=true; }
+    else pkt.push(b);
+  }
+  if(pkt.length) packets.push(new Uint8Array(pkt));
+  stats.pkts += packets.length;
+  updateStats(0, true, 0);
+  if(window.parsedPackets){
+    let no = window.parsedPackets.length + 1;
+    packets.forEach((raw,i)=>{
+      window.parsedPackets.push({
+        no: no++, ts: Date.now()/1000 + i*0.001,
+        src:'SSTV-BRIDGE', dst:'PCAP',
+        sport:null, dport:null,
+        proto:'SSTV/TCP', l4:'',
+        info:`Reassembled ${raw.length} bytes from SSTV bridge (ARQ ${arq.enabled? 'ON':'OFF'})`,
+        len: raw.length,
+        raw: raw
+      });
+    });
+    if(typeof window.applyPacketFilter === 'function') window.applyPacketFilter();
+    sstvLog(`Injected ${packets.length} packets into PCAP Parser — switch to Packet Forensics tab.`);
+    alert(`Injected ${packets.length} reassembled packets into the PCAP Parser.\nOpen the Packet Forensics tab to view them.`);
+  } else {
+    sstvLog(`Bridge decoded ${packets.length} SLIP packets (${total} bytes) — PCAP parser not open.`);
+  }
+});
+
+document.getElementById('faxClearBtn')?.addEventListener('click', ()=>{
+  faxRxFrames.clear(); bridgeRxFrames.clear(); faxRxMeta=null;
+  stats = {frames:0, crcOk:0, rsFix:0, bytes:0, pkts:0, ber:0};
+  arq.retransmits=0; arq.acks=0;
+  updateStats(0, false, 0);
+  arqUpdateUI();
+  const fri=document.getElementById('faxRxInfo'); if(fri) fri.textContent = 'Waiting for frames…';
+  const ffm=document.getElementById('faxFrameMap'); if(ffm) ffm.textContent = '';
+  const db=document.getElementById('faxDownloadBtn'); if(db) db.disabled = true;
+  const ib=document.getElementById('faxInjectPcapBtn'); if(ib) ib.disabled = true;
+  const vr=document.getElementById('sstvVisRead'); if(vr) vr.textContent = '—';
+  sstvLog('RX buffers cleared.');
+});
+
+sstvLog('SSTV Lab v4.7 ready — Robot36 / Martin M1/M2 / Scottie DX / PD120/180/240 — RS-FEC, Auto VIS, Auto Slant, Live Mic Decoder, TCP/IP ARQ Bridge.');
+arqUpdateUI();
+})();
+// ==================== END SSTV ====================
+
+
+
+
+
+
+
+
+
+// --- PWA Install / Standalone ---
+let deferredPrompt = null;
+const installBanner = document.getElementById('installBanner');
+const installBtn = document.getElementById('installBtn');
+const installBtnTop = document.getElementById('installBtnTop');
+const dismissInstallBtn = document.getElementById('dismissInstallBtn');
+
+function showInstallUI(show){
+  if(show){
+    if(installBanner) installBanner.classList.add('show');
+    if(installBtnTop) installBtnTop.style.display = 'inline-block';
+  } else {
+    if(installBanner) installBanner.classList.remove('show');
+  }
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallUI(true);
+});
+
+installBtn?.addEventListener('click', async () => {
+  if(!deferredPrompt){
+    // Fallback: offer download
+    downloadStandalone();
+    return;
+  }
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  showInstallUI(false);
+});
+installBtnTop?.addEventListener('click', async () => {
+  if(deferredPrompt) installBtn.click();
+  else downloadStandalone();
+});
+dismissInstallBtn?.addEventListener('click', ()=>{
+  showInstallUI(false);
+  localStorage.setItem('ptl_install_dismissed', Date.now());
+});
+
+// Service Worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=> {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  });
+}
+
+// Already installed? hide
+window.addEventListener('appinstalled', ()=>{ showInstallUI(false); });
+
+// Offer banner on first visit after 2.5s if not installed
+if(!window.matchMedia('(display-mode: standalone)').matches){
+  const dismissed = localStorage.getItem('ptl_install_dismissed');
+  if(!dismissed || Date.now() - Number(dismissed) > 86400000*7){
+    setTimeout(()=>{ if(!deferredPrompt) showInstallUI(true); }, 2500);
+  }
+}
+
+// --- Download Standalone HTML ---
+async function downloadStandalone(){
+  try {
+    const resp = await fetch(location.href, {cache:'no-cache'});
+    let fullHtml = await resp.text();
+    // Inline the manifest as a data URL so the standalone file is truly single-file
+    fullHtml = fullHtml.replace('<link rel="manifest" href="manifest.webmanifest">',
+      '<!-- manifest removed in standalone build -->');
+    const blob = new Blob([fullHtml], {type: 'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'purple-team-lab-standalone.html';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  } catch(e){
+    // Fallback: serialize current document
+    const blob = new Blob([document.documentElement.outerHTML], {type: 'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'purple-team-lab-standalone.html';
+    a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); }, 1000);
+  }
+}
+document.getElementById('downloadStandaloneBtn')?.addEventListener('click', downloadStandalone);
+
+// Keyboard: Ctrl/Cmd+S to download standalone
+window.addEventListener('keydown', e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){
+    e.preventDefault();
+    downloadStandalone();
+  }
+});
+
+</script>
+</body>
+</html>

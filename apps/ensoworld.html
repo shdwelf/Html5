@@ -1,0 +1,2154 @@
+<!doctype html>
+<!--
+  Ensō World — single-file HTML5 app
+  ==================================
+  An Ensō (Zen brush circle) splash → a spinning live News Globe → with
+  side-doors into a GEDCOM Family Tree and a Timeline-on-Map view.
+
+  Architecture
+    - One self-contained .html file. Drop anywhere; runs in any modern browser.
+    - External CDNs (d3, topojson, leaflet) loaded on-demand. Falls back
+      gracefully to canvas/topology-only when offline.
+    - localStorage for caching feeds + tree data so the app persists.
+  ==================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#0c1320" />
+<title>Ensō World</title>
+<style>
+/* =========================================================================
+   ROOT
+   ========================================================================= */
+:root {
+  --bg-deep:   #04070d;
+  --bg:        #0c1320;
+  --ink:       #0a0a0a;
+  --panel:     rgba(14,22,38,0.92);
+  --panel-2:   rgba(10,18,32,0.78);
+  --edge:      rgba(150,180,220,0.18);
+  --text:      #e7eef7;
+  --muted:     #8aa0bd;
+  --accent:    #ffd166;
+  --pink:      #ff5e7a;
+  --green:     #6ee7a0;
+  --warn:      #f9c74f;
+  --err:       #ff7a8a;
+  --enso:      #f4ead5;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; height: 100%; background: var(--bg-deep);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Inter, sans-serif;
+  overflow: hidden;
+}
+
+/* =========================================================================
+   SPLASH — Ensō brush stroke generator
+   ========================================================================= */
+#splash {
+  position: fixed; inset: 0; z-index: 100;
+  background: radial-gradient(ellipse at center, #15110a 0%, #06040a 70%, #000 100%);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  cursor: pointer;
+  transition: opacity 1.2s ease-out;
+}
+#splash.exit { opacity: 0; pointer-events: none; }
+#splash-canvas { display: block; }
+#splash .seal {
+  position: absolute; bottom: 12%;
+  font-family: "Helvetica Neue", "STSong", serif;
+  color: rgba(244,234,213,0.55);
+  font-size: 11px; letter-spacing: 6px; text-transform: uppercase;
+  animation: sealFade 2.5s ease-out 4.5s both;
+}
+#splash .hint {
+  position: absolute; bottom: 7%;
+  font-size: 10px; letter-spacing: 3px; color: rgba(244,234,213,0.35);
+  text-transform: uppercase;
+  animation: sealFade 1.5s ease-out 5.5s both;
+}
+@keyframes sealFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+/* a subtle paper-grain overlay using SVG noise */
+#splash::before {
+  content:""; position:absolute; inset:0; opacity:0.06; pointer-events:none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='1.5' numOctaves='2' /></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+}
+
+/* =========================================================================
+   APP SHELL
+   ========================================================================= */
+#app {
+  position: fixed; inset: 0;
+  display: grid;
+  grid-template-rows: 52px 1fr;
+  grid-template-areas: "head" "main";
+  opacity: 0; transition: opacity .8s ease-in;
+}
+#app.ready { opacity: 1; }
+
+header.top {
+  grid-area: head;
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 16px;
+  background: linear-gradient(180deg, rgba(8,14,24,0.95), rgba(8,14,24,0.55));
+  border-bottom: 1px solid var(--edge);
+  z-index: 10;
+}
+header .brand { display:flex; align-items:center; gap:8px; font-weight:600; }
+header .brand svg { width:22px; height:22px; }
+header .brand .name { font-size:14px; letter-spacing:0.5px; }
+header .brand .dot { color: var(--accent); }
+header .spacer { flex: 1; }
+header .nav-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  background: rgba(255,255,255,0.04); color: var(--text);
+  border: 1px solid var(--edge); border-radius: 8px;
+  padding: 6px 12px; cursor: pointer; font-size: 12px;
+  transition: background .15s;
+}
+header .nav-btn:hover { background: rgba(255,255,255,0.1); }
+header .nav-btn.active { background: var(--accent); color: #1a1305; border-color: var(--accent); }
+header .pill {
+  display:inline-flex; align-items:center; gap:6px;
+  padding: 4px 10px; border-radius: 999px;
+  font-size: 11px; color: var(--muted);
+  border: 1px solid var(--edge);
+  cursor: pointer;
+}
+header .pill:hover { background: rgba(255,255,255,0.05); }
+header .pill .d { width:7px; height:7px; border-radius:50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+header .pill.offline .d { background: var(--err); box-shadow: 0 0 6px var(--err); }
+header .stats {
+  font-size: 11px; color: var(--muted); margin-right: 6px;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+header .stats b { color: var(--accent); font-weight: 600; }
+
+/* Diagnostic log drawer */
+#log-drawer {
+  position: fixed; right: 12px; top: 60px;
+  width: 380px; max-height: 50vh; z-index: 50;
+  background: rgba(8,14,24,0.96); border: 1px solid var(--edge);
+  border-radius: 10px; padding: 8px 10px;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px; line-height: 1.5; overflow-y: auto;
+  display: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+#log-drawer.open { display: block; }
+#log-drawer .ll { padding: 1px 0; color: var(--muted); border-bottom: 1px dashed rgba(120,180,255,0.05); }
+#log-drawer .ll.ok   { color: var(--green); }
+#log-drawer .ll.warn { color: var(--warn); }
+#log-drawer .ll.err  { color: var(--err); }
+#log-drawer .ll.evt  { color: var(--text); }
+#log-drawer .head    { color: var(--accent); font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 4px; border-bottom: 1px solid var(--edge); margin-bottom: 4px; display: flex; justify-content: space-between; }
+#log-drawer .head .x { cursor: pointer; color: var(--muted); }
+
+main.stage { grid-area: main; position: relative; overflow: hidden; }
+
+/* =========================================================================
+   GLOBE VIEW (background, always present)
+   ========================================================================= */
+#globe-view { position: absolute; inset: 0; }
+#globe-view svg { display: block; width: 100%; height: 100%; cursor: grab; }
+#globe-view svg:active { cursor: grabbing; }
+
+/* Globe ticker */
+#ticker {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 32px; z-index: 4;
+  background: linear-gradient(180deg, rgba(10,18,32,0.4), rgba(10,18,32,0.95));
+  border-top: 1px solid var(--edge);
+  display: flex; align-items: center; overflow: hidden;
+}
+#ticker .label {
+  flex: 0 0 auto; padding: 0 14px; height: 100%;
+  display: flex; align-items: center;
+  background: var(--pink); color: #fff;
+  font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+}
+#ticker .scroll { flex: 1; overflow: hidden; white-space: nowrap; position: relative; height: 100%; }
+#ticker-track { display: inline-block; padding-left: 100%; animation: tickScroll 80s linear infinite; }
+#ticker-track.paused { animation-play-state: paused; }
+@keyframes tickScroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+.tick {
+  display: inline-block; padding: 0 22px; line-height: 32px;
+  font-size: 12px; color: var(--text); cursor: pointer;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.tick:hover { color: var(--accent); }
+.tick .src   { color: var(--accent); font-weight: 600; margin-right: 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.tick .place { color: #9bdcff; margin-right: 8px; font-size: 11px; }
+
+/* Globe info popups */
+#globe-popups { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+.gpopup {
+  position: absolute; pointer-events: auto; cursor: pointer;
+  width: 220px;
+  background: rgba(10,18,32,0.95);
+  border: 1px solid var(--accent); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,209,102,0.2);
+  overflow: hidden;
+  animation: popIn .35s cubic-bezier(.2,.9,.3,1.2);
+  transition: opacity .5s;
+  z-index: 6;
+}
+.gpopup.fadeout { opacity: 0; }
+.gpopup .thumb {
+  width:100%; height: 88px; background:#0a1422 center/cover no-repeat; position: relative;
+}
+.gpopup .thumb::after {
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(10,18,32,0.9) 100%);
+}
+.gpopup .thumb .src-chip { position:absolute; top:6px; left:6px; z-index:2;
+  background:rgba(0,0,0,0.65); color:var(--accent); font-size:9px; text-transform:uppercase;
+  letter-spacing:1px; padding:2px 6px; border-radius:4px; font-weight:600;
+}
+.gpopup .body { padding: 8px 10px 10px; }
+.gpopup .body .t { font-size:12px; line-height:1.35; color:var(--text); font-weight:600;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+}
+.gpopup .body .m { margin-top:6px; font-size:10px; color:var(--muted); display:flex; justify-content:space-between; }
+@keyframes popIn { from { opacity:0; transform: translateY(8px) scale(.9); } to { opacity:1; transform: translateY(0) scale(1); } }
+
+/* =========================================================================
+   OVERLAY VIEWS — Tree & Timeline slide in from the right
+   ========================================================================= */
+.overlay {
+  position: absolute; inset: 0; z-index: 20;
+  background: var(--bg);
+  transform: translateX(100%);
+  transition: transform .4s cubic-bezier(.2,.85,.3,1);
+  display: flex; flex-direction: column;
+}
+.overlay.open { transform: translateX(0); }
+.overlay header.subhead {
+  flex: 0 0 auto; padding: 12px 18px;
+  display: flex; align-items: center; gap: 14px;
+  background: var(--panel); border-bottom: 1px solid var(--edge);
+}
+.overlay header.subhead h2 { margin:0; font-size:15px; color: var(--accent); }
+.overlay header.subhead .sub { color: var(--muted); font-size: 12px; }
+.overlay .close-x {
+  margin-left: auto;
+  background: transparent; color: var(--text);
+  border: 1px solid var(--edge); border-radius: 8px;
+  padding: 6px 12px; cursor: pointer; font-size: 12px;
+}
+.overlay .close-x:hover { background: rgba(255,255,255,0.1); }
+.overlay .body { flex: 1; overflow: hidden; position: relative; }
+
+/* =========================================================================
+   TREE VIEW
+   ========================================================================= */
+#tree-controls {
+  padding: 14px 18px; display: flex; flex-direction: column; gap: 8px;
+  background: var(--panel-2); border-bottom: 1px solid var(--edge);
+}
+#tree-controls .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+#tree-controls textarea, #tree-controls input[type="url"] {
+  flex: 1; min-width: 240px;
+  background: rgba(0,0,0,0.3); color: var(--text);
+  border: 1px solid var(--edge); border-radius: 6px;
+  padding: 8px 10px; font-size: 12px;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+#tree-controls textarea { min-height: 60px; resize: vertical; }
+#tree-controls .btn {
+  background: var(--accent); color: #1a1305; border: none;
+  padding: 8px 12px; border-radius: 6px; cursor: pointer;
+  font-size: 12px; font-weight: 600;
+}
+#tree-controls .btn.secondary { background: transparent; color: var(--text); border: 1px solid var(--edge); }
+#tree-controls .btn:hover { filter: brightness(1.1); }
+#tree-controls .hint { color: var(--muted); font-size: 11px; }
+
+#tree-stage { position: absolute; inset: 0; overflow: hidden; cursor: grab; background:
+  radial-gradient(ellipse at 30% 20%, #142240 0%, #0c1320 60%, #05080f 100%);
+}
+#tree-stage:active { cursor: grabbing; }
+#tree-stage svg { display: block; width:100%; height:100%; }
+#tree-empty {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 14px; text-align: center; padding: 40px;
+}
+
+/* Tree person nodes */
+.tree-person rect.bg { transition: stroke-width .15s; }
+.tree-person:hover rect.bg { stroke-width: 2.5; }
+.tree-person.root rect.bg { stroke:#fff; stroke-width:3; filter: drop-shadow(0 0 8px #fff8); }
+.tree-edge { fill: none; stroke-width: 1.4; opacity: 0.55; }
+.tree-couple { stroke: var(--accent); stroke-dasharray: 4 3; stroke-width: 1.2; opacity: 0.55; }
+
+/* =========================================================================
+   TIMELINE VIEW
+   ========================================================================= */
+#timeline-stage { display: flex; height: 100%; }
+#timeline-list {
+  flex: 0 0 360px; overflow: auto; background: var(--panel-2);
+  border-right: 1px solid var(--edge);
+}
+.tl-year { padding: 12px 16px 6px; color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: 1px; position: sticky; top:0; background: rgba(10,18,32,0.95); border-bottom: 1px solid var(--edge); z-index: 1; }
+.tl-event {
+  padding: 12px 16px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background .15s;
+}
+.tl-event:hover { background: rgba(255,255,255,0.05); }
+.tl-event.active { background: rgba(255,209,102,0.12); border-left: 3px solid var(--accent); padding-left: 13px; }
+.tl-event .date { font-size: 11px; color: var(--muted); }
+.tl-event .who  { font-size: 13px; color: var(--text); font-weight: 600; margin-top: 2px; }
+.tl-event .what { font-size: 12px; color: var(--accent); margin-top: 2px; }
+.tl-event .where{ font-size: 11px; color: #9bdcff; margin-top: 2px; }
+.tl-empty { padding: 40px 20px; color: var(--muted); text-align: center; font-size: 13px; }
+
+#timeline-map { flex: 1; position: relative; background: #0a1422; }
+#timeline-map .map-canvas { width: 100%; height: 100%; }
+#timeline-card {
+  position: absolute; top: 16px; right: 16px; max-width: 320px;
+  background: var(--panel); border: 1px solid var(--edge); border-radius: 12px;
+  padding: 14px 16px; z-index: 5;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  opacity: 0; transform: translateY(-8px); transition: all .3s;
+  pointer-events: none;
+}
+#timeline-card.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+#timeline-card h3 { margin: 0 0 6px 0; color: var(--accent); font-size: 14px; }
+#timeline-card .meta { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+#timeline-card .desc { font-size: 12px; color: var(--text); line-height: 1.5; }
+#timeline-card .pin { display:inline-block; padding:2px 8px; background:rgba(255,209,102,0.15); color:var(--accent); border-radius:999px; font-size:10px; }
+
+/* Tile reveal animation overlay */
+.tile-ripple { position: absolute; pointer-events: none; border: 2px solid var(--accent);
+  border-radius: 50%; animation: ripple 1.4s ease-out forwards;
+}
+@keyframes ripple {
+  0%   { width: 0; height: 0; opacity: 0.9; }
+  100% { width: 300px; height: 300px; transform: translate(-150px, -150px); opacity: 0; }
+}
+
+/* Spinner */
+.spin {
+  display:inline-block; width:12px; height:12px;
+  border:2px solid rgba(255,255,255,0.2); border-top-color: var(--accent);
+  border-radius:50%; animation: spin 1s linear infinite; vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Log toast */
+#toast {
+  position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
+  background: var(--panel); border: 1px solid var(--edge);
+  padding: 8px 14px; border-radius: 8px; font-size: 12px; color: var(--text);
+  opacity: 0; transition: opacity .3s; z-index: 1000; max-width: 80%;
+}
+#toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- ====== SPLASH ====== -->
+<div id="splash">
+  <canvas id="splash-canvas" width="600" height="600"></canvas>
+  <div class="seal">ENSŌ · 圓相</div>
+  <div class="hint">click to enter</div>
+</div>
+
+<!-- ====== APP ====== -->
+<div id="app">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="36" fill="none" stroke="var(--enso)" stroke-width="6" stroke-linecap="round"
+                stroke-dasharray="200 30" transform="rotate(-110 50 50)" opacity="0.85"/>
+      </svg>
+      <span class="name">Ensō<span class="dot">·</span>World</span>
+    </div>
+    <button class="nav-btn active" data-view="globe">🌐 Globe</button>
+    <button class="nav-btn" data-view="tree">🧬 Family Tree</button>
+    <button class="nav-btn" data-view="timeline">🕒 Timeline</button>
+    <div class="spacer"></div>
+    <span class="stats">📡 <b id="stat-feeds">0</b> feeds · 📰 <b id="stat-articles">0</b> articles · 📍 <b id="stat-events">0</b> on globe</span>
+    <span class="pill" id="net-pill" title="Click to toggle activity log"><span class="d"></span> <span id="net-text">connecting…</span></span>
+    <button class="nav-btn" id="btn-replay-splash" title="Replay splash">⟳</button>
+  </header>
+
+  <div id="log-drawer">
+    <div class="head"><span>Activity log</span><span class="x" onclick="document.getElementById('log-drawer').classList.remove('open')">×</span></div>
+    <div id="log-body"></div>
+  </div>
+
+  <main class="stage">
+    <!-- GLOBE VIEW (always present as background) -->
+    <div id="globe-view">
+      <svg id="globe-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div id="globe-popups"></div>
+      <div id="ticker">
+        <div class="label">● Live</div>
+        <div class="scroll"><div id="ticker-track"></div></div>
+      </div>
+    </div>
+
+    <!-- TREE OVERLAY -->
+    <div class="overlay" id="overlay-tree">
+      <header class="subhead">
+        <h2>🧬 Family Tree</h2>
+        <span class="sub" id="tree-sub">paste GEDCOM data or a URL</span>
+        <button class="close-x" data-close>Close ×</button>
+      </header>
+      <div id="tree-controls">
+        <div class="row">
+          <input type="url" id="tree-url" placeholder="https://example.com/family.ged  (multiple URLs separated by newline or comma)"/>
+          <button class="btn" id="tree-load-url">Load URL(s)</button>
+        </div>
+        <div class="row">
+          <textarea id="tree-paste" placeholder="…or paste GEDCOM (0 HEAD … 0 TRLR) here"></textarea>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <button class="btn" id="tree-load-paste">Parse pasted</button>
+            <button class="btn secondary" id="tree-clipboard">📋 Read clipboard</button>
+            <button class="btn secondary" id="tree-demo">Try demo</button>
+          </div>
+        </div>
+        <div class="hint" id="tree-hint">Multipart support: paste/list multiple URLs and the parser smart-merges by @I…@/@F…@ record IDs.</div>
+      </div>
+      <div class="body">
+        <div id="tree-stage"><svg id="tree-svg"></svg></div>
+        <div id="tree-empty">No family tree loaded yet — paste GEDCOM data above, or click <b>Try demo</b>.</div>
+      </div>
+    </div>
+
+    <!-- TIMELINE OVERLAY -->
+    <div class="overlay" id="overlay-timeline">
+      <header class="subhead">
+        <h2>🕒 Timeline & Map</h2>
+        <span class="sub" id="tl-sub">birth · death · marriage · migration events</span>
+        <button class="close-x" data-close>Close ×</button>
+      </header>
+      <div class="body">
+        <div id="timeline-stage">
+          <div id="timeline-list">
+            <div class="tl-empty">Load GEDCOM data in the <b>Family Tree</b> tab first — events with dates and places will appear here.</div>
+          </div>
+          <div id="timeline-map">
+            <div class="map-canvas" id="map-canvas"></div>
+            <div id="timeline-card"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ===========================================================================
+   ENSŌ SPLASH — animated brush-stroke circle generator
+   =========================================================================== */
+(function ensoSplash() {
+  const canvas = document.getElementById('splash-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W/2, cy = H/2;
+  const radius = 180;
+
+  // Pre-compute jitter so the path looks hand-drawn (not perfectly circular)
+  const seed = Math.random() * Math.PI * 2;
+  const STEPS = 360;
+  const points = [];
+  for (let i = 0; i <= STEPS; i++) {
+    const t = i / STEPS;
+    // Don't quite close the circle — leave a gap (the traditional Ensō feel)
+    const startA = -Math.PI * 0.55 + seed;
+    const ang = startA + t * Math.PI * 1.85;   // ~333° sweep
+    const wob = (Math.sin(t * 9) * 0.5 + Math.cos(t * 17) * 0.3) * 4;
+    const r = radius + wob + (Math.random() - 0.5) * 1.2;
+    points.push([cx + r * Math.cos(ang), cy + r * Math.sin(ang), t]);
+  }
+
+  function drawTaperedSegment(p0, p1, t, width) {
+    // Use multiple offset strokes to fake a wet-brush look
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    for (let k = -1; k <= 1; k++) {
+      ctx.beginPath();
+      ctx.moveTo(p0[0] + k * 0.6, p0[1] + k * 0.6);
+      ctx.lineTo(p1[0] + k * 0.6, p1[1] + k * 0.6);
+      ctx.strokeStyle = `rgba(244,234,213,${0.85 - Math.abs(k) * 0.25})`;
+      ctx.lineWidth = width;
+      ctx.stroke();
+    }
+  }
+
+  let i = 0;
+  let lastSpray = 0;
+  const start = performance.now();
+  const totalDuration = 2200;  // ms for the stroke to draw
+
+  function frame(now) {
+    const elapsed = now - start;
+    const targetT = Math.min(1, elapsed / totalDuration);
+    const targetI = Math.floor(targetT * STEPS);
+
+    while (i < targetI) {
+      const p0 = points[i], p1 = points[i+1];
+      if (!p1) { i++; continue; }
+      const t = p0[2];
+      // Brush width: thick in the middle, taper at ends (yin-yang of stroke)
+      const w = 18 + Math.sin(t * Math.PI) * 8 - Math.abs(t - 0.5) * 4
+                + (Math.random() - 0.5) * 1.5;
+      drawTaperedSegment(p0, p1, t, Math.max(4, w));
+
+      // Ink splatter near the start
+      if (t < 0.15 && Math.random() < 0.3) {
+        ctx.beginPath();
+        const r = Math.random() * 2 + 0.5;
+        ctx.arc(p0[0] + (Math.random()-0.5)*14, p0[1] + (Math.random()-0.5)*14, r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(244,234,213,${Math.random() * 0.5 + 0.2})`;
+        ctx.fill();
+      }
+      // Tapered "lift-off" wisps near the end
+      if (t > 0.93 && Math.random() < 0.4) {
+        ctx.beginPath();
+        ctx.arc(p0[0] + (Math.random()-0.5)*5, p0[1] + (Math.random()-0.5)*5, Math.random()*1.5, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(244,234,213,${Math.random() * 0.4 + 0.15})`;
+        ctx.fill();
+      }
+      i++;
+    }
+
+    if (i < STEPS) {
+      requestAnimationFrame(frame);
+    } else {
+      // Done — schedule auto-dismiss
+      setTimeout(dismissSplash, 1400);
+    }
+  }
+  requestAnimationFrame(frame);
+
+  function dismissSplash() {
+    const splash = document.getElementById('splash');
+    if (!splash || splash.classList.contains('exit')) return;
+    splash.classList.add('exit');
+    const app = document.getElementById('app');
+    app.classList.add('ready');
+    setTimeout(() => { if (splash.parentNode) splash.style.display = 'none'; }, 1400);
+  }
+
+  // Click-to-skip
+  document.getElementById('splash').addEventListener('click', dismissSplash);
+  window.__replaySplash = function() {
+    const splash = document.getElementById('splash');
+    splash.style.display = '';
+    splash.classList.remove('exit');
+    ctx.clearRect(0, 0, W, H);
+    i = 0;
+    Object.assign({}, { start: performance.now() });
+    // Restart the stroke
+    const newStart = performance.now();
+    function frame2(now) {
+      const elapsed = now - newStart;
+      const targetT = Math.min(1, elapsed / totalDuration);
+      const targetI = Math.floor(targetT * STEPS);
+      while (i < targetI) {
+        const p0 = points[i], p1 = points[i+1];
+        if (!p1) { i++; continue; }
+        const t = p0[2];
+        const w = 18 + Math.sin(t * Math.PI) * 8 - Math.abs(t - 0.5) * 4;
+        drawTaperedSegment(p0, p1, t, Math.max(4, w));
+        i++;
+      }
+      if (i < STEPS) requestAnimationFrame(frame2);
+      else setTimeout(dismissSplash, 1800);
+    }
+    requestAnimationFrame(frame2);
+  };
+})();
+
+/* ===========================================================================
+   TOAST + LOG helpers (visible to user)
+   =========================================================================== */
+function toast(msg, ms = 2400) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove('show'), ms);
+}
+function log(msg, type = 'info') {
+  console.log(`[ensō:${type}]`, msg);
+  const body = document.getElementById('log-body');
+  if (!body) return;
+  const ln = document.createElement('div');
+  ln.className = 'll ' + type;
+  const t = new Date().toLocaleTimeString();
+  ln.textContent = `${t}  ${msg}`;
+  body.prepend(ln);
+  while (body.children.length > 80) body.removeChild(body.lastChild);
+}
+function setStat(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
+
+// Click pill toggles log drawer
+document.addEventListener('DOMContentLoaded', () => {
+  const pill = document.getElementById('net-pill');
+  if (pill) pill.addEventListener('click', () => {
+    document.getElementById('log-drawer').classList.toggle('open');
+  });
+});
+
+/* ===========================================================================
+   NAVIGATION
+   =========================================================================== */
+function showView(view) {
+  document.querySelectorAll('.nav-btn[data-view]').forEach((b) => {
+    b.classList.toggle('active', b.dataset.view === view);
+  });
+  document.getElementById('overlay-tree').classList.toggle('open', view === 'tree');
+  document.getElementById('overlay-timeline').classList.toggle('open', view === 'timeline');
+  if (view === 'timeline') renderTimeline();
+  if (view === 'tree') renderTree();
+}
+document.querySelectorAll('.nav-btn[data-view]').forEach((b) =>
+  b.addEventListener('click', () => showView(b.dataset.view))
+);
+document.querySelectorAll('[data-close]').forEach((b) =>
+  b.addEventListener('click', () => showView('globe'))
+);
+document.getElementById('btn-replay-splash').addEventListener('click', () => window.__replaySplash());
+
+/* ===========================================================================
+   NETWORK STATUS
+   =========================================================================== */
+function setNet(online) {
+  const pill = document.getElementById('net-pill');
+  const txt  = document.getElementById('net-text');
+  pill.classList.toggle('offline', !online);
+  txt.textContent = online ? 'online' : 'offline · cached';
+}
+window.addEventListener('online',  () => { setNet(true);  toast('Network back online'); });
+window.addEventListener('offline', () => { setNet(false); toast('Network offline — using cached data'); });
+setNet(navigator.onLine);
+</script>
+
+<!-- d3 / topojson loaded lazily for the globe -->
+<script>
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+async function ensureD3() {
+  if (window.d3 && window.topojson) return;
+  try {
+    await Promise.all([
+      loadScript('https://unpkg.com/d3@7'),
+      loadScript('https://unpkg.com/topojson-client@3'),
+    ]);
+  } catch (e) {
+    toast('Could not load d3/topojson — globe unavailable');
+    throw e;
+  }
+}
+async function ensureLeaflet() {
+  if (window.L) return true;
+  try {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(link);
+    await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
+    return true;
+  } catch (e) { return false; }
+}
+</script>
+
+<!-- ====== Gazetteer (compact, ~250 places) ====== -->
+<script>
+window.GAZETTEER = (function () {
+  // [name, lon, lat] — countries first, then major cities. Order = matter for
+  // longest-prefix match; we sort by length descending so "New York" beats "York".
+  const raw = [
+    ["United States",-98.5,39.8],["United Kingdom",-1.5,52.5],["Saudi Arabia",45,24],
+    ["South Korea",127.7,36.5],["North Korea",127.5,40],["South Africa",25,-29],
+    ["New Zealand",174,-41],["Czech Republic",15.5,49.8],["Sri Lanka",80.7,7.9],
+    ["Costa Rica",-84,9.7],["El Salvador",-88.9,13.7],["Puerto Rico",-66.6,18.2],
+    ["Hong Kong",114.17,22.32],["Ivory Coast",-5.5,7.5],["Dominican Republic",-70.16,18.7],
+    ["United Arab Emirates",54,24],["Vatican",12.45,41.9],["Palestine",35.2,31.9],
+    ["Russia",105,61.5],["China",104,35],["India",78.9,21],["Japan",138,36.2],
+    ["Germany",10.4,51.2],["France",2.2,46.6],["Italy",12.6,41.9],["Spain",-3.7,40.5],
+    ["Portugal",-8.2,39.4],["Greece",22,39],["Turkey",35.2,39],["Iran",53.7,32.4],
+    ["Iraq",43.7,33.2],["Syria",38,35],["Israel",34.85,31.05],["Lebanon",35.8,33.9],
+    ["Jordan",36.2,30.6],["Yemen",47.5,15.5],["Egypt",30.8,26.8],["Libya",17.2,26.3],
+    ["Tunisia",9.5,33.9],["Algeria",1.7,28],["Morocco",-7.1,31.8],["Sudan",30.2,12.9],
+    ["Ethiopia",40.5,9.1],["Kenya",37.9,0],["Nigeria",8.7,9.1],["Ghana",-1,7.9],
+    ["Senegal",-14.4,14.5],["Mexico",-102.5,23.6],["Canada",-106.3,56.1],
+    ["Brazil",-51.9,-14.2],["Argentina",-63.6,-38.4],["Chile",-71.5,-35.7],
+    ["Peru",-75,-9.2],["Colombia",-74.3,4.6],["Venezuela",-66.6,6.4],
+    ["Ecuador",-78.2,-1.8],["Cuba",-77.8,21.5],["Australia",133.8,-25.3],
+    ["Indonesia",113.9,-0.8],["Philippines",121.8,12.9],["Vietnam",108.3,14.1],
+    ["Thailand",100,15.9],["Malaysia",101.9,4.2],["Singapore",103.82,1.35],
+    ["Pakistan",69.3,30.4],["Afghanistan",67.7,33.9],["Bangladesh",90.4,23.7],
+    ["Mongolia",103.8,46.9],["Taiwan",121,23.7],["Kazakhstan",66.9,48],
+    ["Ukraine",31.2,48.4],["Belarus",28,53.7],["Poland",19.1,51.9],["Romania",25,45.9],
+    ["Hungary",19.5,47.2],["Austria",14.6,47.5],["Switzerland",8.2,46.8],
+    ["Belgium",4.5,50.5],["Netherlands",5.3,52.1],["Denmark",9.5,56.3],
+    ["Sweden",18.6,60.1],["Norway",8.5,60.5],["Finland",26,64],["Ireland",-8.2,53.4],
+    ["Iceland",-19,64.96],["Croatia",15.2,45.1],["Serbia",21,44],["Bulgaria",25.5,42.7],
+    // cities
+    ["New York",-74,40.71],["Los Angeles",-118.24,34.05],["Chicago",-87.65,41.85],
+    ["Houston",-95.37,29.76],["Phoenix",-112.07,33.45],["Philadelphia",-75.16,39.95],
+    ["San Antonio",-98.5,29.42],["San Diego",-117.16,32.71],["Dallas",-96.8,32.78],
+    ["San Jose",-121.89,37.34],["Austin",-97.74,30.27],["San Francisco",-122.42,37.77],
+    ["Seattle",-122.33,47.6],["Denver",-104.99,39.74],["Boston",-71.06,42.36],
+    ["Washington",-77.04,38.91],["Atlanta",-84.39,33.75],["Miami",-80.19,25.76],
+    ["Detroit",-83.05,42.33],["Minneapolis",-93.27,44.98],["Las Vegas",-115.14,36.17],
+    ["Portland",-122.68,45.52],["Toronto",-79.38,43.65],["Montreal",-73.57,45.5],
+    ["Vancouver",-123.12,49.28],["Ottawa",-75.7,45.42],["Mexico City",-99.13,19.43],
+    ["Bogota",-74.07,4.71],["Lima",-77.04,-12.05],["Santiago",-70.65,-33.45],
+    ["Buenos Aires",-58.38,-34.6],["Sao Paulo",-46.63,-23.55],["Rio de Janeiro",-43.17,-22.91],
+    ["London",-0.13,51.51],["Manchester",-2.24,53.48],["Birmingham",-1.9,52.48],
+    ["Liverpool",-2.99,53.41],["Leeds",-1.55,53.8],["Bristol",-2.59,51.45],
+    ["Glasgow",-4.25,55.86],["Edinburgh",-3.19,55.95],["Dublin",-6.27,53.35],
+    ["Belfast",-5.93,54.6],["Cardiff",-3.18,51.48],
+    ["Paris",2.35,48.86],["Marseille",5.37,43.3],["Lyon",4.83,45.76],
+    ["Berlin",13.4,52.52],["Munich",11.58,48.14],["Hamburg",9.99,53.55],
+    ["Frankfurt",8.68,50.11],["Madrid",-3.7,40.42],["Barcelona",2.17,41.39],
+    ["Lisbon",-9.14,38.72],["Rome",12.49,41.9],["Milan",9.19,45.46],
+    ["Naples",14.27,40.85],["Athens",23.73,37.98],["Amsterdam",4.9,52.37],
+    ["Brussels",4.35,50.85],["Vienna",16.37,48.21],["Zurich",8.54,47.37],
+    ["Copenhagen",12.57,55.68],["Oslo",10.75,59.91],["Stockholm",18.07,59.33],
+    ["Helsinki",24.94,60.17],["Warsaw",21.01,52.23],["Prague",14.42,50.08],
+    ["Budapest",19.04,47.5],["Bucharest",26.1,44.43],["Moscow",37.62,55.75],
+    ["Saint Petersburg",30.31,59.93],["Kyiv",30.52,50.45],["Kiev",30.52,50.45],
+    ["Istanbul",28.98,41.01],["Ankara",32.86,39.93],["Tehran",51.39,35.69],
+    ["Baghdad",44.36,33.31],["Damascus",36.29,33.51],["Beirut",35.5,33.89],
+    ["Jerusalem",35.21,31.77],["Tel Aviv",34.78,32.08],["Gaza",34.46,31.5],
+    ["Riyadh",46.71,24.71],["Dubai",55.27,25.2],["Cairo",31.24,30.04],
+    ["Casablanca",-7.59,33.57],["Lagos",3.39,6.45],["Nairobi",36.82,-1.29],
+    ["Johannesburg",28.05,-26.2],["Cape Town",18.42,-33.92],["Beijing",116.41,39.9],
+    ["Shanghai",121.47,31.23],["Guangzhou",113.26,23.13],["Shenzhen",114.06,22.54],
+    ["Hong Kong",114.17,22.32],["Tokyo",139.69,35.69],["Osaka",135.5,34.69],
+    ["Kyoto",135.77,35.01],["Seoul",126.98,37.57],["Taipei",121.57,25.03],
+    ["New Delhi",77.21,28.61],["Delhi",77.1,28.7],["Mumbai",72.88,19.08],
+    ["Kolkata",88.36,22.57],["Chennai",80.27,13.08],["Bangalore",77.59,12.97],
+    ["Karachi",67,24.86],["Lahore",74.34,31.55],["Islamabad",73.05,33.69],
+    ["Dhaka",90.41,23.81],["Kathmandu",85.32,27.71],["Yangon",96.16,16.87],
+    ["Bangkok",100.5,13.76],["Hanoi",105.83,21.03],["Ho Chi Minh",106.66,10.82],
+    ["Kuala Lumpur",101.69,3.14],["Jakarta",106.85,-6.21],["Manila",120.98,14.6],
+    ["Sydney",151.21,-33.87],["Melbourne",144.96,-37.81],["Brisbane",153.03,-27.47],
+    ["Perth",115.86,-31.95],["Auckland",174.76,-36.85],["Wellington",174.78,-41.29],
+  ];
+  return raw.map(([n,lo,la]) => ({name:n, lon:lo, lat:la, key:n.toLowerCase()}))
+            .sort((a,b) => b.name.length - a.name.length);
+})();
+
+function geocode(text) {
+  if (!text) return null;
+  const t = String(text).toLowerCase();
+  for (const g of window.GAZETTEER) {
+    const i = t.indexOf(g.key);
+    if (i === -1) continue;
+    const before = i === 0 ? ' ' : t[i-1];
+    const after  = i + g.key.length >= t.length ? ' ' : t[i + g.key.length];
+    if (/[a-z0-9]/.test(before) || /[a-z0-9]/.test(after)) continue;
+    return g;
+  }
+  return null;
+}
+</script>
+
+<!-- ====== Feeds DB (compact subset extracted from javalc6/rssreader) ====== -->
+<script>
+/* Facts-only extract (URLs + titles) from FeedsDB.java, news category only
+ * across the 7 languages, capped to keep page weight reasonable.
+ * Original source: https://github.com/javalc6/rssreader (GPL-2.0)
+ */
+window.NEWS_FEEDS = [
+  // English
+  {t:"BBC News - World",u:"http://feeds.bbci.co.uk/news/world/rss.xml"},
+  {t:"BBC News - UK",u:"http://feeds.bbci.co.uk/news/uk/rss.xml"},
+  {t:"CNN World",u:"http://rss.cnn.com/rss/edition_world.rss"},
+  {t:"Al Jazeera",u:"https://www.aljazeera.com/xml/rss/all.xml"},
+  {t:"Reuters Top News",u:"https://feeds.reuters.com/reuters/topNews"},
+  {t:"Guardian World",u:"https://www.theguardian.com/world/rss"},
+  {t:"NYT World",u:"https://rss.nytimes.com/services/xml/rss/nyt/World.xml"},
+  {t:"NPR News",u:"https://feeds.npr.org/1001/rss.xml"},
+  {t:"AP Top News",u:"https://apnews.com/index.rss"},
+  {t:"Washington Post World",u:"http://feeds.washingtonpost.com/rss/world"},
+  {t:"DW English",u:"https://rss.dw.com/rdf/rss-en-all"},
+  {t:"France 24 EN",u:"https://www.france24.com/en/rss"},
+  {t:"Times of India World",u:"https://timesofindia.indiatimes.com/rssfeeds/296589292.cms"},
+  {t:"Sky News",u:"https://feeds.skynews.com/feeds/rss/world.xml"},
+  {t:"Hacker News",u:"https://hnrss.org/frontpage"},
+  // German
+  {t:"tagesschau",u:"https://www.tagesschau.de/xml/rss2"},
+  {t:"Spiegel",u:"https://www.spiegel.de/schlagzeilen/index.rss"},
+  {t:"Zeit Politik",u:"https://newsfeed.zeit.de/politik/index"},
+  {t:"SZ",u:"https://rss.sueddeutsche.de/rss/Politik"},
+  {t:"Welt",u:"https://www.welt.de/feeds/topnews.rss"},
+  // French
+  {t:"Le Monde",u:"https://www.lemonde.fr/rss/une.xml"},
+  {t:"Le Figaro",u:"https://www.lefigaro.fr/rss/figaro_actualites.xml"},
+  {t:"Liberation",u:"https://www.liberation.fr/arc/outboundfeeds/rss-all/?outputType=xml"},
+  {t:"France Info",u:"https://www.francetvinfo.fr/titres.rss"},
+  // Spanish
+  {t:"El País",u:"https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada"},
+  {t:"El Mundo",u:"https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml"},
+  {t:"BBC Mundo",u:"https://feeds.bbci.co.uk/mundo/rss.xml"},
+  {t:"CNN en Español",u:"http://cnnespanol.cnn.com/feed/"},
+  // Italian
+  {t:"ANSA Mondo",u:"https://www.ansa.it/sito/ansait_rss.xml"},
+  {t:"La Repubblica",u:"https://www.repubblica.it/rss/homepage/rss2.0.xml"},
+  {t:"Corriere",u:"https://xml2.corriereobjects.it/rss/homepage.xml"},
+  // Portuguese
+  {t:"Folha",u:"https://feeds.folha.uol.com.br/poder/rss091.xml"},
+  {t:"Globo",u:"https://g1.globo.com/rss/g1/"},
+  {t:"Público",u:"https://feeds.feedburner.com/publicoRSS"},
+  // Russian
+  {t:"RIA",u:"https://ria.ru/export/rss2/index.xml"},
+  {t:"Lenta",u:"https://lenta.ru/rss/news"},
+  {t:"Meduza",u:"https://meduza.io/rss/all"},
+];
+</script>
+
+<!-- ====== Bundled news snapshot (~50 geocoded articles) — instant data on boot,
+     live RSS overlays on top ====== -->
+<script id="snapshot-data" type="application/json">[{"id":"https://www.nytimes.com/live/2026/06/15/world/iran-war-trump-us-deal","title":"Iran War Live Updates: U.S.-Iran Framework Brings Relief, but Challenges Loom","description":"The United States and Iran reached a preliminary deal that was expected to open the Strait of Hormuz. But it defers the toughest issues to further talks.","link":"https://www.nytimes.com/live/2026/06/15/world/iran-war-trump-us-deal","source":"NYT World","ts":1781536625000,"thumbnail":"https://static01.nyt.com/images/2026/06/15/multimedia/15live-mideast-promo-mpqw/15live-mideast-promo-mpqw-mediumSquareAt3X.jpg","lat":39.8,"lon":-98.5,"place":"United States"},{"id":"https://www.aljazeera.com/?t=1781533932","title":"World welcomes US-Iran ‘peace deal’ criticised by Israel","description":"Governments across the world have welcomed the tentative deal between the US and Iran to end the war.","link":"https://www.aljazeera.com/video/newsfeed/2026/6/15/world-welcomes-us-iran-peace-deal-criticised-by-israel?traffic_source=rss","source":"Al Jazeera","ts":1781534077000,"thumbnail":null,"lat":31.05,"lon":34.85,"place":"Israel"},{"id":"https://www.bbc.com/news/articles/cdr4x3vg347o#0","title":"Bowen: Iran deal ends Trump's war that revealed limit of US dominance","description":"The deal to end fighting and re-open the Strait of Hormuz leaves the sides where they were 24 hours before the war - only with thousands now dead.","link":"https://www.bbc.com/news/articles/cdr4x3vg347o?at_medium=RSS&at_campaign=rss","source":"BBC News - World","ts":1781533588000,"thumbnail":"https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/e2ec/live/f929b930-68b0-11f1-a887-c513fdcee6e6.jpg","lat":32.4,"lon":53.7,"place":"Iran"},{"id":"https://www.theguardian.com/world/2026/jun/15/argentine-activist-taty-almeida-dies-disappeared","title":"Argentinian activist who spent 50 years looking for disappeared son dies","description":"Outpouring of public grief for Lidia ‘Taty’ Almeida, leader of group of mothers that has marched every week since 1977 The human rights activist Lidia “Taty” Almeida – who spent more than half a century searching for her son after he was forcibly disappeared by Argentina’s military junta – has died ","link":"https://www.theguardian.com/world/2026/jun/15/argentine-activist-taty-almeida-dies-disappeared","source":"Guardian World","ts":1781533207000,"thumbnail":"https://i.guim.co.uk/img/media/ce7d80701765fab2c0aa0f3b327e3aff37423b4c/0_248_2996_2397/master/2996.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=27fc622df2876c13bf81f06ebd59e65b","lat":-38.4,"lon":-63.6,"place":"Argentina"},{"id":"https://www.nytimes.com/2026/06/15/world/europe/ukraine-eu-membership.html","title":"With Its Biggest E.U. Opponent Gone, Ukraine Is Advancing in Its Bid to Join","description":"Even though negotiations will begin for Ukraine to join the bloc, the path ahead is a long one.","link":"https://www.nytimes.com/2026/06/15/world/europe/ukraine-eu-membership.html","source":"NYT World","ts":1781533076000,"thumbnail":"https://static01.nyt.com/images/2026/06/15/multimedia/15int-eu-ukraine-explainer-wfkc/15int-eu-ukraine-explainer-wfkc-mediumSquareAt3X-v2.jpg","lat":48.4,"lon":31.2,"place":"Ukraine"},{"id":"https://www.theguardian.com/world/2026/jun/15/brazil-rope-jump-bridge-woman-dies","title":"Woman, 21, dies after being thrown from Brazil rope jump bridge without harness","description":"Instructors hurled Maria Eduarda Rodrigues de Freitas into 40-metre abyss without attaching safety equipment A 21-year-old woman who died when two rope jumping instructors threw her from a bridge without first harnessing her to security equipment, has been buried in Brazil’s São Paulo state. Maria E","link":"https://www.theguardian.com/world/2026/jun/15/brazil-rope-jump-bridge-woman-dies","source":"Guardian World","ts":1781532461000,"thumbnail":"https://i.guim.co.uk/img/media/70fd3cce3a7d780d9e9af304623d4ee843a2a281/337_144_1647_1318/master/1647.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=25a0d23f250c26a7dee470ad9b96dd74","lat":-14.2,"lon":-51.9,"place":"Brazil"},{"id":"https://www.aljazeera.com/?t=1781529024","title":"Historic Kyiv monastery set ablaze in deadly Russian air attack","description":"Historic Kyiv monastery set ablaze in deadly Russian air attack","link":"https://www.aljazeera.com/video/newsfeed/2026/6/15/historic-kyiv-monastery-set-ablaze-in-deadly-russian-air-attack?traffic_source=rss","source":"Al Jazeera","ts":1781531760000,"thumbnail":null,"lat":50.45,"lon":30.52,"place":"Kyiv"},{"id":"https://www.aljazeera.com/?t=1781522375","title":"What a UK court’s backing of the Palestine Action ‘terror’ ban means","description":"Britain's Court of Appeal ruled that the government was right to proscribe Palestine Action - what happens next?","link":"https://www.aljazeera.com/news/2026/6/15/what-a-uk-courts-backing-of-the-palestine-action-terror-ban-means?traffic_source=rss","source":"Al Jazeera","ts":1781531207000,"thumbnail":null,"lat":31.9,"lon":35.2,"place":"Palestine"},{"id":"https://www.aljazeera.com/?t=1781519827","title":"Israeli forces kill three-year-old Palestinian boy on family farm in Gaza","description":"Rayan Abu al-Ajeen was being carried in Gaza when both were shot by Israeli forces on Sunday, family says.","link":"https://www.aljazeera.com/news/2026/6/15/israeli-forces-kill-three-year-old-palestinian-boy-on-family-farm-in-gaza?traffic_source=rss","source":"Al Jazeera","ts":1781530499000,"thumbnail":null,"lat":31.5,"lon":34.46,"place":"Gaza"},{"id":"https://www.nytimes.com/2026/06/15/world/europe/uk-palestine-action-ban-appeal.html","title":"U.K. Ban on Pro-Palestinian Protest Group Is Lawful, Court of Appeal Rules","description":"The decision overturned a lower-court ruling that found that banning Palestine Action as a terrorist group had breached free speech rights.","link":"https://www.nytimes.com/2026/06/15/world/europe/uk-palestine-action-ban-appeal.html","source":"NYT World","ts":1781529769000,"thumbnail":"https://static01.nyt.com/images/2026/06/15/multimedia/15int-UK-PALESTINE-ACTION-BAN-zghv/15int-UK-PALESTINE-ACTION-BAN-zghv-mediumSquareAt3X.jpg","lat":31.9,"lon":35.2,"place":"Palestine"},{"id":"https://www.dw.com/en/ibrahim-maza-algeria-s-multicultural-kid-from-berlin/a-77435644?maca=en-rss-en-all-1573-rdf","title":"Ibrahim Maza: Algeria's 'multicultural kid' from Berlin","description":"Ibo Maza had his choice of three different countries. Instead of his native Germany, the Bayer Leverkusen forward is representing Algeria, the country of his father, at the World Cup in North America.","link":"https://www.dw.com/en/ibrahim-maza-algeria-s-multicultural-kid-from-berlin/a-77435644?maca=en-rss-en-all-1573-rdf","source":"DW English","ts":1781529720000,"thumbnail":null,"lat":51.2,"lon":10.4,"place":"Germany"},{"id":"https://www.bbc.com/news/articles/c8r2l352z2do#0","title":"Russia was behind arson attacks targeting PM, BBC reveals","description":"Evidence shows Russians directing the plot and stoking tensions with fake far-right and Muslim groups.","link":"https://www.bbc.com/news/articles/c8r2l352z2do?at_medium=RSS&at_campaign=rss","source":"BBC News - UK","ts":1781529058000,"thumbnail":"https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/7fbd/live/e9c69370-662e-11f1-8546-8f19e4fe30f4.png","lat":61.5,"lon":105,"place":"Russia"},{"id":"https://www.bbc.com/news/articles/c39yvz9w8k3o#0","title":"'Spider-Man of Yemen' dies falling into volcanic crater","description":"Al-Qaqa Ibn Antar had been attempting to climb its walls without safety equipment when he fell in, local authorities say.","link":"https://www.bbc.com/news/articles/c39yvz9w8k3o?at_medium=RSS&at_campaign=rss","source":"BBC News - World","ts":1781528838000,"thumbnail":"https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/fe50/live/996e1120-68b6-11f1-a143-b5a0b6622147.jpg","lat":15.5,"lon":47.5,"place":"Yemen"},{"id":"https://www.aljazeera.com/?t=1781520789","title":"How Pakistan mediated a US-Iran agreement after more than 100 days of war","description":"PM Sharif praises Pakistan's army chief for his efforts in securing a tentative deal, likely to be finalised in Geneva.","link":"https://www.aljazeera.com/news/2026/6/15/how-pakistan-mediated-a-us-iran-agreement-after-more-than-100-days-of-war?traffic_source=rss","source":"Al Jazeera","ts":1781528798000,"thumbnail":null,"lat":30.4,"lon":69.3,"place":"Pakistan"},{"id":"https://www.dw.com/en/us-iran-reported-peace-deal-sparks-both-relief-and-anger/a-77560563?maca=en-rss-en-all-1573-rdf","title":"US-Iran: Reported peace deal sparks both relief and anger","description":"A peace deal between the US and Iran is due to be signed this week — and while the hopes of peace may yet be dashed, the news alone was enough to trigger celebrations, backlash and political infighting on both sides.","link":"https://www.dw.com/en/us-iran-reported-peace-deal-sparks-both-relief-and-anger/a-77560563?maca=en-rss-en-all-1573-rdf","source":"DW English","ts":1781528520000,"thumbnail":null,"lat":32.4,"lon":53.7,"place":"Iran"},{"id":"https://www.nytimes.com/2026/06/15/world/europe/marius-borg-hoiby-verdict-norway.html","title":"Son of Norway’s Crown Princess Is Convicted of Rape","description":"Marius Borg Hoiby was sentenced to four years in prison. He stood trial as his mother came under pressure over her ties to Jeffrey Epstein.","link":"https://www.nytimes.com/2026/06/15/world/europe/marius-borg-hoiby-verdict-norway.html","source":"NYT World","ts":1781528017000,"thumbnail":"https://static01.nyt.com/images/2026/06/15/multimedia/15int-norway-verdict-HFO-01-zjgt/15int-norway-verdict-HFO-01-zjgt-mediumSquareAt3X.jpg","lat":60.5,"lon":8.5,"place":"Norway"},{"id":"https://www.npr.org/2026/06/15/g-s1-128147/former-american-businessman-detained-in-myanmar-after-alleged-financial-misconduct","title":"Former American businessman detained in Myanmar after alleged financial misconduct","description":"Adam Castillo, founder of AGS Myanmar, was detained Thursday at Yangon International Airport. The U.S. State Department is aware of a reported detention but hasn't commented further.","link":"https://www.npr.org/2026/06/15/g-s1-128147/former-american-businessman-detained-in-myanmar-after-alleged-financial-misconduct","source":"NPR News","ts":1781527536000,"thumbnail":null,"lat":16.87,"lon":96.16,"place":"Yangon"},{"id":"https://www.bbc.com/news/articles/ckg4n3pyjg9o#0","title":"South Korea's Starbucks to shut for staff history lesson after backlash","description":"The chain was criticised for a \"Tank Day\" marketing ploy on the anniversary of a military massacre.","link":"https://www.bbc.com/news/articles/ckg4n3pyjg9o?at_medium=RSS&at_campaign=rss","source":"BBC News - World","ts":1781527047000,"thumbnail":"https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/df4d/live/a0009660-68ad-11f1-a887-c513fdcee6e6.jpg","lat":36.5,"lon":127.7,"place":"South Korea"},{"id":"https://www.aljazeera.com/?t=1781513396","title":"Spain vs Cape Verde live: World Cup 2026","description":"Follow our live build-up, with full team news coverage, before our live text commentary stream.","link":"https://www.aljazeera.com/sports/liveblog/2026/6/15/spain-vs-cape-verde-live-world-cup-2026?traffic_source=rss","source":"Al Jazeera","ts":1781526860000,"thumbnail":null,"lat":40.5,"lon":-3.7,"place":"Spain"},{"id":"https://www.nytimes.com/2026/06/15/world/europe/ukraine-kyiv-russia-attack-orthodox-cathedral.html","title":"After Russia Attacks Kyiv With Missiles and Drones, Historic Orthodox Cathedral Burns","description":"A bishop reported that many holy items had been recovered from the church, at the site of the Perchersk monastery, a revered place for the Ukrainian and Russian Orthodox faiths.","link":"https://www.nytimes.com/2026/06/15/world/europe/ukraine-kyiv-russia-attack-orthodox-cathedral.html","source":"NYT World","ts":1781526306000,"thumbnail":"https://static01.nyt.com/images/2026/06/15/multimedia/15int-ukraine-attack-kzmg/15int-ukraine-attack-kzmg-mediumSquareAt3X.jpg","lat":61.5,"lon":105,"place":"Russia"},{"id":"https://www.bbc.com/news/articles/c4gy037gjz3o#0","title":"Russian strikes kill 11 and set historic cathedral in Kyiv ablaze","description":"A Ukrainian drone attack in the Russian city of Tula, south of Moscow, killed three people.","link":"https://www.bbc.com/news/articles/c4gy037gjz3o?at_medium=RSS&at_campaign=rss","source":"BBC News - World","ts":1781525256000,"thumbnail":"https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/b2e3/live/e63b3f40-689e-11f1-b1db-af71d47507d6.jpg","lat":55.75,"lon":37.62,"place":"Moscow"},{"id":"https://www.npr.org/2026/06/15/nx-s1-5853110/luigi-mangione-court-hearings-growing-support","title":"As Luigi Mangione's lawyers head to court, support grows for the accused 'vigilante'","description":"Luigi Mangione's legal team is back in court in New York City this week for a key pretrial hearing. He's accused of stalking and killing an insurance CEO. Donors have given $1.5 million to support his defense.","link":"https://www.npr.org/2026/06/15/nx-s1-5853110/luigi-mangione-court-hearings-growing-support","source":"NPR News","ts":1781524113000,"thumbnail":null,"lat":40.71,"lon":-74,"place":"New York"},{"id":"https://www.washingtonpost.com/world/2026/06/15/russian-attack-kyiv-damages-historic-monastery-kills-least-5/","title":"Russian attack kills at least five and damages historic monastery in Kyiv","description":"UNESCO, the U.N.’s world heritage agency, condemned the attack, which damaged the Kyiv Pechersk Lavra monastery. Russia said it bombed military targets.","link":"https://www.washingtonpost.com/world/2026/06/15/russian-attack-kyiv-damages-historic-monastery-kills-least-5/","source":"Washington Post World","ts":1781523724000,"thumbnail":null,"lat":50.45,"lon":30.52,"place":"Kyiv"},{"id":"https://www.nytimes.com/2026/06/15/world/europe/social-media-bans-worldwide.html","title":"What to Know About Planned Social Media Bans in Australia, the U.K. and Beyond","description":"Britain said it would ban social media access for children under 16 starting in 2027, joining several other countries introducing similar measures.","link":"https://www.nytimes.com/2026/06/15/world/europe/social-media-bans-worldwide.html","source":"NYT World","ts":1781522357000,"thumbnail":"https://static01.nyt.com/images/2026/06/15/multimedia/15int-social-media-bans-wtk-HFO-top-qzwg/15int-social-media-bans-wtk-HFO-top-qzwg-mediumSquareAt3X.jpg","lat":-25.3,"lon":133.8,"place":"Australia"},{"id":"https://www.bbc.com/news/articles/cly9d10l5p4o#0","title":"Norwegian crown princess's son found guilty of two counts of rape","description":"Marius Borg Høiby, the 29-year-old son of Norway's Crown Princess Mette Marit, has been sentenced to four years in jail.","link":"https://www.bbc.com/news/articles/cly9d10l5p4o?at_medium=RSS&at_campaign=rss","source":"BBC News - World","ts":1781521743000,"thumbnail":"https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/dc45/live/e93a3c90-fc70-11f0-9f00-a7fda7ef067e.jpg","lat":60.5,"lon":8.5,"place":"Norway"},{"id":"https://www.npr.org/2026/06/15/g-s1-128145/up-first-newsletter-iran-war-g7-summit-ufc-fight","title":"Trump announces deal to end war in Iran. And, how to stay safe in deadly heat","description":"Trump says a deal has been reached to end the war between the U.S. and Iran. Plus, this is what extreme temperatures do to the human body — and how you can keep yourself safe.","link":"https://www.npr.org/2026/06/15/g-s1-128145/up-first-newsletter-iran-war-g7-summit-ufc-fight","source":"NPR News","ts":1781521163000,"thumbnail":null,"lat":32.4,"lon":53.7,"place":"Iran"},{"id":"https://www.dw.com/en/iran-war-will-the-global-energy-crisis-end-soon/a-77554342?maca=en-rss-en-all-1573-rdf","title":"Iran war: Will the global energy crisis end soon?","description":"A potential US-Iran deal to end the war and reopen the Strait of Hormuz could ease the global energy crunch, but oil prices and supplies may take months to stabilize as shipping restarts and infrastructure recovers.","link":"https://www.dw.com/en/iran-war-will-the-global-energy-crisis-end-soon/a-77554342?maca=en-rss-en-all-1573-rdf","source":"DW English","ts":1781520300000,"thumbnail":null,"lat":32.4,"lon":53.7,"place":"Iran"},{"id":"https://www.nytimes.com/2026/06/15/world/europe/uk-social-media-children.html","title":"Britain Announces Social Media Ban for Children","description":"Prime Minister Keir Starmer said his government planned to bar children under 16 from social media, following policies in Australia and elsewhere.","link":"https://www.nytimes.com/2026/06/15/world/europe/uk-social-media-children.html","source":"NYT World","ts":1781519603000,"thumbnail":"https://static01.nyt.com/images/2026/06/12/multimedia/HFO-int-uk-social-media-zjqt/HFO-int-uk-social-media-zjqt-mediumSquareAt3X.jpg","lat":-25.3,"lon":133.8,"place":"Australia"},{"id":"https://www.dw.com/en/germany-news-23-million-tune-in-for-world-cup-win/live-77557116?maca=en-rss-en-all-1573-rdf","title":"Germany news: 23 million tune in for World Cup win","description":"The Germany national team's 7-1 win over Curacao drew over 23 million viewers. Meanwhile, German President Steinmeier is kicking off his visit to Indonesia. Follow DW for more.","link":"https://www.dw.com/en/germany-news-23-million-tune-in-for-world-cup-win/live-77557116?maca=en-rss-en-all-1573-rdf","source":"DW English","ts":1781519580000,"thumbnail":null,"lat":-0.8,"lon":113.9,"place":"Indonesia"},{"id":"https://www.bbc.com/news/articles/c5yz4xelnveo#0","title":"Brazil woman dies after rope-jumping instructors fail to attach cord","description":"Three men have been arrested after instructors failed to attach a rope to her before helping her jump from a bridge.","link":"https://www.bbc.com/news/articles/c5yz4xelnveo?at_medium=RSS&at_campaign=rss","source":"BBC News - World","ts":1781519049000,"thumbnail":"https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/c00e/live/096e25c0-6897-11f1-a4ef-a30ba74cf09f.png","lat":-14.2,"lon":-51.9,"place":"Brazil"},{"id":"https://www.dw.com/en/g7-leaders-gather-to-grapple-with-wars-global-economy/live-77556967?maca=en-rss-en-all-1573-rdf","title":"G7: Leaders gather to grapple with wars, global economy","description":"The heads of the world's richest nations gather in France as the wars in Iran and Ukraine dominate the global agenda. The US has promised peace in Iran; fellow leaders are cautiously optimistic. DW has the latest.","link":"https://www.dw.com/en/g7-leaders-gather-to-grapple-with-wars-global-economy/live-77556967?maca=en-rss-en-all-1573-rdf","source":"DW English","ts":1781517840000,"thumbnail":null,"lat":48.4,"lon":31.2,"place":"Ukraine"},{"id":"https://www.npr.org/2026/06/15/nx-s1-5858590/us-iran-deal-updates","title":"U.S. and Iran announce a deal to end the war and reopen the Strait of Hormuz","description":"The deal is a major breakthrough in the conflict that set the Middle East aflame and shook the global economy. However, it did not resolve critical issues set aside for further negotiations.","link":"https://www.npr.org/2026/06/15/nx-s1-5858590/us-iran-deal-updates","source":"NPR News","ts":1781517323000,"thumbnail":null,"lat":32.4,"lon":53.7,"place":"Iran"},{"id":"https://www.washingtonpost.com/world/2026/06/15/israelis-denounce-trumps-deal-with-iran/","title":"Israelis denounce Trump’s deal with Iran","description":"Prime Minister Benjamin Netanyahu did not issue an immediate statement, but other Israelis disparaged the peace deal and said Israel’s fight against Hezbollah in Lebanon would go on.","link":"https://www.washingtonpost.com/world/2026/06/15/israelis-denounce-trumps-deal-with-iran/","source":"Washington Post World","ts":1781516752000,"thumbnail":null,"lat":33.9,"lon":35.8,"place":"Lebanon"},{"id":"https://www.nytimes.com/2026/06/15/world/europe/ukraine-russia-war-ai.html","title":"How Ukraine Uses A.I. to Knock Deadly Russian Drones Out of the Skies","description":"Interceptors show Ukraine’s embrace of autonomous technologies trained on immense troves of wartime data.","link":"https://www.nytimes.com/2026/06/15/world/europe/ukraine-russia-war-ai.html","source":"NYT World","ts":1781514161000,"thumbnail":null,"lat":48.4,"lon":31.2,"place":"Ukraine"},{"id":"https://www.nytimes.com/2026/06/15/world/americas/colombia-drug-war-violence-petro.html","title":"Inside Colombia’s Never-Ending Drug War","description":"Ten years after a landmark peace deal, armed groups are wreaking deadly violence, blending jungle combat with new drone warfare.","link":"https://www.nytimes.com/2026/06/15/world/americas/colombia-drug-war-violence-petro.html","source":"NYT World","ts":1781514036000,"thumbnail":"https://static01.nyt.com/images/2026/06/15/multimedia/15int-colombia-armed-conflict-promo/15int-colombia-armed-conflict-twhm-mediumSquareAt3X.jpg","lat":4.6,"lon":-74.3,"place":"Colombia"},{"id":"https://www.npr.org/2026/06/15/nx-s1-5857699/2026-fifa-world-cup-week-1-highlights","title":"It's been a thrilling start to the World Cup. Here are the highlights and what's next","description":"Now that the FIFA World Cup is underway in Mexico, Canada and the U.S., the drama has shifted to the fields, where there have been several surprising results heading into the first full week.","link":"https://www.npr.org/2026/06/15/nx-s1-5857699/2026-fifa-world-cup-week-1-highlights","source":"NPR News","ts":1781514000000,"thumbnail":null,"lat":23.6,"lon":-102.5,"place":"Mexico"},{"id":"https://www.npr.org/2026/06/15/nx-s1-5858610/trump-birthday-ufc-white-house","title":"Trump celebrates 80th birthday with Iran deal and UFC fights at the White House","description":"President Donald Trump marked his 80th birthday on Sunday by hailing an initial agreement to end the war in Iran and staging a cage-fighting show on the White House's storied South Lawn.","link":"https://www.npr.org/2026/06/15/nx-s1-5858610/trump-birthday-ufc-white-house","source":"NPR News","ts":1781513170000,"thumbnail":null,"lat":32.4,"lon":53.7,"place":"Iran"},{"id":"https://www.dw.com/en/india-s-modi-in-slovakia-seeks-to-strengthen-trade-and-investment-ties/a-77553213?maca=en-rss-en-all-1573-rdf","title":"India's Modi in Slovakia, seeks to strengthen trade and investment ties","description":"Prime Minister Narendra Modi's visit to Bratislava marks the first by an Indian leader since Slovakia's &quot;velvet divorce&quot; from the Czech Republic.","link":"https://www.dw.com/en/india-s-modi-in-slovakia-seeks-to-strengthen-trade-and-investment-ties/a-77553213?maca=en-rss-en-all-1573-rdf","source":"DW English","ts":1781513160000,"thumbnail":null,"lat":49.8,"lon":15.5,"place":"Czech Republic"},{"id":"https://www.bbc.com/news/articles/ce9582vlm83o#1","title":"China detains two leaders of influential underground church","description":"More than 30 members of Early Rain Covenant Church were taken for interrogation midway through Sunday service.","link":"https://www.bbc.com/news/articles/ce9582vlm83o?at_medium=RSS&at_campaign=rss","source":"BBC News - World","ts":1781510203000,"thumbnail":"https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/2cb6/live/5bc24570-688a-11f1-8c6b-f595710535a5.jpg","lat":35,"lon":104,"place":"China"},{"id":"https://www.dw.com/en/iran-updates-world-leaders-express-optimism-for-peace-deal/live-77552154?maca=en-rss-en-all-1573-rdf","title":"Iran updates: World leaders express optimism for peace deal","description":"World leaders have welcomed news of a peace deal that would reopen the Strait of Hormuz to international shipping. However, many details remain unconfirmed. DW has more.","link":"https://www.dw.com/en/iran-updates-world-leaders-express-optimism-for-peace-deal/live-77552154?maca=en-rss-en-all-1573-rdf","source":"DW English","ts":1781507100000,"thumbnail":null,"lat":32.4,"lon":53.7,"place":"Iran"},{"id":"https://www.bbc.com/news/articles/cqj1dd5rgnzo#1","title":"US musician Oliver Tree dies in helicopter collision in Brazil","description":"The singer-songwriter is among six people presumed dead in air crash over Rio de Janeiro on Sunday.","link":"https://www.bbc.com/news/articles/cqj1dd5rgnzo?at_medium=RSS&at_campaign=rss","source":"BBC News - World","ts":1781506043000,"thumbnail":"https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/dd84/live/4e40a990-687c-11f1-ad29-ebc8ba5e9f31.jpg","lat":-22.91,"lon":-43.17,"place":"Rio de Janeiro"},{"id":"https://www.washingtonpost.com/politics/2026/06/15/deal-with-iran-trump-settled-much-less-than-he-set-out-get/","title":"Trump sought to break Iran’s regime. He settled for reopening Hormuz.","description":"The emerging agreement ends a costly war but leaves Iran’s leadership intact and its nuclear future still subject to negotiation.","link":"https://www.washingtonpost.com/politics/2026/06/15/deal-with-iran-trump-settled-much-less-than-he-set-out-get/","source":"Washington Post World","ts":1781496963000,"thumbnail":null,"lat":32.4,"lon":53.7,"place":"Iran"},{"id":"https://www.theguardian.com/global-development/2026/jun/15/global-attacks-killing-abductions-education-pupils-staff-up-40pc-gcpea-study","title":"Violent attacks on schools, pupils and staff around the world up by 40%, says study","description":"Cases reported in 83 countries, with at least 10,600 students and staff killed, injured, abducted or arrested, GCPEA says Attacks on education globally have surged by 40% with more than 8,556 recorded incidents and 10,600 students and staff killed, injured, abducted, arrested or otherwise harmed in ","link":"https://www.theguardian.com/global-development/2026/jun/15/global-attacks-killing-abductions-education-pupils-staff-up-40pc-gcpea-study","source":"Guardian World","ts":1781496001000,"thumbnail":"https://i.guim.co.uk/img/media/6dac1cfee0895baf98d046cb4ae8c69266ffb82e/342_0_1977_1582/master/1977.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=ced5a2717105c4621a0c661ef7f67441","lat":31.9,"lon":35.2,"place":"Palestine"},{"id":"https://www.bbc.com/news/articles/cddly65p76no#1","title":"Man apologises for making racist gesture at Korean in World Cup match","description":"He was caught pulling the corners of his eyes at a South Korean influencer during the match in Mexico.","link":"https://www.bbc.com/news/articles/cddly65p76no?at_medium=RSS&at_campaign=rss","source":"BBC News - World","ts":1781494318000,"thumbnail":"https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/98c4/live/22f15430-6866-11f1-9e64-f1871e4c539b.jpg","lat":23.6,"lon":-102.5,"place":"Mexico"},{"id":"https://www.washingtonpost.com/world/2026/06/14/us-singer-oliver-tree-among-six-killed-helicopter-crash-brazil/","title":"U.S. singer Oliver Tree among six killed in helicopter crash in Brazil","description":"The electro-pop singer attracted millions of fans across the world with hits such as \"Life Goes On” and “Miss You.”","link":"https://www.washingtonpost.com/world/2026/06/14/us-singer-oliver-tree-among-six-killed-helicopter-crash-brazil/","source":"Washington Post World","ts":1781475436000,"thumbnail":null,"lat":-14.2,"lon":-51.9,"place":"Brazil"},{"id":"https://www.theguardian.com/world/2026/jun/14/musician-oliver-tree-32-killed-in-helicopter-crash-in-brazil","title":"US musician Oliver Tree, 32, killed in helicopter crash in Brazil","description":"Alternative singer and internet personality among six who died when two helicopters collided over Rio de Janeiro The American musician Oliver Tree has died in a helicopter crash in Brazil at the age of 32, according to reports. Two helicopters collided over Rio de Janeiro on Sunday morning and crash","link":"https://www.theguardian.com/world/2026/jun/14/musician-oliver-tree-32-killed-in-helicopter-crash-in-brazil","source":"Guardian World","ts":1781465076000,"thumbnail":"https://i.guim.co.uk/img/media/bdfc928267c566e4b22e1a340e1e52f69375e52a/729_0_5653_4523/master/5653.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=5f83066c86260047e3c0de3bf0121c8c","lat":-22.91,"lon":-43.17,"place":"Rio de Janeiro"},{"id":"https://www.theguardian.com/uk-news/2026/jun/14/mother-hopes-to-get-justice-for-murdered-daughter-in-retrial-in-dominican-republic","title":"Mother hopes to get justice for murdered daughter in retrial in Dominican Republic","description":"Shirley Firth is hoping those responsible for Lindsay de Feliz’s death in 2019 will finally be convicted A Cambridgeshire mother in her 90s is hoping to finally see justice for her murdered daughter when a retrial into her death is due to open in the Dominican Republic this week. The body of Lindsay","link":"https://www.theguardian.com/uk-news/2026/jun/14/mother-hopes-to-get-justice-for-murdered-daughter-in-retrial-in-dominican-republic","source":"Guardian World","ts":1781442044000,"thumbnail":"https://i.guim.co.uk/img/media/c83443766beec851daa00e54e3109a39f4058d31/683_0_6827_5464/master/6827.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=cf6485880f3448d1ab4b364779691e40","lat":18.7,"lon":-70.16,"place":"Dominican Republic"},{"id":"https://www.washingtonpost.com/world/2026/06/13/us-iran-close-finalizing-deal-mediator-pakistan-says/","title":"U.S. and Iran to close deal within a day, Trump says, but Tehran yet to confirm","description":"An agreement would extend the ceasefire and pave the way for a longer truce, leaders said, though an Iranian official denied a deal will be signed Sunday.","link":"https://www.washingtonpost.com/world/2026/06/13/us-iran-close-finalizing-deal-mediator-pakistan-says/","source":"Washington Post World","ts":1781378090000,"thumbnail":null,"lat":35.69,"lon":51.39,"place":"Tehran"},{"id":"https://www.theguardian.com/society/2026/jun/11/london-council-seizes-social-housing-flat-sierra-leone-first-lady","title":"London council seizes social housing flat rented by Sierra Leone first lady","description":"Fatima Jabbe-Bio kept tenancy in Southwark despite living for much of year at presidential lodge in Freetown A social housing flat rented by Sierra Leone’s first lady has been seized by a London council. Southwark council confirmed it had repossessed the two-bedroom home in Walworth previously occup","link":"https://www.theguardian.com/society/2026/jun/11/london-council-seizes-social-housing-flat-sierra-leone-first-lady","source":"Guardian World","ts":1781191155000,"thumbnail":"https://i.guim.co.uk/img/media/eb6a726a61edfe12624ade8f1deb2877ce05421a/561_0_3096_2477/master/3096.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=ab001e19daa7789cf9557534b7b67768","lat":51.51,"lon":-0.13,"place":"London"},{"id":"https://www.theguardian.com/world/2026/jun/09/man-shot-during-protest-against-proposed-us-ebola-quarantine-facility-in-kenya","title":"Man shot dead during protest against proposed US Ebola quarantine facility in Kenya","description":"Police dispersed demonstrators in Nanyuki, 120 miles from Nairobi, amid rising anger at US plans Kenyan police have shot dead a man during a protest against a proposed Ebola quarantine facility for US citizens. Patrick Wahome, who has organised protests in Nanyuki against the centre, told Reuters on","link":"https://www.theguardian.com/world/2026/jun/09/man-shot-during-protest-against-proposed-us-ebola-quarantine-facility-in-kenya","source":"Guardian World","ts":1781025200000,"thumbnail":"https://i.guim.co.uk/img/media/f226f4da11f7c00a4678d55ae9dbe2c3d5c2ce8f/0_0_4169_3335/master/4169.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=d1a12e50e367df3d5d99ee0d030639ee","lat":-1.29,"lon":36.82,"place":"Nairobi"}]</script>
+
+<!-- ====== GLOBE module ====== -->
+<script>
+const Globe = (() => {
+  let svg, projection, path, width, height;
+  let landFeatures, countryFeatures;
+  let events = [];          // {lat, lon, title, link, source, ts, place, thumbnail, id}
+  let seenIds = new Set();
+  let autoRotate = true;
+  let rotation = [0, -15];
+  let lastTickT = performance.now();
+  let activePopups = [];
+  let inited = false;
+  let pendingQueue = [];   // events received before init() finished
+
+  async function init() {
+    log('Globe: loading d3 + topojson…');
+    try { await ensureD3(); }
+    catch (e) { log('Globe: d3 load FAILED — ' + e.message, 'err'); return; }
+    log('Globe: d3 loaded ✓', 'ok');
+
+    const stage = document.getElementById('globe-view');
+    // Wait for layout if needed (splash may still be over us)
+    let tries = 0;
+    while ((stage.clientWidth < 50 || stage.clientHeight < 50) && tries++ < 20) {
+      await new Promise(r => setTimeout(r, 100));
+    }
+    width = Math.max(300, stage.clientWidth);
+    height = Math.max(300, stage.clientHeight - 32);  // minus ticker
+    log(`Globe: stage ${width}×${height}`);
+    svg = d3.select('#globe-svg').attr('width', width).attr('height', height);
+    svg.selectAll('*').remove();
+
+    const defs = svg.append('defs');
+    const og = defs.append('radialGradient').attr('id','oceanG')
+      .attr('cx','50%').attr('cy','40%').attr('r','70%');
+    og.append('stop').attr('offset','0%').attr('stop-color','#1b3a6b');
+    og.append('stop').attr('offset','100%').attr('stop-color','#04101f');
+
+    projection = d3.geoOrthographic()
+      .scale(Math.min(width, height) / 2.2)
+      .translate([width/2, height/2])
+      .clipAngle(90)
+      .rotate(rotation);
+    path = d3.geoPath(projection);
+
+    svg.append('path').datum({type:'Sphere'})
+      .attr('d', path).attr('fill','url(#oceanG)').attr('class','sphere');
+    const grat = d3.geoGraticule().step([20,20]);
+    svg.append('path').datum(grat).attr('d', path)
+      .attr('fill','none').attr('stroke','rgba(120,180,255,0.12)').attr('stroke-width',0.6)
+      .attr('class','grat');
+
+    svg.append('g').attr('class','land-layer');
+    svg.append('g').attr('class','event-layer');
+
+    try {
+      const world = await fetch('https://unpkg.com/world-atlas@2/countries-110m.json').then(r => r.json());
+      try { localStorage.setItem('ew-world', JSON.stringify(world)); } catch(e){}
+      drawWorld(world);
+      log('Globe: world topology loaded ✓', 'ok');
+    } catch (e) {
+      log('Globe: world topology fetch failed — ' + e.message, 'warn');
+      const cached = localStorage.getItem('ew-world');
+      if (cached) {
+        try { drawWorld(JSON.parse(cached)); log('Globe: using cached topology', 'ok'); }
+        catch(e){ log('Globe: cached topology parse failed', 'err'); }
+      }
+    }
+    enableDrag();
+    d3.timer(tick);
+    window.addEventListener('resize', onResize);
+    inited = true;
+    log('Globe: ready ✓', 'ok');
+    // Flush any events that came in during init
+    if (pendingQueue.length) {
+      log(`Globe: flushing ${pendingQueue.length} queued events`, 'ok');
+      const q = pendingQueue.slice();
+      pendingQueue = [];
+      q.forEach(_addEventNow);
+    }
+  }
+
+  function drawWorld(world) {
+    landFeatures = topojson.feature(world, world.objects.land);
+    countryFeatures = topojson.feature(world, world.objects.countries);
+    svg.select('.land-layer').selectAll('path').remove();
+    svg.select('.land-layer').append('path').datum(landFeatures)
+      .attr('d', path).attr('fill','#1f4a2a').attr('stroke','#2c6b3d').attr('stroke-width',0.4);
+    svg.select('.land-layer').selectAll('path.country').data(countryFeatures.features)
+      .enter().append('path').attr('class','country').attr('d', path)
+      .attr('fill','none').attr('stroke','rgba(255,255,255,0.08)').attr('stroke-width',0.4);
+  }
+
+  function onResize() {
+    if (!projection) return;
+    const stage = document.getElementById('globe-view');
+    width = stage.clientWidth; height = stage.clientHeight - 32;
+    svg.attr('width', width).attr('height', height);
+    projection.scale(Math.min(width, height)/2.2).translate([width/2, height/2]);
+    redrawStatic();
+  }
+  function redrawStatic() {
+    if (!path) return;
+    svg.selectAll('.sphere, .grat, .land-layer path').attr('d', path);
+  }
+
+  function enableDrag() {
+    const el = svg.node();
+    let dragging = false, startXY=null, startRot=null;
+    function xy(e) {
+      const r = el.getBoundingClientRect();
+      return [e.clientX - r.left, e.clientY - r.top];
+    }
+    el.addEventListener('pointerdown', (e) => {
+      if (e.target.classList && e.target.classList.contains('dot')) return;
+      dragging = true; autoRotate = false;
+      startXY = xy(e); startRot = projection.rotate();
+      el.setPointerCapture(e.pointerId);
+    });
+    el.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const c = xy(e);
+      const k = 90 / projection.scale();
+      const nl = startRot[0] + (c[0] - startXY[0]) * k;
+      const np = Math.max(-89, Math.min(89, startRot[1] - (c[1] - startXY[1]) * k));
+      projection.rotate([nl, np, 0]);
+      rotation = projection.rotate();
+    });
+    const end = (e) => { dragging = false; try { el.releasePointerCapture(e.pointerId); } catch(e){} };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+    el.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const s = projection.scale();
+      const f = e.deltaY < 0 ? 1.1 : 0.9;
+      projection.scale(Math.max(150, Math.min(1800, s * f)));
+    }, { passive: false });
+  }
+
+  function tick(elapsed) {
+    if (!projection) return;
+    const now = performance.now();
+    const dt = (now - lastTickT) / 1000;
+    lastTickT = now;
+    if (autoRotate) {
+      const r = projection.rotate();
+      projection.rotate([r[0] + dt * 6, r[1], r[2]]);
+      rotation = projection.rotate();
+    }
+    redrawStatic();
+    drawEvents(now);
+    updatePopups();
+  }
+
+  function drawEvents(now) {
+    const layer = svg.select('.event-layer');
+    // prune events older than 6h
+    events = events.filter((e) => (now - e.added) < 21_600_000);
+    const sel = layer.selectAll('g.evt').data(events, (d) => d.id);
+    const en = sel.enter().append('g').attr('class','evt');
+    en.append('circle').attr('class','ring').attr('fill','none').attr('stroke','#ff5e7a').attr('stroke-width',1.5);
+    en.append('circle').attr('class','dot').attr('r',4).attr('fill','#ffd166').attr('stroke','#fff').attr('stroke-width',0.8);
+    sel.exit().remove();
+    layer.selectAll('g.evt').each(function(d) {
+      const g = d3.select(this);
+      const c = projection([d.lon, d.lat]);
+      const vis = isVisible(d.lon, d.lat);
+      if (!c || !vis) { g.style('display','none'); return; }
+      g.style('display', null).attr('transform', `translate(${c[0]},${c[1]})`);
+      const age = (now - d.added) / 1000;
+      const phase = (age % 3) / 3;
+      g.select('.ring').attr('r', 4 + phase * 22).attr('stroke-opacity', (1-phase) * 0.9);
+    });
+  }
+
+  function isVisible(lon, lat) {
+    const r = projection.rotate();
+    const lam = -r[0] * Math.PI/180, phi = -r[1] * Math.PI/180;
+    const cx = Math.cos(phi)*Math.cos(lam), cy = Math.cos(phi)*Math.sin(lam), cz = Math.sin(phi);
+    const a = lon*Math.PI/180, b = lat*Math.PI/180;
+    const x = Math.cos(b)*Math.cos(a), y = Math.cos(b)*Math.sin(a), z = Math.sin(b);
+    return (x*cx + y*cy + z*cz) > 0.05;
+  }
+
+  function addEvent(ev) {
+    if (!ev || !ev.id) return;
+    if (seenIds.has(ev.id)) return;
+    seenIds.add(ev.id);
+    // Always add to events array + ticker + log so they appear even if the
+    // SVG globe never inits (e.g. d3 CDN blocked). The SVG dots/popups will
+    // start rendering as soon as `inited` becomes true.
+    ev.added = performance.now();
+    events.unshift(ev);
+    if (events.length > 200) events.length = 200;
+    setStat('stat-events', events.length);
+    addTicker(ev);
+    log(`📍 ${ev.place} — ${(ev.title || '').slice(0,60)}…`, 'evt');
+    if (inited) {
+      spawnPopup(ev);
+    } else {
+      // Queue the popup for when globe is ready
+      pendingQueue.push(ev);
+    }
+  }
+  function _addEventNow(ev) {
+    // Flush a queued event's popup (events/ticker already added by addEvent)
+    spawnPopup(ev);
+  }
+
+  function spawnPopup(ev) {
+    const layer = document.getElementById('globe-popups');
+    while (activePopups.length >= 4) {
+      const old = activePopups.shift();
+      if (old.el && old.el.parentNode) { old.el.classList.add('fadeout'); setTimeout(() => old.el.parentNode && old.el.parentNode.removeChild(old.el), 500); }
+    }
+    const el = document.createElement('div');
+    el.className = 'gpopup';
+    const thumbHtml = ev.thumbnail
+      ? `<div class="thumb" style="background-image:url('${ev.thumbnail.replace(/'/g,'&apos;')}')"><div class="src-chip">${esc(ev.source).slice(0,22)}</div></div>`
+      : `<div class="thumb" style="height:48px;background:linear-gradient(135deg,#1b3a6b,#0a1830)"><div class="src-chip">${esc(ev.source).slice(0,22)}</div></div>`;
+    el.innerHTML = thumbHtml + `<div class="body"><div class="t">${esc(ev.title)}</div><div class="m"><span>📍 ${esc(ev.place)}</span><span>${timeAgo(ev.ts)}</span></div></div>`;
+    el.addEventListener('click', () => window.open(ev.link, '_blank', 'noopener'));
+    layer.appendChild(el);
+    const p = { el, ev, expires: performance.now() + 14000 };
+    activePopups.push(p);
+  }
+
+  function updatePopups() {
+    const layer = document.getElementById('globe-popups');
+    if (!layer || !projection) return;
+    const rect = layer.getBoundingClientRect();
+    const now = performance.now();
+    for (let i = activePopups.length - 1; i >= 0; i--) {
+      const p = activePopups[i];
+      const c = projection([p.ev.lon, p.ev.lat]);
+      const vis = isVisible(p.ev.lon, p.ev.lat);
+      if (!c || !vis) { p.el.style.display = 'none'; continue; }
+      p.el.style.display = '';
+      // Offset based on quadrant
+      const goRight = c[0] < width/2;
+      const goDown  = c[1] < height/2;
+      let x = c[0] + (goRight ? 30 : -30 - 220);
+      let y = c[1] + (goDown ? 18 : -18 - 110);
+      x = Math.max(6, Math.min(rect.width - 226, x));
+      y = Math.max(6, Math.min(rect.height - 130, y));
+      p.el.style.left = x + 'px'; p.el.style.top = y + 'px';
+      if (now > p.expires) {
+        p.el.classList.add('fadeout');
+        setTimeout(() => p.el.parentNode && p.el.parentNode.removeChild(p.el), 500);
+        activePopups.splice(i, 1);
+      }
+    }
+  }
+
+  function addTicker(ev) {
+    const track = document.getElementById('ticker-track');
+    const item = document.createElement('span');
+    item.className = 'tick';
+    item.innerHTML = `<span class="src">${esc(ev.source)}</span><span class="place">📍 ${esc(ev.place)}</span>${esc(ev.title)}`;
+    item.addEventListener('click', () => window.open(ev.link, '_blank', 'noopener'));
+    track.appendChild(item);
+    while (track.children.length > 30) track.removeChild(track.firstChild);
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.getElementById('ticker');
+    if (!bar) return;
+    bar.addEventListener('mouseenter', () => document.getElementById('ticker-track').classList.add('paused'));
+    bar.addEventListener('mouseleave', () => document.getElementById('ticker-track').classList.remove('paused'));
+  });
+
+  function esc(s) { return (s||'').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  function timeAgo(ts) {
+    const s = Math.max(1, Math.round((Date.now() - ts) / 1000));
+    if (s < 60) return s + 's ago';
+    if (s < 3600) return Math.round(s/60) + 'm ago';
+    return Math.round(s/3600) + 'h ago';
+  }
+
+  return { init, addEvent, isVisible };
+})();
+</script>
+
+<!-- ====== RSS pipeline ====== -->
+<script>
+const RSS = (() => {
+  // Multiple RSS-to-JSON endpoints — tried in order until one works.
+  // rss2json is fast & reliable but rate-limits aggressively; feed2json is
+  // backup; raw-XML proxies are last resort (we parse them ourselves).
+  const ENDPOINTS = [
+    (u) => ({ url: 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(u), kind: 'rss2json' }),
+    (u) => ({ url: 'https://feed2json.org/convert?url=' + encodeURIComponent(u), kind: 'feed2json' }),
+    (u) => ({ url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u), kind: 'raw-xml' }),
+  ];
+  let feeds = [...(window.NEWS_FEEDS || [])];
+  let cursor = 0;
+  let stats = { polled: 0, ok: 0, fail: 0, articles: 0, geocoded: 0 };
+  setStat && setTimeout(() => setStat('stat-feeds', feeds.length), 0);
+
+  // Parse raw RSS XML into the same shape rss2json gives us
+  function parseRssXml(xml, feedTitle) {
+    try {
+      const doc = new DOMParser().parseFromString(xml, 'text/xml');
+      const items = [];
+      doc.querySelectorAll('item, entry').forEach((it) => {
+        const get = (sel) => it.querySelector(sel)?.textContent?.trim() || '';
+        const link = it.querySelector('link')?.textContent?.trim() ||
+                     it.querySelector('link')?.getAttribute?.('href') || '';
+        items.push({
+          title: get('title'),
+          description: get('description') || get('summary') || get('content'),
+          link,
+          guid: get('guid') || get('id') || link,
+          pubDate: get('pubDate') || get('published') || get('updated'),
+          enclosure: { link: it.querySelector('enclosure')?.getAttribute('url') ||
+                            it.querySelector('media\\:thumbnail, [url]')?.getAttribute('url') || '' },
+          thumbnail: it.querySelector('media\\:thumbnail')?.getAttribute('url') || '',
+        });
+      });
+      return { status: 'ok', items, feed: { title: feedTitle } };
+    } catch (e) { return { status: 'error', message: 'XML parse: ' + e.message }; }
+  }
+
+  async function pollOne(feed) {
+    stats.polled++;
+    let lastErr = 'unknown';
+    for (const ep of ENDPOINTS) {
+      const { url, kind } = ep(feed.u);
+      try {
+        const r = await fetch(url);
+        if (!r.ok) { lastErr = `HTTP ${r.status} on ${kind}`; continue; }
+        let items;
+        if (kind === 'rss2json') {
+          const j = await r.json();
+          if (j.status !== 'ok' || !j.items || !j.items.length) {
+            lastErr = (j && j.message ? j.message : 'no items') + ' (rss2json)';
+            continue;
+          }
+          items = j.items.map((it) => ({
+            id: it.guid || it.link, title: it.title || '',
+            description: stripHtml(it.description || ''),
+            link: it.link, source: feed.t,
+            ts: Date.parse(it.pubDate) || Date.now(),
+            thumbnail: pickThumb(it),
+          }));
+        } else if (kind === 'feed2json') {
+          const j = await r.json();
+          if (!j.items || !j.items.length) { lastErr = 'no items (feed2json)'; continue; }
+          items = j.items.map((it) => ({
+            id: it.guid || it.url, title: it.title || '',
+            description: stripHtml(it.summary || it.content_html || ''),
+            link: it.url, source: feed.t,
+            ts: Date.parse(it.date_published) || Date.now(),
+            thumbnail: it.image || null,
+          }));
+        } else { // raw-xml
+          const xml = await r.text();
+          const j = parseRssXml(xml, feed.t);
+          if (j.status !== 'ok' || !j.items.length) { lastErr = (j.message || 'no items') + ' (raw-xml)'; continue; }
+          items = j.items.map((it) => ({
+            id: it.guid || it.link, title: it.title || '',
+            description: stripHtml(it.description || ''),
+            link: it.link, source: feed.t,
+            ts: Date.parse(it.pubDate) || Date.now(),
+            thumbnail: pickThumb(it),
+          }));
+        }
+        stats.ok++; stats.articles += items.length;
+        setStat('stat-articles', stats.articles);
+        return items;
+      } catch (e) {
+        lastErr = String(e.message || e) + ` (${kind})`;
+        continue;
+      }
+    }
+    stats.fail++;
+    log(`✗ ${feed.t}: ${lastErr.slice(0,80)}`, 'warn');
+    return [];
+  }
+  function stripHtml(s) {
+    const d = document.createElement('div'); d.innerHTML = s;
+    return (d.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+  function pickThumb(it) {
+    if (it.thumbnail && /^https?:/.test(it.thumbnail)) return it.thumbnail;
+    if (it.enclosure && it.enclosure.link && /\.(jpe?g|png|webp|gif)/i.test(it.enclosure.link)) return it.enclosure.link;
+    const txt = (it.description || '') + (it.content || '');
+    const m = txt.match(/<img[^>]+src=["']([^"']+)["']/i);
+    return m ? m[1] : null;
+  }
+  function processArticle(item) {
+    if (!item) return;
+    const text = (item.title + ' ' + item.description).toLowerCase();
+    const hit = geocode(text);
+    if (hit) {
+      stats.geocoded++;
+      Globe.addEvent({ ...item, lat: hit.lat, lon: hit.lon, place: hit.name, source_geo: 'gazetteer' });
+    }
+  }
+  async function pollTick() {
+    if (!feeds.length) { log('RSS: no feeds configured', 'warn'); return; }
+    const batch = [];
+    for (let i = 0; i < 6; i++) {
+      batch.push(feeds[cursor % feeds.length]);
+      cursor++;
+    }
+    log(`Polling ${batch.length} feeds: ${batch.map(b => b.t).join(', ').slice(0,80)}…`);
+    const lists = await Promise.all(batch.map(pollOne));
+    const items = lists.flat();
+    items.forEach(processArticle);
+    if (items.length) {
+      log(`Got ${items.length} articles from this batch (${stats.geocoded} geocoded total)`, 'ok');
+    }
+  }
+  function getStats() { return stats; }
+  return { pollTick, processArticle, pollOne, getStats };
+})();
+</script>
+
+<!-- ====== GEDCOM parser + smart-merge ====== -->
+<script>
+const GEDCOM = (() => {
+  // Parse a GEDCOM string into a flat list of records.
+  // Each record is { id, tag, lines: [{ level, tag, value }, ...] }
+  function parse(text) {
+    const lines = text.split(/\r?\n/);
+    const records = [];
+    let cur = null;
+    for (const raw of lines) {
+      const line = raw.replace(/^\uFEFF/, '');
+      if (!line.trim()) continue;
+      const m = line.match(/^(\d+)\s+(?:(@[^@]+@)\s+)?([A-Z_0-9]+)(?:\s+(.*))?$/);
+      if (!m) continue;
+      const level = +m[1], xrefId = m[2], tag = m[3], value = (m[4] || '').trim();
+      if (level === 0) {
+        if (cur) records.push(cur);
+        cur = { id: xrefId || null, tag, value, lines: [] };
+      } else if (cur) {
+        cur.lines.push({ level, tag, value });
+      }
+    }
+    if (cur) records.push(cur);
+    return records;
+  }
+
+  // Build INDIvidual / FAMily objects from records
+  function build(records) {
+    const indis = new Map(), fams = new Map();
+    for (const r of records) {
+      if (r.tag === 'INDI' && r.id) indis.set(r.id, parseIndi(r));
+      else if (r.tag === 'FAM' && r.id) fams.set(r.id, parseFam(r));
+    }
+    return { indis, fams };
+  }
+
+  function parseIndi(r) {
+    const out = { id: r.id, name: '', sex: null, birth: null, death: null, marriages: [], events: [], famsAsChild: [], famsAsSpouse: [] };
+    let i = 0;
+    while (i < r.lines.length) {
+      const ln = r.lines[i];
+      if (ln.tag === 'NAME' && ln.level === 1) {
+        out.name = ln.value.replace(/\//g, '').replace(/\s+/g, ' ').trim();
+      } else if (ln.tag === 'SEX' && ln.level === 1) {
+        out.sex = ln.value.toUpperCase().charAt(0);
+      } else if ((ln.tag === 'BIRT' || ln.tag === 'DEAT' || ln.tag === 'BAPM' || ln.tag === 'BURI' || ln.tag === 'EMIG' || ln.tag === 'IMMI' || ln.tag === 'RESI' || ln.tag === 'OCCU') && ln.level === 1) {
+        const ev = { type: ln.tag, date: null, place: null };
+        let j = i + 1;
+        while (j < r.lines.length && r.lines[j].level > 1) {
+          if (r.lines[j].tag === 'DATE') ev.date = r.lines[j].value;
+          if (r.lines[j].tag === 'PLAC') ev.place = r.lines[j].value;
+          j++;
+        }
+        if (ln.tag === 'BIRT') out.birth = ev;
+        else if (ln.tag === 'DEAT') out.death = ev;
+        out.events.push(ev);
+        i = j - 1;
+      } else if (ln.tag === 'FAMC' && ln.level === 1) out.famsAsChild.push(ln.value);
+      else if (ln.tag === 'FAMS' && ln.level === 1) out.famsAsSpouse.push(ln.value);
+      i++;
+    }
+    return out;
+  }
+  function parseFam(r) {
+    const out = { id: r.id, husb: null, wife: null, children: [], marriage: null };
+    let i = 0;
+    while (i < r.lines.length) {
+      const ln = r.lines[i];
+      if (ln.tag === 'HUSB' && ln.level === 1) out.husb = ln.value;
+      else if (ln.tag === 'WIFE' && ln.level === 1) out.wife = ln.value;
+      else if (ln.tag === 'CHIL' && ln.level === 1) out.children.push(ln.value);
+      else if (ln.tag === 'MARR' && ln.level === 1) {
+        const ev = { type: 'MARR', date: null, place: null };
+        let j = i + 1;
+        while (j < r.lines.length && r.lines[j].level > 1) {
+          if (r.lines[j].tag === 'DATE') ev.date = r.lines[j].value;
+          if (r.lines[j].tag === 'PLAC') ev.place = r.lines[j].value;
+          j++;
+        }
+        out.marriage = ev;
+        i = j - 1;
+      }
+      i++;
+    }
+    return out;
+  }
+
+  // Smart-merge multiple GEDCOM strings: parse each, then merge by record ID.
+  // Last-write-wins for scalar fields; arrays (events, children) merged unique.
+  function smartMerge(texts) {
+    const merged = { indis: new Map(), fams: new Map() };
+    let totalRecords = 0;
+    for (const text of texts) {
+      const recs = parse(text);
+      totalRecords += recs.length;
+      const { indis, fams } = build(recs);
+      for (const [id, p] of indis) {
+        if (!merged.indis.has(id)) { merged.indis.set(id, p); continue; }
+        const ex = merged.indis.get(id);
+        if (!ex.name && p.name) ex.name = p.name;
+        if (!ex.sex && p.sex) ex.sex = p.sex;
+        // Merge field-by-field so birth date from part1 + birth place from part2 combine
+        if (p.birth) {
+          if (!ex.birth) ex.birth = { ...p.birth };
+          else {
+            if (!ex.birth.date && p.birth.date) ex.birth.date = p.birth.date;
+            if (!ex.birth.place && p.birth.place) ex.birth.place = p.birth.place;
+          }
+        }
+        if (p.death) {
+          if (!ex.death) ex.death = { ...p.death };
+          else {
+            if (!ex.death.date && p.death.date) ex.death.date = p.death.date;
+            if (!ex.death.place && p.death.place) ex.death.place = p.death.place;
+          }
+        }
+        for (const e of p.events) {
+          if (!ex.events.find((x) => x.type === e.type && x.date === e.date)) ex.events.push(e);
+        }
+        for (const f of p.famsAsChild)  if (!ex.famsAsChild.includes(f))  ex.famsAsChild.push(f);
+        for (const f of p.famsAsSpouse) if (!ex.famsAsSpouse.includes(f)) ex.famsAsSpouse.push(f);
+      }
+      for (const [id, f] of fams) {
+        if (!merged.fams.has(id)) { merged.fams.set(id, f); continue; }
+        const ex = merged.fams.get(id);
+        if (!ex.husb && f.husb) ex.husb = f.husb;
+        if (!ex.wife && f.wife) ex.wife = f.wife;
+        if (!ex.marriage && f.marriage) ex.marriage = f.marriage;
+        for (const c of f.children) if (!ex.children.includes(c)) ex.children.push(c);
+      }
+    }
+    return { merged, partsCount: texts.length, totalRecords };
+  }
+
+  // Demo GEDCOM (5 generations, real-ish dates and places)
+  const DEMO = `0 HEAD
+1 SOUR EnsoWorld
+1 GEDC
+2 VERS 5.5.1
+0 @I1@ INDI
+1 NAME John /Smith/
+1 SEX M
+1 BIRT
+2 DATE 12 MAY 1850
+2 PLAC Edinburgh, Scotland
+1 DEAT
+2 DATE 3 NOV 1920
+2 PLAC Boston, Massachusetts
+1 FAMS @F1@
+0 @I2@ INDI
+1 NAME Mary /Campbell/
+1 SEX F
+1 BIRT
+2 DATE 7 AUG 1855
+2 PLAC Glasgow, Scotland
+1 DEAT
+2 DATE 14 FEB 1928
+2 PLAC Boston, Massachusetts
+1 FAMS @F1@
+0 @I3@ INDI
+1 NAME William /Smith/
+1 SEX M
+1 BIRT
+2 DATE 22 MAR 1882
+2 PLAC Liverpool, England
+1 EMIG
+2 DATE 4 APR 1898
+2 PLAC New York
+1 DEAT
+2 DATE 9 JUL 1955
+2 PLAC Chicago, Illinois
+1 FAMC @F1@
+1 FAMS @F2@
+0 @I4@ INDI
+1 NAME Sarah /O'Brien/
+1 SEX F
+1 BIRT
+2 DATE 18 OCT 1885
+2 PLAC Dublin, Ireland
+1 IMMI
+2 DATE 1903
+2 PLAC New York
+1 DEAT
+2 DATE 1962
+2 PLAC Chicago, Illinois
+1 FAMS @F2@
+0 @I5@ INDI
+1 NAME Robert /Smith/
+1 SEX M
+1 BIRT
+2 DATE 5 DEC 1912
+2 PLAC Chicago, Illinois
+1 DEAT
+2 DATE 1989
+2 PLAC San Francisco, California
+1 FAMC @F2@
+1 FAMS @F3@
+0 @I6@ INDI
+1 NAME Elena /Rossi/
+1 SEX F
+1 BIRT
+2 DATE 1915
+2 PLAC Naples, Italy
+1 IMMI
+2 DATE 1935
+2 PLAC San Francisco, California
+1 FAMS @F3@
+0 @I7@ INDI
+1 NAME Michael /Smith/
+1 SEX M
+1 BIRT
+2 DATE 1945
+2 PLAC San Francisco, California
+1 FAMC @F3@
+1 FAMS @F4@
+0 @I8@ INDI
+1 NAME Yuki /Tanaka/
+1 SEX F
+1 BIRT
+2 DATE 1948
+2 PLAC Tokyo, Japan
+1 IMMI
+2 DATE 1970
+2 PLAC Los Angeles, California
+1 FAMS @F4@
+0 @I9@ INDI
+1 NAME Daniel /Smith/
+1 SEX M
+1 BIRT
+2 DATE 1978
+2 PLAC Los Angeles, California
+1 FAMC @F4@
+0 @F1@ FAM
+1 HUSB @I1@
+1 WIFE @I2@
+1 CHIL @I3@
+1 MARR
+2 DATE 14 JUN 1878
+2 PLAC Edinburgh, Scotland
+0 @F2@ FAM
+1 HUSB @I3@
+1 WIFE @I4@
+1 CHIL @I5@
+1 MARR
+2 DATE 22 SEP 1908
+2 PLAC New York
+0 @F3@ FAM
+1 HUSB @I5@
+1 WIFE @I6@
+1 CHIL @I7@
+1 MARR
+2 DATE 1940
+2 PLAC San Francisco, California
+0 @F4@ FAM
+1 HUSB @I7@
+1 WIFE @I8@
+1 CHIL @I9@
+1 MARR
+2 DATE 1972
+2 PLAC Los Angeles, California
+0 TRLR`;
+
+  return { parse, build, smartMerge, DEMO };
+})();
+</script>
+
+<!-- ====== TREE renderer ====== -->
+<script>
+const Tree = (() => {
+  let model = null;   // { indis, fams }
+
+  function setData(merged) {
+    model = merged;
+    document.getElementById('tree-sub').textContent =
+      `${model.indis.size} people · ${model.fams.size} families`;
+    document.getElementById('tree-empty').style.display = 'none';
+    // Persist
+    try {
+      const data = {
+        indis: [...model.indis.entries()],
+        fams:  [...model.fams.entries()],
+      };
+      localStorage.setItem('ew-gedcom', JSON.stringify(data));
+    } catch (e) {}
+    render();
+  }
+  function loadCached() {
+    try {
+      const raw = localStorage.getItem('ew-gedcom');
+      if (!raw) return false;
+      const data = JSON.parse(raw);
+      model = {
+        indis: new Map(data.indis),
+        fams:  new Map(data.fams),
+      };
+      document.getElementById('tree-sub').textContent =
+        `${model.indis.size} people · ${model.fams.size} families (cached)`;
+      document.getElementById('tree-empty').style.display = 'none';
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function getModel() { return model; }
+
+  // Layout: generation based on BFS from a root
+  function generationMap() {
+    if (!model) return null;
+    // Find a root: prefer the person with the most descendants
+    const childMap = new Map(); const parentMap = new Map();
+    model.indis.forEach((_, id) => { childMap.set(id, []); parentMap.set(id, []); });
+    model.fams.forEach((f) => {
+      const ps = [f.husb, f.wife].filter(Boolean);
+      for (const c of f.children) {
+        if (!childMap.has(c)) continue;
+        for (const p of ps) {
+          if (childMap.has(p)) { childMap.get(p).push(c); parentMap.get(c).push(p); }
+        }
+      }
+    });
+    let bestRoot = null, bestN = -1;
+    model.indis.forEach((p, id) => {
+      // Count ancestors + descendants
+      let n = 0;
+      const q = [id]; const seen = new Set();
+      while (q.length) {
+        const x = q.pop();
+        if (seen.has(x)) continue; seen.add(x); n++;
+        (parentMap.get(x) || []).forEach((y) => q.push(y));
+        (childMap.get(x) || []).forEach((y) => q.push(y));
+      }
+      if (n > bestN) { bestN = n; bestRoot = id; }
+    });
+
+    const gen = new Map();
+    if (bestRoot) {
+      gen.set(bestRoot, 0);
+      const q = [bestRoot];
+      while (q.length) {
+        const id = q.shift();
+        const g = gen.get(id);
+        for (const p of parentMap.get(id) || []) if (!gen.has(p)) { gen.set(p, g+1); q.push(p); }
+        for (const c of childMap.get(id) || []) if (!gen.has(c)) { gen.set(c, g-1); q.push(c); }
+      }
+    }
+    // Any unplaced get gen 0
+    model.indis.forEach((_, id) => { if (!gen.has(id)) gen.set(id, 0); });
+    return { gen, parentMap, childMap, root: bestRoot };
+  }
+
+  function render() {
+    if (!model) return;
+    const svgEl = document.getElementById('tree-svg');
+    while (svgEl.firstChild) svgEl.removeChild(svgEl.firstChild);
+    const ns = 'http://www.w3.org/2000/svg';
+    const stage = document.getElementById('tree-stage');
+    const stageW = stage.clientWidth, stageH = stage.clientHeight;
+    svgEl.setAttribute('width', stageW); svgEl.setAttribute('height', stageH);
+    const vp = document.createElementNS(ns, 'g'); vp.setAttribute('id','tree-vp'); svgEl.appendChild(vp);
+
+    const info = generationMap();
+    const byGen = new Map();
+    info.gen.forEach((g, id) => {
+      if (!byGen.has(g)) byGen.set(g, []);
+      byGen.get(g).push(id);
+    });
+
+    // Order within generations: keep siblings together
+    const orderedByGen = new Map();
+    byGen.forEach((ids, g) => {
+      const placed = new Set();
+      const out = [];
+      function place(id) {
+        if (placed.has(id)) return;
+        placed.add(id); out.push(id);
+        // Find spouse(s) at same gen
+        model.fams.forEach((f) => {
+          if (f.husb === id && info.gen.get(f.wife) === g && !placed.has(f.wife)) { placed.add(f.wife); out.push(f.wife); }
+          if (f.wife === id && info.gen.get(f.husb) === g && !placed.has(f.husb)) { placed.add(f.husb); out.push(f.husb); }
+        });
+      }
+      ids.forEach(place);
+      orderedByGen.set(g, out);
+    });
+
+    const W = 170, H = 70, RH = 140;
+    const pos = new Map();
+    let minX = 0, maxX = 0;
+    orderedByGen.forEach((ids, g) => {
+      const y = -g * RH;
+      const total = ids.length * W;
+      const start = -total/2 + W/2;
+      ids.forEach((id, i) => {
+        const x = start + i * W;
+        pos.set(id, { x, y });
+        if (x < minX) minX = x; if (x > maxX) maxX = x;
+      });
+    });
+
+    // Edges
+    model.fams.forEach((f) => {
+      const ps = [f.husb, f.wife].filter(Boolean);
+      // Couple connector
+      if (ps.length === 2 && pos.has(ps[0]) && pos.has(ps[1])) {
+        const a = pos.get(ps[0]), b = pos.get(ps[1]);
+        if (Math.abs(a.y - b.y) < 1) {
+          const line = document.createElementNS(ns, 'line');
+          line.setAttribute('x1', Math.min(a.x, b.x) + W/2);
+          line.setAttribute('x2', Math.max(a.x, b.x) - W/2);
+          line.setAttribute('y1', a.y); line.setAttribute('y2', a.y);
+          line.setAttribute('class', 'tree-couple');
+          vp.appendChild(line);
+        }
+      }
+      // Parent-to-child edges
+      for (const c of f.children) {
+        const child = pos.get(c);
+        if (!child) continue;
+        for (const p of ps) {
+          const parent = pos.get(p);
+          if (!parent) continue;
+          const path = document.createElementNS(ns, 'path');
+          const y1 = parent.y + H/2, y2 = child.y - H/2;
+          const my = (y1 + y2) / 2;
+          path.setAttribute('d', `M ${parent.x} ${y1} C ${parent.x} ${my}, ${child.x} ${my}, ${child.x} ${y2}`);
+          path.setAttribute('class', 'tree-edge');
+          path.setAttribute('stroke', '#5a9');
+          vp.appendChild(path);
+        }
+      }
+    });
+
+    // Person boxes
+    pos.forEach((p, id) => {
+      const person = model.indis.get(id);
+      if (!person) return;
+      const g = document.createElementNS(ns, 'g');
+      g.setAttribute('class', 'tree-person');
+      g.setAttribute('transform', `translate(${p.x - W/2}, ${p.y - H/2})`);
+      const sexColor = person.sex === 'F' ? '#c4577f' : person.sex === 'M' ? '#3d6db5' : '#7a8294';
+      const rect = document.createElementNS(ns, 'rect');
+      rect.setAttribute('class', 'bg'); rect.setAttribute('width', W); rect.setAttribute('height', H);
+      rect.setAttribute('rx', 8); rect.setAttribute('fill', sexColor);
+      rect.setAttribute('stroke', 'rgba(0,0,0,0.3)'); rect.setAttribute('stroke-width', 1);
+      g.appendChild(rect);
+
+      const name = person.name || '(unnamed)';
+      const lines = wrap(name, 18);
+      lines.forEach((ln, i) => {
+        const t = document.createElementNS(ns, 'text');
+        t.setAttribute('x', W/2); t.setAttribute('y', 18 + i * 14);
+        t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', 12);
+        t.setAttribute('font-weight', 600); t.setAttribute('fill', '#fff');
+        t.textContent = ln;
+        g.appendChild(t);
+      });
+      // Dates line
+      const dateStr = formatDates(person);
+      if (dateStr) {
+        const t = document.createElementNS(ns, 'text');
+        t.setAttribute('x', W/2); t.setAttribute('y', H - 8);
+        t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', 10);
+        t.setAttribute('fill', 'rgba(255,255,255,0.75)');
+        t.textContent = dateStr;
+        g.appendChild(t);
+      }
+      vp.appendChild(g);
+    });
+
+    // Generation labels on the left
+    const gens = [...byGen.keys()].sort((a, b) => a - b);
+    const labelX = minX - 100;
+    gens.forEach((gg) => {
+      const t = document.createElementNS(ns, 'text');
+      t.setAttribute('x', labelX); t.setAttribute('y', -gg * RH + 4);
+      t.setAttribute('fill', 'var(--muted)'); t.setAttribute('font-size', 11);
+      t.setAttribute('text-transform', 'uppercase');
+      t.setAttribute('font-family', 'ui-monospace,Menlo,Consolas,monospace');
+      t.textContent = gg === 0 ? 'gen 0 (root)' : (gg > 0 ? `+${gg} gen` : `${gg} gen`);
+      vp.appendChild(t);
+    });
+
+    // Pan + zoom + fit
+    let view = { x: 0, y: 0, k: 1 };
+    function apply() { vp.setAttribute('transform', `translate(${view.x}, ${view.y}) scale(${view.k})`); }
+    function fit() {
+      const treeW = (maxX - minX) + W + 200;
+      const minY = -gens[gens.length-1] * RH - H, maxY = -gens[0] * RH + H;
+      const treeH = maxY - minY + 80;
+      const k = Math.min(stageW / treeW, stageH / treeH) * 0.92;
+      view.k = k;
+      view.x = stageW/2 - ((minX + maxX)/2) * k;
+      view.y = stageH/2 - ((minY + maxY)/2) * k;
+      apply();
+    }
+    fit();
+
+    let dragging = false, last = null;
+    stage.onpointerdown = (e) => { dragging = true; last = [e.clientX, e.clientY]; stage.setPointerCapture(e.pointerId); };
+    stage.onpointermove = (e) => {
+      if (!dragging) return;
+      view.x += e.clientX - last[0]; view.y += e.clientY - last[1];
+      last = [e.clientX, e.clientY]; apply();
+    };
+    stage.onpointerup = () => dragging = false;
+    stage.onwheel = (e) => {
+      e.preventDefault();
+      const r = stage.getBoundingClientRect();
+      const mx = e.clientX - r.left, my = e.clientY - r.top;
+      const f = e.deltaY < 0 ? 1.12 : 1/1.12;
+      const nk = Math.max(0.15, Math.min(3, view.k * f));
+      view.x = mx - (mx - view.x) * (nk / view.k);
+      view.y = my - (my - view.y) * (nk / view.k);
+      view.k = nk; apply();
+    };
+  }
+
+  function wrap(s, max) {
+    if (s.length <= max) return [s];
+    const parts = s.split(' ');
+    let l1 = '', l2 = '';
+    for (const w of parts) {
+      if ((l1 + ' ' + w).trim().length <= max) l1 = (l1 + ' ' + w).trim();
+      else l2 = (l2 + ' ' + w).trim();
+    }
+    return [l1, l2].filter(Boolean);
+  }
+  function formatDates(p) {
+    const b = p.birth ? (p.birth.date || '') : '';
+    const d = p.death ? (p.death.date || '') : '';
+    const yb = b.match(/\d{4}/), yd = d.match(/\d{4}/);
+    if (!yb && !yd) return '';
+    return (yb ? yb[0] : '?') + ' – ' + (yd ? yd[0] : '');
+  }
+
+  return { setData, getModel, render, loadCached };
+})();
+function renderTree() { Tree.render(); }
+</script>
+
+<!-- ====== TIMELINE + map ====== -->
+<script>
+const Timeline = (() => {
+  let map = null;
+  let activeEventEl = null;
+  let usingCanvas = false;
+
+  function buildEvents() {
+    const model = Tree.getModel();
+    if (!model) return [];
+    const events = [];
+    model.indis.forEach((p) => {
+      for (const e of p.events) {
+        const yr = e.date ? (e.date.match(/\d{4}/) || [])[0] : null;
+        if (!yr && !e.place) continue;
+        events.push({
+          who: p.name || '(unnamed)',
+          whoId: p.id,
+          type: humanType(e.type),
+          rawType: e.type,
+          date: e.date,
+          year: yr ? parseInt(yr, 10) : null,
+          place: e.place,
+        });
+      }
+    });
+    model.fams.forEach((f) => {
+      if (!f.marriage) return;
+      const e = f.marriage;
+      const yr = e.date ? (e.date.match(/\d{4}/) || [])[0] : null;
+      if (!yr && !e.place) return;
+      const husbName = f.husb && model.indis.get(f.husb) ? model.indis.get(f.husb).name : '?';
+      const wifeName = f.wife && model.indis.get(f.wife) ? model.indis.get(f.wife).name : '?';
+      events.push({
+        who: `${husbName} & ${wifeName}`,
+        type: 'Marriage', rawType: 'MARR',
+        date: e.date, year: yr ? parseInt(yr, 10) : null,
+        place: e.place,
+      });
+    });
+    events.sort((a, b) => (a.year || 9999) - (b.year || 9999));
+    return events;
+  }
+  function humanType(t) {
+    return { BIRT:'Birth', DEAT:'Death', MARR:'Marriage', EMIG:'Emigration', IMMI:'Immigration',
+             BAPM:'Baptism', BURI:'Burial', RESI:'Residence', OCCU:'Occupation' }[t] || t;
+  }
+
+  function render() {
+    const listEl = document.getElementById('timeline-list');
+    const events = buildEvents();
+    if (!events.length) {
+      listEl.innerHTML = `<div class="tl-empty">Load GEDCOM data in the <b>Family Tree</b> tab first — events with dates and places will appear here.</div>`;
+      return;
+    }
+    let lastYear = null;
+    const html = [];
+    events.forEach((ev, idx) => {
+      if (ev.year && ev.year !== lastYear) {
+        html.push(`<div class="tl-year">${ev.year}</div>`);
+        lastYear = ev.year;
+      }
+      html.push(`
+        <div class="tl-event" data-idx="${idx}">
+          <div class="date">${esc(ev.date || (ev.year || 'unknown date'))}</div>
+          <div class="who">${esc(ev.who)}</div>
+          <div class="what">${esc(ev.type)}</div>
+          ${ev.place ? `<div class="where">📍 ${esc(ev.place)}</div>` : ''}
+        </div>
+      `);
+    });
+    listEl.innerHTML = html.join('');
+    listEl.querySelectorAll('.tl-event').forEach((el) => {
+      el.addEventListener('click', () => {
+        if (activeEventEl) activeEventEl.classList.remove('active');
+        el.classList.add('active');
+        activeEventEl = el;
+        const ev = events[+el.dataset.idx];
+        focusEvent(ev);
+      });
+    });
+    // Init map
+    initMap();
+  }
+
+  async function initMap() {
+    const canvasEl = document.getElementById('map-canvas');
+    if (map) return;
+    // Try Leaflet first
+    const ok = await ensureLeaflet();
+    if (ok && navigator.onLine) {
+      try {
+        map = L.map(canvasEl, { zoomControl: true, attributionControl: false }).setView([20, 0], 2);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap'
+        }).addTo(map);
+        L.control.attribution({ position: 'bottomleft', prefix: false })
+          .addAttribution('© OpenStreetMap').addTo(map);
+        usingCanvas = false;
+        return;
+      } catch (e) { /* fall through to canvas */ }
+    }
+    // Canvas fallback
+    usingCanvas = true;
+    canvasEl.innerHTML = '<canvas id="map-fallback-canvas"></canvas>';
+    const cv = canvasEl.querySelector('canvas');
+    function size() {
+      cv.width = canvasEl.clientWidth; cv.height = canvasEl.clientHeight;
+      drawFallbackMap(cv, [20, 0], 1);
+    }
+    size();
+    window.addEventListener('resize', size);
+    map = { isCanvas: true, canvas: cv, view: [20, 0], zoom: 1 };
+  }
+
+  function drawFallbackMap(cv, center, zoom, highlight) {
+    const ctx = cv.getContext('2d');
+    const W = cv.width, H = cv.height;
+    ctx.fillStyle = '#0a1422'; ctx.fillRect(0, 0, W, H);
+    if (!window.d3 || !window.topojson) return;
+    const cached = localStorage.getItem('ew-world');
+    if (!cached) return;
+    let world; try { world = JSON.parse(cached); } catch (e) { return; }
+    const land = topojson.feature(world, world.objects.land);
+    // Centered equirectangular projection
+    const scale = (W / 360) * Math.max(1, zoom);
+    const cx = W/2 - center[1] * scale;
+    const cy = H/2 + center[0] * scale;
+    const proj = d3.geoEquirectangular()
+      .scale(180 / Math.PI * (W / 360) * Math.max(1, zoom))
+      .translate([W/2, H/2])
+      .center(center.slice().reverse());
+    const path = d3.geoPath(proj, ctx);
+    ctx.fillStyle = '#1f4a2a';
+    ctx.strokeStyle = '#2c6b3d';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath(); path(land); ctx.fill(); ctx.stroke();
+    // graticule
+    ctx.beginPath(); path(d3.geoGraticule10()); ctx.strokeStyle = 'rgba(120,180,255,0.1)'; ctx.stroke();
+    // highlight pin
+    if (highlight) {
+      const c = proj([highlight[0], highlight[1]]);
+      if (c) {
+        ctx.beginPath(); ctx.arc(c[0], c[1], 8, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(255,209,102,0.3)'; ctx.fill();
+        ctx.beginPath(); ctx.arc(c[0], c[1], 4, 0, Math.PI*2);
+        ctx.fillStyle = '#ffd166'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.fill(); ctx.stroke();
+      }
+    }
+  }
+
+  function focusEvent(ev) {
+    const card = document.getElementById('timeline-card');
+    const placeText = ev.place || '(no place)';
+    card.innerHTML = `
+      <h3>${esc(ev.who)}</h3>
+      <div class="meta">${esc(ev.date || ev.year || '')} · <span class="pin">${esc(ev.type)}</span></div>
+      <div class="desc">📍 ${esc(placeText)}</div>
+    `;
+    card.classList.add('show');
+
+    if (!ev.place) return;
+    const hit = geocode(ev.place);
+    if (!hit) {
+      card.innerHTML += `<div class="desc" style="margin-top:8px;color:var(--muted);font-style:italic;">(no exact location in gazetteer)</div>`;
+      return;
+    }
+    // Animate the zoom + ripple
+    if (map && !map.isCanvas) {
+      // Leaflet path: smooth flyTo, then drop a ripple + marker
+      map.flyTo([hit.lat, hit.lon], 7, { duration: 1.6 });
+      setTimeout(() => spawnRipple(canvasPxForLatLng(hit.lat, hit.lon)), 200);
+      if (focusEvent._marker) map.removeLayer(focusEvent._marker);
+      focusEvent._marker = L.marker([hit.lat, hit.lon]).addTo(map);
+    } else if (map && map.isCanvas) {
+      animateCanvasZoom(hit);
+    }
+  }
+
+  function canvasPxForLatLng(lat, lon) {
+    if (!map || map.isCanvas) return null;
+    const p = map.latLngToContainerPoint([lat, lon]);
+    return [p.x, p.y];
+  }
+
+  function spawnRipple(px) {
+    if (!px) return;
+    const r = document.createElement('div');
+    r.className = 'tile-ripple';
+    r.style.left = px[0] + 'px';
+    r.style.top  = px[1] + 'px';
+    document.getElementById('timeline-map').appendChild(r);
+    setTimeout(() => r.parentNode && r.parentNode.removeChild(r), 1500);
+  }
+
+  function animateCanvasZoom(hit) {
+    if (!map || !map.isCanvas) return;
+    const cv = map.canvas;
+    const startCenter = map.view.slice(), startZoom = map.zoom;
+    const endCenter = [hit.lat, hit.lon], endZoom = 6;
+    const start = performance.now(), dur = 1400;
+    function ease(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
+    function step(now) {
+      const t = Math.min(1, (now - start) / dur);
+      const e = ease(t);
+      const cur = [
+        startCenter[0] + (endCenter[0] - startCenter[0]) * e,
+        startCenter[1] + (endCenter[1] - startCenter[1]) * e,
+      ];
+      const z = startZoom + (endZoom - startZoom) * e;
+      map.view = cur; map.zoom = z;
+      drawFallbackMap(cv, cur, z, hit);
+      if (t < 1) requestAnimationFrame(step);
+      else {
+        // Spawn a ripple at center
+        const rect = cv.getBoundingClientRect();
+        spawnRipple([rect.width/2, rect.height/2]);
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  function esc(s) { return (s||'').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  return { render };
+})();
+function renderTimeline() { Timeline.render(); }
+</script>
+
+<!-- ====== Tree controls wiring ====== -->
+<script>
+async function fetchText(url) {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.text();
+  } catch (e) {
+    // Try a CORS proxy fallback
+    try {
+      const r2 = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url));
+      if (!r2.ok) throw new Error('HTTP ' + r2.status);
+      return await r2.text();
+    } catch (e2) {
+      throw new Error('Could not fetch ' + url + ' (' + e.message + ')');
+    }
+  }
+}
+
+document.getElementById('tree-demo').addEventListener('click', () => {
+  toast('Loading demo (5 generations across 4 continents)…');
+  const m = GEDCOM.smartMerge([GEDCOM.DEMO]);
+  Tree.setData(m.merged);
+});
+
+document.getElementById('tree-load-paste').addEventListener('click', () => {
+  const txt = document.getElementById('tree-paste').value.trim();
+  if (!txt) { toast('Paste GEDCOM text first'); return; }
+  try {
+    const m = GEDCOM.smartMerge([txt]);
+    if (m.merged.indis.size === 0) { toast('No individuals found — is this GEDCOM?'); return; }
+    Tree.setData(m.merged);
+    toast(`Parsed ${m.merged.indis.size} people, ${m.merged.fams.size} families`);
+  } catch (e) { toast('Parse error: ' + e.message); }
+});
+
+document.getElementById('tree-clipboard').addEventListener('click', async () => {
+  if (!navigator.clipboard) { toast('Clipboard API unavailable — paste manually'); return; }
+  try {
+    const txt = await navigator.clipboard.readText();
+    if (!txt) { toast('Clipboard is empty'); return; }
+    document.getElementById('tree-paste').value = txt;
+    document.getElementById('tree-load-paste').click();
+  } catch (e) {
+    toast('Could not read clipboard: ' + e.message);
+  }
+});
+
+document.getElementById('tree-load-url').addEventListener('click', async () => {
+  const raw = document.getElementById('tree-url').value.trim();
+  if (!raw) { toast('Enter at least one URL'); return; }
+  const urls = raw.split(/[\s,]+/).filter((u) => /^https?:/.test(u));
+  if (!urls.length) { toast('No valid URLs found'); return; }
+  toast(`Fetching ${urls.length} part(s)…`);
+  document.getElementById('tree-hint').innerHTML = `<span class="spin"></span> Fetching ${urls.length} part(s)…`;
+  try {
+    const texts = [];
+    for (let i = 0; i < urls.length; i++) {
+      document.getElementById('tree-hint').innerHTML = `<span class="spin"></span> Fetching part ${i+1}/${urls.length}…`;
+      texts.push(await fetchText(urls[i]));
+    }
+    const m = GEDCOM.smartMerge(texts);
+    document.getElementById('tree-hint').textContent =
+      `✓ Merged ${m.partsCount} parts → ${m.totalRecords} records → ${m.merged.indis.size} people, ${m.merged.fams.size} families`;
+    if (m.merged.indis.size === 0) { toast('No GEDCOM records found in fetched parts'); return; }
+    Tree.setData(m.merged);
+  } catch (e) {
+    document.getElementById('tree-hint').textContent = '✗ ' + e.message;
+    toast(e.message);
+  }
+});
+</script>
+
+<!-- ====== BOOT ====== -->
+<script>
+// Load the bundled snapshot so the globe is never empty on boot
+function loadBundledSnapshot() {
+  const node = document.getElementById('snapshot-data');
+  if (!node) return 0;
+  try {
+    const arts = JSON.parse(node.textContent);
+    log(`Loading bundled snapshot: ${arts.length} articles (live updates will overlay)`, 'ok');
+    let i = 0;
+    function next() {
+      if (i >= arts.length) return;
+      Globe.addEvent(arts[i]);
+      i++;
+      setTimeout(next, 120);
+    }
+    next();
+    return arts.length;
+  } catch (e) { log('Snapshot load failed: ' + e.message, 'warn'); return 0; }
+}
+
+(async function boot() {
+  log(`🌐 Ensō World booting · ${window.NEWS_FEEDS.length} feeds primed · ${navigator.onLine ? 'online' : 'OFFLINE'}`);
+  setStat('stat-feeds', window.NEWS_FEEDS.length);
+
+  // 1) Load bundled snapshot IMMEDIATELY — events queue until globe is ready,
+  //    then flush. The user sees data within ~1s of boot even if d3/RSS fails.
+  const snapshotCount = loadBundledSnapshot();
+  if (snapshotCount > 0) {
+    toast(`✓ Loading ${snapshotCount} bundled articles…`);
+  }
+
+  // 2) Kick RSS polling in parallel — its events overlay on top of the snapshot
+  log('Starting live RSS poll in parallel with globe init…');
+  const firstPoll = RSS.pollTick();
+
+  // 3) Init globe (loads d3 + topology). Even if this fails, the snapshot is
+  //    queued and we'll log it. The hand-rolled .xdc version doesn't have this
+  //    risk because it doesn't depend on d3, but this is the browser version.
+  try {
+    await Globe.init();
+  } catch (e) {
+    log('Globe init failed: ' + e.message + ' — try reloading', 'err');
+    toast('Globe failed to load — check the activity log');
+  }
+
+  // 4) Restore cached tree if any
+  if (Tree.loadCached()) log('Tree: restored cached family from previous session', 'ok');
+
+  // Wait for the first poll to complete, then check what we got
+  await firstPoll;
+  const s = RSS.getStats();
+  log(`First batch done: ${s.ok}/${s.polled} feeds ok, ${s.articles} articles seen, ${s.geocoded} geocoded`, 'ok');
+  if (s.geocoded === 0 && s.ok > 0) {
+    log('⚠ No articles geocoded from first batch — try more feeds (they cycle every 15s)', 'warn');
+  }
+  if (s.ok === 0) {
+    log('⚠ No feeds returned data — check network / rss2json may be rate-limited', 'warn');
+    toast('No live data — check the activity log');
+  } else {
+    toast(`✓ Live · ${s.articles} articles, ${s.geocoded} on globe`);
+  }
+
+  // Continue polling on a schedule
+  setInterval(RSS.pollTick, 15_000);
+})();
+</script>
+</body>
+</html>

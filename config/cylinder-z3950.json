@@ -1,0 +1,144 @@
+{
+  "profile": "ucsb-cylinder-reconciliation",
+  "profileVersion": 2,
+  "researchedAt": "2026-08-23",
+  "source": {
+    "displayName": "UCSB Alma (Pegasus legacy profile)",
+    "institutionCode": "01UCSB_INST",
+    "transport": "SRU 1.2",
+    "baseUrl": "https://ucsb.alma.exlibrisgroup.com/view/sru/01UCSB_INST",
+    "recordSchema": "marcxml",
+    "operations": ["explain", "searchRetrieve"],
+    "legacy": {
+      "displayName": "Pegasus / Aleph",
+      "status": "retired in 2017",
+      "sruBaseUrl": "http://pegasus.library.ucsb.edu:5661/sba01pub",
+      "notes": "Retained for identifier migration and audit history only; never use as a write target."
+    }
+  },
+  "authorityTargets": [
+    {
+      "displayName": "Library of Congress Catalog",
+      "purpose": "bibliographic candidates",
+      "transport": "Z39.50-1995",
+      "host": "lx2.loc.gov",
+      "port": 210,
+      "database": "LCDB",
+      "recordSyntax": "MARC21",
+      "encoding": "UTF-8",
+      "elementSet": "F",
+      "authentication": "none",
+      "sruFallback": "https://lx2.loc.gov/sru/lcdb"
+    },
+    {
+      "displayName": "LC Name Authority File",
+      "purpose": "1XX and 7XX authority reconciliation",
+      "transport": "Z39.50-1995",
+      "host": "lx2.loc.gov",
+      "port": 210,
+      "database": "NAF",
+      "recordSyntax": "MARC21",
+      "encoding": "UTF-8",
+      "elementSet": "F",
+      "authentication": "none",
+      "sruFallback": "https://lx2.loc.gov/sru/naf"
+    },
+    {
+      "displayName": "LC Subject Authority File",
+      "purpose": "6XX authority reconciliation",
+      "transport": "Z39.50-1995",
+      "host": "lx2.loc.gov",
+      "port": 210,
+      "database": "SAF",
+      "recordSyntax": "MARC21",
+      "encoding": "UTF-8",
+      "elementSet": "F",
+      "authentication": "none",
+      "sruFallback": "https://lx2.loc.gov/sru/saf"
+    }
+  ],
+  "lcFolioQueryProfile": {
+    "supportedBib1UseAttributes": {
+      "personalName": 1,
+      "corporateName": 2,
+      "conferenceName": 3,
+      "title": 4,
+      "isbn": 7,
+      "issn": 8,
+      "lccn": 9,
+      "lcCallNumber": 16,
+      "subjectHeading": 21,
+      "author": 1003,
+      "standardIdentifier": 1007,
+      "keyword": 1016,
+      "oclcNumber": 1211
+    },
+    "defaults": {
+      "relation": 3,
+      "position": 3,
+      "structure": 1,
+      "truncation": 100,
+      "completeness": 1
+    },
+    "maximumPresentRecords": 50,
+    "resultSetLimit": 10000,
+    "sessionInactivitySeconds": 60,
+    "notes": "LC moved to Folio in 2025. Z39.50 access returned in 2026 with fewer supported attributes than Voyager."
+  },
+  "matching": {
+    "queryOrder": [
+      "035$a OCLC number with Bib-1 use 1211",
+      "028$a issue number with Bib-1 use 1007, verified against 028$b label",
+      "245$a title with use 4 AND 100/700 name with use 1003",
+      "1016 keyword fallback using normalized title, label, and issue number"
+    ],
+    "weights": {
+      "oclcIdentifierExact": 0.62,
+      "issueNumberExact": 0.36,
+      "labelExact": 0.12,
+      "titleSimilarity": 0.22,
+      "creatorAuthority": 0.12,
+      "publicationDate": 0.06,
+      "carrierAndDuration": 0.05
+    },
+    "strongCandidateScore": 0.9,
+    "reviewCandidateScore": 0.72,
+    "autoWriteScore": null,
+    "notes": "Scores rank candidates only. Every record requires human approval; a score never authorizes write-back."
+  },
+  "mergePolicy": {
+    "neverImportFromAuthorityTarget": ["001", "003", "004", "005", "009", "852", "856", "9XX"],
+    "preserveLocalFields": ["024 with $2 local", "035", "506", "530", "540", "541", "561", "583", "590", "852", "856", "9XX"],
+    "appendAndDeduplicate": ["500", "505", "511", "520"],
+    "reviewBeforeReplace": ["028", "100", "110", "245", "260", "264", "300", "600-655", "700-751"],
+    "authorityControlledFields": ["100", "110", "111", "130", "600-655", "700", "710", "711", "730"],
+    "requireHumanApproval": true,
+    "preserveIndicatorsAndSubfieldOrder": true,
+    "preserveAlmaLocalExtensionMarker": "$9 local",
+    "notes": "Do not copy LC holdings or digital links into UCSB. Treat repeated 852/856 fields as copy-level data."
+  },
+  "batching": {
+    "preferredSmallBatchInput": "Itemized Alma set or explicit MMS ID list",
+    "retrieveApiLimit": 100,
+    "preferredBulkInput": "Alma Export Bibliographic Records or publishing job",
+    "doNotUseSruForBulkExport": true
+  },
+  "writeBack": {
+    "displayName": "UCSB Alma Bibliographic Records API",
+    "method": "PUT",
+    "urlTemplate": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/bibs/{mms_id}",
+    "contentType": "application/xml",
+    "apiKeyEnvironment": "UCSB_ALMA_API_KEY",
+    "recommendedQueryParameters": {
+      "validate": true,
+      "override_warning": false,
+      "override_lock": false,
+      "stale_version_check": true,
+      "check_match": true
+    },
+    "normalizationProcessEnvironment": "UCSB_ALMA_NORMALIZATION_PROCESS",
+    "catalogerLevelEnvironment": "UCSB_ALMA_CATALOGER_LEVEL",
+    "dryRunByDefault": true,
+    "auditRequired": true
+  }
+}

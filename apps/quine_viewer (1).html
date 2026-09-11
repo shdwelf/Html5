@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>HTML5 Quine Viewer — React/Vite/Tailwind Compiler</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121935;
+      --panel-2: #1a2347;
+      --text: #e8ecff;
+      --muted: #a9b3d9;
+      --accent: #77a8ff;
+      --accent-2: #9bffb0;
+      --warn: #ffcf70;
+      --danger: #ff8f8f;
+      --border: #2d3a72;
+      --code-bg: #0a0f1f;
+      --sidebar-width: 300px;
+      --header-h: 52px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { height: 100%; -webkit-text-size-adjust: 100%; }
+    body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; overflow: hidden; }
+    header {
+      flex: 0 0 var(--header-h); display: flex; align-items: center; justify-content: space-between;
+      padding: 0 12px; background: var(--panel); border-bottom: 1px solid var(--border); gap: 8px; z-index: 100;
+    }
+    header h1 { font-size: clamp(13px, 3.2vw, 18px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #menuBtn {
+      display: none; flex: 0 0 40px; height: 40px; border: none; background: var(--panel-2); color: var(--text);
+      border-radius: 8px; font-size: 22px; cursor: pointer; align-items: center; justify-content: center;
+    }
+    .wrap { flex: 1 1 0; display: flex; min-height: 0; position: relative; }
+    .sidebar {
+      flex: 0 0 var(--sidebar-width); width: var(--sidebar-width); display: flex; flex-direction: column;
+      background: var(--panel); border-right: 1px solid var(--border); min-height: 0; z-index: 50;
+      transition: transform .25s ease;
+    }
+    .sidebar .sb-toolbar { flex: 0 0 auto; padding: 10px; display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid var(--border); }
+    .sidebar .sb-toolbar input[type="search"] { flex: 1 1 100px; min-width: 0; }
+    .dropzone {
+      flex: 0 0 auto; margin: 8px 10px; border: 2px dashed var(--border); border-radius: 10px;
+      padding: 14px 10px; text-align: center; color: var(--muted); font-size: 13px; background: rgba(119,168,255,.04);
+      transition: border-color .15s, background .15s;
+    }
+    .dropzone.drag { border-color: var(--accent); background: rgba(119,168,255,.12); color: var(--text); }
+    #zipSummary { flex: 0 0 auto; padding: 8px 10px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--border); }
+    .file-list { flex: 1 1 0; overflow-y: auto; overflow-x: hidden; padding: 6px; -webkit-overflow-scrolling: touch; }
+    .file-item {
+      display: block; width: 100%; text-align: left; background: transparent; border: 1px solid transparent;
+      border-radius: 8px; padding: 8px 10px; color: var(--text); font: inherit; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; min-height: 44px;
+    }
+    .file-item:hover, .file-item.active { background: rgba(119,168,255,.12); border-color: var(--border); }
+    .main { flex: 1 1 0; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+    .toolbar {
+      flex: 0 0 auto; padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--panel);
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    }
+    #statusbar { flex: 0 0 auto; padding: 6px 12px; background: var(--panel-2); color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--border); }
+    .content { flex: 1 1 0; min-height: 0; overflow: hidden; }
+    .pane { height: 100%; overflow: auto; padding: 14px; -webkit-overflow-scrolling: touch; }
+    #overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 40;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button, .btn, input[type="search"], select, textarea {
+      background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 10px; font: inherit; font-size: 13px; cursor: pointer; min-height: 40px;
+      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    }
+    textarea { cursor: text; resize: vertical; width: 100%; min-height: 120px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+    button:hover, .btn:hover { filter: brightness(1.1); }
+    button:active { transform: scale(.97); }
+    button.primary { background: rgba(119,168,255,.25); border-color: var(--accent); }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; background: rgba(155,255,176,.1); border: 1px solid rgba(155,255,176,.3); color: var(--accent-2); font-size: 12px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .muted { color: var(--muted); }
+    .warn { color: var(--warn); }
+    .danger { color: var(--danger); }
+    .ok { color: var(--accent-2); }
+    .small { font-size: 13px; }
+    p, li { line-height: 1.5; }
+    h2, h3 { margin: 0 0 8px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+    pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    pre { margin: 0; padding: 12px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; overflow: auto; white-space: pre-wrap; word-break: break-all; font-size: 12px; max-height: 60vh; }
+    iframe.preview { width: 100%; border: 1px solid var(--border); border-radius: 10px; background: #fff; height: 55vh; min-height: 200px; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { border: 1px solid var(--border); padding: 6px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+    th { background: var(--panel); white-space: nowrap; }
+    .summary { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 12px; }
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+    .tagrow { display: flex; gap: 6px; flex-wrap: wrap; }
+    .section { margin-top: 14px; }
+    .pill { display: inline-block; border: 1px solid var(--border); background: rgba(119,168,255,.08); border-radius: 999px; padding: 3px 8px; margin: 2px 4px 2px 0; font-size: 11px; }
+    .audit-good { border-left: 4px solid #46d27a; }
+    .audit-warn { border-left: 4px solid #ffcf70; }
+    .audit-bad { border-left: 4px solid #ff8f8f; }
+    .step { padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; background: var(--panel); }
+    .step h3 { display: flex; align-items: center; gap: 8px; }
+    .step-num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--bg); font-weight: 700; font-size: 14px; flex: 0 0 28px; }
+    .log { max-height: 200px; overflow: auto; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px; font-family: monospace; font-size: 11px; white-space: pre-wrap; word-break: break-all; }
+    footer { flex: 0 0 auto; padding: 8px 12px; background: var(--panel); border-top: 1px solid var(--border); color: var(--muted); font-size: 11px; }
+    @media (max-width: 768px) {
+      #menuBtn { display: flex; }
+      .sidebar {
+        position: fixed; top: 0; left: 0; bottom: 0; width: 85vw; max-width: 340px;
+        transform: translateX(-100%); z-index: 50; border-right: 1px solid var(--border);
+        box-shadow: 4px 0 20px rgba(0,0,0,.4);
+      }
+      .sidebar.open { transform: translateX(0); }
+      #overlay.visible { display: block; }
+      .toolbar { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+      .toolbar button { flex: 0 0 auto; white-space: nowrap; font-size: 12px; padding: 7px 8px; }
+      iframe.preview { height: 45vh; min-height: 180px; }
+      .summary { grid-template-columns: 1fr 1fr; }
+      pre { max-height: 40vh; font-size: 11px; }
+    }
+    @media (max-width: 420px) {
+      header h1 { font-size: 13px; }
+      .summary { grid-template-columns: 1fr; }
+      .toolbar button { font-size: 11px; padding: 6px 7px; min-height: 36px; }
+      iframe.preview { height: 38vh; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button id="menuBtn" type="button" aria-label="Toggle sidebar">☰</button>
+    <h1>HTML5 Quine Viewer</h1>
+    <span class="badge" id="selectedPath" style="flex: 0 1 auto;">No file</span>
+  </header>
+  <div id="overlay"></div>
+  <div class="wrap">
+    <aside id="sidebar" class="sidebar">
+      <div class="sb-toolbar">
+        <label class="btn" style="flex:0 0 auto;">
+          Open files
+          <input id="fileInput" type="file" accept=".zip,.html,.htm,.jsx,.tsx,.ts,.js,.css,.json" multiple hidden>
+        </label>
+        <input id="searchBox" type="search" placeholder="Filter…" />
+      </div>
+      <div id="dropzone" class="dropzone">
+        Drop ZIP / HTML / JSX / TSX files<br>
+        <span class="small">Everything stays local.</span>
+      </div>
+      <div id="zipSummary">No files loaded.</div>
+      <div id="fileList" class="file-list"></div>
+    </aside>
+    <main class="main">
+      <div class="toolbar">
+        <button id="showCompilerBtn" type="button" class="primary">⚡ Compile to HTML5</button>
+        <button id="showDiagnosticsBtn" type="button">Diagnostics</button>
+        <button id="showStructureBtn" type="button">Structure</button>
+        <button id="showExportBtn" type="button">Export</button>
+        <button id="showAuditBtn" type="button">Audit</button>
+        <button id="showQuineBtn" type="button">Quine</button>
+      </div>
+      <div id="statusbar">Load a ZIP with React/Vite/Tailwind source, or any HTML/JS project. Compile to standalone HTML5.</div>
+      <div class="content">
+        <div id="viewer" class="pane">
+          <div class="summary">
+            <div class="card"><strong>⚡ Compiler</strong><p class="small muted">Converts React+Vite+Tailwind source ZIPs into standalone single-file HTML5 that runs in any browser.</p></div>
+            <div class="card"><strong>Audit & Export</strong><p class="small muted">Browse ZIP contents, audit HTML5 compatibility, inline assets, and export repaired offline HTML.</p></div>
+            <div class="card"><strong>Mobile-first</strong><p class="small muted">Slide-out sidebar, scrollable toolbar, no overlapping elements on any viewport.</p></div>
+          </div>
+          <div class="card" style="margin-top:12px;">
+            <h3>How it works</h3>
+            <p class="small muted" style="margin-top:6px;">
+              <strong>1.</strong> Load a ZIP containing a React+Vite+Tailwind project (with <code>package.json</code>, <code>src/</code>, etc.)<br>
+              <strong>2.</strong> Click <strong>⚡ Compile to HTML5</strong><br>
+              <strong>3.</strong> The compiler finds your entry point, collects all JSX/TSX/CSS source files, and generates a single HTML that:<br>
+              &nbsp;&nbsp;• Loads React 19 + ReactDOM from <code>esm.sh</code> CDN via import maps<br>
+              &nbsp;&nbsp;• Uses <code>@babel/standalone</code> to transpile JSX/TSX in-browser<br>
+              &nbsp;&nbsp;• Injects Tailwind CSS v4 Play CDN for utility classes<br>
+              &nbsp;&nbsp;• Inlines all source code and images as data URIs<br>
+              <strong>4.</strong> Preview and download the result — one file, works offline after first load.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer>Single-file HTML5 quine viewer + React/Vite/Tailwind → HTML5 compiler. No server required.</footer>
+
+  <script>
+  /* ━━━━━━ ZIP PARSER ━━━━━━ */
+  const U8=Uint8Array, td=new TextDecoder();
+  function strFromU8(u8){try{return td.decode(u8)}catch{let s='';for(let i=0;i<u8.length;i++)s+=String.fromCharCode(u8[i]);return s}}
+  function readU16(a,i){return a[i]|(a[i+1]<<8)}
+  function readU32(a,i){return(a[i]|(a[i+1]<<8)|(a[i+2]<<16)|(a[i+3]<<24))>>>0}
+  async function unzipEntries(ab){const d=new U8(ab),e=[];let eocd=-1;for(let i=d.length-22;i>=Math.max(0,d.length-0xFFFF-22);i--)if(d[i]===0x50&&d[i+1]===0x4b&&d[i+2]===0x05&&d[i+3]===0x06){eocd=i;break}if(eocd<0)throw new Error('Not a valid ZIP');const cc=readU16(d,eocd+10),co=readU32(d,eocd+16);let p=co;for(let n=0;n<cc;n++){if(!(d[p]===0x50&&d[p+1]===0x4b&&d[p+2]===0x01&&d[p+3]===0x02))throw new Error('Bad CD');const m=readU16(d,p+10),cs=readU32(d,p+20),us=readU32(d,p+24),nl=readU16(d,p+28),el=readU16(d,p+30),cl=readU16(d,p+32),lo=readU32(d,p+42),nm=strFromU8(d.slice(p+46,p+46+nl));e.push({name:nm,method:m,compressedSize:cs,uncompressedSize:us,localOffset:lo,directory:nm.endsWith('/')});p+=46+nl+el+cl}for(const x of e){if(x.directory)continue;const lp=x.localOffset;if(!(d[lp]===0x50&&d[lp+1]===0x4b&&d[lp+2]===0x03&&d[lp+3]===0x04))throw new Error('Bad local for '+x.name);const nl2=readU16(d,lp+26),el2=readU16(d,lp+28),st=lp+30+nl2+el2,cm=d.slice(st,st+x.compressedSize);if(x.method===0)x.bytes=cm;else if(x.method===8)x.bytes=await inflateRaw(cm);else x.error='Unsupported method '+x.method}return e}
+  async function inflateRaw(c){const w=zlibWrap(c);if(!('DecompressionStream' in window))throw new Error('No DecompressionStream');const ds=new DecompressionStream('deflate');return new U8(await new Response(new Blob([w]).stream().pipeThrough(ds)).arrayBuffer())}
+  function adler32(d){let a=1,b=0;for(let i=0;i<d.length;i++){a=(a+d[i])%65521;b=(b+a)%65521}return((b<<16)|a)>>>0}
+  function zlibWrap(r){const h=new U8([0x78,0x9C]),ad=adler32(new U8(0)),o=new U8(h.length+r.length+4);o.set(h,0);o.set(r,2);o[o.length-4]=(ad>>>24)&255;o[o.length-3]=(ad>>>16)&255;o[o.length-2]=(ad>>>8)&255;o[o.length-1]=ad&255;return o}
+
+  /* ━━━━━━ STATE & DOM ━━━━━━ */
+  const state={zips:[],files:[],current:null,structures:[],looseFiles:[]};
+  const $=id=>document.getElementById(id);
+  const fileInput=$('fileInput'),dropzone=$('dropzone'),fileList=$('fileList'),viewer=$('viewer'),statusbar=$('statusbar'),zipSummary=$('zipSummary'),selectedPath=$('selectedPath'),searchBox=$('searchBox'),sidebar=$('sidebar'),menuBtn=$('menuBtn'),overlay=$('overlay');
+
+  function openSidebar(){sidebar.classList.add('open');overlay.classList.add('visible')}
+  function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('visible')}
+  menuBtn.addEventListener('click',()=>sidebar.classList.contains('open')?closeSidebar():openSidebar());
+  overlay.addEventListener('click',closeSidebar);
+
+  fileInput.addEventListener('change',e=>loadFiles([...e.target.files]));
+  ['dragenter','dragover'].forEach(t=>dropzone.addEventListener(t,e=>{e.preventDefault();dropzone.classList.add('drag')}));
+  ['dragleave','drop'].forEach(t=>dropzone.addEventListener(t,e=>{e.preventDefault();dropzone.classList.remove('drag')}));
+  dropzone.addEventListener('drop',e=>loadFiles([...e.dataTransfer.files]));
+  searchBox.addEventListener('input',renderFileList);
+  $('showCompilerBtn').addEventListener('click',renderCompiler);
+  $('showDiagnosticsBtn').addEventListener('click',renderDiagnostics);
+  $('showStructureBtn').addEventListener('click',renderProjectStructure);
+  $('showExportBtn').addEventListener('click',renderExportChooser);
+  $('showAuditBtn').addEventListener('click',renderHtml5Audit);
+  $('showQuineBtn').addEventListener('click',renderQuineSelf);
+
+  /* ━━━━━━ LOAD FILES ━━━━━━ */
+  async function loadFiles(files){
+    if(!files.length)return;
+    statusbar.textContent='Loading…';
+    state.zips=[];state.files=[];state.structures=[];state.looseFiles=[];
+    for(const file of files){
+      const ln=file.name.toLowerCase();
+      if(ln.endsWith('.zip')){
+        try{const ab=await file.arrayBuffer();const entries=await unzipEntries(ab);const z={fileName:file.name,entries};state.zips.push(z);for(const e of entries)state.files.push({zipName:file.name,...e});state.structures.push(analyzeZipStructure(z))}
+        catch(err){state.zips.push({fileName:file.name,error:String(err)});state.structures.push({fileName:file.name,error:String(err)})}
+      } else {
+        try{const text=await file.text();const bytes=new TextEncoder().encode(text);const entry={name:file.name,bytes,method:0,compressedSize:bytes.length,uncompressedSize:bytes.length,directory:false,zipName:'(loose)',isLoose:true};state.files.push(entry);state.looseFiles.push(entry)}catch(err){console.error(err)}
+      }
+    }
+    renderSummary();renderFileList();
+    const hasReactProject=state.structures.some(s=>!s.error&&s.frameworks&&(s.frameworks.includes('React')||s.frameworks.includes('Vite')));
+    if(hasReactProject)renderCompiler();
+    else if(state.files.some(f=>/\.(html?|xhtml)$/i.test(f.name)))renderHtml5Audit();
+    statusbar.textContent='Loaded '+state.files.filter(f=>!f.directory).length+' file(s).';
+    closeSidebar();
+  }
+
+  function renderSummary(){
+    const ok=state.zips.filter(z=>!z.error);
+    const total=ok.reduce((a,z)=>a+z.entries.filter(e=>!e.directory).length,0)+state.looseFiles.length;
+    zipSummary.innerHTML=`<strong>${total}</strong> file(s) loaded`+(state.zips.filter(z=>z.error).length?` · <span class="danger">${state.zips.filter(z=>z.error).length} error(s)</span>`:'');
+  }
+
+  function renderFileList(){
+    const q=searchBox.value.trim().toLowerCase();
+    const items=state.files.filter(f=>!f.directory&&(!q||((f.zipName||'')+'/'+f.name).toLowerCase().includes(q)));
+    if(!items.length){fileList.innerHTML='<div class="muted" style="padding:12px">No matching files.</div>';return}
+    fileList.innerHTML=items.map(f=>`
+      <button class="file-item ${state.current===state.files.indexOf(f)?'active':''}" data-idx="${state.files.indexOf(f)}">
+        <div><strong style="font-size:13px;">${esc(baseName(f.name))}</strong></div>
+        <div class="small muted" style="word-break:break-all;">${esc((f.zipName||'')+' / '+f.name)}</div>
+      </button>
+    `).join('');
+    fileList.querySelectorAll('.file-item').forEach(btn=>btn.addEventListener('click',()=>{
+      const idx=Number(btn.dataset.idx);state.current=idx;renderFileList();openFile(state.files[idx]);closeSidebar();
+    }));
+  }
+
+  /* ━━━━━━ FILE VIEWER ━━━━━━ */
+  function openFile(f){
+    selectedPath.textContent=(f.zipName||'')+' / '+baseName(f.name);
+    if(f.error){viewer.innerHTML=`<p class="danger">${esc(f.error)}</p>`;return}
+    const ext=extName(f.name),mime=mimeType(ext);
+    if(mime.startsWith('text/')||['json','md','js','mjs','cjs','ts','tsx','jsx','css','html','htm','xml','svg','toml','yaml','yml','py','go','rs'].includes(ext)){
+      const text=strFromU8(f.bytes||new U8());
+      if(ext==='html'||ext==='htm')renderHtmlPreview(f,text);
+      else if(ext==='json')viewer.innerHTML=`<h3>JSON</h3><pre>${esc(formatJson(text))}</pre>`;
+      else viewer.innerHTML=`<h3>${esc(ext.toUpperCase())} source</h3><pre>${esc(text)}</pre>`;
+    }else if(mime.startsWith('image/')){
+      const url=URL.createObjectURL(new Blob([f.bytes],{type:mime}));
+      viewer.innerHTML=`<h3>Image</h3><img src="${url}" style="max-width:100%;border-radius:10px;background:#fff;border:1px solid var(--border)">`;
+    }else renderBinaryIdent(f);
+  }
+
+  function renderHtmlPreview(file,htmlText){
+    const report=analyzeHtml(htmlText),audit=auditHtml5(file,htmlText),linked=buildInlinedDoc(file,htmlText,false);
+    viewer.innerHTML=`
+      <h3>HTML5 Preview + Audit</h3>
+      <div class="summary">
+        <div class="card"><strong>Score</strong><div class="small ${audit.score>=80?'ok':audit.score>=50?'warn':'danger'}">${audit.score}/100</div></div>
+        <div class="card"><strong>External</strong><div class="small ${report.external.length?'warn':'muted'}">${report.external.length}</div></div>
+        <div class="card"><strong>Inlined</strong><div class="small muted">${linked.mappedCount}</div></div>
+      </div>
+      <iframe class="preview" sandbox="allow-scripts" srcdoc="${escAttr(linked.html)}"></iframe>
+      <div class="section">${renderAuditDetails(audit)}</div>
+      <div class="section"><h3>Source</h3><pre>${esc(htmlText)}</pre></div>`;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     ⚡ REACT/VITE/TAILWIND → HTML5 COMPILER
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  function renderCompiler(){
+    const projects=state.structures.filter(s=>!s.error);
+    const reactProjects=projects.filter(s=>s.frameworks&&(s.frameworks.includes('React')||s.frameworks.includes('Vue')||s.frameworks.includes('Svelte')));
+    const allJsx=state.files.filter(f=>/\.(jsx|tsx)$/i.test(f.name)&&!f.directory);
+    const allTs=state.files.filter(f=>/\.(ts)$/i.test(f.name)&&!f.directory&&!/\.d\.ts$/i.test(f.name));
+    const allCss=state.files.filter(f=>/\.css$/i.test(f.name)&&!f.directory);
+    const allImages=state.files.filter(f=>/\.(png|jpg|jpeg|gif|svg|webp|ico)$/i.test(f.name)&&!f.directory);
+
+    // Try to auto-detect key files
+    const mainEntry=findReactEntry();
+    const appComponent=findAppComponent();
+    const cssEntry=findCssEntry();
+    const indexHtml=findIndexHtml();
+    const pkgJson=state.files.find(f=>/(^|\/)package\.json$/i.test(f.name)&&!f.directory);
+
+    viewer.innerHTML=`
+      <h2>⚡ Compile React/Vite/Tailwind → HTML5</h2>
+      <div class="summary">
+        <div class="card"><strong>JSX/TSX files</strong><div class="small muted">${allJsx.length}</div></div>
+        <div class="card"><strong>CSS files</strong><div class="small muted">${allCss.length}</div></div>
+        <div class="card"><strong>Images</strong><div class="small muted">${allImages.length}</div></div>
+        <div class="card"><strong>Detected</strong><div class="small ${reactProjects.length?'ok':'warn'}">${reactProjects.length?reactProjects.map(s=>s.frameworks.join('+')).join(', '):'No framework'}</div></div>
+      </div>
+
+      <div class="step">
+        <h3><span class="step-num">1</span> Detected project files</h3>
+        <table style="margin-top:8px">
+          <tr><th>Entry (main.tsx/jsx)</th><td>${mainEntry?esc(mainEntry.name):'<span class="warn">Not found</span>'}</td></tr>
+          <tr><th>App component</th><td>${appComponent?esc(appComponent.name):'<span class="warn">Not found</span>'}</td></tr>
+          <tr><th>CSS entry</th><td>${cssEntry?esc(cssEntry.name):'<span class="muted">None (Tailwind CDN will be used)</span>'}</td></tr>
+          <tr><th>index.html</th><td>${indexHtml?esc(indexHtml.name):'<span class="muted">Will generate</span>'}</td></tr>
+          <tr><th>package.json</th><td>${pkgJson?esc(pkgJson.name):'<span class="muted">None</span>'}</td></tr>
+        </table>
+      </div>
+
+      <div class="step">
+        <h3><span class="step-num">2</span> Source files to bundle</h3>
+        <div class="small muted" style="margin-top:6px">All JSX/TSX/TS source files will be transpiled in-browser using Babel Standalone. CSS goes through Tailwind CDN runtime.</div>
+        <div style="margin-top:8px;max-height:150px;overflow:auto;">
+          ${allJsx.concat(allTs).map(f=>`<span class="pill">${esc(f.name)}</span>`).join('')}
+          ${allCss.map(f=>`<span class="pill" style="border-color:var(--accent)">${esc(f.name)}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="step">
+        <h3><span class="step-num">3</span> Compile options</h3>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+          <label class="small"><input type="checkbox" id="optTailwind" checked> Tailwind CSS CDN</label>
+          <label class="small"><input type="checkbox" id="optBabel" checked> Babel in-browser transpile</label>
+          <label class="small"><input type="checkbox" id="optInlineImages" checked> Inline images as data URI</label>
+          <label class="small"><input type="checkbox" id="optLucide"> Lucide icons (CDN)</label>
+        </div>
+        <div style="margin-top:8px">
+          <label class="small">Custom title:</label>
+          <input type="text" id="optTitle" value="${esc(guessProjectTitle())}" style="width:100%;margin-top:4px;">
+        </div>
+      </div>
+
+      <div class="step">
+        <h3><span class="step-num">4</span> Compile & preview</h3>
+        <div class="tagrow" style="margin-top:8px">
+          <button type="button" id="compileBtn" class="primary" style="font-size:15px;padding:12px 24px;">⚡ Compile to single HTML5</button>
+          <button type="button" id="compilePreviewBtn">Compile & preview</button>
+        </div>
+        <div id="compileLog" class="log" style="margin-top:10px;display:none;"></div>
+      </div>
+
+      <div id="compileResult"></div>
+    `;
+    selectedPath.textContent='⚡ Compiler';
+    $('compileBtn').addEventListener('click',()=>runCompile(false));
+    $('compilePreviewBtn').addEventListener('click',()=>runCompile(true));
+  }
+
+  function findReactEntry(){
+    const patterns=[/main\.(tsx|jsx|ts|js)$/i, /index\.(tsx|jsx|ts|js)$/i, /entry\.(tsx|jsx|ts|js)$/i];
+    for(const pat of patterns){
+      // Prefer src/ folder
+      const f=state.files.find(f=>!f.directory&&pat.test(f.name)&&/src\//i.test(f.name));
+      if(f)return f;
+    }
+    for(const pat of patterns){
+      const f=state.files.find(f=>!f.directory&&pat.test(f.name));
+      if(f)return f;
+    }
+    return null;
+  }
+
+  function findAppComponent(){
+    const patterns=[/App\.(tsx|jsx|ts|js)$/i];
+    for(const pat of patterns){
+      const f=state.files.find(f=>!f.directory&&pat.test(f.name)&&/src\//i.test(f.name));
+      if(f)return f;
+      const f2=state.files.find(f=>!f.directory&&pat.test(f.name));
+      if(f2)return f2;
+    }
+    return null;
+  }
+
+  function findCssEntry(){
+    const patterns=[/index\.css$/i, /app\.css$/i, /global\.css$/i, /style\.css$/i, /globals\.css$/i];
+    for(const pat of patterns){
+      const f=state.files.find(f=>!f.directory&&pat.test(f.name)&&/src\//i.test(f.name));
+      if(f)return f;
+    }
+    for(const pat of patterns){
+      const f=state.files.find(f=>!f.directory&&pat.test(f.name));
+      if(f)return f;
+    }
+    return null;
+  }
+
+  function findIndexHtml(){
+    return state.files.find(f=>!f.directory&&/(^|\/)index\.html$/i.test(f.name));
+  }
+
+  function guessProjectTitle(){
+    const pkg=state.files.find(f=>/(^|\/)package\.json$/i.test(f.name)&&!f.directory);
+    if(pkg){try{const j=JSON.parse(safeText(pkg));if(j.name)return j.name}catch{}}
+    return 'My App';
+  }
+
+  /* ── THE COMPILER ── */
+  async function runCompile(andPreview){
+    const log=$('compileLog'), result=$('compileResult');
+    log.style.display='block';log.textContent='';result.innerHTML='';
+    const useTailwind=$('optTailwind').checked;
+    const useBabel=$('optBabel').checked;
+    const inlineImages=$('optInlineImages').checked;
+    const useLucide=$('optLucide').checked;
+    const title=$('optTitle').value||'App';
+
+    function logMsg(msg){log.textContent+=msg+'\n';log.scrollTop=log.scrollHeight;statusbar.textContent=msg}
+
+    logMsg('🔍 Scanning project files...');
+
+    // Collect all JSX/TSX/TS/JS source files from src/ and root
+    const srcFiles=state.files.filter(f=>!f.directory&&/\.(jsx|tsx|ts|js|mjs)$/i.test(f.name)&&!/node_modules/i.test(f.name)&&!/\.d\.ts$/i.test(f.name)&&!/(vite\.config|tailwind\.config|postcss\.config|eslint|prettier)/i.test(f.name));
+    const cssFiles=state.files.filter(f=>!f.directory&&/\.css$/i.test(f.name)&&!/node_modules/i.test(f.name));
+    const imgFiles=state.files.filter(f=>!f.directory&&/\.(png|jpg|jpeg|gif|svg|webp|ico|bmp)$/i.test(f.name)&&!/node_modules/i.test(f.name));
+
+    logMsg(`  Found ${srcFiles.length} source file(s), ${cssFiles.length} CSS, ${imgFiles.length} images`);
+
+    // Parse package.json for dependencies
+    const pkgFile=state.files.find(f=>/(^|\/)package\.json$/i.test(f.name)&&!f.directory);
+    let pkgDeps={};
+    if(pkgFile){
+      try{const pkg=JSON.parse(safeText(pkgFile));pkgDeps={...pkg.dependencies,...pkg.devDependencies}}catch{}
+    }
+    logMsg('📦 Dependencies: '+Object.keys(pkgDeps).filter(k=>!['vite','typescript','@types/react','@types/react-dom','@vitejs/plugin-react','@tailwindcss/vite','vite-plugin-singlefile','eslint','prettier','postcss','autoprefixer'].includes(k)).join(', '));
+
+    // Determine React version
+    const reactVer=pkgDeps['react']?pkgDeps['react'].replace(/[\^~>=<]/g,''):'19';
+    const majorReact=parseInt(reactVer)||19;
+    logMsg(`⚛️  React version: ${reactVer} (major: ${majorReact})`);
+
+    // Build module map: normalized path -> source text
+    const moduleMap={};
+    for(const f of srcFiles){
+      const key=normalizeModulePath(f.name);
+      moduleMap[key]=safeText(f);
+      logMsg(`  📄 ${key} (${f.uncompressedSize||f.bytes?.length||0} bytes)`);
+    }
+
+    // Build CSS content
+    let combinedCss='';
+    for(const f of cssFiles){
+      const cssText=safeText(f);
+      // Strip @import "tailwindcss" and @tailwind directives — CDN handles this
+      const cleaned=cssText.replace(/@import\s+["']tailwindcss["'];?/gi,'').replace(/@tailwind\s+(base|components|utilities)\s*;/gi,'').trim();
+      if(cleaned)combinedCss+=`/* ${f.name} */\n${cleaned}\n`;
+      logMsg(`  🎨 ${f.name}`);
+    }
+
+    // Build image data URIs map
+    const imageDataMap={};
+    if(inlineImages){
+      for(const f of imgFiles){
+        if(f.bytes&&f.bytes.length<2*1024*1024){ // Skip >2MB
+          const key=normalizeModulePath(f.name);
+          const mime=mimeType(extName(f.name));
+          imageDataMap[key]=bytesToDataUrl(f.bytes,mime);
+          logMsg(`  🖼️ ${key} → data URI (${f.bytes.length} bytes)`);
+        }
+      }
+    }
+
+    logMsg('');
+    logMsg('🔨 Generating standalone HTML5...');
+
+    // Detect which npm packages to load from esm.sh
+    const cdnPackages=new Set();
+    cdnPackages.add('react');
+    cdnPackages.add('react-dom');
+    // Scan imports in source for additional packages
+    const npmImportRe=/(?:import|from)\s+['"]([^./'"][^'"]*)['"]/g;
+    for(const src of Object.values(moduleMap)){
+      let m;while(m=npmImportRe.exec(src))cdnPackages.add(m[1].split('/')[0]);
+    }
+    // Remove dev-only / build-only packages
+    ['vite','typescript','@types','eslint','prettier','postcss','autoprefixer','@tailwindcss/vite','@vitejs/plugin-react','vite-plugin-singlefile'].forEach(p=>{cdnPackages.delete(p);for(const k of cdnPackages)if(k.startsWith(p))cdnPackages.delete(k)});
+    logMsg('📡 CDN packages: '+[...cdnPackages].join(', '));
+
+    // Build import map for esm.sh
+    const importMap={imports:{}};
+    const esmBase='https://esm.sh';
+    // React special handling
+    importMap.imports['react']=`${esmBase}/react@${majorReact}`;
+    importMap.imports['react/']=`${esmBase}/react@${majorReact}/`;
+    importMap.imports['react-dom']=`${esmBase}/react-dom@${majorReact}`;
+    importMap.imports['react-dom/']=`${esmBase}/react-dom@${majorReact}/`;
+    importMap.imports['react-dom/client']=`${esmBase}/react-dom@${majorReact}/client`;
+    importMap.imports['react/jsx-runtime']=`${esmBase}/react@${majorReact}/jsx-runtime`;
+    importMap.imports['react/jsx-dev-runtime']=`${esmBase}/react@${majorReact}/jsx-dev-runtime`;
+
+    // Other npm packages
+    for(const pkg of cdnPackages){
+      if(pkg==='react'||pkg==='react-dom')continue;
+      const ver=pkgDeps[pkg]?pkgDeps[pkg].replace(/[\^~>=<]/g,''):'latest';
+      importMap.imports[pkg]=`${esmBase}/${pkg}@${ver}?external=react,react-dom`;
+    }
+
+    if(useLucide){
+      importMap.imports['lucide-react']=`${esmBase}/lucide-react@latest?external=react`;
+    }
+
+    // Build inline source modules — wrap each file as a module the browser can use
+    // We'll use Babel standalone to transpile JSX in-browser
+    const moduleEntries=Object.entries(moduleMap);
+
+    // Process source: replace relative imports with our module IDs, strip TS types
+    const processedModules={};
+    for(const [path,src] of moduleEntries){
+      let code=src;
+      // Replace image imports with data URIs
+      code=code.replace(/import\s+(\w+)\s+from\s+['"]([^'"]+\.(png|jpg|jpeg|gif|svg|webp|ico|bmp))['"]/gi,(match,varName,imgPath)=>{
+        const resolved=resolveModulePath(path,imgPath);
+        const dataUri=imageDataMap[resolved]||imageDataMap[imgPath]||'';
+        return dataUri?`const ${varName} = "${dataUri}"`:`/* image not found: ${imgPath} */ const ${varName} = ""`;
+      });
+      // Replace CSS imports with nothing (we inline CSS separately)
+      code=code.replace(/import\s+['"][^'"]+\.css['"]\s*;?/gi,'/* CSS imported via style tag */');
+      processedModules[path]=code;
+    }
+
+    // Find the App component source
+    const appEntry=findAppComponentPath(moduleMap);
+    logMsg(`🎯 App component: ${appEntry||'(auto-detect)'}`);
+
+    // Generate the final single-file HTML
+    const html=generateStandaloneHtml({
+      title, importMap, processedModules, combinedCss, imageDataMap,
+      useTailwind, useBabel, useLucide, appEntry, majorReact
+    });
+
+    logMsg('');
+    logMsg(`✅ Generated ${html.length.toLocaleString()} bytes of standalone HTML5`);
+    logMsg('   Modules: '+moduleEntries.length);
+    logMsg('   CSS size: '+(combinedCss.length||0)+' bytes');
+    logMsg('   Images inlined: '+Object.keys(imageDataMap).length);
+    logMsg('');
+
+    result.innerHTML=`
+      <div class="step" style="border-color:var(--accent-2);">
+        <h3><span class="step-num" style="background:var(--accent-2);">✓</span> Compilation complete</h3>
+        <div class="summary" style="margin-top:10px">
+          <div class="card"><strong>Output size</strong><div class="small muted">${(html.length/1024).toFixed(1)} KB</div></div>
+          <div class="card"><strong>Modules bundled</strong><div class="small muted">${moduleEntries.length}</div></div>
+          <div class="card"><strong>Images inlined</strong><div class="small muted">${Object.keys(imageDataMap).length}</div></div>
+        </div>
+        <div class="tagrow" style="margin-top:8px">
+          <button type="button" id="dlCompiledBtn" class="primary">⬇ Download HTML</button>
+          <button type="button" id="previewCompiledBtn">Preview in iframe</button>
+          <button type="button" id="openTabBtn">Open in new tab</button>
+          <button type="button" id="viewSourceBtn">View source</button>
+        </div>
+      </div>
+      <div id="compiledPreview" style="margin-top:10px;"></div>
+    `;
+
+    // Wire buttons
+    $('dlCompiledBtn').addEventListener('click',()=>{
+      const blob=new Blob([html],{type:'text/html'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download=title.replace(/[^a-z0-9_-]/gi,'_')+'.html';
+      document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+      statusbar.textContent='Downloaded '+a.download;
+    });
+    $('previewCompiledBtn').addEventListener('click',()=>{
+      $('compiledPreview').innerHTML=`<iframe class="preview" style="height:65vh;" sandbox="allow-scripts allow-same-origin" srcdoc="${escAttr(html)}"></iframe>`;
+    });
+    $('openTabBtn').addEventListener('click',()=>{
+      const blob=new Blob([html],{type:'text/html'});
+      const url=URL.createObjectURL(blob);
+      window.open(url,'_blank');
+    });
+    $('viewSourceBtn').addEventListener('click',()=>{
+      $('compiledPreview').innerHTML=`<pre>${esc(html)}</pre>`;
+    });
+
+    if(andPreview){
+      $('compiledPreview').innerHTML=`<iframe class="preview" style="height:65vh;" sandbox="allow-scripts allow-same-origin" srcdoc="${escAttr(html)}"></iframe>`;
+    }
+
+    statusbar.textContent='✅ Compiled successfully — '+title;
+  }
+
+  function normalizeModulePath(p){
+    // Strip common prefixes and normalize
+    let n=p.replace(/\\/g,'/');
+    // Remove leading zip-internal folder if it matches project name
+    const parts=n.split('/');
+    // If starts with a single project folder, keep from there
+    return n;
+  }
+
+  function resolveModulePath(from,rel){
+    const clean=rel.split('#')[0].split('?')[0];
+    if(!clean.startsWith('.')&&!clean.startsWith('/'))return clean;
+    const parts=from.split('/');parts.pop();
+    for(const p of clean.split('/')){if(!p||p==='.')continue;if(p==='..')parts.pop();else parts.push(p)}
+    let resolved=parts.join('/');
+    // Try adding extensions
+    if(!/\.\w+$/.test(resolved)){
+      for(const ext of ['.tsx','.jsx','.ts','.js','/index.tsx','/index.jsx','/index.ts','/index.js']){
+        const candidate=resolved+ext;
+        // We check later
+      }
+    }
+    return resolved;
+  }
+
+  function findAppComponentPath(moduleMap){
+    const candidates=['src/App.tsx','src/App.jsx','App.tsx','App.jsx','src/App.ts','src/App.js'];
+    for(const c of candidates){
+      for(const key of Object.keys(moduleMap)){
+        if(key.endsWith(c)||key===c)return key;
+      }
+    }
+    // Fallback: find any App file
+    for(const key of Object.keys(moduleMap)){
+      if(/\/App\.(tsx|jsx|ts|js)$/i.test(key))return key;
+    }
+    return Object.keys(moduleMap)[0]||'';
+  }
+
+  function generateStandaloneHtml({title,importMap,processedModules,combinedCss,imageDataMap,useTailwind,useBabel,useLucide,appEntry,majorReact}){
+    // Build inline source: each module as a <script type="text/babel"> block
+    // We use a virtual module system where each source is transpiled by Babel
+    const moduleBlocks=Object.entries(processedModules).map(([path,code])=>{
+      return `
+<!-- Module: ${esc(path)} -->
+<script type="text/babel" data-type="module" data-module-path="${escAttr(path)}">
+${code}
+<\/script>`;
+    }).join('\n');
+
+    // Determine which file contains the ReactDOM.createRoot call (entry point)
+    let entryCode='';
+    let appPath=appEntry;
+    // Find the main entry that does createRoot
+    const mainEntry=Object.entries(processedModules).find(([p,c])=>/createRoot|ReactDOM\.render|render\s*\(/i.test(c)&&/main|index/i.test(p));
+    if(mainEntry){
+      entryCode=mainEntry[1];
+      appPath=mainEntry[0];
+    }
+
+    // If no explicit entry, create one that imports App and renders it
+    if(!entryCode&&appEntry){
+      entryCode=`
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './${baseName(appEntry).replace(/\.\w+$/,'')}';
+createRoot(document.getElementById('root')).render(<App />);
+`;
+    }
+
+    // Build a single combined source that Babel will transpile
+    // Strategy: concatenate all non-entry modules first, then the entry
+    const allSources=[];
+    for(const [path,code] of Object.entries(processedModules)){
+      // Skip the entry — we handle it last
+      if(mainEntry&&path===mainEntry[0])continue;
+    }
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${esc(title)}</title>
+
+  <!-- Import Map: npm packages from esm.sh CDN -->
+  <script type="importmap">
+${JSON.stringify(importMap, null, 2)}
+  <\/script>
+
+  ${useTailwind?`<!-- Tailwind CSS v4 Play CDN (runtime) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"><\/script>`:''}
+
+  ${useBabel?`<!-- Babel Standalone: transpile JSX/TSX in-browser -->
+  <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"><\/script>`:''}
+
+  ${combinedCss?`<style${useTailwind?' type="text/tailwindcss"':''}>\n${combinedCss}\n  </style>`:''}
+
+  <style>
+    /* Reset for compiled app */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { min-height: 100vh; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  ${generateBundledScript(processedModules, mainEntry, appEntry, majorReact, imageDataMap)}
+
+  <script>
+    // Error boundary for debugging
+    window.addEventListener('error', function(e) {
+      const root = document.getElementById('root');
+      if (root && !root.children.length) {
+        root.innerHTML = '<div style="padding:20px;font-family:monospace;color:#c00;background:#fff3f3;border:2px solid #c00;border-radius:8px;margin:20px;">'
+          + '<h2>Runtime Error</h2><pre style="white-space:pre-wrap;word-break:break-all;margin-top:10px;">'
+          + (e.message||'Unknown error') + '\\n' + (e.filename||'') + ':' + (e.lineno||'') + '</pre></div>';
+      }
+    });
+  <\/script>
+</body>
+</html>`;
+  }
+
+  function generateBundledScript(processedModules, mainEntry, appEntry, majorReact, imageDataMap){
+    // Strategy: Use Babel's in-browser transpiler with a single combined script
+    // All component files get concatenated into one big script that Babel compiles
+    // We rewrite imports to use window globals or inline definitions
+
+    const moduleEntries=Object.entries(processedModules);
+
+    // Sort: put utilities/components first, App.tsx before main.tsx
+    moduleEntries.sort((a,b)=>{
+      const aIsMain=/main\.(tsx|jsx|ts|js)$/i.test(a[0]);
+      const bIsMain=/main\.(tsx|jsx|ts|js)$/i.test(b[0]);
+      const aIsApp=/App\.(tsx|jsx|ts|js)$/i.test(a[0]);
+      const bIsApp=/App\.(tsx|jsx|ts|js)$/i.test(b[0]);
+      if(aIsMain&&!bIsMain)return 1;
+      if(!aIsMain&&bIsMain)return -1;
+      if(aIsApp&&!bIsApp)return 1;
+      if(!aIsApp&&bIsApp)return -1;
+      return a[0].localeCompare(b[0]);
+    });
+
+    // Build a single combined source
+    let combined='';
+    for(const [path,code] of moduleEntries){
+      let processed=code;
+
+      // Strip import statements for local files (they'll be in-scope)
+      // Keep npm package imports
+      processed=processed.replace(/import\s+(?:type\s+)?{[^}]*}\s+from\s+['"]\.\.?\/[^'"]*['"]\s*;?/g,'// local import removed');
+      processed=processed.replace(/import\s+\w+\s+from\s+['"]\.\.?\/[^'"]*['"]\s*;?/g,'// local import removed');
+      processed=processed.replace(/import\s+\*\s+as\s+\w+\s+from\s+['"]\.\.?\/[^'"]*['"]\s*;?/g,'// local import removed');
+      processed=processed.replace(/import\s+['"]\.\.?\/[^'"]*['"]\s*;?/g,'// local import removed');
+
+      // Strip export default — make it a simple assignment or declaration
+      processed=processed.replace(/export\s+default\s+function\s+(\w+)/g,'function $1');
+      processed=processed.replace(/export\s+default\s+class\s+(\w+)/g,'class $1');
+      processed=processed.replace(/export\s+default\s+/g,'const __default__ = ');
+
+      // Strip named exports
+      processed=processed.replace(/export\s+(?:const|let|var|function|class)\s/g,match=>match.replace('export ',''));
+      processed=processed.replace(/export\s+{[^}]*}\s*;?/g,'// export removed');
+
+      // Strip TypeScript type-only imports
+      processed=processed.replace(/import\s+type\s+{[^}]*}\s+from\s+['"][^'"]*['"]\s*;?/g,'');
+      processed=processed.replace(/import\s+type\s+\w+\s+from\s+['"][^'"]*['"]\s*;?/g,'');
+
+      combined+=`\n// ═══ ${path} ═══\n${processed}\n`;
+    }
+
+    // If no createRoot call exists, add one
+    if(!/createRoot/i.test(combined)){
+      combined+=`\n// Auto-generated entry\nconst __root = ReactDOM.createRoot(document.getElementById('root'));\n__root.render(React.createElement(typeof App !== 'undefined' ? App : function(){return React.createElement('div',null,'App component not found')}, null));\n`;
+    }
+
+    // Wrap in Babel script tag for in-browser transpilation
+    return `
+  <script type="text/babel" data-type="module" data-presets="react,typescript">
+import React, { useState, useEffect, useRef, useCallback, useMemo, useContext, createContext, Fragment } from 'react';
+import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
+${combined}
+  <\/script>`;
+  }
+
+  /* ━━━━━━ AUDIT ━━━━━━ */
+  function auditHtml5(file,htmlText){
+    const report=analyzeHtml(htmlText);const flags=[],warnings=[],suggestions=[];let score=100;
+    if(!/^<!doctype html>/i.test(htmlText.trim())){score-=15;flags.push('Missing HTML5 doctype');suggestions.push('Add <!DOCTYPE html>.')}else flags.push('HTML5 doctype ✓');
+    if(!/<meta[^>]+charset=/i.test(htmlText)){score-=8;warnings.push('Missing charset');suggestions.push('Add <meta charset="UTF-8">.')}else flags.push('Charset ✓');
+    if(!/<meta[^>]+name=["']viewport["']/i.test(htmlText)){score-=8;warnings.push('Missing viewport');suggestions.push('Add viewport meta.')}else flags.push('Viewport ✓');
+    if(!/<title>[^<]+<\/title>/i.test(htmlText)){score-=6;warnings.push('Missing <title>');suggestions.push('Add a <title>.')}else flags.push('Title ✓');
+    if(report.external.length){score-=Math.min(25,report.external.length*5);warnings.push(report.external.length+' external ref(s)');}
+    if(report.absolute.length){score-=Math.min(15,report.absolute.length*3);warnings.push(report.absolute.length+' absolute path(s)');}
+    if(report.moduleScripts){score-=6;warnings.push(report.moduleScripts+' module script(s)');}
+    score=Math.max(0,score);
+    return{score,summary:score>=80?'Good.':score>=50?'Moderate issues.':'Significant issues.',flags,warnings,suggestions};
+  }
+
+  function renderAuditDetails(audit){return`<h3>Audit</h3><table><tr><th>Summary</th><td>${esc(audit.summary)}</td></tr><tr><th>Flags</th><td>${audit.flags.map(esc).join('<br>')||'—'}</td></tr><tr><th>Warnings</th><td>${audit.warnings.length?audit.warnings.map(esc).join('<br>'):'<span class="muted">None</span>'}</td></tr><tr><th>Suggestions</th><td>${audit.suggestions.length?audit.suggestions.map(esc).join('<br>'):'<span class="muted">None</span>'}</td></tr></table>`}
+
+  function renderHtml5Audit(){
+    const htmlFiles=state.files.filter(f=>/\.(html?|xhtml)$/i.test(f.name)&&!f.directory);
+    const audits=htmlFiles.map(f=>({file:f,audit:auditHtml5(f,strFromU8(f.bytes||new U8()))}));
+    const avg=audits.length?Math.round(audits.reduce((a,b)=>a+b.audit.score,0)/audits.length):0;
+    viewer.innerHTML=`<h2>HTML5 Audit</h2>
+      <div class="summary"><div class="card"><strong>Files</strong><div class="small muted">${audits.length}</div></div><div class="card"><strong>Avg</strong><div class="small ${avg>=80?'ok':avg>=50?'warn':'danger'}">${avg}/100</div></div></div>
+      ${audits.map(({file,audit})=>`<div class="card ${audit.score>=80?'audit-good':audit.score>=50?'audit-warn':'audit-bad'}" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px"><strong style="font-size:13px;word-break:break-all;">${esc((file.zipName||'')+'/'+file.name)}</strong><span class="badge">${audit.score}/100</span></div><div class="small muted">${esc(audit.summary)}</div><div class="section tagrow"><button onclick="window._openFile('${escJs(file.zipName||'')}','${escJs(file.name)}')">View</button></div></div>`).join('')||'<p class="warn">No HTML files.</p>'}`;
+    selectedPath.textContent='Audit';
+  }
+
+  window._openFile=function(z,n){const f=state.files.find(f=>(f.zipName||'')===z&&f.name===n);if(f)openFile(f)};
+
+  /* ━━━━━━ DIAGNOSTICS ━━━━━━ */
+  function renderDiagnostics(){
+    const htmlFiles=state.files.filter(f=>/\.(html?|xhtml)$/i.test(f.name));
+    const findings=[];
+    for(const f of htmlFiles.slice(0,50)){const t=strFromU8(f.bytes||new U8()),r=analyzeHtml(t);if(r.external.length||r.absolute.length)findings.push({f,rep:r})}
+    viewer.innerHTML=`<h2>Diagnostics</h2>${findings.length?findings.map(({f,rep})=>`<div class="card audit-warn" style="margin-bottom:8px"><strong style="font-size:13px;word-break:break-all;">${esc((f.zipName||'')+'/'+f.name)}</strong><div class="small warn">External: ${rep.external.length} · Absolute: ${rep.absolute.length}</div></div>`).join(''):'<p class="ok">No blockers found.</p>'}`;
+    selectedPath.textContent='Diagnostics';
+  }
+
+  /* ━━━━━━ STRUCTURE ━━━━━━ */
+  function analyzeZipStructure(zip){
+    if(zip.error)return{fileName:zip.fileName,error:zip.error};
+    const names=zip.entries.map(e=>e.name),files=zip.entries.filter(e=>!e.directory),ln=names.map(n=>n.toLowerCase());
+    const has=n=>ln.includes(n.toLowerCase()),hasAny=a=>a.some(v=>has(v)),findAll=r=>files.filter(f=>r.test(f.name));
+    const pkg=files.find(f=>/(^|\/)package\.json$/i.test(f.name));
+    const htmlFiles=findAll(/\.(html?|xhtml)$/i),jsFiles=findAll(/\.(m?js|cjs|ts|tsx|jsx)$/i),cssFiles=findAll(/\.css$/i),imgFiles=findAll(/\.(png|jpg|jpeg|gif|svg|webp|bmp)$/i);
+    let eco='Generic',fw=[],eps=[];
+    if(pkg){eco='Node/JS';const t=safeText(pkg);
+      if(/"next"\s*:/i.test(t))fw.push('Next.js');if(/"react"\s*:/i.test(t))fw.push('React');if(/"vue"\s*:/i.test(t))fw.push('Vue');
+      if(/"svelte"\s*:/i.test(t))fw.push('Svelte');if(/"vite"\s*:/i.test(t))fw.push('Vite');
+      if(/"tailwindcss"\s*:/i.test(t)||/"@tailwindcss\//i.test(t))fw.push('Tailwind');
+      if(/"lucide-react"/i.test(t))fw.push('Lucide');
+    }
+    if(hasAny(['index.html','public/index.html','src/index.html']))eps.push(...names.filter(n=>/(^|\/)(index\.html)$/i.test(n)).slice(0,10));
+    if(!eps.length&&htmlFiles.length)eps=htmlFiles.slice(0,10).map(f=>f.name);
+    const cls=fw.includes('React')&&fw.includes('Vite')?'React+Vite (needs compile)':fw.includes('React')?'React (needs compile)':htmlFiles.length?'Web project':'Generic';
+    const notes=[];
+    if(ln.some(n=>n.startsWith('src/')))notes.push('Has src/ folder');
+    if(fw.length&&!ln.some(n=>n.startsWith('dist/')||n.startsWith('build/')))notes.push('Source-only — use ⚡ Compiler');
+    return{fileName:zip.fileName,fileCount:files.length,ecosystem:eco,frameworks:[...new Set(fw)],classification:cls,entryPoints:eps,htmlCount:htmlFiles.length,jsCount:jsFiles.length,cssCount:cssFiles.length,imageCount:imgFiles.length,folders:summarizeTopFolders(names),notes};
+  }
+
+  function summarizeTopFolders(names){const c={};names.forEach(n=>{const f=n.split('/')[0]||'(root)';c[f]=(c[f]||0)+1});return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,8)}
+
+  function renderProjectStructure(){
+    viewer.innerHTML=`<h2>Project Structure</h2>${state.structures.length?state.structures.map(s=>{
+      if(s.error)return`<div class="card audit-bad" style="margin-bottom:10px"><strong>${esc(s.fileName)}</strong><div class="danger small">${esc(s.error)}</div></div>`;
+      return`<div class="card" style="margin-bottom:10px"><h3 style="word-break:break-all;">${esc(s.fileName)}</h3><table><tr><th>Type</th><td>${esc(s.classification)}</td></tr><tr><th>Frameworks</th><td>${s.frameworks.length?s.frameworks.join(', '):'None'}</td></tr><tr><th>Files</th><td>${s.fileCount} (HTML ${s.htmlCount}, JS ${s.jsCount}, CSS ${s.cssCount}, Img ${s.imageCount})</td></tr><tr><th>Folders</th><td>${s.folders.map(([n,c])=>esc(n)+' ('+c+')').join(', ')}</td></tr><tr><th>Notes</th><td>${s.notes.join('<br>')||'—'}</td></tr></table></div>`;
+    }).join(''):'<p class="muted">Load a ZIP first.</p>'}`;
+    selectedPath.textContent='Structure';
+  }
+
+  /* ━━━━━━ EXPORT ━━━━━━ */
+  function renderExportChooser(){
+    const choices=getExportableEntries();
+    viewer.innerHTML=`<h2>Export Repaired HTML</h2>${choices.length?`<div class="card"><select id="entrySelect" style="width:100%">${choices.map((c,i)=>`<option value="${i}">${esc((c.zipName||'')+'/'+c.name)}</option>`).join('')}</select><div class="section tagrow"><button id="dlChosen">Download</button></div></div>`:'<p class="warn">No HTML entries found. Use ⚡ Compiler for React projects.</p>'}`;
+    selectedPath.textContent='Export';
+    const dc=$('dlChosen');if(dc)dc.addEventListener('click',()=>{const f=choices[Number($('entrySelect').value)];if(f)downloadRepaired(f)});
+  }
+
+  function getExportableEntries(){const seen=new Set(),out=[];for(const f of state.files.filter(f=>/\.(html?|xhtml)$/i.test(f.name)&&!f.directory)){const k=(f.zipName||'')+'//'+f.name;if(!seen.has(k)){seen.add(k);out.push(f)}}return out}
+
+  async function downloadRepaired(file){
+    const html=strFromU8(file.bytes||new U8()),rep=buildInlinedDoc(file,html,true);
+    const blob=new Blob([rep.html],{type:'text/html'}),url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=baseName(file.name).replace(/\.\w+$/,'')+'.offline.html';
+    document.body.appendChild(a);a.click();a.remove();
+  }
+
+  /* ━━━━━━ QUINE ━━━━━━ */
+  function renderQuineSelf(){
+    const full='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+    viewer.innerHTML=`<h2>Quine Self</h2><p class="small muted">This viewer's source. Download to use offline.</p><div class="section tagrow"><button id="dlQ">Download</button><button id="cpQ">Copy</button></div><div class="section"><pre>${esc(full.slice(0,5000))}${full.length>5000?'\n\n… ('+((full.length-5000)/1024).toFixed(0)+'KB more)':''}</pre></div>`;
+    selectedPath.textContent='Quine';
+    $('dlQ').addEventListener('click',()=>{const b=new Blob([full],{type:'text/html'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='quine_viewer.html';document.body.appendChild(a);a.click();a.remove()});
+    $('cpQ').addEventListener('click',()=>navigator.clipboard.writeText(full).then(()=>statusbar.textContent='Copied!'));
+  }
+
+  /* ━━━━━━ INLINE BUILDER ━━━━━━ */
+  function buildInlinedDoc(file,htmlText,inlineAssets){
+    const doc=new DOMParser().parseFromString(htmlText,'text/html');let mc=0;
+    doc.querySelectorAll('link[rel="stylesheet"]').forEach(link=>{const h=link.getAttribute('href');if(!h||/^(https?:)?\/\//i.test(h)||h.startsWith('data:'))return;const t=resolveZipPath(file.name,h),f=state.files.find(f=>!f.directory&&f.zipName===file.zipName&&normalizePath(f.name)===t);if(f&&f.bytes){const s=doc.createElement('style');s.textContent=strFromU8(f.bytes);link.replaceWith(s);mc++}});
+    doc.querySelectorAll('script[src]').forEach(s=>{const src=s.getAttribute('src');if(!src||/^(https?:)?\/\//i.test(src)||src.startsWith('data:'))return;const t=resolveZipPath(file.name,src),f=state.files.find(f=>!f.directory&&f.zipName===file.zipName&&normalizePath(f.name)===t);if(f&&f.bytes){s.removeAttribute('src');s.removeAttribute('type');s.textContent=strFromU8(f.bytes);mc++}});
+    doc.querySelectorAll('[src],[href]').forEach(el=>{for(const a of['src','href']){const v=el.getAttribute(a);if(!v||/^(https?:)?\/\//i.test(v)||v.startsWith('data:')||v.startsWith('#')||v.startsWith('javascript:')||v.startsWith('mailto:'))continue;if(el.tagName==='A'&&a==='href')continue;const t=resolveZipPath(file.name,v),f=state.files.find(f=>!f.directory&&f.zipName===file.zipName&&normalizePath(f.name)===t);if(f&&f.bytes){const m=mimeType(extName(f.name));el.setAttribute(a,inlineAssets?bytesToDataUrl(f.bytes,m):URL.createObjectURL(new Blob([f.bytes],{type:m})));mc++}}});
+    return{html:'<!DOCTYPE html>\n<html><head><meta charset="utf-8">'+(doc.head?doc.head.innerHTML:'')+'</head><body>'+(doc.body?doc.body.innerHTML:doc.documentElement.innerHTML)+'</body></html>',mappedCount:mc};
+  }
+
+  function bytesToDataUrl(bytes,mime){let b='';const c=0x8000;for(let i=0;i<bytes.length;i+=c)b+=String.fromCharCode(...bytes.subarray(i,i+c));return`data:${mime};base64,${btoa(b)}`}
+
+  /* ━━━━━━ HTML ANALYSIS ━━━━━━ */
+  function analyzeHtml(html){const refs=[...html.matchAll(/(?:src|href)=['"]([^'"]+)['"]/gi)].map(m=>m[1]);return{external:refs.filter(r=>/^(https?:)?\/\//i.test(r)),absolute:refs.filter(r=>/^\/[^\/]/.test(r)),moduleScripts:(html.match(/<script[^>]*type=['"]module['"]/gi)||[]).length}}
+  function countInlineableAssets(file,htmlText){const refs=[...htmlText.matchAll(/(?:src|href)=['"]([^'"]+)['"]/gi)].map(m=>m[1]);let c=0;for(const r of refs){if(!r||/^(https?:)?\/\//i.test(r)||r.startsWith('data:')||r.startsWith('#'))continue;const t=resolveZipPath(file.name,r);if(state.files.find(f=>!f.directory&&f.zipName===file.zipName&&normalizePath(f.name)===t))c++}return c}
+
+  /* ━━━━━━ BINARY ━━━━━━ */
+  function renderBinaryIdent(f){const ext=extName(f.name);viewer.innerHTML=`<h3>Binary</h3><table><tr><th>Path</th><td style="word-break:break-all;">${esc((f.zipName||'')+'/'+f.name)}</td></tr><tr><th>Type</th><td>${esc(ext?ext.toUpperCase()+' file':'Unknown')}</td></tr><tr><th>Size</th><td>${(f.uncompressedSize||(f.bytes?.length??0)).toLocaleString()} bytes</td></tr></table>`}
+
+  /* ━━━━━━ UTILS ━━━━━━ */
+  function resolveZipPath(from,rel){const c=rel.split('#')[0].split('?')[0];if(c.startsWith('/'))return normalizePath(c.slice(1));const p=from.split('/');p.pop();for(const x of c.split('/')){if(!x||x==='.')continue;if(x==='..')p.pop();else p.push(x)}return normalizePath(p.join('/'))}
+  function normalizePath(p){const o=[];for(const x of String(p).replace(/^\/+/,'').split('/')){if(!x||x==='.')continue;if(x==='..')o.pop();else o.push(x)}return o.join('/')}
+  function formatJson(t){try{return JSON.stringify(JSON.parse(t),null,2)}catch{return t}}
+  function safeText(f){try{return strFromU8(f.bytes||new U8())}catch{return''}}
+  function extName(p){const i=p.lastIndexOf('.');return i>=0?p.slice(i+1).toLowerCase():''}
+  function baseName(p){return p.split('/').pop()}
+  function mimeType(ext){return({txt:'text/plain',md:'text/markdown',html:'text/html',htm:'text/html',css:'text/css',js:'text/javascript',mjs:'text/javascript',json:'application/json',xml:'application/xml',svg:'image/svg+xml',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',webp:'image/webp',bmp:'image/bmp',ico:'image/x-icon',woff:'font/woff',woff2:'font/woff2',ttf:'font/ttf',mp3:'audio/mpeg',mp4:'video/mp4'})[ext]||'application/octet-stream'}
+  function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function escAttr(s){return esc(s).replace(/`/g,'&#96;')}
+  function escJs(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+  </script>
+</body>
+</html>

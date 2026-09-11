@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIP-39 Cryptographic Haiku Miner</title>
+    <style>
+        :root {
+            --bg-main: #090d16;
+            --bg-card: #131926;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #059669;
+            --danger: #dc2626;
+            --text-main: #f1f5f9;
+            --border: #1e293b;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--bg-card);
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            border: 1px solid var(--border);
+        }
+        h2 { margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 15px; text-align: center; letter-spacing: 0.5px; }
+
+        textarea, input[type="password"], input[type="number"] {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background: #020617;
+            color: #4ade80;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea { height: 130px; font-family: monospace; resize: vertical; }
+
+        .control-row { display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-end;}
+        .control-group { flex: 1; }
+        .control-group label { font-size: 12px; color: #94a3b8; display: block; margin-bottom: 6px; font-weight: 500; }
+
+        button {
+            background-color: var(--primary); 
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover { background-color: var(--primary-hover); }
+        button:disabled { background-color: #475569; cursor: not-allowed; opacity: 0.6; }
+
+        .danger-btn { background-color: var(--danger); font-size: 13px; }
+        .danger-btn:hover { background-color: #b91c1c; }
+        .success-btn { background-color: var(--success); }
+        .success-btn:hover { background-color: #047857; }
+
+        #setupSection, #authSection, #appSection { display: none; }
+
+        .info-box {
+            background: #1e293b;
+            padding: 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary);
+            line-height: 1.6;
+        }
+
+        #status { text-align: center; margin: 20px 0; font-size: 14px; color: #38bdf8; font-weight: 600; }
+
+        #resultsGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .haiku-card {
+            background: #0b0f19;
+            border: 1px dashed #334155;
+            border-radius: 8px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .haiku-text {
+            font-family: "Georgia", serif;
+            font-size: 1.35em;
+            font-style: italic;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            margin-bottom: 18px;
+            color: #f8fafc;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .seed-text { font-family: monospace; color: #4ade80; word-wrap: break-word; font-size: 0.9em; background: #020617; padding: 12px; border-radius: 4px; margin-bottom: 18px; border: 1px solid #1e293b;}
+
+        .badge {
+            background: var(--success); color: #fff; font-size: 11px; padding: 4px 8px;
+            border-radius: 4px; vertical-align: middle; margin-left: 10px; font-weight: bold;
+        }
+
+        .saved-section {
+            margin-top: 45px;
+            border-top: 2px solid var(--border);
+            padding-top: 25px;
+        }
+        .saved-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+        }
+        .saved-item {
+            background: #0b0f19;
+            padding: 18px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--success);
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .saved-content pre { font-family: "Georgia", serif; font-style: italic; margin: 0 0 12px 0; font-size: 1.15em; color: #f8fafc;}
+        .saved-content code { color: #34d399; font-size: 0.85em; background: #020617; padding: 4px 8px; border-radius: 4px; border: 1px solid #1e293b;}
+        .warning-text { font-size: 13px; color: #f87171; text-align: center; margin-top: 10px; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>BIP-39 Haiku Batch Miner <span class="badge">Hardware Wallet Validated Checksum</span></h2>
+
+    <div id="setupSection">
+        <div class="info-box">
+            <strong>First-Time Standalone Activation:</strong> Paste the official 2048 English BIP-39 wordlist. This database will be permanently saved to local offline browser storage so that the utility remains functional without network connectivity.
+        </div>
+        <textarea id="wordlistInput" placeholder="Paste all 2048 words here sequentially, separated by spaces or line-breaks..."></textarea>
+        <button onclick="installWordlist()">Load Wordlist Data</button>
+    </div>
+
+    <div id="authSection">
+        <div class="info-box">
+            Wordlist confirmed. System operating fully detached. Input a Master Password to construct or unlock your AES-256-GCM encrypted persistent cookie vault.
+        </div>
+        <input type="password" id="masterPass" placeholder="Enter Master Password Vault Key" />
+        <button onclick="initializeVault()">Unlock Secure Vault</button>
+        <div style="text-align: center; margin-top: 35px;">
+            <button class="danger-btn" onclick="clearLocalWordlist()">Wipe Local Wordlist Database</button>
+        </div>
+    </div>
+
+    <div id="appSection">
+        <div class="control-row">
+            <div class="control-group" style="flex: 0 0 160px;">
+                <label for="batchSize">Seeds to Mine Simultaneously:</label>
+                <input type="number" id="batchSize" min="1" max="20" value="1" style="margin: 0; height: 45px;" />
+            </div>
+            <button id="generateBtn" onclick="startBatchMining()" style="height: 45px; flex: 1;">Execute Parallel Mining Loop</button>
+        </div>
+
+        <div id="status">System standing by...</div>
+
+        <div id="resultsGrid"></div>
+
+        <div class="saved-section" id="savedSection" style="display: none;">
+            <div class="saved-header">
+                <h3 style="margin: 0; color: #94a3b8;">Encrypted Storage Registry</h3>
+                <button class="success-btn" onclick="exportEncryptedTXT()">Export Vault as Encrypted .TXT File</button>
+            </div>
+            <div class="warning-text" id="cookieWarning"></div>
+            <div id="savedList"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const WORDLIST_KEY = "bip39_permanent_wordlist";
+    const COOKIE_NAME = "zen_wallet_vault";
+
+    // Spell Check / Grammar Heuristic Engine
+    // Automatically discards combinations that leave dangling parts of speech at the end of haiku lines.
+    const AWKWARD_ENDINGS = new Set(["the", "a", "an", "and", "or", "but", "if", "of", "with", "at", "by", "for", "to", "from", "in", "on", "as", "is", "are", "it", "that", "this", "my", "your", "their", "his", "her", "its", "our"]);
+
+    let wordlist = [];
+    let savedWallets = [];
+    let masterPassword = "";
+    let currentBatchResults = [];
+    let isMining = false;
+
+    window.onload = () => verifySystemState();
+
+    function verifySystemState() {
+        const stored = localStorage.getItem(WORDLIST_KEY);
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (parsed.length === 2048) {
+                    wordlist = parsed;
+                    document.getElementById('setupSection').style.display = 'none';
+                    document.getElementById('authSection').style.display = 'block';
+                    document.getElementById('appSection').style.display = 'none';
+                    return;
+                }
+            } catch(e) {}
+        }
+        document.getElementById('setupSection').style.display = 'block';
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('appSection').style.display = 'none';
+    }
+
+    function installWordlist() {
+        const input = document.getElementById('wordlistInput').value.trim();
+        const words = input.split(/\s+/).filter(w => w.length > 0).map(w => w.toLowerCase());
+        if (words.length !== 2048) return alert(`Error: Standard BIP-39 lists dictate exactly 2048 index definitions. Found: ${words.length}`);
+        localStorage.setItem(WORDLIST_KEY, JSON.stringify(words));
+        verifySystemState();
+    }
+
+    function clearLocalWordlist() {
+        if(confirm("Permanently erase the offline storage wordlist dictionary?")) {
+            localStorage.removeItem(WORDLIST_KEY);
+            verifySystemState();
+        }
+    }
+
+    // --- CRYPTOGRAPHIC ENGINE (AES-256-GCM) ---
+    async function deriveKey(password, salt) {
+        const enc = new TextEncoder();
+        const baseKey = await window.crypto.subtle.importKey(
+            "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveBits", "deriveKey"]
+        );
+        return window.crypto.subtle.deriveKey(
+            { name: "PBKDF2", salt: salt, iterations: 150000, hash: "SHA-256" },
+            baseKey, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+        );
+    }
+
+    async function encryptPayload(plaintext) {
+        const enc = new TextEncoder();
+        const salt = window.crypto.getRandomValues(new Uint8Array(16));
+        const iv = window.crypto.getRandomValues(new Uint8Array(12));
+        const key = await deriveKey(masterPassword, salt);
+        const ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, enc.encode(plaintext));
+
+        return JSON.stringify({
+            cipher: "AES-256-GCM",
+            salt: btoa(String.fromCharCode(...salt)),
+            iv: btoa(String.fromCharCode(...iv)),
+            ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext)))
+        });
+    }
+
+    async function decryptPayload(encryptedJsonStr) {
+        try {
+            const data = JSON.parse(encryptedJsonStr);
+            const salt = new Uint8Array(atob(data.salt).split('').map(c => c.charCodeAt(0)));
+            const iv = new Uint8Array(atob(data.iv).split('').map(c => c.charCodeAt(0)));
+            const ciphertext = new Uint8Array(atob(data.ciphertext).split('').map(c => c.charCodeAt(0)));
+
+            const key = await deriveKey(masterPassword, salt);
+            const decrypted = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ciphertext);
+            return new TextDecoder().decode(decrypted);
+        } catch (e) { throw new Error("Vault password mismatch or data corruption."); }
+    }
+
+    // --- ENCRYPTED PERSISTENCE ---
+    function writeCookieVault(encryptedString) {
+        const d = new Date(); d.setTime(d.getTime() + (365*24*60*60*1000)); // 1 Year Lifetime
+        let stringBlob = `${COOKIE_NAME}=${encodeURIComponent(encryptedString)};expires=${d.toUTCString()};path=/;SameSite=Strict`;
+
+        if (stringBlob.length > 3700) {
+            document.getElementById('cookieWarning').innerText = "⚠️ Attention: Encrypted cookie approaching browser storage limits (~4KB). Use Export to clear out space.";
+        } else {
+            document.getElementById('cookieWarning').innerText = "";
+        }
+
+        if (stringBlob.length > 4000) {
+            alert("Cookie allocation ceiling breached. Save operation cancelled. Export current collection to clean store.");
+            return false;
+        }
+        document.cookie = stringBlob;
+        return true;
+    }
+
+    function readCookieVault() {
+        const prefix = COOKIE_NAME + "=";
+        const rawCookies = decodeURIComponent(document.cookie).split(';');
+        for(let entry of rawCookies) {
+            entry = entry.trim();
+            if (entry.indexOf(prefix) === 0) return entry.substring(prefix.length, entry.length);
+        }
+        return "";
+    }
+
+    async function initializeVault() {
+        const passInput = document.getElementById('masterPass').value;
+        if (!passInput) return alert("A password key must be supplied.");
+        masterPassword = passInput;
+
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('appSection').style.display = 'block';
+
+        const storedCookie = readCookieVault();
+        if (storedCookie) {
+            try {
+                savedWallets = JSON.parse(await decryptPayload(storedCookie));
+                displaySavedVault();
+            } catch (e) {
+                alert("Decryption failed. Confirm the password string is accurate.");
+                savedWallets = [];
+            }
+        }
+    }
+
+    // --- BIP-39 CHECKSUM & POETIC PARSING ENGINE ---
+    function calculateSyllables(word) {
+        if (word.length <= 3) return 1;
+        word = word.toLowerCase().replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '').replace(/^y/, '');
+        const segments = word.match(/[aeiouy]{1,2}/g);
+        return segments ? Math.max(1, segments.length) : 1;
+    }
+
+    function performGrammaticalSanityCheck(lines) {
+        for (let segment of lines) {
+            const elements = segment.split(" ");
+            // Grammatical/Spell filter: Discard bad phrasing line breaks
+            if (AWKWARD_ENDINGS.has(elements[elements.length - 1])) return false;
+        }
+        return true;
+    }
+
+    function processPoeticStructures(words) {
+        const trackingList = words.map(calculateSyllables);
+        if (trackingList.reduce((acc, val) => acc + val, 0) !== 17) return false;
+
+        // Match standard structural partitions: 5 syllables -> 7 syllables -> 5 syllables
+        for (let indexA = 1; indexA < words.length - 1; indexA++) {
+            if (trackingList.slice(0, indexA).reduce((acc, val) => acc + val, 0) === 5) {
+                for (let indexB = indexA + 1; indexB < words.length; indexB++) {
+                    if (trackingList.slice(indexA, indexB).reduce((acc, val) => acc + val, 0) === 7 && 
+                        trackingList.slice(indexB).reduce((acc, val) => acc + val, 0) === 5) {
+
+                        const constructedLines = [
+                            words.slice(0, indexA).join(' '), 
+                            words.slice(indexA, indexB).join(' '), 
+                            words.slice(indexB).join(' ')
+                        ];
+
+                        if (performGrammaticalSanityCheck(constructedLines)) return constructedLines;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    async function mineValidBIP39Phrase() {
+        // Step 1: Securely extract 128 bits (16 bytes) of real random hardware entropy
+        const dynamicEntropy = window.crypto.getRandomValues(new Uint8Array(16));
+
+        // Step 2: Run cryptographic hash digest calculation (SHA-256)
+        const digestBuffer = await window.crypto.subtle.digest('SHA-256', dynamicEntropy);
+        const digestArray = new Uint8Array(digestBuffer);
+
+        // Step 3: Compute exact 4-bit standard checksum string segment
+        const binaryChecksum = digestArray[0].toString(2).padStart(8, '0').substring(0, 4);
+
+        // Step 4: Map raw entropy into standard continuous bit sequence
+        let processingBitstring = '';
+        for (let i = 0; i < dynamicEntropy.length; i++) {
+            processingBitstring += dynamicEntropy[i].toString(2).padStart(8, '0');
+        }
+
+        // Step 5: Append bits to create valid 132-bit package
+        const comprehensiveBits = processingBitstring + binaryChecksum;
+
+        // Step 6: Map to word positions (12 words x 11 bits)
+        const outputWords = [];
+        for (let offset = 0; offset < 132; offset += 11) {
+            const mappedIndex = parseInt(comprehensiveBits.substring(offset, offset + 11), 2);
+            outputWords.push(wordlist[mappedIndex]);
+        }
+        return outputWords; // Cryptographically intact, verified checksum validation sequence
+    }
+
+    // --- CONCURRENCY PIPELINE ---
+    async function startBatchMining() {
+        if (isMining) return;
+
+        const countInput = parseInt(document.getElementById('batchSize').value) || 1;
+        const requestedTarget = Math.min(Math.max(countInput, 1), 20);
+
+        isMining = true;
+        document.getElementById('generateBtn').disabled = true;
+        document.getElementById('resultsGrid').innerHTML = '';
+        currentBatchResults = [];
+
+        const interfaceStatus = document.getElementById('status');
+        let totalLoopsRun = 0;
+        let successfulMatchesFound = 0;
+
+        const loopExecutionStep = async () => {
+            // Process internal slices to prevent standard main thread UI locking
+            for (let chunk = 0; chunk < 75; chunk++) {
+                totalLoopsRun++;
+                const seedCombination = await mineValidBIP39Phrase();
+                const matchedStructure = processPoeticStructures(seedCombination);
+
+                if (matchedStructure) {
+                    currentBatchResults.push({ haiku: matchedStructure.join('\n'), seed: seedCombination.join(' ') });
+                    successfulMatchesFound++;
+
+                    if (successfulMatchesFound >= requestedTarget) {
+                        interfaceStatus.innerText = `Search terminated successfully. Found ${requestedTarget} wallet configurations out of ${totalLoopsRun} structural combinations checked.`;
+                        buildCardLayout();
+                        isMining = false;
+                        document.getElementById('generateBtn').disabled = false;
+                        return;
+                    }
+                }
+            }
+
+            interfaceStatus.innerText = `Executing cryptographic checks... [Discovered: ${successfulMatchesFound}/${requestedTarget}] (Processed Permutations: ${totalLoopsRun})`;
+            await new Promise(resolve => setTimeout(resolve, 0)); // Relinquish engine loop controls to UI
+            loopExecutionStep(); 
+        };
+
+        loopExecutionStep();
+    }
+
+    function buildCardLayout() {
+        const gridElement = document.getElementById('resultsGrid');
+        gridElement.innerHTML = '';
+
+        currentBatchResults.forEach((item, index) => {
+            const cardUI = document.createElement('div');
+            cardUI.className = 'haiku-card';
+            cardUI.innerHTML = `
+                <div>
+                    <div class="haiku-text">${item.haiku}</div>
+                    <div style="font-size: 11px; color: #64748b; margin-bottom: 6px; font-weight: bold;">VALIDATED SEED CODES:</div>
+                    <div class="seed-text">${item.seed}</div>
+                </div>
+                <button class="success-btn" id="vaultBtn-${index}" onclick="commitToVault(${index})">Commit to Vault Store</button>
+            `;
+            gridElement.appendChild(cardUI);
+        });
+    }
+
+    // --- VAULT REGISTRY WORKFLOWS ---
+    async function commitToVault(index) {
+        const dataTarget = currentBatchResults[index];
+        savedWallets.push({
+            haiku: dataTarget.haiku,
+            seed: dataTarget.seed,
+            timestamp: new Date().toISOString()
+        });
+
+        const encryptedOutput = await encryptPayload(JSON.stringify(savedWallets));
+        if (writeCookieVault(encryptedOutput)) {
+            document.getElementById(`vaultBtn-${index}`).style.display = "none";
+            displaySavedVault();
+        } else {
+            savedWallets.pop(); // Revoke entry modification if writing cookie failed
+        }
+    }
+
+    async function removeVaultItem(index) {
+        if (!confirm("Confirm complete structural erasure of this record from the persistent cookie database?")) return;
+        savedWallets.splice(index, 1);
+
+        if (savedWallets.length === 0) {
+            document.cookie = `${COOKIE_NAME}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+        } else {
+            writeCookieVault(await encryptPayload(JSON.stringify(savedWallets)));
+        }
+        displaySavedVault();
+    }
+
+    function displaySavedVault() {
+        const sectionBlock = document.getElementById('savedSection');
+        const listWrapper = document.getElementById('savedList');
+
+        if (savedWallets.length === 0) { sectionBlock.style.display = 'none'; return; }
+
+        sectionBlock.style.display = 'block'; 
+        listWrapper.innerHTML = ''; 
+
+        savedWallets.forEach((entry, index) => {
+            const cardRow = document.createElement('div');
+            cardRow.className = 'saved-item';
+            cardRow.innerHTML = `
+                <div class="saved-content">
+                    <pre>${entry.haiku}</pre>
+                    <code>${entry.seed}</code>
+                </div>
+                <button class="danger-btn" onclick="removeVaultItem(${index})">Delete</button>
+            `;
+            listWrapper.appendChild(cardRow);
+        });
+    }
+
+    async function exportEncryptedTXT() {
+        if (savedWallets.length === 0) return;
+
+        let documentationPlaintext = "=== ZEN WALLET SECURITY VAULT CODES ===\n";
+        documentationPlaintext += `Generated Backup: ${new Date().toLocaleString()}\n\n`;
+
+        savedWallets.forEach((w, idx) => {
+            documentationPlaintext += `--- Target Instance ID: ${idx + 1} ---\n`;
+            documentationPlaintext += `${w.haiku}\n\nMnemonic Key Phrase: ${w.seed}\n\n`;
+        });
+
+        try {
+            const encryptedString = await encryptPayload(documentationPlaintext);
+            const dataBlob = new Blob([encryptedString], { type: "text/plain;charset=utf-8" });
+            const dynamicUrl = URL.createObjectURL(dataBlob);
+            const anchorElement = document.createElement("a");
+
+            anchorElement.href = dynamicUrl;
+            anchorElement.download = `haiku_vault_secure_backup_${new Date().getTime()}.txt`;
+            document.body.appendChild(anchorElement);
+            anchorElement.click();
+            document.body.removeChild(anchorElement);
+            URL.revokeObjectURL(dynamicUrl);
+        } catch (e) {
+            alert("Cryptographic packaging failed during target disk file write process.");
+        }
+    }
+</script>
+
+</body>
+</html>

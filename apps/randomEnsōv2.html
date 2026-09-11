@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedural Ensō Generator</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #eee;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        canvas {
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            margin-top: 20px;
+            max-width: 100%;
+        }
+        .controls {
+            background: #333;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap; /* Wraps controls on small screens */
+            justify-content: center;
+        }
+        input[type="text"], input[type="number"] {
+            padding: 8px;
+            font-size: 16px;
+            font-family: monospace;
+            text-align: center;
+            border: 1px solid #555;
+            background: #111;
+            color: #0f0;
+        }
+        #ensogenInput { width: 300px; }
+        #customSeedInput { width: 100px; }
+        button {
+            padding: 8px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #555;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        button:hover { background: #777; }
+    </style>
+</head>
+<body>
+
+    <h2>Ensogen ID Engine</h2>
+    <div class="controls">
+        <label for="ensogenInput">Ensogen ID:</label>
+        <!-- Default value is your original Ensō ID -->
+        <input type="text" id="ensogenInput" value="4-CW-C-06-03-U-04-05-D-M-216">
+        
+        <!-- NEW: Optional custom numeric seed for explicit reproducibility -->
+        <label for="customSeedInput">Custom Seed (optional):</label>
+        <input type="number" id="customSeedInput" placeholder="e.g. 12345">
+        
+        <button onclick="render()">Generate Ensō</button>
+        <button onclick="randomize()">Random Terrain</button>
+        <!-- NEW: Download PNG button -->
+        <button onclick="downloadPNG()">Download PNG</button>
+    </div>
+
+    <!-- 600x600 Canvas for drawing the Ensō -->
+    <canvas id="ensoCanvas" width="600" height="600"></canvas>
+
+    <script>
+        // --- 1. SEEDED RNG ENGINE (Deterministic, same input = same output every time) ---
+        // Converts string input to a 32-bit seed hash
+        function xmur3(str) {
+            let h = 1779033703 ^ str.length;
+            for(let i = 0; i < str.length; i++) {
+                h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+                h = h << 13 | h >>> 19;
+            }
+            return function() {
+                h = Math.imul(h ^ h >>> 16, 2246822507);
+                h = Math.imul(h ^ h >>> 13, 3266489909);
+                return (h ^= h >>> 16) >>> 0;
+            }
+        }
+        // Mulberry32 PRNG: generates consistent random numbers from a 32-bit seed
+        function mulberry32(a) {
+            return function() {
+              var t = a += 0x6D2B79F5;
+              t = Math.imul(t ^ t >>> 15, t | 1);
+              t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+              return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            }
+        }
+
+        let rng; // Global seeded RNG function
+        function randomRange(min, max) { return min + rng() * (max - min); }
+
+        // --- 2. PARSE ENSOGEN NUMBER (extracts parameters from the ID string) ---
+        function parseEnsogen(id) {
+            const parts = id.split('-');
+            return {
+                inkLoad: parseInt(parts[0]) || 4,            // 1-10 (Stroke length/completeness)
+                direction: parts[1] === 'CW' ? 1 : -1,       // 1 = Clockwise, -1 = Counter-Clockwise
+                paperHue: parts[2] || 'C',                   // C = Cyan tint, W = Parchment
+                brushSize: parseInt(parts[3]) || 6,          // 1-10 (Brush width)
+                inkDensity: parseInt(parts[4]) || 3,         // 1-10 (Opacity/splatter amount)
+                stretch: parts[5] || 'U',                    // U = Unequal (ellipse), E = Equal (circle)
+                texture: parseInt(parts[6]) || 4,            // 1-10 (Paper grain intensity)
+                bristles: parseInt(parts[7]) || 5,           // 1-10 (Number of sub-strokes for realism)
+                sigStyle: parts[8] || 'D',                   // D = Dark ink, L = Light ink
+                strokeSize: parts[9] || 'M',                 // S = Small, M = Medium, L = Large radius
+                startRot: parseInt(parts[10]) || 216         // 0-360 degrees (starting angle of stroke)
+            };
+        }
+
+        // --- 3. RENDERING ENGINE ---
+        function render() {
+            const id = document.getElementById('ensogenInput').value.toUpperCase();
+            const canvas = document.getElementById('ensoCanvas');
+            const ctx = canvas.getContext('2d');
+            const params = parseEnsogen(id);
+            
+            // Initialize deterministic seed: use custom seed if provided, else hash the Ensogen ID
+            const customSeed = document.getElementById('customSeedInput').value.trim();
+            let seed;
+            if (customSeed !== '' && !isNaN(parseInt(customSeed))) {
+                seed = parseInt(customSeed) >>> 0; // Convert to valid 32-bit unsigned integer
+            } else if (customSeed !== '' && isNaN(parseInt(customSeed))) {
+                alert('Invalid custom seed! Using Ensogen ID as seed instead.');
+                seed = xmur3(id)();
+            } else {
+                seed = xmur3(id)(); // Default: hash the ID string for unique deterministic seed
+            }
+            rng = mulberry32(seed);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // A. Draw paper background and grain texture
+            ctx.fillStyle = params.paperHue === 'C' ? '#E0FFFF' : '#F5F5DC'; // Cyan or parchment
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Paper grain
+            ctx.fillStyle = `rgba(0,0,0,${params.texture * 0.01})`;
+            for(let i=0; i<10000; i++) {
+                ctx.fillRect(rng() * canvas.width, rng() * canvas.height, 2, 2);
+            }
+
+            // B. Geometry setup
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            
+            // Base radius from stroke size
+            let baseR = 150;
+            if (params.strokeSize === 'S') baseR = 100;
+            if (params.strokeSize === 'L') baseR = 200;
+
+            // Ellipse stretch for non-circular Ensō
+            const stretchX = params.stretch === 'U' ? randomRange(0.8, 1.2) : 1;
+            const stretchY = params.stretch === 'U' ? randomRange(0.8, 1.2) : 1;
+
+            // Angles
+            const startAngle = params.startRot * (Math.PI / 180);
+            // Ink load controls how much of a full circle is drawn (4 = ~80% of full circle)
+            const sweepAmount = Math.PI * 2 * (params.inkLoad / 5) * randomRange(0.8, 1.1); 
+            
+            // C. Draw Ensō stroke with brush bristles
+            const steps = 300;
+            const maxBristles = params.bristles * 5;
+            const bristleOffsets = [];
+            
+            // Pre-calculate random bristle positions for the brush
+            for(let b=0; b<maxBristles; b++) {
+                bristleOffsets.push({
+                    x: randomRange(-params.brushSize*3, params.brushSize*3),
+                    y: randomRange(-params.brushSize*3, params.brushSize*3),
+                    size: randomRange(1, params.brushSize)
+                });
+            }
+
+            // Iterate along the brush path
+            for(let i=0; i<steps; i++) {
+                let progress = i / steps;
+                let currentAngle = startAngle + (progress * sweepAmount * params.direction);
+                
+                // Human-like imperfection noise
+                let rNoise = randomRange(-5, 5); 
+                let R = baseR + rNoise;
+
+                let x = cx + (R * Math.cos(currentAngle)) * stretchX;
+                let y = cy + (R * Math.sin(currentAngle)) * stretchY;
+
+                // Fade ink as the stroke progresses (simulates running out of ink)
+                let alpha = (1 - progress) * (params.inkDensity / 3);
+                if (alpha < 0) alpha = 0;
+                ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+
+                // Draw all bristle sub-strokes
+                bristleOffsets.forEach(offset => {
+                    let jitterX = randomRange(-2, 2);
+                    let jitterY = randomRange(-2, 2);
+                    
+                    ctx.beginPath();
+                    ctx.arc(x + offset.x + jitterX, y + offset.y + jitterY, offset.size, 0, Math.PI*2);
+                    ctx.fill();
+                });
+            }
+
+            // D. Add signature Ensō gap (small opening at the end of the stroke)
+            const gapStart = startAngle + (sweepAmount * params.direction) * 0.95;
+            const gapEnd = startAngle + (sweepAmount * params.direction);
+            ctx.strokeStyle = `rgba(0,0,0,${params.inkDensity * 0.02})`;
+            ctx.lineWidth = params.brushSize * 0.5;
+            ctx.beginPath();
+            ctx.arc(cx, cy, baseR * Math.min(stretchX, stretchY), gapStart, gapEnd);
+            ctx.stroke();
+
+            // E. Add ink splatters for realism
+            for (let s = 0; s < params.inkDensity * 10; s++) {
+                const splatX = cx + randomRange(-baseR * 1.5, baseR * 1.5);
+                const splatY = cy + randomRange(-baseR * 1.5, baseR * 1.5);
+                const splatSize = randomRange(1, params.brushSize * 0.8);
+                const splatAlpha = randomRange(0.1, params.inkDensity * 0.1);
+                ctx.fillStyle = `rgba(0,0,0,${splatAlpha})`;
+                ctx.beginPath();
+                ctx.arc(splatX, splatY, splatSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // --- 4. RANDOM ID GENERATOR (for the Random Terrain button) ---
+        function randomize() {
+            // Clear custom seed so each random ID uses its own unique seed
+            document.getElementById('customSeedInput').value = '';
+            
+            // Generate valid random Ensogen ID parts
+            const parts = [
+                Math.floor(Math.random() * 10) + 1, // Ink Load 1-10
+                Math.random() > 0.5 ? 'CW' : 'CCW', // Direction
+                Math.random() > 0.5 ? 'C' : 'W',    // Paper Hue
+                Math.floor(Math.random() * 10) + 1, // Brush Size 1-10
+                Math.floor(Math.random() * 10) + 1, // Ink Density 1-10
+                Math.random() > 0.5 ? 'U' : 'E',    // Stretch
+                Math.floor(Math.random() * 10) + 1, // Texture 1-10
+                Math.floor(Math.random() * 10) + 1, // Bristles 1-10
+                Math.random() > 0.5 ? 'D' : 'L',    // Signature Style
+                ['S', 'M', 'L'][Math.floor(Math.random() * 3)], // Stroke Size
+                Math.floor(Math.random() * 361)      # Start Rotation 0-360
+            ];
+            
+            // Update input and render new Ensō
+            document.getElementById('ensogenInput').value = parts.join('-');
+            render();
+        }
+
+        // --- 5. PNG DOWNLOAD FUNCTIONALITY ---
+        function downloadPNG() {
+            const canvas = document.getElementById('ensoCanvas');
+            const id = document.getElementById('ensogenInput').value.toUpperCase();
+            const customSeed = document.getElementById('customSeedInput').value;
+            
+            // Generate meaningful filename (uses ID or custom seed)
+            const filename = customSeed ? `enso_seed_${customSeed}.png` : `enso_${id}.png`;
+            
+            // Create temporary download link
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            // Clean up temporary element
+            document.body.removeChild(link);
+        }
+
+        // Initial render on page load
+        window.onload = render;
+    </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FILOFAX Digital Time Machine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="background-stars"></div>
+    
+    <header>
+        <div class="mobile-header">
+            <button id="menu-toggle" onclick="toggleMenu()">☰ MENU</button>
+            <span class="mobile-logo">FILOFAX</span>
+        </div>
+        <marquee scrollamount="10">Welcome to the Filofax X.25/Gopher/Tymnet Interface - Est. 1988 - Updated 2026</marquee>
+        <h1><span class="rainbow-text">FILOFAX</span> Digital Planner</h1>
+        <div class="status-bar">
+            <span>CONNECTION: <span id="conn-status">OFFLINE</span></span> | 
+            <span>MODE: <span id="mode-status">X.25/IP</span></span> | 
+            <span>CASH: <span id="banano-balance">0.00 BAN</span></span>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <nav class="sidebar" id="main-sidebar">
+            <h3>DIRECTORY</h3>
+            <ul>
+                <li><a href="#" onclick="showPage('bbs')">BBS Directory</a></li>
+                <li><a href="#" onclick="showPage('gopher')">Gopher Hole</a></li>
+                <li><a href="#" onclick="showPage('tymnet')">Tymnet Gateway</a></li>
+                <li><a href="#" onclick="showPage('banano')">Banano Mail</a></li>
+                <li><a href="#" onclick="showPage('fido')">FidoNet Queue</a></li>
+                <li><a href="#" onclick="showPage('abandonware')">Abandonware</a></li>
+                <li><a href="#" onclick="showPage('sstv')">SSTV Modes</a></li>
+                <li><a href="#" onclick="showPage('creator')">Web Creator</a></li>
+                <li><a href="#" onclick="showPage('tvguide')">TV Guide</a></li>
+            </ul>
+            <div class="ad-box">
+                <p>GET YOUR FREE <br> WEB-SITES HERE!</p>
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodT0iNjAiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InllbGxvdyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSJibGFjayIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkT1cmlhbSIsIGJvbGQiIHN0eWxlPSJmb250LXNpemU6MTBweCI+SGlwcGllOTh8L3RleHQ+PC9zdmc+" alt="ad">
+            </div>
+        </nav>
+
+        <main id="content-area">
+            <div id="welcome-page">
+                <h2>Welcome, User.</h2>
+                <p>Please select a module from the directory to begin your session.</p>
+                <div class="terminal-box">
+                    <div class="terminal-header">Filofax-Term v1.0</div>
+                    <div class="terminal-body" id="terminal-output">
+                        C:\> _
+                    </div>
+                </div>
+            </div>
+
+            <div id="bbs-page" class="page" style="display:none;">
+                <h2>BBS Directory</h2>
+                <p>Searching textfiles.com archives...</p>
+                <div class="bbs-list" id="bbs-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <div id="fido-page" class="page" style="display:none;">
+                <h2>FidoNet Store-and-Forward Queue</h2>
+                <p>Status: <i>Awaiting Zone Mail Hour...</i></p>
+                <div class="fido-form">
+                    <label>Recipient (Bang-Path):</label>
+                    <input type="text" id="fido-dest" placeholder="node!hub!region!user">
+                    <label>Message:</label>
+                    <textarea id="fido-msg" rows="3" placeholder="Enter netmail..."></textarea>
+                    <button onclick="queueFidoMail()">QUEUE MESSAGE</button>
+                </div>
+                <div class="mail-queue">
+                    <h3>Outbound Queue</h3>
+                    <ul id="fido-queue-list"></ul>
+                </div>
+                <div class="mail-log">
+                    <h3>Transmission Log</h3>
+                    <div id="fido-log" class="terminal-body" style="background:#000; color:#0f0; padding:10px; font-family:monospace;">
+                        Idle...
+                    </div>
+                </div>
+            </div>
+
+            <div id="banano-page" class="page" style="display:none;">
+                <h2>Banano Message UX</h2>
+                <div class="wallet-section">
+                    <h3>My MonKey</h3>
+                    <canvas id="monkey-canvas" width="64" height="64"></canvas>
+                    <div id="wallet-addr">Address: Loading...</div>
+                    <button onclick="generateNewWallet()">GENERATE NEW SEED</button>
+                </div>
+                <div class="crypto-form">
+                    <label>Recipient Address:</label>
+                    <input type="text" id="banano-addr" placeholder="ban_1...">
+                    <label>Message (SSTV/X.25 Encoded):</label>
+                    <textarea id="banano-msg" rows="4" placeholder="Enter your message here..."></textarea>
+                    <button onclick="sendBananoMessage()">SIGN & SEND TRANSACTION</button>
+                </div>
+                <div class="tx-history">
+                    <h3>Transaction History</h3>
+                    <ul id="tx-list"></ul>
+                </div>
+            </div>
+
+            <div id="tymnet-page" class="page" style="display:none;">
+                <h2>Tymnet / X.25 Gateway</h2>
+                <p>Status: <i>XOT (X.25 over TCP) Emulation active.</i></p>
+                <div class="gateway-controls">
+                    <input type="text" id="tymnet-host" placeholder="Host Number (e.g. 0XXXX)">
+                    <button onclick="connectTymnet()">DIAL-UP</button>
+                </div>
+                <div class="terminal-box">
+                    <div class="terminal-header">XOT-PAD v1.0 (RFC 1613)</div>
+                    <div class="terminal-body" id="tymnet-output">
+                        XOT PAD Ready. 
+                        Type *call [host] to connect or *exit to leave.
+                    </div>
+                    <div class="terminal-input-area">
+                        <span>></span> <input type="text" id="tymnet-input" onkeypress="handleTymnetInput(event)">
+                    </div>
+                </div>
+            </div>
+
+            <div id="abandonware-page" class="page" style="display:none;">
+                <h2>Abandonware Archive</h2>
+                <ul>
+                    <li><a href="https://www.prodigyreloaded.com/" target="_blank">Prodigy Reloaded (Classic Service Backend)</a></li>
+                    <li><a href="https://archive.org/details/cdfwps" target="_blank">Rodger Ramrod (Full Version)</a></li>
+                    <li><a href="https://archive.org" target="_blank">Sierra Quest Browser Emulator</a></li>
+                    <li><a href="https://archive.org" target="_blank">Diablo Browser Edition</a></li>
+                </ul>
+            </div>
+
+            <div id="sstv-page" class="page" style="display:none;">
+                <h2>SSTV Modes & Frequencies</h2>
+                <div class="sstv-tool">
+                    <h3>SSTV Audio Generator (Martin 1)</h3>
+                    <p>Upload an image to generate the raw audio tones for transmission.</p>
+                    <input type="file" id="sstv-image" accept="image/*">
+                    <button onclick="generateSSTVAudio()">ENCODE TO AUDIO</button>
+                    <div id="sstv-status"></div>
+                    <audio id="sstv-player" controls style="display:none; margin-top: 10px;"></audio>
+                </div>
+                <hr>
+                <table class="sstv-table">
+                    <tr><th>Mode</th><th>Duration</th><th>Size</th><th>Method</th></tr>
+                    <tr><td>Robot 24</td><td>24s</td><td>160x120</td><td>Color Diff</td></tr>
+                    <tr><td>Scottie 1</td><td>110s</td><td>320x256</td><td>RGB</td></tr>
+                    <tr><td>Martin 1</td><td>114s</td><td>320x256</td><td>RGB</td></tr>
+                </table>
+                <p>Sync: 1200Hz | Low: 1500Hz | High: 2300Hz</p>
+            </div>
+
+            <div id="gopher-page" class="page" style="display:none;">
+                <h2>Gopher Hole Browser</h2>
+                <div class="gopher-nav" id="gopher-nav">
+                    <p>Connected to: <code id="gopher-host">gopher.floodgap.com</code></p>
+                    <div id="gopher-content">
+                        <!-- Gopher items will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="creator-page" class="page" style="display:none;">
+                <h2>Hippie98 Webpage Creator</h2>
+                <div class="creator-layout">
+                    <div class="creator-controls">
+                        <label>Page Title:</label>
+                        <input type="text" id="page-title" placeholder="My Cool Page">
+                        
+                        <label>Background Color:</label>
+                        <input type="color" id="page-bg" value="#ff00ff">
+                        
+                        <label>Add Element:</label>
+                        <div class="button-group">
+                            <button onclick="addRetroElement('marquee')">Add Marquee</button>
+                            <button onclick="addRetroElement('blink')">Add Blink</button>
+                            <button onclick="addRetroElement('image')">Add GIF</button>
+                        </div>
+                        
+                        <button id="export-btn" onclick="exportRetroPage()">EXPORT TO HTML</button>
+                    </div>
+                    <div id="preview-window" class="preview-window">
+                        <!-- Preview of the created page -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="tv-guide-page" class="page" style="display:none;">
+                <h2>Readers Digest TV Guide / Outernet</h2>
+                <div class="tv-grid">
+                    <div class="tv-channel">
+                        <strong>CH 01: PBS</strong>
+                        <p>Now: NOVA - The Secret of the SSTV</p>
+                        <p>Next: Leo Laporte's Tech-Cast</p>
+                    </div>
+                    <div class="tv-channel">
+                        <strong>CH 02: Outernet</strong>
+                        <p>Now: Archive.org Data Burst</p>
+                        <p>Next: X.25 Packet Stream</p>
+                    </div>
+                    <div class="tv-channel">
+                        <strong>CH 03: Retro-TV</strong>
+                        <p>Now: Sierra Quest Marathons</p>
+                        <p>Next: Diablo 1 Lo-Fi stream</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 1988-2026 FILOFAX SYSTEMS. ALL RIGHTS RESERVED. <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNSIgaGVpZ2h0PSIxNSI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodT0iMTAwJSIgZmlsbD0icmVkIi8+PC9zdmc+" alt="dot"> Built with Banano and Nostalgia.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

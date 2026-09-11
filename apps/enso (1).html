@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensō • Zen Circle Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Playfair+Display:wght@700&amp;display=swap');
+        
+        :root {
+            --bg: #0a0a0a;
+            --accent: #c5a26f;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: #e5e5e5;
+            font-family: 'Inter', system_ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 2.5rem 1rem 1.5rem;
+            max-width: 720px;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem;
+            letter-spacing: -2px;
+            background: linear-gradient(90deg, #e5e5e5, #c5a26f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #888;
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            padding: 0 1.5rem 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .canvas-wrapper {
+            position: relative;
+            background: #111;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+            border: 1px solid #222;
+        }
+        
+        canvas {
+            border-radius: 16px;
+            background: #0a0a0a;
+            box-shadow: inset 0 0 80px rgba(0,0,0,0.6),
+                        0 0 0 1px #222;
+            cursor: crosshair;
+            touch-action: none;
+        }
+        
+        .controls {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: flex-end;
+            max-width: 820px;
+            width: 100%;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 140px;
+        }
+        
+        .control-group label {
+            font-size: 0.875rem;
+            color: #888;
+            margin-bottom: 0.35rem;
+            font-weight: 500;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        input[type="range"] {
+            accent-color: #c5a26f;
+            width: 100%;
+        }
+        
+        .value {
+            font-family: ui-monospace, monospace;
+            font-size: 0.875rem;
+            background: #1a1a1a;
+            padding: 0.1rem 0.5rem;
+            border-radius: 4px;
+            min-width: 42px;
+            text-align: center;
+            color: #c5a26f;
+        }
+        
+        .btn {
+            background: #1f1f1f;
+            color: #e5e5e5;
+            border: 1px solid #333;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+        
+        .btn:hover {
+            background: #2a2a2a;
+            border-color: #c5a26f;
+            transform: translateY(-1px);
+        }
+        
+        .btn-primary {
+            background: #c5a26f;
+            color: #0a0a0a;
+            border-color: #c5a26f;
+            font-weight: 700;
+        }
+        
+        .btn-primary:hover {
+            background: #d4b17f;
+            border-color: #d4b17f;
+        }
+        
+        .color-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-swatch.active {
+            border-color: #c5a26f;
+            box-shadow: 0 0 0 3px rgba(197, 162, 111, 0.2);
+        }
+        
+        .info {
+            max-width: 620px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #777;
+            line-height: 1.6;
+        }
+        
+        .zen-quote {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: #c5a26f;
+            margin: 1.5rem 0;
+            max-width: 480px;
+        }
+        
+        .stats {
+            font-size: 0.8rem;
+            color: #555;
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Ensō</h1>
+        <p class="subtitle">The Zen circle of enlightenment • Imperfect • Complete • Infinite</p>
+    </div>
+    
+    <div class="container">
+        
+        <!-- Canvas -->
+        <div class="canvas-wrapper">
+            <canvas id="ensoCanvas" width="720" height="720"></canvas>
+        </div>
+        
+        <!-- Controls -->
+        <div class="controls">
+            
+            <!-- Stroke Width -->
+            <div class="control-group">
+                <label>Brush Thickness</label>
+                <div class="slider-container">
+                    <input type="range" id="strokeWidth" min="4" max="42" step="1" value="18">
+                    <span class="value" id="strokeValue">18</span>
+                </div>
+            </div>
+            
+            <!-- Imperfection -->
+            <div class="control-group">
+                <label>Imperfection</label>
+                <div class="slider-container">
+                    <input type="range" id="imperfection" min="0" max="28" step="1" value="12">
+                    <span class="value" id="imperfectionValue">12</span>
+                </div>
+            </div>
+            
+            <!-- Layers -->
+            <div class="control-group">
+                <label>Brush Layers</label>
+                <div class="slider-container">
+                    <input type="range" id="layers" min="1" max="7" step="1" value="3">
+                    <span class="value" id="layersValue">3</span>
+                </div>
+            </div>
+            
+            <!-- Color -->
+            <div class="control-group">
+                <label>Ink Color</label>
+                <div class="color-options">
+                    <div class="color-swatch active" style="background: #e5e5e5;" data-color="#e5e5e5"></div>
+                    <div class="color-swatch" style="background: #c5a26f;" data-color="#c5a26f"></div>
+                    <div class="color-swatch" style="background: #8b5cf6;" data-color="#8b5cf6"></div>
+                    <div class="color-swatch" style="background: #ef4444;" data-color="#ef4444"></div>
+                    <div class="color-swatch" style="background: #22c55e;" data-color="#22c55e"></div>
+                    <input type="color" id="customColor" value="#c5a26f" style="width: 32px; height: 32px; border: none; padding: 0; border-radius: 50%; cursor: pointer;">
+                </div>
+            </div>
+            
+            <!-- Buttons -->
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-left: auto;">
+                <button onclick="drawEnso()" class="btn btn-primary">
+                    ✦ Draw Ensō
+                </button>
+                <button onclick="clearCanvas()" class="btn">
+                    Clear
+                </button>
+                <button onclick="exportPNG()" class="btn">
+                    ⤓ Export PNG
+                </button>
+            </div>
+            
+        </div>
+        
+        <div class="info">
+            <p class="zen-quote">
+                “The circle is perfect because it is imperfect.”
+            </p>
+            <p>
+                Click or drag on the canvas to draw your own Ensō.<br>
+                Use the controls to generate authentic calligraphic variations.
+            </p>
+            <div class="stats">
+                <div>720×720 px</div>
+                <div>Hand-drawn aesthetic</div>
+                <div>Zen tradition</div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('ensoCanvas');
+        const ctx = canvas.getContext('2d', { alpha: true });
+        
+        let currentColor = '#e5e5e5';
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        
+        // Update value displays
+        function updateValueDisplays() {
+            document.getElementById('strokeValue').textContent = document.getElementById('strokeWidth').value;
+            document.getElementById('imperfectionValue').textContent = document.getElementById('imperfection').value;
+            document.getElementById('layersValue').textContent = document.getElementById('layers').value;
+        }
+        
+        // Color swatches
+        document.querySelectorAll('.color-swatch').forEach(swatch => {
+            swatch.addEventListener('click', () => {
+                document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+                swatch.classList.add('active');
+                currentColor = swatch.dataset.color;
+                document.getElementById('customColor').value = currentColor;
+            });
+        });
+        
+        document.getElementById('customColor').addEventListener('input', (e) => {
+            currentColor = e.target.value;
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+        });
+        
+        // Sliders
+        ['strokeWidth', 'imperfection', 'layers'].forEach(id => {
+            const slider = document.getElementById(id);
+            slider.addEventListener('input', updateValueDisplays);
+        });
+        
+        // Clear canvas
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        // Draw a single imperfect Ensō stroke
+        function drawEnsoStroke(centerX, centerY, radius, strokeWidth, imperfection, color, alpha = 1) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = strokeWidth;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.globalAlpha = alpha;
+            
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 8;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            
+            ctx.beginPath();
+            
+            const points = 180; // High resolution for smooth curve
+            const angleStep = (Math.PI * 2) / points;
+            
+            let startAngle = Math.random() * Math.PI * 2; // Random starting point (open circle feel)
+            
+            for (let i = 0; i <= points; i++) {
+                const angle = startAngle + i * angleStep;
+                
+                // Base circle
+                let x = centerX + Math.cos(angle) * radius;
+                let y = centerY + Math.sin(angle) * radius;
+                
+                // Add organic imperfection (wobble)
+                if (imperfection > 0) {
+                    const noise = (Math.sin(i * 1.3) + Math.cos(i * 0.7)) * (imperfection / 2.8);
+                    const radialNoise = (Math.random() - 0.5) * (imperfection / 1.8);
+                    
+                    x += Math.cos(angle) * radialNoise + noise * Math.cos(angle + 1.2);
+                    y += Math.sin(angle) * radialNoise + noise * Math.sin(angle + 1.2);
+                }
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            
+            ctx.stroke();
+            
+            // Reset shadow
+            ctx.shadowBlur = 0;
+            ctx.globalAlpha = 1;
+        }
+        
+        // Main generative Ensō function
+        function drawEnso() {
+            const strokeWidth = parseInt(document.getElementById('strokeWidth').value);
+            const imperfection = parseInt(document.getElementById('imperfection').value);
+            const layers = parseInt(document.getElementById('layers').value);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const baseRadius = 245;
+            
+            // Clear previous
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Subtle background texture (paper feel)
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw multiple layered strokes for authentic brush depth
+            for (let i = 0; i < layers; i++) {
+                const layerOffset = (i - (layers - 1) / 2) * 1.8;
+                const radius = baseRadius + layerOffset;
+                const alpha = 0.65 + (i * 0.12);
+                const widthVariation = strokeWidth * (0.75 + Math.random() * 0.5);
+                
+                drawEnsoStroke(
+                    centerX + (Math.random() - 0.5) * 3,
+                    centerY + (Math.random() - 0.5) * 3,
+                    radius,
+                    widthVariation,
+                    imperfection,
+                    currentColor,
+                    alpha
+                );
+            }
+            
+            // Add final delicate highlight stroke
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.globalAlpha = 0.15;
+            ctx.beginPath();
+            
+            const highlightRadius = baseRadius + 4;
+            ctx.arc(centerX, centerY, highlightRadius, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+        }
+        
+        // Export as PNG
+        function exportPNG() {
+            const link = document.createElement('a');
+            link.download = 'enso.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Interactive drawing on canvas (freehand Ensō style)
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = parseInt(document.getElementById('strokeWidth').value);
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = currentColor;
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            
+            lastX = x;
+            lastY = y;
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.shadowBlur = 0;
+        }
+        
+        // Touch support
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            lastX = touch.clientX - rect.left;
+            lastY = touch.clientY - rect.top;
+            isDrawing = true;
+        }
+        
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!isDrawing) return;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = parseInt(document.getElementById('strokeWidth').value);
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            
+            lastX = x;
+            lastY = y;
+        }
+        
+        function handleTouchEnd() {
+            isDrawing = false;
+        }
+        
+        // Initialize
+        function init() {
+            // Set initial values
+            updateValueDisplays();
+            
+            // Initial beautiful Ensō
+            setTimeout(() => {
+                drawEnso();
+            }, 420);
+            
+            // Event listeners for drawing
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Touch
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('touchend', handleTouchEnd);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'r' || e.key === 'R') {
+                    drawEnso();
+                }
+                if (e.key === 'c' || e.key === 'C') {
+                    clearCanvas();
+                }
+                if (e.key === 'e' || e.key === 'E') {
+                    exportPNG();
+                }
+            });
+            
+            // Random color on load
+            const colors = ['#e5e5e5', '#c5a26f', '#8b5cf6'];
+            currentColor = colors[Math.floor(Math.random() * colors.length)];
+            document.querySelectorAll('.color-swatch').forEach(s => {
+                if (s.dataset.color === currentColor) s.classList.add('active');
+            });
+            
+            // Easter egg: double-click to generate very imperfect Ensō
+            canvas.addEventListener('dblclick', () => {
+                document.getElementById('imperfection').value = 22;
+                document.getElementById('layers').value = 5;
+                updateValueDisplays();
+                drawEnso();
+            });
+            
+            console.log('%c[Ensō] Zen circle generator ready. Press R to redraw, C to clear, E to export.', 'color:#555');
+        }
+        
+        // Boot
+        window.onload = init;
+    </script>
+</body>
+</html>

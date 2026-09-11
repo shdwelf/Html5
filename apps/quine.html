@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Self-Modifying Web App</title>
+    <style>
+        body { font-family: monospace; margin: 20px; background: #1a1a1a; color: #fff; }
+        pre { background: #333; padding: 20px; border-radius: 8px; overflow-x: auto; }
+        button { background: #0066cc; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔄 Self-Modifying Web Application</h1>
+    <pre id="code"></pre>
+    <button onclick="downloadSelf()">💾 Download Self</button>
+    
+    <script>
+        function downloadSelf() {
+            const code = document.documentElement.outerHTML;
+            const blob = new Blob([code], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'index.html';
+            link.click();
+        }
+        
+        document.getElementById('code').textContent = document.documentElement.outerHTML.substring(0, 500) + '...';
+    </script>
+</body>
+</html>
