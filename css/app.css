@@ -25,6 +25,10 @@
   border-color: #6a4a18;
   background: #1a1408;
 }
+.app-dock a.ext {
+  color: #5ce1ff;
+  border-color: rgba(92, 225, 255, 0.32);
+}
 
 body[data-mode="grid"] .ui-ter,
 body[data-mode="terrarium"] .ui-grid,
