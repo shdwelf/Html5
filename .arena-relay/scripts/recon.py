@@ -6,12 +6,19 @@ URL = "https://archive.org/download/AbbottabadCompoundMaterials/Everything.20171
 OUT = ".relay/recon"
 os.makedirs(OUT, exist_ok=True)
 
-def get_range(url, start, end, retries=5):
+def get_range(url, start, end, retries=6):
+    want = end-start+1
     for i in range(retries):
         try:
             req = urllib.request.Request(url, headers={"Range": f"bytes={start}-{end}", "User-Agent":"relay-recon/1.0"})
-            with urllib.request.urlopen(req, timeout=120) as r:
-                return r.read()
+            with urllib.request.urlopen(req, timeout=180) as r:
+                data = r.read()
+            if len(data) == want:
+                return data
+            print("short read", start, end, "got", len(data), "want", want)
+            if len(data) > 0 and len(data) < want:
+                mid = start + len(data) - 1
+                return data + get_range(url, mid+1, end)
         except Exception as e:
             print("range retry", i, start, end, repr(e)[:200]); time.sleep(3*(i+1))
     raise RuntimeError(f"range failed {start}-{end}")
@@ -41,15 +48,23 @@ class RangeZip:
         eocd = tail[idx:idx+22]
         (sig, disk, cd_disk, n_disk, n_total, cd_size32, cd_off32, clen) = struct.unpack("<IHHHHIIH", eocd)
         cd_off, cd_size, n = cd_off32, cd_size32, n_total
-        if cd_off == 0xFFFFFFFF or cd_size == 0xFFFFFFFF or n_total == 0xFFFF:
-            zidx = tail.rfind(b"PK\x06\x07")
-            if zidx < 0: raise RuntimeError("no zip64 eocd locator")
+        print("32bit EOCD:", dict(n=n_total, cd_size=cd_size32, cd_off=cd_off32, idx=idx))
+        # ZIP64 EOCD locator must be the 20 bytes immediately before 32-bit EOCD
+        zidx = idx-20
+        if zidx >= 0 and tail[zidx:zidx+4] == b"PK\x06\x07":
             loc = tail[zidx:zidx+20]
             (zsig, zdisk, z64off, zdisks) = struct.unpack("<IQII", loc)
-            z64 = get_range(self.url, z64off, z64off+55)
-            if z64[:4] != b"PK\x06\x06": raise RuntimeError("bad zip64 eocd")
-            vals = struct.unpack("<IQHHIIQQQQ", z64[:56])
-            n = vals[7]; cd_size = vals[8]; cd_off = vals[9]
+            print("zip64 locator: disk", zdisk, "z64off", z64off, "disks", zdisks)
+            z64 = get_range(self.url, z64off, z64off+71)
+            print("z64 head", z64[:8].hex())
+            if z64[:4] != b"PK\x06\x06": raise RuntimeError("bad zip64 eocd at %d" % z64off)
+            size64 = struct.unpack("<Q", z64[4:12])[0]
+            creator_ver, needed_ver, disk, ndisk = struct.unpack("<HHHH", z64[12:20])
+            n_here, n_tot, cd_size, cd_off = struct.unpack("<QQQQ", z64[40:72])
+            n = n_tot
+            print("zip64: n", n, "cd_size", cd_size, "cd_off", cd_off)
+        elif cd_off32 == 0xFFFFFFFF or cd_size32 == 0xFFFFFFFF or n_total == 0xFFFF:
+            raise RuntimeError("expected zip64 locator before EOCD")
         print("entries", n, "cd_off", cd_off, "cd_size", cd_size)
         cd = b""
         CH = 64*1024*1024
@@ -67,7 +82,7 @@ class RangeZip:
             if sig == b"PK\x06\x06": break
             if sig != b"PK\x02\x01":
                 print("bad central sig at", p, cd[p:p+8]); break
-            hdr = struct.unpack("<IHHHHHHIIIHHHHHIIH", cd[p:p+46])
+            hdr = struct.unpack("<IHHHHHHIIIHHHHHII", cd[p:p+46])
             (s, vmade, vneed, flag, method, mtime, mdate, crc, csize, usize,
              nlen, elen, clen2, disk, iattr, eattr, lho) = hdr
             name = cd[p+46:p+46+nlen]
