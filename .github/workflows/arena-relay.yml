@@ -1,0 +1,31 @@
+name: arena-relay
+on:
+  push:
+    paths:
+      - '.arena-relay/run*'
+permissions:
+  contents: write
+jobs:
+  relay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: JDK
+        run: bash .arena-relay/scripts/fetch_jdk.sh
+      - name: Recon ZIP central directory
+        run: python3 .arena-relay/scripts/recon.py
+      - name: Commit JDK chunks (one per commit)
+        run: |
+          git config user.name arena-relay
+          git config user.email arena-relay@users.noreply.github.com
+          for f in .relay/jdk/jdk21.tar.gz.part-* .relay/jdk/jdk21.sha256; do
+            git add "$f"; git commit -q -m "relay: $f" || true
+          done
+      - name: Commit recon
+        run: |
+          git config user.name arena-relay
+          git config user.email arena-relay@users.noreply.github.com
+          git add .relay/recon
+          git commit -q -m "relay: recon manifests" || true
+          for i in 1 2 3 4 5; do git push origin HEAD:${GITHUB_REF_NAME} && break || git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; done
