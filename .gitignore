@@ -3,3 +3,7 @@ dist/
 node_modules/
 *.local
 .DS_Store
+
+# Arena relay cache (large binaries fetched via Actions)
+.relay/
+.arena-relay/run*

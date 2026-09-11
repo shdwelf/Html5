@@ -1,0 +1,186 @@
+#!/usr/bin/env python3
+# Range-based ZIP64 central-directory parser for Internet Archive large-zip access.
+import os, sys, struct, zlib, gzip, io, csv, urllib.request, urllib.parse, time, re
+
+URL = "https://archive.org/download/AbbottabadCompoundMaterials/Everything.20171021.zip"
+OUT = ".relay/recon"
+os.makedirs(OUT, exist_ok=True)
+
+def get_range(url, start, end, retries=6):
+    want = end-start+1
+    for i in range(retries):
+        try:
+            req = urllib.request.Request(url, headers={"Range": f"bytes={start}-{end}", "User-Agent":"relay-recon/1.0"})
+            with urllib.request.urlopen(req, timeout=180) as r:
+                data = r.read()
+            if len(data) == want:
+                return data
+            print("short read", start, end, "got", len(data), "want", want)
+            if len(data) > 0 and len(data) < want:
+                mid = start + len(data) - 1
+                return data + get_range(url, mid+1, end)
+        except Exception as e:
+            print("range retry", i, start, end, repr(e)[:200]); time.sleep(3*(i+1))
+    raise RuntimeError(f"range failed {start}-{end}")
+
+class RangeZip:
+    def __init__(self, url):
+        self.url = url
+        size=None
+        try:
+            req = urllib.request.Request(url, headers={"Range":"bytes=0-0","User-Agent":"relay-recon/1.0"})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                cr = r.headers.get("Content-Range")
+                if cr and "/" in cr: size=int(cr.split("/")[-1])
+        except Exception as e:
+            print("range-probe error", repr(e))
+        if size is None:
+            req = urllib.request.Request(url, method="HEAD", headers={"User-Agent":"relay-recon/1.0"})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                size=int(r.headers["Content-Length"])
+        self.size=size
+        print("zip size", self.size)
+    def parse(self):
+        tail = get_range(self.url, self.size-262144, self.size-1)
+        # EOCD signature 0x06054b50
+        idx = tail.rfind(b"PK\x05\x06")
+        if idx < 0: raise RuntimeError("no EOCD")
+        eocd = tail[idx:idx+22]
+        (sig, disk, cd_disk, n_disk, n_total, cd_size32, cd_off32, clen) = struct.unpack("<IHHHHIIH", eocd)
+        cd_off, cd_size, n = cd_off32, cd_size32, n_total
+        print("32bit EOCD:", dict(n=n_total, cd_size=cd_size32, cd_off=cd_off32, idx=idx))
+        print("tail hex around eocd:", tail[max(0,idx-80):idx+22].hex())
+        chosen = None
+        scan = 0
+        while True:
+            k = tail.find(b"PK\x06\x07", scan)
+            if k < 0: break
+            scan = k+4
+            (zsig, zdisk, z64off, zdisks) = struct.unpack("<IIQI", tail[k:k+20])
+            print("locator candidate at tail+%d: disk=%d off=%d disks=%d" % (k, zdisk, z64off, zdisks))
+            if z64off < self.size:
+                try:
+                    z64 = get_range(self.url, z64off, z64off+71)
+                    print("  z64 head:", z64[:8].hex())
+                    if z64[:4] == b"PK\x06\x06":
+                        n_here, n_tot, cds, cdo = struct.unpack("<QQQQ", z64[24:56])
+                        print("  -> entries", n_tot, "cd_size", cds, "cd_off", cdo)
+                        if 0 < cds <= 2*1024**3 and 0 <= cdo < self.size:
+                            chosen = (n_tot, cds, cdo)
+                except Exception as e:
+                    print("  fetch failed", repr(e)[:160])
+        if chosen:
+            n, cd_size, cd_off = chosen
+        elif cd_off32 != 0xFFFFFFFF and cd_size32:
+            n, cd_size, cd_off = n_total, cd_size32, cd_off32
+        else:
+            raise RuntimeError("could not locate valid ZIP64 EOCD")
+        print("entries", n, "cd_off", cd_off, "cd_size", cd_size)
+        cd = b""
+        CH = 64*1024*1024
+        pos = cd_off
+        end = cd_off+cd_size
+        while pos < end:
+            cd += get_range(self.url, pos, min(pos+CH-1, end-1))
+            pos += CH
+        print("cd downloaded", len(cd))
+        members=[]
+        p=0
+        while True:
+            sig = cd[p:p+4]
+            if not sig: break
+            if sig in (b"PK\x06\x06", b"PK\x05\x06"): break
+            if sig != b"PK\x01\x02":
+                print("bad central sig at", p, cd[p:p+8]); break
+            hdr = struct.unpack("<IHHHHHHIIIHHHHHII", cd[p:p+46])
+            (s, vmade, vneed, flag, method, mtime, mdate, crc, csize, usize,
+             nlen, elen, clen2, disk, iattr, eattr, lho) = hdr
+            name = cd[p+46:p+46+nlen]
+            extra = cd[p+46+nlen:p+46+nlen+elen]
+            comment = cd[p+46+nlen+elen:p+46+nlen+elen+clen2]
+            csize64, usize64, lho64 = csize, usize, lho
+            # zip64 extra 0x0001
+            ep=0
+            while ep+4 <= len(extra):
+                etag, esz = struct.unpack("<HH", extra[ep:ep+4]); ed = extra[ep+4:ep+4+esz]
+                if etag == 0x0001:
+                    q=0
+                    if usize == 0xFFFFFFFF:
+                        usize64 = struct.unpack("<Q", ed[q:q+8])[0]; q+=8
+                    if csize == 0xFFFFFFFF:
+                        csize64 = struct.unpack("<Q", ed[q:q+8])[0]; q+=8
+                    if lho == 0xFFFFFFFF:
+                        lho64 = struct.unpack("<Q", ed[q:q+8])[0]
+                ep += 4+esz
+            enc = "utf-8" if (flag & 0x800) else "cp437"
+            try: fname = name.decode(enc)
+            except Exception: fname = name.decode("utf-8", "replace")
+            members.append((fname, method, flag, crc, csize64, usize64, lho64))
+            p += 46+nlen+elen+clen2
+        return members
+
+def main():
+    rz = RangeZip(URL)
+    members = rz.parse()
+    print("parsed members", len(members))
+    # full manifest
+    with gzip.open(os.path.join(OUT,"full-manifest.tsv.gz"),"wt",newline="") as f:
+        w=csv.writer(f, delimiter="\t")
+        w.writerow(["name","method","flag","crc","csize","usize","lho"])
+        for m in members: w.writerow(m)
+    # root listing
+    roots = sorted({m[0].split("/")[0] for m in members if m[0]})
+    open(os.path.join(OUT,"roots.txt"),"w").write("\n".join(roots))
+    # redacted list
+    red = os.path.join(OUT,"redacted.txt")
+    urllib.request.urlretrieve("https://ia800407.us.archive.org/25/items/AbbottabadCompoundMaterials/list_of_redacted_files_cia_et_al_seized_during_the_ubl_raid.txt", red)
+    redpaths=set()
+    for line in open(red, encoding="utf-8", errors="replace"):
+        parts=line.rstrip("\n").split("\t")
+        if len(parts)>=2:
+            pth=parts[1].lstrip("./")
+            # outer archive member only (before first '.zip/' nested marker)
+            m=re.match(r"(.+?\.zip)/", pth)
+            redpaths.add(m.group(1) if m else pth)
+    print("redacted outer paths", len(redpaths))
+    byname={m[0]:m for m in members}
+    # PE-ish direct members
+    pe_ext=re.compile(r"\.(exe|dll|scr|sys|cpl|ocx|pif|com|drv|ax)$", re.I)
+    def is_direct(n): 
+        # direct member: 2011-1234/DEVICE/HASH_name
+        return re.match(r"^2011-1234/[0-9]{9}/[0-9A-Fa-f]{32}_", n) is not None
+    with gzip.open(os.path.join(OUT,"pe-members.tsv.gz"),"wt",newline="") as f:
+        w=csv.writer(f, delimiter="\t"); w.writerow(["name","method","crc","csize","usize","lho","redacted"])
+        for m in members:
+            n=m[0]
+            if is_direct(n) and pe_ext.search(n):
+                w.writerow([*m[1:], 1 if n in redpaths else 0])
+    # redacted PE hits
+    hits=[byname[p] for p in redpaths if p in byname and pe_ext.search(p)]
+    with gzip.open(os.path.join(OUT,"redacted-pe.tsv.gz"),"wt",newline="") as f:
+        w=csv.writer(f, delimiter="\t"); w.writerow(["name","method","flag","crc","csize","usize","lho"])
+        for m in hits: w.writerow(m)
+    print("redacted PE direct members:", len(hits))
+    # specific IOC hashes / names
+    needles=["4742ae6404fa227623192998e79f1bc6","903a80a6e8c6457e51a00179f10a8fa8","regsvr.exe","scvhost.exe",
+             "agentcpd.dll","tsxp","a0003368","setup1.exe","postbuild.exe","glb1.tmp","softonicen_vlc",
+             "spyder","password","keylog","klogger","njrat","poison","spy-net","spynet","bifrost","picsnoop"]
+    with open(os.path.join(OUT,"ioc-hits.tsv"),"w") as f:
+        w=csv.writer(f, delimiter="\t"); w.writerow(["needle","name","method","csize","usize","lho"])
+        for nd in needles:
+            for m in members:
+                if nd in m[0].lower():
+                    w.writerow([nd,*m[:1],m[4],m[5],m[6]])
+                    if sum(1 for _ in [0]) and False: pass
+    # tiny PE redacted candidates by size (most compelling small malware)
+    small=sorted([m for m in hits if m[5] <= 400_000], key=lambda m:m[5])[:80]
+    with open(os.path.join(OUT,"small-redacted-pe.tsv"),"w") as f:
+        w=csv.writer(f, delimiter="\t"); w.writerow(["name","method","flag","crc","csize","usize","lho"])
+        for m in small: w.writerow(m)
+    # method stats
+    from collections import Counter
+    print("methods", Counter(m[1] for m in members))
+    print("direct PE count:", sum(1 for m in members if is_direct(m[0]) and pe_ext.search(m[0])))
+
+if __name__=="__main__":
+    main()

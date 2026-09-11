@@ -1,0 +1,67 @@
+zip size 322305813413
+32bit EOCD: {'n': 65535, 'cd_size': 75799936, 'cd_off': 4294967295, 'idx': 262122}
+tail hex around eocd: 4b000000504b06062c000000000000001e032d000000000000000000e622070000000000e622070000000000809d840400000000a4cd67064b000000504b060700000000436bec0a4b00000001000000504b050600000000ffffffff809d8404ffffffff0000
+locator candidate at tail+262102: disk=0 off=322305813315 disks=1
+  z64 head: 504b06062c000000
+  -> entries 322230013348 cd_size 117853008 cd_off 322305813315
+entries 322230013348 cd_off 322305813315 cd_size 117853008
+short read 322305813315 322372922178 got 98 want 67108864
+range retry 0 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 1 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 2 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 3 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 4 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 5 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 0 322305813315 322372922178 RuntimeError('range failed 322305813413-322372922178')
+short read 322305813315 322372922178 got 98 want 67108864
+range retry 0 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 1 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 2 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 3 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 4 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 5 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 1 322305813315 322372922178 RuntimeError('range failed 322305813413-322372922178')
+short read 322305813315 322372922178 got 98 want 67108864
+range retry 0 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 1 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 2 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 3 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 4 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 5 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 2 322305813315 322372922178 RuntimeError('range failed 322305813413-322372922178')
+short read 322305813315 322372922178 got 98 want 67108864
+range retry 0 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 1 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 2 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 3 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 4 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 5 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 3 322305813315 322372922178 RuntimeError('range failed 322305813413-322372922178')
+short read 322305813315 322372922178 got 98 want 67108864
+range retry 0 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 1 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 2 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 3 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 4 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 5 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 4 322305813315 322372922178 RuntimeError('range failed 322305813413-322372922178')
+short read 322305813315 322372922178 got 98 want 67108864
+range retry 0 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 1 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 2 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 3 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 4 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 5 322305813413 322372922178 <HTTPError 416: 'Requested Range Not Satisfiable'>
+range retry 5 322305813315 322372922178 RuntimeError('range failed 322305813413-322372922178')
+Traceback (most recent call last):
+  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 186, in <module>
+    main()
+  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 124, in main
+    members = rz.parse()
+              ^^^^^^^^^^
+  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 84, in parse
+    cd += get_range(self.url, pos, min(pos+CH-1, end-1))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 24, in get_range
+    raise RuntimeError(f"range failed {start}-{end}")
+RuntimeError: range failed 322305813315-322372922178

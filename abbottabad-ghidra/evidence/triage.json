@@ -1,0 +1,2800 @@
+[
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x9560",
+  "file": "0554BE676566850593276A84381E8B1A_Clock_Data4.exe",
+  "imagebase": "0x400000",
+  "import_count": 7,
+  "imports": {
+   "ADVAPI32.dll": [
+    "RegOpenKeyA"
+   ],
+   "COMCTL32.dll": [
+    "InitCommonControlsEx"
+   ],
+   "KERNEL32.DLL": [
+    "LoadLibraryA",
+    "GetProcAddress",
+    "ExitProcess"
+   ],
+   "USER32.dll": [
+    "EndDialog"
+   ],
+   "ole32.dll": [
+    "OleInitialize"
+   ]
+  },
+  "interesting_strings": [
+   "KERNEL32.DLL",
+   "ADVAPI32.dll",
+   "COMCTL32.dll",
+   "ole32.dll",
+   "USER32.dll",
+   "sami808@hotmail.com",
+   "      <embed width=\"100%\" height=\"100%\" bgcolor=\"#000000\" play=\"true\" wmode=\"transparent\" quality=\"high\" pluginspage=\"http://www.macromedia.com/shockwave/download/\" src=\"Clock_Data4.swf\">",
+   "Hhttp://ns.adobe.com/xap/1.0/",
+   "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:iX='http://ns.adobe.com/iX/1.0/'>",
+   "  xmlns:xapMM='http://ns.adobe.com/xap/1.0/mm/'>"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [],
+   "mail": [
+    "sami808@hotmail.com"
+   ],
+   "runkey": [],
+   "url": [
+    "http://ns.adobe.com/iX/1.0/",
+    "http://ns.adobe.com/xap/1.0/",
+    "http://ns.adobe.com/xap/1.0/mm/",
+    "http://www.macromedia.com/shockwave/download/",
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns"
+   ]
+  },
+  "machine": "0x14c",
+  "md5": "0554be676566850593276a84381e8b1a",
+  "section_max_entropy": 7.76,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 0.0,
+    "name": "UPX0",
+    "rawsize": 0,
+    "vsize": 24576
+   },
+   {
+    "chars": "RWX",
+    "entropy": 7.76,
+    "name": "UPX1",
+    "rawsize": 10240,
+    "vsize": 12288
+   },
+   {
+    "chars": "RW",
+    "entropy": 3.25,
+    "name": ".rsrc",
+    "rawsize": 2048,
+    "vsize": 4096
+   }
+  ],
+  "sha1": "aade98661378d438da6dffc80dae098caee1dddb",
+  "sha256": "57bf517907a22a327b96d7a7f3f6a429bad5c1b691969b557e876fca9112691b",
+  "size": 146586,
+  "subsystem": 2,
+  "timestamp": 1047496304,
+  "timestamp_utc": "2003-03-12T19:11:44Z"
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x178c",
+  "file": "13649B559F74AAB726CD4B56F3F4E855_REGSVR.EXE",
+  "imagebase": "0x1000000",
+  "import_count": 92,
+  "imports": {
+   "KERNEL32.dll": [
+    "HeapSetInformation",
+    "QueryActCtxW",
+    "CloseHandle",
+    "SetFilePointer",
+    "ReadFile",
+    "CreateFileW",
+    "LocalFree",
+    "lstrlenA",
+    "WideCharToMultiByte",
+    "LocalAlloc",
+    "lstrlenW",
+    "GetProcAddress",
+    "WaitForSingleObject",
+    "CreateProcessW",
+    "GetCommandLineW",
+    "Wow64EnableWow64FsRedirection",
+    "GetSystemDirectoryW",
+    "GetNativeSystemInfo",
+    "IsWow64Process",
+    "GetCurrentProcess",
+    "SetProcessDEPPolicy",
+    "FormatMessageW",
+    "GetLastError",
+    "LoadLibraryExW",
+    "FreeLibrary",
+    "ExitProcess",
+    "SetErrorMode",
+    "DelayLoadFailureHook",
+    "InterlockedCompareExchange",
+    "LoadLibraryExA",
+    "Sleep",
+    "GetStartupInfoW",
+    "InterlockedExchange",
+    "SetUnhandledExceptionFilter",
+    "GetModuleHandleA",
+    "QueryPerformanceCounter",
+    "GetTickCount",
+    "GetCurrentThreadId",
+    "GetCurrentProcessId",
+    "GetSystemTimeAsFileTime",
+    "TerminateProcess",
+    "UnhandledExceptionFilter",
+    "CompareStringW",
+    "ReleaseActCtx",
+    "DeactivateActCtx",
+    "GetFileAttributesW",
+    "SearchPathW",
+    "CreateActCtxW",
+    "GetModuleHandleW",
+    "ActivateActCtx"
+   ],
+   "USER32.dll": [
+    "LoadIconW",
+    "CharNextW",
+    "DefWindowProcW",
+    "GetClassLongW",
+    "GetClassNameW",
+    "GetWindow",
+    "GetWindowLongW",
+    "SetWindowLongW",
+    "SetClassLongW",
+    "CreateWindowExW",
+    "RegisterClassW",
+    "LoadCursorW",
+    "LoadStringW",
+    "MessageBoxW",
+    "DestroyWindow"
+   ],
+   "imagehlp.dll": [
+    "ImageDirectoryEntryToData"
+   ],
+   "msvcrt.dll": [
+    "iswalpha",
+    "_wtoi",
+    "wcschr",
+    "__wgetmainargs",
+    "memset",
+    "_vsnwprintf",
+    "__set_app_type",
+    "_controlfp",
+    "_except_handler4_common",
+    "?terminate@@YAXXZ",
+    "__p__fmode",
+    "__p__commode",
+    "__setusermatherr",
+    "_amsg_exit",
+    "_initterm",
+    "_wcmdln",
+    "exit",
+    "_XcptFilter",
+    "_exit",
+    "_cexit"
+   ],
+   "ntdll.dll": [
+    "NtClose",
+    "NtOpenProcessToken",
+    "NtSetInformationToken",
+    "RtlImageNtHeader",
+    "NtSetInformationProcess",
+    "NtQueryInformationToken"
+   ]
+  },
+  "interesting_strings": [
+   "KERNEL32.dll",
+   "USER32.dll",
+   "msvcrt.dll",
+   "imagehlp.dll",
+   "ntdll.dll",
+   "ole32.dll",
+   "ntdll.dll",
+   "imagehlp.dll",
+   "msvcrt.dll",
+   "USER32.dll",
+   "KERNEL32.dll",
+   "GetStartupInfoW",
+   "_wcmdln"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [
+    "5.1.0.0"
+   ],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "477a024b9bd8fc8c2687d421e3790349",
+  "section_max_entropy": 6.43,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 6.43,
+    "name": ".text",
+    "rawsize": 14848,
+    "vsize": 14848
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.22,
+    "name": ".data",
+    "rawsize": 1024,
+    "vsize": 952
+   },
+   {
+    "chars": "R",
+    "entropy": 5.7,
+    "name": ".rsrc",
+    "rawsize": 26624,
+    "vsize": 26448
+   },
+   {
+    "chars": "RWX",
+    "entropy": 4.54,
+    "name": ".reloc",
+    "rawsize": 1024,
+    "vsize": 1024
+   }
+  ],
+  "sha1": "913c19b1881ba332156e759335afd8c66cb73d79",
+  "sha256": "59dabb852ea11ac46353a1bba6e0efdb18033f24dd7fd5559f396e26e4983f85",
+  "size": 44544,
+  "subsystem": 2,
+  "timestamp": 1244879547,
+  "timestamp_utc": "2009-06-13T07:52:27Z",
+  "version": {
+   "CompanyName": "Microsoft Corporation",
+   "FileDescription": "Windows host process (Rundll32)",
+   "FileVersion": "6.1.7260.0 (win7_rtm.090612-2110)",
+   "InternalName": "rundll",
+   "LegalCopyright": "\u00c2\u00a9 Microsoft Corporation. All rights reserved.",
+   "OriginalFilename": "RUNDLL32.EXE",
+   "ProductName": "Microsoft\u00c2\u00ae Windows\u00c2\u00ae Operating System",
+   "ProductVersion": "6.1.7260.0"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x178c",
+  "file": "28D7F700019EE925E937A3964E3EB12D_REGSVR.EXE",
+  "imagebase": "0x1000000",
+  "import_count": 92,
+  "imports": {
+   "KERNEL32.dll": [
+    "HeapSetInformation",
+    "QueryActCtxW",
+    "CloseHandle",
+    "SetFilePointer",
+    "ReadFile",
+    "CreateFileW",
+    "LocalFree",
+    "lstrlenA",
+    "WideCharToMultiByte",
+    "LocalAlloc",
+    "lstrlenW",
+    "GetProcAddress",
+    "WaitForSingleObject",
+    "CreateProcessW",
+    "GetCommandLineW",
+    "Wow64EnableWow64FsRedirection",
+    "GetSystemDirectoryW",
+    "GetNativeSystemInfo",
+    "IsWow64Process",
+    "GetCurrentProcess",
+    "SetProcessDEPPolicy",
+    "FormatMessageW",
+    "GetLastError",
+    "LoadLibraryExW",
+    "FreeLibrary",
+    "ExitProcess",
+    "SetErrorMode",
+    "DelayLoadFailureHook",
+    "InterlockedCompareExchange",
+    "LoadLibraryExA",
+    "Sleep",
+    "GetStartupInfoW",
+    "InterlockedExchange",
+    "SetUnhandledExceptionFilter",
+    "GetModuleHandleA",
+    "QueryPerformanceCounter",
+    "GetTickCount",
+    "GetCurrentThreadId",
+    "GetCurrentProcessId",
+    "GetSystemTimeAsFileTime",
+    "TerminateProcess",
+    "UnhandledExceptionFilter",
+    "CompareStringW",
+    "ReleaseActCtx",
+    "DeactivateActCtx",
+    "GetFileAttributesW",
+    "SearchPathW",
+    "CreateActCtxW",
+    "GetModuleHandleW",
+    "ActivateActCtx"
+   ],
+   "USER32.dll": [
+    "LoadIconW",
+    "CharNextW",
+    "DefWindowProcW",
+    "GetClassLongW",
+    "GetClassNameW",
+    "GetWindow",
+    "GetWindowLongW",
+    "SetWindowLongW",
+    "SetClassLongW",
+    "CreateWindowExW",
+    "RegisterClassW",
+    "LoadCursorW",
+    "LoadStringW",
+    "MessageBoxW",
+    "DestroyWindow"
+   ],
+   "imagehlp.dll": [
+    "ImageDirectoryEntryToData"
+   ],
+   "msvcrt.dll": [
+    "iswalpha",
+    "_wtoi",
+    "wcschr",
+    "__wgetmainargs",
+    "memset",
+    "_vsnwprintf",
+    "__set_app_type",
+    "_controlfp",
+    "_except_handler4_common",
+    "?terminate@@YAXXZ",
+    "__p__fmode",
+    "__p__commode",
+    "__setusermatherr",
+    "_amsg_exit",
+    "_initterm",
+    "_wcmdln",
+    "exit",
+    "_XcptFilter",
+    "_exit",
+    "_cexit"
+   ],
+   "ntdll.dll": [
+    "NtClose",
+    "NtOpenProcessToken",
+    "NtSetInformationToken",
+    "RtlImageNtHeader",
+    "NtSetInformationProcess",
+    "NtQueryInformationToken"
+   ]
+  },
+  "interesting_strings": [
+   "KERNEL32.dll",
+   "USER32.dll",
+   "msvcrt.dll",
+   "imagehlp.dll",
+   "ntdll.dll",
+   "ole32.dll",
+   "ntdll.dll",
+   "imagehlp.dll",
+   "msvcrt.dll",
+   "USER32.dll",
+   "KERNEL32.dll",
+   "GetStartupInfoW",
+   "_wcmdln"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [
+    "5.1.0.0"
+   ],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "477a024b9bd8fc8c2687d421e3790349",
+  "section_max_entropy": 6.43,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 6.43,
+    "name": ".text",
+    "rawsize": 14848,
+    "vsize": 14848
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.22,
+    "name": ".data",
+    "rawsize": 1024,
+    "vsize": 952
+   },
+   {
+    "chars": "R",
+    "entropy": 5.7,
+    "name": ".rsrc",
+    "rawsize": 26624,
+    "vsize": 26448
+   },
+   {
+    "chars": "RWX",
+    "entropy": 4.54,
+    "name": ".reloc",
+    "rawsize": 1024,
+    "vsize": 1024
+   }
+  ],
+  "sha1": "913c19b1881ba332156e759335afd8c66cb73d79",
+  "sha256": "59dabb852ea11ac46353a1bba6e0efdb18033f24dd7fd5559f396e26e4983f85",
+  "size": 44544,
+  "subsystem": 2,
+  "timestamp": 1244879547,
+  "timestamp_utc": "2009-06-13T07:52:27Z",
+  "version": {
+   "CompanyName": "Microsoft Corporation",
+   "FileDescription": "Windows host process (Rundll32)",
+   "FileVersion": "6.1.7260.0 (win7_rtm.090612-2110)",
+   "InternalName": "rundll",
+   "LegalCopyright": "\u00c2\u00a9 Microsoft Corporation. All rights reserved.",
+   "OriginalFilename": "RUNDLL32.EXE",
+   "ProductName": "Microsoft\u00c2\u00ae Windows\u00c2\u00ae Operating System",
+   "ProductVersion": "6.1.7260.0"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x178c",
+  "file": "4A0F36311FCD5D6366196082948C0D5A_REGSVR.EXE",
+  "imagebase": "0x1000000",
+  "import_count": 92,
+  "imports": {
+   "KERNEL32.dll": [
+    "HeapSetInformation",
+    "QueryActCtxW",
+    "CloseHandle",
+    "SetFilePointer",
+    "ReadFile",
+    "CreateFileW",
+    "LocalFree",
+    "lstrlenA",
+    "WideCharToMultiByte",
+    "LocalAlloc",
+    "lstrlenW",
+    "GetProcAddress",
+    "WaitForSingleObject",
+    "CreateProcessW",
+    "GetCommandLineW",
+    "Wow64EnableWow64FsRedirection",
+    "GetSystemDirectoryW",
+    "GetNativeSystemInfo",
+    "IsWow64Process",
+    "GetCurrentProcess",
+    "SetProcessDEPPolicy",
+    "FormatMessageW",
+    "GetLastError",
+    "LoadLibraryExW",
+    "FreeLibrary",
+    "ExitProcess",
+    "SetErrorMode",
+    "DelayLoadFailureHook",
+    "InterlockedCompareExchange",
+    "LoadLibraryExA",
+    "Sleep",
+    "GetStartupInfoW",
+    "InterlockedExchange",
+    "SetUnhandledExceptionFilter",
+    "GetModuleHandleA",
+    "QueryPerformanceCounter",
+    "GetTickCount",
+    "GetCurrentThreadId",
+    "GetCurrentProcessId",
+    "GetSystemTimeAsFileTime",
+    "TerminateProcess",
+    "UnhandledExceptionFilter",
+    "CompareStringW",
+    "ReleaseActCtx",
+    "DeactivateActCtx",
+    "GetFileAttributesW",
+    "SearchPathW",
+    "CreateActCtxW",
+    "GetModuleHandleW",
+    "ActivateActCtx"
+   ],
+   "USER32.dll": [
+    "LoadIconW",
+    "CharNextW",
+    "DefWindowProcW",
+    "GetClassLongW",
+    "GetClassNameW",
+    "GetWindow",
+    "GetWindowLongW",
+    "SetWindowLongW",
+    "SetClassLongW",
+    "CreateWindowExW",
+    "RegisterClassW",
+    "LoadCursorW",
+    "LoadStringW",
+    "MessageBoxW",
+    "DestroyWindow"
+   ],
+   "imagehlp.dll": [
+    "ImageDirectoryEntryToData"
+   ],
+   "msvcrt.dll": [
+    "iswalpha",
+    "_wtoi",
+    "wcschr",
+    "__wgetmainargs",
+    "memset",
+    "_vsnwprintf",
+    "__set_app_type",
+    "_controlfp",
+    "_except_handler4_common",
+    "?terminate@@YAXXZ",
+    "__p__fmode",
+    "__p__commode",
+    "__setusermatherr",
+    "_amsg_exit",
+    "_initterm",
+    "_wcmdln",
+    "exit",
+    "_XcptFilter",
+    "_exit",
+    "_cexit"
+   ],
+   "ntdll.dll": [
+    "NtClose",
+    "NtOpenProcessToken",
+    "NtSetInformationToken",
+    "RtlImageNtHeader",
+    "NtSetInformationProcess",
+    "NtQueryInformationToken"
+   ]
+  },
+  "interesting_strings": [
+   "KERNEL32.dll",
+   "USER32.dll",
+   "msvcrt.dll",
+   "imagehlp.dll",
+   "ntdll.dll",
+   "ole32.dll",
+   "ntdll.dll",
+   "imagehlp.dll",
+   "msvcrt.dll",
+   "USER32.dll",
+   "KERNEL32.dll",
+   "GetStartupInfoW",
+   "_wcmdln"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [
+    "5.1.0.0"
+   ],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "477a024b9bd8fc8c2687d421e3790349",
+  "section_max_entropy": 6.43,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 6.43,
+    "name": ".text",
+    "rawsize": 14848,
+    "vsize": 14848
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.22,
+    "name": ".data",
+    "rawsize": 1024,
+    "vsize": 952
+   },
+   {
+    "chars": "R",
+    "entropy": 5.7,
+    "name": ".rsrc",
+    "rawsize": 26624,
+    "vsize": 26448
+   },
+   {
+    "chars": "RWX",
+    "entropy": 4.54,
+    "name": ".reloc",
+    "rawsize": 1024,
+    "vsize": 1024
+   }
+  ],
+  "sha1": "913c19b1881ba332156e759335afd8c66cb73d79",
+  "sha256": "59dabb852ea11ac46353a1bba6e0efdb18033f24dd7fd5559f396e26e4983f85",
+  "size": 44544,
+  "subsystem": 2,
+  "timestamp": 1244879547,
+  "timestamp_utc": "2009-06-13T07:52:27Z",
+  "version": {
+   "CompanyName": "Microsoft Corporation",
+   "FileDescription": "Windows host process (Rundll32)",
+   "FileVersion": "6.1.7260.0 (win7_rtm.090612-2110)",
+   "InternalName": "rundll",
+   "LegalCopyright": "\u00c2\u00a9 Microsoft Corporation. All rights reserved.",
+   "OriginalFilename": "RUNDLL32.EXE",
+   "ProductName": "Microsoft\u00c2\u00ae Windows\u00c2\u00ae Operating System",
+   "ProductVersion": "6.1.7260.0"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x1bdc",
+  "file": "58ECEBFA7B06739DB937B3CEAFB7CC21_REGSVR.EXE",
+  "imagebase": "0x1000000",
+  "import_count": 45,
+  "imports": {
+   "GDI32.dll": [
+    "GetStockObject"
+   ],
+   "IMAGEHLP.dll": [
+    "ImageDirectoryEntryToData"
+   ],
+   "KERNEL32.dll": [
+    "FreeLibrary",
+    "LocalFree",
+    "lstrlenA",
+    "WideCharToMultiByte",
+    "LocalAlloc",
+    "lstrlenW",
+    "GetProcAddress",
+    "FormatMessageW",
+    "GetLastError",
+    "LoadLibraryW",
+    "ActivateActCtx",
+    "CreateActCtxW",
+    "SearchPathW",
+    "GetFileAttributesW",
+    "ReleaseActCtx",
+    "DeactivateActCtx",
+    "SetErrorMode",
+    "ExitProcess",
+    "GetModuleHandleW",
+    "GetStartupInfoW",
+    "GetCommandLineW",
+    "QueryPerformanceCounter",
+    "GetTickCount",
+    "GetCurrentThreadId",
+    "GetCurrentProcessId",
+    "GetSystemTimeAsFileTime",
+    "TerminateProcess",
+    "GetCurrentProcess",
+    "UnhandledExceptionFilter",
+    "SetUnhandledExceptionFilter"
+   ],
+   "USER32.dll": [
+    "RegisterClassW",
+    "LoadStringW",
+    "CharNextW",
+    "SetClassLongW",
+    "LoadIconW",
+    "DefWindowProcW",
+    "CreateWindowExW",
+    "MessageBoxW",
+    "LoadCursorW",
+    "DestroyWindow"
+   ],
+   "msvcrt.dll": [
+    "_except_handler3",
+    "_wtoi",
+    "_vsnwprintf"
+   ]
+  },
+  "interesting_strings": [
+   "msvcrt.dll",
+   "KERNEL32.dll",
+   "NTDLL.DLL",
+   "GDI32.dll",
+   "USER32.dll",
+   "IMAGEHLP.dll",
+   "msvcrt.dll",
+   "GetStartupInfoW",
+   "KERNEL32.dll",
+   "GDI32.dll",
+   "USER32.dll",
+   "IMAGEHLP.dll"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "c1ff3af6960e108028862d01fd27e1ab",
+  "section_max_entropy": 5.98,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 5.98,
+    "name": ".text",
+    "rawsize": 5120,
+    "vsize": 5120
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.25,
+    "name": ".data",
+    "rawsize": 512,
+    "vsize": 56
+   },
+   {
+    "chars": "RWX",
+    "entropy": 3.62,
+    "name": ".rsrc",
+    "rawsize": 47104,
+    "vsize": 47104
+   }
+  ],
+  "sha1": "e43f7194cd83a6fb745f39acf025f0fec0634659",
+  "sha256": "0c139b434f9e8d0bf2defb1b53faf343087abd482867ff4216a644444d121a94",
+  "size": 53760,
+  "subsystem": 2,
+  "timestamp": 1091599804,
+  "timestamp_utc": "2004-08-04T06:10:04Z",
+  "version": {
+   "CompanyName": "Microsoft Corporation",
+   "FileDescription": "Run a DLL as an App",
+   "FileVersion": "5.1.2600.2180 (xpsp_sp2_rtm.040803-2158)",
+   "InternalName": "rundll",
+   "LegalCopyright": "\u00c2\u00a9 Microsoft Corporation. All rights reserved.",
+   "OriginalFilename": "RUNDLL.EXE",
+   "ProductName": "Microsoft\u00c2\u00ae Windows\u00c2\u00ae Operating System",
+   "ProductVersion": "5.1.2600.2180"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x178c",
+  "file": "6ADD5166139BBBC85E81E94571C790FA_REGSVR.EXE",
+  "imagebase": "0x1000000",
+  "import_count": 92,
+  "imports": {
+   "KERNEL32.dll": [
+    "HeapSetInformation",
+    "QueryActCtxW",
+    "CloseHandle",
+    "SetFilePointer",
+    "ReadFile",
+    "CreateFileW",
+    "LocalFree",
+    "lstrlenA",
+    "WideCharToMultiByte",
+    "LocalAlloc",
+    "lstrlenW",
+    "GetProcAddress",
+    "WaitForSingleObject",
+    "CreateProcessW",
+    "GetCommandLineW",
+    "Wow64EnableWow64FsRedirection",
+    "GetSystemDirectoryW",
+    "GetNativeSystemInfo",
+    "IsWow64Process",
+    "GetCurrentProcess",
+    "SetProcessDEPPolicy",
+    "FormatMessageW",
+    "GetLastError",
+    "LoadLibraryExW",
+    "FreeLibrary",
+    "ExitProcess",
+    "SetErrorMode",
+    "DelayLoadFailureHook",
+    "InterlockedCompareExchange",
+    "LoadLibraryExA",
+    "Sleep",
+    "GetStartupInfoW",
+    "InterlockedExchange",
+    "SetUnhandledExceptionFilter",
+    "GetModuleHandleA",
+    "QueryPerformanceCounter",
+    "GetTickCount",
+    "GetCurrentThreadId",
+    "GetCurrentProcessId",
+    "GetSystemTimeAsFileTime",
+    "TerminateProcess",
+    "UnhandledExceptionFilter",
+    "CompareStringW",
+    "ReleaseActCtx",
+    "DeactivateActCtx",
+    "GetFileAttributesW",
+    "SearchPathW",
+    "CreateActCtxW",
+    "GetModuleHandleW",
+    "ActivateActCtx"
+   ],
+   "USER32.dll": [
+    "LoadIconW",
+    "CharNextW",
+    "DefWindowProcW",
+    "GetClassLongW",
+    "GetClassNameW",
+    "GetWindow",
+    "GetWindowLongW",
+    "SetWindowLongW",
+    "SetClassLongW",
+    "CreateWindowExW",
+    "RegisterClassW",
+    "LoadCursorW",
+    "LoadStringW",
+    "MessageBoxW",
+    "DestroyWindow"
+   ],
+   "imagehlp.dll": [
+    "ImageDirectoryEntryToData"
+   ],
+   "msvcrt.dll": [
+    "iswalpha",
+    "_wtoi",
+    "wcschr",
+    "__wgetmainargs",
+    "memset",
+    "_vsnwprintf",
+    "__set_app_type",
+    "_controlfp",
+    "_except_handler4_common",
+    "?terminate@@YAXXZ",
+    "__p__fmode",
+    "__p__commode",
+    "__setusermatherr",
+    "_amsg_exit",
+    "_initterm",
+    "_wcmdln",
+    "exit",
+    "_XcptFilter",
+    "_exit",
+    "_cexit"
+   ],
+   "ntdll.dll": [
+    "NtClose",
+    "NtOpenProcessToken",
+    "NtSetInformationToken",
+    "RtlImageNtHeader",
+    "NtSetInformationProcess",
+    "NtQueryInformationToken"
+   ]
+  },
+  "interesting_strings": [
+   "KERNEL32.dll",
+   "USER32.dll",
+   "msvcrt.dll",
+   "imagehlp.dll",
+   "ntdll.dll",
+   "ole32.dll",
+   "ntdll.dll",
+   "imagehlp.dll",
+   "msvcrt.dll",
+   "USER32.dll",
+   "KERNEL32.dll",
+   "GetStartupInfoW",
+   "_wcmdln"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [
+    "5.1.0.0"
+   ],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "477a024b9bd8fc8c2687d421e3790349",
+  "section_max_entropy": 6.43,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 6.43,
+    "name": ".text",
+    "rawsize": 14848,
+    "vsize": 14848
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.22,
+    "name": ".data",
+    "rawsize": 1024,
+    "vsize": 952
+   },
+   {
+    "chars": "R",
+    "entropy": 5.7,
+    "name": ".rsrc",
+    "rawsize": 26624,
+    "vsize": 26448
+   },
+   {
+    "chars": "RWX",
+    "entropy": 4.54,
+    "name": ".reloc",
+    "rawsize": 1024,
+    "vsize": 1024
+   }
+  ],
+  "sha1": "913c19b1881ba332156e759335afd8c66cb73d79",
+  "sha256": "59dabb852ea11ac46353a1bba6e0efdb18033f24dd7fd5559f396e26e4983f85",
+  "size": 44544,
+  "subsystem": 2,
+  "timestamp": 1244879547,
+  "timestamp_utc": "2009-06-13T07:52:27Z",
+  "version": {
+   "CompanyName": "Microsoft Corporation",
+   "FileDescription": "Windows host process (Rundll32)",
+   "FileVersion": "6.1.7260.0 (win7_rtm.090612-2110)",
+   "InternalName": "rundll",
+   "LegalCopyright": "\u00c2\u00a9 Microsoft Corporation. All rights reserved.",
+   "OriginalFilename": "RUNDLL32.EXE",
+   "ProductName": "Microsoft\u00c2\u00ae Windows\u00c2\u00ae Operating System",
+   "ProductVersion": "6.1.7260.0"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x1000",
+  "file": "8C3F387E85090907ED7864D07980AF86_A0262141.exe",
+  "imagebase": "0x400000",
+  "import_count": 14,
+  "imports": {
+   "advapi32.dll": [
+    "RegQueryValueExA"
+   ],
+   "comctl32.dll": [
+    "ImageList_SetIconSize"
+   ],
+   "comdlg32.dll": [
+    "GetSaveFileNameA"
+   ],
+   "gdi32.dll": [
+    "UnrealizeObject"
+   ],
+   "kernel32.dll": [
+    "LoadLibraryA",
+    "GetProcAddress",
+    "VirtualAlloc",
+    "VirtualFree"
+   ],
+   "ole32.dll": [
+    "CoTaskMemAlloc"
+   ],
+   "oleaut32.dll": [
+    "SysFreeString"
+   ],
+   "shell32.dll": [
+    "ShellExecuteA"
+   ],
+   "user32.dll": [
+    "GetKeyboardType"
+   ],
+   "version.dll": [
+    "VerQueryValueA"
+   ],
+   "winmm.dll": [
+    "timeGetTime"
+   ]
+  },
+  "interesting_strings": [
+   "el32.dll",
+   "\\\\<n th",
+   "\\\\-D<",
+   "kernel32.dll",
+   "user32.dll",
+   "advapi32.dll",
+   "oleaut32.dll",
+   "version.dll",
+   "gdi32.dll",
+   "ole32.dll",
+   "comctl32.dll",
+   "shell32.dll",
+   "comdlg32.dll",
+   "winmm.dll"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [
+    "1.0.0.0",
+    "6.0.0.0"
+   ],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "8c3f387e85090907ed7864d07980af86",
+  "section_max_entropy": 7.94,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 7.94,
+    "name": "CODE",
+    "rawsize": 314368,
+    "vsize": 819200
+   },
+   {
+    "chars": "RWX",
+    "entropy": 6.1,
+    "name": ".rsrc",
+    "rawsize": 14848,
+    "vsize": 16384
+   }
+  ],
+  "sha1": "015482c7feb3ee9314a554c2c17f9c659cc4948e",
+  "sha256": "4a15f6919dfd1285eb903c47aad878aa9ba61c59d417d59fde4e1682bc126c73",
+  "size": 330240,
+  "subsystem": 2,
+  "timestamp": 708992537,
+  "timestamp_utc": "1992-06-19T22:22:17Z"
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x178c",
+  "file": "8DB04E099E22116919ABD4DFCB2A6530_REGSVR.EXE",
+  "imagebase": "0x1000000",
+  "import_count": 92,
+  "imports": {
+   "KERNEL32.dll": [
+    "HeapSetInformation",
+    "QueryActCtxW",
+    "CloseHandle",
+    "SetFilePointer",
+    "ReadFile",
+    "CreateFileW",
+    "LocalFree",
+    "lstrlenA",
+    "WideCharToMultiByte",
+    "LocalAlloc",
+    "lstrlenW",
+    "GetProcAddress",
+    "WaitForSingleObject",
+    "CreateProcessW",
+    "GetCommandLineW",
+    "Wow64EnableWow64FsRedirection",
+    "GetSystemDirectoryW",
+    "GetNativeSystemInfo",
+    "IsWow64Process",
+    "GetCurrentProcess",
+    "SetProcessDEPPolicy",
+    "FormatMessageW",
+    "GetLastError",
+    "LoadLibraryExW",
+    "FreeLibrary",
+    "ExitProcess",
+    "SetErrorMode",
+    "DelayLoadFailureHook",
+    "InterlockedCompareExchange",
+    "LoadLibraryExA",
+    "Sleep",
+    "GetStartupInfoW",
+    "InterlockedExchange",
+    "SetUnhandledExceptionFilter",
+    "GetModuleHandleA",
+    "QueryPerformanceCounter",
+    "GetTickCount",
+    "GetCurrentThreadId",
+    "GetCurrentProcessId",
+    "GetSystemTimeAsFileTime",
+    "TerminateProcess",
+    "UnhandledExceptionFilter",
+    "CompareStringW",
+    "ReleaseActCtx",
+    "DeactivateActCtx",
+    "GetFileAttributesW",
+    "SearchPathW",
+    "CreateActCtxW",
+    "GetModuleHandleW",
+    "ActivateActCtx"
+   ],
+   "USER32.dll": [
+    "LoadIconW",
+    "CharNextW",
+    "DefWindowProcW",
+    "GetClassLongW",
+    "GetClassNameW",
+    "GetWindow",
+    "GetWindowLongW",
+    "SetWindowLongW",
+    "SetClassLongW",
+    "CreateWindowExW",
+    "RegisterClassW",
+    "LoadCursorW",
+    "LoadStringW",
+    "MessageBoxW",
+    "DestroyWindow"
+   ],
+   "imagehlp.dll": [
+    "ImageDirectoryEntryToData"
+   ],
+   "msvcrt.dll": [
+    "iswalpha",
+    "_wtoi",
+    "wcschr",
+    "__wgetmainargs",
+    "memset",
+    "_vsnwprintf",
+    "__set_app_type",
+    "_controlfp",
+    "_except_handler4_common",
+    "?terminate@@YAXXZ",
+    "__p__fmode",
+    "__p__commode",
+    "__setusermatherr",
+    "_amsg_exit",
+    "_initterm",
+    "_wcmdln",
+    "exit",
+    "_XcptFilter",
+    "_exit",
+    "_cexit"
+   ],
+   "ntdll.dll": [
+    "NtClose",
+    "NtOpenProcessToken",
+    "NtSetInformationToken",
+    "RtlImageNtHeader",
+    "NtSetInformationProcess",
+    "NtQueryInformationToken"
+   ]
+  },
+  "interesting_strings": [
+   "KERNEL32.dll",
+   "USER32.dll",
+   "msvcrt.dll",
+   "imagehlp.dll",
+   "ntdll.dll",
+   "ole32.dll",
+   "ntdll.dll",
+   "imagehlp.dll",
+   "msvcrt.dll",
+   "USER32.dll",
+   "KERNEL32.dll",
+   "GetStartupInfoW",
+   "_wcmdln"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [
+    "5.1.0.0"
+   ],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "477a024b9bd8fc8c2687d421e3790349",
+  "section_max_entropy": 6.43,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 6.43,
+    "name": ".text",
+    "rawsize": 14848,
+    "vsize": 14848
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.22,
+    "name": ".data",
+    "rawsize": 1024,
+    "vsize": 952
+   },
+   {
+    "chars": "R",
+    "entropy": 5.7,
+    "name": ".rsrc",
+    "rawsize": 26624,
+    "vsize": 26448
+   },
+   {
+    "chars": "RWX",
+    "entropy": 4.54,
+    "name": ".reloc",
+    "rawsize": 1024,
+    "vsize": 1024
+   }
+  ],
+  "sha1": "913c19b1881ba332156e759335afd8c66cb73d79",
+  "sha256": "59dabb852ea11ac46353a1bba6e0efdb18033f24dd7fd5559f396e26e4983f85",
+  "size": 44544,
+  "subsystem": 2,
+  "timestamp": 1244879547,
+  "timestamp_utc": "2009-06-13T07:52:27Z",
+  "version": {
+   "CompanyName": "Microsoft Corporation",
+   "FileDescription": "Windows host process (Rundll32)",
+   "FileVersion": "6.1.7260.0 (win7_rtm.090612-2110)",
+   "InternalName": "rundll",
+   "LegalCopyright": "\u00c2\u00a9 Microsoft Corporation. All rights reserved.",
+   "OriginalFilename": "RUNDLL32.EXE",
+   "ProductName": "Microsoft\u00c2\u00ae Windows\u00c2\u00ae Operating System",
+   "ProductVersion": "6.1.7260.0"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0xe000",
+  "file": "8EC740ED0E4D6EF2C669C1BEF52E588F_CLScc.exe",
+  "imagebase": "0x400000",
+  "import_count": 2,
+  "imports": {
+   "kernel32.dll": [
+    "LoadLibraryA",
+    "GetProcAddress"
+   ]
+  },
+  "interesting_strings": [
+   "kernel32.dll",
+   "kernel32.dll",
+   "user32.dll",
+   "advapi32.dll",
+   "oleaut32.dll",
+   "kernel32.dll",
+   "kernel32.dll",
+   "gdi32.dll",
+   "user32.dll"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "8ec740ed0e4d6ef2c669c1bef52e588f",
+  "section_max_entropy": 7.85,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 0.0,
+    "name": "UPX0",
+    "rawsize": 0,
+    "vsize": 49152
+   },
+   {
+    "chars": "RW",
+    "entropy": 3.7,
+    "name": "UPX1",
+    "rawsize": 1536,
+    "vsize": 4096
+   },
+   {
+    "chars": "RX",
+    "entropy": 7.74,
+    "name": "UPX2",
+    "rawsize": 4096,
+    "vsize": 4096
+   },
+   {
+    "chars": "R",
+    "entropy": 7.85,
+    "name": "UPX3",
+    "rawsize": 5971,
+    "vsize": 8192
+   }
+  ],
+  "sha1": "8adbabe826f7737dbb4fb910adf0b779a3840313",
+  "sha256": "73f823c7692e1d33ccdf8e2f74e6f63ac037180ff01c17e1212e282c300a5f83",
+  "size": 12627,
+  "subsystem": 2,
+  "timestamp": 708992537,
+  "timestamp_utc": "1992-06-19T22:22:17Z"
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x4eb7",
+  "exports": [
+   "_start@16"
+  ],
+  "file": "91985CF1B695F95A72DF8E27C75EAFC5_AGENTCPD.DLL",
+  "imagebase": "0x10000000",
+  "import_count": 78,
+  "imports": {
+   "ADVAPI32.dll": [
+    "GetUserNameA",
+    "RegOpenKeyExA",
+    "RegQueryValueExA",
+    "RegCloseKey",
+    "RegSetValueExA",
+    "RegCreateKeyExA",
+    "RegDeleteKeyA",
+    "RegNotifyChangeKeyValue"
+   ],
+   "KERNEL32.dll": [
+    "CloseHandle",
+    "GetLastError",
+    "CreateMutexA",
+    "GetTickCount",
+    "GetEnvironmentVariableA",
+    "GetCommandLineA",
+    "GetVolumeInformationA",
+    "WaitForSingleObject",
+    "CreateThread",
+    "WaitForMultipleObjects",
+    "ResetEvent",
+    "SetUnhandledExceptionFilter",
+    "SetErrorMode",
+    "ExitThread",
+    "GetTempPathA",
+    "FindFirstFileA",
+    "CopyFileA",
+    "FindNextFileA",
+    "MoveFileA",
+    "FindClose",
+    "GetSystemTime",
+    "CreateFileA",
+    "VirtualAlloc",
+    "VirtualFree",
+    "WriteFile",
+    "ReadFile",
+    "SetFilePointer",
+    "Sleep",
+    "CreateEventA",
+    "GetVersionExA",
+    "GetSystemInfo",
+    "DeleteFileA",
+    "CreateToolhelp32Snapshot",
+    "Process32First",
+    "Process32Next",
+    "LoadLibraryA",
+    "GetProcAddress",
+    "FreeLibrary",
+    "SetFileAttributesA",
+    "GetComputerNameA"
+   ],
+   "MSVCRT.dll": [
+    "strncat",
+    "fflush",
+    "_except_handler3",
+    "fprintf",
+    "_iob",
+    "memcmp",
+    "_getdiskfree",
+    "tolower",
+    "_initterm",
+    "_adjust_fdiv",
+    "fopen",
+    "fseek",
+    "ftell",
+    "fread",
+    "fwrite",
+    "fclose",
+    "strlen",
+    "strrchr",
+    "strcpy",
+    "srand",
+    "rand",
+    "exit",
+    "strncpy",
+    "strcat",
+    "malloc",
+    "memset",
+    "memcpy",
+    "free",
+    "strstr",
+    "_itoa"
+   ]
+  },
+  "interesting_strings": [
+   "GetTempPathA",
+   "CreateMutexA",
+   "KERNEL32.dll",
+   "ADVAPI32.dll",
+   "MSVCRT.dll",
+   "agentcpd.dll",
+   "\\\\.\\a:",
+   "Explorer.exe",
+   "32.exe",
+   "\\System32",
+   "Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "91985cf1b695f95a72df8e27c75eafc5",
+  "section_max_entropy": 6.33,
+  "sections": [
+   {
+    "chars": "RX",
+    "entropy": 6.33,
+    "name": ".text",
+    "rawsize": 16384,
+    "vsize": 16274
+   },
+   {
+    "chars": "R",
+    "entropy": 3.0,
+    "name": ".rdata",
+    "rawsize": 4096,
+    "vsize": 2009
+   },
+   {
+    "chars": "RW",
+    "entropy": 1.1,
+    "name": ".data",
+    "rawsize": 4096,
+    "vsize": 772
+   },
+   {
+    "chars": "R",
+    "entropy": 2.51,
+    "name": ".reloc",
+    "rawsize": 4096,
+    "vsize": 1260
+   }
+  ],
+  "sha1": "4d0c7d0dd431fd5cfe9ad5bf9e1dfb79a0c014c0",
+  "sha256": "1e77ae780e3f6389ffd6eae92887e531bf156943e31302c93be08a57ea90e6dd",
+  "size": 32768,
+  "subsystem": 2,
+  "timestamp": 1217233679,
+  "timestamp_utc": "2008-07-28T08:27:59Z"
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x11f8",
+  "file": "A131FCA432B42AEC82DFEFC02AA4879C_Setup1.exe",
+  "imagebase": "0x400000",
+  "import_count": 7,
+  "imports": {
+   "MSVBVM60.DLL": [
+    "MethCallEngine",
+    "EVENT_SINK_AddRef",
+    "DllFunctionCall",
+    "EVENT_SINK_Release",
+    "EVENT_SINK_QueryInterface",
+    "__vbaExceptHandler",
+    "ProcCallEngine"
+   ]
+  },
+  "interesting_strings": [
+   "MSVBVM60.DLL",
+   "This label is used for DDE connection to the Program Manager",
+   "vb6stkit.dll",
+   "version.dll",
+   "GetTempPathA",
+   "oleaut32.dll",
+   "advapi32.dll",
+   "VBA6.DLL",
+   "shell32.dll",
+   "ole32.dll",
+   "cmdCancel",
+   "cmdContinue",
+   "cmdExit",
+   "cmdInstall",
+   "cmdChDir",
+   "cmdOK",
+   "cmdChgDrv",
+   "cmdYes",
+   "cmdNo",
+   "cmdNoAll",
+   "rpcrt4.dll",
+   "cmdNoAll",
+   "cmdNoAll",
+   "cmdNo",
+   "cmdNo",
+   "cmdYes",
+   "cmdYes",
+   "For further information visit: http://www.microsoft.com/speech",
+   "http://www.microsoft.com/speech",
+   "cmdExit",
+   "cmdCancel",
+   "cmdContinue",
+   "cmdCancel",
+   "cmdOK",
+   "cmdCancel",
+   "cmdOK",
+   "cmdChgDrv",
+   "cmdInstall",
+   "cmdExit",
+   "cmdExit",
+   "cmdOK",
+   "cmdInstall",
+   "cmdChDir",
+   "cmdExit",
+   "MSVBVM60.DLL"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [],
+   "mail": [],
+   "runkey": [
+    "Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\\Setup"
+   ],
+   "url": [
+    "http://www.microsoft.com/speech"
+   ]
+  },
+  "machine": "0x14c",
+  "md5": "a131fca432b42aec82dfefc02aa4879c",
+  "section_max_entropy": 5.15,
+  "sections": [
+   {
+    "chars": "RX",
+    "entropy": 5.15,
+    "name": ".text",
+    "rawsize": 147456,
+    "vsize": 146292
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.0,
+    "name": ".data",
+    "rawsize": 0,
+    "vsize": 23544
+   },
+   {
+    "chars": "R",
+    "entropy": 3.55,
+    "name": ".rsrc",
+    "rawsize": 20480,
+    "vsize": 20188
+   }
+  ],
+  "sha1": "82cc4ec8adaa4b17797bff54ed2d19963183554f",
+  "sha256": "6c6bba2964712b645e2037f39d95014d4c087ee953a7c6b7ca6350514c55705d",
+  "size": 172032,
+  "subsystem": 2,
+  "timestamp": 1011700290,
+  "timestamp_utc": "2002-01-22T11:51:30Z",
+  "version": {
+   "CompanyName": "Microsoft Corporation",
+   "FileDescription": "Visual Basic 6.0 Setup Toolkit",
+   "FileVersion": "6.00.8450",
+   "InternalName": "Setup1",
+   "LegalCopyright": "Copyright (C) 1987-1999 Microsoft Corporation",
+   "LegalTrademarks": "Microsoft(R) is a registered trademark of Microsoft Corporation. Windows(TM) is a trademark of Microsoft Corporation.",
+   "OriginalFilename": "Setup1.exe",
+   "ProductName": "Visual Basic",
+   "ProductVersion": "6.00.8450"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x178c",
+  "file": "A31D62C63DCDABC8B21FCF8FC66F6F3D_REGSVR.EXE",
+  "imagebase": "0x1000000",
+  "import_count": 92,
+  "imports": {
+   "KERNEL32.dll": [
+    "HeapSetInformation",
+    "QueryActCtxW",
+    "CloseHandle",
+    "SetFilePointer",
+    "ReadFile",
+    "CreateFileW",
+    "LocalFree",
+    "lstrlenA",
+    "WideCharToMultiByte",
+    "LocalAlloc",
+    "lstrlenW",
+    "GetProcAddress",
+    "WaitForSingleObject",
+    "CreateProcessW",
+    "GetCommandLineW",
+    "Wow64EnableWow64FsRedirection",
+    "GetSystemDirectoryW",
+    "GetNativeSystemInfo",
+    "IsWow64Process",
+    "GetCurrentProcess",
+    "SetProcessDEPPolicy",
+    "FormatMessageW",
+    "GetLastError",
+    "LoadLibraryExW",
+    "FreeLibrary",
+    "ExitProcess",
+    "SetErrorMode",
+    "DelayLoadFailureHook",
+    "InterlockedCompareExchange",
+    "LoadLibraryExA",
+    "Sleep",
+    "GetStartupInfoW",
+    "InterlockedExchange",
+    "SetUnhandledExceptionFilter",
+    "GetModuleHandleA",
+    "QueryPerformanceCounter",
+    "GetTickCount",
+    "GetCurrentThreadId",
+    "GetCurrentProcessId",
+    "GetSystemTimeAsFileTime",
+    "TerminateProcess",
+    "UnhandledExceptionFilter",
+    "CompareStringW",
+    "ReleaseActCtx",
+    "DeactivateActCtx",
+    "GetFileAttributesW",
+    "SearchPathW",
+    "CreateActCtxW",
+    "GetModuleHandleW",
+    "ActivateActCtx"
+   ],
+   "USER32.dll": [
+    "LoadIconW",
+    "CharNextW",
+    "DefWindowProcW",
+    "GetClassLongW",
+    "GetClassNameW",
+    "GetWindow",
+    "GetWindowLongW",
+    "SetWindowLongW",
+    "SetClassLongW",
+    "CreateWindowExW",
+    "RegisterClassW",
+    "LoadCursorW",
+    "LoadStringW",
+    "MessageBoxW",
+    "DestroyWindow"
+   ],
+   "imagehlp.dll": [
+    "ImageDirectoryEntryToData"
+   ],
+   "msvcrt.dll": [
+    "iswalpha",
+    "_wtoi",
+    "wcschr",
+    "__wgetmainargs",
+    "memset",
+    "_vsnwprintf",
+    "__set_app_type",
+    "_controlfp",
+    "_except_handler4_common",
+    "?terminate@@YAXXZ",
+    "__p__fmode",
+    "__p__commode",
+    "__setusermatherr",
+    "_amsg_exit",
+    "_initterm",
+    "_wcmdln",
+    "exit",
+    "_XcptFilter",
+    "_exit",
+    "_cexit"
+   ],
+   "ntdll.dll": [
+    "NtClose",
+    "NtOpenProcessToken",
+    "NtSetInformationToken",
+    "RtlImageNtHeader",
+    "NtSetInformationProcess",
+    "NtQueryInformationToken"
+   ]
+  },
+  "interesting_strings": [
+   "KERNEL32.dll",
+   "USER32.dll",
+   "msvcrt.dll",
+   "imagehlp.dll",
+   "ntdll.dll",
+   "ole32.dll",
+   "ntdll.dll",
+   "imagehlp.dll",
+   "msvcrt.dll",
+   "USER32.dll",
+   "KERNEL32.dll",
+   "GetStartupInfoW",
+   "_wcmdln"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [
+    "5.1.0.0"
+   ],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "477a024b9bd8fc8c2687d421e3790349",
+  "section_max_entropy": 6.43,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 6.43,
+    "name": ".text",
+    "rawsize": 14848,
+    "vsize": 14848
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.22,
+    "name": ".data",
+    "rawsize": 1024,
+    "vsize": 952
+   },
+   {
+    "chars": "R",
+    "entropy": 5.7,
+    "name": ".rsrc",
+    "rawsize": 26624,
+    "vsize": 26448
+   },
+   {
+    "chars": "RWX",
+    "entropy": 4.54,
+    "name": ".reloc",
+    "rawsize": 1024,
+    "vsize": 1024
+   }
+  ],
+  "sha1": "913c19b1881ba332156e759335afd8c66cb73d79",
+  "sha256": "59dabb852ea11ac46353a1bba6e0efdb18033f24dd7fd5559f396e26e4983f85",
+  "size": 44544,
+  "subsystem": 2,
+  "timestamp": 1244879547,
+  "timestamp_utc": "2009-06-13T07:52:27Z",
+  "version": {
+   "CompanyName": "Microsoft Corporation",
+   "FileDescription": "Windows host process (Rundll32)",
+   "FileVersion": "6.1.7260.0 (win7_rtm.090612-2110)",
+   "InternalName": "rundll",
+   "LegalCopyright": "\u00c2\u00a9 Microsoft Corporation. All rights reserved.",
+   "OriginalFilename": "RUNDLL32.EXE",
+   "ProductName": "Microsoft\u00c2\u00ae Windows\u00c2\u00ae Operating System",
+   "ProductVersion": "6.1.7260.0"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x9560",
+  "file": "A7AC1F99F190A7966FE4874989A08C26_Clock_Data5.exe",
+  "imagebase": "0x400000",
+  "import_count": 7,
+  "imports": {
+   "ADVAPI32.dll": [
+    "RegOpenKeyA"
+   ],
+   "COMCTL32.dll": [
+    "InitCommonControlsEx"
+   ],
+   "KERNEL32.DLL": [
+    "LoadLibraryA",
+    "GetProcAddress",
+    "ExitProcess"
+   ],
+   "USER32.dll": [
+    "EndDialog"
+   ],
+   "ole32.dll": [
+    "OleInitialize"
+   ]
+  },
+  "interesting_strings": [
+   "KERNEL32.DLL",
+   "ADVAPI32.dll",
+   "COMCTL32.dll",
+   "ole32.dll",
+   "USER32.dll",
+   "sami808@hotmail.com",
+   "      <embed width=\"100%\" height=\"100%\" bgcolor=\"#000000\" play=\"true\" wmode=\"transparent\" quality=\"high\" pluginspage=\"http://www.macromedia.com/shockwave/download/\" src=\"Clock_Data5.swf\">",
+   "Hhttp://ns.adobe.com/xap/1.0/",
+   "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:iX='http://ns.adobe.com/iX/1.0/'>",
+   "  xmlns:xapMM='http://ns.adobe.com/xap/1.0/mm/'>",
+   "fLm\\\\ch*l"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [],
+   "mail": [
+    "sami808@hotmail.com"
+   ],
+   "runkey": [],
+   "url": [
+    "http://ns.adobe.com/iX/1.0/",
+    "http://ns.adobe.com/xap/1.0/",
+    "http://ns.adobe.com/xap/1.0/mm/",
+    "http://www.macromedia.com/shockwave/download/",
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns"
+   ]
+  },
+  "machine": "0x14c",
+  "md5": "a7ac1f99f190a7966fe4874989a08c26",
+  "section_max_entropy": 7.76,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 0.0,
+    "name": "UPX0",
+    "rawsize": 0,
+    "vsize": 24576
+   },
+   {
+    "chars": "RWX",
+    "entropy": 7.76,
+    "name": "UPX1",
+    "rawsize": 10240,
+    "vsize": 12288
+   },
+   {
+    "chars": "RW",
+    "entropy": 3.25,
+    "name": ".rsrc",
+    "rawsize": 2048,
+    "vsize": 4096
+   }
+  ],
+  "sha1": "832b372b1435cf34532993329a8dbe617a62f643",
+  "sha256": "6aee0b506d8da9e08d497349a2aa8297c68fe55052da4d01648830e13d153117",
+  "size": 161908,
+  "subsystem": 2,
+  "timestamp": 1047496304,
+  "timestamp_utc": "2003-03-12T19:11:44Z"
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x387c0",
+  "file": "AB07ED5EBB0167C6704D8D024AFFF74D_TSXP.EXE",
+  "imagebase": "0x400000",
+  "import_count": 9,
+  "imports": {
+   "ADVAPI32.dll": [
+    "RegEnumKeyA"
+   ],
+   "COMCTL32.dll": [],
+   "GDI32.dll": [
+    "SetBkMode"
+   ],
+   "KERNEL32.DLL": [
+    "LoadLibraryA",
+    "GetProcAddress",
+    "ExitProcess"
+   ],
+   "SHELL32.dll": [
+    "SHGetMalloc"
+   ],
+   "USER32.dll": [
+    "GetDC"
+   ],
+   "VERSION.dll": [
+    "VerQueryValueA"
+   ],
+   "ole32.dll": [
+    "OleInitialize"
+   ]
+  },
+  "interesting_strings": [
+   "shlwapi.dll",
+   "Au_.exe",
+   "KERNEL32.DLL",
+   "ADVAPI32.dll",
+   "COMCTL32.dll",
+   "GDI32.dll",
+   "ole32.dll",
+   "SHELL32.dll",
+   "USER32.dll",
+   "VERSION.dll",
+   "C\\\\d;"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [
+    "1.0.0.0",
+    "2.0.9.1",
+    "6.0.0.0"
+   ],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "ab07ed5ebb0167c6704d8d024afff74d",
+  "section_max_entropy": 7.86,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 0.0,
+    "name": "UPX0",
+    "rawsize": 0,
+    "vsize": 208896
+   },
+   {
+    "chars": "RWX",
+    "entropy": 7.86,
+    "name": "UPX1",
+    "rawsize": 18944,
+    "vsize": 20480
+   },
+   {
+    "chars": "RW",
+    "entropy": 5.76,
+    "name": ".rsrc",
+    "rawsize": 18432,
+    "vsize": 20480
+   }
+  ],
+  "sha1": "703b524159b8570683549c66797224b6b4ed214f",
+  "sha256": "fa1d4053f81493431969f00254626384da3f92d956823fa18e5a6892d5468acc",
+  "size": 365956,
+  "subsystem": 2,
+  "timestamp": 1138128155,
+  "timestamp_utc": "2006-01-24T18:42:35Z",
+  "version": {
+   "CompanyName": "Alexander Avdonin",
+   "FileDescription": "TaskSwitchXP Installer",
+   "FileVersion": "2.0.9.1",
+   "LegalCopyright": "\u00c2\u00a9 2004-2006 by Alexander Avdonin",
+   "ProductName": "TaskSwitchXP",
+   "ProductVersion": "2.0.9.1"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x178c",
+  "file": "C529D4AADE464BF5C8C65F79CA7ED9EC_REGSVR.EXE",
+  "imagebase": "0x1000000",
+  "import_count": 92,
+  "imports": {
+   "KERNEL32.dll": [
+    "HeapSetInformation",
+    "QueryActCtxW",
+    "CloseHandle",
+    "SetFilePointer",
+    "ReadFile",
+    "CreateFileW",
+    "LocalFree",
+    "lstrlenA",
+    "WideCharToMultiByte",
+    "LocalAlloc",
+    "lstrlenW",
+    "GetProcAddress",
+    "WaitForSingleObject",
+    "CreateProcessW",
+    "GetCommandLineW",
+    "Wow64EnableWow64FsRedirection",
+    "GetSystemDirectoryW",
+    "GetNativeSystemInfo",
+    "IsWow64Process",
+    "GetCurrentProcess",
+    "SetProcessDEPPolicy",
+    "FormatMessageW",
+    "GetLastError",
+    "LoadLibraryExW",
+    "FreeLibrary",
+    "ExitProcess",
+    "SetErrorMode",
+    "DelayLoadFailureHook",
+    "InterlockedCompareExchange",
+    "LoadLibraryExA",
+    "Sleep",
+    "GetStartupInfoW",
+    "InterlockedExchange",
+    "SetUnhandledExceptionFilter",
+    "GetModuleHandleA",
+    "QueryPerformanceCounter",
+    "GetTickCount",
+    "GetCurrentThreadId",
+    "GetCurrentProcessId",
+    "GetSystemTimeAsFileTime",
+    "TerminateProcess",
+    "UnhandledExceptionFilter",
+    "CompareStringW",
+    "ReleaseActCtx",
+    "DeactivateActCtx",
+    "GetFileAttributesW",
+    "SearchPathW",
+    "CreateActCtxW",
+    "GetModuleHandleW",
+    "ActivateActCtx"
+   ],
+   "USER32.dll": [
+    "LoadIconW",
+    "CharNextW",
+    "DefWindowProcW",
+    "GetClassLongW",
+    "GetClassNameW",
+    "GetWindow",
+    "GetWindowLongW",
+    "SetWindowLongW",
+    "SetClassLongW",
+    "CreateWindowExW",
+    "RegisterClassW",
+    "LoadCursorW",
+    "LoadStringW",
+    "MessageBoxW",
+    "DestroyWindow"
+   ],
+   "imagehlp.dll": [
+    "ImageDirectoryEntryToData"
+   ],
+   "msvcrt.dll": [
+    "iswalpha",
+    "_wtoi",
+    "wcschr",
+    "__wgetmainargs",
+    "memset",
+    "_vsnwprintf",
+    "__set_app_type",
+    "_controlfp",
+    "_except_handler4_common",
+    "?terminate@@YAXXZ",
+    "__p__fmode",
+    "__p__commode",
+    "__setusermatherr",
+    "_amsg_exit",
+    "_initterm",
+    "_wcmdln",
+    "exit",
+    "_XcptFilter",
+    "_exit",
+    "_cexit"
+   ],
+   "ntdll.dll": [
+    "NtClose",
+    "NtOpenProcessToken",
+    "NtSetInformationToken",
+    "RtlImageNtHeader",
+    "NtSetInformationProcess",
+    "NtQueryInformationToken"
+   ]
+  },
+  "interesting_strings": [
+   "KERNEL32.dll",
+   "USER32.dll",
+   "msvcrt.dll",
+   "imagehlp.dll",
+   "ntdll.dll",
+   "ole32.dll",
+   "ntdll.dll",
+   "imagehlp.dll",
+   "msvcrt.dll",
+   "USER32.dll",
+   "KERNEL32.dll",
+   "GetStartupInfoW",
+   "_wcmdln"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [
+    "5.1.0.0"
+   ],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "477a024b9bd8fc8c2687d421e3790349",
+  "section_max_entropy": 6.43,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 6.43,
+    "name": ".text",
+    "rawsize": 14848,
+    "vsize": 14848
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.22,
+    "name": ".data",
+    "rawsize": 1024,
+    "vsize": 952
+   },
+   {
+    "chars": "R",
+    "entropy": 5.7,
+    "name": ".rsrc",
+    "rawsize": 26624,
+    "vsize": 26448
+   },
+   {
+    "chars": "RWX",
+    "entropy": 4.54,
+    "name": ".reloc",
+    "rawsize": 1024,
+    "vsize": 1024
+   }
+  ],
+  "sha1": "913c19b1881ba332156e759335afd8c66cb73d79",
+  "sha256": "59dabb852ea11ac46353a1bba6e0efdb18033f24dd7fd5559f396e26e4983f85",
+  "size": 44544,
+  "subsystem": 2,
+  "timestamp": 1244879547,
+  "timestamp_utc": "2009-06-13T07:52:27Z",
+  "version": {
+   "CompanyName": "Microsoft Corporation",
+   "FileDescription": "Windows host process (Rundll32)",
+   "FileVersion": "6.1.7260.0 (win7_rtm.090612-2110)",
+   "InternalName": "rundll",
+   "LegalCopyright": "\u00c2\u00a9 Microsoft Corporation. All rights reserved.",
+   "OriginalFilename": "RUNDLL32.EXE",
+   "ProductName": "Microsoft\u00c2\u00ae Windows\u00c2\u00ae Operating System",
+   "ProductVersion": "6.1.7260.0"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x1487",
+  "file": "EF93E5FA6220AAA0241ADD163706F30B_REGSVR.EXE",
+  "imagebase": "0x1000000",
+  "import_count": 92,
+  "imports": {
+   "KERNEL32.dll": [
+    "QueryActCtxW",
+    "CloseHandle",
+    "SetFilePointer",
+    "ReadFile",
+    "CreateFileW",
+    "LocalFree",
+    "lstrlenA",
+    "WideCharToMultiByte",
+    "LocalAlloc",
+    "lstrlenW",
+    "GetProcAddress",
+    "WaitForSingleObject",
+    "CreateProcessW",
+    "Wow64EnableWow64FsRedirection",
+    "GetSystemDirectoryW",
+    "GetNativeSystemInfo",
+    "IsWow64Process",
+    "GetCurrentProcess",
+    "GetCommandLineW",
+    "FormatMessageW",
+    "GetLastError",
+    "LoadLibraryW",
+    "FreeLibrary",
+    "ExitProcess",
+    "SetErrorMode",
+    "HeapSetInformation",
+    "InterlockedCompareExchange",
+    "LoadLibraryA",
+    "InterlockedExchange",
+    "Sleep",
+    "GetStartupInfoW",
+    "SetUnhandledExceptionFilter",
+    "DelayLoadFailureHook",
+    "GetModuleHandleA",
+    "QueryPerformanceCounter",
+    "GetTickCount",
+    "GetCurrentThreadId",
+    "GetCurrentProcessId",
+    "GetSystemTimeAsFileTime",
+    "TerminateProcess",
+    "UnhandledExceptionFilter",
+    "CompareStringW",
+    "ReleaseActCtx",
+    "GetFileAttributesW",
+    "SearchPathW",
+    "CreateActCtxW",
+    "GetModuleHandleW",
+    "ActivateActCtx",
+    "DeactivateActCtx"
+   ],
+   "USER32.dll": [
+    "LoadIconW",
+    "CharNextW",
+    "DefWindowProcW",
+    "GetClassLongW",
+    "GetClassNameW",
+    "GetWindow",
+    "GetWindowLongW",
+    "SetWindowLongW",
+    "SetClassLongW",
+    "CreateWindowExW",
+    "RegisterClassW",
+    "DestroyWindow",
+    "LoadStringW",
+    "MessageBoxW",
+    "LoadCursorW"
+   ],
+   "imagehlp.dll": [
+    "ImageDirectoryEntryToData"
+   ],
+   "msvcrt.dll": [
+    "iswalpha",
+    "_wtoi",
+    "wcschr",
+    "__wgetmainargs",
+    "memset",
+    "_vsnwprintf",
+    "__p__fmode",
+    "_controlfp",
+    "_except_handler4_common",
+    "?terminate@@YAXXZ",
+    "__set_app_type",
+    "__p__commode",
+    "_adjust_fdiv",
+    "__setusermatherr",
+    "_amsg_exit",
+    "_initterm",
+    "_wcmdln",
+    "exit",
+    "_XcptFilter",
+    "_exit",
+    "_cexit"
+   ],
+   "ntdll.dll": [
+    "NtClose",
+    "NtOpenProcessToken",
+    "NtSetInformationToken",
+    "NtSetInformationProcess",
+    "RtlImageNtHeader",
+    "NtQueryInformationToken"
+   ]
+  },
+  "interesting_strings": [
+   "KERNEL32.dll",
+   "USER32.dll",
+   "msvcrt.dll",
+   "imagehlp.dll",
+   "ntdll.dll",
+   "ole32.dll",
+   "KERNEL32.dll",
+   "USER32.dll",
+   "msvcrt.dll",
+   "imagehlp.dll",
+   "ntdll.dll",
+   "GetStartupInfoW",
+   "_wcmdln"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [
+    "5.1.0.0"
+   ],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "7f604eda52fbbcc71c51b6ed4515e839",
+  "section_max_entropy": 6.42,
+  "sections": [
+   {
+    "chars": "RWX",
+    "entropy": 6.42,
+    "name": ".text",
+    "rawsize": 14848,
+    "vsize": 14848
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.22,
+    "name": ".data",
+    "rawsize": 1024,
+    "vsize": 960
+   },
+   {
+    "chars": "R",
+    "entropy": 5.68,
+    "name": ".rsrc",
+    "rawsize": 26624,
+    "vsize": 26384
+   },
+   {
+    "chars": "RWX",
+    "entropy": 4.57,
+    "name": ".reloc",
+    "rawsize": 1024,
+    "vsize": 1024
+   }
+  ],
+  "sha1": "2c6f7453ef9e017f6aa63172b47449d7b4092dd1",
+  "sha256": "2d650c03fa3cfbf1e74905d54f6094ed275006cbbde9702f79b69e2ff0d3cb0a",
+  "size": 44544,
+  "subsystem": 2,
+  "timestamp": 1162457313,
+  "timestamp_utc": "2006-11-02T08:48:33Z",
+  "version": {
+   "CompanyName": "Microsoft Corporation",
+   "FileDescription": "Windows host process (Rundll32)",
+   "FileVersion": "6.0.6000.16386 (vista_rtm.061101-2205)",
+   "InternalName": "rundll",
+   "LegalCopyright": "\u00c2\u00a9 Microsoft Corporation. All rights reserved.",
+   "OriginalFilename": "RUNDLL32.EXE",
+   "ProductName": "Microsoft\u00c2\u00ae Windows\u00c2\u00ae Operating System",
+   "ProductVersion": "6.0.6000.16386"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0xa9001",
+  "file": "F4878E9A997F130FFFB12A2ACDE5F1EE_\u0192\u00da\u00f3\u00d5\u00bd___\u0192\u00da\u00db_\u00bd_.exe",
+  "imagebase": "0x400000",
+  "import_count": 13,
+  "imports": {
+   "advapi32.dll": [
+    "RegSetValueExA"
+   ],
+   "comctl32.dll": [
+    "ImageList_SetIconSize"
+   ],
+   "gdi32.dll": [
+    "UnrealizeObject"
+   ],
+   "kernel32.dll": [
+    "GetProcAddress",
+    "GetModuleHandleA",
+    "LoadLibraryA"
+   ],
+   "ole32.dll": [
+    "CreateStreamOnHGlobal"
+   ],
+   "oleaut32.dll": [
+    "CreateErrorInfo"
+   ],
+   "shell32.dll": [
+    "ShellExecuteA"
+   ],
+   "urlmon.dll": [
+    "CoInternetCreateZoneManager"
+   ],
+   "user32.dll": [
+    "WindowFromPoint"
+   ],
+   "version.dll": [
+    "VerQueryValueA"
+   ],
+   "winmm.dll": [
+    "timeGetTime"
+   ]
+  },
+  "interesting_strings": [
+   "O\\\\\\\\",
+   "kernel32.dll",
+   "user32.dll",
+   "kernel32.dll",
+   "user32.dll",
+   "advapi32.dll",
+   "oleaut32.dll",
+   "advapi32.dll",
+   "version.dll",
+   "gdi32.dll",
+   "user32.dll",
+   "ole32.dll",
+   "oleaut32.dll",
+   "comctl32.dll",
+   "shell32.dll",
+   "urlmon.dll",
+   "winmm.dll",
+   "ftP;D",
+   "\\\\`;w",
+   "'\\\\2Md#",
+   "kGlo\\\\v",
+   "9l\\\\%",
+   "?X\\\\cb74",
+   "WdW\\\\",
+   "ftP;D",
+   "\\\\`;w",
+   "'\\\\2Md#",
+   "kGlo\\\\v",
+   "9l\\\\%",
+   "?X\\\\cb74",
+   "WdW\\\\"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [
+    "1.4.0.0"
+   ],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "f4878e9a997f130fffb12a2acde5f1ee",
+  "section_max_entropy": 8.0,
+  "sections": [
+   {
+    "chars": "RW",
+    "entropy": 8.0,
+    "name": "CODE",
+    "rawsize": 225280,
+    "vsize": 573440
+   },
+   {
+    "chars": "RW",
+    "entropy": 7.39,
+    "name": "DATA",
+    "rawsize": 3072,
+    "vsize": 8192
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.0,
+    "name": "BSS",
+    "rawsize": 0,
+    "vsize": 8192
+   },
+   {
+    "chars": "RW",
+    "entropy": 7.92,
+    "name": ".idata",
+    "rawsize": 3584,
+    "vsize": 12288
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.0,
+    "name": ".tls",
+    "rawsize": 0,
+    "vsize": 4096
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.21,
+    "name": ".rdata",
+    "rawsize": 512,
+    "vsize": 4096
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.0,
+    "name": ".reloc",
+    "rawsize": 0,
+    "vsize": 36864
+   },
+   {
+    "chars": "RW",
+    "entropy": 7.43,
+    "name": ".rsrc",
+    "rawsize": 11264,
+    "vsize": 40960
+   },
+   {
+    "chars": "RW",
+    "entropy": 5.62,
+    "name": ".aspack",
+    "rawsize": 8192,
+    "vsize": 8192
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.0,
+    "name": ".data",
+    "rawsize": 0,
+    "vsize": 4096
+   }
+  ],
+  "sha1": "9f361c0858295f31bc83a1dcf75b3a55729e7292",
+  "sha256": "70a623c2aa7ee526df86ea8b9fd44eb6145b2274d96f26df4253f8e319295b7b",
+  "size": 2492645,
+  "subsystem": 2,
+  "timestamp": 708992537,
+  "timestamp_utc": "1992-06-19T22:22:17Z",
+  "version": {
+   "Comments": "Create Professional eBooks ",
+   "CompanyName": "Ada99.com",
+   "FileDescription": "eBook Workshop",
+   "FileVersion": "1.4.0.0",
+   "InternalName": "book.exe",
+   "LegalCopyright": "Copyright (C) 2002-2003 Ada99.com",
+   "LegalTrademarks": "$$",
+   "OriginalFilename": "book.exe",
+   "ProductName": "eBook Workshop",
+   "ProductVersion": "1.4.0.0"
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x21af",
+  "exports": [
+   "_MainWndProc@16",
+   "_StubFileWrite@12"
+  ],
+  "file": "F54E8E2D4A979D6D83AC636569596369_GLB1.tmp",
+  "imagebase": "0x400000",
+  "import_count": 70,
+  "imports": {
+   "ADVAPI32.dll": [
+    "OpenProcessToken",
+    "AdjustTokenPrivileges",
+    "LookupPrivilegeValueA"
+   ],
+   "GDI32.dll": [
+    "DeleteObject",
+    "GetStockObject",
+    "GetDeviceCaps",
+    "PatBlt",
+    "CreateSolidBrush",
+    "TextOutA",
+    "SetTextColor",
+    "SetBkMode",
+    "SelectObject",
+    "StretchDIBits",
+    "CreateFontA",
+    "RealizePalette",
+    "SelectPalette",
+    "CreatePalette"
+   ],
+   "KERNEL32.dll": [
+    "lstrcpyA",
+    "GetCommandLineA",
+    "SetErrorMode",
+    "lstrlenA",
+    "MulDiv",
+    "GetTempFileNameA",
+    "GetWindowsDirectoryA",
+    "GetModuleFileNameA",
+    "GetModuleHandleA",
+    "FormatMessageA",
+    "lstrcatA",
+    "GetLastError",
+    "_lwrite",
+    "_llseek",
+    "GlobalUnlock",
+    "_lopen",
+    "GlobalAlloc",
+    "GlobalFree",
+    "_lclose",
+    "_lcreat",
+    "LoadLibraryA",
+    "GetProcAddress",
+    "FreeLibrary",
+    "OpenFile",
+    "GetVersionExA",
+    "GetCurrentProcess",
+    "WinExec",
+    "ExitProcess",
+    "_lread",
+    "LocalFree",
+    "GetTempPathA",
+    "GlobalLock"
+   ],
+   "USER32.dll": [
+    "GetDC",
+    "BeginPaint",
+    "EndPaint",
+    "InvalidateRect",
+    "PostQuitMessage",
+    "SendMessageA",
+    "DefWindowProcA",
+    "GetClientRect",
+    "CreateWindowExA",
+    "DrawTextA",
+    "ReleaseDC",
+    "ShowWindow",
+    "SetWindowPos",
+    "UpdateWindow",
+    "SetTimer",
+    "LoadIconA",
+    "wsprintfA",
+    "MessageBoxA",
+    "ExitWindowsEx",
+    "RegisterClassA",
+    "LoadCursorA"
+   ]
+  },
+  "interesting_strings": [
+   "GetTempFileNameA",
+   "GetTempPathA",
+   "KERNEL32.dll",
+   "USER32.dll",
+   "GDI32.dll",
+   "ADVAPI32.dll",
+   "STUB32.EXE",
+   "HandleFtp"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "f54e8e2d4a979d6d83ac636569596369",
+  "section_max_entropy": 6.19,
+  "sections": [
+   {
+    "chars": "RX",
+    "entropy": 6.19,
+    "name": ".text",
+    "rawsize": 8704,
+    "vsize": 8486
+   },
+   {
+    "chars": "R",
+    "entropy": 4.78,
+    "name": ".rdata",
+    "rawsize": 2048,
+    "vsize": 1913
+   },
+   {
+    "chars": "RW",
+    "entropy": 3.96,
+    "name": ".data",
+    "rawsize": 1024,
+    "vsize": 1144
+   },
+   {
+    "chars": "R",
+    "entropy": 2.76,
+    "name": ".rsrc",
+    "rawsize": 2048,
+    "vsize": 1600
+   }
+  ],
+  "sha1": "e04eb9c0cceb2b7c445053e290562b956eae52fb",
+  "sha256": "22ebe85d46dcea6472f4a956f0226b34f8e4553593faf969684b84a3ef63080e",
+  "size": 71680,
+  "subsystem": 2,
+  "timestamp": 1004039231,
+  "timestamp_utc": "2001-10-25T19:47:11Z",
+  "version": {
+   "CompanyName": "",
+   "FileDescription": "",
+   "FileVersion": "",
+   "LegalCopyright": ""
+  }
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x1c001",
+  "file": "F8294A40F19351B9F2C05717D6350B2E_cr_tw123a.exe",
+  "imagebase": "0x400000",
+  "import_count": 6,
+  "imports": {
+   "advapi32.dll": [
+    "RegCloseKey"
+   ],
+   "kernel32.dll": [
+    "GetProcAddress",
+    "GetModuleHandleA",
+    "LoadLibraryA"
+   ],
+   "msvcrt.dll": [
+    "time"
+   ],
+   "user32.dll": [
+    "SetFocus"
+   ]
+  },
+  "interesting_strings": [
+   "kernel32.dll",
+   "user32.dll",
+   "kernel32.dll",
+   "user32.dll",
+   "advapi32.dll",
+   "msvcrt.dll"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "f8294a40f19351b9f2c05717d6350b2e",
+  "section_max_entropy": 7.99,
+  "sections": [
+   {
+    "chars": "RW",
+    "entropy": 7.27,
+    "name": ".text",
+    "rawsize": 2048,
+    "vsize": 4096
+   },
+   {
+    "chars": "RW",
+    "entropy": 5.81,
+    "name": ".rdata",
+    "rawsize": 1024,
+    "vsize": 4096
+   },
+   {
+    "chars": "RW",
+    "entropy": 6.17,
+    "name": ".data",
+    "rawsize": 1536,
+    "vsize": 4096
+   },
+   {
+    "chars": "RW",
+    "entropy": 7.99,
+    "name": ".rsrc",
+    "rawsize": 48640,
+    "vsize": 98304
+   },
+   {
+    "chars": "RW",
+    "entropy": 6.22,
+    "name": ".sandra",
+    "rawsize": 7168,
+    "vsize": 8192
+   },
+   {
+    "chars": "RW",
+    "entropy": 0.0,
+    "name": ".data",
+    "rawsize": 0,
+    "vsize": 4096
+   }
+  ],
+  "sha1": "b1665dc059a827043151f0f3415e9ef25f435838",
+  "sha256": "cdc4d4ec546c1933ab3fd41f3dfe724ee3221516999341c1ca197180683b3a56",
+  "size": 64512,
+  "subsystem": 2,
+  "timestamp": 1006800994,
+  "timestamp_utc": "2001-11-26T18:56:34Z"
+ },
+ {
+  "bits": 32,
+  "dllchars": [],
+  "entrypoint_rva": "0x154",
+  "file": "FB0C718C7DE194CD046D3D8AF9268DCF_KeyGen.exe",
+  "imagebase": "0x400000",
+  "import_count": 2,
+  "imports": {
+   "KERNEL32.dll": [
+    "LoadLibraryA",
+    "GetProcAddress"
+   ]
+  },
+  "interesting_strings": [
+   "KERNEL32.dll"
+  ],
+  "iocs": {
+   "ftp": [],
+   "ipv4": [],
+   "mail": [],
+   "runkey": [],
+   "url": []
+  },
+  "machine": "0x14c",
+  "md5": "fb0c718c7de194cd046d3d8af9268dcf",
+  "section_max_entropy": 7.76,
+  "sections": [
+   {
+    "chars": "RW",
+    "entropy": 0.0,
+    "name": "",
+    "rawsize": 0,
+    "vsize": 40960
+   },
+   {
+    "chars": "RW",
+    "entropy": 7.76,
+    "name": "",
+    "rawsize": 24045,
+    "vsize": 24576
+   }
+  ],
+  "sha1": "95877ddb57532b04f3ee3ea4fe3571d935745398",
+  "sha256": "65296c329165c05ad630f2063c2a195560b7e506bae77d890e9cd9a6df5f97bb",
+  "size": 24557,
+  "subsystem": 2,
+  "timestamp": 558322502,
+  "timestamp_utc": "1987-09-11T01:35:02Z"
+ }
+]
