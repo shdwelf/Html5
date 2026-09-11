@@ -1,11 +1,14 @@
 zip size 322305813413
+32bit EOCD: {'n': 65535, 'cd_size': 75799936, 'cd_off': 4294967295, 'idx': 262122}
+zip64 locator: disk 787121970389975040 z64off 75 disks 1
+z64 head 0000000b7a544b00
 Traceback (most recent call last):
-  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 161, in <module>
+  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 176, in <module>
     main()
-  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 99, in main
+  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 114, in main
     members = rz.parse()
               ^^^^^^^^^^
-  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 50, in parse
-    if z64[:4] != b"PK\x06\x06": raise RuntimeError("bad zip64 eocd")
-                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-RuntimeError: bad zip64 eocd
+  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 60, in parse
+    if z64[:4] != b"PK\x06\x06": raise RuntimeError("bad zip64 eocd at %d" % z64off)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: bad zip64 eocd at 75
