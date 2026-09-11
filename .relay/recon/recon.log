@@ -1,0 +1,11 @@
+zip size 322305813413
+Traceback (most recent call last):
+  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 161, in <module>
+    main()
+  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 99, in main
+    members = rz.parse()
+              ^^^^^^^^^^
+  File "/home/runner/work/Html5/Html5/.arena-relay/scripts/recon.py", line 50, in parse
+    if z64[:4] != b"PK\x06\x06": raise RuntimeError("bad zip64 eocd")
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: bad zip64 eocd
