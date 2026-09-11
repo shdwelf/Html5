@@ -1,0 +1,2463 @@
+{
+  "schema": "blink-dom-contract/1",
+  "generatedBy": "tools/blink_contract.mjs",
+  "provenance": {
+    "source": "https://github.com/chromium/chromium",
+    "revision": "8d021b3d480067e55940d1a5b64c4af094fcab07",
+    "commitDate": "2026-09-11T05:13:28-07:00",
+    "subject": "[Isolated Mode] Hide network diagnostics in Isolated Mode on Windows",
+    "files": {
+      "canvasIdl": {
+        "path": "third_party/blink/renderer/core/html/canvas/html_canvas_element.idl",
+        "bytes": 3506,
+        "sha256": "63b3b539526141a12d00b8eed6d8446f008baf999dec92a2897e0d67ef3d4ad4"
+      },
+      "canvasModuleIdl": {
+        "path": "third_party/blink/renderer/modules/canvas/htmlcanvas/html_canvas_element_module.idl",
+        "bytes": 873,
+        "sha256": "0ed164d8588284311e7106aacb403c52d2ab60c22e1c6b9654f679d8312a84ae"
+      },
+      "ctxAttrsIdl": {
+        "path": "third_party/blink/renderer/modules/canvas/htmlcanvas/canvas_context_creation_attributes_module.idl",
+        "bytes": 2512,
+        "sha256": "4eca2e9155f68e7343b93423b9f475f8384058e41ed99999d086abc0a2d9ac7c"
+      },
+      "renderingCtx": {
+        "path": "third_party/blink/renderer/core/html/canvas/canvas_rendering_context.cc",
+        "bytes": 21656,
+        "sha256": "61b5037c3338e7357d3da59106287193dff69f8e4786c33ef3c62d136f710016"
+      },
+      "ctxHost": {
+        "path": "third_party/blink/renderer/core/html/canvas/canvas_rendering_context_host.cc",
+        "bytes": 9290,
+        "sha256": "827245ad785f5e01b55c1a414f56c1f5e9a7fffd639f7f7d5a9b0c083b531fa0"
+      },
+      "webglBaseIdl": {
+        "path": "third_party/blink/renderer/modules/webgl/webgl_rendering_context_base.idl",
+        "bytes": 36712,
+        "sha256": "e8682ebca49949187c92c5db5c0d54ad3927c68d2b32ed1414dafddb3c4860b9"
+      },
+      "webgl1Idl": {
+        "path": "third_party/blink/renderer/modules/webgl/webgl_rendering_context.idl",
+        "bytes": 1744,
+        "sha256": "8bcd8893a7e7e994d2aa108bb4cff9d847e3f2c5eb8f56f68ea472827cc9e719"
+      },
+      "webgl2BaseIdl": {
+        "path": "third_party/blink/renderer/modules/webgl/webgl2_rendering_context_base.idl",
+        "bytes": 41217,
+        "sha256": "6277d40af735b5df3c10c4224f9908a49076510d845ae0994a42475699d1f4f7"
+      },
+      "webgl2Idl": {
+        "path": "third_party/blink/renderer/modules/webgl/webgl2_rendering_context.idl",
+        "bytes": 425,
+        "sha256": "6228c43f9d379706ebb139953c78b526bb13a86445108956bd493ab2ce057438"
+      },
+      "webglCtxAttrs": {
+        "path": "third_party/blink/renderer/modules/webgl/webgl_context_attributes.idl",
+        "bytes": 1950,
+        "sha256": "a15b60a7d311a1795c028d60aa3cc461f70c18f6f49a526fb06c4dbb5f6fbaf3"
+      },
+      "webglRenderCtx": {
+        "path": "third_party/blink/renderer/modules/webgl/webgl_rendering_context_base.cc",
+        "bytes": 351594,
+        "sha256": "14563edf0e6c7afb72c65aa4ec2e2e29b02efce92ac117c574de6c2184b7bb01"
+      },
+      "webglHeader": {
+        "path": "third_party/blink/renderer/modules/webgl/webgl_rendering_context_base.h",
+        "bytes": 86600,
+        "sha256": "f16314b3aa39a1f4d190c1c47b8b6edef5c29b7c2b23d4d4320b62e06f30b628"
+      },
+      "nonElementParent": {
+        "path": "third_party/blink/renderer/core/dom/non_element_parent_node.idl",
+        "bytes": 317,
+        "sha256": "69ff2bf5c273e233c91fb455306fc318cba7e092d6d9ba41785057bbc2707bd8"
+      },
+      "elementIdl": {
+        "path": "third_party/blink/renderer/core/dom/element.idl",
+        "bytes": 13014,
+        "sha256": "e688f875b2440371085605099bf12deb92d1e70bb78c08bd06e4e0f805887257"
+      },
+      "nodeFilterIdl": {
+        "path": "third_party/blink/renderer/core/dom/node.idl",
+        "bytes": 4092,
+        "sha256": "2b166b58be8394f0b00ff1c231a2060889f92f23d2bd6d84e0729399a911e35b"
+      }
+    }
+  },
+  "canvas": {
+    "members": [
+      "captureElementImage",
+      "clearElementGeometry",
+      "configureHighDynamicRange",
+      "getElementTransform",
+      "getElementTransform",
+      "height",
+      "layoutSubtree",
+      "onelementgeometryupdate",
+      "onpaint",
+      "requestPaint",
+      "toBlob",
+      "toDataURL",
+      "updateElementGeometry",
+      "width"
+    ],
+    "getContext": {
+      "args": [
+        {
+          "type": "DOMString",
+          "name": "contextId",
+          "optional": false,
+          "defaultValue": null,
+          "extendedAttributes": []
+        },
+        {
+          "type": "CanvasContextCreationAttributesModule",
+          "name": "attributes",
+          "optional": true,
+          "defaultValue": "{}",
+          "extendedAttributes": []
+        }
+      ],
+      "returns": "RenderingContext?",
+      "extendedAttributes": [
+        "CallWith=ScriptState",
+        "MeasureAs=HTMLCanvasGetContext",
+        "RaisesException"
+      ]
+    },
+    "renderingApiIds": [
+      {
+        "id": "2d",
+        "api": "k2D"
+      },
+      {
+        "id": "experimental-webgl",
+        "api": "kWebgl"
+      },
+      {
+        "id": "webgl",
+        "api": "kWebgl"
+      },
+      {
+        "id": "webgl2",
+        "api": "kWebgl2"
+      },
+      {
+        "id": "bitmaprenderer",
+        "api": "kBitmaprenderer"
+      },
+      {
+        "id": "webgpu",
+        "api": "kWebgpu"
+      }
+    ],
+    "creationAttributes": {
+      "extendedAttributes": [
+        "PermissiveDictionaryConversion"
+      ],
+      "members": [
+        {
+          "type": "boolean",
+          "name": "desynchronized",
+          "defaultValue": "false"
+        },
+        {
+          "type": "boolean",
+          "name": "alpha",
+          "defaultValue": "true"
+        },
+        {
+          "type": "PredefinedColorSpace",
+          "name": "colorSpace",
+          "defaultValue": "\"srgb\""
+        },
+        {
+          "type": "CanvasToneMapping",
+          "name": "toneMapping",
+          "defaultValue": "{}"
+        },
+        {
+          "type": "CanvasPixelFormat",
+          "name": "colorType",
+          "defaultValue": "\"unorm8\""
+        },
+        {
+          "type": "CanvasWillReadFrequently",
+          "name": "willReadFrequently",
+          "defaultValue": "\"undefined\""
+        },
+        {
+          "type": "boolean",
+          "name": "depth",
+          "defaultValue": "true"
+        },
+        {
+          "type": "boolean",
+          "name": "stencil",
+          "defaultValue": "false"
+        },
+        {
+          "type": "boolean",
+          "name": "antialias",
+          "defaultValue": "true"
+        },
+        {
+          "type": "boolean",
+          "name": "premultipliedAlpha",
+          "defaultValue": "true"
+        },
+        {
+          "type": "boolean",
+          "name": "preserveDrawingBuffer",
+          "defaultValue": "false"
+        },
+        {
+          "type": "CanvasPowerPreference",
+          "name": "powerPreference",
+          "defaultValue": "\"default\""
+        },
+        {
+          "type": "boolean",
+          "name": "failIfMajorPerformanceCaveat",
+          "defaultValue": "false"
+        },
+        {
+          "type": "boolean",
+          "name": "xrCompatible",
+          "defaultValue": "false"
+        }
+      ]
+    },
+    "sizeLimits": {
+      "MaxCanvasArea": 268435456,
+      "MaxCanvasAreaNote": "Maximum canvas area in CSS pixels",
+      "MaxSkiaDim": 65535,
+      "MaxSkiaDimNote": "Maximum width/height in CSS pixels."
+    },
+    "contextReuseRule": "GetCanvasRenderingContextInternal returns the existing context when the requested API matches, and fails with \"Canvas has an existing context of a different type\" when it does not."
+  },
+  "webgl": {
+    "contextAttributes": {
+      "extendedAttributes": [],
+      "members": [
+        {
+          "type": "boolean",
+          "name": "alpha",
+          "defaultValue": "true"
+        },
+        {
+          "type": "boolean",
+          "name": "depth",
+          "defaultValue": "true"
+        },
+        {
+          "type": "boolean",
+          "name": "stencil",
+          "defaultValue": "false"
+        },
+        {
+          "type": "boolean",
+          "name": "antialias",
+          "defaultValue": "true"
+        },
+        {
+          "type": "boolean",
+          "name": "premultipliedAlpha",
+          "defaultValue": "true"
+        },
+        {
+          "type": "boolean",
+          "name": "preserveDrawingBuffer",
+          "defaultValue": "false"
+        },
+        {
+          "type": "WebGLPowerPreference",
+          "name": "powerPreference",
+          "defaultValue": "\"default\""
+        },
+        {
+          "type": "boolean",
+          "name": "failIfMajorPerformanceCaveat",
+          "defaultValue": "false"
+        },
+        {
+          "type": "boolean",
+          "name": "desynchronized",
+          "defaultValue": "false"
+        },
+        {
+          "type": "boolean",
+          "name": "xrCompatible",
+          "defaultValue": "false"
+        }
+      ]
+    },
+    "methods": [
+      "activeTexture",
+      "attachShader",
+      "bindAttribLocation",
+      "bindBuffer",
+      "bindFramebuffer",
+      "bindRenderbuffer",
+      "bindTexture",
+      "blendColor",
+      "blendEquation",
+      "blendEquationSeparate",
+      "blendFunc",
+      "blendFuncSeparate",
+      "bufferData",
+      "bufferData",
+      "bufferData",
+      "bufferSubData",
+      "checkFramebufferStatus",
+      "clear",
+      "clearColor",
+      "clearDepth",
+      "clearStencil",
+      "colorMask",
+      "compileShader",
+      "compressedTexImage2D",
+      "compressedTexSubImage2D",
+      "copyTexImage2D",
+      "copyTexSubImage2D",
+      "createBuffer",
+      "createFramebuffer",
+      "createProgram",
+      "createRenderbuffer",
+      "createShader",
+      "createTexture",
+      "cullFace",
+      "deleteBuffer",
+      "deleteFramebuffer",
+      "deleteProgram",
+      "deleteRenderbuffer",
+      "deleteShader",
+      "deleteTexture",
+      "depthFunc",
+      "depthMask",
+      "depthRange",
+      "detachShader",
+      "disable",
+      "disableVertexAttribArray",
+      "drawArrays",
+      "drawElements",
+      "drawingBufferStorage",
+      "drawingBufferToneMapping",
+      "enable",
+      "enableVertexAttribArray",
+      "finish",
+      "flush",
+      "framebufferRenderbuffer",
+      "framebufferTexture2D",
+      "frontFace",
+      "generateMipmap",
+      "getActiveAttrib",
+      "getActiveUniform",
+      "getAttachedShaders",
+      "getAttribLocation",
+      "getBufferParameter",
+      "getContextAttributes",
+      "getError",
+      "getExtension",
+      "getFramebufferAttachmentParameter",
+      "getParameter",
+      "getProgramInfoLog",
+      "getProgramParameter",
+      "getRenderbufferParameter",
+      "getShaderInfoLog",
+      "getShaderParameter",
+      "getShaderPrecisionFormat",
+      "getShaderSource",
+      "getSupportedExtensions",
+      "getTexParameter",
+      "getUniform",
+      "getUniformLocation",
+      "getVertexAttrib",
+      "getVertexAttribOffset",
+      "hint",
+      "isBuffer",
+      "isContextLost",
+      "isEnabled",
+      "isFramebuffer",
+      "isProgram",
+      "isRenderbuffer",
+      "isShader",
+      "isTexture",
+      "lineWidth",
+      "linkProgram",
+      "makeXRCompatible",
+      "pixelStorei",
+      "polygonOffset",
+      "readPixels",
+      "renderbufferStorage",
+      "sampleCoverage",
+      "scissor",
+      "shaderSource",
+      "stencilFunc",
+      "stencilFuncSeparate",
+      "stencilMask",
+      "stencilMaskSeparate",
+      "stencilOp",
+      "stencilOpSeparate",
+      "texElementImage2D",
+      "texElementSubImage2D",
+      "texImage2D",
+      "texImage2D",
+      "texImage2D",
+      "texImage2D",
+      "texImage2D",
+      "texImage2D",
+      "texImage2D",
+      "texImage2D",
+      "texParameterf",
+      "texParameteri",
+      "texSubImage2D",
+      "texSubImage2D",
+      "texSubImage2D",
+      "texSubImage2D",
+      "texSubImage2D",
+      "texSubImage2D",
+      "texSubImage2D",
+      "texSubImage2D",
+      "uniform1f",
+      "uniform1fv",
+      "uniform1i",
+      "uniform1iv",
+      "uniform2f",
+      "uniform2fv",
+      "uniform2i",
+      "uniform2iv",
+      "uniform3f",
+      "uniform3fv",
+      "uniform3i",
+      "uniform3iv",
+      "uniform4f",
+      "uniform4fv",
+      "uniform4i",
+      "uniform4iv",
+      "uniformMatrix2fv",
+      "uniformMatrix3fv",
+      "uniformMatrix4fv",
+      "useProgram",
+      "validateProgram",
+      "vertexAttrib1f",
+      "vertexAttrib1fv",
+      "vertexAttrib2f",
+      "vertexAttrib2fv",
+      "vertexAttrib3f",
+      "vertexAttrib3fv",
+      "vertexAttrib4f",
+      "vertexAttrib4fv",
+      "vertexAttribPointer",
+      "viewport"
+    ],
+    "attributes": [
+      "canvas",
+      "drawingBufferColorSpace",
+      "drawingBufferFormat",
+      "drawingBufferHeight",
+      "drawingBufferWidth",
+      "unpackColorSpace"
+    ],
+    "webgl2OnlyMethods": [
+      "beginQuery",
+      "beginTransformFeedback",
+      "bindBufferBase",
+      "bindBufferRange",
+      "bindSampler",
+      "bindTransformFeedback",
+      "bindVertexArray",
+      "blitFramebuffer",
+      "clearBufferfi",
+      "clearBufferfv",
+      "clearBufferiv",
+      "clearBufferuiv",
+      "clientWaitSync",
+      "compressedTexImage3D",
+      "compressedTexImage3D",
+      "compressedTexSubImage3D",
+      "compressedTexSubImage3D",
+      "copyBufferSubData",
+      "copyTexSubImage3D",
+      "createQuery",
+      "createSampler",
+      "createTransformFeedback",
+      "createVertexArray",
+      "deleteQuery",
+      "deleteSampler",
+      "deleteSync",
+      "deleteTransformFeedback",
+      "deleteVertexArray",
+      "drawArraysInstanced",
+      "drawBuffers",
+      "drawElementsInstanced",
+      "drawRangeElements",
+      "endQuery",
+      "endTransformFeedback",
+      "fenceSync",
+      "framebufferTextureLayer",
+      "getActiveUniformBlockName",
+      "getActiveUniformBlockParameter",
+      "getActiveUniforms",
+      "getBufferSubData",
+      "getFragDataLocation",
+      "getIndexedParameter",
+      "getInternalformatParameter",
+      "getQuery",
+      "getQueryParameter",
+      "getSamplerParameter",
+      "getSyncParameter",
+      "getTransformFeedbackVarying",
+      "getUniformBlockIndex",
+      "getUniformIndices",
+      "invalidateFramebuffer",
+      "invalidateSubFramebuffer",
+      "isQuery",
+      "isSampler",
+      "isSync",
+      "isTransformFeedback",
+      "isVertexArray",
+      "pauseTransformFeedback",
+      "readBuffer",
+      "renderbufferStorageMultisample",
+      "resumeTransformFeedback",
+      "samplerParameterf",
+      "samplerParameteri",
+      "texImage3D",
+      "texImage3D",
+      "texImage3D",
+      "texImage3D",
+      "texImage3D",
+      "texImage3D",
+      "texImage3D",
+      "texImage3D",
+      "texImage3D",
+      "texImage3D",
+      "texStorage2D",
+      "texStorage3D",
+      "texSubImage3D",
+      "texSubImage3D",
+      "texSubImage3D",
+      "texSubImage3D",
+      "texSubImage3D",
+      "texSubImage3D",
+      "texSubImage3D",
+      "texSubImage3D",
+      "texSubImage3D",
+      "transformFeedbackVaryings",
+      "uniform1ui",
+      "uniform1uiv",
+      "uniform2ui",
+      "uniform2uiv",
+      "uniform3ui",
+      "uniform3uiv",
+      "uniform4ui",
+      "uniform4uiv",
+      "uniformBlockBinding",
+      "uniformMatrix2x3fv",
+      "uniformMatrix2x4fv",
+      "uniformMatrix3x2fv",
+      "uniformMatrix3x4fv",
+      "uniformMatrix4x2fv",
+      "uniformMatrix4x3fv",
+      "vertexAttribDivisor",
+      "vertexAttribI4i",
+      "vertexAttribI4iv",
+      "vertexAttribI4ui",
+      "vertexAttribI4uiv",
+      "vertexAttribIPointer",
+      "waitSync"
+    ],
+    "bufferLimits": {
+      "maxArrayBufferSize": "::partition_alloc::MaxAllocationSize()",
+      "comment": "The maximum supported size of an ArrayBuffer is the maximum size that can be allocated in JavaScript. This maximum is defined by the maximum size PartitionAlloc can allocate. We limit the maximum size of ArrayBuffers we support to avoid integer overflows in the WebGL implementation. WebGL stores the data size as uint32_t, so if sizes just below uint32_t::max() were passed in, integer overflows could happen. The limit defined here is (2GB-2MB), which should be enough buffer to avoid integer overflow. This limit should restrict the usability of WebGL2 only insignificantly, as JavaScript cannot allocate bigger ArrayBuffers anyways. Only with WebAssembly it is possible to allocate bigger ArrayBuffers."
+    },
+    "bufferDataValidation": {
+      "target": [
+        {
+          "glError": "GL_INVALID_ENUM",
+          "message": "invalid target"
+        },
+        {
+          "glError": "GL_INVALID_OPERATION",
+          "message": "no buffer"
+        }
+      ],
+      "size": [
+        {
+          "glError": "GL_INVALID_VALUE",
+          "message": "data size is invalid"
+        },
+        {
+          "glError": "GL_INVALID_VALUE",
+          "message": "data size exceeds the maximum supported size"
+        }
+      ]
+    },
+    "calls": [
+      {
+        "name": "bufferData",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLsizeiptr",
+                "name": "size",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "usage",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "ArrayBufferView",
+                "name": "data",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": [
+                  "AllowShared, BufferSourceTypeNoSizeLimit"
+                ]
+              },
+              {
+                "type": "GLenum",
+                "name": "usage",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "ArrayBuffer?",
+                "name": "data",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": [
+                  "AllowShared, BufferSourceTypeNoSizeLimit"
+                ]
+              },
+              {
+                "type": "GLenum",
+                "name": "usage",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "bufferSubData",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLintptr",
+                "name": "offset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "BufferSource",
+                "name": "data",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": [
+                  "AllowShared, PassAsSpan, BufferSourceTypeNoSizeLimit"
+                ]
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "texImage2D",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "internalformat",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLsizei",
+                "name": "width",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLsizei",
+                "name": "height",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "border",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "ArrayBufferView?",
+                "name": "pixels",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": [
+                  "AllowShared, BufferSourceTypeNoSizeLimit"
+                ]
+              }
+            ],
+            "extendedAttributes": []
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "internalformat",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "ImageData",
+                "name": "pixels",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "internalformat",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "HTMLImageElement",
+                "name": "image",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "CallWith=ScriptState",
+              "RaisesException"
+            ]
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "internalformat",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "HTMLCanvasElement",
+                "name": "canvas",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "CallWith=ScriptState",
+              "RaisesException"
+            ]
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "internalformat",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "OffscreenCanvas",
+                "name": "offscreenCanvas",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "CallWith=ScriptState",
+              "RaisesException"
+            ]
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "internalformat",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "HTMLVideoElement",
+                "name": "video",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "CallWith=ScriptState",
+              "RaisesException"
+            ]
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "internalformat",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "ImageBitmap",
+                "name": "bitmap",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "RaisesException"
+            ]
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "internalformat",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "VideoFrame",
+                "name": "frame",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "CallWith=ScriptState",
+              "RaisesException"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "texSubImage2D",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "xoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "yoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLsizei",
+                "name": "width",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLsizei",
+                "name": "height",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "ArrayBufferView?",
+                "name": "pixels",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": [
+                  "AllowShared, BufferSourceTypeNoSizeLimit"
+                ]
+              }
+            ],
+            "extendedAttributes": []
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "xoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "yoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "ImageData",
+                "name": "pixels",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "xoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "yoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "HTMLImageElement",
+                "name": "image",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "CallWith=ScriptState",
+              "RaisesException"
+            ]
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "xoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "yoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "HTMLCanvasElement",
+                "name": "canvas",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "CallWith=ScriptState",
+              "RaisesException"
+            ]
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "xoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "yoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "OffscreenCanvas",
+                "name": "offscreenCanvas",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "CallWith=ScriptState",
+              "RaisesException"
+            ]
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "xoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "yoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "HTMLVideoElement",
+                "name": "video",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "CallWith=ScriptState",
+              "RaisesException"
+            ]
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "xoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "yoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "ImageBitmap",
+                "name": "bitmap",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "RaisesException"
+            ]
+          },
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "level",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "xoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "yoffset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "format",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "VideoFrame",
+                "name": "frame",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "CallWith=ScriptState",
+              "RaisesException"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "drawArrays",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "mode",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "first",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLsizei",
+                "name": "count",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "NoAllocDirectCall"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "vertexAttribPointer",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLuint",
+                "name": "indx",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "size",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLboolean",
+                "name": "normalized",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLsizei",
+                "name": "stride",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLintptr",
+                "name": "offset",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "NoAllocDirectCall"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "enableVertexAttribArray",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLuint",
+                "name": "index",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "NoAllocDirectCall"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "getAttribLocation",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLProgram",
+                "name": "program",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "DOMString",
+                "name": "name",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "bindBuffer",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "WebGLBuffer?",
+                "name": "buffer",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "NoAllocDirectCall"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "createBuffer",
+        "overloads": [
+          {
+            "args": [],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "deleteBuffer",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLBuffer?",
+                "name": "buffer",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "createProgram",
+        "overloads": [
+          {
+            "args": [],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "createShader",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "type",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "shaderSource",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLShader",
+                "name": "shader",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "DOMString",
+                "name": "string",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "compileShader",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLShader",
+                "name": "shader",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "attachShader",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLProgram",
+                "name": "program",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "WebGLShader",
+                "name": "shader",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "linkProgram",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLProgram",
+                "name": "program",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "useProgram",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLProgram?",
+                "name": "program",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "getUniformLocation",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLProgram",
+                "name": "program",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "DOMString",
+                "name": "name",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "uniformMatrix4fv",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLUniformLocation?",
+                "name": "location",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLboolean",
+                "name": "transpose",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "Float32List",
+                "name": "array",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "NoAllocDirectCall"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "uniform1f",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLUniformLocation?",
+                "name": "location",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLfloat",
+                "name": "x",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "NoAllocDirectCall"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "uniform1i",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLUniformLocation?",
+                "name": "location",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "x",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "NoAllocDirectCall"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "viewport",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLint",
+                "name": "x",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "y",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLsizei",
+                "name": "width",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLsizei",
+                "name": "height",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "NoAllocDirectCall"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "clear",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLbitfield",
+                "name": "mask",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "NoAllocDirectCall"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "clearColor",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLclampf",
+                "name": "red",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLclampf",
+                "name": "green",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLclampf",
+                "name": "blue",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLclampf",
+                "name": "alpha",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "NoAllocDirectCall"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "enable",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "cap",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "disable",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "cap",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "blendFunc",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "sfactor",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "dfactor",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "createTexture",
+        "overloads": [
+          {
+            "args": [],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "bindTexture",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "WebGLTexture?",
+                "name": "texture",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "NoAllocDirectCall"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "texParameteri",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "target",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLenum",
+                "name": "pname",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              },
+              {
+                "type": "GLint",
+                "name": "param",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "activeTexture",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "texture",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "getError",
+        "overloads": [
+          {
+            "args": [],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "getParameter",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "GLenum",
+                "name": "pname",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "MeasureAs=WebGLRenderingContextGetParameter",
+              "CallWith=ScriptState"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "getExtension",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "DOMString",
+                "name": "name",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": [
+              "CallWith=ScriptState",
+              "Measure"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "isContextLost",
+        "overloads": [
+          {
+            "args": [],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "createVertexArray",
+        "overloads": [
+          {
+            "args": [],
+            "extendedAttributes": []
+          }
+        ]
+      },
+      {
+        "name": "bindVertexArray",
+        "overloads": [
+          {
+            "args": [
+              {
+                "type": "WebGLVertexArrayObject?",
+                "name": "vertexArray",
+                "optional": false,
+                "defaultValue": null,
+                "extendedAttributes": []
+              }
+            ],
+            "extendedAttributes": []
+          }
+        ]
+      }
+    ],
+    "mixins": {
+      "WebGLRenderingContext": [
+        "WebGLRenderingContextBase"
+      ],
+      "WebGL2RenderingContext": [
+        "WebGLRenderingContextBase",
+        "WebGL2RenderingContextBase"
+      ]
+    }
+  },
+  "dom": {
+    "nonElementParentNode": [
+      "getElementById"
+    ],
+    "elementMembers": [
+      "appendHTML",
+      "appendHTMLUnsafe",
+      "ariaNotify",
+      "assignedSlot",
+      "attachShadow",
+      "attributes",
+      "checkVisibility",
+      "classList",
+      "className",
+      "clientHeight",
+      "clientLeft",
+      "clientTop",
+      "clientWidth",
+      "closest",
+      "computedName",
+      "computedRole",
+      "containerTiming",
+      "containerTimingIgnore",
+      "currentCSSZoom",
+      "customElementRegistry",
+      "elementTiming",
+      "getAttribute",
+      "getAttributeNS",
+      "getAttributeNames",
+      "getAttributeNode",
+      "getAttributeNodeNS",
+      "getBoundingClientRect",
+      "getClientRects",
+      "getElementsByClassName",
+      "getElementsByTagName",
+      "getElementsByTagNameNS",
+      "getHTML",
+      "hasAttribute",
+      "hasAttributeNS",
+      "hasAttributes",
+      "hasPointerCapture",
+      "headingOffset",
+      "headingReset",
+      "id",
+      "innerHTML",
+      "insertAdjacentElement",
+      "insertAdjacentHTML",
+      "insertAdjacentText",
+      "localName",
+      "matchContainer",
+      "matches",
+      "namespaceURI",
+      "onbeforecopy",
+      "onbeforecut",
+      "onbeforepaste",
+      "onsearch",
+      "outerHTML",
+      "part",
+      "prefix",
+      "prependHTML",
+      "prependHTMLUnsafe",
+      "pseudo",
+      "releasePointerCapture",
+      "removeAttribute",
+      "removeAttributeNS",
+      "removeAttributeNode",
+      "requestPointerLock",
+      "scroll",
+      "scroll",
+      "scrollBy",
+      "scrollBy",
+      "scrollHeight",
+      "scrollIntoView",
+      "scrollIntoViewIfNeeded",
+      "scrollLeft",
+      "scrollTo",
+      "scrollTo",
+      "scrollTop",
+      "scrollWidth",
+      "setAttribute",
+      "setAttribute",
+      "setAttributeNS",
+      "setAttributeNS",
+      "setAttributeNode",
+      "setAttributeNodeNS",
+      "setHTML",
+      "setHTMLUnsafe",
+      "setHTMLUnsafe",
+      "setHTMLUnsafe",
+      "setPointerCapture",
+      "shadowRoot",
+      "slot",
+      "streamAppendHTML",
+      "streamAppendHTMLUnsafe",
+      "streamHTML",
+      "streamHTMLUnsafe",
+      "streamPrependHTML",
+      "streamPrependHTMLUnsafe",
+      "tagName",
+      "toggleAttribute",
+      "webkitMatchesSelector"
+    ]
+  }
+}
