@@ -1,0 +1,58 @@
+name: arena-deploy-sync
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_key:
+        description: 'OpenSSH PRIVATE key with write access to the sync-incoming repo (used once; never logged)'
+        required: true
+        type: string
+      source_ref:
+        description: 'Ref in this repo to deploy'
+        required: true
+        default: 'refs/heads/arena/01a09164-html5'
+        type: string
+      target_branch:
+        description: 'Branch to push into shdwelf/Html5-sync-incoming'
+        required: true
+        default: 'arena/01a09164-html5-sync-incoming'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Register mask and write deploy key
+        env:
+          DEPLOY_KEY: ${{ inputs.deploy_key }}
+        run: |
+          set -euo pipefail
+          while IFS= read -r line; do
+            if [ "${#line}" -gt 12 ]; then echo "::add-mask::$line"; fi
+          done <<< "$DEPLOY_KEY"
+          install -d -m 700 ~/.ssh
+          umask 077
+          cat > ~/.ssh/deploy_key <<EOF
+          $DEPLOY_KEY
+          EOF
+          chmod 600 ~/.ssh/deploy_key
+      - name: Checkout source ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref }}
+          fetch-depth: 0
+      - name: Push to sync-incoming via deploy key
+        env:
+          TARGET_BRANCH: ${{ inputs.target_branch }}
+        run: |
+          set -euo pipefail
+          ssh-keyscan -t ed25519,rsa github.com >> ~/.ssh/known_hosts 2>/dev/null
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/deploy_key
+          git config user.name "arena-deploy"
+          git config user.email "arena-deploy@users.noreply.github.com"
+          git remote add incoming git@github.com:shdwelf/Html5-sync-incoming.git
+          git push incoming "HEAD:refs/heads/${TARGET_BRANCH}"
+          ssh -T git@github.com 2>&1 | head -2 || true
