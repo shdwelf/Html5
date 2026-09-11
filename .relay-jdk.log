@@ -1,7 +1,7 @@
 total 202624
-drwxr-xr-x 2 runner runner     4096 Sep 11 17:38 .
-drwxr-xr-x 4 runner runner     4096 Sep 11 17:38 ..
--rw-r--r-- 1 runner runner       84 Sep 11 17:38 jdk21.sha256
--rw-r--r-- 1 runner runner 94371840 Sep 11 17:38 jdk21.tar.gz.part-00
--rw-r--r-- 1 runner runner 94371840 Sep 11 17:38 jdk21.tar.gz.part-01
--rw-r--r-- 1 runner runner 18729667 Sep 11 17:38 jdk21.tar.gz.part-02
+drwxr-xr-x 2 runner runner     4096 Sep 11 17:39 .
+drwxr-xr-x 4 runner runner     4096 Sep 11 17:39 ..
+-rw-r--r-- 1 runner runner       84 Sep 11 17:39 jdk21.sha256
+-rw-r--r-- 1 runner runner 94371840 Sep 11 17:39 jdk21.tar.gz.part-00
+-rw-r--r-- 1 runner runner 94371840 Sep 11 17:39 jdk21.tar.gz.part-01
+-rw-r--r-- 1 runner runner 18729667 Sep 11 17:39 jdk21.tar.gz.part-02
