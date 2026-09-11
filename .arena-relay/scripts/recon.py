@@ -49,22 +49,32 @@ class RangeZip:
         (sig, disk, cd_disk, n_disk, n_total, cd_size32, cd_off32, clen) = struct.unpack("<IHHHHIIH", eocd)
         cd_off, cd_size, n = cd_off32, cd_size32, n_total
         print("32bit EOCD:", dict(n=n_total, cd_size=cd_size32, cd_off=cd_off32, idx=idx))
-        # ZIP64 EOCD locator must be the 20 bytes immediately before 32-bit EOCD
-        zidx = idx-20
-        if zidx >= 0 and tail[zidx:zidx+4] == b"PK\x06\x07":
-            loc = tail[zidx:zidx+20]
-            (zsig, zdisk, z64off, zdisks) = struct.unpack("<IQII", loc)
-            print("zip64 locator: disk", zdisk, "z64off", z64off, "disks", zdisks)
-            z64 = get_range(self.url, z64off, z64off+71)
-            print("z64 head", z64[:8].hex())
-            if z64[:4] != b"PK\x06\x06": raise RuntimeError("bad zip64 eocd at %d" % z64off)
-            size64 = struct.unpack("<Q", z64[4:12])[0]
-            creator_ver, needed_ver, disk, ndisk = struct.unpack("<HHHH", z64[12:20])
-            n_here, n_tot, cd_size, cd_off = struct.unpack("<QQQQ", z64[40:72])
-            n = n_tot
-            print("zip64: n", n, "cd_size", cd_size, "cd_off", cd_off)
-        elif cd_off32 == 0xFFFFFFFF or cd_size32 == 0xFFFFFFFF or n_total == 0xFFFF:
-            raise RuntimeError("expected zip64 locator before EOCD")
+        print("tail hex around eocd:", tail[max(0,idx-80):idx+22].hex())
+        chosen = None
+        scan = 0
+        while True:
+            k = tail.find(b"PK\x06\x07", scan)
+            if k < 0: break
+            scan = k+4
+            (zsig, zdisk, z64off, zdisks) = struct.unpack("<IQII", tail[k:k+20])
+            print("locator candidate at tail+%d: disk=%d off=%d disks=%d" % (k, zdisk, z64off, zdisks))
+            if z64off < self.size:
+                try:
+                    z64 = get_range(self.url, z64off, z64off+71)
+                    print("  z64 head:", z64[:8].hex())
+                    if z64[:4] == b"PK\x06\x06":
+                        n_here, n_tot, cds, cdo = struct.unpack("<QQQQ", z64[40:72])
+                        print("  -> entries", n_tot, "cd_size", cds, "cd_off", cdo)
+                        if 0 < cds <= 2*1024**3 and 0 <= cdo < self.size:
+                            chosen = (n_tot, cds, cdo)
+                except Exception as e:
+                    print("  fetch failed", repr(e)[:160])
+        if chosen:
+            n, cd_size, cd_off = chosen
+        elif cd_off32 != 0xFFFFFFFF and cd_size32:
+            n, cd_size, cd_off = n_total, cd_size32, cd_off32
+        else:
+            raise RuntimeError("could not locate valid ZIP64 EOCD")
         print("entries", n, "cd_off", cd_off, "cd_size", cd_size)
         cd = b""
         CH = 64*1024*1024
