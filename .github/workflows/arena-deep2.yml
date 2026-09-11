@@ -1,0 +1,107 @@
+name: arena-deep2
+on:
+  push:
+    branches: ['arena/01a09164-html5']
+    paths: ['.github/workflows/arena-deep2.yml']
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  deep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: arena/01a09164-html5
+      - name: System packages + python
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq upx-ucl wget unzip jq >/dev/null 2>&1 || sudo apt-get install -y -qq upx wget unzip jq
+          python3 -m venv "$HOME/venv"
+          "$HOME/venv/bin/pip" -q install pefile capstone
+      - name: Toolchain (JDK 21 + Ghidra 11.2.1)
+        run: |
+          set -e
+          cd "$HOME"
+          wget -q -O jdk.tar.gz "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jdk/hotspot/normal/eclipse"
+          mkdir jdk && tar xzf jdk.tar.gz -C jdk --strip-components=1
+          GURL=$(curl -fsSL https://api.github.com/repos/NationalSecurityAgency/ghidra/releases/tags/Ghidra_11.2.1_build | jq -r '.assets[0].browser_download_url')
+          echo "ghidra: $GURL"
+          wget -q -O ghidra.zip "$GURL"
+          mkdir ghidra && unzip -q ghidra.zip -d ghidra
+          echo "$HOME/ghidra" > /tmp/ghidra_home.txt
+      - name: Unpack UPX targets
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          mkdir -p abbottabad-ghidra/evidence/unpacked
+          declare -A M=(
+            [CLScc]="8EC740ED0E4D6EF2C669C1BEF52E588F_CLScc.exe"
+            [KeyGen]="FB0C718C7DE194CD046D3D8AF9268DCF_KeyGen.exe"
+            [Clock_Data4]="0554BE676566850593276A84381E8B1A_Clock_Data4.exe"
+            [Clock_Data5]="A7AC1F99F190A7966FE4874989A08C26_Clock_Data5.exe"
+          )
+          for k in "${!M[@]}"; do
+            (upx -d -o "abbottabad-ghidra/evidence/unpacked/$k.unpacked.exe" ".relay/samples/${M[$k]}" && echo "UNPACKED $k") || echo "UPX_FAIL $k"
+          done
+          ls -la abbottabad-ghidra/evidence/unpacked || true
+      - name: Extract embedded Flash
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          mkdir -p abbottabad-ghidra/evidence/flash
+          "$HOME/venv/bin/python" - <<'PY'
+          import os,re,struct,hashlib
+          S=".relay/samples/"; OUT="abbottabad-ghidra/evidence/flash/"
+          for fn,tag in [("0554BE676566850593276A84381E8B1A_Clock_Data4.exe","Clock_Data4"),
+                         ("A7AC1F99F190A7966FE4874989A08C26_Clock_Data5.exe","Clock_Data5")]:
+              d=open(S+fn,'rb').read()
+              i=d.find(b'FWS')
+              ln=struct.unpack('<I',d[i+4:i+8])[0]
+              swf=d[i:i+ln]
+              open(OUT+tag+".swf","wb").write(swf)
+              # JPEGs in Flash projector overlay (SOI..EOI)
+              n=0
+              for m in re.finditer(rb'\xff\xd8', d[i+ln:]):
+                  e=d.find(b'\xff\xd9', m.start())
+                  if 0 < e-m.start() < 5_000_000:
+                      open(OUT+tag+("_%d.jpg"%n),"wb").write(d[m.start():e+2]); n+=1
+              print(tag,"swf",ln,"md5",hashlib.md5(swf).hexdigest(),"jpgs",n)
+          PY
+      - name: Headless Ghidra recon
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          GH=$(dirname $(find "$HOME/ghidra" -name analyzeHeadless | head -1))
+          mkdir -p "$HOME/ghproj"
+          run() {
+            local bin="$1" tag="$2"
+            [ -f "$bin" ] || { echo "skip missing $bin"; return; }
+            local out="abbottabad-ghidra/outputs/$tag"
+            mkdir -p "$out"
+            "$GH/analyzeHeadless" "$HOME/ghproj" DEEP -import "$PWD/$bin" -overwrite \
+              -postScript ghidra_recon.py "$PWD/$out" -scriptPath "$PWD/abbottabad-ghidra/scripts" \
+              -deleteProject 2>&1 | grep -E "INFO  ghidra_recon|ERROR REPORT|Exception:|Analysis succeeded|analyzers" | head -8
+            mkdir -p "$HOME/ghproj"
+          }
+          # packed-as-shipped custom loaders
+          run ".relay/samples/8C3F387E85090907ED7864D07980AF86_A0262141.exe" A0262141
+          run ".relay/samples/F8294A40F19351B9F2C05717D6350B2E_cr_tw123a.exe" cr_tw123a
+          run ".relay/samples/F54E8E2D4A979D6D83AC636569596369_GLB1.tmp" GLB1
+          # unpacked UPX targets when available
+          run "abbottabad-ghidra/evidence/unpacked/CLScc.unpacked.exe" CLScc_unpacked
+          run "abbottabad-ghidra/evidence/unpacked/KeyGen.unpacked.exe" KeyGen_unpacked
+          run "abbottabad-ghidra/evidence/unpacked/Clock_Data4.unpacked.exe" Clock4_unpacked
+      - name: Commit artifacts
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          git config user.name "arena-relay"
+          git config user.email "arena-relay@users.noreply.github.com"
+          git add abbottabad-ghidra/evidence abbottabad-ghidra/outputs
+          if git diff --cached --quiet; then echo "no changes"; else
+            git commit -m "deep2: UPX unpack + Ghidra recon of secondary binaries (A0262141, cr_tw123a, GLB1, CLScc, KeyGen, Clock)"
+            git push
+          fi
