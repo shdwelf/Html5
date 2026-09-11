@@ -19,9 +19,19 @@ def get_range(url, start, end, retries=5):
 class RangeZip:
     def __init__(self, url):
         self.url = url
-        req = urllib.request.Request(url, method="HEAD", headers={"User-Agent":"relay-recon/1.0"})
-        with urllib.request.urlopen(req, timeout=60) as r:
-            self.size = int(r.headers["Content-Length"])
+        size=None
+        try:
+            req = urllib.request.Request(url, headers={"Range":"bytes=0-0","User-Agent":"relay-recon/1.0"})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                cr = r.headers.get("Content-Range")
+                if cr and "/" in cr: size=int(cr.split("/")[-1])
+        except Exception as e:
+            print("range-probe error", repr(e))
+        if size is None:
+            req = urllib.request.Request(url, method="HEAD", headers={"User-Agent":"relay-recon/1.0"})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                size=int(r.headers["Content-Length"])
+        self.size=size
         print("zip size", self.size)
     def parse(self):
         tail = get_range(self.url, self.size-262144, self.size-1)

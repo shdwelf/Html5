@@ -12,20 +12,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: JDK
-        run: bash .arena-relay/scripts/fetch_jdk.sh
+        run: |
+          bash .arena-relay/scripts/fetch_jdk.sh 2>&1 | tee .relay-jdk.log || true
+      - name: Commit JDK early
+        run: |
+          git config user.name arena-relay
+          git config user.email arena-relay@users.noreply.github.com
+          git add -f .relay .relay-jdk.log
+          git commit -q -m "relay: JDK chunks" || true
+          for i in 1 2 3 4 5; do git push origin HEAD:${GITHUB_REF_NAME} && break || git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; done
       - name: Recon ZIP central directory
-        run: python3 .arena-relay/scripts/recon.py
-      - name: Commit JDK chunks (one per commit)
+        run: |
+          mkdir -p .relay/recon
+          python3 .arena-relay/scripts/recon.py 2>&1 | tee .relay/recon/recon.log || true
+      - name: Commit recon (always)
+        if: always()
         run: |
           git config user.name arena-relay
           git config user.email arena-relay@users.noreply.github.com
-          for f in .relay/jdk/jdk21.tar.gz.part-* .relay/jdk/jdk21.sha256; do
-            git add "$f"; git commit -q -m "relay: $f" || true
-          done
-      - name: Commit recon
-        run: |
-          git config user.name arena-relay
-          git config user.email arena-relay@users.noreply.github.com
-          git add .relay/recon
-          git commit -q -m "relay: recon manifests" || true
+          git add -f .relay/recon
+          git commit -q -m "relay: recon outputs+log" || true
           for i in 1 2 3 4 5; do git push origin HEAD:${GITHUB_REF_NAME} && break || git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; done
