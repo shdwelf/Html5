@@ -104,6 +104,7 @@
       <button class="hud-btn" id="btn-info" aria-label="Toggle information panel" title="Toggle info panel (I)" onclick="togglePanel()">INFO</button>
       <button class="hud-btn" id="btn-cipher" aria-label="Jump to ciphertext section" title="Jump to ciphertext" onclick="scrollTo('sec-ciphertext')">CIPHER</button>
       <button class="hud-btn" id="btn-k4" aria-label="Jump to K4 unsolved section" title="Jump to K4" onclick="scrollTo('sec-k4')">K4</button>
+      <button class="hud-btn" id="btn-k4m" aria-label="Jump to K4 method hypotheses" title="K4 method hypotheses, ranked" onclick="scrollTo('sec-k4-method')">K4?</button>
       <button class="hud-btn" id="btn-research" aria-label="Jump to Elonka Dunin research section" title="Jump to research" onclick="scrollTo('sec-elonka')">RESEARCH</button>
       <button class="hud-btn" id="btn-auto" aria-label="Toggle auto-rotate" aria-pressed="true" title="Toggle auto-rotate (R)" onclick="toggleAutoRotate()">&#10227;</button>
     </div>
@@ -255,6 +256,17 @@
       <strong>Key facts:</strong> The method remains secret. The winning auction bidder ($962,500) gets the method. Smithsonian sealed the archives for 50 years (until ~2075). Kobek &amp; Byrne pledged not to publish.<br><br>
       <span style="color:var(--copper-lt);">As Elonka Dunin said: "If they don't have the method, it's not solved."</span></p>
     </div>
+  </div>
+
+  <div class="sec" id="sec-k4-method">
+    <h3>K4 METHOD &mdash; HYPOTHESES, RANKED</h3>
+    <p style="font-size:0.68em;line-height:1.6;color:#b8b0a0;">The archive find gave the <em>words</em>, not the <em>how</em>. Below are the live
+    candidates for the K4 cryptosystem, ranked by this page's editors (Sept 2026) with the evidence for and against each.
+    Probabilities sum to 100 and will be revised the day the auction winner publishes.
+    <strong>Confirmed facts constraining every row:</strong> 97-char ciphertext; anchors EAST (22&ndash;25),
+    NORTHEAST (26&ndash;34), BERLIN (64&ndash;69), CLOCK (70&ndash;74); the word KNOWLEDGE somewhere inside;
+    Berlin Clock = Weltzeituhr; K5 uses a similar system with BERLINCLOCK in the same position.</p>
+    <div id="k4-hypotheses"></div>
   </div>
 </div>
 </div>
@@ -1030,6 +1042,76 @@ SANBORN 2025 OPEN LETTER:
 Use simulator to test your theories!`;
 }
 
+// ─── K4 method hypotheses (ranked panel) ───
+// Editorial ranking, Sept 2026. Each row: prior probability, the case for,
+// the case against, and a one-click jump into the simulator with the K4
+// ciphertext loaded under the matching cipher family.
+const K4_CT='OBKRUOXOGHULBSOLIFBBWFLRVQQPRNGKSSOTWTQSJQSSEKZZWATJKLUDIAWINFBNYPVTTMZFPKWGDKZXTJCDIGKUHUAUEKCAR';
+const K4_HYPOTHESES=[
+  {p:38,name:'Quagmire-III-style: keyed substitution + transposition',sim:'transposition',kw:'',
+   for:['K3 was double columnar transposition — the natural next rung is substitution wrapped in it',
+        'Scheidt built K1–K3 with rising complexity; this is the textbook rung four',
+        'The four anchors sit in intact blocks, as substitution-then-transposition would leave them',
+        'The archive back-solve effort (solvekryptos) centers on this family'],
+   against:['No published key yet reproduces all 97 characters',
+            'Quagmire III normally wants long keys; K4 offers only ~97 letters of depth']},
+  {p:24,name:'Vigenère on the KRYPTOS alphabet, long or irregular key',sim:'vigenere',kw:'BERLIN',
+   for:['K1 (PALIMPSEST) and K2 (ABSCISSA) are exactly this family',
+        'Single system explains the KNOWLEDGE fragment and the anchor blocks together',
+        'Firmly inside Scheidt\u2019s known repertoire'],
+   against:['Thirty years of attacks on this alphabet never isolated a period',
+            'Friedman / index-of-coincidence analysis never settled on one key length']},
+  {p:14,name:'Autokey / running-key Vigenère',sim:'vigenere',kw:'EAST',
+   for:['Defeats period analysis — explains why hypothesis 2 never converged',
+        'Period-correct for a 1988 hand cipher; Scheidt-era plausible'],
+   against:['Four anchors should allow probable-word dragging — nobody has dragged it out',
+            'Running-key depth usually leaks faster than this over 97 letters']},
+  {p:11,name:'Digraphic (Playfair-style) on the KRYPTOS alphabet',sim:'playfair',kw:'',
+   for:['The next complexity rung after K3 that the community actively tests',
+        'Dunin/Schmeh\u2019s Playfair work keeps this family on the table'],
+   against:['97 characters is ODD — Playfair needs even length, and no pad scheme is visible',
+            'No published digram analysis has ever looked Playfair-clean']},
+  {p:8,name:'Sanborn\u2019s own handmade method',sim:'caesar',kw:'',
+   for:['K5 uses a \u201Csimilar cryptographic system\u201D — artist-designed, possibly one-off',
+        'Explains 35 years of resistance and why the METHOD was the auction prize',
+        'Sanborn wrote the plaintext; Scheidt advised, but the artist owned the puzzle'],
+   against:['K1–K3 all turned out classical — Scheidt\u2019s involvement argues for textbooks',
+            'A one-off would make K5\u2019s \u201Csame position\u201D promise oddly mechanical']},
+  {p:5,name:'Book / code keyed to site features',sim:'caesar',kw:'',
+   for:['Compass rose, coordinates, lodestone — the \u201Cposition\u201D theme runs through K2–K4',
+        'EAST NORTHEAST reads like surveyor language, not prose'],
+   against:['No proposed key text has ever produced running plaintext',
+            'Sanborn framed K4 as solvable at the desk, not only on site']},
+];
+function renderK4Hypotheses(){
+  const host=document.getElementById('k4-hypotheses'); if(!host)return;
+  host.innerHTML='';
+  K4_HYPOTHESES.forEach((h,i)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.style.cssText+=';margin-top:8px;border-color:rgba(74,124,89,'+(0.45-0.05*i).toFixed(2)+');';
+    const bar='<div style="background:#1a2233;border-radius:4px;height:8px;margin:6px 0;"><div style="width:'+h.p+'%;background:'+(i===0?'#7ee2a8':'#4a7c59')+';height:8px;border-radius:4px;"></div></div>';
+    const lis=(arr,color)=>'<ul style="padding-left:16px;font-size:0.66em;line-height:1.6;color:'+color+';margin:4px 0;">'+arr.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+    card.innerHTML='<h4 style="margin:0;">#'+(i+1)+' — '+h.name+' <span class="ktag" style="margin-left:6px;">'+h.p+'%</span></h4>'+bar+
+      '<div style="font-size:0.62em;color:#7ee2a8;margin-top:2px;">CASE FOR</div>'+lis(h.for,'#b8b0a0')+
+      '<div style="font-size:0.62em;color:#e08a7e;margin-top:2px;">CASE AGAINST</div>'+lis(h.against,'#8f887a')+
+      '<button data-i="'+i+'" style="margin-top:6px;font-size:0.66em;">TEST IN SIMULATOR \u2192</button>';
+    host.appendChild(card);
+  });
+  host.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    const h=K4_HYPOTHESES[+b.dataset.i];
+    testHypothesis(h.sim,h.kw,h.name);
+  }));
+}
+function testHypothesis(type,kw,name){
+  document.getElementById('sim-type').value=type;
+  updSim();
+  if(kw)document.getElementById('sim-kw').value=kw;
+  document.getElementById('sim-in').value=K4_CT;
+  scrollTo('sec-simulator');
+  showToast('K4 loaded for “'+name+'” ('+type+(kw?', key '+kw:'')+') — press ENCRYPT / DECRYPT');
+}
+
 // ─── VR ───
 // WebXR VR presentation isn't wired into this build's render loop yet, so requesting
 // a session would strand the user on a black screen. Surface the button only where the
@@ -1066,6 +1148,7 @@ function startLoading(){
 
 // ─── INIT ───
 populateTabs();
+renderK4Hypotheses();
 selectSculpture('kryptos'); // fills the info panel (plain createScene() left it stuck on "Loading...")
 setPanel(true);             // reflect initial panelOpen=true in the INFO button + aria-expanded
 document.getElementById('btn-auto').classList.add('active'); // reflect initial autoRotate=true
