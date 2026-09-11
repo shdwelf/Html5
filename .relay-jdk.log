@@ -1,14 +1,7 @@
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
- 48  197M   48 96.4M    0     0   114M      0  0:00:01 --:--:--  0:00:01  114M100  197M  100  197M    0     0   158M      0  0:00:01  0:00:01 --:--:--  247M
--rw-r--r-- 1 runner runner 207473347 Sep 11 17:25 /tmp/jdk21.tar.gz
-ce79869e1307ed8ee1e2baa86a412b1eb5b75d10a01006d788a6f968bcfaee94  /tmp/jdk21.tar.gz
 total 202624
-drwxr-xr-x 2 runner runner     4096 Sep 11 17:25 .
-drwxr-xr-x 3 runner runner     4096 Sep 11 17:25 ..
--rw-r--r-- 1 runner runner       84 Sep 11 17:25 jdk21.sha256
--rw-r--r-- 1 runner runner 94371840 Sep 11 17:25 jdk21.tar.gz.part-00
--rw-r--r-- 1 runner runner 94371840 Sep 11 17:25 jdk21.tar.gz.part-01
--rw-r--r-- 1 runner runner 18729667 Sep 11 17:25 jdk21.tar.gz.part-02
+drwxr-xr-x 2 runner runner     4096 Sep 11 17:29 .
+drwxr-xr-x 4 runner runner     4096 Sep 11 17:29 ..
+-rw-r--r-- 1 runner runner       84 Sep 11 17:29 jdk21.sha256
+-rw-r--r-- 1 runner runner 94371840 Sep 11 17:29 jdk21.tar.gz.part-00
+-rw-r--r-- 1 runner runner 94371840 Sep 11 17:29 jdk21.tar.gz.part-01
+-rw-r--r-- 1 runner runner 18729667 Sep 11 17:29 jdk21.tar.gz.part-02
