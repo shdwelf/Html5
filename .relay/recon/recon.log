@@ -6,9 +6,8 @@ locator candidate at tail+262102: disk=0 off=322305813315 disks=1
   -> entries 467686 cd_size 75799936 cd_off 322230013348
 entries 467686 cd_off 322230013348 cd_size 75799936
 cd downloaded 75799936
-bad central sig at 0 b'PK\x01\x02\x1e\x03\n\x00'
-parsed members 0
+parsed members 467686
 redacted outer paths 3807
-redacted PE direct members: 0
-methods Counter()
-direct PE count: 0
+redacted PE direct members: 598
+methods Counter({8: 430840, 0: 36846})
+direct PE count: 18759
