@@ -89,8 +89,8 @@ class RangeZip:
         while True:
             sig = cd[p:p+4]
             if not sig: break
-            if sig == b"PK\x06\x06": break
-            if sig != b"PK\x02\x01":
+            if sig in (b"PK\x06\x06", b"PK\x05\x06"): break
+            if sig != b"PK\x01\x02":
                 print("bad central sig at", p, cd[p:p+8]); break
             hdr = struct.unpack("<IHHHHHHIIIHHHHHII", cd[p:p+46])
             (s, vmade, vneed, flag, method, mtime, mdate, crc, csize, usize,
