@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>lens3d · the keyspace 3-D lens, rasterised in WebAssembly</title>
+<meta name="description" content="WebGL view of the keyspace lens layers whose vertex data and texture are produced by a WebAssembly module, with a JavaScript shadow for bit-exact comparison." />
+<style>
+  :root { --bg:#070b12; --panel:#0d1524; --line:#1b2a45; --ink:#d8e6ff; --dim:#7f94b8; --amber:#ffb020; --aqua:#5ce1ff; --mint:#3dffb0; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; }
+  header { padding:14px 18px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; gap:12px; align-items:baseline; }
+  h1 { font-size:15px; margin:0; letter-spacing:.06em; text-transform:uppercase; }
+  h1 span { color:var(--amber); }
+  header p { margin:0; color:var(--dim); font-size:12px; }
+  main { display:grid; grid-template-columns:minmax(280px,1fr) minmax(300px,420px); gap:16px; padding:16px 18px 28px; align-items:start; }
+  @media (max-width:880px){ main { grid-template-columns:1fr; } }
+  .stage { background:#000; border:1px solid var(--line); border-radius:6px; display:grid; place-items:center; }
+  canvas { display:block; width:100%; max-width:512px; aspect-ratio:1; image-rendering:pixelated; }
+  section { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:12px 14px; margin-bottom:14px; }
+  h2 { font-size:11px; margin:0 0 10px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); }
+  label { display:block; font-size:11px; color:var(--dim); margin:8px 0 3px; }
+  input, select, button { font:inherit; font-size:12px; background:#07101d; color:var(--ink); border:1px solid var(--line); border-radius:4px; padding:6px 8px; width:100%; }
+  button { cursor:pointer; width:auto; }
+  button:hover { border-color:var(--aqua); color:var(--aqua); }
+  .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .row > * { flex:1 1 90px; }
+  .row > button { flex:0 0 auto; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  td { padding:3px 0; border-bottom:1px dotted #16233a; }
+  td:last-child { text-align:right; color:var(--aqua); }
+  .ok { color:var(--mint); }
+  .bad { color:#ff5d6c; }
+  .hint { color:var(--dim); font-size:11px; }
+  .layers { display:flex; gap:6px; flex-wrap:wrap; }
+  .layers label { display:inline-flex; gap:5px; align-items:center; margin:0; padding:4px 7px; border:1px solid var(--line); border-radius:999px; cursor:pointer; color:var(--ink); }
+  .layers input { width:auto; }
+  footer { padding:0 18px 26px; color:var(--dim); font-size:11px; max-width:900px; }
+  code { color:var(--amber); }
+  a { color:var(--aqua); }
+</style>
+</head>
+<body>
+<header>
+  <h1>lens<span>3d</span> · wasm rasteriser</h1>
+  <p>the subcube, geodesic and complement layers — vertices and texture produced inside <code>wasm/lens3d.wasm</code>, uploaded to WebGL</p>
+</header>
+
+<main>
+  <div>
+    <div class="stage"><canvas id="stage" width="256" height="256"></canvas></div>
+    <p class="hint" id="mode-note">drag to orbit · scroll to push the camera back</p>
+
+    <section>
+      <h2>gl</h2>
+      <table id="glstats"><tbody></tbody></table>
+    </section>
+  </div>
+
+  <div>
+    <section>
+      <h2>keys</h2>
+      <label for="keya">key A — 16 bytes, hex (blank = random)</label>
+      <div class="row"><input id="keya" spellcheck="false" placeholder="00112233445566778899aabbccddeeff" /><button id="randA" type="button">roll</button></div>
+      <label for="keyb">key B — the second corner (blank = no pair)</label>
+      <div class="row"><input id="keyb" spellcheck="false" placeholder="ffeeddccbbaa99887766554433221100" /><button id="randB" type="button">roll</button></div>
+      <div class="row" style="margin-top:8px"><button id="negate" type="button">B := ¬A</button><button id="onebit" type="button">B := A ⊕ 1 bit</button><button id="same" type="button">B := A</button></div>
+    </section>
+
+    <section>
+      <h2>layers</h2>
+      <div class="layers" id="layers"></div>
+      <label for="order">projection order (grid 2^order, prefix 3·order bits)</label>
+      <select id="order"></select>
+      <label for="samples">subcube samples</label>
+      <select id="samples"></select>
+    </section>
+
+    <section>
+      <h2>pipeline</h2>
+      <div class="row">
+        <label style="flex:0 0 auto;margin:0" for="mode">path</label>
+        <select id="mode">
+          <option value="buffer">wasm → vertex buffer → gl.POINTS/LINES</option>
+          <option value="texture">wasm → RGBA texture → textured quad</option>
+          <option value="both">both, blended</option>
+        </select>
+      </div>
+      <div class="row">
+        <label style="flex:0 0 auto;margin:0" for="backend">backend</label>
+        <select id="backend">
+          <option value="auto">auto (wasm, else shadow)</option>
+          <option value="wasm">require wasm</option>
+          <option value="ref">JavaScript shadow</option>
+        </select>
+        <button id="reload" type="button">rebuild</button>
+      </div>
+      <p class="hint" id="parity">loading…</p>
+    </section>
+
+    <section>
+      <h2>what this proves</h2>
+      <table id="proofs"><tbody></tbody></table>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <p>Two backends, one contract: <code>js/lens3d-ref.js</code> shadows the module op for op, and
+  <code>tests/10-lens3d-wasm.mjs</code> requires the two to agree bit for bit on the vertices and on the
+  texture. The DOM surface this page touches — <code>getContext</code>, <code>bufferData</code>,
+  <code>texImage2D</code> — is checked against Chromium's own IDL in <code>tests/09-blink-contract.mjs</code>
+  (see <code>docs/blink-webgl-wasm.md</code>). Layers needing <code>sin</code>/<code>acos</code>/<code>pow</code>
+  stay in <code>js/lens-3d.js</code>: re-implementing libm inside wasm would forfeit that exactness.</p>
+</footer>
+
+<script type="module">
+import { loadLens3d, LAYERS, GL, SHADER, QUAD } from "./js/lens3d-wasm.js";
+import { keyProjectionCells } from "./js/spacefill.js";
+
+const $ = (id) => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+
+// Option's third argument is defaultSelected, which does not win once options
+// are appended; `selected` has to be set or the first entry stays current.
+const addOpt = (sel, label, value, isDefault) => {
+  const o = new Option(label, value);
+  o.selected = isDefault;
+  sel.append(o);
+};
+for (let o = 1; o <= 10; o++) addOpt($("order"), `${o}  →  ${1 << o}³`, o, o === 7);
+for (const n of [16, 64, 128, 256, 512]) addOpt($("samples"), n, n, n === 512);
+const chosen = new Set(params.get("layers")?.split(",").filter(Boolean) || LAYERS);
+for (const id of LAYERS) {
+  const l = document.createElement("label");
+  const cb = document.createElement("input");
+  cb.type = "checkbox";
+  cb.value = id;
+  cb.checked = chosen.has(id);
+  cb.addEventListener("change", rebuild);
+  l.append(cb, document.createTextNode(id));
+  $("layers").append(l);
+}
+
+const hex = (v) => {
+  const t = String(v || "").replace(/[^0-9a-f]/gi, "");
+  if (!t) return null;
+  const out = new Uint8Array(t.length >> 1);
+  for (let i = 0; i < out.length; i++) out[i] = parseInt(t.slice(i * 2, i * 2 + 2), 16);
+  return out;
+};
+const roll = () => {
+  const b = new Uint8Array(16);
+  crypto.getRandomValues(b);
+  return b;
+};
+const toHex = (b) => [...b].map((v) => v.toString(16).padStart(2, "0")).join("");
+
+// ?a=<hex>&b=<hex> pins the keys, which makes a view shareable and lets a
+// harness load the same picture through both backends.
+let A = hex($("keya").value) || hex(params.get("a")) || roll();
+let B = hex($("keyb").value) || hex(params.get("b"));
+$("keya").value = toHex(A);
+// Start with a *pair*: with one key only the complement layer has anything to
+// say, and the subcube/geodesic builders need a second endpoint. Blank the
+// field to see the degenerate case on purpose. The field is what rebuild()
+// reads, so whatever B was derived from has to be written back into it —
+// a URL-pinned pair that rebuild() then dropped was a real bug here.
+if (!B) B = roll();
+$("keyb").value = toHex(B);
+
+const canvas = $("stage");
+// Blink hands back WebGL for "webgl" and "experimental-webgl" alike (same
+// RenderingAPIFromId entry), and refuses anything else without throwing; the
+// fallback is kept because older engines are still in the wild.
+const wanted = {
+  alpha: false,
+  antialias: false,
+  depth: true,
+  // readPixels and canvas snapshots are only meaningful with a preserved back
+  // buffer — Blink's default for this attribute is false, so it is asked for.
+  preserveDrawingBuffer: true,
+  powerPreference: "high-performance",
+};
+// Both ids resolve to the same rendering API inside Blink, which is why the
+// legacy name is a real fallback rather than a superstition — and getContext
+// returns null (no throw) for anything it does not recognise.
+let gl = null;
+let contextId = null;
+for (const id of ["webgl", "experimental-webgl"]) {
+  gl = canvas.getContext(id, wanted);
+  if (gl) {
+    contextId = id;
+    break;
+  }
+}
+if (!gl) {
+  $("parity").textContent = "no WebGL context on this host — the page needs one to show the GPU half";
+  throw new Error("WebGL unavailable");
+}
+const attrs = gl.getContextAttributes();
+
+let program = null;
+let quad = null;
+let vbo = null;
+let texture = null;
+const TEX = 256;
+let api = null;
+let shadow = null;
+let view = { yaw: 0.62, pitch: 0.34, dist: 5.6 };
+let frameHandle = 0;
+
+function compile(type, source) {
+  const sh = gl.createShader(type);
+  gl.shaderSource(sh, source);
+  gl.compileShader(sh);
+  if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh) || "shader failed");
+  return sh;
+}
+
+function setup() {
+  program = gl.createProgram();
+  gl.attachShader(program, compile(gl.VERTEX_SHADER, SHADER.vertex));
+  gl.attachShader(program, compile(gl.FRAGMENT_SHADER, SHADER.fragment));
+  gl.linkProgram(program);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program) || "link failed");
+  gl.useProgram(program);
+  gl.uniform1i(gl.getUniformLocation(program, "uTex"), 0);
+  gl.activeTexture(gl.TEXTURE0);
+  vbo = gl.createBuffer();
+  quad = gl.createBuffer();
+  gl.bindBuffer(GL.ARRAY_BUFFER, quad);
+  gl.bufferData(GL.ARRAY_BUFFER, QUAD, GL.STATIC_DRAW);
+  texture = gl.createTexture();
+  gl.bindTexture(GL.TEXTURE_2D, texture);
+  gl.texParameteri(GL.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(GL.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(GL.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(GL.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  // A texture with no storage allocated is incomplete and draws nothing: give it
+  // the module's viewport up front so the first frame is already visible.
+  gl.texImage2D(GL.TEXTURE_2D, 0, gl.RGBA, TEX, TEX, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(TEX * TEX * 4));
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.ONE, gl.ONE);
+  gl.clearColor(0.008, 0.016, 0.03, 1);
+}
+
+async function boot() {
+  const backend = params.get("backend") || $("backend").value;
+  try {
+    api = await loadLens3d({ backend: backend === "auto" ? "auto" : backend, log: (m) => console.warn(m) });
+  } catch (err) {
+    console.warn("lens3d: falling back to the shadow —", err.message);
+    api = await loadLens3d({ backend: "ref" });
+  }
+  shadow = await loadLens3d({ backend: "ref" });
+  $("parity").innerHTML = `backend <b>${api.backend}</b> — comparing with the shadow…`;
+  await rebuild();
+}
+
+function activeLayers() {
+  return [...$("layers").querySelectorAll("input")].filter((i) => i.checked).map((i) => i.value);
+}
+
+function configureInto(target) {
+  target.configure(A, B, {
+    order: Number($("order").value),
+    maxSamples: Number($("samples").value),
+  });
+  target.setViewport(TEX, TEX);
+  target.setView(view);
+  target.build(activeLayers());
+  return target;
+}
+
+function rebuild() {
+  if (!api) return;
+  A = hex($("keya").value) || A;
+  B = hex($("keyb").value);
+  $("keya").value = toHex(A);
+  $("keyb").value = B ? toHex(B) : "";
+  configureInto(api);
+  configureInto(shadow);
+
+  const pts = api.points();
+  const shPts = shadow.points();
+  const vertexParity = pts.length === shPts.length && pts.every((v, i) => Object.is(v, shPts[i]));
+  const texA = api.raster().bytes;
+  const texB = shadow.raster().bytes;
+  let firstDiff = -1;
+  for (let i = 0; i < texA.length; i++) if (texA[i] !== texB[i]) { firstDiff = i; break; }
+  parity = { vertexParity, byteParity: firstDiff < 0, firstDiff, floats: pts.length, textureBytes: texA.length };
+
+  // Two uploads, both from the module's memory: the vertex runs into a VBO, the
+  // rasterised texture into a texture object. bufferData/ texImage2D argument
+  // shapes here are the ones tests/09 checks against Chromium's IDL.
+  api.uploadVertices(gl, vbo);
+  gl.bindTexture(GL.TEXTURE_2D, texture);
+  gl.texImage2D(GL.TEXTURE_2D, 0, gl.RGBA, TEX, TEX, 0, gl.RGBA, gl.UNSIGNED_BYTE, texA);
+  stats = api.stats();
+  lastReport = {
+    backend: api.backend,
+    context: contextId,
+    litPixels: stats.litPixels,
+    drawCalls: 0,
+    glError: gl.getError(),
+    parityExact: parity.byteParity && parity.vertexParity,
+    parity,
+    points: stats.points,
+    lines: stats.lines,
+    error: stats.error,
+  };
+  draw();
+  renderTables();
+}
+
+let parity = null;
+let stats = null;
+let lastReport = null;
+
+function draw() {
+  if (!program || !stats) return;
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.useProgram(program);
+  const mode = $("mode").value;
+  let draws = 0;
+
+  if (mode !== "texture") {
+    gl.uniform1i(gl.getUniformLocation(program, "uTextured"), 0);
+    api.applyView(gl, program, { w: TEX, h: TEX });
+    gl.bindBuffer(GL.ARRAY_BUFFER, vbo);
+    api.bindAttribs(gl, program);
+    gl.drawArrays(GL.POINTS, 0, stats.points);
+    gl.drawArrays(GL.LINES, 0, stats.lines);
+    draws += 2;
+  }
+  if (mode !== "buffer") {
+    // The textured quad: the only difference is who did the shading. The module
+    // wrote these pixels, the GPU just samples them.
+    gl.uniform1i(gl.getUniformLocation(program, "uTextured"), 1);
+    gl.bindBuffer(GL.ARRAY_BUFFER, quad);
+    api.bindAttribs(gl, program);
+    gl.drawArrays(GL.TRIANGLE_STRIP, 0, 4);
+    draws += 1;
+  }
+  if (lastReport) lastReport.drawCalls = draws;
+}
+
+function renderTables() {
+  const rows = [
+    ["module", `${api?.backend ?? "—"}`],
+    ["context", `${contextId} · ${canvas.width}×${canvas.height}`],
+    ["parity", parity?.byteParity && parity?.vertexParity ? "exact" : `differs at byte ${parity?.firstDiff}`],
+    ["preserveDrawingBuffer", String(attrs?.preserveDrawingBuffer)],
+    ["points", String(stats?.points ?? 0)],
+    ["line vertices", String(stats?.lines ?? 0)],
+    ["lit pixels", String(stats?.litPixels ?? 0)],
+    ["gl error", stats ? `0x${(gl.getError() ?? 0).toString(16)}` : "—"],
+  ];
+  $("glstats").tBodies[0].innerHTML = rows
+    .map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`)
+    .join("");
+
+  const proofs = [
+    ["vertices match the shadow", parity?.vertexParity],
+    ["texture matches byte-for-byte", parity?.byteParity],
+    ["projection ≡ keyProjectionCells", projOk()],
+    ["subcube is axis-aligned", boxOk()],
+  ];
+  $("proofs").tBodies[0].innerHTML = proofs
+    .map(([k, ok]) => `<tr><td>${k}</td><td class="${ok ? "ok" : "bad"}">${ok ? "yes" : "no"}</td></tr>`)
+    .join("");
+}
+
+function projOk() {
+  if (!api) return false;
+  const order = Number($("order").value);
+  const want = keyProjectionCells(A, order);
+  const cells = [want.cx, want.cy, want.cz];
+  return cells.every((v, axis) => api.exports.cellOf(0, axis, 0) === v);
+}
+
+function boxOk() {
+  if (!api || !B) return null;
+  const l = api.lines();
+  const p = api.points();
+  const ends = [[p[0], p[8]], [p[1], p[9]], [p[2], p[10]]];
+  for (let i = 0; i < l.length / 8; i++) {
+    for (let axis = 0; axis < 3; axis++) {
+      const lo = Math.min(...ends[axis]);
+      const hi = Math.max(...ends[axis]);
+      for (const q of [0, 8]) if (l[i * 16 + axis + q] !== lo && l[i * 16 + axis + q] !== hi) return false;
+    }
+  }
+  return true;
+}
+
+canvas.addEventListener("pointerdown", (e) => {
+  canvas.setPointerCapture(e.pointerId);
+  const move = (ev) => {
+    view.yaw += ev.movementX * 0.008;
+    view.pitch = Math.max(-1.5, Math.min(1.5, view.pitch + ev.movementY * 0.008));
+    api.setView(view);
+    api.raster();
+    draw();
+  };
+  const up = (ev) => {
+    canvas.removeEventListener("pointermove", move);
+    canvas.removeEventListener("pointerup", up);
+    canvas.releasePointerCapture(ev.pointerId);
+    rebuild();
+  };
+  canvas.addEventListener("pointermove", move);
+  canvas.addEventListener("pointerup", up);
+});
+canvas.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  view.dist = Math.max(1.6, Math.min(40, view.dist + Math.sign(e.deltaY) * 0.4));
+  rebuild();
+}, { passive: false });
+
+$("randA").onclick = () => { $("keya").value = toHex(roll()); rebuild(); };
+$("randB").onclick = () => { $("keyb").value = toHex(roll()); rebuild(); };
+$("negate").onclick = () => { $("keyb").value = toHex(Uint8Array.from(A, (v) => v ^ 0xff)); rebuild(); };
+$("onebit").onclick = () => {
+  const b = Uint8Array.from(A);
+  b[0] ^= 0x80;
+  $("keyb").value = toHex(b);
+  rebuild();
+};
+$("same").onclick = () => { $("keyb").value = toHex(A); rebuild(); };
+$("keya").onchange = rebuild;
+$("keyb").onchange = rebuild;
+$("order").onchange = rebuild;
+$("samples").onchange = rebuild;
+$("mode").onchange = draw;
+$("reload").onclick = boot;
+for (const id of ["keya", "keyb"]) $(id).addEventListener("keydown", (e) => e.key === "Enter" && rebuild());
+
+setup();
+await boot();
+setInterval(() => { if (api && stats) { api.raster(); draw(); } }, params.get("spin") ? 120 : 1 << 30);
+
+/** The headless harness (tests/10 §7) reads this. */
+window.__lens3d = () => ({
+  ...(lastReport ?? {}),
+  stats,
+  preserveDrawingBuffer: attrs?.preserveDrawingBuffer ?? null,
+  layers: activeLayers(),
+});
+</script>
+</body>
+</html>

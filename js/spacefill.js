@@ -56,6 +56,63 @@ export function mortonXY(index, order) {
   return { x: x & mask, y: y & mask };
 }
 
+/** Morton / Z-order 3-D: de-interleave the low 3n bits of `index`. */
+export function mortonXYZ(index, order) {
+  const mask = (1 << order) - 1;
+  let x = 0;
+  let y = 0;
+  let z = 0;
+  for (let i = 0; i < order; i++) {
+    x |= ((index >>> (3 * i)) & 1) << i;
+    y |= ((index >>> (3 * i + 1)) & 1) << i;
+    z |= ((index >>> (3 * i + 2)) & 1) << i;
+  }
+  return { x: x & mask, y: y & mask, z: z & mask };
+}
+
+/**
+ * Canonical projection of a key into a 2^order Morton grid — the map every 3-D
+ * lens (js/lens-3d.js) and the WebAssembly rasteriser (wasm/lens3d.wasm) share.
+ *
+ * Prefix entropy bit j (bit 0 = MSB of byte 0, the order `bytesToBits` gives)
+ * becomes coordinate bit ⌊j/3⌋ of axis j % 3. Short keys are left-aligned
+ * exactly like `prefixBits`: missing bits read as 0, so a 6-bit key still spans
+ * the grid instead of collapsing into one corner.
+ *
+ * Because every bit lands on exactly one axis bit, Hamming adjacency in the
+ * prefix *is* grid adjacency: the affine subcube spanned by two keys really is
+ * an axis-aligned box, which is the whole reason this projection is used.
+ *
+ * `x`/`y`/`z` are normalised to [0, 1] over the grid — `keyProjectionCells`
+ * returns the underlying integer cells.
+ *
+ * @returns {{x:number,y:number,z:number,cx:number,cy:number,cz:number,
+ *            index:number,order:number}}
+ */
+export function keyProjection(bytes, order = 7) {
+  const c = keyProjectionCells(bytes, order);
+  const d = (1 << c.order) - 1;
+  return { ...c, x: c.cx / d, y: c.cy / d, z: c.cz / d };
+}
+
+/** {@link keyProjection} on the integer grid: cells in [0, 2^order). */
+export function keyProjectionCells(bytes, order = 7) {
+  const o = Math.max(1, Math.min(10, order | 0));
+  const bits = bytesToBits(bytes || new Uint8Array(0));
+  const cell = [0, 0, 0];
+  const n = 3 * o;
+  for (let j = 0; j < n; j++) {
+    if (j < bits.length && bits[j]) cell[j % 3] |= 1 << ((j / 3) | 0);
+  }
+  let index = 0;
+  for (let i = o - 1; i >= 0; i--) {
+    index = (index << 1) | ((cell[2] >> i) & 1);
+    index = (index << 1) | ((cell[1] >> i) & 1);
+    index = (index << 1) | ((cell[0] >> i) & 1);
+  }
+  return { cx: cell[0], cy: cell[1], cz: cell[2], index: index >>> 0, order: o };
+}
+
 export function fibonacciSphere(n) {
   const out = new Float32Array(n * 3);
   const phi = Math.PI * (3 - Math.sqrt(5));

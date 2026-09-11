@@ -106,19 +106,34 @@ Measurement-backed examples:
 ## Checks
 
 ```sh
-sh tests/run.sh          # suites 01-04 and 06 need nothing but Node >= 18
-npm i --no-save jsdom puppeteer-core @sparticuz/chromium   # optional: enables 05 and 07
+sh tests/run.sh          # suites 01-04, 06, 08-10 need nothing but Node >= 18
+npm i --no-save wabt jsdom puppeteer-core @sparticuz/chromium
+                         # wabt: lens3d.wasm freshness check; the rest: suites 05, 07
 ```
 
 | suite | covers | assertions |
 |------:|--------|-----------:|
 | 01 | generalised layout both directions, mutual invertibility, encode/decode round trips, deterministic checksum corruption, and the measured false-accept rate of a random 12-word phrase | 73 |
-| 02 | every lens `compute()` on a real 25-word key, plus known-answer maths (Grünwald–Letnikov coefficients, Möbius involution, eigenvalues, Hamming balls, Itô determinism, AES field multiply, GF(2) rank, spherical excess, cross-ratio invariance, Parseval) and the differential prediction checked against the real hash | 120 |
-| 03 | every 2-D renderer (all 44 lenses) through an instrumented canvas context that reports non-finite coordinates, plus empty-data resilience | 100 |
+| 02 | every lens `compute()` on a real 25-word key, plus known-answer maths (Grünwald–Letnikov coefficients, Möbius involution, eigenvalues, Hamming balls, Itô determinism, AES field multiply, GF(2) rank, spherical excess, cross-ratio invariance, Parseval) and the differential prediction checked against the real hash | 148 |
+| 03 | every 2-D renderer (all 44 lenses) through an instrumented canvas context that reports non-finite coordinates, plus empty-data resilience | 140 |
 | 04 | every 3-D layer builder: vertex counts, non-finite coordinates, determinism, null-not-throw with no key | 20 |
 | 05 | the real `js/viewer.js` booted in jsdom: 44 rack rows, the 25-word switch, invert invariants through the buttons, the 264-bit flip sweep, card behaviour, toggle-vs-focus, custom bit length | 38 |
-| 06 | the extreme the custom box allows — 512 words / 5632-bit ENT: sweep cost, matrix size, and all 44 lenses computing *and* drawing without NaN | 95 |
+| 06 | the extreme the custom box allows — 512 words / 5632-bit ENT: sweep cost, matrix size, and all 44 lenses computing *and* drawing without NaN | 151 |
 | 07 | the real thing: headless Chromium (from `@sparticuz/chromium`, whose tarball supplies the browser *and* the three NSS libs this sandbox lacks) with SwiftShader for WebGL, driving the live page — boot, 25-word switch, invert invariants, the measured flip sweep, and pixel-decoded proof that the stage rasterises | 20 |
+| 08 | the syllable counter and 5-7-5 layout the workbench shares (`tools/blink_contract.mjs` is unrelated; this one predates it) | 12 |
+| 09 | the DOM stand-ins measured against Blink itself — `getContext`'s accepted ids, the memoised-context and wrong-type rules, `[PermissiveDictionaryConversion]`, the canvas size gates, `bufferData`/`texImage2D` overload arity, the WebAssembly-shaped buffer ceiling, and `getElementById` returning `Element?` | 56 |
+| 10 | the WebAssembly rasteriser: `wasm/lens3d.wat` assembled and validated, its projection checked against `js/spacefill.js`, bit-exact parity with the JS shadow on vertices *and* texture, geometry invariants, overflow/NaN/viewport guards, and a real-Chromium boot of `lens3d-wasm.html` | 72 |
+
+Suite 05 is **stale, not skipped**: it drives 18 element ids (`lensRack`,
+`lensName`, `invSub`, `lensCanvas`, …) that neither `keyspace.html` nor
+`js/viewer.js` contains — `node tools/check-dom-ids.mjs --html keyspace.html
+--js js/viewer.js` finds no gap between the page and its controller, so the page
+is self-consistent and it is the *suite* that was left behind when the layout
+moved to `cubeSeg`/`curveSeg`/`embedSeg`/`math*`. It runs (jsdom is installed)
+and fails on a stale `wcNote` expectation and then on `getElementById` returning
+null, which is what real Blink does for an id the markup lacks. Repairing it
+means rewriting its expectations against the current markup — a separate job from
+the wasm work below, and deliberately not papered over here.
 
 Suite 05 stubs only the WebGL backend (a module-resolve hook) and the canvas
 rasteriser; viewer.js, formal.js, lens-draw.js, bip39.js and
@@ -131,6 +146,28 @@ ships the browser plus its missing `libnspr4/libnss3/libnssutil3` in
 extracted, headless Chromium boots the page and renders the 3-D scene
 (≈4×10⁵ lit pixels decoded from the stage screenshot). Not covered: interactive
 OrbitControls gestures and a hardware GPU path.
+
+## The rasteriser in WebAssembly, and Blink as the DOM reference
+
+`wasm/lens3d.wat` holds the three projection-determined 3-D layers — subcube,
+geodesic, complement — as a 4 KB module that both builds the interleaved vertex
+records and rasterises them into an RGBA texture, and `js/lens3d-ref.js` shadows
+it op for op so the WebAssembly path is *checkable* rather than merely
+plausible. `lens3d-wasm.html` runs either backend against the same client and
+offers both GPU paths (wasm→VBO→`gl.POINTS`/`gl.LINES`, and wasm→RGBA→texture).
+
+The DOM and WebGL surface that path touches is derived, not remembered:
+`tools/blink_contract.mjs` mines `third_party/blink/renderer` from a Chromium
+checkout into `config/blink-dom-contract.json`, `tools/dom-stub.mjs` builds its
+canvas and WebGL recorder from that file, and suite 09 fails if they drift.
+Design, findings and the re-mining recipe: `docs/blink-webgl-wasm.md`.
+
+```sh
+node tools/build_lens3d_wasm.mjs            # .wat → wasm/lens3d.wasm (needs wabt)
+node tools/build_lens3d_wasm.mjs --check    # run.sh calls this; SKIPPED without wabt
+node tools/blink_contract.mjs --src /path/to/chromium/src          # rewrite the JSON
+node tools/blink_contract.mjs --src /path/to/chromium/src --check # drift check
+```
 
 ## Packaging
 
