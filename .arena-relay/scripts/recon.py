@@ -63,7 +63,7 @@ class RangeZip:
                     z64 = get_range(self.url, z64off, z64off+71)
                     print("  z64 head:", z64[:8].hex())
                     if z64[:4] == b"PK\x06\x06":
-                        n_here, n_tot, cds, cdo = struct.unpack("<QQQQ", z64[40:72])
+                        n_here, n_tot, cds, cdo = struct.unpack("<QQQQ", z64[20:52])
                         print("  -> entries", n_tot, "cd_size", cds, "cd_off", cdo)
                         if 0 < cds <= 2*1024**3 and 0 <= cdo < self.size:
                             chosen = (n_tot, cds, cdo)
