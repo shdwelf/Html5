@@ -189,3 +189,9 @@ body[data-display="standalone"] .install-tip { display: none !important; }
 @media (display-mode: standalone) {
   .install-chip, .install-tip { display: none !important; }
 }
+
+/* Calculator port bench (calc.html) — external dock link */
+.app-dock a.ext {
+  color: #5ce1ff;
+  border-color: rgba(92, 225, 255, 0.32);
+}
