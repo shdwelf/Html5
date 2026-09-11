@@ -56,7 +56,7 @@ class RangeZip:
             k = tail.find(b"PK\x06\x07", scan)
             if k < 0: break
             scan = k+4
-            (zsig, zdisk, z64off, zdisks) = struct.unpack("<IQII", tail[k:k+20])
+            (zsig, zdisk, z64off, zdisks) = struct.unpack("<IIQI", tail[k:k+20])
             print("locator candidate at tail+%d: disk=%d off=%d disks=%d" % (k, zdisk, z64off, zdisks))
             if z64off < self.size:
                 try:
