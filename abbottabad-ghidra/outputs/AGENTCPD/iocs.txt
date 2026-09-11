@@ -1,0 +1,31 @@
+# AGENTCPD.DLL — WORM_FANNY (TROJ_FANNY.AB) IOCs
+# Static analysis of Abbottabad corpus member:
+#   2011-1234/000201001/91985CF1B695F95A72DF8E27C75EAFC5_AGENTCPD.DLL
+md5    91985cf1b695f95a72df8e27c75eafc5
+sha1   4d0c7d0dd431fd5cfe9ad5bf9e1dfb79a0c014c0
+sha256 1e77ae780e3f6389ffd6eae92887e531bf156943e31302c93be08a57ea90e6dd
+file   %Windows%\msagent\AGENTCPD.DLL
+file   %SystemRoot%\System32\msdtc32.exe
+file   %TEMP%\msdtc32.exe
+mutex  Global\DirectMarketing
+regkey HKLM\Software\Microsoft\MSNetMng
+regkey HKCU\Software\Microsoft\MSNetMng
+regval HKLM\Software\Microsoft\MSNetMng!Status
+regval HKLM\Software\Microsoft\MSNetMng!Version
+regval HKLM\Software\Microsoft\MSNetMng!Policy
+regval HKLM\Software\Microsoft\MSNetMng!COM
+regval HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon!Shell   # appended: Explorer.exe  <path>\msdtc32.exe
+watch  HKLM\SYSTEM\CurrentControlSet\Services\USBSTOR\Enum
+watch  HKLM\SYSTEM\CurrentControlSet\Services\PartMgr\Enum
+media  <drive>:\restore\*.bmp
+media  <drive>:\FILENAME
+cmdline rundll32.exe AGENTCPD.DLL,_start@16 0
+# Associated Fanny components (vendor reporting; not present in this module)
+file   <drive>:\fanny.bmp
+file   <drive>:__d__.lnk .. __j__.lnk
+file   %System%\ECELP4.ACM
+file   %System%\shelldoc.dll
+file   %System%\comhost.dll
+file   %System%\mscorwin.dll
+file   %Temp%\msupdate.exe
+domain supplystore.mooo.com
