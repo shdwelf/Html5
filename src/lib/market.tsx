@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { MARKET_SEEDS } from "./coins";
 
 export interface Ticker {
   symbol: string;
@@ -8,14 +9,9 @@ export interface Ticker {
   history: number[];
 }
 
-const SEED_COINS: Omit<Ticker, "history" | "change24h">[] = [
-  { symbol: "WAVES", name: "Waves", price: 1.34 },
-  { symbol: "BTC", name: "Bitcoin", price: 64210 },
-  { symbol: "ETH", name: "Ethereum", price: 3380 },
-  { symbol: "USDT", name: "Tether", price: 1.0 },
-  { symbol: "LTC", name: "Litecoin", price: 84.2 },
-  { symbol: "XMR", name: "Monero", price: 168.5 },
-];
+// Top-10 snapshot prices (2026-09-11). The feed stays an offline
+// random-walk simulator; only the starting points are real.
+const SEED_COINS: Omit<Ticker, "history" | "change24h">[] = MARKET_SEEDS;
 
 function genHistory(price: number, n = 48): number[] {
   const out: number[] = [];
@@ -47,7 +43,7 @@ export function useMarket(intervalMs = 2000): Ticker[] {
     const t = setInterval(() => {
       setTickers((prev) =>
         prev.map((tk) => {
-          if (tk.symbol === "USDT") return tk;
+          if (tk.symbol === "USDT" || tk.symbol === "USDC") return tk;
           const drift = (Math.random() - 0.5) * 0.012;
           const price = Math.max(0.0001, tk.price * (1 + drift));
           const history = [...tk.history.slice(1), price];

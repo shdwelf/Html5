@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>News Globe (wasm, offline)</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: #070b12; color: #dbe4f0;
+    display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 0;
+    height: 100vh;
+  }
+  #stage { position: relative; min-width: 0; }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+  #gl:active { cursor: grabbing; }
+  #hud {
+    position: absolute; top: 10px; left: 12px; display: flex; gap: 8px;
+    align-items: center; font-size: 12px; color: #9fb0c8; pointer-events: none;
+  }
+  .pill {
+    background: rgba(10, 16, 28, .72); border: 1px solid #1e2a3f;
+    border-radius: 999px; padding: 2px 10px; backdrop-filter: blur(4px);
+  }
+  .pill b { color: #7ee2a8; font-weight: 600; }
+  #tip {
+    position: absolute; display: none; max-width: 280px; z-index: 5;
+    background: rgba(8, 12, 22, .92); border: 1px solid #2a3a58;
+    border-radius: 8px; padding: 6px 10px; font-size: 12px; pointer-events: none;
+  }
+  aside {
+    border-left: 1px solid #16203280; background: #0a0f18;
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  aside header { padding: 12px 14px 8px; border-bottom: 1px solid #16203280; }
+  aside header h1 { font-size: 15px; margin: 0 0 2px; }
+  aside header p { margin: 0; font-size: 12px; color: #8b99b5; }
+  #feed { flex: 1; overflow: auto; padding: 6px 0; }
+  .item {
+    padding: 8px 14px; border-bottom: 1px solid #121b2c; cursor: pointer;
+  }
+  .item:hover { background: #111a2c; }
+  .item .t { font-size: 13px; }
+  .item .m { font-size: 11px; color: #7ee2a8; margin-top: 2px; }
+  .item.unplaced .m { color: #5b6a84; }
+  #paste {
+    border-top: 1px solid #16203280; padding: 10px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  #paste textarea {
+    width: 100%; height: 76px; resize: vertical; font: 11px/1.4 ui-monospace, monospace;
+    background: #060a12; color: #c7d3e8; border: 1px solid #22314d; border-radius: 8px;
+    padding: 8px;
+  }
+  #paste button {
+    align-self: flex-end; background: #14324a; color: #bfe3ff;
+    border: 1px solid #2a5a7a; border-radius: 8px; padding: 6px 14px; cursor: pointer;
+  }
+  #paste button:hover { background: #1a4060; }
+  #status { font-size: 11px; color: #8b99b5; min-height: 1.2em; }
+  @media (max-width: 860px) {
+    body { grid-template-columns: 1fr; grid-template-rows: 52vh 1fr; }
+    aside { border-left: 0; border-top: 1px solid #16203280; }
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="gl"></canvas>
+  <div id="hud">
+    <span class="pill">projector: <b id="backend">…</b></span>
+    <span class="pill" id="counts">…</span>
+    <span class="pill">drag to spin · wheel to zoom</span>
+  </div>
+  <div id="tip"></div>
+</div>
+<aside>
+  <header>
+    <h1>News Globe <span style="color:#7ee2a8">· wasm</span></h1>
+    <p>Offline port of news-globe: wasm builds the vertices, WebGL draws
+    them. Feed items geocode against the 449-place gazetteer.</p>
+  </header>
+  <div id="feed"></div>
+  <div id="paste">
+    <div id="status"></div>
+    <textarea id="rss" placeholder="Paste RSS/Atom XML here to plot it (stays in your browser)…"></textarea>
+    <button id="plot">geocode + plot</button>
+  </div>
+</aside>
+<script type="module">
+import { loadGlobe, ATTRIBS } from "../js/globe-wasm.js";
+import { GAZETTEER, gazetteerMatch } from "../js/gazetteer.js";
+
+// Offline sample: dated headlines with place names (snapshot 2026-09-11).
+const SAMPLE_FEED = [
+  ["Summit reaches climate finance deal in Nairobi", "Nairobi accord · Sep 11"],
+  ["Tokyo markets rally as yen steadies", "markets · Sep 11"],
+  ["Earthquake off the coast of Chile prompts tsunami watch", "Valparaíso wire · Sep 11"],
+  ["New metro line opens across Sao Paulo", "Sao Paulo metro · Sep 10"],
+  ["Iceland volcano eruption disrupts Reykjavik flights", "Reykjavik aviation · Sep 10"],
+  ["Cairo hosts regional water-security talks", "Cairo talks · Sep 10"],
+  ["Sydney harbour tunnel breakthrough celebrated", "Sydney infra · Sep 9"],
+  ["Lagos tech fund backs twenty startups", "Lagos venture · Sep 9"],
+  ["Historic rainfall floods Venice squares", "Venice weather · Sep 9"],
+  ["Seoul unveils night-metro pilot program", "Seoul transit · Sep 8"],
+  ["Lima archaeologists open newly mapped citadel wing", "Lima dig · Sep 8"],
+  ["Oslo fjord ferry fleet goes fully electric", "Oslo green · Sep 8"],
+  ["Mumbai coastal road extension inaugurated", "Mumbai infra · Sep 7"],
+  ["Anchorage records earliest September snowfall", "Anchorage weather · Sep 7"],
+];
+
+const canvas = document.getElementById("gl");
+const gl = canvas.getContext("webgl", { antialias: true, alpha: false });
+if (!gl) {
+  document.getElementById("counts").textContent = "WebGL unavailable";
+  throw new Error("no webgl");
+}
+
+function program(vs, fs) {
+  const p = gl.createProgram();
+  const sh = (type, src) => {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
+      throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  };
+  sh(gl.VERTEX_SHADER, vs);
+  sh(gl.FRAGMENT_SHADER, fs);
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS))
+    throw new Error(gl.getProgramInfoLog(p));
+  return p;
+}
+
+// Fullscreen ocean: circle SDF + radial gradient + atmosphere rim.
+const ocean = program(
+  `attribute vec2 p; void main(){ gl_Position = vec4(p, 0., 1.); }`,
+  `precision mediump float;
+   uniform vec2 uCenter; uniform float uR;
+   void main(){
+     vec2 d = (gl_FragCoord.xy - uCenter) / uR;
+     float r = length(d);
+     if (r > 1.06) discard;
+     vec3 deep = vec3(0.023, 0.055, 0.11);
+     vec3 glow = vec3(0.05, 0.13, 0.22);
+     vec3 col = mix(glow, deep, smoothstep(0.0, 1.0, r));
+     float rim = smoothstep(0.86, 1.0, r) * 0.5;
+     col += vec3(0.15, 0.35, 0.55) * rim;
+     if (r > 1.0) col = mix(col, vec3(0.02, 0.04, 0.08), smoothstep(1.0, 1.06, r));
+     gl_FragColor = vec4(col, 1.0);
+   }`);
+
+// Vertex layer: pass-through disc coords, per-vertex color/alpha/size.
+const layer = program(
+  `attribute vec3 aPos; attribute vec3 aColor;
+   attribute float aSize; attribute float aAlpha;
+   uniform vec2 uCenter; uniform float uR; uniform float uPointScale;
+   uniform vec2 uScreen;
+   varying vec3 vColor; varying float vAlpha;
+   void main(){
+     // canvas px (y down): flip globe y, then canvas -> NDC (y up)
+     vec2 px = uCenter + vec2(aPos.x, -aPos.y) * uR;
+     vec2 ndc = vec2(px.x / uScreen.x * 2.0 - 1.0, 1.0 - px.y / uScreen.y * 2.0);
+     gl_Position = vec4(ndc, 0.0, 1.0);
+     vColor = aColor; vAlpha = aAlpha;
+     gl_PointSize = aSize * uPointScale;
+   }`,
+  `precision mediump float;
+   varying vec3 vColor; varying float vAlpha;
+   uniform float uRound; // 1 for points (round sprite), 0 for lines
+   void main(){
+     if (vAlpha < 0.01) discard;
+     if (uRound > 0.5) {
+       vec2 q = gl_PointCoord - 0.5;
+       if (dot(q, q) > 0.25) discard;
+     }
+     gl_FragColor = vec4(vColor, vAlpha);
+   }`);
+
+const state = {
+  lon: -30, lat: 20, scale: 1, spinning: true,
+  items: [], // {title, meta, lon, lat, placed}
+};
+let globe = null, raf = 0;
+// Fullscreen-triangle buffer for the ocean pass (created in boot).
+let triBuf = null, triLoc = -1;
+
+async function boot() {
+  const coastRes = await fetch("../config/coast-110m.json");
+  if (!coastRes.ok) throw new Error("coast data missing");
+  const coast = await coastRes.json();
+  globe = await loadGlobe({ log: (m) => console.info(m) });
+  document.getElementById("backend").textContent = globe.backend;
+  globe.loadCoast(coast.rings);
+  globe.setStyle({ markSize: 7.5 });
+  setFeed(SAMPLE_FEED.map(([title, meta]) => ({ title, meta })));
+  triBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, triBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  triLoc = gl.getAttribLocation(ocean, "p");
+  resize();
+  addEventListener("resize", resize);
+  bindPointer();
+  document.getElementById("plot").onclick = plotPasted;
+  state.spinning = true;
+  frame();
+}
+
+function setFeed(items) {
+  state.items = items.map((it) => {
+    const hit = gazetteerMatch((it.title + " " + (it.meta || "")).toLowerCase());
+    return hit ? { ...it, lon: hit.lon, lat: hit.lat, place: hit.name, placed: true }
+               : { ...it, placed: false };
+  });
+  globe.loadMarkers(state.items.filter((i) => i.placed).map((i) => ({ lon: i.lon, lat: i.lat, w: 1 })));
+  renderFeed();
+}
+
+function renderFeed() {
+  const feed = document.getElementById("feed");
+  feed.innerHTML = "";
+  state.items.forEach((it, i) => {
+    const d = document.createElement("div");
+    d.className = "item" + (it.placed ? "" : " unplaced");
+    d.innerHTML = `<div class="t"></div><div class="m"></div>`;
+    d.querySelector(".t").textContent = it.title;
+    d.querySelector(".m").textContent = it.placed ? `◉ ${it.place}` : "○ no gazetteer hit";
+    if (it.placed) d.onclick = () => {
+      state.lon = it.lon; state.lat = Math.max(-80, Math.min(80, it.lat));
+      state.spinning = false;
+    };
+    feed.appendChild(d);
+  });
+  const n = state.items.filter((i) => i.placed).length;
+  document.getElementById("status").textContent =
+    `${n}/${state.items.length} placed · gazetteer ${GAZETTEER.length} places`;
+}
+
+function plotPasted() {
+  const xml = document.getElementById("rss").value;
+  if (!xml.trim()) return;
+  const doc = new DOMParser().parseFromString(xml, "text/xml");
+  if (doc.querySelector("parsererror")) {
+    document.getElementById("status").textContent = "not parseable XML";
+    return;
+  }
+  const items = [...doc.querySelectorAll("item, entry")].slice(0, 120).map((el) => ({
+    title: (el.querySelector("title")?.textContent || "(untitled)").trim(),
+    meta: ((el.querySelector("description, summary")?.textContent || "").slice(0, 140)).trim(),
+  }));
+  if (!items.length) {
+    document.getElementById("status").textContent = "no <item>/<entry> elements found";
+    return;
+  }
+  state.spinning = false;
+  setFeed(items);
+}
+
+function resize() {
+  const r = canvas.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+  canvas.width = Math.max(1, Math.round(r.width * dpr));
+  canvas.height = Math.max(1, Math.round(r.height * dpr));
+}
+
+function bindPointer() {
+  let drag = null, moved = false;
+  const tip = document.getElementById("tip");
+  canvas.addEventListener("pointerdown", (e) => {
+    drag = { x: e.clientX, y: e.clientY, lon: state.lon, lat: state.lat };
+    moved = false;
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    if (drag) {
+      const k = 120 / Math.min(canvas.width, canvas.height); // deg per px
+      state.lon = drag.lon - (e.clientX - drag.x) * k;
+      state.lat = Math.max(-85, Math.min(85, drag.lat + (e.clientY - drag.y) * k));
+      state.spinning = false;
+      moved = true;
+      return;
+    }
+    // hover: nearest visible marker within 14 px
+    const hit = pick(e.clientX, e.clientY);
+    if (hit) {
+      tip.style.display = "block";
+      tip.style.left = (e.clientX + 14) + "px";
+      tip.style.top = (e.clientY + 10) + "px";
+      tip.textContent = `${hit.place} — ${hit.title}`;
+    } else tip.style.display = "none";
+  });
+  const up = () => { drag = null; };
+  canvas.addEventListener("pointerup", up);
+  canvas.addEventListener("pointercancel", up);
+  canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    state.scale = Math.max(0.6, Math.min(3, state.scale * (e.deltaY > 0 ? 0.92 : 1.09)));
+  }, { passive: false });
+}
+
+// Project a lon/lat through the current view (JS-side, for picking only).
+function project(lon, lat) {
+  const la = lon * Math.PI / 180, ph = lat * Math.PI / 180;
+  const x = Math.cos(ph) * Math.cos(la), y = Math.cos(ph) * Math.sin(la), z = Math.sin(ph);
+  const l0 = state.lon * Math.PI / 180, p0 = state.lat * Math.PI / 180;
+  const c0 = Math.cos(l0), s0 = Math.sin(l0), c1 = Math.sin(p0), s1 = -Math.cos(p0);
+  const x1 = x * c0 + y * s0, y1 = y * c0 - x * s0;
+  return [x1 * c1 + z * s1, y1, z * c1 - x1 * s1];
+}
+
+function pick(cx, cy) {
+  const r = canvas.getBoundingClientRect();
+  const R = Math.min(r.width, r.height) / 2 * state.scale;
+  const ox = r.width / 2, oy = r.height / 2;
+  let best = null, bd = 14;
+  for (const it of state.items) {
+    if (!it.placed) continue;
+    const [x, y, z] = project(it.lon, it.lat);
+    if (z <= 0.02) continue;
+    const d = Math.hypot(ox + x * R - cx, oy - y * R - cy);
+    if (d < bd) { bd = d; best = it; }
+  }
+  return best;
+}
+
+function frame() {
+  if (state.spinning) state.lon = (state.lon + 0.12) % 360;
+  globe.setView(state.lon, state.lat);
+  const { lines, points } = globe.build();
+  const W = canvas.width, H = canvas.height;
+  const R = Math.min(W, H) / 2 * state.scale;
+  const cx = W / 2, cy = H / 2;
+  gl.viewport(0, 0, W, H);
+
+  // ocean disc (fullscreen triangle; buffer created once in boot)
+  gl.useProgram(ocean);
+  gl.bindBuffer(gl.ARRAY_BUFFER, triBuf);
+  gl.enableVertexAttribArray(triLoc);
+  gl.vertexAttribPointer(triLoc, 2, gl.FLOAT, false, 0, 0);
+  gl.uniform2f(gl.getUniformLocation(ocean, "uCenter"), cx, H - cy);
+  gl.uniform1f(gl.getUniformLocation(ocean, "uR"), R);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.disableVertexAttribArray(triLoc);
+
+  // vertex layer
+  gl.useProgram(layer);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.uniform2f(gl.getUniformLocation(layer, "uCenter"), cx, cy);
+  gl.uniform1f(gl.getUniformLocation(layer, "uR"), R);
+  gl.uniform1f(gl.getUniformLocation(layer, "uPointScale"), canvas.width / canvas.getBoundingClientRect().width);
+  gl.uniform2f(gl.getUniformLocation(layer, "uScreen"), W, H);
+  const uRound = gl.getUniformLocation(layer, "uRound");
+  const locs = ATTRIBS.map((a) => gl.getAttribLocation(layer, a.name));
+  const draw = (view, mode) => {
+    if (!view.length) return;
+    gl.uniform1f(uRound, mode === gl.POINTS ? 1 : 0);
+    const b = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, b);
+    gl.bufferData(gl.ARRAY_BUFFER, view, gl.DYNAMIC_DRAW);
+    ATTRIBS.forEach((a, i) => {
+      gl.enableVertexAttribArray(locs[i]);
+      gl.vertexAttribPointer(locs[i], a.size, gl.FLOAT, false, 32, a.offset);
+    });
+    gl.drawArrays(mode, 0, view.length / 8);
+    locs.forEach((l) => gl.disableVertexAttribArray(l));
+    gl.deleteBuffer(b);
+  };
+  draw(globe.lineView(), gl.LINES);
+  draw(globe.pointView(), gl.POINTS);
+  gl.disable(gl.BLEND);
+
+  document.getElementById("counts").textContent =
+    `${lines.toLocaleString()} coast verts · ${points} markers`;
+  raf = requestAnimationFrame(frame);
+}
+
+boot().catch((e) => {
+  document.getElementById("counts").textContent = "failed: " + e.message;
+  console.error(e);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+;; ═══════════════════════════════════════════════════════════════════════════
+;; globe.wat — the news-globe orthographic projector, in WebAssembly
+;; ═══════════════════════════════════════════════════════════════════════════
+;;
+;; The module rotates unit-xyz coastline/marker points behind the sub-viewer
+;; point, clips coast segments at the horizon (z=0), and emits interleaved
+;; 8×f32 vertices (x y z r g b size alpha — the lens3d layout) for WebGL to
+;; draw. All arithmetic is plain f32, in the exact order js/globe-ref.js uses,
+;; so the two backends agree bit for bit (tests/12-globe-wasm.mjs).
+;;
+;; Transcendentals stay on the JS side, per the lens3d rule: the caller bakes
+;; lat/lon to unit xyz once at load and passes the four rotation cosines per
+;; frame (c0=cos λ0, s0=sin λ0, c1=sin φ0, s1=−cos φ0). No imports, memory
+;; declared initial:maximum 11 pages and never grown, so views never detach.
+;;
+;; Memory map: see js/globe-ref.js (the single home of the layout).
+;; Build:  node tools/build_globe_wasm.mjs        (wabt is dev-only)
+
+(module
+  (memory (export "memory") 11 11)
+
+  (global $P_NPTS i32 (i32.const 0))
+  (global $P_NRINGS i32 (i32.const 4))
+  (global $P_NMARK i32 (i32.const 8))
+  (global $P_NLNV i32 (i32.const 12))
+  (global $P_NPTV i32 (i32.const 16))
+  (global $P_ERR i32 (i32.const 20))
+  (global $P_C0 i32 (i32.const 32))
+  (global $P_S0 i32 (i32.const 36))
+  (global $P_C1 i32 (i32.const 40))
+  (global $P_S1 i32 (i32.const 44))
+  (global $P_COAST_R i32 (i32.const 48))
+  (global $P_COAST_G i32 (i32.const 52))
+  (global $P_COAST_B i32 (i32.const 56))
+  (global $P_MARK_R i32 (i32.const 60))
+  (global $P_MARK_G i32 (i32.const 64))
+  (global $P_MARK_B i32 (i32.const 68))
+  (global $P_MARK_SIZE i32 (i32.const 72))
+  (global $P_LIMB i32 (i32.const 76))
+
+  (global $RINGS i32 (i32.const 0x100))
+  (global $RING_CAP i32 (i32.const 256))
+  (global $COAST i32 (i32.const 0x1000))
+  (global $COAST_CAP i32 (i32.const 8192))
+  (global $MARKERS i32 (i32.const 0x19000))
+  (global $MARK_CAP i32 (i32.const 512))
+  (global $LINEVERTS i32 (i32.const 0x1b000))
+  (global $LINE_CAP i32 (i32.const 16384))
+  (global $POINTVERTS i32 (i32.const 0x9b000))
+  (global $POINT_CAP i32 (i32.const 2048))
+
+  ;; rotate one point; params mirror rotateXYZ in globe-ref.js exactly
+  (func $rot (param $x f32) (param $y f32) (param $z f32)
+             (param $c0 f32) (param $s0 f32) (param $c1 f32) (param $s1 f32)
+             (result f32 f32 f32)
+    (local $x1 f32) (local $y1 f32)
+    (local.set $x1
+      (f32.add (f32.mul (local.get $x) (local.get $c0))
+               (f32.mul (local.get $y) (local.get $s0))))
+    (local.set $y1
+      (f32.sub (f32.mul (local.get $y) (local.get $c0))
+               (f32.mul (local.get $x) (local.get $s0))))
+    (f32.add (f32.mul (local.get $x1) (local.get $c1))
+             (f32.mul (local.get $z) (local.get $s1)))
+    (local.get $y1)
+    (f32.sub (f32.mul (local.get $z) (local.get $c1))
+             (f32.mul (local.get $x1) (local.get $s1))))
+
+  ;; fade: clamp(z/width, 0, 1) with the ref's exact comparison order
+  (func $fade (param $z f32) (param $w f32) (result f32)
+    (local $a f32)
+    (local.set $a (f32.div (local.get $z) (local.get $w)))
+    (if (f32.gt (local.get $a) (f32.const 1)) (then (local.set $a (f32.const 1))))
+    (if (f32.lt (local.get $a) (f32.const 0)) (then (local.set $a (f32.const 0))))
+    (local.get $a))
+
+  (func $emit (param $o i32)
+              (param $x f32) (param $y f32) (param $z f32)
+              (param $r f32) (param $g f32) (param $b f32)
+              (param $sz f32) (param $a f32)
+    (f32.store (local.get $o) (local.get $x))
+    (f32.store (i32.add (local.get $o) (i32.const 4)) (local.get $y))
+    (f32.store (i32.add (local.get $o) (i32.const 8)) (local.get $z))
+    (f32.store (i32.add (local.get $o) (i32.const 12)) (local.get $r))
+    (f32.store (i32.add (local.get $o) (i32.const 16)) (local.get $g))
+    (f32.store (i32.add (local.get $o) (i32.const 20)) (local.get $b))
+    (f32.store (i32.add (local.get $o) (i32.const 24)) (local.get $sz))
+    (f32.store (i32.add (local.get $o) (i32.const 28)) (local.get $a)))
+
+  (func (export "buildCoast")
+    (local $npts i32) (local $nrings i32)
+    (local $c0 f32) (local $s0 f32) (local $c1 f32) (local $s1 f32)
+    (local $cr f32) (local $cg f32) (local $cb f32) (local $limb f32)
+    (local $r i32) (local $start i32) (local $count i32) (local $k i32)
+    (local $n i32) (local $ao i32)
+    (local $x0 f32) (local $y0 f32) (local $z0 f32)
+    (local $x1 f32) (local $y1 f32) (local $z1 f32)
+    (local $v0 i32) (local $v1 i32) (local $t f32)
+    (local $ex0 f32) (local $ey0 f32) (local $ez0 f32)
+    (local $ex1 f32) (local $ey1 f32) (local $ez1 f32)
+    (i32.store (global.get $P_NLNV) (i32.const 0))
+    (local.set $npts (i32.load (global.get $P_NPTS)))
+    (local.set $nrings (i32.load (global.get $P_NRINGS)))
+    (if (i32.or (i32.gt_u (local.get $npts) (global.get $COAST_CAP))
+                (i32.gt_u (local.get $nrings) (global.get $RING_CAP)))
+      (then (i32.store (global.get $P_ERR) (i32.const 3)) (return)))
+    (local.set $c0 (f32.load (global.get $P_C0)))
+    (local.set $s0 (f32.load (global.get $P_S0)))
+    (local.set $c1 (f32.load (global.get $P_C1)))
+    (local.set $s1 (f32.load (global.get $P_S1)))
+    (local.set $cr (f32.load (global.get $P_COAST_R)))
+    (local.set $cg (f32.load (global.get $P_COAST_G)))
+    (local.set $cb (f32.load (global.get $P_COAST_B)))
+    (local.set $limb (f32.load (global.get $P_LIMB)))
+    (local.set $n (i32.const 0))
+    (local.set $r (i32.const 0))
+    (block $rdone
+      (loop $rloop
+        (br_if $rdone (i32.ge_u (local.get $r) (local.get $nrings)))
+        (local.set $start
+          (i32.load (i32.add (global.get $RINGS)
+                             (i32.mul (local.get $r) (i32.const 8)))))
+        (local.set $count
+          (i32.load (i32.add (global.get $RINGS)
+                             (i32.add (i32.mul (local.get $r) (i32.const 8))
+                                      (i32.const 4)))))
+        (if (i32.gt_u (i32.add (local.get $start) (local.get $count))
+                      (local.get $npts))
+          (then (i32.store (global.get $P_ERR) (i32.const 3)) (return)))
+        (local.set $k (i32.const 0))
+        (block $kdone
+          (loop $kloop
+            (br_if $kdone
+              (i32.ge_u (i32.add (local.get $k) (i32.const 1)) (local.get $count)))
+            (local.set $ao
+              (i32.add (global.get $COAST)
+                       (i32.mul (i32.add (local.get $start) (local.get $k))
+                                (i32.const 12))))
+            (call $rot (f32.load (local.get $ao))
+                       (f32.load (i32.add (local.get $ao) (i32.const 4)))
+                       (f32.load (i32.add (local.get $ao) (i32.const 8)))
+                       (local.get $c0) (local.get $s0)
+                       (local.get $c1) (local.get $s1))
+            (local.set $z0) (local.set $y0) (local.set $x0)
+            (call $rot (f32.load (i32.add (local.get $ao) (i32.const 12)))
+                       (f32.load (i32.add (local.get $ao) (i32.const 16)))
+                       (f32.load (i32.add (local.get $ao) (i32.const 20)))
+                       (local.get $c0) (local.get $s0)
+                       (local.get $c1) (local.get $s1))
+            (local.set $z1) (local.set $y1) (local.set $x1)
+            (local.set $v0 (f32.gt (local.get $z0) (f32.const 0)))
+            (local.set $v1 (f32.gt (local.get $z1) (f32.const 0)))
+            (block $skip
+              (br_if $skip
+                (i32.eqz (i32.or (local.get $v0) (local.get $v1))))
+              (local.set $ex0 (local.get $x0)) (local.set $ey0 (local.get $y0))
+              (local.set $ez0 (local.get $z0)) (local.set $ex1 (local.get $x1))
+              (local.set $ey1 (local.get $y1)) (local.set $ez1 (local.get $z1))
+              (if (i32.xor (local.get $v0) (local.get $v1))
+                (then
+                  (local.set $t (f32.div (local.get $z0)
+                    (f32.sub (local.get $z0) (local.get $z1))))
+                  (local.set $ex1 (f32.add (local.get $x0)
+                    (f32.mul (local.get $t)
+                      (f32.sub (local.get $x1) (local.get $x0)))))
+                  (local.set $ey1 (f32.add (local.get $y0)
+                    (f32.mul (local.get $t)
+                      (f32.sub (local.get $y1) (local.get $y0)))))
+                  (local.set $ez1 (f32.add (local.get $z0)
+                    (f32.mul (local.get $t)
+                      (f32.sub (local.get $z1) (local.get $z0)))))
+                  (if (i32.eqz (local.get $v0))
+                    (then
+                      (local.set $ex0 (local.get $ex1))
+                      (local.set $ey0 (local.get $ey1))
+                      (local.set $ez0 (local.get $ez1))
+                      (local.set $ex1 (local.get $x1))
+                      (local.set $ey1 (local.get $y1))
+                      (local.set $ez1 (local.get $z1))))))
+              (if (i32.gt_u (i32.add (local.get $n) (i32.const 2))
+                            (global.get $LINE_CAP))
+                (then
+                  (i32.store (global.get $P_NLNV) (local.get $n))
+                  (i32.store (global.get $P_ERR) (i32.const 1))
+                  (return)))
+              (call $emit
+                (i32.add (global.get $LINEVERTS)
+                         (i32.mul (local.get $n) (i32.const 32)))
+                (local.get $ex0) (local.get $ey0) (local.get $ez0)
+                (local.get $cr) (local.get $cg) (local.get $cb)
+                (f32.const 0) (call $fade (local.get $ez0) (local.get $limb)))
+              (local.set $n (i32.add (local.get $n) (i32.const 1)))
+              (call $emit
+                (i32.add (global.get $LINEVERTS)
+                         (i32.mul (local.get $n) (i32.const 32)))
+                (local.get $ex1) (local.get $ey1) (local.get $ez1)
+                (local.get $cr) (local.get $cg) (local.get $cb)
+                (f32.const 0) (call $fade (local.get $ez1) (local.get $limb)))
+              (local.set $n (i32.add (local.get $n) (i32.const 1))))
+            (local.set $k (i32.add (local.get $k) (i32.const 1)))
+            (br $kloop)))
+        (local.set $r (i32.add (local.get $r) (i32.const 1)))
+        (br $rloop)))
+    (i32.store (global.get $P_NLNV) (local.get $n))
+    (i32.store (global.get $P_ERR) (i32.const 0)))
+
+  (func (export "buildMarkers")
+    (local $nmark i32)
+    (local $c0 f32) (local $s0 f32) (local $c1 f32) (local $s1 f32)
+    (local $mr f32) (local $mg f32) (local $mb f32)
+    (local $msize f32) (local $half f32)
+    (local $m i32) (local $n i32) (local $ao i32)
+    (local $x f32) (local $y f32) (local $z f32) (local $w f32) (local $sz f32)
+    (i32.store (global.get $P_NPTV) (i32.const 0))
+    (local.set $nmark (i32.load (global.get $P_NMARK)))
+    (if (i32.gt_u (local.get $nmark) (global.get $MARK_CAP))
+      (then (i32.store (global.get $P_ERR) (i32.const 3)) (return)))
+    (local.set $c0 (f32.load (global.get $P_C0)))
+    (local.set $s0 (f32.load (global.get $P_S0)))
+    (local.set $c1 (f32.load (global.get $P_C1)))
+    (local.set $s1 (f32.load (global.get $P_S1)))
+    (local.set $mr (f32.load (global.get $P_MARK_R)))
+    (local.set $mg (f32.load (global.get $P_MARK_G)))
+    (local.set $mb (f32.load (global.get $P_MARK_B)))
+    (local.set $msize (f32.load (global.get $P_MARK_SIZE)))
+    (local.set $half
+      (f32.mul (f32.load (global.get $P_LIMB)) (f32.const 0.5)))
+    (local.set $n (i32.const 0))
+    (local.set $m (i32.const 0))
+    (block $mdone
+      (loop $mloop
+        (br_if $mdone (i32.ge_u (local.get $m) (local.get $nmark)))
+        (local.set $ao
+          (i32.add (global.get $MARKERS)
+                   (i32.mul (local.get $m) (i32.const 16))))
+        (call $rot (f32.load (local.get $ao))
+                   (f32.load (i32.add (local.get $ao) (i32.const 4)))
+                   (f32.load (i32.add (local.get $ao) (i32.const 8)))
+                   (local.get $c0) (local.get $s0)
+                   (local.get $c1) (local.get $s1))
+        (local.set $z) (local.set $y) (local.set $x)
+        (block $skip
+          (br_if $skip (f32.le (local.get $z) (f32.const 0)))
+          (if (i32.gt_u (i32.add (local.get $n) (i32.const 1))
+                        (global.get $POINT_CAP))
+            (then
+              (i32.store (global.get $P_NPTV) (local.get $n))
+              (i32.store (global.get $P_ERR) (i32.const 2))
+              (return)))
+          (local.set $w (f32.load (i32.add (local.get $ao) (i32.const 12))))
+          (local.set $sz
+            (f32.mul (f32.mul (local.get $msize) (local.get $w))
+                     (f32.add (f32.const 0.55)
+                              (f32.mul (f32.const 0.45) (local.get $z)))))
+          (call $emit
+            (i32.add (global.get $POINTVERTS)
+                     (i32.mul (local.get $n) (i32.const 32)))
+            (local.get $x) (local.get $y) (local.get $z)
+            (local.get $mr) (local.get $mg) (local.get $mb)
+            (local.get $sz) (call $fade (local.get $z) (local.get $half)))
+          (local.set $n (i32.add (local.get $n) (i32.const 1))))
+        (local.set $m (i32.add (local.get $m) (i32.const 1)))
+        (br $mloop)))
+    (i32.store (global.get $P_NPTV) (local.get $n))
+    (i32.store (global.get $P_ERR) (i32.const 0)))
+)

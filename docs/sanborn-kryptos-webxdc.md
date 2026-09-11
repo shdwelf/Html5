@@ -153,7 +153,20 @@ fallback markers.
 that neither app has an external script beyond `./webxdc.js`, that neither
 references `.wasm`/`WebAssembly`, and that both carry the WebGL fallback markers.
 
-## 7. Open items for further research
+## 7. K4 method hypotheses panel (Sept 2026)
+
+Kryptos VRML gained a ranked K4-cryptosystem panel (`#sec-k4-method`, HUD
+button `K4?`): six hypotheses with editorial probabilities summing to 100
+(38/24/14/11/8/5), the case for/against each, and one-click jumps that load
+the 97-char K4 ciphertext into the matching simulator family
+(`testHypothesis` → `sec-simulator`). Ranking is the page editors', not
+Sanborn's; it is constrained by the confirmed anchors (EAST 22–25,
+NORTHEAST 26–34, BERLIN 64–69, CLOCK 70–74), KNOWLEDGE, the Weltzeituhr
+identification, and the undisclosed Sept-2025 archive plaintext. Both
+`.xdc` containers were rebuilt from `public/apps/` via
+`scripts/build-xdc.mjs` afterwards.
+
+## 8. Open items for further research
 
 - Implement real WebXR present (render loop + `WebXRManager`) in Kryptos VRML if
   headset support is wanted; today it gracefully declines.

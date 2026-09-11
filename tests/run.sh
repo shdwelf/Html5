@@ -61,6 +61,25 @@ node tests/09-blink-contract.mjs || status=1
 echo "──────────────────────────────────────────────"
 node tests/10-lens3d-wasm.mjs || status=1
 
+# The coin registry is committed; this only checks it is what the market
+# snapshot + SLIP-0044 join build to.
+echo "──────────────────────────────────────────────"
+node tools/build_coins.mjs --check || status=1
+
+echo "──────────────────────────────────────────────"
+node tests/11-wallet-coins.mjs || status=1
+
+# The globe projector binary + coastline are committed; these only check the
+# .wat and the topojson source still build to them (wabt-gated, skips clean).
+echo "──────────────────────────────────────────────"
+node tools/build_globe_wasm.mjs --check || status=1
+
+echo "──────────────────────────────────────────────"
+node tools/build_globe_data.mjs --check || status=1
+
+echo "──────────────────────────────────────────────"
+node tests/12-globe-wasm.mjs || status=1
+
 echo "──────────────────────────────────────────────"
 [ "$status" -eq 0 ] && echo "all suites passed" || echo "FAILURES — see above"
 exit "$status"
