@@ -1,0 +1,650 @@
+{
+  "_comment": [
+    "Boot/ATA scenarios driven identically through the RTL (tools/sim/vchip_driver.cc,",
+    "compiled from the CXXRTL output of rtl/vchip_top.v) and the JavaScript reference",
+    "model (tools/run_vchip_scenarios.mjs). The transcript is the deliverable: if the",
+    "two disagree on any cycle the check fails.",
+    "",
+    "Values may be referenced symbolically:",
+    "  @digest.<name>  -> the stage digests below",
+    "  @golden.<stage> -> the cumulative golden vector for a stage, computed by",
+    "                     tools/gen_vchip_vectors.mjs from the digests above using the",
+    "                     reference mixer. Regenerate with --write; the generator also",
+    "                     re-derives them on every verification run and fails if the",
+    "                     checked-in values drift.",
+    "",
+    "Defaults when a field is absent: everything is 0, except policyProvLatches=1",
+    "(a provisioning attempt after the fuse is burnt is treated as tamper).",
+    "policyAllowDestructive defaults to 0: the safe posture is to refuse erasing a",
+    "device whose chain did not verify."
+  ],
+  "digests": {
+    "mbr_ok": "1122334455667788",
+    "efi_ok": "99aabbccddeeff00",
+    "loader_ok": "0123456789abcdef",
+    "rogue": "deadbeefcafebabe"
+  },
+  "golden": {
+    "mbr": "904e2f69eb77f634",
+    "efi": "3f4dab614c5f4080",
+    "loader": "75c39f3296a3469e"
+  },
+  "scenarios": [
+    {
+      "name": "honest_boot",
+      "description": "Provision three stages, arm, measure MBR -> ESP -> loader in order with the right digests, then use the media and grant a password-authorized erase.",
+      "steps": [
+        {
+          "rst_n": 0,
+          "note": "power-on reset"
+        },
+        {
+          "rst_n": 0,
+          "note": "reset held"
+        },
+        {
+          "rst_n": 1,
+          "note": "reset released; lock idle, no golden vector yet"
+        },
+        {
+          "arm": 1,
+          "note": "arming strap asserted"
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 0,
+          "prov_vec": "@golden.mbr",
+          "note": "fixture writes golden for LBA0",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 1,
+          "prov_vec": "@golden.efi",
+          "note": "fixture writes golden for the ESP",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 2,
+          "prov_vec": "@golden.loader",
+          "note": "fixture writes golden for the loader; fuse burnt",
+          "recov": 1
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 0,
+          "meas_digest": "@digest.mbr_ok",
+          "note": "measure LBA0 bootstrap"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 1,
+          "meas_digest": "@digest.efi_ok",
+          "note": "measure EFI system partition"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 2,
+          "meas_digest": "@digest.loader_ok",
+          "note": "measure second-stage loader"
+        },
+        {
+          "boot": 2,
+          "note": "platform presents a UEFI boot source"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 202,
+          "note": "ATA WRITE DMA",
+          "allow_destr": 1
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 241,
+          "note": "hdparm: SECURITY SET PASSWORD",
+          "allow_destr": 1
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 243,
+          "pwd_ok": 1,
+          "note": "hdparm: SECURITY ERASE PREPARE",
+          "allow_destr": 1
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 244,
+          "pwd_ok": 1,
+          "note": "hdparm: SECURITY ERASE UNIT",
+          "allow_destr": 1
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 245,
+          "note": "hdparm: SECURITY FREEZE LOCK",
+          "allow_destr": 1
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 242,
+          "pwd_ok": 1,
+          "note": "hdparm: SECURITY UNLOCK after freeze -> refused",
+          "allow_destr": 1
+        }
+      ]
+    },
+    {
+      "name": "tampered_mbr",
+      "description": "The bootstrap on the disk does not match the golden vector. Everything after that must be denied, and the destructive-command refusal is the point.",
+      "steps": [
+        {
+          "rst_n": 0,
+          "note": "power-on reset"
+        },
+        {
+          "rst_n": 1
+        },
+        {
+          "arm": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 0,
+          "prov_vec": "@golden.mbr",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 1,
+          "prov_vec": "@golden.efi",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 2,
+          "prov_vec": "@golden.loader",
+          "note": "fuse burnt",
+          "recov": 1
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 0,
+          "meas_digest": "@digest.rogue",
+          "note": "modified bootstrap: digest mismatch"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 1,
+          "meas_digest": "@digest.efi_ok",
+          "note": "attacker then presents a good ESP: refused, lock is closed"
+        },
+        {
+          "boot": 2,
+          "note": "boot source presented to a locked chipset"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 202,
+          "note": "ATA WRITE DMA"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 241,
+          "note": "hdparm: SECURITY SET PASSWORD"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 243,
+          "pwd_ok": 1,
+          "note": "hdparm: SECURITY ERASE PREPARE"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 244,
+          "pwd_ok": 1,
+          "note": "hdparm: SECURITY ERASE UNIT -> denied by chipset policy"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 254,
+          "note": "vendor reflash -> denied"
+        },
+        {
+          "boot": 2,
+          "recov": 1,
+          "note": "recovery strap: re-provisioning only, not erasure"
+        },
+        {
+          "boot": 2,
+          "recov": 1,
+          "cmd_valid": 1,
+          "cmd": 254,
+          "note": "reflash while recovery strap is asserted -> still denied on a tampered box"
+        }
+      ]
+    },
+    {
+      "name": "stage_skip",
+      "description": "A loader that skips straight to the ESP, i.e. an attempt to reorder or omit a stage. Order violation latches immediately.",
+      "steps": [
+        {
+          "rst_n": 0
+        },
+        {
+          "rst_n": 1,
+          "arm": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 0,
+          "prov_vec": "@golden.mbr",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 1,
+          "prov_vec": "@golden.efi",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 2,
+          "prov_vec": "@golden.loader",
+          "recov": 1
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 1,
+          "meas_digest": "@digest.efi_ok",
+          "note": "ESP measured before LBA0"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 0,
+          "meas_digest": "@digest.mbr_ok",
+          "note": "backfill attempt ignored"
+        }
+      ]
+    },
+    {
+      "name": "boot_mode_policy",
+      "description": "UEFI-only policy. The legacy MBR path is refused even with a perfect chain, and vice versa.",
+      "steps": [
+        {
+          "rst_n": 0
+        },
+        {
+          "rst_n": 1,
+          "arm": 1,
+          "mode": 2,
+          "note": "policy: UEFI only, CSM disabled"
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 0,
+          "prov_vec": "@golden.mbr",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 1,
+          "prov_vec": "@golden.efi",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 2,
+          "prov_vec": "@golden.loader",
+          "recov": 1
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 0,
+          "meas_digest": "@digest.mbr_ok"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 1,
+          "meas_digest": "@digest.efi_ok"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 2,
+          "meas_digest": "@digest.loader_ok",
+          "note": "chain complete and matched"
+        },
+        {
+          "boot": 1,
+          "note": "legacy/CSM source presented under a UEFI-only policy"
+        },
+        {
+          "boot": 2,
+          "note": "the UEFI source is accepted"
+        }
+      ]
+    },
+    {
+      "name": "provision_attack",
+      "description": "After the first accepted measurement the reference vectors are frozen. A late provisioning attempt is refused and (by policy) is treated as tamper.",
+      "steps": [
+        {
+          "rst_n": 0
+        },
+        {
+          "rst_n": 1,
+          "arm": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 0,
+          "prov_vec": "@golden.mbr",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 1,
+          "prov_vec": "@golden.efi",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 2,
+          "prov_vec": "@golden.loader",
+          "note": "fuse burnt",
+          "recov": 1
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 0,
+          "meas_digest": "@digest.mbr_ok",
+          "note": "first measurement closes provisioning"
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 0,
+          "prov_vec": "@digest.rogue",
+          "note": "rewrite the root of trust to match the attacker",
+          "recov": 1
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 1,
+          "meas_digest": "@digest.efi_ok",
+          "note": "everything after the violation is inert"
+        }
+      ]
+    },
+    {
+      "name": "attempt_counter",
+      "description": "Five wrong passwords exhaust the ATA attempt counter. With destructive operations denied by policy the device cannot be recovered in-band, which is the documented cost of refusing to erase.",
+      "steps": [
+        {
+          "rst_n": 0
+        },
+        {
+          "rst_n": 1,
+          "arm": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 0,
+          "prov_vec": "@golden.mbr",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 1,
+          "prov_vec": "@golden.efi",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 2,
+          "prov_vec": "@golden.loader",
+          "recov": 1
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 0,
+          "meas_digest": "@digest.mbr_ok"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 1,
+          "meas_digest": "@digest.efi_ok"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 2,
+          "meas_digest": "@digest.loader_ok"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 241,
+          "note": "hdparm: SECURITY SET PASSWORD"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 242,
+          "pwd_ok": 0,
+          "note": "wrong password 1"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 242,
+          "pwd_ok": 0,
+          "note": "wrong password 2"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 242,
+          "pwd_ok": 0,
+          "note": "wrong password 3"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 242,
+          "pwd_ok": 0,
+          "note": "wrong password 4"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 242,
+          "pwd_ok": 0,
+          "note": "wrong password 5: counter spent"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 242,
+          "pwd_ok": 1,
+          "note": "the correct password no longer unlocks"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 243,
+          "pwd_ok": 1,
+          "note": "hdparm: SECURITY ERASE PREPARE"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 244,
+          "pwd_ok": 1,
+          "note": "hdparm: SECURITY ERASE UNIT -> policy denies destructive history erasure"
+        },
+        {
+          "boot": 2,
+          "cmd_valid": 1,
+          "cmd": 202,
+          "note": "writes were already blocked by the locked drive"
+        }
+      ]
+    },
+    {
+      "name": "recovery_strap",
+      "description": "Physical presence before first handoff re-opens provisioning so a fixture can re-key the device. It never grants erasure and never reflashes a tampered box.",
+      "steps": [
+        {
+          "rst_n": 0
+        },
+        {
+          "rst_n": 1,
+          "arm": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 0,
+          "prov_vec": "@golden.mbr",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 1,
+          "prov_vec": "@golden.efi",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 2,
+          "prov_vec": "@golden.loader",
+          "recov": 1
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 0,
+          "meas_digest": "@digest.rogue",
+          "note": "tampered bootstrap latches the lock"
+        },
+        {
+          "recov": 1,
+          "note": "recovery strap asserted: no help, the latch is not pre-boot any more"
+        },
+        {
+          "rst_n": 0,
+          "recov": 1,
+          "note": "fixture cycle: power-on reset with the strap held"
+        },
+        {
+          "rst_n": 1,
+          "arm": 1,
+          "recov": 1,
+          "note": "pre-boot window: recovery is active"
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 0,
+          "prov_vec": "@golden.mbr",
+          "note": "re-key the root of trust",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 1,
+          "prov_vec": "@golden.efi",
+          "recov": 1
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 2,
+          "prov_vec": "@golden.loader",
+          "recov": 1
+        },
+        {
+          "cmd_valid": 1,
+          "cmd": 254,
+          "note": "vendor reflash during recovery: refused, chain not complete"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 0,
+          "meas_digest": "@digest.mbr_ok"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 1,
+          "meas_digest": "@digest.efi_ok"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 2,
+          "meas_digest": "@digest.loader_ok"
+        },
+        {
+          "boot": 2,
+          "note": "re-keyed device hands control to the measured stage"
+        }
+      ]
+    },
+    {
+      "name": "prov_race",
+      "description": "A provisioning violation landing in the same cycle as a valid measurement. The attack must win: the measurement is refused and the lock latches, instead of leaving tampered-but-not-locked for a cycle. The SAT solver found this race, so it is pinned here.",
+      "steps": [
+        {
+          "rst_n": 0
+        },
+        {
+          "rst_n": 1,
+          "arm": 1
+        },
+        {
+          "recov": 1,
+          "prov_valid": 1,
+          "prov_idx": 0,
+          "prov_vec": "@golden.mbr"
+        },
+        {
+          "recov": 1,
+          "prov_valid": 1,
+          "prov_idx": 1,
+          "prov_vec": "@golden.efi"
+        },
+        {
+          "recov": 1,
+          "prov_valid": 1,
+          "prov_idx": 2,
+          "prov_vec": "@golden.loader"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 0,
+          "meas_digest": "@digest.mbr_ok"
+        },
+        {
+          "prov_valid": 1,
+          "prov_idx": 0,
+          "prov_vec": "@digest.rogue",
+          "meas_valid": 1,
+          "meas_stage": 1,
+          "meas_digest": "@digest.efi_ok",
+          "note": "violation and measurement in the same cycle"
+        },
+        {
+          "meas_valid": 1,
+          "meas_stage": 2,
+          "meas_digest": "@digest.loader_ok",
+          "note": "the chain can never complete after this"
+        }
+      ]
+    }
+  ]
+}

@@ -24,8 +24,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEST = ROOT / "wasm" / "ghidra"
 
-# Languages worth keeping for the lab: the three x86 modes a DOS-era sample can
-# realistically be, plus 64-bit so the same pane can chew on modern binaries.
+# Languages worth keeping: the three x86 modes a DOS-era sample can realistically
+# be plus 64-bit for modern binaries, and the Atmel AVR family, which is what the
+# firmware walkthrough in docs/atmel-firmware-walkthrough.md decompiles with
+# (avr8 = classic ATmega/ATtiny, atmega256 = the >128 KB parts with RAMPZ/EIND,
+# xmega, and the 32-bit AVR32 core). The AVR specs are small: ~150 KB in total,
+# against 35 MB for the whole package.
 KEEP_LANGUAGES = [
     "x86:LE:16:Real Mode",
     "x86:LE:16:Protected Mode",
@@ -33,6 +37,11 @@ KEEP_LANGUAGES = [
     "x86:LE:32:System Management Mode",
     "x86:LE:64:default",
     "x86:LE:64:compat32",
+    "avr8:LE:16:default",
+    "avr8:LE:16:extended",
+    "avr8:LE:16:atmega256",
+    "avr8:LE:24:xmega",
+    "avr32:BE:32:default",
 ]
 
 COMPILERS_TO_DROP = {"golang", "swift", "clangwindows"}

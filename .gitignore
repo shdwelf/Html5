@@ -3,3 +3,13 @@ dist/
 node_modules/
 *.local
 .DS_Store
+
+# RTL simulation outputs (regenerable: python3 tools/verify_rtl.py)
+sim/*.cc
+sim/vchip_rtl
+sim/*.log
+sim/*.err
+sim/build.ys
+sim/formal.ys
+sim/transcript.*.txt
+sim/transcript.diff

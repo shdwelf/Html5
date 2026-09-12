@@ -276,13 +276,27 @@ class El {
     this.listeners = {};
     this._html = "";
     this._text = "";
-    const cls = new Set();
+    this._cls = new Set();
+    const cls = this._cls;
     this.classList = {
-      add: (c) => cls.add(c),
-      remove: (c) => cls.delete(c),
+      add: (...cs) => cs.forEach((c) => cls.add(c)),
+      remove: (...cs) => cs.forEach((c) => cls.delete(c)),
       toggle: (c, on) => (on ? cls.add(c) : cls.delete(c)),
       contains: (c) => cls.has(c),
     };
+  }
+
+  /**
+   * `className` reflects the class attribute, so it has to stay in step with
+   * classList - which is how the page controller sets both on the same node.
+   * Blink: HTMLElement.className -> Element.className (DOMString), and
+   * `append(...)` is ParentNode.append (strings become Text nodes).
+   */
+  get className() {
+    return [...this._cls].join(" ");
+  }
+  set className(v) {
+    this._cls = new Set(String(v).split(/\s+/).filter(Boolean));
   }
 
   addEventListener(type, fn) {
@@ -292,7 +306,19 @@ class El {
   removeEventListener() {}
   appendChild(child) {
     this.children.push(child);
+    if (child && child.id) byId.set(child.id, child);
     return child;
+  }
+  append(...nodes) {
+    for (const n of nodes) {
+      const child = typeof n === "string" ? Object.assign(new El("#text"), { textContent: n }) : n;
+      this.appendChild(child);
+    }
+    TOUCHED.add(this.id || this.tagName);
+    return this;
+  }
+  get firstChild() {
+    return this.children[0] || null;
   }
   removeChild() {}
   remove() {}
@@ -321,11 +347,20 @@ class El {
     this._html = String(v);
     TOUCHED.add(this.id || this.tagName);
   }
+  /**
+   * Blink: Node.textContent is the concatenation of every descendant text node
+   * (dom/nodes/Node.idl), and the setter replaces all children with one text
+   * node. Returning only the node's own string made `el.textContent` read as
+   * empty for a container whose children carried the text - which silently
+   * passes a UI test that should fail.
+   */
   get textContent() {
-    return this._text;
+    if (this._text) return this._text;
+    return this.children.map((c) => (c && c.textContent) || "").join("");
   }
   set textContent(v) {
     this._text = String(v);
+    this.children = [];
     TOUCHED.add(this.id || this.tagName);
   }
   get firstElementChild() {
@@ -370,6 +405,11 @@ export function installDomStub(opts = {}) {
     },
     createElementNS(ns, tag) {
       return new El(tag);
+    },
+    createTextNode(value) {
+      const node = new El("#text");
+      node.textContent = String(value);
+      return node;
     },
     querySelector() {
       return null;
