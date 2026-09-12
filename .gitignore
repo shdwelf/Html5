@@ -7,3 +7,13 @@ node_modules/
 # Arena relay cache (large binaries fetched via Actions)
 .relay/
 .arena-relay/run*
+
+# RTL simulation outputs (regenerable: python3 tools/verify_rtl.py)
+sim/*.cc
+sim/vchip_rtl
+sim/*.log
+sim/*.err
+sim/build.ys
+sim/formal.ys
+sim/transcript.*.txt
+sim/transcript.diff

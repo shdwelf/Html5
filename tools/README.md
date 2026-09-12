@@ -9,7 +9,14 @@ needed to serve the app — `ghidra-lab.html` is plain static HTML + ES modules.
 | `verify_disasm.mjs` | Cross-checks `js/x86dis.js` against `objdump -M i8086` on every sample. Currently **364/364 instructions agree**. |
 | `verify_ghidra.mjs` | Headlessly decompiles every code symbol in the catalog through the vendored Ghidra wasm, using the same loader the page uses. |
 | `check-dom-ids.mjs` | Contract test: every `$("id")` in `js/viruslab.js` must exist in `ghidra-lab.html`. |
-| `stage_ghidra_specs.py` | Re-vendors the Ghidra decompiler wasm + the x86 SLEIGH specs into `wasm/ghidra`. |
+| `stage_ghidra_specs.py` | Re-vendors the Ghidra decompiler wasm + the x86 **and Atmel AVR** SLEIGH specs into `wasm/ghidra` (from `npm pack @mauricelam/ghidra-decompiler-wasm`). |
+| `ghidra_avr.mjs` | Intel HEX parsing (checksums, load address) + boot-chain opcode location (`SPM`, `LPM`, `WDR`) for Atmel AVR firmware, with `--probe` documenting that the vendored wasm bridge cannot decompile AVR8 (word-addressed Harvard code space). |
+| `verify_rtl.py` | The vchip verification: vectors → CXXRTL build → transcript diff vs the reference model and the golden → 20 SAT proofs → boot-chain checks. `sh tools/setup_rtl.sh` installs Yosys first. |
+| `gen_vchip_vectors.mjs` | Expands `rtl/scenarios/vchip_scenarios.json` into the golden vectors; fails on drift unless `--write`. |
+| `run_vchip_scenarios.mjs` | Runs the scenarios through the JS reference model (`js/vchip-model.js`, the spec) and prints the transcript. |
+| `bootchain.py` | Boot-chain requirement checker: MBR/GPT/ESP/PE32+/loader structure checks + the platform status word, with `--selftest`, `--fixtures`, `--transcript`, `--layout-json`. |
+| `verify_bootchain.mjs` | Keeps `js/bootchain.js` equal to the RTL-derived layout and to `tools/bootchain.py`, cycle by cycle. |
+| `setup_rtl.sh` | Installs the user-space Yosys build and runs `verify_rtl.py`. |
 | `smoke_pipeline.mjs` | Runs the whole DOM-free analysis path over every sample and prints what the panels would show. Catches crashes and empty panels without a browser. |
 | `render_research.mjs` | Renders `js/virus-catalog.js` to `criteria/RESEARCH-VIRUSES.md`. |
 | `build_entropy_wasm.py` | Pre-existing: hand-assembles the small keyspace projector wasm. |
@@ -23,6 +30,16 @@ node tools/serve.mjs 8099 &                        # wasm + specs over HTTP
 node tools/verify_ghidra.mjs 8099                  # decompile every symbol
 node tools/smoke_pipeline.mjs                      # analysis path over every sample
 node tools/render_research.mjs                     # regenerate criteria/RESEARCH-VIRUSES.md
+
+# the virtual chipset (RTL) and the boot-chain requirements
+sh tools/setup_rtl.sh                              # Yosys (user-space) + full verification
+python3 tools/verify_rtl.py --quick                # RTL/model conformance only, ~5 s
+python3 tools/bootchain.py --selftest              # requirement rules vs crafted fixtures
+python3 tools/bootchain.py --image disk.img --policy uefi
+node tools/verify_bootchain.mjs                    # JS mirror vs the RTL-derived layout
+node tests/11-chipset-lab.mjs                      # the chipset-lab page controller
+node tools/ghidra_avr.mjs samples/avr/optiboot_atmega328.hex    # AVR HEX + opcode map
+node tools/ghidra_avr.mjs samples/avr/optiboot_atmega328.hex --probe   # AVR decompiler matrix
 ```
 
 ## Rebuilding the sample binaries

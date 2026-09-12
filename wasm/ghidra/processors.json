@@ -1,5 +1,80 @@
 [
   {
+    "id": "avr8:LE:16:default",
+    "description": "AVR8 with 16-bit word addressable code space",
+    "sla": "Processors/Atmel/data/languages/avr8.sla",
+    "pspec": "Processors/Atmel/data/languages/avr8.pspec",
+    "compilers": [
+      {
+        "name": "gcc",
+        "id": "gcc",
+        "spec": "Processors/Atmel/data/languages/avr8gcc.cspec"
+      },
+      {
+        "name": "iarV1",
+        "id": "iarV1",
+        "spec": "Processors/Atmel/data/languages/avr8iarV1.cspec"
+      },
+      {
+        "name": "imgCraftV8",
+        "id": "imgCraftV8",
+        "spec": "Processors/Atmel/data/languages/avr8imgCraftV8.cspec"
+      }
+    ]
+  },
+  {
+    "id": "avr8:LE:16:extended",
+    "description": "AVR8 with 22-bit word addressable with EIND code space",
+    "sla": "Processors/Atmel/data/languages/avr8eind.sla",
+    "pspec": "Processors/Atmel/data/languages/avr8.pspec",
+    "compilers": [
+      {
+        "name": "gcc",
+        "id": "gcc",
+        "spec": "Processors/Atmel/data/languages/avr8egcc.cspec"
+      }
+    ]
+  },
+  {
+    "id": "avr8:LE:16:atmega256",
+    "description": "AVR8 for an Atmega 256",
+    "sla": "Processors/Atmel/data/languages/avr8eind.sla",
+    "pspec": "Processors/Atmel/data/languages/atmega256.pspec",
+    "compilers": [
+      {
+        "name": "gcc",
+        "id": "gcc",
+        "spec": "Processors/Atmel/data/languages/avr8egcc.cspec"
+      }
+    ]
+  },
+  {
+    "id": "avr8:LE:24:xmega",
+    "description": "AVR8 for an Xmega",
+    "sla": "Processors/Atmel/data/languages/avr8xmega.sla",
+    "pspec": "Processors/Atmel/data/languages/avr8xmega.pspec",
+    "compilers": [
+      {
+        "name": "gcc",
+        "id": "gcc",
+        "spec": "Processors/Atmel/data/languages/avr8egcc.cspec"
+      }
+    ]
+  },
+  {
+    "id": "avr32:BE:32:default",
+    "description": "Generic AVR32-A big-endian",
+    "sla": "Processors/Atmel/data/languages/avr32a.sla",
+    "pspec": "Processors/Atmel/data/languages/avr32a.pspec",
+    "compilers": [
+      {
+        "name": "default",
+        "id": "default",
+        "spec": "Processors/Atmel/data/languages/avr32a.cspec"
+      }
+    ]
+  },
+  {
     "id": "x86:LE:32:default",
     "description": "Intel/AMD 32-bit x86",
     "sla": "Processors/x86/data/languages/x86.sla",

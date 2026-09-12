@@ -1,0 +1,188 @@
+# vchip transcript
+# vector: 64 bits / 4 lanes / 4 rounds, seed 5a5a5a5a5a5a5a5a
+# mixer conformance: 107/107 vectors match
+# golden chain: mbr=904e2f69eb77f634 efi=3f4dab614c5f4080 loader=75c39f3296a3469e
+
+# ===== honest_boot =====
+# Provision three stages, arm, measure MBR -> ESP -> loader in order with the right digests, then use the media and grant a password-authorized erase.
+# honest_boot: power-on reset
+honest_boot#000 arm=0 arml=0 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000000000200
+# honest_boot: reset held
+honest_boot#001 arm=0 arml=0 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000000000200
+# honest_boot: reset released; lock idle, no golden vector yet
+honest_boot#002 arm=0 arml=0 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000000000200
+# honest_boot: arming strap asserted
+honest_boot#003 arm=1 arml=1 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001000000200
+# honest_boot: fixture writes golden for LBA0
+honest_boot#004 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+# honest_boot: fixture writes golden for the ESP
+honest_boot#005 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/1 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+# honest_boot: fixture writes golden for the loader; fuse burnt
+honest_boot#006 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/2 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001500000200
+# honest_boot: measure LBA0 bootstrap
+honest_boot#007 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=1 mask=0001 ext=1 vec=904e2f69eb77f634 deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001130000204
+# honest_boot: measure EFI system partition
+honest_boot#008 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/1 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=1 mask=0011 ext=2 vec=3f4dab614c5f4080 deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001154000204
+# honest_boot: measure second-stage loader
+honest_boot#009 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/2 prov=0/0 cmd=00 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=3 rel=0 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001178300609
+# honest_boot: platform presents a UEFI boot source
+honest_boot#010 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001978300129
+# honest_boot: ATA WRITE DMA
+honest_boot#011 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=ca pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001978300129
+# honest_boot: hdparm: SECURITY SET PASSWORD
+honest_boot#012 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f1 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=100 fail=0 abrt=0 ign=0 st=0000001978302129
+# honest_boot: hdparm: SECURITY ERASE PREPARE
+honest_boot#013 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f3 pwd=1 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=100 fail=0 abrt=0 ign=0 st=0000001978302129
+# honest_boot: hdparm: SECURITY ERASE UNIT
+honest_boot#014 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f4 pwd=1 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=1 rd=1 ers=1 rfl=0 ersd=0 rfld=0 sec=100 fail=0 abrt=0 ign=0 st=0000001978702129
+# honest_boot: hdparm: SECURITY FREEZE LOCK
+honest_boot#015 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f5 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=101 fail=0 abrt=0 ign=0 st=000000197830a129
+# honest_boot: hdparm: SECURITY UNLOCK after freeze -> refused
+honest_boot#016 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f2 pwd=1 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=101 fail=0 abrt=2 ign=0 st=000120197830a129
+
+# ===== tampered_mbr =====
+# The bootstrap on the disk does not match the golden vector. Everything after that must be denied, and the destructive-command refusal is the point.
+# tampered_mbr: power-on reset
+tampered_mbr#000 arm=0 arml=0 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000000000200
+tampered_mbr#001 arm=0 arml=0 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000000000200
+tampered_mbr#002 arm=1 arml=1 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001000000200
+tampered_mbr#003 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+tampered_mbr#004 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/1 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+# tampered_mbr: fuse burnt
+tampered_mbr#005 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/2 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001500000200
+# tampered_mbr: modified bootstrap: digest mismatch
+tampered_mbr#006 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=000000112000080e
+# tampered_mbr: attacker then presents a good ESP: refused, lock is closed
+tampered_mbr#007 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/1 prov=0/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=1 st=001000112000080e
+# tampered_mbr: boot source presented to a locked chipset
+tampered_mbr#008 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=1 st=001000112000092e
+# tampered_mbr: ATA WRITE DMA
+tampered_mbr#009 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=ca pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=5 ign=1 st=001150112000092e
+# tampered_mbr: hdparm: SECURITY SET PASSWORD
+tampered_mbr#010 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f1 pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=100 fail=0 abrt=0 ign=1 st=001000112000292e
+# tampered_mbr: hdparm: SECURITY ERASE PREPARE
+tampered_mbr#011 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f3 pwd=1 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=100 fail=0 abrt=0 ign=1 st=001000112000292e
+# tampered_mbr: hdparm: SECURITY ERASE UNIT -> denied by chipset policy
+tampered_mbr#012 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f4 pwd=1 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=1 rfld=0 sec=100 fail=0 abrt=5 ign=1 st=001150112100292e
+# tampered_mbr: vendor reflash -> denied
+tampered_mbr#013 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=fe pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=1 sec=100 fail=0 abrt=5 ign=1 st=001150112200292e
+# tampered_mbr: recovery strap: re-provisioning only, not erasure
+tampered_mbr#014 arm=0 arml=1 recov=1 boot=2 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=100 fail=0 abrt=0 ign=1 st=001000112000292e
+# tampered_mbr: reflash while recovery strap is asserted -> still denied on a tampered box
+tampered_mbr#015 arm=0 arml=1 recov=1 boot=2 mode=0 meas=0/0 prov=0/0 cmd=fe pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=1 sec=100 fail=0 abrt=5 ign=1 st=001150112200292e
+
+# ===== stage_skip =====
+# A loader that skips straight to the ESP, i.e. an attempt to reorder or omit a stage. Order violation latches immediately.
+stage_skip#000 arm=0 arml=0 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000000000200
+stage_skip#001 arm=1 arml=1 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001000000200
+stage_skip#002 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+stage_skip#003 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/1 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+stage_skip#004 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/2 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001500000200
+# stage_skip: ESP measured before LBA0
+stage_skip#005 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/1 prov=0/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=000000110400080e
+# stage_skip: backfill attempt ignored
+stage_skip#006 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=1 st=001000110400080e
+
+# ===== boot_mode_policy =====
+# UEFI-only policy. The legacy MBR path is refused even with a perfect chain, and vice versa.
+boot_mode_policy#000 arm=0 arml=0 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000000000200
+# boot_mode_policy: policy: UEFI only, CSM disabled
+boot_mode_policy#001 arm=1 arml=1 recov=0 boot=0 mode=2 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001000000280
+boot_mode_policy#002 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+boot_mode_policy#003 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/1 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+boot_mode_policy#004 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/2 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001500000200
+boot_mode_policy#005 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=1 mask=0001 ext=1 vec=904e2f69eb77f634 deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001130000204
+boot_mode_policy#006 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/1 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=1 mask=0011 ext=2 vec=3f4dab614c5f4080 deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001154000204
+# boot_mode_policy: chain complete and matched
+boot_mode_policy#007 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/2 prov=0/0 cmd=00 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=3 rel=0 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001178300609
+# boot_mode_policy: legacy/CSM source presented under a UEFI-only policy
+boot_mode_policy#008 arm=0 arml=1 recov=0 boot=1 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001978300119
+# boot_mode_policy: the UEFI source is accepted
+boot_mode_policy#009 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001978300129
+
+# ===== provision_attack =====
+# After the first accepted measurement the reference vectors are frozen. A late provisioning attempt is refused and (by policy) is treated as tamper.
+provision_attack#000 arm=0 arml=0 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000000000200
+provision_attack#001 arm=1 arml=1 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001000000200
+provision_attack#002 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+provision_attack#003 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/1 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+# provision_attack: fuse burnt
+provision_attack#004 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/2 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001500000200
+# provision_attack: first measurement closes provisioning
+provision_attack#005 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=1 mask=0001 ext=1 vec=904e2f69eb77f634 deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001130000204
+# provision_attack: rewrite the root of trust to match the attacker
+provision_attack#006 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0001 ext=1 vec=904e2f69eb77f634 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=000000133000080e
+# provision_attack: everything after the violation is inert
+provision_attack#007 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/1 prov=0/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0001 ext=1 vec=904e2f69eb77f634 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=1 st=001000133000080e
+
+# ===== attempt_counter =====
+# Five wrong passwords exhaust the ATA attempt counter. With destructive operations denied by policy the device cannot be recovered in-band, which is the documented cost of refusing to erase.
+attempt_counter#000 arm=0 arml=0 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000000000200
+attempt_counter#001 arm=1 arml=1 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001000000200
+attempt_counter#002 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+attempt_counter#003 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/1 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+attempt_counter#004 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/2 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001500000200
+attempt_counter#005 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=1 mask=0001 ext=1 vec=904e2f69eb77f634 deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001130000204
+attempt_counter#006 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/1 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=1 mask=0011 ext=2 vec=3f4dab614c5f4080 deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001154000204
+attempt_counter#007 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/2 prov=0/0 cmd=00 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=3 rel=0 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001178300609
+# attempt_counter: hdparm: SECURITY SET PASSWORD
+attempt_counter#008 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f1 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=100 fail=0 abrt=0 ign=0 st=0000001978302129
+# attempt_counter: wrong password 1
+attempt_counter#009 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f2 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=110 fail=1 abrt=3 ign=0 st=0001301978026129
+# attempt_counter: wrong password 2
+attempt_counter#010 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f2 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=110 fail=2 abrt=3 ign=0 st=0001301978046129
+# attempt_counter: wrong password 3
+attempt_counter#011 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f2 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=110 fail=3 abrt=3 ign=0 st=0001301978066129
+# attempt_counter: wrong password 4
+attempt_counter#012 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f2 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=110 fail=4 abrt=3 ign=0 st=0001301978086129
+# attempt_counter: wrong password 5: counter spent
+attempt_counter#013 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f2 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=110 fail=5 abrt=3 ign=0 st=00013019780b6129
+# attempt_counter: the correct password no longer unlocks
+attempt_counter#014 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f2 pwd=1 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=110 fail=5 abrt=3 ign=0 st=00013019780b6129
+# attempt_counter: hdparm: SECURITY ERASE PREPARE
+attempt_counter#015 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f3 pwd=1 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=110 fail=5 abrt=0 ign=0 st=00000019780b6129
+# attempt_counter: hdparm: SECURITY ERASE UNIT -> policy denies destructive history erasure
+attempt_counter#016 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=f4 pwd=1 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=110 fail=5 abrt=5 ign=0 st=00015019780b6129
+# attempt_counter: writes were already blocked by the locked drive
+attempt_counter#017 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=ca pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=110 fail=5 abrt=4 ign=0 st=00014019780b6129
+
+# ===== recovery_strap =====
+# Physical presence before first handoff re-opens provisioning so a fixture can re-key the device. It never grants erasure and never reflashes a tampered box.
+recovery_strap#000 arm=0 arml=0 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000000000200
+recovery_strap#001 arm=1 arml=1 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001000000200
+recovery_strap#002 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+recovery_strap#003 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/1 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+recovery_strap#004 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/2 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001500000200
+# recovery_strap: tampered bootstrap latches the lock
+recovery_strap#005 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=000000112000080e
+# recovery_strap: recovery strap asserted: no help, the latch is not pre-boot any more
+recovery_strap#006 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0000 ext=1 vec=0240c37f479405e2 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=000000112000080e
+# recovery_strap: fixture cycle: power-on reset with the strap held
+recovery_strap#007 arm=0 arml=0 recov=1 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000400000200
+# recovery_strap: pre-boot window: recovery is active
+recovery_strap#008 arm=1 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+# recovery_strap: re-key the root of trust
+recovery_strap#009 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+recovery_strap#010 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/1 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+recovery_strap#011 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/2 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001500000200
+# recovery_strap: vendor reflash during recovery: refused, chain not complete
+recovery_strap#012 arm=0 arml=1 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=fe pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=5 ign=0 st=0001501100000200
+recovery_strap#013 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=1 mask=0001 ext=1 vec=904e2f69eb77f634 deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001130000204
+recovery_strap#014 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/1 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=1 mask=0011 ext=2 vec=3f4dab614c5f4080 deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001154000204
+recovery_strap#015 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/2 prov=0/0 cmd=00 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=3 rel=0 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001178300609
+# recovery_strap: re-keyed device hands control to the measured stage
+recovery_strap#016 arm=0 arml=1 recov=0 boot=2 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=1 tamper=0 state=2 mask=0111 ext=3 vec=75c39f3296a3469e deny=0 rel=1 wr=1 rd=1 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001978300129
+
+# ===== prov_race =====
+# A provisioning violation landing in the same cycle as a valid measurement. The attack must win: the measurement is refused and the lock latches, instead of leaving tampered-but-not-locked for a cycle. The SAT solver found this race, so it is pinned here.
+prov_race#000 arm=0 arml=0 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000000000000200
+prov_race#001 arm=1 arml=1 recov=0 boot=0 mode=0 meas=0/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001000000200
+prov_race#002 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/0 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+prov_race#003 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/1 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001400000200
+prov_race#004 arm=0 arml=1 recov=1 boot=0 mode=0 meas=0/0 prov=1/2 cmd=00 pwd=0 chain=0 tamper=0 state=0 mask=0000 ext=0 vec=5a5a5a5a5a5a5a5a deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001500000200
+prov_race#005 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/0 prov=0/0 cmd=00 pwd=0 chain=0 tamper=0 state=1 mask=0001 ext=1 vec=904e2f69eb77f634 deny=1 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=0 st=0000001130000204
+# prov_race: violation and measurement in the same cycle
+prov_race#006 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/1 prov=1/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0001 ext=1 vec=904e2f69eb77f634 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=1 st=001000133000080e
+# prov_race: the chain can never complete after this
+prov_race#007 arm=0 arml=1 recov=0 boot=0 mode=0 meas=1/2 prov=0/0 cmd=00 pwd=0 chain=0 tamper=1 state=3 mask=0001 ext=1 vec=904e2f69eb77f634 deny=4 rel=0 wr=0 rd=0 ers=0 rfl=0 ersd=0 rfld=0 sec=000 fail=0 abrt=0 ign=2 st=002000133000080e
+
