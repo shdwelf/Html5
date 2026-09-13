@@ -1,0 +1,27 @@
+Jumper for Makinterface Pro for the GIS SM1.0/2.0 PC/SC driver
+and .dll Library files.
+==============================================================
+
++--------------------+
+| ooooo I:I:II:::: + |    No external power supply required
+| ooooo :I:I::::I: - |
++--------------------+
+
+If you use the small SIM Socket on a 504 ot 505 unit, then just
+set the DET jumper to normal, this will simulate that the card
+is inserted.
+
+
+
+Jumper for Makinterface for the GIS SM1.0/2.0 PC/SC driver
+and .dll Library files.
+===============================================================
+oo
+oo ==. ==. .== I::::: +   External power supply may be required
+oo ==. ==. .== II:::I -   (it depens on your serial port)
+oo
+
+If you use the small SIM Socket on a 504 ot 505 unit, then just
+set the CTS jumper to normal, this will simulate that the card
+is inserted.
+

@@ -1,0 +1,54 @@
+[Author]
+Version=1.00
+Creation Date=08/11/99
+Company=Privat
+Individual=Vlaski, G
+Comment= Ingra-Beton@t-online.de, http://vlaski.virtualave.net
+Comment=             x.....
+Comment= xx. xx. .xx x..... .    Jumper Settings
+Comment= xx. .xx .xx xx...x .
+Comment=             xx...x
+
+[Product]
+Name=MAKInterface
+Manufacturer=Maki GmbH
+Type=1
+
+[Communication Protocol]
+Reader Type=PassThru
+
+[Transmission]
+Reader NAD=
+Card NAD=
+EDC Type=0
+Composition Type=0
+Delay=1000
+
+[Receive]
+Response NAD=
+RC Card Location=END
+Response Card Location=0
+Common Error1=01, Invalid Command
+Common Error2=02, Invalid Option/Parameters
+Common Error3=03, Smartcard is not inserted
+Common Error4=04, Smartcard I/O time-out
+Common Error5=05, Low Battery
+Common Error6=06, SmartCard Parity Error
+
+[Commands]
+Command1=RdrCardOff
+Command2=RdrInquire
+Command3=RdrReset
+
+[RdrCardOff]
+Type=1
+Instruction=131, pause
+Response Time=0
+Response Length=0
+
+[RdrReset]
+Type=1
+Instruction=1, pause, 3, 1, pause
+Response Time=5000
+Response Length=11
+Error1=0B, Reset Failed
