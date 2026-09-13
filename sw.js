@@ -2,7 +2,8 @@
    The 2.6 MB ghidra_decompiler.wasm is intentionally *not* precached: the
    service worker caches it on first use, so the lab still works offline after
    one visit without slowing down install for everyone else. */
-const CACHE = "sitek-html5-v23";
+const CACHE_PREFIX = "sitek-html5-";
+const CACHE = `${CACHE_PREFIX}v24`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -134,7 +135,12 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      // CacheStorage is shared with other apps on this origin. Only retire
+      // caches owned by this worker; leave the book and other apps alone.
+      .then((keys) => Promise.all(
+        keys.filter((k) => k.startsWith(CACHE_PREFIX) && k !== CACHE)
+          .map((k) => caches.delete(k))
+      ))
       .then(() => self.clients.claim())
   );
 });
