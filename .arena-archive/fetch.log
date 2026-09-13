@@ -1,0 +1,12 @@
+FAIL  makinterface/MAKI-PRO.ZIP  https://web.archive.org/web/20000830072829id_/http://www.makinterface.de:80/MAKI-PRO.ZIP  (size 22789 != indexed 22894)
+FAIL  makinterface/dms.zip  https://web.archive.org/web/20051028062659id_/http://www.makinterface.de:80/dms.zip  (size 1456901 != indexed 1457566)
+FAIL  makinterface/DMS_EN.ZIP  https://web.archive.org/web/20020822020619id_/http://www.makinterface.de:80/DMS_EN.ZIP  (size 217895 != indexed 218350)
+FAIL  makinterface/DMS_DE.ZIP  https://web.archive.org/web/20011120041300id_/http://www.makinterface.de:80/DMS_DE.ZIP  (size 218633 != indexed 219092)
+FAIL  makinterface/IC-PROG.ZIP  https://web.archive.org/web/20011120041757id_/http://www.makinterface.de:80/IC-PROG.ZIP  (size 112982 != indexed 112776)
+FAIL  makinterface/PONYPROG.ZIP  https://web.archive.org/web/20011120045326id_/http://www.makinterface.de:80/PONYPROG.ZIP  (size 93213 != indexed 93169)
+FAIL  makinterface/MAKITEST.ZIP  https://web.archive.org/web/20011108012902id_/http://www.makinterface.de:80/MAKITEST.ZIP  (size 378036 != indexed 378338)
+FAIL  makinterface/SMARTCRD.ZIP  https://web.archive.org/web/20010914164750id_/http://www.makinterface.de:80/SMARTCRD.ZIP  (size 329575 != indexed 330004)
+FAIL  makinterface/Adapter.zip  https://web.archive.org/web/20000830072837id_/http://www.makinterface.de:80/Adapter.zip  (size 365821 != indexed 366258)
+FAIL  makinterface/Pinout.zip  https://web.archive.org/web/20000830072841id_/http://www.makinterface.de:80/Pinout.zip  (size 7109 != indexed 7200)
+
+0/10 retrieved
