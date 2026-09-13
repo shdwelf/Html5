@@ -654,6 +654,138 @@ export const WARRICK = {
     "every capture is SHA-1-gated before analysis.",
 };
 
+/* ------------------------------------------------- vx heavens / vcl ----- */
+
+/**
+ * VX HEAVENS — the Virus Creation Laboratory. Nowhere Man ([NuKE]) published
+ * VCL 1.00 in July 1992: a menu-driven DOS IDE that writes commented assembler
+ * for COM-infecting, companion and overwriting viruses, plus trojans and logic
+ * bombs. VX Heavens' Constructors shelf still serves the [VCL]-cracked vcl.zip
+ * with its shelf page, and textfiles.com mirrors VCL.DOC verbatim. Every row
+ * below is a 200-OK capture pinned with its CDX SHA-1 (base32) at catalog time.
+ */
+export const VXHEAVENS = {
+  name: "VX Heavens — Virus Creation Laboratory",
+  url: "http://vxheavens.com/",
+  years: "1992 (tool) · 1997–2014 (archive)",
+  blurb:
+    "VX Heavens called it the Virus Creation Laboratory: Nowhere Man's July-1992 " +
+    "constructor that let anyone with no assembler produce COM viruses, trojans " +
+    "and logic bombs from menus. The Constructors shelf still serves the " +
+    "[VCL]-cracked vcl.zip (190,066 B per the shelf page, MD5 a82ac0a2…) with " +
+    "its shelf page, and textfiles.com mirrors VCL.DOC word for word — all " +
+    "seven captures pinned below with their CDX SHA-1, all recoverable through " +
+    "the same gate as the kr0me and DSS cases. VCL.EXE itself is 16-bit " +
+    "Borland C++ — the sweep's real target.",
+  /** The shelf page's own record for vcl.zip (vx.php?id=tv03, Oct 10 2014). */
+  shelf: {
+    page: "vx.php?id=tv03",
+    ts: "20141010043629",
+    digest: "J3RQTZMI3G2BUJFSN7253OJCIUWP7SXP",
+    file: "vcl.zip",
+    size: 190066,
+    md5: "a82ac0a215221e29b659c11fdffc84d3",
+    note: "[VCL] (cracked version) · Jul 1992",
+  },
+  shelfNote:
+    "Late summer 1992, Nowhere Man of the American group [NuKE] published VCL " +
+    "1.00: a menu-driven IDE of near-commercial quality (mouse, drop-down " +
+    "menus, separate installer, ICO/PIF for the Program Manager) that writes " +
+    "commented assembler for COM-infecting, companion and overwriting viruses — " +
+    "plus trojans and logic bombs — with selectable triggers (date, time, " +
+    "infection count, country code, DOS version, free RAM) and payloads " +
+    "(crash, corrupt, print, wipe whole disks, play a composed tune). The " +
+    "shelf is candid about the flop: F-PROT caught most VCL viruses before VCL " +
+    "was even analyzed, and much of its output won't assemble. In April 1994 " +
+    "Firecracker (then NuKE) released a VCL Mutator to make VCL viruses " +
+    "unscannable again — reported on the shelf page; no capture pinned yet.",
+  /** Expected contents of vcl.zip, from the VCL.DOC File List (vcl.txt). */
+  manifest: [
+    ["INSTALL.EXE", "installation program — ties VCL to one machine (the shelf copy is the cracked build)"],
+    ["INSTALL.DOC", "installer documentation"],
+    ["NMVCL.ZIP", "remaining files (deleted after install)"],
+    ["VCL.EXE", "main executable — Borland C++ 3.0 small model, the sweep's target"],
+    ["VCL.CFG", "configuration file"],
+    ["VCL.DAT", "routine data"],
+    ["VCL.HLP", "on-line help"],
+    ["VCL.DOC", "main documentation — this is vcl.txt, pinned below"],
+    ["ROUTINES.DOC", "description of included routines"],
+    ["EXAMPLES.DOC", "description of example creations"],
+    ["FILE2DB.DOC", "documentation for FILE2DB"],
+    ["KINISON.VCL … RICHARDS.VCL", "8 example creations (each + data files + .ASM + .COM)"],
+  ],
+  files: [
+    {
+      name: "vcl.zip", ts: "20141010085240", warc: 190060, digest: "JXGKSSLP5WW5TYZXJUISVXTAR3MB3ONW",
+      md5: "a82ac0a215221e29b659c11fdffc84d3", url: "http://vxheavens.com/dl/gen/vcl.zip",
+      desc: "[VCL] (cracked version), Jul 1992, 190,066 B — VCL.EXE + INSTALL.EXE + docs",
+    },
+    {
+      name: "vcl32.zip", ts: "20141010054124", warc: 163187, digest: "I5FNKABEHIAVFO2XKILBXIQVBKUP3OKK",
+      url: "http://vxheavens.com/dl/gen/vcl32.zip",
+      desc: "VCL32 — later 32-bit build on the same shelf (contents unverified until recovered)",
+    },
+    {
+      name: "nxvcl.zip", ts: "20141010053701", warc: 296728, digest: "EDCM227TCTTWQO4VIAQVTDEIZ4GAM7NK",
+      url: "http://vxheavens.com/dl/gen/nxvcl.zip",
+      desc: "NXVCL — companion build on the same shelf (contents unverified until recovered)",
+    },
+    {
+      name: "tv03.shelf.html", ts: "20141010043629", warc: 4371, digest: "J3RQTZMI3G2BUJFSN7253OJCIUWP7SXP",
+      url: "http://vxheavens.com/vx.php?id=tv03",
+      desc: "Virus Creation Lab — the shelf page: history, Nowhere Man, vcl.zip MD5",
+    },
+    {
+      name: "tidx.index.html", ts: "20101129093503", warc: 2767, digest: "MMDNZWPZ5V4FIM2NXMLJR56RO7UOGCRF",
+      url: "http://vxheavens.com/vx.php?id=tidx",
+      desc: "Virus Construction Tools index — 200 constructors",
+    },
+    {
+      name: "Virus.DOS.VCL.collection.html", ts: "20141010092440", warc: 11267, digest: "6NN345DT3OZDJ4VNT3XEQNXKBXBC3CSD",
+      url: "http://vxheavens.com/vl.php?dir=Virus.DOS.VCL",
+      desc: "216 VCL-made samples cataloged with MD5 + SHA-1",
+    },
+    {
+      name: "vcl.txt", ts: "20030128200211", warc: 8707, digest: "6ZMNQBZ3MVG5LYBMEYTI2DBVLJWQEKHS",
+      url: "http://www.textfiles.com/virus/DOCUMENTATION/vcl.txt",
+      desc: "Nowhere Man's VCL 1.00 documentation (VCL.DOC) via textfiles — digest-stable 2003–2012",
+    },
+  ],
+  caveat:
+    "Also in the library: archive.org/details/vxheavens-2010-05-18 — a 112 GB " +
+    "snapshot (47 GB bz2 + 64 GB tar, 271,094 files) with a 2025 review " +
+    "reporting corruption around 16% extraction. Too big for a browser tab and " +
+    "untrusted until verified; the lab recovers the individual file captures " +
+    "above instead.",
+};
+
+/**
+ * TROJANLAIR — the September 2026 user lead ("the trojanlair in archive.org
+ * might have the virus creation laboratory"), checked and honestly unconfirmed.
+ * Nothing under that name exists in archive.org metadata or the Wayback under
+ * any host spelling tried. If a URL surfaces, it gets pinned like the rest.
+ */
+export const TROJANLAIR = {
+  name: "trojanlair",
+  lead:
+    "September 2026 user lead: the trojanlair in archive.org might hold the " +
+    "Virus Creation Laboratory. Checked the library metadata, the likely " +
+    "Wayback hosts, and the era link lists — nothing under that name exists " +
+    "in either archive. The VCL itself needed no trojanlair: it sits on VX " +
+    "Heavens' Constructors shelf, pinned above.",
+  checked: [
+    "archive.org metadata (identifiers, titles, descriptions, uploaders): zero hits for trojanlair in every spelling tried",
+    "trojanlair.com + www.trojanlair.com: parked — 302s and robots.txt only, no content captures",
+    "trojan-lair.com: robots.txt only · thetrojanlair.com: nothing at all",
+    "trojanlair.tripod.com, members.tripod.com/~trojanlair, members.aol.com/trojanlair: no captures",
+    "VX Heavens links + constructors index, textfiles.com/virus, Malware Museum items: no trojanlair entry",
+  ],
+  verdict:
+    "UNCONFIRMED — the trojanlair lead names nothing the archives hold. " +
+    "Standing offer: paste a URL and the lab will CDX-pin it and run it " +
+    "through the same SHA-1 gate as every other case.",
+};
+
 /* ---------------------------------------------------------------- research */
 
 export const METHOD = [

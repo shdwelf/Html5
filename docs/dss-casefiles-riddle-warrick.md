@@ -240,3 +240,75 @@ checks** (adds: SWF FWS+CWS fixtures with GetURL extraction, MIDI fixture
 with name/tempo/program/lyrics, GIF/JPEG/PNG fixtures, dissect router,
 casefiles sweep wiring); `smoke_pipeline.mjs` clean; `check-dom-ids.mjs`
 pass; `sw.js` precache v20 (+`js/artifacts.js`).
+
+## 10. Wave 5 — the Virus Creation Laboratory, and the trojanlair hunt
+
+**The lead.** "The trojanlair in archive.org might have the virus creation
+laboratory — continue researching." Two claims to check: that a *trojanlair*
+exists in the archives, and that the *Virus Creation Laboratory* can be
+recovered from them. The second checked out completely; the first did not,
+and the lab records both verdicts with the same ink.
+
+**The trojanlair hunt: UNCONFIRMED.** Nothing under that name exists in
+archive.org library metadata (identifiers, titles, descriptions, uploaders —
+zero hits in every spelling tried) or in the Wayback under any host spelling
+checked: `trojanlair.com`/`www.trojanlair.com` are parked (302s and
+robots.txt only, no content captures), `trojan-lair.com` is robots.txt only,
+`thetrojanlair.com` has nothing, and neither do `trojanlair.tripod.com`,
+`members.tripod.com/~trojanlair` or `members.aol.com/trojanlair`. The era
+link lists were walked too — VX Heavens' links page and constructors index,
+textfiles.com/virus, the Malware Museum items — no trojanlair entry anywhere.
+The catalog files this as `TROJANLAIR` with the verdict UNCONFIRMED and a
+standing offer: paste a URL and it gets CDX-pinned and SHA-1-gated like
+every other case.
+
+**The VCL itself needed no trojanlair.** VX Heavens' Constructors shelf
+carries it outright, and the Wayback photographed the shelf:
+
+| capture | timestamp | CDX SHA-1 (base32) | note |
+|---|---|---|---|
+| `vxheavens.com/dl/gen/vcl.zip` | 20141010085240 | `JXGKSSLP5WW5TYZXJUISVXTAR3MB3ONW` | 190,066 B per the shelf page, MD5 `a82ac0a215221e29b659c11fdffc84d3`, "[VCL] (cracked version)" |
+| `vxheavens.com/dl/gen/vcl32.zip` | 20141010054124 | `I5FNKABEHIAVFO2XKILBXIQVBKUP3OKK` | later 32-bit build, same shelf |
+| `vxheavens.com/dl/gen/nxvcl.zip` | 20141010053701 | `EDCM227TCTTWQO4VIAQVTDEIZ4GAM7NK` | companion build, same shelf |
+| `vxheavens.com/vx.php?id=tv03` | 20141010043629 | `J3RQTZMI3G2BUJFSN7253OJCIUWP7SXP` | the Virus Creation Lab shelf page |
+| `vxheavens.com/vx.php?id=tidx` | 20101129093503 | `MMDNZWPZ5V4FIM2NXMLJR56RO7UOGCRF` | Constructors index (200 tools) |
+| `vxheavens.com/vl.php?dir=Virus.DOS.VCL` | 20141010092440 | `6NN345DT3OZDJ4VNT3XEQNXKBXBC3CSD` | 216 VCL-made samples, MD5+SHA-1 each |
+| `textfiles.com/virus/DOCUMENTATION/vcl.txt` | 20030128200211 | `6ZMNQBZ3MVG5LYBMEYTI2DBVLJWQEKHS` | VCL.DOC verbatim, digest-stable 2003–2012 |
+
+(The 6-byte gap between the shelf page's 190,066 B and the capture's 190,060
+transfer length is record framing, not a short read — the SHA-1 gate is the
+authority, and it will say so in the browser either way.)
+
+**What the documents say.** VCL 1.00, July 5 1992, by Nowhere Man of the
+American group [NuKE]: a Borland-style DOS IDE (CUA menus, mouse,
+context-sensitive help) that emits commented assembler for appending,
+overwriting and companion viruses plus trojans and logic bombs, with
+selectable triggers and payloads, then shells out to TASM/LINK/EXE2BIN.
+Requirements: a 286, 512K, DOS 3.0+. Written in Borland C++ 3.0 small model
+with the CXL library; self-checking — it wipes itself if its data files are
+altered — and install-tied to one machine, which is why the shelf copy being
+the *cracked* build matters. Contact address: The Hell Pit BBS,
+708-459-7267. The shelf page is candid about the flop: F-PROT recognized
+most VCL viruses before VCL was even analyzed, and much of its output won't
+assemble; in April 1994 Firecracker (then NuKE) released a VCL Mutator to
+make VCL viruses unscannable again (reported, no capture pinned yet).
+
+**Why it's case #6.** The main lab's timeline runs MtE (1991) → PS-MPC/G2
+kits (1993); VCL is the missing 1992 link — the first constructor with a
+commercial-grade face. And VCL.EXE is a genuine decompile target: 16-bit
+Borland C++ with an anti-tamper wipe, straight into the wave-4 sweep. The
+112 GB `vxheavens-2010-05-18` library snapshot exists but carries a 2025
+corruption report and can't cross a browser tab — so the case recovers the
+seven file captures above, each through the gate.
+
+**Wiring.** `VXHEAVENS` + `TROJANLAIR` exports in `js/krome-catalog.js`;
+`VIRUS CREATION LAB` case in `js/casefiles.js` with per-file recovery and
+`GHIDRA SWEEP — 3 VCL ZIPS` over the constructor builds; dossier sections
+for the shelf history, the VCL.DOC manifest (compare after recovery), the
+lab rationale, the snapshot caveat, and the trojanlair verdict.
+
+Verification: `tools/verify_casefiles.mjs` — **ALL CHECKS PASSED, 50
+checks** (adds: 7 pinned rows with unique names/timestamps/digests, vcl.zip
+capture+MD5 pin, vcl.txt pin, manifest+shelf+caveat, trojanlair UNCONFIRMED
+verdict, VCL panel/dossier/sweep wiring); `smoke_pipeline.mjs` clean;
+`check-dom-ids.mjs` pass; `sw.js` precache v21.

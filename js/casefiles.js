@@ -20,6 +20,7 @@ import { dissect } from "./artifacts.js";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
   RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK, SHADOWELF,
+  VXHEAVENS, TROJANLAIR,
   waybackUrl, waybackView, cdxUrl,
 } from "./krome-catalog.js";
 const $ = (id) => document.getElementById(id);
@@ -865,6 +866,51 @@ async function recoverAllShadowelf() {
   logTo(`shadowelf sweep: ${ok}/${SHADOWELF.files.length} captures verified against pinned digests`, ok === SHADOWELF.files.length ? "ok" : "error");
 }
 
+/* ---- virus creation laboratory panel ---- */
+
+function renderVclPanel(host) {
+  const panel = el("section", { class: "panel" });
+  panel.append(el("div", { class: "panel-head" }, el("h2", { text: "VIRUS CREATION LABORATORY" }), el("span", { class: "panel-tag", text: `${VXHEAVENS.files.length} pinned captures` })));
+  panel.append(el("p", { class: "panel-note", html:
+    `Nowhere Man's 1992 constructor, off VX Heavens' Constructors shelf — ` +
+    `every row carries its CDX SHA-1 pinned at catalog time. ` +
+    `The shelf page calls <code>vcl.zip</code> the <b>[VCL] (cracked version)</b>, 190,066 B, ` +
+    `MD5 <code>${VXHEAVENS.shelf.md5}</code>; the gate checks the archive's SHA-1 instead, ` +
+    `and the dossier lists the VCL.DOC manifest to compare against.` }));
+  const zips = VXHEAVENS.files.filter((f) => f.name.endsWith(".zip"));
+  panel.append(el("div", { class: "field-row" },
+    el("button", {
+      type: "button", class: "mini on", id: "btnVclSweep",
+      onclick: () => ghidraSweep({
+        files: zips,
+        nameOf: (f) => `vxheavens.com/dl/gen/${f.name}`,
+        caseLabel: "VX Heavens VCL zips",
+        statusId: "vclSweepStatus", btnId: "btnVclSweep", cardHostId: "vclRecovered", reportId: "vclGhidraReport",
+      }),
+      text: `GHIDRA SWEEP — ${zips.length} VCL ZIPS`,
+    }),
+    el("span", { class: "mini-note dim", id: "vclSweepStatus", text: "VCL.EXE is 16-bit Borland C++ — a real decompile target" }),
+  ));
+  panel.append(el("div", { id: "vclGhidraReport" }));
+  const list = el("div", { class: "catalog" });
+  for (const f of VXHEAVENS.files) {
+    list.append(el("button", {
+      type: "button", class: "cat-item",
+      onclick: () => recoverCapture({ name: f.name, url: f.url, ts: f.ts, digest: f.digest, hostId: "vclRecovered" }),
+    },
+      el("span", { class: "cat-name", text: f.name }),
+      el("span", { class: "cat-kind", text: `${shortDate(f.ts)} · ${f.digest.slice(0, 8)}` }),
+      f.desc ? el("span", { class: "cat-note", text: f.desc }) : null,
+    ));
+  }
+  panel.append(list);
+  host.append(panel);
+  host.append(el("section", { class: "panel" },
+    el("div", { class: "panel-head" }, el("h2", { text: "Recovery log" })),
+    el("div", { id: "vclRecovered", class: "members" }),
+  ));
+}
+
 /* ---- ghidra sweep ---- */
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -1031,6 +1077,7 @@ function renderDossier() {
   if (state.caseId === "krome") renderKromeDossier(host);
   if (state.caseId === "dss") renderDssDossier(host);
   if (state.caseId === "shadowelf") renderShadowelfDossier(host);
+  if (state.caseId === "vcl") renderVclDossier(host);
   if (state.caseId === "demo") host.append(el("section", { class: "case-block" },
     el("h3", { text: "demo.exe — the engine's sanity check" }),
     el("p", { class: "prose", text: "A 63-byte MZ binary that lives in the repository. It exists so you can prove the whole pipeline (sniff → disassemble → decompile) works before asking the Wayback Machine for anything." }),
@@ -1153,6 +1200,50 @@ function renderShadowelfDossier(host) {
       "this one came back. That's the whole thesis of the lab, demonstrated on the " +
       "archivist's own address." }),
   ));
+}
+
+function renderVclDossier(host) {
+  const V = VXHEAVENS;
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, `${V.name} `, el("small", { text: `· ${V.years}` })),
+    el("p", { class: "prose", text: V.blurb }),
+    el("p", { class: "panel-note", html:
+      `Shelf page: <a target="_blank" rel="noreferrer" href="https://web.archive.org/web/20141010043629/http://vxheavens.com/vx.php?id=tv03">Virus Creation Lab (tv03), Oct 10 2014</a> · ` +
+      `<a target="_blank" rel="noreferrer" href="https://web.archive.org/web/20101129093503/http://vxheavens.com/vx.php?id=tidx">Constructors index (200 tools)</a> · ` +
+      `<a target="_blank" rel="noreferrer" href="https://web.archive.org/web/20141010092440/http://vxheavens.com/vl.php?dir=Virus.DOS.VCL">216 VCL-made samples</a> · ` +
+      `<a target="_blank" rel="noreferrer" href="https://web.archive.org/web/20030128200211/http://www.textfiles.com/virus/DOCUMENTATION/vcl.txt">VCL.DOC via textfiles</a>` }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "What the shelf page says" }),
+    el("p", { class: "prose", text: V.shelfNote }),
+  ));
+  const man = el("table", { class: "hash-table" });
+  man.append(el("thead", {}, el("tr", {}, el("th", { text: "file" }), el("th", { text: "role per VCL.DOC" }))));
+  const tb = el("tbody");
+  for (const [file, role] of V.manifest) tb.append(el("tr", {}, el("td", { text: file }), el("td", { text: role })));
+  man.append(tb);
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "Inside vcl.zip (expected — compare after recovery)" }), man));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "Why it's in this lab" }),
+    el("p", { class: "prose", text:
+      "The main lab's timeline runs MtE (1991) → PS-MPC/G2 kits (1993); VCL " +
+      "is the missing 1992 link — the first constructor with a commercial-grade " +
+      "face, and the one whose output the scanners ate for breakfast. VCL.EXE " +
+      "itself is the prize for the decompiler: 16-bit Borland C++ with a " +
+      "self-check that wipes the program if its data files are altered. Static " +
+      "analysis only, as ever — the gate verifies, Ghidra reads, nothing runs." }),
+    el("p", { class: "prose dim", text: V.caveat }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, `The trojanlair lead `, el("small", { text: "· UNCONFIRMED" })),
+    el("p", { class: "prose", text: TROJANLAIR.lead }),
+  ));
+  const ul = el("ul", { class: "ref-list" });
+  for (const c of TROJANLAIR.checked) ul.append(el("li", { text: c }));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "Places checked" }), ul,
+    el("p", { class: "prose dim", text: TROJANLAIR.verdict })));
 }
 
 function renderHashTable(title, rows) {

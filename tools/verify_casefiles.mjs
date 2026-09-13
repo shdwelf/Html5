@@ -25,6 +25,7 @@ import { GhidraWasm } from "../js/ghidra-wasm.js";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
   RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK, SHADOWELF,
+  VXHEAVENS, TROJANLAIR,
   waybackUrl, waybackView, cdxUrl,
 } from "../js/krome-catalog.js";
 
@@ -111,6 +112,47 @@ check(
   check(
     suite.includes('id:"shadowelf"') === false, // lecture hall stays casefiles-free; shadowelf lives in the lab
     "cipher suite lecture hall: no lab-case leakage",
+  );
+}
+
+/* --------------------------------------- vx heavens / vcl lab (wave 5) ---- */
+
+console.log("── vx heavens / virus creation lab");
+{
+  const f = VXHEAVENS.files;
+  const b32 = /^[A-Z2-7]{32}$/;
+  const uniq = new Set(f.map((x) => x.name));
+  check(
+    f.length === 7 && uniq.size === f.length &&
+    f.every((x) => /^\d{14}$/.test(x.ts) && b32.test(x.digest) && x.warc > 0 && x.url.startsWith("http://")) &&
+    f.filter((x) => x.name.endsWith(".zip")).length === 3,
+    `vxheavens: ${f.length} pinned rows, unique names, 14-digit ts, 32-char base32 digests, 3 zips`,
+  );
+  const vcl = f.find((x) => x.name === "vcl.zip");
+  check(
+    vcl.ts === "20141010085240" && vcl.digest === "JXGKSSLP5WW5TYZXJUISVXTAR3MB3ONW" &&
+    vcl.md5 === "a82ac0a215221e29b659c11fdffc84d3" && vcl.url === "http://vxheavens.com/dl/gen/vcl.zip",
+    "vcl.zip pinned: 2014 capture + CDX sha1 + shelf md5",
+  );
+  const doc = f.find((x) => x.name === "vcl.txt");
+  check(
+    doc.digest === "6ZMNQBZ3MVG5LYBMEYTI2DBVLJWQEKHS" && doc.url.includes("textfiles.com"),
+    "vcl.txt (VCL.DOC) pinned via textfiles",
+  );
+  check(
+    VXHEAVENS.manifest.length >= 10 && VXHEAVENS.shelf.md5 === "a82ac0a215221e29b659c11fdffc84d3" &&
+    VXHEAVENS.shelfNote.includes("Firecracker") && VXHEAVENS.caveat.includes("vxheavens-2010-05-18"),
+    "vcl manifest + shelf record + snapshot caveat present",
+  );
+  check(
+    TROJANLAIR.verdict.includes("UNCONFIRMED") && TROJANLAIR.checked.length >= 5,
+    "trojanlair lead checked and honestly unconfirmed",
+  );
+  const cf5 = readFileSync(join(ROOT, "js", "casefiles.js"), "utf8");
+  check(
+    cf5.includes("renderVclPanel") && cf5.includes("renderVclDossier") &&
+    cf5.includes("btnVclSweep") && cf5.includes("vclGhidraReport") && cf5.includes("vclRecovered"),
+    "casefiles wiring: VCL case panel + dossier + sweep ids",
   );
 }
 
