@@ -17,3 +17,5 @@ sim/build.ys
 sim/formal.ys
 sim/transcript.*.txt
 sim/transcript.diff
+
+__pycache__/
