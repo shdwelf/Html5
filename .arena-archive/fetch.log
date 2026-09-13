@@ -1,12 +1,12 @@
-FAIL  makinterface/MAKI-PRO.ZIP  https://web.archive.org/web/20000830072829id_/http://www.makinterface.de:80/MAKI-PRO.ZIP  (size 22789 != indexed 22894)
-FAIL  makinterface/dms.zip  https://web.archive.org/web/20051028062659id_/http://www.makinterface.de:80/dms.zip  (size 1456901 != indexed 1457566)
-FAIL  makinterface/DMS_EN.ZIP  https://web.archive.org/web/20020822020619id_/http://www.makinterface.de:80/DMS_EN.ZIP  (size 217895 != indexed 218350)
-FAIL  makinterface/DMS_DE.ZIP  https://web.archive.org/web/20011120041300id_/http://www.makinterface.de:80/DMS_DE.ZIP  (size 218633 != indexed 219092)
-FAIL  makinterface/IC-PROG.ZIP  https://web.archive.org/web/20011120041757id_/http://www.makinterface.de:80/IC-PROG.ZIP  (size 112982 != indexed 112776)
-FAIL  makinterface/PONYPROG.ZIP  https://web.archive.org/web/20011120045326id_/http://www.makinterface.de:80/PONYPROG.ZIP  (size 93213 != indexed 93169)
-FAIL  makinterface/MAKITEST.ZIP  https://web.archive.org/web/20011108012902id_/http://www.makinterface.de:80/MAKITEST.ZIP  (size 378036 != indexed 378338)
-FAIL  makinterface/SMARTCRD.ZIP  https://web.archive.org/web/20010914164750id_/http://www.makinterface.de:80/SMARTCRD.ZIP  (size 329575 != indexed 330004)
-FAIL  makinterface/Adapter.zip  https://web.archive.org/web/20000830072837id_/http://www.makinterface.de:80/Adapter.zip  (size 365821 != indexed 366258)
-FAIL  makinterface/Pinout.zip  https://web.archive.org/web/20000830072841id_/http://www.makinterface.de:80/Pinout.zip  (size 7109 != indexed 7200)
+OK    makinterface/MAKI-PRO.ZIP  22789 bytes  sha256 ff118d9a85fca23a  digest unavailable  application/zip  zip: 3 entries, 123392 bytes unpacked, crc OK [JUMPER-E.DOC, JUMPER-D.DOC, MODE-PRO.DOC]
+OK    makinterface/dms.zip  1456901 bytes  sha256 39087786951df397  digest unavailable  application/zip  zip: 3 entries, 1543245 bytes unpacked, crc OK [SETUP.LST, setup.exe, DigitalSW.CAB]
+OK    makinterface/DMS_EN.ZIP  217895 bytes  sha256 11781ec733ccb80a  digest unavailable  application/zip  zip: 1 entries, 223331 bytes unpacked, crc OK [DMS_EN.PDF]
+OK    makinterface/DMS_DE.ZIP  218633 bytes  sha256 5f362a26cef10543  digest unavailable  application/zip  zip: 1 entries, 224125 bytes unpacked, crc OK [DMS_DE.PDF]
+OK    makinterface/IC-PROG.ZIP  112982 bytes  sha256 c0b196c637886b63  digest unavailable  application/zip  zip: 1 entries, 280064 bytes unpacked, crc OK [IC-PROG.DOC]
+OK    makinterface/PONYPROG.ZIP  93213 bytes  sha256 910745d4966cd0a6  digest unavailable  application/zip  zip: 1 entries, 253440 bytes unpacked, crc OK [PONYPROG.DOC]
+OK    makinterface/MAKITEST.ZIP  378036 bytes  sha256 c2edd734aab88b95  digest unavailable  application/zip  zip: 7 entries, 667347 bytes unpacked, crc OK [VBRUN300.DLL, IOPORT.VBX, MAKITEST.EXE, MAKITEST.PDF, THREED.VBX, MSCOMM.VBX]
+OK    makinterface/SMARTCRD.ZIP  329575 bytes  sha256 a6369879cd716243  digest unavailable  application/zip  zip: 1 entries, 396288 bytes unpacked, crc OK [SMARTC~1.DOC]
+OK    makinterface/Adapter.zip  365821 bytes  sha256 877b87601508d4db  digest unavailable  application/zip  zip: 1 entries, 427008 bytes unpacked, crc OK [ADAPTER.DOC]
+OK    makinterface/Pinout.zip  7109 bytes  sha256 30234d80e3b60cfb  digest unavailable  application/zip  zip: 5 entries, 43660 bytes unpacked, crc OK [SOCKET.DOC, PIC.TXT, ATMEL.TXT, EPROMSER.TXT, EPROMPAR.TXT]
 
-0/10 retrieved
+10/10 retrieved
