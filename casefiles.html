@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0c14" />
+  <meta name="description" content="Static Ghidra case files: the 1998 kr0me corp underground library recovered from the Wayback Machine with SHA-1 verification, and the 1996 Rodger Ramrod DOS4GW package from archive.org. Nothing is executed." />
+  <title>GHIDRA CASEFILES · kr0me corp and Rodger Ramrod</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="./img/apple-touch.png" sizes="180x180" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./css/validator.css" />
+  <link rel="stylesheet" href="./css/viruslab.css" />
+  <link rel="stylesheet" href="./css/casefiles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html#grid" aria-label="Back to SITE-K">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-copy">
+          <strong>CASEFILES</strong>
+          <small>KR0ME CORP · RODGER RAMROD</small>
+        </span>
+      </a>
+      <div class="header-right">
+        <span class="local-status"><i></i>STATIC ONLY · NOTHING RUNS</span>
+        <a class="back-link" href="./ghidra-lab.html">VIRUS LAB <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span>02</span><b></b>WAYBACK RECOVERY · SHA-1 GATE · GHIDRA WASM</div>
+        <h1 id="page-title">Ghidra<br /><em>Case Files</em></h1>
+        <p class="hero-copy">
+          Two dossiers from the archive floor: <strong>kr0me corp</strong>, the 1995–98
+          underground library at <code>members.tripod.com/~retrotech</code>, and
+          <strong>Rodger Ramrod</strong>, Nonaz Inc.'s 1996 DOS4GW curio. The lab pulls the
+          original bytes out of the Wayback Machine and the Internet Archive, checks every
+          one against the archive's own SHA-1 index, and only then lets Ghidra's
+          WebAssembly decompiler look at them.
+        </p>
+        <div class="trust-list" aria-label="Lab properties">
+          <div class="trust-item">
+            <span class="trust-icon">01</span>
+            <span><b>Hash-gated recovery</b><small>captures are SHA-1 checked against the CDX index before analysis.</small></span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon">02</span>
+            <span><b>Nothing executed</b><small>these are attack tools and abandonware; they are read, never run.</small></span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon">03</span>
+            <span><b>Your tab, your network</b><small>fetches go straight from this page to the archives; no server in between.</small></span>
+          </div>
+        </div>
+        <div class="protocol-strip" aria-label="Lab stack">
+          <span>WAYBACK CDX → SHA-1 GATE</span><span>FFLATE UNZIP</span><span>SLEIGH x86 16/32</span><span>GHIDRA DECOMPILER → WASM</span>
+        </div>
+      </section>
+
+      <section class="lab" aria-label="Analysis workspace">
+        <aside class="rail">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Cases</h2>
+              <span class="panel-tag" id="engineChip">GHIDRA WASM · boot</span>
+            </div>
+            <div id="caseList" class="catalog"></div>
+          </section>
+
+          <div id="casePanel"></div>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Engine</h2><button type="button" class="mini" id="exportListing">EXPORT LISTING</button></div>
+            <div id="engineLog" class="engine-log" aria-live="polite"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Load a binary</h2></div>
+            <label class="file-drop">
+              <input type="file" id="fileInput" multiple accept=".zip,.exe,.com,.sys,.ovl,.bin,.dat,.rar,application/octet-stream" />
+              <span>choose file(s)…</span>
+            </label>
+            <div class="field-row">
+              <label for="baseInput">base</label>
+              <input id="baseInput" value="0x100" spellcheck="false" disabled />
+              <label for="langSelect">lang</label>
+              <select id="langSelect"></select>
+              <label for="compSelect">compiler</label>
+              <select id="compSelect"></select>
+            </div>
+            <p class="panel-note">Dropped zips open without hash verification (provenance is yours). Recovered archives are verified before the engine sees them.</p>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Symbols</h2><span class="panel-tag dim">recovered</span></div>
+            <div id="symbolList" class="symbols"></div>
+          </section>
+        </aside>
+
+        <section class="work">
+          <div class="tabs" role="tablist" aria-label="Views">
+            <button type="button" class="tab on" data-view="dossier" role="tab">DOSSIER</button>
+            <button type="button" class="tab" data-view="listing" role="tab">DISASSEMBLY</button>
+            <button type="button" class="tab" data-view="c" role="tab">GHIDRA C</button>
+            <button type="button" class="tab" data-view="tech" role="tab">TECHNIQUES</button>
+            <button type="button" class="tab" data-view="hex" role="tab">HEX · ENTROPY</button>
+            <button type="button" class="tab" data-view="research" role="tab">RESEARCH</button>
+          </div>
+
+          <p class="stat-line" id="statLine">—</p>
+          <p class="loading" id="loading" hidden></p>
+
+          <div class="view" data-view="dossier" role="tabpanel">
+            <div class="view-bar">
+              <span class="mini-note">provenance, manifests and recovered members for the selected case</span>
+            </div>
+            <div class="code-scroll" id="dossierBody"></div>
+          </div>
+
+          <div class="view" data-view="listing" hidden role="tabpanel">
+            <div class="view-bar">
+              <span class="mini-note">click any instruction to send its address to the decompiler</span>
+              <span class="mini-note dim">data rows are dimmed and not clickable</span>
+            </div>
+            <div class="code-scroll" id="listing"></div>
+          </div>
+
+          <div class="view" data-view="c" hidden role="tabpanel">
+            <div class="view-bar">
+              <label for="funcSelect" class="mini-note">function</label>
+              <select id="funcSelect"></select>
+              <input id="funcInput" value="0x100" spellcheck="false" aria-label="address to decompile" />
+              <button type="button" class="mini on" id="decompileNow">DECOMPILE</button>
+              <button type="button" class="mini" id="copyC">COPY</button>
+              <span class="mini-note dim" id="cStatus">idle</span>
+            </div>
+            <pre class="c-out" id="cOut"><p class="placeholder">Recover a file, then click an instruction — or type an address and hit DECOMPILE.</p></pre>
+          </div>
+
+          <div class="view" data-view="tech" hidden role="tabpanel">
+            <div class="view-bar"><span class="mini-note">DOS/BIOS service usage recovered from the code paths</span></div>
+            <div class="tech-host" id="techTables"></div>
+          </div>
+
+          <div class="view" data-view="hex" hidden role="tabpanel">
+            <div class="view-bar"><span class="mini-note">Shannon entropy in 64-byte windows — flat green is code, red is compressed or encrypted data</span></div>
+            <canvas id="entropyCanvas" class="entropy" height="120"></canvas>
+            <div class="hex-grid">
+              <pre class="hexdump" id="hexDump"></pre>
+              <div class="strings">
+                <h3>Printable runs</h3>
+                <pre class="hexdump" id="stringList"></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="view" data-view="research" hidden role="tabpanel">
+            <div class="research" id="researchBody"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>CASEFILES · STATIC ANALYSIS ONLY · NOTHING EXECUTED, NOTHING UPLOADED</span>
+      <span>SOURCES: WEB.ARCHIVE.ORG CDX · ARCHIVE.ORG METADATA · GHIDRA WASM (APACHE-2.0)</span>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/casefiles.js"></script>
+</body>
+</html>

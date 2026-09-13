@@ -1,0 +1,1612 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>WinExplorer by Dexter</title>
+<style fprolloverstyle>A:hover {color: #FF00FF}
+</style>
+<style>
+<!--
+-->
+</style>
+</head>
+
+<body leftmargin="15">
+
+<hr>
+<blockquote>
+<p align="center"><b><font size="6">WinExplorer by Dexter</font></b></p>
+</blockquote>
+<hr>
+<P align=left>Many people have asked me where they can donate for WinExplorer.<br>
+Up until now I have not taken any money for WinExplorer, or any other programs I have developed as freeware.<br>
+I have spent lots of time and effort over the years (not to mention my own cash) just to give it
+all away for free.<br>
+<P align=left>If you use WinExplorer and want to support my work, then donate whatever you think is fair.
+<P align=left>Click the link that is on the &quot;About&quot; screen in
+WinExplorer
+<P align=left>Thank you for your support.
+
+<hr>
+
+<p align="left"><a href="#Intro">Intro</a><a href="#Getting Started"><br>
+Getting Started<br>
+</a><a href="#System Requirements">System Requirements</a><a href="#Trouble Shooting"><br>
+Trouble Shooting</a><a href="#Batch Files"><br>
+Batch Files</a><a href="#Trouble Shooting"><br>
+</a><a href="#Simple XPL Files">Simple XPL Files</a><a href="#Using VB and Java Script in WinExplorer"><br>
+Using VB and Java Script in WinExplorer</a><a href="#VB and Java Script Basics"><br>
+VB and Java Script Basics</a><a href="#Contacting the Author"><br>
+Contacting the Author</a><a href="#WinExplorer History"><br>
+WinExplorer History</a>
+</p>
+<p align="left"><a name="Intro"></a>
+</p>
+<hr>
+<p align="left">WinExplorer is a Win32 GUI application designed to communicate with a
+wide variety of smartcards.</p>
+<p align="left">It's intended purpose is to give hobbyists and professionals a
+powerful tool for programming smartcards using low cost interfaces.&nbsp;<br>
+It is also a great way to learn about smartcards, VBScript and JavaScript
+programming.<br>
+</p>
+<p align="left">WinExplorer will work on any speed machine, you <b>DO NOT</b>
+need to slow down the CPU to use this program.</p>
+<p align="left">To use WinExplorer, you will need a Phoenix type interface.<br>
+A Phoenix interface is a simple device that plugs into a serial port and uses the RTS line to reset the card.&nbsp;<br>
+ Usually the interface is clocked with
+a standard color burst crystal (3.579545 MHz), or a EXO-3C+ oscillator chip programmed for 3.579545 MHz.&nbsp;<br>
+Every byte sent to the card is echoed back to the computer by the interface&nbsp;due to the way it's
+designed.<br>
+<br>
+If your interface needs drivers, and/or contains a CPU,
+it's probably NOT Phoenix compatible.<br>
+<br>
+WinExplorer can use several different script formats to direct it's interaction
+with a smartcard.<br>
+Supported formats are:</p>
+<ul>
+  <li>
+    <p align="left">Simple scripts&nbsp;&nbsp; .xpl</li>
+  <li>
+    <p align="left">VB Script&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .xvb</li>
+  <li>
+    <p align="left">Java Script&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .xjs</li>
+</ul>
+<p align="left">Batch execution of scripts is also supported.<br>
+Please look at the example files that are included to understand the formats of
+the different files.<br>
+<br>
+</p>
+<p align="left">WinExplorer is written in Borland C++ Builder 5.0</p>
+<p align="left">The Inspiration for WinExplorer comes from&nbsp;<br>
+"Card Explorer" by TheBlob  a.k.a. Chris Coe.</p>
+<p align="left"><font size="5"><b><a name="Getting Started"></a></b></font>
+</p>
+<hr>
+<p align="left"><font size="5"><b>Getting Started</b></font></p>
+<hr>
+<p align="left">Run the program WinExplorer.exe<br>
+<br>
+Open a Script file (.xpl, .xvb, .xjs), or a WinExplorer Batch file (.xpb)<br>
+<br>
+Then Execute Script or Execute batch.<br>
+<br>
+You can edit batch &amp; script files, then save them.
+</p>
+<p align="left">
+<a name="System Requirements"></a>
+</p>
+<hr>
+<p align="left"><font size="5"><b>  System Requirements:</b></font></p>
+<hr>
+<p align="left">  <b>Windows 95/98/NT/Windows 2000.</b><br>
+&nbsp;&nbsp;&nbsp; Note: If you are having problems with button graphics not being visible,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; or other menu/button problems, the file you need to update is "comctl32.dll"&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; which is located in your windows\system dir.</p>
+<p align="left">&nbsp;&nbsp;&nbsp; The easiest fix is to install Microsoft Internet Explorer 5.x.<br>
+<br>
+&nbsp;&nbsp;&nbsp; If you don't want to install IE5,        then get the latest
+comctl32.dll file from here:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://www.microsoft.com/msdownload/ieplatform/ie/comctrlx86.asp">http://www.microsoft.com/msdownload/ieplatform/ie/comctrlx86.asp</a><br>
+<br>
+&nbsp;&nbsp;&nbsp; For more info read:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://support.microsoft.com/support/kb/articles/Q165/4/87.asp">http://support.microsoft.com/support/kb/articles/Q186/1/76.ASP</a></p>
+<p align="left">
+<br>
+<b>
+  The Microsoft Script Control.</b><br>
+&nbsp;&nbsp;&nbsp; The script control can be downloaded from:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://msdn.microsoft.com/scripting/scriptcontrol/x86/sct10en.exe">http://msdn.microsoft.com/scripting/scriptcontrol/x86/sct10en.exe</a><br>
+</p>
+<p align="left">  <b>  A serial port.</b><br>
+<br>
+<b>
+  A Phoenix compatible interface.</b>
+</p>
+<p align="left">  <a name="Trouble Shooting"></a>
+</p>
+<hr>
+<p align="left">  <b><font size="5">Trouble Shooting</font></b>
+</p>
+<hr>
+<p align="left">  WinExplorer will not even start up without installing the
+Microsoft Script Control.<br>
+If you are getting the following message:<br>
+<b><font color="#FF0000"><br>
+</font></b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#FF0000">This Version of WinExplorer will not run without installing the Microsoft Script
+Control.<br>
+</font></b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#FF0000">Please read the file
+&quot;readme.txt&quot; or &quot;WinExplorer.htm&quot; for information on how to<br>
+</font></b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#FF0000">obtain and
+install the Script Control, and additional files that might be required for this application to run.</font></b>
+</p>
+<p align="left">You <b>did not</b> install the script control file sct10en.exe. The script control can be downloaded from:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://msdn.microsoft.com/scripting/scriptcontrol/x86/sct10en.exe">http://msdn.microsoft.com/scripting/scriptcontrol/x86/sct10en.exe</a><br>
+<br>
+If WinExplorer starts up but you are having problems running a VB or Java
+Script,&nbsp;<br>
+please read this section: <a href="#Using VB and Java Script in WinExplorer">
+Using VB and Java Script in WinExplorer</a>
+</p>
+<h3 align="left">  <br>
+Common Error Messages and what to do about them.
+</h3>
+<h4 align="left">  Can't initialize port com x:
+</h4>
+<blockquote>
+  <p align="left">This problem occurs if you have the com port in use by another
+  program or device. A big problem with programs written to run in DOS is that they leave the port
+  open even after the program has exited. Do not run any DOS apps that use the com port
+  prior to running WinExplorer. If you do get a hung port, you have to reboot your computer.
+</p>
+</blockquote>
+<h4 align="left">&nbsp;
+</h4>
+<h4 align="left">Reset Failed
+</h4>
+<blockquote>
+  <p align="left">This message indicates that WinExplorer is trying to reset the
+  smartcard, and no ATR response has been returned in the time specified for the Reset
+  Delay parameter.&nbsp;</p>
+  <p align="left">The cause of this can be many things.&nbsp;<br>
+  Common problems are:</p>
+  <ul>
+    <li>
+      <p align="left">Incorrect settings in WinExplorer.</li>
+    <li>
+      <p align="left">A damaged smartcard.</li>
+    <li>
+      <p align="left">Cable problems.</li>
+    <li>
+      <p align="left">Interface problems.</li>
+    <li>
+      <p align="left">Interface power supply problems.</li>
+  </ul>
+</blockquote>
+<h4 align="left">&nbsp;</h4>
+<h4 align="left">Timeout from 2A&nbsp; /&nbsp; Timeout from 58 command</h4>
+<blockquote>
+  <p align="left">WinExplorer will send a 2A instruction followed by a 58
+  instruction to read general information from a DSS smartcard under the following conditions:</p>
+  <ul>
+    <li>
+      <p align="left">When you do a &quot;Read Card Info&quot; by selecting the
+      menu item or clicking the camera button.</li>
+    <li>
+      <p align="left">You have &quot;Log Transactions&quot; enabled.</li>
+    <li>
+      <p align="left">You have &quot;Display USW After Each Script&quot;
+      enabled.</li>
+    <li>
+      <p align="left">You have &quot;Display Fuse After Each Script&quot;
+      enabled.</li>
+  </ul>
+  <p align="left">If you look at the example scripts included with WinExplorer
+  you will find 2 scripts, &quot;Irdread.xpl&quot; and &quot;fuse.xpl&quot;.<br>
+  These are the instructions sent to the card. A timeout occurs if the card does
+  not respond with enough bytes to satisfy the&nbsp;<br>
+  request for information. The causes for this are many and most are caused by
+  the smartcard, not WinExplorer.</p>
+<ul>
+  <li>
+    <p align="left"> Try increasing the &quot;Byte Delay&quot; parameter
+to a higher number.&nbsp;</li>
+  <li>
+    <p align="left">Try increasing the &quot;Rec Timeout&quot; parameter
+to a higher number.</li>
+</ul>
+  <p align="left">
+  <br>
+  To stop WinExplorer from requesting this information from your smartcard, disable the
+  following options:</p>
+  <ul>
+    <li>
+      <p align="left">&quot;Log Transactions&quot;</li>
+    <li>
+      <p align="left">&quot;Display USW After Each Script&quot;</li>
+    <li>
+      <p align="left">&quot;Display Fuse After Each Script&quot;</li>
+  </ul>
+</blockquote>
+<h4 align="left">  &nbsp;
+</h4>
+<h4 align="left">  Timeouts during a &quot;Read Card Info&quot; and/or during a script.
+</h4>
+<blockquote>
+<p align="left">  If a script tries to read data back from the smartcard, and
+the smartcard does not supply enough bytes to satisfy the<br>
+  request, a timeout occurs.&nbsp;</p>
+<ul>
+  <li>
+    <p align="left"> Try increasing the &quot;Byte Delay&quot; parameter
+to a higher number.&nbsp;</li>
+  <li>
+    <p align="left">Try increasing the &quot;Rec Timeout&quot; parameter
+to a higher number.</li>
+</ul>
+<p align="left">
+Again, the causes for this are many and are most caused by
+  the smartcard, not WinExplorer.</p>
+</blockquote>
+<h4 align="left">  <a name="Batch Files"></a>
+</h4>
+<hr>
+<p align="left">  <b><font size="5">Batch Files</font></b>
+</p>
+<hr>
+<p align="left">
+A WinExplorer Batch file is a simple list of script files you want to run.<br>
+<br>
+  Example Batch:
+</p>
+<blockquote>
+<p>
+    ; This is a WinExplorer Batch File.<br>
+    ; Simply list the script files you want to run in the order you wish to run them in.<br>
+    ; You can run any .xvb, .xjs, or .xpl files from the batch.<br>
+<br>
+    irdread.xpl&nbsp;&nbsp;&nbsp; ; General CAM info<br>
+    ppvlist.xpl&nbsp;&nbsp;&nbsp;&nbsp; ; Dump PPV Info<br>
+    fuse.xpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; Get Fuse info
+</p>
+</blockquote>
+<p align="left"><a name="Simple XPL Files"></a></p>
+<hr>
+<p align="left">  <b><font size="5">Simple XPL Files</font></b>
+</p>
+<hr>
+<p align="left">  This is the most basic way of sending and receiving data.&nbsp;<br>
+You simply specify the bytes you wish to send in hex one after the other, and&nbsp;they will be sent.&nbsp;<br>
+ If you wish to receive some data, simply enter Rxx, where xx&nbsp;is the number of bytes to receive, again in hex.&nbsp;<br>
+ You must handle everything&nbsp;except for the ATR (Answer To Reset), including the 5-byte headers, INS echo and&nbsp;switch bytes.<br>
+You can add comments to an XPL file by placing a semi-colon character ';' on a line. The rest of the line after the ';' will be ignored.<br>
+  <br>
+Example files are supplied to illustrate how XPL files work.<br>
+  <a name="Using VB and Java Script in WinExplorer"></a>
+</p>
+<hr>
+<p align="left"><font size="5"><b>   Using VB and Java Script in WinExplorer</b></font></p>
+<hr>
+<p align="left">
+WinExplorer is a ActiveX Scripting Host.<br>
+<br>
+This means WinExplorer can run Microsoft's VBScript, JavaScript,<br>
+and any other ActiveX scripting engines like perl, python, and REXX.<br>
+<br>
+<font color="#FF0000"><b> This Version of WinExplorer will not run without installing the
+Microsoft Script Control.<br>
+You MUST run the file sct10en.exe to install it.</b></font>
+</p>
+<p align="left">The script control can be downloaded from:<br>
+&nbsp;&nbsp;&nbsp; <a href="http://msdn.microsoft.com/scripting/scriptcontrol/x86/sct10en.exe">http://msdn.microsoft.com/scripting/scriptcontrol/x86/sct10en.exe</a><br>
+<br>
+I also recommend you install the latest scripting engine runtimes from
+Microsoft.<a href="http://www.microsoft.com/scripting/downloads/ws/x86/ste50en.exe"><br>
+</a>&nbsp;&nbsp;&nbsp; <a href="http://www.microsoft.com/msdownload/vbscript/scripting.asp">http://www.microsoft.com/msdownload/vbscript/scripting.asp</a>
+</p>
+<p align="left"><br>
+Important:<br>
+<br>
+The Scripting Engines are for Windows 95, Windows 98 &amp; Windows NT 4.0.<br>
+<br>
+If you are running Windows 98 or Windows NT 4.0 you are home free.<br>
+<br>
+If you are running Windows 95 and are getting the following errors:<br>
+<b><font color="#FF0000">
+"A script engine for the specified language can not be created" or "Script Error on Line 0"</font><br>
+</b>
+or other errors when you try to run a VB or Java Script, you still need to install some components.<br>
+<br>
+Windows 95 users must have OSR2 installed or be running Microsoft Internet Explorer 4.x or later for these files to work properly.<br>
+Windows 95 users without Microsoft Internet Explorer 4.x or OSR2 will need to install DCOM before using these files.<br>
+<br>
+If you are running Windows 95 &amp; you feel that you MUST install this stuff piece by piece,&nbsp;<br>
+instead of installing Microsoft Internet Explorer 4.x, you will need the following files:
+</p>
+<table border="0" width="478">
+  <tr>
+    <td width="98" height="19" nowrap>
+      <p align="center"><b>  File&nbsp;</b></td>
+    <td width="396" height="19" nowrap>
+      <p align="center"><b>DL Location</b></td>
+    <td width="206" height="19" nowrap>
+      <p align="center"><b>&nbsp;Description</b></td>
+  </tr>
+</table>
+<table border="1" width="212" height="50">
+  <tr>
+    <td width="89" height="19" align="left" nowrap>ste50en.exe</td>
+    <td width="404" height="19" align="left" nowrap><a href="http://www.microsoft.com/msdownload/vbscript/scripting.asp">http://www.microsoft.com/msdownload/vbscript/scripting.asp</a>&nbsp;</td>
+    <td width="200" height="19" align="left" nowrap>   Version 5 VB &amp; Java Runtimes</td>
+  </tr>
+  <tr>
+    <td width="89" height="19" align="left" nowrap>dcom95.exe</td>
+    <td width="404" height="19" align="left" nowrap><a href="http://www.microsoft.com/com/dcom/dcom1_2/download.asp">http://www.microsoft.com/com/dcom/dcom1_2/download.asp</a></td>
+    <td width="200" height="19" align="left" nowrap>Decom 95</td>
+  </tr>
+</table>
+<p align="left">&nbsp;<br>
+For documentation on Programming in VB Script download:<br>
+&nbsp;&nbsp;&nbsp; <a href="http://msdn.microsoft.com/scripting/vbscript/download/vbsdoc.exe">http://msdn.microsoft.com/scripting/vbscript/download/vbsdoc.exe</a><br>
+</p>
+<p align="left">For documentation on Programming in Java Script download:<br>
+&nbsp;&nbsp;&nbsp; <a href="http://msdn.microsoft.com/scripting/jscript/download/jsdoc.exe">http://msdn.microsoft.com/scripting/jscript/download/jsdoc.exe</a>
+</p>
+<p align="left"><a name="VB and Java Script Basics"></a>
+</p>
+<hr>
+<p align="left"><font size="5"><b>  VB and Java Script Basics</b></font></p>
+<hr>
+<p align="left">The first line in a script must be a comment to tell WinExplorer that
+this a VB or Java Script.<br>
+<br>
+Examples of the built in functions &amp; proprieties are contained in the demos.<br>
+Please look at the included example script files for reference.<br>
+<br>
+The following is a list of the Built in's, the parameters in brackets [] are optional.<br>
+</p>
+
+<p align="center"><b><font size="5">The &quot;Sc&quot; Object has the following
+members:</font></b>
+</p>
+
+<table border="0" width="978">
+  <tr>
+    <td width="389" align="center"><b>Function / Property</b></td>
+    <td width="575" align="center"><b>Description</b></td>
+  </tr>
+</table>
+<table border="2" width="977" height="508" cellpadding="2">
+  <tr>
+    <td width="386" height="48" valign="top" align="left"><samp><br>
+      Sc.Verbose = true | false</samp></td>
+    <td width="575" height="48" align="left"><samp><br>
+      When set to true, reads &amp; writes are displayed in the output window.&nbsp;<br>
+      When false, reads &amp; writes are not displayed.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="32" valign="top" align="left"><samp><br>
+      Sc.Debug = true | false</samp></td>
+    <td width="575" height="32" align="left"><samp><br>
+      When set to true, writes are not performed&nbsp;<br>
+      but the data is still displayed in the output window.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="96" valign="top" align="left"><samp><br>
+      Sc.DebugBufferStuff(Data String)</samp></td>
+    <td width="575" height="96" align="left"><samp><br>
+      When Sc.Debug is set to true, this command will stuff up to 255 bytes into the receive buffer.<br>
+      &nbsp;<br>
+      Sc.Read will return the stuffed bytes.<br>
+      <br>
+      Sc.BytesInBuffer will return the number of stuffed bytes.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="32" valign="top"><samp><br>
+      Sc.Read(Number of Bytes)</samp></td>
+    <td width="575" height="32"><samp><br>
+      Read data from card. If Number of Bytes &gt; what is in the receive
+      buffer, you will get a timeout.</samp>
+      <p><samp>Sc.Read will return the number of bytes read.</samp></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Sc.Write(Data String)</samp></td>
+    <td width="575" height="19"><samp><br>
+      Write data to card. "Data String" is a string of ASCII Hex Chars.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="20" valign="top"><samp><br>
+      Sc.PutByte(Integer Value)</samp></td>
+    <td width="575" height="20"><samp><br>
+      Write a byte to card</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Sc.GetByte(Byte Number)</samp></td>
+    <td width="575" height="19"><samp><br>
+      Retrieve a byte from the read buffer (0 thru Bytes Read from last Sc.Read command)</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Sc.Print(String)</samp></td>
+    <td width="575" height="19"><samp><br>
+      Print a string to the output window.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Sc.Reset</samp></td>
+    <td width="575" height="19"><samp><br>
+      Perform a Card Reset.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Ret = Sc.InputBox(prompt[, title][, default])</samp></td>
+    <td width="575" height="19"><samp><br>
+      Get user input.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Ret = Sc.ButtonBox(prompt[, buttons][,title]<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [,button1str][,button2str][,button3str]&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [,button4str][,button5str])</samp></td>
+    <td width="575" height="19"><br><samp>
+      Display a dialog box formatted similarly to MsgBox but with up to 5 user-defined buttons.&nbsp;<br>
+ The icon (vbCritical, vbQuestion, vbExclamation, vbInformation) can be specified in the second
+      parameter, as can the default button (vbDefaultButton1, vbDefaultButton2, vbDefaultButton3,
+      vbDefaultButton4, 1024).&nbsp;<br>
+      The function returns a number from 1 through 5 (indicating which button was selected) or 0 if the user clicked the "X" in the corner
+      to close the dialog box.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Ret = Sc.MsgBox(prompt[, buttons] [,title])</samp></td>
+    <td width="575" height="19"><samp><br>
+      Display a Message Box, Returns which button was pressed.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Sc.PictureBox(filename [, timeout]<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[, ShowBorder])</samp></td>
+    <td width="575" height="19"><samp><br>
+      Opens a button-less, title-less splash screen that contains the .bmp or .jpg
+      file specified, centered on the screen. Clicking anywhere in the box dismisses the
+      dialog, unless a non-zero timeout value is specified, in which case the dialog
+      box automatically disappears after the specified number of seconds.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Sc.ProgressBox(Prompt, CurrentStep, LastStep,<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      [Title])</samp></td>
+    <td width="575" height="19"><samp><br>
+      Displays a progress box with a "thermometer" that fills up based on the percentage of CurrentStep/LastStep. A CurrentStep value of "0" will close the
+      dialog box. If "Prompt" is "", the last string is displayed.&nbsp;<br>
+      If "Title" is "", the last string is displayed.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Sc.Err("Error Message")</samp></td>
+    <td width="575" height="19"><samp><br>
+      This function will abort a script and display the line number and the error message.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Sc.Delay(ms)</samp></td>
+    <td width="575" height="19"><samp><br>
+      Delay for xx milliseconds.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Ret = Sc.Log(Text)</samp></td>
+    <td width="575" height="19"><samp><br>
+      Write Text to Log File.&nbsp;<br>
+      Returns 0 if successful.&nbsp;<br>
+      Returns 1 if "Log Transactions" option is not enabled.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Sc.ByteDelay = DelayTime</samp></td>
+    <td width="575" height="19"><samp><br>
+      Set the Delay Time Between Bytes Sent, in microseconds.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Ret = Sc.Version</samp></td>
+    <td width="575" height="19"><samp><br>
+      Return WinExplorer's Version Number.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Ret = Sc.IsHex(Data String)</samp></td>
+    <td width="575" height="19"><samp><br>
+      Returns true if Data String is Valid Hex Data,<br>
+      False if Data String contains invalid chars.&nbsp;</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Ret = Sc.Flush()</samp></td>
+    <td width="575" height="19"><samp><br>
+      Flush Serial input buffer. Returns number of bytes flushed.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Ret = Sc.BytesInBuffer</samp></td>
+    <td width="575" height="19"><samp><br>
+      Get the number of bytes pending in the receive buffer.<br>
+      Returns -1 if the function fails.</samp></td>
+  </tr>
+  <tr>
+    <td width="386" height="19" valign="top"><samp><br>
+      Sc.MousePointer = Value&nbsp;</samp></td>
+    <td width="575" height="19"><samp><br>
+      Changes the mouse pointer. The following values are valid:&nbsp;<br>
+      <br>
+      0  (Default) Shape determined by the object.&nbsp;<br>
+      1  Arrow.&nbsp;<br>
+      2  Cross (crosshair pointer).&nbsp;<br>
+      3  I beam.&nbsp;<br>
+      4  Not Used.&nbsp;<br>
+      5  Not Used.&nbsp;<br>
+      6  Size NE SW (double arrow pointing northeast and southwest).<br>
+      7  Size N S (double arrow pointing north and south).&nbsp;<br>
+      8  Size NW SE (double arrow pointing northwest and southeast).<br>
+      9  Size W E (double arrow pointing west and east).&nbsp;<br>
+      10 Up Arrow.&nbsp;<br>
+      11 Hourglass (wait).&nbsp;<br>
+      12 No Drop.&nbsp;<br>
+      13 Arrow and hourglass.&nbsp;<br>
+      14 Arrow and question mark.&nbsp;</samp></td>
+  </tr>
+</table>
+<p align="center"><b><font size="5"><br>
+The &quot;Fs&quot; Object has the following
+members:</font></b>
+</p>
+
+<table border="0" width="978">
+  <tr>
+    <td width="389" align="center"><b>Function / Property</b></td>
+    <td width="575" align="center"><b>Description</b></td>
+  </tr>
+</table>
+<table border="1" width="977" height="99">
+  <tr>
+    <td width="388" height="19" valign="top"><samp><br>
+      int FileOpen(String FileName, int Mode)</samp></td>
+    <td width="573" height="19" valign="top"><br>
+      Opens a specified file using a specified access mode.<br>
+      <br>
+      Use FileOpen to open a file and obtain its Windows file handle.&nbsp;<br>
+ The access mode can be one of the following values:<br>
+      <br>
+      Const fsoOpenRead = 0<br>
+      Const fsoOpenWrite = 1<br>
+      Const fsoOpenReadWrite = 2<br>
+      <br>
+      If the return value is positive, the function was successful and the value is<br>
+      the file handle of the opened file.<br>
+      A return value of -1 indicates that an error occurred.</td>
+  </tr>
+  <tr>
+    <td width="388" height="18" valign="top"><samp><br>
+      int FileCreate(String FileName)</samp></td>
+    <td width="573" height="18" valign="top"><br>
+      Creates a new file.<br>
+      <br>
+      FileCreate creates a new file with the specified name. If the return value is<br>
+      positive, the function was successful and the value is the file handle of the
+      new file.<br>
+      If the file already exists, FileCreate will <b>overwrite</b> the existing
+      file.<br>
+      A return value of -1 indicates that an error occurred.</td>
+  </tr>
+  <tr>
+    <td width="388" height="19" valign="top"><samp><br>
+      void FileClose(int Handle)</samp></td>
+    <td width="573" height="19" valign="top"><br>
+      Closes a specified file.<br>
+      <br>
+      FileClose closes a file given its handle. The handle is obtained when the<br>
+      file is opened using FileOpen or FileCreate.</td>
+  </tr>
+  <tr>
+    <td width="388" height="19" valign="top"><samp><br>
+      int FileExists(String FileName)</samp></td>
+    <td width="573" height="19" valign="top"><br>
+      Tests if a specified file exists.<br>
+      <br>
+      FileExists returns 1 if the file specified by FileName exists.<br>
+      If the file	does not exist, FileExists returns 0.</td>
+  </tr>
+  <tr>
+    <td width="388" height="19" valign="top"><samp><br>
+      int FileSeek(int Handle, int Offset, int Origin)</samp></td>
+    <td width="573" height="19" valign="top"><br>
+      Positions the current file pointer in a previously opened file.<br>
+      <br>
+      Use FileSeek to position the file pointer in a file that was opened with<br>
+      FileOpen or FileCreate. Handle contains the file handle that was returned by<br>
+      FileOpen or FileCreate.<br>
+      <br>
+      Offset specifies the number of bytes from Origin where the file pointer should<br>
+      be positioned. Origin is a code with three possible values, denoting the<br>
+      beginning of the file, the end of the file, and the current position of the file<br>
+      pointer.<br>
+      <br>
+      Origin&nbsp;&nbsp;&nbsp;&nbsp; Action<br>
+      &nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      The file pointer is positioned Offset bytes from the beginning of the file.<br>
+      &nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      The file pointer is positioned Offset bytes from its current position.<br>
+      &nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      The file pointer is positioned Offset bytes from the end of the file.<br>
+      <br>
+      If FileSeek is successful, it returns the new position of the file pointer;<br>
+      otherwise, it returns -1.</td>
+  </tr>
+  <tr>
+    <td width="388" height="19" valign="top"><samp><br>
+      int FileGetc(int FileHandle)</samp></td>
+    <td width="573" height="19" valign="top"><br>
+      Gets character from the specified file.<br>
+      <br>
+      FileGetc returns the next character from the specified file.<br>
+      The file pointer is incremented after the read to point to the next byte.<br>
+      The return value is the byte read.</td>
+  </tr>
+  <tr>
+    <td width="388" height="19" valign="top"><samp><br>
+      int FilePutc(int FileHandle, int Char)</samp></td>
+    <td width="573" height="19" valign="top"><br>
+      Puts a character to the specified file.<br>
+      <br>
+      FilePutc writes a byte to the specified file at the position pointed to<br>
+      by the file pointer.<br>
+      The file pointer is incremented after the write to point to the next byte.<br>
+      The return value is a 1 if the write is successful, or -1 if an error occurred.</td>
+  </tr>
+  <tr>
+    <td width="388" height="19" valign="top"><samp><br>
+      String FileOpenDialog(String FileFilter,<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      [String Caption],&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      [String DefaultFileName])</samp></td>
+    <td width="573" height="19" valign="top"><br>
+      Display a modal Windows dialog box for selecting and opening files.<br>
+      <br>
+      Filter Parameter:<br>
+      &nbsp;&nbsp;&nbsp; To create file masks, assign a value to the Filter property that<br>
+      &nbsp;&nbsp;&nbsp; consists of a description and a mask separated by a vertical bar (pipe)<br>
+      &nbsp;&nbsp;&nbsp; character. Do not include spaces around the vertical bar. For example,<br>
+      &nbsp;&nbsp;&nbsp; Filter = "Text files (*.txt)|*.TXT";<br>
+      <br>
+      &nbsp;&nbsp;&nbsp; Multiple filters should be separated by vertical bars. For example,<br>
+      &nbsp;&nbsp;&nbsp; Filter = "Text files (*.txt)|*.TXT|C++ files (*.cpp)|*.cpp";<br>
+      <br>
+      &nbsp;&nbsp;&nbsp; To include multiple masks in a single filter, separate the masks with<br>
+      &nbsp;&nbsp;&nbsp; semicolons. For example, Filter = "Script files|*.xpl;*.xvb;*.xjs";<br>
+      <br>
+      &nbsp;&nbsp;&nbsp; If no value is assigned to Filter, the dialog displays all file types.<br>
+      <br>
+      Caption Parameter:<br>
+      &nbsp;&nbsp;&nbsp; Use Caption to specify the text that appears in the file-selection<br>
+      &nbsp;&nbsp;&nbsp; dialog’s title bar. If no value is assigned to Caption, the dialog has the<br>
+      &nbsp;&nbsp;&nbsp; title "Open".<br>
+      <br>
+      DefaultFileName Parameter:<br>
+      &nbsp;&nbsp;&nbsp; Use DefaultFileName to specify a default file name in the dialog box.<br>
+    </td>
+  </tr>
+  <tr>
+    <td width="388" height="19" valign="top"><samp><br>
+      String FileSaveDialog(String FileFilter,&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      [String Caption],&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      [String DefaultFileName])</samp></td>
+    <td width="573" height="19" valign="top"><br>
+      Display a modal Windows dialog box for selecting file names and saving files.<br>
+      <br>
+      Filter Parameter:<br>
+      &nbsp;&nbsp; Same as the <samp>FileOpenDialog function</samp><br>
+      <br>
+      Caption Parameter:<br>
+      &nbsp;&nbsp;&nbsp; Use Caption to specify the text that appears in the file-selection<br>
+      &nbsp;&nbsp;&nbsp; dialog’s title bar. If no value is assigned to Caption, the dialog has the<br>
+      &nbsp;&nbsp;&nbsp; title &quot;Save&quot;.<br>
+      <br>
+      DefaultFileName Parameter:<br>
+      &nbsp;&nbsp;&nbsp; Use DefaultFileName to specify a default file name in the dialog box.<br>
+    </td>
+  </tr>
+</table>
+<p>Notes: None of the functions in the Fs object will throw errors. (i.e. the
+script will not abort if a file does not exist, etc.)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; It is up to the
+script to do any error handling when using these functions.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; When the script ends, any
+open files will remain open until you close WinExplorer.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Don't forget to close any
+files you open in your script!<br>
+<br>
+<a name="Contacting the Author"></a></p>
+
+<hr noshade color="#C0C0C0">
+<p align="left"><font size="5"><b>
+     Contacting the Author</b></font>
+</p>
+
+<hr noshade color="#C0C0C0">
+<p align="left"><b>Please note, there is NO OFFICIAL website for WinExplorer</b>.<br>
+<br>
+ WinExplorer is freeware available to all smartcard users on many websites and irc channels.&nbsp;<br>
+ I do not endorse any dealers or any particular websites.&nbsp;<br>
+<br>
+If you have any comments, questions or suggestions about WinExplorer,<br>
+You can e-mail me at <a href="mailto:WinExplorer@yahoo.com">WinExplorer@yahoo.com</a>
+</p>
+<p align="left">Please NO questions about the following, I will not even reply to
+them:</p>
+<ul>
+  <li>
+    <p align="left">Card programming issues.</li>
+  <li>
+    <p align="left">Problems running a particular script.&nbsp;</li>
+  <li>
+    <p align="left">Will programmer xxx work WinExplorer? (How could I possibly
+    know unless I have one?)</li>
+  <li>
+    <p align="left">Why am I getting timeout 2A/58 messages? (the answer is in
+    this file!)</li>
+</ul>
+
+<p align="left">&nbsp;<br>
+You can also find me hanging around on the following IRC channels:<br>
+<br>
+fxchat.net:<br>
+&nbsp;&nbsp;&nbsp;looped.fxchat.net - #DssWare, #Dss/Tech<br>
+<br>
+<a name="WinExplorer History"></a>
+</p>
+
+<hr noshade color="#C0C0C0">
+<p align="left"><font size="5"><b>
+     WinExplorer History</b></font>
+</p>
+
+<hr noshade color="#C0C0C0">
+<table border="1" height="11">
+  <tr>
+    <td valign="top" height="1">
+1.0  (9/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>
+          <p align="left">First working version.</p>
+        </li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+1.1  (9/98)&nbsp;</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Fixed DTR &amp; RTS line default states. This was causing problems on some machines.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+1.2  (9/98)&nbsp;</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Added window save stuff &amp; line highlighting of bad script data.<br>
+          <br>
+        </li>
+        <li>
+      Added script check button.<br>
+          <br>
+        </li>
+        <li>Added Card information button.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+1.3  (9/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Added locking to edit panes during card I/O to prevent<br>
+          Script/Batch changes while talking to card.<br>
+          <br>
+        </li>
+        <li>Cleaned up SIO code &amp; removed unnecessary delays during card reset.
+        </li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+1.4  (9/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Fixed &quot;unsigned char&quot; bug in &quot;Read Card Info&quot;
+      resulting in a bad Card / IRD numbers&nbsp;<br>
+      if the least significant byte had the high bit set.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+1.5  (9/98)&nbsp;</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Added the Expiry day and hex values to the "Read Card Info" function.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+1.6  (10/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Added "Batch/Script has been modified" warnings.<br>
+          <br>
+        </li>
+        <li>Added Time Zone to the "Read Card Info" function.<br>
+          <br>
+        </li>
+        <li>Fixed script check so it ignores tabs.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+1.7  (10/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Added Transaction Logging based off of Cam ID. To turn on logging,&nbsp;<br>
+      Click "Configuration", &amp; make sure&nbsp; "Log Transactions" is checked.&nbsp;<br>
+      The log file is the Cam ID EG  1234567.log&nbsp;<br>
+      The file is stored in the same dir as WinExplorer.exe</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="672">
+      <p>
+1.8  (10/98)</td>
+    <td valign="top" height="672">
+      <ul>
+        <li>Moved Log Transactions check box to new config page.<br>
+          <br>
+        </li>
+        <li>Added Line Highlight to batch window to show current step.<br>
+          <br>
+        </li>
+        <li>Added Search &amp; Replace for script editing.<br>
+          You can use the &quot;Search&quot; item on the main menu, the Script
+          Popup,<br>
+          or Ctl-F for find, Ctl-R for replace.<br>
+          <br>
+        </li>
+        <li>Added view for log files by clicking &quot;File&quot; then
+          &quot;View Log Files&quot;.<br>
+          <br>
+        </li>
+        <li>WinExplorer will run the application associated with
+          &quot;.log&quot; files<br>
+          or Notepad.exe if no association exists.<br>
+          <br>
+        </li>
+        <li>Added Default settings button for serial config.<br>
+          <br>
+        </li>
+        <li>Added a step mode for the batch processing. When active, you must<br>
+          press the next step button to continue the batch after each script<br>
+          is processed. When the batch is paused, you can do a &quot;Read Card
+          Info&quot;.<br>
+          Enable or Disable on config screen.<br>
+          <br>
+        </li>
+        <li>Added USW (Update Status Word) Display to output window.<br>
+          The USW is displayed after each script is processed.<br>
+          Enable or Disable on config screen.<br>
+          <br>
+        </li>
+        <li>Added &quot;Right Click&quot; Popup Menus to all 3 windows.<br>
+          Open, Save, Execute functions are on the Popup.<br>
+          In the Batch Window, you can open a script file<br>
+          by doing a selection of the script name, right click,<br>
+          select &quot;Open Script at Cursor&quot;.<br>
+          <br>
+        </li>
+        <li>Added a &quot;Hidden&quot; Function for Advanced users:<br>
+          By placing the following lines in your WinExplorer.ini file<br>
+          you can prevent WinExplorer from doing ALL card resets:</li>
+      </ul>
+      <blockquote>
+        <blockquote>
+        <p align="left">[Advanced]<br>
+        ResetMode=0<br>
+        <br>
+        WARNING - DO NOT USE THIS FOR NORMAL CARD PROGRAMMING!<br>
+        Set ResetMode=1 to turn card resets back on.</p>
+        </blockquote>
+      </blockquote>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+1.81  (10/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Phantom Release, A Beta v1.8 file got into circulation, so I needed to differentiate the files.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="167">
+      <p>
+1.9  (10/98)</td>
+    <td valign="top" height="167">
+      <ul>
+        <li>Added "Execute From Cursor" to the batch popup menu and<br>
+      batch button on tool bar. Just place the cursor anywhere on the<br>
+      line in the batch window you wish to start from, Either right click<br>
+      or click the down arrow on the batch button on the toolbar, then<br>
+      select "Execute From Cursor".<br>
+          <br>
+        </li>
+        <li>Added "Execute To Cursor" to the batch popup menu and<br>
+      batch button on tool bar. Just place the cursor anywhere on the<br>
+      line in the batch window you wish to stop at, Either right click<br>
+      or click the down arrow on the batch button on the toolbar, then<br>
+      select "Execute To Cursor".<br>
+          <br>
+        </li>
+        <li>Fixed a problem in "Read Card Info" function that would cause an<br>
+      occasional Exception Error if the card returned a incorrect number<br>
+      of bytes for a "58" or "2B" command. This only happened when the<br>
+      card was REALLY messed up.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+1.91  (11/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Fixed a problem with USW display. If a card reset was not done after<br>
+      some types of xpl files, the USW would be incorrect.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+2.0  (11/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>WinExplorer now Accepts Command Line Parameters.<br>
+          You can now associate .xpl and .xpb files then load<br>
+          them by double clicking them like any other windows file.<br>
+          <br>
+        </li>
+        <li>Added a "Advanced" tab to the config form.<br>
+          WARNING - DO NOT USE ANY ADVANCED FEATURES<br>
+          UNLESS YOU KNOW WHAT YOU ARE DOING!<br>
+          <br>
+        </li>
+        <li>Added "No Card Resets" check box to the "Advanced" tab.<br>
+          When checked, you prevent WinExplorer from doing ALL card resets.<br>
+          <br>
+        </li>
+        <li>Added "Ignore Receive Timeouts" check box to the "Advanced" tab.<br>
+          When checked, WinExplorer will keep sending data to the card<br>
+          even if a receive timeout has occurred.<br>
+          <br>
+        </li>
+        <li>Added "Reset After Timeout" check box to the "Advanced" tab.<br>
+          When checked, WinExplorer will do a card reset after a receive timeout has occurred.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+2.1  (11/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Added File DragDrop. WinExplorer will now accept .xpl, .xpb, .xjs, and .xvb files<br>
+          dropped on the WinExplorer from the file manager.<br>
+          <br>
+        </li>
+        <li>Fixed command line filename not loading if it contained a space.<br>
+          <br>
+        </li>
+        <li>Reworked code to handle "file modified" checks better.<br>
+          A cancel in a save dialog box now will cancel the entire<br>
+          operation, not just the file save.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+2.2  (11/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Added Rating, Spending Limit, and PPV Purchase info to "Read Card
+          Info&quot;.<br>
+          <br>
+        </li>
+        <li>Added new Communication Parameters for other card types.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+3.0  (12/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Added VB Script and Java Script to WinExplorer.<br>
+          See the files VBExample.xpl &amp; JavaExample.xpl for examples.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+3.1  (12/98)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Added Sc.Log Function to Java &amp; VB Scripting.<br>
+          <br>
+        </li>
+        <li>Modified Sc.InputBox function to display more than one line.<br>
+          <br>
+        </li>
+        <li>Modified Sc.Read so it would not flush out the serial port.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="466">
+      <p>
+3.2  (12/98)</td>
+    <td valign="top" height="466">
+      <ul>
+        <li>Changed the Default Byte Delay back to 60000 micro seconds.<br>
+          Some scripts were timing out at higher speeds. Better Safe than sorry.<br>
+          <br>
+        </li>
+        <li>Fixed a bug in the window restore routines. If a window is<br>
+          hidden when you save window settings, it will now be hidden properly<br>
+          when WinExplorer is restarted.<br>
+          <br>
+        </li>
+        <li>Added 2 new file types to WinExplorer:<br>
+          .Xvb for VB Script files.<br>
+          .Xjs for Java Script Files.<br>
+          <br>
+        </li>
+        <li>Added Flushing of serial input buffer before each Sc.Write command.<br>
+          This is to keep the read requests synchronized with the<br>
+          actual command responses from the card in the event there is<br>
+          extra data in the input buffer.<br>
+          The "Sc.PutByte" function does NOT check the serial input buffer.<br>
+          <br>
+        </li>
+        <li>Added Abort checking for VB &amp; Java Scripts. Abort is only checked<br>
+          when executing a "Sc" function.<br>
+          <br>
+        </li>
+        <li>Added "Sc.PutByte" function.<br>
+          <br>
+        </li>
+        <li>Sc.InputBox function now returns a empty string if cancel button is pressed.<br>
+          <br>
+        </li>
+        <li>Added Sc.ByteDelay property to override WinExplorer Comm Settings for the<br>
+          current script. The Original value will reset at the start of a new script.<br>
+          <br>
+        </li>
+        <li>Added Sc.Version to return the version of WinExplorer. Used to make sure<br>
+          any script features needed exist.<br>
+          <br>
+        </li>
+        <li>Added Sc.IsHex Function to check if a string contains valid hex data.<br>
+          <br>
+        </li>
+        <li>Added Sc.Flush Function to flush serial input buffer.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="103">
+      <p>
+3.3  (1/99)&nbsp;</td>
+    <td valign="top" height="103">
+      <ul>
+        <li>Added "Favorite Files" to menu.<br>
+          <br>
+        </li>
+        <li>Cleaned up code to scroll the output window when focus is lost.<br>
+          <br>
+        </li>
+        <li>Made tab chars work properly in Script Window.<br>
+          <br>
+        </li>
+        <li>Tabs are set at 4 chars.<br>
+          <br>
+        </li>
+        <li>Fixed Sc.Flush, It was ignoring the verbose flag.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="86">
+      <p>
+3.4  (1/99)</td>
+    <td valign="top" height="86">
+      <ul>
+        <li>Modified "Manage Favorites" so you can remove more than 1 file at a time.<br>
+          <br>
+        </li>
+        <li>Modified "Open Script at Cursor" to prefix drive &amp; path to script name.<br>
+          <br>
+        </li>
+        <li>Fixed a bug in the "Read Card Info" Function. The Pacific Time Zone was<br>
+          being displayed as "???".  Thanks ^Parrot^ :).<br>
+          <br>
+        </li>
+        <li>Added Fuse byte display to output window.<br>
+          The fuse byte is displayed after each script is processed.<br>
+          Enable or Disable on config screen.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="99">
+      <p>
+3.5  (2/99)</td>
+    <td valign="top" height="99">
+      <ul>
+        <li>Now reading Fuse byte from 2B command for display.<br>
+          This is faster because only one read is done at the end of a script.<br>
+          <br>
+        </li>
+        <li>No more "Class Not Registered" message for people who did not read the doc.<br>
+          Now it says read the file "readme.txt"<br>
+          <br>
+        </li>
+        <li>The horizontal splitter is now maintained as a ratio of the main form size
+          during a resize.<br>
+          <br>
+        </li>
+        <li>Added a "Recent Files" List to the "File", Right Click Popup, and toolbar menus.<br>
+          The last 8 script &amp; batch files accessed are on the list.<br>
+          <br>
+        </li>
+        <li>Swapped the layout of the toolbar buttons for batch &amp; script functions.<br>
+          It made more sense to have the button layout follow the window layout.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="3">
+      <p>
+3.6  (4/99)</td>
+    <td valign="top" height="3">
+      <ul>
+        <li>Set serial receive buffer size to 4096<br>
+          <br>
+        </li>
+        <li>Fixed window save &amp; restore yet again.<br>
+          <br>
+        </li>
+        <li>Changed "Read Card Info" to a 2A command.<br>
+          <br>
+        </li>
+        <li>Advanced features  "No Card Resets", "Ignore Receive Timeouts", and<br>
+          "Reset After Timeout" now work in VB &amp; Java script.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="498">
+      <p>
+4.0  (8/99)&nbsp;</td>
+    <td valign="top" height="498">
+      <ul>
+        <li>Well, I finally got around to messing with a "HU" (P3) card.<br>
+          WinExplorer now talks to a HU just dandy. The problem seemed to be that the HU would<br>
+          output a null for every byte sent to the card, except for the last byte in a packet.<br>
+          The solution is to flush the serial port before each new write.<br>
+          The downside is that in a VB or Java Script, I flush before each write, so I can't report a<br>
+          problem with too many bytes in the receive buffer ala "Extra data in receive buffer ... Flushing buffer".<br>
+          A standard XPL file still works the same as before because of the way I parse the script.<br>
+          <br>
+        </li>
+        <li>Fixed a bug in the parser where a trailing single digit would<br>
+          get truncated. Thanks to TSoR for pointing this out.<br>
+          <br>
+        </li>
+        <li>Fixed a bug where a rating limit > 0D could have caused a access violation fault.<br>
+          <br>
+        </li>
+        <li>Fixed a bug where in a standard xpl script, a "R" command had to be 2 digits.<br>
+          I.E. "R01" worked, "R1" did not.<br>
+          <br>
+        </li>
+        <li>Modified the batch routine to append the current path name to the script to run if<br>
+          the script name does not have a qualified path name.<br>
+          <br>
+        </li>
+        <li>WinExplorer now sets the current directory to where the script is located.<br>
+          <br>
+        </li>
+        <li>Added a button to the "Program Settings" page to register .xpl, .xpb, .xvb, and .xjs files with the shell.<br>
+          After you click this button, you can double click on a script file and it will launch
+          WinExplorer<br>
+          and load the file.<br>
+          <br>
+        </li>
+        <li>Redesigned the Sc.InputBox dialog to be auto sizing, and auto constrained to 90% of<br>
+          the screen size. If the width constraint is hit, the text lines are automatically word
+          wrapped.<br>
+          <br>
+        </li>
+        <li>Added a ATR analyzer to the program. All ISO 7816 info is reported.<br>
+          <br>
+        </li>
+        <li>Added the Sc.BytesInBuffer property.<br>
+          <br>
+        </li>
+        <li>Added the Sc.Debug property.<br>
+          <br>
+        </li>
+        <li>Added the Sc.DebugBufferStuff function.<br>
+          <br>
+        </li>
+        <li>Added the Sc.PictureBox function.<br>
+          <br>
+        </li>
+        <li>Added the Sc.ButtonBox function. The dialog is auto sizing, and auto constrained to 90% of<br>
+          the screen size. If the width constraint is hit, the text lines are automatically word wrapped.<br>
+          <br>
+        </li>
+        <li>Added the Sc.ProgressBox Function.<br>
+          <br>
+        </li>
+        <li>Added the Sc.Err function.<br>
+          <br>
+        </li>
+        <li>Added a full blown editor with Syntax Highlighting. Way too many features to list off.<br>
+          Check out the "right click popup menu" and the new functions in the search menu.<br>
+          <br>
+        </li>
+        <li>Added a Script Print Function to the File Menu.<br>
+          <br>
+        </li>
+        <li>Added a font select dialog for the output window.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+4.1  (8/99)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>I removed the Key Requirement. Enough said.<br>
+          <br>
+        </li>
+        <li>Added a check box on the communication config page to turn the flush before write<br>
+          on or off. This makes WinExplorer compatible with version 3.X of itself.<br>
+          It seems a new script out there modifies the smartcard to respond with a 4 byte<br>
+          "Key" when a command is issued. The card is answering BEFORE the packet send is complete.<br>
+          The flush was eating the response bytes.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+4.2 (11/99)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Added the following script editor options:<br>
+          &nbsp; - Tab support added.<br>
+          &nbsp; - Cursor Thru Tabs option.<br>
+          &nbsp; - Line numbers in gutter option.<br>
+          &nbsp; - Cursor Beyond Start Of Line option.<br>
+          <br>
+        </li>
+        <li>Added a &quot;Receive Timeout&quot; parameter to the Comm Settings.
+          This parameter (in milliseconds)<br>
+          tells WinExplorer how long to wait for a byte to arrive in the receive
+          buffer before giving up.<br>
+          This parameter used to be fixed at 100ms. The default is 200ms.<br>
+          <br>
+        </li>
+        <li>Added a Title to the Sc.ProgressBox function.<br>
+          <br>
+        </li>
+        <li>Modified the Sc.ProgressBox function, If Prompt is "", the last string is
+          displayed<br>
+          <br>
+        </li>
+        <li>Added the Sc.MousePointer property<br>
+          <br>
+        </li>
+        <li>
+          <p>Rewrote this file to make it a little easier to read (I hope).<br>
+          </p>
+        </li>
+        <li>
+          <p>Added the ShowBorder param to Sc.PictureBox</p>
+        </li>
+        <li>
+          <p>Added File/New to the menu to create new xpl, xvb, and xjs files.</p>
+        </li>
+        <li>
+          <p>Added a Save As menu item for Script and Batch files.</p>
+        </li>
+        <li>
+          <p>Added Script and Batch Save buttons.</p>
+        </li>
+        <li>
+          <p>Added a Max ATR of 33 bytes so WinExplorer won't appear to hang getting the&nbsp;<br>
+ ATR from a 99'd or FF'd card.</p>
+        </li>
+        <li>
+          <p>Fixed a bug in the ATR analyzer. It was giving inaccurate
+          information for internally clocked cards.</p>
+        </li>
+      </ul>
+
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="1">
+      <p>
+4.3 (2/00)</td>
+    <td valign="top" height="1">
+      <ul>
+        <li>Added the following script editor options:<br>
+          &nbsp; - You can now use multiple fonts and font sizes for the syntax
+          highlighting in the editor.<br>
+          &nbsp; - Added a uppercase property for the syntax highlighting.<br>
+          &nbsp; - Tab and shift Tab indents/outdents a block<br>
+          &nbsp; - Added &quot;Draw Special Symbols&quot; to editor config - eol and eof are drawn.<br>
+          &nbsp; - Added &quot;Select Found Text&quot; to editor config - found
+          text is selected.<br>
+          <br>
+        </li>
+        <li>Added a &quot;File Exists, overwrite file?&quot; prompt when doing
+          as &quot;Save As&quot; and the file already exists.<br>
+          <br>
+        </li>
+        <li>WinExplorer will now delete entries in the recent files lists if
+          they don't exist.<br>
+          <br>
+        </li>
+        <li>I increased the capacity of the output window from 64K to 256MB.<br>
+          This should fix the &quot;RichEdit line insertion error&quot; and the
+          Sc.Print function<br>
+          appearing to stop working that some users were reporting.<br>
+          <br>
+        </li>
+        <li>Re-wrote the Sc.Write function to behave like the write in the xpl
+          engine.<br>
+          <br>
+        </li>
+        <li>Re-wrote the Sc.Read function to behave like the read in the xpl
+          engine, <br>
+          it will dump all bytes read in the event of a timeout along with the<br>
+          number of bytes requested and number of bytes actually read in the
+          error message. <br>
+          <br>
+        </li>
+        <li>The xpl engine will now return number of bytes requested and number
+          of bytes actually<br>
+          read in the error message in the event of a timeout.<br>
+          <br>
+        </li>
+        <li>Fixed the card info function, it was returning &quot;100&quot; for
+          years &gt; 99.<br>
+          I now use a 4 digit date, WinExplorer is now Y2K compliant :)<br>
+          <br>
+        </li>
+        <li>Changed the Sc.Version property to return a double instead of a
+          float.<br>
+          This fixes the weird rounding errors seen in a JavaScript.
+        </li>
+      </ul>
+
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="11">
+      <p>
+4.4 (4/00)</td>
+    <td valign="top" height="11">
+      <ul>
+        <li>Changed&nbsp; the &quot;Associate WinExplorer Files&quot; button to
+          a check box.<br>
+          The default setting is for WinExplorer to register it's file types
+          with the shell<br>
+          each time you run the application.<br>
+          <br>
+        </li>
+        <li>Added a &quot;Allow Multiple Instances&quot; to the &quot;Program
+          Settings&quot; on the config dialog.<br>
+          The default setting is to only allow a single instance of WinExplorer
+          to run.<br>
+          Any files launched from the shell will be invoked in the existing
+          instance in single instance mode.
+          <br>
+          <br>
+        </li>
+        <li>Added a &quot;Prompt For File Name&quot; to the &quot;Program
+          Settings&quot; on the config dialog.<br>
+          This will allow you to specify a file name for the log file instead of
+          using the CAM Id.<br>
+          This is mainly to allow non DSS users to enable transaction logging.<br>
+          <br>
+        </li>
+        <li>WinExplorer now handles spaces in file names &amp; directories
+          correctly when launching a file<br>
+          from the shell.<br>
+          <br>
+        </li>
+        <li>Added a new object to the scripting model to support binary file
+          reading &amp; writing.<br>
+          The functions contained in the &quot;Fs&quot; object are:<br>
+          FileOpen, FileCreate, FileClose, FileExists, FileSeek, FileGetc, FilePutc,<br>
+          FileOpenDialog, and FileSaveDialog.<br>
+          <br>
+          Check out the sample file &quot;FileSystem.xvb&quot;.<br>
+          For more info, see the section on the &quot;Fs&quot; object in &quot;VB and Java Script Basics&quot;.
+        </li>
+      </ul>
+
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="11">
+      <p>
+4.5 (3/01)</td>
+    <td valign="top" height="11">
+      <ul>
+        <li>Added Encrypted script support for VB &amp; Java Scripts.&nbsp;<br>
+          <br>
+        </li>
+        <li>The Microsoft Script Control is no longer required for WinExplorer to run,&nbsp;<br>
+ however you need to have it installed on your system to run VB and Java scripts.<br>
+          Xpl scripts will still run without the script control installed on your system.<br>
+          <br>
+        </li>
+        <li>Added the ability to type in any baud rate for "Data Rate" and "Reset Rate" on the config screen.<br>
+          This does not mean that every value you can type in is valid.<br>
+          A valid value has to be a divisor of 115200 that has no remainder.<br>
+          i.e. if 115200 MOD x = 0, where x is the baud rate you want to use, then the baud rate is valid.<br>
+          <br>
+        </li>
+        <li>Added a "Flush Echo Bytes" parameter.<br>
+          A Phoenix interface will echo each byte transmitted. Check this setting to discard those bytes.<br>
+          <br>
+        </li>
+        <li>Added DTR &amp; RTS control line settings.<br>
+          <br>
+        </li>
+        <li>Added a new reset mode and a selection for which control line to toggle<br>
+          <br>
+        </li>
+        <li>The extra card reset after the baud rate is set to the post-ATR rate has been removed.<br>
+          I made some changes in the serial routines and I don't seem to need it any more.<br>
+          <br>
+        </li>
+        <li>Added a quick settings combo box.&nbsp;<br>
+ You can now save your own settings and restore them easily.<br>
+          <br>
+        </li>
+        <li>Added Syntax Highlighting for XPL files.<br>
+          <br>
+        </li>
+        <li>WinExplorer now computes the check digit of the CamID.<br>
+          <br>
+        </li>
+        <li>Log file names now use leading zeros and check digit.<br>
+          <br>
+        </li>
+        <li>Re-Wrote the "Progress Box" code to behave better.<br>
+          You can now minimize WinExplorer with no weird side effects, and the<br>
+          "Progress Box" window will not insist on being the topmost window.<br>
+          <br>
+        </li>
+        <li>When deleting entries in the recent files lists if they don't exist, you will now<br>
+          get a message in the status window instead of a dialog box.<br>
+          <br>
+        </li>
+        <li>Fixed the script display so that non mono spaced fonts are rendered correctly.<br>
+          This also corrects the spacing when using different font sizes for different elements.<br>
+          <br>
+        </li>
+        <li>The "Jump to Function" box is now non-modal and stays up after a selection is made.<br>
+          Press F5 to refresh the contents.<br>
+          <br>
+        </li>
+        <li>Now compiled using BCB 5.0</li>
+      </ul>
+
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="11">
+4.51 (4/01)
+    </td>
+    <td valign="top" height="11">
+
+    <ul>
+      <li>Fixed the missing &quot;Quick Settings&quot; entries under Win9x. <br>
+        It turns out that Win9x buffers .ini files, Win NT and 2K do not.<br>
+      </li>
+    </ul>
+
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="11">
+4.6 (6/01)
+    </td>
+    <td valign="top" height="11">
+
+    <ul>
+      <li>Added support for perl.  Active perl still has issues though, the big problem is that it does not pass a error string or a line number
+        back when I throw a error from one of my objects.<br>
+    To put that in english, in vb or java I would get something like "Script Error on Line 14
+        Sc.Read: Timeout Reading Data From Card - 131 Bytes Requested, 0 Bytes Read"<br>
+    In perl, you get &quot;'this-&gt;Run(ProcedureName, Parameters, (TVariant*)&amp;pvarResult)'
+        :Unspecifiederror\r\n @ C:\\Program\\Files\\Borland\\CBuilder5\\Imports\\MSScriptControl_TLB.h/604&quot;<br>
+        <br>
+        Use at your own risk......<br>
+        <br>
+      </li>
+      <li>The plain text portion of a encrypted script is now loaded in. This allows a mixed plain text/encrypted script.<br>
+        <br>
+      </li>
+      <li>Added the "Wx" Object to control WinExplorer itself.<br>
+    You can now configure most of WinExplorer's parameters from a script before the port is opened and before "Main" is executed.<br>
+    See ParamTest.xvb for a example on how to do this.<br>
+      </li>
+    </ul>
+
+    </td>
+  </tr>
+</table>
+
+</html>

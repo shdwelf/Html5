@@ -1,0 +1,7 @@
+'
+Sub Main() ' Sub Main is called by WinExplorer to start the VB Script Application
+    Sc.PictureBox "..\images\robotdex.jpg", 2
+    Sc.PictureBox "..\images\dexter.bmp", 2
+    Sc.PictureBox "..\images\F_Magi.bmp", 2
+    Sc.PictureBox "..\images\ET-hell.jpg", 0
+End Sub

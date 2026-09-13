@@ -1,0 +1,80 @@
+/* casefiles.css — components specific to the CASEFILES lab (kr0me corp +
+   Rodger Ramrod). Everything else is shared with the virus lab. */
+
+/* rail: recovered-file log + zip member pickers */
+.members { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+
+.member-card {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  font: 12px/1.4 var(--mono, monospace); padding: 6px 8px;
+  border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+  border-radius: 6px; opacity: .85;
+}
+.member-card .member-status.ok { color: #4be585; }
+.member-card .member-status.bad { color: #ff5470; }
+
+.member-row {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  text-align: left; cursor: pointer; padding: 7px 9px;
+  font: 12px/1.35 var(--mono, monospace); color: inherit;
+  background: transparent; border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+  border-radius: 6px; transition: border-color .15s ease, transform .15s ease;
+}
+.member-row:hover { border-color: currentColor; transform: translateX(2px); }
+.member-row.suggested { border-left: 3px solid #f7d56a; }
+.member-row .member-meta { opacity: .55; white-space: nowrap; }
+
+.zip-members { margin: 10px 0; }
+
+/* dossier + research typography */
+.case-block { margin: 0 0 28px; }
+.case-block h3 { margin: 0 0 10px; letter-spacing: .04em; }
+.case-block h3 small { opacity: .5; font-weight: 400; letter-spacing: .08em; }
+.case-block .prose { max-width: 72ch; }
+.prose.dim, .dim { opacity: .6; }
+
+.hash-table { width: 100%; border-collapse: collapse; font: 12px/1.5 var(--mono, monospace); }
+.hash-table th, .hash-table td {
+  text-align: left; padding: 6px 10px; vertical-align: top;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+}
+.hash-table th { opacity: .5; font-weight: 500; text-transform: uppercase; font-size: 10px; letter-spacing: .12em; }
+.hash-table td.mono { word-break: break-all; }
+.hash-table a { color: inherit; }
+
+.res-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.res-list .res-card .tag {
+  display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 99px;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent); opacity: .8;
+}
+.res-list .res-card p { margin: 8px 0 0; font-size: 12.5px; opacity: .8; }
+
+.ref-list { padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.ref-list a { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); }
+
+/* the hidden riddle */
+.riddle {
+  margin: 14px 0; padding: 14px 18px;
+  border-left: 3px solid #f7d56a;
+  font: italic 14px/1.9 var(--mono, monospace);
+  background: color-mix(in srgb, #f7d56a 5%, transparent);
+}
+.riddle .riddle-footer { margin-top: 8px; font-style: normal; opacity: .55; letter-spacing: .2em; }
+
+/* technique tables */
+.tech-row {
+  display: grid; grid-template-columns: 220px 1fr auto; gap: 14px;
+  padding: 7px 4px; border-bottom: 1px dashed color-mix(in srgb, currentColor 14%, transparent);
+  font: 12px/1.5 var(--mono, monospace);
+}
+.tech-row .tech-key { font-weight: 700; }
+.tech-row .tech-addrs { opacity: .55; white-space: pre; }
+
+/* curated star */
+.cat-note.curated { color: #f7d56a; }
+
+@media (max-width: 60rem) {
+  .tech-row { grid-template-columns: 1fr; gap: 2px; }
+  .hash-table { display: block; overflow-x: auto; }
+}
