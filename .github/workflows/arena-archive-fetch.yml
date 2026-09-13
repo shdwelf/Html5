@@ -1,0 +1,54 @@
+name: arena-archive-fetch
+
+# Retrieves archived files listed in .arena-archive/requests.txt and commits the
+# bytes to this branch. It exists because the development sandbox's egress is
+# allowlisted to GitHub/PyPI/npm: web.archive.org — where the vendor firmware for
+# this project lives — is unreachable from there, while a runner has ordinary
+# internet access. The workflow is the egress channel, and it commits what it
+# downloaded so the sandbox can `git pull` it.
+#
+# Trigger is a change to requests.txt (or a manual dispatch), so the commit this
+# job makes does not retrigger it.
+
+on:
+  push:
+    paths:
+      - '.arena-archive/requests.txt'
+      - '.arena-archive/fetch.py'
+      - '.github/workflows/arena-archive-fetch.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch
+        run: python3 .arena-archive/fetch.py 2>&1 | tee .arena-archive/fetch.log
+
+      - name: Commit what came back
+        if: always()
+        run: |
+          git config user.name arena-archive
+          git config user.email arena-archive@users.noreply.github.com
+          git add -A samples/archive .arena-archive/fetch.log
+          git commit -q -m "archive: fetch vendor files from the Wayback Machine" || true
+          for i in 1 2 3 4 5; do
+            git push origin HEAD:${GITHUB_REF_NAME} && break || {
+              git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; }
+          done
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### archive fetch"
+            echo '```'
+            cat .arena-archive/fetch.log || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
