@@ -121,7 +121,7 @@
     <p>16-round Feistel with 56-bit effective key (8 bytes × 7 bits + parity), 8 S-boxes, expansion/P-permutations, and a rotated subkey schedule.</p>
     <div class="math">L<sub>i</sub>=R<sub>i−1</sub>, &nbsp; R<sub>i</sub>=L<sub>i−1</sub>⊕F(R<sub>i−1</sub>,K<sub>i</sub>) &nbsp;·&nbsp; F(R,K)=P(S(E(R)⊕K))</div>
     <p class="dim"><b>Deprecated.</b> 56-bit key is brute-forceable and S-boxes are weak against differential/linear cryptanalysis. Use AES or Camellia.</p>
-    <p class="status">Status: <span class="badge b-ok">Verified</span> against NIST DES vector (133457799BBCDFF1 → 85E813540F0AB405).</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> against NIST DES vector (key 133457799BBCDFF1, pt 0123456789ABCDEF → 85E813540F0AB405).</p>
   </div>
 
   <!-- 3DES -->
@@ -131,7 +131,7 @@
     <p>Three DES passes EDE (encrypt–decrypt–encrypt). 3×56 = 168-bit key (112-bit effective).</p>
     <div class="math">C = E<sub>K3</sub>(D<sub>K2</sub>(E<sub>K1</sub>(P)))</div>
     <p class="dim">Being deprecated (NIST 800-131A); only for legacy interop.</p>
-    <p class="status">Status: <span class="badge b-ok">Verified</span> against NIST 3-key TDEA vector (95F8A5E5DD31D900).</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> against NIST 3-key TDEA vector (all-01 keys, pt 8000000000000000 → 95F8A5E5DD31D900).</p>
   </div>
 
   <h2 id="stream"><span class="n">2.</span>Stream Ciphers</h2>
@@ -1496,7 +1496,7 @@
   <div class="card">
     <div class="cat">FIDO · U2F · APDU · ISO/IEC 7816-4</div>
     <h3>FIDO U2F Raw APDU Packet Parser &amp; Builder (<span class="kbd">fidoU2fPacket</span>)</h3>
-    <p>Decodes FIDO U2F Raw Registration response messages (<span class="kbd">0x05 || pubkey(65B) || keyHandleLen || keyHandle || cert || sig</span>), Authentication response messages (<span class="kbd">UP || counter || sig</span>), and constructs raw U2F APDU command headers (<span class="kbd">CLA=0x00 INS=0x01/0x02</span>).</p>
+    <p>Decodes FIDO U2F Raw Registration response messages (<span class="kbd">0x05 || pubkey(65B) || keyHandleLen || keyHandle || cert || sig</span>), Authentication response messages (<span class="kbd">UP || counter || sig</span>), and constructs raw U2F APDU command headers (<span class="kbd">CLA=0x00 INS=0x01/0x02</span>). Example: U2F VERSION is <span class="kbd">0003000000</span> (00 03 00 00 00 = CLA INS P1 P2 Le) and answers "U2F_V2" + SW <span class="kbd">9000</span>.</p>
     <p class="status">Status: <span class="badge b-ok">Verified</span> against FIDO U2F Raw Message Formats specification.</p>
   </div>
 
@@ -1507,7 +1507,7 @@
     <div class="cat">OnlyKey · Challenge-Response · HMAC-SHA1 · trustcrypto/OnlyKey-App</div>
     <h3>OnlyKey HMAC-SHA1 Challenge-Response (<span class="kbd">onlyKeyChallengeRes</span>)</h3>
     <p>Hardware challenge-response authentication algorithm, ported from GitHub <span class="kbd">trustcrypto/OnlyKey-App</span> (and RFC 2104 / Yubico HMAC-SHA1 Challenge-Response format). Computes <span class="kbd">HMAC-SHA1(SecretKey, Challenge)</span> over a 20-byte secret key and up to 64-byte challenge for KeePassXC database unlocking, Linux PAM authentication, and LUKS disk encryption unlocking.</p>
-    <p class="status">Status: <span class="badge b-ok">Verified</span> against <span class="kbd">trustcrypto/OnlyKey-App</span> and RFC 2104 HMAC-SHA1 test vectors (<span class="kbd">f60aadb8741ff2df2ad4eb0bfd9bffb6942ae036</span>).</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> against the <span class="kbd">trustcrypto/OnlyKey-App</span> port; HMAC-SHA1 matches RFC 2104 T2 ("Jefe" / "what do ya want for nothing?" → <span class="kbd">effcdf6ae5eb2fa2d27416d5f184df9c259a7c79</span>).</p>
   </div>
 
   <div class="card">

@@ -85,6 +85,25 @@ node tools/verify_avrdis.mjs || status=1
 echo "──────────────────────────────────────────────"
 node tests/13-avr-lab.mjs || status=1
 
+# Recipes to JavaCardOS: the cookbook parse + emitted applets are committed,
+# so both are re-checked (freshness) and tested (subset, constants, P-256).
+echo "──────────────────────────────────────────────"
+node tools/cookbook_to_javacard.mjs --check || status=1
+
+echo "──────────────────────────────────────────────"
+node tests/14-javacard.mjs || status=1
+
+# Ghidra-side cookbook fix-ups: every checkable vector claim re-verified.
+echo "──────────────────────────────────────────────"
+node tools/cookbook_vectors.mjs --check || status=1
+
+# Corporate kitchen meal-card ledger + its page contract.
+echo "──────────────────────────────────────────────"
+node tests/15-mealcard.mjs || status=1
+
+echo "──────────────────────────────────────────────"
+node tools/check-dom-ids.mjs --self kitchen-meal-card.html || status=1
+
 # The globe projector binary + coastline are committed; these only check the
 # .wat and the topojson source still build to them (wabt-gated, skips clean).
 echo "──────────────────────────────────────────────"

@@ -518,7 +518,10 @@ def parse_pe(data: bytes):
 
 # --------------------------------------------------------- disk: loader (legacy)
 
-LOADER_MARKERS = {"grub": b"GRUB", "lilo": b"LILO", "syslinux": b"SYSLINUX", "ntldr": b"NTLDR"}
+LOADER_MARKERS = {"grub": b"GRUB", "lilo": b"LILO", "syslinux": b"SYSLINUX", "ntldr": b"NTLDR",
+                    # OpenBIOS (IEEE 1275) bootblocks sign themselves; the match runs over an
+                    # uppercased window, hence the uppercase marker.
+                    "openbios": b"OPENBIOS"}
 
 
 def check_legacy_loader(img: bytes, parts: list[Partition], report: Report, want: str | None):
@@ -1060,6 +1063,12 @@ def selftest() -> int:
     expect("VBR without a boot signature", check_disk(build_mbr_disk(vbr_sig=False), "legacy", "grub"),
            "legacy_vbr", True)
     expect("LILO when GRUB is expected", check_disk(build_mbr_disk(loader_marker=b"LILO"), "legacy", "grub"),
+           "legacy_loader", True)
+    expect("OpenBIOS bootblock identified",
+           check_disk(build_mbr_disk(loader_marker=b"OpenBIOS"), "legacy", "openbios"),
+           "legacy_loader", False)
+    expect("OpenBIOS when GRUB is expected",
+           check_disk(build_mbr_disk(loader_marker=b"OpenBIOS"), "legacy", "grub"),
            "legacy_loader", True)
     expect("MBR without the 0x55AA signature",
            check_disk(build_mbr_disk()[:510] + b"\0\0", "legacy", "grub"), "mbr_signature", True)

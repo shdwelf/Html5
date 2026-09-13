@@ -10,6 +10,13 @@ while the runner has ordinary internet access.
 Reads .arena-archive/requests.txt, one request per line:
 
     <url> <output-path> [expected-size]
+    direct:<live-url> <output-path> [expected-size]
+
+Lines with the `direct:` prefix fetch a live URL instead of an archived
+capture (for files the Wayback Machine never captured: the BasicCard
+download page, the exact GL-iNet testing build). Direct fetches get no CDX
+digest check - the sha256 in the log is the whole integrity story - and are
+flagged as such in the provenance table.
 
 `#` starts a comment. Every file is fetched, written to `output-path`, and hashed.
 A file is *rejected* - not written - if it is empty, if the server returned a
@@ -53,7 +60,10 @@ def parse(text):
             continue
         url, path = parts[0], parts[1]
         want = int(parts[2]) if len(parts) > 2 and parts[2].isdigit() else None
-        out.append({"url": url, "path": path, "want": want})
+        direct = url.startswith("direct:")
+        if direct:
+            url = url[len("direct:"):]
+        out.append({"url": url, "path": path, "want": want, "direct": direct})
     return out
 
 
@@ -133,7 +143,7 @@ def main():
             log.append(f"SKIP  {r['url']}  ({r['error']})")
             continue
         url, rel, want = r["url"], r["path"], r["want"]
-        if "id_" not in url:
+        if "id_" not in url and not r.get("direct"):
             log.append(f"SKIP  {url}  (no id_ modifier: would fetch the Archive's rewritten copy, not the original bytes)")
             continue
         try:
@@ -166,9 +176,13 @@ def main():
         ctype = headers.get("Content-Type", "?")
         # The index's digest is over the archived payload, so a match proves the
         # bytes on disk are the bytes the Archive holds - by content, not by size.
-        want_digest = cdx_digest(re.match(r"^https?://[^/]+/web/(\d+)id_/(.+)$", url).group(2),
-                                 re.match(r"^https?://[^/]+/web/(\d+)id_/(.+)$", url).group(1)) if re.match(r"^https?://[^/]+/web/(\d+)id_/(.+)$", url) else None
-        verdict = "digest match" if want_digest == sha1b else (f"digest MISMATCH (index {want_digest})" if want_digest else "digest unavailable")
+        if r.get("direct"):
+            want_digest = None
+            verdict = "direct fetch (no index digest; sha256 recorded)"
+        else:
+            want_digest = cdx_digest(re.match(r"^https?://[^/]+/web/(\d+)id_/(.+)$", url).group(2),
+                                     re.match(r"^https?://[^/]+/web/(\d+)id_/(.+)$", url).group(1)) if re.match(r"^https?://[^/]+/web/(\d+)id_/(.+)$", url) else None
+            verdict = "digest match" if want_digest == sha1b else (f"digest MISMATCH (index {want_digest})" if want_digest else "digest unavailable")
         zr = zip_report(body)
         extra = ""
         if zr:

@@ -46,3 +46,43 @@ https://web.archive.org/web/20020618170559id_/http://makinterface.de:80/MAKI_EN.
 https://web.archive.org/web/20011029161123id_/http://www.makinterface.de:80/SCPROG.ZIP makinterface/SCPROG.ZIP 2224710
 https://web.archive.org/web/20021213134525id_/http://www.makinterface.de:80/PRSC.ZIP makinterface/PRSC.ZIP 2224707
 https://web.archive.org/web/20051210081704id_/http://www.makinterface.de/makstripe.zip makinterface/makstripe.zip 2341381
+
+# ---------------------------------------------------------------- round 3
+# The smartcard round (see docs/RESEARCH_SMARTCARD.md): MAKInterface-ecosystem
+# programmer/magstripe software, period AVR development tools, and the router
+# firmware the order named. Policy: firmware images + docs + dev tools only —
+# key/blocker/enabler material stays inventoried but unqueued.
+#
+# --- digital-laboratory.de: MAKInterface-ecosystem downloads (no CDX lengths
+# --- for this host, so sizes are omitted and the sha256 + ZIP self-check rule)
+https://web.archive.org/web/20000417211846id_/http://www.digital-laboratory.de:80/MAKI.RDC digitallab/MAKI.RDC
+https://web.archive.org/web/20001003210840id_/http://www.digital-laboratory.de:80/MAGSR099.ZIP digitallab/MAGSR099.ZIP
+https://web.archive.org/web/20010406204242id_/http://www.digital-laboratory.de:80/PCSC.TXT digitallab/PCSC.TXT
+https://web.archive.org/web/20001003210216id_/http://www.digital-laboratory.de:80/UCE32.ZIP digitallab/UCE32.ZIP
+https://web.archive.org/web/20010619081503id_/http://www.digital-laboratory.de:80/SCE-202.ZIP digitallab/SCE-202.ZIP
+https://web.archive.org/web/20001003210250id_/http://www.digital-laboratory.de:80/VB6LIB.ZIP digitallab/VB6LIB.ZIP
+https://web.archive.org/web/20001003210632id_/http://www.digital-laboratory.de:80/FT50V099.ZIP digitallab/FT50V099.ZIP
+https://web.archive.org/web/20010616153533id_/http://www.digital-laboratory.de:80/GK-102.ZIP digitallab/GK-102.ZIP
+#
+# --- dr7.com (DSS Research): AVR development tools + docs, sizes from CDX
+https://web.archive.org/web/20000915224717id_/http://www.dr7.com:80/echofiles/avrprogrammer.zip dr7/avrprogrammer.zip 51425
+https://web.archive.org/web/20000915224203id_/http://www.dr7.com:80/echofiles/avrsetup.zip dr7/avrsetup.zip 71032
+https://web.archive.org/web/20000915223903id_/http://www.dr7.com:80/echofiles/avrskels.zip dr7/avrskels.zip 2325
+https://web.archive.org/web/20000915225218id_/http://www.dr7.com:80/echofiles/disavr121.zip dr7/disavr121.zip 19199
+https://web.archive.org/web/20000915224545id_/http://www.dr7.com:80/echofiles/at90sart.zip dr7/at90sart.zip 9920
+https://web.archive.org/web/20000915230604id_/http://www.dr7.com:80/dssfiles/newbieprogramming.zip dr7/newbieprogramming.zip 7410
+https://web.archive.org/web/20000915230800id_/http://www.dr7.com:80/dssfiles/prginst.zip dr7/prginst.zip 6151
+https://web.archive.org/web/20000915230656id_/http://www.dr7.com:80/dssfiles/99info.zip dr7/99info.zip 30023
+https://web.archive.org/web/20000915224055id_/http://www.dr7.com:80/echofiles/esfaq103199.zip dr7/esfaq103199.zip 24999
+#
+# --- hackhu.com: serial-port notes + about (2000s research era)
+https://web.archive.org/web/20010411043206id_/http://hackhu.com:80/9pincom.htm hackhu/9pincom.htm
+https://web.archive.org/web/20010605001856id_/http://www.hackhu.com:80/about.htm hackhu/about.htm
+#
+# --- GL-iNet MT300N-V2: closest archived build to the requested 3.204-1112
+# --- testing image (whose only capture is a 404)
+https://web.archive.org/web/20221217212147id_/https://fw.gl-inet.com/firmware/mt300n-v2/v1/openwrt-mt300n-v2-3.203-0805.bin glinet/openwrt-mt300n-v2-3.203-0805.bin 12537312
+#
+# --- live files the Archive never captured (direct: = runner fetches live)
+direct:https://www.basiccard.zeitcontrol.de/download.htm live/basiccard-download.htm
+direct:https://fw.gl-inet.com/firmware/mt300n-v2/testing/openwrt-mt300n-v2-3.204-1112.bin live/gl-inet-mt300n-v2-3.204-1112.bin
