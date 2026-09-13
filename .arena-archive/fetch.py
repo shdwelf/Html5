@@ -22,9 +22,12 @@ Output: the files, plus samples/archive/PROVENANCE.md rewritten from what was
 actually received, and .arena-archive/fetch.log with one line per request.
 """
 
+import base64
 import hashlib
-import os
 import pathlib
+import re
+import zipfile
+import io
 import sys
 import time
 import urllib.error
@@ -51,6 +54,40 @@ def parse(text):
         want = int(parts[2]) if len(parts) > 2 and parts[2].isdigit() else None
         out.append({"url": url, "path": path, "want": want})
     return out
+
+
+def cdx_digest(original_url: str, timestamp: str):
+    """The index's own integrity field for that capture: base32(sha1(payload))."""
+    bare = re.sub(r"^https?://", "", original_url)
+    api = ("https://web.archive.org/cdx/search/cdx?url=" + urllib.parse.quote(bare, safe="")
+           + "&fl=timestamp,digest,length&limit=200")
+    try:
+        with urllib.request.urlopen(urllib.request.Request(api, headers={"User-Agent": UA}), timeout=60) as r:
+            for line in r.read().decode("utf-8", "replace").splitlines():
+                parts = line.split()
+                if len(parts) >= 2 and parts[0] == timestamp:
+                    return parts[1]
+    except Exception:  # noqa: BLE001 - verification is best-effort, reported not assumed
+        return None
+    return None
+
+
+def sha1_base32(body: bytes) -> str:
+    return base64.b32encode(hashlib.sha1(body).digest()).decode().rstrip("=")
+
+
+def zip_report(body: bytes):
+    """(entries, uncompressed_bytes, bad) for a ZIP body, or None if it is not one."""
+    if body[:2] != b"PK":
+        return None
+    try:
+        with zipfile.ZipFile(io.BytesIO(body)) as z:
+            names = z.namelist()
+            sizes = sum(i.file_size for i in z.infolist())
+            bad = z.testzip()
+            return len(names), sizes, bad, [n for n in names if not n.endswith("/")][:6]
+    except Exception as e:  # noqa: BLE001
+        return -1, 0, f"{type(e).__name__}: {e}", []
 
 
 def looks_like_wayback_error(body: bytes) -> bool:
@@ -111,20 +148,33 @@ def main():
             log.append(f"FAIL  {rel}  {url}  (Wayback error page, not the original file)")
             continue
 
-        # A capture whose length disagrees with the index is either a truncated
-        # transfer or a different capture than the one requested. Both matter.
-        if want is not None and len(body) != want:
-            log.append(f"FAIL  {rel}  {url}  (size {len(body)} != indexed {want})")
+        # The index's `length` is not the byte count of the original file (it is
+        # the size of the stored record, which differs by a few hundred bytes
+        # either way), so it is a sanity band, not an equality: a body this far
+        # from the index is a different resource or a truncated transfer.
+        if want is not None and abs(len(body) - want) > max(1024, int(want * 0.25)):
+            log.append(f"FAIL  {rel}  {url}  (size {len(body)} vs indexed {want}: not the same resource)")
             continue
 
         out = DEST / rel
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_bytes(body)
         digest = hashlib.sha256(body).hexdigest()
+        sha1b = sha1_base32(body)
         magic = body[:4].hex()
         ctype = headers.get("Content-Type", "?")
-        log.append(f"OK    {rel}  {len(body)} bytes  sha256 {digest[:16]}  {ctype}")
-        rows.append((rel, url, len(body), digest, magic, ctype))
+        # The index's digest is over the archived payload, so a match proves the
+        # bytes on disk are the bytes the Archive holds - by content, not by size.
+        want_digest = cdx_digest(re.match(r"^https?://[^/]+/web/(\d+)id_/(.+)$", url).group(2),
+                                 re.match(r"^https?://[^/]+/web/(\d+)id_/(.+)$", url).group(1)) if re.match(r"^https?://[^/]+/web/(\d+)id_/(.+)$", url) else None
+        verdict = "digest match" if want_digest == sha1b else (f"digest MISMATCH (index {want_digest})" if want_digest else "digest unavailable")
+        zr = zip_report(body)
+        extra = ""
+        if zr:
+            entries, usize, bad, first = zr
+            extra = f"  zip: {entries} entries, {usize} bytes unpacked, crc {'OK' if bad is None else 'BAD ' + str(bad)} [{', '.join(first)}]"
+        log.append(f"OK    {rel}  {len(body)} bytes  sha256 {digest[:16]}  {verdict}  {ctype}{extra}")
+        rows.append((rel, url, len(body), digest, sha1b, want_digest, magic, ctype))
 
     (ROOT / ".arena-archive").mkdir(exist_ok=True)
     (ROOT / ".arena-archive" / "fetch.log").write_text("\n".join(log) + "\n")
@@ -144,11 +194,12 @@ def main():
             "to GitHub/PyPI/npm), which is why this runs on a GitHub Actions runner and",
             "commits the bytes back to the branch instead of downloading them locally.",
             "",
-            "| file | bytes | sha256 | magic | source |",
-            "| --- | --- | --- | --- | --- |",
+            "| file | bytes | sha256 | CDX digest (sha1 base32) | verified | source |",
+            "| --- | --- | --- | --- | --- | --- |",
         ]
-        for rel, url, size, digest, magic, _ctype in sorted(rows):
-            lines.append(f"| `{rel}` | {size} | `{digest}` | `{magic}` | [{url.split('/web/')[-1]}]({url}) |")
+        for rel, url, size, digest, sha1b, want_digest, _magic, _ctype in sorted(rows):
+            state = "yes" if want_digest == sha1b else ("**no**" if want_digest else "index had none")
+            lines.append(f"| `{rel}` | {size} | `{digest}` | `{sha1b}` | {state} | [{url.split('/web/')[-1]}]({url}) |")
         lines += [
             "",
             "## Re-fetching",
