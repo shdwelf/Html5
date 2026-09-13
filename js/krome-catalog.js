@@ -458,17 +458,22 @@ export const RIDDLE = {
   footer: "Kv QW n df",
   pointer: "http://kr0mecorp.home.ml.org",
   reading:
-    "The imagery is the hermetic allegory of the great work: the veiled lady in " +
-    "white is the albedo; the King is gold; the red Servant is the red man/sulphur, " +
-    "\"contrary\" (inferior or inverted) to the King; the white figure that dies and " +
-    "is recreated is the lunar/silver phase or phoenix; and the Camelion — mercurius, " +
-    "whom the alchemists literally called the chameleon because he takes every form, " +
-    "\"more sublime than the King, the last One; but fugitive\" — reads like a pun on " +
-    "Maier's Atalanta Fugiens, the fleeing mercury. If the four numbers are the " +
-    "classical numbers of those figures, the strongest candidates are atomic numbers: " +
-    "iron/servant 26 (or the King's 79 reversed, 97), silver 47, gold 79, mercury 80 — " +
-    "i.e. something of the shape 26.47.79.80. Nobody has publicly confirmed the " +
-    "answer; we file it open.",
+    "The imagery is the hermetic allegory of the great work, and the riddle itself " +
+    "supplies the ordering — the hint says so: \"the order of the numbers is also " +
+    "given by the riddle.\" The verses enumerate their figures: the veiled lady in " +
+    "white comes first (the albedo, Luna's white queen — silver, 47), then \"the red " +
+    "Servant, contrary to the King\" (the red man — Mars's iron, 26; sulphur is the " +
+    "older identification), then \"the white Jayre; dying, and recreated\" (the moon " +
+    "that dies and is reborn every month — silver again, 47), and \"the Camelion … the " +
+    "last One\" (mercurius, whom the alchemists literally called the chameleon because " +
+    "he takes every form, a parting pun on Maier's Atalanta Fugiens — mercury, 80). " +
+    "Note the King is never one of the four: he appears only as the measure " +
+    "(\"contrary to the King\", \"more sublime than the King\"), so 79 — or 97 reversed — " +
+    "does not belong in the address, despite this archive's first-pass guess of " +
+    "26.47.79.80, which also broke the stated order. The order-corrected shape is " +
+    "47.26.47.80, with the doubled silver an honest warning that the colour→metal " +
+    "mapping is probably not the whole mechanism. Nobody has publicly confirmed any " +
+    "reading; we file it open.",
   hunt:
     "The hunt for a posted solution: every later capture of hidden.html " +
     "(2004–2012) is a 404 — the page died unforgiven. letters.html survives but " +

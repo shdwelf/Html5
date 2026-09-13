@@ -78,6 +78,10 @@ check(HACKHU.blurb.includes("Unloopers") && DIRT.cryptome.length >= 6, "hackhu +
 check(SATMURACH.blurb.includes("zero Wayback captures"), "satellitemurach ghost recorded");
 check(WARRICK.url.includes("oduwsdl/warrick"), "warrick credited");
 check(typeof RIDDLE.hunt === "string" && RIDDLE.hunt.includes("no solution"), "riddle solution-hunt verdict recorded");
+check(
+  RIDDLE.reading.includes("order-corrected shape is 47.26.47.80") && RIDDLE.reading.includes("never one of the four"),
+  "riddle reading applies the riddle's own ordering (King excluded)",
+);
 {
   const f = SHADOWELF.files;
   const b32 = /^[A-Z2-7]{32}$/;
@@ -99,6 +103,7 @@ check(typeof RIDDLE.hunt === "string" && RIDDLE.hunt.includes("no solution"), "r
     suite.includes('title:"Kr0meCorp: the hidden.html Riddle"') &&
     suite.includes('confidence:"Primary archive"') &&
     suite.includes("MMOS2TQI5722PUSYVTROIMSZEYIJH5G4") &&
+    suite.includes("order-corrected atomic candidates") &&
     suite.includes("Riddle") &&
     !suite.includes("deliberately does not invent");
   check(lectureOk, "cipher suite lecture hall: kr0mecorp record replaced with primary-source dossier");

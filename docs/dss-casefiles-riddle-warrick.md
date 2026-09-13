@@ -178,3 +178,22 @@ Verification after wave 3: `tools/verify_casefiles.mjs` — **ALL CHECKS PASSED,
 37 checks** (adds: hunt verdict, 27 shadowelf pinned rows, suite-file lecture
 record present + placeholder gone); `smoke_pipeline.mjs` clean;
 `check-dom-ids.mjs` pass; `sw.js` precache bumped to v18.
+
+### The ordering correction (immediately post-wave-3)
+
+The archive's first-pass candidate — `26.47.79.80` — violated the riddle's own
+hint: *"the order of the numbers is also given by the riddle."* The verses
+enumerate their figures: the veiled lady in white **first**, then "the red
+Servant, contrary to the King," then "the white Jayre; dying, and recreated,"
+and the Chameleon explicitly **"the last One."** The King is never one of the
+four figures — he appears only as the measure ("contrary to the King", "more
+sublime than the King") — so 79, or 97 reversed, was never a valid octet.
+Order-corrected atomic reading: **47·26·47·80** (Luna, Mars, Luna, mercury) —
+with the doubled silver honestly flagging that the colour→metal mapping is
+probably not the whole mechanism. Still unconfirmed; the case stays open.
+`RIDDLE.reading` and the lecture-hall record now carry this correction.
+
+The Shadow Elf panel also gained a **RECOVER ALL 27** sweep: one click walks
+every pinned row through the SHA-1 gate sequentially (500 ms spaced, progress
+in the status line, per-file verdict cards in the recovery log, failures
+counted and displayed, never hidden).

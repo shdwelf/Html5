@@ -758,6 +758,8 @@ async function runWarrick() {
 
 /* ---- shadow elf panel ---- */
 
+const shadowelfName = (f) => (f.name === "index.html" ? "SiliconValley/Park/8099/" : `SiliconValley/Park/8099/${f.name}`);
+
 function renderShadowelfPanel(host) {
   const panel = el("section", { class: "panel" });
   panel.append(el("div", { class: "panel-head" }, el("h2", { text: "THE SHADOW ELF'S HOMEPAGE" }), el("span", { class: "panel-tag", text: `${SHADOWELF.files.length} pinned captures` })));
@@ -765,11 +767,15 @@ function renderShadowelfPanel(host) {
     `<a target="_blank" rel="noreferrer" href="https://web.archive.org/web/19990204033556/${esc(SHADOWELF.url)}">${esc(SHADOWELF.url.replace("http://", ""))}</a> — ` +
     `the archivist's own GeoCities homestead, kept with the same gate as the attack tools. ` +
     `Every row carries its CDX SHA-1 pinned at catalog time; the console fetches the raw <code>id_</code> memento, hashes it, and shows a mismatch instead of hiding one.` }));
+  panel.append(el("div", { class: "field-row" },
+    el("button", { type: "button", class: "mini on", id: "btnShadowAll", onclick: recoverAllShadowelf, text: `RECOVER ALL ${SHADOWELF.files.length}` }),
+    el("span", { class: "mini-note dim", id: "shadowAllStatus", text: "idle — or click files individually" }),
+  ));
   const list = el("div", { class: "catalog" });
   for (const f of SHADOWELF.files) {
     list.append(el("button", {
       type: "button", class: "cat-item",
-      onclick: () => recoverCapture({ name: f.name === "index.html" ? "SiliconValley/Park/8099/" : `SiliconValley/Park/8099/${f.name}`, url: f.url, ts: f.ts, digest: f.digest, hostId: "shadowRecovered" }),
+      onclick: () => recoverCapture({ name: shadowelfName(f), url: f.url, ts: f.ts, digest: f.digest, hostId: "shadowRecovered" }),
     },
       el("span", { class: "cat-name", text: f.name }),
       el("span", { class: "cat-kind", text: `${shortDate(f.ts)} · ${f.digest.slice(0, 8)}` }),
@@ -782,6 +788,25 @@ function renderShadowelfPanel(host) {
     el("div", { class: "panel-head" }, el("h2", { text: "Recovery log" })),
     el("div", { id: "shadowRecovered", class: "members" }),
   ));
+}
+
+async function recoverAllShadowelf() {
+  const status = $("shadowAllStatus");
+  const btn = $("btnShadowAll");
+  if (!status || !btn || btn.disabled) return;
+  btn.disabled = true;
+  let ok = 0, bad = 0;
+  for (let i = 0; i < SHADOWELF.files.length; i++) {
+    const f = SHADOWELF.files[i];
+    const name = shadowelfName(f);
+    status.textContent = `recovering ${i + 1}/${SHADOWELF.files.length} — ${f.name} …`;
+    await recoverCapture({ name, url: f.url, ts: f.ts, digest: f.digest, hostId: "shadowRecovered" });
+    if (state.recovered.get(name)) ok++; else bad++;
+    await new Promise((r) => setTimeout(r, 500)); // be polite to the archive
+  }
+  status.textContent = `done — ${ok} verified, ${bad} failed`;
+  btn.disabled = false;
+  logTo(`shadowelf sweep: ${ok}/${SHADOWELF.files.length} captures verified against pinned digests`, ok === SHADOWELF.files.length ? "ok" : "error");
 }
 
 /* ---- dossier + research tabs ---- */
