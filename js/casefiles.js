@@ -18,9 +18,9 @@ import { GhidraWasm } from "./ghidra-wasm.js";
 import { unzipSync } from "../vendor/fflate/index.mjs";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
+  RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK,
   waybackUrl, waybackView, cdxUrl,
 } from "./krome-catalog.js";
-
 const $ = (id) => document.getElementById(id);
 const isHexAddr = (s) => /^(0x)?[0-9a-f]+$/i.test(s.trim());
 
@@ -104,9 +104,10 @@ function parsePE(bytes) {
   const optSize = dv.getUint16(peOff + 20, true);
   const opt = peOff + 24;
   const magic = dv.getUint16(opt, true);
-  if (magic !== 0x10b) return { kind: "PE", note: `PE32+ (magic ${magic.toString(16)}) — not mapped in this lab`, machine };
+  const plus = magic === 0x20b; // PE32+ — the UEFI .efi format
+  if (magic !== 0x10b && !plus) return { kind: "PE", note: `PE (magic ${magic.toString(16)}) — not mapped in this lab`, machine };
   const entryRVA = dv.getUint32(opt + 16, true);
-  const imageBase = dv.getUint32(opt + 28, true);
+  const imageBase = plus ? Number(dv.getBigUint64(opt + 24, true)) : dv.getUint32(opt + 28, true);
   const sections = [];
   let top = 0;
   const secBase = opt + optSize;
@@ -121,13 +122,18 @@ function parsePE(bytes) {
     sections.push({ name, va, vsize, rawSize, raw });
     top = Math.max(top, va + vsize);
   }
+  if (top > 32 * 1024 * 1024) return { kind: "PE", note: `image too large to map (${fmtBytes(top)})`, machine };
   const image = new Uint8Array(top || bytes.length);
   for (const s of sections) image.set(bytes.subarray(s.raw, s.raw + Math.min(s.rawSize, s.vsize)), s.va);
   return {
     kind: "PE", machine, entryRVA, imageBase,
     entry: (imageBase + entryRVA) >>> 0,
-    image, sections, lang: "x86:LE:32:default",
-    note: `PE32 · ${nsec} sections · entry ${hex(imageBase + entryRVA)}`,
+    image, sections,
+    lang: plus ? "x86:LE:64:default" : "x86:LE:32:default",
+    compiler: plus ? "gcc" : "windows",
+    note: plus
+      ? `PE32+ · UEFI-capable · ${nsec} sections · entry ${hex(imageBase + entryRVA)} — decompiles as x86:LE:64`
+      : `PE32 · ${nsec} sections · entry ${hex(imageBase + entryRVA)}`,
   };
 }
 
@@ -167,9 +173,10 @@ function loadArtifact(name, bytes, provenance = "") {
   let base = 0x100, entry = 0x100;
 
   if (meta.kind === "PE" && meta.image) {
-    mode = 32; base = meta.imageBase; entry = meta.entry;
-    state.lang = "x86:LE:32:default";
-    state.compiler = "windows";
+    mode = meta.lang === "x86:LE:64:default" ? 64 : 32;
+    base = meta.imageBase; entry = meta.entry;
+    state.lang = meta.lang;
+    state.compiler = meta.compiler || "windows";
     analysis = analyze(meta.image, { base, entry, mode });
   } else if (meta.kind === "MZ") {
     base = meta.loadSeg; entry = meta.entry;
@@ -437,6 +444,10 @@ const CASES = {
     title: "KR0ME CORP", sub: "members.tripod.com/~retrotech · 1995–98",
     chip: `wayback · ${LIBRARY.length} captures`,
   },
+  dss: {
+    title: "DSS ARCHAEOLOGY", sub: "dr7.com · hackhu.com · the card wars",
+    chip: "wayback · warrick mode",
+  },
   demo: {
     title: "DEMO.EXE", sub: "63-byte MZ in this repo",
     chip: "local · offline",
@@ -450,6 +461,7 @@ function selectCase(id) {
   host.textContent = "";
   if (id === "ramrod") renderRamrodPanel(host);
   if (id === "krome") renderKromePanel(host);
+  if (id === "dss") renderDssPanel(host);
   if (id === "demo") loadArtifact("demo.exe", DEMO_BYTES, "repository demo.exe");
   renderDossier();
   showTab(id === "demo" ? "listing" : "dossier");
@@ -566,46 +578,63 @@ function renderKromeList(filter) {
 }
 
 async function recoverKrome(entry) {
-  const card = appendRecoveredCard(entry.name, { status: "recovering…" });
+  return recoverCapture({
+    name: entry.name,
+    url: `http://members.tripod.com/~retrotech/${entry.name}`,
+    ts: entry.ts,
+    hostId: "kromeRecovered",
+  });
+}
+
+/** Raw capture + pinned CDX digest for ANY archived URL — the Warrick primitive. */
+const rawFor = (url, ts) => `https://web.archive.org/web/${ts}id_/${url}`;
+const cdxFor = (url, ts) =>
+  `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(url)}&timestamp=${ts}&limit=1&output=json`;
+
+async function recoverCapture({ name, url, ts, digest, hostId = "kromeRecovered", provenance = null }) {
+  const card = appendRecoveredCard(name, { status: "recovering…" }, hostId);
   try {
-    // 1. expected digest from the CDX index for this exact capture
-    const cdxRes = await fetch(cdxUrl(entry.name, entry.ts));
-    if (!cdxRes.ok) throw new Error(`CDX HTTP ${cdxRes.status}`);
-    const rows = await cdxRes.json();
-    const row = rows.length > 1 ? rows[1] : rows[0];
-    if (!row) throw new Error("CDX returned no row");
-    const expected = row[5];
+    // 1. expected digest — given, or pulled from the CDX index for this capture
+    let expected = digest;
+    if (!expected) {
+      const cdxRes = await fetch(cdxFor(url, ts));
+      if (!cdxRes.ok) throw new Error(`CDX HTTP ${cdxRes.status}`);
+      const rows = await cdxRes.json();
+      const row = rows.length > 1 ? rows[1] : rows[0];
+      if (!row) throw new Error("CDX returned no row");
+      expected = row[5];
+    }
     // 2. the raw capture itself
-    const res = await fetch(waybackUrl(entry.name, entry.ts));
+    const res = await fetch(rawFor(url, ts));
     if (!res.ok) throw new Error(`capture HTTP ${res.status}`);
     const bytes = new Uint8Array(await res.arrayBuffer());
     // 3. verify
     const got = await sha1B32(bytes);
     const verified = got === expected;
-    card.replaceWith(appendRecoveredCard(entry.name, {
+    card.replaceWith(appendRecoveredCard(name, {
       status: verified ? "sha1 ✓" : `sha1 ✗ (got ${got}, CDX said ${expected})`,
-      verified, bytes: bytes.length, expected, ts: entry.ts,
-    }));
-    logTo(`${entry.name} · ${verified ? "VERIFIED" : "MISMATCH"} · sha1 ${got}`, verified ? "ok" : "error");
+      verified, bytes: bytes.length, expected, ts,
+    }, hostId));
+    logTo(`${name} · ${verified ? "VERIFIED" : "MISMATCH"} · sha1 ${got}`, verified ? "ok" : "error");
     if (!verified) return;
     // 4. open
     if (bytes[0] === 0x50 && bytes[1] === 0x4b) {
       const members = unzipSync(bytes);
-      state.recovered.set(entry.name, { caseId: "krome", members, verified, expected: got, ts: entry.ts });
-      openMemberPicker(entry.name, members, { ts: entry.ts, expected: got });
+      state.recovered.set(name, { caseId: state.caseId, members, verified, expected: got, ts });
+      openMemberPicker(name, members, { ts, expected: got, provenance: provenance || url });
     } else {
-      state.recovered.set(entry.name, { caseId: "krome", members: { [entry.name]: bytes }, verified, expected: got, ts: entry.ts });
-      loadArtifact(entry.name, bytes, `wayback ${shortDate(entry.ts)} · sha1 ✓`);
+      state.recovered.set(name, { caseId: state.caseId, members: { [name]: bytes }, verified, expected: got, ts });
+      loadArtifact(name, bytes, provenance || `wayback ${shortDate(ts)} · sha1 ✓`);
     }
     renderDossier();
   } catch (err) {
-    card.replaceWith(appendRecoveredCard(entry.name, { status: `failed — ${err.message}`, verified: false }));
-    logTo(`${entry.name}: ${err.message}`, "error");
+    card.replaceWith(appendRecoveredCard(name, { status: `failed — ${err.message}`, verified: false }, hostId));
+    logTo(`${name}: ${err.message}`, "error");
   }
 }
 
-function appendRecoveredCard(name, rec) {
-  const host = $("kromeRecovered");
+function appendRecoveredCard(name, rec, hostId = "kromeRecovered") {
+  const host = $(hostId);
   const card = el("div", { class: "member-card", "data-name": name },
     el("span", { class: "member-name", text: name }),
     el("span", { class: `member-status ${rec.verified === true ? "ok" : rec.verified === false ? "bad" : ""}`, text: rec.status || "" }),
@@ -616,7 +645,9 @@ function appendRecoveredCard(name, rec) {
 
 function openMemberPicker(zipName, members, rec) {
   state.members = new Map(Object.entries(members));
-  state.memberSrc = `${zipName} · wayback ${shortDate(rec.ts)} · sha1 ✓`;
+  state.memberSrc = rec.provenance
+    ? `${zipName} · ${rec.provenance.replace(/^https?:\/\//, "")} · wayback ${shortDate(rec.ts)} · sha1 ✓`
+    : `${zipName} · wayback ${shortDate(rec.ts)} · sha1 ✓`;
   const view = el("div", { class: "zip-members" });
   view.append(el("p", { class: "panel-note", html: `<b>${esc(zipName)}</b> — ${Object.keys(members).length} members, verified against CDX digest ${esc(rec.expected)}. Click one to analyze:` }));
   const list = el("div", { class: "members" });
@@ -636,6 +667,90 @@ function openMemberPicker(zipName, members, rec) {
   showTab("dossier");
 }
 
+/* ---- dss panel + warrick mode ---- */
+
+function renderDssPanel(host) {
+  const p1 = el("section", { class: "panel" });
+  p1.append(el("div", { class: "panel-head" }, el("h2", { text: "WARRICK MODE" }), el("span", { class: "panel-tag", text: "any domain" })));
+  p1.append(el("p", { class: "panel-note", html:
+    `CDX-driven site recovery in the spirit of <a target="_blank" rel="noreferrer" href="${WARRICK.url}">Warrick</a> ` +
+    `(oduwsdl) — list every live capture of a domain, then pull any of them through the SHA-1 gate.` }));
+  const input = el("input", { id: "warrickDomain", value: "dr7.com/dssfiles/", spellcheck: "false", "aria-label": "domain to recover" });
+  p1.append(el("div", { class: "field-row" },
+    input,
+    el("button", { type: "button", class: "mini on", onclick: runWarrick, text: "SWEEP" }),
+    el("span", { class: "mini-note dim", id: "warrickStatus", text: "idle" }),
+  ));
+  const presets = el("div", { class: "field-row" });
+  for (const d of ["dr7.com/dssfiles/", "hackhu.com/", "members.tripod.com/~retrotech/", "dr7.com/dreckware/"]) {
+    presets.append(el("button", { type: "button", class: "mini", onclick: () => { input.value = d; runWarrick(); }, text: d.replace(/\/$/, "") }));
+  }
+  p1.append(presets);
+  p1.append(el("div", { id: "warrickList", class: "catalog" }));
+  host.append(p1);
+
+  const p2 = el("section", { class: "panel" });
+  p2.append(el("div", { class: "panel-head" }, el("h2", { text: "DR7 · dssfiles" }), el("span", { class: "panel-tag", text: `${DR7.files.length} curated` })));
+  const list = el("div", { class: "catalog" });
+  for (const f of DR7.files) {
+    list.append(el("button", {
+      type: "button", class: "cat-item",
+      onclick: () => recoverCapture({ name: `dr7.com/dssfiles/${f.name}`, url: f.url, ts: f.ts, hostId: "dssRecovered" }),
+    },
+      el("span", { class: "cat-name", text: f.name }),
+      el("span", { class: "cat-kind", text: `${fmtBytes(f.warc)} · ${shortDate(f.ts)}` }),
+      f.desc ? el("span", { class: "cat-note", text: f.desc }) : null,
+    ));
+  }
+  p2.append(list);
+  host.append(p2);
+
+  host.append(el("section", { class: "panel" },
+    el("div", { class: "panel-head" }, el("h2", { text: "Recovery log" })),
+    el("div", { id: "dssRecovered", class: "members" }),
+  ));
+}
+
+async function runWarrick() {
+  const status = $("warrickStatus");
+  const host = $("warrickList");
+  if (!host) return;
+  host.textContent = "";
+  const domain = $("warrickDomain").value.trim().replace(/^https?:\/\//, "").replace(/\/+$/, "");
+  if (!domain) return;
+  status.textContent = "querying CDX …";
+  try {
+    const url = `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(domain)}/*&output=json&collapse=urlkey&limit=500&filter=statuscode:200`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`CDX HTTP ${res.status}`);
+    const rows = (await res.json()).slice(1);
+    const isFile = (u) => /\.(zip|exe|com|bin|rar|7z|arj|lzh|cab|sys|rom|efi|dat)(\?|$)/i.test(u);
+    rows.sort((a, b) => (isFile(b[2]) ? 1 : 0) - (isFile(a[2]) ? 1 : 0));
+    status.textContent = `${rows.length} captures`;
+    for (const r of rows.slice(0, 300)) {
+      let path = r[2];
+      try { path = new URL(r[2]).pathname; } catch { /* keep raw */ }
+      const name = path.split("/").pop() || path;
+      const file = isFile(r[2]);
+      host.append(el("button", {
+        type: "button", class: `cat-item${file ? "" : " src-only"}`,
+        onclick: () => recoverCapture({
+          name: `${name}@${shortDate(r[1])}`,
+          url: r[2], ts: r[1], digest: r[5], hostId: "dssRecovered",
+        }),
+      },
+        el("span", { class: "cat-name", text: name }),
+        el("span", { class: "cat-kind", text: `${r[3] || "?"} · ${shortDate(r[1])}` }),
+        el("span", { class: "cat-note", text: decodeURIComponent(path).slice(0, 60) }),
+      ));
+    }
+    logTo(`warrick sweep ${domain}: ${rows.length} live captures`, "ok");
+  } catch (err) {
+    status.textContent = "failed";
+    logTo(`warrick ${domain}: ${err.message}`, "error");
+  }
+}
+
 /* ---- dossier + research tabs ---- */
 
 function renderDossier() {
@@ -643,6 +758,7 @@ function renderDossier() {
   host.textContent = "";
   if (state.caseId === "ramrod") renderRamrodDossier(host);
   if (state.caseId === "krome") renderKromeDossier(host);
+  if (state.caseId === "dss") renderDssDossier(host);
   if (state.caseId === "demo") host.append(el("section", { class: "case-block" },
     el("h3", { text: "demo.exe — the engine's sanity check" }),
     el("p", { class: "prose", text: "A 63-byte MZ binary that lives in the repository. It exists so you can prove the whole pipeline (sniff → disassemble → decompile) works before asking the Wayback Machine for anything." }),
@@ -689,6 +805,49 @@ function renderRamrodDossier(host) {
   }
 }
 
+function renderDssDossier(host) {
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, `${DR7.name} `, el("small", { text: `· ${DR7.years}` })),
+    el("p", { class: "prose", text: DR7.blurb }),
+    el("p", { class: "panel-note", html:
+      `Front page capture: <a target="_blank" rel="noreferrer" href="https://web.archive.org/web/19981201185215/http://www.dr7.com/">DR7 DSS Digital Corruption, Dec 1 1998</a> — ` +
+      `"Digital Satellite Info You Can Trust!"` }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, `${HACKHU.name} `, el("small", { text: `· ${HACKHU.years}` })),
+    el("p", { class: "prose", text: HACKHU.blurb }),
+    el("p", { class: "prose dim", text: HACKHU.url_note }),
+    el("p", { class: "panel-note", html:
+      `Front page capture: <a target="_blank" rel="noreferrer" href="https://web.archive.org/web/20001019055513/http://www.hackhu.com/">HackHu, Oct 19 2000</a>` }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, `${DIRT.name} `, el("small", { text: `· ${DIRT.vendor} · ${DIRT.years}` })),
+    el("p", { class: "prose", text: DIRT.blurb }),
+  ));
+  const t = el("table", { class: "hash-table" });
+  t.append(el("thead", {}, el("tr", {}, el("th", { text: "cryptome file" }), el("th", { text: "what" }), el("th", { text: "wayback status" }))));
+  const tb = el("tbody");
+  for (const f of DIRT.cryptome) {
+    tb.append(el("tr", {},
+      el("td", {}, el("a", { href: f.url, target: "_blank", rel: "noreferrer", text: f.file })),
+      el("td", { text: f.desc }),
+      el("td", { text: f.wayback }),
+    ));
+  }
+  t.append(tb);
+  host.append(el("section", { class: "case-block" }, t,
+    el("p", { class: "prose dim", text: DIRT.verdict })));
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, `${SATMURACH.name} `, el("small", { text: "· checked" })),
+    el("p", { class: "prose", text: SATMURACH.blurb }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, `${WARRICK.name} `, el("small", { text: "· the recovery tool this mode salutes" })),
+    el("p", { class: "prose", text: WARRICK.blurb }),
+    el("p", { class: "panel-note", html: `<a target="_blank" rel="noreferrer" href="${WARRICK.url}">${WARRICK.url}</a>` }),
+  ));
+}
+
 function renderHashTable(title, rows) {
   const t = el("table", { class: "hash-table" });
   t.append(el("thead", {}, el("tr", {}, el("th", { text: "copy" }), el("th", { text: "size" }), el("th", { text: "md5" }), el("th", { text: "sha1" }), el("th", { text: "crc32" }))));
@@ -715,6 +874,18 @@ function renderKromeDossier(host) {
       `Index capture: <a target="_blank" rel="noreferrer" href="${waybackView("", SITE.pages.index.ts)}">${SITE.pages.index.title}</a> · ` +
       `Catalogue: <a target="_blank" rel="noreferrer" href="${waybackView("files.html", SITE.pages.files.ts)}">${SITE.pages.files.title}</a>` }),
   ));
+
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, "The hidden riddle ", el("small", { text: `· ${RIDDLE.page} · ${shortDate(RIDDLE.ts)}` })),
+    el("p", { class: "prose", text: RIDDLE.preamble }),
+    el("blockquote", { class: "riddle" },
+      ...RIDDLE.text.map((l) => el("div", { text: l })),
+      el("div", { class: "riddle-footer", text: `— ${RIDDLE.footer}` })),
+    el("p", { class: "prose dim", text: `Hint given: "${RIDDLE.hint}" · pointer: ${RIDDLE.pointer}` }),
+    el("p", { class: "prose", text: RIDDLE.reading }),
+    el("p", { class: "prose dim", text: RIDDLE.trail }),
+  ));
+
   const curated = LIBRARY.filter((e) => CURATED[e.name]);
   const grid = el("div", { class: "res-list" });
   for (const e of curated) {

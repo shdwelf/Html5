@@ -53,6 +53,15 @@
 .ref-list { padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
 .ref-list a { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); }
 
+/* the hidden riddle */
+.riddle {
+  margin: 14px 0; padding: 14px 18px;
+  border-left: 3px solid #f7d56a;
+  font: italic 14px/1.9 var(--mono, monospace);
+  background: color-mix(in srgb, #f7d56a 5%, transparent);
+}
+.riddle .riddle-footer { margin-top: 8px; font-style: normal; opacity: .55; letter-spacing: .2em; }
+
 /* technique tables */
 .tech-row {
   display: grid; grid-template-columns: 220px 1fr auto; gap: 14px;

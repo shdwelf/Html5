@@ -438,6 +438,150 @@ export const RAMROD = {
     "SHA-1 and CRC-32 before a single instruction is disassembled.",
 };
 
+/* ------------------------------------------------------------------ riddle */
+
+/** The hidden.html riddle, verbatim from the 1998-12-06 capture. */
+export const RIDDLE = {
+  page: "hidden.html",
+  ts: "19981206004351",
+  preamble:
+    "Solve the following riddle and you will come up with four numbers forming an IP address.",
+  hint: "the order of the numbers is also given by the riddle.",
+  text: [
+    "Follow the path of the one who hath her face covered;",
+    "clothed in white, holding in her left hand, four keys.",
+    "One is the red Servant, contrary to the King;",
+    "One is the white Jayre; dying, and recreated;",
+    "One is the Camelion; something more sublime",
+    "than the King, the last One; but fugitive.",
+  ],
+  footer: "Kv QW n df",
+  pointer: "http://kr0mecorp.home.ml.org",
+  reading:
+    "The imagery is the hermetic allegory of the great work: the veiled lady in " +
+    "white is the albedo; the King is gold; the red Servant is the red man/sulphur, " +
+    "\"contrary\" (inferior or inverted) to the King; the white figure that dies and " +
+    "is recreated is the lunar/silver phase or phoenix; and the Camelion — mercurius, " +
+    "whom the alchemists literally called the chameleon because he takes every form, " +
+    "\"more sublime than the King, the last One; but fugitive\" — reads like a pun on " +
+    "Maier's Atalanta Fugiens, the fleeing mercury. If the four numbers are the " +
+    "classical numbers of those figures, the strongest candidates are atomic numbers: " +
+    "iron/servant 26 (or the King's 79 reversed, 97), silver 47, gold 79, mercury 80 — " +
+    "i.e. something of the shape 26.47.79.80. Nobody has publicly confirmed the " +
+    "answer; we file it open.",
+  trail:
+    "The riddle's own pointer, kr0mecorp.home.ml.org, was a Monolith redirect. " +
+    "Monolith Internet Services shut down on Dec 15, 1998 — the Wayback's captures " +
+    "of the redirect are 301s into that funeral, so the address it pointed at is " +
+    "gone from the record. By April 1999 the Tripod index itself read: \"This site " +
+    "is closed. Special thanks and greetings to: Web Fringe … AEON Laboratories — " +
+    "thanks for your invaluable help with channel 66 — Attacker.\"",
+};
+
+/* --------------------------------------------------------------- dss sites */
+
+/** dr7.com — "DR7 DSS Digital Corruption — Digital Satellite Info You Can Trust!" */
+export const DR7 = {
+  name: "DR7 DSS Digital Corruption",
+  url: "http://www.dr7.com/",
+  years: "1998–2008",
+  blurb:
+    "A DirecTV/DSS smart-card site from the card wars: news (\"Paul Maxwell King " +
+    "arrested\", Nov 21 1998), an ECM watch, a Ultimate.cgi forum, Echostar tools " +
+    "(Rev052 disassembly by The Crack), and a /dssfiles/ depot of card utilities, " +
+    "bin images and stealth scripts. Dozens of those files are captured 200-OK in " +
+    "the Wayback and are first-class Ghidra targets.",
+  files: [
+    "26to34.zip|20001018050235|19236|H-card bin patch 26→34",
+    "asic.zip|20000915230742|93724|ASIC gate-array material",
+    "atr.zip|20000118205200|24337|ATR (answer-to-reset) collections",
+    "axacard2.zip|20000118230808|35597|AXA card tooling",
+    "axaprogrammer.zip|20000118004716|10364|card programmer software",
+    "blocker25.zip|20000303080501|12798|ECM blocker v2.5",
+    "dssstealthpro30b.zip|20000620092241|19145|DSS Stealth Pro 3.0b",
+    "emulpcb.zip|20000118121022|16610|emulator PCB material",
+    "examiner.zip|20000118141843|22169|card examiner",
+    "openit.zip|20000915230729|223721|\"open it\" archive",
+    "sc99tamper.zip|20000915230618|654574|SC99 tamper material",
+    "su2code.zip|20001018072714|3491|SU2 code",
+    "suv2.zip|20001017125031|27596|SU v2",
+    "vcipherjulyfinalfix.zip|20000118171407|38735|VCipher final fix",
+    "x2000-21a.zip|20001017123259|16448|x2000 2.1a",
+    "x3m.zip|20000301122826|12586|3M script material",
+    "spoofer8.zip|20001018151657|11353|Spoofer 8",
+    "obiwan28.zip|20000407211609|11004|Obiwan 2.8",
+    "phantom34.zip|20001018223458|13371|Phantom 3.4",
+    "stealthchecker330.zip|20001017145656|11478|Stealth Checker 3.30",
+  ].map((row) => {
+    const [name, ts, warc, desc] = row.split("|");
+    return { name, ts, warc: Number(warc), desc, url: `http://www.dr7.com/dssfiles/${name}` };
+  }),
+};
+
+/** hackhu.com — the other great DSS depot; later a court-records archive. */
+export const HACKHU = {
+  name: "HackHu",
+  url: "http://www.hackhu.com/",
+  years: "1999–2005",
+  blurb:
+    "\"DSS Hacking, Scripts, Cloning, Bins, ZKT, Programmers, Unloopers\" — 475 " +
+    "Wayback captures. Its files.htm served Script ID, Spoofer, Nitro3m, x2000. " +
+    "After the card wars it turned into a court-records archive: the McKenzie " +
+    "complaint, judgments against Clifford Jones, \"two brothers pirating and " +
+    "fraud\" — DirecTV's lawsuits, filed by the scene itself.",
+  url_note: "no per-file rows pinned here — use WARRICK MODE on hackhu.com/files.htm",
+};
+
+/** D.I.R.T. — the keylogger the user half-remembered. */
+export const DIRT = {
+  name: "D.I.R.T. (Data Interception by Remote Transmission)",
+  vendor: "Codex Data Systems",
+  years: "1998–2002",
+  blurb:
+    "The commercial remote-deploy keylogger/spyware: Codex Data Systems sold " +
+    "D.I.R.T. to law enforcement, and in 2002 Cryptome published the program " +
+    "itself — moredirt.zip (\"Enabled DIRT Program\"), dirty-war.zip (installer " +
+    "+ guides) and the DIRT Reference Guide — alongside the story of DIRT's " +
+    "author and Frank Jones's conviction.",
+  cryptome: [
+    ["dirt-files.htm", "the index page (still live on cryptome.org)"],
+    ["dirt-guide.htm", "Reference Guide/Operations Manual (HTM)"],
+    ["moredirt.zip", "the enabled D.I.R.T. program, 1.2 MB"],
+    ["dirty-war.zip", "program + installation and user guide, 2.4 MB"],
+    ["dirty-jones.htm", "D.I.R.T./Frank Jones conviction and probation docs"],
+    ["dirty-secrets2.htm", "\"Data Interception by Remote Transmission\""],
+  ].map(([file, desc]) => ({
+    file,
+    desc,
+    url: `http://cryptome.org/${file}`,
+    wayback: file === "dirt-files.htm" ? "captured" : "only 404/403 captures — the binaries were never archived",
+  })),
+  verdict:
+    "The D.I.R.T. binaries are not in the Wayback Machine — every capture of " +
+    "moredirt.zip and dirty-war.zip is a 404. The dossier stands on Cryptome's " +
+    "own index and the 2002 Register coverage. If a copy surfaces elsewhere, " +
+    "the drop zone feeds it straight into the same pipeline.",
+};
+
+/** satellitemurach.com — checked; the Wayback has nothing. */
+export const SATMURACH = {
+  name: "satellitemurach.com",
+  blurb: "zero Wayback captures — not even a 404 was archived. A ghost in the CDX.",
+};
+
+/** Warrick — the inspiration for this lab's recovery mode. */
+export const WARRICK = {
+  name: "Warrick",
+  url: "https://github.com/oduwsdl/warrick",
+  blurb:
+    "Frank McCown's Warrick (Old Dominion University, 2006; Memento redesign by " +
+    "Justin Brunelle) reconstructs lost websites by walking the archives — the " +
+    "same CDX→memento→local-file loop this lab runs, parallelized in Perl. The " +
+    "sandbox cannot reach the archives over raw sockets, so our WARRICK MODE is " +
+    "the browser-native rendition: the CDX listing is fetched in your tab and " +
+    "every capture is SHA-1-gated before analysis.",
+};
+
 /* ---------------------------------------------------------------- research */
 
 export const METHOD = [

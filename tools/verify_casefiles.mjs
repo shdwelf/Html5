@@ -23,6 +23,7 @@ import { analyze } from "../js/x86dis.js";
 import { GhidraWasm } from "../js/ghidra-wasm.js";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
+  RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK,
   waybackUrl, waybackView, cdxUrl,
 } from "../js/krome-catalog.js";
 
@@ -68,6 +69,14 @@ check(
 
 check(RAMROD.shareware.md5 === RAMROD.exodos.md5, "shareware zip and eXoDOS repack share the metadata md5");
 check(RAMROD.shareware.sha1.length === 40 && RAMROD.full.sha1.length === 40, "ramrod sha1 fields are 40 hex chars");
+
+console.log("── dossier additions");
+check(RIDDLE.text.length === 6 && RIDDLE.text[5].includes("fugitive"), "riddle transcribed (6 lines, fugitive ending)");
+check(RIDDLE.pointer === "http://kr0mecorp.home.ml.org", "riddle pointer recorded");
+check(DR7.files.length >= 20 && DR7.files.every((f) => f.url.startsWith("http://www.dr7.com/dssfiles/")), `DR7 curated files: ${DR7.files.length}`);
+check(HACKHU.blurb.includes("Unloopers") && DIRT.cryptome.length >= 6, "hackhu + DIRT dossier rows");
+check(SATMURACH.blurb.includes("zero Wayback captures"), "satellitemurach ghost recorded");
+check(WARRICK.url.includes("oduwsdl/warrick"), "warrick credited");
 
 /* --------------------------------------------------------------- base32 */
 
@@ -213,6 +222,45 @@ const nukeDec = await decompileExpect(reopened["tool/NUKE.EXE"], {
   base: "0x" + nukeMeta.loadSeg.toString(16), func: "0x" + nukeMeta.entry.toString(16),
 });
 check(nukeDec.ok, `zip-member decompiled (${nukeDec.lines} lines)`);
+
+
+/* --------------------------------------------------- PE32+/UEFI decompile */
+
+console.log("── PE32+ (UEFI module) path");
+function buildPE32p(code, { imageBase = 0x00400000, entryRVA = 0x1000, rawStart = 0x200 } = {}) {
+  const optSize = 240;
+  const total = rawStart + code.length;
+  const buf = new Uint8Array(total);
+  const dv = new DataView(buf.buffer);
+  buf.set([0x4d, 0x5a], 0);
+  dv.setUint32(0x3c, 0x40, true);                 // e_lfanew
+  buf.set([0x50, 0x45, 0x00, 0x00], 0x40);        // PE\0\0
+  dv.setUint16(0x44, 0x8664, true);               // machine x64
+  dv.setUint16(0x46, 1, true);                    // nsec
+  dv.setUint16(0x54, optSize, true);              // optSize
+  const opt = 0x58;
+  dv.setUint16(opt, 0x20b, true);                 // PE32+ magic
+  dv.setUint32(opt + 16, entryRVA, true);         // AddressOfEntryPoint
+  dv.setBigUint64(opt + 24, BigInt(imageBase), true); // ImageBase
+  const sec = opt + optSize;
+  buf.set(new TextEncoder().encode(".text"), sec);
+  dv.setUint32(sec + 8, code.length, true);       // virtual size
+  dv.setUint32(sec + 12, 0x1000, true);           // virtual address
+  dv.setUint32(sec + 16, code.length, true);      // raw size
+  dv.setUint32(sec + 20, rawStart, true);         // raw pointer
+  buf.set(code, rawStart);
+  // mapped image the way the page's parsePE builds it
+  const image = new Uint8Array(0x1000 + code.length);
+  image.set(code, 0x1000);
+  return { file: buf, image };
+}
+// x86-64: int add2(int a, int b) { return a + b; }  ->  lea eax,[rcx+rdx]; ret
+const uefi = buildPE32p(new Uint8Array([0x8d, 0x01, 0xc3]));
+const uefiDec = await decompileExpect(uefi.image, {
+  lang: "x86:LE:64:default", compiler: "gcc",
+  base: "0x400000", func: "0x401000",
+});
+check(uefiDec.ok, `PE32+/UEFI module decompiled as x86:LE:64 (${uefiDec.lines} lines)`);
 
 console.log(`\n${failures === 0 ? "ALL CHECKS PASSED" : failures + " CHECKS FAILED"} · wasm time ${engine.stats.ms.toFixed(0)} ms`);
 process.exit(failures ? 1 : 0);
