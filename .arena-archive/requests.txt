@@ -1,0 +1,32 @@
+# Archived files to retrieve, one per line:
+#
+#   <url> <output-path-relative-to-samples/archive> [expected-size]
+#
+# The URL must be a web.archive.org raw-bytes URL — the `id_` modifier directly
+# after the timestamp is what returns the file as it was served, instead of the
+# Archive's rewritten copy. The expected size is the CDX index's `length` column;
+# a mismatch fails that file rather than writing something truncated.
+#
+# ---------------------------------------------------------------- makinterface.de
+# The vendor firmware this whole thread started from. The site itself refuses
+# connections from the development sandbox, but every download it ever published
+# is in the Archive. Sizes are from the CDX index (see samples/archive/PROVENANCE.md).
+#
+# MAKInterface Pro (the programmer this device is), and the Digital Mode Switch
+# extension board the original request named.
+https://web.archive.org/web/20000830072829id_/http://www.makinterface.de:80/MAKI-PRO.ZIP makinterface/MAKI-PRO.ZIP 22894
+https://web.archive.org/web/20051028062659id_/http://www.makinterface.de:80/dms.zip makinterface/dms.zip 1457566
+https://web.archive.org/web/20020822020619id_/http://www.makinterface.de:80/DMS_EN.ZIP makinterface/DMS_EN.ZIP 218350
+https://web.archive.org/web/20011120041300id_/http://www.makinterface.de:80/DMS_DE.ZIP makinterface/DMS_DE.ZIP 219092
+#
+# Programming tools that ship firmware of their own: IC-PROG and PonyProg are the
+# classic AVR/EEPROM programmers, MAKITEST is the vendor's own test utility.
+https://web.archive.org/web/20011120041757id_/http://www.makinterface.de:80/IC-PROG.ZIP makinterface/IC-PROG.ZIP 112776
+https://web.archive.org/web/20011120045326id_/http://www.makinterface.de:80/PONYPROG.ZIP makinterface/PONYPROG.ZIP 93169
+https://web.archive.org/web/20011108012902id_/http://www.makinterface.de:80/MAKITEST.ZIP makinterface/MAKITEST.ZIP 378338
+#
+# Smart-card and adapter material (the device family is a smart-card/interface
+# programmer), plus the pinout and adapter drawings.
+https://web.archive.org/web/20010914164750id_/http://www.makinterface.de:80/SMARTCRD.ZIP makinterface/SMARTCRD.ZIP 330004
+https://web.archive.org/web/20000830072837id_/http://www.makinterface.de:80/Adapter.zip makinterface/Adapter.zip 366258
+https://web.archive.org/web/20000830072841id_/http://www.makinterface.de:80/Pinout.zip makinterface/Pinout.zip 7200
