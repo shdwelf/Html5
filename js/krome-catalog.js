@@ -1,0 +1,471 @@
+/**
+ * krome-catalog.js — research data behind the CASEFILES lab.
+ *
+ * Two dossiers live here:
+ *
+ *  1. KR0ME CORP — the 1995–98 "kr0me corp" underground software library that
+ *     lived at http://members.tripod.com/~retrotech/ (indexed by the GeoCities
+ *     hacking link pages of the day as "kr0mecorp — Retrocomputing, Hacking,
+ *     Cyberpunk resources").  The Wayback Machine's Green Crawl walked the
+ *     whole directory in Dec 1998 – Mar 1999.  This catalog stores each
+ *     capture's NAME and TIMESTAMP; the authoritative SHA-1 of the original
+ *     bytes is fetched from the CDX index at recover time and enforced before
+ *     anything reaches the disassembler — no hand-transcribed digests in the
+ *     middle, the archive's own index is the ground truth.
+ *
+ *  2. RODGER RAMROD — the 1996 Nonaz Inc. MS-DOS title.  The Internet Archive
+ *     holds the shareware ZIP (stream-only), the eXoDOS repack (byte-identical
+ *     MD5 to the shareware ZIP), and the full-game RAR (public-domain mark).
+ *     All hashes below were read from the archive.org metadata API.
+ *
+ * Everything here is inert data plus references. Nothing executes: the lab
+ * disassembles and decompiles, it never runs a sample.
+ */
+
+/* ------------------------------------------------------------------- site */
+
+export const SITE = {
+  name: "kr0me corp",
+  url: "http://members.tripod.com/~retrotech/",
+  years: "1995–98",
+  operator: "Njord, from Kr0me BBS",
+  copyright: "Copyright © 1995-98 Kr0me Corp - All rights reserved",
+  blurb:
+    "An underground file archive in the 1998 Tripod belt: kr0me corp's own releases " +
+    "(\"Tools coded by Njord, from Kr0me BBS\"), plus the era's nukers, spoofers, " +
+    "scanners, Cybertek zines, phreak docs and PGP anonymity papers. The Wayback " +
+    "Machine holds ~120 captures of the site and its files, each with a SHA-1 of the " +
+    "original bytes — which is what makes this dossier possible: every byte that " +
+    "reaches the Ghidra engine is checked against the archive's own CDX index first.",
+  pages: {
+    files: { ts: "19990508015502", title: "Kr0me Corp - Archives" },
+    index: { ts: "19981205065406", title: "kr0me corp - pointer to the new site" },
+  },
+};
+
+const ORIGIN = "http://members.tripod.com/~retrotech/";
+
+/** Wayback raw-capture URL (id_ = original bytes, no toolbar). */
+export const waybackUrl = (name, ts) => `https://web.archive.org/web/${ts}id_/${ORIGIN}${name}`;
+
+/** Human view URL for the dossier. */
+export const waybackView = (name, ts) => `https://web.archive.org/web/${ts}/${ORIGIN}${name}`;
+
+/** CDX row for one pinned capture — the source of the expected SHA-1 (base32). */
+export const cdxUrl = (name, ts) =>
+  `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(ORIGIN + name)}&timestamp=${ts}&limit=1&output=json`;
+
+/* ---------------------------------------------------------------- library */
+/*
+ * One line per Wayback capture of the archive, from the CDX index:
+ *
+ *   name | capture-timestamp | compressed-warc-length | class
+ *
+ * class: z = file capture, h = html page, t = text,
+ *        ! = late capture (1999-2000) whose CDX mimetype came back text/html —
+ *            Tripod was serving error pages by then, so the digest check will
+ *            happily refuse anything that is not the real bytes.
+ * desc: from the site's own files.html catalogue where one exists.
+ */
+const LIB = `
+100ways.zip|19990128155635|16523|z|100 ways to disappear and live free
+aaacard.zip|19990128172058|2457|z|
+abcpay.zip|19991011231906|3593|!|
+account.zip|19990128190039|2502|z|
+advanced.zip|19991013161747|3587|!|
+aicard.zip|19990128234244|2898|z|
+airfone.zip|19990129001220|3848|z|
+akill2.zip|19981206081249|2435|z|
+alert.html|19990129025933|2009|h|
+analgsig.zip|19990129045155|4489|z|
+angelfir.zip|19990129053928|1543|z|
+anonfaq.zip|19990129070541|4978|z|Anonymity FAQ
+aolkw.zip|19990202011231|3209|z|
+backdoor.zip|19991014015931|3577|!|
+banner.html|19981205223515|1131|h|
+bashps1.zip|19981205100612|2779|z|
+bboxc5.zip|19990202082801|4932|z|
+bbs.html|19981201051655|947|h|
+bbsbdoor.zip|19981203104634|7625|z|
+boink.zip|19990202112935|2798|z|Boink — Win95/NT fragment nuke variant
+bored.zip|19991018214353|3587|!|
+brazen.zip|19990202155914|31781|z|Brazen 1.10 — forge news posts, control messages
+breaksk.zip|19981206014807|10469|z|
+bufferow.zip|19990202183416|7630|z|
+bufover.zip|19990202191734|15793|z|Buffer overflow papers
+c2myazz.zip|19981205013240|9076|z|Win95 OOB "nuke" — the c2myazz attack family
+caching.zip|19990202223926|25194|z|Caching techniques
+cardchk.zip|19990203000736|1001|z|
+cardcop.zip|19990203003814|17476|z|
+carding.html|19981202174000|1508|h|
+cartefr.zip|19990203030158|4430|z|
+ccformat.zip|19990203042129|1467|z|
+ccnumber.zip|19990203052721|1520|z|
+cellphrk.zip|19990203071203|4866|z|
+celltv.zip|19990203084352|1272|z|Cellular listening with a TV
+cgibasic.zip|19990203091404|3606|z|
+cgibin.zip|19990203103354|4221|z|
+cha0scan.zip|19990203122155|4733|z|CHA0SCAN — incremental port scanner
+checksum.zip|19981202034820|1877|z|
+ciabwash.zip|19990203145715|17477|z|CIA Brainwashing Methods (1956)
+contact.html|19981203112841|1776|h|
+countcgi.zip|19981206063626|2580|z|
+countmea.zip|19990203193412|6788|z|Countermeasures
+covertr2.html|19990203231039|5366|h|
+crdtcard.zip|19990204000206|7655|z|
+crypto.html|19981205192156|2689|h|
+ctelec2.zip|19990204052445|17919|z|Cybertek Electric zine #2
+ctelec4.zip|19990208233545|22203|z|Cybertek Electric zine #4
+dally.zip|19981202210957|34567|z|
+dayaft1.zip|19990209032038|4204|z|The day after
+dcd3c.zip|19981207002209|4456|z|
+denial.zip|19990209060053|17762|z|
+dialuptn.zip|19990209091116|5973|z|
+digirad.zip|19990209094348|3314|z|Digital communications via radio
+digisign.zip|19990209112140|5599|z|
+docs.html|19981206121923|2745|h|
+drspewfy.zip|19990209154422|5958|z|IRC hostname spoofer for Windows
+econsurv.zip|19990209185823|4903|z|Economic survival
+elecexp.zip|19990302023803|3112|z|Electronic expertise
+erect97.zip|19990302041254|9688|z|Windows spoofer
+esperant.zip|19990302044758|34568|z|
+ethics.html|19981201043428|3452|h|
+eurobbox.zip|19990302094201|7863|z|
+faq.html|19990210081743|2805|h|
+feedback.html|19990210110353|1144|h|
+files.html|19990508015502|3529|h|The archive catalogue itself
+fortune.zip|19981202034831|13114|z|
+freeacct.zip|19990210175411|1669|z|
+freq1.zip|19990218035911|3417|z|
+freq2.zip|19990218050711|3105|z|
+fuzz.zip|19990218065733|3027|z|
+fwbkdoor.zip|19981205135052|11838|z|
+gblue.zip|19990218100905|13022|z|
+geocit.zip|19990218114324|2779|z|
+gewse5.zip|19981203090546|1717|z|
+glide.zip|19990218144501|1818|z|
+govdialp.zip|19990218151742|2347|z|
+govsfreq.zip|19990218170552|993|z|
+gthh1-3.zip|19990218173637|4199|z|
+gthh1-6.zip|19990218191607|8147|z|
+gthh2-1.zip|19990218204717|10867|z|
+gthh3-3.zip|19990222074347|6959|z|
+hacktec.zip|19990219082647|4710|z|
+hackweb.zip|19990219102526|4917|z|
+hanson.zip|19990219125109|1649|z|
+hidden.html|19981206004351|1106|h|
+hiding.zip|19990219170326|8452|z|Hiding yourself
+hlinks.html|19981206100925|2772|h|
+hotmail.zip|19990219210716|1753|z|
+icqanon.zip|19981202103314|1126|z|
+icqcrash.zip|19981203000324|2114|z|
+icqflood.zip|19981203072442|2122|z|
+icqipcrk.zip|19981206084436|5707|z|
+icqsniff.zip|19981203160713|3608|z|
+icqspoof.zip|19981206132257|2196|z|
+iftp.zip|19981207015901|1989|z|
+index-2.html|19990220115342|630|h|
+index.html|19990420062100|581|h|
+ipstuff.zip|19990220131515|8775|z|Misc C sources useful for coding spoofers
+ircseq.zip|19990220152501|6045|z|C source of an IRC sequencer
+janet1.zip|19991022001034|3573|!|
+janet2.zip|19991022011122|3586|!|
+jolt.zip|19981201051654|2274|z|Jolt — Win95 flood tool
+keyserv.zip|19991022025725|3578|!|PGP key servers
+kr0menfo.zip|19981203061628|2145|z|kr0me corp's own info file
+land.zip|19990221003817|1506|z|Land — the TCP self-connect crash (m3lt)
+letters.html|19981206200356|2024|h|
+log.html|19981202095919|2118|h|
+loopdiv.zip|19990221053349|1916|z|
+lou.zip|19990221063226|13639|z|
+lowfaq.zip|19990221083030|6528|z|
+machack1.zip|19990221101641|5463|z|
+machack2.zip|19990221105210|1930|z|
+main.html|19981202144535|1743|h|
+media.html|19981205083009|1205|h|
+milgov.html|19981206172402|1827|h|
+milufo.html|19990221195819|15724|h|The Military UFO Underground
+mutilate.zip|19981202092529|2119|z|
+namedspl.zip|19981205090236|6079|z|
+nasa0803.zip|19990222125954|11288|z|
+nasa0925.zip|19990222133803|10790|z|
+nasaint2.zip|19990222155240|23316|z|
+nasaint3.zip|19990222162902|4199|z|
+nasaintl.zip|19990223190950|20240|z|
+nestea.zip|19981202095912|2760|z|Nestea — the ICE-nuke sequel (route)
+netcat.zip|19990223212617|24573|z|
+netwar.html|19981202034817|3546|h|The Armory — net war tools page
+news.html|19981203000331|3098|h|
+newtear.zip|19981207075123|3337|z|NewTear — teardrop refinement
+novhfaq.zip|19990224073230|41806|z|
+ntcrack.zip|19981202214507|2064|z|
+nthakfaq.zip|19990224110338|44292|z|
+ntpptp.zip|19981202052929|2467|z|
+nymhelp.zip|19990224135229|22349|z|Nym documentation
+octopus.zip|19981202181426|2425|z|
+overdrop.zip|19981206081235|1887|z|Overdrop — OOB drop variant
+pb_hbbs1.zip|19981206121911|3683|z|
+pedo.html|19990224211400|2420|h|
+phreak.html|19990225000515|1331|h|
+phreakin.zip|19990225082302|12343|z|
+pir8rad.zip|19990225113243|2785|z|An intro to pirate radio
+plcodes.zip|19990225131853|5051|z|
+pop3scan.zip|19990225152821|3332|z|
+portscan.zip|19990225161046|11663|z|7th Sphere Port Scanner
+pscan.zip|19990127095958|12281|z|Port Scanner
+ptech.zip|19990127112309|5051|z|
+pubkey.zip|19991002065446|3583|!|Our PGP public key
+pwlview.zip|19981207051457|13205|z|Win95 .PWL password viewer
+remobs.zip|19990127175345|3521|z|
+resources.html|19981207041046|2197|h|
+rfc.html|19990127213605|1445|h|
+scan.zip|19991002162831|3563|!|IP Scanner
+scanner.zip|19981205230727|5846|z|
+search.html|19981206132253|1137|h|
+secret.html|19981202181447|2837|h|
+secretfr.zip|19990128102627|10420|z|
+secserv.zip|19990128111856|3127|z|
+servu-ki.zip|19981205192203|1961|z|
+shells.html|19981205020446|1254|h|
+shithead.html|19990128153716|1529|h|
+siemens.zip|19990128172012|2549|z|
+sirc.zip|19990128181721|12631|z|IRC spoofer, sources included
+space.zip|19991003110228|3568|!|
+ss1.zip|19990129001255|3274|z|
+sscodes.zip|19990129021220|3554|z|
+staog.zip|19990129025642|4938|z|Staog — the first Linux virus (VLAD, 1996)
+synk4.zip|19981206142646|3618|z|SYN flood generation 4 (route)
+takeover.zip|19990129052404|3420|z|
+tapper.zip|19990129064355|4470|z|
+teardrop.zip|19990129073624|2965|z|Teardrop — IP fragmentation crash
+tech.html|19981202110709|1618|h|
+thehaq.zip|19990202061539|39509|z|
+tools.html|19981202130235|3123|h|
+tracemail.txt|19990202094118|17135|t|
+treasury.zip|19990202101637|844|z|
+tripod.zip|19990202121532|3753|z|
+tripod2.zip|19990202131419|1095|z|
+trw-ips.zip|19990202140838|9833|z|
+trwaddrs.zip|19990202161112|1603|z|
+trwdefs.zip|19990202174124|2732|z|
+trwinfo.zip|19991004111155|3578|!|
+unixhack.zip|19990202210653|32197|z|
+virii.html|19981202092527|2004|h|
+visahack.zip|19990203001851|2635|z|
+webproxy.zip|19990203015837|2165|z|
+whycp.zip|19990203051646|2189|z|Cyberpunk movement info
+wietse.zip|19990203054145|21148|z|
+win95hack1.txt|19990203065011|824|t|
+win95hack2.txt|19990203081629|2936|t|
+win95pw.txt|19990203091024|2000|t|
+winGateScan95-2_1.zip|19981201205517|29758|z|WinGate scanner 2.1
+winhackgold.zip|19981203043535|17684|z|
+winnuke.zip|19990203131809|1259|z|WinNuke — the OOB attack that named a year
+winspoof.zip|19990203141220|4189|z|Windows 95/NT spoofer (untested)
+wscan.zip|19991005031125|3617|!|Port Scanner
+wsockspy.zip|19981205152719|27924|z|
+wtmped.zip|19981202192435|1181|z|
+x25.zip|19981206060415|1103|z|
+zap2.zip|19990203233635|1167|z|
+`.trim();
+
+/** @type {{name:string, ts:string, warc:number, kind:string, suspect:boolean, desc:string}[]} */
+export const LIBRARY = LIB.split("\n").map((line) => {
+  const [name, ts, warc, kind, desc = ""] = line.split("|");
+  return { name, ts, warc: Number(warc), kind, suspect: kind === "!", desc: desc.trim() };
+});
+
+/** Files the site's own catalogue links but the crawlers never captured with HTTP 200. */
+export const NOT_CAPTURED = [
+  ["phAse-0.zip", "phAse zero v1.0 beta — RAS and hacking tool for Win95/98/NT"],
+  ["euthan.zip", "Euthanasia 1.52 — anonymous fast mailer/mailbomber"],
+  ["scythe.zip", "Death Scythe 2.40 — wipe newsgroups from news servers"],
+  ["deshadow.zip", "DeShadow 0.2 — passwd de-shadowing tool for Windows"],
+  ["ether.zip", "EtherMail IV — post through remailers"],
+  ["theta.zip", "Thetahedron 1.03 — automated fake-news tool"],
+  ["pin-g.zip", "Pin-G 1.02b — asynchronous ping flooder"],
+  ["spoofit.zip", "IP spoofers, blind and non-blind, with full sources"],
+  ["ctelec1.zip", "Cybertek Electric zine #1"],
+  ["ctelec3.zip", "Cybertek Electric zine #3"],
+  ["radcommo.zip", "Intro to radio communications"],
+  ["ciasws.zip", "CIA Secret Weapon System — documentation"],
+].map(([name, desc]) => ({ name, desc, note: "linked from files.html — never captured with HTTP 200" }));
+
+/* --------------------------------------------------------------- curation */
+
+/** Long-form notes for the tools worth a Ghidra session. */
+export const CURATED = {
+  "winnuke.zip": {
+    tag: "the famous one",
+    body:
+      "WinNuke sent a single OOB (URG-flag) TCP segment to port 139 and blue-screened " +
+      "unpatched Windows 95 across the internet in the summer of 1997. Most copies " +
+      "circulating today are later recompiles; this capture is a Dec-1998 snapshot of " +
+      "the file Tripod actually served, digest-checked before anything reaches the " +
+      "decompiler.",
+  },
+  "c2myazz.zip": {
+    tag: "the family",
+    body:
+      "\"c2myazz\" is the name the scene gave the Win95 OOB exploit family after the " +
+      "original leaked through #myazz. The zip gathers the variants; diffing their " +
+      "code against winnuke's is a five-minute exercise in how attack code mutated " +
+      "before CVE culture existed.",
+  },
+  "land.zip": {
+    tag: "protocol pathology",
+    body:
+      "land.c sets the SYN packet's source = destination, and every vulnerable TCP " +
+      "stack of 1997 spins forever resolving the handshake against itself. The zip is " +
+      "1.5 KB compressed — source and binary in the same handful of kilobytes as the " +
+      "RFC they break.",
+  },
+  "nestea.zip": {
+    tag: "fragmentation",
+    body:
+      "Nestea (route) refined teardrop's overlapping-fragment offset bug into a tool " +
+      "with a banner and options. Together with teardrop.zip and newtear.zip this " +
+      "folder is the complete 1997 fragmentation-attack lineage.",
+  },
+  "teardrop.zip": {
+    tag: "fragmentation",
+    body: "The original IP overlapping-fragment crasher that took networks down in late 1997.",
+  },
+  "newtear.zip": {
+    tag: "fragmentation",
+    body: "NewTear — teardrop rewritten after the patches, probing the same bug class.",
+  },
+  "synk4.zip": {
+    tag: "flooding",
+    body: "SYN flood generation 4 — the attack class that took down Panix in 1996 and forced RFC 1948.",
+  },
+  "staog.zip": {
+    tag: "malware history",
+    body:
+      "Staog (VLAD the Impaler, 1996) was the first Linux virus ever written — 80386 " +
+      "assembly exploiting stack-buffer bugs in su/mount, distributed as source and " +
+      "build script. Kr0me Corp filed it under tools; history files it under firsts.",
+  },
+  "pwlview.zip": {
+    tag: "the tool that made .PWL famous",
+    body:
+      "Win95 cached dial-up and LAN passwords in .PWL files under a stream cipher " +
+      "whose keystream collapsed under chosen-ciphertext. PWL viewers turned that " +
+      "weakness into a household story and forced Microsoft's SP1 fix.",
+  },
+  "winGateScan95-2_1.zip": {
+    tag: "the open-proxy era",
+    body:
+      "Wingate scans were 1998's shodan query: find an open WinGate proxy, bounce " +
+      "through it. The scanner automates class-C sweeps for the wingate banner.",
+  },
+  "portscan.zip": {
+    tag: "scanning",
+    body: "7th Sphere port scanner — the Win9x scanner a whole generation started with.",
+  },
+  "kr0menfo.zip": {
+    tag: "self-portrait",
+    body: "kr0me corp's own info file — the group describing itself, in its own words.",
+  },
+};
+
+/* ----------------------------------------------------------------- ramrod */
+
+/** Rodger Ramrod dossier — all numbers below were read from the archive.org metadata API. */
+export const RAMROD = {
+  title: "Rodger Ramrod",
+  publisher: "Nonaz Inc., St Charles, Illinois",
+  team: "Frank Settimio, Paul and Derrick Stringini",
+  released: "December 28, 1996",
+  price: "$39.99 + $5 shipping",
+  platform: "MS-DOS, 640×400, 256 colours, DOS4GW.EXE 32-bit DOS extender",
+  adult: true,
+
+  shareware: {
+    item: "msdos_Rodger_Ramrod_1996",
+    file: "Rodger_Ramrod_1996.zip",
+    bytes: 8433873,
+    md5: "d09be88736b388ea4dbb0887db8adfec",
+    sha1: "40154b55114302155ea19ffeb63102e7959ed98f",
+    crc32: "af02c1c1",
+    filecount: 16,
+    access: "stream_only — plays in the archive's emulator, direct download is refused",
+    url: "https://archive.org/details/msdos_Rodger_Ramrod_1996",
+  },
+
+  /** The eXoDOS repack is byte-identical to the shareware zip (same MD5), and
+   *  its parent item is a public torrent — this is the copy the browser can
+   *  actually fetch. */
+  exodos: {
+    item: "exov5_2",
+    path: "eXo/eXoDOS/Rodger Ramrod (1996).zip",
+    fetchUrl: "https://archive.org/download/exov5_2/eXo/eXoDOS/Rodger%20Ramrod%20%281996%29.zip",
+    bytes: 8433873,
+    md5: "d09be88736b388ea4dbb0887db8adfec",
+    sha1: "40154b55114302155ea19ffeb63102e7959ed98f",
+    crc32: "af02c1c1",
+    note: "byte-identical to the stream-only shareware zip (same MD5/SHA-1/CRC-32)",
+  },
+
+  full: {
+    item: "cdfwps",
+    file: "cdfwps.rar",
+    bytes: 78051394,
+    md5: "37c882b3e8b740c2ca5e6466dca947fc",
+    sha1: "aa7393ee651214879e1fcc3710772a6c285f8ea9",
+    crc32: "e7a7e120",
+    filecount: 34,
+    license: "publicdomain/mark/1.0",
+    url: "https://archive.org/details/cdfwps",
+    note: "RAR container — no in-browser unrar here, so the dossier lists it for provenance only",
+  },
+
+  /** Package manifest as documented in resources/src-62 (extracted from the eXoDOS zip). */
+  manifest: [
+    { file: "rodger/RRR.BAT", bytes: 29, role: "launch batch file → STKRUN MAIN.EXE" },
+    { file: "rodger/STKRUN.EXE", bytes: 39936, role: "runtime loader — 16-bit real-mode MZ, the lab's primary decompile target" },
+    { file: "rodger/MAIN.EXE", bytes: 657920, role: "main executable — check the header: MZ stub or LE/DOS4GW payload" },
+    { file: "rodger/RRR.DAT", bytes: 23276544, role: "primary game data" },
+    { file: "rodger/READ.ME", bytes: 9114, role: "1996 shareware licence + adult-content notice" },
+    { file: "rodger/*.DWM", bytes: 97280, role: "music assets" },
+  ],
+
+  whyItMatters:
+    "A four-step batch chain — RRR.BAT → STKRUN.EXE → MAIN.EXE — wrapping a DOS4GW " +
+    "protected-mode game built by three brothers in St Charles, Illinois. The " +
+    "shareware zip is the same artifact the 2016 4chan thread dug up, the same bytes " +
+    "eXoDOS repacked; the archive.org metadata API lets us pin all of it to MD5, " +
+    "SHA-1 and CRC-32 before a single instruction is disassembled.",
+};
+
+/* ---------------------------------------------------------------- research */
+
+export const METHOD = [
+  {
+    h: "Why hash-first",
+    p: "The Wayback Machine's CDX index stores a SHA-1 (RFC-4648 base32) of every capture's original bytes. The recovery console asks the index for the digest of the exact pinned capture, fetches the raw capture (the id_ variant, no toolbar), hashes it with WebCrypto and refuses to hand anything to the disassembler unless the two match. A mismatch is displayed, never hidden: it means Tripod's later error pages or a re-encode leaked in — and that capture becomes evidence of that instead.",
+  },
+  {
+    h: "What the lab does with a recovered file",
+    p: "Zips are opened with fflate in memory. Every member is sniffed (MZ / NE / LE / PE / COM / text) and can be pushed through the same pipeline the virus lab uses: a linear-sweep + recursive-descent x86 disassembler (16- and 32-bit), technique tables, an entropy map, and Ghidra's C++ decompiler compiled to WebAssembly with vendored SLEIGH specs. Nothing is ever executed — several of these zips are, after all, attack tools.",
+  },
+  {
+    h: "Why the browser, not a server",
+    p: "The recovery step is the only part of the lab that touches the network, and it runs in your tab against web.archive.org and archive.org directly. There is no backend here; the sandbox that builds this page cannot even reach the Wayback Machine. What ships in the repo is the manifest, the timestamps and the code — the bytes come to you from the archives, and the analysis never leaves your machine.",
+  },
+  {
+    h: "Ground rules",
+    p: "Static analysis only. The attack tools here target operating systems that stopped receiving patches when XP was young; they are studied the way the virus corpus in the main lab is studied — as machine code that documents an era. Nothing is executed, nothing is re-hosted, and every artifact points back at its archive.org capture.",
+  },
+];
+
+export const REFERENCES = [
+  { label: "Wayback CDX index — members.tripod.com/~retrotech", url: "https://web.archive.org/cdx/search/cdx?url=members.tripod.com/~retrotech/*&output=json" },
+  { label: "kr0me corp index capture (Dec 5, 1998)", url: "https://web.archive.org/web/19981205065406/http://members.tripod.com/~retrotech/" },
+  { label: "Kr0me Corp archive catalogue (May 8, 1999)", url: "https://web.archive.org/web/19990508015502/http://members.tripod.com/~retrotech/files.html" },
+  { label: "GeoCities hacking links page indexing kr0mecorp", url: "https://www.oocities.org/timessquare/lair/6606/hacks1.html" },
+  { label: "Internet Archive — Rodger Ramrod (shareware, stream-only)", url: "https://archive.org/details/msdos_Rodger_Ramrod_1996" },
+  { label: "Internet Archive — Rodger Ramrod full game (public domain mark)", url: "https://archive.org/details/cdfwps" },
+  { label: "Internet Archive — eXoDOS v5.2 (the byte-identical repack)", url: "https://archive.org/details/exov5_2" },
+  { label: "src-62 — the Rodger Ramrod HTML5 wrapper in this repository", url: "https://github.com/shdwelf/Html5/blob/arena/01a098c1-html5/resources/src-62-rodger-ramrod-html5-app.md" },
+];

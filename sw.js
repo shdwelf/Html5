@@ -2,7 +2,7 @@
    The 2.6 MB ghidra_decompiler.wasm is intentionally *not* precached: the
    service worker caches it on first use, so the lab still works offline after
    one visit without slowing down install for everyone else. */
-const CACHE = "sitek-html5-v15";
+const CACHE = "sitek-html5-v16";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -10,6 +10,7 @@ const PRECACHE = [
   "./keyspace.html",
   "./validator.html",
   "./ghidra-lab.html",
+  "./casefiles.html",
   "./art-studio.html",
   "./poetry-book.html",
   "./louisiana.html",
@@ -41,6 +42,7 @@ const PRECACHE = [
   "./css/viewer.css",
   "./css/validator.css",
   "./css/viruslab.css",
+  "./css/casefiles.css",
   "./css/studio.css",
   "./css/poetry-book.css",
   "./css/wm.css",
@@ -72,6 +74,8 @@ const PRECACHE = [
   "./js/virus-catalog.js",
   "./js/x86dis.js",
   "./js/ghidra-wasm.js",
+  "./js/casefiles.js",
+  "./js/krome-catalog.js",
   "./js/studio.js",
   "./js/studio-data.js",
   "./js/studio-fs.js",
@@ -90,6 +94,7 @@ const PRECACHE = [
   "./samples/bin/michelangelo.bin",
   "./samples/bin/malmsey-habitat-13.bin",
   "./samples/bin/zippy.bin",
+  "./demo.exe",
   "./img/site-x-badge.png",
   "./img/site-l-badge.png",
   "./img/ingen-stripe.jpg",
