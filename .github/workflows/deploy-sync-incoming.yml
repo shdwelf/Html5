@@ -1,0 +1,73 @@
+# Deploy a branch snapshot of this repo to shdwelf/Html5-sync-incoming
+# over SSH, authenticating with the SYNC_INCOMING_DEPLOY_KEY secret
+# (private half of config/deploy-keys/sync-incoming-deploy.pub).
+#
+# One-time setup (see docs/DEPLOY_SYNC_INCOMING.md):
+#   1. Target repo Settings -> Deploy keys -> Add deploy key:
+#      paste config/deploy-keys/sync-incoming-deploy.pub, check "Allow write access".
+#   2. This repo Settings -> Secrets and variables -> Actions -> New secret:
+#      name SYNC_INCOMING_DEPLOY_KEY, value = full private key PEM.
+#   3. Actions -> "Deploy to Html5-sync-incoming" -> Run workflow.
+name: Deploy to Html5-sync-incoming
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: "Branch to create/update in Html5-sync-incoming ('auto' = deploy/html5-<this-branch>)"
+        required: false
+        default: auto
+      ssh_port_mode:
+        description: "SSH port mode (443 uses ssh.github.com for filtered networks)"
+        required: false
+        default: "22"
+      force_with_lease:
+        description: "Update the deploy branch if it already exists"
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-sync-incoming
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve target branch
+        id: target
+        env:
+          INPUT_BRANCH: ${{ inputs.target_branch }}
+        run: |
+          if [ "${INPUT_BRANCH:-auto}" = "auto" ]; then
+            SAFE="$(printf '%s' "${GITHUB_REF_NAME:-manual}" | tr '/' '-' | tr -cd 'A-Za-z0-9._-')"
+            echo "branch=deploy/html5-${SAFE}" >> "$GITHUB_OUTPUT"
+          else
+            echo "branch=${INPUT_BRANCH}" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Deploying ${GITHUB_SHA} to branch: $(grep '^branch=' "$GITHUB_OUTPUT" | cut -d= -f2-)"
+
+      - name: Deploy via SSH deploy key
+        env:
+          SYNC_INCOMING_KEY_DATA: ${{ secrets.SYNC_INCOMING_DEPLOY_KEY }}
+          SYNC_INCOMING_REPO: shdwelf/Html5-sync-incoming
+          SOURCE_REF: ${{ github.sha }}
+          TARGET_BRANCH: ${{ steps.target.outputs.branch }}
+          SSH_PORT_MODE: ${{ inputs.ssh_port_mode }}
+          FORCE_WITH_LEASE: ${{ inputs.force_with_lease && '1' || '0' }}
+          KNOWN_HOSTS_FILE: ${{ runner.temp }}/sync-incoming-known-hosts
+        run: |
+          if [ -z "${SYNC_INCOMING_KEY_DATA:-}" ]; then
+            echo "::error::Secret SYNC_INCOMING_DEPLOY_KEY is not set. See docs/DEPLOY_SYNC_INCOMING.md."
+            exit 1
+          fi
+          bash scripts/deploy-sync-incoming.sh

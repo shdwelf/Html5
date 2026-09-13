@@ -3,3 +3,15 @@ dist/
 node_modules/
 *.local
 .DS_Store
+
+# deploy-key private material must never be committed (public halves live in
+# config/deploy-keys/*.pub and are explicitly re-included below)
+*.pem
+*.key
+*_deploy
+*_deploy.key
+*_id_ed25519
+*_id_rsa
+config/deploy-keys/*private*
+config/deploy-keys/*secret*
+!config/deploy-keys/*.pub
