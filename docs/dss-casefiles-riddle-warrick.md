@@ -312,3 +312,44 @@ checks** (adds: 7 pinned rows with unique names/timestamps/digests, vcl.zip
 capture+MD5 pin, vcl.txt pin, manifest+shelf+caveat, trojanlair UNCONFIRMED
 verdict, VCL panel/dossier/sweep wiring); `smoke_pipeline.mjs` clean;
 `check-dom-ids.mjs` pass; `sw.js` precache v21.
+
+## 11. Wave 6 — Trojan's Lair, and the case button that never shipped
+
+**The address was half-remembered.** The user said `trojanslair.org` — zero
+Wayback rows, unresolvable. But `trojanslair.com` (with the S the earlier
+hunt was missing) *is* captured: a 377-byte doorway, Nov 2000, digest
+`OOR6MPJYCJ4B45SVKKZBT3TQRYJQJWE6`, whose rendered form bounces visitors on
+to the real depot — **TL Security at tlsecurity.net**, splash title
+*"Hacking, Hackers, Subseven, Icq, trojans, download."* The deep dive mapped
+it from the CDX: ~60 builds in /backdoors (SubSeven 2.1–2.2, BioNet
+2.8–3.12, Theef, Y3K, Nettrash, Infector, keyloggers), /trojansarchive
+(NetSphere, the RAT line, ServeU), the 2003 /Incoming/Backdoor upload tray
+(GT Bot, Voodoo Doll), /0-day and /archive/exploits with sources, /windows
+tooling, /advisories, and a `download.cgi` zip gateway. Post-2007 captures
+are domain parking; the 2009+ asterisk URLs are late-era noise. Twenty rows
+pinned (12 Win32 trojan builds — SubSeven 2.2 and the *unpacked* BioNet 3.12
+first among them — 3 exploit sources, 5 paper-trail pages), each through the
+same SHA-1 gate, with `GHIDRA SWEEP — 12 TROJAN BUILDS` routing the PE32s to
+`x86:LE:32`.
+
+**The wave-5 post-mortem, honestly told.** This wave found that the VCL
+case's functions shipped but its *case button never did*: a parallel-edit
+race ate the `CASES.vcl` entry and the `selectCase` branch, and the
+verifier's wiring grep only checked function names and element ids — so 50
+checks passed while the case was unreachable from the UI. Fixed here, and
+the verifier now greps the `vcl: {` / `trojanslair: {` case entries and the
+`if (id === …)` branches too. Lesson recorded with the fix, not instead of
+it: never parallel-edit the same file, and grep what the user clicks.
+
+**Still open: the HU firmware.** No head-unit (or Hughes, or HU-card) blob
+lives in this repo or on the Lair's shelves, and none was attached — so the
+second half of the order waits on a pointer. Drop the file in the lab's
+drop zone or paste a URL, and it goes through the same pipeline; if it
+turns out to be ARM/MIPS/PIC rather than x86, the lab will say exactly
+where its coverage ends instead of guessing.
+
+Verification: `tools/verify_casefiles.mjs` — **ALL CHECKS PASSED, 56
+checks** (adds: 20 trojan rows, SubSeven + unpacked-BioNet + doorway pins,
+shelf map, trojan wiring with case-entry/branch coverage); VCL wiring check
+strengthened the same way; `smoke_pipeline.mjs` clean;
+`check-dom-ids.mjs` pass; `sw.js` precache v22.

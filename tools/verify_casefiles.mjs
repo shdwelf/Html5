@@ -25,7 +25,7 @@ import { GhidraWasm } from "../js/ghidra-wasm.js";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
   RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK, SHADOWELF,
-  VXHEAVENS, TROJANLAIR,
+  VXHEAVENS, TROJANLAIR, TROJANSLAIR,
   waybackUrl, waybackView, cdxUrl,
 } from "../js/krome-catalog.js";
 
@@ -151,8 +151,51 @@ console.log("── vx heavens / virus creation lab");
   const cf5 = readFileSync(join(ROOT, "js", "casefiles.js"), "utf8");
   check(
     cf5.includes("renderVclPanel") && cf5.includes("renderVclDossier") &&
-    cf5.includes("btnVclSweep") && cf5.includes("vclGhidraReport") && cf5.includes("vclRecovered"),
-    "casefiles wiring: VCL case panel + dossier + sweep ids",
+    cf5.includes("btnVclSweep") && cf5.includes("vclGhidraReport") && cf5.includes("vclRecovered") &&
+    cf5.includes("vcl: {") && cf5.includes('if (id === "vcl")'),
+    "casefiles wiring: VCL case entry + panel + dossier + sweep ids",
+  );
+}
+
+/* --------------------------------------- trojan's lair depot (wave 6) ----- */
+
+console.log("── trojan's lair");
+{
+  const f = TROJANSLAIR.files;
+  const b32 = /^[A-Z2-7]{32}$/;
+  const uniq = new Set(f.map((x) => x.name));
+  check(
+    f.length === 20 && uniq.size === f.length &&
+    f.every((x) => /^\d{14}$/.test(x.ts) && b32.test(x.digest) && x.warc > 0 && x.url.startsWith("http://")) &&
+    f.filter((x) => x.name.endsWith(".exe")).length === 12,
+    `trojanslair: ${f.length} pinned rows, unique names, 14-digit ts, 32-char base32 digests, 12 exes`,
+  );
+  const sub = f.find((x) => x.name === "backdoors/Subseven.2.2.exe");
+  check(
+    sub.ts === "20010723022437" && sub.digest === "WL7XYRC5PABMHXOXH6QIPMRNP7GVH73L" &&
+    sub.url === "http://www.tlsecurity.net/backdoors/Subseven.2.2.exe",
+    "subseven 2.2 pinned: 2001 capture + CDX sha1",
+  );
+  const bio = f.find((x) => x.name === "backdoors/Backdoor.Bionet.3.12.unpacked.exe");
+  check(
+    bio.digest === "SPLWRUKN6RLSGAQ2XWP6TZ2VE7HVA5BI" && bio.ts === "20020607041431",
+    "bionet 3.12 unpacked pinned",
+  );
+  const door = f.find((x) => x.name === "doorway/index.html");
+  check(
+    door.digest === "OOR6MPJYCJ4B45SVKKZBT3TQRYJQJWE6" && door.url === "http://www.trojanslair.com/",
+    "trojanslair.com doorway pinned",
+  );
+  check(
+    TROJANSLAIR.shelves.includes("/Incoming/Backdoor") && TROJANSLAIR.blurb.includes("trojanslair.org"),
+    "trojanslair shelf map + .org verdict present",
+  );
+  const cf6 = readFileSync(join(ROOT, "js", "casefiles.js"), "utf8");
+  check(
+    cf6.includes("renderTrojanPanel") && cf6.includes("renderTrojanDossier") &&
+    cf6.includes("btnTrojanSweep") && cf6.includes("trojanGhidraReport") && cf6.includes("trojanRecovered") &&
+    cf6.includes("trojanslair: {") && cf6.includes('if (id === "trojanslair")'),
+    "casefiles wiring: trojan case entry + panel + dossier + sweep ids",
   );
 }
 

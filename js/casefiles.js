@@ -20,7 +20,7 @@ import { dissect } from "./artifacts.js";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
   RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK, SHADOWELF,
-  VXHEAVENS, TROJANLAIR,
+  VXHEAVENS, TROJANLAIR, TROJANSLAIR,
   waybackUrl, waybackView, cdxUrl,
 } from "./krome-catalog.js";
 const $ = (id) => document.getElementById(id);
@@ -472,6 +472,14 @@ const CASES = {
     title: "SHADOW ELF", sub: "geocities.com/SiliconValley/Park/8099 · the archivist's homepage",
     chip: `wayback · ${SHADOWELF.files.length} pinned captures`,
   },
+  vcl: {
+    title: "VIRUS CREATION LAB", sub: "VX Heavens constructors shelf · Nowhere Man · 1992",
+    chip: `wayback · ${VXHEAVENS.files.length} pinned captures`,
+  },
+  trojanslair: {
+    title: "TROJAN'S LAIR", sub: "tlsecurity.net · SubSeven-era depot · 2000–2003",
+    chip: `wayback · ${TROJANSLAIR.files.length} pinned captures`,
+  },
   demo: {
     title: "DEMO.EXE", sub: "63-byte MZ in this repo",
     chip: "local · offline",
@@ -487,6 +495,8 @@ function selectCase(id) {
   if (id === "krome") renderKromePanel(host);
   if (id === "dss") renderDssPanel(host);
   if (id === "shadowelf") renderShadowelfPanel(host);
+  if (id === "vcl") renderVclPanel(host);
+  if (id === "trojanslair") renderTrojanPanel(host);
   if (id === "demo") loadArtifact("demo.exe", DEMO_BYTES, "repository demo.exe");
   renderDossier();
   showTab(id === "demo" ? "listing" : "dossier");
@@ -911,6 +921,50 @@ function renderVclPanel(host) {
   ));
 }
 
+/* ---- trojan's lair panel ---- */
+
+function renderTrojanPanel(host) {
+  const panel = el("section", { class: "panel" });
+  panel.append(el("div", { class: "panel-head" }, el("h2", { text: "TROJAN'S LAIR" }), el("span", { class: "panel-tag", text: `${TROJANSLAIR.files.length} pinned captures` })));
+  panel.append(el("p", { class: "panel-note", html:
+    `TL Security's SubSeven-era depot — every row carries its CDX SHA-1 pinned at catalog time. ` +
+    `The remembered address (<code>trojanslair.org</code>) was never captured; the bytes live at ` +
+    `<code>tlsecurity.net</code> behind the 377-byte <code>trojanslair.com</code> doorway, both pinned below. ` +
+    `Win32 builds throughout: the sweep routes them to <code>x86:LE:32</code>.` }));
+  const exes = TROJANSLAIR.files.filter((f) => f.name.endsWith(".exe"));
+  panel.append(el("div", { class: "field-row" },
+    el("button", {
+      type: "button", class: "mini on", id: "btnTrojanSweep",
+      onclick: () => ghidraSweep({
+        files: exes,
+        nameOf: (f) => `tlsecurity.net/${f.name}`,
+        caseLabel: "Trojan's Lair builds",
+        statusId: "trojanSweepStatus", btnId: "btnTrojanSweep", cardHostId: "trojanRecovered", reportId: "trojanGhidraReport",
+      }),
+      text: `GHIDRA SWEEP — ${exes.length} TROJAN BUILDS`,
+    }),
+    el("span", { class: "mini-note dim", id: "trojanSweepStatus", text: "packed builds will say so in red — mismatches excluded, never hidden" }),
+  ));
+  panel.append(el("div", { id: "trojanGhidraReport" }));
+  const list = el("div", { class: "catalog" });
+  for (const f of TROJANSLAIR.files) {
+    list.append(el("button", {
+      type: "button", class: "cat-item",
+      onclick: () => recoverCapture({ name: f.name, url: f.url, ts: f.ts, digest: f.digest, hostId: "trojanRecovered" }),
+    },
+      el("span", { class: "cat-name", text: f.name }),
+      el("span", { class: "cat-kind", text: `${shortDate(f.ts)} · ${f.digest.slice(0, 8)}` }),
+      f.desc ? el("span", { class: "cat-note", text: f.desc }) : null,
+    ));
+  }
+  panel.append(list);
+  host.append(panel);
+  host.append(el("section", { class: "panel" },
+    el("div", { class: "panel-head" }, el("h2", { text: "Recovery log" })),
+    el("div", { id: "trojanRecovered", class: "members" }),
+  ));
+}
+
 /* ---- ghidra sweep ---- */
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -1078,6 +1132,7 @@ function renderDossier() {
   if (state.caseId === "dss") renderDssDossier(host);
   if (state.caseId === "shadowelf") renderShadowelfDossier(host);
   if (state.caseId === "vcl") renderVclDossier(host);
+  if (state.caseId === "trojanslair") renderTrojanDossier(host);
   if (state.caseId === "demo") host.append(el("section", { class: "case-block" },
     el("h3", { text: "demo.exe — the engine's sanity check" }),
     el("p", { class: "prose", text: "A 63-byte MZ binary that lives in the repository. It exists so you can prove the whole pipeline (sniff → disassemble → decompile) works before asking the Wayback Machine for anything." }),
@@ -1244,6 +1299,37 @@ function renderVclDossier(host) {
   host.append(el("section", { class: "case-block" },
     el("h3", { text: "Places checked" }), ul,
     el("p", { class: "prose dim", text: TROJANLAIR.verdict })));
+}
+
+function renderTrojanDossier(host) {
+  const T = TROJANSLAIR;
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, `${T.name} `, el("small", { text: `· ${T.years}` })),
+    el("p", { class: "prose", text: T.blurb }),
+    el("p", { class: "panel-note", html:
+      `Splash: <a target="_blank" rel="noreferrer" href="https://web.archive.org/web/20000815070027/http://www.tlsecurity.net/">TL Security, Aug 15 2000</a> · ` +
+      `Doorway: <a target="_blank" rel="noreferrer" href="https://web.archive.org/web/20001119090300/http://www.trojanslair.com/">trojanslair.com, Nov 19 2000</a> · ` +
+      `<a target="_blank" rel="noreferrer" href="https://web.archive.org/cdx/search/cdx?url=tlsecurity.net/*&output=json&collapse=urlkey&filter=statuscode:200">CDX shelf listing</a>` }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "The shelves" }),
+    el("p", { class: "prose", text: T.shelves }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "Twelve builds for Ghidra" }),
+    el("p", { class: "prose", text:
+      "The pinned executables run from a 1.5 KB IIS denial-of-service to the " +
+      "2.9 MB SubSeven 2.2 — the full RAT shelf of 2000–2002. The BioNet 3.12 " +
+      "unpacked build should decompile cleanest; the packed ones will show " +
+      "high entropy and short listings instead of pretending. Either outcome " +
+      "is the analysis: the sweep prints per-member verdicts, and anything " +
+      "that fails the SHA-1 gate is excluded with its got/expected digests " +
+      "on display." }),
+    el("p", { class: "prose dim", text:
+      "Static analysis only — these are live trojans of their era, and the " +
+      "lab reads them the way it reads everything else: bytes in, " +
+      "disassembly out, nothing executed, nothing re-hosted." }),
+  ));
 }
 
 function renderHashTable(title, rows) {

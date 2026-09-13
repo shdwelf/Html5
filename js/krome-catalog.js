@@ -786,6 +786,145 @@ export const TROJANLAIR = {
     "through the same SHA-1 gate as every other case.",
 };
 
+/* ------------------------------------------------- trojan's lair ------- */
+
+/**
+ * TROJAN'S LAIR — TL Security (tlsecurity.net), 2000–2003. A SubSeven-era
+ * depot: /backdoors, /trojansarchive, /Incoming/Backdoor, /0-day,
+ * /archive/exploits, /windows tooling and /advisories, served behind a
+ * 377-byte doorway at trojanslair.com. (trojanslair.org, the remembered
+ * address, was never captured — zero Wayback rows.) Every row below is a
+ * 200-OK capture pinned with its CDX SHA-1 (base32) at catalog time; the
+ * 2007+ parking pages and 2009+ asterisk-URL noise are excluded on purpose.
+ */
+export const TROJANSLAIR = {
+  name: "Trojan's Lair (TL Security)",
+  url: "http://www.tlsecurity.net/",
+  doorway: "http://www.trojanslair.com/",
+  years: "2000–2003 · parked after 2007",
+  blurb:
+    "Trojan's Lair called itself TL Security: a 2000–2003 SubSeven-era depot — " +
+    "backdoors, trojan archive, 0-day exploits, advisories — served from " +
+    "tlsecurity.net behind a 377-byte doorway at trojanslair.com " +
+    "(trojanslair.org, the remembered address, was never captured). Twenty " +
+    "captures pinned below: a dozen trojan builds for the decompiler (SubSeven " +
+    "2.2, an unpacked BioNet 3.12, Y3K, Theef, NetSphere…), three exploit " +
+    "sources, and the paper trail. Win32 PE builds throughout — the sweep " +
+    "routes them to x86:LE:32, and packed ones will say so in red.",
+  shelves:
+    "The depot's shelves, as the CDX leaves them: /backdoors holds some sixty " +
+    "builds (SubSeven 2.1–2.2, BioNet 2.8–3.12, Theef, Y3K, Nettrash, Infector, " +
+    "keyloggers); /trojansarchive keeps NetSphere, the RAT 1.x–2.0 line and " +
+    "ServeU; /Incoming/Backdoor is the 2003 upload tray (GT Bot variants, " +
+    "Voodoo Doll); /0-day and /archive/exploits file dated exploit drops with " +
+    "sources; /windows carries cleaners, a binder and a keylogger; /advisories " +
+    "mirrors CERT/defcom texts; and cgi-bin/download.cgi gated the zips. " +
+    "Anything captured 2007 or later is domain parking (ad-feed pages), and " +
+    "the 2009+ asterisk URLs are late-era noise — neither is pinned here.",
+  files: [
+    {
+      name: "backdoors/Subseven.2.2.exe", ts: "20010723022437", warc: 2948279, digest: "WL7XYRC5PABMHXOXH6QIPMRNP7GVH73L",
+      url: "http://www.tlsecurity.net/backdoors/Subseven.2.2.exe",
+      desc: "SubSeven 2.2 — the RAT that defined the era (2.9 MB)",
+    },
+    {
+      name: "backdoors/Backdoor.Bionet.3.12.unpacked.exe", ts: "20020607041431", warc: 424007, digest: "SPLWRUKN6RLSGAQ2XWP6TZ2VE7HVA5BI",
+      url: "http://www.tlsecurity.net/backdoors/Backdoor.Bionet.3.12.unpacked.exe",
+      desc: "BioNet 3.12, unpacked build — best decompile odds",
+    },
+    {
+      name: "backdoors/sub7213.exe", ts: "20010413024425", warc: 1674384, digest: "2FG7XRWSB3WLHH4XE4CPAYHLHSUDDQDB",
+      url: "http://www.tlsecurity.net/backdoors/sub7213.exe",
+      desc: "SubSeven 2.1.3",
+    },
+    {
+      name: "backdoors/y3k.1.5.exe", ts: "20020213110713", warc: 1117908, digest: "YLHEMIFEXNHWCH7LWN7QAJLLNLVGCQNB",
+      url: "http://www.tlsecurity.net/backdoors/y3k.1.5.exe",
+      desc: "Y3K 1.5 RAT",
+    },
+    {
+      name: "trojansarchive/NetSphere128.exe", ts: "20010513050214", warc: 806445, digest: "KVJCPZO4FKLJ5CS7OMYVSA24RTG5Y7HG",
+      url: "http://www.tlsecurity.net/trojansarchive/NetSphere128.exe",
+      desc: "NetSphere 1.28",
+    },
+    {
+      name: "backdoors/backdoor.theef.1.2.exe", ts: "20020212163346", warc: 1463581, digest: "DWXEUB6NRCC2VBXVPK5CNYSBJGXHMN5A",
+      url: "http://www.tlsecurity.net/backdoors/backdoor.theef.1.2.exe",
+      desc: "Theef 1.2",
+    },
+    {
+      name: "backdoors/satansbackdoor.1.exe", ts: "20020212151950", warc: 159186, digest: "PLU6ZUBNKH35UB5HZOI5ZJJAAJM3JGSD",
+      url: "http://www.tlsecurity.net/backdoors/satansbackdoor.1.exe",
+      desc: "Satan's Backdoor 1 (159 KB)",
+    },
+    {
+      name: "0-day/vf.exe", ts: "20010508181321", warc: 13622, digest: "GLIYE2JWKDF44A35TJUKES7VJFV6KBT7",
+      url: "http://www.tlsecurity.net/0-day/vf.exe",
+      desc: "0-day drop (13 KB)",
+    },
+    {
+      name: "0-day/God.Message.IV.exe", ts: "20010508183856", warc: 46620, digest: "TUCXDM5VQCY53YJ44LIOSHSRXZWAR7TF",
+      url: "http://www.tlsecurity.net/0-day/God.Message.IV.exe",
+      desc: "0-day drop (46 KB)",
+    },
+    {
+      name: "archive/exploits/05_00/iisdos.exe", ts: "20010629223816", warc: 1542, digest: "ERDJTVKGYQOOXH4RWFUKKC25FWXHRA65",
+      url: "http://www.tlsecurity.net/archive/exploits/05_00/iisdos.exe",
+      desc: "IIS DoS, May 2000 file (1.5 KB)",
+    },
+    {
+      name: "trojansarchive/rat20.exe", ts: "20010716003847", warc: 2257, digest: "ISU4DVWBNIB5W75HV7SX65SSYGPG2TBR",
+      url: "http://www.tlsecurity.net/trojansarchive/rat20.exe",
+      desc: "RAT 2.0 (2.2 KB)",
+    },
+    {
+      name: "windows/keylogger/hookinput.source.zip.exe", ts: "20020117181122", warc: 42776, digest: "WKFBYHMM6ELMLV4F6D42PLNVELMEHBJA",
+      url: "http://www.tlsecurity.net/windows/keylogger/hookinput.source.zip.exe",
+      desc: "keylogger + source drop (42 KB)",
+    },
+    {
+      name: "0-day/su.c", ts: "20010508180855", warc: 893, digest: "LUQVZZMWJ7XYEVEKNOWSAWQC4NDD6SIV",
+      url: "http://www.tlsecurity.net/0-day/su.c",
+      desc: "0-day source",
+    },
+    {
+      name: "0-day/xlock.c", ts: "20010508182011", warc: 907, digest: "GU4DLPDXBWTFQXV5BKUES43FHTQQWFBH",
+      url: "http://www.tlsecurity.net/0-day/xlock.c",
+      desc: "0-day source",
+    },
+    {
+      name: "0-day/xsco.c", ts: "20010508182243", warc: 1661, digest: "42TFAJ5XYVM3MPBYDGC3L6VZJ5BZIRWE",
+      url: "http://www.tlsecurity.net/0-day/xsco.c",
+      desc: "0-day source",
+    },
+    {
+      name: "0-day/msexcel.htm", ts: "20010505220320", warc: 7542, digest: "5IZJBAZH6HNK2TXF7P44MTAYUJDGCC5O",
+      url: "http://www.tlsecurity.net/0-day/msexcel.htm",
+      desc: "Excel exploit writeup",
+    },
+    {
+      name: "index.html", ts: "20000815070027", warc: 2586, digest: "XL4ZSFVL5RXALRGHXIOWSC5CLSGYZU7L",
+      url: "http://www.tlsecurity.net/",
+      desc: "splash: Hacking, Hackers, Subseven, Icq, trojans, download",
+    },
+    {
+      name: "main.htm", ts: "20000816003212", warc: 956, digest: "ICGPNMYQQHOLXRTK2OTDFR5NAUWI4QP2",
+      url: "http://www.tlsecurity.net/main.htm",
+      desc: "site frameset",
+    },
+    {
+      name: "doorway/index.html", ts: "20001119090300", warc: 377, digest: "OOR6MPJYCJ4B45SVKKZBT3TQRYJQJWE6",
+      url: "http://www.trojanslair.com/",
+      desc: "377-byte doorway — the bytes live at tlsecurity.net",
+    },
+    {
+      name: "doorway/robots.txt", ts: "20010924221510", warc: 390, digest: "HZB4OZ3NWODD4EFLHVQ4AXKJT2AM6B3D",
+      url: "http://trojanslair.com/robots.txt",
+      desc: "doorway robots file",
+    },
+  ],
+};
+
 /* ---------------------------------------------------------------- research */
 
 export const METHOD = [
