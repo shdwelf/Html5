@@ -30,3 +30,19 @@ https://web.archive.org/web/20011108012902id_/http://www.makinterface.de:80/MAKI
 https://web.archive.org/web/20010914164750id_/http://www.makinterface.de:80/SMARTCRD.ZIP makinterface/SMARTCRD.ZIP 330004
 https://web.archive.org/web/20000830072837id_/http://www.makinterface.de:80/Adapter.zip makinterface/Adapter.zip 366258
 https://web.archive.org/web/20000830072841id_/http://www.makinterface.de:80/Pinout.zip makinterface/Pinout.zip 7200
+
+# ---------------------------------------------------------------- round 2
+# The small archives turned out to be documentation and Windows installers (see
+# samples/archive/INSPECT.md): no embedded Intel HEX anywhere. These are the
+# vendor's application packages - which is where a programmer of this class keeps
+# the firmware it flashes into its own interface chip. Sizes from the CDX index.
+https://web.archive.org/web/20000830072825id_/http://www.makinterface.de:80/MANUAL.ZIP makinterface/MANUAL.ZIP 385754
+https://web.archive.org/web/20011120044350id_/http://www.makinterface.de:80/MANUAL-D.ZIP makinterface/MANUAL-D.ZIP 567120
+https://web.archive.org/web/20011120042845id_/http://www.makinterface.de:80/MAKS_DE.ZIP makinterface/MAKS_DE.ZIP 285565
+https://web.archive.org/web/20020618165158id_/http://makinterface.de:80/MAKS_EN.ZIP makinterface/MAKS_EN.ZIP 951698
+https://web.archive.org/web/20051028062138id_/http://www.makinterface.de:80/MaksAct.zip makinterface/MaksAct.zip 1691958
+https://web.archive.org/web/20020316224210id_/http://www.makinterface.de:80/MAKI_DE.ZIP makinterface/MAKI_DE.ZIP 3055846
+https://web.archive.org/web/20020618170559id_/http://makinterface.de:80/MAKI_EN.ZIP makinterface/MAKI_EN.ZIP 2608558
+https://web.archive.org/web/20011029161123id_/http://www.makinterface.de:80/SCPROG.ZIP makinterface/SCPROG.ZIP 2224710
+https://web.archive.org/web/20021213134525id_/http://www.makinterface.de:80/PRSC.ZIP makinterface/PRSC.ZIP 2224707
+https://web.archive.org/web/20051210081704id_/http://www.makinterface.de/makstripe.zip makinterface/makstripe.zip 2341381
