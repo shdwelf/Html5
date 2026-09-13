@@ -33,6 +33,8 @@ import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { GhidraWasm } from "../js/ghidra-wasm.js";
+import { parseIntelHex } from "../js/avrhex.js";
+import { disassemble, branchOrJumpTarget, walkInfo as walkImage, parseSymbols } from "../js/avrdis.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
@@ -74,55 +76,6 @@ if (typeof GhidraDecompiler !== "function") {
   process.exit(1);
 }
 
-// ------------------------------------------------------------------- Intel HEX
-
-/**
- * Parse Intel HEX into a flat image. Returns { bytes, base, min, max, records,
- * errors }. `bytes` spans min..max with 0xFF fill, which is what an erased AVR
- * flash reads as.
- */
-export function parseIntelHex(text) {
-  const chunks = [];
-  const errors = [];
-  let min = Infinity, max = -Infinity, records = 0, extended = 0, eof = false;
-
-  for (const raw of text.split(/\r?\n/)) {
-    const line = raw.trim();
-    if (!line) continue;
-    if (line[0] !== ":") { errors.push(`not a record: ${line.slice(0, 20)}`); continue; }
-    const bytes = [];
-    for (let i = 1; i + 1 < line.length; i += 2) bytes.push(parseInt(line.slice(i, i + 2), 16));
-    if (bytes.some((b) => Number.isNaN(b))) { errors.push(`bad hex: ${line.slice(0, 20)}`); continue; }
-    const [len, addrHi, addrLo, type, ...rest] = bytes;
-    if (rest.length !== len + 1) { errors.push(`length mismatch: ${line.slice(0, 20)}`); continue; }
-    const sum = (len + addrHi + addrLo + type + rest.reduce((a, b) => a + b, 0)) & 0xff;
-    if (sum !== 0) errors.push(`checksum: ${line.slice(0, 20)}`);
-    const data = rest.slice(0, len);
-    records++;
-    switch (type) {
-      case 0x00: {
-        const at = extended + (addrHi << 8) + addrLo;
-        chunks.push({ at, data });
-        min = Math.min(min, at);
-        max = Math.max(max, at + data.length);
-        break;
-      }
-      case 0x01: eof = true; break;
-      case 0x02: extended = ((data[0] << 8) | data[1]) << 4; break;
-      case 0x04: extended = ((data[0] << 8) | data[1]) << 16; break;
-      case 0x03: case 0x05: break; // start address records: not data
-      default: errors.push(`record type 0x${type.toString(16)} at ${line.slice(0, 20)}`);
-    }
-  }
-  if (!records) throw new Error("no Intel HEX records found");
-  if (!eof) errors.push("missing end-of-file record (:00000001FF)");
-
-  const size = max - min;
-  const image = new Uint8Array(size).fill(0xff);
-  for (const { at, data } of chunks) image.set(data, at - min);
-  return { bytes: image, base: min, min, max, records, errors };
-}
-
 /** sha256 of the image as loaded, so a report can name exactly what it read. */
 function sha256(buf) {
   return createHash("sha256").update(buf).digest("hex");
@@ -131,47 +84,21 @@ function sha256(buf) {
 // ------------------------------------------------------------- AVR instruction
 //
 // Only the encodings a boot-chain review actually needs, all exact 2-byte
-// patterns. These are *locators*: a pattern can in principle occur inside data,
-// which is why every hit is checked against the decompiler output below.
-const OPS = {
-  "spm": [0xe8, 0x95],        // 1001 0101 1110 1000
-  "lpm r0,Z": [0xc8, 0x95],
-  "elpm": [0xd8, 0x95],
-  "wdr": [0xa8, 0x95],
-  "sleep": [0x88, 0x95],
-  "break": [0x98, 0x95],
-  "reti": [0x18, 0x95],
-  "cli": [0xf8, 0x94],
-  "sei": [0x78, 0x94],
-};
+// ------------------------------------------------------------------ opcodes
+//
+// These are found by *decoding*, not by pattern-matching bytes: js/avrdis.js is
+// checked instruction-for-instruction against avr-objdump
+// (tools/verify_avrdis.mjs, 225/225 on the Optiboot listing), so a hit here is
+// a decoded instruction, and it cannot be a data byte that happens to look like
+// one.
+const OPS = ["spm", "lpm", "elpm", "wdr", "sleep", "break", "reti", "cli", "sei"];
 
 function findOpcodes(bytes, base) {
   const hits = [];
-  for (const [name, pat] of Object.entries(OPS)) {
-    for (let i = 0; i + 1 < bytes.length; i += 2) {
-      if (bytes[i] === pat[0] && bytes[i + 1] === pat[1]) hits.push({ op: name, addr: base + i });
-    }
+  for (const ins of disassemble(bytes, { base })) {
+    if (OPS.includes(ins.mnemonic)) hits.push({ op: ins.mnemonic, addr: ins.addr });
   }
-  hits.sort((a, b) => a.addr - b.addr || a.op.localeCompare(b.op));
   return hits;
-}
-
-/** `rjmp`/`jmp` at `addr`, so reports can follow the reset vector. */
-function decodeBranch(bytes, base, addr) {
-  const off = addr - base;
-  if (off < 0 || off + 1 >= bytes.length) return null;
-  const w = bytes[off] | (bytes[off + 1] << 8);
-  if ((w & 0xf000) === 0xc000) {           // rjmp: 1100 kkkk kkkk kkkk
-    let k = w & 0x0fff;
-    if (k & 0x0800) k -= 0x1000;           // sign-extend 12 bits
-    return { kind: "rjmp", target: addr + 2 + k * 2 };
-  }
-  if ((w & 0xfe0e) === 0x940c && off + 3 < bytes.length) { // jmp: 1001 010k kkkk 110k + kkkk kkkk kkkk kkkk
-    const w2 = bytes[off + 2] | (bytes[off + 3] << 8);
-    const k = ((w & 0x01f0) << 13) | ((w & 0x0001) << 16) | w2;
-    return { kind: "jmp", target: k * 2 };
-  }
-  return null;
 }
 
 // ------------------------------------------------------------------ the engine
@@ -241,7 +168,43 @@ if (!engine.findLanguage(langId)) {
 // boot-chain review cares about - and says plainly that the decompiled C is
 // unavailable rather than printing something wrong.
 const hits = findOpcodes(img.bytes, img.base);
-const reset = img.base === 0 ? decodeBranch(img.bytes, img.base, 0) : null;
+
+// The reset vector is the first instruction at the image start, wherever the
+// image is loaded (a bootloader is not at 0, so "addr 0" is the wrong question -
+// ask the image).
+const flow = walkImage(img.bytes, { base: img.base });
+const reset = (() => {
+  const first = flow.ins.get(img.base);
+  if (!first || (first.mnemonic !== "rjmp" && first.mnemonic !== "jmp")) return null;
+  const t = branchOrJumpTarget(img.base, first);
+  return t == null ? null : { kind: first.mnemonic, target: t };
+})();
+
+// Reachability, for the report: which opcode hits are in code the walk can
+// actually get to from the reset vector or the interrupt vectors.
+const reach = (addr) => flow.reachable.has(addr);
+
+// When the same build's avr-objdump listing sits next to the .hex, its symbol
+// table names the function each opcode site belongs to. That is what turns
+// "0x7fc2 spm" into "0x7fc2 spm in do_spm (not reachable)".
+const symbols = (() => {
+  const guess = hexFile.replace(/\.(hex|ihx)$/i, ".lst");
+  if (flags.get("lst") === "0") return new Map();
+  const file = flags.get("lst") || guess;
+  try { return parseSymbols(readFileSync(file, "utf8")); } catch { return new Map(); }
+})();
+const symbolAt = (addr) => {
+  let best = null;
+  for (const [a, name] of symbols) if (a <= addr && (best === null || a > best.addr)) best = { addr: a, name };
+  return best ? `${best.name}+0x${(addr - best.addr).toString(16)}` : null;
+};
+const walkStats = {
+  reachable_instructions: flow.reachable.size,
+  total_instructions: flow.ins.size,
+  entry_points: [...flow.entries.entries()]
+    .map(([addr, why]) => ({ addr, why }))
+    .sort((a, b) => a.addr - b.addr),
+};
 
 // AVR8's "code" space is word-addressed, not byte-addressed: the vendored pspec
 // puts the first interrupt vector (INT0) at code:0x1, and in hardware that is
@@ -274,7 +237,9 @@ const report = {
   loadBase,
   addressSpace: space,
   resetVector: reset,
-  opcodes: hits,
+  walk: walkStats,
+  symbols: [...symbols.entries()].map(([addr, name]) => ({ addr, name })),
+  opcodes: hits.map((h) => ({ ...h, reachable: reach(h.addr), in: symbolAt(h.addr) })),
   functions: [],
 };
 
@@ -367,11 +332,17 @@ if (flags.get("json")) {
     console.log(`hex issues: ${img.errors.length}`);
     for (const e of img.errors.slice(0, 5)) console.log(`  - ${e}`);
   }
-  console.log(`\nsecurity-relevant opcodes (${hits.length}):`);
+  console.log(`walk      : ${walkStats.reachable_instructions} of ${walkStats.total_instructions} instructions reachable from the reset vector / interrupt vectors`);
+  for (const e of walkStats.entry_points.slice(0, 10)) {
+    console.log(`            ← 0x${e.addr.toString(16)} (${e.why})`);
+  }
+  console.log(`\nsecurity-relevant opcodes (${hits.length}), decoded not pattern-matched:`);
   const byOp = {};
-  for (const h of hits) (byOp[h.op] ||= []).push(h.addr);
-  for (const [op, addrs] of Object.entries(byOp)) {
-    console.log(`  ${op.padEnd(9)} ${addrs.length.toString().padStart(3)} × ${addrs.slice(0, 8).map((a) => "0x" + a.toString(16)).join(" ")}${addrs.length > 8 ? " …" : ""}`);
+  for (const h of report.opcodes) (byOp[h.op] ||= []).push(h);
+  for (const [op, list] of Object.entries(byOp)) {
+    const live = list.filter((h) => h.reachable);
+    const where = (h) => `0x${h.addr.toString(16)}${h.in ? ` <${h.in}>` : ""}${h.reachable ? "" : " [dead]"}`;
+    console.log(`  ${op.padEnd(9)} ${list.length.toString().padStart(3)} × ${list.slice(0, 6).map(where).join(" ")}${list.length > 6 ? " …" : ""}${live.length === list.length ? "  all reachable" : `  (${live.length}/${list.length} reachable)`}`);
   }
   if (!report.functions.some((f) => f.ok) && report.functions[0]?.blocked) {
     console.log(`\nGhidra decompilation of AVR8 is blocked by the vendored wasm bridge:`);

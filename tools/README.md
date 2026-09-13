@@ -10,7 +10,8 @@ needed to serve the app — `ghidra-lab.html` is plain static HTML + ES modules.
 | `verify_ghidra.mjs` | Headlessly decompiles every code symbol in the catalog through the vendored Ghidra wasm, using the same loader the page uses. |
 | `check-dom-ids.mjs` | Contract test: every `$("id")` in `js/viruslab.js` must exist in `ghidra-lab.html`. |
 | `stage_ghidra_specs.py` | Re-vendors the Ghidra decompiler wasm + the x86 **and Atmel AVR** SLEIGH specs into `wasm/ghidra` (from `npm pack @mauricelam/ghidra-decompiler-wasm`). |
-| `ghidra_avr.mjs` | Intel HEX parsing (checksums, load address) + boot-chain opcode location (`SPM`, `LPM`, `WDR`) for Atmel AVR firmware, with `--probe` documenting that the vendored wasm bridge cannot decompile AVR8 (word-addressed Harvard code space). |
+| `ghidra_avr.mjs` | Atmel AVR firmware walkthrough: real Intel HEX parsing (checksums, load address), decoding via `js/avrdis.js`, a control-flow walk from the reset vector, and the boot-chain opcode sites (`SPM`, `LPM`, `WDR`) each labelled with its function and whether a redirect can reach it. `--lst FILE` points at an `avr-objdump` listing for the symbol names. `--probe` documents that the vendored wasm bridge cannot decompile AVR8 (word-addressed Harvard code space). |
+| `verify_avrdis.mjs` | Checks `js/avrdis.js` against the `avr-objdump` listing Optiboot ships (`samples/avr/optiboot_atmega328.lst`): every instruction, every resolved branch target, the symbol table, and the reachability facts on two independent bootloaders. Exit 1 on any mismatch. |
 | `verify_rtl.py` | The vchip verification: vectors → CXXRTL build → transcript diff vs the reference model and the golden → 20 SAT proofs → boot-chain checks. `sh tools/setup_rtl.sh` installs Yosys first. |
 | `gen_vchip_vectors.mjs` | Expands `rtl/scenarios/vchip_scenarios.json` into the golden vectors; fails on drift unless `--write`. |
 | `run_vchip_scenarios.mjs` | Runs the scenarios through the JS reference model (`js/vchip-model.js`, the spec) and prints the transcript. |
@@ -38,7 +39,8 @@ python3 tools/bootchain.py --selftest              # requirement rules vs crafte
 python3 tools/bootchain.py --image disk.img --policy uefi
 node tools/verify_bootchain.mjs                    # JS mirror vs the RTL-derived layout
 node tests/11-chipset-lab.mjs                      # the chipset-lab page controller
-node tools/ghidra_avr.mjs samples/avr/optiboot_atmega328.hex    # AVR HEX + opcode map
+node tools/verify_avrdis.mjs                                  # AVR decoder vs avr-objdump (225/225)
+node tools/ghidra_avr.mjs samples/avr/optiboot_atmega328.hex   # AVR HEX + control-flow walk + opcode sites
 node tools/ghidra_avr.mjs samples/avr/optiboot_atmega328.hex --probe   # AVR decompiler matrix
 ```
 
