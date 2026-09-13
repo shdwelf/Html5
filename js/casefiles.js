@@ -15,7 +15,8 @@ import {
   mnemonicHistogram, stringsIn, hex,
 } from "./x86dis.js";
 import { GhidraWasm } from "./ghidra-wasm.js";
-import { unzipSync } from "../vendor/fflate/index.mjs";
+import { unzipSync, unzlibSync } from "../vendor/fflate/index.mjs";
+import { dissect } from "./artifacts.js";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
   RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK, SHADOWELF,
@@ -166,43 +167,52 @@ function sniff(bytes) {
 
 /* -------------------------------------------------------------- artifacts */
 
-function loadArtifact(name, bytes, provenance = "") {
+/**
+ * The static pass shared by loadArtifact and the Ghidra sweep: sniff the
+ * container, route it to the disassembler, and produce everything the
+ * decompiler needs (image, language, compiler, base, entry).
+ */
+function staticPass(bytes) {
   const meta = sniff(bytes);
   let analysis = null;
   let mode = 16;
   let base = 0x100, entry = 0x100;
+  let lang = "x86:LE:16:Real Mode";
+  let compiler = "default";
 
   if (meta.kind === "PE" && meta.image) {
     mode = meta.lang === "x86:LE:64:default" ? 64 : 32;
     base = meta.imageBase; entry = meta.entry;
-    state.lang = meta.lang;
-    state.compiler = meta.compiler || "windows";
+    lang = meta.lang;
+    compiler = meta.compiler || "windows";
     analysis = analyze(meta.image, { base, entry, mode });
   } else if (meta.kind === "MZ") {
     base = meta.loadSeg; entry = meta.entry;
-    state.lang = "x86:LE:16:Real Mode";
-    state.compiler = "default";
     analysis = analyze(bytes, { base, entry, mode: 16 });
   } else if (meta.kind === "COM") {
     base = 0x100; entry = 0x100;
-    state.lang = "x86:LE:16:Real Mode";
-    state.compiler = "default";
     analysis = analyze(bytes, { base, entry, mode: 16 });
-  } else {
-    state.lang = "x86:LE:16:Real Mode";
-    state.compiler = "default";
   }
+  return { meta, analysis, mode, base, entry, lang, compiler, image: meta.kind === "PE" && meta.image ? meta.image : bytes };
+}
 
-  state.base = base;
-  state.entry = entry;
+function loadArtifact(name, bytes, provenance = "") {
+  const prep = staticPass(bytes);
+  const { meta, analysis } = prep;
+  state.lang = prep.lang;
+  state.compiler = prep.compiler;
+
+  state.base = prep.base;
+  state.entry = prep.entry;
   state.artifact = {
     name, bytes, meta, provenance,
-    image: meta.kind === "PE" && meta.image ? meta.image : bytes,
+    image: prep.image,
     analysis, techniques: analysis ? extractTechniques(analysis) : null,
-    mode, base, entry,
+    mode: prep.mode, base: prep.base, entry: prep.entry,
     symbols: analysis ? buildSymbols(analysis) : [],
+    structure: dissect(bytes, unzlibSync),
   };
-  state.selectedAddr = analysis ? entry : null;
+  state.selectedAddr = analysis ? prep.entry : null;
   syncLangControls();
   renderArtifact();
   if (analysis) showTab("listing"); else showTab("hex");
@@ -318,7 +328,16 @@ function renderArtifact() {
 
   if (!art.analysis) {
     $("statLine").innerHTML = `<b>${art.bytes.length}</b> bytes · <b>${esc(art.meta.kind)}</b> · ${esc(art.meta.note || "")}${art.provenance ? ` · <span class="dim">${esc(art.provenance)}</span>` : ""}`;
-    $("listing").innerHTML = `<p class="placeholder">${esc(art.name)} — ${esc(art.meta.note || art.meta.kind)}. No code view for this container; see HEX · ENTROPY.</p>`;
+    const st = art.structure;
+    if (st) {
+      const box = el("div", { class: "zip-members" });
+      box.append(el("p", { class: "panel-note", html: `<b>${esc(st.type.toUpperCase())} structure</b> — ${esc(structureSummary(st))} <span class="dim">(parsed, never executed — no machine code for the decompiler here)</span>` }));
+      box.append(structureTable(st));
+      $("listing").textContent = "";
+      $("listing").append(box);
+    } else {
+      $("listing").innerHTML = `<p class="placeholder">${esc(art.name)} — ${esc(art.meta.note || art.meta.kind)}. No code view for this container; see HEX · ENTROPY.</p>`;
+    }
     $("hexDump").textContent = hexDumpText(art.bytes, 0);
     $("stringList").textContent = stringsIn(art.bytes).slice(0, 400).join("\n");
     drawEntropy(art.bytes);
@@ -547,6 +566,21 @@ function renderKromePanel(host) {
   panel.append(el("div", { class: "panel-head" }, el("h2", { text: "Wayback library" }), el("span", { class: "panel-tag", text: `${LIBRARY.length} captures` })));
   const search = el("input", { id: "kromeSearch", type: "search", placeholder: "filter files…", spellcheck: "false", oninput: () => renderKromeList(search.value) });
   panel.append(el("div", { class: "field-row" }, search));
+  const curatedZips = LIBRARY.filter((r) => !r.suspect && CURATED[r.name]);
+  panel.append(el("div", { class: "field-row" },
+    el("button", {
+      type: "button", class: "mini on", id: "btnKromeSweep",
+      onclick: () => ghidraSweep({
+        files: curatedZips.map((r) => ({ name: r.name, url: `http://members.tripod.com/~retrotech/${r.name}`, ts: r.ts })),
+        nameOf: (f) => f.name,
+        caseLabel: "kr0me corp curated zips",
+        statusId: "kromeSweepStatus", btnId: "btnKromeSweep", cardHostId: "kromeRecovered", reportId: "kromeGhidraReport",
+      }),
+      text: `GHIDRA SWEEP — ${curatedZips.length} CURATED ZIPS`,
+    }),
+    el("span", { class: "mini-note dim", id: "kromeSweepStatus", text: "recover → unzip → disassemble → decompile, every member, one report" }),
+  ));
+  panel.append(el("div", { id: "kromeGhidraReport" }));
   panel.append(el("div", { id: "kromeList", class: "catalog" }));
   host.append(panel);
   host.append(el("section", { class: "panel" },
@@ -596,26 +630,33 @@ const rawFor = (url, ts) => `https://web.archive.org/web/${ts}id_/${url}`;
 const cdxFor = (url, ts) =>
   `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(url)}&timestamp=${ts}&limit=1&output=json`;
 
+/**
+ * The gate itself, factored out so the Ghidra sweep can walk captures
+ * without the per-file UI (member pickers, tab switches). Steps: expected
+ * digest (given, or the CDX index for this capture) → raw id_ memento →
+ * SHA-1 → verdict. Never executes anything.
+ */
+async function fetchVerified({ url, ts, digest }) {
+  let expected = digest;
+  if (!expected) {
+    const cdxRes = await fetch(cdxFor(url, ts));
+    if (!cdxRes.ok) throw new Error(`CDX HTTP ${cdxRes.status}`);
+    const rows = await cdxRes.json();
+    const row = rows.length > 1 ? rows[1] : rows[0];
+    if (!row) throw new Error("CDX returned no row");
+    expected = row[5];
+  }
+  const res = await fetch(rawFor(url, ts));
+  if (!res.ok) throw new Error(`capture HTTP ${res.status}`);
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  const got = await sha1B32(bytes);
+  return { bytes, expected, got, verified: got === expected };
+}
+
 async function recoverCapture({ name, url, ts, digest, hostId = "kromeRecovered", provenance = null }) {
   const card = appendRecoveredCard(name, { status: "recovering…" }, hostId);
   try {
-    // 1. expected digest — given, or pulled from the CDX index for this capture
-    let expected = digest;
-    if (!expected) {
-      const cdxRes = await fetch(cdxFor(url, ts));
-      if (!cdxRes.ok) throw new Error(`CDX HTTP ${cdxRes.status}`);
-      const rows = await cdxRes.json();
-      const row = rows.length > 1 ? rows[1] : rows[0];
-      if (!row) throw new Error("CDX returned no row");
-      expected = row[5];
-    }
-    // 2. the raw capture itself
-    const res = await fetch(rawFor(url, ts));
-    if (!res.ok) throw new Error(`capture HTTP ${res.status}`);
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    // 3. verify
-    const got = await sha1B32(bytes);
-    const verified = got === expected;
+    const { bytes, expected, got, verified } = await fetchVerified({ url, ts, digest });
     card.replaceWith(appendRecoveredCard(name, {
       status: verified ? "sha1 ✓" : `sha1 ✗ (got ${got}, CDX said ${expected})`,
       verified, bytes: bytes.length, expected, ts,
@@ -696,6 +737,20 @@ function renderDssPanel(host) {
 
   const p2 = el("section", { class: "panel" });
   p2.append(el("div", { class: "panel-head" }, el("h2", { text: "DR7 · dssfiles" }), el("span", { class: "panel-tag", text: `${DR7.files.length} curated` })));
+  p2.append(el("div", { class: "field-row" },
+    el("button", {
+      type: "button", class: "mini on", id: "btnDssSweep",
+      onclick: () => ghidraSweep({
+        files: DR7.files,
+        nameOf: (f) => `dr7.com/dssfiles/${f.name}`,
+        caseLabel: "DR7 dssfiles",
+        statusId: "dssSweepStatus", btnId: "btnDssSweep", cardHostId: "dssRecovered", reportId: "dssGhidraReport",
+      }),
+      text: `GHIDRA SWEEP — ${DR7.files.length} DSSFILES ZIPS`,
+    }),
+    el("span", { class: "mini-note dim", id: "dssSweepStatus", text: "card tools through the same gate and the same decompiler" }),
+  ));
+  p2.append(el("div", { id: "dssGhidraReport" }));
   const list = el("div", { class: "catalog" });
   for (const f of DR7.files) {
     list.append(el("button", {
@@ -766,7 +821,8 @@ function renderShadowelfPanel(host) {
   panel.append(el("p", { class: "panel-note", html:
     `<a target="_blank" rel="noreferrer" href="https://web.archive.org/web/19990204033556/${esc(SHADOWELF.url)}">${esc(SHADOWELF.url.replace("http://", ""))}</a> — ` +
     `the archivist's own GeoCities homestead, kept with the same gate as the attack tools. ` +
-    `Every row carries its CDX SHA-1 pinned at catalog time; the console fetches the raw <code>id_</code> memento, hashes it, and shows a mismatch instead of hiding one.` }));
+    `Every row carries its CDX SHA-1 pinned at catalog time; the console fetches the raw <code>id_</code> memento, hashes it, and shows a mismatch instead of hiding one. ` +
+    `<b>Ghidra scope:</b> a homepage has no machine code — the LISTING view parses SWF tags, MIDI tracks/lyrics and image chunks instead; the decompiler's targets live in the kr0me and DSS cases.` }));
   panel.append(el("div", { class: "field-row" },
     el("button", { type: "button", class: "mini on", id: "btnShadowAll", onclick: recoverAllShadowelf, text: `RECOVER ALL ${SHADOWELF.files.length}` }),
     el("span", { class: "mini-note dim", id: "shadowAllStatus", text: "idle — or click files individually" }),
@@ -807,6 +863,163 @@ async function recoverAllShadowelf() {
   status.textContent = `done — ${ok} verified, ${bad} failed`;
   btn.disabled = false;
   logTo(`shadowelf sweep: ${ok}/${SHADOWELF.files.length} captures verified against pinned digests`, ok === SHADOWELF.files.length ? "ok" : "error");
+}
+
+/* ---- ghidra sweep ---- */
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Walk a case's recoverable captures through the full pipeline: SHA-1 gate
+ * → unzip → sniff → disassemble → decompile. One button, whole case; every
+ * verdict lands in a case-wide report table. Static only — nothing runs.
+ */
+async function ghidraSweep({ files, nameOf, caseLabel, statusId, btnId, cardHostId, reportId, memberCap = 12, decompileBudget = 48 }) {
+  const status = $(statusId), btn = $(btnId);
+  if (!status || !btn || btn.disabled) return;
+  btn.disabled = true;
+  try {
+    const engine = await ensureEngine();
+    const recovered = [];
+    let okFiles = 0, failFiles = 0;
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      const name = nameOf(f);
+      status.textContent = `[${i + 1}/${files.length}] recovering ${f.name} …`;
+      const card = appendRecoveredCard(name, { status: "recovering…" }, cardHostId);
+      try {
+        const { bytes, expected, got, verified } = await fetchVerified({ url: f.url, ts: f.ts, digest: f.digest });
+        if (!verified) {
+          card.replaceWith(appendRecoveredCard(name, { status: `sha1 ✗ (got ${got}, CDX said ${expected})`, verified: false }, cardHostId));
+          logTo(`${name}: MISMATCH — excluded from the sweep`, "error");
+          failFiles++;
+        } else {
+          card.replaceWith(appendRecoveredCard(name, { status: "sha1 ✓", verified: true, bytes: bytes.length, expected, ts: f.ts }, cardHostId));
+          okFiles++;
+          const members = bytes[0] === 0x50 && bytes[1] === 0x4b ? unzipSync(bytes) : { [name]: bytes };
+          state.recovered.set(name, { caseId: state.caseId, members, verified, expected: got, ts: f.ts });
+          recovered.push({ zip: name, members });
+        }
+      } catch (err) {
+        card.replaceWith(appendRecoveredCard(name, { status: `failed — ${err.message}`, verified: false }, cardHostId));
+        logTo(`${name}: ${err.message}`, "error");
+        failFiles++;
+      }
+      await sleep(400); // be polite to the archive
+    }
+
+    const rows = [];
+    let budget = decompileBudget;
+    for (const { zip, members } of recovered) {
+      let walked = 0;
+      for (const [mname, mbytes] of Object.entries(members)) {
+        if (++walked > memberCap) { rows.push({ member: `${zip}!/${mname}`, bytes: 0, kind: "—", note: "member cap reached for this archive" }); break; }
+        const prep = staticPass(mbytes);
+        const exec = prep.analysis !== null && (prep.meta.kind !== "COM" || /\.(com|sys|bin|ovl)$/i.test(mname));
+        if (!exec) {
+          rows.push({ member: `${zip}!/${mname}`, bytes: mbytes.length, kind: prep.meta.kind, note: prep.meta.note || "data — not routed to the decompiler" });
+          continue;
+        }
+        if (budget-- <= 0) { rows.push({ member: `${zip}!/${mname}`, bytes: mbytes.length, kind: prep.meta.kind, note: "decompile budget reached — re-run the sweep to continue" }); continue; }
+        status.textContent = `ghidra: ${mname} …`;
+        const insnCount = [...prep.analysis.insns.values()].filter((x) => !x.data).length;
+        const strs = stringsIn(mbytes).filter((s) => s.length >= 5).slice(0, 2).join(" · ").slice(0, 70);
+        let decomp;
+        try {
+          const res = await engine.decompile(paddedForDecompile(prep.image), {
+            lang: prep.lang, compiler: prep.compiler,
+            base: "0x" + (prep.base >>> 0).toString(16),
+            func: "0x" + (prep.entry >>> 0).toString(16),
+          });
+          decomp = { ok: true, lines: res.text.split("\n").length, ms: res.ms };
+        } catch (err) {
+          decomp = { ok: false, note: err.message };
+        }
+        rows.push({ member: `${zip}!/${mname}`, bytes: mbytes.length, kind: `${prep.meta.kind} · ${prep.lang.replace("x86:LE:", "")}`, insns: insnCount, decomp, note: strs });
+        await sleep(80);
+      }
+    }
+    renderSweepReport(reportId, caseLabel, rows, { okFiles, failFiles, total: files.length });
+    const decompiled = rows.filter((r) => r.decomp?.ok).length;
+    status.textContent = `sweep done — ${okFiles}/${files.length} verified · ${decompiled} members decompiled`;
+    logTo(`ghidra sweep ${caseLabel}: ${okFiles}/${files.length} captures sha1 ✓, ${decompiled} members decompiled`, okFiles === files.length ? "ok" : "error");
+  } catch (err) {
+    status.textContent = `sweep failed — ${err.message}`;
+    logTo(`ghidra sweep: ${err.message}`, "error");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderSweepReport(reportId, label, rows, tally) {
+  const host = $(reportId);
+  if (!host) return;
+  host.textContent = "";
+  const t = el("table", { class: "hash-table" });
+  t.append(el("thead", {}, el("tr", {},
+    el("th", { text: "member" }), el("th", { text: "bytes" }), el("th", { text: "kind · lang" }),
+    el("th", { text: "insns" }), el("th", { text: "ghidra decompile" }), el("th", { text: "notable strings" }))));
+  const tb = el("tbody");
+  for (const r of rows) {
+    tb.append(el("tr", {},
+      el("td", { class: "mono", text: r.member }),
+      el("td", { text: r.bytes ? String(r.bytes) : "—" }),
+      el("td", { text: r.kind || "—" }),
+      el("td", { text: r.insns !== undefined ? String(r.insns) : "—" }),
+      el("td", { class: r.decomp ? (r.decomp.ok ? "" : "bad") : "dim", text: r.decomp ? (r.decomp.ok ? `✓ ${r.decomp.lines} lines · ${r.decomp.ms} ms` : `✗ ${r.decomp.note}`) : "—" }),
+      el("td", { class: "dim", text: r.note || "" }),
+    ));
+  }
+  t.append(tb);
+  host.append(el("p", { class: "panel-note", html:
+    `<b>${esc(label)}</b> — ${rows.length} members walked · ${tally.okFiles}/${tally.total} captures sha1 ✓ · ` +
+    `${tally.failFiles} failed${tally.failFiles ? " (displayed, never hidden)" : ""}` }), t);
+}
+
+/* ---- structure dissector views ---- */
+
+function structureSummary(st) {
+  if (st.type === "swf") return `Flash ${st.version} (${st.sig}) · ${st.width}×${st.height} @ ${Math.round(st.fps * 100) / 100} fps · ${st.frames} frame(s) · ${st.tags.length} tags · ${st.actions.count} ActionScript op(s)`;
+  if (st.type === "midi") return `Standard MIDI File, format ${st.format} · ${st.tracks.length} track(s) · ${st.division} ticks/quarter-note`;
+  if (st.type === "gif") return `${st.sig} · ${st.width}×${st.height} · ${st.gct || "no"}-color global palette`;
+  if (st.type === "jpeg") return `JPEG · ${st.width ?? "?"}×${st.height ?? "?"} (${st.sof || "no SOF found"})`;
+  if (st.type === "png") return `PNG · ${st.width}×${st.height} · ${st.depth}-bit · color type ${st.colorType}`;
+  return st.type;
+}
+
+function structureTable(st) {
+  const rows = [];
+  if (st.type === "swf") {
+    for (const tag of st.tags.slice(0, 40)) {
+      rows.push([tag.name, tag.len + " B" + (tag.label !== undefined ? ` · label "${tag.label}"` : "") + (tag.meta ? ` · ${tag.meta.replace(/\s+/g, " ").slice(0, 80)}` : "") + (tag.exports ? ` · exports ${tag.exports.join(", ")}` : "") + (tag.protect !== undefined ? ` · ${tag.protect}` : "") + (tag.clipped ? " · truncated" : "")]);
+    }
+    if (st.actions.names.length) rows.push(["ActionScript ops", st.actions.names.join(", ")]);
+    for (const u of st.actions.urls) rows.push(["GetURL", `${u.url}${u.target ? ` → ${u.target}` : ""}`]);
+    if (st.actions.constants.length) rows.push(["ConstantPool", st.actions.constants.join(", ").slice(0, 120)]);
+  } else if (st.type === "midi") {
+    for (const tr of st.tracks) {
+      rows.push([`track ${tr.index + 1}`, `${tr.bytes} B` + (tr.name ? ` · "${tr.name}"` : "") + (tr.bpm ? ` · ${tr.bpm} bpm` : "") + (tr.program !== null ? ` · program ${tr.program}` : "") + (tr.instrument ? ` · ${tr.instrument}` : "") + ` · ${tr.noteOns} note-on(s)`]);
+      if (tr.lyrics.length) rows.push([`track ${tr.index + 1} lyrics`, tr.lyrics.join(" ").slice(0, 160)]);
+    }
+    for (const x of st.texts) rows.push(["text", x.slice(0, 120)]);
+  } else if (st.type === "gif") {
+    for (const c of st.comments) rows.push(["comment", c]);
+    for (const a of st.apps) rows.push(["app extension", a]);
+    rows.push(["background", `color index ${st.bg}`]);
+  } else if (st.type === "jpeg") {
+    for (const c of st.comments) rows.push(["COM segment", c]);
+    if (st.exif) rows.push(["APP1", "Exif metadata present"]);
+    if (st.icc) rows.push(["APP2", "ICC color profile present"]);
+  } else if (st.type === "png") {
+    for (const x of st.texts) rows.push(["text chunk", x]);
+    rows.push(["IHDR", `${st.width}×${st.height} · ${st.depth}-bit · color type ${st.colorType}`]);
+  }
+  const t = el("table", { class: "hash-table" });
+  t.append(el("thead", {}, el("tr", {}, el("th", { text: "field" }), el("th", { text: "value" }))));
+  const tb = el("tbody");
+  for (const [k, v] of rows) tb.append(el("tr", {}, el("td", { text: k }), el("td", { class: "mono", text: String(v).slice(0, 160) })));
+  t.append(tb);
+  return t;
 }
 
 /* ---- dossier + research tabs ---- */

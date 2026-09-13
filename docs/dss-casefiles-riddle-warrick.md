@@ -197,3 +197,46 @@ The Shadow Elf panel also gained a **RECOVER ALL 27** sweep: one click walks
 every pinned row through the SHA-1 gate sequentially (500 ms spaced, progress
 in the status line, per-file verdict cards in the recovery log, failures
 counted and displayed, never hidden).
+
+## 9. Wave 4 — going over the files with Ghidra
+
+**The sweep.** "Go over the files with Ghidra" is now a first-class pass, not
+a per-click affair. `ghidraSweep()` in `js/casefiles.js` walks a case's
+recoverable captures through the entire pipeline in one button press:
+SHA-1 gate (`fetchVerified`, factored out of `recoverCapture`) → unzip →
+sniff (`staticPass`, factored out of `loadArtifact`) → linear-sweep +
+recursive-descent disassembly → Ghidra-WASM decompile of each executable
+member's entry point. Two panels carry it:
+
+* **KR0ME CORP → `GHIDRA SWEEP — 12 CURATED ZIPS`** — winnuke, teardrop,
+  land, nestea, newtear, c2myazz, staog (the first Linux virus), synk4,
+  pwlview, portscan, winGateScan, kr0menfo — every digest pulled from the
+  CDX at recovery time.
+* **DSS ARCHAEOLOGY → `GHIDRA SWEEP — 20 DSSFILES ZIPS`** — the card-war
+  depot, same gate, same decompiler.
+
+The report table lands in the panel: member · bytes · kind·lang ·
+instruction count · decompile verdict (✓ lines/ms or the exact failure) ·
+notable strings. Honest by construction: a digest mismatch **excludes** the
+capture from the sweep and prints the got/expected digests; member caps
+(12/zip) and a decompile budget (48) are displayed when reached, never
+silently dropped.
+
+**The dissectors.** The Shadow Elf case forced the honest counterpoint: a
+1999 GeoCities homepage contains **no machine code** — there is nothing for
+a decompiler to say about HTML, GIF, MIDI or Flash. Pretending otherwise
+would be exactly the legend-making the lab exists to avoid. So the non-code
+views got real static analysis instead: `js/artifacts.js` parses SWF (FWS/
+CWS/ZWS header, bit-packed RECT, tag walk, DoAction ActionScript ops incl.
+GetURL extraction, ConstantPool), Standard MIDI Files (per-track names,
+tempo, program changes, note-ons, and **lyrics** — karaoke meta events),
+GIF (dims, global palette, comment and application extensions), JPEG
+(markers, SOF dimensions, COM comments, EXIF/ICC presence) and PNG (IHDR,
+text chunks). The Shadow Elf LISTING view shows this structure table under
+an explicit "no machine code for the decompiler here" note.
+
+Verification: `tools/verify_casefiles.mjs` — **ALL CHECKS PASSED, 45
+checks** (adds: SWF FWS+CWS fixtures with GetURL extraction, MIDI fixture
+with name/tempo/program/lyrics, GIF/JPEG/PNG fixtures, dissect router,
+casefiles sweep wiring); `smoke_pipeline.mjs` clean; `check-dom-ids.mjs`
+pass; `sw.js` precache v20 (+`js/artifacts.js`).

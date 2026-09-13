@@ -18,7 +18,8 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
-import { unzipSync, zipSync, strFromU8 } from "../vendor/fflate/index.mjs";
+import { unzipSync, zipSync, strFromU8, unzlibSync, zlibSync } from "../vendor/fflate/index.mjs";
+import { parseSWF, parseMIDI, parseGIF, parseJPEG, parsePNG, dissect } from "../js/artifacts.js";
 import { analyze } from "../js/x86dis.js";
 import { GhidraWasm } from "../js/ghidra-wasm.js";
 import {
@@ -110,6 +111,71 @@ check(
   check(
     suite.includes('id:"shadowelf"') === false, // lecture hall stays casefiles-free; shadowelf lives in the lab
     "cipher suite lecture hall: no lab-case leakage",
+  );
+}
+
+/* --------------------------------------------- artifact dissectors (wave 4) */
+
+console.log("── artifact dissectors");
+{
+  const enc = new TextEncoder();
+  const rectBytes = (x0, y0, x1, y1) => {
+    const push = (a, v, n) => { for (let i = n - 1; i >= 0; i--) a.push((v >> i) & 1); };
+    const s = []; push(s, 16, 5); [x0, y0, x1, y1].forEach((v) => push(s, v, 16));
+    while (s.length % 8) s.push(0);
+    const out = new Uint8Array(s.length / 8); s.forEach((b, i) => (out[i >> 3] |= b << (7 - (i & 7)))); return out;
+  };
+  const tag = (code, payload) => {
+    const len = payload.length, cl = len < 0x3f ? (code << 6) | len : (code << 6) | 0x3f;
+    const h = len < 0x3f ? [cl & 255, cl >> 8] : [cl & 255, cl >> 8, len & 255, (len >> 8) & 255, (len >> 16) & 255, (len >> 24) & 255];
+    return new Uint8Array([...h, ...payload]);
+  };
+  const body = new Uint8Array([
+    ...rectBytes(0, 0, 11000, 8000), 0, 12, 1, 0,
+    ...tag(9, new Uint8Array([0x11, 0x22, 0x33])),
+    ...tag(43, new Uint8Array([...enc.encode("frame1"), 0])),
+    ...tag(12, new Uint8Array([0x83, 28, 0, ...enc.encode("http://kr0mecorp.example"), 0, ...enc.encode("_level0"), 0, 0])),
+    0, 0,
+  ]);
+  const L = body.length + 8, fl = new Uint8Array([L & 255, (L >> 8) & 255, (L >> 16) & 255, (L >> 24) & 255]);
+  const fws = parseSWF(new Uint8Array([0x46, 0x57, 0x53, 4, ...fl, ...body]), unzlibSync);
+  check(!!fws && fws.width === 550 && fws.height === 400 && fws.fps === 12 && fws.frames === 1, `swf FWS: ${fws?.width}×${fws?.height} @ ${fws?.fps}fps, ${fws?.frames} frame`);
+  const cws = parseSWF(new Uint8Array([0x43, 0x57, 0x53, 4, ...fl, ...zlibSync(body)]), unzlibSync);
+  check(!!cws && cws.width === 550 && cws.tags.some((t) => t.name === "DoAction") && cws.actions.urls[0]?.url === "http://kr0mecorp.example", `swf CWS: ${cws?.tags.length} tags, GetURL → ${cws?.actions.urls[0]?.url}`);
+  const vlq = (n) => { const b = [n & 0x7f]; while (n >>= 7) b.unshift((n & 0x7f) | 0x80); return b; };
+  const trk = new Uint8Array([
+    0, 0xff, 0x03, ...vlq(6), ...enc.encode("Shadow"),
+    0, 0xff, 0x51, 3, 0x07, 0xa1, 0x20, // 500000 µs/qn = 120 bpm
+    0, 0xc0, 40,
+    0, 0x90, 60, 100, 60, 0x80, 60, 0,
+    0, 0xff, 5, ...vlq(2), ...enc.encode("Y!"), 0, 0xff, 5, ...vlq(2), ...enc.encode("M!"),
+    0, 0xff, 0x2f, 0,
+  ]);
+  const midiBytes = new Uint8Array([0x4d, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 0, 0, 1, 1, 0xe0, 0x4d, 0x54, 0x72, 0x6b, (trk.length >>> 24) & 255, (trk.length >>> 16) & 255, (trk.length >>> 8) & 255, trk.length & 255, ...trk]);
+  const mid = parseMIDI(midiBytes);
+  check(!!mid && mid.tracks[0]?.name === "Shadow" && mid.tracks[0]?.bpm === 120 && mid.tracks[0]?.program === 40 && mid.tracks[0]?.noteOns === 1, `midi: "${mid?.tracks[0]?.name}" ${mid?.tracks[0]?.bpm}bpm program ${mid?.tracks[0]?.program}, ${mid?.tracks[0]?.noteOns} note-on, lyrics [${mid?.tracks[0]?.lyrics}]`);
+  const gifBytes = new Uint8Array([0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 4, 0, 2, 0, 0x80, 0, 0, ...new Array(48).fill(0), 0x21, 0xfe, 3, 0x68, 0x69, 0x21, 0, 0x2c, 0, 0, 0, 0, 4, 0, 2, 0, 0, 2, 0x02, 0x44, 0x01, 0, 0x3b]);
+  const gif = parseGIF(gifBytes);
+  check(!!gif && gif.width === 4 && gif.height === 2 && gif.comments[0] === "hi!", `gif: ${gif?.width}×${gif?.height}, comment "${gif?.comments[0]}"`);
+  const jpgBytes = new Uint8Array([0xff, 0xd8, 0xff, 0xfe, 0, 5, 0x68, 0x69, 0x21, 0xff, 0xc0, 0, 0x0b, 8, 0, 2, 0, 8, 1, 0x11, 0, 0x11, 0, 0xff, 0xd9]);
+  const jpg = parseJPEG(jpgBytes);
+  check(!!jpg && jpg.width === 8 && jpg.height === 2 && jpg.sof === "SOF0" && jpg.comments[0] === "hi!", `jpeg: ${jpg?.width}×${jpg?.height} ${jpg?.sof}, comment "${jpg?.comments[0]}"`);
+  const pngBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 0x49, 0x48, 0x44, 0x52, 0, 0, 0, 4, 0, 0, 0, 2, 8, 2, 0, 0, 0, 0, 0, 0, 0]);
+  const png = parsePNG(pngBytes);
+  check(!!png && png.width === 4 && png.height === 2 && png.depth === 8, `png: ${png?.width}×${png?.height} ${png?.depth}-bit`);
+  check(
+    dissect(new Uint8Array([0x46, 0x57, 0x53, 4, ...fl, ...body]), unzlibSync)?.type === "swf" &&
+    dissect(midiBytes)?.type === "midi" && dissect(gifBytes)?.type === "gif" &&
+    dissect(jpgBytes)?.type === "jpeg" && dissect(pngBytes)?.type === "png" &&
+    dissect(new Uint8Array(64)) === null,
+    "dissect router: swf/midi/gif/jpeg/png routed, non-structures rejected",
+  );
+  const cf = readFileSync(join(ROOT, "js", "casefiles.js"), "utf8");
+  check(
+    cf.includes("async function ghidraSweep(") && cf.includes("async function fetchVerified(") &&
+    cf.includes("function staticPass(") && cf.includes("dissect(bytes, unzlibSync)") &&
+    cf.includes("GHIDRA SWEEP") && cf.includes("kromeGhidraReport") && cf.includes("dssGhidraReport"),
+    "casefiles wiring: ghidraSweep + fetchVerified + staticPass + structure views + both sweep buttons",
   );
 }
 
