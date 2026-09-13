@@ -49,6 +49,9 @@ The chipset therefore:
 | `js/bootchain.js` | the browser half of the same rules, verified against the RTL layout |
 | `chipset-lab.html` + `js/chipset-lab.js` | the page: decode a status word, see the requirements and ATA gates |
 | `tools/verify_bootchain.mjs`, `tests/11-chipset-lab.mjs` | keep the JS mirror and the page honest |
+| `js/avrdis.js`, `js/avrhex.js` | classic-AVR instruction decoder + Intel HEX parser (the firmware walkthrough) |
+| `tools/ghidra_avr.mjs`, `tools/verify_avrdis.mjs` | walk an AVR image from its reset vector; check the decoder against upstream's own `avr-objdump` listing |
+| `avr-lab.html` + `js/avr-lab.js`, `tests/13-avr-lab.mjs` | the page: decode a bootloader, see dead flash-write sites and the symbol names |
 | `tools/setup_rtl.sh` | installs the Yosys toolchain (user-space) and runs the verification |
 
 The simulation path is **yosys Yosys 0.69 `write_cxxrtl` → g++ → `sim/vchip_rtl`**.
@@ -403,3 +406,44 @@ The transcript is the contract between three implementations: the RTL, the JS
 reference model, and the golden file. If RTL and model disagree the build fails
 before any proof is attempted; if both change together, the golden diff is the
 review artifact.
+
+## 10. The firmware side: walking an AVR bootloader
+
+The lock gates firmware writes; the other half of that story is the firmware
+itself, and the vendor images it would have been (MAKInterface / MAKInterface
+Pro, makinterface.de) could not be retrieved — the host refuses connections from
+this environment and the archives are blocked or gone. So the Atmel side is
+built against code of the same class, and verified rather than asserted:
+
+* `js/avrdis.js` decodes the whole classic-AVR instruction set.
+  `tools/verify_avrdis.mjs` compares it instruction-for-instruction against the
+  `avr-objdump` listing **upstream itself published** with Optiboot 8.0
+  (`samples/avr/optiboot_atmega328.lst`): 225/225 instructions and 78/78 branch
+  and call targets — the latter against the addresses objdump resolves and
+  prints in its own comments.
+* With the decoder checked, `tools/ghidra_avr.mjs` *walks* the image from the
+  reset vector (following `rjmp`/`jmp`, entering `rcall`/`call` targets, taking
+  both sides of conditionals and of the skip instructions) so that each
+  `SPM`/`LPM`/`WDR` site can be labelled with the function it lives in and
+  whether a redirect can reach it.
+
+The result worth having: Optiboot's `do_spm` is `__attribute__((used))`, so a
+working `SPM` sequence is linked into the boot region with **nothing calling it**
+— two flash-write sites that are decoded, real, and provably unreachable from
+the image alone. That is exactly the kind of latent primitive the vector lock
+exists to measure against, and reporting "6 SPM sites" without walking them would
+have missed it. The opposite check is made too: Micronucleus's five `SPM`, three
+`LPM` and two `WDR` sites are all live, so "reachable" is not a verdict the walk
+hands out for free.
+
+`avr-lab.html` (controller `js/avr-lab.js`, gated by `tests/13-avr-lab.mjs`)
+shows the same walk in a tab: pick a vendored image, see the disassembly with
+dead instructions marked and the self-programming sites named from the listing's
+symbol table. It is the firmware-side companion to `chipset-lab.html`.
+
+What is **not** done, and is recorded rather than hidden: the vendored Ghidra-wasm
+bridge cannot decompile AVR8. Its `LoadImageXml` reads outside the word-addressed
+`code` space and returns `DataUnavailError`; `node tools/ghidra_avr.mjs … --probe`
+reproduces that as 0/36 combinations, and there is no JVM here to run a real
+Ghidra headless. So the walkthrough is done by decoding instructions and
+following control flow — a smaller claim than "decompiled", and a true one.

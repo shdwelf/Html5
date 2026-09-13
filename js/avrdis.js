@@ -269,7 +269,9 @@ export function disassemble(bytes, { base = 0, start = null, end = null } = {}) 
     const addr = base + at;
     const ins = decode(bytes, at, addr);
     if (!ins) {
-      out.push({ addr, raw: null, mnemonic: ".word", operands: `0x${(bytes[at] | (bytes[at + 1] << 8)).toString(16).toUpperCase().padStart(4, "0")}`, size: 2 });
+      // A word that decodes to nothing is still two bytes of the image; hand
+      // back the bytes so callers never have to special-case `raw`.
+      out.push({ addr, raw: bytes.slice(at, at + 2), mnemonic: ".word", operands: `0x${(bytes[at] | (bytes[at + 1] << 8)).toString(16).toUpperCase().padStart(4, "0")}`, size: 2 });
       at += 2;
       continue;
     }

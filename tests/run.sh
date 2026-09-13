@@ -69,6 +69,22 @@ node tools/build_coins.mjs --check || status=1
 echo "──────────────────────────────────────────────"
 node tests/11-wallet-coins.mjs || status=1
 
+# The boot-vector lock's reference model (js/bootchain.js) and its page; the
+# layout it decodes is parsed out of rtl/vchip_top.v by tools/verify_bootchain.mjs.
+echo "──────────────────────────────────────────────"
+node tools/verify_bootchain.mjs || status=1
+
+echo "──────────────────────────────────────────────"
+node tests/11-chipset-lab.mjs || status=1
+
+# The AVR decoder is checked against the avr-objdump listing upstream shipped,
+# then the same decoder is driven through the AVR lab page.
+echo "──────────────────────────────────────────────"
+node tools/verify_avrdis.mjs || status=1
+
+echo "──────────────────────────────────────────────"
+node tests/13-avr-lab.mjs || status=1
+
 # The globe projector binary + coastline are committed; these only check the
 # .wat and the topojson source still build to them (wabt-gated, skips clean).
 echo "──────────────────────────────────────────────"
