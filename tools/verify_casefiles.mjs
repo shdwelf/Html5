@@ -23,7 +23,7 @@ import { analyze } from "../js/x86dis.js";
 import { GhidraWasm } from "../js/ghidra-wasm.js";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
-  RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK,
+  RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK, SHADOWELF,
   waybackUrl, waybackView, cdxUrl,
 } from "../js/krome-catalog.js";
 
@@ -77,6 +77,36 @@ check(DR7.files.length >= 20 && DR7.files.every((f) => f.url.startsWith("http://
 check(HACKHU.blurb.includes("Unloopers") && DIRT.cryptome.length >= 6, "hackhu + DIRT dossier rows");
 check(SATMURACH.blurb.includes("zero Wayback captures"), "satellitemurach ghost recorded");
 check(WARRICK.url.includes("oduwsdl/warrick"), "warrick credited");
+check(typeof RIDDLE.hunt === "string" && RIDDLE.hunt.includes("no solution"), "riddle solution-hunt verdict recorded");
+{
+  const f = SHADOWELF.files;
+  const b32 = /^[A-Z2-7]{32}$/;
+  const uniq = new Set(f.map((x) => x.name));
+  check(
+    f.length === 27 && uniq.size === f.length &&
+    f.every((x) => /^\d{14}$/.test(x.ts) && b32.test(x.digest) && x.warc > 0) &&
+    f.every((x) => x.url.startsWith("http://www.geocities.com/SiliconValley/Park/8099/")) &&
+    f.some((x) => x.name === "index.html" && x.url === SHADOWELF.url) &&
+    f.some((x) => x.name === "CC.html") && f.some((x) => x.name === "easiest.swf"),
+    `shadowelf: ${f.length} pinned rows, unique names, 14-digit ts, 32-char base32 digests`,
+  );
+  check(f.every((x) => !x.desc || typeof x.desc === "string"), "shadowelf descriptions optional strings");
+}
+{
+  const suite = readFileSync(join(ROOT, "apps", "Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html"), "utf8");
+  const lectureOk =
+    suite.includes('id:"kr0mecorp"') &&
+    suite.includes('title:"Kr0meCorp: the hidden.html Riddle"') &&
+    suite.includes('confidence:"Primary archive"') &&
+    suite.includes("MMOS2TQI5722PUSYVTROIMSZEYIJH5G4") &&
+    suite.includes("Riddle") &&
+    !suite.includes("deliberately does not invent");
+  check(lectureOk, "cipher suite lecture hall: kr0mecorp record replaced with primary-source dossier");
+  check(
+    suite.includes('id:"shadowelf"') === false, // lecture hall stays casefiles-free; shadowelf lives in the lab
+    "cipher suite lecture hall: no lab-case leakage",
+  );
+}
 
 /* --------------------------------------------------------------- base32 */
 

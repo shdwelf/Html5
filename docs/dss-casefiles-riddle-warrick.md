@@ -134,3 +134,47 @@ exactly what the lab already does, so the session generalized it:
 * Honest limits unchanged: the sandbox still cannot reach web.archive.org /
   archive.org directly, so the first live DSS recovery happens in a visitor's
   browser — with the SHA-1 verdict badge as the receipt.
+
+## 8. Wave 3 — the lecture hall, the closed hunt, the archivist's homepage
+
+**Cipher suite lecture hall.** The Intelligence Lecture Hall of
+`apps/Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html` carried only a
+placeholder for Kr0meCorp — a record that said the riddle was "added later with
+provenance." That placeholder is now replaced with the full primary-source
+record: the six riddle lines and the `Kv QW n df` footer verbatim from the
+hash-verified Dec 6 1998 capture of `hidden.html` (Wayback digest
+`MMOS2TQI5722PUSYVTROIMSZEYIJH5G4`), the hermetic reading, the atomic-number
+candidates (26·47·79·80, unconfirmed), the Monolith trail
+(`kr0mecorp.home.ml.org` died with ml.org's shutdown on Dec 15 1998), the
+letters.html fan-mail page, and six source links back to the captures and to
+this lab. The record is flagged `confidence:"Primary source recovered"`. The
+modified bundle's app script was re-extracted and re-parsed clean.
+
+**The solution hunt is closed.** Every later capture of `hidden.html`
+(2004→2012) is a 404 — no solution was ever edited into the page. `letters.html`
+holds fan mail (Attacker of Webfringe, L0rd Binary, others) but no solution
+letter. Lord Shinva's *Enciclopedia dell'Hacking* Vol. 14 uses
+`kr0mecorp.home.ml.org` only as its proxy-tutorial example URL. The open web
+preserves nothing. The catalog now files this verdict permanently
+(`RIDDLE.hunt`): the case stays **OPEN** — and because the riddle's own pointer
+died with Monolith, even a correct answer can no longer be checked against
+anything.
+
+**SHADOWELF — the archivist's own homepage.** The user's original site,
+`www.geocities.com/SiliconValley/Park/8099` — *"The Shadow Elf's Homepage"* —
+is now CASEFILES case #5. All **27 files** the Wayback still serves 200-OK
+(12 HTML pages, 9 images, 5 MIDIs, 1 Flash movie, Feb 1999 → Aug 2000) are
+cataloged in `SHADOWELF` with each row's CDX SHA-1 pinned at catalog time.
+The recovery console verifies every fetch against the pinned digest and
+displays mismatches; the GeoCities view captures carry Yahoo's watermark JS,
+but the raw `id_` mementos are the original bytes, which is why the gate
+matches. Site story: splash page demanding 800×600 and Netscape Navigator 3.0,
+visitor-submitted C&C cheats (CC.html), an underground links page naming LoD,
+cDc, CCC, l0pht and the Jargon File (sites.htm), five MIDIs, one Flash toy —
+recovered with the same gate as the attack tools, which is the lab's thesis
+demonstrated on the archivist's own address.
+
+Verification after wave 3: `tools/verify_casefiles.mjs` — **ALL CHECKS PASSED,
+37 checks** (adds: hunt verdict, 27 shadowelf pinned rows, suite-file lecture
+record present + placeholder gone); `smoke_pipeline.mjs` clean;
+`check-dom-ids.mjs` pass; `sw.js` precache bumped to v18.

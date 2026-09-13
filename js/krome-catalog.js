@@ -469,6 +469,15 @@ export const RIDDLE = {
     "iron/servant 26 (or the King's 79 reversed, 97), silver 47, gold 79, mercury 80 — " +
     "i.e. something of the shape 26.47.79.80. Nobody has publicly confirmed the " +
     "answer; we file it open.",
+  hunt:
+    "The hunt for a posted solution: every later capture of hidden.html " +
+    "(2004–2012) is a 404 — the page died unforgiven. letters.html survives but " +
+    "holds only fan mail (Attacker of Webfringe, L0rd Binary, others); Lord " +
+    "Shinva's Hacking Encyclopedia Vol. 14 uses kr0mecorp.home.ml.org merely as " +
+    "its proxy-tutorial example URL; and the open web preserves no solution. " +
+    "Claimed solutions exist only as private memories — the address itself died " +
+    "with Monolith, so even a correct answer can no longer be checked against " +
+    "anything. Filed open, permanently.",
   trail:
     "The riddle's own pointer, kr0mecorp.home.ml.org, was a Monolith redirect. " +
     "Monolith Internet Services shut down on Dec 15, 1998 — the Wayback's captures " +
@@ -567,6 +576,64 @@ export const DIRT = {
 export const SATMURACH = {
   name: "satellitemurach.com",
   blurb: "zero Wayback captures — not even a 404 was archived. A ghost in the CDX.",
+};
+
+/* ------------------------------------------------------------- shadow elf */
+
+/**
+ * The archivist's own homepage — "The Shadow Elf's Homepage",
+ * www.geocities.com/SiliconValley/Park/8099. Every file the Wayback still
+ * serves with a 200-OK, each row pinned with its CDX SHA-1 (base32) so the
+ * recovery gate can verify before it displays. Rows: name|ts|warc|digest|desc.
+ */
+export const SHADOWELF = {
+  name: "The Shadow Elf's Homepage",
+  url: "http://www.geocities.com/SiliconValley/Park/8099/",
+  years: "1998–2009 · 39 root captures",
+  blurb:
+    "The lab's own archivist grew up here: GeoCities SiliconValley/Park/8099, " +
+    "“The Shadow Elf's Homepage” — a splash page that demands 800×600 and " +
+    "Netscape Navigator 3.0, visitor-submitted C&C cheats, a links page naming " +
+    "LoD, cDc, CCC, l0pht and the Jargon File, five MIDIs and one Flash toy. " +
+    "Twenty-seven files still answer 200-OK in the Wayback; every one below is " +
+    "recoverable through the same SHA-1 gate as the attack tools.",
+  files: [
+    "|19990204033556|1224|AFJVA4GH62S2THDX3TRWFHM4SYJEY4XI|splash page — “best viewed in 800x600 … Netscape Navigator 3.0”",
+    "index2.htm|19990209035429|997|MKP5N3PN2KOBIL3JOVHJBFXW2ZHJWUWY|the real front door behind the splash",
+    "intro.htm|19990209044842|4409|ODMNVK6R3UU4DCLG4SIZJ44M4VVLI2C7|",
+    "menu.htm|19990209072941|1809|26HNIY7AP4TJMDBIH6UIQS5OU23MIADC|",
+    "CC.html|19990208211722|5214|7O4IGSDNB4FOCYPKT4PDUWSGFG2C6U7D|Shadow Elf's C&C Cheats — visitor-submitted, submitter emails included",
+    "cna.htm|19990208234501|3030|6FDZ4E4ELWUPR4KQGNC3ODU6FDCIOFXU|",
+    "email.html|19990209003017|1333|BP5Y65QUYYSUYOTPTV3H3KFGVISZ6KCB|",
+    "members.html|19990209053551|1134|DVVMVRJNQEBHKIN6K63KWLHYDLZRDKO7|",
+    "news.html|19990209080858|1607|JP2LBNLDAEW7UZVYSGFMNV4ISVQENNP3|",
+    "faq.html|19991007180747|1584|K4KZUD66WUCWS7SQJNV7ISGL3VNJO3OF|",
+    "bio.html|20000310114657|889|B2XVQTA3AHMQXJLVAN2R23M6MVZES22B|",
+    "sites.htm|19991008031725|4785|I557IBJ6HFY6DCADO635YSGEAHKQXDYD|the underground links page: LoD, cDc, CCC, l0pht, Jargon File, phreaking",
+    "menu.jpg|20000430014404|44581|QE3KUKQUWCG33SBM2RJ54SOSWZTNUG63|menu image map",
+    "shadow3.gif|20000428181046|735|D5PPR7OH33KUGF7XYZWFWDG3CF4FAZWO|the shadow-elf mark",
+    "back3.jpg|20000830041708|7817|ZQFUTWSDSVLQCFAZZZBRXD7PEYWOVD4S|background tile",
+    "ccring.jpg|20000422102508|12648|AEMXG3Z3EU6DVMY7O6EPSQTUUC3M7QEJ|C&C webring banner",
+    "netbutton.gif|20000423202141|19756|MQBVICORB26DHVXIZOMK2VPMT2LDFDNR|“Netscape NOW” button",
+    "lpagebutton.gif|20000429155307|2390|RWKK4WYEUSSB63VGZPSJTBB3CZYPRGU4|guestbook button",
+    "line.gif|20000428151326|1754|7HV7AIHYXEP63F5QMNVXZBESWPNGQZZM|rule line",
+    "hipline2.gif|20000428142634|4181|35AVBRMVYKYXPQMC3L2HOYQ75PSRAPBN|decoration",
+    "palette.jpg|20000822140540|2138|MFJFI5LVH2GFYBFPF4N45TPXLW5BX46R|",
+    "y-m-c-a.mid|20000229201855|5976|J4EDFCZ6OUFRPNG75VLKYRYSERTBDHN2|Village People, MIDI'd",
+    "cool4.mid|20000619174019|5761|2SQRMOJM4NOMKZK6NCCBNZ5HT2LZH6HT|",
+    "digital.mid|20000616182812|4387|BD4EZ7ULXUWCT7UY7YOCPOOKNHQPNH73|",
+    "idontknow.mid|20000620013655|2718|7V5PCNCM2KJDUZAR6HZ3HGL77EHJLBRL|",
+    "n13.mid|20000303110226|13109|BIKID7V457NNSXB5OCLC44QHKHTUQSUO|",
+    "easiest.swf|20000619203827|7009|3YTOW2DVDCF2WTME6RQDVJGKFG45FJHQ|the Flash toy",
+  ].map((row) => {
+    const [name, ts, warc, digest, desc] = row.split("|");
+    const base = "http://www.geocities.com/SiliconValley/Park/8099/";
+    return {
+      name: name || "index.html",
+      ts, warc: Number(warc), digest, desc,
+      url: name ? `${base}${name}` : base,
+    };
+  }),
 };
 
 /** Warrick — the inspiration for this lab's recovery mode. */

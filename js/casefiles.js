@@ -18,7 +18,7 @@ import { GhidraWasm } from "./ghidra-wasm.js";
 import { unzipSync } from "../vendor/fflate/index.mjs";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
-  RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK,
+  RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK, SHADOWELF,
   waybackUrl, waybackView, cdxUrl,
 } from "./krome-catalog.js";
 const $ = (id) => document.getElementById(id);
@@ -448,6 +448,10 @@ const CASES = {
     title: "DSS ARCHAEOLOGY", sub: "dr7.com · hackhu.com · the card wars",
     chip: "wayback · warrick mode",
   },
+  shadowelf: {
+    title: "SHADOW ELF", sub: "geocities.com/SiliconValley/Park/8099 · the archivist's homepage",
+    chip: `wayback · ${SHADOWELF.files.length} pinned captures`,
+  },
   demo: {
     title: "DEMO.EXE", sub: "63-byte MZ in this repo",
     chip: "local · offline",
@@ -462,6 +466,7 @@ function selectCase(id) {
   if (id === "ramrod") renderRamrodPanel(host);
   if (id === "krome") renderKromePanel(host);
   if (id === "dss") renderDssPanel(host);
+  if (id === "shadowelf") renderShadowelfPanel(host);
   if (id === "demo") loadArtifact("demo.exe", DEMO_BYTES, "repository demo.exe");
   renderDossier();
   showTab(id === "demo" ? "listing" : "dossier");
@@ -751,6 +756,34 @@ async function runWarrick() {
   }
 }
 
+/* ---- shadow elf panel ---- */
+
+function renderShadowelfPanel(host) {
+  const panel = el("section", { class: "panel" });
+  panel.append(el("div", { class: "panel-head" }, el("h2", { text: "THE SHADOW ELF'S HOMEPAGE" }), el("span", { class: "panel-tag", text: `${SHADOWELF.files.length} pinned captures` })));
+  panel.append(el("p", { class: "panel-note", html:
+    `<a target="_blank" rel="noreferrer" href="https://web.archive.org/web/19990204033556/${esc(SHADOWELF.url)}">${esc(SHADOWELF.url.replace("http://", ""))}</a> — ` +
+    `the archivist's own GeoCities homestead, kept with the same gate as the attack tools. ` +
+    `Every row carries its CDX SHA-1 pinned at catalog time; the console fetches the raw <code>id_</code> memento, hashes it, and shows a mismatch instead of hiding one.` }));
+  const list = el("div", { class: "catalog" });
+  for (const f of SHADOWELF.files) {
+    list.append(el("button", {
+      type: "button", class: "cat-item",
+      onclick: () => recoverCapture({ name: f.name === "index.html" ? "SiliconValley/Park/8099/" : `SiliconValley/Park/8099/${f.name}`, url: f.url, ts: f.ts, digest: f.digest, hostId: "shadowRecovered" }),
+    },
+      el("span", { class: "cat-name", text: f.name }),
+      el("span", { class: "cat-kind", text: `${shortDate(f.ts)} · ${f.digest.slice(0, 8)}` }),
+      f.desc ? el("span", { class: "cat-note", text: f.desc }) : null,
+    ));
+  }
+  panel.append(list);
+  host.append(panel);
+  host.append(el("section", { class: "panel" },
+    el("div", { class: "panel-head" }, el("h2", { text: "Recovery log" })),
+    el("div", { id: "shadowRecovered", class: "members" }),
+  ));
+}
+
 /* ---- dossier + research tabs ---- */
 
 function renderDossier() {
@@ -759,6 +792,7 @@ function renderDossier() {
   if (state.caseId === "ramrod") renderRamrodDossier(host);
   if (state.caseId === "krome") renderKromeDossier(host);
   if (state.caseId === "dss") renderDssDossier(host);
+  if (state.caseId === "shadowelf") renderShadowelfDossier(host);
   if (state.caseId === "demo") host.append(el("section", { class: "case-block" },
     el("h3", { text: "demo.exe — the engine's sanity check" }),
     el("p", { class: "prose", text: "A 63-byte MZ binary that lives in the repository. It exists so you can prove the whole pipeline (sniff → disassemble → decompile) works before asking the Wayback Machine for anything." }),
@@ -845,6 +879,41 @@ function renderDssDossier(host) {
     el("h3", {}, `${WARRICK.name} `, el("small", { text: "· the recovery tool this mode salutes" })),
     el("p", { class: "prose", text: WARRICK.blurb }),
     el("p", { class: "panel-note", html: `<a target="_blank" rel="noreferrer" href="${WARRICK.url}">${WARRICK.url}</a>` }),
+  ));
+}
+
+function renderShadowelfDossier(host) {
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, `${SHADOWELF.name} `, el("small", { text: `· ${SHADOWELF.years}` })),
+    el("p", { class: "prose", text: SHADOWELF.blurb }),
+    el("p", { class: "panel-note", html:
+      `Splash capture: <a target="_blank" rel="noreferrer" href="https://web.archive.org/web/19990204033556/${esc(SHADOWELF.url)}">Feb 4, 1999</a> · ` +
+      `<a target="_blank" rel="noreferrer" href="https://web.archive.org/web/19990209044842/${esc(SHADOWELF.url)}intro.htm">intro.htm</a> · ` +
+      `<a target="_blank" rel="noreferrer" href="https://web.archive.org/web/19991008031725/${esc(SHADOWELF.url)}sites.htm">sites.htm</a>` }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "What survives" }),
+    el("p", { class: "prose", text:
+      "Twelve HTML pages, nine images, five MIDIs and one Flash movie still answer " +
+      "200-OK — 27 files, each pinned above with the CDX SHA-1 taken at catalog " +
+      "time. The GeoCities toolbar-era view captures carry Yahoo's watermark " +
+      "javascript; the raw id_ mementos this lab fetches are the original bytes, " +
+      "which is exactly why the digest gate matches." }),
+    el("p", { class: "prose", text:
+      "The capture record is lopsided the way GeoCities always is: the crawl hit " +
+      "the HTML first (Feb 1999), came back for the images and MIDIs in 2000, and " +
+      "kept photographing the front page until 2009 — long after the elf stopped " +
+      "updating. Recovery order doesn't matter; each file verifies on its own." }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "Why it's in this lab" }),
+    el("p", { class: "prose", text:
+      "Because the method has to be general. The same SHA-1 gate that reassembles " +
+      "kr0me corp's virus archive and dr7.com's card depot reassembles a 1999 " +
+      "GeoCities homepage: query the CDX for a digest, fetch the id_ memento, hash it, display " +
+      "any mismatch. GeoCities closed in 2009 and took millions of pages with it; " +
+      "this one came back. That's the whole thesis of the lab, demonstrated on the " +
+      "archivist's own address." }),
   ));
 }
 
