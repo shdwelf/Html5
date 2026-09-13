@@ -31,6 +31,7 @@ import io
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
