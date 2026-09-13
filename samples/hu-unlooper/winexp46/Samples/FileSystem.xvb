@@ -1,0 +1,112 @@
+'
+' File System Object Demo
+'
+
+Option Explicit
+
+'
+' File Open constants
+'
+Const fsoError = -1
+Const fsoOpenRead = 0
+Const fsoOpenWrite = 1
+Const fsoOpenReadWrite = 2
+
+'
+' File Seek Constants
+'
+Const fsoSEEK_SET = 0
+Const fsoSEEK_CUR = 1
+Const fsoSEEK_END = 2
+
+Sub Main()
+    Dim InFile
+    Dim FileSize
+    Dim ThisByte
+    Dim TmpStr
+    Dim Outfile
+    Dim FileName
+
+    '
+    ' Open File
+    '
+    Const FileFilter = "All Eprom Files (*.bin, *.crd)|*.bin;*.crd;|Bin Files (*.bin)|*.bin|Crd Files (*.crd)|*.crd"
+
+    FileName = Fs.FileOpenDialog(FileFilter, "Please select a valid bin file", "Default.bin")
+    If FileName <> "" Then
+        '
+        ' Check if the file exists
+        '
+        If Fs.FileExists(FileName) = 0 Then
+            Sc.MsgBox("The file does not exist")
+        Else
+            InFile = Fs.FileOpen(FileName, fsoOpenRead)
+        End If
+    End if
+
+    '
+    ' Seek to end of file to get size
+    '
+    FileSize = Fs.FileSeek(InFile, 0, fsoSEEK_END)
+    Sc.Print "The file size is " & FileSize & vbCr & vbCr
+
+    '
+    ' Reposition to the last 1/4 of the file
+    '
+    call Fs.FileSeek(InFile, FileSize - (FileSize / 4), fsoSEEK_SET)
+    ' call Fs.FileSeek(InFile, 0 - (FileSize / 4), fsoSEEK_END)   ' this works too
+
+    ' Read in and Print the last 1/4 of the file
+    TmpStr = ""
+    For ThisByte = 0 to (FileSize / 4) - 1
+        If ThisByte > 0 And ThisByte Mod 16 = 0 then
+            TmpStr = TmpStr & vbCr
+        End If
+        TmpStr = TmpStr & HexString(Fs.FileGetc(InFile), 2) & " "
+    Next
+
+    Sc.Print TmpStr & vbCr
+
+    '
+    ' Reposition to begining of file
+    '
+    call Fs.FileSeek(InFile, 0, fsoSEEK_SET)
+
+    '
+    ' Open a file for output
+    '
+    FileName = Fs.FileSaveDialog(FileFilter, "Please select a name for the new bin file", "Default.bin")
+    If FileName <> "" Then
+        OutFile = Fs.FileCreate(FileName)
+        '
+        ' copy the input file to the output file
+        '
+        For ThisByte = 0 to FileSize - 1
+            call Fs.FilePutc(OutFile, Fs.FileGetc(InFile))
+        Next
+    End if
+
+    Fs.FileClose(OutFile)
+    Fs.FileClose(InFile)
+
+End Sub
+
+'================================================================
+
+Function HexString(ThisNumber, Length)
+    Dim RetVal
+    Dim CurLen
+    '
+    ' Convert a integer to a hex string and
+    ' pad it with the desired number of zeros
+    '
+    RetVal = Hex(ThisNumber)
+    CurLen = Len(RetVal)
+
+    If CurLen < Length Then
+        RetVal = String(Length - CurLen, "0") & RetVal
+    End If
+
+    HexString = RetVal
+End Function
+'================================================================

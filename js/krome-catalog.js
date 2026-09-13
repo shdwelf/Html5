@@ -925,6 +925,160 @@ export const TROJANSLAIR = {
   ],
 };
 
+/* ------------------------------------------------------------------ HU unlooper (wave 7)
+ *
+ * The HU-card unlooper hunt, end to end. The Atmel AT90S2313 firmware blobs
+ * themselves (HUFF/UL4S .hex, HACKHU 2) survive nowhere pinnable — hackhu's
+ * /files/*.zip captures are all 404, dssmagic's zips were never archived,
+ * angelfire kept only the HUFF prose — so `files` pins what the Wayback
+ * Machine actually holds (dr7 depot zips, hackhu doctrine pages, the five
+ * MAKInterface programmer drops), while `scripts` + `pe` carry the
+ * SHA-1-gated artifacts recovered in-repo from the travisgoodspeed
+ * winexplorer mirror (see samples/hu-unlooper/MANIFEST.sha1).
+ */
+export const HUUNLOOPER = {
+  name: "HU Unlooper Firmware Hunt",
+  years: "1999–2006 · DSS P3/HU era",
+  blurb:
+    "DirecTV's HU (P3) card died by looping — and lived again by glitching. " +
+    "This case pins the paper trail and the surviving code: UL4S and HUFF " +
+    "unlooper scripts that speak the 55 4C 34 53 magic to AT90S2313-based " +
+    "loaders, TurboUnloop 1.1 by aol6945, the HU Eclipse / ExtremeHU / " +
+    "Crusaider script shelf, and both WinExplorer builds those scripts ran " +
+    "under. The actual Atmel .hex firmware is still missing from every " +
+    "pinnable archive — the dossier says exactly where the hunt went and " +
+    "what stands in for Ghidra until a JVM host exists.",
+  scripts: [
+    { name: "UL4S_10.xvb", bytes: 13240, md5: "75978dc527a97a6dde492a4fb85a97fe", sha1: "d90d12bfb6f3e4b2e8d30a8606e0af71ca5abd07", crc32: "0b0a80a2", note: "Lee Gibling · P4/2001 + T911/UL4S · glitch-interval brute-forcer, 455 lines" },
+    { name: "HUFF_DTV_P4_dbl_Vcc.xvb", bytes: 9538, md5: "af6272c0dcd4a413f05aee375ee7a9a5", sha1: "1a1df47db34e7ae87599e878002226c56796fffc", crc32: "b6f93873", note: "Lee Gibling · Mikubu-III + HUFF · ATR_DM watershed 0x038F/0x0390, 276 lines" },
+    { name: "TurboUnloop_1.1.xvb", bytes: 76247, md5: "28f5d08371ecbf2a56f86f58b4ede8ac", sha1: "9a6d11311c60c2481f6f0724efbeb4a7518a1e34", crc32: "151b72bd", note: "aol6945 · TurboUnloop v1.1 · 12-procedure glitch framework, 2288 lines" },
+    { name: "Nagra_Atmel_Flash_Generator-v12.xvb", bytes: 72444, md5: "dc5ce5f7308177ed1bfb3b8be8eb4e64", sha1: "5436c8127e86130ea192ba74160cb6f97612c6ed", crc32: "0aa8b0ea", note: "Joe Nobody, 2006 · emits Intel HEX Atmel flash for Nagra EMU/AVR3, 1451 lines" },
+    { name: "UL4SComboV2.xvb", bytes: 90529, md5: "c31981a760644249ec214000f99e0734", sha1: "a0ea2a324f8deeb3d517abac36657b02133f88d4", crc32: "95922123", note: "Combo UL4S · HU unlooper + INS5C/7F glitch loader · ChipVer wants 55 4C 34 53, 2504 lines" },
+    { name: "HU_Eclipse1.7.xvb", bytes: 206549, md5: "ec836691263ac9b2ecfcfa1b9f7cb450", sha1: "0ed52a818aba920949c852d8e39724fe3ea26d5d", crc32: "2f080473", note: "DSS_Kit aka Hot_Rod, 6-30-01 · hash-clean @ 24E7, locals fix" },
+    { name: "WildWinExtremeHUV3.0.xvb", bytes: 181493, md5: "c5a8606b187780328a57196b3bc06437", sha1: "5df9233bf04dcac305524f635b80c99529824cab", crc32: "e8ac0582", note: "johnnyL · ExtremeHU series · 6000+ glitch file, D2/D3 save fixes" },
+    { name: "Crusaider-v4.1.xvb", bytes: 169110, md5: "b70bf9cd709cffcade83a03bbbd4e659", sha1: "1fbfaae651eeb8c2a10f2f1c2b4be2377a4352d9", crc32: "3fd1114a", note: "The Nation, 8-15-2002 · Rom Reader/Writer HTR freeware release" },
+    { name: "HtoHu.xvb", bytes: 3185, md5: "a069b6b1b45b9c8ec4103fa08481bc90", sha1: "d3d14ce76818b8cbfc69c9645d9fe87a25f69101", crc32: "b6080961", note: "Anonymous, 12/2/2001 · H CAM ZKT → HU converter, 89 lines" },
+  ],
+  pe: [
+    { name: "winexp46/WinExplorer.exe", bytes: 1029120, md5: "396089de1c1d1161aad66f823f30baba", sha1: "259f2a315fd8dcac6beafe9fc210cf6d83f0b067", crc32: "46de43f0", note: "WinExplorer 4.6 · 2001-06-04 · Delphi + DCPcrypt · PACKED (junk EP stub)" },
+    { name: "winexp50/WinExplorer.exe", bytes: 1249280, md5: "ede66c67cc4154d5eb81bd06284728f4", sha1: "9a263bbec3b8b1149080dae7bd39391f48f47ab4", crc32: "9e864410", note: "WinExplorer 5.0.0.2 · 2002-04-10 · image crypted into .pdata (729 KB, e=7.99)" },
+  ],
+  ghidra:
+    "Ghidra proper cannot run in this lab: no JVM on disk, apt mirrors " +
+    "unreachable, and github release objects blocked — so analyzeHeadless is " +
+    "specified, not executed (project HUUNLOOP, language x86:LE:32:default " +
+    "for the WinExplorer pair; avr8:LE:2:default the hour an Atmel .hex " +
+    "surfaces). Standing in: a capstone+pefile static pass (tools/" +
+    "hu_unlooper_static.py) that mapped both packed Delphi builds — 6008 " +
+    "exports on 5.0, DCPcrypt sha1/twofish units, the IMethods / " +
+    "IMyFileSystem / IParams COM script API — plus entry-point disassembly " +
+    "proving the packer stubs. The AVR side waits on bytes, not tooling: " +
+    "no .hex/.eep with a verifiable hash has surfaced in any archive.",
+  dive:
+    "Trojan's Lair, deeper: tlsecurity.net is a trojan/exploit depot, not a " +
+    "DSS shelf — a (huff|ul4s|hackhu|loader|atmel|2313|8515) sweep of its " +
+    "captures returns only 2007 parking (Downloader-Removal ad feed), one " +
+    "2001 moduloader.c and the 2003 SinisterUploader page. The DSS hunt " +
+    "moved to dr7's full dssfiles depot (su2code/Suv2/HU spoofer below), " +
+    "hackhu (all /files/*.zip captures 404 — binaries never archived), " +
+    "dssmagic (page kept, zips never archived), angelfire (HUFF prose only) " +
+    "and phathacks (hardware photos + HU-loader schematic). MAKInterface " +
+    "(makinterface.net, DE universal-programmer vendor: Phoenix/SmartMouse " +
+    "smartcard tools, AT90S2313/8515 PIC/EEPROM programming, MAKStripe USB " +
+    "magstripe + MAKStripeExplorer for Win/Linux/WinMobile) contributes " +
+    "five December-2005 software drops, pinned below for disassembly. " +
+    "digital-laboratory resolves to the GitHub user Digital-Laboratory — " +
+    "an empty December-2021 placeholder, zero repos — so the name means " +
+    "this lab: the static-analysis bench the verdict above was reached on.",
+  files: [
+    {
+      name: "dssfiles/su2code.zip", ts: "20001018072714", warc: 3491, digest: "GEHCOEHW4ZAWR2NWFKUZFHM4XCIW4FMA",
+      url: "http://www.dr7.com/dssfiles/su2code.zip",
+      desc: "SuperUnlooper II code — the .hex-sized unlooper drop (3.4 KB)",
+    },
+    {
+      name: "dssfiles/Suv2.zip", ts: "20001017125031", warc: 27596, digest: "GBRWYSYMSBKEZDY5FE6QPCTJAF7FNT7Z",
+      url: "http://www.dr7.com/dssfiles/Suv2.zip",
+      desc: "SuperUnlooper II software v2 — loader + docs (27 KB)",
+    },
+    {
+      name: "dssfiles/spoofer(hu).zip", ts: "20001019002429", warc: 11473, digest: "67NRKLJNY5ULA7H5LUMH2JHBV32OSZR6",
+      url: "http://www.dr7.com/dssfiles/spoofer(hu).zip",
+      desc: "HU spoofer script (11 KB)",
+    },
+    {
+      name: "dssfiles/hu_test5.zip", ts: "20000229105144", warc: 4671, digest: "74HUTWP4I6JGYD5CCWIPJ4OJOI5ETZKK",
+      url: "http://www.dr7.com/dssfiles/hu_test5.zip",
+      desc: "HU test utility (4.6 KB)",
+    },
+    {
+      name: "dssfiles/humenu.zip", ts: "20000229130528", warc: 4876, digest: "3L7QZ3E5YRCZBTMVVZOTV3WQ2GT27RU7",
+      url: "http://www.dr7.com/dssfiles/humenu.zip",
+      desc: "HU menu tool (4.8 KB)",
+    },
+    {
+      name: "dssfiles/HCDT-Disassembly.txt", ts: "20001208233500", warc: 101661, digest: "Y65UD364LEGLHPQ4EWWQHCZY4V6UZAKW",
+      url: "http://dr7.com/dssfiles/HCDT-Disassembly.txt",
+      desc: "period H-card disassembly text (101 KB)",
+    },
+    {
+      name: "reviews/whiteviper/WhiteViperXunlooper_review.htm", ts: "20010418024124", warc: 2037, digest: "HC2M6XHQMJMVPGMYM5PRZL4QIKFTUITZ",
+      url: "http://dr7.com/reviews/whiteviper/WhiteViperXunlooper_review.htm",
+      desc: "WhiteViperX unlooper review — the hardware paper trail",
+    },
+    {
+      name: "reviews/whiteviper/WhiteViperXunlooper.jpg", ts: "20010612201058", warc: 7784, digest: "IGP6BPXX6S3XXSQWAN5LNAKSB2F3IT5D",
+      url: "http://dr7.com/reviews/whiteviper/WhiteViperXunlooper.jpg",
+      desc: "WhiteViperX unlooper photo",
+    },
+    {
+      name: "descriptions/huhack.txt", ts: "20010411090541", warc: 523, digest: "KV3NSDFPRL4JM5VM563OJ7T27ZTSGYXR",
+      url: "http://www.hackhu.com/descriptions/huhack.txt",
+      desc: "HUHack doctrine: Atmel.exe + HU Unlooper code + HUPro + input.hex",
+    },
+    {
+      name: "descriptions/huhackhex.txt", ts: "20010411085849", warc: 416, digest: "A466E77G5MVYVQX5LRCIK27EFTCF7KXM",
+      url: "http://www.hackhu.com/descriptions/huhackhex.txt",
+      desc: "HUHack .hex note: Atmel AT90S2313 via FBPRG16",
+    },
+    {
+      name: "descriptions/turbounloop1.txt", ts: "20010411131651", warc: 4081, digest: "XWQOAFYARPO26VX5AA3WK2VQX5ALMB5I",
+      url: "http://www.hackhu.com/descriptions/turbounloop1.txt",
+      desc: "TurboUnloop v1.0 doctrine",
+    },
+    {
+      name: "descriptions/turbounloop11.txt", ts: "20011205093613", warc: 4335, digest: "M4HJFDDBPDENVBOUJLETXEC3JHIECZ4Y",
+      url: "http://hackhu.com/descriptions/turbounloop11.txt",
+      desc: "TurboUnloop v1.1 doctrine (aol6945)",
+    },
+    {
+      name: "dms.zip", ts: "20051211085316", warc: 1457565, digest: "MKU573ISDNMH7NJFCCWI64NFXQ7GVPRK",
+      url: "http://www.makinterface.net/dms.zip",
+      desc: "MAKInterface software drop, Dec 2005 (1.4 MB)",
+    },
+    {
+      name: "MaksAct.zip", ts: "20051211101932", warc: 1691962, digest: "ALM5LHEYGZFES7XMAKRWRHZ3LKHFM47K",
+      url: "http://www.makinterface.net/MaksAct.zip",
+      desc: "MAKInterface software drop, Dec 2005 (1.6 MB)",
+    },
+    {
+      name: "makstripe.zip", ts: "20051211094137", warc: 2341373, digest: "K65J3QAURDS37Z4KLYCDEUBMHVKSK3YK",
+      url: "http://www.makinterface.net/makstripe.zip",
+      desc: "MAKStripe software — the PyMAKInt RE target's vendor side (2.3 MB)",
+    },
+    {
+      name: "makstripee.zip", ts: "20051211083217", warc: 2273175, digest: "SPLNPY3WHCD4ILZ3P4OREVITSVHOSQ3R",
+      url: "http://www.makinterface.net/makstripee.zip",
+      desc: "MAKStripeE software, Dec 2005 (2.2 MB)",
+    },
+    {
+      name: "Pinout.zip", ts: "20051220011357", warc: 7212, digest: "GOBEFEPET63CQHNJNPO6LCEX2JC5L646",
+      url: "http://www.makinterface.net/Pinout.zip",
+      desc: "MAKInterface pinout docs (7 KB)",
+    },
+  ],
+};
+
 /* ---------------------------------------------------------------- research */
 
 export const METHOD = [

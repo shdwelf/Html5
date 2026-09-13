@@ -25,7 +25,7 @@ import { GhidraWasm } from "../js/ghidra-wasm.js";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
   RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK, SHADOWELF,
-  VXHEAVENS, TROJANLAIR, TROJANSLAIR,
+  VXHEAVENS, TROJANLAIR, TROJANSLAIR, HUUNLOOPER,
   waybackUrl, waybackView, cdxUrl,
 } from "../js/krome-catalog.js";
 
@@ -196,6 +196,79 @@ console.log("── trojan's lair");
     cf6.includes("btnTrojanSweep") && cf6.includes("trojanGhidraReport") && cf6.includes("trojanRecovered") &&
     cf6.includes("trojanslair: {") && cf6.includes('if (id === "trojanslair")'),
     "casefiles wiring: trojan case entry + panel + dossier + sweep ids",
+  );
+}
+
+/* ----------------------------------------------- HU unlooper shelf (wave 7) ----- */
+
+console.log("── hu unlooper");
+{
+  const s = HUUNLOOPER.scripts;
+  const hex = (n) => new RegExp(`^[0-9a-f]{${n}}$`);
+  check(
+    s.length === 9 &&
+    s.every((x) => hex(40).test(x.sha1) && hex(32).test(x.md5) && hex(8).test(x.crc32) && x.bytes > 0 && x.note.length > 10),
+    `huunloop scripts: ${s.length} rows, full md5/sha1/crc32 each`,
+  );
+  const ul4 = s.find((x) => x.name === "UL4S_10.xvb");
+  const turbo = s.find((x) => x.name === "TurboUnloop_1.1.xvb");
+  check(
+    ul4.bytes === 13240 && ul4.sha1 === "d90d12bfb6f3e4b2e8d30a8606e0af71ca5abd07" && ul4.note.includes("Gibling") &&
+    turbo.bytes === 76247 && turbo.sha1 === "9a6d11311c60c2481f6f0724efbeb4a7518a1e34",
+    "UL4S_10 + TurboUnloop 1.1 pins hold",
+  );
+  const p = HUUNLOOPER.pe;
+  check(
+    p.length === 2 && p[1].bytes === 1249280 && p[1].sha1 === "9a263bbec3b8b1149080dae7bd39391f48f47ab4" &&
+    p[0].note.includes("PACKED") && p[1].note.includes(".pdata"),
+    "WinExplorer 4.6/5.0 pins hold (packed verdicts attached)",
+  );
+  const f = HUUNLOOPER.files;
+  const b32 = /^[A-Z2-7]{32}$/;
+  const uniq = new Set(f.map((x) => x.name));
+  check(
+    f.length === 17 && uniq.size === f.length &&
+    f.every((x) => /^\d{14}$/.test(x.ts) && b32.test(x.digest) && x.warc > 0 && x.url.startsWith("http://")) &&
+    f.filter((x) => x.name.endsWith(".zip")).length === 10,
+    `huunloop captures: ${f.length} pinned rows, 10 zips for the sweep`,
+  );
+  const su2 = f.find((x) => x.name === "dssfiles/su2code.zip");
+  check(
+    su2.ts === "20001018072714" && su2.digest === "GEHCOEHW4ZAWR2NWFKUZFHM4XCIW4FMA" && su2.warc === 3491,
+    "su2code.zip pinned: 2000 capture + CDX sha1",
+  );
+  const wv = f.find((x) => x.name === "reviews/whiteviper/WhiteViperXunlooper_review.htm");
+  const hh = f.find((x) => x.name === "descriptions/huhack.txt");
+  check(
+    wv.digest === "HC2M6XHQMJMVPGMYM5PRZL4QIKFTUITZ" && hh.digest === "KV3NSDFPRL4JM5VM563OJ7T27ZTSGYXR",
+    "WhiteViperX review + HUHack doctrine pinned",
+  );
+  const ms = f.find((x) => x.name === "makstripe.zip");
+  check(
+    ms.digest === "K65J3QAURDS37Z4KLYCDEUBMHVKSK3YK" && ms.warc === 2341373 && ms.url.includes("makinterface.net"),
+    "MAKStripe software drop pinned (Dec 2005)",
+  );
+  check(
+    HUUNLOOPER.blurb.includes("AT90S2313") && HUUNLOOPER.blurb.includes("UL4S") &&
+    HUUNLOOPER.ghidra.includes("analyzeHeadless") && HUUNLOOPER.ghidra.includes("capstone") &&
+    HUUNLOOPER.dive.includes("Digital-Laboratory") && HUUNLOOPER.dive.includes("MAKInterface"),
+    "ghidra verdict + deep-dive + digital-laboratory resolution in text",
+  );
+  const cf7 = readFileSync(join(ROOT, "js", "casefiles.js"), "utf8");
+  check(
+    cf7.includes("renderHuunloopPanel") && cf7.includes("renderHuunloopDossier") &&
+    cf7.includes("btnHuSweep") && cf7.includes("huGhidraReport") && cf7.includes("huRecovered") &&
+    cf7.includes("huunloop: {") && cf7.includes('if (id === "huunloop")'),
+    "casefiles wiring: huunloop case entry + panel + dossier + sweep ids",
+  );
+  const { createHash } = require("node:crypto");
+  const rehash = [...HUUNLOOPER.scripts, ...HUUNLOOPER.pe].map((a) => {
+    const bytes = readFileSync(join(ROOT, "samples", "hu-unlooper", a.name));
+    return bytes.length === a.bytes && createHash("sha1").update(bytes).digest("hex") === a.sha1;
+  });
+  check(
+    rehash.length === 11 && rehash.every(Boolean),
+    `in-repo bytes re-hashed live: ${rehash.filter(Boolean).length}/11 match the catalog`,
   );
 }
 

@@ -20,7 +20,7 @@ import { dissect } from "./artifacts.js";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
   RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK, SHADOWELF,
-  VXHEAVENS, TROJANLAIR, TROJANSLAIR,
+  VXHEAVENS, TROJANLAIR, TROJANSLAIR, HUUNLOOPER,
   waybackUrl, waybackView, cdxUrl,
 } from "./krome-catalog.js";
 const $ = (id) => document.getElementById(id);
@@ -480,6 +480,10 @@ const CASES = {
     title: "TROJAN'S LAIR", sub: "tlsecurity.net · SubSeven-era depot · 2000–2003",
     chip: `wayback · ${TROJANSLAIR.files.length} pinned captures`,
   },
+  huunloop: {
+    title: "HU UNLOOPER", sub: "P3/HU card glitch shelf · UL4S/HUFF · 1999–2006",
+    chip: `lab · ${HUUNLOOPER.scripts.length} scripts + ${HUUNLOOPER.files.length} captures`,
+  },
   demo: {
     title: "DEMO.EXE", sub: "63-byte MZ in this repo",
     chip: "local · offline",
@@ -497,6 +501,7 @@ function selectCase(id) {
   if (id === "shadowelf") renderShadowelfPanel(host);
   if (id === "vcl") renderVclPanel(host);
   if (id === "trojanslair") renderTrojanPanel(host);
+  if (id === "huunloop") renderHuunloopPanel(host);
   if (id === "demo") loadArtifact("demo.exe", DEMO_BYTES, "repository demo.exe");
   renderDossier();
   showTab(id === "demo" ? "listing" : "dossier");
@@ -965,6 +970,95 @@ function renderTrojanPanel(host) {
   ));
 }
 
+function renderHuunloopPanel(host) {
+  const H = HUUNLOOPER;
+  const panel = el("section", { class: "panel" });
+  panel.append(el("div", { class: "panel-head" }, el("h2", { text: "HU UNLOOPER" }), el("span", { class: "panel-tag", text: `${H.scripts.length} scripts in-repo · ${H.files.length} captures` })));
+  panel.append(el("p", { class: "panel-note", html:
+    `The HU (P3) card died by looping and lived again by glitching. ` +
+    `Nine unlooper scripts and both WinExplorer builds below live <em>in this repository</em> ` +
+    `(<code>samples/hu-unlooper/</code>, SHA-1-gated at fetch and re-hashed by the verifier); ` +
+    `the ${H.files.length} rows beneath them are Wayback captures — dr7 depot zips, hackhu doctrine, ` +
+    `the five MAKInterface drops — each carrying its CDX SHA-1. The Atmel <code>.hex</code> firmware ` +
+    `itself survives nowhere pinnable; the dossier says where the hunt went.` }));
+  const zips = H.files.filter((f) => f.name.endsWith(".zip"));
+  panel.append(el("div", { class: "field-row" },
+    el("button", {
+      type: "button", class: "mini on", id: "btnHuSweep",
+      onclick: () => ghidraSweep({
+        files: zips,
+        nameOf: (f) => f.url.replace(/^http:\/\/(www\.)?/, ""),
+        caseLabel: "HU unlooper + MAKInterface archives",
+        statusId: "huSweepStatus", btnId: "btnHuSweep", cardHostId: "huRecovered", reportId: "huGhidraReport",
+      }),
+      text: `GHIDRA SWEEP — ${zips.length} HU/MAK ARCHIVES`,
+    }),
+    el("span", { class: "mini-note dim", id: "huSweepStatus", text: "zips ride the pipeline — scripts and PEs are already home, hashed below" }),
+  ));
+  panel.append(el("div", { id: "huGhidraReport" }));
+  const list = el("div", { class: "catalog" });
+  for (const f of H.files) {
+    list.append(el("button", {
+      type: "button", class: "cat-item",
+      onclick: () => recoverCapture({ name: f.name, url: f.url, ts: f.ts, digest: f.digest, hostId: "huRecovered" }),
+    },
+      el("span", { class: "cat-name", text: f.name }),
+      el("span", { class: "cat-kind", text: `${shortDate(f.ts)} · ${f.digest.slice(0, 8)}` }),
+      f.desc ? el("span", { class: "cat-note", text: f.desc }) : null,
+    ));
+  }
+  panel.append(list);
+  host.append(panel);
+  const gh = (n) => `https://github.com/travisgoodspeed/winexplorer/blob/HEAD/scripts/${n === "TurboUnloop_1.1.xvb" ? "TurboUnloop 1.1.xvb" : n}`;
+  host.append(renderHashTable("In-repo scripts — samples/hu-unlooper (upstream: travisgoodspeed/winexplorer)",
+    H.scripts.map((s) => [`samples/hu-unlooper/${s.name}`, s, gh(s.name)])));
+  host.append(renderHashTable("In-repo WinExplorer builds (same upstream, winexplorer/)",
+    H.pe.map((p, i) => [`samples/hu-unlooper/${p.name}`, p, `https://github.com/travisgoodspeed/winexplorer/blob/HEAD/winexplorer/winexp${i === 0 ? "46" : "50"}.zip`])));
+  host.append(el("section", { class: "panel" },
+    el("div", { class: "panel-head" }, el("h2", { text: "Recovery log" })),
+    el("div", { id: "huRecovered", class: "members" }),
+  ));
+}
+
+function renderHuunloopDossier(host) {
+  const H = HUUNLOOPER;
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, `${H.name} `, el("small", { text: `· ${H.years}` })),
+    el("p", { class: "prose", text: H.blurb }),
+    el("p", { class: "panel-note", html:
+      `Upstream mirror: <a target="_blank" rel="noreferrer" href="https://github.com/travisgoodspeed/winexplorer">travisgoodspeed/winexplorer</a> · ` +
+      `HUFF doctrine: <a target="_blank" rel="noreferrer" href="https://web.archive.org/web/20190805203901id_/http://www.angelfire.com/nc2/hmncnguyen/Winexplorer46/HUFF/HUFF-Unlooper/huff.htm">huff.htm, 2019 capture</a> · ` +
+      `History: <a target="_blank" rel="noreferrer" href="https://threadreaderapp.com/thread/1054964796506939392.html">akacastor's HU-card thread</a> · ` +
+      `MAK RE: <a target="_blank" rel="noreferrer" href="https://github.com/s3c/PyMAKInt">s3c/PyMAKInt</a>` }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "The scripts — readable source beats a disassembly" }),
+    el("p", { class: "prose", text:
+      "UL4S_10 and HUFF_DTV_P4 are Lee Gibling's glitch-interval research " +
+      "(ATR_DM watershed hunted around 0x038F cycles after reset); " +
+      "TurboUnloop 1.1 is aol6945's twelve-procedure glitch framework in " +
+      "2288 lines; UL4SComboV2 is the full HU unlooper plus INS5C/7F glitch " +
+      "loader, and its ChipVer() reads four bytes off the loader's Atmel " +
+      "expecting 55 4C 34 53 — the UL4S firmware's version magic. The " +
+      "Nagra flash generator emits Intel HEX for EMU/AVR3 boards, and " +
+      "Eclipse 1.7, WildWinExtremeHU 3.0 (6000+ glitch file), Crusaider " +
+      "4.1 and HtoHu round out the shelf. No embedded firmware blobs: a " +
+      "grep for Intel-HEX records across all nine comes back empty." }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "WinExplorer under the lens — and the Ghidra verdict" }),
+    el("p", { class: "prose", text: H.ghidra }),
+    el("p", { class: "prose dim", text:
+      "Reproduce it: pip install pefile capstone && " +
+      "python3 tools/hu_unlooper_static.py — the report lands in " +
+      "samples/hu-unlooper/analysis.json. Static only, here as everywhere." }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "The deep dive — Lair, MAKInterface, digital-laboratory" }),
+    el("p", { class: "prose", text: H.dive }),
+  ));
+}
+
 /* ---- ghidra sweep ---- */
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -1133,6 +1227,7 @@ function renderDossier() {
   if (state.caseId === "shadowelf") renderShadowelfDossier(host);
   if (state.caseId === "vcl") renderVclDossier(host);
   if (state.caseId === "trojanslair") renderTrojanDossier(host);
+  if (state.caseId === "huunloop") renderHuunloopDossier(host);
   if (state.caseId === "demo") host.append(el("section", { class: "case-block" },
     el("h3", { text: "demo.exe — the engine's sanity check" }),
     el("p", { class: "prose", text: "A 63-byte MZ binary that lives in the repository. It exists so you can prove the whole pipeline (sniff → disassemble → decompile) works before asking the Wayback Machine for anything." }),

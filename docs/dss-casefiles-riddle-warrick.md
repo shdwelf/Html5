@@ -353,3 +353,79 @@ checks** (adds: 20 trojan rows, SubSeven + unpacked-BioNet + doorway pins,
 shelf map, trojan wiring with case-entry/branch coverage); VCL wiring check
 strengthened the same way; `smoke_pipeline.mjs` clean;
 `check-dom-ids.mjs` pass; `sw.js` precache v22.
+
+## §12 — Wave 7: the HU unlooper firmware hunt (Trojan's Lair deep dive, Ghidra verdict, MAKInterface)
+
+The order was threefold — dive deeper on trojanslair.org, run Ghidra on the
+HU unlooper firmware, keep researching digital-laboratory / the software /
+MAKInterface disassembly — and the wave answers all three, including the
+parts whose honest answer is "not found" or "cannot run here".
+
+**The Lair, deeper.** A `(huff|ul4s|ul4|hackhu|loader|atmel|2313|8515)`
+sweep of tlsecurity.net's captures returns nothing DSS at all: only 2007
+parking (the Downloader-Removal ad feed), one 2001 `moduloader.c`, and the
+2003 SinisterUploader page. Trojan's Lair is a trojan/exploit depot, not a
+satellite shelf — the firmware hunt moved on to dr7's full `dssfiles`
+depot (enumerated end to end: `su2code.zip`, `Suv2.zip`,
+`spoofer(hu).zip`, `hu_test5.zip`, `humenu.zip`, the 101 KB
+`HCDT-Disassembly.txt`, the WhiteViperX review), hackhu (whose
+`/files/*.zip` captures are *all* 404 — the HUHack binaries were never
+archived — though the `huhack.txt` doctrine page survives: Atmel.exe to
+flash any in-circuit unlooper with the ex-commercial HU Atmel code, HUPro
+to apply `input.hex`), dssmagic (catalog page kept, zips never archived),
+angelfire (the full HUFF prose, signed -unatester-, but no .hex/.eep
+siblings) and phathacks (hardware photos plus the HU-loader schematic).
+The Atmel firmware blobs — HUFF/UL4S .hex, HACKHU 2, input.hex — survive
+in no pinnable archive found. The Akacastor #tvpiratehistory thread dates
+the free HU unloopers (HUFF + ul4s, March 2002) and the HackHU Atmel-code
+post that let anyone program pirate HU cards.
+
+**What the lab holds instead.** GitHub's API (the one egress that works
+here) gave up `travisgoodspeed/winexplorer` — 197 files of period
+glitching scripts — and thirteen blobs came down through it, every one
+SHA-1-gated at fetch time and again against `samples/hu-unlooper/
+MANIFEST.sha1`: UL4S_10 and HUFF_DTV_P4 (Lee Gibling's glitch-interval
+research), TurboUnloop 1.1 (aol6945, 2288 lines), UL4SComboV2 (whose
+`ChipVer()` demands the `55 4C 34 53` magic from a UL4S-flashed Atmel),
+the Nagra Atmel flash generator, HU Eclipse 1.7, WildWinExtremeHUV3.0,
+Crusaider 4.1, HtoHu — plus WinExplorer 4.6 and 5.0 themselves. Both PEs
+went through the capstone+pefile static pass
+(`tools/hu_unlooper_static.py`, report in `analysis.json`): packed Delphi
+with DCPcrypt (sha1, twofish) and 6008 exports on 5.0, the
+IMethods/IMyFileSystem/IParams COM objects that are the `Sc`/`Wx`/`Fs`
+script API, vendor trail Dream Company → Altium (Dream VCL), and
+entry-point disassembly proving the packer stubs (5.0 keeps its real
+image crypted in a 729 KB `.pdata` at entropy 7.99).
+
+**The Ghidra verdict, honestly told.** Real headless Ghidra cannot run in
+this sandbox — no JVM anywhere on disk, apt mirrors unreachable, GitHub
+release objects blocked — so `analyzeHeadless` is *specified* (project
+HUUNLOOP, `x86:LE:32:default` for the WinExplorer pair,
+`avr8:LE:2:default` the hour an Atmel .hex surfaces) rather than
+executed, and capstone did the decode work instead. Even with Ghidra,
+both PEs would need unpacking first (dynamic — outside the lab's
+static-only rule), and the AVR side waits on bytes, not tooling: no
+.hex/.eep with a verifiable hash has surfaced anywhere.
+
+**MAKInterface, resolved.** The `makinterface` lead is makinterface.net,
+a German universal-programmer vendor: smartcard reader/writer
+(DSS/Dishnetwork/GSM/phonecards, Phoenix/SmartMouse-compatible), Atmel
+AT90S2313/8515 + PIC + EEPROM programming — the exact hardware class
+that flashed HU unlooper code — and the MAKStripe USB magstripe
+reader/writer (the `s3c/PyMAKInt` reverse-engineering target) with
+MAKStripeExplorer for Windows, Linux and Windows Mobile. Five
+December-2005 software drops are pinned for disassembly; the fifteen
+megabytes of vendor software ride the case sweep with everything else.
+
+**digital-laboratory, resolved.** The GitHub user `Digital-Laboratory`
+is an empty December-2021 placeholder (zero repos, no bio) — not a lead.
+The name means this lab: the static-analysis bench the verdicts above
+were reached on.
+
+Verification: `tools/verify_casefiles.mjs` — **ALL CHECKS PASSED, 66
+checks** (adds: 9 scripts + 2 PEs with full md5/sha1/crc32, UL4S +
+TurboUnloop + WinExplorer pins, 17 wayback rows, SU2 + WhiteViperX +
+HUHack + MAKStripe pins, AT90S2313/UL4S text markers, Digital-Laboratory
+resolution, huunloop wiring, and a live re-hash of all 13 in-repo files
+against the catalog); `smoke_pipeline.mjs` clean; `check-dom-ids.mjs`
+pass; `sw.js` precache v23.
