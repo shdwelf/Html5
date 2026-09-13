@@ -1,0 +1,794 @@
+{
+  "manifest": {
+    "checked": 13,
+    "ok": 13,
+    "mismatches": [],
+    "rows": [
+      {
+        "file": "UL4S_10.xvb",
+        "expected": "d90d12bfb6f3e4b2e8d30a8606e0af71ca5abd07",
+        "got": "d90d12bfb6f3e4b2e8d30a8606e0af71ca5abd07",
+        "match": true
+      },
+      {
+        "file": "HUFF_DTV_P4_dbl_Vcc.xvb",
+        "expected": "1a1df47db34e7ae87599e878002226c56796fffc",
+        "got": "1a1df47db34e7ae87599e878002226c56796fffc",
+        "match": true
+      },
+      {
+        "file": "TurboUnloop_1.1.xvb",
+        "expected": "9a6d11311c60c2481f6f0724efbeb4a7518a1e34",
+        "got": "9a6d11311c60c2481f6f0724efbeb4a7518a1e34",
+        "match": true
+      },
+      {
+        "file": "Nagra_Atmel_Flash_Generator-v12.xvb",
+        "expected": "5436c8127e86130ea192ba74160cb6f97612c6ed",
+        "got": "5436c8127e86130ea192ba74160cb6f97612c6ed",
+        "match": true
+      },
+      {
+        "file": "UL4SComboV2.xvb",
+        "expected": "a0ea2a324f8deeb3d517abac36657b02133f88d4",
+        "got": "a0ea2a324f8deeb3d517abac36657b02133f88d4",
+        "match": true
+      },
+      {
+        "file": "HU_Eclipse1.7.xvb",
+        "expected": "0ed52a818aba920949c852d8e39724fe3ea26d5d",
+        "got": "0ed52a818aba920949c852d8e39724fe3ea26d5d",
+        "match": true
+      },
+      {
+        "file": "WildWinExtremeHUV3.0.xvb",
+        "expected": "5df9233bf04dcac305524f635b80c99529824cab",
+        "got": "5df9233bf04dcac305524f635b80c99529824cab",
+        "match": true
+      },
+      {
+        "file": "Crusaider-v4.1.xvb",
+        "expected": "1fbfaae651eeb8c2a10f2f1c2b4be2377a4352d9",
+        "got": "1fbfaae651eeb8c2a10f2f1c2b4be2377a4352d9",
+        "match": true
+      },
+      {
+        "file": "HtoHu.xvb",
+        "expected": "d3d14ce76818b8cbfc69c9645d9fe87a25f69101",
+        "got": "d3d14ce76818b8cbfc69c9645d9fe87a25f69101",
+        "match": true
+      },
+      {
+        "file": "winexp46.zip",
+        "expected": "0bdcbf83edb4c1fce9d6aecfbe2a41a271f8ba3d",
+        "got": "0bdcbf83edb4c1fce9d6aecfbe2a41a271f8ba3d",
+        "match": true
+      },
+      {
+        "file": "winexp50.zip",
+        "expected": "c518dc528f5c4e543689359b52c52430da4f2c74",
+        "got": "c518dc528f5c4e543689359b52c52430da4f2c74",
+        "match": true
+      },
+      {
+        "file": "README_root.md",
+        "expected": "a88c747561cede2df8beb6ac531b5325b86038c5",
+        "got": "a88c747561cede2df8beb6ac531b5325b86038c5",
+        "match": true
+      },
+      {
+        "file": "README_winexplorer.md",
+        "expected": "f21786435cfecb79e48c3563ca14d07612c613cf",
+        "got": "f21786435cfecb79e48c3563ca14d07612c613cf",
+        "match": true
+      }
+    ]
+  },
+  "pe": [
+    {
+      "file": "samples/hu-unlooper/winexp46/WinExplorer.exe",
+      "bytes": 1029120,
+      "sha1": "259f2a315fd8dcac6beafe9fc210cf6d83f0b067",
+      "machine": "0x14c",
+      "timestamp": 991695602,
+      "entry": "0x26f001",
+      "imagebase": "0x400000",
+      "sections": [
+        {
+          "name": ".text",
+          "vsize": 1581056,
+          "raw": 564224,
+          "entropy": 8.0
+        },
+        {
+          "name": ".data",
+          "vsize": 184320,
+          "raw": 35328,
+          "entropy": 7.991
+        },
+        {
+          "name": ".tls",
+          "vsize": 4096,
+          "raw": 512,
+          "entropy": -0.0
+        },
+        {
+          "name": ".rdata",
+          "vsize": 4096,
+          "raw": 512,
+          "entropy": 0.166
+        },
+        {
+          "name": ".idata",
+          "vsize": 16384,
+          "raw": 4608,
+          "entropy": 7.928
+        },
+        {
+          "name": ".edata",
+          "vsize": 307200,
+          "raw": 303616,
+          "entropy": 5.853
+        },
+        {
+          "name": ".rsrc",
+          "vsize": 335872,
+          "raw": 111616,
+          "entropy": 7.706
+        },
+        {
+          "name": ".reloc",
+          "vsize": 114688,
+          "raw": 0,
+          "entropy": 0.0
+        },
+        {
+          "name": ".smash",
+          "vsize": 8192,
+          "raw": 7168,
+          "entropy": 6.224
+        },
+        {
+          "name": ".data",
+          "vsize": 4096,
+          "raw": 0,
+          "entropy": 0.0
+        }
+      ],
+      "imports": {
+        "kernel32.dll": [
+          "GetProcAddress",
+          "GetModuleHandleA",
+          "LoadLibraryA"
+        ],
+        "advapi32.dll": [
+          "RegCloseKey"
+        ],
+        "version.dll": [
+          "GetFileVersionInfoA"
+        ],
+        "winspool.drv": [
+          "ClosePrinter"
+        ],
+        "comctl32.dll": [
+          "ImageList_Add"
+        ],
+        "comdlg32.dll": [
+          "ChooseColorA"
+        ],
+        "gdi32.dll": [
+          "BitBlt"
+        ],
+        "shell32.dll": [
+          "DragAcceptFiles"
+        ],
+        "user32.dll": [
+          "ActivateKeyboardLayout"
+        ],
+        "winmm.dll": [
+          "auxGetDevCapsA"
+        ],
+        "ole32.dll": [
+          "CLSIDFromProgID"
+        ],
+        "oleaut32.dll": [
+          "CreateErrorInfo"
+        ],
+        "olepro32.dll": [
+          "OleCreateFontIndirect"
+        ]
+      },
+      "export_count": 5593,
+      "tlb": [
+        "@@Winexplorer_tlb@Finalize",
+        "@@Winexplorer_tlb@Initialize",
+        "@Winexplorer_tlb@CLSID_Methods",
+        "@Winexplorer_tlb@CLSID_MyFileSystem",
+        "@Winexplorer_tlb@CLSID_Params",
+        "@Winexplorer_tlb@IID_IMethods",
+        "@Winexplorer_tlb@IID_IMyFileSystem",
+        "@Winexplorer_tlb@IID_IParams",
+        "@Winexplorer_tlb@LIBID_WinExplorer"
+      ],
+      "dcp_units": [
+        "TDCP_blockcipher",
+        "TDCP_hash",
+        "TDCP_sha1",
+        "TDCP_twofish"
+      ],
+      "entry_disasm": [
+        {
+          "addr": "0x66f001",
+          "text": "pushal"
+        },
+        {
+          "addr": "0x66f002",
+          "text": "call 0x66f009"
+        },
+        {
+          "addr": "0x66f007",
+          "text": "jmp 0x66f012"
+        },
+        {
+          "addr": "0x66f009",
+          "text": "pop ebp"
+        },
+        {
+          "addr": "0x66f00a",
+          "text": "push ebp"
+        },
+        {
+          "addr": "0x66f00b",
+          "text": "sub ebp, 0x443939"
+        },
+        {
+          "addr": "0x66f011",
+          "text": "ret"
+        },
+        {
+          "addr": "0x66f012",
+          "text": "jmp 0x66f470"
+        },
+        {
+          "addr": "0x66f017",
+          "text": "mov dword ptr [esi + 0x65], edi"
+        },
+        {
+          "addr": "0x66f01a",
+          "text": "popal"
+        },
+        {
+          "addr": "0x66f01b",
+          "text": "popal"
+        },
+        {
+          "addr": "0x66f01c",
+          "text": "mov ah, byte ptr [ecx - 0x26]"
+        },
+        {
+          "addr": "0x66f01f",
+          "text": "push ecx"
+        },
+        {
+          "addr": "0x66f020",
+          "text": "pop eax"
+        },
+        {
+          "addr": "0x66f021",
+          "text": "and eax, 0x4abc6261"
+        },
+        {
+          "addr": "0x66f026",
+          "text": "cld"
+        },
+        {
+          "addr": "0x66f027",
+          "text": "popfd"
+        },
+        {
+          "addr": "0x66f028",
+          "text": "pop esi"
+        },
+        {
+          "addr": "0x66f029",
+          "text": "and eax, 0x49dce261"
+        },
+        {
+          "addr": "0x66f02e",
+          "text": "sub esp, dword ptr [0xfce86161]"
+        }
+      ],
+      "printable_runs": 5843,
+      "markers": {
+        "Delphi": [
+          "@$xp$16Dcapi@TDelphiVer",
+          "@$xp$17Dcapi@TDelphiVers",
+          "@$xp$22Dcparser@TDelphiParser",
+          "@$xp$26Dccdes@TDelphiCodeDesigner"
+        ],
+        "DCP": [
+          "@$xp$14Sha1@TDCP_sha1",
+          "@$xp$18Dcpcrypt@TDCP_hash",
+          "@$xp$19Dcapi@TDCPathDialog",
+          "@$xp$20Dcgenreg@TDCPropName"
+        ],
+        "Winexplorer_tlb": [
+          "@@Winexplorer_tlb@Finalize",
+          "@@Winexplorer_tlb@Initialize",
+          "@Winexplorer_tlb@CLSID_Methods",
+          "@Winexplorer_tlb@CLSID_MyFileSystem"
+        ],
+        "Copyright": []
+      },
+      "delphi_refs": 82
+    },
+    {
+      "file": "samples/hu-unlooper/winexp50/WinExplorer.exe",
+      "bytes": 1249280,
+      "sha1": "9a263bbec3b8b1149080dae7bd39391f48f47ab4",
+      "machine": "0x14c",
+      "timestamp": 1018469112,
+      "entry": "0x2877d8",
+      "imagebase": "0x400000",
+      "sections": [
+        {
+          "name": ".text",
+          "vsize": 1622016,
+          "raw": 0,
+          "entropy": 0.0
+        },
+        {
+          "name": ".data",
+          "vsize": 188416,
+          "raw": 0,
+          "entropy": 0.0
+        },
+        {
+          "name": ".tls",
+          "vsize": 4096,
+          "raw": 0,
+          "entropy": 0.0
+        },
+        {
+          "name": ".rdata",
+          "vsize": 4096,
+          "raw": 0,
+          "entropy": 0.0
+        },
+        {
+          "name": ".idata",
+          "vsize": 16384,
+          "raw": 0,
+          "entropy": 0.0
+        },
+        {
+          "name": ".edata",
+          "vsize": 327680,
+          "raw": 327680,
+          "entropy": 5.857
+        },
+        {
+          "name": ".rsrc",
+          "vsize": 319488,
+          "raw": 94208,
+          "entropy": 7.615
+        },
+        {
+          "name": ".reloc",
+          "vsize": 118784,
+          "raw": 0,
+          "entropy": 0.0
+        },
+        {
+          "name": ".smash",
+          "vsize": 8192,
+          "raw": 8192,
+          "entropy": 4.472
+        },
+        {
+          "name": ".adata",
+          "vsize": 4096,
+          "raw": 0,
+          "entropy": 0.0
+        },
+        {
+          "name": ".text1",
+          "vsize": 50968,
+          "raw": 53248,
+          "entropy": 6.262
+        },
+        {
+          "name": ".rdata1",
+          "vsize": 3936,
+          "raw": 4096,
+          "entropy": 5.481
+        },
+        {
+          "name": ".data1",
+          "vsize": 19452,
+          "raw": 16384,
+          "entropy": 1.538
+        },
+        {
+          "name": ".reloc1",
+          "vsize": 3282,
+          "raw": 4096,
+          "entropy": 5.336
+        },
+        {
+          "name": ".pdata",
+          "vsize": 726795,
+          "raw": 729088,
+          "entropy": 7.989
+        }
+      ],
+      "imports": {
+        "KERNEL32.dll": [
+          "GetStartupInfoA",
+          "SetEnvironmentVariableA",
+          "GetEnvironmentVariableA",
+          "ReleaseMutex",
+          "GetCommandLineA",
+          "Sleep",
+          "WaitForSingleObject",
+          "CreateMutexA",
+          "OpenMutexA",
+          "GetCurrentProcessId",
+          "CreateThread",
+          "CloseHandle",
+          "ReadFile",
+          "GetFileSize",
+          "CreateFileA",
+          "FindClose",
+          "FindFirstFileA",
+          "GetCurrentThreadId",
+          "GetExitCodeProcess",
+          "ContinueDebugEvent",
+          "ReadProcessMemory",
+          "WaitForDebugEvent",
+          "SuspendThread",
+          "DebugActiveProcess",
+          "ResumeThread",
+          "VirtualProtectEx",
+          "WriteProcessMemory",
+          "GetThreadContext",
+          "GetModuleFileNameA",
+          "LCMapStringW",
+          "LCMapStringA",
+          "SetStdHandle",
+          "GetOEMCP",
+          "GetACP",
+          "GetCPInfo",
+          "GetStringTypeW",
+          "GetStringTypeA",
+          "MultiByteToWideChar",
+          "SetFilePointer",
+          "HeapReAlloc",
+          "WriteFile",
+          "VirtualFree",
+          "HeapCreate",
+          "HeapDestroy",
+          "FlushFileBuffers",
+          "GetFileType",
+          "GetStdHandle",
+          "SetHandleCount",
+          "GetEnvironmentStringsW",
+          "GetEnvironmentStrings",
+          "WideCharToMultiByte",
+          "FreeEnvironmentStringsW",
+          "FreeEnvironmentStringsA",
+          "UnhandledExceptionFilter",
+          "GetCurrentProcess",
+          "TerminateProcess",
+          "CreateProcessA",
+          "GetCurrentThread",
+          "SetThreadPriority",
+          "GetVersionExA",
+          "LoadLibraryA",
+          "GetLastError",
+          "GetProcAddress",
+          "VirtualAlloc",
+          "VirtualProtect",
+          "GetModuleHandleA",
+          "RtlUnwind",
+          "GetVersion",
+          "ExitProcess",
+          "HeapFree",
+          "HeapAlloc"
+        ],
+        "USER32.dll": [
+          "WaitForInputIdle",
+          "PostThreadMessageA",
+          "GetMessageA",
+          "IsWindow",
+          "PeekMessageA",
+          "TranslateMessage",
+          "DispatchMessageA",
+          "BeginPaint",
+          "EndPaint",
+          "KillTimer",
+          "LoadCursorA",
+          "RegisterClassA",
+          "GetAsyncKeyState",
+          "GetSystemMetrics",
+          "CreateWindowExA",
+          "SetTimer",
+          "PostMessageA",
+          "MessageBoxA",
+          "SetWindowTextA",
+          "GetDlgItem",
+          "CreateDialogIndirectParamA",
+          "ShowWindow",
+          "UpdateWindow",
+          "FindWindowA",
+          "SendMessageA",
+          "DestroyWindow",
+          "DefWindowProcA"
+        ],
+        "GDI32.dll": [
+          "SelectObject",
+          "BitBlt",
+          "DeleteObject",
+          "CreatePalette",
+          "CreateDCA",
+          "SelectPalette",
+          "RealizePalette",
+          "CreateDIBitmap",
+          "DeleteDC",
+          "CreateCompatibleDC"
+        ]
+      },
+      "export_count": 6008,
+      "tlb": [
+        "@@Winexplorer_tlb@Finalize",
+        "@@Winexplorer_tlb@Initialize",
+        "@Winexplorer_tlb@CLSID_Methods",
+        "@Winexplorer_tlb@CLSID_MyFileSystem",
+        "@Winexplorer_tlb@CLSID_Params",
+        "@Winexplorer_tlb@IID_IMethods",
+        "@Winexplorer_tlb@IID_IMyFileSystem",
+        "@Winexplorer_tlb@IID_IParams",
+        "@Winexplorer_tlb@LIBID_WinExplorer"
+      ],
+      "dcp_units": [
+        "TDCP_blockcipher",
+        "TDCP_hash",
+        "TDCP_sha1",
+        "TDCP_twofish"
+      ],
+      "entry_disasm": [
+        {
+          "addr": "0x6877d8",
+          "text": "push ebp"
+        },
+        {
+          "addr": "0x6877d9",
+          "text": "mov ebp, esp"
+        },
+        {
+          "addr": "0x6877db",
+          "text": "push -1"
+        },
+        {
+          "addr": "0x6877dd",
+          "text": "push 0x68c1e0"
+        },
+        {
+          "addr": "0x6877e2",
+          "text": "push 0x6873d4"
+        },
+        {
+          "addr": "0x6877e7",
+          "text": "mov eax, dword ptr fs:[0]"
+        },
+        {
+          "addr": "0x6877ed",
+          "text": "push eax"
+        },
+        {
+          "addr": "0x6877ee",
+          "text": "mov dword ptr fs:[0], esp"
+        },
+        {
+          "addr": "0x6877f5",
+          "text": "sub esp, 0x58"
+        },
+        {
+          "addr": "0x6877f8",
+          "text": "push ebx"
+        },
+        {
+          "addr": "0x6877f9",
+          "text": "push esi"
+        },
+        {
+          "addr": "0x6877fa",
+          "text": "push edi"
+        },
+        {
+          "addr": "0x6877fb",
+          "text": "mov dword ptr [ebp - 0x18], esp"
+        },
+        {
+          "addr": "0x6877fe",
+          "text": "call dword ptr [0x68c138]"
+        },
+        {
+          "addr": "0x687804",
+          "text": "xor edx, edx"
+        },
+        {
+          "addr": "0x687806",
+          "text": "mov dl, ah"
+        },
+        {
+          "addr": "0x687808",
+          "text": "mov dword ptr [0x6906d8], edx"
+        },
+        {
+          "addr": "0x68780e",
+          "text": "mov ecx, eax"
+        },
+        {
+          "addr": "0x687810",
+          "text": "and ecx, 0xff"
+        },
+        {
+          "addr": "0x687816",
+          "text": "mov dword ptr [0x6906d4], ecx"
+        }
+      ],
+      "printable_runs": 6502,
+      "markers": {
+        "Delphi": [
+          "@$xp$16Dcapi@TDelphiVer",
+          "@$xp$17Dcapi@TDelphiVers",
+          "@$xp$22Dcparser@TDelphiParser",
+          "@$xp$26Dccdes@TDelphiCodeDesigner"
+        ],
+        "DCP": [
+          "@$xp$14Sha1@TDCP_sha1",
+          "@$xp$18Dcpcrypt@TDCP_hash",
+          "@$xp$19Dcapi@TDCPathDialog",
+          "@$xp$20Dcgenreg@TDCPropName"
+        ],
+        "Winexplorer_tlb": [
+          "@@Winexplorer_tlb@Finalize",
+          "@@Winexplorer_tlb@Initialize",
+          "@Winexplorer_tlb@CLSID_Methods",
+          "@Winexplorer_tlb@CLSID_MyFileSystem"
+        ],
+        "Copyright": []
+      },
+      "delphi_refs": 94
+    }
+  ],
+  "scripts": [
+    {
+      "file": "Crusaider-v4.1.xvb",
+      "bytes": 169110,
+      "sha1": "1fbfaae651eeb8c2a10f2f1c2b4be2377a4352d9",
+      "lines": 3920,
+      "head": "'Crusaider Rom Reader/Writer HTR v4.1 - Official Freeware Release Version\n'Released as Freeware and NEVER decrypted on August 15th 2002\n'IF you didnt download this direct from the Nation, your playing Russian Roulette.\n'\n'We have released this version and prior versions to the public as freeware.\n'This version, and its prior versions, will be the only versions we make public.\n'We released these files to the public, because too many script kiddies were\n'releasing various imposters, which would cause you more damage than actual good.\n'\n'We find it humerous that several scumgbags have attempted t",
+      "intel_hex_records": 0,
+      "api": {
+        "Sc.": 534,
+        "Wx.": 38,
+        "Fs.": 86
+      },
+      "mentions_ul4s_magic": true
+    },
+    {
+      "file": "HUFF_DTV_P4_dbl_Vcc.xvb",
+      "bytes": 9538,
+      "sha1": "1a1df47db34e7ae87599e878002226c56796fffc",
+      "lines": 277,
+      "head": "'\n' For Mikubu-III flashed with HUFF\n' Power up the P4 then wait a variable number\n' of cycles (0x038F+...) for ATR_DM\n'\n' Print a statistics about the success rate\n' at the end\n'\n' tested with Winexplorer 5.42 (earlier versions might also do)\n' and unlooper settings\n'\n' Author: Lee Gibling :)",
+      "intel_hex_records": 0,
+      "api": {
+        "Sc.": 32,
+        "Wx.": 21,
+        "Fs.": 0
+      },
+      "mentions_ul4s_magic": false
+    },
+    {
+      "file": "HU_Eclipse1.7.xvb",
+      "bytes": 206549,
+      "sha1": "0ed52a818aba920949c852d8e39724fe3ea26d5d",
+      "lines": 5583,
+      "head": "' **     This version is from DSS_Kit aka Hot_Rod     **\n' **  I have seen the premature \"HashFix\" versions,   **\n' ** and they do not seem to address the real problem **\n''''''''''''''''''''''''''''''''''''''''''''''''''''''''\n' **                 HU_Eclipse1.7                    **\n' **                    6-30-01                       **\n' **    Added Hash Clean Routine for byte @ 24E7      **\n' **   Clean your card first, then use Activation.    **\n' **  #1-10 are NEW offsets, #11-20 still work fine.  **\n' **   It will take several minutes for the card to   **\n' **    get all the lost chann",
+      "intel_hex_records": 0,
+      "api": {
+        "Sc.": 2374,
+        "Wx.": 0,
+        "Fs.": 14
+      },
+      "mentions_ul4s_magic": false
+    },
+    {
+      "file": "HtoHu.xvb",
+      "bytes": 3185,
+      "sha1": "d3d14ce76818b8cbfc69c9645d9fe87a25f69101",
+      "lines": 89,
+      "head": "' H CAM ZKT to HU\n' Anonymous 12/2/2001\n'\n' Set WinExplorer to Unlooper Settings (doesn't use any hardware)\n'----------------------------------------------------------------\nOption Explicit\n\nDim CAMID, ZKT1, ZKT2\n\nConst fsoOpenRead = 0\nConst fsoSEEK_SET = 0\nConst fsoSEEK_END = 2",
+      "intel_hex_records": 0,
+      "api": {
+        "Sc.": 4,
+        "Wx.": 0,
+        "Fs.": 16
+      },
+      "mentions_ul4s_magic": false
+    },
+    {
+      "file": "Nagra_Atmel_Flash_Generator-v12.xvb",
+      "bytes": 72444,
+      "sha1": "5436c8127e86130ea192ba74160cb6f97612c6ed",
+      "lines": 1452,
+      "head": "' Nagra Intel Hex Atmel Flash Generator v12\n' New VB Script File - Created 2/7/2006 by Joe Nobody\n'\nOption Explicit\nDim FlashFields, FlashConds, FlashConfig, FlashRead\n\n' ##############################################\n' #        Start Of Jeepers Definitions        #\n' # Ignore these if you don't use that program #\n' # Otherwise you can customize these settings #\n' # Just edit this script window, then run it  #\n' # Save script to make the changes permanent  #",
+      "intel_hex_records": 0,
+      "api": {
+        "Sc.": 26,
+        "Wx.": 19,
+        "Fs.": 3
+      },
+      "mentions_ul4s_magic": false
+    },
+    {
+      "file": "TurboUnloop_1.1.xvb",
+      "bytes": 76247,
+      "sha1": "9a6d11311c60c2481f6f0724efbeb4a7518a1e34",
+      "lines": 2288,
+      "head": "' ================\n' = Turbo Unloop =\n' ================\n' =    v1.1      =\n' ================\n'\n' by aol6945\n'\n' This script requires WinExplorer 4.6 or higher.\n'\n' Read the Documentation.htm file for more information\n'",
+      "intel_hex_records": 0,
+      "api": {
+        "Sc.": 75,
+        "Wx.": 40,
+        "Fs.": 40
+      },
+      "mentions_ul4s_magic": false
+    },
+    {
+      "file": "UL4SComboV2.xvb",
+      "bytes": 90529,
+      "sha1": "a0ea2a324f8deeb3d517abac36657b02133f88d4",
+      "lines": 2505,
+      "head": "'\n'\nOption Explicit\n    Const dss_DefaultButton1 = 0\n    Const dss_DefaultButton2 = 256\n    Const dss_DefaultButton3 = 512\n    Const fsoError = -1\n    Const fsoOpenRead = 0\n    Const fsoOpenWrite = 1\n    Const fsoOpenReadWrite = 2\n    Const fsoSEEK_SET = 0\n    Const fsoSEEK_CUR = 1",
+      "intel_hex_records": 0,
+      "api": {
+        "Sc.": 348,
+        "Wx.": 0,
+        "Fs.": 19
+      },
+      "mentions_ul4s_magic": true
+    },
+    {
+      "file": "UL4S_10.xvb",
+      "bytes": 13240,
+      "sha1": "d90d12bfb6f3e4b2e8d30a8606e0af71ca5abd07",
+      "lines": 455,
+      "head": "'\n' Tested with\n' P4/2001 + T911/UL4S + Winexplorer 5.42\n' Power up the P4 then wait  of (0x038B+...)  cycles for ATR_DM\n'\n' Print a statistics about the success rate\n' at the end\n'\n' tested with Winexplorer 5.42 (earlier versions might also do)\n' and unlooper settings\n'\n' Author: Lee Gibling",
+      "intel_hex_records": 0,
+      "api": {
+        "Sc.": 39,
+        "Wx.": 22,
+        "Fs.": 0
+      },
+      "mentions_ul4s_magic": false
+    },
+    {
+      "file": "WildWinExtremeHUV3.0.xvb",
+      "bytes": 181493,
+      "sha1": "5df9233bf04dcac305524f635b80c99529824cab",
+      "lines": 4382,
+      "head": "'       WildWinExtremeHUV3.0 by johnnyL\n'\n'  last release most likely on this series\n'       unless I receive more feedback.\n'\n'  fixes in this release:\n'\n'    More bug fixes:\n'\n'1) Removed errors in the included glitch file caused\n'   by the script not saving the D2 and D3 values properly\n'   in some cases. This caused an \"error on line 1540\"",
+      "intel_hex_records": 0,
+      "api": {
+        "Sc.": 456,
+        "Wx.": 7,
+        "Fs.": 51
+      },
+      "mentions_ul4s_magic": true
+    }
+  ]
+}

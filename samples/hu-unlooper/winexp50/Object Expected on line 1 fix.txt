@@ -1,0 +1,13 @@
+A lot of people are having problems after upgrading to Windows ME, Windows 2000, XP, and IE6.
+If  you get "OBJECT Expected on line 1" or "Line too long on line 1" when you start WinExplorer, here is the fix:
+
+Run regedit.exe and delete the following keys:
+"HKEY_CURRENT_USER\Software\Dream Company"
+
+For WinExplorer 4.8 and above:
+"HKEY_CURRENT_USER\Software\Altium (Dream VCL)"
+
+This will fix the problem
+
+You should only have to delete the key one time.
+WinExplorer will rebuild the key the next time you run it.

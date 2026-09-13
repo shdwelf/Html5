@@ -1,0 +1,29 @@
+'
+' Play Sound Demo
+'
+
+'
+' Valid values for sound mode
+'
+Const SND_SYNC   = 0  ' play synchronously (default)
+Const SND_ASYNC  = 1  ' play asynchronously
+Const SND_LOOP   = 8  ' loop the sound until next PlaySound
+Const SND_NOSTOP = 16 ' don't stop any currently playing sound
+
+Sub Main()
+    ' Play a sound and continue immediately (this is the default, you can ommit the mode parameter)
+
+    Sc.Print "Play a sound and continue immediately" & vbcrlf
+    Sc.PlaySound "welcome.wav", SND_ASYNC
+
+    Sc.Delay 1000
+    Sc.Print  vbcrlf & "The sound should still be playing, so lets delay before we execute the next statement" & vbcrlf
+    Sc.Delay 2000
+
+    Sc.Print vbcr & "Lets play the same sound and wait for it to finish."
+    Sc.Print vbcr & "If we start this sound while another sound is playing, this sound will interrupt it."
+
+    ' Play a sound and wait for it to finish
+    Sc.PlaySound "welcome.wav", SND_SYNC
+
+End Sub

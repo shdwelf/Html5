@@ -1,0 +1,15 @@
+'
+' Sc.MousePointer Test
+'
+Sub Main()
+    MouseType = Array("Default", "Arrow", "Cross", "I beam", _
+                      "Not Used", "Not Used", "Size NE SW", "Size N S", _
+                      "Size NW SE", "Size W E", "Up Arrow", "Hourglass", _
+                      "No Drop", "Arrow and hourglass", "Arrow and question mark")
+
+    For CurrStep = 0 to 14
+        Sc.MousePointer = CurrStep
+        Sc.Print("MousePointer = " & CurrStep & " " & MouseType(CurrStep) & vbCr)
+        Call Sc.Delay(2000)
+    Next
+End Sub

@@ -1,0 +1,25 @@
+'
+' Sc.DebugBufferStuff Test
+'
+Sub Main()
+    Sc.Print(vbCrLf & "Stuff some bytes" & vbcr)
+    Sc.Debug = true
+    Sc.DebugBufferStuff("0 1 2 3 4 5")
+    Sc.Print("Bytes in buffer = " & Sc.BytesInBuffer)
+    Sc.Read(Sc.BytesInBuffer)
+
+    Sc.Print(vbCrLf & "Now stuff it quietly :)" & vbcr)
+    Sc.Verbose = false
+    Sc.DebugBufferStuff("dead beef")
+    Sc.Verbose = true
+
+    Sc.Print("Bytes in buffer = " & Sc.BytesInBuffer)
+    Sc.Read(Sc.BytesInBuffer)
+
+    Sc.Print(vbCrLf & "Now ignore stuff command" & vbcr)
+    Sc.Debug = false
+
+    Sc.DebugBufferStuff("aa bb cc dd ee ff 0 1 2 3 4 5")
+    Sc.Print("Bytes in buffer = " & Sc.BytesInBuffer)
+    Sc.Read(Sc.BytesInBuffer)
+End Sub

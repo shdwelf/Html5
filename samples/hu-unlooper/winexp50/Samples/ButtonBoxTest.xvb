@@ -1,0 +1,29 @@
+'
+Option Explicit
+Sub Main()
+    Dim RetVal
+
+    RetVal = Sc.ButtonBox("Prompt String Prompt String Prompt String", , ,  "Button 1")
+
+    Sc.Print RetVal
+
+    RetVal = Sc.ButtonBox("This is the Prompt String" & vbcrlf & vbcrlf & "xxxxx", vbDefaultButton3 + vbCritical, "This is the Caption",  "Button 1", "Button 2",  "Button 3", "Button 4", "Button 5")
+    Sc.Print RetVal
+
+    RetVal = Sc.ButtonBox("This is the Prompt String xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxx",  vbDefaultButton1 + vbInformation, "This is the Caption", "Button 1")
+    Sc.Print RetVal
+
+    RetVal = Sc.ButtonBox("This is the Prompt String",  vbDefaultButton2 + vbQuestion, "This is the Caption", "Button 1", "Button 2")
+    Sc.Print RetVal
+
+    RetVal = Sc.ButtonBox("This is the Prompt String", vbDefaultButton3 + vbExclamation, "This is the Caption",  "Button 1", "Button 2",  "Button 3")
+    Sc.Print RetVal
+
+    RetVal = Sc.ButtonBox("This is the Prompt String", vbDefaultButton4, ,  "Button 1", "Button 2",  "Button 3", "Button 4")
+    Sc.Print RetVal
+
+    RetVal = Sc.ButtonBox("Prompt String", vbExclamation + vbDefaultButton1, ,  "Button 1")
+
+    Sc.Print RetVal
+
+End sub
