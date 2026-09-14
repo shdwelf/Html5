@@ -25,7 +25,7 @@ import { GhidraWasm } from "../js/ghidra-wasm.js";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
   RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK, SHADOWELF,
-  VXHEAVENS, TROJANLAIR, TROJANSLAIR, HUUNLOOPER,
+  VXHEAVENS, TROJANLAIR, TROJANSLAIR, HUUNLOOPER, MAKINT, PERIPHERALS,
   waybackUrl, waybackView, cdxUrl,
 } from "../js/krome-catalog.js";
 
@@ -269,6 +269,103 @@ console.log("── hu unlooper");
   check(
     rehash.length === 11 && rehash.every(Boolean),
     `in-repo bytes re-hashed live: ${rehash.filter(Boolean).length}/11 match the catalog`,
+  );
+}
+
+/* ---------------------------------------------------- MAKInterface (wave 8) */
+
+console.log("── MAKInterface + port peripherals (wave 8)");
+{
+  const b32 = /^[A-Z2-7]{32}$/;
+  const f = MAKINT.files;
+  const uniq = new Set(f.map((x) => x.name));
+  check(
+    f.length === 22 && uniq.size === f.length &&
+    f.every((x) => /^\d{14}$/.test(x.ts) && b32.test(x.digest) && x.warc > 0 &&
+      x.url.startsWith("http://www.makinterface.net/")),
+    `makinterface depot: ${f.length} pinned rows (5 wave-7 + 8 archives + 9 pages), ts + CDX sha1 + length each`,
+  );
+  // the five wave-7 pins must not have drifted
+  const wave7 = {
+    "dms.zip": "MKU573ISDNMH7NJFCCWI64NFXQ7GVPRK",
+    "MaksAct.zip": "ALM5LHEYGZFES7XMAKRWRHZ3LKHFM47K",
+    "makstripe.zip": "K65J3QAURDS37Z4KLYCDEUBMHVKSK3YK",
+    "makstripee.zip": "SPLNPY3WHCD4ILZ3P4OREVITSVHOSQ3R",
+    "Pinout.zip": "GOBEFEPET63CQHNJNPO6LCEX2JC5L646",
+  };
+  const drift = Object.entries(wave7).filter(([name, digest]) => {
+    const row = f.find((x) => x.name === name);
+    return !row || row.digest !== digest;
+  });
+  check(drift.length === 0, "the five December-2005 drops hold their wave-7 digests");
+  const zips = f.filter((x) => x.name.toLowerCase().endsWith(".zip"));
+  check(zips.length === 13, `${zips.length} archives ride the sweep (5 pinned + 8 added this wave)`);
+  // PRSC.ZIP is SCPROG.ZIP's bytes under a new name — assert the *documented* digest,
+  // not the identity, because only PRSC.ZIP is pinned in the table.
+  check(
+    f.find((x) => x.name === "PRSC.ZIP").digest === "4OIYHEDGZD62BCFIKOEEX2JJMDGX2SPW" &&
+    f.find((x) => x.name === "PRSC.ZIP").desc.includes("SCPROG.ZIP"),
+    "PRSC/SCPROG rename caught in the pin itself",
+  );
+  check(
+    MAKINT.port.connector.includes("serial") && MAKINT.port.quote.includes("25pole serial port") &&
+    MAKINT.port.parallelIsFor.includes("Parallel Ports on the PC are required"),
+    "port verdict: serial by default, parallel only for the PROM kit + art. 00605",
+  );
+  const P = MAKINT.pinouts;
+  check(
+    P.reader.Reset === "Maki 6" && P.emulator.Reset === "Maki 5" &&
+    P.reader.CLK === "Maki 7" && P.emulator.CLK.startsWith("none") &&
+    P.reader.IO === "Maki 1+2" && P.emulator.IO === "Maki 1+2" &&
+    P.reader.GND === "Maki 4" && P.emulator.GND === "Maki 4",
+    "smart-card reader vs emulator rows transcribed from pinout_e.php3",
+  );
+  check(
+    MAKINT.emulation.vendorProducts.includes("00519") && MAKINT.emulation.vendorProducts.includes("00524") &&
+    MAKINT.emulation.universalPcb.includes("90S8515") && MAKINT.emulation.universalPcb.includes("24C65") &&
+    MAKINT.emulation.answer.includes("js/makint.js"),
+    "emulator products + the 00529 chip recipes + where the model lives",
+  );
+  check(
+    MAKINT.disasm.includes("pydisasm") && MAKINT.disasm.includes("1438") &&
+    MAKINT.upstream.protocol.includes("38400") && MAKINT.upstream.note.includes("no LICENSE"),
+    "disassembly verdict: what ran here, the protocol, and why upstream is not re-hosted",
+  );
+  check(
+    PERIPHERALS.cuecat.what.includes("68-1965") && PERIPHERALS.cuecat.what.includes("modified base64") &&
+    PERIPHERALS.cuecat.disasm.includes("No firmware image survives") &&
+    PERIPHERALS.clik.what.includes("40 MB") && PERIPHERALS.clik.disasm.includes("IDENTIFY"),
+    ":CueCat + Iomega Clik! documented with their honest limits",
+  );
+
+  // the module the UI drives, exercised here so a stale export cannot pass
+  const mi = await import("../js/makint.js");
+  const atr = mi.atrBuild({ ta1: 0x11, td1: 0x50, hist: [0, 0x62] });
+  const info = mi.atrParse(atr);
+  check(info.tckValid && info.Fi === 372 && info.protocol === 0, "makint.js builds and re-parses its ATR");
+  check(Math.abs(mi.etuUs(mi.CRYSTALS.shipped.hz) - 103.924) < 0.01, "shipping crystal → 103.9 µs ETU");
+  const benchCard = mi.makeCardImage();
+  const frames = mi.resetAndAnswer(benchCard);
+  check(
+    frames.bytes === benchCard.atr.length && frames.frames.every((fr) => fr.length === 13),
+    "reset cycle frames one character per ATR byte, 13 slots each");
+  check(
+    mi.cuecatDecode("ENr7C3n1C3PWD3rYCxzYChnZ") === "978006093471251300" &&
+    mi.cuecatDecode("fbmxChO") === "WPT39",
+    ":CueCat decode matches the published vectors",
+  );
+  check(mi.MAK_HEADER.emulatedCards.length === 9 && mi.SCOPE.includes("no credential"),
+    "emulated-card table complete and the scope note present");
+  check(
+    readFileSync(join(ROOT, "samples", "makint", "analysis.json"), "utf8").includes("woodlands_bulk"),
+    "samples/makint/analysis.json present and carries the .mag corpus facts",
+  );
+  const cf8 = readFileSync(join(ROOT, "js", "casefiles.js"), "utf8");
+  check(
+    cf8.includes("renderMakintPanel") && cf8.includes("renderMakintDossier") &&
+    cf8.includes("runMakintBench") && cf8.includes("btnMiSweep") && cf8.includes("miBench") &&
+    cf8.includes("makint: {") && cf8.includes('if (id === "makint")'),
+    "casefiles wiring: makint case entry + panel + bench + dossier + sweep ids",
   );
 }
 

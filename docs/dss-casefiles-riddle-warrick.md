@@ -429,3 +429,95 @@ HUHack + MAKStripe pins, AT90S2313/UL4S text markers, Digital-Laboratory
 resolution, huunloop wiring, and a live re-hash of all 13 in-repo files
 against the catalog); `smoke_pipeline.mjs` clean; `check-dom-ids.mjs`
 pass; `sw.js` precache v23.
+
+## §13 — Wave 8: MAKInterface read at source — the depot, the port, the emulator, two peripherals
+
+The order was: keep researching digital-laboratory / MAKInterface, do the disassembly the five
+December-2005 drops were pinned for, and — since the vendor documents pinouts — say whether the
+interface can be virtualised and a smart-card emulator emulated along with it; plus add the
+RadioShack :CueCat and the Iomega Clik!. All four landed, one premise was corrected, and the
+session note is `resources/src-74-makinterface-port-lab.md`.
+
+**The five pins hold, and the depot is twelve.** Every wave-7 digest was re-queried against the
+live CDX index and came back identical — `dms.zip`, `MaksAct.zip`, `makstripe.zip`,
+`makstripee.zip`, `Pinout.zip`. The same 11-Dec-2005 crawl also caught eight archives nobody had
+pinned: `MAKI_DE.ZIP` and `MAKI_EN.ZIP` (2.6 MB each, the driver/toolkit), `MAKITEST.ZIP`,
+`MAKS_DE.ZIP`/`MAKS_EN.ZIP` (the smart-card software), `DMS_EN.ZIP`/`DMS_DE.ZIP`, and `PRSC.ZIP`.
+Three facts come out of the index without opening a byte: `MAKI_DE.ZIP` keeps one digest across
+nine captures from 2003 to 2006 (recorded WARC length wobbles, SHA-1 does not — capture framing,
+not payload), `MAKS_DE.ZIP` shows a four-step version chain frozen since September 2003, and
+`PRSC.ZIP` is `SCPROG.ZIP` renamed — identical SHA-1, different name. All 13 archives now ride the
+sweep; 22 rows are pinned in `js/krome-catalog.js` as `MAKINT`.
+
+**Which port: serial.** The premise that MAKInterface maps its hardware to the parallel port is
+wrong, and the vendor says so directly: *"MAKInterface has to be connected to a free 25pole serial
+port"*, with the 5 V (12 V for PIC VPP) *"taken from the RS232 port"*. The parallel port appears
+twice and both times for something else — the optional wide PROM/EPROM adapter kit (*"free Parallel
+Ports on the PC are required"*, for 27xxx/28xxx/29Fxxx) and **art. 00605**, a standalone
+parallel-port Nokia flasher, a separate line item. This matters beyond accuracy: it changes the
+virtualisation target from an LPT timing problem to a UART-plus-GPIO register model, which is a
+much better answer to the question being asked.
+
+**The pinouts, transcribed not summarised.** `pinout_e.php3` is HTML, so it recovers as text
+without waiting on `Pinout.zip`. The 2×5 header (art. 00992) documents the reader and the emulator
+as two different wirings — VCC on 8 and GND on 4 in both, Reset on 6 for the reader but 5 for the
+emulator, **CLK on 7 for the reader and absent for the emulator** (an emulated card is clocked by
+its master), and I/O on the *pair* 1+2 in both. That pairing is the mechanism behind the box's
+"compatible with CBUS/DumbMouse/FBUS/Harpune/JDM/LudiPipo/M2BUS/Phoenix/Season7/SmartMouse" claim:
+drive one half, receive on the other, tie them, and a two-wire UART becomes ISO 7816's single
+half-duplex I/O. The EEPROM and PIC rows fix the rest — 4 = ground, 8 = supply, 9 = VPP, 5/6/7
+reassignable.
+
+**Emulation is a product category, so yes — twice over.** The vendor sold the emulator (art. 00519
+and 00524 "Smartcard Emulator & Datalogger", 00525 the PCB, 00522 the cable), and `univpcpe.php3`
+documents art. 00529 where the populated chip set *is* the card: Whitewafer = 16F84, Goldwafer =
+16F84+24C16, TwinPIC = 2×16F84, Triple = +24C16, Quadracard = 2×16F84+2×24C16, Jupiter1 =
+90S2323/43+24C16, Funcard = 90S8515+24C65 with the EEPROM under the Atmel for the lowered contacts.
+So the interface virtualises as a line model (assert VCC, hold Reset, run the clock, bit-bang
+ISO 7816-3) and the card virtualises as a memory model plus a firmware image. `js/makint.js`
+implements the first and a small ISO 7816-4 file image for the second, with the arithmetic that
+explains the odd crystal: 3.579545 MHz at F=372/D=1 is a 103.924 µs ETU, i.e. **9622.4 baud** —
+the 9600 every period smart-card COM driver defaulted to, and the reason the 6.0 MHz option exists.
+The module's last export is a scope note: transport and memory cards, not payment instruments, not
+SIM authentication secrets, not conditional-access modules.
+
+**The disassembly, done on what is reachable.** `web.archive.org` is still not routable from the
+build host — verified this session, alongside github.com/api.github.com/pypi/files.pythonhosted.org
+returning 200 — so the twelve archives stay hash-pinned for the browser-side path and were *not*
+opened here. What could be opened was disassembled for real: PyMAKInt was cloned and put through
+`tools/makint_static.py`, giving CPython 3.4 bytecode census (pymakint 20 code objects / 1438
+instructions, pymagpar 4 / 347), a header check proving the shipped `.pyc` was compiled from the
+shipped `.py` (`source_in_sync`, 10876 and 3638 bytes, build timestamp 15 Sep 2015, build path
+`/home/user/Work/PyMAKInt/`), the MAKStripe wire protocol pulled out of the constant pool (38400
+8N1, `?`→`MSUSB`, `R`→`Ready`/`RD `/ticks/`RD=OK`, `F`, `E`/`e`, `I`, `H`→`EZ=OK`), and the `.mag`
+container verified against **all 144** captures upstream with the clock proven from the data itself
+(widest gap 3.406667 s = 511/150 — the 9-bit tick ceiling, so seconds-and-150 Hz and nothing else
+fits). Upstream ships no license, so nothing was re-hosted: hashes and derived facts only, and its
+`woodlands_bulk/` real-ticket captures were parsed for format and never published — a synthetic
+`.mag` stands in as the fixture.
+
+**:CueCat and the Clik!** — both added as `PERIPHERALS`, both with their limits stated. The :Cat
+(RadioShack 68-1965, Hyundai CPU, 93Cxx serial EEPROM) has no pinnable firmware dump, so its
+disassembly is of the *encoding*: custom alphabet, base64 regrouping, then `(v ^ 3) + 64` folded
+by *"if larger than 128 then subtract 128"* — that fold, not `& 0xff`, is what ports get wrong, and
+four independently published scan strings now decode exactly in `tests/13-makint.mjs` (including
+`ENr7C3n1C3PWD3rYCxzYChnZ` → `978006093471251300`, Bookland → ISBN `0060934719`, and the cat's own
+catalog barcode `040293153502`). The Iomega Clik! is "disassemble which of the three": PC Card
+ATAPI (the `IOMEGA Clik! 40 CZ ATAPI` model-string match that became an 11-character prefix
+compare, data in the fourth partition), parallel cradle, and USB bridge; no controller firmware is
+pinnable and none is claimed, so what ships is the verifiable part — the ATA IDENTIFY model field
+with its per-word byte swap and an MBR reader whose fourth record returns 78 125 sectors × 512 =
+40 000 000 bytes exactly.
+
+Verification: `tools/verify_casefiles.mjs` — **ALL CHECKS PASSED, 82 checks** (was 66; adds the
+22-row depot with ts+digest+length each, the five wave-7 pins held against drift, 13 sweep
+archives, the PRSC/SCPROG rename asserted in the pin text, the port verdict, reader-vs-emulator
+pin rows line by line, the 00529 recipes, `:CueCat`/Clik! limits, live calls into `js/makint.js`,
+and the `makint` case wiring); `node tests/13-makint.mjs` — 72 assertions, including JS↔Python
+agreement on the crystal arithmetic; `smoke_pipeline.mjs` clean; `check-dom-ids.mjs` pass;
+`verify_disasm.mjs` 364/364; `sw.js` precache v24. One repair outside the wave: `tests/run.sh`
+called `run_stale node tests/05…`, i.e. `node node tests/05…`, so the two known-stale suites died
+with MODULE_NOT_FOUND and never ran — they now run and skip honestly. `run.sh` still exits 1 on a
+**pre-existing** `build_coins.mjs --check` staleness that reproduces at HEAD without this wave's
+files; it is a pinned data file regenerated from a market snapshot and was left alone rather than
+quietly rebuilt.
