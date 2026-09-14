@@ -1,0 +1,50 @@
+name: arena-deep3
+on:
+  push:
+    branches: ['arena/01a09164-html5']
+    paths: ['.github/workflows/arena-deep3.yml']
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  ghidra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: arena/01a09164-html5
+      - name: Toolchain (JDK + Ghidra 11.2.1)
+        run: |
+          set -e
+          wget -q -O /tmp/jdk.tar.gz "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jdk/hotspot/normal/eclipse"
+          sudo mkdir -p /opt/jdk && sudo tar xzf /tmp/jdk.tar.gz -C /opt/jdk --strip-components=1
+          GURL=$(curl -fsSL https://api.github.com/repos/NationalSecurityAgency/ghidra/releases/tags/Ghidra_11.2.1_build | jq -r '.assets[0].browser_download_url')
+          wget -q -O /tmp/ghidra.zip "$GURL"
+          unzip -q /tmp/ghidra.zip -d /tmp
+      - name: Headless Ghidra on unpacked binaries
+        run: |
+          set -e
+          export JAVA_HOME=/opt/jdk PATH=/opt/jdk/bin:$PATH
+          GH=/tmp/ghidra_11.2.1_PUBLIC/support/analyzeHeadless
+          mkdir -p /tmp/ghproj
+          run() {
+            bin="$1"; tag="$2"
+            out="abbottabad-ghidra/outputs/$tag"; mkdir -p "$out"
+            $GH /tmp/ghproj DEEP3 -import "$PWD/$bin" -overwrite \
+              -postScript ghidra_recon.py "$PWD/$out" -scriptPath "$PWD/abbottabad-ghidra/scripts" \
+              -deleteProject 2>&1 | grep -E "ghidra_recon|ERROR|Analysis succeeded" | head -6
+            mkdir -p /tmp/ghproj
+          }
+          run "abbottabad-ghidra/evidence/unpacked-local/CLScc.unpacked.exe" CLScc_unpacked
+          run "abbottabad-ghidra/evidence/unpacked-local/KeyGen_FSG.unpacked.exe" KeyGen_FSG_unpacked
+          run "abbottabad-ghidra/evidence/unpacked-local/cr_tw123a.stage2.exe" cr_tw123a_stage2
+      - name: Commit
+        run: |
+          git config user.name "arena-relay"
+          git config user.email "arena-relay@users.noreply.github.com"
+          git add abbottabad-ghidra/outputs
+          if ! git diff --cached --quiet; then
+            git commit -m "deep3: Ghidra recon of unpacked CLScc/KeyGen_FSG/cr_tw123a"
+            git push
+          fi

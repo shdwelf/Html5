@@ -1,0 +1,805 @@
+#VRML V2.0 utf8
+
+WorldInfo {
+  title "Stalag Luft IV - Gross Tychow, Pomerania (1944-1945)"
+  info [
+    "Kriegsgefangenen-Mannschafts-Stammlager Luft IV",
+    "Location: Gross Tychow, Pomerania (now Tychowo, Poland) - 53 55 N, 16 15 E",
+    "POW Camp for Allied Air Force NCOs (USAAF and RAF)",
+    "301st Bomb Group / 15th Air Force Record Center",
+    "Created for Html5 Repository Research Session 15"
+  ]
+}
+
+NavigationInfo {
+  type [ "EXAMINE", "FLY", "WALK", "ANY" ]
+  speed 10.0
+}
+
+Viewpoint {
+  position 0 180 320
+  orientation 1 0 0 -0.523
+  description "Aerial Overview (South Perspective)"
+}
+
+Viewpoint {
+  position -180 30 -160
+  orientation 0 1 0 -2.35
+  description "Main Gate & Vorlager HQ"
+}
+
+Viewpoint {
+  position -120 25 -30
+  orientation 0 1 0 -0.78
+  description "Lager A (US AAF Airmen)"
+}
+
+Viewpoint {
+  position 120 25 -30
+  orientation 0 1 0 0.78
+  description "Lager B (US AAF Airmen)"
+}
+
+Viewpoint {
+  position -120 25 140
+  orientation 0 1 0 -0.35
+  description "Lager C (US AAF Airmen)"
+}
+
+Viewpoint {
+  position 120 25 140
+  orientation 0 1 0 0.35
+  description "Lager D (US & RAF Airmen)"
+}
+
+Viewpoint {
+  position 0 12 -220
+  orientation 0 1 0 0
+  description "North Perimeter & Railway Line"
+}
+
+# Ambient & Sun Lighting
+DirectionalLight {
+  direction 0.5 -0.85 -0.3
+  color 1.0 0.98 0.85
+  intensity 1.0
+}
+
+DirectionalLight {
+  direction -0.5 -0.5 0.5
+  color 0.4 0.5 0.65
+  intensity 0.3
+}
+
+Background {
+  skyColor [ 0.15 0.25 0.45, 0.45 0.6 0.85, 0.75 0.82 0.95 ]
+  skyAngle [ 0.8, 1.4 ]
+  groundColor [ 0.1 0.12 0.08, 0.22 0.28 0.15, 0.35 0.38 0.25 ]
+  groundAngle [ 0.9, 1.4 ]
+}
+
+# Master Ground Terrain
+Transform {
+  translation 0 -0.5 0
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.28 0.32 0.18
+          specularColor 0.05 0.05 0.05
+        }
+      }
+      geometry Box { size 700 1 700 }
+    }
+  ]
+}
+
+# Central Camp Sandy Ground Surface
+Transform {
+  translation 0 0.1 20
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.48 0.42 0.32
+        }
+      }
+      geometry Box { size 460 0.2 460 }
+    }
+  ]
+}
+
+# Dense Surrounding Pine Forest Boundary (Decorative Blocks)
+DEF PINE_TREE Transform {
+  scale 1 1 1
+  children [
+    # Trunk
+    Transform {
+      translation 0 4 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.25 0.15 0.08 } }
+          geometry Cylinder { radius 0.6 height 8 }
+        }
+      ]
+    }
+    # Foliage Tier 1
+    Transform {
+      translation 0 9 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.1 0.22 0.08 } }
+          geometry Cone { bottomRadius 4 height 8 }
+        }
+      ]
+    }
+    # Foliage Tier 2
+    Transform {
+      translation 0 14 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.12 0.28 0.1 } }
+          geometry Cone { bottomRadius 3 height 7 }
+        }
+      ]
+    }
+  ]
+}
+
+# Forest Clusters North / West / East / South
+Transform {
+  translation -280 0 -250
+  children [
+    USE PINE_TREE
+    Transform { translation 15 0 20 children [ USE PINE_TREE ] }
+    Transform { translation -20 0 40 children [ USE PINE_TREE ] }
+    Transform { translation 35 0 -30 children [ USE PINE_TREE ] }
+    Transform { translation -40 0 -15 children [ USE PINE_TREE ] }
+  ]
+}
+
+Transform {
+  translation 280 0 -250
+  children [
+    USE PINE_TREE
+    Transform { translation -15 0 25 children [ USE PINE_TREE ] }
+    Transform { translation 20 0 45 children [ USE PINE_TREE ] }
+    Transform { translation -35 0 -20 children [ USE PINE_TREE ] }
+  ]
+}
+
+Transform {
+  translation -290 0 250
+  children [
+    USE PINE_TREE
+    Transform { translation 25 0 -20 children [ USE PINE_TREE ] }
+    Transform { translation -15 0 35 children [ USE PINE_TREE ] }
+  ]
+}
+
+Transform {
+  translation 290 0 250
+  children [
+    USE PINE_TREE
+    Transform { translation -20 0 -25 children [ USE PINE_TREE ] }
+    Transform { translation 20 0 30 children [ USE PINE_TREE ] }
+  ]
+}
+
+# Standard Reusable Barracks Hut Definition
+DEF BARRACKS_HUT Transform {
+  children [
+    # Main Wooden Hut Body
+    Transform {
+      translation 0 2.25 0
+      children [
+        Shape {
+          appearance Appearance {
+            material Material { diffuseColor 0.42 0.32 0.22 }
+          }
+          geometry Box { size 34 4.5 10 }
+        }
+      ]
+    }
+    # Pitched Roof
+    Transform {
+      translation 0 5.25 0
+      rotation 0 0 1 1.5708
+      children [
+        Shape {
+          appearance Appearance {
+            material Material { diffuseColor 0.22 0.18 0.15 }
+          }
+          geometry Cylinder { radius 5.2 height 34.2 }
+        }
+      ]
+    }
+    # Brick Chimney 1
+    Transform {
+      translation -8 5.5 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.5 0.2 0.15 } }
+          geometry Box { size 1.2 3 1.2 }
+        }
+      ]
+    }
+    # Brick Chimney 2
+    Transform {
+      translation 8 5.5 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.5 0.2 0.15 } }
+          geometry Box { size 1.2 3 1.2 }
+        }
+      ]
+    }
+    # Entrance Door
+    Transform {
+      translation 0 1.5 5.05
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.18 0.12 0.08 } }
+          geometry Box { size 2 3 0.2 }
+        }
+      ]
+    }
+  ]
+}
+
+# Guard Watchtower Definition (Wachturm)
+DEF GUARD_TOWER Transform {
+  children [
+    # 4 Timber Legs
+    Transform {
+      translation -1.4 5 -1.4
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.35 0.25 0.15 } }
+          geometry Cylinder { radius 0.22 height 10 }
+        }
+      ]
+    }
+    Transform {
+      translation 1.4 5 -1.4
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.35 0.25 0.15 } }
+          geometry Cylinder { radius 0.22 height 10 }
+        }
+      ]
+    }
+    Transform {
+      translation -1.4 5 1.4
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.35 0.25 0.15 } }
+          geometry Cylinder { radius 0.22 height 10 }
+        }
+      ]
+    }
+    Transform {
+      translation 1.4 5 1.4
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.35 0.25 0.15 } }
+          geometry Cylinder { radius 0.22 height 10 }
+        }
+      ]
+    }
+    # Elevated Guard Platform Floor
+    Transform {
+      translation 0 10.1 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.3 0.2 0.12 } }
+          geometry Box { size 3.6 0.3 3.6 }
+        }
+      ]
+    }
+    # Cabin Enclosure
+    Transform {
+      translation 0 11.5 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.4 0.3 0.2 } }
+          geometry Box { size 3.2 2.4 3.2 }
+        }
+      ]
+    }
+    # Windows Band
+    Transform {
+      translation 0 11.8 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.6 0.75 0.85 transparency 0.4 } }
+          geometry Box { size 3.25 1 3.25 }
+        }
+      ]
+    }
+    # Pyramid Roof
+    Transform {
+      translation 0 13.5 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.18 0.14 0.12 } }
+          geometry Cone { bottomRadius 2.6 height 1.8 }
+        }
+      ]
+    }
+    # Searchlight
+    Transform {
+      translation 0 12.8 1.7
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.8 0.8 0.2 emissiveColor 0.4 0.4 0.1 } }
+          geometry Sphere { radius 0.4 }
+        }
+      ]
+    }
+  ]
+}
+
+# Perimeter Fence Post with Double Wire Strand Definition
+DEF FENCE_POST Transform {
+  children [
+    Shape {
+      appearance Appearance { material Material { diffuseColor 0.2 0.2 0.2 } }
+      geometry Cylinder { radius 0.08 height 3.5 }
+    }
+  ]
+}
+
+# ============================================================
+# 1. VORLAGER (GERMAN ADMINISTRATION & HQ ZONE - NORTH)
+# ============================================================
+DEF VORLAGER Group {
+  children [
+    # German HQ / Kommandantur Building
+    Transform {
+      translation -120 0 -180
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.52 0.48 0.38 } }
+          geometry Box { size 28 5 14 }
+        }
+        Transform {
+          translation 0 3.8 0
+          rotation 0 0 1 1.5708
+          children [
+            Shape {
+              appearance Appearance { material Material { diffuseColor 0.25 0.2 0.18 } }
+              geometry Cylinder { radius 7.2 height 28.2 }
+            }
+          ]
+        }
+      ]
+    }
+    # German Guard Barracks 1
+    Transform {
+      translation -70 0 -185
+      children [ USE BARRACKS_HUT ]
+    }
+    # German Guard Barracks 2
+    Transform {
+      translation -20 0 -185
+      children [ USE BARRACKS_HUT ]
+    }
+    # Infirmary / Revier Huts (Red Cross Medical Huts)
+    Transform {
+      translation 40 0 -185
+      children [
+        USE BARRACKS_HUT
+        # Red Cross Sign on Roof
+        Transform {
+          translation 0 6 0
+          children [
+            Shape {
+              appearance Appearance { material Material { diffuseColor 0.8 0.1 0.1 emissiveColor 0.5 0.0 0.0 } }
+              geometry Box { size 3 0.2 1 }
+            }
+            Shape {
+              appearance Appearance { material Material { diffuseColor 0.8 0.1 0.1 emissiveColor 0.5 0.0 0.0 } }
+              geometry Box { size 1 0.2 3 }
+            }
+          ]
+        }
+      ]
+    }
+    Transform {
+      translation 85 0 -185
+      children [ USE BARRACKS_HUT ]
+    }
+    # Food & Red Cross Parcel Warehouses
+    Transform {
+      translation 135 0 -180
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.38 0.35 0.3 } }
+          geometry Box { size 32 5.5 16 }
+        }
+      ]
+    }
+    # Main Entrance Gate & Checkpoint (Haupttor)
+    Transform {
+      translation -170 0 -140
+      children [
+        # Guard House
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.45 0.4 0.32 } }
+          geometry Box { size 6 3.5 5 }
+        }
+        # Gate Wooden Gate Posts
+        Transform {
+          translation 6 2 0
+          children [
+            Shape {
+              appearance Appearance { material Material { diffuseColor 0.3 0.2 0.1 } }
+              geometry Box { size 0.6 4 0.6 }
+            }
+          ]
+        }
+        Transform {
+          translation 14 2 0
+          children [
+            Shape {
+              appearance Appearance { material Material { diffuseColor 0.3 0.2 0.1 } }
+              geometry Box { size 0.6 4 0.6 }
+            }
+          ]
+        }
+        # Barrier Gate Arm
+        Transform {
+          translation 10 2.2 0
+          children [
+            Shape {
+              appearance Appearance { material Material { diffuseColor 0.8 0.15 0.15 } }
+              geometry Box { size 8 0.25 0.25 }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+# ============================================================
+# 2. POW COMPOUNDS (LAGERN A, B, C, D)
+# ============================================================
+
+# --- LAGER A (North-West Compound: US AAF Airmen) ---
+DEF LAGER_A Group {
+  children [
+    # Barracks Row 1 (4 Huts)
+    Transform { translation -160 0 -95 children [ USE BARRACKS_HUT ] }
+    Transform { translation -115 0 -95 children [ USE BARRACKS_HUT ] }
+    Transform { translation -70 0 -95 children [ USE BARRACKS_HUT ] }
+    Transform { translation -25 0 -95 children [ USE BARRACKS_HUT ] }
+    # Barracks Row 2 (4 Huts)
+    Transform { translation -160 0 -40 children [ USE BARRACKS_HUT ] }
+    Transform { translation -115 0 -40 children [ USE BARRACKS_HUT ] }
+    Transform { translation -70 0 -40 children [ USE BARRACKS_HUT ] }
+    Transform { translation -25 0 -40 children [ USE BARRACKS_HUT ] }
+    # Compound Latrine & Washhouse
+    Transform {
+      translation -140 0 -5
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.3 0.3 0.35 } }
+          geometry Box { size 16 3.5 8 }
+        }
+      ]
+    }
+    # Central Appell / Assembly Ground Marker
+    Transform {
+      translation -70 0.15 -5
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.55 0.48 0.35 } }
+          geometry Box { size 60 0.05 25 }
+        }
+      ]
+    }
+  ]
+}
+
+# --- LAGER B (North-East Compound: US AAF Airmen) ---
+DEF LAGER_B Group {
+  children [
+    # Barracks Row 1 (4 Huts)
+    Transform { translation 25 0 -95 children [ USE BARRACKS_HUT ] }
+    Transform { translation 70 0 -95 children [ USE BARRACKS_HUT ] }
+    Transform { translation 115 0 -95 children [ USE BARRACKS_HUT ] }
+    Transform { translation 160 0 -95 children [ USE BARRACKS_HUT ] }
+    # Barracks Row 2 (4 Huts)
+    Transform { translation 25 0 -40 children [ USE BARRACKS_HUT ] }
+    Transform { translation 70 0 -40 children [ USE BARRACKS_HUT ] }
+    Transform { translation 115 0 -40 children [ USE BARRACKS_HUT ] }
+    Transform { translation 160 0 -40 children [ USE BARRACKS_HUT ] }
+    # Compound Latrine & Washhouse
+    Transform {
+      translation 140 0 -5
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.3 0.3 0.35 } }
+          geometry Box { size 16 3.5 8 }
+        }
+      ]
+    }
+    # Central Appell / Assembly Ground Marker
+    Transform {
+      translation 70 0.15 -5
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.55 0.48 0.35 } }
+          geometry Box { size 60 0.05 25 }
+        }
+      ]
+    }
+  ]
+}
+
+# --- LAGER C (South-West Compound: US AAF Airmen) ---
+DEF LAGER_C Group {
+  children [
+    # Barracks Row 1 (4 Huts)
+    Transform { translation -160 0 50 children [ USE BARRACKS_HUT ] }
+    Transform { translation -115 0 50 children [ USE BARRACKS_HUT ] }
+    Transform { translation -70 0 50 children [ USE BARRACKS_HUT ] }
+    Transform { translation -25 0 50 children [ USE BARRACKS_HUT ] }
+    # Barracks Row 2 (4 Huts)
+    Transform { translation -160 0 105 children [ USE BARRACKS_HUT ] }
+    Transform { translation -115 0 105 children [ USE BARRACKS_HUT ] }
+    Transform { translation -70 0 105 children [ USE BARRACKS_HUT ] }
+    Transform { translation -25 0 105 children [ USE BARRACKS_HUT ] }
+    # Compound Latrine & Washhouse
+    Transform {
+      translation -140 0 145
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.3 0.3 0.35 } }
+          geometry Box { size 16 3.5 8 }
+        }
+      ]
+    }
+    # Central Appell / Assembly Ground Marker
+    Transform {
+      translation -70 0.15 145
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.55 0.48 0.35 } }
+          geometry Box { size 60 0.05 25 }
+        }
+      ]
+    }
+  ]
+}
+
+# --- LAGER D (South-East Compound: US & RAF Airmen) ---
+DEF LAGER_D Group {
+  children [
+    # Barracks Row 1 (4 Huts)
+    Transform { translation 25 0 50 children [ USE BARRACKS_HUT ] }
+    Transform { translation 70 0 50 children [ USE BARRACKS_HUT ] }
+    Transform { translation 115 0 50 children [ USE BARRACKS_HUT ] }
+    Transform { translation 160 0 50 children [ USE BARRACKS_HUT ] }
+    # Barracks Row 2 (4 Huts)
+    Transform { translation 25 0 105 children [ USE BARRACKS_HUT ] }
+    Transform { translation 70 0 105 children [ USE BARRACKS_HUT ] }
+    Transform { translation 115 0 105 children [ USE BARRACKS_HUT ] }
+    Transform { translation 160 0 105 children [ USE BARRACKS_HUT ] }
+    # Compound Latrine & Washhouse
+    Transform {
+      translation 140 0 145
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.3 0.3 0.35 } }
+          geometry Box { size 16 3.5 8 }
+        }
+      ]
+    }
+    # Central Appell / Assembly Ground Marker
+    Transform {
+      translation 70 0.15 145
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.55 0.48 0.35 } }
+          geometry Box { size 60 0.05 25 }
+        }
+      ]
+    }
+  ]
+}
+
+# ============================================================
+# 3. INTERNAL COMPOUND DIVISION FENCES & CENTRAL ROAD
+# ============================================================
+DEF INTERNAL_FENCES Group {
+  children [
+    # Central East-West Main Road
+    Transform {
+      translation 0 0.12 22.5
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.4 0.35 0.28 } }
+          geometry Box { size 400 0.05 12 }
+        }
+      ]
+    }
+    # Central North-South Dividing Alley
+    Transform {
+      translation 0 0.12 25
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.4 0.35 0.28 } }
+          geometry Box { size 12 0.05 320 }
+        }
+      ]
+    }
+  ]
+}
+
+# ============================================================
+# 4. PERIMETER WATCHTOWERS (16 TOWER RING)
+# ============================================================
+DEF WATCHTOWER_RING Group {
+  children [
+    # North Perimeter Towers
+    Transform { translation -210 0 -210 children [ USE GUARD_TOWER ] }
+    Transform { translation -120 0 -210 children [ USE GUARD_TOWER ] }
+    Transform { translation -30 0 -210 children [ USE GUARD_TOWER ] }
+    Transform { translation 60 0 -210 children [ USE GUARD_TOWER ] }
+    Transform { translation 150 0 -210 children [ USE GUARD_TOWER ] }
+    Transform { translation 210 0 -210 children [ USE GUARD_TOWER ] }
+
+    # West Perimeter Towers
+    Transform { translation -210 0 -100 children [ USE GUARD_TOWER ] }
+    Transform { translation -210 0 10 children [ USE GUARD_TOWER ] }
+    Transform { translation -210 0 120 children [ USE GUARD_TOWER ] }
+    Transform { translation -210 0 210 children [ USE GUARD_TOWER ] }
+
+    # East Perimeter Towers
+    Transform { translation 210 0 -100 children [ USE GUARD_TOWER ] }
+    Transform { translation 210 0 10 children [ USE GUARD_TOWER ] }
+    Transform { translation 210 0 120 children [ USE GUARD_TOWER ] }
+    Transform { translation 210 0 210 children [ USE GUARD_TOWER ] }
+
+    # South Perimeter Towers
+    Transform { translation -110 0 210 children [ USE GUARD_TOWER ] }
+    Transform { translation 0 0 210 children [ USE GUARD_TOWER ] }
+    Transform { translation 110 0 210 children [ USE GUARD_TOWER ] }
+  ]
+}
+
+# ============================================================
+# 5. PERIMETER DOUBLE BARBED-WIRE FENCE & WARNING WIRE
+# ============================================================
+DEF PERIMETER_FENCE Group {
+  children [
+    # Outer Barbed Wire Perimeter Wall Visual
+    Transform {
+      translation 0 1.75 -202
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.2 0.2 0.25 transparency 0.5 } }
+          geometry Box { size 410 3.5 0.4 }
+        }
+      ]
+    }
+    Transform {
+      translation 0 1.75 202
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.2 0.2 0.25 transparency 0.5 } }
+          geometry Box { size 410 3.5 0.4 }
+        }
+      ]
+    }
+    Transform {
+      translation -202 1.75 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.2 0.2 0.25 transparency 0.5 } }
+          geometry Box { size 0.4 3.5 404 }
+        }
+      ]
+    }
+    Transform {
+      translation 202 1.75 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.2 0.2 0.25 transparency 0.5 } }
+          geometry Box { size 0.4 3.5 404 }
+        }
+      ]
+    }
+
+    # 5-Meter Neutral Warning Zone (Warndraht Tripwire Ground Ribbon)
+    Transform {
+      translation 0 0.16 -197
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.7 0.2 0.15 emissiveColor 0.3 0.05 0.05 } }
+          geometry Box { size 400 0.02 1.5 }
+        }
+      ]
+    }
+    Transform {
+      translation 0 0.16 197
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.7 0.2 0.15 emissiveColor 0.3 0.05 0.05 } }
+          geometry Box { size 400 0.02 1.5 }
+        }
+      ]
+    }
+    Transform {
+      translation -197 0.16 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.7 0.2 0.15 emissiveColor 0.3 0.05 0.05 } }
+          geometry Box { size 1.5 0.02 390 }
+        }
+      ]
+    }
+    Transform {
+      translation 197 0.16 0
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.7 0.2 0.15 emissiveColor 0.3 0.05 0.05 } }
+          geometry Box { size 1.5 0.02 390 }
+        }
+      ]
+    }
+  ]
+}
+
+# ============================================================
+# 6. EXTERNAL ACCESS RAILWAY & ROAD ("RUN AT TYCHOW" ROUTE)
+# ============================================================
+DEF ACCESS_INFRASTRUCTURE Group {
+  children [
+    # Gross Tychow Railway Tracks (North-West spur)
+    Transform {
+      translation -250 0.15 -210
+      children [
+        # Rail Bed
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.3 0.25 0.2 } }
+          geometry Box { size 180 0.08 4 }
+        }
+        # Steel Rail 1
+        Transform {
+          translation 0 0.1 -1
+          children [
+            Shape {
+              appearance Appearance { material Material { diffuseColor 0.6 0.6 0.65 } }
+              geometry Box { size 180 0.12 0.2 }
+            }
+          ]
+        }
+        # Steel Rail 2
+        Transform {
+          translation 0 0.1 1
+          children [
+            Shape {
+              appearance Appearance { material Material { diffuseColor 0.6 0.6 0.65 } }
+              geometry Box { size 180 0.12 0.2 }
+            }
+          ]
+        }
+      ]
+    }
+    # Dirt Road from Station to Main Gate
+    Transform {
+      translation -210 0.12 -170
+      rotation 0 1 0 0.6
+      children [
+        Shape {
+          appearance Appearance { material Material { diffuseColor 0.45 0.38 0.28 } }
+          geometry Box { size 120 0.04 10 }
+        }
+      ]
+    }
+  ]
+}

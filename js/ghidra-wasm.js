@@ -127,9 +127,12 @@ export class GhidraWasm {
    * @param {string} [o.compiler]  compiler spec id
    * @param {string|number} o.base load address of byte 0
    * @param {string} o.func        function to decompile (symbol name or "0x7c0e")
+   * @param {string} [o.space]     address space to load into. x86 puts code in
+   *   "ram"; the Atmel AVR8 spec splits Harvard spaces into "code" and "mem",
+   *   and loading AVR code into "ram" fails with "Unknown address space name".
    * @returns {Promise<{text:string, ms:number, lang:string, compiler:string}>}
    */
-  async decompile(bytes, { lang, compiler, base = 0, func }) {
+  async decompile(bytes, { lang, compiler, base = 0, func, space = "ram" }) {
     if (!this.module) await this.load();
     const specs = await this.specs(lang, compiler);
     const t0 = performance.now();
@@ -141,7 +144,7 @@ export class GhidraWasm {
         "decompile_pcode",
         "number",
         ["number", "number", "string", "string", "string", "string"],
-        [slaPtr, specs.sla.length, specs.pspec, specs.cspec, imageXml(bytes, base, lang), String(func)]
+        [slaPtr, specs.sla.length, specs.pspec, specs.cspec, imageXml(bytes, base, lang, space), String(func)]
       );
       const text = this.module.UTF8ToString(resPtr);
       this.module._free_string(resPtr);
@@ -174,10 +177,10 @@ export class GhidraWasm {
  * end of a function, so 32 bytes of zero padding keep the decompiler from
  * running off the image on short samples.
  */
-export function imageXml(bytes, base, archId) {
+export function imageXml(bytes, base, archId, space = "ram") {
   const b = typeof base === "string" ? Number.parseInt(base, 16) : base;
   const hex = [];
   for (let i = 0; i < bytes.length; i++) hex.push(bytes[i].toString(16).padStart(2, "0"));
   for (let i = 0; i < 32; i++) hex.push("00");
-  return `<binaryimage arch="${archId}">\n<bytechunk space="ram" offset="0x${(b >>> 0).toString(16)}">\n${hex.join("")}\n</bytechunk>\n</binaryimage>`;
+  return `<binaryimage arch="${archId}">\n<bytechunk space="${space}" offset="0x${(b >>> 0).toString(16)}">\n${hex.join("")}\n</bytechunk>\n</binaryimage>`;
 }
