@@ -18,27 +18,27 @@ CACHED  makinterface/MAKI_EN.ZIP  2607414 bytes  sha256 e38f4c6725cd0978  (match
 CACHED  makinterface/SCPROG.ZIP  2223763 bytes  sha256 bb75a1cd4d84b5f3  (matches PROVENANCE.md; not re-downloaded)
 CACHED  makinterface/PRSC.ZIP  2223763 bytes  sha256 bb75a1cd4d84b5f3  (matches PROVENANCE.md; not re-downloaded)
 CACHED  makinterface/makstripe.zip  2340397 bytes  sha256 4b63cbe7f271c3c2  (matches PROVENANCE.md; not re-downloaded)
-OK    digitallab/MAKI.RDC  1086 bytes  sha256 12afde4eb74f062f  digest unavailable  text/plain
-OK    digitallab/MAGSR099.ZIP  345194 bytes  sha256 56c4500bb5fac69b  digest unavailable  application/zip  zip: 9 entries, 660050 bytes unpacked, crc OK [FILE_ID.DIZ, MAGSR099.EXE, MSCOMM.VBX, LICENSE.TXT, PACKING.LST, README.TXT]
-FAIL  digitallab/PCSC.TXT  https://web.archive.org/web/20010406204242id_/http://www.digital-laboratory.de:80/PCSC.TXT  (URLError: <urlopen error _ssl.c:983: The handshake operation timed out>)
-OK    digitallab/UCE32.ZIP  273781 bytes  sha256 a0e586e7bf43d6d0  digest unavailable  application/zip  zip: 21 entries, 1039601 bytes unpacked, crc OK [UCE32.EXE, WHATSNEW.TXT, GOLDWA~1.TXT, 24C02.VPA, 2WREAD~1.VPA, 2WRESET.VPA]
-OK    digitallab/SCE-202.ZIP  409526 bytes  sha256 a8198b42d69b141b  digest unavailable  application/zip  zip: 16 entries, 827192 bytes unpacked, crc OK [INPOUT.DLL, UCEXPL.INI, DEFAULT.FIL, PROVIDER.DAT, MSCOMM.VBX, THREED.VBX]
-OK    digitallab/VB6LIB.ZIP  1048292 bytes  sha256 3010b936629a06a2  digest unavailable  application/zip  zip: -1 entries, 0 bytes unpacked, crc BAD BadZipFile: File is not a zip file []
-OK    digitallab/FT50V099.ZIP  386307 bytes  sha256 95aeefaa9f8398f6  digest unavailable  application/zip  zip: 9 entries, 762234 bytes unpacked, crc OK [MSCOMM.VBX, LICENSE.TXT, THREED.VBX, CMDIALOG.VBX, GRID.VBX, VBRUN300.DLL]
-OK    digitallab/GK-102.ZIP  332261 bytes  sha256 6e316f980fa1ad02  digest unavailable  application/zip  zip: 9 entries, 616480 bytes unpacked, crc OK [GELDCARD.EXE, FILE_ID.DIZ, LICENSE.TXT, README.TXT, VBRUN300.DLL, MSCOMM.VBX]
-OK    dr7/avrprogrammer.zip  51069 bytes  sha256 16e807f3ec181cdd  digest unavailable  application/zip  zip: 3 entries, 71039 bytes unpacked, crc OK [avrprogrammer.gif, fbprg16.exe, FBPRG.CFG]
-OK    dr7/avrsetup.zip  70758 bytes  sha256 876497f84feb40c5  digest unavailable  application/zip  zip: 6 entries, 141689 bytes unpacked, crc OK [AVRSETUP.EXE, SKYVISTA.AVR, AVRSETUP.TXT, HEXCSUM.EXE, FBPRG.CFG, FBPRG16.EXE]
-OK    dr7/avrskels.zip  2173 bytes  sha256 dbe8d70084a38227  digest unavailable  application/zip  zip: 4 entries, 2279 bytes unpacked, crc OK [DNEEPROM.AVR, SVEEPROM.AVR, VDEEPROM.AVR, README.AVR]
-OK    dr7/disavr121.zip  19024 bytes  sha256 92bf4f8db2a9b35f  digest unavailable  application/zip  zip: 3 entries, 45034 bytes unpacked, crc OK [biatchread.txt, Disavr3.exe, sample.txt]
-FAIL  dr7/at90sart.zip  https://web.archive.org/web/20000915224545id_/http://www.dr7.com:80/echofiles/at90sart.zip  (URLError: <urlopen error _ssl.c:983: The handshake operation timed out>)
-OK    dr7/newbieprogramming.zip  7138 bytes  sha256 afa679bad73d397b  digest unavailable  application/zip  zip: 1 entries, 30720 bytes unpacked, crc OK [Program Files/Qualcomm/Eudora Mail/Attach/newbie programming procedures.doc]
-OK    dr7/prginst.zip  5819 bytes  sha256 51ce8d3981b0f18e  digest unavailable  application/zip  zip: 1 entries, 29696 bytes unpacked, crc OK [prginst1.5.doc]
-OK    dr7/99info.zip  29800 bytes  sha256 114a96add93a4b3a  digest unavailable  application/zip  zip: 5 entries, 41729 bytes unpacked, crc OK [99INFO.TXT, ADDRESS.TXT, ATR.DOC, ATR.EXE, readme.txt]
-OK    dr7/esfaq103199.zip  24621 bytes  sha256 4ee598c257741a6a  digest unavailable  application/zip  zip: 1 entries, 96366 bytes unpacked, crc OK [esfaq.txt]
-OK    hackhu/9pincom.htm  1984 bytes  sha256 3f99a24e4c9c4d21  digest unavailable  text/html
-OK    hackhu/about.htm  16489 bytes  sha256 b5f16742da7f3879  digest unavailable  text/html
-FAIL  glinet/openwrt-mt300n-v2-3.203-0805.bin  https://web.archive.org/web/20221217212147id_/https://fw.gl-inet.com/firmware/mt300n-v2/v1/openwrt-mt300n-v2-3.203-0805.bin  (URLError: <urlopen error _ssl.c:983: The handshake operation timed out>)
+CACHED  digitallab/MAKI.RDC  1086 bytes  sha256 12afde4eb74f062f  (matches PROVENANCE.md; not re-downloaded)
+CACHED  digitallab/MAGSR099.ZIP  345194 bytes  sha256 56c4500bb5fac69b  (matches PROVENANCE.md; not re-downloaded)
+OK    digitallab/PCSC.TXT  868 bytes  sha256 c3897a1e6320d9a7  digest unavailable  text/plain
+CACHED  digitallab/UCE32.ZIP  273781 bytes  sha256 a0e586e7bf43d6d0  (matches PROVENANCE.md; not re-downloaded)
+CACHED  digitallab/SCE-202.ZIP  409526 bytes  sha256 a8198b42d69b141b  (matches PROVENANCE.md; not re-downloaded)
+CACHED  digitallab/VB6LIB.ZIP  1048292 bytes  sha256 3010b936629a06a2  (matches PROVENANCE.md; not re-downloaded)
+CACHED  digitallab/FT50V099.ZIP  386307 bytes  sha256 95aeefaa9f8398f6  (matches PROVENANCE.md; not re-downloaded)
+CACHED  digitallab/GK-102.ZIP  332261 bytes  sha256 6e316f980fa1ad02  (matches PROVENANCE.md; not re-downloaded)
+CACHED  dr7/avrprogrammer.zip  51069 bytes  sha256 16e807f3ec181cdd  (matches PROVENANCE.md; not re-downloaded)
+CACHED  dr7/avrsetup.zip  70758 bytes  sha256 876497f84feb40c5  (matches PROVENANCE.md; not re-downloaded)
+CACHED  dr7/avrskels.zip  2173 bytes  sha256 dbe8d70084a38227  (matches PROVENANCE.md; not re-downloaded)
+CACHED  dr7/disavr121.zip  19024 bytes  sha256 92bf4f8db2a9b35f  (matches PROVENANCE.md; not re-downloaded)
+OK    dr7/at90sart.zip  10188 bytes  sha256 2f7835b12bf6f808  digest unavailable  application/zip  zip: 1 entries, 283142 bytes unpacked, crc OK [ATMELPROGRAMMER.bmp]
+CACHED  dr7/newbieprogramming.zip  7138 bytes  sha256 afa679bad73d397b  (matches PROVENANCE.md; not re-downloaded)
+CACHED  dr7/prginst.zip  5819 bytes  sha256 51ce8d3981b0f18e  (matches PROVENANCE.md; not re-downloaded)
+CACHED  dr7/99info.zip  29800 bytes  sha256 114a96add93a4b3a  (matches PROVENANCE.md; not re-downloaded)
+CACHED  dr7/esfaq103199.zip  24621 bytes  sha256 4ee598c257741a6a  (matches PROVENANCE.md; not re-downloaded)
+CACHED  hackhu/9pincom.htm  1984 bytes  sha256 3f99a24e4c9c4d21  (matches PROVENANCE.md; not re-downloaded)
+CACHED  hackhu/about.htm  16489 bytes  sha256 b5f16742da7f3879  (matches PROVENANCE.md; not re-downloaded)
+OK    glinet/openwrt-mt300n-v2-3.203-0805.bin  12583196 bytes  sha256 111faa8e4b19a6de  digest unavailable  application/octet-stream
 FAIL  live/basiccard-download.htm  https://www.basiccard.zeitcontrol.de/download.htm  (URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.basiccard.zeitcontrol.de'. (_ssl.c:1000)>)
 FAIL  live/gl-inet-mt300n-v2-3.204-1112.bin  https://fw.gl-inet.com/firmware/mt300n-v2/testing/openwrt-mt300n-v2-3.204-1112.bin  (HTTP 404)
 
-37/42 retrieved
+40/42 retrieved
