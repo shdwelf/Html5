@@ -1,0 +1,30 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {seedRecords,filterRecords,recordFromPage} from '../js/los-alamos-data.js';
+test('selected records have provenance, distinct IDs, and image paths',()=>{assert.equal(seedRecords.length,7);assert.equal(new Set(seedRecords.map(r=>r.id)).size,7);for(const r of seedRecords){assert.match(r.source,/^https:\/\//);assert.ok(r.image);assert.match(r.badge,/^[A-Z]-\d+$/);}});
+test('alphabetical surname ordering and reverse ordering',()=>{assert.deepEqual(filterRecords(seedRecords).map(r=>r.surname),['Bethe','Duffield','Fermi','Feynman','Frankel','Metropolis','Oppenheimer']);assert.equal(filterRecords(seedRecords,{sort:'reverse'})[0].surname,'Oppenheimer');});
+test('badge ordering is natural, with untranscribed identifiers last',()=>{const records=[{surname:'A',badge:null},{surname:'B',badge:'K-11'},{surname:'C',badge:'K-6'},{surname:'D',badge:'G-24'}];assert.deepEqual(filterRecords(records,{sort:'badge'}).map(r=>r.badge),['G-24','K-6','K-11',null]);});
+test('search normalizes whitespace and badge hyphens',()=>{assert.equal(filterRecords(seedRecords,{query:'k6'})[0].surname,'Oppenheimer');assert.equal(filterRecords(seedRecords,{query:'FEYNMAN'}).length,1);assert.equal(filterRecords(seedRecords,{query:'not a person'}).length,0);});
+test('saved and letter filters compose',()=>{const saved=new Set([seedRecords[2].id]);assert.equal(filterRecords(seedRecords,{letter:'F',savedOnly:true,saved}).length,1);assert.equal(filterRecords(seedRecords,{letter:'Z'}).length,0);});
+test('import keeps original provenance and never invents badge numbers',()=>{const r=recordFromPage({title:'File:Duffield-priscilla.jpg',imageinfo:[{thumburl:'https://example.org/thumb.jpg'}]},'D');assert.equal(r.name,'Priscilla Duffield');assert.equal(r.badge,null);assert.equal(r.letter,'D');assert.match(r.source,/File:Duffield-priscilla.jpg$/);const modern=recordFromPage({title:'File:Anna E. Oliver Los Alamos ID.png'},'O');assert.equal(modern.name,'Anna E. Oliver');assert.equal(modern.surname,'Oliver');});
+test('Metropolis has a sourced G-15 record and separates postwar work',()=>{
+ const r=seedRecords.find(r=>r.surname==='Metropolis');
+ assert.equal(r.id,'Metropolis-nicholas.jpg');assert.equal(r.badge,'G-15');
+ assert.equal(filterRecords(seedRecords,{query:'G15'})[0],r);
+ assert.equal(filterRecords(seedRecords,{letter:'M'})[0],r);
+ const ordered=filterRecords(seedRecords,{sort:'badge'});
+ assert.ok(ordered.indexOf(r)<ordered.findIndex(x=>x.surname==='Fermi'));
+ assert.match(r.profile.wartime,/1943/);assert.match(r.profile.postwar,/1952/);
+ assert.ok(r.profile.references.some(x=>x.url.includes('NOTICE-metropolis')));
+ assert.ok(r.profile.references.some(x=>x.url.includes('oral-histories')));
+});
+test('Frankel preserves the chosen photo identity and source-qualified chronology',()=>{
+ const r=seedRecords.find(r=>r.surname==='Frankel');
+ assert.equal(r.id,'Frankel-stanley p.jpg');assert.equal(r.badge,'O-2');
+ assert.equal(filterRecords(seedRecords,{query:'O2'})[0],r);
+ assert.ok(filterRecords(seedRecords,{letter:'F'}).includes(r));
+ assert.match(r.note,/letter O/);assert.match(r.note,/different visible markings/);
+ assert.match(r.profile.wartime,/March 1945/);assert.match(r.profile.postwar,/spring 1946/);
+ assert.ok(r.profile.references.some(x=>x.url.includes('Stanley_P._Frankel')));
+ assert.ok(r.profile.references.some(x=>x.url.includes('NOTICE-frankel')));
+});
