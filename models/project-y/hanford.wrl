@@ -1,0 +1,20 @@
+#VRML V2.0 utf8
+WorldInfo { title "Hanford Site — historical schematic" info [ "SCHEMATIC HISTORICAL EXHIBIT — invented placement and simplified exterior forms; not a survey, navigational map, current facility plan, or engineering model. No interiors or operational systems are modeled." "This exterior vignette represents B Reactor and the Columbia River, not the entire Hanford reservation. Building sizes, stack form, river shape, and distances are illustrative; other reactor areas are omitted." "NPS — B Reactor panoramic tour and chronology: https://www.nps.gov/articles/000/hanford-b-reactor-panoramic-tour.htm" "DOE — B Reactor historical overview: https://www.energy.gov/management/b-reactor" "Princeton Nuclear Princeton — Hanford and displacement: https://nuclearprinceton.princeton.edu/hanford-site" ] }
+NavigationInfo { type ["EXAMINE", "ANY"] }
+Background { skyColor [0.94 0.93 0.89] }
+Viewpoint { description "Overview" position 0 105 140 orientation 1 0 0 -0.55 }
+DirectionalLight { direction -1 -2 -1 intensity 0.9 }
+# Interpretive ground plane
+DEF OBJECT_0 Transform { translation 0 -1 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7333333333333333 0.7176470588235294 0.5764705882352941 } } geometry Box { size 130 2 100 } } ] }
+# Columbia River — symbolic strip
+DEF OBJECT_1 Transform { translation 0 0.2 -32 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.403921568627451 0.5843137254901961 0.6039215686274509 } } geometry Box { size 128 0.5 15 } } ] }
+# B Reactor — exterior massing
+DEF OBJECT_2 Transform { translation -18 12 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7647058823529411 0.7372549019607844 0.6666666666666666 } } geometry Box { size 30 24 24 } } ] }
+# Reactor annex — representative
+DEF OBJECT_3 Transform { translation 8 5 3 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8666666666666667 0.8313725490196079 0.7450980392156863 } } geometry Box { size 22 10 20 } } ] }
+# Stack — representative
+DEF OBJECT_4 Transform { translation -36 23 -10 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.6352941176470588 0.5764705882352941 0.5019607843137255 } } geometry Box { size 3 46 3 } } ] }
+# Support building — representative
+DEF OBJECT_5 Transform { translation 32 5 -13 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7725490196078432 0.7176470588235294 0.6 } } geometry Box { size 20 10 13 } } ] }
+# Access road — illustrative
+DEF OBJECT_6 Transform { translation 0 0.1 29 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8705882352941177 0.8392156862745098 0.7372549019607844 } } geometry Box { size 125 0.2 5 } } ] }

@@ -1,0 +1,32 @@
+#VRML V2.0 utf8
+WorldInfo { title "Los Alamos — historical schematic" info [ "SCHEMATIC HISTORICAL EXHIBIT — invented placement and simplified exterior forms; not a survey, navigational map, current facility plan, or engineering model. No interiors or operational systems are modeled." "A symbolic mesa, technical-area blocks, housing, and a community building evoke the wartime laboratory town. No block is an authenticated building footprint." "LANL — Los Alamos National Laboratory, early days: https://www.lanl.gov/media/publications/national-security-science/0423-los-alamos-national-laboratory" "NPS — Los Alamos development and displacement: https://www.nps.gov/articles/000/-h-our-history-lesson-the-development-of-the-manhattan-project-in-los-alamos-county-new-mexico-wwii-heritage-city.htm" ] }
+NavigationInfo { type ["EXAMINE", "ANY"] }
+Background { skyColor [0.94 0.93 0.89] }
+Viewpoint { description "Overview" position 0 105 140 orientation 1 0 0 -0.55 }
+DirectionalLight { direction -1 -2 -1 intensity 0.9 }
+# Interpretive ground plane
+DEF OBJECT_0 Transform { translation 0 -1 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.6666666666666666 0.6313725490196078 0.5058823529411764 } } geometry Box { size 130 2 100 } } ] }
+# Mesa — symbolic landform
+DEF OBJECT_1 Transform { translation 0 2 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7411764705882353 0.6431372549019608 0.49411764705882355 } } geometry Box { size 96 5 66 } } ] }
+# Main street — illustrative
+DEF OBJECT_2 Transform { translation 0 4.6 3 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8745098039215686 0.8274509803921568 0.7176470588235294 } } geometry Box { size 85 0.2 6 } } ] }
+# Technical-area building 1
+DEF OBJECT_3 Transform { translation -32 8 -17 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8705882352941177 0.8470588235294118 0.7411764705882353 } } geometry Box { size 11 7 14 } } ] }
+# Technical-area building 2
+DEF OBJECT_4 Transform { translation -17 8 -17 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8705882352941177 0.8470588235294118 0.7411764705882353 } } geometry Box { size 11 7 14 } } ] }
+# Technical-area building 3
+DEF OBJECT_5 Transform { translation -2 8 -17 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8705882352941177 0.8470588235294118 0.7411764705882353 } } geometry Box { size 11 7 14 } } ] }
+# Technical-area building 4
+DEF OBJECT_6 Transform { translation 13 8 -17 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8705882352941177 0.8470588235294118 0.7411764705882353 } } geometry Box { size 11 7 14 } } ] }
+# Technical-area building 5
+DEF OBJECT_7 Transform { translation 28 8 -17 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8705882352941177 0.8470588235294118 0.7411764705882353 } } geometry Box { size 11 7 14 } } ] }
+# Housing — representative 1
+DEF OBJECT_8 Transform { translation -28 7 20 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7372549019607844 0.7372549019607844 0.6705882352941176 } } geometry Box { size 12 5 11 } } ] }
+# Housing — representative 2
+DEF OBJECT_9 Transform { translation -10 7 20 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7372549019607844 0.7372549019607844 0.6705882352941176 } } geometry Box { size 12 5 11 } } ] }
+# Housing — representative 3
+DEF OBJECT_10 Transform { translation 8 7 20 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7372549019607844 0.7372549019607844 0.6705882352941176 } } geometry Box { size 12 5 11 } } ] }
+# Housing — representative 4
+DEF OBJECT_11 Transform { translation 26 7 20 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7372549019607844 0.7372549019607844 0.6705882352941176 } } geometry Box { size 12 5 11 } } ] }
+# Community building — representative
+DEF OBJECT_12 Transform { translation 35 9 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7686274509803922 0.611764705882353 0.4588235294117647 } } geometry Box { size 14 9 16 } } ] }
