@@ -2,7 +2,8 @@
    The 2.6 MB ghidra_decompiler.wasm is intentionally *not* precached: the
    service worker caches it on first use, so the lab still works offline after
    one visit without slowing down install for everyone else. */
-const CACHE = "sitek-html5-v24";
+const CACHE_PREFIX = "sitek-html5-";
+const CACHE = `${CACHE_PREFIX}v24`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -15,6 +16,7 @@ const PRECACHE = [
   "./poetry-book.html",
   "./louisiana.html",
   "./terrarium.html",
+  "./calc.html",
   "./glendora.html",
   "./css/glendora.css",
   "./js/glendora-app.js",
@@ -44,6 +46,7 @@ const PRECACHE = [
   "./css/viruslab.css",
   "./css/casefiles.css",
   "./css/studio.css",
+  "./css/calc.css",
   "./css/poetry-book.css",
   "./css/wm.css",
   "./js/app.js",
@@ -81,6 +84,9 @@ const PRECACHE = [
   "./js/studio-data.js",
   "./js/studio-fs.js",
   "./js/studio-wm.js",
+  "./js/calc.js",
+  "./js/calc-core.js",
+  "./calc/devices.json",
   "./js/haiku-catalog.js",
   "./js/bip39.js",
   "./js/bip39-en.js",
@@ -136,7 +142,12 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      // CacheStorage is shared with other apps on this origin. Only retire
+      // caches owned by this worker; leave the book and other apps alone.
+      .then((keys) => Promise.all(
+        keys.filter((k) => k.startsWith(CACHE_PREFIX) && k !== CACHE)
+          .map((k) => caches.delete(k))
+      ))
       .then(() => self.clients.claim())
   );
 });

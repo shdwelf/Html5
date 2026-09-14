@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "source": "Federal Register API v1 (official journal of the U.S. Government), https://www.federalregister.gov/api/v1/documents.json",
+    "query": "conditions[term]=\"General Services Administration\" & conditions[agencies][]=general-services-administration, order=newest",
+    "snapshot": "2026-09-11",
+    "note": "Live refresh re-runs this exact query from the browser; the panel links each document back to federalregister.gov."
+  },
+  "results": [
+    {
+      "title": "Submission for OMB Review; System for Award Management Annual Certification of Compliance With Executive Order 14400, Urgent National Action To Save College Sports",
+      "type": "Notice",
+      "publication_date": "2026-09-11",
+      "document_number": "2026-18609",
+      "citation": "91 FR 57891",
+      "abstract": "Under the provisions of the Paperwork Reduction Act, the Regulatory Secretariat Division will be submitting to OMB a request to review and approve a new information collection requirement regarding annual certification of compliance with Executive Order 14400 from registered Higher Education Institutions in the System for Award Management (SAM.gov).",
+      "html_url": "https://www.federalregister.gov/documents/2026-09-11/2026-18609/submission-for-omb-review-system-for-award-management-annual-certification-of-compliance-with"
+    },
+    {
+      "title": "Submission for OMB Review; Accessibility Conformance Report (ACR) Repository",
+      "type": "Notice",
+      "publication_date": "2026-09-09",
+      "document_number": "2026-18277",
+      "citation": "91 FR 57342",
+      "abstract": "OMB review request for a new information collection regarding the Accessibility Conformance Report (ACR) Repository.",
+      "html_url": "https://www.federalregister.gov/documents/2026-09-09/2026-18277/submission-for-omb-review-accessibility-conformance-report-acr-repository"
+    },
+    {
+      "title": "Information Collection; Nondiscrimination in Federal Financial Assistance Programs, GSA Forms 3702 and 3702R",
+      "type": "Notice",
+      "publication_date": "2026-08-27",
+      "document_number": "2026-17433",
+      "citation": "91 FR 55345",
+      "abstract": "Revision to OMB Control No. 3090-0310 regarding nondiscrimination in GSA's Federal financial assistance programs, consistent with Federal civil rights laws.",
+      "html_url": "https://www.federalregister.gov/documents/2026-08-27/2026-17433/information-collection-nondiscrimination-in-federal-financial-assistance-programs-gsa-forms-3702-and"
+    },
+    {
+      "title": "Privacy Act of 1974; System of Records — Contracted Travel Services Program, GSA/GOVT-4",
+      "type": "Notice",
+      "publication_date": "2026-08-20",
+      "document_number": "2026-16980",
+      "citation": "91 FR 53864",
+      "abstract": "Update to the system of records for the Contracted Travel Services Program, providing travel management services for government agencies.",
+      "html_url": "https://www.federalregister.gov/documents/2026-08-20/2026-16980/privacy-act-of-1974-system-of-records"
+    },
+    {
+      "title": "Submission for OMB Review; Contract Financing",
+      "type": "Notice",
+      "publication_date": "2026-08-14",
+      "document_number": "2026-16678",
+      "citation": "91 FR 52695",
+      "abstract": "Extension of a previously approved information collection regarding contract financing (OMB/OFPP, DoD, GSA, NASA).",
+      "html_url": "https://www.federalregister.gov/documents/2026-08-14/2026-16678/submission-for-omb-review-contract-financing"
+    },
+    {
+      "title": "Submission for OMB Review; Prospective Subcontractor Requests for Bonds",
+      "type": "Notice",
+      "publication_date": "2026-08-14",
+      "document_number": "2026-16677",
+      "citation": "91 FR 52696",
+      "abstract": "Extension of a previously approved information collection regarding prospective subcontractor requests for bonds.",
+      "html_url": "https://www.federalregister.gov/documents/2026-08-14/2026-16677/submission-for-omb-review-prospective-subcontractor-requests-for-bonds"
+    }
+  ]
+}

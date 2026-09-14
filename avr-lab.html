@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0c14" />
+  <meta name="description" content="Walk an ATmega/AVR bootloader image from its reset vector: decode every instruction, follow the control flow, and see which flash-write (SPM) sites a redirect can actually reach. Runs entirely in this tab." />
+  <title>AVR Lab · walk a bootloader from its reset vector</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./css/validator.css" />
+  <link rel="stylesheet" href="./css/viruslab.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html#grid" aria-label="Back to SITE-K">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-copy">
+          <strong>AVR LAB</strong>
+          <small>ATMEL FIRMWARE WALK · WASM-FREE</small>
+        </span>
+      </a>
+      <div class="header-right">
+        <span class="local-status"><i></i>CLIENT-SIDE ONLY</span>
+        <a class="back-link" href="./index.html#studio" target="_top">SITE-K <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span>03</span><b></b>INTEL HEX · CONTROL-FLOW WALK · SELF-PROGRAMMING SITES</div>
+        <h1 id="page-title">AVR<br /><em>Firmware Walk</em></h1>
+        <p class="hero-copy">
+          A bootloader is the code that decides whether a machine accepts new firmware — so the question a boot-chain
+          review actually has is: <strong>which flash-write sites can a redirect reach?</strong> This page decodes the
+          image, walks it from the reset vector, and answers that per <code>SPM</code> site. The decoder is the same
+          <code>js/avrdis.js</code> the tools use, and it is checked instruction-for-instruction against
+          <code>avr-objdump</code> output that upstream itself published —
+          <code>node tools/verify_avrdis.mjs</code> fails if that stops being true.
+        </p>
+      </section>
+
+      <section aria-labelledby="input-title">
+        <h2 id="input-title">Firmware image</h2>
+        <p class="hero-copy">
+          The two images below are vendored, unmodified, commit-pinned ATmega328P bootloaders —
+          Optiboot 8.0 and Micronucleus v2.6; provenance and hashes are in <code>samples/avr/PROVENANCE.md</code>.
+          Nothing is uploaded: the file is read in this tab. (Opening this page straight off disk blocks the
+          <code>fetch</code>, so the paste box is there for that case.)
+        </p>
+        <div class="control-row">
+          <label for="sample-select">sample</label>
+          <select id="sample-select">
+            <option value="optiboot">Optiboot 8.0 · ATmega328P · 512 B at 0x7E00</option>
+            <option value="micronucleus">Micronucleus 2.6 · ATmega328P · 1498 B at 0x7A00</option>
+          </select>
+          <button id="load-sample" type="button">Load</button>
+          <label for="listing-select">listing</label>
+          <select id="listing-select">
+            <option value="optiboot">Optiboot avr-objdump listing (names the functions)</option>
+            <option value="none">none</option>
+          </select>
+          <button id="analyse-paste" type="button">Analyse pasted hex</button>
+        </div>
+        <div class="preset-row">
+          <label for="hex-input">Intel HEX</label>
+          <textarea id="hex-input" rows="4" spellcheck="false" placeholder=":100000000C9434000C944F000C944F000C944F0082
+…paste the whole .hex here…"></textarea>
+        </div>
+        <div id="status" class="verdict"></div>
+      </section>
+
+      <section aria-labelledby="summary-title">
+        <h2 id="summary-title">Image</h2>
+        <table class="kv" id="summary"></table>
+      </section>
+
+      <section aria-labelledby="sites-title">
+        <h2 id="sites-title">Self-programming and control-flow sites</h2>
+        <p class="hero-copy">
+          <code>SPM</code> writes flash: it is page erase, page fill and page write for the bootloader's own update
+          path, and it is the operation the chipset lock in <code>rtl/</code> gates on the host side. A site marked
+          <em>dead</em> is decoded and real but cannot be reached from the reset vector or from either side of any
+          conditional — a latent write primitive rather than a live update path.
+        </p>
+        <table class="kv" id="sites"></table>
+      </section>
+
+      <section aria-labelledby="disasm-title">
+        <h2 id="disasm-title">Disassembly</h2>
+        <div class="control-row">
+          <label for="filter-sites">show</label>
+          <select id="filter-sites">
+            <option value="all">every instruction</option>
+            <option value="sites">only SPM/LPM/ELPM/WDR sites</option>
+            <option value="dead">only unreachable (dead) instructions</option>
+          </select>
+          <span id="disasm-count" class="hero-copy"></span>
+        </div>
+        <table class="kv" id="disasm"></table>
+      </section>
+
+      <section aria-labelledby="notes-title">
+        <h2 id="notes-title">What this page does and does not do</h2>
+        <div class="notes">
+          <ul>
+            <li><strong>It does not decompile to C.</strong> The vendored Ghidra-wasm bridge cannot decompile AVR8 —
+              its <code>LoadImageXml</code> reads outside the word-addressed <code>code</code> space and returns
+              <code>DataUnavailError</code>. That is reproduced by <code>node tools/ghidra_avr.mjs … --probe</code>
+              (0/36 combinations) rather than hidden, and it is why the walk here is done by decoding instructions
+              instead of by a decompiler.</li>
+            <li><strong>The decoder is not self-certified.</strong> <code>tools/verify_avrdis.mjs</code> compares it
+              against the <code>avr-objdump</code> listing upstream shipped with Optiboot 8.0: 225/225 instructions,
+              78/78 branch and call targets resolved by objdump itself, and the symbol table of that listing.</li>
+            <li><strong>The walk is conservative, and that is deliberate.</strong> It follows the reset vector and
+              both sides of every conditional and skip instruction. Indirect jumps (<code>ijmp</code>/<code>icall</code>)
+              end a path instead of being guessed, so "reachable" is a lower bound: a site this page calls dead is
+              unreachable by static control flow, while a site it calls reachable is reachable in the image's own terms
+              (interrupt vectors are only scanned for an image loaded at address 0 — a bootloader has none).</li>
+            <li><strong>This is the stand-in for vendor firmware.</strong> The MAKInterface / MAKInterface Pro images
+              could not be retrieved — the host refuses connections from this environment and the archives are blocked
+              or gone (<code>samples/avr/PROVENANCE.md</code> records that). These two bootloaders are the same class
+              of code the device would run, and both are verified the same way.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./js/avr-lab.js"></script>
+</body>
+</html>

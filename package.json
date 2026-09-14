@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/build-xdc.mjs",
+    "build:bluetops": "node scripts/build-bluetops-xdc.mjs",
     "build:web": "vite build",
     "preview": "vite preview",
     "test": "vitest run"
@@ -31,6 +32,7 @@
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
+    "esbuild": "^0.28.2",
     "fake-indexeddb": "^6.2.5",
     "fflate": "^0.8.3",
     "jsdom": "^30.0.1",

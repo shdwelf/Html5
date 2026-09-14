@@ -1,0 +1,88 @@
+# Archived files to retrieve, one per line:
+#
+#   <url> <output-path-relative-to-samples/archive> [expected-size]
+#
+# The URL must be a web.archive.org raw-bytes URL — the `id_` modifier directly
+# after the timestamp is what returns the file as it was served, instead of the
+# Archive's rewritten copy. The expected size is the CDX index's `length` column;
+# a mismatch fails that file rather than writing something truncated.
+#
+# ---------------------------------------------------------------- makinterface.de
+# The vendor firmware this whole thread started from. The site itself refuses
+# connections from the development sandbox, but every download it ever published
+# is in the Archive. Sizes are from the CDX index (see samples/archive/PROVENANCE.md).
+#
+# MAKInterface Pro (the programmer this device is), and the Digital Mode Switch
+# extension board the original request named.
+https://web.archive.org/web/20000830072829id_/http://www.makinterface.de:80/MAKI-PRO.ZIP makinterface/MAKI-PRO.ZIP 22894
+https://web.archive.org/web/20051028062659id_/http://www.makinterface.de:80/dms.zip makinterface/dms.zip 1457566
+https://web.archive.org/web/20020822020619id_/http://www.makinterface.de:80/DMS_EN.ZIP makinterface/DMS_EN.ZIP 218350
+https://web.archive.org/web/20011120041300id_/http://www.makinterface.de:80/DMS_DE.ZIP makinterface/DMS_DE.ZIP 219092
+#
+# Programming tools that ship firmware of their own: IC-PROG and PonyProg are the
+# classic AVR/EEPROM programmers, MAKITEST is the vendor's own test utility.
+https://web.archive.org/web/20011120041757id_/http://www.makinterface.de:80/IC-PROG.ZIP makinterface/IC-PROG.ZIP 112776
+https://web.archive.org/web/20011120045326id_/http://www.makinterface.de:80/PONYPROG.ZIP makinterface/PONYPROG.ZIP 93169
+https://web.archive.org/web/20011108012902id_/http://www.makinterface.de:80/MAKITEST.ZIP makinterface/MAKITEST.ZIP 378338
+#
+# Smart-card and adapter material (the device family is a smart-card/interface
+# programmer), plus the pinout and adapter drawings.
+https://web.archive.org/web/20010914164750id_/http://www.makinterface.de:80/SMARTCRD.ZIP makinterface/SMARTCRD.ZIP 330004
+https://web.archive.org/web/20000830072837id_/http://www.makinterface.de:80/Adapter.zip makinterface/Adapter.zip 366258
+https://web.archive.org/web/20000830072841id_/http://www.makinterface.de:80/Pinout.zip makinterface/Pinout.zip 7200
+
+# ---------------------------------------------------------------- round 2
+# The small archives turned out to be documentation and Windows installers (see
+# samples/archive/INSPECT.md): no embedded Intel HEX anywhere. These are the
+# vendor's application packages - which is where a programmer of this class keeps
+# the firmware it flashes into its own interface chip. Sizes from the CDX index.
+https://web.archive.org/web/20000830072825id_/http://www.makinterface.de:80/MANUAL.ZIP makinterface/MANUAL.ZIP 385754
+https://web.archive.org/web/20011120044350id_/http://www.makinterface.de:80/MANUAL-D.ZIP makinterface/MANUAL-D.ZIP 567120
+https://web.archive.org/web/20011120042845id_/http://www.makinterface.de:80/MAKS_DE.ZIP makinterface/MAKS_DE.ZIP 285565
+https://web.archive.org/web/20020618165158id_/http://makinterface.de:80/MAKS_EN.ZIP makinterface/MAKS_EN.ZIP 951698
+https://web.archive.org/web/20051028062138id_/http://www.makinterface.de:80/MaksAct.zip makinterface/MaksAct.zip 1691958
+https://web.archive.org/web/20020316224210id_/http://www.makinterface.de:80/MAKI_DE.ZIP makinterface/MAKI_DE.ZIP 3055846
+https://web.archive.org/web/20020618170559id_/http://makinterface.de:80/MAKI_EN.ZIP makinterface/MAKI_EN.ZIP 2608558
+https://web.archive.org/web/20011029161123id_/http://www.makinterface.de:80/SCPROG.ZIP makinterface/SCPROG.ZIP 2224710
+https://web.archive.org/web/20021213134525id_/http://www.makinterface.de:80/PRSC.ZIP makinterface/PRSC.ZIP 2224707
+https://web.archive.org/web/20051210081704id_/http://www.makinterface.de/makstripe.zip makinterface/makstripe.zip 2341381
+
+# ---------------------------------------------------------------- round 3
+# The smartcard round (see docs/RESEARCH_SMARTCARD.md): MAKInterface-ecosystem
+# programmer/magstripe software, period AVR development tools, and the router
+# firmware the order named. Policy: firmware images + docs + dev tools only —
+# key/blocker/enabler material stays inventoried but unqueued.
+#
+# --- digital-laboratory.de: MAKInterface-ecosystem downloads (no CDX lengths
+# --- for this host, so sizes are omitted and the sha256 + ZIP self-check rule)
+https://web.archive.org/web/20000417211846id_/http://www.digital-laboratory.de:80/MAKI.RDC digitallab/MAKI.RDC
+https://web.archive.org/web/20001003210840id_/http://www.digital-laboratory.de:80/MAGSR099.ZIP digitallab/MAGSR099.ZIP
+https://web.archive.org/web/20010406204242id_/http://www.digital-laboratory.de:80/PCSC.TXT digitallab/PCSC.TXT
+https://web.archive.org/web/20001003210216id_/http://www.digital-laboratory.de:80/UCE32.ZIP digitallab/UCE32.ZIP
+https://web.archive.org/web/20010619081503id_/http://www.digital-laboratory.de:80/SCE-202.ZIP digitallab/SCE-202.ZIP
+https://web.archive.org/web/20001003210250id_/http://www.digital-laboratory.de:80/VB6LIB.ZIP digitallab/VB6LIB.ZIP
+https://web.archive.org/web/20001003210632id_/http://www.digital-laboratory.de:80/FT50V099.ZIP digitallab/FT50V099.ZIP
+https://web.archive.org/web/20010616153533id_/http://www.digital-laboratory.de:80/GK-102.ZIP digitallab/GK-102.ZIP
+#
+# --- dr7.com (DSS Research): AVR development tools + docs, sizes from CDX
+https://web.archive.org/web/20000915224717id_/http://www.dr7.com:80/echofiles/avrprogrammer.zip dr7/avrprogrammer.zip 51425
+https://web.archive.org/web/20000915224203id_/http://www.dr7.com:80/echofiles/avrsetup.zip dr7/avrsetup.zip 71032
+https://web.archive.org/web/20000915223903id_/http://www.dr7.com:80/echofiles/avrskels.zip dr7/avrskels.zip 2325
+https://web.archive.org/web/20000915225218id_/http://www.dr7.com:80/echofiles/disavr121.zip dr7/disavr121.zip 19199
+https://web.archive.org/web/20000915224545id_/http://www.dr7.com:80/echofiles/at90sart.zip dr7/at90sart.zip 9920
+https://web.archive.org/web/20000915230604id_/http://www.dr7.com:80/dssfiles/newbieprogramming.zip dr7/newbieprogramming.zip 7410
+https://web.archive.org/web/20000915230800id_/http://www.dr7.com:80/dssfiles/prginst.zip dr7/prginst.zip 6151
+https://web.archive.org/web/20000915230656id_/http://www.dr7.com:80/dssfiles/99info.zip dr7/99info.zip 30023
+https://web.archive.org/web/20000915224055id_/http://www.dr7.com:80/echofiles/esfaq103199.zip dr7/esfaq103199.zip 24999
+#
+# --- hackhu.com: serial-port notes + about (2000s research era)
+https://web.archive.org/web/20010411043206id_/http://hackhu.com:80/9pincom.htm hackhu/9pincom.htm
+https://web.archive.org/web/20010605001856id_/http://www.hackhu.com:80/about.htm hackhu/about.htm
+#
+# --- GL-iNet MT300N-V2: closest archived build to the requested 3.204-1112
+# --- testing image (whose only capture is a 404)
+https://web.archive.org/web/20221217212147id_/https://fw.gl-inet.com/firmware/mt300n-v2/v1/openwrt-mt300n-v2-3.203-0805.bin glinet/openwrt-mt300n-v2-3.203-0805.bin 12537312
+#
+# --- live files the Archive never captured (direct: = runner fetches live)
+direct:https://www.basiccard.zeitcontrol.de/download.htm live/basiccard-download.htm
+direct:https://fw.gl-inet.com/firmware/mt300n-v2/testing/openwrt-mt300n-v2-3.204-1112.bin live/gl-inet-mt300n-v2-3.204-1112.bin
