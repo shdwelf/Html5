@@ -12,6 +12,7 @@ needed to serve the app — `ghidra-lab.html` is plain static HTML + ES modules.
 | `stage_ghidra_specs.py` | Re-vendors the Ghidra decompiler wasm + the x86 SLEIGH specs into `wasm/ghidra`. |
 | `smoke_pipeline.mjs` | Runs the whole DOM-free analysis path over every sample and prints what the panels would show. Catches crashes and empty panels without a browser. |
 | `render_research.mjs` | Renders `js/virus-catalog.js` to `criteria/RESEARCH-VIRUSES.md`. |
+| `verify_lecture_hall.mjs` | Headless proof for the cipher suite’s Intelligence Lecture Hall: re-derives every published ciphertext (Field Notes wheel, F5 Black Hat 2016, the USCYBERCOM seal digest) and audits the bundle the records live in. No dependencies. |
 | `build_entropy_wasm.py` | Pre-existing: hand-assembles the small keyspace projector wasm. |
 
 ## Verification workflow
@@ -23,6 +24,7 @@ node tools/serve.mjs 8099 &                        # wasm + specs over HTTP
 node tools/verify_ghidra.mjs 8099                  # decompile every symbol
 node tools/smoke_pipeline.mjs                      # analysis path over every sample
 node tools/render_research.mjs                     # regenerate criteria/RESEARCH-VIRUSES.md
+node tools/verify_lecture_hall.mjs                   # lecture-hall claims + suite bundle integrity
 ```
 
 ## Rebuilding the sample binaries
