@@ -20,9 +20,13 @@ import { dissect } from "./artifacts.js";
 import {
   SITE, LIBRARY, NOT_CAPTURED, CURATED, RAMROD, METHOD, REFERENCES,
   RIDDLE, DR7, HACKHU, DIRT, SATMURACH, WARRICK, SHADOWELF,
-  VXHEAVENS, TROJANLAIR, TROJANSLAIR, HUUNLOOPER,
+  VXHEAVENS, TROJANLAIR, TROJANSLAIR, HUUNLOOPER, MAKINT, PERIPHERALS,
   waybackUrl, waybackView, cdxUrl,
 } from "./krome-catalog.js";
+import {
+  MAK_HEADER, makeMakLines, etuUs, CRYSTALS, atrBuild, atrParse,
+  t0Frame, makeCardImage, resetAndAnswer, cuecatSections, SCOPE,
+} from "./makint.js";
 const $ = (id) => document.getElementById(id);
 const isHexAddr = (s) => /^(0x)?[0-9a-f]+$/i.test(s.trim());
 
@@ -484,6 +488,10 @@ const CASES = {
     title: "HU UNLOOPER", sub: "P3/HU card glitch shelf · UL4S/HUFF · 1999–2006",
     chip: `lab · ${HUUNLOOPER.scripts.length} scripts + ${HUUNLOOPER.files.length} captures`,
   },
+  makint: {
+    title: "MAKINTERFACE", sub: "Maki GmbH, Karben · serial-port universal programmer + card emulator",
+    chip: `wayback · ${MAKINT.files.length} verified captures · ${PERIPHERALS.name.includes("CueCat") ? "+2 port-era devices" : ""}`,
+  },
   demo: {
     title: "DEMO.EXE", sub: "63-byte MZ in this repo",
     chip: "local · offline",
@@ -502,6 +510,7 @@ function selectCase(id) {
   if (id === "vcl") renderVclPanel(host);
   if (id === "trojanslair") renderTrojanPanel(host);
   if (id === "huunloop") renderHuunloopPanel(host);
+  if (id === "makint") renderMakintPanel(host);
   if (id === "demo") loadArtifact("demo.exe", DEMO_BYTES, "repository demo.exe");
   renderDossier();
   showTab(id === "demo" ? "listing" : "dossier");
@@ -1059,6 +1068,173 @@ function renderHuunloopDossier(host) {
   ));
 }
 
+/* ---- MAKInterface (wave 8) ---- */
+
+/**
+ * The panel doubles as a bench: the pinout the vendor published is loaded into
+ * js/makint.js and driven in memory, so the emulation question is answered by a
+ * run rather than by prose. No port, no device, no network — the only
+ * interaction with the archives is the recovery sweep, which is user-clicked.
+ */
+function renderMakintPanel(host) {
+  const M = MAKINT;
+  const panel = el("section", { class: "panel" });
+  panel.append(el("div", { class: "panel-head" },
+    el("h2", { text: "MAKINTERFACE" }),
+    el("span", { class: "panel-tag", text: `${M.files.length} verified captures · bench runs offline` })));
+  panel.append(el("p", { class: "panel-note", html:
+    `One 2×5 header, jumper-selected into nine different programmers. The port it hangs on ` +
+    `<em>is the 25-pole serial port</em> — the box takes its 5 V (12 V for PIC VPP) from the ` +
+    `RS-232 handshake lines; the parallel port belongs to the optional wide PROM adapter and ` +
+    `to art. 00605, the standalone Nokia flasher. ${M.files.length} captures below are ` +
+    `re-verified against the CDX index this wave: the five December-2005 drops from the HU-unlooper ` +
+    `case, seven siblings that same crawl caught, and the pages the pinouts were read from.` }));
+
+  const zips = M.files.filter((f) => f.name.toLowerCase().endsWith(".zip"));
+  panel.append(el("div", { class: "field-row" },
+    el("button", {
+      type: "button", class: "mini on", id: "btnMiSweep",
+      onclick: () => ghidraSweep({
+        files: zips,
+        nameOf: (f) => f.url.replace(/^http:\/\/(www\.)?/, ""),
+        caseLabel: "MAKInterface vendor depot",
+        statusId: "miSweepStatus", btnId: "btnMiSweep",
+        cardHostId: "miRecovered", reportId: "miGhidraReport",
+      }),
+      text: `GHIDRA SWEEP — ${zips.length} VENDOR ARCHIVES`,
+    }),
+    el("button", {
+      type: "button", class: "mini", id: "btnMiBench",
+      onclick: () => runMakintBench(),
+      text: "RUN THE VIRTUAL INTERFACE",
+    }),
+    el("span", { class: "mini-note dim", id: "miSweepStatus", text: "zips are hash-gated in your tab; the bench needs nothing at all" }),
+  ));
+  panel.append(el("div", { id: "miGhidraReport" }));
+  panel.append(el("div", { id: "miBench" }));
+
+  panel.append(el("div", { class: "catalog" }, ...M.files.map((f) => el("button", {
+    type: "button", class: "cat-item",
+    onclick: () => recoverCapture({ name: f.name, url: f.url, ts: f.ts, digest: f.digest, hostId: "miRecovered" }),
+  },
+    el("span", { class: "cat-name", text: f.name }),
+    el("span", { class: "cat-kind", text: `${shortDate(f.ts)} · ${f.digest.slice(0, 8)}` }),
+    f.desc ? el("span", { class: "cat-note", text: f.desc }) : null,
+  ))));
+  host.append(panel);
+  host.append(el("section", { class: "panel" },
+    el("div", { class: "panel-head" }, el("h2", { text: "Recovery log" })),
+    el("div", { id: "miRecovered", class: "members" }),
+  ));
+}
+
+/**
+ * Drive the model the same way the period software would: power from the
+ * handshake lines, hold reset, read the ATR, select a file, read it back, then
+ * decode a :CueCat scan through the same pure functions. Everything printed
+ * here is computed on click, so the numbers can be checked against
+ * tests/13-makint.mjs — which asserts the identical calls.
+ */
+function runMakintBench() {
+  const host = $("miBench");
+  if (!host) return;
+  host.textContent = "";
+
+  const card = makeCardImage();
+  const cyc = resetAndAnswer(card);
+  const atrInfo = atrParse(card.atr);
+  const sel = card.exchange(Uint8Array.from([0x00, 0xa4, 0x00, 0x00, 0x02, 0x6f, 0x07]));
+  const rd = card.exchange(Uint8Array.from([0x00, 0xb0, 0x00, 0x00, 0x04]));
+  const lines = makeMakLines().powerOn(true);
+  const hexs = (a) => Array.from(a, (b) => b.toString(16).padStart(2, "0").toUpperCase()).join(" ");
+
+  const rows = [
+    ["VCC on pin 8 after the port is asserted", String(lines.apply("reader", "VCC")[0])],
+    ["reset line (pin 6) after release", String(lines.apply("reader", "Reset")[0])],
+    ["I/O pair (pins 1+2) both driven", lines.apply("reader", "IO").join(",")],
+    ["ATR the model answers with", hexs(card.atr)],
+    ["ATR parse · Fi/Di, protocol", `${atrInfo.Fi}/${atrInfo.Di} · T=${atrInfo.protocol}`],
+    ["ETU at the shipping crystal", `${etuUs(CRYSTALS.shipped.hz).toFixed(3)} µs → ${atrInfo.baud.toFixed(1)} baud`],
+    ["TCK parity", atrInfo.tckValid ? "valid" : "invalid"],
+    ["SELECT 6F07", `SW ${hexs(sel)}`],
+    ["READ BINARY 4", `data ${hexs(rd.slice(0, 4))} · SW ${hexs(rd.slice(4))}`],
+    ["one framed ATR byte (0x3B)", cyc.frames[0].join("")],
+    ["scope", SCOPE],
+  ];
+  const cat = cuecatSections(".C3nZC3nZC3nZE3r0Chr3CNnY.cGf2.ENr7C3n1C3PWD3rYCxzYChnZ.");
+  rows.push([":CueCat serial section", cat.serial]);
+  rows.push([":CueCat type", cat.type]);
+  rows.push([":CueCat code → Bookland EAN", cat.code]);
+
+  const table = el("div", { class: "hash-table" });
+  table.append(el("div", { class: "hash-head" },
+    el("span", { text: "BENCH — js/makint.js, computed on click" }),
+    el("span", { text: "RESULT" })));
+  for (const [k, v] of rows) {
+    table.append(el("div", { class: "hash-row" },
+      el("span", { class: "hash-file", text: k }),
+      el("span", { class: "hash-digest", text: v })));
+  }
+  host.append(el("section", { class: "panel" },
+    el("div", { class: "panel-head" }, el("h2", { text: "Virtual interface bench" }),
+      el("span", { class: "panel-tag", text: "no device · no port · no network" })),
+    table,
+  ));
+  logTo("makint bench: ATR built, T=0 exchange run, :CueCat section decoded", "ok");
+}
+
+function renderMakintDossier(host) {
+  const M = MAKINT;
+  host.append(el("section", { class: "case-block" },
+    el("h3", {}, `${M.name} `, el("small", { text: `· ${M.years}` })),
+    el("p", { class: "prose", text: M.blurb }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "Which port — the one thing worth correcting" }),
+    el("p", { class: "prose", text: M.port.quote }),
+    el("p", { class: "prose", text: M.port.parallelIsFor }),
+    el("p", { class: "prose dim", text: `Clock: ${M.port.clock}` }),
+  ));
+  const P = M.pinouts;
+  const pinTable = el("div", { class: "hash-table" });
+  pinTable.append(el("div", { class: "hash-head" },
+    el("span", { text: "LINE" }), el("span", { text: "MAKI 2×5 HEADER (verbatim from pinout_e.php3)" })));
+  for (const [mode, row] of Object.entries({ reader: P.reader, emulator: P.emulator })) {
+    pinTable.append(el("div", { class: "hash-row" },
+      el("span", { class: "hash-file", text: `${mode}: ${row.device}` }),
+      el("span", { class: "hash-digest", text: `VCC ${row.VCC} · Reset ${row.Reset} · CLK ${row.CLK} · GND ${row.GND} · I/O ${row.IO}` }),
+    ));
+  }
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "The two smart-card rows, and why pins 1+2 are a pair" }),
+    pinTable,
+    el("p", { class: "prose", text: P.note }),
+    el("p", { class: "prose dim", text: `Header: ${P.header}` }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "Emulating the card, and where this stops" }),
+    el("p", { class: "prose", text: M.emulation.answer }),
+    el("p", { class: "prose dim", html:
+      `Vendor emulator hardware: ${M.emulation.vendorProducts}<br>Universal PCB: ${M.emulation.universalPcb}<br>Modes: ${M.emulation.modes}` }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "What was disassembled, and what stayed pinned" }),
+    el("p", { class: "prose", text: M.disasm }),
+    el("p", { class: "prose dim", html:
+      `Upstream: <a target="_blank" rel="noreferrer" href="https://github.com/s3c/PyMAKInt">s3c/PyMAKInt</a> — ${M.upstream.note}<br>` +
+      `Protocol recovered from its constant pool: ${M.upstream.protocol}` }),
+  ));
+  host.append(el("section", { class: "case-block" },
+    el("h3", { text: "The :CueCat and the Clik!" }),
+    el("p", { class: "prose" }, el("strong", { text: PERIPHERALS.cuecat.what })),
+    el("p", { class: "prose", text: PERIPHERALS.cuecat.disasm }),
+    el("p", { class: "prose dim", text: PERIPHERALS.cuecat.whyItMatters }),
+    el("p", { class: "prose" }, el("strong", { text: PERIPHERALS.clik.what })),
+    el("p", { class: "prose", text: PERIPHERALS.clik.disasm }),
+    el("p", { class: "prose dim", text: PERIPHERALS.clik.whyItMatters }),
+  ));
+}
+
 /* ---- ghidra sweep ---- */
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -1228,6 +1404,7 @@ function renderDossier() {
   if (state.caseId === "vcl") renderVclDossier(host);
   if (state.caseId === "trojanslair") renderTrojanDossier(host);
   if (state.caseId === "huunloop") renderHuunloopDossier(host);
+  if (state.caseId === "makint") renderMakintDossier(host);
   if (state.caseId === "demo") host.append(el("section", { class: "case-block" },
     el("h3", { text: "demo.exe — the engine's sanity check" }),
     el("p", { class: "prose", text: "A 63-byte MZ binary that lives in the repository. It exists so you can prove the whole pipeline (sniff → disassemble → decompile) works before asking the Wayback Machine for anything." }),

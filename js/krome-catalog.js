@@ -1079,6 +1079,295 @@ export const HUUNLOOPER = {
   ],
 };
 
+/* ------------------------------------------------- MAKInterface port lab (wave 8)
+ *
+ * The five December-2005 drops wave 7 pinned are correct — every digest in the
+ * table below was re-queried against the live CDX index this session and came
+ * back identical. What wave 7 could not see is that the Dec-11-2005 crawl
+ * caught *twelve* archives the same morning, and that the vendor's own pages
+ * answer the two questions the case had left open: which port the box hangs on,
+ * and whether a smart-card *emulator* is in scope. Both are documented below,
+ * with the capture each fact came from.
+ *
+ * Two corrections worth stating plainly:
+ *   · The MAKInterface is not a parallel-port device. home1_e.php3: "MAKInterface
+ *     has to be connected to a free 25pole serial port", powered from the
+ *     RS-232 lines. The parallel port appears twice, for other things: the
+ *     optional wide PROM/EPROM adapter ("free Parallel Ports on the PC are
+ *     required") and art. 00605, a standalone parallel-port Nokia flasher.
+ *   · SCPROG.ZIP and PRSC.ZIP are the same bytes (identical SHA-1) — the
+ *     smart-card programmer archive was simply renamed upstream.
+ */
+export const MAKINT = {
+  name: "MAKInterface — Universal Programmer, Port and Emulation Lab",
+  years: "1999–2011 · Maki GmbH, Hessenring 72, D-61184 Karben",
+  blurb:
+    "MAKInterface is a German bit-banged universal programmer: smart-card " +
+    "reader/writer, smart-card *emulator* and in-line datalogger, Atmel/PIC/" +
+    "EEPROM programmer, Pocsag-FSK decoder and ALDL car-diagnostic port — one " +
+    "2×5 header, jumper-selected to behave as CBUS, DumbMouse, FBUS, Harpune, " +
+    "JDM, LudiPipo, M2BUS, Phoenix, Season7 or SmartMouse, powered from the " +
+    "serial port itself. This case re-verifies wave 7's five December-2005 " +
+    "software drops against the live CDX index, adds the seven sibling " +
+    "archives that same crawl caught, and disassembles what is actually " +
+    "reachable from a sandbox: the PyMAKInt driver that was written to drive " +
+    "the MAKStripe, its CPython 3.4 bytecode, and the .mag capture container — " +
+    "then builds a virtual interface on top of the recovered pinouts.",
+  files: [
+    // the five wave-7 pins, each re-verified this session (digest + length)
+    {
+      name: "dms.zip", ts: "20051211085316", warc: 1457565, digest: "MKU573ISDNMH7NJFCCWI64NFXQ7GVPRK",
+      url: "http://www.makinterface.net/dms.zip",
+      desc: "MAKInterface software drop, Dec 2005 (1.4 MB) — wave-7 pin re-verified byte-length + SHA-1",
+    },
+    {
+      name: "MaksAct.zip", ts: "20051211101932", warc: 1691962, digest: "ALM5LHEYGZFES7XMAKRWRHZ3LKHFM47K",
+      url: "http://www.makinterface.net/MaksAct.zip",
+      desc: "MAKInterface software drop, Dec 2005 (1.6 MB) — re-verified",
+    },
+    {
+      name: "makstripe.zip", ts: "20051211094137", warc: 2341373, digest: "K65J3QAURDS37Z4KLYCDEUBMHVKSK3YK",
+      url: "http://www.makinterface.net/makstripe.zip",
+      desc: "MAKStripe vendor side of the s3c/PyMAKInt target (2.3 MB) — re-verified",
+    },
+    {
+      name: "makstripee.zip", ts: "20051211083217", warc: 2273175, digest: "SPLNPY3WHCD4ILZ3P4OREVITSVHOSQ3R",
+      url: "http://www.makinterface.net/makstripee.zip",
+      desc: "MAKStripeE software, Dec 2005 (2.2 MB) — re-verified",
+    },
+    {
+      name: "Pinout.zip", ts: "20051220011357", warc: 7212, digest: "GOBEFEPET63CQHNJNPO6LCEX2JC5L646",
+      url: "http://www.makinterface.net/Pinout.zip",
+      desc: "MAKInterface pinout docs (7 KB) — the header↔port correspondence lives here",
+    },
+    // the seven siblings of the same 11-Dec-2005 morning, added this wave
+    {
+      name: "MAKI_DE.ZIP", ts: "20051211095800", warc: 2615431, digest: "757MD7VICC3V5AOCJUY7CFEEY5U5TRGV",
+      url: "http://www.makinterface.net/MAKI_DE.ZIP",
+      desc: "the MAKInterface driver/toolkit, German — 2.6 MB, same digest across nine captures 2003→2006",
+    },
+    {
+      name: "MAKI_EN.ZIP", ts: "20051211085636", warc: 2608581, digest: "JOXDCFX5QJIM5OCHVDDRC3PM4X2O2FDI",
+      url: "http://www.makinterface.net/MAKI_EN.ZIP",
+      desc: "English twin of MAKI_DE — 2.6 MB, nine captures, one stable SHA-1",
+    },
+    {
+      name: "MAKITEST.ZIP", ts: "20051211091216", warc: 936801, digest: "QAPUBDQ5CANNYZJJGMLI23GFQEI3ZAKS",
+      url: "http://www.makinterface.net/MAKITEST.ZIP",
+      desc: "MAKITEST — the vendor's own interface exerciser (915 KB), unchanged 2002→2006",
+    },
+    {
+      name: "MAKS_DE.ZIP", ts: "20051211094251", warc: 1777851, digest: "NABWUJZYJYOWMZUCOLE24LQKIEYOUIDT",
+      url: "http://www.makinterface.net/MAKS_DE.ZIP",
+      desc: "MAK'S smart-card software, German — three version changes visible in the digest chain 2002–2003",
+    },
+    {
+      name: "MAKS_EN.ZIP", ts: "20051211100929", warc: 1775284, digest: "2XO6OQX7HYQ4KY5TU3E5IBG2XV56IACW",
+      url: "http://www.makinterface.net/MAKS_EN.ZIP",
+      desc: "MAK'S smart-card software, English (1.7 MB)",
+    },
+    {
+      name: "DMS_EN.ZIP", ts: "20051211083627", warc: 218343, digest: "ZKNXAD3CUT5R4UELGWZX62S2IZO4MYTL",
+      url: "http://www.makinterface.net/DMS_EN.ZIP",
+      desc: "DMS database tool, English — the small archive beside the 1.4 MB dms.zip",
+    },
+    {
+      name: "PRSC.ZIP", ts: "20051211093745", warc: 2224719, digest: "4OIYHEDGZD62BCFIKOEEX2JJMDGX2SPW",
+      url: "http://www.makinterface.net/PRSC.ZIP",
+      desc: "PRSC.ZIP — identical SHA-1 to SCPROG.ZIP@20020623: the smart-card programmer, renamed",
+    },
+    // documents and the pages the facts above were read from
+    {
+      name: "DMS_DE.ZIP", ts: "20051223190328", warc: 219094, digest: "G7CJWZZHAXPCTLDJBJOHXIERANKKYNTZ",
+      url: "http://www.makinterface.net/DMS_DE.ZIP",
+      desc: "DMS German build, unchanged from 2002 to 2006 (same digest, eleven captures)",
+    },
+    {
+      name: "radio-scanner.pdf", ts: "20050221182226", warc: 165718, digest: "ZY2W3VQ7DXXSQ2AKFRMVCJBXO36FHK2U",
+      url: "http://www.makinterface.net/radio-scanner.pdf",
+      desc: "the vendor's radio/CLI reference (162 KB)",
+    },
+    {
+      name: "pinout.php3", ts: "20051217004346", warc: 5109, digest: "ZJT4TY2JWBZOGE5VTLTEKI3YOT4ZFQ5F",
+      url: "http://www.makinterface.net/pinout.php3",
+      desc: "Anschlussbelegungen — the 2×5 header tables, verbatim source of the pinouts below",
+    },
+    {
+      name: "pinout_e.php3", ts: "20050212101250", warc: 4555, digest: "YML64K6KEEWPW3RMUPHBNAIMR6ZDFP23",
+      url: "http://www.makinterface.net/pinout_e.php3",
+      desc: "English twin; the Dec-2005 capture of the same table is at 20051220165606",
+    },
+    {
+      name: "home1_e.php3", ts: "20060501030424", warc: 5837, digest: "PUW3WSSU3HPRYZXFVKTZNJN6XDCVSGZY",
+      url: "http://www.makinterface.net/home1_e.php3",
+      desc: "the product page — 'a free 25pole serial port', PC/SC driver, T=0/T=1, emulator modes",
+    },
+    {
+      name: "emule.php3", ts: "20051211100959", warc: 9031, digest: "SBHAJHDG2J5TIKROOPTUTT7PFCR7PPHB",
+      url: "http://www.makinterface.net/emule.php3",
+      desc: "Smartcard Logging and Emulation — Season7/ASIM compatible, card↔master interception",
+    },
+    {
+      name: "index_e.php3", ts: "20051217011313", warc: 6285, digest: "ZQDMY4LA5VJO4Y6OZVK3KVL2PFFNWDGK",
+      url: "http://www.makinterface.net/index_e.php3",
+      desc: "site index of the Dec-2005 crawl",
+    },
+    {
+      name: "makstripee.php3", ts: "20060512013158", warc: 10013, digest: "BYXFEF2DLGDNZZPQXG6GBVIH47BHP6WN",
+      url: "http://www.makinterface.net/makstripee.php3",
+      desc: "MAKStripe reader/writer product page — the PyMAKInt hardware",
+    },
+    {
+      name: "order-e.txt", ts: "20020824222340", warc: 3175, digest: "S2RI2X4EOGGUKW7CAMHWKTI7MWTCMJ47",
+      url: "http://www.makinterface.net/order-e.txt",
+      desc: "English order form: 00115 Pro LP, 00519/00524 Emulator & Datalogger, 00605 parallel flasher",
+    },
+    {
+      name: "order-d.txt", ts: "20020116092704", warc: 3384, digest: "T66NMFUL3FWFTZRG7XLQENCPUP3XGDGH",
+      url: "http://www.makinterface.net/order-d.txt",
+      desc: "German order form of the same period",
+    },
+  ],
+  /** What the port actually is, quoted from the capture it was read out of. */
+  port: {
+    connector: "25-pole RS-232 serial (9-pole via an adapter); no external supply needed",
+    quote:
+      "MAKInterface has to be connected to a free 25pole serial port. … The " +
+      "required power supply — 5 V for most applications and up to 12 V for " +
+      "PIC programming — is taken from the RS232 port and so it is perfectly " +
+      "suitable for mobile application. (home1_e.php3, 20060501030424)",
+    parallelIsFor:
+      "Parallel PROMs/EPROMs/Flash 27xxx, 28Cxxx, 29Fxxx: 'only with the " +
+      "optional MCU/EEPROM adapter kit, free Parallel Ports on the PC are " +
+      "required'. Plus art. 00605, a standalone parallel-port Nokia flasher.",
+    clock: "3.579545 MHz in a socket, swappable for 6.0 MHz; the Digital Mode " +
+      "Switch (art. 00507) takes 4.9152/6/8/10.7 MHz crystals",
+  },
+  /** The two smart-card rows of pinout_e.php3, transcribed, not summarised. */
+  pinouts: {
+    header: "2×5 pole IDC (art. 00992), even column '+', odd column '−'",
+    reader: { device: "Dumbmouse, Phoenix, Smartmouse", VCC: "Maki 8", Reset: "Maki 6", CLK: "Maki 7", GND: "Maki 4", IO: "Maki 1+2" },
+    emulator: { device: "Season, ASIM, …", VCC: "Maki 8", Reset: "Maki 5", GND: "Maki 4", IO: "Maki 1+2", CLK: "none — the emulator is clocked by its master" },
+    eepromI2C: { device: "24Cxx", VCC: "Maki 8", GND: "Maki 4", SDA: "Maki 5+7", SCL: "Maki 6" },
+    pic16f84: { device: "16C84/16F84", VSS: "Maki 4", VCC: "Maki 8", RB2: "Maki 8→14 pin", VPP: "Maki 9", clock: "Maki 6", data: "Maki 5+7" },
+    note:
+      "Pins 1+2 and 5+7 are written as pairs because the interface drives one " +
+      "half and receives on the other; tying them is how a single-wire, " +
+      "half-duplex line (ISO 7816 I/O, 1-Wire-ish data) is built out of a " +
+      "two-wire UART pair. That pairing is the whole trick behind the box's " +
+      "'compatible with every freeware programmer' claim.",
+  },
+  /** Emulation is a product category here, not an improvisation. */
+  emulation: {
+    vendorProducts:
+      "art. 00519 'Smartcard Emulator & Datalogger (Small)', art. 00524 the same " +
+      "with an IC socket ('Goldwafer, Goldwafer2, Jupiter1, Funcard, Season1, " +
+      "Season2 compatible'), art. 00525 bare PCB, art. 00522 the Emu/Log cable",
+    universalPcb:
+      "art. 00529: socketed for PICs, Atmel and EEPROMs, and the populated chip " +
+      "set *is* the emulated card — Whitewafer = 16F84, Goldwafer = 16F84 + " +
+      "24C16, TwinPIC = 2×16F84, Triple Card = 2×16F84 + 24C16, Quadracard = " +
+      "2×16F84 + 2×24C16, Jupiter1 = 90S2323/43 + 24C16, Funcard = 90S8515 + " +
+      "24C65 (its EEPROM sits under the Atmel for the lowered contacts), or " +
+      "90S8515 + 24C512 / 89S53 + 24C512 for the wide option",
+    modes: "reader/writer, in-line datalogger between card and master, and emulator of the cards above",
+    answer:
+      "Yes — virtualisable, and at two levels. Software-wise the box is a " +
+      "UART plus six general-purpose lines with a per-line inverter, so a " +
+      "virtual MAKInterface is a register model, not an FPGA: assert VCC, hold " +
+      "Reset, feed the clock, bit-bang ISO 7816-3. Physically, the emulated " +
+      "card is *also* just an MCU and an EEPROM, so the honest emulator is a " +
+      "memory model plus the card-side firmware image. js/makint.js builds the " +
+      "first: line state, ATR, T=0 framing, a small ISO7816-4 file image, and " +
+      "the 3.579545-MHz ETU arithmetic. It stops there on purpose — see the " +
+      "scope note in that file.",
+  },
+  /** What was disassembled here, as opposed to pinned for the browser path. */
+  disasm:
+    "The twelve vendor archives stay hash-pinned: web.archive.org is not " +
+    "routable from the build host, so their bytes are recovered in the page " +
+    "against the CDX digest and then run through js/x86dis.js and the Ghidra " +
+    "wasm — never through a sandbox guess. What this session could disassemble " +
+    "is the reachable half: s3c/PyMAKInt was cloned over GitHub and its two " +
+    "CPython 3.4 .pyc files were disassembled with pydisasm (20 code objects / " +
+    "1438 instructions for pymakint, 4 / 347 for pymagpar), the .mag capture " +
+    "container was tested against all 144 vendor captures it ships with, and " +
+    "the :CueCat modified-base64 was rebuilt and checked against four published " +
+    "scan strings. tools/makint_static.py reproduces every number; " +
+    "samples/makint/analysis.json holds them.",
+  upstream: {
+    repo: "s3c/PyMAKInt",
+    note:
+      "cloned with git (the only archive reachable from the sandbox). Not " +
+      "re-hosted in this repository: upstream carries no LICENSE, so the tree is " +
+      "hashed and disassembled and the facts are kept, not the files. Its " +
+      "woodlands_bulk/ captures are a real venue's ticket stock — parsed for " +
+      "format, never published.",
+    protocol:
+      "38400 baud 8N1, one command byte then an ASCII ack: '?'→'MSUSB…', " +
+      "'R'+mask→'Ready'/'RD '/n×u16 tick pairs/'RD=OK', 'F'+mask+secs*8+'\\\\'→" +
+      "'FM '/'FM=OK', 'E'|'e'+mask+secs→'Er '/'eR ', 'I'+n+\\01→three " +
+      "'#' lines, 'H'→'EZ=OK'. Recovered from the disassembly's constant pool.",
+  },
+};
+
+/* ------------------------------------------------- port-era peripherals (wave 8)
+ *
+ * Two more parallel/serial-port devices from the same era, requested alongside
+ * MAKInterface. Neither has a pinnable firmware dump, and the case says so
+ * rather than inventing one: what is recoverable is the protocol, and the
+ * protocol is implemented and tested in js/makint.js.
+ */
+export const PERIPHERALS = {
+  name: ":CueCat and the Iomega Clik!",
+  years: "1999–2002 · PS/2, LPT and PC Card",
+  cuecat: {
+    what:
+      "Digital:Convergence :CueCat, sold by RadioShack as cat. 68-1965 (PS/2 " +
+      "keyboard-wedge wand, later a USB variant). A Hyundai microcontroller, a " +
+      "barcode LED array, and a 93Cxx serial EEPROM holding the unit serial " +
+      "number the company was collecting. Output is three dot-delimited " +
+      "sections — serial, barcode type, barcode data — in a modified base64.",
+    disasm:
+      "No firmware image survives in any archive this lab can pin, so the " +
+      "disassembly here is of the *encoding*, which is pure algorithm: custom " +
+      "64-character alphabet, 6-bit groups regrouped to bytes, then per byte " +
+      "(v ^ 3) + 64 folded back under 128. js/makint.js implements both " +
+      "directions; tests/13-makint.mjs holds it against four independently " +
+      "published scan strings, including the 18-digit Bookland EAN from the " +
+      "2006 .NET write-up and the cat's own catalog barcode. The published " +
+      "hardware mod (lift pin 10 of the Hyundai CPU) selects plain ASCII by " +
+      "floating a strap that is tied to ground — documented here because it " +
+      "explains the output modes, not as a how-to.",
+    whyItMatters:
+      "A keyboard-wedge scanner that tagged every scan with a serial number was " +
+      "a privacy incident in 1999 and a barcode standard lesson afterwards; the " +
+      "'encryption' was an obfuscation table and nothing else.",
+  },
+  clik: {
+    what:
+      "Iomega Clik! (1999) — a 40 MB 1.8″ removable cartridge in a 5 mm drive, " +
+      "sold as a PC Card Type II, a parallel-port cradle, and a USB bridge; " +
+      "renamed PocketZip in 2002. 38 ms seek, 150–600 KB/s.",
+    disasm:
+      "Three host attachments, three different bodies of work: the PC Card is " +
+      "ATAPI-in-a-CFM envelope, which Linux drove from the IDE/floppy path and " +
+      "which needed a model-string change when Iomega began reporting something " +
+      "other than 'IOMEGA Clik! 40 CZ ATAPI'; the parallel cradle is a bridge " +
+      "chip on LPT; the USB one is a vendor-specific bulk protocol, not the " +
+      "standard control set. The drive's own controller firmware is not in any " +
+      "archive this lab can pin, and no disassembly of it is claimed. What is " +
+      "reproduced is the part that can be: the ATA IDENTIFY model field with its " +
+      "per-word byte swap, and the fourth-MBR-record data-partition habit that " +
+      "made /dev/hdc4 the mount point.",
+    whyItMatters:
+      "The Clik! is the cleanest example in this whole case set of a device " +
+      "whose *driver folklore*, not its silicon, was the hard part — and of a " +
+      "'disassembly' request that has to answer with which of three interfaces " +
+      "you mean.",
+  },
+};
+
 /* ---------------------------------------------------------------- research */
 
 export const METHOD = [
