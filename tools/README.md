@@ -22,6 +22,7 @@ needed to serve the app — `ghidra-lab.html` is plain static HTML + ES modules.
 | `setup_rtl.sh` | Installs the user-space Yosys build and runs `verify_rtl.py`. |
 | `smoke_pipeline.mjs` | Runs the whole DOM-free analysis path over every sample and prints what the panels would show. Catches crashes and empty panels without a browser. |
 | `render_research.mjs` | Renders `js/virus-catalog.js` to `criteria/RESEARCH-VIRUSES.md`. |
+| `verify_lecture_hall.mjs` | Headless proof for the cipher suite’s Intelligence Lecture Hall: re-derives every published ciphertext (Field Notes wheel, F5 Black Hat 2016, the USCYBERCOM seal digest) and audits the bundle the records live in. No dependencies. |
 | `build_entropy_wasm.py` | Pre-existing: hand-assembles the small keyspace projector wasm. |
 
 ## Verification workflow
@@ -46,6 +47,7 @@ node tools/ghidra_avr.mjs samples/avr/optiboot_atmega328.hex   # AVR HEX + contr
 node tools/ghidra_avr.mjs samples/avr/optiboot_atmega328.hex --probe   # AVR decompiler matrix
 node tests/13-avr-lab.mjs                                     # the avr-lab page controller
 node tools/serve.mjs 8080 && open http://localhost:8080/avr-lab.html
+node tools/verify_lecture_hall.mjs                   # lecture-hall claims + suite bundle integrity
 ```
 
 ## Rebuilding the sample binaries

@@ -521,3 +521,46 @@ with MODULE_NOT_FOUND and never ran — they now run and skip honestly. `run.sh`
 **pre-existing** `build_coins.mjs --check` staleness that reproduces at HEAD without this wave's
 files; it is a pinned data file regenerated from a market snapshot and was left alone rather than
 quietly rebuilt.
+
+## Wave 8 — the lecture hall grows a second shelf (2026-09-14)
+
+Full research log: **`docs/lecture-hall-research-2026-09-14.md`**; the proofs live in
+`tools/verify_lecture_hall.mjs` against the reference code in `js/lecture-ciphers.js`.
+
+Four records were added to the Intelligence Lecture Hall of
+`apps/Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html` (now 8 rows), each one
+computable rather than merely quoted:
+
+* **F5’s Black Hat 2016 cipher challenge** — the operator’s post-mortem publishes all four
+  ciphertexts and the Ruby generator; the port rebuilds the 42-character key square, re-derives
+  the 22-digram T-shirt puzzle digram-for-digram, and re-peels the three intermediates the
+  article prints. The circulating claim that the hard layer fell to F5 product terminology
+  (“BIG-IP”, “ASM”) is **contradicted by the primary source** and is now flagged in the record.
+* **The MD5 in the USCYBERCOM seal** — `9ec4c12949a4f31474f299058ce2b22a` recomputed from the
+  392-character mission statement with `node:crypto`, with the newline and “specific” variants
+  asserted to fail; CRN’s 31-character rendering recorded as the transcription error it is;
+  “decoded” corrected to “guessed and re-hashed”, and the jemelehill/Correll primacy dispute
+  left unresolved on purpose.
+* **The Field Notes cipher wheel (“Clandestine”, 2018), via Jurph’s model** — 1296 keys reach
+  exactly 648 alphabets, `XV`/`XW` are null keys, both verified by enumeration. Searching those
+  648 recovers two lines of `messages.txt` under key `FN` (“IT’S NOT ENCRYPTED IN CODE TO
+  DECIPHER IT LATER, IT’S ENCRYPTED IN CODE TO DECIPHER IT NOW”, and `F6ELDNOTESBRAND.COM`);
+  the four short codes stay **unrecovered**, and the harness re-asserts that negative every run.
+* **Agents of F.I.E.L.D. (f1eldn0tes.com)** — 8 of 8 published puzzle codes re-derive exactly
+  from answer + two-letter key, #9 checks out as its documented `VK`→`KS` double decode, #11
+  matches up to its documented spiral, and the blog’s **#19/#20 code collision** is flagged
+  (that shared string decrypts under `IE` to `OVERLYGODLYESCAPADE02378`, which is not #20’s
+  answer; #19’s code is not reconstructible) rather than quietly fixed.
+
+The edit also repaired the hall’s own vocabulary bug — the legend defined
+*Community recollection* but the filter row could not select it, while the filter and colour map
+offered *Community archive* that the legend never defined — and now asserts
+**legend ∩ colour map ∩ filter row** for every label any record carries. A raised bar is enforced
+for new material: ≥ 8 facts, ≥ 4 provenance links, ≥ 200-character summary and caution, and no
+unverified answer stated as fact.
+
+Verification for this wave: `node tools/verify_lecture_hall.mjs` — **ALL CHECKS PASSED, 40
+checks**; `node tools/verify_casefiles.mjs 8099` — **ALL CHECKS PASSED, 82 checks** (unchanged,
+re-run after the bundle edit); the modified bundle’s inline app script (911 590 bytes) re-extracted
+and re-parsed clean via `vm.Script`; `smoke_pipeline.mjs` clean; `check-dom-ids.mjs` pass.
+`sw.js` untouched at v24 — the suite file and the new module are not in the precache list.
