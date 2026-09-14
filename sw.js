@@ -115,6 +115,8 @@ const PRECACHE = [
   "./js/dll-catalog.js",
   "./js/driver-catalog.js",
   "./js/pe-version.js",
+  "./js/makint.js",
+  "./samples/makint/analysis.json",
   "./vendor/fflate/index.mjs",
 ];
 

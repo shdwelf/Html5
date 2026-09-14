@@ -2,7 +2,7 @@
 
 Content extracts of the subject-supplied resources cited in the source register
 of `greeran-book.html` (entries **src-10 through src-63**), plus the archivist
-research logs for entries **src-64 through src-68**.
+research logs for entries **src-64 through src-73**, and the casefile-lab note at **src-74**.
 
 ## Why this archive exists
 
@@ -85,13 +85,17 @@ Extracted: **30 August 2026**. Original URLs are recorded in each file.
 
 The `src-NN-*.md` files above mirror resources the subject supplied. The files below are
 different in kind: they record what an archivist found when testing the leads those resources
-left open. They are cited in the book's source register as **src-64 through src-73**.
+left open. They are cited in the book's source register as **src-64 through src-73**,
+and the casefile-lab notes that follow continue from **src-74**.
 
 | File | Register | Session | Subject |
 |---|---|---|---|
 | `session-11-biddeford-and-daisy.md` | src-64, src-65, src-66, src-67 | 31 Aug 2026 | Ahn. 22–23 (the Morins of Biddeford, Maine) and Ahn. 28–29 (Daisy Beatrice's Texas parents) — Biddeford city directories, Find A Grave negatives, Maine vital-records finding aid |
 | `session-12-independent-verification.md` | src-68 | 31 Aug 2026 | Independent re-check of the **contested quarters** — Hewett (Fred Leslie Hewett × Addie Inez Worth, via FamilySearch census/vitals) and Carey (Luther Gordon Carey × Millie Ruth Bickford; Joel Thornburg Carey × Elizabeth Stanley, via Find a Grave + Rootsweb), with the Revolutionary anchor confirmed in the official NSDAR database (Samuel Carey #A020262); immediate family confirmed via the Louise Hewitt obituary/guest book |
 | `session-13-houle-marriages.md` | src-69–src-73 | 7 Sep 2026 | Same-address identification of Alfred Houle at 12 George Street; 1929–30 directory names wife Cordelia, contradicting the uncited Tremblay pairing; obituary-derived memorials add the 1892 Cordelia Chicoine and 1933 Georgianna Doyon marriages while leaving the bridge to the verified line open |
+| `src-74-makinterface-port-lab.md` | src-74 | 13 Sep 2026 | Casefile lab, wave 8: MAKInterface (Maki GmbH, Karben) — the five December-2005 drops re-verified against the live CDX index and eight sibling archives added, the port question settled from the vendor's own page (25-pole serial, powered from the RS-232 lines; the parallel port belongs to the PROM adapter and art. 00605), the reader/emulator pin rows transcribed, `s3c/PyMAKInt` disassembled (CPython 3.4 bytecode, `.mag` container proved on all 144 captures), and the :CueCat + Iomega Clik! records with their limits stated |
+| `session-14-hewitt-military-pow.md` | session-14 | 14 Sep 2026 | NARA AAD WWII records for the Hewitt brothers: Maurice Frederick Hewitt (ASN 19067302) enlisted 4 Jan 1942 in the **Air Corps**, Los Angeles, civilian occupation *carpenter*; and Melvin Samuel "Sam" Hewitt (ASN 19179305) — Air Corps **Technical Sergeant, heavy-bomber crewman** of the 301st Bomb Group, reported captured **26 Jun 1944, Austria** (the Vienna Lobau oil raid) and held at **Stalag Luft IV, Gross Tychow, Pomerania — now Tychowo, Poland** — liberated 1945. The "Polish concentration camp" memory is thereby corrected: it was a Luftwaffe airmen's *Stalag* on land that is now Poland, not a KZ |
+| `session-15-301bg-vienna-stalag-luft-iv.md` | session-15 | 14 Sep 2026 | Detailed operational overview of the **301st Bombardment Group (Heavy)** 15th Air Force strike on the **Vienna Lobau Oil Refinery** (26 June 1944), complete architectural analysis of **Stalag Luft IV (Gross Tychow, Pomerania)** with its 4 POW compounds, 40 barracks huts, 16 guard watchtowers, Vorlager HQ, "Run at Tychow", and "Black March", accompanied by VRML 2.0 3D camp model (`stalag-luft-iv.wrl`) and interactive WebGL portal (`stalag-luft-iv-vrml.html`) |
 
 Session 11 result in one line: the free **Biddeford and Saco Directory 1920–1921** on the Internet
 Archive corroborated the workbench's *Alfred Houle* as a real Biddeford policeman at 12 George

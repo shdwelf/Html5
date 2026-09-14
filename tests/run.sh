@@ -20,13 +20,16 @@ for t in tests/01-layout.mjs tests/02-lens-math.mjs tests/03-lens-draw.mjs tests
 done
 
 echo "──────────────────────────────────────────────"
+# Callers pass the script, not the interpreter: this used to be
+# `run_stale node tests/05…`, which ran `node node tests/05…` and failed with
+# MODULE_NOT_FOUND instead of ever booting the suite.
 run_stale() {
   if node "$@"; then return 0; fi
   echo "  ^^ KNOWN-STALE suite (markup expectations from an older keyspace.html): not gating; STALE_GATE=1 to gate"
   [ -n "${STALE_GATE:-}" ] && return 1
   return 0
 }
-run_stale node --import ./tests/stubs/register.mjs tests/05-viewer-dom.mjs || status=1
+run_stale --import ./tests/stubs/register.mjs tests/05-viewer-dom.mjs || status=1
 
 echo "──────────────────────────────────────────────"
 node tests/06-extreme.mjs || status=1
@@ -45,7 +48,7 @@ if [ -z "${KEYSPACE_URL:-}" ]; then
 fi
 
 echo "──────────────────────────────────────────────"
-run_stale node tests/07-browser.mjs "$KEYSPACE_URL" || status=1
+run_stale tests/07-browser.mjs "$KEYSPACE_URL" || status=1
 
 echo "──────────────────────────────────────────────"
 node tests/08-syllables.mjs || status=1
@@ -114,6 +117,10 @@ node tools/build_globe_data.mjs --check || status=1
 
 echo "──────────────────────────────────────────────"
 node tests/12-globe-wasm.mjs || status=1
+
+# The MAKInterface / :CueCat / Clik! port bench: pure models, no browser.
+echo "──────────────────────────────────────────────"
+node tests/13-makint.mjs || status=1
 
 echo "──────────────────────────────────────────────"
 [ "$status" -eq 0 ] && echo "all suites passed" || echo "FAILURES — see above"
