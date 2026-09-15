@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0c14" />
+  <meta name="description" content="Corporate kitchen meal-card ledger: a feeless, lossless block-lattice for meal credits. Every card carries its own chain; the till confirms. Runs entirely in this tab." />
+  <title>Kitchen Meal Card · feeless block-lattice for meal credits</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./css/validator.css" />
+  <link rel="stylesheet" href="./css/viruslab.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html#grid" aria-label="Back to SITE-K">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-copy">
+          <strong>MEAL CARD</strong>
+          <small>CORP KITCHEN · BLOCK-LATTICE</small>
+        </span>
+      </a>
+      <div class="header-right">
+        <span class="local-status"><i></i>CLIENT-SIDE ONLY</span>
+        <a class="back-link" href="./index.html#studio" target="_top">SITE-K <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span>04</span><b></b>BLOCK-LATTICE · FEELSS · LOSSLESS · NO FLOAT NEAR MONEY</div>
+        <h1 id="page-title">Kitchen<br /><em>Meal Card</em></h1>
+        <p class="hero-copy">
+          Meal credits for the corporation, run like <strong>Nano/Banano</strong>: every card carries its
+          own chain of blocks, transfers are <strong>feeless</strong>, and accounting is <strong>lossless</strong> —
+          integer cents, a receive credits exactly its send, and the till re-verifies every hash before
+          honoring anything. The wallet UX takes after <strong>ARRR PirateOcean</strong> (one balance, send,
+          receive, memo). Nothing leaves this tab: no server, no network, no float near money.
+        </p>
+        <div class="trust-list" aria-label="Ledger properties">
+          <div class="trust-item">
+            <span class="trust-icon">01</span>
+            <span><b>Per-card chains</b><small>Open, send, receive, change — each card's history stands alone.</small></span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon">02</span>
+            <span><b>Till confirms</b><small>The kitchen till is the principal representative; spends finalize on receipt.</small></span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon">03</span>
+            <span><b>Offline vouchers</b><small>8-digit codes for dead-zone tills, verified against the shared secret.</small></span>
+          </div>
+        </div>
+        <div class="protocol-strip" aria-label="Ledger stack">
+          <span>BLOCK-LATTICE</span><span>INTEGER CENTS</span><span>POW ANTI-SPAM</span><span>NO NETWORK</span>
+        </div>
+      </section>
+
+      <section class="lab" aria-label="Meal-card workspace">
+        <aside class="rail">
+          <section class="panel">
+            <div class="panel-head"><h2>Corporation &amp; seed</h2><span class="panel-tag" id="ledger-status">FRESH</span></div>
+            <label class="field">Corp seed (hex)
+              <input id="seed-input" type="text" spellcheck="false" autocomplete="off" />
+            </label>
+            <div class="row">
+              <button type="button" class="mini" id="seed-random">RANDOM SEED</button>
+              <label class="field inline">PoW <input id="pow-input" type="number" min="0" max="3" value="1" /></label>
+            </div>
+            <label class="field">Treasury issue
+              <input id="treasury-issue" type="text" value="$10000" />
+            </label>
+            <div class="row">
+              <button type="button" class="mini" id="treasury-open">OPEN TREASURY</button>
+              <button type="button" class="mini" id="reset-ledger">RESET</button>
+            </div>
+            <p class="panel-note">Treasury <b id="treasury-balance">$0.00</b> · in circulation <b id="supply-total">$0.00</b></p>
+            <p class="panel-note" id="corp-status">No treasury yet — open one to start issuing cards.</p>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Verify</h2><button type="button" class="mini" id="verify-run">VERIFY ALL</button></div>
+            <div id="verify-report" class="engine-log" aria-live="polite">Not verified yet.</div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Carry</h2></div>
+            <div class="row">
+              <button type="button" class="mini" id="export-ledger">EXPORT JSON</button>
+              <label class="mini file">IMPORT JSON<input id="import-file" type="file" accept="application/json" hidden /></label>
+            </div>
+            <p class="panel-note">Imports are re-verified block by block; a tampered file is refused, not repaired.</p>
+          </section>
+        </aside>
+
+        <div class="workspace">
+          <section class="panel">
+            <div class="panel-head"><h2>Cards</h2><span class="panel-tag" id="card-count">0 CARDS</span></div>
+            <div class="row">
+              <label class="field grow">Holder <input id="holder-name" type="text" placeholder="e.g. Ada Lovelace — or Till — Grill" /></label>
+              <button type="button" class="mini" id="issue-card">ISSUE CARD</button>
+            </div>
+            <div id="card-list" class="catalog"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Top-up &amp; spend</h2></div>
+            <div class="row">
+              <label class="field">To card <select id="grant-to"></select></label>
+              <label class="field">Amount <input id="grant-amount" type="text" placeholder="$25.00" /></label>
+              <button type="button" class="mini" id="grant-send">GRANT (TREASURY → CARD)</button>
+            </div>
+            <div class="row">
+              <label class="field">From <select id="spend-from"></select></label>
+              <label class="field">To <select id="spend-to"></select></label>
+              <label class="field">Amount <input id="spend-amount" type="text" placeholder="$8.50" /></label>
+            </div>
+            <div class="row">
+              <label class="field grow">Memo <input id="spend-memo" type="text" placeholder="lunch — grill" /></label>
+              <button type="button" class="mini" id="spend-send">SPEND</button>
+            </div>
+            <p class="panel-note" id="transfer-status">No transfers yet.</p>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Kitchen till</h2><span class="panel-tag" id="till-balance">$0.00</span></div>
+            <div class="row">
+              <label class="field">Till <select id="till-select"></select></label>
+              <label class="field">Card <select id="voucher-card"></select></label>
+              <label class="field">Amount <input id="voucher-make-amount" type="text" placeholder="$8.50" /></label>
+              <button type="button" class="mini" id="voucher-make">SHOW CODE</button>
+            </div>
+            <p class="panel-note" id="voucher-show">Card-side: pick a card and amount to show its next 8-digit code.</p>
+            <div class="row">
+              <label class="field">Code <input id="voucher-code" type="text" inputmode="numeric" placeholder="12345678" /></label>
+              <label class="field">Amount <input id="voucher-amount" type="text" placeholder="$8.50" /></label>
+              <button type="button" class="mini" id="voucher-redeem">REDEEM AT TILL</button>
+            </div>
+            <p class="panel-note" id="voucher-result">Till-side: enter the code the card shows. Redeeming settles on-chain.</p>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Explorer</h2><label class="field inline">Account <select id="explorer-account"></select></label></div>
+            <div id="explorer-list" class="engine-log" aria-live="polite">No blocks yet.</div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>What this is not</h2></div>
+            <p class="panel-note">A demo ledger for one corporation, not a cryptocurrency: a single till confirms,
+            there is no shielded pool and no zero-knowledge proof, and balances are private only because
+            nothing leaves this tab. Voucher codes are a demo construction (SHA-256 based), not HOTP —
+            see <code>js/mealcard.js</code> and <code>tests/15-mealcard.mjs</code>.</p>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+<script type="module">
+import { CORP_ID, emptyLedger, openTreasury, issueCard, transfer, balance, supply,
+  verifyLedger, voucherCode, redeemVoucher, parseAmount, fmt, cardSecret,
+  exportLedger, importLedger } from "./js/mealcard.js";
+
+const $ = (id) => document.getElementById(id);
+const LS_KEY = "mealcard-v1";
+
+let seed = "";
+let ledger = emptyLedger();
+let difficulty = 1;
+const counters = {}; // cardId -> next voucher counter (persisted alongside)
+
+function persist() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({ seed, ledger, counters, difficulty }));
+  } catch { /* private mode: the ledger simply does not persist */ }
+}
+
+function restore() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return false;
+    const obj = JSON.parse(raw);
+    const v = verifyLedger(obj.ledger, obj.difficulty ?? 1);
+    if (!v.ok) return false;
+    seed = obj.seed;
+    ledger = obj.ledger;
+    difficulty = obj.difficulty ?? 1;
+    Object.assign(counters, obj.counters || {});
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function randomSeed() {
+  const b = new Uint8Array(16);
+  crypto.getRandomValues(b);
+  return [...b].map((x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function cardIds() {
+  return Object.keys(ledger.cards);
+}
+
+function tills() {
+  return cardIds().filter((id) => ledger.cards[id].holder.toLowerCase().startsWith("till"));
+}
+
+function fillSelect(sel, ids, placeholder) {
+  const cur = sel.value;
+  sel.innerHTML = ids.length ? "" : `<option value="">${esc(placeholder)}</option>`;
+  for (const id of ids) {
+    const o = document.createElement("option");
+    o.value = id;
+    o.textContent = `${id} — ${ledger.cards[id].holder}`;
+    sel.appendChild(o);
+  }
+  if (ids.includes(cur)) sel.value = cur;
+}
+
+function render() {
+  $("seed-input").value = seed;
+  $("pow-input").value = String(difficulty);
+  $("treasury-balance").textContent = fmt(balance(ledger, CORP_ID));
+  $("supply-total").textContent = fmt(supply(ledger));
+  const ids = cardIds();
+  $("card-count").textContent = `${ids.length} CARD${ids.length === 1 ? "" : "S"}`;
+  $("ledger-status").textContent = balance(ledger, CORP_ID) || ids.length ? "LIVE" : "FRESH";
+  $("corp-status").textContent = ledger.accounts[CORP_ID]
+    ? `Treasury open · ${ids.length} card(s) issued.`
+    : "No treasury yet — open one to start issuing cards.";
+  const list = $("card-list");
+  list.innerHTML = ids.length ? "" : `<p class="panel-note">No cards yet — issue one above. Name a holder "Till — …" to open a till.</p>`;
+  for (const id of ids) {
+    const c = ledger.cards[id];
+    const div = document.createElement("div");
+    div.className = "catalog-row";
+    div.innerHTML = `<b>${esc(id)}</b><span>${esc(c.holder)}</span><b>${fmt(balance(ledger, id))}</b>`;
+    list.appendChild(div);
+  }
+  fillSelect($("grant-to"), ids, "issue a card first");
+  fillSelect($("spend-from"), ids, "issue a card first");
+  const spendTo = [...ids];
+  if (!spendTo.includes(CORP_ID) && ledger.accounts[CORP_ID]) spendTo.unshift(CORP_ID);
+  fillSelect($("spend-to"), spendTo, "no destination");
+  const tillIds = tills();
+  fillSelect($("till-select"), tillIds, "issue a Till card");
+  fillSelect($("voucher-card"), ids, "issue a card first");
+  $("till-balance").textContent = $("till-select").value ? fmt(balance(ledger, $("till-select").value)) : "$0.00";
+  const explorerIds = Object.keys(ledger.accounts);
+  fillSelect($("explorer-account"), explorerIds, "no chains yet");
+  renderExplorer();
+}
+
+function renderExplorer() {
+  const id = $("explorer-account").value;
+  const chain = id && ledger.accounts[id];
+  if (!chain || !chain.length) {
+    $("explorer-list").textContent = "No blocks yet.";
+    return;
+  }
+  $("explorer-list").innerHTML = chain.map((b) => {
+    const amt = b.amount != null ? ` <b>${fmt(b.amount)}</b>` : "";
+    const link = b.funding ? ` ⇐ ${esc(String(b.funding).slice(0, 12))}…` : (b.to ? ` ⇒ ${esc(b.to)}` : "");
+    return `<div class="log-line"><span class="dim">#${b.height} ${esc(b.type)}${amt} · bal ${fmt(b.balance)}${link}</span><br/>` +
+      `<span class="kbd">${esc(b.hash.slice(0, 32))}…</span> <span class="dim">nonce ${b.nonce} · ${esc((b.memo || "").slice(0, 48))}</span></div>`;
+  }).join("");
+}
+
+function announce(msg) {
+  $("transfer-status").textContent = msg;
+}
+
+function refreshVerify() {
+  const v = verifyLedger(ledger, difficulty);
+  $("verify-report").innerHTML = v.ok
+    ? `<div class="log-line"><b>OK</b> — ${Object.values(ledger.accounts).reduce((n, c) => n + c.length, 0)} blocks, ` +
+      `supply ${fmt(supply(ledger))}, every hash/link/balance/PoW recomputed.</div>`
+    : `<div class="log-line"><b>TAMPERED</b><br/>${v.errors.map(esc).join("<br/>")}</div>`;
+}
+
+$("seed-random").addEventListener("click", () => {
+  seed = randomSeed();
+  ledger = emptyLedger();
+  for (const k of Object.keys(counters)) delete counters[k];
+  $("transfer-status").textContent = "New seed — ledger reset. Open a treasury to begin.";
+  persist();
+  render();
+  refreshVerify();
+});
+
+$("seed-input").addEventListener("change", () => {
+  const v = $("seed-input").value.trim();
+  if (/^[0-9a-fA-F]{32,}$/.test(v) && v.length % 2 === 0) {
+    seed = v.toLowerCase();
+    persist();
+    render();
+  } else {
+    $("seed-input").value = seed;
+    announce("Seed must be even-length hex (16+ bytes).");
+  }
+});
+
+$("pow-input").addEventListener("change", () => {
+  difficulty = Math.max(0, Math.min(3, parseInt($("pow-input").value, 10) || 0));
+  persist();
+  render();
+  refreshVerify();
+});
+
+$("treasury-open").addEventListener("click", () => {
+  try {
+    const amt = parseAmount($("treasury-issue").value);
+    if (amt == null) throw new Error("treasury issue is not an amount");
+    openTreasury(ledger, amt, difficulty);
+    announce(`Treasury opened with ${fmt(amt)}.`);
+  } catch (err) {
+    announce(`Treasury refused: ${err.message}`);
+  }
+  persist();
+  render();
+  refreshVerify();
+});
+
+$("reset-ledger").addEventListener("click", () => {
+  if (!confirm("Reset the ledger? This forgets every card and block in this tab.")) return;
+  ledger = emptyLedger();
+  for (const k of Object.keys(counters)) delete counters[k];
+  announce("Ledger reset.");
+  persist();
+  render();
+  refreshVerify();
+});
+
+$("issue-card").addEventListener("click", () => {
+  try {
+    const holder = $("holder-name").value.trim() || `holder-${cardIds().length}`;
+    const id = issueCard(ledger, seed, cardIds().length, holder);
+    $("holder-name").value = "";
+    announce(`Issued ${id} to ${holder}.`);
+  } catch (err) {
+    announce(`Issue refused: ${err.message}`);
+  }
+  persist();
+  render();
+});
+
+$("grant-send").addEventListener("click", () => {
+  try {
+    const amt = parseAmount($("grant-amount").value);
+    if (amt == null) throw new Error("not an amount");
+    const { recv } = transfer(ledger, CORP_ID, $("grant-to").value, amt, "corp grant", difficulty);
+    announce(`Granted ${fmt(amt)} to ${$("grant-to").value} (recv ${recv.hash.slice(0, 12)}…).`);
+  } catch (err) {
+    announce(`Grant refused: ${err.message}`);
+  }
+  persist();
+  render();
+  refreshVerify();
+});
+
+$("spend-send").addEventListener("click", () => {
+  try {
+    const amt = parseAmount($("spend-amount").value);
+    if (amt == null) throw new Error("not an amount");
+    const memo = $("spend-memo").value.trim();
+    const { send } = transfer(ledger, $("spend-from").value, $("spend-to").value, amt, memo, difficulty);
+    announce(`Spent ${fmt(amt)} (${send.hash.slice(0, 12)}…).`);
+  } catch (err) {
+    announce(`Spend refused: ${err.message}`);
+  }
+  persist();
+  render();
+  refreshVerify();
+});
+
+$("voucher-make").addEventListener("click", () => {
+  const id = $("voucher-card").value;
+  const amt = parseAmount($("voucher-make-amount").value);
+  if (!id || amt == null) {
+    $("voucher-show").textContent = "Pick a card and an amount first.";
+    return;
+  }
+  const c = ledger.cards[id];
+  const ctr = counters[id] || 0;
+  const code = voucherCode(c.secret, ctr, amt);
+  counters[id] = ctr + 1;
+  $("voucher-show").innerHTML = `Card <b>${esc(id)}</b> shows <b>${code}</b> for <b>${fmt(amt)}</b> (counter ${ctr}). ` +
+    `Tell it to the till — the code dies after one redemption.`;
+  persist();
+});
+
+$("voucher-redeem").addEventListener("click", () => {
+  const till = $("till-select").value;
+  const amt = parseAmount($("voucher-amount").value);
+  const code = $("voucher-code").value.trim();
+  if (!till || amt == null || !/^\d{8}$/.test(code)) {
+    $("voucher-result").textContent = "Till, 8-digit code and amount are all required.";
+    return;
+  }
+  let hit = null;
+  for (const id of cardIds()) {
+    if (id === till) continue;
+    const c = counters[id] || 0;
+    const at = redeemVoucher(ledger.cards[id].secret, code, amt, Math.max(0, c - 20), 40);
+    if (at >= 0) {
+      hit = { id, at };
+      break;
+    }
+  }
+  if (!hit) {
+    $("voucher-result").textContent = "Code unknown for that amount — till refuses (fail closed).";
+    return;
+  }
+  try {
+    transfer(ledger, hit.id, till, amt, `voucher #${hit.at}`, difficulty);
+    counters[hit.id] = Math.max(counters[hit.id] || 0, hit.at + 1);
+    $("voucher-result").textContent = `Redeemed ${fmt(amt)} from ${hit.id} (counter ${hit.at}) — settled on-chain.`;
+    $("voucher-code").value = "";
+  } catch (err) {
+    $("voucher-result").textContent = `Redemption refused: ${err.message}`;
+  }
+  persist();
+  render();
+  refreshVerify();
+});
+
+$("till-select").addEventListener("change", render);
+$("explorer-account").addEventListener("change", renderExplorer);
+$("verify-run").addEventListener("click", refreshVerify);
+
+$("export-ledger").addEventListener("click", () => {
+  const blob = new Blob([exportLedger(ledger)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "mealcard-ledger.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+$("import-file").addEventListener("change", async () => {
+  const f = $("import-file").files[0];
+  if (!f) return;
+  try {
+    ledger = importLedger(await f.text(), difficulty);
+    announce(`Imported ${f.name} — verified block by block.`);
+  } catch (err) {
+    announce(`Import refused: ${err.message}`);
+  }
+  $("import-file").value = "";
+  persist();
+  render();
+  refreshVerify();
+});
+
+if (!restore()) {
+  seed = randomSeed();
+}
+render();
+refreshVerify();
+</script>
+</body>
+</html>

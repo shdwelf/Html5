@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stalag Luft IV — 3D VRML Command Portal & 301st Bomb Group Research</title>
+<style>
+  :root {
+    --bg-dark: #090d16;
+    --panel-bg: rgba(14, 20, 32, 0.92);
+    --panel-border: rgba(80, 120, 160, 0.25);
+    --gold: #d4af37;
+    --gold-bright: #f3e5ab;
+    --accent-red: #d9534f;
+    --accent-blue: #4a90e2;
+    --accent-green: #5cb85c;
+    --text-main: #e0e6ed;
+    --text-muted: #8a99a6;
+    --font-mono: 'Consolas', 'Courier New', monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    width: 100%;
+    background: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    overflow: hidden;
+  }
+
+  #app-root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* Header Bar */
+  header {
+    height: 56px;
+    background: #060910;
+    border-bottom: 1px solid var(--panel-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-badge {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+  }
+
+  .header-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--gold-bright);
+  }
+
+  .header-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-left: 8px;
+  }
+
+  /* Navigation Tabs */
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .tab-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .tab-btn.active {
+    color: var(--gold);
+    background: rgba(212, 175, 55, 0.12);
+    border-color: var(--gold);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+  }
+
+  /* Main Workspace */
+  main {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tab-content {
+    position: absolute;
+    inset: 0;
+    display: none;
+  }
+
+  .tab-content.active {
+    display: flex;
+  }
+
+  /* Tab 1: 3D VRML Viewport Layout */
+  #tab-vrml {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+
+  #vrml-canvas-container {
+    flex: 1;
+    position: relative;
+    background: #05080f;
+    overflow: hidden;
+  }
+
+  #vrml-hud-top {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  .hud-card {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(12px);
+    padding: 10px 16px;
+    border-radius: 6px;
+    pointer-events: auto;
+  }
+
+  .hud-stat-group {
+    display: flex;
+    gap: 18px;
+  }
+
+  .hud-stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hud-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: var(--font-mono);
+  }
+
+  .hud-value {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--gold);
+    font-family: var(--font-mono);
+  }
+
+  .hud-controls-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .btn-sm {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--panel-border);
+    color: var(--text-main);
+    padding: 5px 10px;
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-sm:hover {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--gold);
+    color: var(--gold-bright);
+  }
+
+  .btn-sm.active {
+    background: var(--gold);
+    color: #000;
+    font-weight: bold;
+  }
+
+  /* Side Inspector Panel */
+  #vrml-sidebar {
+    width: 360px;
+    background: var(--panel-bg);
+    border-left: 1px solid var(--panel-border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    backdrop-filter: blur(16px);
+    z-index: 30;
+  }
+
+  .sidebar-section {
+    padding: 16px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+
+  .sidebar-title {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--gold);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .viewpoint-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .vp-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    text-align: left;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+  }
+
+  .vp-btn:hover {
+    background: rgba(212, 175, 55, 0.12);
+    border-color: var(--gold);
+    color: var(--gold-bright);
+  }
+
+  .layer-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 0.8rem;
+  }
+
+  .layer-toggle-row input {
+    cursor: pointer;
+    accent-color: var(--gold);
+  }
+
+  /* Info Card */
+  .info-box {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--panel-border);
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  /* Tab 2, 3, 4 Scrollable Container */
+  .page-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .page-header {
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 12px;
+  }
+
+  .page-title {
+    font-size: 1.4rem;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .page-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .grid-3col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+  }
+
+  .card {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .card-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--gold-bright);
+    margin-bottom: 12px;
+    font-family: var(--font-mono);
+  }
+
+  .stat-card-number {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--gold);
+    font-family: var(--font-mono);
+  }
+
+  .stat-card-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    margin-top: 12px;
+  }
+
+  table.data-table th {
+    background: rgba(212, 175, 55, 0.12);
+    color: var(--gold);
+    font-family: var(--font-mono);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+
+  table.data-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  table.data-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  /* Canvas Tactical Map */
+  canvas#tactical-map {
+    width: 100%;
+    height: 320px;
+    background: #03060c;
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    display: block;
+  }
+
+  /* Code Editor / Raw VRML */
+  textarea.code-area {
+    width: 100%;
+    height: 520px;
+    background: #04070d;
+    color: #a6e22e;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    padding: 16px;
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    resize: vertical;
+    line-height: 1.4;
+    outline: none;
+  }
+
+  .badge-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.68rem;
+    font-family: var(--font-mono);
+    font-weight: bold;
+  }
+
+  .badge-red { background: rgba(217, 83, 79, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+  .badge-green { background: rgba(92, 184, 92, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
+  .badge-blue { background: rgba(74, 144, 226, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+
+  /* Responsive scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+  ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+</style>
+</head>
+<body>
+
+<div id="app-root">
+  <!-- Header Bar -->
+  <header>
+    <div class="header-brand">
+      <span class="brand-badge">SITE-K 3D</span>
+      <div>
+        <span class="header-title">STALAG LUFT IV COMMAND PORTAL</span>
+        <span class="header-subtitle">Gross Tychow, Pomerania | 301st Bomb Group Research Suite</span>
+      </div>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('vrml')">3D VRML CAMP MAP</button>
+      <button class="tab-btn" onclick="switchTab('raid')">301st BG & VIENNA RAID</button>
+      <button class="tab-btn" onclick="switchTab('pow')">STALAG LUFT IV & HEWITT</button>
+      <button class="tab-btn" onclick="switchTab('vrml-code')">VRML 2.0 SOURCE</button>
+    </nav>
+  </header>
+
+  <!-- Main Viewports -->
+  <main>
+    <!-- TAB 1: 3D VRML CAMP MAP -->
+    <div id="tab-vrml" class="tab-content active">
+      <div id="vrml-canvas-container">
+        <!-- Top Floating HUD -->
+        <div id="vrml-hud-top">
+          <div class="hud-card">
+            <div class="hud-stat-group">
+              <div class="hud-stat-item">
+                <span class="hud-label">CAMP LOCATION</span>
+                <span class="hud-value">53°55' N, 16°15' E</span>
+              </div>
+              <div class="hud-stat-item">
+                <span class="hud-label">ELEVATION</span>
+                <span class="hud-value">85m MSL</span>
+              </div>
+              <div class="hud-stat-item">
+                <span class="hud-label">TOTAL POW POPULATION</span>
+                <span class="hud-value">8,000+ Allied NCOs</span>
+              </div>
+              <div class="hud-stat-item">
+                <span class="hud-label">3D MESHES / TRIS</span>
+                <span id="stat-tris-count" class="hud-value">429 / ~18.4k</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hud-card">
+            <div class="hud-controls-row">
+              <button id="btn-auto-rotate" class="btn-sm active" onclick="toggleAutoRotate()">Auto-Rotate: ON</button>
+              <button id="btn-reset-cam" class="btn-sm" onclick="resetCamera()">Reset View</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Inspector Sidebar -->
+      <aside id="vrml-sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-title">
+            <span>PRESET VIEWPOINTS</span>
+            <span class="badge-tag badge-blue">8 VIEWS</span>
+          </div>
+          <div class="viewpoint-list">
+            <button class="vp-btn" onclick="setPresetView('aerial')">
+              <span>1. Aerial Strategic View</span>
+              <span style="color:var(--text-muted)">[320m]</span>
+            </button>
+            <button class="vp-btn" onclick="setPresetView('vorlager')">
+              <span>2. Main Gate & Vorlager HQ</span>
+              <span style="color:var(--text-muted)">[North]</span>
+            </button>
+            <button class="vp-btn" onclick="setPresetView('lager-a')">
+              <span>3. Lager A (US AAF Airmen)</span>
+              <span style="color:var(--text-muted)">[NW]</span>
+            </button>
+            <button class="vp-btn" onclick="setPresetView('lager-b')">
+              <span>4. Lager B (US AAF Airmen)</span>
+              <span style="color:var(--text-muted)">[NE]</span>
+            </button>
+            <button class="vp-btn" onclick="setPresetView('lager-c')">
+              <span>5. Lager C (US AAF Airmen)</span>
+              <span style="color:var(--text-muted)">[SW]</span>
+            </button>
+            <button class="vp-btn" onclick="setPresetView('lager-d')">
+              <span>6. Lager D (US & RAF Airmen)</span>
+              <span style="color:var(--text-muted)">[SE]</span>
+            </button>
+            <button class="vp-btn" onclick="setPresetView('tower-1')">
+              <span>7. Guard Watchtower #1</span>
+              <span style="color:var(--text-muted)">[Wachturm]</span>
+            </button>
+            <button class="vp-btn" onclick="setPresetView('railway')">
+              <span>8. Gross Tychow Railway Station</span>
+              <span style="color:var(--text-muted)">[Access]</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-title">
+            <span>FEATURE LAYERS</span>
+            <span class="badge-tag badge-green">VRML GROUPS</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <label class="layer-toggle-row">
+              <span>POW Barracks Huts (40 Huts)</span>
+              <input type="checkbox" checked onchange="toggleLayer('barracks', this.checked)">
+            </label>
+            <label class="layer-toggle-row">
+              <span>Perimeter Guard Watchtowers (16 Towers)</span>
+              <input type="checkbox" checked onchange="toggleLayer('towers', this.checked)">
+            </label>
+            <label class="layer-toggle-row">
+              <span>Double Barbed Wire Fence</span>
+              <input type="checkbox" checked onchange="toggleLayer('fences', this.checked)">
+            </label>
+            <label class="layer-toggle-row">
+              <span>5m Warning Wire (Neutral Zone)</span>
+              <input type="checkbox" checked onchange="toggleLayer('warningWire', this.checked)">
+            </label>
+            <label class="layer-toggle-row">
+              <span>Vorlager Admin & Sick Bay</span>
+              <input type="checkbox" checked onchange="toggleLayer('vorlager', this.checked)">
+            </label>
+            <label class="layer-toggle-row">
+              <span>Surrounding Forest & Terrain</span>
+              <input type="checkbox" checked onchange="toggleLayer('forest', this.checked)">
+            </label>
+          </div>
+        </div>
+
+        <div class="sidebar-section" style="flex:1;">
+          <div class="sidebar-title">SELECTED FEATURE DOSSIER</div>
+          <div id="inspector-info-card" class="info-box">
+            <strong style="color:var(--gold-bright); font-size:0.9rem;">Stalag Luft IV Overview</strong><br>
+            <span style="color:var(--text-muted); font-size:0.75rem;">Gross Tychow, Pomerania (now Tychowo, Poland)</span>
+            <p style="margin-top:8px;">
+              Luftwaffe prisoner of war camp constructed in May 1944 to hold captured Allied aircrews.
+              Divided into 4 main compounds (Lagern A, B, C, D) housing over 8,000 American and 800 British airmen.
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- TAB 2: 301st BOMB GROUP & VIENNA LOBAU RAID -->
+    <div id="tab-raid" class="tab-content">
+      <div class="page-container">
+        <div class="page-header">
+          <h2 class="page-title">301st BOMBARDMENT GROUP (HEAVY) & VIENNA LOBAU OIL RAID</h2>
+          <p class="page-subtitle">Tactical Reconstruction of the 26 June 1944 Strategic Strike on German Oil Infrastructure</p>
+        </div>
+
+        <!-- Mission Metrics -->
+        <div class="grid-3col" style="margin-bottom:24px;">
+          <div class="card">
+            <span class="hud-label">DISPATCHED STRIKE FORCE</span>
+            <div class="stat-card-number">82 B-17s</div>
+            <div class="stat-card-desc">301st, 463rd & 483rd Bomb Groups (15th AF)</div>
+          </div>
+          <div class="card">
+            <span class="hud-label">ORDNANCE DELIVERED</span>
+            <div class="stat-card-number">221.8 Tons</div>
+            <div class="stat-card-desc">500 lb GP, 300 lb & 250 lb demolition bombs</div>
+          </div>
+          <div class="card">
+            <span class="hud-label">301st BG AIRCRAFT LOSSES</span>
+            <div class="stat-card-number" style="color:var(--accent-red);">2 B-17s</div>
+            <div class="stat-card-desc">1 to heavy 88mm Flak, 1 to fighter interception</div>
+          </div>
+        </div>
+
+        <div class="grid-2col" style="margin-bottom:24px;">
+          <!-- Tactical Flight Map Canvas -->
+          <div class="card">
+            <div class="card-title">TACTICAL FLIGHT ROUTE (FOGGIA TO VIENNA)</div>
+            <canvas id="tactical-map" width="560" height="320"></canvas>
+          </div>
+
+          <!-- Mission Timeline -->
+          <div class="card">
+            <div class="card-title">MISSION CHRONOLOGY (26 JUNE 1944)</div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>TIME (CET)</th>
+                  <th>STAGE / EVENT</th>
+                  <th>DETAILS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong style="color:var(--gold);">06:15</strong></td>
+                  <td>Takeoff</td>
+                  <td>Lucera Airfield (Foggia, Italy) — 301st BG B-17G formation departs</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--gold);">08:45</strong></td>
+                  <td>Rendezvous & Escort</td>
+                  <td>Join P-38 & P-51 escorts over the Adriatic / Yugoslavian coast</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--gold);">09:35</strong></td>
+                  <td>Fighter Attack</td>
+                  <td>15–20 German Bf 109G/K & Fw 190A fighters attack 301st BG 20mi south of target</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--gold);">09:56</strong></td>
+                  <td>Target Bomb Run</td>
+                  <td>Bombing run on Vienna Lobau Oil Refinery at 23,000–23,500 ft under intense 88mm Flak</td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--gold);">10:06</strong></td>
+                  <td>Withdrawal & Downed B-17</td>
+                  <td>TSgt Sam Hewitt's B-17 heavy bomber hit and forced down over Austria</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- B-17 Crew Positions Table -->
+        <div class="card">
+          <div class="card-title">BOEING B-17G FLYING FORTRESS CREW COMPOSITION (301st BOMB GROUP)</div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>CREW BILLET</th>
+                <th>RANK</th>
+                <th>PRIMARY RESPONSIBILITY</th>
+                <th>SAM HEWITT CORRELATION</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Pilot / Aircraft Commander</strong></td>
+                <td>1st Lieutenant / Captain</td>
+                <td>Flight command, formation control, engine management</td>
+                <td>Commissioned Officer</td>
+              </tr>
+              <tr>
+                <td><strong>Co-Pilot</strong></td>
+                <td>2nd / 1st Lieutenant</td>
+                <td>Flight assistance, cross-checking instruments, bailout control</td>
+                <td>Commissioned Officer</td>
+              </tr>
+              <tr>
+                <td><strong>Navigator</strong></td>
+                <td>2nd / 1st Lieutenant</td>
+                <td>Dead reckoning, Gee/H2S radar navigation, logbook keeping</td>
+                <td>Commissioned Officer</td>
+              </tr>
+              <tr>
+                <td><strong>Bombardier</strong></td>
+                <td>2nd / 1st Lieutenant</td>
+                <td>Norden bomb sight operation, chin turret gunner</td>
+                <td>Commissioned Officer</td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--gold);">Radio Operator / Gunner</strong></td>
+                <td><strong style="color:var(--gold);">Technical Sergeant (TSgt)</strong></td>
+                <td><strong style="color:var(--gold);">HF/DF radio communications, strike reporting, top waist gun</strong></td>
+                <td><strong style="color:var(--gold);">TSgt Melvin Samuel "Sam" Hewitt (ASN 19179305)</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Flight Engineer / Top Turret</strong></td>
+                <td>Technical Sergeant (TSgt)</td>
+                <td>Mechanical maintenance, twin .50-cal top turret defense</td>
+                <td>NCO Aircrews (Stalag Luft IV inmate)</td>
+              </tr>
+              <tr>
+                <td><strong>Ball Turret Gunner</strong></td>
+                <td>Staff Sergeant (SSgt)</td>
+                <td>Ventral sphere defense against lower fighter passes</td>
+                <td>NCO Aircrews (Stalag Luft IV inmate)</td>
+              </tr>
+              <tr>
+                <td><strong>Waist Gunners (Left/Right)</strong></td>
+                <td>Staff Sergeant (SSgt)</td>
+                <td>Lateral defense against beam fighter attacks</td>
+                <td>NCO Aircrews (Stalag Luft IV inmate)</td>
+              </tr>
+              <tr>
+                <td><strong>Tail Gunner</strong></td>
+                <td>Staff Sergeant (SSgt)</td>
+                <td>Rear hemisphere defense, formation strike recording</td>
+                <td>NCO Aircrews (Stalag Luft IV inmate)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: STALAG LUFT IV & SAM HEWITT DOSSIER -->
+    <div id="tab-pow" class="tab-content">
+      <div class="page-container">
+        <div class="page-header">
+          <h2 class="page-title">STALAG LUFT IV & SAM HEWITT ARCHIVAL DOSSIER</h2>
+          <p class="page-subtitle">Primary NARA Record Synthesis, Camp History, and Family Memory Correction</p>
+        </div>
+
+        <div class="grid-2col" style="margin-bottom:24px;">
+          <!-- NARA Archival Card -->
+          <div class="card">
+            <div class="card-title">NARA AAD PRIMARY POW RECORD (RG 389, dt=3159)</div>
+            <table class="data-table">
+              <tbody>
+                <tr>
+                  <td><strong>Full Name</strong></td>
+                  <td><strong style="color:var(--gold);">HEWITT, SAM M</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Army Serial Number (ASN)</strong></td>
+                  <td><code>19179305</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Grade / Rank</strong></td>
+                  <td>Technical Sergeant (TSgt)</td>
+                </tr>
+                <tr>
+                  <td><strong>Service Branch</strong></td>
+                  <td>Army Air Corps (<code>AC</code>)</td>
+                </tr>
+                <tr>
+                  <td><strong>Parent Unit / Group</strong></td>
+                  <td>301st Bombardment Group (Heavy) — Code <code>S53 / 301</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Casualty Report Date</strong></td>
+                  <td><strong>26 June 1944</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Theatre of Casualty</strong></td>
+                  <td>European Theatre: Austria (Vienna Lobau Raid)</td>
+                </tr>
+                <tr>
+                  <td><strong>POW Camp Location</strong></td>
+                  <td><strong>Stalag Luft 4 Gross-Tychow Pomerania</strong> (Code <code>54-16</code>)</td>
+                </tr>
+                <tr>
+                  <td><strong>Detaining Power</strong></td>
+                  <td>Germany (Luftwaffe Administration)</td>
+                </tr>
+                <tr>
+                  <td><strong>Final Repatriation Status</strong></td>
+                  <td>Returned to Military Control (Code <code>8</code> — Liberated)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Family Oral History vs Record Synthesis -->
+          <div class="card">
+            <div class="card-title">ORAL TRADITION VS PRIMARY ARCHIVAL RECORD</div>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+              <div class="info-box">
+                <span class="badge-tag badge-red">CLAIM 1</span> <strong>"In a Polish Concentration Camp"</strong><br>
+                <p style="margin-top:4px; font-size:0.78rem; color:var(--text-muted);">
+                  <strong style="color:var(--text-main);">Historical Fact:</strong> Stalag Luft IV was located in Gross Tychow, Pomerania — territory that became part of <strong>Tychowo, Poland</strong> after WWII borders were redrawn. It was a Luftwaffe Prisoner of War Camp for Allied airmen, <em>not</em> an SS concentration or extermination camp.
+                </p>
+              </div>
+
+              <div class="info-box">
+                <span class="badge-tag badge-blue">CLAIM 2</span> <strong>"Maurice Was a Radio Operator Against Pancho"</strong><br>
+                <p style="margin-top:4px; font-size:0.78rem; color:var(--text-muted);">
+                  <strong style="color:var(--text-main);">Historical Fact:</strong> Maurice Hewitt (ASN 19067302) enlisted as a carpenter. It was his brother <strong>Melvin Samuel "Sam" Hewitt (ASN 19179305)</strong> who served as the heavy bomber Radio Operator / Gunner. "Pancho" phonetically garbles the <strong>Ploiești</strong> oil refineries (Romania) or <strong>Pola</strong> drydocks.
+                </p>
+              </div>
+
+              <div class="info-box">
+                <span class="badge-tag badge-green">VERIFIED</span> <strong>Adjacent Enlistment & Joint Service</strong><br>
+                <p style="margin-top:4px; font-size:0.78rem; color:var(--text-muted);">
+                  Both brothers enlisted in California in the Army Air Corps (ASNs 19-067-302 and 19-179-305). Sam was shot down on 26 June 1944 over Austria and survived 10 months of POW captivity including the "Black March".
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Events Card -->
+        <div class="card">
+          <div class="card-title">STALAG LUFT IV HISTORICAL TIMELINE & NOTABLE EVENTS</div>
+          <div class="grid-2col">
+            <div class="info-box">
+              <strong style="color:var(--gold);">1. "The Run at Tychow" (July 1944)</strong>
+              <p style="margin-top:6px; font-size:0.78rem; color:var(--text-muted);">
+                Upon arrival at Gross Tychow railway station, newly arriving Allied airmen POWs were forced by SS and Kriegsmarine guards to run 2 miles to camp with heavy baggage under bayonets, dog bites, and rifle butt blows. Over 600 prisoners sustained injuries.
+              </p>
+            </div>
+            <div class="info-box">
+              <strong style="color:var(--gold);">2. "The Black March" / Death March (Feb–April 1945)</strong>
+              <p style="margin-top:6px; font-size:0.78rem; color:var(--text-muted);">
+                As Soviet forces advanced across Pomerania, 8,000 Allied airmen were force-marched on foot in sub-zero winter temperatures across Germany for 86 days over 500+ miles. Starvation and dysentery were rampant until liberation by British/US forces.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: VRML 2.0 SOURCE CODE -->
+    <div id="tab-vrml-code" class="tab-content">
+      <div class="page-container">
+        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h2 class="page-title">STALAG LUFT IV — VRML 2.0 SOURCE CODE</h2>
+            <p class="page-subtitle">Standard ISO/IEC 14772 VRML 2.0 (.wrl) Specification File</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-sm" onclick="copyVrmlCode()">Copy VRML Code</button>
+            <a href="../resources/stalag-luft-iv.wrl" download="stalag-luft-iv.wrl" class="btn-sm active" style="text-decoration:none; display:inline-block;">Download .wrl File</a>
+          </div>
+        </div>
+
+        <textarea id="vrml-source-textarea" class="code-area" readonly></textarea>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Three.js + VRML Viewer Imports -->
+<script type="module">
+import * as THREE from '../vendor/three.module.min.js';
+import { parseVrml, flattenVrml } from '../js/wrl-parse.js';
+import { vrmlToScene, startVrmlViewer } from '../js/ghs-viewer-three.js';
+
+let vrmlViewerInstance = null;
+let rawVrmlText = '';
+
+// Load the VRML file text
+async function loadVrmlFile() {
+  try {
+    const res = await fetch('../resources/stalag-luft-iv.wrl');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    rawVrmlText = await res.text();
+    document.getElementById('vrml-source-textarea').value = rawVrmlText;
+
+    init3DViewer(rawVrmlText);
+  } catch (err) {
+    console.error('Failed to load VRML file:', err);
+  }
+}
+
+function init3DViewer(wrlText) {
+  const container = document.getElementById('vrml-canvas-container');
+  if (!container) return;
+
+  vrmlViewerInstance = startVrmlViewer({
+    host: container,
+    wrlText: wrlText
+  });
+
+  // Update stats
+  if (vrmlViewerInstance?.stats) {
+    const el = document.getElementById('stat-tris-count');
+    if (el) el.textContent = `${vrmlViewerInstance.meshes} / ${(vrmlViewerInstance.triangles/1000).toFixed(1)}k tris`;
+  }
+}
+
+// Preset camera viewpoints
+window.setPresetView = function(viewKey) {
+  if (!vrmlViewerInstance) return;
+
+  vrmlViewerInstance.auto = false;
+  document.getElementById('btn-auto-rotate').classList.remove('active');
+  document.getElementById('btn-auto-rotate').textContent = 'Auto-Rotate: OFF';
+
+  const card = document.getElementById('inspector-info-card');
+
+  if (viewKey === 'aerial') {
+    vrmlViewerInstance.frame(380);
+    card.innerHTML = `<strong style="color:var(--gold-bright);">Aerial Overview</strong><br><p style="margin-top:6px; font-size:0.78rem;">Full 400m x 400m perimeter view showing all 4 POW compounds (Lagern A, B, C, D) and northern Vorlager administration zone.</p>`;
+  } else if (viewKey === 'vorlager') {
+    vrmlViewerInstance.frame(180);
+    card.innerHTML = `<strong style="color:var(--gold-bright);">Main Gate & Vorlager HQ</strong><br><p style="margin-top:6px; font-size:0.78rem;">German garrison barracks, Commandant's HQ, Allied Red Cross Revier (Sick Bay), and primary gate security checkpoint.</p>`;
+  } else if (viewKey === 'lager-a') {
+    vrmlViewerInstance.frame(140);
+    card.innerHTML = `<strong style="color:var(--gold-bright);">Lager A (US AAF Airmen)</strong><br><p style="margin-top:6px; font-size:0.78rem;">North-West POW compound containing 8 single-story wooden barracks huts housing ~2,200 USAAF enlisted aircrews.</p>`;
+  } else if (viewKey === 'lager-b') {
+    vrmlViewerInstance.frame(140);
+    card.innerHTML = `<strong style="color:var(--gold-bright);">Lager B (US AAF Airmen)</strong><br><p style="margin-top:6px; font-size:0.78rem;">North-East compound housing USAAF heavy bomber radio operators, gunners, and flight engineers.</p>`;
+  } else if (viewKey === 'lager-c') {
+    vrmlViewerInstance.frame(140);
+    card.innerHTML = `<strong style="color:var(--gold-bright);">Lager C (US AAF Airmen)</strong><br><p style="margin-top:6px; font-size:0.78rem;">South-West compound featuring central Appell assembly yard and washhouses.</p>`;
+  } else if (viewKey === 'lager-d') {
+    vrmlViewerInstance.frame(140);
+    card.innerHTML = `<strong style="color:var(--gold-bright);">Lager D (US & RAF Airmen)</strong><br><p style="margin-top:6px; font-size:0.78rem;">South-East compound housing mixed American AAF and British RAF/RCAF flight crews.</p>`;
+  } else if (viewKey === 'tower-1') {
+    vrmlViewerInstance.frame(110);
+    card.innerHTML = `<strong style="color:var(--gold-bright);">Guard Watchtower (Wachturm)</strong><br><p style="margin-top:6px; font-size:0.78rem;">One of 16 timber perimeter watchtowers fitted with high-intensity searchlights and MG42 machine guns overseeing the 5m warning tripwire zone.</p>`;
+  } else if (viewKey === 'railway') {
+    vrmlViewerInstance.frame(220);
+    card.innerHTML = `<strong style="color:var(--gold-bright);">Gross Tychow Railway Spur</strong><br><p style="margin-top:6px; font-size:0.78rem;">Railway connection line from Gross Tychow station where arriving POWs were forced on the infamous 2-mile "Run at Tychow" under bayonet point.</p>`;
+  }
+};
+
+window.toggleAutoRotate = function() {
+  if (!vrmlViewerInstance) return;
+  vrmlViewerInstance.auto = !vrmlViewerInstance.auto;
+  const btn = document.getElementById('btn-auto-rotate');
+  if (vrmlViewerInstance.auto) {
+    btn.classList.add('active');
+    btn.textContent = 'Auto-Rotate: ON';
+  } else {
+    btn.classList.remove('active');
+    btn.textContent = 'Auto-Rotate: OFF';
+  }
+};
+
+window.resetCamera = function() {
+  if (!vrmlViewerInstance) return;
+  vrmlViewerInstance.frame(380);
+};
+
+// Global Tab Switcher
+window.switchTab = function(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+  const btnIndex = { 'vrml': 0, 'raid': 1, 'pow': 2, 'vrml-code': 3 }[tabId];
+  document.querySelectorAll('.tab-btn')[btnIndex].classList.add('active');
+  document.getElementById(`tab-${tabId}`).classList.add('active');
+
+  if (tabId === 'raid') {
+    drawTacticalMap();
+  }
+};
+
+window.copyVrmlCode = function() {
+  const area = document.getElementById('vrml-source-textarea');
+  area.select();
+  navigator.clipboard.writeText(area.value);
+  alert('VRML 2.0 source code copied to clipboard!');
+};
+
+// Draw Tactical Strike Map Canvas
+function drawTacticalMap() {
+  const canvas = document.getElementById('tactical-map');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width;
+  const h = canvas.height;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Background grid
+  ctx.strokeStyle = '#0f1726';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < w; x += 30) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+  }
+  for (let y = 0; y < h; y += 30) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+
+  // Coastlines / Map Features (Schematic)
+  ctx.strokeStyle = '#1e2d42';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  // Adriatic Coast
+  ctx.moveTo(80, 280); ctx.lineTo(160, 220); ctx.lineTo(240, 180); ctx.lineTo(320, 120);
+  ctx.stroke();
+
+  // Lucera Airfield (Foggia)
+  ctx.fillStyle = '#5cb85c';
+  ctx.beginPath(); ctx.arc(100, 260, 6, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = '10px Consolas';
+  ctx.fillText('Lucera AF (301st BG)', 60, 280);
+
+  // Vienna / Lobau Target
+  ctx.fillStyle = '#d9534f';
+  ctx.beginPath(); ctx.arc(380, 70, 8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillText('VIENNA LOBAU TARGET', 340, 50);
+
+  // Flight Route Line
+  ctx.strokeStyle = '#d4af37';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 4]);
+  ctx.beginPath();
+  ctx.moveTo(100, 260);
+  ctx.lineTo(220, 190);
+  ctx.lineTo(380, 70);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Fighter Interception Zone
+  ctx.strokeStyle = '#d9534f';
+  ctx.fillStyle = 'rgba(217, 83, 79, 0.15)';
+  ctx.beginPath(); ctx.arc(340, 110, 35, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#ff6b6b';
+  ctx.fillText('Luftwaffe Interception Zone (JG 300 / JG 27)', 210, 125);
+}
+
+loadVrmlFile();
+</script>
+</body>
+</html>

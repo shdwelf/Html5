@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "crs": "EPSG:4326",
+    "elevSource": "USGS 3DEP Program ImageServer (https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/identify), sampled 2026-09-11, meters, NAVD88 composite mosaic",
+    "geocode": "vendor-reported FPDS street addresses resolved to block-level city centroids; elevations sampled at these centroids",
+    "units": "meters"
+  },
+  "points": {
+    "p_atlanta":       { "lat": 33.8487, "lon": -84.3655, "elev": 299.032, "label": "Atlanta, GA — AT&T Mobility" },
+    "p_bethesda":      { "lat": 38.9990, "lon": -77.1120, "elev": 107.449, "label": "Bethesda, MD (Rockledge Dr) — Windsor Group / IBM" },
+    "p_bethesda_pop":  { "lat": 38.9847, "lon": -77.0947, "elev": 103.721, "label": "Bethesda, MD — place of performance" },
+    "p_silverspring":  { "lat": 38.9884, "lon": -77.0261, "elev": 105.818, "label": "Silver Spring, MD — FM Talent Source" },
+    "p_alexandria_s":  { "lat": 38.7656, "lon": -77.1420, "elev": 67.8597, "label": "Alexandria, VA (Walker Ln) — Calibre Systems" },
+    "p_alexandria_n":  { "lat": 38.8328, "lon": -77.0608, "elev": 18.9235, "label": "Alexandria, VA (Huntington Ave) — Digital Foundation" },
+    "p_southlake":     { "lat": 32.9412, "lon": -97.1342, "elev": 195.197, "label": "Southlake, TX — JSTOOGOOD" },
+    "p_herndon":       { "lat": 38.9545, "lon": -77.3980, "elev": 115.644, "label": "Herndon, VA (Dulles Corner) — DLT Solutions / Forge Group" },
+    "p_greatfalls":    { "lat": 38.9990, "lon": -77.2900, "elev": 105.764, "label": "Great Falls, VA — Ekuber Ventures" },
+    "p_mclean":        { "lat": 38.9237, "lon": -77.2127, "elev": 108.207, "label": "McLean, VA (Greensboro Dr) — Booz Allen / Avineon" },
+    "p_vienna":        { "lat": 38.9246, "lon": -77.2405, "elev": 120.999, "label": "Vienna, VA — Horizon Industries / Armedia / F-Concepts" },
+    "p_weston":        { "lat": 42.3667, "lon": -71.3030, "elev": 56.6506, "label": "Weston, MA — Monster Government Solutions" },
+    "p_chantilly":     { "lat": 38.8943, "lon": -77.4360, "elev": 92.3337, "label": "Chantilly, VA (Willard Rd) — REI Systems" },
+    "p_sandiego":      { "lat": 32.7620, "lon": -117.1690, "elev": 9.09876, "label": "San Diego, CA — Blue Tech" },
+    "p_rest":          { "lat": 38.9510, "lon": -77.3490, "elev": 122.555, "label": "Reston, VA (Sunset Hills Rd) — Carahsoft" },
+    "p_rockville":     { "lat": 39.0840, "lon": -77.1520, "elev": 136.920, "label": "Rockville, MD (Research Blvd) — Turning Point Global Solutions" },
+    "p_erie":          { "lat": 42.1292, "lon": -80.0851, "elev": 198.872, "label": "Erie, PA — Federal Resources Corp" },
+    "dc_hub":          { "lat": 38.9057, "lon": -77.0426, "elev": 17.4715, "label": "Washington, DC (19th & M NW) — 720 Strategies / Xerox HQ" },
+    "dc_pop":          { "lat": 38.8986, "lon": -77.0417, "elev": 17.8328, "label": "Washington, DC — GSA HQ / place of performance" },
+    "p_centennial":    { "lat": 39.5795, "lon": -104.8772, "elev": 1782.45, "label": "Centennial, CO — Security Install Solutions" },
+    "p_arlington":     { "lat": 38.8558, "lon": -77.0503, "elev": 14.9346, "label": "Arlington, VA (S Bell St) — Bloomberg Industry Group" },
+    "p_parkridge":     { "lat": 42.0111, "lon": -87.8412, "elev": 195.573, "label": "Park Ridge, IL — Black Spectacles" },
+    "p_waltham":       { "lat": 42.3885, "lon": -71.2370, "elev": 23.0455, "label": "Waltham, MA — Graphisoft NA" },
+    "p_philly":        { "lat": 39.9505, "lon": -75.1450, "elev": 9.13373, "label": "Philadelphia, PA (Old City) — Ekuber Region 3 POP" },
+    "p_fortworth":     { "lat": 32.7500, "lon": -97.3300, "elev": 186.898, "label": "Fort Worth, TX — Forge Group POP" },
+    "prof_sd_dc_1":    { "lat": 35.60, "lon": -109.60, "elev": 2016.95, "label": "San Diego→DC route sample 1" },
+    "prof_sd_dc_2":    { "lat": 37.30, "lon": -101.20, "elev": 933.679, "label": "San Diego→DC route sample 2" },
+    "prof_sd_dc_3":    { "lat": 38.50, "lon": -92.40, "elev": 230.514, "label": "San Diego→DC route sample 3" },
+    "prof_co_dc_1":    { "lat": 40.10, "lon": -98.90, "elev": 565.848, "label": "Centennial→DC route sample 1" },
+    "prof_co_dc_2":    { "lat": 40.30, "lon": -92.70, "elev": 232.790, "label": "Centennial→DC route sample 2" },
+    "prof_co_dc_3":    { "lat": 40.10, "lon": -86.40, "elev": 286.904, "label": "Centennial→DC route sample 3" },
+    "prof_il_dc_1":    { "lat": 41.60, "lon": -85.20, "elev": 289.245, "label": "Park Ridge→DC route sample 1" },
+    "prof_il_dc_2":    { "lat": 41.00, "lon": -82.70, "elev": 295.153, "label": "Park Ridge→DC route sample 2" },
+    "prof_il_dc_3":    { "lat": 40.30, "lon": -80.20, "elev": 370.732, "label": "Park Ridge→DC route sample 3" }
+  },
+  "profiles": {
+    "route_sandiego_dc": { "award": "bluetech-47haa022f0166", "from": "p_sandiego", "to": "dc_pop", "samples": ["prof_sd_dc_1", "prof_sd_dc_2", "prof_sd_dc_3"] },
+    "route_centennial_dc": { "award": "secinstall-47haa023f0185", "from": "p_centennial", "to": "dc_pop", "samples": ["prof_co_dc_1", "prof_co_dc_2", "prof_co_dc_3"] },
+    "route_parkridge_dc": { "award": "blackspectacles-47haa023p0014", "from": "p_parkridge", "to": "dc_pop", "samples": ["prof_il_dc_1", "prof_il_dc_2", "prof_il_dc_3"] }
+  }
+}

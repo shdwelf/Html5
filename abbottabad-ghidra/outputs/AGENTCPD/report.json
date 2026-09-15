@@ -1,0 +1,1199 @@
+{
+ "decompiled": [
+  {
+   "entry": "100022d8", 
+   "file": "decompiled/_start_16_100022d8.c", 
+   "name": "_start@16", 
+   "score": 9
+  }, 
+  {
+   "entry": "10004eb7", 
+   "file": "decompiled/entry_10004eb7.c", 
+   "name": "entry", 
+   "score": 6
+  }, 
+  {
+   "entry": "10004f80", 
+   "file": "decompiled/Process32Next_10004f80.c", 
+   "name": "Process32Next", 
+   "score": 3
+  }, 
+  {
+   "entry": "10004f86", 
+   "file": "decompiled/Process32First_10004f86.c", 
+   "name": "Process32First", 
+   "score": 3
+  }, 
+  {
+   "entry": "10004f8c", 
+   "file": "decompiled/CreateToolhelp32Snapshot_10004f8c.c", 
+   "name": "CreateToolhelp32Snapshot", 
+   "score": 3
+  }
+ ], 
+ "entries": [
+  "100022d8", 
+  "10004eb7"
+ ], 
+ "exports": [
+  "_start@16", 
+  "entry"
+ ], 
+ "file": "AGENTCPD.DLL", 
+ "function_count": 97, 
+ "functions": [
+  {
+   "entry": "10001000", 
+   "name": "FUN_10001000", 
+   "size": 21, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001015", 
+   "name": "FUN_10001015", 
+   "size": 255, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001114", 
+   "name": "FUN_10001114", 
+   "size": 833, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001455", 
+   "name": "FUN_10001455", 
+   "size": 241, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100015a2", 
+   "name": "FUN_100015a2", 
+   "size": 281, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100016bb", 
+   "name": "FUN_100016bb", 
+   "size": 459, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001886", 
+   "name": "FUN_10001886", 
+   "size": 13, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001893", 
+   "name": "FUN_10001893", 
+   "size": 496, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001a85", 
+   "name": "FUN_10001a85", 
+   "size": 150, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001b1b", 
+   "name": "FUN_10001b1b", 
+   "size": 157, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001bb8", 
+   "name": "FUN_10001bb8", 
+   "size": 711, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001e7f", 
+   "name": "FUN_10001e7f", 
+   "size": 111, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001eee", 
+   "name": "FUN_10001eee", 
+   "size": 119, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001f65", 
+   "name": "FUN_10001f65", 
+   "size": 107, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10001fd0", 
+   "name": "FUN_10001fd0", 
+   "size": 299, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100020fb", 
+   "name": "FUN_100020fb", 
+   "size": 121, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002174", 
+   "name": "FUN_10002174", 
+   "size": 224, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002254", 
+   "name": "FUN_10002254", 
+   "size": 132, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100022d8", 
+   "name": "_start@16", 
+   "size": 17, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100022e9", 
+   "name": "FUN_100022e9", 
+   "size": 70, 
+   "thunk": false
+  }, 
+  {
+   "entry": "1000232f", 
+   "name": "FUN_1000232f", 
+   "size": 262, 
+   "thunk": false
+  }, 
+  {
+   "entry": "1000243d", 
+   "name": "FUN_1000243d", 
+   "size": 59, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002478", 
+   "name": "FUN_10002478", 
+   "size": 65, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100024b9", 
+   "name": "FUN_100024b9", 
+   "size": 4, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100024bd", 
+   "name": "FUN_100024bd", 
+   "size": 26, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100024d7", 
+   "name": "FUN_100024d7", 
+   "size": 48, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002507", 
+   "name": "FUN_10002507", 
+   "size": 163, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100025aa", 
+   "name": "FUN_100025aa", 
+   "size": 557, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100027d7", 
+   "name": "FUN_100027d7", 
+   "size": 550, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100029fd", 
+   "name": "FUN_100029fd", 
+   "size": 154, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002a97", 
+   "name": "FUN_10002a97", 
+   "size": 343, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002bee", 
+   "name": "FUN_10002bee", 
+   "size": 19, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002c01", 
+   "name": "FUN_10002c01", 
+   "size": 19, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002c14", 
+   "name": "FUN_10002c14", 
+   "size": 19, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002c27", 
+   "name": "FUN_10002c27", 
+   "size": 266, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002d31", 
+   "name": "FUN_10002d31", 
+   "size": 293, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002e56", 
+   "name": "FUN_10002e56", 
+   "size": 19, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002e69", 
+   "name": "FUN_10002e69", 
+   "size": 19, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002e7c", 
+   "name": "FUN_10002e7c", 
+   "size": 38, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002ea2", 
+   "name": "FUN_10002ea2", 
+   "size": 19, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10002eb5", 
+   "name": "FUN_10002eb5", 
+   "size": 672, 
+   "thunk": false
+  }, 
+  {
+   "entry": "1000316f", 
+   "name": "FUN_1000316f", 
+   "size": 417, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003310", 
+   "name": "FUN_10003310", 
+   "size": 180, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100033c4", 
+   "name": "FUN_100033c4", 
+   "size": 76, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003410", 
+   "name": "FUN_10003410", 
+   "size": 108, 
+   "thunk": false
+  }, 
+  {
+   "entry": "1000347c", 
+   "name": "FUN_1000347c", 
+   "size": 249, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003575", 
+   "name": "FUN_10003575", 
+   "size": 163, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003618", 
+   "name": "FUN_10003618", 
+   "size": 188, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100036d4", 
+   "name": "FUN_100036d4", 
+   "size": 26, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100036ee", 
+   "name": "FUN_100036ee", 
+   "size": 330, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003838", 
+   "name": "FUN_10003838", 
+   "size": 53, 
+   "thunk": false
+  }, 
+  {
+   "entry": "1000386d", 
+   "name": "FUN_1000386d", 
+   "size": 118, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100038e3", 
+   "name": "FUN_100038e3", 
+   "size": 9, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100038ec", 
+   "name": "FUN_100038ec", 
+   "size": 27, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003907", 
+   "name": "FUN_10003907", 
+   "size": 278, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003a1d", 
+   "name": "FUN_10003a1d", 
+   "size": 318, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003b5b", 
+   "name": "FUN_10003b5b", 
+   "size": 109, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003bc8", 
+   "name": "FUN_10003bc8", 
+   "size": 313, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003d01", 
+   "name": "FUN_10003d01", 
+   "size": 257, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003e02", 
+   "name": "FUN_10003e02", 
+   "size": 170, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003eac", 
+   "name": "FUN_10003eac", 
+   "size": 302, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10003fda", 
+   "name": "FUN_10003fda", 
+   "size": 165, 
+   "thunk": false
+  }, 
+  {
+   "entry": "1000407f", 
+   "name": "FUN_1000407f", 
+   "size": 25, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004098", 
+   "name": "FUN_10004098", 
+   "size": 108, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004104", 
+   "name": "FUN_10004104", 
+   "size": 301, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004231", 
+   "name": "FUN_10004231", 
+   "size": 24, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004249", 
+   "name": "FUN_10004249", 
+   "size": 117, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100042be", 
+   "name": "FUN_100042be", 
+   "size": 13, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100042cb", 
+   "name": "FUN_100042cb", 
+   "size": 10, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100042d5", 
+   "name": "FUN_100042d5", 
+   "size": 85, 
+   "thunk": false
+  }, 
+  {
+   "entry": "1000432a", 
+   "name": "FUN_1000432a", 
+   "size": 376, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100044a2", 
+   "name": "FUN_100044a2", 
+   "size": 377, 
+   "thunk": false
+  }, 
+  {
+   "entry": "1000461b", 
+   "name": "FUN_1000461b", 
+   "size": 131, 
+   "thunk": false
+  }, 
+  {
+   "entry": "1000469e", 
+   "name": "FUN_1000469e", 
+   "size": 232, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004786", 
+   "name": "FUN_10004786", 
+   "size": 437, 
+   "thunk": false
+  }, 
+  {
+   "entry": "1000493b", 
+   "name": "FUN_1000493b", 
+   "size": 85, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004990", 
+   "name": "FUN_10004990", 
+   "size": 75, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100049db", 
+   "name": "FUN_100049db", 
+   "size": 27, 
+   "thunk": false
+  }, 
+  {
+   "entry": "100049f6", 
+   "name": "FUN_100049f6", 
+   "size": 27, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004a11", 
+   "name": "FUN_10004a11", 
+   "size": 394, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004b9b", 
+   "name": "FUN_10004b9b", 
+   "size": 189, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004c58", 
+   "name": "FUN_10004c58", 
+   "size": 49, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004c89", 
+   "name": "FUN_10004c89", 
+   "size": 118, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004cff", 
+   "name": "FUN_10004cff", 
+   "size": 176, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004db0", 
+   "name": "memcpy", 
+   "size": 6, 
+   "thunk": true
+  }, 
+  {
+   "entry": "10004db6", 
+   "name": "memset", 
+   "size": 6, 
+   "thunk": true
+  }, 
+  {
+   "entry": "10004dbc", 
+   "name": "strcat", 
+   "size": 6, 
+   "thunk": true
+  }, 
+  {
+   "entry": "10004dd0", 
+   "name": "FUN_10004dd0", 
+   "size": 47, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004e00", 
+   "name": "strcpy", 
+   "size": 6, 
+   "thunk": true
+  }, 
+  {
+   "entry": "10004e06", 
+   "name": "strlen", 
+   "size": 6, 
+   "thunk": true
+  }, 
+  {
+   "entry": "10004e0c", 
+   "name": "FUN_10004e0c", 
+   "size": 171, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004eb7", 
+   "name": "entry", 
+   "size": 157, 
+   "thunk": false
+  }, 
+  {
+   "entry": "10004f66", 
+   "name": "memcmp", 
+   "size": 6, 
+   "thunk": true
+  }, 
+  {
+   "entry": "10004f6c", 
+   "name": "_initterm", 
+   "size": 6, 
+   "thunk": true
+  }, 
+  {
+   "entry": "10004f80", 
+   "name": "Process32Next", 
+   "size": 6, 
+   "thunk": true
+  }, 
+  {
+   "entry": "10004f86", 
+   "name": "Process32First", 
+   "size": 6, 
+   "thunk": true
+  }, 
+  {
+   "entry": "10004f8c", 
+   "name": "CreateToolhelp32Snapshot", 
+   "size": 6, 
+   "thunk": true
+  }
+ ], 
+ "image_base": "10000000", 
+ "imports": {
+  "ADVAPI32.DLL": [
+   "GetUserNameA", 
+   "RegCloseKey", 
+   "RegCreateKeyExA", 
+   "RegDeleteKeyA", 
+   "RegNotifyChangeKeyValue", 
+   "RegOpenKeyExA", 
+   "RegQueryValueExA", 
+   "RegSetValueExA"
+  ], 
+  "KERNEL32.DLL": [
+   "CloseHandle", 
+   "CopyFileA", 
+   "CreateEventA", 
+   "CreateFileA", 
+   "CreateMutexA", 
+   "CreateThread", 
+   "CreateToolhelp32Snapshot", 
+   "DeleteFileA", 
+   "ExitThread", 
+   "FindClose", 
+   "FindFirstFileA", 
+   "FindNextFileA", 
+   "FreeLibrary", 
+   "GetCommandLineA", 
+   "GetComputerNameA", 
+   "GetEnvironmentVariableA", 
+   "GetLastError", 
+   "GetProcAddress", 
+   "GetSystemInfo", 
+   "GetSystemTime", 
+   "GetTempPathA", 
+   "GetTickCount", 
+   "GetVersionExA", 
+   "GetVolumeInformationA", 
+   "LoadLibraryA", 
+   "MoveFileA", 
+   "Process32First", 
+   "Process32Next", 
+   "ReadFile", 
+   "ResetEvent", 
+   "SetErrorMode", 
+   "SetFileAttributesA", 
+   "SetFilePointer", 
+   "SetUnhandledExceptionFilter", 
+   "Sleep", 
+   "VirtualAlloc", 
+   "VirtualFree", 
+   "WaitForMultipleObjects", 
+   "WaitForSingleObject", 
+   "WriteFile"
+  ], 
+  "MSVCRT.DLL": [
+   "_adjust_fdiv", 
+   "_except_handler3", 
+   "_getdiskfree", 
+   "_initterm", 
+   "_iob", 
+   "_itoa", 
+   "exit", 
+   "fclose", 
+   "fflush", 
+   "fopen", 
+   "fprintf", 
+   "fread", 
+   "free", 
+   "fseek", 
+   "ftell", 
+   "fwrite", 
+   "malloc", 
+   "memcmp", 
+   "memcpy", 
+   "memset", 
+   "rand", 
+   "srand", 
+   "strcat", 
+   "strcpy", 
+   "strlen", 
+   "strncat", 
+   "strncpy", 
+   "strrchr", 
+   "strstr", 
+   "tolower"
+  ]
+ }, 
+ "iocs": {
+  "email": [], 
+  "ftp": [], 
+  "ipv4": [], 
+  "runkey": [], 
+  "url": []
+ }, 
+ "language": "x86:LE:32:default", 
+ "metadata": {
+  "# of Bytes": "36864", 
+  "# of Data Type Categories": "14", 
+  "# of Data Types": "158", 
+  "# of Defined Data": "1037", 
+  "# of Functions": "172", 
+  "# of Instructions": "5693", 
+  "# of Memory Blocks": "6", 
+  "# of Symbols": "823", 
+  "Address Size": "32", 
+  "Analyzed": "true", 
+  "Compiler": "visualstudio:unknown", 
+  "Compiler ID": "windows", 
+  "Created With Ghidra Version": "11.2.1", 
+  "Date Created": "Fri Sep 11 17:48:03 UTC 2026", 
+  "Endian": "Little", 
+  "Executable Format": "Portable Executable (PE)", 
+  "Executable Location": "/home/user/work/AGENTCPD.DLL", 
+  "Executable MD5": "91985cf1b695f95a72df8e27c75eafc5", 
+  "Executable SHA256": "1e77ae780e3f6389ffd6eae92887e531bf156943e31302c93be08a57ea90e6dd", 
+  "FSRL": "file:///home/user/work/AGENTCPD.DLL?MD5=91985cf1b695f95a72df8e27c75eafc5", 
+  "Language ID": "x86:LE:32:default (4.1)", 
+  "Maximum Address": "ffdfffff", 
+  "Minimum Address": "10000000", 
+  "Preferred Root Namespace Category": "", 
+  "Processor": "x86", 
+  "Program Name": "AGENTCPD.DLL", 
+  "RTTI Found": "false", 
+  "Relocatable": "true", 
+  "SectionAlignment": "4096", 
+  "Should Ask To Analyze": "false"
+ }, 
+ "sections": [
+  {
+   "end": "10000fff", 
+   "name": "Headers", 
+   "r": true, 
+   "size": 4096, 
+   "start": "10000000", 
+   "w": false, 
+   "x": false
+  }, 
+  {
+   "end": "10004fff", 
+   "name": ".text", 
+   "r": true, 
+   "size": 16384, 
+   "start": "10001000", 
+   "w": false, 
+   "x": true
+  }, 
+  {
+   "end": "10005fff", 
+   "name": ".rdata", 
+   "r": true, 
+   "size": 4096, 
+   "start": "10005000", 
+   "w": false, 
+   "x": false
+  }, 
+  {
+   "end": "10006fff", 
+   "name": ".data", 
+   "r": true, 
+   "size": 4096, 
+   "start": "10006000", 
+   "w": true, 
+   "x": false
+  }, 
+  {
+   "end": "10007fff", 
+   "name": ".reloc", 
+   "r": true, 
+   "size": 4096, 
+   "start": "10007000", 
+   "w": false, 
+   "x": false
+  }, 
+  {
+   "end": "ffdfffff", 
+   "name": "tdb", 
+   "r": true, 
+   "size": 4096, 
+   "start": "ffdff000", 
+   "w": true, 
+   "x": false
+  }
+ ], 
+ "strings": [
+  "!This program cannot be run in DOS mode.", 
+  "J#-'V--", 
+  "J#-LU)-", 
+  "J#-LU'-", 
+  "J#-Rich", 
+  ".text", 
+  "`.rdata", 
+  "@.data", 
+  ".reloc", 
+  "X_^[]", 
+  "SVW3", 
+  "9=lb", 
+  "t\"9=pb", 
+  "9=Pa", 
+  "t*9=Ta", 
+  "QQSUV", 
+  "USUU", 
+  "QhPb", 
+  "USUUUWP", 
+  "_^][u", 
+  "Pj V", 
+  "QQVWj", 
+  "u+9}", 
+  "UtCW", 
+  "dSVW3", 
+  "jXPS", 
+  "VVh/#", 
+  "SVWh", 
+  "QSW3", 
+  "trVjeSP", 
+  "T$$:", 
+  "a9D$", 
+  "Wj@3", 
+  "D$(j", 
+  "D$4h", 
+  "D$B\\", 
+  "D$DP", 
+  "D$HhXa", 
+  "D$$j", 
+  "_^][", 
+  "tSVWj", 
+  "t?PSj", 
+  "Sh\\a", 
+  "SSSh<`", 
+  "t&Wj3_", 
+  "SVWj", 
+  "PSVW", 
+  "YSSj", 
+  "SVWj", 
+  "X_^[", 
+  "SVWj", 
+  "YY_^[", 
+  "SVWj", 
+  "YY_^[", 
+  "t9Vj", 
+  "SVWj<3", 
+  "tJ@;", 
+  "VWj<Y3", 
+  "uFVW", 
+  "Wjt3", 
+  "Ph<b", 
+  "SVW3", 
+  "tYj ", 
+  "j@Y3", 
+  "thj [", 
+  ">QP@", 
+  "Su-j", 
+  "t;9}", 
+  "t69}", 
+  "t19}", 
+  "t,9}", 
+  "NWVS", 
+  "u7WPS", 
+  "u&WVS", 
+  "_^[]", 
+  "DeleteFileA", 
+  "FindClose", 
+  "MoveFileA", 
+  "FindNextFileA", 
+  "CopyFileA", 
+  "FindFirstFileA", 
+  "GetTempPathA", 
+  "ExitThread", 
+  "GetVolumeInformationA", 
+  "CloseHandle", 
+  "GetLastError", 
+  "CreateMutexA", 
+  "GetTickCount", 
+  "GetEnvironmentVariableA", 
+  "GetCommandLineA", 
+  "GetSystemTime", 
+  "WaitForSingleObject", 
+  "CreateThread", 
+  "WaitForMultipleObjects", 
+  "ResetEvent", 
+  "SetUnhandledExceptionFilter", 
+  "SetErrorMode", 
+  "KERNEL32.dll", 
+  "RegNotifyChangeKeyValue", 
+  "RegDeleteKeyA", 
+  "RegCreateKeyExA", 
+  "RegSetValueExA", 
+  "RegCloseKey", 
+  "RegQueryValueExA", 
+  "RegOpenKeyExA", 
+  "ADVAPI32.dll", 
+  "free", 
+  "memcpy", 
+  "memset", 
+  "malloc", 
+  "strcat", 
+  "strncpy", 
+  "exit", 
+  "rand", 
+  "srand", 
+  "strcpy", 
+  "strstr", 
+  "strrchr", 
+  "strlen", 
+  "fclose", 
+  "fwrite", 
+  "fread", 
+  "ftell", 
+  "fseek", 
+  "fopen", 
+  "strncat", 
+  "fflush", 
+  "_except_handler3", 
+  "fprintf", 
+  "_iob", 
+  "memcmp", 
+  "_getdiskfree", 
+  "tolower", 
+  "MSVCRT.dll", 
+  "_initterm", 
+  "_adjust_fdiv", 
+  "GetComputerNameA", 
+  "SetFileAttributesA", 
+  "FreeLibrary", 
+  "GetProcAddress", 
+  "LoadLibraryA", 
+  "Process32Next", 
+  "Process32First", 
+  "CreateToolhelp32Snapshot", 
+  "GetSystemInfo", 
+  "GetVersionExA", 
+  "CreateEventA", 
+  "Sleep", 
+  "SetFilePointer", 
+  "ReadFile", 
+  "WriteFile", 
+  "VirtualFree", 
+  "VirtualAlloc", 
+  "CreateFileA", 
+  "GetUserNameA", 
+  "_itoa", 
+  "agentcpd.dll", 
+  "_start@16", 
+  "\\\\.\\a:", 
+  "FILENAME", 
+  "*.bmp", 
+  "\\restore\\", 
+  "Software\\Microsoft\\MSNetMng", 
+  "Global\\DirectMarketing", 
+  "Policy", 
+  "Version", 
+  "Status", 
+  "Explorer.exe", 
+  "Shell", 
+  ".exe", 
+  "32.exe", 
+  "\\System32", 
+  "SYSTEMROOT", 
+  "TEMP", 
+  "Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", 
+  "System\\CurrentControlSet\\Services\\USBSTOR\\Enum", 
+  "ProductId", 
+  "RegisteredOrganization", 
+  "RegisteredOwner", 
+  "Software\\Microsoft\\Windows NT\\CurrentVersion", 
+  ".dll", 
+  "TMP1", 
+  "file size = %d bytes", 
+  "fseek(SEEK_SET) failed", 
+  "System\\CurrentControlSet\\Services\\PartMgr\\Enum", 
+  "WS     TMP", 
+  "000B0U0", 
+  "0%161~1", 
+  "1!2/2G2", 
+  "2 3(3U3", 
+  "4%5F5J5N5R5V5Z5^5b5f5j5n5r5v5z5~5", 
+  "7I7x7", 
+  "798b8z8", 
+  "9-93999A9G9Q9", 
+  "9':3:>:U:[:b:m:w:", 
+  ";);0;6;<;H;N;\\;b;j;q;|;", 
+  ";,<c<", 
+  "='=2=:=d=", 
+  "=b>t>", 
+  "070B0", 
+  "0(1/1J1Z1j1", 
+  "2+2G2^2h2", 
+  "3$3?3D3J3d3m3u3", 
+  "494T4", 
+  "5$5,5=5J5P5Z5g5t5y5", 
+  "6&7H7Q7", 
+  "7G8M8R8]8p8u8|8", 
+  "9!9*919K9R9b9x9", 
+  ":>:^:m:t:{:", 
+  ";:;U;", 
+  "<>=K=X=i=", 
+  ">J>W>j>", 
+  ">#?(?S?Z?_?p?}?", 
+  "3#373L3a3f3p3y3", 
+  "3#4>4`4", 
+  "4!5K5i5", 
+  "5N6c6p6", 
+  "7'707P7s7", 
+  "8 8&8:8B8T8Z8c8", 
+  "919w9|9", 
+  ":':\\:", 
+  ";0;6;=;D;g;|;", 
+  "40I0V0r0", 
+  "535Z5|5", 
+  "6M7y7", 
+  "7a8h8", 
+  "9m:{:", 
+  "<7<@<G<z<1=", 
+  ">$>/><>D>R>W>\\>a>l>y>", 
+  ">:?b?h?n?", 
+  "L1P1", 
+  "Ti rga antb u nDSmd.", 
+  "jX^]U", 
+  "}t9p", 
+  ";YEt", 
+  "Ef@Ff", 
+  "j3Y}", 
+  "EPEPE\\", 
+  "jX^U", 
+  "vj^{", 
+  "PujWu", 
+  "PEhb", 
+  "PEh`", 
+  "PFWFPT", 
+  "^SW|", 
+  "PEPEPV5b", 
+  "QEPCPEP", 
+  "+EjP", 
+  "EV5b", 
+  "$jXF", 
+  "3+tH", 
+  "jjhb", 
+  "EPEP", 
+  "tVePz", 
+  "j_8|", 
+  "d W@", 
+  "jjWE", 
+  "WujP", 
+  "tVjY", 
+  "PEPES", 
+  "PEPEjPu", 
+  "PEjP}", 
+  "SWe3", 
+  "E3PM", 
+  "jW5b", 
+  "QES3;", 
+  "g;tW3", 
+  "Vj3Y", 
+  "SW=b", 
+  "jV5b", 
+  "jjV5b", 
+  "uSjS", 
+  "PEPEPEP", 
+  "9jW&", 
+  "Wshb", 
+  ";r;t", 
+  "Vphb", 
+  "fNfO", 
+  "XfVfP", 
+  "Y[E_", 
+  "Fvf^", 
+  "PEPu", 
+  "`];tj", 
+  "EPuV", 
+  "tj[>P", 
+  "EPEPu", 
+  "MQP}", 
+  "33;t9", 
+  "6}t9", 
+  "EjPuSu", 
+  "Es3h", 
+  "SW}3", 
+  "VuW}", 
+  "0Fur_[", 
+  "S]VuW}", 
+  "WDltFlA", 
+  "FnCoe", 
+  "MvFlA", 
+  "FnNxFlA(CpFlA", 
+  "FnFrtie", 
+  "eGtepah", 
+  "~EiTra", 
+  "wGtouenomtoA", 
+  "Coeade", 
+  "Gtatro", 
+  "?CetMtx", 
+  "mGtikon", 
+  "GtniomnVralA", 
+  "GtomnLnA]Gtytmie", 
+  "WiFrigebetJCetTra", 
+  "WiFrutpebet", 
+  "+Rstvn", 
+  "StnadeEcpinitrdStroMd", 
+  "KRE3.l", 
+  "pRgoiyhneeVlebRgeeeeA_RgraeeEA", 
+  "RgeVlex", 
+  "[RglsKy{RgurVlex", 
+  "rRgpneEAAVP3.l", 
+  "srcyIei", 
+  "srcr", 
+  "Lfls", 
+  "ffrt", 
+  "]feddfelbfekWfpn", 
+  "srctOfls", 
+  "_xethnlr", 
+  "Xfrnf", 
+  "_edsfe", 
+  "tlwrMVR.l", 
+  "_ntem", 
+  "_dutfi", 
+  "Gtoptrae", 
+  "hStietrbts", 
+  "FeLbay>Gtrcdrs", 
+  "LaLbay", 
+  "Poes2et", 
+  "Poes2is", 
+  "LCetTohl3Saso", 
+  "[GtytmnouGtesoEA1CetEet", 
+  "SepjStieone", 
+  "RaFl", 
+  "Wieie", 
+  "Vrulre", 
+  "Vrullo", 
+  "4CetFlA", 
+  "Gtsrae", 
+  "4_ta", 
+  "aetp.l", 
+  "sat1", 
+  "FLNM", 
+  "\\etr\\", 
+  "Sfwr\\irsf\\SeMgd\\Goa\\ietaktn", 
+  "VrinCMSau", 
+  "Epoe.x", 
+  "\\ytm2", 
+  "SSERO", 
+  "Sfwr\\irsf\\idw TCreteso\\ilgn", 
+  "Sse\\urnCnrle\\evcsUBTREu", 
+  "Poutd", 
+  "RgseeOgnzto", 
+  "RgseeOnrSfwr\\irsf\\idw TCreteso", 
+  "fl ie=% ye", 
+  "fekSE_E)fie", 
+  "c\\Sse\\urnCnrle\\evcsPrMrEu", 
+  "W   M", 
+  "%FJNRVZ^bfjnrvz~", 
+  "-39AGQ", 
+  "'3>U[bmw", 
+  ")06<HN\\bjq|", 
+  "'2:d", 
+  "(/JZj", 
+  "+G^h", 
+  "$?DJdmu", 
+  "$,=JPZgty", 
+  "GMR]pu|", 
+  "!*1KRbx", 
+  ">^mt{", 
+  ">KXi", 
+  "#(SZ_p}", 
+  "#7Lafpy", 
+  "'0Ps", 
+  " &:BTZc", 
+  "06=Dg|", 
+  "4IVr", 
+  "7@Gz1", 
+  "$/<DRW\\aly", 
+  ":bhn"
+ ]
+}

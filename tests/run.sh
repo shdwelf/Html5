@@ -72,6 +72,41 @@ node tools/build_coins.mjs --check || status=1
 echo "──────────────────────────────────────────────"
 node tests/11-wallet-coins.mjs || status=1
 
+# The boot-vector lock's reference model (js/bootchain.js) and its page; the
+# layout it decodes is parsed out of rtl/vchip_top.v by tools/verify_bootchain.mjs.
+echo "──────────────────────────────────────────────"
+node tools/verify_bootchain.mjs || status=1
+
+echo "──────────────────────────────────────────────"
+node tests/11-chipset-lab.mjs || status=1
+
+# The AVR decoder is checked against the avr-objdump listing upstream shipped,
+# then the same decoder is driven through the AVR lab page.
+echo "──────────────────────────────────────────────"
+node tools/verify_avrdis.mjs || status=1
+
+echo "──────────────────────────────────────────────"
+node tests/13-avr-lab.mjs || status=1
+
+# Recipes to JavaCardOS: the cookbook parse + emitted applets are committed,
+# so both are re-checked (freshness) and tested (subset, constants, P-256).
+echo "──────────────────────────────────────────────"
+node tools/cookbook_to_javacard.mjs --check || status=1
+
+echo "──────────────────────────────────────────────"
+node tests/14-javacard.mjs || status=1
+
+# Ghidra-side cookbook fix-ups: every checkable vector claim re-verified.
+echo "──────────────────────────────────────────────"
+node tools/cookbook_vectors.mjs --check || status=1
+
+# Corporate kitchen meal-card ledger + its page contract.
+echo "──────────────────────────────────────────────"
+node tests/15-mealcard.mjs || status=1
+
+echo "──────────────────────────────────────────────"
+node tools/check-dom-ids.mjs --self kitchen-meal-card.html || status=1
+
 # The globe projector binary + coastline are committed; these only check the
 # .wat and the topojson source still build to them (wabt-gated, skips clean).
 echo "──────────────────────────────────────────────"

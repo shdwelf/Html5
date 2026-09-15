@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#070a08" />
+  <title>SITE-K · calculator port</title>
+  <link rel="stylesheet" href="./css/calc.css" />
+  <link rel="icon" href="./icon.png" />
+  <script src="./webxdc.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>SITE-K · calculator port</h1>
+      <p>One C core · TI-83 · TI-85 · TI-89 · TI-90 · TI-92</p>
+    </div>
+    <nav class="links">
+      <a href="./index.html#grid">SITE-K GRID</a>
+      <a href="./keyspace.html">KEYSPACE</a>
+    </nav>
+  </header>
+
+  <main class="stage">
+    <section class="bench">
+      <div class="bezel" id="bezel">
+        <div class="screen">
+          <canvas id="lcd" width="96" height="64" aria-label="calculator LCD"></canvas>
+          <div class="grid-overlay" aria-hidden="true"></div>
+        </div>
+        <div class="brand"><span id="brand">TI-83</span><i id="brandSub">96×64 · 1BPP</i></div>
+      </div>
+
+      <div class="keypad" id="keypad" role="group" aria-label="calculator keypad"></div>
+
+      <p class="hint">arrows move · ENTER acts · DEL re-seeds · 1–5 jump to a screen · CLEAR exits</p>
+    </section>
+
+    <aside class="panel">
+      <h2>Device</h2>
+      <div class="devices" id="devices" role="group" aria-label="device"></div>
+
+      <h2>Screen</h2>
+      <div class="screens" id="screens" role="group" aria-label="screen"></div>
+
+      <h2>Facts</h2>
+      <table class="facts" id="facts"></table>
+
+      <h2>Send it to real hardware</h2>
+      <pre class="cmd" id="cmd">make -C calc ti83</pre>
+      <p class="note" id="buildNote"></p>
+
+      <div class="row">
+        <button type="button" id="btnPng" class="act">Save LCD PNG</button>
+        <button type="button" id="btnPause" class="act">Pause</button>
+      </div>
+
+      <p class="note">
+        This page is running <code>calc/core/*.c</code> transpiled to JavaScript —
+        the same source sdcc builds for the Z80 models and TIGCC builds for the 68k
+        models. <code>make -C calc test</code> diffs this build against the gcc build
+        for every device.
+      </p>
+    </aside>
+  </main>
+
+  <script type="module" src="./js/calc.js"></script>
+</body>
+</html>

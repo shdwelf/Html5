@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0d1b2a" />
+<meta name="description" content="Standalone Vincennes command viewer — the Nimitz Graybook vector plot (pips + movement vectors) extracted from the CyberChef Renovated Kitchen. Tactical x/y plots for TG 34.5 / USS Vincennes (CL-64) at Formosa/Leyte and USS Vincennes (CA-44) at Savo Island, plus the Besugo IJN contact. Educational reconstruction, not an official track chart." />
+<title>Vincennes Command Viewer · Nimitz Graybook Vector Plot</title>
+<style>
+:root {
+  --bg: #0d1b2a; --panel: #0a1420; --line: #415a77; --ink: #e0e1dd;
+  --dim: #9aa3b2; --accent: #4cc9f0;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: radial-gradient(1200px 700px at 50% -10%, #12263c 0%, var(--bg) 55%, #070e17 100%);
+  color: var(--ink);
+  font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  padding: 24px 16px 48px;
+}
+.shell { max-width: 1000px; margin: 0 auto; }
+header { margin-bottom: 16px; }
+.eyebrow {
+  color: var(--accent); letter-spacing: 2px; font-size: 12px; font-weight: 700;
+  text-transform: uppercase; margin: 0 0 6px;
+}
+h1 { margin: 0; font-size: 26px; letter-spacing: .5px; }
+h1 em { color: var(--dim); font-style: normal; font-weight: 400; font-size: 15px; display: block; margin-top: 4px; }
+.controls {
+  display: grid; grid-template-columns: auto auto 1fr auto; gap: 12px; align-items: center;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 12px;
+}
+.controls label { font-size: 12px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; }
+.controls select, .controls input[type=number] {
+  background: #132338; color: var(--ink); border: 1px solid var(--line); border-radius: 6px;
+  padding: 7px 10px; font-size: 14px; min-width: 0;
+}
+.controls .paste { display: contents; }
+.controls .paste label { grid-column: 1 / -1; }
+.controls textarea {
+  grid-column: 1 / -1; width: 100%; background: #132338; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font: 12px/1.5 "SFMono-Regular", Consolas, Menlo, monospace;
+  resize: vertical; min-height: 60px;
+}
+.controls .actions { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; }
+button {
+  background: #1b4a6b; color: #fff; border: 1px solid #2f6f99; border-radius: 6px;
+  padding: 8px 14px; font-size: 13px; letter-spacing: 1px; font-weight: 700; cursor: pointer;
+}
+button:hover { background: #23608a; }
+button.ghost { background: transparent; color: var(--dim); border-color: var(--line); }
+button.ghost:hover { color: var(--ink); }
+.plot-wrap {
+  background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px;
+}
+canvas { display: block; width: 100%; height: auto; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; cursor: crosshair; }
+#hint { color: var(--dim); font-size: 12px; margin: 8px 6px 4px; min-height: 15px; }
+#log {
+  display: none; background: #070d15; border: 1px solid var(--line); border-radius: 8px;
+  padding: 12px 14px; margin-top: 12px; overflow: auto; font: 12px/1.5 "SFMono-Regular", Consolas, Menlo, monospace;
+  color: #cfd6e0; white-space: pre;
+}
+#log.on { display: block; }
+footer { color: var(--dim); font-size: 12px; margin-top: 16px; line-height: 1.6; }
+footer code { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <p class="eyebrow">Nimitz Graybook · Vector Position &amp; Movement Plot</p>
+    <h1>Vincennes Command Viewer
+      <em>USS Vincennes CL-64 (Formosa / Leyte) · USS Vincennes CA-44 (Savo Island) · Besugo IJN contact</em>
+    </h1>
+  </header>
+
+  <div class="controls">
+    <label for="theater">Graybook extract</label>
+    <select id="theater">
+      <option value="formosa" selected>Formosa / Leyte Gulf (Oct 1944)</option>
+      <option value="savo">Savo Island / CA-44 Vincennes (Aug 1942)</option>
+      <option value="all">Both extracts</option>
+    </select>
+    <label for="scale">Vector scale</label>
+    <input id="scale" type="number" value="0.04" step="0.005" min="0.005" max="0.2" />
+    <span class="paste">
+      <label for="extra">Paste extra logs — ship|time|lat|lon|course|speed|status (one per line, or a JSON array)</label>
+      <textarea id="extra" spellcheck="false" placeholder="USS Vincennes (CA-44)|9 Aug 0130L|-9.10|159.90|300|12.0|Probing south of Savo&#10;or: [{&quot;ship&quot;:&quot;…&quot;,&quot;time&quot;:&quot;…&quot;,&quot;lat&quot;:…,&quot;lon&quot;:…,&quot;course&quot;:…,&quot;speed&quot;:…}]"></textarea>
+      <span class="actions">
+        <button type="button" id="apply">REPLOT</button>
+        <button type="button" id="reset" class="ghost">RESET LOGS</button>
+        <button type="button" id="toggleAscii" class="ghost">ASCII TABLE</button>
+        <span id="count" style="color:var(--dim);font-size:12px;"></span>
+      </span>
+    </span>
+  </div>
+
+  <div class="plot-wrap">
+    <canvas id="cv" width="960" height="640"></canvas>
+    <div id="hint">Hover a pip for the Graybook fix. White arrows = course/speed. Dashed lines = ship tracks.</div>
+  </div>
+
+  <pre id="log"></pre>
+
+  <footer>
+    Extracted from the CyberChef — HTML5 (Renovated Kitchen) <code>Nimitz Graybook Vector Plot (Pips &amp; Tracks)</code>
+    operation and run standalone. Data are extract positions from the Nimitz Graybook (Vol 5, Formosa/Leyte) and
+    NHHC Savo Island analyses. <strong>Educational reconstruction — not a complete official track chart.</strong>
+    Input logs are parsed in your browser and never leave this page.
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---- extract data (verbatim from the CyberChef operation) ---- */
+  var GRAYBOOK_FORMOSA = [
+    {ship:'USS Canberra (CA-70 / CL-64 Screen)',time:'14 Oct 0700I',lat:22.56,lon:123.43,course:140,speed:4.5,status:'Torpedoed east of Formosa — damaged, in tow',src:'Graybook Vol 5 p.270'},
+    {ship:'USS Canberra (CA-70 / CL-64 Screen)',time:'15 Oct 0600I',lat:17.00,lon:130.00,course:140,speed:4.5,status:'Retiring towards Ulithi',src:'Graybook Vol 5 p.270'},
+    {ship:'USS Houston (CL-81)',time:'14 Oct 1800I',lat:22.51,lon:124.08,course:110,speed:3.0,status:'Hit aft, in tow',src:'Graybook Vol 5 p.270'},
+    {ship:'USS Houston (CL-81)',time:'16 Oct 1422I',lat:20.75,lon:125.40,course:100,speed:3.0,status:'Hit 2nd time, still in tow',src:'Graybook Vol 5 p.272'},
+    {ship:'TG 34.5 (CL-64 Vincennes)',time:'25 Oct 1100I',lat:17.30,lon:126.18,course:180,speed:25.0,status:'Formed under VAdm Lee',src:'Graybook Vol 5 p.282'},
+    {ship:'TG 34.5 (CL-64 Vincennes)',time:'25 Oct 1734I',lat:12.58,lon:125.53,course:270,speed:20.0,status:'San Bernardino sweep',src:'Graybook Vol 5 p.426'},
+    {ship:'IJN Cruiser Force (Besugo)',time:'14 Oct 2300GCT',lat:32.50,lon:132.60,course:140,speed:18.0,status:'Enemy contact off Bungo Suido',src:'Graybook Vol 5 p.271'}
+  ];
+  var GRAYBOOK_SAVO = [
+    {ship:'IJN Cruiser Force (Mikawa)',time:'7 Aug 1130L',lat:-5.817,lon:156.117,course:120,speed:15.0,status:'Off Bougainville, closing Savo',src:'NHHC Savo / Graybook Solomons'},
+    {ship:'USS Vincennes (CA-44)',time:'9 Aug 0200L',lat:-9.133,lon:160.033,course:310,speed:10.0,status:'Northern screen, east of Savo',src:'NHHC Savo analysis'},
+    {ship:'USS Vincennes (CA-44)',time:'9 Aug 0250L',lat:-9.167,lon:159.867,course:0,speed:0.0,status:'Capsized and sunk, Iron Bottom Sound',src:'9°10′S 159°52′E wreck'},
+    {ship:'USS Quincy (CA-39)',time:'9 Aug 0235L',lat:-9.200,lon:159.920,course:280,speed:5.0,status:'Northern group, sinking',src:'NHHC Savo'},
+    {ship:'USS Astoria (CA-34)',time:'9 Aug 0215L',lat:-9.150,lon:159.950,course:300,speed:8.0,status:'Northern group, on fire',src:'NHHC Savo'}
+  ];
+  var GRAY_COLORS = {
+    'USS Canberra (CA-70 / CL-64 Screen)':'#4cc9f0',
+    'USS Houston (CL-81)':'#f72585',
+    'TG 34.5 (CL-64 Vincennes)':'#c39df3',
+    'IJN Cruiser Force (Besugo)':'#ffb703',
+    'IJN Cruiser Force (Mikawa)':'#ffb703',
+    'USS Vincennes (CA-44)':'#4cc9f0',
+    'USS Quincy (CA-39)':'#f72585',
+    'USS Astoria (CA-34)':'#5ce4a0'
+  };
+
+  function grayParseExtra(text) {
+    var out = [];
+    if (!text) return out;
+    var raw = String(text).trim();
+    if (!raw) return out;
+    if (raw[0] === '[') {
+      try {
+        var j = JSON.parse(raw);
+        if (Array.isArray(j)) return j.map(function (e) {
+          return {
+            ship: e.ship || 'Unknown', time: e.time || '', lat: +e.lat, lon: +e.lon,
+            course: +(e.course || 0), speed: +(e.speed || 0), status: e.status || '', src: e.src || 'input'
+          };
+        }).filter(function (e) { return isFinite(e.lat) && isFinite(e.lon); });
+      } catch (err) {}
+    }
+    raw.split(/\n+/).forEach(function (line) {
+      var s = line.trim();
+      if (!s || s[0] === '#') return;
+      var p = s.split('|').map(function (x) { return x.trim(); });
+      if (p.length >= 4 && isFinite(+p[2]) && isFinite(+p[3])) {
+        out.push({ship:p[0], time:p[1]||'', lat:+p[2], lon:+p[3], course:+(p[4]||0), speed:+(p[5]||0), status:p[6]||'', src:'input'});
+      }
+    });
+    return out;
+  }
+
+  function grayHeadingUV(course, speed, scale) {
+    var rad = (90 - course) * Math.PI / 180;
+    return { u: speed * Math.cos(rad) * scale, v: speed * Math.sin(rad) * scale };
+  }
+
+  /* ---- DOM ---- */
+  var cv = document.getElementById('cv');
+  var hint = document.getElementById('hint');
+  var logEl = document.getElementById('log');
+  var countEl = document.getElementById('count');
+  var theaterSel = document.getElementById('theater');
+  var scaleInput = document.getElementById('scale');
+  var extraInput = document.getElementById('extra');
+
+  function collectLogs() {
+    var logs = [];
+    var theater = theaterSel.value;
+    if (theater === 'formosa' || theater === 'all') logs = logs.concat(GRAYBOOK_FORMOSA);
+    if (theater === 'savo' || theater === 'all') logs = logs.concat(GRAYBOOK_SAVO);
+    logs = logs.concat(grayParseExtra(extraInput.value));
+    return logs;
+  }
+
+  function asciiTable(logs, theater) {
+    var lines = ['════ NIMITZ GRAYBOOK — POSITION PIPS & VECTORS ════',
+      'Theater : ' + theater + '   Fixes : ' + logs.length,
+      'Heading : 0°=N  90°=E     u,v = speed·(cos,sin)(90°-course)',
+      '─────────────────────────────────────────────────────────────',
+      'SHIP'.padEnd(38) + 'TIME'.padEnd(16) + 'LAT'.padStart(8) + ' LON'.padStart(8) + ' CSE SPD  STATUS'
+    ];
+    logs.forEach(function (e) {
+      var hemiLat = e.lat >= 0 ? e.lat.toFixed(2) + 'N' : (-e.lat).toFixed(2) + 'S';
+      var hemiLon = e.lon >= 0 ? e.lon.toFixed(2) + 'E' : (-e.lon).toFixed(2) + 'W';
+      lines.push((e.ship || '').slice(0, 37).padEnd(38) + (e.time || '').slice(0, 15).padEnd(16) +
+        hemiLat.padStart(8) + ' ' + hemiLon.padStart(7) + ' ' + String(e.course).padStart(3) + ' ' +
+        String(e.speed).padStart(4) + '  ' + (e.status || ''));
+    });
+    lines.push('', 'Educational reconstruction from Graybook extract positions (Vol 5 Formosa/Leyte + Savo NHHC). Not a complete official track chart.');
+    return lines.join('\n');
+  }
+
+  function render() {
+    var logs = collectLogs();
+    var scale = Math.max(0.005, Math.min(0.2, parseFloat(scaleInput.value) || 0.04));
+    countEl.textContent = logs.length + ' fixes';
+    logEl.textContent = asciiTable(logs, theaterSel.value);
+    if (!logs.length) {
+      hint.textContent = 'No Graybook fixes to plot.';
+      var c0 = cv.getContext('2d');
+      c0.fillStyle = '#0d1b2a'; c0.fillRect(0, 0, cv.width, cv.height);
+      return;
+    }
+
+    var W = cv.width, H = cv.height, pad = 70;
+    var lons = logs.map(function (e) { return e.lon; });
+    var lats = logs.map(function (e) { return e.lat; });
+    var minX = Math.min.apply(null, lons), maxX = Math.max.apply(null, lons);
+    var minY = Math.min.apply(null, lats), maxY = Math.max.apply(null, lats);
+    var dx = maxX - minX || 1, dy = maxY - minY || 1;
+    minX -= dx * 0.18; maxX += dx * 0.28; minY -= dy * 0.22; maxY += dy * 0.22;
+    var sx = (W - pad * 2) / (maxX - minX), sy = (H - pad * 2) / (maxY - minY);
+    function toX(lon) { return pad + (lon - minX) * sx; }
+    function toY(lat) { return H - pad - (lat - minY) * sy; }
+    var ships = [];
+    logs.forEach(function (e) { if (ships.indexOf(e.ship) < 0) ships.push(e.ship); });
+    function color(name) { return GRAY_COLORS[name] || '#e0e1dd'; }
+
+    function draw(hover) {
+      var c = cv.getContext('2d');
+      c.fillStyle = '#0d1b2a'; c.fillRect(0, 0, W, H);
+      c.strokeStyle = '#415a77'; c.lineWidth = 1; c.setLineDash([2, 4]);
+      var nx = 8, ny = 6;
+      c.font = '11px sans-serif'; c.fillStyle = '#9aa3b2';
+      var i;
+      for (i = 0; i <= nx; i++) {
+        var lon = minX + (maxX - minX) * i / nx, x = toX(lon);
+        c.beginPath(); c.moveTo(x, pad); c.lineTo(x, H - pad); c.stroke();
+        c.fillText(lon.toFixed(1) + '°', x - 12, H - pad + 16);
+      }
+      for (i = 0; i <= ny; i++) {
+        var lat = minY + (maxY - minY) * i / ny, y = toY(lat);
+        c.beginPath(); c.moveTo(pad, y); c.lineTo(W - pad, y); c.stroke();
+        c.fillText((lat >= 0 ? lat.toFixed(1) + 'N' : (-lat).toFixed(1) + 'S'), 8, y + 4);
+      }
+      c.setLineDash([]);
+      c.strokeStyle = '#415a77'; c.strokeRect(pad, pad, W - pad * 2, H - pad * 2);
+      c.fillStyle = '#e0e1dd'; c.font = '12px sans-serif';
+      c.fillText('Longitude (°)', W / 2 - 40, H - 18);
+      c.save(); c.translate(16, H / 2 + 40); c.rotate(-Math.PI / 2); c.fillText('Latitude (°)', 0, 0); c.restore();
+
+      ships.forEach(function (ship) {
+        var pts = logs.filter(function (e) { return e.ship === ship; });
+        if (pts.length < 2) return;
+        c.strokeStyle = color(ship); c.lineWidth = 1.6; c.setLineDash([7, 5]); c.globalAlpha = 0.7;
+        c.beginPath();
+        pts.forEach(function (e, i) {
+          var x = toX(e.lon), y = toY(e.lat);
+          if (i === 0) c.moveTo(x, y); else c.lineTo(x, y);
+        });
+        c.stroke(); c.setLineDash([]); c.globalAlpha = 1;
+      });
+      logs.forEach(function (e) {
+        var x = toX(e.lon), y = toY(e.lat);
+        var uv = grayHeadingUV(e.course, e.speed, scale);
+        var x2 = toX(e.lon + uv.u), y2 = toY(e.lat + uv.v);
+        c.strokeStyle = '#ffffff'; c.fillStyle = '#ffffff'; c.lineWidth = 1.6;
+        c.beginPath(); c.moveTo(x, y); c.lineTo(x2, y2); c.stroke();
+        var ang = Math.atan2(y2 - y, x2 - x);
+        c.beginPath(); c.moveTo(x2, y2);
+        c.lineTo(x2 - 8 * Math.cos(ang - 0.4), y2 - 8 * Math.sin(ang - 0.4));
+        c.lineTo(x2 - 8 * Math.cos(ang + 0.4), y2 - 8 * Math.sin(ang + 0.4));
+        c.closePath(); c.fill();
+      });
+      logs.forEach(function (e, i) {
+        var x = toX(e.lon), y = toY(e.lat);
+        var hot = hover === i;
+        c.beginPath(); c.arc(x, y, hot ? 8 : 6, 0, Math.PI * 2);
+        c.fillStyle = color(e.ship); c.fill();
+        c.strokeStyle = '#fff'; c.lineWidth = hot ? 2 : 1.2; c.stroke();
+        if (hot) {
+          var box = e.ship + '  [' + e.time + ']\n' + e.lat.toFixed(2) + ', ' + e.lon.toFixed(2) +
+            '   cse ' + e.course + '°  ' + e.speed + ' kts\n' + (e.status || '') + (e.src ? '\n' + e.src : '');
+          var lines = box.split('\n');
+          c.font = '12px sans-serif';
+          var tw = Math.max.apply(null, lines.map(function (s) { return c.measureText(s).width; })) + 16;
+          var bx = x + 12, by = y - 10 - lines.length * 16;
+          if (bx + tw > W - 8) bx = x - tw - 12;
+          if (by < 8) by = y + 14;
+          c.fillStyle = '#1b263b'; c.strokeStyle = color(e.ship); c.lineWidth = 1.4;
+          c.beginPath(); c.rect(bx, by, tw, lines.length * 16 + 10); c.fill(); c.stroke();
+          c.fillStyle = '#e0e1dd';
+          lines.forEach(function (ln, k) { c.fillText(ln, bx + 8, by + 16 + k * 16); });
+        }
+      });
+      var ly = pad + 8;
+      c.font = '11px sans-serif';
+      ships.forEach(function (ship) {
+        c.fillStyle = color(ship); c.fillRect(W - pad - 210, ly, 12, 12);
+        c.fillStyle = '#e0e1dd'; c.fillText(ship, W - pad - 194, ly + 10);
+        ly += 16;
+      });
+      c.fillStyle = '#fff'; c.fillRect(W - pad - 210, ly + 2, 18, 2);
+      c.beginPath(); c.moveTo(W - pad - 192, ly + 3); c.lineTo(W - pad - 196, ly); c.lineTo(W - pad - 196, ly + 6); c.fill();
+      c.fillStyle = '#e0e1dd'; c.fillText('Course / speed vector', W - pad - 190, ly + 6);
+    }
+
+    function hit(ev) {
+      var r = cv.getBoundingClientRect(), sc = cv.width / r.width;
+      var mx = (ev.clientX - r.left) * sc, my = (ev.clientY - r.top) * sc;
+      var best = -1, bd = 14;
+      logs.forEach(function (e, i) {
+        var dxp = toX(e.lon) - mx, dyp = toY(e.lat) - my;
+        var d = Math.sqrt(dxp * dxp + dyp * dyp);
+        if (d < bd) { bd = d; best = i; }
+      });
+      return best;
+    }
+    cv.onmousemove = function (ev) {
+      var i = hit(ev);
+      draw(i);
+      if (i >= 0) {
+        var e = logs[i];
+        hint.textContent = e.ship + '  ' + e.time + '  ' + e.lat.toFixed(2) + ', ' + e.lon.toFixed(2) + '  ' + e.course + '° / ' + e.speed + ' kts — ' + e.status;
+      } else {
+        hint.textContent = 'Hover a pip for the Graybook fix. White arrows = course/speed. Dashed lines = ship tracks.';
+      }
+    };
+    cv.onmouseleave = function () { draw(-1); };
+    draw(-1);
+  }
+
+  document.getElementById('apply').addEventListener('click', render);
+  document.getElementById('reset').addEventListener('click', function () { extraInput.value = ''; render(); });
+  document.getElementById('toggleAscii').addEventListener('click', function () { logEl.classList.toggle('on'); });
+  theaterSel.addEventListener('change', render);
+  scaleInput.addEventListener('change', render);
+
+  render();
+})();
+</script>
+</body>
+</html>

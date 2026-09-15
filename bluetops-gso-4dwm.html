@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>BlueTops GSO · 4DWM Contract Logistics Globe</title>
+  <link rel="stylesheet" href="./css/bluetops-gso-4dwm.css" />
+</head>
+<body>
+  <canvas id="stage"></canvas>
+  <div id="tooltip" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div>
+      <h1>BLUETOPS GSO · 4DWM</h1>
+      <p>GSA contracting-office purchase awards · FPDS feed · USGS 3DEP DEM · Federal Register · spinning wire-mesh globe</p>
+    </div>
+    <div class="top-actions">
+      <button type="button" id="btnSpin" class="active">SPIN</button>
+      <button type="button" id="btnView">4DWM MAP</button>
+      <button type="button" id="btnReset">RESET VIEW</button>
+      <button type="button" id="btnLive">LIVE USASPENDING</button>
+      <button type="button" id="btnReg">REFRESH REGISTER</button>
+    </div>
+  </header>
+
+  <aside class="panel panel-left">
+    <section class="card">
+      <h2>Legend</h2>
+      <ul class="legend">
+        <li><span class="swatch" style="background:#35e0d6;color:#35e0d6"></span> vendor HQ pip (size = $ obligated)</li>
+        <li><span class="swatch" style="background:#ffc14d;color:#ffc14d"></span> place-of-performance / GSA hub</li>
+        <li><span class="swatch" style="background:#a4e869;color:#a4e869"></span> logistics arc — active within timeline window</li>
+        <li><span class="swatch" style="background:#2a6b7a;color:#2a6b7a"></span> logistics arc — dormant</li>
+        <li><span class="swatch" style="background:#b48cff;color:#b48cff"></span> USGS 3DEP elevation column (exaggerated)</li>
+        <li><span class="swatch" style="background:#ff7a9e;color:#ff7a9e"></span> DEM terrain curtain along route</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>What this shows</h2>
+      <p class="small">Winning contracts signed by <strong>GSA contracting offices</strong> (FAS <code>47Q*</code>, PBS <code>47PA*</code>, HQ <code>47H*</code>) extracted from the official FPDS-NG ATOM feed, geocoded from vendor-reported addresses, and draped with <strong>USGS 3DEP</strong> elevations. Each pip is an awardee; each arc is the transportation leg from vendor hub to place of performance. The 4D axis is time — scrub the timeline to replay the award/modification history.</p>
+      <p class="tiny">Contract data: FPDS-NG public ATOM feed (SAM.gov is the successor registry; its Contract Awards API needs a personal API key). Elevations: USGS 3DEP ImageServer identify, sampled 2026-09-11, meters NAVD88, vertical exaggeration ×400. Geocodes: FPDS street address → city centroid.</p>
+    </section>
+
+    <section class="card">
+      <h2 id="regHead">Official register · Federal Register</h2>
+      <div id="regList" class="reg-list">
+        <p class="small">Loading snapshot…</p>
+      </div>
+    </section>
+  </aside>
+
+  <aside class="panel panel-right">
+    <section class="card">
+      <h2>PIP · contract inspector</h2>
+      <div id="pipBody">
+        <p class="small">Click a pip or a jump-list row to inspect a winning contract, its funding actions, and the USGS DEM profile of its logistics route.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Jump to contract</h2>
+      <div id="jumpList" class="jump-list"></div>
+    </section>
+  </aside>
+
+  <div class="statusbar">
+    <span id="statContracts">contracts: —</span>
+    <span id="statObligated">obligated: —</span>
+    <span id="statDem">USGS DEM samples: —</span>
+    <span id="status">boot…</span>
+  </div>
+
+  <div class="timeline">
+    <span class="tlabel">4D · time</span>
+    <button type="button" id="btnPlay">▶</button>
+    <input type="range" id="timeSlider" min="2019.6" max="2026.78" step="0.004" value="2026.78" />
+    <span class="date" id="timeReadout">—</span>
+  </div>
+
+  <script type="module" src="./js/bluetops-gso-4dwm.js"></script>
+</body>
+</html>

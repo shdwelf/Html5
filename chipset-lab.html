@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0c14" />
+  <meta name="description" content="Decode the vchip boot-vector lock's status word and see whether a machine meets the requirements to boot: measurement chain, tamper latch, UEFI/legacy policy and the ATA security gates. Runs entirely in this tab." />
+  <title>Chipset Lab · boot vector lock, UEFI/MBR requirements, ATA gates</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./css/validator.css" />
+  <link rel="stylesheet" href="./css/viruslab.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html#grid" aria-label="Back to SITE-K">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-copy">
+          <strong>CHIPSET LAB</strong>
+          <small>BOOT VECTOR LOCK · WASM-FREE</small>
+        </span>
+      </a>
+      <div class="header-right">
+        <span class="local-status"><i></i>CLIENT-SIDE ONLY</span>
+        <a class="back-link" href="./index.html#studio" target="_top">SITE-K <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span>02</span><b></b>RTL STATUS WORD · BOOT REQUIREMENTS · ATA SECURITY</div>
+        <h1 id="page-title">Chipset<br /><em>Boot Gate</em></h1>
+        <p class="hero-copy">
+          The chipset in <code>rtl/</code> measures every boot stage — MBR, ESP application, second-stage loader —
+          and refuses the handoff unless the whole chain matched, in order, with no tamper latch. This page decodes
+          the status word it publishes and checks the requirements a UEFI or legacy boot actually needs.
+          The layout is parsed out of the Verilog, not typed in here: <code>tools/verify_bootchain.mjs</code> fails
+          if this page and the RTL disagree.
+        </p>
+      </section>
+
+      <section aria-labelledby="status-title">
+        <h2 id="status-title">Status word</h2>
+        <p class="hero-copy">
+          Paste a 64-bit word, or load one of the states below. Each preset is a real line from
+          <code>rtl/golden/vchip_transcript.txt</code>, produced by the CXXRTL simulation of the actual RTL — including
+          the tampered cases, which is the point.
+        </p>
+        <div class="control-row">
+          <label for="status-input">status</label>
+          <input id="status-input" type="text" spellcheck="false" value="000120197830a129" size="20" />
+          <label for="policy-select">policy</label>
+          <select id="policy-select">
+            <option value="dual">dual (control either)</option>
+            <option value="uefi">uefi-only</option>
+            <option value="legacy">legacy-only</option>
+          </select>
+        </div>
+        <div class="preset-row" id="presets"></div>
+        <div id="verdict" class="verdict"></div>
+        <table class="kv" id="fields"></table>
+      </section>
+
+      <section aria-labelledby="req-title">
+        <h2 id="req-title">Boot requirements</h2>
+        <div id="requirements"></div>
+      </section>
+
+      <section aria-labelledby="ata-title">
+        <h2 id="ata-title">ATA security gates (what <code>hdparm</code> can and cannot do)</h2>
+        <p class="hero-copy">
+          The last command latched by the ATA FSM, with its hdparm equivalent and the gate that decided it.
+          On a tampered platform every destructive command is refused by the chipset — not by the drive —
+          which is why the refusal is latched as evidence rather than silently dropped.
+        </p>
+        <table class="kv" id="ata"></table>
+      </section>
+
+      <section aria-labelledby="notes-title">
+        <h2 id="notes-title">What this page does and does not check</h2>
+        <ul class="notes">
+          <li><b>Checked here:</b> the platform half — chain verified, arm latched, no tamper, lock state, policy
+            match, media reads, CPU release, and that an untrusted platform grants nothing destructive. Those
+            rules live in <code>js/bootchain.js</code> and are diffed against <code>tools/bootchain.py</code> on
+            every cycle of the golden transcript.</li>
+          <li><b>Not checked here:</b> the disk half — MBR/fdisk tables, the GPT header and both CRCs, the protective
+            MBR, the ESP's FAT volume, the PE32+ boot application and the legacy loader. That needs a disk image,
+            and it runs on the command line:
+            <code>python3 tools/bootchain.py --image disk.img --policy uefi</code>
+            (fixtures: <code>--fixtures DIR</code>, verification: <code>--selftest</code>).</li>
+          <li><b>Where the numbers come from:</b> status-field offsets and the DENY/ABORT/LCK constants are read out
+            of <code>rtl/vchip_top.v</code> and <code>rtl/vchip_pkg.vh</code> by
+            <code>python3 tools/bootchain.py --layout-json</code>. Nothing on this page is a transcription.</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./js/chipset-lab.js"></script>
+</body>
+</html>
