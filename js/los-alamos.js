@@ -1,6 +1,7 @@
 import {seedRecords,recordFromPage,filterRecords} from './los-alamos-data.js';
 import {catalogEntries,catalogMetadata} from '../data/project-y/catalog.js';
 import {commonsImageURL,mergeCatalog} from './project-y-catalog-utils.js';
+import {initPipWm} from './project-y-4dwm.js';
 const $=id=>document.getElementById(id);
 let records=mergeCatalog(seedRecords,catalogEntries,([letter,title,hash])=>({...recordFromPage({title:'File:'+title,imageinfo:[{thumburl:commonsImageURL(title,hash)}]},letter),note:'Source label derived from the Commons filename below; spelling and name order may contain source errors. This file was listed in surname category '+letter+' in the 14 September 2026 snapshot. Identity, dates, and badge number have not been independently verified. Alternate files may depict the same person. Consult the original source for identification and reuse rights.'})),letter='All',savedOnly=false,curatedOnly=false,page=1,mode='montage',visible=[],saved=new Set();
 const pageSize=()=> $('page-size').value==='all'?Math.max(1,visible.length):Number($('page-size').value);
@@ -19,14 +20,28 @@ function render(){
  $('result-count').textContent=`${visible.length} ${visible.length===1?'record':'records'}${letter!=='All'?' / '+letter:''} · ${$('sort').selectedOptions[0].textContent}`;
  $('alphabet').innerHTML=['All',...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(l=>`<button data-letter="${l}" class="${l===letter?'selected':''}" aria-pressed="${l===letter}" aria-label="${l==='All'?'All surnames':'Surnames starting with '+l}">${l}</button>`).join('');
  $('records').className='records '+(mode==='grid'?'':mode);
- $('records').innerHTML=visible.slice((page-1)*size,page*size).map(r=>`<article class="record"><button class="record-image" data-open="${escape(r.id)}" aria-label="View ${escape(r.name)}">${picture(r)}</button><div class="record-info"><span class="badge-tag">${r.badge?'BADGE '+escape(r.badge):'ID NOT TRANSCRIBED'}</span><h3><button data-open="${escape(r.id)}" style="padding:0;text-align:left">${escape(r.name)}</button></h3><div class="record-bottom"><span>${r.curated?'RESEARCHED BADGE':'SOURCE LABEL · UNVERIFIED'}</span><button class="save" data-save="${escape(r.id)}" aria-label="${saved.has(r.id)?'Unsave':'Save'} ${escape(r.name)}" aria-pressed="${saved.has(r.id)}">${saved.has(r.id)?'▣':'▢'}</button></div></div></article>`).join('')||'<div class="empty">No badges match this selection.<button id="reset">Clear search and filters</button></div>';
+ $('records').innerHTML=visible.slice((page-1)*size,page*size).map(r=>`<article class="record"><button class="record-image" data-open="${escape(r.id)}" aria-label="View ${escape(r.name)}">${picture(r)}</button><div class="record-info"><span class="badge-tag">${r.badge?'BADGE '+escape(r.badge):'ID NOT TRANSCRIBED'}</span><h3><button data-open="${escape(r.id)}" style="padding:0;text-align:left">${escape(r.name)}</button></h3><div class="record-bottom"><span>${r.curated?'RESEARCHED BADGE':'SOURCE LABEL · UNVERIFIED'}</span><span class="record-actions"><button class="pip-open" data-open="${escape(r.id)}" aria-label="Load a pip window for ${escape(r.name)}" title="Load pip">⧉</button><button class="save" data-save="${escape(r.id)}" aria-label="${saved.has(r.id)?'Unsave':'Save'} ${escape(r.name)}" aria-pressed="${saved.has(r.id)}">${saved.has(r.id)?'▣':'▢'}</button></span></div></div></article>`).join('')||'<div class="empty">No badges match this selection.<button id="reset">Clear search and filters</button></div>';
  $('pagination').innerHTML=pages>1?`<button id="prev" ${page===1?'disabled':''}>← Previous</button><span>Page ${page} of ${pages} · ${(page-1)*size+1}–${Math.min(page*size,visible.length)}</span><button id="next" ${page===pages?'disabled':''}>Next →</button>`:'';
  bindImages($('records'));
 }
-function openRecord(id){const r=records.find(r=>r.id===id);if(!r)return;
- $('detail-content').innerHTML=`<div>${picture(r)}</div><div><p class="eyebrow">PROJECT Y / PERSONNEL RECORD</p><h2>${escape(r.name)}</h2><span class="badge-tag">${r.badge?'BADGE '+escape(r.badge):'BADGE NUMBER NOT TRANSCRIBED'}</span><p>${escape(r.note)}</p><p class="source-filename"><b>Source filename</b><br>${escape(r.id)}</p>${r.profile?`<section class="research-profile"><h3>Wartime · Project Y</h3><p>${escape(r.profile.wartime)}</p><h3>Postwar · Computing legacy</h3><p>${escape(r.profile.postwar)}</p><h3>Research & sources</h3><ul>${r.profile.references.map(ref=>`<li><a href="${escape(ref.url)}" target="_blank" rel="noopener">${escape(ref.label)} ↗</a></li>`).join('')}</ul></section>`:''}<p>Collection: c. 1943–1947<br>Los Alamos, New Mexico</p><a href="${escape(r.source)}" target="_blank" rel="noopener">View original source & rights information ↗</a><button class="outline" id="detail-save">${saved.has(id)?'Remove from saved badges':'Save this badge'}</button></div>`;
- bindImages($('detail-content'));$('detail-save').onclick=()=>{toggleSave(id);$('detail-save').textContent=saved.has(id)?'Remove from saved badges':'Save this badge';};$('detail').showModal();
+function recordDetailHtml(r,id){
+ return `<div>${picture(r)}</div><div><p class="eyebrow">PROJECT Y / PERSONNEL RECORD</p><h2>${escape(r.name)}</h2><span class="badge-tag">${r.badge?'BADGE '+escape(r.badge):'BADGE NUMBER NOT TRANSCRIBED'}</span><p>${escape(r.note)}</p><p class="source-filename"><b>Source filename</b><br>${escape(r.id)}</p>${r.profile?`<section class="research-profile"><h3>Wartime · Project Y</h3><p>${escape(r.profile.wartime)}</p><h3>Postwar · Computing legacy</h3><p>${escape(r.profile.postwar)}</p><h3>Research & sources</h3><ul>${r.profile.references.map(ref=>`<li><a href="${escape(ref.url)}" target="_blank" rel="noopener">${escape(ref.label)} ↗</a></li>`).join('')}</ul></section>`:''}<p>Collection: c. 1943–1947<br>Los Alamos, New Mexico</p><a href="${escape(r.source)}" target="_blank" rel="noopener">View original source & rights information ↗</a><button class="outline detail-save">${saved.has(id)?'Remove from saved badges':'Save this badge'}</button></div>`;
 }
+function bindRecordBody(root,r){
+ bindImages(root);
+ const btn=root.querySelector('.detail-save');
+ if(btn)btn.onclick=()=>{toggleSave(r.id);btn.textContent=saved.has(r.id)?'Remove from saved badges':'Save this badge';};
+}
+/** 4Dwm: every badge card loads up its own floating PIP window. */
+const wm=initPipWm({
+ layer:$('pip-layer'),desk:$('wm4d'),tray:$('wm4d-tray'),status:$('wm4d-status'),
+ findRecord:id=>records.find(r=>r.id===id),
+ titleFor:r=>`${escape(r.name)} <i>${r.badge?'BADGE '+escape(r.badge):'ID UNTRANSCRIBED'}</i>`,
+ chipFor:r=>({top:escape((r.surname||r.name).slice(0,8).toUpperCase()),sub:r.badge?escape(r.badge):'PIP'}),
+ detailHtml:r=>recordDetailHtml(r,r.id),
+ bindBody:bindRecordBody,
+});
+function openRecord(id){wm.spawn(id);}
 $('records').onclick=e=>{const open=e.target.closest('[data-open]'),save=e.target.closest('[data-save]');if(open)openRecord(open.dataset.open);if(save)toggleSave(save.dataset.save);if(e.target.id==='reset'){letter='All';savedOnly=false;curatedOnly=false;$('search').value='';page=1;render();}};
 $('alphabet').onclick=e=>{if(e.target.dataset.letter){letter=e.target.dataset.letter;page=1;render();}};
 $('pagination').onclick=e=>{if(e.target.id==='prev')page--;else if(e.target.id==='next')page++;else return;render();$('collection').scrollIntoView();};
@@ -34,6 +49,7 @@ $('search').oninput=$('sort').onchange=$('page-size').onchange=()=>{page=1;rende
 $('all-tab').onclick=()=>{savedOnly=false;curatedOnly=false;page=1;render();};$('curated-tab').onclick=()=>{savedOnly=false;curatedOnly=true;page=1;render();};$('saved-tab').onclick=()=>{savedOnly=true;curatedOnly=false;page=1;render();};
 for(const v of ['montage','grid','list'])$(v+'-view').onclick=()=>{mode=v;page=1;for(const m of ['montage','grid','list']){$(m+'-view').classList.toggle('selected',m===v);$(m+'-view').setAttribute('aria-pressed',String(m===v));}render();};
 $('close-detail').onclick=()=>$('detail').close();$('detail').onclick=e=>{if(e.target===$('detail')){const r=$('detail').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('detail').close();}};
+$('pip-results').onclick=()=>{const size=pageSize();wm.spawnAll(visible.slice((page-1)*size,page*size).map(r=>r.id),12);};
 document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&!$('detail').open){e.preventDefault();$('search').focus();}});
 $('download').onclick=()=>{const cell=s=>'"'+String(s??'').replace(/"/g,'""')+'"';const csv=[['Source-derived label','Badge identifier','Source','Notes','Source filename','Review status'],...visible.map(r=>[r.name,r.badge,r.source,r.note,r.id,r.curated?'Researched':'Source label — unverified'])].map(row=>row.map(cell).join(',')).join('\r\n');const url=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='project-y-badges.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 const completed=new Set();

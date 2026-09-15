@@ -13,10 +13,15 @@ await withBrowser(deps,async browser=>{
  // All external access is blocked: catalog, search, source links, and local reference still work.
  await page.type('#search','Mary P. Frankel');
  assert.equal(await page.$$eval('.records .record',els=>els.length),1);
+ // The 4Dwm loads a floating pip for the card instead of the old shared dialog.
  await page.click('.record-image');
- assert.ok((await page.$eval('#detail-content',e=>e.textContent)).includes('BADGE NUMBER NOT TRANSCRIBED'));
- assert.ok((await page.$eval('#detail-content .source-filename',e=>e.textContent)).includes('Mary P. Frankel Los Alamos ID.png'));
- await page.click('#detail-save');await page.click('#close-detail');
+ assert.equal(await page.$$eval('.pip-layer .pip4',els=>els.length),1);
+ assert.ok((await page.$eval('.pip4 .pip4-body',e=>e.textContent)).includes('BADGE NUMBER NOT TRANSCRIBED'));
+ assert.ok((await page.$eval('.pip4 .pip4-body .source-filename',e=>e.textContent)).includes('Mary P. Frankel Los Alamos ID.png'));
+ await page.click('.pip4 .pip4-body .detail-save');
+ assert.equal(await page.$eval('#wm4d',e=>e.hidden),false);
+ await page.click('.pip4 [data-act="close"]');
+ assert.equal(await page.$$eval('.pip-layer .pip4',els=>els.length),0);
  await page.$eval('#search',e=>{e.value='';e.dispatchEvent(new Event('input'));});
  await page.click('#saved-tab');assert.equal(await page.$$eval('.records .record',e=>e.length),1);
  await page.click('#curated-tab');assert.equal(await page.$$eval('.records .record',e=>e.length),7);
@@ -25,6 +30,22 @@ await withBrowser(deps,async browser=>{
  await page.click('[data-letter="X"]');assert.ok(await page.$('#reset'));await page.click('#reset');
  await page.select('#page-size','all');assert.equal(await page.$$eval('.records .record',e=>e.length),1404);
  assert.equal(await page.$eval('#pagination',e=>e.textContent),'');
+ // 4Dwm: PIP RESULTS loads one floating pip per card (capped), then desk tile/iconify/clear.
+ await page.click('#pip-results');
+ assert.equal(await page.$$eval('.pip-layer .pip4',els=>els.length),12);
+ assert.ok((await page.$eval('#wm4d-status',e=>e.textContent)).includes('more cards'));
+ await page.click('[data-wm4d="desk"]');
+ assert.equal(await page.$$eval('.pip4.is-icon',els=>els.length),12);
+ await page.click('[data-wm4d="desk"]');
+ assert.equal(await page.$$eval('.pip4.is-icon',els=>els.length),0);
+ await page.click('[data-wm4d="tile"]');
+ assert.ok(new Set(await page.$$eval('.pip4',els=>els.map(e=>e.style.top))).size>1);
+ await page.click('.pip4 [data-act="icon"]');
+ assert.equal(await page.$$eval('#wm4d-tray .wm4d-chip',els=>els.length),1);
+ await page.click('#wm4d-tray .wm4d-chip');
+ assert.equal(await page.$$eval('.pip4:not(.is-icon)',els=>els.length),12);
+ await page.click('[data-wm4d="clear"]');
+ assert.equal(await page.$$eval('.pip-layer .pip4',els=>els.length),0);
  await page.select('#page-size','100');await page.click('#next');assert.ok((await page.$eval('#pagination',e=>e.textContent)).includes('101–200'));
  for(const id of ['grid','list','montage']){await page.click('#'+id+'-view');assert.equal(await page.$eval('#'+id+'-view',e=>e.getAttribute('aria-pressed')),'true');}
  await page.click('#open-montage-reference');
