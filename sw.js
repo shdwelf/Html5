@@ -3,7 +3,7 @@
    service worker caches it on first use, so the lab still works offline after
    one visit without slowing down install for everyone else. */
 const CACHE_PREFIX = "sitek-html5-";
-const CACHE = `${CACHE_PREFIX}v25`;
+const CACHE = `${CACHE_PREFIX}v26`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -67,6 +67,19 @@ const PRECACHE = [
   "./js/project-y-sites-data.js",
   "./js/project-y-4dwm.js",
   "./data/project-y/catalog.js",
+  "./data/project-y/manifest.json",
+  "./data/project-y/commons-index.txt",
+  "./assets/los-alamos/bethe.jpg",
+  "./assets/los-alamos/duffield.jpg",
+  "./assets/los-alamos/fermi.png",
+  "./assets/los-alamos/feynman.jpg",
+  "./assets/los-alamos/frankel.jpg",
+  "./assets/los-alamos/metropolis.jpg",
+  "./assets/los-alamos/oppenheimer.jpg",
+  "./assets/los-alamos/bulletin-montage-reference.jpg",
+  "./models/project-y/los-alamos.wrl",
+  "./models/project-y/hanford.wrl",
+  "./models/project-y/trinity.wrl",
   "./js/jp-grid.js",
   "./js/terrarium.js",
   "./js/site-id.js",
