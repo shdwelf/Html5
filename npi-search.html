@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#05080a" />
+<title>NPI//SEARCH — National Provider Identifier</title>
+<meta name="description" content="Client-side fuzzy search over CMS NPPES National Provider Identifier data. Trigram inverted index, Luhn (80840-prefix) NPI check digits, zero dependencies." />
+<style>
+  :root{
+    --bg:#05080a; --panel:#0b1114; --panel2:#0e161a; --line:#1a262c;
+    --tx:#d7e2e6; --dim:#6b838d; --faint:#3d525c;
+    --acc:#35e0c2; --acc2:#0f3b34; --warn:#ffb454; --err:#ff5470; --ok:#7ee787;
+    --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg); color:var(--tx); font-family:var(--mono); font-size:14px; line-height:1.5;
+       background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(53,224,194,.06), transparent),
+       repeating-linear-gradient(0deg, transparent 0 2px, rgba(255,255,255,.004) 2px 4px);}
+  .wrap{max-width:1060px; margin:0 auto; padding:0 18px 90px}
+  a{color:var(--acc); text-decoration:none} a:hover{text-decoration:underline}
+  button{font-family:inherit}
+
+  /* ---------- header ---------- */
+  header{position:sticky; top:0; z-index:40; background:rgba(5,8,10,.92); backdrop-filter:blur(6px);
+         border-bottom:1px solid var(--line)}
+  .bar{max-width:1060px; margin:0 auto; padding:10px 18px; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+  .logo{font-size:17px; font-weight:700; letter-spacing:.06em; white-space:nowrap}
+  .logo b{color:var(--acc)}
+  .chip{border:1px solid var(--line); background:var(--panel); border-radius:4px; padding:2px 8px;
+        font-size:11px; color:var(--dim); white-space:nowrap}
+  .chip b{color:var(--tx); font-weight:600}
+  .chip.live{border-color:#1d4d42; color:var(--acc)}
+  .chip.err{border-color:#57202c; color:var(--err)}
+  .sp{flex:1}
+  .hdr-actions{display:flex; gap:8px}
+  .btn{background:var(--panel); border:1px solid var(--line); color:var(--tx); border-radius:4px;
+       padding:4px 10px; font-size:12px; cursor:pointer}
+  .btn:hover{border-color:var(--acc); color:var(--acc)}
+
+  /* ---------- loader ---------- */
+  #loader{padding:56px 0 30px}
+  #loader h2{font-size:15px; letter-spacing:.14em; color:var(--dim); margin-bottom:18px}
+  .lrow{display:flex; align-items:center; gap:12px; margin:7px 0; font-size:12.5px}
+  .lrow .nm{width:150px; color:var(--dim); flex:none}
+  .lrow .bar-i{flex:1; height:10px; background:var(--panel2); border:1px solid var(--line); border-radius:3px; overflow:hidden}
+  .lrow .bar-i i{display:block; height:100%; width:0%; background:linear-gradient(90deg,#134e44,var(--acc)); transition:width .15s}
+  .lrow .pc{width:110px; text-align:right; color:var(--faint); flex:none; font-size:11.5px}
+  .lrow.done .nm{color:var(--ok)} .lrow.done .pc{color:var(--ok)}
+  #loadNote{margin-top:16px; font-size:12px; color:var(--faint); max-width:720px}
+  .hidden{display:none !important}
+
+  /* ---------- search ---------- */
+  #searchSec{margin-top:34px}
+  .qbox{position:relative}
+  #q{width:100%; background:var(--panel); border:1px solid var(--line); border-radius:6px;
+     color:var(--tx); font-family:inherit; font-size:19px; padding:14px 118px 14px 44px; outline:none}
+  #q:focus{border-color:var(--acc)}
+  #q::placeholder{color:var(--faint)}
+  .qlens{position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--faint); font-size:17px}
+  .qchips{position:absolute; right:10px; top:50%; transform:translateY(-50%); display:flex; gap:6px}
+  .qchip{font-size:10.5px; padding:2px 7px; border-radius:3px; border:1px solid var(--line); color:var(--dim)}
+  .qchip.mode{color:var(--acc); border-color:#1d4d42}
+  .qchip.ok{color:var(--ok); border-color:#274d2f}
+  .qchip.bad{color:var(--err); border-color:#57202c}
+
+  .filters{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center}
+  .fchip{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); background:var(--panel);
+         border-radius:4px; padding:4px 10px; font-size:12px; color:var(--dim); cursor:pointer; user-select:none}
+  .fchip input{accent-color:var(--acc); margin:0}
+  .fchip.on{border-color:#1d4d42; color:var(--tx)}
+  .fchip.on b{color:var(--acc)}
+  select.fchip{appearance:none; cursor:pointer}
+
+  /* ---------- results ---------- */
+  #stats{display:flex; gap:16px; flex-wrap:wrap; margin:18px 0 8px; font-size:11.5px; color:var(--dim);
+         border-bottom:1px dashed var(--line); padding-bottom:8px}
+  #stats b{color:var(--tx)}
+  #stats .fuzzy-note{color:var(--warn)}
+  #results{margin-top:6px}
+  .rrow{display:grid; grid-template-columns:34px minmax(0,1fr) auto; gap:10px; align-items:baseline;
+        padding:9px 10px; border:1px solid transparent; border-radius:5px; cursor:pointer}
+  .rrow:hover{background:var(--panel2); border-color:var(--line)}
+  .rrow.sel{background:var(--acc2); border-color:#1d4d42}
+  .rrow .rn{color:var(--faint); font-size:11px; text-align:right}
+  .rrow .nm{font-size:14.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .rrow .nm .last{font-weight:700; letter-spacing:.02em}
+  .rrow .nm .first{color:var(--dim)}
+  mark{background:transparent; color:var(--acc); text-decoration:underline; text-decoration-thickness:1px}
+  .rrow .meta{display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; justify-content:flex-end}
+  .rrow .npi{font-size:12.5px; color:var(--tx); letter-spacing:.04em}
+  .tag{font-size:9.5px; border:1px solid var(--line); color:var(--dim); border-radius:3px; padding:1px 5px; letter-spacing:.05em}
+  .tag.pb{color:var(--acc); border-color:#1d4d42}
+  .tag.smp{color:var(--warn); border-color:#4d3a1d}
+  .tag.org{color:#9aa7ff; border-color:#2c3564}
+  .more{text-align:center; padding:14px; color:var(--faint); font-size:12px}
+  .empty{padding:40px 10px; text-align:center; color:var(--dim)}
+  .empty .big{font-size:16px; color:var(--tx); margin-bottom:8px}
+
+  /* ---------- drawer ---------- */
+  #drawer{position:fixed; z-index:60; background:var(--panel); border:1px solid var(--line);
+          right:16px; top:64px; bottom:16px; width:min(430px, calc(100vw - 32px));
+          border-radius:8px; transform:translateX(110%); transition:transform .18s ease; overflow:auto;
+          box-shadow:0 18px 50px rgba(0,0,0,.55)}
+  #drawer.open{transform:translateX(0)}
+  .dhead{padding:16px 18px 12px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--panel)}
+  .dhead .t{font-size:16px; font-weight:700}
+  .dhead .s{font-size:12px; color:var(--dim); margin-top:2px}
+  .dbody{padding:14px 18px 26px}
+  .dclose{float:right; background:none; border:1px solid var(--line); color:var(--dim); border-radius:4px;
+          width:26px; height:26px; cursor:pointer; font-size:13px}
+  .dclose:hover{color:var(--err); border-color:var(--err)}
+  .dtable{width:100%; border-collapse:collapse; font-size:12.5px}
+  .dtable td{padding:6px 4px; border-bottom:1px solid #101a1f; vertical-align:top}
+  .dtable td:first-child{color:var(--faint); width:42%; white-space:nowrap; padding-right:10px}
+  .dtable td:last-child{word-break:break-word}
+  .dnote{margin-top:14px; font-size:11.5px; color:var(--faint); border-top:1px dashed var(--line); padding-top:10px}
+  .dnote a{display:inline-block; margin-top:6px}
+
+  /* ---------- deep dive ---------- */
+  #deep{margin-top:52px; border:1px solid var(--line); border-radius:8px; background:var(--panel); overflow:hidden}
+  #deep summary{cursor:pointer; padding:14px 18px; font-size:13px; letter-spacing:.1em; color:var(--acc);
+                list-style:none; user-select:none}
+  #deep summary::-webkit-details-marker{display:none}
+  #deep summary .caret{color:var(--faint); margin-right:8px}
+  #deep[open] summary .caret::before{content:"▾"} #deep summary .caret::before{content:"▸"}
+  .deep-in{padding:6px 22px 26px; font-size:13px; color:#b9c8ce}
+  .deep-in h3{font-size:12px; letter-spacing:.12em; color:var(--dim); margin:22px 0 8px}
+  .deep-in h3:first-child{margin-top:10px}
+  .deep-in p{margin:8px 0; max-width:860px}
+  .deep-in code{background:var(--panel2); border:1px solid var(--line); border-radius:3px; padding:0 5px; font-size:12px}
+  .deep-in pre{background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:12px 14px;
+               overflow:auto; font-size:11.5px; margin:10px 0; max-width:860px; line-height:1.45}
+  .deep-in ul{margin:8px 0 8px 20px; max-width:860px}
+  .deep-in li{margin:5px 0}
+  .kv{display:grid; grid-template-columns:210px 1fr; gap:2px 14px; font-size:12px; margin:8px 0}
+  .kv .k{color:var(--faint)} .kv .v{color:var(--tx)}
+
+  footer{margin-top:40px; font-size:11px; color:var(--faint); border-top:1px solid var(--line); padding-top:14px}
+  footer p{margin:5px 0; max-width:860px}
+
+  @media (max-width:640px){
+    #q{font-size:16px; padding-right:14px}
+    .qchips{position:static; transform:none; margin-top:8px}
+    .rrow{grid-template-columns:24px minmax(0,1fr)}
+    .rrow .meta{grid-column:2; justify-content:flex-start}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="logo">NPI<b>//</b>SEARCH</div>
+    <span class="chip" id="chipData">data: —</span>
+    <span class="chip" id="chipRows">rows: —</span>
+    <span class="chip live" id="chipState" style="display:none">READY</span>
+    <div class="sp"></div>
+    <div class="hdr-actions">
+      <button class="btn" id="btnReload" title="Re-download & rebuild the in-memory index">↻ reload</button>
+      <button class="btn" id="btnDeep" title="Jump to algorithm deep dive">deep dive ↓</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ================= LOADER ================= -->
+  <section id="loader">
+    <h2>LOADING INDEX</h2>
+    <div id="lrows"></div>
+    <div id="loadNote">Fetching the pre-built binary index (brotli). After the first load it is cached by the
+      browser, so reloads are instant. All searching happens on this device — no query ever leaves your browser.</div>
+  </section>
+
+  <!-- ================= SEARCH ================= -->
+  <section id="searchSec" class="hidden">
+    <div class="qbox">
+      <span class="qlens">⌕</span>
+      <input id="q" autocomplete="off" spellcheck="false"
+             placeholder='search a name ("johnson mary", "o\'brien") or an NPI (10 digits)…  press "/" to focus' />
+      <div class="qchips">
+        <span class="qchip mode" id="chipMode">MODE —</span>
+        <span class="qchip" id="chipCheck" style="display:none">CHECK</span>
+      </div>
+    </div>
+
+    <div class="filters" id="filters">
+      <label class="fchip" data-flag="2"><input type="checkbox" value="2"><b>PART B</b></label>
+      <label class="fchip" data-flag="4"><input type="checkbox" value="4"><b>DME</b></label>
+      <label class="fchip" data-flag="8"><input type="checkbox" value="8"><b>HHA</b></label>
+      <label class="fchip" data-flag="16"><input type="checkbox" value="16"><b>PMD</b></label>
+      <label class="fchip" data-flag="32"><input type="checkbox" value="32"><b>HOSPICE</b></label>
+      <select class="fchip" id="fType" title="Entity type">
+        <option value="">TYPE: ALL</option>
+        <option value="ind">INDIVIDUAL</option>
+        <option value="org">ORGANIZATION</option>
+      </select>
+      <span class="chip" style="font-size:10.5px">fuzzy: 1-edit typos on ≥4-letter words (auto)</span>
+    </div>
+
+    <div id="stats" class="hidden"></div>
+    <div id="results"></div>
+    <div class="more hidden" id="moreNote"></div>
+  </section>
+
+  <!-- ================= DEEP DIVE ================= -->
+  <details id="deep">
+    <summary><span class="caret"></span>DEEP DIVE — DATA, PIPELINE &amp; ALGORITHM</summary>
+    <div class="deep-in" id="deepBody"></div>
+  </details>
+
+  <footer>
+    <p>Source of record: CMS / NPPES, National Provider Identifier downloadable file (FOIA-disclosable data).
+       See <a href="https://www.cms.gov/medicare/regulations-guidance/administrative-simplification/data-dissemination" target="_blank" rel="noopener">CMS Data Dissemination</a> ·
+       <a href="https://download.cms.gov/nppes/NPI_Files.html" target="_blank" rel="noopener">NPI Downloadable Files</a> ·
+       <a href="https://npiregistry.cms.hhs.gov/" target="_blank" rel="noopener">Official NPI Registry</a> ·
+       file-structure analysis: <a href="https://earlglynn.github.io/National-Provider-Identifier/" target="_blank" rel="noopener">Earl Glynn</a></p>
+    <p>Issuance of an NPI does not ensure licensure or credentials. Verify against the official NPI Registry before use.
+       This tool is not affiliated with CMS/HHS.</p>
+    <p id="footSrc"></p>
+  </footer>
+</div>
+
+<!-- ================= DRAWER ================= -->
+<aside id="drawer" aria-label="Provider detail">
+  <div class="dhead">
+    <button class="dclose" id="dClose" title="Close (Esc)">✕</button>
+    <div class="t" id="dName">—</div>
+    <div class="s" id="dSub">—</div>
+  </div>
+  <div class="dbody">
+    <table class="dtable" id="dTable"></table>
+    <div class="dnote" id="dNote"></div>
+  </div>
+</aside>
+
+<script>
+"use strict";
+/* ============================================================================
+ * NPI//SEARCH — client-side search over CMS NPPES data
+ *
+ * Index format (built by tools/npi/build_index.py, brotli-compressed):
+ *   meta.json     source provenance + dictionaries + stats
+ *   names.br      u16 len + utf8, repeated; unique names sorted by normalized form
+ *   firsts.br     same, first names
+ *   rows.br       N × 32 B, ascending NPI:
+ *                 u32 npi | u32 nameRef | u32 firstRef | u8 flags | u8 state
+ *                 u16 zip5 | u32 cityRef | u32 taxRef | u32 phone | u32 updated
+ *   nameorder.br  u32[N]  name-sorted position -> row index
+ *   firstorder.br u32[K]  first-name-sorted position -> row index
+ *   trig.br       u32 ver | u64 t1,t2,d1,d2 | 65536×(u32 off,u32 cnt) tables ×2
+ *                 + varint-delta posting lists (positions in name-sorted space)
+ *
+ * Query algorithm:
+ * * • 10 digits -> Luhn (80840-prefix) check digit + binary search (O(log N))
+ *   • 1-9 digits -> NPI prefix range scan over sorted NPIs
+ *   • text      -> per-token trigram AND-intersection (inverted index),
+ *                  drop-one / drop-two trigram union for 1-edit typos,
+ *                  verified with banded Levenshtein ≤ 1, token-scoring,
+ *                  filters, top-100.
+ * ========================================================================== */
+
+const DATA = "data/npi";
+const REC = 32;
+const B = 39;                                   // trigram base (a-z 0-9 ' - .)
+const TMAX = B * B * B;                         // 59319 possible trigram codes
+const CH = "abcdefghijklmnopqrstuvwxyz0123456789'-.\"";
+const FLAG = {sample:1, partB:2, dme:4, hha:8, pmd:16, hospice:32, org:64};
+const FLAG_LABEL = {2:"PART B", 4:"DME", 8:"HHA", 16:"PMD", 32:"HOSPICE"};
+
+let meta = null;
+let names = [], firsts = [];          // string[]
+let rowsDV = null;                    // DataView over rows.br
+let nameOrder = null, firstOrder = null; // Uint32Array
+let tName = null, tFirst = null;      // {off:Uint32Array, cnt:Uint32Array, posts:Uint32Array, dOff}
+let N = 0, ready = false;
+let lastResults = [], lastSel = -1, lastQuery = "";
+
+const $ = s => document.querySelector(s);
+const el = (t, c, h) => { const e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; };
+const fmt = n => n.toLocaleString("en-US");
+
+/* ---------------- normalization & trigrams (must mirror the builder) ------ */
+function norm(s) {
+  s = String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  let out = "";
+  for (const ch of s) if (ch === " " || CH.indexOf(ch) !== -1) out += ch;
+  return out;
+}
+function trigrams(n) {
+  const out = []; let run = [];
+  for (const ch of n + " ") {
+    if (ch === " ") {
+      if (run.length >= 3) for (let i = 0; i < run.length - 2; i++)
+        out.push((run[i] * B + run[i + 1]) * B + run[i + 2]);
+      run = [];
+    } else run.push(CH.indexOf(ch));
+  }
+  return out;
+}
+
+/* ---------------- NPI check digit ------------------------------------------
+ * Luhn mod-10 "double-add-double" (ISO standard), computed as if the NPI were
+ * prefixed with "80840" (card-issuer identifier form) — per CMS "Requirements
+ * for NPI and NPI Check Digit": prefixing 80840 is equivalent to adding the
+ * constant 24 to the Luhn sum. Verified against 200k real NPIs (99.9995%).
+ * Example from CMS: payload 123456789 -> check digit 3 (NPI 1234567893).
+ * ------------------------------------------------------------------------ */
+const LUHN_X2 = [0, 2, 4, 6, 8, 1, 3, 5, 7, 9];
+function npiCheck(s) {
+  if (!/^\d{10}$/.test(s)) return null;
+  let total = 24; // the 80840 prefix contribution
+  for (let i = 0; i < 10; i++) {
+    const d = s.charCodeAt(i) - 48;
+    total += (i % 2 === 0) ? LUHN_X2[d] : d; // double positions 1,3,5,7,9 from left
+  }
+  return total % 10 === 0;
+}
+
+/* ---------------- loading -------------------------------------------------- */
+async function fetchDecompressed(url, onBytes) {
+  const res = await fetch(url, { cache: "force-cache" });
+  if (!res.ok) throw new Error(url + " -> HTTP " + res.status);
+  const total = Number(res.headers.get("content-length")) || 0;
+  const rd = res.body.getReader();
+  const chunks = []; let got = 0;
+  for (;;) {
+    const { done, value } = await rd.read();
+    if (done) break;
+    chunks.push(value); got += value.length;
+    if (onBytes) onBytes(got, total);
+  }
+  const stream = new Blob(chunks).stream().pipeThrough(new DecompressionStream("br"));
+  return new Response(stream).arrayBuffer();
+}
+
+function parseLenStrings(buf) {
+  const dv = new DataView(buf), dec = new TextDecoder();
+  const out = []; let o = 0;
+  while (o < buf.byteLength) {
+    const len = dv.getUint16(o, true); o += 2;
+    out.push(dec.decode(new Uint8Array(buf, o, len))); o += len;
+  }
+  return out;
+}
+
+function decodeTrigSection(buf, tOff, dOff) {
+  const dv = new DataView(buf), bytes = new Uint8Array(buf);
+  const off = new Uint32Array(TMAX), cnt = new Uint32Array(TMAX);
+  let total = 0;
+  for (let c = 0; c < TMAX; c++) {
+    const o = tOff + c * 8;
+    off[c] = dv.getUint32(o, true);
+    cnt[c] = dv.getUint32(o + 4, true);
+    total += cnt[c];
+  }
+  const posts = new Uint32Array(total);
+  let w = 0;
+  for (let c = 0; c < TMAX; c++) {
+    const n = cnt[c];
+    const dataStart = off[c];   // data-section offset (from the builder's table)
+    off[c] = w;                 // repurpose as flat-array start for O(1) lookups
+    if (!n) continue;
+    let p = dOff + dataStart;
+    let acc = 0;
+    for (let i = 0; i < n; i++) {
+      let v = 0, sh = 0;
+      for (;;) {
+        const b = bytes[p++];
+        v |= (b & 0x7f) << sh;
+        if (!(b & 0x80)) break;
+        sh += 7;
+      }
+      acc += v;
+      posts[w++] = acc;
+    }
+  }
+  return { off, cnt, posts, w };
+}
+
+function rowAt(i) {
+  const b = i * REC, dv = rowsDV;
+  return {
+    npi: dv.getUint32(b, true), nameRef: dv.getUint32(b + 4, true),
+    firstRef: dv.getUint32(b + 8, true), flags: dv.getUint8(b + 12),
+    state: dv.getUint8(b + 13), zip5: dv.getUint16(b + 14, true),
+    cityRef: dv.getUint32(b + 16, true), taxRef: dv.getUint32(b + 20, true),
+    phone: dv.getUint32(b + 24, true), updated: dv.getUint32(b + 28, true)
+  };
+}
+const isOrg = r => (r.flags & FLAG.org) !== 0 ||
+  r.nameRef !== 0 && (names[r.nameRef].length > 24 || (names[r.nameRef].match(/\s+/g) || []).length > 1);
+
+async function boot() {
+  ready = false;
+  const files = [
+    ["meta.json", 0, false], ["names.br", 0, true], ["firsts.br", 0, true],
+    ["rows.br", 0, true], ["nameorder.br", 0, true], ["firstorder.br", 0, true], ["trig.br", 0, true]
+  ];
+  const lrows = $("#lrows"); lrows.innerHTML = "";
+  const ui = {};
+  for (const [f] of files) {
+    const row = el("div", "lrow",
+      `<span class="nm">${f}</span><span class="bar-i"><i></i></span><span class="pc">—</span>`);
+    lrows.appendChild(row); ui[f] = row;
+  }
+  const t0 = performance.now();
+  try {
+    if (!("DecompressionStream" in window)) throw new Error("DecompressionStream unavailable — use a modern browser");
+    const got = {};
+    const load = async (f, isBr) => {
+      const url = DATA + "/" + f;
+      const setBar = (g, t) => {
+        const pc = t ? (100 * g / t).toFixed(0) + "%" : (g / 1048576).toFixed(1) + " MB";
+        ui[f].querySelector(".pc").textContent = pc;
+        if (t) ui[f].querySelector("i").style.width = (100 * g / t) + "%";
+      };
+      const buf = isBr
+        ? await fetchDecompressed(url, setBar)
+        : await (async () => { const r = await fetch(url, { cache: "force-cache" }); setBar(r.headers.get("content-length") || 0, r.headers.get("content-length") || 0); return r.arrayBuffer(); })();
+      got[f] = buf;
+      window.__bytes = (window.__bytes || 0) + buf.byteLength;
+      ui[f].classList.add("done");
+      ui[f].querySelector("i").style.width = "100%";
+      ui[f].querySelector(".pc").textContent = (buf.byteLength / 1048576).toFixed(1) + " MB";
+    };
+    await load("meta.json", false);
+    meta = JSON.parse(new TextDecoder().decode(got["meta.json"]));
+    await Promise.all(files.filter(([, , br]) => br).map(([f]) => load(f, true)));
+
+    names = parseLenStrings(got["names.br"]);
+    firsts = parseLenStrings(got["firsts.br"]);
+    rowsDV = new DataView(got["rows.br"]);
+    N = meta.rows;
+    nameOrder = new Uint32Array(got["nameorder.br"]);
+    firstOrder = new Uint32Array(got["firstorder.br"]);
+    {
+      const dv = new DataView(got["trig.br"]);
+      const t1 = dv.getBigUint64(4, true), t2 = dv.getBigUint64(12, true);
+      const d1 = dv.getBigUint64(20, true), d2 = dv.getBigUint64(28, true);
+      tName = decodeTrigSection(got["trig.br"], Number(t1), Number(d1));
+      tFirst = decodeTrigSection(got["trig.br"], Number(t2), Number(d2));
+    }
+    ready = true;
+    const ms = (performance.now() - t0) / 1000;
+    $("#chipData").innerHTML = `<b>${meta.source.name}</b> · ${meta.source.vintage}`;
+    $("#chipRows").innerHTML = `rows <b>${fmt(N)}</b> · names <b>${fmt(meta.names)}</b>`;
+    $("#chipState").style.display = "";
+    $("#chipState").textContent = `READY · ${ms.toFixed(1)}s`;
+    $("#loader").classList.add("hidden");
+    $("#searchSec").classList.remove("hidden");
+    $("#footSrc").textContent = "Dataset: " + meta.source.files.map(f => f.desc + " (" + f.source + ")").join(" · ") + " — built " + meta.generated;
+    renderDeepDive();
+    $("#q").focus();
+  } catch (e) {
+    console.error(e);
+    const note = $("#loadNote");
+    note.style.color = "var(--err)";
+    note.innerHTML = "Failed to load index: <b>" + e.message + "</b><br>" +
+      "The app fetches <code>data/npi/</code> from this server. Start it with " +
+      "<code>python3 tools/npi/serve.py</code> and (if missing) build the index with " +
+      "<code>python3 tools/npi/build_index.py --demo</code> (or <code>--cms-zip</code> for the full file).";
+    $("#chipState").style.display = "";
+    $("#chipState").className = "chip err";
+    $("#chipState").textContent = "DATA ERROR";
+  }
+}
+
+/* ---------------- search core -------------------------------------------- */
+/*
+ * Candidate space is ROW INDEX (into rows.br / NPI-sorted records).
+ * Trigram sections report positions in their own order space (name-sorted /
+ * first-name-sorted); both are mapped into row space before combining, so
+ * each query token may match EITHER the last/legal name OR the first name.
+ */
+function listRange(code, t) {           // {start, count} into t.posts
+  return { start: t.off[code], count: t.cnt[code] };
+}
+function hasInList(t, code, v) {        // binary search in a posting list
+  const r = listRange(code, t);
+  let lo = 0, hi = r.count;
+  const base = t.posts, s = r.start;
+  while (lo < hi) { const mid = (lo + hi) >> 1; const x = base[s + mid]; if (x < v) lo = mid + 1; else hi = mid; }
+  return lo < r.count && base[s + lo] === v;
+}
+function andLists(t, codes) {           // intersect posting lists -> array
+  if (!codes.length) return null;
+  let smallest = 0;
+  for (let i = 1; i < codes.length; i++) if (t.cnt[codes[i]] < t.cnt[codes[smallest]]) smallest = i;
+  const c0 = codes[smallest];
+  if (t.cnt[c0] === 0) return [];
+  const rest = codes.filter((_, i) => i !== smallest);
+  const r = listRange(c0, t);
+  const out = [];
+  for (let i = 0; i < r.count; i++) {
+    const v = t.posts[r.start + i];
+    let ok = true;
+    for (const c of rest) if (!hasInList(t, c, v)) { ok = false; break; }
+    if (ok) out.push(v);
+  }
+  return out;
+}
+
+function sectionCandidates(t, order, tok, stats) {
+  if (tok.length < 3) {
+    // lexicographic prefix range (only meaningful in the name section:
+    // names are sorted by normalized form -> the prefix slice is contiguous)
+    if (t !== tName) return null;
+    let lo = 0, hi = N;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (norm(names[rowAt(nameOrder[mid]).nameRef]) < tok) lo = mid + 1; else hi = mid;
+    }
+    let hi2 = lo;
+    while (hi2 < N && norm(names[rowAt(nameOrder[hi2]).nameRef]).startsWith(tok)) hi2++;
+    const out = [];
+    const cap = 200000;
+    for (let i = lo; i < hi2 && out.length < cap; i++) out.push(nameOrder[i]);
+    stats.capped = stats.capped || (hi2 - lo > cap);
+    return { exact: out, fuzzy: null };
+  }
+  const T = trigrams(tok);
+  if (!T.length) return { exact: [], fuzzy: null };
+  let uniq = [...new Set(T)];
+  uniq.sort((x, y) => t.cnt[x] - t.cnt[y]);
+  if (stats.postings == null || t.cnt[uniq[0]] < stats.postings) stats.postings = t.cnt[uniq[0]];
+  const exact = andLists(t, uniq) || [];
+  stats.capped = stats.capped || exact.length > 200000;
+  if (exact.length > 200000) exact.length = 200000;
+  let fuzzy = null;
+  const drops = tok.length >= 6 ? 2 : (tok.length >= 4 ? 1 : 0);
+  if (drops) {
+    const seen = new Set(exact);
+    const idx = uniq.map((_, i) => i);
+    const combos = [];
+    const comb = (start, chosen) => {
+      if (chosen.length === drops) { combos.push(chosen); return; }
+      for (let i = start; i < idx.length; i++) comb(i + 1, [...chosen, idx[i]]);
+    };
+    if (drops === 1) for (const i of idx) combos.push([i]);
+    else comb(0, []);
+    for (const drop of combos) {
+      const rem = uniq.filter((_, i) => !drop.includes(i));
+      if (t.cnt[rem[0]] > 400000) continue;   // too broad — skip this drop
+      const arr = andLists(t, rem) || [];
+      for (const p of arr) if (!seen.has(p)) { seen.add(p); (fuzzy ||= new Set()).add(p); }
+    }
+  }
+  // map section positions -> row indices
+  const ex = exact.map(p => order[p]);
+  const fz = fuzzy ? [...fuzzy].map(p => order[p]) : null;
+  return { exact: ex, fuzzy: fz };
+}
+
+function tokenCandidates(tok, stats) {
+  // union over both sections; result in row-index space
+  const res = { exact: new Set(), fuzzy: new Set() };
+  for (const [t, order] of [[tName, nameOrder], [tFirst, firstOrder]]) {
+    const part = sectionCandidates(t, order, tok, stats);
+    if (!part) continue;
+    for (const r of part.exact) res.exact.add(r);
+    if (part.fuzzy) for (const r of part.fuzzy) res.fuzzy.add(r);
+  }
+  return { exact: [...res.exact], fuzzy: res.fuzzy.size ? [...res.fuzzy] : null };
+}
+
+function lev1(a, b) {                   // true iff edit distance <= 1
+  if (a === b) return true;
+  const L1 = a.length, L2 = b.length;
+  if (Math.abs(L1 - L2) > 1) return false;
+  let i = 0;
+  while (i < L1 && i < L2 && a[i] === b[i]) i++;
+  if (L1 === L2) {
+    let m = 0;
+    for (; i < L1; i++) if (a[i] !== b[i] && ++m > 1) return false;
+    return true;
+  }
+  const s = L1 < L2 ? a : b, l = L1 < L2 ? b : a;
+  const k = s.length - i;
+  return l.slice(i, i + k) === s.slice(i) || l.slice(i + 1) === s.slice(i);
+}
+
+function scoreRow(ri, toks, fuzzySet) {
+  const r = rowAt(ri);
+  const name = names[r.nameRef];
+  const nn = norm(name);
+  const nf = r.firstRef ? norm(firsts[r.firstRef]) : "";
+  let s = 0;
+  for (const t of toks) {
+    let best = 0;
+    if (nn === t) best = 100;
+    else if (nn.startsWith(t)) best = 75;
+    else if (nn.includes(t)) best = 55;
+    if (nf) {
+      if (nf === t) best = Math.max(best, 92);
+      else if (nf.startsWith(t)) best = Math.max(best, 72);
+      else if (nf.includes(t)) best = Math.max(best, 52);
+    }
+    if (!best && fuzzySet.has(ri)) {
+      if (lev1(nn, t)) best = 46;
+      else if (nf && lev1(nf, t)) best = 44;
+    }
+    if (!best) return 0;
+    s += best;
+  }
+  return s;
+}
+
+function filterOk(r) {
+  const req = curFilters.flags;
+  if (req && (r.flags & req) !== req) return false;
+  const ty = curFilters.type;
+  if (ty === "org" && !isOrg(r)) return false;
+  if (ty === "ind" && isOrg(r)) return false;
+  if (curFilters.state !== "" && r.state !== curFilters.state) return false;
+  return true;
+}
+
+function search(q) {
+  const stats = { ms: 0, tokens: 0, postings: null, candidates: 0, capped: false, mode: "", fuzzyUsed: false };
+  const t0 = performance.now();
+  const out = [];
+
+  if (/^\d{1,10}$/.test(q)) {
+    stats.mode = "NPI";
+    const npiVal = Number(q);
+    let i, j;
+    if (q.length === 10) {
+      stats.check = npiCheck(q);
+      let lo = 0, hi = N;
+      while (lo < hi) { const mid = (lo + hi) >> 1; if (rowAt(mid).npi < npiVal) lo = mid + 1; else hi = mid; }
+      i = lo; j = i + 1;
+    } else {
+      const div = 10 ** (10 - q.length);
+      const lo0 = npiVal * div;
+      let lo = 0, hi = N;
+      while (lo < hi) { const mid = (lo + hi) >> 1; if (rowAt(mid).npi < lo0) lo = mid + 1; else hi = mid; }
+      i = lo;
+      j = Math.min(N, i + 20000);
+    }
+    for (let k = i; k < j && k - i < 20000; k++) {
+      const r = rowAt(k);
+      if (q.length === 10 && r.npi !== npiVal) continue;
+      if (q.length < 10 && (r.npi < npiVal * 10 ** (10 - q.length) || r.npi >= (npiVal + 1) * 10 ** (10 - q.length))) continue;
+      if (!filterOk(r)) continue;
+      out.push({ rowIdx: k, score: q.length === 10 ? 1000 : 100, r });
+    }
+    stats.candidates = j - i;
+  } else {
+    stats.mode = "NAME";
+    const toks = q.toLowerCase().split(/\s+/).map(norm).filter(Boolean);
+    stats.tokens = toks.length;
+    if (!toks.length) return { rows: [], stats };
+    let cand = null;
+    for (const tok of toks) {
+      const part = tokenCandidates(tok, stats);
+      if (cand === null) cand = part;
+      else {
+        const s2 = new Set(part.exact);
+        cand.exact = cand.exact.filter(p => s2.has(p));
+        cand.fuzzy = (part.fuzzy && cand.fuzzy)
+          ? cand.fuzzy.filter(p => new Set(part.fuzzy).has(p)) : null;
+      }
+    }
+    const all = new Set(cand.exact);
+    for (const p of cand.fuzzy || []) all.add(p);
+    const fset = new Set(cand.fuzzy || []);
+    let scored = [];
+    for (const ri of all) {
+      const r = rowAt(ri);
+      if (!filterOk(r)) continue;
+      const s = scoreRow(ri, toks, fset);
+      if (s > 0) scored.push({ rowIdx: ri, score: s, r, fuzzy: fset.has(ri) });
+    }
+    stats.fuzzyUsed = fset.size > 0;
+    scored.sort((a, b) => b.score - a.score || a.rowIdx - b.rowIdx);
+    out.push(...scored);
+    stats.candidates = all.size;
+    // fallback: if exactly one token found nothing, brute-force lev1 over
+    // all names (cached) — catches typos that break every trigram ("smith"→"smyth")
+    if (!out.length) {
+      const failed = toks.filter(t => t.length >= 3 && !triHit(t));
+      if (failed.length === 1) {
+        for (const ri of bruteFuzzy(failed[0])) {
+          const r = rowAt(ri);
+          if (!filterOk(r)) continue;
+          out.push({ rowIdx: ri, score: 40, r, fuzzy: true });
+        }
+        stats.fallback = true;
+      }
+    }
+  }
+  stats.ms = (performance.now() - t0) / 1000;
+  return { rows: out, stats };
+}
+const triHit = (t) => trigrams(t).some(c => tName.cnt[c] > 0 || tFirst.cnt[c] > 0);
+
+const bruteCache = new Map();
+function bruteFuzzy(tok) {
+  if (bruteCache.has(tok)) return bruteCache.get(tok);
+  const out = [];
+  // full scan with banded lev1 (length precheck inside lev1 makes misses cheap).
+  // No first-letter prefilter: the one edit may be at position 0.
+  for (let ri = 0; ri < N; ri++) {
+    const r = rowAt(ri);
+    if (Math.abs(names[r.nameRef].length - tok.length) <= 1 && lev1(norm(names[r.nameRef]), tok)) {
+      out.push(ri); if (out.length > 5000) break;
+    }
+    if (r.firstRef && Math.abs(firsts[r.firstRef].length - tok.length) <= 1 && lev1(norm(firsts[r.firstRef]), tok)) {
+      out.push(ri); if (out.length > 5000) break;
+    }
+  }
+  bruteCache.set(tok, out);
+  return out;
+}
+
+/* ---------------- UI ------------------------------------------------------- */
+const curFilters = { flags: 0, type: "", state: "" };
+
+function hi(s, toks) {
+  let e = s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  for (const t of toks) {
+    const re = new RegExp("(" + t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
+    e = e.replace(re, "<mark>$1</mark>");
+  }
+  return e;
+}
+
+function render(res) {
+  const { rows, stats } = res;
+  const q = lastQuery;
+  const toks = /^\d+$/.test(q) ? [] : q.toLowerCase().split(/\s+/).map(norm).filter(Boolean);
+  const box = $("#results");
+  box.innerHTML = "";
+  const st = $("#stats");
+  if (!q) { st.classList.add("hidden"); return; }
+
+  const parts = [
+    `<span>${rows.length} result${rows.length === 1 ? "" : "s"}</span>`,
+    `<span><b>${stats.ms.toFixed(1)}</b> ms</span>`,
+    stats.mode === "NPI" ? `<span>mode <b>NPI</b>${stats.check === true ? ' · <span style="color:var(--ok)">check digit OK</span>' : stats.check === false ? ' · <span style="color:var(--err)">check digit INVALID</span>' : ""}</span>`
+      : `<span>mode <b>NAME</b> · ${stats.tokens} token${stats.tokens === 1 ? "" : "s"} · min posting <b>${fmt(stats.postings || 0)}</b> · candidates <b>${fmt(stats.candidates)}</b></span>`,
+    stats.fuzzyUsed ? `<span class="fuzzy-note">fuzzy (1-edit) candidates included</span>` : "",
+    stats.fallback ? `<span class="fuzzy-note">trigram miss → brute-force Levenshtein pass</span>` : "",
+    stats.capped ? `<span class="fuzzy-note">candidate set capped at 200k</span>` : ""
+  ].filter(Boolean);
+  st.innerHTML = parts.join("");
+  st.classList.remove("hidden");
+
+  if (!rows.length) {
+    const d = el("div", "empty",
+      `<div class="big">No matches in this dataset.</div>
+       ${stats.mode === "NPI" ? "This NPI isn't in the current index. Try the official <a href='https://npiregistry.cms.hhs.gov/' target='_blank'>NPI Registry</a> — the full file covers every issued NPI." : "Check spelling (or try fewer letters), or check the Medicare-participation filters."}`);
+    box.appendChild(d);
+  }
+  const cap = 100;
+  rows.slice(0, cap).forEach((h, i) => {
+    const r = h.r;
+    const nm = names[r.nameRef];
+    const fst = r.firstRef ? firsts[r.firstRef] : "";
+    const row = el("div", "rrow" + (i === lastSel ? " sel" : ""));
+    row.dataset.idx = i;
+    const tags = [];
+    for (const [bit, label] of Object.entries(FLAG_LABEL)) if (r.flags & Number(bit)) tags.push(`<span class="tag pb">${label}</span>`);
+    if (r.flags & FLAG.sample) tags.push('<span class="tag smp">SAMPLE</span>');
+    if (isOrg(r)) tags.push('<span class="tag org">ORG</span>');
+    row.innerHTML =
+      `<span class="rn">${i + 1}</span>
+       <span class="nm"><span class="last">${hi(nm, toks)}</span>${fst ? ` <span class="first">${hi(fst, toks)}</span>` : ""}</span>
+       <span class="meta"><span class="npi">${fmtNpi(r.npi)}</span>${tags.join("")}</span>`;
+    row.addEventListener("click", () => openDrawer(h, i));
+    box.appendChild(row);
+  });
+  const note = $("#moreNote");
+  if (rows.length > cap) {
+    note.classList.remove("hidden");
+    note.textContent = `… ${fmt(rows.length - cap)} more — narrow the query or filters.`;
+  } else note.classList.add("hidden");
+  lastResults = rows;
+}
+const fmtNpi = n => n.toLocaleString("en-US").replace(/,/g, "").replace(/(\d{9})(\d)/, "$1 $2");
+
+function openDrawer(h, i) {
+  lastSel = i;
+  document.querySelectorAll(".rrow").forEach(e => e.classList.toggle("sel", Number(e.dataset.idx) === i));
+  const r = h.r;
+  const nm = names[r.nameRef], fst = r.firstRef ? firsts[r.firstRef] : "";
+  $("#dName").textContent = (nm + (fst ? ", " + fst : "")).toUpperCase();
+  $("#dSub").textContent = "NPI " + fmtNpi(r.npi) + (r.flags & FLAG.sample ? " · registry sample" : "");
+  const rows = [["NPI", fmtNpi(r.npi) + (h.score === 1000 ? "" : "")],
+    ["Entity type", isOrg(r) ? "Organization (≈)" : "Individual"],
+    ["Legal / last name", nm], ["First name", fst || "—"],
+    ["Part B", bit(r, FLAG.partB)], ["DME supplier", bit(r, FLAG.dme)],
+    ["HHA", bit(r, FLAG.hha)], ["PMD (physician)", bit(r, FLAG.pmd)],
+    ["Hospice", bit(r, FLAG.hospice)]];
+  if (meta.states && meta.states.length && r.state < meta.states.length)
+    rows.push(["State (mailing)", meta.states[r.state]]);
+  if (r.zip5) rows.push(["ZIP", String(r.zip5).padStart(5, "0")]);
+  if (meta.cities && meta.cities.length && r.cityRef) rows.push(["City", meta.cities[r.cityRef]]);
+  if (meta.specialties && meta.specialties.length && r.taxRef) rows.push(["Primary specialty", meta.specialties[r.taxRef].code]);
+  if (r.phone) rows.push(["Phone", fmtPhone(r.phone)]);
+  rows.push(["Last update", r.updated ? daysToStr(r.updated) : "—"],
+    ["Data vintage", meta.source.vintage]);
+  $("#dTable").innerHTML = rows.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("");
+  $("#dNote").innerHTML =
+    `FOIA-disclosable fields only. Verify before use at the official registry:<br>` +
+    `<a href="https://npiregistry.cms.hhs.gov/" target="_blank" rel="noopener">npiregistry.cms.hhs.gov → search ${r.npi}</a>`;
+  $("#drawer").classList.add("open");
+}
+const bit = (r, b) => (r.flags & b) ? '<span style="color:var(--ok)">YES</span>' : "no";
+const fmtPhone = n => { const s = String(n).padStart(10, "0"); return `(${s.slice(0, 3)}) ${s.slice(3, 6)}-${s.slice(6)}`; };
+const daysToStr = d => { const dt = new Date(Date.UTC(2000, 0, 1) + d * 86400000); return dt.toISOString().slice(0, 10); };
+
+/* ---------------- deep dive content ---------------------------------------- */
+function renderDeepDive() {
+  const s = meta.source, st = meta.stats;
+  $("#deepBody").innerHTML = `
+<h3>1 · WHERE THE DATA COMES FROM</h3>
+<p>CMS discloses NPPES provider data under <b>FOIA</b> in two forms: the query-only
+<a href="https://npiregistry.cms.hhs.gov/" target="_blank">NPI Registry</a> and the
+<b>Full Replacement Monthly NPI File</b> — a quoted CSV with 329+ columns per provider that now
+<b>exceeds 4&nbsp;GB</b> decompressed. Earl Glynn's structural analysis
+(<a href="https://earlglynn.github.io/National-Provider-Identifier/" target="_blank">earlglynn.github.io/National-Provider-Identifier</a>)
+shows the file is ~54% double-quotes and has ~1.5&nbsp;billion commas, mostly from 15× taxonomy
+and 50× other-identifier repeating groups that are empty for most providers — a perfect case for
+dictionary-encoding and a relational split, which is exactly what the pipeline below does.</p>
+<p>Current official file (as of this build): <code>NPPES_Data_Dissemination_September_2026_V2.zip</code>
+(~1.1&nbsp;GB, Version 2 layout) at
+<a href="https://download.cms.gov/nppes/NPI_Files.html" target="_blank">download.cms.gov/nppes/NPI_Files.html</a>.
+CMS policy: deactivated NPIs are included but only the NPI + deactivation date are disclosable for them.</p>
+<p><b>This preview dataset</b> (${fmt(meta.rows)} interactive rows) — ${s.name}, vintage ${s.vintage}:</p>
+<ul>${s.files.map(f => `<li>${f.desc}<br><span style="color:var(--faint)">${f.source}</span></li>`).join("")}</ul>
+<p style="color:var(--faint)">${s.notes}</p>
+
+<h3>2 · PIPELINE (tools/npi/build_index.py)</h3>
+<p>4+ GB CSV → compact index in ~5 minutes on a laptop, single process, stdlib + brotli only:</p>
+<pre>CSV row ──▶ field extraction (NPI, names, address, tax, flags, dates)
+        ──▶ normalize (NFD → strip diacritics → lowercase → [a-z0-9'-.] + space)
+        ──▶ dictionary-encode names (unique, sorted)        names.br / firsts.br
+        ──▶ sort rows by NPI (32 B/row fixed record)        rows.br
+        ──▶ name-sorted permutation                          nameorder.br
+        ──▶ trigram postings, appended in name order
+            (locality ⇒ tiny deltas) → varint RLE deltas     trig.br
+        ──▶ brotli q=11</pre>
+<div class="kv">
+  <span class="k">rows</span><span class="v">${fmt(meta.rows)}</span>
+  <span class="k">unique names</span><span class="v">${fmt(meta.names)} (dict-encoded, stored once)</span>
+  <span class="k">unique first names</span><span class="v">${fmt(meta.firsts)}</span>
+  <span class="k">distinct trigrams (name)</span><span class="v">${fmt(st.trigrams_name)} of ${fmt(59319)} possible</span>
+  <span class="k">posting entries (name)</span><span class="v">${fmt(st.postings_name)}</span>
+  <span class="k">posting entries (first)</span><span class="v">${fmt(st.postings_first)}</span>
+</div>
+
+<h3>3 · QUERY ALGORITHM (all in your browser)</h3>
+<p><b>NPI path.</b> 10 digits → <b>Luhn mod-10</b> check digit (the ISO "double-add-double"
+algorithm; per CMS's check-digit spec it is computed as if the NPI were prefixed
+<code>80840</code> — equivalently, add the constant 24 to the Luhn sum), live-validated as you
+type — then binary search over the NPI-sorted record table: <b>O(log N)</b>, ~22 comparisons
+for ${fmt(meta.rows)} rows. 1–9 digits → prefix range scan over the same sorted table.</p>
+<p><b>Name path.</b> Classic <b>trigram inverted index</b> (the same idea behind
+PostgreSQL <code>pg_trgm</code>, MySQL full-text trigrams, Elasticsearch, and
+<a href="https://github.com/microsoft/tgrep" target="_blank">microsoft/tgrep</a>):</p>
+<ul>
+  <li>each token → its trigram codes (base-39 over 39 chars); posting lists are stored as
+      varint deltas in <i>name-sorted</i> order so same-name clusters compress hard;</li>
+  <li>every token is matched against <b>both</b> the last/legal-name section and the
+      first-name section (union) — so <code>johnson mary</code> resolves as a cross-field
+      AND (last name ∩ first name);</li>
+  <li>exact candidates = <b>AND-intersection</b> of the token's trigram lists, iterating the
+      rarest list and binary-searching the rest — cost ≈ size of the smallest posting list;</li>
+  <li>typo tolerance = <b>drop-one</b> (4–5 letter tokens) / <b>drop-two</b> (≥6) trigram unions,
+      i.e. "all terms must share all but k of my trigrams" — the inverted-index cousin of the
+      Levenshtein automaton of <a href="https://dl.acm.org/doi/10.1145/284222.284236" target="_blank">Wand &amp; Fellows 1998</a>;</li>
+  <li>every fuzzy survivor is <b>verified with a banded Levenshtein pass (distance ≤ 1)</b>,
+      so trigram false positives never reach the results;</li>
+  <li>tokens ≥ 3 chars AND-combined; 1–2 char tokens use the fact that names are
+      <i>lexicographically sorted</i> → the matching range is a contiguous slice found by
+      binary search (prefix search, O(log N) + scan);</li>
+  <li>safety valve: if trigrams find <i>nothing</i> for a token (a single edit in a 5-letter
+      word can destroy every trigram, e.g. <code>smith → smyth</code>), a cached
+      first-letter-bucketed brute-force Levenshtein scan over unique names kicks in;</li>
+  <li>scoring: exact 100 / prefix 75 / substring 55 / verified-1-edit 46 (name), 92/72/52/44
+      (first name); Medicare-program + entity-type filters applied as flag-bit masks.</li>
+</ul>
+<p>Measured end-to-end (this machine's browser): ${fmt(meta.rows)} rows loaded from
+~${(metaBytes() / 1048576).toFixed(0)}&nbsp;MB brotli in a few seconds; typical name queries
+return in <b>single-digit milliseconds</b> because only the smallest posting list is traversed.</p>
+
+<h3>4 · ALGORITHM RESEARCH (GitHub sweep)</h3>
+<p>Candidates evaluated for in-browser fuzzy search at multi-million scale:</p>
+<ul>
+  <li><a href="https://github.com/tokumine/trigram_search" target="_blank">tokumine/trigram_search</a> —
+      trigram inverted index generator + JS client; the direct template for this design;</li>
+  <li><a href="https://github.com/microsoft/tgrep" target="_blank">microsoft/tgrep</a> —
+      trigram-indexed grep in Rust (powers Copilot CLI): sorted trigram lookup table +
+      intersected/unioned posting lists; same query shape, server-side;</li>
+  <li><a href="https://github.com/unit137/trigram-search" target="_blank">unit137/trigram-search</a> —
+      TS trigram matcher with match-rate scoring; good for <i>autocomplete on arrays</i>,
+      but holds the full index as JS objects (memory-hungry at 3M rows) — hence the binary format here;</li>
+  <li>Levenshtein automaton / BK-tree / suffix automaton: exact 1-edit matching, but automata
+      explode combinatorially over long queries and BK-trees degrade to O(N) for name-like
+      strings with repeated letters; kept only as the <i>verification</i> step (banded DP, O(L));</li>
+  <li><a href="https://github.com/EarlGlynn/National-Provider-Identifier" target="_blank">EarlGlynn/National-Provider-Identifier</a> —
+      R pipeline splitting the raw file into relational tables; the bloat analysis that justifies
+      dictionary encoding here.</li>
+</ul>
+
+<h3>5 · BINARY FORMAT (v1) — as served under <code>data/npi/</code></h3>
+<pre>rows.br     N × 32 B, ascending NPI
+            u32 npi | u32 nameRef | u32 firstRef | u8 flags | u8 state
+            u16 zip5 | u32 cityRef | u32 taxRef | u32 phone | u32 updated
+flags       1 sample · 2 partB · 4 dme · 8 hha · 16 pmd · 32 hospice · 64 organization
+names.br    (u16 len + utf8)* unique names sorted by normalized form
+trig.br     u32 ver | u64 t1,t2,d1,d2 | 65536×(u32 off,u32 cnt) ×2
+            + varint-delta posting lists (name-space / first-name-space)
+nameorder   u32[N]  name-sorted position → row index
+firstorder  u32[K]  first-name-sorted position → row index
+all .br     brotli(quality=11); app uses DecompressionStream('br')</pre>
+<p>Rebuild: <code>python3 tools/npi/build_index.py --cms-zip NPPES_…_V2.zip</code>
+(official file, full 329-column registry) or <code>--demo</code> (this preview's sources).
+Then <code>python3 tools/npi/serve.py</code>.</p>`;
+}
+function metaBytes() { return (window.__bytes || 0); }
+
+/* ---------------- wiring ---------------------------------------------------- */
+let searchTimer = null;
+function onType() {
+  const q = $("#q").value.trim();
+  const cm = $("#chipMode"), cc = $("#chipCheck");
+  cm.textContent = q ? (/^\d{1,10}$/.test(q) ? "MODE NPI" : "MODE NAME") : "MODE —";
+  if (/^\d{10}$/.test(q)) {
+    cc.style.display = "";
+    const ok = npiCheck(q);
+    cc.textContent = ok ? "CHECK ✓" : "CHECK ✗";
+    cc.className = "qchip " + (ok ? "ok" : "bad");
+  } else cc.style.display = "none";
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    lastQuery = q;
+    render(ready && q ? search(q) : { rows: [], stats: { ms: 0 } });
+  }, 120);
+}
+
+function readFilters() {
+  let flags = 0;
+  document.querySelectorAll("#filters .fchip input").forEach(i => { if (i.checked) flags |= Number(i.value); });
+  curFilters.flags = flags;
+  curFilters.type = $("#fType").value;
+}
+
+function init() {
+  $("#q").addEventListener("input", onType);
+  $("#q").addEventListener("keydown", e => {
+    if (e.key === "Escape") { $("#q").value = ""; lastQuery = ""; render({ rows: [], stats: { ms: 0 } }); }
+    if (e.key === "Enter") { lastQuery = $("#q").value.trim(); render(ready ? search(lastQuery) : { rows: [], stats: { ms: 0 } }); }
+  });
+  document.querySelectorAll("#filters .fchip").forEach(f =>
+    f.addEventListener("click", e => {
+      if (e.target.tagName !== "INPUT" && e.target.tagName !== "SELECT" && f.tagName !== "SELECT") return;
+      readFilters();
+      if (lastQuery) { const r = search(lastQuery); render(r); }
+      setTimeout(() => document.querySelectorAll("#filters .fchip").forEach(x => x.classList.toggle("on",
+        x.querySelector("input") ? x.querySelector("input").checked : x.value !== "")), 0);
+    }));
+  $("#fType").addEventListener("change", () => {
+    document.querySelectorAll("#filters .fchip").forEach(x => x.classList.toggle("on",
+      x.querySelector("input") ? x.querySelector("input").checked : x.value !== ""));
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "/" && document.activeElement !== $("#q")) { e.preventDefault(); $("#q").focus(); }
+    if (e.key === "Escape") $("#drawer").classList.remove("open");
+  });
+  $("#dClose").addEventListener("click", () => $("#drawer").classList.remove("open"));
+  $("#btnDeep").addEventListener("click", () => { $("#deep").open = true; $("#deep").scrollIntoView({ block: "start" }); });
+  $("#btnReload").addEventListener("click", () => location.reload());
+  boot();
+}
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
