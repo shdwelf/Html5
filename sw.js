@@ -2,7 +2,7 @@
    The 2.6 MB ghidra_decompiler.wasm is intentionally *not* precached: the
    service worker caches it on first use, so the lab still works offline after
    one visit without slowing down install for everyone else. */
-const CACHE = "sitek-html5-v24";
+const CACHE = "sitek-html5-v25";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -16,6 +16,22 @@ const PRECACHE = [
   "./louisiana.html",
   "./terrarium.html",
   "./glendora.html",
+  "./chipwright.html",
+  "./css/chipwright.css",
+  "./js/cw-data.js",
+  "./js/cw-tap.js",
+  "./js/cw-data-storage.js",
+  "./js/cw-data-uefi.js",
+  "./js/cw-data-onewire.js",
+  "./js/cw-data-jvm.js",
+  "./js/cw-data-firmware.js",
+  "./js/cw-firmware.js",
+  "./js/cw-synth.js",
+  "./js/cw-arch.js",
+  "./js/cw-subst.js",
+  "./js/cw-probe.js",
+  "./js/cw-prime.js",
+  "./js/cw-app.js",
   "./css/glendora.css",
   "./js/glendora-app.js",
   "./js/ghs-data.js",
