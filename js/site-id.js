@@ -9,11 +9,18 @@ export const CATALOG = [
 ];
 
 export function resolveSite() {
-  const q = new URLSearchParams(location.search).get("site");
-  if (q && CATALOG.some((c) => c.id === q)) return q;
-  if (/louisiana/.test(location.pathname)) return "la";
-  if (/wrightwood/.test(location.pathname)) return "ww";
-  if (/dalton/.test(location.pathname)) return "dalton";
-  if (/isla|ivista/.test(location.pathname)) return "iv";
-  return "stx";
+  try {
+    if (typeof location === "undefined" || !location) return "stx";
+    const search = location.search || "";
+    const pathname = location.pathname || "";
+    const q = new URLSearchParams(search).get("site");
+    if (q && CATALOG.some((c) => c.id === q)) return q;
+    if (/louisiana/.test(pathname)) return "la";
+    if (/wrightwood/.test(pathname)) return "ww";
+    if (/dalton/.test(pathname)) return "dalton";
+    if (/isla|ivista/.test(pathname)) return "iv";
+    return "stx";
+  } catch {
+    return "stx";
+  }
 }

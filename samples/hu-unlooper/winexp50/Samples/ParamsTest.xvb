@@ -1,0 +1,131 @@
+'
+' Wx Object Example - Created 5/23/2001
+'
+Option Explicit
+'
+' Code outside of any Sub is executed BEFORE the port is opened.
+' You can override any of the configured settings here.
+'
+Sc.Print vbcrlf & "Configured Settings" & vbcr
+Call PrintSettings()
+
+' Set up new comm parameters.
+' Basically you can paste this info from the "Quick Settings" in the Winexplorer.ini
+' If you don't set these parameters here, WinExplorer will use the configured settings.
+Call UnlooperSettings()
+'-------------------------------------------------------------------------------------------
+
+Sub Main()
+    Sc.Print vbcrlf & "After Main is executed" & vbcr
+    Call PrintSettings()
+
+    '
+    ' We don't really need to close the comm port unless we are going to change ports.
+    ' I'm doing it just to show how it's done.
+    ' We could have used Wx.ForceCommParams
+    '
+    Wx.ClosePort                ' Close the port
+    Call SmartcardSettings()    ' Set up the port for a phoenix interface & a smartcard
+
+    ' Open the port, we should get a ATR because of the settings.
+    ' A failed reset will abort the script if Wx.ResetMode = 1, this is by design.
+    Wx.OpenPort                 ' Open the port
+
+    ' To open the port and not fail on a reset, use the following:
+    Wx.ClosePort                ' Close the port
+    Wx.ResetMode = 0            ' No Resets
+    Wx.OpenPort                 ' Open the port
+    Sc.Reset                    ' Sc.Reset does not error if the card does not respond
+
+    Sc.Delay(1000)
+    Sc.Print vbcrlf & "Smartcard settings" & vbcr
+    Call PrintSettings()
+
+    '
+    ' If you change any of the following serial port settings on a open port
+    ' you must call Wx.ForceCommParams after you change the parameters.
+    '
+    Wx.BaudRate = 115200
+    Wx.Parity = 0
+    Wx.StopBits = 0
+    Wx.DTRControl = 0
+    Wx.RTSControl = 1
+
+    Wx.ForceCommParams
+    Wx.ClearOutputWindow
+End Sub
+'-------------------------------------------------------------------------------------------
+
+Sub SmartcardSettings()
+    Wx.CommPort = "com1:"
+    Wx.BaudRate = 19200
+    Wx.ResetBaudRate = 9600
+    Wx.Parity = 1                ' 0 = None, 1 = Odd, 2 = Even, 3 = Mark, 4 = Space
+    Wx.StopBits = 2              ' 0 = 1 stop bit, 1 = 1.5 stop bits, 2 = 2 stop bits
+    Wx.DTRControl = 1            ' Initial state of DTR  0 = off, 1 = on
+    Wx.RTSControl = 0            ' Initial state of RTS  0 = off, 1 = on
+
+    Wx.ResetDelay = 40000        ' In microseconds
+    Wx.ByteDelay = 70000         ' In microseconds
+    Wx.RxByteTimeout = 200       ' In milliseconds
+    Wx.ResetMode = 1             ' 0 = No Resets, 1 = ISO Reset (Expect a ATR), 2 = Device Reset (No ATR)
+    Wx.ResetLine = 0             ' 0 = Toggle RTS for Reset, 1 = Toggle DTR for Reset
+    Wx.ByteConvention = 0        ' 0 = Inverse, 1 = Direct
+    Wx.FlushEchoByte = 1         ' 0 = no flush, 1 = flush - A Phoenix interface will echo each byte transmitted.
+    Wx.FlushBeforeWrite = 0      ' 0 = no flush, 1 = flush - Flush the receive buffer before each write to strip off Null bytes.
+    Wx.IgnoreTimeouts = 0        ' 0 = Abort script on a receive timeout, 1 = Ignore all receive timeouts
+    Wx.ResetAfterTimeout = 0     ' 0 = Don't reset after a timeout, 1 = do a reset after a timeout  - Not used if "IgnoreTimeouts=0"
+    Wx.LogTransactions = 0       ' 0 = Don't log transactions, 1 = log transactions
+    Wx.DisplayUSW = 0            ' Display USW after script complete 0 = no, 1 = yes
+    Wx.DisplayFuse = 0           ' Display Fuse after script complete 0 = no, 1 = yes
+End Sub
+'-------------------------------------------------------------------------------------------
+
+Sub UnlooperSettings()
+    Wx.CommPort = "com1:"
+    Wx.BaudRate = 115200
+    Wx.ResetBaudRate = 115200
+    Wx.Parity = 0                ' 0 = None, 1 = Odd, 2 = Even, 3 = Mark, 4 = Space
+    Wx.StopBits = 0              ' 0 = 1 stop bit, 1 = 1.5 stop bits, 2 = 2 stop bits
+    Wx.DTRControl = 0            ' Initial state of DTR  0 = off, 1 = on
+    Wx.RTSControl = 1            ' Initial state of RTS  0 = off, 1 = on
+
+    Wx.ResetDelay = 0            ' In microseconds
+    Wx.ByteDelay = 0             ' In microseconds
+    Wx.RxByteTimeout = 100       ' In milliseconds
+    Wx.ResetMode = 2             ' 0 = No Resets, 1 = ISO Reset (Expect a ATR), 2 = Device Reset (No ATR)
+    Wx.ResetLine = 1             ' 0 = Toggle RTS for Reset, 1 = Toggle DTR for Reset
+    Wx.ByteConvention = 1        ' 0 = Inverse, 1 = Direct
+    Wx.FlushEchoByte = 0         ' 0 = no flush, 1 = flush - A Phoenix interface will echo each byte transmitted.
+    Wx.FlushBeforeWrite = 0      ' 0 = no flush, 1 = flush - Flush the receive buffer before each write to strip off Null bytes.
+    Wx.IgnoreTimeouts = 0        ' 0 = Abort script on a receive timeout, 1 = Ignore all receive timeouts
+    Wx.ResetAfterTimeout = 0     ' 0 = Don't reset after a timeout, 1 = do a reset after a timeout  - Not used if "IgnoreTimeouts=0"
+    Wx.LogTransactions = 0       ' 0 = Don't log transactions, 1 = log transactions
+    Wx.DisplayUSW = 0            ' Display USW after script complete 0 = no, 1 = yes
+    Wx.DisplayFuse = 0           ' Display Fuse after script complete 0 = no, 1 = yes
+End Sub
+'-------------------------------------------------------------------------------------------
+
+Sub PrintSettings()
+    Sc.Print vbCr & "CommPort = " &          Wx.CommPort
+    Sc.Print vbCr & "BaudRate = " &          Wx.BaudRate
+    Sc.Print vbCr & "ResetBaudRate = " &     Wx.ResetBaudRate
+    Sc.Print vbCr & "Parity = " &            Wx.Parity
+    Sc.Print vbCr & "StopBits = " &          Wx.StopBits
+    Sc.Print vbCr & "DTRControl = " &        Wx.DTRControl
+    Sc.Print vbCr & "RTSControl = " &        Wx.RTSControl
+
+    Sc.Print vbCr & "ResetDelay = " &        Wx.ResetDelay
+    Sc.Print vbCr & "ByteDelay = " &         Wx.ByteDelay
+    Sc.Print vbCr & "RxByteTimeout = " &     Wx.RxByteTimeout
+    Sc.Print vbCr & "ResetMode = " &         Wx.ResetMode
+    Sc.Print vbCr & "ResetLine = " &         Wx.ResetLine
+    Sc.Print vbCr & "ByteConvention = " &    Wx.ByteConvention
+    Sc.Print vbCr & "FlushEchoByte = " &     Wx.FlushEchoByte
+    Sc.Print vbCr & "FlushBeforeWrite = " &  Wx.FlushBeforeWrite
+    Sc.Print vbCr & "IgnoreTimeouts = " &    Wx.IgnoreTimeouts
+    Sc.Print vbCr & "ResetAfterTimeout = " & Wx.ResetAfterTimeout
+    Sc.Print vbCr & "LogTransactions = " &   Wx.LogTransactions
+    Sc.Print vbCr & "DisplayUSW = " &        Wx.DisplayUSW
+    Sc.Print vbCr & "DisplayFuse = " &       Wx.DisplayFuse
+End Sub

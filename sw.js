@@ -2,7 +2,8 @@
    The 2.6 MB ghidra_decompiler.wasm is intentionally *not* precached: the
    service worker caches it on first use, so the lab still works offline after
    one visit without slowing down install for everyone else. */
-const CACHE = "sitek-html5-v15";
+const CACHE_PREFIX = "sitek-html5-";
+const CACHE = `${CACHE_PREFIX}v26`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -10,6 +11,7 @@ const PRECACHE = [
   "./keyspace.html",
   "./validator.html",
   "./ghidra-lab.html",
+  "./casefiles.html",
   "./art-studio.html",
   "./poetry-book.html",
   "./louisiana.html",
@@ -42,6 +44,7 @@ const PRECACHE = [
   "./css/viewer.css",
   "./css/validator.css",
   "./css/viruslab.css",
+  "./css/casefiles.css",
   "./css/studio.css",
   "./css/calc.css",
   "./css/poetry-book.css",
@@ -52,6 +55,31 @@ const PRECACHE = [
   "./js/adl-data.js",
   "./src/gazbean/gazbean.js",
   "./js/wm.js",
+  "./js/pip-deck.js",
+  "./los-alamos.html",
+  "./css/los-alamos.css",
+  "./css/project-y-sites.css",
+  "./css/project-y-4dwm.css",
+  "./js/los-alamos.js",
+  "./js/los-alamos-data.js",
+  "./js/project-y-catalog-utils.js",
+  "./js/project-y-sites.js",
+  "./js/project-y-sites-data.js",
+  "./js/project-y-4dwm.js",
+  "./data/project-y/catalog.js",
+  "./data/project-y/manifest.json",
+  "./data/project-y/commons-index.txt",
+  "./assets/los-alamos/bethe.jpg",
+  "./assets/los-alamos/duffield.jpg",
+  "./assets/los-alamos/fermi.png",
+  "./assets/los-alamos/feynman.jpg",
+  "./assets/los-alamos/frankel.jpg",
+  "./assets/los-alamos/metropolis.jpg",
+  "./assets/los-alamos/oppenheimer.jpg",
+  "./assets/los-alamos/bulletin-montage-reference.jpg",
+  "./models/project-y/los-alamos.wrl",
+  "./models/project-y/hanford.wrl",
+  "./models/project-y/trinity.wrl",
   "./js/jp-grid.js",
   "./js/terrarium.js",
   "./js/site-id.js",
@@ -74,6 +102,9 @@ const PRECACHE = [
   "./js/virus-catalog.js",
   "./js/x86dis.js",
   "./js/ghidra-wasm.js",
+  "./js/casefiles.js",
+  "./js/krome-catalog.js",
+  "./js/artifacts.js",
   "./js/studio.js",
   "./js/studio-data.js",
   "./js/studio-fs.js",
@@ -95,6 +126,7 @@ const PRECACHE = [
   "./samples/bin/michelangelo.bin",
   "./samples/bin/malmsey-habitat-13.bin",
   "./samples/bin/zippy.bin",
+  "./demo.exe",
   "./img/site-x-badge.png",
   "./img/site-l-badge.png",
   "./img/ingen-stripe.jpg",
@@ -108,6 +140,8 @@ const PRECACHE = [
   "./js/dll-catalog.js",
   "./js/driver-catalog.js",
   "./js/pe-version.js",
+  "./js/makint.js",
+  "./samples/makint/analysis.json",
   "./vendor/fflate/index.mjs",
 ];
 
@@ -133,7 +167,12 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      // CacheStorage is shared with other apps on this origin. Only retire
+      // caches owned by this worker; leave the book and other apps alone.
+      .then((keys) => Promise.all(
+        keys.filter((k) => k.startsWith(CACHE_PREFIX) && k !== CACHE)
+          .map((k) => caches.delete(k))
+      ))
       .then(() => self.clients.claim())
   );
 });

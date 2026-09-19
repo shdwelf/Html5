@@ -1,0 +1,2017 @@
+{
+  "bytecode": [
+    {
+      "code_objects": 20,
+      "compiled_from_path": "/home/user/Work/PyMAKInt/pymakint.py",
+      "file": "pymakint.cpython-34.pyc",
+      "functions": [
+        {
+          "args": 0,
+          "firstline": 3,
+          "instructions": 32,
+          "locals": 0,
+          "name": "<module>",
+          "names": [
+            "serial",
+            "struct",
+            "math",
+            "os",
+            "PyMAKInt",
+            "PyMAKDat"
+          ],
+          "stack": 3,
+          "strings": [
+            "PyMAKInt",
+            "PyMAKDat"
+          ]
+        },
+        {
+          "args": 0,
+          "firstline": 8,
+          "instructions": 68,
+          "locals": 0,
+          "name": "PyMAKInt",
+          "names": [
+            "__name__",
+            "__module__",
+            "__qualname__",
+            "TRACK1",
+            "TRACK2",
+            "TRACK3",
+            "CHARB7",
+            "__init__",
+            "__str__",
+            "__iter__",
+            "__next__",
+            "read_tracks_raw",
+            "format_tracks",
+            "erase_tracks",
+            "read_eeprom_single",
+            "read_eeprom_all",
+            "erase_eeprom"
+          ],
+          "stack": 5,
+          "strings": [
+            "PyMAKInt",
+            "/dev/ttyUSB0",
+            "PyMAKInt.__init__",
+            "PyMAKInt.__str__",
+            "PyMAKInt.__iter__",
+            "PyMAKInt.__next__",
+            "PyMAKInt.read_tracks_raw",
+            "PyMAKInt.format_tracks",
+            "PyMAKInt.erase_tracks",
+            "PyMAKInt.read_eeprom_single",
+            "PyMAKInt.read_eeprom_all",
+            "PyMAKInt.erase_eeprom"
+          ]
+        },
+        {
+          "args": 3,
+          "firstline": 15,
+          "instructions": 76,
+          "locals": 3,
+          "name": "__init__",
+          "names": [
+            "_portname",
+            "_defracks",
+            "serial",
+            "Serial",
+            "_serialobj",
+            "serialutil",
+            "SerialException",
+            "write",
+            "read",
+            "_rversion"
+          ],
+          "stack": 11,
+          "strings": [
+            "timeout",
+            "Error opening serial port",
+            "?",
+            "Reader not responding",
+            "MSUSB",
+            "Reader not valid"
+          ]
+        },
+        {
+          "args": 1,
+          "firstline": 30,
+          "instructions": 7,
+          "locals": 1,
+          "name": "__str__",
+          "names": [
+            "print",
+            "_rversion"
+          ],
+          "stack": 2,
+          "strings": []
+        },
+        {
+          "args": 1,
+          "firstline": 33,
+          "instructions": 2,
+          "locals": 1,
+          "name": "__iter__",
+          "names": [],
+          "stack": 1,
+          "strings": []
+        },
+        {
+          "args": 1,
+          "firstline": 36,
+          "instructions": 36,
+          "locals": 3,
+          "name": "__next__",
+          "names": [
+            "read_tracks_raw",
+            "serial",
+            "SerialException",
+            "str",
+            "StopIteration"
+          ],
+          "stack": 16,
+          "strings": [
+            "Card read timeout occurred"
+          ]
+        },
+        {
+          "args": 3,
+          "firstline": 44,
+          "instructions": 168,
+          "locals": 7,
+          "name": "read_tracks_raw",
+          "names": [
+            "_defracks",
+            "PyMAKInt",
+            "TRACK1",
+            "TRACK2",
+            "TRACK3",
+            "ValueError",
+            "_serialobj",
+            "timeout",
+            "write",
+            "bytes",
+            "read",
+            "serial",
+            "SerialException",
+            "PyMAKDat",
+            "list"
+          ],
+          "stack": 6,
+          "strings": [
+            "Invalid track specified",
+            "R",
+            "Ready",
+            "Error initialising card read",
+            "Card read timeout occurred",
+            "RD ",
+            "Invalid data from reader",
+            "RD=OK",
+            "Error, data alignment problem"
+          ]
+        },
+        {
+          "args": 3,
+          "firstline": 80,
+          "instructions": 105,
+          "locals": 4,
+          "name": "format_tracks",
+          "names": [
+            "_deftracks",
+            "PyMAKInt",
+            "TRACK1",
+            "TRACK2",
+            "TRACK3",
+            "ValueError",
+            "_serialobj",
+            "write",
+            "bytes",
+            "timeout",
+            "read",
+            "serial",
+            "SerialException"
+          ],
+          "stack": 7,
+          "strings": [
+            "Invalid track specified",
+            "F",
+            "\\",
+            "FM ",
+            "Error initializing card format",
+            "FM=OK",
+            "Error performing card format"
+          ]
+        },
+        {
+          "args": 4,
+          "firstline": 96,
+          "instructions": 111,
+          "locals": 5,
+          "name": "erase_tracks",
+          "names": [
+            "_deftracks",
+            "PyMAKInt",
+            "TRACK1",
+            "TRACK2",
+            "TRACK3",
+            "ValueError",
+            "_serialobj",
+            "write",
+            "bytes",
+            "timeout",
+            "read",
+            "serial",
+            "SerialException"
+          ],
+          "stack": 4,
+          "strings": [
+            "Invalid track specified",
+            "e",
+            "E",
+            "eR ",
+            "Er ",
+            "Error initialising card erase",
+            "eR=OK",
+            "Er=OK",
+            "Error card erase failure"
+          ]
+        },
+        {
+          "args": 2,
+          "firstline": 112,
+          "instructions": 77,
+          "locals": 5,
+          "name": "read_eeprom_single",
+          "names": [
+            "ValueError",
+            "_serialobj",
+            "write",
+            "bytes",
+            "timeout",
+            "range",
+            "readline",
+            "decode",
+            "len",
+            "split"
+          ],
+          "stack": 4,
+          "strings": [
+            "Invalid EEPROM entry specified",
+            "I",
+            "\u0001",
+            "#",
+            "Error reading track value",
+            "'"
+          ]
+        },
+        {
+          "args": 1,
+          "firstline": 126,
+          "instructions": 21,
+          "locals": 3,
+          "name": "read_eeprom_all",
+          "names": [
+            "range",
+            "read_eeprom_single"
+          ],
+          "stack": 4,
+          "strings": [
+            "Read all 20 entries from the EEPROM, not tested"
+          ]
+        },
+        {
+          "args": 1,
+          "firstline": 133,
+          "instructions": 38,
+          "locals": 2,
+          "name": "erase_eeprom",
+          "names": [
+            "_serialobj",
+            "write",
+            "timeout",
+            "read",
+            "serial",
+            "SerialException"
+          ],
+          "stack": 2,
+          "strings": [
+            "Erase the EEPROM, not tested",
+            "H",
+            "Error, timeout while erasing device",
+            "EZ=OK",
+            "Error, invalid confirmation from device"
+          ]
+        },
+        {
+          "args": 0,
+          "firstline": 144,
+          "instructions": 35,
+          "locals": 0,
+          "name": "PyMAKDat",
+          "names": [
+            "__name__",
+            "__module__",
+            "__qualname__",
+            "__init__",
+            "__str__",
+            "_calc_raw_timing",
+            "_load_file",
+            "save_file",
+            "get_raw_track_timing",
+            "set_raw_track_timing"
+          ],
+          "stack": 3,
+          "strings": [
+            "PyMAKDat",
+            "PyMAKDat.__init__",
+            "PyMAKDat.__str__",
+            "PyMAKDat._calc_raw_timing",
+            "PyMAKDat._load_file",
+            "PyMAKDat.save_file",
+            "PyMAKDat.get_raw_track_timing",
+            "PyMAKDat.set_raw_track_timing"
+          ]
+        },
+        {
+          "args": 2,
+          "firstline": 146,
+          "instructions": 32,
+          "locals": 2,
+          "name": "__init__",
+          "names": [
+            "_rawtracktiming",
+            "isinstance",
+            "str",
+            "_load_file",
+            "list",
+            "_rawdata",
+            "_calc_raw_timing"
+          ],
+          "stack": 3,
+          "strings": []
+        },
+        {
+          "args": 1,
+          "firstline": 154,
+          "instructions": 45,
+          "locals": 4,
+          "name": "__str__",
+          "names": [
+            "str",
+            "range",
+            "len",
+            "_rawtracktiming"
+          ],
+          "stack": 6,
+          "strings": [
+            " ",
+            "\n"
+          ]
+        },
+        {
+          "args": 1,
+          "firstline": 162,
+          "instructions": 222,
+          "locals": 7,
+          "name": "_calc_raw_timing",
+          "names": [
+            "_rawdata",
+            "len",
+            "ValueError",
+            "bool",
+            "PyMAKInt",
+            "TRACK1",
+            "TRACK2",
+            "TRACK3",
+            "range",
+            "CHARB7",
+            "pow",
+            "_rawtracktiming"
+          ],
+          "stack": 8,
+          "strings": [
+            "Raw data length mismatch",
+            "Error parsing tick transition"
+          ]
+        },
+        {
+          "args": 2,
+          "firstline": 187,
+          "instructions": 187,
+          "locals": 9,
+          "name": "_load_file",
+          "names": [
+            "ValueError",
+            "open",
+            "struct",
+            "unpack",
+            "read",
+            "os",
+            "path",
+            "getsize",
+            "_rawdata",
+            "float",
+            "range",
+            "PyMAKInt",
+            "TRACK1",
+            "TRACK2",
+            "TRACK3",
+            "int",
+            "CHARB7",
+            "close"
+          ],
+          "stack": 6,
+          "strings": [
+            "Load the data from a .mag compatible file",
+            ".mag",
+            "Filename must end with a .mag extension",
+            "rb",
+            "i",
+            "Error parsing input file, length mismatch",
+            "Error parsing input file, transition mismatch",
+            "f",
+            "Error parsing input file, timing mismatch"
+          ]
+        },
+        {
+          "args": 2,
+          "firstline": 213,
+          "instructions": 135,
+          "locals": 8,
+          "name": "save_file",
+          "names": [
+            "ValueError",
+            "open",
+            "int",
+            "len",
+            "_rawdata",
+            "write",
+            "struct",
+            "pack",
+            "float",
+            "range",
+            "PyMAKInt",
+            "CHARB7",
+            "TRACK1",
+            "TRACK2",
+            "TRACK3",
+            "close"
+          ],
+          "stack": 5,
+          "strings": [
+            "Save the data in a .mag compatible file",
+            ".mag",
+            "Filename must end with a .mag extension",
+            "wb",
+            "i",
+            "f"
+          ]
+        },
+        {
+          "args": 2,
+          "firstline": 232,
+          "instructions": 39,
+          "locals": 2,
+          "name": "get_raw_track_timing",
+          "names": [
+            "bin",
+            "count",
+            "PyMAKInt",
+            "TRACK1",
+            "TRACK2",
+            "TRACK3",
+            "ValueError",
+            "_rawtracktiming",
+            "int",
+            "math",
+            "log"
+          ],
+          "stack": 5,
+          "strings": [
+            "Return the timing values for a given track",
+            "1",
+            "Invalid track specified"
+          ]
+        },
+        {
+          "args": 3,
+          "firstline": 238,
+          "instructions": 2,
+          "locals": 3,
+          "name": "set_raw_track_timing",
+          "names": [],
+          "stack": 1,
+          "strings": [
+            "Calculate raw data from timing data"
+          ]
+        }
+      ],
+      "magic": "ee0c0d0a",
+      "magic_flavor": "3.4",
+      "opcode_top": {
+        "BINARY_ADD": 23,
+        "BINARY_OR": 25,
+        "BINARY_SUBSCR": 34,
+        "CALL_FUNCTION": 113,
+        "COMPARE_OP": 37,
+        "JUMP_FORWARD": 40,
+        "LOAD_ATTR": 158,
+        "LOAD_CONST": 267,
+        "LOAD_FAST": 203,
+        "LOAD_GLOBAL": 123,
+        "MAKE_FUNCTION": 19,
+        "POP_JUMP_IF_FALSE": 40,
+        "RAISE_VARARGS": 27,
+        "RETURN_VALUE": 20,
+        "STORE_FAST": 53,
+        "STORE_NAME": 31
+      },
+      "opcode_total": 1438,
+      "python": "3.4",
+      "source_in_sync": true,
+      "source_size_on_disk": 10876,
+      "source_size_recorded": 10876,
+      "timestamp": 1442334330
+    },
+    {
+      "code_objects": 4,
+      "compiled_from_path": "/home/user/Work/PyMAKInt/pymagpar.py",
+      "file": "pymagpar.cpython-34.pyc",
+      "functions": [
+        {
+          "args": 0,
+          "firstline": 1,
+          "instructions": 14,
+          "locals": 0,
+          "name": "<module>",
+          "names": [
+            "raw_decode",
+            "f2f_raw_decode",
+            "p1v_decode"
+          ],
+          "stack": 2,
+          "strings": [
+            "raw_decode",
+            "f2f_raw_decode",
+            "p1v_decode"
+          ]
+        },
+        {
+          "args": 2,
+          "firstline": 1,
+          "instructions": 24,
+          "locals": 5,
+          "name": "raw_decode",
+          "names": [
+            "get_raw_track_timing",
+            "str"
+          ],
+          "stack": 4,
+          "strings": [
+            "Decode stream into raw timing values",
+            " "
+          ]
+        },
+        {
+          "args": 2,
+          "firstline": 9,
+          "instructions": 112,
+          "locals": 6,
+          "name": "f2f_raw_decode",
+          "names": [
+            "get_raw_track_timing",
+            "sum",
+            "len",
+            "TypeError"
+          ],
+          "stack": 5,
+          "strings": [
+            "0",
+            "1",
+            "F2F parse error"
+          ]
+        },
+        {
+          "args": 2,
+          "firstline": 36,
+          "instructions": 197,
+          "locals": 10,
+          "name": "p1v_decode",
+          "names": [
+            "f2f_raw_decode",
+            "find",
+            "TypeError",
+            "len",
+            "range",
+            "int",
+            "list",
+            "join"
+          ],
+          "stack": 5,
+          "strings": [
+            "Decode and check data from type 1 parking cards",
+            "11111110",
+            "Start sentinel not found",
+            "Incomplete data stream",
+            "End sentinel mismatch",
+            "Repeat value mismatch",
+            "Checksum mismatch",
+            "0",
+            "1"
+          ]
+        }
+      ],
+      "magic": "ee0c0d0a",
+      "magic_flavor": "3.4",
+      "opcode_top": {
+        "BINARY_ADD": 6,
+        "BINARY_MULTIPLY": 6,
+        "BINARY_SUBSCR": 20,
+        "CALL_FUNCTION": 26,
+        "COMPARE_OP": 11,
+        "FOR_ITER": 6,
+        "GET_ITER": 6,
+        "JUMP_ABSOLUTE": 11,
+        "LOAD_CONST": 61,
+        "LOAD_FAST": 75,
+        "LOAD_GLOBAL": 21,
+        "POP_BLOCK": 7,
+        "POP_JUMP_IF_FALSE": 11,
+        "RAISE_VARARGS": 6,
+        "SETUP_LOOP": 7,
+        "STORE_FAST": 26
+      },
+      "opcode_total": 347,
+      "python": "3.4",
+      "source_in_sync": true,
+      "source_size_on_disk": 3638,
+      "source_size_recorded": 3638,
+      "timestamp": 1442000791
+    }
+  ],
+  "cuecat": {
+    "all_match": true,
+    "gage-alnum": {
+      "got": "WPT39",
+      "input": "fbmxChO",
+      "ok": true,
+      "want": "WPT39"
+    },
+    "gage-serial-neutered": {
+      "got": "000000000",
+      "input": "C3nZC3nZC3nZ",
+      "ok": true,
+      "want": "000000000"
+    },
+    "hanselman-stardust": {
+      "got": "978006093471251300",
+      "input": "ENr7C3n1C3PWD3rYCxzYChnZ",
+      "ok": true,
+      "want": "978006093471251300"
+    }
+  },
+  "iso7816": {
+    "10.7 MHz (digital-mode switch)": {
+      "baud_f372_d1": 28763.4,
+      "etu_us_f372_d1": 34.766,
+      "fi_hz": 10700000,
+      "fwt_us_bwt10": 333757.0
+    },
+    "3.579545 MHz (shipped)": {
+      "baud_f372_d1": 9622.4,
+      "etu_us_f372_d1": 103.924,
+      "fi_hz": 3579545,
+      "fwt_us_bwt10": 997668.7
+    },
+    "4.9152 MHz (digital-mode switch)": {
+      "baud_f372_d1": 13212.9,
+      "etu_us_f372_d1": 75.684,
+      "fi_hz": 4915200,
+      "fwt_us_bwt10": 726562.5
+    },
+    "6.0 MHz (optional)": {
+      "baud_f372_d1": 16129.0,
+      "etu_us_f372_d1": 62.0,
+      "fi_hz": 6000000,
+      "fwt_us_bwt10": 595200.0
+    }
+  },
+  "mag_format": {
+    "corpus": {
+      "distinct_sizes": 27,
+      "failed": [],
+      "files": 144,
+      "mask_hist_totals": {
+        "0": 28031,
+        "2": 33061
+      },
+      "parsed": 144,
+      "saturated_at_9bit": true,
+      "span_s_max": 858.727,
+      "span_s_min": 445.233,
+      "tick_max_values": [
+        511
+      ],
+      "unit_proof": "widest inter-transition gap in the corpus is 858.727000 s, and 511 ticks at 150 Hz is 3.406667 s \u2014 the gap sits exactly on the 9-bit ceiling of the on-wire tick field. So the float in the container is seconds and the capture clock is 150 Hz."
+    },
+    "layout": "u32 transition count, then count \u00d7 (u32 (trackmask<<4), f32 absolute seconds)",
+    "length_rule": "filesize == 4 + 8 * count",
+    "record_bytes": 8,
+    "synthetic_vector": {
+      "bytes": 516,
+      "parse": {
+        "mask_hist": {
+          "0": 32,
+          "2": 32
+        },
+        "monotone": true,
+        "span_s": 105.42,
+        "tick_max": 251,
+        "tick_min": 251,
+        "tracks_seen": [
+          0,
+          2
+        ],
+        "transitions": 64
+      },
+      "path": "samples/makint/vectors/synthetic-track2.mag",
+      "sha1": "f99255adbfb707fd0007f3ab6931f1ab4b570bf5"
+    },
+    "tick_field": "9-bit on the wire (byte | (byte2&0x80)<<1), max 511",
+    "tick_hz": 150
+  },
+  "makstripe_protocol": {
+    "?": [
+      "identity",
+      "reply: 15 bytes, must begin 'MSUSB'"
+    ],
+    "E": [
+      "erase tracks fwd",
+      "'E' + trackmask + seconds; ack 'Er ', completion 'Er=OK'"
+    ],
+    "F": [
+      "format tracks",
+      "'F' + trackmask + seconds*8 + '\\\\'; ack 'FM ', completion 'FM=OK'"
+    ],
+    "H": [
+      "erase EEPROM",
+      "'H'; completion 'EZ=OK'"
+    ],
+    "I": [
+      "read EEPROM entry",
+      "'I' + entry(1..20) + '\\01'; three '#...\\'...\\'' lines"
+    ],
+    "R": [
+      "read raw tracks",
+      "'R' + trackmask; ack 'Ready', then 'RD ' + u16 tick count + payload, then 'RD=OK'"
+    ],
+    "e": [
+      "erase tracks rev",
+      "'e' + trackmask + seconds; ack 'eR ', completion 'eR=OK'"
+    ]
+  },
+  "pins_recovered_from": "makinterface.net/pinout_e.php3 @ 20051220165606 (CDX digest ZJT4TY2JWBZOGE5VTLTEKI3YOT4ZFQ5F, 5121 B)",
+  "tool": "makint_static.py",
+  "upstream": {
+    "cloned_via": "git clone https://github.com/s3c/PyMAKInt (depth 200)",
+    "files": [
+      {
+        "bytes": 9624,
+        "entropy": 4.671,
+        "kind": "text",
+        "md5": "d704c0a4239db8d239351f8dc2587de1",
+        "path": "binana.py",
+        "sha1": "2d98ec885a91562461d8e06e7f5f40b77785c2bf"
+      },
+      {
+        "bytes": 3638,
+        "entropy": 4.708,
+        "kind": "text",
+        "md5": "883e30b4320882729a0c7cf84eba964c",
+        "path": "pymagpar.py",
+        "sha1": "44451bf863d6e6ca419fb00b78ef18818e6f4517"
+      },
+      {
+        "bytes": 11500,
+        "entropy": 4.534,
+        "kind": "text",
+        "md5": "abb1ee00143e86ab5f614b73aca28682",
+        "path": "pymakcli.py",
+        "sha1": "748b6bcac291284286e575584d39fc7fd96f0384"
+      },
+      {
+        "bytes": 10876,
+        "entropy": 4.669,
+        "kind": "text",
+        "md5": "477d9e521eb7d443c542412631d509d7",
+        "path": "pymakint.py",
+        "sha1": "a221594f1591aebedd0fc7e790f416dfd6dfea64"
+      },
+      {
+        "bytes": 2040,
+        "entropy": 5.149,
+        "kind": "cpython-pyc",
+        "md5": "cd729f7b19619d847e1c340813be42c2",
+        "path": "__pycache__/pymagpar.cpython-34.pyc",
+        "sha1": "3fc51ea09341dc07d6205b628572b051dd2162de"
+      },
+      {
+        "bytes": 9693,
+        "entropy": 5.047,
+        "kind": "cpython-pyc",
+        "md5": "57307086e2f0ec64cadfb02f62345531",
+        "path": "__pycache__/pymakint.cpython-34.pyc",
+        "sha1": "0c54c83e097272e38e3a7b72231df97d00d26299"
+      },
+      {
+        "bytes": 3468,
+        "entropy": 4.649,
+        "kind": "mag-container",
+        "md5": "18601d3679aa64bba0f7419042cf5062",
+        "path": "woodlands_bulk/woodlands_bulk-001.mag",
+        "sha1": "ac7ebd51f0869b232bbcde4b43f2b4c406e8419d"
+      },
+      {
+        "bytes": 3308,
+        "entropy": 4.643,
+        "kind": "mag-container",
+        "md5": "678b50de4043cd4fbf0b8d0c6caeed2c",
+        "path": "woodlands_bulk/woodlands_bulk-002.mag",
+        "sha1": "aa5928b1a792152e4bb99863de9d2839bf4ed86e"
+      },
+      {
+        "bytes": 3324,
+        "entropy": 4.656,
+        "kind": "mag-container",
+        "md5": "3e504ce7b6000645e2b62cdd8ab6f658",
+        "path": "woodlands_bulk/woodlands_bulk-003.mag",
+        "sha1": "ce149aac18dafce6b462788cc960130676919ff5"
+      },
+      {
+        "bytes": 3436,
+        "entropy": 4.666,
+        "kind": "mag-container",
+        "md5": "0e8644d8d00e8c54a11998d98ff54a56",
+        "path": "woodlands_bulk/woodlands_bulk-004.mag",
+        "sha1": "07e66a892025824f4c4f2c4210b3a0fffb31ab86"
+      },
+      {
+        "bytes": 3516,
+        "entropy": 4.661,
+        "kind": "mag-container",
+        "md5": "291480250534487613d881bd90decc87",
+        "path": "woodlands_bulk/woodlands_bulk-005.mag",
+        "sha1": "6b930fd1ce4a81e915c05b1fd7a4364be492777d"
+      },
+      {
+        "bytes": 3516,
+        "entropy": 4.661,
+        "kind": "mag-container",
+        "md5": "d393a72fc782f18266bba675291dfee3",
+        "path": "woodlands_bulk/woodlands_bulk-006.mag",
+        "sha1": "c660b6ca532f665d2000aad873f3f11a55914ca7"
+      },
+      {
+        "bytes": 3524,
+        "entropy": 4.612,
+        "kind": "mag-container",
+        "md5": "288b5f2c0983cfedeebf761f40f86810",
+        "path": "woodlands_bulk/woodlands_bulk-007.mag",
+        "sha1": "a18217d3232cd4c81e80cf8c2d7ec3d94bfb9078"
+      },
+      {
+        "bytes": 3364,
+        "entropy": 4.613,
+        "kind": "mag-container",
+        "md5": "3aa4942340c25e6c98748611032eb718",
+        "path": "woodlands_bulk/woodlands_bulk-008.mag",
+        "sha1": "6e32d19aa6f19980d0b5b69577b65b79cde84ae8"
+      },
+      {
+        "bytes": 3468,
+        "entropy": 4.68,
+        "kind": "mag-container",
+        "md5": "46bec24382f20bd50c3e2d86af56bb43",
+        "path": "woodlands_bulk/woodlands_bulk-009.mag",
+        "sha1": "cd9a11fb895dcbbdf551004e3f6e194aca715f79"
+      },
+      {
+        "bytes": 3364,
+        "entropy": 4.585,
+        "kind": "mag-container",
+        "md5": "dc58524f65fb3cf3b4ac53d34c309a35",
+        "path": "woodlands_bulk/woodlands_bulk-010.mag",
+        "sha1": "369775b591838797158816ba95019cbede79914c"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.649,
+        "kind": "mag-container",
+        "md5": "ac13ef35c96b6b7bb1c0ed244dd64c11",
+        "path": "woodlands_bulk/woodlands_bulk-011.mag",
+        "sha1": "7195a3b8d0c4b91559a0ed835f9dd60aec9de660"
+      },
+      {
+        "bytes": 3492,
+        "entropy": 4.612,
+        "kind": "mag-container",
+        "md5": "aa85c8168af616428b204f40ef761902",
+        "path": "woodlands_bulk/woodlands_bulk-012.mag",
+        "sha1": "95d5b465f106e93799d5c1f2b81a7263eaefb941"
+      },
+      {
+        "bytes": 3436,
+        "entropy": 4.663,
+        "kind": "mag-container",
+        "md5": "c9942a747abfdaebec4be4628ff1655e",
+        "path": "woodlands_bulk/woodlands_bulk-013.mag",
+        "sha1": "9f067f29daef47899be50745ac30dd95c79d42b8"
+      },
+      {
+        "bytes": 3356,
+        "entropy": 4.655,
+        "kind": "mag-container",
+        "md5": "e5a14110f6ecf8cdaea1c2495a3cc7c6",
+        "path": "woodlands_bulk/woodlands_bulk-014.mag",
+        "sha1": "abcbb5cb04c1d2df12315b20e1adc83f67c6fb4b"
+      },
+      {
+        "bytes": 3340,
+        "entropy": 4.674,
+        "kind": "mag-container",
+        "md5": "355aeb1aaa5b4ca5d5c9d31ae68c6e8c",
+        "path": "woodlands_bulk/woodlands_bulk-015.mag",
+        "sha1": "0b0b8abad3108cf1ba7b52df6a0255558d61f0a7"
+      },
+      {
+        "bytes": 3436,
+        "entropy": 4.676,
+        "kind": "mag-container",
+        "md5": "8e7185d1a32a263ed433e01b50ccce7e",
+        "path": "woodlands_bulk/woodlands_bulk-016.mag",
+        "sha1": "e989b3e48a7b623c9f11bb7e04fde3d2a4c01f7a"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.682,
+        "kind": "mag-container",
+        "md5": "4f9e4e62866aee2c70a681ab0f3758ec",
+        "path": "woodlands_bulk/woodlands_bulk-017.mag",
+        "sha1": "ced012f6cde9397d5ed76d93c427c4fb766a7267"
+      },
+      {
+        "bytes": 3468,
+        "entropy": 4.648,
+        "kind": "mag-container",
+        "md5": "a18ba2a614eadb64f56896167f108efe",
+        "path": "woodlands_bulk/woodlands_bulk-018.mag",
+        "sha1": "84e0cd76e0ed19f152560525e664f336eceef44e"
+      },
+      {
+        "bytes": 3412,
+        "entropy": 4.604,
+        "kind": "mag-container",
+        "md5": "e53448c0926902fef234b4bc3b4de3be",
+        "path": "woodlands_bulk/woodlands_bulk-019.mag",
+        "sha1": "a16f105485d204b3eaee2cf762d405eb14c79408"
+      },
+      {
+        "bytes": 3388,
+        "entropy": 4.643,
+        "kind": "mag-container",
+        "md5": "294d7e59c0ed0e207a3c3af2fdda8aab",
+        "path": "woodlands_bulk/woodlands_bulk-020.mag",
+        "sha1": "6d4312a1e4b8040736752ba827a66f9f7193761f"
+      },
+      {
+        "bytes": 3420,
+        "entropy": 4.664,
+        "kind": "mag-container",
+        "md5": "29588238389ab58c8fe6fb1d522c7d85",
+        "path": "woodlands_bulk/woodlands_bulk-021.mag",
+        "sha1": "033aba8614750b7185d8907857509c5f5d0b8845"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.651,
+        "kind": "mag-container",
+        "md5": "3d90c57db7d54a00d563f2895d2fefe7",
+        "path": "woodlands_bulk/woodlands_bulk-022.mag",
+        "sha1": "69ef059b621b68d3d03846a233dea48ffea67f0d"
+      },
+      {
+        "bytes": 3324,
+        "entropy": 4.63,
+        "kind": "mag-container",
+        "md5": "37950baef2cbacd6041488385d286faf",
+        "path": "woodlands_bulk/woodlands_bulk-023.mag",
+        "sha1": "b865488b939794fa03ba8bc00d25bfb2df830700"
+      },
+      {
+        "bytes": 3388,
+        "entropy": 4.657,
+        "kind": "mag-container",
+        "md5": "e99fb7e97a72f6db7728925562dd3bde",
+        "path": "woodlands_bulk/woodlands_bulk-024.mag",
+        "sha1": "285f36a936266d8966fadd0fbd296354dd0f3c27"
+      },
+      {
+        "bytes": 3308,
+        "entropy": 4.662,
+        "kind": "mag-container",
+        "md5": "fabaa0719d1021d81676e135c54572a9",
+        "path": "woodlands_bulk/woodlands_bulk-025.mag",
+        "sha1": "0de6ae41b08c7ad2d1f490648ad293da2e6c40b8"
+      },
+      {
+        "bytes": 3420,
+        "entropy": 4.684,
+        "kind": "mag-container",
+        "md5": "95384a4a3d30b39994c58aff21929766",
+        "path": "woodlands_bulk/woodlands_bulk-026.mag",
+        "sha1": "f38372088daa49ce0110ad0719aa25eeae55ccec"
+      },
+      {
+        "bytes": 3340,
+        "entropy": 4.646,
+        "kind": "mag-container",
+        "md5": "b27522bb4b128a79f8d9a2903a774337",
+        "path": "woodlands_bulk/woodlands_bulk-027.mag",
+        "sha1": "5d28593b3d1bdf6d3fd649d1f250818a424e4f09"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.664,
+        "kind": "mag-container",
+        "md5": "58286a52523809a758ab694b2e66efe1",
+        "path": "woodlands_bulk/woodlands_bulk-028.mag",
+        "sha1": "e56d20ed6560f8960b0e498dfcd9c609bd2a8227"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.668,
+        "kind": "mag-container",
+        "md5": "9304e82521f9111c62b4f20fe765a9dd",
+        "path": "woodlands_bulk/woodlands_bulk-029.mag",
+        "sha1": "e1fa55a49d2a6bc1510fd58c9cb02a104b925223"
+      },
+      {
+        "bytes": 3436,
+        "entropy": 4.674,
+        "kind": "mag-container",
+        "md5": "b31bcf4caa111748f63f4a73c0e5be8c",
+        "path": "woodlands_bulk/woodlands_bulk-030.mag",
+        "sha1": "94749a658df5e25955a77934bd08eda7760d1dca"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.655,
+        "kind": "mag-container",
+        "md5": "dbfc473bce2669a2e027074c293aa99d",
+        "path": "woodlands_bulk/woodlands_bulk-031.mag",
+        "sha1": "f72143dfc2e1779c52b4f3a8836158a28bf43e17"
+      },
+      {
+        "bytes": 3340,
+        "entropy": 4.652,
+        "kind": "mag-container",
+        "md5": "1c82e23bbdd7eaa2185510c97bd9ac21",
+        "path": "woodlands_bulk/woodlands_bulk-032.mag",
+        "sha1": "a9a454bb22552f0cab82c6a04da538707aa1d2c0"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.657,
+        "kind": "mag-container",
+        "md5": "c60e4acd7e97df3a5828eb02c40ca350",
+        "path": "woodlands_bulk/woodlands_bulk-033.mag",
+        "sha1": "8ff33776c88d48f6915dcbb5c5080cc58f666837"
+      },
+      {
+        "bytes": 3428,
+        "entropy": 4.612,
+        "kind": "mag-container",
+        "md5": "90635c4aa6c74712cedd394c53cb6b03",
+        "path": "woodlands_bulk/woodlands_bulk-034.mag",
+        "sha1": "702c94c0f0d5bc080076f19c88be054e9a22d6ce"
+      },
+      {
+        "bytes": 3324,
+        "entropy": 4.668,
+        "kind": "mag-container",
+        "md5": "c2d2e3ba3071a2f12807bccdff86a3eb",
+        "path": "woodlands_bulk/woodlands_bulk-035.mag",
+        "sha1": "684f667b120ce256ab9dff0bc75b8c960fea26b2"
+      },
+      {
+        "bytes": 3348,
+        "entropy": 4.604,
+        "kind": "mag-container",
+        "md5": "799fe64b58d562407f82b8c938707b77",
+        "path": "woodlands_bulk/woodlands_bulk-036.mag",
+        "sha1": "4e2588ee5c4528b0cc71ae357542878500ae7347"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.64,
+        "kind": "mag-container",
+        "md5": "9041b11f47dc380b47cefede4de84e08",
+        "path": "woodlands_bulk/woodlands_bulk-037.mag",
+        "sha1": "e1d5bd115ca8459e4fe443a0d7945f034bd3d13c"
+      },
+      {
+        "bytes": 3452,
+        "entropy": 4.651,
+        "kind": "mag-container",
+        "md5": "913e136095254ffba9c4fa9855d55bb4",
+        "path": "woodlands_bulk/woodlands_bulk-038.mag",
+        "sha1": "83740a91e257dbf67e5cae7aa50cb18f5bee1659"
+      },
+      {
+        "bytes": 3324,
+        "entropy": 4.643,
+        "kind": "mag-container",
+        "md5": "1d27c66dcd42e01b4e0e789b5bbf53d9",
+        "path": "woodlands_bulk/woodlands_bulk-039.mag",
+        "sha1": "10c9c6d966cd2fbaeb44581184ea64b595db2d71"
+      },
+      {
+        "bytes": 3428,
+        "entropy": 4.598,
+        "kind": "mag-container",
+        "md5": "c49680656b94d86861e815a162e64cdd",
+        "path": "woodlands_bulk/woodlands_bulk-040.mag",
+        "sha1": "fc07dfb728bb29ad6013bb94053a607d5d75213a"
+      },
+      {
+        "bytes": 3396,
+        "entropy": 4.625,
+        "kind": "mag-container",
+        "md5": "a5993e45413bf1715db861e29a49c99c",
+        "path": "woodlands_bulk/woodlands_bulk-041.mag",
+        "sha1": "8d897b0c67d59e370a45eed86eb9eb4ff1a30279"
+      },
+      {
+        "bytes": 3428,
+        "entropy": 4.583,
+        "kind": "mag-container",
+        "md5": "608ca2c44c12be4597226581e383049d",
+        "path": "woodlands_bulk/woodlands_bulk-042.mag",
+        "sha1": "8eec0c186c8ed7fa5377c9fe8e6c0b78915d1f5c"
+      },
+      {
+        "bytes": 3436,
+        "entropy": 4.637,
+        "kind": "mag-container",
+        "md5": "8f4029469002a7e7bdde91ecd2f89dd3",
+        "path": "woodlands_bulk/woodlands_bulk-043.mag",
+        "sha1": "d921766566b761d96686af2b07b0690d25128014"
+      },
+      {
+        "bytes": 3476,
+        "entropy": 4.606,
+        "kind": "mag-container",
+        "md5": "0e5e62f6035294810e9341b1cd627dbc",
+        "path": "woodlands_bulk/woodlands_bulk-044.mag",
+        "sha1": "c25ad66e7eec8ae6f28358fddbe63615c272f1b9"
+      },
+      {
+        "bytes": 3436,
+        "entropy": 4.646,
+        "kind": "mag-container",
+        "md5": "1448630337cb2932e5a530b429b93e57",
+        "path": "woodlands_bulk/woodlands_bulk-045.mag",
+        "sha1": "a202c63785ed5f2a84d9862ad58b93b28f6619f2"
+      },
+      {
+        "bytes": 3484,
+        "entropy": 4.657,
+        "kind": "mag-container",
+        "md5": "80f339e80ea0f9b9bb48607800deb2ca",
+        "path": "woodlands_bulk/woodlands_bulk-046.mag",
+        "sha1": "52e6a0ebdea5129d95640d214abcd7211b4c76c6"
+      },
+      {
+        "bytes": 3324,
+        "entropy": 4.653,
+        "kind": "mag-container",
+        "md5": "083cd983e93f1b3f1cc37a6585939812",
+        "path": "woodlands_bulk/woodlands_bulk-047.mag",
+        "sha1": "1a129929892bc3e416a9cb8152c6134fe3739336"
+      },
+      {
+        "bytes": 3484,
+        "entropy": 4.661,
+        "kind": "mag-container",
+        "md5": "fc4a9fc2224c1dfe5ab8f125e49b7775",
+        "path": "woodlands_bulk/woodlands_bulk-048.mag",
+        "sha1": "5ec15587f584be8a54ee39db4acda771dd324a86"
+      },
+      {
+        "bytes": 3468,
+        "entropy": 4.647,
+        "kind": "mag-container",
+        "md5": "2f8fd3b6afdba6dae38590e47225a3a5",
+        "path": "woodlands_bulk/woodlands_bulk-049.mag",
+        "sha1": "101ca476c732350d86590b3860a39f491e95d243"
+      },
+      {
+        "bytes": 3484,
+        "entropy": 4.64,
+        "kind": "mag-container",
+        "md5": "66c700413a0c809b8cc62fc29ed86660",
+        "path": "woodlands_bulk/woodlands_bulk-050.mag",
+        "sha1": "d8bc2addee148befc10aa8254826b1b1eec2a8aa"
+      },
+      {
+        "bytes": 3460,
+        "entropy": 4.587,
+        "kind": "mag-container",
+        "md5": "8e15fb07181e1e12b7ecd74440208417",
+        "path": "woodlands_bulk/woodlands_bulk-051.mag",
+        "sha1": "ac86da8b85291a1db3ba43de91e7f8721c645b71"
+      },
+      {
+        "bytes": 3388,
+        "entropy": 4.666,
+        "kind": "mag-container",
+        "md5": "31e70acf8564d95efdb41660422041f4",
+        "path": "woodlands_bulk/woodlands_bulk-052.mag",
+        "sha1": "d96a3eb44c6d17cceb9ee799d64f895ef7b60ff0"
+      },
+      {
+        "bytes": 3500,
+        "entropy": 4.69,
+        "kind": "mag-container",
+        "md5": "76de0d2e3d4f256924d9967151eb1473",
+        "path": "woodlands_bulk/woodlands_bulk-053.mag",
+        "sha1": "e1c62b4f1d5e99195be70ad08fbb3be961a197b5"
+      },
+      {
+        "bytes": 3436,
+        "entropy": 4.631,
+        "kind": "mag-container",
+        "md5": "c3170f40b056a02eccfdf3ba2ea4d734",
+        "path": "woodlands_bulk/woodlands_bulk-054.mag",
+        "sha1": "de445e92a9180e8a8a807591a9149592b8196e19"
+      },
+      {
+        "bytes": 3468,
+        "entropy": 4.676,
+        "kind": "mag-container",
+        "md5": "8659de2ecbe493c53b868ef5ee9ab2b2",
+        "path": "woodlands_bulk/woodlands_bulk-055.mag",
+        "sha1": "74f0cced374c614166e4adbe7489d0ae24bb57ea"
+      },
+      {
+        "bytes": 3380,
+        "entropy": 4.612,
+        "kind": "mag-container",
+        "md5": "f00b351f7234f5b7ded76fffdf518c53",
+        "path": "woodlands_bulk/woodlands_bulk-056.mag",
+        "sha1": "0ad542b77b6f385e23abbf6d2646321ccc1aabaa"
+      },
+      {
+        "bytes": 3452,
+        "entropy": 4.64,
+        "kind": "mag-container",
+        "md5": "69d2840980149c8d2837716828edbc0c",
+        "path": "woodlands_bulk/woodlands_bulk-057.mag",
+        "sha1": "69906da9923f9a4e5fa924d2c88f710438484572"
+      },
+      {
+        "bytes": 3308,
+        "entropy": 4.698,
+        "kind": "mag-container",
+        "md5": "c55c29dc932dc6417889ad12bf749c81",
+        "path": "woodlands_bulk/woodlands_bulk-058.mag",
+        "sha1": "1ed09d524f0f978ac27dcc00d22acb247111bf2e"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.664,
+        "kind": "mag-container",
+        "md5": "2a6c94157a7a414c72a2797a921d1a72",
+        "path": "woodlands_bulk/woodlands_bulk-059.mag",
+        "sha1": "6e675247bf194d7bb22c795b306c2cd01b38475c"
+      },
+      {
+        "bytes": 3420,
+        "entropy": 4.63,
+        "kind": "mag-container",
+        "md5": "f679919a01e12a1ac0a6cc7e78bb39b2",
+        "path": "woodlands_bulk/woodlands_bulk-060.mag",
+        "sha1": "98cee1ecf1a2f0cff66387b4fda993d729e40a75"
+      },
+      {
+        "bytes": 3468,
+        "entropy": 4.642,
+        "kind": "mag-container",
+        "md5": "bdab1afec49455f4283fbabf43d8bf14",
+        "path": "woodlands_bulk/woodlands_bulk-061.mag",
+        "sha1": "1e108b23dc0496480ae0b7dcc544eff2cb1a14f2"
+      },
+      {
+        "bytes": 3340,
+        "entropy": 4.658,
+        "kind": "mag-container",
+        "md5": "ad00e2869cd722cbfc1fb5fb2219c955",
+        "path": "woodlands_bulk/woodlands_bulk-062.mag",
+        "sha1": "118fec611c6d370fa24dc09b83b35cd0651ae233"
+      },
+      {
+        "bytes": 3324,
+        "entropy": 4.625,
+        "kind": "mag-container",
+        "md5": "0c5b8a8686ff131c5b59b153c5e29491",
+        "path": "woodlands_bulk/woodlands_bulk-063.mag",
+        "sha1": "9a1ae02e991659b2d4446c129c49be9312c0ceae"
+      },
+      {
+        "bytes": 3356,
+        "entropy": 4.687,
+        "kind": "mag-container",
+        "md5": "dec7e90034d947a15a19202fce8182a7",
+        "path": "woodlands_bulk/woodlands_bulk-064.mag",
+        "sha1": "3cd4781eb4eeefd316f47de5277799bf4f610048"
+      },
+      {
+        "bytes": 3356,
+        "entropy": 4.648,
+        "kind": "mag-container",
+        "md5": "460ae2b49b359d08ab8f32c0e1ab5eb7",
+        "path": "woodlands_bulk/woodlands_bulk-065.mag",
+        "sha1": "62b65a9d5340d2cc281f52ec25a1b3dc966e4802"
+      },
+      {
+        "bytes": 3388,
+        "entropy": 4.654,
+        "kind": "mag-container",
+        "md5": "7a1bc8c0622ffdab97b684a60e930983",
+        "path": "woodlands_bulk/woodlands_bulk-066.mag",
+        "sha1": "20291ad98cad8b32ba83c8a5953730738b6c7e61"
+      },
+      {
+        "bytes": 3332,
+        "entropy": 4.601,
+        "kind": "mag-container",
+        "md5": "f1d697a093d5de0acba87118fb96b438",
+        "path": "woodlands_bulk/woodlands_bulk-067.mag",
+        "sha1": "210fefd0dabf09cb48b56194de589b5a097d7858"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.659,
+        "kind": "mag-container",
+        "md5": "55045005ddec40f0dd9e9d9dafaa9748",
+        "path": "woodlands_bulk/woodlands_bulk-068.mag",
+        "sha1": "c6f343735e10014b30dddc828fa8ffb8c0dd1e9e"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.684,
+        "kind": "mag-container",
+        "md5": "f7151c1820efa78185a3647c5cf8a3e6",
+        "path": "woodlands_bulk/woodlands_bulk-069.mag",
+        "sha1": "9069e29a045454a884e5dda8091813ac137182cd"
+      },
+      {
+        "bytes": 3356,
+        "entropy": 4.626,
+        "kind": "mag-container",
+        "md5": "572b55ffc91e786ac907b07d65f990d6",
+        "path": "woodlands_bulk/woodlands_bulk-070.mag",
+        "sha1": "b3beb76b2eb1ee97e1434a97d803162784a5338b"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.664,
+        "kind": "mag-container",
+        "md5": "561783424382b962ac919b3e0bc156bb",
+        "path": "woodlands_bulk/woodlands_bulk-071.mag",
+        "sha1": "0e1e3be982f44cd6ae88c4aead509ee2342faea5"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.621,
+        "kind": "mag-container",
+        "md5": "6532c80277f7d6899a189ccb710bd848",
+        "path": "woodlands_bulk/woodlands_bulk-072.mag",
+        "sha1": "584b66d553686cfddf08a4efe930af706e92a5c5"
+      },
+      {
+        "bytes": 3452,
+        "entropy": 4.646,
+        "kind": "mag-container",
+        "md5": "5ba69ba9489962a0d435b27d67d1fdc3",
+        "path": "woodlands_bulk/woodlands_bulk-073.mag",
+        "sha1": "5775c7565e799b57b7a21b98b0157de622166872"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.669,
+        "kind": "mag-container",
+        "md5": "8cb4f90dc75ffaca277d77738f45edc6",
+        "path": "woodlands_bulk/woodlands_bulk-074.mag",
+        "sha1": "af9705744dd5739de1d3a56030d03a7a47276194"
+      },
+      {
+        "bytes": 3388,
+        "entropy": 4.646,
+        "kind": "mag-container",
+        "md5": "9009ebe01ae11f186eac24472d10feba",
+        "path": "woodlands_bulk/woodlands_bulk-075.mag",
+        "sha1": "bd1553a81761ac0e0b5f36eec28aec6a96245ee3"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.645,
+        "kind": "mag-container",
+        "md5": "d9eedb28328c9ff25309b4e0b418879b",
+        "path": "woodlands_bulk/woodlands_bulk-076.mag",
+        "sha1": "58b33053d4e9aa0550a91759440cff0f18d8be78"
+      },
+      {
+        "bytes": 3324,
+        "entropy": 4.641,
+        "kind": "mag-container",
+        "md5": "90cd84f460004248782e5697793ebfa0",
+        "path": "woodlands_bulk/woodlands_bulk-077.mag",
+        "sha1": "f833fe98645885e0b6c730ca6bb9767608627648"
+      },
+      {
+        "bytes": 3340,
+        "entropy": 4.676,
+        "kind": "mag-container",
+        "md5": "b1b0c7ee5622f90088989c2bd2c67806",
+        "path": "woodlands_bulk/woodlands_bulk-078.mag",
+        "sha1": "16bd74e268e1eead4d0cab67f7108c7565b89ebd"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.669,
+        "kind": "mag-container",
+        "md5": "383828f5b2c27611baf974fcdf2f88e8",
+        "path": "woodlands_bulk/woodlands_bulk-079.mag",
+        "sha1": "ea7bc7dce8b38d44634f5c1923ca343a26f75bb5"
+      },
+      {
+        "bytes": 3356,
+        "entropy": 4.677,
+        "kind": "mag-container",
+        "md5": "a60e5645f9db6b928fb2550e3e6bbfeb",
+        "path": "woodlands_bulk/woodlands_bulk-080.mag",
+        "sha1": "4c6678fa430a24a668adcc0dd586e00e069c7a43"
+      },
+      {
+        "bytes": 3340,
+        "entropy": 4.662,
+        "kind": "mag-container",
+        "md5": "e35e6959082eb81695616b60b813c349",
+        "path": "woodlands_bulk/woodlands_bulk-081.mag",
+        "sha1": "dcf4b09dbfc7dfa865673ed5956f84662a1103fa"
+      },
+      {
+        "bytes": 3452,
+        "entropy": 4.656,
+        "kind": "mag-container",
+        "md5": "c3070e788af49e538c48d48f0e8e6862",
+        "path": "woodlands_bulk/woodlands_bulk-082.mag",
+        "sha1": "4cd876d9152ae72d9526a69dfc18c200a67a6f75"
+      },
+      {
+        "bytes": 3428,
+        "entropy": 4.598,
+        "kind": "mag-container",
+        "md5": "253e8c39c21a28a308532414c786b1a8",
+        "path": "woodlands_bulk/woodlands_bulk-083.mag",
+        "sha1": "08fb7eaad91f3b864e6e9b2c716b2e34bb7580b1"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.678,
+        "kind": "mag-container",
+        "md5": "02207fdb908c1bc53f60476a000996d7",
+        "path": "woodlands_bulk/woodlands_bulk-084.mag",
+        "sha1": "d01f37f28721d1012603a9850663abc610655d7f"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.677,
+        "kind": "mag-container",
+        "md5": "3e1af06c0fb9c5d30b6dcd0558c76622",
+        "path": "woodlands_bulk/woodlands_bulk-085.mag",
+        "sha1": "e99de763c30931e50081a4139537e4b84ac93349"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.656,
+        "kind": "mag-container",
+        "md5": "978e4d7d00f5973d5b5124c90c9f6520",
+        "path": "woodlands_bulk/woodlands_bulk-086.mag",
+        "sha1": "2a70b808bea3b59d9ea072372aa1fe592eb6b242"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.642,
+        "kind": "mag-container",
+        "md5": "6cf76440b8e2b0d72029b547f453a6a9",
+        "path": "woodlands_bulk/woodlands_bulk-087.mag",
+        "sha1": "e6eb416690f1904894a3b573c10beabfbfc46b4c"
+      },
+      {
+        "bytes": 3356,
+        "entropy": 4.671,
+        "kind": "mag-container",
+        "md5": "75676c9c1cbb5a2795ace46a6889785c",
+        "path": "woodlands_bulk/woodlands_bulk-088.mag",
+        "sha1": "e2aad9903976a2098300a9007078048134c4511e"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.659,
+        "kind": "mag-container",
+        "md5": "4374c7f150b430c3fe0447eca76a26f6",
+        "path": "woodlands_bulk/woodlands_bulk-089.mag",
+        "sha1": "e7ee7fea1469260d98aae77effd16ea9e6f44126"
+      },
+      {
+        "bytes": 3324,
+        "entropy": 4.664,
+        "kind": "mag-container",
+        "md5": "bf6949a509e602c5801b475b38a706fe",
+        "path": "woodlands_bulk/woodlands_bulk-090.mag",
+        "sha1": "4405362088c69df79388e10d1294e684d94db098"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.681,
+        "kind": "mag-container",
+        "md5": "2efb2c41e3f0867c31d89cc654c3c510",
+        "path": "woodlands_bulk/woodlands_bulk-091.mag",
+        "sha1": "37f1245613cd95d9128261ca0e6d0b5a8ef8e3c3"
+      },
+      {
+        "bytes": 3420,
+        "entropy": 4.686,
+        "kind": "mag-container",
+        "md5": "ac56c7ddd10d26853ad4e66b4ee91748",
+        "path": "woodlands_bulk/woodlands_bulk-092.mag",
+        "sha1": "13d0b420603527dc7316fa73b8a1c4b7acd49a4f"
+      },
+      {
+        "bytes": 3388,
+        "entropy": 4.651,
+        "kind": "mag-container",
+        "md5": "7c6eadc3efb1b4f19699f8ecfb56b644",
+        "path": "woodlands_bulk/woodlands_bulk-093.mag",
+        "sha1": "f759c4420cb9ec532888cf59ad225f06fe5b6a37"
+      },
+      {
+        "bytes": 3364,
+        "entropy": 4.598,
+        "kind": "mag-container",
+        "md5": "2c86e496b1c9a8c9cfb2eb883441ff5e",
+        "path": "woodlands_bulk/woodlands_bulk-094.mag",
+        "sha1": "f3b00dcce8aa5c58fe9d8c66b9f382fe2adf8e2d"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.648,
+        "kind": "mag-container",
+        "md5": "ec056412c9cf7546e6f11fd5e7db47d2",
+        "path": "woodlands_bulk/woodlands_bulk-095.mag",
+        "sha1": "a573c1777548b92e67d61d8aca5369385738fc9c"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.667,
+        "kind": "mag-container",
+        "md5": "f54539cb4029d77cbb4239eb979f521c",
+        "path": "woodlands_bulk/woodlands_bulk-096.mag",
+        "sha1": "3eb2b31e8c5f01b6d3908ab33833413b01cdc5e9"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.66,
+        "kind": "mag-container",
+        "md5": "d31ae506c27c69214730fcb3b942435b",
+        "path": "woodlands_bulk/woodlands_bulk-097.mag",
+        "sha1": "43eb9598efcb9d0375096dd52767b20a24f99cb4"
+      },
+      {
+        "bytes": 3332,
+        "entropy": 4.578,
+        "kind": "mag-container",
+        "md5": "ee4699c57ed7fe7e41b473d920c860dc",
+        "path": "woodlands_bulk/woodlands_bulk-098.mag",
+        "sha1": "2237ed09b5976efe2fbd7e95b514cf9f98b899e7"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.654,
+        "kind": "mag-container",
+        "md5": "cf2b166e6b530b34bf2a57c5ad1d8686",
+        "path": "woodlands_bulk/woodlands_bulk-099.mag",
+        "sha1": "cb5092ee604d50e5f973fd85191486d0a7f23a7a"
+      },
+      {
+        "bytes": 3340,
+        "entropy": 4.657,
+        "kind": "mag-container",
+        "md5": "adf10d848c7dfe5c9f82a77d5190aab1",
+        "path": "woodlands_bulk/woodlands_bulk-100.mag",
+        "sha1": "93aec944db80ca6261dcd2f6ced3c240dac4f457"
+      },
+      {
+        "bytes": 3364,
+        "entropy": 4.617,
+        "kind": "mag-container",
+        "md5": "e50281a885b0762d90a8bf84d519c444",
+        "path": "woodlands_bulk/woodlands_bulk-101.mag",
+        "sha1": "e8dbb91b9aab559e5c6ee9d0473b980dc9e99eee"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.649,
+        "kind": "mag-container",
+        "md5": "2e7229876e3c59c8376f3347f7484811",
+        "path": "woodlands_bulk/woodlands_bulk-102.mag",
+        "sha1": "c6c839e3835ba7dc120eb5e8b341d120139e7ed3"
+      },
+      {
+        "bytes": 3420,
+        "entropy": 4.643,
+        "kind": "mag-container",
+        "md5": "7b3384aa71cb42ccb2f2cf16db30a007",
+        "path": "woodlands_bulk/woodlands_bulk-103.mag",
+        "sha1": "8672b409cad813ed4cefd080f41c9f4ffc16138b"
+      },
+      {
+        "bytes": 3388,
+        "entropy": 4.637,
+        "kind": "mag-container",
+        "md5": "7bebf1b30f4b6b94201d44de4af63568",
+        "path": "woodlands_bulk/woodlands_bulk-104.mag",
+        "sha1": "26cfc4bba04c008381cfd249de05fa5dcb1216da"
+      },
+      {
+        "bytes": 3340,
+        "entropy": 4.642,
+        "kind": "mag-container",
+        "md5": "178f981e06c4ced1c3735366ab840b62",
+        "path": "woodlands_bulk/woodlands_bulk-105.mag",
+        "sha1": "f2cc177b8817038a41825b81466464c9d7c27a33"
+      },
+      {
+        "bytes": 3324,
+        "entropy": 4.643,
+        "kind": "mag-container",
+        "md5": "011912063c34b0b3d96a27dff8092a74",
+        "path": "woodlands_bulk/woodlands_bulk-106.mag",
+        "sha1": "928739e6fffeba573c52528481610d07dae0d4f8"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.652,
+        "kind": "mag-container",
+        "md5": "16d5cf543a47c22a522c70c4eb648747",
+        "path": "woodlands_bulk/woodlands_bulk-107.mag",
+        "sha1": "96a5ab97ac6a28b63ae94a22d0018aaf51cee94a"
+      },
+      {
+        "bytes": 3324,
+        "entropy": 4.643,
+        "kind": "mag-container",
+        "md5": "d09b82ec95ea44b6c82c53be62827130",
+        "path": "woodlands_bulk/woodlands_bulk-108.mag",
+        "sha1": "e1fddc050898b43607c8ff1c67642b9a30a4880d"
+      },
+      {
+        "bytes": 3300,
+        "entropy": 4.595,
+        "kind": "mag-container",
+        "md5": "764108db99aaba12792d885ca5042ff2",
+        "path": "woodlands_bulk/woodlands_bulk-109.mag",
+        "sha1": "8e45a00dc80b39d6090917858dac740df3713a3a"
+      },
+      {
+        "bytes": 3364,
+        "entropy": 4.569,
+        "kind": "mag-container",
+        "md5": "567fb3e9ba0bf811613df8f54c8e220c",
+        "path": "woodlands_bulk/woodlands_bulk-110.mag",
+        "sha1": "905f1aa74317c60c38e19d323b01f7ed760f9879"
+      },
+      {
+        "bytes": 3476,
+        "entropy": 4.607,
+        "kind": "mag-container",
+        "md5": "3fcd808c04c0c7ea43978c4f0718c969",
+        "path": "woodlands_bulk/woodlands_bulk-111.mag",
+        "sha1": "82eb633f3328a64c358615c36146c58c6322c3a4"
+      },
+      {
+        "bytes": 3468,
+        "entropy": 4.655,
+        "kind": "mag-container",
+        "md5": "49bc1d95feb69734b86a02eca8256320",
+        "path": "woodlands_bulk/woodlands_bulk-112.mag",
+        "sha1": "f0231c141cfbfb0834b2dd07c95a92ee7cc52124"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.662,
+        "kind": "mag-container",
+        "md5": "4a43d86a972888ac4c89f168ce214d85",
+        "path": "woodlands_bulk/woodlands_bulk-113.mag",
+        "sha1": "ec395302d626d30ee31bfd7cc691b6d4af0ca37d"
+      },
+      {
+        "bytes": 3516,
+        "entropy": 4.687,
+        "kind": "mag-container",
+        "md5": "1ab24b4afaeedd44f9a907675f945cc2",
+        "path": "woodlands_bulk/woodlands_bulk-114.mag",
+        "sha1": "1ff7e9c9c2c324bf154ca84afcb797af10de61bc"
+      },
+      {
+        "bytes": 3484,
+        "entropy": 4.664,
+        "kind": "mag-container",
+        "md5": "116e7cfbca0adbf6c334abe8db7ffbaf",
+        "path": "woodlands_bulk/woodlands_bulk-115.mag",
+        "sha1": "289d38424b400254e32fb4e84155d89a8227a5cd"
+      },
+      {
+        "bytes": 3292,
+        "entropy": 4.671,
+        "kind": "mag-container",
+        "md5": "b54111f44c61677387550ac6affaed0c",
+        "path": "woodlands_bulk/woodlands_bulk-116.mag",
+        "sha1": "cbac8b5e93c217334dfa27adcced96daef37c633"
+      },
+      {
+        "bytes": 3364,
+        "entropy": 4.61,
+        "kind": "mag-container",
+        "md5": "8f52fd245372e6fc45800b57da1df9d6",
+        "path": "woodlands_bulk/woodlands_bulk-117.mag",
+        "sha1": "45a1126ec7207cca9fc5a60d703fbbbcf01e1d55"
+      },
+      {
+        "bytes": 3388,
+        "entropy": 4.669,
+        "kind": "mag-container",
+        "md5": "91f97ea2962c558649b21a3cdf6aadb8",
+        "path": "woodlands_bulk/woodlands_bulk-118.mag",
+        "sha1": "e38e1057a161031cb9e252d23932201f235727e1"
+      },
+      {
+        "bytes": 3388,
+        "entropy": 4.657,
+        "kind": "mag-container",
+        "md5": "89aafddb0c55d3aad19f79b97345f766",
+        "path": "woodlands_bulk/woodlands_bulk-119.mag",
+        "sha1": "a2c895d32189d20620554cdfad0e275d47315be6"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.656,
+        "kind": "mag-container",
+        "md5": "a602d0de98f388ffe5e90e8168dfdb97",
+        "path": "woodlands_bulk/woodlands_bulk-120.mag",
+        "sha1": "a7ac5439878d3d1a235297b59596fc8e1c6a7771"
+      },
+      {
+        "bytes": 3300,
+        "entropy": 4.59,
+        "kind": "mag-container",
+        "md5": "0b5d41a59e885302bde680f4e29a8dab",
+        "path": "woodlands_bulk/woodlands_bulk-121.mag",
+        "sha1": "0c5e02164a899af72d5bdbff7f984279e924dbfd"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.657,
+        "kind": "mag-container",
+        "md5": "96f54c5e6b48e9244ece5c115b3a0bf9",
+        "path": "woodlands_bulk/woodlands_bulk-122.mag",
+        "sha1": "66807adc757945f4babd072d5110c9907d10d054"
+      },
+      {
+        "bytes": 3332,
+        "entropy": 4.584,
+        "kind": "mag-container",
+        "md5": "bb28af92445c357c3a76b691168e8d14",
+        "path": "woodlands_bulk/woodlands_bulk-123.mag",
+        "sha1": "38d36892b065d5af8e4bae22343659ce1362e412"
+      },
+      {
+        "bytes": 3396,
+        "entropy": 4.607,
+        "kind": "mag-container",
+        "md5": "f595a3b72fb76a715f98ce9e4abfd0b0",
+        "path": "woodlands_bulk/woodlands_bulk-124.mag",
+        "sha1": "087deaacec6d6bf90d812c2ac43370ebe50db28c"
+      },
+      {
+        "bytes": 3356,
+        "entropy": 4.65,
+        "kind": "mag-container",
+        "md5": "1c77f3e07557cf9cc6423f5ca82598ca",
+        "path": "woodlands_bulk/woodlands_bulk-125.mag",
+        "sha1": "2434295250813b5dd38245bb8087fd90797289e7"
+      },
+      {
+        "bytes": 3436,
+        "entropy": 4.674,
+        "kind": "mag-container",
+        "md5": "da6492875537249272ecc83a927d503f",
+        "path": "woodlands_bulk/woodlands_bulk-126.mag",
+        "sha1": "3c8ef2aa3249e6ae42e2e7fefae43b32d52c2ad2"
+      },
+      {
+        "bytes": 3356,
+        "entropy": 4.672,
+        "kind": "mag-container",
+        "md5": "2265c51de09f1ddc9f9e2e0dae29d073",
+        "path": "woodlands_bulk/woodlands_bulk-127.mag",
+        "sha1": "8c0e07626d3197e000d79e6c35385af5ab7ce950"
+      },
+      {
+        "bytes": 3356,
+        "entropy": 4.663,
+        "kind": "mag-container",
+        "md5": "7f4de92bbbefee43dabce52142bc6c05",
+        "path": "woodlands_bulk/woodlands_bulk-128.mag",
+        "sha1": "c4325a50527fe5001d343f11c56ec6179f0246c9"
+      },
+      {
+        "bytes": 3404,
+        "entropy": 4.664,
+        "kind": "mag-container",
+        "md5": "dc4c5dadc34b6bf9d9455a91052fa21e",
+        "path": "woodlands_bulk/woodlands_bulk-129.mag",
+        "sha1": "16fd007bfcbf800c7766c5fa51308bdb4ddf412d"
+      },
+      {
+        "bytes": 3364,
+        "entropy": 4.635,
+        "kind": "mag-container",
+        "md5": "b718e0bafabd330f200354858b6df9f6",
+        "path": "woodlands_bulk/woodlands_bulk-130.mag",
+        "sha1": "b3c1d74e56a5eed012380dec5344bef186263ae3"
+      },
+      {
+        "bytes": 3356,
+        "entropy": 4.667,
+        "kind": "mag-container",
+        "md5": "74cc3c9c5adca3935cd1b82dc3f051fc",
+        "path": "woodlands_bulk/woodlands_bulk-131.mag",
+        "sha1": "c34a7a1e76b84237069fe9e657308bb76e8bd9d4"
+      },
+      {
+        "bytes": 3452,
+        "entropy": 4.687,
+        "kind": "mag-container",
+        "md5": "007b577d45a46edf7f25e08495ae8b88",
+        "path": "woodlands_bulk/woodlands_bulk-132.mag",
+        "sha1": "e0679b3cd52767b1638f5f3a85317d3872818c87"
+      },
+      {
+        "bytes": 3516,
+        "entropy": 4.647,
+        "kind": "mag-container",
+        "md5": "472e66c73f260948ea754bd1d6fa5420",
+        "path": "woodlands_bulk/woodlands_bulk-133.mag",
+        "sha1": "4dd3fbd883420d1e68c07ac660ba8145a825cfff"
+      },
+      {
+        "bytes": 3468,
+        "entropy": 4.67,
+        "kind": "mag-container",
+        "md5": "96315f2b1faa35b0df6ece840bee19d0",
+        "path": "woodlands_bulk/woodlands_bulk-134.mag",
+        "sha1": "413657e9a3078285dc2c52d2ee2077f976214e33"
+      },
+      {
+        "bytes": 3468,
+        "entropy": 4.673,
+        "kind": "mag-container",
+        "md5": "a2756fc231516ecc541a0fd0801facba",
+        "path": "woodlands_bulk/woodlands_bulk-135.mag",
+        "sha1": "982ec594e1a176733292411c5604d0fa6f154358"
+      },
+      {
+        "bytes": 3332,
+        "entropy": 4.596,
+        "kind": "mag-container",
+        "md5": "3ae26874e4a9fcf8f37229247d498178",
+        "path": "woodlands_bulk/woodlands_bulk-136.mag",
+        "sha1": "fa603a844a69ba39cc47e6e994bc63b25bbcee22"
+      },
+      {
+        "bytes": 3460,
+        "entropy": 4.636,
+        "kind": "mag-container",
+        "md5": "7eb269214caccb5ceb7eb9199d7dfe15",
+        "path": "woodlands_bulk/woodlands_bulk-137.mag",
+        "sha1": "700f8fd944f557f5a31810bd292fe86665be73c2"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.659,
+        "kind": "mag-container",
+        "md5": "b4482f03f3f18f31a95b2ff01df6877a",
+        "path": "woodlands_bulk/woodlands_bulk-138.mag",
+        "sha1": "e0e8a29ec5d6930c49774ce88381509cd4a870b6"
+      },
+      {
+        "bytes": 3500,
+        "entropy": 4.676,
+        "kind": "mag-container",
+        "md5": "18af13dc03fde27245a742bd2a652e44",
+        "path": "woodlands_bulk/woodlands_bulk-139.mag",
+        "sha1": "b83207e865ba606d8d6e4c6fa9fccb414101f41c"
+      },
+      {
+        "bytes": 3372,
+        "entropy": 4.673,
+        "kind": "mag-container",
+        "md5": "72bdc6c314464aa6c7cd2443403fc4f2",
+        "path": "woodlands_bulk/woodlands_bulk-140.mag",
+        "sha1": "ea57f36ea146754b5dca4f157e6a26972e298497"
+      },
+      {
+        "bytes": 3420,
+        "entropy": 4.696,
+        "kind": "mag-container",
+        "md5": "db5941ad8419627f264b2d2bc5540f59",
+        "path": "woodlands_bulk/woodlands_bulk-141.mag",
+        "sha1": "975e6b35fc219524f282a661a8ab71de725db41e"
+      },
+      {
+        "bytes": 28341,
+        "entropy": 1.033,
+        "kind": "text",
+        "md5": "31b44e261231da21bb9989ce0872aa35",
+        "path": "woodlands_bulk/woodlands_data.txt",
+        "sha1": "1e7d45ae1e65d08da1cde99ba2d614daeda5f198"
+      },
+      {
+        "bytes": 9089,
+        "entropy": 3.414,
+        "kind": "text",
+        "md5": "81f85afe4821bd58b5321c7c423248d6",
+        "path": "woodlands_bulk/woodlands_ext.txt",
+        "sha1": "d4fc0b2bc82986abe40a2e42385018407a9eaea5"
+      },
+      {
+        "bytes": 603,
+        "entropy": 1.013,
+        "kind": "text",
+        "md5": "19e84f88a1a6c02f4a89422fdaf000af",
+        "path": "woodlands_paid/woodlands_data.txt",
+        "sha1": "d296e10ea2f857f5d3b7a2101d4445e663bfdbd4"
+      },
+      {
+        "bytes": 261,
+        "entropy": 3.983,
+        "kind": "text",
+        "md5": "b23d3b25ec8bd6edf70cbcdf23545ee9",
+        "path": "woodlands_paid/woodlands_ext.txt",
+        "sha1": "69b3ab33e5004f56f24826d83d987f25bdc2b1be"
+      },
+      {
+        "bytes": 3468,
+        "entropy": 4.611,
+        "kind": "mag-container",
+        "md5": "868bf0ff8d8efce506b848f66151d308",
+        "path": "woodlands_paid/woodlands_save-001.mag",
+        "sha1": "7d518f62d9f654af1d01c90d8c7654561453fd74"
+      },
+      {
+        "bytes": 3436,
+        "entropy": 4.617,
+        "kind": "mag-container",
+        "md5": "f45d7ac136517991bd0088d8fc7e4e11",
+        "path": "woodlands_paid/woodlands_save-002.mag",
+        "sha1": "9a18d085bd0fe8823dd6186ae3bc1953ba3d6620"
+      },
+      {
+        "bytes": 3500,
+        "entropy": 4.644,
+        "kind": "mag-container",
+        "md5": "a5f0ca2710758a775f09d5c375e321e3",
+        "path": "woodlands_paid/woodlands_save-003.mag",
+        "sha1": "ff0bfead7b17ecf7b3a6f519b32a2ca264f5cc39"
+      }
+    ],
+    "rehosted": false,
+    "repo": "s3c/PyMAKInt",
+    "why": "no license file upstream \u2014 the tree is hashed and analysed here, not copied into the repository"
+  },
+  "wave": 8
+}

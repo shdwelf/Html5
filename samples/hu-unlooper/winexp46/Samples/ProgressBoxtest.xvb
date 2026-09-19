@@ -1,0 +1,12 @@
+'
+' Sc.ProgressBox Test
+'
+Sub Main()
+    For CurrStep = 1 to 100
+        Call Sc.ProgressBox("This is Step " & CurrStep, CurrStep, 100, "The Dialog Caption")
+        Call Sc.Delay(50)
+        Sc.Print "This is Step " & CurrStep & vbcr
+    Next
+    Call Sc.ProgressBox("", 0, 100)   'close the dialog
+    Sc.MsgBox "Done", vbInformation
+End Sub

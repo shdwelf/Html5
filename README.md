@@ -524,3 +524,81 @@ public/book-sw.js          micro_httpd ported to a Service Worker
 Seeds are generated in the browser for entertainment and education. **Do not store
 real funds in them.** The vault is AES-256 encrypted with your Ensō ID, but the
 plaintext export writes mnemonics in the clear.
+
+## Project Y — Los Alamos Badge Archive
+
+Open [`los-alamos.html`](los-alamos.html) through any static HTTP server, or run:
+
+```bash
+python scripts/serve-los-alamos.py   # port 5173; root redirects to the archive
+node --test tests/los-alamos.test.mjs
+```
+
+A separate HTML5 app with locally vendored Three.js; the existing SITE-K homepage and workbench
+build are unchanged. Features: responsive gallery/list, surname A–Z index, search,
+natural badge-number sorting (unknown numbers last), record/source dialog,
+locally saved favorites, filtered CSV export, and paginated Commons import.
+
+Seven researched photographs and manually transcribed identifiers are bundled in
+`assets/los-alamos/`. A **1,404-file A–Z source index** is now bundled in
+`data/project-y/`, so the complete snapshot is searchable on startup. The default
+contact-sheet view supports 100, 250, or all files, with card/list alternatives.
+Each record links to its exact source filename. Remote photographs still require
+internet access. The optional refresh button checks all 26 Commons surname
+categories; failed updates never discard the available bundled index. Two failed requests stop a batch to avoid prolonged waits
+when offline. Online additions remain in memory; the bundled snapshot loads every session and favorites persist when browser
+storage is available. Fonts are optional network enhancements with local fallbacks.
+
+**Historical limits:** the public image collection is not a complete Manhattan
+Project personnel roster. It includes alternate scans and approximately 1943–1947
+material, including postwar photographs. Names imported from filenames may contain
+errors. No employee arrival order, security clearance, badge color, or unknown
+badge number is invented. The source link on each record supplies context and
+rights information. The export contains the current filtered ordering, across all
+pages. No original photographs were generated with AI.
+
+Research continuation: [Nicholas Metropolis — badge G-15](docs/los-alamos-metropolis.md), with a sourced wartime/postwar profile available in his badge detail panel.
+
+Next researched record: [Stanley P. Frankel — badge O-2](docs/los-alamos-frankel.md), including alternate-photo uncertainty and the 1945–1946 ENIAC chronology.
+
+### Three.js historical sites and VRML
+
+The **Explore sites · 3D** section (`los-alamos.html#sites`) now includes Los Alamos,
+Hanford (B Reactor exterior vignette), and the Trinity test site. Locally vendored
+Three.js/OrbitControls power orbit, pan, zoom, top/reset views, and wireframe.
+Each site has a downloadable VRML 2.0 `.wrl` scene under `models/project-y/`.
+These are explicitly schematic exterior exhibits, not surveyed reconstructions,
+current facility maps, engineering plans, or nuclear simulations. Trinity's ranch
+house is a labeled displaced inset. No badge-holder assignments are inferred.
+
+See [site research, sources, interpretation limits, and validation](docs/project-y-sites.md).
+Regenerate exports with `node scripts/build-project-y-models.mjs` and run:
+
+```sh
+node --test tests/los-alamos.test.mjs tests/project-y-sites.test.mjs
+# Optional real-browser checks against the running preview:
+# npm install --no-save --package-lock=false puppeteer-core @sparticuz/chromium
+node tests/project-y-sites-browser.mjs
+```
+
+Additional contextual source: the Bulletin of the Atomic Scientists feature
+[“The faces that made the Bomb”](https://thebulletin.org/multimedia/the-faces-that-made-the-bomb/)
+(Bulletin Staff, June 19, 2013) is linked in a research spotlight. See the
+[source assessment](docs/los-alamos-bulletin.md) for extraction limits and research
+priorities; no unseen gallery captions or badge records were inferred.
+
+### Full archive showcase inspired by the montage
+
+The user-supplied Bulletin montage is now included as a credited, reduced reference
+with enlargement controls. It is not used for automated face identification. The
+interactive montage is independently built from **1,404 Commons image-file records**
+across all 26 queried surname categories; alternate scans are separate files, not
+unique people. Seven records retain researched badge identifiers. Other labels
+come from source filenames and are explicitly unverified. See
+[full provenance, counts, and limitations](docs/project-y-catalog.md).
+
+```sh
+node scripts/build-project-y-catalog.mjs
+node --test tests/project-y-catalog.test.mjs
+node tests/project-y-catalog-browser.mjs
+```

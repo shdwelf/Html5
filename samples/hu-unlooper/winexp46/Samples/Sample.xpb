@@ -1,0 +1,7 @@
+; This is a WinExplorer Batch File.
+; Simply list the script files you want to
+; run in the order you wish to run them in. 
+
+irdread.xpl    ; General CAM info
+ppvlist.xpl    ; Dump PPV Info
+fuse.xpl       ; Get Fuse Info

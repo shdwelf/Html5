@@ -19,3 +19,4 @@ sim/transcript.*.txt
 sim/transcript.diff
 
 __pycache__/
+data/

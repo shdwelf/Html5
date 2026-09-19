@@ -1,0 +1,8 @@
+'
+' Get Keys Example
+'
+Sub Main()
+    Sc.Print VbCrlf
+    Sc.Print "Challenge Key = " & Sc.ChallengeKey & VbCr
+    Sc.Print "UnlockKey Key = " & Sc.UnlockKey & vbCr
+End Sub

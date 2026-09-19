@@ -4,6 +4,7 @@ import { resolveSite, CATALOG } from "./site-id.js";
 import { loadWeather, ecosystemFromWx, wxHudBody, wxChipText } from "./wx-live.js";
 import { open as wmOpen, nudge as wmNudge, toggle as wmToggle, isPhone as wmPhone } from "./wm.js";
 import { bindSfxPanel, autoPack, downloadWrl, downloadSfx, readLayers } from "./vrml-pack.js";
+import { initPipDeck } from "./pip-deck.js";
 
 const SITE_ID = resolveSite();
 
@@ -93,6 +94,9 @@ const state = {
   hoverLon: -91.1,
   hoverLat: 30.5,
 };
+
+/** 4Dwm PIP deck: one floating 990 PIP per card. Set up in main(). */
+let deck = null;
 
 let scene, camera, renderer, controls, raycaster, pointer;
 let terrain, stormRing, stormFence, stormDisk;
@@ -589,17 +593,10 @@ function sparkline(filings) {
     else ctx.lineTo(x, y);
   });
   ctx.stroke();
-  return `<img id="spark" alt="990 revenue" src="${cv.toDataURL("image/png")}" />`;
+  return `<img class="spark" alt="990 revenue" src="${cv.toDataURL("image/png")}" />`;
 }
 
-function openPip(node, opts = {}) {
-  state.selectedNode = node;
-  $("rightDock")?.classList.add("open");
-  if (!node) {
-    $("pipBody").innerHTML =
-      '<p class="note">Select a sanctuary node (religious headquarters) to open Form 990 history and contact. Figures are rounded public extracts — not IRS transcripts.</p>';
-    return;
-  }
+function pipNodeHtml(node) {
   const rows = node.filings
     .map(
       (f) =>
@@ -608,7 +605,7 @@ function openPip(node, opts = {}) {
         )}</td><td class="num">${money(f.ast)}</td><td>${f.status}</td></tr>`
     )
     .join("");
-  $("pipBody").innerHTML = `
+  return `
     <h2>${node.name}</h2>
     <div class="rite">${node.short} · ${node.rite} · ${node.ntee}</div>
     <div class="kv">
@@ -627,6 +624,17 @@ function openPip(node, opts = {}) {
     </table>
     <p class="note">${node.note} Compiled for ${SITE.code} simulation. Not an IRS transcript.</p>
   `;
+}
+
+function openPip(node, opts = {}) {
+  state.selectedNode = node;
+  $("rightDock")?.classList.add("open");
+  if (!node) {
+    $("pipBody").innerHTML =
+      '<p class="note">Select a sanctuary node (religious headquarters) to open Form 990 history and contact. Figures are rounded public extracts — not IRS transcripts.</p>';
+    return;
+  }
+  $("pipBody").innerHTML = pipNodeHtml(node);
   logLine("sys", `open  /990/${node.id}   ${node.short}   EIN ${node.ein}`);
   beep(880, 0.06, 0.025, "triangle");
   if (opts.force || !wmPhone()) wmOpen("pip");
@@ -732,8 +740,29 @@ function execCommand(raw) {
     wmOpen("syslog");
     logLine(
       "ok",
-      `cmds: list · nodes · open <name> · track <org> · fly <tract> · storm · wx · sfx · vrml · wm · site ww|dalton|iv|stx|la · pause · access security`
+      `cmds: list · nodes · open <name> · deck · pip all · pip <name> · pips tile|close · track <org> · fly <tract> · storm · wx · sfx · vrml · wm · site ww|dalton|iv|stx|la · pause · access security`
     );
+  } else if (c === "deck" || c === "cards") {
+    wmOpen("deck");
+    logLine("ok", "deck  one card per node — PIP loads its 990 in its own 4Dwm window");
+  } else if (c === "pip" || c === "pips") {
+    const a = arg.toLowerCase();
+    if (!a) {
+      $("rightDock")?.classList.add("open");
+      wmToggle("pip");
+    } else if (a === "all" || a === "each" || a === "deck") {
+      deck?.spawnAll();
+    } else if (a === "tile" || a === "arrange") {
+      deck?.tileAll();
+    } else if (a === "close" || a === "clear" || a === "none") {
+      deck?.closeAll();
+    } else {
+      const node = findSanctuary(arg);
+      if (node) {
+        deck?.spawn(node);
+        logLine("ok", `pip loaded for card ${node.short}`);
+      } else logLine("bad", `no card matches: ${arg}`);
+    }
   } else if (c === "list") {
     wmOpen("syslog");
     PARISHES.forEach((p) => {
@@ -911,6 +940,7 @@ function tick(now) {
   }
   updateStorm(state.time);
   renderSectors(state.time);
+  deck?.refresh(state.time);
   if ((now / 250) % 1 < 0.5 || !state._miniAt || now - state._miniAt > 400) {
     renderMinimap(state.time);
     state._miniAt = now;
@@ -1058,7 +1088,26 @@ async function main() {
   dem = buildDem(fine ? (SITE.id === "iv" ? 220 : 200) : 140, fine ? (SITE.id === "iv" ? 110 : 140) : 88);
   initThree();
   bindUi();
+  deck = initPipDeck({
+    cards: $("deckCards"),
+    layer: $("pipLayer"),
+    bar: $("pipBar"),
+    nodes: SANCTUARIES,
+    money,
+    status: (node, t) => parishStatus(node, t),
+    renderBody: (node) => pipNodeHtml(node),
+    phone: () => wmPhone(),
+    log: (lvl, msg) => logLine(lvl, msg),
+    beep,
+    inspect: (node) => {
+      const p = parishByName(node.parish);
+      if (p) selectParish(p.index);
+      flyTo(node.lon, node.lat, 7);
+      openPip(node, { force: true });
+    },
+  });
   logLine("sys", `${SITE.code} control online.  type HELP.  source ${SITE.source}`);
+  logLine("sys", `4dwm  deck holds ${SANCTUARIES.length} cards — PIP ALL loads one pip per card`);
   bootWx(false);
   bindSfxPanel(gridPackSource());
   requestAnimationFrame(tick);

@@ -23,6 +23,9 @@
   <div class="labels ui-grid" id="labels"></div>
   <iframe id="keyframe" title="Art Studio — Enso Forge, key viewer, validator, and Ghidra lab"></iframe>
   <div id="wmCatch" class="wm-catch" hidden></div>
+  <div id="pipLayer" class="ui-grid" aria-label="4Dwm PIP windows">
+    <div id="pipBar" class="pip-bar" aria-label="Iconified PIPs"></div>
+  </div>
 
   <div id="boot">
     <img src="./img/site-x-badge.png" alt="SITE-K" />
@@ -65,6 +68,15 @@
       <div class="win-body wx-panel" id="gridWx">
         <div class="body">probing NOAA / Open-Meteo / WU…</div>
       </div>
+    </section>
+    <section class="motif" data-win="deck" data-win-label="NODE DECK" data-win-short="DECK">
+      <div class="title">NODE DECK <i id="deckCount">—</i></div>
+      <div class="deck-actions">
+        <button type="button" id="btnDeckAll" class="hot" title="Load a floating PIP for every card">PIP ALL</button>
+        <button type="button" id="btnDeckTile" title="Tile the open PIPs">TILE</button>
+        <button type="button" id="btnDeckClear" title="Close all PIPs">CLEAR</button>
+      </div>
+      <div id="deckCards" class="deck-cards"></div>
     </section>
   </aside>
 
@@ -142,6 +154,7 @@
       <a data-mode="terrarium" href="#terrarium">TERRARIUM</a>
       <a data-mode="studio" href="#studio">ART STUDIO</a>
       <a data-mode="ghidra" href="#ghidra">GHIDRA LAB</a>
+      <a href="./casefiles.html">CASEFILES</a>
       <a href="./glendora.html">GLENDORA</a>
         <a class="ext" href="./calc.html">CALC PORT</a>
     </div>
