@@ -29,7 +29,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Fetch
-        run: python3 .arena-archive/fetch.py 2>&1 | tee .arena-archive/fetch.log
+        # NOTE: fetch.py writes .arena-archive/fetch.log itself at the end of a
+        # complete run. Do NOT `| tee` stdout into the same path: tee truncates
+        # it at step start, so a killed run used to commit an EMPTY log over the
+        # previous good one (plus partial files and a stale PROVENANCE.md).
+        # Stdout stays visible in the run log; the file has exactly one writer.
+        run: python3 .arena-archive/fetch.py
 
       - name: Commit what came back
         if: always()
