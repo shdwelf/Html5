@@ -59,6 +59,26 @@ stratified (by first letter, seed 42) sample of the remaining issued NPIs
 are empty in this profile; NPI lookups for NPIs outside the sample return
 "not in this dataset" by design.
 
+### Full-data access audit (2026-09-19)
+
+The official 1.1 GB zip could not be fetched from the sandbox; every route
+was tried:
+
+| Route | Result |
+| --- | --- |
+| direct `curl` to `download.cms.gov` | blocked (connection reset) |
+| CDN (`jsdelivr`, `unpkg`), `raw.githack`, `gitlab.com`, `*.github.io` | blocked |
+| CORS relays (`allorigins`, `corsproxy.io`), `r.jina.ai` reader | blocked |
+| `web.archive.org` | blocked |
+| Tor gateway | N/A — `cms.gov` has no `.onion` presence; exit relays only route `.onion` |
+| `L99` gateway | unreachable from sandbox egress |
+| **platform `fetch_page` tool** | **worked** — reached the live `NPI_Files.html` page, confirming current file `NPPES_Data_Dissemination_September_2026_V2.zip` (1,105.79 MB, 2026-09-14) |
+| GitHub (git protocol, reachable) | full mirror hunt: no raw-CSV commits exist (code search for the official column headers = 0 hits), LFS objects blocked; best reachable datasets = HHA-507-2025 (used above) + `Lukembinc/NPPES` (state-level dental subsets only) |
+| npm / PyPI | no package bundles the full registry |
+
+So the `--cms-zip` path below remains the full-rebuild route: download the
+zip on a machine with normal egress, then run the build locally.
+
 ## Why not just ship the CSV?
 
 The raw file is a quoted CSV with 329+ columns per provider. Earl Glynn's
