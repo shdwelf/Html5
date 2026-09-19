@@ -7,7 +7,6 @@ import {
   ROADS,
   buildDem,
   buildContours,
-  drapeLine,
   hypsometric,
   project,
   sampleDem,
@@ -45,7 +44,7 @@ const LOCAL_MEMORY_POINTER = [
   [-117.8445, 34.186],
 ];
 
-const MARKERS = [
+const BASE_MARKERS = [
   {
     id: "gmr-turn",
     short: "GMR",
@@ -118,6 +117,32 @@ const MARKERS = [
   },
 ];
 
+const EXTRA_LABELS = [
+  {
+    id: "route-label-official",
+    short: "RACE",
+    label: "Official GMR race corridor",
+    kind: "official",
+    lon: -117.829,
+    lat: 34.182,
+    note: "Scene label for the verified GMR corridor.",
+    hiddenFromJump: true,
+  },
+  {
+    id: "route-label-community",
+    short: "TRAIL",
+    label: "Lower Monroe / Little Dalton corridor",
+    kind: "community",
+    lon: -117.844,
+    lat: 34.191,
+    note: "Scene label for the public/community trail corridor.",
+    hiddenFromJump: true,
+  },
+];
+
+// Immutable combined list — no mutation of BASE_MARKERS
+const MARKERS = [...BASE_MARKERS, ...EXTRA_LABELS];
+
 let renderer;
 let scene;
 let camera;
@@ -131,11 +156,21 @@ let pointer;
 let dem;
 let selected = null;
 let wireOn = true;
+let animationId = 0;
 
 const labelCache = new Map();
 
 function size() {
   return { w: window.innerWidth, h: window.innerHeight };
+}
+
+function webglAvailable() {
+  try {
+    const c = document.createElement("canvas");
+    return !!(c.getContext("webgl") || c.getContext("experimental-webgl") || c.getContext("webgl2"));
+  } catch {
+    return false;
+  }
 }
 
 function makeTerrain() {
@@ -178,6 +213,7 @@ function makeTerrain() {
     g,
     new THREE.MeshPhongMaterial({ vertexColors: true, shininess: 18, flatShading: false })
   );
+  terrain.userData.pick = true;
   scene.add(terrain);
 
   terrainWire = new THREE.Mesh(
@@ -227,31 +263,6 @@ function polyline(points, color, { dashed = false, yOffset = 0.08 } = {}) {
   const line = new THREE.Line(g, mat);
   if (dashed) line.computeLineDistances();
   return line;
-}
-
-function addRouteLabels() {
-  MARKERS.push(
-    {
-      id: "route-label-official",
-      short: "RACE",
-      label: "Official GMR race corridor",
-      kind: "official",
-      lon: -117.829,
-      lat: 34.182,
-      note: "Scene label for the verified GMR corridor.",
-      hiddenFromJump: true,
-    },
-    {
-      id: "route-label-community",
-      short: "TRAIL",
-      label: "Lower Monroe / Little Dalton corridor",
-      kind: "community",
-      lon: -117.844,
-      lat: 34.191,
-      note: "Scene label for the public/community trail corridor.",
-      hiddenFromJump: true,
-    }
-  );
 }
 
 function makeRoutes() {
@@ -320,6 +331,7 @@ function ensureLabel(id, text, kind) {
 }
 
 function updateLabels() {
+  if (!camera || !MARKERS.length) return;
   const w = window.innerWidth;
   const h = window.innerHeight;
   MARKERS.forEach((m) => {
@@ -333,7 +345,7 @@ function updateLabels() {
     }
     const px = (v.x * 0.5 + 0.5) * w;
     const py = (-v.y * 0.5 + 0.5) * h;
-    const hidden = px < 0 || px > w || py < 0 || py > h;
+    const hidden = px < -50 || px > w + 50 || py < -50 || py > h + 50;
     el.style.display = hidden ? "none" : "block";
     if (!hidden) {
       el.style.left = `${px}px`;
@@ -342,35 +354,68 @@ function updateLabels() {
   });
 }
 
+function escapeHtmlText(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 function updateInfo(marker) {
   selected = marker;
-  $("infoTitle").textContent = marker ? marker.label : "Scene notes";
-  $("infoBody").innerHTML = marker
-    ? `<p>${marker.note}</p><p class="small">${marker.kind === "official" ? "Verified public/official anchor" : marker.kind === "community" ? "Public/community terrain context" : "Local-only memory layer"}</p>`
-    : `<p>Click a pip to inspect what it stands for.</p><p class="small">Orbit to see how Big Dalton, Little Dalton, GMR, and the lower canyon sit relative to each other.</p>`;
+  const titleEl = $("infoTitle");
+  const bodyEl = $("infoBody");
+  if (!titleEl || !bodyEl) return;
+  titleEl.textContent = marker ? marker.label : "Scene notes";
+  if (marker) {
+    const kindText =
+      marker.kind === "official"
+        ? "Verified public/official anchor"
+        : marker.kind === "community"
+          ? "Public/community terrain context"
+          : "Local-only memory layer";
+    // Use textContent for safety, construct DOM safely
+    bodyEl.textContent = "";
+    const p1 = document.createElement("p");
+    p1.textContent = marker.note;
+    const p2 = document.createElement("p");
+    p2.className = "small";
+    p2.textContent = kindText;
+    bodyEl.append(p1, p2);
+  } else {
+    bodyEl.innerHTML = `<p>Click a pip to inspect what it stands for.</p><p class=\"small\">Orbit to see how Big Dalton, Little Dalton, GMR, and the lower canyon sit relative to each other.</p>`;
+  }
 }
 
 function makeJumpList() {
   const host = $("jumpList");
-  host.innerHTML = "";
+  if (!host) return;
+  host.textContent = "";
   MARKERS.filter((m) => !m.hiddenFromJump).forEach((m) => {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.innerHTML = `${m.short} — ${m.label}<small>${m.kind}</small>`;
+    // Safe construction: no innerHTML with user data
+    const label = document.createElement("span");
+    label.textContent = `${m.short} — ${m.label}`;
+    const small = document.createElement("small");
+    small.textContent = m.kind;
+    btn.append(label, document.createElement("br"), small);
     btn.addEventListener("click", () => flyTo(m));
     host.appendChild(btn);
   });
 }
 
 function flyTo(marker) {
+  if (!marker || !controls || !camera) return;
   const [x, z] = project(marker.lon, marker.lat);
   const y = sampleDem(dem, marker.lon, marker.lat) * WORLD.elevScale;
   controls.target.set(x, y, z);
-  camera.position.set(x + 7.2, y + 5.3, z + 7.8);
+  // Offset camera but keep above terrain minimum
+  const camY = y + 5.3;
+  camera.position.set(x + 7.2, Math.max(camY, y + 2.5), z + 7.8);
+  controls.update();
   updateInfo(marker);
 }
 
 function onResize() {
+  if (!camera || !renderer) return;
   const { w, h } = size();
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
@@ -378,6 +423,7 @@ function onResize() {
 }
 
 function pointerToRay(ev) {
+  if (!renderer || !raycaster || !pointer) return;
   const rect = renderer.domElement.getBoundingClientRect();
   pointer.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
   pointer.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
@@ -392,14 +438,17 @@ function terrainCoordsFromPoint(point) {
 }
 
 function hover(ev) {
+  if (!terrain || !raycaster) return;
   pointerToRay(ev);
   const terrainHit = raycaster.intersectObject(terrain)[0];
   if (!terrainHit) return;
   const { lon, lat, elev } = terrainCoordsFromPoint(terrainHit.point);
-  $("coords").textContent = `${lat.toFixed(5)} N · ${Math.abs(lon).toFixed(5)} W · elev ${elev.toFixed(1)} m`;
+  const el = $("coords");
+  if (el) el.textContent = `${lat.toFixed(5)} N · ${Math.abs(lon).toFixed(5)} W · elev ${elev.toFixed(1)} m`;
 }
 
 function pick(ev) {
+  if (!pipGroup || !terrain || !raycaster) return;
   pointerToRay(ev);
   const hits = raycaster.intersectObjects(pipGroup.children, true);
   const hit = hits.find((entry) => {
@@ -418,7 +467,8 @@ function pick(ev) {
   const terrainHit = raycaster.intersectObject(terrain)[0];
   if (!terrainHit) return;
   const { lon, lat, elev } = terrainCoordsFromPoint(terrainHit.point);
-  $("coords").textContent = `${lat.toFixed(5)} N · ${Math.abs(lon).toFixed(5)} W · elev ${elev.toFixed(1)} m`;
+  const el = $("coords");
+  if (el) el.textContent = `${lat.toFixed(5)} N · ${Math.abs(lon).toFixed(5)} W · elev ${elev.toFixed(1)} m`;
 }
 
 function drapeRouteAsPairs(points, yOffset = 0.1) {
@@ -444,23 +494,48 @@ function makeVrml() {
     ...drapeRouteAsPairs(COMMUNITY_ROUTE, 0.2),
     ...drapeRouteAsPairs(LOCAL_MEMORY_POINTER, 0.27),
   ];
-  const contourLines = buildContours(dem, [250, 350, 450, 550, 700, 900]).map((c) => ({ level: c.level, segs: c.segs }));
-  const wrl = demToVrml(dem, WORLD, { source: "research mix", tempF: NaN, text: "Dalton race scene" }, `${SITE.title} · RACE POINTERS`, {
-    contourLines,
-    hachureLines: [],
-    drainLines: [],
-    outlineLines: [],
-    roadLines,
-    nodes: nodePts,
-    stepX: 3,
-    stepY: 3,
-  });
+  const contourLines = buildContours(dem, [250, 350, 450, 550, 700, 900]).map((c) => ({
+    level: c.level,
+    segs: c.segs,
+  }));
+  const wrl = demToVrml(
+    dem,
+    WORLD,
+    { source: "research mix", tempF: NaN, text: "Dalton race scene" },
+    `${SITE.title} · RACE POINTERS`,
+    {
+      contourLines,
+      hachureLines: [],
+      drainLines: [],
+      outlineLines: [],
+      roadLines,
+      nodes: nodePts,
+      stepX: 3,
+      stepY: 3,
+    }
+  );
   downloadText("dalton-race-4dwm.wrl", wrl);
 }
 
 function bootScene() {
+  if (!webglAvailable()) {
+    const status = $("status");
+    if (status) status.textContent = "WebGL unavailable — cannot render terrain";
+    const stage = $("stage");
+    if (stage) {
+      const ctx = stage.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = "#050806";
+        ctx.fillRect(0, 0, stage.width || 800, stage.height || 600);
+        ctx.fillStyle = "#d8f4d4";
+        ctx.font = "14px ui-monospace, monospace";
+        ctx.fillText("WebGL required for 4Dwm terrain", 20, 40);
+      }
+    }
+    return;
+  }
+
   dem = buildDem(220, 150);
-  addRouteLabels();
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x030604);
@@ -469,9 +544,10 @@ function bootScene() {
   camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
   camera.position.set(12, 10, 16);
 
-  renderer = new THREE.WebGLRenderer({ canvas: $("stage"), antialias: true });
+  renderer = new THREE.WebGLRenderer({ canvas: $("stage"), antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.setSize(w, h, false);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
@@ -497,39 +573,61 @@ function bootScene() {
   pointer = new THREE.Vector2();
   updateInfo(null);
 
-  window.addEventListener("resize", onResize);
+  window.addEventListener("resize", onResize, { passive: true });
   renderer.domElement.addEventListener("click", pick);
-  renderer.domElement.addEventListener("pointermove", hover);
+  renderer.domElement.addEventListener("pointermove", hover, { passive: true });
 
-  $("btnReset").addEventListener("click", () => {
+  $("btnReset")?.addEventListener("click", () => {
+    if (!camera || !controls) return;
     camera.position.set(12, 10, 16);
     controls.target.set(0, 2.5, 0);
+    controls.update();
     updateInfo(null);
   });
-  $("btnTerrain").addEventListener("click", (e) => {
+  $("btnTerrain")?.addEventListener("click", (e) => {
     wireOn = !wireOn;
-    terrainWire.visible = wireOn;
+    if (terrainWire) terrainWire.visible = wireOn;
     e.currentTarget.classList.toggle("active", wireOn);
   });
-  $("btnTerrain").classList.add("active");
-  $("btnVrml").addEventListener("click", makeVrml);
+  $("btnTerrain")?.classList.add("active");
+  $("btnVrml")?.addEventListener("click", makeVrml);
 
-  $("status").textContent = `${SITE.code} · ${MARKERS.length} pips · WRL export ready`;
+  const status = $("status");
+  if (status) status.textContent = `${SITE.code} · ${MARKERS.length} pips · WRL export ready`;
 }
 
 function animate() {
-  requestAnimationFrame(animate);
+  animationId = requestAnimationFrame(animate);
   const t = performance.now() * 0.001;
-  pipGroup?.children?.forEach((g, i) => {
-    const halo = g.children[2];
-    const head = g.children[1];
-    if (halo) halo.scale.setScalar(1 + 0.16 * Math.sin(t * 1.8 + i));
-    if (head) head.position.y = 0.62 + 0.03 * Math.sin(t * 1.6 + i * 0.7);
-  });
+  if (pipGroup?.children) {
+    pipGroup.children.forEach((g, i) => {
+      const halo = g.children[2];
+      const head = g.children[1];
+      if (halo) halo.scale.setScalar(1 + 0.16 * Math.sin(t * 1.8 + i));
+      if (head) head.position.y = 0.62 + 0.03 * Math.sin(t * 1.6 + i * 0.7);
+    });
+  }
   controls?.update();
   updateLabels();
   renderer?.render(scene, camera);
 }
 
+function dispose() {
+  if (animationId) cancelAnimationFrame(animationId);
+  controls?.dispose();
+  renderer?.dispose();
+  scene?.traverse((obj) => {
+    if (obj.geometry) obj.geometry.dispose();
+    if (obj.material) {
+      if (Array.isArray(obj.material)) obj.material.forEach((m) => m.dispose());
+      else obj.material.dispose();
+    }
+  });
+}
+
+window.addEventListener("beforeunload", dispose);
+
 bootScene();
 animate();
+
+export { MARKERS, BASE_MARKERS, HOUSE_1803, OFFICIAL_ROUTE, COMMUNITY_ROUTE, LOCAL_MEMORY_POINTER };

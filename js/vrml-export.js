@@ -4,6 +4,10 @@ function fmt(n) {
   return Number(n).toFixed(4);
 }
 
+function sanitizeTitle(s) {
+  return String(s).replace(/["\r\n]/g, "").slice(0, 200);
+}
+
 export const VRML_LAYERS = [
   { id: "terrain", label: "MESH" },
   { id: "contours", label: "CONTOUR" },
@@ -22,6 +26,8 @@ export function defaultLayers() {
 
 function lineSet(points, color, name) {
   if (!points || points.length < 6) return "";
+  // Validate numeric input to avoid NaN in VRML
+  if (points.some((v) => !Number.isFinite(v))) return "";
   const coords = [];
   const idx = [];
   for (let i = 0; i + 5 < points.length; i += 6) {
@@ -31,8 +37,9 @@ function lineSet(points, color, name) {
   }
   const pts = [];
   for (let i = 0; i < coords.length; i += 3) pts.push(`${coords[i]} ${coords[i + 1]} ${coords[i + 2]}`);
+  const safeName = String(name).replace(/[^A-Za-z0-9_]/g, "_");
   return `
-DEF LAYER_${name} Transform {
+DEF LAYER_${safeName} Transform {
   children [
     Shape {
       appearance Appearance { material Material { emissiveColor ${color} } }
@@ -48,8 +55,8 @@ DEF LAYER_${name} Transform {
 export function demToVrml(dem, world, wx, title = "SITE-K Terrarium", extra = {}) {
   const layers = { ...defaultLayers(), ...(extra.layers || {}) };
   const { nx, ny, elev } = dem;
-  const stepX = extra.stepX || 3;
-  const stepY = extra.stepY || 3;
+  const stepX = Math.max(1, extra.stepX || 3);
+  const stepY = Math.max(1, extra.stepY || 3);
   const cx = Math.ceil(nx / stepX);
   const cy = Math.ceil(ny / stepY);
   const coords = [];
@@ -58,6 +65,7 @@ export function demToVrml(dem, world, wx, title = "SITE-K Terrarium", extra = {}
       const x = (i / (nx - 1) - 0.5) * world.w;
       const z = (j / (ny - 1) - 0.5) * world.d;
       const y = elev[j * nx + i] * world.elevScale;
+      if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) continue;
       coords.push(`${fmt(x)} ${fmt(y)} ${fmt(z)}`);
     }
   }
@@ -84,19 +92,29 @@ export function demToVrml(dem, world, wx, title = "SITE-K Terrarium", extra = {}
 
   const nodeShapes = (extra.nodes || [])
     .map((n) => {
+      if (!Number.isFinite(n.x) || !Number.isFinite(n.y) || !Number.isFinite(n.z)) return "";
       return `Transform { translation ${fmt(n.x)} ${fmt(n.y + 0.2)} ${fmt(n.z)} children [ Shape { appearance Appearance { material Material { diffuseColor 1 0.7 0.12 } } geometry Box { size 0.18 0.4 0.18 } } ] }`;
     })
+    .filter(Boolean)
     .join("\n");
+
+  const safeTitle = sanitizeTitle(title);
+  const wxSource = sanitizeTitle(wx?.source || "n/a");
+  const wxText = sanitizeTitle(wx?.text || "");
+  const tempStr = wx?.tempF?.toFixed?.(1) || "—";
 
   const parts = [];
   parts.push(`#VRML V2.0 utf8
-# SITE-K terrarium — ${title}
-# weather ${wx?.source || "n/a"}  ${wx?.tempF?.toFixed?.(1) || "—"}F  ${wx?.text || ""}
+# SITE-K terrarium — ${safeTitle}
+# weather ${wxSource}  ${tempStr}F  ${wxText}
 # generated ${new Date().toISOString()}
-# layers ${Object.entries(layers).filter(([, v]) => v).map(([k]) => k).join(" ")}
+# layers ${Object.entries(layers)
+    .filter(([, v]) => v)
+    .map(([k]) => k)
+    .join(" ")}
 
 WorldInfo {
-  title "${String(title).replace(/"/g, "")}"
+  title "${safeTitle}"
   info [ "USGS 3DEP reconstruction", "NOAA / WU live weather", "Terraink line-art sibling", "SFX installer sibling" ]
 }
 
@@ -176,10 +194,29 @@ DEF LAYER_NODES Transform {
 }
 
 export function downloadText(filename, text, mime = "model/vrml") {
-  const blob = new Blob([text], { type: mime });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  try {
+    const blob = new Blob([text], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = String(filename).replace(/[^A-Za-z0-9._-]/g, "_");
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      try {
+        document.body.removeChild(a);
+      } catch {}
+      URL.revokeObjectURL(url);
+    }, 2000);
+  } catch (err) {
+    console.error("downloadText failed", err);
+    // Fallback: open in new tab
+    try {
+      const w = window.open();
+      if (w) {
+        w.document.write(`<pre>${text.slice(0, 50000)}</pre>`);
+      }
+    } catch {}
+  }
 }
