@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#06080c" />
+  <meta name="description" content="CHIPWRIGHT — an offline hardware repair workbench: JTAG/TAP, firmware dump analysis, S.M.A.R.T. and NVMe drive health, UEFI/BIOS/POST, 1-Wire and iButton, Java Card CAP files, cross-manufacturer chip substitution and repair planning. 100% offline HTML5." />
+  <title>CHIPWRIGHT · chipset · architecture · assembly · repair</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="stylesheet" href="./css/chipwright.css" />
+</head>
+<body>
+  <div class="shell">
+
+    <header class="masthead">
+      <a class="brand" href="./index.html#grid" aria-label="Back to the site index">
+        <span class="brand-mark" aria-hidden="true">CW</span>
+        <span class="brand-copy">
+          <strong>CHIPWRIGHT</strong>
+          <small>chipset · architecture · assembly · repair</small>
+        </span>
+      </a>
+      <div class="mast-right">
+        <span class="pill" id="pillLocal"><i></i>OFFLINE · NO NETWORK</span>
+        <span class="pill" id="pillChecks"><i></i>SELF-CHECK …</span>
+        <span class="pill" id="pillHw"><i></i>HARDWARE APIs …</span>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow"><span>00</span><b></b>HARDWARE REPAIR WORKBENCH</div>
+      <h1>Identify it.<br /><em>Then</em> replace it.</h1>
+      <p class="hero-copy">
+        A workbench for equipment you own or are authorised to service. It reads what a device
+        <strong>reports about itself</strong> — an IDCODE, an RDID, a ROM id, a CAP file, a firmware
+        dump, a S.M.A.R.T. log — and turns that into a substitution decision with every gate
+        enumerated. It does not guess from a marking on a package, it does not sniff a network it
+        cannot reach, and it will not help defeat a read-out protection.
+      </p>
+      <div class="chips" id="heroChips"></div>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="Workbench sections" id="tablist">
+      <button type="button" class="tab-btn" role="tab" id="tab-btn-dossier"  aria-controls="tab-dossier"  data-tab="dossier"><span class="num">01</span>Dossier</button>
+      <button type="button" class="tab-btn" role="tab" id="tab-btn-jtag"     aria-controls="tab-jtag"     data-tab="jtag"><span class="num">02</span>JTAG / TAP</button>
+      <button type="button" class="tab-btn" role="tab" id="tab-btn-dump"     aria-controls="tab-dump"     data-tab="dump"><span class="num">03</span>Dump</button>
+      <button type="button" class="tab-btn" role="tab" id="tab-btn-uefi"     aria-controls="tab-uefi"     data-tab="uefi"><span class="num">04</span>UEFI / POST</button>
+      <button type="button" class="tab-btn" role="tab" id="tab-btn-storage"  aria-controls="tab-storage"  data-tab="storage"><span class="num">05</span>Storage</button>
+      <button type="button" class="tab-btn" role="tab" id="tab-btn-onewire"  aria-controls="tab-onewire"  data-tab="onewire"><span class="num">06</span>1-Wire</button>
+      <button type="button" class="tab-btn" role="tab" id="tab-btn-javacard" aria-controls="tab-javacard" data-tab="javacard"><span class="num">07</span>Java Card</button>
+      <button type="button" class="tab-btn" role="tab" id="tab-btn-arch"     aria-controls="tab-arch"     data-tab="arch"><span class="num">08</span>Arch / ASM</button>
+      <button type="button" class="tab-btn" role="tab" id="tab-btn-subst"    aria-controls="tab-subst"    data-tab="subst"><span class="num">09</span>Substitute</button>
+      <button type="button" class="tab-btn" role="tab" id="tab-btn-prime"    aria-controls="tab-prime"    data-tab="prime"><span class="num">10</span>Prime lattice</button>
+      <button type="button" class="tab-btn" role="tab" id="tab-btn-refs"     aria-controls="tab-refs"     data-tab="refs"><span class="num">11</span>Refs &amp; scope</button>
+    </nav>
+
+    <!-- ============================ 01 DOSSIER ============================ -->
+    <section class="panel" id="tab-dossier" role="tabpanel" aria-labelledby="tab-btn-dossier" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>The dossier</h2>
+          <p>
+            The premise this app was asked to start from was an agent promiscuously sniffing the
+            network and detecting devices. A web page cannot do that — no raw sockets, no
+            promiscuous mode, no ARP table, and the browser hides your own LAN address behind an
+            mDNS placeholder. The first panel below says exactly what is blocked and what remains.
+            What remains is hardware you physically hand the page, and the unit of knowledge is a
+            dossier: one per device you own, with every finding ranked by how it was obtained.
+          </p>
+        </div>
+        <span class="hint">DISCOVERY FEEDS THE DOSSIER · IT DOES NOT REPLACE IT</span>
+      </div>
+
+      <div class="grid g2">
+        <div class="card" id="cardCaps">
+          <h3>What this browser can and cannot do <i>runtime detection</i></h3>
+          <div id="capsBody"></div>
+        </div>
+        <div class="card" id="cardIdentify">
+          <h3>Identify anything <i>multi-format parser</i></h3>
+          <p class="small">
+            Paste whatever you have: an IDCODE, three RDID bytes, an eight-byte 1-Wire ROM id, a
+            MAC address, a part marking. The parser reports <em>every</em> plausible reading and
+            ranks them — it does not pick one for you, because the ambiguity is the information.
+          </p>
+          <div class="field">
+            <label for="idInput">Bytes, hex value or part marking</label>
+            <input type="text" id="idInput" spellcheck="false" autocomplete="off"
+                   placeholder="e.g.  0x4BA00477   ·   EF 40 16   ·   28 FF 12 34 56 78 90 A1   ·   W25Q32JV" />
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary" id="idRun">Identify</button>
+            <button type="button" class="btn sm" id="idExamples">Examples</button>
+          </div>
+          <div id="idOut" class="mt"></div>
+        </div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardDossier">
+          <h3>Current dossier <i>ranked evidence</i></h3>
+          <div class="field">
+            <label for="dossierName">Device name</label>
+            <input type="text" id="dossierName" placeholder="e.g. Weather station mast sensor" />
+          </div>
+          <div class="row">
+            <button type="button" class="btn" id="dossierNew">New dossier</button>
+            <button type="button" class="btn" id="dossierExport">Export JSON</button>
+            <button type="button" class="btn" id="dossierFromId">Add last identification</button>
+          </div>
+          <div id="dossierBody" class="mt"></div>
+        </div>
+        <div class="card" id="cardPinout">
+          <h3>Find a header with no schematic <i>bench procedure</i></h3>
+          <div id="pinoutBody"></div>
+        </div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardBaud">
+          <h3>Baud rate from a measured bit width <i>autobaud by measurement</i></h3>
+          <div class="field">
+            <label for="baudUs">Narrowest pulse measured, µs</label>
+            <input type="number" id="baudUs" min="0.1" step="0.01" value="8.68" />
+            <span class="help">Measure the narrowest pulse in a burst. That is one bit time; 1/bit-time is the baud rate.</span>
+          </div>
+          <div class="row"><button type="button" class="btn primary" id="baudRun">Compute</button></div>
+          <div id="baudOut" class="mt"></div>
+        </div>
+        <div class="card" id="cardConnectors">
+          <h3>Connector pinouts <i>standard headers</i></h3>
+          <div class="field">
+            <label for="connSel">Header</label>
+            <select id="connSel"></select>
+          </div>
+          <div id="connBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 02 JTAG ============================ -->
+    <section class="panel" id="tab-jtag" role="tabpanel" aria-labelledby="tab-btn-jtag" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>JTAG &amp; the TAP state machine</h2>
+          <p>
+            An exact model of IEEE 1149.1. Clock TMS and TDI one cycle at a time and watch the
+            16-state controller move, or run the chain-discovery procedure: reset the TAP, load
+            BYPASS everywhere, flush zeros, then count clocks until the first 1 — that count is the
+            number of devices in the chain. Every semantic that is easy to get wrong is implemented
+            the way the standard says, and the self-check proves it.
+          </p>
+        </div>
+        <span class="hint">IEEE 1149.1 · 16 STATES · NO SHORTCUTS</span>
+      </div>
+
+      <div class="grid g2">
+        <div class="card" id="cardChain">
+          <h3>Chain <i>devices nearest TDO first</i></h3>
+          <div class="field">
+            <label for="chainPreset">Load a chain</label>
+            <select id="chainPreset"></select>
+          </div>
+          <div class="row">
+            <button type="button" class="btn sm" id="chainAdd">+ device</button>
+            <button type="button" class="btn sm" id="chainRemove">− device</button>
+            <button type="button" class="btn sm" id="chainCount">Run discovery</button>
+            <button type="button" class="btn sm" id="chainBypass">Bypass latency</button>
+            <button type="button" class="btn sm" id="chainIdcode">Find IDCODE instr.</button>
+          </div>
+          <div id="chainBody" class="mt"></div>
+        </div>
+        <div class="card" id="cardTapCtl">
+          <h3>Clock the TAP <i>manual</i></h3>
+          <div id="tapPins" class="row mb"></div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="tapClock0">Clock · TMS 0</button>
+            <button type="button" class="btn primary sm" id="tapClock1">Clock · TMS 1</button>
+            <button type="button" class="btn sm" id="tapReset">5-clock reset</button>
+            <button type="button" class="btn sm" id="tapShiftIr">Shift-IR 0xF</button>
+            <button type="button" class="btn sm" id="tapCaptureIdcode">Capture IDCODE</button>
+          </div>
+          <div class="field mt">
+            <label for="tapTdi">TDI bit to shift in</label>
+            <select id="tapTdi"><option value="0">0</option><option value="1">1</option></select>
+          </div>
+          <div class="field">
+            <label for="tapDrLen">Data-register length for Shift-DR</label>
+            <input type="number" id="tapDrLen" min="1" max="128" value="32" />
+          </div>
+          <div class="row">
+            <button type="button" class="btn sm" id="tapShiftDr">Shift-DR</button>
+            <button type="button" class="btn sm" id="tapIsolate">Isolate device 0</button>
+            <button type="button" class="btn sm" id="tapPath">Show TMS path</button>
+          </div>
+          <div id="tapOut" class="mt"></div>
+        </div>
+      </div>
+
+      <div class="card mt" id="cardFsm">
+        <h3>State machine <i>current state highlighted</i></h3>
+        <div id="fsmBody"></div>
+        <div id="tapLog" class="mt"></div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardIdcodes">
+          <h3>Known IDCODEs <i>decode + JEDEC designer</i></h3>
+          <div class="field">
+            <label for="idcodeInput">Decode an IDCODE</label>
+            <input type="text" id="idcodeInput" spellcheck="false" placeholder="0x4BA00477" />
+          </div>
+          <div class="row"><button type="button" class="btn primary sm" id="idcodeRun">Decode</button></div>
+          <div id="idcodeOut" class="mt"></div>
+        </div>
+        <div class="card" id="cardIr">
+          <h3>IR lengths &amp; instruction encodings <i>chain gotchas</i></h3>
+          <div id="irBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 03 DUMP ============================ -->
+    <section class="panel" id="tab-dump" role="tabpanel" aria-labelledby="tab-btn-dump" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>Firmware dump analysis</h2>
+          <p>
+            Load a dump taken anywhere — a programmer on another bench, a vendor tool, a
+            <code>dd</code> of an MTD partition. Hygiene runs first and gates everything below it:
+            a corrupt dump written back is how a repairable board becomes unrepairable. Then the
+            descriptor, the firmware volumes, the partition table, the variable store and the
+            filesystem signatures, each with its own validity check rather than a hopeful parse.
+          </p>
+        </div>
+        <span class="hint">READ ONLY · NOTHING IS WRITTEN ANYWHERE</span>
+      </div>
+
+      <div class="card" id="cardLoad">
+        <h3>Load a dump</h3>
+        <div class="drop" id="dropZone">
+          <strong>Drop a firmware or disk image here</strong>, or
+          <label class="ck" style="display:inline-flex"><input type="file" id="fileInput" /></label>
+          <div class="mono">bin · rom · img · cap · dmp — analysed entirely in this page, never uploaded</div>
+        </div>
+        <div class="row mt">
+          <button type="button" class="btn sm" id="sampleFv">Synthesise a UEFI volume</button>
+          <button type="button" class="btn sm" id="sampleMbr">Synthesise an MBR/GPT disk</button>
+          <button type="button" class="btn sm" id="sampleIfd">Synthesise an IFD + regions</button>
+          <button type="button" class="btn sm" id="sampleBad">Synthesise an all-0xFF read</button>
+          <button type="button" class="btn sm" id="sampleTrunc">Synthesise a truncated read</button>
+        </div>
+        <div id="loadStatus" class="mt"></div>
+      </div>
+
+      <div id="dumpReport" class="mt"></div>
+    </section>
+
+    <!-- ============================ 04 UEFI / POST ============================ -->
+    <section class="panel" id="tab-uefi" role="tabpanel" aria-labelledby="tab-btn-uefi" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>UEFI, BIOS ROM arithmetic and the POST card</h2>
+          <p>
+            Three layers that are routinely conflated: the <em>flash</em> (what the SPI chip holds),
+            the <em>regions</em> (what the descriptor carves it into) and the <em>volumes</em> (what
+            the firmware parses). Getting the layer wrong is how a repair writes one board's MAC
+            address onto another. Below that, a virtual POST card: feed it a captured code trace and
+            it tells you whether the board stalled, retried, or handed off.
+          </p>
+        </div>
+        <span class="hint">REGION SAFETY IS NOT OPTIONAL</span>
+      </div>
+
+      <div class="grid g2">
+        <div class="card" id="cardPost">
+          <h3>Virtual POST card <i>trace interpreter</i></h3>
+          <div class="field">
+            <label for="postTrace">Captured codes, comma or space separated, hex</label>
+            <textarea id="postTrace" spellcheck="false" placeholder="00, 01, 03, 0B, 2C, 2C, 2C, 2C"></textarea>
+            <span class="help">
+              Codes are vendor-specific: an AMI 0x2C and a Phoenix 0x2C are unrelated. This
+              interpreter reads the <em>shape</em> of the trace — stalled, cycling, or handed off —
+              which is vendor-independent, and then points you at the vendor's table.
+            </span>
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="postRun">Analyse trace</button>
+            <button type="button" class="btn sm" id="postDemoRetry">Demo: retry loop</button>
+            <button type="button" class="btn sm" id="postDemoHandoff">Demo: handoff</button>
+          </div>
+          <div id="postOut" class="mt"></div>
+        </div>
+        <div class="card" id="cardX87">
+          <h3>Math coprocessor BIOS test <i>x87 presence probe</i></h3>
+          <div id="x87Body"></div>
+          <div class="hr"></div>
+          <div class="row">
+            <div class="field" style="flex:1;min-width:150px">
+              <label for="cwInput">Control word (FNSTCW result)</label>
+              <input type="text" id="cwInput" spellcheck="false" value="0x037F" />
+            </div>
+            <div class="field" style="flex:1;min-width:150px">
+              <label for="swInput">Status word (FNSTSW result)</label>
+              <input type="text" id="swInput" spellcheck="false" value="0x0000" />
+            </div>
+          </div>
+          <div class="row"><button type="button" class="btn primary sm" id="x87Run">Interpret</button></div>
+          <div id="x87Out" class="mt"></div>
+        </div>
+      </div>
+
+      <div class="card mt" id="cardRegionSafety">
+        <h3>Which region may be written from another board <i>the rule that stops board cloning</i></h3>
+        <div id="regionSafetyBody"></div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardUefiTriage">
+          <h3>Platform firmware triage <i>by symptom</i></h3>
+          <div id="uefiTriageBody"></div>
+        </div>
+        <div class="card" id="cardFvRef">
+          <h3>Firmware volume reference <i>headers, file types, sections</i></h3>
+          <div class="field">
+            <label for="fvRefSel">Show</label>
+            <select id="fvRefSel">
+              <option value="header">Volume header layout</option>
+              <option value="files">FFS file types</option>
+              <option value="sections">Section types</option>
+              <option value="wrappers">GUID_DEFINED wrappers</option>
+              <option value="te">TE (Terse Executable) header</option>
+              <option value="varstores">Variable-store signatures</option>
+              <option value="varstate">Variable state + attributes</option>
+              <option value="gpt">GPT header</option>
+              <option value="mbr">MBR + partition entry</option>
+            </select>
+          </div>
+          <div id="fvRefBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 05 STORAGE ============================ -->
+    <section class="panel" id="tab-storage" role="tabpanel" aria-labelledby="tab-btn-storage" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>Drive health: S.M.A.R.T., ATA and NVMe</h2>
+          <p>
+            Paste a <code>smartctl -a</code> report, or work from the attribute tables directly.
+            The decisive fact is that S.M.A.R.T. attribute <em>numbers</em> are largely standardised
+            while their <em>meanings</em> are vendor-specific and differ between spinning media and
+            flash — so the tables here mark which attributes are critical on which media, and the
+            triage reasons from that rather than from a health percentage.
+          </p>
+        </div>
+        <span class="hint">RAW VALUES MATTER · NORMALISED VALUES LIE</span>
+      </div>
+
+      <div class="grid g2">
+        <div class="card" id="cardSmartPaste">
+          <h3>Paste a SMART report <i>parser</i></h3>
+          <div class="field">
+            <label for="smartText">smartctl output, or attribute rows: <code>id value worst thresh raw</code></label>
+            <textarea id="smartText" spellcheck="false" style="min-height:150px"
+              placeholder="5 Reallocated_Sector_Ct   100   100   010    -    12&#10;197 Current_Pending_Sector  100   100   000    -    8&#10;198 Offline_Uncorrectable   100   100   000    -    8"></textarea>
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="smartRun">Analyse</button>
+            <button type="button" class="btn sm" id="smartDemoDying">Demo: dying HDD</button>
+            <button type="button" class="btn sm" id="smartDemoWorn">Demo: worn SSD</button>
+            <button type="button" class="btn sm" id="smartDemoHealthy">Demo: healthy</button>
+          </div>
+          <div id="smartOut" class="mt"></div>
+        </div>
+        <div class="card" id="cardDriveTriage">
+          <h3>Triage decision table <i>nine scenarios</i></h3>
+          <div id="driveTriageBody"></div>
+        </div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardSmartAttrs">
+          <h3>Attribute reference <i>40 attributes with criticality</i></h3>
+          <div class="row mb">
+            <label class="ck"><input type="checkbox" id="smartCriticalOnly" /> Critical only</label>
+            <label class="ck"><input type="checkbox" id="smartSsdOnly" /> SSD-specific only</label>
+          </div>
+          <div id="smartAttrsBody"></div>
+        </div>
+        <div class="card" id="cardAta">
+          <h3>ATA / NVMe transport reference</h3>
+          <div class="field">
+            <label for="ataSel">Show</label>
+            <select id="ataSel">
+              <option value="taskfile">SMART taskfile registers</option>
+              <option value="identify">IDENTIFY DEVICE word map</option>
+              <option value="cmds">ATA commands</option>
+              <option value="selftest">Self-test log layout</option>
+              <option value="entry">SMART log entry layout</option>
+              <option value="nvmelogs">NVMe log pages</option>
+              <option value="nvmesm">NVMe SMART/Health layout</option>
+              <option value="nvmeadmin">NVMe admin opcodes</option>
+            </select>
+          </div>
+          <div id="ataBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 06 1-WIRE ============================ -->
+    <section class="panel" id="tab-onewire" role="tabpanel" aria-labelledby="tab-btn-onewire" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>1-Wire, iButton and the weather station</h2>
+          <p>
+            A weather station is the most common field equipment whose sensors are not on I²C or SPI
+            but on a one-wire bus with parasitic power, a 48-bit serial number per device and a CRC-8
+            over the ROM. When one fails you are usually not debugging a chip — you are debugging a
+            pull-up resistor, a cable length and a checksum. Decode a ROM id, check a scratchpad,
+            or work through the bus-fault table.
+          </p>
+        </div>
+        <span class="hint">CRC-8 = X⁸+X⁵+X⁴+1 · INIT 0 · LSB FIRST</span>
+      </div>
+
+      <div class="grid g2">
+        <div class="card" id="cardRom">
+          <h3>Decode a ROM id <i>8 bytes, CRC-8 checked</i></h3>
+          <div class="field">
+            <label for="romInput">ROM bytes</label>
+            <input type="text" id="romInput" spellcheck="false" placeholder="28 FF 64 1E 4C 3B 9C 28" />
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="romRun">Decode</button>
+            <button type="button" class="btn sm" id="romGen">Generate a valid one</button>
+            <button type="button" class="btn sm" id="romCorrupt">Corrupt a byte</button>
+          </div>
+          <div id="romOut" class="mt"></div>
+        </div>
+        <div class="card" id="cardScratch">
+          <h3>DS18B20 scratchpad <i>9 bytes with CRC in byte 9</i></h3>
+          <div class="field">
+            <label for="spInput">Scratchpad bytes (9 expected)</label>
+            <input type="text" id="spInput" spellcheck="false" placeholder="50 05 4B 46 7F FF 0C 10 56" />
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="spRun">Decode</button>
+            <button type="button" class="btn sm" id="spDemo85">Demo: the 85 °C read</button>
+          </div>
+          <div id="spOut" class="mt"></div>
+        </div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardOwBus">
+          <h3>Bus faults <i>the six that account for nearly all of them</i></h3>
+          <div id="owFaultBody"></div>
+        </div>
+        <div class="card" id="cardOwTiming">
+          <h3>Timing &amp; pull-up <i>standard speed vs overdrive</i></h3>
+          <div id="owTimingBody"></div>
+        </div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardOwFamily">
+          <h3>Family codes <i>what the first ROM byte means</i></h3>
+          <div class="field">
+            <label for="familyFilter">Filter</label>
+            <input type="text" id="familyFilter" spellcheck="false" placeholder="name, code or function…" />
+          </div>
+          <div id="familyBody"></div>
+        </div>
+        <div class="card" id="cardOwCmds">
+          <h3>Commands <i>ROM commands + memory functions</i></h3>
+          <div class="field">
+            <label for="owCmdSel">Device</label>
+            <select id="owCmdSel">
+              <option value="rom">ROM commands (all devices)</option>
+              <option value="ds18b20">DS18B20 / DS1822 thermometer</option>
+              <option value="ds2438">DS2438 battery monitor / humidity front-end</option>
+              <option value="ds2408">DS2408 8-channel switch</option>
+              <option value="owfs">1-Wire File Structure (iButton loggers)</option>
+            </select>
+          </div>
+          <div id="owCmdBody"></div>
+        </div>
+      </div>
+
+      <div class="card mt" id="cardOwBrowser">
+        <h3>Talking to 1-Wire from this page <i>what is and is not possible</i></h3>
+        <div id="owBrowserBody"></div>
+      </div>
+    </section>
+
+    <!-- ============================ 07 JAVA CARD ============================ -->
+    <section class="panel" id="tab-javacard" role="tabpanel" aria-labelledby="tab-btn-javacard" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>Java bytecode &amp; Java Card</h2>
+          <p>
+            Java bytecode is the one instruction set here that is manufacturer-independent <em>by
+            design</em>: the same CAP file runs on an NXP JCOP, an Infineon SECORA, a Thales card and
+            a simulator, because the ISA is specified rather than reverse engineered. When the
+            silicon underneath is unobtainable — which is the whole premise of a substitution repair
+            — the bytecode layer is the part of the stack that survives the change of manufacturer.
+            That is why this sits next to JTAG and not in some other project.
+          </p>
+        </div>
+        <span class="hint">CAP MAGIC 0xDECAFFED · CLASS MAGIC 0xCAFEBABE</span>
+      </div>
+
+      <div class="card" id="cardCapLoad">
+        <h3>Load a CAP or class file <i>or synthesise one to see the parser work</i></h3>
+        <div class="drop" id="capDrop">
+          <strong>Drop a <code>.cap</code>, <code>.class</code> or <code>.jar</code> here</strong>, or
+          <label class="ck" style="display:inline-flex"><input type="file" id="capInput" accept=".cap,.class,.jar" /></label>
+          <div class="mono">a CAP is a ZIP containing &lt;package&gt;/javacard/*.cap — one file per component</div>
+        </div>
+        <div class="row mt">
+          <button type="button" class="btn sm" id="capSynth">Synthesise a CAP header + components</button>
+          <button type="button" class="btn sm" id="classSynth">Synthesise a minimal class file</button>
+        </div>
+        <div id="capOut" class="mt"></div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardBytecode">
+          <h3>Bytecode disassembler <i>JVM + Java Card subset</i></h3>
+          <div class="field">
+            <label for="bcInput">Code attribute bytes (hex)</label>
+            <textarea id="bcInput" spellcheck="false" placeholder="2a b6 00 07 b1"></textarea>
+            <span class="help">
+              Paste the <code>code[]</code> array from a method's Code attribute. Switch operands are
+              padded to a 4-byte boundary and <code>wide</code> changes the length of the instruction
+              that follows — both are handled, because both are where a naive decoder loses sync.
+            </span>
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="bcRun">Disassemble</button>
+            <button type="button" class="btn sm" id="bcDemo">Demo: a method body</button>
+            <button type="button" class="btn sm" id="bcDemoSwitch">Demo: tableswitch padding</button>
+          </div>
+          <div id="bcOut" class="mt"></div>
+        </div>
+        <div class="card" id="cardApdu">
+          <h3>APDU builder &amp; decoder <i>ISO 7816-4</i></h3>
+          <div class="field">
+            <label for="apduInput">Hex APDU (command or response)</label>
+            <input type="text" id="apduInput" spellcheck="false" placeholder="00 A4 04 00 07 A0 00 00 01 51 00 00 00" />
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="apduRun">Decode</button>
+            <button type="button" class="btn sm" id="apduDemoSelect">Demo: SELECT card manager</button>
+            <button type="button" class="btn sm" id="apduDemoInstall">Demo: INSTALL for load</button>
+          </div>
+          <div id="apduOut" class="mt"></div>
+        </div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardCapRef">
+          <h3>CAP file reference <i>12 component tags</i></h3>
+          <div id="capRefBody"></div>
+        </div>
+        <div class="card" id="cardJcRef">
+          <h3>Java Card reference <i>limits, status words, portability</i></h3>
+          <div class="field">
+            <label for="jcRefSel">Show</label>
+            <select id="jcRefSel">
+              <option value="portability">Cross-manufacturer portability</option>
+              <option value="limits">Platform limits</option>
+              <option value="sw">Status words</option>
+              <option value="ins">Instructions</option>
+              <option value="cases">APDU cases</option>
+              <option value="notes">CAP format notes</option>
+              <option value="cpl">Class file layout</option>
+              <option value="cptags">Constant-pool tags</option>
+            </select>
+          </div>
+          <div id="jcRefBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 08 ARCH ============================ -->
+    <section class="panel" id="tab-arch" role="tabpanel" aria-labelledby="tab-btn-arch" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>Architecture, processor and assembly</h2>
+          <p>
+            The instruction tables here are deliberately <em>partial</em>: they cover the encodings a
+            bootloader or a vector table is made of, not a whole ISA. Every word the decoder cannot
+            match is shown as a raw <code>.word</code> rather than guessed at, and the coverage
+            percentage is reported, because a disassembly that silently skips is fiction.
+          </p>
+        </div>
+        <span class="hint">UNDENIED GAPS ARE REPORTED, NOT PAPERED OVER</span>
+      </div>
+
+      <div class="grid g2">
+        <div class="card" id="cardArchList">
+          <h3>Architectures <i>what each one needs to know</i></h3>
+          <div id="archListBody"></div>
+        </div>
+        <div class="card" id="cardVectors">
+          <h3>Cortex-M vector table validator <i>ARMv7-M B1.5</i></h3>
+          <div class="field">
+            <label for="vecInput">First 64 bytes of flash (hex), or use a demo</label>
+            <textarea id="vecInput" spellcheck="false" placeholder="00 50 00 20 C1 01 00 08 …"></textarea>
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="vecRun">Validate</button>
+            <button type="button" class="btn sm" id="vecDemoGood">Demo: valid</button>
+            <button type="button" class="btn sm" id="vecDemoErased">Demo: erased flash</button>
+            <button type="button" class="btn sm" id="vecDemoThumb">Demo: bit0 clear</button>
+          </div>
+          <div id="vecOut" class="mt"></div>
+        </div>
+      </div>
+
+      <div class="card mt" id="cardDisasm">
+        <h3>Disassemble <i>from the dump, or from pasted bytes</i></h3>
+        <div class="row mb">
+          <div class="field" style="flex:1;min-width:150px">
+            <label for="disIsa">ISA table</label>
+            <select id="disIsa">
+              <option value="thumb">Thumb (ARMv6-M)</option>
+              <option value="mips">MIPS32</option>
+              <option value="avr">AVR</option>
+              <option value="mos6502">MOS 6502</option>
+            </select>
+          </div>
+          <div class="field" style="flex:1;min-width:150px">
+            <label for="disLoadBase">Load base (address the CPU sees)</label>
+            <input type="text" id="disLoadBase" spellcheck="false" value="0x08000000" />
+          </div>
+          <div class="field" style="flex:1;min-width:120px">
+            <label for="disOffset">Offset in source</label>
+            <input type="text" id="disOffset" spellcheck="false" value="0x0" />
+          </div>
+          <div class="field" style="flex:0 0 110px">
+            <label for="disLimit">Max rows</label>
+            <input type="number" id="disLimit" min="1" max="2000" value="64" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="disBytes">Bytes (hex) — leave empty to disassemble the loaded dump</label>
+          <textarea id="disBytes" spellcheck="false" placeholder="10 b5 04 4c 20 46 …"></textarea>
+        </div>
+        <div class="row">
+          <button type="button" class="btn primary sm" id="disRun">Disassemble</button>
+          <button type="button" class="btn sm" id="disFromDump">From the loaded dump</button>
+          <button type="button" class="btn sm" id="disIdentify">Identify architecture first</button>
+        </div>
+        <div id="disOut" class="mt"></div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardCpuid">
+          <h3>CPUID decode &amp; diff <i>the substitution question</i></h3>
+          <div class="field">
+            <label for="cpuidA">CPU A — leaf0 EAX,EBX,ECX,EDX then leaf1 EAX,EBX,ECX,EDX (hex, comma separated)</label>
+            <input type="text" id="cpuidA" spellcheck="false" value="0x16,0x756e6547,0x6c65746e,0x49656e69, 0x000906ea,0x00100800,0x7ffafbff,0xbfebfbff" />
+          </div>
+          <div class="field">
+            <label for="cpuidB">CPU B — same format (leave empty to skip the diff)</label>
+            <input type="text" id="cpuidB" spellcheck="false" value="0x16,0x68747541,0x444d4163,0x69746e65, 0x00800f11,0x01100800,0x7ed8320b,0x178bfbff" />
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="cpuidRun">Decode + diff</button>
+            <button type="button" class="btn sm" id="cpuidSwap">Swap A ↔ B</button>
+          </div>
+          <div id="cpuidOut" class="mt"></div>
+        </div>
+        <div class="card" id="cardCpuSubst">
+          <h3>CPU substitution gates <i>where "compatible" stops</i></h3>
+          <div id="cpuSubstBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 09 SUBSTITUTE ============================ -->
+    <section class="panel" id="tab-subst" role="tabpanel" aria-labelledby="tab-btn-subst" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>Substitution &amp; repair planning</h2>
+          <p>
+            A substitution is a set of <em>gates</em>. A hard gate failed means the board or the
+            replacement part is damaged; a soft gate failed means something subtler breaks — a
+            bootloader whitelist rejects the part, a status-register write locks the array, a
+            calibration page is lost. A gate you cannot answer is recorded as unknown and counted
+            against confidence. It is never silently treated as a pass, because that is exactly how a
+            confident wrong substitution kills a board.
+          </p>
+        </div>
+        <span class="hint">13 FAMILIES · 3 HARD-GATE DOMAINS · NOTHING INFERRED FROM A MARKING</span>
+      </div>
+
+      <div class="grid g2">
+        <div class="card" id="cardSubstSel">
+          <h3>Choose a substitution <i>every family in the corpus</i></h3>
+          <div class="field">
+            <label for="substSel">Family</label>
+            <select id="substSel"></select>
+          </div>
+          <div class="field">
+            <label for="substBasis">Basis</label>
+            <div id="substBasis" class="small"></div>
+          </div>
+          <div class="row">
+            <div class="field" style="flex:1;min-width:130px">
+              <label for="substOriginal">Original part (free text)</label>
+              <input type="text" id="substOriginal" spellcheck="false" placeholder="Winbond W25Q32JV" />
+            </div>
+            <div class="field" style="flex:1;min-width:130px">
+              <label for="substReplacement">Replacement (free text)</label>
+              <input type="text" id="substReplacement" spellcheck="false" placeholder="GigaDevice GD25Q32E" />
+            </div>
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="substEval">Evaluate gates</button>
+            <button type="button" class="btn sm" id="substAllPass">Mark all pass</button>
+            <button type="button" class="btn sm" id="substReset">Mark all unknown</button>
+            <button type="button" class="btn sm" id="substPlan">Build repair plan</button>
+          </div>
+          <div id="substVerdict" class="mt"></div>
+        </div>
+        <div class="card" id="cardSpiRank">
+          <h3>SPI NOR candidate ranking <i>arithmetic, not opinion</i></h3>
+          <div class="row mb">
+            <div class="field" style="flex:1;min-width:120px">
+              <label for="rankRdid">Original RDID</label>
+              <input type="text" id="rankRdid" spellcheck="false" value="EF 40 16" />
+            </div>
+            <div class="field" style="flex:1;min-width:120px">
+              <label for="rankCap">Required capacity</label>
+              <select id="rankCap">
+                <option value="4194304">4 MiB (32 Mbit)</option>
+                <option value="8388608">8 MiB (64 Mbit)</option>
+                <option value="16777216">16 MiB (128 Mbit)</option>
+                <option value="33554432">32 MiB (256 Mbit)</option>
+                <option value="">unspecified</option>
+              </select>
+            </div>
+            <div class="field" style="flex:0 0 110px">
+              <label for="rankVcc">Board VCC</label>
+              <select id="rankVcc"><option value="3.3">3.3 V</option><option value="1.8">1.8 V</option><option value="5">5 V</option></select>
+            </div>
+          </div>
+          <div class="row"><button type="button" class="btn primary sm" id="rankRun">Rank candidates</button></div>
+          <div id="rankOut" class="mt"></div>
+        </div>
+      </div>
+
+      <div class="card mt" id="cardGates">
+        <h3>Gates <i>hard gates in red, soft in amber, answered in green</i></h3>
+        <div id="gatesBody"></div>
+      </div>
+
+      <div class="card mt" id="cardPlan">
+        <h3>Repair plan <i>non-destructive steps first, always</i></h3>
+        <div class="field">
+          <label for="planSymptom">Symptom under investigation</label>
+          <select id="planSymptom"></select>
+        </div>
+        <div class="row"><button type="button" class="btn primary sm" id="planRun">Build the plan</button></div>
+        <div id="planOut" class="mt"></div>
+      </div>
+
+      <div class="card mt" id="cardRework">
+        <h3>Rework reference <i>alloys, profile, ESD</i></h3>
+        <div id="reworkBody"></div>
+      </div>
+    </section>
+
+    <!-- ============================ 10 PRIME LATTICE ============================ -->
+    <section class="panel" id="tab-prime" role="tabpanel" aria-labelledby="tab-btn-prime" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>Prime lattice</h2>
+          <p>
+            Not decoration. Primes appear in hardware work in four places where getting them wrong
+            costs a day: stride aliasing against a bank count, LFSR and CRC tap selection over GF(2),
+            capacity arithmetic on non-power-of-two parts, and coprimality of wear and polling
+            periods. The sieve here is verified against Project Gutenberg ebook #65, <em>The First
+            100,000 Prime Numbers</em>, whose 100,000th prime is 1,299,709.
+          </p>
+        </div>
+        <span class="hint">SELF-VERIFYING ARITHMETIC · SEE REFS</span>
+      </div>
+
+      <div class="grid g2">
+        <div class="card" id="cardPrimeTool">
+          <h3>Prime tools</h3>
+          <div class="row mb">
+            <div class="field" style="flex:1;min-width:130px">
+              <label for="primeN">n — test, factor, or "the n-th prime"</label>
+              <input type="number" id="primeN" min="1" max="2000000" value="1299709" />
+            </div>
+            <div class="field" style="flex:1;min-width:130px">
+              <label for="primeK">k — for the k-th prime and gaps</label>
+              <input type="number" id="primeK" min="1" max="100000" value="100000" />
+            </div>
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="primeRun">Test + factor</button>
+            <button type="button" class="btn sm" id="primeNth">k-th prime</button>
+            <button type="button" class="btn sm" id="primeVerify">Verify against Gutenberg #65</button>
+          </div>
+          <div id="primeOut" class="mt"></div>
+        </div>
+        <div class="card" id="cardStride">
+          <h3>Stride aliasing <i>the bank-conflict bug</i></h3>
+          <div class="row mb">
+            <div class="field" style="flex:1;min-width:110px">
+              <label for="strideBuckets">Buckets (banks / channels / slots)</label>
+              <input type="number" id="strideBuckets" min="1" max="4096" value="16" />
+            </div>
+            <div class="field" style="flex:1;min-width:110px">
+              <label for="strideVal">Stride</label>
+              <input type="number" id="strideVal" min="-65536" max="65536" value="16" />
+            </div>
+          </div>
+          <div class="row"><button type="button" class="btn primary sm" id="strideRun">Analyse</button></div>
+          <div id="strideOut" class="mt"></div>
+        </div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardLfsr">
+          <h3>LFSR &amp; GF(2) <i>tap sets verified two ways</i></h3>
+          <div class="field">
+            <label for="lfsrN">Register width n</label>
+            <select id="lfsrN"></select>
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="lfsrRun">Check this tap set</button>
+            <button type="button" class="btn sm" id="lfsrVerifyAll">Verify the whole table</button>
+            <button type="button" class="btn sm" id="lfsrCrc32">Check the CRC-32 polynomial</button>
+          </div>
+          <div id="lfsrOut" class="mt"></div>
+        </div>
+        <div class="card" id="cardCapacity">
+          <h3>Capacity &amp; geometry <i>the non-power-of-two trap</i></h3>
+          <div class="row mb">
+            <div class="field" style="flex:1;min-width:130px">
+              <label for="capBytes">Capacity in bytes</label>
+              <input type="number" id="capBytes" min="1" value="3145728" />
+            </div>
+            <div class="field" style="flex:0 0 120px">
+              <label for="capBlock">Erase block</label>
+              <select id="capBlock">
+                <option value="65536">64 KiB</option><option value="32768">32 KiB</option>
+                <option value="4096">4 KiB</option><option value="131072">128 KiB</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary sm" id="capRun">Analyse</button>
+            <button type="button" class="btn sm" id="capPresets">Presets</button>
+          </div>
+          <div id="capArithOut" class="mt"></div>
+        </div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardCollide">
+          <h3>Poll-period collisions <i>coprime periods never synchronise</i></h3>
+          <div class="field">
+            <label for="collideIn">Periods, comma separated</label>
+            <input type="text" id="collideIn" spellcheck="false" value="7, 11, 13" />
+          </div>
+          <div class="row"><button type="button" class="btn primary sm" id="collideRun">Analyse</button></div>
+          <div id="collideOut" class="mt"></div>
+        </div>
+        <div class="card" id="cardCrt">
+          <h3>CRT reconstruction <i>a wide counter from narrow fields</i></h3>
+          <div class="field">
+            <label for="crtIn">Residue:modulus pairs, comma separated</label>
+            <input type="text" id="crtIn" spellcheck="false" value="2:3, 3:5, 2:7" />
+          </div>
+          <div class="row"><button type="button" class="btn primary sm" id="crtRun">Solve</button></div>
+          <div id="crtOut" class="mt"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 11 REFS ============================ -->
+    <section class="panel" id="tab-refs" role="tabpanel" aria-labelledby="tab-btn-refs" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>References, evidence discipline and scope</h2>
+          <p>
+            Every row in every table in this app carries an evidence tag. <b>std</b> is read out of a
+            published standard or vendor datasheet. <b>tool</b> is read out of an open-source tool's
+            own tables and quoted. <b>report</b> is a third-party observation. <b>recall</b> was
+            transcribed from memory and <em>not</em> verified against the source — those rows are
+            rendered with a warning stripe and are excluded from automatic decisions. A fabricated
+            citation is worse than no citation.
+          </p>
+        </div>
+        <span class="hint">THE SELF-CHECK BELOW RUNS IN THIS PAGE, NOT ON A SERVER</span>
+      </div>
+
+      <div class="card" id="cardSelfCheck">
+        <h3>Self-check <i>run at load; re-run any time</i></h3>
+        <div class="row mb"><button type="button" class="btn primary sm" id="selfCheckRun">Run all checks again</button></div>
+        <div id="selfCheckBody"></div>
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card" id="cardScope">
+          <h3>Scope &amp; ethics <i>printed here, not hidden in a README</i></h3>
+          <div id="scopeBody"></div>
+        </div>
+        <div class="card" id="cardEvidence">
+          <h3>Evidence tags <i>what each one commits to</i></h3>
+          <div id="evidenceBody"></div>
+          <div class="hr"></div>
+          <h3 style="font-size:12.5px">Rows in this app resting on <span style="color:var(--amber)">recall</span></h3>
+          <div id="recallBody"></div>
+        </div>
+      </div>
+
+      <div class="card mt" id="cardSources">
+        <h3>Sources <i>where the numbers came from</i></h3>
+        <div id="sourcesBody"></div>
+      </div>
+
+      <div class="card mt" id="cardModules">
+        <h3>Modules <i>what each file does</i></h3>
+        <div id="modulesBody"></div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>
+        <b>CHIPWRIGHT</b> — offline HTML5. No server, no keys, no upload: a dump you drop here is
+        analysed in this page and never leaves it. The tools read, identify, verify and reconstruct.
+        They are for equipment you own or are authorised to service. Read-out protection, secure boot
+        and debug authentication exist to stop exactly what a JTAG tool makes easy; this workbench
+        tells you when a part is documented as protected and stops there. It contains no bypass, no
+        fuse-defeat procedure and no per-device unlock recipe.
+      </p>
+      <p class="small">
+        Run <code>node tools/verify_chipwright.mjs</code> for the headless proof: CRC-32 and CRC-8
+        check values, the sieve against Project Gutenberg #65, JEP106 parity across the vendor table,
+        the TAP simulator's eight behavioural suites, the GF(2) tap table verified two ways, ISA
+        round-trips, and the DOM-id contract between this page and <code>js/cw-app.js</code>.
+      </p>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/cw-app.js"></script>
+</body>
+</html>
