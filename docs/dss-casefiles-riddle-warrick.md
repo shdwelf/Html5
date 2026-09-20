@@ -564,3 +564,78 @@ checks**; `node tools/verify_casefiles.mjs 8099` — **ALL CHECKS PASSED, 82 che
 re-run after the bundle edit); the modified bundle’s inline app script (911 590 bytes) re-extracted
 and re-parsed clean via `vm.Script`; `smoke_pipeline.mjs` clean; `check-dom-ids.mjs` pass.
 `sw.js` untouched at v24 — the suite file and the new module are not in the precache list.
+
+## Wave 9 — the lecture hall grows a third shelf (2026-09-20)
+
+Full research log: **`docs/lecture-hall-research-2026-09-20.md`**; the proofs live in the
+rewritten `tools/verify_lecture_hall.mjs` (40 checks → **119**) against `js/lecture-ciphers.js`
+(21 exports). Bundle spliced by `tools/patch_lecture_hall_records_r2.py` (16 steps, 8 rows → **10
+rows**, 1 024 252 → 1 051 337 bytes).
+
+Two records added, four rewritten or extended, and **all six open threads from Wave 8 §6
+disposed of** — two closed with primary sources, two answered, one strengthened into a calibrated
+negative, one recorded as a documented absence:
+
+* **Cicada 3301** — added on the archivist’s request, including a source check of the claim that
+  the key sits on a **`cryptomomicon.mit.edu`** keyserver. That host **does not resolve**
+  (`getaddrinfo ENOTFOUND`); it is a one-letter corruption of `cryptonomicon.mit.edu`, the
+  canonical name `pgp.mit.edu` CNAMEs to (both 18.9.60.141). Cicada itself named no host at all —
+  “the mit keyservers” is the whole of its claim. The key ID **7A35090F** is then verified with no
+  keyserver and no GnuPG, by parsing the published signature: an OpenPGP **issuer subpacket** at
+  byte 19 (`0a 09 10 181f01e57a35090f`) whose low 32 bits are that ID, agreeing with the v4
+  fingerprint `6D85 4CD7 9333 22A6 01C3 286D 181F 01E5 7A35 090F`. The RSA sub-puzzle is measured
+  (112 digits / **372 bits**, e = 65537 = F4) and **not factored** — four methods attempted, zero
+  factors — so “breakable” is recorded as Cicada’s framing, never as a result. gpg’s own “not
+  certified with a trusted signature” warning is quoted as the counterweight, and the April 2017
+  `Version: CicadaPG v.3301` anomaly is flagged rather than explained.
+* **F5’s Black Hat 2018 cipher challenge** — the year F5 published **no post-mortem** for, so the
+  only account is a solver’s writeup. That made it a test: ciphertext
+  `WVBYTJPYHGPBHBIRYAIBFPQUYBZILI`, alphabet key `GDPQWLZIHMSONAKFYXTVJRBCEU` (the 26 moons of
+  seven bodies ordered by distance, asserted to be a full permutation of A–Z) and passphrase
+  `truthsreturnzero` decrypt to `NECESSITY DISPENSETH WITH DECORUM` (Carlyle) **and re-encrypt
+  back exactly**. Of six plausible keyed-Vigenère index conventions only one survives, and the
+  harness asserts the other five fail; the shirt’s front is flag semaphore spelling `F5`.
+* **The Clandestine corpus, corrected** — this repository’s own port had **dropped the seventh
+  line** of `messages.txt`, which is the publisher’s domain in the clear and therefore the
+  corpus’s own answer key. Restored from the GitHub API. Line 2’s `O`-versus-`0` ambiguity is now
+  pinned both ways: the wheel emits `50WB…`, the file prints `5OWB…`, reading the `O` as a zero
+  gives `FIELDNOTESBRAND.COM` exactly, and reading the `1` as a lowercase `l` reproduces the
+  file’s own annotation `f[6]eldnotes[V]rand.com`. The four short codes stay **unrecovered**, and
+  the attempt to break them harder was **calibrated and discarded**: 217 728 lookalike-variant
+  attempts yield 224 “domain-shaped” strings of which **none contains a word**, while the same
+  test fires 32 times on the known recovery and more often still on 16 random controls — an
+  uncalibrated negative is only a rumour about a search.
+* **Agents of F.I.E.L.D., the complete ledger** — all 21 rows now carried, **18 of 21 re-derived**.
+  The unlocking finding is that the archive documents a **different operation per puzzle** (#6
+  encodes; #5 needs a 5×4 box, not the 4×5 its “4x5” phrasing suggests; #9 double-decodes; #16
+  pre-shifts quartets; #21 is polyalphabetic) — a flat decode is what made #11 and #21 look
+  broken. **#8 is a book cipher**: it decodes to fourteen digits, `70225849304224`, i.e. word
+  numbers 70/22/58/49/30/42/24 into the Declaration of Independence’s opening sentence, whose
+  first letters spell `TTMEPLA` — and only if **“Nature’s” counts as one word** (splitting it
+  gives `TTOGPLA`). **#11** is proved a permutation of `VORTEXSOUVENIR67214` with its spiral
+  geometry **not published** (exhaustive search to 5×5 is empty — do not retry). **#19/#20** is
+  proved corrupt rather than flagged: **10 368** key×direction×answer×orientation attempts, zero
+  successes. **#21** reconstructs exactly to `PLAY JACKBOX TWITCH 330`. Wave 8’s open query
+  **`820chi`** is resolved as puzzle #1’s clue `826 CHI 60622`, one digit off.
+* **The USCYBERCOM seal after 2018** — closed by a primary source: the U.S. Army **Institute of
+  Heraldry**’s official blazon still specifies the MD5 ring, and it repeats the error the record
+  exists to correct, calling the digest “**encrypted** within this code”. A third transcription
+  caught by counting: Computerworld’s “58-word mission statement” is **55 words / 392 characters**
+  in the text that actually hashes.
+* **F5 2016, extended** — article 291348 fetched, so the 2019 thread closes as a **documented
+  absence** (a JSON tree model, no answer, “avoid posting hints, answers, or spoilers here”), and
+  card #3’s pigpen ciphertext is recorded as unrecovered with the reason: it exists only as a
+  ~600×57 image and the generator explicitly excludes it.
+
+Two defects surfaced in the **checking** code rather than the checked material, both recorded in
+the research log: an off-by-one in the patch tool that emitted a doubled quote into the 1 MB
+minified bundle (invisible by eye, fatal to the app) — the tool now parses the inline script with
+`node:vm` and verifies the record-id list before writing anything; and a Cicada check that banned
+`solved|cracked|broken` as a bare substring, firing inside “re**solved**”.
+
+Verification for this wave: `node tools/verify_lecture_hall.mjs` — **ALL CHECKS PASSED, 119
+checks**; `node tools/verify_casefiles.mjs 8099` — **ALL CHECKS PASSED** (re-run after the bundle
+edit, no regression); the patched bundle’s inline app script (938 676 bytes) re-extracted and
+re-parsed clean via `vm.Script` and served over HTTP 200 with all 10 records present;
+`smoke_pipeline.mjs` clean; `check-dom-ids.mjs` pass; `patch_lecture_hall_records_r2.py` re-run
+fails loudly. `sw.js` untouched — the suite file is not in the precache list.

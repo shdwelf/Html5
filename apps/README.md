@@ -15,7 +15,7 @@ Files originally saved as `index (N).html` on a mobile device were renamed from 
 | `Cipher-Machines-and-Cryptology-Suite-2026-07-29 (2).html` | Cipher Machines & Cryptology - Interactive Simulator Suite | 802 KB |  |
 | `Cipher-Machines-and-Cryptology-Suite-2026-07-30 (1).html` | Cipher Machines & Cryptology - Interactive Simulator Suite | 894 KB |  |
 | `Cipher-Machines-and-Cryptology-Suite-2026-07-31.html` | Cipher Machines & Cryptology - Interactive Simulator Suite | 901 KB |  |
-| `Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html` | Cipher Machines & Cryptology - Interactive Simulator Suite | 1000 KB | _(Intelligence Lecture Hall extended 2026-09-14 — see `docs/lecture-hall-research-2026-09-14.md`)_ |
+| `Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html` | Cipher Machines & Cryptology - Interactive Simulator Suite | 1027 KB | _(Intelligence Lecture Hall extended 2026-09-20 — 10 records, Cicada 3301 and F5 Black Hat 2018 added; see `docs/lecture-hall-research-2026-09-20.md` and `docs/lecture-hall-research-2026-09-14.md`)_ |
 | `DECRYPTORv1.html` | Standalone Offline Decryptor | 13 KB |  |
 | `GCWizard-Offline-Standalone.html` | GCWizard - GeoCache Wizard HTML5 App | 485 KB |  |
 | `GCWizard-offline.html` | GCWizard - GeoCache Wizard HTML5 App | 493 KB |  |
