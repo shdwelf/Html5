@@ -32,7 +32,7 @@
  * Zero dependencies beyond node itself. Exit code = number of failures.
  */
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -51,9 +51,21 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SUITE = join(ROOT, "apps", "Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html");
 
 let failures = 0;
+let skips = 0;
 const check = (ok, label) => {
   console.log(`   ${ok ? "✓" : "✗"} ${label}`);
   if (!ok) failures++;
+};
+/**
+ * A skip is not a pass. Section 8 audits the bundle the records live in, and
+ * this harness is also kept as a standalone research corpus where that 1 MB
+ * single-file app is deliberately absent. Absent material is announced rather
+ * than silently green, because a check that quietly disappears is worse than
+ * one that fails.
+ */
+const skip = (label) => {
+  console.log(`   − SKIP ${label}`);
+  skips++;
 };
 const md5 = (s) => createHash("md5").update(s, "utf8").digest("hex");
 const squash = (s) => s.replace(/[^A-Z0-9]/g, "").toUpperCase();
@@ -701,7 +713,14 @@ function literalAt(text, marker) {
   return null;
 }
 
-{
+if (!existsSync(SUITE)) {
+  skip(
+    "bundle integrity — the cipher-suite HTML the records live in is not in this " +
+    `checkout (looked for ${SUITE}). Every bundle assertion in this section, ` +
+    "including the per-record ones, did NOT run: sections 1–7 re-derive the " +
+    "cryptography from js/lecture-ciphers.js alone and are unaffected.",
+  );
+} else {
   const src = readFileSync(SUITE, "utf8");
   const scripts = [...src.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   let parsed = 0;
@@ -892,5 +911,8 @@ function literalAt(text, marker) {
 function fpOf(s) { return s; }
 function fingerprintNoSpace(s) { return s.replace(/\s+/g, ""); }
 
-console.log(`\n${failures === 0 ? "ALL CHECKS PASSED" : failures + " CHECKS FAILED"}`);
+const verdict = failures === 0
+  ? skips === 0 ? "ALL CHECKS PASSED" : `ALL CHECKS PASSED · ${skips} section(s) skipped`
+  : `${failures} CHECKS FAILED`;
+console.log(`\n${verdict}`);
 process.exit(failures ? 1 : 0);

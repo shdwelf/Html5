@@ -569,6 +569,13 @@ def validate(src, orig_ids):
 
 
 def main():
+    if not os.path.exists(APP):
+        sys.exit(
+            "FAIL: no cipher-suite bundle at\n  " + APP + "\n"
+            "This tool splices records into the single-file app, which lives in "
+            "shdwelf/Html5 under apps/. It is kept beside the research corpus for "
+            "reviewability, not to be run from a checkout that lacks the bundle."
+        )
     src = open(APP, encoding="utf-8").read()
     original = src
     before = len(src)
