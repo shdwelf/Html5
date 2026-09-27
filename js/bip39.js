@@ -1,4 +1,5 @@
 import { WORDLIST } from "./bip39-en.js";
+import { sha256 as sha256Pure } from "./hash.js";
 
 const INDEX = new Map(WORDLIST.map((w, i) => [w, i]));
 
@@ -89,9 +90,29 @@ function bytesToBits(bytes) {
   return bits;
 }
 
+/**
+ * SHA-256 for the BIP-39 checksum, with a pure-JS fallback.
+ *
+ * The WebCrypto digest only exists in secure contexts (https, localhost).
+ * These apps are also opened straight from disk (file://) or from a plain
+ * http:// host, where `crypto.subtle` is undefined and the old direct digest
+ * call threw — which surfaced in the Art Studio as "UNABLE TO CHECK" the
+ * moment a phrase was typed into the mnemonic box, so no phrase could ever
+ * validate. When the WebCrypto entry point is missing (or fails), fall back
+ * to the zero-dependency implementation in ./hash.js, which tests/11
+ * verifies against node:crypto.
+ */
 export async function sha256(bytes) {
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return new Uint8Array(digest);
+  const subtle = globalThis.crypto && globalThis.crypto.subtle;
+  if (subtle && typeof subtle.digest === "function") {
+    try {
+      const digest = await subtle.digest("SHA-256", bytes);
+      return new Uint8Array(digest);
+    } catch {
+      /* unexpected WebCrypto failure — use the fallback below */
+    }
+  }
+  return sha256Pure(bytes);
 }
 
 export async function entropyToMnemonic(entropy) {
