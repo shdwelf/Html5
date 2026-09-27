@@ -1,0 +1,166 @@
+{
+ "file": "b43-fwcutter",
+ "provenance": {
+  "distro": "Linux Kodachi 8 (EOL build tree)",
+  "source_repo": "https://github.com/WMAL/kodachios",
+  "clone_commit": "97adf1d8cf6d581998ffc18e0d0f3d0313315cb0",
+  "deb_path": "Kodachi-OS-8-EOL/open/bash/etc/bodhibuilder/debs/amd64/b43-fwcutter_1%3a019-3_amd64.deb",
+  "deb_md5": "bba7a66c17a3c6c1926f5592fed63fc8",
+  "deb_sha256": "1545d709c25b32c0f385d192215ab628a6cf803d9ff52a90a39a44ca7f971105",
+  "extraction": "ar x *.deb ; tar xf data.tar.xz ; usr/bin/b43-fwcutter"
+ },
+ "binary": {
+  "path": "usr/bin/b43-fwcutter",
+  "size": 61552,
+  "md5": "a4e9520a21545f07b11b7a925d98e19e",
+  "sha256": "41362c7281d2f50a07188727ba9c704e1346da609f4e741b529bdce768ff883b",
+  "format": "ELF64 PIE (DYN)",
+  "arch": "x86-64",
+  "stripped": true,
+  "entry": "0x6300",
+  "description": "b43-fwcutter version 019 - extract firmware for Broadcom 43xx"
+ },
+ "decompile": {
+  "engine": "wasm/ghidra (ghidra_decompiler.wasm)",
+  "driver": "tools/decompile_elf.mjs",
+  "lang": "x86:LE:64:default",
+  "compiler": "gcc",
+  "base": "0x0",
+  "load": "flat (file offset == vaddr)"
+ },
+ "image_base": "0x0",
+ "language": "x86:LE:64:default",
+ "function_count": 11,
+ "entries": [
+  "0x6300"
+ ],
+ "functions": [
+  {
+   "entry": "0x6300",
+   "name": "_start"
+  },
+  {
+   "entry": "0x57c0",
+   "name": "main"
+  },
+  {
+   "entry": "0x6430",
+   "name": "opt_match"
+  },
+  {
+   "entry": "0x7170",
+   "name": "opt_match_v2"
+  },
+  {
+   "entry": "0x6a90",
+   "name": "input_open_detect"
+  },
+  {
+   "entry": "0x66f0",
+   "name": "blob_write"
+  },
+  {
+   "entry": "0x68d0",
+   "name": "header_write"
+  },
+  {
+   "entry": "0x6d90",
+   "name": "byteswap_checksum"
+  },
+  {
+   "entry": "0x6570",
+   "name": "brcmsmac_extract"
+  },
+  {
+   "entry": "0x6f50",
+   "name": "list_versions"
+  },
+  {
+   "entry": "0x71e0",
+   "name": "seek_read_helper"
+  }
+ ],
+ "decompiled": [
+  {
+   "entry": "0x6300",
+   "name": "_start",
+   "file": "decompiled/0x6300.c"
+  },
+  {
+   "entry": "0x57c0",
+   "name": "main",
+   "file": "decompiled/0x57c0.c"
+  },
+  {
+   "entry": "0x6430",
+   "name": "opt_match",
+   "file": "decompiled/0x6430.c"
+  },
+  {
+   "entry": "0x7170",
+   "name": "opt_match_v2",
+   "file": "decompiled/0x7170.c"
+  },
+  {
+   "entry": "0x6a90",
+   "name": "input_open_detect",
+   "file": "decompiled/0x6a90.c"
+  },
+  {
+   "entry": "0x66f0",
+   "name": "blob_write",
+   "file": "decompiled/0x66f0.c"
+  },
+  {
+   "entry": "0x68d0",
+   "name": "header_write",
+   "file": "decompiled/0x68d0.c"
+  },
+  {
+   "entry": "0x6d90",
+   "name": "byteswap_checksum",
+   "file": "decompiled/0x6d90.c"
+  },
+  {
+   "entry": "0x6570",
+   "name": "brcmsmac_extract",
+   "file": "decompiled/0x6570.c"
+  },
+  {
+   "entry": "0x6f50",
+   "name": "list_versions",
+   "file": "decompiled/0x6f50.c"
+  },
+  {
+   "entry": "0x71e0",
+   "name": "seek_read_helper",
+   "file": "decompiled/0x71e0.c"
+  }
+ ],
+ "plt_map": {
+  "0x5748": "__libc_start_main",
+  "0x5790": "fopen",
+  "0x5788": "__printf_chk",
+  "0x57b0": "__fprintf_chk",
+  "0x5758": "strcmp",
+  "0x5730": "strlen",
+  "0x5778": "malloc",
+  "0x56f8": "free",
+  "0x5720": "fread",
+  "0x5780": "fseek",
+  "0x5768": "ftell",
+  "0x57a8": "fwrite",
+  "0x5728": "fclose",
+  "0x5790_note": "fopen",
+  "0x5760": "__memcpy_chk",
+  "0x5750": "memcmp",
+  "0x5740": "memset",
+  "0x5710": "strncpy",
+  "0x5700": "strcasecmp",
+  "0x5718": "mkdir",
+  "0x56f0": "__snprintf_chk",
+  "0x5798": "perror",
+  "0x57a0": "exit",
+  "0x5708": "__errno_location"
+ }
+}

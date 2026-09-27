@@ -128,6 +128,43 @@ The interesting targets are the **dashboard's Rust binaries** in `/opt/kodachi/�
 
 > Note: Rust's decompiled C is dense; Ghidra's static view is best for confirming *which* binaries touch the network/kill-switch, then focused function-level reading — not for a clean top-to-bottom source recovery.
 
+### 6.1 A real, reproducible pass — done here, from Kodachi's own bytes
+
+The steps above aren't hypothetical. Egress here is GitHub-only and multi-GB ISOs can't be
+pulled, but Warith Al Maawali's **official** source repo `github.com/WMAL/kodachios`
+commits the Kodachi-8 build tree — which **bakes 81 stock `.deb` packages into the image**.
+That is a genuine channel to real distro machine code without the ISO:
+
+```
+git clone --depth 1 https://github.com/WMAL/kodachios
+cd kodachios/Kodachi-OS-8-EOL/open/bash/etc/bodhibuilder/debs/amd64
+cp 'b43-fwcutter_1%3a019-3_amd64.deb' /tmp/p.deb
+cd /tmp && ar x p.deb && tar xf data.tar.xz     # -> usr/bin/b43-fwcutter (ELF64 PIE)
+```
+
+`usr/bin/b43-fwcutter` (v019; extracts Broadcom 43xx firmware so Kodachi's Wi-Fi works on
+live boot) was then decompiled **headlessly with the repo's own Ghidra-WASM engine** — the
+same `wasm/ghidra/` bundle `ghidra-lab.html` runs — via the new driver
+[`tools/decompile_elf.mjs`](./tools/decompile_elf.mjs):
+
+```
+node tools/decompile_elf.mjs usr/bin/b43-fwcutter entry   # _start -> __libc_start_main(main=0x57c0)
+node tools/decompile_elf.mjs usr/bin/b43-fwcutter 0x57c0  # full main(): arg parse + blob extraction
+```
+
+The output is real C. `_start` tail-calls `__libc_start_main` with `main` at `0x57c0`;
+`main` opens the driver file with `fopen`, walks options with `strcmp`/`strlen`, and byte-swaps
+firmware blobs. Because the binary is a **stripped PIE** whose executable segment has
+`Offset 0x0 → VirtAddr 0x0`, the flat loader uses **base `0x0`** (file offset == virtual
+address). PLT stubs were pinned to libc symbols (`objdump -d`) and match the decompiled calls
+exactly — evidence the load is faithful. Full corpus with provenance, hashes and per-function
+C: **[`abbottabad-ghidra/outputs/kodachi-b43-fwcutter/`](./abbottabad-ghidra/outputs/kodachi-b43-fwcutter/report.md)**.
+
+> Honest scope: these `.deb`s are stock Ubuntu code *shipped in* Kodachi, not Kodachi-authored
+> logic — WMAL/kodachios ships no native Kodachi binaries (the dashboard is Bash/Rust built at
+> image time), so committed `.deb`s are the only real machine code to decompile without the ISO.
+> To reach `/opt/kodachi`'s own binaries you still need an authenticated ISO (§5).
+
 ---
 
 ## 7. Kodachi vs the neighbours
