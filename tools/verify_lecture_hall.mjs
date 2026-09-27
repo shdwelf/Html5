@@ -44,7 +44,7 @@ import {
   WHEEL_POOL, WHEEL_VECTORS, CLANDESTINE_MESSAGES, CLANDESTINE_AMBIGUITY,
   FIELDNOTES_CODES, FIELDNOTES_21, FIELDNOTES_8, FIELDNOTES_COLLISION,
   DECLARATION_FIRST_SENTENCE,
-  F5_2016, F5_2018, USCYBERCOM, USCYBERCOM_HERALDRY, CICADA3301,
+  F5_2016, F5_2018, USCYBERCOM, USCYBERCOM_HERALDRY, CICADA3301, CICADA_LAB,
 } from "../js/lecture-ciphers.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -894,6 +894,54 @@ if (!existsSync(SUITE)) {
     /Institute of Heraldry/i.test(haystack("uscybercom-seal-md5")) &&
       /encrypted within this code/.test(haystack("uscybercom-seal-md5")),
     "Cyber Command record closes the post-2018 thread with the official blazon — and corrects its word “encrypted”",
+  );
+
+  // Cicada laboratory model and source grading
+  check(
+    CICADA_LAB.controls.length === 6 &&
+      CICADA_LAB.controls.every((control) => control.id && control.capability && control.technique && control.status),
+    "Cicada laboratory matrix has six capability controls with explicit technique and status fields",
+  );
+  check(
+    CICADA_LAB.controls.some((control) => /OutGuess/i.test(control.technique)) &&
+      CICADA_LAB.controls.some((control) => /RSA\/OAEP/i.test(control.technique)) &&
+      CICADA_LAB.controls.some((control) => /Tor/i.test(control.technique)) &&
+      CICADA_LAB.controls.some((control) => /Gematria Primus/i.test(control.technique)),
+    "Cicada laboratory matrix covers steganography, RSA/OAEP, Tor, and Gematria Primus",
+  );
+  check(
+    CICADA_LAB.sourceDiscipline.authenticated.includes("April 2017 warning") &&
+      CICADA_LAB.sourceDiscipline.communityOnly.includes("Liber Primus transcription") &&
+      CICADA_LAB.sourceDiscipline.explicitlyNotProven.includes("intelligence-agency attribution"),
+    "Cicada source discipline separates signed artifacts, community transcriptions, and attribution limits",
+  );
+  check(
+    CICADA_LAB.sources.some((url) => url.endsWith("/2014.md")) &&
+      CICADA_LAB.sources.some((url) => url.endsWith("/liber_primus.md")) &&
+      CICADA_LAB.sources.some((url) => url.includes("The_Leaked_Email")),
+    "Cicada laboratory matrix cites the 2014 archive, Liber Primus transcription, and leaked-email provenance record",
+  );
+  check(
+    /laboratory model|cryptographic laboratory/i.test(haystack("cicada-3301")) &&
+      /intelligence service|intelligence connection|intelligence-agency/i.test(haystack("cicada-3301")) &&
+      /not proof|does not prove|not identify/i.test(haystack("cicada-3301")),
+    "Cicada record presents a laboratory model while explicitly limiting intelligence attribution",
+  );
+  check(
+    /OutGuess/i.test(haystack("cicada-3301")) &&
+      /book cipher/i.test(haystack("cicada-3301")) &&
+      /Tor hidden service/i.test(haystack("cicada-3301")) &&
+      /Gematria Primus/i.test(haystack("cicada-3301")) &&
+      /Atbash\/reversal/i.test(haystack("cicada-3301")) &&
+      /Vigenère-like shifts/i.test(haystack("cicada-3301")) &&
+      /prime.*totient|totient.*prime/i.test(haystack("cicada-3301")),
+    "Cicada record names the reproducible technique chain from OutGuess through Liber Primus numerical analysis",
+  );
+  check(
+    /modified and unsigned|modified\/unsigned/i.test(haystack("cicada-3301")) &&
+      /Think Tank/i.test(haystack("cicada-3301")) &&
+      /authorship|intelligence connection/i.test(haystack("cicada-3301")),
+    "Cicada record treats the Think Tank/recruitment language as a provenance-graded claim, not an authenticated identity",
   );
 
   // cicada record

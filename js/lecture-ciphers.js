@@ -691,6 +691,80 @@ export const CICADA3301 = {
 };
 
 /**
+ * Cicada 3301 as a bounded cryptographic laboratory model.
+ *
+ * This is an evidence map, not an attribution claim. It separates signed
+ * artifacts, community transcriptions, and later commentary so "research lab"
+ * describes the observable design of the puzzle pipeline rather than an
+ * alleged employer or intelligence service.
+ */
+export const CICADA_LAB = {
+  thesis:
+    "The public record supports a progressive cryptography laboratory model: each round instruments a different capability, then gates the next stage behind an authenticated artifact. It does not identify the people behind 3301 or prove an intelligence-agency connection.",
+  controls: [
+    {
+      id: "authenticity-control",
+      capability: "provenance and message authentication",
+      technique: "OpenPGP cleartext signatures with issuer key ID 7A35090F",
+      evidence: "2012 Welcome payload, later signed messages, and the April 2017 warning",
+      status: "reproducible packet parsing; human identity unproven",
+      provenance: "signed artifact transcription",
+    },
+    {
+      id: "concealment-control",
+      capability: "steganographic extraction",
+      technique: "OutGuess payloads in JPEG images",
+      evidence: "2012 and 2014 archive walkthroughs record the extraction command and signed output",
+      status: "reproducible from archived images when the image bytes are available",
+      provenance: "community archive with source assets",
+    },
+    {
+      id: "text-addressing-control",
+      capability: "literary precision and indexing",
+      technique: "book ciphers using specified editions and multi-part coordinates",
+      evidence: "2012 Mabinogion/Bulfinch path and the 2014 Self-Reliance book code",
+      status: "re-derived in the archive; edition and transcription remain part of the proof",
+      provenance: "community archive with signed payloads",
+    },
+    {
+      id: "public-key-control",
+      capability: "number theory and cryptographic engineering",
+      technique: "RSA/OAEP challenges with public exponent 65537",
+      evidence: "2012 low-bit challenge and the 2014 onion-stage RSA record",
+      status: "ciphertext and parameters are documented; this repository does not claim every historical decryption",
+      provenance: "signed artifact transcription",
+    },
+    {
+      id: "anonymous-transport-control",
+      capability: "privacy-preserving deployment",
+      technique: "Tor hidden service, CGI upload endpoint, and a posted GnuPG public key",
+      evidence: "the signed 2014 instruction asks solvers to run a hidden service and publish /key.asc",
+      status: "instruction is observable; operator infrastructure and intent are not identified",
+      provenance: "signed artifact transcription",
+    },
+    {
+      id: "manuscript-control",
+      capability: "custom alphabet and numerical cryptanalysis",
+      technique: "29-symbol Gematria Primus, rune substitution, Atbash/reversal, Vigenère-like shifts, prime and totient streams",
+      evidence: "Liber Primus archive: known plaintext pages, prime sums, and the phi(prime) page method",
+      status: "partial solutions are reproducible; the corpus is not fully solved",
+      provenance: "community transcription and analysis",
+    },
+  ],
+  sourceDiscipline: {
+    authenticated: ["2012 Welcome payload", "2014 signed instructions", "April 2017 warning"],
+    communityOnly: ["Liber Primus transcription", "solver walkthroughs", "recovered 2013 recruitment email"],
+    explicitlyNotProven: ["intelligence-agency attribution", "organizational identity", "complete Liber Primus solution"],
+  },
+  sources: [
+    "https://github.com/scream314/cicada3301/blob/master/2014.md",
+    "https://github.com/scream314/cicada3301/blob/master/liber_primus.md",
+    "https://uncovering-cicada.fandom.com/wiki/The_Leaked_Email",
+    "https://uncovering-cicada.fandom.com/wiki/What_Happened_Part_1_(2014)",
+  ],
+};
+
+/**
  * The U.S. Army Institute of Heraldry's official blazon for the USCYBERCOM
  * seal — the primary source that closes the "does the seal still carry it"
  * thread. Quoted because it repeats, in the command's own heraldic record, the
