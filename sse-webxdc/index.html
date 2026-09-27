@@ -1,0 +1,3560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SSE WebXDC — Secret Space Encryptor</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --panel2: #1c2230; --border: #2d333b;
+    --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --accent2: #3fb950;
+    --danger: #f85149; --pro: #d29922;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 16px; }
+  header { display: flex; align-items: center; gap: 12px; padding: 14px 0 6px; }
+  header .logo {
+    width: 40px; height: 40px; border-radius: 9px; background: linear-gradient(135deg, #1f6feb, #39d353);
+    display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #fff;
+  }
+  header h1 { font-size: 19px; margin: 0; }
+  header .sub { color: var(--muted); font-size: 12.5px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin: 10px 0; }
+  label { display: block; font-size: 12.5px; color: var(--muted); margin: 8px 0 4px; }
+  textarea, input[type=password], input[type=text], select {
+    width: 100%; background: var(--panel2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 7px; padding: 9px 10px; font: inherit; resize: vertical;
+  }
+  textarea { min-height: 96px; }
+  textarea:focus, input:focus, select:focus { outline: none; border-color: var(--accent); }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+  .row > div { flex: 1 1 200px; }
+  .btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  button {
+    background: var(--accent); color: #04121f; border: 0; border-radius: 7px;
+    padding: 9px 14px; font-weight: 700; cursor: pointer; font-size: 14px;
+  }
+  button:hover { filter: brightness(1.1); }
+  button.secondary { background: #21262d; color: var(--text); border: 1px solid var(--border); }
+  button.green { background: var(--accent2); }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .status { margin-top: 10px; min-height: 20px; font-size: 13px; color: var(--muted); }
+  .status.error { color: var(--danger); }
+  .note { font-size: 12px; color: var(--muted); }
+  .pro-tag { color: var(--pro); font-weight: 700; }
+  footer { color: var(--muted); font-size: 11.5px; text-align: center; padding: 18px 10px 26px; }
+  footer a { color: var(--accent); }
+  code { background: var(--panel2); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+  .filebox { border: 1px dashed var(--border); border-radius: 7px; padding: 10px; margin-top: 6px; }
+  .filebox input { border: 0; padding: 4px 0; background: transparent; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">SS</div>
+    <div>
+      <h1>Secret Space Encryptor <span style="color:var(--muted);font-weight:400">· WebXDC</span></h1>
+      <div class="sub">File &amp; text encryption · AES · Serpent · Threefish · SHACAL-2 · Paranoia C4 · <span class="pro-tag">PRO features enabled</span></div>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="alg">Algorithm</label>
+        <select id="alg"></select>
+      </div>
+      <div>
+        <label for="format">Format</label>
+        <select id="format">
+          <option value="ssev3" selected>SSE v3 — compatible with SSE Android/desktop (Base62, Argon2id)</option>
+          <option value="ssev2">SSE v2 — legacy Android/desktop messages (decrypt)</option>
+          <option value="aesgcm">AES-GCM — modern Web Crypto (128/192/256-bit)</option>
+          <option value="ssewx">SSEWX — this app's native container (PBKDF2)</option>
+        </select>
+      </div>
+      <div>
+        <label for="iter">PBKDF2 iterations (SSEWX / AES-GCM)</label>
+        <select id="iter">
+          <option value="100000">100,000 (faster)</option>
+          <option value="200000" selected>200,000 (default)</option>
+          <option value="600000">600,000 (stronger)</option>
+        </select>
+      </div>
+    </div>
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Passphrase (only the hash leaves this device)">
+
+    <label for="input">Input — plaintext to encrypt, or a Base64 <code>SSEWX…</code> payload to decrypt</label>
+    <textarea id="input" placeholder="Type a message, or paste an encrypted payload…"></textarea>
+
+    <div class="btns">
+      <button id="encryptBtn" class="green">🔒 Encrypt</button>
+      <button id="decryptBtn">🔓 Decrypt</button>
+      <button id="copyBtn" class="secondary">Copy output</button>
+      <button id="sendBtn" class="secondary">Send to chat</button>
+      <button id="clearBtn" class="secondary">Clear</button>
+    </div>
+
+    <label for="output">Output</label>
+    <textarea id="output" placeholder="Encrypted payload (Base64) or decrypted text appears here…" readonly></textarea>
+
+    <div class="filebox">
+      <label for="fileIn">File encryption (optional)</label>
+      <input type="file" id="fileIn">
+      <div class="btns" style="margin-top:8px">
+        <button id="encryptFileBtn" class="secondary">🔒 Encrypt file → <code>.sse</code></button>
+        <button id="decryptFileBtn" class="secondary">🔓 Decrypt <code>.sse</code> file</button>
+      </div>
+      <div class="note">Files are sealed with the same password + algorithm and sent to the chat (or downloaded).</div>
+    </div>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <div class="card">
+    <div class="note">
+      <strong>Algorithms</strong> — AES-256 and Serpent-256 are the free set. <span class="pro-tag">Threefish-1024, SHACAL-2 (512-bit key) and Paranoia C4-2048</span> (a cascade of Threefish → Serpent → AES → SHACAL-2) are the donation-tier ("PRO") ciphers from SSE.
+      <br><br><strong>SSE v2 compatibility</strong> — legacy payloads are detected by their version bits. SSE v2 uses the historical Skein-1024 + scrypt KDF and is accepted for decryption; new messages use v3.
+      <br><br><strong>AES variations</strong> — the modern Web Crypto format supports authenticated AES-GCM with 128, 192, or 256-bit keys.
+      <br><br><strong>SSE v3 format</strong> — byte-compatible with Secret Space Encryptor for Android/desktop: produces and opens the exact same encrypted messages (Base62 shareable links, Argon2id key derivation, EAX, LZMA, the Tnepres Serpent flavor). Verified against vectors generated from SSE's own source.
+      <br><br>All cryptography runs locally in your browser in pure JavaScript — no server, no network, no telemetry.
+    </div>
+  </div>
+
+  <footer>
+    Port of <a href="https://github.com/sdatar59/Paranoia_Works-Secret_Space_Encryptor_for_Android">Paranoia Works · Secret Space Encryptor</a> (GPL v3).
+    If you find this useful, please consider <a href="https://paranoiaworks.mobi/buypro/">supporting the original project</a>.
+  </footer>
+</div>
+
+<script>/* Minimal WebXDC API shim.
+ * Inside a real WebXDC runtime (Delta Chat, etc.) the host injects
+ * window.webxdc; this file only fills in a standalone-browser fallback so the
+ * app also runs (and can be demoed) as a plain web page. */
+(function () {
+  "use strict";
+  if (window.webxdc && typeof window.webxdc.sendToChat === "function") return;
+
+  var updates = [];
+  var updateListener = null;
+
+  function makeFile(name, data, mime) {
+    try {
+      return new File([data], name, { type: mime || "application/octet-stream" });
+    } catch (e) {
+      // older environments: File constructor may need Blob parts
+      var blob = new Blob([data], { type: mime || "application/octet-stream" });
+      blob.name = name;
+      return blob;
+    }
+  }
+
+  function download(file) {
+    var url = URL.createObjectURL(file);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = file.name || "download";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 0);
+  }
+
+  window.webxdc = {
+    selfAddr: "you@example.org",
+    selfName: "You",
+    sendUpdate: function (payload, description) {
+      updates.push(payload);
+      if (updateListener) {
+        try { updateListener({ payload: payload }); } catch (e) {}
+      }
+    },
+    setUpdateListener: function (cb, serial) {
+      updateListener = cb;
+      var max = serial || 0;
+      var since = Math.min(max, updates.length);
+      for (var i = since; i < updates.length; i++) {
+        try { cb({ payload: updates[i] }); } catch (e) {}
+      }
+      return updates.length;
+    },
+    sendToChat: function (file, description) {
+      download(file);
+    },
+    importFiles: function (files) {
+      // fallback: nothing to do
+      return [];
+    }
+  };
+})();
+</script>
+<script>/*
+ * SSE-WebXDC crypto core — pure JavaScript, no dependencies.
+ *
+ * Every primitive below is a faithful port of the EXACT crypto code that
+ * Secret Space Encryptor (Paranoia Works) ships under GPL v3:
+ *
+ *   - AES-256, Serpent-256, Threefish-1024, SHACAL-2 (512-bit key):
+ *       vendored Bouncy Castle engines in CryptoLibs/src/main/java/sse/org/bouncycastle
+ *   - Threefish-1024 rotation constants / key schedule:
+ *       Crypto++ threefish.cpp (also in this repo)
+ *   - CMAC / EAX / CTR (SIC): Bouncy Castle CMac, EAXBlockCipher, SICBlockCipher
+ *   - Paranoia C4-2048 cascade: EncryptorPI.encryptByteArrayEAX + AlgorithmBean
+ *       (Threefish-1024 CTR -> Serpent CTR -> AES CTR -> SHACAL-2 EAX,
+ *        key split [128,32,32,64], nonce split [128,16,16,32])
+ *
+ * Validated byte-for-byte against reference vectors generated by compiling
+ * the actual SSE Bouncy Castle sources (see test.js).
+ *
+ * The KDF and container format are this app's own (SSE uses Argon2id + its
+ * own v3 framing); see README.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    var ciphers = null;
+    try { ciphers = require("./compat/ciphers.js"); } catch (e) { ciphers = null; }
+    module.exports = factory(ciphers);
+  } else {
+    root.SSECrypto = factory(null);
+  }
+})(typeof self !== "undefined" ? self : this, function (CIPHERS) {
+  "use strict";
+
+  // Resolve the optional ciphers module lazily: in the browser it is
+  // registered as self.SSECIPHERS by the ciphers script (which may run
+  // after this one); in Node it is auto-required above.
+  function getCiphers() {
+    if (CIPHERS) return CIPHERS;
+    var g = (typeof self !== "undefined") ? self
+          : (typeof globalThis !== "undefined") ? globalThis : null;
+    if (g && g.SSECIPHERS) return g.SSECIPHERS;
+    return null;
+  }
+
+  /* ============================= byte helpers ============================= */
+
+  function hexToBytes(h) {
+    h = h.replace(/[^0-9a-fA-F]/g, "");
+    if (h.length % 2) h = "0" + h;
+    var out = new Uint8Array(h.length / 2);
+    for (var i = 0; i < out.length; i++) out[i] = parseInt(h.substr(2 * i, 2), 16);
+    return out;
+  }
+  function bytesToHex(b) {
+    var s = "";
+    for (var i = 0; i < b.length; i++) s += ("0" + b[i].toString(16)).slice(-2);
+    return s;
+  }
+  function concatBytes() {
+    var len = 0;
+    for (var i = 0; i < arguments.length; i++) len += arguments[i].length;
+    var out = new Uint8Array(len), o = 0;
+    for (var i = 0; i < arguments.length; i++) {
+      out.set(arguments[i], o);
+      o += arguments[i].length;
+    }
+    return out;
+  }
+  function equalBytes(a, b) {
+    if (a.length !== b.length) return false;
+    var d = 0;
+    for (var i = 0; i < a.length; i++) d |= a[i] ^ b[i];
+    return d === 0;
+  }
+  function readBE32(b, o) {
+    return ((b[o] << 24) | (b[o + 1] << 16) | (b[o + 2] << 8) | b[o + 3]) >>> 0;
+  }
+  function readLE32(b, o) {
+    return ((b[o + 3] << 24) | (b[o + 2] << 16) | (b[o + 1] << 8) | b[o]) >>> 0;
+  }
+  function readBE32(b, o) {
+    return ((b[o] << 24) | (b[o + 1] << 16) | (b[o + 2] << 8) | b[o + 3]) >>> 0;
+  }
+  function writeBE32(v, b, o) {
+    b[o] = v >>> 24; b[o + 1] = v >>> 16; b[o + 2] = v >>> 8; b[o + 3] = v;
+  }
+  function writeLE32(v, b, o) {
+    b[o] = v; b[o + 1] = v >>> 8; b[o + 2] = v >>> 16; b[o + 3] = v >>> 24;
+  }
+  function rol32(x, n) { n &= 31; return n ? ((x << n) | (x >>> (32 - n))) >>> 0 : x >>> 0; }
+  function ror32(x, n) { n &= 31; return n ? ((x >>> n) | (x << (32 - n))) >>> 0 : x >>> 0; }
+
+  var RANDOM_OK = (typeof crypto !== "undefined" && crypto.getRandomValues && typeof crypto.getRandomValues === "function");
+  function randomBytes(n) {
+    var out = new Uint8Array(n);
+    if (RANDOM_OK) {
+      crypto.getRandomValues(out);
+    } else {
+      for (var i = 0; i < n; i++) out[i] = Math.floor(Math.random() * 256);
+    }
+    return out;
+  }
+
+  /* ============================= SHA-256 / HMAC / PBKDF2 ============================= */
+
+  var K256 = [
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+  ];
+
+  function sha256(bytes) {
+    var len = bytes.length;
+    var bitLenHi = Math.floor(len / 536870912); // len*8 >> 32
+    var bitLenLo = (len << 3) >>> 0;
+    var padded = new Uint8Array(((len + 8) >> 6 << 6) + 64);
+    padded.set(bytes);
+    padded[len] = 0x80;
+    var dv = new DataView(padded.buffer);
+    dv.setUint32(padded.length - 8, bitLenHi);
+    dv.setUint32(padded.length - 4, bitLenLo);
+
+    var h = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+             0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+    var w = new Uint32Array(64);
+
+    for (var off = 0; off < padded.length; off += 64) {
+      for (var i = 0; i < 16; i++) w[i] = readBE32(padded, off + 4 * i);
+      for (var i = 16; i < 64; i++) {
+        var s0 = ror32(w[i - 15], 7) ^ ror32(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+        var s1 = ror32(w[i - 2], 17) ^ ror32(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+        w[i] = (w[i - 16] + s0 + w[i - 7] + s1) >>> 0;
+      }
+      var a = h[0], b = h[1], c = h[2], d = h[3], e = h[4], f = h[5], g = h[6], hh = h[7];
+      for (var i = 0; i < 64; i++) {
+        var S1 = ror32(e, 6) ^ ror32(e, 11) ^ ror32(e, 25);
+        var ch = (e & f) ^ (~e & g);
+        var t1 = (hh + S1 + ch + K256[i] + w[i]) >>> 0;
+        var S0 = ror32(a, 2) ^ ror32(a, 13) ^ ror32(a, 22);
+        var maj = (a & b) ^ (a & c) ^ (b & c);
+        var t2 = (S0 + maj) >>> 0;
+        hh = g; g = f; f = e;
+        e = (d + t1) >>> 0;
+        d = c; c = b; b = a;
+        a = (t1 + t2) >>> 0;
+      }
+      h[0] = (h[0] + a) >>> 0; h[1] = (h[1] + b) >>> 0; h[2] = (h[2] + c) >>> 0; h[3] = (h[3] + d) >>> 0;
+      h[4] = (h[4] + e) >>> 0; h[5] = (h[5] + f) >>> 0; h[6] = (h[6] + g) >>> 0; h[7] = (h[7] + hh) >>> 0;
+    }
+    var out = new Uint8Array(32);
+    for (var i = 0; i < 8; i++) writeBE32(h[i], out, 4 * i);
+    return out;
+  }
+
+  function hmacSha256(key, msg) {
+    if (key.length > 64) key = sha256(key);
+    var ipad = new Uint8Array(64), opad = new Uint8Array(64);
+    for (var i = 0; i < 64; i++) {
+      ipad[i] = 0x36; opad[i] = 0x5c;
+    }
+    for (var i = 0; i < key.length; i++) { ipad[i] ^= key[i]; opad[i] ^= key[i]; }
+    return sha256(concatBytes(opad, sha256(concatBytes(ipad, msg))));
+  }
+
+  function pbkdf2Sha256(password, salt, iterations, dkLen) {
+    var out = new Uint8Array(dkLen);
+    var blocks = Math.ceil(dkLen / 32);
+    for (var b = 1; b <= blocks; b++) {
+      var saltB = new Uint8Array(salt.length + 4);
+      saltB.set(salt);
+      saltB[salt.length] = (b >>> 24) & 0xff;
+      saltB[salt.length + 1] = (b >>> 16) & 0xff;
+      saltB[salt.length + 2] = (b >>> 8) & 0xff;
+      saltB[salt.length + 3] = b & 0xff;
+      var u = hmacSha256(password, saltB);
+      var t = new Uint8Array(u);
+      for (var i = 1; i < iterations; i++) {
+        u = hmacSha256(password, u);
+        for (var j = 0; j < 32; j++) t[j] ^= u[j];
+      }
+      out.set(t.subarray(0, Math.min(32, dkLen - (b - 1) * 32)), (b - 1) * 32);
+    }
+    return out;
+  }
+
+  /* ============================= AES-256 ============================= */
+
+  var AES_S = hexToBytes(
+    "637c777bf26b6fc53001672bfed7ab76ca82c97dfa5947f0add4a2af9ca472c0b7fd9326363ff7cc34a5e5f171d8311504c723c31896059a071280e2eb27b27509832c1a1b6e5aa0523bd6b329e32f8453d100ed20fcb15b6acbbe394a4c58cfd0efaafb434d338545f9027f503c9fa851a3408f929d38f5bcb6da2110fff3d2cd0c13ec5f974417c4a77e3d645d197360814fdc222a908846eeb814de5e0bdbe0323a0a4906245cc2d3ac629195e479e7c8376d8dd54ea96c56f4ea657aae08ba78252e1ca6b4c6e8dd741f4bbd8b8a703eb5664803f60e613557b986c11d9ee1f8981169d98e949b1e87e9ce5528df8ca1890dbfe6426841992d0fb054bb16");
+  var AES_SI = hexToBytes(
+    "52096ad53036a538bf40a39e81f3d7fb7ce339829b2fff87348e4344c4dee9cb547b9432a6c2233dee4c950b42fac34e082ea16628d924b2765ba2496d8bd12572f8f66486689816d4a45ccc5d65b6926c704850fdedb9da5e154657a78d9d8490d8ab008cbcd30af7e45805b8b34506d02c1e8fca3f0f02c1afbd0301138a6b3a9111414f67dcea97f2cfcef0b4e67396ac7422e7ad3585e2f937e81c75df6e47f11a711d29c5896fb7620eaa18be1bfc563e4bc6d279209adbc0fe78cd5af41fdda8338807c731b11210592780ec5f60517fa919b54a0d2de57a9f93c99cefa0e03b4dae2af5b0c8ebbb3c83539961172b047eba77d626e169146355210c7d");
+  var AES_RCON = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d];
+
+  function subWord(w) {
+    return ((AES_S[(w >>> 24) & 0xff] << 24) | (AES_S[(w >>> 16) & 0xff] << 16) |
+            (AES_S[(w >>> 8) & 0xff] << 8) | AES_S[w & 0xff]) >>> 0;
+  }
+  function rotWord(w) { return ((w << 8) | (w >>> 24)) >>> 0; }
+  function xtime(x) { return ((x << 1) ^ (x & 0x80 ? 0x1b : 0)) & 0xff; }
+  function mul2(x) { return xtime(x); }
+  function mul3(x) { return xtime(x) ^ x; }
+  function mul9(x) { return xtime(xtime(xtime(x))) ^ x; }
+  function mul11(x) { return xtime(xtime(xtime(x)) ^ x) ^ x; }
+  function mul13(x) { return xtime(xtime(xtime(x) ^ x)) ^ x; }
+  function mul14(x) { return xtime(xtime(xtime(x) ^ x) ^ x); }
+
+  function mixColumn(w) {
+    var a0 = (w >>> 24) & 0xff, a1 = (w >>> 16) & 0xff, a2 = (w >>> 8) & 0xff, a3 = w & 0xff;
+    var b0 = mul2(a0) ^ mul3(a1) ^ a2 ^ a3;
+    var b1 = a0 ^ mul2(a1) ^ mul3(a2) ^ a3;
+    var b2 = a0 ^ a1 ^ mul2(a2) ^ mul3(a3);
+    var b3 = mul3(a0) ^ a1 ^ a2 ^ mul2(a3);
+    return ((b0 << 24) | (b1 << 16) | (b2 << 8) | b3) >>> 0;
+  }
+  function invMixColumn(w) {
+    var a0 = (w >>> 24) & 0xff, a1 = (w >>> 16) & 0xff, a2 = (w >>> 8) & 0xff, a3 = w & 0xff;
+    var b0 = mul14(a0) ^ mul11(a1) ^ mul13(a2) ^ mul9(a3);
+    var b1 = mul9(a0) ^ mul14(a1) ^ mul11(a2) ^ mul13(a3);
+    var b2 = mul13(a0) ^ mul9(a1) ^ mul14(a2) ^ mul11(a3);
+    var b3 = mul11(a0) ^ mul13(a1) ^ mul9(a2) ^ mul14(a3);
+    return ((b0 << 24) | (b1 << 16) | (b2 << 8) | b3) >>> 0;
+  }
+
+  function aesExpandKey(key) { // 32-byte key -> 60 words
+    var w = new Array(60);
+    for (var i = 0; i < 8; i++) w[i] = readBE32(key, 4 * i);
+    for (var i = 8; i < 60; i++) {
+      var t = w[i - 1];
+      if (i % 8 === 0) t = (subWord(rotWord(t)) ^ ((AES_RCON[i / 8 - 1] << 24) >>> 0)) >>> 0;
+      else if (i % 8 === 4) t = subWord(t);
+      w[i] = (w[i - 8] ^ t) >>> 0;
+    }
+    return w;
+  }
+
+  function aesEncryptBlock(w, inb) {
+    var s0 = readBE32(inb, 0) ^ w[0], s1 = readBE32(inb, 4) ^ w[1],
+        s2 = readBE32(inb, 8) ^ w[2], s3 = readBE32(inb, 12) ^ w[3];
+    for (var r = 1; r < 14; r++) {
+      // SubBytes + ShiftRows
+      var t0 = ((AES_S[s0 >>> 24] << 24) | (AES_S[(s1 >>> 16) & 0xff] << 16) | (AES_S[(s2 >>> 8) & 0xff] << 8) | AES_S[s3 & 0xff]) >>> 0;
+      var t1 = ((AES_S[s1 >>> 24] << 24) | (AES_S[(s2 >>> 16) & 0xff] << 16) | (AES_S[(s3 >>> 8) & 0xff] << 8) | AES_S[s0 & 0xff]) >>> 0;
+      var t2 = ((AES_S[s2 >>> 24] << 24) | (AES_S[(s3 >>> 16) & 0xff] << 16) | (AES_S[(s0 >>> 8) & 0xff] << 8) | AES_S[s1 & 0xff]) >>> 0;
+      var t3 = ((AES_S[s3 >>> 24] << 24) | (AES_S[(s0 >>> 16) & 0xff] << 16) | (AES_S[(s1 >>> 8) & 0xff] << 8) | AES_S[s2 & 0xff]) >>> 0;
+      // MixColumns + AddRoundKey
+      s0 = mixColumn(t0) ^ w[4 * r];
+      s1 = mixColumn(t1) ^ w[4 * r + 1];
+      s2 = mixColumn(t2) ^ w[4 * r + 2];
+      s3 = mixColumn(t3) ^ w[4 * r + 3];
+    }
+    // final round: SubBytes + ShiftRows + AddRoundKey (no MixColumns)
+    var f0 = ((AES_S[s0 >>> 24] << 24) | (AES_S[(s1 >>> 16) & 0xff] << 16) | (AES_S[(s2 >>> 8) & 0xff] << 8) | AES_S[s3 & 0xff]) >>> 0;
+    var f1 = ((AES_S[s1 >>> 24] << 24) | (AES_S[(s2 >>> 16) & 0xff] << 16) | (AES_S[(s3 >>> 8) & 0xff] << 8) | AES_S[s0 & 0xff]) >>> 0;
+    var f2 = ((AES_S[s2 >>> 24] << 24) | (AES_S[(s3 >>> 16) & 0xff] << 16) | (AES_S[(s0 >>> 8) & 0xff] << 8) | AES_S[s1 & 0xff]) >>> 0;
+    var f3 = ((AES_S[s3 >>> 24] << 24) | (AES_S[(s0 >>> 16) & 0xff] << 16) | (AES_S[(s1 >>> 8) & 0xff] << 8) | AES_S[s2 & 0xff]) >>> 0;
+    s0 = f0 ^ w[56]; s1 = f1 ^ w[57]; s2 = f2 ^ w[58]; s3 = f3 ^ w[59];
+    var out = new Uint8Array(16);
+    writeBE32(s0, out, 0); writeBE32(s1, out, 4); writeBE32(s2, out, 8); writeBE32(s3, out, 12);
+    return out;
+  }
+
+  function aesDecryptBlock(w, inb) {
+    var s0 = readBE32(inb, 0) ^ w[56], s1 = readBE32(inb, 4) ^ w[57],
+        s2 = readBE32(inb, 8) ^ w[58], s3 = readBE32(inb, 12) ^ w[59];
+    for (var r = 13; r >= 1; r--) {
+      // InvSubBytes + InvShiftRows
+      var t0 = ((AES_SI[s0 >>> 24] << 24) | (AES_SI[(s3 >>> 16) & 0xff] << 16) | (AES_SI[(s2 >>> 8) & 0xff] << 8) | AES_SI[s1 & 0xff]) >>> 0;
+      var t1 = ((AES_SI[s1 >>> 24] << 24) | (AES_SI[(s0 >>> 16) & 0xff] << 16) | (AES_SI[(s3 >>> 8) & 0xff] << 8) | AES_SI[s2 & 0xff]) >>> 0;
+      var t2 = ((AES_SI[s2 >>> 24] << 24) | (AES_SI[(s1 >>> 16) & 0xff] << 16) | (AES_SI[(s0 >>> 8) & 0xff] << 8) | AES_SI[s3 & 0xff]) >>> 0;
+      var t3 = ((AES_SI[s3 >>> 24] << 24) | (AES_SI[(s2 >>> 16) & 0xff] << 16) | (AES_SI[(s1 >>> 8) & 0xff] << 8) | AES_SI[s0 & 0xff]) >>> 0;
+      // AddRoundKey then InvMixColumns
+      s0 = invMixColumn(t0 ^ w[4 * r]);
+      s1 = invMixColumn(t1 ^ w[4 * r + 1]);
+      s2 = invMixColumn(t2 ^ w[4 * r + 2]);
+      s3 = invMixColumn(t3 ^ w[4 * r + 3]);
+    }
+    // final round: InvSubBytes + InvShiftRows + AddRoundKey(w[0..3])
+    var f0 = ((AES_SI[s0 >>> 24] << 24) | (AES_SI[(s3 >>> 16) & 0xff] << 16) | (AES_SI[(s2 >>> 8) & 0xff] << 8) | AES_SI[s1 & 0xff]) >>> 0;
+    var f1 = ((AES_SI[s1 >>> 24] << 24) | (AES_SI[(s0 >>> 16) & 0xff] << 16) | (AES_SI[(s3 >>> 8) & 0xff] << 8) | AES_SI[s2 & 0xff]) >>> 0;
+    var f2 = ((AES_SI[s2 >>> 24] << 24) | (AES_SI[(s1 >>> 16) & 0xff] << 16) | (AES_SI[(s0 >>> 8) & 0xff] << 8) | AES_SI[s3 & 0xff]) >>> 0;
+    var f3 = ((AES_SI[s3 >>> 24] << 24) | (AES_SI[(s2 >>> 16) & 0xff] << 16) | (AES_SI[(s1 >>> 8) & 0xff] << 8) | AES_SI[s0 & 0xff]) >>> 0;
+    s0 = f0 ^ w[0]; s1 = f1 ^ w[1]; s2 = f2 ^ w[2]; s3 = f3 ^ w[3];
+    var out = new Uint8Array(16);
+    writeBE32(s0, out, 0); writeBE32(s1, out, 4); writeBE32(s2, out, 8); writeBE32(s3, out, 12);
+    return out;
+  }
+
+  function makeAES(key) { // 32-byte key
+    var w = aesExpandKey(key);
+    return {
+      blockSize: 16,
+      encrypt: function (b) { return aesEncryptBlock(w, b); },
+      decrypt: function (b) { return aesDecryptBlock(w, b); }
+    };
+  }
+
+  /* ============================= Serpent-256 (standard) ============================= */
+
+  var SERPENT_PHI = 0x9e3779b9;
+
+  function serpentWorkingKey(key) { // key bytes, little-endian words
+    var kPad = new Array(16);
+    var length = 0, off = 0;
+    for (off = 0; off + 4 < key.length; off += 4) kPad[length++] = readLE32(key, off);
+    if (off % 4 === 0 && off < key.length) {
+      kPad[length++] = readLE32(key, off);
+      if (length < 8) kPad[length] = 1;
+    }
+    for (var i = 8; i < 16; i++) {
+      kPad[i] = rol32((kPad[i - 8] ^ kPad[i - 5] ^ kPad[i - 3] ^ kPad[i - 1] ^ SERPENT_PHI ^ (i - 8)) >>> 0, 11);
+    }
+    var amount = 33 * 4; // 132
+    var w = new Array(amount);
+    for (var i = 0; i < 8; i++) w[i] = kPad[i + 8];
+    for (var i = 8; i < amount; i++) {
+      w[i] = rol32((w[i - 8] ^ w[i - 5] ^ w[i - 3] ^ w[i - 1] ^ SERPENT_PHI ^ i) >>> 0, 11);
+    }
+    // apply S-boxes 3,2,1,0,7,6,5,4 repeating
+    var order = [3, 2, 1, 0, 7, 6, 5, 4];
+    for (var i = 0; i < 132; i += 4) {
+      var sb = serpentSBox(order[(i / 4) % 8]);
+      var r = sb(w[i], w[i + 1], w[i + 2], w[i + 3]);
+      w[i] = r[0]; w[i + 1] = r[1]; w[i + 2] = r[2]; w[i + 3] = r[3];
+    }
+    return w;
+  }
+
+  // Serpent S-boxes (bit-sliced boolean form, from Bouncy Castle SerpentEngineBase).
+  function serpentSBox(n) {
+    switch (n) {
+      case 0: return function (a, b, c, d) {
+        var t1 = a ^ d, t3 = c ^ t1, t4 = b ^ t3;
+        var x3 = (a & d) ^ t4;
+        var t7 = a ^ (b & t1);
+        var x2 = t4 ^ (c | t7);
+        var t12 = x3 & (t3 ^ t7);
+        var x1 = (~t3) ^ t12;
+        var x0 = t12 ^ (~t7);
+        return [x0, x1, x2, x3];
+      };
+      case 1: return function (a, b, c, d) {
+        var t2 = b ^ (~a), t5 = c ^ (a | t2);
+        var x2 = d ^ t5;
+        var t7 = b ^ (d | t2), t8 = t2 ^ x2;
+        var x3 = t8 ^ (t5 & t7);
+        var t11 = t5 ^ t7;
+        var x1 = x3 ^ t11, x0 = t5 ^ (t8 & t11);
+        return [x0, x1, x2, x3];
+      };
+      case 2: return function (a, b, c, d) {
+        var t1 = ~a, t2 = b ^ d, t3 = c & t1;
+        var x0 = t2 ^ t3;
+        var t5 = c ^ t1, t6 = c ^ x0, t7 = b & t6;
+        var x3 = t5 ^ t7;
+        var x2 = a ^ ((d | t7) & (x0 | t5));
+        var x1 = (t2 ^ x3) ^ (x2 ^ (d | t1));
+        return [x0, x1, x2, x3];
+      };
+      case 3: return function (a, b, c, d) {
+        var t1 = a ^ b, t2 = a & c, t3 = a | d, t4 = c ^ d, t5 = t1 & t3, t6 = t2 | t5;
+        var x2 = t4 ^ t6;
+        var t8 = b ^ t3, t9 = t6 ^ t8, t10 = t4 & t9;
+        var x0 = t1 ^ t10;
+        var t12 = x2 & x0;
+        var x1 = t9 ^ t12, x3 = (b | d) ^ (t4 ^ t12);
+        return [x0, x1, x2, x3];
+      };
+      case 4: return function (a, b, c, d) {
+        var t1 = a ^ d, t2 = d & t1, t3 = c ^ t2, t4 = b | t3;
+        var x3 = t1 ^ t4;
+        var t6 = ~b, t7 = t1 | t6;
+        var x0 = t3 ^ t7;
+        var t9 = a & x0, t10 = t1 ^ t6, t11 = t4 & t10;
+        var x2 = t9 ^ t11, x1 = (a ^ t3) ^ (t10 & x2);
+        return [x0, x1, x2, x3];
+      };
+      case 5: return function (a, b, c, d) {
+        var t1 = ~a, t2 = a ^ b, t3 = a ^ d, t4 = c ^ t1, t5 = t2 | t3;
+        var x0 = t4 ^ t5;
+        var t7 = d & x0, t8 = t2 ^ x0;
+        var x1 = t7 ^ t8;
+        var t10 = t1 | x0, t11 = t2 | t7, t12 = t3 ^ t10;
+        var x2 = t11 ^ t12, x3 = (b ^ t7) ^ (x1 & t12);
+        return [x0, x1, x2, x3];
+      };
+      case 6: return function (a, b, c, d) {
+        var t1 = ~a, t2 = a ^ d, t3 = b ^ t2, t4 = t1 | t2, t5 = c ^ t4;
+        var x1 = b ^ t5;
+        var t7 = t2 | x1, t8 = d ^ t7, t9 = t5 & t8;
+        var x2 = t3 ^ t9;
+        var t11 = t5 ^ t8;
+        var x0 = x2 ^ t11, x3 = (~t5) ^ (t3 & t11);
+        return [x0, x1, x2, x3];
+      };
+      case 7: return function (a, b, c, d) {
+        var t1 = b ^ c, t2 = c & t1, t3 = d ^ t2, t4 = a ^ t3, t5 = d | t1, t6 = t4 & t5;
+        var x1 = b ^ t6;
+        var t8 = t3 | x1, t9 = a & t4;
+        var x3 = t1 ^ t9;
+        var t11 = t4 ^ t8, t12 = x3 & t11;
+        var x2 = t3 ^ t12, x0 = (~t11) ^ (x3 & x2);
+        return [x0, x1, x2, x3];
+      };
+    }
+  }
+
+  function serpentSBoxInv(n) {
+    switch (n) {
+      case 0: return function (a, b, c, d) {
+        var t1 = ~a, t2 = a ^ b, t4 = d ^ (t1 | t2), t5 = c ^ t4;
+        var x2 = t2 ^ t5;
+        var t8 = t1 ^ (d & t2);
+        var x1 = t4 ^ (x2 & t8);
+        var x3 = (a & t4) ^ (t5 | x1);
+        var x0 = x3 ^ (t5 ^ t8);
+        return [x0, x1, x2, x3];
+      };
+      case 1: return function (a, b, c, d) {
+        var t1 = b ^ d, t3 = a ^ (b & t1), t4 = t1 ^ t3;
+        var x3 = c ^ t4;
+        var t7 = b ^ (t1 & t3), t8 = x3 | t7;
+        var x1 = t3 ^ t8;
+        var t10 = ~x1, t11 = x3 ^ t7;
+        var x0 = t10 ^ t11, x2 = t4 ^ (t10 | t11);
+        return [x0, x1, x2, x3];
+      };
+      case 2: return function (a, b, c, d) {
+        var t1 = b ^ d, t2 = ~t1, t3 = a ^ c, t4 = c ^ t1, t5 = b & t4;
+        var x0 = t3 ^ t5;
+        var t7 = a | t2, t8 = d ^ t7, t9 = t3 | t8;
+        var x3 = t1 ^ t9;
+        var t11 = ~t4, t12 = x0 | x3;
+        var x1 = t11 ^ t12, x2 = (d & t11) ^ (t3 ^ t12);
+        return [x0, x1, x2, x3];
+      };
+      case 3: return function (a, b, c, d) {
+        var t1 = a | b, t2 = b ^ c, t3 = b & t2, t4 = a ^ t3, t5 = c ^ t4, t6 = d | t4;
+        var x0 = t2 ^ t6;
+        var t8 = t2 | t6, t9 = d ^ t8;
+        var x2 = t5 ^ t9;
+        var t11 = t1 ^ t9, t12 = x0 & t11;
+        var x3 = t4 ^ t12, x1 = x3 ^ (x0 ^ t11);
+        return [x0, x1, x2, x3];
+      };
+      case 4: return function (a, b, c, d) {
+        var t1 = c | d, t2 = a & t1, t3 = b ^ t2, t4 = a & t3, t5 = c ^ t4;
+        var x1 = d ^ t5;
+        var t7 = ~a, t8 = t5 & x1;
+        var x3 = t3 ^ t8;
+        var t10 = x1 | t7, t11 = d ^ t10;
+        var x0 = x3 ^ t11, x2 = (t3 & t11) ^ (x1 ^ t7);
+        return [x0, x1, x2, x3];
+      };
+      case 5: return function (a, b, c, d) {
+        var t1 = ~c, t2 = b & t1, t3 = d ^ t2, t4 = a & t3, t5 = b ^ t1;
+        var x3 = t4 ^ t5;
+        var t7 = b | x3, t8 = a & t7;
+        var x1 = t3 ^ t8;
+        var t10 = a | d, t11 = t1 ^ t7;
+        var x0 = t10 ^ t11, x2 = (b & t10) ^ (t4 | (a ^ c));
+        return [x0, x1, x2, x3];
+      };
+      case 6: return function (a, b, c, d) {
+        var t1 = ~a, t2 = a ^ b, t3 = c ^ t2, t4 = c | t1, t5 = d ^ t4;
+        var x1 = t3 ^ t5;
+        var t7 = t3 & t5, t8 = t2 ^ t7, t9 = b | t8;
+        var x3 = t5 ^ t9;
+        var t11 = b | x3;
+        var x0 = t8 ^ t11, x2 = (d & t1) ^ (t3 ^ t11);
+        return [x0, x1, x2, x3];
+      };
+      case 7: return function (a, b, c, d) {
+        var t3 = c | (a & b), t4 = d & (a | b);
+        var x3 = t3 ^ t4;
+        var t6 = ~d, t7 = b ^ t4, t9 = t7 | (x3 ^ t6);
+        var x1 = a ^ t9;
+        var x0 = (c ^ t7) ^ (d | x1);
+        var x2 = (t3 ^ x1) ^ (x0 ^ (a & x3));
+        return [x0, x1, x2, x3];
+      };
+    }
+  }
+
+  function serpentLT(x) {
+    var X0 = x[0], X1 = x[1], X2 = x[2], X3 = x[3];
+    var x0 = rol32(X0, 13), x2 = rol32(X2, 3);
+    var x1 = (X1 ^ x0 ^ x2) >>> 0;
+    var x3 = (X3 ^ x2 ^ (x0 << 3)) >>> 0;
+    var nX1 = rol32(x1, 1), nX3 = rol32(x3, 7);
+    var nX0 = rol32((x0 ^ nX1 ^ nX3) >>> 0, 5);
+    var nX2 = rol32((x2 ^ nX3 ^ (nX1 << 7)) >>> 0, 22);
+    return [nX0, nX1, nX2, nX3];
+  }
+  function serpentILT(x) {
+    var X0 = x[0], X1 = x[1], X2 = x[2], X3 = x[3];
+    var x2 = (ror32(X2, 22) ^ X3 ^ (X1 << 7)) >>> 0;
+    var x0 = (ror32(X0, 5) ^ X1 ^ X3) >>> 0;
+    var x3 = ror32(X3, 7);
+    var x1 = ror32(X1, 1);
+    var nX3 = (x3 ^ x2 ^ (x0 << 3)) >>> 0;
+    var nX1 = (x1 ^ x0 ^ x2) >>> 0;
+    var nX2 = ror32(x2, 3);
+    var nX0 = ror32(x0, 13);
+    return [nX0, nX1, nX2, nX3];
+  }
+
+  function makeSerpent(key) { // 32-byte key
+    var w = serpentWorkingKey(key);
+    return {
+      blockSize: 16,
+      encrypt: function (inb) {
+        var X = [readLE32(inb, 0), readLE32(inb, 4), readLE32(inb, 8), readLE32(inb, 12)];
+        var order = [0, 1, 2, 3, 4, 5, 6, 7];
+        for (var r = 0; r < 32; r++) {
+          var sb = serpentSBox(order[r % 8]);
+          var t = sb((w[4 * r] ^ X[0]) >>> 0, (w[4 * r + 1] ^ X[1]) >>> 0, (w[4 * r + 2] ^ X[2]) >>> 0, (w[4 * r + 3] ^ X[3]) >>> 0);
+          X = t;
+          if (r < 31) X = serpentLT(X);
+        }
+        var out = new Uint8Array(16);
+        writeLE32((w[128] ^ X[0]) >>> 0, out, 0); writeLE32((w[129] ^ X[1]) >>> 0, out, 4);
+        writeLE32((w[130] ^ X[2]) >>> 0, out, 8); writeLE32((w[131] ^ X[3]) >>> 0, out, 12);
+        return out;
+      },
+      decrypt: function (inb) {
+        var X = [(w[128] ^ readLE32(inb, 0)) >>> 0, (w[129] ^ readLE32(inb, 4)) >>> 0,
+                 (w[130] ^ readLE32(inb, 8)) >>> 0, (w[131] ^ readLE32(inb, 12)) >>> 0];
+        for (var r = 31; r >= 0; r--) {
+          if (r < 31) X = serpentILT(X);
+          var ib = serpentSBoxInv(r % 8);
+          var t = ib(X[0], X[1], X[2], X[3]);
+          X = [(t[0] ^ w[4 * r]) >>> 0, (t[1] ^ w[4 * r + 1]) >>> 0,
+               (t[2] ^ w[4 * r + 2]) >>> 0, (t[3] ^ w[4 * r + 3]) >>> 0];
+        }
+        var out = new Uint8Array(16);
+        writeLE32(X[0], out, 0); writeLE32(X[1], out, 4); writeLE32(X[2], out, 8); writeLE32(X[3], out, 12);
+        return out;
+      }
+    };
+  }
+
+  /* ============================= Serpent-Tnepres (SSE legacy flavor) =============================
+   * Port of Bouncy Castle SerpentEngineBC: identical rounds to standard Serpent,
+   * but the key is read as big-endian words in REVERSE order, and the block I/O
+   * uses big-endian words in reversed order. SSE's Version-3 text format uses this
+   * flavor (CipherProvider REVISION_DISABLED path). */
+
+  function serpentWorkingKeyTnepres(key) {
+    var kPad = new Array(16);
+    var length = 0, off = 0;
+    for (off = key.length - 4; off > 0; off -= 4) kPad[length++] = readBE32(key, off);
+    if (off === 0) {
+      kPad[length++] = readBE32(key, 0);
+      if (length < 8) kPad[length] = 1;
+    }
+    for (var i = 8; i < 16; i++) {
+      kPad[i] = rol32((kPad[i - 8] ^ kPad[i - 5] ^ kPad[i - 3] ^ kPad[i - 1] ^ SERPENT_PHI ^ (i - 8)) >>> 0, 11);
+    }
+    var amount = 33 * 4;
+    var w = new Array(amount);
+    for (var i = 0; i < 8; i++) w[i] = kPad[i + 8];
+    for (var i = 8; i < amount; i++) {
+      w[i] = rol32((w[i - 8] ^ w[i - 5] ^ w[i - 3] ^ w[i - 1] ^ SERPENT_PHI ^ i) >>> 0, 11);
+    }
+    var order = [3, 2, 1, 0, 7, 6, 5, 4];
+    for (var i = 0; i < 132; i += 4) {
+      var sb = serpentSBox(order[(i / 4) % 8]);
+      var r = sb(w[i], w[i + 1], w[i + 2], w[i + 3]);
+      w[i] = r[0]; w[i + 1] = r[1]; w[i + 2] = r[2]; w[i + 3] = r[3];
+    }
+    return w;
+  }
+
+  function makeSerpentTnepres(key) { // 32-byte key
+    var w = serpentWorkingKeyTnepres(key);
+    return {
+      blockSize: 16,
+      encrypt: function (inb) {
+        var X = [readBE32(inb, 12), readBE32(inb, 8), readBE32(inb, 4), readBE32(inb, 0)]; // X0..X3
+        var order = [0, 1, 2, 3, 4, 5, 6, 7];
+        for (var r = 0; r < 32; r++) {
+          var sb = serpentSBox(order[r % 8]);
+          var t = sb((w[4 * r] ^ X[0]) >>> 0, (w[4 * r + 1] ^ X[1]) >>> 0, (w[4 * r + 2] ^ X[2]) >>> 0, (w[4 * r + 3] ^ X[3]) >>> 0);
+          X = t;
+          if (r < 31) X = serpentLT(X);
+        }
+        var out = new Uint8Array(16);
+        writeBE32((w[131] ^ X[3]) >>> 0, out, 0);
+        writeBE32((w[130] ^ X[2]) >>> 0, out, 4);
+        writeBE32((w[129] ^ X[1]) >>> 0, out, 8);
+        writeBE32((w[128] ^ X[0]) >>> 0, out, 12);
+        return out;
+      },
+      decrypt: function (inb) {
+        var X = [(w[128] ^ readBE32(inb, 12)) >>> 0, (w[129] ^ readBE32(inb, 8)) >>> 0,
+                 (w[130] ^ readBE32(inb, 4)) >>> 0, (w[131] ^ readBE32(inb, 0)) >>> 0]; // X0..X3
+        for (var r = 31; r >= 1; r--) {
+          var ib = serpentSBoxInv(r % 8);
+          var t = ib(X[0], X[1], X[2], X[3]);
+          X = [(t[0] ^ w[4 * r]) >>> 0, (t[1] ^ w[4 * r + 1]) >>> 0,
+               (t[2] ^ w[4 * r + 2]) >>> 0, (t[3] ^ w[4 * r + 3]) >>> 0];
+          X = serpentILT(X);
+        }
+        var t0 = serpentSBoxInv(0);
+        X = t0(X[0], X[1], X[2], X[3]);
+        var out = new Uint8Array(16);
+        writeBE32((X[3] ^ w[3]) >>> 0, out, 0);
+        writeBE32((X[2] ^ w[2]) >>> 0, out, 4);
+        writeBE32((X[1] ^ w[1]) >>> 0, out, 8);
+        writeBE32((X[0] ^ w[0]) >>> 0, out, 12);
+        return out;
+      }
+    };
+  }
+
+  /* ============================= Threefish-1024 ============================= */
+
+  var MASK64 = 0xFFFFFFFFFFFFFFFFn;
+  var THREEFISH_C240 = 0x1BD11BDAA9FC1A22n;
+  function rol64(x, n) { return ((x << BigInt(n)) | (x >> BigInt(64 - n))) & MASK64; }
+  function ror64(x, n) { return ((x >> BigInt(n)) | (x << BigInt(64 - n))) & MASK64; }
+
+  function threefishKeySchedule(keyBytes) { // 128-byte key, tweak = 0
+    var k = new Array(17);
+    for (var i = 0; i < 16; i++) {
+      var o = 8 * i;
+      k[i] = BigInt(readLE32(keyBytes, o)) | (BigInt(readLE32(keyBytes, o + 4)) << 32n);
+    }
+    var x = THREEFISH_C240;
+    for (var i = 0; i < 16; i++) x ^= k[i];
+    k[16] = x;
+    return k; // tweak all zero
+  }
+
+  function gMIX(g, i0, i1, i2, i3, i4, i5, i6, i7, r0, r1, r2, r3) {
+    g[i0] = (g[i0] + g[i1]) & MASK64; g[i1] = rol64(g[i1], r0) ^ g[i0];
+    g[i2] = (g[i2] + g[i3]) & MASK64; g[i3] = rol64(g[i3], r1) ^ g[i2];
+    g[i4] = (g[i4] + g[i5]) & MASK64; g[i5] = rol64(g[i5], r2) ^ g[i4];
+    g[i6] = (g[i6] + g[i7]) & MASK64; g[i7] = rol64(g[i7], r3) ^ g[i6];
+  }
+  function gIMIX(g, i0, i1, i2, i3, i4, i5, i6, i7, r0, r1, r2, r3) {
+    g[i7] = ror64(g[i7] ^ g[i6], r3); g[i6] = (g[i6] - g[i7]) & MASK64;
+    g[i5] = ror64(g[i5] ^ g[i4], r2); g[i4] = (g[i4] - g[i5]) & MASK64;
+    g[i3] = ror64(g[i3] ^ g[i2], r1); g[i2] = (g[i2] - g[i3]) & MASK64;
+    g[i1] = ror64(g[i1] ^ g[i0], r0); g[i0] = (g[i0] - g[i1]) & MASK64;
+  }
+
+  function threefishKS(g, k, r) {
+    var j;
+    for (j = 0; j < 13; j++) g[j] = (g[j] + k[(r + 1 + j) % 17]) & MASK64;
+    g[13] = (g[13] + k[(r + 14) % 17]) & MASK64; // + tweak[(r+1)%3] == 0
+    g[14] = (g[14] + k[(r + 15) % 17]) & MASK64; // + tweak[(r+2)%3] == 0
+    g[15] = (g[15] + k[(r + 16) % 17] + BigInt(r + 1)) & MASK64;
+  }
+  function threefishIKS(g, k, r) {
+    var j;
+    for (j = 0; j < 13; j++) g[j] = (g[j] - k[(r + 1 + j) % 17]) & MASK64;
+    g[13] = (g[13] - k[(r + 14) % 17]) & MASK64;
+    g[14] = (g[14] - k[(r + 15) % 17]) & MASK64;
+    g[15] = (g[15] - k[(r + 16) % 17] - BigInt(r + 1)) & MASK64;
+  }
+
+  function threefishRound(g, k, r) {
+    gMIX(g, 0, 1, 2, 3, 4, 5, 6, 7, 24, 13, 8, 47);
+    gMIX(g, 8, 9, 10, 11, 12, 13, 14, 15, 8, 17, 22, 37);
+    gMIX(g, 0, 9, 2, 13, 6, 11, 4, 15, 38, 19, 10, 55);
+    gMIX(g, 10, 7, 12, 3, 14, 5, 8, 1, 49, 18, 23, 52);
+    gMIX(g, 0, 7, 2, 5, 4, 3, 6, 1, 33, 4, 51, 13);
+    gMIX(g, 12, 15, 14, 13, 8, 11, 10, 9, 34, 41, 59, 17);
+    gMIX(g, 0, 15, 2, 11, 6, 13, 4, 9, 5, 20, 48, 41);
+    gMIX(g, 14, 1, 8, 5, 10, 3, 12, 7, 47, 28, 16, 25);
+    threefishKS(g, k, r);
+    gMIX(g, 0, 1, 2, 3, 4, 5, 6, 7, 41, 9, 37, 31);
+    gMIX(g, 8, 9, 10, 11, 12, 13, 14, 15, 12, 47, 44, 30);
+    gMIX(g, 0, 9, 2, 13, 6, 11, 4, 15, 16, 34, 56, 51);
+    gMIX(g, 10, 7, 12, 3, 14, 5, 8, 1, 4, 53, 42, 41);
+    gMIX(g, 0, 7, 2, 5, 4, 3, 6, 1, 31, 44, 47, 46);
+    gMIX(g, 12, 15, 14, 13, 8, 11, 10, 9, 19, 42, 44, 25);
+    gMIX(g, 0, 15, 2, 11, 6, 13, 4, 9, 9, 48, 35, 52);
+    gMIX(g, 14, 1, 8, 5, 10, 3, 12, 7, 23, 31, 37, 20);
+    threefishKS(g, k, r + 1);
+  }
+
+  function threefishIRound(g, k, r) {
+    gIMIX(g, 0, 15, 2, 11, 6, 13, 4, 9, 9, 48, 35, 52);
+    gIMIX(g, 14, 1, 8, 5, 10, 3, 12, 7, 23, 31, 37, 20);
+    gIMIX(g, 0, 7, 2, 5, 4, 3, 6, 1, 31, 44, 47, 46);
+    gIMIX(g, 12, 15, 14, 13, 8, 11, 10, 9, 19, 42, 44, 25);
+    gIMIX(g, 0, 9, 2, 13, 6, 11, 4, 15, 16, 34, 56, 51);
+    gIMIX(g, 10, 7, 12, 3, 14, 5, 8, 1, 4, 53, 42, 41);
+    gIMIX(g, 0, 1, 2, 3, 4, 5, 6, 7, 41, 9, 37, 31);
+    gIMIX(g, 8, 9, 10, 11, 12, 13, 14, 15, 12, 47, 44, 30);
+    threefishIKS(g, k, r);
+    gIMIX(g, 0, 15, 2, 11, 6, 13, 4, 9, 5, 20, 48, 41);
+    gIMIX(g, 14, 1, 8, 5, 10, 3, 12, 7, 47, 28, 16, 25);
+    gIMIX(g, 0, 7, 2, 5, 4, 3, 6, 1, 33, 4, 51, 13);
+    gIMIX(g, 12, 15, 14, 13, 8, 11, 10, 9, 34, 41, 59, 17);
+    gIMIX(g, 0, 9, 2, 13, 6, 11, 4, 15, 38, 19, 10, 55);
+    gIMIX(g, 10, 7, 12, 3, 14, 5, 8, 1, 49, 18, 23, 52);
+    gIMIX(g, 0, 1, 2, 3, 4, 5, 6, 7, 24, 13, 8, 47);
+    gIMIX(g, 8, 9, 10, 11, 12, 13, 14, 15, 8, 17, 22, 37);
+    threefishIKS(g, k, r - 1);
+  }
+
+  function threefishBlock(k, inb, encrypt) {
+    var g = new Array(16);
+    for (var i = 0; i < 16; i++) {
+      var o = 8 * i;
+      g[i] = BigInt(readLE32(inb, o)) | (BigInt(readLE32(inb, o + 4)) << 32n);
+    }
+    if (encrypt) {
+      for (var i = 0; i < 16; i++) g[i] = (g[i] + k[i]) & MASK64;
+      for (var r = 0; r <= 18; r += 2) threefishRound(g, k, r);
+    } else {
+      g[0] = (g[0] - k[3]) & MASK64; g[1] = (g[1] - k[4]) & MASK64; g[2] = (g[2] - k[5]) & MASK64; g[3] = (g[3] - k[6]) & MASK64;
+      g[4] = (g[4] - k[7]) & MASK64; g[5] = (g[5] - k[8]) & MASK64; g[6] = (g[6] - k[9]) & MASK64; g[7] = (g[7] - k[10]) & MASK64;
+      g[8] = (g[8] - k[11]) & MASK64; g[9] = (g[9] - k[12]) & MASK64; g[10] = (g[10] - k[13]) & MASK64; g[11] = (g[11] - k[14]) & MASK64;
+      g[12] = (g[12] - k[15]) & MASK64; g[13] = (g[13] - k[16]) & MASK64; g[14] = (g[14] - k[0]) & MASK64; g[15] = (g[15] - k[1]) & MASK64;
+      g[15] = (g[15] - 20n) & MASK64; // tweak[2]=0
+      for (var r = 18; r >= 0; r -= 2) threefishIRound(g, k, r);
+    }
+    var out = new Uint8Array(128);
+    for (var i = 0; i < 16; i++) {
+      var v = g[i] & MASK64;
+      var lo = Number(v & 0xFFFFFFFFn) >>> 0, hi = Number(v >> 32n) >>> 0;
+      writeLE32(lo, out, 8 * i);
+      writeLE32(hi, out, 8 * i + 4);
+    }
+    return out;
+  }
+
+  function makeThreefish1024(key) { // 128-byte key, tweak = 0
+    var k = threefishKeySchedule(key);
+    return {
+      blockSize: 128,
+      encrypt: function (b) { return threefishBlock(k, b, true); },
+      decrypt: function (b) { return threefishBlock(k, b, false); }
+    };
+  }
+
+  /* ============================= SHACAL-2 (512-bit key) ============================= */
+
+  function shacal2KeySchedule(key) { // 64-byte key
+    var w = new Array(64);
+    for (var i = 0; i < 16; i++) w[i] = readBE32(key, 4 * i);
+    for (var i = 16; i < 64; i++) {
+      var s1 = ror32(w[i - 2], 17) ^ ror32(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+      var s0 = ror32(w[i - 15], 7) ^ ror32(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+      w[i] = (s1 + w[i - 7] + s0 + w[i - 16]) >>> 0;
+    }
+    return w;
+  }
+
+  function shacal2Block(w, inb, encrypt) {
+    var a = readBE32(inb, 0), b = readBE32(inb, 4), c = readBE32(inb, 8), d = readBE32(inb, 12),
+        e = readBE32(inb, 16), f = readBE32(inb, 20), g = readBE32(inb, 24), h = readBE32(inb, 28);
+    if (encrypt) {
+      for (var i = 0; i < 64; i++) {
+        var S1 = ror32(e, 6) ^ ror32(e, 11) ^ ror32(e, 25);
+        var ch = (e & f) ^ (~e & g);
+        var t1 = (h + S1 + ch + K256[i] + w[i]) >>> 0;
+        var olda = a;
+        h = g; g = f; f = e; e = (d + t1) >>> 0;
+        d = c; c = b; b = olda;
+        var S0 = ror32(olda, 2) ^ ror32(olda, 13) ^ ror32(olda, 22);
+        var maj = (olda & c) ^ (olda & d) ^ (c & d);
+        a = (t1 + S0 + maj) >>> 0;
+      }
+    } else {
+      for (var i = 63; i >= 0; i--) {
+        var S0d = ror32(b, 2) ^ ror32(b, 13) ^ ror32(b, 22);
+        var majd = (b & c) ^ (b & d) ^ (c & d);
+        var tmp = (a - S0d - majd) >>> 0; // T1
+        a = b; b = c; c = d;
+        d = (e - tmp) >>> 0;
+        e = f; f = g; g = h;
+        var S1d = ror32(e, 6) ^ ror32(e, 11) ^ ror32(e, 25);
+        var chd = (e & f) ^ (~e & g);
+        h = (tmp - K256[i] - w[i] - S1d - chd) >>> 0;
+      }
+    }
+    var out = new Uint8Array(32);
+    writeBE32(a, out, 0); writeBE32(b, out, 4); writeBE32(c, out, 8); writeBE32(d, out, 12);
+    writeBE32(e, out, 16); writeBE32(f, out, 20); writeBE32(g, out, 24); writeBE32(h, out, 28);
+    return out;
+  }
+
+  function makeShacal2(key) { // 64-byte key
+    var w = shacal2KeySchedule(key);
+    return {
+      blockSize: 32,
+      encrypt: function (b) { return shacal2Block(w, b, true); },
+      decrypt: function (b) { return shacal2Block(w, b, false); }
+    };
+  }
+
+  /* ============================= CMAC (OMAC1) ============================= */
+  // Rb = reduction polynomial constant for the block size (fits in 24 bits).
+  var CMAC_RB = { 8: 0x1b, 16: 0x87, 32: 0x425, 128: 0x80043 };
+
+  function cmacDouble(block, Rb) {
+    var n = block.length;
+    var out = new Uint8Array(n);
+    var carry = 0;
+    for (var i = n - 1; i >= 0; i--) {
+      var b = block[i];
+      out[i] = ((b << 1) & 0xff) | carry;
+      carry = (b >> 7) & 1;
+    }
+    if (carry) {
+      out[n - 3] ^= (Rb >> 16) & 0xff;
+      out[n - 2] ^= (Rb >> 8) & 0xff;
+      out[n - 1] ^= Rb & 0xff;
+    }
+    return out;
+  }
+
+  function cmac(cipher, key, msg, macSize) {
+    // OMAC1 / CMAC (as in Bouncy Castle CMac, which SSE uses).
+    var bs = cipher.blockSize;
+    var rb = CMAC_RB[bs] !== undefined ? CMAC_RB[bs] : 0x87;
+    var L = cipher.encrypt(new Uint8Array(bs)); // E_K(0^bs)
+    var K1 = cmacDouble(L, rb);
+    var K2 = cmacDouble(K1, rb);
+
+    var m = msg;
+    var n = Math.floor(m.length / bs);
+    var rem = m.length - n * bs;
+    var state = new Uint8Array(bs);
+    var i, j;
+
+    // Full blocks except the last: standard CBC-MAC.
+    var full = (rem === 0) ? n - 1 : n;
+    for (i = 0; i < full; i++) {
+      for (j = 0; j < bs; j++) state[j] ^= m[i * bs + j];
+      state = cipher.encrypt(state);
+    }
+    if (rem === 0) {
+      // Message is a multiple of bs: XOR K1 into the final block.
+      for (j = 0; j < bs; j++) state[j] ^= m[(n - 1) * bs + j] ^ K1[j];
+    } else {
+      // Partial final block: pad with 0x80 + zeros, XOR K2.
+      for (j = 0; j < rem; j++) state[j] ^= m[n * bs + j];
+      state[rem] ^= 0x80;
+      for (j = 0; j < bs; j++) state[j] ^= K2[j];
+    }
+    var out = cipher.encrypt(state);
+    return out.subarray(0, macSize);
+  }
+
+  /* ============================= CTR (SIC) ============================= */
+
+  function ctrXform(cipher, nonce, data) {
+    var bs = cipher.blockSize;
+    var counter = new Uint8Array(nonce); // copy
+    var out = new Uint8Array(data.length);
+    var off = 0;
+    while (off < data.length) {
+      var ks = cipher.encrypt(counter);
+      var n = Math.min(bs, data.length - off);
+      for (var i = 0; i < n; i++) out[off + i] = data[off + i] ^ ks[i];
+      off += n;
+      // big-endian increment
+      for (var j = bs - 1; j >= 0; j--) { counter[j] = (counter[j] + 1) & 0xff; if (counter[j] !== 0) break; }
+    }
+    return out;
+  }
+
+  /* ============================= EAX ============================= */
+
+  function eaxEncrypt(cipher, key, nonce, data, aad, macSize) {
+    var bs = cipher.blockSize;
+    function cmacTag(tagByte, msg) {
+      var m = new Uint8Array(msg.length + bs);
+      m[bs - 1] = tagByte;
+      m.set(msg, bs);
+      return cmac(cipher, key, m, bs);
+    }
+    var nonceMac = cmacTag(0x00, nonce);
+    var aadMac = cmacTag(0x01, aad || new Uint8Array(0));
+    var ct = ctrXform(cipher, nonceMac, data);
+    var ctMac = cmacTag(0x02, ct);
+    var tag = new Uint8Array(macSize);
+    for (var i = 0; i < macSize; i++) tag[i] = nonceMac[i] ^ aadMac[i] ^ ctMac[i];
+    return concatBytes(ct, tag);
+  }
+
+  function eaxDecrypt(cipher, key, nonce, data, aad, macSize) {
+    if (data.length < macSize) throw new Error("data too short");
+    var bs = cipher.blockSize;
+    function cmacTag(tagByte, msg) {
+      var m = new Uint8Array(msg.length + bs);
+      m[bs - 1] = tagByte;
+      m.set(msg, bs);
+      return cmac(cipher, key, m, bs);
+    }
+    var nonceMac = cmacTag(0x00, nonce);
+    var aadMac = cmacTag(0x01, aad || new Uint8Array(0));
+    var ct = data.subarray(0, data.length - macSize);
+    var tag = data.subarray(data.length - macSize);
+    var ctMac = cmacTag(0x02, ct);
+    var expect = new Uint8Array(macSize);
+    for (var i = 0; i < macSize; i++) expect[i] = nonceMac[i] ^ aadMac[i] ^ ctMac[i];
+    if (!equalBytes(expect, tag)) throw new Error("EAX authentication failed (wrong password or corrupted data)");
+    return ctrXform(cipher, nonceMac, ct);
+  }
+
+  /* ============================= Paranoia C4-2048 cascade ============================= */
+
+  var C4_ALGS = [7, 2, 0, 8];
+  var C4_KEY_SPLIT = [128, 32, 32, 64];
+  var C4_NONCE_SPLIT = [128, 16, 16, 32];
+  var C4_MACSIZE = 32; // SHACAL-2 EAX tag = 256 bits
+
+  function c4Layer(algCode, key) {
+    switch (algCode) {
+      case 0: return makeAES(key);
+      case 2: return makeSerpent(key);
+      case 7: return makeThreefish1024(key);
+      case 8: return makeShacal2(key);
+    }
+    throw new Error("bad C4 algorithm " + algCode);
+  }
+
+  function c4Encrypt(key, nonce, data, aad) {
+    var counters = [];
+    var off = 0, i;
+    for (i = 0; i < 4; i++) { counters.push(nonce.subarray(off, off + C4_NONCE_SPLIT[i])); off += C4_NONCE_SPLIT[i]; }
+    var koff = 0;
+    for (i = 0; i < 4; i++) {
+      var k = key.subarray(koff, koff + C4_KEY_SPLIT[i]);
+      koff += C4_KEY_SPLIT[i];
+      if (i === 3) data = eaxEncrypt(c4Layer(C4_ALGS[i], k), k, counters[i], data, aad, C4_MACSIZE);
+      else data = ctrXform(c4Layer(C4_ALGS[i], k), counters[i], data);
+    }
+    return data;
+  }
+
+  function c4Decrypt(key, nonce, data, aad) {
+    var counters = [];
+    var off = 0, i;
+    for (i = 0; i < 4; i++) { counters.push(nonce.subarray(off, off + C4_NONCE_SPLIT[i])); off += C4_NONCE_SPLIT[i]; }
+    var koff = key.length;
+    for (i = 3; i >= 0; i--) {
+      koff -= C4_KEY_SPLIT[i];
+      var k = key.subarray(koff, koff + C4_KEY_SPLIT[i]);
+      if (i === 3) data = eaxDecrypt(c4Layer(C4_ALGS[i], k), k, counters[i], data, aad, C4_MACSIZE);
+      else data = ctrXform(c4Layer(C4_ALGS[i], k), counters[i], data);
+    }
+    return data;
+  }
+
+  /* ============================= algorithm registry ============================= */
+
+  var ALGORITHMS = {
+    0: { name: "AES-256", keySize: 32, nonceSize: 16, tagSize: 16, blockSize: 16 },
+    1: { name: "RC6-256", keySize: 32, nonceSize: 16, tagSize: 16, blockSize: 16 },
+    2: { name: "Serpent-256", keySize: 32, nonceSize: 16, tagSize: 16, blockSize: 16 },
+    3: { name: "Blowfish-256", keySize: 32, nonceSize: 8, tagSize: 8, blockSize: 8 },
+    4: { name: "Twofish-256", keySize: 32, nonceSize: 16, tagSize: 16, blockSize: 16 },
+    5: { name: "GOST-256", keySize: 32, nonceSize: 8, tagSize: 8, blockSize: 8 },
+    6: { name: "Blowfish-448", keySize: 56, nonceSize: 8, tagSize: 8, blockSize: 8 },
+    7: { name: "Threefish-1024", keySize: 128, nonceSize: 128, tagSize: 32, blockSize: 128 },
+    8: { name: "SHACAL-2 (512-bit key)", keySize: 64, nonceSize: 32, tagSize: 32, blockSize: 32 },
+    9: { name: "Paranoia C4-2048", keySize: 256, nonceSize: 192, tagSize: 32, blockSize: -1 }
+  };
+
+  function makeCipher(algCode, key) {
+    switch (algCode) {
+      case 0: return makeAES(key);
+      case 2: return makeSerpent(key);
+      case 7: return makeThreefish1024(key);
+      case 8: return makeShacal2(key);
+      default: {
+        var ciphers = getCiphers();
+        if (ciphers) {
+          switch (algCode) {
+            case 1: return ciphers.makeRC6(key);
+            case 3: case 6: return ciphers.makeBlowfish(key);
+            case 4: return ciphers.makeTwofish(key);
+            case 5: return ciphers.makeGOST(key);
+          }
+        }
+        throw new Error("unknown algorithm " + algCode);
+      }
+    }
+  }
+
+  function seal(algCode, key, nonce, plaintext, aad) {
+    if (algCode === 9) return c4Encrypt(key, nonce, plaintext, aad);
+    return eaxEncrypt(makeCipher(algCode, key), key, nonce, plaintext, aad, ALGORITHMS[algCode].tagSize);
+  }
+
+  function open(algCode, key, nonce, ciphertext, aad) {
+    if (algCode === 9) return c4Decrypt(key, nonce, ciphertext, aad);
+    return eaxDecrypt(makeCipher(algCode, key), key, nonce, ciphertext, aad, ALGORITHMS[algCode].tagSize);
+  }
+
+  /* ============================= container format =============================
+   * SSEWX v1:  "SSEWX" | ver=1 | alg | salt(32) | iter(4 BE) | nonce | ct||tag
+   * KDF = PBKDF2-HMAC-SHA256(password, salt, iterations, key+nonce)
+   * AAD  = "SSEWX1" || alg || salt (domain separation)
+   */
+
+  var MAGIC = [0x53, 0x53, 0x45, 0x57, 0x58]; // "SSEWX"
+
+  function sealContainer(password, algCode, plaintext, iterations) {
+    iterations = iterations || 200000;
+    var alg = ALGORITHMS[algCode];
+    if (!alg) throw new Error("unknown algorithm " + algCode);
+    var salt = randomBytes(32);
+    var mat = pbkdf2Sha256(password, salt, iterations, alg.keySize + alg.nonceSize);
+    var key = mat.subarray(0, alg.keySize);
+    var nonce = mat.subarray(alg.keySize);
+    var aad = concatBytes(Uint8Array.from(MAGIC), Uint8Array.of(1, algCode), salt);
+    var ct = seal(algCode, key, nonce, plaintext, aad);
+    var hdr = new Uint8Array(5 + 1 + 1 + 32 + 4);
+    hdr.set(MAGIC, 0);
+    hdr[5] = 1;
+    hdr[6] = algCode;
+    hdr.set(salt, 7);
+    hdr[39] = (iterations >>> 24) & 0xff; hdr[40] = (iterations >>> 16) & 0xff;
+    hdr[41] = (iterations >>> 8) & 0xff; hdr[42] = iterations & 0xff;
+    return concatBytes(hdr, nonce, ct);
+  }
+
+  function openContainer(password, blob) {
+    if (blob.length < 43) throw new Error("not an SSEWX container");
+    for (var i = 0; i < 5; i++) if (blob[i] !== MAGIC[i]) throw new Error("not an SSEWX container");
+    var ver = blob[5];
+    if (ver !== 1) throw new Error("unsupported version " + ver);
+    var algCode = blob[6];
+    var alg = ALGORITHMS[algCode];
+    if (!alg) throw new Error("unknown algorithm " + algCode);
+    var salt = blob.subarray(7, 39);
+    var iterations = ((blob[39] << 24) | (blob[40] << 16) | (blob[41] << 8) | blob[42]) >>> 0;
+    var nonce = blob.subarray(43, 43 + alg.nonceSize);
+    var ct = blob.subarray(43 + alg.nonceSize);
+    var mat = pbkdf2Sha256(password, salt, iterations, alg.keySize + alg.nonceSize);
+    var key = mat.subarray(0, alg.keySize);
+    var aad = concatBytes(Uint8Array.from(MAGIC), Uint8Array.of(1, algCode), salt);
+    var pt = open(algCode, key, nonce, ct, aad);
+    return { algorithm: alg.name, iterations: iterations, plaintext: pt };
+  }
+
+  /* ============================= export ============================= */
+
+  return {
+    hexToBytes: hexToBytes,
+    bytesToHex: bytesToHex,
+    concatBytes: concatBytes,
+    randomBytes: randomBytes,
+    sha256: sha256,
+    hmacSha256: hmacSha256,
+    pbkdf2Sha256: pbkdf2Sha256,
+    makeAES: makeAES,
+    makeCipher: makeCipher,
+    makeSerpent: makeSerpent,
+    makeSerpentTnepres: makeSerpentTnepres,
+    makeThreefish1024: makeThreefish1024,
+    makeShacal2: makeShacal2,
+    cmac: cmac,
+    ctrXform: ctrXform,
+    eaxEncrypt: eaxEncrypt,
+    eaxDecrypt: eaxDecrypt,
+    c4Encrypt: c4Encrypt,
+    c4Decrypt: c4Decrypt,
+    ALGORITHMS: ALGORITHMS,
+    seal: seal,
+    open: open,
+    sealContainer: sealContainer,
+    openContainer: openContainer
+  };
+});
+
+/*
+ * Additional SSE ciphers — pure JS ports of the exact Bouncy Castle engines
+ * SSE ships (BlowfishEngine, RC6Engine, TwofishEngine, GOST28147Engine).
+ * SSE algorithm codes: 1 = RC6-256, 3 = Blowfish-256, 4 = Twofish-256,
+ * 5 = GOST-256, 6 = Blowfish-448.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.SSECIPHERS = factory();
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  function readBE32(b, o) { return ((b[o] << 24) | (b[o + 1] << 16) | (b[o + 2] << 8) | b[o + 3]) >>> 0; }
+  function writeBE32(v, b, o) { b[o] = v >>> 24; b[o + 1] = v >>> 16; b[o + 2] = v >>> 8; b[o + 3] = v; }
+  function readLE32(b, o) { return ((b[o + 3] << 24) | (b[o + 2] << 16) | (b[o + 1] << 8) | b[o]) >>> 0; }
+  function writeLE32(v, b, o) { b[o] = v; b[o + 1] = v >>> 8; b[o + 2] = v >>> 16; b[o + 3] = v >>> 24; }
+  function rol32(x, n) { n &= 31; return n ? ((x << n) | (x >>> (32 - n))) >>> 0 : x >>> 0; }
+  function ror32(x, n) { n &= 31; return n ? ((x >>> n) | (x << (32 - n))) >>> 0 : x >>> 0; }
+
+var BF_KP = [
+    608135816,2242054355,320440878,57701188,2752067618,698298832,137296536,3964562569,1160258022,953160567,3193202383,887688300,3232508343,3380367581,1065670069,3041331479,
+    2450970073,2306472731
+  ];
+var BF_KS0 = [
+    3509652390,2564797868,805139163,3491422135,3101798381,1780907670,3128725573,4046225305,614570311,3012652279,134345442,2240740374,1667834072,1901547113,2757295779,4103290238,
+    227898511,1921955416,1904987480,2182433518,2069144605,3260701109,2620446009,720527379,3318853667,677414384,3393288472,3101374703,2390351024,1614419982,1822297739,2954791486,
+    3608508353,3174124327,2024746970,1432378464,3864339955,2857741204,1464375394,1676153920,1439316330,715854006,3033291828,289532110,2706671279,2087905683,3018724369,1668267050,
+    732546397,1947742710,3462151702,2609353502,2950085171,1814351708,2050118529,680887927,999245976,1800124847,3300911131,1713906067,1641548236,4213287313,1216130144,1575780402,
+    4018429277,3917837745,3693486850,3949271944,596196993,3549867205,258830323,2213823033,772490370,2760122372,1774776394,2652871518,566650946,4142492826,1728879713,2882767088,
+    1783734482,3629395816,2517608232,2874225571,1861159788,326777828,3124490320,2130389656,2716951837,967770486,1724537150,2185432712,2364442137,1164943284,2105845187,998989502,
+    3765401048,2244026483,1075463327,1455516326,1322494562,910128902,469688178,1117454909,936433444,3490320968,3675253459,1240580251,122909385,2157517691,634681816,4142456567,
+    3825094682,3061402683,2540495037,79693498,3249098678,1084186820,1583128258,426386531,1761308591,1047286709,322548459,995290223,1845252383,2603652396,3431023940,2942221577,
+    3202600964,3727903485,1712269319,422464435,3234572375,1170764815,3523960633,3117677531,1434042557,442511882,3600875718,1076654713,1738483198,4213154764,2393238008,3677496056,
+    1014306527,4251020053,793779912,2902807211,842905082,4246964064,1395751752,1040244610,2656851899,3396308128,445077038,3742853595,3577915638,679411651,2892444358,2354009459,
+    1767581616,3150600392,3791627101,3102740896,284835224,4246832056,1258075500,768725851,2589189241,3069724005,3532540348,1274779536,3789419226,2764799539,1660621633,3471099624,
+    4011903706,913787905,3497959166,737222580,2514213453,2928710040,3937242737,1804850592,3499020752,2949064160,2386320175,2390070455,2415321851,4061277028,2290661394,2416832540,
+    1336762016,1754252060,3520065937,3014181293,791618072,3188594551,3933548030,2332172193,3852520463,3043980520,413987798,3465142937,3030929376,4245938359,2093235073,3534596313,
+    375366246,2157278981,2479649556,555357303,3870105701,2008414854,3344188149,4221384143,3956125452,2067696032,3594591187,2921233993,2428461,544322398,577241275,1471733935,
+    610547355,4027169054,1432588573,1507829418,2025931657,3646575487,545086370,48609733,2200306550,1653985193,298326376,1316178497,3007786442,2064951626,458293330,2589141269,
+    3591329599,3164325604,727753846,2179363840,146436021,1461446943,4069977195,705550613,3059967265,3887724982,4281599278,3313849956,1404054877,2845806497,146425753,1854211946
+  ];
+var BF_KS1 = [
+    1266315497,3048417604,3681880366,3289982499,2909710000,1235738493,2632868024,2414719590,3970600049,1771706367,1449415276,3266420449,422970021,1963543593,2690192192,3826793022,
+    1062508698,1531092325,1804592342,2583117782,2714934279,4024971509,1294809318,4028980673,1289560198,2221992742,1669523910,35572830,157838143,1052438473,1016535060,1802137761,
+    1753167236,1386275462,3080475397,2857371447,1040679964,2145300060,2390574316,1461121720,2956646967,4031777805,4028374788,33600511,2920084762,1018524850,629373528,3691585981,
+    3515945977,2091462646,2486323059,586499841,988145025,935516892,3367335476,2599673255,2839830854,265290510,3972581182,2759138881,3795373465,1005194799,847297441,406762289,
+    1314163512,1332590856,1866599683,4127851711,750260880,613907577,1450815602,3165620655,3734664991,3650291728,3012275730,3704569646,1427272223,778793252,1343938022,2676280711,
+    2052605720,1946737175,3164576444,3914038668,3967478842,3682934266,1661551462,3294938066,4011595847,840292616,3712170807,616741398,312560963,711312465,1351876610,322626781,
+    1910503582,271666773,2175563734,1594956187,70604529,3617834859,1007753275,1495573769,4069517037,2549218298,2663038764,504708206,2263041392,3941167025,2249088522,1514023603,
+    1998579484,1312622330,694541497,2582060303,2151582166,1382467621,776784248,2618340202,3323268794,2497899128,2784771155,503983604,4076293799,907881277,423175695,432175456,
+    1378068232,4145222326,3954048622,3938656102,3820766613,2793130115,2977904593,26017576,3274890735,3194772133,1700274565,1756076034,4006520079,3677328699,720338349,1533947780,
+    354530856,688349552,3973924725,1637815568,332179504,3949051286,53804574,2852348879,3044236432,1282449977,3583942155,3416972820,4006381244,1617046695,2628476075,3002303598,
+    1686838959,431878346,2686675385,1700445008,1080580658,1009431731,832498133,3223435511,2605976345,2271191193,2516031870,1648197032,4164389018,2548247927,300782431,375919233,
+    238389289,3353747414,2531188641,2019080857,1475708069,455242339,2609103871,448939670,3451063019,1395535956,2413381860,1841049896,1491858159,885456874,4264095073,4001119347,
+    1565136089,3898914787,1108368660,540939232,1173283510,2745871338,3681308437,4207628240,3343053890,4016749493,1699691293,1103962373,3625875870,2256883143,3830138730,1031889488,
+    3479347698,1535977030,4236805024,3251091107,2132092099,1774941330,1199868427,1452454533,157007616,2904115357,342012276,595725824,1480756522,206960106,497939518,591360097,
+    863170706,2375253569,3596610801,1814182875,2094937945,3421402208,1082520231,3463918190,2785509508,435703966,3908032597,1641649973,2842273706,3305899714,1510255612,2148256476,
+    2655287854,3276092548,4258621189,236887753,3681803219,274041037,1734335097,3815195456,3317970021,1899903192,1026095262,4050517792,356393447,2410691914,3873677099,3682840055
+  ];
+var BF_KS2 = [
+    3913112168,2491498743,4132185628,2489919796,1091903735,1979897079,3170134830,3567386728,3557303409,857797738,1136121015,1342202287,507115054,2535736646,337727348,3213592640,
+    1301675037,2528481711,1895095763,1721773893,3216771564,62756741,2142006736,835421444,2531993523,1442658625,3659876326,2882144922,676362277,1392781812,170690266,3921047035,
+    1759253602,3611846912,1745797284,664899054,1329594018,3901205900,3045908486,2062866102,2865634940,3543621612,3464012697,1080764994,553557557,3656615353,3996768171,991055499,
+    499776247,1265440854,648242737,3940784050,980351604,3713745714,1749149687,3396870395,4211799374,3640570775,1161844396,3125318951,1431517754,545492359,4268468663,3499529547,
+    1437099964,2702547544,3433638243,2581715763,2787789398,1060185593,1593081372,2418618748,4260947970,69676912,2159744348,86519011,2512459080,3838209314,1220612927,3339683548,
+    133810670,1090789135,1078426020,1569222167,845107691,3583754449,4072456591,1091646820,628848692,1613405280,3757631651,526609435,236106946,48312990,2942717905,3402727701,
+    1797494240,859738849,992217954,4005476642,2243076622,3870952857,3732016268,765654824,3490871365,2511836413,1685915746,3888969200,1414112111,2273134842,3281911079,4080962846,
+    172450625,2569994100,980381355,4109958455,2819808352,2716589560,2568741196,3681446669,3329971472,1835478071,660984891,3704678404,4045999559,3422617507,3040415634,1762651403,
+    1719377915,3470491036,2693910283,3642056355,3138596744,1364962596,2073328063,1983633131,926494387,3423689081,2150032023,4096667949,1749200295,3328846651,309677260,2016342300,
+    1779581495,3079819751,111262694,1274766160,443224088,298511866,1025883608,3806446537,1145181785,168956806,3641502830,3584813610,1689216846,3666258015,3200248200,1692713982,
+    2646376535,4042768518,1618508792,1610833997,3523052358,4130873264,2001055236,3610705100,2202168115,4028541809,2961195399,1006657119,2006996926,3186142756,1430667929,3210227297,
+    1314452623,4074634658,4101304120,2273951170,1399257539,3367210612,3027628629,1190975929,2062231137,2333990788,2221543033,2438960610,1181637006,548689776,2362791313,3372408396,
+    3104550113,3145860560,296247880,1970579870,3078560182,3769228297,1714227617,3291629107,3898220290,166772364,1251581989,493813264,448347421,195405023,2709975567,677966185,
+    3703036547,1463355134,2715995803,1338867538,1343315457,2802222074,2684532164,233230375,2599980071,2000651841,3277868038,1638401717,4028070440,3237316320,6314154,819756386,
+    300326615,590932579,1405279636,3267499572,3150704214,2428286686,3959192993,3461946742,1862657033,1266418056,963775037,2089974820,2263052895,1917689273,448879540,3550394620,
+    3981727096,150775221,3627908307,1303187396,508620638,2975983352,2726630617,1817252668,1876281319,1457606340,908771278,3720792119,3617206836,2455994898,1729034894,1080033504
+  ];
+var BF_KS3 = [
+    976866871,3556439503,2881648439,1522871579,1555064734,1336096578,3548522304,2579274686,3574697629,3205460757,3593280638,3338716283,3079412587,564236357,2993598910,1781952180,
+    1464380207,3163844217,3332601554,1699332808,1393555694,1183702653,3581086237,1288719814,691649499,2847557200,2895455976,3193889540,2717570544,1781354906,1676643554,2592534050,
+    3230253752,1126444790,2770207658,2633158820,2210423226,2615765581,2414155088,3127139286,673620729,2805611233,1269405062,4015350505,3341807571,4149409754,1057255273,2012875353,
+    2162469141,2276492801,2601117357,993977747,3918593370,2654263191,753973209,36408145,2530585658,25011837,3520020182,2088578344,530523599,2918365339,1524020338,1518925132,
+    3760827505,3759777254,1202760957,3985898139,3906192525,674977740,4174734889,2031300136,2019492241,3983892565,4153806404,3822280332,352677332,2297720250,60907813,90501309,
+    3286998549,1016092578,2535922412,2839152426,457141659,509813237,4120667899,652014361,1966332200,2975202805,55981186,2327461051,676427537,3255491064,2882294119,3433927263,
+    1307055953,942726286,933058658,2468411793,3933900994,4215176142,1361170020,2001714738,2830558078,3274259782,1222529897,1679025792,2729314320,3714953764,1770335741,151462246,
+    3013232138,1682292957,1483529935,471910574,1539241949,458788160,3436315007,1807016891,3718408830,978976581,1043663428,3165965781,1927990952,4200891579,2372276910,3208408903,
+    3533431907,1412390302,2931980059,4132332400,1947078029,3881505623,4168226417,2941484381,1077988104,1320477388,886195818,18198404,3786409000,2509781533,112762804,3463356488,
+    1866414978,891333506,18488651,661792760,1628790961,3885187036,3141171499,876946877,2693282273,1372485963,791857591,2686433993,3759982718,3167212022,3472953795,2716379847,
+    445679433,3561995674,3504004811,3574258232,54117162,3331405415,2381918588,3769707343,4154350007,1140177722,4074052095,668550556,3214352940,367459370,261225585,2610173221,
+    4209349473,3468074219,3265815641,314222801,3066103646,3808782860,282218597,3406013506,3773591054,379116347,1285071038,846784868,2669647154,3771962079,3550491691,2305946142,
+    453669953,1268987020,3317592352,3279303384,3744833421,2610507566,3859509063,266596637,3847019092,517658769,3462560207,3443424879,370717030,4247526661,2224018117,4143653529,
+    4112773975,2788324899,2477274417,1456262402,2901442914,1517677493,1846949527,2295493580,3734397586,2176403920,1280348187,1908823572,3871786941,846861322,1172426758,3287448474,
+    3383383037,1655181056,3139813346,901632758,1897031941,2986607138,3066810236,3447102507,1393639104,373351379,950779232,625454576,3124240540,4148612726,2007998917,544563296,
+    2244738638,2330496472,2058025392,1291430526,424198748,50039436,29584100,3605783033,2429876329,2791104160,1057563949,3255363231,3075367218,3463963227,1469046755,985887462
+  ];
+
+
+  /* ============================= Blowfish ============================= */
+
+  function makeBlowfish(key) { // key: 16..56 bytes (SSE uses 32 or 56)
+    var S0 = BF_KS0.slice(), S1 = BF_KS1.slice(), S2 = BF_KS2.slice(), S3 = BF_KS3.slice();
+    var P = BF_KP.slice();
+    var kl = key.length, ki = 0, i, j;
+    for (i = 0; i < 18; i++) {
+      var data = 0;
+      for (j = 0; j < 4; j++) { data = (data << 8) | (key[ki++] & 0xff); if (ki >= kl) ki = 0; }
+      P[i] ^= data;
+    }
+    function F(x) { return (((S0[x >>> 24] + S1[(x >>> 16) & 0xff]) ^ S2[(x >>> 8) & 0xff]) + S3[x & 0xff]) >>> 0; }
+    function processTable(xl, xr, table) {
+      var size = table.length;
+      for (var s = 0; s < size; s += 2) {
+        xl ^= P[0];
+        for (var i = 1; i < 16; i += 2) { xr ^= F(xl) ^ P[i]; xl ^= F(xr) ^ P[i + 1]; }
+        xr ^= P[17];
+        table[s] = xr >>> 0; table[s + 1] = xl >>> 0;
+        xr = xl >>> 0; xl = table[s];
+      }
+    }
+    processTable(0, 0, P);
+    processTable(P[16], P[17], S0);
+    processTable(S0[254], S0[255], S1);
+    processTable(S1[254], S1[255], S2);
+    processTable(S2[254], S2[255], S3);
+    return {
+      blockSize: 8,
+      encrypt: function (b) {
+        var xl = readBE32(b, 0), xr = readBE32(b, 4);
+        xl ^= P[0];
+        for (var i = 1; i < 16; i += 2) { xr ^= F(xl) ^ P[i]; xl ^= F(xr) ^ P[i + 1]; }
+        xr ^= P[17];
+        var out = new Uint8Array(8);
+        writeBE32(xr, out, 0); writeBE32(xl, out, 4);
+        return out;
+      },
+      decrypt: function (b) {
+        var xl = readBE32(b, 0), xr = readBE32(b, 4);
+        xl ^= P[17];
+        for (var i = 16; i > 0; i -= 2) { xr ^= F(xl) ^ P[i]; xl ^= F(xr) ^ P[i - 1]; }
+        xr ^= P[0];
+        var out = new Uint8Array(8);
+        writeBE32(xr, out, 0); writeBE32(xl, out, 4);
+        return out;
+      }
+    };
+  }
+
+  /* ============================= RC6 ============================= */
+
+  function makeRC6(key) {
+    var _noRounds = 20, P32 = 0xb7e15163, Q32 = 0x9e3779b9;
+    var c = Math.ceil(key.length / 4) || 1;
+    var L = new Array(Math.ceil(key.length / 4)).fill(0);
+    for (var i = key.length - 1; i >= 0; i--) L[(i / 4) | 0] = (L[(i / 4) | 0] << 8) + (key[i] & 0xff);
+    var S = new Array(2 + 2 * _noRounds + 2);
+    S[0] = P32;
+    for (var i = 1; i < S.length; i++) S[i] = (S[i - 1] + Q32) >>> 0;
+    var iter = 3 * Math.max(L.length, S.length);
+    var A = 0, B = 0, ii = 0, j = 0;
+    for (var k = 0; k < iter; k++) {
+      A = S[ii] = rol32((S[ii] + A + B) >>> 0, 3);
+      B = L[j] = rol32((L[j] + A + B) >>> 0, A + B);
+      ii = (ii + 1) % S.length; j = (j + 1) % L.length;
+    }
+    return {
+      blockSize: 16,
+      encrypt: function (b) {
+        var A = readLE32(b, 0), B = readLE32(b, 4), C = readLE32(b, 8), D = readLE32(b, 12);
+        B = (B + S[0]) >>> 0; D = (D + S[1]) >>> 0;
+        for (var i = 1; i <= _noRounds; i++) {
+          var t = rol32(Math.imul(B, ((2 * B + 1) | 0)) >>> 0, 5);
+          var u = rol32(Math.imul(D, ((2 * D + 1) | 0)) >>> 0, 5);
+          A = (rol32(A ^ t, u) + S[2 * i]) >>> 0;
+          C = (rol32(C ^ u, t) + S[2 * i + 1]) >>> 0;
+          var tmp = A; A = B; B = C; C = D; D = tmp;
+        }
+        A = (A + S[2 * _noRounds + 2]) >>> 0; C = (C + S[2 * _noRounds + 3]) >>> 0;
+        var out = new Uint8Array(16);
+        writeLE32(A, out, 0); writeLE32(B, out, 4); writeLE32(C, out, 8); writeLE32(D, out, 12);
+        return out;
+      },
+      decrypt: function (b) {
+        var A = readLE32(b, 0), B = readLE32(b, 4), C = readLE32(b, 8), D = readLE32(b, 12);
+        C = (C - S[2 * _noRounds + 3]) >>> 0; A = (A - S[2 * _noRounds + 2]) >>> 0;
+        for (var i = _noRounds; i >= 1; i--) {
+          var tmp = D; D = C; C = B; B = A; A = tmp;
+          var t = rol32(Math.imul(B, ((2 * B + 1) | 0)) >>> 0, 5);
+          var u = rol32(Math.imul(D, ((2 * D + 1) | 0)) >>> 0, 5);
+          C = ror32((C - S[2 * i + 1]) >>> 0, t) ^ u;
+          A = ror32((A - S[2 * i]) >>> 0, u) ^ t;
+        }
+        D = (D - S[1]) >>> 0; B = (B - S[0]) >>> 0;
+        var out = new Uint8Array(16);
+        writeLE32(A, out, 0); writeLE32(B, out, 4); writeLE32(C, out, 8); writeLE32(D, out, 12);
+        return out;
+      }
+    };
+  }
+
+  /* ============================= GOST 28147-89 ============================= */
+var GOST_S = [
+    4,10,9,2,13,8,0,14,6,11,1,12,7,15,5,3,
+    14,11,4,12,6,13,15,10,2,3,8,1,0,7,5,9,
+    5,8,1,13,10,3,4,2,14,15,12,7,6,0,9,11,
+    7,13,10,1,0,8,9,15,14,4,6,12,11,2,5,3,
+    6,12,7,1,5,15,13,8,4,10,9,14,0,3,11,2,
+    4,11,10,0,7,2,1,13,3,6,8,5,9,12,15,14,
+    13,11,4,1,3,15,5,9,0,10,14,7,6,8,2,12,
+    1,15,13,0,5,7,10,4,9,2,3,14,6,11,8,12
+  ];
+
+
+  function makeGOST(key) { // 32-byte key
+    var wk = new Array(8);
+    for (var i = 0; i < 8; i++) wk[i] = readLE32(key, 4 * i);
+    function mainStep(n1, k) {
+      var cm = (k + n1) >>> 0;
+      var om = 0;
+      om += GOST_S[0 + ((cm >>> 0) & 0xF)] << 0;
+      om += GOST_S[16 + ((cm >>> 4) & 0xF)] << 4;
+      om += GOST_S[32 + ((cm >>> 8) & 0xF)] << 8;
+      om += GOST_S[48 + ((cm >>> 12) & 0xF)] << 12;
+      om += GOST_S[64 + ((cm >>> 16) & 0xF)] << 16;
+      om += GOST_S[80 + ((cm >>> 20) & 0xF)] << 20;
+      om += GOST_S[96 + ((cm >>> 24) & 0xF)] << 24;
+      om += GOST_S[112 + ((cm >>> 28) & 0xF)] << 28;
+      om = om >>> 0;
+      return (om << 11) | (om >>> 21);
+    }
+    return {
+      blockSize: 8,
+      encrypt: function (b) {
+        var N1 = readLE32(b, 0), N2 = readLE32(b, 4), tmp;
+        for (var k = 0; k < 3; k++) for (var j = 0; j < 8; j++) { tmp = N1; N1 = N2 ^ mainStep(N1, wk[j]); N2 = tmp; }
+        for (var j = 7; j > 0; j--) { tmp = N1; N1 = N2 ^ mainStep(N1, wk[j]); N2 = tmp; }
+        N2 = N2 ^ mainStep(N1, wk[0]);
+        var out = new Uint8Array(8);
+        writeLE32(N1, out, 0); writeLE32(N2, out, 4);
+        return out;
+      },
+      decrypt: function (b) {
+        var N1 = readLE32(b, 0), N2 = readLE32(b, 4), tmp;
+        for (var j = 0; j < 8; j++) { tmp = N1; N1 = N2 ^ mainStep(N1, wk[j]); N2 = tmp; }
+        for (var k = 0; k < 3; k++) for (var j = 7; j >= 0; j--) {
+          if (k === 2 && j === 0) break;
+          tmp = N1; N1 = N2 ^ mainStep(N1, wk[j]); N2 = tmp;
+        }
+        N2 = N2 ^ mainStep(N1, wk[0]);
+        var out = new Uint8Array(8);
+        writeLE32(N1, out, 0); writeLE32(N2, out, 4);
+        return out;
+      }
+    };
+  }
+
+  /* ============================= Twofish ============================= */
+var TF_P0 = [
+    169,103,179,232,4,253,163,118,154,146,128,120,228,221,209,56,
+    13,198,53,152,24,247,236,108,67,117,55,38,250,19,148,72,
+    242,208,139,48,132,84,223,35,25,91,61,89,243,174,162,130,
+    99,1,131,46,217,81,155,124,166,235,165,190,22,12,227,97,
+    192,140,58,245,115,44,37,11,187,78,137,107,83,106,180,241,
+    225,230,189,69,226,244,182,102,204,149,3,86,212,28,30,215,
+    251,195,142,181,233,207,191,186,234,119,57,175,51,201,98,113,
+    129,121,9,173,36,205,249,216,229,197,185,77,68,8,134,231,
+    161,29,170,237,6,112,178,210,65,123,160,17,49,194,39,144,
+    32,246,96,255,150,92,177,171,158,156,82,27,95,147,10,239,
+    145,133,73,238,45,79,143,59,71,135,109,70,214,62,105,100,
+    42,206,203,47,252,151,5,122,172,127,213,26,75,14,167,90,
+    40,20,63,41,136,60,76,2,184,218,176,23,85,31,138,125,
+    87,199,141,116,183,196,159,114,126,21,34,18,88,7,153,52,
+    110,80,222,104,101,188,219,248,200,168,43,64,220,254,50,164,
+    202,16,33,240,211,93,15,0,111,157,54,66,74,94,193,224
+  ];
+var TF_P1 = [
+    117,243,198,244,219,123,251,200,74,211,230,107,69,125,232,75,
+    214,50,216,253,55,113,241,225,48,15,248,27,135,250,6,63,
+    94,186,174,91,138,0,188,157,109,193,177,14,128,93,210,213,
+    160,132,7,20,181,144,44,163,178,115,76,84,146,116,54,81,
+    56,176,189,90,252,96,98,150,108,66,247,16,124,40,39,140,
+    19,149,156,199,36,70,59,112,202,227,133,203,17,208,147,184,
+    166,131,32,255,159,119,195,204,3,111,8,191,64,231,43,226,
+    121,12,170,130,65,58,234,185,228,154,164,151,126,218,122,23,
+    102,148,161,29,61,240,222,179,11,114,167,28,239,209,83,62,
+    143,51,38,95,236,118,42,73,129,136,238,33,196,26,235,217,
+    197,57,153,205,173,49,139,1,24,35,221,31,78,45,249,72,
+    79,242,101,142,120,92,88,25,141,229,152,87,103,127,5,100,
+    175,99,182,254,245,183,60,165,206,233,104,68,224,77,67,105,
+    41,46,172,21,89,168,10,158,110,71,223,52,53,106,207,220,
+    34,201,192,155,137,212,237,171,18,162,13,82,187,2,47,169,
+    215,97,30,180,80,4,246,194,22,37,134,86,85,9,190,145
+  ];
+
+
+  var TF_P = [TF_P0, TF_P1];
+  var P_00 = 1, P_01 = 0, P_02 = 0, P_03 = 1, P_04 = 1;
+  var P_10 = 0, P_11 = 0, P_12 = 1, P_13 = 1, P_14 = 0;
+  var P_20 = 1, P_21 = 1, P_22 = 0, P_23 = 0, P_24 = 0;
+  var P_30 = 0, P_31 = 1, P_32 = 1, P_33 = 0, P_34 = 1;
+  var GF256_FDBK = 0x169, GF256_FDBK_2 = GF256_FDBK >> 1, GF256_FDBK_4 = GF256_FDBK >> 2;
+  var RS_GF_FDBK = 0x14D;
+
+  function Mx_X(x) { return x ^ LFSR2(x); }
+  function Mx_Y(x) { return x ^ LFSR1(x) ^ LFSR2(x); }
+  function LFSR1(x) { return (x >> 1) ^ ((x & 0x01) !== 0 ? GF256_FDBK_2 : 0); }
+  function LFSR2(x) { return (x >> 2) ^ ((x & 0x02) !== 0 ? GF256_FDBK_2 : 0) ^ ((x & 0x01) !== 0 ? GF256_FDBK_4 : 0); }
+  function RS_rem(x) {
+    var b = (x >>> 24) & 0xff;
+    var g2 = ((b << 1) ^ ((b & 0x80) !== 0 ? RS_GF_FDBK : 0)) & 0xff;
+    var g3 = ((b >>> 1) ^ ((b & 0x01) !== 0 ? (RS_GF_FDBK >>> 1) : 0)) ^ g2;
+    return (x << 8) ^ (g3 << 24) ^ (g2 << 16) ^ (g3 << 8) ^ b;
+  }
+  function RS_MDS_Encode(k0, k1) {
+    var r = k1;
+    for (var i = 0; i < 4; i++) r = RS_rem(r);
+    r ^= k0;
+    for (var i = 0; i < 4; i++) r = RS_rem(r);
+    return r;
+  }
+  function b0(x) { return x & 0xff; }
+  function b1(x) { return (x >>> 8) & 0xff; }
+  function b2(x) { return (x >>> 16) & 0xff; }
+  function b3(x) { return (x >>> 24) & 0xff; }
+
+  function makeTwofish(key) { // 32-byte key (k64Cnt = 4)
+    var MDS0 = [], MDS1 = [], MDS2 = [], MDS3 = [];
+    for (var i = 0; i < 256; i++) {
+      var j = TF_P[0][i] & 0xff;
+      var m1_0 = j, mX_0 = Mx_X(j) & 0xff, mY_0 = Mx_Y(j) & 0xff;
+      j = TF_P[1][i] & 0xff;
+      var m1_1 = j, mX_1 = Mx_X(j) & 0xff, mY_1 = Mx_Y(j) & 0xff;
+      MDS0[i] = (m1_1 | (mX_1 << 8) | (mY_1 << 16) | (mY_1 << 24)) >>> 0;
+      MDS1[i] = (mY_0 | (mY_0 << 8) | (mX_0 << 16) | (m1_0 << 24)) >>> 0;
+      MDS2[i] = (mX_1 | (mY_1 << 8) | (m1_1 << 16) | (mY_1 << 24)) >>> 0;
+      MDS3[i] = (mX_0 | (m1_0 << 8) | (mY_0 << 16) | (mX_0 << 24)) >>> 0;
+    }
+    var k64Cnt = 4;
+    var k32e = new Array(4), k32o = new Array(4), sBoxKeys = new Array(4);
+    for (var i = 0; i < 4; i++) {
+      var p = i * 8;
+      k32e[i] = readLE32(key, p);
+      k32o[i] = readLE32(key, p + 4);
+      sBoxKeys[3 - i] = RS_MDS_Encode(k32e[i], k32o[i]);
+    }
+    function F32(x, k32) {
+      var r0 = b0(x), r1 = b1(x), r2 = b2(x), r3 = b3(x);
+      var k0 = k32[0], k1 = k32[1], k2 = k32[2], k3 = k32[3];
+      r0 = (TF_P[P_04][r0] & 0xff) ^ b0(k3);
+      r1 = (TF_P[P_14][r1] & 0xff) ^ b1(k3);
+      r2 = (TF_P[P_24][r2] & 0xff) ^ b2(k3);
+      r3 = (TF_P[P_34][r3] & 0xff) ^ b3(k3);
+      r0 = (TF_P[P_03][r0] & 0xff) ^ b0(k2);
+      r1 = (TF_P[P_13][r1] & 0xff) ^ b1(k2);
+      r2 = (TF_P[P_23][r2] & 0xff) ^ b2(k2);
+      r3 = (TF_P[P_33][r3] & 0xff) ^ b3(k2);
+      return (MDS0[(TF_P[P_01][(TF_P[P_02][r0] & 0xff) ^ b0(k1)] & 0xff) ^ b0(k0)] ^
+              MDS1[(TF_P[P_11][(TF_P[P_12][r1] & 0xff) ^ b1(k1)] & 0xff) ^ b1(k0)] ^
+              MDS2[(TF_P[P_21][(TF_P[P_22][r2] & 0xff) ^ b2(k1)] & 0xff) ^ b2(k0)] ^
+              MDS3[(TF_P[P_31][(TF_P[P_32][r3] & 0xff) ^ b3(k1)] & 0xff) ^ b3(k0)]) >>> 0;
+    }
+    var gSubKeys = new Array(40);
+    for (var i = 0; i < 20; i++) {
+      var q = i * 0x02020202;
+      var A = F32(q, k32e);
+      var B = F32((q + 0x01010101) >>> 0, k32o);
+      B = ((B << 8) | (B >>> 24)) >>> 0;
+      A = (A + B) >>> 0;
+      gSubKeys[i * 2] = A;
+      A = (A + B) >>> 0;
+      gSubKeys[i * 2 + 1] = ((A << 9) | (A >>> 23)) >>> 0;
+    }
+    var gSBox = new Array(1024);
+    var k0s = sBoxKeys[0], k1s = sBoxKeys[1], k2s = sBoxKeys[2], k3s = sBoxKeys[3];
+    for (var i = 0; i < 256; i++) {
+      var c0 = i, c1 = i, c2 = i, c3 = i;
+      c0 = (TF_P[P_04][c0] & 0xff) ^ b0(k3s);
+      c1 = (TF_P[P_14][c1] & 0xff) ^ b1(k3s);
+      c2 = (TF_P[P_24][c2] & 0xff) ^ b2(k3s);
+      c3 = (TF_P[P_34][c3] & 0xff) ^ b3(k3s);
+      c0 = (TF_P[P_03][c0] & 0xff) ^ b0(k2s);
+      c1 = (TF_P[P_13][c1] & 0xff) ^ b1(k2s);
+      c2 = (TF_P[P_23][c2] & 0xff) ^ b2(k2s);
+      c3 = (TF_P[P_33][c3] & 0xff) ^ b3(k2s);
+      gSBox[i * 2] = MDS0[(TF_P[P_01][(TF_P[P_02][c0] & 0xff) ^ b0(k1s)] & 0xff) ^ b0(k0s)];
+      gSBox[i * 2 + 1] = MDS1[(TF_P[P_11][(TF_P[P_12][c1] & 0xff) ^ b1(k1s)] & 0xff) ^ b1(k0s)];
+      gSBox[i * 2 + 0x200] = MDS2[(TF_P[P_21][(TF_P[P_22][c2] & 0xff) ^ b2(k1s)] & 0xff) ^ b2(k0s)];
+      gSBox[i * 2 + 0x201] = MDS3[(TF_P[P_31][(TF_P[P_32][c3] & 0xff) ^ b3(k1s)] & 0xff) ^ b3(k0s)];
+    }
+    function Fe32_0(x) { return (gSBox[0x000 + 2 * (x & 0xff)] ^ gSBox[0x001 + 2 * ((x >>> 8) & 0xff)] ^ gSBox[0x200 + 2 * ((x >>> 16) & 0xff)] ^ gSBox[0x201 + 2 * ((x >>> 24) & 0xff)]) >>> 0; }
+    function Fe32_3(x) { return (gSBox[0x000 + 2 * ((x >>> 24) & 0xff)] ^ gSBox[0x001 + 2 * (x & 0xff)] ^ gSBox[0x200 + 2 * ((x >>> 8) & 0xff)] ^ gSBox[0x201 + 2 * ((x >>> 16) & 0xff)]) >>> 0; }
+    return {
+      blockSize: 16,
+      encrypt: function (b) {
+        var x0 = readLE32(b, 0) ^ gSubKeys[0];
+        var x1 = readLE32(b, 4) ^ gSubKeys[1];
+        var x2 = readLE32(b, 8) ^ gSubKeys[2];
+        var x3 = readLE32(b, 12) ^ gSubKeys[3];
+        var k = 8, t0, t1;
+        for (var r = 0; r < 16; r += 2) {
+          t0 = Fe32_0(x0); t1 = Fe32_3(x1);
+          x2 ^= (t0 + t1 + gSubKeys[k++]) >>> 0;
+          x2 = ((x2 >>> 1) | (x2 << 31)) >>> 0;
+          x3 = (((x3 << 1) | (x3 >>> 31)) >>> 0) ^ ((t0 + 2 * t1 + gSubKeys[k++]) >>> 0);
+          t0 = Fe32_0(x2); t1 = Fe32_3(x3);
+          x0 ^= (t0 + t1 + gSubKeys[k++]) >>> 0;
+          x0 = ((x0 >>> 1) | (x0 << 31)) >>> 0;
+          x1 = (((x1 << 1) | (x1 >>> 31)) >>> 0) ^ ((t0 + 2 * t1 + gSubKeys[k++]) >>> 0);
+        }
+        var out = new Uint8Array(16);
+        writeLE32(x2 ^ gSubKeys[4], out, 0); writeLE32(x3 ^ gSubKeys[5], out, 4);
+        writeLE32(x0 ^ gSubKeys[6], out, 8); writeLE32(x1 ^ gSubKeys[7], out, 12);
+        return out;
+      },
+      decrypt: function (b) {
+        var x2 = readLE32(b, 0) ^ gSubKeys[4];
+        var x3 = readLE32(b, 4) ^ gSubKeys[5];
+        var x0 = readLE32(b, 8) ^ gSubKeys[6];
+        var x1 = readLE32(b, 12) ^ gSubKeys[7];
+        var k = 39, t0, t1;
+        for (var r = 0; r < 16; r += 2) {
+          t0 = Fe32_0(x2); t1 = Fe32_3(x3);
+          x1 ^= (t0 + 2 * t1 + gSubKeys[k--]) >>> 0;
+          x0 = (((x0 << 1) | (x0 >>> 31)) >>> 0) ^ ((t0 + t1 + gSubKeys[k--]) >>> 0);
+          x1 = ((x1 >>> 1) | (x1 << 31)) >>> 0;
+          t0 = Fe32_0(x0); t1 = Fe32_3(x1);
+          x3 ^= (t0 + 2 * t1 + gSubKeys[k--]) >>> 0;
+          x2 = (((x2 << 1) | (x2 >>> 31)) >>> 0) ^ ((t0 + t1 + gSubKeys[k--]) >>> 0);
+          x3 = ((x3 >>> 1) | (x3 << 31)) >>> 0;
+        }
+        var out = new Uint8Array(16);
+        writeLE32(x0 ^ gSubKeys[0], out, 0); writeLE32(x1 ^ gSubKeys[1], out, 4);
+        writeLE32(x2 ^ gSubKeys[2], out, 8); writeLE32(x3 ^ gSubKeys[3], out, 12);
+        return out;
+      }
+    };
+  }
+
+  return {
+    makeBlowfish: makeBlowfish,
+    makeRC6: makeRC6,
+    makeGOST: makeGOST,
+    makeTwofish: makeTwofish
+  };
+});
+
+/*
+ * SSE-compat KDF primitives — pure JS.
+ * SHA3-512 (Keccak-f[1600]), HMAC-SHA3-512, HKDF (RFC 5869), Blake2b-512,
+ * and Argon2id v1.3 — each matching the exact implementations SSE ships
+ * (Bouncy Castle SHA3Digest / HKDFBytesGenerator, at.gadermaier argon2-java,
+ * which itself matches the reference libargon2).
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.SSEKDF = factory();
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  var MASK64 = 0xFFFFFFFFFFFFFFFFn;
+  function rol64(x, n) { n &= 63; return n ? ((x << BigInt(n)) | (x >> BigInt(64 - n))) & MASK64 : x & MASK64; }
+  function ror64(x, n) { n &= 63; return n ? ((x >> BigInt(n)) | (x << BigInt(64 - n))) & MASK64 : x & MASK64; }
+  function readLE32(b, o) { return ((b[o + 3] << 24) | (b[o + 2] << 16) | (b[o + 1] << 8) | b[o]) >>> 0; }
+  function writeLE32(v, b, o) { b[o] = v; b[o + 1] = v >>> 8; b[o + 2] = v >>> 16; b[o + 3] = v >>> 24; }
+  function readLE64(b, o) { return BigInt(readLE32(b, o)) | (BigInt(readLE32(b, o + 4)) << 32n); }
+  function concatBytes() {
+    var len = 0, i;
+    for (i = 0; i < arguments.length; i++) len += arguments[i].length;
+    var out = new Uint8Array(len), o = 0;
+    for (i = 0; i < arguments.length; i++) { out.set(arguments[i], o); o += arguments[i].length; }
+    return out;
+  }
+  function utf8(s) {
+    if (typeof TextEncoder !== "undefined") return new TextEncoder().encode(s);
+    return Uint8Array.from(unescape(encodeURIComponent(s)), function (c) { return c.charCodeAt(0); });
+  }
+
+  /* ============================= Keccak / SHA3 ============================= */
+
+  var KECCAK_RC = [
+    0x0000000000000001n, 0x0000000000008082n, 0x800000000000808an, 0x8000000080008000n,
+    0x000000000000808bn, 0x0000000080000001n, 0x8000000080008081n, 0x8000000000008009n,
+    0x000000000000008an, 0x0000000000000088n, 0x0000000080008009n, 0x000000008000000an,
+    0x000000008000808bn, 0x800000000000008bn, 0x8000000000008089n, 0x8000000000008003n,
+    0x8000000000008002n, 0x8000000000000080n, 0x000000000000800an, 0x800000008000000an,
+    0x8000000080008081n, 0x8000000000008080n, 0x0000000080000001n, 0x8000000080008008n
+  ];
+  var KECCAK_ROTC = [
+    [0, 36, 3, 41, 18], [1, 44, 10, 45, 2], [62, 6, 43, 15, 61],
+    [28, 55, 25, 21, 56], [27, 20, 39, 8, 14]
+  ];
+
+  function keccakF(a) {
+    var i, x, y;
+    var b = new Array(25);
+    for (i = 0; i < 24; i++) {
+      var c = new Array(5);
+      for (x = 0; x < 5; x++) c[x] = a[x] ^ a[x + 5] ^ a[x + 10] ^ a[x + 15] ^ a[x + 20];
+      for (x = 0; x < 5; x++) {
+        var d = c[(x + 4) % 5] ^ rol64(c[(x + 1) % 5], 1);
+        for (y = 0; y < 25; y += 5) a[y + x] ^= d;
+      }
+      for (x = 0; x < 5; x++) for (y = 0; y < 5; y++) b[y + 5 * ((2 * x + 3 * y) % 5)] = rol64(a[x + 5 * y], KECCAK_ROTC[x][y]);
+      for (x = 0; x < 5; x++) for (y = 0; y < 5; y++) a[x + 5 * y] = b[x + 5 * y] ^ ((~b[(x + 1) % 5 + 5 * y]) & b[(x + 2) % 5 + 5 * y]);
+      a[0] ^= KECCAK_RC[i];
+    }
+  }
+
+  function keccakSponge(bytes, outLen, domain) {
+    var rate = 200 - 2 * outLen;
+    var state = new Array(25);
+    for (var i = 0; i < 25; i++) state[i] = 0n;
+    function absorbBlock(block) {
+      for (var j = 0; j < rate; j += 8) state[j / 8] ^= readLE64(block, j);
+      keccakF(state);
+    }
+    var off = 0, block = new Uint8Array(rate);
+    while (off + rate <= bytes.length) {
+      block.set(bytes.subarray(off, off + rate));
+      absorbBlock(block);
+      off += rate;
+    }
+    block.fill(0);
+    block.set(bytes.subarray(off));
+    block[bytes.length - off] ^= domain;
+    block[rate - 1] ^= 0x80;
+    absorbBlock(block);
+
+    var out = new Uint8Array(outLen);
+    var produced = 0;
+    while (produced < outLen) {
+      for (var j = 0; j < rate && produced < outLen; j += 8) {
+        var lo = Number(state[j / 8] & 0xFFFFFFFFn) >>> 0;
+        var hi = Number(state[j / 8] >> 32n) >>> 0;
+        writeLE32(lo, out, produced);
+        if (produced + 4 < outLen) writeLE32(hi, out, produced + 4);
+        produced += 8;
+      }
+      if (produced < outLen) keccakF(state);
+    }
+    return out.subarray(0, outLen);
+  }
+
+  function sha3_512(bytes) { return keccakSponge(bytes, 64, 0x06); }
+
+  function hmacSha3(key, msg) {
+    var bs = 72; // SHA3-512 rate (Bouncy Castle HMac block size)
+    if (key.length > bs) key = sha3_512(key);
+    var ipad = new Uint8Array(bs), opad = new Uint8Array(bs);
+    for (var i = 0; i < bs; i++) { ipad[i] = 0x36; opad[i] = 0x5c; }
+    for (var i = 0; i < key.length; i++) { ipad[i] ^= key[i]; opad[i] ^= key[i]; }
+    return sha3_512(concatBytes(opad, sha3_512(concatBytes(ipad, msg))));
+  }
+
+  function hkdfSha3(ikm, salt, info, len) {
+    var prk = hmacSha3(salt, ikm);
+    var out = new Uint8Array(len);
+    var produced = 0, counter = 1, t = new Uint8Array(0);
+    while (produced < len) {
+      t = hmacSha3(prk, concatBytes(t, info, new Uint8Array([counter])));
+      var take = Math.min(t.length, len - produced);
+      out.set(t.subarray(0, take), produced);
+      produced += take;
+      counter++;
+    }
+    return out;
+  }
+
+  /* ============================= Blake2b ============================= */
+
+  var BLAKE2B_IV = [
+    0x6a09e667f3bcc908n, 0xbb67ae8584caa73bn, 0x3c6ef372fe94f82bn, 0xa54ff53a5f1d36f1n,
+    0x510e527fade682d1n, 0x9b05688c2b3e6c1fn, 0x1f83d9abfb41bd6bn, 0x5be0cd19137e2179n
+  ];
+  var BLAKE2B_SIGMA = [
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    [14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3],
+    [11, 8, 12, 0, 5, 2, 15, 13, 10, 14, 3, 6, 7, 1, 9, 4],
+    [7, 9, 3, 1, 13, 12, 11, 14, 2, 6, 5, 10, 4, 0, 15, 8],
+    [9, 0, 5, 7, 2, 4, 10, 15, 14, 1, 11, 12, 6, 8, 3, 13],
+    [2, 12, 6, 10, 0, 11, 8, 3, 4, 13, 7, 5, 15, 14, 1, 9],
+    [12, 5, 1, 15, 14, 13, 4, 10, 0, 7, 6, 3, 9, 2, 8, 11],
+    [13, 11, 7, 14, 12, 1, 3, 9, 5, 0, 15, 4, 8, 6, 2, 10],
+    [6, 15, 14, 9, 11, 3, 0, 8, 12, 2, 13, 7, 1, 4, 10, 5],
+    [10, 2, 8, 4, 7, 6, 1, 5, 15, 11, 9, 14, 3, 12, 13, 0],
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    [14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3]
+  ];
+
+  function blake2b(bytes, outLen) {
+    var h = BLAKE2B_IV.slice();
+    h[0] ^= 0x01010000n ^ BigInt(outLen); // digest_length = outLen, fanout=1, depth=1
+    var v = new Array(16), m = new Array(16);
+    var nBlocks = Math.max(1, Math.ceil(bytes.length / 128));
+    var block = new Uint8Array(128);
+    for (var b = 0; b < nBlocks; b++) {
+      var isLast = (b === nBlocks - 1);
+      block.fill(0);
+      var off = b * 128;
+      var n = Math.min(128, bytes.length - off);
+      if (n > 0) block.set(bytes.subarray(off, off + n));
+      for (var i = 0; i < 16; i++) m[i] = readLE64(block, 8 * i);
+      for (var j = 0; j < 8; j++) v[j] = h[j];
+      for (var j = 0; j < 8; j++) v[j + 8] = BLAKE2B_IV[j];
+      var tCount = BigInt(Math.min(128 * (b + 1), bytes.length)); // bytes incl. this block
+      v[12] ^= tCount & 0xFFFFFFFFFFFFFFFFn;   // t0 (low 64 bits)
+      v[13] ^= 0n;                             // t1 (high 64 bits)
+      if (isLast) v[14] ^= 0xFFFFFFFFFFFFFFFFn; // finalization flag
+      function G(a, c, e, g, x, y) {
+        v[a] = (v[a] + v[c] + x) & MASK64; v[g] = ror64(v[g] ^ v[a], 32);
+        v[e] = (v[e] + v[g]) & MASK64; v[c] = ror64(v[c] ^ v[e], 24);
+        v[a] = (v[a] + v[c] + y) & MASK64; v[g] = ror64(v[g] ^ v[a], 16);
+        v[e] = (v[e] + v[g]) & MASK64; v[c] = ror64(v[c] ^ v[e], 63);
+      }
+      for (var r = 0; r < 12; r++) {
+        var s = BLAKE2B_SIGMA[r];
+        G(0, 4, 8, 12, m[s[0]], m[s[1]]);
+        G(1, 5, 9, 13, m[s[2]], m[s[3]]);
+        G(2, 6, 10, 14, m[s[4]], m[s[5]]);
+        G(3, 7, 11, 15, m[s[6]], m[s[7]]);
+        G(0, 5, 10, 15, m[s[8]], m[s[9]]);
+        G(1, 6, 11, 12, m[s[10]], m[s[11]]);
+        G(2, 7, 8, 13, m[s[12]], m[s[13]]);
+        G(3, 4, 9, 14, m[s[14]], m[s[15]]);
+      }
+      for (var j = 0; j < 8; j++) h[j] = (h[j] ^ v[j] ^ v[j + 8]) & MASK64;
+    }
+    var out = new Uint8Array(outLen);
+    for (var i = 0; i < outLen; i++) out[i] = Number((h[i >> 3] >> BigInt(8 * (i & 7))) & 0xFFn);
+    return out;
+  }
+
+  function blake2b64(bytes) { return blake2b(bytes, 64); }
+
+  // H' variable-length hash (Argon2 §3.3 / at.gadermaier Functions.blake2bLong)
+  function blake2bLong(bytes, outLen) {
+    if (outLen <= 64) return blake2b(concatBytes(new Uint8Array([outLen, 0, 0, 0]), bytes), outLen);
+    var out = new Uint8Array(outLen);
+    var v = blake2b(concatBytes(new Uint8Array([outLen >>> 0 & 0xff, (outLen >>> 8) & 0xff, (outLen >>> 16) & 0xff, (outLen >>> 24) & 0xff]), bytes), 64);
+    var pos = 0;
+    var r = Math.floor(outLen / 32) - 2;
+    out.set(v.subarray(0, 32), 0); pos = 32;
+    for (var i = 2; i <= r; i++) {
+      v = blake2b(v, 64);
+      out.set(v.subarray(0, 32), pos); pos += 32;
+    }
+    var lastLen = outLen - 32 * r;
+    v = blake2b(v, lastLen);
+    out.set(v.subarray(0, lastLen), pos);
+    return out;
+  }
+
+  /* ============================= Argon2id (32-bit fast path) =============================
+   * Memory blocks are stored as a flat Uint32Array: block b word w is at
+   * [b*256 + 2w] = lo, [b*256 + 2w + 1] = hi. All 64-bit ops are done in
+   * 32-bit halves (matches at.gadermaier / reference libargon2 semantics). */
+
+  var ARGON2_BLOCK = 1024, ARGON2_QWORDS = 128, ARGON2_SYNC_POINTS = 4, ARGON2_ADDRESSES = 128;
+
+  function blake2bLong(bytes, outLen) {
+    if (outLen <= 64) return blake2b(concatBytes(new Uint8Array([outLen, 0, 0, 0]), bytes), outLen);
+    var out = new Uint8Array(outLen);
+    var v = blake2b(concatBytes(new Uint8Array([outLen & 0xff, (outLen >>> 8) & 0xff, (outLen >>> 16) & 0xff, (outLen >>> 24) & 0xff]), bytes), 64);
+    var pos = 0;
+    var r = Math.floor(outLen / 32) - 2;
+    out.set(v.subarray(0, 32), 0); pos = 32;
+    for (var i = 2; i <= r; i++) {
+      v = blake2b(v, 64);
+      out.set(v.subarray(0, 32), pos); pos += 32;
+    }
+    var lastLen = outLen - 32 * r;
+    v = blake2b(v, lastLen);
+    out.set(v.subarray(0, lastLen), pos);
+    return out;
+  }
+
+  function argon2idHash(password, salt, t, mKiB, p, outLen) {
+    var lanes = p;
+    var memoryBlocks = mKiB;
+    if (memoryBlocks < 2 * ARGON2_SYNC_POINTS * lanes) memoryBlocks = 2 * ARGON2_SYNC_POINTS * lanes;
+    var segmentLength = Math.floor(memoryBlocks / (lanes * ARGON2_SYNC_POINTS));
+    var laneLength = segmentLength * ARGON2_SYNC_POINTS;
+    memoryBlocks = segmentLength * (lanes * ARGON2_SYNC_POINTS);
+
+    var version = 0x13, type = 2;
+    function le32(v) { return new Uint8Array([v & 0xff, (v >>> 8) & 0xff, (v >>> 16) & 0xff, (v >>> 24) & 0xff]); }
+    var h0 = blake2b64(concatBytes(
+      le32(lanes), le32(outLen), le32(memoryBlocks), le32(t), le32(version), le32(type),
+      le32(password.length), password, le32(salt.length), salt, le32(0), le32(0)
+    ));
+
+    var mem = new Uint32Array(2 * ARGON2_QWORDS * memoryBlocks);
+
+    function wordsToBlock(words) {
+      var b = new Uint8Array(ARGON2_BLOCK);
+      for (var i = 0; i < ARGON2_QWORDS; i++) {
+        var lo = Number(words[i] & 0xFFFFFFFFn) >>> 0;
+        var hi = Number(words[i] >> 32n) >>> 0;
+        writeLE32(lo, b, 8 * i);
+        writeLE32(hi, b, 8 * i + 4);
+      }
+      return b;
+    }
+    function blockToMem(bytes, blockIdx) {
+      var base = blockIdx * 256;
+      for (var i = 0; i < ARGON2_QWORDS; i++) {
+        mem[base + 2 * i] = readLE32(bytes, 8 * i);
+        mem[base + 2 * i + 1] = readLE32(bytes, 8 * i + 4);
+      }
+    }
+
+    // first two blocks of each lane
+    for (var lane = 0; lane < lanes; lane++) {
+      var seed0 = new Uint8Array(72);
+      seed0.set(h0, 0);
+      writeLE32(0, seed0, 64); writeLE32(lane, seed0, 68);
+      blockToMem(blake2bLong(seed0, ARGON2_BLOCK), lane * laneLength + 0);
+      var seed1 = new Uint8Array(72);
+      seed1.set(h0, 0);
+      writeLE32(1, seed1, 64); writeLE32(lane, seed1, 68);
+      blockToMem(blake2bLong(seed1, ARGON2_BLOCK), lane * laneLength + 1);
+    }
+
+    // 32-bit G helpers on a flat Uint32Array
+    function blaMka32(z, x, y) {
+      var xl = z[2 * x], xh = z[2 * x + 1], yl = z[2 * y], yh = z[2 * y + 1];
+      // p = xl * yl (32x32 -> 64)
+      var ah = xl >>> 16, al = xl & 0xffff, bh = yl >>> 16, bl = yl & 0xffff;
+      var p0 = al * bl, p1 = ah * bl + al * bh, p2 = ah * bh;
+      var mid = p1 % 0x10000;
+      var p1hi = Math.floor(p1 / 0x10000);
+      var pLo = p0 + mid * 0x10000;
+      var carry = (pLo >= 0x100000000) ? 1 : 0;
+      var loProd = pLo >>> 0;
+      var hiProd = (p2 + p1hi + carry) >>> 0;
+      // 2 * p
+      var dlo = (loProd << 1) >>> 0, dhi = (hiProd << 1) >>> 0;
+      if (loProd >= 0x80000000) dhi = (dhi + 1) >>> 0;
+      // x = x + y + 2p
+      var s0 = xl + yl; var c0 = s0 >= 0x100000000 ? 1 : 0;
+      s0 = s0 - c0 * 0x100000000;
+      var s1 = xh + yh + c0;
+      var r0 = s0 + dlo; var c1 = r0 >= 0x100000000 ? 1 : 0;
+      var r1 = s1 + dhi + c1;
+      z[2 * x] = r0 >>> 0; z[2 * x + 1] = r1 >>> 0;
+    }
+    function rotr32(z, v, w, c) {
+      var t0 = z[2 * v] ^ z[2 * w], t1 = z[2 * v + 1] ^ z[2 * w + 1];
+      if (c === 32) { z[2 * v] = t1; z[2 * v + 1] = t0; }
+      else if (c === 24) { z[2 * v] = ((t0 >>> 24) | (t1 << 8)) >>> 0; z[2 * v + 1] = ((t1 >>> 24) | (t0 << 8)) >>> 0; }
+      else if (c === 16) { z[2 * v] = ((t0 >>> 16) | (t1 << 16)) >>> 0; z[2 * v + 1] = ((t1 >>> 16) | (t0 << 16)) >>> 0; }
+      else { z[2 * v] = ((t0 << 1) | (t1 >>> 31)) >>> 0; z[2 * v + 1] = ((t1 << 1) | (t0 >>> 31)) >>> 0; }
+    }
+    function F32(z, a, b, c, d) {
+      blaMka32(z, a, b); rotr32(z, d, a, 32);
+      blaMka32(z, c, d); rotr32(z, b, c, 24);
+      blaMka32(z, a, b); rotr32(z, d, a, 16);
+      blaMka32(z, c, d); rotr32(z, b, c, 63);
+    }
+    function roundFunction32(z, i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15) {
+      F32(z, i0, i4, i8, i12); F32(z, i1, i5, i9, i13); F32(z, i2, i6, i10, i14); F32(z, i3, i7, i11, i15);
+      F32(z, i0, i5, i10, i15); F32(z, i1, i6, i11, i12); F32(z, i2, i7, i8, i13); F32(z, i3, i4, i9, i14);
+    }
+
+    // scratch buffers
+    var rLo = new Uint32Array(ARGON2_QWORDS), rHi = new Uint32Array(ARGON2_QWORDS);
+    var z = new Uint32Array(256); // flat z block (lo/hi interleaved)
+
+    function fillBlock32(prevBase, refBase, nextBase, withXor) {
+      var i, off, rr0, rr1;
+      for (i = 0; i < ARGON2_QWORDS; i++) {
+        off = 2 * i;
+        rr0 = mem[prevBase + off] ^ mem[refBase + off];
+        rr1 = mem[prevBase + off + 1] ^ mem[refBase + off + 1];
+        rLo[i] = rr0; rHi[i] = rr1;
+        z[off] = rr0; z[off + 1] = rr1;
+      }
+      for (i = 0; i < 8; i++) {
+        roundFunction32(z, 16 * i, 16 * i + 1, 16 * i + 2, 16 * i + 3, 16 * i + 4, 16 * i + 5, 16 * i + 6, 16 * i + 7,
+          16 * i + 8, 16 * i + 9, 16 * i + 10, 16 * i + 11, 16 * i + 12, 16 * i + 13, 16 * i + 14, 16 * i + 15);
+      }
+      for (i = 0; i < 8; i++) {
+        roundFunction32(z, 2 * i, 2 * i + 1, 2 * i + 16, 2 * i + 17, 2 * i + 32, 2 * i + 33, 2 * i + 48, 2 * i + 49,
+          2 * i + 64, 2 * i + 65, 2 * i + 80, 2 * i + 81, 2 * i + 96, 2 * i + 97, 2 * i + 112, 2 * i + 113);
+      }
+      for (i = 0; i < ARGON2_QWORDS; i++) {
+        off = 2 * i;
+        var acc0 = rLo[i] ^ z[off], acc1 = rHi[i] ^ z[off + 1];
+        if (withXor) { acc0 ^= mem[nextBase + off]; acc1 ^= mem[nextBase + off + 1]; }
+        mem[nextBase + off] = acc0; mem[nextBase + off + 1] = acc1;
+      }
+    }
+
+    function getRefIndex(pass, slice, index, segLen, laneLen, pseudoRand, sameLane) {
+      var referenceAreaSize, startPosition;
+      if (pass === 0) {
+        startPosition = 0;
+        if (sameLane) referenceAreaSize = slice * segLen + index - 1;
+        else referenceAreaSize = slice * segLen + (index === 0 ? -1 : 0);
+      } else {
+        startPosition = ((slice + 1) * segLen) % laneLen;
+        if (sameLane) referenceAreaSize = laneLen - segLen + index - 1;
+        else referenceAreaSize = laneLen - segLen + (index === 0 ? -1 : 0);
+      }
+      var rel = pseudoRand & 0xFFFFFFFFn;
+      rel = (rel * rel) >> 32n;
+      rel = BigInt(referenceAreaSize) - 1n - ((BigInt(referenceAreaSize) * rel) >> 32n);
+      return Number((BigInt(startPosition) + rel) % BigInt(laneLen));
+    }
+
+    // zero block (used for address generation)
+    var zero = new Uint32Array(256);
+
+    for (var pass = 0; pass < t; pass++) {
+      for (var slice = 0; slice < ARGON2_SYNC_POINTS; slice++) {
+        for (var lane = 0; lane < lanes; lane++) {
+          var dataIndependent = (pass === 0 && slice < ARGON2_SYNC_POINTS / 2);
+          var startingIndex = (pass === 0 && slice === 0) ? 2 : 0;
+          var inputBlock = new Uint32Array(256);
+          var addressBlock = new Uint32Array(256);
+          if (dataIndependent) {
+            inputBlock[0] = pass; inputBlock[2] = lane; inputBlock[4] = slice;
+            inputBlock[6] = memoryBlocks; inputBlock[8] = t; inputBlock[10] = type;
+            if (pass === 0 && slice === 0) {
+              inputBlock[12] += 1;
+              fillInto(inputBlock, addressBlock);
+            }
+          }
+          var currOffset = lane * laneLength + slice * segmentLength + startingIndex;
+          var prevOffset = (currOffset % laneLength === 0) ? currOffset + laneLength - 1 : currOffset - 1;
+          for (var index = startingIndex; index < segmentLength; index++, currOffset++, prevOffset++) {
+            if (currOffset % laneLength === 1) prevOffset = currOffset - 1;
+            var pseudoRand;
+            if (dataIndependent) {
+              if (index % ARGON2_ADDRESSES === 0) {
+                inputBlock[12] += 1;
+                fillInto(inputBlock, addressBlock);
+              }
+              pseudoRand = BigInt(addressBlock[2 * (index % ARGON2_ADDRESSES)]) | (BigInt(addressBlock[2 * (index % ARGON2_ADDRESSES) + 1]) << 32n);
+            } else {
+              pseudoRand = BigInt(mem[prevOffset * 256]) | (BigInt(mem[prevOffset * 256 + 1]) << 32n);
+            }
+            var refLane = Number((pseudoRand >> 32n) % BigInt(lanes));
+            if (pass === 0 && slice === 0) refLane = lane;
+            var sameLane = (refLane === lane);
+            var refIndex = getRefIndex(pass, slice, index, segmentLength, laneLength, pseudoRand, sameLane);
+            var refOffset = refLane * laneLength + refIndex;
+            fillBlock32(prevOffset * 256, refOffset * 256, currOffset * 256, pass !== 0);
+          }
+        }
+      }
+    }
+
+    function fillInto(inputBlock, addressBlock) {
+      // addressBlock = G(zero, inputBlock) then G(zero, addressBlock)
+      var tmp = new Uint32Array(256);
+      // R = zero ^ inputBlock = inputBlock; Z = R
+      for (var i = 0; i < 256; i++) { tmp[i] = inputBlock[i]; z[i] = inputBlock[i]; }
+      for (var i = 0; i < 8; i++) {
+        roundFunction32(z, 16 * i, 16 * i + 1, 16 * i + 2, 16 * i + 3, 16 * i + 4, 16 * i + 5, 16 * i + 6, 16 * i + 7,
+          16 * i + 8, 16 * i + 9, 16 * i + 10, 16 * i + 11, 16 * i + 12, 16 * i + 13, 16 * i + 14, 16 * i + 15);
+      }
+      for (var i = 0; i < 8; i++) {
+        roundFunction32(z, 2 * i, 2 * i + 1, 2 * i + 16, 2 * i + 17, 2 * i + 32, 2 * i + 33, 2 * i + 48, 2 * i + 49,
+          2 * i + 64, 2 * i + 65, 2 * i + 80, 2 * i + 81, 2 * i + 96, 2 * i + 97, 2 * i + 112, 2 * i + 113);
+      }
+      for (var i = 0; i < 256; i++) { addressBlock[i] = tmp[i] ^ z[i]; }
+      // second: G(zero, addressBlock)
+      for (var i = 0; i < 256; i++) { tmp[i] = addressBlock[i]; z[i] = addressBlock[i]; }
+      for (var i = 0; i < 8; i++) {
+        roundFunction32(z, 16 * i, 16 * i + 1, 16 * i + 2, 16 * i + 3, 16 * i + 4, 16 * i + 5, 16 * i + 6, 16 * i + 7,
+          16 * i + 8, 16 * i + 9, 16 * i + 10, 16 * i + 11, 16 * i + 12, 16 * i + 13, 16 * i + 14, 16 * i + 15);
+      }
+      for (var i = 0; i < 8; i++) {
+        roundFunction32(z, 2 * i, 2 * i + 1, 2 * i + 16, 2 * i + 17, 2 * i + 32, 2 * i + 33, 2 * i + 48, 2 * i + 49,
+          2 * i + 64, 2 * i + 65, 2 * i + 80, 2 * i + 81, 2 * i + 96, 2 * i + 97, 2 * i + 112, 2 * i + 113);
+      }
+      for (var i = 0; i < 256; i++) { addressBlock[i] = tmp[i] ^ z[i]; }
+    }
+
+    // final: XOR last block of each lane
+    var finalLo = new Uint32Array(ARGON2_QWORDS), finalHi = new Uint32Array(ARGON2_QWORDS);
+    var lastBase = (laneLength - 1) * 256;
+    for (var i = 0; i < ARGON2_QWORDS; i++) { finalLo[i] = mem[lastBase + 2 * i]; finalHi[i] = mem[lastBase + 2 * i + 1]; }
+    for (var lane = 1; lane < lanes; lane++) {
+      var lb = (lane * laneLength + laneLength - 1) * 256;
+      for (var i = 0; i < ARGON2_QWORDS; i++) { finalLo[i] ^= mem[lb + 2 * i]; finalHi[i] ^= mem[lb + 2 * i + 1]; }
+    }
+    var finalBytes = new Uint8Array(ARGON2_BLOCK);
+    for (var i = 0; i < ARGON2_QWORDS; i++) { writeLE32(finalLo[i], finalBytes, 8 * i); writeLE32(finalHi[i], finalBytes, 8 * i + 4); }
+    return blake2bLong(finalBytes, outLen);
+  }
+
+  return {
+    sha3_512: sha3_512,
+    hmacSha3: hmacSha3,
+    hkdfSha3: hkdfSha3,
+    blake2b: blake2b,
+    blake2b64: blake2b64,
+    blake2bLong: blake2bLong,
+    concatBytes: concatBytes,
+    argon2idHash: argon2idHash,
+    utf8: utf8,
+    hexToBytes: function (h) {
+      h = h.replace(/[^0-9a-fA-F]/g, "");
+      var out = new Uint8Array(h.length / 2);
+      for (var i = 0; i < out.length; i++) out[i] = parseInt(h.substr(2 * i, 2), 16);
+      return out;
+    },
+    bytesToHex: function (b) {
+      var s = "";
+      for (var i = 0; i < b.length; i++) s += ("0" + b[i].toString(16)).slice(-2);
+      return s;
+    }
+  };
+});
+
+/*
+ * LZMA1 raw-stream codec (the exact format SSE uses: SevenZip LZMA SDK,
+ * dictionary 1 MiB, lc=3 lp=0 pb=2, no end marker, 5-byte props + 8-byte size).
+ *
+ * - decodeLZMA: verbatim port of SevenZip's LZMA Decoder (decodes any valid
+ *   LZMA1 stream, including everything SSE's Android/desktop apps produce).
+ * - encodeLZMA: an encoder that produces valid LZMA1 streams using the exact
+ *   same probability models / range coder (verbatim encode functions) with a
+ *   simple hash-based greedy matcher. Output is compatible with SSE's decoder
+ *   (not bit-identical to SSE's optimal encoder — that is not required for
+ *   interoperability).
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.SSELZMA = factory();
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  /* ============================= Base constants ============================= */
+  var kNumStates = 12;
+  var kNumPosSlotBits = 6;
+  var kNumLenToPosStates = 4;
+  var kMatchMinLen = 2;
+  var kNumAlignBits = 4;
+  var kAlignTableSize = 1 << kNumAlignBits;
+  var kAlignMask = kAlignTableSize - 1;
+  var kStartPosModelIndex = 4;
+  var kEndPosModelIndex = 14;
+  var kNumFullDistances = 1 << (kEndPosModelIndex / 2); // 128
+  var kNumPosStatesBitsMax = 4;
+  var kNumPosStatesMax = 1 << kNumPosStatesBitsMax;
+  var kNumLowLenBits = 3;
+  var kNumMidLenBits = 3;
+  var kNumHighLenBits = 8;
+  var kNumLowLenSymbols = 1 << kNumLowLenBits;
+  var kNumMidLenSymbols = 1 << kNumMidLenBits;
+  var kNumLenSymbols = kNumLowLenSymbols + kNumMidLenSymbols + (1 << kNumHighLenBits);
+  var kMatchMaxLen = kMatchMinLen + kNumLenSymbols - 1;
+
+  function stateUpdateChar(i) { return i < 4 ? 0 : (i < 10 ? i - 3 : i - 6); }
+  function stateUpdateMatch(i) { return i < 7 ? 7 : 10; }
+  function stateUpdateRep(i) { return i < 7 ? 8 : 11; }
+  function stateUpdateShortRep(i) { return i < 7 ? 9 : 11; }
+  function stateIsCharState(i) { return i < 7; }
+  function getLenToPosState(len) { len -= kMatchMinLen; return len < kNumLenToPosStates ? len : kNumLenToPosStates - 1; }
+
+  /* ============================= Range coder (decoder) ============================= */
+  var kTopMask = ~((1 << 24) - 1);
+  var kBitModelTotal = 1 << 11;
+  var kNumMoveBits = 5;
+
+  function RangeDecoder(data, pos) {
+    this.data = data;
+    this.pos = pos || 0;
+    this.range = -1;
+    this.code = 0;
+    for (var i = 0; i < 5; i++) this.code = (this.code << 8) | this.data[this.pos++];
+  }
+  RangeDecoder.prototype.decodeBit = function (probs, index) {
+    var prob = probs[index];
+    var newBound = ((this.range >>> 11) * prob) | 0;
+    if ((this.code ^ 0x80000000) < (newBound ^ 0x80000000)) {
+      this.range = newBound | 0;
+      probs[index] = (prob + ((kBitModelTotal - prob) >>> kNumMoveBits)) | 0;
+      if ((this.range & kTopMask) === 0) { this.code = (this.code << 8) | this.data[this.pos++]; this.range = (this.range << 8) | 0; }
+      return 0;
+    } else {
+      this.range = (this.range - newBound) | 0;
+      this.code = (this.code - newBound) | 0;
+      probs[index] = (prob - (prob >>> kNumMoveBits)) | 0;
+      if ((this.range & kTopMask) === 0) { this.code = (this.code << 8) | this.data[this.pos++]; this.range = (this.range << 8) | 0; }
+      return 1;
+    }
+  };
+  RangeDecoder.prototype.decodeDirectBits = function (n) {
+    var result = 0;
+    for (var i = n; i !== 0; i--) {
+      this.range = (this.range >>> 1) | 0;
+      var t = ((this.code - this.range) >>> 31);
+      this.code = (this.code - (this.range & (t - 1))) | 0;
+      result = (result << 1) | (1 - t);
+      if ((this.range & kTopMask) === 0) { this.code = (this.code << 8) | this.data[this.pos++]; this.range = (this.range << 8) | 0; }
+    }
+    return result;
+  };
+
+  function initBitModels(probs) {
+    for (var i = 0; i < probs.length; i++) probs[i] = kBitModelTotal >>> 1;
+  }
+
+  function BitTreeDecoder(numBits) {
+    this.numBits = numBits;
+    this.models = new Int32Array(1 << numBits);
+  }
+  BitTreeDecoder.prototype.init = function () { for (var i = 0; i < this.models.length; i++) this.models[i] = kBitModelTotal >>> 1; };
+  BitTreeDecoder.prototype.decode = function (rc) {
+    var m = 1;
+    for (var b = this.numBits; b !== 0; b--) m = (m << 1) + rc.decodeBit(this.models, m);
+    return m - (1 << this.numBits);
+  };
+  BitTreeDecoder.prototype.reverseDecode = function (rc) {
+    var m = 1, symbol = 0;
+    for (var b = 0; b < this.numBits; b++) {
+      var bit = rc.decodeBit(this.models, m);
+      m = (m << 1) + bit;
+      symbol |= bit << b;
+    }
+    return symbol;
+  };
+  function reverseDecodeStatic(models, startIndex, rc, numBits) {
+    var m = 1, symbol = 0;
+    for (var b = 0; b < numBits; b++) {
+      var bit = rc.decodeBit(models, startIndex + m);
+      m = (m << 1) + bit;
+      symbol |= bit << b;
+    }
+    return symbol;
+  }
+
+  /* ============================= Decoder ============================= */
+
+  function decodeLZMA(bytes) {
+    // parse header
+    if (bytes.length < 13) throw new Error("LZMA stream too short");
+    var props = bytes;
+    var val = props[0] & 0xff;
+    var lc = val % 9, rem = (val / 9) | 0, lp = rem % 5, pb = (rem / 5) | 0;
+    var dictSize = 0;
+    for (var i = 0; i < 4; i++) dictSize += (props[1 + i] & 0xff) << (8 * i);
+    var outSize = 0;
+    for (var i = 0; i < 8; i++) {
+      var v = props[5 + i];
+      if (v === undefined) throw new Error("can't read size");
+      outSize += (v & 0xff) * Math.pow(2, 8 * i);
+    }
+
+    var rc = new RangeDecoder(bytes, 13);
+    var out = new Uint8Array(outSize);
+    var outPos = 0;
+
+    // --- model state (mirror of SevenZip Decoder) ---
+    var isMatchDecoders = new Int32Array(kNumStates << kNumPosStatesBitsMax);
+    var isRepDecoders = new Int32Array(kNumStates);
+    var isRepG0Decoders = new Int32Array(kNumStates);
+    var isRepG1Decoders = new Int32Array(kNumStates);
+    var isRepG2Decoders = new Int32Array(kNumStates);
+    var isRep0LongDecoders = new Int32Array(kNumStates << kNumPosStatesBitsMax);
+    var posSlotDecoder = [];
+    for (var i = 0; i < kNumLenToPosStates; i++) posSlotDecoder.push(new BitTreeDecoder(kNumPosSlotBits));
+    var posDecoders = new Int32Array(kNumFullDistances - kEndPosModelIndex);
+    var posAlignDecoder = new BitTreeDecoder(kNumAlignBits);
+
+    function LenDecoder() {
+      this.choice = new Int32Array(2);
+      this.low = []; this.mid = [];
+      this.high = new BitTreeDecoder(kNumHighLenBits);
+      this.numPosStates = 0;
+    }
+    LenDecoder.prototype.create = function (numPosStates) {
+      for (; this.numPosStates < numPosStates; this.numPosStates++) {
+        this.low.push(new BitTreeDecoder(kNumLowLenBits));
+        this.mid.push(new BitTreeDecoder(kNumMidLenBits));
+      }
+    };
+    LenDecoder.prototype.init = function () {
+      initBitModels(this.choice);
+      for (var i = 0; i < this.numPosStates; i++) { this.low[i].init(); this.mid[i].init(); }
+      this.high.init();
+    };
+    LenDecoder.prototype.decode = function (rc, posState) {
+      if (rc.decodeBit(this.choice, 0) === 0) return this.low[posState].decode(rc);
+      var symbol = kNumLowLenSymbols;
+      if (rc.decodeBit(this.choice, 1) === 0) symbol += this.mid[posState].decode(rc);
+      else symbol += kNumMidLenSymbols + this.high.decode(rc);
+      return symbol;
+    };
+
+    function LiteralDecoder2() { this.decoders = new Int32Array(0x300); }
+    LiteralDecoder2.prototype.init = function () { initBitModels(this.decoders); };
+    LiteralDecoder2.prototype.decodeNormal = function (rc) {
+      var symbol = 1;
+      do { symbol = (symbol << 1) | rc.decodeBit(this.decoders, symbol); } while (symbol < 0x100);
+      return symbol;
+    };
+    LiteralDecoder2.prototype.decodeWithMatchByte = function (rc, matchByte) {
+      var symbol = 1;
+      do {
+        var matchBit = (matchByte >> 7) & 1;
+        matchByte <<= 1;
+        var bit = rc.decodeBit(this.decoders, ((1 + matchBit) << 8) + symbol);
+        symbol = (symbol << 1) | bit;
+        if (matchBit !== bit) {
+          while (symbol < 0x100) symbol = (symbol << 1) | rc.decodeBit(this.decoders, symbol);
+          break;
+        }
+      } while (symbol < 0x100);
+      return symbol;
+    };
+
+    function LiteralDecoder() {
+      this.coders = null; this.numPrevBits = -1; this.numPosBits = -1; this.posMask = 0;
+    }
+    LiteralDecoder.prototype.create = function (numPosBits, numPrevBits) {
+      if (this.coders && this.numPrevBits === numPrevBits && this.numPosBits === numPosBits) return;
+      this.numPosBits = numPosBits; this.posMask = (1 << numPosBits) - 1; this.numPrevBits = numPrevBits;
+      var numStates = 1 << (numPrevBits + numPosBits);
+      this.coders = new Array(numStates);
+      for (var i = 0; i < numStates; i++) this.coders[i] = new LiteralDecoder2();
+    };
+    LiteralDecoder.prototype.init = function () {
+      for (var i = 0; i < this.coders.length; i++) this.coders[i].init();
+    };
+    LiteralDecoder.prototype.getDecoder = function (pos, prevByte) {
+      return this.coders[((pos & this.posMask) << this.numPrevBits) + ((prevByte & 0xff) >>> (8 - this.numPrevBits))];
+    };
+
+    var literalDecoder = new LiteralDecoder();
+    var lenDecoder = new LenDecoder();
+    var repLenDecoder = new LenDecoder();
+
+    // init
+    literalDecoder.create(lp, lc);
+    var numPosStates = 1 << pb;
+    lenDecoder.create(numPosStates);
+    repLenDecoder.create(numPosStates);
+    var posStateMask = numPosStates - 1;
+
+    initBitModels(isMatchDecoders);
+    initBitModels(isRep0LongDecoders);
+    initBitModels(isRepDecoders);
+    initBitModels(isRepG0Decoders);
+    initBitModels(isRepG1Decoders);
+    initBitModels(isRepG2Decoders);
+    initBitModels(posDecoders);
+    literalDecoder.init();
+    for (var i = 0; i < kNumLenToPosStates; i++) posSlotDecoder[i].init();
+    lenDecoder.init();
+    repLenDecoder.init();
+    posAlignDecoder.init();
+
+    var state = 0, rep0 = 0, rep1 = 0, rep2 = 0, rep3 = 0;
+    var nowPos = 0, prevByte = 0;
+    var dictCheck = Math.max(dictSize, 1);
+
+    function getByte(distance) { return out[outPos - distance - 1]; }
+    function putByte(b) { out[outPos++] = b; }
+    function copyBlock(distance, len) {
+      var p = outPos - distance - 1;
+      for (; len !== 0; len--) { out[outPos++] = out[p++]; }
+    }
+
+    while (nowPos < outSize) {
+      var posState = nowPos & posStateMask;
+      if (rc.decodeBit(isMatchDecoders, (state << kNumPosStatesBitsMax) + posState) === 0) {
+        var dec2 = literalDecoder.getDecoder(nowPos, prevByte);
+        if (!stateIsCharState(state)) prevByte = dec2.decodeWithMatchByte(rc, getByte(rep0));
+        else prevByte = dec2.decodeNormal(rc);
+        putByte(prevByte);
+        state = stateUpdateChar(state);
+        nowPos++;
+      } else {
+        var len;
+        if (rc.decodeBit(isRepDecoders, state) === 1) {
+          len = 0;
+          if (rc.decodeBit(isRepG0Decoders, state) === 0) {
+            if (rc.decodeBit(isRep0LongDecoders, (state << kNumPosStatesBitsMax) + posState) === 0) {
+              state = stateUpdateShortRep(state);
+              len = 1;
+            }
+          } else {
+            var distance;
+            if (rc.decodeBit(isRepG1Decoders, state) === 0) distance = rep1;
+            else {
+              if (rc.decodeBit(isRepG2Decoders, state) === 0) distance = rep2;
+              else { distance = rep3; rep3 = rep2; }
+              rep2 = rep1;
+            }
+            rep1 = rep0;
+            rep0 = distance;
+          }
+          if (len === 0) {
+            len = repLenDecoder.decode(rc, posState) + kMatchMinLen;
+            state = stateUpdateRep(state);
+          }
+        } else {
+          rep3 = rep2; rep2 = rep1; rep1 = rep0;
+          len = kMatchMinLen + lenDecoder.decode(rc, posState);
+          state = stateUpdateMatch(state);
+          var posSlot = posSlotDecoder[getLenToPosState(len)].decode(rc);
+          if (posSlot >= kStartPosModelIndex) {
+            var numDirectBits = (posSlot >> 1) - 1;
+            rep0 = (2 | (posSlot & 1)) << numDirectBits;
+            if (posSlot < kEndPosModelIndex) {
+              rep0 += reverseDecodeStatic(posDecoders, rep0 - posSlot - 1, rc, numDirectBits);
+            } else {
+              rep0 += rc.decodeDirectBits(numDirectBits - kNumAlignBits) << kNumAlignBits;
+              rep0 += posAlignDecoder.reverseDecode(rc);
+            }
+          } else {
+            rep0 = posSlot;
+          }
+        }
+        if (rep0 >= nowPos || rep0 >= dictCheck) throw new Error("corrupt LZMA stream");
+        copyBlock(rep0, len);
+        nowPos += len;
+        prevByte = getByte(0);
+      }
+    }
+    if (outPos !== outSize) throw new Error("LZMA size mismatch");
+    return out;
+  }
+
+  /* ============================= Range coder (encoder) ============================= */
+
+  function RangeEncoder() {
+    this.out = [];
+    this.low = 0;
+    this.range = -1;
+    this.cacheSize = 1;
+    this.cache = 0;
+  }
+  RangeEncoder.prototype.shiftLow = function () {
+    var lowHi = Math.floor(this.low / 4294967296); // Low >>> 32
+    if (lowHi !== 0 || this.low < 0xFF000000) {
+      var temp = this.cache;
+      do {
+        this.out.push((temp + lowHi) & 0xff);
+        temp = 0xFF;
+      } while (--this.cacheSize !== 0);
+      this.cache = Math.floor(this.low / 16777216) & 0xff; // ((int)Low >>> 24)
+    }
+    this.cacheSize++;
+    this.low = (this.low % 16777216) * 256; // (Low & 0xFFFFFF) << 8
+  };
+  RangeEncoder.prototype.encode = function (probs, index, symbol) {
+    var prob = probs[index];
+    var newBound = ((this.range >>> 11) * prob) | 0;
+    if (symbol === 0) {
+      this.range = newBound | 0;
+      probs[index] = (prob + ((kBitModelTotal - prob) >>> kNumMoveBits)) | 0;
+    } else {
+      this.low += (newBound >>> 0);
+      this.range = (this.range - newBound) | 0;
+      probs[index] = (prob - (prob >>> kNumMoveBits)) | 0;
+    }
+    if ((this.range & kTopMask) === 0) {
+      this.range = (this.range << 8) | 0;
+      this.shiftLow();
+    }
+  };
+  RangeEncoder.prototype.encodeDirectBits = function (v, n) {
+    for (var i = n - 1; i >= 0; i--) {
+      this.range = (this.range >>> 1) | 0;
+      if (((v >>> i) & 1) === 1) this.low += (this.range >>> 0);
+      if ((this.range & kTopMask) === 0) { this.range = (this.range << 8) | 0; this.shiftLow(); }
+    }
+  };
+  RangeEncoder.prototype.flushData = function () { for (var i = 0; i < 5; i++) this.shiftLow(); };
+
+  function BitTreeEncoder(numBits) {
+    this.numBits = numBits;
+    this.models = new Int32Array(1 << numBits);
+  }
+  BitTreeEncoder.prototype.init = function () { for (var i = 0; i < this.models.length; i++) this.models[i] = kBitModelTotal >>> 1; };
+  BitTreeEncoder.prototype.encode = function (rc, symbol) {
+    var m = 1;
+    for (var b = this.numBits; b !== 0; ) {
+      b--;
+      var bit = (symbol >>> b) & 1;
+      rc.encode(this.models, m, bit);
+      m = (m << 1) | bit;
+    }
+  };
+  BitTreeEncoder.prototype.reverseEncode = function (rc, symbol) {
+    var m = 1;
+    for (var i = 0; i < this.numBits; i++) {
+      var bit = symbol & 1;
+      rc.encode(this.models, m, bit);
+      m = (m << 1) | bit;
+      symbol >>= 1;
+    }
+  };
+  function reverseEncodeStatic(models, startIndex, rc, numBits, symbol) {
+    var m = 1;
+    for (var i = 0; i < numBits; i++) {
+      var bit = symbol & 1;
+      rc.encode(models, startIndex + m, bit);
+      m = (m << 1) | bit;
+      symbol >>= 1;
+    }
+  }
+
+  /* ============================= Encoder ============================= */
+
+  function encodeLZMA(bytes, dictSize) {
+    dictSize = dictSize || 1048576;
+
+    var rc = new RangeEncoder();
+    var state = 0, prevByte = 0;
+    var reps = [0, 0, 0, 0];
+
+    // LiteralEncoder (lc=3, lp=0)
+    function LitEnc2() { this.encoders = new Int32Array(0x300); }
+    LitEnc2.prototype.init = function () { initBitModels(this.encoders); };
+    LitEnc2.prototype.encode = function (rc, symbol) {
+      var context = 1;
+      for (var i = 7; i >= 0; i--) {
+        var bit = (symbol >> i) & 1;
+        rc.encode(this.encoders, context, bit);
+        context = (context << 1) | bit;
+      }
+    };
+    LitEnc2.prototype.encodeMatched = function (rc, matchByte, symbol) {
+      var context = 1, same = true;
+      for (var i = 7; i >= 0; i--) {
+        var bit = (symbol >> i) & 1;
+        var st = context;
+        if (same) {
+          var matchBit = (matchByte >> i) & 1;
+          st += (1 + matchBit) << 8;
+          same = (matchBit === bit);
+        }
+        rc.encode(this.encoders, st, bit);
+        context = (context << 1) | bit;
+      }
+    };
+
+    var litCoders = [];
+    for (var i = 0; i < (1 << 3); i++) litCoders.push(new LitEnc2()); // lc=3, lp=0 => 8 states
+
+    // LenEncoder
+    function LenEnc() {
+      this.choice = new Int32Array(2);
+      this.low = []; this.mid = [];
+      this.high = new BitTreeEncoder(kNumHighLenBits);
+      for (var p = 0; p < kNumPosStatesMax; p++) { this.low.push(new BitTreeEncoder(kNumLowLenBits)); this.mid.push(new BitTreeEncoder(kNumMidLenBits)); }
+    }
+    LenEnc.prototype.init = function (numPosStates) {
+      initBitModels(this.choice);
+      for (var p = 0; p < numPosStates; p++) { this.low[p].init(); this.mid[p].init(); }
+      this.high.init();
+    };
+    LenEnc.prototype.encode = function (rc, symbol, posState) {
+      if (symbol < kNumLowLenSymbols) {
+        rc.encode(this.choice, 0, 0);
+        this.low[posState].encode(rc, symbol);
+      } else {
+        symbol -= kNumLowLenSymbols;
+        rc.encode(this.choice, 0, 1);
+        if (symbol < kNumMidLenSymbols) {
+          rc.encode(this.choice, 1, 0);
+          this.mid[posState].encode(rc, symbol);
+        } else {
+          rc.encode(this.choice, 1, 1);
+          this.high.encode(rc, symbol - kNumMidLenSymbols);
+        }
+      }
+    };
+
+    var lenEncoder = new LenEnc();
+    var repLenEncoder = new LenEnc();
+    var posSlotEncoder = [];
+    for (var i = 0; i < kNumLenToPosStates; i++) posSlotEncoder.push(new BitTreeEncoder(kNumPosSlotBits));
+    var posEncoders = new Int32Array(kNumFullDistances - kEndPosModelIndex);
+    var posAlignEncoder = new BitTreeEncoder(kNumAlignBits);
+
+    var isMatch = new Int32Array(kNumStates << kNumPosStatesBitsMax);
+    var isRep = new Int32Array(kNumStates);
+    var isRepG0 = new Int32Array(kNumStates);
+    var isRepG1 = new Int32Array(kNumStates);
+    var isRepG2 = new Int32Array(kNumStates);
+    var isRep0Long = new Int32Array(kNumStates << kNumPosStatesBitsMax);
+
+    initBitModels(isMatch);
+    initBitModels(isRep);
+    initBitModels(isRepG0);
+    initBitModels(isRepG1);
+    initBitModels(isRepG2);
+    initBitModels(isRep0Long);
+    initBitModels(posEncoders);
+    for (var i = 0; i < litCoders.length; i++) litCoders[i].init();
+    lenEncoder.init(1 << 2);      // pb=2 => 4 pos states
+    repLenEncoder.init(1 << 2);
+    for (var i = 0; i < kNumLenToPosStates; i++) posSlotEncoder[i].init();
+    posAlignEncoder.init();
+
+    var posStateBits = 2;
+    var posStateMask = (1 << posStateBits) - 1;
+
+    // fast pos-slot table
+    var gFastPos = new Uint8Array(1 << 11);
+    gFastPos[0] = 0; gFastPos[1] = 1;
+    var c = 2;
+    for (var slotFast = 2; slotFast < 22; slotFast++) {
+      var k = 1 << ((slotFast >> 1) - 1);
+      for (var j = 0; j < k; j++, c++) gFastPos[c] = slotFast;
+    }
+    function getPosSlot(pos) {
+      if (pos < (1 << 11)) return gFastPos[pos];
+      if (pos < (1 << 21)) return gFastPos[pos >> 10] + 20;
+      return gFastPos[pos >> 20] + 40;
+    }
+
+    // hash-based match finder (4-byte hash -> position)
+    var HASH_BITS = 20;
+    var HASH_SIZE = 1 << HASH_BITS;
+    var hashTable = new Int32Array(HASH_SIZE);
+    for (var i = 0; i < HASH_SIZE; i++) hashTable[i] = -1;
+
+    var data = bytes;
+    var n = data.length;
+    var pos = 0;
+
+    function hash4(p) {
+      return ((data[p] * 0x1e35a7bd + data[p + 1] * 0x85ebca6b + data[p + 2] * 0xc2b2ae35 + data[p + 3] * 0x27d4eb2f) >>> 0) & (HASH_SIZE - 1);
+    }
+    function matchLen(p1, p2, limit) {
+      var len = 0;
+      while (len < limit && data[p1 + len] === data[p2 + len]) len++;
+      return len;
+    }
+
+    function encodeLiteral(curByte) {
+      rc.encode(isMatch, (state << kNumPosStatesBitsMax) + posState, 0);
+      var sub = litCoders[(pos & 0) + (prevByte >>> 5)]; // lp=0, lc=3 => index = prevByte >> 5
+      if (!stateIsCharState(state)) {
+        var matchByte = (reps[0] > 0 && reps[0] < pos) ? data[pos - reps[0] - 1] : 0;
+        sub.encodeMatched(rc, matchByte, curByte);
+      } else {
+        sub.encode(rc, curByte);
+      }
+      prevByte = curByte;
+      state = stateUpdateChar(state);
+    }
+
+    function encodeMatchRep(repIndex, len, posState) {
+      rc.encode(isMatch, (state << kNumPosStatesBitsMax) + posState, 1);
+      rc.encode(isRep, state, 1);
+      if (repIndex === 0) {
+        rc.encode(isRepG0, state, 0);
+        if (len === 1) rc.encode(isRep0Long, (state << kNumPosStatesBitsMax) + posState, 0);
+        else rc.encode(isRep0Long, (state << kNumPosStatesBitsMax) + posState, 1);
+      } else {
+        rc.encode(isRepG0, state, 1);
+        if (repIndex === 1) rc.encode(isRepG1, state, 0);
+        else { rc.encode(isRepG1, state, 1); rc.encode(isRepG2, state, repIndex - 2); }
+      }
+      if (len === 1) state = stateUpdateShortRep(state);
+      else { repLenEncoder.encode(rc, len - kMatchMinLen, posState); state = stateUpdateRep(state); }
+      var distance = reps[repIndex];
+      if (repIndex !== 0) {
+        for (var i = repIndex; i >= 1; i--) reps[i] = reps[i - 1];
+        reps[0] = distance;
+      }
+    }
+
+    function encodeMatch(len, dist1, posState) {
+      rc.encode(isMatch, (state << kNumPosStatesBitsMax) + posState, 1);
+      rc.encode(isRep, state, 0);
+      state = stateUpdateMatch(state);
+      lenEncoder.encode(rc, len - kMatchMinLen, posState);
+      var dist0 = dist1 - 1; // 0-based distance (LZMA convention)
+      var posSlot = getPosSlot(dist0);
+      var lenToPosState = getLenToPosState(len);
+      posSlotEncoder[lenToPosState].encode(rc, posSlot);
+      if (posSlot >= kStartPosModelIndex) {
+        var footerBits = (posSlot >> 1) - 1;
+        var baseVal = (2 | (posSlot & 1)) << footerBits;
+        var posReduced = dist0 - baseVal;
+        if (posSlot < kEndPosModelIndex) {
+          reverseEncodeStatic(posEncoders, baseVal - posSlot - 1, rc, footerBits, posReduced);
+        } else {
+          rc.encodeDirectBits(posReduced >>> kNumAlignBits, footerBits - kNumAlignBits);
+          posAlignEncoder.reverseEncode(rc, posReduced & kAlignMask);
+        }
+      }
+      for (var i = 3; i >= 1; i--) reps[i] = reps[i - 1];
+      reps[0] = dist0;
+    }
+
+    // main loop
+    var posState = 0;
+    while (pos < n) {
+      posState = pos & posStateMask;
+
+      // find matches
+      var limit = Math.min(64, n - pos);
+      var bestLen = 0, bestDist = 0, bestIsRep = -1;
+      if (limit >= 4) {
+        var h = hash4(pos);
+        var cand = hashTable[h];
+        if (cand >= 0 && pos - cand <= dictSize) {
+          var ml = matchLen(cand, pos, limit);
+          if (ml >= 2 && ml > bestLen) { bestLen = ml; bestDist = pos - cand; bestIsRep = -1; }
+        }
+      }
+      // reps
+      for (var r = 0; r < 4; r++) {
+        var d = reps[r];
+        if (d > 0 && d <= pos) {
+          var rl = matchLen(pos - d - 1, pos, limit);
+          if (rl >= 2 && rl > bestLen) { bestLen = rl; bestDist = d; bestIsRep = r; }
+        }
+      }
+      if (bestLen >= 2) {
+        if (bestIsRep >= 0) encodeMatchRep(bestIsRep, bestLen, posState);
+        else encodeMatch(bestLen, bestDist, posState);
+        // update hash table for the skipped positions + matched positions
+        for (var i = 0; i < bestLen && pos < n; i++, pos++) {
+          if (pos + 4 <= n) hashTable[hash4(pos)] = pos;
+        }
+        prevByte = data[pos - 1];
+      } else {
+        var curByte = data[pos];
+        encodeLiteral(curByte);
+        if (pos + 4 <= n) hashTable[hash4(pos)] = pos;
+        pos++;
+      }
+    }
+
+    rc.flushData();
+    var out = new Uint8Array(rc.out.length + 13);
+    // header
+    out[0] = (posStateBits * 5 + 0) * 9 + 3; // (pb*5+lp)*9+lc = (2*5+0)*9+3 = 93 = 0x5D
+    for (var i = 0; i < 4; i++) out[1 + i] = (dictSize >> (8 * i)) & 0xff;
+    for (var i = 0; i < 8; i++) out[5 + i] = Math.floor(n / Math.pow(2, 8 * i)) & 0xff;
+    for (var i = 0; i < rc.out.length; i++) out[13 + i] = rc.out[i];
+    return out;
+  }
+
+  /* ============================= SSE-style helpers ============================= */
+  function compressLZMA(bytes) { return encodeLZMA(bytes, 1048576); }
+  function decompressLZMA(bytes) { return decodeLZMA(bytes); }
+
+  return { decodeLZMA: decodeLZMA, encodeLZMA: encodeLZMA, compressLZMA: compressLZMA, decompressLZMA: decompressLZMA };
+});
+
+/*
+ * SSE output codecs — ports of SSE's HybridBase62, SSEBase10, Base32EAM and
+ * SSEBase64 (standard base64), used for the Version-3 text format.
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.SSECODECS = factory();
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  /* ============================= Base62 (HybridBase62) ============================= */
+  var B62_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  var B62_BASE = 62n;
+  var B62_BIG_BASE = 839299365868340224n; // 62^10
+  var MAX_LEGACY_BYTES = 51200;
+  var ROUTING_CHAR_THRESHOLD = 70000;
+
+  var b62lookup = {};
+  for (var i = 0; i < B62_ALPHABET.length; i++) b62lookup[B62_ALPHABET[i]] = i;
+
+  function b62FromBytes(data) {
+    // big-endian big integer
+    var value = 0n;
+    for (var i = 0; i < data.length; i++) value = (value << 8n) | BigInt(data[i]);
+    return value;
+  }
+
+  function b62ToBytes(value) {
+    if (value === 0n) return new Uint8Array(0);
+    var hex = value.toString(16);
+    if (hex.length % 2) hex = "0" + hex;
+    var out = new Uint8Array(hex.length / 2);
+    for (var i = 0; i < out.length; i++) out[i] = parseInt(hex.substr(2 * i, 2), 16);
+    // strip leading zero byte if present (BigInteger.toByteArray sign byte)
+    if (out.length > 1 && out[0] === 0) out = out.subarray(1);
+    return out;
+  }
+
+  function encodePrimitiveB62(value) {
+    if (value === 0n) return "0";
+    var s = "";
+    while (value > 0n) {
+      s = B62_ALPHABET[Number(value % B62_BASE)] + s;
+      value /= B62_BASE;
+    }
+    return s;
+  }
+
+  function encodeBatchedLegacy(data) {
+    var value = b62FromBytes(data);
+    var sb = [];
+    while (value > 0n) {
+      var rem = value % B62_BIG_BASE;
+      value = value / B62_BIG_BASE;
+      if (value === 0n) {
+        var chunk = encodePrimitiveB62(rem);
+        for (var i = chunk.length - 1; i >= 0; i--) sb.push(chunk[i]);
+      } else {
+        for (var i = 0; i < 10; i++) { sb.push(B62_ALPHABET[Number(rem % B62_BASE)]); rem = rem / B62_BASE; }
+      }
+    }
+    for (var i = 0; i < data.length && data[i] === 0; i++) sb.push("0");
+    return sb.reverse().join("");
+  }
+
+  function encodeChunked(data) {
+    var out = [];
+    var offset = 0;
+    while (offset < data.length) {
+      var length = Math.min(7, data.length - offset);
+      var chunkValue = 0n;
+      for (var i = 0; i < length; i++) chunkValue = (chunkValue << 8n) | BigInt(data[offset + i]);
+      var encoded = encodePrimitiveB62(chunkValue);
+      var expected = getExpectedCharLength(length);
+      while (encoded.length < expected) { out.push("0"); expected--; }
+      out.push(encoded);
+      offset += length;
+    }
+    return out.join("");
+  }
+
+  function getExpectedCharLength(byteLength) {
+    return [2, 3, 5, 6, 7, 9, 10][byteLength - 1];
+  }
+  function getExpectedByteLength(charLength) {
+    switch (charLength) { case 2: return 1; case 3: return 2; case 5: return 3; case 6: return 4; case 7: return 5; case 9: return 6; case 10: return 7; }
+    throw new Error("bad chunk " + charLength);
+  }
+
+  function encodeBase62(data) {
+    if (data.length === 0) return "";
+    if (data.length <= MAX_LEGACY_BYTES) return encodeBatchedLegacy(data);
+    return encodeChunked(data);
+  }
+
+  function decodeLegacy(s) {
+    var value = 0n;
+    for (var i = 0; i < s.length; i++) value = value * B62_BASE + BigInt(b62lookup[s[i]]);
+    var result = b62ToBytes(value);
+    var leadingZeros = 0;
+    while (leadingZeros < s.length && s[leadingZeros] === "0") leadingZeros++;
+    if (leadingZeros === s.length) return new Uint8Array(leadingZeros);
+    var final = new Uint8Array(leadingZeros + result.length);
+    final.set(result, leadingZeros);
+    return final;
+  }
+
+  function decodeChunked(s) {
+    var result = new Uint8Array(Math.floor((s.length * 7) / 10) + 7);
+    var resultOffset = 0, offset = 0;
+    while (offset < s.length) {
+      var remaining = s.length - offset;
+      var charsToRead = Math.min(10, remaining);
+      var bytesForChunk = 7;
+      if (remaining < 10) { bytesForChunk = getExpectedByteLength(remaining); charsToRead = remaining; }
+      var chunkValue = 0n;
+      for (var i = offset; i < offset + charsToRead; i++) chunkValue = chunkValue * B62_BASE + BigInt(b62lookup[s[i]]);
+      var cv = chunkValue;
+      for (var i = bytesForChunk - 1; i >= 0; i--) { result[resultOffset + i] = Number(cv & 0xFFn); cv >>= 8n; }
+      resultOffset += bytesForChunk;
+      offset += charsToRead;
+    }
+    return result.subarray(0, resultOffset);
+  }
+
+  function decodeBase62(s) {
+    if (s.length === 0) return new Uint8Array(0);
+    if (s.length > ROUTING_CHAR_THRESHOLD) return decodeChunked(s);
+    return decodeLegacy(s);
+  }
+
+  /* ============================= Base10 (SSEBase10) ============================= */
+  function encodeBase10(bytes) {
+    var value = 1n;
+    for (var i = 0; i < bytes.length; i++) value = (value << 8n) | BigInt(bytes[i]);
+    return value.toString();
+  }
+  function decodeBase10(s) {
+    var value = BigInt(s);
+    var bytes = [];
+    while (value > 0n) { bytes.push(Number(value & 0xFFn)); value >>= 8n; }
+    bytes.reverse();
+    // drop the leading 0x01 byte
+    var out = new Uint8Array(bytes.length);
+    for (var i = 0; i < bytes.length; i++) out[i] = bytes[i];
+    return out.subarray(1);
+  }
+
+  /* ============================= Base32 (Base32EAM, RFC4648 no padding) ============================= */
+  var B32_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  var b32lookup = {};
+  for (var i = 0; i < B32_CHARS.length; i++) b32lookup[B32_CHARS[i]] = i;
+
+  function encodeBase32(bytes) {
+    var out = "";
+    var i = 0, index = 0, digit = 0;
+    while (i < bytes.length) {
+      var currByte = bytes[i];
+      if (index > 3) {
+        var nextByte = (i + 1 < bytes.length) ? bytes[i + 1] : 0;
+        digit = currByte & (0xFF >> index);
+        index = (index + 5) % 8;
+        digit = (digit << index) | (nextByte >> (8 - index));
+        i++;
+      } else {
+        digit = (currByte >> (8 - (index + 5))) & 0x1F;
+        index = (index + 5) % 8;
+        if (index === 0) i++;
+      }
+      out += B32_CHARS[digit];
+    }
+    return out;
+  }
+
+  function decodeBase32(s) {
+    s = s.toUpperCase().replace(/[^A-Z2-7]/g, "");
+    var bytes = new Uint8Array(Math.floor(s.length * 5 / 8));
+    var offset = 0, index = 0;
+    for (var i = 0; i < s.length; i++) {
+      var digit = b32lookup[s[i]];
+      if (digit === undefined) continue;
+      if (index <= 3) {
+        index = (index + 5) % 8;
+        if (index === 0) { bytes[offset] |= digit; offset++; if (offset >= bytes.length) break; }
+        else bytes[offset] |= digit << (8 - index);
+      } else {
+        index = (index + 5) % 8;
+        bytes[offset] |= (digit >>> index);
+        offset++;
+        if (offset >= bytes.length) break;
+        bytes[offset] |= digit << (8 - index);
+      }
+    }
+    return bytes;
+  }
+
+  /* ============================= Base64 (SSE variant) =============================
+   * SSE's base64: alphabet A-Z a-z 0-9 ) ] (instead of + /), NO padding. */
+  var B64_TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789)]";
+  function encodeBase64(bytes) {
+    var out = "";
+    var i = 0;
+    for (; i + 3 <= bytes.length; i += 3) {
+      var a = bytes[i], b = bytes[i + 1], c = bytes[i + 2];
+      out += B64_TABLE[a >>> 2] + B64_TABLE[((a & 3) << 4) | (b >>> 4)] + B64_TABLE[((b & 15) << 2) | (c >>> 6)] + B64_TABLE[c & 63];
+    }
+    var rem = bytes.length - i;
+    if (rem === 1) {
+      var a1 = bytes[i];
+      out += B64_TABLE[a1 >>> 2] + B64_TABLE[(a1 & 3) << 4];
+    } else if (rem === 2) {
+      var a2 = bytes[i], b2 = bytes[i + 1];
+      out += B64_TABLE[a2 >>> 2] + B64_TABLE[((a2 & 3) << 4) | (b2 >>> 4)] + B64_TABLE[(b2 & 15) << 2];
+    }
+    return out;
+  }
+  function decodeBase64(s) {
+    s = s.replace(/\)/g, "+").replace(/\]/g, "/").replace(/\./g, "=").replace(/[^A-Za-z0-9+/=]/g, "");
+    while (s.length % 4) s += "=";
+    var bin = atob(s);
+    var out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  return {
+    encodeBase62: encodeBase62, decodeBase62: decodeBase62,
+    encodeBase10: encodeBase10, decodeBase10: decodeBase10,
+    encodeBase32: encodeBase32, decodeBase32: decodeBase32,
+    encodeBase64: encodeBase64, decodeBase64: decodeBase64
+  };
+});
+
+/*
+ * SSE Version-3 text/message encryption — byte-compatible with SSE Android /
+ * desktop (the format behind SSE's shareable messages and pteo.paranoiaworks.mobi
+ * links). Reproduces Encryptor.encryptString/decryptString:
+ *
+ *   password --(convertToCodePoints, UTF-8)--> pwb
+ *   l0 = HKDF-SHA3-512(pwb, "memorySaltTE", "memoryInfoTE") [256 bytes]
+ *   argon = Argon2id v1.3(l0, salt, t=3, m=30720 KiB, p=4) [32 bytes]
+ *   key   = HKDF-SHA3-512(argon, "encKeySalt", "encKeyInfo")
+ *   nonce = HKDF-SHA3-512(argon, "nonceSalt", "nonceInfo")
+ *   payload = LZMA-if-smaller(text) | EAX(key, nonce, AAD=salt||config)
+ *   output = salt || ct||tag || configByte  (then Base62/Base64/Base32/Base10)
+ *
+ * Serpent is the SSE "Tnepres" flavor everywhere (REVISION_DISABLED path).
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) {
+    module.exports = factory(require("./kdf.js"), require("./lzma.js"), require("./codecs.js"), require("../crypto.js"), require("./ciphers.js"));
+  } else {
+    root.SSEV3 = factory(root.SSEKDF, root.SSELZMA, root.SSECODECS, root.SSECrypto, root.SSECIPHERS);
+  }
+})(typeof self !== "undefined" ? self : this, function (KDF, LZ, CODECS, C, CIPHERS) {
+  "use strict";
+
+  var enc = (typeof TextEncoder !== "undefined") ? new TextEncoder() : null;
+  function utf8(s) { return enc ? enc.encode(s) : Uint8Array.from(unescape(encodeURIComponent(s)), function (c) { return c.charCodeAt(0); }); }
+  function utf8d(b) { return (typeof TextDecoder !== "undefined") ? new TextDecoder("utf-8", { fatal: false }).decode(b) : String.fromCharCode.apply(null, b); }
+
+  var ALG = {
+    0: { name: "AES-256", keySize: 32, blockBits: 128 },
+    1: { name: "RC6-256", keySize: 32, blockBits: 128 },
+    2: { name: "Serpent-256 (Tnepres)", keySize: 32, blockBits: 128 },
+    3: { name: "Blowfish-256", keySize: 32, blockBits: 64 },
+    4: { name: "Twofish-256", keySize: 32, blockBits: 128 },
+    5: { name: "GOST-256", keySize: 32, blockBits: 64 },
+    6: { name: "Blowfish-448", keySize: 56, blockBits: 64 },
+    7: { name: "Threefish-1024", keySize: 128, blockBits: 1024 },
+    8: { name: "SHACAL-2 (512)", keySize: 64, blockBits: 256 },
+    9: { name: "Paranoia C4-2048", keySize: 256, blockBits: 1536 }
+  };
+
+  // Encryptor.convertToCodePoints + Helpers.toBytes(UTF-8)
+  function passwordBytes(password) {
+    var s = "";
+    for (var i = 0; i < password.length; i++) {
+      var cp = password.codePointAt(i);
+      if (cp > 0xFFFF) i++;
+      if (cp > 126 || cp < 32) s += cp.toString();
+      else s += String.fromCharCode(cp);
+    }
+    return utf8(s);
+  }
+
+  function cipherFor(alg, tnepres) {
+    switch (alg) {
+      case 0: return C.makeAES;
+      case 2: return tnepres ? C.makeSerpentTnepres : C.makeSerpent;
+      case 7: return C.makeThreefish1024;
+      case 8: return C.makeShacal2;
+      default:
+        if (CIPHERS) {
+          switch (alg) {
+            case 1: return CIPHERS.makeRC6;
+            case 3: case 6: return CIPHERS.makeBlowfish;
+            case 4: return CIPHERS.makeTwofish;
+            case 5: return CIPHERS.makeGOST;
+          }
+        }
+        throw new Error("unknown alg " + alg);
+    }
+  }
+
+  function macSize(alg) {
+    if (alg === 3 || alg === 5 || alg === 6) return 8; // 64-bit block ciphers
+    if (alg === 0 || alg === 1 || alg === 2 || alg === 4) return 16;
+    return 32;
+  }
+
+  var _keyCache = new Map();
+  function deriveKeyMaterial(password, salt, alg) {
+    var a = ALG[alg];
+    var cacheKey = password + "|" + C.bytesToHex(salt) + "|" + alg;
+    var hit = _keyCache.get(cacheKey);
+    if (hit) return { key: hit[0].slice(), nonce: hit[1].slice() };
+    var pwb = passwordBytes(password);
+    var l0 = KDF.hkdfSha3(pwb, utf8("memorySaltTE"), utf8("memoryInfoTE"), 256);
+    var argon = KDF.argon2idHash(l0, salt, 3, 30720, 4, 32);
+    var key = KDF.hkdfSha3(argon, utf8("encKeySalt"), utf8("encKeyInfo"), a.keySize);
+    var nonce = KDF.hkdfSha3(argon, utf8("nonceSalt"), utf8("nonceInfo"), a.blockBits / 8);
+    _keyCache.set(cacheKey, [key.slice(), nonce.slice()]);
+    return { key: key, nonce: nonce };
+  }
+
+  function nonceSize(alg) { return ALG[alg].blockBits / 8; }
+  function saltSize(alg) { var s = ALG[alg].blockBits; if (s > 256) s = 256; return s / 8; }
+
+  function eaxEncrypt(alg, key, nonce, data, aad, tnepres) {
+    var cipher = cipherFor(alg, tnepres)(key);
+    return C.eaxEncrypt(cipher, key, nonce, data, aad, macSize(alg));
+  }
+  function eaxDecrypt(alg, key, nonce, data, aad, tnepres) {
+    var cipher = cipherFor(alg, tnepres)(key);
+    return C.eaxDecrypt(cipher, key, nonce, data, aad, macSize(alg));
+  }
+
+  var C4_ALGS = [7, 2, 0, 8];
+  var C4_KEY_SPLIT = [128, 32, 32, 64];
+  var C4_NONCE_SPLIT = [128, 16, 16, 32];
+
+  function c4Encrypt(key, nonce, data, aad, tnepres) {
+    var counters = [];
+    var off = 0;
+    for (var i = 0; i < 4; i++) { counters.push(nonce.subarray(off, off + C4_NONCE_SPLIT[i])); off += C4_NONCE_SPLIT[i]; }
+    var koff = 0;
+    for (var i = 0; i < 4; i++) {
+      var k = key.subarray(koff, koff + C4_KEY_SPLIT[i]);
+      koff += C4_KEY_SPLIT[i];
+      if (i === 3) data = eaxEncrypt(8, k, counters[i], data, aad, false);
+      else data = C.ctrXform(cipherFor(C4_ALGS[i], (C4_ALGS[i] === 2) && tnepres)(k), counters[i], data);
+    }
+    return data;
+  }
+  function c4Decrypt(key, nonce, data, aad, tnepres) {
+    var counters = [];
+    var off = 0;
+    for (var i = 0; i < 4; i++) { counters.push(nonce.subarray(off, off + C4_NONCE_SPLIT[i])); off += C4_NONCE_SPLIT[i]; }
+    var koff = key.length;
+    for (var i = 3; i >= 0; i--) {
+      koff -= C4_KEY_SPLIT[i];
+      var k = key.subarray(koff, koff + C4_KEY_SPLIT[i]);
+      if (i === 3) data = eaxDecrypt(8, k, counters[i], data, aad, false);
+      else data = C.ctrXform(cipherFor(C4_ALGS[i], (C4_ALGS[i] === 2) && tnepres)(k), counters[i], data);
+    }
+    return data;
+  }
+
+  function encryptPayload(text, password, alg, compress, salt) {
+    var data = utf8(text.trim());
+    var ss = saltSize(alg);
+    var s = salt || C.randomBytes(ss);
+    var km = deriveKeyMaterial(password, s, alg);
+
+    var payload = data, zipped = false;
+    if (compress) {
+      var c = LZ.compressLZMA(data);
+      if (c.length < data.length) { payload = c; zipped = true; } else payload = data;
+    }
+
+    var configB = (zipped ? "1" : "0") + "011" + ("0000" + (alg & 0xFF).toString(2)).slice(-4);
+    var configByte = parseInt(configB, 2);
+    var aad = C.concatBytes(s, new Uint8Array([configByte]));
+
+    var ct = (alg === 9) ? c4Encrypt(km.key, km.nonce, payload, aad, true)
+                         : eaxEncrypt(alg, km.key, km.nonce, payload, aad, true);
+    return C.concatBytes(C.concatBytes(s, ct), new Uint8Array([configByte]));
+  }
+
+  function encryptV3(text, password, alg, encoding, compress, salt) {
+    var payload = encryptPayload(text, password, alg, compress, salt);
+    switch (encoding) {
+      case 0: return CODECS.encodeBase32(payload);
+      case 1: return CODECS.encodeBase10(payload);
+      case 2: return CODECS.encodeBase62(payload);
+      default: return CODECS.encodeBase64(payload) + "!";
+    }
+  }
+
+  function decodeInput(s) {
+    var t = s.trim().replace(/\s+/g, "");
+    // mirrors Encryptor.decryptString routing:
+    if (t.endsWith("!")) return CODECS.decodeBase64(t.slice(0, -1));       // VerX: base64
+    if (t.endsWith("~") || t.indexOf("-") > -1) {                          // VerX: base62
+      var b62 = t.endsWith("~") ? t.slice(0, -1) : t;
+      b62 = b62.replace(/-/g, "");
+      return CODECS.decodeBase62(b62);
+    }
+    if (/^[0-9]+$/.test(t)) return CODECS.decodeBase10(t);                 // VerAlt: base10
+    if (/^[A-Za-z2-7]+$/.test(t)) return CODECS.decodeBase32(t);           // VerAlt: base32
+    if (/^[0-9a-zA-Z]+$/.test(t)) return CODECS.decodeBase62(t);           // VerAlt: base62
+    throw new Error("unknown encoding");
+  }
+
+  function decryptPayloadBytes(input, password) {
+    var configByte = input[input.length - 1];
+    var version = 4 * ((configByte >> 6) & 1) + 2 * ((configByte >> 5) & 1) + ((configByte >> 4) & 1);
+    if (version !== 3) throw new Error("unsupported SSE version " + version);
+    var compressed = (configByte >> 7) & 1;
+    var alg = (configByte & 0x0F);
+    if (!ALG[alg]) throw new Error("unknown SSE algorithm code " + alg);
+
+    var ss = saltSize(alg);
+    var salt = input.subarray(0, ss);
+    var body = input.subarray(ss, input.length - 1);
+
+    var km = deriveKeyMaterial(password, salt, alg);
+    var aad = C.concatBytes(salt, new Uint8Array([configByte]));
+
+    var pt = (alg === 9) ? c4Decrypt(km.key, km.nonce, body, aad, true)
+                         : eaxDecrypt(alg, km.key, km.nonce, body, aad, true);
+    if (compressed === 1) pt = LZ.decompressLZMA(pt);
+    return { text: utf8d(pt), alg: alg, algorithm: ALG[alg].name };
+  }
+
+  function decryptV3(s, password) {
+    return decryptPayloadBytes(decodeInput(s), password);
+  }
+
+  return {
+    ALG: ALG,
+    passwordBytes: passwordBytes,
+    deriveKeyMaterial: deriveKeyMaterial,
+    encryptPayload: encryptPayload,
+    encryptV3: encryptV3,
+    decryptV3: decryptV3,
+    decodeInput: decodeInput,
+    decryptPayloadBytes: decryptPayloadBytes
+  };
+});
+</script>
+<script>/* SSE-WebXDC UI logic */
+(function () {
+  "use strict";
+
+  var C = window.SSECrypto;
+  var enc = new TextEncoder();
+  var dec = new TextDecoder("utf-8", { fatal: false });
+
+  /* ---- base64 (binary-safe) ---- */
+  function toBase64(bytes) {
+    var s = "";
+    var chunk = 0x8000;
+    for (var i = 0; i < bytes.length; i += chunk) {
+      s += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    return btoa(s);
+  }
+  function fromBase64(str) {
+    str = str.replace(/\s+/g, "");
+    var s = atob(str);
+    var b = new Uint8Array(s.length);
+    for (var i = 0; i < s.length; i++) b[i] = s.charCodeAt(i);
+    return b;
+  }
+
+  var ALG_OPTIONS = [
+    { code: 128, label: "AES-128-GCM (Web Crypto)" },
+    { code: 192, label: "AES-192-GCM (Web Crypto)" },
+    { code: 256, label: "AES-256-GCM (Web Crypto)" },
+    { code: 0, label: "AES-256 (EAX)" },
+    { code: 2, label: "Serpent-256 (EAX)" },
+    { code: 1, label: "RC6-256 (EAX)" },
+    { code: 3, label: "Blowfish-256 (EAX)" },
+    { code: 4, label: "Twofish-256 (EAX)" },
+    { code: 5, label: "GOST-256 (EAX)" },
+    { code: 6, label: "Blowfish-448 (EAX)" },
+    { code: 7, label: "Threefish-1024 (EAX)  · PRO" },
+    { code: 8, label: "SHACAL-2 / 512-bit (EAX)  · PRO" },
+    { code: 9, label: "Paranoia C4-2048 (cascade)  · PRO" }
+  ];
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  var AES_MAGIC = enc.encode("SSEA2");
+  function joinBytes(parts) { var n=0; parts.forEach(function(x){n+=x.length;}); var o=new Uint8Array(n), p=0; parts.forEach(function(x){o.set(x,p);p+=x.length;}); return o; }
+  function isAesGcm(b) { return b.length > 10 && AES_MAGIC.every(function(v,i){return b[i]===v;}); }
+  async function aesGcmSeal(data, password, bits, iterations) {
+    if (!window.crypto || !crypto.subtle) throw new Error("Web Crypto is unavailable in this browser");
+    var salt=crypto.getRandomValues(new Uint8Array(16)), iv=crypto.getRandomValues(new Uint8Array(12));
+    var base=await crypto.subtle.importKey("raw",enc.encode(password),"PBKDF2",false,["deriveKey"]);
+    var key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:salt,iterations:iterations,hash:"SHA-256"},base,{name:"AES-GCM",length:bits},false,["encrypt"]);
+    var header=joinBytes([AES_MAGIC,new Uint8Array([bits/64]),salt,iv]);
+    var ct=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv:iv,additionalData:header,tagLength:128},key,data));
+    return joinBytes([header,ct]);
+  }
+  async function aesGcmOpen(blob, password, iterations) {
+    if (!isAesGcm(blob)) throw new Error("not an SSEA2 AES-GCM payload");
+    var bits=blob[5]*64; if ([128,192,256].indexOf(bits)<0) throw new Error("invalid AES key size");
+    var salt=blob.slice(6,22), iv=blob.slice(22,34), header=blob.slice(0,34), ct=blob.slice(34);
+    var base=await crypto.subtle.importKey("raw",enc.encode(password),"PBKDF2",false,["deriveKey"]);
+    var key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:salt,iterations:iterations,hash:"SHA-256"},base,{name:"AES-GCM",length:bits},false,["decrypt"]);
+    return {plaintext:new Uint8Array(await crypto.subtle.decrypt({name:"AES-GCM",iv:iv,additionalData:header,tagLength:128},key,ct)),algorithm:"AES-"+bits+"-GCM",iterations:iterations};
+  }
+
+  function setStatus(msg, isError) {
+    var el = $("status");
+    el.textContent = msg || "";
+    el.className = isError ? "status error" : "status";
+  }
+
+  function getAlgorithm() { return parseInt($("alg").value, 10); }
+  function getIterations() { return parseInt($("iter").value, 10); }
+  function getFormat() { return $("format").value; }
+
+  function busy(on) {
+    $("encryptBtn").disabled = on;
+    $("decryptBtn").disabled = on;
+    $("encryptFileBtn").disabled = on;
+    $("decryptFileBtn").disabled = on;
+    document.body.style.cursor = on ? "wait" : "default";
+  }
+
+  async function encryptBytes(data, filenameHint) {
+    var pw = $("password").value;
+    if (!pw) { setStatus("Enter a password first.", true); return null; }
+    var alg = getAlgorithm();
+    var iters = getIterations();
+    var format = getFormat();
+    var t0 = Date.now();
+    var blob;
+    try {
+      if (format === "ssev2") {
+        throw new Error("SSE v2 is a legacy decrypt-only format; choose SSE v3 for compatible new messages");
+      } else if (format === "aesgcm") {
+        var bits = [128,192,256].indexOf(alg) >= 0 ? alg : 256;
+        setStatus("Deriving AES-" + bits + " key with PBKDF2…");
+        blob = await aesGcmSeal(data, pw, bits, iters);
+      } else if (format === "ssev3") {
+        setStatus("Deriving key (Argon2id, matching SSE)…");
+        blob = window.SSEV3.encryptPayload(dec.decode(data), pw, alg, true);
+      } else {
+        setStatus("Deriving key (PBKDF2, " + iters.toLocaleString() + " iterations)…");
+        blob = C.sealContainer(enc.encode(pw), alg, data, iters);
+      }
+    } catch (e) {
+      setStatus("Encryption failed: " + e.message, true);
+      return null;
+    }
+    var ms = Date.now() - t0;
+    setStatus("Encrypted with " + (format === "aesgcm" ? "AES-" + ([128,192,256].indexOf(alg) >= 0 ? alg : 256) + "-GCM" : C.ALGORITHMS[alg].name) + " in " + ms + " ms. " + blob.length + " bytes.");
+    return { blob: blob, format: format };
+  }
+
+  async function decryptBytes(blob, isSseV3Text) {
+    var pw = $("password").value;
+    if (!pw) { setStatus("Enter the password first.", true); return null; }
+    setStatus("Deriving key…");
+    var t0 = Date.now();
+    var result;
+    try {
+      if (isAesGcm(blob)) {
+        result = await aesGcmOpen(blob, pw, getIterations());
+      } else if (isSseV3Text) {
+        var r = window.SSEV3.decryptV3(dec.decode(blob), pw);
+        setStatus("Decrypted (" + r.algorithm + ", Argon2id) in " + (Date.now() - t0) + " ms.");
+        return r.text;
+      }
+      result = C.openContainer(enc.encode(pw), blob);
+    } catch (e) {
+      setStatus("Decryption failed: " + e.message, true);
+      return null;
+    }
+    setStatus("Decrypted (" + result.algorithm + ", " + result.iterations.toLocaleString() + " PBKDF2 iterations) in " + (Date.now() - t0) + " ms.");
+    return dec.decode(result.plaintext);
+  }
+
+  /* ---- text path ---- */
+  async function encryptText() {
+    var text = $("input").value;
+    if (!text) { setStatus("Nothing to encrypt.", true); return; }
+    var r = await encryptBytes(enc.encode(text), "message.txt");
+    if (!r) return;
+    if (r.format === "ssev3") {
+      // output as SSE base62 shareable text
+      var b62 = window.SSECODECS.encodeBase62(r.blob);
+      $("output").value = "https://pteo.paranoiaworks.mobi/#" + b62;
+      $("output").dataset.kind = "ssev3";
+    } else {
+      $("output").value = toBase64(r.blob);
+      $("output").dataset.kind = "text";
+    }
+  }
+
+  async function decryptText() {
+    var input = $("input").value.trim();
+    if (!input) { setStatus("Nothing to decrypt.", true); return; }
+    // auto-detect SSE v3 (URL or non-base64 text) vs native base64 container
+    var stripped = input;
+    if (stripped.indexOf("#") > -1) stripped = stripped.substring(stripped.lastIndexOf("#") + 1);
+    stripped = stripped.replace(/\s+/g, "");
+    var looksSseV3 = (stripped.endsWith("!") || stripped.endsWith("~") || /^[0-9]+$/.test(stripped) ||
+                       /^[A-Za-z2-7]+$/.test(stripped) || /^[0-9a-zA-Z]+$/.test(stripped)) &&
+                       !/^(SSEWX|U0VXW|U1NFQTI)/.test(stripped);
+    var out;
+    if (looksSseV3) {
+      out = await decryptBytes(enc.encode(input), true);
+    } else {
+      var blob;
+      try { blob = fromBase64(stripped); } catch (e) { setStatus("Input is not valid Base64.", true); return; }
+      out = await decryptBytes(blob, false);
+    }
+    if (!out && out !== "") { if (typeof out !== "string") return; }
+    if (out === undefined || out === null) return;
+    $("output").value = out;
+    $("output").dataset.kind = "text";
+  }
+
+  function copyOutput() {
+    var el = $("output");
+    el.select();
+    el.setSelectionRange(0, el.value.length);
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) {}
+    setStatus(ok ? "Copied to clipboard." : "Could not copy — select and copy manually.", !ok);
+  }
+
+  function sendOutputToChat() {
+    var el = $("output");
+    var val = el.value;
+    if (!val) { setStatus("Nothing to send.", true); return; }
+    var file = new File([val], "sse-encrypted.txt", { type: "text/plain" });
+    if (window.webxdc && window.webxdc.sendToChat) {
+      window.webxdc.sendToChat(file, "SSE encrypted payload");
+      setStatus("Sent to chat.");
+    }
+  }
+
+  /* ---- file path ---- */
+  function encryptFile() {
+    var input = $("fileIn");
+    if (!input.files || !input.files.length) { setStatus("Choose a file first.", true); return; }
+    var f = input.files[0];
+    var reader = new FileReader();
+    reader.onload = async function () {
+      var data = new Uint8Array(reader.result);
+      var r = await encryptBytes(data, f.name);
+      if (!r) return;
+      var blob = r.blob;
+      var out = new File([blob], f.name + ".sse", { type: "application/octet-stream" });
+      if (window.webxdc && window.webxdc.sendToChat) {
+        window.webxdc.sendToChat(out, "SSE encrypted file");
+        setStatus("Encrypted file sent to chat.");
+      } else {
+        var url = URL.createObjectURL(out);
+        var a = document.createElement("a");
+        a.href = url; a.download = out.name;
+        document.body.appendChild(a); a.click();
+        setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+        setStatus("Encrypted file downloaded (" + out.name + ").");
+      }
+    };
+    reader.readAsArrayBuffer(f);
+  }
+
+  function decryptFile() {
+    var input = $("fileIn");
+    if (!input.files || !input.files.length) { setStatus("Choose a .sse file first.", true); return; }
+    var f = input.files[0];
+    var reader = new FileReader();
+    reader.onload = async function () {
+      var data = new Uint8Array(reader.result);
+      var pt = await decryptBytes(data, false);
+      if (!pt) return;
+      var name = f.name.replace(/\.sse$/i, "") || "decrypted.bin";
+      var out = new File([enc.encode(pt)], name, { type: "application/octet-stream" });
+      var url = URL.createObjectURL(out);
+      var a = document.createElement("a");
+      a.href = url; a.download = out.name;
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+      setStatus("Decrypted file downloaded (" + out.name + ", " + pt.length + " bytes).");
+    };
+    reader.readAsArrayBuffer(f);
+  }
+
+  function fillAlgorithmSelect() {
+    var sel = $("alg");
+    ALG_OPTIONS.forEach(function (o) {
+      var opt = document.createElement("option");
+      opt.value = o.code;
+      opt.textContent = o.label;
+      sel.appendChild(opt);
+    });
+  }
+
+  window.addEventListener("DOMContentLoaded", function () {
+    fillAlgorithmSelect();
+    $("format").addEventListener("change", function () {
+      var modern = this.value === "aesgcm";
+      Array.prototype.forEach.call($("alg").options, function(o){ o.hidden = modern ? (+o.value < 100) : (+o.value >= 100); });
+      $("alg").value = modern ? "256" : "0";
+    });
+    $("format").dispatchEvent(new Event("change"));
+    $("encryptBtn").addEventListener("click", encryptText);
+    $("decryptBtn").addEventListener("click", decryptText);
+    $("copyBtn").addEventListener("click", copyOutput);
+    $("sendBtn").addEventListener("click", sendOutputToChat);
+    $("encryptFileBtn").addEventListener("click", encryptFile);
+    $("decryptFileBtn").addEventListener("click", decryptFile);
+    $("clearBtn").addEventListener("click", function () {
+      $("input").value = ""; $("output").value = ""; setStatus("");
+    });
+    setStatus("Ready. Crypto runs entirely in your browser — nothing leaves this device unencrypted.");
+  });
+})();
+</script>
+</body>
+</html>

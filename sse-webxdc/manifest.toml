@@ -1,0 +1,5 @@
+name = "Secret Space Encryptor (WebXDC)"
+source_code_url = "https://github.com/sdatar59/Paranoia_Works-Secret_Space_Encryptor_for_Android"
+
+[icons]
+icon-128 = "icon.png"
