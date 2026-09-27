@@ -1,4 +1,4 @@
-/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator | #studio | #ghidra */
+/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator | #studio | #ghidra | #dossier */
 import { initWm } from "./wm.js";
 
 document.documentElement.dataset.shell = "1";
@@ -7,8 +7,9 @@ const $ = (id) => document.getElementById(id);
 
 function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
-  const normalized = raw === "artstudio" || raw === "art-studio" ? "studio" : raw;
-  if (["terrarium", "keyspace", "validator", "studio", "ghidra", "grid"].includes(normalized)) return normalized;
+  const normalized = raw === "artstudio" || raw === "art-studio" ? "studio"
+    : raw === "distro-dossier" || raw === "distro" ? "dossier" : raw;
+  if (["terrarium", "keyspace", "validator", "studio", "ghidra", "dossier", "grid"].includes(normalized)) return normalized;
   return "grid";
 }
 
@@ -99,17 +100,19 @@ let started = null;
 async function start(mode) {
   markDock(mode);
 
-  if (mode === "keyspace" || mode === "validator" || mode === "studio" || mode === "ghidra") {
+  if (mode === "keyspace" || mode === "validator" || mode === "studio" || mode === "ghidra" || mode === "dossier") {
     const frame = $("keyframe");
     const view = mode === "studio" ? "./art-studio.html"
       : mode === "validator" ? "./validator.html"
       : mode === "ghidra" ? "./ghidra-lab.html"
+      : mode === "dossier" ? "./distro-dossier.html"
       : "./keyspace.html";
     if (frame && frame.getAttribute("src") !== view) frame.src = view;
     const titles = {
       studio: "Ensō & Haiku Wallet Forging Engine · Art Studio",
       validator: "BIP-39 Mnemonic Validator",
       ghidra: "Ghidra WASM Lab · DOS virology corpus",
+      dossier: "Distro Dossier · Privacy & OSINT VM research console",
       keyspace: "SITE-K · Keyspace",
     };
     document.title = titles[mode];

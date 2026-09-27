@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0c14" />
+  <meta name="description" content="A client-side research console for privacy and OSINT Linux VMs — Buscador, Kodachi, CrunchBang and successors. Provenance, default credentials, VPN/OpenVPN mechanics, tool manifests, and an offline image-checksum verifier. Nothing is uploaded." />
+  <title>Distro Dossier · Privacy &amp; OSINT VM research console</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="./img/apple-touch.png" sizes="180x180" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./css/validator.css" />
+  <link rel="stylesheet" href="./css/distro-dossier.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html#grid" aria-label="Back to SITE-K">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-copy">
+          <strong>DISTRO DOSSIER</strong>
+          <small>PRIVACY &amp; OSINT VM RESEARCH</small>
+        </span>
+      </a>
+      <div class="header-right">
+        <span class="local-status"><i></i>CLIENT-SIDE ONLY</span>
+        <a class="back-link" href="./ghidra-lab.html" target="_top">GHIDRA LAB <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span>RESEARCH CONSOLE</span><b></b>PROVENANCE · VERIFICATION · REVERSE ENGINEERING</div>
+        <h1 id="page-title">Secure Distro<br /><em>Dossier</em></h1>
+        <p class="hero-copy">
+          A field reference for privacy and OSINT Linux VMs — <b>Buscador</b>, <b>Linux Kodachi</b>, <b>CrunchBang (#!)</b>
+          and their living successors. Each dossier records provenance and lineage, default credentials, VPN/OpenVPN mechanics,
+          the tool manifest, published image checksums, and an <b>extract → Ghidra WASM</b> reverse-engineering path.
+          The image verifier hashes files <b>locally in your browser</b> and compares them to the published checksums —
+          nothing is uploaded. Companion write-ups:
+          <a href="./buscador-deep-dive.md">buscador-deep-dive.md</a> ·
+          <a href="./kodachi-deep-dive.md">kodachi-deep-dive.md</a>.
+        </p>
+        <div class="protocol-strip" aria-label="Console scope">
+          <span>OSINT VMs</span><span>ANTI-FORENSIC OS</span><span>CHECKSUM VERIFY</span><span>OPENVPN CONFIG</span><span>GHIDRA WASM</span><span>NO NETWORK</span>
+        </div>
+      </section>
+
+      <section class="console">
+        <aside class="rail">
+          <section class="panel">
+            <div class="panel-head"><h2>Catalog</h2><span class="panel-tag" id="countTag">6 entries</span></div>
+            <input type="search" id="search" class="search" placeholder="Search name, tool, tag…" autocomplete="off" />
+            <div class="chips" id="filters"></div>
+            <div class="catalog" id="catalog"></div>
+            <p class="panel-note">Status: <span class="status-dot active"></span> active · <span class="status-dot discontinued"></span> discontinued.</p>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Image verifier</h2><span class="panel-tag dim">local</span></div>
+            <label class="verify-drop" id="verifyDrop">
+              <input type="file" id="verifyInput" />
+              drop an ISO / OVA here — or click to choose.<br />
+              <small style="color:var(--faint)">hashed in-browser (MD5 · SHA-1 · SHA-256), never uploaded</small>
+            </label>
+            <div class="verify-out" id="verifyOut"></div>
+            <div class="match idle" id="verifyMatch">Computed hashes are matched against every published checksum in the catalog.</div>
+            <div class="paste-row">
+              <input id="pasteHash" placeholder="…or paste a hex digest to identify" spellcheck="false" />
+              <button class="mini" id="pasteCheck">CHECK</button>
+            </div>
+            <div class="match idle" id="pasteMatch" style="margin-top:8px">Paste an MD5 / SHA-1 / SHA-256 to identify a known image.</div>
+          </section>
+        </aside>
+
+        <section class="dossier" id="dossier" aria-live="polite"></section>
+      </section>
+
+      <p class="disclaimer">
+        Default credentials are reproduced only because vendors publish them for their own live images; change them immediately on any
+        persistent install. Reverse-engineering guidance is for static analysis of images you are authorised to examine. All data is
+        sourced from the references shown in each dossier.
+      </p>
+    </main>
+
+    <footer class="site-footer">
+      <span>DISTRO DOSSIER · CLIENT-SIDE RESEARCH CONSOLE</span>
+      <span>VERIFY: WEBCRYPTO SHA-1/256 + BUNDLED MD5 · PAIRS WITH GHIDRA-LAB.HTML</span>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/distro-dossier.js"></script>
+</body>
+</html>

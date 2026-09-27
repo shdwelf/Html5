@@ -3,7 +3,7 @@
    service worker caches it on first use, so the lab still works offline after
    one visit without slowing down install for everyone else. */
 const CACHE_PREFIX = "sitek-html5-";
-const CACHE = `${CACHE_PREFIX}v26`;
+const CACHE = `${CACHE_PREFIX}v27`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -11,6 +11,9 @@ const PRECACHE = [
   "./keyspace.html",
   "./validator.html",
   "./ghidra-lab.html",
+  "./distro-dossier.html",
+  "./css/distro-dossier.css",
+  "./js/distro-dossier.js",
   "./casefiles.html",
   "./art-studio.html",
   "./poetry-book.html",
