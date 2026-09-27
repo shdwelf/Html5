@@ -1,5 +1,6 @@
 /** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator | #studio | #ghidra | #dossier */
 import { initWm } from "./wm.js";
+import { SITEK_APP_BY_ID } from "./sitek-catalog.js";
 
 document.documentElement.dataset.shell = "1";
 
@@ -9,7 +10,7 @@ function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
   const normalized = raw === "artstudio" || raw === "art-studio" ? "studio"
     : raw === "distro-dossier" || raw === "distro" ? "dossier" : raw;
-  if (["terrarium", "keyspace", "validator", "studio", "ghidra", "dossier", "grid"].includes(normalized)) return normalized;
+  if (["terrarium", "keyspace", "validator", "studio", "enso", "ghidra", "dossier", "grid"].includes(normalized)) return normalized;
   return "grid";
 }
 
@@ -100,9 +101,9 @@ let started = null;
 async function start(mode) {
   markDock(mode);
 
-  if (mode === "keyspace" || mode === "validator" || mode === "studio" || mode === "ghidra" || mode === "dossier") {
+  if (mode === "keyspace" || mode === "validator" || mode === "studio" || mode === "enso" || mode === "ghidra" || mode === "dossier") {
     const frame = $("keyframe");
-    const view = mode === "studio" ? "./art-studio.html"
+    const view = (mode === "studio" || mode === "enso") ? "./art-studio.html"
       : mode === "validator" ? "./validator.html"
       : mode === "ghidra" ? "./ghidra-lab.html"
       : mode === "dossier" ? "./distro-dossier.html"
@@ -110,6 +111,7 @@ async function start(mode) {
     if (frame && frame.getAttribute("src") !== view) frame.src = view;
     const titles = {
       studio: "Ensō & Haiku Wallet Forging Engine · Art Studio",
+      enso: `${SITEK_APP_BY_ID.enso.label} · Art Studio`,
       validator: "BIP-39 Mnemonic Validator",
       ghidra: "Ghidra WASM Lab · DOS virology corpus",
       dossier: "Distro Dossier · Privacy & OSINT VM research console",

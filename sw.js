@@ -53,6 +53,7 @@ const PRECACHE = [
   "./css/poetry-book.css",
   "./css/wm.css",
   "./js/app.js",
+  "./js/sitek-catalog.js",
   "./js/adl-studio.js",
   "./js/adl-map.js",
   "./js/adl-data.js",
