@@ -1,4 +1,4 @@
-import { INDEX, parsePhrase, mnemonicToEntropy, wordCountToEntropyBits } from "./bip39.js";
+import { INDEX, parsePhrase, mnemonicToEntropy, wordCountToEntropyBits, sha256 } from "./bip39.js";
 import { CATALOG } from "./haiku-catalog.js";
 import { COIN_MODELS, FOIL_TREATMENTS, HANKO_STYLES, PAPER_HUES, POETRY_FORMS, SAIJIKI, SEASONS, SOLVERS } from "./studio-data.js";
 import { clearGallery, deleteGalleryCard, listGallery, saveGalleryCard } from "./studio-fs.js";
@@ -174,11 +174,8 @@ function artSeed() {
   return hashText(`${toHex(state.seed)}|${state.variant}|${state.palette}|${state.inkLoad}|${state.brush}|${state.roughness}|${state.opening}|${state.strokeDirection}|${state.paperHue}|${state.aspect}|${state.dynamic}|${state.hanko}|${state.hankoText}|${state.rotation}`);
 }
 
-async function sha256(bytes) {
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return new Uint8Array(digest);
-}
-
+/* sha256 comes from bip39.js: WebCrypto when available, pure-JS fallback for
+   file:// and plain-http origins, so fingerprints match on every origin. */
 async function fingerprintFor(bytes) {
   try {
     return toHex(await sha256(bytes), 4).toUpperCase();
