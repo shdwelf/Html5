@@ -40,11 +40,11 @@ import vm from "node:vm";
 
 import {
   wheel, wheelAlphabet, wheelKeyspace, caesar, atbash, playfair,
-  keyedVigenere, boxCipher, openpgpIssuer,
+  keyedVigenere, boxCipher, openpgpIssuer, openpgpSignatureInfo,
   WHEEL_POOL, WHEEL_VECTORS, CLANDESTINE_MESSAGES, CLANDESTINE_AMBIGUITY,
   FIELDNOTES_CODES, FIELDNOTES_21, FIELDNOTES_8, FIELDNOTES_COLLISION,
   DECLARATION_FIRST_SENTENCE,
-  F5_2016, F5_2018, USCYBERCOM, USCYBERCOM_HERALDRY, CICADA3301,
+  F5_2016, F5_2018, USCYBERCOM, USCYBERCOM_HERALDRY, CICADA3301, CICADA_LAB,
 } from "../js/lecture-ciphers.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -622,6 +622,38 @@ console.log("── Cicada 3301 (OpenPGP 7A35090F)");
     issuer && issuer.shortKeyId === keyId,
     `and its low 32 bits are ${issuer && issuer.shortKeyId}, the ID Cicada published: the key ID is in the signature, so it needs no keyserver to check`,
   );
+
+  // The April 2017 follow-up: parse the packet header, but do not confuse a
+  // structural check with RSA verification. The exact public key is not bundled
+  // here, so the harness deliberately proves only what the published bytes can
+  // prove without importing trust.
+  const april = CICADA3301.april2017;
+  const aprilInfo = openpgpSignatureInfo(april.signaturePrefixB64);
+  check(
+    april.cleartext.includes("Beware false paths") && april.hashArmor === "SHA512" && april.versionArmor === "CicadaPG v.3301",
+    "the April 2017 source transcription carries the warning, SHA512 header and CicadaPG version line",
+  );
+  check(
+    aprilInfo && aprilInfo.packetTag === 2 && aprilInfo.packetLength === 540 && aprilInfo.version === 4 && aprilInfo.signatureType === 1,
+    "the April 2017 bytes begin a 540-byte v4 canonical-text signature packet",
+  );
+  check(
+    aprilInfo && aprilInfo.publicKeyAlgorithm === 1 && aprilInfo.hashAlgorithm === 10 && aprilInfo.mpiBits === 4096,
+    "the packet declares RSA, SHA-512 and a 4096-bit RSA signature MPI",
+  );
+  check(
+    aprilInfo && aprilInfo.issuerLongKeyId === "181F01E57A35090F" && aprilInfo.issuerShortKeyId === keyId,
+    "the April packet repeats the same long and short issuer IDs — a byte-level continuity check, not a claim of human identity",
+  );
+  check(
+    aprilInfo && aprilInfo.createdEpoch === 1491348208,
+    "the signature packet timestamp is 2017-04-04 23:23:28 UTC, matching the source record",
+  );
+  check(
+    /metadata|not signed|not protected/i.test(april.note),
+    "the source record labels Version: CicadaPG v.3301 as unprotected armor metadata",
+  );
+
   const fp = fingerprint.replace(/\s+/g, "");
   check(fp.length === 40, `the v4 fingerprint is 40 hex digits = ${fp.length * 4} bits (SHA-1)`);
   check(fp.slice(-16) === "181F01E57A35090F" && fp.slice(-8) === keyId, "long key ID = last 16 digits, short key ID = last 8, per RFC 4880");
@@ -676,8 +708,8 @@ console.log("── Cicada 3301 (OpenPGP 7A35090F)");
     "the cicada’s 13- and 17-year brood cycles are both prime — the reason the insect was chosen is not published, so the hall records the arithmetic only",
   );
   check(
-    CICADA3301.timeline.some((t) => /CicadaPG v\.3301/.test(t.event)),
-    "the April 2017 message’s Version line reads “CicadaPG v.3301”, which no GnuPG release ever printed — flagged, not resolved",
+    CICADA3301.timeline.some((t) => /unprotected Version armor header|v4\/RSA\/SHA512/.test(t.event)),
+    "the April 2017 anomaly is narrowed correctly: the packet is machine-checkable, but its Version label is unprotected metadata",
   );
   check(
     /not certified with a trusted signature/.test(CICADA3301.gpgWarning),
@@ -864,6 +896,54 @@ if (!existsSync(SUITE)) {
     "Cyber Command record closes the post-2018 thread with the official blazon — and corrects its word “encrypted”",
   );
 
+  // Cicada laboratory model and source grading
+  check(
+    CICADA_LAB.controls.length === 6 &&
+      CICADA_LAB.controls.every((control) => control.id && control.capability && control.technique && control.status),
+    "Cicada laboratory matrix has six capability controls with explicit technique and status fields",
+  );
+  check(
+    CICADA_LAB.controls.some((control) => /OutGuess/i.test(control.technique)) &&
+      CICADA_LAB.controls.some((control) => /RSA\/OAEP/i.test(control.technique)) &&
+      CICADA_LAB.controls.some((control) => /Tor/i.test(control.technique)) &&
+      CICADA_LAB.controls.some((control) => /Gematria Primus/i.test(control.technique)),
+    "Cicada laboratory matrix covers steganography, RSA/OAEP, Tor, and Gematria Primus",
+  );
+  check(
+    CICADA_LAB.sourceDiscipline.authenticated.includes("April 2017 warning") &&
+      CICADA_LAB.sourceDiscipline.communityOnly.includes("Liber Primus transcription") &&
+      CICADA_LAB.sourceDiscipline.explicitlyNotProven.includes("intelligence-agency attribution"),
+    "Cicada source discipline separates signed artifacts, community transcriptions, and attribution limits",
+  );
+  check(
+    CICADA_LAB.sources.some((url) => url.endsWith("/2014.md")) &&
+      CICADA_LAB.sources.some((url) => url.endsWith("/liber_primus.md")) &&
+      CICADA_LAB.sources.some((url) => url.includes("The_Leaked_Email")),
+    "Cicada laboratory matrix cites the 2014 archive, Liber Primus transcription, and leaked-email provenance record",
+  );
+  check(
+    /laboratory model|cryptographic laboratory/i.test(haystack("cicada-3301")) &&
+      /intelligence service|intelligence connection|intelligence-agency/i.test(haystack("cicada-3301")) &&
+      /not proof|does not prove|not identify/i.test(haystack("cicada-3301")),
+    "Cicada record presents a laboratory model while explicitly limiting intelligence attribution",
+  );
+  check(
+    /OutGuess/i.test(haystack("cicada-3301")) &&
+      /book cipher/i.test(haystack("cicada-3301")) &&
+      /Tor hidden service/i.test(haystack("cicada-3301")) &&
+      /Gematria Primus/i.test(haystack("cicada-3301")) &&
+      /Atbash\/reversal/i.test(haystack("cicada-3301")) &&
+      /Vigenère-like shifts/i.test(haystack("cicada-3301")) &&
+      /prime.*totient|totient.*prime/i.test(haystack("cicada-3301")),
+    "Cicada record names the reproducible technique chain from OutGuess through Liber Primus numerical analysis",
+  );
+  check(
+    /modified and unsigned|modified\/unsigned/i.test(haystack("cicada-3301")) &&
+      /Think Tank/i.test(haystack("cicada-3301")) &&
+      /authorship|intelligence connection/i.test(haystack("cicada-3301")),
+    "Cicada record treats the Think Tank/recruitment language as a provenance-graded claim, not an authenticated identity",
+  );
+
   // cicada record
   check(haystack("cicada-3301").includes(CICADA3301.keyId), "Cicada record carries the key ID 7A35090F");
   check(
@@ -883,6 +963,22 @@ if (!existsSync(SUITE)) {
   check(
     /issuer/i.test(haystack("cicada-3301")) && haystack("cicada-3301").includes("181F01E57A35090F"),
     "Cicada record explains how the key ID is checked without a keyserver: the issuer subpacket in the signature itself",
+  );
+  check(
+    /RFC 4880|armor headers/i.test(haystack("cicada-3301")) &&
+      /not protected|unprotected|metadata/i.test(haystack("cicada-3301")) &&
+      haystack("cicada-3301").includes("yEiTHhvF"),
+    "Cicada record adds the April 2017 primary Pastebin and RFC 4880 armor-header source check",
+  );
+  check(
+    /4096-bit|4096 bit/i.test(haystack("cicada-3301")) &&
+      /2017-04-04 23:23:28|23:23:28 UTC/i.test(haystack("cicada-3301")),
+    "Cicada record carries the parsed April packet metadata without claiming RSA verification",
+  );
+  check(
+    /RSA verification|human identity|human author|identity/i.test(haystack("cicada-3301")) &&
+      /does not pretend|does not claim|not a claim|not proof/i.test(haystack("cicada-3301")),
+    "Cicada record distinguishes continuity of a key ID from proof of a human author",
   );
   check(
     // Word-boundary test on purpose: a bare /solved|cracked|broken/ also fires

@@ -12,7 +12,7 @@ Target file: `apps/Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html`,
 tab `lecturehall` → component `qv`, data array `Pc`
 (1,024,252 → 1,051,337 bytes, +27,085 across 16 splice steps).
 Proof harness: `tools/verify_lecture_hall.mjs` — rewritten, now **119 checks**
-in 8 sections, against `js/lecture-ciphers.js` (21 exports).
+in 8 sections, against `js/lecture-ciphers.js` (the module now has 26 named exports after the 2026-09-27 packet parser).
 
 ```bash
 python3 tools/patch_lecture_hall_records_r2.py   # already applied; re-run fails loudly

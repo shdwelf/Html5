@@ -25,6 +25,10 @@ not looser: a substring that is not unique inside the record aborts the run.
 
 See docs/lecture-hall-research-2026-09-20.md for the research and
 tools/verify_lecture_hall.mjs for the proofs the records rest on.
+
+The 2026-09-27 follow-up is deliberately separate: run
+`tools/update_cicada_source_check.py` to apply the April 2017 packet/RFC 4880
+source check to the already-created Cicada record.
 """
 import json
 import os
