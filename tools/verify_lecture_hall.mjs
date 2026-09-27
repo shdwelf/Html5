@@ -40,7 +40,7 @@ import vm from "node:vm";
 
 import {
   wheel, wheelAlphabet, wheelKeyspace, caesar, atbash, playfair,
-  keyedVigenere, boxCipher, openpgpIssuer,
+  keyedVigenere, boxCipher, openpgpIssuer, openpgpSignatureInfo,
   WHEEL_POOL, WHEEL_VECTORS, CLANDESTINE_MESSAGES, CLANDESTINE_AMBIGUITY,
   FIELDNOTES_CODES, FIELDNOTES_21, FIELDNOTES_8, FIELDNOTES_COLLISION,
   DECLARATION_FIRST_SENTENCE,
@@ -622,6 +622,38 @@ console.log("── Cicada 3301 (OpenPGP 7A35090F)");
     issuer && issuer.shortKeyId === keyId,
     `and its low 32 bits are ${issuer && issuer.shortKeyId}, the ID Cicada published: the key ID is in the signature, so it needs no keyserver to check`,
   );
+
+  // The April 2017 follow-up: parse the packet header, but do not confuse a
+  // structural check with RSA verification. The exact public key is not bundled
+  // here, so the harness deliberately proves only what the published bytes can
+  // prove without importing trust.
+  const april = CICADA3301.april2017;
+  const aprilInfo = openpgpSignatureInfo(april.signaturePrefixB64);
+  check(
+    april.cleartext.includes("Beware false paths") && april.hashArmor === "SHA512" && april.versionArmor === "CicadaPG v.3301",
+    "the April 2017 source transcription carries the warning, SHA512 header and CicadaPG version line",
+  );
+  check(
+    aprilInfo && aprilInfo.packetTag === 2 && aprilInfo.packetLength === 540 && aprilInfo.version === 4 && aprilInfo.signatureType === 1,
+    "the April 2017 bytes begin a 540-byte v4 canonical-text signature packet",
+  );
+  check(
+    aprilInfo && aprilInfo.publicKeyAlgorithm === 1 && aprilInfo.hashAlgorithm === 10 && aprilInfo.mpiBits === 4096,
+    "the packet declares RSA, SHA-512 and a 4096-bit RSA signature MPI",
+  );
+  check(
+    aprilInfo && aprilInfo.issuerLongKeyId === "181F01E57A35090F" && aprilInfo.issuerShortKeyId === keyId,
+    "the April packet repeats the same long and short issuer IDs — a byte-level continuity check, not a claim of human identity",
+  );
+  check(
+    aprilInfo && aprilInfo.createdEpoch === 1491348208,
+    "the signature packet timestamp is 2017-04-04 23:23:28 UTC, matching the source record",
+  );
+  check(
+    /metadata|not signed|not protected/i.test(april.note),
+    "the source record labels Version: CicadaPG v.3301 as unprotected armor metadata",
+  );
+
   const fp = fingerprint.replace(/\s+/g, "");
   check(fp.length === 40, `the v4 fingerprint is 40 hex digits = ${fp.length * 4} bits (SHA-1)`);
   check(fp.slice(-16) === "181F01E57A35090F" && fp.slice(-8) === keyId, "long key ID = last 16 digits, short key ID = last 8, per RFC 4880");
@@ -676,8 +708,8 @@ console.log("── Cicada 3301 (OpenPGP 7A35090F)");
     "the cicada’s 13- and 17-year brood cycles are both prime — the reason the insect was chosen is not published, so the hall records the arithmetic only",
   );
   check(
-    CICADA3301.timeline.some((t) => /CicadaPG v\.3301/.test(t.event)),
-    "the April 2017 message’s Version line reads “CicadaPG v.3301”, which no GnuPG release ever printed — flagged, not resolved",
+    CICADA3301.timeline.some((t) => /unprotected Version armor header|v4\/RSA\/SHA512/.test(t.event)),
+    "the April 2017 anomaly is narrowed correctly: the packet is machine-checkable, but its Version label is unprotected metadata",
   );
   check(
     /not certified with a trusted signature/.test(CICADA3301.gpgWarning),
@@ -883,6 +915,22 @@ if (!existsSync(SUITE)) {
   check(
     /issuer/i.test(haystack("cicada-3301")) && haystack("cicada-3301").includes("181F01E57A35090F"),
     "Cicada record explains how the key ID is checked without a keyserver: the issuer subpacket in the signature itself",
+  );
+  check(
+    /RFC 4880|armor headers/i.test(haystack("cicada-3301")) &&
+      /not protected|unprotected|metadata/i.test(haystack("cicada-3301")) &&
+      haystack("cicada-3301").includes("yEiTHhvF"),
+    "Cicada record adds the April 2017 primary Pastebin and RFC 4880 armor-header source check",
+  );
+  check(
+    /4096-bit|4096 bit/i.test(haystack("cicada-3301")) &&
+      /2017-04-04 23:23:28|23:23:28 UTC/i.test(haystack("cicada-3301")),
+    "Cicada record carries the parsed April packet metadata without claiming RSA verification",
+  );
+  check(
+    /RSA verification|human identity|human author|identity/i.test(haystack("cicada-3301")) &&
+      /does not pretend|does not claim|not a claim|not proof/i.test(haystack("cicada-3301")),
+    "Cicada record distinguishes continuity of a key ID from proof of a human author",
   );
   check(
     // Word-boundary test on purpose: a bare /solved|cracked|broken/ also fires

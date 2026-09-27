@@ -639,3 +639,27 @@ edit, no regression); the patched bundle’s inline app script (938 676 bytes) r
 re-parsed clean via `vm.Script` and served over HTTP 200 with all 10 records present;
 `smoke_pipeline.mjs` clean; `check-dom-ids.mjs` pass; `patch_lecture_hall_records_r2.py` re-run
 fails loudly. `sw.js` untouched — the suite file is not in the precache list.
+
+## Wave 10 — the lecture hall source check is narrowed (2026-09-27)
+
+Follow-up log: **`docs/lecture-hall-research-2026-09-27.md`**. The Drive search
+was also recorded: it contained a working-tree backup at `12c463f`, not lecture
+source or Git history, so it was not unpacked over the current checkout and no
+unsafe “merge” was performed.
+
+The next Cicada thread is now investigated rather than left as folklore. The
+April 2017 Pastebin transcription is parsed far enough to establish a 540-byte
+v4 Tag 2 packet: canonical text, RSA, SHA-512, a 4096-bit MPI, issuer
+`181F01E57A35090F` / `7A35090F`, and creation time `2017-04-04 23:23:28 UTC`.
+That proves packet structure and issuer-ID continuity; it does **not** replace
+RSA verification or establish a human author. RFC 4880 §§6.2 and 7 are now cited
+in the hall: `Version: CicadaPG v.3301` is unprotected armor metadata, while the
+embedded packet’s hash algorithm is the machine-readable field. The anomaly is
+therefore narrowed to unknown encoder/provenance, not treated as either proof or
+disproof of authenticity.
+
+`js/lecture-ciphers.js` gained the dependency-free packet parser;
+`tools/update_cicada_source_check.py` is the fail-loud, one-shot app patcher;
+and `tools/verify_lecture_hall.mjs` now checks the parsed values and the updated
+record. The lecture hall remains at **10 records**; this is a source-check
+upgrade to the Cicada record, not an asserted eleventh solution.

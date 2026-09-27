@@ -528,6 +528,64 @@ export function openpgpIssuer(armoured) {
   return null;
 }
 
+/**
+ * Parse the fixed header of a v4 OpenPGP signature packet.
+ *
+ * This intentionally stops short of RSA verification: a key and the exact
+ * signed cleartext are required for that. It does, however, make the April
+ * 2017 source check reproducible from the published signature prefix: packet
+ * tag, packet length, signature version/type, public-key and hash algorithms,
+ * issuer ID, creation time, and the RSA MPI size. The prefix is enough because
+ * all of those fields precede the MPI bytes.
+ *
+ * @param {string} armoured base64 data from a PGP SIGNATURE armor block
+ * @returns {object|null}
+ */
+export function openpgpSignatureInfo(armoured) {
+  const b64 = armoured.replace(/[^A-Za-z0-9+/=]/g, "");
+  const pad = b64.length % 4 ? "=".repeat(4 - (b64.length % 4)) : "";
+  const bin = atobLike(b64 + pad);
+  // 0x89 is an old-format Tag 2 (signature) packet with a two-octet length.
+  if (bin.length < 29 || bin[0] !== 0x89 || ((bin[0] >> 2) & 0x0f) !== 2) return null;
+  const packetLength = (bin[1] << 8) | bin[2];
+  const p = 3;
+  const version = bin[p];
+  const signatureType = bin[p + 1];
+  const publicKeyAlgorithm = bin[p + 2];
+  const hashAlgorithm = bin[p + 3];
+  const hashedLength = (bin[p + 4] << 8) | bin[p + 5];
+  const hashedStart = p + 6;
+  const unhashedLengthAt = hashedStart + hashedLength;
+  if (version !== 4 || bin.length < unhashedLengthAt + 2) return null;
+  const unhashedLength = (bin[unhashedLengthAt] << 8) | bin[unhashedLengthAt + 1];
+  const unhashedStart = unhashedLengthAt + 2;
+  const issuerAt = unhashedStart; // length 9, type 0x10, then the 8-byte ID
+  const issuer = bin.length >= issuerAt + 10 && bin[issuerAt] === 0x09 && bin[issuerAt + 1] === 0x10
+    ? [...bin.slice(issuerAt + 2, issuerAt + 10)].map((b) => b.toString(16).padStart(2, "0")).join("").toUpperCase()
+    : null;
+  const leftHashAt = unhashedStart + unhashedLength;
+  const mpiBitsAt = leftHashAt + 2;
+  const mpiBits = bin.length >= mpiBitsAt + 2 ? (bin[mpiBitsAt] << 8) | bin[mpiBitsAt + 1] : null;
+  const createdAt = hashedStart; // subpacket 0x05, length 2, then 4-byte epoch
+  const createdEpoch = bin.length >= createdAt + 6 && bin[createdAt] === 0x05 && bin[createdAt + 1] === 0x02
+    ? (((bin[createdAt + 2] << 24) >>> 0) | (bin[createdAt + 3] << 16) | (bin[createdAt + 4] << 8) | bin[createdAt + 5]) >>> 0
+    : null;
+  return {
+    packetTag: 2,
+    packetLength,
+    version,
+    signatureType,
+    publicKeyAlgorithm,
+    hashAlgorithm,
+    hashedSubpacketLength: hashedLength,
+    unhashedSubpacketLength: unhashedLength,
+    issuerLongKeyId: issuer,
+    issuerShortKeyId: issuer ? issuer.slice(8) : null,
+    createdEpoch,
+    mpiBits,
+  };
+}
+
 /** Minimal base64 -> byte array, so this module stays dependency-free in node and browser. */
 function atobLike(s) {
   const T = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -579,6 +637,19 @@ export const CICADA3301 = {
   welcomeSignatureB64:
     "iQIcBAEBAgAGBQJPBRz7AAoJEBgfAeV6NQkP1UIQALFcO8DyZkecTK5pAIcGez7k",
   /**
+   * Source check added 2026-09-27 from the surviving Pastebin transcription.
+   * The prefix contains the complete v4 signature header and issuer fields; the
+   * RSA MPI itself is deliberately not copied into this small reference module.
+   */
+  april2017: {
+    posted: "2017-04-04",
+    cleartext: "Beware false paths.  Always verify PGP signature from 7A35090F.\n\n3301",
+    hashArmor: "SHA512",
+    versionArmor: "CicadaPG v.3301",
+    signaturePrefixB64: "iQIcBAEBCgAGBQJY5CrwAAoJEBgfAeV6NQkPFvMQAJa3W1K1gFcxFPk90fMFFKKx",
+    note: "The Version armor header is metadata, not signed content; its label cannot authenticate the signer or implementation.",
+  },
+  /**
    * The keyserver claim, source-checked on 2026-09-20.
    * Cicada wrote "the mit keyservers" and named no host, so every hostname
    * below is this repository's check, not Cicada's assertion.
@@ -614,7 +685,7 @@ export const CICADA3301 = {
     { date: "2014-01-04", event: "third round posted on Twitter — the Liber Primus, still unsolved" },
     { date: "2015-07", event: "an unrelated group calling itself “3301” intrudes on Planned Parenthood; Cicada signs a denial" },
     { date: "2016-01-05", event: "“The path lies empty; epiphany seeks the devoted. … Beware false paths. Verify OpenPGP 7A35090F.”" },
-    { date: "2017-04", event: "last verified signed message; its Version line reads “CicadaPG v.3301”, which no GnuPG ever printed" },
+    { date: "2017-04", event: "last public signed message; its v4/RSA/SHA512 packet carries issuer 181F01E57A35090F while the unprotected Version armor header says “CicadaPG v.3301”" },
   ],
   numbers: { threeThreeOhOneIsPrime: true, eIsFermatPrimeF4: true, broodCycles: [13, 17] },
 };
