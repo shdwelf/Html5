@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 336 recipes · Cloud C, Cistercian, 231sts &amp; more</div>
+  <div class="sub">HTML5 · 347 recipes · Cloud C, Cistercian, 231sts &amp; more</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -772,13 +772,6 @@ addOp('xorBrute','XOR Brute Force','Crypto',
       if(score>best.score)best={score,key:k,out};
     }
     return 'Best key: 0x'+best.key.toString(16).padStart(2,'0')+' ('+best.key+')\nScore: '+best.score.toFixed(1)+'\n\nDecrypted:\n'+best.out;
-  });
-
-addOp('sha256','SHA-256 Hash','Crypto',
-  'SHA-256 digest of the input (WebCrypto, hex).',
-  [], async function(t,a){
-    const buf=await crypto.subtle.digest('SHA-256',utf8Encode(t));
-    return hexFromBytes(new Uint8Array(buf));
   });
 
 /* ============ HASH PRIMITIVES ============ */
@@ -2290,6 +2283,7 @@ const RECIPE_PACKS={
  'KEM → AEAD (ML-KEM)':[['mkkemFull',{}],['aesGCM',{mode:'encrypt'}]],
  'Keygen → Encrypt (AES)':[['keyRandom',{}],['aesGCM',{mode:'encrypt'}]],
  'Hash Collection':[['allhash',{}]],
+ 'Boxentriq Puzzle & Code-Breaking Pack (Deferred Four — AMSCO · Morbit · Pollux · Nak-Nak)':[['amsco',{}],['morbit',{}],['pollux',{}],['naknak',{}]],
 };
 addOp('recipePack','Recipe Pack','Recipes','Load a predefined cipher-suite recipe pack into the Recipe panel.',Object.keys(RECIPE_PACKS).map((name,i)=>({key:'pack',label:'Pack',type:'select',default:Object.keys(RECIPE_PACKS)[0],options:Object.keys(RECIPE_PACKS).map(n=>[n,n])})),function(t,a){
   const n=applyRecipePack(a.pack);
@@ -22530,6 +22524,263 @@ function zenInit(){
   const b=document.getElementById('btn-zen');
   if(b) b.onclick=zenRoll;
 }
+/* ============================================================
+   BOXENTRIQ PART 2 — THE DEFERRED FOUR, SPECS NOW VERIFIED
+   Follow-up to the 2026-09-25 deep dive: its four deferred
+   recipes (AMSCO, Morbit, Pollux, Nak-Nak) are now added. The
+   tool pages were unreachable then; this session captured all
+   of them — boxentriq.com/ciphers/amsco-cipher, /morbit-cipher,
+   /pollux-cipher and /encodings/nak-nak-duckspeak — and every
+   recipe below was written against the worked example on its
+   page. AMSCO was additionally cross-checked against
+   thonky.com/kryptos/amsco-cipher (second worked example).
+   Spec research is documented in the Html5-sync-incoming repo:
+   docs/BOXENTRIQ_DEEP_DIVE.md §9.
+   ============================================================ */
+
+/* shared: International Morse for the fractionating ciphers */
+const MBP_MORSE={'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','0':'-----','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.'};
+const MBP_REV=(function(){const r={};for(const k in MBP_MORSE)r[MBP_MORSE[k]]=k;return r;})();
+
+/* shared: key → numeric permutation. A numeric key passes through;
+   a keyword is ranked alphabetically with first-occurrence tie-breaks
+   (boxentriq: "Columns are read in alphabetical order (ties stay left
+   to right)" and "letters are ranked alphabetically with first-
+   occurrence tie-breaks"). SECRETKEY → 7 2 1 6 3 8 5 4 9. */
+function mbpKeyPerm(key){
+  const s=String(key||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(!s.length)throw new Error('Enter a key: a numeric permutation (e.g. 41325) or a keyword (e.g. AMSCO)');
+  if(/^[0-9]+$/.test(s)){
+    const d=s.split('').map(Number);
+    const seen={};
+    for(const n of d){
+      if(n<1||n>d.length)throw new Error('Numeric key digits must be in the range 1–'+d.length+' (got '+n+')');
+      if(seen[n])throw new Error('Numeric key digit '+n+' repeats — it must be a permutation of 1–'+d.length);
+      seen[n]=1;
+    }
+    return d;
+  }
+  const sorted=[...s].sort();
+  const ranks={};
+  sorted.forEach((c,i)=>{(ranks[c]=ranks[c]||[]).push(i+1);});
+  const used={};
+  return [...s].map(c=>{const u=used[c]||0;used[c]=u+1;return ranks[c][u];});
+}
+
+/* shared: text → Morse stream over {., -, x}. Per the boxentriq Morbit
+   page: "Each encoded letter is followed by x. Word boundaries add one
+   extra x so words are separated by xx." dropTrailing strips the final
+   letter separator for Pollux, whose page shows the stream ending on
+   the last letter's own symbols. */
+function mbpMorseStream(text,dropTrailing){
+  const chars=String(text||'').toUpperCase().trim().replace(/\s+/g,' ');
+  if(!chars.length)throw new Error('Nothing to encipher — Morbit/Pollux take letters A–Z, digits 0–9 and spaces');
+  let stream='';
+  for(const ch of chars){
+    if(ch===' '){stream+='x';continue;}
+    const m=MBP_MORSE[ch];
+    if(m===undefined)throw new Error('No International Morse for "'+ch+'" — Morbit/Pollux take A–Z, 0–9 and spaces only');
+    stream+=m+'x';
+  }
+  return dropTrailing?stream.slice(0,-1):stream;
+}
+
+/* shared: Morse stream → text. Trailing separators are padding; xx is a
+   word break, x a letter break. */
+function mbpMorseText(stream){
+  let s=String(stream||'').replace(/[^.\-x]/g,'');
+  while(s.charAt(s.length-1)==='x')s=s.slice(0,-1);
+  if(!s.length)throw new Error('Empty Morse stream');
+  return s.split('xx').map(word=>word.split('x').map(tok=>{
+    if(!tok)return '';
+    const ch=MBP_REV[tok];
+    if(ch===undefined)throw new Error('Not International Morse: "'+tok+'"');
+    return ch;
+  }).join('')).join(' ');
+}
+
+/* 27. AMSCO — irregular columnar transposition with alternating
+   single-letter and digraph cells. Boxentriq and Thonky agree on the
+   convention: fill row by row, cell sizes alternate and the starting
+   size flips on each new row, the final cell may be short, and the
+   columns are read in key order. */
+function amscoShape(perm,start,n){
+  const cols=perm.length,cells=[];
+  let rem=n;
+  for(let r=0;rem>0;r++){
+    for(let c=0;c<cols&&rem>0;c++){
+      const want=((r+c)%2===0)?start:(3-start);
+      const take=Math.min(want,rem);
+      cells.push({r,c,n:take});
+      rem-=take;
+    }
+  }
+  return cells;
+}
+addOp('amsco','AMSCO Cipher','Boxentriq',
+  'Irregular columnar transposition (A. M. Scott, 19th c.): the grid is filled row by row with alternating digraph and single-letter cells — the starting size flips on each new row and the final cell may be short — then the columns are read off in key order. Verified against the worked examples on boxentriq.com and thonky.com.',
+  [
+    {key:'key',label:'Key',type:'text',default:'AMSCO'},
+    {key:'first',label:'First entry',type:'select',default:'digraph',options:[['digraph','Digraph (2 letters)'],['single','Single letter']]},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]}
+  ],
+  function(text,args){
+    const perm=mbpKeyPerm(args.key);
+    const start=args.first==='single'?1:2;
+    const letters=toUpperLetters(text);
+    if(!letters.length)throw new Error('Enter some letters (A–Z) — AMSCO transposes letters only');
+    const cells=amscoShape(perm,start,letters.length);
+    let rows=0;
+    const colLen={};
+    for(const cell of cells){colLen[cell.c]=(colLen[cell.c]||0)+cell.n;if(cell.r+1>rows)rows=cell.r+1;}
+    if(args.mode==='decrypt'){
+      const colStr={};
+      let i=0;
+      for(let d=1;d<=perm.length;d++){
+        const c=perm.indexOf(d);
+        colStr[c]=letters.slice(i,i+(colLen[c]||0));
+        i+=(colLen[c]||0);
+      }
+      const grid={};
+      const ptr={};
+      for(const cell of cells){
+        const p=ptr[cell.c]||0;
+        grid[cell.r+','+cell.c]=colStr[cell.c].slice(p,p+cell.n);
+        ptr[cell.c]=p+cell.n;
+      }
+      let out='';
+      for(let r=0;r<rows;r++)for(let c=0;c<perm.length;c++){const s=grid[r+','+c];if(s)out+=s;}
+      return out;
+    }
+    const grid={};
+    let i=0;
+    for(const cell of cells){grid[cell.r+','+cell.c]=letters.slice(i,i+cell.n);i+=cell.n;}
+    let out='';
+    for(let d=1;d<=perm.length;d++){
+      const c=perm.indexOf(d);
+      for(let r=0;r<rows;r++){const s=grid[r+','+c];if(s)out+=s;}
+    }
+    return out;
+  });
+
+/* 28. Morbit — fractionated Morse: symbol pairs → digits 1–9 */
+const MB_PAIRS=['..','.-','.x','-.','--','-x','x.','x-','xx'];
+function morbitPerm(key){
+  const s=String(key||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(s.length!==9)throw new Error('A Morbit key is 9 letters (duplicates allowed) or a 9-digit permutation of 1–9 — got '+s.length+' characters');
+  return mbpKeyPerm(s);
+}
+addOp('morbit','Morbit Cipher','Boxentriq',
+  '"MORse dIT": plaintext → International Morse (x after each letter, xx between words) → symbol pairs → digits 1–9 through a 9-position key. The ACA\u2019s simplified Fractionated Morse; the whole keyspace is only 9!, so it falls to brute force.',
+  [
+    {key:'key',label:'Key (9 letters or digits 1–9)',type:'text',default:'SECRETKEY'},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]}
+  ],
+  function(text,args){
+    const perm=morbitPerm(args.key);
+    if(args.mode==='decrypt'){
+      const pairFor={};MB_PAIRS.forEach((p,i)=>pairFor[perm[i]]=p);
+      const digits=text.replace(/[^1-9]/g,'');
+      if(!digits.length)throw new Error('Enter the Morbit ciphertext digits (1–9)');
+      let stream='';
+      for(const d of digits){
+        const p=pairFor[d];
+        if(p===undefined)throw new Error('Digit '+d+' is not produced by this key — its digits must be a permutation of 1–9');
+        stream+=p;
+      }
+      return mbpMorseText(stream);
+    }
+    const digitFor={};MB_PAIRS.forEach((p,i)=>digitFor[p]=perm[i]);
+    let stream=mbpMorseStream(text,false);
+    if(stream.length%2)stream+='x';
+    let out='';
+    for(let i=0;i<stream.length;i+=2)out+=digitFor[stream.substr(i,2)];
+    return out;
+  });
+
+/* 29. Pollux — fractionated Morse: single symbols → pool characters */
+addOp('pollux','Pollux Cipher','Boxentriq',
+  'Morse stream where every dot, dash and separator becomes a character drawn from one of three non-overlapping key pools (ACA convention is digit-only, e.g. dot 0346 / dash 278 / delimiter 159). The mapping is many-to-one, so the same message can encrypt differently each time.',
+  [
+    {key:'dot',label:'Characters for "." (dots)',type:'text',default:'0346'},
+    {key:'dash',label:'Characters for "-" (dashes)',type:'text',default:'278'},
+    {key:'delim',label:'Characters for "x" (delimiters)',type:'text',default:'159'},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]},
+    {key:'pick',label:'Pool pick',type:'select',default:'first',options:[['first','First pool member (deterministic)'],['cycle','Round-robin'],['random','Random']]}
+  ],
+  function(text,args){
+    const norm=p=>String(p||'').toUpperCase().replace(/[^A-Z0-9]/g,'').split('');
+    const pools={'.':norm(args.dot),'-':norm(args.dash),'x':norm(args.delim)};
+    const label={'.':'dot','-':'dash','x':'delimiter'};
+    for(const sym of ['.','x','-']){
+      if(!pools[sym].length)throw new Error('The '+label[sym]+' pool is empty — all three pools need at least one character');
+    }
+    const owner={};
+    for(const sym of ['.','x','-']){
+      for(const ch of pools[sym]){
+        if(owner[ch])throw new Error('Character '+ch+' appears in more than one pool — the three pools must not overlap');
+        owner[ch]=sym;
+      }
+    }
+    if(args.mode==='decrypt'){
+      const chars=text.toUpperCase().replace(/[^A-Z0-9]/g,'');
+      if(!chars.length)throw new Error('Enter the Pollux ciphertext characters (A–Z, 0–9)');
+      let stream='';
+      for(const ch of chars){
+        const sym=owner[ch];
+        if(!sym)throw new Error('Cipher character '+ch+' belongs to none of the three pools');
+        stream+=sym;
+      }
+      return mbpMorseText(stream);
+    }
+    const stream=mbpMorseStream(text,true);
+    const cnt={'.':0,'-':0,'x':0};
+    let out='';
+    for(const sym of stream){
+      const pool=pools[sym];
+      out+=(args.pick==='random')?pool[Math.floor(Math.random()*pool.length)]
+           :(args.pick==='cycle')?pool[cnt[sym]++%pool.length]
+           :pool[0];
+    }
+    return out;
+  });
+
+/* 30. Nak-Nak — duckspeak: ASCII hex digits → duck syllables */
+const NAKNAK_TOKENS=['Nak','Nanak','Nananak','Nanananak','Nak?','nak?','Naknak','Naknaknak','Nak.','Naknak.','Naknaknaknak','nakak','naknak','nak!','nak.','naknaknak'];
+addOp('naknak','Nak-Nak (Duckspeak)','Boxentriq',
+  'Duckspeak (2011): each character → its ASCII hex value → each hex digit becomes a duck syllable (0=Nak, 4=Nak? … B=nakak, F=naknaknak). Case and punctuation in the tokens are significant. The decoder also accepts dcode\u2019s B spelling ("nanak"); this kitchen encodes B as Boxentriq\u2019s "nakak".',
+  [
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]}
+  ],
+  function(text,args){
+    if(args.mode==='decrypt'){
+      const rev={};
+      NAKNAK_TOKENS.forEach((t,i)=>rev[t]=i);
+      rev['nanak']=11; /* dcode spells the B token "nanak"; Boxentriq spells it "nakak" */
+      const toks=String(text||'').trim().split(/\s+/).filter(Boolean);
+      if(!toks.length)throw new Error('Enter the duckspeak tokens, separated by spaces');
+      let hex='';
+      for(const t of toks){
+        const d=rev[t];
+        if(d===undefined)throw new Error('Unknown duckspeak token: "'+t+'" (case and punctuation matter)');
+        hex+=d.toString(16).toUpperCase();
+      }
+      if(hex.length%2)throw new Error('Odd token count — the hex digits must pair up into bytes');
+      let out='';
+      for(let i=0;i<hex.length;i+=2)out+=String.fromCharCode(parseInt(hex.substr(i,2),16));
+      return out;
+    }
+    const out=[];
+    for(const ch of String(text)){
+      let cp=ch.codePointAt(0);
+      if(cp>0x7F)cp=0x3F; /* Boxentriq: characters outside ASCII are encoded as ? */
+      const h=('0'+cp.toString(16).toUpperCase()).slice(-2);
+      out.push(NAKNAK_TOKENS[parseInt(h.charAt(0),16)],NAKNAK_TOKENS[parseInt(h.charAt(1),16)]);
+    }
+    if(!out.length)throw new Error('Nothing to encode');
+    return out.join(' ');
+  });
+
 zenInit();
 sfxInitUi();
 renderOpsList();renderRecipe();
