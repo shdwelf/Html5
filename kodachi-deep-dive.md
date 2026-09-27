@@ -72,20 +72,62 @@ The documented custom-VPN path (stable since the 6.x era):
 
 ```
 1. cd /home/kodachi/Own_VPN_Config
-2. Paste your provider's config into:      myownvpn.ovpn
-3. If it needs a login, put it in:         myownvpnauth.txt
-4. In myownvpn.ovpn set:                   auth-user-pass ../Own_VPN_Config/myownvpnauth.txt
-5. Any extra setup goes in:                myownvpnsetup
-6. Save; connect from the dashboard's VPN tab.
+2. Paste your provider's config into:      myownvpn.ovpn   (ships empty, template only)
+3. If it needs a login, edit myownvpnsetup:  need_user_password='1'
+                                             ownvpnusername='...'  ownvpnpassword='...'
+4. Kodachi generates myownvpnauth.txt on the fly from those vars, and
+   myownvpn.ovpn consumes it via:          auth-user-pass ../Own_VPN_Config/myownvpnauth.txt
+5. Save; connect from the dashboard's VPN tab.
 ```
 
-### On "the root password from the website is for the ovpn vpn"
+> Verified against the committed files: `myownvpn.ovpn` contains only comments + the (commented)
+> `auth-user-pass` line, and `myownvpnsetup` is where the username/password go — `myownvpnauth.txt`
+> does not exist until the scripts write it.
 
-Precisely stated, the verifiable facts are:
+### On "the root password from the website is for the ovpn vpn" — settled against Kodachi's own source
 
-- The **`r@@t00`** password published on the Kodachi site is the **OS account / `sudo`** password (user *and* root) — it authorises the dashboard's privileged actions, including **bringing the VPN tunnel up** (starting OpenVPN/WireGuard is a root operation).
-- It is **not**, by itself, documented as *VPN account credentials*. VPN **provider** logins are separate — either the pre-loaded providers' own credentials or whatever you place in `myownvpnauth.txt`.
-- So the accurate reading is: **the website's password unlocks the machine that runs the always-on VPN**, and the OpenVPN client it drives reads its *provider* credentials from `Own_VPN_Config/myownvpnauth.txt`. If a specific build ships a *pre-filled* `myownvpnauth.txt` bundled free VPN, verify that from the mounted image (see [§5](#5-verify-the-image--inspect-it)) rather than assuming the OS password doubles as the VPN password.
+The earlier reading was speculative; it can now be **resolved directly against Kodachi's
+source tree** (`github.com/WMAL/kodachios`, Kodachi-8 build at commit `97adf1d`), where the
+website copy *and* every `.ovpn`/auth file are committed. The answer is unambiguous.
+
+**Where `r@@t00` actually appears.** Grepping the *entire* repository for the literal string
+`r@@t00` returns exactly **one file — the website copy itself**,
+`Kodachi-OS-8-EOL/docs/landing-page.md`, on two lines:
+
+```
+## Hints
+#### To Login as Normal User (Recommended)
+- Username: kodachi
+- Password: r@@t00   (Note: the "00" is double zeros)
+#### To Login as root
+- Username: root
+- Password: r@@t00
+```
+
+It is listed **only** as the OS **login / root** credential. It appears in **no `.ovpn`
+file and no `*auth.txt`/`*setup` file** anywhere in the 6,224 committed OpenVPN configs.
+
+**Where the OpenVPN settings/credentials actually live.** VPN auth is a completely separate
+mechanism under `/home/kodachi/Own_VPN_Config/`:
+
+- The config template `myownvpn.ovpn` ships **empty** — it holds only instructions and the
+  commented directive `# auth-user-pass ../Own_VPN_Config/myownvpnauth.txt`. `myownvpnauth.txt`
+  is *"created on the fly"* from the setup file.
+- **Provider credentials** are entered in the plain-text `*setup` files, all shipping **blank**:
+  `myownvpnsetup` (`ownvpnusername=''`, `ownvpnpassword=''`, `need_user_password='0'`),
+  plus `hidemevpnsetup`, `nordvpnsetup`, `protonvpnsetup`, `mullvadvpnsetup`, `vpngatesetup`.
+- Kodachi's scripts read those vars and generate the matching `<provider>auth.txt`, which the
+  bundled `.ovpn` files consume via `auth-user-pass ../Own_VPN_Config/<provider>auth.txt`
+  (e.g. 5,345 NordVPN configs reference `nordvpnauth.txt`, 505 Proton `protonvpnauth.txt`,
+  229 Mullvad, 78 hide.me). The free **VPNGate** bundle needs no login at all.
+
+**Conclusion.** The claim that the website password *is* the OpenVPN password is **not
+supported by the source**. `r@@t00` is purely the OS/`sudo` password; it authorises the
+dashboard to *start* the tunnel (a root action), but the OpenVPN client draws its *provider*
+credentials from `Own_VPN_Config/<provider>setup` → `<provider>auth.txt`, all of which ship
+empty. There is no bundled `.ovpn` or auth file that embeds `r@@t00` or any pre-filled
+provider login. The "original ovpn settings file" for a bring-your-own VPN is
+`Own_VPN_Config/myownvpn.ovpn` (paired with `myownvpnsetup`), not a credential store.
 
 ---
 
@@ -189,6 +231,7 @@ Kodachi's VPN-then-Tor default is also its most debated design: layering a VPN, 
 - MakeUseOf — default creds + the "keep the kodachi user" warning: https://www.makeuseof.com/linux-kodachi-privacy-focused-distro/
 - Grokipedia — *Linux Kodachi* (founding date, provider list, OpenVPN/WireGuard failover): https://grokipedia.com/page/linux_kodachi
 - archive.ph capture of digi77 Kodachi page — the `Own_VPN_Config/myownvpn.ovpn` bring-your-own steps + creds: https://archive.ph/9qxoZ
+- **Kodachi source (primary):** `github.com/WMAL/kodachios` @ `97adf1d` — `Kodachi-OS-8-EOL/docs/landing-page.md` (the `r@@t00` login copy) and `Kodachi-OS-8-EOL/open/bash/home/kodachi/Own_VPN_Config/` (`myownvpn.ovpn`, `myownvpnsetup`, per-provider `*setup` files, and 6,224 bundled `.ovpn` configs wired to `auth-user-pass ../Own_VPN_Config/<provider>auth.txt`): https://github.com/WMAL/kodachios
 - DistroWatch — release listing, ISO sizes, SHA512, creds: https://distrowatch.com/10317
 - HandWiki — *Software:Linux Kodachi* version history (Mint → Debian 9.5 → Ubuntu 20.04 → Xubuntu 18 → Debian 13): https://handwiki.org/wiki/Software:Linux_Kodachi
 - LinuxInsider — *Kodachi Builds Privacy Tunnel for Linux* (5.6 = Debian 9.5 / Xubuntu 18.04): https://www.linuxinsider.com/story/kodachi-builds-privacy-tunnel-for-linux-85762.html
