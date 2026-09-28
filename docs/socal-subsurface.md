@@ -16,14 +16,46 @@ windows for HUD, layers, dossier and a plan-view minimap.
 
 | Layer | Contents |
 | --- | --- |
-| Terrain | Generalized relief shell for the transect: Sierra south, Tehachapi, San Gabriel/San Bernardino/San Jacinto, Mojave block, Peninsular ranges, LA Basin, San Joaquin floor, Salton Trough, Pacific shelf |
-| Aqueducts | Colorado River Aqueduct (MWD), California Aqueduct / SWP East + West Branch (DWR), Los Angeles Aqueduct (LADWP) |
+| Terrain | Generalized relief shell for the transect: Sierra south, Tehachapi, San Gabriel/San Bernardino/San Jacinto, Mojave block, Peninsular ranges, LA Basin, San Joaquin floor, Salton Trough, Pacific shelf; now extended north to the Long Valley caldera, Mammoth, Mono Basin and Bodie Hills |
+| Aqueducts | Colorado River Aqueduct (MWD), California Aqueduct / SWP East + West Branch (DWR), Los Angeles Aqueduct (LADWP), Silverwood Lake / San Bernardino Tunnel |
 | Refined products | CALNEV Colton → Las Vegas (14"/8", Kinder Morgan) plus the ~55 mi Edwards AFB lateral; SFPP North Line out of Watson/Carson |
-| Crude + gas | San Joaquin heavy-crude trunk (Kern → LA refineries); SoCalGas Topock → basin backbone |
-| Rail | Union Pacific LA Sub / ex-LA&SL over Cajon; BNSF Southern Transcon (ex-Santa Fe); Southern Pacific lineage over the Tehachapi Loop |
-| Power | Salton Sea Geothermal Field (CalEnergy, ~340–400 MW, the lithium brine), Coso at China Lake, IID collection corridor, Salton Buttes heat source |
-| Sites | Ducommun (1849 — oldest continuously operating business in California), El Mirage Dry Lake (the *Con Air* "Lerner Airfield" set), Kern River Oil Field (1899, Bakersfield), Midway-Sunset / Lakeview Gusher |
+| Crude + gas | San Joaquin heavy-crude trunk (Kern → LA refineries); SoCalGas Topock → basin backbone; Las Flores / Gaviota crude pipeline context |
+| Rail | Union Pacific LA Sub / ex-LA&SL over Cajon; BNSF Southern Transcon (ex-Santa Fe); Southern Pacific lineage over the Tehachapi Loop; BNSF Cushenbury Branch; Carson & Colorado / SP narrow gauge; Bodie Railway & Lumber Co. |
+| Power | Salton Sea Geothermal Field (CalEnergy, ~340–400 MW, the lithium brine), Coso at China Lake, IID collection corridor, Salton Buttes heat source, Big/Little Caliente, Sespe, Long Valley / Casa Diablo |
+| Sites | Ducommun (1849 — oldest continuously operating business in California), El Mirage Dry Lake (the *Con Air* "Lerner Airfield" set), Kern River Oil Field (1899, Bakersfield), Midway-Sunset / Lakeview Gusher, Knapp's Castle, Solvang, Mammoth Mountain Resort, Bodie / Mono Mills |
 | Bases | Edwards AFB, Fort Irwin NTC, NAWS China Lake, MCAGCC Twentynine Palms |
+| Trails | Pacific Crest Trail now drawn north to the Yosemite edge; John Muir Trail generalized from Happy Isles to Mount Whitney |
+| Roads | Silverwood → Arrowhead / Arrowbear / Big Bear backside → Lucerne Valley → US 395 → Mammoth / June Lake / Mono Lake / Bodie; June Lake Loop; Rim of the World / backside route |
+| Aviation | San Bernardino International, Big Bear City, Mammoth Yosemite, Eastern Sierra Regional, Victorville SCLA, Apple Valley, Hesperia, and Mountains Community Hospital Heliport |
+| Harbors | Port of Los Angeles, Port of Long Beach, Port Hueneme, Santa Barbara Harbor |
+| Offshore | THUMS Islands; Platform Holly; Santa Ynez Unit platforms Hondo / Harmony / Heritage; Point Arguello platforms Hidalgo / Harvest / Hermosa; subsea gathering lines and Line 901/903 / Las Flores pipeline context |
+| Industry | Mitsubishi Cement's Cushenbury plant and its rail-served limestone / cement backside to Big Bear |
+
+
+## September 2026 north-and-offshore extension
+
+This pass widened the theater from a Southern California basin plate to a basin +
+Eastern Sierra + Santa Barbara Channel plate. The frame now reaches Bodie and
+Mono Lake, so the former JMT off-frame entry was removed and the JMT itself is
+drawn as a generalized Yosemite-to-Whitney trace.
+
+New reading lines and sites:
+
+- `silverwood-bodie-route`: a field route, not an engineered utility line, from
+  Silverwood Lake through Arrowhead, Arrowbear, Big Bear's backside, the
+  Cushenbury cement works, US 395, Mammoth, June Lake, Mono Lake and Bodie.
+- `bnsf-cushenbury-branch`: the rail spur that makes Mitsubishi Cement legible
+  as a bulk-material plant rather than just a dot on SR 18.
+- `june-lake-loop`: the SR 158 resort loop under Carson Peak.
+- `carson-colorado` and `bodie-mono-mills-rail`: the two narrow-gauge stories
+  that explain why Bodie needed a timber railroad and why Owens Valley had a
+  separate rail economy.
+- `syu-offshore-gathering`, `point-arguello-gathering`, `lasflores-901-903`,
+  and `thums-harbor-oil`: offshore steel tied to onshore pipes and ports.
+
+The same warning applies more strongly offshore: platform and pipeline traces
+are schematic register lines. They are not navigation, survey, lease-boundary or
+excavation data.
 
 ## Controls
 

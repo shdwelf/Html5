@@ -277,22 +277,52 @@ If any of those resolve, the fix is a one-line tier change from `context` to
 
 ## 7b. Trails and springs added in this pass
 
-- **Pacific Crest National Scenic Trail** — 2,650 mi total; roughly 604 km of
-  generalized centerline drawn here, Campo to the southern Sierra. It crosses
+- **Pacific Crest National Scenic Trail** — 2,650 mi total; roughly 805 km of
+  generalized centerline drawn here, Campo to the Yosemite edge. It crosses
   Cajon Pass at grade and goes under I-15, the same notch as two railroads, the
   CALNEV stem, the Edwards fuel lateral, a gas transmission line and the SWP
   East Branch, and it tops Vincent Gap and Mount Baden-Powell above the Big Horn
   Mine. Live crossing analysis puts **~107 km of the in-frame PCT inside
   historical fire perimeters**: Bobcat 32 km, Old 16, Station 16, Cedar 16,
   Blue Cut 12, Lake 9, Pilot 6.
-- **John Muir Trail** — only the final descent to the Whitney summit terminus
-  falls inside the frame; the other ~200 miles are in the off-frame register.
+- **John Muir Trail** — now drawn as a generalized Happy Isles → Mount Whitney
+  trace after the frame was expanded north to the Mammoth / Mono / Bodie country.
 - **Big Caliente Hot Springs** (34.5392 N, 119.5646 W, ~115 °F source, Los
   Padres NF, Santa Barbara RD), **Little Caliente** (4.8 mi north, ~105 °F) and
   **Sespe Hot Springs**. Filed in the `power` layer next to Salton Sea and Coso
   deliberately, because the contrast is the lesson: Salton and Coso are magmatic
   heat, Caliente and Sespe are meteoric water circulating deep along Transverse
   Range faults and coming back up warm. Same symbol, different engine.
+
+---
+
+## 7c. North-and-offshore extension: Mammoth to Bodie, Big Bear backside, ports and platforms
+
+The frame now extends to 38.35°N. That pulls in Long Valley, Mammoth Mountain,
+June Lake, Mono Lake and Bodie instead of treating them as off-map references.
+The synthetic terrain received four new control features: Eastern Sierra
+escarpment, Long Valley caldera floor, Mono Basin and Bodie Hills. A smaller
+control feature lifts the Big Bear / Arrowhead plateau so the resort lakes read
+above the Lucerne Valley cement plant rather than beside it.
+
+New schematic linework:
+
+| id | type | reason |
+| --- | --- | --- |
+| `silverwood-bodie-route` | road / field route | connective reading line from SWP water at Silverwood to Arrowhead, Arrowbear, Big Bear, Cushenbury, US 395, Mammoth, June Lake, Mono Lake and Bodie |
+| `rim-of-world-backside` | road | the resort ridge and its desert service side |
+| `june-lake-loop` | road | SR 158 resort basin loop |
+| `bnsf-cushenbury-branch` | rail | Mitsubishi Cement is rail-served bulk industry, not just a highway plant |
+| `carson-colorado` | rail, historic | Owens Valley narrow-gauge economy |
+| `bodie-mono-mills-rail` | rail, historic | Bodie's timber supply machine |
+| `syu-offshore-gathering` | subsea oil/gas | Hondo, Harmony, Heritage to Las Flores Canyon |
+| `point-arguello-gathering` | subsea oil/gas | Hidalgo, Harvest, Hermosa to Gaviota |
+| `lasflores-901-903` | crude pipeline | onshore line whose shutdown stranded offshore production after Refugio |
+| `thums-harbor-oil` | harbor oil | Long Beach artificial oil islands as civic disguise for derricks |
+
+The offshore platform coordinates are platform-head points from BOEM / BSEE and
+state platform registers where available; linework is intentionally schematic.
+It is a land-use register, not a navigation chart.
 
 ---
 

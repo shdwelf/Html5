@@ -387,18 +387,6 @@ export const EXTRA_NODES = [
  */
 export const OFF_FRAME = [
   {
-    id: "jmt-north",
-    name: "John Muir Trail — Happy Isles to Forester Pass (off-frame north)",
-    lon: -119.5583,
-    lat: 37.7325,
-    facts: [
-      "The other ~200 miles of the JMT: Happy Isles in Yosemite Valley, Donohue Pass, Thousand Island Lake, Silver Pass, Muir Pass, the Evolution Basin, Mather, Pinchot, Glen and Forester — the highest pass on the PCT at 13,153 ft.",
-      "This frame ends at 36.75°N, so only the final descent to Whitney is drawn. The southern terminus IS in frame.",
-      "Shares tread with the PCT for roughly 170 miles.",
-    ],
-    sources: ["NPS Yosemite / Sequoia–Kings Canyon trail records", "USFS Inyo & Sierra National Forests"],
-  },
-  {
     id: "valley-of-fires-nm",
     name: "Valley of Fires Recreation Area, New Mexico",
     lon: -105.9236,

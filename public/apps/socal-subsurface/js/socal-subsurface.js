@@ -204,6 +204,8 @@ function corridorRadius(item) {
   if (item.layer === "water") return 0.16;
   if (item.layer === "rail") return 0.11;
   if (item.layer === "trails") return 0.05;
+  if (item.layer === "roads") return 0.07;
+  if (item.layer === "offshore") return 0.085;
   return 0.1;
 }
 
@@ -260,6 +262,44 @@ for (const item of CORRIDORS) {
 
 /* ------------------------------------------------------------------ nodes */
 
+
+function nodeHeadGeometry(kind) {
+  switch (kind) {
+    case "geothermal":
+      return new THREE.OctahedronGeometry(0.2);
+    case "oil":
+      return new THREE.ConeGeometry(0.17, 0.34, 5);
+    case "platform":
+      return new THREE.CylinderGeometry(0.16, 0.11, 0.42, 4);
+    case "airport":
+      return new THREE.BoxGeometry(0.42, 0.075, 0.18);
+    case "heliport":
+      return new THREE.TorusGeometry(0.17, 0.03, 8, 24).rotateX(Math.PI / 2);
+    case "harbor":
+      return new THREE.TorusKnotGeometry(0.12, 0.035, 40, 6);
+    case "factory":
+      return new THREE.BoxGeometry(0.26, 0.26, 0.26);
+    case "resort":
+      return new THREE.IcosahedronGeometry(0.18, 0);
+    case "lake":
+      return new THREE.SphereGeometry(0.18, 12, 8).scale(1.25, 0.65, 1.25);
+    case "base":
+      return new THREE.BoxGeometry(0.26, 0.26, 0.26);
+    case "first":
+      return new THREE.TorusKnotGeometry(0.13, 0.045, 48, 8);
+    case "mine":
+      return new THREE.TetrahedronGeometry(0.21);
+    case "ghost":
+      return new THREE.DodecahedronGeometry(0.17);
+    case "rcs":
+      return new THREE.TorusGeometry(0.16, 0.035, 8, 20).rotateX(Math.PI / 2);
+    case "memory":
+      return new THREE.OctahedronGeometry(0.16, 0);
+    default:
+      return new THREE.SphereGeometry(0.17, 14, 10);
+  }
+}
+
 const nodeMeshes = [];
 
 for (const node of NODES) {
@@ -279,24 +319,7 @@ for (const node of NODES) {
   mast.position.y = 0.45;
   g.add(mast);
 
-  const headGeo =
-    node.kind === "geothermal"
-      ? new THREE.OctahedronGeometry(0.2)
-      : node.kind === "oil"
-        ? new THREE.ConeGeometry(0.17, 0.34, 5)
-        : node.kind === "base"
-          ? new THREE.BoxGeometry(0.26, 0.26, 0.26)
-          : node.kind === "first"
-            ? new THREE.TorusKnotGeometry(0.13, 0.045, 48, 8)
-            : node.kind === "mine"
-              ? new THREE.TetrahedronGeometry(0.21)
-              : node.kind === "ghost"
-                ? new THREE.DodecahedronGeometry(0.17)
-                : node.kind === "rcs"
-                  ? new THREE.TorusGeometry(0.16, 0.035, 8, 20).rotateX(Math.PI / 2)
-                  : node.kind === "memory"
-                    ? new THREE.OctahedronGeometry(0.16, 0)
-                    : new THREE.SphereGeometry(0.17, 14, 10);
+  const headGeo = nodeHeadGeometry(node.kind);
   const head = new THREE.Mesh(
     headGeo,
     new THREE.MeshStandardMaterial({ color, emissive: color.clone().multiplyScalar(0.45), roughness: 0.35, metalness: 0.2 }),
