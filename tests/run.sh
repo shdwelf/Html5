@@ -128,6 +128,10 @@ node tests/12-globe-wasm.mjs || status=1
 echo "──────────────────────────────────────────────"
 node tests/13-makint.mjs || status=1
 
+# Helios Observatory: catalog, Kepler propagation, stream and sharing contracts.
+echo "──────────────────────────────────────────────"
+node tests/18-astronomy.mjs || status=1
+
 echo "──────────────────────────────────────────────"
 [ "$status" -eq 0 ] && echo "all suites passed" || echo "FAILURES — see above"
 exit "$status"
