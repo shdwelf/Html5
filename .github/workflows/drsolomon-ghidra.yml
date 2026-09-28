@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
@@ -32,13 +32,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/drsolomon"
-          curl -fL --retry 6 --retry-all-errors --connect-timeout 30 \
-            'https://archive.org/download/dr-solomon/DrSolomon.iso' \
-            -o "$RUNNER_TEMP/DrSolomon.iso"
-          python3 tools/drsolomon_extract.py \
-            "$RUNNER_TEMP/DrSolomon.iso" "$RUNNER_TEMP/drsolomon" \
-            | tee "$RUNNER_TEMP/drsolomon/extract.log"
+          root="$RUNNER_TEMP/drsolomon"
+          mkdir -p "$root"
+          log="$root/extract.log"
+          if ! {
+            curl -fL --retry 6 --retry-all-errors --connect-timeout 30 \
+              'https://archive.org/download/dr-solomon/DrSolomon.iso' \
+              -o "$RUNNER_TEMP/DrSolomon.iso"
+            stat -c 'downloaded bytes=%s' "$RUNNER_TEMP/DrSolomon.iso"
+            md5sum "$RUNNER_TEMP/DrSolomon.iso"
+            sha1sum "$RUNNER_TEMP/DrSolomon.iso"
+            python3 tools/drsolomon_extract.py \
+              "$RUNNER_TEMP/DrSolomon.iso" "$root"
+          } >"$log" 2>&1; then
+            cat "$log"
+            message=$(tail -n 80 "$log" | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+            echo "::error title=Dr Solomon extraction failed::$message"
+            exit 1
+          fi
+          cat "$log"
 
       - name: Install pinned official Ghidra release
         shell: bash
