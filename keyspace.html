@@ -18,7 +18,7 @@
   <header class="topbar">
     <div>
       <h1>Keyspace Viewer</h1>
-      <p>1 parallel · 2 avalanche · 3 fiber · 4 Gray · 5 cube</p>
+      <p>1 parallel · 2 avalanche · 3 fiber · 4 Gray · 5 cube · 6 statistics</p>
     </div>
     <div style="display:flex;align-items:center;gap:8px;pointer-events:auto">
       <a href="./index.html#studio" target="_top" style="color:#8eacff;font-size:10px;letter-spacing:.12em;text-decoration:none;border:1px solid rgba(142,172,255,.35);padding:8px 10px;border-radius:8px">ART STUDIO</a>
@@ -58,7 +58,7 @@
 
       <div class="pager">
         <button class="act" id="mathPrev" type="button">Back</button>
-        <span id="mathPos">1 / 5</span>
+        <span id="mathPos">1 / 6</span>
         <button class="act" id="mathNext" type="button">Next</button>
       </div>
 
@@ -101,7 +101,26 @@
       <p class="legend" id="cubeNote">A real face of C: first n entropy bits. Remaining bits still live in the vertex.</p>
       </section>
 
-      <h2 class="step">6 · CSPRNG / dice</h2>
+      <section class="math-step" data-math="6">
+      <h2 class="step">6 · Statistical diagnostics</h2>
+      <div class="seg" id="statsSeg" role="tablist" aria-label="Statistical view">
+        <button type="button" class="seg-btn on" data-stats="nibbles">Nibble histogram</button>
+        <button type="button" class="seg-btn" data-stats="runs">Bit runs</button>
+        <button type="button" class="seg-btn" data-stats="correlation">Autocorrelation</button>
+      </div>
+      <canvas id="statsPlot" class="plot" width="360" height="200" aria-label="Entropy statistical diagnostic"></canvas>
+      <div class="stat-grid">
+        <div><span>ones</span><b id="statBalance">—</b></div>
+        <div><span>runs</span><b id="statRuns">—</b></div>
+        <div><span>longest</span><b id="statLongest">—</b></div>
+        <div><span>byte H</span><b id="statByteH">—</b></div>
+        <div><span>unique bytes</span><b id="statUnique">—</b></div>
+        <div><span>word σ</span><b id="statWordSigma">—</b></div>
+      </div>
+      <p class="legend" id="statsNote">Descriptive only. A single BIP-39 entropy sample is too short to certify randomness.</p>
+      </section>
+
+      <h2 class="step">7 · CSPRNG / dice</h2>
       <div class="onair" id="onair"><span class="dot"></span> ON AIR · peek only — not the seed</div>
       <div class="seg" id="srcSeg">
         <button type="button" class="seg-btn" data-src="dice6">Dice 1–6</button>
@@ -115,7 +134,7 @@
         <button class="act" id="commitRolls" type="button">Commit rolls → phrase</button>
       </div>
 
-      <h2 class="step">7 · Hole plates</h2>
+      <h2 class="step">8 · Hole plates</h2>
       <div id="holes" class="holes" aria-label="11-bit hole plates"></div>
       <div class="decode-row">
         <div id="decodePips" class="pips decode"></div>
@@ -128,7 +147,7 @@
       <input type="search" id="lexQ" placeholder="search word, prefix, or index" />
       <div id="lex" class="lex"></div>
 
-      <h2 class="step">8 · Hilbert / Morton</h2>
+      <h2 class="step">9 · Hilbert / Morton</h2>
       <div class="seg" id="curveSeg">
         <button type="button" class="seg-btn on" data-curve="hilbert">Hilbert</button>
         <button type="button" class="seg-btn" data-curve="morton">Morton / Z</button>
@@ -136,19 +155,75 @@
       <canvas id="slice" class="slice" width="256" height="256" aria-label="Space-filling keyspace slice"></canvas>
       <p class="legend" id="sliceNote">Top 14 entropy bits. The cell is still 2ⁿ⁻¹⁴ keys.</p>
 
-      <h2 class="step">9 · Bit plane + tape</h2>
+      <h2 class="step">10 · Bit plane + tape</h2>
       <canvas id="bits" class="bitplane" width="256" height="128" aria-label="Entropy and checksum bits"></canvas>
       <div class="tape-wrap"><table class="tape" id="tape"></table></div>
       <div class="scale" id="scale"></div>
       <p class="legend" id="scaleNote"></p>
 
-      <h2 class="step">10 · Word embedding</h2>
+      <h2 class="step">11 · Word embedding</h2>
       <div class="seg" id="embedSeg" role="tablist">
         <button type="button" class="seg-btn on" data-embed="scatter">WASM scatter</button>
         <button type="button" class="seg-btn" data-embed="fibonacci">Fibonacci sphere</button>
         <button type="button" class="seg-btn" data-embed="polar">11-bit polar</button>
       </div>
       <p class="legend" id="embedNote">Random mixer — nearby indices are not nearby in space.</p>
+
+      <h2 class="step">12 · Seed haiku identity</h2>
+      <div class="seed-identity">
+        <canvas id="seedEnso" width="320" height="320" aria-label="Deterministic ensō fingerprint for the loaded entropy"></canvas>
+        <div id="haiku" class="haiku" aria-live="polite">
+          <div class="haiku-line"><b>—</b><span>Load a valid phrase</span></div>
+          <div class="haiku-line"><b>—</b><span>to fold its words into</span></div>
+          <div class="haiku-line"><b>—</b><span>a seed-linked poem</span></div>
+        </div>
+        <div class="row">
+          <button class="act" id="copyHaiku" type="button">Copy poem</button>
+          <button class="act" id="saveEnso" type="button">Save ensō</button>
+        </div>
+        <p class="legend" id="haikuNote">Local-only presentation layer. Syllable counts are heuristic; the ensō is a deterministic visual fingerprint, not a key or proof.</p>
+        <div class="enso-id" id="ensoId">EN—</div>
+      </div>
+
+      <h2 class="step">13 · Wallet derivatives</h2>
+      <div class="wallet-panel">
+        <p class="legend wallet-warning">Educational, local-only Bitcoin derivation. Never paste a mnemonic that protects real funds into a web page.</p>
+        <label for="walletPass">BIP-39 passphrase</label>
+        <input id="walletPass" type="password" autocomplete="new-password" spellcheck="false" placeholder="optional · never stored" />
+        <div class="row">
+          <button class="act" id="deriveWallet" type="button">Derive wallet</button>
+          <button class="act" id="revealWallet" type="button" aria-pressed="false" disabled>Reveal secrets</button>
+          <button class="act" id="clearWallet" type="button" disabled>Clear</button>
+        </div>
+        <div id="walletStatus" class="legend">Derivation is explicit and only accepts standard 12/15/18/21/24-word phrases with valid checksums.</div>
+        <label for="topCoin">Top 50 asset address</label>
+        <div class="row">
+          <select id="topCoin" disabled><option>Loading registry…</option></select>
+          <button class="act" id="deriveTopCoin" type="button" disabled>Derive selected</button>
+        </div>
+        <p id="topCoinNote" class="legend">Market-rank snapshot · supported chains derive locally; unsupported chains explain why.</p>
+        <div id="topCoinOutput" class="top-coin-output" hidden>
+          <div class="wallet-kv"><span id="topCoinLabel">Selected asset</span><code id="topCoinPath">—</code></div>
+          <div class="wallet-kv"><span>Address</span><code id="topCoinAddress">—</code></div>
+          <div class="wallet-kv"><span>Public key</span><code id="topCoinPublic">—</code></div>
+        </div>
+        <div id="walletOutput" hidden>
+          <div class="wallet-kv"><span>Seed · 512-bit</span><code id="walletSeed" class="wallet-secret">—</code></div>
+          <div class="wallet-kv"><span>Root xprv</span><code id="walletRoot" class="wallet-secret">—</code></div>
+          <div class="seg" id="walletScheme" role="tablist" aria-label="Bitcoin derivation scheme">
+            <button type="button" class="seg-btn" data-wallet-scheme="44">BIP-44</button>
+            <button type="button" class="seg-btn" data-wallet-scheme="49">BIP-49</button>
+            <button type="button" class="seg-btn on" data-wallet-scheme="84">BIP-84</button>
+          </div>
+          <div class="wallet-kv"><span id="walletAccountLabel">Account zpub</span><code id="walletAccount">—</code></div>
+          <div class="wallet-table-wrap">
+            <table class="wallet-table">
+              <thead><tr><th>Path</th><th>Address</th><th>WIF</th></tr></thead>
+              <tbody id="walletRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
       <div class="metric-grid">
         <div class="metric"><span>Wordlist</span><b id="wl">—</b></div>

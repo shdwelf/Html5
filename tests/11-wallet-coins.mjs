@@ -27,6 +27,7 @@ const E = await import("../js/ed25519.js");
 const B = await import("../js/bip32.js");
 const A = await import("../js/addrs.js");
 const W = await import("../js/coins.js");
+const D = await import("../js/wallet-derivatives.js");
 const s = suite("11 · wallet stack + top-500 registry");
 
 const hex = (b) => Buffer.from(b).toString("hex");
@@ -268,6 +269,65 @@ const coins = REG.assets;
   s.eq("[S] NEAR = pub hex", rnear.address, rnear.pubkeyHex);
   // Purpose overrides re-encode the same key across script families.
   s.eq("override keeps path", btc({ purpose: 44 }).path, "m/44'/0'/0'/0/0");
+}
+
+// ------------------------------------------- [P/S] Keyspace wallet derivatives
+
+{
+  const wallet = D.deriveBitcoinWallet(ABANDON, "", 5);
+  s.ok("viewer root private serialization", wallet.rootPrivate.startsWith("xprv"));
+  s.ok("viewer account public prefixes",
+    wallet.schemes[44].accountPublic.startsWith("xpub") &&
+    wallet.schemes[49].accountPublic.startsWith("ypub") &&
+    wallet.schemes[84].accountPublic.startsWith("zpub"));
+  s.eq("viewer BIP-44 first address", wallet.schemes[44].rows[0].address, "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA");
+  s.eq("viewer BIP-49 first address", wallet.schemes[49].rows[0].address, "37VucYSaXLCAsxYyAPfbSi9eh4iEcbShgf");
+  s.eq("viewer BIP-84 first address", wallet.schemes[84].rows[0].address, "bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu");
+  const wif = C.base58CheckDecode(wallet.schemes[84].rows[0].wif);
+  s.eq("viewer WIF mainnet version", wif[0], 0x80);
+  s.eq("viewer WIF compressed marker", wif[33], 0x01);
+  s.eq("viewer WIF controls displayed address",
+    A.p2wpkhAddr(T.compress(T.privToPoint(wif.subarray(1, 33))), "BTC"),
+    wallet.schemes[84].rows[0].address);
+  let badWif = false;
+  try { D.privateKeyToWif(new Uint8Array(31)); } catch { badWif = true; }
+  s.ok("viewer WIF rejects a non-32-byte key", badWif);
+
+  const viewerHtml = readFileSync(join(ROOT, "keyspace.html"), "utf8");
+  const viewerJs = readFileSync(join(ROOT, "js", "viewer.js"), "utf8");
+  const viewerCss = readFileSync(join(ROOT, "css", "viewer.css"), "utf8");
+  s.ok("viewer seed and root are secret-classed",
+    /id="walletSeed" class="wallet-secret"/.test(viewerHtml) &&
+    /id="walletRoot" class="wallet-secret"/.test(viewerHtml));
+  s.ok("viewer WIF cells are secret-classed", /class="wallet-secret">\$\{row\.wif\}/.test(viewerJs));
+  s.ok("viewer secrets blur until explicit reveal",
+    /\.wallet-secret\s*\{[^}]*filter:\s*blur\(6px\)/s.test(viewerCss) &&
+    /\.wallet-revealed \.wallet-secret\s*\{[^}]*filter:\s*none/s.test(viewerCss));
+
+  const top50 = coins.slice(0, 50);
+  s.eq("viewer top-50 registry rows", top50.length, 50);
+  s.eq("viewer top-50 derivable rows", top50.filter((coin) => coin.derive).length, 40);
+  s.ok("viewer unsupported top-50 rows explain why",
+    top50.filter((coin) => !coin.derive).every((coin) => Boolean(coin.reason)));
+  const families = new Map();
+  for (const coin of top50.filter((item) => item.derive)) {
+    const key = `${coin.family}|${coin.chain}|${coin.path}`;
+    if (!families.has(key)) families.set(key, coin);
+  }
+  let cleanTop50 = true;
+  for (const coin of families.values()) {
+    const result = W.deriveCoin(top50, ABANDON, { id: coin.id });
+    if (!result.address || result.path !== coin.path || !result.pubkeyHex || "priv" in result || "wif" in result)
+      cleanTop50 = false;
+  }
+  s.ok("every distinct supported top-50 chain/path derives public output only", cleanTop50,
+    `${families.size} distinct chain/path families`);
+  const eth50 = W.deriveCoin(top50, ABANDON, { id: "eth-ethereum" });
+  const usdt50 = W.deriveCoin(top50, ABANDON, { id: "usdt-tether" });
+  s.eq("host-chain token reuses its EVM address", usdt50.address, eth50.address);
+  s.ok("viewer has top-50 selector contract",
+    /id="topCoin"/.test(viewerHtml) && /id="deriveTopCoin"/.test(viewerHtml) &&
+    /slice\(0, 50\)/.test(viewerJs));
 }
 
 process.exit(s.done() ? 1 : 0);

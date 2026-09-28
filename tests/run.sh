@@ -53,6 +53,12 @@ run_stale tests/07-browser.mjs "$KEYSPACE_URL" || status=1
 echo "──────────────────────────────────────────────"
 node tests/08-syllables.mjs || status=1
 
+echo "──────────────────────────────────────────────"
+node tests/16-key-stats.mjs || status=1
+
+echo "──────────────────────────────────────────────"
+node tests/17-primes.mjs || status=1
+
 # The wasm binary is committed; this only checks it is what the .wat assembles
 # to. Exits 0 with a SKIPPED note when wabt is not installed.
 echo "──────────────────────────────────────────────"
@@ -121,6 +127,10 @@ node tests/12-globe-wasm.mjs || status=1
 # The MAKInterface / :CueCat / Clik! port bench: pure models, no browser.
 echo "──────────────────────────────────────────────"
 node tests/13-makint.mjs || status=1
+
+# Helios Observatory: catalog, Kepler propagation, stream and sharing contracts.
+echo "──────────────────────────────────────────────"
+node tests/18-astronomy.mjs || status=1
 
 echo "──────────────────────────────────────────────"
 [ "$status" -eq 0 ] && echo "all suites passed" || echo "FAILURES — see above"

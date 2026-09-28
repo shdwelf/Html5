@@ -39,4 +39,17 @@ assert.deepEqual(overflow.counts, [5, 7, 6]);
 assert.equal(overflow.lines.flat().length, 18, "greedy split must never discard overflow words");
 assert.equal(overflow.isHaiku, false, "5-7-6 must fail strict validation");
 
+// The Keyspace Viewer also uses the existing ensō codec as a deterministic,
+// local-only visual identity for a valid entropy value.
+const ensoSource = await readFile(new URL("../js/enso-id.js", import.meta.url), "utf8");
+const enso = await import(`data:text/javascript;base64,${Buffer.from(ensoSource).toString("base64")}`);
+const artA = enso.randomSettings(0x51eed123);
+const artB = enso.randomSettings(0x51eed123);
+assert.deepEqual(artA, artB, "the same entropy fingerprint must select the same brush settings");
+assert.equal(enso.encodeEnsoId(artA), enso.encodeEnsoId(artB), "the packed EN identity is stable");
+const artId = enso.encodeEnsoId(artA);
+assert.deepEqual(enso.decodeEnsoId(artId), artA, "packed EN identity round-trips");
+const wrongCheck = artId.slice(0, 2) + (artId[2] === "Z" ? "Y" : "Z") + artId.slice(3);
+assert.equal(enso.decodeEnsoId(wrongCheck), null, "the packed EN checksum rejects a corrupted identity");
+
 console.log("08-syllables: all assertions passed");

@@ -91,8 +91,10 @@ function parseInt36(str) {
 export function decodeEnsoId(id) {
   try {
     const m = String(id || "").trim().toUpperCase();
-    if (!m.startsWith("EN")) return null;
+    if (!m.startsWith("EN") || m.length < 4) return null;
     const body = m.slice(3);
+    const checksum = (hashStr(body) % 36).toString(36).toUpperCase();
+    if (m[2] !== checksum) return null;
     let acc = parseInt36(body);
     const out = {};
     for (let i = FIELDS.length - 1; i >= 0; i--) {

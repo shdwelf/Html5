@@ -40,6 +40,11 @@ import {
 } from "./mathvis.js";
 import { buildForm, FORMS } from "./forms3d.js";
 import { pathTemplate, PIPELINE } from "./hdtopo.js";
+import { greedy575 } from "./syllables.js";
+import { drawEnso, encodeEnsoId, hashStr, prettyId, randomSettings } from "./enso-id.js";
+import { deriveBitcoinWallet } from "./wallet-derivatives.js";
+import { deriveCoin } from "./coins.js";
+import { entropyStatistics } from "./key-stats.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
@@ -59,6 +64,13 @@ const state = {
   flipBit: 0,
   mathStep: 1,
   form: "hd",
+  wallet: null,
+  walletScheme: "84",
+  walletRevealed: false,
+  topCoins: [],
+  topCoinResult: null,
+  statsView: "nibbles",
+  statistics: null,
 };
 
 let formGroup = null;
@@ -360,8 +372,15 @@ function applyForm() {
         ? " PBKDF2-HMAC-SHA512 ×2048 → 512 bits = IL∥IR (shown as torus, not printed)."
         : name === "curve"
           ? " Real Weierstrass sketch y²=x³+7 — not secp256k1 / Fp."
-          : "";
-  if ($("formNote")) $("formNote").textContent = `${label}.${extra} Art only.`;
+          : name === "distribution"
+            ? " Sixteen measured nibble bins arranged as a skyline; height is observed count."
+            : name === "autocorrelation"
+              ? " Measured Pearson r for entropy-bit lags 1–32; radius and height encode sign and magnitude."
+              : "";
+  if ($("formNote")) {
+    const measured = name === "distribution" || name === "autocorrelation";
+    $("formNote").textContent = `${label}.${extra} ${measured ? "Measured descriptive layer; not a randomness test." : "Art only."}`;
+  }
 }
 
 function applyEmbedding() {
@@ -492,13 +511,13 @@ function renderTape(words, indices, checksumBits) {
 }
 
 function setMathStep(n) {
-  state.mathStep = Math.min(5, Math.max(1, n));
+  state.mathStep = Math.min(6, Math.max(1, n));
   document.querySelectorAll(".math-step").forEach((el) => {
     el.classList.toggle("on", Number(el.dataset.math) === state.mathStep);
   });
-  $("mathPos").textContent = `${state.mathStep} / 5`;
+  $("mathPos").textContent = `${state.mathStep} / 6`;
   $("mathPrev").disabled = state.mathStep <= 1;
-  $("mathNext").disabled = state.mathStep >= 5;
+  $("mathNext").disabled = state.mathStep >= 6;
   drawMath(state.analysis);
 }
 
@@ -622,12 +641,90 @@ function drawCube(entropy) {
   $("cubeNote").textContent = `Q_${n} face of C (first ${n} ENT bits). Vertex still contains 2^{ENT−${n}} keys.`;
 }
 
+function drawStatistics(analysis) {
+  const cv = $("statsPlot");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#05070c";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  if (!analysis?.entropy) {
+    state.statistics = null;
+    ["statBalance", "statRuns", "statLongest", "statByteH", "statUnique", "statWordSigma"]
+      .forEach((id) => { $(id).textContent = "—"; });
+    $("statsNote").textContent = "Load a phrase to measure its entropy bytes.";
+    return;
+  }
+
+  const stats = entropyStatistics(analysis.entropy, analysis.indices || []);
+  state.statistics = stats;
+  const W = cv.width, H = cv.height, pad = 24;
+  ctx.font = "10px ui-monospace, monospace";
+  ctx.textAlign = "center";
+
+  if (state.statsView === "nibbles") {
+    const max = Math.max(1, ...stats.nibbleHistogram);
+    const bw = (W - pad * 2) / 16;
+    stats.nibbleHistogram.forEach((count, i) => {
+      const h = (count / max) * (H - 54);
+      ctx.fillStyle = i % 2 ? "#3dffb0" : "#5ce1ff";
+      ctx.fillRect(pad + i * bw + 2, H - 24 - h, Math.max(2, bw - 4), h);
+      ctx.fillStyle = "#7790a5";
+      ctx.fillText(i.toString(16).toUpperCase(), pad + (i + 0.5) * bw, H - 8);
+    });
+    ctx.strokeStyle = "#ffb02088";
+    ctx.setLineDash([4, 4]);
+    const expectedY = H - 24 - ((analysis.entropy.length * 2 / 16) / max) * (H - 54);
+    ctx.beginPath(); ctx.moveTo(pad, expectedY); ctx.lineTo(W - pad, expectedY); ctx.stroke();
+    ctx.setLineDash([]);
+  } else if (state.statsView === "runs") {
+    const cols = 32, cell = (W - pad * 2) / cols;
+    stats.bits.forEach((bit, i) => {
+      const row = Math.floor(i / cols), col = i % cols;
+      const y = 14 + row * 20;
+      ctx.fillStyle = bit ? "#5ce1ff" : "#163246";
+      ctx.fillRect(pad + col * cell + 1, y, Math.max(2, cell - 2), 13);
+      if (i && bit !== stats.bits[i - 1]) {
+        ctx.fillStyle = "#ffb020";
+        ctx.fillRect(pad + col * cell, y, 1.5, 13);
+      }
+    });
+  } else {
+    const values = stats.autocorrelation;
+    const bw = (W - pad * 2) / Math.max(1, values.length);
+    const mid = H / 2;
+    ctx.strokeStyle = "#385066";
+    ctx.beginPath(); ctx.moveTo(pad, mid); ctx.lineTo(W - pad, mid); ctx.stroke();
+    values.forEach(({ lag, correlation }, i) => {
+      const h = correlation * (H * 0.38);
+      ctx.fillStyle = correlation >= 0 ? "#3dffb0" : "#ff5d6c";
+      ctx.fillRect(pad + i * bw + 1, h >= 0 ? mid - h : mid, Math.max(1, bw - 2), Math.abs(h));
+      if (lag === 1 || lag % 8 === 0) {
+        ctx.fillStyle = "#7790a5";
+        ctx.fillText(String(lag), pad + (i + 0.5) * bw, H - 7);
+      }
+    });
+  }
+
+  $("statBalance").textContent = `${(stats.balance * 100).toFixed(1)}%`;
+  $("statRuns").textContent = `${stats.runs} / ${stats.expectedRuns.toFixed(1)}`;
+  $("statLongest").textContent = String(stats.longestRun);
+  $("statByteH").textContent = `${stats.byteEntropy.toFixed(3)} / 8`;
+  $("statUnique").textContent = `${stats.uniqueBytes} / ${analysis.entropy.length}`;
+  $("statWordSigma").textContent = stats.wordStdDev.toFixed(1);
+  $("statsNote").textContent =
+    `Exploratory only: ${stats.bitCount} bits is too short for certification. ` +
+    `Monobit p≈${stats.monobitP.toFixed(3)} · runs p≈${stats.runsApplicable ? stats.runsP.toFixed(3) : "n/a (balance gate)"} · ` +
+    `nibble χ²=${stats.nibbleChiSquare.toFixed(2)} (15 df) · lag-1 word r=${stats.wordLag1.toFixed(3)}. ` +
+    `P-values are descriptive multiple looks, not evidence that a key is safe.`;
+}
+
 function drawMath(analysis) {
   const idxs = analysis?.indices || [];
   drawParallel(idxs);
   drawFiber(analysis?.checksumBits || 0, analysis?.checksumExpected);
   drawGray(idxs);
   drawCube(analysis?.entropy);
+  drawStatistics(analysis);
   const max = (analysis?.entropyBits || 128) - 1;
   $("flipBit").max = String(max);
 }
@@ -658,6 +755,200 @@ function renderScale(bits) {
   $("scaleNote").textContent = bits ? analogForBits(bits) : "";
 }
 
+function seedFingerprint(entropy) {
+  // FNV-1a through the existing ensō module. This only selects art parameters;
+  // it is deliberately not presented as a cryptographic identifier.
+  return hashStr(hex(entropy));
+}
+
+function renderSeedIdentity(words, analysis) {
+  const canvas = $("seedEnso");
+  const host = $("haiku");
+  const id = $("ensoId");
+  if (!canvas || !host || !id) return;
+
+  if (!analysis?.ok || !analysis.entropy) {
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.fillStyle = "#05070c";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    host.innerHTML = ["Load a valid phrase", "to fold its words into", "a seed-linked poem"]
+      .map((line) => `<div class="haiku-line"><b>—</b><span>${line}</span></div>`)
+      .join("");
+    id.textContent = "EN—";
+    $("haikuNote").textContent = "A valid checksum is required. Nothing in this section is sent or stored.";
+    return;
+  }
+
+  const poem = greedy575(words);
+  host.innerHTML = poem.lines
+    .map((line, i) => `<div class="haiku-line"><b>${poem.counts[i]}</b><span>${line.join(" ") || "—"}</span></div>`)
+    .join("");
+  const settings = randomSettings(seedFingerprint(analysis.entropy));
+  drawEnso(canvas, settings);
+  id.textContent = prettyId(encodeEnsoId(settings));
+  $("haikuNote").textContent = poem.isHaiku
+    ? "Exact 5–7–5 contiguous fold · deterministic entropy-linked ensō · local only."
+    : `${poem.counts.join("–")} greedy fold (not a strict 5–7–5 haiku) · deterministic entropy-linked ensō · local only.`;
+}
+
+function copyHaiku() {
+  const text = [...$("haiku").querySelectorAll(".haiku-line span")]
+    .map((line) => line.textContent)
+    .join("\n");
+  if (!text) return;
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+
+function saveEnso() {
+  const canvas = $("seedEnso");
+  if (!state.analysis?.ok || !canvas?.toDataURL) return;
+  const a = document.createElement("a");
+  a.download = `keyspace-enso-${$("ensoId").textContent.replace(/[^A-Z0-9]/gi, "").toLowerCase()}.png`;
+  a.href = canvas.toDataURL("image/png");
+  a.click();
+}
+
+function setWalletReveal(revealed) {
+  state.walletRevealed = Boolean(revealed && state.wallet);
+  $("walletOutput").classList.toggle("wallet-revealed", state.walletRevealed);
+  $("revealWallet").setAttribute("aria-pressed", String(state.walletRevealed));
+  $("revealWallet").textContent = state.walletRevealed ? "Hide secrets" : "Reveal secrets";
+}
+
+function renderWalletScheme() {
+  const derived = state.wallet?.schemes[state.walletScheme];
+  if (!derived) return;
+  $("walletAccountLabel").textContent = `Account ${derived.accountKind}`;
+  $("walletAccount").textContent = derived.accountPublic;
+  $("walletRows").innerHTML = derived.rows.map((row) =>
+    `<tr><td><code>${row.path}</code></td><td><code>${row.address}</code></td>` +
+    `<td><code class="wallet-secret">${row.wif}</code></td></tr>`
+  ).join("");
+}
+
+function clearTopCoin() {
+  state.topCoinResult = null;
+  $("topCoinOutput").hidden = true;
+  $("topCoinPath").textContent = "—";
+  $("topCoinAddress").textContent = "—";
+  $("topCoinPublic").textContent = "—";
+  if (!state.wallet) $("clearWallet").disabled = true;
+}
+
+function selectedTopCoin() {
+  return state.topCoins.find((coin) => coin.id === $("topCoin").value) || null;
+}
+
+function updateTopCoinSelection() {
+  clearTopCoin();
+  const coin = selectedTopCoin();
+  if (!coin) {
+    $("deriveTopCoin").disabled = true;
+    return;
+  }
+  $("deriveTopCoin").disabled = !coin.derive;
+  $("topCoinNote").textContent = coin.derive
+    ? `#${coin.rank} ${coin.name} · ${coin.chain} · ${coin.path} · local derivation available.`
+    : `#${coin.rank} ${coin.name} · unsupported: ${coin.reason}`;
+}
+
+async function loadTopCoins() {
+  try {
+    const response = await fetch("./config/coins-top500.json");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const registry = await response.json();
+    state.topCoins = (registry.assets || []).slice(0, 50);
+    const select = $("topCoin");
+    select.replaceChildren(...state.topCoins.map((coin) => {
+      const option = document.createElement("option");
+      option.value = coin.id;
+      option.textContent = `#${coin.rank} · ${coin.symbol} · ${coin.name}${coin.derive ? "" : " · unsupported"}`;
+      return option;
+    }));
+    select.disabled = false;
+    updateTopCoinSelection();
+  } catch (error) {
+    $("topCoin").replaceChildren(new Option("Registry unavailable"));
+    $("topCoinNote").textContent = `Could not load the offline coin registry: ${error.message || error}`;
+  }
+}
+
+async function deriveSelectedTopCoin() {
+  const coin = selectedTopCoin();
+  if (!coin?.derive) return;
+  if (!state.analysis?.ok || !state.analysis?.layout?.standard) {
+    $("topCoinNote").textContent = "Use a valid standard BIP-39 phrase first.";
+    return;
+  }
+  const button = $("deriveTopCoin");
+  button.disabled = true;
+  $("topCoinNote").textContent = `Deriving ${coin.symbol} locally…`;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  try {
+    const result = deriveCoin(state.topCoins, state.words.join(" "), { id: coin.id }, {
+      passphrase: $("walletPass").value,
+    });
+    state.topCoinResult = result;
+    $("topCoinLabel").textContent = `#${coin.rank} ${coin.symbol} · ${result.family || coin.family} · path`;
+    $("topCoinPath").textContent = result.path;
+    $("topCoinAddress").textContent = result.address;
+    $("topCoinPublic").textContent = result.pubkeyHex;
+    $("topCoinOutput").hidden = false;
+    $("clearWallet").disabled = false;
+    const hostNote = coin.type === "token" ? ` Token address uses its host chain ${coin.chain}.` : "";
+    $("topCoinNote").textContent = `Derived locally from the selected path.${hostNote} No private material is displayed or shared here.`;
+  } catch (error) {
+    clearTopCoin();
+    $("topCoinNote").textContent = `Derivation failed: ${error.message || error}`;
+  } finally {
+    button.disabled = !coin.derive;
+  }
+}
+
+function clearWallet(message = "Wallet derivatives cleared.", clearPassphrase = false) {
+  state.wallet = null;
+  clearTopCoin();
+  if (clearPassphrase) $("walletPass").value = "";
+  setWalletReveal(false);
+  $("walletSeed").textContent = "—";
+  $("walletRoot").textContent = "—";
+  $("walletAccount").textContent = "—";
+  $("walletRows").replaceChildren();
+  $("walletOutput").hidden = true;
+  $("revealWallet").disabled = true;
+  $("clearWallet").disabled = true;
+  $("walletStatus").textContent = message;
+}
+
+async function deriveWallet() {
+  const standard = state.analysis?.layout?.standard;
+  if (!state.analysis?.ok || !standard) {
+    clearWallet("Use a valid standard 12/15/18/21/24-word BIP-39 phrase first.");
+    return;
+  }
+  const button = $("deriveWallet");
+  button.disabled = true;
+  $("walletStatus").textContent = "Deriving PBKDF2 seed and 15 receive keys locally…";
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  try {
+    state.wallet = deriveBitcoinWallet(state.words.join(" "), $("walletPass").value, 5);
+    $("walletSeed").textContent = state.wallet.seedHex;
+    $("walletRoot").textContent = state.wallet.rootPrivate;
+    $("walletOutput").hidden = false;
+    $("revealWallet").disabled = false;
+    $("clearWallet").disabled = false;
+    setWalletReveal(false);
+    renderWalletScheme();
+    $("walletStatus").textContent = "Derived locally · private seed, xprv and WIF values are blurred by default · never shared.";
+  } catch (error) {
+    clearWallet(`Derivation failed: ${error.message || error}`);
+  } finally {
+    button.disabled = false;
+  }
+}
+
 function renderAnalysis(words, analysis) {
   $("chips").innerHTML = words
     .map((w, i) => {
@@ -665,6 +956,8 @@ function renderAnalysis(words, analysis) {
       return `<span class="chip ${last ? "cs" : ""}">${String(i + 1).padStart(2, "0")} ${w}</span>`;
     })
     .join("");
+
+  renderSeedIdentity(words, analysis);
 
   const status = $("status");
   if (!analysis) {
@@ -702,7 +995,9 @@ function renderAnalysis(words, analysis) {
 
 async function applyPhrase(text, { broadcast = false } = {}) {
   const words = parsePhrase(text);
-  $("phrase").value = words.join(" ");
+  const normalized = words.join(" ");
+  if ((state.wallet || state.topCoinResult) && normalized !== state.words.join(" ")) clearWallet("Phrase changed · derive again explicitly.", true);
+  $("phrase").value = normalized;
   state.words = words;
   if (!words.length) {
     state.analysis = null;
@@ -720,6 +1015,7 @@ async function applyPhrase(text, { broadcast = false } = {}) {
   const seed = analysis.entropy ?? new TextEncoder().encode(words.join(" "));
   const fieldN = isCoarse ? 2200 : 5000;
   makeField(state.engine.entropyField(seed, fieldN));
+  applyForm();
 
   if (broadcast && window.webxdc?.sendUpdate) {
     window.webxdc.sendUpdate(
@@ -787,6 +1083,7 @@ async function main() {
   updateRollNeed();
   paintDecode();
   renderLex("");
+  loadTopCoins();
   $("wl").textContent = `${WORDLIST.length}`;
   const sel = $("formSel");
   sel.innerHTML = FORMS.map((f) => `<option value="${f[0]}">${f[1]}</option>`).join("");
@@ -849,11 +1146,37 @@ async function main() {
     );
     drawCube(state.analysis?.entropy);
   });
+  $("statsSeg").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-stats]");
+    if (!btn) return;
+    state.statsView = btn.dataset.stats;
+    [...$("statsSeg").querySelectorAll(".seg-btn")].forEach((b) =>
+      b.classList.toggle("on", b === btn)
+    );
+    drawStatistics(state.analysis);
+  });
   setMathStep(1);
 
   $("apply").onclick = () => applyPhrase($("phrase").value);
   $("gen").onclick = generate;
   $("share").onclick = shareChat;
+  $("copyHaiku").onclick = copyHaiku;
+  $("saveEnso").onclick = saveEnso;
+  $("deriveWallet").onclick = deriveWallet;
+  $("revealWallet").onclick = () => setWalletReveal(!state.walletRevealed);
+  $("clearWallet").onclick = () => clearWallet("Wallet derivatives and passphrase cleared.", true);
+  $("deriveTopCoin").onclick = deriveSelectedTopCoin;
+  $("topCoin").addEventListener("change", updateTopCoinSelection);
+  $("walletPass").addEventListener("input", () => {
+    if (state.wallet || state.topCoinResult) clearWallet("Passphrase changed · derive again explicitly.");
+  });
+  $("walletScheme").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-wallet-scheme]");
+    if (!button) return;
+    state.walletScheme = button.dataset.walletScheme;
+    [...$("walletScheme").querySelectorAll(".seg-btn")].forEach((item) => item.classList.toggle("on", item === button));
+    renderWalletScheme();
+  });
   $("wc").onchange = () => {
     $("wcNote").textContent = `${$("wc").value} words → ${wordCountToEntropyBits(Number($("wc").value))} bits · checksum is not free entropy`;
     updateRollNeed();

@@ -68,6 +68,12 @@ URL fragment, so only a real browser can decrypt it. It runs anywhere
 playwright + chromium are installed (a laptop, a GitHub runner with the
 workflow permission).
 
+## Standalone viewers
+
+- **[Keyspace Viewer](keyspace.html)** — BIP-39 geometry, measured statistical layers, wallet derivatives, and keyspace projections.
+- **[Prime Viewer](prime.html)** — exact prime atlas, residue-class solar system, prime constellations, counting statistics, gaps, and integer inspection. See [PRIME.md](PRIME.md).
+- **[Helios Observatory](astronomy.html)** — time-propagated solar orrery, curated celestial catalog, Earth-centered NEO radar, and modeled meteor streams. See [ASTRONOMY.md](ASTRONOMY.md).
+
 ## Tools
 
 | Tab | Purpose |

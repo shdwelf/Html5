@@ -1,0 +1,23 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { ROOT } from "./lib.mjs";
+import { BODIES, METEOR_STREAMS, solveKepler, orbitalPosition, orbitPath, bodyById, daysSinceJ2000, J2000 } from "../js/astronomy.js";
+assert.ok(BODIES.length >= 25);
+assert.equal(new Set(BODIES.map(b=>b.id)).size,BODIES.length);
+assert.deepEqual(BODIES.filter(b=>b.kind==="planet").map(b=>b.name),["Mercury","Venus","Earth","Mars","Jupiter","Saturn","Uranus","Neptune"]);
+for(const b of BODIES){assert.ok(b.a>0&&b.e>=0&&b.e<1&&b.period>0,`${b.name} usable ellipse`);if(b.parent)assert.ok(bodyById(b.parent),`${b.name} parent exists`)}
+assert.ok(Math.abs(solveKepler(0,.9))<1e-12);
+const earth=bodyById("earth");
+const peri=orbitalPosition(earth,0,0),apo=orbitalPosition(earth,0,Math.PI);
+assert.ok(Math.abs(peri.r-earth.a*(1-earth.e))<1e-10);
+assert.ok(Math.abs(apo.r-earth.a*(1+earth.e))<1e-10);
+assert.equal(orbitPath(earth,64).length,65);
+assert.ok(Math.hypot(orbitPath(earth,64)[0].x-orbitPath(earth,64).at(-1).x,orbitPath(earth,64)[0].z-orbitPath(earth,64).at(-1).z)<1e-9);
+assert.equal(daysSinceJ2000(new Date(J2000)),0);
+assert.equal(METEOR_STREAMS.length,5);
+assert.ok(METEOR_STREAMS.every(s=>s.parent&&s.peak&&s.e>.8));
+const html=readFileSync(join(ROOT,"astronomy.html"),"utf8"),js=readFileSync(join(ROOT,"js/astronomy-viewer.js"),"utf8");
+for(const v of["orrery","radar","meteors"])assert.match(html,new RegExp(`data-view="${v}"`));
+assert.match(js,/type:"helios"/);assert.match(js,/setUpdateListener/);
+console.log("18-astronomy: all assertions passed");

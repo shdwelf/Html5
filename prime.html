@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#02040b" />
+  <title>Prime Viewer · Atlas, Orrery & Constellations</title>
+  <link rel="stylesheet" href="./css/prime.css" />
+  <link rel="icon" href="./icon.png" />
+  <script src="./webxdc.js"></script>
+</head>
+<body>
+  <canvas id="primeStage" aria-label="Interactive three-dimensional prime-number universe"></canvas>
+  <div class="nebula" aria-hidden="true"></div>
+
+  <header class="prime-topbar">
+    <div class="prime-brand">
+      <span class="prime-sigil">ℙ</span>
+      <div><h1>PRIME VIEWER</h1><p>ATLAS · ORRERY · CONSTELLATIONS</p></div>
+    </div>
+    <div class="prime-live"><i></i><span id="renderCount">—</span> bodies</div>
+    <nav>
+      <a href="./keyspace.html">KEYSPACE</a>
+      <a href="./index.html#grid" target="_top">SITE-K</a>
+    </nav>
+  </header>
+
+  <aside class="prime-panel" id="primePanel">
+    <button class="panel-toggle" id="panelToggle" type="button" aria-expanded="false">Prime observatory</button>
+    <div class="panel-scroll">
+      <section class="hero-copy">
+        <span class="eyebrow">THE MULTIPLICATIVE UNIVERSE</span>
+        <h2 id="viewTitle">Ulam Atlas</h2>
+        <p id="viewNote">Every luminous body is prime. Composite integers remain as gravitational absence.</p>
+      </section>
+
+      <div class="view-switch" id="viewSwitch" role="tablist" aria-label="Prime universe view">
+        <button class="on" type="button" data-view="atlas">Atlas</button>
+        <button type="button" data-view="solar">Solar system</button>
+        <button type="button" data-view="constellation">Constellations</button>
+      </div>
+
+      <label for="limit">Survey horizon <b id="limitLabel">10,000</b></label>
+      <input id="limit" type="range" min="100" max="100000" step="100" value="10000" />
+      <div class="quick-limits" id="quickLimits">
+        <button type="button" data-limit="1000">1K</button>
+        <button type="button" data-limit="10000" class="on">10K</button>
+        <button type="button" data-limit="50000">50K</button>
+        <button type="button" data-limit="100000">100K</button>
+      </div>
+
+      <div class="prime-actions">
+        <button id="rebuild" class="primary" type="button">Rebuild universe</button>
+        <button id="sharePrime" type="button">Share view</button>
+      </div>
+
+      <section class="inspect">
+        <label for="inspectNumber">Inspect an integer</label>
+        <div class="inspect-row">
+          <input id="inspectNumber" type="number" min="1" max="1000000000" value="97" inputmode="numeric" />
+          <button id="inspectBtn" type="button">Locate</button>
+        </div>
+        <div id="inspectResult" class="inspect-result">97 is prime · body #25</div>
+      </section>
+
+      <section class="metrics" aria-label="Prime statistics">
+        <div><span>π(N)</span><b id="statCount">—</b></div>
+        <div><span>density</span><b id="statDensity">—</b></div>
+        <div><span>N / ln N</span><b id="statEstimate">—</b></div>
+        <div><span>largest gap</span><b id="statGap">—</b></div>
+        <div><span>twin pairs</span><b id="statTwins">—</b></div>
+        <div><span>triplets</span><b id="statTriplets">—</b></div>
+      </section>
+
+      <section class="chart-card">
+        <div class="chart-head"><span id="chartTitle">Prime gaps</span><b id="chartMeta">—</b></div>
+        <canvas id="primeChart" width="380" height="170" aria-label="Prime statistical chart"></canvas>
+        <div class="chart-tabs" id="chartTabs">
+          <button type="button" class="on" data-chart="gaps">gaps</button>
+          <button type="button" data-chart="residues">wheel mod 30</button>
+          <button type="button" data-chart="counting">π(x)</button>
+        </div>
+      </section>
+
+      <section class="legend-card">
+        <h3>Reading the universe</h3>
+        <div class="legend-row"><i class="cyan"></i><span>ordinary prime body</span></div>
+        <div class="legend-row"><i class="gold"></i><span>selected / focus prime</span></div>
+        <div class="legend-row"><i class="rose"></i><span>twin-prime bond · gap 2</span></div>
+        <div class="legend-row"><i class="violet"></i><span>cousin / sexy-prime bond</span></div>
+        <p>Visual scale is transformed for legibility. Counts, gaps, residues, primality and factorizations are exact.</p>
+      </section>
+    </div>
+  </aside>
+
+  <div class="prime-caption" id="primeCaption">
+    <span>DRAG TO ORBIT · WHEEL TO TRAVEL</span>
+    <b id="focusReadout">FOCUS 97</b>
+  </div>
+
+  <script type="module" src="./js/prime-viewer.js"></script>
+</body>
+</html>
