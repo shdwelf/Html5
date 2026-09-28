@@ -1994,6 +1994,20 @@ const RECIPE_PACKS={
  'KEM → AEAD (ML-KEM)':[['mkkemFull',{}],['aesGCM',{mode:'encrypt'}]],
  'Keygen → Encrypt (AES)':[['keyRandom',{}],['aesGCM',{mode:'encrypt'}]],
  'Hash Collection':[['allhash',{}]],
+ 'IACR · Hash-based signature prehash':[['sha256',{}],['ed25519',{}]],
+ 'IACR · Post-quantum KEM lab (ML-KEM-768)':[['mkkemFull',{ver:'768',mode:'all'}]],
+ 'IACR · Post-quantum signature lab (ML-DSA)':[['mldsaCore',{msg:'IACR research watch'}]],
+ 'IACR · Authenticated envelope (AES-256-GCM)':[['aesGCM',{mode:'encrypt',pass:'change-this-password'}]],
+ 'IACR · Integrity tag (HMAC-SHA-256)':[['hmac',{key:'replace-with-a-random-key'}]],
+ 'Lecture Hall · F5 Black Hat 2016 Playfair layer':[['playfair',{key:'ITISARIDDLEWRAPPEDINAMYSTERYINSIDEANENIGMA',mode:'decrypt'}]],
+ 'Research citation fingerprint (SHA3-256 → Base64)':[['sha3_256',{}],['fromHex',{}],['toB64',{}]],
+ 'Research artifact fingerprint (SHA-256 → Base64)':[['sha256',{}],['fromHex',{}],['toB64',{}]],
+ 'Research · Legacy digest comparison (not authentication)':[['allhash',{}]],
+ 'Research · Decode URL-safe Base64 payload':[['fromURL',{}],['fromB64',{}]],
+ 'Research · Classical ciphertext frequency report':[['freq',{}]],
+ 'Prerequisite lab · Base64 round trip':[['toB64',{}],['fromB64',{}]],
+ 'Prerequisite lab · Caesar round trip':[['caesar',{shift:'3',mode:'encrypt'}],['caesar',{shift:'3',mode:'decrypt'}]],
+ 'Prerequisite lab · AES-GCM authenticated round trip':[['aesGCM',{pass:'course-lab-only',mode:'encrypt'}],['aesGCM',{pass:'course-lab-only',mode:'decrypt'}]],
 };
 addOp('recipePack','Recipe Pack','Recipes','Load a predefined cipher-suite recipe pack into the Recipe panel.',Object.keys(RECIPE_PACKS).map((name,i)=>({key:'pack',label:'Pack',type:'select',default:Object.keys(RECIPE_PACKS)[0],options:Object.keys(RECIPE_PACKS).map(n=>[n,n])})),function(t,a){
   const n=applyRecipePack(a.pack);
