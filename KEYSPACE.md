@@ -126,12 +126,22 @@ mnemonic checksums do not receive an identity image. Researching the packed EN
 identifier also found that its check character was emitted but never verified;
 `decodeEnsoId` now rejects a corrupted check character, with a regression test.
 
-The source `.xdc` also contains BIP-32/BIP-44/49/84 private-key derivation,
-Game of Life, NFT art, a catalog, 50 themes and CryptoMonopoly. Those were
-researched but deliberately not copied here: wallet derivation would expand the
-secret-bearing surface, while games/themes/catalogs do not improve the
-keyspace model. The existing repository workbench and art studio remain the
-appropriate homes for those capabilities.
+The source `.xdc` also contains BIP-32/BIP-44/49/84 wallet derivatives. Section
+12 now preserves that workflow using this repository's independently
+vector-tested wallet stack rather than copying the archive's inline crypto:
+PBKDF2-HMAC-SHA512 seed, root xprv, account xpub/ypub/zpub, and five receive
+addresses plus compressed-mainnet WIFs for each scheme. Derivation requires an
+explicit click, accepts only valid standard BIP-39 lengths, never enters the
+webxdc update payload, and keeps the seed, root private key, and WIFs blurred and
+unselectable until **Reveal secrets** is pressed. Changing the phrase or
+passphrase clears derived output; **Clear** also clears the passphrase. JavaScript
+cannot guarantee physical memory erasure, so the warning against real-fund
+mnemonics remains prominent.
+
+Game of Life, NFT art, a catalog, 50 themes and CryptoMonopoly were researched
+but not copied because they do not improve the keyspace model. The existing
+repository workbench and art studio remain the appropriate homes for those
+capabilities.
 
 ## Checks
 

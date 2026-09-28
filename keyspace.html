@@ -166,6 +166,35 @@
         <div class="enso-id" id="ensoId">EN—</div>
       </div>
 
+      <h2 class="step">12 · Wallet derivatives</h2>
+      <div class="wallet-panel">
+        <p class="legend wallet-warning">Educational, local-only Bitcoin derivation. Never paste a mnemonic that protects real funds into a web page.</p>
+        <label for="walletPass">BIP-39 passphrase</label>
+        <input id="walletPass" type="password" autocomplete="new-password" spellcheck="false" placeholder="optional · never stored" />
+        <div class="row">
+          <button class="act" id="deriveWallet" type="button">Derive wallet</button>
+          <button class="act" id="revealWallet" type="button" aria-pressed="false" disabled>Reveal secrets</button>
+          <button class="act" id="clearWallet" type="button" disabled>Clear</button>
+        </div>
+        <div id="walletStatus" class="legend">Derivation is explicit and only accepts standard 12/15/18/21/24-word phrases with valid checksums.</div>
+        <div id="walletOutput" hidden>
+          <div class="wallet-kv"><span>Seed · 512-bit</span><code id="walletSeed" class="wallet-secret">—</code></div>
+          <div class="wallet-kv"><span>Root xprv</span><code id="walletRoot" class="wallet-secret">—</code></div>
+          <div class="seg" id="walletScheme" role="tablist" aria-label="Bitcoin derivation scheme">
+            <button type="button" class="seg-btn" data-wallet-scheme="44">BIP-44</button>
+            <button type="button" class="seg-btn" data-wallet-scheme="49">BIP-49</button>
+            <button type="button" class="seg-btn on" data-wallet-scheme="84">BIP-84</button>
+          </div>
+          <div class="wallet-kv"><span id="walletAccountLabel">Account zpub</span><code id="walletAccount">—</code></div>
+          <div class="wallet-table-wrap">
+            <table class="wallet-table">
+              <thead><tr><th>Path</th><th>Address</th><th>WIF</th></tr></thead>
+              <tbody id="walletRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <div class="metric-grid">
         <div class="metric"><span>Wordlist</span><b id="wl">—</b></div>
         <div class="metric"><span>Entropy</span><b id="entBits">—</b></div>

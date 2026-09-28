@@ -42,6 +42,7 @@ import { buildForm, FORMS } from "./forms3d.js";
 import { pathTemplate, PIPELINE } from "./hdtopo.js";
 import { greedy575 } from "./syllables.js";
 import { drawEnso, encodeEnsoId, hashStr, prettyId, randomSettings } from "./enso-id.js";
+import { deriveBitcoinWallet } from "./wallet-derivatives.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
@@ -61,6 +62,9 @@ const state = {
   flipBit: 0,
   mathStep: 1,
   form: "hd",
+  wallet: null,
+  walletScheme: "84",
+  walletRevealed: false,
 };
 
 let formGroup = null;
@@ -715,6 +719,65 @@ function saveEnso() {
   a.click();
 }
 
+function setWalletReveal(revealed) {
+  state.walletRevealed = Boolean(revealed && state.wallet);
+  $("walletOutput").classList.toggle("wallet-revealed", state.walletRevealed);
+  $("revealWallet").setAttribute("aria-pressed", String(state.walletRevealed));
+  $("revealWallet").textContent = state.walletRevealed ? "Hide secrets" : "Reveal secrets";
+}
+
+function renderWalletScheme() {
+  const derived = state.wallet?.schemes[state.walletScheme];
+  if (!derived) return;
+  $("walletAccountLabel").textContent = `Account ${derived.accountKind}`;
+  $("walletAccount").textContent = derived.accountPublic;
+  $("walletRows").innerHTML = derived.rows.map((row) =>
+    `<tr><td><code>${row.path}</code></td><td><code>${row.address}</code></td>` +
+    `<td><code class="wallet-secret">${row.wif}</code></td></tr>`
+  ).join("");
+}
+
+function clearWallet(message = "Wallet derivatives cleared.", clearPassphrase = false) {
+  state.wallet = null;
+  if (clearPassphrase) $("walletPass").value = "";
+  setWalletReveal(false);
+  $("walletSeed").textContent = "—";
+  $("walletRoot").textContent = "—";
+  $("walletAccount").textContent = "—";
+  $("walletRows").replaceChildren();
+  $("walletOutput").hidden = true;
+  $("revealWallet").disabled = true;
+  $("clearWallet").disabled = true;
+  $("walletStatus").textContent = message;
+}
+
+async function deriveWallet() {
+  const standard = state.analysis?.layout?.standard;
+  if (!state.analysis?.ok || !standard) {
+    clearWallet("Use a valid standard 12/15/18/21/24-word BIP-39 phrase first.");
+    return;
+  }
+  const button = $("deriveWallet");
+  button.disabled = true;
+  $("walletStatus").textContent = "Deriving PBKDF2 seed and 15 receive keys locally…";
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  try {
+    state.wallet = deriveBitcoinWallet(state.words.join(" "), $("walletPass").value, 5);
+    $("walletSeed").textContent = state.wallet.seedHex;
+    $("walletRoot").textContent = state.wallet.rootPrivate;
+    $("walletOutput").hidden = false;
+    $("revealWallet").disabled = false;
+    $("clearWallet").disabled = false;
+    setWalletReveal(false);
+    renderWalletScheme();
+    $("walletStatus").textContent = "Derived locally · private seed, xprv and WIF values are blurred by default · never shared.";
+  } catch (error) {
+    clearWallet(`Derivation failed: ${error.message || error}`);
+  } finally {
+    button.disabled = false;
+  }
+}
+
 function renderAnalysis(words, analysis) {
   $("chips").innerHTML = words
     .map((w, i) => {
@@ -761,7 +824,9 @@ function renderAnalysis(words, analysis) {
 
 async function applyPhrase(text, { broadcast = false } = {}) {
   const words = parsePhrase(text);
-  $("phrase").value = words.join(" ");
+  const normalized = words.join(" ");
+  if (state.wallet && normalized !== state.words.join(" ")) clearWallet("Phrase changed · derive again explicitly.", true);
+  $("phrase").value = normalized;
   state.words = words;
   if (!words.length) {
     state.analysis = null;
@@ -915,6 +980,19 @@ async function main() {
   $("share").onclick = shareChat;
   $("copyHaiku").onclick = copyHaiku;
   $("saveEnso").onclick = saveEnso;
+  $("deriveWallet").onclick = deriveWallet;
+  $("revealWallet").onclick = () => setWalletReveal(!state.walletRevealed);
+  $("clearWallet").onclick = () => clearWallet("Wallet derivatives and passphrase cleared.", true);
+  $("walletPass").addEventListener("input", () => {
+    if (state.wallet) clearWallet("Passphrase changed · derive again explicitly.");
+  });
+  $("walletScheme").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-wallet-scheme]");
+    if (!button) return;
+    state.walletScheme = button.dataset.walletScheme;
+    [...$("walletScheme").querySelectorAll(".seg-btn")].forEach((item) => item.classList.toggle("on", item === button));
+    renderWalletScheme();
+  });
   $("wc").onchange = () => {
     $("wcNote").textContent = `${$("wc").value} words → ${wordCountToEntropyBits(Number($("wc").value))} bits · checksum is not free entropy`;
     updateRollNeed();
