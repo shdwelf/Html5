@@ -15,7 +15,7 @@ Files originally saved as `index (N).html` on a mobile device were renamed from 
 | `Cipher-Machines-and-Cryptology-Suite-2026-07-29 (2).html` | Cipher Machines & Cryptology - Interactive Simulator Suite | 802 KB |  |
 | `Cipher-Machines-and-Cryptology-Suite-2026-07-30 (1).html` | Cipher Machines & Cryptology - Interactive Simulator Suite | 894 KB |  |
 | `Cipher-Machines-and-Cryptology-Suite-2026-07-31.html` | Cipher Machines & Cryptology - Interactive Simulator Suite | 901 KB |  |
-| `Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html` | Cipher Machines & Cryptology - Interactive Simulator Suite | 1027 KB | _(Intelligence Lecture Hall updated 2026-09-27 — Cicada 3301 April packet/source check and bounded cryptographic-laboratory matrix added; see `docs/lecture-hall-research-2026-09-27.md`, `docs/lecture-hall-research-2026-09-20.md`, and `docs/lecture-hall-research-2026-09-14.md`)_ |
+| `Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html` | Cipher Machines & Cryptology - Interactive Simulator Suite | 1058 KB | _(Intelligence Lecture Hall updated 2026-09-28 — fourteen source-caveated IACR/TCHES/arXiv research records now cover lattice foundations, side channels, hardware reverse engineering, RPKI, candidate evaluation, proof encodings, and signature bounds, LANL/arXiv provenance, prerequisites, and seminar readers, IACR schools, lattice tutorials, and publication evidence; see `docs/source-check-2026-09-28.md`, `docs/arxiv-course-reader-research-2026-09-28.md`, `docs/iacr-research-watch-2026-09-28.md`, `docs/lecture-hall-research-2026-09-27.md`, and earlier research notes)_ |
 | `DECRYPTORv1.html` | Standalone Offline Decryptor | 13 KB |  |
 | `GCWizard-Offline-Standalone.html` | GCWizard - GeoCache Wizard HTML5 App | 485 KB |  |
 | `GCWizard-offline.html` | GCWizard - GeoCache Wizard HTML5 App | 493 KB |  |
@@ -68,7 +68,7 @@ Files originally saved as `index (N).html` on a mobile device were renamed from 
 | `cryptopoly-the-crypto-nft-board-game` | Cryptopoly - The Crypto & NFT Board Game | 29 KB | _(from `index (11).html`)_ |
 | `cryptopoly.html` | Cryptopoly - The Crypto & NFT Board Game | 32 KB |  |
 | `cyberchef-the-cyber-swiss-army-knife` | CyberChef - The Cyber Swiss Army Knife | 1 KB | _(from `index (21).html`)_ |
-| `cyberchef.html` | CyberChef — HTML5 (Renovated Kitchen) | 176 KB |  |
+| `cyberchef.html` | CyberChef — HTML5 (Renovated Kitchen) | 177 KB | _(fourteen IACR/lecture/research/prerequisite recipe packs added 2026-09-28; see `docs/iacr-research-watch-2026-09-28.md`)_ |
 | `cybervault-1781736948866.html` | The Vault - Members Only | 1.66 MB |  |
 | `cybervault-webos-members-only-portal-screensavers` | CyberVault WebOS • Members Only Portal & Screensavers | 1 KB | _(from `index (24).html`)_ |
 | `dna_dashboard.html` | Family DNA Inheritance Dashboard | 11 KB |  |

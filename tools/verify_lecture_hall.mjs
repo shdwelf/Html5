@@ -770,7 +770,7 @@ if (!existsSync(SUITE)) {
 
   const pc = literalAt(src, "Pc=[");
   const records = vm.runInNewContext(`(${pc.text})`, Object.create(null), { timeout: 2000 });
-  check(Array.isArray(records) && records.length === 10, `lecture hall holds ${records.length} records`);
+  check(Array.isArray(records) && records.length === 24, `lecture hall holds ${records.length} records`);
 
   const required = ["id", "title", "period", "location", "confidence", "summary", "facts", "sourceLinks", "caution"];
   const shapeOk = records.every((r) =>
@@ -819,7 +819,24 @@ if (!existsSync(SUITE)) {
   );
   check(
     ["cicada-3301", "f5-blackhat-2018"].every((id) => byId[id]),
-    "the two records added by this pass are in the hall",
+    "the two records added by the Cicada/F5 pass are in the hall",
+  );
+  check(
+    [
+      "iacr-lattice-primer-2026", "iacr-mldsa-sidechannel-2026",
+      "iacr-null-branch-2026", "iacr-hash-signature-bounds-2026",
+      "iacr-hardware-re-sok-2026", "iacr-hash-drbg-sidechannel-2026",
+      "iacr-rpki-gap-2026", "iacr-ngcc-breaks-2026",
+    ].every((id) => byId[id]),
+    "all eight IACR research-watch records are in the hall",
+  );
+  check(
+    ["lanl-arxiv-field-guide", "crypto-prerequisite-shelf", "arxiv-summer-school-readers"].every((id) => byId[id]),
+    "the LANL/arXiv provenance, prerequisite shelf and seminar-reader records are in the hall",
+  );
+  check(
+    ["iacr-school-corridor", "lattice-reader-ladder", "publication-evidence-ladder"].every((id) => byId[id]),
+    "the school corridor, lattice reader ladder and publication evidence records are in the hall",
   );
 
   // F5 2016 — the two threads this pass closed on that record
