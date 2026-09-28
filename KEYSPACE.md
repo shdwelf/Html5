@@ -103,6 +103,36 @@ Measurement-backed examples:
   Hamming cube is flat, Γⁱⱼₖ = 0 and R = 0. Any lens claiming curvature here
   would be wrong.
 
+## Seed Haiku identity (Drive research integration)
+
+Section 11 now carries forward the useful local-only presentation ideas from
+`create (1).xdc.xml` / **Seed Haiku Lab** without importing its wallet or game
+surface into the keyspace viewer:
+
+- the current phrase is folded contiguously with the shared, tested syllable
+  engine (`js/syllables.js`), preserving overflow rather than dropping words;
+- exact 5–7–5 is identified explicitly, while other folds show their measured
+  syllable counts and are not called strict haiku;
+- valid entropy deterministically selects an existing packed ensō brush setting
+  (`js/enso-id.js`), so the same phrase produces the same image and EN id;
+- the poem can be copied and the canvas exported as PNG. Both actions remain
+  local. The phrase itself is only shared through the viewer's existing,
+  explicit **Share in chat** action.
+
+The ensō selector uses a 32-bit non-cryptographic hash because it is a compact
+visual fingerprint, not authentication, collision resistance, a key derivation,
+or a proof of mnemonic ownership. The UI states this distinction. Invalid
+mnemonic checksums do not receive an identity image. Researching the packed EN
+identifier also found that its check character was emitted but never verified;
+`decodeEnsoId` now rejects a corrupted check character, with a regression test.
+
+The source `.xdc` also contains BIP-32/BIP-44/49/84 private-key derivation,
+Game of Life, NFT art, a catalog, 50 themes and CryptoMonopoly. Those were
+researched but deliberately not copied here: wallet derivation would expand the
+secret-bearing surface, while games/themes/catalogs do not improve the
+keyspace model. The existing repository workbench and art studio remain the
+appropriate homes for those capabilities.
+
 ## Checks
 
 ```sh

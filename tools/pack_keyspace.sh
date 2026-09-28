@@ -14,7 +14,7 @@ cp css/viewer.css "$tmp/css/"
 # every module viewer.js imports, plus the ones those import
 cp js/viewer.js js/bip39.js js/bip39-en.js js/engine.js js/spacefill.js \
    js/entropy-live.js js/lexicon.js js/mathvis.js js/forms3d.js js/hdtopo.js \
-   js/formal.js js/lens-draw.js js/lens-3d.js "$tmp/js/"
+   js/formal.js js/lens-draw.js js/lens-3d.js js/syllables.js js/enso-id.js "$tmp/js/"
 cp wasm/entropy.wasm "$tmp/wasm/"
 cp vendor/three.module.min.js vendor/OrbitControls.js "$tmp/vendor/"
 cp vendor/THREE_LICENSE "$tmp/vendor/" 2>/dev/null || true
@@ -25,5 +25,8 @@ name = "Keyspace Viewer"
 source_code_url = "https://github.com/shdwelf/Html5"
 TOML
 
+# zip updates an existing archive in place and otherwise leaves removed files
+# behind. Recreate it so the package is exactly the declared dependency set.
+rm -f "$out"
 (cd "$tmp" && zip -9 -r "$out" . -x "*.DS_Store")
 echo "wrote $out ($(wc -c < "$out") bytes)"

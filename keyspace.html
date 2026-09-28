@@ -150,6 +150,22 @@
       </div>
       <p class="legend" id="embedNote">Random mixer — nearby indices are not nearby in space.</p>
 
+      <h2 class="step">11 · Seed haiku identity</h2>
+      <div class="seed-identity">
+        <canvas id="seedEnso" width="320" height="320" aria-label="Deterministic ensō fingerprint for the loaded entropy"></canvas>
+        <div id="haiku" class="haiku" aria-live="polite">
+          <div class="haiku-line"><b>—</b><span>Load a valid phrase</span></div>
+          <div class="haiku-line"><b>—</b><span>to fold its words into</span></div>
+          <div class="haiku-line"><b>—</b><span>a seed-linked poem</span></div>
+        </div>
+        <div class="row">
+          <button class="act" id="copyHaiku" type="button">Copy poem</button>
+          <button class="act" id="saveEnso" type="button">Save ensō</button>
+        </div>
+        <p class="legend" id="haikuNote">Local-only presentation layer. Syllable counts are heuristic; the ensō is a deterministic visual fingerprint, not a key or proof.</p>
+        <div class="enso-id" id="ensoId">EN—</div>
+      </div>
+
       <div class="metric-grid">
         <div class="metric"><span>Wordlist</span><b id="wl">—</b></div>
         <div class="metric"><span>Entropy</span><b id="entBits">—</b></div>

@@ -40,6 +40,8 @@ import {
 } from "./mathvis.js";
 import { buildForm, FORMS } from "./forms3d.js";
 import { pathTemplate, PIPELINE } from "./hdtopo.js";
+import { greedy575 } from "./syllables.js";
+import { drawEnso, encodeEnsoId, hashStr, prettyId, randomSettings } from "./enso-id.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
@@ -658,6 +660,61 @@ function renderScale(bits) {
   $("scaleNote").textContent = bits ? analogForBits(bits) : "";
 }
 
+function seedFingerprint(entropy) {
+  // FNV-1a through the existing ensō module. This only selects art parameters;
+  // it is deliberately not presented as a cryptographic identifier.
+  return hashStr(hex(entropy));
+}
+
+function renderSeedIdentity(words, analysis) {
+  const canvas = $("seedEnso");
+  const host = $("haiku");
+  const id = $("ensoId");
+  if (!canvas || !host || !id) return;
+
+  if (!analysis?.ok || !analysis.entropy) {
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.fillStyle = "#05070c";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    host.innerHTML = ["Load a valid phrase", "to fold its words into", "a seed-linked poem"]
+      .map((line) => `<div class="haiku-line"><b>—</b><span>${line}</span></div>`)
+      .join("");
+    id.textContent = "EN—";
+    $("haikuNote").textContent = "A valid checksum is required. Nothing in this section is sent or stored.";
+    return;
+  }
+
+  const poem = greedy575(words);
+  host.innerHTML = poem.lines
+    .map((line, i) => `<div class="haiku-line"><b>${poem.counts[i]}</b><span>${line.join(" ") || "—"}</span></div>`)
+    .join("");
+  const settings = randomSettings(seedFingerprint(analysis.entropy));
+  drawEnso(canvas, settings);
+  id.textContent = prettyId(encodeEnsoId(settings));
+  $("haikuNote").textContent = poem.isHaiku
+    ? "Exact 5–7–5 contiguous fold · deterministic entropy-linked ensō · local only."
+    : `${poem.counts.join("–")} greedy fold (not a strict 5–7–5 haiku) · deterministic entropy-linked ensō · local only.`;
+}
+
+function copyHaiku() {
+  const text = [...$("haiku").querySelectorAll(".haiku-line span")]
+    .map((line) => line.textContent)
+    .join("\n");
+  if (!text) return;
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+
+function saveEnso() {
+  const canvas = $("seedEnso");
+  if (!state.analysis?.ok || !canvas?.toDataURL) return;
+  const a = document.createElement("a");
+  a.download = `keyspace-enso-${$("ensoId").textContent.replace(/[^A-Z0-9]/gi, "").toLowerCase()}.png`;
+  a.href = canvas.toDataURL("image/png");
+  a.click();
+}
+
 function renderAnalysis(words, analysis) {
   $("chips").innerHTML = words
     .map((w, i) => {
@@ -665,6 +722,8 @@ function renderAnalysis(words, analysis) {
       return `<span class="chip ${last ? "cs" : ""}">${String(i + 1).padStart(2, "0")} ${w}</span>`;
     })
     .join("");
+
+  renderSeedIdentity(words, analysis);
 
   const status = $("status");
   if (!analysis) {
@@ -854,6 +913,8 @@ async function main() {
   $("apply").onclick = () => applyPhrase($("phrase").value);
   $("gen").onclick = generate;
   $("share").onclick = shareChat;
+  $("copyHaiku").onclick = copyHaiku;
+  $("saveEnso").onclick = saveEnso;
   $("wc").onchange = () => {
     $("wcNote").textContent = `${$("wc").value} words → ${wordCountToEntropyBits(Number($("wc").value))} bits · checksum is not free entropy`;
     updateRollNeed();
