@@ -238,14 +238,14 @@ export const sites = [
   {
     id: 'walter-e-washington', name: 'Walter E. Washington Convention Center', region: 'MOUNT VERNON SQUARE, WASHINGTON D.C.', period: 'LINGUA INSTALLED 2002',
     role: 'Sanborn · Lingua', tag: 'LINGUA', objects: lingua, camera: [110, 70, 150], target: [0, 8, 26],
-    summary: 'Jim Sanborn’s Lingua stands in the Walter E. Washington Convention Center: two 16-foot bronze cylinders, installed in 2002, their surfaces waterjet-cut with historical texts in eight languages — Russian, Chinese, Ethiopian, French, Spanish, Latin, Greek and Iroquois — ranging back to about 1400 BC. The Chinese section reproduces Wang Xizhi’s Lantingji Xu. Internal lights project the text outward across the building’s surfaces.',
-    context: 'This is the convention center already present in this repository: Lingua is catalogued in sanborn-codex.html alongside Kryptos, and apps/kryptos_vrml.html is the VRML-styled Sanborn experience. It is included here because it is almost certainly the “convention center” half of the recollection that started this pass — a different thread entirely from the Las Vegas and Anaheim trade-show floors, and the two should not be conflated in the book.',
+    summary: 'Jim Sanborn’s Lingua stands in the Walter E. Washington Convention Center: two 16-foot bronze cylinders, installed in 2002, their surfaces waterjet-cut with historical texts in eight languages — Russian, Chinese, Ethiopic (Ge’ez), French, Spanish, Latin, Greek and Iroquois — ranging back to about 1400 BC. The Chinese section reproduces Wang Xizhi’s Lantingji Xu. Internal lights project the text outward across the building’s surfaces.',
+    context: 'CORRECTION (28 Sept 2026): this building is NOT the “convention center VRML” remembered at the start of this pass. That artifact is the Sanborn installation viewer already in the repository — public/apps/kryptos-vrml/index.html — whose sculpture registry carries eleven Sanborn sites, Lingua among them, with the convention center in its location line. This model is only an exterior massing study of the building that houses the work; the sculpture itself is modelled, sourced and source-checked in that viewer, which is where a reader should go. It is kept here so the Sanborn thread and the Las Vegas / Anaheim trade-show thread stay visibly separate rather than braided in the book.',
     interpretation: 'Only the cylinder height is sourced, and even that is boxed: the VRML export writes boxes, so a 16-foot bronze cylinder is represented as a 4.88-unit square prism. Diameter, spacing, plinths, the building masses, the canopy and the street are invented. The “projected-text wash” is an editorial marker for the lighting effect, not a photometric or optical simulation, and no glyph, language, or text fragment is reproduced in the geometry.',
     landmarks: [
       ['Lingua (2002)', 'Two 16 ft bronze cylinders; text in eight languages, some dating to c. 1400 BC.'],
       ['Chinese section', 'Wang Xizhi’s Lantingji Xu, waterjet-cut into the bronze.'],
       ['Projection', 'The cylinders are lit from within and throw their text onto the surroundings.'],
-      ['Repo link', 'Catalogued in sanborn-codex.html; see also apps/kryptos_vrml.html.'],
+      ['Where the sculpture lives', 'Modelled and source-checked in the Sanborn installation viewer: public/apps/kryptos-vrml/index.html (also catalogued in sanborn-codex.html).'],
     ],
     sources: [
       ['Lingua (sculpture) — two 16 ft cylinders, eight languages', 'https://en.wikipedia.org/wiki/Lingua_(sculpture)'],

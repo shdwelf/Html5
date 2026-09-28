@@ -161,6 +161,12 @@
     <ul id="p-clues"></ul>
   </div>
 
+  <div class="sec" id="sec-sources">
+    <h3>SOURCES &amp; VERIFICATION</h3>
+    <div id="p-verified" style="font-size:0.62em;line-height:1.7;color:#8d8778;letter-spacing:0.04em;"></div>
+    <ul id="p-sources" style="font-size:0.62em;line-height:1.8;"></ul>
+  </div>
+
   <div class="sec" id="sec-elonka">
     <h3>ELONKA DUNIN &mdash; RESEARCH</h3>
     <div class="card">
@@ -282,6 +288,12 @@
 const SCULPTURES = {
   kryptos: {
     name:"Kryptos (Main)", loc:"CIA HQ Courtyard, Langley, VA", year:"1990",
+    verified:'Source-checked 28 Sept 2026. Commission 1988 / dedication 1990, the Sept 2025 Smithsonian discovery and the $962,500 hammer price all confirmed; the \u201creconstructed\u201d K4 plaintext below is community reconstruction, NOT confirmed text.',
+    sources:[
+      ['Wikipedia \u2014 Kryptos: auction, Smithsonian discovery, K5 confirmation','https://en.wikipedia.org/wiki/Kryptos'],
+      ['Elonka Dunin \u2014 Kryptos research site (since 2003)','https://www.elonka.com/kryptos/index.html'],
+      ['Wired (2026) \u2014 who bought the K4 answer, and what happens next','https://www.wired.com/story/crypto-guys-bought-the-answer-to-the-cias-mysterious-kryptos-sculpture/'],
+    ],
     desc:"The centerpiece: ~1,800 encrypted letters on curved copper screen. Four sections (K1–K4). K1–K3 solved 1998–1999. K4 plaintext found in Smithsonian archives Sept 2025 (Kobek & Byrne). Auction closed Nov 2025: $962,500. K5 confirmed.",
     pieces:[
       {type:'pedestal',x:0,y:0,z:0, w:7,h:1.2,d:3.5, color:0x8b4513},
@@ -308,6 +320,8 @@ const SCULPTURES = {
   },
   entrance: {
     name:"CIA Entrance: Morse Slabs", loc:"CIA HQ Entrance Plaza, Langley, VA", year:"1990",
+    verified:'Partly verified. The Morse fragments come from Jim Gillogly\'s published rubbings via Elonka Dunin; the compass bearing and the \u201cincreasing complexity\u201d reading are researcher interpretation, not Sanborn\'s statements.',
+    sources:[['Elonka Dunin \u2014 Kryptos site: entrance Morse code and rubbings','https://www.elonka.com/kryptos/index.html']],
     desc:"At the entrance to CIA's New Headquarters Building, Sanborn installed large granite slabs with copper sheets sandwiched between them. The copper bears International Morse code messages. One slab has a carved compass rose pointing toward a buried lodestone. These entrance elements increase in 'complexity' leading toward the courtyard Kryptos — 'as if it were a fossil'.",
     pieces:[
       {type:'pedestal',x:0,y:0,z:0, w:10,h:0.8,d:2.5, color:0x8b4513},
@@ -327,6 +341,8 @@ const SCULPTURES = {
   },
   berlin_wall: {
     name:"Berlin Wall Slabs", loc:"CIA HQ Grounds, Langley, VA", year:"1992",
+    verified:'Partly verified. The slabs and their 1992 dedication are documented; the claim that K2\'s coordinates were \u201coriginally intended\u201d for this monument is a community hypothesis and is unproven.',
+    sources:[['Wikipedia \u2014 Kryptos: K2 coordinates','https://en.wikipedia.org/wiki/Kryptos']],
     desc:"Three slabs from the Berlin Wall, gifted to CIA by the German government. Dedicated in 1992 (two years after Kryptos). Some researchers believe the coordinates in K2 (38 57 6.5 N, 77 08 44 W) may originally have been intended to point to this monument's location. The actual monument coordinates differ by ~4 seconds.",
     pieces:[
       {type:'pedestal',x:0,y:0,z:0, w:8,h:1.2,d:2, color:0x555555},
@@ -344,7 +360,7 @@ const SCULPTURES = {
     ],
   },
   cyrillic: {
-    name:"Cyrillic Projector", loc:"Private collection / exhibitions", year:"2002",
+    name:"Cyrillic Projector", loc:"University of North Carolina, Charlotte", year:"made early 1990s; installed 1997",
     desc:"Sister sculpture to Kryptos. One side has Russian Cyrillic encrypted text; the other has Kryptos ciphertext. The Cyrillic side was solved in 2003 by a team organized by Elonka Dunin. The Kryptos side remains partially mysterious. Also includes an extract from a classified KGB document.",
     pieces:[
       {type:'pedestal',x:0,y:0,z:0, w:5,h:1,d:2.5, color:0x444444},
@@ -354,13 +370,21 @@ const SCULPTURES = {
     plaintext:'Cyrillic side: SOLVED (2003, Elonka Dunin team)',
     ciphertext:'[Russian Cyrillic encrypted text — KGB document extract]',
     clues:[
-      'Solved by Elonka Dunin\'s team in 2003',
+      'Cyrillic side solved in 2003 by an international team organised by Elonka Dunin',
       'Combines Kryptos themes with Cold War Russian imagery',
-      'Sometimes exhibited alongside Kryptos discussions',
+      'Bronze, about 5 ft in diameter, lit from within so the text is projected onto the room',
+      'CORRECTION (Sept 2026): this entry previously read \u201cPrivate collection / exhibitions, 2002\u201d. It is a permanent installation at UNC Charlotte, made in the early 1990s and installed in 1997.',
+    ],
+    verified:'Source-checked 28 Sept 2026. Location and date corrected against Elonka Dunin\'s works list.',
+    sources:[
+      ['Elonka Dunin \u2014 The Cyrillic Projector (aka Encoded Cylinder), UNC Charlotte, installed 1997','https://www.elonka.com/kryptos/cyrillic.html'],
+      ['Elonka Dunin \u2014 Sanborn selected works table','https://www.elonka.com/kryptos/sanborn.html'],
     ],
   },
   coastline: {
     name:"Coastline", loc:"NOAA HQ, Silver Spring, MD", year:"1993",
+    verified:'Source-checked 28 Sept 2026. Venue, date and the Variwave wave generator match Elonka Dunin\'s works list.',
+    sources:[['Elonka Dunin \u2014 Coastline, NOAA Silver Spring, 1993','https://www.elonka.com/kryptos/sanborn/coastline.html']],
     desc:"Large granite wave simulation with computer-controlled pneumatically operated wave generator (Variwave). Water flows over granite in real-time, representing ocean forces. Part of Sanborn's 'making the invisible visible' theme. Real-time wave height data via modem connection.",
     pieces:[
       {type:'pedestal',x:0,y:0,z:0, w:9,h:1.5,d:5.5, color:0x6b6b6b},
@@ -378,6 +402,8 @@ const SCULPTURES = {
   },
   indian_run: {
     name:"Indian Run Park", loc:"U.S. Courthouse, Beltsville, MD", year:"1994",
+    verified:'Source-checked 28 Sept 2026. Granite/copper/water, Iroquois text, bronze cylinder with Onondaga text, \u201cSeneca Red\u201d gravel and the 5,000\u201310,000 buried arrowheads all match the works list.',
+    sources:[['Elonka Dunin \u2014 Indian Run Park, U.S. Federal Courthouse, Beltsville MD, 1994','https://www.elonka.com/kryptos/sanborn/IndianRunPark.html']],
     desc:"Features granite, copper water features, Iroquois text on a bronze cylinder, and 5,000–10,000 arrowheads buried on-site in 'Seneca Red' gravel. Explores Native American history, language, and hidden narratives in the landscape.",
     pieces:[
       {type:'pedestal',x:0,y:0,z:0, w:6,h:1.2,d:4, color:0x6b5b4b},
@@ -395,6 +421,8 @@ const SCULPTURES = {
   },
   antipodes: {
     name:"Antipodes", loc:"Hirshhorn Museum, Washington D.C.", year:"1997",
+    verified:'Source-checked 28 Sept 2026. Hirshhorn, 1997, copper and petrified wood confirmed. Note the related 1992 \u201cUntitled Kryptos Piece\u201d (copper + petrified tree, half Cyrillic/KGB, half Kryptos text) in a private Californian garden \u2014 not modelled here.',
+    sources:[['Elonka Dunin \u2014 Antipodes / Untitled Kryptos Piece','https://www.elonka.com/kryptos/sanborn/antipodes.html']],
     desc:"Copper and petrified wood sculpture exploring deep time and the Earth's antipodes (points directly opposite on the globe). Publicly accessible. The cipher on Antipodes repeats part of Kryptos text with slight differences — a link between the works.",
     pieces:[
       {type:'pedestal',x:0,y:0,z:0, w:4,h:1,d:3, color:0x654321},
@@ -412,24 +440,34 @@ const SCULPTURES = {
     ],
   },
   lingua: {
-    name:"Lingua", loc:"Washington D.C. Convention Center", year:"2002",
-    desc:"Two 16-foot tall cylinders with waterjet-cut text in eight languages: Russian, Chinese, Ethiopian, French, Spanish, Latin, Greek, and Iroquois. Explores linguistic diversity, cryptography of human language, and the universal need to encode meaning.",
+    name:"Lingua", loc:"Walter E. Washington Convention Center, Washington D.C.", year:"2002",
+    desc:"Two 16-foot bronze cylinders with waterjet-cut text in eight languages \u2014 Russian, Chinese, Ethiopic (Ge\'ez), French, Spanish, Latin, Greek and Iroquois \u2014 drawn from historical texts reaching back to about 1400 BC. The Chinese section reproduces Wang Xizhi\'s calligraphic Lantingji Xu. Lit from within, the cylinders project their text across the building: the same \u201cprojector\u201d principle as the Cyrillic Projector, scaled to a convention hall. Explores linguistic diversity, the cryptography of human language, and the universal need to encode meaning.",
     pieces:[
       {type:'pedestal',x:0,y:0,z:0, w:5,h:0.8,d:3, color:0x4a4a4a},
-      {type:'cylinder',x:-1.8,y:1.5,z:0, w:2,h:5,d:0, color:0xa0522d},
-      {type:'cylinder',x:1.8,y:1.5,z:0, w:2,h:5,d:0, color:0xa0522d},
+      {type:'cylinder',x:-1.8,y:1.5,z:0, w:2,h:4.88,d:0, color:0xa0522d},
+      {type:'cylinder',x:1.8,y:1.5,z:0, w:2,h:4.88,d:0, color:0xa0522d},
     ],
-    cipherInfo:'<span class="ktag">8 languages</span><span class="ktag">Waterjet-cut text</span><span class="ktag">Language cryptography</span>',
-    plaintext:'"[Text in Russian, Chinese, Ethiopian, French, Spanish, Latin, Greek, Iroquois]"',
+    cipherInfo:'<span class="ktag">8 languages</span><span class="ktag">Waterjet-cut bronze</span><span class="ktag">Lit from within</span><span class="ktag">c. 1400 BC \u2192 19th c.</span><span class="ktag">Language cryptography</span>',
+    plaintext:'"[Historical texts in Russian, Chinese (Wang Xizhi, Lantingji Xu), Ethiopic/Ge\'ez, French, Spanish, Latin, Greek and Iroquois \u2014 plaintext, not enciphered]"',
     ciphertext:'N/A',
     clues:[
-      'Waterjet-cut text (precision fabrication)',
-      'Eight languages representing global cryptographic diversity',
-      'Iroquois included alongside major world languages (Native American representation)',
+      'Waterjet-cut text (precision fabrication), the same technique used for the Kryptos copper screen',
+      'Eight writing systems act as simultaneous codes \u2014 most of them unreadable to any one visitor',
+      'Iroquois included alongside major world languages; compare the Onondaga cylinder at Indian Run Park (1994)',
+      'Cylinder height (16 ft) is the only sourced dimension in this model; diameter and spacing are interpretive',
+      'VENUE NAMING: installed 2002 in the new Washington Convention Center (opened 2003); the city renamed it the Walter E. Washington Convention Center in 2007',
+    ],
+    verified:'Source-checked 28 Sept 2026. Venue name corrected (was \u201cWashington D.C. Convention Center\u201d); \u201cEthiopian\u201d recorded as Ethiopic/Ge\'ez; cylinder height set to the sourced 16 ft.',
+    sources:[
+      ['Lingua (sculpture) \u2014 two 16 ft cylinders, eight languages, texts from c. 1400 BC','https://en.wikipedia.org/wiki/Lingua_(sculpture)'],
+      ['Elonka Dunin \u2014 Sanborn works list: Lingua, new Washington D.C. Convention Center, 2002','https://www.elonka.com/kryptos/sanborn.html'],
+      ['EventsDC \u2014 venue history: opened 2003, renamed Walter E. Washington Convention Center in 2007','https://eventsdc.com/venue/walter-e-washington-convention-center/venue-history'],
     ],
   },
   atomic_time: {
     name:"Atomic Time / Critical Assembly", loc:"Corcoran Gallery (2003) / National Museum of Nuclear Science, Albuquerque", year:"2003",
+    verified:'Partially source-checked 28 Sept 2026. The Los Alamos lab recreation, the uranium-ore self-portraits and the Albuquerque re-installation are well attested; the exact Trinity clock time quoted here (5:30 AM, 16 July 1945) is the test time, not a verified detail of the clock faces.',
+    sources:[['Wikipedia \u2014 Jim Sanborn: Critical Assembly / Atomic Time','https://en.wikipedia.org/wiki/Jim_Sanborn']],
     desc:"Sanborn's recreation of the 1944 Los Alamos Manhattan Project lab. Includes actual lab equipment from Los Alamos (1940s–60s) acquired from retirees. Uranium ore self-portraits (radioactive exposure on film). Radium-dial clocks frozen at 5:30 AM, July 16, 1945 (Trinity test time). Now permanently installed at National Museum of Nuclear Science & History, Albuquerque (2017).",
     pieces:[
       {type:'pedestal',x:0,y:0,z:0, w:8,h:1,d:5, color:0x444444},
@@ -449,6 +487,8 @@ const SCULPTURES = {
   },
   nsa_museum: {
     name:"National Cryptologic Museum (Context)", loc:"NSA/Ft. Meade, MD", year:"1993",
+    verified:'Context entry, not a Sanborn work. Holdings listed are standard museum exhibits; the museum reopened in a rebuilt form in 2022, so gallery details may be out of date.',
+    sources:[['National Cryptologic Museum (NSA)','https://www.nsa.gov/museum/']],
     desc:"While not a Sanborn sculpture, the NCM is the sister institution to CIA's Kryptos. Located just outside NSA headquarters. Houses Enigma machines, the U.S. Navy Bombe, Purple cipher machines, SIGABA, and thousands of cryptologic artifacts. Essential context for understanding the Kryptos puzzle and the cryptologic profession.",
     pieces:[
       {type:'pedestal',x:0,y:0,z:0, w:8,h:1,d:4, color:0x3a3a3a},
@@ -469,6 +509,8 @@ const SCULPTURES = {
   },
   find_lodestone: {
     name:"Find the Lodestone", loc:"Artery Plaza, Bethesda, MD", year:"1985",
+    verified:'Source-checked 28 Sept 2026. Artery Plaza Building, Bethesda MD, 1985; quartz, sandstone and granite, 13\u00d75\u00d75 ft. Compare \u201cInvisible Forces\u201d (Electronic Industries Alliance building, Arlington VA, 1987), which carries the same compass motif.',
+    sources:[['Elonka Dunin \u2014 Find the Lodestone, Artery Plaza, Bethesda','https://www.elonka.com/kryptos/sanborn/ArteryPlaza.html']],
     desc:"Early Sanborn sculpture featuring a large magnetized lodestone. Explores magnetism and invisible natural forces. A precursor to the compass rose and lodestone themes in Kryptos. Part of Sanborn's 'invisible forces' series.",
     pieces:[
       {type:'pedestal',x:0,y:0,z:0, w:5,h:1.5,d:3, color:0x4a4a4a},
@@ -968,13 +1010,25 @@ function selectSculpture(name){
   document.getElementById('p-k4-info').textContent=sc.k4plain||'';
   // K4 2025 news
   if(name==='kryptos'){
-    document.getElementById('p-k4-2025').innerHTML='<div class="card" style="border-color:rgba(180,100,80,0.3);margin-top:8px;"><p style="font-size:0.65em;line-height:1.6;color:#b8b0a0;"><strong>2025 BREAKTHROUGH:</strong> Plaintext found in Smithsonian archives by Jarett Kobek & Richard Byrne (Sept 2025). Sanborn confirmed. Auction sold for <strong>$962,500</strong> (Nov 20, 2025). Winner anonymous. Method remains private. Smithsonian archives sealed until ~2075.<br><br><strong>Reconstructed plaintext</strong> (solvekryptos.com):<br>"THE COMPASS ROSE IS HERE X EAST NORTHEAST THIS IS YOUR POSITION X COMMISSION BERLIN CLOCK WHICH IS NORTHEAST OF HERE X"<br><br>Sanborn (2025): The "Berlin Clock" = <strong>Weltzeituhr (World Clock) at Alexanderplatz</strong>, not the Mengenlehreuhr.</p></div>';
+    document.getElementById('p-k4-2025').innerHTML='<div class="card" style="border-color:rgba(180,100,80,0.3);margin-top:8px;"><p style="font-size:0.65em;line-height:1.6;color:#b8b0a0;"><strong>2025 BREAKTHROUGH:</strong> Plaintext found in Smithsonian archives by Jarett Kobek & Richard Byrne (Sept 2025). Sanborn confirmed. Auction sold for <strong>$962,500</strong> (Nov 20, 2025). Smithsonian archives sealed until 2075.<br><br><strong>SINCE THE SALE (2026):</strong> the winning bidders were a crypto-industry group; Sanborn took home about $770,000 of the $962,500. Submissions now cost $1 (Sanborn charged $50), and the new keepers say the encrypted K5 will be published once K4 falls. <strong>The encryption method that produced K4 has still not been broken</strong> \u2014 finding the plaintext in an archive is not a cryptanalytic solve, and Kobek has said he will never publish it.<br><br><strong>Reconstructed plaintext</strong> (solvekryptos.com):<br>"THE COMPASS ROSE IS HERE X EAST NORTHEAST THIS IS YOUR POSITION X COMMISSION BERLIN CLOCK WHICH IS NORTHEAST OF HERE X"<br><br>Sanborn (2025): The "Berlin Clock" = <strong>Weltzeituhr (World Clock) at Alexanderplatz</strong>, not the Mengenlehreuhr.</p></div>';
   } else {
     document.getElementById('p-k4-2025').innerHTML='';
   }
   // Clues
   const ul=document.getElementById('p-clues'); ul.innerHTML='';
   if(sc.clues) sc.clues.forEach(c=>{const li=document.createElement('li');li.innerHTML=c;ul.appendChild(li);});
+  // Sources (source-check pass, Sept 2026)
+  const sul=document.getElementById('p-sources'); sul.innerHTML='';
+  const ver=document.getElementById('p-verified');
+  ver.textContent = sc.verified || 'Not yet source-checked. Treat the details above as unverified.';
+  if(sc.sources) sc.sources.forEach(([label,url])=>{
+    const li=document.createElement('li');
+    const a=document.createElement('a');
+    a.href=url; a.target='_blank'; a.rel='noopener'; a.textContent=label;
+    a.style.color='var(--copper-lt)';
+    li.appendChild(a); sul.appendChild(li);
+  });
+  if(!sc.sources){const li=document.createElement('li');li.textContent='No source list recorded for this entry yet.';sul.appendChild(li);}
   // Tabs
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.sculpt===name));
   // HUD

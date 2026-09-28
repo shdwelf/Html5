@@ -589,8 +589,9 @@ six schematic venue exteriors — the Las Vegas Convention Center (with the
 Renaissance across Paradise Road and a Loop marker), the Sands Expo / Venetian
 Expo with its stacked halls, the Anaheim Convention Center including ACC North,
 the Javits Center, the Mandalay Bay Convention Center with the Delano / W tower
-and its 64th-floor Skyfall band, and the Walter E. Washington Convention Center
-with Jim Sanborn's *Lingua*. Each has a downloadable `.wrl` under
+and its 64th-floor Skyfall band, and the Walter E. Washington Convention Center,
+the building that houses Jim Sanborn's *Lingua* (the sculpture itself is modelled
+in the Sanborn viewer described below, not here). Each has a downloadable `.wrl` under
 `models/venues/`.
 
 Everything is invented massing except three sourced measurements, which are
@@ -607,6 +608,34 @@ brackets it produces](docs/convention-venues.md) — supports Chapter XI of
 
 ```sh
 node --test tests/venue-sites.test.mjs
+```
+
+### The Sanborn installation viewer — source-checked
+
+The "convention center VRML" in the workshop's own history is **not** the venue
+exhibit above: it is [`public/apps/kryptos-vrml/index.html`](public/apps/kryptos-vrml/index.html),
+the webxdc-packaged Sanborn installation viewer, whose `SCULPTURES` registry
+holds eleven Sanborn sites (keys `1`–`9` and the tab strip switch between them)
+— one of which is *Lingua*, at a convention center. That app, not a lost file,
+is the artifact; tab 06 of the venue exhibit is only the shell of the building
+and now links to it.
+
+Every installation in the viewer was source-checked on 28 September 2026 and now
+carries a `verified` line and a `sources` list, rendered in a new **SOURCES &
+VERIFICATION** section of the info panel. Two errors were corrected: *Lingua*'s
+venue is the **Walter E. Washington Convention Center** (installed 2002, building
+opened 2003, renamed 2007) and its eighth script is **Ethiopic (Ge'ez)**; the
+**Cyrillic Projector** is a permanent installation at **UNC Charlotte, installed
+1997**, not a private-collection piece from 2002. Interpretation is now flagged
+as interpretation on the entrance slabs, the Berlin Wall segments and Atomic
+Time, and the K4 panel carries the post-auction position: the archive sold for
+$962,500 on 20 November 2025, and the cipher system that produced K4 has still
+not been broken. Details and the full table are in
+[§10 of the venue note](docs/convention-venues.md). Repack with
+`sh tools/pack_kryptos_xdc.sh` and run:
+
+```sh
+node --test tests/sanborn-viewer-sources.test.mjs
 ```
 
 Additional contextual source: the Bulletin of the Atomic Scientists feature

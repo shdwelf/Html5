@@ -334,20 +334,64 @@ repeats the hunt:
    `f9f04ba9…b9e51e5a` and `apps/kryptos_vrml_backup.html` to `29952bb4…b204db8f`,
    matching the index rows exactly. There is nothing newer to sync.
 
-The likeliest source of the memory is the **Sanborn thread**, not the trade-show
-thread: `sanborn-codex.html` already catalogues **Lingua**, Jim Sanborn's 2002
-work at the **Walter E. Washington Convention Center** — two 16-foot bronze
-cylinders, waterjet-cut with historical texts in eight languages (Russian,
-Chinese, Ethiopian, French, Spanish, Latin, Greek and Iroquois, the Chinese
-section reproducing Wang Xizhi's *Lantingji Xu*), lit from within so the text is
-projected across the building. [34](https://en.wikipedia.org/wiki/Lingua_(sculpture)) [35](https://www.elonka.com/kryptos/sanborn.html)
-A "convention center" plus a "VRML" app in the same workspace is an easy pair of
-memories to fuse.
+**Resolved, 28 Sept 2026 (corrected).** The remembered artifact is the **Jim
+Sanborn installation viewer already in this repository** —
+`public/apps/kryptos-vrml/index.html`, the webxdc-packaged "Kryptos VRML" app.
+It is not a Kryptos-only viewer: its `SCULPTURES` registry holds **eleven**
+Sanborn sites, selectable with keys `1`–`9` and the tab strip, and one of them is
+**Lingua**, the 2002 work whose `loc` field reads *Convention Center*. That is
+the "convention center VRML". The three negative searches above stand for a
+*new* convention-centre model; they missed the existing one because the grep was
+for venue names, not for the sculpture registry inside an app called
+`kryptos_vrml`.
 
-So the exhibit built in this pass includes Lingua's convention center as its
-sixth model — which both honours the original recollection and keeps it visibly
-separate from the Las Vegas and Anaheim trade-show floors. They are different
-threads and the book should not braid them.
+Two builds of that app exist and they have diverged. The canonical one is the
+packaged `public/apps/kryptos-vrml/index.html` (72 KB), which is ahead of the
+root copy `apps/kryptos_vrml.html` (62 KB): it adds `webxdc.js`, the loading
+hints (`drag orbit · scroll zoom · right-drag pan · I info · R rotate ·
+1-9 sculptures · 0 reset view`), a `#toast` live region, ARIA labels on every HUD
+control, a `K4?` button and the ranked-hypotheses section `#sec-k4-method`. Work
+on the public build; the root copy is a stale snapshot.
+
+### 10.1 Source check of the viewer's installation data (28 Sept 2026)
+
+Every entry in `SCULPTURES` now carries a `verified` line and a `sources` list,
+rendered in a new **SOURCES & VERIFICATION** panel section. Two factual errors
+were found and fixed:
+
+| Entry | Was | Now | Source |
+| --- | --- | --- | --- |
+| `lingua` | "Washington D.C. Convention Center" | "Walter E. Washington Convention Center, Washington D.C." — installed 2002 in the new Washington Convention Center, which opened 2003 and was renamed for the District's first Home Rule mayor in 2007 | EventsDC venue history |
+| `lingua` | "Ethiopian" among the eight languages | "Ethiopic (Ge'ez)"; added the c. 1400 BC text range, Wang Xizhi's *Lantingji Xu*, the internal lighting that projects the text, and a note that 16 ft is the only sourced dimension | Wikipedia, *Lingua (sculpture)*; Elonka Dunin |
+| `cyrillic` | "Private collection / exhibitions, 2002" | "University of North Carolina, Charlotte — made early 1990s, installed 1997"; the 2003 solve by Elonka Dunin's team is retained and dated correctly | Elonka Dunin, works table |
+
+Checked and found correct: `kryptos` (1988 commission / 1990 dedication),
+`coastline` (NOAA Silver Spring 1993, Variwave generator), `indian_run`
+(Beltsville 1994, Onondaga cylinder, 5,000–10,000 arrowheads), `antipodes`
+(Hirshhorn 1997, copper and petrified wood), `find_lodestone` (Artery Plaza,
+Bethesda 1985, 13×5×5 ft).
+
+Flagged rather than silently kept: the `entrance` compass bearing and
+"increasing complexity" reading are researcher interpretation; the `berlin_wall`
+claim that K2's coordinates were meant for that monument is an unproven
+community hypothesis; `atomic_time`'s clock-face time is the Trinity test time,
+not a verified property of the clocks; `nsa_museum` is context, not a Sanborn
+work, and its gallery list predates the museum's 2022 rebuild.
+
+The K4 panel was also brought forward past the sale: the archive sold for
+**$962,500 on 20 November 2025**, Sanborn kept about **$770,000**, the buyers
+were a crypto-industry group, submissions now cost $1 rather than $50, the
+Smithsonian papers are sealed until 2075 — and **the cipher system that produced
+K4 has still not been broken**. Finding plaintext in an archive is not a solve.
+
+### 10.2 What this means for the six-model exhibit
+
+The Walter E. Washington model shipped as tab 06 of `convention-centers.html`
+is *not* the remembered artifact and does not replace the Sanborn viewer. It
+stays as an exterior massing study of the building, and now links to the viewer
+so the two are not confused; the sculpture itself lives in the viewer, where it
+is modelled and sourced. The five Las Vegas and Anaheim models remain a separate
+thread from the Sanborn thread, and the book should not braid them.
 
 ## Source list
 
