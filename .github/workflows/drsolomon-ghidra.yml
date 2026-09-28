@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   analyze:
@@ -120,6 +120,18 @@ jobs:
             "$root/inventory.json" "$root/reports" \
             "$root/dr-solomon-virus-encyclopaedia-ghidra.md"
           sed -n '1,240p' "$root/dr-solomon-virus-encyclopaedia-ghidra.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit the generated evidence report
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp "$RUNNER_TEMP/drsolomon/dr-solomon-virus-encyclopaedia-ghidra.md" \
+            docs/dr-solomon-virus-encyclopaedia-ghidra.md
+          git config user.name arena-ghidra-research
+          git config user.email arena-ghidra-research@users.noreply.github.com
+          git add docs/dr-solomon-virus-encyclopaedia-ghidra.md
+          git commit -m "Document Ghidra analysis of Dr Solomon's Virus Encyclopaedia" || exit 0
+          git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Remove source binaries before artifact upload
         if: always()
