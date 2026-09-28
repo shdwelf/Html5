@@ -581,6 +581,34 @@ node --test tests/los-alamos.test.mjs tests/project-y-sites.test.mjs
 node tests/project-y-sites-browser.mjs
 ```
 
+### The convention floor — venue exhibit and source check
+
+[`convention-centers.html`](convention-centers.html) is a second Three.js/VRML
+exhibit built on the same primitives-shared-with-the-exporter pattern. It renders
+six schematic venue exteriors — the Las Vegas Convention Center (with the
+Renaissance across Paradise Road and a Loop marker), the Sands Expo / Venetian
+Expo with its stacked halls, the Anaheim Convention Center including ACC North,
+the Javits Center, the Mandalay Bay Convention Center with the Delano / W tower
+and its 64th-floor Skyfall band, and the Walter E. Washington Convention Center
+with Jim Sanborn's *Lingua*. Each has a downloadable `.wrl` under
+`models/venues/`.
+
+Everything is invented massing except three sourced measurements, which are
+labelled in the geometry and in each file's `WorldInfo`: the Sands hall split
+(upper halls A–D ≈ 32 ft 5 in, lower Hall G 13 ft 5 in), Skyfall's 64th storey,
+and Lingua's 16-foot cylinders. These are not maps, floor plans, navigation aids,
+or event-planning tools, and they depict buildings rather than attendance.
+
+The research and source check behind the exhibit —
+[venue chronology, name changes, show-by-show venue history, and the dating
+brackets it produces](docs/convention-venues.md) — supports Chapter XI of
+`greeran-book.html`. Regenerate exports with
+`node scripts/build-venue-models.mjs` and run:
+
+```sh
+node --test tests/venue-sites.test.mjs
+```
+
 Additional contextual source: the Bulletin of the Atomic Scientists feature
 [“The faces that made the Bomb”](https://thebulletin.org/multimedia/the-faces-that-made-the-bomb/)
 (Bulletin Staff, June 19, 2013) is linked in a research spotlight. See the

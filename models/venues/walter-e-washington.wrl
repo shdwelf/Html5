@@ -1,0 +1,28 @@
+#VRML V2.0 utf8
+WorldInfo { title "Walter E. Washington Convention Center — schematic venue exhibit" info [ "SCHEMATIC VENUE EXHIBIT — invented footprints, heights, spacing and placement; simplified exterior massing only. Not a survey, site plan, floor plan, navigation aid, evacuation map, or event-planning tool. No interiors, booths, exhibitor layouts, docks or building systems are modeled." "Only the cylinder height is sourced, and even that is boxed: the VRML export writes boxes, so a 16-foot bronze cylinder is represented as a 4.88-unit square prism. Diameter, spacing, plinths, the building masses, the canopy and the street are invented. The “projected-text wash” is an editorial marker for the lighting effect, not a photometric or optical simulation, and no glyph, language, or text fragment is reproduced in the geometry." "Lingua (sculpture) — two 16 ft cylinders, eight languages: https://en.wikipedia.org/wiki/Lingua_(sculpture)" "Jim Sanborn — selected works including Lingua: https://en.wikipedia.org/wiki/Jim_Sanborn" "Elonka Dunin — Sanborn works list, Lingua 2002: https://www.elonka.com/kryptos/sanborn.html" ] }
+NavigationInfo { type ["EXAMINE", "ANY"] }
+Background { skyColor [0.91 0.92 0.94] }
+Viewpoint { description "Overview" position 0 150 230 orientation 1 0 0 -0.55 }
+DirectionalLight { direction -1 -2 -1 intensity 0.9 }
+# Interpretive ground plane
+DEF OBJECT_0 Transform { translation 0 -1 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.807843137254902 0.788235294117647 0.7411764705882353 } } geometry Box { size 220 2 180 } } ] }
+# Convention center — exhibition mass
+DEF OBJECT_1 Transform { translation 0 15 -34 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8509803921568627 0.8352941176470589 0.788235294117647 } } geometry Box { size 170 30 70 } } ] }
+# Entrance hall — glazed mass
+DEF OBJECT_2 Transform { translation 0 19 18 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.803921568627451 0.8666666666666667 0.8862745098039215 } } geometry Box { size 120 38 34 } } ] }
+# Canopy — interpretive
+DEF OBJECT_3 Transform { translation 0 38.6 40 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7372549019607844 0.7372549019607844 0.6901960784313725 } } geometry Box { size 130 1.4 16 } } ] }
+# Concourse floor — illustrative
+DEF OBJECT_4 Transform { translation 0 0.3 46 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7764705882352941 0.7607843137254902 0.7058823529411765 } } geometry Box { size 150 0.6 30 } } ] }
+# Lingua — bronze cylinder A (16 ft, boxed approximation)
+DEF OBJECT_5 Transform { translation -9 2.44 44 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.5490196078431373 0.4196078431372549 0.24705882352941178 } } geometry Box { size 3 4.88 3 } } ] }
+# Lingua — bronze cylinder B (16 ft, boxed approximation)
+DEF OBJECT_6 Transform { translation 9 2.44 44 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.5490196078431373 0.4196078431372549 0.24705882352941178 } } geometry Box { size 3 4.88 3 } } ] }
+# Cylinder A — plinth
+DEF OBJECT_7 Transform { translation -9 0.35 44 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7019607843137254 0.6705882352941176 0.6078431372549019 } } geometry Box { size 5 0.7 5 } } ] }
+# Cylinder B — plinth
+DEF OBJECT_8 Transform { translation 9 0.35 44 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7019607843137254 0.6705882352941176 0.6078431372549019 } } geometry Box { size 5 0.7 5 } } ] }
+# Projected-text wash — interpretive marker
+DEF OBJECT_9 Transform { translation 0 6.5 44 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8901960784313725 0.8274509803921568 0.6823529411764706 } } geometry Box { size 46 0.2 20 } } ] }
+# Street — illustrative strip
+DEF OBJECT_10 Transform { translation 0 0.1 74 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7176470588235294 0.7019607843137254 0.6549019607843137 } } geometry Box { size 210 0.3 14 } } ] }

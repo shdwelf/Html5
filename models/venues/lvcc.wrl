@@ -1,0 +1,36 @@
+#VRML V2.0 utf8
+WorldInfo { title "Las Vegas Convention Center — schematic venue exhibit" info [ "SCHEMATIC VENUE EXHIBIT — invented footprints, heights, spacing and placement; simplified exterior massing only. Not a survey, site plan, floor plan, navigation aid, evacuation map, or event-planning tool. No interiors, booths, exhibitor layouts, docks or building systems are modeled." "Hall blocks, the concourse link, Paradise Road and the parking apron are invented masses at invented spacings. The Convention Center Loop appears only as a below-grade marker bar — it is not a tunnel alignment. The Renaissance Las Vegas is shown as a slab across the road because it is genuinely adjacent, not because its shape or distance was measured." "LVCVA — West Hall expansion fact sheet, June 2021: https://www.multivu.com/players/English/8909751-lvcva-las-vegas-convention-center-expansion-informa-market-world-of-concrete/docs/WestHallFactSheet_1623197150059-907052717.pdf" "PR Newswire — West Hall debut and Loop, 8 June 2021: https://www.prnewswire.com/news-releases/1-billion-las-vegas-convention-center-expansion-debuts-with-first-major-convention-post-pandemic-301308548.html" "Review-Journal — renovated campus, CES in Las Vegas since 1978: https://www.reviewjournal.com/business/conventions/best-convention-center-in-the-world-reopens-after-massive-renovation-3604125/" "Cvent — Renaissance Las Vegas Hotel, 3400 Paradise Road: https://www.cvent.com/venues/las-vegas/hotel/renaissance-las-vegas-hotel/venue-de267c7f-28aa-454f-8b00-c57040b11c07" "DEF CON archives — DC 32 (2024) and DC 33 (2025) at the West Hall: https://defcon.org/html/links/dc-archives.html" ] }
+NavigationInfo { type ["EXAMINE", "ANY"] }
+Background { skyColor [0.91 0.92 0.94] }
+Viewpoint { description "Overview" position 0 150 230 orientation 1 0 0 -0.55 }
+DirectionalLight { direction -1 -2 -1 intensity 0.9 }
+# Interpretive ground plane
+DEF OBJECT_0 Transform { translation 0 -1 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8117647058823529 0.788235294117647 0.7137254901960784 } } geometry Box { size 340 2 250 } } ] }
+# Paradise Road — illustrative strip
+DEF OBJECT_1 Transform { translation -96 0.1 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7254901960784313 0.7058823529411765 0.6509803921568628 } } geometry Box { size 16 0.3 240 } } ] }
+# West Hall — exhibition mass (2021 expansion)
+DEF OBJECT_2 Transform { translation -52 12 -38 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8862745098039215 0.8705882352941177 0.8156862745098039 } } geometry Box { size 62 24 96 } } ] }
+# West Hall — Grand Lobby atrium
+DEF OBJECT_3 Transform { translation -84 16 -38 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8117647058823529 0.8784313725490196 0.8941176470588236 } } geometry Box { size 10 32 54 } } ] }
+# West Hall — terrace deck
+DEF OBJECT_4 Transform { translation -52 25 16 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7843137254901961 0.7607843137254902 0.6823529411764706 } } geometry Box { size 62 1.2 12 } } ] }
+# North Hall — exhibition mass
+DEF OBJECT_5 Transform { translation 24 10 -74 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8588235294117647 0.8392156862745098 0.7764705882352941 } } geometry Box { size 86 20 62 } } ] }
+# Central Hall — exhibition mass
+DEF OBJECT_6 Transform { translation 30 11 -4 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8352941176470589 0.8156862745098039 0.7490196078431373 } } geometry Box { size 98 22 70 } } ] }
+# South Hall — lower level
+DEF OBJECT_7 Transform { translation 36 8 74 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8509803921568627 0.8274509803921568 0.7568627450980392 } } geometry Box { size 104 16 66 } } ] }
+# South Hall — upper level (two-story hall)
+DEF OBJECT_8 Transform { translation 36 20 74 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8901960784313725 0.8705882352941177 0.8156862745098039 } } geometry Box { size 96 9 58 } } ] }
+# Concourse link — illustrative
+DEF OBJECT_9 Transform { translation -14 8 -20 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.796078431372549 0.7764705882352941 0.7098039215686275 } } geometry Box { size 16 14 120 } } ] }
+# Convention Center Loop — below-grade marker
+DEF OBJECT_10 Transform { translation -10 -2.4 20 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.6039215686274509 0.6352941176470588 0.6509803921568628 } } geometry Box { size 120 2.4 6 } } ] }
+# Loop station portal — interpretive
+DEF OBJECT_11 Transform { translation -52 1.5 26 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.5568627450980392 0.5882352941176471 0.6078431372549019 } } geometry Box { size 10 5 10 } } ] }
+# Renaissance Las Vegas — hotel slab (15 floors)
+DEF OBJECT_12 Transform { translation -124 27 -6 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.796078431372549 0.7490196078431373 0.6823529411764706 } } geometry Box { size 22 54 40 } } ] }
+# Renaissance Las Vegas — podium
+DEF OBJECT_13 Transform { translation -124 5 26 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8666666666666667 0.8313725490196079 0.7607843137254902 } } geometry Box { size 26 10 26 } } ] }
+# Surface parking — illustrative
+DEF OBJECT_14 Transform { translation 96 0.1 30 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7764705882352941 0.7568627450980392 0.6941176470588235 } } geometry Box { size 58 0.3 180 } } ] }

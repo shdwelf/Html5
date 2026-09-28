@@ -1,0 +1,30 @@
+#VRML V2.0 utf8
+WorldInfo { title "Sands Expo → Venetian Expo — schematic venue exhibit" info [ "SCHEMATIC VENUE EXHIBIT — invented footprints, heights, spacing and placement; simplified exterior massing only. Not a survey, site plan, floor plan, navigation aid, evacuation map, or event-planning tool. No interiors, booths, exhibitor layouts, docks or building systems are modeled." "Only the two ceiling heights are sourced; they set the relative thickness of the lower and upper slabs. Hall footprints, the concourse, the escalator bank, the resort tower and the street are invented. No hall is positioned where the real hall stands, and the letters mark relationships, not locations." "Venetian Expo — opened as Sands Expo, renamed 2021: https://en.wikipedia.org/wiki/Venetian_Expo" "Hall table — upper halls A–D and lower Hall G dimensions: https://grokipedia.com/page/Venetian_Expo" "Las Vegas Sun — why CES and the adult expo split, 2012: https://lasvegassun.com/news/2012/jan/17/why-vegas-porn-convention-decided-meet-week-after-/" "Review-Journal — rename effective 2 September 2021: https://www.reviewjournal.com/business/tourism/sands-expo-changing-name-to-the-venetian-expo-on-sept-2-2400580/" ] }
+NavigationInfo { type ["EXAMINE", "ANY"] }
+Background { skyColor [0.91 0.92 0.94] }
+Viewpoint { description "Overview" position 0 150 230 orientation 1 0 0 -0.55 }
+DirectionalLight { direction -1 -2 -1 intensity 0.9 }
+# Interpretive ground plane
+DEF OBJECT_0 Transform { translation 0 -1 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8235294117647058 0.8 0.7294117647058823 } } geometry Box { size 260 2 200 } } ] }
+# Hall G — lower hall, low ceiling (~13 ft 5 in)
+DEF OBJECT_1 Transform { translation 0 2.05 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.788235294117647 0.7647058823529411 0.6901960784313725 } } geometry Box { size 150 4.1 110 } } ] }
+# Hall G — service apron
+DEF OBJECT_2 Transform { translation 0 0.6 66 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7411764705882353 0.7176470588235294 0.6509803921568628 } } geometry Box { size 150 1.2 22 } } ] }
+# Hall A — upper level (~32 ft 5 in ceiling)
+DEF OBJECT_3 Transform { translation -56 9.04 -28 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8784313725490196 0.8588235294117647 0.796078431372549 } } geometry Box { size 36 9.88 52 } } ] }
+# Hall B — upper level
+DEF OBJECT_4 Transform { translation -18 9.04 -28 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8549019607843137 0.8352941176470589 0.7686274509803922 } } geometry Box { size 36 9.88 52 } } ] }
+# Hall C — upper level
+DEF OBJECT_5 Transform { translation 20 9.04 -28 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8784313725490196 0.8588235294117647 0.796078431372549 } } geometry Box { size 36 9.88 52 } } ] }
+# Hall D — upper level
+DEF OBJECT_6 Transform { translation 54 9.04 -22 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8352941176470589 0.8156862745098039 0.7490196078431373 } } geometry Box { size 26 9.88 40 } } ] }
+# Upper concourse — illustrative
+DEF OBJECT_7 Transform { translation 0 8.6 22 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.803921568627451 0.7843137254901961 0.7176470588235294 } } geometry Box { size 148 9 20 } } ] }
+# Escalator bank — interpretive
+DEF OBJECT_8 Transform { translation -10 6.5 34 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7058823529411765 0.6823529411764706 0.6274509803921569 } } geometry Box { size 14 9 8 } } ] }
+# Adjoining resort tower — massing only
+DEF OBJECT_9 Transform { translation 0 46 -86 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7843137254901961 0.7176470588235294 0.615686274509804 } } geometry Box { size 70 92 26 } } ] }
+# Resort podium — massing only
+DEF OBJECT_10 Transform { translation 0 9 -66 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8274509803921568 0.7764705882352941 0.6784313725490196 } } geometry Box { size 110 18 24 } } ] }
+# Sands Avenue — illustrative strip
+DEF OBJECT_11 Transform { translation 0 0.1 82 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7215686274509804 0.7019607843137254 0.6470588235294118 } } geometry Box { size 230 0.3 14 } } ] }

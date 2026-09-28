@@ -1,0 +1,32 @@
+#VRML V2.0 utf8
+WorldInfo { title "Mandalay Bay, the Delano tower & Skyfall — schematic venue exhibit" info [ "SCHEMATIC VENUE EXHIBIT — invented footprints, heights, spacing and placement; simplified exterior massing only. Not a survey, site plan, floor plan, navigation aid, evacuation map, or event-planning tool. No interiors, booths, exhibitor layouts, docks or building systems are modeled." "The convention-center masses, tower, wings, podium, pool deck and porte-cochère are invented forms at invented spacings; no hall, ballroom, or Business Hall layout is represented. Only one datum is sourced: the lounge sits on the 64th floor, so the band is placed high on the tower as a storey marker. Floor-to-floor spacing here is nominal — the band’s height above ground is not a measured elevation, and no interior, terrace layout, or view cone is modelled." "Black Hat — event list: Caesars Palace through 2013, Mandalay Bay from 2014: https://en.wikipedia.org/wiki/Black_Hat_(conference)" "Review-Journal — $70M expansion brings Mandalay Bay to 2.1M sq ft: https://www.reviewjournal.com/business/tourism/expanded-mandalay-bay-convention-center-ready-to-welcome-even-more-crowds/" "W Las Vegas — THEhotel, Delano, and the 2024 rebrand: https://en.wikipedia.org/wiki/W_Las_Vegas" "Rivea and Skyfall Lounge open on the 64th floor, October 2015: https://www.themeetingmagazines.com/news/ducasse-debuts-rivea-skyfall-lounge-delano-las-vegas/" "DEF CON archives — DC 32 and DC 33 at the LVCC West Hall: https://defcon.org/html/links/dc-archives.html" ] }
+NavigationInfo { type ["EXAMINE", "ANY"] }
+Background { skyColor [0.91 0.92 0.94] }
+Viewpoint { description "Overview" position 0 150 230 orientation 1 0 0 -0.55 }
+DirectionalLight { direction -1 -2 -1 intensity 0.9 }
+# Interpretive ground plane
+DEF OBJECT_0 Transform { translation 0 -1 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8392156862745098 0.803921568627451 0.7058823529411765 } } geometry Box { size 300 2 230 } } ] }
+# Resort podium — massing only
+DEF OBJECT_1 Transform { translation 0 9 44 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8470588235294118 0.788235294117647 0.6588235294117647 } } geometry Box { size 150 18 72 } } ] }
+# Mandalay Bay Convention Center — exhibition mass
+DEF OBJECT_2 Transform { translation -116 11 14 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8117647058823529 0.7568627450980392 0.6352941176470588 } } geometry Box { size 86 22 104 } } ] }
+# Convention center — ballroom level
+DEF OBJECT_3 Transform { translation -116 25 -10 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8549019607843137 0.8 0.6627450980392157 } } geometry Box { size 74 8 56 } } ] }
+# Convention center — expansion wing (2014–16)
+DEF OBJECT_4 Transform { translation -116 9 76 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7764705882352941 0.7215686274509804 0.592156862745098 } } geometry Box { size 70 18 34 } } ] }
+# Convention link corridor — illustrative
+DEF OBJECT_5 Transform { translation -56 7 34 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.803921568627451 0.7490196078431373 0.6235294117647059 } } geometry Box { size 36 14 16 } } ] }
+# Hotel tower — suite floors (massing only)
+DEF OBJECT_6 Transform { translation 0 48 -22 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.788235294117647 0.7098039215686275 0.5607843137254902 } } geometry Box { size 44 96 26 } } ] }
+# Tower side wing — massing only
+DEF OBJECT_7 Transform { translation -34 40 -22 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7607843137254902 0.6823529411764706 0.5333333333333333 } } geometry Box { size 26 80 22 } } ] }
+# 64th-floor lounge band — sourced storey, nominal height
+DEF OBJECT_8 Transform { translation 0 96 -22 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.9058823529411765 0.8509803921568627 0.7058823529411765 } } geometry Box { size 48 5 30 } } ] }
+# Lounge terrace — interpretive
+DEF OBJECT_9 Transform { translation 26 96 -22 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8509803921568627 0.792156862745098 0.6431372549019608 } } geometry Box { size 8 4 22 } } ] }
+# Rooftop plant — representative
+DEF OBJECT_10 Transform { translation 0 101.5 -22 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.6588235294117647 0.592156862745098 0.47843137254901963 } } geometry Box { size 26 6 16 } } ] }
+# Pool deck — illustrative
+DEF OBJECT_11 Transform { translation 58 0.4 30 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7372549019607844 0.788235294117647 0.7529411764705882 } } geometry Box { size 56 0.8 70 } } ] }
+# Porte-cochère — representative
+DEF OBJECT_12 Transform { translation -40 5 78 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.803921568627451 0.7450980392156863 0.611764705882353 } } geometry Box { size 34 10 20 } } ] }
