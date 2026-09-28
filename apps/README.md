@@ -139,6 +139,7 @@ Files originally saved as `index (N).html` on a mobile device were renamed from 
 | `network-topology-scanner (1).html` | Network Topology Scanner & Subnet Detective | 73 KB |  |
 | `neural-augment-lab.html` | Neural Augment Lab · GitHub × OpenAI | 15 KB | _(added as an offline research artifact)_ |
 | `z3950-interface.html` | Z39.50 Interface · Deep Dive & Server Health | 13 KB | _(added as an offline research artifact)_ |
+| `../tools/z3950-terminal.php` | Z39.50 HTML5 Terminal · PHP/YAZ adapter | — | _(server-side adapter; see docs/z3950-server-deep-dive-2026-09-28.md)_ |
 | `news-globe-app-1781706672984.html` | Spinning News Globe – Standalone Offline | 2 KB |  |
 | `news-globe-live-rss-on-an-earth` | News Globe — Live RSS on an Earth | 7 KB | _(from `index (27).html`)_ |
 | `news-globe.html` | News Globe — Live RSS on an Earth | 131 KB |  |
