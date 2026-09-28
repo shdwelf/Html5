@@ -8,10 +8,16 @@ npm run serve:catalog
 PORT=4180 npm run serve:catalog
 ```
 
-It serves `apps/z3950-sru-gopher-terminal.html` at `/` and provides two allow-listed endpoints:
+It serves `apps/z3950-sru-gopher-terminal.html` at `/` and provides allow-listed endpoints:
 
 - `GET /api/servers` — SRU target metadata
 - `GET /api/sru?server=dnb&q=For%20Dummies` — bounded SRU proxy
+- `GET /api/resources` — additional resource metadata
+- `GET /api/fetch?resource=ucsb` — JSON envelope containing fetched page text and final URL
+- `GET /api/proxy?resource=ucsb` — same-origin proxied page response
+- `GET /go/ucsb` — allow-listed 302 redirect to the original URL
+
+Resource fetches are restricted to the in-code allow-list and capped at 2 MB. This provides three alternatives for online use: open the provider directly, redirect through the local server, or fetch/proxy through the local server.
 
 Only LOC and DNB SRU bases are accepted by the proxy. User input becomes a title query and is capped at 120 characters. Arbitrary URLs are rejected, which prevents turning the development server into an open proxy.
 
