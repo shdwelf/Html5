@@ -72,7 +72,8 @@ The workflow imports every expanded MZ/NE executable into official NSA Ghidra
 12.1.4, allows standard auto-analysis, exports a complete instruction listing,
 defined strings, imports, analyzer warnings, and up to 48 decompiled functions,
 then deletes the temporary Ghidra project and source bytes. The Git repository
-retains this evidence report—not the executable corpus.
+retains this report plus `WVENCYCL.EXE` assembly, selected decompilation, strings,
+and JSON metadata—not the executable corpus.
 
 | program | format | language | functions | instructions | strings | imports | decompiled |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
@@ -99,6 +100,21 @@ retains this evidence report—not the executable corpus.
 - Image base/range: `0000:0000` · `1000:0000`–`1150:037b`
 - Recovered: **634 functions**, **12637 instructions**, **149 strings**, **108 external symbols**
 - Decompiler: **48/48** selected functions produced C
+
+### What the static evidence establishes
+
+- This is a segmented 16-bit Windows NE application, not an encyclopedia
+  document and not a stand-alone DOS virus sample.
+- Its `USER`, `GDI`, `KERNEL`, and `BWCC` imports identify a graphical Win16
+  front end using Borland's custom controls. Embedded references to
+  `WTOOLKIT.HLP` connect it to the surrounding Anti-Virus Toolkit.
+- Its descriptive records distinguish infectiousness, infected object classes
+  (COM, EXE, boot/partition sectors), memory residence, and payload/infection
+  behavior. That is consistent with an informational browser over structured
+  virus descriptions; it does not establish that `WVENCYCL.EXE` carries or runs
+  the viruses it describes.
+- Ghidra's generated names (`FUN_…`, `DAT_…`) remain provisional. The checked-in
+  evidence preserves addresses and bytes so later symbol recovery can be audited.
 
 ### Memory map
 
@@ -182,232 +198,7 @@ retains this evidence report—not the executable corpus.
 - `1010:0066` — `FUN_1010_0066`
 - `1010:00d1` — `FUN_1010_00d1`
 - `1010:015d` — `FUN_1010_015d`
-- `1010:01b5` — `FUN_1010_01b5`
-- `1010:022e` — `FUN_1010_022e`
-- `1010:0002` — `FUN_1010_0002`
-- `1010:0090` — `FUN_1010_0090`
-- `1010:025a` — `FUN_1010_025a`
-- `1010:02eb` — `FUN_1010_02eb`
-- `1010:036d` — `FUN_1010_036d`
-- `1018:01aa` — `FUN_1018_01aa`
-- `1018:000f` — `FUN_1018_000f`
-- `1020:052f` — `FUN_1020_052f`
-- `1020:0002` — `FUN_1020_0002`
-- `1020:002d` — `FUN_1020_002d`
-- `1020:02ea` — `FUN_1020_02ea`
-- `1020:026b` — `FUN_1020_026b`
-- `1020:04d7` — `FUN_1020_04d7`
-- `1028:0e27` — `FUN_1028_0e27`
-- `1028:0d15` — `FUN_1028_0d15`
-- `1028:03e4` — `FUN_1028_03e4`
-- `1028:04bc` — `FUN_1028_04bc`
-- `1028:04d6` — `FUN_1028_04d6`
-- `1028:0532` — `FUN_1028_0532`
-- `1028:0599` — `FUN_1028_0599`
-- `1028:01c1` — `FUN_1028_01c1`
-- `1028:028a` — `FUN_1028_028a`
-- `1028:0cd0` — `FUN_1028_0cd0`
-- `1028:0aec` — `FUN_1028_0aec`
-- `1028:0bcf` — `FUN_1028_0bcf`
-- `1028:0c0f` — `FUN_1028_0c0f`
-- `1028:0c47` — `FUN_1028_0c47`
-- `1028:0c5e` — `FUN_1028_0c5e`
-- `1028:0d78` — `FUN_1028_0d78`
-- `1030:0002` — `FUN_1030_0002`
-- `1038:0002` — `FUN_1038_0002`
-- `1040:0341` — `FUN_1040_0341`
-- `1040:03ff` — `FUN_1040_03ff`
-- `1040:0bcd` — `FUN_1040_0bcd`
-- `1040:0c57` — `FUN_1040_0c57`
-- `1040:0c73` — `FUN_1040_0c73`
-- `1040:065b` — `FUN_1040_065b`
-- `1040:068d` — `FUN_1040_068d`
-- `1040:0827` — `FUN_1040_0827`
-- `1040:0874` — `FUN_1040_0874`
-- `1040:05f3` — `FUN_1040_05f3`
-- `1040:060d` — `FUN_1040_060d`
-- `1040:0641` — `FUN_1040_0641`
-- `1040:0627` — `FUN_1040_0627`
-- `1040:0e2f` — `FUN_1040_0e2f`
-- `1040:0d01` — `FUN_1040_0d01`
-- `1040:08c6` — `FUN_1040_08c6`
-- `1040:10d2` — `FUN_1040_10d2`
-- `1040:0d84` — `FUN_1040_0d84`
-- `1040:0e87` — `FUN_1040_0e87`
-- `1040:0edd` — `FUN_1040_0edd`
-- `1040:05dc` — `FUN_1040_05dc`
-- `1040:0df3` — `FUN_1040_0df3`
-- `1040:0a9f` — `FUN_1040_0a9f`
-- `1040:0f21` — `FUN_1040_0f21`
-- `1040:06b4` — `FUN_1040_06b4`
-- `1040:0736` — `FUN_1040_0736`
-- `1040:055c` — `FUN_1040_055c`
-- `1040:0b3f` — `FUN_1040_0b3f`
-- `1040:0b86` — `FUN_1040_0b86`
-- `1040:090a` — `FUN_1040_090a`
-- `1040:0f0b` — `FUN_1040_0f0b`
-- `1040:0f76` — `FUN_1040_0f76`
-- `1040:0fb5` — `FUN_1040_0fb5`
-- `1040:0fe6` — `FUN_1040_0fe6`
-- `1040:103d` — `FUN_1040_103d`
-- `1040:1093` — `FUN_1040_1093`
-- `1040:1148` — `FUN_1040_1148`
-- `1040:10ef` — `FUN_1040_10ef`
-- `1040:11b9` — `FUN_1040_11b9`
-- `1040:148c` — `FUN_1040_148c`
-- `1040:14cb` — `FUN_1040_14cb`
-- `1040:123a` — `FUN_1040_123a`
-- `1040:1294` — `FUN_1040_1294`
-- `1040:1256` — `FUN_1040_1256`
-- `1040:15e2` — `FUN_1040_15e2`
-- `1040:1630` — `FUN_1040_1630`
-- `1040:1651` — `FUN_1040_1651`
-- `1040:16a6` — `FUN_1040_16a6`
-- `1040:16cd` — `FUN_1040_16cd`
-- `1040:173d` — `FUN_1040_173d`
-- `1040:17ad` — `FUN_1040_17ad`
-- `1040:182e` — `FUN_1040_182e`
-- `1040:183a` — `FUN_1040_183a`
-- `1040:18b1` — `FUN_1040_18b1`
-- `1040:18d7` — `FUN_1040_18d7`
-- `1040:195f` — `FUN_1040_195f`
-- `1040:1505` — `FUN_1040_1505`
-- `1040:19b2` — `FUN_1040_19b2`
-- `1040:1a59` — `FUN_1040_1a59`
-- `1040:1a86` — `FUN_1040_1a86`
-- `1040:1a9c` — `FUN_1040_1a9c`
-- `1040:1aa8` — `FUN_1040_1aa8`
-- `1040:1b01` — `FUN_1040_1b01`
-- `1040:1b30` — `FUN_1040_1b30`
-- `1040:1b4d` — `FUN_1040_1b4d`
-- `1040:1bd0` — `FUN_1040_1bd0`
-- `1040:1c27` — `FUN_1040_1c27`
-- `1040:1c73` — `FUN_1040_1c73`
-- `1040:1cb5` — `FUN_1040_1cb5`
-- `1040:1d8a` — `FUN_1040_1d8a`
-- `1040:1e01` — `FUN_1040_1e01`
-- `1040:1d02` — `FUN_1040_1d02`
-- `1040:1e65` — `FUN_1040_1e65`
-- `1040:1ea7` — `FUN_1040_1ea7`
-- `1040:0097` — `FUN_1040_0097`
-- `1040:0045` — `FUN_1040_0045`
-- `1040:0071` — `FUN_1040_0071`
-- `1040:0133` — `FUN_1040_0133`
-- `1040:018b` — `FUN_1040_018b`
-- `1040:01dc` — `FUN_1040_01dc`
-- `1040:02fa` — `FUN_1040_02fa`
-- `1040:03e9` — `FUN_1040_03e9`
-- `1040:0466` — `FUN_1040_0466`
-- `1040:049e` — `FUN_1040_049e`
-- `1040:0524` — `FUN_1040_0524`
-- `1040:08dd` — `FUN_1040_08dd`
-- `1040:0ce1` — `FUN_1040_0ce1`
-- `1040:0db6` — `FUN_1040_0db6`
-- `1040:0ea9` — `FUN_1040_0ea9`
-- `1048:0002` — `FUN_1048_0002`
-- `1048:007a` — `FUN_1048_007a`
-- `1048:00b1` — `FUN_1048_00b1`
-- `1048:014f` — `FUN_1048_014f`
-- `1048:023d` — `FUN_1048_023d`
-- `1048:0345` — `FUN_1048_0345`
-- `1048:0394` — `FUN_1048_0394`
-- `1048:03dc` — `FUN_1048_03dc`
-- `1048:0274` — `FUN_1048_0274`
-- `1048:028b` — `FUN_1048_028b`
-- `1048:0408` — `FUN_1048_0408`
-- `1048:02ef` — `FUN_1048_02ef`
-- `1048:037b` — `FUN_1048_037b`
-- `1048:0429` — `FUN_1048_0429`
-- `1048:04ab` — `FUN_1048_04ab`
-- `1048:04dd` — `FUN_1048_04dd`
-- `1048:0517` — `FUN_1048_0517`
-- `1048:052d` — `FUN_1048_052d`
-- `1048:0549` — `FUN_1048_0549`
-- `1048:0795` — `FUN_1048_0795`
-- `1048:0589` — `FUN_1048_0589`
-- `1048:07c9` — `FUN_1048_07c9`
-- `1048:07ea` — `FUN_1048_07ea`
-- `1048:083c` — `FUN_1048_083c`
-- `1048:021d` — `FUN_1048_021d`
-- `1048:0569` — `FUN_1048_0569`
-- `1050:0002` — `FUN_1050_0002`
-- `1050:001c` — `FUN_1050_001c`
-- `1050:0036` — `FUN_1050_0036`
-- `1050:0049` — `FUN_1050_0049`
-- `1050:00bb` — `FUN_1050_00bb`
-- `1050:011f` — `FUN_1050_011f`
-- `1050:0171` — `FUN_1050_0171`
-- `1050:019b` — `FUN_1050_019b`
-- `1050:01d2` — `FUN_1050_01d2`
-- `1050:0248` — `FUN_1050_0248`
-- `1050:025f` — `FUN_1050_025f`
-- `1050:0293` — `FUN_1050_0293`
-- `1050:02e7` — `FUN_1050_02e7`
-- `1050:03ac` — `FUN_1050_03ac`
-- `1050:03e1` — `FUN_1050_03e1`
-- `1050:0469` — `FUN_1050_0469`
-- `1050:04bc` — `FUN_1050_04bc`
-- `1050:04dd` — `FUN_1050_04dd`
-- `1050:0588` — `FUN_1050_0588`
-- `1050:05ae` — `FUN_1050_05ae`
-- `1050:05c5` — `FUN_1050_05c5`
-- `1050:05ea` — `FUN_1050_05ea`
-- `1058:00d1` — `FUN_1058_00d1`
-- `1058:0002` — `FUN_1058_0002`
-- `1058:0021` — `FUN_1058_0021`
-- `1058:0044` — `FUN_1058_0044`
-- `1058:007d` — `FUN_1058_007d`
-- `1060:0002` — `FUN_1060_0002`
-- `1060:0019` — `FUN_1060_0019`
-- `1060:0030` — `FUN_1060_0030`
-- `1060:0077` — `FUN_1060_0077`
-- `1060:009f` — `FUN_1060_009f`
-- `1060:00bd` — `FUN_1060_00bd`
-- `1060:00e0` — `FUN_1060_00e0`
-- `1060:0109` — `FUN_1060_0109`
-- `1060:0131` — `FUN_1060_0131`
-- `1060:0158` — `FUN_1060_0158`
-- `1060:017e` — `FUN_1060_017e`
-- `1060:01a0` — `FUN_1060_01a0`
-- `1060:020d` — `FUN_1060_020d`
-- `1068:0002` — `FUN_1068_0002`
-- `1068:005d` — `FUN_1068_005d`
-- `1068:0061` — `FUN_1068_0061`
-- `1068:0891` — `FUN_1068_0891`
-- `1068:08ab` — `FUN_1068_08ab`
-- `1068:08cf` — `FUN_1068_08cf`
-- `1068:0910` — `FUN_1068_0910`
-- `1068:093c` — `FUN_1068_093c`
-- `1068:0982` — `FUN_1068_0982`
-- `1068:09ad` — `FUN_1068_09ad`
-- `1068:0a39` — `FUN_1068_0a39`
-- `1068:012d` — `FUN_1068_012d`
-- `1068:0147` — `FUN_1068_0147`
-- `1068:0866` — `FUN_1068_0866`
-- `1068:038f` — `FUN_1068_038f`
-- `1068:03cb` — `FUN_1068_03cb`
-- `1068:0760` — `FUN_1068_0760`
-- `1068:0527` — `FUN_1068_0527`
-- `1068:052c` — `FUN_1068_052c`
-- `1068:0667` — `FUN_1068_0667`
-- `1068:06ab` — `FUN_1068_06ab`
-- `1068:072c` — `FUN_1068_072c`
-- `1068:0796` — `FUN_1068_0796`
-- `1068:07fe` — `FUN_1068_07fe`
-- `1068:0d26` — `FUN_1068_0d26`
-- `1068:0d12` — `FUN_1068_0d12`
-- `1068:082e` — `FUN_1068_082e`
-- `1068:0cee` — `FUN_1068_0cee`
-- `1068:0c72` — `FUN_1068_0c72`
-- `1068:0cbd` — `FUN_1068_0cbd`
-- `1068:03ef` — `FUN_1068_03ef`
-- `1068:0439` — `FUN_1068_0439`
-- `1068:0d3d` — `FUN_1068_0d3d`
-- `1068:0aa8` — `FUN_1068_0aa8`
-- `1068:05d8` — `FUN_1068_05d8`
-- `1068:0608` — `FUN_1068_0608`
-- `1068:062d` — `FUN_1068_062d`
-- `1068:064d` — `FUN_1068_064d`
+- … 226 additional NE entry/export addresses are retained in [`WVENCYCL.EXE.ghidra.json`](dr-solomon-ghidra-evidence/WVENCYCL.EXE.ghidra.json).
 
 ### Imported API surface
 
@@ -446,10 +237,21 @@ retains this evidence report—not the executable corpus.
 1070:0b18	/The *v* has a memory resident infection system.
 ```
 
+### Code references to descriptive strings
+
+No direct references to the matched string starts were recovered; Win16 resource or table indirection can obscure those links.
+
+### Checked-in Ghidra evidence
+
+- [Complete instruction listing](dr-solomon-ghidra-evidence/WVENCYCL.EXE.asm)
+- [Selected decompiler output](dr-solomon-ghidra-evidence/WVENCYCL.EXE.c)
+- [Defined strings](dr-solomon-ghidra-evidence/WVENCYCL.EXE.strings.txt)
+- [Machine-readable metadata, imports, xrefs, and analyzer findings](dr-solomon-ghidra-evidence/WVENCYCL.EXE.ghidra.json)
+
 ### Disassembly excerpt at the entry point
 
-The full listing is retained as a workflow artifact; this excerpt is the
-reviewable, checked-in proof that Ghidra decoded the entry path.
+The complete checked-in listing is linked above; this excerpt provides a
+compact view of the decoded entry path.
 
 ```asm
 ; Ghidra 12.1.4
@@ -507,6 +309,7 @@ FUN_1000_0002:
 
 /* ------------------------------------------------------------
  * FUN_1000_2577 @ 1000:2577
+ * selected: NE entry/export
  * body bytes: 47
  * completed: true
  */
@@ -529,6 +332,7 @@ void __stdcall16far FUN_1000_2577(undefined4 param_1)
 
 /* ------------------------------------------------------------
  * FUN_1000_0002 @ 1000:0002
+ * selected: NE entry/export
  * body bytes: 136
  * completed: true
  */
@@ -557,6 +361,7 @@ FUN_1000_0002(undefined4 param_1,undefined2 param_2,undefined2 param_3,undefined
 
 /* ------------------------------------------------------------
  * FUN_1000_008a @ 1000:008a
+ * selected: NE entry/export
  * body bytes: 80
  * completed: true
  */
@@ -586,9 +391,6 @@ FUN_1000_008a(undefined4 param_1,undefined2 param_2,undefined2 param_3,undefined
 
 
 
-/* ------------------------------------------------------------
- * FUN_1000_00da @ 1000:00da
- * body bytes: 57
 ```
 
 ### Analyzer caveats
@@ -619,6 +421,7 @@ python3 tools/drsolomon_report.py \
   docs/dr-solomon-virus-encyclopaedia-ghidra.md
 ```
 
-The automation lives in `.github/workflows/drsolomon-ghidra.yml`. Its retained
-artifact contains the complete `.asm`, `.c`, string, and JSON exports; raw disk
-and executable bytes are intentionally excluded from that artifact.
+The automation lives in `.github/workflows/drsolomon-ghidra.yml`. The principal
+`WVENCYCL.EXE` static outputs are checked in under `docs/dr-solomon-ghidra-evidence/`;
+the run artifact also contains exports for every analyzed executable. Raw disk and
+executable bytes are intentionally excluded from both destinations.

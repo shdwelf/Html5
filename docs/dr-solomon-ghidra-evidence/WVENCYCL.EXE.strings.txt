@@ -1,0 +1,149 @@
+1070:016e	WTOOLKIT.HLP
+1070:017c	Cannot find VIRDATA.DAT
+1070:0194	Error
+1070:019c	Virus Encyclopaedia Information:
+1070:01bd	There has been a problem initializing the printer.
+1070:01f0	Error
+1070:01f6	WTOOLKIT.HLP
+1070:0204	WTOOLKIT.HLP
+1070:0212	Variant
+1070:021a	WTOOLKIT.HLP
+1070:0228	bordlg_sands
+1070:0238	-is not in the field, and is not likely to be.
+1070:0275	3is not in the field, but it could be in the future.
+1070:02b2	*has been found in the field at least once.
+1070:02f0	is found sometimes.
+1070:032d	is found frequently.
+1070:036a	is a common *v*.
+1070:03a7	It is not infectious at all,
+1070:03e4	It is barely infectious,
+1070:0421	It is somewhat infectious,
+1070:045e	It is quite infectious,
+1070:049b	It is very infectious,
+1070:04d8	It is extremely infectious,
+1070:0514	/and results in trivial damage, with no payload.
+1070:0565	*and results in trivial damage (3 minutes).
+1070:05b6	)and results in minor damage (30 minutes).
+1070:0607	/and results in moderate damage (disk trashing).
+1070:0658	.and results in major damage (data corruption).
+1070:06a9	<and results in severe damage (undetectable data corruption).
+1070:06fa	-and results in unpleasant damage (unlimited).
+1070:074d	Nothing is infected.
+1070:079e	COM files are infected.
+1070:07ef	EXE files are infected.
+1070:0840	COM and EXE files are infected.
+1070:0890	.Boot and/or partition sectors can be infected.
+1070:08e1	<Boot and/or partition sectors and COM files can be infected.
+1070:0932	<Boot and/or partition sectors and EXE files can be infected.
+1070:0983	ABoot and/or partition sectors, COM and EXE files can be infected.
+1070:09d4	)An "Other" form of infection takes place.
+1070:0a25	<This *v* infection is a special case, please see the manual.
+1070:0a77	The *v* is not memory resident.
+1070:0ac7	&The *v* has a memory resident payload.
+1070:0b18	/The *v* has a memory resident infection system.
+1070:0b69	;The *v* has a memory resident payload and infection system.
+1070:0bba	2It has no stealth capability, and is very visible.
+1070:0c0b	$It has a minimum stealth capability.
+1070:0c5c	'It has intermediate stealth capability.
+1070:0cad	&It has an advanced stealth capability.
+1070:0cfe	$It avoids using interrupts to write.
+1070:0d4f	#It "tunnels", with minimum stealth.
+1070:0da0	(It "tunnels", with intermediate stealth.
+1070:0df1	$It "tunnels", with advanced stealth.
+1070:0e43	This *v* is not encrypted.
+1070:0e9d	'Some messages in the *v* are encrypted.
+1070:0ef9	The whole *v* is encrypted.
+1070:0f53	9The whole *v* is encrypted, and it has a variable loader.
+1070:0fae	MThe whole *v* is encrypted, there is a variable loader, and it resists Debug.
+1070:100b	There are no other effects.
+1070:105b	#This *v* overwrites infected files.
+1070:10ac	%The *v* plays tricks with the screen.
+1070:10fe	The *v* plays music or beeps.
+1070:114f	The *v* displays a message.
+1070:119f	%The *v* simulates a hardware failure.
+1070:11f0	3The *v* evades or attacks some anti-virus programs.
+1070:1242	The *v* patches other programs.
+1070:1292	'This *v* fakes bad sectors on the disk.
+1070:12e3	(This *v* plays tricks with the keyboard.
+1070:1334	'This *v* plays tricks with the printer.
+1070:1386	The *v* plays various tricks.
+1070:13d7	The *v* survives a warm reboot.
+1070:1427	 The *v* slows down the computer.
+1070:1479	The *v* deletes files.
+1070:14c9	*The *v* plays tricks with the serial port.
+1070:151a	%This *v* plays tricks with the clock.
+1070:156c	This *v* creates hidden files.
+1070:15bd	The *v* causes reboots.
+1070:160e	The *v* changes data.
+1070:165f	program
+1070:1689	packager
+1070:169e	joke program
+1070:16b3	trojan
+1070:16c8	"failed virus"
+1070:16dd	dropper
+1070:16f2	virus
+1070:1706	windows
+1070:170e	device
+1070:1730	(Inactive %s)
+1070:175c	TPWinCrt
+1070:1860	Error code = %d. Continue?
+1070:187b	Application Error
+1070:191e	Listbox
+1070:196e	Runtime error 000 at 0000:0000.
+1080:000e	bordlg_sands
+1080:001b	Integrity checking...
+1080:0045	PBorShade
+1080:0060	Checking file integrity...
+1088:000e	bordlg_sands
+1088:0030	PBorShade
+1088:0051	Button
+1088:006e	Button
+1088:0083	PBorStatic
+1090:000e	bordlg_sands
+1090:001b	Virus Encyclopaedia
+1090:005c	&Print
+1090:0079	Button
+1090:00bd	Can be repaired by the Toolkit
+1090:00ea	XBorCheck
+1090:0103	PBorShade
+1090:012d	PBorShade
+1090:0148	Search for:
+1090:0162	PBorShade
+1090:017d	Variants
+1090:0196	Repair
+1098:0015	File Open
+1098:0035	File&name:
+1098:0061	Directory:
+1098:008d	&Files:
+1098:00b6	&Directories:
+1098:00e3	PBorShade
+1098:0104	Button
+1098:0121	Button
+10a0:0015	File Save As
+10a0:0038	File&name:
+10a0:0064	Directory:
+10a0:00a1	&Directories:
+10a0:00bd	PBorShade
+10a0:00d6	PBorShade
+10a0:00f7	Button
+10a0:0114	Button
+10a8:0015	Select Directory
+10a8:004d	&Directories:
+10a8:0069	PBorShade
+10a8:0082	PBorShade
+10a8:00a3	Button
+10a8:00c0	Button
+10a8:00d7	Path:
+10b0:000f	File Open
+10b0:002f	File&name:
+10b0:005b	Directory:
+10b0:0087	&Files:
+10b0:00b0	&Directories:
+10b0:00f2	Cancel
+10b8:000f	File Save As
+10b8:0032	File&name:
+10b8:005e	Directory:
+10b8:009b	&Directories:
+10b8:00cc	Cancel
+10c0:005b	Cancel
+1110:024b	wwwwwwwwwwww
