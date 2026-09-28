@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>SOCAL SUBSURFACE 4Dwm — underground pipeline theater</title>
+  <meta name="description" content="Three.js theater of Southern California's buried infrastructure: aqueducts, product pipelines, rail corridors, geothermal fields and desert sites." />
+  <link rel="stylesheet" href="./css/socal-subsurface.css" />
+</head>
+<body>
+  <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
+  <div id="labels" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div>
+      <h1>SOCAL SUBSURFACE 4Dwm</h1>
+      <p>Aqueducts · product lines · rail corridors · geothermal · Mojave sites — schematic, not a survey</p>
+    </div>
+    <div class="actions">
+      <select id="viewSelect" aria-label="Jump to view">
+        <option value="basin">VIEW · BASIN</option>
+        <option value="transect">VIEW · TRANSECT</option>
+        <option value="mojave">VIEW · MOJAVE</option>
+        <option value="salton">VIEW · SALTON TROUGH</option>
+        <option value="kern">VIEW · KERN / BAKERSFIELD</option>
+        <option value="underground">VIEW · UNDERGROUND</option>
+      </select>
+      <button type="button" id="btnXray" aria-pressed="false">X-RAY</button>
+      <button type="button" id="btnWire" aria-pressed="false">WIREFRAME</button>
+      <button type="button" id="btnLabels" aria-pressed="true">LABELS</button>
+      <button type="button" id="btnReset">RESET</button>
+    </div>
+  </header>
+
+  <!-- PIP: HUD ---------------------------------------------------------- -->
+  <section class="pip" id="pipHud">
+    <div class="pip-head"><h2>HUD</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <dl class="kv">
+        <dt>camera</dt><dd id="hudCam">—</dd>
+        <dt>target</dt><dd id="hudTarget">—</dd>
+        <dt>cursor</dt><dd id="hudLonLat">—</dd>
+        <dt>ground</dt><dd id="hudElev">—</dd>
+        <dt>layers on</dt><dd id="hudLayers">—</dd>
+        <dt>pickable</dt><dd id="hudObjects">—</dd>
+        <dt>fps</dt><dd id="hudFps">—</dd>
+      </dl>
+      <div class="slider-row">
+        <label for="vertExag">terrain exaggeration <span id="vertExagVal">6×</span></label>
+        <input type="range" id="vertExag" min="1" max="18" step="1" value="6" />
+      </div>
+      <div class="slider-row">
+        <label for="depthExag">depth exaggeration <span id="depthExagVal">14×</span></label>
+        <input type="range" id="depthExag" min="1" max="60" step="1" value="14" />
+      </div>
+      <p class="hint" id="peer">offline · standalone</p>
+    </div>
+  </section>
+
+  <!-- PIP: layers ------------------------------------------------------- -->
+  <section class="pip" id="pipLayers">
+    <div class="pip-head"><h2>LAYERS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div id="layerList"></div>
+      <p class="hint" style="margin-top:8px">
+        Evidence tiers — <span style="color:#ffb020">official</span> operator/agency fact,
+        <span style="color:#5cd6ff">community</span> well-sourced secondary,
+        <span style="color:#ff6ec7">context</span> schematic only.
+      </p>
+    </div>
+  </section>
+
+  <!-- PIP: detail ------------------------------------------------------- -->
+  <section class="pip" id="pipDetail">
+    <div class="pip-head"><h2>DOSSIER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body" id="detailBody"></div>
+  </section>
+
+  <!-- PIP: minimap ------------------------------------------------------ -->
+  <section class="pip" id="pipMap">
+    <div class="pip-head"><h2>PLAN VIEW</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <canvas id="minimap" width="220" height="150" aria-label="Plan view of the theater"></canvas>
+      <p class="hint" style="margin:6px 0 0">Orthographic plan pass. White wedge is the main camera.</p>
+    </div>
+  </section>
+
+  <footer class="statusbar">
+    <span id="status" aria-live="polite">booting…</span>
+    <span>Generalized 5–15 km corridor accuracy · call 811 before you dig</span>
+  </footer>
+
+  <script src="./webxdc.js"></script>
+  <script type="module" src="./js/socal-subsurface.js"></script>
+</body>
+</html>
