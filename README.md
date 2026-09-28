@@ -638,6 +638,39 @@ not been broken. Details and the full table are in
 node --test tests/sanborn-viewer-sources.test.mjs
 ```
 
+### One container: the Sanborn Suite
+
+The codex and the viewer now also ship **fused into a single webxdc app** —
+[`public/apps/sanborn-suite/index.html`](public/apps/sanborn-suite/index.html),
+packed as `sanborn-suite.xdc` (2.25 MB of HTML, 882 KB zipped). Both programs
+are carried whole inside that one file as base64 payloads and written into their
+own same-origin child documents on first use, so every feature of each app keeps
+working — React/three.js galleries, the Cipher Lab and the zen-garden skins on
+one side, raw-WebGL scenes, the cipher simulator and the source-checked panels
+on the other — without their CSS resets, globals or key handlers colliding.
+Switch with the header buttons or <kbd>Alt</kbd>+<kbd>1</kbd> /
+<kbd>Alt</kbd>+<kbd>2</kbd> / <kbd>Alt</kbd>+<kbd>3</kbd> from anywhere,
+including from inside either app; each child is handed the host's
+`window.webxdc` so the container keeps one identity. Nothing is fetched at
+runtime — the tests assert that.
+
+```sh
+node scripts/build-sanborn-suite.mjs     # regenerate from the two packaged apps
+sh tools/pack_sanborn_suite_xdc.sh       # …and pack sanborn-suite.xdc
+node --test tests/sanborn-suite.test.mjs
+```
+
+### The "CES For Dummies guide" — source check
+
+There is no *Consumer Electronics Show For Dummies* and no *RSA For Dummies*:
+the books remembered from a convention floor are Wiley's sponsored *For Dummies,
+[Vendor] Special Edition* booklets, given away at booths with no ISBN and no
+price. The full check — including what the author's own 1,000-title library list
+does and does not contain, and what the Internet Archive holds on CES (Mattel's
+1978 planning memos, not a guidebook) — is in
+[docs/for-dummies-source-check.md](docs/for-dummies-source-check.md) and feeds
+Chapter XI of `greeran-book.html`.
+
 Additional contextual source: the Bulletin of the Atomic Scientists feature
 [“The faces that made the Bomb”](https://thebulletin.org/multimedia/the-faces-that-made-the-bomb/)
 (Bulletin Staff, June 19, 2013) is linked in a research spotlight. See the

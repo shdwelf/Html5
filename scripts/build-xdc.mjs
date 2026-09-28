@@ -74,3 +74,4 @@ async function packageAppXdc(appDir, xdcName) {
 
 await packageAppXdc("sanborn-codex", "sanborn-codex.xdc");
 await packageAppXdc("kryptos-vrml", "kryptos-vrml.xdc");
+await packageAppXdc("sanborn-suite", "sanborn-suite.xdc");

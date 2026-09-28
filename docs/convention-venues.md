@@ -384,6 +384,15 @@ were a crypto-industry group, submissions now cost $1 rather than $50, the
 Smithsonian papers are sealed until 2075 — and **the cipher system that produced
 K4 has still not been broken**. Finding plaintext in an archive is not a solve.
 
+### 10.3 The "CES For Dummies guide"
+
+Checked separately and recorded in [`for-dummies-source-check.md`](for-dummies-source-check.md):
+no such title exists. The convention-floor books are Wiley's sponsored *For
+Dummies, [Vendor] Special Edition* booklets; the Internet Archive has no CES
+guidebook, only Mattel's 1978 CES planning memos, Commodore's 1984 Winter CES
+preparation file and period magazine coverage; and the "pub crawl" is
+unverified.
+
 ### 10.2 What this means for the six-model exhibit
 
 The Walter E. Washington model shipped as tab 06 of `convention-centers.html`
