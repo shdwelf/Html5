@@ -1,0 +1,161 @@
+name: Dr Solomon encyclopaedia — Ghidra static analysis
+
+on:
+  push:
+    paths:
+      - '.github/workflows/drsolomon-ghidra.yml'
+      - 'tools/drsolomon_extract.py'
+      - 'tools/drsolomon_report.py'
+      - 'tools/ghidra_scripts/EncyclopediaReport.java'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GHIDRA_VERSION: '12.1.4'
+      GHIDRA_DATE: '20260921'
+      GHIDRA_SHA256: 'ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db'
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Fetch and hash-gate the 1992 disk image
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/drsolomon"
+          mkdir -p "$root"
+          log="$root/extract.log"
+          if ! {
+            curl -fL --retry 6 --retry-all-errors --connect-timeout 30 \
+              'https://archive.org/download/dr-solomon/DrSolomon.iso' \
+              -o "$RUNNER_TEMP/DrSolomon.iso"
+            stat -c 'downloaded bytes=%s' "$RUNNER_TEMP/DrSolomon.iso"
+            md5sum "$RUNNER_TEMP/DrSolomon.iso"
+            sha1sum "$RUNNER_TEMP/DrSolomon.iso"
+            python3 tools/drsolomon_extract.py \
+              "$RUNNER_TEMP/DrSolomon.iso" "$root"
+          } >"$log" 2>&1; then
+            cat "$log"
+            message=$(tail -n 80 "$log" | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+            echo "::error title=Dr Solomon extraction failed::$message"
+            exit 1
+          fi
+          cat "$log"
+
+      - name: Install pinned official Ghidra release
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/ghidra.zip"
+          url="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_build/ghidra_${GHIDRA_VERSION}_PUBLIC_${GHIDRA_DATE}.zip"
+          curl -fL --retry 6 --retry-all-errors --connect-timeout 30 "$url" -o "$archive"
+          echo "$GHIDRA_SHA256  $archive" | sha256sum --check --strict
+          unzip -q "$archive" -d "$RUNNER_TEMP"
+          test -x "$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC/support/analyzeHeadless"
+
+      - name: Disassemble and decompile every expanded executable
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/drsolomon"
+          reports="$root/reports"
+          projects="$RUNNER_TEMP/ghidra-projects"
+          headless="$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC/support/analyzeHeadless"
+          mkdir -p "$reports" "$projects" "$root/logs"
+
+          mapfile -t programs < <(python3 - "$root/inventory.json" <<'PY'
+          import json, pathlib, sys
+          inventory = json.loads(pathlib.Path(sys.argv[1]).read_text())
+          for row in inventory['expandedFiles']:
+              if 'executable' in row['kind'].lower():
+                  print(row['path'])
+          PY
+          )
+          printf 'Ghidra queue: %s\n' "${programs[@]}"
+          test "${#programs[@]}" -gt 0
+
+          failures=0
+          index=0
+          for program in "${programs[@]}"; do
+            index=$((index + 1))
+            base=$(basename "$program")
+            project=$(printf 'DSVE_%02d_%s' "$index" "$base" | tr -c 'A-Za-z0-9_' '_')
+            log="$root/logs/${base}.log"
+            echo "===== [$index/${#programs[@]}] $base =====" | tee "$log"
+            if ! timeout 10m "$headless" "$projects" "$project" \
+              -import "$program" \
+              -analysisTimeoutPerFile 300 \
+              -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+              -postScript EncyclopediaReport.java "$reports" \
+              -deleteProject >>"$log" 2>&1; then
+              failures=$((failures + 1))
+              echo "GHIDRA_FAILURE $base" | tee -a "$log"
+              message=$(tail -n 100 "$log" | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+              echo "::error title=Ghidra failed for $base::$message"
+            fi
+            tail -n 24 "$log"
+          done
+
+          report_count=$(find "$reports" -maxdepth 1 -name '*.ghidra.json' | wc -l)
+          echo "reports=$report_count failures=$failures programs=${#programs[@]}"
+          test "$report_count" -gt 0
+          find "$reports" -maxdepth 1 -iname '*VENCYCL*.ghidra.json' | grep -q .
+
+      - name: Build research report
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/drsolomon"
+          python3 tools/drsolomon_report.py \
+            "$root/inventory.json" "$root/reports" \
+            "$root/dr-solomon-virus-encyclopaedia-ghidra.md"
+          sed -n '1,240p' "$root/dr-solomon-virus-encyclopaedia-ghidra.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit the generated evidence report
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp "$RUNNER_TEMP/drsolomon/dr-solomon-virus-encyclopaedia-ghidra.md" \
+            docs/dr-solomon-virus-encyclopaedia-ghidra.md
+          mkdir -p docs/dr-solomon-ghidra-evidence
+          for suffix in asm c strings.txt ghidra.json; do
+            cp "$RUNNER_TEMP/drsolomon/reports/WVENCYCL.EXE.$suffix" \
+              "docs/dr-solomon-ghidra-evidence/WVENCYCL.EXE.$suffix"
+          done
+          git config user.name arena-ghidra-research
+          git config user.email arena-ghidra-research@users.noreply.github.com
+          git add docs/dr-solomon-virus-encyclopaedia-ghidra.md docs/dr-solomon-ghidra-evidence/
+          git commit -m "Document Ghidra analysis of Dr Solomon's Virus Encyclopaedia" || exit 0
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Remove source binaries before artifact upload
+        if: always()
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/drsolomon/raw" "$RUNNER_TEMP/drsolomon/expanded"
+          rm -f "$RUNNER_TEMP/DrSolomon.iso" "$RUNNER_TEMP/ghidra.zip"
+          find "$RUNNER_TEMP/drsolomon" -type f -maxdepth 3 -printf '%P\n' | sort || true
+
+      - name: Upload static-analysis evidence only
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: dr-solomon-ghidra-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/drsolomon/inventory.json
+            ${{ runner.temp }}/drsolomon/extract.log
+            ${{ runner.temp }}/drsolomon/logs
+            ${{ runner.temp }}/drsolomon/reports
+            ${{ runner.temp }}/drsolomon/dr-solomon-virus-encyclopaedia-ghidra.md
+          if-no-files-found: warn
+          retention-days: 30

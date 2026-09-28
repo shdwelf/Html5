@@ -1,0 +1,2994 @@
+{
+  "schemaVersion": 1,
+  "program": "WVENCYCL.EXE",
+  "ghidraVersion": "12.1.4",
+  "executableFormat": "New Executable (NE)",
+  "executablePath": "/home/runner/work/_temp/drsolomon/expanded/WVENCYCL.EXE",
+  "md5": "27e4829158805e958e2ac0e82d010741",
+  "sha256": "1eceb11ab373acfb08bd6a8e59c6bf1c26eec2404293229b84bbc177bb30dbd8",
+  "language": "x86:LE:16:Protected Mode",
+  "compiler": "default",
+  "imageBase": "0000:0000",
+  "minAddress": "1000:0000",
+  "maxAddress": "1150:037b",
+  "memoryBlocks": [
+    {
+      "name": "Code1",
+      "start": "1000:0000",
+      "end": "1000:268d",
+      "bytes": 9870,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.5337
+    },
+    {
+      "name": "Code2",
+      "start": "1008:0000",
+      "end": "1008:02e9",
+      "bytes": 746,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.075
+    },
+    {
+      "name": "Code3",
+      "start": "1010:0000",
+      "end": "1010:03d5",
+      "bytes": 982,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.0875
+    },
+    {
+      "name": "Code4",
+      "start": "1018:0000",
+      "end": "1018:01c9",
+      "bytes": 458,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.8668
+    },
+    {
+      "name": "Code5",
+      "start": "1020:0000",
+      "end": "1020:0558",
+      "bytes": 1369,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.2764
+    },
+    {
+      "name": "Code6",
+      "start": "1028:0000",
+      "end": "1028:0eda",
+      "bytes": 3803,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.4699
+    },
+    {
+      "name": "Code7",
+      "start": "1030:0000",
+      "end": "1030:003f",
+      "bytes": 64,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 4.385
+    },
+    {
+      "name": "Code8",
+      "start": "1038:0000",
+      "end": "1038:016a",
+      "bytes": 363,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.2719
+    },
+    {
+      "name": "Code9",
+      "start": "1040:0000",
+      "end": "1040:1eca",
+      "bytes": 7883,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.0266
+    },
+    {
+      "name": "Code10",
+      "start": "1048:0000",
+      "end": "1048:0864",
+      "bytes": 2149,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.8998
+    },
+    {
+      "name": "Code11",
+      "start": "1050:0000",
+      "end": "1050:0605",
+      "bytes": 1542,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.8723
+    },
+    {
+      "name": "Code12",
+      "start": "1058:0000",
+      "end": "1058:00ec",
+      "bytes": 237,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.5129
+    },
+    {
+      "name": "Code13",
+      "start": "1060:0000",
+      "end": "1060:0238",
+      "bytes": 569,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.9322
+    },
+    {
+      "name": "Code14",
+      "start": "1068:0000",
+      "end": "1068:0d7e",
+      "bytes": 3455,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.9058
+    },
+    {
+      "name": "Data15",
+      "start": "1070:0000",
+      "end": "1070:9fe5",
+      "bytes": 40934,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": true,
+      "entropy": 0.9048
+    },
+    {
+      "name": "Rsrc0",
+      "start": "1078:0000",
+      "end": "1078:02ff",
+      "bytes": 768,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.3616
+    },
+    {
+      "name": "Rsrc1",
+      "start": "1080:0000",
+      "end": "1080:00ff",
+      "bytes": 256,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.2979
+    },
+    {
+      "name": "Rsrc2",
+      "start": "1088:0000",
+      "end": "1088:00ff",
+      "bytes": 256,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.1581
+    },
+    {
+      "name": "Rsrc3",
+      "start": "1090:0000",
+      "end": "1090:01ff",
+      "bytes": 512,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.1676
+    },
+    {
+      "name": "Rsrc4",
+      "start": "1098:0000",
+      "end": "1098:01ff",
+      "bytes": 512,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.0298
+    },
+    {
+      "name": "Rsrc5",
+      "start": "10a0:0000",
+      "end": "10a0:01ff",
+      "bytes": 512,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.9476
+    },
+    {
+      "name": "Rsrc6",
+      "start": "10a8:0000",
+      "end": "10a8:00ff",
+      "bytes": 256,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.2389
+    },
+    {
+      "name": "Rsrc7",
+      "start": "10b0:0000",
+      "end": "10b0:00ff",
+      "bytes": 256,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.3198
+    },
+    {
+      "name": "Rsrc8",
+      "start": "10b8:0000",
+      "end": "10b8:00ff",
+      "bytes": 256,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.8842
+    },
+    {
+      "name": "Rsrc9",
+      "start": "10c0:0000",
+      "end": "10c0:00ff",
+      "bytes": 256,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.7837
+    },
+    {
+      "name": "Rsrc10",
+      "start": "10c8:0000",
+      "end": "10c8:00ff",
+      "bytes": 256,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 0.3287
+    },
+    {
+      "name": "Rsrc11",
+      "start": "10d0:0000",
+      "end": "10d0:03ff",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.0956
+    },
+    {
+      "name": "Rsrc12",
+      "start": "10d8:0000",
+      "end": "10d8:03ff",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.0588
+    },
+    {
+      "name": "Rsrc13",
+      "start": "10e0:0000",
+      "end": "10e0:02ff",
+      "bytes": 768,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.7761
+    },
+    {
+      "name": "Rsrc14",
+      "start": "10e8:0000",
+      "end": "10e8:01ff",
+      "bytes": 512,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.175
+    },
+    {
+      "name": "Rsrc15",
+      "start": "10f0:0000",
+      "end": "10f0:03ff",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.0443
+    },
+    {
+      "name": "Rsrc16",
+      "start": "10f8:0000",
+      "end": "10f8:03ff",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.5745
+    },
+    {
+      "name": "Rsrc17",
+      "start": "1100:0000",
+      "end": "1100:03ff",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.1262
+    },
+    {
+      "name": "Rsrc18",
+      "start": "1108:0000",
+      "end": "1108:03ff",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.2112
+    },
+    {
+      "name": "Rsrc19",
+      "start": "1110:0000",
+      "end": "1110:05ff",
+      "bytes": 1536,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.6727
+    },
+    {
+      "name": "Rsrc20",
+      "start": "1118:0000",
+      "end": "1118:03ff",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.6635
+    },
+    {
+      "name": "Rsrc21",
+      "start": "1120:0000",
+      "end": "1120:02ff",
+      "bytes": 768,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.9521
+    },
+    {
+      "name": "Rsrc22",
+      "start": "1128:0000",
+      "end": "1128:02ff",
+      "bytes": 768,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.5988
+    },
+    {
+      "name": "Rsrc23",
+      "start": "1130:0000",
+      "end": "1130:03ff",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.7692
+    },
+    {
+      "name": "Rsrc24",
+      "start": "1138:0000",
+      "end": "1138:04ff",
+      "bytes": 1280,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.5225
+    },
+    {
+      "name": "Rsrc25",
+      "start": "1140:0000",
+      "end": "1140:03ff",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.8404
+    },
+    {
+      "name": "Rsrc26",
+      "start": "1148:0000",
+      "end": "1148:03ff",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.7504
+    },
+    {
+      "name": "EXTERNAL",
+      "start": "1150:0000",
+      "end": "1150:037b",
+      "bytes": 892,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": false
+    }
+  ],
+  "entryPoints": [
+    {
+      "address": "1000:260b",
+      "name": "entry",
+      "function": ""
+    },
+    {
+      "address": "1000:2577",
+      "name": "FUN_1000_2577",
+      "function": "FUN_1000_2577"
+    },
+    {
+      "address": "1000:0002",
+      "name": "FUN_1000_0002",
+      "function": "FUN_1000_0002"
+    },
+    {
+      "address": "1000:008a",
+      "name": "FUN_1000_008a",
+      "function": "FUN_1000_008a"
+    },
+    {
+      "address": "1000:00da",
+      "name": "FUN_1000_00da",
+      "function": "FUN_1000_00da"
+    },
+    {
+      "address": "1000:0113",
+      "name": "FUN_1000_0113",
+      "function": "FUN_1000_0113"
+    },
+    {
+      "address": "1000:157a",
+      "name": "FUN_1000_157a",
+      "function": "FUN_1000_157a"
+    },
+    {
+      "address": "1000:25a6",
+      "name": "FUN_1000_25a6",
+      "function": "FUN_1000_25a6"
+    },
+    {
+      "address": "1000:25c9",
+      "name": "FUN_1000_25c9",
+      "function": "FUN_1000_25c9"
+    },
+    {
+      "address": "1000:0195",
+      "name": "FUN_1000_0195",
+      "function": "FUN_1000_0195"
+    },
+    {
+      "address": "1000:02cb",
+      "name": "FUN_1000_02cb",
+      "function": "FUN_1000_02cb"
+    },
+    {
+      "address": "1000:04a8",
+      "name": "FUN_1000_04a8",
+      "function": "FUN_1000_04a8"
+    },
+    {
+      "address": "1000:0c97",
+      "name": "FUN_1000_0c97",
+      "function": "FUN_1000_0c97"
+    },
+    {
+      "address": "1000:1783",
+      "name": "FUN_1000_1783",
+      "function": "FUN_1000_1783"
+    },
+    {
+      "address": "1000:1c16",
+      "name": "FUN_1000_1c16",
+      "function": "FUN_1000_1c16"
+    },
+    {
+      "address": "1000:1c38",
+      "name": "FUN_1000_1c38",
+      "function": "FUN_1000_1c38"
+    },
+    {
+      "address": "1000:1e25",
+      "name": "FUN_1000_1e25",
+      "function": "FUN_1000_1e25"
+    },
+    {
+      "address": "1000:202a",
+      "name": "FUN_1000_202a",
+      "function": "FUN_1000_202a"
+    },
+    {
+      "address": "1000:204f",
+      "name": "FUN_1000_204f",
+      "function": "FUN_1000_204f"
+    },
+    {
+      "address": "1000:2081",
+      "name": "FUN_1000_2081",
+      "function": "FUN_1000_2081"
+    },
+    {
+      "address": "1000:20b4",
+      "name": "FUN_1000_20b4",
+      "function": "FUN_1000_20b4"
+    },
+    {
+      "address": "1000:211e",
+      "name": "FUN_1000_211e",
+      "function": "FUN_1000_211e"
+    },
+    {
+      "address": "1000:0ab0",
+      "name": "FUN_1000_0ab0",
+      "function": "FUN_1000_0ab0"
+    },
+    {
+      "address": "1008:0002",
+      "name": "FUN_1008_0002",
+      "function": "FUN_1008_0002"
+    },
+    {
+      "address": "1008:0102",
+      "name": "FUN_1008_0102",
+      "function": "FUN_1008_0102"
+    },
+    {
+      "address": "1008:01b4",
+      "name": "FUN_1008_01b4",
+      "function": "FUN_1008_01b4"
+    },
+    {
+      "address": "1008:02a7",
+      "name": "FUN_1008_02a7",
+      "function": "FUN_1008_02a7"
+    },
+    {
+      "address": "1010:03b6",
+      "name": "FUN_1010_03b6",
+      "function": "FUN_1010_03b6"
+    },
+    {
+      "address": "1010:003c",
+      "name": "FUN_1010_003c",
+      "function": "FUN_1010_003c"
+    },
+    {
+      "address": "1010:0066",
+      "name": "FUN_1010_0066",
+      "function": "FUN_1010_0066"
+    },
+    {
+      "address": "1010:00d1",
+      "name": "FUN_1010_00d1",
+      "function": "FUN_1010_00d1"
+    },
+    {
+      "address": "1010:015d",
+      "name": "FUN_1010_015d",
+      "function": "FUN_1010_015d"
+    },
+    {
+      "address": "1010:01b5",
+      "name": "FUN_1010_01b5",
+      "function": "FUN_1010_01b5"
+    },
+    {
+      "address": "1010:022e",
+      "name": "FUN_1010_022e",
+      "function": "FUN_1010_022e"
+    },
+    {
+      "address": "1010:0002",
+      "name": "FUN_1010_0002",
+      "function": "FUN_1010_0002"
+    },
+    {
+      "address": "1010:0090",
+      "name": "FUN_1010_0090",
+      "function": "FUN_1010_0090"
+    },
+    {
+      "address": "1010:025a",
+      "name": "FUN_1010_025a",
+      "function": "FUN_1010_025a"
+    },
+    {
+      "address": "1010:02eb",
+      "name": "FUN_1010_02eb",
+      "function": "FUN_1010_02eb"
+    },
+    {
+      "address": "1010:036d",
+      "name": "FUN_1010_036d",
+      "function": "FUN_1010_036d"
+    },
+    {
+      "address": "1018:01aa",
+      "name": "FUN_1018_01aa",
+      "function": "FUN_1018_01aa"
+    },
+    {
+      "address": "1018:000f",
+      "name": "FUN_1018_000f",
+      "function": "FUN_1018_000f"
+    },
+    {
+      "address": "1020:052f",
+      "name": "FUN_1020_052f",
+      "function": "FUN_1020_052f"
+    },
+    {
+      "address": "1020:0002",
+      "name": "FUN_1020_0002",
+      "function": "FUN_1020_0002"
+    },
+    {
+      "address": "1020:002d",
+      "name": "FUN_1020_002d",
+      "function": "FUN_1020_002d"
+    },
+    {
+      "address": "1020:02ea",
+      "name": "FUN_1020_02ea",
+      "function": "FUN_1020_02ea"
+    },
+    {
+      "address": "1020:026b",
+      "name": "FUN_1020_026b",
+      "function": "FUN_1020_026b"
+    },
+    {
+      "address": "1020:04d7",
+      "name": "FUN_1020_04d7",
+      "function": "FUN_1020_04d7"
+    },
+    {
+      "address": "1028:0e27",
+      "name": "FUN_1028_0e27",
+      "function": "FUN_1028_0e27"
+    },
+    {
+      "address": "1028:0d15",
+      "name": "FUN_1028_0d15",
+      "function": "FUN_1028_0d15"
+    },
+    {
+      "address": "1028:03e4",
+      "name": "FUN_1028_03e4",
+      "function": "FUN_1028_03e4"
+    },
+    {
+      "address": "1028:04bc",
+      "name": "FUN_1028_04bc",
+      "function": "FUN_1028_04bc"
+    },
+    {
+      "address": "1028:04d6",
+      "name": "FUN_1028_04d6",
+      "function": "FUN_1028_04d6"
+    },
+    {
+      "address": "1028:0532",
+      "name": "FUN_1028_0532",
+      "function": "FUN_1028_0532"
+    },
+    {
+      "address": "1028:0599",
+      "name": "FUN_1028_0599",
+      "function": "FUN_1028_0599"
+    },
+    {
+      "address": "1028:01c1",
+      "name": "FUN_1028_01c1",
+      "function": "FUN_1028_01c1"
+    },
+    {
+      "address": "1028:028a",
+      "name": "FUN_1028_028a",
+      "function": "FUN_1028_028a"
+    },
+    {
+      "address": "1028:0cd0",
+      "name": "FUN_1028_0cd0",
+      "function": "FUN_1028_0cd0"
+    },
+    {
+      "address": "1028:0aec",
+      "name": "FUN_1028_0aec",
+      "function": "FUN_1028_0aec"
+    },
+    {
+      "address": "1028:0bcf",
+      "name": "FUN_1028_0bcf",
+      "function": "FUN_1028_0bcf"
+    },
+    {
+      "address": "1028:0c0f",
+      "name": "FUN_1028_0c0f",
+      "function": "FUN_1028_0c0f"
+    },
+    {
+      "address": "1028:0c47",
+      "name": "FUN_1028_0c47",
+      "function": "FUN_1028_0c47"
+    },
+    {
+      "address": "1028:0c5e",
+      "name": "FUN_1028_0c5e",
+      "function": "FUN_1028_0c5e"
+    },
+    {
+      "address": "1028:0d78",
+      "name": "FUN_1028_0d78",
+      "function": "FUN_1028_0d78"
+    },
+    {
+      "address": "1030:0002",
+      "name": "FUN_1030_0002",
+      "function": "FUN_1030_0002"
+    },
+    {
+      "address": "1038:0002",
+      "name": "FUN_1038_0002",
+      "function": "FUN_1038_0002"
+    },
+    {
+      "address": "1040:0341",
+      "name": "FUN_1040_0341",
+      "function": "FUN_1040_0341"
+    },
+    {
+      "address": "1040:03ff",
+      "name": "FUN_1040_03ff",
+      "function": "FUN_1040_03ff"
+    },
+    {
+      "address": "1040:0bcd",
+      "name": "FUN_1040_0bcd",
+      "function": "FUN_1040_0bcd"
+    },
+    {
+      "address": "1040:0c57",
+      "name": "FUN_1040_0c57",
+      "function": "FUN_1040_0c57"
+    },
+    {
+      "address": "1040:0c73",
+      "name": "FUN_1040_0c73",
+      "function": "FUN_1040_0c73"
+    },
+    {
+      "address": "1040:065b",
+      "name": "FUN_1040_065b",
+      "function": "FUN_1040_065b"
+    },
+    {
+      "address": "1040:068d",
+      "name": "FUN_1040_068d",
+      "function": "FUN_1040_068d"
+    },
+    {
+      "address": "1040:0827",
+      "name": "FUN_1040_0827",
+      "function": "FUN_1040_0827"
+    },
+    {
+      "address": "1040:0874",
+      "name": "FUN_1040_0874",
+      "function": "FUN_1040_0874"
+    },
+    {
+      "address": "1040:05f3",
+      "name": "FUN_1040_05f3",
+      "function": "FUN_1040_05f3"
+    },
+    {
+      "address": "1040:060d",
+      "name": "FUN_1040_060d",
+      "function": "FUN_1040_060d"
+    },
+    {
+      "address": "1040:0641",
+      "name": "FUN_1040_0641",
+      "function": "FUN_1040_0641"
+    },
+    {
+      "address": "1040:0627",
+      "name": "FUN_1040_0627",
+      "function": "FUN_1040_0627"
+    },
+    {
+      "address": "1040:0e2f",
+      "name": "FUN_1040_0e2f",
+      "function": "FUN_1040_0e2f"
+    },
+    {
+      "address": "1040:0d01",
+      "name": "FUN_1040_0d01",
+      "function": "FUN_1040_0d01"
+    },
+    {
+      "address": "1040:08c6",
+      "name": "FUN_1040_08c6",
+      "function": "FUN_1040_08c6"
+    },
+    {
+      "address": "1040:10d2",
+      "name": "FUN_1040_10d2",
+      "function": "FUN_1040_10d2"
+    },
+    {
+      "address": "1040:0d84",
+      "name": "FUN_1040_0d84",
+      "function": "FUN_1040_0d84"
+    },
+    {
+      "address": "1040:0e87",
+      "name": "FUN_1040_0e87",
+      "function": "FUN_1040_0e87"
+    },
+    {
+      "address": "1040:0edd",
+      "name": "FUN_1040_0edd",
+      "function": "FUN_1040_0edd"
+    },
+    {
+      "address": "1040:05dc",
+      "name": "FUN_1040_05dc",
+      "function": "FUN_1040_05dc"
+    },
+    {
+      "address": "1040:0df3",
+      "name": "FUN_1040_0df3",
+      "function": "FUN_1040_0df3"
+    },
+    {
+      "address": "1040:0a9f",
+      "name": "FUN_1040_0a9f",
+      "function": "FUN_1040_0a9f"
+    },
+    {
+      "address": "1040:0f21",
+      "name": "FUN_1040_0f21",
+      "function": "FUN_1040_0f21"
+    },
+    {
+      "address": "1040:06b4",
+      "name": "FUN_1040_06b4",
+      "function": "FUN_1040_06b4"
+    },
+    {
+      "address": "1040:0736",
+      "name": "FUN_1040_0736",
+      "function": "FUN_1040_0736"
+    },
+    {
+      "address": "1040:055c",
+      "name": "FUN_1040_055c",
+      "function": "FUN_1040_055c"
+    },
+    {
+      "address": "1040:0b3f",
+      "name": "FUN_1040_0b3f",
+      "function": "FUN_1040_0b3f"
+    },
+    {
+      "address": "1040:0b86",
+      "name": "FUN_1040_0b86",
+      "function": "FUN_1040_0b86"
+    },
+    {
+      "address": "1040:090a",
+      "name": "FUN_1040_090a",
+      "function": "FUN_1040_090a"
+    },
+    {
+      "address": "1040:0f0b",
+      "name": "FUN_1040_0f0b",
+      "function": "FUN_1040_0f0b"
+    },
+    {
+      "address": "1040:0f76",
+      "name": "FUN_1040_0f76",
+      "function": "FUN_1040_0f76"
+    },
+    {
+      "address": "1040:0fb5",
+      "name": "FUN_1040_0fb5",
+      "function": "FUN_1040_0fb5"
+    },
+    {
+      "address": "1040:0fe6",
+      "name": "FUN_1040_0fe6",
+      "function": "FUN_1040_0fe6"
+    },
+    {
+      "address": "1040:103d",
+      "name": "FUN_1040_103d",
+      "function": "FUN_1040_103d"
+    },
+    {
+      "address": "1040:1093",
+      "name": "FUN_1040_1093",
+      "function": "FUN_1040_1093"
+    },
+    {
+      "address": "1040:1148",
+      "name": "FUN_1040_1148",
+      "function": "FUN_1040_1148"
+    },
+    {
+      "address": "1040:10ef",
+      "name": "FUN_1040_10ef",
+      "function": "FUN_1040_10ef"
+    },
+    {
+      "address": "1040:11b9",
+      "name": "FUN_1040_11b9",
+      "function": "FUN_1040_11b9"
+    },
+    {
+      "address": "1040:148c",
+      "name": "FUN_1040_148c",
+      "function": "FUN_1040_148c"
+    },
+    {
+      "address": "1040:14cb",
+      "name": "FUN_1040_14cb",
+      "function": "FUN_1040_14cb"
+    },
+    {
+      "address": "1040:123a",
+      "name": "FUN_1040_123a",
+      "function": "FUN_1040_123a"
+    },
+    {
+      "address": "1040:1294",
+      "name": "FUN_1040_1294",
+      "function": "FUN_1040_1294"
+    },
+    {
+      "address": "1040:1256",
+      "name": "FUN_1040_1256",
+      "function": "FUN_1040_1256"
+    },
+    {
+      "address": "1040:15e2",
+      "name": "FUN_1040_15e2",
+      "function": "FUN_1040_15e2"
+    },
+    {
+      "address": "1040:1630",
+      "name": "FUN_1040_1630",
+      "function": "FUN_1040_1630"
+    },
+    {
+      "address": "1040:1651",
+      "name": "FUN_1040_1651",
+      "function": "FUN_1040_1651"
+    },
+    {
+      "address": "1040:16a6",
+      "name": "FUN_1040_16a6",
+      "function": "FUN_1040_16a6"
+    },
+    {
+      "address": "1040:16cd",
+      "name": "FUN_1040_16cd",
+      "function": "FUN_1040_16cd"
+    },
+    {
+      "address": "1040:173d",
+      "name": "FUN_1040_173d",
+      "function": "FUN_1040_173d"
+    },
+    {
+      "address": "1040:17ad",
+      "name": "FUN_1040_17ad",
+      "function": "FUN_1040_17ad"
+    },
+    {
+      "address": "1040:182e",
+      "name": "FUN_1040_182e",
+      "function": "FUN_1040_182e"
+    },
+    {
+      "address": "1040:183a",
+      "name": "FUN_1040_183a",
+      "function": "FUN_1040_183a"
+    },
+    {
+      "address": "1040:18b1",
+      "name": "FUN_1040_18b1",
+      "function": "FUN_1040_18b1"
+    },
+    {
+      "address": "1040:18d7",
+      "name": "FUN_1040_18d7",
+      "function": "FUN_1040_18d7"
+    },
+    {
+      "address": "1040:195f",
+      "name": "FUN_1040_195f",
+      "function": "FUN_1040_195f"
+    },
+    {
+      "address": "1040:1505",
+      "name": "FUN_1040_1505",
+      "function": "FUN_1040_1505"
+    },
+    {
+      "address": "1040:19b2",
+      "name": "FUN_1040_19b2",
+      "function": "FUN_1040_19b2"
+    },
+    {
+      "address": "1040:1a59",
+      "name": "FUN_1040_1a59",
+      "function": "FUN_1040_1a59"
+    },
+    {
+      "address": "1040:1a86",
+      "name": "FUN_1040_1a86",
+      "function": "FUN_1040_1a86"
+    },
+    {
+      "address": "1040:1a9c",
+      "name": "FUN_1040_1a9c",
+      "function": "FUN_1040_1a9c"
+    },
+    {
+      "address": "1040:1aa8",
+      "name": "FUN_1040_1aa8",
+      "function": "FUN_1040_1aa8"
+    },
+    {
+      "address": "1040:1b01",
+      "name": "FUN_1040_1b01",
+      "function": "FUN_1040_1b01"
+    },
+    {
+      "address": "1040:1b30",
+      "name": "FUN_1040_1b30",
+      "function": "FUN_1040_1b30"
+    },
+    {
+      "address": "1040:1b4d",
+      "name": "FUN_1040_1b4d",
+      "function": "FUN_1040_1b4d"
+    },
+    {
+      "address": "1040:1bd0",
+      "name": "FUN_1040_1bd0",
+      "function": "FUN_1040_1bd0"
+    },
+    {
+      "address": "1040:1c27",
+      "name": "FUN_1040_1c27",
+      "function": "FUN_1040_1c27"
+    },
+    {
+      "address": "1040:1c73",
+      "name": "FUN_1040_1c73",
+      "function": "FUN_1040_1c73"
+    },
+    {
+      "address": "1040:1cb5",
+      "name": "FUN_1040_1cb5",
+      "function": "FUN_1040_1cb5"
+    },
+    {
+      "address": "1040:1d8a",
+      "name": "FUN_1040_1d8a",
+      "function": "FUN_1040_1d8a"
+    },
+    {
+      "address": "1040:1e01",
+      "name": "FUN_1040_1e01",
+      "function": "FUN_1040_1e01"
+    },
+    {
+      "address": "1040:1d02",
+      "name": "FUN_1040_1d02",
+      "function": "FUN_1040_1d02"
+    },
+    {
+      "address": "1040:1e65",
+      "name": "FUN_1040_1e65",
+      "function": "FUN_1040_1e65"
+    },
+    {
+      "address": "1040:1ea7",
+      "name": "FUN_1040_1ea7",
+      "function": "FUN_1040_1ea7"
+    },
+    {
+      "address": "1040:0097",
+      "name": "FUN_1040_0097",
+      "function": "FUN_1040_0097"
+    },
+    {
+      "address": "1040:0045",
+      "name": "FUN_1040_0045",
+      "function": "FUN_1040_0045"
+    },
+    {
+      "address": "1040:0071",
+      "name": "FUN_1040_0071",
+      "function": "FUN_1040_0071"
+    },
+    {
+      "address": "1040:0133",
+      "name": "FUN_1040_0133",
+      "function": "FUN_1040_0133"
+    },
+    {
+      "address": "1040:018b",
+      "name": "FUN_1040_018b",
+      "function": "FUN_1040_018b"
+    },
+    {
+      "address": "1040:01dc",
+      "name": "FUN_1040_01dc",
+      "function": "FUN_1040_01dc"
+    },
+    {
+      "address": "1040:02fa",
+      "name": "FUN_1040_02fa",
+      "function": "FUN_1040_02fa"
+    },
+    {
+      "address": "1040:03e9",
+      "name": "FUN_1040_03e9",
+      "function": "FUN_1040_03e9"
+    },
+    {
+      "address": "1040:0466",
+      "name": "FUN_1040_0466",
+      "function": "FUN_1040_0466"
+    },
+    {
+      "address": "1040:049e",
+      "name": "FUN_1040_049e",
+      "function": "FUN_1040_049e"
+    },
+    {
+      "address": "1040:0524",
+      "name": "FUN_1040_0524",
+      "function": "FUN_1040_0524"
+    },
+    {
+      "address": "1040:08dd",
+      "name": "FUN_1040_08dd",
+      "function": "FUN_1040_08dd"
+    },
+    {
+      "address": "1040:0ce1",
+      "name": "FUN_1040_0ce1",
+      "function": "FUN_1040_0ce1"
+    },
+    {
+      "address": "1040:0db6",
+      "name": "FUN_1040_0db6",
+      "function": "FUN_1040_0db6"
+    },
+    {
+      "address": "1040:0ea9",
+      "name": "FUN_1040_0ea9",
+      "function": "FUN_1040_0ea9"
+    },
+    {
+      "address": "1048:0002",
+      "name": "FUN_1048_0002",
+      "function": "FUN_1048_0002"
+    },
+    {
+      "address": "1048:007a",
+      "name": "FUN_1048_007a",
+      "function": "FUN_1048_007a"
+    },
+    {
+      "address": "1048:00b1",
+      "name": "FUN_1048_00b1",
+      "function": "FUN_1048_00b1"
+    },
+    {
+      "address": "1048:014f",
+      "name": "FUN_1048_014f",
+      "function": "FUN_1048_014f"
+    },
+    {
+      "address": "1048:023d",
+      "name": "FUN_1048_023d",
+      "function": "FUN_1048_023d"
+    },
+    {
+      "address": "1048:0345",
+      "name": "FUN_1048_0345",
+      "function": "FUN_1048_0345"
+    },
+    {
+      "address": "1048:0394",
+      "name": "FUN_1048_0394",
+      "function": "FUN_1048_0394"
+    },
+    {
+      "address": "1048:03dc",
+      "name": "FUN_1048_03dc",
+      "function": "FUN_1048_03dc"
+    },
+    {
+      "address": "1048:0274",
+      "name": "FUN_1048_0274",
+      "function": "FUN_1048_0274"
+    },
+    {
+      "address": "1048:028b",
+      "name": "FUN_1048_028b",
+      "function": "FUN_1048_028b"
+    },
+    {
+      "address": "1048:0408",
+      "name": "FUN_1048_0408",
+      "function": "FUN_1048_0408"
+    },
+    {
+      "address": "1048:02ef",
+      "name": "FUN_1048_02ef",
+      "function": "FUN_1048_02ef"
+    },
+    {
+      "address": "1048:037b",
+      "name": "FUN_1048_037b",
+      "function": "FUN_1048_037b"
+    },
+    {
+      "address": "1048:0429",
+      "name": "FUN_1048_0429",
+      "function": "FUN_1048_0429"
+    },
+    {
+      "address": "1048:04ab",
+      "name": "FUN_1048_04ab",
+      "function": "FUN_1048_04ab"
+    },
+    {
+      "address": "1048:04dd",
+      "name": "FUN_1048_04dd",
+      "function": "FUN_1048_04dd"
+    },
+    {
+      "address": "1048:0517",
+      "name": "FUN_1048_0517",
+      "function": "FUN_1048_0517"
+    },
+    {
+      "address": "1048:052d",
+      "name": "FUN_1048_052d",
+      "function": "FUN_1048_052d"
+    },
+    {
+      "address": "1048:0549",
+      "name": "FUN_1048_0549",
+      "function": "FUN_1048_0549"
+    },
+    {
+      "address": "1048:0795",
+      "name": "FUN_1048_0795",
+      "function": "FUN_1048_0795"
+    },
+    {
+      "address": "1048:0589",
+      "name": "FUN_1048_0589",
+      "function": "FUN_1048_0589"
+    },
+    {
+      "address": "1048:07c9",
+      "name": "FUN_1048_07c9",
+      "function": "FUN_1048_07c9"
+    },
+    {
+      "address": "1048:07ea",
+      "name": "FUN_1048_07ea",
+      "function": "FUN_1048_07ea"
+    },
+    {
+      "address": "1048:083c",
+      "name": "FUN_1048_083c",
+      "function": "FUN_1048_083c"
+    },
+    {
+      "address": "1048:021d",
+      "name": "FUN_1048_021d",
+      "function": "FUN_1048_021d"
+    },
+    {
+      "address": "1048:0569",
+      "name": "FUN_1048_0569",
+      "function": "FUN_1048_0569"
+    },
+    {
+      "address": "1050:0002",
+      "name": "FUN_1050_0002",
+      "function": "FUN_1050_0002"
+    },
+    {
+      "address": "1050:001c",
+      "name": "FUN_1050_001c",
+      "function": "FUN_1050_001c"
+    },
+    {
+      "address": "1050:0036",
+      "name": "FUN_1050_0036",
+      "function": "FUN_1050_0036"
+    },
+    {
+      "address": "1050:0049",
+      "name": "FUN_1050_0049",
+      "function": "FUN_1050_0049"
+    },
+    {
+      "address": "1050:00bb",
+      "name": "FUN_1050_00bb",
+      "function": "FUN_1050_00bb"
+    },
+    {
+      "address": "1050:011f",
+      "name": "FUN_1050_011f",
+      "function": "FUN_1050_011f"
+    },
+    {
+      "address": "1050:0171",
+      "name": "FUN_1050_0171",
+      "function": "FUN_1050_0171"
+    },
+    {
+      "address": "1050:019b",
+      "name": "FUN_1050_019b",
+      "function": "FUN_1050_019b"
+    },
+    {
+      "address": "1050:01d2",
+      "name": "FUN_1050_01d2",
+      "function": "FUN_1050_01d2"
+    },
+    {
+      "address": "1050:0248",
+      "name": "FUN_1050_0248",
+      "function": "FUN_1050_0248"
+    },
+    {
+      "address": "1050:025f",
+      "name": "FUN_1050_025f",
+      "function": "FUN_1050_025f"
+    },
+    {
+      "address": "1050:0293",
+      "name": "FUN_1050_0293",
+      "function": "FUN_1050_0293"
+    },
+    {
+      "address": "1050:02e7",
+      "name": "FUN_1050_02e7",
+      "function": "FUN_1050_02e7"
+    },
+    {
+      "address": "1050:03ac",
+      "name": "FUN_1050_03ac",
+      "function": "FUN_1050_03ac"
+    },
+    {
+      "address": "1050:03e1",
+      "name": "FUN_1050_03e1",
+      "function": "FUN_1050_03e1"
+    },
+    {
+      "address": "1050:0469",
+      "name": "FUN_1050_0469",
+      "function": "FUN_1050_0469"
+    },
+    {
+      "address": "1050:04bc",
+      "name": "FUN_1050_04bc",
+      "function": "FUN_1050_04bc"
+    },
+    {
+      "address": "1050:04dd",
+      "name": "FUN_1050_04dd",
+      "function": "FUN_1050_04dd"
+    },
+    {
+      "address": "1050:0588",
+      "name": "FUN_1050_0588",
+      "function": "FUN_1050_0588"
+    },
+    {
+      "address": "1050:05ae",
+      "name": "FUN_1050_05ae",
+      "function": "FUN_1050_05ae"
+    },
+    {
+      "address": "1050:05c5",
+      "name": "FUN_1050_05c5",
+      "function": "FUN_1050_05c5"
+    },
+    {
+      "address": "1050:05ea",
+      "name": "FUN_1050_05ea",
+      "function": "FUN_1050_05ea"
+    },
+    {
+      "address": "1058:00d1",
+      "name": "FUN_1058_00d1",
+      "function": "FUN_1058_00d1"
+    },
+    {
+      "address": "1058:0002",
+      "name": "FUN_1058_0002",
+      "function": "FUN_1058_0002"
+    },
+    {
+      "address": "1058:0021",
+      "name": "FUN_1058_0021",
+      "function": "FUN_1058_0021"
+    },
+    {
+      "address": "1058:0044",
+      "name": "FUN_1058_0044",
+      "function": "FUN_1058_0044"
+    },
+    {
+      "address": "1058:007d",
+      "name": "FUN_1058_007d",
+      "function": "FUN_1058_007d"
+    },
+    {
+      "address": "1060:0002",
+      "name": "FUN_1060_0002",
+      "function": "FUN_1060_0002"
+    },
+    {
+      "address": "1060:0019",
+      "name": "FUN_1060_0019",
+      "function": "FUN_1060_0019"
+    },
+    {
+      "address": "1060:0030",
+      "name": "FUN_1060_0030",
+      "function": "FUN_1060_0030"
+    },
+    {
+      "address": "1060:0077",
+      "name": "FUN_1060_0077",
+      "function": "FUN_1060_0077"
+    },
+    {
+      "address": "1060:009f",
+      "name": "FUN_1060_009f",
+      "function": "FUN_1060_009f"
+    },
+    {
+      "address": "1060:00bd",
+      "name": "FUN_1060_00bd",
+      "function": "FUN_1060_00bd"
+    },
+    {
+      "address": "1060:00e0",
+      "name": "FUN_1060_00e0",
+      "function": "FUN_1060_00e0"
+    },
+    {
+      "address": "1060:0109",
+      "name": "FUN_1060_0109",
+      "function": "FUN_1060_0109"
+    },
+    {
+      "address": "1060:0131",
+      "name": "FUN_1060_0131",
+      "function": "FUN_1060_0131"
+    },
+    {
+      "address": "1060:0158",
+      "name": "FUN_1060_0158",
+      "function": "FUN_1060_0158"
+    },
+    {
+      "address": "1060:017e",
+      "name": "FUN_1060_017e",
+      "function": "FUN_1060_017e"
+    },
+    {
+      "address": "1060:01a0",
+      "name": "FUN_1060_01a0",
+      "function": "FUN_1060_01a0"
+    },
+    {
+      "address": "1060:020d",
+      "name": "FUN_1060_020d",
+      "function": "FUN_1060_020d"
+    },
+    {
+      "address": "1068:0002",
+      "name": "FUN_1068_0002",
+      "function": "FUN_1068_0002"
+    },
+    {
+      "address": "1068:005d",
+      "name": "FUN_1068_005d",
+      "function": "FUN_1068_005d"
+    },
+    {
+      "address": "1068:0061",
+      "name": "FUN_1068_0061",
+      "function": "FUN_1068_0061"
+    },
+    {
+      "address": "1068:0891",
+      "name": "FUN_1068_0891",
+      "function": "FUN_1068_0891"
+    },
+    {
+      "address": "1068:08ab",
+      "name": "FUN_1068_08ab",
+      "function": "FUN_1068_08ab"
+    },
+    {
+      "address": "1068:08cf",
+      "name": "FUN_1068_08cf",
+      "function": "FUN_1068_08cf"
+    },
+    {
+      "address": "1068:0910",
+      "name": "FUN_1068_0910",
+      "function": "FUN_1068_0910"
+    },
+    {
+      "address": "1068:093c",
+      "name": "FUN_1068_093c",
+      "function": "FUN_1068_093c"
+    },
+    {
+      "address": "1068:0982",
+      "name": "FUN_1068_0982",
+      "function": "FUN_1068_0982"
+    },
+    {
+      "address": "1068:09ad",
+      "name": "FUN_1068_09ad",
+      "function": "FUN_1068_09ad"
+    },
+    {
+      "address": "1068:0a39",
+      "name": "FUN_1068_0a39",
+      "function": "FUN_1068_0a39"
+    },
+    {
+      "address": "1068:012d",
+      "name": "FUN_1068_012d",
+      "function": "FUN_1068_012d"
+    },
+    {
+      "address": "1068:0147",
+      "name": "FUN_1068_0147",
+      "function": "FUN_1068_0147"
+    },
+    {
+      "address": "1068:0866",
+      "name": "FUN_1068_0866",
+      "function": "FUN_1068_0866"
+    },
+    {
+      "address": "1068:038f",
+      "name": "FUN_1068_038f",
+      "function": "FUN_1068_038f"
+    },
+    {
+      "address": "1068:03cb",
+      "name": "FUN_1068_03cb",
+      "function": "FUN_1068_03cb"
+    },
+    {
+      "address": "1068:0760",
+      "name": "FUN_1068_0760",
+      "function": "FUN_1068_0760"
+    },
+    {
+      "address": "1068:0527",
+      "name": "FUN_1068_0527",
+      "function": "FUN_1068_0527"
+    },
+    {
+      "address": "1068:052c",
+      "name": "FUN_1068_052c",
+      "function": "FUN_1068_052c"
+    },
+    {
+      "address": "1068:0667",
+      "name": "FUN_1068_0667",
+      "function": "FUN_1068_0667"
+    },
+    {
+      "address": "1068:06ab",
+      "name": "FUN_1068_06ab",
+      "function": "FUN_1068_06ab"
+    },
+    {
+      "address": "1068:072c",
+      "name": "FUN_1068_072c",
+      "function": "FUN_1068_072c"
+    },
+    {
+      "address": "1068:0796",
+      "name": "FUN_1068_0796",
+      "function": "FUN_1068_0796"
+    },
+    {
+      "address": "1068:07fe",
+      "name": "FUN_1068_07fe",
+      "function": "FUN_1068_07fe"
+    },
+    {
+      "address": "1068:0d26",
+      "name": "FUN_1068_0d26",
+      "function": "FUN_1068_0d26"
+    },
+    {
+      "address": "1068:0d12",
+      "name": "FUN_1068_0d12",
+      "function": "FUN_1068_0d12"
+    },
+    {
+      "address": "1068:082e",
+      "name": "FUN_1068_082e",
+      "function": "FUN_1068_082e"
+    },
+    {
+      "address": "1068:0cee",
+      "name": "FUN_1068_0cee",
+      "function": "FUN_1068_0cee"
+    },
+    {
+      "address": "1068:0c72",
+      "name": "FUN_1068_0c72",
+      "function": "FUN_1068_0c72"
+    },
+    {
+      "address": "1068:0cbd",
+      "name": "FUN_1068_0cbd",
+      "function": "FUN_1068_0cbd"
+    },
+    {
+      "address": "1068:03ef",
+      "name": "FUN_1068_03ef",
+      "function": "FUN_1068_03ef"
+    },
+    {
+      "address": "1068:0439",
+      "name": "FUN_1068_0439",
+      "function": "FUN_1068_0439"
+    },
+    {
+      "address": "1068:0d3d",
+      "name": "FUN_1068_0d3d",
+      "function": "FUN_1068_0d3d"
+    },
+    {
+      "address": "1068:0aa8",
+      "name": "FUN_1068_0aa8",
+      "function": "FUN_1068_0aa8"
+    },
+    {
+      "address": "1068:05d8",
+      "name": "FUN_1068_05d8",
+      "function": "FUN_1068_05d8"
+    },
+    {
+      "address": "1068:0608",
+      "name": "FUN_1068_0608",
+      "function": "FUN_1068_0608"
+    },
+    {
+      "address": "1068:062d",
+      "name": "FUN_1068_062d",
+      "function": "FUN_1068_062d"
+    },
+    {
+      "address": "1068:064d",
+      "name": "FUN_1068_064d",
+      "function": "FUN_1068_064d"
+    }
+  ],
+  "imports": [
+    {
+      "name": "GLOBALALLOC",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000001",
+      "references": 0
+    },
+    {
+      "name": "GLOBALFREE",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000002",
+      "references": 0
+    },
+    {
+      "name": "GLOBALLOCK",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000003",
+      "references": 0
+    },
+    {
+      "name": "GLOBALUNLOCK",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000004",
+      "references": 0
+    },
+    {
+      "name": "GLOBALHANDLE",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000005",
+      "references": 0
+    },
+    {
+      "name": "GLOBALCOMPACT",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000006",
+      "references": 0
+    },
+    {
+      "name": "WAITEVENT",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000007",
+      "references": 0
+    },
+    {
+      "name": "GETMODULEFILENAME",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000008",
+      "references": 0
+    },
+    {
+      "name": "MAKEPROCINSTANCE",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000009",
+      "references": 0
+    },
+    {
+      "name": "FREEPROCINSTANCE",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000a",
+      "references": 0
+    },
+    {
+      "name": "GETPROFILESTRING",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000b",
+      "references": 0
+    },
+    {
+      "name": "INITTASK",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000c",
+      "references": 0
+    },
+    {
+      "name": "__AHINCR",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000d",
+      "references": 0
+    },
+    {
+      "name": "GETWINFLAGS",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000e",
+      "references": 0
+    },
+    {
+      "name": "GETFREESPACE",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000f",
+      "references": 0
+    },
+    {
+      "name": "ALLOCCSTODSALIAS",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000010",
+      "references": 0
+    },
+    {
+      "name": "FREESELECTOR",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000011",
+      "references": 0
+    },
+    {
+      "name": "PRESTOCHANGOSELECTOR",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000012",
+      "references": 0
+    },
+    {
+      "name": "GLOBALDOSALLOC",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000013",
+      "references": 0
+    },
+    {
+      "name": "GLOBALDOSFREE",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000014",
+      "references": 0
+    },
+    {
+      "name": "DIALOGBOXPARAM",
+      "library": "BWCC",
+      "address": "EXTERNAL:00000015",
+      "references": 0
+    },
+    {
+      "name": "CREATEDIALOGPARAM",
+      "library": "BWCC",
+      "address": "EXTERNAL:00000016",
+      "references": 0
+    },
+    {
+      "name": "BWCCDEFDLGPROC",
+      "library": "BWCC",
+      "address": "EXTERNAL:00000017",
+      "references": 0
+    },
+    {
+      "name": "BWCCMESSAGEBOX",
+      "library": "BWCC",
+      "address": "EXTERNAL:00000018",
+      "references": 0
+    },
+    {
+      "name": "SETBKCOLOR",
+      "library": "GDI",
+      "address": "EXTERNAL:00000019",
+      "references": 0
+    },
+    {
+      "name": "SETTEXTCOLOR",
+      "library": "GDI",
+      "address": "EXTERNAL:0000001a",
+      "references": 0
+    },
+    {
+      "name": "TEXTOUT",
+      "library": "GDI",
+      "address": "EXTERNAL:0000001b",
+      "references": 0
+    },
+    {
+      "name": "ESCAPE",
+      "library": "GDI",
+      "address": "EXTERNAL:0000001c",
+      "references": 0
+    },
+    {
+      "name": "SELECTOBJECT",
+      "library": "GDI",
+      "address": "EXTERNAL:0000001d",
+      "references": 0
+    },
+    {
+      "name": "CREATEDC",
+      "library": "GDI",
+      "address": "EXTERNAL:0000001e",
+      "references": 0
+    },
+    {
+      "name": "DELETEDC",
+      "library": "GDI",
+      "address": "EXTERNAL:0000001f",
+      "references": 0
+    },
+    {
+      "name": "GETSTOCKOBJECT",
+      "library": "GDI",
+      "address": "EXTERNAL:00000020",
+      "references": 0
+    },
+    {
+      "name": "GETTEXTMETRICS",
+      "library": "GDI",
+      "address": "EXTERNAL:00000021",
+      "references": 0
+    },
+    {
+      "name": "MESSAGEBOX",
+      "library": "USER",
+      "address": "EXTERNAL:00000022",
+      "references": 0
+    },
+    {
+      "name": "INITAPP",
+      "library": "USER",
+      "address": "EXTERNAL:00000023",
+      "references": 0
+    },
+    {
+      "name": "POSTQUITMESSAGE",
+      "library": "USER",
+      "address": "EXTERNAL:00000024",
+      "references": 0
+    },
+    {
+      "name": "SETCAPTURE",
+      "library": "USER",
+      "address": "EXTERNAL:00000025",
+      "references": 0
+    },
+    {
+      "name": "RELEASECAPTURE",
+      "library": "USER",
+      "address": "EXTERNAL:00000026",
+      "references": 0
+    },
+    {
+      "name": "SETFOCUS",
+      "library": "USER",
+      "address": "EXTERNAL:00000027",
+      "references": 0
+    },
+    {
+      "name": "GETFOCUS",
+      "library": "USER",
+      "address": "EXTERNAL:00000028",
+      "references": 0
+    },
+    {
+      "name": "REMOVEPROP",
+      "library": "USER",
+      "address": "EXTERNAL:00000029",
+      "references": 0
+    },
+    {
+      "name": "GETPROP",
+      "library": "USER",
+      "address": "EXTERNAL:0000002a",
+      "references": 0
+    },
+    {
+      "name": "SETPROP",
+      "library": "USER",
+      "address": "EXTERNAL:0000002b",
+      "references": 0
+    },
+    {
+      "name": "SCREENTOCLIENT",
+      "library": "USER",
+      "address": "EXTERNAL:0000002c",
+      "references": 0
+    },
+    {
+      "name": "ISICONIC",
+      "library": "USER",
+      "address": "EXTERNAL:0000002d",
+      "references": 0
+    },
+    {
+      "name": "GETWINDOWRECT",
+      "library": "USER",
+      "address": "EXTERNAL:0000002e",
+      "references": 0
+    },
+    {
+      "name": "ENABLEWINDOW",
+      "library": "USER",
+      "address": "EXTERNAL:0000002f",
+      "references": 0
+    },
+    {
+      "name": "GETWINDOWTEXT",
+      "library": "USER",
+      "address": "EXTERNAL:00000030",
+      "references": 0
+    },
+    {
+      "name": "SETWINDOWTEXT",
+      "library": "USER",
+      "address": "EXTERNAL:00000031",
+      "references": 0
+    },
+    {
+      "name": "BEGINPAINT",
+      "library": "USER",
+      "address": "EXTERNAL:00000032",
+      "references": 0
+    },
+    {
+      "name": "ENDPAINT",
+      "library": "USER",
+      "address": "EXTERNAL:00000033",
+      "references": 0
+    },
+    {
+      "name": "CREATEWINDOW",
+      "library": "USER",
+      "address": "EXTERNAL:00000034",
+      "references": 0
+    },
+    {
+      "name": "SHOWWINDOW",
+      "library": "USER",
+      "address": "EXTERNAL:00000035",
+      "references": 0
+    },
+    {
+      "name": "GETPARENT",
+      "library": "USER",
+      "address": "EXTERNAL:00000036",
+      "references": 0
+    },
+    {
+      "name": "ISWINDOW",
+      "library": "USER",
+      "address": "EXTERNAL:00000037",
+      "references": 0
+    },
+    {
+      "name": "ISCHILD",
+      "library": "USER",
+      "address": "EXTERNAL:00000038",
+      "references": 0
+    },
+    {
+      "name": "DESTROYWINDOW",
+      "library": "USER",
+      "address": "EXTERNAL:00000039",
+      "references": 0
+    },
+    {
+      "name": "REGISTERCLASS",
+      "library": "USER",
+      "address": "EXTERNAL:0000003a",
+      "references": 0
+    },
+    {
+      "name": "SCROLLWINDOW",
+      "library": "USER",
+      "address": "EXTERNAL:0000003b",
+      "references": 0
+    },
+    {
+      "name": "SETSCROLLPOS",
+      "library": "USER",
+      "address": "EXTERNAL:0000003c",
+      "references": 0
+    },
+    {
+      "name": "SETSCROLLRANGE",
+      "library": "USER",
+      "address": "EXTERNAL:0000003d",
+      "references": 0
+    },
+    {
+      "name": "GETDC",
+      "library": "USER",
+      "address": "EXTERNAL:0000003e",
+      "references": 0
+    },
+    {
+      "name": "RELEASEDC",
+      "library": "USER",
+      "address": "EXTERNAL:0000003f",
+      "references": 0
+    },
+    {
+      "name": "SETCURSOR",
+      "library": "USER",
+      "address": "EXTERNAL:00000040",
+      "references": 0
+    },
+    {
+      "name": "ENDDIALOG",
+      "library": "USER",
+      "address": "EXTERNAL:00000041",
+      "references": 0
+    },
+    {
+      "name": "ISDIALOGMESSAGE",
+      "library": "USER",
+      "address": "EXTERNAL:00000042",
+      "references": 0
+    },
+    {
+      "name": "GETDLGITEM",
+      "library": "USER",
+      "address": "EXTERNAL:00000043",
+      "references": 0
+    },
+    {
+      "name": "SETDLGITEMTEXT",
+      "library": "USER",
+      "address": "EXTERNAL:00000044",
+      "references": 0
+    },
+    {
+      "name": "GETDLGITEMTEXT",
+      "library": "USER",
+      "address": "EXTERNAL:00000045",
+      "references": 0
+    },
+    {
+      "name": "SENDDLGITEMMESSAGE",
+      "library": "USER",
+      "address": "EXTERNAL:00000046",
+      "references": 0
+    },
+    {
+      "name": "MESSAGEBEEP",
+      "library": "USER",
+      "address": "EXTERNAL:00000047",
+      "references": 0
+    },
+    {
+      "name": "GETKEYSTATE",
+      "library": "USER",
+      "address": "EXTERNAL:00000048",
+      "references": 0
+    },
+    {
+      "name": "DEFWINDOWPROC",
+      "library": "USER",
+      "address": "EXTERNAL:00000049",
+      "references": 0
+    },
+    {
+      "name": "GETMESSAGE",
+      "library": "USER",
+      "address": "EXTERNAL:0000004a",
+      "references": 0
+    },
+    {
+      "name": "PEEKMESSAGE",
+      "library": "USER",
+      "address": "EXTERNAL:0000004b",
+      "references": 0
+    },
+    {
+      "name": "SENDMESSAGE",
+      "library": "USER",
+      "address": "EXTERNAL:0000004c",
+      "references": 0
+    },
+    {
+      "name": "WAITMESSAGE",
+      "library": "USER",
+      "address": "EXTERNAL:0000004d",
+      "references": 0
+    },
+    {
+      "name": "TRANSLATEMESSAGE",
+      "library": "USER",
+      "address": "EXTERNAL:0000004e",
+      "references": 0
+    },
+    {
+      "name": "DISPATCHMESSAGE",
+      "library": "USER",
+      "address": "EXTERNAL:0000004f",
+      "references": 0
+    },
+    {
+      "name": "CALLWINDOWPROC",
+      "library": "USER",
+      "address": "EXTERNAL:00000050",
+      "references": 0
+    },
+    {
+      "name": "UPDATEWINDOW",
+      "library": "USER",
+      "address": "EXTERNAL:00000051",
+      "references": 0
+    },
+    {
+      "name": "GETWINDOWWORD",
+      "library": "USER",
+      "address": "EXTERNAL:00000052",
+      "references": 0
+    },
+    {
+      "name": "GETWINDOWLONG",
+      "library": "USER",
+      "address": "EXTERNAL:00000053",
+      "references": 0
+    },
+    {
+      "name": "SETWINDOWLONG",
+      "library": "USER",
+      "address": "EXTERNAL:00000054",
+      "references": 0
+    },
+    {
+      "name": "ENABLEMENUITEM",
+      "library": "USER",
+      "address": "EXTERNAL:00000055",
+      "references": 0
+    },
+    {
+      "name": "GETSYSTEMMENU",
+      "library": "USER",
+      "address": "EXTERNAL:00000056",
+      "references": 0
+    },
+    {
+      "name": "CREATECARET",
+      "library": "USER",
+      "address": "EXTERNAL:00000057",
+      "references": 0
+    },
+    {
+      "name": "DESTROYCARET",
+      "library": "USER",
+      "address": "EXTERNAL:00000058",
+      "references": 0
+    },
+    {
+      "name": "SETCARETPOS",
+      "library": "USER",
+      "address": "EXTERNAL:00000059",
+      "references": 0
+    },
+    {
+      "name": "SHOWCARET",
+      "library": "USER",
+      "address": "EXTERNAL:0000005a",
+      "references": 0
+    },
+    {
+      "name": "WINHELP",
+      "library": "USER",
+      "address": "EXTERNAL:0000005b",
+      "references": 0
+    },
+    {
+      "name": "LOADCURSOR",
+      "library": "USER",
+      "address": "EXTERNAL:0000005c",
+      "references": 0
+    },
+    {
+      "name": "LOADICON",
+      "library": "USER",
+      "address": "EXTERNAL:0000005d",
+      "references": 0
+    },
+    {
+      "name": "TRANSLATEACCELERATOR",
+      "library": "USER",
+      "address": "EXTERNAL:0000005e",
+      "references": 0
+    },
+    {
+      "name": "GETSYSTEMMETRICS",
+      "library": "USER",
+      "address": "EXTERNAL:0000005f",
+      "references": 0
+    },
+    {
+      "name": "GETSYSCOLOR",
+      "library": "USER",
+      "address": "EXTERNAL:00000060",
+      "references": 0
+    },
+    {
+      "name": "SETWINDOWPOS",
+      "library": "USER",
+      "address": "EXTERNAL:00000061",
+      "references": 0
+    },
+    {
+      "name": "DIALOGBOXPARAM",
+      "library": "USER",
+      "address": "EXTERNAL:00000062",
+      "references": 0
+    },
+    {
+      "name": "CREATEDIALOGPARAM",
+      "library": "USER",
+      "address": "EXTERNAL:00000063",
+      "references": 0
+    },
+    {
+      "name": "ISZOOMED",
+      "library": "USER",
+      "address": "EXTERNAL:00000064",
+      "references": 0
+    },
+    {
+      "name": "DEFDLGPROC",
+      "library": "USER",
+      "address": "EXTERNAL:00000065",
+      "references": 0
+    },
+    {
+      "name": "GETCLASSINFO",
+      "library": "USER",
+      "address": "EXTERNAL:00000066",
+      "references": 0
+    },
+    {
+      "name": "WVSPRINTF",
+      "library": "USER",
+      "address": "EXTERNAL:00000067",
+      "references": 0
+    },
+    {
+      "name": "DEFMDICHILDPROC",
+      "library": "USER",
+      "address": "EXTERNAL:00000068",
+      "references": 0
+    },
+    {
+      "name": "TRANSLATEMDISYSACCEL",
+      "library": "USER",
+      "address": "EXTERNAL:00000069",
+      "references": 0
+    },
+    {
+      "name": "CREATEWINDOWEX",
+      "library": "USER",
+      "address": "EXTERNAL:0000006a",
+      "references": 0
+    },
+    {
+      "name": "Ordinal_5",
+      "library": "KEYBOARD",
+      "address": "EXTERNAL:0000006b",
+      "references": 0
+    },
+    {
+      "name": "Ordinal_6",
+      "library": "KEYBOARD",
+      "address": "EXTERNAL:0000006c",
+      "references": 0
+    }
+  ],
+  "notableStringReferences": [
+    {
+      "address": "1070:016e",
+      "text": "WTOOLKIT.HLP",
+      "xrefs": []
+    },
+    {
+      "address": "1070:019c",
+      "text": "Virus Encyclopaedia Information:",
+      "xrefs": []
+    },
+    {
+      "address": "1070:01f6",
+      "text": "WTOOLKIT.HLP",
+      "xrefs": []
+    },
+    {
+      "address": "1070:0204",
+      "text": "WTOOLKIT.HLP",
+      "xrefs": []
+    },
+    {
+      "address": "1070:021a",
+      "text": "WTOOLKIT.HLP",
+      "xrefs": []
+    },
+    {
+      "address": "1070:03a7",
+      "text": "It is not infectious at all,",
+      "xrefs": []
+    },
+    {
+      "address": "1070:03e4",
+      "text": "It is barely infectious,",
+      "xrefs": []
+    },
+    {
+      "address": "1070:0421",
+      "text": "It is somewhat infectious,",
+      "xrefs": []
+    },
+    {
+      "address": "1070:045e",
+      "text": "It is quite infectious,",
+      "xrefs": []
+    },
+    {
+      "address": "1070:049b",
+      "text": "It is very infectious,",
+      "xrefs": []
+    },
+    {
+      "address": "1070:04d8",
+      "text": "It is extremely infectious,",
+      "xrefs": []
+    },
+    {
+      "address": "1070:074d",
+      "text": "Nothing is infected.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:079e",
+      "text": "COM files are infected.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:07ef",
+      "text": "EXE files are infected.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:0840",
+      "text": "COM and EXE files are infected.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:0890",
+      "text": ".Boot and/or partition sectors can be infected.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:08e1",
+      "text": "\u003cBoot and/or partition sectors and COM files can be infected.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:0932",
+      "text": "\u003cBoot and/or partition sectors and EXE files can be infected.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:0983",
+      "text": "ABoot and/or partition sectors, COM and EXE files can be infected.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:09d4",
+      "text": ")An \"Other\" form of infection takes place.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:0a25",
+      "text": "\u003cThis *v* infection is a special case, please see the manual.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:0a77",
+      "text": "The *v* is not memory resident.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:0ac7",
+      "text": "\u0026The *v* has a memory resident payload.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:0b18",
+      "text": "/The *v* has a memory resident infection system.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:0b69",
+      "text": ";The *v* has a memory resident payload and infection system.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:105b",
+      "text": "#This *v* overwrites infected files.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:11f0",
+      "text": "3The *v* evades or attacks some anti-virus programs.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:13d7",
+      "text": "The *v* survives a warm reboot.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:15bd",
+      "text": "The *v* causes reboots.",
+      "xrefs": []
+    },
+    {
+      "address": "1070:16c8",
+      "text": "\"failed virus\"",
+      "xrefs": []
+    },
+    {
+      "address": "1070:16f2",
+      "text": "virus",
+      "xrefs": []
+    },
+    {
+      "address": "1090:001b",
+      "text": "Virus Encyclopaedia",
+      "xrefs": []
+    },
+    {
+      "address": "1090:00bd",
+      "text": "Can be repaired by the Toolkit",
+      "xrefs": []
+    },
+    {
+      "address": "1090:0196",
+      "text": "Repair",
+      "xrefs": []
+    }
+  ],
+  "counts": {
+    "functions": 634,
+    "instructions": 12637,
+    "definedStrings": 149
+  },
+  "decompilations": [
+    {
+      "name": "FUN_1000_2577",
+      "selectionReason": "NE entry/export",
+      "address": "1000:2577",
+      "bodyBytes": 47,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0002",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0002",
+      "bodyBytes": 136,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_008a",
+      "selectionReason": "NE entry/export",
+      "address": "1000:008a",
+      "bodyBytes": 80,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_00da",
+      "selectionReason": "NE entry/export",
+      "address": "1000:00da",
+      "bodyBytes": 57,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0113",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0113",
+      "bodyBytes": 124,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_157a",
+      "selectionReason": "NE entry/export",
+      "address": "1000:157a",
+      "bodyBytes": 364,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_25a6",
+      "selectionReason": "NE entry/export",
+      "address": "1000:25a6",
+      "bodyBytes": 35,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_25c9",
+      "selectionReason": "NE entry/export",
+      "address": "1000:25c9",
+      "bodyBytes": 66,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0195",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0195",
+      "bodyBytes": 304,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_02cb",
+      "selectionReason": "NE entry/export",
+      "address": "1000:02cb",
+      "bodyBytes": 328,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_04a8",
+      "selectionReason": "NE entry/export",
+      "address": "1000:04a8",
+      "bodyBytes": 1542,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0c97",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0c97",
+      "bodyBytes": 2271,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1783",
+      "selectionReason": "NE entry/export",
+      "address": "1000:1783",
+      "bodyBytes": 1171,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1c16",
+      "selectionReason": "NE entry/export",
+      "address": "1000:1c16",
+      "bodyBytes": 34,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1c38",
+      "selectionReason": "NE entry/export",
+      "address": "1000:1c38",
+      "bodyBytes": 316,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1e25",
+      "selectionReason": "NE entry/export",
+      "address": "1000:1e25",
+      "bodyBytes": 517,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_202a",
+      "selectionReason": "NE entry/export",
+      "address": "1000:202a",
+      "bodyBytes": 37,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_204f",
+      "selectionReason": "NE entry/export",
+      "address": "1000:204f",
+      "bodyBytes": 50,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_2081",
+      "selectionReason": "NE entry/export",
+      "address": "1000:2081",
+      "bodyBytes": 51,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_20b4",
+      "selectionReason": "NE entry/export",
+      "address": "1000:20b4",
+      "bodyBytes": 37,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_211e",
+      "selectionReason": "NE entry/export",
+      "address": "1000:211e",
+      "bodyBytes": 1113,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0ab0",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0ab0",
+      "bodyBytes": 456,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1008_0002",
+      "selectionReason": "NE entry/export",
+      "address": "1008:0002",
+      "bodyBytes": 256,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1008_0102",
+      "selectionReason": "NE entry/export",
+      "address": "1008:0102",
+      "bodyBytes": 176,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1008_01b4",
+      "selectionReason": "NE entry/export",
+      "address": "1008:01b4",
+      "bodyBytes": 243,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1008_02a7",
+      "selectionReason": "NE entry/export",
+      "address": "1008:02a7",
+      "bodyBytes": 67,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_03b6",
+      "selectionReason": "NE entry/export",
+      "address": "1010:03b6",
+      "bodyBytes": 32,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_003c",
+      "selectionReason": "NE entry/export",
+      "address": "1010:003c",
+      "bodyBytes": 42,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_0066",
+      "selectionReason": "NE entry/export",
+      "address": "1010:0066",
+      "bodyBytes": 42,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_00d1",
+      "selectionReason": "NE entry/export",
+      "address": "1010:00d1",
+      "bodyBytes": 140,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_015d",
+      "selectionReason": "NE entry/export",
+      "address": "1010:015d",
+      "bodyBytes": 88,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_01b5",
+      "selectionReason": "NE entry/export",
+      "address": "1010:01b5",
+      "bodyBytes": 121,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_022e",
+      "selectionReason": "NE entry/export",
+      "address": "1010:022e",
+      "bodyBytes": 41,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_0002",
+      "selectionReason": "NE entry/export",
+      "address": "1010:0002",
+      "bodyBytes": 58,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_0090",
+      "selectionReason": "NE entry/export",
+      "address": "1010:0090",
+      "bodyBytes": 65,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_025a",
+      "selectionReason": "NE entry/export",
+      "address": "1010:025a",
+      "bodyBytes": 145,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_02eb",
+      "selectionReason": "NE entry/export",
+      "address": "1010:02eb",
+      "bodyBytes": 130,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1010_036d",
+      "selectionReason": "NE entry/export",
+      "address": "1010:036d",
+      "bodyBytes": 73,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1018_01aa",
+      "selectionReason": "NE entry/export",
+      "address": "1018:01aa",
+      "bodyBytes": 32,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1018_000f",
+      "selectionReason": "NE entry/export",
+      "address": "1018:000f",
+      "bodyBytes": 411,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1020_052f",
+      "selectionReason": "NE entry/export",
+      "address": "1020:052f",
+      "bodyBytes": 42,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1020_0002",
+      "selectionReason": "NE entry/export",
+      "address": "1020:0002",
+      "bodyBytes": 43,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1020_002d",
+      "selectionReason": "NE entry/export",
+      "address": "1020:002d",
+      "bodyBytes": 574,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1020_02ea",
+      "selectionReason": "NE entry/export",
+      "address": "1020:02ea",
+      "bodyBytes": 493,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1020_026b",
+      "selectionReason": "NE entry/export",
+      "address": "1020:026b",
+      "bodyBytes": 125,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1020_04d7",
+      "selectionReason": "NE entry/export",
+      "address": "1020:04d7",
+      "bodyBytes": 88,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1028_0e27",
+      "selectionReason": "NE entry/export",
+      "address": "1028:0e27",
+      "bodyBytes": 180,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1028_0d15",
+      "selectionReason": "NE entry/export",
+      "address": "1028:0d15",
+      "bodyBytes": 99,
+      "completed": true,
+      "message": ""
+    }
+  ],
+  "analysisBookmarks": []
+}
