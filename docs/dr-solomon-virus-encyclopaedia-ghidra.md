@@ -116,6 +116,30 @@ and JSON metadata—not the executable corpus.
 - Ghidra's generated names (`FUN_…`, `DAT_…`) remain provisional. The checked-in
   evidence preserves addresses and bytes so later symbol recovery can be audited.
 
+### Recovered data path and record layout
+
+- `WVENCYCL.EXE` expects the separate `VIRDATA.DAT`; its data segment contains
+  `Cannot find VIRDATA.DAT`. This separates the browser code from the 43,894-byte
+  virus-description corpus shipped beside it.
+- The parser at `FUN_1000_0c97` reads 4 KiB buffers and dispatches tagged records
+  beginning with bytes `B5` through `B8`. The `B5` path increments the item index
+  and inserts recovered text into the UI; `B6`/`B7` retain comma-delimited text
+  and file offsets. Those tag meanings are structural interpretations, not
+  recovered source-level names.
+- The `B8` path unpacks bit fields from four source bytes into a ten-byte
+  classification vector. Renderers `FUN_1000_0195` and `FUN_1000_02cb` use those
+  values as indexes into prose tables for prevalence, infectiousness, damage,
+  target type, residence, stealth, and other effects.
+- The prose tables use Pascal `ShortString` storage: one length byte followed by
+  fixed-capacity text. Their observed strides include `0x3d` (60 characters plus
+  length), `0x51` (80 plus length), and `0x5b` (90 plus length). Printable length
+  bytes explain apparent prefixes such as `/`, `<`, and `A` in unnormalized Ghidra
+  strings. Together with `BWCC`, this is consistent with a Borland Pascal toolchain.
+- Segment `1068` contains the linked Pascal/DOS file runtime, including `INT 21h`
+  services `AH=3Fh` (read), `3Eh` (close), and `42h` (seek). Generic write helpers
+  are present too; their inclusion alone does not show that the encyclopaedia
+  modifies the corpus.
+
 ### Memory map
 
 | block | address range | bytes | R/W/X | entropy |
@@ -210,6 +234,10 @@ and JSON metadata—not the executable corpus.
 
 ### Notable defined strings
 
+For readability, this excerpt removes a printable leading byte when it exactly
+matches the remaining Pascal `ShortString` length. The raw Ghidra strings remain
+available in the checked-in evidence.
+
 ```text
 1070:016e	WTOOLKIT.HLP
 1070:019c	Virus Encyclopaedia Information:
@@ -226,15 +254,15 @@ and JSON metadata—not the executable corpus.
 1070:079e	COM files are infected.
 1070:07ef	EXE files are infected.
 1070:0840	COM and EXE files are infected.
-1070:0890	.Boot and/or partition sectors can be infected.
-1070:08e1	<Boot and/or partition sectors and COM files can be infected.
-1070:0932	<Boot and/or partition sectors and EXE files can be infected.
-1070:0983	ABoot and/or partition sectors, COM and EXE files can be infected.
-1070:09d4	)An "Other" form of infection takes place.
-1070:0a25	<This *v* infection is a special case, please see the manual.
+1070:0890	Boot and/or partition sectors can be infected.
+1070:08e1	Boot and/or partition sectors and COM files can be infected.
+1070:0932	Boot and/or partition sectors and EXE files can be infected.
+1070:0983	Boot and/or partition sectors, COM and EXE files can be infected.
+1070:09d4	An "Other" form of infection takes place.
+1070:0a25	This *v* infection is a special case, please see the manual.
 1070:0a77	The *v* is not memory resident.
-1070:0ac7	&The *v* has a memory resident payload.
-1070:0b18	/The *v* has a memory resident infection system.
+1070:0ac7	The *v* has a memory resident payload.
+1070:0b18	The *v* has a memory resident infection system.
 ```
 
 ### Code references to descriptive strings
@@ -248,149 +276,152 @@ No direct references to the matched string starts were recovered; Win16 resource
 - [Defined strings](dr-solomon-ghidra-evidence/WVENCYCL.EXE.strings.txt)
 - [Machine-readable metadata, imports, xrefs, and analyzer findings](dr-solomon-ghidra-evidence/WVENCYCL.EXE.ghidra.json)
 
-### Disassembly excerpt at the entry point
+### Disassembly excerpt from the data parser
 
 The complete checked-in listing is linked above; this excerpt provides a
-compact view of the decoded entry path.
+compact view of the parser at `FUN_1000_0c97`.
 
 ```asm
-; Ghidra 12.1.4
-; Static disassembly only — the input was never executed
-; Program: WVENCYCL.EXE
-; SHA-256: 1eceb11ab373acfb08bd6a8e59c6bf1c26eec2404293229b84bbc177bb30dbd8
-; Language: x86:LE:16:Protected Mode
-
-FUN_1000_0002:
-1000:0002          55                             PUSH BP
-1000:0003          89e5                           MOV BP,SP
-1000:0005          b80a00                         MOV AX,0xa
-1000:0008          9acb036810                     CALLF 0x1068:03cb
-1000:000d          83ec0a                         SUB SP,0xa
-1000:0010          ff7610                         PUSH word ptr [BP + 0x10]
-1000:0013          ff760e                         PUSH word ptr [BP + 0xe]
-1000:0016          9aa0016010                     CALLF 0x1060:01a0
-1000:001b          8946fa                         MOV word ptr [BP + -0x6],AX
-1000:001e          8956fc                         MOV word ptr [BP + -0x4],DX
-1000:0021          ff760c                         PUSH word ptr [BP + 0xc]
-1000:0024          ff760a                         PUSH word ptr [BP + 0xa]
-1000:0027          9aa0016010                     CALLF 0x1060:01a0
-1000:002c          8946f6                         MOV word ptr [BP + -0xa],AX
-1000:002f          8956f8                         MOV word ptr [BP + -0x8],DX
-1000:0032          ff76fc                         PUSH word ptr [BP + -0x4]
-1000:0035          ff76fa                         PUSH word ptr [BP + -0x6]
-1000:0038          9a58016010                     CALLF 0x1060:0158
-1000:003d          8946fa                         MOV word ptr [BP + -0x6],AX
-1000:0040          8956fc                         MOV word ptr [BP + -0x4],DX
-1000:0043          ff76f8                         PUSH word ptr [BP + -0x8]
-1000:0046          ff76f6                         PUSH word ptr [BP + -0xa]
-1000:0049          9a58016010                     CALLF 0x1060:0158
-1000:004e          8946f6                         MOV word ptr [BP + -0xa],AX
-1000:0051          8956f8                         MOV word ptr [BP + -0x8],DX
-1000:0054          ff76fc                         PUSH word ptr [BP + -0x4]
-1000:0057          ff76fa                         PUSH word ptr [BP + -0x6]
-1000:005a          ff76f8                         PUSH word ptr [BP + -0x8]
-1000:005d          ff76f6                         PUSH word ptr [BP + -0xa]
-1000:0060          c47e06                         LES DI,[BP + 0x6]
-1000:0063          06                             PUSH ES
-1000:0064          57                             PUSH DI
-1000:0065          9a88055010                     CALLF 0x1050:0588
-1000:006a          8946fe                         MOV word ptr [BP + -0x2],AX
-1000:006d          ff76fc                         PUSH word ptr [BP + -0x4]
+FUN_1000_0c97:
+1000:0c97          55                             PUSH BP
+1000:0c98          89e5                           MOV BP,SP
+1000:0c9a          b8bc16                         MOV AX,0x16bc
+1000:0c9d          9acb036810                     CALLF 0x1068:03cb
+1000:0ca2          81ecbc16                       SUB SP,0x16bc
+1000:0ca6          c6068e1a00                     MOV byte ptr [0x1a8e],0x0
+1000:0cab          8dbe44ea                       LEA DI,[BP + 0xea44]
+1000:0caf          16                             PUSH SS
+1000:0cb0          57                             PUSH DI
+1000:0cb1          bfac99                         MOV DI,0x99ac
+1000:0cb4          1e                             PUSH DS
+1000:0cb5          57                             PUSH DI
+1000:0cb6          9a91086810                     CALLF 0x1068:0891
+1000:0cbb          bf780c                         MOV DI,0xc78
+1000:0cbe          0e                             PUSH CS
+1000:0cbf          57                             PUSH DI
+1000:0cc0          9a10096810                     CALLF 0x1068:0910
+1000:0cc5          9ad7042010                     CALLF 0x1020:04d7
+1000:0cca          08c0                           OR AL,AL
+1000:0ccc          7520                           JNZ 0x1000:0cee
+1000:0cce          c47e06                         LES DI,[BP + 0x6]
+1000:0cd1          26ff7504                       PUSH word ptr ES:[DI + 0x4]
+1000:0cd5          bf7c01                         MOV DI,0x17c
+1000:0cd8          1e                             PUSH DS
+1000:0cd9          57                             PUSH DI
+1000:0cda          bf9401                         MOV DI,0x194
+1000:0cdd          1e                             PUSH DS
+1000:0cde          57                             PUSH DI
+1000:0cdf          6a10                           PUSH 0x10
+1000:0ce1          9a5c005011                     CALLF 0x1150:005c
+1000:0ce6          c6068e1a01                     MOV byte ptr [0x1a8e],0x1
+1000:0ceb          e98408                         JMP 0x1000:1572
+LAB_1000_0cee:
+1000:0cee          8dbe62ed                       LEA DI,[BP + 0xed62]
+1000:0cf2          16                             PUSH SS
+1000:0cf3          57                             PUSH DI
+1000:0cf4          8dbe44ea                       LEA DI,[BP + 0xea44]
+1000:0cf8          16                             PUSH SS
+1000:0cf9          57                             PUSH DI
+1000:0cfa          bfac99                         MOV DI,0x99ac
+1000:0cfd          1e                             PUSH DS
 ```
 
-### Decompiler excerpt
+### Decompiler excerpt: packed classification record
+
+Ghidra's C shows the `B8` parser unpacking source bits into the ten-byte
+classification vector later consumed by the prose renderers.
 
 ```c
-/* Ghidra 12.1.4
- * Static decompiler output — the input was never executed
- * Program: WVENCYCL.EXE
- * SHA-256: 1eceb11ab373acfb08bd6a8e59c6bf1c26eec2404293229b84bbc177bb30dbd8
- */
-
-/* ------------------------------------------------------------
- * FUN_1000_2577 @ 1000:2577
- * selected: NE entry/export
- * body bytes: 47
- * completed: true
- */
-
-void __stdcall16far FUN_1000_2577(undefined4 param_1)
-
-{
-  undefined2 uVar1;
-  undefined4 uVar2;
-  
-  FUN_1068_03cb();
-  uVar2 = FUN_1000_008a(0,0,0xbe,200,0,0,0);
-  uVar1 = (undefined2)((ulong)param_1 >> 0x10);
-  *(undefined2 *)((int)param_1 + 8) = (int)uVar2;
-  *(undefined2 *)((int)param_1 + 10) = (int)((ulong)uVar2 >> 0x10);
-  return;
-}
-
-
-
-/* ------------------------------------------------------------
- * FUN_1000_0002 @ 1000:0002
- * selected: NE entry/export
- * body bytes: 136
- * completed: true
- */
-
-undefined2 __stdcall16far
-FUN_1000_0002(undefined4 param_1,undefined2 param_2,undefined2 param_3,undefined2 param_4,
-             undefined2 param_5)
-
-{
-  undefined2 uVar1;
-  undefined4 uVar2;
-  undefined4 uVar3;
-  
-  FUN_1068_03cb();
-  uVar2 = FUN_1060_01a0(param_4,param_5);
-  uVar3 = FUN_1060_01a0(param_2,param_3);
-  uVar2 = FUN_1060_0158(uVar2);
-  uVar3 = FUN_1060_0158(uVar3);
-  uVar1 = FUN_1050_0588((int)param_1,(int)((ulong)param_1 >> 0x10),uVar3,uVar2);
-  FUN_1060_020d(uVar2);
-  FUN_1060_020d(uVar3);
-  return uVar1;
-}
-
-
-
-/* ------------------------------------------------------------
- * FUN_1000_008a @ 1000:008a
- * selected: NE entry/export
- * body bytes: 80
- * completed: true
- */
-
-undefined4 __stdcall16far
-FUN_1000_008a(undefined4 param_1,undefined2 param_2,undefined2 param_3,undefined2 param_4,
-             undefined2 param_5,undefined2 param_6)
-
-{
-  undefined2 uVar1;
-  bool bVar2;
-  undefined4 uVar3;
-  
-  FUN_1068_03cb();
-  bVar2 = true;
-  FUN_1068_03ef();
-  uVar3 = CONCAT22(DAT_1070_92c4,DAT_1070_92c2);
-  if (!bVar2) {
-    uVar1 = (undefined2)((ulong)param_1 >> 0x10);
-    FUN_1048_0002((int)param_1,uVar1,0,param_3,param_4,param_5,param_6);
-    uVar3 = FUN_1048_04dd(0,0,0x18c8,0x67,(int)param_1,uVar1);
-  }
-  DAT_1070_92c4 = (undefined2)((ulong)uVar3 >> 0x10);
-  DAT_1070_92c2 = (undefined2)uVar3;
-  return param_1;
-}
-
-
-
+      }
+      else if (bVar2 == 0xb8) {
+        local_1219 = 0;
+        local_1217 = 0;
+        local_1215 = 0;
+        local_1213 = 0;
+        local_20c = (uint)local_1210[local_206 + 1];
+        FUN_1068_0cee(local_20c,&local_121e,unaff_SS,local_1210 + local_206 + 2,unaff_SS);
+        *(byte *)(iVar5 + local_20a * 10 + 0x9e6) = local_121e >> 5;
+        *(byte *)(iVar5 + local_20a * 10 + 0x9e7) = (local_121e & 0x1c) >> 2;
+        *(byte *)(iVar5 + local_20a * 10 + 0x9e8) = local_121d >> 5;
+        *(byte *)(iVar5 + local_20a * 10 + 0x9e9) = local_121d & 0xf;
+        *(byte *)(iVar5 + local_20a * 10 + 0x9ea) = local_121c >> 6;
+        *(byte *)(iVar5 + local_20a * 10 + 0x9eb) = (local_121c & 0x38) >> 3;
+        *(byte *)(iVar5 + local_20a * 10 + 0x9ec) = local_121c & 7;
+        *(byte *)(iVar5 + local_20a * 10 + 0x9ed) = local_121b & 0x1f;
+        *(byte *)(iVar5 + local_20a * 10 + 0x9ee) = local_121e & 1;
+        if ((local_121d & 8) == 8) {
+          *(undefined1 *)(iVar5 + local_20a * 10 + 0x9ee) = 99;
+        }
+        if (*(char *)(iVar5 + local_20a * 10 + 0x9ee) == '\0') {
+          *(undefined1 *)(iVar5 + local_20a + 0x2b) = 0;
+        }
+        *(byte *)(iVar5 + local_20a * 10 + 0x9ef) = local_121b >> 5;
+        uVar8 = FUN_1068_012d(0x1f);
+        iVar6 = iVar5 + local_20a * 4;
+        *(undefined2 *)(iVar6 + 0x6b94) = (int)uVar8;
+        *(undefined2 *)(iVar6 + 0x6b96) = (int)((ulong)uVar8 >> 0x10);
+        if (local_1219 == -1) {
+          local_102[0] = 0;
+        }
+        else if (local_1215 == -1) {
+          local_102[0] = 0;
+        }
+        else {
+          local_102[0] = 0;
+          if (local_1219 != 0) {
+            puVar11 = local_15be;
+            uVar13 = unaff_SS;
+            FUN_1068_0891(local_102,unaff_SS);
+            FUN_1068_0910(0xc88,(char *)s__This__v__overwrites_infected_fi_1070_105b + 0xd);
+            puVar9 = local_16be;
+            uVar10 = unaff_SS;
+            FUN_1010_0090(local_1219);
+            FUN_1068_0910(puVar9,uVar10);
+            FUN_1068_08ab(0xff,local_102,unaff_SS,puVar11,uVar13);
+          }
+          if (local_1217 != 0) {
+            puVar11 = local_15be;
+            uVar13 = unaff_SS;
+            FUN_1068_0891(local_102,unaff_SS);
+            FUN_1068_0910(0xc8e,(char *)s__This__v__overwrites_infected_fi_1070_105b + 0xd);
+            puVar9 = local_16be;
+            uVar10 = unaff_SS;
+            FUN_1010_0090(local_1217);
+            FUN_1068_0910(puVar9,uVar10);
+            FUN_1068_08ab(0xff,local_102,unaff_SS,puVar11,uVar13);
+          }
+          if (local_1215 != 0) {
+            puVar11 = local_15be;
+            uVar13 = unaff_SS;
+            FUN_1068_0891(local_102,unaff_SS);
+            FUN_1068_0910(0xc90,(char *)s__This__v__overwrites_infected_fi_1070_105b + 0xd);
+            puVar9 = local_16be;
+            uVar10 = unaff_SS;
+            FUN_1010_0090(local_1215);
+            FUN_1068_0910(puVar9,uVar10);
+            FUN_1068_08ab(0xff,local_102,unaff_SS,puVar11,uVar13);
+          }
+          if (local_1213 != 0) {
+            puVar11 = local_15be;
+            uVar13 = unaff_SS;
+            FUN_1068_0891(local_102,unaff_SS);
+            FUN_1068_0910(0xc8e,(char *)s__This__v__overwrites_infected_fi_1070_105b + 0xd);
+            puVar9 = local_16be;
+            uVar10 = unaff_SS;
+            FUN_1010_0090(local_1213);
+            FUN_1068_0910(puVar9,uVar10);
+            FUN_1068_08ab(0xff,local_102,unaff_SS,puVar11,uVar13);
+          }
+        }
+        uVar8 = *(undefined4 *)(iVar5 + local_20a * 4 + 0x6b94);
+        FUN_1068_08ab(0x1e,(int)uVar8,(int)((ulong)uVar8 >> 0x10),local_102,unaff_SS);
+        local_206 = local_206 + local_1210[local_206 + 1] + 2;
+      }
+      else if (bVar2 == 7) {
+        local_206 = local_206 + 1;
+        if (0xdac < local_206) {
+          bVar7 = CARRY2(local_206,local_210);
+          local_210 = local_206 + local_210;
 ```
 
 ### Analyzer caveats
@@ -401,11 +432,12 @@ FUN_1000_008a(undefined4 param_1,undefined2 param_2,undefined2 param_3,undefined
 
 - The 1992 disk image and S&S attribution come from the Internet Archive item
   metadata and are independently enforced by the disk hashes above.
-- A separate 1995 print edition is catalogued as *Dr Solomon’s Virus
-  Encyclopaedia* by Alan Solomon and Dmitry O. Gryaznov, ISBN 1-897661-00-2.
-- This artifact is distinct from Eugene Kaspersky’s later AVP Virus
-  Encyclopedia. Contemporary descriptions place AVP’s bilingual virus databank
-  project in 1992, but that does not make this S&S disk an AVP binary.
+- A [separate 1995 print edition](https://archive.org/details/drsolomonsviruse0000alan)
+  is catalogued as *Dr Solomon’s Virus Encyclopaedia* by Alan Solomon and
+  Dmitry O. Gryaznov, ISBN 1-897661-00-2.
+- This artifact is distinct from Eugene Kaspersky’s later AVP Virus Encyclopedia.
+  [Published AVP history](https://doi.org/10.1109/93.790614) places that bilingual
+  virus databank project in 1992, but that does not make this S&S disk an AVP binary.
 
 ## Reproduce
 
