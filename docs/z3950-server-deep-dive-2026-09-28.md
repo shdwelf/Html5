@@ -1,0 +1,76 @@
+# Z39.50 server deep dive — 2026-09-28
+
+## Outcome
+
+The repository now includes `tools/z3950-terminal.php`, a PHP/YAZ-backed HTML5 terminal. It keeps Z39.50 on the server side, exposes an allow-listed target directory, provides TCP health checks, and uses a dice button to select a target at random.
+
+A browser cannot open arbitrary TCP connections to port 210. The PHP endpoint is therefore an adapter rather than a browser implementation of ASN.1/BER. It requires PHP 8+, the PECL YAZ extension, and the YAZ toolkit.
+
+## Targets investigated
+
+| Target | Host / port | Database | Evidence | Workspace transport check |
+|---|---|---|---|---|
+| UCSB Davidson Library — Cylinder Audio Archive | `cylinders.library.ucsb.edu:443` | Alma SRU / archive | [UCSB backend note](https://cylinders.library.ucsb.edu/alma.php) | HTTPS OPEN; **not current Z39.50** |
+| Library of Congress | `lx2.loc.gov:210` | `LCDB` | [official LC configuration](https://www.loc.gov/z3950/lcserver.html) | Z39.50 OPEN |
+| Yale University Library | `z3950.library.yale.edu:7090` | `Voyager` | [academic directory entry](https://kohasupport.com/knowledge-base/z3950-server-directory/) | Z39.50 OPEN |
+| MIT Libraries | `library.mit.edu:9909` | `MITILS` | [academic directory entry](https://kohasupport.com/knowledge-base/z3950-server-directory/) | Z39.50 OPEN |
+| Purdue University Libraries | `na03.alma.exlibrisgroup.com:1921` | `01PURDUE_PUWL` | [Purdue LibAnswers](https://answers.lib.purdue.edu/erm/faq/328412) | Z39.50 OPEN |
+| OCLC WorldCat | `zcat.oclc.org:210` | `OLUCWorldCat` | [OCLC configuration guide](https://help.oclc.org/Metadata_Services/Z3950_Cataloging/Get_started/Configuration_guide_for_OCLC_Z39.50_Cataloging) | Z39.50 OPEN |
+| Deutsche Nationalbibliothek | `z3950.dnb.de:210` | `dnb` | [Koha server directory](https://kohasupport.com/knowledge-base/z3950-server-directory/) | Z39.50 OPEN |
+| Bibliothèque nationale de France | `z3950.bnf.fr:2100` | `BNF-SECO` | [Koha server directory](https://kohasupport.com/knowledge-base/z3950-server-directory/) | Z39.50 OPEN |
+| CSIC Library & Archive Network | `eu00.alma.exlibrisgroup.com:210` | `34CSIC_INST` | [CSIC official page](https://bibliotecas.csic.es/en/servidor-z3950) | Z39.50 OPEN |
+
+The checks were TCP reachability checks from the development workspace on 2026-09-28. They are not proof that an unauthenticated Initialize, Search, or Present operation will succeed. OCLC documentation specifically indicates that authorization is needed for its cataloging service.
+
+## UCSB Davidson Library and the wax-cylinder archive
+
+UCSB is an important special-collections starting point, but it needs a protocol distinction. The UCSB Cylinder Audio Archive page says its old Aleph-backed search interface used Z39.50 for roughly twelve years, but Aleph was retired in 2017. The current backend is Ex Libris Alma and the archive now uses SRU. The PHP terminal therefore includes UCSB as an **SRU/archive target**, not as a false current Z39.50 database.
+
+The archive is especially relevant for cultural-heritage discovery: UCSB describes more than 22,000 cylinder titles and more than 650 vernacular wax-cylinder home recordings. The university's Performing Arts / Special Research Collections pages describe commercial cylinders, unique recordings, and the archive's digitized access model. The terminal points researchers to the live archive while keeping the historical Z39.50 fact in the research notes. This is preferable to copying a retired host/database pair into a production server list.
+
+Useful UCSB sources:
+
+- [Cylinder Audio Archive](https://cylinders.library.ucsb.edu/)
+- [Alma migration and SRU note](https://cylinders.library.ucsb.edu/alma.php)
+- [UCSB Cylinder Audio Archive collection page](https://www.library.ucsb.edu/special-collections/performing-arts/cylinders)
+- [Historical sound recordings](https://www.library.ucsb.edu/special-collections/performing-arts/pasound)
+
+The Library of Congress testing page is useful for discovery, but much of its directory is old. Entries marked as old, stale, or lacking a current provider page should not be treated as production targets. The implementation intentionally starts with five documented targets rather than scraping arbitrary hosts.
+
+## PHP/YAZ request path
+
+1. The terminal selects a server from the allow-list.
+2. `z_search()` constructs `host:port/database` for `yaz_connect()`.
+3. The term is constrained to 160 characters and mapped to a small Bib-1 field set: title (`use=4`), author (`use=1`), or any (`use=1016`).
+4. A quoted RPN query is queued with `yaz_search()`.
+5. `yaz_wait()` completes the asynchronous request; `yaz_error()`, `yaz_errno()`, and `yaz_addinfo()` are checked.
+6. A bounded Present range retrieves at most 20 records.
+7. The response is JSON to the same HTML5 terminal; record values are escaped before rendering.
+
+YAZ PHP reference: [PHP manual](https://www.php.net/manual/en/ref.yaz.php). `yaz_connect()` is non-blocking and the connection is actually progressed by `yaz_wait()`; this is why the adapter does not use a raw PHP socket as a substitute for the protocol.
+
+## Deployment notes
+
+- Install PECL YAZ plus the YAZ toolkit before running the PHP file.
+- Run from the repository root with `php -S 127.0.0.1:8080 tools/z3950-terminal.php` for local testing.
+- Put the adapter behind HTTPS and authentication for non-local use.
+- Keep the target list allow-listed; never accept arbitrary hostnames from a public form.
+- Do not log passwords or raw authenticated connection options.
+- Rate-limit and cap result windows. Respect catalog policies and provider terms.
+- Preserve target, database, query, syntax, timestamp, and diagnostics with each imported record.
+- Treat `OPEN` as transport evidence only. The application still has to handle rejected associations, missing databases, unsupported syntax, diagnostics, and encoding differences such as MARC-8 versus UTF-8.
+
+## SRU and Gopher follow-up
+
+The static Webxdc companion `apps/z3950-sru-gopher-terminal.html` adds an SRU directory and a small Gopher directory. SRU targets include the Library of Congress, DNB main catalogue, DNB German Music Archive, DNB ZDB serials, and the UCSB Cylinder Audio Archive. DNB documents its SRU base at `https://services.dnb.de/sru`, with `/dnb`, `/dnb.dma`, `/authorities`, and `/zdb` catalogue paths and CQL queries.[1](https://www.dnb.de/EN/sru)
+
+Gopher is included as a link directory rather than an inline socket client. It is a plaintext menu protocol on TCP/70; modern browsers and Webxdc sandboxes cannot open that socket. The app provides native `gopher://` links and Floodgap HTTP gateway links for Floodgap, SDF, Quux, Gopher Project, and Gopherpedia. The directory is discovery material, not a claim that every host is currently operational.
+
+The static app is packaged as `z3950-sru-gopher-terminal.xdc`. The PHP/YAZ terminal remains the correct path for live Z39.50 Search/Present operations.
+
+## Files
+
+- `tools/z3950-terminal.php` — PHP/YAZ adapter and HTML5 terminal
+- `apps/z3950-interface.html` — standalone browser/SRU interface and protocol explainer
+- `apps/z3950-sru-gopher-terminal.html` — Webxdc-safe SRU/Gopher terminal
+- `z3950-sru-gopher-terminal.xdc` — packaged Webxdc application
