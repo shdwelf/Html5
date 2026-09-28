@@ -71,7 +71,7 @@ def main() -> int:
         "an ISO-9660 CD image.",
         "",
         "The disk’s `WVENCYCL.EX_` member expands with Microsoft SZDD/LZSS to",
-        "`WVENCYCLE.EXE`, the Windows encyclopaedia program. The disk also carries the",
+        "`WVENCYCL.EXE`, the Windows encyclopaedia program. The disk also carries the",
         "DOS/Windows scanner, guard, repair, installer, help, and virus-data components.",
         "The report keeps those components in scope so the encyclopaedia is not mistaken",
         "for a stand-alone virus sample.",

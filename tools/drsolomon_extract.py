@@ -197,6 +197,28 @@ def expand_szdd(body: bytes) -> tuple[bytes, str]:
 def restored_name(name: str, missing: str) -> str:
     if not name.endswith("_"):
         raise ValueError(f"compressed member {name} has no underscore suffix")
+    # Microsoft's compressor permits 0 here ("missing character unknown").
+    # The disk uses conventional setup suffixes, so recover those explicitly
+    # rather than creating a path containing NUL or silently inventing a byte.
+    if missing == "\x00":
+        conventional = {
+            ".EX_": "E",
+            ".DL_": "L",
+            ".HL_": "P",
+            ".DR_": "V",
+            ".CO_": "M",
+            ".PI_": "F",
+            ".DA_": "T",
+            ".00_": "1",
+        }
+        for suffix, inferred in conventional.items():
+            if name.upper().endswith(suffix):
+                missing = inferred
+                break
+        else:
+            raise ValueError(f"{name}: SZDD header omits the missing filename character")
+    if missing in ("/", "\\") or ord(missing) < 32:
+        raise ValueError(f"{name}: unsafe SZDD missing character {missing!r}")
     return name[:-1] + missing
 
 
