@@ -56,6 +56,9 @@ node tests/08-syllables.mjs || status=1
 echo "──────────────────────────────────────────────"
 node tests/16-key-stats.mjs || status=1
 
+echo "──────────────────────────────────────────────"
+node tests/17-primes.mjs || status=1
+
 # The wasm binary is committed; this only checks it is what the .wat assembles
 # to. Exits 0 with a SKIPPED note when wabt is not installed.
 echo "──────────────────────────────────────────────"
