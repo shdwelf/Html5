@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 347 recipes · Cloud C, Cistercian, 231sts &amp; more</div>
+  <div class="sub">HTML5 · 353 recipes · Classical deep dive: ADFGX, Fractionated Morse, route &amp; checkerboard ciphers</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -2165,6 +2165,8 @@ const RECIPE_PACKS={
  'Magnet URI & Torrent Metainfo Pack':[['magnetParse',{}],['torrentBencode',{}]],
  'Fam Secret Larger Game of Life & Text Input':[['textInput',{}],['lifeXL',{}]],
  'Wikipedia Crypto Timeline Classics (Scytale → ADFGVX)':[['cryptoTimeline',{}],['scytale',{}],['beaufort',{}],['adfgvx',{}]],
+ 'Classical Deep Dive — Fractionation & Checkerboards':[['adfgx',{}],['fractionatedMorse',{}],['straddlingCheckerboard',{}]],
+ 'Classical Deep Dive — Running Keys & Routes':[['runningKey',{}],['keyedSubstitution',{}],['routeTransposition',{}]],
  'Project Gutenberg Telegraph Codebooks':[['gutenbergCodebook',{}],['gcwBookCipher',{}]],
  'RSS / OPML Feed Kitchen':[['rssParse',{}],['opmlParse',{}]],
  'Geocoding Pack (Geohash, Plus Codes, Maidenhead)':[['geohash',{}],['plusCode',{}],['maidenhead',{}]],
@@ -22779,6 +22781,268 @@ addOp('naknak','Nak-Nak (Duckspeak)','Boxentriq',
     }
     if(!out.length)throw new Error('Nothing to encode');
     return out.join(' ');
+  });
+
+/* ============================================================
+   CLASSICAL CIPHER DEEP DIVE — ACA / PRACTICAL CRYPTOGRAPHY
+   These recipes intentionally keep the historical, hand-cipher conventions
+   explicit: alphabet cleanup, stable duplicate-key ordering, and no imagined
+   padding during decryption. They are educational, not modern protection.
+============================================================ */
+function deepKeyedAlphabet(key, alphabet){
+  const base=alphabet||'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const seen=new Set(); let out='';
+  for(const ch of (onlyAZ(key)+base)){
+    if(base.includes(ch)&&!seen.has(ch)){seen.add(ch);out+=ch;}
+  }
+  return out;
+}
+function deepColumnOrder(key){
+  return [...key].map((ch,i)=>({ch,i})).sort((a,b)=>a.ch.localeCompare(b.ch)||a.i-b.i).map(x=>x.i);
+}
+function deepColumnarEncrypt(stream,key){
+  const cols=key.length, order=deepColumnOrder(key), rows=Math.ceil(stream.length/cols);
+  let out='';
+  for(const c of order) for(let r=0;r<rows;r++){
+    const ch=stream[r*cols+c]; if(ch!==undefined) out+=ch;
+  }
+  return out;
+}
+function deepColumnarDecrypt(cipher,key){
+  const cols=key.length, order=deepColumnOrder(key), fullRows=Math.floor(cipher.length/cols), extra=cipher.length%cols;
+  const columns=Array(cols).fill(''); let at=0;
+  for(const c of order){
+    const n=fullRows+(c<extra?1:0);
+    columns[c]=cipher.slice(at,at+n); at+=n;
+  }
+  let out='';
+  for(let r=0;r<=fullRows;r++) for(let c=0;c<cols;c++) if(r<columns[c].length) out+=columns[c][r];
+  return out;
+}
+
+/* 31. ADFGX — the 5×5, letters-only predecessor to ADFGVX. */
+addOp('adfgx','ADFGX Cipher','Classical',
+  'German Army field cipher from World War I: a keyed 5×5 Polybius square labelled A D F G X (J merges into I), followed by a stable keyword columnar transposition. This is the letters-only predecessor of ADFGVX; Painvin\'s 1918 work made it famous.',
+  [
+    {key:'transKey',label:'Transposition key',type:'text',default:'KEY'},
+    {key:'squareKey',label:'Square keyword',type:'text',default:'KEYWORD'},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]}
+  ],
+  function(text,args){
+    const labels='ADFGX', square=sq25(args.squareKey), key=onlyAZ(args.transKey)||'KEY';
+    const encode={},decode={};
+    for(let i=0;i<25;i++){
+      const pair=labels[Math.floor(i/5)]+labels[i%5];
+      encode[square.g[i]]=pair; decode[pair]=square.g[i];
+    }
+    if(args.mode==='decrypt'){
+      const cipher=onlyAZ(text).replace(/[^ADFGX]/g,'');
+      if(!cipher.length)throw new Error('Enter ADFGX ciphertext using only A, D, F, G and X');
+      if(cipher.length%2)throw new Error('ADFGX ciphertext must contain an even number of symbols');
+      const stream=deepColumnarDecrypt(cipher,key); let out='';
+      for(let i=0;i<stream.length;i+=2){
+        const ch=decode[stream.slice(i,i+2)];
+        if(!ch)throw new Error('Invalid ADFGX coordinate at position '+(i+1));
+        out+=ch;
+      }
+      return out;
+    }
+    const plain=onlyAZ(text||'MEET').replace(/J/g,'I');
+    if(!plain)throw new Error('Enter plaintext letters for ADFGX');
+    const stream=[...plain].map(ch=>encode[ch]).join('');
+    return deepColumnarEncrypt(stream,key);
+  });
+
+/* 32. Fractionated Morse — keyed trigrams of dot, dash and separator.
+   There are 3³ possible trigrams, but xxx cannot occur in a valid Morse
+   stream, leaving exactly 26 slots for a keyed Latin alphabet. */
+const DEEP_FM_TRIGRAMS=[];
+for(const a of '.-x')for(const b of '.-x')for(const c of '.-x')if(a+b+c!=='xxx')DEEP_FM_TRIGRAMS.push(a+b+c);
+function deepFractionatedMorseStream(text){
+  const src=String(text||'').toUpperCase().trim().replace(/\s+/g,' ');
+  if(!src)throw new Error('Enter text for Fractionated Morse');
+  let stream='';
+  for(const ch of src){
+    if(ch===' '){stream+='x';continue;}
+    const morse=MBP_MORSE[ch];
+    if(morse===undefined)throw new Error('No International Morse entry for "'+ch+'" — use A–Z, digits and spaces');
+    stream+=morse+'x';
+  }
+  // The terminal letter separator is not data. Remove it before padding so
+  // a one-symbol remainder never creates the impossible xxx trigram.
+  stream=stream.replace(/x+$/,'');
+  while(stream.length%3)stream+='x';
+  return stream;
+}
+addOp('fractionatedMorse','Fractionated Morse Cipher','Classical',
+  'Fractionated Morse converts International Morse into one continuous stream (x between letters, xx between words), then replaces each dot/dash/x trigram with a letter from a 26-character keyed alphabet. The unused xxx trigram is what makes the 3-symbol cube fit A–Z exactly.',
+  [
+    {key:'key',label:'Keyed alphabet word',type:'text',default:'ROUNDTABLE'},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]}
+  ],
+  function(text,args){
+    const alphabet=deepKeyedAlphabet(args.key);
+    if(args.mode==='decrypt'){
+      const cipher=onlyAZ(text);
+      if(!cipher)throw new Error('Enter Fractionated Morse ciphertext letters');
+      let stream='';
+      for(const ch of cipher){
+        const ix=alphabet.indexOf(ch);
+        if(ix<0)throw new Error('Ciphertext character '+ch+' is absent from the keyed alphabet');
+        stream+=DEEP_FM_TRIGRAMS[ix];
+      }
+      return mbpMorseText(stream);
+    }
+    const stream=deepFractionatedMorseStream(text||'DEFEND THE EAST');
+    let out='';
+    for(let i=0;i<stream.length;i+=3)out+=alphabet[DEEP_FM_TRIGRAMS.indexOf(stream.slice(i,i+3))];
+    return out;
+  });
+
+/* 33. A configurable route transposition. The write path and read path are
+   deliberately separate; decryption fills the read path then recovers the
+   write path. This handles unpadded final rows without silently adding Xs. */
+function deepRouteCells(rows,cols,route){
+  const out=[];
+  if(route==='columns'){
+    for(let c=0;c<cols;c++)for(let r=0;r<rows;r++)out.push([r,c]);
+  }else if(route==='snakeRows'){
+    for(let r=0;r<rows;r++)for(let k=0;k<cols;k++)out.push([r,r%2?cols-1-k:k]);
+  }else if(route==='snakeColumns'){
+    for(let c=0;c<cols;c++)for(let k=0;k<rows;k++)out.push([c%2?rows-1-k:k,c]);
+  }else if(route==='spiral'){
+    let top=0,bottom=rows-1,left=0,right=cols-1;
+    while(top<=bottom&&left<=right){
+      for(let c=left;c<=right;c++)out.push([top,c]);top++;
+      for(let r=top;r<=bottom;r++)out.push([r,right]);right--;
+      if(top<=bottom){for(let c=right;c>=left;c--)out.push([bottom,c]);bottom--;}
+      if(left<=right){for(let r=bottom;r>=top;r--)out.push([r,left]);left++;}
+    }
+  }else{
+    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)out.push([r,c]);
+  }
+  return out;
+}
+function deepCellId(cell){return cell[0]+','+cell[1];}
+addOp('routeTransposition','Route Transposition Cipher','Classical',
+  'Write a message into a rectangle by rows or columns, then read a different route: rows, columns, alternating “snake” rows/columns, or a clockwise spiral. This is a pure transposition: it keeps the same characters and changes only their order.',
+  [
+    {key:'width',label:'Grid width',type:'number',default:'5'},
+    {key:'write',label:'Write route',type:'select',default:'rows',options:[['rows','Rows (left → right)'],['columns','Columns (top → bottom)']]},
+    {key:'read',label:'Read route',type:'select',default:'columns',options:[['rows','Rows'],['columns','Columns'],['snakeRows','Snake rows'],['snakeColumns','Snake columns'],['spiral','Clockwise spiral']]},
+    {key:'padding',label:'Padding (blank = none)',type:'text',default:'X'},
+    {key:'whitespace',label:'Whitespace',type:'select',default:'remove',options:[['remove','Remove spaces / newlines'],['keep','Keep spaces / newlines']]},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]}
+  ],
+  function(text,args){
+    const width=Math.max(2,Math.min(99,parseInt(args.width)||5));
+    let source=String(text||'SOLVE A GOOD CRYPT TODAY');
+    if(args.whitespace==='remove')source=source.replace(/\s/g,'');
+    if(!source.length)throw new Error('Enter a message for route transposition');
+    const pad=String(args.padding||'').charAt(0);
+    if(args.mode==='encrypt'&&pad){const rem=source.length%width;if(rem)source+=pad.repeat(width-rem);}
+    const rows=Math.ceil(source.length/width);
+    const writeOrder=deepRouteCells(rows,width,args.write), readOrder=deepRouteCells(rows,width,args.read);
+    const used=new Set(writeOrder.slice(0,source.length).map(deepCellId));
+    const activeRead=readOrder.filter(cell=>used.has(deepCellId(cell)));
+    if(args.mode==='encrypt'){
+      const grid=Array.from({length:rows},()=>Array(width).fill(''));
+      writeOrder.slice(0,source.length).forEach((cell,i)=>{grid[cell[0]][cell[1]]=source[i];});
+      return activeRead.map(cell=>grid[cell[0]][cell[1]]).join('');
+    }
+    const grid=Array.from({length:rows},()=>Array(width).fill(''));
+    activeRead.forEach((cell,i)=>{grid[cell[0]][cell[1]]=source[i];});
+    return writeOrder.slice(0,source.length).map(cell=>grid[cell[0]][cell[1]]).join('');
+  });
+
+/* 34. Straddling checkerboard — a compact variable-length numeric code.
+   The eight top-row letters consume single digits; two selected digits signal
+   a second row, producing two-digit values for the other eighteen letters. */
+function deepCheckerboard(args){
+  const top=onlyAZ(args.top||'ETAONRIS');
+  if(top.length!==8||new Set(top).size!==8)throw new Error('Top row must contain exactly 8 distinct letters');
+  const rowLabels=String(args.rows||'26').replace(/\D/g,'');
+  if(rowLabels.length!==2||rowLabels[0]===rowLabels[1])throw new Error('Row labels must be two different digits, such as 2 and 6');
+  const headers='0123456789', topHeaders=[...headers].filter(d=>!rowLabels.includes(d));
+  const alphabet=deepKeyedAlphabet(args.key).split('').filter(ch=>!top.includes(ch)).join('');
+  const encode={},decode={};
+  topHeaders.forEach((digit,i)=>{encode[top[i]]=digit;decode[digit]=top[i];});
+  let at=0;
+  for(const label of rowLabels)for(const digit of headers){
+    const ch=alphabet[at++]; if(!ch)break;
+    encode[ch]=label+digit;decode[label+digit]=ch;
+  }
+  return {encode,decode,rowLabels};
+}
+addOp('straddlingCheckerboard','Straddling Checkerboard','Classical',
+  'A compact numeric code used in hand ciphers and the VIC family. Eight frequent letters occupy one-digit slots; two row-label digits “straddle” into two-digit slots for the remaining eighteen letters. Configure the frequency top row, row labels, and keyed remainder.',
+  [
+    {key:'top',label:'Top row (8 letters)',type:'text',default:'ETAONRIS'},
+    {key:'rows',label:'Row-label digits',type:'text',default:'26'},
+    {key:'key',label:'Keyword for lower rows',type:'text',default:'KEYWORD'},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encode text → digits'],['decrypt','Decode digits → text']]}
+  ],
+  function(text,args){
+    const board=deepCheckerboard(args);
+    if(args.mode==='decrypt'){
+      const digits=String(text||'').replace(/\D/g,'');
+      if(!digits)throw new Error('Enter checkerboard digits');
+      let out='';
+      for(let i=0;i<digits.length;){
+        const one=digits[i];
+        const token=board.rowLabels.includes(one)?digits.slice(i,i+2):one;
+        if(token.length<1||!board.decode[token])throw new Error('Invalid or incomplete checkerboard token at digit '+(i+1));
+        out+=board.decode[token];i+=token.length;
+      }
+      return out;
+    }
+    const plain=onlyAZ(text||'DEFEND THE EAST');
+    if(!plain)throw new Error('Enter letters for checkerboard encoding');
+    return [...plain].map(ch=>board.encode[ch]).join('');
+  });
+
+/* 35. Running-key Vigenère and a readable keyed monoalphabetic companion.
+   Running keys must not be repeated; requiring enough key letters makes that
+   difference visible rather than quietly falling back to Vigenère. */
+addOp('runningKey','Running Key Cipher','Classical',
+  'Vigenère with a long, non-repeating key text (often a shared book passage), rather than a short keyword repeated forever. C = (P + K) mod 26. The supplied key must contain at least one letter for every message letter.',
+  [
+    {key:'key',label:'Running key text',type:'text',default:'THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGANDTHENRUNSAWAY'},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]}
+  ],
+  function(text,args){
+    const key=onlyAZ(args.key), input=String(text||'DEFEND THE EAST');
+    const letters=(input.match(/[A-Za-z]/g)||[]).length;
+    if(key.length<letters)throw new Error('Running key has '+key.length+' letters; this message needs '+letters+' (keys never repeat)');
+    let i=0;
+    return input.split('').map(ch=>{
+      const up=ch>='A'&&ch<='Z',lo=ch>='a'&&ch<='z';if(!up&&!lo)return ch;
+      const p=ch.toUpperCase().charCodeAt(0)-65,k=key[i++].charCodeAt(0)-65;
+      const v=args.mode==='decrypt'?(p-k+26)%26:(p+k)%26;
+      return String.fromCharCode((up?65:97)+v);
+    }).join('');
+  });
+
+addOp('keyedSubstitution','Keyed Substitution Cipher','Classical',
+  'A readable monoalphabetic substitution recipe. Build the cipher alphabet from a keyword (unique keyword letters followed by the remaining A–Z), or provide an explicit 26-letter cipher alphabet. Spacing, punctuation and case are preserved.',
+  [
+    {key:'key',label:'Keyword',type:'text',default:'ZEBRAS'},
+    {key:'alphabet',label:'Custom cipher alphabet (optional)',type:'text',default:''},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]}
+  ],
+  function(text,args){
+    const custom=onlyAZ(args.alphabet);
+    const alphabet=custom||deepKeyedAlphabet(args.key);
+    if(alphabet.length!==26||new Set(alphabet).size!==26)throw new Error('Custom cipher alphabet must contain each A–Z exactly once');
+    const plain='ABCDEFGHIJKLMNOPQRSTUVWXYZ'; let out='';
+    for(const ch of String(text||'DEFEND THE EAST')){
+      const up=ch>='A'&&ch<='Z',lo=ch>='a'&&ch<='z';
+      if(!up&&!lo){out+=ch;continue;}
+      const source=args.mode==='decrypt'?alphabet:plain, target=args.mode==='decrypt'?plain:alphabet;
+      const mapped=target[source.indexOf(ch.toUpperCase())];
+      out+=lo?mapped.toLowerCase():mapped;
+    }
+    return out;
   });
 
 zenInit();
