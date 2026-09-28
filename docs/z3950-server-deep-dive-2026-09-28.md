@@ -60,7 +60,17 @@ YAZ PHP reference: [PHP manual](https://www.php.net/manual/en/ref.yaz.php). `yaz
 - Preserve target, database, query, syntax, timestamp, and diagnostics with each imported record.
 - Treat `OPEN` as transport evidence only. The application still has to handle rejected associations, missing databases, unsupported syntax, diagnostics, and encoding differences such as MARC-8 versus UTF-8.
 
+## SRU and Gopher follow-up
+
+The static Webxdc companion `apps/z3950-sru-gopher-terminal.html` adds an SRU directory and a small Gopher directory. SRU targets include the Library of Congress, DNB main catalogue, DNB German Music Archive, DNB ZDB serials, and the UCSB Cylinder Audio Archive. DNB documents its SRU base at `https://services.dnb.de/sru`, with `/dnb`, `/dnb.dma`, `/authorities`, and `/zdb` catalogue paths and CQL queries.[1](https://www.dnb.de/EN/sru)
+
+Gopher is included as a link directory rather than an inline socket client. It is a plaintext menu protocol on TCP/70; modern browsers and Webxdc sandboxes cannot open that socket. The app provides native `gopher://` links and Floodgap HTTP gateway links for Floodgap, SDF, Quux, Gopher Project, and Gopherpedia. The directory is discovery material, not a claim that every host is currently operational.
+
+The static app is packaged as `z3950-sru-gopher-terminal.xdc`. The PHP/YAZ terminal remains the correct path for live Z39.50 Search/Present operations.
+
 ## Files
 
 - `tools/z3950-terminal.php` — PHP/YAZ adapter and HTML5 terminal
 - `apps/z3950-interface.html` — standalone browser/SRU interface and protocol explainer
+- `apps/z3950-sru-gopher-terminal.html` — Webxdc-safe SRU/Gopher terminal
+- `z3950-sru-gopher-terminal.xdc` — packaged Webxdc application
