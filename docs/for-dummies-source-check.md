@@ -8,14 +8,17 @@ personal library —
 
 ## 1. The claim, and the finding in one line
 
-There is **no** *Consumer Electronics Show For Dummies* and no *RSA For Dummies*
-— not in the supplied library, not in Wiley's trade catalogue, and not on the
-Internet Archive. The books remembered from a convention floor are real, but
-they are a **different product line**: vendor-sponsored *For Dummies, [Company]
-Special Edition* booklets, written and published by Wiley for a sponsor and
-given away free at trade-show booths. They carry no trade ISBN and are not
-listed with the retail titles, which is exactly why searching a library list for
-"CES" finds nothing.
+**Revised 28 September 2026 (second pass, after catalogue checks).** There is no
+retail title called *Consumer Electronics Show For Dummies*. But the challenge
+was right on the substance and this note's first pass was wrong on two counts:
+the sponsored *For Dummies* **Special Editions are a real, catalogued
+collection** — they carry ISBNs and appear in library catalogues — and the CES
+show floor has its own, written by CES exhibitors. The clearest example is
+**Qorvo's *Internet of Things For Dummies*, published with Wiley and launched on
+5 December 2016**, a month before CES 2017, by the RF-chip company whose
+Wireless Connectivity unit sells into exactly the smart-home market CES exists
+to show. So: a *For Dummies* guide picked up around CES is entirely real; the
+thing that does not exist is a guide *to the show itself*.
 
 ## 2. What the supplied library actually contains
 
@@ -54,30 +57,91 @@ plausible: the two product lines look identical on a shelf.
 ## 3. What the convention-floor books really are
 
 Wiley runs this as a product: **Custom Solutions / Custom For Dummies**, sold to
-vendors as content marketing, with the sponsor named on the cover.
+sponsors as content marketing, with the sponsor named on the cover.
 [Wiley's own sales page](https://www.dummies.com/custom-solutions-archive/)
 showcases *SASE For Dummies, Palo Alto Networks 2nd Special Edition*,
 *Single-Vendor SASE For Dummies, Fortinet Special Edition*, *Application
-Security Posture Management For Dummies, Dazz Special Edition*, and *Zero Trust
-Security For Dummies* — and quotes a customer, Cowbell, explicitly on the
-trade-show behaviour: *"During events, we have had agents grab several books to
-hand out to their colleagues as well."* That is the memory, sourced.
+Security Posture Management For Dummies, Dazz Special Edition* and *Zero Trust
+Security For Dummies* — and quotes a customer, Cowbell, on the trade-show
+behaviour itself: *"During events, we have had agents grab several books to hand
+out to their colleagues as well."*
 
-Physical characteristics that identify one of these in a pile:
+How to identify one in a pile:
 
-- Cover reads **"<Topic> For Dummies®, <Vendor> Special Edition"**.
-- Published by **John Wiley & Sons, Inc., 111 River St., Hoboken, NJ** — but
-  every page footer reads *"These materials are © <year> John Wiley & Sons,
-  Inc. Any dissemination, distribution, or unauthorized use is strictly
-  prohibited."*
-- Roughly 24–50 pages, stapled, no retail ISBN or price.
-- Distributed free from the sponsor's booth and as a gated PDF afterwards; e.g.
+- Cover reads **"<Topic> For Dummies®, <Sponsor> Special Edition"** (or
+  *Limited Edition*, or a bare *Special Edition* for an unnamed client).
+- Published by **John Wiley & Sons, Inc., 111 River St., Hoboken, NJ**, with
+  every page footed *"These materials are © <year> John Wiley & Sons, Inc. Any
+  dissemination, distribution, or unauthorized use is strictly prohibited."*
+- Roughly 24–80 pages, stapled, no cover price, free at the booth and as a gated
+  PDF afterwards — e.g.
   [*Phishing For Dummies*, Cisco Special Edition (2023)](https://www.cisco.com/c/dam/en/us/products/security/phishing-dummies-ebook.pdf).
 
-The security-vendor concentration in that list is why RSA Conference is the show
-most associated with the practice — the sponsors are the same companies. The
-book should say **"a vendor's *For Dummies* Special Edition picked up at a
-booth"**, never "the CES For Dummies guide", which does not exist.
+### 3.1 Correction: they *are* catalogued, and they *do* have ISBNs
+
+The first pass of this note said these booklets carry no ISBN and are absent
+from catalogues. **That is wrong.** Open Library returns **128** titles matching
+`title:"for dummies" AND title:custom` and **71** matching
+`title:"for dummies" AND title:"special edition"`, nearly all published by
+"Wiley & Sons, Incorporated, John", and each carries two to four ISBNs (print
+and electronic). A sample of the record shape:
+
+| Title | Year | ISBN |
+| --- | --- | --- |
+| Cloud Data Lakes for Dummies, Snowflake Special Edition (Custom) | 2019 | 9781119666240 |
+| Zero Trust Security for Dummies, Edgewise Special Edition (Custom) | 2018 | 9781119542704 |
+| Machine Identity Protection for Dummies, Venafi Special Edition (Custom) | 2018 | 9781119491309 |
+| SIP Trunking for Dummies, Sonus Special Edition | 2012 | 9781118487679 |
+| Green Cleaning For Dummies, ISSA Special Edition | 2007 | 9780470125113 |
+| IT Compliance for Dummies (Limited Edition) | 2005 | 9780471752806 |
+
+So the line to use about these books is *"no retail edition, no cover price,
+distributed free"* — **not** "no ISBN" and **not** "uncatalogued".
+
+WorldCat itself could not be queried from here: `search.worldcat.org` answers
+the fetcher with an OCLC terms-of-service consent page rather than results, and
+its `/api/search` endpoint returns HTTP 502 without a key. Open Library and the
+Library of Congress JSON API were used instead; LoC's index is dominated by
+newspapers with "SPECIAL EDITION" mastheads and returned nothing useful. **If
+WorldCat is to be the citation, it needs to be run from a browser session** —
+the catalogue records above are the same ones it would show.
+
+### 3.2 The CES floor's own yellow books
+
+No sponsor has ever put the show's name on a cover, but CES exhibitors have
+commissioned the books, and the timing is the giveaway:
+
+- **Internet of Things For Dummies®, Qorvo Special Edition** and its companion
+  **Internet of Things Applications For Dummies** — written with John Wiley &
+  Sons, announced **5 December 2016**, free download, two volumes. Qorvo's
+  Wireless Connectivity GM Cees Links fronted it; the content is smart-home
+  market opportunity, IoT communications standards, and security. A later
+  **2nd Qorvo Special Edition** adds the **Matter** standard. Announced a month
+  before CES 2017, aimed squarely at the smart-home audience that fills the
+  LVCC. [Qorvo release](https://www.qorvo.com/newsroom/news/2016/new-qorvo-ebook-series-explains-the-internet-of-things-iot) ·
+  [download page](https://www.qorvo.com/design-hub/ebooks/internet-of-things-for-dummies) ·
+  [EDN](https://www.edn.com/new-qorvo-e-book-series-explains-the-internet-of-things-iot/)
+- **IoT Solutions For Dummies, ARM Special Edition** (2018, 9781119503354)
+- **Internet of Things For Dummies, Qorvo Special Edition** (2016, 9781119349921)
+- **Wi-Fi 6 For Dummies, Extreme Networks Special Edition** (2019, 9781119642855)
+- **Time-Sensitive Networking For Dummies, Belden/Hirschmann Special Edition** (2018, 9781119527992)
+
+And the consumer-electronics *retail* channel had its own customs, which is a
+second way one of these ends up in a house:
+
+- **Windows XP For Dummies, Limited Edition (Circuit City Custom Book)**, 2003,
+  ISBN 9780764549960
+- **ACT for Dummies, Student Edition, Wal-mart Custom**, 2006, ISBN 9780470056592
+
+### 3.3 The RSA side is documented twice over
+
+RSA Conference doesn't just receive these books, it reviews them: RSAC's own
+library carries a review of **Cryptography For Dummies** and one of **Hacking
+For Dummies, 5th Edition**. The security-vendor concentration in the custom
+catalogue and the reviews on the conference's own site are two independent
+records of the same habit.
+[RSAC on Cryptography For Dummies](https://www.rsaconference.com/library/blog/cryptography-for-dummies) ·
+[RSAC on Hacking For Dummies](https://www.rsaconference.com/blogs/hacking-for-dummies-5th-edition)
 
 ## 4. Internet Archive sweep
 
@@ -116,9 +180,18 @@ before it can go in the book as anything but recollection.
 
 ## 6. What this changes
 
-1. Do not cite a "CES For Dummies guide"; no such title exists.
-2. The convention-floor books are sponsored *Special Editions* — cite Wiley
-   Custom Solutions and a concrete example, as §3 does.
-3. The library gist is a useful primary document for what the author was reading
-   around 2011, and it is evidence of the cryptography interest that the Sanborn
-   apps later became. It is **not** evidence of attendance at any show.
+1. Do not cite a "CES For Dummies guide" **as a guide to the show** — no such
+   title exists in any catalogue checked.
+2. Do cite the sponsored editions, which are real, ISBN-bearing and catalogued;
+   for a CES-floor example use **Qorvo's *Internet of Things For Dummies***
+   (Wiley, December 2016, with a 2nd Special Edition covering Matter). For the
+   RSA side, use the vendor security editions plus RSAC's own book reviews.
+3. Correct the earlier wording in this note and anywhere it was repeated: these
+   booklets have ISBNs and library records. What they lack is a retail edition
+   and a cover price.
+4. The supplied library gist remains a dated record of what the author was
+   reading around 2011 — including *Cryptography For Dummies* and *Cracking
+   Codes and Cryptograms For Dummies* — and is not evidence of attendance at any
+   show.
+5. Still open: WorldCat could not be queried from this environment (consent
+   wall), and the "pub crawl" is still unverified.

@@ -662,10 +662,11 @@ node --test tests/sanborn-suite.test.mjs
 
 ### The "CES For Dummies guide" — source check
 
-There is no *Consumer Electronics Show For Dummies* and no *RSA For Dummies*:
-the books remembered from a convention floor are Wiley's sponsored *For Dummies,
-[Vendor] Special Edition* booklets, given away at booths with no ISBN and no
-price. The full check — including what the author's own 1,000-title library list
+There is no retail title called *Consumer Electronics Show For Dummies* — but
+the sponsored *For Dummies, [Sponsor] Special Edition* line is real, catalogued
+and ISBN-bearing (128 custom titles in Open Library), and CES exhibitors
+commissioned their own: Qorvo published *Internet of Things For Dummies* with
+Wiley in December 2016, a month before CES 2017. The full check — including what the author's own 1,000-title library list
 does and does not contain, and what the Internet Archive holds on CES (Mattel's
 1978 planning memos, not a guidebook) — is in
 [docs/for-dummies-source-check.md](docs/for-dummies-source-check.md) and feeds
