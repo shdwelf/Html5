@@ -285,7 +285,7 @@ public class EncyclopediaReport extends GhidraScript {
 
     private JsonArray analysisBookmarks() {
         JsonArray rows = new JsonArray();
-        BookmarkIterator iterator = currentProgram.getBookmarkManager().getBookmarksIterator();
+        Iterator<Bookmark> iterator = currentProgram.getBookmarkManager().getBookmarksIterator();
         int emitted = 0;
         while (iterator.hasNext() && emitted < 500 && !monitor.isCancelled()) {
             Bookmark bookmark = iterator.next();

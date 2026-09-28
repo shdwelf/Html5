@@ -97,10 +97,13 @@ jobs:
               -analysisTimeoutPerFile 300 \
               -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
               -postScript EncyclopediaReport.java "$reports" \
-              -deleteProject 2>&1 | tee -a "$log"; then
+              -deleteProject >>"$log" 2>&1; then
               failures=$((failures + 1))
               echo "GHIDRA_FAILURE $base" | tee -a "$log"
+              message=$(tail -n 100 "$log" | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+              echo "::error title=Ghidra failed for $base::$message"
             fi
+            tail -n 24 "$log"
           done
 
           report_count=$(find "$reports" -maxdepth 1 -name '*.ghidra.json' | wc -l)
