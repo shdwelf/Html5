@@ -74,6 +74,46 @@ not a fact.
 
 ---
 
+## 2b. Getting the real gas pipeline maps
+
+The operator is right that the gas company has detailed maps. The question is
+which of them a member of the public can actually hold.
+
+**PHMSA National Pipeline Mapping System (NPMS)** — US DOT, Office of Pipeline
+Safety. The only complete non-commercial source of transmission pipeline
+geometry. Operator submission is **mandatory and annual**.
+
+| Access route | Who | What you get | Export? |
+| --- | --- | --- | --- |
+| **Public Map Viewer** (`npms.phmsa.dot.gov/PublicViewer`) | anyone | Gas transmission + hazardous-liquid trunk lines, **one county per session**, max scale **1:24,000**, operator name/contact, commodity, sometimes diameter | print only |
+| **PIMMA** | federal / state / local / tribal government, operators, contractors under NDA | Same plus incidents and accidents since 2012, network history, federal and tribal lands, liquid HCAs, imagery | no download |
+| **NPMS GIS Data Request** | government with jurisdiction | Shapefile / File Geodatabase for your jurisdiction, full attributes, metadata, data use agreement | yes, 1-month access |
+
+**What is deliberately not there.** NPMS excludes **gas gathering** and **gas
+distribution** entirely. The line to a house, the line down a residential
+street, the field gathering web around a producing area — none of it. So a map
+that looks complete is not.
+
+**Accuracy.** NPMS metadata states ±500 ft. Submitted record accuracy breaks
+down roughly 22% at 0–50 ft, 45% at 51–300 ft, the rest worse. That is fine for
+awareness and useless for excavation, which is why every NPMS page says the same
+thing this app's status bar says: **call 811**.
+
+**Operator-side sources worth adding.** SoCalGas publishes transmission system
+maps and integrity-management materials (it runs ~101,000 miles of transmission
+and distribution pipe, the largest gas distribution utility in the US); CPUC
+filings and CEQA/NEPA documents for specific projects carry alignment figures at
+far better accuracy than NPMS; CEC and CNRA publish some energy-infrastructure
+GIS. For a Cajon Pass refinement specifically, the county-by-county trace is
+San Bernardino → Los Angeles → Kern in the Public Map Viewer, cross-read against
+the Calnev Expansion EIR/EIS route figures, which are drawn at engineering scale
+and are public.
+
+The `edwards-gas` and `socalgas-trunk` dossiers in the app now carry this
+provenance ladder, so the schematic line points at the way to replace itself.
+
+---
+
 ## 3. USGS 3DEP — replacing the synthetic terrain
 
 The elevation field in `socal-geo.js` is a sum of rotated gaussians (`RELIEF`).
@@ -232,6 +272,27 @@ neighbours are. They are never blended with sourced material.
 
 If any of those resolve, the fix is a one-line tier change from `context` to
 `community` plus a source string. That is the whole point of keeping them apart.
+
+---
+
+## 7b. Trails and springs added in this pass
+
+- **Pacific Crest National Scenic Trail** — 2,650 mi total; roughly 604 km of
+  generalized centerline drawn here, Campo to the southern Sierra. It crosses
+  Cajon Pass at grade and goes under I-15, the same notch as two railroads, the
+  CALNEV stem, the Edwards fuel lateral, a gas transmission line and the SWP
+  East Branch, and it tops Vincent Gap and Mount Baden-Powell above the Big Horn
+  Mine. Live crossing analysis puts **~107 km of the in-frame PCT inside
+  historical fire perimeters**: Bobcat 32 km, Old 16, Station 16, Cedar 16,
+  Blue Cut 12, Lake 9, Pilot 6.
+- **John Muir Trail** — only the final descent to the Whitney summit terminus
+  falls inside the frame; the other ~200 miles are in the off-frame register.
+- **Big Caliente Hot Springs** (34.5392 N, 119.5646 W, ~115 °F source, Los
+  Padres NF, Santa Barbara RD), **Little Caliente** (4.8 mi north, ~105 °F) and
+  **Sespe Hot Springs**. Filed in the `power` layer next to Salton Sea and Coso
+  deliberately, because the contrast is the lesson: Salton and Coso are magmatic
+  heat, Caliente and Sespe are meteoric water circulating deep along Transverse
+  Range faults and coming back up warm. Same symbol, different engine.
 
 ---
 

@@ -199,6 +199,14 @@ function corridorPoints(item) {
   });
 }
 
+/** Tube radius by class: aqueducts read heaviest, footpaths lightest. */
+function corridorRadius(item) {
+  if (item.layer === "water") return 0.16;
+  if (item.layer === "rail") return 0.11;
+  if (item.layer === "trails") return 0.05;
+  return 0.1;
+}
+
 const corridorMeshes = [];
 const FLOW = [];
 
@@ -206,7 +214,7 @@ for (const item of CORRIDORS) {
   const layer = LAYERS.find((l) => l.id === item.layer);
   const pts = corridorPoints(item);
   const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.15);
-  const radius = item.layer === "rail" ? 0.11 : item.layer === "water" ? 0.16 : 0.1;
+  const radius = corridorRadius(item);
   const geo = new THREE.TubeGeometry(curve, Math.min(600, pts.length * 3), radius, 7, false);
   const mat = new THREE.MeshStandardMaterial({
     color: new THREE.Color(layer.color),
@@ -766,7 +774,7 @@ function rebuildDepths() {
   for (const entry of corridorMeshes) {
     const pts = corridorPoints(entry.item);
     const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.15);
-    const radius = entry.item.layer === "rail" ? 0.11 : entry.item.layer === "water" ? 0.16 : 0.1;
+    const radius = corridorRadius(entry.item);
     const geo = new THREE.TubeGeometry(curve, Math.min(600, pts.length * 3), radius, 7, false);
     entry.mesh.geometry.dispose();
     entry.mesh.geometry = geo;
