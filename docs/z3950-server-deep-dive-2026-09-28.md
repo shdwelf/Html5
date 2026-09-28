@@ -8,15 +8,32 @@ A browser cannot open arbitrary TCP connections to port 210. The PHP endpoint is
 
 ## Targets investigated
 
-| Target | Host / port | Database | Evidence | Workspace TCP check |
+| Target | Host / port | Database | Evidence | Workspace transport check |
 |---|---|---|---|---|
-| Library of Congress | `lx2.loc.gov:210` | `LCDB` | [official LC configuration](https://www.loc.gov/z3950/lcserver.html) | OPEN |
-| OCLC WorldCat | `zcat.oclc.org:210` | `OLUCWorldCat` | [OCLC configuration guide](https://help.oclc.org/Metadata_Services/Z3950_Cataloging/Get_started/Configuration_guide_for_OCLC_Z39.50_Cataloging) | OPEN |
-| Deutsche Nationalbibliothek | `z3950.dnb.de:210` | `dnb` | [Koha server directory](https://kohasupport.com/knowledge-base/z3950-server-directory/) | OPEN |
-| Bibliothèque nationale de France | `z3950.bnf.fr:2100` | `BNF-SECO` | [Koha server directory](https://kohasupport.com/knowledge-base/z3950-server-directory/) | OPEN |
-| CSIC Library & Archive Network | `eu00.alma.exlibrisgroup.com:210` | `34CSIC_INST` | [CSIC official page](https://bibliotecas.csic.es/en/servidor-z3950) | OPEN |
+| UCSB Davidson Library — Cylinder Audio Archive | `cylinders.library.ucsb.edu:443` | Alma SRU / archive | [UCSB backend note](https://cylinders.library.ucsb.edu/alma.php) | HTTPS OPEN; **not current Z39.50** |
+| Library of Congress | `lx2.loc.gov:210` | `LCDB` | [official LC configuration](https://www.loc.gov/z3950/lcserver.html) | Z39.50 OPEN |
+| Yale University Library | `z3950.library.yale.edu:7090` | `Voyager` | [academic directory entry](https://kohasupport.com/knowledge-base/z3950-server-directory/) | Z39.50 OPEN |
+| MIT Libraries | `library.mit.edu:9909` | `MITILS` | [academic directory entry](https://kohasupport.com/knowledge-base/z3950-server-directory/) | Z39.50 OPEN |
+| Purdue University Libraries | `na03.alma.exlibrisgroup.com:1921` | `01PURDUE_PUWL` | [Purdue LibAnswers](https://answers.lib.purdue.edu/erm/faq/328412) | Z39.50 OPEN |
+| OCLC WorldCat | `zcat.oclc.org:210` | `OLUCWorldCat` | [OCLC configuration guide](https://help.oclc.org/Metadata_Services/Z3950_Cataloging/Get_started/Configuration_guide_for_OCLC_Z39.50_Cataloging) | Z39.50 OPEN |
+| Deutsche Nationalbibliothek | `z3950.dnb.de:210` | `dnb` | [Koha server directory](https://kohasupport.com/knowledge-base/z3950-server-directory/) | Z39.50 OPEN |
+| Bibliothèque nationale de France | `z3950.bnf.fr:2100` | `BNF-SECO` | [Koha server directory](https://kohasupport.com/knowledge-base/z3950-server-directory/) | Z39.50 OPEN |
+| CSIC Library & Archive Network | `eu00.alma.exlibrisgroup.com:210` | `34CSIC_INST` | [CSIC official page](https://bibliotecas.csic.es/en/servidor-z3950) | Z39.50 OPEN |
 
 The checks were TCP reachability checks from the development workspace on 2026-09-28. They are not proof that an unauthenticated Initialize, Search, or Present operation will succeed. OCLC documentation specifically indicates that authorization is needed for its cataloging service.
+
+## UCSB Davidson Library and the wax-cylinder archive
+
+UCSB is an important special-collections starting point, but it needs a protocol distinction. The UCSB Cylinder Audio Archive page says its old Aleph-backed search interface used Z39.50 for roughly twelve years, but Aleph was retired in 2017. The current backend is Ex Libris Alma and the archive now uses SRU. The PHP terminal therefore includes UCSB as an **SRU/archive target**, not as a false current Z39.50 database.
+
+The archive is especially relevant for cultural-heritage discovery: UCSB describes more than 22,000 cylinder titles and more than 650 vernacular wax-cylinder home recordings. The university's Performing Arts / Special Research Collections pages describe commercial cylinders, unique recordings, and the archive's digitized access model. The terminal points researchers to the live archive while keeping the historical Z39.50 fact in the research notes. This is preferable to copying a retired host/database pair into a production server list.
+
+Useful UCSB sources:
+
+- [Cylinder Audio Archive](https://cylinders.library.ucsb.edu/)
+- [Alma migration and SRU note](https://cylinders.library.ucsb.edu/alma.php)
+- [UCSB Cylinder Audio Archive collection page](https://www.library.ucsb.edu/special-collections/performing-arts/cylinders)
+- [Historical sound recordings](https://www.library.ucsb.edu/special-collections/performing-arts/pasound)
 
 The Library of Congress testing page is useful for discovery, but much of its directory is old. Entries marked as old, stale, or lacking a current provider page should not be treated as production targets. The implementation intentionally starts with five documented targets rather than scraping arbitrary hosts.
 

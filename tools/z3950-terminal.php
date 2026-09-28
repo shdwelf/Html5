@@ -13,10 +13,35 @@ declare(strict_types=1);
 
 $servers = [
     [
+        'id' => 'ucsb-cylinder', 'name' => 'UCSB Davidson Library · Cylinder Audio Archive', 'host' => 'cylinders.library.ucsb.edu',
+        'port' => 443, 'database' => 'ALMA SRU / Cylinder Archive', 'syntax' => 'MARCXML',
+        'region' => 'US', 'protocol' => 'SRU', 'archive' => 'https://cylinders.library.ucsb.edu/',
+        'source' => 'https://cylinders.library.ucsb.edu/alma.php',
+        'note' => 'Special Collections archive: 22,000+ cylinder titles and 650+ vernacular wax cylinders. Former Aleph Z39.50 was retired; current backend is Alma SRU.'
+    ],
+    [
         'id' => 'loc', 'name' => 'Library of Congress', 'host' => 'lx2.loc.gov',
         'port' => 210, 'database' => 'LCDB', 'syntax' => 'usmarc',
         'region' => 'US', 'source' => 'https://www.loc.gov/z3950/lcserver.html',
         'note' => 'Public; UTF-8 LC catalog; current official target.'
+    ],
+    [
+        'id' => 'yale', 'name' => 'Yale University Library', 'host' => 'z3950.library.yale.edu',
+        'port' => 7090, 'database' => 'Voyager', 'syntax' => 'usmarc',
+        'region' => 'US', 'source' => 'https://kohasupport.com/knowledge-base/z3950-server-directory/',
+        'note' => 'Directory-listed academic and rare-book target; verify access policy.'
+    ],
+    [
+        'id' => 'mit', 'name' => 'MIT Libraries', 'host' => 'library.mit.edu',
+        'port' => 9909, 'database' => 'MITILS', 'syntax' => 'usmarc',
+        'region' => 'US', 'source' => 'https://kohasupport.com/knowledge-base/z3950-server-directory/',
+        'note' => 'Directory-listed technical and scientific collections.'
+    ],
+    [
+        'id' => 'purdue', 'name' => 'Purdue University Libraries', 'host' => 'na03.alma.exlibrisgroup.com',
+        'port' => 1921, 'database' => '01PURDUE_PUWL', 'syntax' => 'usmarc',
+        'region' => 'US', 'source' => 'https://answers.lib.purdue.edu/erm/faq/328412',
+        'note' => 'Provider documents Purdue credentials; do not guess or store credentials.'
     ],
     [
         'id' => 'dnb', 'name' => 'Deutsche Nationalbibliothek', 'host' => 'z3950.dnb.de',
@@ -96,9 +121,10 @@ function z_search(array $server, string $term, string $field = 'title', int $sta
 }
 function tcp_check(array $server): array {
     $started = microtime(true); $errno = 0; $errstr = '';
+    $protocol = $server['protocol'] ?? 'Z39.50';
     $socket = @fsockopen($server['host'], $server['port'], $errno, $errstr, 4.0);
     $ms = (int)round((microtime(true) - $started) * 1000);
-    if ($socket) { fclose($socket); return ['ok' => true, 'latency_ms' => $ms, 'message' => 'TCP port reachable']; }
+    if ($socket) { fclose($socket); return ['ok' => true, 'latency_ms' => $ms, 'message' => $protocol.' transport reachable']; }
     return ['ok' => false, 'latency_ms' => $ms, 'message' => $errstr ?: 'connection failed', 'errno' => $errno];
 }
 
@@ -118,7 +144,7 @@ if ($api === 'search') {
 </style></head><body><main class="terminal"><header class="mast"><div class="eyebrow">ORIGIN → TARGET / HTML5 TERMINAL</div><h1>Z39.50 / diceware catalog</h1><p>Discoverable server directory, native YAZ search adapter, TCP health checks, and a single die for choosing where the next query goes.</p></header><div class="grid"><section class="pane"><h2>01 / targets</h2><p class="status">Allow-listed records gathered from provider documentation and catalog directories. “Reachable” means TCP only; it does not guarantee Search or Present.</p><div id="servers">Loading directory…</div><button class="dice" id="roll" title="Choose a random server">⚄ Roll the target die</button></section><section class="pane"><h2>02 / search terminal</h2><p class="status">PHP YAZ executes Z39.50 server-side. Browser-only static hosting cannot open port 210.</p><form id="search"><div class="controls"><input name="term" value="neural networks" maxlength="160" placeholder="search term"><select name="field"><option value="title">title</option><option value="author">author</option><option value="any">any Bib-1</option></select><button>Transmit</button></div></form><pre id="console">Awaiting target selection…</pre><div id="records"></div></section><section class="pane full"><h2>03 / investigation notes</h2><p><span class="tag">Initialize</span> negotiates the association. <span class="tag">Search</span> sends a Bib-1 RPN query. <span class="tag">Present</span> retrieves records in the configured syntax. The YAZ PHP extension exposes these operations through <code>yaz_connect</code>, <code>yaz_search</code>, <code>yaz_wait</code>, <code>yaz_present</code>, and <code>yaz_record</code>.</p><p class="status">Current evidence: Library of Congress <code>lx2.loc.gov:210/LCDB</code> and OCLC <code>zcat.oclc.org:210/OLUCWorldCat</code> were TCP-checked from this workspace on 2026-09-28. Other targets are discoverable candidates and should be checked before use.</p><p class="status">Sources: <a href="https://www.loc.gov/z3950/lcserver.html">LOC configuration</a> · <a href="https://www.loc.gov/z3950/agency/resources/testport.html">LOC testing hosts</a> · <a href="https://bibliotecas.csic.es/en/servidor-z3950">CSIC server</a> · <a href="https://help.oclc.org/Metadata_Services/Z3950_Cataloging/Get_started/Configuration_guide_for_OCLC_Z39.50_Cataloging">OCLC guide</a> · <a href="https://www.php.net/manual/en/ref.yaz.php">PHP YAZ reference</a></p></section></div><footer class="foot">No credentials are stored. OCLC and other authenticated targets require authorized access. Respect provider terms, rate limits, and catalog policies.</footer></main>
 <script>
 let selected=null;const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-async function load(){const data=await fetch('?api=servers').then(r=>r.json());$('#servers').innerHTML=data.servers.map(s=>`<div class="server" id="srv-${s.id}"><div><b>${esc(s.name)}</b> <span class="tag">${esc(s.region)}</span><small>${esc(s.host)}:${s.port}/${esc(s.database)} · ${esc(s.note)}</small><span class="status" id="stat-${s.id}">not checked</span></div><button data-id="${s.id}">check</button></div>`).join('');document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>check(b.dataset.id));}
+async function load(){const data=await fetch('?api=servers').then(r=>r.json());$('#servers').innerHTML=data.servers.map(s=>`<div class="server" id="srv-${s.id}"><div><b>${esc(s.name)}</b> <span class="tag">${esc(s.region)} · ${esc(s.protocol||'Z39.50')}</span><small>${esc(s.host)}:${s.port}/${esc(s.database)} · ${esc(s.note)}</small><span class="status" id="stat-${s.id}">not checked</span></div><button data-id="${s.id}">check</button></div>`).join('');document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>check(b.dataset.id));}
 async function check(id){const r=await fetch('?api=check&server='+encodeURIComponent(id)).then(x=>x.json()),st=$('#stat-'+id);st.textContent=r.check.ok?'● '+r.check.message+' ('+r.check.latency_ms+'ms)':'× '+r.check.message;st.className='status '+(r.check.ok?'ok':'bad');select(id);}
 function select(id){document.querySelectorAll('.server').forEach(x=>x.classList.remove('selected'));$('#srv-'+id)?.classList.add('selected');selected=id;$('#console').textContent='Target locked: '+id+'\nReady to transmit.';}
 $('#roll').onclick=async()=>{const r=await fetch('?api=random').then(x=>x.json());select(r.server.id);$('#console').textContent='🎲 Rolled: '+r.server.name+'\n'+r.server.host+':'+r.server.port+'/'+r.server.database+'\nUse “check” or transmit a query.'};
