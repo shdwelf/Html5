@@ -59,6 +59,7 @@ public class EncyclopediaReport extends GhidraScript {
         root.add("memoryBlocks", memoryBlocks());
         root.add("entryPoints", entryPoints());
         root.add("imports", externalSymbols());
+        root.add("notableStringReferences", notableStringReferences());
 
         JsonObject counts = new JsonObject();
         counts.addProperty("functions", currentProgram.getFunctionManager().getFunctionCount());
@@ -173,6 +174,38 @@ public class EncyclopediaReport extends GhidraScript {
         return rows;
     }
 
+    private JsonArray notableStringReferences() {
+        JsonArray rows = new JsonArray();
+        Listing listing = currentProgram.getListing();
+        ReferenceManager references = currentProgram.getReferenceManager();
+        FunctionManager functions = currentProgram.getFunctionManager();
+        DataIterator iterator = listing.getDefinedData(true);
+        while (iterator.hasNext() && rows.size() < 200 && !monitor.isCancelled()) {
+            Data data = iterator.next();
+            if (!data.hasStringValue() || data.getValue() == null) continue;
+            String text = String.valueOf(data.getValue()).replace("\r", "\\r").replace("\n", "\\n");
+            if (!isResearchString(text)) continue;
+
+            JsonObject row = new JsonObject();
+            row.addProperty("address", data.getAddress().toString());
+            row.addProperty("text", text);
+            JsonArray xrefs = new JsonArray();
+            ReferenceIterator referenceIterator = references.getReferencesTo(data.getAddress());
+            while (referenceIterator.hasNext() && xrefs.size() < 32) {
+                Reference reference = referenceIterator.next();
+                JsonObject xref = new JsonObject();
+                Address from = reference.getFromAddress();
+                xref.addProperty("from", from.toString());
+                Function function = functions.getFunctionContaining(from);
+                xref.addProperty("function", function == null ? "" : function.getName(true));
+                xrefs.add(xref);
+            }
+            row.add("xrefs", xrefs);
+            rows.add(row);
+        }
+        return rows;
+    }
+
     private long writeAssembly(File file) throws IOException {
         long count = 0;
         Listing listing = currentProgram.getListing();
@@ -243,22 +276,52 @@ public class EncyclopediaReport extends GhidraScript {
                 return rows;
             }
 
-            LinkedHashSet<Function> targets = new LinkedHashSet<>();
+            LinkedHashMap<Function, String> targets = new LinkedHashMap<>();
+            FunctionManager functionManager = currentProgram.getFunctionManager();
             AddressIterator entries = currentProgram.getSymbolTable().getExternalEntryPointIterator();
-            while (entries.hasNext()) {
+            if (entries.hasNext()) {
                 Address address = entries.next();
-                Function f = currentProgram.getFunctionManager().getFunctionAt(address);
-                if (f == null) f = currentProgram.getFunctionManager().getFunctionContaining(address);
-                if (f != null && !f.isExternal()) targets.add(f);
+                Function function = functionManager.getFunctionAt(address);
+                if (function == null) function = functionManager.getFunctionContaining(address);
+                addTarget(targets, function, "program entry point");
             }
-            FunctionIterator functions = currentProgram.getFunctionManager().getFunctionsNoStubs(true);
-            while (functions.hasNext() && targets.size() < MAX_DECOMPILES) targets.add(functions.next());
+
+            // Prefer code that references the encyclopaedia's descriptive strings. This
+            // produces more useful review material than simply taking functions in address order.
+            DataIterator dataIterator = currentProgram.getListing().getDefinedData(true);
+            ReferenceManager referenceManager = currentProgram.getReferenceManager();
+            while (dataIterator.hasNext() && targets.size() < MAX_DECOMPILES) {
+                Data data = dataIterator.next();
+                if (!data.hasStringValue() || data.getValue() == null ||
+                    !isResearchString(String.valueOf(data.getValue()))) continue;
+                ReferenceIterator refs = referenceManager.getReferencesTo(data.getAddress());
+                while (refs.hasNext() && targets.size() < MAX_DECOMPILES) {
+                    Address from = refs.next().getFromAddress();
+                    addTarget(targets, functionManager.getFunctionContaining(from),
+                        "references notable string at " + data.getAddress());
+                }
+            }
+
+            entries = currentProgram.getSymbolTable().getExternalEntryPointIterator();
+            while (entries.hasNext() && targets.size() < MAX_DECOMPILES) {
+                Address address = entries.next();
+                Function function = functionManager.getFunctionAt(address);
+                if (function == null) function = functionManager.getFunctionContaining(address);
+                addTarget(targets, function, "NE entry/export");
+            }
+            FunctionIterator functions = functionManager.getFunctionsNoStubs(true);
+            while (functions.hasNext() && targets.size() < MAX_DECOMPILES) {
+                addTarget(targets, functions.next(), "address-order fallback");
+            }
 
             int index = 0;
-            for (Function function : targets) {
+            for (Map.Entry<Function, String> target : targets.entrySet()) {
                 if (index++ >= MAX_DECOMPILES || monitor.isCancelled()) break;
+                Function function = target.getKey();
+                String selectionReason = target.getValue();
                 JsonObject row = new JsonObject();
                 row.addProperty("name", function.getName(true));
+                row.addProperty("selectionReason", selectionReason);
                 row.addProperty("address", function.getEntryPoint().toString());
                 row.addProperty("bodyBytes", function.getBody().getNumAddresses());
                 DecompileResults result = decompiler.decompileFunction(function, DECOMPILE_TIMEOUT_SECONDS, monitor);
@@ -269,6 +332,7 @@ public class EncyclopediaReport extends GhidraScript {
 
                 out.println("/* ------------------------------------------------------------");
                 out.println(" * " + function.getName(true) + " @ " + function.getEntryPoint());
+                out.println(" * selected: " + selectionReason);
                 out.println(" * body bytes: " + function.getBody().getNumAddresses());
                 out.println(" * completed: " + completed);
                 if (!completed) out.println(" * message: " + nullToEmpty(result.getErrorMessage()));
@@ -300,6 +364,18 @@ public class EncyclopediaReport extends GhidraScript {
             emitted++;
         }
         return rows;
+    }
+
+    private static void addTarget(LinkedHashMap<Function, String> targets, Function function, String reason) {
+        if (function != null && !function.isExternal()) targets.putIfAbsent(function, reason);
+    }
+
+    private static boolean isResearchString(String value) {
+        String text = value.toLowerCase(Locale.ROOT);
+        return text.contains("virus") || text.contains("encyclop") || text.contains("infect") ||
+            text.contains("remove") || text.contains("repair") || text.contains("clean") ||
+            text.contains("boot") || text.contains("partition") || text.contains("memory") ||
+            text.contains("findvirus") || text.contains("solomon") || text.contains("toolkit");
     }
 
     private static String safeName(String value) {

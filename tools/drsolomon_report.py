@@ -114,7 +114,8 @@ def main() -> int:
         "12.1.4, allows standard auto-analysis, exports a complete instruction listing,",
         "defined strings, imports, analyzer warnings, and up to 48 decompiled functions,",
         "then deletes the temporary Ghidra project and source bytes. The Git repository",
-        "retains this evidence report—not the executable corpus.",
+        "retains this report plus `WVENCYCL.EXE` assembly, selected decompilation, strings,",
+        "and JSON metadata—not the executable corpus.",
         "",
         "| program | format | language | functions | instructions | strings | imports | decompiled |",
         "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |",
@@ -156,6 +157,21 @@ def main() -> int:
                 f"**{counts['definedStrings']} strings**, **{len(imports)} external symbols**",
                 f"- Decompiler: **{len(completed)}/{len(report['decompilations'])}** selected functions produced C",
                 "",
+                "### What the static evidence establishes",
+                "",
+                "- This is a segmented 16-bit Windows NE application, not an encyclopedia",
+                "  document and not a stand-alone DOS virus sample.",
+                "- Its `USER`, `GDI`, `KERNEL`, and `BWCC` imports identify a graphical Win16",
+                "  front end using Borland's custom controls. Embedded references to",
+                "  `WTOOLKIT.HLP` connect it to the surrounding Anti-Virus Toolkit.",
+                "- Its descriptive records distinguish infectiousness, infected object classes",
+                "  (COM, EXE, boot/partition sectors), memory residence, and payload/infection",
+                "  behavior. That is consistent with an informational browser over structured",
+                "  virus descriptions; it does not establish that `WVENCYCL.EXE` carries or runs",
+                "  the viruses it describes.",
+                "- Ghidra's generated names (`FUN_…`, `DAT_…`) remain provisional. The checked-in",
+                "  evidence preserves addresses and bytes so later symbol recovery can be audited.",
+                "",
                 "### Memory map",
                 "",
                 "| block | address range | bytes | R/W/X | entropy |",
@@ -171,8 +187,13 @@ def main() -> int:
 
             lines += ["", "### Entry points", ""]
             if entries:
-                for entry in entries:
+                for entry in entries[:32]:
                     lines.append(f"- `{entry['address']}` — `{cell(entry.get('function') or entry.get('name') or 'unnamed')}`")
+                if len(entries) > 32:
+                    lines.append(
+                        f"- … {len(entries) - 32} additional NE entry/export addresses are retained in "
+                        "[`WVENCYCL.EXE.ghidra.json`](dr-solomon-ghidra-evidence/WVENCYCL.EXE.ghidra.json)."
+                    )
             else:
                 lines.append("- Ghidra marked no external entry point; review the loader/analyzer warnings.")
 
@@ -205,6 +226,40 @@ def main() -> int:
             else:
                 lines.append("Ghidra's defined-string pass found no strings matching the research terms.")
 
+            string_references = [
+                row for row in report.get("notableStringReferences", []) if row.get("xrefs")
+            ]
+            lines += ["", "### Code references to descriptive strings", ""]
+            if string_references:
+                lines += [
+                    "| string address/text | referring instruction → function |",
+                    "| --- | --- |",
+                ]
+                for row in string_references[:24]:
+                    text = str(row.get("text", "")).replace("`", "'")
+                    if len(text) > 72:
+                        text = text[:69] + "…"
+                    refs = ", ".join(
+                        f"`{ref.get('from', '')}` → `{cell(ref.get('function') or 'unresolved')}`"
+                        for ref in row["xrefs"][:8]
+                    )
+                    lines.append(f"| `{row['address']}` — {cell(text)} | {refs} |")
+            else:
+                lines.append(
+                    "No direct references to the matched string starts were recovered; Win16 resource "
+                    "or table indirection can obscure those links."
+                )
+
+            lines += [
+                "",
+                "### Checked-in Ghidra evidence",
+                "",
+                "- [Complete instruction listing](dr-solomon-ghidra-evidence/WVENCYCL.EXE.asm)",
+                "- [Selected decompiler output](dr-solomon-ghidra-evidence/WVENCYCL.EXE.c)",
+                "- [Defined strings](dr-solomon-ghidra-evidence/WVENCYCL.EXE.strings.txt)",
+                "- [Machine-readable metadata, imports, xrefs, and analyzer findings](dr-solomon-ghidra-evidence/WVENCYCL.EXE.ghidra.json)",
+            ]
+
             entry_address = str(entries[0]["address"]) if entries else ""
             if asm_path.exists():
                 asm_lines = asm_path.read_text(encoding="utf-8", errors="replace").splitlines()
@@ -213,8 +268,8 @@ def main() -> int:
                     "",
                     "### Disassembly excerpt at the entry point",
                     "",
-                    "The full listing is retained as a workflow artifact; this excerpt is the",
-                    "reviewable, checked-in proof that Ghidra decoded the entry path.",
+                    "The complete checked-in listing is linked above; this excerpt provides a",
+                    "compact view of the decoded entry path.",
                     "",
                     "```asm",
                     *excerpt,
@@ -269,9 +324,10 @@ def main() -> int:
         "  docs/dr-solomon-virus-encyclopaedia-ghidra.md",
         "```",
         "",
-        "The automation lives in `.github/workflows/drsolomon-ghidra.yml`. Its retained",
-        "artifact contains the complete `.asm`, `.c`, string, and JSON exports; raw disk",
-        "and executable bytes are intentionally excluded from that artifact.",
+        "The automation lives in `.github/workflows/drsolomon-ghidra.yml`. The principal",
+        "`WVENCYCL.EXE` static outputs are checked in under `docs/dr-solomon-ghidra-evidence/`;",
+        "the run artifact also contains exports for every analyzed executable. Raw disk and",
+        "executable bytes are intentionally excluded from both destinations.",
         "",
     ]
 

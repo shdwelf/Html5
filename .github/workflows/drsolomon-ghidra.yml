@@ -21,7 +21,7 @@ jobs:
       GHIDRA_DATE: '20260921'
       GHIDRA_SHA256: 'ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-java@v5
         with:
@@ -127,9 +127,14 @@ jobs:
           set -euo pipefail
           cp "$RUNNER_TEMP/drsolomon/dr-solomon-virus-encyclopaedia-ghidra.md" \
             docs/dr-solomon-virus-encyclopaedia-ghidra.md
+          mkdir -p docs/dr-solomon-ghidra-evidence
+          for suffix in asm c strings.txt ghidra.json; do
+            cp "$RUNNER_TEMP/drsolomon/reports/WVENCYCL.EXE.$suffix" \
+              "docs/dr-solomon-ghidra-evidence/WVENCYCL.EXE.$suffix"
+          done
           git config user.name arena-ghidra-research
           git config user.email arena-ghidra-research@users.noreply.github.com
-          git add docs/dr-solomon-virus-encyclopaedia-ghidra.md
+          git add docs/dr-solomon-virus-encyclopaedia-ghidra.md docs/dr-solomon-ghidra-evidence/
           git commit -m "Document Ghidra analysis of Dr Solomon's Virus Encyclopaedia" || exit 0
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
@@ -143,7 +148,7 @@ jobs:
 
       - name: Upload static-analysis evidence only
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: dr-solomon-ghidra-${{ github.run_id }}
           path: |
