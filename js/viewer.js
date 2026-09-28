@@ -43,6 +43,7 @@ import { pathTemplate, PIPELINE } from "./hdtopo.js";
 import { greedy575 } from "./syllables.js";
 import { drawEnso, encodeEnsoId, hashStr, prettyId, randomSettings } from "./enso-id.js";
 import { deriveBitcoinWallet } from "./wallet-derivatives.js";
+import { deriveCoin } from "./coins.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
@@ -65,6 +66,8 @@ const state = {
   wallet: null,
   walletScheme: "84",
   walletRevealed: false,
+  topCoins: [],
+  topCoinResult: null,
 };
 
 let formGroup = null;
@@ -737,8 +740,88 @@ function renderWalletScheme() {
   ).join("");
 }
 
+function clearTopCoin() {
+  state.topCoinResult = null;
+  $("topCoinOutput").hidden = true;
+  $("topCoinPath").textContent = "—";
+  $("topCoinAddress").textContent = "—";
+  $("topCoinPublic").textContent = "—";
+  if (!state.wallet) $("clearWallet").disabled = true;
+}
+
+function selectedTopCoin() {
+  return state.topCoins.find((coin) => coin.id === $("topCoin").value) || null;
+}
+
+function updateTopCoinSelection() {
+  clearTopCoin();
+  const coin = selectedTopCoin();
+  if (!coin) {
+    $("deriveTopCoin").disabled = true;
+    return;
+  }
+  $("deriveTopCoin").disabled = !coin.derive;
+  $("topCoinNote").textContent = coin.derive
+    ? `#${coin.rank} ${coin.name} · ${coin.chain} · ${coin.path} · local derivation available.`
+    : `#${coin.rank} ${coin.name} · unsupported: ${coin.reason}`;
+}
+
+async function loadTopCoins() {
+  try {
+    const response = await fetch("./config/coins-top500.json");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const registry = await response.json();
+    state.topCoins = (registry.assets || []).slice(0, 50);
+    const select = $("topCoin");
+    select.replaceChildren(...state.topCoins.map((coin) => {
+      const option = document.createElement("option");
+      option.value = coin.id;
+      option.textContent = `#${coin.rank} · ${coin.symbol} · ${coin.name}${coin.derive ? "" : " · unsupported"}`;
+      return option;
+    }));
+    select.disabled = false;
+    updateTopCoinSelection();
+  } catch (error) {
+    $("topCoin").replaceChildren(new Option("Registry unavailable"));
+    $("topCoinNote").textContent = `Could not load the offline coin registry: ${error.message || error}`;
+  }
+}
+
+async function deriveSelectedTopCoin() {
+  const coin = selectedTopCoin();
+  if (!coin?.derive) return;
+  if (!state.analysis?.ok || !state.analysis?.layout?.standard) {
+    $("topCoinNote").textContent = "Use a valid standard BIP-39 phrase first.";
+    return;
+  }
+  const button = $("deriveTopCoin");
+  button.disabled = true;
+  $("topCoinNote").textContent = `Deriving ${coin.symbol} locally…`;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  try {
+    const result = deriveCoin(state.topCoins, state.words.join(" "), { id: coin.id }, {
+      passphrase: $("walletPass").value,
+    });
+    state.topCoinResult = result;
+    $("topCoinLabel").textContent = `#${coin.rank} ${coin.symbol} · ${result.family || coin.family} · path`;
+    $("topCoinPath").textContent = result.path;
+    $("topCoinAddress").textContent = result.address;
+    $("topCoinPublic").textContent = result.pubkeyHex;
+    $("topCoinOutput").hidden = false;
+    $("clearWallet").disabled = false;
+    const hostNote = coin.type === "token" ? ` Token address uses its host chain ${coin.chain}.` : "";
+    $("topCoinNote").textContent = `Derived locally from the selected path.${hostNote} No private material is displayed or shared here.`;
+  } catch (error) {
+    clearTopCoin();
+    $("topCoinNote").textContent = `Derivation failed: ${error.message || error}`;
+  } finally {
+    button.disabled = !coin.derive;
+  }
+}
+
 function clearWallet(message = "Wallet derivatives cleared.", clearPassphrase = false) {
   state.wallet = null;
+  clearTopCoin();
   if (clearPassphrase) $("walletPass").value = "";
   setWalletReveal(false);
   $("walletSeed").textContent = "—";
@@ -825,7 +908,7 @@ function renderAnalysis(words, analysis) {
 async function applyPhrase(text, { broadcast = false } = {}) {
   const words = parsePhrase(text);
   const normalized = words.join(" ");
-  if (state.wallet && normalized !== state.words.join(" ")) clearWallet("Phrase changed · derive again explicitly.", true);
+  if ((state.wallet || state.topCoinResult) && normalized !== state.words.join(" ")) clearWallet("Phrase changed · derive again explicitly.", true);
   $("phrase").value = normalized;
   state.words = words;
   if (!words.length) {
@@ -911,6 +994,7 @@ async function main() {
   updateRollNeed();
   paintDecode();
   renderLex("");
+  loadTopCoins();
   $("wl").textContent = `${WORDLIST.length}`;
   const sel = $("formSel");
   sel.innerHTML = FORMS.map((f) => `<option value="${f[0]}">${f[1]}</option>`).join("");
@@ -983,8 +1067,10 @@ async function main() {
   $("deriveWallet").onclick = deriveWallet;
   $("revealWallet").onclick = () => setWalletReveal(!state.walletRevealed);
   $("clearWallet").onclick = () => clearWallet("Wallet derivatives and passphrase cleared.", true);
+  $("deriveTopCoin").onclick = deriveSelectedTopCoin;
+  $("topCoin").addEventListener("change", updateTopCoinSelection);
   $("walletPass").addEventListener("input", () => {
-    if (state.wallet) clearWallet("Passphrase changed · derive again explicitly.");
+    if (state.wallet || state.topCoinResult) clearWallet("Passphrase changed · derive again explicitly.");
   });
   $("walletScheme").addEventListener("click", (event) => {
     const button = event.target.closest("[data-wallet-scheme]");

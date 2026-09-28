@@ -177,6 +177,17 @@
           <button class="act" id="clearWallet" type="button" disabled>Clear</button>
         </div>
         <div id="walletStatus" class="legend">Derivation is explicit and only accepts standard 12/15/18/21/24-word phrases with valid checksums.</div>
+        <label for="topCoin">Top 50 asset address</label>
+        <div class="row">
+          <select id="topCoin" disabled><option>Loading registry…</option></select>
+          <button class="act" id="deriveTopCoin" type="button" disabled>Derive selected</button>
+        </div>
+        <p id="topCoinNote" class="legend">Market-rank snapshot · supported chains derive locally; unsupported chains explain why.</p>
+        <div id="topCoinOutput" class="top-coin-output" hidden>
+          <div class="wallet-kv"><span id="topCoinLabel">Selected asset</span><code id="topCoinPath">—</code></div>
+          <div class="wallet-kv"><span>Address</span><code id="topCoinAddress">—</code></div>
+          <div class="wallet-kv"><span>Public key</span><code id="topCoinPublic">—</code></div>
+        </div>
         <div id="walletOutput" hidden>
           <div class="wallet-kv"><span>Seed · 512-bit</span><code id="walletSeed" class="wallet-secret">—</code></div>
           <div class="wallet-kv"><span>Root xprv</span><code id="walletRoot" class="wallet-secret">—</code></div>

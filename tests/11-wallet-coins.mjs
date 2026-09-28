@@ -303,6 +303,31 @@ const coins = REG.assets;
   s.ok("viewer secrets blur until explicit reveal",
     /\.wallet-secret\s*\{[^}]*filter:\s*blur\(6px\)/s.test(viewerCss) &&
     /\.wallet-revealed \.wallet-secret\s*\{[^}]*filter:\s*none/s.test(viewerCss));
+
+  const top50 = coins.slice(0, 50);
+  s.eq("viewer top-50 registry rows", top50.length, 50);
+  s.eq("viewer top-50 derivable rows", top50.filter((coin) => coin.derive).length, 40);
+  s.ok("viewer unsupported top-50 rows explain why",
+    top50.filter((coin) => !coin.derive).every((coin) => Boolean(coin.reason)));
+  const families = new Map();
+  for (const coin of top50.filter((item) => item.derive)) {
+    const key = `${coin.family}|${coin.chain}|${coin.path}`;
+    if (!families.has(key)) families.set(key, coin);
+  }
+  let cleanTop50 = true;
+  for (const coin of families.values()) {
+    const result = W.deriveCoin(top50, ABANDON, { id: coin.id });
+    if (!result.address || result.path !== coin.path || !result.pubkeyHex || "priv" in result || "wif" in result)
+      cleanTop50 = false;
+  }
+  s.ok("every distinct supported top-50 chain/path derives public output only", cleanTop50,
+    `${families.size} distinct chain/path families`);
+  const eth50 = W.deriveCoin(top50, ABANDON, { id: "eth-ethereum" });
+  const usdt50 = W.deriveCoin(top50, ABANDON, { id: "usdt-tether" });
+  s.eq("host-chain token reuses its EVM address", usdt50.address, eth50.address);
+  s.ok("viewer has top-50 selector contract",
+    /id="topCoin"/.test(viewerHtml) && /id="deriveTopCoin"/.test(viewerHtml) &&
+    /slice\(0, 50\)/.test(viewerJs));
 }
 
 process.exit(s.done() ? 1 : 0);

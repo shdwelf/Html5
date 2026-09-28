@@ -7,7 +7,7 @@ tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 cd "$root"
 
-mkdir -p "$tmp/css" "$tmp/js" "$tmp/wasm" "$tmp/vendor"
+mkdir -p "$tmp/css" "$tmp/js" "$tmp/wasm" "$tmp/vendor" "$tmp/config"
 cp keyspace.html "$tmp/index.html"
 cp webxdc.js "$tmp/"
 cp css/viewer.css "$tmp/css/"
@@ -21,6 +21,7 @@ cp wasm/entropy.wasm "$tmp/wasm/"
 cp vendor/three.module.min.js vendor/OrbitControls.js "$tmp/vendor/"
 cp vendor/THREE_LICENSE "$tmp/vendor/" 2>/dev/null || true
 cp icon.png "$tmp/icon.png"
+cp config/coins-top500.json "$tmp/config/"
 
 cat > "$tmp/manifest.toml" <<'TOML'
 name = "Keyspace Viewer"

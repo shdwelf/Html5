@@ -500,6 +500,9 @@ input[type="range"] { flex: 1; min-width: 120px; }
   gap: 9px;
   margin-top: 8px;
 }
+.wallet-panel .row select { flex: 1; min-width: 180px; }
+.top-coin-output { display: grid; gap: 7px; }
+.top-coin-output[hidden] { display: none; }
 .wallet-warning {
   padding: 9px;
   border: 1px solid rgba(255, 93, 108, 0.42);

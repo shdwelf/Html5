@@ -138,6 +138,15 @@ passphrase clears derived output; **Clear** also clears the passphrase. JavaScri
 cannot guarantee physical memory erasure, so the warning against real-fund
 mnemonics remains prominent.
 
+The same panel exposes the first 50 rows of the committed market/SLIP-0044
+registry. It derives one selected asset on demand—never all 50 at once—and shows
+its configured path, address and public key. EVM tokens correctly reuse their
+host-chain address; supported Bitcoin-family, XRP, Solana, Stellar, NEAR,
+Cosmos, TRON and transparent-Zcash families use their registered codecs.
+Unsupported top-50 rows remain visible and show the registry's reason instead
+of inventing an address. This selector displays no additional private material;
+BTC WIFs remain in the explicitly blurred BIP-44/49/84 table.
+
 Game of Life, NFT art, a catalog, 50 themes and CryptoMonopoly were researched
 but not copied because they do not improve the keyspace model. The existing
 repository workbench and art studio remain the appropriate homes for those
