@@ -137,6 +137,7 @@ Files originally saved as `index (N).html` on a mobile device were renamed from 
 | `ndx.js.html` | — | 25 KB |  |
 | `netscope.html` | NetScope v2 — IPv4/IPv6 + HTML5 Nmap + Bypass Lab | 70 KB |  |
 | `network-topology-scanner (1).html` | Network Topology Scanner & Subnet Detective | 73 KB |  |
+| `neural-augment-lab.html` | Neural Augment Lab · GitHub × OpenAI | 15 KB | _(added as an offline research artifact)_ |
 | `news-globe-app-1781706672984.html` | Spinning News Globe – Standalone Offline | 2 KB |  |
 | `news-globe-live-rss-on-an-earth` | News Globe — Live RSS on an Earth | 7 KB | _(from `index (27).html`)_ |
 | `news-globe.html` | News Globe — Live RSS on an Earth | 131 KB |  |
