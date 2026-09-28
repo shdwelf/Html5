@@ -37,6 +37,16 @@ def excerpt_after(lines: list[str], needle: str, count: int = 36) -> list[str]:
     return lines[:count]
 
 
+def normalize_pascal_string_line(line: str) -> str:
+    """Hide a printable ShortString length byte that Ghidra treated as text."""
+    if "\t" not in line:
+        return line
+    address, text = line.split("\t", 1)
+    if text and ord(text[0]) == len(text) - 1:
+        text = text[1:]
+    return f"{address}\t{text}"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("inventory", type=Path)
@@ -172,6 +182,30 @@ def main() -> int:
                 "- Ghidra's generated names (`FUN_…`, `DAT_…`) remain provisional. The checked-in",
                 "  evidence preserves addresses and bytes so later symbol recovery can be audited.",
                 "",
+                "### Recovered data path and record layout",
+                "",
+                "- `WVENCYCL.EXE` expects the separate `VIRDATA.DAT`; its data segment contains",
+                "  `Cannot find VIRDATA.DAT`. This separates the browser code from the 43,894-byte",
+                "  virus-description corpus shipped beside it.",
+                "- The parser at `FUN_1000_0c97` reads 4 KiB buffers and dispatches tagged records",
+                "  beginning with bytes `B5` through `B8`. The `B5` path increments the item index",
+                "  and inserts recovered text into the UI; `B6`/`B7` retain comma-delimited text",
+                "  and file offsets. Those tag meanings are structural interpretations, not",
+                "  recovered source-level names.",
+                "- The `B8` path unpacks bit fields from four source bytes into a ten-byte",
+                "  classification vector. Renderers `FUN_1000_0195` and `FUN_1000_02cb` use those",
+                "  values as indexes into prose tables for prevalence, infectiousness, damage,",
+                "  target type, residence, stealth, and other effects.",
+                "- The prose tables use Pascal `ShortString` storage: one length byte followed by",
+                "  fixed-capacity text. Their observed strides include `0x3d` (60 characters plus",
+                "  length), `0x51` (80 plus length), and `0x5b` (90 plus length). Printable length",
+                "  bytes explain apparent prefixes such as `/`, `<`, and `A` in unnormalized Ghidra",
+                "  strings. Together with `BWCC`, this is consistent with a Borland Pascal toolchain.",
+                "- Segment `1068` contains the linked Pascal/DOS file runtime, including `INT 21h`",
+                "  services `AH=3Fh` (read), `3Eh` (close), and `42h` (seek). Generic write helpers",
+                "  are present too; their inclusion alone does not show that the encyclopaedia",
+                "  modifies the corpus.",
+                "",
                 "### Memory map",
                 "",
                 "| block | address range | bytes | R/W/X | entropy |",
@@ -216,11 +250,20 @@ def main() -> int:
             notable: list[str] = []
             if strings_path.exists():
                 for line in strings_path.read_text(encoding="utf-8", errors="replace").splitlines():
+                    line = normalize_pascal_string_line(line)
                     if KEYWORDS.search(line) and line not in notable:
                         notable.append(line)
                     if len(notable) >= 24:
                         break
-            lines += ["", "### Notable defined strings", ""]
+            lines += [
+                "",
+                "### Notable defined strings",
+                "",
+                "For readability, this excerpt removes a printable leading byte when it exactly",
+                "matches the remaining Pascal `ShortString` length. The raw Ghidra strings remain",
+                "available in the checked-in evidence.",
+                "",
+            ]
             if notable:
                 lines += ["```text", *notable, "```"]
             else:
@@ -260,16 +303,15 @@ def main() -> int:
                 "- [Machine-readable metadata, imports, xrefs, and analyzer findings](dr-solomon-ghidra-evidence/WVENCYCL.EXE.ghidra.json)",
             ]
 
-            entry_address = str(entries[0]["address"]) if entries else ""
             if asm_path.exists():
                 asm_lines = asm_path.read_text(encoding="utf-8", errors="replace").splitlines()
-                excerpt = excerpt_after(asm_lines, entry_address, 42)
+                excerpt = excerpt_after(asm_lines, "1000:0c97", 42)
                 lines += [
                     "",
-                    "### Disassembly excerpt at the entry point",
+                    "### Disassembly excerpt from the data parser",
                     "",
                     "The complete checked-in listing is linked above; this excerpt provides a",
-                    "compact view of the decoded entry path.",
+                    "compact view of the parser at `FUN_1000_0c97`.",
                     "",
                     "```asm",
                     *excerpt,
@@ -277,10 +319,13 @@ def main() -> int:
                 ]
             if c_path.exists():
                 c_lines = c_path.read_text(encoding="utf-8", errors="replace").splitlines()
-                excerpt = c_lines[:90]
+                excerpt = excerpt_after(c_lines, "else if (bVar2 == 0xb8)", 90)
                 lines += [
                     "",
-                    "### Decompiler excerpt",
+                    "### Decompiler excerpt: packed classification record",
+                    "",
+                    "Ghidra's C shows the `B8` parser unpacking source bits into the ten-byte",
+                    "classification vector later consumed by the prose renderers.",
                     "",
                     "```c",
                     *excerpt,
@@ -304,11 +349,12 @@ def main() -> int:
         "",
         "- The 1992 disk image and S&S attribution come from the Internet Archive item",
         "  metadata and are independently enforced by the disk hashes above.",
-        "- A separate 1995 print edition is catalogued as *Dr Solomon’s Virus",
-        "  Encyclopaedia* by Alan Solomon and Dmitry O. Gryaznov, ISBN 1-897661-00-2.",
-        "- This artifact is distinct from Eugene Kaspersky’s later AVP Virus",
-        "  Encyclopedia. Contemporary descriptions place AVP’s bilingual virus databank",
-        "  project in 1992, but that does not make this S&S disk an AVP binary.",
+        "- A [separate 1995 print edition](https://archive.org/details/drsolomonsviruse0000alan)",
+        "  is catalogued as *Dr Solomon’s Virus Encyclopaedia* by Alan Solomon and",
+        "  Dmitry O. Gryaznov, ISBN 1-897661-00-2.",
+        "- This artifact is distinct from Eugene Kaspersky’s later AVP Virus Encyclopedia.",
+        "  [Published AVP history](https://doi.org/10.1109/93.790614) places that bilingual",
+        "  virus databank project in 1992, but that does not make this S&S disk an AVP binary.",
         "",
         "## Reproduce",
         "",
