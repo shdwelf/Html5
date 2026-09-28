@@ -587,6 +587,97 @@ node --test tests/los-alamos.test.mjs tests/project-y-sites.test.mjs
 node tests/project-y-sites-browser.mjs
 ```
 
+### The convention floor — venue exhibit and source check
+
+[`convention-centers.html`](convention-centers.html) is a second Three.js/VRML
+exhibit built on the same primitives-shared-with-the-exporter pattern. It renders
+six schematic venue exteriors — the Las Vegas Convention Center (with the
+Renaissance across Paradise Road and a Loop marker), the Sands Expo / Venetian
+Expo with its stacked halls, the Anaheim Convention Center including ACC North,
+the Javits Center, the Mandalay Bay Convention Center with the Delano / W tower
+and its 64th-floor Skyfall band, and the Walter E. Washington Convention Center,
+the building that houses Jim Sanborn's *Lingua* (the sculpture itself is modelled
+in the Sanborn viewer described below, not here). Each has a downloadable `.wrl` under
+`models/venues/`.
+
+Everything is invented massing except three sourced measurements, which are
+labelled in the geometry and in each file's `WorldInfo`: the Sands hall split
+(upper halls A–D ≈ 32 ft 5 in, lower Hall G 13 ft 5 in), Skyfall's 64th storey,
+and Lingua's 16-foot cylinders. These are not maps, floor plans, navigation aids,
+or event-planning tools, and they depict buildings rather than attendance.
+
+The research and source check behind the exhibit —
+[venue chronology, name changes, show-by-show venue history, and the dating
+brackets it produces](docs/convention-venues.md) — supports Chapter XI of
+`greeran-book.html`. Regenerate exports with
+`node scripts/build-venue-models.mjs` and run:
+
+```sh
+node --test tests/venue-sites.test.mjs
+```
+
+### The Sanborn installation viewer — source-checked
+
+The "convention center VRML" in the workshop's own history is **not** the venue
+exhibit above: it is [`public/apps/kryptos-vrml/index.html`](public/apps/kryptos-vrml/index.html),
+the webxdc-packaged Sanborn installation viewer, whose `SCULPTURES` registry
+holds eleven Sanborn sites (keys `1`–`9` and the tab strip switch between them)
+— one of which is *Lingua*, at a convention center. That app, not a lost file,
+is the artifact; tab 06 of the venue exhibit is only the shell of the building
+and now links to it.
+
+Every installation in the viewer was source-checked on 28 September 2026 and now
+carries a `verified` line and a `sources` list, rendered in a new **SOURCES &
+VERIFICATION** section of the info panel. Two errors were corrected: *Lingua*'s
+venue is the **Walter E. Washington Convention Center** (installed 2002, building
+opened 2003, renamed 2007) and its eighth script is **Ethiopic (Ge'ez)**; the
+**Cyrillic Projector** is a permanent installation at **UNC Charlotte, installed
+1997**, not a private-collection piece from 2002. Interpretation is now flagged
+as interpretation on the entrance slabs, the Berlin Wall segments and Atomic
+Time, and the K4 panel carries the post-auction position: the archive sold for
+$962,500 on 20 November 2025, and the cipher system that produced K4 has still
+not been broken. Details and the full table are in
+[§10 of the venue note](docs/convention-venues.md). Repack with
+`sh tools/pack_kryptos_xdc.sh` and run:
+
+```sh
+node --test tests/sanborn-viewer-sources.test.mjs
+```
+
+### One container: the Sanborn Suite
+
+The codex and the viewer now also ship **fused into a single webxdc app** —
+[`public/apps/sanborn-suite/index.html`](public/apps/sanborn-suite/index.html),
+packed as `sanborn-suite.xdc` (2.25 MB of HTML, 882 KB zipped). Both programs
+are carried whole inside that one file as base64 payloads and written into their
+own same-origin child documents on first use, so every feature of each app keeps
+working — React/three.js galleries, the Cipher Lab and the zen-garden skins on
+one side, raw-WebGL scenes, the cipher simulator and the source-checked panels
+on the other — without their CSS resets, globals or key handlers colliding.
+Switch with the header buttons or <kbd>Alt</kbd>+<kbd>1</kbd> /
+<kbd>Alt</kbd>+<kbd>2</kbd> / <kbd>Alt</kbd>+<kbd>3</kbd> from anywhere,
+including from inside either app; each child is handed the host's
+`window.webxdc` so the container keeps one identity. Nothing is fetched at
+runtime — the tests assert that.
+
+```sh
+node scripts/build-sanborn-suite.mjs     # regenerate from the two packaged apps
+sh tools/pack_sanborn_suite_xdc.sh       # …and pack sanborn-suite.xdc
+node --test tests/sanborn-suite.test.mjs
+```
+
+### The "CES For Dummies guide" — source check
+
+There is no retail title called *Consumer Electronics Show For Dummies* — but
+the sponsored *For Dummies, [Sponsor] Special Edition* line is real, catalogued
+and ISBN-bearing (128 custom titles in Open Library), and CES exhibitors
+commissioned their own: Qorvo published *Internet of Things For Dummies* with
+Wiley in December 2016, a month before CES 2017. The full check — including what the author's own 1,000-title library list
+does and does not contain, and what the Internet Archive holds on CES (Mattel's
+1978 planning memos, not a guidebook) — is in
+[docs/for-dummies-source-check.md](docs/for-dummies-source-check.md) and feeds
+Chapter XI of `greeran-book.html`.
+
 Additional contextual source: the Bulletin of the Atomic Scientists feature
 [“The faces that made the Bomb”](https://thebulletin.org/multimedia/the-faces-that-made-the-bomb/)
 (Bulletin Staff, June 19, 2013) is linked in a research spotlight. See the

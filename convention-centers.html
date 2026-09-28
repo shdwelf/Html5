@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f3f2ec">
+<title>The convention floor — schematic venue exhibit</title>
+<meta name="description" content="Schematic Three.js and VRML 2.0 exteriors of the Las Vegas Convention Center, Sands/Venetian Expo, Mandalay Bay and the Delano tower, Anaheim Convention Center, the Javits Center and the Walter E. Washington Convention Center, with a source check of the shows held in them.">
+<link rel="stylesheet" href="css/convention-centers.css">
+<link rel="stylesheet" href="css/project-y-sites.css">
+<script type="module" src="js/venue-sites.js"></script>
+</head>
+<body>
+<header class="page-head"><div class="wrap" style="display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;width:100%">
+  <h1>The convention floor</h1>
+  <span class="eyebrow" style="margin:0">BLACK HAT · DEF CON · CES · AVN · MD&amp;M WEST · MD&amp;M EAST</span>
+  <nav><a href="#sites">Exhibit</a><a href="docs/convention-venues.md">Research notes</a><a href="greeran-book.html#convention-floor">Book chapter</a></nav>
+</div></header>
+
+<main class="wrap">
+  <section id="sites" class="site-exhibit" aria-labelledby="site-heading">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">SIX BUILDINGS BEHIND SIX SHOWS</p>
+        <h2 id="site-heading">The halls, dated and named correctly.</h2>
+      </div>
+      <span class="eyebrow">THREE.JS / VRML 2.0</span>
+    </div>
+    <p class="site-intro">Interpretive exterior models of the Las Vegas Convention Center, the Sands Expo (now the Venetian Expo), the Anaheim Convention Center, the Javits Center, the Mandalay Bay Convention Center with the tower that became the Delano and then W Las Vegas, and the Walter E. Washington Convention Center with Sanborn’s <i>Lingua</i>. These are simplified historical exhibits — not maps, floor plans, or navigation aids.</p>
+
+    <div class="site-tabs" role="group" aria-label="Select venue">
+      <button data-site="lvcc" aria-pressed="true">01 / Las Vegas CC</button>
+      <button data-site="sands-expo" aria-pressed="false">02 / Sands Expo</button>
+      <button data-site="anaheim-cc" aria-pressed="false">03 / Anaheim CC</button>
+      <button data-site="javits" aria-pressed="false">04 / Javits</button>
+      <button data-site="delano-tower" aria-pressed="false">05 / Mandalay Bay &amp; Skyfall</button>
+      <button data-site="walter-e-washington" aria-pressed="false">06 / Washington D.C.</button>
+    </div>
+
+    <div class="site-layout">
+      <div>
+        <div id="site-stage" class="site-stage">
+          <canvas id="site-canvas" tabindex="0" aria-label="Interactive schematic venue model. Drag to orbit; use the view buttons to change the camera."></canvas>
+          <span class="model-caption">SCHEMATIC · NOT TO SCALE</span>
+          <p id="site-render-status" role="status">Preparing the local Three.js viewer…</p>
+        </div>
+        <div class="site-controls" role="group" aria-label="Model controls">
+          <button id="site-reset">Reset view</button>
+          <button id="site-top">Top view</button>
+          <button id="site-left" aria-label="Rotate model view left">↶</button>
+          <button id="site-right" aria-label="Rotate model view right">↷</button>
+          <button id="site-zoom-in" aria-label="Zoom in">＋</button>
+          <button id="site-zoom-out" aria-label="Zoom out">−</button>
+          <button id="site-wire" aria-pressed="false">Wireframe</button>
+        </div>
+        <p class="fineprint">Drag to orbit · Scroll or pinch to zoom · Right-drag to pan. Keyboard-accessible view controls are above. Geometry loads locally; WebGL2 is required for 3D.</p>
+      </div>
+      <aside id="site-detail" class="site-detail" aria-live="polite"></aside>
+    </div>
+
+    <div class="site-downloads">
+      <a id="site-vrml" class="primary" download>Download this venue · .wrl ↓</a>
+      <div>
+        <b>Take the exhibit into a VRML viewer.</b>
+        <p>Each VRML 2.0 file carries the same exterior geometry plus the disclaimer, the interpretation note, and the source links in its <code>WorldInfo</code>. No plugin is needed for the Three.js view.</p>
+        <a href="models/venues/lvcc.wrl" download>Las Vegas CC</a> ·
+        <a href="models/venues/sands-expo.wrl" download>Sands Expo</a> ·
+        <a href="models/venues/anaheim-cc.wrl" download>Anaheim CC</a> ·
+        <a href="models/venues/javits.wrl" download>Javits</a> ·
+        <a href="models/venues/delano-tower.wrl" download>Mandalay Bay &amp; Skyfall</a> ·
+        <a href="models/venues/walter-e-washington.wrl" download>Walter E. Washington CC</a>
+      </div>
+      <div>
+        <b>The sculpture is not here — it is in the Sanborn viewer.</b>
+        <p>Tab 06 is only the shell of the building. Jim Sanborn&rsquo;s <i>Lingua</i> itself, with its two sixteen-foot cylinders, is modelled and source-checked inside the <b>Sanborn installation viewer</b> already in this workshop, alongside ten other Sanborn sites. That viewer &mdash; not this exhibit &mdash; is the &ldquo;convention center VRML&rdquo; that started this pass.</p>
+        <a href="public/apps/kryptos-vrml/index.html">Open the Sanborn installation viewer &rarr;</a>
+      </div>
+    </div>
+
+    <div class="callout">
+      <h3>What the source check found</h3>
+      <p><b>Black Hat and Skyfall are one property.</b> Black Hat USA has run at the Mandalay Bay Convention Center every year since 2014 — at Caesars Palace before that — and the Delano tower is part of the same complex, so a conference day and a rooftop meeting are a walk across one resort. Because Skyfall only opened in October 2015, after Black Hat USA 2015 had ended, such an evening dates to <b>2016 or later</b>, and not 2020, when Black Hat was virtual. If the same week also took in the Las Vegas Convention Center, that was DEF CON, which moved to the West Hall for DEF CON 32 in August 2024 — narrowing the trip to <b>August 2024 or August 2025</b>.</p>
+      <p><b>But the AVN memory is a different decade.</b> The AVN Adult Entertainment Expo shared a week and a building with CES only until January 2011; in 2012 it moved to the following weekend and to the Hard Rock. A January CES-era trip and an August Black Hat-era trip are two threads, at least five years apart, and the book should keep them apart.</p>
+      <p><b>The “above/below” detail checks out.</b> The Sands Expo really does stack: halls A–D on the upper level at roughly 32½-foot ceilings, and Hall G — about 380,000 sq ft at 13 ft 5 in — below them.</p>
+      <p><b>Names have dates.</b> Sands Expo became the Venetian Expo on 2 September 2021; THEhotel became the Delano in 2014 and W Las Vegas on 18 December 2024; IME West and IME East became MD&amp;M West and MD&amp;M East in the 2025 rebrand. ACC North opened 26 September 2017 and the LVCC West Hall on 8 June 2021 — both are hard before/after markers for dating a visit.</p>
+      <p><b>The earlier “convention center VRML” was never lost.</b> This checkout, the connected Google Drive, and <code>shdwelf/Html5-sync-incoming</code> were all searched: the only VRML artifact in the sync repo is <code>kryptos_vrml.html</code>, byte-identical to the copies already here. The convention centre in the existing work is Jim Sanborn’s <i>Lingua</i> at the Walter E. Washington Convention Center, already catalogued in <code>sanborn-codex.html</code> — model 06 above.</p>
+      <p><b>No attendance is claimed.</b> Nothing in this repository documents that anyone attended these shows; the only in-repo trace is simulated demonstration data in <code>apps/Resume.html</code>, complete with reserved fictional 555 phone numbers. Full reasoning and citations: <a href="docs/convention-venues.md">docs/convention-venues.md</a>.</p>
+    </div>
+
+    <p class="fineprint">These models depict buildings, not attendance, and not events. Placing a tower beside a hall does not assert that anyone walked between them. Every footprint, height, spacing and placement is invented except two sourced figures, noted per model.</p>
+    <noscript><p>JavaScript is disabled. Download the six VRML files above, or read <a href="docs/convention-venues.md">the venue research notes</a>.</p></noscript>
+  </section>
+</main>
+
+<footer class="page-foot"><div class="wrap">
+  <p class="fineprint">Schematic venue exhibit · researched 28 September 2026 · part of the Greeran book lab. Venue facts are cited in <a href="docs/convention-venues.md">docs/convention-venues.md</a>; personal attendance remains unverified recollection.</p>
+</div></footer>
+</body>
+</html>
