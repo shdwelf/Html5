@@ -103,6 +103,41 @@ Measurement-backed examples:
   Hamming cube is flat, Γⁱⱼₖ = 0 and R = 0. Any lens claiming curvature here
   would be wrong.
 
+## Statistical views and measured 3-D layers
+
+Math view 6 adds three coordinated, data-backed diagnostics for the loaded
+entropy rather than another metaphor:
+
+- a 16-bin nibble histogram with the uniform expected-count line and Pearson
+  χ² statistic (15 degrees of freedom);
+- a bit-run raster with transition marks, observed/expected runs and longest
+  run;
+- Pearson autocorrelation bars for bit lags 1–32, plus lag-1 correlation of the
+  BIP-39 word-index sequence.
+
+The readout also reports one-bit balance, exploratory monobit and runs p-values,
+empirical byte Shannon entropy, observed unique bytes, word-index standard
+deviation and nibble χ². The module (`js/key-stats.js`) is deliberately labelled
+**descriptive only**: 128–256 bits is too small for byte-frequency inference or
+a randomness certification, p-values are multiple looks at one sample, and a
+pleasant-looking chart does not make a mnemonic safe. The generator's security
+still comes from `crypto.getRandomValues`, not from passing a dashboard test.
+This treatment follows NIST's own cautions: SP 800-22 says its asymptotic
+references are inappropriate for small `n` and makes bit balance a prerequisite
+for its runs test, while NIST entropy-source guidance explains why generic
+output tests do not substitute for source modelling and entropy assessment:
+
+- https://doi.org/10.6028/NIST.SP.800-22r1a
+- https://doi.org/10.6028/NIST.SP.800-90B
+
+Two additional 3-D engine layers expose the same measurements: **Nibble
+distribution skyline** maps the 16 observed counts to radial bar height, and
+**Bit autocorrelation ring** maps measured lag-1…32 Pearson coefficients to
+radius and height. Unlike the older schematic forms, both are marked as measured
+layers and rebuild whenever the phrase changes. Their finite geometry and the
+statistics' known cases (all-zero, alternating, and byte ramp) are regression
+tested in suite 16.
+
 ## Seed Haiku identity (Drive research integration)
 
 Section 11 now carries forward the useful local-only presentation ideas from
@@ -172,6 +207,7 @@ npm i --no-save wabt jsdom puppeteer-core @sparticuz/chromium
 | 08 | the syllable counter and 5-7-5 layout the workbench shares (`tools/blink_contract.mjs` is unrelated; this one predates it) | 12 |
 | 09 | the DOM stand-ins measured against Blink itself — `getContext`'s accepted ids, the memoised-context and wrong-type rules, `[PermissiveDictionaryConversion]`, the canvas size gates, `bufferData`/`texImage2D` overload arity, the WebAssembly-shaped buffer ceiling, and `getElementById` returning `Element?` | 56 |
 | 10 | the WebAssembly rasteriser: `wasm/lens3d.wat` assembled and validated, its projection checked against `js/spacefill.js`, bit-exact parity with the JS shadow on vertices *and* texture, geometry invariants, overflow/NaN/viewport guards, and a real-Chromium boot of `lens3d-wasm.html` | 72 |
+| 16 | descriptive key statistics known cases, p-value helpers, lag correlations, histogram accounting, and finite geometry for the distribution/autocorrelation 3-D layers | 33 |
 
 Suite 05 is **stale, not skipped**: it drives 18 element ids (`lensRack`,
 `lensName`, `invSub`, `lensCanvas`, …) that neither `keyspace.html` nor

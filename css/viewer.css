@@ -282,14 +282,22 @@ button.act:active { transform: scale(0.98); }
   background: #05070c;
 }
 input[type="range"] { flex: 1; min-width: 120px; }
-  display: block;
-  width: 100%;
-  max-width: 360px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: #05070c;
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 8px;
 }
-input[type="range"] { flex: 1; min-width: 120px; }
+.stat-grid div {
+  display: grid;
+  gap: 2px;
+  padding: 7px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0b1018;
+}
+.stat-grid span { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .08em; }
+.stat-grid b { color: var(--accent); font-family: var(--mono); font-size: 11px; }
 
 .slice, .bitplane {
   display: block;

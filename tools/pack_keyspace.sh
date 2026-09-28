@@ -16,7 +16,7 @@ cp js/viewer.js js/bip39.js js/bip39-en.js js/engine.js js/spacefill.js \
    js/entropy-live.js js/lexicon.js js/mathvis.js js/forms3d.js js/hdtopo.js \
    js/formal.js js/lens-draw.js js/lens-3d.js js/syllables.js js/enso-id.js \
    js/wallet-derivatives.js js/coins.js js/bip32.js js/addrs.js js/codec.js \
-   js/hash.js js/secp256k1.js js/ed25519.js "$tmp/js/"
+   js/hash.js js/secp256k1.js js/ed25519.js js/key-stats.js "$tmp/js/"
 cp wasm/entropy.wasm "$tmp/wasm/"
 cp vendor/three.module.min.js vendor/OrbitControls.js "$tmp/vendor/"
 cp vendor/THREE_LICENSE "$tmp/vendor/" 2>/dev/null || true

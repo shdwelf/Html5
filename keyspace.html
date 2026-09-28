@@ -18,7 +18,7 @@
   <header class="topbar">
     <div>
       <h1>Keyspace Viewer</h1>
-      <p>1 parallel · 2 avalanche · 3 fiber · 4 Gray · 5 cube</p>
+      <p>1 parallel · 2 avalanche · 3 fiber · 4 Gray · 5 cube · 6 statistics</p>
     </div>
     <div style="display:flex;align-items:center;gap:8px;pointer-events:auto">
       <a href="./index.html#studio" target="_top" style="color:#8eacff;font-size:10px;letter-spacing:.12em;text-decoration:none;border:1px solid rgba(142,172,255,.35);padding:8px 10px;border-radius:8px">ART STUDIO</a>
@@ -58,7 +58,7 @@
 
       <div class="pager">
         <button class="act" id="mathPrev" type="button">Back</button>
-        <span id="mathPos">1 / 5</span>
+        <span id="mathPos">1 / 6</span>
         <button class="act" id="mathNext" type="button">Next</button>
       </div>
 
@@ -101,7 +101,26 @@
       <p class="legend" id="cubeNote">A real face of C: first n entropy bits. Remaining bits still live in the vertex.</p>
       </section>
 
-      <h2 class="step">6 · CSPRNG / dice</h2>
+      <section class="math-step" data-math="6">
+      <h2 class="step">6 · Statistical diagnostics</h2>
+      <div class="seg" id="statsSeg" role="tablist" aria-label="Statistical view">
+        <button type="button" class="seg-btn on" data-stats="nibbles">Nibble histogram</button>
+        <button type="button" class="seg-btn" data-stats="runs">Bit runs</button>
+        <button type="button" class="seg-btn" data-stats="correlation">Autocorrelation</button>
+      </div>
+      <canvas id="statsPlot" class="plot" width="360" height="200" aria-label="Entropy statistical diagnostic"></canvas>
+      <div class="stat-grid">
+        <div><span>ones</span><b id="statBalance">—</b></div>
+        <div><span>runs</span><b id="statRuns">—</b></div>
+        <div><span>longest</span><b id="statLongest">—</b></div>
+        <div><span>byte H</span><b id="statByteH">—</b></div>
+        <div><span>unique bytes</span><b id="statUnique">—</b></div>
+        <div><span>word σ</span><b id="statWordSigma">—</b></div>
+      </div>
+      <p class="legend" id="statsNote">Descriptive only. A single BIP-39 entropy sample is too short to certify randomness.</p>
+      </section>
+
+      <h2 class="step">7 · CSPRNG / dice</h2>
       <div class="onair" id="onair"><span class="dot"></span> ON AIR · peek only — not the seed</div>
       <div class="seg" id="srcSeg">
         <button type="button" class="seg-btn" data-src="dice6">Dice 1–6</button>
@@ -115,7 +134,7 @@
         <button class="act" id="commitRolls" type="button">Commit rolls → phrase</button>
       </div>
 
-      <h2 class="step">7 · Hole plates</h2>
+      <h2 class="step">8 · Hole plates</h2>
       <div id="holes" class="holes" aria-label="11-bit hole plates"></div>
       <div class="decode-row">
         <div id="decodePips" class="pips decode"></div>
@@ -128,7 +147,7 @@
       <input type="search" id="lexQ" placeholder="search word, prefix, or index" />
       <div id="lex" class="lex"></div>
 
-      <h2 class="step">8 · Hilbert / Morton</h2>
+      <h2 class="step">9 · Hilbert / Morton</h2>
       <div class="seg" id="curveSeg">
         <button type="button" class="seg-btn on" data-curve="hilbert">Hilbert</button>
         <button type="button" class="seg-btn" data-curve="morton">Morton / Z</button>
@@ -136,13 +155,13 @@
       <canvas id="slice" class="slice" width="256" height="256" aria-label="Space-filling keyspace slice"></canvas>
       <p class="legend" id="sliceNote">Top 14 entropy bits. The cell is still 2ⁿ⁻¹⁴ keys.</p>
 
-      <h2 class="step">9 · Bit plane + tape</h2>
+      <h2 class="step">10 · Bit plane + tape</h2>
       <canvas id="bits" class="bitplane" width="256" height="128" aria-label="Entropy and checksum bits"></canvas>
       <div class="tape-wrap"><table class="tape" id="tape"></table></div>
       <div class="scale" id="scale"></div>
       <p class="legend" id="scaleNote"></p>
 
-      <h2 class="step">10 · Word embedding</h2>
+      <h2 class="step">11 · Word embedding</h2>
       <div class="seg" id="embedSeg" role="tablist">
         <button type="button" class="seg-btn on" data-embed="scatter">WASM scatter</button>
         <button type="button" class="seg-btn" data-embed="fibonacci">Fibonacci sphere</button>
@@ -150,7 +169,7 @@
       </div>
       <p class="legend" id="embedNote">Random mixer — nearby indices are not nearby in space.</p>
 
-      <h2 class="step">11 · Seed haiku identity</h2>
+      <h2 class="step">12 · Seed haiku identity</h2>
       <div class="seed-identity">
         <canvas id="seedEnso" width="320" height="320" aria-label="Deterministic ensō fingerprint for the loaded entropy"></canvas>
         <div id="haiku" class="haiku" aria-live="polite">
@@ -166,7 +185,7 @@
         <div class="enso-id" id="ensoId">EN—</div>
       </div>
 
-      <h2 class="step">12 · Wallet derivatives</h2>
+      <h2 class="step">13 · Wallet derivatives</h2>
       <div class="wallet-panel">
         <p class="legend wallet-warning">Educational, local-only Bitcoin derivation. Never paste a mnemonic that protects real funds into a web page.</p>
         <label for="walletPass">BIP-39 passphrase</label>

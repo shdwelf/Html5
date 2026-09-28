@@ -217,6 +217,41 @@ export function buildForm(name, { entropy, indices, checksumBits }) {
     });
   }
 
+  if (name === "distribution") {
+    const bins = Array(16).fill(0);
+    for (const byte of e) { bins[byte >> 4]++; bins[byte & 15]++; }
+    const max = Math.max(1, ...bins);
+    bins.forEach((count, i) => {
+      const angle = (i / 16) * Math.PI * 2;
+      const h = 0.12 + (count / max) * 2.2;
+      const bar = new THREE.Mesh(
+        new THREE.BoxGeometry(0.22, h, 0.22),
+        new THREE.MeshBasicMaterial({ color: i % 2 ? 0x3dffb0 : 0x5ce1ff, transparent: true, opacity: 0.82 })
+      );
+      bar.position.set(Math.cos(angle) * 1.65, h / 2 - 1, Math.sin(angle) * 1.65);
+      bar.rotation.y = -angle;
+      g.add(bar);
+    });
+  }
+
+  if (name === "autocorrelation") {
+    const bits = [];
+    for (const byte of e) for (let bit = 7; bit >= 0; bit--) bits.push((byte >> bit) & 1);
+    const arr = [];
+    const lags = Math.min(32, bits.length - 2);
+    for (let lag = 1; lag <= lags; lag++) {
+      const r = bitPearson(bits, lag);
+      const angle = ((lag - 1) / Math.max(1, lags)) * Math.PI * 2;
+      const radius = 1.7 + r * 0.8;
+      arr.push(Math.cos(angle) * radius, r * 1.5, Math.sin(angle) * radius);
+    }
+    if (arr.length) {
+      arr.push(arr[0], arr[1], arr[2]);
+      g.add(lineFrom(arr, 0x3dffb0));
+      g.add(ptsFrom(arr.slice(0, -3), 0xffb020, 0.08));
+    }
+  }
+
   return g;
 }
 
@@ -238,6 +273,20 @@ function countBits(v) {
   return n;
 }
 
+function bitPearson(bits, lag) {
+  const n = bits.length - lag;
+  if (n < 2) return 0;
+  let a = 0, b = 0;
+  for (let i = 0; i < n; i++) { a += bits[i]; b += bits[i + lag]; }
+  a /= n; b /= n;
+  let num = 0, da = 0, db = 0;
+  for (let i = 0; i < n; i++) {
+    const x = bits[i] - a, y = bits[i + lag] - b;
+    num += x * y; da += x * x; db += y * y;
+  }
+  return da && db ? num / Math.sqrt(da * db) : 0;
+}
+
 export const FORMS = [
   ["hd", "HD derivation topology"],
   ["curve", "Elliptic curve manifold"],
@@ -252,4 +301,6 @@ export const FORMS = [
   ["cascade", "Bit cascade"],
   ["hamming", "Hamming shells"],
   ["towers", "Scale towers"],
+  ["distribution", "Nibble distribution skyline"],
+  ["autocorrelation", "Bit autocorrelation ring"],
 ];

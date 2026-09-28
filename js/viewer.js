@@ -44,6 +44,7 @@ import { greedy575 } from "./syllables.js";
 import { drawEnso, encodeEnsoId, hashStr, prettyId, randomSettings } from "./enso-id.js";
 import { deriveBitcoinWallet } from "./wallet-derivatives.js";
 import { deriveCoin } from "./coins.js";
+import { entropyStatistics } from "./key-stats.js";
 
 const $ = (id) => document.getElementById(id);
 const isCoarse = matchMedia("(pointer: coarse)").matches || innerWidth < 860;
@@ -68,6 +69,8 @@ const state = {
   walletRevealed: false,
   topCoins: [],
   topCoinResult: null,
+  statsView: "nibbles",
+  statistics: null,
 };
 
 let formGroup = null;
@@ -369,8 +372,15 @@ function applyForm() {
         ? " PBKDF2-HMAC-SHA512 ×2048 → 512 bits = IL∥IR (shown as torus, not printed)."
         : name === "curve"
           ? " Real Weierstrass sketch y²=x³+7 — not secp256k1 / Fp."
-          : "";
-  if ($("formNote")) $("formNote").textContent = `${label}.${extra} Art only.`;
+          : name === "distribution"
+            ? " Sixteen measured nibble bins arranged as a skyline; height is observed count."
+            : name === "autocorrelation"
+              ? " Measured Pearson r for entropy-bit lags 1–32; radius and height encode sign and magnitude."
+              : "";
+  if ($("formNote")) {
+    const measured = name === "distribution" || name === "autocorrelation";
+    $("formNote").textContent = `${label}.${extra} ${measured ? "Measured descriptive layer; not a randomness test." : "Art only."}`;
+  }
 }
 
 function applyEmbedding() {
@@ -501,13 +511,13 @@ function renderTape(words, indices, checksumBits) {
 }
 
 function setMathStep(n) {
-  state.mathStep = Math.min(5, Math.max(1, n));
+  state.mathStep = Math.min(6, Math.max(1, n));
   document.querySelectorAll(".math-step").forEach((el) => {
     el.classList.toggle("on", Number(el.dataset.math) === state.mathStep);
   });
-  $("mathPos").textContent = `${state.mathStep} / 5`;
+  $("mathPos").textContent = `${state.mathStep} / 6`;
   $("mathPrev").disabled = state.mathStep <= 1;
-  $("mathNext").disabled = state.mathStep >= 5;
+  $("mathNext").disabled = state.mathStep >= 6;
   drawMath(state.analysis);
 }
 
@@ -631,12 +641,90 @@ function drawCube(entropy) {
   $("cubeNote").textContent = `Q_${n} face of C (first ${n} ENT bits). Vertex still contains 2^{ENT−${n}} keys.`;
 }
 
+function drawStatistics(analysis) {
+  const cv = $("statsPlot");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#05070c";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  if (!analysis?.entropy) {
+    state.statistics = null;
+    ["statBalance", "statRuns", "statLongest", "statByteH", "statUnique", "statWordSigma"]
+      .forEach((id) => { $(id).textContent = "—"; });
+    $("statsNote").textContent = "Load a phrase to measure its entropy bytes.";
+    return;
+  }
+
+  const stats = entropyStatistics(analysis.entropy, analysis.indices || []);
+  state.statistics = stats;
+  const W = cv.width, H = cv.height, pad = 24;
+  ctx.font = "10px ui-monospace, monospace";
+  ctx.textAlign = "center";
+
+  if (state.statsView === "nibbles") {
+    const max = Math.max(1, ...stats.nibbleHistogram);
+    const bw = (W - pad * 2) / 16;
+    stats.nibbleHistogram.forEach((count, i) => {
+      const h = (count / max) * (H - 54);
+      ctx.fillStyle = i % 2 ? "#3dffb0" : "#5ce1ff";
+      ctx.fillRect(pad + i * bw + 2, H - 24 - h, Math.max(2, bw - 4), h);
+      ctx.fillStyle = "#7790a5";
+      ctx.fillText(i.toString(16).toUpperCase(), pad + (i + 0.5) * bw, H - 8);
+    });
+    ctx.strokeStyle = "#ffb02088";
+    ctx.setLineDash([4, 4]);
+    const expectedY = H - 24 - ((analysis.entropy.length * 2 / 16) / max) * (H - 54);
+    ctx.beginPath(); ctx.moveTo(pad, expectedY); ctx.lineTo(W - pad, expectedY); ctx.stroke();
+    ctx.setLineDash([]);
+  } else if (state.statsView === "runs") {
+    const cols = 32, cell = (W - pad * 2) / cols;
+    stats.bits.forEach((bit, i) => {
+      const row = Math.floor(i / cols), col = i % cols;
+      const y = 14 + row * 20;
+      ctx.fillStyle = bit ? "#5ce1ff" : "#163246";
+      ctx.fillRect(pad + col * cell + 1, y, Math.max(2, cell - 2), 13);
+      if (i && bit !== stats.bits[i - 1]) {
+        ctx.fillStyle = "#ffb020";
+        ctx.fillRect(pad + col * cell, y, 1.5, 13);
+      }
+    });
+  } else {
+    const values = stats.autocorrelation;
+    const bw = (W - pad * 2) / Math.max(1, values.length);
+    const mid = H / 2;
+    ctx.strokeStyle = "#385066";
+    ctx.beginPath(); ctx.moveTo(pad, mid); ctx.lineTo(W - pad, mid); ctx.stroke();
+    values.forEach(({ lag, correlation }, i) => {
+      const h = correlation * (H * 0.38);
+      ctx.fillStyle = correlation >= 0 ? "#3dffb0" : "#ff5d6c";
+      ctx.fillRect(pad + i * bw + 1, h >= 0 ? mid - h : mid, Math.max(1, bw - 2), Math.abs(h));
+      if (lag === 1 || lag % 8 === 0) {
+        ctx.fillStyle = "#7790a5";
+        ctx.fillText(String(lag), pad + (i + 0.5) * bw, H - 7);
+      }
+    });
+  }
+
+  $("statBalance").textContent = `${(stats.balance * 100).toFixed(1)}%`;
+  $("statRuns").textContent = `${stats.runs} / ${stats.expectedRuns.toFixed(1)}`;
+  $("statLongest").textContent = String(stats.longestRun);
+  $("statByteH").textContent = `${stats.byteEntropy.toFixed(3)} / 8`;
+  $("statUnique").textContent = `${stats.uniqueBytes} / ${analysis.entropy.length}`;
+  $("statWordSigma").textContent = stats.wordStdDev.toFixed(1);
+  $("statsNote").textContent =
+    `Exploratory only: ${stats.bitCount} bits is too short for certification. ` +
+    `Monobit p≈${stats.monobitP.toFixed(3)} · runs p≈${stats.runsApplicable ? stats.runsP.toFixed(3) : "n/a (balance gate)"} · ` +
+    `nibble χ²=${stats.nibbleChiSquare.toFixed(2)} (15 df) · lag-1 word r=${stats.wordLag1.toFixed(3)}. ` +
+    `P-values are descriptive multiple looks, not evidence that a key is safe.`;
+}
+
 function drawMath(analysis) {
   const idxs = analysis?.indices || [];
   drawParallel(idxs);
   drawFiber(analysis?.checksumBits || 0, analysis?.checksumExpected);
   drawGray(idxs);
   drawCube(analysis?.entropy);
+  drawStatistics(analysis);
   const max = (analysis?.entropyBits || 128) - 1;
   $("flipBit").max = String(max);
 }
@@ -927,6 +1015,7 @@ async function applyPhrase(text, { broadcast = false } = {}) {
   const seed = analysis.entropy ?? new TextEncoder().encode(words.join(" "));
   const fieldN = isCoarse ? 2200 : 5000;
   makeField(state.engine.entropyField(seed, fieldN));
+  applyForm();
 
   if (broadcast && window.webxdc?.sendUpdate) {
     window.webxdc.sendUpdate(
@@ -1056,6 +1145,15 @@ async function main() {
       b.classList.toggle("on", b === btn)
     );
     drawCube(state.analysis?.entropy);
+  });
+  $("statsSeg").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-stats]");
+    if (!btn) return;
+    state.statsView = btn.dataset.stats;
+    [...$("statsSeg").querySelectorAll(".seg-btn")].forEach((b) =>
+      b.classList.toggle("on", b === btn)
+    );
+    drawStatistics(state.analysis);
   });
   setMathStep(1);
 
