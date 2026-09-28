@@ -51,7 +51,7 @@
         <input type="range" id="vertExag" min="1" max="18" step="1" value="6" />
       </div>
       <div class="slider-row">
-        <label for="depthExag">depth exaggeration <span id="depthExagVal">14×</span></label>
+        <label for="depthExag">depth scale (log) <span id="depthExagVal">14×</span></label>
         <input type="range" id="depthExag" min="1" max="60" step="1" value="14" />
       </div>
       <p class="hint" id="peer">offline · standalone</p>
@@ -68,6 +68,18 @@
         <span style="color:#5cd6ff">community</span> well-sourced secondary,
         <span style="color:#ff6ec7">context</span> schematic only.
       </p>
+    </div>
+  </section>
+
+  <!-- PIP: overlays ----------------------------------------------------- -->
+  <section class="pip" id="pipOverlays">
+    <div class="pip-head"><h2>OVERLAYS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div id="overlayList"></div>
+      <p class="hint" style="margin-top:8px">Fire perimeters are generalized rings scaled to published acreage. Swap in true geometry from:</p>
+      <ul class="srcs" id="fireSources"></ul>
+      <p class="hint" style="margin-top:8px">off-frame register</p>
+      <div id="offFrameList"></div>
     </div>
   </section>
 

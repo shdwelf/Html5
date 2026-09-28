@@ -39,7 +39,14 @@ html = html.replace(
 await writeFile(path.join(appDir, "index.html"), html);
 
 await copyFile(path.join(root, "css", "socal-subsurface.css"), path.join(appDir, "css", "socal-subsurface.css"));
-for (const f of ["socal-subsurface.js", "socal-subsurface-data.js"]) {
+for (const f of [
+  "socal-subsurface.js",
+  "socal-subsurface-data.js",
+  "socal-geo.js",
+  "socal-overlays.js",
+  "socal-overlays-data.js",
+  "socal-sites-extended.js",
+]) {
   await copyFile(path.join(root, "js", f), path.join(appDir, "js", f));
 }
 for (const f of ["three.module.min.js", "OrbitControls.js", "THREE_LICENSE"]) {

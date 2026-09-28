@@ -154,6 +154,7 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); o
 
 #pipHud { top: 66px; left: 10px; }
 #pipLayers { top: 66px; right: 10px; }
+#pipOverlays { top: 300px; right: 10px; }
 #pipDetail { bottom: 34px; left: 10px; width: 340px; }
 #pipMap { bottom: 34px; right: 10px; width: 236px; }
 
@@ -223,10 +224,14 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); o
   z-index: 90;
 }
 
+.crossings { border-top: 1px dashed var(--line); margin-top: 6px; }
+.crossings .facts li { color: #ffb4a2; }
+
 @media (max-width: 760px) {
   #pipDetail { width: calc(100vw - 20px); bottom: 34px; left: 10px; }
   #pipMap { display: none; }
   #pipLayers { top: 96px; }
+  #pipOverlays { display: none; }
   .pip { width: 250px; }
 }
 

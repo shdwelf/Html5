@@ -19,10 +19,21 @@ import {
   KM_PER_DEG_LAT,
   LAYERS,
   NODES,
-  RELIEF,
   TIER_COLOR,
-  UNITS_PER_KM,
 } from "./socal-subsurface-data.js";
+import {
+  COS_LAT,
+  depthY,
+  elevY,
+  elevationAt,
+  lonLatFromXZ,
+  pathKm,
+  project,
+  scale,
+} from "./socal-geo.js";
+import { buildOverlays } from "./socal-overlays.js";
+import { FIRE_SOURCE_URLS } from "./socal-overlays-data.js";
+import { OFF_FRAME } from "./socal-sites-extended.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -40,52 +51,8 @@ if (!gl) {
 
 /* ------------------------------------------------------------- projection */
 
-const COS_LAT = Math.cos((CENTER.lat * Math.PI) / 180);
-const VERT_EXAG_BASE = 6; // terrain relief is tiny next to 700 km of map
-let vertExag = VERT_EXAG_BASE;
-let depthExag = 14; // log-depth gain, see depthY()
-
-/** lon/lat -> scene XZ (units: 1 = 10 km). */
-function project(lon, lat) {
-  const x = (lon - CENTER.lon) * KM_PER_DEG_LAT * COS_LAT * UNITS_PER_KM;
-  const z = -(lat - CENTER.lat) * KM_PER_DEG_LAT * UNITS_PER_KM;
-  return [x, z];
-}
-
-/** Metres of elevation -> scene Y. */
-const elevY = (m) => (m / 1000) * UNITS_PER_KM * 10 * vertExag * 0.1;
-/**
- * Metres of depth (negative) -> scene Y offset, LOGARITHMIC.
- *
- * A trench-buried products line sits ~1.5 m down; a geothermal production zone
- * sits ~2,000 m down. On a 700 km wide stage a linear depth axis makes the
- * first invisible and the second a hairline. So depth is compressed with a
- * log10 ramp: ordering and order-of-magnitude are preserved, absolute spacing
- * is not. Read the dossier for the real number.
- */
-function depthY(m) {
-  if (!m) return 0;
-  const mag = 0.35 + 0.45 * Math.log10(1 + Math.abs(m));
-  return -mag * (depthExag / 10);
-}
-
-/** Generalized elevation field in metres from the RELIEF control features. */
-function elevationAt(lon, lat) {
-  let e = 120;
-  for (const f of RELIEF) {
-    const dx = lon - f.lon;
-    const dy = lat - f.lat;
-    const c = Math.cos(f.rot || 0);
-    const s = Math.sin(f.rot || 0);
-    const u = (dx * c + dy * s) / f.rx;
-    const v = (-dx * s + dy * c) / f.ry;
-    e += f.amp * Math.exp(-(u * u + v * v) * 1.5);
-  }
-  // Light fractal texture so ridges are not billiard-smooth.
-  e += 90 * (Math.sin(lon * 21.3 + lat * 13.7) + Math.sin(lon * 9.1 - lat * 31.4)) * 0.5;
-  return e;
-}
-
+// Projection, elevation field and vertical-scale state now live in
+// js/socal-geo.js so the overlay pack drapes on exactly the same surface.
 /* ------------------------------------------------------------------ scene */
 
 const scene = new THREE.Scene();
@@ -140,12 +107,6 @@ const posAttr = terrainGeo.attributes.position;
 const elevM = new Float32Array(posAttr.count);
 const colors = new Float32Array(posAttr.count * 3);
 const c = new THREE.Color();
-
-function lonLatFromXZ(x, z) {
-  const lat = CENTER.lat - z / (KM_PER_DEG_LAT * UNITS_PER_KM);
-  const lon = CENTER.lon + x / (KM_PER_DEG_LAT * COS_LAT * UNITS_PER_KM);
-  return [lon, lat];
-}
 
 for (let i = 0; i < posAttr.count; i++) {
   const x = posAttr.getX(i);
@@ -239,6 +200,7 @@ function corridorPoints(item) {
 }
 
 const corridorMeshes = [];
+const FLOW = [];
 
 for (const item of CORRIDORS) {
   const layer = LAYERS.find((l) => l.id === item.layer);
@@ -256,7 +218,19 @@ for (const item of CORRIDORS) {
   mesh.userData = { record: item, kind: "corridor" };
   groups[item.layer].add(mesh);
   PICKABLE.push(mesh);
-  corridorMeshes.push({ item, mesh, geoParams: { curvePts: pts } });
+  corridorMeshes.push({ item, mesh, curve });
+
+  // Flow pip: a bead that runs the line in the direction of load. Used on the
+  // lines that pump uphill out of the basin through Cajon.
+  if (item.flow) {
+    const bead = new THREE.Mesh(
+      new THREE.SphereGeometry(radius * 2.1, 10, 8),
+      new THREE.MeshBasicMaterial({ color: 0xffffff }),
+    );
+    bead.userData = { record: item, kind: "flow" };
+    groups[item.layer].add(bead);
+    FLOW.push({ item, bead, get curve() { return corridorMeshes.find((c) => c.item === item).curve; } });
+  }
 
   // Hangers: vertical ties from the buried line up to the ground surface, so
   // depth is legible instead of implied.
@@ -306,7 +280,15 @@ for (const node of NODES) {
           ? new THREE.BoxGeometry(0.26, 0.26, 0.26)
           : node.kind === "first"
             ? new THREE.TorusKnotGeometry(0.13, 0.045, 48, 8)
-            : new THREE.SphereGeometry(0.17, 14, 10);
+            : node.kind === "mine"
+              ? new THREE.TetrahedronGeometry(0.21)
+              : node.kind === "ghost"
+                ? new THREE.DodecahedronGeometry(0.17)
+                : node.kind === "rcs"
+                  ? new THREE.TorusGeometry(0.16, 0.035, 8, 20).rotateX(Math.PI / 2)
+                  : node.kind === "memory"
+                    ? new THREE.OctahedronGeometry(0.16, 0)
+                    : new THREE.SphereGeometry(0.17, 14, 10);
   const head = new THREE.Mesh(
     headGeo,
     new THREE.MeshStandardMaterial({ color, emissive: color.clone().multiplyScalar(0.45), roughness: 0.35, metalness: 0.2 }),
@@ -342,6 +324,26 @@ for (const node of NODES) {
 
   groups[node.layer].add(g);
   nodeMeshes.push({ node, group: g, head });
+}
+
+/* --------------------------------------------------------------- overlays */
+
+// Vector overlay pack: fire perimeters, DEM/quad index frames, SAR swath and
+// deformation fringes, CLUI register captions. Same projection, same surface.
+const overlays = buildOverlays();
+world.add(overlays.root);
+PICKABLE.push(...overlays.pickables);
+
+const OVERLAY_DEFS = [
+  { id: "fires", name: "Fire perimeters (WIFIRE / FRAP lineage)", color: "#ea580c", on: true, group: () => overlays.groups.fires },
+  { id: "quad", name: "USGS 7.5′ quad graticule", color: "#6b8ba3", on: false, group: () => overlays.groups.frames.getObjectByName("quad") },
+  { id: "demTile", name: "1° 3DEP DEM delivery tiles", color: "#2dd4bf", on: true, group: () => overlays.groups.frames.getObjectByName("demTile") },
+  { id: "sar", name: "SAR swath + InSAR deformation", color: "#a3e635", on: false, group: () => overlays.groups.sar },
+  { id: "clui", name: "CLUI register captions", color: "#e5e7eb", on: false, group: () => overlays.groups.clui },
+];
+for (const def of OVERLAY_DEFS) {
+  const g = def.group();
+  if (g) g.visible = def.on;
 }
 
 /* ----------------------------------------------------------------- labels */
@@ -396,6 +398,63 @@ for (const l of LAYERS) {
   txt.textContent = l.name;
   row.append(cb, sw, txt);
   layerHost.append(row);
+}
+
+/* ---------------------------------------------------------- overlay panel */
+
+const overlayHost = $("overlayList");
+if (overlayHost) {
+  for (const def of OVERLAY_DEFS) {
+    const row = document.createElement("label");
+    row.className = "layer-row";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = def.on;
+    cb.addEventListener("change", () => {
+      const g = def.group();
+      if (g) g.visible = cb.checked;
+      refreshCounts();
+    });
+    const sw = document.createElement("span");
+    sw.className = "swatch";
+    sw.style.background = def.color;
+    const txt = document.createElement("span");
+    txt.textContent = def.name;
+    row.append(cb, sw, txt);
+    overlayHost.append(row);
+  }
+}
+
+const fireSrcHost = $("fireSources");
+if (fireSrcHost) {
+  for (const url of FIRE_SOURCE_URLS) {
+    const li = document.createElement("li");
+    li.textContent = url;
+    fireSrcHost.append(li);
+  }
+}
+
+// Off-frame register: named sites that fall outside the theater get a text
+// entry, never a pin at the wrong place.
+const offHost = $("offFrameList");
+if (offHost) {
+  for (const site of OFF_FRAME) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.style.cssText = "display:block;width:100%;text-align:left;margin:2px 0";
+    b.textContent = `↗ ${site.name}`;
+    b.addEventListener("click", () => {
+      select(null);
+      renderDetail({
+        ...site,
+        layer: "off-frame",
+        tier: "official",
+        facts: [...site.facts, `True position ${site.lat.toFixed(3)}°N ${Math.abs(site.lon).toFixed(3)}°W — outside this frame, so it is not drawn.`],
+      });
+      setStatus(`off-frame · ${site.name}`);
+    });
+    offHost.append(b);
+  }
 }
 
 function refreshCounts() {
@@ -454,6 +513,29 @@ function renderDetail(record) {
     dl.append(dt, dd);
   }
 
+  // Corridor × fire-perimeter intersection, computed live from the overlay rings.
+  let crossBox = null;
+  if (record.path) {
+    const { hits } = overlays.corridorFireCrossings(record.path);
+    if (hits.length) {
+      crossBox = document.createElement("div");
+      crossBox.className = "crossings";
+      const h2 = document.createElement("p");
+      h2.className = "hint";
+      h2.style.margin = "8px 0 3px";
+      h2.textContent = "runs through burned ground";
+      crossBox.append(h2);
+      const cl = document.createElement("ul");
+      cl.className = "facts";
+      for (const hit of hits) {
+        const li = document.createElement("li");
+        li.textContent = `${hit.fire.name} ${hit.fire.year} — ${hit.km.toFixed(0)} km of plotted route inside the perimeter (${hit.fire.acres.toLocaleString()} ac).`;
+        cl.append(li);
+      }
+      crossBox.append(cl);
+    }
+  }
+
   const ul = document.createElement("ul");
   ul.className = "facts";
   for (const f of record.facts || []) {
@@ -471,6 +553,7 @@ function renderDetail(record) {
   }
 
   detailBody.append(h, tier, dl, ul);
+  if (crossBox) detailBody.append(crossBox);
   if (src.childElementCount) {
     const sh = document.createElement("p");
     sh.className = "hint";
@@ -481,16 +564,6 @@ function renderDetail(record) {
 }
 
 const fmtLL = ([lon, lat]) => `${lat.toFixed(2)}N ${Math.abs(lon).toFixed(2)}W`;
-
-function pathKm(path) {
-  let km = 0;
-  for (let i = 0; i < path.length - 1; i++) {
-    const dx = (path[i + 1][0] - path[i][0]) * KM_PER_DEG_LAT * COS_LAT;
-    const dy = (path[i + 1][1] - path[i][1]) * KM_PER_DEG_LAT;
-    km += Math.hypot(dx, dy);
-  }
-  return km;
-}
 
 renderDetail(null);
 
@@ -672,15 +745,15 @@ btnLabels.addEventListener("click", () => {
 
 const depthSlider = $("depthExag");
 depthSlider.addEventListener("input", () => {
-  depthExag = Number(depthSlider.value);
-  $("depthExagVal").textContent = `${depthExag}×`;
+  scale.depth = Number(depthSlider.value);
+  $("depthExagVal").textContent = `${scale.depth}×`;
   rebuildDepths();
 });
 
 const vertSlider = $("vertExag");
 vertSlider.addEventListener("input", () => {
-  vertExag = Number(vertSlider.value);
-  $("vertExagVal").textContent = `${vertExag}×`;
+  scale.vert = Number(vertSlider.value);
+  $("vertExagVal").textContent = `${scale.vert}×`;
   for (let i = 0; i < posAttr.count; i++) posAttr.setY(i, elevY(elevM[i]));
   posAttr.needsUpdate = true;
   terrainGeo.computeVertexNormals();
@@ -697,11 +770,13 @@ function rebuildDepths() {
     const geo = new THREE.TubeGeometry(curve, Math.min(600, pts.length * 3), radius, 7, false);
     entry.mesh.geometry.dispose();
     entry.mesh.geometry = geo;
+    entry.curve = curve;
   }
   for (const { node, group } of nodeMeshes) {
     group.position.y = elevY(elevationAt(node.lon, node.lat));
   }
   subGrid.position.y = depthY(-3000);
+  overlays.rebuild();
 }
 
 /* ------------------------------------------------------------ webxdc wire */
@@ -795,6 +870,17 @@ function tick(now) {
 
   controls.update();
   updateLabels();
+
+  // Flow beads: direction of load on the lines that pump uphill through Cajon.
+  if (FLOW.length) {
+    const t = (now / 9000) % 1;
+    for (let i = 0; i < FLOW.length; i++) {
+      const f = FLOW[i];
+      const u = (t + i * 0.37) % 1;
+      f.bead.visible = isVisible(f.bead.parent);
+      if (f.bead.visible) f.curve.getPointAt(u, f.bead.position);
+    }
+  }
 
   if (hud.cam) hud.cam.textContent = `${camera.position.x.toFixed(1)}, ${camera.position.y.toFixed(1)}, ${camera.position.z.toFixed(1)}`;
   if (hud.target) {

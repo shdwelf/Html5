@@ -13,6 +13,8 @@
  *   context    — generalized terrain or corridor context, schematic only
  */
 
+import { EXTRA_LAYERS, EXTRA_NODES } from "./socal-sites-extended.js";
+
 export const BBOX = { lon0: -121.6, lon1: -114.3, lat0: 32.45, lat1: 36.75 };
 export const CENTER = { lon: -117.95, lat: 34.6 };
 
@@ -20,7 +22,7 @@ export const CENTER = { lon: -117.95, lat: 34.6 };
 export const KM_PER_DEG_LAT = 111.32;
 export const UNITS_PER_KM = 0.1;
 
-export const LAYERS = [
+const BASE_LAYERS = [
   { id: "terrain", name: "Terrain / basin shell", color: "#3c5a70", kind: "surface", on: true },
   { id: "water", name: "Aqueducts (surface + siphon)", color: "#38bdf8", kind: "line", on: true },
   { id: "products", name: "Refined-product pipelines", color: "#f59e0b", kind: "line", on: true },
@@ -30,6 +32,9 @@ export const LAYERS = [
   { id: "sites", name: "Sites, sets and first-in-California", color: "#f472b6", kind: "node", on: true },
   { id: "bases", name: "Federal ranges and bases", color: "#94a3b8", kind: "node", on: true },
 ];
+
+/** Overlay layers are declared in socal-overlays-data.js and registered by the app. */
+export const LAYERS = [...BASE_LAYERS, ...EXTRA_LAYERS];
 
 /** Terrain control features: gaussian ridges/basins, elevation in metres. */
 export const RELIEF = [
@@ -149,15 +154,43 @@ export const CORRIDORS = [
     id: "calnev-edwards",
     layer: "products",
     tier: T("official"),
-    name: "CALNEV Edwards AFB lateral",
+    name: "CALNEV Edwards AFB lateral — the ascent through Cajon / Blue Cut",
     short: "EDW lateral",
     depthM: -1.5,
-    path: [[-117.3, 34.75], [-117.6, 34.83], [-117.9, 34.9], [-117.88, 34.93]],
-    facts: [
-      "Roughly 55-mile intrastate jet-fuel lateral off the main CALNEV stem.",
-      "It is why a flight-test base in the middle of the Mojave never runs dry.",
+    flow: 1,
+    path: [
+      [-117.32, 34.06], [-117.38, 34.16], [-117.42, 34.25], [-117.465, 34.315],
+      [-117.5, 34.39], [-117.55, 34.48], [-117.6, 34.57], [-117.64, 34.64],
+      [-117.75, 34.78], [-117.85, 34.87], [-117.89, 34.905],
     ],
-    sources: ["CPUC D.07-05-061", "Kinder Morgan CALNEV description"],
+    facts: [
+      "Roughly 55-mile intrastate jet-fuel lateral off the main CALNEV stem at Colton.",
+      "It climbs out of the basin the only way anything climbs out of the basin: up Cajon Pass, through the ground the Blue Cut Fire burned over in August 2016.",
+      "It is why a flight-test base in the middle of the Mojave never runs dry.",
+      "Product moves uphill — pumped, not gravity-fed. Turn on the FLOW overlay to watch the direction of load.",
+    ],
+    sources: ["CPUC D.07-05-061", "Kinder Morgan CALNEV description", "Calnev Expansion EIR/EIS route figures"],
+  },
+  {
+    id: "edwards-gas",
+    layer: "crude",
+    tier: T("community"),
+    name: "Edwards / Victor Valley gas feeder — basin to high desert through the Blue Cut ground",
+    short: "EDW gas",
+    depthM: -2.0,
+    flow: 1,
+    path: [
+      [-117.35, 34.05], [-117.4, 34.18], [-117.45, 34.28], [-117.475, 34.335],
+      [-117.52, 34.42], [-117.56, 34.52], [-117.62, 34.62], [-117.72, 34.74],
+      [-117.84, 34.86], [-117.885, 34.9],
+    ],
+    facts: [
+      "Natural gas loads up out of the basin through the same Cajon notch, feeding the Victor Valley and the Edwards plant load.",
+      "Its corridor sits inside the 2016 Blue Cut Fire footprint — turn on the FIRE PERIMETERS overlay and the intersection is the whole story.",
+      "Transmission pipe in a burn corridor is a specific engineering problem: cover depth, exposed risers, cathodic protection test stations, and access roads that become fire line.",
+      "Alignment generalized from public utility corridor descriptions — schematic, not an as-built.",
+    ],
+    sources: ["SoCalGas system maps", "CPUC gas transmission filings", "Cajon Pass utility corridor descriptions"],
   },
   {
     id: "sfpp-north",
@@ -284,7 +317,7 @@ export const CORRIDORS = [
   },
 ];
 
-export const NODES = [
+const BASE_NODES = [
   {
     id: "ducommun",
     layer: "sites",
@@ -571,6 +604,8 @@ export const NODES = [
     sources: ["USGS Salton Buttes volcanic hazard assessment"],
   },
 ];
+
+export const NODES = [...BASE_NODES, ...EXTRA_NODES];
 
 export const TIER_COLOR = {
   official: "#ffb020",
