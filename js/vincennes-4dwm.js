@@ -709,6 +709,7 @@ function renderJumpList() {
       $("timeSlider").value = String(Math.round(f * 1000));
       applyTime();
       openEvent(ev);
+      shareView(ev.label.slice(0, 60), { open: `event:${ev.id}` });
     });
     box.appendChild(b);
   }
@@ -889,10 +890,12 @@ function openEvent(ev) {
 
 function openCheck(c) {
   wm?.spawn(`check:${c.id}`);
+  shareView(`opened the check \u201c${c.label}\u201d`, { open: `check:${c.id}` });
 }
 
 async function openPlate(p) {
   wm?.spawn(`plate:${p.file}`);
+  shareView(`opened the plate \u201c${p.title}\u201d`, { open: `plate:${p.file}` });
 }
 
 /* =======================================================================
@@ -1107,13 +1110,46 @@ function fileHtml(doc, name) {
   ${txt?.text ? `<p class="tiny">hidden text (${txt.text.length} chars, zones ${txt.zoneParse}):</p><div class="platepage">${esc(txt.text.slice(0, 4000))}</div>` : "<p class=\"tiny\">No uncompressed TXTa layer. If this page has TXTz, it is BZZ-compressed and this reader reports it without decoding it — run <code>djvused -e 'print-pure-txt'</code> or fetch the Internet Archive <code>_djvu.xml</code>.</p>"}`;
 }
 
+/**
+ * Plate bytes come from one of two places. Packaged as a .xdc the whole
+ * bundle is offline and `fetch` of a bundled file is not guaranteed across
+ * every webxdc host, so the packer embeds the four plates (about 4 KB) as
+ * base64 on `globalThis.__VINCENNES_PLATE_BYTES__`. Served over HTTP there is
+ * no embed and the files are fetched. Same parser either way.
+ */
+function embeddedPlateBytes(file) {
+  const blob = globalThis.__VINCENNES_PLATE_BYTES__?.[file];
+  if (!blob) return null;
+  const bin = atob(blob);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
 async function loadPlate(p) {
   try {
+    const embedded = embeddedPlateBytes(p.file);
+    if (embedded) {
+      platesLoaded.set(p.file, parseDjvu(embedded));
+      return;
+    }
     const res = await fetch(`./data/vincennes/${p.file}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const buf = new Uint8Array(await res.arrayBuffer());
     platesLoaded.set(p.file, parseDjvu(buf));
   } catch (err) {
     status(`plate read failed: ${err.message}`);
+  }
+}
+
+async function loadPlateManifest() {
+  if (globalThis.__VINCENNES_PLATES__) return globalThis.__VINCENNES_PLATES__;
+  try {
+    const res = await fetch("./data/vincennes/plates.json");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch {
+    return { meta: null, plates: [] };
   }
 }
 
@@ -1154,6 +1190,94 @@ async function readUserFile(file) {
     wm?.spawn(`file:${name}`);
   } catch (err) {
     status(`could not read ${name}: ${err.message}`);
+  }
+}
+
+/* =======================================================================
+   webxdc · a shared plot
+
+   Packaged as a .xdc this runs inside a chat, and a chat is the natural
+   place to argue about a reconstruction. So the view itself is shared: when
+   one person switches theater, scrubs to 06:54:22 or opens a cross-check,
+   everyone else's plot follows. That is the whole integration — no accounts,
+   no server, just the webxdc update log.
+
+   Outside a messenger `window.webxdc` is absent and every one of these
+   functions is a no-op, so the page on the open web behaves exactly as before.
+   ======================================================================= */
+
+const WX = {
+  api: null,
+  applying: false,   // guard against echoing a remote update straight back
+  lastSent: 0,
+  timer: null,
+  peers: new Set(),
+};
+
+function initWebxdc() {
+  const api = globalThis.webxdc;
+  // The simulator shim in the bundle defines the surface but never delivers
+  // anything; that is fine, it just means a solo session.
+  if (!api || typeof api.setUpdateListener !== "function") return;
+  WX.api = api;
+  api.setUpdateListener((u) => applyShared(u.payload, u.serial), 0);
+  $("statTracks").insertAdjacentHTML("beforebegin", '<span id="statShare">shared: on</span>');
+  status("shared plot \u2014 your view follows the chat");
+}
+
+/** Broadcast the current view. Coalesced, because the slider fires a lot. */
+function shareView(reason, extra = {}) {
+  if (!WX.api || WX.applying) return;
+  clearTimeout(WX.timer);
+  WX.timer = setTimeout(() => {
+    const payload = {
+      v: 1,
+      theater: theater.id,
+      t: Math.round(tNow),
+      layers: [...layers.values()].filter((l) => l.on).map((l) => l.id),
+      reason,
+      ...extra,
+    };
+    WX.lastSent = Date.now();
+    try {
+      WX.api.sendUpdate(
+        { payload, info: `${WX.api.selfName ?? "someone"}: ${reason}`, summary: `${theater.title.split("\u00b7")[0].trim()} \u2014 ${stamp(tNow)}` },
+        `${reason} @ ${stamp(tNow)}`
+      );
+    } catch { /* a host that refuses updates is not a reason to break the plot */ }
+  }, 220);
+}
+
+function applyShared(payload, serial) {
+  if (!payload || payload.v !== 1) return;
+  // our own update comes back through the listener; do not fight ourselves
+  if (Date.now() - WX.lastSent < 400) return;
+  WX.applying = true;
+  try {
+    if (payload.theater && payload.theater !== theater.id) {
+      const btn = document.querySelector(`[data-theater="${CSS.escape(payload.theater)}"]`);
+      if (btn) {
+        for (const o of document.querySelectorAll("[data-theater]")) o.classList.toggle("active", o === btn);
+        wm?.clear();
+        build(payload.theater);
+      }
+    }
+    if (Number.isFinite(payload.t)) {
+      const { t0, t1 } = solved.span;
+      const f = (payload.t - t0) / (t1 - t0 || 1);
+      $("timeSlider").value = String(Math.max(0, Math.min(1000, Math.round(f * 1000))));
+      applyTime();
+    }
+    if (Array.isArray(payload.layers) && payload.layers.length) {
+      const want = new Set(payload.layers);
+      for (const L of layers.values()) setLayer(L.id, want.has(L.id));
+    }
+    if (payload.open) wm?.spawn(payload.open);
+    if (payload.reason) status(`following the chat: ${payload.reason}`);
+    const share = $("statShare");
+    if (share) share.textContent = `shared: on \u00b7 ${serial ?? ""}`;
+  } finally {
+    WX.applying = false;
   }
 }
 
@@ -1217,7 +1341,7 @@ function wire() {
   }
   $("btnTilt").addEventListener("click", () => setTilt(!tilted));
   $("btnReset").addEventListener("click", () => frameCamera());
-  $("timeSlider").addEventListener("input", applyTime);
+  $("timeSlider").addEventListener("input", () => { applyTime(); shareView("scrubbed the clock"); });
   $("btnPlay").addEventListener("click", () => {
     playing = !playing;
     if (playing && Number($("timeSlider").value) >= 1000) $("timeSlider").value = "0";
@@ -1236,6 +1360,19 @@ function wire() {
       }
     });
   }
+  // Inside the .xdc bundle the 1988-era canvas plot this app grew out of
+  // travels along as a second page. On the open web it lives under apps/ and
+  // this button is not drawn.
+  const bundled = globalThis.__VINCENNES_XDC__;
+  if (bundled?.commandViewer) {
+    const a = document.createElement("button");
+    a.type = "button";
+    a.textContent = "COMMAND VIEWER";
+    a.title = "The original Nimitz Graybook canvas plot this reconstruction replaced";
+    a.addEventListener("click", () => { location.href = bundled.commandViewer; });
+    document.querySelector(".top-actions")?.appendChild(a);
+  }
+
   addEventListener("keydown", (e) => {
     if (e.target.matches("input, textarea")) return;
     if (e.key === " ") { e.preventDefault(); $("btnPlay").click(); }
@@ -1258,13 +1395,9 @@ async function main() {
     chipFor,
     detailHtml,
   });
-  try {
-    const res = await fetch("./data/vincennes/plates.json");
-    plates = await res.json();
-  } catch {
-    plates = { meta: null, plates: [] };
-  }
+  plates = await loadPlateManifest();
   build("hormuz-1988");
+  initWebxdc();
   requestAnimationFrame(loop);
 }
 

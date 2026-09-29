@@ -137,6 +137,7 @@ node tests/18-astronomy.mjs || status=1
 echo "──────────────────────────────────────────────"
 node tools/make-vincennes-plates.mjs >/dev/null || status=1
 node tools/make-vincennes-dem.mjs >/dev/null || status=1
+node scripts/build-vincennes-xdc.mjs >/dev/null || status=1
 node tests/19-vincennes.mjs || status=1
 
 echo "──────────────────────────────────────────────"

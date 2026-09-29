@@ -742,6 +742,119 @@ test("the viewer imports its numbers instead of hard-coding them", () => {
   assert.deepEqual(suspicious, [], `view layer should not carry coordinates: ${suspicious}`);
 });
 
+/* ======================================================================
+   the webxdc bundle
+   ====================================================================== */
+
+test("the viewer prefers embedded plate bytes and falls back to fetch", () => {
+  assert.match(js, /__VINCENNES_PLATE_BYTES__/, "embedded plate payload is read");
+  assert.match(js, /__VINCENNES_PLATES__/, "embedded manifest is read");
+  assert.match(js, /await fetch\("\.\/data\/vincennes\/plates\.json"\)/, "and the HTTP path survives");
+  assert.match(js, /function loadPlateManifest/);
+});
+
+test("webxdc sharing is entirely optional", () => {
+  // Outside a messenger `globalThis.webxdc` is absent. Nothing may throw and
+  // nothing may be required: the page on the open web must behave as before.
+  assert.match(js, /function initWebxdc/);
+  assert.match(js, /if \(!api \|\| typeof api\.setUpdateListener !== "function"\) return;/,
+    "initWebxdc bails when there is no host");
+  assert.match(js, /if \(!WX\.api \|\| WX\.applying\) return;/,
+    "shareView bails without a host, and never echoes a remote update back");
+  assert.ok(!/^\s*import .*webxdc/m.test(js), "webxdc is never a hard import");
+});
+
+test("the xdc packer stages a coherent bundle", async () => {
+  const packer = readFileSync(new URL("../scripts/build-vincennes-xdc.mjs", import.meta.url), "utf8");
+  // every module the viewer imports must be staged by the packer
+  const imported = [...js.matchAll(/from "\.\/([a-z0-9-]+\.js)"/g)].map((m) => m[1]);
+  assert.ok(imported.length >= 5, `expected the viewer to import several modules, saw ${imported}`);
+  for (const f of imported) {
+    assert.ok(packer.includes(`js/${f}`), `packer does not stage js/${f}`);
+  }
+  for (const v of ["three.module.min.js", "OrbitControls.js"]) {
+    assert.ok(packer.includes(`vendor/${v}`), `packer does not stage vendor/${v}`);
+  }
+  for (const c of ["vincennes-4dwm.css", "project-y-4dwm.css"]) {
+    assert.ok(packer.includes(`css/${c}`), `packer does not stage css/${c}`);
+  }
+  assert.match(packer, /index\.html/);
+  assert.match(packer, /manifest\.toml/);
+  assert.match(packer, /webxdc\.js/);
+  assert.match(packer, /command-viewer\.html/, "the viewer this one replaced travels with it");
+});
+
+test("the built .xdc is a valid webxdc and matches the sources", async () => {
+  const xdcPath = new URL("../vincennes-4dwm.xdc", import.meta.url);
+  let raw;
+  try {
+    raw = readFileSync(xdcPath);
+  } catch {
+    assert.fail("vincennes-4dwm.xdc not built — run node scripts/build-vincennes-xdc.mjs");
+  }
+  const { unzipSync } = await import("../vendor/fflate/index.mjs");
+  const zip = unzipSync(new Uint8Array(raw));
+  const names = Object.keys(zip);
+  const text = (n) => new TextDecoder().decode(zip[n]);
+
+  // webxdc requires index.html at the root; a manifest and icon are expected
+  assert.ok(names.includes("index.html"), "a .xdc must be rooted at index.html");
+  assert.ok(names.includes("manifest.toml"));
+  assert.ok(names.includes("icon.png"));
+  assert.match(text("manifest.toml"), /^name = "/m);
+  assert.match(text("manifest.toml"), /source_code_url/);
+
+  // every relative reference in index.html must resolve inside the zip
+  const html5 = text("index.html");
+  for (const m of html5.matchAll(/(?:src|href)="\.\/([^"]+)"/g)) {
+    assert.ok(zip[m[1]], `index.html references ${m[1]}, which is not in the bundle`);
+  }
+  // and every relative import inside every bundled module must resolve too
+  for (const n of names.filter((x) => x.endsWith(".js"))) {
+    const dir = n.includes("/") ? n.slice(0, n.lastIndexOf("/")) : "";
+    for (const m of text(n).matchAll(/from\s+"(\.[^"]+)"/g)) {
+      const parts = (dir ? dir + "/" : "") + m[1];
+      const norm = [];
+      for (const seg of parts.split("/")) {
+        if (seg === "." || seg === "") continue;
+        if (seg === "..") norm.pop();
+        else norm.push(seg);
+      }
+      assert.ok(zip[norm.join("/")], `${n} imports ${m[1]}, which is not in the bundle`);
+    }
+  }
+
+  // the entry must load the shim and the embed before the module
+  const iShim = html5.indexOf("webxdc.js");
+  const iData = html5.indexOf("vincennes-xdc-data.js");
+  const iApp = html5.indexOf('type="module" src="./js/vincennes-4dwm.js"');
+  assert.ok(iShim > 0 && iData > iShim && iApp > iData,
+    "shim, then the embedded data, then the module");
+
+  // the embedded plates must be byte-identical to the shipped fixtures
+  const ctx = {};
+  new Function("globalThis", text("js/vincennes-xdc-data.js")).call(ctx, ctx);
+  assert.equal(ctx.__VINCENNES_PLATES__.plates.length, 4);
+  assert.equal(ctx.__VINCENNES_XDC__.commandViewer, "command-viewer.html");
+  for (const p of ctx.__VINCENNES_PLATES__.plates) {
+    const embedded = Buffer.from(ctx.__VINCENNES_PLATE_BYTES__[p.file], "base64");
+    assert.equal(embedded.length, p.bytes, `${p.file} embedded size`);
+    assert.deepEqual(
+      new Uint8Array(embedded), zip[`data/vincennes/${p.file}`],
+      `${p.file} embedded bytes differ from the bundled file`
+    );
+    const doc = parseDjvu(new Uint8Array(embedded));
+    assert.equal(doc.magic, true, `${p.file} parses from the embed`);
+    assert.equal(doc.pages[0].text[0].zoneParse, "ok");
+  }
+
+  // provenance rides along
+  assert.ok(names.includes("command-viewer.html"), "the original canvas plot");
+  assert.ok(names.some((n) => n.startsWith("docs/")), "the write-ups");
+  assert.ok(names.includes("data/vincennes/dem.json"));
+  assert.ok(names.includes("vendor/THREE_LICENSE"), "vendored three.js keeps its licence");
+});
+
 test("formatters render the way a plot is labelled", () => {
   assert.equal(hhmmss(24862), "0654:22");
   assert.equal(dm(26.6292, "lat"), "26\u00b037.75'N");

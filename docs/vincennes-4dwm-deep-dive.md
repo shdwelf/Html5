@@ -365,3 +365,58 @@ own encoder, then corrupted two different ways to confirm it refuses rather than
 Two of the tests exist to stop the architecture eroding: one asserts the view layer
 contains no literal latitudes, and one asserts the page loads the shared pip stylesheet
 before its own so the theme can still override it.
+
+## Shipping it as a chat app
+
+`node scripts/build-vincennes-xdc.mjs` writes `vincennes-4dwm.xdc` (307 KB,
+26 entries, byte-reproducible) to the repo root and to `dist/`. A `.xdc` is a
+deflated ZIP rooted at `index.html` + `manifest.toml`; drop it into a Delta
+Chat thread and it opens as an app inside the conversation.
+
+The bundle is multi-file with native ES modules rather than inlined into one
+document, which is the shape `los-alamos.xdc` already uses here. That choice
+is about provenance: the six modules, `data/vincennes/dem.json`, the four DjVu
+fixtures, this write-up and the source-check all travel inside the archive and
+stay readable to anyone who unzips it. `vendor/THREE_LICENSE` rides along with
+the vendored three.js.
+
+Two things exist only in the bundle. `js/vincennes-xdc-data.js` carries the
+plate manifest and the four DjVu fixtures as base64, because `fetch()` of a
+bundled file is not guaranteed across webxdc hosts; the viewer prefers the
+embed and falls back to HTTP, so the same `js/` tree serves both the web page
+and the app. And `command-viewer.html` is the original canvas plot this
+reconstruction grew out of, carried along unchanged — the bundle contains the
+thing it replaced as well as the replacement, reachable from the COMMAND
+VIEWER button in the top bar.
+
+### The view is the shared state
+
+A chat is where people argue about a reconstruction, so the plot is shared
+rather than the messages about it. Switching theater, scrubbing the clock, or
+opening an event, a cross-check or a plate broadcasts a small payload:
+
+```js
+{ v: 1, theater: "hormuz-1988", t: 24862, layers: ["dem", "track:tn4131", …],
+  reason: "scrubbed the clock", open: "event:launch" }
+```
+
+Everyone else's plot moves to match. Scrubbing is coalesced on a 220 ms timer
+because the slider fires continuously, and an update arriving within 400 ms of
+one we sent is ignored so two clients cannot ping-pong a time cursor between
+them. The `summary` line each update carries — `Hormuz 1988 — 03 JUL 0654:22Z`
+— is what the chat shows in the message list, so the thread reads as a log of
+where the argument went.
+
+None of this is required. `initWebxdc()` returns immediately when
+`globalThis.webxdc` is absent and `shareView()` is a no-op without a host, so
+the page on the open web behaves exactly as it did before. The bundled
+`webxdc.js` is the simulator shim: it satisfies the API and delivers nothing,
+which makes a solo session out of a plain static server.
+
+Four tests cover the packaging (`tests/19-vincennes.mjs`). The strongest one
+opens the built `.xdc` and walks every `src`/`href` in `index.html` and every
+relative `import` in every bundled module, asserting each target is present in
+the archive — deleting one module from the zip fails it by name. It also
+re-parses the embedded plates through `parseDjvu` and asserts they are
+byte-identical to the shipped fixtures, so the embed cannot drift from
+`tools/make-vincennes-plates.mjs`.
