@@ -1,0 +1,514 @@
+{
+  "meta": {
+    "crs": "EPSG:4326",
+    "units": "metres",
+    "vdatum": "approximate MSL / EGM96; the control values are published spot heights, not a levelled survey",
+    "elevSource": "control-point reconstruction",
+    "generated": "tools/make-vincennes-dem.mjs",
+    "consumer": "js/vincennes-dem.js",
+    "disclosure": "These are published spot elevations and soundings interpolated onto a grid. They are not a sample of a USGS raster. None of these three theaters is covered by 3DEP; the USGS/EROS products that do cover them are listed under `products`, together with the command that swaps a real clip in.",
+    "swapIn": "gdal_translate -projwin <W> <N> <E> <S> srtm.tif clip.tif && gdal_translate -of AAIGrid clip.tif clip.asc, then post { nx, ny, bbox:[w,s,e,n], elev:[...] } as data/vincennes/dem-<theater>.json and set DEM_GRID_URL.",
+    "license": "SRTM / GMTED2010 / GDEM are public domain or freely redistributable; see each product page."
+  },
+  "products": [
+    {
+      "id": "srtm1",
+      "name": "SRTM 1 Arc-Second Global",
+      "resolution": "1″ (~30 m)",
+      "coverage": "60°N–56°S — all three theaters",
+      "access": "https://earthexplorer.usgs.gov/ → Data Sets → Digital Elevation → SRTM",
+      "formats": [
+        "GeoTIFF",
+        "BIL",
+        "DTED"
+      ]
+    },
+    {
+      "id": "gdem3",
+      "name": "ASTER Global DEM v3",
+      "resolution": "1″ (~30 m)",
+      "coverage": "83°N–83°S",
+      "access": "https://appeears.earthdatacloud.nasa.gov/ (USGS LP DAAC)",
+      "formats": [
+        "GeoTIFF"
+      ]
+    },
+    {
+      "id": "gmted2010",
+      "name": "GMTED2010",
+      "resolution": "7.5″ / 15″ / 30″ (250 m / 500 m / 1 km)",
+      "coverage": "global",
+      "access": "https://earthexplorer.usgs.gov/ → Digital Elevation → GMTED2010",
+      "formats": [
+        "GeoTIFF"
+      ]
+    },
+    {
+      "id": "3dep",
+      "name": "USGS 3DEP ImageServer (identify)",
+      "resolution": "1 m / 1/3″ / 1″",
+      "coverage": "United States only — no coverage in any of these frames",
+      "access": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+      "formats": [
+        "JSON identify",
+        "WCS",
+        "WMS"
+      ],
+      "unusable": true
+    }
+  ],
+  "theaters": {
+    "hormuz-1988": {
+      "bbox": [
+        55.55,
+        26.15,
+        56.75,
+        27.45
+      ],
+      "shelfDeg": 0.1,
+      "seaFloorM": -70,
+      "note": "Strait of Hormuz. Channel depths are 60–80 m; the deep-water lanes north of the Musandam peninsula run to ~90 m.",
+      "landPolygons": [
+        {
+          "id": "qeshm-east",
+          "name": "Qeshm Island (eastern half)",
+          "vertices": 13
+        },
+        {
+          "id": "hengam",
+          "name": "Hengam Island",
+          "vertices": 5
+        },
+        {
+          "id": "larak",
+          "name": "Larak Island",
+          "vertices": 5
+        },
+        {
+          "id": "hormuz",
+          "name": "Hormuz Island",
+          "vertices": 5
+        },
+        {
+          "id": "iran-coast",
+          "name": "Iranian mainland, Bandar Abbas",
+          "vertices": 10
+        },
+        {
+          "id": "musandam",
+          "name": "Musandam peninsula (Oman)",
+          "vertices": 7
+        }
+      ],
+      "control": [
+        {
+          "lon": 56.05,
+          "lat": 26.86,
+          "elevM": 370,
+          "kind": "spot-height",
+          "name": "Bukhun, Qeshm Island",
+          "src": "UNESCO tentative list — highest point of Qeshm, 370 m"
+        },
+        {
+          "lon": 55.72,
+          "lat": 26.76,
+          "elevM": 120,
+          "kind": "spot-height",
+          "name": "Qeshm interior, west of Suza",
+          "src": "generalised from the 35 m island mean / 290–370 m maximum"
+        },
+        {
+          "lon": 56.24,
+          "lat": 26.93,
+          "elevM": 60,
+          "kind": "spot-height",
+          "name": "Qeshm eastern tip",
+          "src": "generalised"
+        },
+        {
+          "lon": 55.88,
+          "lat": 26.655,
+          "elevM": 106,
+          "kind": "spot-height",
+          "name": "Hengam Island summit",
+          "src": "published island maximum, 106 m"
+        },
+        {
+          "lon": 56.37,
+          "lat": 26.87,
+          "elevM": 125,
+          "kind": "spot-height",
+          "name": "Larak Island",
+          "src": "generalised island maximum"
+        },
+        {
+          "lon": 56.46,
+          "lat": 27.05,
+          "elevM": 186,
+          "kind": "spot-height",
+          "name": "Hormuz Island (salt dome)",
+          "src": "generalised island maximum"
+        },
+        {
+          "lon": 56.37,
+          "lat": 27.22,
+          "elevM": 20,
+          "kind": "spot-height",
+          "name": "Bandar Abbas shore plain",
+          "src": "OIKB aerodrome elevation 22 ft / 7 m; coastal plain"
+        },
+        {
+          "lon": 56.2,
+          "lat": 27.42,
+          "elevM": 1400,
+          "kind": "spot-height",
+          "name": "Zagros front, north of Bandar Abbas",
+          "src": "Geno massif reaches 2,347 m ~25 km inland; frame edge value"
+        },
+        {
+          "lon": 56.55,
+          "lat": 26.28,
+          "elevM": 900,
+          "kind": "spot-height",
+          "name": "Musandam, Ru’us al-Jibal",
+          "src": "Jebel Harim 2,087 m lies south of the frame; edge value"
+        },
+        {
+          "lon": 56.05,
+          "lat": 26.55,
+          "elevM": -58,
+          "kind": "sounding",
+          "name": "Strait channel sounding",
+          "src": "published strait depths 60–80 m"
+        },
+        {
+          "lon": 56.3,
+          "lat": 26.6,
+          "elevM": -80,
+          "kind": "sounding",
+          "name": "Inbound traffic lane",
+          "src": "published strait depths 60–80 m"
+        },
+        {
+          "lon": 56.02,
+          "lat": 27.05,
+          "elevM": -18,
+          "kind": "sounding",
+          "name": "Clarence Strait (Khuran)",
+          "src": "shallow channel between Qeshm and the mainland"
+        },
+        {
+          "lon": 56.64,
+          "lat": 26.8,
+          "elevM": -90,
+          "kind": "sounding",
+          "name": "Gulf of Oman approach",
+          "src": "deep-water approach"
+        }
+      ],
+      "gridProbe": {
+        "nx": 240,
+        "ny": 220,
+        "minM": -90,
+        "maxM": 1390
+      },
+      "probes": [
+        {
+          "label": "Bukhun, Qeshm",
+          "lon": 56.05,
+          "lat": 26.86,
+          "elevM": 342
+        },
+        {
+          "label": "Hengam summit",
+          "lon": 55.88,
+          "lat": 26.655,
+          "elevM": 106
+        },
+        {
+          "label": "Hormuz Island",
+          "lon": 56.46,
+          "lat": 27.05,
+          "elevM": 186
+        },
+        {
+          "label": "Vincennes launch fix",
+          "lon": 56.0158,
+          "lat": 26.5131,
+          "elevM": -58
+        },
+        {
+          "label": "IR 655 impact fix",
+          "lon": 56.0167,
+          "lat": 26.6292,
+          "elevM": -47
+        },
+        {
+          "label": "strait, mid-channel",
+          "lon": 56.2,
+          "lat": 26.5,
+          "elevM": -69
+        }
+      ]
+    },
+    "savo-1942": {
+      "bbox": [
+        159.55,
+        -9.55,
+        160.25,
+        -8.85
+      ],
+      "shelfDeg": 0.018,
+      "seaFloorM": -900,
+      "note": "Iron Bottom Sound. The 2015 Allen survey reported wreck depths of 600–1,350 m; Vincennes lies in ~1,020 m.",
+      "landPolygons": [
+        {
+          "id": "savo",
+          "name": "Savo Island",
+          "vertices": 8
+        },
+        {
+          "id": "guadalcanal",
+          "name": "Guadalcanal north coast",
+          "vertices": 10
+        },
+        {
+          "id": "florida",
+          "name": "Florida Island (Nggela Sule), western end",
+          "vertices": 5
+        }
+      ],
+      "control": [
+        {
+          "lon": 159.818,
+          "lat": -9.135,
+          "elevM": 485,
+          "kind": "spot-height",
+          "name": "Savo Island summit",
+          "src": "volcanic cone, published summit ~485 m"
+        },
+        {
+          "lon": 159.79,
+          "lat": -9.118,
+          "elevM": 180,
+          "kind": "spot-height",
+          "name": "Savo NW flank",
+          "src": "generalised cone profile"
+        },
+        {
+          "lon": 159.845,
+          "lat": -9.155,
+          "elevM": 150,
+          "kind": "spot-height",
+          "name": "Savo SE flank",
+          "src": "generalised cone profile"
+        },
+        {
+          "lon": 159.705,
+          "lat": -9.258,
+          "elevM": 40,
+          "kind": "spot-height",
+          "name": "Cape Esperance",
+          "src": "low coastal point"
+        },
+        {
+          "lon": 159.9,
+          "lat": -9.47,
+          "elevM": 900,
+          "kind": "spot-height",
+          "name": "Guadalcanal coastal range",
+          "src": "range rises steeply inland; Popomanaseu 2,335 m is well south of the frame"
+        },
+        {
+          "lon": 160.15,
+          "lat": -8.95,
+          "elevM": 380,
+          "kind": "spot-height",
+          "name": "Florida Island interior",
+          "src": "generalised island maximum ~430 m"
+        },
+        {
+          "lon": 159.9,
+          "lat": -9.16,
+          "elevM": -780,
+          "kind": "sounding",
+          "name": "Iron Bottom Sound, west",
+          "src": "2015 survey depth band 600–1,350 m"
+        },
+        {
+          "lon": 159.87,
+          "lat": -9.17,
+          "elevM": -1020,
+          "kind": "sounding",
+          "name": "Vincennes (CA-44) wreck",
+          "src": "located 16 Jan 2015; ~1,020 m"
+        },
+        {
+          "lon": 160.02,
+          "lat": -9.2,
+          "elevM": -1100,
+          "kind": "sounding",
+          "name": "Sound centre",
+          "src": "2015 survey depth band"
+        },
+        {
+          "lon": 159.72,
+          "lat": -9.1,
+          "elevM": -600,
+          "kind": "sounding",
+          "name": "North-west approach",
+          "src": "Mikawa's approach; shallower shelf"
+        }
+      ],
+      "gridProbe": {
+        "nx": 240,
+        "ny": 220,
+        "minM": -1100,
+        "maxM": 900
+      },
+      "probes": [
+        {
+          "label": "Savo Island summit",
+          "lon": 159.818,
+          "lat": -9.135,
+          "elevM": 484
+        },
+        {
+          "label": "Vincennes (CA-44) wreck",
+          "lon": 159.8667,
+          "lat": -9.1667,
+          "elevM": -1018
+        },
+        {
+          "label": "Iron Bottom Sound, mid",
+          "lon": 160,
+          "lat": -9.2,
+          "elevM": -1093
+        },
+        {
+          "label": "Cape Esperance",
+          "lon": 159.705,
+          "lat": -9.258,
+          "elevM": 11
+        }
+      ]
+    },
+    "leyte-1944": {
+      "bbox": [
+        120,
+        9,
+        134,
+        34
+      ],
+      "shelfDeg": 0.45,
+      "seaFloorM": -4500,
+      "note": "Philippine Sea scale. At this frame the DEM is a backdrop: the Philippine Trench is the only feature with any vertical authority, and it is drawn at GMTED/GEBCO generalisation, not from a sounding set.",
+      "landPolygons": [
+        {
+          "id": "luzon",
+          "name": "Luzon",
+          "vertices": 10
+        },
+        {
+          "id": "samar-leyte",
+          "name": "Samar / Leyte",
+          "vertices": 9
+        },
+        {
+          "id": "formosa",
+          "name": "Formosa (Taiwan)",
+          "vertices": 7
+        },
+        {
+          "id": "kyushu",
+          "name": "Kyūshū",
+          "vertices": 7
+        }
+      ],
+      "control": [
+        {
+          "lon": 120.95,
+          "lat": 23.47,
+          "elevM": 3952,
+          "kind": "spot-height",
+          "name": "Yu Shan, Formosa",
+          "src": "island high point"
+        },
+        {
+          "lon": 121.05,
+          "lat": 16.6,
+          "elevM": 2900,
+          "kind": "spot-height",
+          "name": "Cordillera Central, Luzon",
+          "src": "generalised"
+        },
+        {
+          "lon": 125.1,
+          "lat": 11.1,
+          "elevM": 800,
+          "kind": "spot-height",
+          "name": "Samar interior",
+          "src": "generalised"
+        },
+        {
+          "lon": 131.1,
+          "lat": 32.6,
+          "elevM": 1750,
+          "kind": "spot-height",
+          "name": "Kyūshū interior",
+          "src": "generalised"
+        },
+        {
+          "lon": 127,
+          "lat": 12.5,
+          "elevM": -9000,
+          "kind": "sounding",
+          "name": "Philippine Trench",
+          "src": "generalised trench axis"
+        },
+        {
+          "lon": 130,
+          "lat": 24,
+          "elevM": -4200,
+          "kind": "sounding",
+          "name": "Philippine Sea basin",
+          "src": "generalised"
+        },
+        {
+          "lon": 126,
+          "lat": 20,
+          "elevM": -5200,
+          "kind": "sounding",
+          "name": "West Philippine Basin",
+          "src": "generalised"
+        }
+      ],
+      "gridProbe": {
+        "nx": 240,
+        "ny": 220,
+        "minM": -9000,
+        "maxM": 3952
+      },
+      "probes": [
+        {
+          "label": "Yu Shan, Formosa",
+          "lon": 120.95,
+          "lat": 23.47,
+          "elevM": 3952
+        },
+        {
+          "label": "Philippine Trench axis",
+          "lon": 127,
+          "lat": 12.5,
+          "elevM": -9000
+        },
+        {
+          "label": "Samar interior",
+          "lon": 125.1,
+          "lat": 11.1,
+          "elevM": 800
+        }
+      ]
+    }
+  }
+}
