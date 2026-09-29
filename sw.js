@@ -3,7 +3,7 @@
    service worker caches it on first use, so the lab still works offline after
    one visit without slowing down install for everyone else. */
 const CACHE_PREFIX = "sitek-html5-";
-const CACHE = `${CACHE_PREFIX}v27`;
+const CACHE = `${CACHE_PREFIX}v28`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -11,6 +11,7 @@ const PRECACHE = [
   "./keyspace.html",
   "./validator.html",
   "./ghidra-lab.html",
+  "./flash-decompiler.html",
   "./distro-dossier.html",
   "./css/distro-dossier.css",
   "./js/distro-dossier.js",
@@ -47,6 +48,7 @@ const PRECACHE = [
   "./css/viewer.css",
   "./css/validator.css",
   "./css/viruslab.css",
+  "./css/flash-decompiler.css",
   "./css/casefiles.css",
   "./css/studio.css",
   "./css/calc.css",
@@ -103,6 +105,8 @@ const PRECACHE = [
   "./js/viewer.js",
   "./js/validator.js",
   "./js/viruslab.js",
+  "./js/flash-decompiler.js",
+  "./data/flash-decompiler-targets.json",
   "./js/virus-catalog.js",
   "./js/x86dis.js",
   "./js/ghidra-wasm.js",

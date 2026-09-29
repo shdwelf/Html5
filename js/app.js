@@ -1,4 +1,4 @@
-/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator | #studio | #ghidra | #dossier */
+/** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator | #studio | #ghidra | #flash | #dossier */
 import { initWm } from "./wm.js";
 import { SITEK_APP_BY_ID } from "./sitek-catalog.js";
 
@@ -9,8 +9,9 @@ const $ = (id) => document.getElementById(id);
 function currentMode() {
   const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
   const normalized = raw === "artstudio" || raw === "art-studio" ? "studio"
-    : raw === "distro-dossier" || raw === "distro" ? "dossier" : raw;
-  if (["terrarium", "keyspace", "validator", "studio", "enso", "ghidra", "dossier", "grid"].includes(normalized)) return normalized;
+    : raw === "distro-dossier" || raw === "distro" ? "dossier"
+    : raw === "flash-decompiler" || raw === "swf" ? "flash" : raw;
+  if (["terrarium", "keyspace", "validator", "studio", "enso", "ghidra", "flash", "dossier", "grid"].includes(normalized)) return normalized;
   return "grid";
 }
 
@@ -101,11 +102,12 @@ let started = null;
 async function start(mode) {
   markDock(mode);
 
-  if (mode === "keyspace" || mode === "validator" || mode === "studio" || mode === "enso" || mode === "ghidra" || mode === "dossier") {
+  if (mode === "keyspace" || mode === "validator" || mode === "studio" || mode === "enso" || mode === "ghidra" || mode === "flash" || mode === "dossier") {
     const frame = $("keyframe");
     const view = (mode === "studio" || mode === "enso") ? "./art-studio.html"
       : mode === "validator" ? "./validator.html"
       : mode === "ghidra" ? "./ghidra-lab.html"
+      : mode === "flash" ? "./flash-decompiler.html"
       : mode === "dossier" ? "./distro-dossier.html"
       : "./keyspace.html";
     if (frame && frame.getAttribute("src") !== view) frame.src = view;
@@ -114,6 +116,7 @@ async function start(mode) {
       enso: `${SITEK_APP_BY_ID.enso.label} · Art Studio`,
       validator: "BIP-39 Mnemonic Validator",
       ghidra: "Ghidra WASM Lab · DOS virology corpus",
+      flash: "Flash Decompiler Timeline · Behind The Dune / NATA2",
       dossier: "Distro Dossier · Privacy & OSINT VM research console",
       keyspace: "SITE-K · Keyspace",
     };

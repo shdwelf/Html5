@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#070912" />
+  <meta name="description" content="Archive/Wayback Flash SWF triage with configurable CORS proxy, Behind The Dune timeline, easter-egg notes, and GitHub FFDec decompiler workflow links." />
+  <title>Flash Decompiler Timeline · Behind The Dune / NATA2</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="stylesheet" href="./css/flash-decompiler.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="./index.html#grid" target="_top" aria-label="Back to SITE-K">
+        <span class="mark" aria-hidden="true"></span>
+        <span><strong>FLASH DECOMPILER</strong><small>WAYBACK · CORS PROXY · FFDEC</small></span>
+      </a>
+      <nav class="nav">
+        <a href="./research/behind_the_dune_backup_manifest.md">Manifest</a>
+        <a href="./docs/flash-decompiler-workflow.md">GitHub Workflow</a>
+        <a href="./index.html#ghidra" target="_top">Ghidra Lab</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="title">
+        <p class="eyebrow">SWF TRIAGE · NOT A PLAYER · NO BINARY MIRRORING</p>
+        <h1 id="title">Flash archive<br /><em>decompiler timeline</em></h1>
+        <p>
+          A safe front-end for the NATA2-style Wayback <code>id_</code> raw-SWF pattern and the
+          Behind The Dune archive trail. Browser triage can fetch through a configurable CORS
+          proxy and inspect SWF headers/tags; full ActionScript/resource export is delegated to
+          the manual GitHub Actions workflow that runs JPEXS FFDec.
+        </p>
+        <div class="stack" aria-label="Lab stack">
+          <span>Wayback CDX → raw id_ URL</span>
+          <span>CORS proxy template</span>
+          <span>SWF CWS/FWS/ZWS header parser</span>
+          <span>JPEXS FFDec on GitHub Actions</span>
+        </div>
+      </section>
+
+      <section class="grid" aria-label="Workspace">
+        <aside class="panel">
+          <div class="panel-head"><h2>Targets</h2><span class="badge" id="targetCount">—</span></div>
+          <div class="panel-body">
+            <p class="note">Select a target. NSFW targets are not fetched until the checkbox below is enabled.</p>
+            <div class="target-list" id="targetList"></div>
+          </div>
+        </aside>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Timeline</h2><span class="badge">NATA2 → Balsamique → archive.org</span></div>
+          <div class="panel-body timeline" id="timeline"></div>
+        </section>
+
+        <aside class="panel">
+          <div class="panel-head"><h2>CORS / fetch</h2><span class="badge">proxy-aware</span></div>
+          <div class="panel-body controls">
+            <div class="row">
+              <label for="proxyPreset">Proxy</label>
+              <select id="proxyPreset">
+                <option value="direct">Direct fetch</option>
+                <option value="corsproxy">corsproxy.io</option>
+                <option value="allorigins">allorigins raw</option>
+                <option value="custom">Custom template</option>
+              </select>
+            </div>
+            <div class="row">
+              <label for="proxyTemplate">Template</label>
+              <input id="proxyTemplate" spellcheck="false" value="https://corsproxy.io/?{url}" />
+            </div>
+            <div class="row">
+              <label for="activeUrl">URL</label>
+              <textarea id="activeUrl" spellcheck="false"></textarea>
+            </div>
+            <label class="pill"><input id="allowNsfw" type="checkbox" /> I understand selected targets may be adult/NSFW metadata or binaries</label>
+            <button type="button" class="hot" id="fetchBtn">Fetch & triage selected SWF</button>
+            <button type="button" id="copyWorkflow">Copy workflow command list</button>
+            <p class="note">If a public proxy blocks large binaries, use the GitHub workflow instead. It fetches from the runner and runs FFDec headlessly.</p>
+          </div>
+        </aside>
+
+        <section class="panel">
+          <div class="panel-head"><h2>SWF triage</h2><span class="badge" id="status">idle</span></div>
+          <div class="panel-body">
+            <div class="stat-grid" id="stats"></div>
+            <div class="output"><pre id="output">Select a target, choose a proxy, then fetch. The parser reads SWF headers, frame metadata, tag inventory and ASCII URLs where available. It does not execute Flash.</pre></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Easter eggs / hidden interactions</h2><span class="badge">non-explicit notes</span></div>
+          <div class="panel-body eggs" id="eggs"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>GitHub decompiler path</h2><span class="badge">JPEXS FFDec</span></div>
+          <div class="panel-body">
+            <p class="note">
+              Browser JavaScript can triage tags, but real SWF decompilation belongs to
+              <a href="https://github.com/jindrapetrik/jpexs-decompiler" target="_blank" rel="noreferrer">JPEXS Free Flash Decompiler</a>.
+              This branch adds a manual workflow: <code>.github/workflows/flash-decompile.yml</code>.
+            </p>
+            <pre id="workflowHint">gh workflow run flash-decompile.yml -f include_nsfw=true</pre>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>FLASH DECOMPILER TIMELINE · STATIC TRIAGE ONLY</span>
+      <span>Explicit SWF/ZIP/RAR binaries stay out of git by default.</span>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/flash-decompiler.js"></script>
+</body>
+</html>
