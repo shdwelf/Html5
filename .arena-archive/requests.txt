@@ -132,3 +132,18 @@ direct:https://archive.org/download/QuestForGlorySoYouWantToBeAHeroDemo/qfg1demo
 # --- item msdos_Tetris_1986, md5 2e5546d57079e630d1f9ddc41ac43074. 15 KB: the
 # --- smallest thing in the corpus and the oldest.
 direct:https://archive.org/download/msdos_Tetris_1986/Tetris_1986.zip games/Tetris_1986.zip 15165
+
+# === round 5: X-COM demo disk + Indiana Jones point-and-click (SCUMM) ===
+#
+# --- MicroProse/Mythos Games: the X-COM demo disk. This is a raw 1.44 MB
+# --- floppy IMAGE (1474560 = 80 cyl x 2 heads x 18 sect x 512), cover-mounted
+# --- by PC Gamer, so it exercises the boot-sector/FAT12 path in
+# --- tools/decompile_boot.mjs as well as the MZ path. Item
+# --- PCGamerTerrorFromTheDeepDemo, md5 42b4033ba77e4819483f7955825c57c8.
+direct:https://archive.org/download/PCGamerTerrorFromTheDeepDemo/PCGamer-Terror-from-the-Deep-Demo.IMA games/xcom-tftd-demo.ima 1474560
+#
+# --- LucasArts: the official "Indiana Jones and the Fate of Atlantis" playable
+# --- demo (PLAYFATE). SCUMM v5. The game opens in Indy's office at Barnett
+# --- College, which is the scene this demo ships. Item msdos_PLAYFATE_shareware,
+# --- md5 f7ac8f2bdbb11b6ea5d23a667f26fcbc, 9 files in the zip.
+direct:https://archive.org/download/msdos_PLAYFATE_shareware/PLAYFATE.zip games/PLAYFATE.zip 671058
