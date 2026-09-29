@@ -48,5 +48,5 @@ CACHED  games/DUKE2.zip  1030021 bytes  sha256 b5d4a0bface1e90c  (matches PROVEN
 CACHED  games/3dduke13SW.zip  5924374 bytes  sha256 c67efd179022bc6d  (matches PROVENANCE.md; not re-downloaded)
 CACHED  games/qfg1demo.zip  924891 bytes  sha256 cf8f2a8939d20b4c  (matches PROVENANCE.md; not re-downloaded)
 CACHED  games/Tetris_1986.zip  15165 bytes  sha256 b21423e88430f505  (matches PROVENANCE.md; not re-downloaded)
-OK    games/xcom-tftd-demo.ima  1474560 bytes  sha256 a442c4e0f3d719ef  direct fetch (no index digest; sha256 recorded)  application/octet-stream
-OK    games/PLAYFATE.zip  671058 bytes  sha256 e91d8c3e206fc098  direct fetch (no index digest; sha256 recorded)  application/zip  zip: 10 entries, 1140551 bytes unpacked, crc OK [PLAYFATE/PLAYFATE.EXE, PLAYFATE/SPEAKER.IMS, PLAYFATE/ADLIB.IMS, PLAYFATE/PLAYFATE.001, PLAYFATE/READ.ME, PLAYFATE/ROLAND.IMS]
+CACHED  games/xcom-tftd-demo.ima  1474560 bytes  sha256 a442c4e0f3d719ef  (matches PROVENANCE.md; not re-downloaded)
+CACHED  games/PLAYFATE.zip  671058 bytes  sha256 e91d8c3e206fc098  (matches PROVENANCE.md; not re-downloaded)
