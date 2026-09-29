@@ -2218,8 +2218,14 @@ function expLzexe91Unpack(img){
     for(let k=0;k<length;k++)out.push(out[src+k]);
   }
 }
-function expLzexe91Relocs(img){
-  let i=0x5B30+0x158,relOff=0,relSeg=0;const relocs=[];
+/* LZEXE puts its stub in its own segment and points the MZ entry at it with
+   e_ip=0x000E, so the eight stub data words sit at the START of that segment:
+   image offset e_cs<<4 (file offset (e_cparhdr<<4)+(e_cs<<4)).  This used to be
+   hard-coded 0x5B30, which is simply e_cs<<4 for ATR.EXE (e_cs=0x5B3) — the one
+   sample it was ever tested on.  See docs/dos-game-disassembly.md §2. */
+function expLzexeStubOff(hdr){return hdr.e_cs<<4;}
+function expLzexe91Relocs(img,stubOff){
+  let i=stubOff+0x158,relOff=0,relSeg=0;const relocs=[];
   for(;;){
     if(i>=img.length)throw new Error('LZEXE relocation table exhausted — corrupted input?');
     let span=img[i];i++;
@@ -2232,11 +2238,13 @@ function expLzexe91Relocs(img){
     relOff+=span;
     relSeg+=(relOff&~0x0F)>>4;
     relOff&=0x0F;
+    if(relSeg>0xFFFF||relOff>0xFFFF)throw new Error('LZEXE relocation out of range ('+relSeg.toString(16)+':'+relOff.toString(16)+') — wrong stub offset or corrupted input?');
     relocs.push([relSeg,relOff]);
   }
 }
-function expLzexe91Rebuild(b,hdr,image,relocs){
-  const inf=[];for(let i=0;i<16;i+=2)inf.push(b[0x20+0x5B30+i]|(b[0x20+0x5B30+i+1]<<8));
+function expLzexe91Rebuild(b,hdr,image,relocs,stubOff){
+  const base=(hdr.e_cparhdr<<4)+stubOff;
+  const inf=[];for(let i=0;i<16;i+=2)inf.push(b[base+i]|(b[base+i+1]<<8));
   const w=o=>b[o]|(b[o+1]<<8);
   const out=[];
   const push16=v=>{out.push(v&0xFF,(v>>8)&0xFF);};
@@ -2268,10 +2276,11 @@ function expLzexeFull(b){
   if(pk.name==='LZEXE 0.90')throw new Error('LZEXE 0.90 detected — this op implements 0.91 only (0.90 uses a different stub and reloc table)');
   if(pk.name!=='LZEXE 0.91')throw new Error('unsupported packer: '+(pk.name||'none detected'));
   const image=Array.from(b.slice(hdr.e_cparhdr<<4));
+  const stubOff=expLzexeStubOff(hdr);
   const {out,stats}=expLzexe91Unpack(image);
-  const relocs=expLzexe91Relocs(image);
-  const exe=expLzexe91Rebuild(b,hdr,out,relocs);
-  return {hdr,pk,image,out,stats,relocs,exe};
+  const relocs=expLzexe91Relocs(image,stubOff);
+  const exe=expLzexe91Rebuild(b,hdr,out,relocs,stubOff);
+  return {hdr,pk,image,out,stats,relocs,exe,stubOff};
 }
 
 /* ---- op: MZ triage ---- */
@@ -2296,13 +2305,15 @@ addOp('mzTriage','MZ / DOS EXE Triage','EXE Protection',
     L.push('  packer: '+(pk.name||'unknown')+' — '+pk.detail);
     if(pk.name==='LZEXE 0.91'){
       const image=Array.from(b.slice(h.e_cparhdr<<4));
-      const inf=[];for(let i=0;i<14;i+=2)inf.push(image[0x5B30+i]|(image[0x5B30+i+1]<<8));
+      const stubOff=expLzexeStubOff(h);
+      const inf=[];for(let i=0;i<14;i+=2)inf.push(image[stubOff+i]|(image[stubOff+i+1]<<8));
+      L.push('  LZEXE stub data at image+0x'+stubOff.toString(16).toUpperCase());
       L.push('  LZEXE stub info: orig entry '+inf[1].toString(16).toUpperCase()+':'+inf[0].toString(16).toUpperCase()+
         ', orig ss:sp '+inf[3].toString(16).toUpperCase()+':'+inf[2].toString(16).toUpperCase()+
         ', packed paras 0x'+inf[4].toString(16).toUpperCase()+
         ', grow paras 0x'+inf[5].toString(16).toUpperCase()+
         ', stub+reloc bytes 0x'+inf[6].toString(16).toUpperCase());
-      L.push('  stub reloc table decodes to '+expLzexe91Relocs(image).length+' entries');
+      L.push('  stub reloc table decodes to '+expLzexe91Relocs(image,stubOff).length+' entries');
     }
     L.push('Docs: docs/exe-protection-deep-dive.md · vectors: samples/exeprotect/VECTORS.md');
     return L.join('\n');
@@ -2328,6 +2339,144 @@ addOp('lzexeDecode','LZEXE 0.91 Unpack','EXE Protection',
       '0:0 image-relative (stub info words)');
     L.push('  rebuilt EXE     : '+r.exe.length+' bytes — feed to mzTriage to inspect');
     L.push('Reference check: ATR.EXE (99info.zip, dr7 corpus) → image sha256 79c72bc0866721…c7252c5fd7, 55 002 bytes, 132 relocs — matches UNLZEXE 0.9 exactly.');
+    return L.join('\n');
+  });
+
+/* ---- PKLITE: the stub decrypts itself before it decompresses ----
+   Only a short preamble is plaintext; it ends in a backwards running-XOR
+   chain (std + lodsw/xchg/xor/stosw) over its own body.  The chain key is the
+   previous CIPHERTEXT word, which makes it self-synchronising: a wrong start
+   offset still decrypts the overlap correctly and a wrong key corrupts only
+   one word, so wrong answers look right.  Geometry is therefore read from the
+   instruction operands.  Operands are offsets in the stub's segment, which
+   sits 0x100 BELOW the load image (PKLITE sets cs=0xFFF0 and wraps).
+   Derived from the stub via tools/decompile_mz.mjs; see
+   docs/exe-compressors-and-scumm.md §1 and tools/pklite.py. */
+const PKL_SEG_ADJ = 0x100;
+function pklFindDecrypt(img){
+  for(let i=0;i<Math.min(img.length,0x400)-10;i++){
+    if(img[i]===0xB9&&img[i+3]===0xBE&&img[i+6]===0x8B&&img[i+7]===0xFE&&img[i+8]===0xFD){
+      const count=img[i+1]|(img[i+2]<<8), segOff=img[i+4]|(img[i+5]<<8);
+      // FIRST mov dx,imm16 is the key; later ones are the int 21h/AH=9 message.
+      let key=null;
+      for(let j=0;j<i;j++) if(img[j]===0xBA){key=img[j+1]|(img[j+2]<<8);break;}
+      if(key===null) continue;
+      return {count,segOff,key,at:i};
+    }
+  }
+  throw new Error('PKLITE self-decryption loop not found — unsupported variant?');
+}
+function pklDecryptStub(img){
+  const p=pklFindDecrypt(img);
+  const out=img.slice();
+  let si=p.segOff-PKL_SEG_ADJ;
+  if(si<0||si>=out.length) throw new Error('PKLITE decrypt window 0x'+si.toString(16)+' outside the image');
+  let di=si, dx=p.key, cx=p.count, n=0;
+  for(;;){
+    cx--; if(cx===0) break;
+    if(si<0||si+2>out.length) throw new Error('PKLITE decrypt walked off the image at 0x'+si.toString(16));
+    const w=out[si]|(out[si+1]<<8); si-=2;
+    const ax=dx^w; dx=w;
+    out[di]=ax&0xFF; out[di+1]=(ax>>8)&0xFF; di-=2; n++;
+  }
+  return {image:out,info:{...p,words:n,lo:di+2,hi:p.segOff-PKL_SEG_ADJ+1}};
+}
+function pklVersion(b){
+  const w=b[0x1C]|(b[0x1D]<<8);
+  return {word:w,major:(w>>8)&0x0F,minor:w&0xFF,extra:!!(w&0x1000),large:!!(w&0x2000)};
+}
+addOp('pkliteStub','PKLITE Stub Decrypt','EXE Protection',
+  'Decrypt a PKLITE-packed DOS EXE\'s self-decrypting stub (hex in) and report its version and geometry. PKLITE hides its own decompressor behind a backwards running-XOR chain; this recovers it so the decompressor can be read. The chain is self-synchronising, so a wrong key or start offset still yields plausible code — the geometry here is read from the stub\'s instruction operands, not guessed. Mode "report": version, key, decrypted window. Mode "stub": hex of the image with the stub decrypted. Full v1.15 decompression lives in tools/pklite.py; v1.20 has a different layout and is not implemented.',
+  [{key:'mode',label:'Mode',type:'select',default:'report',options:[['report','Report'],['stub','Decrypted image (hex)']]}],
+  function(t,a){
+    const b=bytesFromHex(t);
+    const h=expMzParse(b);
+    let isPk=false; for(let i=0x1C;i<Math.min(b.length,0x40)-6;i++)
+      if(b[i]===0x50&&b[i+1]===0x4B&&b[i+2]===0x4C&&b[i+3]===0x49&&b[i+4]===0x54&&b[i+5]===0x45){isPk=true;break;}
+    if(!isPk) throw new Error('no PKLITE marker in the MZ header — not a PKLITE-packed file');
+    const img=Array.from(b.slice(h.e_cparhdr<<4));
+    const v=pklVersion(b);
+    const {image,info}=pklDecryptStub(img);
+    if(a.mode==='stub') return hexFromBytes(image);
+    const L=[];
+    L.push('PKLITE v'+v.major+'.'+String(v.minor).padStart(2,'0')+' (version word 0x'+v.word.toString(16).toUpperCase().padStart(4,'0')+')'+
+      (v.extra?', extra compression':'')+(v.large?', large model':''));
+    L.push('  entry cs:ip = '+h.e_cs.toString(16).toUpperCase().padStart(4,'0')+':'+h.e_ip.toString(16).toUpperCase().padStart(4,'0')+
+      (h.e_cs===0xFFF0?'  (the 0xFFF0 wrap: entry resolves back to image offset 0)':''));
+    L.push('  decrypt loop found at image 0x'+info.at.toString(16).toUpperCase());
+    L.push('  initial chain key : 0x'+info.key.toString(16).toUpperCase().padStart(4,'0')+'   (first mov dx,imm16 in the preamble)');
+    L.push('  words decrypted   : '+info.words);
+    L.push('  segment operand   : 0x'+info.segOff.toString(16).toUpperCase()+' -> image 0x'+(info.segOff-PKL_SEG_ADJ).toString(16).toUpperCase()+
+      '  (stub segment sits 0x100 below the image)');
+    L.push('  decrypted window  : image 0x'+info.lo.toString(16).toUpperCase()+'..0x'+info.hi.toString(16).toUpperCase());
+    L.push('  NOTE: the chain is self-synchronising — only the first word depends on the key,');
+    L.push('        so a misidentified key corrupts exactly one word and still looks correct.');
+    L.push('Docs: docs/exe-compressors-and-scumm.md §1 · full decoder: tools/pklite.py');
+    return L.join('\n');
+  });
+
+/* ---- SCUMM (LucasArts) resource obfuscation ----
+   v5 ships an index (.000) and data (.001) file, each whole-file XORed with
+   one constant byte.  The key is recovered from the root tag rather than
+   hard-coded.  Room NAMES carry a second, different XOR (0xFF).  Block
+   headers are 4-byte tag + BIG-endian u32 size that includes the header.
+   Verified against the official Fate of Atlantis demo; see
+   docs/exe-compressors-and-scumm.md §3 and tools/scumm.py. */
+const SCUMM_ROOTS=['LECF','RNAM','LOFF','MAXS'];
+const SCUMM_NAME_XOR=0xFF;
+function scummDetectKey(b){
+  if(b.length<4) return null;
+  for(const tag of SCUMM_ROOTS){
+    const k=new Set(); for(let i=0;i<4;i++) k.add(b[i]^tag.charCodeAt(i));
+    if(k.size===1) return {key:[...k][0],tag};
+  }
+  return null;
+}
+function scummWalk(buf,off,end,depth,out){
+  while(off+8<=end){
+    const tag=String.fromCharCode(buf[off],buf[off+1],buf[off+2],buf[off+3]);
+    const size=((buf[off+4]<<24)|(buf[off+5]<<16)|(buf[off+6]<<8)|buf[off+7])>>>0;
+    if(size<8||off+size>end) break;              // desynchronised — stop, don't guess
+    out.push({depth,tag,off,size});
+    if(tag==='LECF'||tag==='LFLF'||tag==='ROOM') scummWalk(buf,off+8,off+size,depth+1,out);
+    off+=size;
+  }
+  return out;
+}
+addOp('scummXor','SCUMM Resource Deobfuscate (LucasArts)','EXE Protection',
+  'Break the whole-file XOR on a LucasArts SCUMM v5 resource file (hex in) and walk its IFF-style container. The XOR key is RECOVERED from the root block tag (LECF/RNAM/LOFF/MAXS), not assumed — all four bytes must agree. Room names in the RNAM table carry a second, different XOR (0xFF). Mode "report": key, block tree, room names. Mode "plain": hex of the de-XORed file. Verified against the official Indiana Jones and the Fate of Atlantis demo, whose index leaks the full 97-room game map; see tools/scumm.py.',
+  [{key:'mode',label:'Mode',type:'select',default:'report',options:[['report','Report'],['plain','De-XORed file (hex)']]},
+   {key:'blockLimit',label:'Blocks to show',type:'number',default:'24'}],
+  function(t,a){
+    const raw=bytesFromHex(t);
+    const d=scummDetectKey(raw);
+    if(!d) throw new Error('no recognised SCUMM root tag (LECF/RNAM/LOFF/MAXS) — not a v5 resource file');
+    const b=raw.map(x=>x^d.key);
+    if(a.mode==='plain') return hexFromBytes(b);
+    const L=[];
+    L.push('SCUMM v5 resource — XOR key 0x'+d.key.toString(16).toUpperCase().padStart(2,'0')+', root tag '+d.tag+', '+b.length+' bytes');
+    const blocks=scummWalk(b,0,b.length,0,[]);
+    const lim=Math.min(blocks.length,parseInt(a.blockLimit)||24);
+    L.push('  block tree ('+blocks.length+' total):');
+    for(let i=0;i<lim;i++){const x=blocks[i];
+      L.push('    '+'  '.repeat(x.depth)+x.tag.padEnd(5)+' off=0x'+x.off.toString(16).toUpperCase().padStart(6,'0')+' size='+x.size);}
+    if(lim<blocks.length) L.push('    ... '+(blocks.length-lim)+' more');
+    if(d.tag==='RNAM'){
+      const size=((b[4]<<24)|(b[5]<<16)|(b[6]<<8)|b[7])>>>0;
+      const rooms=[]; let p=8;
+      while(p+10<=Math.min(size,b.length)){
+        const num=b[p]; if(num===0) break;
+        let nm=''; for(let i=0;i<9;i++){const c=b[p+1+i]^SCUMM_NAME_XOR; if(c) nm+=String.fromCharCode(c);}
+        if(!nm) break;   // padding entry: repeats the last room number, empty name
+        rooms.push([num,nm]); p+=10;
+      }
+      const stripped=rooms.filter(r=>r[1].startsWith(';')).length;
+      L.push('  RNAM room table: '+rooms.length+' entries (names carry a second XOR 0x'+SCUMM_NAME_XOR.toString(16).toUpperCase()+')');
+      for(const [n,nm] of rooms.slice(0,40)) L.push('    '+String(n).padStart(3)+'  '+nm+(nm.startsWith(';')?'   (stripped from this build)':''));
+      if(rooms.length>40) L.push('    ... '+(rooms.length-40)+' more');
+      L.push('  '+stripped+" marked ';' (absent from this build), "+(rooms.length-stripped)+' unmarked');
+    }
+    L.push('Docs: docs/exe-compressors-and-scumm.md §3 · tools/scumm.py');
     return L.join('\n');
   });
 

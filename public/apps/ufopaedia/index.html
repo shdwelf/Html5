@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UFOPAEDIA — Software Protection &amp; the Crack Scene</title>
+<meta name="description" content="An X-COM UFOpaedia-styled encyclopedia of DOS-era software protection, executable packers, and the archived crack/keygen scene — every claim sourced to a primary capture.">
+<style>
+  :root{
+    --bg:#08081c; --panel:#141446; --panel2:#1c1c5c; --edge:#5a5ad2;
+    --edge-lo:#2e2e7a; --amber:#ffd24a; --green:#6ef08a; --text:#c8c8f0;
+    --dim:#7a7ab8; --red:#ff6b6b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:"Lucida Console","DejaVu Sans Mono",Consolas,monospace;
+    font-size:14px; line-height:1.55; padding:14px;
+  }
+  a{color:var(--green)}
+  .frame{max-width:1180px;margin:0 auto;border:2px solid var(--edge);background:var(--panel);
+    box-shadow:0 0 0 2px #000 inset,0 0 24px #000}
+  header{background:var(--panel2);border-bottom:2px solid var(--edge);padding:10px 16px;
+    display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between}
+  h1{margin:0;font-size:22px;letter-spacing:5px;color:var(--amber);text-shadow:2px 2px 0 #000}
+  .sub{color:var(--dim);font-size:12px;letter-spacing:1px}
+  .bar{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid var(--edge-lo);flex-wrap:wrap}
+  input[type=search]{flex:1;min-width:200px;background:#05051a;border:1px solid var(--edge-lo);
+    color:var(--green);font:inherit;padding:6px 9px;outline:none}
+  input[type=search]:focus{border-color:var(--edge)}
+  .layout{display:grid;grid-template-columns:250px 1fr;min-height:560px}
+  @media(max-width:820px){.layout{grid-template-columns:1fr}}
+  nav{border-right:1px solid var(--edge-lo);padding:12px;background:#0e0e34}
+  @media(max-width:820px){nav{border-right:none;border-bottom:1px solid var(--edge-lo)}}
+  .cat{display:block;width:100%;text-align:left;background:var(--panel2);color:var(--text);
+    border:1px solid var(--edge-lo);font:inherit;padding:7px 9px;margin-bottom:6px;cursor:pointer}
+  .cat:hover{border-color:var(--edge);color:#fff}
+  .cat[aria-current=true]{background:var(--edge);color:#07071e;font-weight:bold;border-color:var(--amber)}
+  .cat small{display:block;color:var(--dim);font-size:11px}
+  .cat[aria-current=true] small{color:#1a1a4a}
+  main{padding:14px 18px;min-width:0}
+  .list{display:grid;gap:7px}
+  .item{background:#10103a;border:1px solid var(--edge-lo);padding:8px 11px;cursor:pointer}
+  .item:hover{border-color:var(--edge)}
+  .item b{color:var(--amber);font-weight:normal}
+  .item .meta{color:var(--dim);font-size:11.5px}
+  h2{color:var(--amber);font-size:17px;margin:0 0 4px;letter-spacing:1px}
+  .tags{color:var(--dim);font-size:11.5px;margin-bottom:10px}
+  .tag{display:inline-block;border:1px solid var(--edge-lo);padding:1px 6px;margin-right:5px;color:var(--green)}
+  .summary{background:#10103a;border-left:3px solid var(--amber);padding:9px 12px;margin-bottom:12px}
+  h3{color:var(--green);font-size:13px;letter-spacing:2px;margin:14px 0 6px;
+    border-bottom:1px solid var(--edge-lo);padding-bottom:3px}
+  ul{margin:0;padding-left:20px}
+  li{margin-bottom:6px}
+  .caution{border:1px solid var(--red);background:#2a0e14;padding:9px 12px;margin-top:12px;color:#ffc9c9}
+  .caution b{color:var(--red)}
+  code{background:#05051a;border:1px solid var(--edge-lo);padding:0 4px;color:var(--green)}
+  button.back{background:var(--panel2);border:1px solid var(--edge);color:var(--amber);
+    font:inherit;padding:4px 12px;cursor:pointer;margin-bottom:12px}
+  button.back:hover{background:var(--edge);color:#07071e}
+  footer{border-top:1px solid var(--edge-lo);padding:9px 16px;color:var(--dim);font-size:11.5px}
+  .empty{color:var(--dim);padding:20px 0}
+  .demo{background:#05051a;border:1px solid var(--edge-lo);padding:10px;margin-top:8px}
+  .demo input{background:#0e0e34;border:1px solid var(--edge-lo);color:var(--green);font:inherit;padding:4px 7px}
+  .demo output{display:block;margin-top:7px;color:var(--amber);white-space:pre-wrap}
+</style>
+</head>
+<body>
+<div class="frame">
+  <header>
+    <h1>UFOPAEDIA</h1>
+    <div class="sub">SOFTWARE PROTECTION &amp; THE ARCHIVED CRACK SCENE · <span id="count"></span> ENTRIES</div>
+  </header>
+  <div class="bar">
+    <input type="search" id="q" placeholder="SEARCH ENTRIES, FACTS AND SOURCES…" aria-label="Search the UFOpaedia">
+  </div>
+  <div class="layout">
+    <nav id="nav"></nav>
+    <main id="main"></main>
+  </div>
+  <footer>
+    Every entry is graded and sourced. <b>Historical and technical documentation only</b> — this
+    encyclopedia describes how protection schemes and the sites that indexed their defeats worked, and
+    deliberately contains no keys, no serials and no working keygen for any real product.
+  </footer>
+</div>
+
+<script>
+/* ============================================================================
+   UFOPAEDIA — data
+   ----------------------------------------------------------------------------
+   Entry shape mirrors the Intelligence Lecture Hall's `Pc` records so the same
+   editorial bar applies: id, title, period, location, confidence, summary,
+   facts[], sourceLinks[], caution.
+
+   Confidence vocabulary (same grading discipline as the lecture hall):
+     "Primary capture"  — checked against an archived copy of the thing itself
+     "Primary artifact" — derived from bytes in this repository
+     "Secondary"        — reported by others, not independently verifiable here
+   ========================================================================== */
+const ENTRIES = [
+
+/* ---------------------------------------------------------------- SITES --- */
+{
+  id:"astalavista-box-sk", cat:"ARCHIVED SITES",
+  title:"astalavista.box.sk — the index, not the archive",
+  period:"1994 (claimed) · first capture 10 Dec 1997 · dormant by ~2007",
+  location:"Slovakia (napri.sk) · .box.sk free-subdomain handler",
+  confidence:"Primary capture",
+  summary:
+    "The search engine everyone remembers as the front door to the crack scene. It is worth reading the "+
+    "earliest archived copy rather than the retellings, because the primary capture contradicts several "+
+    "widely-repeated claims about who ran it and where. Crucially, astalavista hosted almost nothing: it was "+
+    "an index of other people's sites, which is why it decayed rather than being shut down.",
+  facts:[
+    "The 10 December 1997 capture describes itself, in its own words, as a \u201csearch engine for hack/crack/phreakin' stuff\u201d and states it is \u201ccurrently \u2026 used by about 60000 people daily.\u201d",
+    "Attribution from the page footer, not from later summaries: \u201cASTALAVISTA.BOX.SK search engine is (c) by Marek Bednar\u201d, contact bednar@napri.sk, with \u201cCGI scripts hosted by\u201d napri.sk \u2014 a Slovak host. Popular retellings that credit a different founder and call the hosting Swiss are not supported by the capture.",
+    "It ran a crawler: the 1997 page links to a live \u201clink database statistics\u201d endpoint at /cgi-bin/marek/robot/robotstat, and to an /add.html page for submitting your own site. This was an ordinary web index pointed at an unusual corpus.",
+    "The architecture explains the decline. Because it indexed rather than hosted, its usefulness was a function of its targets' survival; as those were taken down through the 2000s the results thinned out, and no single takedown could kill \u2014 or save \u2014 the index itself.",
+    "The Wayback record is dense from 1997 through the 2000s (captures at least monthly in 1998\u20132000), which makes it one of the better-documented sites of the era.",
+    "The name is a double pun \u2014 on AltaVista, the dominant search engine of the moment, and on \u201cHasta la vista, baby.\u201d",
+    "A security-branded successor at astalavista.com persisted separately and was itself defaced in June 2009; it never recovered the original's reach."
+  ],
+  sourceLinks:[
+    ["Wayback \u2014 astalavista.box.sk, 10 Dec 1997 (earliest capture)","https://web.archive.org/web/19971210063410/http://astalavista.box.sk:80/"],
+    ["Wayback CDX \u2014 full capture index for astalavista.box.sk","http://web.archive.org/cdx/search/cdx?url=astalavista.box.sk&output=json&limit=40"],
+    ["Wikiwand \u2014 Astalavista.box.sk (secondary summary)","https://www.wikiwand.com/en/Astalavista.box.sk"]
+  ],
+  caution:
+    "The 1994 founding date is repeated everywhere but the Wayback record begins only in December 1997; "+
+    "treat 1994 as claimed, not demonstrated. The \u201c60000 people daily\u201d figure is the site's own unaudited "+
+    "marketing copy. Founder and hosting details here follow the capture and contradict several secondary "+
+    "sources \u2014 that disagreement is recorded deliberately rather than resolved."
+},
+{
+  id:"cracks-to", cat:"ARCHIVED SITES",
+  title:"cracks.to — a famous name that the archive shows was a parked domain",
+  period:"54 captures, 24 Mar 2004 \u2013 4 Oct 2016",
+  location:"domain squatted; sale contact on the porno.to domain",
+  confidence:"Primary capture",
+  summary:
+    "A cautionary entry, and the reason this encyclopedia checks captures instead of memories. cracks.to is "+
+    "frequently named alongside the real crack databases, but in the entire archived record it never appears "+
+    "as a working one. The first capture is a for-sale parking page.",
+  facts:[
+    "The earliest capture, 24 March 2004, carries the page title \u201ccracks.to is for sale!\u201d and the body text \u201ccracks.to is for sale by owner. Please send a mail to domainsale@porno.to to negotiate the price.\u201d",
+    "The remainder of that page is a single adult-affiliate banner linking to a deluxepass.com tracking URL \u2014 the standard monetisation of a parked, high-recall domain name.",
+    "The Wayback record holds 54 captures spanning 24 March 2004 to 4 October 2016; the archived history is one of domain speculation, not of a crack database.",
+    "The value being squatted was purely the string: \u201ccracks\u201d plus the fashionable .to (Tonga) ccTLD, which was marketed in that era as a permissive, offshore-feeling registry.",
+    "Method note: the failure mode this entry documents \u2014 a name everyone \u201cremembers\u201d that the record does not support \u2014 is exactly why each entry here is graded by what was actually checked."
+  ],
+  sourceLinks:[
+    ["Wayback \u2014 cracks.to, 24 Mar 2004 (earliest capture)","https://web.archive.org/web/20040324194824/http://cracks.to:80/"],
+    ["Wayback CDX \u2014 capture index for cracks.to","http://web.archive.org/cdx/search/cdx?url=cracks.to&output=json&limit=20"]
+  ],
+  caution:
+    "Absence of evidence is not evidence of absence: cracks.to may well have operated before March 2004, "+
+    "below the crawler's notice or behind robots.txt. What can be stated is narrower and is all that is "+
+    "stated here \u2014 no archived capture shows it functioning as a crack database."
+},
+{
+  id:"serials-ws", cat:"ARCHIVED SITES",
+  title:"serials.ws — the serial-number database as a search problem",
+  period:"captures from 10 Mar 2001 through the late 2000s",
+  location:".ws (Samoa) ccTLD, marketed as \u201cwebsite\u201d",
+  confidence:"Primary capture",
+  summary:
+    "Where astalavista indexed sites, the serial databases indexed strings: a title, a version, and a key to "+
+    "paste into a registration dialog. They are the purest expression of the weakness this encyclopedia is "+
+    "really about \u2014 a protection scheme whose secret is a short constant can be defeated by a lookup table, "+
+    "with no reverse engineering at all.",
+  facts:[
+    "Continuously captured from 10 March 2001 onwards, with at least annual Wayback coverage through 2008 \u2014 a materially longer verified run than cracks.to.",
+    "The model needs no crawler and no binary analysis: a submitted product name, version and key, stored as text and searched as text.",
+    "This is only possible against schemes with a small shared secret \u2014 a fixed key list, or a check function with no per-installation input. One leaked key works for every copy.",
+    "The countermeasures that eventually made such lists useless are the ones still in use: per-machine binding (hardware fingerprints), server-side activation, and signature-based licences where a key is a public-key signature and cannot be produced by knowing the checker.",
+    "The .ws ccTLD belongs to Samoa and was marketed internationally as standing for \u201cwebsite\u201d; like .to for cracks.to, the choice signalled distance from any single national registrar."
+  ],
+  sourceLinks:[
+    ["Wayback CDX \u2014 capture index for serials.ws","http://web.archive.org/cdx/search/cdx?url=serials.ws&output=json&limit=20"],
+    ["Wayback \u2014 serials.ws, 10 Mar 2001 (earliest capture)","https://web.archive.org/web/20010310071501/http://www.serials.ws:80/"]
+  ],
+  caution:
+    "Listed here for what its existence proves about protection design, not as a pointer to content. No keys "+
+    "are reproduced in this encyclopedia. The capture index is cited; the indexed material is not."
+},
+
+/* ------------------------------------------------- PROTECTION MECHANISMS --- */
+{
+  id:"serial-check-classes", cat:"PROTECTION MECHANISMS",
+  title:"Why serial schemes fell: the three structural classes",
+  period:"c. 1985\u20132005",
+  location:"desktop software registration dialogs",
+  confidence:"Secondary",
+  summary:
+    "Registration schemes of the era divide into three structures, and the division \u2014 not the arithmetic \u2014 "+
+    "decides what an attacker has to do. Understanding this is what makes a lookup-table site like serials.ws "+
+    "and a keygen a different kind of event.",
+  facts:[
+    "CLASS 1 \u2014 fixed key list. The program compares the input against constants compiled into it. Defeated by reading strings out of the binary; one key serves every copy. This is what filled the serial databases.",
+    "CLASS 2 \u2014 self-checking key. The program computes a predicate over the key alone (a checksum, a check digit, a structural rule) and accepts anything satisfying it. Nothing is stored to compare against, so there is no key to extract \u2014 but the checker IS the specification, so anyone who reads it can enumerate valid keys. This is the class that produces keygens.",
+    "CLASS 3 \u2014 keyed to per-copy data. The predicate takes a name, machine fingerprint or installation ID as well as the key. A single key no longer transfers, which kills the lookup-table model but not the keygen: if the check is still a symmetric function the attacker can read, it can still be inverted.",
+    "The structural fix is asymmetry. If the key is a signature under a private key the vendor holds, reading the checker reveals only the public key, and generation requires a secret the binary does not contain. Attacks then move from the mathematics to the code \u2014 patching the branch that tests the result.",
+    "Which is why the packers in this encyclopedia matter: once inverting the check stops being feasible, hiding and hardening the code that performs it becomes the whole game. Compression and anti-debugging are protection's second line, not its first.",
+    "The consistent historical lesson is that obscurity of the ALGORITHM bought very little, while asymmetry of the SECRET bought a great deal \u2014 the same conclusion cryptography reached with Kerckhoffs's principle a century earlier."
+  ],
+  sourceLinks:[
+    ["Kerckhoffs's principle \u2014 the security of a system must not depend on the secrecy of its design","https://en.wikipedia.org/wiki/Kerckhoffs%27s_principle"],
+    ["This repository \u2014 docs/exe-protection-deep-dive.md","https://github.com/shdwelf/Html5/blob/main/docs/exe-protection-deep-dive.md"]
+  ],
+  caution:
+    "This is a taxonomy of published technique classes, written from the defender's side. It deliberately "+
+    "contains no algorithm for any real product and no worked key generator. The demonstration in the "+
+    "\u201cCheck-digit demonstrator\u201d entry uses an invented scheme that guards nothing."
+},
+{
+  id:"checkdigit-demo", cat:"PROTECTION MECHANISMS",
+  title:"Check-digit demonstrator — why a Class 2 checker is its own specification",
+  period:"illustrative",
+  location:"runs in this page",
+  confidence:"Primary artifact",
+  summary:
+    "The claim that \u201cthe checker is the specification\u201d is the kind of thing this project insists on computing "+
+    "rather than asserting. Below is a deliberately invented Class 2 scheme that protects nothing. Read its "+
+    "validator, and you can produce valid inputs for it without ever having seen one \u2014 which is the entire "+
+    "argument, demonstrated on something harmless.",
+  facts:[
+    "The invented rule: a code is five groups of four uppercase hex digits. It is accepted when the sum of all twenty nibbles, taken modulo 251, equals the value of the final group modulo 251.",
+    "Nothing is stored and nothing is compared: there is no key list inside the validator to extract, which is exactly why Class 2 schemes felt stronger than Class 1 to their authors.",
+    "But the rule is total and public once read. Fix the first four groups arbitrarily, compute the required residue, and solve for a final group \u2014 generation is the validator run backwards, and costs the same as validation.",
+    "That asymmetry-of-effort is the thing that does not exist here and must exist in a real scheme: verifying and forging are the same amount of work, so hiding the code is the only remaining defence, and hiding code is what packers do.",
+    "The scheme below is invented for this page. It is not a simplification of any shipped product's algorithm, and a correct code for it unlocks nothing."
+  ],
+  sourceLinks:[
+    ["Luhn algorithm \u2014 the canonical published check-digit scheme","https://en.wikipedia.org/wiki/Luhn_algorithm"]
+  ],
+  caution:
+    "Illustrative only. This scheme guards no software, and is included to make a structural point about "+
+    "verification-versus-generation cost that would otherwise be a bare assertion.",
+  demo:"checkdigit"
+},
+{
+  id:"anti-debug", cat:"PROTECTION MECHANISMS",
+  title:"Anti-debugging on DOS: the interrupt-vector era",
+  period:"c. 1988\u20131996",
+  location:"real-mode x86",
+  confidence:"Primary artifact",
+  summary:
+    "Before OS-level debug APIs, both protection and malware defended themselves with the same handful of "+
+    "real-mode tricks, all of which are visible as byte patterns. This repository's scanner detects them in "+
+    "the corpus; the techniques are catalogued here because they are the ancestor of every modern anti-analysis "+
+    "check.",
+  facts:[
+    "INT 1 (single-step) and INT 3 (breakpoint) vectors live at fixed low memory, 0000:0004 and 0000:000C. Code that overwrites them is taking the debugger's own signalling path away from it.",
+    "The trap flag in FLAGS (bit 8) can be read by pushing flags and popping into a register; finding it set means something is single-stepping the process.",
+    "The prefetch-queue trick exploits the 8086 fetching ahead: self-modifying code that patches an instruction already in the queue behaves differently under a debugger, which forces a re-fetch.",
+    "Timing checks read the 8253 PIT or the BIOS tick counter at 0040:006C across a short region; human-speed stepping shows up as an impossible elapsed time.",
+    "These are all detectable statically because they must touch known addresses or known instructions \u2014 the same property that makes the antiDebugScan operation in this repository's CyberChef kitchen possible.",
+    "The modern descendants are structurally identical: IsDebuggerPresent, the PEB BeingDebugged byte, RDTSC deltas and exception-handler tricks all still rely on observable side-effects of being observed."
+  ],
+  sourceLinks:[
+    ["This repository \u2014 antiDebugScan operation and corpus findings","https://github.com/shdwelf/Html5/blob/main/docs/exe-protection-deep-dive.md"],
+    ["Ralf Brown's Interrupt List \u2014 the primary reference for DOS interrupt behaviour","https://www.cs.cmu.edu/~ralf/files.html"]
+  ],
+  caution:
+    "The list is of techniques observed in this repository's sample corpus and in published references; it is "+
+    "not exhaustive, and the corpus is small and skewed towards shareware utilities."
+},
+
+/* ------------------------------------------------------------- PACKERS --- */
+{
+  id:"packer-lzexe", cat:"EXECUTABLE PACKERS",
+  title:"LZEXE 0.91 — the packer that taught this project to distrust one sample",
+  period:"Fabrice Bellard, 1989\u201390",
+  location:"13 samples in this repository's corpus",
+  confidence:"Primary artifact",
+  summary:
+    "The first and most widespread DOS executable compressor, written by Fabrice Bellard before FFmpeg and "+
+    "QEMU. Its place here is earned less by the format than by the bug it exposed in this repository's own "+
+    "unpacker \u2014 a textbook demonstration that a decoder validated against one file is not validated at all.",
+  facts:[
+    "LZEXE prepends a decompression stub and rewrites the MZ header so the entry point lands in the stub; the original header fields are stashed in eight words in the stub's data area.",
+    "The stub data area sits at image offset e_cs<<4, i.e. file offset (e_cparhdr<<4) + (e_cs<<4), and e_ip is 0x000E \u2014 pointing just past those eight words. The relocation table follows at stub + 0x158.",
+    "The bug: this repository's unpacker had 0x5B30 written into it as a constant. That is exactly e_cs<<4 for ATR.EXE, the single file it had ever been run against. It worked perfectly on that file and silently corrupted every other one.",
+    "It went unnoticed because there was only ever one sample. Growing the corpus from 1 file to 13 is what surfaced it \u2014 five distinct stub offsets are now exercised: 0x5B30, 0x1E50, 0x2050, 0xC660 and 0xE020.",
+    "A second real subtlety, recorded so it is not rediscovered: the lazy flag-word reload must happen the moment the sixteenth bit is dispensed, before the movsb, or output desynchronises deep into the stream.",
+    "Verified vectors are pinned in samples/exeprotect/VECTORS.md \u2014 for example KEEN1.EXE unpacks to 99 972 bytes with 17 relocations, NUKEM2.EXE to 114 124 bytes with 949."
+  ],
+  sourceLinks:[
+    ["This repository \u2014 tools/exeprotect.py (unpacker and verifier)","https://github.com/shdwelf/Html5/blob/main/tools/exeprotect.py"],
+    ["This repository \u2014 samples/exeprotect/VECTORS.md (golden vectors)","https://github.com/shdwelf/Html5/blob/main/samples/exeprotect/VECTORS.md"],
+    ["Fabrice Bellard \u2014 author's home page","https://bellard.org/"]
+  ],
+  caution:
+    "LZEXE 0.90 uses a different stub and relocation layout and is NOT decoded by this repository's tooling \u2014 "+
+    "detection only. That gap is recorded rather than papered over."
+},
+{
+  id:"packer-pklite", cat:"EXECUTABLE PACKERS",
+  title:"PKLITE — a packer that encrypts its own decompressor",
+  period:"PKWARE, 1990\u201393",
+  location:"derived from Disavr3.exe in this repository's corpus",
+  confidence:"Primary artifact",
+  summary:
+    "PKWARE's executable compressor, and a genuine step up from LZEXE: it does not merely compress, it hides "+
+    "the code that decompresses. Reconstructing it here produced the single best lesson in the collection "+
+    "about ciphers that fail silently \u2014 two separate mistakes were made, and neither produced a wrong-looking "+
+    "result.",
+  facts:[
+    "Only a short preamble of the stub is plaintext. It ends in a backwards running-XOR chain \u2014 std, then lodsw / xchg ax,dx / xor ax,dx / stosw \u2014 that decrypts the rest of the stub in place, 216 words for the sample studied.",
+    "The chain is keyed on the previous CIPHERTEXT word, which makes it self-synchronising: only the FIRST word depends on the initial key. That is the trap, because it means a wrong key is almost invisible.",
+    "Demonstrated, not asserted: the reconstruction first picked the wrong mov dx,imm16 \u2014 the int 21h/AH=9 \u201cnot enough memory\u201d message pointer 0x0118 instead of the real key 0x0317 \u2014 and the file still unpacked to a byte-identical result, sha256 0a3e081f\u2026, because the one corrupted word lay outside the token stream.",
+    "A second silent trap: PKLITE sets cs=0xFFF0 and relies on 20-bit segment wraparound, so the stub's segment base sits 0x100 BELOW the load image. Decrypting at the unadjusted address shifted the whole window by 0x100 and \u2014 by the self-synchronising property \u2014 still disassembled as clean, plausible 8086 code.",
+    "What finally pinned the geometry was computable, not visual: the decrypt loop's own exit branch must land exactly on the first byte of the region it just decrypted, and with the corrected base it does, to the byte.",
+    "The compressed stream is obfuscated too \u2014 every literal byte is XORed with the LIVE BIT-BUFFER COUNTER, a value existing only inside the decoder's state machine, so a decoder that mismodels the counter emits garbage literals while matches keep working.",
+    "Verification without a reference implementation: over every paragraph-aligned candidate start offset, exactly ONE decodes to a clean end-of-stream marker, and the output contains strings absent from the packed file \u2014 \u201cAtmel AVR Disassembler v1.21\u201d and a Borland C++ banner."
+  ],
+  sourceLinks:[
+    ["This repository \u2014 tools/pklite.py (stub decryption and v1.15 decoder)","https://github.com/shdwelf/Html5/blob/main/tools/pklite.py"],
+    ["This repository \u2014 docs/exe-compressors-and-scumm.md","https://github.com/shdwelf/Html5/blob/main/docs/exe-compressors-and-scumm.md"],
+    ["PKWARE \u2014 company history","https://www.pkware.com/about"]
+  ],
+  caution:
+    "Coverage is PKLITE v1.15 \u201cextra compression\u201d only. v1.20 decrypts but its decompressor layout differs and "+
+    "is NOT implemented \u2014 the tool fails loudly rather than emitting garbage. Non-\u201cextra\u201d mode and "+
+    "relocation-table rebuild are also unimplemented; the unpacker emits a load module, not a runnable EXE."
+},
+
+/* ---------------------------------------------------------- CASE FILES --- */
+{
+  id:"case-scumm", cat:"CASE FILES",
+  title:"The demo that shipped the whole game — LucasArts SCUMM, two XOR layers",
+  period:"SCUMM v5 · Fate of Atlantis demo dated 1 Sept 1994",
+  location:"samples/archive/games/PLAYFATE.zip",
+  confidence:"Primary artifact",
+  summary:
+    "A second cipher that fails quietly, and a genuinely accidental disclosure. LucasArts obfuscated its game "+
+    "resources with a single-byte XOR, and its room names with a second, different one. Break only the outer "+
+    "layer and everything parses perfectly while every name is garbage \u2014 right structure, wrong content, no "+
+    "error anywhere.",
+  facts:[
+    "SCUMM v5 ships an index (.000) and a data file (.001), each XORed whole with one constant byte \u2014 0x69 for Fate of Atlantis. The key is recoverable from any known block tag, so this is obfuscation, not encryption.",
+    "The reconstruction recovers the key from the root tag rather than hard-coding it, and requires all four tag bytes to agree on the same candidate before accepting it.",
+    "After the XOR both files are IFF-like: a 4-byte ASCII tag then a BIG-endian u32 size that includes its own 8-byte header. Containers are LECF, LFLF and ROOM; the index root is RNAM.",
+    "The second layer: room NAMES inside RNAM carry a further XOR of 0xFF. Strip only the 0x69 and the block tree walks cleanly \u2014 sizes all check \u2014 while the names read as mojibake.",
+    "The disclosure: the demo physically ships 10 rooms, but its index carries the room-name table for the ENTIRE retail game, 96 entries \u2014 including the Barnett College suite where Indiana Jones and the Fate of Atlantis opens (col-offi, col-hall, col-base, col-atti, col-stor, col-arch, col-catr) and the ending (end-volc, end-v2, endscene).",
+    "Names of rooms stripped from the demo build keep a leading semicolon \u2014 a source-level comment marker that survived into a shipped retail artifact.",
+    "Treated as a hypothesis and checked rather than asserted: the set of rooms in the LOFF directory must equal the set of names WITHOUT the semicolon. It matches exactly, 10 for 10, and the LFLF block count agrees."
+  ],
+  sourceLinks:[
+    ["This repository \u2014 tools/scumm.py (key recovery, container walk, verification)","https://github.com/shdwelf/Html5/blob/main/tools/scumm.py"],
+    ["Internet Archive \u2014 Fate of Atlantis playable demo (PLAYFATE)","https://archive.org/details/msdos_PLAYFATE_shareware"],
+    ["ScummVM wiki \u2014 the SCUMM engine and its resource formats","https://wiki.scummvm.org/index.php/SCUMM"]
+  ],
+  caution:
+    "This is one demo of one game. The semicolon convention is verified for that build and must not be assumed "+
+    "across the SCUMM catalogue. The room table's final entry repeats the last room number with an empty name; "+
+    "treating that as a terminator is why the count is 96 and not 97."
+},
+{
+  id:"case-xcom", cat:"CASE FILES",
+  title:"X-COM: Terror From The Deep demo disk — and an honest null result",
+  period:"MicroProse / Mythos Games · PC Gamer cover disk, 1995",
+  location:"samples/archive/games/xcom-tftd-demo.ima",
+  confidence:"Primary artifact",
+  summary:
+    "The namesake. X-COM's in-game UFOpaedia is the model for this encyclopedia's structure \u2014 a browsable, "+
+    "cross-referenced research archive that grows as you learn things. The demo disk itself was searched for "+
+    "hidden content and nothing was found, which is recorded here as a result rather than quietly dropped.",
+  facts:[
+    "Unlike everything else in this corpus the artifact is a raw 1.44 MB floppy image, not an archive: 1 474 560 bytes = 80 cylinders \u00d7 2 heads \u00d7 18 sectors \u00d7 512.",
+    "It parses as FAT12 with OEM label \u201cIBM  3.3\u201d, 512-byte sectors, 1 sector per cluster, 2 FATs of 9 sectors, a 224-entry root directory and boot signature AA55.",
+    "Contents: INSTALL.BAT, DISKSIZE.EXE, PKUNZIP.EXE, README.TXT and TFTD.ZIP (1 128 810 bytes) \u2014 the demo is a ZIP plus PKUNZIP, so PKWARE tooling ships as the installer for a game whose payload this encyclopedia also documents.",
+    "Inside, TFTDEXE/TACTICAL.EXE is a 32-bit DOS/4GW LE image (LE header at 0x2998, Watcom C/C++32, \u201cCopyright 1995 Microprose\u201d), with DOS4GW.EXE alongside and real-mode .COM sound drivers.",
+    "NULL RESULT, stated plainly: a string scan across TACTICAL.EXE for hidden credits, developer names and debug or cheat text returned only the Watcom runtime banners and the MicroProse copyright. No easter egg was found.",
+    "That is a \u201cnot found with these tools\u201d, not a \u201cnot there\u201d \u2014 the 32-bit LE body is outside the reach of this repository's real-mode-only decompiler, so the interesting part of the binary was never actually read."
+  ],
+  sourceLinks:[
+    ["Internet Archive \u2014 X-COM: Terror From The Deep, PC Gamer demo disk image","https://archive.org/details/PCGamerTerrorFromTheDeepDemo"],
+    ["UFOpaedia.org \u2014 the community reference the in-game encyclopedia inspired","https://www.ufopaedia.org/"],
+    ["This repository \u2014 docs/exe-compressors-and-scumm.md \u00a72","https://github.com/shdwelf/Html5/blob/main/docs/exe-compressors-and-scumm.md"]
+  ],
+  caution:
+    "The absence of easter eggs is a negative finding limited by the toolchain, and should not be cited as "+
+    "evidence that the game contains none."
+},
+{
+  id:"case-ghost", cat:"CASE FILES",
+  title:"Norton Ghost's cipher — and two reverse engineers who disagree",
+  period:"Binary Research 1995 \u00b7 Symantec from 1998 \u00b7 analysed at Ghost 11.5.1",
+  location:"docs/norton-ghost-deep-dive.md",
+  confidence:"Secondary",
+  summary:
+    "Included because it is the one entry in this collection where the sources contradict each other and the "+
+    "contradiction cannot be resolved from here. One independent reimplementation documents Ghost's image "+
+    "encryption in full; another, working from the same product version, states flatly that it is unbroken.",
+  facts:[
+    "The .gho container is well agreed: a 512-byte header beginning with magic 0xEFFE, a compression byte (0 none, 2 FastLZ \u201cZ1\u201d, 3\u20139 zlib), and an encrypted flag at bit 1 of offset 12.",
+    "Ghost's FastLZ variant is attributed to sub_4DDD70 in Ghost 11.5.1 via IDA. Its distinguishing quirk: a 4096-entry hash table of output positions pre-seeded with the ASCII text \u201c123456789012345678\u201d, and match tokens that index that TABLE rather than encoding a displacement.",
+    "The disputed part \u2014 per one Go implementation, the cipher is CRC-16/ARC (polynomial 0xA001) with the password folded through the same CRC; each byte is XORed with the low byte of the running state, which is then updated with the PLAINTEXT byte. That is an autokey construction with only 16 bits of total state.",
+    "If that description is right, the consequence is severe and testable: passphrase entropy is discarded down to 16 bits. A reimplementation in this repository confirms the arithmetic folds any passphrase to two bytes \u2014 a 28-character passphrase reduces to 0x9814, and a 2-byte known-plaintext crib leaves a single surviving candidate even for a 45-character passphrase.",
+    "The contradiction \u2014 an independent Rust extractor for the same format, reverse engineered from the same Ghost 11.5.1, refuses encrypted images outright and states that \u201cthe Ghost encryption format is not (yet) reverse-engineered.\u201d",
+    "No genuine encrypted .gho was available to settle it. Everything above was validated against synthetic images built by this repository's own builder, which means it tests self-consistency and not fidelity to Symantec's product."
+  ],
+  sourceLinks:[
+    ["nyarime/gho \u2014 Go parser, the source of the cipher description","https://github.com/nyarime/gho"],
+    ["tomeq82/gho \u2014 Rust extractor, which declares the encryption unbroken","https://github.com/tomeq82/gho"],
+    ["This repository \u2014 docs/norton-ghost-deep-dive.md","https://github.com/shdwelf/Html5/blob/main/docs/norton-ghost-deep-dive.md"]
+  ],
+  caution:
+    "SINGLE-SOURCED AND CONTESTED. The 16-bit-state finding follows from one reverse engineer's description, "+
+    "reimplemented here; a second reverse engineer of the same product says the format is not understood. "+
+    "Without a real encrypted image this entry records a disagreement, not a conclusion, and the weak-cipher "+
+    "claim should not be repeated as established fact."
+},
+
+/* ------------------------------------------------------- TERMINOLOGY --- */
+{
+  id:"terminology", cat:"TERMINOLOGY",
+  title:"Field glossary — crack, keygen, patch, loader, NFO",
+  period:"c. 1985\u2013present",
+  location:"scene usage",
+  confidence:"Secondary",
+  summary:
+    "The vocabulary is precise and the distinctions are technical, not decorative. Each term names a different "+
+    "point of attack, and which one is available says more about the protection's design than about the "+
+    "attacker's skill.",
+  facts:[
+    "CRACK \u2014 a modified copy of the executable with the protection check removed or its branch inverted. Attacks the code. Defeated by integrity checking, and complicated by packers, which is why the two topics sit together in this encyclopedia.",
+    "KEYGEN \u2014 a program that produces valid keys by implementing the vendor's own check function in reverse. Attacks the algorithm, and is only possible against the symmetric Class 2 and Class 3 schemes; genuinely impossible against a signature-based key without the private key.",
+    "PATCH \u2014 a small program that applies a crack to an already-installed file at byte offsets, rather than shipping the whole modified executable. A distribution-size optimisation from the floppy and dial-up era.",
+    "LOADER \u2014 launches the target and modifies it in memory at run time, leaving the file on disk untouched. The response to on-disk integrity checks, and the direct ancestor of modern runtime patching.",
+    "NFO \u2014 the plain-text file accompanying a release, carrying ASCII art, group credits, install notes and often a statement of intent. The .nfo extension and the elaborate ANSI/ASCII art tradition are among the scene's most durable cultural artifacts.",
+    "The progression crack \u2192 patch \u2192 loader tracks defence, not fashion: each answers a countermeasure the previous one provoked."
+  ],
+  sourceLinks:[
+    ["Wikipedia \u2014 Warez scene","https://en.wikipedia.org/wiki/Warez_scene"],
+    ["Wikipedia \u2014 .nfo files and scene release conventions","https://en.wikipedia.org/wiki/.nfo"]
+  ],
+  caution:
+    "Definitional and historical. Usage varied between groups and across decades; these are the common "+
+    "meanings, not a standard, and no group's own documentation was treated as authoritative."
+}
+];
+
+const CATEGORIES = ["ARCHIVED SITES","PROTECTION MECHANISMS","EXECUTABLE PACKERS","CASE FILES","TERMINOLOGY"];
+
+/* --------------------------------------------------------------- the demo */
+function checkDigitValid(code){
+  const groups = String(code).toUpperCase().trim().split(/[\s-]+/).filter(Boolean);
+  if(groups.length!==5) return {ok:false,why:"need 5 groups of 4 hex digits"};
+  if(!groups.every(g=>/^[0-9A-F]{4}$/.test(g))) return {ok:false,why:"each group must be exactly 4 hex digits"};
+  let sum=0;
+  for(const g of groups) for(const ch of g) sum += parseInt(ch,16);
+  const want = parseInt(groups[4],16) % 251;
+  return {ok: sum % 251 === want, why:"nibble sum "+sum+" mod 251 = "+(sum%251)+", final group mod 251 = "+want};
+}
+/* Generation is the validator solved backwards — the whole point of the entry. */
+function checkDigitMake(prefix4){
+  const gs = prefix4 && prefix4.length===4 ? prefix4.slice() : ["DEAD","BEEF","0000","1111"];
+  let base=0; for(const g of gs) for(const ch of g) base += parseInt(ch,16);
+  for(let v=0; v<0x10000; v++){
+    const last = v.toString(16).toUpperCase().padStart(4,"0");
+    let s=base; for(const ch of last) s += parseInt(ch,16);
+    if(s % 251 === v % 251) return gs.concat([last]).join("-");
+  }
+  return null;
+}
+
+/* ------------------------------------------------------------------ view */
+const $ = s => document.querySelector(s);
+let state = {cat:CATEGORIES[0], id:null, q:""};
+
+function matches(e,q){
+  if(!q) return true;
+  const hay = (e.title+" "+e.summary+" "+e.facts.join(" ")+" "+e.caution+" "+
+               e.sourceLinks.map(l=>l[0]+" "+l[1]).join(" ")+" "+e.cat).toLowerCase();
+  return q.toLowerCase().split(/\s+/).filter(Boolean).every(t=>hay.includes(t));
+}
+function renderNav(){
+  const nav=$("#nav"); nav.innerHTML="";
+  for(const c of CATEGORIES){
+    const n = ENTRIES.filter(e=>e.cat===c && matches(e,state.q)).length;
+    const b=document.createElement("button");
+    b.className="cat"; b.type="button";
+    b.setAttribute("aria-current", String(c===state.cat && !state.id));
+    b.innerHTML = c + "<small>"+n+" entr"+(n===1?"y":"ies")+"</small>";
+    b.onclick=()=>{state.cat=c;state.id=null;render();};
+    nav.appendChild(b);
+  }
+}
+function renderList(){
+  const list = ENTRIES.filter(e=>e.cat===state.cat && matches(e,state.q));
+  if(!list.length) return '<div class="empty">NO ENTRIES MATCH THE CURRENT FILTER.</div>';
+  return '<h2>'+state.cat+'</h2><div class="list">'+list.map(e=>
+    '<div class="item" data-id="'+e.id+'" role="button" tabindex="0"><b>'+esc(e.title)+'</b>'+
+    '<div class="meta">'+esc(e.period)+' &middot; '+esc(e.confidence)+'</div></div>').join("")+'</div>';
+}
+function renderEntry(e){
+  let h='<button class="back" type="button" id="back">&#9664; BACK TO '+esc(e.cat)+'</button>';
+  h+='<h2>'+esc(e.title)+'</h2>';
+  h+='<div class="tags"><span class="tag">'+esc(e.confidence)+'</span>'+esc(e.period)+' &middot; '+esc(e.location)+'</div>';
+  h+='<div class="summary">'+esc(e.summary)+'</div>';
+  h+='<h3>FINDINGS</h3><ul>'+e.facts.map(f=>'<li>'+esc(f)+'</li>').join("")+'</ul>';
+  if(e.demo==="checkdigit"){
+    h+='<h3>DEMONSTRATOR</h3><div class="demo">'+
+       '<label>CODE <input id="cd" size="26" value="DEAD-BEEF-0000-1111-00A3"></label> '+
+       '<button type="button" id="cdCheck">VALIDATE</button> '+
+       '<button type="button" id="cdMake">GENERATE</button>'+
+       '<output id="cdOut"></output></div>';
+  }
+  h+='<h3>SOURCES</h3><ul>'+e.sourceLinks.map(l=>
+      '<li><a href="'+esc(l[1])+'" target="_blank" rel="noopener noreferrer">'+esc(l[0])+'</a></li>').join("")+'</ul>';
+  h+='<div class="caution"><b>CAUTION &mdash;</b> '+esc(e.caution)+'</div>';
+  return h;
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+function render(){
+  $("#count").textContent = ENTRIES.length;
+  renderNav();
+  const main=$("#main");
+  const entry = state.id ? ENTRIES.find(e=>e.id===state.id) : null;
+  main.innerHTML = entry ? renderEntry(entry) : renderList();
+  if(entry){
+    $("#back").onclick=()=>{state.id=null;render();};
+    if(entry.demo==="checkdigit"){
+      $("#cdCheck").onclick=()=>{
+        const r=checkDigitValid($("#cd").value);
+        $("#cdOut").textContent=(r.ok?"ACCEPTED \u2014 ":"REJECTED \u2014 ")+r.why;
+      };
+      $("#cdMake").onclick=()=>{
+        const code=checkDigitMake(["DEAD","BEEF","0000","1111"]);
+        $("#cd").value=code;
+        $("#cdOut").textContent="GENERATED "+code+" \u2014 produced by solving the validator backwards, not by searching a list.";
+      };
+    }
+  } else {
+    main.querySelectorAll(".item").forEach(el=>{
+      const go=()=>{state.id=el.dataset.id;render();window.scrollTo(0,0);};
+      el.onclick=go;
+      el.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();go();}};
+    });
+  }
+}
+$("#q").addEventListener("input",ev=>{
+  state.q=ev.target.value; state.id=null;
+  const withHits = CATEGORIES.filter(c=>ENTRIES.some(e=>e.cat===c&&matches(e,state.q)));
+  if(withHits.length && !withHits.includes(state.cat)) state.cat=withHits[0];
+  render();
+});
+render();
+
+/* Exposed for the test harness, same pattern as the CyberChef kitchen. */
+window.UFOPAEDIA = {ENTRIES, CATEGORIES, checkDigitValid, checkDigitMake, matches};
+</script>
+</body>
+</html>

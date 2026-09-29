@@ -94,3 +94,56 @@ direct:https://fw.gl-inet.com/firmware/mt300n-v2/testing/openwrt-mt300n-v2-3.204
 # --- collection on archive.org has no Kirkpatrick items (checked 2026-09-29);
 # --- the DEMU mirror is the surviving copy.
 direct:https://archive.org/download/FNA102B_ZIP/FNA102B.ZIP kirkpatrick/FNA102B.ZIP 556030
+
+# ---------------------------------------------------------------- round 4: DOS game corpus
+# Shareware/demo episodes only — the episodes their publishers released for free
+# redistribution — fetched to run the repo's MZ toolchain (tools/exe_triage.py,
+# tools/decompile_mz.mjs) over real commercial-grade DOS protection and packing.
+# Sizes are archive.org's own `size` field for each file (fetch.py treats the
+# number as a +/-25% sanity band, not an equality).
+#
+# --- Apogee/id: Commander Keen 1 "Marooned on Mars" v1.31 shareware (1990).
+# --- item keen1-sw, md5 a10b60eb231fe18e6ddea20ffbf0dbdf.
+direct:https://archive.org/download/keen1-sw/keen1.zip games/keen1.zip 194029
+#
+# --- id Software: DOOM v1.9 shareware episode (1995). item doom1-sw1,
+# --- md5 03af3d6d8dfc2f009233ad3c520a614d. DOS/4GW-extended LE, not plain MZ.
+direct:https://archive.org/download/doom1-sw1/doom-sw.zip games/doom-sw.zip 2098949
+#
+# --- Raven/id: Heretic shareware v1.2 (1994). item ayers-software-repair-heretic,
+# --- md5 975a1f9c8eeb6e58c5f2d4326fdf5fa6.
+direct:https://archive.org/download/ayers-software-repair-heretic/heretic-sw.zip games/heretic-sw.zip 2884396
+#
+# --- Apogee: Duke Nukem II shareware (1993). item msdos_DUKE2_shareware,
+# --- md5 bc30f5520e452bac6866deb37ef918b2.
+direct:https://archive.org/download/msdos_DUKE2_shareware/DUKE2.zip games/DUKE2.zip 1030021
+#
+# --- 3D Realms: Duke Nukem 3D shareware v1.3d (1996), the 1998 repack.
+# --- item 3dduke13SW, md5 04e4ca70b8a2d59ed56c451c5c1d5d39. The member path
+# --- contains spaces, so the URL is percent-encoded (requests.txt is whitespace
+# --- split; a literal space would truncate the line).
+direct:https://archive.org/download/3dduke13SW/Files%2Fv1.3d%20%281998%20Repack%29%2F3dduke13SW.zip games/3dduke13SW.zip 5924374
+#
+# --- Sierra: Quest for Glory I "So You Want To Be A Hero" official demo (SCI).
+# --- item QuestForGlorySoYouWantToBeAHeroDemo, md5 b2d6d6434fda1c6fbee7b171b93755d0.
+direct:https://archive.org/download/QuestForGlorySoYouWantToBeAHeroDemo/qfg1demo.zip games/qfg1demo.zip 924891
+#
+# --- AcademySoft/Pajitnov-Pavlovsky-Gerasimov: the original 1986 IBM PC Tetris.
+# --- item msdos_Tetris_1986, md5 2e5546d57079e630d1f9ddc41ac43074. 15 KB: the
+# --- smallest thing in the corpus and the oldest.
+direct:https://archive.org/download/msdos_Tetris_1986/Tetris_1986.zip games/Tetris_1986.zip 15165
+
+# === round 5: X-COM demo disk + Indiana Jones point-and-click (SCUMM) ===
+#
+# --- MicroProse/Mythos Games: the X-COM demo disk. This is a raw 1.44 MB
+# --- floppy IMAGE (1474560 = 80 cyl x 2 heads x 18 sect x 512), cover-mounted
+# --- by PC Gamer, so it exercises the boot-sector/FAT12 path in
+# --- tools/decompile_boot.mjs as well as the MZ path. Item
+# --- PCGamerTerrorFromTheDeepDemo, md5 42b4033ba77e4819483f7955825c57c8.
+direct:https://archive.org/download/PCGamerTerrorFromTheDeepDemo/PCGamer-Terror-from-the-Deep-Demo.IMA games/xcom-tftd-demo.ima 1474560
+#
+# --- LucasArts: the official "Indiana Jones and the Fate of Atlantis" playable
+# --- demo (PLAYFATE). SCUMM v5. The game opens in Indy's office at Barnett
+# --- College, which is the scene this demo ships. Item msdos_PLAYFATE_shareware,
+# --- md5 f7ac8f2bdbb11b6ea5d23a667f26fcbc, 9 files in the zip.
+direct:https://archive.org/download/msdos_PLAYFATE_shareware/PLAYFATE.zip games/PLAYFATE.zip 671058

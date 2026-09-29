@@ -41,3 +41,12 @@ CACHED  glinet/openwrt-mt300n-v2-3.203-0805.bin  12583196 bytes  sha256 111faa8e
 FAIL  live/basiccard-download.htm  https://www.basiccard.zeitcontrol.de/download.htm  (URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.basiccard.zeitcontrol.de'. (_ssl.c:1000)>)
 FAIL  live/gl-inet-mt300n-v2-3.204-1112.bin  https://fw.gl-inet.com/firmware/mt300n-v2/testing/openwrt-mt300n-v2-3.204-1112.bin  (HTTP 404)
 CACHED  kirkpatrick/FNA102B.ZIP  556030 bytes  sha256 341271dbce5aa7ed  (matches PROVENANCE.md; not re-downloaded)
+CACHED  games/keen1.zip  194029 bytes  sha256 a823802afb03ab38  (matches PROVENANCE.md; not re-downloaded)
+CACHED  games/doom-sw.zip  2098949 bytes  sha256 dbc372ac5a2f8063  (matches PROVENANCE.md; not re-downloaded)
+CACHED  games/heretic-sw.zip  2884396 bytes  sha256 6e2128ca0d9c73d2  (matches PROVENANCE.md; not re-downloaded)
+CACHED  games/DUKE2.zip  1030021 bytes  sha256 b5d4a0bface1e90c  (matches PROVENANCE.md; not re-downloaded)
+CACHED  games/3dduke13SW.zip  5924374 bytes  sha256 c67efd179022bc6d  (matches PROVENANCE.md; not re-downloaded)
+CACHED  games/qfg1demo.zip  924891 bytes  sha256 cf8f2a8939d20b4c  (matches PROVENANCE.md; not re-downloaded)
+CACHED  games/Tetris_1986.zip  15165 bytes  sha256 b21423e88430f505  (matches PROVENANCE.md; not re-downloaded)
+OK    games/xcom-tftd-demo.ima  1474560 bytes  sha256 a442c4e0f3d719ef  direct fetch (no index digest; sha256 recorded)  application/octet-stream
+OK    games/PLAYFATE.zip  671058 bytes  sha256 e91d8c3e206fc098  direct fetch (no index digest; sha256 recorded)  application/zip  zip: 10 entries, 1140551 bytes unpacked, crc OK [PLAYFATE/PLAYFATE.EXE, PLAYFATE/SPEAKER.IMS, PLAYFATE/ADLIB.IMS, PLAYFATE/PLAYFATE.001, PLAYFATE/READ.ME, PLAYFATE/ROLAND.IMS]

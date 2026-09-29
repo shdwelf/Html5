@@ -40,9 +40,12 @@ function bootCyberChef() {
   return { dom, html, operations, run };
 }
 
-/** dr7 corpus: 99info.zip → ATR.EXE (LZEXE 0.91 packed), disavr121.zip → Disavr3.exe (PKLITE). */
-function corpusFile(zip: string, member: string): Buffer {
-  const zipBytes = new Uint8Array(readFileSync(path.resolve("samples/archive/dr7", zip)));
+/**
+ * dr7 corpus: 99info.zip → ATR.EXE (LZEXE 0.91 packed), disavr121.zip → Disavr3.exe (PKLITE).
+ * games corpus: keen1.zip → KEEN1.EXE, DUKE2.zip → DUKE2/NUKEM2.EXE (both LZEXE 0.91).
+ */
+function corpusFile(zip: string, member: string, dir = "samples/archive/dr7"): Buffer {
+  const zipBytes = new Uint8Array(readFileSync(path.resolve(dir, zip)));
   const entries = unzipSync(zipBytes);
   const key = Object.keys(entries).find((name) => name.toLowerCase() === member.toLowerCase());
   if (!key) throw new Error(`member ${member} not found in ${zip}`);
@@ -117,6 +120,155 @@ describe("CyberChef EXE protection deep dive", () => {
       expect(triage).toContain("relocations: 132");
       expect(triage).toContain("[0] 0000:0001");
       expect(triage).toContain("packer: unknown");
+    } finally {
+      kitchen.dom.window.close();
+    }
+  });
+
+  // Regression for the bug found by the DOS game corpus (docs/dos-game-disassembly.md
+  // §2): the stub data offset was hard-coded 0x5B30, which is only e_cs<<4 for
+  // ATR.EXE. Every other LZEXE 0.91 file read its stub info from the wrong bytes.
+  // These two samples have e_cs = 0xC66 and 0xE02, so they fail on the old code
+  // and pass only when the offset is derived from the header.
+  it.each([
+    {
+      name: "KEEN1.EXE (Commander Keen 1 v1.31, Apogee/id 1990)",
+      zip: "keen1.zip",
+      member: "KEEN1.EXE",
+      stubOff: 0xc660,
+      unpacked: 99972,
+      stream: 51158,
+      consumed: 50773,
+      literals: 21164,
+      relocs: 17,
+      exeLen: 100484,
+      exeSha: "d52d7b6bd9f25412ff40d0bece121f83d3c0aca87abd7d879c8219711b61ed70",
+    },
+    {
+      name: "NUKEM2.EXE (Duke Nukem II shareware, Apogee 1993)",
+      zip: "DUKE2.zip",
+      member: "DUKE2/NUKEM2.EXE",
+      stubOff: 0xe020,
+      unpacked: 114124,
+      stream: 58820,
+      consumed: 57370,
+      literals: 23618,
+      relocs: 949,
+      exeLen: 118220,
+      exeSha: "06589de60d40d85d5e97e0b9b635bfb7b84050355e63ac2bbee1176d2d4d8b0a",
+    },
+  ])("lzexeDecode derives the stub offset per file: $name", async (vector) => {
+    const kitchen = bootCyberChef();
+    try {
+      const packed = corpusFile(vector.zip, vector.member, "samples/archive/games");
+
+      // mzTriage must locate the stub from e_cs, not from a constant.
+      const triage = await kitchen.run("mzTriage", packed.toString("hex"));
+      expect(triage).toContain("packer: LZEXE 0.91");
+      expect(triage).toContain(`LZEXE stub data at image+0x${vector.stubOff.toString(16).toUpperCase()}`);
+      expect(triage).toContain(`stub reloc table decodes to ${vector.relocs} entries`);
+
+      const report = await kitchen.run("lzexeDecode", packed.toString("hex"));
+      expect(report).toContain(
+        `unpacked ${vector.unpacked} bytes (0x${vector.unpacked.toString(16).toUpperCase()}) from a ${vector.stream}-byte stream`,
+      );
+      expect(report).toContain(`stream consumed : ${vector.consumed} of ${vector.stream} bytes`);
+      expect(report).toContain(`literals        : ${vector.literals}`);
+      expect(report).toContain(`relocations     : ${vector.relocs}`);
+
+      // Byte-identical to tools/exeprotect.py, the independent Python
+      // implementation; see samples/exeprotect/VECTORS.md.
+      const exeHex = await kitchen.run("lzexeDecode", packed.toString("hex"), { mode: "exe" });
+      const exe = Buffer.from(exeHex, "hex");
+      expect(exe.length).toBe(vector.exeLen);
+      expect(sha256(exe)).toBe(vector.exeSha);
+
+      // The rebuilt original is a plain unpacked MZ again.
+      const rebuilt = await kitchen.run("mzTriage", exeHex);
+      expect(rebuilt).toContain(`relocations: ${vector.relocs}`);
+      expect(rebuilt).toContain("packer: unknown");
+    } finally {
+      kitchen.dom.window.close();
+    }
+  });
+
+  it("pkliteStub decrypts the self-decrypting stub and reads geometry from the operands", async () => {
+    const kitchen = bootCyberChef();
+    try {
+      const disavr = corpusFile("disavr121.zip", "Disavr3.exe");
+      const report = await kitchen.run("pkliteStub", disavr.toString("hex"));
+
+      expect(report).toContain("PKLITE v1.15 (version word 0x110F), extra compression");
+      expect(report).toContain("entry cs:ip = FFF0:0100");
+      // The key is the FIRST mov dx,imm16 (0x0317). The last one is the
+      // int 21h/AH=9 "not enough memory" message pointer (0x0118) — picking
+      // that corrupts exactly one word and still looks right, so pin it.
+      expect(report).toContain("initial chain key : 0x0317");
+      expect(report).not.toContain("0x0118");
+      expect(report).toContain("words decrypted   : 216");
+      expect(report).toContain("segment operand   : 0x2F6 -> image 0x1F6");
+      expect(report).toContain("decrypted window  : image 0x48..0x1F7");
+
+      // The decrypted stub must contain code the encrypted one does not:
+      // `mov word ptr [0x5C], 'PK'` (C7 06 5C 00 50 4B) and the register
+      // restore + retf that hands control to the unpacked program.
+      const stubHex = await kitchen.run("pkliteStub", disavr.toString("hex"), { mode: "stub" });
+      expect(stubHex).toContain("c7065c00504b");
+      expect(disavr.toString("hex")).not.toContain("c7065c00504b");
+      expect(Buffer.from(stubHex, "hex").length).toBe(disavr.length - 0x60);
+    } finally {
+      kitchen.dom.window.close();
+    }
+  });
+
+  it("pkliteStub refuses non-PKLITE input instead of guessing", async () => {
+    const kitchen = bootCyberChef();
+    try {
+      const atr = corpusFile("99info.zip", "ATR.EXE");
+      await expect(kitchen.run("pkliteStub", atr.toString("hex"))).rejects.toThrow(
+        /no PKLITE marker/,
+      );
+      await expect(kitchen.run("pkliteStub", "00ff")).rejects.toThrow(/Not an MZ file/);
+    } finally {
+      kitchen.dom.window.close();
+    }
+  });
+
+  it("scummXor recovers the key from the tag and finds the leaked room table", async () => {
+    const kitchen = bootCyberChef();
+    try {
+      // Official LucasArts "Fate of Atlantis" demo — the Barnett College game.
+      const index = corpusFile("PLAYFATE.zip", "PLAYFATE/PLAYFATE.000", "samples/archive/games");
+      const report = await kitchen.run("scummXor", index.toString("hex"));
+
+      expect(report).toContain("XOR key 0x69, root tag RNAM");
+      // The demo ships 10 rooms but lists the whole retail game.
+      expect(report).toContain("RNAM room table: 96 entries");
+      expect(report).toContain("86 marked ';' (absent from this build), 10 unmarked");
+      // Barnett College, room 1, stripped from the demo build.
+      expect(report).toContain(";col-offi   (stripped from this build)");
+      expect(report).toContain(";col-hall");
+
+      const plainHex = await kitchen.run("scummXor", index.toString("hex"), { mode: "plain" });
+      expect(Buffer.from(plainHex, "hex").subarray(0, 4).toString("latin1")).toBe("RNAM");
+
+      // The data file is the same XOR but a different container root.
+      const data = corpusFile("PLAYFATE.zip", "PLAYFATE/PLAYFATE.001", "samples/archive/games");
+      const dreport = await kitchen.run("scummXor", data.toString("hex"));
+      expect(dreport).toContain("XOR key 0x69, root tag LECF");
+      expect(dreport).toContain("LOFF");
+      expect(dreport).toContain("LFLF");
+    } finally {
+      kitchen.dom.window.close();
+    }
+  });
+
+  it("scummXor refuses a file whose tag bytes disagree on a key", async () => {
+    const kitchen = bootCyberChef();
+    try {
+      await expect(kitchen.run("scummXor", "00010203deadbeef")).rejects.toThrow(
+        /no recognised SCUMM root tag/,
+      );
     } finally {
       kitchen.dom.window.close();
     }

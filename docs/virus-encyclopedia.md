@@ -199,5 +199,12 @@ DEMU/vintagesoftware is the surviving mirror, reached via the proxy.
 - Whale's nine layers: not stripped.
 - openrce.iso / rce.iso / Fravia reverse-lore ISOs: not fetched (the
   186–623 MB images exceed the archive commit limits; metadata only).
-- Norton Ghost processor-lock and IDA/Immunity debugger sections: not
-  completed this round.
+- ~~Norton Ghost processor-lock and IDA/Immunity debugger sections: not
+  completed this round.~~ **Done** — `docs/norton-ghost-deep-dive.md`
+  (2026-09-29): the .GHO/.GHS container, the Fast LZ (Z1) codec, a
+  cryptanalysis of the password cipher showing 2^16 key recovery
+  regardless of passphrase, the PSN→PPIN processor-locking arc, and the
+  debugger/lore section. Executable companion `tools/ghostimg.py`
+  (`info` / `analyse` / `selftest`). Its own remaining gaps are listed
+  in §7 of that page — chiefly that no real `.gho` was available, and
+  that the encryption reconstruction is single-sourced and contested.
