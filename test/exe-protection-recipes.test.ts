@@ -40,9 +40,12 @@ function bootCyberChef() {
   return { dom, html, operations, run };
 }
 
-/** dr7 corpus: 99info.zip → ATR.EXE (LZEXE 0.91 packed), disavr121.zip → Disavr3.exe (PKLITE). */
-function corpusFile(zip: string, member: string): Buffer {
-  const zipBytes = new Uint8Array(readFileSync(path.resolve("samples/archive/dr7", zip)));
+/**
+ * dr7 corpus: 99info.zip → ATR.EXE (LZEXE 0.91 packed), disavr121.zip → Disavr3.exe (PKLITE).
+ * games corpus: keen1.zip → KEEN1.EXE, DUKE2.zip → DUKE2/NUKEM2.EXE (both LZEXE 0.91).
+ */
+function corpusFile(zip: string, member: string, dir = "samples/archive/dr7"): Buffer {
+  const zipBytes = new Uint8Array(readFileSync(path.resolve(dir, zip)));
   const entries = unzipSync(zipBytes);
   const key = Object.keys(entries).find((name) => name.toLowerCase() === member.toLowerCase());
   if (!key) throw new Error(`member ${member} not found in ${zip}`);
@@ -117,6 +120,73 @@ describe("CyberChef EXE protection deep dive", () => {
       expect(triage).toContain("relocations: 132");
       expect(triage).toContain("[0] 0000:0001");
       expect(triage).toContain("packer: unknown");
+    } finally {
+      kitchen.dom.window.close();
+    }
+  });
+
+  // Regression for the bug found by the DOS game corpus (docs/dos-game-disassembly.md
+  // §2): the stub data offset was hard-coded 0x5B30, which is only e_cs<<4 for
+  // ATR.EXE. Every other LZEXE 0.91 file read its stub info from the wrong bytes.
+  // These two samples have e_cs = 0xC66 and 0xE02, so they fail on the old code
+  // and pass only when the offset is derived from the header.
+  it.each([
+    {
+      name: "KEEN1.EXE (Commander Keen 1 v1.31, Apogee/id 1990)",
+      zip: "keen1.zip",
+      member: "KEEN1.EXE",
+      stubOff: 0xc660,
+      unpacked: 99972,
+      stream: 51158,
+      consumed: 50773,
+      literals: 21164,
+      relocs: 17,
+      exeLen: 100484,
+      exeSha: "d52d7b6bd9f25412ff40d0bece121f83d3c0aca87abd7d879c8219711b61ed70",
+    },
+    {
+      name: "NUKEM2.EXE (Duke Nukem II shareware, Apogee 1993)",
+      zip: "DUKE2.zip",
+      member: "DUKE2/NUKEM2.EXE",
+      stubOff: 0xe020,
+      unpacked: 114124,
+      stream: 58820,
+      consumed: 57370,
+      literals: 23618,
+      relocs: 949,
+      exeLen: 118220,
+      exeSha: "06589de60d40d85d5e97e0b9b635bfb7b84050355e63ac2bbee1176d2d4d8b0a",
+    },
+  ])("lzexeDecode derives the stub offset per file: $name", async (vector) => {
+    const kitchen = bootCyberChef();
+    try {
+      const packed = corpusFile(vector.zip, vector.member, "samples/archive/games");
+
+      // mzTriage must locate the stub from e_cs, not from a constant.
+      const triage = await kitchen.run("mzTriage", packed.toString("hex"));
+      expect(triage).toContain("packer: LZEXE 0.91");
+      expect(triage).toContain(`LZEXE stub data at image+0x${vector.stubOff.toString(16).toUpperCase()}`);
+      expect(triage).toContain(`stub reloc table decodes to ${vector.relocs} entries`);
+
+      const report = await kitchen.run("lzexeDecode", packed.toString("hex"));
+      expect(report).toContain(
+        `unpacked ${vector.unpacked} bytes (0x${vector.unpacked.toString(16).toUpperCase()}) from a ${vector.stream}-byte stream`,
+      );
+      expect(report).toContain(`stream consumed : ${vector.consumed} of ${vector.stream} bytes`);
+      expect(report).toContain(`literals        : ${vector.literals}`);
+      expect(report).toContain(`relocations     : ${vector.relocs}`);
+
+      // Byte-identical to tools/exeprotect.py, the independent Python
+      // implementation; see samples/exeprotect/VECTORS.md.
+      const exeHex = await kitchen.run("lzexeDecode", packed.toString("hex"), { mode: "exe" });
+      const exe = Buffer.from(exeHex, "hex");
+      expect(exe.length).toBe(vector.exeLen);
+      expect(sha256(exe)).toBe(vector.exeSha);
+
+      // The rebuilt original is a plain unpacked MZ again.
+      const rebuilt = await kitchen.run("mzTriage", exeHex);
+      expect(rebuilt).toContain(`relocations: ${vector.relocs}`);
+      expect(rebuilt).toContain("packer: unknown");
     } finally {
       kitchen.dom.window.close();
     }

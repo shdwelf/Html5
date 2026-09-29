@@ -39,6 +39,37 @@ the flag word one element too late and desynchronises the whole stream
 after 15 elements (first symptom: a short match whose displacement reaches
 before the start of output).
 
+## LZEXE 0.91 — the game corpus (`samples/archive/games/`)
+
+Added 2026-09-29. ATR.EXE was for a long time the *only* LZEXE sample
+here, and that hid a bug: both implementations hard-coded the stub data
+area at `0x5B30`, which is just `e_cs << 4` for that one file (`e_cs =
+0x5B3`). These two samples have different entry segments, so they are
+the vectors that pin the offset to the header rather than to a constant.
+See `docs/dos-game-disassembly.md` §2–3.
+
+| | **KEEN1.EXE** | **NUKEM2.EXE** |
+| --- | --- | --- |
+| source | `keen1.zip` (Commander Keen 1 v1.31, Apogee/id 1990) | `DUKE2.zip → DUKE2/` (Duke Nukem II shareware, Apogee 1993) |
+| packed file | 51 190 bytes | 58 852 bytes |
+| entry | 0C66:000E | 0E02:000E |
+| stub data area | image + **0x C660** | image + **0x E020** |
+| unpacked load module | **99 972 bytes** (0x18684), sha256 `f2a38bf36ac19dba85fd6335b1c9fc0dea0a15647a3b0c0257f109c10df3400a` | **114 124 bytes** (0x1BDCC), sha256 `4bc2f9202f8445d0734fea711679e0efdb537494b988a824068d4cea809c7ee4` |
+| rebuilt original EXE | **100 484 bytes**, sha256 `d52d7b6bd9f25412ff40d0bece121f83d3c0aca87abd7d879c8219711b61ed70` | **118 220 bytes**, sha256 `06589de60d40d85d5e97e0b9b635bfb7b84050355e63ac2bbee1176d2d4d8b0a` |
+| stream stats | 50 773 of 51 158 consumed; 21 164 lit, 7 526 short, 5 364 long, 1 106 runs, 2 slides | 57 370 of 58 820 consumed; 23 618 lit, 6 525 short, 7 234 long, 1 454 runs, 2 slides |
+| relocations | 17 | 949 |
+| agreement | `tools/exeprotect.py` and the `lzexeDecode` kitchen op produce **byte-identical** output | same |
+
+Cross-check status: these two are corroborated by the repo's *two*
+independent implementations (Python and JS), not by UNLZEXE — no compiled
+UNLZEXE was available in this sandbox. ATR.EXE remains the sample tied to
+the external third-party reference, and it is unchanged by the fix
+(`0x5B3 << 4 == 0x5B30`), which is what makes it the regression anchor.
+
+Unpacked-content sanity check (Keen): strings absent from the packed file
+and present after unpacking — `Turbo C++ - Copyright 1990 Borland Intl.`,
+`KEENSCRN.PIC`, `You are now cheating!`.
+
 ## TPE data cipher (Trident Polymorphic Engine)
 
 `samples/exeprotect/tpe_cipher_ref.c` is a C harness transcribed directly
@@ -84,4 +115,9 @@ python3 tools/exeprotect.py unpack  samples/…/ATR.EXE out.exe
 python3 tools/exeprotect.py verify  samples/…/ATR.EXE 79c72bc08667210160ccd595a776766d14b55f59374762c33de756c7252c5fd7
 gcc -O2 -o tpe_ref samples/exeprotect/tpe_cipher_ref.c && ./tpe_ref w x beef 0001 abcdef01
 npx vitest run test/exe-protection-recipes.test.ts
+
+# game corpus (unzip samples/archive/games/{keen1,DUKE2}.zip first)
+python3 tools/game_triage.py --dir /path/to/extracted
+python3 tools/exeprotect.py unpack KEEN1.EXE  KEEN1.unp.exe
+python3 tools/exeprotect.py unpack NUKEM2.EXE NUKEM2.unp.exe
 ```

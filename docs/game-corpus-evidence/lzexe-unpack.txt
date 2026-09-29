@@ -1,0 +1,45 @@
+# LZEXE 0.91 unpack log — Commander Keen 1 and Duke Nukem II
+
+## regression: ATR.EXE (dr7 corpus) must still match VECTORS.md
+unpacked load module: 55002 bytes (0xD6DA)
+  sha256(image) = 79c72bc08667210160ccd595a776766d14b55f59374762c33de756c7252c5fd7
+  stream: 23335 of 23851 bytes consumed; 9974 literals, 2957 short, 2615 long matches, 550 runs, 1 segment slides
+  relocations: 132
+wrote /tmp/atr/ATR.unp.exe (56026 bytes) — sha256 4eb9a400e69b310882cfc3dca4402520ff515f5476eb7a7852582d7eb545c38c
+
+## KEEN1.EXE
+unpacked load module: 99972 bytes (0x18684)
+  sha256(image) = f2a38bf36ac19dba85fd6335b1c9fc0dea0a15647a3b0c0257f109c10df3400a
+  stream: 50773 of 51158 bytes consumed; 21164 literals, 7526 short, 5364 long matches, 1106 runs, 2 segment slides
+  relocations: 17
+wrote /tmp/games/unpacked/KEEN1.unp.exe (100484 bytes) — sha256 d52d7b6bd9f25412ff40d0bece121f83d3c0aca87abd7d879c8219711b61ed70
+
+## NUKEM2.EXE
+unpacked load module: 114124 bytes (0x1BDCC)
+  sha256(image) = 4bc2f9202f8445d0734fea711679e0efdb537494b988a824068d4cea809c7ee4
+  stream: 57370 of 58820 bytes consumed; 23618 literals, 6525 short, 7234 long matches, 1454 runs, 2 segment slides
+  relocations: 949
+wrote /tmp/games/unpacked/NUKEM2.unp.exe (118220 bytes) — sha256 06589de60d40d85d5e97e0b9b635bfb7b84050355e63ac2bbee1176d2d4d8b0a
+
+## bonus samples from keen1.zip — five distinct stub offsets now exercised
+## (these two are Apogee order-form viewers, not the game; both would have
+##  failed against the old hard-coded 0x5B30)
+
+## CATALOG.EXE  (58749 bytes, stub data at image+0x1E50)
+unpacked load module: 11214 bytes
+  sha256(image) = dbc3f14ebc6d76256116825911aad76c17ecdca89e415af5882041893a11f303
+  stream: 7756 of 58717 bytes consumed; 4046 literals, 1088 short, 606 long matches, 63 runs, 0 segment slides
+  relocations: 0
+  note: only 13% of the file is the packed stream — the remainder is the
+        plain-text catalogue appended behind the viewer, and the decoder
+        stops cleanly on the stream terminator rather than running into it.
+wrote CATALOG.unp.exe (11214 bytes) — sha256 ec3edfe4e23a28d0749c431aaa90b5e20ba6eaf927f3df6031d1aa7374e83689
+
+## DEALERS.EXE  (8651 bytes, stub data at image+0x2050)
+unpacked load module: 17637 bytes
+  sha256(image) = 2e0ee8e5f89f6f4a9b19082f74193acc7c31147be0797fbacd3c129afe74d609
+  stream: 8258 of 8619 bytes consumed; 3686 literals, 823 short, 809 long matches, 324 runs, 0 segment slides
+  relocations: 0
+wrote DEALERS.unp.exe (17637 bytes) — sha256 6a3c508b80a559bc8dc8cb2085f1a6b43b1e683822790f914742c8cb0f76186e
+  strings after unpacking: "Copyright 1988, 1990 by Keith P. Graham",
+                           "This document is the copyrighted work of Apogee Software"

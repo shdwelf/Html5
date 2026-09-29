@@ -1,0 +1,72 @@
+========================================================================
+/tmp/games/keen1/KEEN1.EXE  (51190 bytes)
+  family : MZ + LZEXE 0.91
+  detail : marker at 0x1C doubling as an empty reloc table; stub data area at image+0xC660
+  MZ     : pages=100 lastpage=502 relocs=0 hdrparas=2 (image @0x20)
+           ss:sp=1892:0080  cs:ip=0C66:000E  entry @file 0xC68E
+========================================================================
+/tmp/games/DUKE2/DUKE2/NUKEM2.EXE  (58852 bytes)
+  family : MZ + LZEXE 0.91
+  detail : marker at 0x1C doubling as an empty reloc table; stub data area at image+0xE020
+  MZ     : pages=115 lastpage=484 relocs=0 hdrparas=2 (image @0x20)
+           ss:sp=1C49:0080  cs:ip=0E02:000E  entry @file 0xE04E
+========================================================================
+/tmp/games/3dduke13SW/DN3DSW13.SHR  (5848108 bytes)
+  family : MZ + PKLITE
+  detail : 'PKLITE Copr.' at 0x1E; e_cs=0xFFF0 (the 0xFFF0 wrap: entry resolves back to image offset 0)
+  MZ     : pages=30 lastpage=501 relocs=1 hdrparas=6 (image @0x60)
+           ss:sp=0000:5FB0  cs:ip=FFF0:0100  entry @file 0x100060
+========================================================================
+/tmp/games/3dduke13SW/INSTALL.EXE  (142342 bytes)
+  family : MZ stub + LE (32-bit protected mode)
+  detail : LE header at 0x1C15C; DOS/4GW-class extender in the MZ stub
+  MZ     : pages=275 lastpage=136 relocs=2444 hdrparas=640 (image @0x2800)
+           ss:sp=21A2:1400  cs:ip=014E:0010  entry @file 0x3CF0
+  LE     : cpu=0x5452 os=0x4944 pages=1128618053 x 20037 bytes, 1380143956 objects @0x53414C4E
+           entry = object #1161953280 + 0x464E4947, stack = object #1414746697 + 0x45524353
+           fixup section 1414746697 bytes, loader section 20037 bytes
+========================================================================
+/tmp/games/doom-sw/doom.exe  (575767 bytes)
+  family : MZ stub + LE (32-bit protected mode)
+  detail : LE header at 0x270CC; DOS/4GW-class extender in the MZ stub
+  MZ     : pages=122 lastpage=164 relocs=78 hdrparas=32 (image @0x200)
+           ss:sp=0121:0340  cs:ip=01BD:2372  entry @file 0x4142
+  LE     : cpu=80386 os=OS/2 pages=82 x 4096 bytes, 2 objects @0xC4
+           entry = object #1 + 0x2DDE0, stack = object #2 + 0x7C710
+           fixup section 81334 bytes, loader section 81722 bytes
+           obj1  base=0x00010000 vsize=0x32A66   pages=51    flags=0x2045 [RX BIG/32]
+           obj2  base=0x00050000 vsize=0x7C710   pages=31    flags=0x2043 [RW BIG/32]
+========================================================================
+/tmp/games/heretic-sw/HERETIC.EXE  (728031 bytes)
+  family : MZ stub + LE (32-bit protected mode)
+  detail : LE header at 0x28FEC; DOS/4GW-class extender in the MZ stub
+  MZ     : pages=123 lastpage=116 relocs=78 hdrparas=32 (image @0x200)
+           ss:sp=0121:0340  cs:ip=01BD:2382  entry @file 0x4152
+  LE     : cpu=80386 os=OS/2 pages=114 x 4096 bytes, 3 objects @0xC4
+           entry = object #1 + 0x2A408, stack = object #3 + 0x6F750
+           fixup section 95487 bytes, loader section 96023 bytes
+           obj1  base=0x00010000 vsize=0x47250   pages=72    flags=0x2045 [RX BIG/32]
+           obj2  base=0x00060000 vsize=0x19      pages=1     flags=0x1045 [RX]
+           obj3  base=0x00070000 vsize=0x6F750   pages=41    flags=0x2043 [RW BIG/32]
+========================================================================
+/tmp/games/qfg1demo/sierra/democd/SCIDHUV.EXE  (144836 bytes)
+  family : MZ (plain real-mode)
+  detail : 1924 relocations, entry 0026:007D
+  MZ     : pages=246 lastpage=448 relocs=1924 hdrparas=512 (image @0x2000)
+           ss:sp=1D92:0080  cs:ip=0026:007D  entry @file 0x22DD
+========================================================================
+/tmp/games/Tetris_1986/Tetris86/tetris.com  (24245 bytes)
+  family : COM / Turbo Pascal 3.x
+  detail : JMP over the runtime header; 'Copyright (C) 1985 BORLAND Inc' at 0x7
+========================================================================
+/tmp/games/unpacked/KEEN1.unp.exe  (100484 bytes)
+  family : MZ (plain real-mode)
+  detail : 17 relocations, entry 0000:0000
+  MZ     : pages=197 lastpage=132 relocs=17 hdrparas=32 (image @0x200)
+           ss:sp=1DCA:0080  cs:ip=0000:0000  entry @file 0x200
+========================================================================
+/tmp/games/unpacked/NUKEM2.unp.exe  (118220 bytes)
+  family : MZ (plain real-mode)
+  detail : 949 relocations, entry 0000:0000
+  MZ     : pages=231 lastpage=460 relocs=949 hdrparas=256 (image @0x1000)
+           ss:sp=273F:0080  cs:ip=0000:0000  entry @file 0x1000

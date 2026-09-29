@@ -27,8 +27,28 @@ MZ_FIELDS = [
     ("e_ip", "H"), ("e_cs", "H"), ("e_ovno", "H"),
 ]
 LZEXE_STUB_STEP_PARAS = 0x7CC      # dest step used by the 0.91 stub
-LZEXE_STUB_INFO = 0x5B30           # stub data area: 8 words (orig regs etc.)
 LZEXE91_RELOC_OFF = 0x158          # compressed reloc table inside the stub
+
+
+def lzexe_stub_off(hdr):
+    """Image-relative offset of the LZEXE stub data area (8 words).
+
+    LZEXE parks the stub in its own segment and points the MZ entry at it,
+    with `e_ip = 0x0E` so execution starts just past the data words. The
+    data area is therefore at the start of that segment: `e_cs << 4` bytes
+    into the load module (the load module itself begins at
+    `e_cparhdr << 4` in the file). UNLZEXE reads its `inf[]` from the same
+    place.
+
+    This used to be the hard-coded constant 0x5B30, which is simply
+    `e_cs << 4` for ATR.EXE — the only sample it was ever run on. Every
+    other LZEXE file has a different `e_cs`, so the constant read the
+    wrong 16 bytes, produced nonsense stub info, and walked the
+    relocation decoder off into garbage until it threw. Deriving it from
+    the header is what makes the unpacker work on the whole corpus;
+    ATR.EXE's verified vectors are unchanged because 0x5B3 << 4 == 0x5B30.
+    """
+    return hdr["e_cs"] << 4
 
 
 def parse_mz(data):
@@ -67,19 +87,24 @@ def detect_packer(data, hdr):
             % hdr["entry_off"])
 
 
-def lzexe91_relocations(image):
+def lzexe91_relocations(image, stub_off):
     """Decode the compressed relocation table at stub+0x158.
 
     Semantics mirror UNLZEXE 0.9 (reloc91): byte spans accumulate rel_off;
     a 0x00 byte announces a word: 0x0000 bumps rel_seg by 0x0FFF, 0x0001
     terminates, anything larger is a wide span.
+
+    `stub_off` is image-relative (see lzexe_stub_off).
     """
-    base = LZEXE_STUB_INFO
-    i = base + LZEXE91_RELOC_OFF
+    i = stub_off + LZEXE91_RELOC_OFF
     rel_off = 0
     rel_seg = 0
     relocs = []
     while True:
+        if i + 2 >= len(image):
+            raise SystemExit("relocation table ran off the end of the image at "
+                             "0x%X — stub offset 0x%X is not a 0.91 stub"
+                             % (i, stub_off))
         span = image[i]; i += 1
         if span == 0:
             word = image[i] | (image[i + 1] << 8); i += 2
@@ -179,9 +204,10 @@ def lzexe91_unpack(image):
             out.append(out[src + k])
 
 
-def rebuild_exe(data, hdr, image, relocs):
+def rebuild_exe(data, hdr, image, relocs, stub_off):
     """Rebuild the original EXE exactly like UNLZEXE 0.9 does."""
-    stub = data[0x20 + LZEXE_STUB_INFO:0x20 + LZEXE_STUB_INFO + 16]
+    base = (hdr["e_cparhdr"] << 4) + stub_off
+    stub = data[base:base + 16]
     inf = struct.unpack("<8H", stub)
     oip, ocs, osp, oss = inf[0], inf[1], inf[2], inf[3]
     word18 = struct.unpack_from("<H", data, 0x18)[0]
@@ -192,6 +218,12 @@ def rebuild_exe(data, hdr, image, relocs):
                                 oss, osp, hdr["e_csum"], oip, ocs,
                                 word18, word1a))
     for seg, off in relocs:
+        # A 16-bit reloc table cannot express a segment above 0xFFFF; a
+        # decode that produces one means the table was misread, not that
+        # the file is exotic. Fail loudly rather than emit a corrupt EXE.
+        if not (0 <= seg <= 0xFFFF and 0 <= off <= 0xFFFF):
+            raise SystemExit("relocation %04X:%04X out of range — the "
+                             "decoded table is not a valid 0.91 table" % (seg, off))
         out += struct.pack("<HH", off, seg)
     fpos = len(out)
     pad = (0x200 - fpos) & 0x1FF
@@ -230,13 +262,16 @@ def cmd_triage(path):
     print("  packer: %s — %s" % (name or "unknown", detail))
     if name and name.startswith("LZEXE 0.91"):
         image = data[hdr["e_cparhdr"] << 4:]
-        stub = image[LZEXE_STUB_INFO:LZEXE_STUB_INFO + 14]
+        stub_off = lzexe_stub_off(hdr)
+        stub = image[stub_off:stub_off + 14]
         inf = struct.unpack("<7H", stub)
+        print("  LZEXE stub data area: image offset 0x%X (e_cs<<4), file "
+              "offset 0x%X" % (stub_off, (hdr["e_cparhdr"] << 4) + stub_off))
         print("  LZEXE stub info: orig entry %04X:%04X, orig ss:sp %04X:%04X,"
               " packed paras 0x%X, grow paras 0x%X, stub+reloc bytes 0x%X"
               % (inf[1], inf[0], inf[3], inf[2], inf[4], inf[5], inf[6]))
         print("  reloc table decodes to %d entries"
-              % len(lzexe91_relocations(image)))
+              % len(lzexe91_relocations(image, stub_off)))
 
 
 def cmd_unpack(path, out_path):
@@ -249,11 +284,12 @@ def cmd_unpack(path, out_path):
     if name != "LZEXE 0.91":
         raise SystemExit("unsupported packer: %s" % (name or "none detected"))
     image = data[hdr["e_cparhdr"] << 4:]
+    stub_off = lzexe_stub_off(hdr)
     out, stats = lzexe91_unpack(image)
-    relocs = lzexe91_relocations(image)
+    relocs = lzexe91_relocations(image, stub_off)
     # The packed file's e_crlc is 0 (the LZ91 marker doubles as an empty
     # reloc table); the real table is rebuilt from the stub's compressed one.
-    exe = rebuild_exe(data, hdr, out, relocs)
+    exe = rebuild_exe(data, hdr, out, relocs, stub_off)
     print("unpacked load module: %d bytes (0x%X)" % (len(out), len(out)))
     print("  sha256(image) = %s" % hashlib.sha256(out).hexdigest())
     print("  stream: %d of %d bytes consumed; %d literals, %d short, "

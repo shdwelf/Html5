@@ -103,6 +103,17 @@ different reloc format at +0x19D) and PKLITE — detected by `mzTriage`
 decode is honestly deferred, not silently faked. There is also a Rust
 `lzexe` crate covering 0.90/0.91/0.91e if you need 0.90 today.
 
+> **2026-09-29 — the unpacker only ever worked on ATR.EXE.** The stub
+> data area was a hard-coded `0x5B30`, which is simply `e_cs << 4` for
+> this one file. Running it on the DOS game corpus
+> (`docs/dos-game-disassembly.md`) crashed it on both LZEXE samples;
+> `tools/exeprotect.py` now derives the offset from the header and
+> rejects out-of-range relocations instead of packing them. ATR.EXE's
+> vectors above are unchanged (`0x5B3 << 4 == 0x5B30`), and Commander
+> Keen 1 and Duke Nukem II now unpack. The PKLITE deferral still
+> stands, but the corpus gained a second, 5.8 MB PKLITE sample
+> (Duke Nukem 3D's `DN3DSW13.SHR`) to test against when it is lifted.
+
 ## 3. The polymorphic era — TPE and friends
 
 Once scanners started matching *bytes*, virus authors answered with
@@ -187,6 +198,11 @@ and Pentium M. The idea returned quietly as **PPIN** from Ivy Bridge on
 (and in AMD's Zen 2), while modern licensing mostly hashes hardware
 through TPMs instead. The DOS corpus in §5 is what "processor locking"
 looked like when the CPU gave you nothing to lock to.
+
+*Both of the threads below are now carried through in full — the
+processor-locking arc (PSN → PPIN → TPM, with the actual CPUID sequence
+and MSR numbers), the Ghost container and its password cipher, and the
+debugger/lore shelf — in `docs/norton-ghost-deep-dive.md`.*
 
 **Norton Ghost and the boot-disk economy.** GHOST — "General
 Hardware-Oriented System Transfer" — was built by **Murray Haszard** at

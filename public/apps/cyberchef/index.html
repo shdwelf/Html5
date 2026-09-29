@@ -2218,8 +2218,14 @@ function expLzexe91Unpack(img){
     for(let k=0;k<length;k++)out.push(out[src+k]);
   }
 }
-function expLzexe91Relocs(img){
-  let i=0x5B30+0x158,relOff=0,relSeg=0;const relocs=[];
+/* LZEXE puts its stub in its own segment and points the MZ entry at it with
+   e_ip=0x000E, so the eight stub data words sit at the START of that segment:
+   image offset e_cs<<4 (file offset (e_cparhdr<<4)+(e_cs<<4)).  This used to be
+   hard-coded 0x5B30, which is simply e_cs<<4 for ATR.EXE (e_cs=0x5B3) — the one
+   sample it was ever tested on.  See docs/dos-game-disassembly.md §2. */
+function expLzexeStubOff(hdr){return hdr.e_cs<<4;}
+function expLzexe91Relocs(img,stubOff){
+  let i=stubOff+0x158,relOff=0,relSeg=0;const relocs=[];
   for(;;){
     if(i>=img.length)throw new Error('LZEXE relocation table exhausted — corrupted input?');
     let span=img[i];i++;
@@ -2232,11 +2238,13 @@ function expLzexe91Relocs(img){
     relOff+=span;
     relSeg+=(relOff&~0x0F)>>4;
     relOff&=0x0F;
+    if(relSeg>0xFFFF||relOff>0xFFFF)throw new Error('LZEXE relocation out of range ('+relSeg.toString(16)+':'+relOff.toString(16)+') — wrong stub offset or corrupted input?');
     relocs.push([relSeg,relOff]);
   }
 }
-function expLzexe91Rebuild(b,hdr,image,relocs){
-  const inf=[];for(let i=0;i<16;i+=2)inf.push(b[0x20+0x5B30+i]|(b[0x20+0x5B30+i+1]<<8));
+function expLzexe91Rebuild(b,hdr,image,relocs,stubOff){
+  const base=(hdr.e_cparhdr<<4)+stubOff;
+  const inf=[];for(let i=0;i<16;i+=2)inf.push(b[base+i]|(b[base+i+1]<<8));
   const w=o=>b[o]|(b[o+1]<<8);
   const out=[];
   const push16=v=>{out.push(v&0xFF,(v>>8)&0xFF);};
@@ -2268,10 +2276,11 @@ function expLzexeFull(b){
   if(pk.name==='LZEXE 0.90')throw new Error('LZEXE 0.90 detected — this op implements 0.91 only (0.90 uses a different stub and reloc table)');
   if(pk.name!=='LZEXE 0.91')throw new Error('unsupported packer: '+(pk.name||'none detected'));
   const image=Array.from(b.slice(hdr.e_cparhdr<<4));
+  const stubOff=expLzexeStubOff(hdr);
   const {out,stats}=expLzexe91Unpack(image);
-  const relocs=expLzexe91Relocs(image);
-  const exe=expLzexe91Rebuild(b,hdr,out,relocs);
-  return {hdr,pk,image,out,stats,relocs,exe};
+  const relocs=expLzexe91Relocs(image,stubOff);
+  const exe=expLzexe91Rebuild(b,hdr,out,relocs,stubOff);
+  return {hdr,pk,image,out,stats,relocs,exe,stubOff};
 }
 
 /* ---- op: MZ triage ---- */
@@ -2296,13 +2305,15 @@ addOp('mzTriage','MZ / DOS EXE Triage','EXE Protection',
     L.push('  packer: '+(pk.name||'unknown')+' — '+pk.detail);
     if(pk.name==='LZEXE 0.91'){
       const image=Array.from(b.slice(h.e_cparhdr<<4));
-      const inf=[];for(let i=0;i<14;i+=2)inf.push(image[0x5B30+i]|(image[0x5B30+i+1]<<8));
+      const stubOff=expLzexeStubOff(h);
+      const inf=[];for(let i=0;i<14;i+=2)inf.push(image[stubOff+i]|(image[stubOff+i+1]<<8));
+      L.push('  LZEXE stub data at image+0x'+stubOff.toString(16).toUpperCase());
       L.push('  LZEXE stub info: orig entry '+inf[1].toString(16).toUpperCase()+':'+inf[0].toString(16).toUpperCase()+
         ', orig ss:sp '+inf[3].toString(16).toUpperCase()+':'+inf[2].toString(16).toUpperCase()+
         ', packed paras 0x'+inf[4].toString(16).toUpperCase()+
         ', grow paras 0x'+inf[5].toString(16).toUpperCase()+
         ', stub+reloc bytes 0x'+inf[6].toString(16).toUpperCase());
-      L.push('  stub reloc table decodes to '+expLzexe91Relocs(image).length+' entries');
+      L.push('  stub reloc table decodes to '+expLzexe91Relocs(image,stubOff).length+' entries');
     }
     L.push('Docs: docs/exe-protection-deep-dive.md · vectors: samples/exeprotect/VECTORS.md');
     return L.join('\n');
