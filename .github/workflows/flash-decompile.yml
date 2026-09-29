@@ -1,0 +1,80 @@
+name: Flash decompile
+
+on:
+  workflow_dispatch:
+    inputs:
+      include_nsfw:
+        description: "Explicitly include NSFW/adult SWF targets from data/flash-decompiler-targets.json"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      only_ids:
+        description: "Optional comma/space separated target IDs to process"
+        required: false
+        default: ""
+      dry_run:
+        description: "Select targets and generate manifest only; do not download/decompile"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+permissions:
+  contents: read
+
+jobs:
+  ffdec:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select targets
+        env:
+          INCLUDE_NSFW: ${{ inputs.include_nsfw }}
+          ONLY_IDS: ${{ inputs.only_ids }}
+          DRY_RUN: "true"
+          FLASH_WORKDIR: flash-work
+        run: node scripts/flash_decompile_urls.mjs
+
+      - name: Build JPEXS FFDec container
+        if: ${{ inputs.dry_run != 'true' }}
+        run: |
+          git clone --depth=1 https://github.com/jindrapetrik/jpexs-decompiler.git "$RUNNER_TEMP/jpexs-decompiler"
+          docker build -t ffdec-local "$RUNNER_TEMP/jpexs-decompiler"
+
+      - name: Download SWFs and export scripts/text
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          INCLUDE_NSFW: ${{ inputs.include_nsfw }}
+          ONLY_IDS: ${{ inputs.only_ids }}
+          FFDEC_IMAGE: ffdec-local
+          FLASH_WORKDIR: flash-work
+        run: node scripts/flash_decompile_urls.mjs
+
+      - name: Add grep index
+        if: ${{ always() }}
+        run: |
+          {
+            echo "# Flash decompile grep index"
+            echo
+            echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo
+            if [ -d flash-work/output ]; then
+              grep -RInaE "easter|egg|lollipop|library|lamp|camera|Duncan|Alia|spice|Patreon|getURL|http" flash-work/output || true
+            fi
+          } > flash-work/grep-index.md
+
+      - name: Upload decompiler artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flash-decompiler-output
+          path: flash-work
+          if-no-files-found: error
+          retention-days: 7

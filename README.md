@@ -73,6 +73,7 @@ workflow permission).
 - **[Keyspace Viewer](keyspace.html)** — BIP-39 geometry, measured statistical layers, wallet derivatives, and keyspace projections.
 - **[Prime Viewer](prime.html)** — exact prime atlas, residue-class solar system, prime constellations, counting statistics, gaps, and integer inspection. See [PRIME.md](PRIME.md).
 - **[Helios Observatory](astronomy.html)** — time-propagated solar orrery, curated celestial catalog, Earth-centered NEO radar, and modeled meteor streams. See [ASTRONOMY.md](ASTRONOMY.md).
+- **[Flash Decompiler Timeline](flash-decompiler.html)** — Wayback/NATA2-style raw SWF retrieval, configurable CORS proxy triage, Behind The Dune version timeline, easter-egg notes, and a GitHub Actions path for JPEXS/FFDec decompilation without committing large NSFW binaries.
 
 ## Tools
 
