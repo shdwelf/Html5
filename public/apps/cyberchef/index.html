@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 358 recipes · EXE protection deep dive: LZEXE 0.91 unpack, TPE cipher, anti-debug scan</div>
+  <div class="sub">HTML5 · 360 recipes · Virus encyclopedia: Stoned/Michelangelo/Cascade/Jerusalem signatures &amp; boot-sector triage</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -23414,8 +23414,123 @@ addOp('keyedSubstitution','Keyed Substitution Cipher','Classical',
     return out;
   });
 
+/* ============ VIRUS ANALYSIS OPERATIONS ============
+   Signatures below were verified byte-for-byte against the real samples in
+   samples/archive/virushistory/ (SnorreFagerland/virushistory corpus) and the
+   Ghidra real-mode decompilations documented in docs/virus-encyclopedia.md:
+   Stoned (stoned-standard.boo), Michelangelo (michelangelo.boo),
+   Cascade 1701 (cascade1701a/b.vom), Jerusalem (jerusalem664.vom).
+   Every hit is a candidate, not a verdict — match the whole family context
+   (entry style, INT 13h usage, strings) before calling a file infected. */
+
+const VS_SIGS=[
+  {name:'Stoned (standard)',hex:'ea0500007c',at:0,kind:'entry far-jmp 0000:7C05',
+   note:'far JMP at offset 0 — a genuine DOS boot sector starts with a near JMP (E9/EB) so this sector never was a normal boot record'},
+  {name:'Stoned (standard)',hex:'596f7572205043206973206e6f772053746f6e6564',kind:'string',
+   note:'"Your PC is now Stoned!" (samples/archive/virushistory/stoned-standard.boo @0x18A)'},
+  {name:'Stoned (standard)',hex:'4c4547414c495345204d4152494a55414e41',kind:'string',
+   note:'"LEGALISE MARIJUANA!" (@0x1A5)'},
+  {name:'Michelangelo (A)',hex:'e9ac00',at:0,kind:'entry near-jmp',
+   note:'entry jump over a non-BPB data block — pair with INT 13h density before concluding'},
+  {name:'Cascade 1701',hex:'e800005b81eb',kind:'decryptor',
+   note:'call $+3 / pop bx / sub bx,imm — position-independent decryptor prologue (cascade1701a.vom @0x68)'},
+  {name:'Cascade 1701',hex:'3134312446'+'4c75f8',kind:'decryptor',
+   note:'xor [si],si / xor [si],sp / inc si / dec sp / jne — the overlapping-word self-decryptor (@0x7F)'},
+  {name:'Jerusalem (standard family)',hex:'b4f1cd2180fcf174',kind:'install-check',
+   note:'mov ah,F1h / int 21h / cmp ah,F1h / je — TSR install check (jerusalem664.vom @0x100)'},
+  {name:'Jerusalem (standard family)',hex:'80fca175',kind:'install-check',
+   note:'cmp ah,A1h / jne — second marker byte the resident copy answers'}
+];
+
+addOp('virusSigScan','DOS Virus Signature Scan','Virus Analysis',
+  'Scan a 512-byte boot sector, COM or EXE image (hex in) for verified DOS-virus signatures: Stoned, Michelangelo, Cascade 1701 (self-decryptor), and the Jerusalem INT 21h F1h/A1h install check. Every signature was verified byte-for-byte against the real samples in samples/archive/virushistory/ and cross-checked with Ghidra real-mode decompilation (docs/virus-encyclopedia.md). A hit is a candidate, not a verdict: boot viruses must also be judged on entry style, INT 13h density and boot-sector sanity (see the DOS Boot Sector Parse op).',
+  [{key:'maxHits',label:'Max hits shown',type:'number',default:'20'}],
+  function(t,a){
+    const b=bytesFromHex(t);
+    const L=['DOS virus signature scan — '+b.length+' bytes scanned'];
+    let hits=0;
+    for(const s of VS_SIGS){
+      if(!s.hex)continue;
+      const needle=bytesFromHex(s.hex);
+      let found=[];
+      for(let i=0;i+needle.length<=b.length;i++){
+        let ok=true;
+        for(let j=0;j<needle.length;j++)if(b[i+j]!==needle[j]){ok=false;break;}
+        if(ok){found.push(i);if(found.length>=3)break;}
+      }
+      if('at' in s)found=found.filter(f=>f===s.at);
+      if(found.length){
+        hits++;
+        for(const f of found)L.push('  HIT  0x'+f.toString(16).toUpperCase().padStart(4,'0')+'  '+s.name+' — '+s.kind+' ('+s.note+')');
+      }
+    }
+    const int13=[];for(let i=0;i+1<b.length;i++)if(b[i]===0xCD&&b[i+1]===0x13)int13.push(i);
+    const int21=[];for(let i=0;i+1<b.length;i++)if(b[i]===0xCD&&b[i+1]===0x21)int21.push(i);
+    L.push('  INT 13h sites: '+int13.length+(int13.length?' (offsets '+int13.slice(0,8).map(x=>'0x'+x.toString(16).toUpperCase()).join(', ')+(int13.length>8?' …':'')+')':''));
+    L.push('  INT 21h sites: '+int21.length+(int21.length?' (offsets '+int21.slice(0,8).map(x=>'0x'+x.toString(16).toUpperCase()).join(', ')+(int21.length>8?' …':'')+')':''));
+    if(b.length>=512)L.push('  sector signature: '+b[510].toString(16).toUpperCase().padStart(2,'0')+' '+b[511].toString(16).toUpperCase().padStart(2,'0')+(b[510]===0x55&&b[511]===0xAA?' (55 AA — valid)':' (missing 55 AA)'));
+    if(hits===0)L.push('  no verified signature matched — unknown or polymorphic; feed the image to mzTriage and decompile_boot for structure');
+    L.push('Corpus: samples/archive/virushistory/ · analysis: docs/virus-encyclopedia.md');
+    return L.join('\n');
+  });
+
+/* ---- op: DOS boot sector / MBR parse ---- */
+addOp('dosBootSector','DOS Boot Sector / MBR Parse','Virus Analysis',
+  'Parse a 512-byte boot sector or MBR (hex in): entry jump, OEM name, full BIOS Parameter Block (BPB), media descriptor, 55 AA signature and the 4-entry partition table. Flags the structural tells that boot viruses get wrong — a far JMP at offset 0 (Stoned), an entry jump that lands inside the BPB, impossible BPB geometry, or a missing partition table on an MBR-shaped sector. Verified against stoned-standard.boo, michelangelo.boo and healthy DOS floppies.',
+  [{key:'showParts',label:'Show partition table',type:'select',default:'yes',options:[['yes','Yes'],['no','No']]}],
+  function(t,a){
+    const b=bytesFromHex(t);
+    if(b.length<64)throw new Error('need at least 64 bytes (got '+b.length+') — a full sector is 512');
+    const H=(i,n)=>{let v=0;for(let j=n-1;j>=0;j--)v=(v<<8)|b[i+j];return v;};
+    const hx=v=>v.toString(16).toUpperCase().padStart(2,'0');
+    const L=['DOS boot sector / MBR — '+b.length+' bytes'];
+    const e0=b[0],e1=b[1],e2=b[2];
+    let entry='??';
+    if(e0===0xE9)entry='near JMP +'+H(1,2)+' -> 0x'+((3+H(1,2))&0xFFFF).toString(16).toUpperCase();
+    else if(e0===0xEB)entry='short JMP +'+b[2]+' -> 0x'+((3+b[2])&0xFFFF).toString(16).toUpperCase()+(e2===0x90?' (NOP-padded)':'');
+    else if(e0===0xEA)entry='far JMP '+H(3,2).toString(16).toUpperCase().padStart(4,'0')+':'+H(1,2).toString(16).toUpperCase().padStart(4,'0');
+    else entry='byte 0x'+e0.toString(16).toUpperCase()+' — no standard entry jump';
+    L.push('  entry: '+entry);
+    if(e0===0xEA)L.push('    ^ far JMP at offset 0: real DOS boot sectors start with a near JMP (E9/EB) followed by the BPB at 0x0B — this is a boot-virus layout (Stoned: EA 05 00 00 7C)');
+    const oem=String.fromCharCode(...b.slice(3,11)).replace(/[^\x20-\x7e]/g,'.');
+    L.push('  OEM name @0x03: "'+oem+'"'+(/^[A-Z0-9._ ]{5,8}$/.test(oem)?'':'  (not printable ASCII — data, not an OEM string)'));
+    const bps=H(11,2),spc=b[13],res=H(14,2),nfats=b[16],root=H(17,2),tot16=H(19,2),
+          media=b[21],spf=H(22,2),spt=H(24,2),heads=H(26,2),hidden=H(28,2),tot32=H(32,4);
+    const driv=b.length>0x25?b[0x25]:0, sig2=b.length>0x26?H(0x26,2):0;
+    const isBpb=bps>=128&&bps<=4096&&(bps&(bps-1))===0&&spc>0&&(spc&(spc-1))===0&&nfats>0&&nfats<=4&&res>0&&spf>0;
+    if(isBpb){
+      const mediaNames={0xE5:'fixed disk (old)',0xF0:'1.44M/2.88M 3.5" or other removable',0xF8:'fixed disk',0xF9:'720K 3.5" / 1.2M 5.25"',0xFA:'320K 5.25"',0xFB:'640K 3.5"',0xFC:'180K 5.25"',0xFD:'360K 5.25"',0xFE:'160K 5.25"',0xFF:'320K 5.25"'};
+      L.push('  BPB: '+bps+' B/sector, '+spc+' sectors/cluster, '+res+' reserved, '+nfats+' FAT'+(nfats>1?'s':'')+', '+root+' root entries');
+      L.push('       total '+(tot16||tot32)+' sectors ('+(((tot16||tot32)*(bps||512))/1024).toFixed(0)+' KiB), media 0x'+media.toString(16).toUpperCase().padStart(2,'0')+' ('+(mediaNames[media]||'unknown')+')');
+      L.push('       '+spf+' sectors/FAT, '+spt+' sectors/track, '+heads+' heads, '+hidden+' hidden sectors');
+      if(e0===0xE9&&(3+H(1,2))>0x0B&&isBpb)L.push('    ^ entry jump lands at/after 0x0B — fine for a real booter; Michelangelo keeps a normal-looking near JMP, so a clean BPB is NOT proof of health');
+    } else {
+      L.push('  no sane BPB @0x0B (bytes/sector=0x'+bps.toString(16)+', sectors/cluster=0x'+spc.toString(16)+') — either an MBR, a raw loader, or a boot virus that overwrote it');
+    }
+    if(e0===0xE9&&((3+H(1,2))>=0x0B)&&!isBpb)L.push('    ^ near JMP over a non-BPB block: the Michelangelo pattern (E9 AC 00 then virus data) — check INT 13h density with virusSigScan');
+    if(b.length>=510){
+      L.push('  sector signature @0x1FE: '+hx(b[510])+' '+hx(b[511])+(b[510]===0x55&&b[511]===0xAA?' (valid)':' (MISSING 55 AA — not bootable as-is)'));
+    }
+    if(a.showParts==='yes'&&b.length>=510){
+      const types={0x01:'FAT12',0x04:'FAT16 <32M',0x05:'extended',0x06:'FAT16B',0x07:'NTFS/HPFS/exFAT',0x0B:'FAT32 CHS',0x0C:'FAT32 LBA',0x0E:'FAT16 LBA',0x0F:'extended LBA',0x82:'Linux swap',0x83:'Linux',0xA5:'FreeBSD'};
+      for(let p=0;p<4;p++){
+        const o=0x1BE+16*p;
+        if(b.slice(o,o+16).every(x=>x===0)){continue;}
+        const boot=b[o],pType=b[o+4],lbaval=H(o+8,4);
+        L.push('  partition['+p+'] '+(boot===0x80?'BOOT':'    ')+' type 0x'+pType.toString(16).toUpperCase().padStart(2,'0')+' ('+(types[pType]||'?')+') start LBA '+lbaval+', '+H(o+12,4)+' sectors');
+      }
+    }
+    L.push('Corpus: samples/archive/virushistory/ · analysis: docs/virus-encyclopedia.md');
+    return L.join('\n');
+  });
+
 zenInit();
 sfxInitUi();
+renderOpsList();renderRecipe();
+</script>
+</body>
+</html>
+InitUi();
 renderOpsList();renderRecipe();
 </script>
 </body>
