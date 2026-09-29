@@ -13,6 +13,32 @@
     "digest": "537EQZ77BEDW4ZF3AFF6U57TBSPMPPGO"
   },
   {
+    "id": "simgirls-full-newgrounds-2012",
+    "label": "Simgirls (Full Version) \u2014 Newgrounds portal 594476",
+    "family": "SIMGIRLS / SimMan release lineage",
+    "date": "2012-04-25",
+    "sort": "2012-04-25",
+    "url": "https://www.newgrounds.com/portal/view/594476",
+    "source": "Newgrounds portal metadata",
+    "notes": "Verified portal title and ID for the completed release. This is a landing page, not a stable raw SWF URL, so it is catalog-only until an authorized direct asset endpoint is established.",
+    "nsfw": true,
+    "bytes": null,
+    "digest": null
+  },
+  {
+    "id": "simgirls-v66-ia-2015",
+    "label": "Sim Girls v6.6 English \u2014 Internet Archive ARC container",
+    "family": "SIMGIRLS / beta 6.6",
+    "date": "2015-11-19 (archive upload)",
+    "sort": "2015-11-19",
+    "url": "https://archive.org/details/SimGirlsV6.6EnglishSWF",
+    "source": "Internet Archive metadata API",
+    "notes": "The preserved original is sim661.swf.arc (13,825,244 bytes), an Internet Archive ARC container rather than a directly downloadable SWF. ARC member extraction is required before FFDec. Metadata digests: md5 e0f09527eb193b9a0b5564bda70a2859; sha1 2d3bc88281622d25c27db749145992430ff41eb6.",
+    "nsfw": true,
+    "bytes": 13825244,
+    "digest": "sha1:2d3bc88281622d25c27db749145992430ff41eb6"
+  },
+  {
     "id": "balsamique-dune-patreon-2016",
     "label": "DUNE on Patreon by Balsamique.swf",
     "family": "Behind The Dune prototype lineage",
@@ -50,6 +76,19 @@
     "nsfw": true,
     "bytes": null,
     "digest": null
+  },
+  {
+    "id": "simgirls-v524-ia-2019",
+    "label": "Simgirls 5.24 English \u2014 preserved SWF",
+    "family": "SIMGIRLS / version 5.24",
+    "date": "2019-08-04 (archive upload)",
+    "sort": "2019-08-04",
+    "url": "https://archive.org/download/SimGirlsV5.24EnglishSWF/Simgirls%205.24%20%5BEnglish%5D.swf",
+    "source": "Internet Archive original file",
+    "notes": "Direct SWF preserved as Simgirls 5.24 [English].swf (9,568,667 bytes). Archive metadata reports md5 5f4f23cfb781e0a3c32634b8aa89827b and sha1 1135272f8214a959f5d891a97eb1b165c342c28a. Suitable for opt-in FFDec script/text export.",
+    "nsfw": true,
+    "bytes": 9568667,
+    "digest": "sha1:1135272f8214a959f5d891a97eb1b165c342c28a"
   },
   {
     "id": "behind-dune-official-swf-2023",
