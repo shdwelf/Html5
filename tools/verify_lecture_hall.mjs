@@ -770,7 +770,7 @@ if (!existsSync(SUITE)) {
 
   const pc = literalAt(src, "Pc=[");
   const records = vm.runInNewContext(`(${pc.text})`, Object.create(null), { timeout: 2000 });
-  check(Array.isArray(records) && records.length === 25, `lecture hall holds ${records.length} records`);
+  check(Array.isArray(records) && records.length === 26, `lecture hall holds ${records.length} records`);
 
   const required = ["id", "title", "period", "location", "confidence", "summary", "facts", "sourceLinks", "caution"];
   const shapeOk = records.every((r) =>
@@ -784,6 +784,7 @@ if (!existsSync(SUITE)) {
   const RAISED = [
     "f5-blackhat-2016", "uscybercom-seal-md5", "fieldnotes-wheel", "f1eldn0tes-agents",
     "cicada-3301", "f5-blackhat-2018", "kryptos-k4-smithsonian",
+    "dos-packer-obfuscation",
   ];
   const raisedBarOk = RAISED.every((id) => {
     const r = records.find((x) => x.id === id);
@@ -849,6 +850,29 @@ if (!existsSync(SUITE)) {
       /Paradigm/.test(haystack("kryptos-k4-smithsonian")) &&
       /HMAC/.test(haystack("kryptos-k4-smithsonian")),
     "Kryptos record carries the onward custody chain: $962,500 sale, Paradigm steward, SHA-256\u2192HMAC verifier",
+  );
+  // --- dos-packer-obfuscation: both ciphers fail silently, so the record has
+  // to carry the demonstration, not just the claim.
+  check(
+    /self-synchronising/i.test(haystack("dos-packer-obfuscation")) &&
+      haystack("dos-packer-obfuscation").includes("0x0118") &&
+      haystack("dos-packer-obfuscation").includes("0x0317"),
+    "packer record shows the wrong-key-still-works demonstration (0x0118 vs 0x0317)",
+  );
+  check(
+    haystack("dos-packer-obfuscation").includes("0a3e081f"),
+    "packer record pins the byte-identical sha256 that the wrong key still produced",
+  );
+  check(
+    haystack("dos-packer-obfuscation").includes("0x69") &&
+      haystack("dos-packer-obfuscation").includes("0xFF") &&
+      /col-offi/.test(haystack("dos-packer-obfuscation")),
+    "packer record carries both SCUMM XOR layers and the leaked Barnett College rooms",
+  );
+  check(
+    /v1\.20/.test(haystack("dos-packer-obfuscation")) &&
+      /NOT implemented|not implemented/.test(haystack("dos-packer-obfuscation")),
+    "packer record states the v1.20 limitation rather than implying full coverage",
   );
   check(
     [
