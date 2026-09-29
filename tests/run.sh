@@ -132,6 +132,14 @@ node tests/13-makint.mjs || status=1
 echo "──────────────────────────────────────────────"
 node tests/18-astronomy.mjs || status=1
 
+# Vincennes logs: geodesy, the three solved theaters, the minimal USGS DEM,
+# and the DjVu reader (round-tripped against its own encoder).
+echo "──────────────────────────────────────────────"
+node tools/make-vincennes-plates.mjs >/dev/null || status=1
+node tools/make-vincennes-dem.mjs >/dev/null || status=1
+node scripts/build-vincennes-xdc.mjs >/dev/null || status=1
+node tests/19-vincennes.mjs || status=1
+
 echo "──────────────────────────────────────────────"
 [ "$status" -eq 0 ] && echo "all suites passed" || echo "FAILURES — see above"
 exit "$status"

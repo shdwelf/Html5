@@ -1,0 +1,70 @@
+{
+  "meta": {
+    "kind": "djvu plate manifest",
+    "generated": "tools/make-vincennes-plates.mjs",
+    "status": "GENERATED FIXTURES, NOT SCANS. Each file is a structurally valid DjVu carrying the transcribed text of the page it stands for, with no image layer. The real documents are linked per plate.",
+    "reader": "js/vincennes-djvu.js"
+  },
+  "plates": [
+    {
+      "file": "djvu/fogarty-encl5-timeline.djvu",
+      "theater": "hormuz-1988",
+      "title": "Fogarty report — chronology of events, 0647Z–0655Z",
+      "standsFor": "Investigation Report, Downing of Iran Air Flight 655 (DoD release scan), enclosure chronology",
+      "url": "https://time.com/wp-content/uploads/2014/03/dodvincennes.pdf",
+      "bytes": 1336,
+      "pageWidth": 2550,
+      "pageHeight": 3300,
+      "dpi": 300,
+      "lines": 18,
+      "chars": 914,
+      "zones": 19,
+      "generated": true
+    },
+    {
+      "file": "djvu/icao-figure-1-positions.djvu",
+      "theater": "hormuz-1988",
+      "title": "ICAO Figure 1 — unit positions at launch",
+      "standsFor": "ICAO C-WP/8708 Figure 1, as reproduced in the Yale J. Int'l L. and Iran's ICJ Memorial",
+      "url": "https://www.icj-cij.org/public/files/case-related/79/6629.pdf",
+      "bytes": 810,
+      "pageWidth": 2550,
+      "pageHeight": 3300,
+      "dpi": 300,
+      "lines": 10,
+      "chars": 532,
+      "zones": 11,
+      "generated": true
+    },
+    {
+      "file": "djvu/graybook-v1-savo.djvu",
+      "theater": "savo-1942",
+      "title": "Nimitz Graybook vol. 1 — Savo Island, 9 August 1942",
+      "standsFor": "Command Summary of Fleet Admiral Chester W. Nimitz, Volume 1, running estimate for 9 Aug 1942",
+      "url": "https://www.usnwcarchives.org/repositories/2/digital_objects/22",
+      "bytes": 996,
+      "pageWidth": 2550,
+      "pageHeight": 3300,
+      "dpi": 300,
+      "lines": 15,
+      "chars": 637,
+      "zones": 16,
+      "generated": true
+    },
+    {
+      "file": "djvu/graybook-v5-formosa.djvu",
+      "theater": "leyte-1944",
+      "title": "Nimitz Graybook vol. 5 — Formosa strikes and Cripple Division 1",
+      "standsFor": "Command Summary of Fleet Admiral Chester W. Nimitz, Volume 5, pp. 270–272",
+      "url": "https://www.usnwcarchives.org/repositories/2/digital_objects/22",
+      "bytes": 1110,
+      "pageWidth": 2550,
+      "pageHeight": 3300,
+      "dpi": 300,
+      "lines": 16,
+      "chars": 733,
+      "zones": 17,
+      "generated": true
+    }
+  ]
+}
