@@ -770,7 +770,7 @@ if (!existsSync(SUITE)) {
 
   const pc = literalAt(src, "Pc=[");
   const records = vm.runInNewContext(`(${pc.text})`, Object.create(null), { timeout: 2000 });
-  check(Array.isArray(records) && records.length === 24, `lecture hall holds ${records.length} records`);
+  check(Array.isArray(records) && records.length === 25, `lecture hall holds ${records.length} records`);
 
   const required = ["id", "title", "period", "location", "confidence", "summary", "facts", "sourceLinks", "caution"];
   const shapeOk = records.every((r) =>
@@ -783,7 +783,7 @@ if (!existsSync(SUITE)) {
 
   const RAISED = [
     "f5-blackhat-2016", "uscybercom-seal-md5", "fieldnotes-wheel", "f1eldn0tes-agents",
-    "cicada-3301", "f5-blackhat-2018",
+    "cicada-3301", "f5-blackhat-2018", "kryptos-k4-smithsonian",
   ];
   const raisedBarOk = RAISED.every((id) => {
     const r = records.find((x) => x.id === id);
@@ -820,6 +820,35 @@ if (!existsSync(SUITE)) {
   check(
     ["cicada-3301", "f5-blackhat-2018"].every((id) => byId[id]),
     "the two records added by the Cicada/F5 pass are in the hall",
+  );
+  check(
+    ["kryptos-k4-smithsonian"].every((id) => byId[id]),
+    "the Kryptos K4 Smithsonian archive record added by the 2026-09-29 pass is in the hall",
+  );
+
+  // Kryptos K4 — the archive is walked as a checkable provenance chain, and
+  // "recovered" is never allowed to read as "solved".
+  check(
+    haystack("kryptos-k4-smithsonian").includes("AAA.sanbojim") &&
+      haystack("kryptos-k4-smithsonian").includes("16.1 linear feet") &&
+      /Box 6|6:18|6:19/.test(haystack("kryptos-k4-smithsonian")),
+    "Kryptos record cites the finding aid (AAA.sanbojim, 16.1 ft) and the box/folder that held the charts",
+  );
+  check(
+    /open for research/i.test(haystack("kryptos-k4-smithsonian")) &&
+      /2075|fifty[- ]year|50[- ]year/i.test(haystack("kryptos-k4-smithsonian")),
+    "Kryptos record keeps the source-check tension: reported 50-year seal vs finding aid still 'open for research'",
+  );
+  check(
+    /recover(ed|y)/i.test(haystack("kryptos-k4-smithsonian")) &&
+      /never been publicly broken|method was never publicly broken/i.test(haystack("kryptos-k4-smithsonian")),
+    "Kryptos record keeps recovered-not-solved: the cipher method was never publicly broken",
+  );
+  check(
+    haystack("kryptos-k4-smithsonian").includes("962,500") &&
+      /Paradigm/.test(haystack("kryptos-k4-smithsonian")) &&
+      /HMAC/.test(haystack("kryptos-k4-smithsonian")),
+    "Kryptos record carries the onward custody chain: $962,500 sale, Paradigm steward, SHA-256\u2192HMAC verifier",
   );
   check(
     [
