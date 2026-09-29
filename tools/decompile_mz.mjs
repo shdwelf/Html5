@@ -105,7 +105,9 @@ const engine = new GhidraWasm({ root: SPEC_ORIGIN, log: () => {},
   loadModule: () => GhidraDecompiler({ locateFile: (p) => join(ROOT, "wasm", "ghidra", p), print: () => {}, printErr: () => {} }) });
 await engine.load();
 for (const f of funcs) {
-  const r = await engine.decompile(mz.image, { lang, compiler, base: BASE, func: f });
+  // the bridge wants "0xADDR" hex strings; bare numbers are read as symbol
+  // names and silently decompile the wrong (or an empty) function
+  const r = await engine.decompile(mz.image, { lang, compiler, base: BASE, func: "0x" + f.toString(16) });
   console.log(`\n/* ==== 0x${f.toString(16)}  (${lang}, ${r.compiler}, ${Math.round(r.ms)} ms) ==== */`);
   console.log(r.text.trim());
 }
