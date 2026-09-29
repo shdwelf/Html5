@@ -86,3 +86,11 @@ https://web.archive.org/web/20221217212147id_/https://fw.gl-inet.com/firmware/mt
 # --- live files the Archive never captured (direct: = runner fetches live)
 direct:https://www.basiccard.zeitcontrol.de/download.htm live/basiccard-download.htm
 direct:https://fw.gl-inet.com/firmware/mt300n-v2/testing/openwrt-mt300n-v2-3.204-1112.bin live/gl-inet-mt300n-v2-3.204-1112.bin
+#
+# --- Ken Kirkpatrick's First Name Almanac v1.02 (DOS), the 1994 shareware hit
+# --- requested for the Ghidra-on-shareware run. archive.org item FNA102B_ZIP
+# --- (DEMU collection, uploaded 2018-07-12; md5 b3ff7ffc102605dfe87086f6850ba70e,
+# --- sha1 cf98dc2588e42dbc2a693cd7f2f2f3ddd40b2126, 556030 bytes). The Tucows
+# --- collection on archive.org has no Kirkpatrick items (checked 2026-09-29);
+# --- the DEMU mirror is the surviving copy.
+direct:https://archive.org/download/FNA102B_ZIP/FNA102B.ZIP kirkpatrick/FNA102B.ZIP 556030

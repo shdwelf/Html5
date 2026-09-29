@@ -40,3 +40,4 @@ CACHED  hackhu/about.htm  16489 bytes  sha256 b5f16742da7f3879  (matches PROVENA
 CACHED  glinet/openwrt-mt300n-v2-3.203-0805.bin  12583196 bytes  sha256 111faa8e4b19a6de  (matches PROVENANCE.md; not re-downloaded)
 FAIL  live/basiccard-download.htm  https://www.basiccard.zeitcontrol.de/download.htm  (URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.basiccard.zeitcontrol.de'. (_ssl.c:1000)>)
 FAIL  live/gl-inet-mt300n-v2-3.204-1112.bin  https://fw.gl-inet.com/firmware/mt300n-v2/testing/openwrt-mt300n-v2-3.204-1112.bin  (HTTP 404)
+OK    kirkpatrick/FNA102B.ZIP  556030 bytes  sha256 341271dbce5aa7ed  direct fetch (no index digest; sha256 recorded)  application/zip  zip: 5 entries, 558175 bytes unpacked, crc OK [INSTALL.COM, MEANINGS.OVL, NAMES.OVL, FILE_ID.DIZ, SYSOP.DOC]

@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 353 recipes · Classical deep dive: ADFGX, Fractionated Morse, route &amp; checkerboard ciphers</div>
+  <div class="sub">HTML5 · 360 recipes · Virus encyclopedia: Stoned/Michelangelo/Cascade/Jerusalem signatures &amp; boot-sector triage</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -2149,6 +2149,373 @@ addOp('ean13','Barcode: EAN-13','Barcode','EAN-13 UPC barcode. Enter 12 digits; 
 
 
 /* ============================================================
+   EXE PROTECTION DEEP DIVE — DOS PACKERS, POLYMORPHIC ENGINES,
+   ANTI-DEBUG & ANTI-DISASSEMBLY TRICKS
+   The LZEXE 0.91 decoder below was derived from the packer's own
+   runtime stub (disassembled with tools/decompile_mz.mjs — Ghidra
+   x86:LE:16:Real Mode) and verified byte-for-byte against UNLZEXE
+   0.9 (mywave82/unlzexe, compiled and run on the same samples) —
+   see samples/exeprotect/VECTORS.md and docs/exe-protection-deep-dive.md.
+   PKLITE and LZEXE 0.90 are detected but not decoded (honest deferral).
+============================================================ */
+function expMzParse(b){
+  if(b.length<0x1C||(b[0]|(b[1]<<8))!==0x5A4D) throw new Error('Not an MZ file (need hex of a DOS EXE)');
+  const w=o=>b[o]|(b[o+1]<<8);
+  const cparhdr=w(8), cs=w(22), ip=w(20);
+  const hdr={e_cblp:w(2),e_cp:w(4),e_crlc:w(6),e_cparhdr:cparhdr,e_minalloc:w(10),
+    e_maxalloc:w(12),e_ss:w(14),e_sp:w(16),e_csum:w(18),e_ip:ip,e_cs:cs,
+    entryOff:((cparhdr+cs)<<4)+ip};
+  const relocs=[];
+  for(let i=0;i<hdr.e_crlc;i++){const o=0x1C+4*i;relocs.push([w(o+2),w(o)]);} // [seg,off]
+  hdr.relocs=relocs;
+  return hdr;
+}
+function expDetectPacker(b,hdr){
+  const marker=String.fromCharCode(b[0x1C],b[0x1D],b[0x1E],b[0x1F]);
+  if(((b[0x18]|(b[0x19]<<8))===0x001C)&&(marker==='LZ91'||marker==='LZ09'))
+    return {name:'LZEXE '+(marker==='LZ91'?'0.91':'0.90'),detail:'signature "'+marker+'" at 0x1C (reloc-table pointer forced to 0x1C so the marker doubles as an empty table)'};
+  const ascii=[];for(let i=0;i<b.length;i++)ascii.push(String.fromCharCode(b[i]));
+  const s=ascii.join('');
+  for(const [needle,name] of [['PKLITE Copr.','PKLITE'],['[ MK / TridenT ]','TPE (Trident Polymorphic Engine)']]){
+    const at=s.indexOf(needle);
+    if(at>=0)return {name,detail:'string "'+needle+'" at file offset 0x'+at.toString(16)};
+  }
+  return {name:null,detail:'no known packer signature; entry at file offset 0x'+hdr.entryOff.toString(16)};
+}
+/* LZEXE 0.91: 16-bit flag words LSB-first; 1=literal; 0 0 <2-bit L> <byte> =
+   short match len=L+2 disp=byte-0x100; 0 1 <word w>: lo=w&0xFF hi=w>>8,
+   disp=-0x2000+((hi>>3)<<8)+lo, len=(hi&7)+2; len==0 special byte:
+   0=END 1=segment slide (representation change only) n>=2 run len=n+1.
+   The flag word is reloaded the moment the 16th bit is dispensed —
+   BEFORE the element bytes for that bit are read (stub: dec dx / jne /
+   lodsw precedes the movsb). A lazy reload desynchronises the stream
+   after 15 elements — that off-by-one is the whole game. */
+function expLzexe91Unpack(img){
+  let si=0,flag=0,bits=0;
+  const word=()=>{if(si+1>=img.length)throw new Error('LZEXE stream exhausted — corrupted input?');const w=img[si]|(img[si+1]<<8);si+=2;return w;};
+  const bit=()=>{if(bits===0){flag=word();bits=16;}const cf=flag&1;flag>>>=1;bits--;
+    if(bits===0){flag=word();bits=16;}return cf;};
+  const out=[];const stats={literal:0,short:0,long:0,run:0,slide:0,consumed:0};
+  for(;;){
+    if(bit()===1){out.push(img[si]);si++;stats.literal++;continue;}
+    let disp,length;
+    if(bit()===0){
+      length=((bit()<<1)|bit())+2;
+      disp=img[si]-0x100;si++;stats.short++;
+    }else{
+      const w=word(),lo=w&0xFF,hi=w>>8;
+      disp=-0x2000+((hi>>3)<<8)+lo;
+      const ln=hi&7;
+      if(ln===0){
+        if(si>=img.length)throw new Error('LZEXE stream exhausted — corrupted input?');const cmd=img[si];si++;
+        if(cmd===0){stats.consumed=si;return {out,stats};}
+        if(cmd===1){stats.slide++;continue;}
+        length=cmd+1;stats.run++;
+      }else{length=ln+2;stats.long++;}
+    }
+    const src=out.length+disp;
+    if(src<0)throw new Error('match reaches before start of output at out['+out.length+']+'+disp+' — stream desynchronised');
+    for(let k=0;k<length;k++)out.push(out[src+k]);
+  }
+}
+function expLzexe91Relocs(img){
+  let i=0x5B30+0x158,relOff=0,relSeg=0;const relocs=[];
+  for(;;){
+    if(i>=img.length)throw new Error('LZEXE relocation table exhausted — corrupted input?');
+    let span=img[i];i++;
+    if(span===0){
+      const w=img[i]|(img[i+1]<<8);i+=2;
+      if(w===0){relSeg+=0x0FFF;continue;}
+      if(w===1)return relocs;
+      span=w;
+    }
+    relOff+=span;
+    relSeg+=(relOff&~0x0F)>>4;
+    relOff&=0x0F;
+    relocs.push([relSeg,relOff]);
+  }
+}
+function expLzexe91Rebuild(b,hdr,image,relocs){
+  const inf=[];for(let i=0;i<16;i+=2)inf.push(b[0x20+0x5B30+i]|(b[0x20+0x5B30+i+1]<<8));
+  const w=o=>b[o]|(b[o+1]<<8);
+  const out=[];
+  const push16=v=>{out.push(v&0xFF,(v>>8)&0xFF);};
+  push16(0x5A4D);push16(hdr.e_cblp);push16(hdr.e_cp);push16(relocs.length);
+  push16(0);push16(hdr.e_minalloc);push16(hdr.e_maxalloc);
+  push16(inf[3]);push16(inf[2]);push16(hdr.e_csum);push16(inf[0]);push16(inf[1]);
+  push16(w(0x18));push16(w(0x1A));
+  for(const [seg,off] of relocs){push16(off);push16(seg);}
+  const fpos=out.length,pad=(0x200-fpos)&0x1FF,cparhdr=(fpos+pad)>>4;
+  for(let i=0;i<pad;i++)out.push(0);
+  for(const x of image)out.push(x);
+  const loadsize=image.length;
+  out[2]=((loadsize+(cparhdr<<4))&0x1FF)&0xFF;out[3]=((loadsize+(cparhdr<<4))&0x1FF)>>8;
+  out[4]=((loadsize+(cparhdr<<4)+0x1FF)>>9)&0xFF;out[5]=((loadsize+(cparhdr<<4)+0x1FF)>>9)>>8;
+  out[8]=cparhdr&0xFF;out[9]=cparhdr>>8;
+  if(hdr.e_maxalloc!==0){
+    const minalloc=hdr.e_minalloc-(inf[5]+((inf[6]+15)>>4)+9);
+    out[10]=minalloc&0xFF;out[11]=(minalloc>>8)&0xFF;
+    if(hdr.e_maxalloc!==0xFFFF){
+      const maxalloc=hdr.e_maxalloc-(hdr.e_minalloc-minalloc);
+      out[12]=maxalloc&0xFF;out[13]=(maxalloc>>8)&0xFF;
+    }
+  }
+  return out;
+}
+function expLzexeFull(b){
+  const hdr=expMzParse(b);
+  const pk=expDetectPacker(b,hdr);
+  if(pk.name==='LZEXE 0.90')throw new Error('LZEXE 0.90 detected — this op implements 0.91 only (0.90 uses a different stub and reloc table)');
+  if(pk.name!=='LZEXE 0.91')throw new Error('unsupported packer: '+(pk.name||'none detected'));
+  const image=Array.from(b.slice(hdr.e_cparhdr<<4));
+  const {out,stats}=expLzexe91Unpack(image);
+  const relocs=expLzexe91Relocs(image);
+  const exe=expLzexe91Rebuild(b,hdr,out,relocs);
+  return {hdr,pk,image,out,stats,relocs,exe};
+}
+
+/* ---- op: MZ triage ---- */
+addOp('mzTriage','MZ / DOS EXE Triage','EXE Protection',
+  'Parse a DOS MZ executable (hex in): full header, entry point, relocations, and packer/protector identification (LZEXE 0.90/0.91, PKLITE, Trident Polymorphic Engine marker). Pair with the Ghidra-side loader tools/decompile_mz.mjs for stub decompilation.',
+  [{key:'relocLimit',label:'Show relocations',type:'number',default:'8'}],
+  function(t,a){
+    const b=bytesFromHex(t);
+    const h=expMzParse(b);
+    const pk=expDetectPacker(b,h);
+    const L=[];
+    L.push('MZ header ('+b.length+' bytes)');
+    const names=[['e_cblp','bytes on last page'],['e_cp','pages'],['e_crlc','relocations'],
+      ['e_cparhdr','header paras'],['e_minalloc','min alloc paras'],['e_maxalloc','max alloc paras'],
+      ['e_ss','init SS'],['e_sp','init SP'],['e_csum','checksum'],['e_ip','entry IP'],['e_cs','entry CS']];
+    for(const [k,d] of names)L.push('  '+k.padEnd(11)+'= 0x'+h[k].toString(16).toUpperCase().padStart(4,'0')+'  ('+d+')');
+    L.push('  entry = '+h.e_cs.toString(16).toUpperCase().padStart(4,'0')+':'+h.e_ip.toString(16).toUpperCase().padStart(4,'0')+' (file offset 0x'+h.entryOff.toString(16).toUpperCase()+')');
+    L.push('  load module: '+(b.length-(h.e_cparhdr<<4))+' bytes');
+    const lim=Math.min(h.e_crlc,parseInt(a.relocLimit)||8);
+    L.push('  relocations: '+h.e_crlc);
+    for(let i=0;i<lim;i++)L.push('    ['+i+'] '+h.relocs[i][0].toString(16).toUpperCase().padStart(4,'0')+':'+h.relocs[i][1].toString(16).toUpperCase().padStart(4,'0'));
+    L.push('  packer: '+(pk.name||'unknown')+' — '+pk.detail);
+    if(pk.name==='LZEXE 0.91'){
+      const image=Array.from(b.slice(h.e_cparhdr<<4));
+      const inf=[];for(let i=0;i<14;i+=2)inf.push(image[0x5B30+i]|(image[0x5B30+i+1]<<8));
+      L.push('  LZEXE stub info: orig entry '+inf[1].toString(16).toUpperCase()+':'+inf[0].toString(16).toUpperCase()+
+        ', orig ss:sp '+inf[3].toString(16).toUpperCase()+':'+inf[2].toString(16).toUpperCase()+
+        ', packed paras 0x'+inf[4].toString(16).toUpperCase()+
+        ', grow paras 0x'+inf[5].toString(16).toUpperCase()+
+        ', stub+reloc bytes 0x'+inf[6].toString(16).toUpperCase());
+      L.push('  stub reloc table decodes to '+expLzexe91Relocs(image).length+' entries');
+    }
+    L.push('Docs: docs/exe-protection-deep-dive.md · vectors: samples/exeprotect/VECTORS.md');
+    return L.join('\n');
+  });
+
+/* ---- op: LZEXE 0.91 unpack ---- */
+addOp('lzexeDecode','LZEXE 0.91 Unpack','EXE Protection',
+  'Decode an LZEXE 0.91-packed DOS EXE (hex in) back to its original form. Algorithm derived from the packer runtime stub via Ghidra real-mode disassembly and verified byte-identical against UNLZEXE 0.9. Mode "report": stats and verification data; mode "exe": hex of the rebuilt original EXE (header + relocation table + load module). LZEXE 0.90 and PKLITE are detected by mzTriage but not decoded here.',
+  [{key:'mode',label:'Mode',type:'select',default:'report',options:[['report','Report'],['exe','Unpacked EXE (hex)']]}],
+  function(t,a){
+    const b=bytesFromHex(t);
+    const r=expLzexeFull(b);
+    if(a.mode==='exe')return hexFromBytes(r.exe);
+    const L=[];
+    L.push('LZEXE 0.91 — unpacked '+r.out.length+' bytes (0x'+r.out.length.toString(16).toUpperCase()+') from a '+r.image.length+'-byte stream');
+    L.push('  stream consumed : '+r.stats.consumed+' of '+r.image.length+' bytes (rest is stub + compressed relocs)');
+    L.push('  literals        : '+r.stats.literal);
+    L.push('  short matches   : '+r.stats.short+'  (len 2–5, disp −0x100..−1)');
+    L.push('  long matches    : '+r.stats.long+'  (len 2–9, disp −0x2000..−0x101) + '+r.stats.run+' runs (len 3–256)');
+    L.push('  segment slides  : '+r.stats.slide+'  (16-bit window representation change)');
+    L.push('  relocations     : '+r.relocs.length+' (rebuilt from the stub compressed table)');
+    L.push('  original entry  : '+r.hdr.e_cs.toString(16)+':'+r.hdr.e_ip.toString(16)+' packed → '+
+      '0:0 image-relative (stub info words)');
+    L.push('  rebuilt EXE     : '+r.exe.length+' bytes — feed to mzTriage to inspect');
+    L.push('Reference check: ATR.EXE (99info.zip, dr7 corpus) → image sha256 79c72bc0866721…c7252c5fd7, 55 002 bytes, 132 relocs — matches UNLZEXE 0.9 exactly.');
+    return L.join('\n');
+  });
+
+/* ---- op: TPE data cipher ---- */
+function expTpeCrypt(data,K0,step,method,width,decrypt){
+  const mask=width==='byte'?0xFF:0xFFFF;
+  const bytes=width==='byte';
+  if(!bytes&&data.length%2)throw new Error('word mode needs an even number of bytes (use byte mode or pad)');
+  const n=bytes?data.length:data.length>>1;
+  const out=new Array(data.length);
+  let K=K0&0xFFFF;
+  const apply=(v,k)=>method==='xor'?((v^k)&mask):method==='add'?((v+k)&mask):((v-k)&mask);
+  const unapply=(v,k)=>method==='xor'?((v^k)&mask):method==='add'?((v-k)&mask):((v+k)&mask);
+  for(let i=0;i<n;i++){
+    if(bytes){K=((K&0xFF)+step)&0xFFFF;}else{K=(K+step)&0xFFFF;}
+    if(bytes){
+      const v=data[i];
+      out[i]=decrypt?unapply(v,K&0xFF):apply(v,K&0xFF);
+    }else{
+      const v=data[2*i]|(data[2*i+1]<<8);
+      const r=decrypt?unapply(v,K):apply(v,K);
+      out[2*i]=r&0xFF;out[2*i+1]=(r>>8)&0xFF;
+    }
+  }
+  return out;
+}
+addOp('tpeCrypt','TPE Cipher (Trident Polymorphic Engine)','EXE Protection',
+  'Data cipher of the Trident Polymorphic Engine (TPE v1.1–1.3, "[ MK / TridenT ]", samples/src/tpe_v1*.asm): a progressive key K_i = K0 + i·S applied with XOR, ADD or SUB, over bytes or 16-bit words — exactly what the engine\'s generated decryptor undoes. This op implements the cipher core (do_encrypt + the blup/lup loops), not the mutating-decryptor generator. Word mode mirrors lodsw/stosw; byte mode mirrors the engine\'s xor dh,dh quirk (the carry out of the key step is dropped each byte).',
+  [
+    {key:'key',label:'Key K0 (hex word)',type:'text',default:'beef'},
+    {key:'step',label:'Key step S (hex word)',type:'text',default:'0001'},
+    {key:'method',label:'Method',type:'select',default:'xor',options:[['xor','XOR'],['add','ADD'],['sub','SUB']]},
+    {key:'width',label:'Width',type:'select',default:'word',options:[['word','Word (16-bit)'],['byte','Byte']]},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]},
+    {key:'infmt',label:'Input',type:'select',default:'hex',options:[['hex','Hex'],['text','Text']]}
+  ],
+  function(t,a){
+    const K0=(parseInt(a.key,16)||0)&0xFFFF;   // key & step are 16-bit words in hex: 'beef' = 0xBEEF
+    const S=(parseInt(a.step,16)||0)&0xFFFF;
+    const inb=a.infmt==='hex'?bytesFromHex(t):utf8Encode(t);
+    const out=expTpeCrypt(Array.from(inb),K0,S,a.method,a.width,a.mode==='decrypt');
+    return hexFromBytes(out);
+  });
+
+/* ---- op: Johansson opcode substitutions ---- */
+const EXEPROT_JOHANSSON=[
+  ["ADC AX,BX","13C3","11D8"], ["ADD AX,BX","03C3","01D8"], ["ADC AX,DX","13C2","11D0"],
+  ["ADD AX,DX","03C2","01D0"], ["ADC BX,AX","13D8","11C3"], ["ADD BX,AX","03D8","01C3"],
+  ["ADC BX,CX","13D9","11CB"], ["ADD BX,CX","03D9","01CB"], ["ADC CX,BX","13CB","11D9"],
+  ["ADD CX,BX","03CB","01D9"], ["ADC CX,DX","13CA","11D1"], ["ADD CX,DX","03CA","01D1"],
+  ["ADC DX,AX","13D0","11C2"], ["ADD DX,AX","03D0","01C2"], ["ADC DX,CX","13D1","11CA"],
+  ["ADD DX,CX","03D1","01CA"], ["ADC SI,AX","13F0","11C6"], ["ADD SI,AX","03F0","01C6"],
+  ["ADC SI,CX","13F1","11CE"], ["ADD SI,CX","03F1","01CE"], ["ADC DI,AX","13F8","11C7"],
+  ["ADD DI,AX","03F8","01C7"], ["ADC DI,CX","13F9","11CF"], ["ADD DI,CX","03F9","01CF"],
+  ["ADC AL,BL","12C3","10D8"], ["ADC AL,AL","12C0","10D0"], ["ADD AL,BL","00D8","02C7"],
+  ["ADC BL,AL","12D8","10C3"], ["ADC BL,CL","12D9","10CB"], ["ADD AL,DL","00D0","02C6"],
+  ["ADC CL,BL","12CB","10D9"], ["ADC CL,DL","12CA","10D1"], ["ADD BL,BL","02DB","02DF"],
+  ["ADC DL,AL","12D0","10C2"], ["ADD BL,CL","00CB","02DD"], ["ADC DL,CL","12D1","10CA"],
+  ["ADC AH,BL","12E3","10DC"], ["ADC AH,DL","12E2","10D4"], ["ADD CL,BL","00D9","02CF"],
+  ["ADC BH,AL","12F8","10C7"], ["ADC BH,CL","12F9","10CF"], ["ADD CL,DL","00D1","02CA"],
+  ["ADC CH,BL","12EB","10DD"], ["ADD DL,AL","00C2","02D4"], ["ADC CH,DL","12EA","10D5"],
+  ["ADC DH,AL","12F0","10C6"], ["ADD DL,CL","00CA","02D5"], ["ADC DH,CL","12F1","10CE"],
+  ["ADC AH,BH","12E7","10FC"], ["ADD AH,BL","00DC","02E3"], ["ADC AH,DH","12E6","10F4"],
+  ["ADD AH,DL","00D4","02E2"], ["ADC BH,AH","12FC","10E7"], ["ADD BH,AL","00C7","02F8"],
+  ["ADC BH,CH","12FD","10EF"], ["ADD BH,CL","00CF","02F9"], ["ADC CH,BH","12EF","10FD"],
+  ["ADD CH,AL","00DD","02EB"], ["ADC CH,DH","12EE","10F5"], ["ADD CH,CL","00D5","02EA"],
+  ["ADC DH,AH","12F4","10E6"], ["ADD DH,AL","00C6","02F0"], ["ADC DH,CH","12F5","10EE"],
+  ["ADD DH,CL","00CE","02F1"], ["ADC AL,BH 12 F8 10 F8 2 ADD AH,BH","00FC","02E7"], ["ADC AL,DH 12 F0 10 F0 2 ADD AH,DH","00F4","02E6"],
+  ["ADC BL,AH 12 E3 10 E3 2 ADD BH,AH","00E7","02FC"], ["ADC BL,CH 12 EB 10 EB 2 ADD BH,CH","00EF","02FD"], ["ADC CL,BH 12 F9 10 F9 2 ADD CH,BH","00FD","02EF"],
+  ["ADC CL,CH 12 F1 10 F1 2 ADD CH,DH","00F5","02EE"], ["ADC DL,AH 12 E2 10 E2 2 ADD DH,AH","00E6","02F4"], ["ADC DL,CH 12 EA 10 EA 2 ADD DH,CH","00EE","02F5"],
+  ["ADC AX,SI","13C6","11F0"], ["ADD AL,BH","00F8","02C7"], ["ADC CX,SI","13CE","11F1"],
+  ["ADD AL,DH","00F0","02C6"], ["ADC AX,DI","13C7","11F8"], ["ADD BL,AH","00E3","02DC"],
+  ["ADC CX,DI","13CF","11F9"], ["ADD BL,CH","00EB","02DD"], ["ADD CL,BH","00F9","02CF"],
+  ["ADD CL,DH","00F1","02CE"], ["ADD DL,AH","00E2","02D4"], ["ADD DL,CH","00EA","02D5"],
+  ["ADD AX,SI","01F0","03C6"], ["ADD CX,SI","01F1","03CE"], ["ADD AX,DI","01F8","03C7"],
+  ["ADD CX,DI","01F9","03CF"], ["AND AX,BX","23C3","21D8"], ["CMP AX,BX","3BC3","39D8"],
+  ["AND AX,DX","23C2","21D0"], ["CMP AX,DX","3BC2","39D0"], ["AND BX,AX","23D8","21C3"],
+  ["CMP BX,AX","3BD8","39C3"], ["AND BX,CX","23D9","21CB"], ["CMP BX,CX","3BD9","39CB"],
+  ["AND CX,BX","23CB","21D9"], ["CMP CX,BX","3BCB","39D9"], ["AND CX,DX","23CA","21D1"],
+  ["CMP CX,DX","3BCA","39D1"], ["AND DX,AX","23D0","21C2"], ["CMP DX,AX","3BD0","39C2"],
+  ["AND DX,CX","23D1","21CA"], ["CMP DX,CX","3BD1","39CA"], ["AND SI,AX","23F0","21C6"],
+  ["CMP SI,AX","3BF0","39C6"], ["AND SI,CX","23F1","21CE"], ["CMP SI,CX","3BF1","39CE"],
+  ["AND DI,AX","23F8","21C7"], ["CMP DI,AX","3BF8","39C7"], ["AND DI,CX","23F9","21CF"],
+  ["CMP DI,CX","3BF9","39CF"], ["AND AX,SI","23C6","21F0"], ["CMP AX,SI","3BC6","39F0"],
+  ["AND CX,SI","23CE","21F1"], ["CMP CX,SI","3BCE","39F1"], ["AND AX,DI","23C7","21F8"],
+  ["CMP AX,DI","3BC7","39F8"], ["AND CX,DI","23CF","21F9"], ["CMP CX,DI","3BCF","39F9"],
+  ["MOV AX,AX 8B C0 89 C0 2 OR AX,BX","0BC3","09D8"], ["MOV AX,CX 8B C1 89 C8 902 OR AX,DX","0BC2","09D6"], ["MOV BX,BX 8B DB 89 DB 2 OR AX,SI","0BC6","09F0"],
+  ["MOV BX,DX 8B DA 89 D3 902 OR AX,DI","0BC7","09F8"], ["MOV BX,SI","8BDE","89F3"], ["OR BX,AX","0BD8","09C3"],
+  ["MOV BX,DI","8BDF","89FB"], ["OR BX,CX","0BD9","09CB"], ["MOV CX,AX 8B C8 89 C1 902 OR CX,BX","0BCB","09D9"],
+  ["MOV CX,CX 8B C9 89 C9 2 OR CX,DX","0BCA","09D1"], ["MOV DX,BX 8B D3 89 DA 902 OR CX,SI","0BDE","09F1"], ["MOV DX,DX 8B D2 89 D2 2 OR CX,DI","0BCF","09F9"],
+  ["MOV DX,SI","8BD6","89F2"], ["OR DX,AX","0BD0","09C2"], ["MOV DX,DI","8BD7","89FA"],
+  ["OR DX,CX","0BD1","09CA"], ["MOV SI,BX","8BF3","89DE"], ["OR SI,AX","0BF0","09C6"],
+  ["MOV SI,DX","8BF2","89D6"], ["OR SI,CX","0BF1","09CE"], ["MOV SI,SI 8B F6 89 F6 2 OR DI,AX","0BF8","09C7"],
+  ["MOV SI,DI 8B F7 89 FE 902 OR DI,CX","0BF9","09CF"], ["MOV DI,BX","8BFB","89DF"], ["OR AL,BL","0AC3","08D8"],
+  ["MOV DI,DX","8BFA","89D7"], ["OR AL,DL","0AC2","08D0"], ["MOV DI,SI 8B FE 89 F7 902 OR BL,AL","0AD8","08C3"],
+  ["MOV DI,DI 8B FF 89 FF 2 OR BL,CL","0AD9","08CB"], ["MOV AL,AL 8A C0 88 C0 2 OR CL,BL","0ACB","08D9"], ["MOV AL,CL 8A C1 88 C8 902 OR CL,DL","0ACA","08D1"],
+  ["MOV BL,DL 8A DA 88 D3 902 OR DL,AL","0AD0","08C2"], ["MOV CL,AL 8A C8 88 C1 902 OR DL,CL","0AD1","08CA"], ["MOV CL,CL 8A C9 88 C9 2 OR AH,BL","0AE3","08DC"],
+  ["MOV DL,BL 8A DA 88 DA 2 OR AH,DL","0AE2","08D4"], ["MOV DL,DL 8A D2 88 D2 2 OR BH,AL","0AF8","08C7"], ["MOV AH,AL","8AE0","88C4"],
+  ["OR BH,CL","0AF9","08CF"], ["MOV AH,CL","8AE1","88CC"], ["OR CH,BL","0AEB","08DD"],
+  ["MOV BH,BL","8AFB","88DF"], ["OR CH,DL","0AEA","08D5"], ["MOV BH,DL","8AFA","88D7"],
+  ["OR DH,AL","0AF0","08C6"]
+];
+addOp('opcodeSubst','Johansson Opcode Substitution','EXE Protection',
+  'Karsten Johansson\'s "Byte Substitutions for Intel Opcodes" (PC Scavenger, 1993 — samples/src/byte-substitutions.txt): 163 published byte-pairs that interconvert x86 register instructions, so XORing a code region with one value flips whole sets of encodings — the trick he proposed for mutating bytecode, stamping signatures, and hiding text inside working executables. Most pairs are the direction swap (op r,r ↔ op r/m,r — equivalent for commutative ops); a few published pairs change operands, so read the report. Substitution is byte-exact and reversible (apply the other direction).',
+  [
+    {key:'direction',label:'Direction',type:'select',default:'12',options:[['12','set 1 → set 2'],['21','set 2 → set 1'],['report','Report only']]},
+    {key:'infmt',label:'Input',type:'select',default:'hex',options:[['hex','Hex'],['text','Text']]}
+  ],
+  function(t,a){
+    const inb=a.infmt==='hex'?Array.from(bytesFromHex(t)):Array.from(utf8Encode(t));
+    const hits=[];
+    const map1=new Map(),map2=new Map();
+    for(const [name,s1,s2] of EXEPROT_JOHANSSON){
+      map1.set(s1,[name,s2]);map2.set(s2,[name,s1]);
+    }
+    const b2h=x=>x.toString(16).toUpperCase().padStart(2,'0');
+    let out=inb.slice();
+    for(let i=0;i+1<inb.length;i++){
+      const key=b2h(inb[i])+b2h(inb[i+1]);
+      let m=null,from=0,to=0;
+      if(a.direction!=='21'&&map1.has(key)){m=map1.get(key);from=1;to=2;}
+      else if(a.direction!=='12'&&map2.has(key)){m=map2.get(key);from=2;to=1;}
+      if(!m)continue;
+      const repl=m[1];
+      hits.push('0x'+i.toString(16).toUpperCase().padStart(4,'0')+'  '+key+' → '+repl+'  ('+m[0]+', set '+from+'→'+to+')');
+      if(a.direction!=='report'){
+        out[i]=parseInt(repl.substr(0,2),16);
+        out[i+1]=parseInt(repl.substr(2,2),16);
+        i++; // consume the pair
+      }
+    }
+    if(a.direction==='report')return hits.length?('Johansson substitutions found: '+hits.length+'\n\n'+hits.join('\n')):'no table entries matched';
+    return 'substituted '+hits.length+' byte pair(s)\n'+(hits.length?hits.join('\n')+'\n':'')+'\noutput (hex):\n'+hexFromBytes(out);
+  });
+
+/* ---- op: anti-debug scan ---- */
+const EXEPROT_ANTIDEBUG=[
+  {sig:[0xEB,0xFE],name:'JMP $ (jump-to-self)',why:'Tight self-loop: a single-stepping debugger never leaves it; only run/continue escapes. samples/src/anti-debug1a.asm'},
+  {sig:[0xCD,0x01],name:'INT 01h',why:'Trap-flag interrupt: hooking or invoking INT 1 catches debuggers and single-step traces.'},
+  {sig:[0xF1],name:'ICEBP (undocumented INT 1)',why:'One-byte trap invisible in INT-vector scans; trips on trace. Favourite of 386-era anti-debug code.'},
+  {sig:[0xCC],name:'INT3 opcode',why:'Breakpoint byte — planted to detect debuggers that overwrite it, or used as a marker.'},
+  {sig:[0xB8,0x08,0x35],name:'MOV AX,3508h (get INT 8 vector)',why:'First step of a timer-interrupt hijack: the real program body runs from the timer ISR, so a tracer never executes it. samples/src/anti-debug1e.asm'},
+  {sig:[0xB8,0x01,0x35],name:'MOV AX,3501h (get INT 1 vector)',why:'Reads the trap vector to spot an installed debugger.'},
+  {sig:[0xF6,0xF4],name:'DIV AH (deliberate divide error)',why:'Forces INT 0 with a handler the code installed itself — control-flow redirection that punishes tracers. samples/src/anti-debug1d.asm'}
+];
+addOp('antiDebugScan','Anti-Debug / Anti-Disassembly Scan','EXE Protection',
+  'Scan 16-bit x86 code (hex in) for classic DOS-era anti-debug and anti-disassembly signatures from the samples/src corpus (1990s virus/anti-debug techniques): jump-to-self hangs, INT 1 / ICEBP / INT 3 traps, timer-interrupt hijacks, divide-by-zero redirection, PUSHF/POPF trap-flag inspection, and self-modifying stores that patch the arguments of an upcoming INT 21h. Signature scan with explanations — not a disassembler.',
+  [],
+  function(t){
+    const b=Array.from(bytesFromHex(t));
+    const b2h=x=>x.toString(16).toUpperCase().padStart(2,'0');
+    const at=[];
+    const found=[];
+    const push=(off,name,why)=>found.push('0x'+off.toString(16).toUpperCase().padStart(4,'0')+'  '+name+'\n    '+why);
+    const match=(i,sig)=>{for(let k=0;k<sig.length;k++)if(b[i+k]!==sig[k])return false;return true;};
+    const sigHits={};
+    for(const s of EXEPROT_ANTIDEBUG){
+      for(let i=0;i+s.sig.length<=b.length;i++){
+        if(match(i,s.sig)){push(i,s.name,s.why);sigHits[s.name]=true;}
+      }
+    }
+    // backward short jumps (overlap-trick suspects)
+    for(let i=0;i+1<b.length;i++){
+      if(b[i]===0xEB&&(b[i+1]&0x80)&&b[i+1]!==0xFE){
+        push(i,'backward short jump (EB '+b2h(b[i+1])+')','Jumps into earlier bytes — often the middle of the previous instruction, desynchronising traced/linear disassembly (overlapping-instruction trick, anti-debug1a.asm)');
+      }
+    }
+    // PUSHF ... POPF nearby = trap-flag inspection
+    for(let i=0;i<b.length;i++){
+      if(b[i]===0x9C){
+        for(let j=i+1;j<Math.min(i+9,b.length);j++){
+          if(b[j]===0x9E){push(i,'PUSHF … POPF pair','Saves then inspects FLAGS — the classic trap-flag (bit 8) check that reveals a debugger is single-stepping.');break;}
+        }
+      }
+    }
+    // self-modifying store shortly before INT 21h (anti-debug1b/1c)
+    for(let i=0;i+2<b.length;i++){
+      if((b[i]===0xC6&&b[i+1]===0x06)||(b[i]===0x89&&(b[i+1]&0xC7)===0x06)){
+        for(let j=i+3;j<Math.min(i+18,b.length-1);j++){
+          if(b[j]===0xCD&&b[j+1]===0x21){push(i,(b[i]===0xC6?'MOV byte [imm16], imm8':'MOV word [imm16], imm16')+' before INT 21h','Self-modifying store that rewrites the DOS call arguments/message pointer just in time — traced execution sees different bytes than a straight run (anti-debug1b/1c).');break;}
+        }
+      }
+    }
+    if(!found.length)return 'no anti-debug signatures matched ('+b.length+' bytes scanned)';
+    return 'anti-debug / anti-disassembly signatures: '+found.length+' hit(s)\n\n'+found.join('\n');
+  });
+
+/* ============================================================
    RECIPE PACKS (cipher suites)
 ============================================================ */
 const RECIPE_PACKS={
@@ -2190,6 +2557,8 @@ const RECIPE_PACKS={
  'Unicode Homoglyph & Zero-Width Scanner':[['unicodeConfusable',{}],['unicodeInspect',{}],['unicodeStyles',{}]],
  'GCWizard Trifid / Nihilist / Navajo / Wheel':[['gcwTrifid',{}],['gcwNihilist',{}],['gcwNavajo',{}],['gcwCipherWheel',{}]],
  'GCWizard BCD / Gray / Crosssum':[['gcwBcdGray',{}],['gcwCrosssum',{}]],
+ 'EXE Packer Triage & LZEXE Unpack (Ghidra-verified)':[['mzTriage',{}],['lzexeDecode',{}]],
+ 'DOS Anti-Debug & Polymorphic Ops (TPE, Johansson)':[['antiDebugScan',{}],['tpeCrypt',{}],['opcodeSubst',{}]],
  'More Gutenberg Ainslie / Peterson / WU':[['gutenbergAinslie',{}],['gutenbergMore',{}]],
  'Bouncy Castle RC5 / RC6 / SAFER Kitchen':[['rc5',{}],['rc6',{}],['saferK64',{}]],
  'GCWizard Formula Solver & More Symbols':[['gcwFormula',{}],['gcwSymbolMore',{}],['gcwSymbolTables',{}]],
@@ -23045,8 +23414,123 @@ addOp('keyedSubstitution','Keyed Substitution Cipher','Classical',
     return out;
   });
 
+/* ============ VIRUS ANALYSIS OPERATIONS ============
+   Signatures below were verified byte-for-byte against the real samples in
+   samples/archive/virushistory/ (SnorreFagerland/virushistory corpus) and the
+   Ghidra real-mode decompilations documented in docs/virus-encyclopedia.md:
+   Stoned (stoned-standard.boo), Michelangelo (michelangelo.boo),
+   Cascade 1701 (cascade1701a/b.vom), Jerusalem (jerusalem664.vom).
+   Every hit is a candidate, not a verdict — match the whole family context
+   (entry style, INT 13h usage, strings) before calling a file infected. */
+
+const VS_SIGS=[
+  {name:'Stoned (standard)',hex:'ea0500007c',at:0,kind:'entry far-jmp 0000:7C05',
+   note:'far JMP at offset 0 — a genuine DOS boot sector starts with a near JMP (E9/EB) so this sector never was a normal boot record'},
+  {name:'Stoned (standard)',hex:'596f7572205043206973206e6f772053746f6e6564',kind:'string',
+   note:'"Your PC is now Stoned!" (samples/archive/virushistory/stoned-standard.boo @0x18A)'},
+  {name:'Stoned (standard)',hex:'4c4547414c495345204d4152494a55414e41',kind:'string',
+   note:'"LEGALISE MARIJUANA!" (@0x1A5)'},
+  {name:'Michelangelo (A)',hex:'e9ac00',at:0,kind:'entry near-jmp',
+   note:'entry jump over a non-BPB data block — pair with INT 13h density before concluding'},
+  {name:'Cascade 1701',hex:'e800005b81eb',kind:'decryptor',
+   note:'call $+3 / pop bx / sub bx,imm — position-independent decryptor prologue (cascade1701a.vom @0x68)'},
+  {name:'Cascade 1701',hex:'3134312446'+'4c75f8',kind:'decryptor',
+   note:'xor [si],si / xor [si],sp / inc si / dec sp / jne — the overlapping-word self-decryptor (@0x7F)'},
+  {name:'Jerusalem (standard family)',hex:'b4f1cd2180fcf174',kind:'install-check',
+   note:'mov ah,F1h / int 21h / cmp ah,F1h / je — TSR install check (jerusalem664.vom @0x100)'},
+  {name:'Jerusalem (standard family)',hex:'80fca175',kind:'install-check',
+   note:'cmp ah,A1h / jne — second marker byte the resident copy answers'}
+];
+
+addOp('virusSigScan','DOS Virus Signature Scan','Virus Analysis',
+  'Scan a 512-byte boot sector, COM or EXE image (hex in) for verified DOS-virus signatures: Stoned, Michelangelo, Cascade 1701 (self-decryptor), and the Jerusalem INT 21h F1h/A1h install check. Every signature was verified byte-for-byte against the real samples in samples/archive/virushistory/ and cross-checked with Ghidra real-mode decompilation (docs/virus-encyclopedia.md). A hit is a candidate, not a verdict: boot viruses must also be judged on entry style, INT 13h density and boot-sector sanity (see the DOS Boot Sector Parse op).',
+  [{key:'maxHits',label:'Max hits shown',type:'number',default:'20'}],
+  function(t,a){
+    const b=bytesFromHex(t);
+    const L=['DOS virus signature scan — '+b.length+' bytes scanned'];
+    let hits=0;
+    for(const s of VS_SIGS){
+      if(!s.hex)continue;
+      const needle=bytesFromHex(s.hex);
+      let found=[];
+      for(let i=0;i+needle.length<=b.length;i++){
+        let ok=true;
+        for(let j=0;j<needle.length;j++)if(b[i+j]!==needle[j]){ok=false;break;}
+        if(ok){found.push(i);if(found.length>=3)break;}
+      }
+      if('at' in s)found=found.filter(f=>f===s.at);
+      if(found.length){
+        hits++;
+        for(const f of found)L.push('  HIT  0x'+f.toString(16).toUpperCase().padStart(4,'0')+'  '+s.name+' — '+s.kind+' ('+s.note+')');
+      }
+    }
+    const int13=[];for(let i=0;i+1<b.length;i++)if(b[i]===0xCD&&b[i+1]===0x13)int13.push(i);
+    const int21=[];for(let i=0;i+1<b.length;i++)if(b[i]===0xCD&&b[i+1]===0x21)int21.push(i);
+    L.push('  INT 13h sites: '+int13.length+(int13.length?' (offsets '+int13.slice(0,8).map(x=>'0x'+x.toString(16).toUpperCase()).join(', ')+(int13.length>8?' …':'')+')':''));
+    L.push('  INT 21h sites: '+int21.length+(int21.length?' (offsets '+int21.slice(0,8).map(x=>'0x'+x.toString(16).toUpperCase()).join(', ')+(int21.length>8?' …':'')+')':''));
+    if(b.length>=512)L.push('  sector signature: '+b[510].toString(16).toUpperCase().padStart(2,'0')+' '+b[511].toString(16).toUpperCase().padStart(2,'0')+(b[510]===0x55&&b[511]===0xAA?' (55 AA — valid)':' (missing 55 AA)'));
+    if(hits===0)L.push('  no verified signature matched — unknown or polymorphic; feed the image to mzTriage and decompile_boot for structure');
+    L.push('Corpus: samples/archive/virushistory/ · analysis: docs/virus-encyclopedia.md');
+    return L.join('\n');
+  });
+
+/* ---- op: DOS boot sector / MBR parse ---- */
+addOp('dosBootSector','DOS Boot Sector / MBR Parse','Virus Analysis',
+  'Parse a 512-byte boot sector or MBR (hex in): entry jump, OEM name, full BIOS Parameter Block (BPB), media descriptor, 55 AA signature and the 4-entry partition table. Flags the structural tells that boot viruses get wrong — a far JMP at offset 0 (Stoned), an entry jump that lands inside the BPB, impossible BPB geometry, or a missing partition table on an MBR-shaped sector. Verified against stoned-standard.boo, michelangelo.boo and healthy DOS floppies.',
+  [{key:'showParts',label:'Show partition table',type:'select',default:'yes',options:[['yes','Yes'],['no','No']]}],
+  function(t,a){
+    const b=bytesFromHex(t);
+    if(b.length<64)throw new Error('need at least 64 bytes (got '+b.length+') — a full sector is 512');
+    const H=(i,n)=>{let v=0;for(let j=n-1;j>=0;j--)v=(v<<8)|b[i+j];return v;};
+    const hx=v=>v.toString(16).toUpperCase().padStart(2,'0');
+    const L=['DOS boot sector / MBR — '+b.length+' bytes'];
+    const e0=b[0],e1=b[1],e2=b[2];
+    let entry='??';
+    if(e0===0xE9)entry='near JMP +'+H(1,2)+' -> 0x'+((3+H(1,2))&0xFFFF).toString(16).toUpperCase();
+    else if(e0===0xEB)entry='short JMP +'+b[2]+' -> 0x'+((3+b[2])&0xFFFF).toString(16).toUpperCase()+(e2===0x90?' (NOP-padded)':'');
+    else if(e0===0xEA)entry='far JMP '+H(3,2).toString(16).toUpperCase().padStart(4,'0')+':'+H(1,2).toString(16).toUpperCase().padStart(4,'0');
+    else entry='byte 0x'+e0.toString(16).toUpperCase()+' — no standard entry jump';
+    L.push('  entry: '+entry);
+    if(e0===0xEA)L.push('    ^ far JMP at offset 0: real DOS boot sectors start with a near JMP (E9/EB) followed by the BPB at 0x0B — this is a boot-virus layout (Stoned: EA 05 00 00 7C)');
+    const oem=String.fromCharCode(...b.slice(3,11)).replace(/[^\x20-\x7e]/g,'.');
+    L.push('  OEM name @0x03: "'+oem+'"'+(/^[A-Z0-9._ ]{5,8}$/.test(oem)?'':'  (not printable ASCII — data, not an OEM string)'));
+    const bps=H(11,2),spc=b[13],res=H(14,2),nfats=b[16],root=H(17,2),tot16=H(19,2),
+          media=b[21],spf=H(22,2),spt=H(24,2),heads=H(26,2),hidden=H(28,2),tot32=H(32,4);
+    const driv=b.length>0x25?b[0x25]:0, sig2=b.length>0x26?H(0x26,2):0;
+    const isBpb=bps>=128&&bps<=4096&&(bps&(bps-1))===0&&spc>0&&(spc&(spc-1))===0&&nfats>0&&nfats<=4&&res>0&&spf>0;
+    if(isBpb){
+      const mediaNames={0xE5:'fixed disk (old)',0xF0:'1.44M/2.88M 3.5" or other removable',0xF8:'fixed disk',0xF9:'720K 3.5" / 1.2M 5.25"',0xFA:'320K 5.25"',0xFB:'640K 3.5"',0xFC:'180K 5.25"',0xFD:'360K 5.25"',0xFE:'160K 5.25"',0xFF:'320K 5.25"'};
+      L.push('  BPB: '+bps+' B/sector, '+spc+' sectors/cluster, '+res+' reserved, '+nfats+' FAT'+(nfats>1?'s':'')+', '+root+' root entries');
+      L.push('       total '+(tot16||tot32)+' sectors ('+(((tot16||tot32)*(bps||512))/1024).toFixed(0)+' KiB), media 0x'+media.toString(16).toUpperCase().padStart(2,'0')+' ('+(mediaNames[media]||'unknown')+')');
+      L.push('       '+spf+' sectors/FAT, '+spt+' sectors/track, '+heads+' heads, '+hidden+' hidden sectors');
+      if(e0===0xE9&&(3+H(1,2))>0x0B&&isBpb)L.push('    ^ entry jump lands at/after 0x0B — fine for a real booter; Michelangelo keeps a normal-looking near JMP, so a clean BPB is NOT proof of health');
+    } else {
+      L.push('  no sane BPB @0x0B (bytes/sector=0x'+bps.toString(16)+', sectors/cluster=0x'+spc.toString(16)+') — either an MBR, a raw loader, or a boot virus that overwrote it');
+    }
+    if(e0===0xE9&&((3+H(1,2))>=0x0B)&&!isBpb)L.push('    ^ near JMP over a non-BPB block: the Michelangelo pattern (E9 AC 00 then virus data) — check INT 13h density with virusSigScan');
+    if(b.length>=510){
+      L.push('  sector signature @0x1FE: '+hx(b[510])+' '+hx(b[511])+(b[510]===0x55&&b[511]===0xAA?' (valid)':' (MISSING 55 AA — not bootable as-is)'));
+    }
+    if(a.showParts==='yes'&&b.length>=510){
+      const types={0x01:'FAT12',0x04:'FAT16 <32M',0x05:'extended',0x06:'FAT16B',0x07:'NTFS/HPFS/exFAT',0x0B:'FAT32 CHS',0x0C:'FAT32 LBA',0x0E:'FAT16 LBA',0x0F:'extended LBA',0x82:'Linux swap',0x83:'Linux',0xA5:'FreeBSD'};
+      for(let p=0;p<4;p++){
+        const o=0x1BE+16*p;
+        if(b.slice(o,o+16).every(x=>x===0)){continue;}
+        const boot=b[o],pType=b[o+4],lbaval=H(o+8,4);
+        L.push('  partition['+p+'] '+(boot===0x80?'BOOT':'    ')+' type 0x'+pType.toString(16).toUpperCase().padStart(2,'0')+' ('+(types[pType]||'?')+') start LBA '+lbaval+', '+H(o+12,4)+' sectors');
+      }
+    }
+    L.push('Corpus: samples/archive/virushistory/ · analysis: docs/virus-encyclopedia.md');
+    return L.join('\n');
+  });
+
 zenInit();
 sfxInitUi();
+renderOpsList();renderRecipe();
+</script>
+</body>
+</html>
+InitUi();
 renderOpsList();renderRecipe();
 </script>
 </body>
