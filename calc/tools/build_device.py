@@ -24,9 +24,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CORE_C = ["core/tables.c", "core/util.c", "core/fb.c", "core/keys.c", "core/grid.c", "core/app.c"]
+APP = "sitek"
+INCLUDES = ["core"]
 
 INSTALL = {
-    "sdcc": "apt install sdcc / brew install sdcc — then put ti83plus.inc (TI-83+ SDK) in calc/plat/ti83/",
+    "sdcc": "apt install sdcc / brew install sdcc — then put ti83plus.inc (TI-83+ SDK) next to the port's plat/ti83/lcd.asm",
     "tigcc": "install TIGCC or GCC4TI (http://tigcc.ticalc.org/)",
 }
 
@@ -60,6 +62,25 @@ SPECS = {
 def load_devices():
     data = json.loads((ROOT / "devices.json").read_text())
     return {d["id"]: d for d in data["devices"]}
+
+
+def load_port(root: Path):
+    """Read <root>/build.json, if any, and retarget this builder at that port.
+
+    A second app (see socal-calc/) reuses this orchestrator verbatim: the only
+    things that differ are the source list, the include path, the output name
+    and which devices have a platform layer.
+    """
+    global ROOT, CORE_C, APP, INCLUDES, SPECS
+    ROOT = root
+    cfg_path = root / "build.json"
+    if not cfg_path.exists():
+        return
+    cfg = json.loads(cfg_path.read_text())
+    APP = cfg.get("app", APP)
+    CORE_C = cfg.get("core", CORE_C)
+    INCLUDES = cfg.get("includes", INCLUDES)
+    SPECS = cfg.get("specs", SPECS)
 
 
 def run(cmd, cwd=ROOT):
@@ -98,13 +119,16 @@ def build(dev_id, dev, strict=False):
             rel = out / (Path(src).stem + ".rel")
             run(["sdasz80", "-p", "-g", "-o", str(rel), src])
             rels.append(str(rel))
-        ihx = out / ("sitek.ihx")
-        binf = out / ("sitek.bin")
+        ihx = out / (APP + ".ihx")
+        binf = out / (APP + ".bin")
         org = spec["org"]
         if dev_id == "ti85":
             org = subprocess.os.environ.get("SITEK_TI85_ORG", org)
-        cmd = ["sdcc", "-mz80", "--no-std-crt0", "--code-loc", org, "--data-loc", "0",
-               "-Icore", "-o", str(ihx)] + rels + CORE_C + [spec["main"]]
+        incs = []
+        for inc in INCLUDES:
+            incs += ["-I" + inc]
+        cmd = ["sdcc", "-mz80", "--no-std-crt0", "--code-loc", org, "--data-loc", "0"] \
+            + incs + ["-o", str(ihx)] + rels + CORE_C + [spec["main"]]
         run(cmd)
         run(["sdobjcopy", "-I", "ihex", "-O", "binary", str(ihx), str(binf)])
         payload = binf
@@ -112,13 +136,18 @@ def build(dev_id, dev, strict=False):
         payload = None
 
     if spec["pack"]:
-        target = ROOT / "build" / ("sitek-%s.%s" % (dev_id, dev["ext"]))
-        run([sys.executable, "tools/ti_pack.py", "pack", "--device", dev_id,
+        target = ROOT / "build" / ("%s-%s.%s" % (APP, dev_id, dev["ext"]))
+        run([sys.executable, str(Path(__file__).with_name("ti_pack.py")),
+             "--devices", str(ROOT / "devices.json"), "--app", APP.upper(),
+             "pack", "--device", dev_id, "--name", dev["var_name"],
              "--input", str(payload), "--out", str(target), "--hexdump"])
         return target
 
-    target = ROOT / "build" / ("sitek-%s.%s" % (dev_id, dev["ext"]))
-    run(["tigcc", "-O2", "-Wall", "-Icore", "-o", str(target), spec["main"]] + CORE_C)
+    target = ROOT / "build" / ("%s-%s.%s" % (APP, dev_id, dev["ext"]))
+    incs = []
+    for inc in INCLUDES:
+        incs += ["-I" + inc]
+    run(["tigcc", "-O2", "-Wall"] + incs + ["-o", str(target), spec["main"]] + CORE_C)
     return target
 
 
@@ -127,7 +156,11 @@ def main(argv=None):
     ap.add_argument("--device", help="device id from devices.json")
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--strict", action="store_true", help="fail instead of skipping")
+    ap.add_argument("--root", default=None,
+                    help="port directory holding devices.json / build.json (default: calc/)")
     args = ap.parse_args(argv)
+    if args.root:
+        load_port(Path(args.root).resolve())
     devices = load_devices()
     ids = list(devices) if args.all else [args.device]
     built = []

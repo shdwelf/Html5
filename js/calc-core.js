@@ -238,8 +238,8 @@ if (c == 32) return 10;
 if (c == 46) return 11;
 if (c == 45) return 12;
 if (c == 58) return 13;
-if (c == 47) return 14;
-if (c == 43) return 15;
+if (c == 43) return 14;
+if (c == 47) return 15;
 if (c == 42) return 16;
 if (c == 35) return 17;
 return 10;
@@ -259,7 +259,7 @@ for (r = 0; r < 5; r = r + 1) {
 bits = FONT3x5[gi * 5 + r];
 for (b = 0; b < 3; b = b + 1) {
 if ((bits & (4 >> b)) != 0) fb_px((cx + b), (y + r), mode);
-else if (mode == PX_CLEAR) fb_px((cx + b), (y + r), PX_CLEAR);
+else if (mode == PX_CLEAR) fb_px((cx + b), (y + r), PX_SET);
 }
 }
 cx = (cx + 4);
