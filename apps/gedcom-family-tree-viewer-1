@@ -133,6 +133,27 @@
   .view-tabs button{background:transparent;color:var(--muted);border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
   .view-tabs button.active{background:var(--accent);color:#04101f;font-weight:600}
 
+  /* Evidence-aware matching */
+  .evidence-card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px}
+  .evidence-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .evidence-title{font-size:12px;font-weight:650;overflow-wrap:anywhere}
+  .evidence-meta,.method-note{font-size:11px;color:var(--muted);line-height:1.45;margin-top:5px}
+  .evidence-tag{font:600 10px/1.2 monospace;color:#b6e3ff;background:rgba(88,166,255,.12);border:1px solid rgba(88,166,255,.28);padding:3px 6px;border-radius:99px;white-space:nowrap}
+  .match-score{font-size:12px;font-weight:750;color:var(--accent2);white-space:nowrap}
+  .match-bar{height:3px;background:var(--border);border-radius:9px;overflow:hidden;margin-top:7px}
+  .match-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .match-reasons{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.45}
+  .match-card{cursor:pointer;transition:.15s}
+  .match-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .privacy-note{font-size:10px;color:var(--muted);border-left:2px solid var(--accent);padding-left:8px;line-height:1.45;margin-top:8px}
+  .text-btn{border:0;background:none;color:var(--accent);font:inherit;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px}
+  dialog{max-width:620px;width:calc(100% - 32px);max-height:82vh;margin:auto;background:var(--panel);color:var(--ink);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:0}
+  dialog::backdrop{background:rgba(4,8,14,.76);backdrop-filter:blur(3px)}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border)}
+  .modal-head h2{font-size:16px}.modal-body{padding:18px;overflow:auto;font-size:13px;line-height:1.55;color:var(--muted)}
+  .modal-body h3{font-size:12px;color:var(--ink);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 5px}.modal-body h3:first-child{margin-top:0}
+  .modal-body a{color:var(--accent)}
+
   @media(max-width:820px){
     #detail{width:280px}
     .search-wrap input{width:140px}
@@ -154,9 +175,10 @@
   <div class="toolbar">
     <span class="stat" id="stat-indi">0 people</span>
     <span class="stat" id="stat-fam">0 families</span>
+    <span class="stat" id="stat-dna" title="People with explicit genetic evidence">0 genetic records</span>
     <div class="search-wrap">
       <span class="ico"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-      <input id="search" type="text" placeholder="Search people…" autocomplete="off" disabled>
+      <input id="search" type="text" placeholder="Fuzzy search people…" autocomplete="off" disabled>
     </div>
     <div class="view-tabs" id="view-tabs" style="display:none">
       <button data-view="desc" class="active">Descendants</button>
@@ -164,6 +186,7 @@
     </div>
     <button class="btn" id="btn-load" title="Open another file"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 11v2a1 1 0 001 1h8a1 1 0 001-1v-2M8 2v8m0-8L5 5m3-3l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Open</button>
     <button class="btn" id="btn-sample" title="Load a demo tree">Demo</button>
+    <button class="btn" id="btn-method" title="How evidence matching works">Evidence method</button>
     <button class="btn" id="btn-export" style="display:none">PNG</button>
   </div>
 </header>
@@ -184,8 +207,8 @@
     </div>
     <div class="features">
       <div class="feature"><span class="fi">⚡</span>Streaming parser for huge files</div>
-      <div class="feature"><span class="fi">🔍</span>Search across every person</div>
-      <div class="feature"><span class="fi">🔗</span>Click relatives to navigate</div>
+      <div class="feature"><span class="fi">🔍</span>Fuzzy, explainable person matching</div>
+      <div class="feature"><span class="fi">🧬</span>Preserve explicit DNA evidence</div>
       <div class="feature"><span class="fi">🖱️</span>Pan, zoom &amp; export</div>
     </div>
   </section>
@@ -214,6 +237,20 @@
 
   <aside id="detail" class="empty"></aside>
 </main>
+
+<dialog id="method-dialog" aria-labelledby="method-title">
+  <div class="modal-head"><h2 id="method-title">Evidence-aware matching</h2><button class="btn" id="method-close">Close</button></div>
+  <div class="modal-body">
+    <h3>Why this model</h3>
+    <p>The gentoo penguin study separates four lineages by combining phylogenomics, population structure, geography, morphology, and ecology—not by trusting one convenient signal. This viewer applies that same integrative principle to genealogy: names propose candidates; dates, places, relationships, and explicit genetic records strengthen or contradict them.</p>
+    <h3>Fuzzy score</h3>
+    <p>Scores are weighted only across evidence that both records actually contain. Name similarity uses accent-insensitive token comparison and Jaro–Winkler similarity. Birth/death years and places add independent support; strong date conflicts reduce the score. A score is a review priority, never proof that two people are identical.</p>
+    <h3>Genetic evidence</h3>
+    <p>Vendor GEDCOM extension tags such as <code>_DNA</code>, <code>_YDNA</code>, <code>_MTDNA</code>, <code>_HAPLO</code>, and <code>_HAPLOGROUP</code> are displayed as supplied. The viewer does not infer biological relationships, disease risk, ethnicity, or haplogroups. Genetic data remains in this browser.</p>
+    <h3>Research source</h3>
+    <p><a href="https://doi.org/10.1038/s42003-026-10081-7" target="_blank" rel="noopener">Integrative evidence reveals adaptive divergence and speciation in gentoo penguins</a>, <i>Communications Biology</i> (2026), especially Fig. 1 and its UCE/ASTRAL and time-calibrated species trees.</p>
+  </div>
+</dialog>
 
 <input type="file" id="file-input" accept=".ged,.gedcom,.txt,text/plain" hidden>
 
@@ -303,6 +340,8 @@ function ingest(individuals, families, meta){
 
   $('stat-indi').textContent=meta.indi+' people';
   $('stat-fam').textContent=meta.fam+' families';
+  const geneticCount=DB.list.filter(p=>p.genetics&&p.genetics.length).length;
+  $('stat-dna').textContent=geneticCount+' genetic record'+(geneticCount===1?'':'s');
   $('search').disabled=false;
   viewTabs.style.display='flex';
   $('btn-export').style.display='inline-flex';
@@ -550,6 +589,30 @@ function renderDetail(xref){
     h+='</div>';
   }
 
+  // Explicit genetic evidence: display only; never infer sensitive traits.
+  if(p.genetics&&p.genetics.length){
+    h+='<div class="d-section"><h4>Genetic evidence</h4>';
+    p.genetics.forEach(g=>{
+      h+='<div class="evidence-card"><div class="evidence-row"><span class="evidence-title">'+esc(geneticLabel(g.tag))+'</span><span class="evidence-tag">'+esc(g.tag)+'</span></div>';
+      if(g.value) h+='<div class="evidence-meta">'+esc(g.value)+'</div>';
+      if(g.type) h+='<div class="evidence-meta">Type: '+esc(g.type)+'</div>';
+      if(g.note) h+='<div class="evidence-meta">Note: '+esc(g.note)+'</div>';
+      h+='</div>';
+    });
+    h+='<div class="privacy-note">Imported evidence only. No haplogroup, health, ethnicity, or biological relationship is inferred.</div></div>';
+  }
+
+  // Integrative duplicate candidates, inspired by the article's multi-evidence approach.
+  const matches=findMatches(p,4);
+  h+='<div class="d-section"><h4>Possible record matches</h4>';
+  if(matches.length){
+    matches.forEach(m=>{
+      h+='<div class="evidence-card match-card" data-match-xref="'+esc(m.person.xref)+'"><div class="evidence-row"><span class="evidence-title">'+esc(m.person.name||'Unknown')+'</span><span class="match-score">'+Math.round(m.score*100)+'%</span></div>';
+      h+='<div class="match-bar"><i style="width:'+Math.round(m.score*100)+'%"></i></div><div class="match-reasons">'+esc(m.reasons.join(' · '))+'</div></div>';
+    });
+  } else h+='<div class="method-note">No plausible candidates with enough shared evidence.</div>';
+  h+='<div class="method-note">Suggestions are review aids, not identity or kinship conclusions. <button class="text-btn" data-open-method>How scoring works</button></div></div>';
+
   // relatives
   const parents=parentsOf(xref), sp=spouseOf(xref), kids=childrenOfPerson(xref), sib=siblingsOf(xref);
   const relSection=(label,arr,kind)=>{
@@ -571,6 +634,10 @@ function renderDetail(xref){
   detail.querySelectorAll('.d-rel').forEach(r=>{
     r.onclick=()=>{ focusOn(r.dataset.xref); };
   });
+  detail.querySelectorAll('[data-match-xref]').forEach(r=>{
+    r.onclick=()=>{ focusOn(r.dataset.matchXref); };
+  });
+  detail.querySelectorAll('[data-open-method]').forEach(b=>{ b.onclick=openMethod; });
 }
 
 /* =========================================================
@@ -602,19 +669,101 @@ document.addEventListener('click', e=>{
   if(!e.target.closest('.search-wrap') && !e.target.closest('#results')) results.classList.remove('show');
 });
 function doSearch(){
-  const q=searchInput.value.trim().toLowerCase();
-  if(!q){ results.classList.remove('show'); return; }
+  const raw=searchInput.value.trim();
+  if(!raw){ results.classList.remove('show'); return; }
+  const q=normalizeText(raw);
   const found=[];
   for(const p of DB.byName){
-    if((p.name||'').toLowerCase().includes(q)){ found.push(p); if(found.length>=40) break; }
+    const n=normalizeText(p.name||'');
+    const exact=n.includes(q);
+    const score=exact?1:Math.max(jaroWinkler(q,n),tokenSimilarity(q,n));
+    if(exact||score>=0.70) found.push({p,score,exact});
   }
-  if(!found.length){ results.innerHTML='<div class="res-empty">No matches</div>'; results.classList.add('show'); return; }
-  results.innerHTML=found.map(p=>'<div class="res-item" data-xref="'+esc(p.xref)+'"><div>'+esc(p.name||'Unknown')+'</div><div class="rl">'+esc(lifetime(p))+'</div></div>').join('');
+  found.sort((a,b)=>Number(b.exact)-Number(a.exact)||b.score-a.score||(a.p.name||'').localeCompare(b.p.name||''));
+  const shown=found.slice(0,40);
+  if(!shown.length){ results.innerHTML='<div class="res-empty">No close matches</div>'; results.classList.add('show'); return; }
+  results.innerHTML=shown.map(x=>'<div class="res-item" data-xref="'+esc(x.p.xref)+'"><div>'+esc(x.p.name||'Unknown')+'</div><div class="rl">'+esc(lifetime(x.p))+(x.exact?' · direct match':' · fuzzy '+Math.round(x.score*100)+'%')+'</div></div>').join('');
   results.classList.add('show');
   results.querySelectorAll('.res-item').forEach(it=>{
     it.onclick=()=>{ focusOn(it.dataset.xref); results.classList.remove('show'); searchInput.value=''; };
   });
 }
+
+/* =========================================================
+   EXPLAINABLE FUZZY / EVIDENCE MATCHING
+   ========================================================= */
+function normalizeText(v){
+  return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+}
+function tokenSimilarity(a,b){
+  const A=new Set(normalizeText(a).split(' ').filter(Boolean)), B=new Set(normalizeText(b).split(' ').filter(Boolean));
+  if(!A.size||!B.size) return 0;
+  let common=0; A.forEach(x=>{ if(B.has(x)) common++; });
+  return (2*common)/(A.size+B.size);
+}
+function jaroWinkler(a,b){
+  a=normalizeText(a); b=normalizeText(b); if(a===b) return a?1:0;
+  const range=Math.max(0,Math.floor(Math.max(a.length,b.length)/2)-1), am=new Array(a.length).fill(false), bm=new Array(b.length).fill(false);
+  let m=0;
+  for(let i=0;i<a.length;i++) for(let j=Math.max(0,i-range);j<=Math.min(i+range,b.length-1);j++) if(!bm[j]&&a[i]===b[j]){am[i]=true;bm[j]=true;m++;break;}
+  if(!m) return 0;
+  let k=0,t=0; for(let i=0;i<a.length;i++) if(am[i]){while(!bm[k])k++;if(a[i]!==b[k])t++;k++;}
+  const j=(m/a.length+m/b.length+(m-t/2)/m)/3;
+  let prefix=0; while(prefix<4&&prefix<a.length&&prefix<b.length&&a[prefix]===b[prefix])prefix++;
+  return j+prefix*.1*(1-j);
+}
+function yearEvidence(a,b,label){
+  if(!a||!b) return null;
+  const d=Math.abs(Number(a)-Number(b));
+  if(d===0) return {score:1,reason:label+' year exact'};
+  if(d<=2) return {score:.82,reason:label+' years within '+d};
+  if(d<=5) return {score:.48,reason:label+' years within '+d};
+  return {score:0,reason:label+' years conflict'};
+}
+function geneticOverlap(a,b){
+  const A=new Map((a.genetics||[]).map(g=>[normalizeText(g.tag),normalizeText(g.value)]));
+  const B=new Map((b.genetics||[]).map(g=>[normalizeText(g.tag),normalizeText(g.value)]));
+  const shared=[...A.keys()].filter(tag=>tag&&B.has(tag)&&A.get(tag)&&B.get(tag));
+  if(!shared.length) return null;
+  const same=shared.filter(tag=>A.get(tag)===B.get(tag));
+  return {score:same.length/shared.length,reason:same.length?'same supplied genetic marker text':'supplied genetic marker text differs'};
+}
+function relationshipEvidence(a,b){
+  const relatives=p=>[...parentsOf(p.xref),spouseOf(p.xref),...childrenOfPerson(p.xref)].filter(Boolean).map(x=>DB.people.get(x)).filter(Boolean);
+  const A=relatives(a), B=relatives(b); if(!A.length||!B.length) return null;
+  let best=0; for(const x of A) for(const y of B) best=Math.max(best,jaroWinkler(x.name,y.name),tokenSimilarity(x.name,y.name));
+  return {score:best,reason:best>.84?'family context overlaps':'family context differs'};
+}
+function comparePeople(a,b){
+  const evidence=[];
+  const ns=Math.max(jaroWinkler(a.name,b.name),tokenSimilarity(a.name,b.name));
+  evidence.push({score:ns,weight:5,reason:(ns>.94?'name very close':ns>.78?'name similar':'name differs')});
+  const ay=a._years||{}, by=b._years||{};
+  const birth=yearEvidence(ay.b,by.b,'birth'), death=yearEvidence(ay.d,by.d,'death');
+  if(birth)evidence.push({...birth,weight:3}); if(death)evidence.push({...death,weight:2});
+  const ap=a.birth&&a.birth.place, bp=b.birth&&b.birth.place;
+  if(ap&&bp){const ps=Math.max(jaroWinkler(ap,bp),tokenSimilarity(ap,bp));evidence.push({score:ps,weight:2,reason:ps>.85?'birthplace close':'birthplace differs'});}
+  const ge=geneticOverlap(a,b); if(ge)evidence.push({...ge,weight:2});
+  const re=relationshipEvidence(a,b); if(re)evidence.push({...re,weight:1.5});
+  const total=evidence.reduce((n,e)=>n+e.weight,0), score=evidence.reduce((n,e)=>n+e.score*e.weight,0)/total;
+  return {score,reasons:evidence.filter(e=>e.score>=.75||e.score===0).map(e=>e.reason),evidenceCount:evidence.length};
+}
+function findMatches(person,limit){
+  const out=[];
+  for(const candidate of DB.list){
+    if(candidate.xref===person.xref) continue;
+    const m=comparePeople(person,candidate);
+    if(m.evidenceCount>=2&&m.score>=.62) out.push({person:candidate,...m});
+  }
+  return out.sort((a,b)=>b.score-a.score).slice(0,limit);
+}
+function geneticLabel(tag){
+  return ({'_DNA':'DNA test or marker','DNA':'DNA test or marker','_YDNA':'Y-DNA evidence','YDNA':'Y-DNA evidence','_MTDNA':'Mitochondrial DNA evidence','MTDNA':'Mitochondrial DNA evidence','_HAPLO':'Recorded haplogroup','_HAPLOGROUP':'Recorded haplogroup','HAPLOGROUP':'Recorded haplogroup','_AUTOSOMAL':'Autosomal DNA evidence'})[tag]||'Genetic evidence';
+}
+function openMethod(){ const d=$('method-dialog'); if(d&&typeof d.showModal==='function') d.showModal(); }
+$('btn-method').onclick=openMethod;
+$('method-close').onclick=()=>$('method-dialog').close();
+$('method-dialog').addEventListener('click',e=>{ if(e.target===$('method-dialog')) $('method-dialog').close(); });
 
 /* =========================================================
    PAN / ZOOM
@@ -696,8 +845,8 @@ function makeSampleGedcom(){
   const P=(id,name,sex,b,d,famc,fams)=>{ L.push(`0 @${id}@ INDI`); L.push(`1 NAME ${name}`); L.push(`1 SEX ${sex}`); if(b){L.push(`1 BIRT`);L.push(`2 DATE ${b}`);L.push(`2 PLACE ${'Boston, MA'}`);} if(d){L.push(`1 DEAT`);L.push(`2 DATE ${d}`);L.push(`2 PLACE ${'Boston, MA'}`);} if(famc)L.push(`1 FAMC @${famc}@`); (fams||[]).forEach(f=>L.push(`1 FAMS @${f}@`)); };
   const F=(id,h,w,ch)=>{ L.push(`0 @${id}@ FAM`); if(h)L.push(`1 HUSB @${h}@`); if(w)L.push(`1 WIFE @${w}@`); if(h&&w){L.push(`1 MARR`);L.push(`2 DATE 1920`);} ch.forEach(c=>L.push(`1 CHIL @${c}@`)); };
   // 4 generations
-  P('I1','William Hayward','M','1880','1950',null,['F1']);
-  P('I2','Margaret Clark','F','1885','1955',null,['F1']);
+  P('I1','William Hayward','M','1880','1950',null,['F1']); L.push('1 _YDNA R-M269');
+  P('I2','Margaret Clark','F','1885','1955',null,['F1']); L.push('1 _MTDNA H1');
   P('I3','Arthur Bell','M','1878','1948',null,['F2']);
   P('I4','Alice Moore','F','1882','1952',null,['F2']);
   F('F1','I1','I2',['I5','I6']);
@@ -715,6 +864,7 @@ function makeSampleGedcom(){
   F('F5','I9','I11',['I13','I14']);
   P('I13','Michael Hayward','M','1968',null,'F5',[]);
   P('I14','Laura Hayward','F','1971',null,'F5',[]);
+  P('I15','Wm. Hayward','M','1881','1950',null,[]); L.push('1 _YDNA R-M269'); // deliberately similar record for matching demo
   L.push('0 TRLR');
   return L.join('\n');
 }
@@ -763,8 +913,6 @@ function parseFile(text){
   let subObj = null;                // current level-1 event container (BIRT/DEAT/MARR...)
   let subLevel = 0;                 // level of subObj
 
-  function newEvent(type){ return { type:type, date:'', place:'' }; }
-
   for(let i=0;i<total;i++){
     const raw = lines[i];
     if(raw==='') continue;
@@ -794,7 +942,7 @@ function parseFile(text){
       cur=null; curType=null; subObj=null; subLevel=0;
       if(xref){
         if(tag==='INDI'){
-          cur = { xref:xref, name:'', sex:'U', birth:null, death:null, events:[], fams:[], famc:[], notes:[] };
+          cur = { xref:xref, name:'', sex:'U', birth:null, death:null, events:[], fams:[], famc:[], notes:[], genetics:[] };
           individuals[xref]=cur; curType='INDI';
         } else if(tag==='FAM'){
           cur = { xref:xref, husb:'', wife:'', children:[], events:[] };
@@ -814,6 +962,9 @@ function parseFile(text){
     } else if(level===2 && subObj){
       if(tag==='DATE') subObj.date = val.trim();
       else if(tag==='PLAC') subObj.place = val.trim();
+      else if(tag==='TYPE') subObj.type = val.trim();
+      else if(tag==='VALUE') subObj.value = val.trim();
+      else if(tag==='NOTE') subObj.note = val.trim();
     }
     // level>=3 (e.g. source citation text) ignored for compactness
 
@@ -826,7 +977,7 @@ function parseFile(text){
   const indiArr = Object.keys(individuals).map(k=>{
     const p=individuals[k];
     return { xref:p.xref, name:p.name, sex:p.sex, birth:p.birth, death:p.death,
-             events:p.events, fams:p.fams, famc:p.famc, notes:p.notes };
+             events:p.events, fams:p.fams, famc:p.famc, notes:p.notes, genetics:p.genetics };
   });
   const famArr = Object.keys(families).map(k=>{
     const f=families[k];
@@ -837,6 +988,8 @@ function parseFile(text){
     meta:{ parseMs:Math.round(performance.now()-t0), lines:total, indi:indiArr.length, fam:famArr.length }});
 }
 
+function newEvent(type){ return { type:type, date:'', place:'' }; }
+
 function handleIndiL1(cur, tag, val){
   switch(tag){
     case 'NAME': cur.name = cleanName(val); return null;
@@ -846,17 +999,21 @@ function handleIndiL1(cur, tag, val){
     case 'CHR':  case 'BAPM': { const e=newEvent(tag); cur.events.push(e); return e; }
     case 'OCCU': { const e=newEvent('Occupation'); e.date=val; cur.events.push(e); return e; }
     case 'RESI': { const e=newEvent('Residence'); e.date=val; cur.events.push(e); return e; }
-    case 'FAMS': if(val) cur.fams.push(val); return null;
-    case 'FAMC': if(val) cur.famc.push(val); return null;
+    case 'FAMS': if(val) cur.fams.push(stripAt(val)); return null;
+    case 'FAMC': if(val) cur.famc.push(stripAt(val)); return null;
     case 'NOTE': cur.notes.push(stripAt(val)); return null;
+    case '_DNA': case 'DNA': case '_YDNA': case 'YDNA': case '_MTDNA': case 'MTDNA':
+    case '_HAPLO': case '_HAPLOGROUP': case 'HAPLOGROUP': case '_AUTOSOMAL': {
+      const g={tag:tag,value:val.trim(),type:'',note:''}; cur.genetics.push(g); return g;
+    }
   }
   return null;
 }
 function handleFamL1(cur, tag, val){
   switch(tag){
-    case 'HUSB': cur.husb=val; return null;
-    case 'WIFE': cur.wife=val; return null;
-    case 'CHIL': if(val) cur.children.push(val); return null;
+    case 'HUSB': cur.husb=stripAt(val); return null;
+    case 'WIFE': cur.wife=stripAt(val); return null;
+    case 'CHIL': if(val) cur.children.push(stripAt(val)); return null;
     case 'MARR': { const e=newEvent('Marriage'); cur.events.push(e); return e; }
     case 'DIV':  { const e=newEvent('Divorce'); cur.events.push(e); return e; }
   }
@@ -865,3 +1022,6 @@ function handleFamL1(cur, tag, val){
 
 function cleanName(v){ return v? v.replace(/\//g,' ').replace(/\s+/g,' ').trim()||'Unknown' : 'Unknown'; }
 function stripAt(v){ return v? v.replace(/^@|@$/g,'') : ''; }
+</script>
+</body>
+</html>
