@@ -63,8 +63,13 @@ public class JdkToolchainReport extends GhidraScript {
         {"env", "java_home", "classpath", "jdk_home", "path="},
         {"jni", "jvm.dll", "jni_createjavavm", "jni_getdefaultjavavminitargs",
             "jni_getcreatedjavavms", "javai.dll", "jvm.cfg", "hotspot", "symcjit"},
-        {"diagnostic", "cannot resolve symbol", "cannot find symbol", "error:",
-            "warning:", "errors", "warnings", " error", "deprecated api"},
+        // Deliberately specific: a bare "error:"/"warning:" also matches the
+        // MSVC C runtime's own message table, which produced seven false
+        // positives per installer stub on the first run.
+        {"diagnostic", "cannot resolve symbol", "cannot find symbol",
+            "javac:", "deprecated api", "unreported exception",
+            "incompatible types", "class file", "package does not exist",
+            "missing method body", "unchecked"},
         {"process", "createprocess", "createpipe", "peeknamedpipe", "cmd.exe",
             "/c ", "command.com"},
     };
