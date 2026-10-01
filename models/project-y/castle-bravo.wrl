@@ -1,0 +1,24 @@
+#VRML V2.0 utf8
+WorldInfo { title "Castle Bravo — historical schematic" info [ "SCHEMATIC HISTORICAL EXHIBIT — invented placement and simplified exterior forms; not a survey, navigational map, current facility plan, blast/dose simulator, or engineering model. No interiors, weapon assemblies, or operational systems are modeled." "The Bikini scene shows a symbolic reef, shot area, crater marker, and fallout-direction cue. It is a historical warning label for variable-yield comparisons: the ring scales with cube-root yield, not with actual damage, fallout, terrain shielding, weather, burst height, or weapon design." "Brookings — Castle Bravo overview and miscalculation: https://www.brookings.edu/articles/castle-bravo-the-largest-u-s-nuclear-explosion/" "Johnston Archive — Castle Bravo event summary: https://www.johnstonsarchive.net/nuclear/radevents/1954USA1.html" ] }
+NavigationInfo { type ["EXAMINE", "ANY"] }
+Background { skyColor [0.94 0.93 0.89] }
+Viewpoint { description "Overview" position 0 105 140 orientation 1 0 0 -0.55 }
+DirectionalLight { direction -1 -2 -1 intensity 0.9 }
+# Bikini lagoon — schematic
+DEF OBJECT_0 Transform { translation 0 -1 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.4549019607843137 0.6549019607843137 0.6784313725490196 } } geometry Box { size 128 1 96 } } ] }
+# Bikini reef rim — schematic
+DEF OBJECT_1 Transform { translation 0 0.2 -28 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8352941176470589 0.807843137254902 0.6431372549019608 } } geometry Box { size 118 1.2 7 } } ] }
+# Bikini reef rim — southern arc
+DEF OBJECT_2 Transform { translation 0 0.2 31 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8352941176470589 0.807843137254902 0.6431372549019608 } } geometry Box { size 112 1.2 7 } } ] }
+# Namu island — representative
+DEF OBJECT_3 Transform { translation -34 1 -25 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7725490196078432 0.7333333333333333 0.5294117647058824 } } geometry Box { size 18 2.5 6 } } ] }
+# Bravo shot causeway — symbolic
+DEF OBJECT_4 Transform { translation -21 1.2 -19 rotation 0 1 0 0.35 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7137254901960784 0.6588235294117647 0.4745098039215686 } } geometry Box { size 22 0.8 3 } } ] }
+# Bravo crater marker
+DEF OBJECT_5 Transform { translation -15 1.5 -18 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.23529411764705882 0.49019607843137253 0.5490196078431373 } } geometry Box { size 18 0.6 9 } } ] }
+# Fallout plume direction — interpretive
+DEF OBJECT_6 Transform { translation 18 6 -4 rotation 0 1 0 0.28 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7803921568627451 0.5058823529411764 0.36470588235294116 } } geometry Box { size 72 1 8 } } ] }
+# Downwind atolls reminder
+DEF OBJECT_7 Transform { translation 51 5 7 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8392156862745098 0.6274509803921569 0.4627450980392157 } } geometry Box { size 9 9 9 } } ] }
+# Instrumentation bunker — representative
+DEF OBJECT_8 Transform { translation -48 4 -12 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.6705882352941176 0.6313725490196078 0.5490196078431373 } } geometry Box { size 8 8 8 } } ] }

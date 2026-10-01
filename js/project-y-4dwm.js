@@ -152,7 +152,7 @@ export function initPipWm(cfg) {
     el.className = "pip4";
     el.dataset.pip = id;
     el.setAttribute("role", "dialog");
-    el.setAttribute("aria-label", `${r.name} — badge pip`);
+    el.setAttribute("aria-label", `${r.name} — ${cfg.ariaKindFor?.(r) || "pip"}`);
     el.innerHTML = `
       <header class="pip4-title">
         <span class="pip4-name">${cfg.titleFor ? cfg.titleFor(r) : r.name}</span>
@@ -273,6 +273,10 @@ export function initPipWm(cfg) {
     clear,
     toggleDesk,
     closeTop,
+    close: (idOrWindow) => {
+      const w = typeof idOrWindow === "string" ? pips.get(idOrWindow) : idOrWindow;
+      if (w) close(w);
+    },
     has: (id) => pips.has(id),
     count: () => pips.size,
     ids: () => [...pips.keys()],

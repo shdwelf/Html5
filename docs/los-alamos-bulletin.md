@@ -56,5 +56,9 @@ A separate **1,404-file Commons snapshot** was assembled from completed A–Z AP
 queries. It replaces the seven-record-only startup view, while retaining the seven
 researched records. Names for additional files are source-derived labels, not new
 verified biographies. This changes the initial count but does not claim that all
-1,404 files correspond to cells in the Bulletin montage. See
-[full snapshot provenance and limitations](project-y-catalog.md).
+1,404 files correspond to cells in the Bulletin montage. Filename-based variation
+chips added later help reviewers find alternate scans, but still do not map
+montage cells or infer badge numbers. See
+[full snapshot provenance and limitations](project-y-catalog.md), the
+[source-domain check](los-alamos-source-check-2026-09-30.md), and the
+[no-filter domain deep dive](los-alamos-domain-deep-dive-2026-09-30.md).

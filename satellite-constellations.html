@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>Satellite Constellations 4Dwm — orbital shell theater</title>
+  <meta name="description" content="Three.js 4Dwm viewer that illustrates satellite constellations as mathematical orbit shells: GNSS, LEO broadband, Iridium, and polar weather satellites." />
+  <link rel="stylesheet" href="./css/satellite-constellations.css" />
+</head>
+<body>
+  <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
+  <div id="labels" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div>
+      <h1>SATELLITE CONSTELLATIONS 4Dwm</h1>
+      <p>Orbit shells · Kepler periods · timeline growth · schematic, not live tracking</p>
+    </div>
+    <div class="actions">
+      <select id="viewSelect" aria-label="Jump to view">
+        <option value="overview">VIEW · OVERVIEW</option>
+        <option value="leo">VIEW · LEO SWARMS</option>
+        <option value="meo">VIEW · GNSS MEO</option>
+        <option value="geo">VIEW · GEO / IGSO</option>
+        <option value="polar">VIEW · POLAR</option>
+      </select>
+      <button type="button" id="btnAnimate" aria-pressed="true">ORBIT</button>
+      <button type="button" id="btnTrails" aria-pressed="true">SHELLS</button>
+      <button type="button" id="btnLabels" aria-pressed="true">LABELS</button>
+      <button type="button" id="btnReset">RESET</button>
+    </div>
+  </header>
+
+  <section class="pip" id="pipHud">
+    <div class="pip-head"><h2>HUD</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <dl class="kv">
+        <dt>camera</dt><dd id="hudCam">—</dd>
+        <dt>timeline</dt><dd id="hudYear">—</dd>
+        <dt>active systems</dt><dd id="hudActive">—</dd>
+        <dt>proxy sats</dt><dd id="hudProxy">—</dd>
+        <dt>scale</dt><dd>linear radius · Earth = 6,371 km</dd>
+        <dt>pickable</dt><dd id="hudObjects">—</dd>
+        <dt>fps</dt><dd id="hudFps">—</dd>
+      </dl>
+      <div class="slider-row">
+        <label for="speedSlider">orbit speed <span id="speedVal">4×</span></label>
+        <input type="range" id="speedSlider" min="0" max="20" step="1" value="4" />
+      </div>
+      <p class="hint">Click a satellite marker or orbit shell for the sourced dossier and computed period / speed / horizon angle.</p>
+    </div>
+  </section>
+
+  <section class="pip" id="pipLayers">
+    <div class="pip-head"><h2>LAYERS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div id="layerList"></div>
+      <p class="hint" style="margin-top:8px">Colors separate mission classes. The Starlink and OneWeb swarms are downsampled into proxy markers so the browser stays responsive.</p>
+    </div>
+  </section>
+
+  <section class="pip" id="pipTimeline">
+    <div class="pip-head"><h2>TIMELINE</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div class="slider-row">
+        <label for="yearSlider">project year <output id="yearVal">2026</output></label>
+        <input type="range" id="yearSlider" min="1957" max="2032" step="1" value="2026" />
+      </div>
+      <div class="timeline-buttons">
+        <button type="button" id="yearBack">−1 yr</button>
+        <button type="button" id="yearForward">+1 yr</button>
+        <button type="button" id="btnTimelinePlay" aria-pressed="false">PLAY YEARS</button>
+      </div>
+      <div id="eventList" class="event-list"></div>
+    </div>
+  </section>
+
+  <section class="pip" id="pipMath">
+    <div class="pip-head"><h2>MATH</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <canvas id="orbitChart" width="260" height="170" aria-label="Chart comparing altitude, period, and constellation count"></canvas>
+      <p class="hint">Period uses T = 2π√(a³/μ), with a = Earth radius + altitude. Horizon uses acos(Rₑ/a). Counts are historical/design summaries, not live catalogs.</p>
+    </div>
+  </section>
+
+  <section class="pip" id="pipDetail">
+    <div class="pip-head"><h2>DOSSIER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body" id="detailBody"></div>
+  </section>
+
+  <section class="pip" id="pipMap">
+    <div class="pip-head"><h2>PLAN VIEW</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <canvas id="minimap" width="220" height="150" aria-label="Top-down plan view of orbit shells"></canvas>
+      <p class="hint" style="margin:6px 0 0">Top-down shell scale. Inner ring is Earth; outer rings are LEO, MEO, and GEO.</p>
+    </div>
+  </section>
+
+  <footer class="statusbar">
+    <span id="status" aria-live="polite">booting…</span>
+    <span>schematic orbit shells · no TLEs · no live conjunction or coverage claims</span>
+  </footer>
+
+  <script type="module" src="./js/satellite-constellations.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+#VRML V2.0 utf8
+WorldInfo { title "Operation Ivy — Mike — historical schematic" info [ "SCHEMATIC HISTORICAL EXHIBIT — invented placement and simplified exterior forms; not a survey, navigational map, current facility plan, blast/dose simulator, or engineering model. No interiors, weapon assemblies, or operational systems are modeled." "This atoll scene is a symbolic lagoon/reef with Elugelab and a post-test crater marker. It does not model the device, cab engineering, blast, fallout, bathymetry, or a surveyed island outline. “Silly Putty” is unrelated; the larger-than-expected lithium-7 yield story belongs to Castle Bravo, not Ivy Mike." "DOE — October 31, 1952: Mike Test: https://www.energy.gov/management/october-31-1952-mike-test" "Britannica — Operation Ivy / Mike summary: https://www.britannica.com/topic/Operation-Ivy" ] }
+NavigationInfo { type ["EXAMINE", "ANY"] }
+Background { skyColor [0.94 0.93 0.89] }
+Viewpoint { description "Overview" position 0 105 140 orientation 1 0 0 -0.55 }
+DirectionalLight { direction -1 -2 -1 intensity 0.9 }
+# Enewetak lagoon — schematic
+DEF OBJECT_0 Transform { translation 0 -1 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.4549019607843137 0.6549019607843137 0.6784313725490196 } } geometry Box { size 128 1 96 } } ] }
+# Northern reef rim — schematic
+DEF OBJECT_1 Transform { translation 0 0.2 -28 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8470588235294118 0.8156862745098039 0.6509803921568628 } } geometry Box { size 112 1.2 8 } } ] }
+# Southern reef rim — schematic
+DEF OBJECT_2 Transform { translation 0 0.2 30 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8470588235294118 0.8156862745098039 0.6509803921568628 } } geometry Box { size 108 1.2 7 } } ] }
+# Western reef rim — schematic
+DEF OBJECT_3 Transform { translation -52 0.2 2 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8470588235294118 0.8156862745098039 0.6509803921568628 } } geometry Box { size 8 1.2 62 } } ] }
+# Eastern reef rim — schematic
+DEF OBJECT_4 Transform { translation 52 0.2 1 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8470588235294118 0.8156862745098039 0.6509803921568628 } } geometry Box { size 8 1.2 60 } } ] }
+# Elugelab pre-shot island — erased by Mike
+DEF OBJECT_5 Transform { translation -33 1 -29 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7411764705882353 0.7019607843137254 0.49411764705882355 } } geometry Box { size 18 2.5 7 } } ] }
+# Mike crater — post-test void marker
+DEF OBJECT_6 Transform { translation -33 1.4 -29 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.23921568627450981 0.4980392156862745 0.5686274509803921 } } geometry Box { size 23 0.6 10 } } ] }
+# Mike shot cab — no device details
+DEF OBJECT_7 Transform { translation -33 6 -29 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.7254901960784313 0.592156862745098 0.4549019607843137 } } geometry Box { size 7 9 5 } } ] }
+# Enewetak support island — representative
+DEF OBJECT_8 Transform { translation 20 1 31 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.8117647058823529 0.7803921568627451 0.6039215686274509 } } geometry Box { size 22 2.5 6 } } ] }
+# Pacific Proving Ground marker
+DEF OBJECT_9 Transform { translation 0 3 0 rotation 0 1 0 0 children [ Shape { appearance Appearance { material Material { diffuseColor 0.6313725490196078 0.43529411764705883 0.3607843137254902 } } geometry Box { size 6 6 6 } } ] }

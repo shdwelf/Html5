@@ -1,12 +1,12 @@
 # From the Bulletin montage to an indexed showcase
 
-Updated **14 September 2026**.
+Updated **30 September 2026**.
 
 ## What changed
 
 The app now starts with **1,404 distinct public image-file records**, rather than seven selected records followed by a required live import. All 26 surname-category queries were completed; X returned no files. The seven researched records are retained with their local photographs, transcribed identifiers, and research notes. All other badge identifiers remain untranscribed.
 
-The default display is a dense, clickable **montage/contact sheet**. Card and list views remain available. Search, A–Z filters, saved records, the researched subset, and CSV export use the complete bundled index. Choose 100, 250, or **All files** per page. Non-bundled photographs load lazily from Wikimedia; the names and source links do not require the Commons API to be available.
+The default display is a dense, clickable **montage/contact sheet**. Card and list views remain available. Search, A–Z filters, saved records, the researched subset, filename-variation records, and CSV export use the complete bundled index. Choose 100, 250, or **All files** per page. Non-bundled photographs load lazily from Wikimedia; the names and source links do not require the Commons API to be available.
 
 ## Three different collections—not interchangeable counts
 
@@ -15,6 +15,8 @@ The default display is a dense, clickable **montage/contact sheet**. Card and li
 3. **The bundled Commons snapshot:** **1,404 image files** returned by the A–Z category queries on 14 September 2026. It includes older scans, later higher-resolution uploads, cropped variants, and alternate photographs. It is **not 1,404 unique people**, not the precise 1,229-image montage roster, and not every badge ever issued. [3](https://commons.wikimedia.org/wiki/Category:Los_Alamos_identity_badges)
 
 The interactive contact sheet is constructed independently from the Commons file index; it is not a crop-and-name reconstruction of the Bulletin image. No claim is made that its order or cells match that image.
+
+Official LANL/OSTI restoration records add another count boundary: LA-UR-22-20541 describes the NSRC-held physical collection as several hundred photos and an estimated 30% of the Project Y badge photos taken, while LA-UR-23-21584 describes about 1,400 restored/digitized early badge photos and notes that some staff have multiple photos/codes. These reports support the archive scale and the variation warning, but they still do not turn the Commons file snapshot into a unique-person roster or badge-code ledger.
 
 ## Snapshot provenance
 
@@ -48,22 +50,25 @@ The A query returned the same title fields with additional page IDs. Those page 
 
 Example queries: [A](https://commons.wikimedia.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:Los_Alamos_identity_badges:_A&cmlimit=500&cmprop=title&format=json), [F](https://commons.wikimedia.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:Los_Alamos_identity_badges:_F&cmlimit=500&cmprop=title&format=json), [Z](https://commons.wikimedia.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:Los_Alamos_identity_badges:_Z&cmlimit=500&cmprop=title&format=json).
 
-## Labels, ordering, and verification
+## Labels, ordering, variations, and verification
 
-- The name shown for an unreviewed record is a **source-derived label**, not an independently established identity. Archive suffixes are stripped and the recognizable surname-first hyphen form is reordered for display. Ambiguous or erroneous filenames may yield awkward labels.
+- The name shown for an unreviewed record is a **source-derived label**, not an independently established identity. Archive suffixes are stripped and the recognizable surname-first hyphen/comma forms are reordered for display. The parser also guards against truncating names that contain the letters `id` (for example, David and Reid). Ambiguous or erroneous filenames may still yield awkward labels.
 - Every detail panel includes the exact original filename and a link to the file-description page. Researchers can inspect the original rather than relying on the display label.
 - A–Z filtering follows the **source category**, including its inconsistencies. Display ordering groups by category, then inferred surname, label, and filename. This is not an arrival or badge-issue sequence.
 - No portraits are merged based on facial similarity. Distinct filenames remain distinct records. Exact filename matches preserve the seven researched records instead of overwriting them during snapshot merging or an online refresh.
-- Historic badge numbers are displayed only when already manually transcribed in the seven researched records. Identifiers are not inferred from montage positions, alphabetical order, or another photograph of the same person.
+- The **Variation files** tab and card chips group records by normalized source labels so reviewers can find alternate scans, crops, and older/newer uploads. A variation group is not proof of the same exposure, same badge issue, same person, or a verified biography; it is a review queue.
+- Historic badge numbers are displayed only when already manually transcribed in the seven researched records. Identifiers are not inferred from montage positions, alphabetical order, variation siblings, or another photograph of the same person.
 - This update makes Mary Frankel, Eldred Nelson, Naomi Livesay, and many other previously absent source records discoverable. It does **not** claim to have completed their biographies or badge-number review.
 
 ## Images, rights, and offline behavior
 
 The reduced Bulletin image is a credited reference at the user's request. Its compilation-specific reuse license has not been established, and the app does not label it public domain. See `assets/los-alamos/NOTICE-bulletin-montage.txt`. Individual Commons file rights remain attached to their respective source pages; the montage's status is not inferred from them.
 
-The full archive’s image binaries are **not bundled**. Older 130 × 180 scans are requested from Wikimedia’s original-file paths; other formats use smaller thumbnail paths (including a rendered JPEG thumbnail for TIFF). The local filenames/hash metadata are bundled, so search, counts, filtering, and exports continue to work even when remote images fail. Failed photographs show an explicit unavailable state with their source-derived labels, not a substitute portrait.
+The full archive’s image binaries are **not bundled**. Older 130 × 180 scans are requested from Wikimedia’s original-file paths; other formats use smaller thumbnail paths (including a rendered JPEG thumbnail for TIFF). The local filenames/hash metadata are bundled, so search, counts, filtering, variation chips, and exports continue to work even when remote images fail. Failed photographs show an explicit unavailable state with their source-derived labels, not a substitute portrait.
 
-The optional Commons button now **checks for updates**. Failure does not turn the existing bundled index into an allegedly partial import: the UI distinguishes an incomplete update from the available 1,404-file snapshot. Successful refreshes add new source files without replacing reviewed records. The snapshot is not a promise that live Commons categories will never change.
+The optional Commons button now **checks for updates**. Failure does not turn the existing bundled index into an allegedly partial import: the UI distinguishes an incomplete update from the available 1,404-file snapshot. Successful refreshes add new source files without replacing reviewed records, then recompute filename-variation groups. The snapshot is not a promise that live Commons categories will never change.
+
+See also the 30 September 2026 [source-domain check](los-alamos-source-check-2026-09-30.md) and [no-filter domain deep dive](los-alamos-domain-deep-dive-2026-09-30.md), which record the current status of Commons, LANL, OSTI LA-UR records, the older LANL wartime staff paths, the Bulletin, Wellerstein’s 2012 project, NPS, PhotoShelter, derivative mirrors, and Nuclear Museum leads.
 
 ## Regeneration and tests
 
@@ -75,6 +80,6 @@ node tests/project-y-catalog-browser.mjs
 node tests/project-y-sites-browser.mjs
 ```
 
-The catalog build is deterministic and checks the reviewed category counts and distinct filenames. Tests cover lossless expansion, image-path hashing, total counts, researched-record preservation, source-label search, A–Z filtering, all-files display, pagination, modal details, saving, CSV export across all pages, the local reference image and zoom control, mobile overflow, and failed-update preservation.
+The catalog build is deterministic and checks the reviewed category counts and distinct filenames. Tests cover lossless expansion, image-path hashing, total counts, researched-record preservation, source-label parsing, filename-variation grouping, source-label search, A–Z filtering, all-files display, pagination, modal details, saving, CSV export across all pages, the local reference image and zoom control, mobile overflow, and failed-update preservation.
 
 The dedicated catalog browser test deliberately blocks all external requests. It validates the bundled index and unavailable-image behavior, **not successful delivery of 1,404 remote photographs**. The Three.js/VRML browser regression also remains passing. No third-party gallery-cell identity mapping is claimed.
