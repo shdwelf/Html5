@@ -74,6 +74,7 @@ workflow permission).
 - **[Prime Viewer](prime.html)** — exact prime atlas, residue-class solar system, prime constellations, counting statistics, gaps, and integer inspection. See [PRIME.md](PRIME.md).
 - **[Helios Observatory](astronomy.html)** — time-propagated solar orrery, curated celestial catalog, Earth-centered NEO radar, and modeled meteor streams. See [ASTRONOMY.md](ASTRONOMY.md).
 - **[Flash Decompiler Timeline](flash-decompiler.html)** — Wayback/NATA2-style raw SWF retrieval, configurable CORS proxy triage, Behind The Dune version timeline, easter-egg notes, and a GitHub Actions path for JPEXS/FFDec decompilation without committing large NSFW binaries.
+- **[Greeran Family Tree · 4DWM](greeran-family-4dwm.html)** — the Drive family-tree Webxdc converted into an offline spinning globe with a playable 1774–2023 record timeline, dated kinship arcs, and an all-time aggregate view. See [the import/build notes](docs/greeran-family-4dwm.md).
 
 ## Tools
 
