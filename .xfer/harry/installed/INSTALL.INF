@@ -1,0 +1,185 @@
+-START_SCRIPT
+-PROG_NAME
+	Headline Harry and the Great Paper Race
+-BYTES_NEEDED
+	3600000
+-SPEAKER_MINVAL
+	30
+-DEF_SORC_PATH
+	B:\
+-DEF_DEST_PATH
+	C:\HH
+-CPYRGHT_MSG
+	Copyright (c) 1991 by Davidson & Associates, Inc.
+-SET_SWAP_PRMPT
+	In order to conserve space, some Harry files may be 
+	deleted from your hard disk and new Harry files copied
+	from the original disks.  
+-INS_OPEN_MSG
+	Hard Disk Install Version 1.0 written by Frank Sasaki and
+	Phil Van Duyne.
+	This program will copy all of the files needed to install 
+	Headline Harry onto your system.  Headline Harry requires
+	different amounts of disk space depending on the configuration
+	of your system.  Selecting Internal Speaker for slower machines
+	can save 1,000,000 bytes of Hard Disk space. Normal Headline 
+	Harry installation requires about 3,600,000 bytes of available 
+	disk space. Press Enter to continue, press Esc to abort.
+-SET_OPEN_MSG
+	This program will allow you to change the type of video mode
+	and sound card that Headline Harry will use. 
+-UN_OPEN_MSG
+	Uninstall will delete any files that were previously installed.
+-SORC_PRMPT
+	Enter the SOURCE drive letter ( e.g. B:\ ).
+-DEST_PRMPT
+	Enter the DESTINATION drive and path.
+-DISK_PRMPT
+	Please insert the disk labeled 
+-INS_END_MSG
+	Headline Harry is now installed on your system.
+-SET_END_MSG
+	Headline Harry setup is complete.
+-UN_END_MSG
+	Headline Harry uninstall completed.
+-SET_VID_PRMPT
+	Select one of the following video modes
+	by using the up-arrow and down-arrow keys.
+	If you are unsure of the Video mode just hit enter.		
+	
+	   VGA (Video Graphics Array)
+	   MCGA (MultiColor Graphics Array)
+	   EGA (Enhanced Graphics Adapter)
+	   CGA (Color Graphics Adapter)
+	   BWCGA (Black and White Color Graphics Adapter)
+	   TGA (Tandy Graphics Array)
+	   HERCULES (Hercules Graphics Card)
+-SET_SND_PRMPT
+	Select one of the following sound cards.
+	If you are unsure of the Sound card just hit enter.		
+	
+	   Internal Speaker on a slower machine
+	   SoundBlaster
+	   Adlib
+	   IBM Ps-1 Speech accessory
+	   Tandy SL,TL or XL2500
+	   Internal Speaker on a 10 megahertz AT or better
+-SET_PORT_PRMPT
+	Select the port that your SoundBlaster card
+	is installed to.  If you are not certain
+	which one is correct, press ENTER to accept
+	the detected port.
+	
+	   Port 210
+	   Port 220
+	   Port 230
+	   Port 240
+	   Port 250
+	   Port 260
+-SET_INT_PRMPT
+	fred
+-SET_PRNT_PRMPT
+	Select one of the following printers.
+	
+	   IBM Compatible Dox Matrix Printer
+	   HP LaserJet/InkJet Printer
+-SET_VID_MODES
+	VGA
+	MCGA
+	EGA
+	CGA
+	BWCGA
+	TGA
+	HERCULES
+-SET_SND_DRVRS
+	SPEAKERSLOW
+	SOUNDBLASTER
+	ADLIB
+	IBM PS1
+	TANDY
+	SPEAKERFAST
+-SET_PORT_NUMS
+	210
+	220
+	230
+	240
+	250
+	260
+-SET_INT_NUMS
+-SET_PRNT_DRVRS
+	IBMEMULATION
+	HPLASERJETINKJET
+-CHECK_FILE
+	MAP.EXE
+-DISK_LABEL
+	Headline Harry Program Disk 1
+-INSERT_DISK
+-PACKED_FILES
+-OTHER_FILES
+	map.exe
+	intro.exe
+	*.mdi
+	*.sfm
+	*.pak
+	border2.pic
+	anim.spr
+	ball.spr
+-NOTPACKED_FILES
+-OTHER_FILES
+	menu.dat
+	install.*
+	setup.*
+	uninstal.com
+	harry.bat
+-NOTPACKED_FILES
+-SOUNDBLASTER
+-ADLIB
+-TANDY
+-IBM PS1
+-SPEAKERFAST
+	*.DAC
+-CHECK_FILE
+	fore2.dac
+-DISK_LABEL
+	Headline Harry Program Disk 2
+-INSERT_DISK
+-NOTPACKED_FILES
+-SOUNDBLASTER
+-ADLIB
+-TANDY
+-IBM PS1
+-SPEAKERFAST
+	*.DAC
+-PACKED_FILES
+-OTHER_FILES
+	*.SPR
+-CHECK_FILE
+	edit2.SPR
+-DISK_LABEL
+	Headline Harry Program Disk 3
+-INSERT_DISK
+-NOTPACKED_FILES
+-SOUNDBLASTER
+-ADLIB
+-TANDY
+-IBM PS1
+-SPEAKERFAST
+	*.DAC
+-PACKED_FILES
+-OTHER_FILES
+	*.EXE
+	*.INC
+	*.DTA
+	*.SPR
+-CHECK_FILE
+	rand.001
+-DISK_LABEL
+	Headline Harry Program Disk 4
+-INSERT_DISK
+-PACKED_FILES
+-OTHER_FILES
+	*.SPR
+	*.0??
+	*.DAT
+-END_SCRIPT
+

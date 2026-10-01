@@ -16,7 +16,3 @@ CONFIG:Loading primary settings from config file /home/runner/.dosbox/dosbox-0.7
 MIXER:Can't open audio: ALSA: Couldn't open audio device: No such file or directory , running in nosound mode.
 ALSA:Can't open sequencer
 MIDI:Opened device:none
-Diskcaching reset for normal mounted drives.
-Diskcaching reset for normal mounted drives.
-Diskcaching reset for normal mounted drives.
-Diskcaching reset for normal mounted drives.
