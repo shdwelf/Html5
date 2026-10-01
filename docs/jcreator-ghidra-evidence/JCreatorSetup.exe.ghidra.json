@@ -1117,7 +1117,7 @@
     "flags": 0,
     "env": 0,
     "jni": 0,
-    "diagnostic": 7,
+    "diagnostic": 0,
     "process": 0
   },
   "probe": {
@@ -1161,55 +1161,7 @@
     "flags": [],
     "env": [],
     "jni": [],
-    "diagnostic": [
-      {
-        "address": "0040b380",
-        "text": "runtime error ",
-        "matched": " error",
-        "xrefs": []
-      },
-      {
-        "address": "0040b394",
-        "text": "TLOSS error\\r\\n",
-        "matched": " error",
-        "xrefs": []
-      },
-      {
-        "address": "0040b3a4",
-        "text": "SING error\\r\\n",
-        "matched": " error",
-        "xrefs": []
-      },
-      {
-        "address": "0040b3b4",
-        "text": "DOMAIN error\\r\\n",
-        "matched": " error",
-        "xrefs": []
-      },
-      {
-        "address": "0040b4e8",
-        "text": "R6018\\r\\n- unexpected heap error\\r\\n",
-        "matched": " error",
-        "xrefs": []
-      },
-      {
-        "address": "0040b50c",
-        "text": "R6017\\r\\n- unexpected multithread lock error\\r\\n",
-        "matched": " error",
-        "xrefs": []
-      },
-      {
-        "address": "0040b634",
-        "text": "Runtime Error!\\n\\nProgram: ",
-        "matched": " error",
-        "xrefs": [
-          {
-            "from": "0040a7e4",
-            "function": "FUN_0040a711"
-          }
-        ]
-      }
-    ],
+    "diagnostic": [],
     "process": []
   },
   "definedStrings": 232,
@@ -1230,12 +1182,6 @@
       "function": "FUN_00404d2f",
       "address": "00404d2f",
       "reason": "references registry string \"currentversion\" at 0040d26c",
-      "decompiled": true
-    },
-    {
-      "function": "FUN_0040a711",
-      "address": "0040a711",
-      "reason": "references diagnostic string \" error\" at 0040b634",
       "decompiled": true
     }
   ]

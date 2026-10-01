@@ -18,23 +18,144 @@ Both archives were hash-gated against the checksums the Internet Archive publish
 
 | program | format | compiler | functions | strings |
 |---|---|---|---:|---:|
+| `GE2001.exe` | Portable Executable (PE) | `windows` | 278 | 122 |
+| `JCreator.exe` | Portable Executable (PE) | `windows` | 22,460 | 4,663 |
 | `JCreatorSetup.exe` | Portable Executable (PE) | `windows` | 386 | 232 |
-| `Setup.exe` | Portable Executable (PE) | `borlanddelphi` | 349 | 228 |
+| `zlib.dll` | Portable Executable (PE) | `windows` | 175 | 137 |
 
 ## Probe summary
 
 Every defined string in each binary was bucketed against a fixed probe set. Counts are matching strings, not occurrences.
 
-| category | question | `JCreatorSetup.exe` | `Setup.exe` |
-|---|---|---:|---:|
-| registry | Does it read `Software\JavaSoft` to find an installed JDK? | 3 | 0 |
-| jni | Does it instead load `jvm.dll` in-process via the Invocation API? | 0 | 0 |
-| tools | Which JDK executables does it shell out to? | 0 | 0 |
-| jars | Does it know `classes.zip` (JDK 1.1) or `tools.jar` (1.2+)? | 0 | 0 |
-| flags | Which javac/java command-line options does it construct? | 0 | 0 |
-| env | Does it fall back to `JAVA_HOME` / `CLASSPATH`? | 0 | 0 |
-| process | What Win32 plumbing runs a tool and captures its output? | 0 | 1 |
-| diagnostic | Does it parse javac's error output? | 7 | 7 |
+| category | question | `GE2001.exe` | `JCreator.exe` | `JCreatorSetup.exe` | `zlib.dll` |
+|---|---|---:|---:|---:|---:|
+| registry | Does it read `Software\JavaSoft` to find an installed JDK? | 0 | 14 | 3 | 0 |
+| jni | Does it instead load `jvm.dll` in-process via the Invocation API? | 0 | 0 | 0 | 0 |
+| tools | Which JDK executables does it shell out to? | 1 | 33 | 0 | 0 |
+| jars | Does it know `classes.zip` (JDK 1.1) or `tools.jar` (1.2+)? | 0 | 6 | 0 | 0 |
+| flags | Which javac/java command-line options does it construct? | 0 | 16 | 0 | 0 |
+| env | Does it fall back to `JAVA_HOME` / `CLASSPATH`? | 0 | 13 | 0 | 0 |
+| process | What Win32 plumbing runs a tool and captures its output? | 1 | 7 | 0 | 0 |
+| diagnostic | Does it parse javac's error output? | 0 | 1 | 0 | 0 |
+
+## `GE2001.exe`
+
+- SHA-256 `e4659da37fbf4aea8c4ca4f8c093e07806e7824cdb90d57b389190833d7e87da`
+- MD5 `ef36d26b9f75bbf6dcc465c48838ace1`
+- Language `x86:LE:32:default`, image base `00400000`
+- Ghidra 12.1.4
+
+**Verdict.** This binary shows no registry-based discovery; runs tools out-of-process via `CreateProcess`; shows no in-process `jvm.dll` linkage.
+
+### Imports that matter
+
+| symbol | library | xrefs | why it matters |
+|---|---|---:|---|
+| `GetProcAddress` | KERNEL32.DLL | 4 | paired with LoadLibrary for JNI_CreateJavaVM |
+| `CreateProcessA` | KERNEL32.DLL | 2 | runs a JDK tool as a child process |
+| `GetEnvironmentVariableA` | KERNEL32.DLL | 2 | JAVA_HOME / CLASSPATH fallback |
+| `LoadLibraryA` | KERNEL32.DLL | 2 | could be loading jvm.dll in-process |
+
+### tools — Which JDK executables does it shell out to?
+
+`jdb.exe` (1 xref)
+
+### process — What Win32 plumbing runs a tool and captures its output?
+
+`CreateProcessA`
+
+### Decompiled (1/1 succeeded)
+
+Functions were selected because they reference probe strings, not by address order. Full C is in the evidence directory.
+
+| function | address | selected because |
+|---|---|---|
+| `FUN_00401900` | `00401900` | references tools string "jdb.exe" at 0040b1fc |
+
+## `JCreator.exe`
+
+- SHA-256 `faac1dc4a1e0a3fd74d66516c81215d9b71cb9a54530d1fe5ae85664730ff33d`
+- MD5 `cfadae2d8e2adab28b2a79ad03ae0f5a`
+- Language `x86:LE:32:default`, image base `00400000`
+- Ghidra 12.1.4
+
+**Verdict.** This binary reads the registry **and** imports the registry API; runs tools out-of-process via `CreateProcess`; shows no in-process `jvm.dll` linkage.
+
+### Registry paths found
+
+- `Software\JavaSoft\Java Development Kit`
+
+### Imports that matter
+
+| symbol | library | xrefs | why it matters |
+|---|---|---:|---|
+| `GetProcAddress` | KERNEL32.DLL | 24 | paired with LoadLibrary for JNI_CreateJavaVM |
+| `RegQueryValueExA` | ADVAPI32.DLL | 24 | reads a registry value — JavaHome |
+| `ShellExecuteA` | SHELL32.DLL | 11 | opens API documentation in a browser |
+| `LoadLibraryA` | KERNEL32.DLL | 9 | could be loading jvm.dll in-process |
+| `RegOpenKeyExA` | ADVAPI32.DLL | 7 | opens a registry key — JDK discovery |
+| `CreatePipe` | KERNEL32.DLL | 3 | captures javac stdout/stderr |
+| `PeekNamedPipe` | KERNEL32.DLL | 3 | polls captured compiler output |
+| `CreateProcessA` | KERNEL32.DLL | 2 | runs a JDK tool as a child process |
+
+### registry — Does it read `Software\JavaSoft` to find an installed JDK?
+
+`JavaHome` (1 xref), `$[JavaHome]` (2 xrefs), `CurrentVersion` (1 xref), `http://www.javasoft.com` (2 xrefs), `$[JavaHome]\bin\rmic.exe` (1 xref), `"$[JavaHome]\bin\jar.exe"` (1 xref), `"$[JavaHome]\bin\jdb.exe"` (1 xref), `"$[JavaHome]\bin\java.exe"` (1 xref), `"$[JavaHome]\bin\javac.exe"` (1 xref), `"$[JavaHome]\bin\javah.exe"` (1 xref), `Visit the homepage of JavaSoft` (2 xrefs), `"$[JavaHome]\bin\appletviewer.exe"` (1 xref), `Software\JavaSoft\Java Development Kit\` (1 xref), `Select a different JAVA Runtime environment\nSelect JAVA tool`
+
+### tools — Which JDK executables does it shell out to?
+
+`javadoc` (1 xref), `JavaHome` (1 xref), `javadocs` (2 xrefs), `CJavaClass` (1 xref), `$[JavaHome]` (2 xrefs), `$[JavaClass]` (2 xrefs), `CJavaProject` (1 xref), `bin\java.exe` (1 xref), `JavaDocWindow` (2 xrefs), `.?AVCJavaClass@@`, `.?AVJavaParser@@`, `: Run AppletViewer` (1 xref), `CJavaDocWizardPage` (1 xref), `.?AVCJavaDocParser@@`, `.?AVCJavaDocHelpDlg@@`, `.?AVJavaClassReader@@`, `$[JavaHome]\bin\rmic.exe` (1 xref), `.?AVCJavaDocBrowseCtrl@@`, `.?AVCJavaDocWizardPage@@`, `"$[JavaHome]\bin\jar.exe"` (1 xref), `"$[JavaHome]\bin\jdb.exe"` (1 xref), `"$[JavaHome]\bin\java.exe"` (1 xref), `"$[JavaHome]\bin\javac.exe"` (1 xref), `"$[JavaHome]\bin\javah.exe"` (1 xref), `.?AVCAppletViewerParamPage@@`, `: JDK JavaDoc directory ( 3 of 3)` (1 xref), `"$[JavaHome]\bin\appletviewer.exe"` (1 xref), `sun.applet.AppletViewer $[FileName]` (1 xref)
+
+### jars — Does it know `classes.zip` (JDK 1.1) or `tools.jar` (1.2+)?
+
+`dt.jar` (1 xref), `rt.jar` (1 xref), `src.jar` (2 xrefs), `jre\lib\` (1 xref), `tools.jar` (1 xref), `jre\lib\ext\*.*` (1 xref)
+
+### flags — Which javac/java command-line options does it construct?
+
+`-nowarn` (3 xrefs), `-verbose` (7 xrefs), `-classpath` (6 xrefs), `-deprecation` (3 xrefs), `-extdirs <dirs>` (1 xref), `-classpath <path>` (1 xref), `-target <release>` (1 xref), `-sourcepath <path>` (1 xref), `-encoding <encoding>` (1 xref), `-bootclasspath <path>` (1 xref), `-classpath <path;path>` (1 xref), `-verbose [:class | gc | jni]` (1 xref), `-classpath "$[ClassPath]" $[JavaClass]` (2 xrefs), `-classpath "$[ClassPath]" -d "$[OutputPath]" $[JavaFiles]` (1 xref), `-classpath "$[ClassPath]" -d "$[OutputPath]" -jni $[JavaClass]` (1 xref), `-v1.2 -classpath "$[ClassPath]" -d "$[OutputPath]" $[JavaClass]` (1 xref)
+
+### env — Does it fall back to `JAVA_HOME` / `CLASSPATH`?
+
+`JAVA_HOME` (1 xref), `-classpath` (6 xrefs), `$[ClassPath]` (2 xrefs), `"$[ClassPath]"` (3 xrefs), `-classpath <path>` (1 xref), `-bootclasspath <path>` (1 xref), `-classpath <path;path>` (1 xref), `-Xbootclasspath:<path;path>` (1 xref), `-classpath "$[ClassPath]" $[JavaClass]` (2 xrefs), `The classpath of the active project.\nTool Macro`, `-classpath "$[ClassPath]" -d "$[OutputPath]" $[JavaFiles]` (1 xref), `-classpath "$[ClassPath]" -d "$[OutputPath]" -jni $[JavaClass]` (1 xref), `-v1.2 -classpath "$[ClassPath]" -d "$[OutputPath]" $[JavaClass]` (1 xref)
+
+### process — What Win32 plumbing runs a tool and captures its output?
+
+`CMD.EXE` (1 xref), `CMD.EXE /C` (2 xrefs), `CreatePipe`, `COMMAND.COM` (1 xref), `PeekNamedPipe`, `COMMAND.COM /C` (2 xrefs), `CreateProcessA`
+
+### diagnostic — Does it parse javac's error output?
+
+`The output path for the class files.\nTool Macro`
+
+### Decompiled (25/25 succeeded)
+
+Functions were selected because they reference probe strings, not by address order. Full C is in the evidence directory.
+
+| function | address | selected because |
+|---|---|---|
+| `FUN_0044bd80` | `0044bd80` | references registry string "javahome" at 00681b60 |
+| `FUN_0044dc60` | `0044dc60` | references registry string "javahome" at 00681d88 |
+| `FUN_0044f4a0` | `0044f4a0` | references registry string "javahome" at 00681e30 |
+| `FUN_00464900` | `00464900` | references registry string "javasoft" at 00682994 |
+| `FUN_00479a70` | `00479a70` | references registry string "javahome" at 00683750 |
+| `FUN_00479b40` | `00479b40` | references registry string "javahome" at 00683798 |
+| `FUN_00479c10` | `00479c10` | references registry string "javahome" at 00683804 |
+| `FUN_0048fa40` | `0048fa40` | references registry string "javahome" at 00684b50 |
+| `FUN_0044c2e0` | `0044c2e0` | references tools string "javadoc" at 00681bc0 |
+| `FUN_004500a0` | `004500a0` | references tools string "appletviewer" at 00681f38 |
+| `FUN_00464290` | `00464290` | references tools string "javadoc" at 006829cc |
+| `FUN_00464430` | `00464430` | references tools string "javadoc" at 006829f0 |
+| `FUN_004816e0` | `004816e0` | references tools string "javadoc" at 00683dc4 |
+| `FUN_0048f9e0` | `0048f9e0` | references tools string "javac" at 00684b40 |
+| `FUN_0044cb20` | `0044cb20` | references jars string "src.jar" at 00681c60 |
+| `FUN_0044bac0` | `0044bac0` | references flags string "-classpath" at 00681990 |
+| `FUN_0044b3f0` | `0044b3f0` | references flags string "-classpath" at 00681990 |
+| `FUN_0044a3a0` | `0044a3a0` | references flags string "-classpath" at 00681990 |
+| `FUN_00449ec0` | `00449ec0` | references flags string "-classpath" at 00681990 |
+| `FUN_00449280` | `00449280` | references flags string "-classpath" at 00681990 |
+| `FUN_004497f0` | `004497f0` | references flags string "-classpath" at 00681990 |
+| `FUN_0048fbe0` | `0048fbe0` | references flags string "-deprecation" at 006819ac |
+| `FUN_00447d10` | `00447d10` | references process string "/c " at 006817bc |
+| `FUN_00479410` | `00479410` | references process string "cmd.exe" at 00683684 |
 
 ## `JCreatorSetup.exe`
 
@@ -65,11 +186,7 @@ Every defined string in each binary was bucketed against a fixed probe set. Coun
 
 `Software\Microsoft\Windows\CurrentVersion` (1 xref), `Software\Microsoft\Windows\CurrentVersion\SharedDLLs` (1 xref), `Software\Microsoft\Windows\CurrentVersion\Uninstall\` (1 xref)
 
-### diagnostic — Does it parse javac's error output?
-
-`runtime error`, `SING error\r\n`, `TLOSS error\r\n`, `DOMAIN error\r\n`, `Runtime Error!\n\nProgram:` (1 xref), `R6018\r\n- unexpected heap error\r\n`, `R6017\r\n- unexpected multithread lock error\r\n`
-
-### Decompiled (4/4 succeeded)
+### Decompiled (3/3 succeeded)
 
 Functions were selected because they reference probe strings, not by address order. Full C is in the evidence directory.
 
@@ -78,43 +195,15 @@ Functions were selected because they reference probe strings, not by address ord
 | `FUN_004021a3` | `004021a3` | references registry string "currentversion" at 0040d130 |
 | `FUN_00402936` | `00402936` | references registry string "currentversion" at 0040d194 |
 | `FUN_00404d2f` | `00404d2f` | references registry string "currentversion" at 0040d26c |
-| `FUN_0040a711` | `0040a711` | references diagnostic string " error" at 0040b634 |
 
-## `Setup.exe`
+## `zlib.dll`
 
-- SHA-256 `b2e07ad88050b96b1ad6e121ac259a9f1617b95f8eee78b6d87e65296d243cd7`
-- MD5 `cd30725073cd12904b73e8c842af5301`
-- Language `x86:LE:32:default`, image base `00400000`
+- SHA-256 `792d768258eddaec86d9263e51ff64ee6f0bed2f28205f535ee150e94f8d6a2b`
+- MD5 `87eddceb9d22c129e386e652c5cda521`
+- Language `x86:LE:32:default`, image base `10000000`
 - Ghidra 12.1.4
 
-**Verdict.** This binary shows no registry-based discovery; runs tools out-of-process via `CreateProcess`; shows no in-process `jvm.dll` linkage.
-
-### Imports that matter
-
-| symbol | library | xrefs | why it matters |
-|---|---|---:|---|
-| `GetEnvironmentVariableA` | KERNEL32.DLL | 2 | JAVA_HOME / CLASSPATH fallback |
-| `CreateProcessA` | KERNEL32.DLL | 1 | runs a JDK tool as a child process |
-
-### process — What Win32 plumbing runs a tool and captures its output?
-
-`CreateProcessA`
-
-### diagnostic — Does it parse javac's error output?
-
-`I/O error %d` (1 xref), `Application Error` (1 xref), `Range check error`, `Runtime error     at 00000000` (2 xrefs), `zlib: Internal error. Code %d`
-
-### Decompiled (5/5 succeeded)
-
-Functions were selected because they reference probe strings, not by address order. Full C is in the evidence directory.
-
-| function | address | selected because |
-|---|---|---|
-| `FUN_00406d00` | `00406d00` | references diagnostic string " error" at 00406e8c |
-| `FUN_00406eac` | `00406eac` | references diagnostic string " error" at 00407164 |
-| `FUN_00403d80` | `00403d80` | references diagnostic string " error" at 0040d014 |
-| `FUN_00405b90` | `00405b90` | references diagnostic string " error" at 00415806 |
-| `FUN_00405844` | `00405844` | references diagnostic string " error" at 00415c08 |
+**Verdict.** This binary shows no registry-based discovery; shows no in-process `jvm.dll` linkage.
 
 ## Cross-reference: does this contract still exist?
 

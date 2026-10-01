@@ -1,0 +1,122 @@
+0040a1f4	CONIN$
+0040a1fc	CONOUT$
+0040a262	null)
+0040a271	null)
+0040a2f0	__GLOBAL_HEAP_SELECTED
+0040a308	__MSVCRT_HEAP_SELECT
+0040a320	runtime error 
+0040a334	TLOSS error\r\n
+0040a344	SING error\r\n
+0040a354	DOMAIN error\r\n
+0040a364	R6028\r\n- unable to initialize heap\r\n
+0040a38c	R6027\r\n- not enough space for lowio initialization\r\n
+0040a3c4	R6026\r\n- not enough space for stdio initialization\r\n
+0040a3fc	R6025\r\n- pure virtual function call\r\n
+0040a424	R6024\r\n- not enough space for _onexit/atexit table\r\n
+0040a45c	R6019\r\n- unable to open console device\r\n
+0040a488	R6018\r\n- unexpected heap error\r\n
+0040a4ac	R6017\r\n- unexpected multithread lock error\r\n
+0040a4dc	R6016\r\n- not enough space for thread data\r\n
+0040a508	\r\nabnormal program termination\r\n
+0040a52c	R6009\r\n- not enough space for environment\r\n
+0040a558	R6008\r\n- not enough space for arguments\r\n
+0040a584	R6002\r\n- floating point not loaded\r\n
+0040a5ac	Microsoft Visual C++ Runtime Library
+0040a5d8	Runtime Error!\n\nProgram: 
+0040a5f8	<program name unknown>
+0040a640	GetLastActivePopup
+0040a654	GetActiveWindow
+0040a664	MessageBoxA
+0040a670	user32.dll
+0040ab02	TerminateProcess
+0040ab16	WaitForSingleObject
+0040ab2c	GenerateConsoleCtrlEvent
+0040ab48	SetThreadPriority
+0040ab5c	CreateProcessA
+0040ab6e	GetStdHandle
+0040ab7e	SetConsoleCtrlHandler
+0040ab96	GetCurrentThread
+0040abaa	CloseHandle
+0040abb8	CreateFileA
+0040abc6	GetModuleFileNameA
+0040abdc	GetLastError
+0040abec	GetFileSize
+0040abfa	ReadFile
+0040ac04	KERNEL32.dll
+0040ac14	DispatchMessageA
+0040ac28	PeekMessageA
+0040ac38	MsgWaitForMultipleObjects
+0040ac52	USER32.dll
+0040ac60	WriteConsoleA
+0040ac70	RtlUnwind
+0040ac7c	RaiseException
+0040ac8e	GetCommandLineA
+0040aca0	GetVersion
+0040acae	ExitProcess
+0040acbc	WriteFile
+0040acc8	SetFilePointer
+0040acda	SetHandleCount
+0040acec	GetFileType
+0040acfa	GetStartupInfoA
+0040ad0c	HeapFree
+0040ad18	HeapAlloc
+0040ad24	GetCPInfo
+0040ad30	GetACP
+0040ad3a	GetOEMCP
+0040ad46	SetUnhandledExceptionFilter
+0040ad64	GetCurrentProcess
+0040ad78	UnhandledExceptionFilter
+0040ad94	FreeEnvironmentStringsA
+0040adae	FreeEnvironmentStringsW
+0040adc8	WideCharToMultiByte
+0040adde	GetEnvironmentStrings
+0040adf6	GetEnvironmentStringsW
+0040ae10	GetModuleHandleA
+0040ae24	GetEnvironmentVariableA
+0040ae3e	GetVersionExA
+0040ae4e	HeapDestroy
+0040ae5c	HeapCreate
+0040ae6a	VirtualFree
+0040ae78	FlushFileBuffers
+0040ae8c	HeapReAlloc
+0040ae9a	HeapSize
+0040aea6	SetStdHandle
+0040aeb6	MultiByteToWideChar
+0040aecc	GetStringTypeA
+0040aede	GetStringTypeW
+0040aef0	VirtualAlloc
+0040af00	IsBadWritePtr
+0040af10	LCMapStringA
+0040af20	LCMapStringW
+0040af30	IsBadReadPtr
+0040af40	IsBadCodePtr
+0040af50	GetProcAddress
+0040af62	LoadLibraryA
+0040af72	ReadConsoleInputA
+0040af86	SetConsoleMode
+0040af98	GetConsoleMode
+0040b056	sgcvru1i|i
+0040b065	/1=5$Abqjhyhg#Lqydogb.d]l_bups/fyf!tjhobuvsf/!Qmfbtf!sfjotubmm!uif!qspevdu/
+0040b0b4	GE2001 version 1.3 - Copyright 2000 Xinox Software\r\n
+0040b0ec	Invalid command line. Error : 
+0040b10c	Press any key to continue...
+0040b12c	Directory : 
+0040b13c	Command   : 
+0040b14c	Invalid path
+0040b15c	0x%08x
+0040b170	Missing commandline
+0040b188	-r or -r:none expected
+0040b1ac	-c or -c:none expected
+0040b1cc	-p or -p:none expected
+0040b1e8	-c:none
+0040b1f0	-p:none
+0040b1fc	jdb.exe
+0040b210	.H
+0040b220	.?AVios@@
+0040b238	.?AVostream@@
+0040b250	.?AVostream_withassign@@
+0040b280	.?AVstreambuf@@
+0040b298	.?AVfilebuf@@
+0040b2c8	.?AVtype_info@@
+ffdff1ac	
+ffdffc00	

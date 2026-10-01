@@ -139,5 +139,43 @@
       "sha1": "321056280b041daa592b2ac5f3ffb5aa7e1bc89a"
     }
   ],
-  "executableCount": 2
+  "executableCount": 2,
+  "unpackedFiles": [
+    {
+      "source": "jcreator-le-2.50",
+      "fromInstaller": "Setup.exe",
+      "extractor": "innoextract",
+      "path": "/home/runner/work/_temp/jcreator/expanded/jcreator-le-2.50/_unpacked/innoextract/app/GE2001.exe",
+      "name": "GE2001.exe",
+      "relative": "innoextract/app/GE2001.exe",
+      "size": 57344,
+      "kind": "pe-executable:i386"
+    },
+    {
+      "source": "jcreator-le-2.50",
+      "fromInstaller": "Setup.exe",
+      "extractor": "innoextract",
+      "path": "/home/runner/work/_temp/jcreator/expanded/jcreator-le-2.50/_unpacked/innoextract/app/JCreator.exe",
+      "name": "JCreator.exe",
+      "relative": "innoextract/app/JCreator.exe",
+      "size": 4485120,
+      "kind": "pe-executable:i386"
+    },
+    {
+      "source": "jcreator-le-2.50",
+      "fromInstaller": "Setup.exe",
+      "extractor": "innoextract",
+      "path": "/home/runner/work/_temp/jcreator/expanded/jcreator-le-2.50/_unpacked/innoextract/app/zlib.dll",
+      "name": "zlib.dll",
+      "relative": "innoextract/app/zlib.dll",
+      "size": 53760,
+      "kind": "pe-executable:i386"
+    }
+  ],
+  "analysisQueue": [
+    "/home/runner/work/_temp/jcreator/expanded/jcreator-le-2.50/_unpacked/innoextract/app/JCreator.exe",
+    "/home/runner/work/_temp/jcreator/expanded/jcreator-1.11/JCreatorSetup.exe",
+    "/home/runner/work/_temp/jcreator/expanded/jcreator-le-2.50/_unpacked/innoextract/app/GE2001.exe",
+    "/home/runner/work/_temp/jcreator/expanded/jcreator-le-2.50/_unpacked/innoextract/app/zlib.dll"
+  ]
 }

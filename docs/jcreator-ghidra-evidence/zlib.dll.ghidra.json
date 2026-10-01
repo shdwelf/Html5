@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "program": "zlib.dll",
+  "ghidraVersion": "12.1.4",
+  "executableFormat": "Portable Executable (PE)",
+  "md5": "87eddceb9d22c129e386e652c5cda521",
+  "sha256": "792d768258eddaec86d9263e51ff64ee6f0bed2f28205f535ee150e94f8d6a2b",
+  "language": "x86:LE:32:default",
+  "compiler": "windows",
+  "imageBase": "10000000",
+  "functions": 175,
+  "memoryBlocks": [
+    {
+      "name": "Headers",
+      "start": "10000000",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false
+    },
+    {
+      "name": ".text",
+      "start": "10001000",
+      "bytes": 39424,
+      "read": true,
+      "write": false,
+      "execute": true
+    },
+    {
+      "name": ".rdata",
+      "start": "1000b000",
+      "bytes": 5632,
+      "read": true,
+      "write": false,
+      "execute": false
+    },
+    {
+      "name": ".data",
+      "start": "1000d000",
+      "bytes": 6316,
+      "read": true,
+      "write": true,
+      "execute": false
+    },
+    {
+      "name": ".rsrc",
+      "start": "1000f000",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false
+    },
+    {
+      "name": ".reloc",
+      "start": "10010000",
+      "bytes": 1024,
+      "read": true,
+      "write": false,
+      "execute": false
+    },
+    {
+      "name": "tdb",
+      "start": "ffdff000",
+      "bytes": 4096,
+      "read": true,
+      "write": true,
+      "execute": false
+    }
+  ],
+  "imports": [
+    {
+      "name": "fflush",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000001",
+      "references": 2
+    },
+    {
+      "name": "fprintf",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000002",
+      "references": 2
+    },
+    {
+      "name": "_fdopen",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000003",
+      "references": 2
+    },
+    {
+      "name": "fopen",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000004",
+      "references": 2
+    },
+    {
+      "name": "_errno",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000005",
+      "references": 2
+    },
+    {
+      "name": "malloc",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000006",
+      "references": 2
+    },
+    {
+      "name": "sprintf",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000007",
+      "references": 2
+    },
+    {
+      "name": "fwrite",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000008",
+      "references": 2
+    },
+    {
+      "name": "fread",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000009",
+      "references": 2
+    },
+    {
+      "name": "fclose",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:0000000a",
+      "references": 2
+    },
+    {
+      "name": "free",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:0000000b",
+      "references": 2
+    },
+    {
+      "name": "vsprintf",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:0000000c",
+      "references": 2
+    },
+    {
+      "name": "ftell",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:0000000d",
+      "references": 2
+    },
+    {
+      "name": "fseek",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:0000000e",
+      "references": 2
+    },
+    {
+      "name": "rewind",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:0000000f",
+      "references": 2
+    },
+    {
+      "name": "fputc",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000010",
+      "references": 2
+    },
+    {
+      "name": "calloc",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000011",
+      "references": 2
+    },
+    {
+      "name": "initterm",
+      "library": "CRTDLL.DLL",
+      "address": "EXTERNAL:00000012",
+      "references": 2
+    },
+    {
+      "name": "GlobalAlloc",
+      "library": "KERNEL32.DLL",
+      "address": "EXTERNAL:00000013",
+      "references": 2
+    },
+    {
+      "name": "GetVersion",
+      "library": "KERNEL32.DLL",
+      "address": "EXTERNAL:00000014",
+      "references": 2
+    },
+    {
+      "name": "GlobalFree",
+      "library": "KERNEL32.DLL",
+      "address": "EXTERNAL:00000015",
+      "references": 2
+    }
+  ],
+  "probeSummary": {
+    "registry": 0,
+    "tools": 0,
+    "jars": 0,
+    "flags": 0,
+    "env": 0,
+    "jni": 0,
+    "diagnostic": 0,
+    "process": 0
+  },
+  "probe": {
+    "registry": [],
+    "tools": [],
+    "jars": [],
+    "flags": [],
+    "env": [],
+    "jni": [],
+    "diagnostic": [],
+    "process": []
+  },
+  "definedStrings": 137,
+  "decompilations": []
+}
