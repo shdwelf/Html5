@@ -1,0 +1,143 @@
+{
+  "sources": [
+    {
+      "key": "jcreator-1.11",
+      "identifier": "jcrea111_zip",
+      "filename": "jcrea111.zip",
+      "url": "https://archive.org/download/jcrea111_zip/jcrea111.zip",
+      "note": "JCreator v1.11, freeware, DEMU Collection / vintagesoftware, dated 2000.",
+      "size": 2047175,
+      "md5": "724024cb3160c6de89bc9684e9519c45",
+      "sha1": "ec6b60ae93288d8a2ab6c3390654616cfde93bc4",
+      "members": [
+        {
+          "name": "JCreatorSetup.exe",
+          "size": 2075172,
+          "kind": "pe-executable:i386"
+        },
+        {
+          "name": "EULA.txt",
+          "size": 5907,
+          "kind": "data"
+        },
+        {
+          "name": "README.txt",
+          "size": 1236,
+          "kind": "data"
+        },
+        {
+          "name": "Upgrade Notes.txt",
+          "size": 495,
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "key": "jcreator-le-2.50",
+      "identifier": "tucows_225075_JCreator_LE",
+      "filename": "jcrea250.zip",
+      "url": "https://archive.org/download/tucows_225075_JCreator_LE/jcrea250.zip",
+      "note": "JCreator LE 2.5.0, Tucows Software Archive, dated 2001-10-14, rights 'Freeware'. Archive curation note: 'checked for malware' (validator@archive.org, 2014-04-06).",
+      "size": 2029349,
+      "md5": "c31eeb68b03f491fc61455dc207c1c40",
+      "sha1": "6deceb4f18dda28b4cec5443851d158b73740f9a",
+      "members": [
+        {
+          "name": "file_id.diz",
+          "size": 278,
+          "kind": "data"
+        },
+        {
+          "name": "README.txt",
+          "size": 1646,
+          "kind": "data"
+        },
+        {
+          "name": "EULA.txt",
+          "size": 5910,
+          "kind": "data"
+        },
+        {
+          "name": "Setup.exe",
+          "size": 2059305,
+          "kind": "pe-executable:i386"
+        }
+      ]
+    }
+  ],
+  "expandedFiles": [
+    {
+      "source": "jcreator-1.11",
+      "path": "/home/runner/work/_temp/jcreator/expanded/jcreator-1.11/JCreatorSetup.exe",
+      "name": "JCreatorSetup.exe",
+      "size": 2075172,
+      "kind": "pe-executable:i386",
+      "md5": "bbc24653d616ca491be10dededb065c4",
+      "sha1": "05dc488a43f8e9f73285745f2414d0a5e3ebfa91"
+    },
+    {
+      "source": "jcreator-1.11",
+      "path": "/home/runner/work/_temp/jcreator/expanded/jcreator-1.11/EULA.txt",
+      "name": "EULA.txt",
+      "size": 5907,
+      "kind": "data",
+      "md5": "ec91f37667e1394abaa5ceaa98917852",
+      "sha1": "4d755ef45e28245b59e4c3aa94b00ef5ad999a09"
+    },
+    {
+      "source": "jcreator-1.11",
+      "path": "/home/runner/work/_temp/jcreator/expanded/jcreator-1.11/README.txt",
+      "name": "README.txt",
+      "size": 1236,
+      "kind": "data",
+      "md5": "999e063a1358955a7d37cac45cef546c",
+      "sha1": "57d85e753b14e487d442c25dffa8d929fac72258"
+    },
+    {
+      "source": "jcreator-1.11",
+      "path": "/home/runner/work/_temp/jcreator/expanded/jcreator-1.11/Upgrade Notes.txt",
+      "name": "Upgrade Notes.txt",
+      "size": 495,
+      "kind": "data",
+      "md5": "4256aafce7e25da4c4dc60086db505f4",
+      "sha1": "ecfdfba96397d3f95e26b12ec40f2d5baa25924d"
+    },
+    {
+      "source": "jcreator-le-2.50",
+      "path": "/home/runner/work/_temp/jcreator/expanded/jcreator-le-2.50/file_id.diz",
+      "name": "file_id.diz",
+      "size": 278,
+      "kind": "data",
+      "md5": "9776a65cedc1e5db9acf593583d89675",
+      "sha1": "1fe3540ec997942cd675f652e3454834a765fee8"
+    },
+    {
+      "source": "jcreator-le-2.50",
+      "path": "/home/runner/work/_temp/jcreator/expanded/jcreator-le-2.50/README.txt",
+      "name": "README.txt",
+      "size": 1646,
+      "kind": "data",
+      "md5": "f0ff52e8aeb5e2bf639f759073c01f3a",
+      "sha1": "4beb8d69c55f1d802fac5c9c11c10a5d9148b335"
+    },
+    {
+      "source": "jcreator-le-2.50",
+      "path": "/home/runner/work/_temp/jcreator/expanded/jcreator-le-2.50/EULA.txt",
+      "name": "EULA.txt",
+      "size": 5910,
+      "kind": "data",
+      "md5": "31115747d36f0788c30280602d214936",
+      "sha1": "d29d39d5d523a6eda7a2367cbffb82fbeb0f39ad"
+    },
+    {
+      "source": "jcreator-le-2.50",
+      "path": "/home/runner/work/_temp/jcreator/expanded/jcreator-le-2.50/Setup.exe",
+      "name": "Setup.exe",
+      "size": 2059305,
+      "kind": "pe-executable:i386",
+      "md5": "cd30725073cd12904b73e8c842af5301",
+      "sha1": "321056280b041daa592b2ac5f3ffb5aa7e1bc89a"
+    }
+  ],
+  "executableCount": 2
+}
