@@ -1,0 +1,173 @@
+name: JCreator — Ghidra static analysis of a native Java IDE
+
+# Why a workflow and not a local run: the development sandbox has no JVM and
+# no Ghidra, and its egress is allowlisted to GitHub/PyPI/npm, so archive.org
+# is unreachable from there. A runner has both. Same pattern as
+# drsolomon-ghidra.yml and arena-archive-fetch.yml.
+#
+# Research question: JCreator is a Java IDE written in C++, so its coupling to
+# the JDK is visible in native code. How did it find an installed JDK, and does
+# that contract survive anywhere in OpenJDK today?
+
+on:
+  push:
+    paths:
+      - '.github/workflows/jcreator-ghidra.yml'
+      - 'tools/jcreator_fetch.py'
+      - 'tools/jcreator_report.py'
+      - 'tools/ghidra_scripts/JdkToolchainReport.java'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      # Same pinned, SHA-gated release the Dr Solomon analysis uses.
+      GHIDRA_VERSION: '12.1.4'
+      GHIDRA_DATE: '20260921'
+      GHIDRA_SHA256: 'ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db'
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Fetch and hash-gate the archived JCreator distributions
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/jcreator"
+          mkdir -p "$root"
+          log="$root/fetch.log"
+          if ! python3 tools/jcreator_fetch.py "$root" >"$log" 2>&1; then
+            cat "$log"
+            message=$(tail -n 60 "$log" | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+            echo "::error title=JCreator fetch failed::$message"
+            exit 1
+          fi
+          cat "$log"
+
+      - name: Install pinned official Ghidra release
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/ghidra.zip"
+          url="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_build/ghidra_${GHIDRA_VERSION}_PUBLIC_${GHIDRA_DATE}.zip"
+          curl -fL --retry 6 --retry-all-errors --connect-timeout 30 "$url" -o "$archive"
+          echo "$GHIDRA_SHA256  $archive" | sha256sum --check --strict
+          unzip -q "$archive" -d "$RUNNER_TEMP"
+          test -x "$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC/support/analyzeHeadless"
+
+      - name: Probe every PE for its JDK toolchain coupling
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/jcreator"
+          reports="$root/reports"
+          projects="$RUNNER_TEMP/ghidra-projects"
+          headless="$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC/support/analyzeHeadless"
+          mkdir -p "$reports" "$projects" "$root/logs"
+
+          mapfile -t programs < <(python3 - "$root/inventory.json" <<'PY'
+          import json, sys, pathlib
+          inv = json.loads(pathlib.Path(sys.argv[1]).read_text())
+          for row in inv['expandedFiles']:
+              if row['kind'].startswith('pe-'):
+                  print(row['path'])
+          PY
+          )
+          printf 'Ghidra queue: %s\n' "${programs[@]}"
+          test "${#programs[@]}" -gt 0
+
+          failures=0
+          index=0
+          for program in "${programs[@]}"; do
+            index=$((index + 1))
+            base=$(basename "$program")
+            project=$(printf 'JCRE_%02d_%s' "$index" "$base" | tr -c 'A-Za-z0-9_' '_')
+            log="$root/logs/${base}.log"
+            echo "===== [$index/${#programs[@]}] $base =====" | tee "$log"
+            if ! timeout 15m "$headless" "$projects" "$project" \
+              -import "$program" \
+              -analysisTimeoutPerFile 420 \
+              -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+              -postScript JdkToolchainReport.java "$reports" \
+              -deleteProject >>"$log" 2>&1; then
+              failures=$((failures + 1))
+              echo "GHIDRA_FAILURE $base" | tee -a "$log"
+              message=$(tail -n 80 "$log" | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+              echo "::error title=Ghidra failed for $base::$message"
+            fi
+            grep -E 'JDK_PROBE|JDK_REPORT' "$log" || tail -n 15 "$log"
+          done
+
+          report_count=$(find "$reports" -maxdepth 1 -name '*.ghidra.json' | wc -l)
+          echo "reports=$report_count failures=$failures programs=${#programs[@]}"
+          test "$report_count" -gt 0
+
+      - name: Build research report
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/jcreator"
+          python3 tools/jcreator_report.py \
+            "$root/inventory.json" "$root/reports" "$root/jcreator-jdk-ghidra.md"
+          sed -n '1,200p' "$root/jcreator-jdk-ghidra.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit the generated evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/jcreator"
+          cp "$root/jcreator-jdk-ghidra.md" docs/jcreator-jdk-ghidra.md
+          mkdir -p docs/jcreator-ghidra-evidence
+          # Derived static-analysis artefacts only — never the input binaries.
+          for f in "$root"/reports/*.ghidra.json "$root"/reports/*.strings.txt "$root"/reports/*.c; do
+            [ -e "$f" ] || continue
+            cp "$f" docs/jcreator-ghidra-evidence/
+          done
+          cp "$root/inventory.json" docs/jcreator-ghidra-evidence/inventory.json
+          # Strings files can be large; keep the committed evidence bounded.
+          for f in docs/jcreator-ghidra-evidence/*.strings.txt; do
+            [ -e "$f" ] || continue
+            if [ "$(stat -c%s "$f")" -gt 900000 ]; then
+              head -c 900000 "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+              echo "(truncated at 900 kB by jcreator-ghidra.yml)" >> "$f"
+            fi
+          done
+          git config user.name arena-ghidra-research
+          git config user.email arena-ghidra-research@users.noreply.github.com
+          git add docs/jcreator-jdk-ghidra.md docs/jcreator-ghidra-evidence/
+          git commit -m "Document Ghidra analysis of JCreator's JDK coupling" || exit 0
+          for i in 1 2 3 4 5; do
+            git push origin "HEAD:${GITHUB_REF_NAME}" && break || {
+              git pull --rebase -X ours origin "${GITHUB_REF_NAME}"; sleep 3; }
+          done
+
+      - name: Remove source binaries before artifact upload
+        if: always()
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/jcreator/raw" "$RUNNER_TEMP/jcreator/expanded"
+          rm -f "$RUNNER_TEMP/ghidra.zip"
+          find "$RUNNER_TEMP/jcreator" -maxdepth 3 -type f -printf '%P\n' | sort || true
+
+      - name: Upload static-analysis evidence only
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: jcreator-ghidra-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/jcreator/inventory.json
+            ${{ runner.temp }}/jcreator/fetch.log
+            ${{ runner.temp }}/jcreator/logs
+            ${{ runner.temp }}/jcreator/reports
+            ${{ runner.temp }}/jcreator/jcreator-jdk-ghidra.md
+          if-no-files-found: warn
+          retention-days: 30
