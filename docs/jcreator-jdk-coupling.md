@@ -166,6 +166,85 @@ WebAssembly. None is an implementation of the name.
 `loom`, `valhalla`, `leyden`). Anyone looking for "the open source JVM" wants
 `src/hotspot` inside that tree.
 
+## Result: the probe found it
+
+Run [36865578705](https://github.com/shdwelf/Html5/actions/runs/36865578705)
+confirmed the hypothesis. `JCreator.exe` — 4,485,120 bytes, 22,460 functions,
+4,663 defined strings, recovered from `Setup.exe` with `innoextract` — reads
+exactly the key that OpenJDK never contained.
+
+All three strings resolve to **one function, `FUN_0044dc60`**, referenced from
+three consecutive sites:
+
+| string | address | referenced from |
+|---|---|---|
+| `Software\JavaSoft\Java Development Kit\` | `00681da4` | `0044dc9f` |
+| `CurrentVersion` | `00681d94` | `0044dceb` |
+| `JavaHome` | `00681d88` | `0044dd42` |
+
+Decompiled, the routine is Sun's own algorithm pointed at the sibling key:
+
+```c
+FUN_005b41ba(s_Software_JavaSoft_Java_Developme_00681da4);
+iVar2 = FUN_00506710(0x80000002, local_5c, 0x20019);        /* HKLM, KEY_READ */
+...
+  cVar1 = FUN_005067d0(s_CurrentVersion_00681d94, &local_60);
+  if (cVar1 != '\0') {
+    FUN_00506730();                                          /* close */
+    iVar2 = FUN_00506710(0x80000002, local_5c, 0x20019);     /* reopen at <version> */
+    ...
+      cVar1 = FUN_005067d0(s_JavaHome_00681d88, &local_64);
+```
+
+`0x80000002` is `HKEY_LOCAL_MACHINE`; `0x20019` is `KEY_READ`. Open the key,
+read `CurrentVersion`, reopen at that subkey, read `JavaHome` — step for step
+the sequence `GetPublicJREHome()` performs in `jdk8u`, with
+`Java Development Kit` substituted for `Java Runtime Environment`. A
+third-party IDE reimplemented the launcher's documented algorithm against the
+one key the launcher never read.
+
+### How it drives the toolchain
+
+JCreator stores tool invocations as templates with `$[...]` substitution:
+
+| tool | template |
+|---|---|
+| compile | `"$[JavaHome]\bin\javac.exe"` `-classpath "$[ClassPath]" -d "$[OutputPath]" $[JavaFiles]` |
+| run | `"$[JavaHome]\bin\java.exe"` `-classpath "$[ClassPath]" $[JavaClass]` |
+| applet | `sun.applet.AppletViewer $[FileName]` |
+| others | `jdb.exe`, `jar.exe`, `javah.exe`, `rmic.exe`, `appletviewer.exe`, `javadoc` |
+
+The import table settles the execution model: `RegQueryValueExA` (24 xrefs),
+`RegOpenKeyExA` (7), `CreateProcessA` (2), `CreatePipe` (3), `PeekNamedPipe`
+(3) — discover via registry, run out-of-process, capture stdout through a
+pipe. The `jni` probe returned **0**: no `jvm.dll`, no `JNI_CreateJavaVM`,
+no in-process VM anywhere in the binary. `JAVA_HOME` is present as a fallback.
+
+The `jars` bucket dates the build: `tools.jar`, `dt.jar`, `rt.jar`, `src.jar`,
+`jre\lib\`, `jre\lib\ext\*.*` — and **no `classes.zip`**, so this is a
+JDK 1.2+ world. A wizard string confirms the era: *"Select JavaDoc home path
+(e.g C:\jdk1.4\docs\)"*.
+
+### What the probe got wrong, and how that showed
+
+Two things worth recording, because both are the pipeline working rather than
+failing:
+
+- **Run 1 analyzed the wrong binaries.** The zips contain installers, not the
+  IDE. The probe reported `tools 0, jars 0, flags 0, jni 0` for both — a
+  correct negative that immediately identified the mistake. `Setup.exe`
+  reported compiler id `borlanddelphi` with a 46 KB `CODE` section, which is
+  the Inno Setup signature, and `innoextract` then yielded `JCreator.exe`.
+- **`FUN_00464900` is a false positive.** It matched the `registry` bucket on
+  the substring `javasoft`, but it is the Help menu handler that opens
+  `http://www.javasoft.com`. A substring probe surfaces candidates; it does
+  not identify them. The real routine had to be found by following xrefs.
+
+`JCreatorSetup.exe` (v1.11) resisted all three extractors — it is an MSVC
+self-extractor that `innoextract`, `7z` and `cabextract` all declined. Only
+JCreator LE 2.5.0's IDE binary was recovered, so every finding above is from
+the 2001 release.
+
 ## Method and honesty notes
 
 - Every OpenJDK claim above was checked by fetching the file through the GitHub

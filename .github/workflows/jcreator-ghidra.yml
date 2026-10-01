@@ -138,6 +138,10 @@ jobs:
           root="$RUNNER_TEMP/jcreator"
           cp "$root/jcreator-jdk-ghidra.md" docs/jcreator-jdk-ghidra.md
           mkdir -p docs/jcreator-ghidra-evidence
+          # Clear first: run 1 analyzed Setup.exe, run 2 correctly dropped it
+          # once innoextract cracked it open, and the stale report lingered in
+          # the committed evidence looking like a current result.
+          rm -f docs/jcreator-ghidra-evidence/*
           # Derived static-analysis artefacts only — never the input binaries.
           for f in "$root"/reports/*.ghidra.json "$root"/reports/*.strings.txt "$root"/reports/*.c; do
             [ -e "$f" ] || continue
