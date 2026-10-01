@@ -55,6 +55,11 @@ console.log(`  xdc sha256:   ${digest}`);
 console.log(`  index sha256: ${indexDigest}`);
 console.log(`  entries:      ${Object.keys(archive).length}`);
 
+// Regenerate the fused Sanborn source before packaging companion apps.  This
+// avoids distributing an older embedded Codex/VRML payload when `npm run build`
+// is the entry point rather than the dedicated Sanborn packer.
+await import("./build-sanborn-suite.mjs");
+
 // Package companion Webxdc applications from public/apps/
 async function packageAppXdc(appDir, xdcName) {
   const dirPath = path.join(root, "public", "apps", appDir);
@@ -75,3 +80,5 @@ async function packageAppXdc(appDir, xdcName) {
 await packageAppXdc("sanborn-codex", "sanborn-codex.xdc");
 await packageAppXdc("kryptos-vrml", "kryptos-vrml.xdc");
 await packageAppXdc("sanborn-suite", "sanborn-suite.xdc");
+// The same complete suite under the purpose-revealing distribution name.
+await packageAppXdc("sanborn-suite", "sanborn-installations.xdc");

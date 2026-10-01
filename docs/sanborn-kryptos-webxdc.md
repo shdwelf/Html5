@@ -15,9 +15,10 @@ and the UX/UI fixes applied in this session.
 | `sanborn-codex.html` | byte-identical root copy (source of truth for `tools/pack_sanborn_xdc.sh`) |
 | `public/apps/kryptos-vrml/index.html` | Kryptos VRML app (canonical, packaged) |
 | `public/apps/kryptos-vrml/manifest.toml` / `webxdc.js` / `icon.png` | webxdc manifest / shim / icon |
-| `sanborn-codex.xdc`, `kryptos-vrml.xdc` | built webxdc containers |
-| `tools/pack_sanborn_xdc.sh`, `tools/pack_kryptos_xdc.sh` | shell packers |
-| `scripts/build-xdc.mjs` | Node/fflate packer (packages the same two apps) |
+| `sanborn-codex.xdc`, `kryptos-vrml.xdc` | built webxdc containers for the individual apps |
+| `sanborn-installations.xdc` (`sanborn-suite.xdc` compatibility name) | complete offline suite: all 30 Codex installations plus all 11 source-checked VRML site entries |
+| `tools/pack_sanborn_xdc.sh`, `tools/pack_kryptos_xdc.sh`, `tools/pack_sanborn_suite_xdc.sh` | shell packers |
+| `scripts/build-xdc.mjs` | Node/fflate packer (packages the individual apps and complete suite) |
 | `test/sanborn-codex.test.ts` | regression guard |
 
 ## 2. What the apps are

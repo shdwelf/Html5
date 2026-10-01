@@ -2,8 +2,9 @@
 
 *Research pass 2026-09-29. Continues `docs/sanborn-kryptos-webxdc.md` (the webxdc
 packaging/UX work) with the substantive Kryptos research that feeds the two
-companion apps — `sanborn-codex` and `kryptos-vrml` — plus the `sanborn-suite.xdc`
-bundle. This note updates the K4 solution record, walks the "Q as signed by army
+companion apps — `sanborn-codex` and `kryptos-vrml` — plus the complete
+`sanborn-installations.xdc` bundle (`sanborn-suite.xdc` remains its compatibility
+name). This note updates the K4 solution record, walks the "Q as signed by army
 radio" lead, and inventories where solutions are now submitted and where the
 authoritative material is archived.*
 
@@ -17,8 +18,8 @@ Source-checking companion: `docs/source-check-2026-09-29.md`.
 | --- | --- |
 | `public/apps/sanborn-codex/index.html` (+ root `sanborn-codex.html`) | 30-installation Jim Sanborn portal, Kryptos Cipher Lab, 26×26 tableau |
 | `public/apps/kryptos-vrml/index.html` (+ standalone `apps/kryptos_vrml.html`) | Raw-WebGL Kryptos/sites viewer, K1–K5 data, cipher simulator, K4 method-ranking panel |
-| `sanborn-suite.xdc` | Packed webxdc container for the suite |
-| `sanborn-codex.xdc`, `kryptos-vrml.xdc` | Packed webxdc containers for the two apps |
+| `sanborn-installations.xdc` (`sanborn-suite.xdc` compatibility name) | Packed webxdc container containing the full 30-installation Codex and 11-entry source-checked VRML viewer |
+| `sanborn-codex.xdc`, `kryptos-vrml.xdc` | Packed webxdc containers for the two individual apps |
 
 The two apps are the deliverable surface; this document is the research substrate
 behind their K4 text, and the source-check note is the audit trail.

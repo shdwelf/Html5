@@ -650,12 +650,17 @@ node --test tests/sanborn-viewer-sources.test.mjs
 
 The codex and the viewer now also ship **fused into a single webxdc app** —
 [`public/apps/sanborn-suite/index.html`](public/apps/sanborn-suite/index.html),
-packed as `sanborn-suite.xdc` (2.25 MB of HTML, 882 KB zipped). Both programs
-are carried whole inside that one file as base64 payloads and written into their
-own same-origin child documents on first use, so every feature of each app keeps
-working — React/three.js galleries, the Cipher Lab and the zen-garden skins on
-one side, raw-WebGL scenes, the cipher simulator and the source-checked panels
-on the other — without their CSS resets, globals or key handlers colliding.
+distributed as `sanborn-installations.xdc` (with `sanborn-suite.xdc` retained as
+a compatibility name). Both names package the complete suite: the Codex’s
+**30-installation catalogue** and the viewer’s **11 source-checked site entries**.
+The catalogues intentionally remain whole rather than being deduplicated into an
+ambiguous headline total, because some entries overlap and the viewer also holds
+context locations. Both programs are carried whole inside one file as base64
+payloads and written into their own same-origin child documents on first use, so
+every feature keeps working — React/three.js galleries, the Cipher Lab and the
+zen-garden skins on one side, raw-WebGL scenes, the cipher simulator and the
+source-checked panels on the other — without their CSS resets, globals or key
+handlers colliding.
 Switch with the header buttons or <kbd>Alt</kbd>+<kbd>1</kbd> /
 <kbd>Alt</kbd>+<kbd>2</kbd> / <kbd>Alt</kbd>+<kbd>3</kbd> from anywhere,
 including from inside either app; each child is handed the host's
@@ -664,7 +669,7 @@ runtime — the tests assert that.
 
 ```sh
 node scripts/build-sanborn-suite.mjs     # regenerate from the two packaged apps
-sh tools/pack_sanborn_suite_xdc.sh       # …and pack sanborn-suite.xdc
+sh tools/pack_sanborn_suite_xdc.sh       # pack sanborn-installations.xdc (+ suite compatibility name)
 node --test tests/sanborn-suite.test.mjs
 ```
 

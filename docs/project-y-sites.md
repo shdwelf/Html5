@@ -97,6 +97,21 @@ This is deliberately minimal. It is labeled as “USGS DEM minimal overlay” to
 node scripts/build-project-y-models.mjs
 ```
 
+### Offline webxdc packages
+
+`los-alamos.xdc` is the focused Project Y distribution. It carries the archive
+page, the shared site data and renderer, every one of the six generated VRML
+files, local Three.js modules, local imagery, and the source notes. `sitek.xdc`
+contains that same current Project Y page and dependency tree alongside the
+SITE-K shell. Rebuild the complete set with:
+
+```sh
+sh tools/pack_xdc.sh
+```
+
+The latter also regenerates the focused Project Y package, so the standalone
+and SITE-K copies cannot silently diverge when a new represented site is added.
+
 ### Validate
 
 ```sh

@@ -31,5 +31,10 @@ name = "Project Y — Los Alamos Badge Archive"
 source_code_url = "https://github.com/shdwelf/Html5"
 TOML
 
-(cd "$tmp" && zip -9 -r "$out" . -x "*.DS_Store")
+# Recreate rather than update an existing ZIP: otherwise a deleted source/model
+# can remain in a previously built .xdc and make the installed archive differ
+# from the declared current dependency set.
+rm -f "$out"
+(cd "$tmp" && zip -9 -r "$out" . -x "*.DS_Store" > /dev/null)
+unzip -t "$out" > /dev/null
 echo "wrote $out ($(wc -c < "$out") bytes)"
