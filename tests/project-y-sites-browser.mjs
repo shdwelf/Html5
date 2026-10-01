@@ -10,7 +10,7 @@ await withBrowser(deps,async browser=>{
  await page.$eval('#sites',e=>e.scrollIntoView());
  await page.waitForFunction(()=>document.querySelector('#site-render-status').textContent.includes('Drag to explore'));
  let last=null;
- for(const id of ['los-alamos','hanford','trinity']){
+ for(const id of ['los-alamos','oak-ridge','hanford','trinity','ivy-mike','castle-bravo']){
   await page.click(`[data-site="${id}"]`);
   assert.equal(await page.$eval(`[data-site="${id}"]`,e=>e.getAttribute('aria-pressed')),'true');
   assert.ok((await page.$eval('#site-vrml',e=>e.href)).endsWith(id+'.wrl'));
@@ -19,6 +19,13 @@ await withBrowser(deps,async browser=>{
   const shot=await (await page.$('#site-canvas')).screenshot();
   if(last)assert.notDeepEqual(shot,last);last=shot;
  }
+ await page.click('[data-yield-preset="ivy-mike"]');
+ assert.ok((await page.$eval('#yield-value',e=>e.textContent||e.value)).includes('10.4 Mt'));
+ assert.ok((await page.$eval('#yield-note',e=>e.textContent)).includes('Castle Bravo'));
+ await page.click('#site-scope-los');
+ assert.equal(await page.$eval('#site-scope-los',e=>e.getAttribute('aria-pressed')),'true');
+ await page.click('#site-scope-all');
+ assert.equal(await page.$eval('#site-scope-all',e=>e.getAttribute('aria-pressed')),'true');
  await page.click('#site-wire');assert.equal(await page.$eval('#site-wire',e=>e.getAttribute('aria-pressed')),'true');
  for(const id of ['site-top','site-left','site-right','site-zoom-in','site-zoom-out','site-reset'])await page.click('#'+id);
  await page.screenshot({path:'/tmp/project-y-sites-desktop.png'});
@@ -35,5 +42,5 @@ await withBrowser(deps,async browser=>{
  await fallback.click('[data-site="trinity"]');
  assert.ok((await fallback.$eval('#site-detail',e=>e.textContent)).includes('Trinity Test Site'));
  assert.ok((await fallback.$eval('#site-vrml',e=>e.href)).endsWith('trinity.wrl'));
- console.log('PASS: Three.js scenes, site switching, VRML downloads, controls, mobile layout, and no-WebGL fallback.');
+ console.log('PASS: Three.js scenes, 4Dwm site switching, yield overlay, VRML downloads, controls, mobile layout, and no-WebGL fallback.');
 });

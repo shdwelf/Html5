@@ -33,19 +33,45 @@ export const seedRecords = [
     ]}},
   {id:'J. R. Oppenheimer Los Alamos ID.jpg',name:'J. Robert Oppenheimer',surname:'Oppenheimer',badge:'K-6',image:'assets/los-alamos/oppenheimer.jpg',source:'https://www.nps.gov/articles/000/the-life-of-j-robert-oppenheimer-the-manhattan-project-years-1941-to-1946.htm'}
 ].map(r=>({...r,source:r.source || commons+'File:'+encodeURIComponent(r.id),note:r.note || 'Original Los Alamos security badge photograph. Badge identifier transcribed from the visible photograph; the collection date range is approximate.'}));
+
+function titleCaseWords(value){
+ return value.replace(/\b\p{L}[\p{L}'’.-]*/gu,word=>word.length<=1?word.toUpperCase():word[0].toUpperCase()+word.slice(1));
+}
+function sourceLabelFromId(id,letter){
+ const raw=id.replace(/\.[^.]+$/,'').replace(/_/g,' ').replace(/\s+/g,' ').trim();
+ let name=raw
+  // Remove archive/source suffixes only when they appear as full terms. The \b before ID is
+  // important: without it, names such as David and Reid were truncated to Dav/Re.
+  .replace(/\s*(?:Los,?\s+Alamos|\bID\s+badge\b|\bidentity\s+badge\b|\bbadge\s+photo\b|\bbadge\b|\bID\s+card\b|\bID\s+photo\b|\bID\.?(?=\s|$)).*$/i,'')
+  .replace(/\s*\((?:cropped|adjusted)\)\s*$/i,'')
+  .replace(/([A-Za-z])[’']s$/,'$1')
+  .replace(/\s+/g,' ')
+  .trim();
+ const comma=name.match(/^([A-Za-z][A-Za-z'’. -]+?),\s*(.+)$/);
+ if(comma)name=`${comma[2]} ${comma[1]}`;
+ // Only reverse the archive's unambiguous surname-first hyphen format.
+ if(/^[A-Za-z][A-Za-z'’. -]*-[A-Za-z][A-Za-z'’. ()-]*$/i.test(name)){
+  const [last,...first]=name.split('-');name=titleCaseWords(first.join('-').trim())+' '+titleCaseWords(last.trim());
+ }
+ // A small set of older files use "Surname Given Badge" without a comma or hyphen.
+ // Apply this only when the surname category agrees with the first token and the
+ // second token is clearly not from that category, to avoid changing ordinary names.
+ const parts=name.split(/\s+/).filter(Boolean);
+ if(parts.length===2&&letter&&parts[0][0]?.toUpperCase()===letter&&parts[1][0]?.toUpperCase()!==letter&&/\bBadge\b/i.test(raw)){
+  name=`${parts[1]} ${parts[0]}`;
+ }
+ return name.replace(/\s+/g,' ').trim();
+}
 export function recordFromPage(page, letter){
  const id=page.title.replace(/^File:/,'');
- let name=id.replace(/\.[^.]+$/,'').replace(/_/g,' ').replace(/\s*(Los,? Alamos|ID badge|identity badge|badge photo|badge|ID card|ID photo|ID\.?(?:\s|$)).*$/i,'').replace(/\s*\(cropped\)$/i,'').trim();
- // Only reverse the archive's unambiguous surname-first hyphen format.
- if(/^[A-Za-z]+-[a-z ]+$/i.test(name)){const [last,...first]=name.split('-');name=first.join(' ').replace(/\b\w/g,c=>c.toUpperCase())+' '+last;}
- name=name.replace(/\s+/g,' ').trim();
+ const name=sourceLabelFromId(id,letter);
  const parts=name.replace(/,?\s+(Jr\.?|Sr\.?|II|III)$/i,'').split(' ');
  const surname=parts.at(-1) || name;
  return {id,name,surname,letter,badge:null,image:page.imageinfo?.[0]?.thumburl||page.imageinfo?.[0]?.url||'',source:commons+'File:'+encodeURIComponent(id),note:'Imported from the Commons surname category '+letter+'. Name derived from the source filename, not an independently verified personnel record. Badge number has not been transcribed. Refer to the original file for identification, date, and reuse information.'};
 }
 export function filterRecords(records,{query='',letter='All',savedOnly=false,saved=new Set(),sort='name'}={}){
  const q=query.toLowerCase().replace(/[\s–—-]/g,'');
- return records.filter(r=>(!savedOnly||saved.has(r.id))&&(letter==='All'||(r.letter||r.surname[0]).toUpperCase()===letter)&&(!q||(r.name+' '+(r.badge||'')+' '+(r.id||'')).toLowerCase().replace(/[\s–—-]/g,'').includes(q))).sort((a,b)=>{
+ return records.filter(r=>(!savedOnly||saved.has(r.id))&&(letter==='All'||(r.letter||r.surname[0]).toUpperCase()===letter)&&(!q||(r.name+' '+(r.badge||'')+' '+(r.id||'')+' '+(r.variantLabel||'')).toLowerCase().replace(/[\s–—-]/g,'').includes(q))).sort((a,b)=>{
   if(sort==='badge'){if(!a.badge&&!b.badge)return a.surname.localeCompare(b.surname);if(!a.badge)return 1;if(!b.badge)return -1;return a.badge.localeCompare(b.badge,'en',{numeric:true});}
   return ((a.letter||a.surname[0]).toUpperCase().localeCompare((b.letter||b.surname[0]).toUpperCase())||a.surname.localeCompare(b.surname)||a.name.localeCompare(b.name)||a.id.localeCompare(b.id))*(sort==='reverse'?-1:1);
  });

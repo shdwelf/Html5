@@ -28,3 +28,16 @@ test('Frankel preserves the chosen photo identity and source-qualified chronolog
  assert.ok(r.profile.references.some(x=>x.url.includes('Stanley_P._Frankel')));
  assert.ok(r.profile.references.some(x=>x.url.includes('NOTICE-frankel')));
 });
+
+test('source-label parser preserves names with embedded id and older surname-first forms',()=>{
+ const david=recordFromPage({title:'File:David L. Anderson Los Alamos ID.png'},'A');
+ assert.equal(david.name,'David L. Anderson');assert.equal(david.surname,'Anderson');
+ const reid=recordFromPage({title:'File:Reid A. Cameron Jr. Los Alamos ID.png'},'C');
+ assert.equal(reid.name,'Reid A. Cameron Jr.');assert.equal(reid.surname,'Cameron');
+ const comma=recordFromPage({title:'File:Dunne, Frances badge photo.jpg'},'D');
+ assert.equal(comma.name,'Frances Dunne');assert.equal(comma.surname,'Dunne');
+ const old=recordFromPage({title:'File:Metropolis Nicholas Badge.gif'},'M');
+ assert.equal(old.name,'Nicholas Metropolis');assert.equal(old.surname,'Metropolis');
+ const possessive=recordFromPage({title:"File:Richard Feynman's badge photo from Los Alamos National Laboratory.jpg"},'F');
+ assert.equal(possessive.name,'Richard Feynman');assert.equal(possessive.surname,'Feynman');
+});
