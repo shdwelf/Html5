@@ -127,44 +127,28 @@ jobs:
             echo "source=" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Smoke test — boot the installed game under QEMU
+      - name: Smoke test — boot the installed game in DOSBox and screenshot it
         if: steps.install.outputs.source == 'installer'
         run: |
           set +e
-          sudo apt-get install -y -qq qemu-system-x86 || exit 0
           work="$RUNNER_TEMP/hhwork"
-          mkdir -p "$work/smoke-shots"
-          # bootable single-floppy FreeDOS (balder) whose AUTOEXEC starts the
-          # installed game from C:\HH; QEMU vvfat serves the install dir as C:
-          if curl -fsL "https://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/distributions/balder/balder10.zip" \
-               -o "$work/balder.zip"; then
-            unzip -o -q "$work/balder.zip" -d "$work/balder"
-            img=$(find "$work/balder" -iname '*.img' | head -1)
-            printf 'set BLASTER=A220 I7 D1 H5 T6\r\nC:\r\nCD HH\r\nHARRY.BAT\r\n' > "$work/AUTOEXEC.BAT"
-            cp "$img" "$work/smoke.img"
-            mcopy -o -i "$work/smoke.img" "$work/AUTOEXEC.BAT" ::
-            qemu-system-x86_64 -m 32 -vga std -display none \
-              -drive if=floppy,format=raw,unit=0,file="$work/smoke.img" \
-              -hda "fat:rw:$work/hd" -boot a \
-              -monitor unix:$work/smon,server,nowait &
-            qpid=$!
-            sleep 14
-            for t in 15 30 45 60; do
-              python3 tools/harry/qemu_mon.py "$work/smon" \
-                "screendump $work/smoke-shots/smoke_$t.ppm" 1.5 || true
-              sleep $((t - 15 + 15))
+          mkdir -p "$work/game-shots"
+          (
+            sleep 12
+            for i in 1 2 3 4 5 6; do
+              import -window root "$work/game-shots/game_$((i*15))s.png" 2>/dev/null
+              sleep 15
             done
-            python3 tools/harry/qemu_mon.py "$work/smon" "quit" 0.5 || true
-            wait $qpid 2>/dev/null
-            mkdir -p .xfer/harry/install/smoke
-            cp "$work"/smoke-shots/*.ppm .xfer/harry/install/smoke/ 2>/dev/null
-            for p in .xfer/harry/install/smoke/*.ppm; do
-              convert "$p" "${p%.ppm}.png" 2>/dev/null && rm -f "$p"
-            done
-            ls .xfer/harry/install/smoke/
-          else
-            echo "balder download failed - skipping smoke test"
-          fi
+          ) &
+          sp=$!
+          timeout 130 dosbox \
+            -c "mount c $work/hd" -c "c:" -c "cd hh" -c "harry.bat" \
+            > "$work/game-run.log" 2>&1
+          kill $sp 2>/dev/null
+          mkdir -p .xfer/harry/install/game-shots
+          cp "$work"/game-shots/*.png .xfer/harry/install/game-shots/ 2>/dev/null
+          cp "$work/game-run.log" .xfer/harry/install/ 2>/dev/null
+          ls .xfer/harry/install/game-shots/
 
       - name: Fallback — try pre-installed mirror URLs
         if: steps.install.outputs.source != 'installer'
