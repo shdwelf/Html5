@@ -1,0 +1,4 @@
+# Trigger file for .github/workflows/arena-headline-harry-ghidra.yml
+# Runs headless Ghidra on the 1991 game executables in .xfer/harry/game/
+# (INTRO.EXE = intro, MAP.EXE = main game) and commits the disassembly,
+# decompilation, strings and metadata reports to webxdc-headline-harry/ghidra/.
