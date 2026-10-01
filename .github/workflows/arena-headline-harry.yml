@@ -131,6 +131,9 @@ jobs:
         if: steps.install.outputs.source == 'installer'
         run: |
           set +e
+          # DISPLAY/Xvfb don't persist across steps: re-export and respawn
+          pgrep -x Xvfb >/dev/null || { Xvfb :99 -screen 0 800x600x24 >/dev/null 2>&1 & sleep 3; }
+          export DISPLAY=:99
           work="$RUNNER_TEMP/hhwork"
           mkdir -p "$work/game-shots"
           (

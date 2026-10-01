@@ -42,9 +42,27 @@ e134a66120ce989e1344dfb90d363eb2f36e2975  disk4.img
 
 Boot sequence discovered from `HARRY.BAT`: `memtest` → `intro` → `map`.
 The bundle's autoexec runs `INTRO` then `MAP` directly (MEMTEST would only gate
-the game on conventional-memory checks). Original launch scripts/configs kept in
-the bundle untouched: `HARRY.BAT`, `SETUP.BAT`, `SETUP.INF` (VGA + Sound Blaster),
-`INSTALL.EXE`/`INSTALL.INF`.
+the game on conventional-memory checks). The bundle contains the **original
+installer-recovered `C:\HH` directory** (see *Recovery*): `SETUP.INF` = VGA +
+AdLib, `HARRY.BAT`/`SETUP.BAT`/`INSTALL.EXE` kept untouched.
+
+## Recovery (how the retail floppies became runnable files)
+
+The 1991 floppies store game files **packed** (every EXE starts `ff 4d 5a`,
+only `INSTALL.EXE` is clean) — key-disk style media. `INSTALL.INF` reveals a
+script-driven unpacker that identifies disks only via per-disk CHECK_FILEs, so
+the fetch workflow merges the four SHA-1-verified images into one `B:\` source
+dir and drives the original installer through it unattended (DOSBox/Xvfb
+keybot, VGA+AdLib chosen in its menus). The resulting `C:\HH` passes clean-`MZ`
+checks (MAP.EXE 122,638→217,743 B, INTRO.EXE 47,851→82,525 B), and a DOSBox
+game-run is screenshot-verified each build (`.xfer/harry/install/`).
+Ghidra consumes these recovered executables — `ghidra/` holds the disassembly,
+decompilation, strings and metadata reports for INTRO.EXE and MAP.EXE
+(`ANALYSIS.md` summarizes; note: the tiny real-mode programs yield 0 named
+functions in auto-analysis, so reports are linear disassembly + strings).
+
+Audio: installed with **AdLib** (FM synthesis music). To use SoundBlaster
+digitized audio instead, re-run `SETUP.BAT` inside the app (menu-driven).
 
 ## Pipeline (how this .xdc was built)
 
