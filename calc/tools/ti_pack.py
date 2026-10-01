@@ -24,12 +24,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEVICES_PATH = ROOT / "devices.json"
+APP_NAME = "SITE-K"
 
 TI83_ENTRY_HDR = 0x0D   # 0x0D = TI Connect style entry (version + archive flag present)
 
 
-def load_devices():
-    data = json.loads(DEVICES_PATH.read_text())
+def load_devices(path=None):
+    data = json.loads(Path(path or DEVICES_PATH).read_text())
     return {d["id"]: d for d in data["devices"]}
 
 
@@ -171,13 +172,13 @@ def hexdump(data: bytes, limit=96) -> str:
 
 
 def cmd_pack(args):
-    devices = load_devices()
+    devices = load_devices(getattr(args, "devices", None))
     if args.device not in devices:
         raise SystemExit("unknown device %s (have: %s)" % (args.device, ", ".join(devices)))
     dev = devices[args.device]
     body = Path(args.input).read_bytes()
     type_id = args.type_id if args.type_id is not None else dev["type_id"]
-    comment = args.comment or "SITE-K %s core" % dev["name"]
+    comment = args.comment or "%s %s core" % (getattr(args, "app", None) or APP_NAME, dev["name"])
     blob = pack(dev, body, args.name, comment, type_id,
                 prefix=not args.no_prefix, size_mode=args.size_mode)
     out = Path(args.out)
@@ -199,7 +200,7 @@ def cmd_verify(args):
 
 
 def cmd_info(args):
-    devices = load_devices()
+    devices = load_devices(getattr(args, "devices", None))
     if args.json:
         print(json.dumps(devices, indent=2))
         return 0
@@ -213,7 +214,7 @@ def cmd_info(args):
 
 def cmd_selftest(args):
     """Round-trip every device with a fake payload and check every field."""
-    devices = load_devices()
+    devices = load_devices(getattr(args, "devices", None))
     failures = 0
     payload = bytes(range(256)) * 2
     for dev in devices.values():
@@ -229,21 +230,25 @@ def cmd_selftest(args):
         except ValueError as err:
             print("  FAIL %-5s %s" % (dev["id"], err))
             failures += 1
-    # TI-85 program variant (0x12) must work too
-    dev = devices["ti85"]
-    blob = pack(dev, payload, "SITEK", "selftest", dev["type_ids"]["prgm"])
-    rep = verify(blob)
-    if rep["type_id"] != dev["type_ids"]["prgm"]:
-        print("  FAIL ti85 program variant type id")
-        failures += 1
-    else:
-        print("  ok   ti85  .85p program variant type=0x%02X" % rep["type_id"])
+    # TI-85 program variant (0x12) must work too, when the port targets a TI-85
+    if "ti85" in devices:
+        dev = devices["ti85"]
+        blob = pack(dev, payload, dev["var_name"], "selftest", dev["type_ids"]["prgm"])
+        rep = verify(blob)
+        if rep["type_id"] != dev["type_ids"]["prgm"]:
+            print("  FAIL ti85 program variant type id")
+            failures += 1
+        else:
+            print("  ok   ti85  .85p program variant type=0x%02X" % rep["type_id"])
     print("%d devices, %d failures" % (len(devices), failures))
     return 1 if failures else 0
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description="TI variable container writer for SITE-K")
+    ap = argparse.ArgumentParser(description="TI variable container writer")
+    ap.add_argument("--devices", default=None,
+                    help="path to a devices.json (default: calc/devices.json)")
+    ap.add_argument("--app", default=None, help="app name used in the container comment")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     p = sub.add_parser("pack")

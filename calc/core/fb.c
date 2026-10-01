@@ -118,13 +118,19 @@ static u16 font_index(u8 c) {
   if (c == 46) return 11;
   if (c == 45) return 12;
   if (c == 58) return 13;
-  if (c == 47) return 14;
-  if (c == 43) return 15;
+  /* Glyph order in tables.c is 0123456789, space, dot, dash, colon, then
+     plus at index 14 and slash at index 15 — these two were transposed,
+     which nothing noticed until a port needed to print "1/2000". */
+  if (c == 43) return 14;
+  if (c == 47) return 15;
   if (c == 42) return 16;
   if (c == 35) return 17;
   return 10;
 }
 
+/* mode == PX_CLEAR means inverse video: knock the glyph out of a lit
+   background. It therefore has to LIGHT the cells the glyph does not cover —
+   clearing both made every inverse label a blank rectangle. */
 void fb_textm(u16 x, u16 y, const u8 *s, u8 mode) {
   u16 i;
   u16 cx;
@@ -140,7 +146,7 @@ void fb_textm(u16 x, u16 y, const u8 *s, u8 mode) {
       bits = FONT3x5[gi * 5 + r];
       for (b = 0; b < 3; b++) {
         if ((bits & (4 >> b)) != 0) fb_px((u16)(cx + b), (u16)(y + r), mode);
-        else if (mode == PX_CLEAR) fb_px((u16)(cx + b), (u16)(y + r), PX_CLEAR);
+        else if (mode == PX_CLEAR) fb_px((u16)(cx + b), (u16)(y + r), PX_SET);
       }
     }
     cx = (u16)(cx + 4);

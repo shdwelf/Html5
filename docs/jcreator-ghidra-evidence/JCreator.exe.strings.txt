@@ -1,0 +1,4663 @@
+0061bab4	Tools
+0061babc	Options
+0061bac4	Compiler
+0061bad0	Viewer
+0061bad8	Execute
+0061bae0	GeneralFlags
+0061baf0	EditFlags
+00626980	hhctrl.ocx
+00626990	CLSID\{ADB880A6-D8FF-11CF-9377-00AA003B7A11}\InprocServer32
+006269e8	CObject
+006269f0	CStringList
+00626a28	CDialog
+00626bf4	MS Shell Dlg
+00626c20	CScrollBar
+00626c48	CEdit
+00626c68	CComboBox
+00626c90	CListBox
+00626cb8	CButton
+00626cd8	CStatic
+00626ce0	BUTTON
+00626ce8	LISTBOX
+00626cf0	COMBOBOX
+00626cfc	SCROLLBAR
+00626de0	CTempWnd
+006270b8	AfxOldWndProc423
+006270cc	AfxWnd42s
+006270d8	AfxControlBar42s
+006270ec	AfxMDIFrame42s
+006270fc	AfxFrameOrView42s
+00627110	AfxOleControl42s
+00627124	GetMonitorInfoA
+00627134	EnumDisplayMonitors
+00627148	MonitorFromPoint
+0062715c	MonitorFromRect
+0062716c	MonitorFromWindow
+00627180	GetSystemMetrics
+00627194	USER32
+0062719c	DISPLAY
+006271a4	commctrl_DragListMsg
+0062727c	Afx:%x:%x:%x:%x:%x
+00627290	Afx:%x:%x
+006272b0	InitCommonControlsEx
+006272c8	COMCTL32.DLL
+006273b8	CCmdTarget
+006274c0	CTempGdiObject
+006274e8	CTempDC
+00627528	CPalette
+00627550	CBitmap
+00627570	CFont
+00627590	CBrush
+006275d0	CGdiObject
+006275f8	CPaintDC
+00627620	CWindowDC
+00627648	CClientDC
+00627690	CUserException
+006276b8	CResourceException
+00627744	GetLayout
+00627750	GDI32.DLL
+0062775c	SetLayout
+006279b0	CNotSupportedException
+006279e0	CMemoryException
+00627a10	CException
+00627a68	CFileException
+00627a90	CStdioFile
+00627b00	%*.*f
+00627b38	CRichEditCtrl
+00627b60	CTempImageList
+00627b88	CImageList
+00627bb0	CListCtrl
+00627bd8	CTreeCtrl
+00627c00	CTabCtrl
+00627c28	CProgressCtrl
+00627c50	CSliderCtrl
+00627d08	ToolbarWindow32
+00627d18	msctls_statusbar32
+00627d2c	SysListView32
+00627d3c	SysTreeView32
+00627d4c	msctls_progress32
+00627d60	SysTabControl32
+00627e50	CObList
+00627e80	CDocument
+00627ef8	 #%;/\
+00627f04	ReplaceFile
+00627f10	KERNEL32
+00627fa8	CSyncObject
+00627fb4	CCriticalSection
+00628000	CWinThread
+006280b0	CFileFind
+0062810c	file://
+00628130	CFile
+006281b0	DllGetClassObject
+006281c4	{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}
+006281f8	InProcServer32
+00628240	CHtmlView
+00628770	CSplitterWnd
+006288c0	CFormView
+00628a78	CScrollView
+00628b10	MouseZ
+00628b18	Magellan MSWHEEL
+00628b2c	WheelScrollLines
+00628b40	Control Panel\Desktop
+00628b58	MSH_SCROLL_LINES_MSG
+00628ca8	CPreviewView
+006290a8	CEvent
+006290e8	CMDIChildWnd
+00629110	CMDIFrameWnd
+006294b8	mdiclient
+006295e0	CControlBar
+00629608	CView
+00629628	CFrameWnd
+00629aa8	MSWHEEL_ROLLMSG
+00629ea8	CDocTemplate
+00629ed0	CMultiDocTemplate
+00629f90	CWinApp
+0062a000	PreviewPages
+0062a010	Settings
+0062a01c	File%d
+0062a024	Recent File List
+0062a0f4	Automation
+0062a100	Embedding
+0062a110	Unregserver
+0062a11c	Unregister
+0062a148	CDocManager
+0062a194	NullFile
+0062a1a0	[printto("%1","%2","%3","%4")]
+0062a1c0	[print("%1")]
+0062a1d0	[open("%1")]
+0062a1e0	ddeexec
+0062a1e8	 /dde
+0062a1f0	 /pt "%1" "%2" "%3" "%4"
+0062a20c	 /p "%1"
+0062a218	 "%1"
+0062a220	command
+0062a22c	%s\ShellNew
+0062a238	%s\DefaultIcon
+0062a248	%s\shell\printto\%s
+0062a25c	%s\shell\print\%s
+0062a270	%s\shell\open\%s
+0062a2c8	[printto("
+0062a2d4	[print("
+0062a2e0	[open("
+0062a3bc	Software\
+0062a3c8	system
+0062a3d0	software
+0062a434	RichEdit Text and Objects
+0062a450	Rich Text Format
+0062a464	FileNameW
+0062a470	FileName
+0062a47c	Link Source Descriptor
+0062a494	Object Descriptor
+0062a4a8	Link Source
+0062a4b4	Embed Source
+0062a4c4	Embedded Object
+0062a4d4	ObjectLink
+0062a4e0	OwnerLink
+0062a4ec	Native
+0062a6e8	CMiniDockFrameWnd
+0062a718	CDockBar
+0062aa40	CStatusBar
+0062ac78	CTempMenu
+0062aca0	CMenu
+0062acd8	CFileDialog
+0062add4	CStringArray
+0062ae10	CToolTipCtrl
+0062af60	tooltips_class32
+0062af90	CPtrList
+0062afac	CMapStringToOb
+0062afd4	RICHED32.DLL
+0062afe4	RICHEDIT
+0062b008	CPtrArray
+0062b040	CCheckListBox
+0062b1e8	CArchiveException
+0062b214	combobox
+0062b220	System
+0062b248	CMapPtrToPtr
+0062b488	COleDispatchException
+0062b56c	CByteArray
+0062b5a0	COleException
+0062b5e0	CDialogBar
+0062b728	CPreviewDC
+0062b7c8	CPageSetupDialog
+0062b7f8	CPrintDialog
+0062bcf8	CMemFile
+0062bfa8	CMiniFrameWnd
+0062c238	Small Fonts
+0062c280	commdlg_SetRGBColor
+0062c294	commdlg_help
+0062c2a4	commdlg_ColorOK
+0062c2b4	commdlg_FileNameOK
+0062c2c8	commdlg_ShareViolation
+0062c2e0	commdlg_LBSelChangedNotify
+0062c318	CMapStringToPtr
+0062c340	commdlg_FindReplace
+0062c3f8	COleBusyDialog
+0062c420	COleDialog
+0062c508	%2\CLSID
+0062c514	%2\Insertable
+0062c524	%2\protocol\StdFileEditing\verb\0
+0062c54c	%2\protocol\StdFileEditing\server
+0062c574	CLSID\%1
+0062c580	CLSID\%1\ProgID
+0062c594	CLSID\%1\InprocHandler32
+0062c5ad	ole32.dll
+0062c5b8	CLSID\%1\LocalServer32
+0062c5d4	CLSID\%1\Verb\0
+0062c5f0	CLSID\%1\Verb\1
+0062c60c	CLSID\%1\Insertable
+0062c624	CLSID\%1\AuxUserType\2
+0062c640	CLSID\%1\AuxUserType\3
+0062c65c	CLSID\%1\DefaultIcon
+0062c678	CLSID\%1\MiscStatus
+0062c690	CLSID\%1\InProcServer32
+0062c6ac	CLSID\%1\DocObject
+0062c6c4	%2\DocObject
+0062c6d4	CLSID\%1\Printable
+0062c6e8	CLSID\%1\DefaultExtension
+0062c8b0	COleStreamFile
+0062c938	CSharedFile
+0062c9c8	CUIntArray
+0062ca08	Unknown exception
+0062ca40	Access violation - no RTTI data!
+0062ca7c	Bad dynamic_cast!
+0062cad0	H:mm:ss
+0062cad8	dddd, MMMM dd, yyyy
+0062caec	M/d/yy
+0062cafc	December
+0062cb08	November
+0062cb14	October
+0062cb1c	September
+0062cb28	August
+0062cb40	April
+0062cb48	March
+0062cb50	February
+0062cb5c	January
+0062cb94	Saturday
+0062cba0	Friday
+0062cba8	Thursday
+0062cbb4	Wednesday
+0062cbc0	Tuesday
+0062cbc8	Monday
+0062cbd0	Sunday
+0062cbf8	am/pm
+0062ccb6	GAIsProcessorFeaturePresent
+0062ccd4	e+000
+0062cd6e	null)
+0062cd7d	null)
+0062cd84	runtime error 
+0062cd94	TLOSS error\r\n
+0062cda4	SING error\r\n
+0062cdb4	DOMAIN error\r\n
+0062cdc4	R6028\r\n- unable to initialize heap\r\n
+0062cdec	R6027\r\n- not enough space for lowio initialization\r\n
+0062ce24	R6026\r\n- not enough space for stdio initialization\r\n
+0062ce5c	R6025\r\n- pure virtual function call\r\n
+0062ce84	R6024\r\n- not enough space for _onexit/atexit table\r\n
+0062cebc	R6019\r\n- unable to open console device\r\n
+0062cee8	R6018\r\n- unexpected heap error\r\n
+0062cf0c	R6017\r\n- unexpected multithread lock error\r\n
+0062cf3c	R6016\r\n- not enough space for thread data\r\n
+0062cf68	\r\nabnormal program termination\r\n
+0062cf8c	R6009\r\n- not enough space for environment\r\n
+0062cfb8	R6008\r\n- not enough space for arguments\r\n
+0062cfe4	R6002\r\n- floating point not loaded\r\n
+0062d00c	Microsoft Visual C++ Runtime Library
+0062d034	Runtime Error!\n\nProgram: 
+0062d050	<program name unknown>
+0062d0ac	floor
+0062d11c	SunMonTueWedThuFriSat
+0062d134	JanFebMarAprMayJunJulAugSepOctNovDec
+0062d160	LC_TIME
+0062d168	LC_NUMERIC
+0062d174	LC_MONETARY
+0062d180	LC_CTYPE
+0062d18c	LC_COLLATE
+0062d198	LC_ALL
+0062d1a8	GetLastActivePopup
+0062d1bc	GetActiveWindow
+0062d1cc	MessageBoxA
+0062d1d8	user32.dll
+0062d1e4	Paraguay
+0062d1f8	Chile
+0062d200	Ecuador
+0062d208	Argentina
+0062d21c	Colombia
+0062d228	Venezuela
+0062d234	Dominican Republic
+0062d248	South Africa
+0062d258	Panama
+0062d260	Luxembourg
+0062d26c	Costa Rica
+0062d278	Switzerland
+0062d284	Guatemala
+0062d290	Canada
+0062d298	Spanish - Modern Sort
+0062d2b0	Australia
+0062d2bc	English
+0062d2c4	Austria
+0062d2cc	German
+0062d2d4	Belgium
+0062d2dc	Mexico
+0062d2e4	Spanish
+0062d2ec	Basque
+0062d2f4	Sweden
+0062d2fc	Swedish
+0062d304	Iceland
+0062d30c	Icelandic
+0062d318	France
+0062d320	French
+0062d328	Finland
+0062d330	Finnish
+0062d338	Spain
+0062d340	Spanish - Traditional Sort
+0062d35c	united-states
+0062d36c	united-kingdom
+0062d37c	trinidad & tobago
+0062d390	south-korea
+0062d39c	south-africa
+0062d3ac	south korea
+0062d3b8	south africa
+0062d3d0	puerto-rico
+0062d3dc	pr-china
+0062d3e8	pr china
+0062d3f8	new-zealand
+0062d404	hong-kong
+0062d410	holland
+0062d418	great britain
+0062d428	england
+0062d438	china
+0062d440	britain
+0062d448	america
+0062d45c	swiss
+0062d464	swedish-finland
+0062d474	spanish-venezuela
+0062d488	spanish-uruguay
+0062d498	spanish-puerto rico
+0062d4ac	spanish-peru
+0062d4bc	spanish-paraguay
+0062d4d0	spanish-panama
+0062d4e0	spanish-nicaragua
+0062d4f4	spanish-modern
+0062d504	spanish-mexican
+0062d514	spanish-honduras
+0062d528	spanish-guatemala
+0062d53c	spanish-el salvador
+0062d550	spanish-ecuador
+0062d560	spanish-dominican republic
+0062d57c	spanish-costa rica
+0062d590	spanish-colombia
+0062d5a4	spanish-chile
+0062d5b4	spanish-bolivia
+0062d5c4	spanish-argentina
+0062d5d8	portuguese-brazilian
+0062d5f0	norwegian-nynorsk
+0062d604	norwegian-bokmal
+0062d618	norwegian
+0062d624	italian-swiss
+0062d634	irish-english
+0062d644	german-swiss
+0062d654	german-luxembourg
+0062d668	german-lichtenstein
+0062d67c	german-austrian
+0062d68c	french-swiss
+0062d69c	french-luxembourg
+0062d6b0	french-canadian
+0062d6c0	french-belgian
+0062d6d0	english-usa
+0062d6dc	english-us
+0062d6e8	english-uk
+0062d6f4	english-trinidad y tobago
+0062d710	english-south africa
+0062d728	english-nz
+0062d734	english-jamaica
+0062d744	english-ire
+0062d750	english-caribbean
+0062d764	english-can
+0062d770	english-belize
+0062d780	english-aus
+0062d78c	english-american
+0062d7a0	dutch-belgian
+0062d7b0	chinese-traditional
+0062d7c4	chinese-singapore
+0062d7d8	chinese-simplified
+0062d7ec	chinese-hongkong
+0062d800	chinese
+0062d810	canadian
+0062d81c	belgian
+0062d824	australian
+0062d830	american-english
+0062d844	american english
+0062d858	american
+0062d86c	1#QNAN
+0062d874	1#INF
+0062d87c	1#IND
+0062d884	1#SNAN
+00636400	ios::eofbit set
+00636410	ios::failbit set
+00636424	ios::badbit set
+00636454	string too long
+00636484	invalid string position
+00636514	0123456789abcdefABCDEF
+00636534	false
+006365a8	bad allocation
+00636764	%.0Lf
+006367b0	:Sun:Sunday:Mon:Monday:Tue:Tuesday:Wed:Wednesday:Thu:Thursday:Fri:Friday:Sat:Saturday
+00636808	:Jan:January:Feb:February:Mar:March:Apr:April:May:May:Jun:June:Jul:July:Aug:August:Sep:September:Oct:October:Nov:November:Dec:December
+00636898	+v$x+v$xv$+xv+$xv$+x+$vx+$vx$v+x+$vx$+vx+v $+v $v $+v+ $v $++$ v+$ v$ v++$ v$ +v
+0063940c	unicode
+0063941c	blank
+00639424	xdigit
+0063942c	upper
+00639434	space
+0063943c	punct
+00639444	print
+0063944c	lower
+00639454	graph
+0063945c	digit
+00639464	cntrl
+0063946c	alpha
+00639474	alnum
+00639484	zero
+0063949c	Unable to open dll: 
+00639714	Unknown error
+00639724	Empty expression
+00639738	Unmatched ) or \)
+0063974c	Regular expression too big
+00639768	Premature end of regular expression
+0063978c	Invalid preceding regular expression
+006397b4	Memory exhausted
+006397c8	Invalid range end
+006397dc	Invalid content of \{\}
+006397f4	Unmatched \{
+00639804	Unmatched ( or \(
+00639818	Unmatched [ or [^
+0063982c	Invalid back reference
+00639844	Trailing backslash
+00639858	Invalid character class name
+00639878	Invalid collation character
+00639894	Invalid regular expression
+006398b0	No match
+006398bc	Success
+0063991c	tilde
+00639924	right-curly-bracket
+00639938	vertical-line
+00639948	left-curly-bracket
+006399ac	grave-accent
+006399bc	underscore
+006399c8	circumflex
+006399d4	right-square-bracket
+006399ec	backslash
+006399f8	left-square-bracket
+00639a2c	commercial-at
+00639a3c	question-mark
+00639a4c	greater-than-sign
+00639a60	equals-sign
+00639a6c	less-than-sign
+00639a7c	semicolon
+00639a88	colon
+00639a98	eight
+00639aa0	seven
+00639abc	three
+00639acc	slash
+00639ad4	period
+00639adc	hyphen
+00639ae4	comma
+00639aec	plus-sign
+00639af8	asterisk
+00639b04	right-parenthesis
+00639b18	left-parenthesis
+00639b2c	apostrophe
+00639b38	ampersand
+00639b44	percent-sign
+00639b54	dollar-sign
+00639b60	number-sign
+00639b6c	quotation-mark
+00639b7c	exclamation-mark
+00639bd4	carriage-return
+00639be4	form-feed
+00639bf0	vertical-tab
+00639c00	newline
+00639c0c	backspace
+00639c18	alert
+00639c40	Button
+00639c60	ListBox
+00639ca0	ComboBox
+00639cc0	Static
+00639ce0	ComboLBox
+00639e18	CDockState
+00639e24	Bar#%d
+00639e2c	ScreenCY
+00639e38	ScreenCX
+00639e4c	Floating
+00639e60	BarID
+00639e68	MRUFloatYPos
+00639e78	MRUFloatXPos
+00639e88	MRUFloatStyle
+00639e98	MRUDockBottomPos
+00639eac	MRUDockTopPos
+00639ebc	MRUDockRightPos
+00639ecc	MRUDockLeftPos
+00639edc	MRUDockID
+00639ee8	Docking
+00639ef0	MRUWidth
+00639f0c	%s-Summary
+00639f18	%s-Bar%d
+00639f24	Visible
+00639f58	windows
+00639f60	DragMinDist
+00639f6c	DragDelay
+0063a008	CReBar
+0063a028	COleDocument
+0063a038	CDocItem
+0063a060	CToolBar
+0063a1d0	DllGetVersion
+0063a1e0	Marlett
+0063a300	CPropertySheetEx
+0063a330	CPropertySheet
+0063a358	CPropertyPage
+0063a64c	CDWordArray
+0063a668	CWordArray
+0063a6a0	COleIPFrameWnd
+0063a920	windows
+0063a928	DragScrollDelay
+0063a938	DragScrollInset
+0063a948	DragScrollInterval
+0063aa08	CColorDialog
+0063ab30	CMapStringToString
+0067b2c6	PlaySoundA
+0067b2d2	WINMM.dll
+0067b2de	InitializeCriticalSection
+0067b2fa	DeleteCriticalSection
+0067b312	GetFileAttributesA
+0067b328	LocalFree
+0067b334	FormatMessageA
+0067b346	GetLastError
+0067b356	EnterCriticalSection
+0067b36e	LeaveCriticalSection
+0067b386	ResetEvent
+0067b394	SetEvent
+0067b3a0	Sleep
+0067b3a8	WaitForSingleObject
+0067b3be	lstrcmpiA
+0067b3ca	ExitProcess
+0067b3d8	GetModuleFileNameA
+0067b3ee	GetVersionExA
+0067b3fe	lstrcpyA
+0067b40a	lstrcpynA
+0067b416	GetWindowsDirectoryA
+0067b42e	MulDiv
+0067b438	GlobalUnlock
+0067b448	GlobalLock
+0067b456	GlobalAlloc
+0067b464	lstrlenA
+0067b470	CopyFileA
+0067b47c	CloseHandle
+0067b48a	CreateThread
+0067b49a	ReadFile
+0067b4a6	PeekNamedPipe
+0067b4b6	WriteFile
+0067b4c2	CreateProcessA
+0067b4d4	CreatePipe
+0067b4e2	CompareFileTime
+0067b4f4	GetFileSize
+0067b502	GetFileTime
+0067b510	CreateFileA
+0067b51e	CreateEventA
+0067b52e	SetThreadPriority
+0067b542	FindCloseChangeNotification
+0067b560	WaitForMultipleObjects
+0067b57a	FindFirstChangeNotificationA
+0067b59a	GetProcAddress
+0067b5ac	GetModuleHandleA
+0067b5c0	IsBadReadPtr
+0067b5d0	LoadLibraryA
+0067b5e0	InterlockedIncrement
+0067b5f8	InterlockedDecrement
+0067b610	WideCharToMultiByte
+0067b626	MultiByteToWideChar
+0067b63c	lstrcmpA
+0067b648	LoadResource
+0067b658	FindResourceA
+0067b668	LockResource
+0067b678	GlobalFree
+0067b686	GlobalDeleteAtom
+0067b69a	GlobalFindAtomA
+0067b6ac	GlobalAddAtomA
+0067b6be	GlobalGetAtomNameA
+0067b6d4	GetCurrentThreadId
+0067b6ea	lstrcatA
+0067b6f6	GetVersion
+0067b704	FreeLibrary
+0067b712	SetLastError
+0067b722	GetTempFileNameA
+0067b736	GetFullPathNameA
+0067b74a	SetFileTime
+0067b758	GetDiskFreeSpaceA
+0067b76c	ResumeThread
+0067b77c	SuspendThread
+0067b78c	FindClose
+0067b798	FindFirstFileA
+0067b7aa	FindNextFileA
+0067b7ba	DuplicateHandle
+0067b7cc	GetCurrentProcess
+0067b7e0	SetFilePointer
+0067b7f2	FlushFileBuffers
+0067b806	LockFile
+0067b812	UnlockFile
+0067b820	SetEndOfFile
+0067b830	MoveFileA
+0067b83c	DeleteFileA
+0067b84a	GetVolumeInformationA
+0067b862	GetStringTypeExA
+0067b876	GetThreadLocale
+0067b888	GetShortPathNameA
+0067b89c	lstrlenW
+0067b8a8	FileTimeToSystemTime
+0067b8c0	FileTimeToLocalFileTime
+0067b8da	IsBadStringPtrA
+0067b8ec	IsBadWritePtr
+0067b8fc	GetCurrentThread
+0067b910	GetPrivateProfileIntA
+0067b928	GetPrivateProfileStringA
+0067b944	WritePrivateProfileStringA
+0067b962	GetCurrentDirectoryA
+0067b97a	GetTickCount
+0067b98a	LocalFileTimeToFileTime
+0067b9a4	SystemTimeToFileTime
+0067b9bc	SetFileAttributesA
+0067b9d2	LocalAlloc
+0067b9e0	TlsAlloc
+0067b9ec	GlobalHandle
+0067b9fc	TlsFree
+0067ba06	GlobalReAlloc
+0067ba16	TlsSetValue
+0067ba24	LocalReAlloc
+0067ba34	TlsGetValue
+0067ba42	GlobalFlags
+0067ba50	SizeofResource
+0067ba62	GetProcessVersion
+0067ba76	GetCPInfo
+0067ba82	GetOEMCP
+0067ba8e	SetErrorMode
+0067ba9e	GlobalSize
+0067baac	RtlUnwind
+0067bab8	HeapFree
+0067bac4	ExitThread
+0067bad2	TerminateProcess
+0067bae6	RaiseException
+0067baf8	GetDriveTypeA
+0067bb08	GetStartupInfoA
+0067bb1a	GetCommandLineA
+0067bb2c	HeapAlloc
+0067bb38	SetStdHandle
+0067bb48	GetFileType
+0067bb56	GetTimeZoneInformation
+0067bb70	GetSystemTime
+0067bb80	GetLocalTime
+0067bb90	GetACP
+0067bb9a	HeapReAlloc
+0067bba8	HeapSize
+0067bbb4	GetStringTypeA
+0067bbc6	GetStringTypeW
+0067bbd8	LCMapStringA
+0067bbe8	LCMapStringW
+0067bbf8	HeapDestroy
+0067bc06	HeapCreate
+0067bc14	VirtualFree
+0067bc22	VirtualAlloc
+0067bc32	UnhandledExceptionFilter
+0067bc4e	SetUnhandledExceptionFilter
+0067bc6c	FreeEnvironmentStringsA
+0067bc86	FreeEnvironmentStringsW
+0067bca0	GetEnvironmentStrings
+0067bcb8	GetEnvironmentStringsW
+0067bcd2	SetHandleCount
+0067bce4	GetStdHandle
+0067bcf4	IsBadCodePtr
+0067bd04	IsValidLocale
+0067bd14	IsValidCodePage
+0067bd26	GetLocaleInfoA
+0067bd38	EnumSystemLocalesA
+0067bd4e	GetUserDefaultLCID
+0067bd64	CompareStringA
+0067bd76	CompareStringW
+0067bd88	SetEnvironmentVariableA
+0067bda2	GetLocaleInfoW
+0067bdb2	KERNEL32.dll
+0067bdc2	SendMessageA
+0067bdd2	GetSystemMetrics
+0067bde6	OffsetRect
+0067bdf4	PtInRect
+0067be00	GetWindowRect
+0067be10	GetCursorPos
+0067be20	IsWindow
+0067be2c	InflateRect
+0067be3a	GetClientRect
+0067be4a	GetParent
+0067be56	EnableWindow
+0067be66	DrawFocusRect
+0067be76	GetSysColor
+0067be84	CopyRect
+0067be90	InvalidateRect
+0067bea2	FillRect
+0067beae	LoadCursorA
+0067bebc	GetAsyncKeyState
+0067bed0	SystemParametersInfoA
+0067bee8	SetFocus
+0067bef4	RegisterWindowMessageA
+0067bf0e	RedrawWindow
+0067bf1e	LoadImageA
+0067bf2c	LoadAcceleratorsA
+0067bf40	PostMessageA
+0067bf50	MsgWaitForMultipleObjects
+0067bf6c	KillTimer
+0067bf78	TranslateAcceleratorA
+0067bf90	MessageBeep
+0067bf9e	ClientToScreen
+0067bfb0	GetCaretPos
+0067bfbe	UpdateWindow
+0067bfce	SetForegroundWindow
+0067bfe4	EnableMenuItem
+0067bff6	PostQuitMessage
+0067c008	PeekMessageA
+0067c018	GetFocus
+0067c024	GetSubMenu
+0067c032	LoadMenuA
+0067c03e	DeleteMenu
+0067c04c	ModifyMenuA
+0067c05a	GetMenuItemID
+0067c06a	GetMenuItemCount
+0067c07e	ReleaseCapture
+0067c090	GetWindow
+0067c09c	IsChild
+0067c0a6	ScreenToClient
+0067c0b8	LockWindowUpdate
+0067c0cc	SetRect
+0067c0d6	EqualRect
+0067c0e2	IsWindowVisible
+0067c0f4	LoadBitmapA
+0067c102	GetDC
+0067c10a	GetDesktopWindow
+0067c11e	DestroyCursor
+0067c12e	DestroyIcon
+0067c13c	GetIconInfo
+0067c14a	WindowFromPoint
+0067c15c	SetCapture
+0067c16a	GetCapture
+0067c178	GetActiveWindow
+0067c18a	DrawStateA
+0067c198	FrameRect
+0067c1a4	GetWindowLongA
+0067c1b6	SetCursor
+0067c1c2	SetRectEmpty
+0067c1d2	ShowScrollBar
+0067c1e2	CheckMenuItem
+0067c1f2	CloseClipboard
+0067c204	SetClipboardData
+0067c218	EmptyClipboard
+0067c22a	OpenClipboard
+0067c23a	AppendMenuA
+0067c248	CreatePopupMenu
+0067c25a	GetMessagePos
+0067c26a	GetKeyState
+0067c278	MapWindowPoints
+0067c28a	PostThreadMessageA
+0067c2a0	SetTimer
+0067c2ac	ReleaseDC
+0067c2b8	DispatchMessageA
+0067c2cc	TranslateMessage
+0067c2e0	ShowWindow
+0067c2ee	GetSysColorBrush
+0067c302	DefWindowProcA
+0067c314	GetClassInfoA
+0067c324	GetWindowTextA
+0067c336	OemToCharA
+0067c344	IsWindowEnabled
+0067c356	GetDlgItem
+0067c364	DestroyWindow
+0067c374	CreateDialogIndirectParamA
+0067c392	SetActiveWindow
+0067c3a4	EndDialog
+0067c3b0	GetNextDlgTabItem
+0067c3c4	GetWindowPlacement
+0067c3da	IsIconic
+0067c3e6	IntersectRect
+0067c3f6	SetWindowPos
+0067c406	SetWindowLongA
+0067c418	GetForegroundWindow
+0067c42e	GetLastActivePopup
+0067c444	GetMessageTime
+0067c456	RemovePropA
+0067c464	CallWindowProcA
+0067c476	GetPropA
+0067c482	UnhookWindowsHookEx
+0067c498	SetPropA
+0067c4a4	GetClassLongA
+0067c4b4	CallNextHookEx
+0067c4c6	SetWindowsHookExA
+0067c4da	CreateWindowExA
+0067c4ec	GetDlgCtrlID
+0067c4fc	GetWindowTextLengthA
+0067c514	TrackPopupMenu
+0067c526	GetMenu
+0067c530	RegisterClassA
+0067c542	wsprintfA
+0067c54e	WinHelpA
+0067c55a	MessageBoxA
+0067c568	GetTopWindow
+0067c578	SetScrollPos
+0067c588	GetScrollPos
+0067c598	SetScrollRange
+0067c5aa	GetScrollRange
+0067c5bc	SetScrollInfo
+0067c5cc	GetScrollInfo
+0067c5dc	ScrollWindow
+0067c5ec	EndDeferWindowPos
+0067c600	BeginDeferWindowPos
+0067c616	DeferWindowPos
+0067c628	AdjustWindowRectEx
+0067c63e	SendDlgItemMessageA
+0067c654	LoadIconA
+0067c660	SetMenuItemBitmaps
+0067c676	GetMenuState
+0067c686	GetMenuCheckMarkDimensions
+0067c6a4	GetWindowDC
+0067c6b2	BeginPaint
+0067c6c0	EndPaint
+0067c6cc	TabbedTextOutA
+0067c6de	DrawTextA
+0067c6ea	GrayStringA
+0067c6f8	CheckDlgButton
+0067c70a	SetDlgItemTextA
+0067c71c	IsDlgButtonChecked
+0067c732	IsDialogMessageA
+0067c746	SetWindowTextA
+0067c758	MoveWindow
+0067c766	ValidateRect
+0067c776	GetMessageA
+0067c784	CharUpperA
+0067c792	FindWindowA
+0067c7a0	IsRectEmpty
+0067c7ae	BringWindowToTop
+0067c7c2	DefFrameProcA
+0067c7d2	TranslateMDISysAccel
+0067c7ea	DrawMenuBar
+0067c7f8	DefMDIChildProcA
+0067c80c	DestroyMenu
+0067c81a	SetMenu
+0067c824	ReuseDDElParam
+0067c836	UnpackDDElParam
+0067c848	SetCursorPos
+0067c858	ShowOwnedPopups
+0067c86a	InsertMenuA
+0067c878	GetMenuStringA
+0067c88a	SetWindowContextHelpId
+0067c8a4	MapDialogRect
+0067c8b4	RegisterClipboardFormatA
+0067c8d0	WaitMessage
+0067c8de	GetWindowThreadProcessId
+0067c8fa	SetParent
+0067c906	GetSystemMenu
+0067c916	LoadStringA
+0067c924	IsZoomed
+0067c930	UnregisterClassA
+0067c944	GetClassNameA
+0067c954	CharNextA
+0067c960	RemoveMenu
+0067c96e	GetTabbedTextExtentA
+0067c986	CopyAcceleratorTableA
+0067c99e	GetNextDlgGroupItem
+0067c9b4	GetDCEx
+0067c9be	InvertRect
+0067c9cc	IsClipboardFormatAvailable
+0067c9e8	USER32.dll
+0067c9f6	CreateFontIndirectA
+0067ca0c	GetObjectA
+0067ca1a	GetTextExtentPoint32A
+0067ca32	GetStockObject
+0067ca44	Rectangle
+0067ca50	CreateSolidBrush
+0067ca64	CreateCompatibleDC
+0067ca7a	GetBitmapDimensionEx
+0067ca92	GetDeviceCaps
+0067caa2	StretchBlt
+0067cab0	DeleteObject
+0067cac0	SelectObject
+0067cad0	CreateCompatibleBitmap
+0067caea	BitBlt
+0067caf4	GetBkColor
+0067cb02	GetTextColor
+0067cb12	GetClipBox
+0067cb20	SetTextColor
+0067cb30	SetBkColor
+0067cb3e	CreateBitmap
+0067cb4e	DeleteDC
+0067cb5a	StartDocA
+0067cb66	SaveDC
+0067cb70	RestoreDC
+0067cb7c	SelectPalette
+0067cb8c	SetBkMode
+0067cb98	SetPolyFillMode
+0067cbaa	SetROP2
+0067cbb4	SetStretchBltMode
+0067cbc8	SetMapMode
+0067cbd6	SetViewportOrgEx
+0067cbea	OffsetViewportOrgEx
+0067cc00	SetViewportExtEx
+0067cc14	ScaleViewportExtEx
+0067cc2a	SetWindowOrgEx
+0067cc3c	OffsetWindowOrgEx
+0067cc50	SetWindowExtEx
+0067cc62	ScaleWindowExtEx
+0067cc76	SelectClipRgn
+0067cc86	ExcludeClipRect
+0067cc98	IntersectClipRect
+0067ccac	MoveToEx
+0067ccb8	LineTo
+0067ccc2	SetTextAlign
+0067ccd2	GetCurrentPositionEx
+0067ccea	CreateRectRgn
+0067ccfa	ExtSelectClipRgn
+0067cd0e	GetViewportExtEx
+0067cd22	GetWindowExtEx
+0067cd34	CreatePen
+0067cd40	CreatePatternBrush
+0067cd56	PtVisible
+0067cd62	RectVisible
+0067cd70	TextOutA
+0067cd7c	ExtTextOutA
+0067cd8a	Escape
+0067cd94	GetMapMode
+0067cda2	PatBlt
+0067cdac	SetRectRgn
+0067cdba	CombineRgn
+0067cdc8	CreateRectRgnIndirect
+0067cde0	DPtoLP
+0067cdea	LPtoDP
+0067cdf4	GetViewportOrgEx
+0067ce08	AbortDoc
+0067ce14	EndDoc
+0067ce1e	EndPage
+0067ce28	StartPage
+0067ce34	SetAbortProc
+0067ce44	CreateDCA
+0067ce50	GetTextMetricsA
+0067ce62	CopyMetaFileA
+0067ce72	GetNearestColor
+0067ce84	GetStretchBltMode
+0067ce98	GetPolyFillMode
+0067ceaa	GetTextAlign
+0067ceba	GetBkMode
+0067cec6	GetROP2
+0067ced0	GetTextFaceA
+0067cee0	GetCharWidthA
+0067cef0	GetWindowOrgEx
+0067cf00	GDI32.dll
+0067cf0c	GetFileTitleA
+0067cf1c	CommDlgExtendedError
+0067cf34	GetSaveFileNameA
+0067cf48	GetOpenFileNameA
+0067cf5c	PageSetupDlgA
+0067cf6c	PrintDlgA
+0067cf76	comdlg32.dll
+0067cf86	ClosePrinter
+0067cf96	DocumentPropertiesA
+0067cfac	OpenPrinterA
+0067cfba	WINSPOOL.DRV
+0067cfca	RegEnumKeyA
+0067cfd8	RegQueryInfoKeyA
+0067cfec	RegCloseKey
+0067cffa	RegSetValueExA
+0067d00c	RegCreateKeyA
+0067d01c	RegSetValueA
+0067d02c	RegQueryValueExA
+0067d040	RegOpenKeyExA
+0067d050	SetFileSecurityA
+0067d064	GetFileSecurityA
+0067d078	RegOpenKeyA
+0067d086	RegDeleteKeyA
+0067d096	RegQueryValueA
+0067d0a8	RegCreateKeyExA
+0067d0ba	RegDeleteValueA
+0067d0ca	ADVAPI32.dll
+0067d0da	ShellExecuteA
+0067d0ea	DragAcceptFiles
+0067d0fc	SHGetFileInfoA
+0067d10e	DragFinish
+0067d11c	DragQueryFileA
+0067d12e	ExtractIconA
+0067d13c	SHELL32.dll
+0067d14a	ImageList_Draw
+0067d15c	ImageList_ReplaceIcon
+0067d174	ImageList_GetIcon
+0067d188	ImageList_GetImageInfo
+0067d1a2	ImageList_EndDrag
+0067d1b6	ImageList_DragLeave
+0067d1cc	ImageList_DragShowNolock
+0067d1e8	ImageList_DragEnter
+0067d1fe	ImageList_BeginDrag
+0067d214	ImageList_DragMove
+0067d22a	ImageList_Destroy
+0067d23e	ImageList_AddMasked
+0067d254	ImageList_Create
+0067d268	ImageList_LoadImageA
+0067d27e	COMCTL32.dll
+0067d28c	oledlg.dll
+0067d29a	CLSIDFromProgID
+0067d2ac	CLSIDFromString
+0067d2be	OleInitialize
+0067d2ce	OleUninitialize
+0067d2e0	CoFreeUnusedLibraries
+0067d2f8	OleDuplicateData
+0067d30c	CoTaskMemAlloc
+0067d31e	CoTaskMemFree
+0067d32e	ReleaseStgMedium
+0067d342	CoGetClassObject
+0067d356	StgOpenStorageOnILockBytes
+0067d374	StgCreateDocfileOnILockBytes
+0067d394	CreateILockBytesOnHGlobal
+0067d3b0	CoRegisterMessageFilter
+0067d3ca	CoRevokeClassObject
+0067d3e0	OleFlushClipboard
+0067d3f4	OleIsCurrentClipboard
+0067d40c	CreateStreamOnHGlobal
+0067d422	ole32.dll
+0067d42c	OLEPRO32.DLL
+0067d43a	OLEAUT32.dll
+0067d44a	VerQueryValueA
+0067d45c	GetFileVersionInfoA
+0067d472	GetFileVersionInfoSizeA
+0067d48a	VERSION.dll
+0067d496	zlib.dll
+0067d4a2	SearchPathA
+0067d4b0	GetTempPathA
+0067d4c0	GetExitCodeThread
+0067d4d4	InterlockedExchange
+0067d4ea	CreateDirectoryA
+0067d4fe	SetCurrentDirectoryA
+0067d516	GetProfileStringA
+0067d52a	SetVolumeLabelA
+0067d53c	UnmapViewOfFile
+0067d54e	MapViewOfFile
+0067d55e	CreateFileMappingA
+0067d574	GetProfileIntA
+0067d586	VirtualProtect
+0067d598	GetSystemTimeAsFileTime
+0067d5b2	GetFileInformationByHandle
+0067d5d0	UnionRect
+0067d5dc	DrawIconEx
+0067d5ea	GetMenuItemInfoA
+0067d5fe	IsMenu
+0067d608	DrawFrameControl
+0067d61c	EnableScrollBar
+0067d62e	GetMenuDefaultItem
+0067d644	SetMenuDefaultItem
+0067d65a	MapVirtualKeyA
+0067d66c	DestroyAcceleratorTable
+0067d686	CreateAcceleratorTableA
+0067d6a0	ToAsciiEx
+0067d6ac	GetKeyboardLayout
+0067d6c0	GetKeyboardState
+0067d6d4	EnumChildWindows
+0067d6e8	GetClassInfoExA
+0067d6fa	IsCharLowerA
+0067d70a	GetKeyNameTextA
+0067d71c	MapVirtualKeyExA
+0067d730	GetClipboardData
+0067d744	HideCaret
+0067d750	ShowCaret
+0067d75c	SetCaretPos
+0067d76a	CreateCaret
+0067d778	DrawEdge
+0067d784	IsWindowUnicode
+0067d796	DefDlgProcA
+0067d7a4	ExcludeUpdateRgn
+0067d7b8	CreateMenu
+0067d7c6	CreateDIBSection
+0067d7da	EnumFontFamiliesA
+0067d7ee	CreateDIBitmap
+0067d800	SetPixel
+0067d80c	GetPixel
+0067d818	OffsetRgn
+0067d824	GetDIBits
+0067d830	RealizePalette
+0067d842	Polygon
+0067d84c	Ellipse
+0067d856	ExtFloodFill
+0067d866	GetPaletteEntries
+0067d87a	CreateFontA
+0067d888	EnumFontFamiliesExA
+0067d89e	CreatePalette
+0067d8ae	GetTextExtentPointA
+0067d8c4	StretchDIBits
+0067d8d4	ChooseColorA
+0067d8e4	SHGetPathFromIDListA
+0067d8fc	SHBrowseForFolderA
+0067d912	SHGetDesktopFolder
+0067d928	SHGetMalloc
+0067d936	PropertySheetA
+0067d948	DestroyPropertySheetPage
+0067d964	CreatePropertySheetPageA
+0067d980	DoDragDrop
+0067d98e	OleLockRunning
+0067d9a0	OleGetClipboard
+0067d9b2	OleTranslateAccelerator
+0067d9cc	IsAccelerator
+0067d9dc	OleCreateMenuDescriptor
+0067d9f6	OleDestroyMenuDescriptor
+0067da12	RegisterDragDrop
+0067da26	CoLockObjectExternal
+0067da3e	RevokeDragDrop
+0067db54	JCreator.exe
+0067db61	?GetPathWithoutFilename@@YA?AVCString@@ABV1@H@Z
+0067db91	?GetPathWithoutFilename@@YAXAAVCString@@@Z
+0067dbbc	?SetNormalPathFormat@@YAXAAVCString@@@Z
+0067dbe4	?SortStrings@@YAXAAVCStringList@@@Z
+0067dc08	?SortStrings@@YAXPAVCString@@H@Z
+0067dc29	?SortStrings@@YAXQAPADH@Z
+0067dc43	?SwapReferences@@YAXAAVCStringArray@@HH@Z
+0067dc6d	?WDWCreatePath@@YAHPBD@Z
+0067dc86	?WDWExistFile@@YAHPBD@Z
+0067dc9e	?WDWGetFileExtension@@YA?AVCString@@ABV1@@Z
+0067dcca	?WDWGetFileTitle@@YA?AVCString@@ABV1@@Z
+0067dcf2	?WDWGetNameExt@@YA?AVCString@@ABV1@@Z
+0067dd18	?WDWGetNamePosition@@YAHPBD@Z
+0067dd36	?WDWIsValidFilename@@YAHPBVCString@@@Z
+0067dd5d	?WDWValidatePath@@YAHPBDH@Z
+0067dd79	?bracetype@@YAHD@Z
+0067dd8c	?bracetype@@YAHPBD@Z
+0067dda1	?invbrace@@YA_NDAAD@Z
+0067ddb7	?isclosebrace@@YA_ND@Z
+0067ddce	?isclosebrace@@YA_NPBD@Z
+0067dde7	?isopenbrace@@YA_ND@Z
+0067ddfd	?isopenbrace@@YA_NPBD@Z
+0067e958	.?AV?$CList@PAVCCodeTemplate@@PAV1@@@
+0067e988	.?AVCObject@@
+0067e9a0	.?AVCCodeTemplateList@@
+0067e9c0	.?AVCCodeTemplate@@
+0067e9e0	.?AVCCodeTemplateLoader@@
+0067ea08	.?AVCFileLoader@@
+0067ea28	.?AVCListBox@@
+0067ea40	.?AVCCJListBox@@
+0067ea60	.?AVCDoubleListBox@@
+0067ea80	.?AVCPopupControl2@@
+0067eaa0	.?AVCGdiObject@@
+0067eac0	.?AVCFont@@
+0067ead8	.?AVCCmdTarget@@
+0067eaf8	.?AVCWnd@@
+0067eb10	.?AVCDialog@@
+0067eb28	.?AVCCodeTemplatePopup@@
+0067eb44	Tahoma
+0067eb54	none available
+0067eb68	HELLO
+0067eb78	.?AVCEdit@@
+0067eb90	.?AVCButton@@
+0067eba8	.?AVCCodeTemplateProperties@@
+0067ebc8	Invalid Label
+0067ebd8	" already exist
+0067ebe8	Template "
+0067ebfc	! ** JCreator CodeTemplate File (C)2000\n
+0067ec28	! ************ DO NOT EDIT ************\n\n
+0067ec54	! Start CodeTemplate Structure\n\n
+0067ec80	.?AVCCodeTemplateSaver@@
+0067eca8	.?AVCFileSaver@@
+0067ecc8	.?AVCException@@
+0067ece8	.?AVCFileException@@
+0067ed10	.?AV?$CList@PAVMemberStruct@@PAV1@@@
+0067ed40	.?AVCClassMemberListBox@@
+0067ed68	.?AVCBrush@@
+0067ed90	.?AVCClassMemberPopup@@
+0067edb0	.?AVCPopupControl@@
+0067edc8	interface
+0067edd4	package
+0067eddc	class
+0067edf0	.?AV?$CList@PAVITEMDATA@CDoubleListBox@@PAV12@@@
+0067ee30	.?AVCParamInfoWnd@@
+0067ee50	.?AV?$CList@PAUDRAWBLOCK@CParamInfoWnd@@PAU12@@@
+0067ee90	.?AV?$CArray@PAVCParamInfo@@PAV1@@@
+0067eec0	.?AVCStringTokenizer@@
+0067eef0	%d of %d
+0067ef08	.?AVCWListBox@@
+0067ef20	.?AVCPopupControl3@@
+0067ef40	.?AVCWordCompletionPopup@@
+0067ef68	.?AVCFindQuery@@
+0067ef88	.?AVCCrystalFindQuery@@
+0067efa4	[[:alnum:]_]*
+0067efc0	.?AVCFindResult@@
+0067efe0	.?AV?$CList@PAVCFindResult@@PAV1@@@
+0067f004	CJCreatorDoc
+0067f014	WM_CLOSED_DOCUMENT
+0067f028	WM_OPENED_DOCUMENT
+0067f03c	WM_ACTIVE_DOCUMENT
+0067f058	.?AVCChangeDocEvent@@
+0067f078	.?AVCDocument@@
+0067f090	.?AVCJCreatorDoc@@
+0067f0b0	.?AVCSyncObject@@
+0067f0d0	.?AVCCriticalSection@@
+0067f0f0	.java
+0067f108	Plain
+0067f118	.?AV?$CList@PBVCBreakPoint@@PBV1@@@
+0067f144	CJCreatorHtmlDoc
+0067f160	.?AV?$CArray@PAVCHistoryObj@@PAV1@@@
+0067f190	.?AVCJCreatorHtmlDoc@@
+0067f1ac	http:
+0067f1b4	CJCreatorHtmlView
+0067f1d0	.?AVCView@@
+0067f1e8	.?AVCScrollView@@
+0067f208	.?AVCFormView@@
+0067f220	.?AVCHtmlView@@
+0067f238	.?AVCJCreatorHtmlView@@
+0067f254	file:///
+0067f260	CJCreatorView
+0067f278	.?AVCCrystalTextView@@
+0067f298	.?AVCCrystalFindTextView@@
+0067f2c0	.?AVCCrystalEditView@@
+0067f2e0	.?AVCJCreatorView@@
+0067f300	CChildFrame
+0067f318	.?AVCFrameWnd@@
+0067f330	.?AVCMDIChildWnd@@
+0067f350	.?AVCChildFrame@@
+0067f370	.?AVCDosCmdDlg@@
+0067f384	Default
+0067f38c	txt,doc,diz,syn
+0067f39c	plain.syn
+0067f3a8	java.syn
+0067f3b9	+*/<>!~%^&|=
+0067f3d9	}[]()
+0067f3e0	html.syn
+0067f3ec	html,htm,shtml,ihtml
+0067f418	.?AVCDocTemplate@@
+0067f438	.?AVCMultiDocTemplate@@
+0067f458	.?AVCJCMultiDocTemplate@@
+0067f480	.?AVCBCGWorkspace@@
+0067f4a0	.?AVCJCreatorApp@@
+0067f4c0	.?AVCWinThread@@
+0067f4e0	.?AVCWinApp@@
+0067f4f8	.?AVCDumpHandleApp@@
+0067f518	.?AVCDocumentClassList@@
+0067f540	.?AVCJCDocumentClassList@@
+0067f55c	www.jcreator.com
+0067f570	wendeldw@jcreator.com
+0067f590	.?AV?$CList@PAVCPaneDialog@@PAV1@@@
+0067f5c0	.?AVCDocManager@@
+0067f5e0	.?AVCMultiOpenDocManager@@
+0067f604	CommandLine
+0067f610	JCREATOR_VERIFY_SINSTANCE
+0067f62c	Recent Workspaces
+0067f644	Software\Microsoft Network\Docs\
+0067f668	Software\Xinox Software\JCreator\
+0067f68c	Software\Xinox Software\JCreatorLE\Options\DocTypes
+0067f6c0	Settings
+0067f6cc	JCreatorLE
+0067f6d8	Xinox Software\
+0067f6e8	CodeSnippets\
+0067f6f8	MyProjects\
+0067f704	Syntax\
+0067f70c	Templates\
+0067f728	Software\Xinox Software\JCreatorLE\Search\
+0067f754	Software\Xinox Software\JCreatorLE\Options\JDKTools
+0067f788	Software\Xinox Software\JCreatorLE\Options\JLibraries
+0067f7c0	Software\Xinox Software\JCreatorLE\Options\JDKProfiles
+0067f800	.?AVCAboutDlg@@
+0067f810	MDI Tabs menu
+0067f820	Context menu
+0067f838	2.00 final
+0067f844	2.50 
+0067f84c	Software\Xinox Software\JCreatorLE
+0067f870	Software\Xinox Software\JCreatorLE\Options\
+0067f89c	Software\Xinox Software\Beta\JCreator\Options\
+0067f8cc	Software\Xinox Software\Beta\JCreator\Search\
+0067f8fc	Software\Xinox Software\Beta\JCreator\Options\JDKTools
+0067f934	Software\Xinox Software\Beta\JCreator\Options\JLibraries
+0067f970	Software\Xinox Software\Beta\JCreator\Options\JDKProfiles
+0067f9ac	Software\Xinox Software\Beta\JCreator
+0067f9d4	Software\Xinox Software\JCreatorLE\Settings\
+0067fa04	OutputViews
+0067fa10	ToolTypeSel
+0067fa1c	PackageView
+0067fa28	ParserDelay
+0067fa34	FlagsClv
+0067fa40	MaxFiles
+0067fa4c	MaxWsp
+0067fa54	SyntaxDir
+0067fa60	TemplateDir
+0067fa6c	ProjectDir
+0067fa78	FlagsWzd
+0067fa84	FlagsEdi
+0067fa90	FlagsGen2
+0067fa9c	FlagsGen
+0067faa8	CodeTemplates.ctt
+0067fac8	iexplore.exe
+0067fae4	htmlfile\shell\open\command
+0067fb04	Software\Xinox Software\JCreatorLE\TipOfDay
+0067fb30	tips.txt
+0067fb3c	Send mail to author
+0067fb50	mailto:
+0067fb58	Visit the homepage of JCreator
+0067fba8	CMainFrame
+0067fbc0	.?AVCFindInFilesView@@
+0067fbe0	.?AVCMainFindInFilesView@@
+0067fc08	.?AVCControlBar@@
+0067fc28	.?AVCBCGSizingControlBar@@
+0067fc50	.?AVCControlbarWorkspace@@
+0067fc78	.?AVCMDIFrameWnd@@
+0067fc98	.?AVCBCGMDIFrameWnd@@
+0067fcb8	.?AVCMDITabFrameWnd@@
+0067fcd8	.?AVCMainFrame@@
+0067fcf4	http:\\www.jcreator.com\Faq.html
+0067fd18	http:\\www.jcreator.com\Feedback.html
+0067fd40	http:\\www.jcreator.com
+0067fd58	http:\\www.jcreator.com\Support.html
+0067fd80	http:\\www.jcreator.com\register.html
+0067fda8	Windows...
+0067fdb4	ClassView
+0067fdc0	Output
+0067fdc8	FileView
+0067fdd4	Customize...
+0067fde4	UserImages.bmp
+0067fe00	.?AVCBCGToolbarButton@@
+0067fe20	.?AVCBCGToolbarComboBoxButton@@
+0067fe48	.?AVCFindComboButton@@
+0067fe68	.?AVCMenu@@
+0067fe84	&Configuration...
+0067fea0	Project Files(*.
+0067febc	Workspaces(*.
+0067fed8	.?AV?$CList@PAVCFileItem@@PAV1@@@
+0067ff08	.?AVCWorkspaceInfo@@
+0067ff28	.?AVCRunTimeConfig@@
+0067ff48	.?AV?$CList@PAVCRunTimeConfig@@PAV1@@@
+0067ff78	.?AVCToolTask@@
+0067ff90	.?AVCJDKToolTask@@
+0067ffa4	Batch Process
+0067ffc8	.?AV?$CList@PAVCWnd@@PAV1@@@
+0067ffe8	sfddfgfd
+0067fffc	&e!Ebzt!sfnbjo!jo!fwbmvbujpo!qfsjpe
+00680020	Wptgikuvgtgf
+00680034	Uijt!qspevdu!jt!mjdfotfe!up;
+00680054	WindowParserHandle
+00680068	WindowParser
+00680078	Folfn#RN#wr#glvsod|#wkh#uhjlvwudwlrq#gldorj1
+006800a8	{qw"owuv"tgikuvgt"cv"jvvr<11yyy0letgcvqt0eqo"qt"kpuvcnn"vjg"htggyctg"gfkvkqp0
+006800f8	Zpvs!fwbmvbujpo!qfsjpe!ibt!fyqjsfe/!Jg!zpv!xjti!up!dpoujovf!vtjoh!KDsfbups!Qsp
+00680148	folder.1
+006801a0	234244354 245 5465 3245566756767
+006801c4	897636263 543 5345 3544385039853
+006801e8	CLSID
+00680204	AHPFile
+0068020c	COLEChildWind
+00680228	.?AVCOLEChildWind@@
+0068023c	CProgressBar
+00680258	.?AVCProgressBar@@
+00680278	.?AVCProgressCtrl@@
+00680298	.?AVCPropertiesClassDlg@@
+006802c0	.?AVCBitmap@@
+006802d8	.?AVCSplashScrDlg@@
+006802ec	\nJCreator v2.50 Lite Edition is a Freeware product.
+00680320	Verdana
+00680330	.?AVCTreeCtrl@@
+00680348	.?AVCWTreeCtrl@@
+00680368	.?AVCMyTreeCtrl@@
+00680390	.?AVCButtonST@@
+006803a8	.?AVCClassWizard@@
+006803c8	.?AVCComboBox@@
+006803e0	.?AVCStatic@@
+006803f8	.?AVCJavaMember@@
+00680418	.?AVCJavaInterface@@
+00680438	.?AVCJavaClass@@
+0068044c	source\
+0068045c	 Variables      
+00680470	 Methods      
+00680480	Class Properties
+00680494	Interface
+006804a0	Class
+006804b0	.?AVCIdentList@@
+006804d0	.?AVCPtrList@@
+006804e8	.?AVCPackageLineList@@
+00680508	.?AVCPackageLine@@
+00680528	.?AV?$CList@PAVCJavaFunction@@PAV1@@@
+00680550	javax.swing.JPanel
+00680564	javax.swing.JFrame
+00680578	java.awt.Panel
+00680588	java.awt.Frame
+00680598	java.lang.Object
+006805ac	Interface options :
+006805c0	Base Interface :
+006805d4	Interface name :
+006805e8	Class options :
+006805f8	Base class :
+00680608	Class name :
+00680618	Select directory :
+0068062c	Select directory
+00680648	.?AVParameterList@@
+00680668	.?AV?$CList@PBVCJavaFunction@@PBV1@@@
+00680690	Object
+00680698	String
+006806b0	String[]
+006806d0	.?AVCFunctionPage@@
+006806f0	.?AVCNewFunctionDlg@@
+00680710	.?AVCNewVariableDlg@@
+00680730	.?AVCVariablePage@@
+00680750	.?AVCWImageListCtrl@@
+00680770	.?AVCListCtrl@@
+00680788	.?AVCClassLoader@@
+0068079c	c:\test\dbase.bin
+006807b8	.?AV?$CList@PBVCJavaInterface@@PBV1@@@
+006807e8	.?AV?$CList@PAVCFileClassView@@PAV1@@@
+00680818	.?AVCWndContainer@@
+00680838	.?AVCClassViewManager@@
+00680858	.?AVCControlbarClassView@@
+00680874	MS Sans Serif
+00680890	.?AVCControlbarOutput@@
+006808a8	Find in Files 2
+006808b8	Find in Files 1
+006808c8	Build
+006808d0	Courier
+006808e0	.?AVCRichEditCtrl@@
+00680900	.?AVCTreeClassCtrl@@
+00680920	.?AVCFileClassView@@
+00680938	ClassView not available
+00680950	DUMMY
+00680958	Imports
+00680968	.?AV?$CArray@PBVCPackageLine@@PBV1@@@
+00680998	.?AVCFolderPropertiesDlg@@
+006809b4	WSP_INITGUI
+006809c0	WSP_INSERT_FILEDATA
+006809d4	WSP_INSERT_PROJECT
+006809e8	WSP_INSERT_FOLDER
+006809fc	WSP_INSERT_FILE
+00680a0c	WSP_INSERT_FILES
+00680a20	WSP_DELETE_ITEM
+00680a30	WSP_ACTIVE_PROJECT
+00680a44	WSP_ACTIVE_FILE
+00680a54	WSP_UPDATE_GRAPHICS
+00680a68	WSP_UPDATE_FILE
+00680a78	WSP_CLOSING_FILE
+00680a98	.?AV?$CList@PAUHWND__@@PAU1@@@
+00680ac0	.?AVCWSInterface@@
+00680ae0	.?AVCJCreatorWsp@@
+00680b00	.?AV?$CList@PAVCJavaProject@@PAV1@@@
+00680b2c	JCreator
+00680b38	Parsing document...
+00680b4c	Parsing documents...
+00680b64	' from this workspace?\n
+00680b7c	Do you want to delete '
+00680b94	 - JCreator
+00680ba8	.?AV?$CArray@PBVCJavaFileItemData@@PBV1@@@
+00680be0	.?AV?$CList@PAVCJavaFileItemData@@PAV1@@@
+00680c18	.?AV?$CList@PBVCJavaFileItemData@@PBV1@@@
+00680c50	.?AVCDBaseNode@@
+00680c70	.?AVCClassDBase@@
+00680c90	.?AVCJPackageDBase@@
+00680cb0	.?AVCJFileDBase@@
+00680cc4	Loading Project: 
+00680cdc	Parsing Java Files
+00680cf0	APPLET
+00680cf8	applet
+00680d08	.?AVCClassFactory@@
+00680d28	.?AVCCrystalClassFactory@@
+00680d50	.?AV?$CList@PAVCJavaMember@@PAV1@@@
+00680d80	.?AV?$CList@PBVCJavaVariable@@PBV1@@@
+00680db0	.?AV?$CMap@PBVCObject@@PBV1@PAU_TREEITEM@@AAPAU2@@@
+00680df0	.?AV?$CMap@PAU_TREEITEM@@AAPAU1@PBVCObject@@PBV2@@@
+00680e24	C&ancel
+00680e2c	&Move
+00680e34	Error
+00680e48	.?AVCOutputEditCtrl@@
+00680e68	.?AVCOutputListCtrl@@
+00680e8c	reinstall
+00680e98	#0291
+00680ea8	.?AVCPackageView@@
+00680ec8	.?AV?$CList@PAVCPackageNode@CPackageView@@PAV12@@@
+00680efc	Package Default
+00680f0c	PackageView not available
+00680f28	No workspace loaded
+00680f3c	Inserting Java Classes
+00680f60	.?AVCPackageNode@CPackageView@@
+00680f88	.?AVCPropertiesDlg@@
+00680fa8	.?AV?$CList@PBVCJavaMember@@PBV1@@@
+00680fcc	%H:%M:%S, %A, %B %d, %Y
+00680fe4	Last Modified:
+00680ff4	File Name    :
+00681004	Error : One of the documents is still in parsing mode.\nPlease wait or close all documents.
+00681068	.?AVCTreeFileCtrl@@
+00681088	.PAVCZipException@@
+0068109c	Invalid path name
+006810b0	Compile 
+006810bc	WNDC_CHANGE_ACTIVE_WND
+006810e0	.?AVCWndChildInfo@@
+00681100	.?AVSmartSenseLookUp@@
+00681120	.?AVCWorkspaceClassLookUp@@
+00681148	.?AVJavaMemberItemList@@
+00681170	.?AVCWorkSPropertiesDlg@@
+00681198	.?AVCBatchBuildDlg@@
+006811b8	.?AVCStringScanner@@
+006811d0	[#CHECKED#]
+006811dc	 [#CHECKED#]
+006811ec	BatchBuildSel
+00681208	.?AVCBCGUserToolsManager@@
+00681230	.?AVCCustomTools@@
+00681244	Label
+0068124c	Flags
+00681254	Arguments
+00681260	Directory
+0068126c	Command
+00681275	ools\
+00681288	.?AVCDebugBox@@
+006812a0	.?AVCFileSplitter@@
+006812c0	.?AV?$CList@HH@@
+006812d4	Error : Didn't find any classes or interfaces in the target file.
+00681318	Error : Couldn't open or read target file.
+00681344	Error : Found only one class or interface in the target file.
+00681384	Error : Failed parsing the target file.
+006813ac	Error : Invalid line number [
+006813d0	Error : Couldn't open or write to '
+006813f4	Error : File '
+00681404	' already exist.
+00681418	Skipped : File '
+00681430	//DEL//
+0068143c	import 
+00681448	package 
+00681460	.?AVCFileSplitterDlg@@
+0068147c	Finished.\r\nNew Files :
+00681494	Created new file : 
+006814a8	Error : Creating backup file '
+006814c8	Created backup file : 
+006814e0	Java Files (.java;.jav;) |*.java;*.jav;|All Files(*.*)|*.*||
+00681520	Select destination directory
+00681540	Backup Files (.bak;.tmp;) |*.bak;*.tmp|Java Files (.java;.jav;) |*.java;*.jav|All Files(*.*)|*.*||
+006815ac	FlagsSplitter
+006815c8	.?AVCInsertFilesFromDirectory@@
+006815e8	src\*.*
+006815f1	ource\*.*
+006815fc	*.java
+00681604	*.java;*.html;*.htm
+00681618	Inserting Files...
+0068162c	Invalid Root Directory
+00681648	Select root directory
+00681660	IDF_Flags
+0068166c	IDF_Extensions
+00681688	.?AVCModifiedFiles@@
+006816a8	.?AVCJavaModifiedFiles@@
+006816c4	.class
+006816cc	CToolItem
+006816e0	.?AV?$CList@PAVCToolTask@@PAV1@@@
+00681710	.?AVCBCGUserTool@@
+00681730	.?AVCToolItem@@
+00681740	Error : Empty Commandline!\n
+00681760	Directory : 
+00681770	Command   : 
+0068178c	-r:none 
+00681798	-c:none 
+006817a4	-p:none 
+006817b0	GE2001.exe 
+006817bc	COMMAND.COM /C 
+006817cc	CMD.EXE /C 
+006817d8	\nProcess completed.\n
+006817f0	\nProcess interrupted by user.\n
+00681810	Reading output
+00681820	Creating child process
+00681838	Pipe for input redirection.
+00681854	Pipe for output redirection.
+00681874	\nError:(%ld)%s 
+00681884	\nFile:%s\nError occured in %s on line %d\n
+006818b0	E:\Microsoft Visual Studio\RealProjects\JCreatorV2\ToolItem.cpp
+006818f8	.?AVCToolParamDlg@@
+00681918	.?AVCAppletViewerParamPage@@
+00681940	.?AVCCompilerParamPage@@
+0068195c	$[ModJavaFiles]
+0068196c	$[JavaFiles]
+00681980	"$[OutputPath]"
+00681990	-classpath
+0068199c	"$[ClassPath]"
+006819ac	-deprecation
+006819bc	-verbose
+006819c8	-nowarn
+006819d8	-g:none
+006819f0	.?AVCDebugParamPage@@
+00681a10	.?AVCPaneDialog@@
+00681a30	.?AVCDocPathPage@@
+00681a48	Select path
+00681a54	Select documentation root path :
+00681a80	.?AVCInterpreterParamPage@@
+00681a9c	Programs (.exe;.com;.bat;)|*.exe;*.com;*.bat;|All Files (*.*)|*.*||
+00681ae8	.?AVCJDKTool@@
+00681b00	.?AVCJDKDebugTool@@
+00681b14	sun.applet.AppletViewer $[FileName]
+00681b38	-classpath "$[ClassPath]" $[JavaClass]
+00681b60	"$[JavaHome]\bin\jdb.exe"
+00681b84	Parameters3
+00681b98	.?AVCJDKProfile@@
+00681bac	classes
+00681bc0	javadocs
+00681bcc	javadoc
+00681bd4	JDK version 
+00681be8	jre\lib\ext\*.*
+00681bf8	tools.jar
+00681c04	dt.jar
+00681c14	I18n.jar
+00681c20	rt.jar
+00681c28	jre\lib\
+00681c3c	lib\classes.
+00681c4c	bin\java.exe
+00681c60	src.jar
+00681c68	src.zip
+00681c88	.?AVCJDKProfileDlg@@
+00681ca0	  Documentation 
+00681cb4	  Sources 
+00681cc0	  Classes 
+00681ccc	Duplicate names are not allowed.
+00681cf0	Select JDK home path (e.g C:\jdk1.4) :
+00681d20	.?AV?$CList@PAVCJDKProfile@@PAV1@@@
+00681d50	.?AVCJDKProfileManager@@
+00681d6c	JAVA_HOME
+00681d78	C:\autoexec.bat
+00681d88	JavaHome
+00681d94	CurrentVersion
+00681da4	Software\JavaSoft\Java Development Kit\
+00681dd8	.?AVCJDKProfilePage@@
+00681df0	Select JDK home path (e.g C:\jdk1.4\) :
+00681e18	<Default>
+00681e24	$[FileName]
+00681e30	"$[JavaHome]\bin\appletviewer.exe"
+00681e54	"$[JavaHome]\bin\java.exe"
+00681e70	-classpath "$[ClassPath]" -d "$[OutputPath]" $[JavaFiles]
+00681eac	"$[JavaHome]\bin\javac.exe"
+00681ec8	OutputTab
+00681edc	Parameters2
+00681ee8	Parameters
+00681ef4	"$[ModJavaFiles]"
+00681f08	"$[JavaFiles]"
+00681f20	.?AVCJDKToolConfigDlg@@
+00681f38	 : Run AppletViewer
+00681f4c	 : Run Application
+00681f60	 : Debugger
+00681f6c	 : Compiler
+00681f78	Tool Configuration
+00681f8c	 Applet Parameters 
+00681fa0	 Parameters 
+00681fb0	 Application Parameters 
+00681fcc	 Command 
+00681fe0	.?AV?$CList@PAVCJDKTool@@PAV1@@@
+00682010	.?AVCJDKToolManager@@
+00682030	.?AV?$CList@VCJDKToolTask@@V1@@@
+00682060	.?AVCJDKToolsPage@@
+00682074	Run Applet
+00682080	Run Application
+00682090	Compiler
+006820a8	.?AVCLibPathPage@@
+006820bc	Select package path
+006820d0	Select path :
+006820e0	Packages (.jar;.zip;)|*.jar;*.zip;|All Files (*.*)|*.*||
+00682128	.?AVCLibrariesPage@@
+00682148	.?AV?$CList@PAVCLibraryPaths@@PAV1@@@
+00682178	.?AVCLibraryManager@@
+00682198	.?AVCLibraryPathDialog@@
+006821c0	.?AVCLibraryPaths@@
+006821e8	Paths
+006821f8	.?AVCProjectProperties@@
+00682214	  Required Libraries  
+0068222c	  JDK Tools  
+0068223c	  JDK Profiles 
+0068224c	  --  
+00682260	.?AVCRunParamDlg@@
+00682274	MainArgs
+00682288	.?AVCRunTimeConfigDlg@@
+006822a0	You've reached the maximum of 16 items
+006822d0	.?AVCRunTimePropertiesDlg@@
+006822ec	  Run Debugger 
+006822fc	  Run Applet  
+0068230c	  Run Application 
+00682328	.?AVCToolCommandPage@@
+00682348	.?AVCRunToolCommandPage@@
+00682370	.?AVCSrcPathPage@@
+00682384	Programs (.exe;.com;.bat;.cmd)|*.exe;*.com;*.bat;*.cmd;|All Files (*.*)|*.*||
+006823e0	.?AV?$CList@PAVCBreakPoint@@PAV1@@@
+00682404	Invalid line number
+00682418	The breakpoint already exist
+00682440	.?AVCMultiTree@@
+00682460	.?AVCBrowseCtrl@@
+00682474	CCJFlatComboBox
+00682490	.?AVCCJFlatComboBox@@
+006824c0	CClassDBase
+006824d8	.PAVCArchiveException@@
+006824f8	.PAVCMemoryException@@
+00682518	.PAVCFileException@@
+00682530	java.lang
+0068254c	 implements 
+0068255c	 extends 
+00682568	interface 
+00682574	class 
+00682580	// TODO: Add your code here
+0068259c	 throws 
+006825ac	java.lang.
+006825d0	CDBaseNode
+006825e0	stop at 
+006825ec	.main(java/lang/String[])
+00682608	stop in 
+00682614	clear 
+0068262c	step up
+0068263c	locals
+00682644	dump 
+0068264c	threads
+00682658	memory
+00682668	where
+00682680	.?AVCStringXData@@
+00682694	Open the source file of 
+006826b0	Java Files(.java)|*.java;|All Files (*.*)|*.*||
+006826e0	Breakpoint hit:
+006826f0	line=
+006826f8	Breakpoint hit: 
+0068270c	thread=
+00682720	.?AVCDocBrowseCtrl@@
+00682740	.?AV?$CList@PAVCString@@PAV1@@@
+00682760	No Documentation Found
+00682778	CFileAssocWizardPage
+00682798	.?AVCFileAssocWizardPage@@
+006827b4	: File Assocations ( 1 of 3)
+006827d4	JCreator Setup 
+00682800	CFindComboButton
+00682820	.?AVCFindComboBox@@
+00682840	.?AVCHistoryObj@@
+00682888	CJFileDBase
+00682894	CJPackageDBase
+006828b0	.?AV?$CArray@PAVCObject@@PAV1@@@
+006828e0	.?AVCDBaseEnumerator@@
+006828f8	DATA : 
+00682900	NODE : 
+00682910	.?AV?$CList@PAVCJavaInterface@@PAV1@@@
+00682938	CJFileDBase::m_MapFileData
+0068295c	CJavaDocWizardPage
+00682978	.?AVCJavaDocWizardPage@@
+00682994	Visit the homepage of JavaSoft
+006829b4	http://www.javasoft.com
+006829cc	: JDK JavaDoc directory ( 3 of 3)
+006829f0	Select JavaDoc home path (e.g C:\jdk1.4\docs\) :
+00682a30	.?AVCJavaFileData@@
+00682a50	.?AVCJavaFileItemData@@
+00682a68	CJDKProfileWizardPage
+00682a88	.?AVCJDKProfileWizardPage@@
+00682aa4	: JDK Home directory ( 2 of 3)
+00682ad0	.?AVCPackageBrowseCtrl@@
+00682af8	.?AV?$_CTypedPtrList@VCPtrList@@PAU_TREEITEM@@@@
+00682b38	.?AV?$CTypedPtrList@VCPtrList@@PAU_TREEITEM@@@@
+00682b70	.?AVCPackageBrowser@@
+00682b88	Select Package:
+00682b98	Select Interface:
+00682bac	Select Class:
+00682bbc	Select Class or Interface:
+00682be0	.?AVCStartupWizard@@
+00682bf8	c:\LichtKrant\
+00682c10	.?AVCDocumentWizard@@
+00682c30	.?AVCDocWizardPage1@@
+00682c48	This documentclass already exist, please choose another label
+00682c90	.?AVCDocWizardPage2@@
+00682ca8	Please fill in the textfield for the extensions.
+00682ce8	.?AVCDocWizardPage3@@
+00682d00	\r\n\r\n Syntax File : 
+00682d14	\r\n\r\n Extensions : 
+00682d28	 Label : 
+00682d40	.?AVCAlphaLabel@@
+00682d54	Terminal
+00682d68	.?AVCSliderCtrl@@
+00682d88	.?AVCClassViewOptionPage@@
+00682db0	.?AVCCodeTempateOptionPage@@
+00682dd0	Code Templates
+00682de0	Description
+00682e54	 Text Limit Line
+00682e68	 Line Highlight
+00682e78	 Bracket Highlight
+00682e8c	 Bookmarks
+00682e98	 Left Margin
+00682ea8	 Disabled BreakPoints
+00682ec0	 BreakPoints
+00682ed0	 Background
+00682edc	 Preprocessors
+00682eec	 Brackets
+00682ef8	 Operators
+00682f04	 Numbers
+00682f10	 Keywords 4
+00682f1c	 Keywords 3
+00682f28	 Keywords 2
+00682f34	 Keywords 1
+00682f40	 Strings
+00682f4c	 Methods
+00682f58	 Extended Comments
+00682f6c	 Comments 2
+00682f78	 Comments 1
+00682f84	 Debug Pointer
+00682f94	 Line Pointer
+00682fa4	 Error Pointer
+00682fb4	 Selected Text
+00682fc4	 Normal Text
+00682fe0	.?AV?$CList@PAULINECOLOR@@PAU1@@@
+00683010	.?AVCColorsOptionPage@@
+00683028	  Sample  
+00683034	 documents
+00683040	Customize colors for 
+00683058	Requires the font 'Courier New'
+00683078	Courier New
+00683090	.?AVCDirectoryOptionPage@@
+006830ac	Directories
+006830c0	.?AVCDocumentOptionPage@@
+006830dc	No encoding
+006830e8	Options for 
+00683100	.?AVCBCGEditListBase@@
+00683120	.?AVCBCGEditListBox@@
+00683140	.?AVCWDocumentsList@@
+00683160	.?AVCDocumentsOptionPage@@
+0068317c	Documents
+00683188	Custom Documents
+006831a8	.?AVCEditorOptionPage@@
+006831c0	Editor
+006831c8	WM_CHANGED_ASSOC
+006831e8	.?AVCFileAssocOptionPage@@
+00683204	File Associations
+00683218	Associatons
+00683224	 "%1"
+0068322c	\shell\open\command
+00683240	\DefaultIcon
+00683250	OldFileTypeId
+00683260	txt;me;diz;
+0068326c	htm;html;shtml;ihtml;
+00683284	java;
+0068328c	Java Source File
+006832a0	JCreator Workspace File
+006832b8	JCreator Project File
+006832f4	.ihtml
+006832fc	.shtml
+0068330c	.html
+00683320	AssocFiles
+00683338	.?AVCFontOptionsPage@@
+00683350	Font options for 
+00683370	.?AVCGeneralOptionPage@@
+0068338c	General
+006833a0	.?AVCJDKProfilesOptionPage@@
+006833c0	The first profile is used as default
+006833e8	JDK Profiles
+00683400	.?AVCJDKToolsOptionsPage@@
+0068341c	JDK Tools
+00683430	.?AV?$CList@PAVCDocumentClass@@PAV1@@@
+00683460	.?AVCOptionDlg@@
+00683474	Tools
+0068347c	Code Insertion
+0068348c	Workspace
+00683498	Syntax
+006834a0	Printer
+006834b0	Colors
+006834b8	CPaneDialog
+006834c4	WM_OPTION_CHANGED
+006834e0	.?AVCPrinterOptionPage@@
+006834fc	Printing settings for 
+00683514	-----
+00683528	.?AVCSmartSenseOptionPage@@
+00683544	Code Completion
+00683560	.?AVCSoundOptionPage@@
+00683580	.?AVCSubToolOptionPage@@
+0068359c	Options for the tool 
+006835c0	.?AVCSyntaxOptionPage@@
+006835d8	Syntax settings for 
+006835f8	.?AVCWToolsList@@
+00683618	.?AVCToolsOptionPage@@
+00683638	.?AV?$CList@PAVCToolItem@@PAV1@@@
+0068365c	Error : Insertion aborted.
+00683678	$[FileDir]
+00683684	CMD.EXE
+0068368c	COMMAND.COM
+00683698	WINHLP32.EXE
+006836b4	Help Files (.hlp;.chm;)|*.hlp;*.chm;|All Files (*.*)|*.*||
+006836f0	Programs (.exe;.com;.bat;.cmd;)|*.exe;*.com;*.bat;*.cmd;|All Files (*.*)|*.*||
+00683740	Create Jar File
+00683750	"$[JavaHome]\bin\jar.exe"
+0068376c	cvf $[PrjName].jar .
+00683784	Create JNI Header
+00683798	"$[JavaHome]\bin\javah.exe"
+006837b4	-classpath "$[ClassPath]" -d "$[OutputPath]" -jni $[JavaClass]
+006837f4	RMI Compiler
+00683804	$[JavaHome]\bin\rmic.exe
+00683820	-v1.2 -classpath "$[ClassPath]" -d "$[OutputPath]" $[JavaClass]
+00683868	.?AVCWizardOptionPage@@
+00683888	.?AVCWorkspaceOptionPage@@
+006838b0	.?AVCAddExceptionDialog@@
+006838d8	.?AVCAPIIndexControl@@
+006838f0	Create a list of documentation files
+00683918	index
+00683920	class-use
+00683938	.?AVCAPISearchControl@@
+00683958	.?AV?$CList@PAVCColorListBoxItem@@PAV1@@@
+00683984	Searching...
+00683994	Sort by Type
+006839a4	Sort by Package
+006839b4	Sort by Name
+006839c4	Search API Documentation
+006839e0	ApiSearchList
+006839f0	ApiSearchSort
+00683a08	.?AVCJavaFunction@@
+00683a20	public
+00683a2c	Exceptions
+00683a40	.?AVCBufferedCanvas@@
+00683a60	.?AV?$CList@PAVCDrawElementEvent@@PAV1@@@
+00683a98	.?AV?$CList@PAVCDrawElement@@PAV1@@@
+00683ac0	CBUFFEREDCANVAS_CLASSNAME
+00683ae8	.?AV?$CList@PAVDrawStruct@CColorListBoxItem@@PAV12@@@
+00683b28	.?AVCColorListBox@@
+00683b48	.?AVCDrawElement@@
+00683b68	.?AVCDrawBitmapElement@@
+00683b84	CDrawBitmapElement
+00683b98	CDrawElement
+00683bb0	.?AVCDrawTextElement@@
+00683bd0	.?AVCDrawHyperLinkElement@@
+00683bec	CDrawHyperLinkElement
+00683c04	CDrawTextElement
+00683c20	.?AVCDumpDialog@@
+00683c34	%d.%d.%d.%d
+00683c40	Unknown
+00683c48	There has been a critical error in %s\r\n\r\n- All documents have been saved\r\n- The original documents have been saved with a '.bak' extension\r\n\r\nA copy of this information should be sent to %s.\r\n\r\nFilename       : %s\r\nVersion        : %s.\r\n
+00683d40	.?AVCFaderWnd@@
+00683d50	STATIC
+00683d58	UpdateLayeredWindow
+00683d6c	USER32.DLL
+00683d80	.?AVCJavaDocHelpDlg@@
+00683da0	.?AVCJavaDocBrowseCtrl@@
+00683dbc	images
+00683dc4	JavaDocWindow
+00683dd4	 Index 
+00683ddc	 Java Tools 
+00683dec	 Java Guide 
+00683dfc	 Search API 
+00683e0c	 Java API 
+00683e18	index-
+00683e20	tooldocs
+00683e2c	guide
+00683e34	java\
+00683e68	jcdoc_index.ini
+00683e78	<A[\s]*HREF[\s]*=[\s]*"([^>"]*)"><B>([^>]*)</B></A>([^<]*)<A[^>]*>([^<]*)</A>
+00683ec8	<A NAME="[:refid:]"><!-- --></A><H3>[^<]*</H3>[^<]*<PRE>([^<]*)
+00683f10	.?AVCJavaDocParser@@
+00683f30	.?AV?$basic_ifstream@DU?$char_traits@D@std@@@std@@
+00683f70	.?AV?$basic_istream@DU?$char_traits@D@std@@@std@@
+00683fb0	.?AVios_base@std@@
+00683fd0	.?AV?$basic_ios@DU?$char_traits@D@std@@@std@@
+00684000	index-all.html
+00684010	index-%d.html
+00684020	default
+00684028	private
+00684030	protected
+00684040	Package
+00684048	Constructor
+00684054	Method
+0068405c	Variable
+00684068	Exception
+0068407c	[:refid:]
+006840a0	.?AV?$basic_filebuf@DU?$char_traits@D@std@@@std@@
+006840e0	.?AV?$basic_streambuf@DU?$char_traits@D@std@@@std@@
+00684120	.?AVexception@@
+00684138	.?AVbad_cast@std@@
+0068414c	missing locale facet
+00684170	.?AVfacet@locale@std@@
+00684190	.?AVcodecvt_base@std@@
+006841b0	.?AV?$codecvt@DDH@std@@
+006841d8	.?AUctype_base@std@@
+006841f8	.?AV?$ctype@D@std@@
+0068420c	CJDKToolTask
+0068421c	--------------------
+00684238	--------------------Configuration: 
+00684278	.?AV?$CArray@PAVCMessagePopupInfo@@PAV1@@@
+006842b0	.?AVCMessagePopup@@
+006842d0	.?AVCMessagePopupInfo@@
+006842f0	.?AVCRegistrationDialog@@
+0068430c	Sfhjtusbujpo!Efubjmt
+00684324	Vtfs!Efubjmt
+00684334	up!kvnq!up!uif!pomjof!sfhjtusbujpo!tfswfs/
+00684360	Jg!zpv!ibwf!opu!sfhjtufsfe-!dmjdl!ifsf!
+00684388	Qmfbtf!foufs!zpvs!sfhjtusbujpo!efubjmt!cfmpx/!Qmfbtf!opuf!uibu!zpv!nvtu!vtf!uif!sfhjtusbujpo!obnf!boe!sfhjtusbujpo!lfz!xijdi!zpv!sfdfjwfe!gspn!Yjopy!Tpguxbsf/
+00684430	.?AVCSaveItemsDialog@@
+0068444c	CSeException
+0068445c	E:\Microsoft Visual Studio\RealProjects\JCreatorV2\SeException.cpp
+006844a8	.PAX
+006844b8	.PAVCObject@@
+006844d0	.PAVCException@@
+006844f0	.PAVCSeException@@
+00684510	.?AVCSeException@@
+00684524	Unknown exception.
+00684538	STACK_OVERFLOW
+00684548	PRIV_INSTRUCTION
+0068455c	INT_OVERFLOW
+0068456c	INT_DIVIDE_BY_ZERO
+00684580	FLT_UNDERFLOW
+00684590	FLT_STACK_CHECK
+006845a0	FLT_OVERFLOW
+006845b0	FLT_INVALID_OPERATION
+006845c8	FLT_INEXACT_RESULT
+006845dc	FLT_DIVIDE_BY_ZERO
+006845f0	FLT_DENORMAL_OPERAND
+00684608	INVALID_HANDLE
+00684618	INVALID_DISPOSITION
+0068462c	NONCONTINUABLE_EXCEPTION
+00684648	ILLEGAL_INSTRUCTION
+0068465c	ARRAY_BOUNDS_EXCEEDED
+00684674	IN_PAGE_ERROR
+00684684	SINGLE_STEP
+00684690	Exception %s (0x%.8x) at address 0x%.8x trying to %s address 0x%.8x.
+006846d8	ACCESS_VIOLATION
+006846f4	write
+006846fc	BREAKPOINT
+00684708	GUARD_PAGE
+00684714	Exception %s (0x%.8x) at address 0x%.8x.
+00684740	DATATYPE_MISALIGNMENT
+00684758	Exception      : %.8x\r\nAddress        : %.8x\r\nAccess Type    : %s\r\nAccess Address : %.8x\r\n
+006847b8	Registers      : EAX=%.8x CS=%.4x EIP=%.8x EFLGS=%.8x\r\n               : EBX=%.8x SS=%.4x ESP=%.8x EBP=%.8x\r\n               : ECX=%.8x DS=%.4x ESI=%.8x FS=%.4x\r\n               : EDX=%.8x ES=%.4x EDI=%.8x GS=%.4x\r\n
+00684890	Stack Trace    : %.8x %.8x %.8x %.8x\r\n               : %.8x %.8x %.8x %.8x\r\n               : %.8x %.8x %.8x %.8x\r\n               : %.8x %.8x %.8x %.8x\r\n               : %.8x %.8x %.8x %.8x\r\n               : %.8x %.8x %.8x %.8x\r\n               : %.8x %.8x %.8x %.8x\r\n               : %.8x %.8x %.8x %.8x\r\n
+006849c4	GOTO_CLASS
+006849d0	GOTO_INDENT
+006849dc	GOTO_HELP
+006849f0	.?AVCSymbolInfoPopup@@
+00684a10	.?AVCSymbolInfo@@
+00684a30	.?AVSymbolInfo@@
+00684a50	.?AVCSymbolInfoPopupEvent@@
+00684a78	.?AVCDrawElementEvent@@
+00684a90	$[FilePath]
+00684aa8	.?AVCToolMacro@@
+00684abc	$[FileBase]
+00684ac8	$[CurLine]
+00684ad4	$[CurText]
+00684ae0	$[CurDir]
+00684aec	$[CurLineNr]
+00684afc	$[CurClass]
+00684b08	$[PrjName]
+00684b14	$[PrjDir]
+00684b20	$[ClassPath]
+00684b30	$[OutputPath]
+00684b40	$[JavaClass]
+00684b50	$[JavaHome]
+00684b5c	$[PrjFiles]
+00684b68	$[PrjRun]
+00684b74	-target <release>
+00684b88	-encoding <encoding>
+00684ba0	-d <directory>
+00684bb0	-extdirs <dirs>
+00684bc0	-bootclasspath <path>
+00684bd8	-sourcepath <path>
+00684bec	-classpath <path>
+00684c00	-g:{lines;vars;source}
+00684c18	Xcheck:jni
+00684c2c	-Xmx <size>
+00684c38	-Xms <size>
+00684c44	-Xnoclassgc
+00684c50	-Xbootclasspath:<path;path>
+00684c6c	-version
+00684c78	-verbose [:class | gc | jni]
+00684c98	-0 <name>=<value>
+00684cac	-classpath <path;path>
+00684cc4	CToolTask
+00684cd0	--------------------\n
+00684ce8	--------------------Custom Tool: 
+00684d18	.?AVCWindowHandleManager@@
+00684d34	dfhjskdhf#ksdjhfk@#$s334542hvuyuiy
+00684d58	dfh@!#jsdfsdfsd2jsdfhfkshvFDGuyuiy
+00684d7c	dfhsfhsf@#$@#$@#4ks4342h2v234uyuiy
+00684da0	dfhjskdhfks3223433djhfkshvuyuiy345
+00684dd0	.?AV?$CList@PBVCFileItem@@PBV1@@@
+00684e30	.?AVCStringList@@
+00684e50	.?AVCScrollBar@@
+00684e70	.?AVCCmdUI@@
+00684e88	.?AVCTestCmdUI@@
+00684ea8	.PAVCUserException@@
+00684ec8	.?AVCTempWnd@@
+00684ee0	.?AVCNoTrackObject@@
+00684f00	.?AV_AFX_CTL3D_STATE@@
+00684f30	.?AVCDC@@
+00684f48	.?AVCClientDC@@
+00684f60	.?AVCWindowDC@@
+00684f78	.?AVCPaintDC@@
+00684f90	.?AVCPen@@
+00684fa8	.?AVCTempDC@@
+00684fc0	.?AVCTempGdiObject@@
+00684fe0	.PAVCSimpleException@@
+00685000	.PAVCResourceException@@
+00685028	.?AVCSimpleException@@
+00685048	.?AVCResourceException@@
+00685070	.?AVCUserException@@
+00685090	.PAVCNotSupportedException@@
+006850b8	.?AVCMemoryException@@
+006850d8	.?AVCNotSupportedException@@
+00685100	.?AVCFile@@
+00685118	.?AVCStdioFile@@
+00685138	.?AVCRgn@@
+00685150	.?AVCTabCtrl@@
+00685168	.?AVCImageList@@
+00685188	.?AVCTempImageList@@
+006851c0	.?AVCObList@@
+006851d8	.?AVCMirrorFile@@
+006851f8	.?AV_AFX_CTL3D_THREAD@@
+00685218	.?AVCFileFind@@
+00685230	.?AV_AFX_THREAD_STATE@@
+00685250	.?AVAFX_MODULE_STATE@@
+00685270	.?AVAFX_MODULE_THREAD_STATE@@
+00685298	.?AV_AFX_BASE_MODULE_STATE@@
+00685300	.PAVCOleException@@
+00685320	.?AVCPreviewView@@
+00685340	.?AVCPrintingDialog@@
+00685360	.?AVCEvent@@
+00685378	.?AVCSplitterWnd@@
+00685398	.?AV_AFX_WIN_STATE@@
+006853b8	.?AVCCommandLineInfo@@
+006853d8	.?AVCNewTypeDlg@@
+006853f8	.?AVCRecentFileList@@
+00685418	.?AVCOccManager@@
+00685438	.?AVCDockBar@@
+00685450	.?AVCMiniFrameWnd@@
+00685470	.?AVCMiniDockFrameWnd@@
+00685490	.?AVCStatusBar@@
+006854b0	.?AVCStatusCmdUI@@
+006854d0	.?AVCTempMenu@@
+006854e8	.?AVCCommonDialog@@
+00685508	.?AVCFileDialog@@
+00685540	.?AVCStringArray@@
+00685560	.?AVCToolTipCtrl@@
+00685598	.?AVCMapStringToOb@@
+006855b8	.?AV_AFX_EDIT_STATE@@
+006855d8	.?AV_AFX_RICHEDIT_STATE@@
+00685600	.?AVCPtrArray@@
+00685618	.?AV_AFX_CHECKLIST_STATE@@
+00685640	.?AUCThreadData@@
+00685660	.?AVCArchiveException@@
+00685680	.?AVCHandleMap@@
+006856a0	.?AVCMapPtrToPtr@@
+006856c0	.?AUIUnknown@@
+006856d8	.?AUISequentialStream@@
+006856f8	.?AUIStream@@
+00685710	.?AVCArchiveStream@@
+00685738	.?AUIOleWindow@@
+00685758	.?AUIOleInPlaceUIWindow@@
+00685780	.?AUIOleInPlaceFrame@@
+006857a0	.?AVXOleIPFrame@COleControlContainer@@
+006857d0	.?AVCOleControlContainer@@
+006857f8	.?AUIParseDisplayName@@
+00685818	.?AUIOleContainer@@
+00685838	.?AVXOleContainer@COleControlContainer@@
+00685870	.?AVCEnumArray@@
+00685890	.?AVCEnumUnknown@@
+006858b0	.?AUIDispatch@@
+006858c8	.?AVCOleDispatchException@@
+006858f0	.PAVCOleDispatchException@@
+00685930	.?AVCByteArray@@
+00685950	.?AVCOleException@@
+00685970	.?AVCDialogBar@@
+00685990	.?AVCPreviewDC@@
+006859b0	.?AVCPageSetupDialog@@
+006859d0	.?AVCPrintDialog@@
+006859f0	.?AVXAmbientProps@COleControlSite@@
+00685a20	.?AUIOleControlSite@@
+00685a40	.?AVXOleControlSite@COleControlSite@@
+00685a70	.?AUIOleInPlaceSite@@
+00685a90	.?AVXOleIPSite@COleControlSite@@
+00685ac0	.?AUIOleClientSite@@
+00685ae0	.?AVXOleClientSite@COleControlSite@@
+00685b10	.?AUIRowsetNotify@@
+00685b30	.?AVXRowsetNotify@COleControlSite@@
+00685b60	.?AUINotifyDBEvents@@
+00685b80	.?AVXNotifyDBEvents@COleControlSite@@
+00685bb0	.?AUIBoundObjectSite@@
+00685bd0	.?AVXBoundObjectSite@COleControlSite@@
+00685c00	.?AVXEventSink@COleControlSite@@
+00685c30	.?AVCOleControlSite@@
+00685c50	.?AUIPropertyNotifySink@@
+00685c78	.?AVXPropertyNotifySink@COleControlSite@@
+00685cb0	.?AVCDataSourceControl@@
+00685d08	.?AVCMemFile@@
+00685d20	.?AVCOleMessageFilter@@
+00685d40	.?AUIMessageFilter@@
+00685d60	.?AVXMessageFilter@COleMessageFilter@@
+00685d90	.?AVCOleDataSource@@
+00685db0	.?AUIDataObject@@
+00685dd0	.?AVXDataObject@COleDataSource@@
+00685e00	.?AVCEnumFormatEtc@@
+00685e20	.?AVCDockContext@@
+00685e40	.?AVCMapStringToPtr@@
+00685e60	.?AUIEnumVOID@@
+00685e78	.?AVXEnumVOID@CEnumArray@@
+00685ea0	.?AVCOleDialog@@
+00685ec0	.?AVCOleBusyDialog@@
+00685ee0	.?AV_AFX_OLE_STATE@@
+00685f00	.?AVCOleStreamFile@@
+00685f20	.?AVCSharedFile@@
+00685f40	.?AVCUIntArray@@
+00685f60	.?AVtype_info@@
+00685fb0	.?AVbad_typeid@@
+00685fd0	.?AV__non_rtti_object@@
+00685ff0	.?AVbad_cast@@
+0068786b	\n\ControlBars
+0068787c	WindowPlacement
+0068788c	MainWindowRect
+006878a4	ShowCmd
+006878ac	\SizingBars
+006878b8	BCGControlBarVersion
+006878d0	Major
+006878d8	Minor
+006878e0	WindowDocTabs
+006878f0	FullScreen
+006878fc	BCGWorkspace
+00687928	CBCGPopupMenu
+00687938	&%d %s
+00687940	Recent File
+00687978	CBCGToolBar
+00687984	BCGToolBars
+00687990	BCGTOOLBAR_POPUPMENU
+006879a8	BCGTOOLBAR_CUSTOMIZE
+006879c0	BCGTOOLBAR_CREATE
+006879d4	BCGTOOLBAR_DELETE
+006879e8	BCGTOOLBAR_CUSTOMIZEHELP
+00687a04	BCGTOOLBAR_RESETTOOLBAR
+00687a1c	BCGTOOLBAR_RESETMENU
+00687a34	BCGTOOLBAR_SHOWREGULARMENU
+00687a50	BCGTOOLBAR_RESETCONTEXTMENU
+00687a6c	BCGTOOLBAR_RESETKEYBAORD
+00687a88	BCGToolBar:%x:%x:%x:%x
+00687aa0	Buttons
+00687ab0	%sBCGToolBar-%d%x
+00687ac4	%sBCGToolBar-%d
+00687ad4	CommandsUsage
+00687ae4	Look2000
+00687af0	ShowAllMenusAfterDelay
+00687b08	MenuShadows
+00687b14	RecentlyUsedMenus
+00687b28	MenuAnimation
+00687b38	LargeIcons
+00687b44	ShortcutKeys
+00687b54	Tooltips
+00687b60	%sBCGToolbarParameters
+00687b90	CBCGToolbarComboBoxButton
+00687bac	CBCGPrintPreviewView
+00687be0	CBCGUserTool
+00687bf0	CBCGURLLinkButton
+00687c04	BCGContextMenuManager
+00687c38	CBCGMouseManager
+00687c4c	Mouse
+00687c54	BCGMouseManager
+00687c64	Arial
+00687c6c	BCGUserToolsManager
+00687c80	*.exe
+00687c88	CBCGButton
+00687c94	WINDOW_HELP
+00687ca0	CBCGMDIFrameWnd
+00687cb0	Shell_TrayWnd
+00687cc0	CMDITabFrameWnd
+00687cd0	CBCGSizingControlBar
+00687ce8	BCGSizingControlBar
+00687cfc	showGradient
+00687d0c	showCaption
+00687d18	Expanded
+00687d24	sizeFloatCY
+00687d30	sizeFloatCX
+00687d3c	sizeVertCY
+00687d48	sizeVertCX
+00687d54	sizeHorzCY
+00687d60	sizeHorzCX
+00687d6c	%s-SCBar-%d
+00687d9c	CBCGMenuBar
+00687da8	BCGMenuBar
+00687db4	BCGM_ONCHANGE_ACTIVE_TAB
+00687dd0	BCGM_ON_HSCROLL
+00687de0	CBCGToolDockBar
+00687df0	ControlBars-TearOff
+00687e04	State
+00687e0c	%s-%d
+00687e34	CBCGToolbarButton
+00687e48	BCGToolbarButton%lx
+00687e78	CBCGToolbarMenuButton
+00687e90	CBCGToolbarCustomize
+00687ec8	CBCGPopupMenuBar
+00687edc	MenuShowDelay
+00687eec	CBCGMenuButton
+00687efc	%c%d%c%s
+00687f08	BCGKeyboardManager
+00687f1c	Accelerators
+00687f2c	%sBCGKeyboard-%d
+00687f40	SOFTWARE\
+00687f4c	BCGRebar-%ld
+00687f68	MenuCommand
+00687f74	MenuPopup
+00687f80	CBCGOleIPFrameWnd
+00687f94	CBCGFrameWnd
+00687fa4	CBCGMenuPage
+00687fb4	Can't create context menu!
+00687fd0	CBCGShowAllButton
+00687fe8	CBCGMiniDockFrameWnd
+00688020	CCustomizeButton
+00688050	CBCGToolbarSystemMenuButton
+0068806c	CBCGToolbarMenuButtonsButton
+006880a8	CBCGDialogBar
+006880b8	CBCGToolbarsPage
+006880cc	CBCGCustomizePage
+006880e0	CBCGOptionsPage
+006880f0	CBCGMousePage
+00688100	CBCGKeyboardPage
+0068811c	Ctrl+Scroll lock
+00688130	Ctrl+Break
+0068813c	Ctrl+
+00688190	CBCGDropDownToolbarButton
+006881ac	CBCGDropDownFrame
+006881c0	CBCGDropDownToolBar
+006881d4	CCrystalTextView
+006881ec	Page %d/%d
+006881f8	Unknown Path
+00688208	%d   
+00688210	Ln %d, Col %d, Char %d
+00688248	CCrystalTextBuffer
+00688290	CFindResult
+0068829c	CFindQuery
+006882a8	Selection only, 
+006882bc	All open documents, 
+006882d4	Current document, 
+006882e8	Search down, 
+006882f8	Search up, 
+00688304	Regular expressions, 
+0068831c	Whole word, 
+0068832c	Match case, 
+00688358	CCrystalFindQuery
+00688378	CDocumentClass
+0068838c	Extensions
+00688398	DefaultEncoding
+006883a8	TextLimit
+006883b4	TabSize
+006883bc	PrintLogFont
+006883cc	LogFont
+006883d4	SyntaxFile
+006883e0	Failed, loading syntax file :
+00688400	MultiLineStrings
+00688420	IgnoreSyntaxCase
+00688434	Brackets
+00688440	Operators
+0068844c	Preprocessor
+0068845c	Escape
+00688464	CharEnd
+0068846c	CharStart
+00688478	StringEnd
+00688484	StringStart
+00688490	CommentEnd
+0068849c	CommentStart
+006884ac	SyntaxEnd
+006884b8	SyntaxStart
+006884c4	ExtCommentEnd
+006884d4	ExtCommentStart
+006884e4	ExtCommentEndAlt
+006884f8	ExtCommentStartAlt
+0068850c	[PREPROCESSORS]
+0068851c	[KEYWORDS_4]
+0068852c	[KEYWORDS_3]
+0068853c	[KEYWORDS_2]
+0068854c	[KEYWORDS_1]
+0068855c	[SYNTAX]
+0068856c	*.,; 
+00688574	All Files(*.*)|*.*||
+00688590	 Files
+006885a0	Files
+006885a8	CCrystalEditView
+006885bc	Spellchecking finished.
+006885d4	WIspell
+006885dc	Error loading "wispell.dll".
+006885fc	SpellConfig
+00688608	SpellCheck
+00688614	SpellInit
+00688620	wispell.dll
+0068862c	CCrystalFindTextView
+00688644	FindFilesFlags
+00688654	LookInList
+00688660	FileTypesList
+00688670	ReplaceFilesList
+00688684	FindFilesList
+0068869c	FindFlags
+006886a8	ReplaceList
+006886b4	FindList
+006886c0	StartUp
+006886c8	TimeStamp
+006886d8	FilePos
+006886e0	Times
+00688734	Apple Macintosh for Central Europe
+00688758	Apple Macintosh
+00688768	KOI8-CS
+00688770	KEYBCS2
+00688778	ISO-8859-2
+00688784	ISO-8859-1
+00688790	IBM Latin II (IBM 852)
+006887a8	PC Latin II (CP 852)
+006887c0	PC Latin I (CP 850)
+006887d4	MS-Windows CP 1252
+006887e8	MS-Windows CP 1250
+006887fc	ASCII (without accents)
+00688814	CHARENCODING_HELP
+00688828	"...\r\n
+00688830	Searching for: "
+00688844	Total number of files searched : 
+00688868	 files. 
+00688874	 file.
+0068887c	have been found in 
+00688890	 occurrences 
+006888a0	 occurrence 
+006888b0	Process interrupted by user.\r\n
+006888d0	have been replaced in 
+006888e8	CEditStatusBar
+006888f8	%d.%m. %H:%M:%S
+00688908	Number of replacements : 
+0068892c	Replace
+00688934	?Ntrue:false
+006889ac	[[:unicode:]]
+006889c8	[[:print:]]
+00688aa0	Find Next
+00688ab4	Find in Files
+00688ac4	Replace in Files
+00688b10	Cyrillic
+00688b1c	Central European
+00688b30	Baltic
+00688b38	Turkish
+00688b40	Greek
+00688b48	Arabic
+00688b50	Hebrew
+00688b58	Western
+00688b60	CFontPage
+00688b6c	WM_CHANGED_FONT
+00688b7c	MS Gothic
+00688be8	Align Right
+00688bf4	Align Center
+00688c04	Align Left
+00688c10	------------
+00688c28	Date Long
+00688c3c	Page Total
+00688c48	Page Number
+00688c54	File Path
+00688c60	File Name
+00688c94	&L&f&R&d
+00688ca0	&C&p of &P
+00688cac	%I:%M %p
+00688cb8	%A, %B %d, %Y
+00688cc8	%d/%b/%Y
+00688cd4	PrintFlags
+00688ce0	FooterText
+00688cec	HeaderText
+00688cf8	PageBottom
+00688d04	PageTop
+00688d0c	PageRight
+00688d18	PageLeft
+00688d24	PageHeight
+00688d30	PageWidth
+00688d44	{}()[]<>
+00689158	ACDEEINORSTUUYZLRLOOUAacdeeinorstuuyzlrloouasS&\"<>                
+0068922c	MACCE
+006893cc	IBM852
+00689418	CP852
+00689464	CP850
+006894b0	CP1252
+006894fc	CP1250
+00689548	ASCII
+00689550	MYCHARSET
+0068955c	<!--MYCHARSET
+00689588	CFindFilesQuery
+00689598	Open modified, 
+006895a8	Include subfolders, 
+006895c0	Count only, 
+006895d0	(%d,%d) : 
+006895e4	CFontComboBox
+00689600	.?AV?$basic_ostream@DU?$char_traits@D@std@@@std@@
+00689640	.?AV?$basic_ios@GU?$char_traits@G@std@@@std@@
+00689678	.?AV?$basic_istream@GU?$char_traits@G@std@@@std@@
+006896b8	.?AV?$basic_ostream@GU?$char_traits@G@std@@@std@@
+006896f8	.?AV?$basic_filebuf@GU?$char_traits@G@std@@@std@@
+00689738	.?AV?$basic_streambuf@GU?$char_traits@G@std@@@std@@
+00689778	.?AVruntime_error@std@@
+00689798	.?AVfailure@ios_base@std@@
+006897c0	.?AVlogic_error@std@@
+006897e0	.?AVlength_error@std@@
+00689800	.?AVout_of_range@std@@
+00689820	.?AV_Locimp@locale@std@@
+00689848	.?AV?$num_put@DV?$ostreambuf_iterator@DU?$char_traits@D@std@@@std@@@std@@
+006898a0	.?AV?$num_get@DV?$istreambuf_iterator@DU?$char_traits@D@std@@@std@@@std@@
+006898f8	.?AV?$numpunct@D@std@@
+00689958	.?AVbad_alloc@std@@
+00689978	.?AV?$num_put@GV?$ostreambuf_iterator@GU?$char_traits@G@std@@@std@@@std@@
+006899d0	.?AV?$num_get@GV?$istreambuf_iterator@GU?$char_traits@G@std@@@std@@@std@@
+00689a28	.?AV?$time_put@GV?$ostreambuf_iterator@GU?$char_traits@G@std@@@std@@@std@@
+00689a80	.?AUtime_base@std@@
+00689aa0	.?AV?$time_get@GV?$istreambuf_iterator@GU?$char_traits@G@std@@@std@@@std@@
+00689af8	.?AV?$moneypunct@G$00@std@@
+00689b20	.?AUmoney_base@std@@
+00689b40	.?AV?$_Mpunct@G@std@@
+00689b60	.?AV?$moneypunct@G$0A@@std@@
+00689b88	.?AV?$money_put@GV?$ostreambuf_iterator@GU?$char_traits@G@std@@@std@@@std@@
+00689be0	.?AV?$money_get@GV?$istreambuf_iterator@GU?$char_traits@G@std@@@std@@@std@@
+00689c38	.?AV?$ctype@G@std@@
+00689c58	.?AUmessages_base@std@@
+00689c78	.?AV?$messages@G@std@@
+00689c98	.?AV?$collate@G@std@@
+00689cb8	.?AV?$numpunct@G@std@@
+00689cd8	.?AV?$codecvt@GDH@std@@
+00689cf8	.?AV?$time_put@DV?$ostreambuf_iterator@DU?$char_traits@D@std@@@std@@@std@@
+00689d50	.?AV?$time_get@DV?$istreambuf_iterator@DU?$char_traits@D@std@@@std@@@std@@
+00689da8	.?AV?$moneypunct@D$00@std@@
+00689dd0	.?AV?$_Mpunct@D@std@@
+00689df0	.?AV?$moneypunct@D$0A@@std@@
+00689e18	.?AV?$money_put@DV?$ostreambuf_iterator@DU?$char_traits@D@std@@@std@@@std@@
+00689e70	.?AV?$money_get@DV?$istreambuf_iterator@DU?$char_traits@D@std@@@std@@@std@@
+00689ec8	.?AV?$messages@D@std@@
+00689ee8	.?AV?$collate@D@std@@
+00689f00	CCJListBox
+00689f10	Invalid location : 
+00689f28	CNewOpenSheet
+00689f38	NEWWIZARD_HELP
+00689f48	A file with the specified name exist at the specified location. Do you want to overwrite it with this new file?
+00689fbc	the product
+00689fcc	Project Files (*.
+00689fe0	Java Files (.java) |*.java|Html Files (.html;.htm;.shtml;.ihtml)|*.html;*.htm;*.shtml;*.ihtml|Text Files (.txt;.me;.ini;.bak)|*.txt;*.me;*.ini;*.bak|All Files(*.*)|*.*||
+0068a0a8	CJavaProject
+0068a0b8	Failed, saving project : \n\n
+0068a0d4	Failed, loading project :\n\n
+0068a0f0	Failed, loading project : \n\n
+0068a128	CObStack
+0068a150	CRunTimeConfig
+0068a178	CFileItem
+0068a1a4	CFolderItem
+0068a1c8	CTreeItem
+0068a1d4	Bytes	
+0068a1e4	CColourPicker
+0068a1f4	More Colours...
+0068a204	Automatic
+0068a210	CNewPage
+0068a21c	Invalid 
+0068a228	CNewWorkspacePage
+0068a23c	 Workspaces  
+0068a24c	&Location:
+0068a258	&Workspace name:
+0068a26c	Empty Workspace
+0068a298	CJavaWorkspace
+0068a2a8	Documentation Files
+0068a2bc	External Files
+0068a2cc	Failed, saving the workspace.\n\n
+0068a2ec	Failed, loading the workspace.\n\n
+0068a310	A project with the same name already exist in the current workspace 
+0068a35c	 Project
+0068a36c	Workspace '
+0068a378	CNewProjectPage
+0068a388	 Projects  
+0068a394	&Project name:
+0068a3a4	<Menu : Configure>, <Options..>, <Directories>\n
+0068a3d4	Please verify the path in the option dialogue.\n
+0068a404	Invalid template path : \n
+0068a420	&Add to current workspace
+0068a43c	&Create new workspace
+0068a454	CNewFilePage
+0068a464	 Files  
+0068a470	&Filename:
+0068a47c	Text File
+0068a488	HTML File
+0068a494	Java File
+0068a4a0	Add to Project
+0068a4fc	Project_Name
+0068a50c	setup.tst
+0068a518	[SRCPATH]
+0068a524	[DESTPATH]
+0068a530	[IMAGE_ID]
+0068a53d	LABEL]
+0068a544	UPROJECT_NAME
+0068a554	LPROJECT_NAME
+0068a580	PROJECT_NAME
+0068a590	- Or Reinstall 
+0068a5a0	- Create a new file from another template setup file.\n
+0068a5d8	Error : Missing file : \n
+0068a5fc	! ** JCreator Project File (C)2000\n
+0068a620	! ********** DO NOT EDIT *********\n\n
+0068a648	! Start Project Folder Structure\n
+0068a66c	! Start RunTime Configuration Structure\n
+0068a698	! Start Required Libraries Structure\n
+0068a800	White
+0068a808	Lavender
+0068a814	Pale blue
+0068a820	Pale turquoise
+0068a830	Pale green 
+0068a83c	Light yellow
+0068a858	Light grey
+0068a874	Turquoise
+0068a880	Bright green
+0068a890	Yellow
+0068a8a8	Grey - 50
+0068a8b4	Violet
+0068a8bc	Light blue
+0068a8d0	Sea green
+0068a8e4	Light orange
+0068a904	Blue-grey
+0068a920	Green
+0068a928	Dark yellow
+0068a934	Orange
+0068a93c	Dark red
+0068a948	Dark grey
+0068a954	Indigo
+0068a95c	Dark blue
+0068a968	Dark Teal
+0068a974	Dark Green
+0068a980	Dark Olive Green
+0068a994	Brown
+0068a99c	Black
+0068a9a4	! ** JCreator Workspace File (C)2000\n
+0068a9cc	! Start Project Structure\n
+0068a9e8	! Start Last Document Structure\n
+0068aa0c	! Start Breakpoint Structure\n
+0068aa38	.?AV?$CList@PAVCPFileSymbol@@PAV1@@@
+0068aa68	.?AVCPScanner@@
+0068aa78	Unknown Symbol
+0068aa88	"=" expected
+0068aa98	"[" expected
+0068aaa8	unexpected end of string
+0068aac4	BEGINHEADER
+0068aad4	ENDHEADER
+0068aae0	BEGINFOLDER
+0068aaec	BeginFolder
+0068aaf8	ENDFOLDER
+0068ab04	EndFolder
+0068ab10	BEGINFILE
+0068ab1c	BeginFile
+0068ab28	ENDFILE
+0068ab30	EndFile
+0068ab38	BEGINRLIBRARY
+0068ab48	BeginRLibrary
+0068ab58	ENDRLIBRARY
+0068ab64	EndRLibrary
+0068ab70	BEGINRUNTIME
+0068ab80	BeginRunTime
+0068ab90	ENDRUNTIME
+0068ab9c	EndRunTime
+0068aba8	BEGINPROJECT
+0068abb8	BeginProject
+0068abc8	ENDPROJECT
+0068abd4	EndProject
+0068abe0	BEGINBREAKPOINT
+0068abf0	BeginBreakpoint
+0068ac00	ENDBREAKPOINT
+0068ac10	EndBreakpoint
+0068ac20	DESCRIPTION
+0068ac2c	CLASS
+0068ac34	SOURCE
+0068ac3c	LABEL
+0068ac44	FILTER
+0068ac4c	ACTIVE
+0068ac54	STRING
+0068ac5c	string
+0068ac64	DESTINPATH
+0068ac70	OUTPUTPATH
+0068ac7c	CHECK
+0068ac88	PARAM
+0068ac90	RUNAPPLIC
+0068ac9c	RUNAPPLET
+0068aca8	RUNDEBUG
+0068acb4	COMPILER
+0068acc0	JDKPROFILE
+0068accc	SHOWSOURCE
+0068acd8	COMMENT
+0068ace0	VERSION
+0068ace8	VALUE
+0068acf0	BECOMES
+0068ad04	ERROR
+0068ad18	.?AVCPFileSymbol@@
+0068ad2c	, pos 
+0068ad34	Parsing error: line 
+0068ad4c	 expected
+0068ada0	CJavaMember
+0068adac	synchronized 
+0068adbc	native 
+0068adc4	final 
+0068adcc	static 
+0068add4	abstract 
+0068ade0	private 
+0068adec	protected 
+0068adf8	public 
+0068ae1c	CJavaFileData
+0068ae38	.?AVInputBuffer@antlr@@
+0068ae58	.?AVSourceFileBuffer@@
+0068ae74	<error>
+0068ae88	.?AVSmartSense@@
+0068aea8	.?AVRecognitionException@antlr@@
+0068aed8	.?AUJavaTokenTypes@@
+0068aef8	.?AVParser@antlr@@
+0068af18	.?AVLLkParser@antlr@@
+0068af38	.?AVJavaRecognizer@@
+0068af58	.?AVJavaDotRecognizer@@
+0068af78	.?AVAST@antlr@@
+0068af90	.?AVParameter@@
+0068afa8	.?AVSymbolDeclaration@@
+0068afdc	double
+0068afe4	float
+0068aff8	short
+0068b010	.?AVSmartSenseBuffer@@
+0068b030	.?AV?$CList@PAVClassNode@@PAV1@@@
+0068b060	.?AVCJavaVariable@@
+0068b080	.?AVRuntimeConstants@@
+0068b0a0	.?AVJavaClassReader@@
+0068b0c8	.?AVClassNode@@
+0068b110	CJavaInterface
+0068b120	CJavaClass
+0068b134	[%d,%d]
+0068b144	boolean
+0068b180	Parameter
+0068b18c	CJavaFunction
+0068b1b8	CJavaVariable
+0068b1d0	.?AVJavaParser@@
+0068b434	FLOAT_SUFFIX
+0068b444	EXPONENT
+0068b450	VOCAB
+0068b458	HEX_DIGIT
+0068b468	ML_COMMENT
+0068b474	SL_COMMENT
+0068b484	NUM_FLOAT
+0068b490	STRING_LITERAL
+0068b4a0	CHAR_LITERAL
+0068b4b0	NUM_INT
+0068b4b8	"new"
+0068b4c0	"null"
+0068b4c8	"false"
+0068b4d0	"true"
+0068b4d8	"super"
+0068b4e0	"this"
+0068b508	MINUS
+0068b524	"instanceof"
+0068b544	EQUAL
+0068b54c	NOT_EQUAL
+0068b578	QUESTION
+0068b584	BOR_ASSIGN
+0068b590	BXOR_ASSIGN
+0068b59c	BAND_ASSIGN
+0068b5a8	SL_ASSIGN
+0068b5b4	BSR_ASSIGN
+0068b5c0	SR_ASSIGN
+0068b5cc	MOD_ASSIGN
+0068b5d8	DIV_ASSIGN
+0068b5e4	STAR_ASSIGN
+0068b5f0	MINUS_ASSIGN
+0068b600	PLUS_ASSIGN
+0068b60c	"catch"
+0068b614	"finally"
+0068b620	"try"
+0068b628	"default"
+0068b634	"case"
+0068b63c	"throw"
+0068b644	"switch"
+0068b650	"return"
+0068b65c	"continue"
+0068b668	"break"
+0068b678	"while"
+0068b680	"for"
+0068b688	"else"
+0068b698	COLON
+0068b6a0	"throws"
+0068b6ac	ASSIGN
+0068b6b4	RPAREN
+0068b6bc	LPAREN
+0068b6c4	"implements"
+0068b6d4	COMMA
+0068b6dc	RCURLY
+0068b6e4	LCURLY
+0068b6ec	"interface"
+0068b6f8	"extends"
+0068b704	"class"
+0068b70c	"volatile"
+0068b718	"synchronized"
+0068b728	"threadsafe"
+0068b738	"native"
+0068b744	"transient"
+0068b750	"static"
+0068b75c	"protected"
+0068b768	"public"
+0068b774	"private"
+0068b78c	IDENT
+0068b794	"double"
+0068b7a0	"long"
+0068b7a8	"float"
+0068b7b0	"int"
+0068b7b8	"short"
+0068b7c0	"char"
+0068b7c8	"byte"
+0068b7d0	"boolean"
+0068b7dc	"void"
+0068b7e4	RBRACK
+0068b7ec	LBRACK
+0068b7f4	"import"
+0068b808	"package"
+0068b814	"abstract"
+0068b820	"final"
+0068b828	EMPTY_STAT
+0068b834	FOR_ITERATOR
+0068b844	FOR_CONDITION
+0068b854	FOR_INIT
+0068b860	ELIST
+0068b868	CASE_GROUP
+0068b874	UNARY_PLUS
+0068b880	UNARY_MINUS
+0068b88c	IMPORT
+0068b894	ARRAY_INIT
+0068b8a8	METHOD_CALL
+0068b8b4	POST_DEC
+0068b8c0	POST_INC
+0068b8cc	INDEX_OP
+0068b8d8	TYPECAST
+0068b8e4	LABELED_STAT
+0068b8f4	PARAMETER_DEF
+0068b904	PARAMETERS
+0068b910	IMPLEMENTS_CLAUSE
+0068b924	EXTENDS_CLAUSE
+0068b934	ARRAY_DECLARATOR
+0068b948	PACKAGE_DEF
+0068b954	INTERFACE_DEF
+0068b964	CLASS_DEF
+0068b978	STATIC_INIT
+0068b984	INSTANCE_INIT
+0068b994	VARIABLE_DEF
+0068b9a4	METHOD_DEF
+0068b9b0	CTOR_DEF
+0068b9bc	SLIST
+0068b9c4	OBJBLOCK
+0068b9d0	MODIFIERS
+0068b9dc	BLOCK
+0068b9e4	NULL_TREE_LOOKAHEAD
+0068ba00	Error : 
+0068ba0c	Warning : 
+0068ba20	.?AVMismatchedTokenException@antlr@@
+0068ba50	.?AVANTLRException@antlr@@
+0068ba78	.?AVNoViableAltException@antlr@@
+0068ba9c	abstract
+0068baa8	final
+0068bab8	.?AV?$CList@PAVJavaIdent@@PAV1@@@
+0068bae8	.?AVIdentifierExtractor@@
+0068bb10	.?AVJavaIdent@@
+0068bb20	java.lang.String
+0068bb34	java.lang.Class
+0068bb50	.?AVTokenStream@antlr@@
+0068bb70	.?AVCharScanner@antlr@@
+0068bb90	.?AVJavaLexer@@
+0068bba0	instanceof
+0068bbac	continue
+0068bbc0	threadsafe
+0068bbcc	throws
+0068bbd4	catch
+0068bbdc	transient
+0068bbe8	super
+0068bbf4	finally
+0068bbfc	static
+0068bc20	synchronized
+0068bc30	return
+0068bc38	throw
+0068bc40	switch
+0068bc48	extends
+0068bc50	implements
+0068bc5c	while
+0068bc6c	import
+0068bc74	volatile
+0068bc84	break
+0068bc8c	native
+0068bca0	.?AVCharStreamException@antlr@@
+0068bcc8	.?AVCharStreamIOException@antlr@@
+0068bcf8	.?AVTokenStreamIOException@antlr@@
+0068bd28	.?AVTokenStreamException@antlr@@
+0068bd58	.?AVTokenStreamRecognitionException@antlr@@
+0068bde8	.?AVNoViableAltForCharException@antlr@@
+0068be18	.?AVPackageNode@@
+0068be38	.?AVPackageTree@@
+0068be4c	<root>
+0068be60	.?AVVariableBlockWalker@@
+0068be88	.?AVVariableBlockFactory@@
+0068beb0	.?AV?$CList@PAVVariable@@PAV1@@@
+0068bee0	.?AV?$CList@PAVVariableBlock@@PAV1@@@
+0068bf10	.?AVClassFormatError@@
+0068bf30	.?AVIOException@@
+0068bf44	InnerClasses
+0068bf54	parm%d
+0068bf68	.?AVJcfClassInputStream@@
+0068bf84	Unable to open input file
+0068bfa0	Empty input file
+0068bfb4	End of File
+0068bfc8	.?AV?$CList@PAUClassItem@PackageNode@@PAU12@@@
+0068bff8	Meta-inf
+0068c010	.?AVNoViableClassException@@
+0068c030	unexpected AST node: 
+0068c048	unexpected end of subtree
+0068c064	'class' or 'interface' expected
+0068c090	.?AVVariableBlock@@
+0068c0b0	.?AVJcfClassFile@@
+0068c0c4	Invalid magic signature
+0068c0e8	.?AVJcfConstantPool@@
+0068c108	.?AV?$CArray@PAVCptGeneric@@PAV1@@@
+0068c138	.?AVCptString@@
+0068c150	.?AVCptNameType@@
+0068c170	.?AVCptMethod@@
+0068c188	.?AVCptDouble@@
+0068c1a0	.?AVCptLong@@
+0068c1b8	.?AVCptClass@@
+0068c1d0	.?AVCptUnicode@@
+0068c1f0	.?AVCptInterface@@
+0068c210	.?AVCptInteger@@
+0068c230	.?AVCptFloat@@
+0068c248	.?AVCptMemberOrInterface@@
+0068c270	.?AVCptField@@
+0068c288	.?AVCptGeneric@@
+0068c2a8	.?AVCptUTF@@
+0068c2b8	Unrecognized constant pool tag: 
+0068c2e8	.?AV?$CArray@PAVJcfAttribute@@PAV1@@@
+0068c318	.?AVJcfAttributeCollection@@
+0068c348	.?AVJcfMemberCollection@@
+0068c370	.?AV?$CArray@PAVJcfMember@@PAV1@@@
+0068c3a0	.?AVJcfInterfaceCollection@@
+0068c728	breakpoint
+0068c734	jsr_w
+0068c73c	goto_w
+0068c744	ifnonnull
+0068c750	ifnull
+0068c758	multianewarray
+0068c770	monitorexit
+0068c77c	monitorenter
+0068c78c	checkcast
+0068c798	athrow
+0068c7a0	arraylength
+0068c7ac	anewarray
+0068c7b8	newarray
+0068c7c4	***unused***
+0068c7d4	invokeinterface
+0068c7e4	invokestatic
+0068c7f4	invokenonvirtual
+0068c808	invokevirtual
+0068c818	putfield
+0068c824	getfield
+0068c830	putstatic
+0068c83c	getstatic
+0068c848	areturn
+0068c850	dreturn
+0068c858	freturn
+0068c860	lreturn
+0068c868	ireturn
+0068c870	lookupswitch
+0068c880	tableswitch
+0068c89c	if_acmpne
+0068c8a8	if_acmpeq
+0068c8b4	if_icmple
+0068c8c0	if_icmpgt
+0068c8cc	if_icmpge
+0068c8d8	if_icmplt
+0068c8e4	if_icmpne
+0068c8f0	if_icmpeq
+0068c92c	dcmpg
+0068c934	dcmpl
+0068c93c	fcmpg
+0068c944	fcmpl
+0068c954	int2short
+0068c960	int2char
+0068c96c	int2byte
+0068c9d8	lushr
+0068c9e0	iushr
+0068cad0	dup2_x2
+0068cad8	dup2_x1
+0068cae8	dup_x2
+0068caf0	dup_x1
+0068cb08	sastore
+0068cb10	castore
+0068cb18	bastore
+0068cb20	aastore
+0068cb28	dastore
+0068cb30	fastore
+0068cb38	lastore
+0068cb40	iastore
+0068cb48	astore_3
+0068cb54	astore_2
+0068cb60	astore_1
+0068cb6c	astore_0
+0068cb78	dstore_3
+0068cb84	dstore_2
+0068cb90	dstore_1
+0068cb9c	dstore_0
+0068cba8	fstore_3
+0068cbb4	fstore_2
+0068cbc0	fstore_1
+0068cbcc	fstore_0
+0068cbd8	lstore_3
+0068cbe4	lstore_2
+0068cbf0	lstore_1
+0068cbfc	lstore_0
+0068cc08	istore_3
+0068cc14	istore_2
+0068cc20	istore_1
+0068cc2c	istore_0
+0068cc38	astore
+0068cc40	dstore
+0068cc48	fstore
+0068cc50	lstore
+0068cc58	istore
+0068cc60	saload
+0068cc68	caload
+0068cc70	baload
+0068cc78	aaload
+0068cc80	daload
+0068cc88	faload
+0068cc90	laload
+0068cc98	iaload
+0068cca0	aload_3
+0068cca8	aload_2
+0068ccb0	aload_1
+0068ccb8	aload_0
+0068ccc0	dload_3
+0068ccc8	dload_2
+0068ccd0	dload_1
+0068ccd8	dload_0
+0068cce0	fload_3
+0068cce8	fload_2
+0068ccf0	fload_1
+0068ccf8	fload_0
+0068cd00	lload_3
+0068cd08	lload_2
+0068cd10	lload_1
+0068cd18	lload_0
+0068cd20	iload_3
+0068cd28	iload_2
+0068cd30	iload_1
+0068cd38	iload_0
+0068cd40	aload
+0068cd48	dload
+0068cd50	fload
+0068cd58	lload
+0068cd60	iload
+0068cd68	ldc2_w
+0068cd70	ldc_w
+0068cd7c	sipush
+0068cd84	bipush
+0068cd8c	dconst_1
+0068cd98	dconst_0
+0068cda4	fconst_2
+0068cdb0	fconst_1
+0068cdbc	fconst_0
+0068cdc8	lconst_1
+0068cdd4	lconst_0
+0068cde0	iconst_5
+0068cdec	iconst_4
+0068cdf8	iconst_3
+0068ce04	iconst_2
+0068ce10	iconst_1
+0068ce1c	iconst_0
+0068ce28	iconst_m1
+0068ce34	aconst_null
+0068ce68	.?AVJcfAttribute@@
+0068ce88	.?AVJcfCodeAttribute@@
+0068cea8	.?AVJcfMember@@
+0068cec0	.?AVJcfExceptionTable@@
+0068cee0	; [guessing]
+0068cef0	enter 
+0068cf08	.?AVASTFactory@antlr@@
+0068cf20	token mismatch: 
+0068cf34	enter match(
+0068cf44	) with LA(1)=
+0068cf54	: error: 
+0068cf60	error: 
+0068cf68	: warning: 
+0068cf74	warning: 
+0068cf80	; LA(1)==
+0068cf8c	 [guessing]
+0068cfa0	.?AVMismatchedCharException@antlr@@
+0068cfc4	enter lexer 
+0068cfd4	; c==
+0068cfdc	exit lexer 
+0068cff0	.?AVBaseAST@antlr@@
+0068d00c	NoViableAlt
+0068d018	unexpected token: 
+0068d02c	<no text>
+0068d040	.?AVToken@antlr@@
+0068d060	Mismatched Token
+0068d074	), found '
+0068d080	one of (
+0068d094	expecting token NOT in range: 
+0068d0b4	expecting token in range: 
+0068d0d0	; got it anyway
+0068d0e0	expecting anything but 
+0068d0f8	, found '
+0068d104	expecting 
+0068d114	<Set of tokens>
+0068d124	line 
+0068d12c	unexpected char: 
+0068d148	.?AVCommonToken@antlr@@
+0068d160	>,line=
+0068d168	Mismatched char
+0068d180	.?AVCommonAST@antlr@@
+0068d1a0	.?AVbad_pattern@boost@@
+0068d1c0	.?AVbad_expression@boost@@
+0068db08	hangeul
+0068db10	kanji
+0068db18	english
+0068db20	roman
+0068db28	hangeulmenu
+0068db34	kanjimenu
+0068db40	windows
+0068db48	C3dHNew
+0068db50	C3dLNew
+0068db58	C3dNew
+0068db7c	#32770
+0068db84	DisableThreadLibraryCalls
+0068dba0	KERNEL32.DLL
+0068dbb0	Zip archive creation and modification Copyright 2000 Tadeusz Dracz
+0068dc00	.?AVCZipArchive@@
+0068dc14	.jar!
+0068dc1c	.zip!
+0068dc24	1.1.3
+0068dc38	.?AV?$CList@PAVCZipArchivePoolNode@@PAV1@@@
+0068dc70	.?AVCZipArchivePool@@
+0068dc90	.?AVCZipArchivePoolNode@@
+0068dcb8	.?AVCAutoReleaseZipArchive@@
+0068dce8	.?AVCZipFileHeader@@
+0068dd08	.?AVCZipAutoBuffer@@
+0068dd30	.?AVCZipStorage@@
+0068dd4c	pkback#%.3d
+0068dd60	.?AVCZipInternalInfo@@
+0068dd88	.?AV?$CTypedPtrArray@VCPtrArray@@PAVCZipFileHeader@@@@
+0068ddc8	.?AVCZipCentralDir@@
+0068dde0	ZipArchive Mapping File
+0068ddf8	CZipException
+0068de10	.?AVCZipException@@
+0068de24	CZipBigFile
+0068de38	.?AVCZipBigFile@@
+0068de70	.?AVCDockState@@
+0068de90	.?AUIDropSource@@
+0068deb0	.?AVXDropSource@COleDropSource@@
+0068dee0	.?AVCOleDropSource@@
+0068df20	.?AVCToolBar@@
+0068df38	.?AVCToolCmdUI@@
+0068df68	.?AVCPropertyPage@@
+0068df88	.?AVCPropertySheet@@
+0068dfc0	.?AVCDWordArray@@
+0068dff8	.?AVCWordArray@@
+0068e018	.?AVCOleIPFrameWnd@@
+0068e038	.?AVCOleDropTarget@@
+0068e058	.?AUIDropTarget@@
+0068e078	.?AVXDropTarget@COleDropTarget@@
+0068e0a8	.?AV_AFX_COLOR_STATE@@
+0068e0c8	.?AVCColorDialog@@
+0068e100	.?AVCMapStringToString@@
+0068e128	.?AU_AFX_PROPPAGEFONTINFO@@
+008370fa	StringFileInfo
+0083711e	040904b0
+00837136	Comments
+0083714e	CompanyName
+00837168	Xinox Software
+0083718e	FileDescription
+008371b0	JCreator Pro
+008371d2	FileVersion
+008371ec	2, 5, 0, 6
+0083720a	InternalName
+00837224	JCreator Pro
+00837246	LegalCopyright
+00837264	Copyright © 2000 - 2002
+0083729a	LegalTrademarks
+008372c2	OriginalFilename
+008372e4	JCreator.exe
+00837306	PrivateBuild
+00837326	ProductName
+00837340	Xinox Software JCreator
+00837376	ProductVersion
+00837394	2, 5, 0, 6
+008373b2	SpecialBuild
+008373d2	VarFileInfo
+008373f2	Translation
+00844fc0	JCreator
+00844fd2	\nText\nJCreator\n\n\nJCreator.Document\nJCreator Document
+0084503c	
+0084503e	
+00845040	
+00845042	
+00845044	
+00845046	
+00845048	
+0084504a	
+0084504c	
+0084504e	
+00845050	
+00845052	
+00845054	
+00845056	
+00845058	JCreator
+0084506a	For Help, press F1
+00845090	Select an object on which to get Help
+008450dc	
+008450de	
+008450e0	
+008450e2	
+008450e4	
+008450e6	
+008450e8	
+008450ea	
+008450ec	
+008450ee	
+008450f0	
+008450f2	
+008450f4	
+008450f8	EXT
+00845100	CAP
+00845108	NUM
+00845110	SCRL
+0084511a	OVR
+00845122	REC
+0084512a	
+0084512c	
+0084512e	
+00845130	
+00845132	
+00845134	
+00845136	
+00845138	
+0084513a	
+0084513c	
+00845140	Create a new document\nNew File
+0084517e	Open an existing document\nOpen
+008451bc	Close the active document\nClose
+008451fc	Save the active document\nSave
+00845238	Save the active document with a new name\nSave As
+0084529a	Change the printing options\nPage Setup
+008452e8	Change the printer and printing options\nPrint Setup
+00845350	Print the active document\nPrint
+00845390	
+00845392	Display full pages\nPrint Preview
+008453d4	
+008453d6	
+008453d8	
+008453da	
+008453dc	
+008453de	
+008453e0	Display program information, version number and copyright\nAbout
+00845460	Quit the application; prompts to save documents\nExit
+008454ca	Opens Help\nHelp Topics
+008454f8	Displays Help topics\nDisplays Help Topics
+0084554c	Display instructions about how to use help\nHelp
+008455ac	Display help for clicked on buttons, menus and windows\nHelp
+00845624	Display help for current task or command\nHelp
+00845680	
+00845682	
+00845684	
+00845686	
+00845688	
+0084568a	
+0084568c	
+0084568e	
+00845690	
+00845698	Open this document
+008456be	Open this document
+008456e4	Open this document
+0084570a	Open this document
+00845730	Open this document
+00845756	Open this document
+0084577c	Open this document
+008457a2	Open this document
+008457c8	Open this document
+008457ee	Open this document
+00845814	Open this document
+0084583a	Open this document
+00845860	Open this document
+00845886	Open this document
+008458ac	Open this document
+008458d2	Open this document
+008458f8	Switch to the next window pane\nNext Pane
+0084594a	Switch back to the previous window pane\nPrevious Pane
+008459b6	
+008459b8	
+008459ba	
+008459bc	
+008459be	
+008459c0	
+008459c2	
+008459c4	
+008459c6	
+008459c8	
+008459ca	
+008459cc	
+008459ce	
+008459d0	
+008459d8	Open another window for the active document\nNew Window
+00845a46	Arrange icons at the bottom of the window\nArrange Icons
+00845ab6	Arrange windows so they overlap\nCascade Windows
+00845b16	Arrange windows as non-overlapping tiles\nTile Windows
+00845b82	Arrange windows as non-overlapping tiles\nTile Windows
+00845bee	Split the active window into panes\nSplit
+00845c40	
+00845c42	
+00845c44	
+00845c46	
+00845c48	
+00845c4a	
+00845c4c	
+00845c4e	
+00845c50	
+00845c52	
+00845c58	Erase the selection\nErase
+00845c8c	Erase everything\nErase All
+00845cc2	Copy the selection and put it on the Clipboard\nCopy
+00845d2a	Cut the selection and put it on the Clipboard\nCut
+00845d8e	Find the specified text\nFind
+00845dc8	Insert Clipboard contents\nPaste
+00845e08	
+00845e0a	
+00845e0c	Find the next occurrence of the specified text\nFind Next
+00845e7e	Replace specific text with different text\nReplace
+00845ee2	Select the entire document\nSelect All
+00845f2e	Undo the last action\nUndo
+00845f62	Redo the previously undone action\nRedo
+00845fb0	
+00845fb2	
+00845fb4	
+00845fb8	Show or hide the toolbar\nToggle ToolBar
+00846008	Show or hide the status bar\nToggle StatusBar
+00846062	
+00846064	
+00846066	
+00846068	
+0084606a	
+0084606c	
+0084606e	
+00846070	
+00846072	
+00846074	
+00846076	
+00846078	
+0084607a	
+0084607c	
+00846080	Change the window size
+008460ae	Change the window position
+008460e4	Reduce the window to an icon
+0084611e	Enlarge the window to full size
+0084615e	Switch to the next document window
+008461a4	Switch to the previous document window
+008461f2	Close the active window and prompts to save the documents
+00846266	
+00846268	
+0084626a	
+0084626c	
+0084626e	
+00846270	
+00846272	
+00846274	
+00846276	
+00846278	
+0084627a	
+0084627c	Restore the window to normal size
+008462c0	Activate Task List
+008462e6	
+008462e8	
+008462ea	
+008462ec	
+008462ee	
+008462f0	
+008462f2	
+008462f4	
+008462f6	
+008462f8	
+008462fa	
+008462fc	Activate this window
+00846328	Open
+00846332	Save As
+00846342	All Files (*.*)
+00846362	Untitled
+00846374	
+00846376	Close print preview mode\nCancel Preview
+008463c6	an unnamed file
+008463e6	
+008463e8	
+008463ea	
+008463ec	
+008463ee	
+008463f0	
+008463f2	
+008463f4	
+008463f6	
+008463f8	Move the cursor to the declaration of the super method\nGo To Super Method
+0084648c	
+0084648e	
+00846490	
+00846492	All modified Java file paths from the active project.\nTool Macro
+00846514	
+00846516	
+00846518	
+0084651a	
+0084651c	
+0084651e	
+00846520	Create a new documentt\nNew File
+00846560	Closes all windows\nClose all
+0084659a	Ensures the last line is always visible\nAuto Scroll
+00846602	The file for the class "%s" already exists.\nPlease choose a different class name.
+008466a6	The file for the interface "%s" already exists.\nPlease choose a different interface name.
+00846760	Superclass is final and cannot be extended.
+008467b8	
+008467ba	
+008467bc	
+008467be	
+008467c0	
+008467c2	
+008467c4	
+008467c6	
+008467c8	
+008467ca	
+008467cc	
+008467ce	
+008467d0	
+008467d2	
+008467d4	
+008467d8	Please enter an integer between 1 and 64 for the tabsize.
+0084684c	Do you want to close all document Windows?
+008468a2	JCreator found %d files which are already included in the selected project.
+0084693a	JCreator found %d file which is already included in the selected project.
+008469ce	
+008469d0	
+008469d2	
+008469d4	
+008469d6	
+008469d8	
+008469da	
+008469dc	
+008469de	
+008469e0	
+008469e2	
+008469e4	
+008469e8	
+008469ea	
+008469ec	Show or hide the toolbar\nToggle ToolBar
+00846a3c	
+00846a3e	
+00846a40	Debug
+00846a4c	
+00846a4e	Show only the browser toolbar\nShow only browser toolbar
+00846abe	Enter internet or local address\nAddress
+00846b0e	
+00846b10	Selects largest font size\nLargest
+00846b54	Selects large font size\nLarge
+00846b90	Selects medium font size\nMedium
+00846bd0	Selects small font size\nSmall
+00846c0c	Selects smallest font size\nSmallest
+00846c54	Completes the current word\nCompletes the current word
+00846cc0	
+00846cc2	
+00846cc4	Show or hide the toolbar\nToggle ToolBar
+00846d14	Goes back one step\nBack
+00846d44	Goes forward one step\nForward
+00846d80	Refreshes the contents of the current page\nRefresh
+00846de6	Opens the start page\nHome
+00846e1a	Searches the internet\nSearch
+00846e54	Stops loading current page\nStop loading
+00846ea4	Browser
+00846eb4	
+00846eb6	
+00846eb8	
+00846eba	
+00846ebc	
+00846ebe	
+00846ec0	Select the current line\nSelect line
+00846f08	Select braces block\nSelect braces
+00846f4c	Cut the selection and append it to the Clipboard\nAppend Cut
+00846fc4	
+00846fc6	Converts tabs to spaces\nTabs to Spaces
+00847014	Converts spaces to tabs\nSpaces to Tabs
+00847062	Converts leading spaces to tabs\nLeading Spaces to Tabs
+008470d0	Join the selected lines\nJoin lines
+00847116	Duplicate the current line\nDuplicate line
+0084716a	
+0084716c	
+0084716e	
+00847170	Converts leading tabs to spaces\nLeading Tabs to Spaces
+008471de	
+008471e0	
+008471e2	
+008471e8	
+008471ea	
+008471ec	
+008471ee	Browse for a directory\nBrowse for a directory
+0084724a	Change settings for the active project\nProject Properties
+008472be	Change settings for the active project\nProject Properties
+00847332	Select JDK home path.
+0084735e	The path or paths that contain all the classes in the library.
+008473dc	All Java file paths from the active project.\nTool Macro
+0084744c	The classpath of the active project.\nTool Macro
+008474ac	The output path for the class files.\nTool Macro
+0084750c	All file paths from the active project.\nTool Macro
+00847572	The JDK home path assigned to the active project.\nTool Macro
+008475ec	Select a runtime configuration
+0084762a	The default workspace can only be closed by closing all documents.\nDo you want to close all documents?
+008476f8	
+00847700	
+00847702	
+00847704	
+00847706	
+00847708	
+0084770a	
+0084770c	
+0084770e	
+00847710	
+00847712	Error opening new File
+00847740	Edit
+0084774a	%s\n\nThis file has been modified outside of this editor.\nDo you want to reload it ?
+008477f0	%s\n\nThis file has been deleted.\nIt will be lost if you don't save it.
+0084787c	This action will stop the active tool.\nDo you really want to exit?
+00847902	Build
+0084790e	Tools
+00847920	
+00847922	
+00847924	
+00847926	
+00847928	
+0084792a	
+0084792c	
+0084792e	Shows or hides the line numbers\nToggle Line Numbers
+00847996	
+00847998	
+0084799a	Shows or hides the selection margin\nToggle Selection Margin
+00847a12	
+00847a14	
+00847a16	Toggle read only state\nRead Only
+00847a58	
+00847a5a	
+00847a60	
+00847a62	
+00847a64	Customize toolbars and menus.\nCustomize
+00847ab4	
+00847ab6	
+00847ab8	
+00847aba	
+00847abc	
+00847abe	
+00847ac0	
+00847ac2	
+00847ac4	
+00847ac6	
+00847ac8	
+00847aca	
+00847acc	
+00847ad0	
+00847ad2	
+00847ad4	
+00847ad6	
+00847ad8	
+00847ada	
+00847adc	
+00847ade	Standard
+00847af0	
+00847af2	
+00847af4	
+00847af6	
+00847af8	
+00847afa	
+00847afc	
+00847afe	
+00847b00	
+00847b02	
+00847b04	
+00847b06	
+00847b08	
+00847b0a	
+00847b0c	
+00847b0e	
+00847b10	
+00847b12	Show or hide the user toolbar\nToggle User ToolBar
+00847b76	Show or hide the user toolbar\nToggle User ToolBar
+00847bda	Show or hide the user toolbar\nToggle User ToolBar
+00847c3e	Show or hide the user toolbar\nToggle User ToolBar
+00847ca2	Show or hide the user toolbar\nToggle User ToolBar
+00847d06	Show or hide the user toolbar\nToggle User ToolBar
+00847d6a	Show or hide the user toolbar\nToggle User ToolBar
+00847dd0	Adds an existing project to the workspace.\nAdds project
+00847e40	Adds a new project to the workspace.\nAdds new project
+00847eac	
+00847eae	Create a new Folder.\nNew Folder
+00847eee	Terminates the active tool\nStops the active tool
+00847f50	
+00847f52	Searches for a string in multiple files\nFind in Files
+00847fbe	Switch to the previous window\nPrevious Window
+0084801a	
+0084801c	Switch to the next window\nNext Window
+00848068	saves all open files\nSave all files
+008480b0	Show or hide the toolbar\nToggle ToolBar
+00848100	
+00848102	
+00848104	
+00848106	
+00848108	Show or hide the user toolbar\nToggle User ToolBar
+0084816c	Show or hide the user toolbar\nToggle User ToolBar
+008481d0	Show or hide the user toolbar\nToggle User ToolBar
+00848234	
+00848236	Toggle control bar captions\nControl Bar Captions
+00848298	Change Options\nChange Options
+008482d4	Force Gradiend Captions\nGradiend Captions
+00848328	Show or hide the file viewer\nFileView
+00848374	Activates the output window\nOutput
+008483ba	Create a new Folder\nNew Folder
+008483f8	Show or hide the ClassView\nClassView
+00848442	
+00848444	Toggles the docking feature of the window\nDocking on/off
+008484b6	Hides the window\nHide
+008484e2	Opens the selected file\nOpen file
+00848526	Builds the selected file\nBuild
+00848568	
+0084856a	
+0084856c	
+0084856e	Encodes the selected text\nCharacter Encoding
+008485c8	
+008485ca	
+008485cc	
+008485ce	
+008485d0	
+008485d2	
+008485d4	
+008485d6	
+008485d8	
+008485da	
+008485dc	
+008485de	
+008485e0	Create a new DOS command tool. \nDOS Tool Command
+00848642	Create a new tool for reading help files.\nOnline Help File Tool
+008486c2	Create a new tool for starting a program.\nProgram Tool
+00848730	Create a new tool for compiling JAVA files.\nJAVA Execute Tool
+008487ac	Create a new Folder\nNew Folder
+008487ea	Create a new tool for running JAVA programs.\nJAVA Execute Tool
+00848868	Sets this project to be the active project\nSet Active Project
+008488e4	Create a new tool for viewing JAVA Applets.\nJAVA View Applet
+0084895e	Adds a new project to the workspace.\nAdds new project
+008489ca	Create a new tool for starting a program.\nProgram Tool
+00848a38	Adds an existing project to the workspace.\nAdds project
+00848aa8	Create a new tool for compiling JAVA files.\nJAVA Compiler 
+00848b1e	Shows the properties list\nProperties
+00848b68	
+00848b6a	Create a new document or project\nNew
+00848bb4	The path of the active document\nTool Macro
+00848c10	Shows the properties list\nProperties
+00848c5a	Toggles the docking feature for the window\nDocking on/off
+00848cce	Hides the window\nHides the window
+00848d12	Add Files\nAdd Files
+00848d3a	Shows the properties list\nProperties
+00848d84	User Tool 1\nUser Tool 1
+00848db4	User Tool 2\nUser Tool 2
+00848de4	User Tool 3\nUser Tool 3
+00848e14	User Tool 4\nUser Tool 4
+00848e44	
+00848e46	User Tool 5\nUser Tool 5
+00848e76	User Tool 6\nUser Tool 6
+00848ea6	User Tool 7\nUser Tool 7
+00848ed6	User Tool 8\nUser Tool 8
+00848f06	User Tool 9\nUser Tool 9
+00848f36	User Tool 10\nUser Tool 10
+00848f70	Shows the properties list\nProperties
+00848fba	The directory of the active document without the filename\nTool Macro
+00849044	Add files to the project\nAdd Files
+0084908a	The name of the active document\nTool Macro
+008490e0	Opens an existing workspace\nOpens an existing workspace
+00849150	The basename of the active document\nTool Macro
+008491ae	Saves the workspace.\nSave workspace
+008491f6	The current line text of the active document.\nTool Macro
+00849268	Closes the workspace.\nClose workspace
+008492b4	The current selected text of the active document.\nTool Macro
+0084932e	The current working directory.\nTool Macro
+00849382	The project directory without filename.\nTool Macro
+008493e8	The project name without the file extension.\nTool Macro
+00849458	The current line index of the active document.\nTool Macro
+008494cc	
+008494ce	
+008494d0	
+008494d2	
+008494d4	
+008494d6	
+008494d8	
+008494da	
+008494dc	
+008494de	
+008494e0	
+008494e2	
+008494e4	
+008494e6	Removes the selected project from the Workspace
+00849546	
+00849548	
+0084954a	
+0084954c	
+00849550	
+00849552	
+00849554	
+00849556	
+00849558	
+0084955a	
+0084955c	
+0084955e	
+00849560	
+00849562	
+00849564	
+00849566	
+00849568	Compile the active JAVA file\nCompile File
+008495bc	Compile the active project\nCompile Project
+00849612	Compiles multiple projects\nCompile Batch
+00849664	Executes the active project\nExecute Project
+008496c0	
+008496c2	
+008496c4	
+008496c6	
+008496c8	
+008496ca	
+008496cc	Find the previous occurrence of the specified text\nFind Previous
+0084974e	Find the next occurrence of the specified text\nFind Next
+008497c0	
+008497c2	
+008497c4	
+008497c6	
+008497c8	
+008497ca	
+008497cc	
+008497ce	
+008497d0	
+008497d2	
+008497d4	
+008497d6	
+008497d8	
+008497da	
+008497dc	
+008497de	
+008497e0	
+008497e2	
+008497e4	
+008497e6	Increase Indent\nIncrease Indent
+00849826	Decrease Indent\nDecrease Indent
+00849866	
+00849868	
+0084986a	
+00849870	
+00849872	
+00849874	Go to the definition of the selected item\n Go to the definition of the selected item.
+00849920	
+00849922	Add files to the project\nAdd Files
+00849968	
+0084996a	Shows the properties list\nProperties
+008499b4	
+008499b6	
+008499b8	
+008499ba	
+008499bc	Create a new Class.\nNew Class
+008499f8	
+008499fa	
+008499fc	
+008499fe	
+00849a00	Executes the active file\nExecute File
+00849a4c	Runs 
+00849a58	Select a different JAVA Runtime environment\nSelect JAVA tool
+00849ad2	
+00849ad4	Compiles the active project\nCompiles Project
+00849b2e	
+00849b30	
+00849b32	
+00849b34	
+00849b36	
+00849b38	
+00849b3a	
+00849b3c	
+00849b3e	
+00849b40	
+00849b42	
+00849b48	
+00849b4a	
+00849b4c	
+00849b4e	
+00849b50	
+00849b52	
+00849b54	
+00849b56	
+00849b58	
+00849b5a	
+00849b5c	
+00849b5e	
+00849b60	
+00849b62	Read
+00849b6c	AUTO
+00849b76	Ln 9999, Col 9999, Char 9999
+00849bb0	Recent WorkspacesID_FILE_MRU_WSP1
+00849bf4	
+00849bf6	
+00849bf8	
+00849bfa	
+00849bfc	
+00849bfe	
+00849c00	
+00849c02	
+00849c04	
+00849c06	
+00849c08	
+00849c0a	
+00849c0c	
+00849c0e	
+00849c10	
+00849c18	
+00849c1a	
+00849c1c	
+00849c1e	
+00849c20	
+00849c22	
+00849c24	
+00849c26	Toggle Withespace Display\nToggle Withespace Display
+00849c8e	
+00849c90	
+00849c92	
+00849c94	Increase Comment Indent\nIncrease Comment Indent
+00849cf4	Decrease Comment Indent\nDecrease Comment Indent
+00849d54	Delete the current line\nDelete line
+00849d9c	
+00849d9e	Select the current word\nSelect word
+00849de8	
+00849dea	
+00849dec	
+00849dee	
+00849df0	
+00849df2	
+00849df4	
+00849df6	
+00849df8	
+00849dfa	
+00849dfc	
+00849dfe	
+00849e00	Disable the views worker threads\nDisable the views worker threads
+00849e84	
+00849e86	Closes all windows\nClose all
+00849ec0	Closes the active window\nClose
+00849f00	
+00849f02	
+00849f04	
+00849f06	Activates the FileView window\nShow FileView
+00849f5e	
+00849f60	
+00849f62	
+00849f64	
+00849f66	
+00849f68	
+00849f6a	
+00849f6c	
+00849f6e	
+00849f70	
+00849f72	
+00849f74	
+00849f78	
+00849f7a	
+00849f7c	Show or hide the toolbar\nToggle ToolBar
+00849fcc	
+00849fce	
+00849fd0	
+00849fd2	
+00849fd4	
+00849fd6	
+00849fd8	
+00849fda	
+00849fdc	
+00849fde	
+00849fe0	
+00849fe2	
+00849fe4	
+00849fe8	
+00849fea	
+00849fec	
+00849fee	
+00849ff0	
+00849ff2	Show or hide the toolbar\nToggle ToolBar
+0084a042	Show or hide the toolbar\nToggle ToolBar
+0084a092	
+0084a094	
+0084a096	
+0084a098	
+0084a09a	
+0084a09c	
+0084a09e	
+0084a0a0	
+0084a0a2	
+0084a0a8	
+0084a0aa	
+0084a0ac	
+0084a0ae	
+0084a0b0	
+0084a0b2	
+0084a0b4	
+0084a0b6	Toggle Bookmark\nToggle Bookmark
+0084a0f6	Next Bookmark\nNext Bookmark
+0084a12e	Previous Bookmark\nPrevious Bookmark
+0084a176	Clear All Bookmarks\nClear All Bookmarks
+0084a1c6	Move the cursor to last edit location\nGo To Last Change
+0084a236	
+0084a238	
+0084a23a	
+0084a23c	
+0084a240	
+0084a242	
+0084a244	
+0084a246	
+0084a248	
+0084a24a	
+0084a24c	Match Bracket\nMatch Bracket
+0084a284	Lower Case\nLower Case
+0084a2b0	Upper Case\n\Upper Case 
+0084a2e0	Capitalize\nCapitalize 
+0084a30e	Sentencize\nSentencize 
+0084a33c	Invert Case\nInvert Case 
+0084a36e	Move the cursor to a specified line number\nGo To Line
+0084a3da	
+0084a3dc	
+0084a3de	
+0084a3e0	
+0084a3e2	
+0084a3e4	
+0084a3e6	
+0084a3e8	User Tool 1\nUser Tool 1
+0084a418	User Tool 2\nUser Tool 2
+0084a448	User Tool 3\nUser Tool 3
+0084a478	User Tool 4\nUser Tool 4
+0084a4a8	User Tool 5\nUser Tool 5
+0084a4d8	User Tool 6\nUser Tool 6
+0084a508	User Tool 7\nUser Tool 7
+0084a538	User Tool 8\nUser Tool 8
+0084a568	User Tool 9\nUser Tool 9
+0084a598	User Tool 10\nUser Tool 10
+0084a5cc	
+0084a5ce	
+0084a5d0	Save the workspace modifications?
+0084a614	
+0084a616	Copyright © 2000-2002 Xinox Software - Wendel de Witte\nThis program is protected by copyright law and international treaties.
+0084a712	This program is protected by copyright law and international treaties.
+0084a7a0	
+0084a7a2	
+0084a7a4	You must first create a JDK profile. \n\nTo do so, choose : <Menu : Configure> <Options...> < JDK Profiles >
+0084a87a	
+0084a87c	
+0084a87e	
+0084a880	
+0084a882	The system couldn't find a suitable main method\n\nor htm(l) file in the active project."
+0084a932	
+0084a934	The system couldn't find a suitable tool for starting the JAVA application.\n\nCreate a new JAVA Tool in the option dialogue.\n<Menu : Configure> <Options..> <Tools>.\n\n
+0084aa80	The system couldn't find a suitable tool for starting the JAVA Applet..\n\nCreate a new JAVA Tool in the option dialogue.\n<Menu : Configure> <Options..> <Tools>.\n\n
+0084abc4	The active document file has an invalid extension.\nOnly documents with the extension java or htm(l) are allowed.\n
+0084aca8	
+0084acaa	
+0084acac	
+0084acae	
+0084acb0	
+0084acb2	
+0084acb4	
+0084acb6	
+0084acb8	Splits a java file with multiple classes in separate files\nSplits a java file with multiple classes in separate files
+0084ada4	
+0084ada6	
+0084ada8	Shows the Splash Screen\nShows the Splash Screen
+0084ae08	
+0084ae0a	
+0084ae0c	
+0084ae0e	
+0084ae10	
+0084ae12	User Tool 1\nUser Tool 1
+0084ae42	
+0084ae44	
+0084ae46	
+0084ae48	
+0084ae4a	
+0084ae4c	
+0084ae4e	
+0084ae50	
+0084ae52	
+0084ae54	
+0084ae56	
+0084ae58	
+0084ae5a	
+0084ae5c	
+0084ae60	
+0084ae62	
+0084ae64	
+0084ae66	
+0084ae68	
+0084ae6a	
+0084ae6c	
+0084ae6e	
+0084ae70	Clear the current output page\nClear output
+0084aec6	Copies the selection to the clipboard\nCopy selection
+0084af30	Moves the cursor to the line with the error\nGo to error
+0084afa0	
+0084afa2	
+0084afa4	
+0084afa6	
+0084afa8	
+0084afb0	
+0084afb2	
+0084afb4	
+0084afb6	
+0084afb8	
+0084afba	
+0084afbc	
+0084afbe	
+0084afc0	Deletes the selected item/nDelete item
+0084b00e	
+0084b010	&Removes the selected item from the workspace\nRemove Item
+0084b084	
+0084b086	
+0084b088	
+0084b08a	
+0084b08c	
+0084b090	
+0084b092	
+0084b094	
+0084b096	
+0084b098	
+0084b09a	
+0084b09c	
+0084b09e	
+0084b0a0	
+0084b0a2	Show or hide the PackageView\nPackageView
+0084b0f4	Create a new Class.\nNew Class
+0084b130	
+0084b132	
+0084b134	Add files from a directory to the active project\nAdd Directory
+0084b1b2	Add files from a directory to the active project\nAdd Directory
+0084b230	
+0084b238	The current main class from the active project.\nTool Macro
+0084b2ae	Compiles the selected folder\nCompile Folder
+0084b306	Compiles the Package\nCompile Package
+0084b350	
+0084b352	
+0084b354	
+0084b356	
+0084b358	
+0084b35a	
+0084b35c	
+0084b35e	
+0084b360	
+0084b362	
+0084b364	
+0084b366	
+0084b368	
+0084b370	
+0084b372	
+0084b374	
+0084b376	
+0084b378	
+0084b37a	
+0084b37c	
+0084b37e	
+0084b380	
+0084b382	
+0084b384	
+0084b386	
+0084b388	
+0084b38a	Displays all keyboard commands\nKeyboard Map
+0084b3e2	
+0084b3e4	
+0084b3e8	\nJCreator Html\nJCreator Html\n\n\nJCreator.Document\nJCreator Html Document
+0084b478	
+0084b47a	
+0084b47c	
+0084b47e	
+0084b480	
+0084b482	
+0084b484	
+0084b486	
+0084b488	
+0084b48a	
+0084b48c	
+0084b48e	
+0084b490	
+0084b492	
+0084b494	
+0084b498	
+0084b49a	
+0084b49c	
+0084b49e	
+0084b4a0	Show next error
+0084b4c0	
+0084b4c2	Shows a popup list with code snippets\nCode Templates
+0084b52c	
+0084b52e	Completes the current java statement or word\nCode Completion
+0084b5a8	
+0084b5aa	
+0084b5ac	
+0084b5ae	
+0084b5b0	
+0084b5b2	
+0084b5b4	
+0084b5b8	
+0084b5ba	Delete the current word\nDelete word
+0084b602	
+0084b604	
+0084b606	
+0084b608	
+0084b60a	
+0084b60c	
+0084b60e	
+0084b610	
+0084b612	
+0084b614	
+0084b616	
+0084b618	
+0084b61a	
+0084b61c	
+0084b620	
+0084b622	
+0084b624	
+0084b626	
+0084b628	
+0084b62a	
+0084b62c	
+0084b62e	
+0084b630	
+0084b632	Shows the help document of the selected text\nShow JDK Help
+0084b6a8	Interface implementation wizard\nImplement Interface
+0084b710	
+0084b712	
+0084b714	
+0084b716	
+0084b718	
+0084b720	
+0084b722	
+0084b724	
+0084b726	
+0084b728	Activates the find Tool\nFind Text
+0084b76c	Find the specified text\nFind
+0084b7a6	
+0084b7a8	
+0084b7aa	
+0084b7ac	
+0084b7ae	
+0084b7b0	
+0084b7b2	
+0084b7b4	
+0084b7b6	
+0084b7b8	
+0084b7c0	
+0084b7c2	
+0084b7c4	
+0084b7c6	
+0084b7c8	Start the debugger\nDebug
+0084b7fa	Steps to the next statement\nStep
+0084b83c	Show all object information\nDump
+0084b87e	Steps out of the current method\nStep Out
+0084b8d0	Steps into the next statement\nStep Into
+0084b920	Run to next breakpoint\nContinue
+0084b960	Location of the program\nProgram Location
+0084b9b2	Move up a thread's stack\nStack Up
+0084b9f6	Move down a thread's stack\nStack Down
+0084ba42	Shows the list of threads\nList Threads
+0084ba90	Shows the memory state\nMemory state
+0084bad8	Shows the currently known classes\nClass List
+0084bb38	Shows the list of commands\nCommands
+0084bb80	Edits breakpoints in the program\nBreakpoints
+0084bbda	Inserts or removes a breakpoint\nToggle breakpoint
+0084bc3e	Enables or disables the current breakpoint\nSwitch Breakpoint
+0084bcb8	
+0084bcba	
+0084bcbc	
+0084bcbe	
+0084bcc0	
+0084bcc2	
+0084bcc4	
+0084bcc6	
+0084bcc8	
+0084bcca	
+0084bccc	
+0084bcce	
+0084bcd0	
+0084bcd2	
+0084bcd4	
+0084bcd6	Completes the current word\nWord Completion
+0084bd2c	Save the active document\nSave
+0084bd68	
+0084bd6a	The current line number of the active document.\nTool Macro
+0084bde0	Create a new tool for making jar files.\nJar Tool
+0084be42	Create a new tool for making JNI headers.\nJNI Tool
+0084bea8	Create a tool for the RMI compiler.\nRMI Compiler
+0084bf0a	Remove the file item from the project\nRemove file
+0084bf6e	
+0084bf70	Remove the project item from the workspace\nRemove Project
+0084bfe4	Delete the folder item from the workspace\nDelete folder
+0084c054	
+0084c056	The current class name of the active document.\nTool Macro
+0084c0d0	ID_EDIT_WORDCOMPLETE
+0084c0fa	Activate Output View\nActivate Output View
+0084c14e	Activate Output View\nActivate Output View
+0084c1a2	Activate Package View\nActivate Package View
+0084c1fa	Activate File View\nActivate File View
+0084c246	Toggle Views\nToggle Views
+0084c27a	
+0084c27c	Insert get and set methods for the class members\nInsert get and set methods
+0084c314	
+0084c316	
+0084c318	
+0084c31a	Opens the JCreator Main page\nOpens the JCreator Main page
+0084c38e	Opens the JCreator FAQ page\nOpens the JCreator FAQ page
+0084c3fe	Opens the JCreator Support page\nOpens the JCreator Support page
+0084c47e	Opens the JCreator Feedback page\nOpens the JCreator Feedback page
+0084c502	Find out how to purchase JCreator online\nOnline registration
+0084c580	Enter your license details to register JCreator\nEnter registration details
+0084c616	
+0084c618	
+0084c61a	
+0084c61c	
+0084c61e	
+0084c620	
+0084c622	
+0084c624	
+0084c626	
+0084c628	
+0084c62a	Provides the syntax for a variable, method or class selected in the editor\nShow Identifier Info
+0084c6ea	Replaces a string in multiple files\nReplace in Files
+0084c754	
+0084c756	Move the cursor to the declaration of the variable or method\nGo To Declaration
+0084c7f4	Move the cursor to the type declaration of the symbol\nGo To Definition
+0084c888	JCreator
+0084c89a	
+0084c89c	
+0084c89e	
+0084c8a0	
+0084c8a2	\nJCreator Html\nJCreator Html\n\n\nJCreator.Document\nJCreator Html Document
+0084c932	
+0084c934	
+0084c936	
+0084c938	
+0084c93a	
+0084c93c	
+0084c93e	
+0084c940	
+0084c942	
+0084c944	
+0084c948	
+0084c94a	
+0084c94c	
+0084c94e	
+0084c950	
+0084c952	
+0084c954	
+0084c956	
+0084c958	
+0084c95a	
+0084c95c	
+0084c95e	
+0084c960	
+0084c962	
+0084c964	
+0084c966	\nText\nJCreator\n\n\nJCreator.Document\nJCreator Document
+0084c9d0	
+0084c9d2	
+0084c9d4	
+0084c9d6	
+0084c9d8	
+0084c9da	
+0084c9dc	
+0084c9de	Reloads the document\nReload Document
+0084ca28	
+0084ca2a	
+0084ca2c	
+0084ca2e	
+0084ca30	
+0084ca32	
+0084ca34	
+0084ca36	
+0084ca38	
+0084ca3a	&Hide
+0084ca46	
+0084ca48	
+0084ca4a	
+0084ca4c	
+0084ca4e	
+0084ca50	
+0084ca52	
+0084ca54	
+0084ca56	
+0084ca58	
+0084ca5a	
+0084ca5c	
+0084ca5e	
+0084ca60	
+0084ca68	No error message is available.
+0084caa6	An unsupported operation was attempted.
+0084caf6	A required resource was unavailable.
+0084cb40	Out of memory.
+0084cb5e	An unknown error has occurred.
+0084cb9c	
+0084cb9e	
+0084cba0	
+0084cba2	
+0084cba4	
+0084cba6	
+0084cba8	
+0084cbaa	
+0084cbac	
+0084cbae	
+0084cbb0	
+0084cbb8	Invalid filename.
+0084cbdc	Failed to open document.
+0084cc0e	Failed to save document.
+0084cc40	Save changes to %1?
+0084cc68	Failed to create empty document.
+0084ccaa	The file is too large to open.
+0084cce8	Could not start print job.
+0084cd1e	Failed to launch help.
+0084cd4c	Internal application error.
+0084cd84	Command failed.
+0084cda4	Insufficient memory to perform operation.
+0084cdf8	System registry entries have been removed and the INI file (if any) was deleted.
+0084ce9a	Not all of the system registry entries (or INI file) were removed.
+0084cf20	This program requires the file %s, which was not found on this system.
+0084cfae	This program is linked to the missing export %s in the file %s. This machine may have an incompatible version of %s.
+0084d098	
+0084d0a0	
+0084d0a2	
+0084d0a4	
+0084d0a6	
+0084d0a8	
+0084d0aa	
+0084d0ac	
+0084d0ae	
+0084d0b0	
+0084d0b2	
+0084d0b4	
+0084d0b6	
+0084d0b8	Unable to read write-only property.
+0084d100	Unable to write read-only property.
+0084d148	
+0084d14a	
+0084d150	Unexpected file format.
+0084d180	%1\nCannot find this file.\nPlease verify that the correct path and file name are given.
+0084d22e	Destination disk drive is full.
+0084d26e	Unable to read from %1, it is opened by someone else.
+0084d2da	Unable to write to %1, it is read-only or opened by someone else.
+0084d35e	An unexpected error occurred while reading %1.
+0084d3bc	An unexpected error occurred while writing %1.
+0084d41a	
+0084d41c	
+0084d41e	
+0084d420	
+0084d422	
+0084d424	
+0084d426	
+0084d428	
+0084d42a	
+0084d430	Please enter an integer.
+0084d462	Please enter a number.
+0084d490	Please enter an integer between %1 and %2.
+0084d4e6	Please enter a number between %1 and %2.
+0084d538	Please enter no more than %1 characters.
+0084d58a	Please select a button.
+0084d5ba	Please enter an integer between 0 and 255.
+0084d610	Please enter a positive integer.
+0084d652	Please enter a date and/or time.
+0084d694	Please enter a currency.
+0084d6c6	
+0084d6c8	
+0084d6ca	
+0084d6cc	
+0084d6ce	
+0084d6d0	
+0084d6d8	No error occurred.
+0084d6fe	An unknown error occurred while accessing %1.
+0084d75a	%1 was not found.
+0084d77e	%1 contains an invalid path.
+0084d7b8	%1 could not be opened because there are too many open files.
+0084d834	Access to %1 was denied.
+0084d866	An invalid file handle was associated with %1.
+0084d8c4	%1 could not be removed because it is the current directory.
+0084d93e	%1 could not be created because the directory is full.
+0084d9ac	Seek failed on %1
+0084d9d0	A hardware I/O error was reported while accessing %1.
+0084da3c	A sharing violation occurred while accessing %1.
+0084da9e	A locking violation occurred while accessing %1.
+0084db00	Disk full while accessing %1.
+0084db3c	An attempt was made to access %1 past its end.
+0084db9a	
+0084dba0	No error occurred.
+0084dbc6	An unknown error occurred while accessing %1.
+0084dc22	An attempt was made to write to the reading %1.
+0084dc82	An attempt was made to access %1 past its end.
+0084dce0	An attempt was made to read from the writing %1.
+0084dd42	%1 has a bad format.
+0084dd6c	%1 contained an unexpected object.
+0084ddb2	%1 contains an incorrect schema.
+0084ddf4	
+0084ddf6	
+0084ddf8	
+0084ddfa	
+0084ddfc	
+0084ddfe	
+0084de00	
+0084de02	
+0084de08	Unable to load mail system support.
+0084de50	Mail system DLL is invalid.
+0084de88	Send Mail failed to send message.
+0084decc	
+0084dece	
+0084ded0	
+0084ded2	
+0084ded4	
+0084ded6	
+0084ded8	
+0084deda	
+0084dedc	
+0084dede	
+0084dee0	
+0084dee2	
+0084dee4	
+0084dee8	pixels
+0084def6	
+0084def8	
+0084defa	
+0084defc	
+0084defe	
+0084df00	
+0084df02	
+0084df04	
+0084df06	
+0084df08	
+0084df0a	
+0084df0c	
+0084df0e	
+0084df10	
+0084df12	
+0084df18	on %1
+0084df24	&One Page
+0084df38	&Two Page
+0084df4c	Page %u
+0084df5c	Page %u\nPages %u-%u\n
+0084df86	prn
+0084df8e	Output.prn
+0084dfa4	Printer Files (*.prn)|*.prn|All Files (*.*)|*.*||
+0084e008	Print to File
+0084e024	to %1
+0084e030	
+0084e032	
+0084e034	
+0084e036	
+0084e038	
+0084e03a	
+0084e040	
+0084e042	You should select an image!
+0084e07a	You should enter a text!
+0084e0ac	Can't create a new image!
+0084e0e0	Can't paste bitmap image from the clipboard!
+0084e13a	You can paste bitmap with the size (%d x %d) only!
+0084e1a0	Menu Bar
+0084e1b2	Can't customize menues!
+0084e1e2	BCG Toolbar internal error. Please contact your application vendor.
+0084e26a	[Unassigned]
+0084e284	Can't copy bitmap image into the clipboard!
+0084e2dc	Hide docked window
+0084e302	Expand docked window
+0084e32c	Contract docked window
+0084e35a	New Menu
+0084e36c	File
+0084e378	Folder
+0084e386	New
+0084e38e	Existing
+0084e3a0	Recent
+0084e3ae	Delete
+0084e3bc	Move Item Up
+0084e3d6	Move Item Down
+0084e3f4	Executable (*.exe)|*.exe|Command (*.com)|*.com|Information (*.pdf)|*.pdf|Batch (*.bat)|*.bat|All Files (*.*)|*.*||
+0084e4da	You may define up to %d tools.
+0084e518	Expand (%s)
+0084e530	More Buttons
+0084e54a	New
+0084e552	Drag to make this menu float
+0084e58c	Command
+0084e59c	Keys
+0084e5a6	Description
+0084e5c0	
+0084e5c2	
+0084e5c4	
+0084e5c6	
+0084e5c8	
+0084e5ca	
+0084e5cc	
+0084e5ce	Customize
+0084e5e2	<Untitled>
+0084e5f8	Close
+0084e604	Default Menu
+0084e61e	Default application menu. Appears when no documents are open.
+0084e69a	-------------------------------------------------------------------------------------------
+0084e752	Do you really want to delete the toolbar '%s'?
+0084e7b0	All Commands
+0084e7ca	All your changes will be lost! Do you really want to reset the toolbar '%s'?
+0084e868	All your changes will be lost! Do you really want to reset all toolbars and menus?
+0084e90e	All your changes will be lost! Do you really want to reset the menu '%s'?
+0084e9a2	Default
+0084e9b2	All your changes will be lost! Do you really want to reset the keyboard assignments?
+0084ea5c	
+0084ea5e	
+0084ea60	
+0084ea62	
+0084ea64	
+0084ea66	
+0084ea68	
+0084ea6a	
+0084ea6c	
+0084ea6e	
+0084ea70	
+0084ea72	
+0084ea78	
+0084ea7a	
+0084ea7c	
+0084ea7e	You can't create more than %d user-defined toolbars!
+0084eae8	This will delete the record of commands you've used in this application and restore the default set of visible commands to the menus and toolbars. It will not undo any explicit custmizations. Are you sure you want to do this?
+0084ecac	
+0084ecae	
+0084ecb0	
+0084ecb2	
+0084ecb4	
+0084ecb6	
+0084ecb8	
+0084ecba	
+0084ecbc	
+0084ecbe	
+0084ecc0	
+0084ecc8	
+0084ecca	
+0084eccc	
+0084ecce	
+0084ecd0	
+0084ecd2	Fill Tool\nFill
+0084ecf0	Pencil Tool\nPencil
+0084ed16	Select Color Tool\nSelect Color
+0084ed54	Line Tool\nLine
+0084ed72	Rectangle Tool\nRectangle
+0084eda4	Ellipse Tools\nEllipse
+0084edd0	Copy Tool\nCopy
+0084edee	Paste Tool\nPaste
+0084ee10	Clear Tool\nClear
+0084ee32	
+0084ee34	
+0084ee38	Close Print Preview\n&Close
+0084ee6e	Toggle One/Two Pages display\nToggle One/Two Pages display
+0084eee2	Next Page\nNext Page
+0084ef0a	Previous Page\nPrevious Page
+0084ef42	Print Document\n&Print
+0084ef6e	Zoom In\nZoom In
+0084ef8e	Zoom Out\nZoom Out
+0084efb2	
+0084efb4	
+0084efb6	
+0084efb8	
+0084efba	
+0084efbc	
+0084efbe	
+0084efc0	
+0084efc2	
+0084efc8	
+0084efca	
+0084efcc	
+0084efce	
+0084efd0	
+0084efd2	
+0084efd4	
+0084efd6	
+0084efd8	Shows or hides the tabbed document selector\nShows or hides the tabbed document selector
+0084f088	
+0084f08a	Toggles the Full Screen mode on and off\nToggles Full Screen mode
+0084f10c	Toggles Full Screen mode on and off\nToggles Full Screen mode on and off
+0084f19c	
+0084f19e	
+0084f1a0	
+0084f1a2	
+0084f1a8	
+0084f1aa	
+0084f1ac	
+0084f1ae	
+0084f1b0	
+0084f1b2	
+0084f1b4	
+0084f1b6	
+0084f1b8	
+0084f1ba	Properties
+0084f1d0	
+0084f1d2	
+0084f1d4	Could not load the RichEdit control DLL.  The file RICHED32.DLL may be missing or corrupt.
+0084f28a	
+0084f28c	
+0084f28e	
+0084f290	
+0084f292	
+0084f294	
+0084f296	
+0084f298	
+0084f29a	
+0084f29c	
+0084f29e	
+0084f2a0	
+0084f2a2	
+0084f2a4	
+0084f2a6	
+0084f2a8	
+0084f2aa	Did you know...
+0084f2ca	Tips file does not exist in the prescribed directory.
+0084f336	Trouble reading the tips file.
+0084f378	
+0084f37a	
+0084f37c	
+0084f37e	
+0084f380	
+0084f382	
+0084f384	
+0084f386	
+0084f388	
+0084f38a	
+0084f38c	The specified text was not found.
+0084f3d0	
+0084f3d2	
+0084f3d4	
+0084f3d6	
+0084f3d8	
+0084f3e0	
+0084f3e2	
+0084f3e4	
+0084f3e6	
+0084f3e8	
+0084f3ea	
+0084f3ec	
+0084f3ee	&Undo %s	Ctrl+Z
+0084f40e	&Redo %s	Ctrl+Y
+0084f42e	&Undo	Ctrl+Z
+0084f448	&Redo	Ctrl+Y
+0084f462	
+0084f464	
+0084f466	
+0084f468	
+0084f46a	
+0084f470	
+0084f472	
+0084f474	
+0084f476	Unknown
+0084f486	Paste
+0084f492	Delete Selection
+0084f4b4	Cut
+0084f4bc	Delete
+0084f4ca	Typing
+0084f4d8	Backspace
+0084f4ec	Indent
+0084f4fa	Drag And Drop
+0084f516	Replace
+0084f526	Auto Indent
+0084f53e	Auto Complete
+0084f55a	Auto Expand
+0084f578	Lower case
+0084f58e	Upper case
+0084f5a4	Swap case
+0084f5b8	Capitalize
+0084f5ce	Sentencize
+0084f5e4	Character encoding change
+0084f618	Spellchecking
+0084f634	
+0084f636	Incremental search: %s
+0084f664	Incremental search backward: %s
+0084f6a4	Incremental search failed: %s
+0084f6e0	Options
+0084f6f0	
+0084f6f2	
+0084f6f4	
+0084f6f6	
+0084f6f8	99.99. 99:99:99
+0084f718	Invalid Format for Number
+0084f74c	Warning!\nUndo is not available for files that are not open in the workspace.\n\nContinue with Replace All?
+0084f81e	No more occurrences found in the specified documents.
+0084f88a	No occurrences found in the specified documents.
+0084f8ec	No more occurrences found in the specified documents.
+0084f958	
+0084f95a	
+0084f95c	
+0084f95e	
+0084f960	
+0084f962	
+0084f964	
+0084f966	
+0084f968	
+0084f96a	
+ffdff1ac	
+ffdffc00	

@@ -701,3 +701,44 @@ node scripts/build-project-y-catalog.mjs
 node --test tests/project-y-catalog.test.mjs
 node tests/project-y-catalog-browser.mjs
 ```
+
+## SOCAL SUBSURFACE on TI calculators (`socal-calc/`)
+
+`socal-subsurface.xdc` — a webxdc bundle whose payload is 691 KB of Three.js
+drawing an animated 3D theater of Southern California's buried infrastructure —
+is also a native port for three graphing calculators:
+
+```
+TI-83 / TI-83+ / TI-84+   Z80   96x64     .8xp
+TI-89 / TI-89 Titanium    68k   160x100   .89z
+TI-92 / TI-92 Plus        68k   240x128   .9xz
+```
+
+One integer-only C89 core, six screens (map, terrain section, layer list,
+dossier, device sheet, boot), 117 features and 581 vertices in **8584 bytes** —
+35 % of a TI-83's practical program budget. Open `socal-calc.html` for the
+bench: it runs `socal-calc/core/*.c` transpiled to an ES module, so the preview
+*is* the port rather than a second implementation of it.
+
+`socal-calc/tools/xdc2c.py` produces the data pack by unzipping the `.xdc` and
+running the app's own ES modules under node, not by scraping them, so a rename
+upstream breaks the build instead of quietly corrupting the map. The terrain is
+the app's own `elevationAt()` re-derived in fixed point and checked against 221
+captured samples: mean error 2 m, worst 16 m.
+
+```sh
+make -C socal-calc test      # 36 core checks, C/JS differential test, containers
+make -C socal-calc preview   # PBM frames for all three devices
+```
+
+The port reuses `calc/core/{tables,util,fb}.c` and all four `calc/tools/*.py`
+unforked — see [`socal-calc/README.md`](socal-calc/README.md) for the full
+architecture, the data ledger and the accuracy notes.
+
+**Not built or run here.** Neither sdcc nor tigcc is installed in this
+environment, so **no `.8xp`, `.89z` or `.9xz` binary has ever been assembled,
+linked, or executed** — not on hardware and not in an emulator. What exists and
+is tested is the C those compilers consume, the platform glue, the container
+writer, and a differential test proving the browser build and the gcc build
+agree byte for byte. `build_device.py` reports the missing toolchain and stops
+rather than emitting anything.

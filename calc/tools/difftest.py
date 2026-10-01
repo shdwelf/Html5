@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """Differential test: the transpiled core must behave exactly like the C core.
 
-For every device we run `sitek-host dump <dev>` (gcc build of calc/core) and
-`node tools/js_dump.mjs` (c2js build of the very same calc/core sources) and
-require byte-identical output — word indices, SHA-256 derived checksum bits,
-entropy stats, sector counts and every rendered framebuffer hash.
+For every device we run `<port>-host dump <dev>` (the gcc build of the C core)
+and `node <port>/tools/js_dump.mjs` (the c2js build of those very same C
+sources) and require byte-identical output: every scalar the dump prints and
+every rendered framebuffer hash.
 
-Usage: python3 calc/tools/difftest.py [--host build/sitek-host] [--core build/calc-core.mjs]
+    python3 calc/tools/difftest.py                       # the SITE-K port
+    python3 calc/tools/difftest.py --host socal-calc/build/socal-host \
+        --core socal-calc/build/socal-core.mjs --devices ti83,ti89,ti92 \
+        --jsdump socal-calc/tools/js_dump.mjs            # the SOCAL port
 """
 import argparse
 import subprocess
@@ -22,7 +25,12 @@ def main():
     ap.add_argument("--host", default=str(ROOT / "build" / "sitek-host"))
     ap.add_argument("--core", default=str(ROOT / "build" / "calc-core.mjs"))
     ap.add_argument("--verbose", action="store_true")
+    ap.add_argument("--devices", default=",".join(DEVICES),
+                    help="comma separated device ids to diff")
+    ap.add_argument("--jsdump", default=str(ROOT / "tools" / "js_dump.mjs"),
+                    help="node mirror of the host dump command")
     args = ap.parse_args()
+    devices = [d for d in args.devices.replace(",", " ").split() if d]
 
     if not Path(args.host).exists():
         print("missing host binary: %s (run make -C calc host)" % args.host)
@@ -32,9 +40,9 @@ def main():
         return 2
 
     failures = 0
-    for dev in DEVICES:
+    for dev in devices:
         c = subprocess.run([args.host, "dump", dev], capture_output=True, text=True, check=True).stdout
-        j = subprocess.run(["node", str(ROOT / "tools" / "js_dump.mjs"), args.core, dev],
+        j = subprocess.run(["node", args.jsdump, args.core, dev],
                            capture_output=True, text=True)
         if j.returncode != 0:
             print("  FAIL %-5s node exited %d\n%s" % (dev, j.returncode, j.stderr.strip()))
@@ -42,7 +50,7 @@ def main():
             continue
         if c.strip() == j.stdout.strip():
             lines = c.strip().splitlines()
-            print("  ok   %-5s %2d lines identical (idx, sha256 checksum, H8, frames)" % (dev, len(lines)))
+            print("  ok   %-5s %2d lines identical (every scalar and every frame hash)" % (dev, len(lines)))
             if args.verbose:
                 for line in lines:
                     print("         %s" % line)
@@ -56,7 +64,7 @@ def main():
                 if a != b:
                     print("         C : %s" % a)
                     print("         JS: %s" % b)
-    print("%d devices, %d failures" % (len(DEVICES), failures))
+    print("%d devices, %d failures" % (len(devices), failures))
     return 1 if failures else 0
 
 

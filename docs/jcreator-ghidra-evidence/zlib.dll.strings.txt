@@ -1,0 +1,137 @@
+1000b078	 deflate 1.1.3 Copyright 1995-1998 Jean-loup Gailly 
+1000b178	 inflate 1.1.3 Copyright 1995-1998 Mark Adler 
+1000bdd8	 unzip 0.15 Copyright 1998 Gilles Vollant 
+1000be08	 zip 0.15a Copyright 1998 Gilles Vollant 
+1000bece	ftell
+1000bed6	fprintf
+1000bee0	_fdopen
+1000beea	fopen
+1000bef2	_errno
+1000befc	malloc
+1000bf06	sprintf
+1000bf10	fwrite
+1000bf1a	fread
+1000bf22	fclose
+1000bf2c	free
+1000bf34	vsprintf
+1000bf40	fflush
+1000bf4a	fseek
+1000bf52	rewind
+1000bf5c	fputc
+1000bf64	calloc
+1000bf6c	CRTDLL.dll
+1000bf7a	_initterm
+1000bf86	GlobalFree
+1000bf94	GlobalAlloc
+1000bfa2	GetVersion
+1000bfae	KERNEL32.dll
+1000c2a6	zlib.dll
+1000c2af	adler32
+1000c2b7	compress2
+1000c2c1	compress
+1000c2ca	crc32
+1000c2d0	deflate
+1000c2d8	deflateCopy
+1000c2e4	deflateEnd
+1000c2ef	deflateInit2_
+1000c2fd	deflateInit_
+1000c30a	deflateParams
+1000c318	deflateReset
+1000c325	deflateSetDictionary
+1000c33a	get_crc_table
+1000c348	gzclose
+1000c350	gzdopen
+1000c358	gzeof
+1000c35e	gzerror
+1000c366	gzflush
+1000c36e	gzgetc
+1000c375	gzgets
+1000c37c	gzopen
+1000c383	gzprintf
+1000c38c	gzputc
+1000c393	gzputs
+1000c39a	gzread
+1000c3a1	gzrewind
+1000c3aa	gzseek
+1000c3b1	gzsetparams
+1000c3bd	gztell
+1000c3c4	gzwrite
+1000c3cc	inflate
+1000c3d4	inflateEnd
+1000c3df	inflateInit2_
+1000c3ed	inflateInit_
+1000c3fa	inflateReset
+1000c407	inflateSetDictionary
+1000c41c	inflateSync
+1000c428	inflateSyncPoint
+1000c439	uncompress
+1000c444	unzClose
+1000c44d	unzCloseCurrentFile
+1000c461	unzGetCurrentFileInfo
+1000c477	unzGetGlobalComment
+1000c48b	unzGetGlobalInfo
+1000c49c	unzGetLocalExtrafield
+1000c4b2	unzGoToFirstFile
+1000c4c3	unzGoToNextFile
+1000c4d3	unzLocateFile
+1000c4e1	unzOpen
+1000c4e9	unzOpenCurrentFile
+1000c4fc	unzReadCurrentFile
+1000c50f	unzStringFileNameCompare
+1000c528	unzeof
+1000c52f	unztell
+1000c537	zError
+1000c53e	zipClose
+1000c547	zipCloseFileInZip
+1000c559	zipOpen
+1000c561	zipOpenNewFileInZip
+1000c575	zipWriteInFileInZip
+1000c589	zlibVersion
+1000d000	1.1.3
+1000d020	%c%c%c%c%c%c%c%c%c%c
+1000d038	<fd:%d>
+1000d044	invalid bit length repeat
+1000d060	too many length or distance symbols
+1000d084	invalid stored block lengths
+1000d0a4	invalid block type
+1000d0b8	invalid distance code
+1000d0d0	invalid literal/length code
+1000d0ec	need dictionary
+1000d0fc	incorrect data check
+1000d114	incorrect header check
+1000d12c	invalid window size
+1000d140	unknown compression method
+1000e268	incomplete dynamic bit lengths tree
+1000e28c	oversubscribed dynamic bit lengths tree
+1000e2b4	incomplete literal/length tree
+1000e2d4	oversubscribed literal/length tree
+1000e2f8	empty distance tree with lengths
+1000e31c	incomplete distance tree
+1000e338	oversubscribed distance tree
+1000e420	incompatible version
+1000e438	buffer error
+1000e448	insufficient memory
+1000e45c	data error
+1000e468	stream error
+1000e478	file error
+1000e484	stream end
+1000f0c2	StringFileInfo
+1000f0e6	040904E4
+1000f0fe	FileDescription
+1000f120	zlib data compression library
+1000f162	FileVersion
+1000f17c	1.1.3
+1000f18e	InternalName
+1000f1a8	zlib
+1000f1ba	OriginalFilename
+1000f1dc	zlib.dll
+1000f1f6	ProductName
+1000f210	ZLib.DLL
+1000f22a	Comments
+1000f23c	DLL support by Alessandro Iacopetti & Gilles Vollant
+1000f2ae	LegalCopyright
+1000f2cc	(C) 1995-1998 Jean-loup Gailly & Mark Adler
+1000f32a	VarFileInfo
+1000f34a	Translation
+ffdff1ac	
+ffdffc00	

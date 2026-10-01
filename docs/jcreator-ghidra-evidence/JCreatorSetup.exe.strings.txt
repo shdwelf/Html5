@@ -1,0 +1,232 @@
+0040b380	runtime error 
+0040b394	TLOSS error\r\n
+0040b3a4	SING error\r\n
+0040b3b4	DOMAIN error\r\n
+0040b3c4	R6028\r\n- unable to initialize heap\r\n
+0040b3ec	R6027\r\n- not enough space for lowio initialization\r\n
+0040b424	R6026\r\n- not enough space for stdio initialization\r\n
+0040b45c	R6025\r\n- pure virtual function call\r\n
+0040b484	R6024\r\n- not enough space for _onexit/atexit table\r\n
+0040b4bc	R6019\r\n- unable to open console device\r\n
+0040b4e8	R6018\r\n- unexpected heap error\r\n
+0040b50c	R6017\r\n- unexpected multithread lock error\r\n
+0040b53c	R6016\r\n- not enough space for thread data\r\n
+0040b568	\r\nabnormal program termination\r\n
+0040b58c	R6009\r\n- not enough space for environment\r\n
+0040b5b8	R6008\r\n- not enough space for arguments\r\n
+0040b5e4	R6002\r\n- floating point not loaded\r\n
+0040b60c	Microsoft Visual C++ Runtime Library
+0040b634	Runtime Error!\n\nProgram: 
+0040b654	<program name unknown>
+0040b67c	GetLastActivePopup
+0040b690	GetActiveWindow
+0040b6a0	MessageBoxA
+0040b6ac	user32.dll
+0040ba46	GetLastError
+0040ba56	CreateFileA
+0040ba64	ReadFile
+0040ba70	WriteFile
+0040ba7c	SetFilePointer
+0040ba8e	CloseHandle
+0040ba9c	GlobalLock
+0040baaa	GlobalAlloc
+0040bab8	GlobalFree
+0040bac6	GlobalUnlock
+0040bad6	GlobalHandle
+0040bae6	MultiByteToWideChar
+0040bafc	GetFullPathNameA
+0040bb10	WritePrivateProfileStringA
+0040bb2e	GetSystemDirectoryA
+0040bb44	GetWindowsDirectoryA
+0040bb5c	FreeLibrary
+0040bb6a	GetProcAddress
+0040bb7c	LoadLibraryA
+0040bb8c	SetFileTime
+0040bb9a	GetCurrentProcess
+0040bbae	LocalFree
+0040bbba	GetTempPathA
+0040bbca	LocalAlloc
+0040bbd8	lstrcatA
+0040bbe4	GetShortPathNameA
+0040bbf8	MoveFileExA
+0040bc06	WinExec
+0040bc10	GetDriveTypeA
+0040bc20	GetModuleFileNameA
+0040bc36	GetVersionExA
+0040bc46	GetPrivateProfileStringA
+0040bc62	FindClose
+0040bc6e	FindFirstFileA
+0040bc80	GetDiskFreeSpaceA
+0040bc94	lstrlenA
+0040bc9e	KERNEL32.dll
+0040bcae	DestroyWindow
+0040bcbe	DispatchMessageA
+0040bcd2	TranslateMessage
+0040bce6	GetMessageA
+0040bcf4	IsDialogMessageA
+0040bd08	CreateDialogIndirectParamA
+0040bd26	MessageBoxA
+0040bd34	wsprintfA
+0040bd40	SetWindowTextA
+0040bd52	SetWindowPos
+0040bd62	ScreenToClient
+0040bd74	GetWindowRect
+0040bd84	GetDlgItem
+0040bd92	EnableWindow
+0040bda2	SetFocus
+0040bdae	SendDlgItemMessageA
+0040bdc4	SetDlgItemTextA
+0040bdd6	GetDlgItemTextA
+0040bde8	SendMessageA
+0040bdf8	EndPaint
+0040be04	BeginPaint
+0040be12	SetTimer
+0040be1e	KillTimer
+0040be2a	IsWindowVisible
+0040be3c	CheckDlgButton
+0040be4e	ShowWindow
+0040be5c	ExitWindowsEx
+0040be6c	IsDlgButtonChecked
+0040be82	PostMessageA
+0040be92	DefWindowProcA
+0040bea4	PostQuitMessage
+0040beb6	RedrawWindow
+0040bec6	IsIconic
+0040bed2	UpdateWindow
+0040bee2	AdjustWindowRectEx
+0040bef8	GetSystemMetrics
+0040bf0c	BringWindowToTop
+0040bf20	GetLastActivePopup
+0040bf36	FindWindowA
+0040bf44	RegisterClassA
+0040bf56	LoadCursorA
+0040bf64	LoadIconA
+0040bf70	CreateWindowExA
+0040bf82	GetSysColor
+0040bf90	GetWindow
+0040bf9c	FillRect
+0040bfa8	GetClientRect
+0040bfb8	SetWindowLongA
+0040bfca	ReleaseDC
+0040bfd6	GetDC
+0040bfde	GetParent
+0040bfea	OemToCharA
+0040bff8	RegisterWindowMessageA
+0040c010	USER32.dll
+0040c01e	AddFontResourceA
+0040c032	GetStockObject
+0040c044	CreateSolidBrush
+0040c058	DeleteObject
+0040c068	CreateFontIndirectA
+0040c07e	GetObjectA
+0040c08c	ExtTextOutA
+0040c09a	SetBkColor
+0040c0a8	CreatePalette
+0040c0b8	GetSystemPaletteEntries
+0040c0d2	GetDeviceCaps
+0040c0e2	StretchDIBits
+0040c0f2	RealizePalette
+0040c104	SelectPalette
+0040c114	IntersectClipRect
+0040c128	TextOutA
+0040c134	SetTextColor
+0040c144	SetBkMode
+0040c150	CreateDIBPatternBrush
+0040c168	SelectObject
+0040c178	DeleteDC
+0040c184	BitBlt
+0040c18e	CreateCompatibleBitmap
+0040c1a8	CreateCompatibleDC
+0040c1bc	GDI32.dll
+0040c1c8	GetSaveFileNameA
+0040c1da	comdlg32.dll
+0040c1ea	RegCloseKey
+0040c1f8	RegSetValueExA
+0040c20a	RegCreateKeyA
+0040c21a	RegQueryValueExA
+0040c22e	RegOpenKeyExA
+0040c23e	AdjustTokenPrivileges
+0040c256	LookupPrivilegeValueA
+0040c26e	OpenProcessToken
+0040c282	RegOpenKeyA
+0040c290	RegQueryValueA
+0040c2a0	ADVAPI32.dll
+0040c2b0	SHGetPathFromIDListA
+0040c2c8	SHGetSpecialFolderLocation
+0040c2e6	ShellExecuteA
+0040c2f4	SHELL32.dll
+0040c302	CoCreateInstance
+0040c316	OleInitialize
+0040c326	OleUninitialize
+0040c336	ole32.dll
+0040c342	VerFindFileA
+0040c352	VerQueryValueA
+0040c364	GetFileVersionInfoA
+0040c37a	GetFileVersionInfoSizeA
+0040c392	VERSION.dll
+0040c3a0	SetEnvironmentVariableA
+0040c3ba	GetCurrentDirectoryA
+0040c3d2	SetCurrentDirectoryA
+0040c3ea	HeapFree
+0040c3f6	HeapAlloc
+0040c402	DeleteFileA
+0040c410	MoveFileA
+0040c41c	SetFileAttributesA
+0040c432	GetFileAttributesA
+0040c448	ExitProcess
+0040c456	TerminateProcess
+0040c46a	HeapSize
+0040c476	HeapCompact
+0040c484	CreateDirectoryA
+0040c498	GetModuleHandleA
+0040c4ac	GetStartupInfoA
+0040c4be	GetCommandLineA
+0040c4d0	GetVersion
+0040c4de	HeapDestroy
+0040c4ec	HeapCreate
+0040c4fa	VirtualFree
+0040c508	VirtualAlloc
+0040c518	HeapReAlloc
+0040c526	WideCharToMultiByte
+0040c53c	LCMapStringA
+0040c54c	LCMapStringW
+0040c55c	GetCPInfo
+0040c568	GetACP
+0040c572	GetOEMCP
+0040c57e	UnhandledExceptionFilter
+0040c59a	FreeEnvironmentStringsA
+0040c5b4	FreeEnvironmentStringsW
+0040c5ce	GetEnvironmentStrings
+0040c5e6	GetEnvironmentStringsW
+0040c600	SetHandleCount
+0040c612	GetStdHandle
+0040c622	GetFileType
+0040c630	RtlUnwind
+0040c63c	GetStringTypeA
+0040c64e	GetStringTypeW
+0040d06c	InstItClass
+0040d080	DllRegisterServer
+0040d0e8	http://www.clickteam.com
+0040d10c	.D%2.2d
+0040d114	UninstallString
+0040d124	DisplayName
+0040d130	Software\Microsoft\Windows\CurrentVersion\Uninstall\
+0040d170	\VarFileInfo\Translation
+0040d194	Software\Microsoft\Windows\CurrentVersion\SharedDLLs
+0040d1cc	SeShutdownPrivilege
+0040d1e0	#Startup#
+0040d1ec	#Start Menu#
+0040d200	Rename
+0040d208	\WININIT.INI
+0040d218	rundll32 desk.cpl,InstallScreenSaver %s
+0040d240	" /DEL
+0040d250	_inst%d.exe
+0040d25c	ProgramFilesDir
+0040d26c	Software\Microsoft\Windows\CurrentVersion
+0040d298	#Program Files#
+0040d2a8	#System#
+0040d2b4	#Windows#
+0040d3d8	commdlg_LBSelChangedNotify
+0040d404	\shell\open\command
+ffdff1ac	
+ffdffc00	
