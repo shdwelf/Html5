@@ -770,7 +770,7 @@ if (!existsSync(SUITE)) {
 
   const pc = literalAt(src, "Pc=[");
   const records = vm.runInNewContext(`(${pc.text})`, Object.create(null), { timeout: 2000 });
-  check(Array.isArray(records) && records.length === 30, `lecture hall holds ${records.length} records`);
+  check(Array.isArray(records) && records.length === 31, `lecture hall holds ${records.length} records`);
 
   const required = ["id", "title", "period", "location", "confidence", "summary", "facts", "sourceLinks", "caution"];
   const shapeOk = records.every((r) =>
@@ -787,6 +787,7 @@ if (!existsSync(SUITE)) {
     "dos-packer-obfuscation",
     "kgb-museum-auction", "international-spy-museum-machines",
     "crows-cryptogram-secom", "kryptos-enigma-hypothesis",
+    "sylichenko-enigma-hillclimb",
   ];
   const raisedBarOk = RAISED.every((id) => {
     const r = records.find((x) => x.id === id);
@@ -799,6 +800,28 @@ if (!existsSync(SUITE)) {
   });
   check(raisedBarOk, "every record added or rewritten since 2026-09-14 meets the raised bar: ≥ 8 facts, ≥ 4 links, ≥ 200-char summary and caution, no asserted answers");
   check(new Set(records.map((r) => r.id)).size === records.length, "record ids are unique");
+
+  // The Sylichenko record is about method provenance, so its own claims must
+  // be checkable against the cited repository and the probe in this checkout.
+  const syl = records.find((r) => r.id === "sylichenko-enigma-hillclimb");
+  const sylText = syl ? JSON.stringify(syl) : "";
+  check(!!syl && /8 February 2023/.test(sylText) && /5 September 2026/.test(sylText), "Sylichenko record carries both table-of-honor dates");
+  check(/Σh²/.test(sylText) && /N\(N−1\)/.test(sylText), "Sylichenko record names the integer IoC shortcut and the dropped denominator");
+  check(/unigram fitness for pairs one to four/.test(sylText) && /trigram for five to nine/.test(sylText), "Sylichenko record states the fitness-ladder stages exactly as the Java source thresholds");
+  check(/no SECOM implementation, no Crow ciphertext, no solution file/.test(sylText), "Sylichenko record states plainly what the repository does NOT contain");
+  check(/2:144, 3:116, 8:88, 5:56, 7:46, 6:45, 4:40, 1:33, 0:23, 9:9/.test(sylText), "Sylichenko record carries the transposition-invariant Crow digit histogram");
+  {
+    // Recompute that histogram from the probe's own ciphertext constant so the
+    // record's numbers can never drift from the artifact.
+    const probe = readFileSync(join(ROOT, "tools", "secom_probe.py"), "utf8");
+    const m = probe.match(/CROW_CIPHERTEXT = '''([\s\S]*?)'''/);
+    const digits = m ? m[1].replace(/\D/g, "") : "";
+    const hist = {};
+    for (const d of digits) hist[d] = (hist[d] || 0) + 1;
+    const got = Object.keys(hist).sort((a, b) => hist[b] - hist[a] || a.localeCompare(b)).map((d) => `${d}:${hist[d]}`).join(", ");
+    check(digits.length === 600 && got === "2:144, 3:116, 8:88, 5:56, 7:46, 6:45, 4:40, 1:33, 0:23, 9:9", `Crow histogram recomputed from the probe ciphertext matches the record (${got || "probe missing"})`);
+  }
+  check(!/his (solution|plaintext|key) (is|was)/i.test(sylText.replace(/his method/gi, "")), "Sylichenko record never reconstructs or implies his private solution");
 
   // provenance vocabulary must resolve in all three places that use it
   const legend = vm.runInNewContext(`(${literalAt(src, "Vv=[").text})`, Object.create(null)).map((x) => x.label);
