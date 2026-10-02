@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 366 recipes · Virus encyclopedia: Stoned/Michelangelo/Cascade/Jerusalem signatures &amp; boot-sector triage</div>
+  <div class="sub">HTML5 · 369 recipes · Virus encyclopedia: Stoned/Michelangelo/Cascade/Jerusalem signatures &amp; boot-sector triage</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -2705,6 +2705,8 @@ const RECIPE_PACKS={
  'Gödel Escher Bach Formal Systems (MIU & TNT)':[['gebMiu',{}],['gebTnt',{}]],
  'Bouncy Castle / wolfSSL Kitchen (Twofish & IDEA)':[['twofish',{}],['idea',{}]],
  'Wehrmacht Enigma I':[['enigma',{}],['cryptoTimeline',{q:'Enigma'}]],
+ 'Museum Rotor Machines — Enigma M3/M4':[['enigma',{}],['enigmaM4',{}],['cryptoTimeline',{q:'Enigma'}]],
+ 'Field Ciphers — SECOM & OD Poem Code':[['secomSchedule',{}],['odPoemKey',{}],['straddlingCheckerboard',{}],['doubleColumn',{}]],
  'Unicode Homoglyph & Zero-Width Scanner':[['unicodeConfusable',{}],['unicodeInspect',{}],['unicodeStyles',{}]],
  'GCWizard Trifid / Nihilist / Navajo / Wheel':[['gcwTrifid',{}],['gcwNihilist',{}],['gcwNavajo',{}],['gcwCipherWheel',{}]],
  'GCWizard BCD / Gray / Crosssum':[['gcwBcdGray',{}],['gcwCrosssum',{}]],
@@ -9005,6 +9007,51 @@ addOp('enigma','Enigma I (Wehrmacht)','Classical',
     return kitCard('Enigma I',a.L+'-'+a.M+'-'+a.R+' · UKW '+a.ukw,kitMono(out)+'<div style="margin-top:8px;font-size:12px;color:#abb2bf;">Double-stepping middle rotor included. Reciprocal machine — run again to invert.</div>',ascii);
   }
 );
+
+
+/* 37. Naval Enigma M4 — the non-stepping Greek wheel sits between the
+   left moving rotor and a thin reflector.  At Beta A / thin-B the pair is
+   electrically equivalent to the wide UKW-B, giving a useful M3 control. */
+const ENI_M4_GREEK={Beta:'LEYJVCNIXWPBQMDRTAKZGFUHOS',Gamma:'FSOKANUERHMBTIYCWLQPZXVGJD'};
+const ENI_M4_UKW={Bthin:'ENKQAUYWJICOPBLMDXZVFTHRGS',Cthin:'RDOBJNTKVEHMLFCWZAXGYIPSUQ'};
+function enigmaM4Crypt(text,opts){
+  const rotL=ENI_ROT[opts.L||'II'],rotM=ENI_ROT[opts.M||'IV'],rotR=ENI_ROT[opts.R||'I'];
+  const greek=ENI_M4_GREEK[opts.G||'Beta'],ukw=ENI_M4_UKW[opts.ukw||'Bthin'];
+  let pG=eniPos(opts.posG||'A'),pL=eniPos(opts.posL||'A'),pM=eniPos(opts.posM||'A'),pR=eniPos(opts.posR||'A');
+  const rG=eniPos(opts.ringG||'A'),rL=eniPos(opts.ringL||'A'),rM=eniPos(opts.ringM||'A'),rR=eniPos(opts.ringR||'A');
+  const plug={};const pairs=String(opts.plug||'').toUpperCase().replace(/[^A-Z]/g,'');
+  if(new Set(pairs).size!==pairs.length)throw new Error('Each plugboard letter may appear only once');
+  for(let i=0;i+1<pairs.length;i+=2){plug[pairs[i]]=pairs[i+1];plug[pairs[i+1]]=pairs[i];}
+  function thru(wiring,pos,ring,c,inv){const shift=(pos-ring+26)%26,x=(c+shift)%26;const y=inv?wiring.indexOf(eniChr(x)):eniPos(wiring[x]);return(y-shift+26)%26;}
+  let out='';
+  for(const ch0 of String(text).toUpperCase()){
+    if(ch0<'A'||ch0>'Z'){out+=ch0;continue;}
+    const midNotch=eniChr(pM)===rotM.n,rightNotch=eniChr(pR)===rotR.n;
+    if(midNotch){pL=(pL+1)%26;pM=(pM+1)%26;}else if(rightNotch)pM=(pM+1)%26;
+    pR=(pR+1)%26; // Greek/Beta-Gamma wheel never steps.
+    let c=eniPos(plug[ch0]||ch0);
+    c=thru(rotR.w,pR,rR,c,false);c=thru(rotM.w,pM,rM,c,false);c=thru(rotL.w,pL,rL,c,false);c=thru(greek,pG,rG,c,false);
+    c=eniPos(ukw[c]);
+    c=thru(greek,pG,rG,c,true);c=thru(rotL.w,pL,rL,c,true);c=thru(rotM.w,pM,rM,c,true);c=thru(rotR.w,pR,rR,c,true);
+    out+=plug[eniChr(c)]||eniChr(c);
+  }
+  return out;
+}
+addOp('enigmaM4','Naval Enigma M4','Classical',
+  'Kriegsmarine four-wheel Enigma: a stationary Beta or Gamma “Greek” wheel, three stepping naval rotors, and thin B/C reflector. The fourth wheel did not add a fourth stepping lever. Full key material still needs wheel order, four ring settings, four starts, reflector and reciprocal plugboard pairs.',
+  [
+    {key:'G',label:'Greek wheel',type:'select',default:'Beta',options:[['Beta','Beta'],['Gamma','Gamma']]},
+    {key:'L',label:'Left moving rotor',type:'select',default:'I',options:[['I','I'],['II','II'],['III','III'],['IV','IV'],['V','V']]},
+    {key:'M',label:'Middle moving rotor',type:'select',default:'II',options:[['I','I'],['II','II'],['III','III'],['IV','IV'],['V','V']]},
+    {key:'R',label:'Right moving rotor',type:'select',default:'III',options:[['I','I'],['II','II'],['III','III'],['IV','IV'],['V','V']]},
+    {key:'ukw',label:'Thin reflector',type:'select',default:'Bthin',options:[['Bthin','UKW B thin'],['Cthin','UKW C thin']]},
+    {key:'pos',label:'Start (G-L-M-R)',type:'text',default:'AAAA'},
+    {key:'ring',label:'Rings (G-L-M-R)',type:'text',default:'AAAA'},
+    {key:'plug',label:'Plugboard pairs',type:'text',default:''}
+  ],function(t,a){
+    const pos=(a.pos||'AAAA').toUpperCase().replace(/[^A-Z]/g,'').padEnd(4,'A').slice(0,4),ring=(a.ring||'AAAA').toUpperCase().replace(/[^A-Z]/g,'').padEnd(4,'A').slice(0,4);
+    return enigmaM4Crypt(t||'AAAAA',{G:a.G,L:a.L,M:a.M,R:a.R,ukw:a.ukw,posG:pos[0],posL:pos[1],posM:pos[2],posR:pos[3],ringG:ring[0],ringL:ring[1],ringM:ring[2],ringR:ring[3],plug:a.plug||''});
+  });
 
 const ZW_CPS={0x200B:'ZERO WIDTH SPACE',0x200C:'ZERO WIDTH NON-JOINER',0x200D:'ZERO WIDTH JOINER',0x2060:'WORD JOINER',0xFEFF:'BOM / ZERO WIDTH NO-BREAK SPACE',0x180E:'MONGOLIAN VOWEL SEPARATOR',0x00AD:'SOFT HYPHEN',0x034F:'COMBINING GRAPHEME JOINER',0x202A:'LEFT-TO-RIGHT EMBEDDING',0x202B:'RIGHT-TO-LEFT EMBEDDING',0x202C:'POP DIRECTIONAL FORMATTING',0x202D:'LEFT-TO-RIGHT OVERRIDE',0x202E:'RIGHT-TO-LEFT OVERRIDE',0x2066:'LRI',0x2067:'RLI',0x2068:'FSI',0x2069:'PDI'};
 const HOMO={'А':'A','В':'B','Е':'E','К':'K','М':'M','Н':'H','О':'O','Р':'P','С':'C','Т':'T','Х':'X','Ѕ':'S','а':'a','е':'e','о':'o','р':'p','с':'c','у':'y','х':'x','і':'i','ј':'j','Α':'A','Β':'B','Ε':'E','Ζ':'Z','Η':'H','Ι':'I','Κ':'K','Μ':'M','Ν':'N','Ο':'O','Ρ':'P','Τ':'T','Υ':'Y','Χ':'X','α':'a','ο':'o','ν':'v','ρ':'p','τ':'t','υ':'u','χ':'x','ι':'i','Ⅰ':'I','Ⅱ':'II','Ⅲ':'III','Ⅳ':'IV','Ⅴ':'V','０':'0','１':'1','２':'2','３':'3','４':'4','５':'5','６':'6','７':'7','８':'8','９':'9','Ａ':'A','Ｏ':'O','Ｉ':'I'};
@@ -23564,6 +23611,55 @@ addOp('keyedSubstitution','Keyed Substitution Cipher','Classical',
     }
     return out;
   });
+
+
+/* 37. SECOM key schedule inspector.  This is deliberately the auditable key
+   derivation, not a claim to solve the Crow: a wrong phrase still makes a
+   perfectly plausible schedule. */
+function secomSequence10(s){
+  const ranked=[...s].map((ch,i)=>({ch,i})).sort((a,b)=>a.ch.localeCompare(b.ch)||a.i-b.i),out=Array(10);
+  ranked.forEach((x,i)=>out[x.i]=(i+1)%10);return out.join('');
+}
+function secomSchedule(phrase){
+  const p=onlyAZ(phrase);
+  if(p.length<20)throw new Error('SECOM needs at least 20 letters; spaces are ignored');
+  const first=p.slice(0,10),second=p.slice(10,20),a=secomSequence10(first),b=secomSequence10(second);
+  const add=(x,y)=>[...x].map((d,i)=>(Number(d)+Number(y[i]))%10).join('');
+  const seed=add(a,b),chain=[...seed].map(Number);
+  for(let i=0;chain.length<60;i++)chain.push((chain[i]+chain[i+1])%10);
+  const block=chain.slice(10).join(''),last=block.slice(-10);
+  const ranked=[...last].map((ch,i)=>({ch:Number(ch),i})).sort((x,y)=>(x.ch===0?10:x.ch)-(y.ch===0?10:y.ch)||x.i-y.i),checker=Array(10);
+  ranked.forEach((x,i)=>checker[x.i]=(i+1)%10);
+  return {phrase:p.slice(0,20),first,second,firstDigits:a,secondDigits:b,seed,block,checker:checker.join('')};
+}
+addOp('secomSchedule','SECOM Key Schedule','Classical',
+  'Inspect SECOM’s auditable key schedule: rank the two ten-letter halves (1…9,0), add without carry, generate 50 new chain digits, and sequence the checkerboard row. This is not a full decryptor: exact triangular disruption is required. The repository probe reproduces the official full vector and rejects INMYMEMORYIWILLALWAY as the Crow key.',
+  [{key:'phrase',label:'Key phrase (20+ letters)',type:'text',default:'MAKE NEW FRIENDS BUT KEEP THE OLD'}],
+  function(t,a){const s=secomSchedule(a.phrase||t);return ['Phrase : '+s.phrase.slice(0,10)+' '+s.phrase.slice(10),'Ranks : '+s.firstDigits+' '+s.secondDigits,'Seed   : '+s.seed,'50     : '+s.block.match(/.{10}/g).join(' '),'Board  : '+s.checker].join('\n');});
+
+/* 38. Dutch OD poem-code indicator/key worksheet.  The historical example
+   uses the first 20 words, chooses positions 2,6,11,15 and secret 58265. */
+const OD_CHECK_SWAP='KLMNOPQRSTABCDEFGHIJUVWXYZ';
+addOp('odPoemKey','OD Poem-Code Key & Indicator','Classical',
+  'Reproduce Ton van Schendel’s Ordedienst worksheet: select words by 1-based position from the agreed poem, concatenate them as a columnar-transposition key, and hide those positions in a five-letter indicator with a pre-agreed five-digit secret. The exact poem/version is key material; this recipe does not guess it.',
+  [
+    {key:'poem',label:'Agreed poem (first 20 words)',type:'text',default:'TOEN ONZE MOP EEN MOPJE WAS HET AARDIG HEM TE ZIEN NU BROMT HY ALLE DAGEN EN BYT NOG BOVENDIEN'},
+    {key:'positions',label:'Selected positions',type:'text',default:'2,6,11,15'},
+    {key:'secret',label:'Five-digit secret',type:'text',default:'58265'}
+  ],function(t,a){
+    const words=String(a.poem||t).toUpperCase().match(/[A-Z]+/g)||[],pos=String(a.positions).match(/\d+/g)?.map(Number)||[],secret=String(a.secret).replace(/\D/g,'');
+    if(words.length<20)throw new Error('Supply at least the agreed first 20 poem words');
+    if(!pos.length||pos.some(n=>n<1||n>words.length))throw new Error('Selected positions must exist in the poem');
+    if(secret.length!==5)throw new Error('Secret must be exactly five digits');
+    const selected=pos.map(n=>words[n-1]),key=selected.join(''),slots=Array(5-pos.length).fill(0).concat(pos);
+    if(slots.length!==5)throw new Error('The OD indicator worksheet supports at most five selected words');
+    const nums=slots.map((n,i)=>n+Number(secret[i]));
+    if(nums.some(n=>n<1||n>26))throw new Error('Position + secret digit must stay in A=1…Z=26');
+    const indicator=nums.map(n=>String.fromCharCode(64+n)).join(''),check=[...indicator].map(ch=>OD_CHECK_SWAP[ch.charCodeAt(0)-65]).join('');
+    const ranks=deepColumnOrder(key).map((_,i)=>0);deepColumnOrder(key).forEach((col,rank)=>ranks[col]=rank+1);
+    return ['Words     : '+selected.join(' | '),'Key       : '+key,'Key ranks : '+ranks.join(' '),'Positions : '+slots.join(' '),'Indicator : '+indicator,'Check     : '+check].join('\n');
+  });
+
 
 /* ============================================================
    MATRIX CIPHER DEEP DIVE — matrix/square/grille systems.
