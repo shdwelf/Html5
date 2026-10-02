@@ -770,7 +770,7 @@ if (!existsSync(SUITE)) {
 
   const pc = literalAt(src, "Pc=[");
   const records = vm.runInNewContext(`(${pc.text})`, Object.create(null), { timeout: 2000 });
-  check(Array.isArray(records) && records.length === 26, `lecture hall holds ${records.length} records`);
+  check(Array.isArray(records) && records.length === 30, `lecture hall holds ${records.length} records`);
 
   const required = ["id", "title", "period", "location", "confidence", "summary", "facts", "sourceLinks", "caution"];
   const shapeOk = records.every((r) =>
@@ -785,6 +785,8 @@ if (!existsSync(SUITE)) {
     "f5-blackhat-2016", "uscybercom-seal-md5", "fieldnotes-wheel", "f1eldn0tes-agents",
     "cicada-3301", "f5-blackhat-2018", "kryptos-k4-smithsonian",
     "dos-packer-obfuscation",
+    "kgb-museum-auction", "international-spy-museum-machines",
+    "crows-cryptogram-secom", "kryptos-enigma-hypothesis",
   ];
   const raisedBarOk = RAISED.every((id) => {
     const r = records.find((x) => x.id === id);
@@ -810,6 +812,26 @@ if (!existsSync(SUITE)) {
 
   const byId = Object.fromEntries(records.map((r) => [r.id, r]));
   const haystack = (id) => JSON.stringify(byId[id]);
+  check(
+    ["kgb-museum-auction", "international-spy-museum-machines", "crows-cryptogram-secom", "kryptos-enigma-hypothesis"].every((id) => byId[id]),
+    "the museum/Crow/Kryptos pass adds all four source-graded records",
+  );
+  check(
+    /lot 343/i.test(haystack("kgb-museum-auction")) && /\$22,400/.test(haystack("kgb-museum-auction")) && /not automatically.*operational history/i.test(haystack("kgb-museum-auction")),
+    "KGB auction record pins the Fialka lot/result and limits seller-supplied provenance",
+  );
+  check(
+    /stationary.*Greek wheel/i.test(haystack("international-spy-museum-machines")) && /Beta.*Gamma/.test(haystack("international-spy-museum-machines")) && /not.*fourth stepping wheel/i.test(haystack("international-spy-museum-machines")),
+    "Spy Museum record distinguishes M4's stationary Greek wheel from a fourth stepping rotor",
+  );
+  check(
+    /SEe and COMe/.test(haystack("crows-cryptogram-secom")) && /INMYMEMORYIWILLALWAY/.test(haystack("crows-cryptogram-secom")) && /not presented as a solved cryptogram/i.test(haystack("crows-cryptogram-secom")),
+    "Crow record separates the strong SECOM tell from the unconfirmed Derry-song phrase",
+  );
+  check(
+    /bright.*not.*cryptographic setting/i.test(haystack("kryptos-enigma-hypothesis")) && /complete machine model and every setting/i.test(haystack("kryptos-enigma-hypothesis")),
+    "Kryptos Enigma audit rejects a lamp/brightness analogy without a complete key sheet",
+  );
   check(
     ["kr0mecorp", "orc-hcu", "fravia-searchlores", "kim-philby-stasi"].every((id) => byId[id]),
     "the four earliest records survive both passes intact",
