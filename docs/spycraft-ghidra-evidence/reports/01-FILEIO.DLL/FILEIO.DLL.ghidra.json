@@ -347,7 +347,43 @@
       "references": 0
     }
   ],
-  "notableStringReferences": [],
+  "notableStringReferences": [
+    {
+      "address": "1008:0067",
+      "text": "File directory full",
+      "xrefs": []
+    },
+    {
+      "address": "1008:0100",
+      "text": "Directory not found",
+      "xrefs": []
+    },
+    {
+      "address": "1010:0000",
+      "text": "-- FileIO External Factory. 9feb93 JT",
+      "xrefs": []
+    },
+    {
+      "address": "1010:0026",
+      "text": "FileIO",
+      "xrefs": []
+    },
+    {
+      "address": "1010:002d",
+      "text": "ISS    mNew, mode, fileNameOrType  --Creates a new instance of the XObject",
+      "xrefs": []
+    },
+    {
+      "address": "1010:0078",
+      "text": "X      mDispose                --Disposes of XObject instance.",
+      "xrefs": []
+    },
+    {
+      "address": "1010:0504",
+      "text": "II     +mSetOverrideDrive, driveLetter --Set override drive letter (\u0027A\u0027 - \u0027Z\u0027) to use when loading linked castmembers.  Use 0x00 to clear override.",
+      "xrefs": []
+    }
+  ],
   "counts": {
     "functions": 123,
     "instructions": 3379,

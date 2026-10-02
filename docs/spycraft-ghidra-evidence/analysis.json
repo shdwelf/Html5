@@ -37,14 +37,129 @@
     },
     "notableStrings": [
       {
+        "address": "1008:0067",
+        "program": "FILEIO.DLL",
+        "text": "File directory full"
+      },
+      {
+        "address": "1008:0100",
+        "program": "FILEIO.DLL",
+        "text": "Directory not found"
+      },
+      {
+        "address": "1010:0000",
+        "program": "FILEIO.DLL",
+        "text": "-- FileIO External Factory. 9feb93 JT"
+      },
+      {
+        "address": "1010:0026",
+        "program": "FILEIO.DLL",
+        "text": "FileIO"
+      },
+      {
+        "address": "1010:002d",
+        "program": "FILEIO.DLL",
+        "text": "ISS    mNew, mode, fileNameOrType  --Creates a new instance of the XObject"
+      },
+      {
+        "address": "1010:0078",
+        "program": "FILEIO.DLL",
+        "text": "X      mDispose                --Disposes of XObject instance."
+      },
+      {
+        "address": "1010:0504",
+        "program": "FILEIO.DLL",
+        "text": "II     +mSetOverrideDrive, driveLetter --Set override drive letter ('A' - 'Z') to use when loading linked castmembers.  Use 0x00 to clear override."
+      },
+      {
+        "address": "1418:0007",
+        "program": "SPYCRAFT.EXE",
+        "text": "Director version 4.0b1"
+      },
+      {
+        "address": "1420:0000",
+        "program": "SPYCRAFT.EXE",
+        "text": "Director"
+      },
+      {
+        "address": "1430:0001",
+        "program": "SPYCRAFT.EXE",
+        "text": "Director files (*.dir)"
+      },
+      {
+        "address": "1430:0018",
+        "program": "SPYCRAFT.EXE",
+        "text": "Director Movies (*.dir)"
+      },
+      {
+        "address": "1430:003c",
+        "program": "SPYCRAFT.EXE",
+        "text": "XObject (*.dll)"
+      },
+      {
+        "address": "1430:0092",
+        "program": "SPYCRAFT.EXE",
+        "text": "Director Movie (*.dir)"
+      },
+      {
         "address": "1430:00a9",
         "program": "SPYCRAFT.EXE",
         "text": "Video for Windows (*.avi)"
       },
       {
+        "address": "1430:00c3",
+        "program": "SPYCRAFT.EXE",
+        "text": "Quicktime Movie (*.mov)"
+      },
+      {
         "address": "1440:0001",
         "program": "SPYCRAFT.EXE",
         "text": "Windows Sound (*.wav)"
+      },
+      {
+        "address": "1450:0049",
+        "program": "SPYCRAFT.EXE",
+        "text": " Could not find or open ASIPORT.RSR"
+      },
+      {
+        "address": "1460:0016",
+        "program": "SPYCRAFT.EXE",
+        "text": "Windows version must be 3.1 or higher."
+      },
+      {
+        "address": "1460:005e",
+        "program": "SPYCRAFT.EXE",
+        "text": "Windows must be in enhanced and protected mode."
+      },
+      {
+        "address": "1460:0090",
+        "program": "SPYCRAFT.EXE",
+        "text": "Not enough free memory to run Director."
+      },
+      {
+        "address": "1460:00b9",
+        "program": "SPYCRAFT.EXE",
+        "text": "Problem during initialization. Director cannot be run."
+      },
+      {
+        "address": "1468:0001",
+        "program": "SPYCRAFT.EXE",
+        "text": "Director Player 4.0"
+      },
+      {
+        "address": "1468:0015",
+        "program": "SPYCRAFT.EXE",
+        "text": "DIRECTOR.HLP"
+      },
+      {
+        "address": "1478:006c",
+        "program": "SPYCRAFT.EXE",
+        "text": "Unable to copy the driver file %s to your Windows directory.\\n\\nYour disk may be full."
+      },
+      {
+        "address": "1478:00c2",
+        "program": "SPYCRAFT.EXE",
+        "text": "This program requires at least 4MB free memory to run."
       }
     ]
   },
@@ -78,6 +193,7 @@
       "member": "SPYCRAFT/FILEIO.DLL",
       "sha1": "f781dd407d733cb0c591bc16cc00c9a44d092b0a",
       "sha256": "0b2aba6d615d596573bc243b181596355ef0f77df5bb24c0bec3bde97992316b",
+      "signature": "MZ",
       "zipBytes": 6604
     },
     {
@@ -100,6 +216,7 @@
       "member": "SPYCRAFT/SPYCRAFT.EXE",
       "sha1": "6d3509776d8e14260b32709ce150eb1286bfadc1",
       "sha256": "0bc0bd01c6ea453e39918c37f5c8af4b5f136c0ddc6350fd1a16fbf88c51c7d2",
+      "signature": "MZ",
       "zipBytes": 618599
     }
   ],
@@ -842,7 +959,43 @@
         }
       ],
       "minAddress": "1000:0000",
-      "notableStringReferences": [],
+      "notableStringReferences": [
+        {
+          "address": "1008:0067",
+          "text": "File directory full",
+          "xrefs": []
+        },
+        {
+          "address": "1008:0100",
+          "text": "Directory not found",
+          "xrefs": []
+        },
+        {
+          "address": "1010:0000",
+          "text": "-- FileIO External Factory. 9feb93 JT",
+          "xrefs": []
+        },
+        {
+          "address": "1010:0026",
+          "text": "FileIO",
+          "xrefs": []
+        },
+        {
+          "address": "1010:002d",
+          "text": "ISS    mNew, mode, fileNameOrType  --Creates a new instance of the XObject",
+          "xrefs": []
+        },
+        {
+          "address": "1010:0078",
+          "text": "X      mDispose                --Disposes of XObject instance.",
+          "xrefs": []
+        },
+        {
+          "address": "1010:0504",
+          "text": "II     +mSetOverrideDrive, driveLetter --Set override drive letter ('A' - 'Z') to use when loading linked castmembers.  Use 0x00 to clear override.",
+          "xrefs": []
+        }
+      ],
       "program": "FILEIO.DLL",
       "reportPath": "01-FILEIO.DLL/FILEIO.DLL.ghidra.json",
       "schemaVersion": 1,
@@ -2814,13 +2967,93 @@
       "minAddress": "1000:0000",
       "notableStringReferences": [
         {
+          "address": "1418:0007",
+          "text": "Director version 4.0b1",
+          "xrefs": []
+        },
+        {
+          "address": "1420:0000",
+          "text": "Director",
+          "xrefs": []
+        },
+        {
+          "address": "1430:0001",
+          "text": "Director files (*.dir)",
+          "xrefs": []
+        },
+        {
+          "address": "1430:0018",
+          "text": "Director Movies (*.dir)",
+          "xrefs": []
+        },
+        {
+          "address": "1430:003c",
+          "text": "XObject (*.dll)",
+          "xrefs": []
+        },
+        {
+          "address": "1430:0092",
+          "text": "Director Movie (*.dir)",
+          "xrefs": []
+        },
+        {
           "address": "1430:00a9",
           "text": "Video for Windows (*.avi)",
           "xrefs": []
         },
         {
+          "address": "1430:00c3",
+          "text": "Quicktime Movie (*.mov)",
+          "xrefs": []
+        },
+        {
           "address": "1440:0001",
           "text": "Windows Sound (*.wav)",
+          "xrefs": []
+        },
+        {
+          "address": "1450:0049",
+          "text": " Could not find or open ASIPORT.RSR",
+          "xrefs": []
+        },
+        {
+          "address": "1460:0016",
+          "text": "Windows version must be 3.1 or higher.",
+          "xrefs": []
+        },
+        {
+          "address": "1460:005e",
+          "text": "Windows must be in enhanced and protected mode.",
+          "xrefs": []
+        },
+        {
+          "address": "1460:0090",
+          "text": "Not enough free memory to run Director.",
+          "xrefs": []
+        },
+        {
+          "address": "1460:00b9",
+          "text": "Problem during initialization. Director cannot be run.",
+          "xrefs": []
+        },
+        {
+          "address": "1468:0001",
+          "text": "Director Player 4.0",
+          "xrefs": []
+        },
+        {
+          "address": "1468:0015",
+          "text": "DIRECTOR.HLP",
+          "xrefs": []
+        },
+        {
+          "address": "1478:006c",
+          "text": "Unable to copy the driver file %s to your Windows directory.\\n\\nYour disk may be full.",
+          "xrefs": []
+        },
+        {
+          "address": "1478:00c2",
+          "text": "This program requires at least 4MB free memory to run.",
           "xrefs": []
         }
       ],
@@ -2830,11 +3063,114 @@
       "sha256": "0bc0bd01c6ea453e39918c37f5c8af4b5f136c0ddc6350fd1a16fbf88c51c7d2"
     }
   ],
+  "inventoryFiles": [
+    {
+      "bytes": 369448,
+      "categories": [
+        "game-data"
+      ],
+      "crc32": "b466bdc4",
+      "extractedPath": "ACTRES/LOGO.DIR",
+      "md5": "af10a6b453561408af256639ed665ca3",
+      "member": "ACTRES/LOGO.DIR",
+      "sha1": "13e0503e4e8210901145721d2d0a46c302ad00a1",
+      "sha256": "61efc57634162542eab746e7911741af2a957ed1c8e1032f86df1a0d2c214d3d",
+      "signature": "RIFX/MV93",
+      "zipBytes": 172479
+    },
+    {
+      "bytes": 12832,
+      "categories": [
+        "executable-candidate"
+      ],
+      "crc32": "5512c408",
+      "executable": {
+        "architecture": "x86 16-bit",
+        "entryTableBytes": 147,
+        "entryTableOffset": 176,
+        "format": "NE",
+        "moduleReferenceCount": 2,
+        "segmentCount": 2,
+        "targetOS": "Windows"
+      },
+      "extractedPath": "SPYCRAFT/FILEIO.DLL",
+      "md5": "9f179cdc8d4c52c1b40514a53a1cc534",
+      "member": "SPYCRAFT/FILEIO.DLL",
+      "sha1": "f781dd407d733cb0c591bc16cc00c9a44d092b0a",
+      "sha256": "0b2aba6d615d596573bc243b181596355ef0f77df5bb24c0bec3bde97992316b",
+      "signature": "MZ",
+      "zipBytes": 6604
+    },
+    {
+      "bytes": 826,
+      "categories": [
+        "game-data"
+      ],
+      "crc32": "7c08e96d",
+      "extractedPath": "SPYCRAFT/LINGO.INI",
+      "md5": "4f75e838a13079b4fc75af0fd6f70f3c",
+      "member": "SPYCRAFT/LINGO.INI",
+      "sha1": "1539b353b52462c80d85b8056c67a0179f021a66",
+      "sha256": "afde68026f566cfb5567478ae71ac55b27f3b63cb01cbafd73331b86f9536f74",
+      "signature": "INI text",
+      "zipBytes": 460
+    },
+    {
+      "bytes": 2317010,
+      "categories": [
+        "game-data"
+      ],
+      "crc32": "5cbf7e8e",
+      "extractedPath": "SPYCRAFT/SPYCRAFT.DIR",
+      "md5": "3434734a1e729c661f7362efbd5797a6",
+      "member": "SPYCRAFT/SPYCRAFT.DIR",
+      "sha1": "93f3ff0008c84ae2122c36ccacf42bea5b40c5ed",
+      "sha256": "60d28223566119ed83d36b59580dcbfd0c728065491e476145a9800b71d5947f",
+      "signature": "XFIR/39VM",
+      "zipBytes": 1608378
+    },
+    {
+      "bytes": 712817,
+      "categories": [
+        "executable-candidate"
+      ],
+      "crc32": "6cdb556e",
+      "executable": {
+        "architecture": "x86 16-bit",
+        "entryTableBytes": 52,
+        "entryTableOffset": 1830,
+        "format": "NE",
+        "moduleReferenceCount": 8,
+        "segmentCount": 107,
+        "targetOS": "Windows"
+      },
+      "extractedPath": "SPYCRAFT/SPYCRAFT.EXE",
+      "md5": "0788d37f21220b1e68a692c9316974ff",
+      "member": "SPYCRAFT/SPYCRAFT.EXE",
+      "sha1": "6d3509776d8e14260b32709ce150eb1286bfadc1",
+      "sha256": "0bc0bd01c6ea453e39918c37f5c8af4b5f136c0ddc6350fd1a16fbf88c51c7d2",
+      "signature": "MZ",
+      "zipBytes": 618599
+    },
+    {
+      "bytes": 12558,
+      "categories": [
+        "game-data"
+      ],
+      "crc32": "dee0fdac",
+      "extractedPath": "SPYCRAFT/SPYCRAFT.INI",
+      "md5": "f42cba1b57097c309714cb8d769431cd",
+      "member": "SPYCRAFT/SPYCRAFT.INI",
+      "sha1": "b131b24295030a1d87c3b435d8f63e25aa44ab13",
+      "sha256": "7eb078c6b19366064d1dfaa847ba55267cf02801b575c9b997a0cce05bc0b7a9",
+      "signature": "INI text",
+      "zipBytes": 2798
+    }
+  ],
   "inventorySummary": {
     "categories": {
       "executable-candidate": 2,
-      "game-data": 2,
-      "other": 2
+      "game-data": 4
     },
     "expandedBytes": 3425491,
     "files": 6

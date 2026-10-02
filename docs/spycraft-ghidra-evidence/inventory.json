@@ -12,7 +12,7 @@
     {
       "bytes": 369448,
       "categories": [
-        "other"
+        "game-data"
       ],
       "crc32": "b466bdc4",
       "extractedPath": "ACTRES/LOGO.DIR",
@@ -20,6 +20,7 @@
       "member": "ACTRES/LOGO.DIR",
       "sha1": "13e0503e4e8210901145721d2d0a46c302ad00a1",
       "sha256": "61efc57634162542eab746e7911741af2a957ed1c8e1032f86df1a0d2c214d3d",
+      "signature": "RIFX/MV93",
       "zipBytes": 172479
     },
     {
@@ -42,6 +43,7 @@
       "member": "SPYCRAFT/FILEIO.DLL",
       "sha1": "f781dd407d733cb0c591bc16cc00c9a44d092b0a",
       "sha256": "0b2aba6d615d596573bc243b181596355ef0f77df5bb24c0bec3bde97992316b",
+      "signature": "MZ",
       "zipBytes": 6604
     },
     {
@@ -55,12 +57,13 @@
       "member": "SPYCRAFT/LINGO.INI",
       "sha1": "1539b353b52462c80d85b8056c67a0179f021a66",
       "sha256": "afde68026f566cfb5567478ae71ac55b27f3b63cb01cbafd73331b86f9536f74",
+      "signature": "INI text",
       "zipBytes": 460
     },
     {
       "bytes": 2317010,
       "categories": [
-        "other"
+        "game-data"
       ],
       "crc32": "5cbf7e8e",
       "extractedPath": "SPYCRAFT/SPYCRAFT.DIR",
@@ -68,6 +71,7 @@
       "member": "SPYCRAFT/SPYCRAFT.DIR",
       "sha1": "93f3ff0008c84ae2122c36ccacf42bea5b40c5ed",
       "sha256": "60d28223566119ed83d36b59580dcbfd0c728065491e476145a9800b71d5947f",
+      "signature": "XFIR/39VM",
       "zipBytes": 1608378
     },
     {
@@ -90,6 +94,7 @@
       "member": "SPYCRAFT/SPYCRAFT.EXE",
       "sha1": "6d3509776d8e14260b32709ce150eb1286bfadc1",
       "sha256": "0bc0bd01c6ea453e39918c37f5c8af4b5f136c0ddc6350fd1a16fbf88c51c7d2",
+      "signature": "MZ",
       "zipBytes": 618599
     },
     {
@@ -103,6 +108,7 @@
       "member": "SPYCRAFT/SPYCRAFT.INI",
       "sha1": "b131b24295030a1d87c3b435d8f63e25aa44ab13",
       "sha256": "7eb078c6b19366064d1dfaa847ba55267cf02801b575c9b997a0cce05bc0b7a9",
+      "signature": "INI text",
       "zipBytes": 2798
     }
   ],
@@ -118,8 +124,7 @@
   "summary": {
     "categories": {
       "executable-candidate": 2,
-      "game-data": 2,
-      "other": 2
+      "game-data": 4
     },
     "expandedBytes": 3425491,
     "files": 6

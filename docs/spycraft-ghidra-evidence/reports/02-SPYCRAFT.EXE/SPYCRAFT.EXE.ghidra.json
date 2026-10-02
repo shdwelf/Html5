@@ -1712,13 +1712,93 @@
   ],
   "notableStringReferences": [
     {
+      "address": "1418:0007",
+      "text": "Director version 4.0b1",
+      "xrefs": []
+    },
+    {
+      "address": "1420:0000",
+      "text": "Director",
+      "xrefs": []
+    },
+    {
+      "address": "1430:0001",
+      "text": "Director files (*.dir)",
+      "xrefs": []
+    },
+    {
+      "address": "1430:0018",
+      "text": "Director Movies (*.dir)",
+      "xrefs": []
+    },
+    {
+      "address": "1430:003c",
+      "text": "XObject (*.dll)",
+      "xrefs": []
+    },
+    {
+      "address": "1430:0092",
+      "text": "Director Movie (*.dir)",
+      "xrefs": []
+    },
+    {
       "address": "1430:00a9",
       "text": "Video for Windows (*.avi)",
       "xrefs": []
     },
     {
+      "address": "1430:00c3",
+      "text": "Quicktime Movie (*.mov)",
+      "xrefs": []
+    },
+    {
       "address": "1440:0001",
       "text": "Windows Sound (*.wav)",
+      "xrefs": []
+    },
+    {
+      "address": "1450:0049",
+      "text": " Could not find or open ASIPORT.RSR",
+      "xrefs": []
+    },
+    {
+      "address": "1460:0016",
+      "text": "Windows version must be 3.1 or higher.",
+      "xrefs": []
+    },
+    {
+      "address": "1460:005e",
+      "text": "Windows must be in enhanced and protected mode.",
+      "xrefs": []
+    },
+    {
+      "address": "1460:0090",
+      "text": "Not enough free memory to run Director.",
+      "xrefs": []
+    },
+    {
+      "address": "1460:00b9",
+      "text": "Problem during initialization. Director cannot be run.",
+      "xrefs": []
+    },
+    {
+      "address": "1468:0001",
+      "text": "Director Player 4.0",
+      "xrefs": []
+    },
+    {
+      "address": "1468:0015",
+      "text": "DIRECTOR.HLP",
+      "xrefs": []
+    },
+    {
+      "address": "1478:006c",
+      "text": "Unable to copy the driver file %s to your Windows directory.\\n\\nYour disk may be full.",
+      "xrefs": []
+    },
+    {
+      "address": "1478:00c2",
+      "text": "This program requires at least 4MB free memory to run.",
       "xrefs": []
     }
   ],
