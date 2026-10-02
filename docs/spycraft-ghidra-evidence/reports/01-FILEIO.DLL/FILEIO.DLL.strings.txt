@@ -1,0 +1,46 @@
+1008:001f	write
+1008:0025	?write
+1008:002c	append
+1008:0033	?append
+1008:004d	Memory allocation failure
+1008:0067	File directory full
+1008:007b	Volume full
+1008:0087	Volume not found
+1008:0098	I/O Error
+1008:00a2	Bad file name
+1008:00b0	File not open
+1008:00be	Too many files open
+1008:00d2	File not found
+1008:00e1	No such drive
+1008:00ef	No disk in drive
+1008:0100	Directory not found
+1008:0114	Unknown error
+1008:01cc	R6000\r\n- stack overflow\r\n
+1008:01e8	R6003\r\n- integer divide by 0\r\n
+1008:0209	R6009\r\n- not enough space for environment\r\n
+1008:0237	R6018\r\n- unexpected heap error\r\n
+1008:025f	run-time error\x20
+1008:0271	R6002\r\n- floating-point support not loaded\r\n
+1010:0000	-- FileIO External Factory. 9feb93 JT
+1010:0026	FileIO
+1010:002d	ISS    mNew, mode, fileNameOrType  --Creates a new instance of the XObject
+1010:0078	X      mDispose                --Disposes of XObject instance.
+1010:00b7	II     mWriteChar, charNum     --Writes a single character. Returns error code
+1010:0106	IS     mWriteString, string    --Writes out a string of chars. Returns error code
+1010:0158	I      mReadChar       --Returns a single character
+1010:018c	S      mReadWord       --Returns the next word of an input file
+1010:01cc	S      mReadLine       --Returns the next line of an input file
+1010:020c	S      mReadFile       --Returns the remainder of the file
+1010:0247	SSS    mReadToken, breakString, skipString
+1010:0272	I      mGetPosition    --Returns the file position
+1010:02a5	II     mSetPosition, newPos    --Sets the file position. Returns error code
+1010:02f1	I      mGetLength      --Returns the number of chars in the file
+1010:0332	ISS    mSetFinderInfo, typeString, creatorString
+1010:0363	S      mGetFinderInfo  --Gets the finder info
+1010:0391	S      mFileName       --Returns the name of the file
+1010:03c7	I      mDelete         --Delete the file and dispose of me
+1010:0402	I      mStatus         --Returns result code of the last file io activity
+1010:044c	SI     +mError, errorCode  --Returns error message string
+1010:0486	V      mReadPICT           --Return handle to Metafile
+1010:04bd	S      mNativeFileName     --Returns the native (dos) name of the file
+1010:0504	II     +mSetOverrideDrive, driveLetter --Set override drive letter ('A' - 'Z') to use when loading linked castmembers.  Use 0x00 to clear override.

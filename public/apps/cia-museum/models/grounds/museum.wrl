@@ -1,0 +1,16 @@
+#VRML V2.0 utf8
+# CIA Museum — conceptual pavilion, not an architectural survey
+WorldInfo { title "CIA Museum Conceptual Pavilion" }
+DEF STONE Material { diffuseColor 0.67 0.66 0.60 }
+DEF GLASS Material { diffuseColor 0.22 0.36 0.33 specularColor 0.62 0.70 0.66 transparency 0.43 shininess 0.85 }
+DEF DARK Material { diffuseColor 0.08 0.10 0.095 }
+DEF RED Material { diffuseColor 0.57 0.06 0.08 }
+Transform { translation 0 -0.35 0 children [ Shape { appearance Appearance { material USE STONE } geometry Box { size 17 0.7 12 } } ] }
+Transform { translation 0 3.5 0 children [ Shape { appearance Appearance { material USE GLASS } geometry Box { size 15 7 10 } } ] }
+Transform { translation 0 7.2 0 children [ Shape { appearance Appearance { material USE DARK } geometry Box { size 15.8 0.4 10.8 } } ] }
+Transform { translation 0 0.45 0 children [ Shape { appearance Appearance { material USE DARK } geometry Box { size 2 0.18 9 } } ] }
+Transform { translation -5 1.2 -2.8 children [ Shape { appearance Appearance { material USE RED } geometry Box { size 3.4 1.5 2.2 } } ] }
+Transform { translation 0 1.2 -2.8 children [ Shape { appearance Appearance { material USE DARK } geometry Box { size 3.4 1.5 2.2 } } ] }
+Transform { translation 5 1.2 -2.8 children [ Shape { appearance Appearance { material USE STONE } geometry Box { size 3.4 1.5 2.2 } } ] }
+Transform { translation -3.4 1.2 2.8 children [ Shape { appearance Appearance { material USE DARK } geometry Box { size 4.8 1.5 2.2 } } ] }
+Transform { translation 3.4 1.2 2.8 children [ Shape { appearance Appearance { material USE RED } geometry Box { size 4.8 1.5 2.2 } } ] }

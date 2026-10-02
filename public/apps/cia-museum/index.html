@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f3f0e8">
+  <meta name="description" content="An interactive public-source study of the CIA Museum, Headquarters landscape, eleven official online exhibits, Camp Peary, Camp X, and the repository's St. Croix Site-X identity, rendered from local VRML97 models.">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <title>CIA Museum · Interactive VRML Campus</title>
+  <link rel="stylesheet" href="./museum.css">
+</head>
+<body>
+  <noscript><div class="noscript">This interactive museum requires JavaScript to render its local VRML models.</div></noscript>
+
+  <div id="loading" class="loading" role="status" aria-live="polite">
+    <div class="loading-mark" aria-hidden="true">
+      <svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="31"/><path d="M36 12 41 30 59 36 41 42 36 60 31 42 13 36 31 30Z"/><circle cx="36" cy="36" r="5"/></svg>
+    </div>
+    <p class="loading-kicker">DIGITAL COLLECTION 001</p>
+    <h1>Assembling the museum</h1>
+    <div class="loading-track"><i id="loading-bar"></i></div>
+    <p id="loading-message">Reading campus.wrl…</p>
+  </div>
+
+  <div class="app-shell" id="app-shell" aria-hidden="true">
+    <header class="topbar">
+      <button class="mobile-menu icon-button" id="mobile-menu" aria-label="Open collection navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <a class="brand" href="./" aria-label="CIA Museum digital campus home">
+        <span class="brand-seal" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21"/><path d="M24 7.5 27.5 20.5 40.5 24 27.5 27.5 24 40.5 20.5 27.5 7.5 24 20.5 20.5Z"/><circle cx="24" cy="24" r="3"/></svg>
+        </span>
+        <span><b>CIA MUSEUM</b><small>Interactive digital campus</small></span>
+      </a>
+      <div class="topbar-rule"></div>
+      <div class="collection-id"><span>COLLECTION</span><strong>LANGLEY / 1947—PRESENT</strong></div>
+      <nav class="top-actions" aria-label="Museum controls">
+        <button class="top-link" id="about-button">ABOUT</button>
+        <button class="tour-button" id="tour-button"><span class="tour-dot"></span> START GUIDED TOUR</button>
+      </nav>
+    </header>
+
+    <main class="workspace">
+      <aside class="collection-rail" id="collection-rail" aria-label="Collection navigation">
+        <div class="rail-heading">
+          <p class="eyebrow">EXPLORE THE COLLECTION</p>
+          <h2>History in three dimensions.</h2>
+          <p>Move from the public-source campus into eleven official exhibit stories and three clearly separated field-site studies.</p>
+        </div>
+
+        <label class="search-box" for="collection-search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+          <input id="collection-search" type="search" autocomplete="off" placeholder="Search exhibits" aria-label="Search exhibits">
+          <kbd>/</kbd>
+        </label>
+
+        <div class="rail-tabs" role="tablist" aria-label="Collection section">
+          <button class="active" data-rail-tab="exhibits" role="tab" aria-selected="true">EXHIBITS <span>11</span></button>
+          <button data-rail-tab="grounds" role="tab" aria-selected="false">GROUNDS <span>08</span></button>
+          <button data-rail-tab="field-sites" role="tab" aria-selected="false">FIELD <span>03</span></button>
+        </div>
+
+        <div class="collection-list" id="collection-list" role="list"></div>
+
+        <div class="access-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <div><b>VIRTUAL ACCESS ONLY</b><span>The physical museum is inside CIA Headquarters and is not open to the public.</span></div>
+        </div>
+      </aside>
+
+      <section class="viewer-stage" aria-label="Interactive campus VRML viewer">
+        <canvas id="campus-canvas" tabindex="0" aria-label="Interactive 3D model. Drag to orbit, use the mouse wheel to zoom, or use the view buttons."></canvas>
+        <div class="viewer-wash" aria-hidden="true"></div>
+        <div class="viewer-grid" aria-hidden="true"></div>
+
+        <div class="viewer-head">
+          <div>
+            <p class="viewer-kicker"><span id="viewer-index">SITE 00</span> / VRML97 MODEL</p>
+            <h1 id="viewer-title">George Bush Center for Intelligence</h1>
+            <p id="viewer-subtitle">Conceptual campus study · McLean, Virginia</p>
+          </div>
+          <div class="view-status" aria-live="polite"><i></i><span id="view-status-text">CAMPUS MODEL ONLINE</span></div>
+        </div>
+
+        <div class="hotspot-layer" id="hotspot-layer" aria-label="Campus points of interest"></div>
+
+        <div class="compass" aria-hidden="true"><span>N</span><i></i><small>38.9517° N</small></div>
+
+        <div class="view-presets" aria-label="Camera views">
+          <button class="active" data-preset="overview"><span>01</span> OVERVIEW</button>
+          <button data-preset="museum"><span>02</span> MUSEUM</button>
+          <button data-preset="grounds"><span>03</span> GROUNDS</button>
+          <button data-preset="landscape"><span>04</span> LANDSCAPE</button>
+        </div>
+
+        <div class="viewer-tools" aria-label="3D tools">
+          <button id="reset-view" title="Reset camera" aria-label="Reset camera"><svg viewBox="0 0 24 24"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M5.5 15a8 8 0 0 0 13.1 2.2M18.5 9A8 8 0 0 0 5.4 6.8"/></svg></button>
+          <button id="toggle-spin" title="Toggle auto orbit" aria-pressed="false" aria-label="Toggle auto orbit"><svg viewBox="0 0 24 24"><path d="M3 12a9 5 0 1 0 18 0 9 5 0 1 0-18 0Z"/><path d="m18 8 3 4-3 4"/></svg></button>
+          <button id="toggle-labels" class="active" title="Toggle labels" aria-pressed="true" aria-label="Toggle hotspot labels"><svg viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4Z"/><path d="M8 9h8M8 13h5"/></svg></button>
+          <button id="model-source" title="View VRML source" aria-label="View campus VRML source"><svg viewBox="0 0 24 24"><path d="m8 6-6 6 6 6M16 6l6 6-6 6M14 3l-4 18"/></svg></button>
+        </div>
+
+        <div class="viewer-footer">
+          <div class="interaction-hint"><span class="mouse-icon" aria-hidden="true"></span><b>DRAG</b> ORBIT <i></i><b>SCROLL</b> ZOOM <i></i><b>SHIFT + DRAG</b> PAN</div>
+          <div class="model-readout"><span id="primitive-count">— PRIMITIVES</span><i></i><span>LOCAL / NO TELEMETRY</span></div>
+        </div>
+
+        <div class="mini-map" id="mini-map" aria-label="Conceptual site plan">
+          <div class="map-label"><b>SITE PLAN</b><span>CONCEPTUAL / NTS</span></div>
+          <div class="map-building old">OHB</div>
+          <div class="map-building new">NHB</div>
+          <div class="map-path"></div>
+          <button class="map-point p1" data-select="kryptos" aria-label="Kryptos"></button>
+          <button class="map-point p2" data-select="berlin-wall" aria-label="Berlin Wall segments"></button>
+          <button class="map-point p3" data-select="a12-grounds" aria-label="A-12 OXCART"></button>
+          <button class="map-point p4" data-select="museum" aria-label="CIA Museum"></button>
+          <span class="map-north">N ↑</span>
+        </div>
+      </section>
+
+      <aside class="object-panel" id="object-panel" aria-label="Selected exhibit details">
+        <button class="object-panel-tab" id="object-panel-tab" aria-label="Open object file">OBJECT FILE</button>
+        <button class="object-panel-close" id="object-panel-close" aria-label="Close object file">×</button>
+        <div class="object-scroll">
+          <div class="object-label-row">
+            <p class="eyebrow">SELECTED OBJECT</p>
+            <span id="object-number">01 / 11</span>
+          </div>
+
+          <div class="object-viewer">
+            <canvas id="object-canvas" tabindex="0" aria-label="Interactive VRML model of the selected exhibit"></canvas>
+            <div class="object-viewer-grid" aria-hidden="true"></div>
+            <div class="object-vrml-badge"><i></i> VRML VIEWER</div>
+            <button id="object-reset" class="object-reset" aria-label="Reset object view" title="Reset object view">↻</button>
+            <span class="object-orbit-hint">DRAG TO ORBIT</span>
+          </div>
+
+          <div class="object-header">
+            <div class="era-tag" id="object-era">COLD WAR</div>
+            <h2 id="object-title">A-12 OXCART</h2>
+            <p id="object-deck">Higher, faster, and far less visible.</p>
+          </div>
+
+          <dl class="object-facts" id="object-facts"></dl>
+
+          <div class="object-copy">
+            <p id="object-description"></p>
+            <div class="curator-note" id="curator-note"><span>CURATOR’S NOTE</span><p></p></div>
+          </div>
+
+          <section class="detail-section">
+            <div class="section-head"><h3>IN THIS EXHIBIT</h3><span id="highlight-count">03 STORIES</span></div>
+            <div class="highlights" id="object-highlights"></div>
+          </section>
+
+          <section class="detail-section source-section">
+            <div class="section-head"><h3>MODEL &amp; SOURCE</h3><span>PUBLIC RECORD</span></div>
+            <button class="file-row" id="exhibit-source-button">
+              <span class="file-icon">WRL</span>
+              <span><b id="model-file">a12-oxcart.wrl</b><small id="model-meta">VRML V2.0 · local model</small></span>
+              <i>↗</i>
+            </button>
+            <a class="official-link" id="official-link" href="https://www.cia.gov/legacy/museum/" target="_blank" rel="noopener noreferrer">OPEN PRIMARY SOURCE <span>↗</span></a>
+          </section>
+        </div>
+
+        <div class="object-pagination">
+          <button id="previous-object" aria-label="Previous exhibit">← <span>PREVIOUS</span></button>
+          <div><i id="pagination-progress"></i></div>
+          <button id="next-object" aria-label="Next exhibit"><span>NEXT</span> →</button>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="statusbar">
+      <span><i class="online-dot"></i> ARCHIVE READY</span>
+      <span id="status-selection">A-12 OXCART / SELECTED</span>
+      <span class="status-spacer"></span>
+      <span>PUBLIC-SOURCE INTERPRETATION</span>
+      <span>BUILD 2026.10</span>
+    </footer>
+  </div>
+
+  <div class="modal-backdrop" id="source-modal" hidden>
+    <section class="source-modal" role="dialog" aria-modal="true" aria-labelledby="source-title">
+      <header><div><p class="eyebrow">VRML97 / READ ONLY</p><h2 id="source-title">campus.wrl</h2></div><div><button id="download-source">DOWNLOAD .WRL</button><button id="close-source" aria-label="Close source viewer">×</button></div></header>
+      <pre><code id="source-code"></code></pre>
+      <footer><span id="source-lines">— lines</span><span>Models are local, human-readable VRML V2.0 UTF8.</span></footer>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="about-modal" hidden>
+    <section class="about-modal" role="dialog" aria-modal="true" aria-labelledby="about-title">
+      <button class="about-close" id="close-about" aria-label="Close about dialog">×</button>
+      <p class="eyebrow">ABOUT THIS STUDY</p>
+      <h2 id="about-title">A digital visit—not a site survey.</h2>
+      <p>This independent HTML5 experience assembles publicly documented museum stories, campus art and landscape cues into an interpretive 3D model. Separate field-site studies preserve source context without pretending those places occupy the Headquarters campus. Building massing, exhibit placement, paths and distances are intentionally conceptual and not suitable for navigation.</p>
+      <div class="about-grid">
+        <div><b>11</b><span>official online exhibits represented</span></div>
+        <div><b>08</b><span>publicly described campus landmarks</span></div>
+        <div><b>03</b><span>disambiguated field-site studies</span></div>
+        <div><b>100%</b><span>local rendering; no analytics</span></div>
+      </div>
+      <p class="about-small">The physical CIA Museum is located inside CIA Headquarters and is not open to the public. Exhibit summaries link to CIA.gov for the full official record. This app is not affiliated with or endorsed by the Central Intelligence Agency.</p>
+      <button class="about-primary" id="about-tour">BEGIN THE HIGHLIGHTS TOUR →</button>
+    </section>
+  </div>
+
+  <div class="tour-card" id="tour-card" hidden role="dialog" aria-live="polite">
+    <div class="tour-card-top"><span>GUIDED TOUR</span><span id="tour-step">01 / 06</span><button id="close-tour" aria-label="End guided tour">×</button></div>
+    <p class="tour-location" id="tour-location">CAMPUS / ARRIVAL</p>
+    <h2 id="tour-title">A campus shaped by memory</h2>
+    <p id="tour-copy">Begin with a conceptual overview of the Headquarters landscape and its best-known publicly documented landmarks.</p>
+    <div class="tour-controls"><button id="tour-previous" disabled>←</button><div><i id="tour-progress"></i></div><button id="tour-next">NEXT STOP →</button></div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

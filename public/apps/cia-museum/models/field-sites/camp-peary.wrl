@@ -1,0 +1,22 @@
+#VRML V2.0 utf8
+# Camp Peary / AFETA — conceptual historical landscape study, not a site plan
+WorldInfo { title "Camp Peary — documented history and attributed use" }
+DEF EARTH Material { diffuseColor 0.34 0.40 0.27 }
+DEF GRASS Material { diffuseColor 0.47 0.55 0.34 }
+DEF WATER Material { diffuseColor 0.25 0.46 0.55 transparency 0.16 specularColor 0.34 0.50 0.55 }
+DEF TIMBER Material { diffuseColor 0.32 0.24 0.16 }
+DEF ROOF Material { diffuseColor 0.26 0.28 0.25 }
+DEF ROAD Material { diffuseColor 0.44 0.42 0.37 }
+DEF MARK Material { diffuseColor 0.67 0.13 0.10 }
+Transform { translation 0 -0.65 0 children [ Shape { appearance Appearance { material USE EARTH } geometry Box { size 30 1.2 22 } } ] }
+Transform { translation 0 0 0 children [ Shape { appearance Appearance { material USE GRASS } geometry Box { size 28 0.2 20 } } ] }
+Transform { translation 10.8 0.15 0 children [ Shape { appearance Appearance { material USE WATER } geometry Box { size 5.5 0.25 20 } } ] }
+Transform { translation -4 0.2 0 rotation 0 1 0 -0.12 children [ Shape { appearance Appearance { material USE ROAD } geometry Box { size 2.1 0.18 19 } } ] }
+Transform { translation -8 1.2 -5 children [ Shape { appearance Appearance { material USE TIMBER } geometry Box { size 6 2.2 3 } } Transform { translation 0 1.6 0 rotation 0 0 1 0.785 children [ Shape { appearance Appearance { material USE ROOF } geometry Box { size 2.7 2.7 3.3 } } ] } ] }
+Transform { translation 1 1.2 -4 children [ Shape { appearance Appearance { material USE TIMBER } geometry Box { size 6 2.2 3 } } Transform { translation 0 1.6 0 rotation 0 0 1 0.785 children [ Shape { appearance Appearance { material USE ROOF } geometry Box { size 2.7 2.7 3.3 } } ] } ] }
+Transform { translation -7 1.2 5 children [ Shape { appearance Appearance { material USE TIMBER } geometry Box { size 5 2.2 3 } } Transform { translation 0 1.6 0 rotation 0 0 1 0.785 children [ Shape { appearance Appearance { material USE ROOF } geometry Box { size 2.7 2.7 3.3 } } ] } ] }
+Transform { translation 3 2.7 4 children [ Shape { appearance Appearance { material USE TIMBER } geometry Cylinder { radius 0.35 height 5 } } Transform { translation 0 2.1 0 children [ Shape { appearance Appearance { material USE ROOF } geometry Box { size 2.2 0.45 2.2 } } ] } ] }
+Transform { translation -12 1.5 8 children [ Shape { appearance Appearance { material USE MARK } geometry Box { size 0.5 3 0.5 } } Transform { translation 0 1.2 0 children [ Shape { appearance Appearance { material USE MARK } geometry Box { size 4.2 0.5 0.4 } } ] } ] }
+# Tree clusters signal seclusion without encoding actual positions.
+Transform { translation -12 1.8 -7 children [ Shape { appearance Appearance { material USE TIMBER } geometry Cylinder { radius 0.35 height 3.2 } } Transform { translation 0 2.4 0 children [ Shape { appearance Appearance { material USE GRASS } geometry Cone { bottomRadius 1.8 height 3.8 } } ] } ] }
+Transform { translation 5 1.8 7 children [ Shape { appearance Appearance { material USE TIMBER } geometry Cylinder { radius 0.35 height 3.2 } } Transform { translation 0 2.4 0 children [ Shape { appearance Appearance { material USE GRASS } geometry Cone { bottomRadius 1.8 height 3.8 } } ] } ] }

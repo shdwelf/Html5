@@ -1,0 +1,156 @@
+1000:084d	 loading module
+1348:01ca	glossary
+1348:01d8	cedures
+1348:0302	hVIVideo
+1350:0024	AppIcon
+1350:0070	Movie
+1350:0082	Script
+1350:0512	CrossCursor
+1350:0782	oolHelp.Pso
+1408:0010	&Contents...
+1408:0021	&Keys...
+1408:002e	How to Use &Help...
+1408:004b	&About Your App...
+1410:000f	Print
+1410:0024	Cancel
+1410:003b	Sending
+1410:0068	to print spooler.
+1418:0007	Director version 4.0b1
+1420:0000	Director
+1428:0002	16-bit Audio Playback
+1428:002c	16-bit Audio Playback
+1428:0056	16-bit Audio Playback
+1428:0080	Compaq Audio Wave Playback
+1428:00b0	Compaq Audio Wave Playback
+1428:00e0	Compaq Audio Wave Playback
+1428:0110	Gateway Audio Playback
+1428:013c	Gateway Audio Playback
+1428:0168	Gateway Audio Playback
+1428:0194	Mwave Wave Audio Driver
+1428:01c0	Mwave Wave Audio Driver
+1428:01ec	Mwave Wave Audio Driver
+1428:0218	Media Vision Waveform Output
+1428:024a	Media Vision Waveform Output
+1428:027c	Media Vision Waveform Output
+1428:02ae	MVI Pro Audio/CDPC Wave Output
+1428:02e2	MVI Pro Audio/CDPC Wave Output
+1428:0316	MVI Pro Audio/CDPC Wave Output
+1428:034a	Orchid SoundWave Playback
+1428:0378	Orchid SoundWave Playback
+1428:03a6	Orchid SoundWave Playback
+1428:03d4	Orchid SW32 System Playback
+1428:0404	Orchid SW32 System Playback
+1428:0434	Orchid SW32 System Playback
+1428:0464	Aria Waveform Output 1
+1428:0490	Aria Waveform Output 1
+1428:04bc	Aria Waveform Output 1
+1428:04e8	Roland Audio Producer Rap-10
+1428:051a	Roland Audio Producer Rap-10
+1428:054c	Roland Audio Producer Rap-10
+1428:057e	SB16 Wave Out
+1428:05a0	SB16 Wave Out
+1428:05c2	SB16 Wave Out
+1428:05e4	SBPro Wave Out
+1428:0608	SBPro Wave Out
+1428:062c	SBPro Wave Out
+1428:0650	16-Bit Audio Playback
+1428:067a	16-Bit Audio Playback
+1428:06a4	16-Bit Audio Playback
+1428:06ce	MultiSound Wave Out
+1428:06f6	MultiSound Wave Out
+1428:071e	MultiSound Wave Out
+1428:0746	Windows Sound System Playback/1
+1428:077a	Windows Sound System Playback/1
+1428:07ae	Windows Sound System Playback/1
+1428:07e2	Windows Sound System Playback
+1428:0814	Windows Sound System Playback
+1428:0846	Windows Sound System Playback
+1428:0878	Default Sound
+1428:089a	Default Sound
+1428:08bc	Default Sound
+1430:0001	Director files (*.dir)
+1430:0018	Director Movies (*.dir)
+1430:0030	??? (*.dxr)
+1430:003c	XObject (*.dll)
+1430:004c	DIB (*.dib)
+1430:0058	Bitmap (*.bmp)
+1430:0067	MacPaint (*.pnt)
+1430:0078	PICT (*.pic)
+1430:0085	PICT (*.pct)
+1430:0092	Director Movie (*.dir)
+1430:00a9	Video for Windows (*.avi)
+1430:00c3	Quicktime Movie (*.mov)
+1430:00db	FLI Movie (*.fli)
+1430:00ed	FLC Movie (*.flc)
+1430:00ff	Palette (*.pal)
+1430:010f	Windows Metafile (*.wmf)
+1438:0001	dir
+1438:0005	dir
+1438:0009	dxr
+1438:000d	dll
+1438:0011	dib
+1438:0015	bmp
+1438:0019	pnt
+1438:001d	pic
+1438:0021	pct
+1438:0025	dir
+1438:0029	avi
+1438:002d	mov
+1438:0031	fli
+1438:0035	flc
+1438:0039	pal
+1438:003d	wmf
+1440:0001	Windows Sound (*.wav)
+1440:0017	Mac Sound (*.aif)
+1440:0029	PC Paintbrush (*.pcx)
+1440:003f	Encapsulated Postscript (*.eps)
+1440:005f	TIFF (*.tif)
+1440:006c	Compuserve GIF (*.gif)
+1440:0083	Executable File (*.exe)
+1440:009b	FontMap File (*.txt)
+1448:0001	wav
+1448:0005	aif
+1448:0009	pcx
+1448:000d	eps
+1448:0011	tif
+1448:0015	gif
+1448:0019	exe
+1448:001d	txt
+1450:0001	Alert
+1450:0007		Ctrl+%s
+1450:0010	Print File
+1450:001b	Unable to start print job
+1450:0035	All Files
+1450:003f	Debug Str
+1450:0049	 Could not find or open ASIPORT.RSR
+1450:006d		Shift+Ctrl+%s
+1458:0001	R
+1458:0003	P&rint Setup...
+1458:0013	X
+1458:0015	E&xit
+1460:0001	Initialization Error
+1460:0016	Windows version must be 3.1 or higher.
+1460:003d	CPU must be Intel 386 or higher.
+1460:005e	Windows must be in enhanced and protected mode.
+1460:0090	Not enough free memory to run Director.
+1460:00b9	Problem during initialization. Director cannot be run.
+1468:0001	Director Player 4.0
+1468:0015	DIRECTOR.HLP
+1470:0009	More...
+1478:000c	Invalid projector file: %s
+1478:0027	Must have either Full Screen or Show Caption set to show user menus.
+1478:006c	Unable to copy the driver file %s to your Windows directory.\n\nYour disk may be full.
+1478:00c2	This program requires at least 4MB free memory to run.
+1480:0001	Could not load the player, check free system resources.
+1488:0005	ASI_System
+1488:0010	ASI_Mono
+1488:0019	Helv
+1488:001e	MS Sans Serif
+1488:002c	10
+1488:002f	-10
+1488:0033	-8
+1488:0036	-8
+1488:0039	400
+1488:003d	400
+1488:0041	400
+1488:0045	700

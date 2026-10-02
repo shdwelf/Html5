@@ -1,0 +1,20 @@
+#VRML V2.0 utf8
+# Project AZORIAN — interpretive deep-ocean recovery model
+WorldInfo { title "Project AZORIAN" }
+DEF SEA Material { diffuseColor 0.08 0.25 0.29 specularColor 0.34 0.52 0.55 shininess 0.68 transparency 0.16 }
+DEF DARK Material { diffuseColor 0.055 0.07 0.068 specularColor 0.24 0.26 0.25 }
+DEF STEEL Material { diffuseColor 0.34 0.38 0.37 specularColor 0.55 0.61 0.59 shininess 0.74 }
+DEF RUST Material { diffuseColor 0.46 0.24 0.13 }
+DEF RED Material { diffuseColor 0.56 0.06 0.08 }
+Transform { translation 0 -0.5 0 children [ Shape { appearance Appearance { material USE SEA } geometry Box { size 17 1 12 } } ] }
+# submerged K-129 fragment
+Transform { translation 0 1.8 0 rotation 0 0 1 1.5708 children [ Shape { appearance Appearance { material USE DARK } geometry Cylinder { radius 1.25 height 11 } } ] }
+Transform { translation -6.5 1.8 0 rotation 0 0 1 1.5708 children [ Shape { appearance Appearance { material USE DARK } geometry Cone { bottomRadius 1.25 height 2.1 } } ] }
+Transform { translation 4.0 3.0 0 children [ Shape { appearance Appearance { material USE DARK } geometry Box { size 2.2 2.1 1.0 } } ] }
+# recovery claw assembly
+Transform { translation 0 5.9 0 children [ Shape { appearance Appearance { material USE STEEL } geometry Box { size 8.5 0.5 5.2 } } ] }
+Transform { translation -3.6 3.9 -1.8 rotation 0 0 1 0.18 children [ Shape { appearance Appearance { material USE RUST } geometry Box { size 0.5 4.2 0.55 } } ] }
+Transform { translation 3.6 3.9 -1.8 rotation 0 0 1 -0.18 children [ Shape { appearance Appearance { material USE RUST } geometry Box { size 0.5 4.2 0.55 } } ] }
+Transform { translation -3.6 3.9 1.8 rotation 0 0 1 0.18 children [ Shape { appearance Appearance { material USE RUST } geometry Box { size 0.5 4.2 0.55 } } ] }
+Transform { translation 3.6 3.9 1.8 rotation 0 0 1 -0.18 children [ Shape { appearance Appearance { material USE RUST } geometry Box { size 0.5 4.2 0.55 } } ] }
+Transform { translation 0 6.55 0 children [ Shape { appearance Appearance { material USE RED } geometry Box { size 2.2 0.2 1.1 } } ] }
