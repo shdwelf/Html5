@@ -13,8 +13,14 @@ DirectionalLight { direction -0.4 -1 -0.6 intensity 0.55 color 0.72 0.84 0.86 }
 # XDC_BOX floor 0 -0.12 0 24 0.24 18 #173640 structure none Room floor
 # XDC_BOX left-booth-back -8 2.25 1.0 0.45 3.5 12 #3d6b70 booths none Left booth run
 # XDC_BOX right-booth-back 8 2.25 1.0 0.45 3.5 12 #3d6b70 booths none Right booth run
-# XDC_BOX left-booth-seat -7.25 0.9 1.0 1.0 0.55 10.8 #a6603a booths none Left banquette
-# XDC_BOX right-booth-seat 7.25 0.9 1.0 1.0 0.55 10.8 #a6603a booths none Right banquette
+# XDC_BOX left-booth-seat -7.25 0.9 1.0 1.0 0.55 10.8 #7e2f3c booths none Left red-velvet banquette
+# XDC_BOX right-booth-seat 7.25 0.9 1.0 1.0 0.55 10.8 #7e2f3c booths none Right red-velvet banquette
+# XDC_BOX left-mirror-a -7.70 3.05 -3.2 0.08 1.9 3.0 #9bd0c7 display glass Left booth mirror
+# XDC_BOX left-mirror-b -7.70 3.05 3.7 0.08 1.9 3.0 #9bd0c7 display glass Left booth mirror
+# XDC_BOX right-mirror-a 7.70 3.05 -3.2 0.08 1.9 3.0 #9bd0c7 display glass Right booth mirror
+# XDC_BOX right-mirror-b 7.70 3.05 3.7 0.08 1.9 3.0 #9bd0c7 display glass Right booth mirror
+# XDC_BOX spy-window-left -7.63 3.05 -3.2 0.10 0.60 1.05 #142b31 display none Left mirror spy window
+# XDC_BOX spy-window-right 7.63 3.05 -3.2 0.10 0.60 1.05 #142b31 display none Right mirror spy window
 # XDC_BOX left-table-a -4.7 1.05 -2.4 3.4 0.18 1.4 #b8814c booths none Left table A
 # XDC_BOX left-table-b -4.7 1.05 4.2 3.4 0.18 1.4 #b8814c booths none Left table B
 # XDC_BOX right-table-a 4.7 1.05 -2.4 3.4 0.18 1.4 #b8814c booths none Right table A
@@ -26,6 +32,11 @@ DirectionalLight { direction -0.4 -1 -0.6 intensity 0.55 color 0.72 0.84 0.86 }
 # XDC_CYL flip-hinge-right 4.2 3.08 -6.1 0.09 0.8 #f2c36b cashier flip Hinge pin right
 # XDC_BOX glass-case-body -2.9 3.05 -7.12 3.4 1.25 0.86 #77d5d0 display glass Glass display case
 # XDC_BOX glass-case-top -2.9 3.72 -7.12 3.55 0.10 1.0 #a8ffff display none Display case top
+# XDC_BOX wine-station-a -5.1 2.5 -5.25 1.15 1.8 0.7 #77d5d0 display glass Oval wine display A
+# XDC_BOX wine-station-b 0 2.5 -5.25 1.15 1.8 0.7 #77d5d0 display glass Oval wine display B
+# XDC_BOX wine-station-c 5.1 2.5 -5.25 1.15 1.8 0.7 #77d5d0 display glass Oval wine display C
+# XDC_BOX acrylic-panel-a -4.8 4.0 -6.05 2.0 1.4 0.08 #77d5d0 display none Backlit acrylic panel A
+# XDC_BOX acrylic-panel-b 4.8 4.0 -6.05 2.0 1.4 0.08 #77d5d0 display none Backlit acrylic panel B
 # XDC_BOX display-tray-a -2.9 2.52 -7.12 2.65 0.08 0.50 #d5b46a display none Pastry tray
 # XDC_BOX display-tray-b -2.9 2.77 -7.12 2.65 0.08 0.50 #d5b46a display none Lower tray
 # XDC_BOX register 2.65 3.02 -7.12 1.35 0.50 0.76 #384e59 cashier none Cash register
@@ -54,7 +65,9 @@ DirectionalLight { direction -0.4 -1 -0.6 intensity 0.55 color 0.72 0.84 0.86 }
 # XDC_LABEL room-label 0 0.12 -8.65 0.34 #65f6df labels DINING ROOM / SERVICE COUNTER
 # XDC_LABEL kitchen-label 6.0 5.0 6.0 0.28 #f6c768 labels SMALL DEEP-FRY KITCHEN
 # XDC_LABEL counter-label 0 5.1 -7.0 0.28 #65f6df labels FLIP-UP PASS / CASHIER
+# XDC_LABEL zola-label 0 5.55 -5.9 0.22 #f1bd67 labels REPORTED ZOLA MOTIFS / NOT A PLAN
 # XDC_LABEL mesh-label -9.0 4.9 1.0 0.24 #7ddde1 labels WIREMESH BOOTH SHELL
+# XDC_LABEL documents-label -6.2 4.6 -5.8 0.20 #f1bd67 labels CODE PANELS / DOCUMENT CORRIDOR
 # XDC_POINTLIGHT service-glow 0 4.0 -6.5 #f0b35c 2.3 12 livelight service counter glow
 # XDC_POINTLIGHT kitchen-glow 6.0 4.0 5.5 #71f6d4 2.0 10 livelight fryer work light
 # XDC_POINTLIGHT bar-glow 0 3.6 5.0 #54e8d2 1.8 9 livelight back bar glow
