@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071114">
+<title>Sanborn Restaurant Study · 4Dwm / XDC Viewer</title>
+<style>
+:root {
+  --bg:#071114; --panel:#0b1c20; --panel-2:#10262a; --line:#28474b; --ink:#d5ebe5;
+  --muted:#779095; --cyan:#65f6df; --amber:#f1bd67; --rust:#b96542; --red:#ee7c67;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace; --sans:Inter,ui-sans-serif,system-ui,sans-serif;
+}
+* { box-sizing:border-box; }
+html,body { margin:0; height:100%; background:var(--bg); color:var(--ink); font-family:var(--sans); }
+body { overflow:hidden; }
+button,select { font:inherit; }
+button { cursor:pointer; }
+.app { height:100dvh; display:grid; grid-template-rows:50px 1fr 28px; background:radial-gradient(900px 560px at 58% 35%,#123238 0%,#071114 62%); }
+.topbar { display:flex; align-items:center; gap:18px; padding:0 18px; border-bottom:1px solid var(--line); background:rgba(6,16,19,.92); z-index:3; }
+.brand { display:flex; align-items:center; gap:10px; min-width:230px; }
+.brand-mark { width:27px; height:27px; border:1px solid var(--cyan); display:grid; place-items:center; color:var(--cyan); font:700 14px var(--mono); box-shadow:inset 0 0 13px #65f6df22; }
+.brand h1 { margin:0; font:600 13px var(--mono); letter-spacing:.14em; color:#eefcf8; }
+.brand p { margin:1px 0 0; color:var(--muted); font:10px var(--mono); letter-spacing:.07em; }
+.topnav { display:flex; align-self:stretch; gap:3px; }
+.topnav button { padding:0 12px; border:0; border-bottom:2px solid transparent; background:transparent; color:var(--muted); font:10px var(--mono); letter-spacing:.12em; }
+.topnav button:hover,.topnav button.active { color:var(--cyan); border-bottom-color:var(--cyan); }
+.header-meta { margin-left:auto; text-align:right; font:10px/1.35 var(--mono); color:var(--muted); }
+.header-meta strong { color:var(--amber); font-weight:500; }
+.workspace { min-height:0; display:grid; grid-template-columns:205px minmax(420px,1fr) 310px; gap:1px; }
+.sidebar,.inspector { min-height:0; overflow:auto; background:rgba(7,19,22,.9); }
+.sidebar { border-right:1px solid var(--line); padding:14px 12px; }
+.inspector { border-left:1px solid var(--line); padding:14px; }
+.eyebrow { margin:0 0 7px; color:var(--cyan); font:10px var(--mono); letter-spacing:.16em; text-transform:uppercase; }
+.block { border:1px solid var(--line); background:linear-gradient(135deg,#10262a99,#07151899); margin-bottom:12px; }
+.block h2 { margin:0; padding:9px 10px; border-bottom:1px solid var(--line); color:#e6f6f1; font:11px var(--mono); letter-spacing:.1em; }
+.block-body { padding:10px; }
+.small-copy { color:var(--muted); font:11px/1.55 var(--mono); }
+.nav-list { display:grid; gap:4px; }
+.nav-list button,.preset { display:flex; justify-content:space-between; width:100%; border:1px solid transparent; background:transparent; color:#a8c1be; padding:8px 9px; text-align:left; font:11px var(--mono); }
+.nav-list button:hover,.nav-list button.active,.preset:hover { border-color:#3d686b; background:#153337; color:var(--cyan); }
+.nav-list span { color:#526d70; font-size:10px; }
+.layer-row { display:flex; align-items:center; gap:8px; padding:6px 0; color:#a8c1be; font:11px var(--mono); }
+.layer-row input { accent-color:var(--cyan); }
+.layer-key { width:9px; height:9px; border:1px solid currentColor; display:inline-block; }
+.key-blue { color:#5bc9d1; }.key-wire { color:#8feee5; }.key-light { color:#f1bd67; }.key-label { color:#d79361; }
+#viewer-wrap { position:relative; min-height:0; overflow:hidden; background:#061014; }
+#viewport { display:block; width:100%; height:100%; outline:none; }
+.viewport-grid { position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg,#65f6df08 1px,transparent 1px),linear-gradient(#65f6df08 1px,transparent 1px); background-size:44px 44px; mask-image:linear-gradient(to bottom,transparent 0%,#000 35%,#000 100%); opacity:.13; }
+.viewport-head { position:absolute; top:13px; left:16px; right:16px; display:flex; justify-content:space-between; pointer-events:none; }
+.viewport-head > * { pointer-events:auto; }
+.view-title { font:11px var(--mono); color:var(--cyan); letter-spacing:.12em; text-shadow:0 0 12px #000; }
+.view-title span { color:var(--muted); }
+.view-actions { display:flex; gap:5px; }
+.tool { border:1px solid #3a686c; background:#07171ac7; color:#a8d2cb; padding:6px 9px; font:10px var(--mono); letter-spacing:.1em; }
+.tool:hover,.tool.active { border-color:var(--cyan); color:var(--cyan); background:#133237e6; }
+.hotspot { position:absolute; display:none; border:1px solid var(--amber); color:var(--amber); background:#0b1819d9; padding:5px 8px; font:10px var(--mono); letter-spacing:.07em; pointer-events:auto; }
+.hotspot:hover { border-color:var(--cyan); color:var(--cyan); }
+.viewport-foot { position:absolute; bottom:13px; left:16px; right:16px; display:flex; justify-content:space-between; align-items:end; pointer-events:none; font:10px var(--mono); color:#759497; }
+.viewport-foot b { color:var(--cyan); font-weight:500; }
+.readout { display:grid; gap:2px; text-align:right; }
+.readout strong { color:var(--amber); }
+.section-title { margin:0 0 8px; color:var(--cyan); font:11px var(--mono); letter-spacing:.1em; text-transform:uppercase; }
+.inspect-title { margin:0; color:#eefaf6; font-size:18px; line-height:1.2; font-weight:600; }
+.inspect-sub { margin:5px 0 13px; color:var(--muted); font:10px/1.45 var(--mono); }
+.chips { display:flex; flex-wrap:wrap; gap:5px; }
+.chip { display:inline-flex; padding:4px 6px; border:1px solid #346064; color:#9bcac4; font:9px var(--mono); letter-spacing:.08em; }
+.chip.confirmed { border-color:#3e8171; color:var(--cyan); }.chip.caution { border-color:#8f6b39; color:var(--amber); }.chip.invented { border-color:#7b5243; color:#ee9a77; }
+.note { border-left:2px solid var(--amber); padding:7px 9px; background:#f1bd670b; color:#bac7c3; font:10px/1.5 var(--mono); }
+.preset-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+.preset { display:block; border:1px solid #2b4d51; padding:8px; text-align:center; }
+.data-list { display:grid; gap:7px; }
+.data-row { display:flex; justify-content:space-between; gap:7px; color:var(--muted); font:10px var(--mono); }
+.data-row b { color:#d2e5df; font-weight:500; text-align:right; }
+.annotation { display:grid; grid-template-columns:8px 1fr; gap:8px; padding:7px 0; border-bottom:1px solid #1d3639; cursor:pointer; }
+.annotation:last-child { border-bottom:0; }.annotation:hover strong { color:var(--cyan); }
+.annotation i { width:7px; height:7px; margin-top:4px; border-radius:50%; background:var(--amber); box-shadow:0 0 8px #f1bd67; }
+.annotation strong { color:#c9e0da; font:10px var(--mono); }.annotation span { display:block; color:var(--muted); font:10px/1.35 var(--mono); margin-top:2px; }
+.source { display:grid; grid-template-columns:auto 1fr; gap:7px; padding:8px 0; border-bottom:1px solid #1d3639; }.source:last-child{border:0}.source .badge { height:max-content; padding:3px 4px; font:8px var(--mono); letter-spacing:.05em; border:1px solid; }.source .badge.primary{color:var(--cyan);border-color:#3d8d7b}.source .badge.secondary{color:var(--amber);border-color:#91723b}.source .badge.gap{color:#ef9473;border-color:#92533f}.source a { color:#c4dfd8; font:10px/1.3 var(--mono); }.source p { margin:3px 0 0; color:var(--muted); font:9px/1.45 var(--mono); }
+.statusbar { display:flex; align-items:center; gap:16px; padding:0 13px; border-top:1px solid var(--line); background:#061012; color:#6d898c; font:9px var(--mono); letter-spacing:.04em; }.statusbar b{color:var(--cyan);font-weight:500}.statusbar .right{margin-left:auto}
+.drawer { position:absolute; left:16px; bottom:45px; width:min(590px,calc(100% - 32px)); max-height:46%; display:none; z-index:2; border:1px solid #356166; background:#071619ed; box-shadow:0 14px 45px #000b; }.drawer.open{display:block}.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line);font:10px var(--mono);color:var(--cyan)}.drawer pre{margin:0;padding:10px;overflow:auto;max-height:320px;white-space:pre-wrap;color:#c1ddd7;font:9px/1.45 var(--mono)}
+#toast { position:absolute; left:50%; bottom:56px; transform:translate(-50%,10px); opacity:0; pointer-events:none; transition:.2s; padding:7px 12px; border:1px solid var(--cyan); background:#07191beF; color:var(--cyan); font:10px var(--mono); z-index:4; }.toast-show{opacity:1!important;transform:translate(-50%,0)!important}
+@media(max-width:1000px){.workspace{grid-template-columns:165px minmax(360px,1fr) 270px}.brand{min-width:180px}.topnav button{padding:0 7px}}
+@media(max-width:760px){body{overflow:auto}.app{height:auto;min-height:100dvh;grid-template-rows:50px auto 28px}.workspace{min-height:calc(100dvh - 78px);grid-template-columns:1fr;grid-template-rows:auto minmax(480px,65dvh) auto}.sidebar{border:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}.sidebar .block{margin:0}.sidebar .block:last-child{grid-column:1/-1}.inspector{border:0;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:10px}.inspector .block{margin:0}.inspector .block:first-child{grid-column:1/-1}.inspector .source-block{grid-column:1/-1}.topnav{display:none}.header-meta{font-size:9px}.brand{min-width:0}.viewport-foot{font-size:9px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">4D</div><div><h1>SANBORN / RESTAURANT STUDY</h1><p>XDC-02 · VRML97 · SOURCE-CHECKED DESIGN LAB</p></div></div>
+    <nav class="topnav" aria-label="4Dwm mode"><button class="active" data-mode="viewport">VIEWPORT</button><button data-mode="blueprint">BLUEPRINT</button><button data-mode="research">RESEARCH</button></nav>
+    <div class="header-meta"><strong id="clock">00:00:00</strong><br>4DWM SESSION · <span id="load-state">LOADING</span></div>
+  </header>
+  <main class="workspace">
+    <aside class="sidebar" aria-label="Scene controls">
+      <div class="block"><h2>WINDOW / VIEW</h2><div class="block-body"><div class="nav-list"><button class="active" data-preset="axon">AXONOMETRIC <span>01</span></button><button data-preset="plan">PLAN / TOP <span>02</span></button><button data-preset="bar">BAR + STOOLS <span>03</span></button><button data-preset="kitchen">KITCHEN <span>04</span></button></div></div></div>
+      <div class="block"><h2>LAYERS</h2><div class="block-body">
+        <label class="layer-row"><input type="checkbox" data-layer="blueprint" checked><i class="layer-key key-blue"></i> blueprint datum</label>
+        <label class="layer-row"><input type="checkbox" data-layer="wiremesh" checked><i class="layer-key key-wire"></i> wiremesh shell</label>
+        <label class="layer-row"><input type="checkbox" data-layer="livelight" checked><i class="layer-key key-light"></i> livelight emitters</label>
+        <label class="layer-row"><input type="checkbox" data-layer="labels" checked><i class="layer-key key-label"></i> room labels</label>
+      </div></div>
+      <div class="block"><h2>OPERATOR ACTIONS</h2><div class="block-body"><button class="tool" id="flip-btn" style="width:100%;margin-bottom:6px">FLIP COUNTERTOP <span>↗</span></button><button class="tool" id="reset-btn" style="width:100%">RESET CAMERA <span>↺</span></button></div></div>
+      <div class="block"><h2>SCENE NOTE</h2><div class="block-body"><p class="small-copy">A measured-feeling original study of a compact service restaurant: two booth runs, a four-stool bar, cashier pass, display case, and a small deep-fry kitchen.</p></div></div>
+    </aside>
+
+    <section id="viewer-wrap" aria-label="Three.js VRML viewport">
+      <canvas id="viewport" tabindex="0" aria-label="Interactive 3D restaurant model"></canvas><div class="viewport-grid"></div>
+      <div class="viewport-head"><div class="view-title">VRML / XDC VIEWER <span>· LIVE SCENE</span></div><div class="view-actions"><button class="tool" id="wire-btn">WIREFRAME</button><button class="tool" id="light-btn">LIVE LIGHT</button><button class="tool" id="source-btn">VRML SOURCE</button></div></div>
+      <div id="hotspot"></div>
+      <div class="viewport-foot"><div><b id="object-count">—</b> objects · <b id="camera-readout">AXON</b> camera · drag orbit / wheel zoom</div><div class="readout">Y <strong id="y-readout">0.00</strong> · <span id="selection-readout">no selection</span></div></div>
+      <div class="drawer" id="source-drawer"><div class="drawer-head"><span>SANBORN-RESTAURANT.WRL · READ-ONLY SOURCE</span><button class="tool" id="close-source">CLOSE</button></div><pre id="source-text"></pre></div>
+      <div id="toast" role="status" aria-live="polite"></div>
+    </section>
+
+    <aside class="inspector" aria-label="Inspector and research">
+      <div class="block"><div class="block-body"><p class="eyebrow">XDC / SELECTED STUDY</p><h2 class="inspect-title">Service Counter<br>Restaurant Study</h2><p class="inspect-sub">ORIGINAL INTERPRETIVE MODEL · NOT A CLAIMED SANBORN RECONSTRUCTION</p><div class="chips"><span class="chip confirmed">VRML97</span><span class="chip confirmed">WIREFRAME</span><span class="chip caution">RESEARCH LAYER</span><span class="chip invented">DESIGN STUDY</span></div></div></div>
+      <div class="block"><h2>INSPECTOR</h2><div class="block-body"><div class="data-list"><div class="data-row"><span>selection</span><b id="inspector-selection">room / all</b></div><div class="data-row"><span>material</span><b id="inspector-material">copper, glass, steel</b></div><div class="data-row"><span>state</span><b id="inspector-state">counter closed</b></div><div class="data-row"><span>source</span><b>sanborn-restaurant.wrl</b></div></div></div></div>
+      <div class="block"><h2>ANNOTATIONS / CLICK TO FOCUS</h2><div class="block-body" id="annotations"><div class="annotation" data-focus="booths"><i></i><div><strong>TWO BOOTH RUNS</strong><span>symmetrical upholstered bays · left + right</span></div></div><div class="annotation" data-focus="bar"><i></i><div><strong>FOUR BAR STOOLS</strong><span>high rail with amber service light</span></div></div><div class="annotation" data-focus="cashier"><i></i><div><strong>CASHIER / FLIP PASS</strong><span>hinged countertop opens toward guest lane</span></div></div><div class="annotation" data-focus="display"><i></i><div><strong>GLASS DISPLAY CASE</strong><span>two trays · transparent enclosure</span></div></div><div class="annotation" data-focus="kitchen"><i></i><div><strong>SMALL DEEP-FRY KITCHEN</strong><span>fryer, hood, prep table, under-counter fridge</span></div></div></div></div>
+      <div class="block source-block"><h2>RESEARCH / SOURCE CHECK</h2><div class="block-body"><p class="note">Research confirms Sanborn's use of light, coded text, artifacts, scientific reconstruction, and historical source material. It does not confirm a publicly documented restaurant blueprint; this room is explicitly an authored design study.</p><div style="height:8px"></div>
+        <div class="source"><span class="badge primary">PRIMARY</span><div><a href="https://jimsanborn.net/main.html" target="_blank" rel="noopener">Jim Sanborn · official installations</a><p>Official catalog for Kryptos, Coastline, Atomic Time / Critical Assembly, Terrestrial Physics, and public-space work.</p></div></div>
+        <div class="source"><span class="badge primary">ARCHIVE</span><div><a href="https://www.aaa.si.edu/collections/interviews/oral-history-interview-jim-sanborn-15700" target="_blank" rel="noopener">Smithsonian AAA oral history · 2009</a><p>First-person account of lodestone/compass work, pinpoint light, research, blueprints, sound, and installation process.</p></div></div>
+        <div class="source"><span class="badge primary">MUSEUM</span><div><a href="https://ahf.nuclearmuseum.org/voices/oral-histories/jim-sanborns-interview/" target="_blank" rel="noopener">Atomic Heritage Foundation interview</a><p>First-person Atomic Time details: original parts, blueprints, period lamps, cables, and a dark lab atmosphere.</p></div></div>
+        <div class="source"><span class="badge secondary">SECONDARY</span><div><a href="https://www.elonka.com/kryptos/sanborn/old/list.html" target="_blank" rel="noopener">Elonka Dunin · selected works list</a><p>Useful historical index; the page itself is a fan/secondary source. “Zola Spy Restaurant” is not treated as a verified blueprint.</p></div></div>
+        <div class="source"><span class="badge gap">OPEN GAP</span><div><a href="https://galleries.lafayette.edu/2020/02/12/jim-sanborn-looted/" target="_blank" rel="noopener">Lafayette exhibition research</a><p>Corroborates light projections, Atomic Time, Terrestrial Physics, and Without Provenance; no restaurant plan found.</p></div></div>
+      </div></div>
+    </aside>
+  </main>
+  <footer class="statusbar"><span>STATUS <b id="status-text">loading VRML manifest…</b></span><span>RENDER <b id="render-text">THREE.JS</b></span><span class="right">XDC-02 / SANBORN STUDY · <b>OFFLINE-CAPABLE</b></span></footer>
+</div>
+<script type="module">
+import * as THREE from "./vendor/three.module.min.js";
+import { OrbitControls } from "./vendor/OrbitControls.js";
+
+const FALLBACK = `# XDC_BOX floor 0 -0.12 0 24 0.24 18 #173640 structure none Room floor\n# XDC_BOX cashier-base 0 1.65 -7.2 10.4 3.3 1.2 #6a3d2b cashier none Cashier counter\n# XDC_BOX flip-top 0 0.14 0.65 10 0.28 1.3 #d9a565 cashier flip Flip-up countertop\n# XDC_BOX glass-case-body -2.9 3.05 -7.12 3.4 1.25 .86 #77d5d0 display glass Glass display case\n# XDC_BOX fryer 6 1.25 6 3.4 2.5 2.4 #7a4a35 kitchen none Deep fry unit`;
+let scene, camera, renderer, controls, model, blueprint, wire, labels, flipPivot, raycaster, pointer;
+let sourceText = "", picked = null, flipped = false, liveLight = true, wireOn = true;
+const objects = [], hotspots = new Map(), materials = new Set(), lights = [];
+const $ = (id) => document.getElementById(id);
+const hex = (value) => new THREE.Color(value);
+function num(v){ return Number.parseFloat(v) || 0; }
+function parseManifest(text){
+  const rows=[];
+  for(const raw of text.split(/\r?\n/)){
+    const line=raw.trim(); if(!line.startsWith("# XDC_")) continue;
+    const p=line.split(/\s+/), kind=p[1];
+    if(kind === "BOX" && p.length >= 13) rows.push({kind,id:p[2],pos:[num(p[3]),num(p[4]),num(p[5])],size:[num(p[6]),num(p[7]),num(p[8])],color:p[9],layer:p[10],group:p[11],label:p.slice(12).join(" ")});
+    if((kind === "CYL" || kind === "CYLINDER") && p.length >= 12) rows.push({kind:"CYL",id:p[2],pos:[num(p[3]),num(p[4]),num(p[5])],radius:num(p[6]),height:num(p[7]),color:p[8],layer:p[9],group:p[10],label:p.slice(11).join(" ")});
+    if(kind === "LINE" && p.length >= 11) rows.push({kind,id:p[2],a:[num(p[3]),num(p[4]),num(p[5])],b:[num(p[6]),num(p[7]),num(p[8])],color:p[9],layer:p[10],label:p.slice(11).join(" ")});
+    if(kind === "LABEL" && p.length >= 8) rows.push({kind,id:p[2],pos:[num(p[3]),num(p[4]),num(p[5])],size:num(p[6]),color:p[7],layer:p[8],label:p.slice(9).join(" ")});
+    if(kind === "POINTLIGHT" && p.length >= 11) rows.push({kind,id:p[2],pos:[num(p[3]),num(p[4]),num(p[5])],color:p[6],intensity:num(p[7]),distance:num(p[8]),layer:p[9],label:p.slice(10).join(" ")});
+  }
+  return rows;
+}
+function makeLabel(text,color,size=0.24){
+  const c=document.createElement("canvas"), ctx=c.getContext("2d"); c.width=640;c.height=96;
+  ctx.font="600 28px monospace";ctx.fillStyle=color;ctx.fillText(text,12,52);
+  const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));
+  sprite.scale.set(size*text.length*.27,size,1); return sprite;
+}
+function mat(color,opts={}){ const m=new THREE.MeshStandardMaterial({color:hex(color),roughness:.66,metalness:.16,...opts}); materials.add(m);return m; }
+function build(rows){
+  scene=new THREE.Scene(); scene.background=new THREE.Color("#061014");
+  camera=new THREE.PerspectiveCamera(42,1,.1,100); camera.position.set(22,17,25);
+  renderer=new THREE.WebGLRenderer({canvas:$("viewport"),antialias:true,preserveDrawingBuffer:false}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.dampingFactor=.07; controls.target.set(0,1,0); controls.minDistance=7;controls.maxDistance=50; controls.maxPolarAngle=Math.PI*.49;
+  scene.add(new THREE.HemisphereLight("#aacbc7","#071014",1.5));
+  const sun=new THREE.DirectionalLight("#d3e0d5",2.2);sun.position.set(-10,18,12);sun.castShadow=true;scene.add(sun);
+  model=new THREE.Group(); blueprint=new THREE.Group(); wire=new THREE.Group(); labels=new THREE.Group(); flipPivot=new THREE.Group(); flipPivot.position.set(0,3.08,-6.1); model.add(flipPivot); scene.add(model,blueprint,wire,labels);
+  raycaster=new THREE.Raycaster(); pointer=new THREE.Vector2();
+  for(const row of rows){
+    if(row.kind==="BOX") addBox(row);
+    if(row.kind==="CYL") addCylinder(row);
+    if(row.kind==="LINE") addLine(row);
+    if(row.kind==="LABEL") addSceneLabel(row);
+    if(row.kind==="POINTLIGHT") addLight(row);
+  }
+  makeBlueprint(); makeWireframe(); addExtraMeshes();
+  $("object-count").textContent=String(objects.length); $("load-state").textContent="READY"; $("status-text").textContent=`${objects.length} manifest objects · source loaded`;
+  resize(); window.addEventListener("resize",resize); renderer.domElement.addEventListener("pointerdown",onPointer); renderer.domElement.addEventListener("pointermove",onPointerMove);
+  requestAnimationFrame(animate);
+}
+function targetGroup(row){ return row.group==="flip" ? flipPivot : model; }
+function addBox(row){
+  const isGlass=row.group==="glass"; const m=mat(row.color,isGlass?{transparent:true,opacity:.24,roughness:.18,metalness:.05,side:THREE.DoubleSide}:{ });
+  const mesh=new THREE.Mesh(new THREE.BoxGeometry(...row.size),m); mesh.position.set(...row.pos); mesh.castShadow=true;mesh.receiveShadow=true;mesh.userData={...row,type:"box"};targetGroup(row).add(mesh);objects.push(mesh); addWireFor(mesh,row);
+  if(row.group==="glass") { const edge=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry),new THREE.LineBasicMaterial({color:"#a8ffff",transparent:true,opacity:.9}));edge.position.copy(mesh.position);edge.userData.layer="wiremesh";wire.add(edge); }
+}
+function addCylinder(row){ const m=mat(row.color);const mesh=new THREE.Mesh(new THREE.CylinderGeometry(row.radius,row.radius,row.height,20),m);mesh.position.set(...row.pos);mesh.castShadow=true;mesh.userData={...row,type:"cylinder"};targetGroup(row).add(mesh);objects.push(mesh);addWireFor(mesh,row); }
+function addLine(row){ const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...row.a),new THREE.Vector3(...row.b)]);const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:row.color,transparent:true,opacity:.92}));l.userData={...row,layer:row.layer};blueprint.add(l); }
+function addSceneLabel(row){ const s=makeLabel(row.label,row.color,row.size);s.position.set(...row.pos);s.userData={...row,type:"label"};labels.add(s); }
+function addLight(row){ const l=new THREE.PointLight(row.color,row.intensity,row.distance,2);l.position.set(...row.pos);l.userData={...row,layer:"livelight"};scene.add(l);lights.push(l); }
+function addWireFor(mesh,row){ const e=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry),new THREE.LineBasicMaterial({color:"#69e9e0",transparent:true,opacity:.38}));e.position.copy(mesh.position);e.rotation.copy(mesh.rotation);e.userData={layer:"wiremesh",group:row.group};wire.add(e); }
+function makeBlueprint(){
+  const grid=new THREE.GridHelper(24,24,"#236069","#123338");grid.position.y=.02;grid.userData.layer="blueprint";blueprint.add(grid);
+  const points=[[-11,.05,-8],[11,.05,-8],[11,.05,8],[-11,.05,8],[-11,.05,-8]];const g=new THREE.BufferGeometry().setFromPoints(points.map(p=>new THREE.Vector3(...p)));blueprint.add(new THREE.Line(g,new THREE.LineBasicMaterial({color:"#65f6df",transparent:true,opacity:.85})));
+  const cross=new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-11,.06,0),new THREE.Vector3(11,.06,0),new THREE.Vector3(0,.06,-8),new THREE.Vector3(0,.06,8)]),new THREE.LineBasicMaterial({color:"#f1bd67",transparent:true,opacity:.4}));blueprint.add(cross);
+}
+function makeWireframe(){
+  const arch=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(22,5.5,16)),new THREE.LineBasicMaterial({color:"#65f6df",transparent:true,opacity:.13}));arch.position.y=2.75;wire.add(arch);
+}
+function addExtraMeshes(){
+  // Thin metal rails make the “wiremesh” layer readable without hiding the solid study.
+  for(const x of [-8.3,8.3]) for(let z=-4;z<=6;z+=2){
+    const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,1.1,z),new THREE.Vector3(x,4.8,z)]);
+    const line=new THREE.Line(g,new THREE.LineBasicMaterial({color:"#86efe6",transparent:true,opacity:.34})); line.userData.layer="wiremesh";wire.add(line);
+  }
+  const beam=new THREE.Mesh(new THREE.BoxGeometry(14,.09,.09),mat("#65f6df",{emissive:"#65f6df",emissiveIntensity:1.4}));beam.position.set(0,3.5,5);beam.userData.layer="livelight";model.add(beam);
+}
+function resize(){ if(!renderer)return;const el=$("viewer-wrap"),w=el.clientWidth,h=el.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix(); }
+function animate(){ requestAnimationFrame(animate); if(controls){controls.update();renderer.render(scene,camera);$("y-readout").textContent=camera.position.y.toFixed(2);} }
+function preset(name){
+  const p={axon:[[22,17,25],[0,1,0]],plan:[[0,24,.01],[0,0,0]],bar:[[0,8,19],[0,2.3,4]],kitchen:[[16,9,16],[5,2.2,5]]}[name]||[[22,17,25],[0,1,0]];
+  camera.position.set(...p[0]);controls.target.set(...p[1]);controls.update();$("camera-readout").textContent=name.toUpperCase();document.querySelectorAll("[data-preset]").forEach(b=>b.classList.toggle("active",b.dataset.preset===name));
+}
+function focus(tag){ const pos={booths:[[18,8,16],[-1,1.5,1]],bar:[[0,7,16],[0,2.4,5]],cashier:[[0,7,-18],[0,2.5,-7]],display:[[-10,5,-16],[-2.9,3,-7]],kitchen:[[15,8,14],[6,2.5,6]]}[tag];if(pos){camera.position.set(...pos[0]);controls.target.set(...pos[1]);controls.update();toast(tag.replace(/^./,c=>c.toUpperCase())+" focus");}}
+function setVisibility(){
+  blueprint.visible=$("layer-blueprint")?.checked ?? true; wire.visible=$("layer-wiremesh")?.checked ?? true; labels.visible=$("layer-labels")?.checked ?? true; lights.forEach(l=>l.visible=$("layer-livelight")?.checked ?? true);
+}
+function flip(){ flipped=!flipped;flipPivot.rotation.x=flipped?-Math.PI/2:0;$("flip-btn").innerHTML=`${flipped?"CLOSE":"FLIP"} COUNTERTOP <span>${flipped?"↙":"↗"}</span>`;$("inspector-state").textContent=flipped?"counter open":"counter closed";toast(flipped?"countertop flipped up":"countertop reset flat"); }
+function setLight(on){liveLight=on;lights.forEach(l=>l.intensity=on?Number(l.userData.intensity):0);materials.forEach(m=>{if(m.emissive)m.emissiveIntensity=on?1.35:0;});$("light-btn").classList.toggle("active",on);toast(on?"livelight emitters on":"livelight emitters off");}
+function setWire(on){wireOn=on;$("layer-wiremesh").checked=on;wire.visible=on;$("wire-btn").classList.toggle("active",on);}
+function toast(message){const t=$("toast");t.textContent=message;t.classList.add("toast-show");clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove("toast-show"),1800);}
+function onPointer(e){const r=renderer.domElement.getBoundingClientRect();pointer.x=((e.clientX-r.left)/r.width)*2-1;pointer.y=-((e.clientY-r.top)/r.height)*2+1;raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObjects(objects,true)[0];if(!hit)return;picked=hit.object;const d=picked.userData;$("selection-readout").textContent=d.label||d.id;$("inspector-selection").textContent=d.label||d.id;$("inspector-material").textContent=d.group==="glass"?"transparent glass":"solid study material";toast(d.label||d.id);}
+function onPointerMove(e){ /* reserved for future projected hotspot placement */ }
+async function load(){
+  try{sourceText=await fetch("./sanborn-restaurant.wrl").then(r=>{if(!r.ok)throw new Error(r.status);return r.text()})}catch(e){sourceText=FALLBACK;$("status-text").textContent="fallback manifest · fetch unavailable";}
+  $("source-text").textContent=sourceText;const rows=parseManifest(sourceText);build(rows);
+}
+function bind(){
+  document.querySelectorAll("[data-preset]").forEach(b=>b.addEventListener("click",()=>preset(b.dataset.preset)));
+  document.querySelectorAll("[data-layer]").forEach(input=>{input.id=`layer-${input.dataset.layer}`;input.addEventListener("change",()=>{if(input.dataset.layer==="wiremesh")setWire(input.checked);else if(input.dataset.layer==="livelight")setLight(input.checked);else setVisibility();});});
+  $("flip-btn").onclick=flip;$("reset-btn").onclick=()=>preset("axon");$("wire-btn").onclick=()=>setWire(!wireOn);$("light-btn").onclick=()=>setLight(!liveLight);$("source-btn").onclick=()=>$("source-drawer").classList.toggle("open");$("close-source").onclick=()=>$("source-drawer").classList.remove("open");
+  document.querySelectorAll("[data-focus]").forEach(a=>a.addEventListener("click",()=>focus(a.dataset.focus)));
+  document.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-mode]").forEach(x=>x.classList.remove("active"));b.classList.add("active");toast(`${b.dataset.mode} mode selected`);if(b.dataset.mode==="blueprint")preset("plan");if(b.dataset.mode==="research")$("source-drawer").classList.add("open");}));
+  setInterval(()=>$("clock").textContent=new Date().toLocaleTimeString([], {hour12:false}),1000);
+}
+bind();load();
+</script>
+</body>
+</html>

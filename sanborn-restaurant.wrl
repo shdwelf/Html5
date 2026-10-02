@@ -1,0 +1,94 @@
+#VRML V2.0 utf8
+# Sanborn restaurant study / XDC-02
+# This is an original interpretive service-counter study, not an attributed Jim Sanborn artwork.
+# Coordinates: metres. Y is up. The XDC_* comments are a deliberately small, source-readable
+# manifest consumed by sanborn-restaurant-4dwm.html; the VRML below remains valid VRML97.
+
+WorldInfo { title "Sanborn Restaurant Study — Blueprint / Wiremesh / Livelight" info [ "Original design study; research notes are source-checked separately" ] }
+NavigationInfo { type [ "EXAMINE", "ANY" ] headlight FALSE }
+Background { skyColor [ 0.012 0.025 0.031 ] }
+Viewpoint { description "Axonometric" position 22 17 25 orientation -0.55 0.75 0.32 0.76 }
+DirectionalLight { direction -0.4 -1 -0.6 intensity 0.55 color 0.72 0.84 0.86 }
+
+# XDC_BOX floor 0 -0.12 0 24 0.24 18 #173640 structure none Room floor
+# XDC_BOX left-booth-back -8 2.25 1.0 0.45 3.5 12 #3d6b70 booths none Left booth run
+# XDC_BOX right-booth-back 8 2.25 1.0 0.45 3.5 12 #3d6b70 booths none Right booth run
+# XDC_BOX left-booth-seat -7.25 0.9 1.0 1.0 0.55 10.8 #a6603a booths none Left banquette
+# XDC_BOX right-booth-seat 7.25 0.9 1.0 1.0 0.55 10.8 #a6603a booths none Right banquette
+# XDC_BOX left-table-a -4.7 1.05 -2.4 3.4 0.18 1.4 #b8814c booths none Left table A
+# XDC_BOX left-table-b -4.7 1.05 4.2 3.4 0.18 1.4 #b8814c booths none Left table B
+# XDC_BOX right-table-a 4.7 1.05 -2.4 3.4 0.18 1.4 #b8814c booths none Right table A
+# XDC_BOX right-table-b 4.7 1.05 4.2 3.4 0.18 1.4 #b8814c booths none Right table B
+# XDC_BOX cashier-base 0 1.65 -7.2 10.4 3.3 1.2 #6a3d2b cashier none Cashier counter
+# XDC_BOX cashier-kick 0 0.25 -7.88 10.4 0.45 0.2 #bd7d43 cashier none Toe kick
+# XDC_BOX flip-top 0 0.14 0.65 10.0 0.28 1.3 #d9a565 cashier flip Flip-up countertop
+# XDC_CYL flip-hinge-left -4.2 3.08 -6.1 0.09 0.8 #f2c36b cashier flip Hinge pin left
+# XDC_CYL flip-hinge-right 4.2 3.08 -6.1 0.09 0.8 #f2c36b cashier flip Hinge pin right
+# XDC_BOX glass-case-body -2.9 3.05 -7.12 3.4 1.25 0.86 #77d5d0 display glass Glass display case
+# XDC_BOX glass-case-top -2.9 3.72 -7.12 3.55 0.10 1.0 #a8ffff display none Display case top
+# XDC_BOX display-tray-a -2.9 2.52 -7.12 2.65 0.08 0.50 #d5b46a display none Pastry tray
+# XDC_BOX display-tray-b -2.9 2.77 -7.12 2.65 0.08 0.50 #d5b46a display none Lower tray
+# XDC_BOX register 2.65 3.02 -7.12 1.35 0.50 0.76 #384e59 cashier none Cash register
+# XDC_BOX register-screen 2.65 3.53 -7.36 0.88 0.50 0.10 #8cf4d2 livelight none Register display
+# XDC_BOX menu-rail 5.1 4.25 -7.08 3.0 0.12 0.12 #e7b866 livelight none Menu light rail
+# XDC_BOX fryer 6.0 1.25 6.0 3.4 2.5 2.4 #7a4a35 kitchen none Deep fry unit
+# XDC_BOX fryer-well 6.0 2.56 5.78 1.45 0.10 1.1 #1d2528 kitchen none Oil well
+# XDC_BOX prep-table 2.8 1.35 6.0 2.5 2.7 2.0 #4a5c5f kitchen none Prep table
+# XDC_BOX hood 6.0 4.0 6.0 4.5 0.25 3.0 #526d70 kitchen none Exhaust hood
+# XDC_BOX hood-light 6.0 3.78 4.62 2.6 0.08 0.18 #f6c768 livelight none Hood work light
+# XDC_BOX fridge 9.0 2.0 1.0 1.6 4.0 2.5 #344951 kitchen none Under-counter fridge
+# XDC_BOX shelf -1.5 3.8 6.4 3.0 0.18 0.55 #49656a kitchen none Wire shelf
+# XDC_BOX shelf-level -1.5 4.7 6.4 3.0 0.14 0.55 #49656a kitchen none Wire shelf upper
+# XDC_BOX neon-bar 0 3.5 5.0 7.8 0.06 0.06 #65f6df livelight none Back bar livelight
+# XDC_CYL stool-1 -3.3 1.1 5.0 0.23 2.2 #d39452 seating stool Bar stool 1
+# XDC_CYL stool-2 -1.1 1.1 5.0 0.23 2.2 #d39452 seating stool Bar stool 2
+# XDC_CYL stool-3 1.1 1.1 5.0 0.23 2.2 #d39452 seating stool Bar stool 3
+# XDC_CYL stool-4 3.3 1.1 5.0 0.23 2.2 #d39452 seating stool Bar stool 4
+# XDC_CYL stool-seat-1 -3.3 2.26 5.0 0.62 0.18 #cf8a4c seating stool Bar stool seat 1
+# XDC_CYL stool-seat-2 -1.1 2.26 5.0 0.62 0.18 #cf8a4c seating stool Bar stool seat 2
+# XDC_CYL stool-seat-3 1.1 2.26 5.0 0.62 0.18 #cf8a4c seating stool Bar stool seat 3
+# XDC_CYL stool-seat-4 3.3 2.26 5.0 0.62 0.18 #cf8a4c seating stool Bar stool seat 4
+# XDC_LINE room-outline -11 0.02 -8 11 0.02 -8 #58c9d1 blueprint Room outline front
+# XDC_LINE room-outline -11 0.02 8 11 0.02 8 #58c9d1 blueprint Room outline back
+# XDC_LINE counter-line -5.2 3.35 -7.84 5.2 3.35 -7.84 #f5c765 blueprint Cashier datum
+# XDC_LABEL room-label 0 0.12 -8.65 0.34 #65f6df labels DINING ROOM / SERVICE COUNTER
+# XDC_LABEL kitchen-label 6.0 5.0 6.0 0.28 #f6c768 labels SMALL DEEP-FRY KITCHEN
+# XDC_LABEL counter-label 0 5.1 -7.0 0.28 #65f6df labels FLIP-UP PASS / CASHIER
+# XDC_LABEL mesh-label -9.0 4.9 1.0 0.24 #7ddde1 labels WIREMESH BOOTH SHELL
+# XDC_POINTLIGHT service-glow 0 4.0 -6.5 #f0b35c 2.3 12 livelight service counter glow
+# XDC_POINTLIGHT kitchen-glow 6.0 4.0 5.5 #71f6d4 2.0 10 livelight fryer work light
+# XDC_POINTLIGHT bar-glow 0 3.6 5.0 #54e8d2 1.8 9 livelight back bar glow
+
+# A valid, intentionally sparse VRML97 companion scene. The HTML5/XDC viewer reads
+# the source manifest above to supply labels, wiremesh, blueprint, and animation.
+PROTO BoxPart [
+  field SFVec3f translation 0 0 0
+  field SFVec3f size 1 1 1
+  field SFColor color 0.5 0.5 0.5
+] {
+  Transform { translation IS translation children [
+    Shape { appearance Appearance { material Material { diffuseColor IS color } }
+      geometry Box { size IS size } }
+  ] }
+}
+PROTO CylinderPart [
+  field SFVec3f translation 0 0 0
+  field SFFloat radius 0.5
+  field SFFloat height 1
+  field SFColor color 0.5 0.5 0.5
+] {
+  Transform { translation IS translation children [
+    Shape { appearance Appearance { material Material { diffuseColor IS color } }
+      geometry Cylinder { radius IS radius height IS height } }
+  ] }
+}
+BoxPart { translation 0 -0.12 0 size 24 0.24 18 color 0.09 0.21 0.25 }
+BoxPart { translation -8 2.25 1 size 0.45 3.5 12 color 0.24 0.42 0.44 }
+BoxPart { translation 8 2.25 1 size 0.45 3.5 12 color 0.24 0.42 0.44 }
+BoxPart { translation 0 1.65 -7.2 size 10.4 3.3 1.2 color 0.42 0.24 0.17 }
+BoxPart { translation 0 0.14 -5.45 size 10 0.28 1.3 color 0.85 0.65 0.40 }
+BoxPart { translation -2.9 3.05 -7.12 size 3.4 1.25 0.86 color 0.30 0.75 0.74 }
+BoxPart { translation 6 1.25 6 size 3.4 2.5 2.4 color 0.48 0.29 0.21 }
+BoxPart { translation 6 4 6 size 4.5 0.25 3 color 0.32 0.43 0.44 }
+CylinderPart { translation -3.3 1.1 5 radius 0.23 height 2.2 color 0.83 0.58 0.32 }
+CylinderPart { translation 3.3 1.1 5 radius 0.23 height 2.2 color 0.83 0.58 0.32 }
