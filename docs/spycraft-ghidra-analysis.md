@@ -69,7 +69,9 @@ Candidates are selected by filename suffix or an `MZ` header. Header parsing bel
 | `KERNEL` | 28 |
 | `USER` | 1 |
 
-### Research strings with code references
+### Research string records
+
+These are defined strings selected by research terms; per-row cross-reference arrays in the JSON may be empty for resource-only text.
 
 | Program | Address | Defined string |
 |---|---|---|
