@@ -23633,7 +23633,7 @@ function secomSchedule(phrase){
   return {phrase:p.slice(0,20),first,second,firstDigits:a,secondDigits:b,seed,block,checker:checker.join('')};
 }
 addOp('secomSchedule','SECOM Key Schedule','Classical',
-  'Inspect the first, checkable half of SECOM: rank each ten-letter half of a 20-letter phrase (1…9,0), add without carry, extend to 50 digits by chain addition, then sequence the last row for the checkerboard. Useful for testing a Crow key hypothesis; it does not prove that phrase or disclose the later transpositions.',
+  'Inspect SECOM’s auditable key schedule: rank the two ten-letter halves (1…9,0), add without carry, generate 50 new chain digits, and sequence the checkerboard row. This is not a full decryptor: exact triangular disruption is required. The repository probe reproduces the official full vector and rejects INMYMEMORYIWILLALWAY as the Crow key.',
   [{key:'phrase',label:'Key phrase (20+ letters)',type:'text',default:'MAKE NEW FRIENDS BUT KEEP THE OLD'}],
   function(t,a){const s=secomSchedule(a.phrase||t);return ['Phrase : '+s.phrase.slice(0,10)+' '+s.phrase.slice(10),'Ranks : '+s.firstDigits+' '+s.secondDigits,'Seed   : '+s.seed,'50     : '+s.block.match(/.{10}/g).join(' '),'Board  : '+s.checker].join('\n');});
 

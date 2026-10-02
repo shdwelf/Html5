@@ -79,11 +79,22 @@ INMYMEMORYIWILLALWAY   (first 20 letters)
 ```
 
 This is **not a claimed solve**. The source publishes no accepted plaintext or
-key, although it lists Oleksii Sylichenko (2023) and Daisuke Kondo (2026). The
-new `secomSchedule` recipe exposes the exact schedule for testing candidates;
-it intentionally does not use the suite’s older row-rotation teaching model as
-proof of a real disrupted-transposition solve. Confirmation requires exact
-re-encryption of all 600 digits.
+key, although it lists Oleksii Sylichenko (2023) and Daisuke Kondo (2026).
+
+Continued research recovered the complete disrupted-transposition construction
+from Rijmenants’s worksheet: triangular areas begin at columns in `1…9,0` key
+order, advance one column per row, and are filled only after the ordinary area.
+`tools/secom_probe.py` implements both directions and first reproduces the
+published 105-digit example exactly. Under that exact algorithm the opening-line
+candidate `INMYMEMORYIWILLALWAY` does **not** produce coherent English from the
+600 Crow digits, so it is now recorded as a failed candidate rather than an open
+lead. Several direct combinations of the six hint lines failed as well; this was
+a small hypothesis test, not a dictionary or lyric-key exhaustion.
+
+The CyberChef `secomSchedule` recipe remains a transparent schedule worksheet,
+and now directs users to the exact probe instead of implying that schedule
+agreement can validate a solve. Confirmation of another phrase still requires
+exact re-encryption of all 600 digits.
 
 ## 4. The “20 words from the poem” question
 
@@ -105,21 +116,37 @@ by themselves, supply the required machine fields.
 
 An M3 proposal needs rotor order, three ring settings, three start positions,
 reflector and reciprocal plugboard. M4 additionally needs Beta/Gamma, four rings
-and starts, and thin B/C. “Bright” is not an Enigma setting, despite its
-lampboard; Morse is normally a transport encoding, not a plugboard schedule.
-Wrong→right typo pairs can be investigated, but they are not evidence until a
-rule fixed in advance yields disjoint reciprocal pairs and passes all positioned
-K4 cribs.
+and starts, and thin B/C. Morse is normally a transport encoding, not a
+plugboard schedule. Wrong→right typo pairs can be investigated, but they are not
+evidence until a rule fixed in advance yields disjoint reciprocal pairs and
+passes all positioned K4 cribs.
 
-The new lecture record therefore marks the result as a **negative finding**, not
-an impossibility proof. Any future proposal must publish a complete deterministic
-setup, preprocessing convention, all crib matches and a full round trip without
-manual corrections.
+“Bright” is not a named Enigma key field. The corrected, narrower hypothesis is
+**no/empty plugboard**, not plugboard pairs: an empty Steckerbrett is a valid
+configuration, and Ostwald and Weierud’s modern Enigma-breaking paper explicitly
+uses “brightness” for the plaintext-statistics signal, observing that wrong or
+additional plugs dim it and beginning rotor/ring searches with an empty
+plugboard approximation:
+<https://cryptocellar.org/pubs/enigma-modern-breaking.pdf>.
+
+That parallel makes the empty-plugboard trial technically motivated and
+falsifiable; it does not show that Sanborn intended it. Empty plugs also supply
+only one field of a key and leave model, rotor order, rings, starts and reflector
+unknown. Historical commercial Enigma variants without plugboards establish
+that no-plugboard machines existed, but do not connect such a variant to
+Kryptos:
+<https://www.nsa.gov/portals/75/documents/about/cryptologic-heritage/historical-figures-publications/publications/wwii/solving_enigma.pdf>.
+
+The lecture record therefore marks the result as a **negative finding with a
+specific search hypothesis**, not an impossibility proof. Any future proposal
+must publish a complete deterministic setup, preprocessing convention, all crib
+matches and a full round trip without manual corrections.
 
 ## 6. Verification
 
 ```bash
 node tools/verify_lecture_hall.mjs
+python3 tools/secom_probe.py
 npx vitest run \
   test/cyberchef-classical-deep-dive.test.ts \
   test/cyberchef-matrix-deep-dive.test.ts \

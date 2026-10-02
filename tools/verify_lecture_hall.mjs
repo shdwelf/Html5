@@ -825,12 +825,12 @@ if (!existsSync(SUITE)) {
     "Spy Museum record distinguishes M4's stationary Greek wheel from a fourth stepping rotor",
   );
   check(
-    /SEe and COMe/.test(haystack("crows-cryptogram-secom")) && /INMYMEMORYIWILLALWAY/.test(haystack("crows-cryptogram-secom")) && /not presented as a solved cryptogram/i.test(haystack("crows-cryptogram-secom")),
-    "Crow record separates the strong SECOM tell from the unconfirmed Derry-song phrase",
+    /SEe and COMe/.test(haystack("crows-cryptogram-secom")) && /INMYMEMORYIWILLALWAY/.test(haystack("crows-cryptogram-secom")) && /failed the exact published algorithm/i.test(haystack("crows-cryptogram-secom")),
+    "Crow record separates the strong SECOM tell from the exact rejection of the Derry opening-line candidate",
   );
   check(
-    /bright.*not.*cryptographic setting/i.test(haystack("kryptos-enigma-hypothesis")) && /complete machine model and every setting/i.test(haystack("kryptos-enigma-hypothesis")),
-    "Kryptos Enigma audit rejects a lamp/brightness analogy without a complete key sheet",
+    /empty plugboard.*useful first approximation/i.test(haystack("kryptos-enigma-hypothesis")) && /not a complete key/i.test(haystack("kryptos-enigma-hypothesis")) && /Modern breaking of Enigma/.test(haystack("kryptos-enigma-hypothesis")),
+    "Kryptos Enigma audit treats bright as a sourced empty-plugboard hypothesis, not cable pairs or a complete key",
   );
   check(
     ["kr0mecorp", "orc-hcu", "fravia-searchlores", "kim-philby-stasi"].every((id) => byId[id]),

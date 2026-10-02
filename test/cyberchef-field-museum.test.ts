@@ -26,7 +26,9 @@ describe("museum and field-cipher research recipes", () => {
       expect(k.html).toContain("369 recipes");
       expect(k.html).toContain("Museum Rotor Machines — Enigma M3/M4");
       expect(k.html).toContain("Field Ciphers — SECOM & OD Poem Code");
+      expect(k.html).toContain("repository probe reproduces the official full vector and rejects INMYMEMORYIWILLALWAY");
       expect(k.ops.map(x => x.id)).toEqual(expect.arrayContaining(["enigmaM4", "secomSchedule", "odPoemKey"]));
+      expect(k.ops.find(x => x.id === "enigmaM4")?.args.find(a => a.key === "plug")?.default).toBe("");
       expect(new Set(k.ops.map(x => x.id)).size).toBe(k.ops.length);
 
       // Beta A + thin B is electrically equivalent to the old wide B reflector.
