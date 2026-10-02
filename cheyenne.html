@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>CHEYENNE / ANGELES 4Dwm — NORAD's granite + Angeles NF mine theater</title>
+  <meta name="description" content="Two-plate Three.js theater: Cheyenne Mountain (NORAD) and the Pikes Peak massif in Colorado beside the Angeles National Forest's mines, camps and the Bridge to Nowhere in California. USGS 3DEP control-point DEM, GNIS gazetteer, MRDS mine index, political relief." />
+  <link rel="stylesheet" href="./css/cheyenne.css" />
+</head>
+<body>
+  <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
+  <div id="labels" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div>
+      <h1>CHEYENNE / ANGELES 4Dwm</h1>
+      <p>NORAD's granite · Angeles NF mines + camps · USGS 3DEP + GNIS + MRDS — schematic, not a survey</p>
+    </div>
+    <div class="actions">
+      <select id="viewSelect" aria-label="Jump to view">
+        <!-- options injected from js/cheyenne-data.js VIEWS -->
+      </select>
+      <button type="button" id="btnXray" aria-pressed="false">X-RAY</button>
+      <button type="button" id="btnWire" aria-pressed="false">WIREFRAME</button>
+      <button type="button" id="btnLabels" aria-pressed="true">LABELS</button>
+      <button type="button" id="btnReset">RESET</button>
+    </div>
+  </header>
+
+  <!-- PIP: HUD + gazetteer search -------------------------------------- -->
+  <section class="pip" id="pipHud">
+    <div class="pip-head"><h2>HUD · GAZETTEER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div class="search-row">
+        <input type="search" id="searchBox" placeholder="search GNIS names + features…" aria-label="Search gazetteer" />
+        <div id="searchResults"></div>
+      </div>
+      <dl class="kv">
+        <dt>camera</dt><dd id="hudCam">—</dd>
+        <dt>target</dt><dd id="hudTarget">—</dd>
+        <dt>cursor</dt><dd id="hudLonLat">—</dd>
+        <dt>ground</dt><dd id="hudElev">—</dd>
+        <dt>layers on</dt><dd id="hudLayers">—</dd>
+        <dt>pickable</dt><dd id="hudObjects">—</dd>
+        <dt>fps</dt><dd id="hudFps">—</dd>
+      </dl>
+      <div class="slider-row">
+        <label for="vertExag">terrain exaggeration <span id="vertExagVal">6×</span></label>
+        <input type="range" id="vertExag" min="1" max="18" step="1" value="6" />
+      </div>
+      <div class="slider-row">
+        <label for="depthExag">depth scale <span id="depthExagVal">2.5×</span></label>
+        <input type="range" id="depthExag" min="1" max="6" step="0.5" value="2.5" />
+      </div>
+      <p class="hint">Vertical is exaggerated; plan distances are true per plate. The two plates are ~1,310 km apart in reality and sit side by side here for reading.</p>
+      <p class="hint">offline · standalone</p>
+    </div>
+  </section>
+
+  <!-- PIP: layers ------------------------------------------------------- -->
+  <section class="pip" id="pipLayers">
+    <div class="pip-head"><h2>LAYERS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div id="layerList"></div>
+      <p class="hint" style="margin-top:8px">
+        Evidence tiers — <span style="color:#ffb020">official</span> USGS MRDS/GNIS + agency fact,
+        <span style="color:#5cd6ff">community</span> well-sourced secondary,
+        <span style="color:#ff6ec7">context</span> approximate only.
+      </p>
+      <p class="hint" style="margin-top:8px">off-frame register</p>
+      <div id="offFrameList"></div>
+    </div>
+  </section>
+
+  <!-- PIP: detail ------------------------------------------------------- -->
+  <section class="pip" id="pipDetail">
+    <div class="pip-head"><h2>DOSSIER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body" id="detailBody">
+      <p class="hint">Click any node or the terrain. Mines carry their USGS MRDS record; terrain carries its 3DEP provenance.</p>
+    </div>
+  </section>
+
+  <!-- PIP: minimap ------------------------------------------------------ -->
+  <section class="pip" id="pipMap">
+    <div class="pip-head"><h2>PLAN VIEW</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <canvas id="minimap" width="220" height="150" aria-label="Plan view of both plates"></canvas>
+      <p class="hint" style="margin:6px 0 0">Orthographic plan pass, both plates. White wedge is the main camera.</p>
+    </div>
+  </section>
+
+  <footer class="statusbar">
+    <span id="status" aria-live="polite">booting…</span>
+    <span>USGS 3DEP control-point DEM · GNIS gazetteer · USGS MRDS mine index — schematic, not a survey</span>
+  </footer>
+
+  <script type="module" src="./js/cheyenne.js"></script>
+</body>
+</html>
