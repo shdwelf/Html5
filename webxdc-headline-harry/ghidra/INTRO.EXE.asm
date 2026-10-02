@@ -444,7 +444,7 @@ LAB_1000_0676:
 1000:0681          26a07c02                       MOV AL,ES:[0x27c]
 1000:0685          8e062a0f                       MOV ES,word ptr [0xf2a]
 1000:0689          2688841600                     MOV byte ptr ES:[SI + 0x16],AL
-switchD_1000:99e7::caseD_3:
+switchD_1000:96f1::caseD_2:
 1000:068e          8e06280f                       MOV ES,word ptr [0xf28]
 1000:0692          26c684ca0203                   MOV byte ptr ES:[SI + 0x2ca],0x3
 1000:0698          ebd2                           JMP 0x1000:066c

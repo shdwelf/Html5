@@ -7323,6 +7323,27 @@ LAB_1000_6f30:
 1000:6f49          1e                             PUSH DS
 1000:6f4a          50                             PUSH AX
 1000:6f4b          9a23052408                     CALLF 0x0000:8763
+1000:6f50          83c40a                         ADD SP,0xa
+LAB_1000_6f53:
+1000:6f53          8d46ee                         LEA AX,[BP + -0x12]
+1000:6f56          16                             PUSH SS
+1000:6f57          50                             PUSH AX
+1000:6f58          9ae0030000                     CALLF 0x0000:03e0
+1000:6f5d          83c404                         ADD SP,0x4
+1000:6f60          807eee00                       CMP byte ptr [BP + -0x12],0x0
+1000:6f64          74ed                           JZ 0x1000:6f53
+1000:6f66          8e06684b                       MOV ES,word ptr [0x4b68]
+1000:6f6a          26ff368836                     PUSH word ptr ES:[0x3688]
+1000:6f6f          26ff368636                     PUSH word ptr ES:[0x3686]
+1000:6f74          9a2c0b0000                     CALLF 0x0000:0b2c
+1000:6f79          83c404                         ADD SP,0x4
+1000:6f7c          8d46e6                         LEA AX,[BP + -0x1a]
+1000:6f7f          16                             PUSH SS
+1000:6f80          50                             PUSH AX
+1000:6f81          9ac0130000                     CALLF 0x0000:13c0
+1000:6f86          8be5                           MOV SP,BP
+1000:6f88          5d                             POP BP
+1000:6f89          cb                             RETF
 FUN_1000_6f8a:
 1000:6f8a          55                             PUSH BP
 1000:6f8b          8bec                           MOV BP,SP
@@ -7767,6 +7788,12 @@ LAB_1000_749a:
 1000:74b3          1e                             PUSH DS
 1000:74b4          50                             PUSH AX
 1000:74b5          9a23052408                     CALLF 0x0000:8763
+1000:74ba          83c40a                         ADD SP,0xa
+1000:74bd          8b46c8                         MOV AX,word ptr [BP + -0x38]
+1000:74c0          050f00                         ADD AX,0xf
+1000:74c3          50                             PUSH AX
+1000:74c4          ff76c6                         PUSH word ptr [BP + -0x3a]
+1000:74c7          9a7a0d0000                     CALLF 0x0000:0d7a
 FUN_1000_77ac:
 1000:77ac          55                             PUSH BP
 1000:77ad          8bec                           MOV BP,SP
@@ -10556,6 +10583,35 @@ LAB_1000_a107:
 1000:a113          ff76d0                         PUSH word ptr [BP + -0x30]
 1000:a116          ff76ce                         PUSH word ptr [BP + -0x32]
 1000:a119          9a23052408                     CALLF 0x0000:8763
+1000:a11e          83c40a                         ADD SP,0xa
+1000:a121          c746cc0100                     MOV word ptr [BP + -0x34],0x1
+1000:a126          eb2e                           JMP 0x1000:a156
+LAB_1000_a128:
+1000:a128          b80a00                         MOV AX,0xa
+1000:a12b          f76ecc                         IMUL word ptr [BP + -0x34]
+1000:a12e          053c00                         ADD AX,0x3c
+1000:a131          50                             PUSH AX
+1000:a132          b84600                         MOV AX,0x46
+1000:a135          50                             PUSH AX
+1000:a136          9a7a0d0000                     CALLF 0x0000:0d7a
+LAB_1000_a156:
+1000:a156          8b8654ff                       MOV AX,word ptr [BP + 0xff54]
+1000:a15a          3946cc                         CMP word ptr [BP + -0x34],AX
+1000:a15d          72c9                           JC 0x1000:a128
+1000:a15f          eb0c                           JMP 0x1000:a16d
+LAB_1000_a161:
+1000:a161          807ec003                       CMP byte ptr [BP + -0x40],0x3
+1000:a165          7419                           JZ 0x1000:a180
+1000:a167          807ec005                       CMP byte ptr [BP + -0x40],0x5
+1000:a16b          7413                           JZ 0x1000:a180
+LAB_1000_a16d:
+1000:a16d          8d46c0                         LEA AX,[BP + -0x40]
+1000:a170          16                             PUSH SS
+1000:a171          50                             PUSH AX
+1000:a172          9ae0030000                     CALLF 0x0000:03e0
+1000:a177          83c404                         ADD SP,0x4
+1000:a17a          807ec001                       CMP byte ptr [BP + -0x40],0x1
+1000:a17e          75e1                           JNZ 0x1000:a161
 LAB_1000_a180:
 1000:a180          5e                             POP SI
 1000:a181          8be5                           MOV SP,BP
@@ -10988,6 +11044,23 @@ LAB_1000_a6e8:
 1000:a700          1e                             PUSH DS
 1000:a701          50                             PUSH AX
 1000:a702          9a23052408                     CALLF 0x0000:8763
+1000:a707          83c40a                         ADD SP,0xa
+1000:a70a          8e060c4c                       MOV ES,word ptr [0x4c0c]
+1000:a70e          26833ee20302                   CMP word ptr ES:[0x3e2],0x2
+1000:a714          7e05                           JLE 0x1000:a71b
+1000:a716          b84b00                         MOV AX,0x4b
+1000:a719          eb03                           JMP 0x1000:a71e
+LAB_1000_a71b:
+1000:a71b          b8af00                         MOV AX,0xaf
+LAB_1000_a71e:
+1000:a71e          50                             PUSH AX
+1000:a71f          9a100e0000                     CALLF 0x0000:0e10
+1000:a724          83c402                         ADD SP,0x2
+1000:a727          b82d00                         MOV AX,0x2d
+1000:a72a          50                             PUSH AX
+1000:a72b          b80f00                         MOV AX,0xf
+1000:a72e          50                             PUSH AX
+1000:a72f          9a7a0d0000                     CALLF 0x0000:0d7a
 1000:a836          83c404                         ADD SP,0x4
 1000:a839          b81c00                         MOV AX,0x1c
 1000:a83c          50                             PUSH AX
@@ -11228,6 +11301,26 @@ LAB_1000_acbf:
 1000:acd8          1e                             PUSH DS
 1000:acd9          50                             PUSH AX
 1000:acda          9a23052408                     CALLF 0x0000:8763
+1000:acdf          83c40a                         ADD SP,0xa
+1000:ace2          8e060c4c                       MOV ES,word ptr [0x4c0c]
+1000:ace6          26833ee20302                   CMP word ptr ES:[0x3e2],0x2
+1000:acec          7e05                           JLE 0x1000:acf3
+1000:acee          b84b00                         MOV AX,0x4b
+1000:acf1          eb03                           JMP 0x1000:acf6
+LAB_1000_acf3:
+1000:acf3          b8af00                         MOV AX,0xaf
+LAB_1000_acf6:
+1000:acf6          50                             PUSH AX
+1000:acf7          9a100e0000                     CALLF 0x0000:0e10
+1000:acfc          83c402                         ADD SP,0x2
+1000:acff          8b46e4                         MOV AX,word ptr [BP + -0x1c]
+1000:ad02          051400                         ADD AX,0x14
+1000:ad05          50                             PUSH AX
+1000:ad06          8b46e2                         MOV AX,word ptr [BP + -0x1e]
+1000:ad09          40                             INC AX
+1000:ad0a          40                             INC AX
+1000:ad0b          50                             PUSH AX
+1000:ad0c          9a7a0d0000                     CALLF 0x0000:0d7a
 1000:ad3b          83c404                         ADD SP,0x4
 1000:ad3e          8b46e4                         MOV AX,word ptr [BP + -0x1c]
 1000:ad41          051200                         ADD AX,0x12
@@ -11296,6 +11389,76 @@ LAB_1000_aeca:
 1000:aee2          1e                             PUSH DS
 1000:aee3          50                             PUSH AX
 1000:aee4          9a23052408                     CALLF 0x0000:8763
+1000:aee9          83c40a                         ADD SP,0xa
+1000:aeec          8e060c4c                       MOV ES,word ptr [0x4c0c]
+1000:aef0          26833ee20302                   CMP word ptr ES:[0x3e2],0x2
+1000:aef6          7e05                           JLE 0x1000:aefd
+1000:aef8          b84b00                         MOV AX,0x4b
+1000:aefb          eb03                           JMP 0x1000:af00
+LAB_1000_aefd:
+1000:aefd          b8af00                         MOV AX,0xaf
+LAB_1000_af00:
+1000:af00          50                             PUSH AX
+1000:af01          9a100e0000                     CALLF 0x0000:0e10
+1000:af06          83c402                         ADD SP,0x2
+1000:af09          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:af0c          051b00                         ADD AX,0x1b
+1000:af0f          50                             PUSH AX
+1000:af10          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:af13          058200                         ADD AX,0x82
+1000:af16          50                             PUSH AX
+1000:af17          ff76ec                         PUSH word ptr [BP + -0x14]
+1000:af1a          b80c1c                         MOV AX,0x1c0c
+1000:af1d          1e                             PUSH DS
+1000:af1e          50                             PUSH AX
+1000:af1f          9a23052408                     CALLF 0x0000:8763
+1000:af24          83c40a                         ADD SP,0xa
+1000:af27          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:af2a          051b00                         ADD AX,0x1b
+1000:af2d          50                             PUSH AX
+1000:af2e          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:af31          05fa00                         ADD AX,0xfa
+1000:af34          50                             PUSH AX
+1000:af35          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:af38          058200                         ADD AX,0x82
+1000:af3b          50                             PUSH AX
+1000:af3c          b8121c                         MOV AX,0x1c12
+1000:af3f          1e                             PUSH DS
+1000:af40          50                             PUSH AX
+1000:af41          9a23052408                     CALLF 0x0000:8763
+1000:af46          83c40a                         ADD SP,0xa
+1000:af49          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:af4c          051b00                         ADD AX,0x1b
+1000:af4f          50                             PUSH AX
+1000:af50          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:af53          053c01                         ADD AX,0x13c
+1000:af56          50                             PUSH AX
+1000:af57          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:af5a          05fa00                         ADD AX,0xfa
+1000:af5d          50                             PUSH AX
+1000:af5e          b81c1c                         MOV AX,0x1c1c
+1000:af61          1e                             PUSH DS
+1000:af62          50                             PUSH AX
+1000:af63          9a23052408                     CALLF 0x0000:8763
+1000:af68          83c40a                         ADD SP,0xa
+1000:af6b          8e060c4c                       MOV ES,word ptr [0x4c0c]
+1000:af6f          26833ee20302                   CMP word ptr ES:[0x3e2],0x2
+1000:af75          7e05                           JLE 0x1000:af7c
+1000:af77          b80b00                         MOV AX,0xb
+1000:af7a          eb03                           JMP 0x1000:af7f
+LAB_1000_af7c:
+1000:af7c          b80f00                         MOV AX,0xf
+LAB_1000_af7f:
+1000:af7f          50                             PUSH AX
+1000:af80          9a100e0000                     CALLF 0x0000:0e10
+1000:af85          83c402                         ADD SP,0x2
+1000:af88          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:af8b          050f00                         ADD AX,0xf
+1000:af8e          50                             PUSH AX
+1000:af8f          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:af92          058200                         ADD AX,0x82
+1000:af95          50                             PUSH AX
+1000:af96          9a7a0d0000                     CALLF 0x0000:0d7a
 1000:afc3          83c404                         ADD SP,0x4
 1000:afc6          ff76f2                         PUSH word ptr [BP + -0xe]
 1000:afc9          8b46ec                         MOV AX,word ptr [BP + -0x14]
@@ -11321,6 +11484,27 @@ LAB_1000_aeca:
 1000:b013          1e                             PUSH DS
 1000:b014          50                             PUSH AX
 1000:b015          9a23052408                     CALLF 0x0000:8763
+1000:b01a          83c40a                         ADD SP,0xa
+1000:b01d          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b020          052a00                         ADD AX,0x2a
+1000:b023          50                             PUSH AX
+1000:b024          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b027          053f01                         ADD AX,0x13f
+1000:b02a          50                             PUSH AX
+1000:b02b          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b02e          05fa00                         ADD AX,0xfa
+1000:b031          50                             PUSH AX
+1000:b032          b8e433                         MOV AX,0x33e4
+1000:b035          bab230                         MOV DX,0x30b2
+1000:b038          52                             PUSH DX
+1000:b039          50                             PUSH AX
+1000:b03a          9a23052408                     CALLF 0x0000:8763
+1000:b03f          83c40a                         ADD SP,0xa
+1000:b042          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b045          052d00                         ADD AX,0x2d
+1000:b048          50                             PUSH AX
+1000:b049          ff76ec                         PUSH word ptr [BP + -0x14]
+1000:b04c          9a7a0d0000                     CALLF 0x0000:0d7a
 1000:b079          83c404                         ADD SP,0x4
 1000:b07c          b84d1c                         MOV AX,0x1c4d
 1000:b07f          1e                             PUSH DS
@@ -11340,6 +11524,27 @@ LAB_1000_aeca:
 1000:b0a1          1e                             PUSH DS
 1000:b0a2          50                             PUSH AX
 1000:b0a3          9a23052408                     CALLF 0x0000:8763
+1000:b0a8          83c40a                         ADD SP,0xa
+1000:b0ab          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b0ae          053900                         ADD AX,0x39
+1000:b0b1          50                             PUSH AX
+1000:b0b2          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b0b5          053f01                         ADD AX,0x13f
+1000:b0b8          50                             PUSH AX
+1000:b0b9          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b0bc          05fa00                         ADD AX,0xfa
+1000:b0bf          50                             PUSH AX
+1000:b0c0          b8e433                         MOV AX,0x33e4
+1000:b0c3          bab230                         MOV DX,0x30b2
+1000:b0c6          52                             PUSH DX
+1000:b0c7          50                             PUSH AX
+1000:b0c8          9a23052408                     CALLF 0x0000:8763
+1000:b0cd          83c40a                         ADD SP,0xa
+1000:b0d0          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b0d3          053c00                         ADD AX,0x3c
+1000:b0d6          50                             PUSH AX
+1000:b0d7          ff76ec                         PUSH word ptr [BP + -0x14]
+1000:b0da          9a7a0d0000                     CALLF 0x0000:0d7a
 1000:b107          83c404                         ADD SP,0x4
 1000:b10a          b8781c                         MOV AX,0x1c78
 1000:b10d          1e                             PUSH DS
@@ -11360,6 +11565,27 @@ LAB_1000_aeca:
 1000:b132          52                             PUSH DX
 1000:b133          50                             PUSH AX
 1000:b134          9a23052408                     CALLF 0x0000:8763
+1000:b139          83c40a                         ADD SP,0xa
+1000:b13c          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b13f          054800                         ADD AX,0x48
+1000:b142          50                             PUSH AX
+1000:b143          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b146          053f01                         ADD AX,0x13f
+1000:b149          50                             PUSH AX
+1000:b14a          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b14d          05fa00                         ADD AX,0xfa
+1000:b150          50                             PUSH AX
+1000:b151          b8e433                         MOV AX,0x33e4
+1000:b154          bab230                         MOV DX,0x30b2
+1000:b157          52                             PUSH DX
+1000:b158          50                             PUSH AX
+1000:b159          9a23052408                     CALLF 0x0000:8763
+1000:b15e          83c40a                         ADD SP,0xa
+1000:b161          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b164          054b00                         ADD AX,0x4b
+1000:b167          50                             PUSH AX
+1000:b168          ff76ec                         PUSH word ptr [BP + -0x14]
+1000:b16b          9a7a0d0000                     CALLF 0x0000:0d7a
 1000:b198          83c404                         ADD SP,0x4
 1000:b19b          b8821c                         MOV AX,0x1c82
 1000:b19e          1e                             PUSH DS
@@ -11380,6 +11606,27 @@ LAB_1000_aeca:
 1000:b1c3          52                             PUSH DX
 1000:b1c4          50                             PUSH AX
 1000:b1c5          9a23052408                     CALLF 0x0000:8763
+1000:b1ca          83c40a                         ADD SP,0xa
+1000:b1cd          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b1d0          055700                         ADD AX,0x57
+1000:b1d3          50                             PUSH AX
+1000:b1d4          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b1d7          053f01                         ADD AX,0x13f
+1000:b1da          50                             PUSH AX
+1000:b1db          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b1de          05fa00                         ADD AX,0xfa
+1000:b1e1          50                             PUSH AX
+1000:b1e2          b8e433                         MOV AX,0x33e4
+1000:b1e5          bab230                         MOV DX,0x30b2
+1000:b1e8          52                             PUSH DX
+1000:b1e9          50                             PUSH AX
+1000:b1ea          9a23052408                     CALLF 0x0000:8763
+1000:b1ef          83c40a                         ADD SP,0xa
+1000:b1f2          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b1f5          055a00                         ADD AX,0x5a
+1000:b1f8          50                             PUSH AX
+1000:b1f9          ff76ec                         PUSH word ptr [BP + -0x14]
+1000:b1fc          9a7a0d0000                     CALLF 0x0000:0d7a
 1000:b229          83c404                         ADD SP,0x4
 1000:b22c          b88c1c                         MOV AX,0x1c8c
 1000:b22f          1e                             PUSH DS
@@ -11400,6 +11647,27 @@ LAB_1000_aeca:
 1000:b254          52                             PUSH DX
 1000:b255          50                             PUSH AX
 1000:b256          9a23052408                     CALLF 0x0000:8763
+1000:b25b          83c40a                         ADD SP,0xa
+1000:b25e          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b261          056600                         ADD AX,0x66
+1000:b264          50                             PUSH AX
+1000:b265          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b268          053f01                         ADD AX,0x13f
+1000:b26b          50                             PUSH AX
+1000:b26c          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b26f          05fa00                         ADD AX,0xfa
+1000:b272          50                             PUSH AX
+1000:b273          b8e433                         MOV AX,0x33e4
+1000:b276          bab230                         MOV DX,0x30b2
+1000:b279          52                             PUSH DX
+1000:b27a          50                             PUSH AX
+1000:b27b          9a23052408                     CALLF 0x0000:8763
+1000:b280          83c40a                         ADD SP,0xa
+1000:b283          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b286          056900                         ADD AX,0x69
+1000:b289          50                             PUSH AX
+1000:b28a          ff76ec                         PUSH word ptr [BP + -0x14]
+1000:b28d          9a7a0d0000                     CALLF 0x0000:0d7a
 FUN_1000_b2a9:
 1000:b2a9          ee                             OUT DX,AL
 1000:b2aa          057500                         ADD AX,0x75
@@ -11428,6 +11696,27 @@ FUN_1000_b2a9:
 1000:b376          52                             PUSH DX
 1000:b377          50                             PUSH AX
 1000:b378          9a23052408                     CALLF 0x0000:8763
+1000:b37d          83c40a                         ADD SP,0xa
+1000:b380          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b383          058400                         ADD AX,0x84
+1000:b386          50                             PUSH AX
+1000:b387          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b38a          053f01                         ADD AX,0x13f
+1000:b38d          50                             PUSH AX
+1000:b38e          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b391          05fa00                         ADD AX,0xfa
+1000:b394          50                             PUSH AX
+1000:b395          b8e433                         MOV AX,0x33e4
+1000:b398          bab230                         MOV DX,0x30b2
+1000:b39b          52                             PUSH DX
+1000:b39c          50                             PUSH AX
+1000:b39d          9a23052408                     CALLF 0x0000:8763
+1000:b3a2          83c40a                         ADD SP,0xa
+1000:b3a5          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b3a8          058700                         ADD AX,0x87
+1000:b3ab          50                             PUSH AX
+1000:b3ac          ff76ec                         PUSH word ptr [BP + -0x14]
+1000:b3af          9a7a0d0000                     CALLF 0x0000:0d7a
 1000:b3dc          83c404                         ADD SP,0x4
 1000:b3df          b8ba1c                         MOV AX,0x1cba
 1000:b3e2          1e                             PUSH DS
@@ -11448,6 +11737,26 @@ FUN_1000_b2a9:
 1000:b407          52                             PUSH DX
 1000:b408          50                             PUSH AX
 1000:b409          9a23052408                     CALLF 0x0000:8763
+1000:b40e          83c40a                         ADD SP,0xa
+1000:b411          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b414          059300                         ADD AX,0x93
+1000:b417          50                             PUSH AX
+1000:b418          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b41b          053f01                         ADD AX,0x13f
+1000:b41e          50                             PUSH AX
+1000:b41f          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b422          05fa00                         ADD AX,0xfa
+1000:b425          50                             PUSH AX
+1000:b426          b8cb1c                         MOV AX,0x1ccb
+1000:b429          1e                             PUSH DS
+1000:b42a          50                             PUSH AX
+1000:b42b          9a23052408                     CALLF 0x0000:8763
+1000:b430          83c40a                         ADD SP,0xa
+1000:b433          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b436          059600                         ADD AX,0x96
+1000:b439          50                             PUSH AX
+1000:b43a          ff76ec                         PUSH word ptr [BP + -0x14]
+1000:b43d          9a7a0d0000                     CALLF 0x0000:0d7a
 1000:b46a          83c404                         ADD SP,0x4
 1000:b46d          b8d31c                         MOV AX,0x1cd3
 1000:b470          1e                             PUSH DS
@@ -11467,6 +11776,27 @@ FUN_1000_b2a9:
 1000:b492          1e                             PUSH DS
 1000:b493          50                             PUSH AX
 1000:b494          9a23052408                     CALLF 0x0000:8763
+1000:b499          83c40a                         ADD SP,0xa
+1000:b49c          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b49f          05a200                         ADD AX,0xa2
+1000:b4a2          50                             PUSH AX
+1000:b4a3          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b4a6          053f01                         ADD AX,0x13f
+1000:b4a9          50                             PUSH AX
+1000:b4aa          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b4ad          05fa00                         ADD AX,0xfa
+1000:b4b0          50                             PUSH AX
+1000:b4b1          b8e433                         MOV AX,0x33e4
+1000:b4b4          bab230                         MOV DX,0x30b2
+1000:b4b7          52                             PUSH DX
+1000:b4b8          50                             PUSH AX
+1000:b4b9          9a23052408                     CALLF 0x0000:8763
+1000:b4be          83c40a                         ADD SP,0xa
+1000:b4c1          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b4c4          05a500                         ADD AX,0xa5
+1000:b4c7          50                             PUSH AX
+1000:b4c8          ff76ec                         PUSH word ptr [BP + -0x14]
+1000:b4cb          9a7a0d0000                     CALLF 0x0000:0d7a
 1000:b4f8          83c404                         ADD SP,0x4
 1000:b4fb          b8ed1c                         MOV AX,0x1ced
 1000:b4fe          1e                             PUSH DS
@@ -11487,6 +11817,46 @@ FUN_1000_b2a9:
 1000:b523          52                             PUSH DX
 1000:b524          50                             PUSH AX
 1000:b525          9a23052408                     CALLF 0x0000:8763
+1000:b52a          83c40a                         ADD SP,0xa
+1000:b52d          8b46ee                         MOV AX,word ptr [BP + -0x12]
+1000:b530          05b100                         ADD AX,0xb1
+1000:b533          50                             PUSH AX
+1000:b534          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b537          053f01                         ADD AX,0x13f
+1000:b53a          50                             PUSH AX
+1000:b53b          8b46ec                         MOV AX,word ptr [BP + -0x14]
+1000:b53e          05fa00                         ADD AX,0xfa
+1000:b541          50                             PUSH AX
+1000:b542          b8e433                         MOV AX,0x33e4
+1000:b545          bab230                         MOV DX,0x30b2
+1000:b548          52                             PUSH DX
+1000:b549          50                             PUSH AX
+1000:b54a          9a23052408                     CALLF 0x0000:8763
+1000:b54f          83c40a                         ADD SP,0xa
+LAB_1000_b552:
+1000:b552          8d46f4                         LEA AX,[BP + -0xc]
+1000:b555          16                             PUSH SS
+1000:b556          50                             PUSH AX
+1000:b557          9ae0030000                     CALLF 0x0000:03e0
+1000:b55c          83c404                         ADD SP,0x4
+1000:b55f          807ef400                       CMP byte ptr [BP + -0xc],0x0
+1000:b563          74ed                           JZ 0x1000:b552
+1000:b565          8e06ce4b                       MOV ES,word ptr [0x4bce]
+1000:b569          26ff368836                     PUSH word ptr ES:[0x3688]
+1000:b56e          26ff368636                     PUSH word ptr ES:[0x3686]
+1000:b573          9a2c0b0000                     CALLF 0x0000:0b2c
+1000:b578          83c404                         ADD SP,0x4
+1000:b57b          836eec02                       SUB word ptr [BP + -0x14],0x2
+1000:b57f          8346f002                       ADD word ptr [BP + -0x10],0x2
+1000:b583          836eee02                       SUB word ptr [BP + -0x12],0x2
+1000:b587          8346f202                       ADD word ptr [BP + -0xe],0x2
+1000:b58b          8d46ec                         LEA AX,[BP + -0x14]
+1000:b58e          16                             PUSH SS
+1000:b58f          50                             PUSH AX
+1000:b590          9ac0130000                     CALLF 0x0000:13c0
+1000:b595          8be5                           MOV SP,BP
+1000:b597          5d                             POP BP
+1000:b598          cb                             RETF
 FUN_1000_b599:
 1000:b599          55                             PUSH BP
 1000:b59a          8bec                           MOV BP,SP
@@ -12447,9 +12817,14 @@ FUN_1000_c05c:
 1000:c0de          1e                             PUSH DS
 1000:c0df          50                             PUSH AX
 1000:c0e0          9a23052408                     CALLF 0x0000:8763
-FUN_1000_c0ff:
-1000:c0ff          08268b16                       OR byte ptr [0x168b],AH
-1000:c103          2008                           AND byte ptr [BX + SI],CL
+1000:c0e5          83c40a                         ADD SP,0xa
+1000:c0e8          8e061c4c                       MOV ES,word ptr [0x4c1c]
+1000:c0ec          26a1ea07                       MOV AX,ES:[0x7ea]
+1000:c0f0          268b16ec07                     MOV DX,word ptr ES:[0x7ec]
+1000:c0f5          a3641e                         MOV [0x1e64],AX
+1000:c0f8          8916661e                       MOV word ptr [0x1e66],DX
+1000:c0fc          26a11e08                       MOV AX,ES:[0x81e]
+1000:c100          268b162008                     MOV DX,word ptr ES:[0x820]
 1000:c105          a3681e                         MOV [0x1e68],AX
 1000:c108          89166a1e                       MOV word ptr [0x1e6a],DX
 1000:c10c          26a15208                       MOV AX,ES:[0x852]
@@ -13761,6 +14136,28 @@ LAB_1000_cfe8:
 1000:cff8          26ff36a039                     PUSH word ptr ES:[0x39a0]
 1000:cffd          26ff369e39                     PUSH word ptr ES:[0x399e]
 1000:d002          9a23052408                     CALLF 0x0000:8763
+1000:d007          83c40a                         ADD SP,0xa
+1000:d00a          b81900                         MOV AX,0x19
+1000:d00d          50                             PUSH AX
+1000:d00e          b82c01                         MOV AX,0x12c
+1000:d011          50                             PUSH AX
+1000:d012          b8b400                         MOV AX,0xb4
+1000:d015          50                             PUSH AX
+1000:d016          8e06644c                       MOV ES,word ptr [0x4c64]
+1000:d01a          26ff36a839                     PUSH word ptr ES:[0x39a8]
+1000:d01f          26ff36a639                     PUSH word ptr ES:[0x39a6]
+1000:d024          9a23052408                     CALLF 0x0000:8763
+1000:d029          83c40a                         ADD SP,0xa
+1000:d02c          b86900                         MOV AX,0x69
+1000:d02f          50                             PUSH AX
+1000:d030          b88c00                         MOV AX,0x8c
+1000:d033          50                             PUSH AX
+1000:d034          b81400                         MOV AX,0x14
+1000:d037          50                             PUSH AX
+1000:d038          8e06644c                       MOV ES,word ptr [0x4c64]
+1000:d03c          26ff36a439                     PUSH word ptr ES:[0x39a4]
+1000:d041          26ff36a239                     PUSH word ptr ES:[0x39a2]
+1000:d046          9a23052408                     CALLF 0x0000:8763
 FUN_1000_d04c:
 1000:d04c          c40a                           LES CX,[BP + SI]
 1000:d04e          b86900                         MOV AX,0x69
@@ -13773,7 +14170,6 @@ FUN_1000_d04c:
 1000:d05e          26ff36ac39                     PUSH word ptr ES:[0x39ac]
 1000:d063          26ff36aa39                     PUSH word ptr ES:[0x39aa]
 1000:d068          9a23052408                     CALLF 0x0000:8763
-FUN_1000_d06d:
 1000:d06d          83c40a                         ADD SP,0xa
 1000:d070          8e06324c                       MOV ES,word ptr [0x4c32]
 1000:d074          26833ee20302                   CMP word ptr ES:[0x3e2],0x2
@@ -14065,6 +14461,7 @@ LAB_1000_d37f:
 1000:d3d5          16                             PUSH SS
 1000:d3d6          50                             PUSH AX
 1000:d3d7          9a23052408                     CALLF 0x0000:8763
+1000:d3dc          83c40a                         ADD SP,0xa
 LAB_1000_d3df:
 1000:d3df          ff46fe                         INC word ptr [BP + -0x2]
 LAB_1000_d3e2:
@@ -15653,6 +16050,80 @@ LAB_1000_f4fd:
 1000:f510          1e                             PUSH DS
 1000:f511          50                             PUSH AX
 1000:f512          9a23052408                     CALLF 0x0000:8763
+1000:f517          83c40a                         ADD SP,0xa
+1000:f51a          b85000                         MOV AX,0x50
+1000:f51d          50                             PUSH AX
+1000:f51e          b80501                         MOV AX,0x105
+1000:f521          50                             PUSH AX
+1000:f522          b83d00                         MOV AX,0x3d
+1000:f525          50                             PUSH AX
+1000:f526          b84f23                         MOV AX,0x234f
+1000:f529          1e                             PUSH DS
+1000:f52a          50                             PUSH AX
+1000:f52b          9a23052408                     CALLF 0x0000:8763
+1000:f530          83c40a                         ADD SP,0xa
+1000:f533          b86400                         MOV AX,0x64
+1000:f536          50                             PUSH AX
+1000:f537          b80501                         MOV AX,0x105
+1000:f53a          50                             PUSH AX
+1000:f53b          b83d00                         MOV AX,0x3d
+1000:f53e          50                             PUSH AX
+1000:f53f          8e06984c                       MOV ES,word ptr [0x4c98]
+1000:f543          26a09d39                       MOV AL,ES:[0x399d]
+1000:f547          98                             CBW
+1000:f548          8bd8                           MOV BX,AX
+1000:f54a          d1e3                           SHL BX,0x1
+1000:f54c          d1e3                           SHL BX,0x1
+1000:f54e          8e069a4c                       MOV ES,word ptr [0x4c9a]
+1000:f552          26ffb79839                     PUSH word ptr ES:[BX + 0x3998]
+1000:f557          26ffb79639                     PUSH word ptr ES:[BX + 0x3996]
+1000:f55c          9a23052408                     CALLF 0x0000:8763
+1000:f561          83c40a                         ADD SP,0xa
+1000:f564          b87800                         MOV AX,0x78
+1000:f567          50                             PUSH AX
+1000:f568          b80f01                         MOV AX,0x10f
+1000:f56b          50                             PUSH AX
+1000:f56c          b83300                         MOV AX,0x33
+1000:f56f          50                             PUSH AX
+1000:f570          b8ba03                         MOV AX,0x3ba
+1000:f573          ba0c30                         MOV DX,0x300c
+1000:f576          52                             PUSH DX
+1000:f577          50                             PUSH AX
+1000:f578          9a23052408                     CALLF 0x0000:8763
+1000:f57d          83c40a                         ADD SP,0xa
+1000:f580          b88c00                         MOV AX,0x8c
+1000:f583          50                             PUSH AX
+1000:f584          b80501                         MOV AX,0x105
+1000:f587          50                             PUSH AX
+1000:f588          b83d00                         MOV AX,0x3d
+1000:f58b          50                             PUSH AX
+1000:f58c          b86023                         MOV AX,0x2360
+1000:f58f          1e                             PUSH DS
+1000:f590          50                             PUSH AX
+1000:f591          9a23052408                     CALLF 0x0000:8763
+1000:f596          83c40a                         ADD SP,0xa
+1000:f599          b8a000                         MOV AX,0xa0
+1000:f59c          50                             PUSH AX
+1000:f59d          b80501                         MOV AX,0x105
+1000:f5a0          50                             PUSH AX
+1000:f5a1          b83d00                         MOV AX,0x3d
+1000:f5a4          50                             PUSH AX
+1000:f5a5          8e06984c                       MOV ES,word ptr [0x4c98]
+1000:f5a9          26a09d39                       MOV AL,ES:[0x399d]
+1000:f5ad          98                             CBW
+1000:f5ae          8bd8                           MOV BX,AX
+1000:f5b0          d1e3                           SHL BX,0x1
+1000:f5b2          d1e3                           SHL BX,0x1
+1000:f5b4          8e069a4c                       MOV ES,word ptr [0x4c9a]
+1000:f5b8          26ffb79c39                     PUSH word ptr ES:[BX + 0x399c]
+1000:f5bd          26ffb79a39                     PUSH word ptr ES:[BX + 0x399a]
+1000:f5c2          9a23052408                     CALLF 0x0000:8763
+1000:f5c7          83c40a                         ADD SP,0xa
+1000:f5ca          b83700                         MOV AX,0x37
+1000:f5cd          50                             PUSH AX
+1000:f5ce          b80500                         MOV AX,0x5
+1000:f5d1          50                             PUSH AX
+1000:f5d2          9a7a0d0000                     CALLF 0x0000:0d7a
 FUN_1000_f61e:
 1000:f61e          9a6021811d                     CALLF 0x1000:f970
 1000:f623          83c40a                         ADD SP,0xa
@@ -15670,6 +16141,61 @@ FUN_1000_f629:
 1000:f63c          1e                             PUSH DS
 1000:f63d          50                             PUSH AX
 1000:f63e          9a23052408                     CALLF 0x0000:8763
+1000:f643          83c40a                         ADD SP,0xa
+1000:f646          b85000                         MOV AX,0x50
+1000:f649          50                             PUSH AX
+1000:f64a          b80501                         MOV AX,0x105
+1000:f64d          50                             PUSH AX
+1000:f64e          b83d00                         MOV AX,0x3d
+1000:f651          50                             PUSH AX
+1000:f652          b88023                         MOV AX,0x2380
+1000:f655          1e                             PUSH DS
+1000:f656          50                             PUSH AX
+1000:f657          9a23052408                     CALLF 0x0000:8763
+1000:f65c          83c40a                         ADD SP,0xa
+1000:f65f          b86400                         MOV AX,0x64
+1000:f662          50                             PUSH AX
+1000:f663          b80501                         MOV AX,0x105
+1000:f666          50                             PUSH AX
+1000:f667          b83d00                         MOV AX,0x3d
+1000:f66a          50                             PUSH AX
+1000:f66b          b89b23                         MOV AX,0x239b
+1000:f66e          1e                             PUSH DS
+1000:f66f          50                             PUSH AX
+1000:f670          9a23052408                     CALLF 0x0000:8763
+1000:f675          83c40a                         ADD SP,0xa
+1000:f678          b87800                         MOV AX,0x78
+1000:f67b          50                             PUSH AX
+1000:f67c          b80501                         MOV AX,0x105
+1000:f67f          50                             PUSH AX
+1000:f680          b83d00                         MOV AX,0x3d
+1000:f683          50                             PUSH AX
+1000:f684          b87e05                         MOV AX,0x57e
+1000:f687          ba0c30                         MOV DX,0x300c
+1000:f68a          52                             PUSH DX
+1000:f68b          50                             PUSH AX
+1000:f68c          9a23052408                     CALLF 0x0000:8763
+1000:f691          83c40a                         ADD SP,0xa
+1000:f694          b88c00                         MOV AX,0x8c
+1000:f697          50                             PUSH AX
+1000:f698          b80501                         MOV AX,0x105
+1000:f69b          50                             PUSH AX
+1000:f69c          b83d00                         MOV AX,0x3d
+1000:f69f          50                             PUSH AX
+1000:f6a0          b89f23                         MOV AX,0x239f
+1000:f6a3          1e                             PUSH DS
+1000:f6a4          50                             PUSH AX
+1000:f6a5          9a23052408                     CALLF 0x0000:8763
+1000:f6aa          83c40a                         ADD SP,0xa
+1000:f6ad          b80b00                         MOV AX,0xb
+1000:f6b0          50                             PUSH AX
+1000:f6b1          9a3d000000                     CALLF 0x0000:003d
+1000:f6b6          83c402                         ADD SP,0x2
+1000:f6b9          b83700                         MOV AX,0x37
+1000:f6bc          50                             PUSH AX
+1000:f6bd          b80500                         MOV AX,0x5
+1000:f6c0          50                             PUSH AX
+1000:f6c1          9a7a0d0000                     CALLF 0x0000:0d7a
 FUN_1000_f6e8:
 1000:f6e8          39bab230                       CMP word ptr [BP + SI + 0x30b2],DI
 1000:f6ec          52                             PUSH DX
@@ -16581,9 +17107,21 @@ switchD_2000:3ab7::caseD_0:
 2000:044f          52                             PUSH DX
 2000:0450          50                             PUSH AX
 2000:0451          9a23052408                     CALLF 0x0000:8763
-switchD_2000:3468::caseD_1:
-2000:047a          07                             POP ES
-2000:047b          007414                         ADD byte ptr [SI + 0x14],DH
+2000:0456          83c40a                         ADD SP,0xa
+2000:0459          b83f00                         MOV AX,0x3f
+2000:045c          50                             PUSH AX
+2000:045d          b80501                         MOV AX,0x105
+2000:0460          50                             PUSH AX
+2000:0461          b83d00                         MOV AX,0x3d
+2000:0464          50                             PUSH AX
+2000:0465          b82c24                         MOV AX,0x242c
+2000:0468          1e                             PUSH DS
+2000:0469          50                             PUSH AX
+2000:046a          9a23052408                     CALLF 0x0000:8763
+2000:046f          83c40a                         ADD SP,0xa
+2000:0472          8e06904c                       MOV ES,word ptr [0x4c90]
+2000:0476          26803e9b0700                   CMP byte ptr ES:[0x79b],0x0
+2000:047c          7414                           JZ 0x2000:0492
 2000:047e          b84800                         MOV AX,0x48
 2000:0481          50                             PUSH AX
 2000:0482          b80501                         MOV AX,0x105
@@ -16593,11 +17131,21 @@ switchD_2000:3468::caseD_1:
 2000:048a          b8ba03                         MOV AX,0x3ba
 2000:048d          ba0c30                         MOV DX,0x300c
 2000:0490          eb16                           JMP 0x2000:04a8
+LAB_2000_0492:
+2000:0492          0e                             PUSH CS
+2000:0493          e806f4                         CALL 0x2000:f89c
+2000:0496          b84800                         MOV AX,0x48
+2000:0499          50                             PUSH AX
+2000:049a          b80501                         MOV AX,0x105
+2000:049d          50                             PUSH AX
+2000:049e          b83d00                         MOV AX,0x3d
+2000:04a1          50                             PUSH AX
+2000:04a2          b87e05                         MOV AX,0x57e
+2000:04a5          ba0c30                         MOV DX,0x300c
 LAB_2000_04a8:
 2000:04a8          52                             PUSH DX
 2000:04a9          50                             PUSH AX
 2000:04aa          9a23052408                     CALLF 0x0000:8763
-FUN_2000_04af:
 2000:04af          83c40a                         ADD SP,0xa
 2000:04b2          b85500                         MOV AX,0x55
 2000:04b5          50                             PUSH AX
@@ -16605,9 +17153,7 @@ FUN_2000_04af:
 2000:04b9          50                             PUSH AX
 2000:04ba          9a7a0d0000                     CALLF 0x0000:0d7a
 2000:04bf          83c404                         ADD SP,0x4
-switchD_2000:37b7::caseD_7:
-2000:04c4          ae                             SCASB ES:DI
-2000:04c5          4c                             DEC SP
+2000:04c2          8e06ae4c                       MOV ES,word ptr [0x4cae]
 2000:04c6          26ff36b007                     PUSH word ptr ES:[0x7b0]
 2000:04cb          26ff36ae07                     PUSH word ptr ES:[0x7ae]
 2000:04d0          9a600a0000                     CALLF 0x0000:0a60
@@ -18256,7 +18802,8 @@ LAB_2000_1aa0:
 2000:1ae7          50                             PUSH AX
 2000:1ae8          52                             PUSH DX
 2000:1ae9          50                             PUSH AX
-2000:1aea          b83300                         MOV AX,0x33
+switchD_2000:3ab7::caseD_4:
+2000:1aeb          3300                           XOR AX,word ptr [BX + SI]
 2000:1aed          50                             PUSH AX
 2000:1aee          9afa22811d                     CALLF 0x1000:fb0a
 2000:1af3          83c40a                         ADD SP,0xa
@@ -19743,6 +20290,8 @@ FUN_2000_31d7:
 switchD_2000:38f8::caseD_b:
 2000:31ec          ee                             OUT DX,AL
 2000:31ed          9aa8080000                     CALLF 0x0000:08a8
+2000:31f2          8946e4                         MOV word ptr [BP + -0x1c],AX
+2000:31f5          8956e6                         MOV word ptr [BP + -0x1a],DX
 FUN_2000_31f8:
 2000:31f8          8e063a4d                       MOV ES,word ptr [0x4d3a]
 2000:31fc          26803eb73600                   CMP byte ptr ES:[0x36b7],0x0
@@ -20599,10 +21148,8 @@ LAB_2000_3f67:
 2000:3f6f          8be5                           MOV SP,BP
 2000:3f71          5d                             POP BP
 2000:3f72          cb                             RETF
-switchD_2000:38f8::caseD_3:
-2000:468a          06                             PUSH ES
-switchD_2000:38f8::caseD_10:
-2000:468b          f24c                           DEC SP
+switchD_2000:3a0e::caseD_5:
+2000:4689          8e06f24c                       MOV ES,word ptr [0x4cf2]
 2000:468d          26c606c00901                   MOV byte ptr ES:[0x9c0],0x1
 2000:4693          b80200                         MOV AX,0x2
 2000:4696          50                             PUSH AX
@@ -20770,7 +21317,7 @@ LAB_2000_4fc8:
 2000:4ff2          9ac0130000                     CALLF 0x0000:13c0
 2000:4ff7          83c404                         ADD SP,0x4
 2000:4ffa          eb4f                           JMP 0x2000:504b
-switchD_2000:37b7::caseD_3:
+switchD_2000:39cb::caseD_8:
 2000:5016          9a2c0b0000                     CALLF 0x0000:0b2c
 2000:501b          83c404                         ADD SP,0x4
 switchD_2000:38f8::caseD_7:
@@ -21156,8 +21703,6 @@ LAB_2000_54c9:
 2000:54ca          9a100e0000                     CALLF 0x0000:0e10
 2000:54cf          83c402                         ADD SP,0x2
 2000:54d2          9aa8080000                     CALLF 0x0000:08a8
-2000:5586          83c40a                         ADD SP,0xa
-2000:5589          9aa8080000                     CALLF 0x0000:08a8
 FUN_2000_55c6:
 2000:55c6          55                             PUSH BP
 2000:55c7          8bec                           MOV BP,SP
@@ -21236,6 +21781,9 @@ switchD_2000:3ae6::caseD_5:
 2000:5689          1e                             PUSH DS
 2000:568a          50                             PUSH AX
 2000:568b          9a23052408                     CALLF 0x0000:8763
+2000:5690          8be5                           MOV SP,BP
+2000:5692          5d                             POP BP
+2000:5693          cb                             RETF
 FUN_2000_5af4:
 2000:5af4          55                             PUSH BP
 2000:5af5          8bec                           MOV BP,SP
@@ -22165,9 +22713,12 @@ LAB_2000_67d4:
 2000:67f5          16                             PUSH SS
 2000:67f6          50                             PUSH AX
 2000:67f7          9a23052408                     CALLF 0x0000:8763
+2000:67fc          83c40a                         ADD SP,0xa
+2000:67ff          eb09                           JMP 0x2000:680a
 LAB_2000_6801:
 2000:6801          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
 2000:6805          c682f8fe00                     MOV byte ptr [BP + SI + 0xfef8],0x0
+LAB_2000_680a:
 2000:680a          a1b032                         MOV AX,[0x32b0]
 2000:680d          2d0d00                         SUB AX,0xd
 2000:6810          50                             PUSH AX
@@ -22177,6 +22728,174 @@ LAB_2000_6801:
 2000:681d          16                             PUSH SS
 2000:681e          50                             PUSH AX
 2000:681f          9a23052408                     CALLF 0x0000:8763
+2000:6824          83c40a                         ADD SP,0xa
+2000:6827          8e06a44d                       MOV ES,word ptr [0x4da4]
+2000:682b          26a1ac05                       MOV AX,ES:[0x5ac]
+2000:682f          d1e0                           SHL AX,0x1
+2000:6831          03862aff                       ADD AX,word ptr [BP + 0xff2a]
+2000:6835          8b962cff                       MOV DX,word ptr [BP + 0xff2c]
+2000:6839          8986a2fe                       MOV word ptr [BP + 0xfea2],AX
+2000:683d          8996a4fe                       MOV word ptr [BP + 0xfea4],DX
+2000:6841          c49ea2fe                       LES BX,[BP + 0xfea2]
+2000:6845          268b4702                       MOV AX,word ptr ES:[BX + 0x2]
+2000:6849          038628ff                       ADD AX,word ptr [BP + 0xff28]
+2000:684d          8986f6fe                       MOV word ptr [BP + 0xfef6],AX
+2000:6851          268b4704                       MOV AX,word ptr ES:[BX + 0x4]
+2000:6855          038628ff                       ADD AX,word ptr [BP + 0xff28]
+2000:6859          8946fe                         MOV word ptr [BP + -0x2],AX
+2000:685c          8b86f6fe                       MOV AX,word ptr [BP + 0xfef6]
+2000:6860          898630ff                       MOV word ptr [BP + 0xff30],AX
+2000:6864          c78632ff0000                   MOV word ptr [BP + 0xff32],0x0
+2000:686a          c6862eff00                     MOV byte ptr [BP + 0xff2e],0x0
+2000:686f          89865cff                       MOV word ptr [BP + 0xff5c],AX
+2000:6873          eb3a                           JMP 0x2000:68af
+LAB_2000_6875:
+2000:6875          8e06824d                       MOV ES,word ptr [0x4d82]
+2000:6879          26c41e7636                     LES BX,ES:[0x3676]
+2000:687e          8bb65cff                       MOV SI,word ptr [BP + 0xff5c]
+2000:6882          268a00                         MOV AL,byte ptr ES:[BX + SI]
+2000:6885          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
+2000:6889          8842ae                         MOV byte ptr [BP + SI + -0x52],AL
+LAB_2000_688c:
+2000:688c          ff8632ff                       INC word ptr [BP + 0xff32]
+2000:6890          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
+2000:6894          80bacdfe20                     CMP byte ptr [BP + SI + 0xfecd],0x20
+2000:6899          7510                           JNZ 0x2000:68ab
+2000:689b          c682cdfe00                     MOV byte ptr [BP + SI + 0xfecd],0x0
+2000:68a0          c6862eff01                     MOV byte ptr [BP + 0xff2e],0x1
+2000:68a5          c78632ff0000                   MOV word ptr [BP + 0xff32],0x0
+LAB_2000_68ab:
+2000:68ab          ff865cff                       INC word ptr [BP + 0xff5c]
+LAB_2000_68af:
+2000:68af          8b46fe                         MOV AX,word ptr [BP + -0x2]
+2000:68b2          39865cff                       CMP word ptr [BP + 0xff5c],AX
+2000:68b6          7321                           JNC 0x2000:68d9
+2000:68b8          80be2eff00                     CMP byte ptr [BP + 0xff2e],0x0
+2000:68bd          75b6                           JNZ 0x2000:6875
+2000:68bf          8e06824d                       MOV ES,word ptr [0x4d82]
+2000:68c3          26c41e7636                     LES BX,ES:[0x3676]
+2000:68c8          8bb65cff                       MOV SI,word ptr [BP + 0xff5c]
+2000:68cc          268a00                         MOV AL,byte ptr ES:[BX + SI]
+2000:68cf          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
+2000:68d3          8882cefe                       MOV byte ptr [BP + SI + 0xfece],AL
+2000:68d7          ebb3                           JMP 0x2000:688c
+LAB_2000_68d9:
+2000:68d9          80be2eff00                     CMP byte ptr [BP + 0xff2e],0x0
+2000:68de          7424                           JZ 0x2000:6904
+2000:68e0          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
+2000:68e4          c642ae00                       MOV byte ptr [BP + SI + -0x52],0x0
+2000:68e8          a1b832                         MOV AX,[0x32b8]
+2000:68eb          48                             DEC AX
+2000:68ec          50                             PUSH AX
+2000:68ed          ff36b632                       PUSH word ptr [0x32b6]
+2000:68f1          ff36b232                       PUSH word ptr [0x32b2]
+2000:68f5          8d46ae                         LEA AX,[BP + -0x52]
+2000:68f8          16                             PUSH SS
+2000:68f9          50                             PUSH AX
+2000:68fa          9a23052408                     CALLF 0x0000:8763
+2000:68ff          83c40a                         ADD SP,0xa
+2000:6902          eb09                           JMP 0x2000:690d
+LAB_2000_6904:
+2000:6904          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
+2000:6908          c682cefe00                     MOV byte ptr [BP + SI + 0xfece],0x0
+LAB_2000_690d:
+2000:690d          a1b832                         MOV AX,[0x32b8]
+2000:6910          2d0d00                         SUB AX,0xd
+2000:6913          50                             PUSH AX
+2000:6914          ff36b632                       PUSH word ptr [0x32b6]
+2000:6918          ff36b232                       PUSH word ptr [0x32b2]
+2000:691c          8d86cefe                       LEA AX,[BP + 0xfece]
+2000:6920          16                             PUSH SS
+2000:6921          50                             PUSH AX
+2000:6922          9a23052408                     CALLF 0x0000:8763
+2000:6927          83c40a                         ADD SP,0xa
+2000:692a          8e06a44d                       MOV ES,word ptr [0x4da4]
+2000:692e          26a1ac05                       MOV AX,ES:[0x5ac]
+2000:6932          d1e0                           SHL AX,0x1
+2000:6934          03862aff                       ADD AX,word ptr [BP + 0xff2a]
+2000:6938          8b962cff                       MOV DX,word ptr [BP + 0xff2c]
+2000:693c          8986a2fe                       MOV word ptr [BP + 0xfea2],AX
+2000:6940          8996a4fe                       MOV word ptr [BP + 0xfea4],DX
+2000:6944          c49ea2fe                       LES BX,[BP + 0xfea2]
+2000:6948          268b4704                       MOV AX,word ptr ES:[BX + 0x4]
+2000:694c          038628ff                       ADD AX,word ptr [BP + 0xff28]
+2000:6950          8986f6fe                       MOV word ptr [BP + 0xfef6],AX
+2000:6954          268b4706                       MOV AX,word ptr ES:[BX + 0x6]
+2000:6958          038628ff                       ADD AX,word ptr [BP + 0xff28]
+2000:695c          8946fe                         MOV word ptr [BP + -0x2],AX
+2000:695f          8b86f6fe                       MOV AX,word ptr [BP + 0xfef6]
+2000:6963          898630ff                       MOV word ptr [BP + 0xff30],AX
+2000:6967          c78632ff0000                   MOV word ptr [BP + 0xff32],0x0
+2000:696d          c6862eff00                     MOV byte ptr [BP + 0xff2e],0x0
+2000:6972          89865cff                       MOV word ptr [BP + 0xff5c],AX
+2000:6976          eb39                           JMP 0x2000:69b1
+LAB_2000_6978:
+2000:6978          8e06824d                       MOV ES,word ptr [0x4d82]
+2000:697c          26c41e7636                     LES BX,ES:[0x3676]
+2000:6981          8bb65cff                       MOV SI,word ptr [BP + 0xff5c]
+2000:6985          268a00                         MOV AL,byte ptr ES:[BX + SI]
+2000:6988          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
+2000:698c          88825eff                       MOV byte ptr [BP + SI + 0xff5e],AL
+LAB_2000_6990:
+2000:6990          ff8632ff                       INC word ptr [BP + 0xff32]
+2000:6994          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
+2000:6998          807ad520                       CMP byte ptr [BP + SI + -0x2b],0x20
+2000:699c          750f                           JNZ 0x2000:69ad
+2000:699e          c642d500                       MOV byte ptr [BP + SI + -0x2b],0x0
+2000:69a2          c6862eff01                     MOV byte ptr [BP + 0xff2e],0x1
+2000:69a7          c78632ff0000                   MOV word ptr [BP + 0xff32],0x0
+LAB_2000_69ad:
+2000:69ad          ff865cff                       INC word ptr [BP + 0xff5c]
+LAB_2000_69b1:
+2000:69b1          8b46fe                         MOV AX,word ptr [BP + -0x2]
+2000:69b4          39865cff                       CMP word ptr [BP + 0xff5c],AX
+2000:69b8          7320                           JNC 0x2000:69da
+2000:69ba          80be2eff00                     CMP byte ptr [BP + 0xff2e],0x0
+2000:69bf          75b7                           JNZ 0x2000:6978
+2000:69c1          8e06824d                       MOV ES,word ptr [0x4d82]
+2000:69c5          26c41e7636                     LES BX,ES:[0x3676]
+2000:69ca          8bb65cff                       MOV SI,word ptr [BP + 0xff5c]
+2000:69ce          268a00                         MOV AL,byte ptr ES:[BX + SI]
+2000:69d1          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
+2000:69d5          8842d6                         MOV byte ptr [BP + SI + -0x2a],AL
+2000:69d8          ebb6                           JMP 0x2000:6990
+LAB_2000_69da:
+2000:69da          80be2eff00                     CMP byte ptr [BP + 0xff2e],0x0
+2000:69df          7432                           JZ 0x2000:6a13
+2000:69e1          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
+2000:69e5          c6825eff00                     MOV byte ptr [BP + SI + 0xff5e],0x0
+2000:69ea          8e06924d                       MOV ES,word ptr [0x4d92]
+2000:69ee          26833e540902                   CMP word ptr ES:[0x954],0x2
+2000:69f4          7625                           JBE 0x2000:6a1b
+2000:69f6          a1c032                         MOV AX,[0x32c0]
+2000:69f9          48                             DEC AX
+2000:69fa          50                             PUSH AX
+2000:69fb          ff36be32                       PUSH word ptr [0x32be]
+2000:69ff          ff36ba32                       PUSH word ptr [0x32ba]
+2000:6a03          8d865eff                       LEA AX,[BP + 0xff5e]
+2000:6a07          16                             PUSH SS
+2000:6a08          50                             PUSH AX
+2000:6a09          9a23052408                     CALLF 0x0000:8763
+2000:6a0e          83c40a                         ADD SP,0xa
+2000:6a11          eb08                           JMP 0x2000:6a1b
+LAB_2000_6a13:
+2000:6a13          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
+2000:6a17          c642d600                       MOV byte ptr [BP + SI + -0x2a],0x0
+LAB_2000_6a1b:
+2000:6a1b          8e06924d                       MOV ES,word ptr [0x4d92]
+2000:6a1f          26833e540902                   CMP word ptr ES:[0x954],0x2
+2000:6a25          761c                           JBE 0x2000:6a43
+2000:6a27          a1c032                         MOV AX,[0x32c0]
+2000:6a2a          2d0d00                         SUB AX,0xd
+2000:6a2d          50                             PUSH AX
+2000:6a2e          ff36be32                       PUSH word ptr [0x32be]
+2000:6a32          ff36ba32                       PUSH word ptr [0x32ba]
+2000:6a36          8d46d6                         LEA AX,[BP + -0x2a]
+2000:6a39          16                             PUSH SS
+2000:6a3a          50                             PUSH AX
+2000:6a3b          9a23052408                     CALLF 0x0000:8763
+2000:6a40          83c40a                         ADD SP,0xa
+LAB_2000_6a43:
 2000:6a43          8e06a44d                       MOV ES,word ptr [0x4da4]
 2000:6a47          26a1ac05                       MOV AX,ES:[0x5ac]
 2000:6a4b          d1e0                           SHL AX,0x1
@@ -22244,6 +22963,8 @@ LAB_2000_6af3:
 2000:6b20          16                             PUSH SS
 2000:6b21          50                             PUSH AX
 2000:6b22          9a23052408                     CALLF 0x0000:8763
+2000:6b27          83c40a                         ADD SP,0xa
+2000:6b2a          eb08                           JMP 0x2000:6b34
 LAB_2000_6b2c:
 2000:6b2c          8bb632ff                       MOV SI,word ptr [BP + 0xff32]
 2000:6b30          c6428600                       MOV byte ptr [BP + SI + -0x7a],0x0
@@ -22260,6 +22981,7 @@ LAB_2000_6b34:
 2000:6b52          16                             PUSH SS
 2000:6b53          50                             PUSH AX
 2000:6b54          9a23052408                     CALLF 0x0000:8763
+2000:6b59          83c40a                         ADD SP,0xa
 LAB_2000_6b5c:
 2000:6b5c          5e                             POP SI
 2000:6b5d          8be5                           MOV SP,BP
@@ -22780,6 +23502,7 @@ LAB_2000_70e5:
 2000:70e5          1e                             PUSH DS
 2000:70e6          50                             PUSH AX
 2000:70e7          9a23052408                     CALLF 0x0000:8763
+2000:70ec          83c40a                         ADD SP,0xa
 LAB_2000_70ef:
 2000:70ef          b80b00                         MOV AX,0xb
 2000:70f2          50                             PUSH AX
@@ -23103,7 +23826,7 @@ LAB_2000_74a6:
 2000:74bf          b83235                         MOV AX,0x3532
 2000:74c2          8946f0                         MOV word ptr [BP + -0x10],AX
 2000:74c5          8c5ef2                         MOV word ptr [BP + -0xe],DS
-switchD_2000:3468::caseD_8:
+switchD_2000:39cb::caseD_5:
 2000:74c8          8e06ce4d                       MOV ES,word ptr [0x4dce]
 2000:74cc          26ff368836                     PUSH word ptr ES:[0x3688]
 2000:74d1          26ff368636                     PUSH word ptr ES:[0x3686]
@@ -23350,7 +24073,6 @@ LAB_2000_7706:
 2000:776c          1e                             PUSH DS
 2000:776d          50                             PUSH AX
 2000:776e          9a23052408                     CALLF 0x0000:8763
-FUN_2000_7773:
 2000:7773          83c40a                         ADD SP,0xa
 LAB_2000_7776:
 2000:7776          5e                             POP SI
@@ -23491,6 +24213,8 @@ LAB_2000_786c:
 2000:78dc          1e                             PUSH DS
 2000:78dd          50                             PUSH AX
 2000:78de          9a23052408                     CALLF 0x0000:8763
+2000:78e3          83c40a                         ADD SP,0xa
+2000:78e6          eb0c                           JMP 0x2000:78f4
 LAB_2000_78e8:
 2000:78e8          b80200                         MOV AX,0x2
 2000:78eb          50                             PUSH AX
@@ -23635,6 +24359,8 @@ LAB_2000_79ea:
 2000:7a5a          1e                             PUSH DS
 2000:7a5b          50                             PUSH AX
 2000:7a5c          9a23052408                     CALLF 0x0000:8763
+2000:7a61          83c40a                         ADD SP,0xa
+2000:7a64          eb0c                           JMP 0x2000:7a72
 LAB_2000_7a66:
 2000:7a66          b80200                         MOV AX,0x2
 2000:7a69          50                             PUSH AX
@@ -23779,6 +24505,8 @@ LAB_2000_7b68:
 2000:7bd8          1e                             PUSH DS
 2000:7bd9          50                             PUSH AX
 2000:7bda          9a23052408                     CALLF 0x0000:8763
+2000:7bdf          83c40a                         ADD SP,0xa
+2000:7be2          eb0c                           JMP 0x2000:7bf0
 LAB_2000_7be4:
 2000:7be4          b80200                         MOV AX,0x2
 2000:7be7          50                             PUSH AX
@@ -24268,8 +24996,7 @@ switchD_2000:3a0e::caseD_2:
 2000:8483          50                             PUSH AX
 2000:8484          b86e00                         MOV AX,0x6e
 2000:8487          50                             PUSH AX
-switchD_2000:393a::caseD_4:
-2000:848b          0000                           ADD byte ptr [BX + SI],AL
+2000:8488          9a7a0d0000                     CALLF 0x0000:0d7a
 2000:848d          83c404                         ADD SP,0x4
 2000:8490          8e060e4e                       MOV ES,word ptr [0x4e0e]
 2000:8494          26ff36460a                     PUSH word ptr ES:[0xa46]
@@ -27716,6 +28443,117 @@ LAB_2000_b165:
 2000:b180          52                             PUSH DX
 2000:b181          50                             PUSH AX
 2000:b182          9a23052408                     CALLF 0x0000:8763
+2000:b187          83c40a                         ADD SP,0xa
+2000:b18a          8e06da4e                       MOV ES,word ptr [0x4eda]
+2000:b18e          26ff368836                     PUSH word ptr ES:[0x3688]
+2000:b193          26ff368636                     PUSH word ptr ES:[0x3686]
+2000:b198          9af90a0000                     CALLF 0x0000:0af9
+2000:b19d          83c404                         ADD SP,0x4
+2000:b1a0          8d46be                         LEA AX,[BP + -0x42]
+2000:b1a3          16                             PUSH SS
+2000:b1a4          50                             PUSH AX
+2000:b1a5          9a8d130000                     CALLF 0x0000:138d
+2000:b1aa          83c404                         ADD SP,0x4
+2000:b1ad          8d46be                         LEA AX,[BP + -0x42]
+2000:b1b0          16                             PUSH SS
+2000:b1b1          50                             PUSH AX
+2000:b1b2          9a51042408                     CALLF 0x0000:8691
+2000:b1b7          83c404                         ADD SP,0x4
+2000:b1ba          9aca080000                     CALLF 0x0000:08ca
+2000:b1bf          b80200                         MOV AX,0x2
+2000:b1c2          50                             PUSH AX
+2000:b1c3          8d46e2                         LEA AX,[BP + -0x1e]
+2000:b1c6          16                             PUSH SS
+2000:b1c7          50                             PUSH AX
+2000:b1c8          b8da22                         MOV AX,0x22da
+2000:b1cb          bab230                         MOV DX,0x30b2
+2000:b1ce          52                             PUSH DX
+2000:b1cf          50                             PUSH AX
+2000:b1d0          9a0d01b507                     CALLF 0x0000:7c5d
+2000:b1d5          83c40a                         ADD SP,0xa
+2000:b1d8          b80200                         MOV AX,0x2
+2000:b1db          50                             PUSH AX
+2000:b1dc          b8fa22                         MOV AX,0x22fa
+2000:b1df          bab230                         MOV DX,0x30b2
+2000:b1e2          52                             PUSH DX
+2000:b1e3          50                             PUSH AX
+2000:b1e4          b8da22                         MOV AX,0x22da
+2000:b1e7          bab230                         MOV DX,0x30b2
+2000:b1ea          52                             PUSH DX
+2000:b1eb          50                             PUSH AX
+2000:b1ec          9a7b00b507                     CALLF 0x0000:7bcb
+2000:b1f1          83c40a                         ADD SP,0xa
+LAB_2000_b1f4:
+2000:b1f4          8d46e6                         LEA AX,[BP + -0x1a]
+2000:b1f7          16                             PUSH SS
+2000:b1f8          50                             PUSH AX
+2000:b1f9          b80200                         MOV AX,0x2
+2000:b1fc          50                             PUSH AX
+2000:b1fd          50                             PUSH AX
+2000:b1fe          8d46c6                         LEA AX,[BP + -0x3a]
+2000:b201          16                             PUSH SS
+2000:b202          50                             PUSH AX
+2000:b203          8d46e2                         LEA AX,[BP + -0x1e]
+2000:b206          16                             PUSH SS
+2000:b207          50                             PUSH AX
+2000:b208          b8da22                         MOV AX,0x22da
+2000:b20b          bab230                         MOV DX,0x30b2
+2000:b20e          52                             PUSH DX
+2000:b20f          50                             PUSH AX
+2000:b210          9a3302b507                     CALLF 0x0000:7d83
+2000:b215          83c414                         ADD SP,0x14
+2000:b218          807ec600                       CMP byte ptr [BP + -0x3a],0x0
+2000:b21c          74d6                           JZ 0x2000:b1f4
+2000:b21e          8e06da4e                       MOV ES,word ptr [0x4eda]
+2000:b222          26ff368836                     PUSH word ptr ES:[0x3688]
+2000:b227          26ff368636                     PUSH word ptr ES:[0x3686]
+2000:b22c          9a2c0b0000                     CALLF 0x0000:0b2c
+2000:b231          83c404                         ADD SP,0x4
+2000:b234          8d46be                         LEA AX,[BP + -0x42]
+2000:b237          16                             PUSH SS
+2000:b238          50                             PUSH AX
+2000:b239          9ac0130000                     CALLF 0x0000:13c0
+2000:b23e          83c404                         ADD SP,0x4
+2000:b241          837ee200                       CMP word ptr [BP + -0x1e],0x0
+2000:b245          751d                           JNZ 0x2000:b264
+2000:b247          b80b00                         MOV AX,0xb
+2000:b24a          50                             PUSH AX
+2000:b24b          9a3d000000                     CALLF 0x0000:003d
+2000:b250          83c402                         ADD SP,0x2
+2000:b253          9aaf0e0000                     CALLF 0x0000:0eaf
+2000:b258          9a95100000                     CALLF 0x0000:1095
+2000:b25d          9a960e0000                     CALLF 0x0000:0e96
+2000:b262          eb0c                           JMP 0x2000:b270
+LAB_2000_b264:
+2000:b264          837ee201                       CMP word ptr [BP + -0x1e],0x1
+2000:b268          7406                           JZ 0x2000:b270
+2000:b26a          837ee2ff                       CMP word ptr [BP + -0x1e],-0x1
+2000:b26e          7584                           JNZ 0x2000:b1f4
+LAB_2000_b270:
+2000:b270          8d46d0                         LEA AX,[BP + -0x30]
+2000:b273          16                             PUSH SS
+2000:b274          50                             PUSH AX
+2000:b275          9a25052f1c                     CALLF 0x1000:c815
+2000:b27a          83c404                         ADD SP,0x4
+2000:b27d          8d46c8                         LEA AX,[BP + -0x38]
+2000:b280          16                             PUSH SS
+2000:b281          50                             PUSH AX
+2000:b282          9a25052f1c                     CALLF 0x1000:c815
+2000:b287          83c404                         ADD SP,0x4
+2000:b28a          8d46de                         LEA AX,[BP + -0x22]
+2000:b28d          16                             PUSH SS
+2000:b28e          50                             PUSH AX
+2000:b28f          9a25052f1c                     CALLF 0x1000:c815
+2000:b294          83c404                         ADD SP,0x4
+2000:b297          8d46cc                         LEA AX,[BP + -0x34]
+2000:b29a          16                             PUSH SS
+2000:b29b          50                             PUSH AX
+2000:b29c          9a25052f1c                     CALLF 0x1000:c815
+2000:b2a1          83c404                         ADD SP,0x4
+2000:b2a4          5e                             POP SI
+2000:b2a5          8be5                           MOV SP,BP
+2000:b2a7          5d                             POP BP
+2000:b2a8          cb                             RETF
 FUN_2000_b2a9:
 2000:b2a9          55                             PUSH BP
 2000:b2aa          8bec                           MOV BP,SP
@@ -30814,7 +31652,7 @@ LAB_2000_e837:
 2000:e840          8be5                           MOV SP,BP
 2000:e842          5d                             POP BP
 2000:e843          cb                             RETF
-switchD_2000:363a::caseD_4:
+switchD_2000:39cb::caseD_7:
 2000:e846          8bec                           MOV BP,SP
 2000:e848          56                             PUSH SI
 2000:e849          57                             PUSH DI
