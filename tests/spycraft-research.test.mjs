@@ -44,6 +44,8 @@ for value in ("../escape.exe", "/absolute.exe", "C:/drive.exe", "dir/../../escap
     except ValueError: pass
     else: raise SystemExit("accepted unsafe path: " + value)
 assert str(module.safe_member_path("DEMO/SPYCRAFT.EXE")) == "DEMO/SPYCRAFT.EXE"
+assert "game-data" in module.classify(pathlib.Path("SPYCRAFT.DIR"), b"RIFX0000MV93")
+assert module.file_signature(pathlib.Path("SPYCRAFT.DIR"), b"RIFX0000MV93") == "RIFX/MV93"
 `;
   execFileSync("python3",["-c",script,path.join(root,"tools/spycraft/inventory.py")],{stdio:"pipe"});
 });

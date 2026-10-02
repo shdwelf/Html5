@@ -28,7 +28,7 @@ MAX_FILES = 10_000
 MAX_EXPANDED_BYTES = 512 * 1024 * 1024
 EXECUTABLE_SUFFIXES = {".exe", ".dll", ".com", ".drv", ".scr"}
 MEDIA_SUFFIXES = {".avi", ".wav", ".mid", ".midi", ".bmp", ".pcx", ".gif", ".jpg", ".jpeg"}
-GAME_DATA_SUFFIXES = {".ast", ".sgm", ".ini", ".cfg", ".dat", ".res"}
+GAME_DATA_SUFFIXES = {".ast", ".sgm", ".ini", ".cfg", ".dat", ".res", ".dir", ".dxr"}
 MACHINE_NAMES = {
     0x014C: "x86",
     0x0162: "MIPS R3000",
@@ -132,6 +132,18 @@ def classify(path: Path, first_bytes: bytes) -> list[str]:
     return labels or ["other"]
 
 
+def file_signature(path: Path, first_bytes: bytes) -> str:
+    if first_bytes.startswith(b"MZ"):
+        return "MZ"
+    if first_bytes[:4] in {b"RIFX", b"XFIR", b"RIFF"}:
+        container = first_bytes[:4].decode("ascii", "replace")
+        form = first_bytes[8:12].decode("ascii", "backslashreplace")
+        return f"{container}/{form}"
+    if path.suffix.lower() == ".ini":
+        return "INI text"
+    return first_bytes[:12].hex()
+
+
 def copy_member(source: BinaryIO, destination: Path) -> dict[str, object]:
     digesters = {name: hashlib.new(name) for name in ("md5", "sha1", "sha256")}
     size = 0
@@ -197,12 +209,14 @@ def inventory(archive: Path, extract_dir: Path, strict_gate: bool = True) -> dic
                 facts = copy_member(source, destination)
             if facts["bytes"] != info.file_size:
                 raise ValueError(f"size mismatch while extracting {info.filename!r}")
-            labels = classify(destination, bytes.fromhex(str(facts.pop("firstBytes"))))
+            first_bytes = bytes.fromhex(str(facts.pop("firstBytes")))
+            labels = classify(destination, first_bytes)
             row: dict[str, object] = {
                 "member": str(path),
                 "extractedPath": str(path),
                 "zipBytes": info.compress_size,
                 "crc32": f"{info.CRC:08x}",
+                "signature": file_signature(destination, first_bytes),
                 "categories": labels,
                 **facts,
             }

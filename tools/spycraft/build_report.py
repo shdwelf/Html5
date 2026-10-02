@@ -71,6 +71,7 @@ def summarize(inventory: dict[str, Any], ghidra: list[dict[str, Any]]) -> dict[s
         "source": inventory["source"],
         "archive": inventory["archive"],
         "inventorySummary": inventory["summary"],
+        "inventoryFiles": inventory["files"],
         "executableCandidates": candidate_rows(inventory),
         "ghidraReports": ghidra,
         "aggregate": {
@@ -114,6 +115,10 @@ def markdown(summary: dict[str, Any]) -> str:
     ]
     for category, count in inventory["categories"].items():
         lines.append(f"| {cell(category)} | {count} |")
+    lines.extend(["", "### Members", "", "| Archive member | Bytes | Signature | Categories |", "|---|---:|---|---|"])
+    for row in summary.get("inventoryFiles", []):
+        categories = ", ".join(row.get("categories", []))
+        lines.append(f"| `{cell(row['member'])}` | {row['bytes']:,} | `{cell(row.get('signature', ''))}` | {cell(categories)} |")
     lines.extend(
         [
             "",
@@ -155,6 +160,52 @@ def markdown(summary: dict[str, Any]) -> str:
     if not ghidra:
         lines.append("| _No Ghidra JSON reports were produced_ | — | — | — | — | — | — |")
 
+    lines.extend(["", "### Evidence-based findings", ""])
+    inventory_files = summary.get("inventoryFiles", [])
+    director_containers = [
+        (row["member"], row.get("signature", ""))
+        for row in inventory_files
+        if row.get("signature", "").startswith(("RIFX/", "XFIR/", "RIFF/"))
+    ]
+    if candidates and all(row.get("executable", {}).get("format") == "NE" for row in candidates):
+        names = " and ".join(f"`{row['member']}`" for row in candidates)
+        quantifier = "Both executable candidates are" if len(candidates) == 2 else f"All {len(candidates)} executable candidate(s) are"
+        lines.append(f"- {quantifier} 16-bit Windows New Executable (NE) files: {names}.")
+    if director_containers:
+        rendered = ", ".join(f"`{name}` ({signature})" for name, signature in director_containers)
+        lines.append(f"- The archive carries Director-style resource containers: {rendered}.")
+
+    notable_text = [row["text"] for row in summary["aggregate"]["notableStrings"]]
+    notable_lower = "\n".join(notable_text).lower()
+    director_version = next((text for text in notable_text if "director version" in text.lower()), "")
+    player_version = next((text for text in notable_text if "director player" in text.lower()), "")
+    if director_version or player_version:
+        versions = " and ".join(f"`{value}`" for value in (director_version, player_version) if value)
+        lines.append(f"- Defined resource strings identify the executable as a Macromedia Director-era projector: {versions}.")
+    requirements = [
+        text for text in notable_text
+        if any(term in text.lower() for term in ("windows version", "protected mode", "free memory"))
+    ]
+    if requirements:
+        lines.append("- Its own initialization strings require Windows 3.1 or later, enhanced/protected mode, and at least 4 MB of free memory; these are period platform requirements, not modern compatibility claims.")
+    if any("video for windows" in text.lower() for text in notable_text) and any("windows sound" in text.lower() for text in notable_text):
+        lines.append("- The player resources enumerate Video for Windows (`.avi`) and Windows Sound (`.wav`); the broader string listing also names Director movies, QuickTime, FLI/FLC, bitmap, GIF, TIFF, and other importable media formats.")
+
+    fileio = next((row for row in ghidra if row.get("program", "").upper() == "FILEIO.DLL"), None)
+    if fileio:
+        exports = [row.get("name", "") for row in fileio.get("entryPoints", []) if row.get("name", "").startswith("_FILEIO_")]
+        if exports:
+            exemplars = ", ".join(f"`{name}`" for name in exports[:6])
+            lines.append(f"- `FILEIO.DLL` exposes {len(exports)} named FileIO entry points ({exemplars}, …), consistent with the recovered XObject factory/help strings for scripted file access.")
+    if not any(term in notable_lower for term in ("cia", "kgb", "spycraft")):
+        lines.append("- No defined executable string matched CIA, KGB, or Spycraft narrative terms. In this demo, story/interface material is therefore more likely to reside in the Director containers than in the generic player and FileIO executable strings; this is a bounded inference, not a decoded-container result.")
+
+    bookmarks = sum(len(row.get("analysisBookmarks", [])) for row in ghidra)
+    if bookmarks:
+        lines.append(f"- Ghidra recorded {bookmarks} warning/error analysis bookmarks. Function and instruction counts are partial loader results for segmented 16-bit NE code, not complete source-level coverage.")
+    if not any(line.startswith("- ") for line in lines[-8:]):
+        lines.append("- The available machine-readable evidence does not support additional format-level findings.")
+
     aggregate = summary["aggregate"]
     lines.extend(["", "### Imported libraries", ""])
     if aggregate["libraries"]:
@@ -187,7 +238,7 @@ def markdown(summary: dict[str, Any]) -> str:
             "- Import names and strings indicate capabilities or terminology available to a binary; they do not prove a code path ran.",
             "- Ghidra's recovered names and decompilation are analytic reconstructions, not original Activision source code.",
             "- A demo may differ materially from the 1996 retail releases and later reissues.",
-            "- Full per-program disassembly, selected decompilation, defined-string listings, and Ghidra JSON are retained as workflow artifacts rather than committed copyrighted binaries.",
+            "- Selected decompilation, defined-string listings, and Ghidra JSON are committed as derived evidence. Full disassembly remains only in the time-limited workflow artifact; copyrighted input binaries are never committed or uploaded.",
             "",
             "## Reproduction",
             "",

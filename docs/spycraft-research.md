@@ -48,6 +48,14 @@ After a successful run, the workflow writes:
 
 Copyrighted demo inputs are intentionally absent from Git and from the uploaded artifact.
 
+## First reproducible run
+
+The first successful workflow run analyzed archive SHA-256 `a195c7ad45e3236503242e95f47234685a5cceb1cba0000fc746fb015d612cfe`. Its six members are two Director containers (`ACTRES/LOGO.DIR` and `SPYCRAFT/SPYCRAFT.DIR`), two INI files, `SPYCRAFT/FILEIO.DLL`, and `SPYCRAFT/SPYCRAFT.EXE`.
+
+Both executable candidates are 16-bit Windows New Executable (NE) files. Ghidra 12.1.4 identified them as `x86:LE:16:Protected Mode`. Defined executable strings identify a Director 4.0-era player, enumerate period multimedia formats including Director movies, Video for Windows, QuickTime, FLI/FLC, WAV, bitmap, GIF, and TIFF, and state Windows 3.1/enhanced-mode/386/4 MB initialization requirements. The companion FileIO module exposes named read, write, seek, status, filename, delete, and override-drive entry points matching its recovered XObject factory/help text.
+
+No defined executable string in this corpus matched CIA, KGB, or Spycraft narrative terms. The bounded interpretation is that most game-specific story, interface, and Lingo material resides in the Director containers rather than in the generic player/FileIO executables. Those containers were inventoried and hash-preserved but not decoded by this Ghidra pass. Ghidra also recorded segmented-code analysis errors, so recovered function/instruction totals are partial loader results rather than complete source-level coverage. See [`spycraft-ghidra-analysis.md`](./spycraft-ghidra-analysis.md) for exact hashes, counts, caveats, and generated evidence paths.
+
 ## Research limits
 
 - A demo can differ materially from the 1996 DOS, Windows, Classic Mac, retail CD-ROM, and later packaged releases.

@@ -374,11 +374,15 @@ public class SpycraftReport extends GhidraScript {
         String text = value.toLowerCase(Locale.ROOT);
         return text.contains("spycraft") || text.contains("activision") || text.contains("resource.ini") ||
             text.contains("game_") || text.contains(".sgm") || text.contains(".avi") ||
-            text.contains(".wav") || text.contains(".ast") || text.contains("dukdll") ||
-            text.contains("sos95") || text.contains("winsock") || text.contains("internet") ||
-            text.contains("encrypt") || text.contains("decrypt") || text.contains("cipher") ||
-            text.contains("photo") || text.contains("fingerprint") || text.contains("surveillance") ||
-            text.contains("intercept") || text.contains("cia") || text.contains("kgb");
+            text.contains(".wav") || text.contains(".ast") || text.contains(".dir") ||
+            text.contains("director") || text.contains("xobject") || text.contains("fileio") ||
+            text.contains("quicktime") || text.contains("protected mode") || text.contains("free memory") ||
+            text.contains("windows version") || text.contains("linked cast") || text.contains("asiport") ||
+            text.contains("dukdll") || text.contains("sos95") || text.contains("winsock") ||
+            text.contains("internet") || text.contains("encrypt") || text.contains("decrypt") ||
+            text.contains("cipher") || text.contains("photo") || text.contains("fingerprint") ||
+            text.contains("surveillance") || text.contains("intercept") || text.contains("cia") ||
+            text.contains("kgb");
     }
 
     private static String safeName(String value) {
