@@ -1,0 +1,172 @@
+name: Spycraft demo — Ghidra static analysis
+
+on:
+  push:
+    paths:
+      - '.github/workflows/spycraft-ghidra.yml'
+      - 'tools/spycraft/**'
+      - 'tools/ghidra_scripts/SpycraftReport.java'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GHIDRA_VERSION: '12.1.4'
+      GHIDRA_DATE: '20260921'
+      GHIDRA_SHA256: 'ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db'
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Fetch, hash-gate, and inventory the published demo
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/spycraft"
+          archive="$RUNNER_TEMP/spycraft.zip"
+          mkdir -p "$root/extracted" "$root/logs"
+          log="$root/acquisition.log"
+          if ! {
+            curl -fL --retry 8 --retry-all-errors --connect-timeout 30 \
+              'https://archive.org/download/Spycraft./spycraft.zip' \
+              -o "$archive"
+            stat -c 'downloaded bytes=%s' "$archive"
+            md5sum "$archive"
+            sha1sum "$archive"
+            sha256sum "$archive"
+            python3 tools/spycraft/inventory.py \
+              --archive "$archive" \
+              --extract-dir "$root/extracted" \
+              --output "$root/inventory.json"
+          } >"$log" 2>&1; then
+            cat "$log"
+            message=$(tail -n 100 "$log" | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+            echo "::error title=Spycraft acquisition or provenance gate failed::$message"
+            exit 1
+          fi
+          cat "$log"
+
+      - name: Install pinned official Ghidra release
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/ghidra.zip"
+          url="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_build/ghidra_${GHIDRA_VERSION}_PUBLIC_${GHIDRA_DATE}.zip"
+          curl -fL --retry 6 --retry-all-errors --connect-timeout 30 "$url" -o "$archive"
+          echo "$GHIDRA_SHA256  $archive" | sha256sum --check --strict
+          unzip -q "$archive" -d "$RUNNER_TEMP"
+          test -x "$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC/support/analyzeHeadless"
+
+      - name: Disassemble and decompile every executable candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/spycraft"
+          reports="$root/reports"
+          projects="$RUNNER_TEMP/ghidra-projects"
+          headless="$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC/support/analyzeHeadless"
+          mkdir -p "$reports" "$projects"
+
+          mapfile -t relative_programs < <(python3 - "$root/inventory.json" <<'PY'
+          import json, pathlib, sys
+          inventory = json.loads(pathlib.Path(sys.argv[1]).read_text())
+          for row in inventory['files']:
+              if 'executable-candidate' in row['categories']:
+                  print(row['extractedPath'])
+          PY
+          )
+          printf 'Ghidra queue: %s\n' "${relative_programs[@]}"
+          test "${#relative_programs[@]}" -gt 0
+
+          failures=0
+          index=0
+          for relative in "${relative_programs[@]}"; do
+            index=$((index + 1))
+            program="$root/extracted/$relative"
+            base=$(basename "$relative")
+            safe=$(printf '%s' "$base" | tr -c 'A-Za-z0-9._-' '_')
+            project=$(printf 'SPYCRAFT_%02d_%s' "$index" "$safe" | tr -c 'A-Za-z0-9_' '_')
+            output="$reports/$(printf '%02d-%s' "$index" "$safe")"
+            log="$root/logs/$(printf '%02d-%s.log' "$index" "$safe")"
+            mkdir -p "$output"
+            echo "===== [$index/${#relative_programs[@]}] $relative =====" | tee "$log"
+            if ! timeout 12m "$headless" "$projects" "$project" \
+              -import "$program" \
+              -analysisTimeoutPerFile 420 \
+              -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+              -postScript SpycraftReport.java "$output" \
+              -deleteProject >>"$log" 2>&1; then
+              failures=$((failures + 1))
+              echo "GHIDRA_FAILURE $relative" | tee -a "$log"
+              message=$(tail -n 100 "$log" | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+              echo "::error title=Ghidra failed for $base::$message"
+            fi
+            tail -n 30 "$log"
+          done
+
+          report_count=$(find "$reports" -name '*.ghidra.json' | wc -l)
+          echo "reports=$report_count failures=$failures programs=${#relative_programs[@]}"
+          test "$report_count" -gt 0
+
+      - name: Build the derived research report
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/spycraft"
+          python3 tools/spycraft/build_report.py \
+            --inventory "$root/inventory.json" \
+            --ghidra-root "$root/reports" \
+            --json-output "$root/spycraft-ghidra-analysis.json" \
+            --markdown-output "$root/spycraft-ghidra-analysis.md"
+          sed -n '1,260p' "$root/spycraft-ghidra-analysis.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit static evidence without source binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/spycraft"
+          evidence="docs/spycraft-ghidra-evidence"
+          rm -rf "$evidence"
+          mkdir -p "$evidence"
+          cp "$root/inventory.json" "$evidence/inventory.json"
+          cp "$root/spycraft-ghidra-analysis.json" "$evidence/analysis.json"
+          cp -R "$root/reports/." "$evidence/reports/"
+          find "$evidence" -type f -name '*.asm' -delete
+          cp "$root/spycraft-ghidra-analysis.md" docs/spycraft-ghidra-analysis.md
+          git config user.name arena-ghidra-research
+          git config user.email arena-ghidra-research@users.noreply.github.com
+          git add docs/spycraft-ghidra-analysis.md "$evidence"
+          git commit -m "Document static Ghidra analysis of Spycraft demo" || exit 0
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Remove copyrighted inputs before artifact upload
+        if: always()
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/spycraft/extracted"
+          rm -f "$RUNNER_TEMP/spycraft.zip" "$RUNNER_TEMP/ghidra.zip"
+          find "$RUNNER_TEMP/spycraft" -maxdepth 4 -type f -printf '%P\n' | sort || true
+
+      - name: Upload derived static-analysis evidence only
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: spycraft-ghidra-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/spycraft/inventory.json
+            ${{ runner.temp }}/spycraft/acquisition.log
+            ${{ runner.temp }}/spycraft/logs
+            ${{ runner.temp }}/spycraft/reports
+            ${{ runner.temp }}/spycraft/spycraft-ghidra-analysis.json
+            ${{ runner.temp }}/spycraft/spycraft-ghidra-analysis.md
+          if-no-files-found: warn
+          retention-days: 30

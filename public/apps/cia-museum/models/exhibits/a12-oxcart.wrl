@@ -1,0 +1,18 @@
+#VRML V2.0 utf8
+# A-12 OXCART — interpretive exhibit object
+WorldInfo { title "A-12 OXCART" info [ "Public-source museum study" ] }
+DEF BLACK Material { diffuseColor 0.025 0.032 0.030 specularColor 0.48 0.52 0.50 shininess 0.82 }
+DEF EDGE Material { diffuseColor 0.17 0.19 0.18 specularColor 0.40 0.43 0.41 shininess 0.68 }
+DEF GLASS Material { diffuseColor 0.10 0.24 0.24 specularColor 0.65 0.72 0.70 shininess 0.9 transparency 0.12 }
+DEF PLINTH Material { diffuseColor 0.52 0.52 0.48 }
+DEF RED Material { diffuseColor 0.56 0.06 0.08 }
+Transform { translation 0 -0.3 0 children [ Shape { appearance Appearance { material USE PLINTH } geometry Cylinder { radius 9 height 0.6 } } ] }
+Transform { translation 0 2.8 0 rotation 1 0 0 1.5708 children [ Shape { appearance Appearance { material USE BLACK } geometry Cylinder { radius 0.92 height 17 } } ] }
+Transform { translation 0 2.8 -10 rotation 1 0 0 -1.5708 children [ Shape { appearance Appearance { material USE BLACK } geometry Cone { bottomRadius 0.92 height 3.2 } } ] }
+Transform { translation -4.4 2.72 1.2 rotation 0 1 0 -0.11 children [ Shape { appearance Appearance { material USE BLACK } geometry Box { size 11.5 0.22 7.1 } } ] }
+Transform { translation 4.4 2.72 1.2 rotation 0 1 0 0.11 children [ Shape { appearance Appearance { material USE BLACK } geometry Box { size 11.5 0.22 7.1 } } ] }
+Transform { translation 0 3.62 -4.0 children [ Shape { appearance Appearance { material USE GLASS } geometry Box { size 1.28 0.52 3.5 } } ] }
+Transform { translation -3.1 2.25 5.3 rotation 1 0 0 1.5708 children [ Shape { appearance Appearance { material USE EDGE } geometry Cylinder { radius 0.88 height 3.1 } } ] }
+Transform { translation 3.1 2.25 5.3 rotation 1 0 0 1.5708 children [ Shape { appearance Appearance { material USE EDGE } geometry Cylinder { radius 0.88 height 3.1 } } ] }
+Transform { translation 0 4.25 6.6 children [ Shape { appearance Appearance { material USE BLACK } geometry Box { size 6.5 2.8 0.18 } } ] }
+Transform { translation 0 1.15 0 children [ Shape { appearance Appearance { material USE RED } geometry Cylinder { radius 0.12 height 2.3 } } ] }

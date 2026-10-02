@@ -1,0 +1,12 @@
+#VRML V2.0 utf8
+# Headquarters seal floor medallion — generic compass abstraction
+WorldInfo { title "Headquarters Seal" }
+DEF DARK Material { diffuseColor 0.06 0.08 0.075 specularColor 0.32 0.34 0.31 }
+DEF GOLD Material { diffuseColor 0.65 0.51 0.24 specularColor 0.58 0.47 0.27 shininess 0.68 }
+DEF RED Material { diffuseColor 0.56 0.06 0.08 }
+Transform { translation 0 -0.25 0 children [ Shape { appearance Appearance { material USE DARK } geometry Cylinder { radius 7.5 height 0.5 } } ] }
+Transform { translation 0 0.05 0 children [ Shape { appearance Appearance { material USE GOLD } geometry Cylinder { radius 5.7 height 0.14 } } ] }
+Transform { translation 0 0.16 0 children [ Shape { appearance Appearance { material USE DARK } geometry Cylinder { radius 4.5 height 0.10 } } ] }
+Transform { translation 0 0.25 0 rotation 0 1 0 0.785 children [ Shape { appearance Appearance { material USE GOLD } geometry Box { size 1.15 0.12 8.0 } } ] }
+Transform { translation 0 0.26 0 rotation 0 1 0 -0.785 children [ Shape { appearance Appearance { material USE GOLD } geometry Box { size 1.15 0.12 8.0 } } ] }
+Transform { translation 0 0.36 0 children [ Shape { appearance Appearance { material USE RED } geometry Sphere { radius 0.60 } } ] }

@@ -1,0 +1,15 @@
+#VRML V2.0 utf8
+# Berlin Wall segments at CIA Headquarters
+WorldInfo { title "Berlin Wall Segments" }
+DEF CONCRETE Material { diffuseColor 0.52 0.52 0.48 }
+DEF BASE Material { diffuseColor 0.38 0.39 0.36 }
+DEF RED Material { diffuseColor 0.58 0.06 0.08 }
+DEF BLUE Material { diffuseColor 0.11 0.29 0.41 }
+DEF GOLD Material { diffuseColor 0.62 0.46 0.20 }
+Transform { translation 0 -0.3 0 children [ Shape { appearance Appearance { material USE BASE } geometry Box { size 16 0.6 8 } } ] }
+Transform { translation -4.7 3.1 0 children [ Shape { appearance Appearance { material USE CONCRETE } geometry Box { size 4.2 6.2 0.75 } } ] }
+Transform { translation 0 3.25 0 children [ Shape { appearance Appearance { material USE CONCRETE } geometry Box { size 4.2 6.5 0.75 } } ] }
+Transform { translation 4.7 3.0 0 children [ Shape { appearance Appearance { material USE CONCRETE } geometry Box { size 4.2 6.0 0.75 } } ] }
+Transform { translation -4.8 4.3 -0.41 rotation 0 0 1 0.16 children [ Shape { appearance Appearance { material USE RED } geometry Box { size 2.7 0.4 0.06 } } ] }
+Transform { translation -0.5 2.1 -0.41 rotation 0 0 1 -0.34 children [ Shape { appearance Appearance { material USE BLUE } geometry Box { size 3.2 0.5 0.06 } } ] }
+Transform { translation 4.8 3.8 -0.41 rotation 0 0 1 0.52 children [ Shape { appearance Appearance { material USE GOLD } geometry Box { size 2.6 0.4 0.06 } } ] }

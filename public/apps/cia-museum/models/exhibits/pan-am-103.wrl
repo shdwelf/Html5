@@ -1,0 +1,27 @@
+#VRML V2.0 utf8
+# Pan Am Flight 103 — interpretive remembrance and investigation gallery
+WorldInfo { title "Terrorist Bombing of Pan Am Flight 103" }
+DEF WALL Material { diffuseColor 0.70 0.69 0.63 }
+DEF DARK Material { diffuseColor 0.10 0.12 0.115 }
+DEF STEEL Material { diffuseColor 0.38 0.42 0.40 specularColor 0.48 0.53 0.51 }
+DEF GLASS Material { diffuseColor 0.26 0.39 0.37 specularColor 0.62 0.68 0.65 transparency 0.45 }
+DEF RED Material { diffuseColor 0.55 0.06 0.08 }
+Transform { translation 0 -0.3 0 children [ Shape { appearance Appearance { material USE DARK } geometry Box { size 16 0.6 10 } } ] }
+# remembrance wall
+Transform { translation 0 3.8 3.8 children [ Shape { appearance Appearance { material USE WALL } geometry Box { size 14 7.2 0.45 } } ] }
+Transform { translation 0 5.5 3.5 children [ Shape { appearance Appearance { material USE RED } geometry Box { size 8.2 0.18 0.12 } } ] }
+# evidence vitrine
+Transform { translation 0 1.6 -1.2 children [ Shape { appearance Appearance { material USE GLASS } geometry Box { size 9.0 3.2 4.2 } } ] }
+Transform { translation -2.8 1.5 -1.4 rotation 0 0 1 0.18 children [ Shape { appearance Appearance { material USE STEEL } geometry Box { size 3.2 0.25 2.0 } } ] }
+Transform { translation 1.0 1.35 -0.4 rotation 0 1 0 0.35 children [ Shape { appearance Appearance { material USE DARK } geometry Box { size 1.8 1.25 0.8 } } ] }
+Transform { translation 3.1 1.3 -1.5 children [ Shape { appearance Appearance { material USE STEEL } geometry Cylinder { radius 0.72 height 1.8 } } ] }
+# 270 quiet markers, represented as a field of nine
+Transform { translation -4.8 3.8 3.52 children [ Shape { appearance Appearance { material USE DARK } geometry Sphere { radius 0.16 } } ] }
+Transform { translation -3.6 3.8 3.52 children [ Shape { appearance Appearance { material USE DARK } geometry Sphere { radius 0.16 } } ] }
+Transform { translation -2.4 3.8 3.52 children [ Shape { appearance Appearance { material USE DARK } geometry Sphere { radius 0.16 } } ] }
+Transform { translation -1.2 3.8 3.52 children [ Shape { appearance Appearance { material USE DARK } geometry Sphere { radius 0.16 } } ] }
+Transform { translation 0 3.8 3.52 children [ Shape { appearance Appearance { material USE DARK } geometry Sphere { radius 0.16 } } ] }
+Transform { translation 1.2 3.8 3.52 children [ Shape { appearance Appearance { material USE DARK } geometry Sphere { radius 0.16 } } ] }
+Transform { translation 2.4 3.8 3.52 children [ Shape { appearance Appearance { material USE DARK } geometry Sphere { radius 0.16 } } ] }
+Transform { translation 3.6 3.8 3.52 children [ Shape { appearance Appearance { material USE DARK } geometry Sphere { radius 0.16 } } ] }
+Transform { translation 4.8 3.8 3.52 children [ Shape { appearance Appearance { material USE DARK } geometry Sphere { radius 0.16 } } ] }
