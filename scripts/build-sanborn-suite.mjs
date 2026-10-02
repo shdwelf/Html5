@@ -6,11 +6,15 @@
  *
  * Inputs (canonical, packaged builds):
  *   public/apps/sanborn-codex/index.html   ~1.6 MB React/three.js codex, 30 installations
- *   public/apps/kryptos-vrml/index.html    ~80 KB raw-WebGL viewer, 11 installations
+ *   public/apps/kryptos-vrml/index.html    ~80 KB raw-WebGL viewer, 11 source-checked site entries
  *
  * Output:
  *   public/apps/sanborn-suite/index.html   one self-contained file, both apps inlined
  *   public/apps/sanborn-suite/manifest.toml, webxdc.js, icon.png
+ *
+ * tools/pack_sanborn_suite_xdc.sh distributes the result under both the
+ * established sanborn-suite.xdc name and sanborn-installations.xdc, whose name
+ * makes the complete installation coverage explicit.
  *
  * Why inline-and-mount rather than concatenate
  * --------------------------------------------
@@ -39,14 +43,14 @@ const APPS = [
     id: "codex",
     label: "CODEX",
     title: "Sanborn Codex",
-    blurb: "30 installations · React + three.js galleries · Kryptos Cipher Lab · 26×26 tableau · zen-garden skins",
+    blurb: "30 catalogued installations · React + three.js galleries · Kryptos Cipher Lab · 26×26 tableau · zen-garden skins",
     src: "public/apps/sanborn-codex/index.html",
   },
   {
     id: "vrml",
     label: "VRML VIEWER",
     title: "Kryptos VRML",
-    blurb: "11 installations · raw-WebGL scenes with custom GLSL · cipher simulator · minimap · source-checked panels",
+    blurb: "11 source-checked site entries · raw-WebGL scenes with custom GLSL · cipher simulator · minimap · verification panels",
     src: "public/apps/kryptos-vrml/index.html",
   },
 ];
@@ -178,6 +182,12 @@ const shell = `<!doctype html>
           second app to install. Pick one above, or use <kbd>Alt</kbd>+<kbd>1</kbd>,
           <kbd>Alt</kbd>+<kbd>2</kbd>, <kbd>Alt</kbd>+<kbd>3</kbd> from anywhere, including from inside
           either app.
+        </p>
+        <p>
+          <b>Coverage:</b> the Codex carries its complete 30-installation catalogue and the VRML viewer
+          carries all 11 of its source-checked sculpture/site entries. They remain separate catalogues on
+          purpose: some entries overlap and the viewer also preserves contextual locations. This suite carries
+          both complete source applications rather than dropping one list to make a misleading combined count.
         </p>
         <div class="cards">
           ${payloads.map((p) => `<div class="card">
@@ -341,7 +351,7 @@ writeFileSync(path.join(OUT_DIR, "index.html"), shell, "utf8");
 
 writeFileSync(
   path.join(OUT_DIR, "manifest.toml"),
-  'name = "Sanborn Suite — Codex & Kryptos VRML"\norientation = "landscape"\nsource_code_url = "https://github.com/shdwelf/Html5"\n',
+  'name = "Sanborn Installations — Complete Suite"\norientation = "landscape"\nsource_code_url = "https://github.com/shdwelf/Html5"\n',
   "utf8",
 );
 copyFileSync(path.join(root, "public/apps/kryptos-vrml/webxdc.js"), path.join(OUT_DIR, "webxdc.js"));
