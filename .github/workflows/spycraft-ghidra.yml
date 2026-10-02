@@ -141,6 +141,14 @@ jobs:
           cp "$root/spycraft-ghidra-analysis.json" "$evidence/analysis.json"
           cp -R "$root/reports/." "$evidence/reports/"
           find "$evidence" -type f -name '*.asm' -delete
+          python3 - "$evidence" <<'PY'
+          import pathlib, sys
+          for path in pathlib.Path(sys.argv[1]).rglob('*.c'):
+              lines = [line.rstrip() for line in path.read_text(encoding='utf-8').splitlines()]
+              while lines and not lines[-1]:
+                  lines.pop()
+              path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          PY
           cp "$root/spycraft-ghidra-analysis.md" docs/spycraft-ghidra-analysis.md
           git config user.name arena-ghidra-research
           git config user.email arena-ghidra-research@users.noreply.github.com

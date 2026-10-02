@@ -247,7 +247,7 @@ public class SpycraftReport extends GhidraScript {
                 Object value = data.getValue();
                 if (value == null) continue;
                 String text = String.valueOf(value).replace("\r", "\\r").replace("\n", "\\n");
-                out.println(data.getAddress() + "\t" + text);
+                out.println(data.getAddress() + "\t" + escapeTrailingWhitespace(text));
                 count++;
             }
         }
@@ -383,6 +383,17 @@ public class SpycraftReport extends GhidraScript {
             text.contains("cipher") || text.contains("photo") || text.contains("fingerprint") ||
             text.contains("surveillance") || text.contains("intercept") || text.contains("cia") ||
             text.contains("kgb");
+    }
+
+    private static String escapeTrailingWhitespace(String value) {
+        int end = value.length();
+        while (end > 0 && (value.charAt(end - 1) == ' ' || value.charAt(end - 1) == '\t')) end--;
+        if (end == value.length()) return value;
+        StringBuilder result = new StringBuilder(value.substring(0, end));
+        for (int index = end; index < value.length(); index++) {
+            result.append(value.charAt(index) == ' ' ? "\\x20" : "\\t");
+        }
+        return result.toString();
     }
 
     private static String safeName(String value) {
