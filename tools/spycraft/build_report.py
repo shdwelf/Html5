@@ -215,7 +215,7 @@ def markdown(summary: dict[str, Any]) -> str:
     else:
         lines.append("No external library symbols were recovered. That can reflect the executable format or loader limitations; it is not evidence that the program has no dependencies.")
 
-    lines.extend(["", "### Research strings with code references", ""])
+    lines.extend(["", "### Research string records", "", "These are defined strings selected by research terms; per-row cross-reference arrays in the JSON may be empty for resource-only text.", ""])
     notable = aggregate["notableStrings"]
     if notable:
         lines.extend(["| Program | Address | Defined string |", "|---|---|---|"])
