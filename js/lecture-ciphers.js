@@ -778,3 +778,327 @@ export const USCYBERCOM_HERALDRY = {
   elevatedToUnifiedCombatantCommand: "May 2018",
   theErrorInTheBlazon: "“encrypted within this code” — MD5 is a one-way digest; nothing is encrypted or decryptable",
 };
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Enigma I / M3 / M4 — the museum pass (2026-10-02)
+   ═══════════════════════════════════════════════════════════════════════════
+   Added with the KGB Museum / International Spy Museum research pass. The
+   suite's own Enigma tab had four incorrect wirings (UKW-A, rotor VI, rotor
+   Gamma, UKW-B thin) that this module's vectors now pin to the canonical
+   values from Rijmenants' Enigma Tech Details page, Crypto Museum's wiring
+   page and Wikipedia's Enigma rotor details — three independent sources that
+   agree with each other and disagree with what the bundle shipped.
+
+   The engine mirrors the suite's Fp class exactly (same ring/position
+   conventions, same double-step, Greek rotor never steps) so the vectors
+   below verify both implementations.
+*/
+
+export const ENIGMA_WIRINGS = {
+  rotors: {
+    I:     { wiring: "EKMFLGDQVZNTOWYHXUSPAIBRCJ", notch: "Q" },
+    II:    { wiring: "AJDKSIRUXBLHWTMCQGZNPYFVOE", notch: "E" },
+    III:   { wiring: "BDFHJLCPRTXVZNYEIWGAKMUSQO", notch: "V" },
+    IV:    { wiring: "ESOVPZJAYQUIRHXLNFTGKDCMWB", notch: "J" },
+    V:     { wiring: "VZBRGITYUPSDNHLXAWMJQOFECK", notch: "Z" },
+    VI:    { wiring: "JPGVOUMFYQBENHZRDKASXLICTW", notch: "ZM" },
+    VII:   { wiring: "NZJHGRCXMYSWBOUFAIVLPEKQDT", notch: "ZM" },
+    VIII:  { wiring: "FKQHTLXOCBJSPDZRAMEWNIUYGV", notch: "ZM" },
+    Beta:  { wiring: "LEYJVCNIXWPBQMDRTAKZGFUHOS", notch: "" },
+    Gamma: { wiring: "FSOKANUERHMBTIYCWLQPZXVGJD", notch: "" },
+  },
+  reflectors: {
+    "UKW-A":      "EJMZALYXVBWFCRQUONTSPIKHGD",
+    "UKW-B":      "YRUHQSLDPXNGOKMIEBFZCWVJAT",
+    "UKW-C":      "FVPJIAOYEDRZXWGCTKUQSBNMHL",
+    "UKW-B Thin": "ENKQAUYWJICOPBLMDXZVFTHRGS",
+    "UKW-C Thin": "RDOBJNTKVEHMLFCWZAXGYIPSUQ",
+  },
+  /** the four wirings the 2026-08-02 bundle shipped wrongly, kept so the
+   *  verify harness can assert they are gone */
+  wrongAsShipped: {
+    "UKW-A":      "EJMZALYXVBWFCRQUISTNGOKHPD",
+    "VI":         "JPGVOUMFYQBENHZRDKIDXSCWLA",
+    "Gamma":      "FSOKANUERHMBTIYCWLQPXUZDSVG",
+    "UKW-B Thin": "ENRQWEZXYSFIPOVBLMDUHGMCKJ",
+  },
+  sources: [
+    "https://www.ciphermachinesandcryptology.com/en/enigmatech.htm",
+    "https://www.cryptomuseum.com/crypto/enigma/wiring.htm",
+    "https://en.wikipedia.org/wiki/Enigma_rotor_details",
+  ],
+};
+
+const AZ = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+/**
+ * A fresh Enigma. `config` = { rotors: ["Beta","I","II","III"] leftmost-first,
+ * reflector: "UKW-B Thin", positions: "IQLU", rings: "DESP",
+ * plugs: [["U","N"],...] } — all strings leftmost-first.
+ */
+export function enigmaMachine(config) {
+  const rotors = [...config.rotors];
+  const reflector = ENIGMA_WIRINGS.reflectors[config.reflector];
+  const pos = [...config.positions].map((c) => AZ.indexOf(c));
+  const ring = [...config.rings].map((c) => AZ.indexOf(c));
+  const plug = {};
+  for (const [a, b] of config.plugs || []) {
+    plug[a] = b;
+    plug[b] = a;
+  }
+  const step = () => {
+    const n = rotors.length;
+    const right = n - 1, middle = n - 2;
+    const notchR = ENIGMA_WIRINGS.rotors[rotors[right]].notch;
+    const notchM = ENIGMA_WIRINGS.rotors[rotors[middle]].notch;
+    const atNotchM = notchM.includes(AZ[pos[middle]]);
+    const atNotchR = notchR.includes(AZ[pos[right]]);
+    pos[right] = (pos[right] + 1) % 26;
+    if (atNotchM || atNotchR) pos[middle] = (pos[middle] + 1) % 26;
+    if (atNotchM && middle - 1 >= 0) pos[middle - 1] = (pos[middle - 1] + 1) % 26;
+    // index 0 of an M4 is the Greek Zusatzwalze: it never steps
+  };
+  const through = (i, name, p, r, reverse) => {
+    const shift = p - r;
+    const x = (i + shift + 26) % 26;
+    const wiring = ENIGMA_WIRINGS.rotors[name].wiring;
+    if (!reverse) return (AZ.indexOf(wiring[x]) - shift + 26) % 26;
+    return (wiring.indexOf(AZ[x]) - shift + 26) % 26;
+  };
+  return {
+    /** the current window positions, leftmost-first — for verifying stepping */
+    positions() {
+      return pos.map((p) => AZ[p]).join("");
+    },
+    encrypt(text) {
+      let out = "";
+      for (const ch of text.toUpperCase()) {
+        if (!AZ.includes(ch)) continue;
+        step();
+        let c = plug[ch] || ch;
+        let i = AZ.indexOf(c);
+        for (let k = rotors.length - 1; k >= 0; k--) i = through(i, rotors[k], pos[k], ring[k], false);
+        i = AZ.indexOf(reflector[i]);
+        for (let k = 0; k < rotors.length; k++) i = through(i, rotors[k], pos[k], ring[k], true);
+        c = plug[AZ[i]] || AZ[i];
+        out += c;
+      }
+      return out;
+    },
+  };
+}
+
+/** The three properties that make the corrected wirings provable. */
+export const ENIGMA_VECTORS = {
+  /** Wikipedia, Enigma rotor details: rotors I-II-III, UKW-B, rings AAA,
+   *  start AAA, no plugs: typing AAAAA gives BDZGO */
+  wikipediaAAAAA: { input: "AAAAA", output: "BDZGO" },
+  /** Wikipedia's normalized double-step sequence (rotors I II III, left to
+   *  right): ADU → ADV, then AEW, then BFX */
+  doubleStepFrom: "ADU",
+  doubleStepSequence: ["ADV", "AEW", "BFX"],
+  /** Crypto Museum: with the Greek rotor at position A (ring A) and its
+   *  matching thin reflector, the M4 is backwards compatible with the M3 */
+  m4Compat: [
+    { greek: "Beta", thin: "UKW-B Thin", wide: "UKW-B" },
+    { greek: "Gamma", thin: "UKW-C Thin", wide: "UKW-C" },
+  ],
+};
+
+/**
+ * The Crow's Cryptogram corpus (Dirk Rijmenants, 2010), transcribed from
+ * ciphermachinesandcryptology.com/en/crow.htm (page last changed 05 Sep 2026).
+ */
+export const CROW_2010 = {
+  author: "Dirk Rijmenants",
+  published: 2010,
+  hintLine: "The old crows are on the watch. They SEe and COMe...",
+  poem:
+    "Never forget the town we loved\n" +
+    "A town betrayed by strangers\n" +
+    "Not once or twice but three times\n" +
+    "To unveil the truth and smell of grief\n" +
+    "We found in sacred soil",
+  poemWordCount: 31,
+  solvers: [
+    { name: "Oleksii Sylichenko", country: "Ukraine", date: "8 February 2023", place: 1 },
+    { name: "Daisuke Kondo", country: "Japan", date: "5 September 2026", place: 2 },
+  ],
+  groups: 120,
+  digitsPerGroup: 5,
+  ciphertext:
+    "81232 44783 73232 32263 75722 86365 51963 87366 03222 72668\n" +
+    "33331 27230 52235 23366 23822 87373 75343 52352 22233 29348\n" +
+    "72314 63282 03622 22824 35552 23820 28242 22051 38253 78435\n" +
+    "26882 44825 82262 72736 59828 70417 82232 22288 22682 21731\n" +
+    "65838 47821 47438 75321 25803 22980 25288 84853 83221 55566\n" +
+    "12882 32833 56821 61483 61322 52289 29223 38362 64330 03281\n" +
+    "04482 38254 24393 22203 85563 42714 75854 33606 22125 32227\n" +
+    "32427 54827 34541 73353 02673 22537 58933 02858 78627 23216\n" +
+    "18332 58738 17238 27432 75818 78175 22327 21458 58181 16284\n" +
+    "32082 36857 60426 34562 34873 32531 48845 26072 42848 81358\n" +
+    "26533 52733 04602 28232 38732 23385 38336 23731 83852 72638\n" +
+    "08538 20333 27838 52662 13523 27833 39332 81488 25260 82636",
+  sources: [
+    "https://www.ciphermachinesandcryptology.com/en/crow.htm",
+    "https://rijmenants.blogspot.com/2025/02/20-years-of-cryptologic-challenges.html",
+  ],
+};
+
+/** Digit-level statistics of the Crow corpus — computed, never quoted. */
+export function crowDigitStats() {
+  const digits = CROW_2010.ciphertext.replace(/[^0-9]/g, "");
+  const groups = CROW_2010.ciphertext.trim().split(/\s+/);
+  const freq = {};
+  for (const d of digits) freq[d] = (freq[d] || 0) + 1;
+  const ioc = Object.values(freq).reduce((s, v) => s + v * (v - 1), 0) / (digits.length * (digits.length - 1));
+  return {
+    digitCount: digits.length,
+    groupCount: groups.length,
+    frequencies: freq,
+    digitIoC: ioc,
+    /** digits 2 and 3 carry 43.3% of the corpus between them — the signature
+     *  of a checkerboard-style hand cipher, not of a letter-machine output */
+    digitsTwoAndThreeShare: (freq["2"] + freq["3"]) / digits.length,
+    repeatedGroups: groups.filter((g, i) => groups.indexOf(g) !== i),
+  };
+}
+
+/** Digit→letter bridges attempted for the Enigma experiment. */
+export function crowToLetters(scheme) {
+  const digits = CROW_2010.ciphertext.replace(/[^0-9]/g, "");
+  if (scheme === "A-J") return [...digits].map((d) => AZ[+d]).join("");
+  if (scheme === "mod26-pairs") {
+    let out = "";
+    for (let i = 0; i < digits.length - 1; i += 2) out += AZ[+digits.slice(i, i + 2) % 26];
+    return out;
+  }
+  if (scheme === "phone") {
+    const m = { 2: "A", 3: "D", 4: "G", 5: "J", 6: "M", 7: "P", 8: "T", 9: "W", 0: "Z", 1: "Q" };
+    return [...digits].map((d) => m[+d]).join("");
+  }
+  throw new Error("unknown scheme " + scheme);
+}
+
+/**
+ * Kryptos' four deliberate misspellings, and the settings the hypothesis
+ * derives from them. The diff positions are computed, not asserted.
+ */
+export const KRYPTOS_MISSPELLINGS = {
+  words: {
+    K1: { asCarved: "IQLUSION", intended: "ILLUSION" },
+    K2: { asCarved: "UNDERGRUUND", intended: "UNDERGROUND" },
+    K3: { asCarved: "DESPARATLY", intended: "DESPERATELY" },
+    morseSlab: { asCarved: "DIGETAL", intended: "DIGITAL" },
+  },
+  /** first-divergence letters: Q (K1, position 2), U (K2, position 8),
+   *  A (K3, position 5), E (Morse slab, position 4) */
+  changedLetters: "QUAE",
+  /** the headline M4 configuration baked into the suite's Enigma presets:
+   *  Grundstellung from IQLUSION, Steckerbrett from UNDERGRUUND,
+   *  Ringstellung from DESPARATLY, Zusatzwalze Beta (the Morse slab's slot) */
+  headlineConfig: {
+    rotors: ["Beta", "I", "II", "III"],
+    reflector: "UKW-B Thin",
+    positions: "IQLU",
+    rings: "DESP",
+    plugs: [["U", "N"], ["D", "E"], ["R", "G"]],
+  },
+  /** note: UNDERGRUUND also contains a second U-N pair, which a real
+   *  Steckerbrett cannot accept — the plugboard derivation must drop it */
+  plugboardNote: "UNDERGRUUND pairs sequentially as UN DE RG RU UN D; after UN, DE and RG every remaining pair would reuse a letter already plugged (RU reuses R, the second UN reuses both), so the largest legal Steckerbrett subset is UN DE RG",
+  k4Ciphertext: "OBKRUOXOGHULBSOLIFBBWFLRVQQVPRNGKSSOTWTQSJQSSEKZZWATJKLUDIAWINFBNYPVTTMZFPKWGDKZXTJCDIGKUHUAUEKCAR",
+};
+
+/** Englishness of a letter string, 0..1 — the same composite heuristic the
+ *  Python experiment used: chi-square closeness, IoC, common-word density. */
+export function englishness(text) {
+  const n = text.length;
+  if (!n) return 0;
+  const ENGLISH = {
+    A: 8.17, B: 1.49, C: 2.78, D: 4.25, E: 12.7, F: 2.23, G: 2.02, H: 6.09,
+    I: 6.97, J: 0.15, K: 0.77, L: 4.03, M: 2.41, N: 6.75, O: 7.51, P: 1.93,
+    Q: 0.1, R: 5.99, S: 6.33, T: 9.06, U: 2.76, V: 0.98, W: 2.36, X: 0.15,
+    Y: 1.97, Z: 0.07,
+  };
+  const obs = {};
+  for (const c of text) obs[c] = (obs[c] || 0) + 1;
+  let chi = 0;
+  for (const c of AZ) {
+    const e = (ENGLISH[c] * n) / 100;
+    chi += ((obs[c] || 0) - e) ** 2 / e;
+  }
+  const ioc = Object.values(obs).reduce((s, v) => s + v * (v - 1), 0) / (n * (n - 1));
+  const words = (text.match(/\b(THE|AND|THAT|HAVE|FOR|NOT|WITH|YOU|THIS|BUT|HIS|FROM|THEY|SAY|HER|SHE|ONE|ALL|WE|WOULD|THERE|THEIR|WHAT|OUT|ABOUT|WHO|GET|WHICH|WHEN|MAKE|CAN|LIKE|TIME|JUST|HIM|KNOW|TAKE|PERSON|INTO|YEAR|YOUR|GOOD|SOME|COULD|THEM|SEE|OTHER|THAN|THEN|NOW|LOOK|ONLY|COME|ITS|OVER|THINK|ALSO|BACK|AFTER|USE|TWO|HOW|OUR|WORK|FIRST|WELL|WAY|EVEN|NEW|WANT|BECAUSE|ANY|THESE|GIVE|DAY|MOST|US|IS|ARE|WAS|WERE|BEEN|HAS|HAD|WILL|TOWN|CROW|NEVER|FORGET)\b/g) || []).length;
+  const chiScore = Math.max(0, 1 - chi / n / 0.8);
+  const iocScore = Math.max(0, Math.min(1, (ioc - 0.03) / 0.04));
+  const wordScore = Math.min(1, words / Math.max(1, n / 30));
+  return 0.4 * chiScore + 0.3 * iocScore + 0.3 * wordScore;
+}
+
+/**
+ * The 2026-10-02 experiment, reproducibly: every Enigma configuration the
+ * misspellings-as-settings hypothesis suggests, run over the Crow corpus
+ * (three digit→letter bridges) and the K4 ciphertext, scored for English.
+ * Returns the headline preset's scores and the global best. The honest
+ * result — encoded by the harness as an assertion, not a hope — is that
+ * nothing scores anywhere near English.
+ */
+export function kryptosEnigmaExperiment() {
+  const starts = ["IQLU", "UNDE", "DESP", "DIGE", "QUAE", "UDDE"];
+  const rings = ["DESP", "IQLU", "UNDE", "DIGE", "AAAA"];
+  /** each misspelling's sequential letter pairs, skipping any pair that would
+   *  reuse an already-plugged letter (UNDERGRUUND's RU reuses R, DESPARATLY's
+   *  AT reuses A — dropped, then LY is still legal — IQLUSION's SI reuses I) */
+  const plugsByName = {
+    undergruund: [["U", "N"], ["D", "E"], ["R", "G"]],
+    desparatly: [["D", "E"], ["S", "P"], ["A", "R"], ["L", "Y"]],
+    iqlusion: [["I", "Q"], ["L", "U"], ["O", "N"]],
+    none: [],
+  };
+  const rotorSets = [
+    { rotors: ["I", "II", "III"], reflectors: ["UKW-B", "UKW-C"], greek: false },
+    { rotors: ["Beta", "I", "II", "III"], reflectors: ["UKW-B Thin"], greek: true },
+    { rotors: ["Gamma", "I", "II", "III"], reflectors: ["UKW-C Thin"], greek: true },
+    { rotors: ["Beta", "II", "IV", "I"], reflectors: ["UKW-B Thin"], greek: true },
+    { rotors: ["Gamma", "V", "VI", "VIII"], reflectors: ["UKW-C Thin"], greek: true },
+  ];
+  const targets = {
+    "crow:A-J": crowToLetters("A-J"),
+    "crow:mod26-pairs": crowToLetters("mod26-pairs"),
+    "crow:phone": crowToLetters("phone"),
+    "k4:letters": KRYPTOS_MISSPELLINGS.k4Ciphertext,
+  };
+  let runs = 0;
+  let best = null;
+  const headline = {};
+  for (const set of rotorSets) {
+    for (const start of starts) {
+      for (const ring of rings) {
+        for (const [plugName, plugs] of Object.entries(plugsByName)) {
+          for (const reflector of set.reflectors) {
+            const positions = set.greek ? start : start.slice(1);
+            const rings = set.greek ? ring : ring.slice(1);
+            for (const [tName, text] of Object.entries(targets)) {
+              const config = { rotors: set.rotors, reflector, positions, rings, plugs };
+              const out = enigmaMachine(config).encrypt(text);
+              const score = englishness(out);
+              runs++;
+              const row = { score, target: tName, rotors: set.rotors.join("-"), reflector, positions, rings, plugs: plugName, head: out.slice(0, 48) };
+              if (!best || score > best.score) best = row;
+              if (JSON.stringify(config) === JSON.stringify(KRYPTOS_MISSPELLINGS.headlineConfig) && tName === "crow:A-J") {
+                Object.assign(headline, row, { fullTarget: text.length });
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  /** calibration anchors, so "far from English" is a measured statement */
+  const calibration = {
+    crowPoemEnglish: englishness(CROW_2010.poem.toUpperCase().replace(/[^A-Z]/g, "")),
+    k4RawCiphertext: englishness(KRYPTOS_MISSPELLINGS.k4Ciphertext),
+  };
+  return { runs, best, headline, calibration };
+}

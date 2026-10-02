@@ -49,7 +49,7 @@ describe("CyberChef matrix-cipher deep dive", () => {
       const added = ["hill3", "twoSquare", "doubleColumn", "myszkowski", "turningGrille", "phillips"];
       expect(ids).toEqual(expect.arrayContaining(added));
       expect(new Set(ids).size).toBe(ids.length);
-      expect(kitchen.html).toContain("366 recipes");
+      expect(kitchen.html).toContain("369 recipes");
       expect(kitchen.html).toContain("Matrix Deep Dive — Hill, Two-Square & Phillips");
       expect(kitchen.html).toContain("Matrix Deep Dive — Columnar, Myszkowski & Grilles");
 

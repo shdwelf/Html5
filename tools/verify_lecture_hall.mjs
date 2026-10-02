@@ -45,6 +45,8 @@ import {
   FIELDNOTES_CODES, FIELDNOTES_21, FIELDNOTES_8, FIELDNOTES_COLLISION,
   DECLARATION_FIRST_SENTENCE,
   F5_2016, F5_2018, USCYBERCOM, USCYBERCOM_HERALDRY, CICADA3301, CICADA_LAB,
+  ENIGMA_WIRINGS, enigmaMachine, ENIGMA_VECTORS, CROW_2010, crowDigitStats,
+  crowToLetters, KRYPTOS_MISSPELLINGS, kryptosEnigmaExperiment,
 } from "../js/lecture-ciphers.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -770,7 +772,7 @@ if (!existsSync(SUITE)) {
 
   const pc = literalAt(src, "Pc=[");
   const records = vm.runInNewContext(`(${pc.text})`, Object.create(null), { timeout: 2000 });
-  check(Array.isArray(records) && records.length === 26, `lecture hall holds ${records.length} records`);
+  check(Array.isArray(records) && records.length === 28, `lecture hall holds ${records.length} records`);
 
   const required = ["id", "title", "period", "location", "confidence", "summary", "facts", "sourceLinks", "caution"];
   const shapeOk = records.every((r) =>
@@ -784,7 +786,7 @@ if (!existsSync(SUITE)) {
   const RAISED = [
     "f5-blackhat-2016", "uscybercom-seal-md5", "fieldnotes-wheel", "f1eldn0tes-agents",
     "cicada-3301", "f5-blackhat-2018", "kryptos-k4-smithsonian",
-    "dos-packer-obfuscation",
+    "dos-packer-obfuscation", "kgb-museum-juliens-2021", "intl-spy-museum-provenance",
   ];
   const raisedBarOk = RAISED.every((id) => {
     const r = records.find((x) => x.id === id);
@@ -825,6 +827,10 @@ if (!existsSync(SUITE)) {
   check(
     ["kryptos-k4-smithsonian"].every((id) => byId[id]),
     "the Kryptos K4 Smithsonian archive record added by the 2026-09-29 pass is in the hall",
+  );
+  check(
+    ["kgb-museum-juliens-2021", "intl-spy-museum-provenance"].every((id) => byId[id]),
+    "the two museum-provenance records added by the 2026-10-02 pass are in the hall",
   );
 
   // Kryptos K4 — the archive is walked as a checkable provenance chain, and
@@ -1061,6 +1067,119 @@ if (!existsSync(SUITE)) {
     "Cicada record never claims the third puzzle was solved — “resolved” and “unsolved” are allowed, a claim is not",
   );
 
+  // ── the 2026-10-02 museum pass ────────────────────────────────────────────
+  // KGB Espionage Museum — the record's job is the custody chain, so every
+  // link in it must be present and every number must be the sourced one.
+  const kg = haystack("kgb-museum-juliens-2021");
+  check(
+    kg.includes("245 West 14th Street") && kg.includes("3,500") &&
+      kg.includes("January 2019") && kg.includes("March 2020") &&
+      kg.includes("13 February 2021") && kg.includes("3292"),
+    "KGB museum record: the custody chain's four fixed points (Chelsea opening, COVID closure, sale #3292, 3,500+ artifacts)",
+  );
+  check(
+    kg.includes("lot 343") && kg.includes("$22,400") &&
+      kg.includes("$32,000") && kg.includes("$25,600") &&
+      kg.includes("Irsay") && kg.includes("lot 147"),
+    "KGB museum record: Fialka lot 343 at $22,400, the Fly purse at $32,000 into the Irsay Collection (lot 147), the coin at $25,600",
+  );
+  check(
+    /Urbaitis/.test(kg) && /Chernobyl/.test(kg) && /Kaunas/.test(kg),
+    "KGB museum record: the collectors, their Kaunas bunker museum and the HBO Chernobyl consultancy are all named",
+  );
+  check(
+    /Fialka/.test(kg) && /NEMA|KL-7/.test(kg) && /Forbes/.test(kg) &&
+      /captured Nazi Enigma technology/.test(kg),
+    "KGB museum record: carries the Forbes Enigma-lineage claim AND the Crypto Museum contradiction, not just one",
+  );
+  check(
+    /hammer|buyer.s premium|preparation/i.test(kg) && /not independently audited|never independently audited/i.test(kg),
+    "KGB museum record: prices flagged as the house's own reported bids, authenticity flagged as unaudited",
+  );
+
+  // International Spy Museum — the counter-case, checked with the same rigor.
+  const sp = haystack("intl-spy-museum-provenance");
+  check(
+    sp.includes("Maltz") && sp.includes("Earnest") && sp.includes("19 July 2002") &&
+      sp.includes("800 F Street") && sp.includes("Enfant Plaza") && sp.includes("2019"),
+    "Spy Museum record: founders (Maltz, Earnest), 19 July 2002 opening at 800 F Street, the 2019 L'Enfant Plaza building",
+  );
+  check(
+    /Melton/.test(sp) && /tripled/.test(sp) &&
+      sp.includes("PURPLE") && sp.includes("CipherTAC 2000") &&
+      sp.includes("13") && /Houghton/.test(sp) && /Hammond/.test(sp),
+    "Spy Museum record: the Melton gift, the 13-object NSA loan (PURPLE analog #1, CipherTAC 2000), Houghton and Hammond named",
+  );
+  check(
+    /nonprofit/.test(sp) && /Guinness/.test(sp) && /governance|Governance/.test(sp),
+    "Spy Museum record: nonprofit status, Guinness record and governance are what make it the counter-case",
+  );
+  check(
+    /self-description|self-description|institutional self/i.test(sp) && /not documented on the public exhibit pages/i.test(sp),
+    "Spy Museum record: the caution names what is the museum's own account and what is unknown (the Enigma's provenance)",
+  );
+
+  // the Enigma engine the suite ships — four wirings were wrong before this
+  // pass; the corrected values and the banished variants are both pinned.
+  for (const [name, wiring] of Object.entries(ENIGMA_WIRINGS.wrongAsShipped)) {
+    check(
+      !src.includes(wiring),
+      `bundle no longer ships the wrong ${name} wiring (${wiring})`,
+    );
+  }
+  check(
+    src.includes("EJMZALYXVBWFCRQUONTSPIKHGD") &&          // UKW-A
+      src.includes("JPGVOUMFYQBENHZRDKASXLICTW") &&        // VI
+      src.includes("FSOKANUERHMBTIYCWLQPZXVGJD") &&        // Gamma
+      src.includes("ENKQAUYWJICOPBLMDXZVFTHRGS"),          // UKW-B thin
+    "bundle carries the canonical UKW-A, rotor VI, Gamma and UKW-B thin wirings (three-source cross-check)",
+  );
+  check(
+    /Kryptos Misspellings Experiment \(2026\)/.test(src) &&
+      src.includes("IQLU") && src.includes("DESP") &&
+      /UKW-B Thin/.test(src),
+    "bundle's Enigma presets include the Kryptos-misspellings M4 experiment (IQLU / DESP / UKW-B Thin)",
+  );
+  check(
+    !/\[\"R\",\"U\"\]|\["R","U"\]/.test(src.slice(src.indexOf("Kryptos Misspellings") - 4000, src.indexOf("Kryptos Misspellings") + 4000)),
+    "the experiment preset's plugboard is the legal UN-DE-RG subset (no letter plugged twice)",
+  );
+
+  // the Crow's Cryptogram record and exhibits
+  check(
+    src.includes("crow-cryptogram") && src.includes("Sylichenko") &&
+      src.includes("Kondo") && /5 September 2026/.test(src) &&
+      src.includes("IQLU"),
+    "crow-cryptogram record names both honored solvers (Sylichenko 2023, Kondo 5 Sep 2026) — and the suite knows the Kryptos experiment settings",
+  );
+  {
+    const paAt = src.indexOf("pa={");
+    const paBlock = src.slice(paAt, src.indexOf(",solvedBy", paAt) + 600);
+    check(
+      paBlock.includes("Sylichenko") && paBlock.includes("Kondo") &&
+        /31-word|31 word/.test(paBlock),
+      "the crow museum pane's solvedBy/solvedDate carry both solvers and the 31-word poem note",
+    );
+  }
+  const qcText = literalAt(src, "qc=[");
+  const exhibits = vm.runInNewContext(`(${qcText.text})`, Object.create(null), { timeout: 2000 });
+  check(
+    Array.isArray(exhibits) && exhibits.length === 15,
+    `museum tab holds ${exhibits.length} exhibits (13 + Fialka/Juilien's + Spy Museum)`,
+  );
+  const fialka = exhibits.find((e) => e.id === "fialka-juliens-343");
+  const spyEx = exhibits.find((e) => e.id === "spy-museum-enigma");
+  check(
+    !!fialka && JSON.stringify(fialka).includes("343") && JSON.stringify(fialka).includes("$22,400") &&
+      JSON.stringify(fialka).includes("Urbaitis"),
+    "Fialka exhibit carries lot 343, the $22,400 result and the collector's name",
+  );
+  check(
+    !!spyEx && JSON.stringify(spyEx).includes("Maltz") && JSON.stringify(spyEx).includes("PURPLE") &&
+      JSON.stringify(spyEx).includes("CipherTAC"),
+    "Spy Museum exhibit carries Maltz, PURPLE analog #1 and CipherTAC 2000",
+  );
+
   // absence is recorded as absence
   check(
     !/deliberately does not invent/.test(src) &&
@@ -1069,9 +1188,96 @@ if (!existsSync(SUITE)) {
     "missing material is recorded as missing — placeholders and silent repairs both absent",
   );
   check(
-    src.includes("internet puzzle hunts"),
-    "the hall’s scope line was widened again to cover internet puzzle hunts",
+    src.includes("internet puzzle hunts") &&
+      src.includes("museum and collection custody"),
+    "the hall’s scope line was widened again — internet puzzle hunts, then museum and collection custody",
   );
+}
+
+/* ------------------------------------------------- 9. the museum cipher pass */
+
+console.log("── Enigma M4, the Crow's Cryptogram and the Kryptos misspellings (2026-10-02 pass)");
+{
+  // the engine itself — pinned to the same three-source canonical wirings the
+  // bundle now carries
+  const canon = enigmaMachine({
+    rotors: ["I", "II", "III"], reflector: "UKW-B", positions: "AAA", rings: "AAA", plugs: [],
+  });
+  check(
+    canon.encrypt(ENIGMA_VECTORS.wikipediaAAAAA.input) === ENIGMA_VECTORS.wikipediaAAAAA.output,
+    `Wikipedia vector: rotors I-II-III, UKW-B, AAA/AAA encrypts AAAAA to ${ENIGMA_VECTORS.wikipediaAAAAA.output}`,
+  );
+
+  // M4 backwards compatibility — the property that proves the Beta/Gamma and
+  // thin-reflector wirings jointly: at Greek rotor A with ring A, the M4
+  // reduces exactly to the matching M3
+  for (const { greek, thin, wide } of ENIGMA_VECTORS.m4Compat) {
+    const m4 = enigmaMachine({ rotors: [greek, "I", "II", "III"], reflector: thin, positions: "AQDK", rings: "AAAA", plugs: [] });
+    const m3 = enigmaMachine({ rotors: ["I", "II", "III"], reflector: wide, positions: "QDK", rings: "AAA", plugs: [] });
+    check(
+      m4.encrypt("ABCDEFGHIJKLMNOPQRSTUVWXYZ") === m3.encrypt("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+      `M4 compatibility: ${greek} at A + ${thin} ≡ M3 with ${wide} (this is what the old wrong wirings could not do)`,
+    );
+  }
+
+  // double-stepping — the mechanical behaviour most reimplementations get wrong
+  {
+    const e = enigmaMachine({
+      rotors: ["I", "II", "III"], reflector: "UKW-B",
+      positions: ENIGMA_VECTORS.doubleStepFrom, rings: "AAA", plugs: [],
+    });
+    const seq = [];
+    for (let i = 0; i < 3; i++) {
+      e.encrypt("A");
+      seq.push(e.positions());
+    }
+    check(
+      JSON.stringify(seq) === JSON.stringify(ENIGMA_VECTORS.doubleStepSequence),
+      `double-step from ADU: ${seq.join(" → ")} (the middle rotor steps twice)`,
+    );
+  }
+
+  // reciprocity and the no-self-encryption property, with a full plugboard
+  {
+    const fullPlugs = [["A","T"],["B","S"],["C","Y"],["D","K"],["E","Q"],["F","L"],["G","X"],["H","J"],["I","V"],["M","W"]];
+    const cfg = { rotors: ["Beta", "V", "VI", "VIII"], reflector: "UKW-B Thin", positions: "BJKL", rings: "AAAV", plugs: fullPlugs };
+    const az = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const out = enigmaMachine(cfg).encrypt(az);
+    const back = enigmaMachine({ ...cfg }).encrypt(out);
+    check(back === az, "M4 with 10 plugs is reciprocal: enc(enc(alphabet)) = alphabet");
+    check(![...out].some((c, i) => c === az[i]), "no letter encrypts to itself — the property Bletchley exploited, present even with a full plugboard");
+  }
+
+  // the Crow's Cryptogram corpus — every structural claim recomputed
+  {
+    const stats = crowDigitStats();
+    check(stats.digitCount === 600 && stats.groupCount === 120, `crow corpus is ${stats.groupCount} five-digit groups, ${stats.digitCount} digits`);
+    check(CROW_2010.poemWordCount === 31 && CROW_2010.poem.split(/\s+/).length === 31, "the crow poem is 31 words (not the 20 the request remembered — the correction is on the record)");
+    check(CROW_2010.solvers.length === 2 && CROW_2010.solvers[1].name === "Daisuke Kondo", "both honored solvers are in the corpus: Sylichenko (2023), Kondo (2026)");
+    check(
+      stats.digitIoC > 0.14 && stats.digitsTwoAndThreeShare > 0.4,
+      `crow digits are far from uniform: IoC ${stats.digitIoC.toFixed(3)}, digits 2+3 alone carry ${(stats.digitsTwoAndThreeShare * 100).toFixed(1)}% — the profile of a checkerboard-style hand cipher, not a rotor machine`,
+    );
+    check(stats.repeatedGroups.length === 0, "no whole 5-digit group repeats — the grouping carries no crib");
+  }
+
+  // the experiment — reproducible in this harness, honest about its outcome
+  {
+    const x = kryptosEnigmaExperiment();
+    check(x.runs === 2880, `the misspellings-as-settings experiment explores ${x.runs} Enigma configurations across the crow corpus and K4`);
+    check(
+      x.calibration.crowPoemEnglish > 0.55 && x.calibration.k4RawCiphertext < 0.1,
+      `calibration anchors the scale: the poem (English) scores ${x.calibration.crowPoemEnglish.toFixed(3)}, raw K4 noise ${x.calibration.k4RawCiphertext.toFixed(3)}`,
+    );
+    check(
+      x.best.score < 0.35 && x.best.target === "k4:letters",
+      `best of all ${x.runs} runs: ${x.best.score.toFixed(3)} (${x.best.rotors}, start ${x.best.positions}, rings ${x.best.rings}, ${x.best.plugs} plugs) — nowhere near English, and the winner is on K4, not the crow`,
+    );
+    check(
+      x.headline.score < 0.2 && x.headline.head === "PEQMUGPJHTKKMVHWIKTAQVNNQGNOHRPUYWPJJBTNMSXNONZR",
+      `the headline preset (IQLU / DESP / UN-DE-RG over the crow) scores ${x.headline.score.toFixed(3)} — the hypothesis is recorded as failed, not as solved`,
+    );
+  }
 }
 
 function fpOf(s) { return s; }

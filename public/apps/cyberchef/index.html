@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 366 recipes · Virus encyclopedia: Stoned/Michelangelo/Cascade/Jerusalem signatures &amp; boot-sector triage</div>
+  <div class="sub">HTML5 · 369 recipes · Virus encyclopedia: Stoned/Michelangelo/Cascade/Jerusalem signatures &amp; boot-sector triage</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -2806,6 +2806,12 @@ const RECIPE_PACKS={
  'Keygen → Encrypt (AES)':[['keyRandom',{}],['aesGCM',{mode:'encrypt'}]],
  'Hash Collection':[['allhash',{}]],
  'Boxentriq Puzzle & Code-Breaking Pack (Deferred Four — AMSCO · Morbit · Pollux · Nak-Nak)':[['amsco',{}],['morbit',{}],['pollux',{}],['naknak',{}]],
+ 'Museum · Enigma I reference vector (expect BDZGO)':[['enigma',{}]],
+ 'Museum · Kriegsmarine M4 · Beta + UKW-B Thin (M3-compatible at A)':[['enigma',{G:'Beta',ukw:'Bt',pos:'AQDK',ring:'AAAA'}]],
+ 'Museum · Kryptos misspellings M4 experiment (IQLU / DESP / UN DE RG)':[['enigma',{G:'Beta',ukw:'Bt',pos:'IQLU',ring:'DESP',plug:'UN DE RG'}]],
+ 'Museum · KGB Espionage Museum: VIC straddling checkerboard':[['vic',{}]],
+ 'Museum · Hollow-nickel mod-10 one-time pad (VENONA class)':[['otp10',{}]],
+ 'Museum · Crow cryptogram digit profile':[['freq',{}]],
 };
 addOp('recipePack','Recipe Pack','Recipes','Load a predefined cipher-suite recipe pack into the Recipe panel.',Object.keys(RECIPE_PACKS).map((name,i)=>({key:'pack',label:'Pack',type:'select',default:Object.keys(RECIPE_PACKS)[0],options:Object.keys(RECIPE_PACKS).map(n=>[n,n])})),function(t,a){
   const n=applyRecipePack(a.pack);
@@ -8955,54 +8961,116 @@ addOp('idea','IDEA (wolfSSL / Lai–Massey)','Block Cipher',
   }
 );
 
-const ENI_ROT={I:{w:'EKMFLGDQVZNTOWYHXUSPAIBRCJ',n:'Q'},II:{w:'AJDKSIRUXBLHWTMCQGZNPYFVOE',n:'E'},III:{w:'BDFHJLCPRTXVZNYEIWGAKMUSQO',n:'V'},IV:{w:'ESOVPZJAYQUIRHXLNFTGKDCMWB',n:'J'},V:{w:'VZBRGITYUPSDNHLXAWMJQOFECK',n:'Z'}};
-const ENI_UKW={B:'YRUHQSLDPXNGOKMIEBFZCWVJAT',C:'FVPJIAOYEDRZXWGCTKUQSBNMHL'};
+const ENI_ROT={I:{w:'EKMFLGDQVZNTOWYHXUSPAIBRCJ',n:'Q'},II:{w:'AJDKSIRUXBLHWTMCQGZNPYFVOE',n:'E'},III:{w:'BDFHJLCPRTXVZNYEIWGAKMUSQO',n:'V'},IV:{w:'ESOVPZJAYQUIRHXLNFTGKDCMWB',n:'J'},V:{w:'VZBRGITYUPSDNHLXAWMJQOFECK',n:'Z'},
+ VI:{w:'JPGVOUMFYQBENHZRDKASXLICTW',n:'ZM'},VII:{w:'NZJHGRCXMYSWBOUFAIVLPEKQDT',n:'ZM'},VIII:{w:'FKQHTLXOCBJSPDZRAMEWNIUYGV',n:'ZM'},
+ Beta:{w:'LEYJVCNIXWPBQMDRTAKZGFUHOS',n:''},Gamma:{w:'FSOKANUERHMBTIYCWLQPZXVGJD',n:''}};
+const ENI_UKW={A:'EJMZALYXVBWFCRQUONTSPIKHGD',B:'YRUHQSLDPXNGOKMIEBFZCWVJAT',C:'FVPJIAOYEDRZXWGCTKUQSBNMHL',
+ Bt:'ENKQAUYWJICOPBLMDXZVFTHRGS',Ct:'RDOBJNTKVEHMLFCWZAXGYIPSUQ'};
+/* 2026-10-02 museum pass: upgraded from Enigma I to the full M3/M4 range.
+   Wirings cross-checked against Rijmenants' Enigma Tech Details, Crypto
+   Museum's wiring page and Wikipedia's Enigma rotor details (three sources
+   agree). M4 rule: the Greek Zusatzwalze never steps, and with it at A (ring
+   A) plus its matching thin reflector the machine reduces exactly to an M3. */
 function eniPos(ch){return ch.charCodeAt(0)-65;}
 function eniChr(n){return String.fromCharCode(65+((n%26)+26)%26);}
+function eniPlugs(s){
+  const plug={};const seen={};
+  String(s||'').toUpperCase().split(/[^A-Z]+/).filter(t=>t.length===2).forEach(p=>{
+    const a=p[0],b=p[1];
+    if(a!==b&&!seen[a]&&!seen[b]){plug[a]=b;plug[b]=a;seen[a]=1;seen[b]=1;}
+  });
+  return plug;
+}
 function enigmaCrypt(text,opts){
-  const rotL=ENI_ROT[opts.L||'I'], rotM=ENI_ROT[opts.M||'II'], rotR=ENI_ROT[opts.R||'III'];
+  const names=(opts.rotors||[]).filter(Boolean);
+  const n=names.length;
+  if(n<3||n>4)return 'ERROR: 3 rotors (M3) or Greek + 3 (M4)';
+  const greek=names[0]==='Beta'||names[0]==='Gamma';
+  const thin=opts.ukw==='Bt'||opts.ukw==='Ct';
+  if(greek&&!thin)return 'ERROR: Beta/Gamma pair with a thin reflector (Bt or Ct)';
+  if(!greek&&thin)return 'ERROR: a thin reflector needs a 4th rotor — put Beta or Gamma in the Greek slot';
   const ukw=ENI_UKW[opts.ukw||'B'];
-  let pL=eniPos(opts.posL||'A'), pM=eniPos(opts.posM||'A'), pR=eniPos(opts.posR||'A');
-  const rL=eniPos(opts.ringL||'A'), rM=eniPos(opts.ringM||'A'), rR=eniPos(opts.ringR||'A');
-  const plug={}; const pairs=String(opts.plug||'').toUpperCase().replace(/[^A-Z]/g,'');
-  for(let i=0;i+1<pairs.length;i+=2){plug[pairs[i]]=pairs[i+1]; plug[pairs[i+1]]=pairs[i];}
-  function thru(wiring,pos,ring,c,inv){
-    const shift=(pos-ring+26)%26; const x=(c+shift)%26;
+  const rots=names.map(k=>ENI_ROT[k]);
+  let pos=[...(opts.pos||'AAA')].map(eniPos);
+  const ring=[...(opts.ring||'AAA')].map(eniPos);
+  if(pos.length!==n||ring.length!==n)return 'ERROR: positions and rings need exactly '+n+' letters (one per rotor, left to right)';
+  const plug=eniPlugs(opts.plug);
+  function thru(wiring,p,r,c,inv){
+    const shift=(p-r+26)%26;const x=(c+shift)%26;
     const y=inv?wiring.indexOf(eniChr(x)):eniPos(wiring[x]);
     return (y-shift+26)%26;
   }
   let out='';
   for(const ch0 of text.toUpperCase()){
-    if(ch0<'A'||ch0>'Z'){out+=ch0; continue;}
-    const midNotch=eniChr(pM)===rotM.n, rightNotch=eniChr(pR)===rotR.n;
-    if(midNotch){pL=(pL+1)%26; pM=(pM+1)%26;} else if(rightNotch) pM=(pM+1)%26;
-    pR=(pR+1)%26;
+    if(ch0<'A'||ch0>'Z'){out+=ch0;continue;}
+    /* step: right rotor always; middle at its own or the right's notch (double
+       step); the rotor left of the middle at the middle's notch. Greek never steps. */
+    const right=n-1,middle=n-2;
+    const atNM=rots[middle].n.includes(eniChr(pos[middle]));
+    const atNR=rots[right].n.includes(eniChr(pos[right]));
+    pos[right]=(pos[right]+1)%26;
+    if(atNM||atNR)pos[middle]=(pos[middle]+1)%26;
+    if(atNM&&middle-1>=0)pos[middle-1]=(pos[middle-1]+1)%26;
     let c=eniPos(plug[ch0]||ch0);
-    c=thru(rotR.w,pR,rR,c,false); c=thru(rotM.w,pM,rM,c,false); c=thru(rotL.w,pL,rL,c,false);
+    for(let k=n-1;k>=0;k--)c=thru(rots[k].w,pos[k],ring[k],c,false);
     c=eniPos(ukw[c]);
-    c=thru(rotL.w,pL,rL,c,true); c=thru(rotM.w,pM,rM,c,true); c=thru(rotR.w,pR,rR,c,true);
+    for(let k=0;k<n;k++)c=thru(rots[k].w,pos[k],ring[k],c,true);
     out+=plug[eniChr(c)]||eniChr(c);
   }
   return out;
 }
-addOp('enigma','Enigma I (Wehrmacht)','Classical',
-  'Wehrmacht Enigma I with rotors I–V, reflectors B/C, ring settings, start positions, plugboard, and the middle-rotor double-step. Reciprocal: encrypt = decrypt. Verified against the Wikipedia vector I-II-III / UKW-B / rings AAA / start AAA / AAAAA → BDZGO. GCWizard leftover.',
+const ENI_ROPT=[['I','I'],['II','II'],['III','III'],['IV','IV'],['V','V'],['VI','VI'],['VII','VII'],['VIII','VIII']];
+addOp('enigma','Enigma I / M3 / M4 (Wehrmacht & Kriegsmarine)','Classical',
+  'Enigma I through the four-rotor Kriegsmarine M4: rotors I–VIII plus the Greek Zusatzwalze Beta/Gamma (which never steps), reflectors UKW A/B/C and the thin B/C, ring settings, start positions, plugboard, and the middle-rotor double-step. Reciprocal: encrypt = decrypt. Verified against the Wikipedia vector I-II-III / UKW-B / rings AAA / start AAA / AAAAA → BDZGO, and the M4 compatibility property (Beta at A + UKW-B Thin ≡ M3 UKW-B).',
   [
-    {key:'L',label:'Left rotor',type:'select',default:'I',options:[['I','I'],['II','II'],['III','III'],['IV','IV'],['V','V']]},
-    {key:'M',label:'Middle rotor',type:'select',default:'II',options:[['I','I'],['II','II'],['III','III'],['IV','IV'],['V','V']]},
-    {key:'R',label:'Right rotor',type:'select',default:'III',options:[['I','I'],['II','II'],['III','III'],['IV','IV'],['V','V']]},
-    {key:'ukw',label:'Reflector',type:'select',default:'B',options:[['B','UKW B'],['C','UKW C']]},
-    {key:'pos',label:'Start (LMR)',type:'text',default:'AAA'},
-    {key:'ring',label:'Rings (LMR)',type:'text',default:'AAA'},
+    {key:'G',label:'Greek rotor (M4)',type:'select',default:'',options:[['','— (M3: 3 rotors)'],['Beta','Beta'],['Gamma','Gamma']]},
+    {key:'L',label:'Left rotor',type:'select',default:'I',options:ENI_ROPT},
+    {key:'M',label:'Middle rotor',type:'select',default:'II',options:ENI_ROPT},
+    {key:'R',label:'Right rotor',type:'select',default:'III',options:ENI_ROPT},
+    {key:'ukw',label:'Reflector',type:'select',default:'B',options:[['A','UKW A'],['B','UKW B'],['C','UKW C'],['Bt','UKW B Thin (M4)'],['Ct','UKW C Thin (M4)']]},
+    {key:'pos',label:'Start (LMR / GLMR)',type:'text',default:'AAA'},
+    {key:'ring',label:'Rings (LMR / GLMR)',type:'text',default:'AAA'},
     {key:'plug',label:'Plugboard pairs',type:'text',default:''}
   ],
   function(t,a){
-    const pos=(a.pos||'AAA').toUpperCase().replace(/[^A-Z]/g,'').padEnd(3,'A');
-    const ring=(a.ring||'AAA').toUpperCase().replace(/[^A-Z]/g,'').padEnd(3,'A');
+    const rotors=[a.G,a.L,a.M,a.R].filter(v=>v!==''&&v!==undefined&&v!==null);
+    const want=rotors.length;
+    let pos=(a.pos||'AAA').toUpperCase().replace(/[^A-Z]/g,'');
+    let ring=(a.ring||'AAA').toUpperCase().replace(/[^A-Z]/g,'');
+    pos=pos.padEnd(want,'A').slice(0,Math.max(want,pos.length));
+    ring=ring.padEnd(want,'A').slice(0,Math.max(want,ring.length));
     const src=(t||'AAAAA');
-    const out=enigmaCrypt(src,{L:a.L,M:a.M,R:a.R,ukw:a.ukw,posL:pos[0],posM:pos[1],posR:pos[2],ringL:ring[0],ringM:ring[1],ringR:ring[2],plug:a.plug||''});
-    const ascii=['════ ENIGMA I (Wehrmacht) ════','Walzen : '+a.L+'-'+a.M+'-'+a.R+'   UKW '+a.ukw,'Start  : '+pos+'   Rings '+ring,'Stecker: '+(a.plug||'(none)'),'In     : '+src.toUpperCase(),'Out    : '+out,'','Verified: I-II-III UKW-B AAA/AAA AAAAA → BDZGO'].join('\n');
-    return kitCard('Enigma I',a.L+'-'+a.M+'-'+a.R+' · UKW '+a.ukw,kitMono(out)+'<div style="margin-top:8px;font-size:12px;color:#abb2bf;">Double-stepping middle rotor included. Reciprocal machine — run again to invert.</div>',ascii);
+    const out=enigmaCrypt(src,{rotors,ukw:a.ukw,pos,ring,plug:a.plug||''});
+    const label=(a.G?a.G+'-':'')+a.L+'-'+a.M+'-'+a.R+' · UKW '+a.ukw;
+    const ascii=['════ ENIGMA '+(a.G?'M4':'I / M3')+' ════','Walzen : '+label,'Start  : '+pos+'   Rings '+ring,'Stecker: '+(a.plug||'(none)'),'In     : '+src.toUpperCase(),'Out    : '+out,'','Verified: I-II-III UKW-B AAA/AAA AAAAA → BDZGO','M4 compat: Beta@A + UKW-B Thin ≡ M3 UKW-B (all 26 letters)'].join('\n');
+    return kitCard(a.G?'Enigma M4':'Enigma I / M3',label,kitMono(out)+'<div style="margin-top:8px;font-size:12px;color:#abb2bf;">Double-stepping middle rotor included; the Greek rotor never steps. Reciprocal machine — run again to invert.</div>',ascii);
+  }
+);
+
+/* mod-10 one-time pad — the VENONA / hollow-nickel class of system, added with
+   the 2026-10-02 museum pass (KGB Espionage Museum research). */
+addOp('otp10','One-Time Pad (mod 10)','Classical',
+  'Modulo-10 one-time pad over digits — the VENONA / Rudolf Abel hollow-nickel class of system. Encrypt adds the key digits mod 10, decrypt subtracts. Output regrouped in fives. If the key is shorter than the message it repeats, and the output says so: a repeated key is exactly what turned VENONA from unbreakable into readable.',
+  [
+    {key:'key',label:'Key digits',type:'text',default:'31415926535897932384'},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Add key (encrypt)'],['decrypt','Subtract key (decrypt)']]},
+    {key:'group',label:'Group output',type:'select',default:'yes',options:[['yes','in fives'],['no','continuous']]}
+  ],
+  function(t,a){
+    const digits=String(t||'').replace(/[^0-9]/g,'');
+    const key=String(a.key||'').replace(/[^0-9]/g,'');
+    if(!key)return 'ERROR: key must contain at least one digit';
+    if(!digits)return '';
+    let out='';let repeated=false;
+    for(let i=0;i<digits.length;i++){
+      const k=+key[i%key.length];
+      if(i>=key.length)repeated=true;
+      const d=+digits[i];
+      out+=String(a.mode==='decrypt'?((d-k+10)%10):((d+k)%10));
+    }
+    if(repeated)out+='\n\n⚠ key shorter than message — repeated. A real one-time pad never repeats its key; reuse is what made VENONA readable.';
+    if(a.group==='yes')out=out.replace(/(.{5})/g,'$1 ').trim();
+    return kitCard('One-Time Pad (mod 10)',a.mode==='decrypt'?'subtract key':'add key mod 10',kitMono(out),'OTP mod-10 · '+(a.mode==='decrypt'?'decrypt':'encrypt'));
   }
 );
 

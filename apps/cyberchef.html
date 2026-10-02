@@ -279,6 +279,112 @@ addOp('vic','VIC Cipher','Classical',
       return text.split('').map(ch=>{const u=ch.toUpperCase();return (enc[u]!==undefined)?enc[u]:(ch===' '?' ':ch);}).join('');
     }
   });
+/* ---- Enigma (M3 / M4) — added with the 2026-10-02 museum pass; wirings
+   cross-checked against Rijmenants' Enigma Tech Details, Crypto Museum's
+   wiring page and Wikipedia's Enigma rotor details (three sources agree).
+   The M4 Zusatzwalze (Beta/Gamma) never steps; with the Greek rotor at A and
+   ring A the M4 reduces exactly to the M3 with the matching wide reflector. */
+const ENG_WIRINGS={
+ I:'EKMFLGDQVZNTOWYHXUSPAIBRCJ',II:'AJDKSIRUXBLHWTMCQGZNPYFVOE',III:'BDFHJLCPRTXVZNYEIWGAKMUSQO',
+ IV:'ESOVPZJAYQUIRHXLNFTGKDCMWB',V:'VZBRGITYUPSDNHLXAWMJQOFECK',VI:'JPGVOUMFYQBENHZRDKASXLICTW',
+ VII:'NZJHGRCXMYSWBOUFAIVLPEKQDT',VIII:'FKQHTLXOCBJSPDZRAMEWNIUYGV',
+ Beta:'LEYJVCNIXWPBQMDRTAKZGFUHOS',Gamma:'FSOKANUERHMBTIYCWLQPZXVGJD'};
+const ENG_NOTCH={I:'Q',II:'E',III:'V',IV:'J',V:'Z',VI:'ZM',VII:'ZM',VIII:'ZM',Beta:'',Gamma:''};
+const ENG_UKW={'UKW-A':'EJMZALYXVBWFCRQUONTSPIKHGD','UKW-B':'YRUHQSLDPXNGOKMIEBFZCWVJAT','UKW-C':'FVPJIAOYEDRZXWGCTKUQSBNMHL',
+ 'UKW-B Thin':'ENKQAUYWJICOPBLMDXZVFTHRGS','UKW-C Thin':'RDOBJNTKVEHMLFCWZAXGYIPSUQ'};
+const ENG_AZ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function engParsePlugs(s){
+  /* pairs are whitespace-separated tokens — "UN DE RG" is three pairs.
+     A letter may only be plugged once; later pairs that reuse a letter are
+     dropped (a Steckerbrett cannot accept them). */
+  const out=[];const seen={};
+  (s||'').toUpperCase().split(/[^A-Z]+/).filter(t=>t.length===2).forEach(pair=>{
+    const a=pair[0],b=pair[1];
+    if(a!==b&&!seen[a]&&!seen[b]){out.push([a,b]);seen[a]=1;seen[b]=1;}
+  });
+  return out;
+}
+function engRun(text,rotorNames,reflector,positions,rings,plugs){
+  const n=rotorNames.length;
+  const pos=[...positions].map(c=>ENG_AZ.indexOf(c));
+  const ring=[...rings].map(c=>ENG_AZ.indexOf(c));
+  const plug={};plugs.forEach(([a,b])=>{plug[a]=b;plug[b]=a;});
+  const ukw=ENG_UKW[reflector];
+  const through=(i,name,p,r,rev)=>{
+    const shift=p-r;const x=(i+shift+26)%26;const w=ENG_WIRINGS[name];
+    if(!rev)return (ENG_AZ.indexOf(w[x])-shift+26)%26;
+    return (w.indexOf(ENG_AZ[x])-shift+26)%26;
+  };
+  let out='';
+  for(const ch of text.toUpperCase()){
+    if(!ENG_AZ.includes(ch))continue;
+    /* step: right rotor always; middle at its own or the right rotor's notch (double step); left when the middle is at its notch. The Greek rotor never steps. */
+    const right=n-1,middle=n-2;
+    const nm=ENG_NOTCH[rotorNames[middle]],nr=ENG_NOTCH[rotorNames[right]];
+    const atNM=nm.includes(ENG_AZ[pos[middle]]),atNR=nr.includes(ENG_AZ[pos[right]]);
+    pos[right]=(pos[right]+1)%26;
+    if(atNM||atNR)pos[middle]=(pos[middle]+1)%26;
+    if(atNM&&middle-1>=0)pos[middle-1]=(pos[middle-1]+1)%26;
+    let c=plug[ch]||ch,i=ENG_AZ.indexOf(c);
+    for(let k=n-1;k>=0;k--)i=through(i,rotorNames[k],pos[k],ring[k],false);
+    i=ENG_AZ.indexOf(ukw[i]);
+    for(let k=0;k<n;k++)i=through(i,rotorNames[k],pos[k],ring[k],true);
+    c=plug[ENG_AZ[i]]||ENG_AZ[i];
+    out+=c;
+  }
+  return out;
+}
+addOp('enigma','Enigma (M3/M4)','Classical',
+  'Enigma I / M3 / Kriegsmarine M4. Reciprocal: encryption and decryption are the same operation. Rotors left-to-right, e.g. "Beta I II III" for an M4 (Greek rotor first) or "I II III" for an M3. Reference vector: I-II-III, UKW-B, positions AAA, rings AAA encrypts AAAAA to BDZGO.',
+  [
+    {key:'rotors',label:'Rotors (left→right)',type:'text',default:'I II III'},
+    {key:'reflector',label:'Reflector',type:'select',default:'UKW-B',options:[['UKW-A','UKW-A'],['UKW-B','UKW-B'],['UKW-C','UKW-C'],['UKW-B Thin','UKW-B Thin (M4)'],['UKW-C Thin','UKW-C Thin (M4)']]},
+    {key:'positions',label:'Start positions',type:'text',default:'AAA'},
+    {key:'rings',label:'Ring settings',type:'text',default:'AAA'},
+    {key:'plugs',label:'Plugboard pairs',type:'text',default:''}
+  ],
+  function(text,args){
+    const rotors=(args.rotors||'').toUpperCase().replace(/[^A-Z]/g,' ').trim().split(/\s+/)
+      .map(r=>({I:'I',II:'II',III:'III',IV:'IV',V:'V',VI:'VI',VII:'VII',VIII:'VIII',BETA:'Beta',GAMMA:'Gamma'}[r]))
+      .filter(Boolean);
+    if(rotors.length<3||rotors.length>4)return 'ERROR: give 3 rotors (M3) or Greek + 3 (M4), e.g. "I II III" or "Beta I II III"';
+    const greek=rotors[0]==='Beta'||rotors[0]==='Gamma';
+    const thin=args.reflector.indexOf('Thin')!==-1;
+    if(greek&&!thin)return 'ERROR: Beta/Gamma need a thin reflector (UKW-B Thin or UKW-C Thin) — the M4 Zusatzwalze pairs with the thin UKWs';
+    if(!greek&&thin)return 'ERROR: a thin reflector needs a 4th (Greek) rotor — add Beta or Gamma at the front';
+    const positions=(args.positions||'').toUpperCase().replace(/[^A-Z]/g,'');
+    const rings=(args.rings||'').toUpperCase().replace(/[^A-Z]/g,'')||'A'.repeat(rotors.length);
+    if(positions.length!==rotors.length||rings.length!==rotors.length)
+      return 'ERROR: positions and rings need exactly '+rotors.length+' letters (one per rotor, left to right)';
+    return engRun(text,rotors,args.reflector,positions,rings,engParsePlugs(args.plugs));
+  });
+
+/* ---- mod-10 one-time pad — the VENONA / hollow-nickel class of system:
+   digits plus (or minus) a key stream, modulo 10, regrouped in fives. */
+addOp('otp10','One-Time Pad (mod 10)','Classical',
+  'Modulo-10 one-time pad over digits (the VENONA / Rudolf Abel hollow-nickel class of system). Encrypt adds the key digits mod 10; decrypt subtracts. Output regrouped in fives. Key repeats if shorter than the message — noted in the output when it does.',
+  [
+    {key:'key',label:'Key digits',type:'text',default:'31415926535897932384'},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Add key (encrypt)'],['decrypt','Subtract key (decrypt)']]},
+    {key:'group',label:'Group output',type:'select',default:'yes',options:[['yes','in fives'],['no','continuous']]}
+  ],
+  function(text,args){
+    const digits=text.replace(/[^0-9]/g,'');
+    const key=(args.key||'').replace(/[^0-9]/g,'');
+    if(!key)return 'ERROR: key must contain at least one digit';
+    if(!digits)return '';
+    let out='';let repeated=false;
+    for(let i=0;i<digits.length;i++){
+      const k=+key[i%key.length];
+      if(i>=key.length)repeated=true;
+      const d=+digits[i];
+      out+=String(args.mode==='decrypt'?((d-k+10)%10):((d+k)%10));
+    }
+    if(repeated)out+='\n\n⚠ key shorter than message — repeated (a real one-time pad never repeats its key; this is why VENONA was readable)';
+    if(args.group==='yes')out=out.replace(/(.{5})/g,'$1 ').trim();
+    return out;
+  });
+
 
 /* 6. RSA */
 function bigGcd(a,b){a=a<0n?-a:a;b=b<0n?-b:b;while(b){[a,b]=[b,a%b];}return a;}
@@ -2008,6 +2114,11 @@ const RECIPE_PACKS={
  'Prerequisite lab · Base64 round trip':[['toB64',{}],['fromB64',{}]],
  'Prerequisite lab · Caesar round trip':[['caesar',{shift:'3',mode:'encrypt'}],['caesar',{shift:'3',mode:'decrypt'}]],
  'Prerequisite lab · AES-GCM authenticated round trip':[['aesGCM',{pass:'course-lab-only',mode:'encrypt'}],['aesGCM',{pass:'course-lab-only',mode:'decrypt'}]],
+ 'Museum · Enigma I reference vector (expect BDZGO)':[['enigma',{rotors:'I II III',reflector:'UKW-B',positions:'AAA',rings:'AAA'}]],
+ 'Museum · Kryptos misspellings M4 experiment (IQLU / DESP / UN DE RG)':[['enigma',{rotors:'Beta I II III',reflector:'UKW-B Thin',positions:'IQLU',rings:'DESP',plugs:'UN DE RG'}]],
+ 'Museum · KGB VIC straddling checkerboard (text → digits)':[['vic',{mode:'encrypt'}]],
+ 'Museum · Hollow-nickel mod-10 one-time pad (add key)':[['otp10',{key:'31415926535897932384',mode:'encrypt',group:'yes'}]],
+ 'Museum · Crow cryptogram digit profile (frequency report)':[['freq',{}]],
 };
 addOp('recipePack','Recipe Pack','Recipes','Load a predefined cipher-suite recipe pack into the Recipe panel.',Object.keys(RECIPE_PACKS).map((name,i)=>({key:'pack',label:'Pack',type:'select',default:Object.keys(RECIPE_PACKS)[0],options:Object.keys(RECIPE_PACKS).map(n=>[n,n])})),function(t,a){
   const n=applyRecipePack(a.pack);
