@@ -1,0 +1,127 @@
+{
+  "analysisMode": "static-only; no extracted file was executed",
+  "archive": {
+    "bytes": 2410498,
+    "gatePassed": true,
+    "md5": "6eb0f915fb10123eb89575ac46132357",
+    "path": "spycraft.zip",
+    "sha1": "cd1ab69040bcdce7e4131e62216fd65ac8361b22",
+    "sha256": "a195c7ad45e3236503242e95f47234685a5cceb1cba0000fc746fb015d612cfe"
+  },
+  "files": [
+    {
+      "bytes": 369448,
+      "categories": [
+        "other"
+      ],
+      "crc32": "b466bdc4",
+      "extractedPath": "ACTRES/LOGO.DIR",
+      "md5": "af10a6b453561408af256639ed665ca3",
+      "member": "ACTRES/LOGO.DIR",
+      "sha1": "13e0503e4e8210901145721d2d0a46c302ad00a1",
+      "sha256": "61efc57634162542eab746e7911741af2a957ed1c8e1032f86df1a0d2c214d3d",
+      "zipBytes": 172479
+    },
+    {
+      "bytes": 12832,
+      "categories": [
+        "executable-candidate"
+      ],
+      "crc32": "5512c408",
+      "executable": {
+        "architecture": "x86 16-bit",
+        "entryTableBytes": 147,
+        "entryTableOffset": 176,
+        "format": "NE",
+        "moduleReferenceCount": 2,
+        "segmentCount": 2,
+        "targetOS": "Windows"
+      },
+      "extractedPath": "SPYCRAFT/FILEIO.DLL",
+      "md5": "9f179cdc8d4c52c1b40514a53a1cc534",
+      "member": "SPYCRAFT/FILEIO.DLL",
+      "sha1": "f781dd407d733cb0c591bc16cc00c9a44d092b0a",
+      "sha256": "0b2aba6d615d596573bc243b181596355ef0f77df5bb24c0bec3bde97992316b",
+      "zipBytes": 6604
+    },
+    {
+      "bytes": 826,
+      "categories": [
+        "game-data"
+      ],
+      "crc32": "7c08e96d",
+      "extractedPath": "SPYCRAFT/LINGO.INI",
+      "md5": "4f75e838a13079b4fc75af0fd6f70f3c",
+      "member": "SPYCRAFT/LINGO.INI",
+      "sha1": "1539b353b52462c80d85b8056c67a0179f021a66",
+      "sha256": "afde68026f566cfb5567478ae71ac55b27f3b63cb01cbafd73331b86f9536f74",
+      "zipBytes": 460
+    },
+    {
+      "bytes": 2317010,
+      "categories": [
+        "other"
+      ],
+      "crc32": "5cbf7e8e",
+      "extractedPath": "SPYCRAFT/SPYCRAFT.DIR",
+      "md5": "3434734a1e729c661f7362efbd5797a6",
+      "member": "SPYCRAFT/SPYCRAFT.DIR",
+      "sha1": "93f3ff0008c84ae2122c36ccacf42bea5b40c5ed",
+      "sha256": "60d28223566119ed83d36b59580dcbfd0c728065491e476145a9800b71d5947f",
+      "zipBytes": 1608378
+    },
+    {
+      "bytes": 712817,
+      "categories": [
+        "executable-candidate"
+      ],
+      "crc32": "6cdb556e",
+      "executable": {
+        "architecture": "x86 16-bit",
+        "entryTableBytes": 52,
+        "entryTableOffset": 1830,
+        "format": "NE",
+        "moduleReferenceCount": 8,
+        "segmentCount": 107,
+        "targetOS": "Windows"
+      },
+      "extractedPath": "SPYCRAFT/SPYCRAFT.EXE",
+      "md5": "0788d37f21220b1e68a692c9316974ff",
+      "member": "SPYCRAFT/SPYCRAFT.EXE",
+      "sha1": "6d3509776d8e14260b32709ce150eb1286bfadc1",
+      "sha256": "0bc0bd01c6ea453e39918c37f5c8af4b5f136c0ddc6350fd1a16fbf88c51c7d2",
+      "zipBytes": 618599
+    },
+    {
+      "bytes": 12558,
+      "categories": [
+        "game-data"
+      ],
+      "crc32": "dee0fdac",
+      "extractedPath": "SPYCRAFT/SPYCRAFT.INI",
+      "md5": "f42cba1b57097c309714cb8d769431cd",
+      "member": "SPYCRAFT/SPYCRAFT.INI",
+      "sha1": "b131b24295030a1d87c3b435d8f63e25aa44ab13",
+      "sha256": "7eb078c6b19366064d1dfaa847ba55267cf02801b575c9b997a0cce05bc0b7a9",
+      "zipBytes": 2798
+    }
+  ],
+  "schemaVersion": 1,
+  "source": {
+    "identifier": "Spycraft.",
+    "member": "spycraft.zip",
+    "provider": "Internet Archive",
+    "publicationDate": "1996",
+    "publisherAttribution": "Activision",
+    "url": "https://archive.org/download/Spycraft./spycraft.zip"
+  },
+  "summary": {
+    "categories": {
+      "executable-candidate": 2,
+      "game-data": 2,
+      "other": 2
+    },
+    "expandedBytes": 3425491,
+    "files": 6
+  }
+}

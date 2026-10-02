@@ -1,0 +1,743 @@
+{
+  "schemaVersion": 1,
+  "program": "FILEIO.DLL",
+  "ghidraVersion": "12.1.4",
+  "executableFormat": "New Executable (NE)",
+  "executablePath": "FILEIO.DLL",
+  "md5": "9f179cdc8d4c52c1b40514a53a1cc534",
+  "sha256": "0b2aba6d615d596573bc243b181596355ef0f77df5bb24c0bec3bde97992316b",
+  "language": "x86:LE:16:Protected Mode",
+  "compiler": "default",
+  "imageBase": "0000:0000",
+  "minAddress": "1000:0000",
+  "maxAddress": "1018:006b",
+  "memoryBlocks": [
+    {
+      "name": "Code1",
+      "start": "1000:0000",
+      "end": "1000:2121",
+      "bytes": 8482,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.6536
+    },
+    {
+      "name": "Data2",
+      "start": "1008:0000",
+      "end": "1008:02b1",
+      "bytes": 690,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.5114
+    },
+    {
+      "name": "Rsrc0",
+      "start": "1010:0000",
+      "end": "1010:059f",
+      "bytes": 1440,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.375
+    },
+    {
+      "name": "EXTERNAL",
+      "start": "1018:0000",
+      "end": "1018:006b",
+      "bytes": 108,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": false
+    }
+  ],
+  "entryPoints": [
+    {
+      "address": "1000:13aa",
+      "name": "entry",
+      "function": "entry"
+    },
+    {
+      "address": "1000:0000",
+      "name": "LIBMAIN",
+      "function": "LIBMAIN"
+    },
+    {
+      "address": "1000:20ce",
+      "name": "WEP",
+      "function": "WEP"
+    },
+    {
+      "address": "1000:0032",
+      "name": "_FILEIO_MNEW",
+      "function": "_FILEIO_MNEW"
+    },
+    {
+      "address": "1000:04e2",
+      "name": "_FILEIO_MDISPOSE",
+      "function": "_FILEIO_MDISPOSE"
+    },
+    {
+      "address": "1000:199e",
+      "name": "___EXPORTEDSTUB",
+      "function": "___EXPORTEDSTUB"
+    },
+    {
+      "address": "1000:0896",
+      "name": "_FILEIO_MWRITECHAR",
+      "function": "_FILEIO_MWRITECHAR"
+    },
+    {
+      "address": "1000:0904",
+      "name": "_FILEIO_MWRITESTRING",
+      "function": "_FILEIO_MWRITESTRING"
+    },
+    {
+      "address": "1000:099c",
+      "name": "_FILEIO_MREADCHAR",
+      "function": "_FILEIO_MREADCHAR"
+    },
+    {
+      "address": "1000:0f2c",
+      "name": "_FILEIO_MREADWORD",
+      "function": "_FILEIO_MREADWORD"
+    },
+    {
+      "address": "1000:0a22",
+      "name": "_FILEIO_MREADLINE",
+      "function": "_FILEIO_MREADLINE"
+    },
+    {
+      "address": "1000:0b16",
+      "name": "_FILEIO_MREADFILE",
+      "function": "_FILEIO_MREADFILE"
+    },
+    {
+      "address": "1000:0f96",
+      "name": "_FILEIO_MREADTOKEN",
+      "function": "_FILEIO_MREADTOKEN"
+    },
+    {
+      "address": "1000:0786",
+      "name": "_FILEIO_MGETPOSITION",
+      "function": "_FILEIO_MGETPOSITION"
+    },
+    {
+      "address": "1000:071c",
+      "name": "_FILEIO_MSETPOSITION",
+      "function": "_FILEIO_MSETPOSITION"
+    },
+    {
+      "address": "1000:07f6",
+      "name": "_FILEIO_MGETLENGTH",
+      "function": "_FILEIO_MGETLENGTH"
+    },
+    {
+      "address": "1000:1042",
+      "name": "_FILEIO_MSETFINDERINFO",
+      "function": "_FILEIO_MSETFINDERINFO"
+    },
+    {
+      "address": "1000:105a",
+      "name": "_FILEIO_MGETFINDERINFO",
+      "function": "_FILEIO_MGETFINDERINFO"
+    },
+    {
+      "address": "1000:0572",
+      "name": "_FILEIO_MFILENAME",
+      "function": "_FILEIO_MFILENAME"
+    },
+    {
+      "address": "1000:1078",
+      "name": "_FILEIO_MDELETE",
+      "function": "_FILEIO_MDELETE"
+    },
+    {
+      "address": "1000:0644",
+      "name": "_FILEIO_MSTATUS",
+      "function": "_FILEIO_MSTATUS"
+    },
+    {
+      "address": "1000:065e",
+      "name": "_FILEIO_MERROR",
+      "function": "_FILEIO_MERROR"
+    },
+    {
+      "address": "1000:1164",
+      "name": "_FILEIO_MREADPICT",
+      "function": "_FILEIO_MREADPICT"
+    },
+    {
+      "address": "1000:05e0",
+      "name": "_FILEIO_MNATIVEFILENAME",
+      "function": "_FILEIO_MNATIVEFILENAME"
+    },
+    {
+      "address": "1000:130a",
+      "name": "_FILEIO_MSETOVERRIDEDRIVE",
+      "function": "_FILEIO_MSETOVERRIDEDRIVE"
+    }
+  ],
+  "imports": [
+    {
+      "name": "FATALEXIT",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000001",
+      "references": 0
+    },
+    {
+      "name": "GETVERSION",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000002",
+      "references": 0
+    },
+    {
+      "name": "LOCALINIT",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000003",
+      "references": 0
+    },
+    {
+      "name": "GLOBALALLOC",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000004",
+      "references": 0
+    },
+    {
+      "name": "GLOBALREALLOC",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000005",
+      "references": 0
+    },
+    {
+      "name": "GLOBALFREE",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000006",
+      "references": 0
+    },
+    {
+      "name": "GLOBALLOCK",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000007",
+      "references": 0
+    },
+    {
+      "name": "GLOBALUNLOCK",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000008",
+      "references": 0
+    },
+    {
+      "name": "GLOBALSIZE",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000009",
+      "references": 0
+    },
+    {
+      "name": "LOCKSEGMENT",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000a",
+      "references": 0
+    },
+    {
+      "name": "GETMODULEUSAGE",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000b",
+      "references": 0
+    },
+    {
+      "name": "_LCLOSE",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000c",
+      "references": 0
+    },
+    {
+      "name": "_LREAD",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000d",
+      "references": 0
+    },
+    {
+      "name": "_LCREAT",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000e",
+      "references": 0
+    },
+    {
+      "name": "_LLSEEK",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000000f",
+      "references": 0
+    },
+    {
+      "name": "_LOPEN",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000010",
+      "references": 0
+    },
+    {
+      "name": "_LWRITE",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000011",
+      "references": 0
+    },
+    {
+      "name": "LSTRCPY",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000012",
+      "references": 0
+    },
+    {
+      "name": "LSTRCAT",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000013",
+      "references": 0
+    },
+    {
+      "name": "LSTRLEN",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000014",
+      "references": 0
+    },
+    {
+      "name": "INITTASK",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000015",
+      "references": 0
+    },
+    {
+      "name": "DOS3CALL",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000016",
+      "references": 0
+    },
+    {
+      "name": "__AHSHIFT",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000017",
+      "references": 0
+    },
+    {
+      "name": "GETDOSENVIRONMENT",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000018",
+      "references": 0
+    },
+    {
+      "name": "FATALAPPEXIT",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000019",
+      "references": 0
+    },
+    {
+      "name": "__WINFLAGS",
+      "library": "KERNEL",
+      "address": "EXTERNAL:0000001a",
+      "references": 0
+    },
+    {
+      "name": "LSTRCMPI",
+      "library": "USER",
+      "address": "EXTERNAL:0000001b",
+      "references": 0
+    }
+  ],
+  "notableStringReferences": [],
+  "counts": {
+    "functions": 123,
+    "instructions": 3379,
+    "definedStrings": 46
+  },
+  "decompilations": [
+    {
+      "name": "entry",
+      "selectionReason": "program entry point",
+      "address": "1000:13aa",
+      "bodyBytes": 162,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "LIBMAIN",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0000",
+      "bodyBytes": 50,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "WEP",
+      "selectionReason": "NE entry/export",
+      "address": "1000:20ce",
+      "bodyBytes": 60,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MNEW",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0032",
+      "bodyBytes": 284,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MDISPOSE",
+      "selectionReason": "NE entry/export",
+      "address": "1000:04e2",
+      "bodyBytes": 143,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "___EXPORTEDSTUB",
+      "selectionReason": "NE entry/export",
+      "address": "1000:199e",
+      "bodyBytes": 19,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MWRITECHAR",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0896",
+      "bodyBytes": 109,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MWRITESTRING",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0904",
+      "bodyBytes": 152,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MREADCHAR",
+      "selectionReason": "NE entry/export",
+      "address": "1000:099c",
+      "bodyBytes": 132,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MREADWORD",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0f2c",
+      "bodyBytes": 106,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MREADLINE",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0a22",
+      "bodyBytes": 244,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MREADFILE",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0b16",
+      "bodyBytes": 400,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MREADTOKEN",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0f96",
+      "bodyBytes": 172,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MGETPOSITION",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0786",
+      "bodyBytes": 111,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MSETPOSITION",
+      "selectionReason": "NE entry/export",
+      "address": "1000:071c",
+      "bodyBytes": 105,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MGETLENGTH",
+      "selectionReason": "NE entry/export",
+      "address": "1000:07f6",
+      "bodyBytes": 158,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MSETFINDERINFO",
+      "selectionReason": "NE entry/export",
+      "address": "1000:1042",
+      "bodyBytes": 23,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MGETFINDERINFO",
+      "selectionReason": "NE entry/export",
+      "address": "1000:105a",
+      "bodyBytes": 30,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MFILENAME",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0572",
+      "bodyBytes": 110,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MDELETE",
+      "selectionReason": "NE entry/export",
+      "address": "1000:1078",
+      "bodyBytes": 187,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MSTATUS",
+      "selectionReason": "NE entry/export",
+      "address": "1000:0644",
+      "bodyBytes": 26,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MERROR",
+      "selectionReason": "NE entry/export",
+      "address": "1000:065e",
+      "bodyBytes": 173,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MREADPICT",
+      "selectionReason": "NE entry/export",
+      "address": "1000:1164",
+      "bodyBytes": 422,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MNATIVEFILENAME",
+      "selectionReason": "NE entry/export",
+      "address": "1000:05e0",
+      "bodyBytes": 100,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "_FILEIO_MSETOVERRIDEDRIVE",
+      "selectionReason": "NE entry/export",
+      "address": "1000:130a",
+      "bodyBytes": 32,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_014e",
+      "selectionReason": "address-order fallback",
+      "address": "1000:014e",
+      "bodyBytes": 399,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_02e2",
+      "selectionReason": "address-order fallback",
+      "address": "1000:02e2",
+      "bodyBytes": 143,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0372",
+      "selectionReason": "address-order fallback",
+      "address": "1000:0372",
+      "bodyBytes": 93,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_03d0",
+      "selectionReason": "address-order fallback",
+      "address": "1000:03d0",
+      "bodyBytes": 270,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0caa",
+      "selectionReason": "address-order fallback",
+      "address": "1000:0caa",
+      "bodyBytes": 47,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0cda",
+      "selectionReason": "address-order fallback",
+      "address": "1000:0cda",
+      "bodyBytes": 591,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1134",
+      "selectionReason": "address-order fallback",
+      "address": "1000:1134",
+      "bodyBytes": 47,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_133a",
+      "selectionReason": "address-order fallback",
+      "address": "1000:133a",
+      "bodyBytes": 44,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_144c",
+      "selectionReason": "address-order fallback",
+      "address": "1000:144c",
+      "bodyBytes": 24,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1464",
+      "selectionReason": "address-order fallback",
+      "address": "1000:1464",
+      "bodyBytes": 72,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_14ac",
+      "selectionReason": "address-order fallback",
+      "address": "1000:14ac",
+      "bodyBytes": 80,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1534",
+      "selectionReason": "address-order fallback",
+      "address": "1000:1534",
+      "bodyBytes": 19,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1548",
+      "selectionReason": "address-order fallback",
+      "address": "1000:1548",
+      "bodyBytes": 35,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_156c",
+      "selectionReason": "address-order fallback",
+      "address": "1000:156c",
+      "bodyBytes": 55,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_15a3",
+      "selectionReason": "address-order fallback",
+      "address": "1000:15a3",
+      "bodyBytes": 23,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_15ba",
+      "selectionReason": "address-order fallback",
+      "address": "1000:15ba",
+      "bodyBytes": 151,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_165c",
+      "selectionReason": "address-order fallback",
+      "address": "1000:165c",
+      "bodyBytes": 66,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_169e",
+      "selectionReason": "address-order fallback",
+      "address": "1000:169e",
+      "bodyBytes": 29,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_16bc",
+      "selectionReason": "address-order fallback",
+      "address": "1000:16bc",
+      "bodyBytes": 293,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_17e4",
+      "selectionReason": "address-order fallback",
+      "address": "1000:17e4",
+      "bodyBytes": 145,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1875",
+      "selectionReason": "address-order fallback",
+      "address": "1000:1875",
+      "bodyBytes": 102,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_18db",
+      "selectionReason": "address-order fallback",
+      "address": "1000:18db",
+      "bodyBytes": 32,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_18fc",
+      "selectionReason": "address-order fallback",
+      "address": "1000:18fc",
+      "bodyBytes": 6,
+      "completed": true,
+      "message": ""
+    }
+  ],
+  "analysisBookmarks": []
+}

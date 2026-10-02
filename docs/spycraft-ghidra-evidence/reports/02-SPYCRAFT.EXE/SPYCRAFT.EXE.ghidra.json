@@ -1,0 +1,1980 @@
+{
+  "schemaVersion": 1,
+  "program": "SPYCRAFT.EXE",
+  "ghidraVersion": "12.1.4",
+  "executableFormat": "New Executable (NE)",
+  "executablePath": "SPYCRAFT.EXE",
+  "md5": "0788d37f21220b1e68a692c9316974ff",
+  "sha256": "0bc0bd01c6ea453e39918c37f5c8af4b5f136c0ddc6350fd1a16fbf88c51c7d2",
+  "language": "x86:LE:16:Protected Mode",
+  "compiler": "default",
+  "imageBase": "0000:0000",
+  "minAddress": "1000:0000",
+  "maxAddress": "1490:0007",
+  "memoryBlocks": [
+    {
+      "name": "Code1",
+      "start": "1000:0000",
+      "end": "1000:09f1",
+      "bytes": 2546,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.7663
+    },
+    {
+      "name": "Code2",
+      "start": "1008:0000",
+      "end": "1008:6237",
+      "bytes": 25144,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.1776
+    },
+    {
+      "name": "Code3",
+      "start": "1010:0000",
+      "end": "1010:2b3a",
+      "bytes": 11067,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.8894
+    },
+    {
+      "name": "Code4",
+      "start": "1018:0000",
+      "end": "1018:02fa",
+      "bytes": 763,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.8867
+    },
+    {
+      "name": "Code5",
+      "start": "1020:0000",
+      "end": "1020:1a6b",
+      "bytes": 6764,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.5133
+    },
+    {
+      "name": "Code6",
+      "start": "1028:0000",
+      "end": "1028:013c",
+      "bytes": 317,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.2974
+    },
+    {
+      "name": "Code7",
+      "start": "1030:0000",
+      "end": "1030:012b",
+      "bytes": 300,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.9128
+    },
+    {
+      "name": "Code8",
+      "start": "1038:0000",
+      "end": "1038:4cbc",
+      "bytes": 19645,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.6567
+    },
+    {
+      "name": "Code9",
+      "start": "1040:0000",
+      "end": "1040:214c",
+      "bytes": 8525,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.5369
+    },
+    {
+      "name": "Code10",
+      "start": "1048:0000",
+      "end": "1048:06a1",
+      "bytes": 1698,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.1267
+    },
+    {
+      "name": "Code11",
+      "start": "1050:0000",
+      "end": "1050:12e5",
+      "bytes": 4838,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.7892
+    },
+    {
+      "name": "Code12",
+      "start": "1058:0000",
+      "end": "1058:5d16",
+      "bytes": 23831,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.1479
+    },
+    {
+      "name": "Code13",
+      "start": "1060:0000",
+      "end": "1060:2457",
+      "bytes": 9304,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.9354
+    },
+    {
+      "name": "Code14",
+      "start": "1068:0000",
+      "end": "1068:35c7",
+      "bytes": 13768,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.9184
+    },
+    {
+      "name": "Code15",
+      "start": "1070:0000",
+      "end": "1070:007e",
+      "bytes": 127,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.6207
+    },
+    {
+      "name": "Code16",
+      "start": "1078:0000",
+      "end": "1078:10fe",
+      "bytes": 4351,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.1117
+    },
+    {
+      "name": "Code17",
+      "start": "1080:0000",
+      "end": "1080:0860",
+      "bytes": 2145,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.2845
+    },
+    {
+      "name": "Code18",
+      "start": "1088:0000",
+      "end": "1088:005d",
+      "bytes": 94,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.1945
+    },
+    {
+      "name": "Code19",
+      "start": "1090:0000",
+      "end": "1090:004e",
+      "bytes": 79,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.2347
+    },
+    {
+      "name": "Code20",
+      "start": "1098:0000",
+      "end": "1098:acad",
+      "bytes": 44206,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.5437
+    },
+    {
+      "name": "Code21",
+      "start": "10a0:0000",
+      "end": "10a0:3698",
+      "bytes": 13977,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.9857
+    },
+    {
+      "name": "Code22",
+      "start": "10a8:0000",
+      "end": "10a8:18e3",
+      "bytes": 6372,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.8646
+    },
+    {
+      "name": "Code23",
+      "start": "10b0:0000",
+      "end": "10b0:1b24",
+      "bytes": 6949,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.3566
+    },
+    {
+      "name": "Code24",
+      "start": "10b8:0000",
+      "end": "10b8:0196",
+      "bytes": 407,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.4758
+    },
+    {
+      "name": "Code25",
+      "start": "10c0:0000",
+      "end": "10c0:0702",
+      "bytes": 1795,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.5565
+    },
+    {
+      "name": "Code26",
+      "start": "10c8:0000",
+      "end": "10c8:02dc",
+      "bytes": 733,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.7168
+    },
+    {
+      "name": "Code27",
+      "start": "10d0:0000",
+      "end": "10d0:0095",
+      "bytes": 150,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.5272
+    },
+    {
+      "name": "Code28",
+      "start": "10d8:0000",
+      "end": "10d8:16b2",
+      "bytes": 5811,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.1078
+    },
+    {
+      "name": "Code29",
+      "start": "10e0:0000",
+      "end": "10e0:0221",
+      "bytes": 546,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.0804
+    },
+    {
+      "name": "Code30",
+      "start": "10e8:0000",
+      "end": "10e8:06fb",
+      "bytes": 1788,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.2884
+    },
+    {
+      "name": "Code31",
+      "start": "10f0:0000",
+      "end": "10f0:066c",
+      "bytes": 1645,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.1539
+    },
+    {
+      "name": "Code32",
+      "start": "10f8:0000",
+      "end": "10f8:0c0b",
+      "bytes": 3084,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.8356
+    },
+    {
+      "name": "Code33",
+      "start": "1100:0000",
+      "end": "1100:0a8e",
+      "bytes": 2703,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.3212
+    },
+    {
+      "name": "Code34",
+      "start": "1108:0000",
+      "end": "1108:0279",
+      "bytes": 634,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 4.9539
+    },
+    {
+      "name": "Code35",
+      "start": "1110:0000",
+      "end": "1110:0f77",
+      "bytes": 3960,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.548
+    },
+    {
+      "name": "Code36",
+      "start": "1118:0000",
+      "end": "1118:04ac",
+      "bytes": 1197,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.32
+    },
+    {
+      "name": "Code37",
+      "start": "1120:0000",
+      "end": "1120:0315",
+      "bytes": 790,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.4231
+    },
+    {
+      "name": "Code38",
+      "start": "1128:0000",
+      "end": "1128:2330",
+      "bytes": 9009,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.04
+    },
+    {
+      "name": "Code39",
+      "start": "1130:0000",
+      "end": "1130:02b5",
+      "bytes": 694,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.4371
+    },
+    {
+      "name": "Code40",
+      "start": "1138:0000",
+      "end": "1138:05f7",
+      "bytes": 1528,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.5305
+    },
+    {
+      "name": "Code41",
+      "start": "1140:0000",
+      "end": "1140:0518",
+      "bytes": 1305,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.3129
+    },
+    {
+      "name": "Code42",
+      "start": "1148:0000",
+      "end": "1148:05b4",
+      "bytes": 1461,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.5105
+    },
+    {
+      "name": "Code43",
+      "start": "1150:0000",
+      "end": "1150:0ae0",
+      "bytes": 2785,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.96
+    },
+    {
+      "name": "Code44",
+      "start": "1158:0000",
+      "end": "1158:010c",
+      "bytes": 269,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.0579
+    },
+    {
+      "name": "Code45",
+      "start": "1160:0000",
+      "end": "1160:04d9",
+      "bytes": 1242,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.0035
+    },
+    {
+      "name": "Code46",
+      "start": "1168:0000",
+      "end": "1168:02a7",
+      "bytes": 680,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.9276
+    },
+    {
+      "name": "Code47",
+      "start": "1170:0000",
+      "end": "1170:0094",
+      "bytes": 149,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.9615
+    },
+    {
+      "name": "Code48",
+      "start": "1178:0000",
+      "end": "1178:199f",
+      "bytes": 6560,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.9276
+    },
+    {
+      "name": "Code49",
+      "start": "1180:0000",
+      "end": "1180:0e5c",
+      "bytes": 3677,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.7266
+    },
+    {
+      "name": "Code50",
+      "start": "1188:0000",
+      "end": "1188:21b5",
+      "bytes": 8630,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.7597
+    },
+    {
+      "name": "Code51",
+      "start": "1190:0000",
+      "end": "1190:001c",
+      "bytes": 29,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 4.2282
+    },
+    {
+      "name": "Code52",
+      "start": "1198:0000",
+      "end": "1198:0843",
+      "bytes": 2116,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.3396
+    },
+    {
+      "name": "Code53",
+      "start": "11a0:0000",
+      "end": "11a0:063a",
+      "bytes": 1595,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.6086
+    },
+    {
+      "name": "Code54",
+      "start": "11a8:0000",
+      "end": "11a8:1e0b",
+      "bytes": 7692,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.019
+    },
+    {
+      "name": "Code55",
+      "start": "11b0:0000",
+      "end": "11b0:092d",
+      "bytes": 2350,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.4443
+    },
+    {
+      "name": "Code56",
+      "start": "11b8:0000",
+      "end": "11b8:0075",
+      "bytes": 118,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.8714
+    },
+    {
+      "name": "Code57",
+      "start": "11c0:0000",
+      "end": "11c0:014b",
+      "bytes": 332,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.9494
+    },
+    {
+      "name": "Code58",
+      "start": "11c8:0000",
+      "end": "11c8:0036",
+      "bytes": 55,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 4.9765
+    },
+    {
+      "name": "Code59",
+      "start": "11d0:0000",
+      "end": "11d0:123a",
+      "bytes": 4667,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.2635
+    },
+    {
+      "name": "Code60",
+      "start": "11d8:0000",
+      "end": "11d8:10ec",
+      "bytes": 4333,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.8176
+    },
+    {
+      "name": "Code61",
+      "start": "11e0:0000",
+      "end": "11e0:00b0",
+      "bytes": 177,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.1523
+    },
+    {
+      "name": "Code62",
+      "start": "11e8:0000",
+      "end": "11e8:16cc",
+      "bytes": 5837,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.9828
+    },
+    {
+      "name": "Code63",
+      "start": "11f0:0000",
+      "end": "11f0:01bc",
+      "bytes": 445,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.2884
+    },
+    {
+      "name": "Code64",
+      "start": "11f8:0000",
+      "end": "11f8:0147",
+      "bytes": 328,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.5357
+    },
+    {
+      "name": "Code65",
+      "start": "1200:0000",
+      "end": "1200:0e5e",
+      "bytes": 3679,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.0356
+    },
+    {
+      "name": "Code66",
+      "start": "1208:0000",
+      "end": "1208:93fc",
+      "bytes": 37885,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.5868
+    },
+    {
+      "name": "Code67",
+      "start": "1210:0000",
+      "end": "1210:9311",
+      "bytes": 37650,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.5811
+    },
+    {
+      "name": "Code68",
+      "start": "1218:0000",
+      "end": "1218:01de",
+      "bytes": 479,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.655
+    },
+    {
+      "name": "Code69",
+      "start": "1220:0000",
+      "end": "1220:252d",
+      "bytes": 9518,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.7807
+    },
+    {
+      "name": "Code70",
+      "start": "1228:0000",
+      "end": "1228:1eaa",
+      "bytes": 7851,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.8185
+    },
+    {
+      "name": "Code71",
+      "start": "1230:0000",
+      "end": "1230:0973",
+      "bytes": 2420,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.777
+    },
+    {
+      "name": "Code72",
+      "start": "1238:0000",
+      "end": "1238:06ff",
+      "bytes": 1792,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.6089
+    },
+    {
+      "name": "Code73",
+      "start": "1240:0000",
+      "end": "1240:02f4",
+      "bytes": 757,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.8849
+    },
+    {
+      "name": "Code74",
+      "start": "1248:0000",
+      "end": "1248:035b",
+      "bytes": 860,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.5158
+    },
+    {
+      "name": "Code75",
+      "start": "1250:0000",
+      "end": "1250:47ce",
+      "bytes": 18383,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.7936
+    },
+    {
+      "name": "Code76",
+      "start": "1258:0000",
+      "end": "1258:054b",
+      "bytes": 1356,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.4846
+    },
+    {
+      "name": "Code77",
+      "start": "1260:0000",
+      "end": "1260:3896",
+      "bytes": 14487,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.932
+    },
+    {
+      "name": "Code78",
+      "start": "1268:0000",
+      "end": "1268:67fd",
+      "bytes": 26622,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.6973
+    },
+    {
+      "name": "Code79",
+      "start": "1270:0000",
+      "end": "1270:01ae",
+      "bytes": 431,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.6476
+    },
+    {
+      "name": "Code80",
+      "start": "1278:0000",
+      "end": "1278:082c",
+      "bytes": 2093,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.4212
+    },
+    {
+      "name": "Code81",
+      "start": "1280:0000",
+      "end": "1280:2659",
+      "bytes": 9818,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.5276
+    },
+    {
+      "name": "Code82",
+      "start": "1288:0000",
+      "end": "1288:0f22",
+      "bytes": 3875,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.3635
+    },
+    {
+      "name": "Code83",
+      "start": "1290:0000",
+      "end": "1290:0061",
+      "bytes": 98,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.4858
+    },
+    {
+      "name": "Code84",
+      "start": "1298:0000",
+      "end": "1298:06ab",
+      "bytes": 1708,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.688
+    },
+    {
+      "name": "Code85",
+      "start": "12a0:0000",
+      "end": "12a0:0697",
+      "bytes": 1688,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.5494
+    },
+    {
+      "name": "Code86",
+      "start": "12a8:0000",
+      "end": "12a8:0187",
+      "bytes": 392,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.3197
+    },
+    {
+      "name": "Code87",
+      "start": "12b0:0000",
+      "end": "12b0:004a",
+      "bytes": 75,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.1848
+    },
+    {
+      "name": "Code88",
+      "start": "12b8:0000",
+      "end": "12b8:077a",
+      "bytes": 1915,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.7447
+    },
+    {
+      "name": "Code89",
+      "start": "12c0:0000",
+      "end": "12c0:019b",
+      "bytes": 412,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.228
+    },
+    {
+      "name": "Code90",
+      "start": "12c8:0000",
+      "end": "12c8:1146",
+      "bytes": 4423,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.5889
+    },
+    {
+      "name": "Code91",
+      "start": "12d0:0000",
+      "end": "12d0:02dd",
+      "bytes": 734,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.3538
+    },
+    {
+      "name": "Code92",
+      "start": "12d8:0000",
+      "end": "12d8:0427",
+      "bytes": 1064,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.4765
+    },
+    {
+      "name": "Code93",
+      "start": "12e0:0000",
+      "end": "12e0:1180",
+      "bytes": 4481,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.9305
+    },
+    {
+      "name": "Code94",
+      "start": "12e8:0000",
+      "end": "12e8:0890",
+      "bytes": 2193,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.3025
+    },
+    {
+      "name": "Code95",
+      "start": "12f0:0000",
+      "end": "12f0:13d0",
+      "bytes": 5073,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.2247
+    },
+    {
+      "name": "Code96",
+      "start": "12f8:0000",
+      "end": "12f8:fb7c",
+      "bytes": 64381,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.509
+    },
+    {
+      "name": "Code97",
+      "start": "1300:0000",
+      "end": "1300:fca7",
+      "bytes": 64680,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.6855
+    },
+    {
+      "name": "Code98",
+      "start": "1308:0000",
+      "end": "1308:fbaa",
+      "bytes": 64427,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.5743
+    },
+    {
+      "name": "Code99",
+      "start": "1310:0000",
+      "end": "1310:fb5f",
+      "bytes": 64352,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.7925
+    },
+    {
+      "name": "Code100",
+      "start": "1318:0000",
+      "end": "1318:f948",
+      "bytes": 63817,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.6754
+    },
+    {
+      "name": "Code101",
+      "start": "1320:0000",
+      "end": "1320:dffd",
+      "bytes": 57342,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 4.3203
+    },
+    {
+      "name": "Code102",
+      "start": "1328:0000",
+      "end": "1328:021e",
+      "bytes": 543,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.8321
+    },
+    {
+      "name": "Code103",
+      "start": "1330:0000",
+      "end": "1330:037f",
+      "bytes": 896,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.4537
+    },
+    {
+      "name": "Code104",
+      "start": "1338:0000",
+      "end": "1338:0755",
+      "bytes": 1878,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 5.3449
+    },
+    {
+      "name": "Code105",
+      "start": "1340:0000",
+      "end": "1340:10e5",
+      "bytes": 4326,
+      "read": true,
+      "write": false,
+      "execute": true,
+      "initialized": true,
+      "entropy": 6.6532
+    },
+    {
+      "name": "Data106",
+      "start": "1348:0000",
+      "end": "1348:3aab",
+      "bytes": 15020,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.2216
+    },
+    {
+      "name": "Data107",
+      "start": "1350:0000",
+      "end": "1350:7d3f",
+      "bytes": 32064,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.7833
+    },
+    {
+      "name": "Rsrc0",
+      "start": "1358:0000",
+      "end": "1358:02ff",
+      "bytes": 768,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.2046
+    },
+    {
+      "name": "Rsrc1",
+      "start": "1360:0000",
+      "end": "1360:02ff",
+      "bytes": 768,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.3795
+    },
+    {
+      "name": "Rsrc2",
+      "start": "1368:0000",
+      "end": "1368:001f",
+      "bytes": 32,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.6216
+    },
+    {
+      "name": "Rsrc3",
+      "start": "1370:0000",
+      "end": "1370:001f",
+      "bytes": 32,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.6606
+    },
+    {
+      "name": "Rsrc4",
+      "start": "1378:0000",
+      "end": "1378:013f",
+      "bytes": 320,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.616
+    },
+    {
+      "name": "Rsrc5",
+      "start": "1380:0000",
+      "end": "1380:013f",
+      "bytes": 320,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.4355
+    },
+    {
+      "name": "Rsrc6",
+      "start": "1388:0000",
+      "end": "1388:013f",
+      "bytes": 320,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.9922
+    },
+    {
+      "name": "Rsrc7",
+      "start": "1390:0000",
+      "end": "1390:001f",
+      "bytes": 32,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.4987
+    },
+    {
+      "name": "Rsrc8",
+      "start": "1398:0000",
+      "end": "1398:001f",
+      "bytes": 32,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.4987
+    },
+    {
+      "name": "Rsrc9",
+      "start": "13a0:0000",
+      "end": "13a0:001f",
+      "bytes": 32,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.4987
+    },
+    {
+      "name": "Rsrc10",
+      "start": "13a8:0000",
+      "end": "13a8:00df",
+      "bytes": 224,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.3048
+    },
+    {
+      "name": "Rsrc11",
+      "start": "13b0:0000",
+      "end": "13b0:00df",
+      "bytes": 224,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.2581
+    },
+    {
+      "name": "Rsrc12",
+      "start": "13b8:0000",
+      "end": "13b8:007f",
+      "bytes": 128,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.5736
+    },
+    {
+      "name": "Rsrc13",
+      "start": "13c0:0000",
+      "end": "13c0:007f",
+      "bytes": 128,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.6989
+    },
+    {
+      "name": "Rsrc14",
+      "start": "13c8:0000",
+      "end": "13c8:00df",
+      "bytes": 224,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.3075
+    },
+    {
+      "name": "Rsrc15",
+      "start": "13d0:0000",
+      "end": "13d0:00df",
+      "bytes": 224,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.3018
+    },
+    {
+      "name": "Rsrc16",
+      "start": "13d8:0000",
+      "end": "13d8:007f",
+      "bytes": 128,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.6015
+    },
+    {
+      "name": "Rsrc17",
+      "start": "13e0:0000",
+      "end": "13e0:007f",
+      "bytes": 128,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.7312
+    },
+    {
+      "name": "Rsrc18",
+      "start": "13e8:0000",
+      "end": "13e8:00df",
+      "bytes": 224,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.4218
+    },
+    {
+      "name": "Rsrc19",
+      "start": "13f0:0000",
+      "end": "13f0:00df",
+      "bytes": 224,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.2971
+    },
+    {
+      "name": "Rsrc20",
+      "start": "13f8:0000",
+      "end": "13f8:007f",
+      "bytes": 128,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.5066
+    },
+    {
+      "name": "Rsrc21",
+      "start": "1400:0000",
+      "end": "1400:007f",
+      "bytes": 128,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.6233
+    },
+    {
+      "name": "Rsrc22",
+      "start": "1408:0000",
+      "end": "1408:005f",
+      "bytes": 96,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.8811
+    },
+    {
+      "name": "Rsrc23",
+      "start": "1410:0000",
+      "end": "1410:007f",
+      "bytes": 128,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.0914
+    },
+    {
+      "name": "Rsrc24",
+      "start": "1418:0000",
+      "end": "1418:001f",
+      "bytes": 32,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.9248
+    },
+    {
+      "name": "Rsrc25",
+      "start": "1420:0000",
+      "end": "1420:001f",
+      "bytes": 32,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.4988
+    },
+    {
+      "name": "Rsrc26",
+      "start": "1428:0000",
+      "end": "1428:08df",
+      "bytes": 2272,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.2991
+    },
+    {
+      "name": "Rsrc27",
+      "start": "1430:0000",
+      "end": "1430:013f",
+      "bytes": 320,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 5.0248
+    },
+    {
+      "name": "Rsrc28",
+      "start": "1438:0000",
+      "end": "1438:003f",
+      "bytes": 64,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.6149
+    },
+    {
+      "name": "Rsrc29",
+      "start": "1440:0000",
+      "end": "1440:00bf",
+      "bytes": 192,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.9865
+    },
+    {
+      "name": "Rsrc30",
+      "start": "1448:0000",
+      "end": "1448:003f",
+      "bytes": 64,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.691
+    },
+    {
+      "name": "Rsrc31",
+      "start": "1450:0000",
+      "end": "1450:009f",
+      "bytes": 160,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.4641
+    },
+    {
+      "name": "Rsrc32",
+      "start": "1458:0000",
+      "end": "1458:003f",
+      "bytes": 64,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 2.6417
+    },
+    {
+      "name": "Rsrc33",
+      "start": "1460:0000",
+      "end": "1460:00ff",
+      "bytes": 256,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.53
+    },
+    {
+      "name": "Rsrc34",
+      "start": "1468:0000",
+      "end": "1468:003f",
+      "bytes": 64,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.3385
+    },
+    {
+      "name": "Rsrc35",
+      "start": "1470:0000",
+      "end": "1470:001f",
+      "bytes": 32,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 1.4127
+    },
+    {
+      "name": "Rsrc36",
+      "start": "1478:0000",
+      "end": "1478:00ff",
+      "bytes": 256,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.6098
+    },
+    {
+      "name": "Rsrc37",
+      "start": "1480:0000",
+      "end": "1480:005f",
+      "bytes": 96,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 3.3647
+    },
+    {
+      "name": "Rsrc38",
+      "start": "1488:0000",
+      "end": "1488:005f",
+      "bytes": 96,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": true,
+      "entropy": 4.1478
+    },
+    {
+      "name": "EXTERNAL",
+      "start": "1490:0000",
+      "end": "1490:0007",
+      "bytes": 8,
+      "read": true,
+      "write": false,
+      "execute": false,
+      "initialized": false
+    }
+  ],
+  "entryPoints": [
+    {
+      "address": "1008:07a6",
+      "name": "entry",
+      "function": ""
+    },
+    {
+      "address": "1020:021a",
+      "name": "MAINWNDPROC",
+      "function": "MAINWNDPROC"
+    },
+    {
+      "address": "1020:007a",
+      "name": "SUBWNDPROC",
+      "function": ""
+    },
+    {
+      "address": "1270:014a",
+      "name": "SUBMDIWNDPROC",
+      "function": ""
+    },
+    {
+      "address": "1020:1904",
+      "name": "APP_MAKEPROCINST",
+      "function": ""
+    },
+    {
+      "address": "1020:191e",
+      "name": "APP_FREEPROCINST",
+      "function": ""
+    },
+    {
+      "address": "1020:01e6",
+      "name": "MYAPPBYTESWAP",
+      "function": ""
+    },
+    {
+      "address": "1300:b178",
+      "name": "BITDITHER",
+      "function": ""
+    },
+    {
+      "address": "1300:43a2",
+      "name": "BITINFO",
+      "function": ""
+    },
+    {
+      "address": "12f8:36b4",
+      "name": "GETPICTDATA",
+      "function": ""
+    },
+    {
+      "address": "1060:0866",
+      "name": "_RAMPINGTIMERPROC",
+      "function": ""
+    },
+    {
+      "address": "1060:0000",
+      "name": "_SPOOLINGTIMERPROC",
+      "function": ""
+    },
+    {
+      "address": "1008:4ab6",
+      "name": "___EXPORTEDSTUB",
+      "function": ""
+    }
+  ],
+  "imports": [
+    {
+      "name": "__AHINCR",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000001",
+      "references": 0
+    },
+    {
+      "name": "ALLOCCSTODSALIAS",
+      "library": "KERNEL",
+      "address": "EXTERNAL:00000002",
+      "references": 0
+    }
+  ],
+  "notableStringReferences": [
+    {
+      "address": "1430:00a9",
+      "text": "Video for Windows (*.avi)",
+      "xrefs": []
+    },
+    {
+      "address": "1440:0001",
+      "text": "Windows Sound (*.wav)",
+      "xrefs": []
+    }
+  ],
+  "counts": {
+    "functions": 22,
+    "instructions": 709,
+    "definedStrings": 156
+  },
+  "decompilations": [
+    {
+      "name": "MAINWNDPROC",
+      "selectionReason": "NE entry/export",
+      "address": "1020:021a",
+      "bodyBytes": 21,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0031",
+      "selectionReason": "address-order fallback",
+      "address": "1000:0031",
+      "bodyBytes": 289,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0154",
+      "selectionReason": "address-order fallback",
+      "address": "1000:0154",
+      "bodyBytes": 14,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0162",
+      "selectionReason": "address-order fallback",
+      "address": "1000:0162",
+      "bodyBytes": 7,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0169",
+      "selectionReason": "address-order fallback",
+      "address": "1000:0169",
+      "bodyBytes": 326,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_04c1",
+      "selectionReason": "address-order fallback",
+      "address": "1000:04c1",
+      "bodyBytes": 101,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_074f",
+      "selectionReason": "address-order fallback",
+      "address": "1000:074f",
+      "bodyBytes": 26,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_093d",
+      "selectionReason": "address-order fallback",
+      "address": "1000:093d",
+      "bodyBytes": 34,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1038_0049",
+      "selectionReason": "address-order fallback",
+      "address": "1038:0049",
+      "bodyBytes": 3,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1050_0096",
+      "selectionReason": "address-order fallback",
+      "address": "1050:0096",
+      "bodyBytes": 59,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_10a8_004d",
+      "selectionReason": "address-order fallback",
+      "address": "10a8:004d",
+      "bodyBytes": 9,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_10c0_0066",
+      "selectionReason": "address-order fallback",
+      "address": "10c0:0066",
+      "bodyBytes": 10,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_10f8_0155",
+      "selectionReason": "address-order fallback",
+      "address": "10f8:0155",
+      "bodyBytes": 194,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1100_0084",
+      "selectionReason": "address-order fallback",
+      "address": "1100:0084",
+      "bodyBytes": 330,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1120_002b",
+      "selectionReason": "address-order fallback",
+      "address": "1120:002b",
+      "bodyBytes": 28,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1238_0408",
+      "selectionReason": "address-order fallback",
+      "address": "1238:0408",
+      "bodyBytes": 9,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_12c0_0041",
+      "selectionReason": "address-order fallback",
+      "address": "12c0:0041",
+      "bodyBytes": 25,
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_12d0_0060",
+      "selectionReason": "address-order fallback",
+      "address": "12d0:0060",
+      "bodyBytes": 31,
+      "completed": true,
+      "message": ""
+    }
+  ],
+  "analysisBookmarks": [
+    {
+      "address": "1000:023e",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Unable to resolve constructor at 1000:023e (flow from 1000:023c)"
+    },
+    {
+      "address": "1000:01bb",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Failed to disassemble at 1000:01bb due to conflicting instruction at 1000:01be (flow from 1000:01b9)"
+    },
+    {
+      "address": "1000:0231",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Failed to disassemble at 1000:0231 due to conflicting instruction at 1000:0230 (flow from 1000:01b9)"
+    },
+    {
+      "address": "1000:0586",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Unable to resolve constructor at 1000:0586 (flow from 1000:0584)"
+    },
+    {
+      "address": "1000:0515",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Failed to disassemble at 1000:0515 due to conflicting instruction at 1000:0513 (flow from 1000:0584)"
+    },
+    {
+      "address": "1000:095d",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Maximum run of repeated byte instructions exceeded (flow from 1000:095b)"
+    },
+    {
+      "address": "1038:004c",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Unable to resolve constructor at 1038:004c (flow from 1038:004a)"
+    },
+    {
+      "address": "10c0:0070",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Unable to resolve constructor at 10c0:0070 (flow from 10c0:006e)"
+    },
+    {
+      "address": "10f8:0161",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Could not follow disassembly flow into non-existing memory at 0412:2600 (flow from 10f8:0161)"
+    },
+    {
+      "address": "1100:01d7",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Unable to resolve constructor at 1100:01d7 (flow from 1100:01d5)"
+    },
+    {
+      "address": "1100:01fd",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Unable to resolve constructor at 1100:01fd (flow from 1100:01fc)"
+    },
+    {
+      "address": "1100:00e3",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Could not follow disassembly flow into non-existing memory at 46aa:001e (flow from 1100:00e3)"
+    },
+    {
+      "address": "1120:0047",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Unable to resolve constructor at 1120:0047 (flow from 1120:0046)"
+    },
+    {
+      "address": "1238:0411",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Unable to resolve constructor at 1238:0411 (flow from 1238:040f)"
+    },
+    {
+      "address": "12c0:005a",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Unable to resolve constructor at 12c0:005a (flow from 12c0:0055)"
+    },
+    {
+      "address": "12c0:0055",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Could not follow disassembly flow into non-existing memory at 0060:012a (flow from 12c0:0055)"
+    },
+    {
+      "address": "12d0:007f",
+      "type": "Error",
+      "category": "Bad Instruction",
+      "comment": "Unable to resolve constructor at 12d0:007f (flow from 12d0:007a)"
+    }
+  ]
+}
