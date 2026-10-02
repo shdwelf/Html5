@@ -1,0 +1,253 @@
+3000:608a	 Options \n 
+3000:60aa		About ...
+3000:60e6	Travel Itinerary ^X
+3000:614c	Music\n
+3000:615e	Memory Test
+3000:616b	Save Menu Defaults ^G
+3000:b1e8	rerror.dat
+3000:eff7	The Headline Harry Team:
+3000:f012	Designers: Mary Cron, Anne Hertz and the Headline
+3000:f04b	Harry Team
+3000:f056	Programming: Phil Van Duyne 
+3000:f073	Graphics: Carol Carpenter, Project Art Director
+3000:f0aa	Marcia Edwards
+3000:f0b9	Writers: Joe Skelley, John McCormick, Mary Cron,
+3000:f0f1	Barbara De Witt, Robert Hill, Anne Hertz,
+3000:f122	Liz Davidson, and Cathy Siegel
+3000:f141	Editing: Joe Skelley
+3000:f156	Original Music: Phil Van Duyne
+3000:f175	Sound Effects: Phil Van Duyne, John McCormick
+3000:f1a3	Manual: Barbara De Witt
+3000:f1df	menu.dat
+3000:f224	0Do you wish to save this
+3000:f23f	Are you sure you want to exit?
+3000:f25f	game before exiting?
+3000:f27b	Menu options saved.
+3000:f28f	Cancel
+3000:f2a7	Travel Itinerary
+3000:f2b9	 = Cities Visited
+3000:f2cb	Current Location: 
+3000:f2ed	Washington, D.C.
+3000:f2fe	Cape Canaveral
+3000:f30d	Houston
+3000:f315	Atlanta
+3000:f31d	Montgomery
+3000:f328	Milwaukee
+3000:f332	Saint Paul
+3000:f343	New York
+3000:f34c	St. Louis
+3000:f356	Portsmouth
+3000:f361	Anchorage
+3000:f36b	Phoenix
+3000:f373	Little Rock
+3000:f37f	Mojave
+3000:f386	Denver
+3000:f38d	Hartford
+3000:f396	Dover
+3000:f39c	Jacksonville
+3000:f3a9	Honolulu
+3000:f3b2	Boise
+3000:f3b8	Terlingua
+3000:f3c2	Indianapolis
+3000:f3cf	Des Moines
+3000:f3e1	Louisville
+3000:f3ec	New Orleans
+3000:f3f8	Augusta
+3000:f400	Baltimore
+3000:f40a	Boston
+3000:f411	Detroit
+3000:f419	Minneapolis
+3000:f425	Jackson
+3000:f42d	Ann Arbor
+3000:f437	Helena
+3000:f43e	Lincoln
+4000:0a16	Uplay2.dat
+4000:0a25	Print
+4000:0a2b	Notebook Information
+4000:0a40	Key People:
+4000:0a4c	Key Words:
+4000:0a57	DDR Objects
+4000:0a63	Found:
+4000:0a6a	Brief2.spr
+4000:0a75	Briefcase Contents
+4000:0a88	Your Briefcase is empty.
+4000:0aa1	Timetable
+4000:0aab	EVENT
+4000:0ab1	TIME LOST
+4000:0abb	TIME GAINED
+4000:0ac7	Travel to cities
+4000:0ad8	1 hr. per 500 miles
+4000:0aec	Travel within cities
+4000:0b01	1 hr. per destination
+4000:0b17	Interview
+4000:0b21	Use radio
+4000:0b2b	Use telephone
+4000:0b39	Use reference
+4000:0b47	Use tape recorder
+4000:0b59	DDR object found
+4000:0b6a	5 hours
+4000:0b72	DDR object missed
+4000:0b84	5 hours
+4000:0b8c	Incorrect info
+4000:0b9b	malloc failed on Getfile filename is
+4000:0bc0	OPEN failed on Getfile filename is
+4000:0be3	OPEN failed on Getfile filename is
+4000:0c06	malloc failed on GetPartFile filename is
+4000:0c2f	OPEN failed on GetPartFile filename is
+4000:0c56	malloc failed on GetPartFile filename is
+4000:0c7f	OPEN failed on GetPartFile filename is
+4000:0ca7	Exit Diabolicals
+4000:0cb8	doss.dat
+4000:0cc1	doss.spr
+4000:0d11	Diabolicals
+4000:0d1d	South-Central
+4000:0d2b	Northwest
+4000:0d35	New York
+4000:0d3e	South
+4000:0d44	Mid-Atlantic
+4000:0d51	Mt-Plains
+4000:0d5b	Washington, D.C.
+4000:0d6c	Great Lakes
+4000:0d78	Southwest
+4000:0d82	California
+4000:0d8d	New England
+4000:0d99	Alaska
+4000:0f6c	0You are about to play a game previously saved.
+4000:0f9d	Do you want to play it or a pick a new game?
+4000:0fcb	Do you wish to delete this reporter
+4000:0fef	or is this reporter you?
+4000:1035	player.dat
+4000:1045	New Game
+4000:1051	Delete
+4000:1058	 = attempted
+4000:1065	 = completed
+4000:1073	w4edit.pak
+4000:108a	philedit.mdi
+4000:1097	page.pak
+4000:10a0	philwin.mdi
+4000:10bf	w4edit.pak
+4000:10ca	edit.spr
+4000:10d3	edit2.spr
+4000:10dd	edit3.spr
+4000:10e7	Valid for use by:9
+4000:10ff	title.pak
+4000:1109	title.spr
+4000:111e	open.spr
+4000:1127	philopen.mdi
+4000:1135	Print
+4000:116e	0Are you finished reading?
+4000:1189	Please name your story
+4000:11a0	We proudly announce
+4000:11b4	the promotion of
+4000:11c8	Page 13
+4000:11d0	The Diabolical Daily
+4000:11e5	will have an awards dinner
+4000:1204	at the Billiot Hotel
+4000:1219	Page 19
+4000:1221	Miss Quote
+4000:122c	Otto Context
+4000:1239	Leda Stray
+4000:1244	Ruth Liz Tactics
+4000:1255	Hood Wink
+4000:125f	Marvin Muckraker
+4000:1270	paper.pak
+4000:127a	paper.spr
+4000:128a	Page 1
+4000:1294	Page 
+4000:12a6		ACCEPT
+4000:12ae	CHALLENGE
+4000:12bd	FALSE
+4000:12e8	Headline Harry
+4000:1301	Dr. Know
+4000:130a	Hang Up Phone
+4000:1e8e	brief1.spr
+4000:1e99	butfram.spr
+4000:1ea5	note.spr
+4000:1eae	fore.spr
+4000:1eb7	back.spr
+4000:1ec0	head.spr
+4000:1ec9	head.spr
+4000:1ee0	QUICK DIAL
+4000:1f2b	Delete Note
+4000:1f37	File Story
+4000:1f42	Note Info.
+4000:1f4d	Close
+4000:1fc3	Place
+4000:1fc9	Event
+4000:1fcf	 Key People
+4000:1fdb	 Key Words
+4000:1fe7	 Key Person
+4000:2024	30 minutes
+4000:2032	15 minutes
+4000:203e	You have already saved this note.
+4000:2060	Get a life--a story--anything!
+4000:2080	You're not done yet.
+4000:2096	What kind of hairbrained reporter
+4000:20b8	are you anyway? Get serious!
+4000:20d6	You really don't have your
+4000:20f2	facts straight. Think again!
+4000:2110	Yo!! Bad Timing!
+4000:2122	Get back to work.
+4000:2134	Assignment
+4000:2140	Notebook is full.
+4000:2152	Try deleting some notes.
+4000:2172	Key Person
+4000:21ac	Notes Saved ...
+4000:21bd	The Notebook is empty.
+4000:21d4	Note 
+4000:21df	Enter Year:
+4000:21eb	Enter a Key Word:
+4000:21fd	Enter the Key Person or select NOTE to
+4000:2224	Enter the Event or select NOTE to
+4000:2246	Enter the Date or select NOTE to
+4000:2267	Enter the Place or select NOTE to
+4000:229a	ball.spr
+4000:22a3	button.spr
+4000:22ae	icon.spr
+4000:22b7	border2.pic
+4000:22c3	mape.pak
+4000:22cc	sticons.spr
+4000:22d8	neweng.pak
+4000:22e3	maps.spr
+4000:22ec	statetex.dta
+4000:2404	BB?VVVOONLIHFD6win2.pak
+4000:2429	crono.spr
+4000:2445	Chronometer (hours)
+4000:2459	Odometer (miles)
+4000:246b	Tripometer (miles)y
+4000:2498	Time left: 
+4000:24a4	malloc failed
+4000:24b2	Retry
+4000:24b8	Cancel
+4000:24c0	Printer is not ready.
+4000:24d6	Disk drive is not ready.
+4000:24f0	Data error on Disk Drive.
+4000:250a	Cub Reporter
+4000:2517	Staff Reporter
+4000:2526	Senior Reporter
+4000:2536	Star Reporter
+4000:2544	Diabolical Daily
+4000:2555	Beginning:  
+4000:2562	Current:  
+4000:256e	Circulation 
+4000:2fc8	R6000\r\n- stack overflow\r\n
+4000:2fe4	R6003\r\n- integer divide by 0\r\n
+4000:3005	R6009\r\n- not enough space for environment\r\n
+4000:3038	run-time error 
+4000:304a	R6002\r\n- floating point not loaded\r\n
+4000:3071	R6001\r\n- null pointer assignment\r\n
+4000:3096	: MATH\r\n- floating-point error: 
+4000:30b9	invalid\r\n
+4000:30c5	denormal\r\n
+4000:30d2	divide by 0\r\n
+4000:30e2	overflow\r\n
+4000:30ef	underflow\r\n
+4000:30fd	inexact\r\n
+4000:3109	unemulated\r\n
+4000:3118	square root\r\n
+4000:312d	stack overflow\r\n
+4000:3140	stack underflow\r\n
+4000:3154	explicitly generated\r\n
+4000:316d	DOMAIN error\r\n
+4000:317e	SING error\r\n
+4000:318d	TLOSS error\r\n

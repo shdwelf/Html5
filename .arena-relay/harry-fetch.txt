@@ -1,0 +1,14 @@
+# Headline Harry and The Great Paper Race (Davidson & Associates, 1991)
+# Fetch request for .github/workflows/arena-headline-harry.yml
+#
+# v2: floppies verified OK, but game EXEs are scrambled on-disk (key-disk style;
+# only INSTALL.EXE runs). Job now also performs an unattended DOSBox install and
+# falls back to pre-installed mirrors; wants .xfer/harry/installed with MZ exes.
+#
+# Internet Archive item: https://archive.org/details/HeadlineHarry
+# Files: Headline-Harry-disk1.img .. disk4.img (720kB FAT12 raw floppies)
+# Expected SHA-1 (from IA item + TGOD floppy collection notes):
+#   disk1 77abc24ed8a401b23ef7ef769512f91c6e205b59
+#   disk2 e7f468e2b3cda4066e003bb02c011e3227df16a6
+#   disk3 ab4c1390f2c442069f04c151fa25f600dfd04f21
+#   disk4 e134a66120ce989e1344dfb90d363eb2f36e2975

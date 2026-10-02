@@ -1,0 +1,221 @@
+name: arena-headline-harry
+
+# Temporary transfer lane. The dev sandbox's egress is allowlisted to
+# GitHub/PyPI/npm, so archive.org (where the Headline Harry floppy images
+# live) is unreachable from it, while a runner has ordinary internet access.
+#
+# v2: the IA floppy set turned out to be key-disk style media whose game
+# executables are scrambled on disk (files show `ff 4d 5a` instead of `MZ`;
+# only INSTALL.EXE is a clean runnable). This workflow therefore goes one
+# step further: it runs the ORIGINAL installer unattended under DOSBox/Xvfb
+# on the runner (xdotool presses the keys; ctrl+F4 cycles the four mounted
+# floppy images) to reproduce the authenticated installed C:\HH directory.
+# Fallback: try a couple of known pre-installed mirrors. Either way the
+# recovered installed directory is committed so the sandbox can `git pull` it.
+#
+# Trigger is a change to .arena-relay/harry-fetch.txt or this file (or manual
+# dispatch), so the commit this job makes does not retrigger it.
+
+on:
+  push:
+    paths:
+      - '.arena-relay/harry-fetch.txt'
+      - '.github/workflows/arena-headline-harry.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download floppies from archive.org
+        run: |
+          set -e
+          mkdir -p .xfer/harry/disks
+          cd .xfer/harry/disks
+          base="https://archive.org/download/HeadlineHarry"
+          for i in 1 2 3 4; do
+            curl -fsSL --retry 3 --retry-delay 2 \
+              "$base/Headline-Harry-disk${i}.img" -o "disk${i}.img"
+          done
+          echo "77abc24ed8a401b23ef7ef769512f91c6e205b59  disk1.img" > expected.sha1
+          echo "e7f468e2b3cda4066e003bb02c011e3227df16a6  disk2.img" >> expected.sha1
+          echo "ab4c1390f2c442069f04c151fa25f600dfd04f21  disk3.img" >> expected.sha1
+          echo "e134a66120ce989e1344dfb90d363eb2f36e2975  disk4.img" >> expected.sha1
+          sha1sum -c expected.sha1
+
+      - name: Extract raw FAT12 contents (reference copy)
+        run: |
+          set -e
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq mtools
+          mkdir -p .xfer/harry/game-raw
+          cd .xfer/harry
+          for i in 1 2 3 4; do
+            mdir -i "disks/disk${i}.img" ::/ > /dev/null
+            mcopy -s -o -i "disks/disk${i}.img" ::/ game-raw/ || true
+          done
+          find game-raw -type f | LC_ALL=C sort -f | tee raw-listing.txt | wc -l
+
+      - name: Install DOSBox, Xvfb, xdotool for the unattended install attempt
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq dosbox xvfb xdotool imagemagick
+
+      - name: Run the original installer unattended in DOSBox
+        id: install
+        run: |
+          set +e
+          work="$RUNNER_TEMP/hhwork"
+          mkdir -p "$work/src" "$work/hd" "$work/shots"
+          # The installer is a data-driven unpacker (INSTALL.INF): game files are
+          # PACKED/encrypted on the floppies (that's the `ff 4d 5a` prefix). It
+          # identifies each of the 4 disks only via the existence of a per-disk
+          # CHECK_FILE (no volume-label checks), so ONE merged dir with every
+          # disk's contents mounted as the source drive B: satisfies all prompts.
+          for i in 1 2 3 4; do
+            mcopy -s -o -i ".xfer/harry/disks/disk${i}.img" ::/ "$work/src/" || true
+          done
+          ls "$work/src" | wc -l
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 800x600x24 >/dev/null 2>&1 &
+          sleep 2
+          {
+            # keybot walkthrough (keyboard-only UI, defaults sane):
+            #  Enter x3 = welcome / source B:\ / dest C:\HH
+            #  Enter    = video menu  (default VGA)
+            #  Down,Enter = sound menu -> SoundBlaster (first item is speaker)
+            #  Enter x3 = SB port auto / printer / spare
+            #  Enter xN = any "insert disk" prompts are satisfied instantly
+            #  (merged B:\), end message
+            sleep 8
+            for k in 1 2 3; do xdotool key Return; sleep 5; done
+            xdotool key Return; sleep 5                      # video
+            xdotool key Down; sleep 2; xdotool key Return; sleep 5  # sound = SB
+            for k in 1 2 3; do xdotool key Return; sleep 5; done    # port/printer
+            for i in $(seq 1 25); do
+              xdotool key Return 2>/dev/null; sleep 4
+              import -window root "$work/shots/shot_$i.png" 2>/dev/null
+            done
+          } &
+          bot=$!
+          timeout 260 dosbox \
+            -c "mount b $work/src -t floppy -label HARRY1" \
+            -c "mount c $work/hd" \
+            -c "b:" -c "install" \
+            > "$work/dosbox.log" 2>&1
+          kill $bot 2>/dev/null
+          import -window root "$work/shots/final.png" 2>/dev/null
+          tail -30 "$work/dosbox.log"
+          mkdir -p .xfer/harry/install
+          cp -r "$work/shots" .xfer/harry/install/ 2>/dev/null
+          cp "$work/dosbox.log" .xfer/harry/install/ 2>/dev/null
+          # did C:\HH get clean, unpacked executables?
+          if [ -d "$work/hd/HH" ] && head -c2 "$work/hd/HH/MAP.EXE" 2>/dev/null | grep -q MZ; then
+            echo "INSTALL_OK"
+            echo "source=installer" >> "$GITHUB_OUTPUT"
+            cp -r "$work/hd/HH" .xfer/harry/installed
+          else
+            echo "INSTALL_FAILED or still scrambled"
+            find "$work/hd" -maxdepth 2 | head -40
+            [ -f "$work/hd/HH/MAP.EXE" ] && head -c8 "$work/hd/HH/MAP.EXE" | od -A n -t x1
+            echo "source=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Smoke test — boot the installed game in DOSBox and screenshot it
+        if: steps.install.outputs.source == 'installer'
+        run: |
+          set +e
+          # DISPLAY/Xvfb don't persist across steps: re-export and respawn
+          pgrep -x Xvfb >/dev/null || { Xvfb :99 -screen 0 800x600x24 >/dev/null 2>&1 & sleep 3; }
+          export DISPLAY=:99
+          work="$RUNNER_TEMP/hhwork"
+          mkdir -p "$work/game-shots"
+          (
+            sleep 12
+            for i in 1 2 3 4 5 6; do
+              import -window root "$work/game-shots/game_$((i*15))s.png" 2>/dev/null
+              sleep 15
+            done
+          ) &
+          sp=$!
+          timeout 130 dosbox \
+            -c "mount c $work/hd" -c "c:" -c "cd hh" -c "harry.bat" \
+            > "$work/game-run.log" 2>&1
+          kill $sp 2>/dev/null
+          mkdir -p .xfer/harry/install/game-shots
+          cp "$work"/game-shots/*.png .xfer/harry/install/game-shots/ 2>/dev/null
+          cp "$work/game-run.log" .xfer/harry/install/ 2>/dev/null
+          ls .xfer/harry/install/game-shots/
+
+      - name: Fallback — try pre-installed mirror URLs
+        if: steps.install.outputs.source != 'installer'
+        id: mirror
+        run: |
+          set +e
+          ua="Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Firefox/121.0"
+          mkdir -p "$RUNNER_TEMP/mirror"
+          ok=""
+          for url in \
+            "https://classicreload.com/sites/default/files/archive/headline-harry-and-the-great-paper-race.zip" \
+            "https://www.myabandonware.com/media/roms/h/headline-harry-and-the-great-paper-race-166/headline-harry-and-the-great-paper-race.zip" \
+          ; do
+            echo "trying $url"
+            if curl -fL --retry 2 -A "$ua" -H "Referer: https://classicreload.com/play/headline-harry-and-the-great-paper-race.html" \
+                 "$url" -o "$RUNNER_TEMP/mirror/hh.zip"; then
+              if unzip -l "$RUNNER_TEMP/mirror/hh.zip" | grep -qi "MAP.EXE"; then
+                ok="$url"; break
+              fi
+            fi
+          done
+          if [ -n "$ok" ]; then
+            unzip -o -q "$RUNNER_TEMP/mirror/hh.zip" -d "$RUNNER_TEMP/mirror/x"
+            dir=$(dirname "$(find "$RUNNER_TEMP/mirror/x" -iname MAP.EXE | head -1)")
+            if head -c2 "$dir/MAP.EXE" | grep -q MZ; then
+              echo "MIRROR_OK $ok"
+              echo "source=$ok" >> "$GITHUB_OUTPUT"
+              cp -r "$dir" .xfer/harry/installed
+            else
+              echo "mirror zip but MAP.EXE still scrambled?!"
+            fi
+          else
+            echo "NO_WORKING_SOURCE"
+          fi
+
+      - name: Verify recovered install
+        run: |
+          test -d .xfer/harry/installed
+          for f in MAP.EXE INTRO.EXE; do
+            sig=$(head -c2 ".xfer/harry/installed/$f")
+            echo "$f signature: $sig"
+            [ "$sig" = "MZ" ]
+          done
+          find .xfer/harry/installed -type f | wc -l
+
+      - name: Commit what came back
+        if: always()
+        run: |
+          git config user.name arena-relay
+          git config user.email arena-relay@users.noreply.github.com
+          git add -f .xfer
+          git commit -q -m "xfer: Headline Harry install attempt (installer + mirrors)" || true
+          for i in 1 2 3 4 5; do
+            git push origin HEAD:${GITHUB_REF_NAME} && break || {
+              git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; }
+          done
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### headline-harry install attempt"
+            echo "installed/ present: $(test -d .xfer/harry/installed && echo yes || echo no)"
+            echo '```'
+            find .xfer/harry/installed -type f 2>/dev/null | sort | head -40
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

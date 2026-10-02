@@ -1,0 +1,6 @@
+# Trigger file for .github/workflows/arena-headline-harry-ghidra.yml
+# Runs headless Ghidra on the 1991 game executables recovered by the
+# unattended install (.xfer/harry/installed/INTRO.EXE = intro,
+# MAP.EXE = main game) and commits the disassembly, decompilation,
+# strings and metadata reports to webxdc-headline-harry/ghidra/.
+# Fired now: installed executables verified present and clean MZ.

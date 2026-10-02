@@ -1,0 +1,29 @@
+1000:f1b6	rerror.dat
+2000:2fa2	title0.spr
+2000:2fad	title1.spr
+2000:2fb8	title2.spr
+2000:2fc3	title3.spr
+2000:2fce	title4.spr
+2000:2fd9	title.pak
+2000:31e1	setup.inf
+2000:31eb	menu.dat
+2000:31f4	title.pak
+2000:31fe	malloc failed on Getfile filename is
+2000:3223	OPEN failed on Getfile filename is
+2000:3246	OPEN failed on Getfile filename is
+2000:3269	malloc failed on GetPartFile filename is
+2000:3292	OPEN failed on GetPartFile filename is
+2000:32b9	malloc failed on GetPartFile filename is
+2000:32e2	OPEN failed on GetPartFile filename is
+2000:330a	malloc failed
+2000:3369	Retry
+2000:336f	Cancel
+2000:3377	Printer is not ready.
+2000:338d	Disk drive is not ready.
+2000:33a7	Data error on Disk Drive.
+2000:3805	R6000\r\n- stack overflow\r\n
+2000:3821	R6003\r\n- integer divide by 0\r\n
+2000:3842	R6009\r\n- not enough space for environment\r\n
+2000:3875	run-time error 
+2000:3887	R6002\r\n- floating point not loaded\r\n
+2000:38ae	R6001\r\n- null pointer assignment\r\n
