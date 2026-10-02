@@ -19,7 +19,7 @@ void MAINWNDPROC(void)
   int in_BX;
   int unaff_SI;
   bool bVar2;
-  
+
   *(uint *)(in_BX + unaff_SI) = *(uint *)(in_BX + unaff_SI) | 0x7c;
   do {
     bVar2 = in_AX < 0x85;
@@ -66,7 +66,7 @@ void __cdecl16near FUN_1000_0031(void)
   byte *unaff_DI;
   undefined2 unaff_ES;
   bool bVar14;
-  
+
   puVar12 = unaff_SI + 1;
   uVar11 = *unaff_SI;
   iVar9 = 0x10;
@@ -289,7 +289,7 @@ void __cdecl16near FUN_1000_0154(void)
 
 {
   int in_DX;
-  
+
   if (in_DX != 1) {
     return;
   }
@@ -364,7 +364,7 @@ undefined2 __cdecl16near FUN_1000_0169(void)
   undefined1 *puStack_12;
   int aiStack_10 [3];
   uint *puStack_a;
-  
+
   puVar19 = (uint *)&stack0xfffe;
   puStack_a = (uint *)0x1c1;
   iVar11 = FUN_1000_0162();
@@ -583,7 +583,7 @@ void FUN_1000_04c1(int param_1)
   int unaff_DI;
   undefined2 unaff_SS;
   uint in_stack_00000000;
-  
+
   bVar3 = *(byte *)(unaff_BP + (int)unaff_SI);
   bVar4 = (byte)in_AX;
   if (bVar3 == bVar4) {
@@ -634,7 +634,7 @@ void FUN_1000_074f(void)
   int unaff_SI;
   undefined2 *unaff_DI;
   undefined2 unaff_ES;
-  
+
   uVar1 = in(CONCAT11(0x70,in_DL + '\x01'));
   *unaff_DI = uVar1;
   *(char *)(in_BX + unaff_SI) = *(char *)(in_BX + unaff_SI) + '\x01';
@@ -661,7 +661,7 @@ void FUN_1000_093d(void)
   char in_AL;
   int in_BX;
   int unaff_SI;
-  
+
   *(char *)(in_BX + unaff_SI) = *(char *)(in_BX + unaff_SI) + in_AL;
   *(char *)(in_BX + unaff_SI) = *(char *)(in_BX + unaff_SI) + in_AL;
   *(char *)(in_BX + unaff_SI) = *(char *)(in_BX + unaff_SI) + in_AL;
@@ -796,7 +796,7 @@ void __stdcall16far FUN_1050_0096(void)
   int iVar1;
   int iVar2;
   undefined2 unaff_SS;
-  
+
   (*(code *)*in_BX)();
   iVar2 = 0;
   if (unaff_SI + -1 != 0) {
@@ -825,7 +825,7 @@ void FUN_10a8_004d(void)
 
 {
   code *pcVar1;
-  
+
   pcVar1 = (code *)swi(1);
   (*pcVar1)();
   return;
@@ -896,7 +896,7 @@ uint __cdecl16far FUN_10f8_0155(void)
   undefined1 in_XMM2 [16];
   undefined4 uVar22;
   uint uVar5;
-  
+
   uVar20 = 0x1350;
   uVar22 = func_0x04122600();
   uVar13 = (uint)((ulong)uVar22 >> 0x10);
@@ -1051,7 +1051,7 @@ void FUN_1100_0084(void)
   byte bVar6;
   byte bVar13;
   char cVar24;
-  
+
   bVar18 = (byte)in_CX;
   if ((in_CX == 0) && (!in_ZF)) {
     puVar1 = (undefined1 *)(((uint)&stack0xfffe | *(uint *)(&stack0x320f + (int)unaff_SI)) - 1);
@@ -1240,7 +1240,7 @@ void FUN_12c0_0041(void)
   undefined2 unaff_SS;
   char in_CF;
   int in_stack_0000000c;
-  
+
   (&stack0xfffe)[in_stack_0000000c] = ((&stack0xfffe)[in_stack_0000000c] - in_CL) - in_CF;
   func_0x0060012a();
                     /* WARNING: Bad instruction - Truncating control flow here */
@@ -1265,13 +1265,10 @@ void FUN_12d0_0060(void)
   uint *unaff_SI;
   char *unaff_DI;
   char in_CF;
-  
+
   *unaff_DI = (*unaff_DI + '<') - in_CF;
   DAT_1350_3938 = (in_CL & 3) + 0x81;
   *unaff_SI = *unaff_SI | 0xb;
                     /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
-
-
-

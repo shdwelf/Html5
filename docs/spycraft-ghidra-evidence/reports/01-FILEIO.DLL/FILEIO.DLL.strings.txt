@@ -19,7 +19,7 @@
 1008:01e8	R6003\r\n- integer divide by 0\r\n
 1008:0209	R6009\r\n- not enough space for environment\r\n
 1008:0237	R6018\r\n- unexpected heap error\r\n
-1008:025f	run-time error 
+1008:025f	run-time error\x20
 1008:0271	R6002\r\n- floating-point support not loaded\r\n
 1010:0000	-- FileIO External Factory. 9feb93 JT
 1010:0026	FileIO

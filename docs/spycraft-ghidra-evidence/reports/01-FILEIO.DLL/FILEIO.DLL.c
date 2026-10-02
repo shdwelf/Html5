@@ -25,7 +25,7 @@ void __cdecl16far entry(void)
   undefined2 unaff_CS;
   undefined2 uVar3;
   undefined2 uVar4;
-  
+
   DAT_1008_0132 = 0x1008;
   uVar3 = unaff_CS;
   DAT_1008_0130 = unaff_DI;
@@ -66,18 +66,18 @@ void __cdecl16far entry(void)
 /* Title:  File I/O External Factory
    Format: New Executable (NE) Windows
    CRC:    00000000
-   
+
    Program Entry Point (CS:IP):   0001:13aa
    Initial Stack Pointer (SS:SP): 0000:0000
    Auto Data Segment Index:       0002
    Initial Heap Size:             0080
    Initial Stack Size:            0000
    Minimum Code Swap Size:        0000
-   
+
    Linker Version:  5.50
    Target OS:       Windows
    Windows Version: 3.10
-   
+
    Program Flags:     01
            Single Data
    Application Flags: 83
@@ -92,7 +92,7 @@ LIBMAIN(undefined2 param_1,undefined2 param_2,int param_3,undefined2 param_4,und
 {
   int iVar1;
   undefined2 unaff_CS;
-  
+
                     /* Segment:    1
                        Offset:     00000760
                        Length:     2122
@@ -154,7 +154,7 @@ _FILEIO_MNEW(undefined2 param_1,undefined2 param_2,int param_3,undefined2 param_
   undefined2 uVar9;
   undefined2 uVar10;
   undefined2 uVar11;
-  
+
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
   uVar4 = (*(code *)*(undefined2 *)(param_3 + 0x18))();
@@ -212,7 +212,7 @@ undefined4 __stdcall16far _FILEIO_MDISPOSE(undefined2 param_1,undefined2 param_2
   undefined2 uVar5;
   undefined2 uVar6;
   undefined2 uVar7;
-  
+
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
   uVar6 = param_1;
@@ -276,7 +276,7 @@ _FILEIO_MWRITECHAR(undefined2 param_1,undefined2 param_2,int param_3,undefined2 
   undefined1 local_5;
   undefined2 local_4;
   int iStack_2;
-  
+
   iStack_2 = unaff_BP + 1;
   local_4 = 0x1008;
   DAT_1008_0012 = 0;
@@ -321,7 +321,7 @@ _FILEIO_MWRITESTRING
   undefined2 uVar8;
   undefined2 uVar9;
   undefined2 uVar10;
-  
+
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
   uVar9 = param_1;
@@ -369,7 +369,7 @@ undefined4 __stdcall16far _FILEIO_MREADCHAR(undefined2 param_1,undefined2 param_
   undefined2 local_6;
   undefined2 local_4;
   int iStack_2;
-  
+
   iStack_2 = unaff_BP + 1;
   local_4 = 0x1008;
   DAT_1008_0012 = 0;
@@ -413,7 +413,7 @@ _FILEIO_MREADWORD(undefined2 param_1,undefined2 param_2,int param_3,undefined2 p
   undefined2 uVar5;
   undefined2 uVar6;
   int iVar7;
-  
+
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
   uVar6 = 0x1008;
@@ -457,7 +457,7 @@ undefined4 __stdcall16far _FILEIO_MREADLINE(undefined2 param_1,undefined2 param_
   int local_6;
   undefined2 local_4;
   int iStack_2;
-  
+
   iStack_2 = unaff_BP + 1;
   local_4 = 0x1008;
   local_7 = '\0';
@@ -528,7 +528,7 @@ undefined2 __stdcall16far _FILEIO_MREADFILE(undefined2 param_1,undefined2 param_
   undefined2 uVar10;
   undefined2 uVar11;
   int local_10;
-  
+
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
   uVar10 = param_1;
@@ -605,7 +605,7 @@ _FILEIO_MREADTOKEN(undefined2 param_1,undefined2 param_2,int param_3,undefined2 
   undefined4 uVar3;
   undefined4 uVar4;
   undefined4 uVar5;
-  
+
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
   uVar3 = (*(code *)*(undefined2 *)(param_3 + 0x18))();
@@ -638,7 +638,7 @@ long __stdcall16far _FILEIO_MGETPOSITION(undefined2 param_1,undefined2 param_2,i
   undefined2 uVar3;
   undefined2 uVar4;
   undefined2 uVar5;
-  
+
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
   uVar4 = param_1;
@@ -675,7 +675,7 @@ _FILEIO_MSETPOSITION
   undefined2 uVar3;
   undefined2 uVar4;
   undefined2 uVar5;
-  
+
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
   uVar4 = param_1;
@@ -716,7 +716,7 @@ undefined4 __stdcall16far _FILEIO_MGETLENGTH(undefined2 param_1,undefined2 param
   undefined2 uVar10;
   undefined2 local_8;
   undefined2 local_6;
-  
+
   uVar5 = CONCAT22(local_6,local_8);
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
@@ -787,7 +787,7 @@ long __stdcall16far _FILEIO_MFILENAME(undefined2 param_1,undefined2 param_2,int 
 
 {
   long lVar1;
-  
+
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
   (*(code *)*(undefined2 *)(param_3 + 0x18))();
@@ -819,7 +819,7 @@ void __stdcall16far _FILEIO_MDELETE(undefined2 param_1,undefined2 param_2,int pa
   undefined2 uVar6;
   undefined2 uVar7;
   undefined2 uVar8;
-  
+
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
   uVar7 = param_1;
@@ -911,7 +911,7 @@ _FILEIO_MREADPICT(undefined2 param_1,undefined2 param_2,undefined4 param_3,undef
   int local_c;
   uint local_8;
   int local_6;
-  
+
   local_14 = (undefined4 *)0x0;
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
@@ -987,7 +987,7 @@ undefined4 __stdcall16far _FILEIO_MNATIVEFILENAME(undefined2 param_1,undefined2 
 
 {
   undefined4 uVar1;
-  
+
   DAT_1008_0012 = 0;
   DAT_1008_0010 = 0;
   (*(code *)*(undefined2 *)(param_3 + 0x18))();
@@ -1043,7 +1043,7 @@ FUN_1000_014e(undefined4 param_1,undefined2 param_2,undefined2 param_3,undefined
   undefined1 local_104 [256];
   undefined2 local_4;
   int iStack_2;
-  
+
   iStack_2 = unaff_BP + 1;
   local_4 = 0x1008;
   uVar5 = param_3;
@@ -1140,7 +1140,7 @@ FUN_1000_02e2(undefined2 param_1,undefined2 param_2,char *param_3,undefined2 par
   undefined1 local_7f;
   undefined2 local_4;
   int iStack_2;
-  
+
   iStack_2 = unaff_BP + 1;
   local_4 = 0x1008;
   if (*param_3 == '\0') {
@@ -1181,7 +1181,7 @@ FUN_1000_0372(undefined2 param_1,undefined2 param_2,undefined2 param_3,undefined
   undefined1 local_104 [256];
   undefined2 local_4;
   int iStack_2;
-  
+
   iStack_2 = unaff_BP + 1;
   local_4 = 0x1008;
   LSTRCPY(unaff_CS,param_3,param_4,local_104);
@@ -1218,7 +1218,7 @@ bool __cdecl16far FUN_1000_03d0(undefined4 param_1,int param_2)
   undefined2 uVar8;
   undefined2 uVar9;
   undefined2 uVar10;
-  
+
   iVar5 = unaff_BP + 1;
   uVar10 = 0x1008;
   uVar6 = (undefined2)((ulong)param_1 >> 0x10);
@@ -1293,7 +1293,7 @@ undefined2 __cdecl16far FUN_1000_0caa(undefined2 param_1,int *param_2)
   undefined1 local_5;
   undefined2 local_4;
   int iStack_2;
-  
+
   iStack_2 = unaff_BP + 1;
   local_4 = 0x1008;
   iVar1 = _LREAD(unaff_CS,1,&local_5,unaff_SS);
@@ -1344,7 +1344,7 @@ FUN_1000_0cda(undefined2 param_1,char *param_2,undefined2 param_3,char *param_4,
   undefined2 local_4;
   int iStack_2;
   byte bVar2;
-  
+
   iStack_2 = unaff_BP + 1;
   local_4 = 0x1008;
   local_12 = 0;
@@ -1452,7 +1452,7 @@ undefined2 __cdecl16far FUN_1000_1134(undefined2 param_1)
 
 {
   undefined1 uStack_7;
-  
+
   uStack_7 = (undefined1)((uint)param_1 >> 8);
   return CONCAT11((char)param_1,uStack_7);
 }
@@ -1504,7 +1504,7 @@ void __cdecl16far FUN_1000_1464(void)
   int iVar1;
   bool bVar2;
   undefined2 uVar3;
-  
+
   iVar1 = unaff_BP + 1;
   uVar3 = 0x1008;
   if (DAT_1008_01b8 != 0) {
@@ -1559,7 +1559,7 @@ void __cdecl16near FUN_1000_1534(void)
   int *unaff_SI;
   int *unaff_DI;
   int *piVar2;
-  
+
   while (unaff_SI < unaff_DI) {
     piVar2 = unaff_DI + -2;
     piVar1 = unaff_DI + -1;
@@ -1604,7 +1604,7 @@ int * __stdcall16far FUN_1000_156c(int param_1)
   int iVar2;
   int *piVar3;
   int *piVar4;
-  
+
   piVar3 = (int *)&DAT_1008_01ca;
   do {
     piVar1 = piVar3;
@@ -1662,7 +1662,7 @@ void __cdecl16far FUN_1000_15ba(void)
   undefined4 uVar10;
   char *pcVar11;
   undefined2 *puVar12;
-  
+
   uVar10 = GETDOSENVIRONMENT();
   iVar4 = (int)((ulong)uVar10 >> 0x10);
   if ((int)uVar10 != 0) {
@@ -1733,7 +1733,7 @@ void FUN_1000_165c(undefined2 param_1,undefined2 param_2)
   undefined2 unaff_CS;
   undefined2 in_stack_00000000;
   undefined2 uVar5;
-  
+
   uVar5 = in_AX;
   FUN_1000_1548();
   FUN_1000_15a3(in_AX);
@@ -1774,7 +1774,7 @@ void __cdecl16far FUN_1000_169e(undefined2 param_1,undefined2 param_2,undefined2
 
 {
   int unaff_BP;
-  
+
   FUN_1000_16bc(0,param_1,param_2,param_3,0x1008,unaff_BP + 1);
   return;
 }
@@ -1807,7 +1807,7 @@ uint __cdecl16far FUN_1000_16bc(int param_1,uint param_2,uint param_3,int param_
   char local_108 [260];
   undefined2 local_4;
   int iStack_2;
-  
+
   iStack_2 = unaff_BP + 1;
   local_4 = 0x1008;
   _local_130 = (char *)CONCAT22(unaff_SS,local_108);
@@ -1874,7 +1874,7 @@ void __cdecl16near FUN_1000_17e4(void)
   uint *unaff_SI;
   undefined2 *puVar7;
   bool bVar8;
-  
+
   if ((*(byte *)(in_BX + 2) & 1) != 0) {
     FUN_1000_18db();
     if ((*unaff_SI & 1) != 0) {
@@ -1941,7 +1941,7 @@ void __cdecl16near FUN_1000_1875(void)
   long lVar2;
   int iVar3;
   int iVar4;
-  
+
   if ((*(byte *)(in_BX + 2) & 4) == 0) {
     iVar3 = *(int *)(in_BX + 6);
     iVar4 = iVar3;
@@ -1974,7 +1974,7 @@ void __cdecl16near FUN_1000_18db(void)
 {
   int in_BX;
   uint *puVar1;
-  
+
   puVar1 = (uint *)*(undefined2 *)(in_BX + 10);
   if (puVar1 == (uint *)*(undefined2 *)(in_BX + 0xc)) {
     puVar1 = (uint *)*(undefined2 *)(in_BX + 8);
@@ -2001,6 +2001,3 @@ void FUN_1000_18fc(void)
   FUN_1000_165c();
   return;
 }
-
-
-
