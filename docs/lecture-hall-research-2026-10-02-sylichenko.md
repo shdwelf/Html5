@@ -44,9 +44,15 @@ solution provenance; the solve itself remains unpublished, and the page (last
 changed 5 September 2026, after Daisuke Kondo's second solve) still withholds
 plaintext and key.
 
-Other repositories on the account (`simulated-annealing`,
-`ant-colony-optimization`) show general metaheuristic interests but carry no
-cipher material; they were reviewed and not used.
+The profile's indexed README also lists a separate `secom-cipher-gui` project under
+Cryptography. Its indexed GitHub description says it is a Java SECOM GUI based on
+Dirk Rijmenants's published description, with a GPL-3.0 license and a 2023 release.
+The repository is not currently returned by the GitHub API and its direct page is
+404 in this source pass, so its code and history cannot be audited here. This is a
+new provenance lead, not evidence of the Crow answer. Other repositories on the
+account (`simulated-annealing`, `ant-colony-optimization`) show general
+metaheuristic interests but carry no additional Crow material; they were reviewed
+and not used.
 
 ## 2. What was ported, with executable controls
 
