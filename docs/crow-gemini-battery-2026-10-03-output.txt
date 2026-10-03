@@ -1,0 +1,166 @@
+==========================================================================
+PART A - ciphertext hygiene and tooling cross-validation
+==========================================================================
+groups: 120, digits: 600, groups-of-5: True
+histogram matches PR #81 golden record: True
+counts: 2:144  3:116  8:88  5:56  7:46  6:45  4:40  1:33  0:23  9:9
+secom_ref_impl official worksheet vector: PASS
+probe == ref in legacy (0-smallest) mode on a zero-row phrase: True
+probe == ref worksheet mode when the chain row is zero-free: True
+prior scan contamination: 70 of 111 prior candidates have a 0 in the
+   last chain row and were therefore tested under a NON-worksheet
+   board numbering in the merged record; they are re-tested here.
+
+==========================================================================
+PART B - statistical battery on the 600 digits
+==========================================================================
+
+--- B1 monographic frequencies (vs the 'mostly flat' hypothesis)
+digit:       0       1       2       3       4       5       6       7       8       9
+count:      23      33     144     116      40      56      45      46      88       9
+pct  :    3.8%    5.5%   24.0%   19.3%    6.7%    9.3%    7.5%    7.7%   14.7%    1.5%
+chi2 vs uniform = 275.2  (df=9; crit 16.9 @5%, 21.7 @1%)
+digit sum-of-squares (digit-level IoC) = 0.1459  (uniform floor 0.1000)
+verdict: distribution is NOT flat - a heavy three-peak profile
+         {2,3,8} holds 58.0% of all digits; this alone refutes the
+         'homophonic/pseudorandom' reading of the monogram layer.
+
+--- B2 adjacent digrams (599 overlapping pairs)
+chi2 association = 98.1  (df~81; crit ~103 @5%)
+mutual information = 0.1235 bits (0 => independence)
+top digrams: 22 x36, 32 x29, 82 x26, 23 x25, 33 x22, 38 x19
+verdict: consistent with a PERMUTED stream - adjacency carries no
+         information because the transpositions destroyed it.
+
+--- B3 repeated substrings (Kasiski) 
+3-grams repeated: 139 distinct, 262 repeats total, gap gcd=1
+4-grams repeated:  49 distinct,  58 repeats total, gap gcd=1
+5-grams repeated:   6 distinct,   6 repeats total, gap gcd=1
+   0322 @ [40, 223] gaps=[183]
+   1488 @ [479, 586] gaps=[107]
+   2125 @ [218, 341] gaps=[123]
+   22228 @ [113, 184] gaps=[71]
+   22338 @ [282, 524] gaps=[242]
+verdict: repeat profile matches a random-looking permutation; no
+         usable period leaks through the double transposition.
+
+--- B4 autocorrelation (match count at lag k, z-scored)
+expected single-digit match rate p0 = 0.1459
+largest |z| lags: lag 72 z=+2.34, lag 13 z=-2.06, lag 33 z=+2.06, lag 24 z=+2.00, lag 110 z=-1.98, lag 16 z=-1.90
+lags with |z|>3.0: 0 (150 lags tested; ~0.4 expected by chance)
+
+--- B5 width scan w=2..45 (arrange rows of w; look for structure)
+top widths by mean column SSQ : w=43 0.2140, w=45 0.2095, w=41 0.2041, w=39 0.2034, w=40 0.2027
+top widths by column chi2 low : w=2 279.4, w=4 295.5, w=7 311.9, w=8 313.1, w=3 315.3
+top widths by horizontal MI   : w=42 0.1367, w=31 0.1355, w=15 0.1334, w=7 0.1334, w=2 0.1325
+
+--- B6 homogeneity / structural break hunt
+first-half vs second-half chi2 = 13.9 (df~9), KS gap = 0.060
+quarter homogeneity chi2 = 34.7 (df~27; crit ~40 @5%)
+100-digit window chi2 vs uniform: min 33.0  max 84.2 (df=9)
+verdict: no statistically significant break - the profile is
+         stationary, so the disruption does NOT leak as a frequency
+         step (exactly what a well-formed SECOM message should do).
+
+--- B7 simulated controls (what signals SHOULD look like)
+uniform random digits: mean-col SSQ range [0.1033, 0.1696] (Crow: [0.1466, 0.2140])
+control phrase GEMINIBATTERYTESTKEY -> widths w1=11 w2=17
+SIMPLE transposition only : w1=11 ranks #36 of 44 by column SSQ (SSQ 0.1601 vs median 0.1869)
+FULL double+disrupted     : w1=11 ranks #35, w2=17 ranks #29 of 44 
+verdict: column-marginal statistics (SSQ/IoC/chi2) are the WRONG
+         instrument even for a single transposition - both control
+         widths hide in the noise band. A digram contact method is
+         the classic remedy, and the second (disrupted) pass of
+         SECOM exists precisely to defeat it; the Gemini plan's
+         width-recovery step is a dead end on this construction.
+
+==========================================================================
+PART C - checkerboard skeleton inference (key-independent)
+==========================================================================
+Columnar transposition never changes digit COUNTS, so the observed
+histogram is the histogram of the checkerboard-encoded plaintext.
+
+coarse fit - top prefix triples (row1,row2,row3) by chi2:
+  chi2= 0.16990  prefixes=239  singles-by-rank=8576410  sigma=0.00 rho=0.000
+  chi2= 0.17376  prefixes=239  singles-by-rank=8576410  sigma=0.00 rho=0.005
+  chi2= 0.17708  prefixes=239  singles-by-rank=8576410  sigma=0.05 rho=0.000
+  chi2= 0.17774  prefixes=239  singles-by-rank=8576410  sigma=0.00 rho=0.010
+  chi2= 0.18092  prefixes=239  singles-by-rank=8576410  sigma=0.05 rho=0.005
+  chi2= 0.18485  prefixes=239  singles-by-rank=8576410  sigma=0.05 rho=0.010
+  chi2= 0.18596  prefixes=239  singles-by-rank=8576410  sigma=0.00 rho=0.020
+  chi2= 0.18634  prefixes=289  singles-by-rank=3576410  sigma=0.00 rho=0.000
+
+winner: prefixes row1=2 row2=3 row3=9 (chi2=0.16990, sigma=0.00 rho=0.000)
+rank-matched one-digit letters (mass order E>T>A>O>I>N>S):
+   digit 8  ->  E   (observed 88/600 = 14.7%)
+   digit 5  ->  T   (observed 56/600 = 9.3%)
+   digit 7  ->  A   (observed 46/600 = 7.7%)
+   digit 6  ->  O   (observed 45/600 = 7.5%)
+   digit 4  ->  I   (observed 40/600 = 6.7%)
+   digit 1  ->  N   (observed 33/600 = 5.5%)
+   digit 0  ->  S   (observed 23/600 = 3.8%)
+
+exact stage-C geometry fit for the winning prefix set
+best exact chi2 = 0.19629 at sigma=0.00 rho=0.000
+implied board (top digits are placeholders for the UNKNOWN order):
+   row BCDFGHJKLM  headed by digit 2
+   row PQRUVWXYZ*  headed by digit 3
+   row 0123456789  headed by digit 9
+   one-digit letters: 0:S  1:I  4:O  5:T  6:A  7:N  8:E
+caveat: sigma (use of '*' spaces) and rho (use of digits) are
+        unknowns; a real ~400-symbol message fluctuates around the
+        model, so single-letter assignment near the mass ties
+        (esp. digits 0/1) is indicative, not proven.
+
+==========================================================================
+PART D - structured 20-letter extraction of the hint text
+==========================================================================
+
+micro-extractions (< 20 letters -> documented, not decryptable):
+  caps stream        : TTSECOMNANTW (12)
+  line acrostic      : NTANTW
+  line telestich     : TDSSFL
+  main diagonal      : NHOOVN
+  first words joined : NEVERTHEANOTTOWE (16)
+  second words joined: FORGETTOWNTOWNONCEUNVEILFOUND (29)
+  last words joined  : FORGETLOVEDSTRANGERSTIMESGRIEFSOIL (34)
+
+==========================================================================
+PART E - calibrated candidate scan
+==========================================================================
+english sample : IoC 0.0678  chi2    25.2  bigram +0.175
+null decrypt   : IoC 0.1673  chi2   633.5  bigram -0.246
+ladder: bigram >= -0.036 AND chi2 <= 329.4 AND IoC <= 0.1175
+
+--- positive controls (known phrase must SURVIVE the ladder)
+  CORRECTHORSEBATTERYS       IoC 0.0678 chi2    25.2 bigram +0.175 -> SURVIVES (control ok)
+  GEMINIBATTERYTESTKEY       IoC 0.0678 chi2    24.9 bigram +0.176 -> SURVIVES (control ok)
+
+coverage: 6480 unique 20-letter candidates total
+   110 covered by the merged 111-candidate record
+    69 thereof zero-contaminated -> re-tested under the worksheet
+       board-numbering rule in this pass
+  6370 NEW candidates in this pass (scanned in BOTH board modes)
+  12767 decrypt-and-score events executed
+    42 degenerate key phrases skipped (chain cannot close two widths)
+classes: named x22, semantic-permutation x4977, stream:each line reversed x82, stream:intro+poem x18, stream:intro-sentence x18, stream:poem blob x104, stream:poem reversed x107, stream:song lyrics blob (Coulter opening) x234, stream:stride 2 offset 0 x44, stream:stride 2 offset 1 x44, stream:stride 3 offset 0 x23, stream:stride 3 offset 1 x23, stream:stride 3 offset 2 x23, stream:word order reversed x107, stream:word-finals x12, stream:word-initials x12, stream:wordsworth blob (Gutenberg #12383) x606, stream:wordsworth+acrostic x24
+
+SURVIVORS (decrypt events beating the whole ladder): 0
+
+best 12 NEW decrypts by bigram (all still rejections):
+  LONDONDERRYNEVERSIEG semantic-permutation:token-per legacy    IoC 0.1546 chi2   417.8 bigram +0.152
+  VEMOODTHEYFLASHUPONT stream:wordsworth blob (Gutenb worksheet IoC 0.1635 chi2   319.7 bigram +0.151
+  LOVEDFORGETTRUTHSTRA semantic-permutation:token-per legacy    IoC 0.1553 chi2   472.5 bigram +0.124
+  ITERTADMLOGIFEONISCE stream:stride 2 offset 0:strid legacy    IoC 0.1587 chi2   563.8 bigram +0.121
+  BETRAYEDFORGETSTRANG semantic-permutation:token-per worksheet IoC 0.1559 chi2   647.6 bigram +0.119
+  TIMESGRIEFFORGETLOVE semantic-permutation:token-per legacy    IoC 0.1563 chi2   369.3 bigram +0.115
+  LOVEDTRUTHGRIEFTHREE semantic-permutation:token-per worksheet IoC 0.1619 chi2   553.8 bigram +0.108
+  VNUOTSEMITEERHTTUBEC stream:poem reversed:poem reve worksheet IoC 0.1694 chi2   359.6 bigram +0.104
+  LONDONDERRYNEVERDOIR semantic-permutation:token-per worksheet IoC 0.1466 chi2   531.7 bigram +0.103
+  LONDONDERRYNEVERDOIR semantic-permutation:token-per legacy    IoC 0.1466 chi2   531.7 bigram +0.103
+  TRUTHTHREENEVERGRIEF semantic-permutation:token-per worksheet IoC 0.1551 chi2   325.6 bigram +0.099
+  TRUTHTHREENEVERGRIEF semantic-permutation:token-per legacy    IoC 0.1551 chi2   325.6 bigram +0.099
+
+verdict: every candidate is REJECTED. The phrase remains
+         unknown; the structured extraction record, the board
+         skeleton, and the negative results are the product.
