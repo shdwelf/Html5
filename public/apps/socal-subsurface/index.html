@@ -76,6 +76,27 @@
     </div>
   </section>
 
+  <!-- PIP: USGS GNIS gazetteer ------------------------------------------ -->
+  <section class="pip" id="pipGaz">
+    <div class="pip-head"><h2>GAZETTEER · USGS GNIS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div class="gaz-controls">
+        <input id="gazQuery" type="search" placeholder="search-name (fuzzy, trigram)…" aria-label="Search place names" autocomplete="off" />
+        <select id="gazFacet" aria-label="Feature type facet"></select>
+      </div>
+      <div class="gaz-classes" id="gazClasses" aria-label="Feature class filters"></div>
+      <div class="gaz-ops">
+        <button type="button" id="gazBox">SEARCH-BOX · CURRENT VIEW</button>
+        <button type="button" id="gazClear">CLEAR</button>
+        <span class="hint" id="gazCaps">—</span>
+      </div>
+      <ol id="gazHits" class="gaz-hits"></ol>
+      <p class="hint" style="margin-top:6px">
+        Curated seed register (343 entries) in the ADL GCS model — names set + EPSG:4326 footprint + FTT classification; FEATURE_IDs confirmed per entry where pinned.
+      </p>
+    </div>
+  </section>
+
   <!-- PIP: overlays ----------------------------------------------------- -->
   <section class="pip" id="pipOverlays">
     <div class="pip-head"><h2>OVERLAYS</h2><button type="button" data-min aria-label="Minimize">–</button></div>

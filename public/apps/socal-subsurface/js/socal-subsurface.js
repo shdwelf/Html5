@@ -34,6 +34,15 @@ import {
 import { buildOverlays } from "./socal-overlays.js";
 import { FIRE_SOURCE_URLS } from "./socal-overlays-data.js";
 import { OFF_FRAME } from "./socal-sites-extended.js";
+import { GAZ_META, GAZ_ROWS } from "./socal-gazetteer-data.js";
+import {
+  GAZ_CLASS_META,
+  GAZ_FACETS,
+  classRollup,
+  makeGazetteerIndex,
+  searchBox,
+  searchName,
+} from "./socal-gazetteer.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -361,6 +370,74 @@ for (const node of NODES) {
   nodeMeshes.push({ node, group: g, head });
 }
 
+/* -------- USGS GNIS gazetteer register (socal-gazetteer-data build) ------ */
+
+/**
+ * ADL GCS entries drawn as a subdued register of place-name markers: small
+ * mast + class-swatch pin. Verified FEATURE_ID rows (GNIS ids confirmed via
+ * the Wikidata P590 anchor pull, or the official extract when present) render
+ * at full brightness; curated seed coordinates render muted — the same
+ * official/community evidence-tier split the rest of the theater uses.
+ */
+const gazIdx = makeGazetteerIndex(GAZ_ROWS);
+const gazMeshes = [];
+const gazHeadByIdx = new Map();
+
+for (const e of gazIdx.entries) {
+  const meta = GAZ_CLASS_META[e.fclass] ?? { swatch: "#9db2d1", short: "GNIS" };
+  const color = new THREE.Color(meta.swatch);
+  if (!e.verified) color.multiplyScalar(0.5);
+  const [x, z] = project(e.lon, e.lat);
+  const surf = elevY(elevationAt(e.lon, e.lat));
+  const g = new THREE.Group();
+  g.position.set(x, surf, z);
+
+  const mast = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.016, 0.016, 0.34, 5),
+    new THREE.MeshBasicMaterial({ color, transparent: !e.verified, opacity: e.verified ? 1 : 0.72 }),
+  );
+  mast.position.y = 0.17;
+  g.add(mast);
+
+  const head = new THREE.Mesh(
+    new THREE.ConeGeometry(0.07, 0.17, 5).rotateX(Math.PI),
+    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: e.verified ? 0.95 : 0.62 }),
+  );
+  head.position.y = 0.4;
+  const record = {
+    id: `gaz-${e.i}`,
+    name: e.name,
+    layer: "gazetteer",
+    tier: e.verified ? "official" : "community",
+    lon: e.lon,
+    lat: e.lat,
+    kind: "gaz",
+    depthM: 0,
+    facts: [
+      `GNIS class: ${e.fclass} → ADL FTT facet ${e.ftt}`,
+      `county: ${e.county}`,
+      e.elev !== null
+        ? `elevation ${e.elev.toLocaleString()} m (${Math.round(e.elev * 3.281).toLocaleString()} ft)`
+        : "elevation not asserted (awaiting official extract coordinates)",
+      e.gnis
+        ? `GNIS FEATURE_ID ${e.gnis} — verified via ${GAZ_META.verified > 200 ? "USGS DomesticNames extract" : "Wikidata P590 anchor (CC0)"}`
+        : "position from the curated seed register — no verified FEATURE_ID yet",
+      ...(e.note ? [e.note] : []),
+    ],
+    sources: [
+      "USGS U.S. Board on Geographic Names / GNIS (17 USC 105)",
+      e.gnis ? "Wikidata P590 anchor, Wikimedia CC0, retrieved 2026-10-03" : "data/gnis/socal-gazetteer-seed.csv (curated, this repo)",
+    ],
+  };
+  head.userData = { record, kind: "gaz", gazIdx: e.i };
+  g.add(head);
+  PICKABLE.push(head);
+
+  groups.gazetteer.add(g);
+  gazMeshes.push({ entry: e, group: g, head });
+  gazHeadByIdx.set(e.i, head);
+}
+
 /* --------------------------------------------------------------- overlays */
 
 // Vector overlay pack: fire perimeters, DEM/quad index frames, SAR swath and
@@ -393,6 +470,18 @@ for (const { node } of nodeMeshes) {
   labelHost.append(el);
   labelEls.set(node.id, el);
 }
+
+// Gazetteer labels work at register zoom only: the nearest few pins get
+// annotated, everything else stays a tick mark until searched or camera-close.
+const gazLabelEls = [];
+for (const { entry } of gazMeshes) {
+  const el = document.createElement("div");
+  el.className = `lbl gaz t-${entry.verified ? "official" : "community"}`;
+  el.textContent = entry.name.slice(0, 34);
+  labelHost.append(el);
+  gazLabelEls.push(el);
+}
+const gazHitIds = new Set(); // search-driven highlights stay labelled
 
 /* ------------------------------------------------------------------- HUD */
 
@@ -461,6 +550,157 @@ if (overlayHost) {
     row.append(cb, sw, txt);
     overlayHost.append(row);
   }
+}
+
+/* ----------------------------------------------------- gazetteer search */
+
+// ADL GSP ops (offline): search-name / search-box over the seed register.
+// ADL GCS describe = the dossier panel. Facets walk the FTT prefix tree.
+const gazFacetSel = $("gazFacet");
+const gazClassesHost = $("gazClasses");
+const gazQuery = $("gazQuery");
+const gazHits = $("gazHits");
+const gazCaps = $("gazCaps");
+
+const gazState = { facet: "", classes: null }; // null = all
+let gazClassToggles = [];
+
+if (gazFacetSel) {
+  for (const f of GAZ_FACETS) {
+    const opt = document.createElement("option");
+    opt.value = f.fac;
+    opt.textContent = f.label;
+    gazFacetSel.append(opt);
+  }
+  gazFacetSel.addEventListener("change", () => {
+    gazState.facet = gazFacetSel.value;
+    runGazSearch();
+  });
+}
+
+if (gazClassesHost) {
+  for (const c of classRollup(GAZ_ROWS)) {
+    const row = document.createElement("label");
+    row.className = "gaz-chip";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = true;
+    cb.addEventListener("change", () => {
+      // Sane Set detection: rebuild from the DOM
+      const cls = gazClassToggles.filter((t) => t.el.checked).map((t) => t.fclass);
+      gazState.classes = cls.length === gazClassToggles.length ? null : new Set(cls);
+      runGazSearch();
+    });
+    const dot = document.createElement("span");
+    dot.className = "swatch";
+    dot.style.background = c.swatch;
+    const txt = document.createElement("span");
+    txt.textContent = `${c.label} ${c.count}`;
+    row.append(cb, dot, txt);
+    gazClassesHost.append(row);
+    gazClassToggles.push({ el: cb, fclass: c.fclass });
+  }
+}
+
+/** Float the camera to a gazetteer entry and select its pin. */
+function focusGazEntry(e) {
+  const head = gazHeadByIdx.get(e.i);
+  const { group } = gazMeshes.find((m) => m.entry.i === e.i) ?? {};
+  if (!group) return;
+  const [x, z] = project(e.lon, e.lat);
+  const y = elevY(elevationAt(e.lon, e.lat));
+  const span = Math.max(4, 20);
+  camera.position.set(x + 6, y + span * 0.55, z + span * 0.72);
+  controls.target.set(x, y, z);
+  controls.update();
+  if (head) select(head);
+  setStatus(`gazetteer · ${e.name} (${e.fclass})`);
+}
+
+function renderGazHits(hits, mode) {
+  if (!gazHits) return;
+  gazHits.textContent = "";
+  gazHitIds.clear();
+  for (const h of hits.slice(0, 8)) gazHitIds.add(h.i);
+  for (const h of gainsCap(hits)) {
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "gaz-hit" + (h.verified ? " verified" : "");
+    const meta = GAZ_CLASS_META[h.fclass] ?? { short: "GNIS", swatch: "#9db2d1" };
+    const detail =
+      mode === "point"
+        ? `${h.distKm.toFixed(1)} km · ${meta.short} · ${h.county}`
+        : `${meta.short} · ${h.county}${h.elev != null ? " · " + h.elev + " m" : ""}`;
+    btn.innerHTML = `<span class="gaz-hit-name"></span><span class="gaz-hit-meta"></span>`;
+    btn.querySelector(".gaz-hit-name").textContent = h.name;
+    btn.querySelector(".gaz-hit-meta").textContent = detail;
+    btn.style.setProperty("--gaz", meta.swatch);
+    btn.addEventListener("click", () => focusGazEntry(h));
+    li.append(btn);
+    gazHits.append(li);
+  }
+}
+
+// Cap result rendering so search-box can't flood the DOM with every PPL row.
+function gainsCap(hits) {
+  return hits.slice(0, 40);
+}
+
+function runGazSearch() {
+  const q = gazQuery ? gazQuery.value : "";
+  if (!q || q.trim().length < 2) {
+    renderGazHits([], "name");
+    return;
+  }
+  const hits = searchName(gazIdx, q, {
+    facet: gazState.facet,
+    classes: gazState.classes,
+    limit: 40,
+  });
+  renderGazHits(hits, "name");
+  setStatus(`search-name · ${hits.length} hit${hits.length === 1 ? "" : "s"}`);
+}
+
+let gazTimer = 0;
+if (gazQuery) {
+  gazQuery.addEventListener("input", () => {
+    clearTimeout(gazTimer);
+    gazTimer = setTimeout(runGazSearch, 90);
+  });
+}
+
+const gazBoxBtn = $("gazBox");
+if (gazBoxBtn) {
+  gazBoxBtn.addEventListener("click", () => {
+    // Camera view → EPSG:4326 search box at the ground plane.
+    const [lonC, latC] = lonLatFromXZ(controls.target.x, controls.target.z);
+    const camDist = camera.position.distanceTo(controls.target);
+    const spanKm = camDist / 0.1 * 0.5; // half-width ≈ half the camera height in km
+    const box = {
+      lat0: latC - spanKm / KM_PER_DEG_LAT,
+      lat1: latC + spanKm / KM_PER_DEG_LAT,
+      lon0: lonC - spanKm / (KM_PER_DEG_LAT * COS_LAT),
+      lon1: lonC + spanKm / (KM_PER_DEG_LAT * COS_LAT),
+    };
+    const hits = searchBox(gazIdx, box, { facet: gazState.facet, classes: gazState.classes });
+    renderGazHits(hits, "box");
+    setStatus(`search-box · ${hits.length} entries in view`);
+  });
+}
+
+const gazClearBtn = $("gazClear");
+if (gazClearBtn) {
+  gazClearBtn.addEventListener("click", () => {
+    if (gazQuery) gazQuery.value = "";
+    renderGazHits([], "name");
+    setStatus("gazetteer cleared");
+  });
+}
+
+if (gazCaps) {
+  const caps = GAZ_META;
+  gazCaps.textContent = `${caps.rowCount} names · ${caps.verified} id-verified · EPSG:4326`;
 }
 
 const fireSrcHost = $("fireSources");
@@ -901,6 +1141,9 @@ function rebuildDepths() {
   for (const { node, group } of nodeMeshes) {
     group.position.y = elevY(elevationAt(node.lon, node.lat));
   }
+  for (const { entry, group } of gazMeshes) {
+    group.position.y = elevY(elevationAt(entry.lon, entry.lat));
+  }
   subGrid.position.y = depthY(-3000);
   overlays.rebuild();
 }
@@ -979,6 +1222,29 @@ function updateLabels() {
     el.style.left = `${((v3.x + 1) / 2) * w}px`;
     el.style.top = `${((1 - v3.y) / 2) * h - 16}px`;
     el.style.opacity = String(Math.max(0.25, 1 - dist / 130));
+  }
+
+  // Gazetteer register: label the few pins that matter (close, or last search).
+  for (const el of gazLabelEls) el.style.display = "none";
+  const near = [];
+  for (let gi = 0; gi < gazMeshes.length; gi += 1) {
+    const { entry, head } = gazMeshes[gi];
+    if (!isVisible(head)) continue;
+    head.getWorldPosition(v3);
+    const dist = camera.position.distanceTo(v3);
+    if (gazHitIds.has(entry.i)) near.push({ gi, head, dist: 0 });
+    else if (dist < 26) near.push({ gi, head, dist });
+  }
+  near.sort((a, b) => a.dist - b.dist);
+  for (const n of near.slice(0, 14)) {
+    const el = gazLabelEls[n.gi];
+    n.head.getWorldPosition(v3);
+    v3.project(camera);
+    if (v3.z >= 1 || Math.abs(v3.x) > 1.05 || Math.abs(v3.y) > 1.05) continue;
+    el.style.display = "";
+    el.style.left = `${((v3.x + 1) / 2) * w}px`;
+    el.style.top = `${((1 - v3.y) / 2) * h + 2}px`;
+    el.style.opacity = String(n.dist === 0 ? 1 : Math.max(0.3, 1 - n.dist / 30));
   }
 }
 

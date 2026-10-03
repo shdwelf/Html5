@@ -8,6 +8,7 @@ windows for HUD, layers, dossier and a plan-view minimap.
 - App shell: `socal-subsurface.html`
 - Logic: `js/socal-subsurface.js`
 - Data pack: `js/socal-subsurface-data.js`
+- Gazetteer pack + engine: `js/socal-gazetteer-data.js` (generated; seed at `data/gnis/socal-gazetteer-seed.csv`), `js/socal-gazetteer.js`
 - Styles: `css/socal-subsurface.css`
 - Webxdc build: `node scripts/build-socal-subsurface-xdc.mjs` → `socal-subsurface.xdc`
   (staged bundle in `public/apps/socal-subsurface/`)
@@ -23,6 +24,7 @@ windows for HUD, layers, dossier and a plan-view minimap.
 | Crude + gas | San Joaquin heavy-crude trunk (Kern → LA refineries); SoCalGas Topock → basin backbone; Las Flores / Gaviota crude pipeline context |
 | Rail | Union Pacific LA Sub / ex-LA&SL over Cajon; BNSF Southern Transcon (ex-Santa Fe); Southern Pacific lineage over the Tehachapi Loop; BNSF Cushenbury Branch; Carson & Colorado / SP narrow gauge; Bodie Railway & Lumber Co. |
 | Power | Salton Sea Geothermal Field (CalEnergy, ~340–400 MW, the lithium brine), Coso at China Lake, IID collection corridor, Salton Buttes heat source, Big/Little Caliente, Sespe, Long Valley / Casa Diablo |
+| GNIS gazetteer | USGS GNIS register extract (480 entries, 26 classes, 65 FEATURE_ID-verified plus curated community-tier rows) — mast+pin markers with FTT-branch swatches, a GNIS GAZETTEER PiP with fuzzy trigram search-name / search-box / search-point ops and a get-capabilities caption; see `docs/socal-usgs-gazetteer.md` |
 | Sites | Ducommun (1849 — oldest continuously operating business in California), El Mirage Dry Lake (the *Con Air* "Lerner Airfield" set), Kern River Oil Field (1899, Bakersfield), Midway-Sunset / Lakeview Gusher, Knapp's Castle, Solvang, Mammoth Mountain Resort, Bodie / Mono Mills |
 | Bases | Edwards AFB, Fort Irwin NTC, NAWS China Lake, MCAGCC Twentynine Palms |
 | Trails | Pacific Crest Trail now drawn north to the Yosemite edge; John Muir Trail generalized from Happy Isles to Mount Whitney |
@@ -67,6 +69,11 @@ excavation data.
 - **WIREFRAME** overlays the DEM lattice; **LABELS** toggles the 2D callouts.
 - HUD sliders: terrain exaggeration (linear) and depth scale.
 - PiP windows drag by their title bar and collapse with the `–` button.
+- The GNIS GAZETTEER PiP searches the register offline: fuzzy name queries
+  (pg_trgm-style trigram similarity with prefix/substring boosts), FTT facet
+  and GNIS class chips, an **in view** search-box under the camera, and a
+  click-to-fly result list whose pins open the full dossier (GNIS class →
+  ADL FTT facet, county, elevation, FEATURE_ID or its absence).
 
 ## Honest scale notes
 
