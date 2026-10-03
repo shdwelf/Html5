@@ -88,14 +88,36 @@ def build_candidates():
     # Odd/even extraction families: a bounded interpretation of "odd poem"
     # that preserves order rather than enumerating arbitrary subsets.
     flat = clean(' '.join(LINES))
-    for name, stream in [
+    streams = [
         ("poem-odd-letters", flat[::2]),
         ("poem-even-letters", flat[1::2]),
         ("poem-odd-words", clean(' '.join(WORDS[::2]))),
         ("poem-even-words", clean(' '.join(WORDS[1::2]))),
-    ]:
+        ("word-acrostic-reverse", word_acrostic[::-1]),
+        ("word-telestich-reverse", word_telestich[::-1]),
+        ("poem-reverse", flat[::-1]),
+        ("alternating-word-edges", ''.join(w[0] + w[-1] for w in WORDS)),
+    ]
+    for name, stream in streams:
         for i in range(len(stream) - 19):
             add(c, f"{name}[{i}:{i+20}]", stream[i:i+20])
+
+    # Ordered word-position extraction: choose whole poem words in order, with
+    # gaps allowed, but require exactly 20 letters. This is still bounded and
+    # auditable; it does not allow arbitrary letter anagrams.
+    def walk(start, chosen, length):
+        if length == 20:
+            add(c, "ordered-word-subsequence:" + ','.join(map(str, chosen)),
+                ''.join(WORDS[i] for i in chosen))
+            return
+        if length > 20:
+            return
+        for i in range(start, len(WORDS)):
+            n = len(WORDS[i])
+            if length + n <= 20:
+                walk(i + 1, chosen + [i], length + n)
+    walk(0, [], 0)
+
     # Capitalization clue plus all 15-letter poem windows (SECOM + 15 letters).
     for i in range(len(flat) - 14):
         add(c, f"SECOM+poem[{i}:{i+15}]", "SECOM" + flat[i:i+15])
@@ -119,6 +141,7 @@ def main():
         "ioc": (english["ioc"] + null["ioc"]) / 2,
     }
     rows = []
+    metric_survivors = []
     for key, labels in candidates.items():
         try:
             plain, _, _ = probe.decrypt(probe.CROW_CIPHERTEXT, key)
@@ -132,6 +155,8 @@ def main():
               m["chi2"] <= thresholds["chi2"] and
               m["ioc"] <= thresholds["ioc"])
         rows.append((ok, m["bigram"], -m["chi2"], -m["ioc"], key, labels))
+        if ok:
+            metric_survivors.append((key, plain))
     rows.sort(reverse=True)
     print(f"structured candidates: {len(rows)}")
     print("thresholds:", ", ".join(f"{k}={v:.4f}" for k, v in thresholds.items()))
@@ -141,6 +166,9 @@ def main():
         print(f"{'SURVIVES' if ok else 'reject':8} {key} "
               f"IoC={-neg_ioc:.4f} chi2={-neg_chi:.1f} bigram={bigram:+.3f} "
               f"{labels[0]}")
+    for key, plain in metric_survivors:
+        print(f"metric survivor plaintext {key}: {plain[:160]}")
+        print(f"structural invalid marker count: {plain.count('?')}")
 
 
 if __name__ == "__main__":
