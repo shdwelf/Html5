@@ -6,7 +6,7 @@
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { unzipSync } from "../vendor/fflate/index.mjs";
@@ -58,6 +58,59 @@ test("focused Project Y archive ships all six sites and their local dependencies
       source(`models/project-y/${id}.wrl`),
       `${id} is stale or absent from los-alamos.xdc`,
     );
+  }
+});
+
+test("SoCal Subsurface archive is current and closes its local module graph", () => {
+  const files = archive("socal-subsurface.xdc");
+  const required = [
+    "index.html", "manifest.toml", "css/socal-subsurface.css",
+    "js/socal-subsurface.js", "js/socal-radio.js", "js/socal-radio-data.js",
+    "js/socal-propagation.js", "js/socal-relief.js", "js/socal-utilities.js",
+    "js/socal-utilities-data.js", "js/socal-orbital.js",
+  ];
+  for (const file of required) assert.ok(files[file], `archive is missing ${file}`);
+
+  // Every staged first-party source must be byte-identical to the working tree.
+  // This catches archives that contain the right filename but stale contents.
+  for (const archived of Object.keys(files).filter((name) => /^(?:js|css)\//.test(name))) {
+    const working = path.join(root, archived);
+    assert.ok(existsSync(working), `${archived} in socal-subsurface.xdc has no working-tree source`);
+    assert.deepEqual(
+      Buffer.from(files[archived]),
+      readFileSync(working),
+      `${archived} in socal-subsurface.xdc is stale`,
+    );
+  }
+
+  const specifiers = (sourceText) => {
+    const found = [];
+    const patterns = [
+      /\b(?:import\s+(?:[^'";]*?\s+from\s*)?|export\s+[^'";]*?\s+from\s*)["']([^"']+)["']/g,
+      /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g,
+    ];
+    for (const pattern of patterns) {
+      for (const match of sourceText.matchAll(pattern)) found.push(match[1]);
+    }
+    return found;
+  };
+
+  // Traverse source imports. Every resolvable first-party dependency must also
+  // be in the archive; unresolved imports are optional runtime enhancements.
+  const pending = ["js/socal-subsurface.js"];
+  const visited = new Set();
+  while (pending.length) {
+    const moduleName = pending.pop();
+    if (visited.has(moduleName)) continue;
+    visited.add(moduleName);
+    assert.ok(files[moduleName], `archive module graph is missing ${moduleName}`);
+    const sourceText = readFileSync(path.join(root, moduleName), "utf8");
+    for (const specifier of specifiers(sourceText)) {
+      if (!specifier.startsWith(".")) continue;
+      const dependency = path.posix.normalize(path.posix.join(path.posix.dirname(moduleName), specifier));
+      if (dependency.startsWith("vendor/")) continue;
+      if (existsSync(path.join(root, dependency))) pending.push(dependency);
+    }
   }
 });
 

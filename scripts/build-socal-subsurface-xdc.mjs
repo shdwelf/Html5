@@ -39,19 +39,56 @@ html = html.replace(
 await writeFile(path.join(appDir, "index.html"), html);
 
 await copyFile(path.join(root, "css", "socal-subsurface.css"), path.join(appDir, "css", "socal-subsurface.css"));
-for (const f of [
-  "socal-subsurface.js",
-  "socal-subsurface-data.js",
-  "socal-gazetteer-data.js",
-  "socal-geo.js",
-  "socal-overlays.js",
-  "socal-overlays-data.js",
-  "socal-sites-extended.js",
-  "socal-gazetteer.js",
-  "socal-gazetteer-data.js",
-]) {
-  await copyFile(path.join(root, "js", f), path.join(appDir, "js", f));
+
+// Follow the app's actual module graph rather than maintaining a second list
+// here. A missing optional relative import is recorded but not staged (the DEM
+// grid is intentionally loaded behind a try/catch); vendor and package imports
+// are packaged separately or external by design.
+function moduleSpecifiers(source) {
+  const specs = [];
+  const staticImport = /\b(?:import\s+(?:[^'";]*?\s+from\s*)?|export\s+[^'";]*?\s+from\s*)["']([^"']+)["']/g;
+  const dynamicImport = /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g;
+  for (const pattern of [staticImport, dynamicImport]) {
+    for (const match of source.matchAll(pattern)) specs.push(match[1]);
+  }
+  return specs;
 }
+
+async function collectModules(entry) {
+  const pending = [entry];
+  const modules = new Set();
+  const optional = new Set();
+
+  while (pending.length) {
+    const abs = path.resolve(pending.pop());
+    if (modules.has(abs)) continue;
+    modules.add(abs);
+
+    const source = await readFile(abs, "utf8");
+    for (const specifier of moduleSpecifiers(source)) {
+      if (!specifier.startsWith(".")) continue; // bare package specifier
+      const dependency = path.resolve(path.dirname(abs), specifier);
+      const rel = path.relative(root, dependency).split(path.sep).join("/");
+      if (rel === "vendor" || rel.startsWith("vendor/")) continue;
+      if (!rel || rel.startsWith("../")) {
+        throw new Error(`module import escapes repository: ${specifier} from ${path.relative(root, abs)}`);
+      }
+      if (await stat(dependency).catch(() => null)) pending.push(dependency);
+      else optional.add(`${path.relative(root, abs).split(path.sep).join("/")} -> ${specifier}`);
+    }
+  }
+
+  return { modules: [...modules].sort(), optional: [...optional].sort() };
+}
+
+const { modules, optional } = await collectModules(path.join(root, "js", "socal-subsurface.js"));
+for (const abs of modules) {
+  const rel = path.relative(root, abs);
+  await mkdir(path.dirname(path.join(appDir, rel)), { recursive: true });
+  await copyFile(abs, path.join(appDir, rel));
+}
+for (const dependency of optional) console.log(`Optional module not shipped: ${dependency}`);
+
 for (const f of ["three.module.min.js", "OrbitControls.js", "THREE_LICENSE"]) {
   await copyFile(path.join(root, "vendor", f), path.join(appDir, "vendor", f));
 }
