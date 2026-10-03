@@ -1,5 +1,7 @@
 # Spectre Press, kimsoft.com — domain-chain source check
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 **Run:** 28 September 2026. **Scope:** the spectrepress.com research thread,
 written up as a domain-chain source check in the house style (named entity →
 what the primary captures actually establish → verdict). **Provenance

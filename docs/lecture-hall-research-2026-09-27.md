@@ -1,5 +1,7 @@
 # Intelligence Lecture Hall — source-check follow-up, 2026-09-27
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 This is a follow-up to `docs/lecture-hall-research-2026-09-20.md`. It does two
 things: records what the Google Drive update actually contained, and closes the
 next Cicada 3301 thread without claiming more than the bytes establish.

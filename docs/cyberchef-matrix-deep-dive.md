@@ -1,5 +1,7 @@
 # CyberChef matrix-cipher deep dive
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 This note records the research and implementation contracts for the six additions in
 `/apps/cyberchef/` (packs **Matrix Deep Dive — Hill, Two-Square & Phillips** and
 **Matrix Deep Dive — Columnar, Myszkowski & Grilles**). All are **matrix-based**

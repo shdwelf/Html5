@@ -1,5 +1,7 @@
 # Intelligence Lecture Hall — research log, 2026-09-20
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 Second pass over the lecture hall, continuing
 `lecture-hall-research-2026-09-14.md`. Two new records were researched, written
 and verified — **Cicada 3301** and **F5's Black Hat 2018 cipher challenge** — and

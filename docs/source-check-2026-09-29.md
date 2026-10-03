@@ -1,5 +1,7 @@
 # Source check — Sanborn / Kryptos K4 deep dive — 2026-09-29
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 Companion audit for `docs/sanborn-suite-deep-dive.md` and the K4 text shipped in
 `public/apps/kryptos-vrml/index.html` (and its standalone twin
 `apps/kryptos_vrml.html`).

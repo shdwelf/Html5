@@ -1,5 +1,7 @@
 # Source check — Vincennes 4DWM reconstruction — 2026-09-29
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 Companion audit for `docs/vincennes-4dwm-deep-dive.md`, `js/vincennes-logs-data.js`,
 `js/vincennes-dem.js`, `js/vincennes-djvu.js` and `data/vincennes/`.
 

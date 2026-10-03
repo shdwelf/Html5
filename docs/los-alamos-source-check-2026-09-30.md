@@ -1,5 +1,7 @@
 # Los Alamos badge archive — source-domain check
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 Reviewed **30 September 2026** as a follow-up to the Project Y badge catalog,
 filename-variation work, and the subsequent no-filter domain deep dive.
 
