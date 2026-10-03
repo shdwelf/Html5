@@ -23,14 +23,23 @@ import {
 } from "./socal-subsurface-data.js";
 import {
   COS_LAT,
+  demInfo,
   depthY,
   elevY,
   elevationAt,
+  installDem,
   lonLatFromXZ,
   pathKm,
   project,
   scale,
 } from "./socal-geo.js";
+import { buildRadio, emitterPath } from "./socal-radio.js";
+import { BANDS, EMITTERS, RADIO_SITES, RADIO_SOURCE_URLS, SITE_BY_ID } from "./socal-radio-data.js";
+import { fresnelRadiusM, earthBulgeM, serviceThresholdDbu } from "./socal-propagation.js";
+import { makeReliefMap } from "./socal-relief.js";
+import { buildUtilities } from "./socal-utilities.js";
+import { LONGLINES, SUBSTATIONS, TRANSMISSION, UTILITY_SOURCE_URLS } from "./socal-utilities-data.js";
+import { ORBITAL_SOURCE_URLS, SATELLITES, SAT_BY_ID, formatHours, nextWindows, trackGeometry } from "./socal-orbital.js";
 import { buildOverlays } from "./socal-overlays.js";
 import { FIRE_SOURCE_URLS } from "./socal-overlays-data.js";
 import { OFF_FRAME } from "./socal-sites-extended.js";
@@ -56,6 +65,30 @@ if (!gl) {
   fb.textContent = "WebGL is unavailable in this webview, so the 3D basin cannot render.";
   document.body.append(fb);
   throw new Error("no-webgl");
+}
+
+/* --------------------------------------------------------------- the DEM */
+
+/**
+ * If a real USGS 3DEP grid has been generated into js/socal-dem-grid.js (see
+ * scripts/fetch-3dep-dem.py), install it before anything samples the surface.
+ * Terrain mesh, corridors, fire rings, radio propagation and the relief map
+ * all go through elevationAt(), so one import swaps the whole theater from a
+ * synthetic gaussian field to 1/3 arc-second measured ground.
+ *
+ * The file is intentionally absent from the repo: it is a large binary asset
+ * and this app ships offline. Absent, the catch keeps the synthetic field.
+ */
+let demStatus = "synthetic relief field (RELIEF gaussians)";
+try {
+  const mod = await import("./socal-dem-grid.js");
+  const grid = mod.DEM ?? mod.default;
+  if (grid && installDem({ ...grid, data: grid.data instanceof Int16Array || grid.data instanceof Float32Array ? grid.data : Int16Array.from(grid.data) })) {
+    const info = demInfo();
+    demStatus = `USGS 3DEP grid ${info.nx}×${info.ny} · ${info.resolution} · cell ≈ ${info.cellKm.toFixed(2)} km · retrieved ${info.retrieved}`;
+  }
+} catch {
+  /* no DEM asset present — the synthetic field stands in, as documented */
 }
 
 /* ------------------------------------------------------------- projection */
@@ -446,8 +479,30 @@ const overlays = buildOverlays();
 world.add(overlays.root);
 PICKABLE.push(...overlays.pickables);
 
+/* ------------------------------------------------------- radio spectrum */
+
+// FCC-registered transmitter sites + licensed emitters, with terrain-aware
+// propagation computed against the same elevation field everything else uses.
+const radio = buildRadio();
+groups.radio.add(radio.root);
+PICKABLE.push(...radio.pickables);
+
+/* ------------------------------------ utilities, skyway, orbital windows */
+
+// Bulk power, the AT&T microwave network and satellite swaths. The power and
+// microwave groups hang off their own base layers; the orbital track is an
+// overlay because it is a schedule, not a structure.
+const utilities = buildUtilities();
+groups.transmission.add(utilities.groups.power);
+groups.longlines.add(utilities.groups.longlines);
+world.add(utilities.groups.orbital);
+PICKABLE.push(...utilities.pickables);
+
 const OVERLAY_DEFS = [
   { id: "fires", name: "Fire perimeters (WIFIRE / FRAP lineage)", color: "#ea580c", on: true, group: () => overlays.groups.fires },
+  { id: "radioCoverage", name: "Radio service contours", color: "#f0abfc", on: true, group: () => radio.groups.coverage },
+  { id: "radioWavefront", name: "Propagation wavefront", color: "#c4b5fd", on: true, group: () => radio.groups.wavefront },
+  { id: "orbital", name: "Satellite ground track + swath", color: "#22d3ee", on: true, group: () => utilities.groups.orbital },
   { id: "quad", name: "USGS 7.5′ quad graticule", color: "#6b8ba3", on: false, group: () => overlays.groups.frames.getObjectByName("quad") },
   { id: "demTile", name: "1° 3DEP DEM delivery tiles", color: "#2dd4bf", on: true, group: () => overlays.groups.frames.getObjectByName("demTile") },
   { id: "sar", name: "SAR swath + InSAR deformation", color: "#a3e635", on: false, group: () => overlays.groups.sar },
@@ -551,6 +606,420 @@ if (overlayHost) {
     overlayHost.append(row);
   }
 }
+
+/* -------------------------------------------------------- spectrum panel */
+
+const radioState = { bands: new Set(Object.keys(BANDS)), current: null, lastReport: null };
+
+const radioBandsHost = $("radioBands");
+const radioSelect = $("radioEmitter");
+const radioStatsHost = $("radioStats");
+const radioProfileCanvas = $("radioProfileCanvas");
+const radioProfileNote = $("radioProfileNote");
+
+function fmtFreq(mhz) {
+  return mhz >= 1 ? `${mhz} MHz` : `${Math.round(mhz * 1000)} kHz`;
+}
+
+function fillRadioSelect() {
+  if (!radioSelect) return;
+  const keep = radioSelect.value;
+  radioSelect.textContent = "";
+  for (const site of RADIO_SITES) {
+    const ems = EMITTERS.filter((e) => e.site === site.id && radioState.bands.has(e.band));
+    if (!ems.length) continue;
+    const group = document.createElement("optgroup");
+    group.label = site.name;
+    for (const em of ems) {
+      const opt = document.createElement("option");
+      opt.value = em.id;
+      opt.textContent = `${em.call} · ${fmtFreq(em.freqMHz)} · ${em.erpKw >= 1 ? `${em.erpKw} kW` : `${Math.round(em.erpKw * 1000)} W`}`;
+      group.append(opt);
+    }
+    radioSelect.append(group);
+  }
+  if ([...radioSelect.options].some((o) => o.value === keep)) radioSelect.value = keep;
+}
+
+if (radioBandsHost) {
+  for (const band of Object.values(BANDS)) {
+    const row = document.createElement("label");
+    row.className = "gaz-chip";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = true;
+    cb.addEventListener("change", () => {
+      if (cb.checked) radioState.bands.add(band.id);
+      else radioState.bands.delete(band.id);
+      fillRadioSelect();
+    });
+    const dot = document.createElement("span");
+    dot.className = "swatch";
+    dot.style.background = band.color;
+    const txt = document.createElement("span");
+    txt.textContent = band.id.toUpperCase();
+    row.title = band.name;
+    row.append(cb, dot, txt);
+    radioBandsHost.append(row);
+  }
+}
+fillRadioSelect();
+
+function renderRadioStats(report) {
+  if (!radioStatsHost) return;
+  radioStatsHost.textContent = "";
+  if (!report) return;
+  const em = report.emitter;
+  const rows = [
+    ["facility", `${em.call} · ${em.service}`],
+    ["carrier", `${fmtFreq(em.freqMHz)} (${em.channel})`],
+    ["ERP", em.erpKw >= 1 ? `${em.erpKw} kW` : `${Math.round(em.erpKw * 1000)} W`],
+    ["threshold", `${report.thresholdDbu.toFixed(1)} dBµV/m`],
+  ];
+  if (report.mode === "terrain") {
+    rows.push(
+      ["HAAT (computed)", `${Math.round(report.haatM)} m${report.filedHaatM ? ` · filed ${report.filedHaatM} m` : ""}`],
+      ["FCC smooth earth", `${report.fccKm.toFixed(0)} km radius`],
+      ["terrain march", `${report.terrain.minKm.toFixed(0)} – ${report.terrain.maxKm.toFixed(0)} km (mean ${report.terrain.meanKm.toFixed(0)})`],
+      ["area enclosed", `${Math.round(report.terrain.areaKm2).toLocaleString()} km²`],
+      ["radio horizon", `${report.horizonKm.toFixed(0)} km`],
+    );
+  } else {
+    rows.push(
+      ["groundwave", `${report.fccKm.toFixed(0)} km to contour`],
+      ["ground σ", `${report.conductivity} mS/m (assumed)`],
+      ["skywave", "not drawn — different model (47 CFR 73.190)"],
+    );
+  }
+  for (const [k, v] of rows) {
+    const dt = document.createElement("dt");
+    dt.textContent = k;
+    const dd = document.createElement("dd");
+    dd.textContent = v;
+    radioStatsHost.append(dt, dd);
+  }
+}
+
+/** Terrain path profile with the first Fresnel zone, drawn 2D. */
+function drawPathProfile(analysis, em) {
+  if (!radioProfileCanvas) return;
+  const ctx = radioProfileCanvas.getContext("2d");
+  const W = radioProfileCanvas.width;
+  const H = radioProfileCanvas.height;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = "#070d14";
+  ctx.fillRect(0, 0, W, H);
+  if (!analysis || !analysis.profile.distKm.length) return;
+
+  const { distKm, elevM } = analysis.profile;
+  const total = analysis.distKm;
+  const n = distKm.length;
+  // Flatten the earth: add the 4/3 bulge to the ground so the LOS ray is straight.
+  const ground = new Float64Array(n);
+  for (let i = 0; i < n; i++) ground[i] = elevM[i] + earthBulgeM(distKm[i], total - distKm[i]);
+  let max = Math.max(analysis.txAmsl, analysis.rxAmsl);
+  let min = Infinity;
+  for (let i = 0; i < n; i++) {
+    max = Math.max(max, ground[i]);
+    min = Math.min(min, ground[i]);
+  }
+  const pad = (max - min) * 0.18 + 40;
+  const lo = min - pad * 0.3;
+  const hi = max + pad;
+  const X = (d) => 4 + (d / Math.max(total, 0.001)) * (W - 8);
+  const Y = (m) => H - 14 - ((m - lo) / (hi - lo)) * (H - 24);
+
+  // Ground profile
+  ctx.beginPath();
+  ctx.moveTo(X(0), Y(ground[0]));
+  for (let i = 1; i < n; i++) ctx.lineTo(X(distKm[i]), Y(ground[i]));
+  ctx.lineTo(X(total), H - 14);
+  ctx.lineTo(X(0), H - 14);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(90,110,96,0.75)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(190,210,190,0.75)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Line of sight
+  ctx.strokeStyle = analysis.lineOfSight ? "#4ade80" : "#f87171";
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath();
+  ctx.moveTo(X(0), Y(analysis.txAmsl));
+  ctx.lineTo(X(total), Y(analysis.rxAmsl));
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // First Fresnel zone envelope
+  ctx.strokeStyle = "rgba(125,211,252,0.6)";
+  for (const sign of [-1, 1]) {
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const d1 = distKm[i];
+      const d2 = total - d1;
+      const ray = analysis.txAmsl + ((analysis.rxAmsl - analysis.txAmsl) * d1) / total;
+      const f1 = fresnelRadiusM(em.freqMHz, d1, d2);
+      const y = Y(ray + sign * f1);
+      if (i === 0) ctx.moveTo(X(d1), y);
+      else ctx.lineTo(X(d1), y);
+    }
+    ctx.stroke();
+  }
+
+  // Controlling obstruction
+  if (analysis.obstruction.index > 0) {
+    const d = analysis.obstruction.distKm;
+    ctx.strokeStyle = "#fbbf24";
+    ctx.beginPath();
+    ctx.moveTo(X(d), 2);
+    ctx.lineTo(X(d), H - 14);
+    ctx.stroke();
+  }
+
+  ctx.fillStyle = "rgba(220,235,250,0.85)";
+  ctx.font = "9px ui-monospace, monospace";
+  ctx.fillText(`${total.toFixed(1)} km`, W - 54, H - 3);
+  ctx.fillText(`${Math.round(lo)}–${Math.round(hi)} m`, 6, H - 3);
+}
+
+function showCoverageFor(emitterId) {
+  if (!emitterId) return null;
+  radio.clearCoverage();
+  const report = radio.showCoverage(emitterId);
+  radioState.current = emitterId;
+  radioState.lastReport = report;
+  renderRadioStats(report);
+  if (report) {
+    setStatus(
+      report.mode === "terrain"
+        ? `coverage · ${report.emitter.call} ${report.thresholdDbu.toFixed(0)} dBµ · terrain ${report.terrain.meanKm.toFixed(0)} km mean vs FCC ${report.fccKm.toFixed(0)} km`
+        : `groundwave · ${report.emitter.call} ${report.fccKm.toFixed(0)} km to ${report.thresholdDbu.toFixed(0)} dBµ`,
+    );
+  }
+  drawRelief();
+  return report;
+}
+
+$("radioShow")?.addEventListener("click", () => showCoverageFor(radioSelect?.value));
+$("radioClear")?.addEventListener("click", () => {
+  radio.clearCoverage();
+  radioState.current = null;
+  radioState.lastReport = null;
+  renderRadioStats(null);
+  if (radioProfileCanvas) radioProfileCanvas.getContext("2d").clearRect(0, 0, radioProfileCanvas.width, radioProfileCanvas.height);
+  if (radioProfileNote) radioProfileNote.textContent = "Path profile cleared.";
+  drawRelief();
+  setStatus("spectrum cleared");
+});
+
+$("radioProfile")?.addEventListener("click", () => {
+  const em = EMITTERS.find((e) => e.id === (radioSelect?.value || radioState.current));
+  if (!em) return;
+  const [lon, lat] = lonLatFromXZ(controls.target.x, controls.target.z);
+  const analysis = emitterPath(em, lon, lat);
+  drawPathProfile(analysis, em);
+  const threshold = serviceThresholdDbu(em.band, em.freqMHz);
+  if (radioProfileNote) {
+    const site = SITE_BY_ID.get(em.site);
+    radioProfileNote.textContent =
+      `${em.call} (${site.name}) → ${lat.toFixed(3)}N ${Math.abs(lon).toFixed(3)}W · ${analysis.distKm.toFixed(1)} km · ` +
+      `${analysis.lineOfSight ? "line of sight" : `obstructed, ${analysis.diffractionDb.toFixed(1)} dB knife-edge loss`} · ` +
+      `${analysis.fieldDbu.toFixed(1)} dBµV/m (${analysis.fieldDbu >= threshold ? "above" : "below"} the ${threshold.toFixed(0)} dBµ service threshold)` +
+      (analysis.obstruction.index > 0 ? ` · controlling ridge at ${analysis.obstruction.distKm.toFixed(1)} km` : "");
+  }
+  setStatus(`path · ${em.call} → target · ${analysis.fieldDbu.toFixed(1)} dBµV/m`);
+});
+
+const radioSrcHost = $("radioSources");
+if (radioSrcHost) {
+  for (const url of RADIO_SOURCE_URLS) {
+    const li = document.createElement("li");
+    li.textContent = url;
+    radioSrcHost.append(li);
+  }
+}
+
+/* ------------------------------------------------------------ relief map */
+
+const reliefCanvas = $("reliefCanvas");
+const relief = reliefCanvas ? makeReliefMap(reliefCanvas, { bbox: BBOX, elevAt: elevationAt, cell: 2 }) : null;
+
+function reliefRings() {
+  const out = [];
+  for (const [, entry] of radio.drawn) {
+    const r = entry.report;
+    out.push({ ring: r.ring, color: r.band.color, width: 1.2 });
+    if (r.fccRing) out.push({ ring: r.fccRing, color: r.band.color, width: 0.7, dash: [3, 3] });
+  }
+  return out;
+}
+
+function drawRelief() {
+  if (!relief) return;
+  const [lon, lat] = lonLatFromXZ(controls.target.x, controls.target.z);
+  relief.draw({
+    coast: COAST,
+    points: RADIO_SITES.map((s) => ({
+      lon: s.lon,
+      lat: s.lat,
+      color: EMITTERS.some((e) => e.site === s.id && e.band === "am") ? BANDS.am.color : "#fda4af",
+      r: 2,
+    })),
+    rings: reliefRings(),
+    cursor: { lon, lat },
+  });
+}
+
+if (relief) {
+  relief.resample();
+  drawRelief();
+  const srcEl = $("reliefSource");
+  if (srcEl) srcEl.textContent = `source · ${demStatus}`;
+
+  const modeBtn = $("reliefMode");
+  const modes = [
+    ["hypso", "TINT · HYPSO"],
+    ["grey", "TINT · SHADE"],
+    ["slope", "TINT · SLOPE"],
+  ];
+  modeBtn?.addEventListener("click", () => {
+    const i = modes.findIndex(([m]) => m === relief.state.mode);
+    const [mode, label] = modes[(i + 1) % modes.length];
+    relief.setMode(mode);
+    modeBtn.textContent = label;
+    drawRelief();
+  });
+
+  const contourBtn = $("reliefContour");
+  const steps = [500, 250, 1000, 0];
+  contourBtn?.addEventListener("click", () => {
+    const i = steps.indexOf(relief.state.contourStepM);
+    const next = steps[(i + 1) % steps.length];
+    relief.setContourStep(next);
+    contourBtn.textContent = next ? `CONTOUR ${next} m` : "CONTOUR OFF";
+    drawRelief();
+  });
+
+  const sun = $("reliefSun");
+  sun?.addEventListener("input", () => {
+    relief.setSun(Number(sun.value), relief.state.sunAlt);
+    const label = $("reliefSunVal");
+    if (label) label.textContent = `${sun.value}°`;
+    drawRelief();
+  });
+
+  reliefCanvas.addEventListener("click", (e) => {
+    const r = reliefCanvas.getBoundingClientRect();
+    const [lon, lat] = relief.pxToLonLat(
+      ((e.clientX - r.left) / r.width) * reliefCanvas.width,
+      ((e.clientY - r.top) / r.height) * reliefCanvas.height,
+    );
+    const [x, z] = project(lon, lat);
+    const y = elevY(elevationAt(lon, lat));
+    controls.target.set(x, y, z);
+    camera.position.set(x + 5, y + 9, z + 12);
+    controls.update();
+    setStatus(`relief · ${lat.toFixed(3)}N ${Math.abs(lon).toFixed(3)}W · ${Math.round(elevationAt(lon, lat))} m`);
+    drawRelief();
+  });
+}
+
+/* -------------------------------------------------------- orbital panel */
+
+const orbitalState = { current: null };
+const orbitalSelect = $("orbitalSat");
+const orbitalStatsHost = $("orbitalStats");
+const orbitalWindowsHost = $("orbitalWindows");
+
+if (orbitalSelect) {
+  for (const sat of SATELLITES) {
+    const opt = document.createElement("option");
+    opt.value = sat.id;
+    opt.textContent = `${sat.name} · ${sat.kind === "sar" ? "SAR" : "optical"} · ${sat.repeatDays} d`;
+    orbitalSelect.append(opt);
+  }
+}
+
+/** Date → "YYYY-MM-DD HH:MM UTC". */
+function fmtUtc(d) {
+  return `${d.toISOString().slice(0, 10)} ${d.toISOString().slice(11, 16)} UTC`;
+}
+
+function showOrbitalFor(satId) {
+  const sat = SAT_BY_ID.get(satId);
+  if (!sat) return null;
+  const shown = utilities.showOrbital(satId, { bbox: BBOX, lon: CENTER.lon, lat: CENTER.lat });
+  orbitalState.current = satId;
+  const geom = trackGeometry(sat, CENTER.lat);
+
+  if (orbitalStatsHost) {
+    orbitalStatsHost.textContent = "";
+    const rows = [
+      ["platform", `${sat.name} · ${sat.agency}`],
+      ["instrument", sat.band],
+      ["orbit", `${sat.altitudeKm} km · ${sat.inclinationDeg}° · ${sat.periodMin} min`],
+      ["repeat", `${sat.repeatDays} days`],
+      ["swath", `${sat.swathKm} km · ${sat.resolution}`],
+      ["crossing here", `${formatHours(geom.localTime)} local solar, ${geom.pass}`],
+      ["track heading", `${geom.heading.toFixed(1)}° from north`],
+      ["other node", `${formatHours(geom.opposite.localTime)} local, ${geom.opposite.pass}, ${geom.opposite.heading.toFixed(1)}°`],
+    ];
+    for (const [k, v] of rows) {
+      const dt = document.createElement("dt");
+      dt.textContent = k;
+      const dd = document.createElement("dd");
+      dd.textContent = v;
+      orbitalStatsHost.append(dt, dd);
+    }
+  }
+
+  if (orbitalWindowsHost) {
+    orbitalWindowsHost.textContent = "";
+    const windows = nextWindows({
+      lat: CENTER.lat,
+      lon: CENTER.lon,
+      perSat: 3,
+      satellites: [sat],
+    });
+    for (const w of windows) {
+      const li = document.createElement("li");
+      li.textContent = `${fmtUtc(w.utc)} · ${w.localSolarLabel} local · ${w.pass} · hdg ${w.headingDeg.toFixed(0)}°`;
+      orbitalWindowsHost.append(li);
+    }
+    const li = document.createElement("li");
+    li.textContent = "dates nominal — anchored on cycleAnchorUtc, not on an observed acquisition";
+    orbitalWindowsHost.append(li);
+  }
+
+  setStatus(
+    `orbital · ${sat.name} · ${sat.swathKm} km swath · ${formatHours(geom.localTime)} local solar, ${geom.pass}`,
+  );
+  return shown;
+}
+
+// Source list for the three registers this panel and its neighbours draw on.
+const utilSrcHost = $("orbitalWindowsSources");
+if (utilSrcHost) {
+  for (const url of [...ORBITAL_SOURCE_URLS, ...UTILITY_SOURCE_URLS]) {
+    const li = document.createElement("li");
+    li.textContent = url;
+    utilSrcHost.append(li);
+  }
+}
+
+// Boot with the C-band workhorse drawn, so the overlay is not an empty toggle.
+showOrbitalFor(SATELLITES[0].id);
+if (orbitalSelect) orbitalSelect.value = SATELLITES[0].id;
+
+$("orbitalShow")?.addEventListener("click", () => showOrbitalFor(orbitalSelect?.value || SATELLITES[0].id));
+$("orbitalClear")?.addEventListener("click", () => {
+  utilities.clearOrbital();
+  orbitalState.current = null;
+  if (orbitalStatsHost) orbitalStatsHost.textContent = "";
+  if (orbitalWindowsHost) orbitalWindowsHost.textContent = "";
+  setStatus("orbital track cleared");
+});
 
 /* ----------------------------------------------------- gazetteer search */
 
@@ -874,6 +1343,7 @@ function select(obj) {
     obj.material.emissive.setRGB(1, 1, 1).multiplyScalar(0.55);
   }
   renderDetail(rec);
+  if (rec.kind === "radio-emitter" && rec.emitterId) showCoverageFor(rec.emitterId);
   setStatus(`selected · ${rec.name}`);
   broadcast(rec);
   const pip = $("pipDetail");
@@ -897,6 +1367,38 @@ const searchIndex = [
     record,
     label: record.name,
     meta: `corridor · ${LAYERS.find((l) => l.id === record.layer)?.name || record.layer}`,
+  })),
+  ...RADIO_SITES.map((site) => ({
+    record: { id: `radio-site-${site.id}`, name: site.name, layer: "radio", lon: site.lon, lat: site.lat },
+    label: site.name,
+    meta: `transmitter site · ${EMITTERS.filter((e) => e.site === site.id).length} registered emitters`,
+  })),
+  ...SUBSTATIONS.map((st) => ({
+    record: { id: `substation-${st.id}`, name: st.name, layer: "transmission", lon: st.lon, lat: st.lat },
+    label: st.name,
+    meta: `${st.operator}${st.approx ? " · generalized pin" : ""}`,
+  })),
+  ...TRANSMISSION.map((line) => ({
+    record: { id: `transmission-${line.id}`, name: line.name, layer: "transmission", lon: line.path[0][0], lat: line.path[0][1] },
+    label: line.name,
+    meta: `transmission · ${line.operator}`,
+  })),
+  ...LONGLINES.map((site) => ({
+    record: { id: `longline-${site.id}`, name: site.name, layer: "longlines", lon: site.lon, lat: site.lat },
+    label: `${site.name} — Long Lines`,
+    meta: `AT&T microwave relay${site.hardened ? " · hardened" : ""} · ${site.status}`,
+  })),
+  ...EMITTERS.map((em) => ({
+    record: {
+      id: `radio-${em.id}`,
+      name: `${em.call} ${em.channel}`,
+      layer: "radio",
+      lon: SITE_BY_ID.get(em.site).lon,
+      lat: SITE_BY_ID.get(em.site).lat,
+      emitterId: em.id,
+    },
+    label: `${em.call} — ${em.channel}`,
+    meta: `${em.service} · ${SITE_BY_ID.get(em.site).name}`,
   })),
 ].map((item) => ({ ...item, key: foldSearch(`${item.label} ${item.meta}`) }));
 
@@ -927,6 +1429,10 @@ function flyToRecord(record) {
   const nodeHit = nodeMeshes.find((entry) => entry.node === record)?.head;
   const corridorHit = corridorMeshes.find((entry) => entry.item === record)?.mesh;
   select(nodeHit || corridorHit || null);
+  if (record.emitterId) {
+    if (radioSelect) radioSelect.value = record.emitterId;
+    showCoverageFor(record.emitterId);
+  }
 }
 
 function runSearch() {
@@ -1101,6 +1607,79 @@ btnXray.addEventListener("click", () => {
   setStatus(xray ? "x-ray · terrain transparent, buried systems exposed" : "x-ray off");
 });
 
+/* --------------------------------------------------- terrain relief modes */
+
+/**
+ * Re-tint the terrain mesh. Hypsometric is the default theater read; the two
+ * relief modes are the cartographic ones — a Lambertian hillshade computed on
+ * the mesh lattice, and a slope ramp. All three read the same elevM array, so
+ * they switch instantly and they will all change the moment a real 3DEP grid
+ * is installed under elevationAt().
+ */
+const SHADE_MODES = ["hypso", "hillshade", "slope"];
+let shadeMode = "hypso";
+const LAT_ROWS = SEG_Y + 1;
+const LON_COLS = SEG_X + 1;
+const cellXm = ((BBOX.lon1 - BBOX.lon0) / SEG_X) * 111320 * COS_LAT;
+const cellYm = ((BBOX.lat1 - BBOX.lat0) / SEG_Y) * 111320;
+
+function applyTerrainShading(mode) {
+  shadeMode = mode;
+  const colorAttr = terrainGeo.attributes.color;
+  const sunAz = ((360 - 315 + 90) % 360) * (Math.PI / 180);
+  const zenith = Math.PI / 2 - 45 * (Math.PI / 180);
+  const tmp = new THREE.Color();
+  for (let row = 0; row < LAT_ROWS; row++) {
+    for (let col = 0; col < LON_COLS; col++) {
+      const i = row * LON_COLS + col;
+      const e = elevM[i];
+      const ir = row * LON_COLS + Math.min(col + 1, LON_COLS - 1);
+      const il = row * LON_COLS + Math.max(col - 1, 0);
+      const iu = Math.max(row - 1, 0) * LON_COLS + col;
+      const id = Math.min(row + 1, LAT_ROWS - 1) * LON_COLS + col;
+      const dzdx = (elevM[ir] - elevM[il]) / (2 * cellXm);
+      const dzdy = (elevM[iu] - elevM[id]) / (2 * cellYm);
+      const slope = Math.atan(Math.hypot(dzdx, dzdy) * 3);
+      const aspect = Math.atan2(dzdy, -dzdx);
+      const shade = Math.max(
+        0,
+        Math.cos(zenith) * Math.cos(slope) + Math.sin(zenith) * Math.sin(slope) * Math.cos(sunAz - aspect),
+      );
+      if (mode === "hillshade") {
+        const t = Math.max(0, Math.min(1, (e + 500) / 4000));
+        const v = (0.22 + 0.72 * t) * (0.4 + 0.85 * shade);
+        tmp.setRGB(v, v * 1.01, v * 1.04);
+      } else if (mode === "slope") {
+        const t = Math.max(0, Math.min(1, (slope * 180) / Math.PI / 45));
+        tmp.setRGB(0.2 + 0.78 * t, 0.42 + 0.3 * (1 - t), 0.55 * (1 - t) + 0.12).multiplyScalar(0.45 + 0.8 * shade);
+      } else {
+        if (e < 0) tmp.setHSL(0.58, 0.55, 0.12 + Math.max(-0.08, e / 9000));
+        else if (e < 300) tmp.setHSL(0.33 - e / 4000, 0.3, 0.2 + e / 3000);
+        else if (e < 1200) tmp.setHSL(0.11, 0.35, 0.24 + e / 5200);
+        else if (e < 2200) tmp.setHSL(0.07, 0.22, 0.34 + e / 9000);
+        else tmp.setHSL(0.6, 0.06, 0.62);
+      }
+      colorAttr.setXYZ(i, tmp.r, tmp.g, tmp.b);
+    }
+  }
+  colorAttr.needsUpdate = true;
+}
+
+const btnRelief = $("btnRelief");
+btnRelief?.addEventListener("click", () => {
+  const next = SHADE_MODES[(SHADE_MODES.indexOf(shadeMode) + 1) % SHADE_MODES.length];
+  applyTerrainShading(next);
+  btnRelief.setAttribute("aria-pressed", String(next !== "hypso"));
+  btnRelief.textContent = next === "hypso" ? "RELIEF" : next === "hillshade" ? "HILLSHADE" : "SLOPE";
+  setStatus(
+    next === "hypso"
+      ? "terrain · hypsometric tint"
+      : next === "hillshade"
+        ? "terrain · shaded relief, sun 315° / 45°"
+        : "terrain · slope ramp, 0–45°",
+  );
+});
+
 const btnLabels = $("btnLabels");
 let labelsOn = true;
 btnLabels.addEventListener("click", () => {
@@ -1123,6 +1702,7 @@ vertSlider.addEventListener("input", () => {
   for (let i = 0; i < posAttr.count; i++) posAttr.setY(i, elevY(elevM[i]));
   posAttr.needsUpdate = true;
   terrainGeo.computeVertexNormals();
+  applyTerrainShading(shadeMode);
   sea.position.y = elevY(0);
   rebuildDepths();
 });
@@ -1146,6 +1726,13 @@ function rebuildDepths() {
   }
   subGrid.position.y = depthY(-3000);
   overlays.rebuild();
+  radio.rebuild();
+  utilities.rebuild();
+  if (orbitalState.current) showOrbitalFor(orbitalState.current);
+  if (relief) {
+    relief.resample();
+    drawRelief();
+  }
 }
 
 /* ------------------------------------------------------------ webxdc wire */
@@ -1198,6 +1785,7 @@ addEventListener("resize", resize);
 resize();
 
 const v3 = new THREE.Vector3();
+let reliefClock = 0;
 let last = performance.now();
 let frames = 0;
 let fpsAcc = 0;
@@ -1262,6 +1850,17 @@ function tick(now) {
 
   controls.update();
   updateLabels();
+
+  // Spectrum layer: expanding phase fronts and the FAA obstruction beacons.
+  if (radio.groups.wavefront.visible) radio.tickWavefront(dt);
+  radio.tickBeacons(now);
+
+  // Relief map tracks the camera target, throttled — it is a full resample.
+  reliefClock += dt;
+  if (relief && reliefClock > 0.5) {
+    reliefClock = 0;
+    drawRelief();
+  }
 
   // Flow beads: direction of load on the lines that pump uphill through Cajon.
   if (FLOW.length) {
