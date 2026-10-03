@@ -13,6 +13,7 @@
     "build:web": "vite build",
     "preview": "vite preview",
     "serve:catalog": "node tools/z3950-server.mjs",
+    "check:sources": "node tools/check-source-check-bibliography.mjs",
     "test": "vitest run && node --test tests/*.test.mjs"
   },
   "dependencies": {

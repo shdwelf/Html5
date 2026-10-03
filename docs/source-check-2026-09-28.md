@@ -1,5 +1,7 @@
 # Source check — research and curriculum records — 2026-09-28
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 ## Method
 
 This pass checked claims against first-party pages rather than search-result summaries wherever a first-party page was retrievable. Checks covered title, author, identifier, version date, category, event context, publication status, DOI/venue metadata, and the distinction between preprint, proceedings paper, teaching reader, slide deck, and recording.

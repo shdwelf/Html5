@@ -1,5 +1,7 @@
 # The "CES For Dummies guide" — source check
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 **Run:** 28 September 2026. **Prompted by:** the recollection that *"the CES for
 dummies guide explains it well"*, and that *"the For Dummies books from the
 convention center are a hit."* **Source supplied:** a 2011 gist listing the
