@@ -14,6 +14,12 @@ This index covers the following source-check documents:
 - [`docs/spectre-press-source-check.md`](spectre-press-source-check.md)
 - [`research/jim-sanborn-source-check.md`](../research/jim-sanborn-source-check.md)
 - [`public/apps/sanborn-restaurant-4dwm/research-source-check.md`](../public/apps/sanborn-restaurant-4dwm/research-source-check.md)
+- [`docs/convention-venues.md`](convention-venues.md)
+- [`docs/cyberchef-matrix-deep-dive.md`](cyberchef-matrix-deep-dive.md)
+- [`docs/dss-casefiles-riddle-warrick.md`](dss-casefiles-riddle-warrick.md)
+- [`docs/lecture-hall-research-2026-09-20.md`](lecture-hall-research-2026-09-20.md)
+- [`docs/lecture-hall-research-2026-09-27.md`](lecture-hall-research-2026-09-27.md)
+- [`docs/los-alamos-domain-deep-dive-2026-09-30.md`](los-alamos-domain-deep-dive-2026-09-30.md)
 
 Entries use a compact Chicago-style web-reference form: author or responsible
 organization; title; publisher or collection where useful; publication date where
@@ -23,8 +29,8 @@ substantially identical source lists, so their shared references appear once her
 
 The bibliography has two safeguards:
 
-1. Every distinct literal `http://` or `https://` source URL in the eight notes is
-   represented below at least once. The current corpus contains **60 unique literal
+1. Every distinct literal `http://` or `https://` source URL in the fourteen notes is
+   represented below at least once. The current corpus contains **118 unique literal
    URLs**.
 2. Sources that a note names only as a database, a source family, or an unlocatable
    record are retained in [Incomplete or family-level references](#incomplete-or-family-level-references)
@@ -155,6 +161,71 @@ publication status of any item.
 - **[JS-10]** Atomic Heritage Foundation / National Museum of Nuclear Science & History. “Critical Assembly Exhibition Opens.” n.d. https://ahf.nuclearmuseum.org/critical-assembly-exhibition-opens/ (accessed 3 October 2026).
 - **[JS-11]** Randolph-Macon College. “Kryptographer.” 2026. https://www.rmc.edu/news/kryptographer/ (accessed 3 October 2026). **Later institutional corroboration, not fabrication documentation.**
 
+## Convention venues and event chronology
+
+- **[CV-01]** Black Hat. “Black Hat Conference.” *Wikipedia, The Free Encyclopedia*. n.d. https://en.wikipedia.org/wiki/Black_Hat_(conference) (accessed 3 October 2026). **Orientation only; event dates are corroborated with organizer or reporting sources below.**
+- **[CV-02]** Review-Journal. “Expanded Mandalay Bay Convention Center Ready to Welcome Even More Crowds.” n.d. https://www.reviewjournal.com/business/tourism/expanded-mandalay-bay-convention-center-ready-to-welcome-even-more-crowds/ (accessed 3 October 2026).
+- **[CV-03]** Pro Global Events. “Mandalay Bay Convention Center.” n.d. https://www.proglobalevents.com/blog/mandalay-bay-convention-center/ (accessed 3 October 2026). **Venue-industry secondary source.**
+- **[CV-04]** No Cover Vegas. “Black Hat 2026 Guide.” 2026. https://nocovervegas.com/guides/blackhat-2026 (accessed 3 October 2026). **Event-discovery source.**
+- **[CV-05]** Splunk. “Black Hat and DEF CON Conference.” n.d. https://www.splunk.com/en_us/blog/learn/blackhat-defcon-conference.html (accessed 3 October 2026). **Vendor explainer.**
+- **[CV-06]** No Cover Vegas. “Black Hat USA.” n.d. https://nocovervegas.com/conventions/black-hat-usa (accessed 3 October 2026). **Event-discovery source.**
+- **[CV-07]** DEF CON. “DEF CON Archives.” n.d. https://defcon.org/html/links/dc-archives.html (accessed 3 October 2026). **Organizer archive.**
+- **[CV-08]** News 3 Las Vegas. “Hacker Conference DEF CON Moves from Caesars to Las Vegas Convention Center.” n.d. https://news3lv.com/news/local/hacker-conference-def-con-moves-from-caesars-to-las-vegas-convention-center-lvcc-southern-nevada (accessed 3 October 2026).
+- **[CV-09]** Wikiwand. “AVN Adult Entertainment Expo.” n.d. https://www.wikiwand.com/en/articles/AVN_Adult_Entertainment_Expo (accessed 3 October 2026). **Tertiary orientation source.**
+- **[CV-10]** *Las Vegas Sun*. “Why Vegas Porn Convention Decided to Meet a Week After CES.” 17 January 2012. https://lasvegassun.com/news/2012/jan/17/why-vegas-porn-convention-decided-meet-week-after-/ (accessed 3 October 2026).
+- **[CV-11]** *Fast Company*. “CES and AEE: The Weird Tech Trade Show / Porn Overlap.” 2022. https://www.fastcompany.com/90732919/ces-aee-weird-tech-trade-show-porn (accessed 3 October 2026).
+- **[CV-12]** Grokipedia. “Venetian Expo.” n.d. https://grokipedia.com/page/Venetian_Expo (accessed 3 October 2026). **Tertiary orientation source.**
+- **[CV-13]** Wikipedia contributors. “W Las Vegas.” *Wikipedia, The Free Encyclopedia*. n.d. https://en.wikipedia.org/wiki/W_Las_Vegas (accessed 3 October 2026). **Orientation only.**
+- **[CV-14]** The Meeting Magazines. “Ducasse Debuts Rivea and Skyfall Lounge at Delano Las Vegas.” n.d. https://www.themeetingmagazines.com/news/ducasse-debuts-rivea-skyfall-lounge-delano-las-vegas/ (accessed 3 October 2026).
+- **[CV-15]** Vital Vegas. “Skyfall Lounge Closes for Renovation at W Las Vegas.” 2026. https://www.casino.org/vitalvegas/skyfall-lounge-closes-for-renovation-at-w-las-vegas/ (accessed 3 October 2026). **Contemporary local reporting.**
+- **[CV-16]** Las Vegas Convention and Visitors Authority. *Las Vegas Convention Center Expansion: West Hall Fact Sheet*. 2021. https://www.multivu.com/players/English/8909751-lvcva-las-vegas-convention-center-expansion-informa-market-world-of-concrete/docs/WestHallFactSheet_1623197150059-907052717.pdf (accessed 3 October 2026).
+- **[CV-17]** Review-Journal. “Best Convention Center in the World Reopens after Massive Renovation.” n.d. https://www.reviewjournal.com/business/conventions/best-convention-center-in-the-world-reopens-after-massive-renovation-3604125/ (accessed 3 October 2026).
+- **[CV-18]** PR Newswire. “$1 Billion Las Vegas Convention Center Expansion Debuts with First Major Convention Post-Pandemic.” 2021. https://www.prnewswire.com/news-releases/1-billion-las-vegas-convention-center-expansion-debuts-with-first-major-convention-post-pandemic-301308548.html (accessed 3 October 2026).
+- **[CV-19]** American Society of Civil Engineers. “New Hall Opens at Las Vegas Convention Center.” *Civil Engineering Source*, January 2021. https://www.asce.org/publications-and-news/civil-engineering-source/civil-engineering-magazine/article/2021/01/new-hall-opens-at-las-vegas-convention-center (accessed 3 October 2026).
+- **[CV-20]** Wikipedia contributors. “Venetian Expo.” *Wikipedia, The Free Encyclopedia*. n.d. https://en.wikipedia.org/wiki/Venetian_Expo (accessed 3 October 2026). **Orientation only.**
+- **[CV-21]** Review-Journal. “Signs Beginning to Change as Sands Adopts the Venetian Expo Name.” n.d. https://www.reviewjournal.com/business/conventions/signs-beginning-to-change-as-sands-adopts-the-venetian-expo-name-2431639/ (accessed 3 October 2026).
+- **[CV-22]** Review-Journal. “Sands Expo Changing Name to the Venetian Expo on Sept. 2.” n.d. https://www.reviewjournal.com/business/tourism/sands-expo-changing-name-to-the-venetian-expo-on-sept-2-2400580/ (accessed 3 October 2026).
+- **[CV-23]** SparkOC. “Anaheim Convention Center.” n.d. https://sparkoc.com/venue/anaheim-convention-center/ (accessed 3 October 2026). **Venue-industry secondary source.**
+- **[CV-24]** Anaheim Convention Center. *ACC Specification Guide 2025*. 2025. https://assets.simpleviewinc.com/simpleview/image/upload/v1/clients/anaheimca/ACC_Spec_Guide_2025_v8_final_reduced_77890cd3-63c3-48e9-886d-703bc25dfb33.pdf (accessed 3 October 2026).
+- **[CV-25]** PR Newswire. “Anaheim Convention Center Officially Opens ACC North Building.” 2017. https://www.prnewswire.com/news-releases/anaheim-convention-center-officially-opens-acc-north-building-300526058.html (accessed 3 October 2026).
+- **[CV-26]** Visit Anaheim. “ACC North Officially Opens.” 2017. https://www.visitanaheim.org/articles/post/acc-north-officially-opens/ (accessed 3 October 2026).
+- **[CV-27]** Yahoo Finance. “MD&M West Returns with Focus ….” 2025. https://finance.yahoo.com/news/md-m-west-returns-focus-200000600.html (accessed 3 October 2026). **Syndicated event announcement.**
+- **[CV-28]** MD+DI. “Informa Markets Engineering Advanced Manufacturing Events Unify to MD&M Brand.” 2024. https://www.mddionline.com/manufacturing/informa-markets-engineering-advanced-manufacturing-events-unify-to-md-m-brand (accessed 3 October 2026).
+- **[CV-29]** MD&M East. “MD&M East.” n.d. https://www.mdmeast.com/ (accessed 3 October 2026). **Organizer event page.**
+- **[CV-30]** MD+DI. “MD&M East.” n.d. https://www.mddionline.com/events/md-m-east (accessed 3 October 2026).
+- **[CV-31]** Convention Calendar. “MD&M East, Jacob Javits Center.” n.d. https://conventioncalendar.com/us/ny/new-york-city/jacob-javits-center/mdm-east-399792 (accessed 3 October 2026). **Calendar secondary source.**
+- **[CV-32]** Cvent. “Renaissance Las Vegas Hotel.” Venue profile. n.d. https://www.cvent.com/venues/las-vegas/hotel/renaissance-las-vegas-hotel/venue-de267c7f-28aa-454f-8b00-c57040b11c07 (accessed 3 October 2026).
+- **[CV-33]** HotelPlanner. “Renaissance Las Vegas.” Hotel profile. n.d. https://www.hotelplanner.com/Hotels/283886/Reservations-Renaissance-Las-Vegas-Las-Vegas-3400-Paradise-Rd-89169 (accessed 3 October 2026). **Booking-directory secondary source.**
+- **[CV-34]** Dunin, Elonka. “Jim Sanborn.” n.d. https://www.elonka.com/kryptos/sanborn.html (accessed 3 October 2026). **Secondary fan-maintained lead.**
+- **[CV-35]** Wikipedia contributors. “Lingua (Sculpture).” *Wikipedia, The Free Encyclopedia*. n.d. https://en.wikipedia.org/wiki/Lingua_(sculpture) (accessed 3 October 2026). **Orientation only.**
+- **[CV-36]** Grokipedia. “AVN Adult Entertainment Expo.” n.d. https://grokipedia.com/page/AVN_Adult_Entertainment_Expo (accessed 3 October 2026). **Tertiary orientation source.**
+
+## CyberChef matrix-cipher sources
+
+- **[CM-01]** Wikipedia contributors. “Hill Cipher.” *Wikipedia, The Free Encyclopedia*. n.d. https://en.wikipedia.org/wiki/Hill_cipher (accessed 3 October 2026). **Used for its documented teaching vector; not a substitute for a primary historical source.**
+- **[CM-02]** Wikipedia contributors. “Two-Square Cipher.” *Wikipedia, The Free Encyclopedia*. n.d. https://en.wikipedia.org/wiki/Two-square_cipher (accessed 3 October 2026). **Used for the vertical-convention vector.**
+- **[CM-03]** American Cryptogram Association. *Two-Square Cipher*. Cipher-information sheet. n.d. https://www.cryptogram.org/downloads/aca.info/ciphers/TwoSquare.pdf (accessed 3 October 2026).
+- **[CM-04]** dCode. “Two-Square Cipher.” n.d. https://www.dcode.fr/two-square-cipher (accessed 3 October 2026). **Second-convention corroboration.**
+- **[CM-05]** Wikipedia contributors. “Transposition Cipher.” *Wikipedia, The Free Encyclopedia*. n.d. https://en.wikipedia.org/wiki/Transposition_cipher (accessed 3 October 2026). **Used for the irregular-columnar vector.**
+- **[CM-06]** Wikipedia contributors. “Transposition Cipher: Myszkowski Transposition.” *Wikipedia, The Free Encyclopedia*. n.d. https://en.wikipedia.org/wiki/Transposition_cipher#Myszkowski_transposition (accessed 3 October 2026).
+- **[CM-07]** American Cryptogram Association. *Myszkowski Cipher*. Cipher-information sheet. n.d. https://www.cryptogram.org/downloads/aca.info/ciphers/Myszkowski.pdf (accessed 3 October 2026).
+- **[CM-08]** American Cryptogram Association. *Grille Cipher*. Cipher-information sheet. n.d. https://www.cryptogram.org/downloads/aca.info/ciphers/Grille.pdf (accessed 3 October 2026).
+- **[CM-09]** The Black Chamber. “Grille Transposition.” 18 November 2020. https://theblackchamber552383191.wordpress.com/2020/11/18/grille-transposition/ (accessed 3 October 2026). **Independent walkthrough.**
+- **[CM-10]** American Cryptogram Association. *Phillips Cipher*. Cipher-information sheet. n.d. https://www.cryptogram.org/downloads/aca.info/ciphers/Phillips.pdf (accessed 3 October 2026).
+- **[CM-11]** CryptoCrack. “Phillips.” n.d. https://sites.google.com/site/cryptocrackprogram/user-guide/cipher-types/substitution/phillips (accessed 3 October 2026).
+- **[CM-12]** Central Washington University. *Kryptos Challenge: Phillips Cipher*. Classroom worksheet. n.d. https://www.cwu.edu/academics/math/_documents/kryptos-challenges/cwu-kryptos-challenge-phillips-cipher.pdf (accessed 3 October 2026).
+
+## Intelligence Lecture Hall / Cicada 3301 sources
+
+- **[LH-01]** Cicada 3301. “Message from 3301/Cicada.” *Pastebin*, 4 April 2017. https://pastebin.com/yEiTHhvF (accessed 3 October 2026). **Primary transcription retained by the source check.**
+- **[LH-02]** Uncovering Cicada Wiki. “PGP Signed Message April 2017.” n.d. https://uncovering-cicada.fandom.com/wiki/PGP_Signed_Message_April_2017 (accessed 3 October 2026). **Community transcription and discovery record, not a replacement for LH-01.**
+- **[LH-03]** Callas, Jon, et al. *OpenPGP Message Format*. RFC 4880. Internet Engineering Task Force, November 2007. https://www.rfc-editor.org/rfc/rfc4880.html (accessed 3 October 2026).
+- **[LH-04]** aadishgoel. “Welcome.txt.” *Cicada-3301* repository, GitHub. n.d. https://github.com/aadishgoel/Cicada-3301/blob/master/Welcome.txt (accessed 3 October 2026). **Archive copy; preserve a byte digest when relying on it.**
+- **[LH-05]** scream314. “2014.md.” *cicada3301* repository, GitHub. n.d. https://github.com/scream314/cicada3301/blob/master/2014.md (accessed 3 October 2026). **Community archive.**
+- **[LH-06]** scream314. “liber_primus.md.” *cicada3301* repository, GitHub. n.d. https://github.com/scream314/cicada3301/blob/master/liber_primus.md (accessed 3 October 2026). **Community transcription.**
+- **[LH-07]** Uncovering Cicada Wiki. “What Happened Part 1 (2014).” n.d. https://uncovering-cicada.fandom.com/wiki/What_Happened_Part_1_(2014) (accessed 3 October 2026). **Community archive.**
+- **[LH-08]** Uncovering Cicada Wiki. “The Leaked Email.” n.d. https://uncovering-cicada.fandom.com/wiki/The_Leaked_Email (accessed 3 October 2026). **Disputed community record; not independent proof of authorship or organizational identity.**
+
 ## Incomplete or family-level references
 
 The following were deliberately retained because the source-check corpus names
@@ -191,3 +262,9 @@ every claim in that note.
 | `docs/spectre-press-source-check.md` | SP-01–SP-09; FL-09–FL-10 |
 | `research/jim-sanborn-source-check.md` | JS-01–JS-11 |
 | `public/apps/sanborn-restaurant-4dwm/research-source-check.md` | JS-01–JS-11 |
+| `docs/convention-venues.md` | CV-01–CV-36 |
+| `docs/cyberchef-matrix-deep-dive.md` | CM-01–CM-12 |
+| `docs/dss-casefiles-riddle-warrick.md` | No literal web locator is retained in this note; see its digest-pinned local evidence and the incomplete-record policy. |
+| `docs/lecture-hall-research-2026-09-20.md` | No literal web locator is retained in this note; its follow-up links are indexed at LH-01–LH-08. |
+| `docs/lecture-hall-research-2026-09-27.md` | LH-01–LH-08 |
+| `docs/los-alamos-domain-deep-dive-2026-09-30.md` | PY-01–PY-15; FL-01–FL-03 |

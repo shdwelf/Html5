@@ -1,5 +1,7 @@
 # Los Alamos badge archive — no-filter domain deep dive
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 Reviewed **30 September 2026** after the filename-variation pass. This note is
 an unfiltered source-domain investigation for the full Project Y badge surface in
 `los-alamos.html`: the 1,404-file Commons snapshot, the seven curated local

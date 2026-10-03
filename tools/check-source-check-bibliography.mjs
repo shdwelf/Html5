@@ -19,13 +19,27 @@ const SOURCE_CHECKS = [
   'docs/spectre-press-source-check.md',
   'research/jim-sanborn-source-check.md',
   'public/apps/sanborn-restaurant-4dwm/research-source-check.md',
+  'docs/convention-venues.md',
+  'docs/cyberchef-matrix-deep-dive.md',
+  'docs/dss-casefiles-riddle-warrick.md',
+  'docs/lecture-hall-research-2026-09-20.md',
+  'docs/lecture-hall-research-2026-09-27.md',
+  'docs/los-alamos-domain-deep-dive-2026-09-30.md',
 ];
-const EXPECTED_UNIQUE_LITERAL_URLS = 60;
+const EXPECTED_UNIQUE_LITERAL_URLS = 118;
 
-// Deliberately conservative: a bibliography is expected to contain ordinary
-// HTTP(S) locators only. Trailing prose punctuation is not part of a locator.
-const URL_PATTERN = /https?:\/\/[^\s)>\]}|]+/g;
-const normaliseUrl = (url) => url.replace(/[.,;:]+$/, '');
+// A Markdown destination can legitimately contain balanced parentheses (for
+// example, Wikipedia's `Black_Hat_(conference)`), while the closing parenthesis
+// of the Markdown link is not part of the URL. Keep balanced URL parentheses,
+// discard an unmatched final delimiter, and stop before Markdown's `]` wrapper.
+const URL_PATTERN = /https?:\/\/[^\s<>"'\]]+/g;
+const normaliseUrl = (url) => {
+  let normalised = url.replace(/[.,;:`]+$/, '');
+  while (normalised.endsWith(')') && (normalised.match(/\)/g) ?? []).length > (normalised.match(/\(/g) ?? []).length) {
+    normalised = normalised.slice(0, -1);
+  }
+  return normalised;
+};
 const urlsIn = (text) => new Set((text.match(URL_PATTERN) ?? []).map(normaliseUrl));
 
 const fail = (message) => {

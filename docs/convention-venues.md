@@ -1,5 +1,7 @@
 # The convention floor — venue research and source check
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 Research checked: **28 September 2026**.
 
 This note supports the book chapter *The convention floor* and the schematic VRML

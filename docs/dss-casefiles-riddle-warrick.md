@@ -1,5 +1,7 @@
 # CASEFILES II — the riddle, the DSS card wars, D.I.R.T., and Warrick mode
 
+> **Bibliographic index:** [Source-check bibliography](source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+
 *Built 2026-09-13 (second session) · extends `casefiles.html` · data in
 `js/krome-catalog.js` · proof in `tools/verify_casefiles.mjs` (ALL CHECKS PASSED)*
 
