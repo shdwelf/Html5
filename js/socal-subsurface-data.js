@@ -39,6 +39,7 @@ const BASE_LAYERS = [
   { id: "harbors", name: "Harbors + marine terminals", color: "#0ea5e9", kind: "node", on: true },
   { id: "offshore", name: "Offshore oil platforms + subsea lines", color: "#fb7185", kind: "line", on: true },
   { id: "industry", name: "Factories + quarries", color: "#c084fc", kind: "node", on: true },
+  { id: "gazetteer", name: "USGS GNIS gazetteer register", color: "#f8fafc", kind: "node", on: true },
 ];
 
 /** Overlay layers are declared in socal-overlays-data.js and registered by the app. */

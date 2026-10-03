@@ -252,11 +252,68 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .crossings { border-top: 1px dashed var(--line); margin-top: 6px; }
 .crossings .facts li { color: #ffb4a2; }
 
+/* ---------- gazetteer PiP ---------- */
+#pipGaz { top: 372px; left: 10px; width: 310px; }
+#pipGaz .pip-body { max-height: 46vh; }
+
+.gaz-controls { display: flex; gap: 6px; }
+.gaz-controls input[type="search"] {
+  flex: 1 1 auto; min-width: 0;
+  background: rgba(9, 16, 25, 0.9); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 3px;
+  font: inherit; font-size: 11px; padding: 4px 7px;
+}
+.gaz-controls select {
+  flex: 0 0 auto; max-width: 118px;
+  background: rgba(9, 16, 25, 0.9); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 3px;
+  font: inherit; font-size: 10px; padding: 3px;
+}
+
+.gaz-classes {
+  display: flex; flex-wrap: wrap; gap: 2px 8px;
+  max-height: 88px; overflow-y: auto; margin-top: 6px;
+  padding-bottom: 4px; border-bottom: 1px dashed var(--line);
+}
+.gaz-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 9.5px; letter-spacing: 0.02em; color: var(--dim);
+  cursor: pointer; white-space: nowrap;
+}
+.gaz-chip input { accent-color: var(--accent); margin: 0; }
+
+.gaz-ops { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.gaz-ops button {
+  background: rgba(21, 34, 49, 0.85); color: var(--ink);
+  border: 1px solid #274a63; border-radius: 3px;
+  font: inherit; font-size: 9px; letter-spacing: 0.08em;
+  padding: 3px 7px; cursor: pointer;
+}
+.gaz-ops button:hover { background: rgba(31, 50, 71, 0.95); }
+.gaz-ops .hint { margin-left: auto; text-align: right; }
+
+.gaz-hits { margin: 6px 0 0; padding: 0; list-style: none; }
+.gaz-hits li + li { margin-top: 2px; }
+.gaz-hit {
+  display: block; width: 100%; text-align: left;
+  background: rgba(12, 21, 32, 0.8); border: 1px solid var(--line);
+  border-left: 3px solid var(--gaz, #9db2d1); border-radius: 3px;
+  padding: 3px 7px; cursor: pointer; font: inherit;
+}
+.gaz-hit:hover { background: rgba(24, 39, 57, 0.95); }
+.gaz-hit.verified .gaz-hit-name { color: #ffd98c; }
+.gaz-hit-name { display: block; font-size: 11px; color: var(--ink); }
+.gaz-hit-meta { display: block; font-size: 9.5px; color: var(--dim); letter-spacing: 0.02em; }
+
+/* register-zoom labels are quieter than corridor labels */
+.lbl.gaz { font-size: 9px; opacity: 0.9; border-radius: 1px; padding: 0 4px; }
+
 @media (max-width: 760px) {
   #pipDetail { width: calc(100vw - 20px); bottom: 34px; left: 10px; }
   #pipMap { display: none; }
   #pipLayers { top: 96px; }
   #pipOverlays { display: none; }
+  #pipGaz { display: none; }
   .pip { width: 250px; }
 }
 

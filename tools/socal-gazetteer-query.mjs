@@ -9,7 +9,12 @@
  * keeps a federal source refresh from silently moving labels or introducing
  * thousands of low-value points into the offline theater.
  */
-import { SOCAL_GAZETTEER } from "../js/socal-gazetteer-data.js";
+import { GAZ_ROWS } from "../js/socal-gazetteer-data.js";
+
+// Row layout: [name, fclass, ftt, county, lat, lon, elevM, gnisId, verified, note]
+const SOCAL_GAZETTEER = GAZ_ROWS.map(([name, fclass, ftt, county, lat, lon]) => ({
+  name, featureClass: fclass, county, lat, lon,
+}));
 
 const SERVICE = "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer";
 const BBOX = "-121.6,32.45,-114.0,38.35";
