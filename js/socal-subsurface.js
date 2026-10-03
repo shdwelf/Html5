@@ -37,6 +37,9 @@ import { buildRadio, emitterPath } from "./socal-radio.js";
 import { BANDS, EMITTERS, RADIO_SITES, RADIO_SOURCE_URLS, SITE_BY_ID } from "./socal-radio-data.js";
 import { fresnelRadiusM, earthBulgeM, serviceThresholdDbu } from "./socal-propagation.js";
 import { makeReliefMap } from "./socal-relief.js";
+import { buildUtilities } from "./socal-utilities.js";
+import { LONGLINES, SUBSTATIONS, TRANSMISSION, UTILITY_SOURCE_URLS } from "./socal-utilities-data.js";
+import { ORBITAL_SOURCE_URLS, SATELLITES, SAT_BY_ID, formatHours, nextWindows, trackGeometry } from "./socal-orbital.js";
 import { buildOverlays } from "./socal-overlays.js";
 import { FIRE_SOURCE_URLS } from "./socal-overlays-data.js";
 import { OFF_FRAME } from "./socal-sites-extended.js";
@@ -484,10 +487,22 @@ const radio = buildRadio();
 groups.radio.add(radio.root);
 PICKABLE.push(...radio.pickables);
 
+/* ------------------------------------ utilities, skyway, orbital windows */
+
+// Bulk power, the AT&T microwave network and satellite swaths. The power and
+// microwave groups hang off their own base layers; the orbital track is an
+// overlay because it is a schedule, not a structure.
+const utilities = buildUtilities();
+groups.transmission.add(utilities.groups.power);
+groups.longlines.add(utilities.groups.longlines);
+world.add(utilities.groups.orbital);
+PICKABLE.push(...utilities.pickables);
+
 const OVERLAY_DEFS = [
   { id: "fires", name: "Fire perimeters (WIFIRE / FRAP lineage)", color: "#ea580c", on: true, group: () => overlays.groups.fires },
   { id: "radioCoverage", name: "Radio service contours", color: "#f0abfc", on: true, group: () => radio.groups.coverage },
   { id: "radioWavefront", name: "Propagation wavefront", color: "#c4b5fd", on: true, group: () => radio.groups.wavefront },
+  { id: "orbital", name: "Satellite ground track + swath", color: "#22d3ee", on: true, group: () => utilities.groups.orbital },
   { id: "quad", name: "USGS 7.5′ quad graticule", color: "#6b8ba3", on: false, group: () => overlays.groups.frames.getObjectByName("quad") },
   { id: "demTile", name: "1° 3DEP DEM delivery tiles", color: "#2dd4bf", on: true, group: () => overlays.groups.frames.getObjectByName("demTile") },
   { id: "sar", name: "SAR swath + InSAR deformation", color: "#a3e635", on: false, group: () => overlays.groups.sar },
@@ -910,6 +925,102 @@ if (relief) {
   });
 }
 
+/* -------------------------------------------------------- orbital panel */
+
+const orbitalState = { current: null };
+const orbitalSelect = $("orbitalSat");
+const orbitalStatsHost = $("orbitalStats");
+const orbitalWindowsHost = $("orbitalWindows");
+
+if (orbitalSelect) {
+  for (const sat of SATELLITES) {
+    const opt = document.createElement("option");
+    opt.value = sat.id;
+    opt.textContent = `${sat.name} · ${sat.kind === "sar" ? "SAR" : "optical"} · ${sat.repeatDays} d`;
+    orbitalSelect.append(opt);
+  }
+}
+
+/** Date → "YYYY-MM-DD HH:MM UTC". */
+function fmtUtc(d) {
+  return `${d.toISOString().slice(0, 10)} ${d.toISOString().slice(11, 16)} UTC`;
+}
+
+function showOrbitalFor(satId) {
+  const sat = SAT_BY_ID.get(satId);
+  if (!sat) return null;
+  const shown = utilities.showOrbital(satId, { bbox: BBOX, lon: CENTER.lon, lat: CENTER.lat });
+  orbitalState.current = satId;
+  const geom = trackGeometry(sat, CENTER.lat);
+
+  if (orbitalStatsHost) {
+    orbitalStatsHost.textContent = "";
+    const rows = [
+      ["platform", `${sat.name} · ${sat.agency}`],
+      ["instrument", sat.band],
+      ["orbit", `${sat.altitudeKm} km · ${sat.inclinationDeg}° · ${sat.periodMin} min`],
+      ["repeat", `${sat.repeatDays} days`],
+      ["swath", `${sat.swathKm} km · ${sat.resolution}`],
+      ["crossing here", `${formatHours(geom.localTime)} local solar, ${geom.pass}`],
+      ["track heading", `${geom.heading.toFixed(1)}° from north`],
+      ["other node", `${formatHours(geom.opposite.localTime)} local, ${geom.opposite.pass}, ${geom.opposite.heading.toFixed(1)}°`],
+    ];
+    for (const [k, v] of rows) {
+      const dt = document.createElement("dt");
+      dt.textContent = k;
+      const dd = document.createElement("dd");
+      dd.textContent = v;
+      orbitalStatsHost.append(dt, dd);
+    }
+  }
+
+  if (orbitalWindowsHost) {
+    orbitalWindowsHost.textContent = "";
+    const windows = nextWindows({
+      lat: CENTER.lat,
+      lon: CENTER.lon,
+      perSat: 3,
+      satellites: [sat],
+    });
+    for (const w of windows) {
+      const li = document.createElement("li");
+      li.textContent = `${fmtUtc(w.utc)} · ${w.localSolarLabel} local · ${w.pass} · hdg ${w.headingDeg.toFixed(0)}°`;
+      orbitalWindowsHost.append(li);
+    }
+    const li = document.createElement("li");
+    li.textContent = "dates nominal — anchored on cycleAnchorUtc, not on an observed acquisition";
+    orbitalWindowsHost.append(li);
+  }
+
+  setStatus(
+    `orbital · ${sat.name} · ${sat.swathKm} km swath · ${formatHours(geom.localTime)} local solar, ${geom.pass}`,
+  );
+  return shown;
+}
+
+// Source list for the three registers this panel and its neighbours draw on.
+const utilSrcHost = $("orbitalWindowsSources");
+if (utilSrcHost) {
+  for (const url of [...ORBITAL_SOURCE_URLS, ...UTILITY_SOURCE_URLS]) {
+    const li = document.createElement("li");
+    li.textContent = url;
+    utilSrcHost.append(li);
+  }
+}
+
+// Boot with the C-band workhorse drawn, so the overlay is not an empty toggle.
+showOrbitalFor(SATELLITES[0].id);
+if (orbitalSelect) orbitalSelect.value = SATELLITES[0].id;
+
+$("orbitalShow")?.addEventListener("click", () => showOrbitalFor(orbitalSelect?.value || SATELLITES[0].id));
+$("orbitalClear")?.addEventListener("click", () => {
+  utilities.clearOrbital();
+  orbitalState.current = null;
+  if (orbitalStatsHost) orbitalStatsHost.textContent = "";
+  if (orbitalWindowsHost) orbitalWindowsHost.textContent = "";
+  setStatus("orbital track cleared");
+});
+
 /* ----------------------------------------------------- gazetteer search */
 
 // ADL GSP ops (offline): search-name / search-box over the seed register.
@@ -1262,6 +1373,21 @@ const searchIndex = [
     label: site.name,
     meta: `transmitter site · ${EMITTERS.filter((e) => e.site === site.id).length} registered emitters`,
   })),
+  ...SUBSTATIONS.map((st) => ({
+    record: { id: `substation-${st.id}`, name: st.name, layer: "transmission", lon: st.lon, lat: st.lat },
+    label: st.name,
+    meta: `${st.operator}${st.approx ? " · generalized pin" : ""}`,
+  })),
+  ...TRANSMISSION.map((line) => ({
+    record: { id: `transmission-${line.id}`, name: line.name, layer: "transmission", lon: line.path[0][0], lat: line.path[0][1] },
+    label: line.name,
+    meta: `transmission · ${line.operator}`,
+  })),
+  ...LONGLINES.map((site) => ({
+    record: { id: `longline-${site.id}`, name: site.name, layer: "longlines", lon: site.lon, lat: site.lat },
+    label: `${site.name} — Long Lines`,
+    meta: `AT&T microwave relay${site.hardened ? " · hardened" : ""} · ${site.status}`,
+  })),
   ...EMITTERS.map((em) => ({
     record: {
       id: `radio-${em.id}`,
@@ -1601,6 +1727,8 @@ function rebuildDepths() {
   subGrid.position.y = depthY(-3000);
   overlays.rebuild();
   radio.rebuild();
+  utilities.rebuild();
+  if (orbitalState.current) showOrbitalFor(orbitalState.current);
   if (relief) {
     relief.resample();
     drawRelief();

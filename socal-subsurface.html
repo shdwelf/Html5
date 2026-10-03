@@ -151,6 +151,28 @@
     </div>
   </section>
 
+  <!-- PIP: orbital windows ------------------------------------------------ -->
+  <section class="pip" id="pipOrbital">
+    <div class="pip-head"><h2>ORBITAL WINDOWS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div class="gaz-controls">
+        <select id="orbitalSat" aria-label="Satellite"></select>
+      </div>
+      <div class="gaz-ops">
+        <button type="button" id="orbitalShow">SHOW SWATH</button>
+        <button type="button" id="orbitalClear">CLEAR</button>
+      </div>
+      <dl class="kv" id="orbitalStats"></dl>
+      <ul class="srcs" id="orbitalWindows"></ul>
+      <ul class="srcs" id="orbitalWindowsSources"></ul>
+      <p class="hint">
+        Repeat-cycle geometry, not an ephemeris. Local solar time and track heading are derived;
+        the calendar dates are anchored on a nominal epoch and are indicative until re-anchored
+        to one observed acquisition.
+      </p>
+    </div>
+  </section>
+
   <!-- PIP: detail ------------------------------------------------------- -->
   <section class="pip" id="pipDetail">
     <div class="pip-head"><h2>DOSSIER</h2><button type="button" data-min aria-label="Minimize">–</button></div>

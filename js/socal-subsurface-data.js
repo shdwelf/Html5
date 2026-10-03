@@ -39,6 +39,8 @@ const BASE_LAYERS = [
   { id: "offshore", name: "Offshore oil platforms + subsea lines", color: "#fb7185", kind: "line", on: true },
   { id: "industry", name: "Factories + quarries", color: "#c084fc", kind: "node", on: true },
   { id: "radio", name: "Radio towers + spectrum (FCC)", color: "#f0abfc", kind: "node", on: true },
+  { id: "transmission", name: "Transmission + substations (WECC paths)", color: "#fbbf24", kind: "line", on: true },
+  { id: "longlines", name: "AT&T Long Lines microwave skyway", color: "#cbd5e1", kind: "node", on: true },
 ];
 
 /** Overlay layers are declared in socal-overlays-data.js and registered by the app. */

@@ -308,6 +308,18 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 /* ---------- spectrum + relief PiPs ---------- */
 #pipRadio { top: 66px; right: 304px; width: 318px; }
 #pipRadio .pip-body { max-height: 54vh; }
+#pipOrbital { bottom: 34px; left: 362px; width: 300px; }
+#pipOrbital .pip-body { max-height: 42vh; }
+#orbitalSat {
+  flex: 1 1 auto; min-width: 0; max-width: none;
+  background: rgba(9, 16, 25, 0.9); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 3px;
+  font: inherit; font-size: 10px; padding: 4px;
+}
+#orbitalStats { margin-top: 7px; grid-template-columns: 108px 1fr; }
+#pipOrbital #orbitalWindows li { color: #9fb6c9; }
+#pipOrbital #orbitalWindowsSources { max-height: 72px; overflow: auto; }
+
 #pipRelief { bottom: 34px; right: 254px; width: 318px; }
 
 #radioProfileCanvas,
@@ -340,6 +352,7 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
   #pipOverlays { display: none; }
   #pipGaz { display: none; }
   #pipRadio { top: 96px; right: 10px; width: 250px; }
+  #pipOrbital { display: none; }
   #pipRelief { display: none; }
   .pip { width: 250px; }
 }
