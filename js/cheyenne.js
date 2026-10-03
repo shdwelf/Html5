@@ -319,10 +319,14 @@ function init() {
 
       /* mines ------------------------------------------------------------- */
       const mines = allMines().filter((m) => m.plate === plateId);
-      const mineGroup = new THREE.Group();
-      for (const m of mines) mineGroup.add(buildNodeGroup(plateId, m, m.layer));
-      p.group.add(mineGroup);
-      layerGroups[m.layer]?.push(mineGroup);
+      const minesByLayer = {};
+      for (const m of mines) (minesByLayer[m.layer] ??= []).push(m);
+      for (const [layerId, rows] of Object.entries(minesByLayer)) {
+        const mineGroup = new THREE.Group();
+        for (const m of rows) mineGroup.add(buildNodeGroup(plateId, m, layerId));
+        p.group.add(mineGroup);
+        layerGroups[layerId]?.push(mineGroup);
+      }
 
       /* corridors --------------------------------------------------------- */
       const corGroup = new THREE.Group();
@@ -825,9 +829,53 @@ function init() {
 /* --------------------------------------------------------------- exports */
 /* (nothing — this module is the app entry; boot-guarded for smoke tests)  */
 
+function bootFail(err) {
+  const card = document.createElement("div");
+  card.style.cssText =
+    "position:fixed;inset:1rem;z-index:999;background:#0a0f16;color:#ffd28a;" +
+    "border:1px solid #e0a020;padding:1rem 1.2rem;" +
+    "font:14px/1.55 ui-monospace,monospace;overflow:auto;" +
+    "white-space:pre-wrap;border-radius:8px;";
+  const close = document.createElement("button");
+  close.type = "button";
+  close.textContent = "✕ close";
+  close.style.cssText =
+    "position:absolute;top:0.6rem;right:0.8rem;background:none;" +
+    "border:1px solid #e0a020;color:#ffd28a;border-radius:4px;" +
+    "padding:0.1rem 0.5rem;font:inherit;cursor:pointer;";
+  close.addEventListener("click", () => card.remove());
+  card.appendChild(close);
+  const msg = document.createElement("div");
+  msg.textContent =
+    "CHEYENNE / ANGELES 4Dwm failed to start.\n\n" +
+    (err && err.message ? err.message : String(err)) +
+    "\n\nThis theater needs WebGL (WebGL2 preferred). Some webxdc hosts and " +
+    "simulators run without GPU access — open the static bundle " +
+    "(public/apps/cheyenne/index.html) or cheyenne.html in a full browser instead.";
+  card.appendChild(msg);
+  document.body.appendChild(card);
+}
+
 if (typeof window !== "undefined" && typeof document !== "undefined") {
   const start = () => {
-    if (document.getElementById("stage")) init();
+    const canvas = document.getElementById("stage");
+    if (!canvas) return;
+    let gl = null;
+    try {
+      gl = canvas.getContext("webgl2") || canvas.getContext("webgl");
+    } catch (err) {
+      /* fall through to the guard below */
+    }
+    if (!gl) {
+      bootFail(new Error("WebGL is not available in this host."));
+      return;
+    }
+    try {
+      init();
+    } catch (err) {
+      console.error(err);
+      bootFail(err);
+    }
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
