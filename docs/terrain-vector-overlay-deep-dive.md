@@ -151,6 +151,37 @@ converting, you will be metres off and the error will look like a real signal.
    — corridors, fire rings, CLUI pins, the minimap — drapes automatically,
    because they all already go through one function.
 
+**That recipe is now implemented.** `scripts/fetch-3dep-dem.py` carries three
+retrieval paths — the 3DEP dynamic ImageServer, OpenTopography's `usgsdem`
+API (free key; 1″ and 1/3″ open to registered users, 1 m academic-only), and
+the National Map's TNM Access API — resamples to the app lattice and emits a
+base64 `Int16Array` ES module. `js/socal-geo.js` gained `installDem(grid)`,
+`demInfo()` and a bilinear `demSample()`; `elevationAt()` is now DEM-first and
+falls back to the gaussian field. The app imports `js/socal-dem-grid.js`
+dynamically and degrades silently when it is absent, which is the shipped
+state — the grid is a large binary asset and this theater runs offline from a
+`.xdc`.
+
+```
+python3 scripts/fetch-3dep-dem.py --nx 190 --ny 150 --out js/socal-dem-grid.js
+```
+
+**Programme status.** 3DEP had terrestrial lidar over **98.3 %** of the nation
+at the end of FY2024; baseline collection is expected complete in **2026** and
+the seamless national map in **2027**, with next-generation QL1 recollection
+funded since FY2023. The programme runs about $259 M/yr against an estimated
+$7.6 B/yr in benefits. In development: a **seamless 1 m bare-earth DEM** and a
+seamless topobathymetric DEM, plus federated 3D Nation access. Seamless
+resolutions remain 1/3″, 1″ and 2″ (Alaska); 1/9″ and 1 m stay project-seamless
+only.
+
+**The test that matters.** With the synthetic field, HAAT computed to
+47 CFR 73.313 over Mount Wilson comes out near 290 m against a filed 981 m.
+That gap is a direct, numeric measurement of how wrong the elevation field is,
+and it is displayed in the spectrum panel next to the filed value. When a real
+grid is installed the two should converge; until then the propagation layer
+prefers the filed figure and says so.
+
 ---
 
 ## 4. SAR — what radar adds that a DEM cannot
@@ -333,5 +364,41 @@ It is a land-use register, not a navigation chart.
   ("later call the flyer"). Hook goes in `renderDetail()`; it already builds
   every field a flyer needs.
 - Real FRAP geometry in place of the scaled rings.
-- Real 3DEP 1/3 arc-second grid in place of `elevationAt()`.
+- ~~Real 3DEP 1/3 arc-second grid in place of `elevationAt()`~~ — the loader,
+  the resampler and the retrieval script now exist (§3). What is still open is
+  *shipping a grid*: generating the asset requires network access to 3DEP and
+  a geospatial toolchain, and the result is a large binary in a repo that
+  packages itself as a `.xdc`.
 - A rectified DjVu quad (Cajon Pass, 1953 or earlier) as a draped texture.
+- Longley-Rice / ITM in place of the knife-edge + contour hybrid in
+  `js/socal-propagation.js`, which is the only way to claim agreement with
+  OET-69. See `docs/socal-radio-propagation.md` §7.
+- Directional antenna patterns and depression-angle correction for the
+  broadcast emitters; every one is currently omnidirectional.
+- Transmission corridor geometry from CEC or HIFLD GIS rather than reading
+  lines, and the rest of the Long Lines network inside the frame. See
+  `docs/socal-utilities-orbital.md` §4.
+- Re-anchoring each satellite's `cycleAnchorUtc` to one observed acquisition,
+  which turns the orbital window dates from nominal into real.
+
+---
+
+## 9. What this pass added
+
+Four registers and the maths under them, documented in two new companion
+files:
+
+| Layer | Module | Doc |
+| --- | --- | --- |
+| Radio towers + spectrum (FCC) | `js/socal-radio-data.js`, `js/socal-radio.js` | `socal-radio-propagation.md` §4 |
+| Radiowave propagation | `js/socal-propagation.js` | `socal-radio-propagation.md` §2 |
+| Relief map + terrain shading | `js/socal-relief.js` | `socal-radio-propagation.md` §5 |
+| Transmission + substations | `js/socal-utilities-data.js` | `socal-utilities-orbital.md` §1 |
+| AT&T Long Lines skyway | `js/socal-utilities.js` | `socal-utilities-orbital.md` §2 |
+| Satellite ground track + swath | `js/socal-orbital.js` | `socal-utilities-orbital.md` §3 |
+
+The connective tissue is that they all read the same elevation field. The
+propagation core interrogates terrain rather than draping on it, which is what
+makes the synthetic surface's limits visible: a Long Lines hop that the model
+calls blocked, over ground the 1960s commissioned and ran for forty years, is
+the elevation field telling on itself.

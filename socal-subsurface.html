@@ -27,6 +27,7 @@
         <option value="underground">VIEW · UNDERGROUND</option>
       </select>
       <button type="button" id="btnXray" aria-pressed="false">X-RAY</button>
+      <button type="button" id="btnRelief" aria-pressed="false">RELIEF</button>
       <button type="button" id="btnWire" aria-pressed="false">WIREFRAME</button>
       <button type="button" id="btnLabels" aria-pressed="true">LABELS</button>
       <button type="button" id="btnReset">RESET</button>
@@ -106,6 +107,69 @@
       <ul class="srcs" id="fireSources"></ul>
       <p class="hint" style="margin-top:8px">off-frame register</p>
       <div id="offFrameList"></div>
+    </div>
+  </section>
+
+  <!-- PIP: radio spectrum ----------------------------------------------- -->
+  <section class="pip" id="pipRadio">
+    <div class="pip-head"><h2>SPECTRUM · FCC</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div class="gaz-classes" id="radioBands" aria-label="Band filters"></div>
+      <div class="gaz-controls">
+        <select id="radioEmitter" aria-label="Transmitter facility"></select>
+      </div>
+      <div class="gaz-ops">
+        <button type="button" id="radioShow">COVERAGE</button>
+        <button type="button" id="radioProfile">PATH → TARGET</button>
+        <button type="button" id="radioClear">CLEAR</button>
+      </div>
+      <dl class="kv" id="radioStats"></dl>
+      <canvas id="radioProfileCanvas" width="300" height="130" aria-label="Terrain path profile with Fresnel zone"></canvas>
+      <p class="hint" id="radioProfileNote">Path profile: pick a facility, aim the camera at a place, then PATH → TARGET.</p>
+      <p class="hint" style="margin-top:6px">
+        Terrain-aware ray march (free space + ITU-R P.526 knife-edge over a 4/3 earth) in solid line;
+        the FCC smooth-earth contour at the same ERP/HAAT dashed. Neither is Longley-Rice.
+      </p>
+      <ul class="srcs" id="radioSources"></ul>
+    </div>
+  </section>
+
+  <!-- PIP: relief map ----------------------------------------------------- -->
+  <section class="pip" id="pipRelief">
+    <div class="pip-head"><h2>RELIEF MAP</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <canvas id="reliefCanvas" width="300" height="236" aria-label="Shaded relief map of the theater"></canvas>
+      <div class="gaz-ops" style="margin-top:6px">
+        <button type="button" id="reliefMode" data-mode="hypso">TINT · HYPSO</button>
+        <button type="button" id="reliefContour" data-step="500">CONTOUR 500 m</button>
+      </div>
+      <div class="slider-row">
+        <label for="reliefSun">illumination azimuth <span id="reliefSunVal">315°</span></label>
+        <input type="range" id="reliefSun" min="0" max="350" step="10" value="315" />
+      </div>
+      <p class="hint" id="reliefSource">—</p>
+    </div>
+  </section>
+
+  <!-- PIP: orbital windows ------------------------------------------------ -->
+  <section class="pip" id="pipOrbital">
+    <div class="pip-head"><h2>ORBITAL WINDOWS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div class="gaz-controls">
+        <select id="orbitalSat" aria-label="Satellite"></select>
+      </div>
+      <div class="gaz-ops">
+        <button type="button" id="orbitalShow">SHOW SWATH</button>
+        <button type="button" id="orbitalClear">CLEAR</button>
+      </div>
+      <dl class="kv" id="orbitalStats"></dl>
+      <ul class="srcs" id="orbitalWindows"></ul>
+      <ul class="srcs" id="orbitalWindowsSources"></ul>
+      <p class="hint">
+        Repeat-cycle geometry, not an ephemeris. Local solar time and track heading are derived;
+        the calendar dates are anchored on a nominal epoch and are indicative until re-anchored
+        to one observed acquisition.
+      </p>
     </div>
   </section>
 
