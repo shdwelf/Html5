@@ -17,6 +17,7 @@ windows for HUD, layers, dossier and a plan-view minimap.
 | Layer | Contents |
 | --- | --- |
 | Terrain | Generalized relief shell for the transect: Sierra south, Tehachapi, San Gabriel/San Bernardino/San Jacinto, Mojave block, Peninsular ranges, LA Basin, San Joaquin floor, Salton Trough, Pacific shelf; now extended north to the Long Valley caldera, Mammoth, Mono Basin and Bodie Hills |
+| USGS Gazetteer | 78 curated GNIS / The National Map control points: populated places, summits, gaps, ranges, valleys, basins, lakes, reservoirs and coastal names. Embedded offline from the July 2026 service refresh; search from the HUD |
 | Aqueducts | Colorado River Aqueduct (MWD), California Aqueduct / SWP East + West Branch (DWR), Los Angeles Aqueduct (LADWP), Silverwood Lake / San Bernardino Tunnel |
 | Refined products | CALNEV Colton → Las Vegas (14"/8", Kinder Morgan) plus the ~55 mi Edwards AFB lateral; SFPP North Line out of Watson/Carson |
 | Crude + gas | San Joaquin heavy-crude trunk (Kern → LA refineries); SoCalGas Topock → basin backbone; Las Flores / Gaviota crude pipeline context |
@@ -59,8 +60,9 @@ excavation data.
 
 ## Controls
 
+- Search the **HUD · USGS GAZETTEER** box by name, GNIS class, county or theater feature; choose a result to fly to it and open its dossier.
 - Drag to orbit, wheel to zoom, right-drag to pan.
-- Click a pip, pipe, aqueduct or rail tube → DOSSIER PiP fills with facts + sources.
+- Click a GNIS control, pip, pipe, aqueduct or rail tube → DOSSIER PiP fills with facts + sources.
 - **X-RAY** makes the terrain translucent so the buried systems read through it.
 - **WIREFRAME** overlays the DEM lattice; **LABELS** toggles the 2D callouts.
 - HUD sliders: terrain exaggeration (linear) and depth scale.
@@ -73,6 +75,11 @@ excavation data.
   alignments, not as-builts, not dig tickets. Call 811.
 - Terrain is a synthesized gaussian-relief field, not a DEM download — shape is
   right, individual contours are not.
+- Gazetteer points are rounded GNIS primary/control locations. For a valley,
+  range, basin, lake or channel the point identifies the name; it does **not**
+  define the feature's extent. This is a curated landmark set, not every GNIS
+  record in the frame. Refresh/audit it with
+  `node tools/socal-gazetteer-query.mjs > /tmp/socal-gnis.json`.
 - **Depth is logarithmic.** A products line at 1.5 m and a geothermal
   production zone at 2,000 m cannot share a linear axis on a 700 km stage, so
   `depthY()` compresses with a log10 ramp. Ordering and magnitude survive;

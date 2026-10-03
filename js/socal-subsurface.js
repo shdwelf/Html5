@@ -265,6 +265,8 @@ for (const item of CORRIDORS) {
 
 function nodeHeadGeometry(kind) {
   switch (kind) {
+    case "gazetteer":
+      return new THREE.OctahedronGeometry(0.09, 0);
     case "geothermal":
       return new THREE.OctahedronGeometry(0.2);
     case "oil":
@@ -309,14 +311,16 @@ for (const node of NODES) {
   const g = new THREE.Group();
   g.position.set(x, surf, z);
 
-  const color = new THREE.Color(TIER_COLOR[node.tier] || layer.color);
+  const color = new THREE.Color(node.kind === "gazetteer" ? layer.color : TIER_COLOR[node.tier] || layer.color);
+  const isGazetteer = node.kind === "gazetteer";
+  const mastHeight = isGazetteer ? 0.24 : 0.9;
 
-  // Mast + head: readable from any azimuth.
+  // Mast + head: GNIS controls stay deliberately quiet beside infrastructure.
   const mast = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.035, 0.035, 0.9, 6),
+    new THREE.CylinderGeometry(isGazetteer ? 0.014 : 0.035, isGazetteer ? 0.014 : 0.035, mastHeight, 6),
     new THREE.MeshStandardMaterial({ color, emissive: color.clone().multiplyScalar(0.3), roughness: 0.5 }),
   );
-  mast.position.y = 0.45;
+  mast.position.y = mastHeight / 2;
   g.add(mast);
 
   const headGeo = nodeHeadGeometry(node.kind);
@@ -324,13 +328,13 @@ for (const node of NODES) {
     headGeo,
     new THREE.MeshStandardMaterial({ color, emissive: color.clone().multiplyScalar(0.45), roughness: 0.35, metalness: 0.2 }),
   );
-  head.position.y = 1.0;
+  head.position.y = isGazetteer ? 0.3 : 1.0;
   head.userData = { record: node, kind: "node" };
   g.add(head);
   PICKABLE.push(head);
 
   const ring = new THREE.Mesh(
-    new THREE.RingGeometry(0.24, 0.32, 28).rotateX(-Math.PI / 2),
+    new THREE.RingGeometry(isGazetteer ? 0.1 : 0.24, isGazetteer ? 0.14 : 0.32, 28).rotateX(-Math.PI / 2),
     new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.45, side: THREE.DoubleSide }),
   );
   ring.position.y = 0.02;
@@ -382,8 +386,9 @@ for (const def of OVERLAY_DEFS) {
 const labelHost = $("labels");
 const labelEls = new Map();
 for (const { node } of nodeMeshes) {
+  if (node.kind === "gazetteer" && node.labelPriority !== 1) continue;
   const el = document.createElement("div");
-  el.className = `lbl t-${node.tier}`;
+  el.className = `lbl t-${node.kind === "gazetteer" ? "gazetteer" : node.tier}`;
   el.textContent = node.name.split("—")[0].trim().slice(0, 40);
   labelHost.append(el);
   labelEls.set(node.id, el);
@@ -410,6 +415,7 @@ function setStatus(text) {
 
 const layerHost = $("layerList");
 const layerState = new Map(LAYERS.map((l) => [l.id, l.on]));
+const layerInputs = new Map();
 
 for (const l of LAYERS) {
   const row = document.createElement("label");
@@ -417,6 +423,7 @@ for (const l of LAYERS) {
   const cb = document.createElement("input");
   cb.type = "checkbox";
   cb.checked = l.on;
+  layerInputs.set(l.id, cb);
   cb.addEventListener("change", () => {
     layerState.set(l.id, cb.checked);
     groups[l.id].visible = cb.checked;
@@ -530,6 +537,9 @@ function renderDetail(record) {
   const layer = LAYERS.find((l) => l.id === record.layer);
   const rows = [["layer", layer ? layer.name : record.layer]];
   if (record.lon !== undefined) rows.push(["position", `${record.lat.toFixed(3)}°N ${Math.abs(record.lon).toFixed(3)}°W`]);
+  if (record.featureClass) rows.push(["GNIS class", record.featureClass]);
+  if (record.county) rows.push(["county", record.county]);
+  if (record.gnisId) rows.push(["GNIS feature ID", String(record.gnisId)]);
   if (record.path) {
     rows.push(["endpoints", `${fmtLL(record.path[0])} → ${fmtLL(record.path[record.path.length - 1])}`]);
     rows.push(["plotted", `${pathKm(record.path).toFixed(0)} km (generalized)`]);
@@ -629,6 +639,91 @@ function select(obj) {
   const pip = $("pipDetail");
   if (pip) pip.classList.remove("min");
 }
+
+/* ---------------------------------------------------- gazetteer search */
+
+const searchInput = $("searchBox");
+const searchResults = $("searchResults");
+const foldSearch = (value) => value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
+const searchIndex = [
+  ...NODES.map((record) => ({
+    record,
+    label: record.name,
+    meta: record.kind === "gazetteer"
+      ? `USGS GNIS · ${record.featureClass} · ${record.county} County`
+      : `theater feature · ${LAYERS.find((l) => l.id === record.layer)?.name || record.layer}`,
+  })),
+  ...CORRIDORS.map((record) => ({
+    record,
+    label: record.name,
+    meta: `corridor · ${LAYERS.find((l) => l.id === record.layer)?.name || record.layer}`,
+  })),
+].map((item) => ({ ...item, key: foldSearch(`${item.label} ${item.meta}`) }));
+
+function revealLayer(layerId) {
+  if (!groups[layerId]) return;
+  groups[layerId].visible = true;
+  layerState.set(layerId, true);
+  const input = layerInputs.get(layerId);
+  if (input) input.checked = true;
+  refreshCounts();
+}
+
+function flyToRecord(record) {
+  let lon = record.lon;
+  let lat = record.lat;
+  if (record.path?.length) {
+    const mid = record.path[Math.floor(record.path.length / 2)];
+    [lon, lat] = mid;
+  }
+  if (!Number.isFinite(lon) || !Number.isFinite(lat)) return;
+  const [x, z] = project(lon, lat);
+  const y = elevY(elevationAt(lon, lat));
+  controls.target.set(x, y + 0.25, z);
+  camera.position.set(x + 3.6, y + 3.0, z + 4.6);
+  controls.update();
+  revealLayer(record.layer);
+
+  const nodeHit = nodeMeshes.find((entry) => entry.node === record)?.head;
+  const corridorHit = corridorMeshes.find((entry) => entry.item === record)?.mesh;
+  select(nodeHit || corridorHit || null);
+}
+
+function runSearch() {
+  if (!searchInput || !searchResults) return;
+  const query = foldSearch(searchInput.value.trim());
+  searchResults.replaceChildren();
+  if (query.length < 2) return;
+  const hits = searchIndex
+    .filter((item) => item.key.includes(query))
+    .sort((a, b) => {
+      const ar = foldSearch(a.label).startsWith(query) ? 0 : 1;
+      const br = foldSearch(b.label).startsWith(query) ? 0 : 1;
+      return ar - br || a.label.localeCompare(b.label);
+    })
+    .slice(0, 12);
+
+  for (const item of hits) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "search-hit";
+    const name = document.createElement("span");
+    name.textContent = item.label;
+    const meta = document.createElement("small");
+    meta.textContent = item.meta;
+    button.append(name, meta);
+    button.addEventListener("click", () => flyToRecord(item.record));
+    searchResults.append(button);
+  }
+  if (!hits.length) {
+    const empty = document.createElement("p");
+    empty.className = "hint";
+    empty.textContent = "No match in the embedded USGS gazetteer or theater register.";
+    searchResults.append(empty);
+  }
+}
+searchInput?.addEventListener("input", runSearch);
+$("gazetteerSearch")?.addEventListener("submit", (event) => event.preventDefault());
 
 let downAt = null;
 renderer.domElement.addEventListener("pointerdown", (e) => {
