@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
   <title>SOCAL SUBSURFACE 4Dwm — underground pipeline theater</title>
-  <meta name="description" content="Three.js theater of Southern California's buried infrastructure: aqueducts, product pipelines, rail corridors, geothermal fields and desert sites." />
+  <meta name="description" content="Three.js theater of Southern California's buried infrastructure with an offline USGS GNIS gazetteer: aqueducts, product pipelines, rail corridors, geothermal fields and desert sites." />
   <link rel="stylesheet" href="./css/socal-subsurface.css" />
 </head>
 <body>
@@ -33,10 +33,15 @@
     </div>
   </header>
 
-  <!-- PIP: HUD ---------------------------------------------------------- -->
+  <!-- PIP: HUD + offline USGS gazetteer -------------------------------- -->
   <section class="pip" id="pipHud">
-    <div class="pip-head"><h2>HUD</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-head"><h2>HUD · USGS GAZETTEER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
     <div class="pip-body">
+      <form class="search-row" id="gazetteerSearch" role="search">
+        <label class="sr-only" for="searchBox">Search the offline USGS gazetteer and theater features</label>
+        <input type="search" id="searchBox" placeholder="find GNIS name or theater feature…" autocomplete="off" />
+        <div id="searchResults" aria-live="polite"></div>
+      </form>
       <dl class="kv">
         <dt>camera</dt><dd id="hudCam">—</dd>
         <dt>target</dt><dd id="hudTarget">—</dd>

@@ -14,6 +14,7 @@
  */
 
 import { EXTRA_LAYERS, EXTRA_NODES } from "./socal-sites-extended.js";
+import { SOCAL_GAZETTEER } from "./socal-gazetteer-data.js";
 
 export const BBOX = { lon0: -121.6, lon1: -114.0, lat0: 32.45, lat1: 38.35 };
 export const CENTER = { lon: -117.95, lat: 34.6 };
@@ -24,6 +25,7 @@ export const UNITS_PER_KM = 0.1;
 
 const BASE_LAYERS = [
   { id: "terrain", name: "Terrain / basin shell", color: "#3c5a70", kind: "surface", on: true },
+  { id: "gazetteer", name: "USGS GNIS gazetteer · named features", color: "#b8c7d1", kind: "node", on: true },
   { id: "water", name: "Aqueducts (surface + siphon)", color: "#38bdf8", kind: "line", on: true },
   { id: "products", name: "Refined-product pipelines", color: "#f59e0b", kind: "line", on: true },
   { id: "crude", name: "Crude + gas trunk lines", color: "#ef4444", kind: "line", on: true },
@@ -1363,7 +1365,7 @@ const BASE_NODES = [
   },
 ];
 
-export const NODES = [...BASE_NODES, ...EXTRA_NODES];
+export const NODES = [...BASE_NODES, ...EXTRA_NODES, ...SOCAL_GAZETTEER];
 
 export const TIER_COLOR = {
   official: "#ffb020",
