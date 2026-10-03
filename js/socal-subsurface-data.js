@@ -14,7 +14,6 @@
  */
 
 import { EXTRA_LAYERS, EXTRA_NODES } from "./socal-sites-extended.js";
-import { SOCAL_GAZETTEER } from "./socal-gazetteer-data.js";
 
 export const BBOX = { lon0: -121.6, lon1: -114.0, lat0: 32.45, lat1: 38.35 };
 export const CENTER = { lon: -117.95, lat: 34.6 };
@@ -39,7 +38,7 @@ const BASE_LAYERS = [
   { id: "harbors", name: "Harbors + marine terminals", color: "#0ea5e9", kind: "node", on: true },
   { id: "offshore", name: "Offshore oil platforms + subsea lines", color: "#fb7185", kind: "line", on: true },
   { id: "industry", name: "Factories + quarries", color: "#c084fc", kind: "node", on: true },
-  { id: "gazetteer", name: "USGS GNIS gazetteer register", color: "#f8fafc", kind: "node", on: true },
+  { id: "radio", name: "Radio towers + spectrum (FCC)", color: "#f0abfc", kind: "node", on: true },
 ];
 
 /** Overlay layers are declared in socal-overlays-data.js and registered by the app. */
@@ -1365,7 +1364,11 @@ const BASE_NODES = [
   },
 ];
 
-export const NODES = [...BASE_NODES, ...EXTRA_NODES, ...SOCAL_GAZETTEER];
+// The USGS GNIS register is NOT folded into NODES: it is drawn from GAZ_ROWS
+// by the gazetteer pass in socal-subsurface.js, with its own class symbology
+// and its own verified/seed tier split. Spreading it here would double-plot
+// every named feature.
+export const NODES = [...BASE_NODES, ...EXTRA_NODES];
 
 export const TIER_COLOR = {
   official: "#ffb020",
