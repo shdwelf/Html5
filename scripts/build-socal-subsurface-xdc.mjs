@@ -46,6 +46,8 @@ for (const f of [
   "socal-overlays.js",
   "socal-overlays-data.js",
   "socal-sites-extended.js",
+  "socal-gazetteer.js",
+  "socal-gazetteer-data.js",
 ]) {
   await copyFile(path.join(root, "js", f), path.join(appDir, "js", f));
 }
