@@ -42,6 +42,7 @@ await copyFile(path.join(root, "css", "socal-subsurface.css"), path.join(appDir,
 for (const f of [
   "socal-subsurface.js",
   "socal-subsurface-data.js",
+  "socal-gazetteer-data.js",
   "socal-geo.js",
   "socal-overlays.js",
   "socal-overlays-data.js",
