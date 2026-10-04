@@ -1,5 +1,25 @@
 {
   "$comment": "Machine-readable ledger of the Google Drive backup area for shdwelf/Html5, as audited on 2026-10-04. Narrative: docs/drive-repo-sync-2026-10-04.md. Re-check the repository side with: node scripts/drive-sync-audit.mjs",
+  "$comment_tooling": "The rsync-style sync channel. The manifests fully determine the comparison and are ~1 KB per 100 files, so the diff runs on hashes alone and bytes move only for the files proven missing. Nothing here can run until the Drive files are link-readable; fetch.py reports NOT-SHARED rather than writing a sign-in page to disk.",
+  "tooling": {
+    "requests": ".arena-drive/requests.txt",
+    "fetch": ".arena-drive/fetch.py",
+    "workflow": ".github/workflows/arena-drive-sync.yml",
+    "diff": "scripts/drive-rsync-diff.mjs",
+    "apply": "scripts/drive-sync-apply.mjs",
+    "audit": "scripts/drive-sync-audit.mjs",
+    "reports": "docs/drive-sync/",
+    "manifests_needed": [
+      { "drive_id": "1kCD-Nq6-XoGfAfbTpQlCy0iCj-di0I9S", "name": "Html5-file-manifest-2026-09-27-12c463f.sha256", "size": 79963, "covers": "827 files at 12c463f — the only source for the 25 chipwright paths and hashes" },
+      { "drive_id": "1TE0RY_-B0xhfLZg7DqW6F8t1rTCAmCsP", "name": "Html5-file-manifest-2026-09-28-ee1ec85.sha256", "size": 135713, "covers": "1313 files at ee1ec85 — holds 559fb69, the lost pub-crawl resolution" },
+      { "drive_id": "10cPMbBD4ckfP6jnBz8f3YXdXmdgBhVTj", "name": "Html5-file-manifest-2026-09-29-6635490.sha256", "size": 138630, "covers": "1342 files at 6635490 — the newest full snapshot" }
+    ],
+    "payloads_needed_only_to_restore_bytes": [
+      { "drive_id": "18353TsKE03vnXnbDT4jg2yKFTO6rNpmv", "name": "chipwright-xdc-12c463f.zip", "size": 400183, "note": "smallest useful restore: the packed app alone" },
+      { "drive_id": "1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV", "name": "Html5-worktree-2026-09-27-12c463f.tar.gz", "size": 33141885, "note": "only source for the 25 chipwright source files" },
+      { "drive_id": "1eCBX34mZ4DXrntc-Wp2vlgnZ1gXMKwu7", "name": "Html5-worktree-2026-09-28-ee1ec85.tar.gz", "size": 97889803, "note": "only source for 559fb69's evidence" }
+    ]
+  },
   "audited": "2026-10-04",
   "repo": "shdwelf/Html5",
   "repo_state_at_audit": {

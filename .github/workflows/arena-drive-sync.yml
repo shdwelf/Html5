@@ -1,0 +1,125 @@
+name: arena-drive-sync
+
+# Reconciles the Google Drive backup area with this repository, and commits the
+# delta. It exists for the same reason arena-archive-fetch.yml does: the
+# development sandbox's egress is allowlisted to GitHub/PyPI/npm, so
+# drive.google.com fails at the TLS handshake there, while a runner has
+# ordinary internet access. The workflow is the egress channel.
+#
+# It is rsync-shaped on purpose. The manifests are a few hundred KB of hashes
+# and fully determine the comparison, so the default run moves only those and
+# computes the file-level diff from them. Tarballs (33-96 MB) are fetched only
+# when a line for one is uncommented in requests.txt, and are never committed —
+# only the files the diff proves are missing here.
+#
+# Requires the Drive files to be link-readable. They are not by default, and
+# this workflow cannot change that: granting and revoking sharing is a human
+# step. Unshared files are reported as NOT-SHARED and the run still completes.
+
+on:
+  push:
+    paths:
+      - '.arena-drive/requests.txt'
+      - '.arena-drive/fetch.py'
+      - '.github/workflows/arena-drive-sync.yml'
+  workflow_dispatch:
+    inputs:
+      restore:
+        description: 'Copy missing files out of an unpacked snapshot (needs a tarball enabled in requests.txt)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The diff compares against real history; a shallow clone cannot tell
+          # "absent from history" from "absent from the clone", which is the
+          # exact mistake this whole reconciliation exists to avoid.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Fetch Drive artifacts
+        run: python3 .arena-drive/fetch.py
+
+      - name: Diff every manifest against this tree
+        run: |
+          mkdir -p docs/drive-sync
+          shopt -s nullglob
+          found=0
+          for m in .arena-drive/payload/*.sha256; do
+            found=1
+            name=$(basename "$m" .sha256)
+            echo "::group::$name"
+            # Non-zero exit just means "they differ", which is the normal and
+            # interesting case — do not let it fail the step.
+            node scripts/drive-rsync-diff.mjs "$m" --tracked-only \
+              | tee "docs/drive-sync/$name.txt" || true
+            node scripts/drive-rsync-diff.mjs "$m" --tracked-only --json \
+              > "docs/drive-sync/$name.json" || true
+            cp "$m" "docs/drive-sync/$name.sha256"
+            echo "::endgroup::"
+          done
+          [ "$found" = 1 ] || echo "No manifests arrived — see .arena-drive/fetch.log (likely NOT-SHARED)."
+
+      - name: Restore the delta
+        if: inputs.restore
+        run: |
+          shopt -s nullglob
+          for t in .arena-drive/payload/*.tar.gz; do
+            mkdir -p /tmp/snap && tar xzf "$t" -C /tmp/snap
+            root=$(find /tmp/snap -maxdepth 1 -mindepth 1 -type d | head -1)
+            base=$(basename "$t" .tar.gz)
+            stamp=${base##*-}                       # e.g. 12c463f
+            man=$(ls .arena-drive/payload/*"$stamp"*.sha256 2>/dev/null | head -1)
+            [ -n "$man" ] || { echo "no manifest matching $stamp; skipping $t"; continue; }
+            node scripts/drive-sync-apply.mjs --manifest "$man" --snapshot "$root" --write
+          done
+          for z in .arena-drive/payload/*.zip; do unzip -o "$z" -d .arena-drive/payload/unzipped; done
+
+      - name: Re-check the ledger
+        if: always()
+        run: node scripts/drive-sync-audit.mjs || true
+
+      - name: Commit the delta
+        if: always()
+        run: |
+          git config user.name arena-drive-sync
+          git config user.email arena-drive-sync@users.noreply.github.com
+          # Deliberately NOT adding .arena-drive/payload — it is gitignored and
+          # holds up to 96 MB of tarball. Only hashes, reports and recovered
+          # files belong in the repository.
+          git add -A docs/drive-sync .arena-drive/fetch.log
+          git add -A -- ':!.arena-drive/payload'
+          git diff --cached --quiet && { echo "nothing changed"; exit 0; }
+          git commit -q -m "drive-sync: reconcile with the Drive backup area"
+          for i in 1 2 3 4 5; do
+            git push origin HEAD:${GITHUB_REF_NAME} && break || {
+              git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; }
+          done
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Drive sync"
+            echo '```'
+            cat .arena-drive/fetch.log 2>/dev/null || echo "no fetch log"
+            echo '```'
+            for r in docs/drive-sync/*.txt; do
+              [ -f "$r" ] || continue
+              echo "#### $(basename "$r" .txt)"
+              echo '```'
+              head -30 "$r"
+              echo '```'
+            done
+          } >> "$GITHUB_STEP_SUMMARY"

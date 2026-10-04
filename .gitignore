@@ -8,6 +8,10 @@ node_modules/
 .relay/
 .arena-relay/run*
 
+# Drive sync payload: 33-96 MB snapshot tarballs fetched by a runner.
+# Only the manifests, diff reports and recovered files are committed.
+.arena-drive/payload/
+
 # RTL simulation outputs (regenerable: python3 tools/verify_rtl.py)
 sim/*.cc
 sim/vchip_rtl

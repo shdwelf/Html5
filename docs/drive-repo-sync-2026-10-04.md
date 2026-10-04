@@ -261,12 +261,7 @@ sha256sum chipwright.xdc
 node scripts/drive-sync-audit.mjs
 ```
 
-**Alternatively, use the egress channel this repository already has.** The
-`.arena-archive/fetch.py` + Actions pattern exists precisely because the sandbox
-cannot reach the open internet while a runner can. A Drive file shared with
-link-access would be fetchable by a runner and committed back the same way.
-That requires a deliberate decision to expose those files, briefly and
-intentionally — it is not done here.
+**Or use the sync channel, which is now built.** See §7.
 
 **Backup hygiene, in priority order:**
 
@@ -285,7 +280,77 @@ true — including the day chipwright comes back.
 
 ---
 
-## 7. Audit note
+## 7. The sync channel
+
+Reconciling by hand does not scale past one audit, so the comparison is now a
+tool. It is deliberately rsync-shaped.
+
+**Why manifests, not tarballs.** Every Html5 backup on Drive ships a `.sha256`
+manifest beside its tarball — `sha256sum` output, one line per file. That
+manifest *fully determines* the comparison, and it is three orders of magnitude
+smaller than the payload: 80 KB of hashes describes a 33 MB snapshot; 139 KB
+describes 96 MB. So the diff runs on hashes alone, and bytes move only for the
+files that actually turn out to be missing. Same trick rsync plays, same reason.
+
+| piece | role |
+| --- | --- |
+| [`.arena-drive/requests.txt`](../.arena-drive/requests.txt) | Drive file IDs → output names, with Drive's own byte counts as the expectation |
+| [`.arena-drive/fetch.py`](../.arena-drive/fetch.py) | runner-side fetch; size-checked, sha256'd, rejects rather than writes on mismatch |
+| [`.github/workflows/arena-drive-sync.yml`](../.github/workflows/arena-drive-sync.yml) | the egress channel, modelled on `arena-archive-fetch.yml` |
+| [`scripts/drive-rsync-diff.mjs`](../scripts/drive-rsync-diff.mjs) | the diff: identical / differing / only-on-Drive / only-in-repo |
+| [`scripts/drive-sync-apply.mjs`](../scripts/drive-sync-apply.mjs) | the update: copies only the missing set, re-hashing each file as it lands |
+| [`scripts/drive-sync-audit.mjs`](../scripts/drive-sync-audit.mjs) | the ledger check, which flips to `RESTORED` once content comes back |
+
+### What it does and does not touch
+
+- Never overwrites a file that already exists here. Recovering lost content must
+  not clobber current work, so a path present on both sides is reported and
+  skipped, even when the bytes differ.
+- Re-hashes every restored file against the manifest. A mismatch **deletes** what
+  it wrote and fails the run: a half-correct restore of content that exists
+  nowhere else is worse than no restore.
+- Never commits a tarball. `.arena-drive/payload/` is gitignored; only
+  manifests, reports and recovered files enter the repository.
+- Cannot change Drive sharing, by design. Drive serves
+  `uc?export=download` only for link-readable files; anything else returns a
+  sign-in page, which `fetch.py` reports as `NOT-SHARED` instead of writing an
+  HTML error page to disk and calling it a download.
+
+### Validation
+
+The channel cannot be exercised end-to-end from the sandbox — Drive is
+unreachable — so the tools were validated against synthetic manifests built
+from Git, where ground truth is known:
+
+- **A commit that is fully in history must show zero losses.** Manifest
+  generated from all 802 files of `6a324e5`, diffed against the working tree:
+  748 identical, 54 differing (nine months of drift), **0 only-on-Drive** — the
+  correct answer, since every one of those files is an ancestor of `main`.
+- **Quoted paths must not read as losses.** The first run of that test reported
+  four files missing — `apps/randomEnsō*.html`, which are sitting right there.
+  Both `git` and GNU `sha256sum` escape non-ASCII names (`"apps/randomEns\305\215.html"`),
+  and a naive reader turns four present files into four phantom casualties. The
+  manifest parser now decodes both conventions; the case is covered by a fixture.
+- **The restore path, including its failure modes.** Against a simulated
+  snapshot: 2 missing files restored and hash-verified; an existing file left
+  untouched; a deliberately corrupted manifest entry caught, the file removed,
+  exit 1; `--only` and `--max-bytes` filters honoured. The ledger audit then
+  correctly flipped the chipwright orphan to `RESTORED`.
+
+### Running it
+
+Share the manifests link-readable, then **Actions → arena-drive-sync → Run
+workflow**. Reports land in [`docs/drive-sync/`](drive-sync/). To restore bytes,
+uncomment a tarball line in `requests.txt` and run with `restore: true`. Revoke
+the sharing afterwards; §8 is the precedent for recording that you did.
+
+Sharing only the three manifests is enough for the complete file-level diff —
+including the exact identity of all 25 chipwright files. The tarballs are needed
+only to move the bytes themselves.
+
+---
+
+## 8. Audit note
 
 One reversible action was taken on Drive during this audit: two checksum
 manifests (`Html5-file-manifest-2026-09-27-12c463f.sha256` and the 09-29

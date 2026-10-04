@@ -1,0 +1,47 @@
+# Google Drive backup artifacts to pull onto a runner, one per line:
+#
+#   <drive-file-id> <output-name> [expected-size]
+#
+# Sizes are Drive's own reported byte counts, read from the API on 2026-10-04.
+# A mismatch rejects the file rather than writing something truncated.
+#
+# Files land in .arena-drive/payload/, which is gitignored. The tarballs are up
+# to 96 MB and must NEVER be committed — the workflow commits only the manifests
+# (small, and useful provenance on their own) and the delta the diff identifies.
+#
+# NOTHING HERE WORKS UNTIL THE FILES ARE LINK-READABLE. Drive serves
+# `uc?export=download` only for files shared with "anyone with the link"; for
+# anything else it returns a sign-in page, which fetch.py reports as NOT-SHARED.
+# Granting that access, and revoking it afterwards, is a deliberate human step.
+# Sharing just the two .sha256 manifests is enough for the full file-level diff
+# — the tarballs are only needed to actually restore bytes.
+#
+# ---------------------------------------------------------------- manifests
+# Checksum lists. These are what make the rsync-style comparison possible
+# without moving a single tarball: ~1 KB of hashes per 100 files.
+#
+# 2026-09-27 snapshot, 827 files, commit 12c463f — the tree that holds the
+# 25-file chipwright workbench that exists nowhere in Git.
+1kCD-Nq6-XoGfAfbTpQlCy0iCj-di0I9S  Html5-file-manifest-2026-09-27-12c463f.sha256  79963
+#
+# 2026-09-29 snapshot, 1342 files, commit 6635490 — the newest full snapshot.
+10cPMbBD4ckfP6jnBz8f3YXdXmdgBhVTj  Html5-file-manifest-2026-09-29-6635490.sha256  138630
+#
+# 2026-09-28 snapshot, 1313 files, commit ee1ec85 — holds 559fb69, the lost
+# pub-crawl resolution.
+1TE0RY_-B0xhfLZg7DqW6F8t1rTCAmCsP  Html5-file-manifest-2026-09-28-ee1ec85.sha256  135713
+#
+# ---------------------------------------------------------------- payloads
+# Only needed to restore bytes. Commented out by default: 96 MB of tarball is
+# a far larger thing to expose than a list of hashes, so enable deliberately,
+# one line at a time, and revoke sharing as soon as the run finishes.
+#
+# chipwright.xdc alone (400,057 B), wrapped in a zip because a bare .xdc upload
+# was corrupted by Drive's UTF-8 re-encode. Smallest useful restore.
+# 18353TsKE03vnXnbDT4jg2yKFTO6rNpmv  chipwright-xdc-12c463f.zip  400183
+#
+# Full 2026-09-27 working tree — the only source for the 25 chipwright files.
+# 1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV  Html5-worktree-2026-09-27-12c463f.tar.gz  33141885
+#
+# Full 2026-09-28 working tree — the only source for 559fb69's evidence.
+# 1eCBX34mZ4DXrntc-Wp2vlgnZ1gXMKwu7  Html5-worktree-2026-09-28-ee1ec85.tar.gz  97889803
