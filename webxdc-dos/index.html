@@ -17,9 +17,10 @@
       };
     }
   </script>
-  <!-- js-dos emulation engine -->
-  <link rel="stylesheet" href="/js-dos/js-dos.css" />
-  <script src="/js-dos/js-dos.js"></script>
+  <!-- js-dos emulation engine (relative paths: webxdc serves the archive
+       from wherever it is installed, never from a server root) -->
+  <link rel="stylesheet" href="./js-dos/js-dos.css" />
+  <script src="./js-dos/js-dos.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -301,6 +302,7 @@
           </div>
           <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
             <button onclick="loadDemo()" style="background:var(--a2);color:#000;border:none;padding:5px 12px;border-radius:var(--rad);cursor:pointer;font-weight:600;font-size:0.74rem">▶ Run Demo</button>
+            <button onclick="loadSneakers()" style="background:var(--bg4);color:var(--a);border:1px solid var(--bg3);padding:5px 12px;border-radius:var(--rad);cursor:pointer;font-size:0.74rem">▶ SNEAKERS</button>
             <button onclick="resetEmu()" style="background:var(--bg4);color:var(--fg);border:1px solid var(--bg3);padding:5px 12px;border-radius:var(--rad);cursor:pointer;font-size:0.74rem">↻ Reset</button>
           </div>
         </div>
@@ -311,7 +313,7 @@
         <div class="card">
           <h2>⬆ Load Binary</h2>
           <div class="drop" id="drop">
-            <input type="file" id="fi" accept=".exe,.com,.bin,.sys,.zip,.dosz">
+            <input type="file" id="fi" accept=".exe,.com,.bin,.sys,.zip,.jsdos,.dosz">
             <div class="ic">📂</div>
             <p>Drop <strong>MZ .EXE</strong>, <strong>.COM</strong>, <strong>.ZIP</strong>, or <strong>Raw Binary</strong></p>
           </div>
@@ -406,6 +408,7 @@ DI — Dest Index               FLAGS — Status Reg</code></pre>
   <div class="toast" id="toast"></div>
 
   <script type="module">
+    import { unzipSync, zipSync } from "./vendor/fflate.mjs";
     // ═══════════════════════════════════════════════════════════════
     // WASM Binary Loader (inline base64)
     // ═══════════════════════════════════════════════════════════════
@@ -452,10 +455,40 @@ DI — Dest Index               FLAGS — Status Reg</code></pre>
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // DOSBox Emulator
+    // DOSBox Emulator (js-dos v8 options API)
+    //
+    // v6/v7 called Dos.configure({wdosboxUrl}) and dosInstance.run(zip, exe);
+    // none of that exists in the bundled 8.4.1 engine — v8 takes the bundle
+    // `url` in the options and auto-starts, and it needs the FULL engine set
+    // (emulators.js lazily fetches wdosbox.js + wlibzip.js/wlibzip.wasm via
+    // pathPrefix).  v8 also only auto-runs real .jsdos bundles — a plain ZIP
+    // without .jsdos/dosbox.conf opens the config editor instead of a game —
+    // so dropped archives and bare COM/EXE files are wrapped into bundles
+    // here with fflate, fully offline.
     // ═══════════════════════════════════════════════════════════════
+    const emuLoading = document.getElementById('emu-loading');
+    const emuLoadingDefault = emuLoading.innerHTML;
+
+    function emuStatus(msg, isError) {
+      emuLoading.classList.remove('hidden');
+      emuLoading.innerHTML =
+        (isError ? '' : '<div class="spinner"></div>') +
+        '<div style="color:' + (isError ? 'var(--r)' : 'var(--fg2)') + ';font-size:0.78rem;max-width:90%;word-break:break-word">' + msg + '</div>';
+    }
+
+    function showEmulatorPanel() {
+      document.querySelectorAll('#nav button').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-p="emulator"]').classList.add('active');
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('p-emulator').classList.add('active');
+    }
+
     function loadDemo() {
-      startEmulator('/roms/DOSDEMO.ZIP', 'DEMO.COM');
+      startEmulator('./roms/DOSDEMO.jsdos', 'DEMO.COM');
+    }
+
+    function loadSneakers() {
+      startEmulator('./roms/SNEAKERS.jsdos', 'RUN.BAT');
     }
 
     function resetEmu() {
@@ -464,62 +497,122 @@ DI — Dest Index               FLAGS — Status Reg</code></pre>
         dosInstance = null;
       }
       document.getElementById('dosbox-container').innerHTML = '';
-      document.getElementById('emu-loading').classList.remove('hidden');
+      emuStatus('Emulator reset — press a Run button to boot again.');
       toast('Emulator reset');
     }
 
-    function startEmulator(zipPath, exeName) {
+    function startEmulator(bundleUrl, label) {
       const container = document.getElementById('dosbox-container');
+      if (typeof Dos === 'undefined') {
+        emuStatus('js-dos failed to load — engine files missing from ./js-dos/.', true);
+        return;
+      }
+      if (dosInstance) {
+        try { dosInstance.stop(); } catch(e) {}
+        dosInstance = null;
+      }
       container.innerHTML = '';
-      document.getElementById('emu-loading').classList.remove('hidden');
-
+      emuStatus('Initializing DOSBox (WASM)… loading ' + label);
       try {
-        Dos.configure({
-          wdosboxUrl: "/js-dos/wdosbox.wasm"
-        });
-
         dosInstance = Dos(container, {
-          wdosboxUrl: "/js-dos/wdosbox.wasm",
-          autolock: true,
-          onready: function(ci) {
-            document.getElementById('emu-loading').classList.add('hidden');
-            document.getElementById('status-left').innerHTML = '<span class="active">🎮 DOSBox running</span>';
-            toast('DOSBox ready — running ' + exeName);
-          },
-          onerror: function(err) {
-            console.error('DOSBox error:', err);
-            document.getElementById('emu-loading').innerHTML =
-              '<div style="color:var(--r);font-size:0.78rem">Error: ' + err + '</div>';
+          url: bundleUrl,
+          pathPrefix: './js-dos/',
+          autoStart: true,
+          noCloud: true,
+          onEvent: function (event) {
+            if (event === 'emu-ready') {
+              emuStatus('DOSBox engine ready — starting ' + label + '…');
+            } else if (event === 'bnd-play') {
+              emuStatus('Booting ' + label + '…');
+            } else if (event === 'ci-ready') {
+              emuLoading.classList.add('hidden');
+              document.getElementById('status-left').innerHTML = '<span class="active">🎮 DOSBox running</span>';
+              toast('DOSBox ready — running ' + label);
+            } else if (event === 'emu-error' || event === 'bnd-error') {
+              emuStatus('DOSBox error — see console. ↻ Reset then try again.', true);
+              console.error('js-dos event:', event);
+            }
           }
         });
-
-        dosInstance.run(zipPath, exeName);
       } catch (e) {
         console.error('DOSBox init error:', e);
-        document.getElementById('emu-loading').innerHTML =
-          '<div style="color:var(--r);font-size:0.78rem">Failed to initialize DOSBox: ' + e.message + '</div>';
+        emuStatus('Failed to initialize DOSBox: ' + (e && e.message ? e.message : e), true);
       }
     }
 
-    function runInEmulator() {
+    // Pick the program a ZIP should auto-run: known launcher names first,
+    // then the first .COM, then the first .EXE, then any .BAT.
+    function pickLauncher(names) {
+      const lower = names.map(n => ({ n, l: n.toLowerCase() }));
+      for (const want of ['run.bat', 'start.bat', 'play.bat', 'go.bat', 'demo.bat']) {
+        const hit = lower.find(x => x.l === want || x.l.endsWith('/' + want));
+        if (hit) return hit.n;
+      }
+      const com = lower.find(x => x.l.endsWith('.com'));
+      if (com) return com.n;
+      const exe = lower.find(x => x.l.endsWith('.exe'));
+      if (exe) return exe.n;
+      const bat = lower.find(x => x.l.endsWith('.bat'));
+      if (bat) return bat.n;
+      return null;
+    }
+
+    function buildJsdosBundle(entries, launcher) {
+      const files = Object.assign({}, entries);
+      const conf =
+        '[jsdos]\n# wrapped at runtime by webxdc-dos\n' +
+        '[cpu]\ncore=auto\ncputype=auto\ncycles=auto\n\n' +
+        '[mixer]\nrate=22050\n\n[sblaster]\nsbtype=sb16\n\n[speaker]\npcspeaker=true\n\n' +
+        '[autoexec]\nmount c .\nc:\n' + launcher.replace(/\//g, '\\') + '\n';
+      files['.jsdos/dosbox.conf'] = new TextEncoder().encode(conf);
+      return new Blob([zipSync(files, { level: 6 })], { type: 'application/zip' });
+    }
+
+    async function runInEmulator() {
       if (!rawFile) { toast('No file loaded'); return; }
-      // For ZIP files, run directly
-      if (rawFile.name && rawFile.name.toLowerCase().endsWith('.zip')) {
-        const url = URL.createObjectURL(rawFile);
-        startEmulator(url, rawFile.name.replace('.zip', '.EXE'));
+      showEmulatorPanel();
+      const fname = (rawFile.name || 'GAME.BIN');
+      const lower = fname.toLowerCase();
+
+      // Already a js-dos bundle → boot directly.
+      if (lower.endsWith('.jsdos')) {
+        const url = URL.createObjectURL(new Blob([rawFile], { type: 'application/zip' }));
+        startEmulator(url, fname);
         return;
       }
-      // For COM/EXE files, wrap in ZIP and run
-      toast('Preparing file for DOSBox...');
-      // We'll use a blob URL approach
-      const blob = new Blob([rawFile], { type: 'application/octet-stream' });
-      const url = URL.createObjectURL(blob);
-      // Switch to emulator panel
-      document.querySelectorAll('#nav button').forEach(b => b.classList.remove('active'));
-      document.querySelector('[data-p="emulator"]').classList.add('active');
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      document.getElementById('p-emulator').classList.add('active');
-      toast('File ready — use DOSBox to run');
+
+      // Plain ZIP → wrap into a .jsdos bundle with a dosbox.conf autoexec.
+      if (lower.endsWith('.zip') || lower.endsWith('.dosz')) {
+        try {
+          emuStatus('Wrapping ' + fname + ' into a js-dos bundle…');
+          const bytes = rawFile instanceof Uint8Array ? rawFile : new Uint8Array(await rawFile.arrayBuffer());
+          const entries = unzipSync(bytes);
+          const names = Object.keys(entries).filter(n => !n.endsWith('/'));
+          if (!names.length) throw new Error('archive is empty');
+          const launcher = pickLauncher(names);
+          if (!launcher) throw new Error('no .com/.exe/.bat found inside the ZIP');
+          const url = URL.createObjectURL(buildJsdosBundle(entries, launcher));
+          startEmulator(url, launcher);
+        } catch (e) {
+          console.error('bundle wrap failed:', e);
+          emuStatus('Could not wrap ' + fname + ': ' + (e && e.message ? e.message : e), true);
+        }
+        return;
+      }
+
+      // Bare COM/EXE/BIN/SYS → single-file bundle.
+      try {
+        emuStatus('Wrapping ' + fname + ' into a js-dos bundle…');
+        const bytes = rawFile instanceof Uint8Array ? rawFile : new Uint8Array(await rawFile.arrayBuffer());
+        const dosName = fname.replace(/[^A-Za-z0-9._\-]/g, '_').toUpperCase();
+        const entries = {};
+        entries[dosName] = bytes;
+        const url = URL.createObjectURL(buildJsdosBundle(entries, dosName));
+        startEmulator(url, dosName);
+      } catch (e) {
+        console.error('bundle wrap failed:', e);
+        emuStatus('Could not wrap ' + fname + ': ' + (e && e.message ? e.message : e), true);
+      }
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -817,6 +910,19 @@ DI — Dest Index               FLAGS — Status Reg</code></pre>
     function hex8(v) { return (v&0xFF).toString(16).toUpperCase().padStart(2,'0'); }
     function hex16(v) { return (v&0xFFFF).toString(16).toUpperCase().padStart(4,'0'); }
     function toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+
+    // This is a module script: nothing is global until exported. The inline
+    // onclick handlers (Run Demo / SNEAKERS / Reset / "run in emulator") and
+    // the secrets script below both call through window.* — without these
+    // exports every button threw "loadDemo is not defined" and the emulator
+    // never booted.
+    window.loadDemo = loadDemo;
+    window.loadSneakers = loadSneakers;
+    window.resetEmu = resetEmu;
+    window.runInEmulator = runInEmulator;
+    window.analyzeWasm = analyzeWasm;
+    window.hexSearch = hexSearch;
+    window.loadFile = loadFile;
 
     // Boot
     initWasm();

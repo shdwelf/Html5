@@ -1,9 +1,94 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FOUR CORNERS · Gazetteer + Orbit</title><link rel="stylesheet" href="./four-corners.css"></head>
-<body><header><div><p class="eyebrow">OFFLINE FIELD ATLAS / 2026-10-04</p><h1>FOUR CORNERS</h1><p class="sub">SoCal Subsurface × Cheyenne / Angeles · Gazetteer sync · orbital windows · launch opportunities</p></div><div class="badge">SCHEMATIC / NOT A SURVEY</div></header>
-<main class="grid">
-<section class="card hero"><div class="cardhead"><span>01 / FOUR-CORNER MODEL</span><span id="syncState">SYNC READY</span></div><h2>One register, four reading modes.</h2><p>Two source theaters are kept in their native coordinate systems, then joined by a neutral register: <b>SoCal</b>, <b>Cheyenne</b>, <b>Gazetteer</b>, and <b>Orbit</b>. No approximate point is promoted to an official fact.</p><div class="metrics"><div><strong id="countAll">—</strong><small>synced places</small></div><div><strong id="countOfficial">—</strong><small>GNIS / MRDS tiered</small></div><div><strong>4</strong><small>corners</small></div></div><button id="syncBtn">SYNC LOCAL REGISTERS</button></section>
-<section class="card"><div class="cardhead"><span>02 / GAZETTEER</span><span id="gazCount">—</span></div><label for="search">Search merged SoCal + Cheyenne / Angeles names</label><input id="search" type="search" placeholder="mountain, mine, valley…"><div id="results" class="results"></div><p class="note">Data is copied from the offline USGS GNIS-shaped packs; the Cheyenne plate contributes its 75-name register and SoCal contributes its ADL GCS rows. Coordinates remain EPSG:4326.</p></section>
-<section class="card"><div class="cardhead"><span>03 / SATELLITE WINDOWS</span><span>DERIVED / NOMINAL</span></div><div id="satellites"></div><p class="note">Repeat-cycle geometry only. Calendar windows are nominal until re-anchored to an observed acquisition; this is not an ephemeris.</p></section>
-<section class="card"><div class="cardhead"><span>04 / LAUNCH OPPORTUNITIES</span><span>VANDENBERG</span></div><div id="launches"></div><p class="note">Launch dates and windows are changeable. Confirm with the official range or mission operator before travel; no viewing or access is implied.</p><section class="card dem-card"><div class="cardhead"><span>05 / USGS 3DEP DEM PROBE</span><span>MINIMAL · FOUR STATES</span></div><p class="note">One Gazetteer-linked probe per state. Query uses the USGS Elevation Point Query Service; offline bundles retain only the coordinate and provenance, never a fabricated raster.</p><div id="demSamples"></div><label for="proxyUrl">Optional proxy URL template <span class="muted">use {url} placeholder; blank = direct</span></label><input id="proxyUrl" type="url" placeholder="https://corsproxy.io/?url={url}"><div class="proxy-row"><button id="demBtn">QUERY DIRECT + USGS ALTERNATIVES</button><button id="proxyBtn" class="secondary">TRY PROXY URL</button><button id="osmBtn" class="secondary">TRY OSM CONTEXT</button></div><p id="demStatus" class="note">offline seed: Colorado control point is from the local 3DEP pack; other states need a live query.</p></section>
-</main><footer><span>Source check: 2026-10-04 · <a href="./source-check.md">audit notes</a></span><span>offline webxdc · no live tracking · no treasure claim</span></footer><script src="./webxdc.js"></script><script type="module" src="./four-corners.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>FOUR CORNERS 4Dwm — quadripoint theater</title>
+  <meta name="description" content="Three.js theater of the AZ/CO/NM/UT quadripoint country: Navajo volcanic field necks, San Juan Basin energy sites, the uranium legacy ring, Ancestral Puebloan parks, and a curated GNIS gazetteer." />
+  <link rel="stylesheet" href="./css/four-corners.css" />
+</head>
+<body>
+  <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
+  <div id="labels" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div>
+      <h1>FOUR CORNERS 4Dwm</h1>
+      <p>Quadripoint · volcanic necks · San Juan energy basin · Puebloan core — schematic, not a survey</p>
+    </div>
+    <div class="actions">
+      <select id="viewSelect" aria-label="Jump to view">
+        <!-- options injected from js/four-corners-data.js VIEWS -->
+      </select>
+      <button type="button" id="btnWire" aria-pressed="false">WIREFRAME</button>
+      <button type="button" id="btnLabels" aria-pressed="true">LABELS</button>
+      <button type="button" id="btnReset">RESET</button>
+    </div>
+  </header>
+
+  <!-- PIP: HUD + gazetteer search -------------------------------------- -->
+  <section class="pip" id="pipHud">
+    <div class="pip-head"><h2>HUD · GAZETTEER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div class="search-row">
+        <input type="search" id="searchBox" placeholder="search register + sites…" aria-label="Search gazetteer" autocomplete="off" />
+        <div id="searchResults" aria-live="polite"></div>
+      </div>
+      <dl class="kv">
+        <dt>camera</dt><dd id="hudCam">—</dd>
+        <dt>target</dt><dd id="hudTarget">—</dd>
+        <dt>cursor</dt><dd id="hudLonLat">—</dd>
+        <dt>ground</dt><dd id="hudElev">—</dd>
+        <dt>layers on</dt><dd id="hudLayers">—</dd>
+        <dt>pickable</dt><dd id="hudObjects">—</dd>
+        <dt>fps</dt><dd id="hudFps">—</dd>
+      </dl>
+      <div class="slider-row">
+        <label for="vertExag">terrain exaggeration <span id="vertExagVal">6×</span></label>
+        <input type="range" id="vertExag" min="1" max="18" step="1" value="6" />
+      </div>
+      <p class="hint">Vertical is exaggerated; plan distances are true (1 unit = 10 km). The relief is a curated control-point surface, not a DEM.</p>
+      <p class="hint">offline · standalone</p>
+    </div>
+  </section>
+
+  <!-- PIP: layers ------------------------------------------------------- -->
+  <section class="pip" id="pipLayers">
+    <div class="pip-head"><h2>LAYERS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div id="layerList"></div>
+      <p class="hint" style="margin-top:8px">
+        Evidence tiers — <span style="color:#ffb020">official</span> NPS/BLM/DOE-LM/operator fact,
+        <span style="color:#5cd6ff">community</span> well-sourced secondary,
+        <span style="color:#ff6ec7">context</span> schematic only.
+      </p>
+    </div>
+  </section>
+
+  <!-- PIP: dossier ------------------------------------------------------ -->
+  <section class="pip" id="pipDetail">
+    <div class="pip-head"><h2>DOSSIER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body" id="detailBody">
+      <p class="hint">Click any marker — necks carry their geology, energy sites their operator record, ruins their NPS/BLM unit, gazetteer pins their ADL GCS triple. The gold octahedron is the quadripoint itself.</p>
+    </div>
+  </section>
+
+  <!-- PIP: minimap ------------------------------------------------------ -->
+  <section class="pip" id="pipMap">
+    <div class="pip-head"><h2>PLAN VIEW</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <canvas id="minimap" width="220" height="165" aria-label="Top-down plan view of the theater"></canvas>
+      <p class="hint" style="margin:6px 0 0">State lines cross at the surveyed quadripoint; blue is the San Juan corridor.</p>
+    </div>
+  </section>
+
+  <footer class="statusbar">
+    <span id="status" aria-live="polite">booting…</span>
+    <span>curated relief · no DEM · tiers labelled per node</span>
+  </footer>
+
+  <script src="./webxdc.js"></script>
+  <script type="module" src="./js/four-corners.js"></script>
+</body>
+</html>

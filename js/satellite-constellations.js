@@ -3,6 +3,7 @@ import { OrbitControls } from "../vendor/OrbitControls.js";
 import {
   CONSTELLATIONS,
   EARTH_RADIUS_KM,
+  LAUNCH_WINDOWS,
   LAYERS,
   TIMELINE_EVENTS,
   VIEW_PRESETS,
@@ -13,6 +14,8 @@ import {
   oneWayLightTimeMs,
   orbitalPeriodMinutes,
   orbitalSpeedKmS,
+  periodFromSmaMinutes,
+  shellGeometry,
   visibleProxyCount,
 } from "./satellite-constellations-data.js";
 
@@ -152,13 +155,18 @@ const geoBelt = makeRing(GEO_RADIUS_VIS, 0x93c5fd, 0.35);
 groups.reference.add(geoBelt);
 
 function orbitalPoint(shell, plane, slot, slots, minutes = 0) {
-  const r = visualRadius(shell.altitudeKm);
+  const geom = shellGeometry(shell);
   const inc = THREE.MathUtils.degToRad(shell.inclinationDeg);
   const raan = (plane / Math.max(1, shell.planes)) * Math.PI * 2 + (shell.raanOffset || 0);
-  const period = orbitalPeriodMinutes(shell.altitudeKm);
+  const period = geom.elliptical ? periodFromSmaMinutes(geom.a) : orbitalPeriodMinutes(shell.altitudeKm);
   const animateTerm = shell.longitudeLocked && shell.inclinationDeg < 1 ? 0 : (minutes / period) * Math.PI * 2;
   const phase = (slot / Math.max(1, slots)) * Math.PI * 2 + (plane * (shell.phasing || 0) / Math.max(1, slots)) * Math.PI * 2;
-  const u = phase + animateTerm;
+  // For elliptical shells the angle is read as true anomaly (schematic — no
+  // Kepler-equation time correction; this is an orbit-shape theater).
+  const nu = phase + animateTerm;
+  const rKm = geom.elliptical ? (geom.a * (1 - geom.e * geom.e)) / (1 + geom.e * Math.cos(nu)) : geom.a;
+  const r = rKm * KM_TO_UNITS;
+  const u = nu + THREE.MathUtils.degToRad(shell.argPerigeeDeg || 0);
   const cu = Math.cos(u), su = Math.sin(u), cO = Math.cos(raan), sO = Math.sin(raan), ci = Math.cos(inc), si = Math.sin(inc);
   return new THREE.Vector3(
     r * (cO * cu - sO * su * ci),
@@ -255,13 +263,24 @@ function renderDetail(record, shell = null, kind = "constellation") {
     ["design/current", fmtCount(record.currentSatellites || constellationDesignCount(record))],
   ];
   if (shell) {
-    const period = orbitalPeriodMinutes(shell.altitudeKm);
-    rows.push(["shell", `${shell.altitudeKm.toLocaleString()} km · ${shell.inclinationDeg}°`]);
-    rows.push(["planes", `${shell.planes} × ${shell.satsPerPlane || Math.round(shell.renderSatellites / shell.planes)} slots`]);
-    rows.push(["period", fmtPeriod(period)]);
-    rows.push(["speed", `${orbitalSpeedKmS(shell.altitudeKm).toFixed(2)} km/s`]);
-    rows.push(["horizon", `${horizonHalfAngleDeg(shell.altitudeKm).toFixed(1)}° Earth-central`]);
-    rows.push(["light time", `${oneWayLightTimeMs(shell.altitudeKm).toFixed(1)} ms straight up`]);
+    const geom = shellGeometry(shell);
+    if (geom.elliptical) {
+      rows.push(["ellipse", `${shell.perigeeKm.toLocaleString()} × ${shell.apogeeKm.toLocaleString()} km · ${shell.inclinationDeg}°`]);
+      rows.push(["eccentricity", geom.e.toFixed(3)]);
+      rows.push(["planes", `${shell.planes} × ${shell.satsPerPlane || Math.round(shell.renderSatellites / shell.planes)} slots`]);
+      rows.push(["period", fmtPeriod(periodFromSmaMinutes(geom.a))]);
+      rows.push(["speed", `perigee-fast / apogee-slow (vis-viva)`]);
+      rows.push(["horizon @ apogee", `${horizonHalfAngleDeg(shell.apogeeKm).toFixed(1)}° Earth-central`]);
+      rows.push(["light time @ apogee", `${oneWayLightTimeMs(shell.apogeeKm).toFixed(1)} ms straight up`]);
+    } else {
+      const period = orbitalPeriodMinutes(shell.altitudeKm);
+      rows.push(["shell", `${shell.altitudeKm.toLocaleString()} km · ${shell.inclinationDeg}°`]);
+      rows.push(["planes", `${shell.planes} × ${shell.satsPerPlane || Math.round(shell.renderSatellites / shell.planes)} slots`]);
+      rows.push(["period", fmtPeriod(period)]);
+      rows.push(["speed", `${orbitalSpeedKmS(shell.altitudeKm).toFixed(2)} km/s`]);
+      rows.push(["horizon", `${horizonHalfAngleDeg(shell.altitudeKm).toFixed(1)}° Earth-central`]);
+      rows.push(["light time", `${oneWayLightTimeMs(shell.altitudeKm).toFixed(1)} ms straight up`]);
+    }
   } else {
     rows.push(["shells", String(record.shells.length)]);
   }
@@ -437,8 +456,55 @@ function makeDraggable(pip) {
   if (min) min.addEventListener("click", () => { pip.classList.toggle("min"); min.textContent = pip.classList.contains("min") ? "+" : "–"; });
 }
 
+function renderLaunchDetail(op) {
+  const body = $("detailBody");
+  body.textContent = "";
+  const h = document.createElement("h3"); h.className = "detail-title"; h.textContent = op.label;
+  const tier = document.createElement("span"); tier.className = "tier transfer"; tier.textContent = `LAUNCH OPPORTUNITY · ${op.status}`;
+  const p = document.createElement("p"); p.textContent = op.note;
+  const src = document.createElement("ul"); src.className = "srcs";
+  for (const [label, url] of op.sources || []) {
+    const li = document.createElement("li");
+    const a = document.createElement("a"); a.href = url; a.target = "_blank"; a.rel = "noopener"; a.textContent = label;
+    li.append(a); src.append(li);
+  }
+  const caveat = document.createElement("p"); caveat.className = "hint";
+  caveat.textContent = `Research checked ${LAUNCH_WINDOWS.retrieved}. Windows/dates are the sources' statements, not a live schedule.`;
+  body.append(h, tier, p, caveat);
+  if (src.childElementCount) { const sh = document.createElement("p"); sh.className = "hint"; sh.textContent = "sources"; body.append(sh, src); }
+  const pip = $("pipDetail"); if (pip) pip.classList.remove("min");
+}
+
+function buildLaunchPanel() {
+  const host = $("launchBody"); if (!host) return;
+  host.textContent = "";
+  const intro = document.createElement("p"); intro.className = "hint"; intro.textContent = LAUNCH_WINDOWS.note;
+  host.append(intro);
+  const table = document.createElement("table"); table.className = "launch-table";
+  const thead = document.createElement("tr");
+  for (const t of ["target", "window", ""]) { const th = document.createElement("th"); th.textContent = t; thead.append(th); }
+  table.append(thead);
+  for (const t of LAUNCH_WINDOWS.types) {
+    const tr = document.createElement("tr");
+    const a = document.createElement("td"); a.textContent = t.target;
+    const b = document.createElement("td"); b.textContent = t.window;
+    const c = document.createElement("td");
+    tr.title = t.driver;
+    tr.append(a, b, c); table.append(tr);
+  }
+  host.append(table);
+  const hr = document.createElement("p"); hr.className = "hint"; hr.textContent = `opportunities · checked ${LAUNCH_WINDOWS.retrieved}`;
+  host.append(hr);
+  for (const op of LAUNCH_WINDOWS.opportunities) {
+    const btn = document.createElement("button"); btn.type = "button"; btn.className = "constellation-row";
+    btn.innerHTML = `<span class="swatch" style="background:#f472b6"></span><span>${op.label}</span>`;
+    btn.addEventListener("click", () => renderLaunchDetail(op));
+    host.append(btn);
+  }
+}
+
 document.querySelectorAll(".pip").forEach(makeDraggable);
-buildLayerPanel(); buildTimeline();
+buildLayerPanel(); buildTimeline(); buildLaunchPanel();
 
 function flyTo(name) {
   const v = VIEW_PRESETS[name]; if (!v) return;

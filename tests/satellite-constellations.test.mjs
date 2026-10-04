@@ -3,19 +3,22 @@ import assert from 'node:assert/strict';
 import {
   CONSTELLATIONS,
   EARTH_RADIUS_KM,
+  LAUNCH_WINDOWS,
   countAtYear,
   horizonHalfAngleDeg,
   modelDisclaimer,
   oneWayLightTimeMs,
   orbitalPeriodMinutes,
   orbitalSpeedKmS,
+  periodFromSmaMinutes,
+  shellGeometry,
   visibleProxyCount,
 } from '../js/satellite-constellations-data.js';
 
 test('constellation data has sources, shells, and conservative caveats', () => {
   assert.match(modelDisclaimer.toLowerCase(), /not live ephemeris/);
   assert.ok(EARTH_RADIUS_KM > 6300 && EARTH_RADIUS_KM < 6400);
-  assert.deepEqual(CONSTELLATIONS.map(c => c.id), ['gps','glonass','galileo','beidou','iridium','oneweb','starlink','jpss']);
+  assert.deepEqual(CONSTELLATIONS.map(c => c.id), ['gps','glonass','galileo','beidou','iridium','oneweb','starlink','jpss','gto','molniya']);
   for (const c of CONSTELLATIONS) {
     assert.ok(c.sources.length >= 1, `${c.id} has at least one source`);
     assert.ok(c.facts.length >= 3, `${c.id} has interpretive facts`);
@@ -62,4 +65,53 @@ test('large constellations are downsampled and GNSS is not', () => {
   assert.ok(starlink.renderSatellites < starlink.satellites, 'Starlink is represented by proxies');
   assert.ok(oneweb.renderSatellites < oneweb.satellites, 'OneWeb is represented by proxies');
   assert.equal(gps.renderSatellites, gps.satellites, 'GPS nominal slots are all drawn');
+});
+
+test('transfer layer carries honest elliptical geometry', () => {
+  const gto = CONSTELLATIONS.find(c => c.id === 'gto');
+  const mol = CONSTELLATIONS.find(c => c.id === 'molniya');
+  assert.equal(gto.layer, 'transfer');
+  assert.equal(mol.layer, 'transfer');
+
+  const gtoGeom = shellGeometry(gto.shells[0]);
+  assert.ok(gtoGeom.elliptical);
+  assert.equal(gto.shells[0].apogeeKm, 35786, 'GTO apogee kisses GEO altitude');
+  assert.ok(gtoGeom.e > 0.7 && gtoGeom.e < 0.75, `GTO eccentricity plausible (${gtoGeom.e})`);
+  // GTO period is ~10.5 h
+  const gtoPeriodH = periodFromSmaMinutes(gtoGeom.a) / 60;
+  assert.ok(Math.abs(gtoPeriodH - 10.5) < 0.4, `GTO period ~10.5 h (${gtoPeriodH.toFixed(2)})`);
+
+  const molGeom = shellGeometry(mol.shells[0]);
+  assert.equal(mol.shells[0].inclinationDeg, 63.4, 'Molniya critical inclination');
+  const molPeriodH = periodFromSmaMinutes(molGeom.a) / 60;
+  assert.ok(Math.abs(molPeriodH - 11.97) < 0.25, `Molniya semi-synchronous ~12 h (${molPeriodH.toFixed(2)})`);
+  // Both are labeled as illustrative orbit classes, not fleets
+  assert.match(gto.name.toLowerCase(), /illustrative/);
+  assert.match(mol.name.toLowerCase(), /illustrative/);
+
+  // Circular shells report e = 0 through the same helper
+  const gps = CONSTELLATIONS.find(c => c.id === 'gps');
+  const gpsGeom = shellGeometry(gps.shells[0]);
+  assert.equal(gpsGeom.e, 0);
+  assert.ok(!gpsGeom.elliptical);
+});
+
+test('launch window research is typed, dated, and sourced', () => {
+  assert.match(LAUNCH_WINDOWS.retrieved, /^\d{4}-\d{2}-\d{2}$/);
+  assert.ok(LAUNCH_WINDOWS.types.length >= 5, 'window taxonomy covers the mission classes');
+  const targets = LAUNCH_WINDOWS.types.map(t => t.target.toLowerCase()).join(' ');
+  for (const needle of ['iss', 'sun-synchronous', 'geo', 'mars']) {
+    assert.ok(targets.includes(needle), `window taxonomy covers ${needle}`);
+  }
+  for (const t of LAUNCH_WINDOWS.types) {
+    assert.ok(t.window && t.driver, `${t.id} explains its window and driver`);
+  }
+  assert.ok(LAUNCH_WINDOWS.opportunities.length >= 4);
+  for (const op of LAUNCH_WINDOWS.opportunities) {
+    assert.ok(op.label && op.status && op.note, `${op.id} is fully described`);
+    assert.ok((op.sources || []).length >= 1, `${op.id} is sourced`);
+    for (const [, url] of op.sources) assert.match(url, /^https:\/\//, `${op.id} source is https`);
+  }
+  const mars = LAUNCH_WINDOWS.opportunities.find(o => o.id === 'mars-2026');
+  assert.match(mars.label, /Nov/);
 });

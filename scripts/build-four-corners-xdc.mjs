@@ -1,31 +1,131 @@
-/** Build the Four Corners offline Webxdc. The data module is generated from the
- * existing SoCal ADL/GNIS and Cheyenne GNIS registers so the two apps cannot
- * silently drift apart. */
-import { createHash } from 'node:crypto';
-import { mkdir, readFile, rm, writeFile, cp } from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-const { zipSync } = await import('fflate').catch(()=>import('../vendor/fflate/index.mjs'));
-const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const outDir=path.join(root,'public/apps/four-corners'); const mtime=new Date('2026-10-04T00:00:00Z');
-const { GAZ_ROWS }=await import('../js/socal-gazetteer-data.js');
-const { GAZETTEER }=await import('../js/cheyenne-data.js');
-const places=[...GAZ_ROWS.map(r=>({name:r[0],kind:r[1],region:r[3],lat:r[4],lon:r[5],tier:r[8]?'official':'curated',source:'SoCal Subsurface / USGS GNIS'})),...Object.entries(GAZETTEER).flatMap(([plate,rows])=>rows.map(r=>({name:r[0],lon:r[1],lat:r[2],kind:r[3],region:plate==='chey'?'Cheyenne / Colorado':'Angeles / California',tier:'official',source:'Cheyenne / Angeles / USGS GNIS'})))];
-const data=`export const PLACES=${JSON.stringify(places)};\nexport const SATELLITES=${JSON.stringify([
-{name:'Sentinel-1A / 1C',platform:'ESA Copernicus C-SAR',altitude:693,repeat:6,window:'~18:00 local ascending node',status:'Two-satellite constellation; six-day revisit when both are operational.'},
-{name:'NISAR',platform:'NASA / ISRO L+S SAR',altitude:747,repeat:12,window:'~18:00 local ascending node',status:'Nominal repeat geometry; calendar date requires an observed anchor.'},
-{name:'Landsat 8 / 9',platform:'NASA / USGS optical + thermal',altitude:705,repeat:8,window:'~10:11–10:12 local descending node',status:'Eight-day pair cadence on the WRS-2 grid.'}
-])};\nexport const LAUNCHES=${JSON.stringify([
-{name:'SDA Tranche 1 Transport Layer A',date:'NET 2026-10-05',site:'Vandenberg SFB · SLC-4E',window:'08:17 UTC target; subject to range/weather',status:'schedule listing; confirm with VSFB / operator'},
-{name:'Starlink Group 15-25',date:'NET 2026-10-10',site:'Vandenberg SFB',window:'23:00 UTC listing; subject to change',status:'schedule listing; confirm with operator'},
-{name:'Vandenberg launch cadence',date:'2026',site:'California western range',window:'Opportunities are mission-specific, not a public guarantee',status:'planning note; no access or viewing implied'}
-])};\nexport const DEM_SAMPLES=${JSON.stringify([
-{state:'Utah',place:'Four Corners boundary / San Juan plateau',lat:37,lon:-109,seedM:null},
-{state:'Colorado',place:'Pikes Peak GNIS / local 3DEP control',lat:38.8406,lon:-105.0449,seedM:4298.8},
-{state:'Arizona',place:'Grand Canyon South Rim Gazetteer anchor',lat:36.0544,lon:-112.1401,seedM:null},
-{state:'Nevada',place:'Charleston Peak GNIS anchor',lat:36.2716,lon:-115.6956,seedM:null}
-])};`;
-await rm(outDir,{recursive:true,force:true}); await mkdir(outDir,{recursive:true});
-let html=await readFile(path.join(root,'four-corners.html'),'utf8'); html=html.replace('./four-corners.js','./four-corners.js'); await writeFile(path.join(outDir,'index.html'),html);
-await cp(path.join(root,'four-corners.css'),path.join(outDir,'four-corners.css')); await cp(path.join(root,'four-corners.js'),path.join(outDir,'four-corners.js')); await writeFile(path.join(outDir,'four-corners-data.js'),data); await writeFile(path.join(outDir,'webxdc.js'),`window.webxdc=window.webxdc||{sendUpdate(){},setUpdateListener:async()=>0,getAllUpdates:async()=>[]};`); await writeFile(path.join(outDir,'manifest.toml'),'name = "Four Corners · Gazetteer + Orbit"\nsource_code_url = "https://github.com/shdwelf/Html5"\n'); await cp(path.join(root,'icon.png'),path.join(outDir,'icon.png')); await cp(path.join(root,'docs/source-check-four-corners-2026-10-04.md'),path.join(outDir,'source-check.md'));
-const files={}; for(const f of ['index.html','four-corners.css','four-corners.js','four-corners-data.js','webxdc.js','manifest.toml','icon.png','source-check.md']) files[f]=[new Uint8Array(await readFile(path.join(outDir,f))),{level:9,mtime}]; const bytes=zipSync(files,{level:9,mtime}); await writeFile(path.join(root,'four-corners.xdc'),bytes); await mkdir(path.join(root,'dist'),{recursive:true}); await writeFile(path.join(root,'dist/four-corners.xdc'),bytes); console.log(`Webxdc: four-corners.xdc (${bytes.length} bytes, ${places.length} synced places)`); console.log(`sha256: ${createHash('sha256').update(bytes).digest('hex')}`);
+/**
+ * Package FOUR CORNERS 4Dwm as a Webxdc bundle.
+ *
+ * A .xdc is a deflated ZIP rooted at index.html + manifest.toml. This script
+ * stages the root-level authoring sources (four-corners.html, js/, css/,
+ * vendor three) into public/apps/four-corners/ as a flat offline bundle,
+ * then zips it deterministically.
+ *
+ *   node scripts/build-four-corners-xdc.mjs
+ */
+
+import { createHash } from "node:crypto";
+import { copyFile, mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+const { zipSync } = await import("fflate").catch(() => import("../vendor/fflate/index.mjs"));
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const appDir = path.join(root, "public", "apps", "four-corners");
+const outName = "four-corners.xdc";
+const mtime = new Date("2026-10-04T00:00:00.000Z"); // reproducible builds
+
+const manifest = `name = "Four Corners 4Dwm"
+source_code_url = "https://github.com/shdwelf/Html5"
+`;
+
+await rm(appDir, { recursive: true, force: true });
+await mkdir(path.join(appDir, "js"), { recursive: true });
+await mkdir(path.join(appDir, "css"), { recursive: true });
+await mkdir(path.join(appDir, "vendor"), { recursive: true });
+
+let html = await readFile(path.join(root, "four-corners.html"), "utf8");
+html = html.replace(
+  '<script type="module" src="./js/four-corners.js"></script>',
+  '<script src="./webxdc.js"></script>\n  <script type="module" src="./js/four-corners.js"></script>',
+);
+await writeFile(path.join(appDir, "index.html"), html);
+
+await copyFile(path.join(root, "css", "four-corners.css"), path.join(appDir, "css", "four-corners.css"));
+
+// Follow the app's actual module graph rather than maintaining a second list.
+function moduleSpecifiers(source) {
+  const specs = [];
+  const staticImport = /\b(?:import\s+(?:[^'";]*?\s+from\s*)?|export\s+[^'";]*?\s+from\s*)["']([^"']+)["']/g;
+  const dynamicImport = /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g;
+  for (const pattern of [staticImport, dynamicImport]) {
+    for (const match of source.matchAll(pattern)) specs.push(match[1]);
+  }
+  return specs;
+}
+
+async function collectModules(entry) {
+  const pending = [entry];
+  const modules = new Set();
+  const optional = new Set();
+
+  while (pending.length) {
+    const abs = path.resolve(pending.pop());
+    if (modules.has(abs)) continue;
+    modules.add(abs);
+
+    const source = await readFile(abs, "utf8");
+    for (const specifier of moduleSpecifiers(source)) {
+      if (!specifier.startsWith(".")) continue;
+      const dependency = path.resolve(path.dirname(abs), specifier);
+      const rel = path.relative(root, dependency).split(path.sep).join("/");
+      if (rel === "vendor" || rel.startsWith("vendor/")) continue;
+      if (!rel || rel.startsWith("../")) {
+        throw new Error(`module import escapes repository: ${specifier} from ${path.relative(root, abs)}`);
+      }
+      if (await stat(dependency).catch(() => null)) pending.push(dependency);
+      else optional.add(`${path.relative(root, abs).split(path.sep).join("/")} -> ${specifier}`);
+    }
+  }
+
+  return { modules: [...modules].sort(), optional: [...optional].sort() };
+}
+
+const { modules, optional } = await collectModules(path.join(root, "js", "four-corners.js"));
+for (const abs of modules) {
+  const rel = path.relative(root, abs);
+  await mkdir(path.dirname(path.join(appDir, rel)), { recursive: true });
+  await copyFile(abs, path.join(appDir, rel));
+}
+for (const dependency of optional) console.log(`Optional module not shipped: ${dependency}`);
+
+for (const f of ["three.module.min.js", "OrbitControls.js", "THREE_LICENSE"]) {
+  await copyFile(path.join(root, "vendor", f), path.join(appDir, "vendor", f));
+}
+
+await writeFile(
+  path.join(appDir, "webxdc.js"),
+  `/* webxdc simulator shim - the host overrides this file at runtime. */
+window.webxdc = window.webxdc || {
+  selfAddr: "local@device",
+  selfName: "local",
+  sendUpdate() {},
+  setUpdateListener: async () => 0,
+  getAllUpdates: async () => [],
+};
+`,
+);
+
+await writeFile(path.join(appDir, "manifest.toml"), manifest);
+const iconSrc = path.join(root, "icon.png");
+if (await stat(iconSrc).catch(() => null)) await copyFile(iconSrc, path.join(appDir, "icon.png"));
+
+async function walk(dir) {
+  const out = [];
+  for (const e of await readdir(dir, { withFileTypes: true })) {
+    const abs = path.join(dir, e.name);
+    if (e.isDirectory()) out.push(...(await walk(abs)));
+    else if (e.isFile()) out.push(abs);
+  }
+  return out;
+}
+
+const archive = {};
+for (const abs of (await walk(appDir)).sort()) {
+  const rel = path.relative(appDir, abs).split(path.sep).join("/");
+  archive[rel] = [new Uint8Array(await readFile(abs)), { level: 9, mtime }];
+}
+if (!archive["index.html"] || !archive["manifest.toml"]) throw new Error("bundle missing index.html/manifest.toml");
+
+const bytes = zipSync(archive, { level: 9, mtime });
+await writeFile(path.join(root, outName), bytes);
+await mkdir(path.join(root, "dist"), { recursive: true });
+await writeFile(path.join(root, "dist", outName), bytes);
+
+console.log(`Webxdc: ${outName} (${bytes.length.toLocaleString()} bytes, ${Object.keys(archive).length} entries)`);
+console.log(`  sha256: ${createHash("sha256").update(bytes).digest("hex")}`);

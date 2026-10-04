@@ -29,6 +29,8 @@ calc.html
 casefiles.html
 socal-calc.html
 socal-subsurface.html
+cheyenne.html
+four-corners.html
 convention-centers.html
 los-alamos.html
 ghidra-lab.html
