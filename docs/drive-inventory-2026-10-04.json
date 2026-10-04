@@ -1,0 +1,144 @@
+{
+  "$comment": "Machine-readable ledger of the Google Drive backup area for shdwelf/Html5, as audited on 2026-10-04. Narrative: docs/drive-repo-sync-2026-10-04.md. Re-check the repository side with: node scripts/drive-sync-audit.mjs",
+  "audited": "2026-10-04",
+  "repo": "shdwelf/Html5",
+  "repo_state_at_audit": {
+    "main_head": "3fbea9bd24fcf869b466cc7edde57be47f8075c9",
+    "main_head_subject": "Merge pull request #90 from shdwelf/arena/01a106c7-html5",
+    "commits_reachable": 445,
+    "refs": 90,
+    "tracked_files_on_main": 2164
+  },
+  "drive_totals": {
+    "items": 57,
+    "folders": 9,
+    "files": 48,
+    "in_scope_files": 46,
+    "out_of_scope_files": 2
+  },
+  "folders": [
+    { "id": "18ku8eCVEgppj17W-P1Iij4gdU7WBQZ_F", "path": "GitHub Backups" },
+    { "id": "1_AsL3gIMRZVTMR_4eFV-OcLr3ql5Wq8v", "path": "GitHub Backups/shdwelf" },
+    { "id": "1l7RKJPEe3uHhgppup2KcDoN2wcDqU31S", "path": "GitHub Backups/shdwelf/Html5" },
+    { "id": "1Tuzx2EdaJLoN00FAJ9aeQixUnLOb_Dwn", "path": "GitHub Backups/2026-09-27 full mirrors" },
+    { "id": "1rd5j-Zcxd_4YTQxb9Gz5BdoOKEakDVaU", "path": "SSE local backup 2026-09-27 — pre-merge" },
+    { "id": "143iR3GObuk84afkg-y-wf5Y5gy3IUfZC", "path": "CyberChef SSE + Nitramite Hash Lab — 2026-09-27" },
+    { "id": "1ww2Y3Wz6TAHzZVqFHSGuxITAyS6YrskZ", "path": "Html5 RE Research — 2026-09-29" },
+    { "id": "1jU2GTTjrZc3p5h7xZvfwVYgcRG1myerU", "path": "BehindTheDune archive backup metadata" },
+    { "id": "1NKRCcNOFZJPETTk6pqRx5NuUWZXqzVA_", "path": "Html5 backup — 2026-10-04 (four-corners, gazetteer sync, lost treasure, launch windows)" }
+  ],
+
+  "$comment_commits": "Every commit SHA named anywhere in the Drive backup notes, checked against the full 445-commit history and all 90 refs of this clone. 'expect' is what scripts/drive-sync-audit.mjs enforces.",
+  "commits": [
+    { "sha": "6a324e5", "expect": "on-main",  "note": "Base commit of the chipwright work. 802 tracked files." },
+    { "sha": "12c463f", "expect": "absent",   "note": "Source of the 2026-09-27 Drive snapshot, 827 files. Drive records it as destroyed by a mid-session sandbox re-clone, together with 8366299 and d6d11c3." },
+    { "sha": "029e4ff", "expect": "absent",   "note": "Re-commit of 12c463f's identical tree. Never reached GitHub: the 25-file chipwright delta is Drive-only." },
+    { "sha": "559fb69", "expect": "absent",   "note": "Drive-only. 'Resolve the pub crawl: it is DEF CON's, not CES's'. The correction never landed; main still records the pub crawl as unverified." },
+    { "sha": "ee1ec85", "expect": "absent",   "note": "Drive-only. 'Refresh apps/kryptos_vrml.html from the canonical build' (79,519 B). Superseded on main by 1a93af7." },
+    { "sha": "6635490", "expect": "absent",   "note": "Drive-only. Smithsonian box/folder provenance + kryptos-vrml K4 panel. Equivalent content reached main by another route." },
+    { "sha": "854f8ff", "expect": "absent",   "note": "SHA recorded by the 2026-10-04 Drive patch. The branch was rewritten to e1150b5..1148120b before PR #90, so this exact SHA never existed on GitHub; the content did land." },
+    { "sha": "1148120", "expect": "on-main",  "note": "Actual head of PR #90, the branch the 2026-10-04 patch was taken from." },
+    { "sha": "e1150b5", "expect": "on-main",  "note": "'Add Four Corners gazetteer and orbital windows webxdc' — the content the 2026-10-04 patch describes." },
+    { "sha": "d9a4842", "expect": "on-main",  "note": "Base of the 2026-10-04 patch, as recorded in its Drive description." },
+    { "sha": "1a93af7", "expect": "on-main",  "note": "Kryptos K4 archive deep dive; rewrote apps/kryptos_vrml.html after the ee1ec85 refresh." },
+    { "sha": "0c2e34c", "expect": "on-main",  "note": "PR #60 merge. 1377 tracked files." },
+    { "sha": "bf3f82c", "expect": "on-main",  "note": "PR #60 content, listed by BACKUP-INFO-2026-09-28 as already on GitHub." },
+    { "sha": "eaca3d8", "expect": "on-main",  "note": "PR #60 content." },
+    { "sha": "e5d24ec", "expect": "on-main",  "note": "PR #60 content." },
+    { "sha": "bd8f7aa", "expect": "on-main",  "note": "PR #60 content." },
+    { "sha": "285339f", "expect": "on-main",  "note": "PR #60 content." },
+    { "sha": "d7d9ba2", "expect": "on-main",  "note": "Art Studio mnemonic-box fix, PR #55; backed up to Drive as art-studio-fixed.zip." },
+    { "sha": "9d9de13", "expect": "absent",   "note": "Base of the CyberChef SSE hash-lab work — belongs to shdwelf/Html5-sync-incoming, not this repository." },
+    { "sha": "59631df", "expect": "absent",   "note": "CyberChef SSE hash-lab integration commit — Html5-sync-incoming." },
+    { "sha": "d943829", "expect": "absent",   "note": "sync-outgoing/cyberchef-crow-field-recipes.bundle commit — targets Html5-sync-incoming." }
+  ],
+
+  "$comment_artifacts": "Drive artifacts whose bytes can be tied to a path in this repository. 'verified' entries had their Drive-recorded SHA-256 reproduced locally.",
+  "artifacts": [
+    {
+      "drive_id": "1bV9oCl5S7Q-i1rxd_7lS_R_se7e2253f",
+      "drive_name": "Greeran_Family_Tree_4DWM.xdc",
+      "size": 111244,
+      "repo_path": "greeran-family-4dwm.xdc",
+      "expected_sha256": "188db5ea100ba96c9efd650cd25b61901ca361da468da6d85a35a2fb26249f72",
+      "status": "in-sync-verified"
+    },
+    {
+      "drive_id": null,
+      "drive_name": "BACKUP-INFO-2026-09-28.txt chain-of-custody entry",
+      "repo_path": "apps/kryptos_vrml_backup.html",
+      "expected_sha256": "29952bb430acffd5c9536f00c8a0a6cef62820d084d6b904f1f602b204db8f46",
+      "status": "in-sync-verified"
+    },
+    {
+      "drive_id": "1ZNsPKHN_6vVbj61ssY88lBA0l91cK7ia",
+      "drive_name": "behind_the_dune_backup_manifest.md",
+      "size": 4300,
+      "repo_path": "research/behind_the_dune_backup_manifest.md",
+      "status": "in-sync"
+    },
+    {
+      "drive_id": "1hl3s1fhxVU-Zzg4y8K2FUjoffK15q1Kw",
+      "drive_name": "UFOpaedia.html",
+      "size": 44687,
+      "repo_path": "public/apps/ufopaedia/index.html",
+      "repo_size": 42581,
+      "status": "drift",
+      "note": "Drive copy is 2,106 bytes larger than the in-repo app. Which way the drift runs is unresolved; the Drive bytes are unreachable from the sandbox."
+    },
+    {
+      "drive_id": "1O-XBFoGiGykKofa-Rn2kGde0vABshHEK",
+      "drive_name": "sse-webxdc-updated.xdc",
+      "size": 106614,
+      "repo_path": "sse-webxdc.xdc",
+      "repo_size": 58808,
+      "status": "drift",
+      "note": "Drive also holds sse-webxdc-verified.xdc and sse-webxdc.xml at 57,765 B. Three different sizes for one app; none matches the repo."
+    },
+    {
+      "drive_id": "1sOR2kOlccuAx4fdylS2xqY7qHTqtC8si",
+      "drive_name": "art-studio-fixed.zip",
+      "size": 132534,
+      "repo_path": "art-studio.html",
+      "status": "superseded-by-repo",
+      "note": "Snapshot of PR #55 / d7d9ba2, which is on main."
+    }
+  ],
+
+  "$comment_orphans": "Content that exists ONLY in Drive. scripts/drive-sync-audit.mjs asserts these paths are still absent, so the day one is restored the audit tells you.",
+  "orphans": [
+    {
+      "name": "chipwright hardware-triage workbench",
+      "only_in": "GitHub Backups/shdwelf/Html5/Html5-worktree-2026-09-27-12c463f.tar.gz + chipwright-xdc-12c463f.zip",
+      "paths": ["chipwright.html", "CHIPWRIGHT.md", "chipwright.xdc", "css/chipwright.css"],
+      "glob_paths": ["js/cw-*.js"],
+      "file_count": 25,
+      "recorded_xdc_md5": "c9c7fff157c6e41160db013b7280e8ef",
+      "recorded_xdc_sha256": "0e6a47dc25a7987f15796faec9608fe2969cc414ff0cfc8930a52168f80c268c",
+      "recorded_xdc_size": 400057,
+      "note": "827 files at 12c463f minus 802 at base 6a324e5 = 25 files. Zero hits across 445 commits and 90 refs."
+    },
+    {
+      "name": "pub-crawl resolution (559fb69)",
+      "only_in": "GitHub Backups/shdwelf/Html5/Html5-worktree-2026-09-28-ee1ec85.tar.gz",
+      "paths": [],
+      "note": "A finding, not a file: Drive says the pub crawl was resolved as DEF CON's. docs/convention-venues.md:395 and docs/for-dummies-source-check.md:174 still say unverified."
+    }
+  ],
+
+  "$comment_drive_gaps": "Gaps on the Drive side, carried forward from the Drive area's own STATUS.txt and READ ME FIRST.txt and re-checked here.",
+  "drive_gaps": [
+    { "severity": "high",   "item": "No Git history for Html5 exists on Drive. Html5.bundle was declared by two mirror runs and uploaded by neither; every Html5 artifact on Drive is a working-tree snapshot with no commit history." },
+    { "severity": "high",   "item": "Newest full Drive snapshot is 2026-09-29 (6635490, 1342 files). main has since reached 3fbea9b with 2164 tracked files. The 2026-10-04 upload is a 34-file patch, not a snapshot." },
+    { "severity": "high",   "item": "shdwelf/Html5-sync-incoming (~380 MB) reported public since 2026-08-31 and is not backed up in any form. Unverified by this audit — no GitHub access to that repository from here." },
+    { "severity": "medium", "item": "bip39-haiku-workbench.bundle (3,576,209 B) present but its integrity was never verified against a recorded hash." },
+    { "severity": "medium", "item": "Raw .bundle/.xdc/.wasm/.bin uploads are silently mangled by UTF-8 re-encode (a 65,552 B probe stored as 118,711 B; a 400,057 B .xdc stored as 726,579 B). Wrap binaries in .zip or .tar.gz." },
+    { "severity": "low",    "item": "Five same-named '2026-09-27 full mirrors' folders were consolidated into one; a sixth from 14:23 was left alone." }
+  ],
+
+  "$comment_out_of_scope": "Drive files at My Drive root unrelated to this repository.",
+  "out_of_scope": [
+    { "drive_id": "1xaLzkek8CIg7v-P37vlmvMW3PjBNClFp7Qu98FuoXfw", "name": "Field Notes Database", "type": "spreadsheet" },
+    { "drive_id": "1wblw6aHEL91QScBoOuL6qWPrPACO86uXbzqIF5xfp3s", "name": "Agents of F.I.E.L.D.", "type": "spreadsheet" }
+  ]
+}
