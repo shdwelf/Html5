@@ -93,19 +93,39 @@ jobs:
       - name: Commit the delta
         if: always()
         run: |
+          set -euo pipefail
           git config user.name arena-drive-sync
           git config user.email arena-drive-sync@users.noreply.github.com
-          # Deliberately NOT adding .arena-drive/payload — it is gitignored and
-          # holds up to 96 MB of tarball. Only hashes, reports and recovered
-          # files belong in the repository.
-          git add -A docs/drive-sync .arena-drive/fetch.log
-          git add -A -- ':!.arena-drive/payload'
-          git diff --cached --quiet && { echo "nothing changed"; exit 0; }
+
+          # .arena-drive/payload/ is gitignored, so a plain `git add -A` cannot
+          # pick it up. Naming it explicitly as an exclude pathspec
+          # (`git add -A -- ':!.arena-drive/payload'`) looks like extra safety
+          # but makes git exit 1 for referring to an ignored path — it fails
+          # the job instead of protecting anything. That is exactly what it did.
+          git add -A
+
+          # Belt and braces: a 33-96 MB snapshot must never enter history, so
+          # check what is actually staged rather than trusting the ignore rule.
+          if git diff --cached --name-only | grep -q '^\.arena-drive/payload/'; then
+            echo "::error::snapshot payload staged for commit — refusing"
+            exit 1
+          fi
+
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+            exit 0
+          fi
+
           git commit -q -m "drive-sync: reconcile with the Drive backup area"
           for i in 1 2 3 4 5; do
-            git push origin HEAD:${GITHUB_REF_NAME} && break || {
-              git pull --rebase -X theirs origin ${GITHUB_REF_NAME}; sleep 3; }
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              exit 0
+            fi
+            git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" || true
+            sleep 3
           done
+          echo "::error::push failed after 5 attempts"
+          exit 1
 
       - name: Summary
         if: always()
