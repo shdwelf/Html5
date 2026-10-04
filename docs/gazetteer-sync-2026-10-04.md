@@ -8,18 +8,15 @@ script header; this file is the run record.
 Ange plate envelope (+0.03°): lon -118.3760 … -117.5425, lat 34.0764 … 34.5514.
 Socal rows in window: 54. Cheyenne ange rows: 53.
 
-## Matched and agreeing (≤ 0.012°): 49
+## Matched and agreeing (≤ 0.012°): 52
 
-Mount San Antonio (Old Baldy) · Mount Baden-Powell · Mount Islip · Mount Hawkins · Mount Burnham · Iron Mountain · Mount Wilson · San Gabriel Peak · Mount Disappointment · Occidental Peak · Strawberry Peak · Josephine Peak · Pacifico Mountain · Mount Gleason · Vetter Mountain · Monrovia Peak · Mount Harwood · Cucamonga Peak · Ross Mountain · Vincent Gap · Islip Saddle · Red Box Gap · Mill Creek Summit · Newcomb Pass · Blue Ridge · San Gabriel Range · Heaton Flat · Crystal Lake · San Fernando Valley · Azusa · San Dimas · Rancho Cucamonga · Pasadena · Acton · La Cañada Flintridge · Cahuenga Pass · Vasquez Rocks · Agua Dulce · Burbank · Phelan · Pinon Hills · San Gabriel Mountains · Verdugo Mountains · Mount Emma · Mount Williamson · Ontario Peak · Waterman Mountain · Littlerock · Pearblossom
+Mount San Antonio (Old Baldy) · Mount Baden-Powell · Mount Islip · Throop Peak · Mount Hawkins · Mount Burnham · Iron Mountain · Mount Wilson · San Gabriel Peak · Mount Disappointment · Occidental Peak · Strawberry Peak · Josephine Peak · Pacifico Mountain · Mount Gleason · Vetter Mountain · Monrovia Peak · Pine Mountain · Dawson Peak · Mount Harwood · Cucamonga Peak · Ross Mountain · Vincent Gap · Islip Saddle · Red Box Gap · Mill Creek Summit · Newcomb Pass · Blue Ridge · San Gabriel Range · Heaton Flat · Crystal Lake · San Fernando Valley · Azusa · San Dimas · Rancho Cucamonga · Pasadena · Acton · La Cañada Flintridge · Cahuenga Pass · Vasquez Rocks · Agua Dulce · Burbank · Phelan · Pinon Hills · San Gabriel Mountains · Verdugo Mountains · Mount Emma · Mount Williamson · Ontario Peak · Waterman Mountain · Littlerock · Pearblossom
 
-## Coordinate conflicts (> 0.012°): 4
+## Coordinate conflicts (> 0.012°): 1
 
 | Name | socal had | cheyenne had | winner |
 |---|---|---|---|
-| Throop Peak | 34.3510, -117.7480 | 34.3505, -117.7991 | none — both curated/unverified; flagged, neither file changed |
-| Pine Mountain | 34.3060, -117.6630 | 34.3136, -117.6442 | none — both curated/unverified; flagged, neither file changed |
-| Dawson Peak | 34.2940, -117.6610 | 34.3032, -117.6359 | none — both curated/unverified; flagged, neither file changed |
-| Wrightwood | 34.3610, -117.6330 | 34.3608, -117.5975 | none — both curated/unverified; flagged, neither file changed |
+| Wrightwood | 34.3608, -117.6339 | 34.3608, -117.5975 | socal (verified FEATURE_ID 1652816) → cheyenne row updated |
 
 ## Added to socal register (from cheyenne): 0
 
@@ -33,7 +30,30 @@ Mine/Oilfield/Tunnel/Canal classes excluded (cheyenne plots mines from MRDS, not
 
 ## Result
 
-- js/socal-gazetteer-data.js: 508 → 508 rows (verified 65).
+- js/socal-gazetteer-data.js: 508 → 508 rows (verified 69).
 - js/cheyenne-data.js GAZETTEER.ange: 53 → 53 rows.
 - chey (Colorado) plate untouched — outside the socal theater.
 
+
+## Conflict resolution — 2026-10-04 (follow-up pass)
+
+The four divergences flagged by the first pass (Throop Peak, Pine Mountain,
+Dawson Peak, Wrightwood) were researched against GNIS FEATURE_IDs bound
+through Wikidata P590 anchors (the register's standing anchor model). The
+socal rows were marked VERIFIED with the confirmed FEATURE_IDs, and a
+`--write` rerun propagated the verified coordinates to the cheyenne ange
+register under policy rule 2. Fixpoint confirmed: a follow-up dry run
+reports **0 conflicts**.
+
+| Name | GNIS FEATURE_ID | Wikidata | authoritative coords | verdict |
+|---|---|---|---|---|
+| Throop Peak | 252256 | Q7798370 | 34.350556, -117.799505 | cheyenne was right; socal lon was ~0.05° east (corrected) |
+| Pine Mountain | 272994 | Q49061746 | 34.313611, -117.644444 | cheyenne was right; socal corrected (beware GNIS 247508, a different LA-County Pine Mountain near Mount Wilson) |
+| Dawson Peak | 270769 | Q35737041 | 34.303333, -117.635833 | cheyenne was right; socal corrected |
+| Wrightwood | 1652816 (ppl; CDP twin 2409630) | Q2481425 | 34.3608, -117.6339 | socal was right; cheyenne lon was ~0.036° east (corrected by sync --write) |
+
+Corroborating coordinates: Throop Peak 34.3505562/-117.7995051 (USGS Crystal
+Lake quad), Pine Mountain #1 34.3136139/-117.6444996 (HPS register),
+Dawson Peak 34.3030/-117.636 (9,575 ft, Baldy north ridge).
+
+Register meta after resolution: 508 rows, verified 65 → **69**.

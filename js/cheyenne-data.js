@@ -155,7 +155,7 @@ export const GAZETTEER = {
     ["Rancho Cucamonga", -117.5931, 34.1064, "Populated Place"],
     ["Pasadena", -118.1445, 34.1478, "Populated Place"],
     ["Acton", -118.1965, 34.469, "Populated Place"],
-    ["Wrightwood", -117.5975, 34.3608, "Populated Place"],
+    ["Wrightwood", -117.6339, 34.3608, "Populated Place"],
     ["La Cañada Flintridge", -118.2002, 34.2097, "Populated Place"],
     ["Cahuenga Pass", -118.346, 34.12, "Gap"],
     ["Vasquez Rocks", -118.3336, 34.4878, "Locale"],

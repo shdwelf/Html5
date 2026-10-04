@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Headline Harry and The Great Paper Race</title>
+<link rel="stylesheet" href="js-dos/js-dos.css" />
+<script src="js-dos/js-dos.js"></script>
+<!-- webxdc.js: ArcaneChat/Delta Chat inject the real API at runtime;
+     this local copy is a no-op stub for standalone browser preview. -->
+<script src="webxdc.js"></script>
+<style>
+  :root {
+    --ink: #e8e0cc;
+    --paper: #141311;
+    --paper2: #1d1b17;
+    --rule: #3a362c;
+    --red: #c0392b;
+    --gold: #d4a017;
+    --mono: 'Courier New', Courier, monospace;
+    --serif: Georgia, 'Times New Roman', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--paper); color: var(--ink);
+    font-family: var(--serif); overflow: hidden; }
+  #app { display: flex; flex-direction: column; height: 100%; }
+
+  header {
+    flex: 0 0 auto; padding: 6px 12px 5px; border-bottom: 2px solid var(--rule);
+    background:
+      repeating-linear-gradient(0deg, var(--paper2) 0 2px, transparent 2px 4px),
+      var(--paper2);
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  }
+  header .kicker { font: 700 10px/1 var(--mono); letter-spacing: 2px;
+    color: var(--red); text-transform: uppercase; white-space: nowrap; }
+  header h1 { font: italic 700 clamp(15px, 3.2vw, 22px)/1.1 var(--serif);
+    color: var(--ink); white-space: nowrap; }
+  header .meta { margin-left: auto; font: 10px/1.4 var(--mono); color: #8a846f;
+    text-align: right; white-space: nowrap; }
+
+  #stage { position: relative; flex: 1 1 auto; min-height: 0; background: #000; }
+  #dosbox-container { position: absolute; inset: 0; }
+
+  #overlay {
+    position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px; padding: 24px;
+    background:
+      radial-gradient(ellipse at 50% 35%, rgba(212,160,23,.07), transparent 60%),
+      var(--paper);
+    text-align: center;
+  }
+  #overlay .masthead { font: italic 700 clamp(22px, 6vw, 40px)/1 var(--serif);
+    border-top: 3px double var(--rule); border-bottom: 3px double var(--rule);
+    padding: 10px 18px; }
+  #overlay .masthead span { color: var(--red); }
+  #overlay .sub { font: 12px/1.5 var(--mono); color: #8a846f; max-width: 46ch; }
+  #start {
+    font: 700 15px/1 var(--mono); letter-spacing: 1px; cursor: pointer;
+    color: #fff; background: var(--red); border: 2px solid #7c241a;
+    padding: 14px 26px; border-radius: 4px; box-shadow: 0 3px 0 #7c241a;
+  }
+  #start:active { transform: translateY(2px); box-shadow: 0 1px 0 #7c241a; }
+  #overlay .keys { font: 10px/1.6 var(--mono); color: #6d6853; }
+
+  #status {
+    flex: 0 0 auto; font: 10px/1.4 var(--mono); color: #8a846f;
+    padding: 3px 10px; border-top: 1px solid var(--rule); background: var(--paper2);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  details { flex: 0 0 auto; background: var(--paper2); border-top: 1px solid var(--rule); }
+  details summary { font: 10px/1.6 var(--mono); color: #6d6853; padding: 2px 10px;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+  details .body { padding: 8px 12px; font: 11px/1.55 var(--serif); color: #9d9779;
+    border-top: 1px dashed var(--rule); }
+  details .body b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <span class="kicker">★ Extra! ★</span>
+    <h1>Headline Harry &amp; The Great Paper Race</h1>
+    <span class="meta">Davidson &amp; Associates · DOS · 1991<br/>js-dos (DOSBox&nbsp;WASM) · webxdc</span>
+  </header>
+
+  <div id="stage">
+    <div id="dosbox-container"></div>
+    <div id="overlay">
+      <div class="masthead">HEADLINE <span>HARRY</span></div>
+      <div class="sub">The original 1991 DOS program, booted from the archive.org
+        floppy set (<span style="color:var(--ink)">HeadlineHarry</span> item),
+        running in DOSBox compiled to WebAssembly — fully offline inside this
+        webxdc app.</div>
+      <button id="start">▶&nbsp; BOOT THE PRESSROOM</button>
+      <div class="keys">mouse + keyboard · on touch devices use the js-dos on-screen
+        keyboard button (☰ sidebar)</div>
+    </div>
+  </div>
+
+  <div id="status">press BOOT to start the 1991 pressroom…</div>
+
+  <details>
+    <summary>about · controls · provenance</summary>
+    <div class="body">
+      <p><b>What this is:</b> Headline Harry and The Great Paper Race (1991,
+      Davidson &amp; Associates). You are a rookie reporter for the US Daily Star
+      chasing stories from 1950–1990 across America against the rival tabloid
+      <i>Diabolical Daily</i>. Point-and-click + typing game.</p>
+      <p><b>Provenance:</b> four 720&nbsp;kB FAT12 floppy images from Internet
+      Archive item <b>HeadlineHarry</b> (SHA-1 verified against the item's
+      documented hashes), contents extracted and packed to
+      <span style="font-family:var(--mono)">roms/headline-harry.jsdos</span>, booted
+      by js-dos 8.4.1 (DOSBox → WebAssembly). No files leave the app; webxdc CSP
+      keeps it fully offline.</p>
+      <p><b>Legal:</b> abandonware is not public domain — © Davidson &amp;
+      Associates. For personal archival/preservation use only; please don't
+      redistribute this .xdc.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var statusEl = document.getElementById("status");
+  function status(msg) { statusEl.textContent = msg; }
+
+  var dosInstance = null;
+
+  function boot() {
+    var overlay = document.getElementById("overlay");
+    var container = document.getElementById("dosbox-container");
+    overlay.style.display = "none";
+    status("loading DOSBox (WASM) from app bundle…");
+
+    // js-dos v8 API: the bundle URL goes in the options and the player
+    // auto-starts — there is no .run() method (that was the v7 API; calling
+    // it threw "dosInstance.run is not a function" and the game never booted).
+    var opts = {
+      // everything local — never touch the default CDN (webxdc is offline)
+      url: "roms/headline-harry.jsdos",
+      pathPrefix: "js-dos/",
+      autoStart: true,
+      noCloud: true,
+      kiosk: false,
+      onEvent: function (event) {
+        if (event === "emu-ready") {
+          status("DOSBox (WASM) engine loaded from the app bundle…");
+        } else if (event === "bnd-play") {
+          status("booting HEADLINE HARRY (1991)…");
+        } else if (event === "ci-ready") {
+          status("DOSBox ready — HEADLINE HARRY (1991). " +
+                 "js-dos sidebar: ☰ = keyboard/gamepad, 💾 = actions");
+        } else if (event === "emu-error" || event === "bnd-error") {
+          status("DOSBox error — see console. ⟳ RETRY to boot again.");
+          overlay.style.display = "flex";
+          document.getElementById("start").textContent = "⟳ RETRY";
+        }
+      }
+    };
+
+    try {
+      dosInstance = window.Dos(container, opts);
+    } catch (e) {
+      status("failed to start js-dos: " + (e && e.message ? e.message : e));
+      console.error(e);
+      overlay.style.display = "flex";
+    }
+  }
+
+  document.getElementById("start").addEventListener("click", boot);
+})();
+</script>
+</body>
+</html>
