@@ -34,6 +34,12 @@ Alternative paths investigated:
 - The National Map download/TNM Access API is appropriate for downloading a real DEM tile, not for a four-point browser probe: [USGS GIS Data Download](https://www.usgs.gov/the-national-map-data-delivery/gis-data-download).
 - OpenTopography exposes USGS 3DEP rasters but requires a free API key for the public API, so it is not embedded as an anonymous fallback: [OpenTopography 3DEP API](https://opentopography.org/news/api-access-usgs-3dep-rasters-now-available).
 
+## OpenStreetMap alternative
+
+The app also offers an explicit **OSM context** action using the public Nominatim reverse-geocoder at `https://nominatim.openstreetmap.org/reverse`. It can return a nearby OSM name/address for each probe coordinate, which is useful for Gazetteer context and diagnosing coordinate placement. It is **not an elevation source** and its result is never substituted for USGS DEM data.
+
+The four requests are serialized with a one-second delay to respect the public service's fair-use policy: [Nominatim usage policy](https://operations.osmfoundation.org/policies/nominatim/). For production or repeated use, a self-hosted Nominatim instance or a permitted commercial OSM provider is preferable. OSM data is community-maintained and should be attributed as OpenStreetMap contributors.
+
 ## Orbital windows
 
 - Sentinel-1 geometry: [ESA Sentinel-1 mission summary](https://sentinel.esa.int/en/web/sentinel/missions/sentinel-1/overview/mission-summary) — 693 km, 98.18°, 12-day single-satellite repeat; the app reports the nominal six-day constellation cadence only when both spacecraft are operational.
