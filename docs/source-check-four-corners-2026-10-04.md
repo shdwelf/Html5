@@ -8,6 +8,14 @@ This note audits the new `.xdc`; it is not a claim of live launch availability.
 - **Cheyenne / Angeles register:** `docs/cheyenne.md` and `js/cheyenne-data.js`, whose `GAZETTEER` arrays are documented as a July 2026 USGS GNIS refresh. The builder carries both plates into the same neutral register but retains `Cheyenne / Colorado` and `Angeles / California` region tags.
 - **MRDS distinction:** mine records remain in the Cheyenne app's source theater. The merged Four Corners view is a gazetteer index, not a treasure map and not evidence that a place contains recoverable property.
 
+## Minimal USGS DEM probe
+
+The Four Corners extension does not ship a large raster. It exposes four Gazetteer-linked point probes and, on user action, queries the USGS **Elevation Point Query Service (EPQS)** endpoint: `https://epqs.nationalmap.gov/v1/json`. USGS documents EPQS as returning elevations interpolated from the 3DEP dynamic elevation service, including 1 m lidar DEMs where available and 1/3 arc-second seamless DEMs: [USGS Maps and Mapping FAQ](https://www.usgs.gov/science/faqs/maps-and-mapping?page=5).
+
+- Colorado is seeded from the repository's local USGS 3DEP control point for Pikes Peak (`js/cheyenne-dem-data.js`, fetched 2026-10-02).
+- Utah, Arizona, and Nevada retain only coordinates in the offline bundle; their elevations are intentionally blank until a live EPQS query succeeds.
+- A returned point value is labeled as an EPQS point sample, not a downloaded DEM tile or a survey. Failed network requests remain visibly unavailable.
+
 ## Orbital windows
 
 - Sentinel-1 geometry: [ESA Sentinel-1 mission summary](https://sentinel.esa.int/en/web/sentinel/missions/sentinel-1/overview/mission-summary) — 693 km, 98.18°, 12-day single-satellite repeat; the app reports the nominal six-day constellation cadence only when both spacecraft are operational.

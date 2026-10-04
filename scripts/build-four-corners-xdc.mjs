@@ -19,6 +19,11 @@ const data=`export const PLACES=${JSON.stringify(places)};\nexport const SATELLI
 {name:'SDA Tranche 1 Transport Layer A',date:'NET 2026-10-05',site:'Vandenberg SFB · SLC-4E',window:'08:17 UTC target; subject to range/weather',status:'schedule listing; confirm with VSFB / operator'},
 {name:'Starlink Group 15-25',date:'NET 2026-10-10',site:'Vandenberg SFB',window:'23:00 UTC listing; subject to change',status:'schedule listing; confirm with operator'},
 {name:'Vandenberg launch cadence',date:'2026',site:'California western range',window:'Opportunities are mission-specific, not a public guarantee',status:'planning note; no access or viewing implied'}
+])};\nexport const DEM_SAMPLES=${JSON.stringify([
+{state:'Utah',place:'Four Corners boundary / San Juan plateau',lat:37,lon:-109,seedM:null},
+{state:'Colorado',place:'Pikes Peak GNIS / local 3DEP control',lat:38.8406,lon:-105.0449,seedM:4298.8},
+{state:'Arizona',place:'Grand Canyon South Rim Gazetteer anchor',lat:36.0544,lon:-112.1401,seedM:null},
+{state:'Nevada',place:'Charleston Peak GNIS anchor',lat:36.2716,lon:-115.6956,seedM:null}
 ])};`;
 await rm(outDir,{recursive:true,force:true}); await mkdir(outDir,{recursive:true});
 let html=await readFile(path.join(root,'four-corners.html'),'utf8'); html=html.replace('./four-corners.js','./four-corners.js'); await writeFile(path.join(outDir,'index.html'),html);
