@@ -16,6 +16,24 @@ The Four Corners extension does not ship a large raster. It exposes four Gazette
 - Utah, Arizona, and Nevada retain only coordinates in the offline bundle; their elevations are intentionally blank until a live EPQS query succeeds.
 - A returned point value is labeled as an EPQS point sample, not a downloaded DEM tile or a survey. Failed network requests remain visibly unavailable.
 
+## CORS / proxy deep dive
+
+The browser path now tries three first-party USGS alternatives in order:
+
+1. `https://epqs.nationalmap.gov/v1/json` — current EPQS JSON endpoint.
+2. `https://nationalmap.gov/epqs/pqs.php` — legacy EPQS compatibility path, retained as a fallback only.
+3. `https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples` — ArcGIS ImageServer point sampling against the current 3DEP dynamic service.
+
+The app first tries these directly. If the host blocks cross-origin requests, the user may provide a proxy URL template containing `{url}`, for example `https://corsproxy.io/?url={url}` or an organization-controlled relay. The app URL-encodes the complete USGS request and never sends a request through a public proxy unless the user explicitly enters that template.
+
+Public CORS proxies are an availability and privacy risk: they can log coordinates, rate-limit, rewrite responses, or disappear. They are not treated as authoritative data sources, and the source displayed in the app remains the USGS endpoint. A same-origin relay under the deployer's control is preferable. The offline webxdc cannot embed a server-side proxy; the direct path and local seed therefore remain the honest fallback.
+
+Alternative paths investigated:
+
+- USGS 3DEP ImageServer supports REST, WMS, WCS, and `getSamples`; this is the best no-key alternative for point queries and small map exports: [3DEPElevation ImageServer](https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer).
+- The National Map download/TNM Access API is appropriate for downloading a real DEM tile, not for a four-point browser probe: [USGS GIS Data Download](https://www.usgs.gov/the-national-map-data-delivery/gis-data-download).
+- OpenTopography exposes USGS 3DEP rasters but requires a free API key for the public API, so it is not embedded as an anonymous fallback: [OpenTopography 3DEP API](https://opentopography.org/news/api-access-usgs-3dep-rasters-now-available).
+
 ## Orbital windows
 
 - Sentinel-1 geometry: [ESA Sentinel-1 mission summary](https://sentinel.esa.int/en/web/sentinel/missions/sentinel-1/overview/mission-summary) — 693 km, 98.18°, 12-day single-satellite repeat; the app reports the nominal six-day constellation cadence only when both spacecraft are operational.
