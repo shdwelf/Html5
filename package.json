@@ -8,6 +8,7 @@
     "build": "vite build && node scripts/build-xdc.mjs",
     "build:bluetops": "node scripts/build-bluetops-xdc.mjs",
     "build:cheyenne": "node scripts/build-cheyenne-xdc.mjs",
+    "build:four-corners": "node scripts/build-four-corners-xdc.mjs",
     "build:cia-museum": "node scripts/build-cia-museum-xdc.mjs",
     "build:greeran-family": "node scripts/build-greeran-family-4dwm-xdc.mjs",
     "build:vincennes": "node scripts/build-vincennes-xdc.mjs",

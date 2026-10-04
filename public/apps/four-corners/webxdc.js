@@ -1,0 +1,1 @@
+window.webxdc=window.webxdc||{sendUpdate(){},setUpdateListener:async()=>0,getAllUpdates:async()=>[]};
