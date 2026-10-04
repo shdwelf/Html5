@@ -134,31 +134,34 @@
     overlay.style.display = "none";
     status("loading DOSBox (WASM) from app bundle…");
 
+    // js-dos v8 API: the bundle URL goes in the options and the player
+    // auto-starts — there is no .run() method (that was the v7 API; calling
+    // it threw "dosInstance.run is not a function" and the game never booted).
     var opts = {
       // everything local — never touch the default CDN (webxdc is offline)
+      url: "roms/headline-harry.jsdos",
       pathPrefix: "js-dos/",
-      wdosboxUrl: "js-dos/wdosbox.wasm",
-      autolock: true,
-      onready: function (ci) {
-        status("DOSBox ready — booting HEADLINE HARRY (1991). " +
-               "js-dos sidebar: ☰ = keyboard/gamepad, 💾 = actions");
-      },
-      onerror: function (err) {
-        status("DOSBox error: " + err);
-        overlay.style.display = "flex";
-        document.getElementById("start").textContent = "⟳ RETRY";
+      autoStart: true,
+      noCloud: true,
+      kiosk: false,
+      onEvent: function (event) {
+        if (event === "emu-ready") {
+          status("DOSBox (WASM) engine loaded from the app bundle…");
+        } else if (event === "bnd-play") {
+          status("booting HEADLINE HARRY (1991)…");
+        } else if (event === "ci-ready") {
+          status("DOSBox ready — HEADLINE HARRY (1991). " +
+                 "js-dos sidebar: ☰ = keyboard/gamepad, 💾 = actions");
+        } else if (event === "emu-error" || event === "bnd-error") {
+          status("DOSBox error — see console. ⟳ RETRY to boot again.");
+          overlay.style.display = "flex";
+          document.getElementById("start").textContent = "⟳ RETRY";
+        }
       }
     };
 
     try {
-      if (window.Dos && typeof window.Dos.configure === "function") {
-        window.Dos.configure({
-          pathPrefix: opts.pathPrefix,
-          wdosboxUrl: opts.wdosboxUrl
-        });
-      }
       dosInstance = window.Dos(container, opts);
-      dosInstance.run("roms/headline-harry.jsdos");
     } catch (e) {
       status("failed to start js-dos: " + (e && e.message ? e.message : e));
       console.error(e);

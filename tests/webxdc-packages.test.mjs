@@ -143,3 +143,157 @@ test("Sanborn Installations archive carries both complete source applications", 
     assert.ok(viewerEntries.includes(id), `missing Sanborn viewer entry: ${id}`);
   }
 });
+
+test("SITE-K ships the Cheyenne and Four Corners exhibits with local dependencies", () => {
+  const files = archive("sitek.xdc");
+  for (const file of [
+    "cheyenne.html", "four-corners.html",
+    "css/cheyenne.css", "css/four-corners.css",
+    "js/cheyenne.js", "js/cheyenne-data.js",
+    "js/four-corners.js", "js/four-corners-data.js",
+  ]) {
+    assert.ok(files[file], `SITE-K is missing ${file}`);
+  }
+  // The pages must be the current working-tree versions, not stale copies.
+  assert.equal(text(files, "cheyenne.html"), source("cheyenne.html"));
+  assert.equal(text(files, "four-corners.html"), source("four-corners.html"));
+  assert.equal(text(files, "js/four-corners.js"), source("js/four-corners.js"));
+  assert.equal(text(files, "js/four-corners-data.js"), source("js/four-corners-data.js"));
+  // The theater and the 4Dwm map need the local three.js modules.
+  assert.ok(files["vendor/three.module.min.js"], "SITE-K is missing vendor three for the exhibits");
+  assert.ok(files["vendor/OrbitControls.js"], "SITE-K is missing vendor OrbitControls for the exhibits");
+});
+
+test("Four Corners theater archive is current and closes its local module graph", () => {
+  const files = archive("four-corners.xdc");
+  for (const file of [
+    "index.html", "manifest.toml", "webxdc.js",
+    "css/four-corners.css", "js/four-corners.js", "js/four-corners-data.js",
+    "vendor/three.module.min.js", "vendor/OrbitControls.js",
+  ]) assert.ok(files[file], `four-corners.xdc is missing ${file}`);
+
+  // Every staged first-party source must be byte-identical to the working tree.
+  for (const archived of Object.keys(files).filter((name) => /^(?:js|css)\//.test(name))) {
+    assert.deepEqual(
+      Buffer.from(files[archived]),
+      readFileSync(path.join(root, archived)),
+      `${archived} in four-corners.xdc is stale`,
+    );
+  }
+
+  // index.html is the root page with the webxdc.js injection spliced in.
+  const stagedIndex = text(files, "index.html");
+  const rootPage = source("four-corners.html");
+  assert.ok(
+    stagedIndex.includes('<script src="./webxdc.js"></script>'),
+    "four-corners.xdc index.html lost the webxdc.js injection",
+  );
+  for (const line of rootPage.split("\n")) {
+    if (line.includes("four-corners.css") || line.includes("four-corners.js")) {
+      assert.ok(stagedIndex.includes(line.trim()), `staged index lost reference: ${line.trim()}`);
+    }
+  }
+
+  const specifiers = (sourceText) => {
+    const found = [];
+    const patterns = [
+      /\b(?:import\s+(?:[^'";]*?from\s*)?|export\s+[^'";]*?from\s*)["']([^"']+)["']/g,
+      /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g,
+    ];
+    for (const pattern of patterns) for (const match of sourceText.matchAll(pattern)) found.push(match[1]);
+    return found;
+  };
+
+  const pending = ["js/four-corners.js"];
+  const visited = new Set();
+  while (pending.length) {
+    const moduleName = pending.pop();
+    if (visited.has(moduleName)) continue;
+    visited.add(moduleName);
+    assert.ok(files[moduleName], `four-corners module graph is missing ${moduleName}`);
+    const sourceText = readFileSync(path.join(root, moduleName), "utf8");
+    for (const specifier of specifiers(sourceText)) {
+      if (!specifier.startsWith(".")) continue;
+      const dependency = path.posix.normalize(path.posix.join(path.posix.dirname(moduleName), specifier));
+      if (dependency.startsWith("vendor/")) continue;
+      if (existsSync(path.join(root, dependency))) pending.push(dependency);
+    }
+  }
+});
+
+test("Headline Harry archive boots the js-dos v8 API with the complete engine", () => {
+  const files = archive("headline-harry.xdc");
+
+  // The full 8.4.1 engine set — emulators.js lazily fetches wdosbox.js AND
+  // the wlibzip pair via pathPrefix; a missing wlibzip 404s inside
+  // bundleConfig() before the game can start.
+  const engineDir = path.join(root, "webxdc-headline-harry", "app", "js-dos");
+  for (const name of [
+    "js-dos.js", "js-dos.css", "emulators.js",
+    "wdosbox.js", "wdosbox.wasm", "wlibzip.js", "wlibzip.wasm",
+  ]) {
+    const entry = `js-dos/${name}`;
+    assert.ok(files[entry], `headline-harry.xdc is missing ${entry}`);
+    assert.deepEqual(
+      Buffer.from(files[entry]),
+      readFileSync(path.join(engineDir, name)),
+      `${entry} is not the vendored js-dos 8.4.1 file`,
+    );
+  }
+
+  const shell = text(files, "index.html");
+  assert.equal(shell, source("public/apps/headline-harry/index.html"), "packed shell is stale");
+  assert.doesNotMatch(shell, /dosInstance\.run\(/, "v7 dosInstance.run() crept back into the shell");
+  assert.match(shell, /url:\s*"roms\/headline-harry\.jsdos"/);
+  assert.match(shell, /pathPrefix:\s*"js-dos\/"/);
+
+  // The roms bundle must be a real .jsdos bundle: autoexec mounts C: and boots.
+  const rom = unzipSync(files["roms/headline-harry.jsdos"]);
+  const conf = decoder.decode(rom[".jsdos/dosbox.conf"]);
+  assert.match(conf, /\[autoexec\]/);
+  assert.match(conf, /mount c \./);
+  assert.ok(rom["MAP.EXE"], "headline-harry.jsdos lost MAP.EXE");
+});
+
+test("webxdc-dos archive boots js-dos v8 with complete engine and prebuilt bundles", () => {
+  const files = archive("webxdc-dos/dos-binary-loader.xdc");
+
+  for (const name of [
+    "js-dos/js-dos.js", "js-dos/js-dos.css", "js-dos/emulators.js",
+    "js-dos/wdosbox.js", "js-dos/wdosbox.wasm",
+    "js-dos/wlibzip.js", "js-dos/wlibzip.wasm",
+  ]) assert.ok(files[name], `dos-binary-loader.xdc is missing ${name}`);
+
+  // Relative engine references only — a webxdc host serves the archive from an
+  // arbitrary path, root-absolute /js-dos/ URLs 404.
+  const index = text(files, "index.html");
+  assert.match(index, /href="\.\/js-dos\/js-dos\.css"/);
+  assert.match(index, /src="\.\/js-dos\/js-dos\.js"/);
+  assert.doesNotMatch(index, /["'](\/js-dos\/|\/roms\/)/);
+
+  // The bundled app: v8 boot markers, runtime zip wrapping, global exports.
+  const appChunk = Object.keys(files).find((name) => /^assets\/index-[^/]+\.js$/.test(name));
+  assert.ok(appChunk, "dos-binary-loader.xdc has no vite app chunk");
+  const app = text(files, appChunk);
+  // vite minifies strings to backticks — accept either quoting style
+  assert.match(app, /pathPrefix:\s*["'`]\.\/js-dos\/["'`]/);
+  assert.match(app, /roms\/DOSDEMO\.jsdos/);
+  assert.match(app, /roms\/SNEAKERS\.jsdos/);
+  assert.match(app, /window\.loadDemo\s*=/, "module exports missing: Run Demo button cannot reach loadDemo");
+  assert.doesNotMatch(app, /Dos\.configure\(/, "v6 Dos.configure crept back into the app");
+  assert.doesNotMatch(app, /dosInstance\.run\(/, "v7 dosInstance.run() crept back into the app");
+  assert.match(app, /invalid zip data/, "fflate runtime zip-wrapping is not bundled");
+
+  // Prebuilt .jsdos bundles carry a dosbox.conf whose autoexec boots the game.
+  for (const [bundle, launcher, payload] of [
+    ["roms/DOSDEMO.jsdos", "DEMO.COM", "DEMO.COM"],
+    ["roms/SNEAKERS.jsdos", "RUN.BAT", "SNEAKERS.EXE"],
+  ]) {
+    assert.ok(files[bundle], `dos-binary-loader.xdc is missing ${bundle}`);
+    const inner = unzipSync(files[bundle]);
+    const conf = decoder.decode(inner[".jsdos/dosbox.conf"]);
+    assert.match(conf, /\[autoexec\]/, `${bundle} has no autoexec`);
+    assert.ok(conf.trimEnd().endsWith(launcher), `${bundle} autoexec does not run ${launcher}`);
+    assert.ok(inner[payload], `${bundle} lost ${payload}`);
+  }
+});

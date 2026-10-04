@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "xdc": "vite build && cd dist && zip -r ../dos-binary-loader.xdc . -x '*.map'",
+    "xdc": "vite build && rm -f dos-binary-loader.xdc && cd dist && zip -r ../dos-binary-loader.xdc . -x '*.map'",
     "xdc-dev": "npx xdc-dev run"
   },
   "devDependencies": {
