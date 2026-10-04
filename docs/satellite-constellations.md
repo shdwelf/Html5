@@ -1,6 +1,8 @@
 # Satellite Constellations 4Dwm
 
-Research checked: **30 September 2026**.
+Research checked: **30 September 2026**. Continued **4 October 2026** with
+launch windows, launch opportunities, and a new `transfer` orbit layer —
+see `docs/satellite-launch-windows-research-2026-10-04.md`.
 
 `/satellite-constellations.html` is a new Three.js viewer based on the interaction pattern of `socal-subsurface.html`: fixed canvas, draggable 4Dwm-style PiP panels, layer toggles, dossier panel, minimap, and a timeline slider. It illustrates satellite constellations as **mathematical orbit shells**, not as live satellite tracking.
 
@@ -22,6 +24,7 @@ a = Earth radius + altitude
   - Earth-central horizon half-angle.
 - Uses a year slider from **1957–2032** so the viewer can illustrate the shift from early satellite navigation to large LEO broadband constellations.
 - Downsamples very large constellations into proxy markers. For example, Starlink and OneWeb are drawn as representative swarms instead of thousands of individual meshes.
+- Draws elliptical launch/transfer orbit classes (GTO, Molniya-type HEO) via the conic equation, and carries a LAUNCH WINDOWS panel: the window taxonomy per mission class plus dated, sourced launch opportunities (`LAUNCH_WINDOWS` in the data pack).
 
 ## What the viewer does not do
 
@@ -43,6 +46,8 @@ a = Earth radius + altitude
 | Broadband | Eutelsat OneWeb Gen 1 | 648 satellites at roughly 1,200 km, 12 near-polar planes; drawn with 144 proxy markers. |
 | Broadband | Starlink representative shell | SpaceX describes thousands of LEO satellites around 550 km; source page reported over 6,750 in orbit at research time. Drawn as one representative 53° shell with proxy markers, not the full multi-shell system. |
 | Earth observation | NOAA JPSS | Polar weather satellites around 512 miles / 824 km, about 101-minute orbits; drawn as a small polar observation series. |
+| Launch & transfer | GTO transfer ellipse (illustrative) | 250 × 35,786 km, ~27°, e ≈ 0.73 — the standard GEO delivery ellipse; one marker, not a fleet. |
+| Launch & transfer | Molniya-type HEO (illustrative) | 600 × 39,750 km at the 63.4° critical inclination; ~12-hour semi-synchronous ellipses dwelling over high latitudes. |
 
 ## Sources consulted
 

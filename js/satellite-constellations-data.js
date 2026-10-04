@@ -31,6 +31,24 @@ export function horizonHalfAngleDeg(altitudeKm) {
   return Math.acos(EARTH_RADIUS_KM / (EARTH_RADIUS_KM + altitudeKm)) * 180 / Math.PI;
 }
 
+/** Kepler period from a semi-major axis in km (for elliptical shells). */
+export function periodFromSmaMinutes(aKm) {
+  return (2 * Math.PI * Math.sqrt((aKm ** 3) / MU_EARTH_KM3_S2)) / 60;
+}
+
+/**
+ * Geometry of a shell: circular shells carry altitudeKm; elliptical shells
+ * carry perigeeKm/apogeeKm (altitudeKm then holds the mean altitude so the
+ * circular-formula dossier fields stay meaningful as "mean" values).
+ */
+export function shellGeometry(shell) {
+  const rp = EARTH_RADIUS_KM + (shell.perigeeKm ?? shell.altitudeKm);
+  const ra = EARTH_RADIUS_KM + (shell.apogeeKm ?? shell.altitudeKm);
+  const a = (rp + ra) / 2;
+  const e = (ra - rp) / (ra + rp);
+  return { rp, ra, a, e, elliptical: shell.apogeeKm != null };
+}
+
 export function shellActualCount(shell) {
   return shell.satellites ?? shell.planes * shell.satsPerPlane;
 }
@@ -64,6 +82,7 @@ export const LAYERS = [
   { id: "broadband", name: "LEO broadband megaconstellations", color: "#38bdf8", on: true },
   { id: "mobile", name: "Mobile satellite service", color: "#a78bfa", on: true },
   { id: "earthobs", name: "Weather / Earth observation", color: "#34d399", on: true },
+  { id: "transfer", name: "Launch & transfer orbits · HEO / GTO", color: "#f472b6", on: true },
 ];
 
 const SRC = {
@@ -77,6 +96,11 @@ const SRC = {
   iridium: ["Iridium — network overview", "https://www.iridium.com/network"],
   iridiumEo: ["eoPortal — Iridium NEXT architecture", "https://www.eoportal.org/satellite-missions/iridium-next"],
   jpssNoaa: ["NOAA — JPSS fact sheet", "https://www.nesdis.noaa.gov/s3/2024-12/JPSS-factsheet.pdf"],
+  orbitCatalog: ["NASA Earth Observatory — Catalog of Earth Satellite Orbits", "https://earthobservatory.nasa.gov/features/OrbitsCatalog"],
+  windowGlossary: ["Orbital Radar — launch window glossary", "https://orbitalradar.com/glossary/launch-window"],
+  mmxJaxa: ["JAXA — Martian Moons eXploration (MMX)", "https://www.mmx.jaxa.jp/en/"],
+  artemis2: ["NASA — Artemis II", "https://www.nasa.gov/mission/artemis-ii/"],
+  marsWindow: ["The Space Review — 2026 Mars window reporting", "https://www.thespacereview.com/article/5230/1"],
 };
 
 export const CONSTELLATIONS = [
@@ -283,7 +307,110 @@ export const CONSTELLATIONS = [
     ],
     shells: [{ id: "jpss-polar", altitudeKm: 824, inclinationDeg: 98.7, planes: 1, satsPerPlane: 5, satellites: 5, renderSatellites: 5, phasing: 0 }],
   },
+  {
+    id: "gto",
+    layer: "transfer",
+    name: "GTO transfer ellipse (illustrative)",
+    operator: "— (orbit class, not a fleet)",
+    purpose: "How GEO satellites are delivered: the geostationary transfer orbit",
+    short: "GTO",
+    introYear: 1963,
+    matureYear: 1965,
+    currentSatellites: 1,
+    color: "#f472b6",
+    facts: [
+      "A classic GTO is an ellipse whose apogee kisses the GEO radius (35,786 km altitude) while its perigee stays a few hundred km up; the satellite circularizes with an apogee burn.",
+      "The ellipse is inclined roughly at the launch-site latitude (about 28° from Cape Canaveral, near 0° from Kourou) — the plane-change cost is exactly why GEO launch windows (1–4 hours) and site latitude matter.",
+      "One illustrative marker is drawn, not a fleet: this layer exists to show the launch-and-transfer geometry beside the destination shells.",
+    ],
+    sources: [SRC.orbitCatalog, SRC.windowGlossary],
+    milestones: [
+      { year: 1963, count: 1, label: "Syncom-era GTO deliveries begin" },
+      { year: 1980, count: 1, label: "commercial GEO era — GTO becomes the standard drop-off" },
+      { year: 2026, count: 1, label: "the workhorse path to GEO" },
+    ],
+    shells: [{ id: "gto-ellipse", perigeeKm: 250, apogeeKm: 35786, altitudeKm: 18018, inclinationDeg: 27, argPerigeeDeg: 180, planes: 1, satsPerPlane: 1, satellites: 1, renderSatellites: 1, phasing: 0 }],
+  },
+  {
+    id: "molniya",
+    layer: "transfer",
+    name: "Molniya-type HEO (illustrative)",
+    operator: "— (orbit class, not a fleet)",
+    purpose: "Highly elliptical 12-hour orbits that dwell over high latitudes",
+    short: "HEO",
+    introYear: 1965,
+    matureYear: 1967,
+    currentSatellites: 4,
+    color: "#fb7185",
+    facts: [
+      "Molniya orbits are ~12-hour ellipses (perigee ~600 km, apogee ~39,750 km) at the critical inclination of 63.4°, where Earth's oblateness stops rotating the perigee — the apogee stays parked over the north.",
+      "A spacecraft near apogee moves slowly, so it hangs over high latitudes for most of each orbit; three spaced planes give continuous northern coverage where GEO sits too low on the horizon.",
+      "Four proxy markers in two planes are drawn as an orbit-class illustration, not any specific operator's fleet.",
+    ],
+    sources: [SRC.orbitCatalog],
+    milestones: [
+      { year: 1965, count: 1, label: "first Molniya communications satellite" },
+      { year: 1967, count: 4, label: "operational HEO relay era" },
+      { year: 2026, count: 4, label: "orbit class still in military/comms use" },
+    ],
+    shells: [{ id: "molniya-heo", perigeeKm: 600, apogeeKm: 39750, altitudeKm: 20175, inclinationDeg: 63.4, argPerigeeDeg: 270, planes: 2, satsPerPlane: 2, satellites: 4, renderSatellites: 4, phasing: 0.5 }],
+  },
 ];
+
+/* ------------------------------------------------------------------------ */
+/* Launch windows & launch opportunities (research continued 2026-10-04).    */
+/* Windows are orbital geometry, not schedule padding: the tightest          */
+/* constraint sets the window length.                                        */
+
+export const LAUNCH_WINDOWS = {
+  retrieved: "2026-10-04",
+  note: "A launch PERIOD is the run of days a mission can fly; the launch WINDOW is the slice of one day. The more specific the target plane or body geometry, the shorter the window.",
+  types: [
+    { id: "iss", target: "ISS / crewed rendezvous", window: "instantaneous (seconds)", driver: "The pad must rotate into the station's orbital plane — matching inclination and RAAN in flight is prohibitively expensive, so RAAN is set by launching at the exact plane-crossing moment." },
+    { id: "sso", target: "Sun-synchronous (SSO)", window: "minutes, once daily", driver: "The required local time of the ascending node (LTAN) fixes when the site aligns with the target plane." },
+    { id: "geo", target: "GEO via transfer orbit", window: "1–4 hours, near-daily", driver: "Transfer geometry and Sun angle constraints; the broad target makes the window long." },
+    { id: "leo", target: "LEO constellation slot", window: "hours (flexible)", driver: "No rendezvous and broad plane tolerance; phasing is finished with on-orbit maneuvers." },
+    { id: "lunar", target: "Lunar free-return / NRHO", window: "tens of minutes to ~2 h on select days", driver: "Moon position plus vehicle thermal/lighting constraints pick both the days and the daily slice." },
+    { id: "mars", target: "Mars (Hohmann-class)", window: "weeks of days, every ~26 months", driver: "The Earth–Mars synodic period (~780 days) gates the low-energy transfer; porkchop plots pick the day-by-day energies." },
+  ],
+  opportunities: [
+    {
+      id: "mars-2026",
+      label: "Mars launch period — Nov → Dec 2026",
+      status: "open at research time",
+      note: "The 26-month Mars window opens in November 2026 and closes roughly a month later; missing it means waiting until late 2028/early 2029.",
+      sources: [SRC.marsWindow, SRC.windowGlossary],
+    },
+    {
+      id: "mmx-2026",
+      label: "JAXA MMX · Martian Moons eXploration",
+      status: "NET Nov 2026, Tanegashima",
+      note: "Phobos sample-return flagship riding the Nov–Dec 2026 Mars window; the first of the window's interplanetary departures.",
+      sources: [SRC.mmxJaxa, SRC.marsWindow],
+    },
+    {
+      id: "artemis2-2026",
+      label: "NASA Artemis II crewed lunar free-return",
+      status: "April 2026 attempt window (per NASA updates)",
+      note: "Daily windows of roughly two hours on select days (e.g. April 1, 5:24–7:24 pm CT), set by lunar geometry and Orion constraints — the lunar row of the window table in practice.",
+      sources: [SRC.artemis2],
+    },
+    {
+      id: "iss-cadence",
+      label: "ISS crew/cargo rendezvous cadence",
+      status: "recurring, instantaneous windows",
+      note: "Every ISS flight illustrates the plane-matching rule: one second per day per site, a scrub costs 24 hours. The station's 51.6° plane is drawn in this viewer's LEO band.",
+      sources: [SRC.windowGlossary],
+    },
+    {
+      id: "sso-daily",
+      label: "Sun-synchronous ride-share cadence",
+      status: "recurring, once-daily minutes",
+      note: "Earth-observation stacks (the JPSS layer here) launch in short daily windows pinned to their LTAN — the dawn-dusk or early-afternoon crossing times their sensors need.",
+      sources: [SRC.jpssNoaa, SRC.windowGlossary],
+    },
+  ],
+};
 
 export const TIMELINE_EVENTS = [
   { year: 1957, label: "Sputnik proves satellite radio tracking", note: "GPS history begins with Doppler tracking lessons from Sputnik-era observations." },

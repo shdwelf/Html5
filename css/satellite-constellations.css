@@ -10,6 +10,7 @@
   --mobile: #c084fc;
   --earthobs: #34d399;
   --reference: #7dd3fc;
+  --transfer: #f472b6;
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 }
 
@@ -42,6 +43,7 @@ html, body {
 .lbl.t-broadband { border-color: rgba(56,189,248,.65); }
 .lbl.t-mobile { border-color: rgba(192,132,252,.65); }
 .lbl.t-earthobs { border-color: rgba(52,211,153,.65); }
+.lbl.t-transfer { border-color: rgba(244,114,182,.65); }
 
 .topbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 40;
@@ -84,6 +86,7 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 #pipMath { top: 300px; right: 10px; width: 292px; }
 #pipDetail { bottom: 34px; left: 10px; width: 378px; }
 #pipMap { bottom: 34px; right: 10px; width: 236px; }
+#pipLaunch { top: 290px; left: 360px; width: 312px; }
 
 #minimap, #orbitChart { display: block; width: 100%; border: 1px solid var(--line); border-radius: 3px; background: rgba(2, 8, 23, .72); }
 #minimap { width: 220px; height: 150px; }
@@ -114,6 +117,28 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .tier.mobile { color: var(--mobile); }
 .tier.earthobs { color: var(--earthobs); }
 .tier.reference { color: var(--reference); }
+.tier.transfer { color: var(--transfer); }
+
+.launch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+  margin: 4px 0 6px;
+}
+.launch-table th {
+  text-align: left;
+  color: var(--dim);
+  font-weight: normal;
+  letter-spacing: 0.08em;
+  padding: 1px 4px 2px 0;
+  border-bottom: 1px solid var(--line);
+}
+.launch-table td {
+  padding: 2px 4px 2px 0;
+  border-bottom: 1px solid rgba(24, 48, 74, 0.5);
+  vertical-align: top;
+}
+.launch-table tr[title] { cursor: help; }
 .facts { margin: 6px 0 0; padding-left: 15px; font-size: 11px; line-height: 1.5; }
 .facts li { margin-bottom: 4px; }
 .srcs { margin: 8px 0 0; padding-left: 15px; font-size: 10px; color: var(--dim); line-height: 1.45; word-break: break-word; }
@@ -129,7 +154,7 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 @media (max-width: 900px) {
   .topbar { align-items: flex-start; }
   .topbar p { display: none; }
-  #pipMath, #pipMap { display: none; }
+  #pipMath, #pipMap, #pipLaunch { display: none; }
   #pipLayers { top: 104px; right: 10px; }
   #pipTimeline { top: auto; bottom: 34px; left: auto; right: 10px; width: 300px; }
   #pipDetail { width: calc(100vw - 20px); bottom: 34px; left: 10px; }
