@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reclassification Catalog · Legislation & Litigation Console</title>
+<style>
+  :root{
+    --bg:#0b0e13; --panel:#11151d; --panel2:#161b26; --line:#232b3a;
+    --ink:#d7e0ee; --dim:#7c8aa0; --acc:#5ad1a5; --pro:#5ad1a5; --con:#e0705f; --neu:#c9b458;
+    --mono:"IBM Plex Mono","JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:14px;line-height:1.5}
+  header{padding:18px 22px 10px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0e1420,#0b0e13)}
+  h1{margin:0;font-size:17px;letter-spacing:.14em;color:var(--acc)}
+  h1 small{color:var(--dim);letter-spacing:.04em;font-weight:400}
+  .sub{color:var(--dim);font-size:12px;margin-top:6px}
+  .sub a{color:#8ab8ff;text-decoration:none}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;padding:12px 22px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5;align-items:center}
+  .bar label{color:var(--dim);font-size:11px;letter-spacing:.08em}
+  select,input[type=search]{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:5px 8px;font-family:var(--mono);font-size:12px}
+  input[type=search]{min-width:200px}
+  .toggle{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .toggle button{background:var(--panel2);color:var(--dim);border:0;padding:6px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;cursor:pointer}
+  .toggle button.on{background:var(--acc);color:#09110d}
+  .count{margin-left:auto;color:var(--dim);font-size:11px}
+  main{padding:18px 22px 60px;max-width:1200px;margin:0 auto}
+  .group{margin:26px 0 10px}
+  .group h2{font-size:12px;letter-spacing:.18em;color:var(--acc);border-bottom:1px dashed var(--line);padding-bottom:6px;margin:0 0 10px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+  .card:hover{border-color:#31405a}
+  .row1{display:flex;gap:8px;align-items:baseline}
+  .id{color:var(--dim);font-size:11px}
+  .nm{font-weight:700;font-size:13px}
+  .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+  .tag{font-size:10px;letter-spacing:.06em;padding:2px 7px;border-radius:3px;border:1px solid var(--line);color:var(--dim)}
+  .tag.side-pro{color:var(--pro);border-color:var(--pro)}
+  .tag.side-con{color:var(--con);border-color:var(--con)}
+  .tag.side-neu{color:var(--neu);border-color:var(--neu)}
+  .cite{color:#8ab8ff;font-size:11px}
+  .sum{color:var(--ink);font-size:12px}
+  .st{color:var(--dim);font-size:11px}
+  .st b{color:var(--neu);font-weight:700}
+  .flag{color:var(--con)}
+  footer{border-top:1px solid var(--line);color:var(--dim);font-size:11px;padding:14px 22px;line-height:1.7}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;padding:8px 22px;color:var(--dim);font-size:11px;border-bottom:1px solid var(--line)}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:baseline}
+</style>
+</head>
+<body>
+<header>
+  <h1>RECLASSIFICATION CATALOG <small>· legislation &amp; litigation console · snapshot 2026-10-05</small></h1>
+  <div class="sub">
+    Federal penal reclassification, worked example: marijuana Schedule I → III (NPRM 89 FR 44597 · EO 14370 · April 2026 § 811(d)(1) order · ALJ Docket 26-96, <span class="flag">STAYED 2026-09-29, responses due 2026-10-13</span>).
+    Research: <a href="./docs/federal-reclassification-deep-dive-2026-10-05.md">deep dive</a> ·
+    <a href="./docs/reclassification-legislation-catalog-2026-10-05.md">catalog</a> ·
+    <a href="./docs/reclassification-symbolic-logic-2026-10-05.md">symbolic logic</a> ·
+    <a href="./docs/reclassification-budget-draft-bill-2026-10-05.md">budget &amp; draft bill</a> ·
+    <a href="./docs/reclassification-source-check-2026-10-05.md">source check</a>
+  </div>
+</header>
+<div class="legend">
+  <span><span class="dot" style="background:var(--pro)"></span>supports reclassification</span>
+  <span><span class="dot" style="background:var(--con)"></span>opposes / restricts</span>
+  <span><span class="dot" style="background:var(--neu)"></span>neutral / structural</span>
+  <span>◉ = short-title entry, current bill number unverified</span>
+</div>
+<div class="bar">
+  <label>GROUP</label>
+  <div class="toggle" id="groupToggle">
+    <button data-g="forum" class="on">BY FORUM / COURT</button>
+    <button data-g="jurisdiction">BY JURISDICTION</button>
+    <button data-g="matter">BY MATTER</button>
+  </div>
+  <label>SIDE</label>
+  <select id="fSide"><option value="">all</option><option value="pro">supports</option><option value="con">opposes</option><option value="neu">neutral</option></select>
+  <label>MATTER</label>
+  <select id="fMatter"><option value="">all</option></select>
+  <label>JURISDICTION</label>
+  <select id="fJur"><option value="">all</option></select>
+  <input type="search" id="fQ" placeholder="search… (e.g. NORML, rider, 811)" />
+  <span class="count" id="count"></span>
+</div>
+<main id="out"></main>
+<footer>
+  Session research console for <code>shdwelf/Html5</code>. Statuses verified to 2026-10-05 where sourced (grades in the source-check file); ◉ entries and items graded C/D there require verification before formal citation. Companion thread: <a style="color:#8ab8ff" href="./docs/berlin-wall-monument-deep-dive-2026-10-05.md">Berlin Wall Monument deep dive</a> → CIA Museum webxdc exhibit update.
+</footer>
+<script>
+const DATA=[
+ {id:"A1",n:"In re Rescheduling of Marijuana (DEA Docket 1362 / Hearing 26-96)",forum:"DEA Office of ALJs",jur:"Federal / Administrative",matter:"Administrative hearing",side:"neu",cite:"NPRM 89 FR 44597 (May 21, 2024)",st:"Hearing closed Jul 15 2026 · STAYED Sep 29 2026 · DEA response due Oct 13 2026",sum:"Formal rulemaking hearing on transferring all marijuana to Schedule III. Government is proponent; seven designated opponents. Chief ALJ Derek C. Julius; recommended decision pending the stay."},
+ {id:"A2",n:"Motion to admit GAO report + supplemental briefing",forum:"DEA Office of ALJs",jur:"Federal / Administrative",matter:"Administrative motion",side:"con",cite:"GAO, Drug Scheduling… (Sep 23, 2026)",st:"Pending — caused the A1 stay",sum:"DUID Victim Voices, Dr. Kenneth Finn, and NDASA move to reopen the record for the GAO report finding DEA/FDA lack comprehensive written scheduling policies."},
+ {id:"B1",n:"Consolidated petitions v. April 2026 Final Order",forum:"D.C. Circuit",jur:"Federal / Judicial — D.C. Cir.",matter:"Civil (APA / CSA §877 review)",side:"con",cite:"SAM+NDASA · Indiana & Nebraska AGs · pharma/physician coalition",st:"Interim stay DENIED · merits briefing ongoing",sum:"Arguments: §811(d)(1) cannot place marijuana below Schedule II absent Convention compulsion (NORML 1977), and the order creates an unauthorized 'hybrid schedule' with retained I/II-style controls."},
+ {id:"B2",n:"Canna Provisions v. Garland → v. Bondi",forum:"D. Mass. → 1st Cir. → S. Ct. (cert)",jur:"Federal / Judicial — 1st Cir.",matter:"Civil (Commerce Clause / due process)",side:"pro",cite:"No. 3:23-cv-30113; aff'd 1st Cir. (Jun 2025)",st:"Cert petition filed Oct 2025 — disposition unverified this session",sum:"Boies-led challenge asking courts to carve state-legal cannabis out of the CSA; dismissed as foreclosed by Raich; commentators rate cert chances near zero."},
+ {id:"B3",n:"NORML v. DEA",forum:"D.C. Circuit",jur:"Federal / Judicial — D.C. Cir.",matter:"Civil precedent",side:"con",cite:"559 F.2d 735 (D.C. Cir. 1977)",st:"Controlling construction invoked by B1 petitioners",sum:"Construed §811(d)'s treaty pathway as having a 'limited purpose' — the textual battleground for the April 2026 order."},
+ {id:"B4",n:"Americans for Safe Access v. DEA",forum:"D.C. Circuit",jur:"Federal / Judicial — D.C. Cir.",matter:"Civil precedent",side:"con",cite:"706 F.3d 438 (D.C. Cir. 2013)",st:"Upheld 2011 rescheduling denial",sum:"Background CAMU standard the 2023 HHS two-part test displaced."},
+ {id:"C1",n:"Gonzales v. Raich",forum:"Supreme Court",jur:"Federal / Judicial — S. Ct.",matter:"Criminal-adjacent (Commerce Clause)",side:"con",cite:"545 U.S. 1 (2005)",st:"Good law",sum:"Congress may reach wholly intrastate cultivation under the Commerce Clause — the wall Canna Provisions hit."},
+ {id:"C2",n:"United States v. Oakland Cannabis Buyers' Cooperative",forum:"Supreme Court",jur:"Federal / Judicial — S. Ct.",matter:"Civil injunction, criminal frame",side:"con",cite:"532 U.S. 483 (2001)",st:"Good law; premise weakens if Schedule III finalized",sum:"No medical-necessity defense for Schedule I substances — reasoning keyed to the schedule itself."},
+ {id:"C3",n:"United States v. McIntosh",forum:"9th Circuit",jur:"Federal / Judicial — 9th Cir.",matter:"Criminal",side:"pro",cite:"833 F.3d 1163 (9th Cir. 2016)",st:"Good law",sum:"The CJS medical-marijuana appropriations rider bars DOJ from prosecuting rider-compliant state-medical conduct."},
+ {id:"D1",n:"Controlled Substances Act",forum:"Congress (enacted)",jur:"Federal / Legislative — enacted",matter:"Penal statute",side:"neu",cite:"Pub. L. 91-513 (1970), 21 U.S.C. §801 et seq.",st:"The framework",sum:"Five-schedule graded penal mini-code; §812(b) criteria, §811(d)(1) treaty exception, §§841–865 offenses."},
+ {id:"D2",n:"CJS medical-marijuana rider (Rohrabacher–Blumenauer lineage)",forum:"Congress (appropriations)",jur:"Federal / Legislative — enacted",matter:"Appropriations limitation",side:"pro",cite:"First enacted FY2015",st:"Renewed in successive CJS acts — verify current FY",sum:"No DOJ funds to prevent states implementing medical-marijuana laws; Congress's only enacted pro-position."},
+ {id:"D3",n:"D.C. commercialization rider (Harris rider)",forum:"Congress (appropriations)",jur:"Federal / Legislative — enacted",matter:"Appropriations limitation",side:"con",cite:"First enacted FY2015",st:"Verify current FY",sum:"Blocks D.C. from commercializing adult-use cannabis."},
+ {id:"D4",n:"HALT Fentanyl Act",forum:"Congress (enacted)",jur:"Federal / Legislative — enacted",matter:"Penal statute",side:"con",cite:"Enacted Jul 2025",st:"In force",sum:"Permanently schedules fentanyl-related substances in Schedule I — Congress tightening by name while the executive loosens by schedule."},
+ {id:"D5",n:"Hemp THC redefinition rider",forum:"Congress (appropriations)",jur:"Federal / Legislative — enacted",matter:"Definitional rider",side:"con",cite:"FY2026 agriculture appropriations (Nov 2025)",st:"Implementation window running",sum:"Closes the intoxicating-hemp loophole with delayed effect — the opposite-direction reclassification."},
+ {id:"D6",n:"Medical Marijuana and CBD Research Expansion Act",forum:"Congress (enacted)",jur:"Federal / Legislative — enacted",matter:"Research statute",side:"pro",cite:"Pub. L. 117-215 (2022)",st:"In force",sum:"Streamlined cannabis research registrations — the statutory seed of EO 14370's research policy."},
+ {id:"D7",n:"SAFER Banking Act ◉",forum:"Congress (pending)",jur:"Federal / Legislative — pending",matter:"Bill (banking)",side:"pro",cite:"Short title — current bill number unverified",st:"Endorsed by the President at the Dec 2025 EO signing; never enacted",sum:"Safe-harbor for financial institutions serving state-legal cannabis businesses."},
+ {id:"D8",n:"STATES 2.0 Act ◉",forum:"Congress (pending)",jur:"Federal / Legislative — pending",matter:"Bill (federalism)",side:"pro",cite:"Short title — unverified",st:"Pending",sum:"Federal deference to state cannabis regimes."},
+ {id:"D9",n:"Cannabis Administration and Opportunity Act ◉",forum:"Congress (pending)",jur:"Federal / Legislative — pending",matter:"Bill (descheduling)",side:"pro",cite:"Short title — unverified",st:"Pending",sum:"Full descheduling plus federal regulatory framework — would moot the administrative track."},
+ {id:"D10",n:"MORE Act ◉",forum:"Congress (pending)",jur:"Federal / Legislative — pending",matter:"Bill (descheduling)",side:"pro",cite:"Short title — unverified; passed House 2020 & 2022",st:"Pending",sum:"Descheduling + expungement + reinvestment."},
+ {id:"D11",n:"No Deductions for Marijuana Businesses Act ◉",forum:"Congress (pending)",jur:"Federal / Legislative — pending",matter:"Bill (tax)",side:"con",cite:"Short title — unverified",st:"Pending",sum:"Would re-impose §280E economics on Schedule III marijuana — the fiscal counterattack to rescheduling."},
+ {id:"D12",n:"22-senator / 26-representative anti-rescheduling letters",forum:"Congress (correspondence)",jur:"Federal / Legislative — political record",matter:"Correspondence",side:"con",cite:"2025, pre-EO",st:"Political record",sum:"Formal urging to abandon rescheduling; SAM reportedly retained former AG William Barr for litigation."},
+ {id:"D13",n:"Anticipated CRA resolution v. final Schedule III rule",forum:"Congress (anticipated)",jur:"Federal / Legislative — anticipated",matter:"CRA resolution",side:"con",cite:"5 U.S.C. §§801–808",st:"Hypothetical until a final rule issues",sum:"Congressional Review Act disapproval is the opposition's post-rule legislative vehicle."},
+ {id:"E1",n:"Pardon proclamation + scheduling review directive",forum:"White House",jur:"Federal / Executive — Presidency",matter:"Clemency / directive",side:"pro",cite:"Oct 6, 2022",st:"Executed",sum:"Pardoned federal simple possession; directed HHS/DOJ review that produced the 2023 recommendation."},
+ {id:"E2",n:"HHS Schedule III recommendation",forum:"HHS / FDA",jur:"Federal / Executive — HHS/FDA",matter:"Scientific evaluation",side:"pro",cite:"Letter of Aug 29, 2023",st:"Operative input to Docket 1362",sum:"Eight-factor analysis + two-part CAMU test: abuse potential below I/II, accepted medical use, Schedule III dependence profile."},
+ {id:"E3",n:"OLC opinion on Single Convention compliance",forum:"DOJ Office of Legal Counsel",jur:"Federal / Executive — DOJ",matter:"Legal opinion",side:"pro",cite:"2024",st:"Basis of the April 2026 order's treaty analysis",sum:"Concludes Convention obligations remain satisfiable with marijuana at Schedule III plus existing CSA authorities."},
+ {id:"E4",n:"Executive Order 14370 — Increasing Medical Marijuana and Cannabidiol Research",forum:"White House",jur:"Federal / Executive — Presidency",matter:"Executive order",side:"pro",cite:"Dec 18, 2025",st:"In force",sum:"Directs the AG to complete the Schedule III rulemaking expeditiously; research-expansion policy; does not itself reschedule."},
+ {id:"E5",n:"April 2026 Final Order (Acting AG Todd Blanche)",forum:"DOJ / DEA",jur:"Federal / Executive — DOJ",matter:"Scheduling order (§811(d)(1))",side:"pro",cite:"Signed Apr 22, announced Apr 23, 2026",st:"IN FORCE · under D.C. Cir. review (B1)",sum:"Immediately places FDA-approved marijuana products and state-medical-licensed marijuana in Schedule III; expedited registration; no notice-and-comment (order, not rule)."},
+ {id:"E6",n:"GAO: Drug Scheduling — Both Need Comprehensive Policies",forum:"GAO",jur:"Federal / Legislative-branch watchdog",matter:"Audit report",side:"neu",cite:"Sep 23, 2026 · 208 substances, 2020–2025",st:"Published; weaponized in A2",sum:"Finds DEA/FDA lack comprehensive written scheduling policies; does not assess the merits of the marijuana evaluation."},
+ {id:"F1",n:"State medical-marijuana statutes (~40 states)",forum:"State legislatures",jur:"State / Legislative",matter:"State regulatory statutes",side:"pro",cite:"Various",st:"The predicate the April 2026 order federalizes",sum:"A state medical license is now the trigger for federal Schedule III treatment — an unprecedented federal incorporation of state classification."},
+ {id:"F2",n:"State adult-use statutes (~24 states)",forum:"State legislatures",jur:"State / Legislative",matter:"State regulatory statutes",side:"pro",cite:"Various",st:"Outside the April order — still federal Schedule I",sum:"The category whose fate rides on the stayed general rulemaking."},
+ {id:"F3",n:"Indiana & Nebraska AG petitions",forum:"State AGs → D.C. Circuit",jur:"State / Executive",matter:"Civil (petition for review)",side:"con",cite:"Consolidated in B1 (Louisiana withdrew)",st:"Live",sum:"States suing to undo a federal order that defers to other states' classifications — federalism running both directions."},
+ {id:"F4",n:"Idaho medical cannabis initiative",forum:"Idaho ballot",jur:"State / Direct democracy",matter:"Initiative",side:"pro",cite:"Qualified Mar 20, 2026",st:"On the Nov 2026 ballot",sum:"Would create the state-license predicate that the April order now federally rewards."},
+ {id:"F5",n:"Non-legalizing state penal codes",forum:"State legislatures",jur:"State / Legislative",matter:"State penal statutes",side:"con",cite:"e.g., ID, KS, IN, NE",st:"Unaffected by federal rescheduling",sum:"Federal reclassification does not preempt state prohibition; the map stays patchwork either way."}
+];
+const out=document.getElementById("out"),fSide=document.getElementById("fSide"),fMatter=document.getElementById("fMatter"),fJur=document.getElementById("fJur"),fQ=document.getElementById("fQ"),count=document.getElementById("count");
+let groupBy="forum";
+function uniq(k){return [...new Set(DATA.map(d=>d[k]))].sort();}
+for(const m of uniq("matter")){fMatter.insertAdjacentHTML("beforeend",`<option>${m}</option>`);}
+for(const j of uniq("jur")){fJur.insertAdjacentHTML("beforeend",`<option>${j}</option>`);}
+document.getElementById("groupToggle").addEventListener("click",e=>{
+  if(!e.target.dataset.g)return;
+  groupBy=e.target.dataset.g;
+  document.querySelectorAll("#groupToggle button").forEach(b=>b.classList.toggle("on",b===e.target));
+  render();
+});
+[fSide,fMatter,fJur].forEach(s=>s.addEventListener("change",render));
+fQ.addEventListener("input",render);
+const sideName={pro:"SUPPORTS",con:"OPPOSES",neu:"NEUTRAL"};
+function render(){
+  const q=fQ.value.trim().toLowerCase();
+  const rows=DATA.filter(d=>
+    (!fSide.value||d.side===fSide.value)&&
+    (!fMatter.value||d.matter===fMatter.value)&&
+    (!fJur.value||d.jur===fJur.value)&&
+    (!q||JSON.stringify(d).toLowerCase().includes(q)));
+  count.textContent=`${rows.length} / ${DATA.length} entries`;
+  const key=groupBy==="forum"?"forum":groupBy==="jurisdiction"?"jur":"matter";
+  const groups={};
+  for(const r of rows)(groups[r[key]]??=[]).push(r);
+  out.innerHTML=Object.keys(groups).sort().map(g=>`
+    <section class="group"><h2>${g.toUpperCase()}</h2><div class="grid">
+    ${groups[g].map(d=>`
+      <article class="card">
+        <div class="row1"><span class="id">${d.id}</span><span class="nm">${d.n}</span></div>
+        <div class="tags">
+          <span class="tag side-${d.side}">${sideName[d.side]}</span>
+          <span class="tag">${d.matter}</span>
+          <span class="tag">${d.jur}</span>
+        </div>
+        <div class="cite">${d.cite}</div>
+        <div class="sum">${d.sum}</div>
+        <div class="st">STATUS: <b>${d.st}</b></div>
+      </article>`).join("")}
+    </div></section>`).join("")||"<p style='color:var(--dim)'>No entries match.</p>";
+}
+render();
+</script>
+</body>
+</html>
