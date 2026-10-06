@@ -58,8 +58,15 @@ for the Goleta movie outing; 9/11 falls inside it.
 
 ## Move-in and the halls (memory tier until paperwork)
 
-- Anacapa Hall first, then **San Nicolas** for the year; beds/furnishings assembled
-  more than once. Open queue: move-in packet, housing assignment, RA name.
+- Anacapa Hall first, then **San Nicolas** (first floor, per the author, Oct 2026) for
+  the year; beds/furnishings assembled more than once. Open queue: move-in packet,
+  housing assignment, RA name.
+- **The summer after (memory)**: a stay in **San Rafael** while construction ran — the
+  adjacent **Manzanita Village** was completing for its Fall 2002 opening (Daily Nexus
+  2022; UCSB Housing's 2002–03 register, page updated Sept 6, 2002, carries San
+  Rafael with Carrillo dining) — on a Kmart metal-pipe fold-out futon, with a roommate
+  who ran Costco for the summer and played loud music. San Rafael itself: Residence
+  Hall #6, Charles Luckman Associates, c. 1967, UCSB's first co-ed hall (ADC Omeka).
 - **The 2001–02 register, resolved (official)** — UCSB Housing's own Wayback pages:
   six co-ed university-owned halls (San Miguel, San Nicolas, Santa Rosa, Anacapa,
   Santa Cruz, San Rafael), 2,600 spaces, rates **$7,984 double / $8,899 single**
@@ -82,6 +89,39 @@ for the Goleta movie outing; 9/11 falls inside it.
   seepage near **Platform Holly** dropped ~50% 1973–95 (Quigley et al. 1999,
   *Geology* 27(11):1047); UCSB beach monitoring **2001–03** peaked ~930,000
   tarballs/km at Coal Oil Point Beach.
+
+## Disc golf (resolved October 2026)
+
+- **Isla Vista Peace Course** — built 2000 with "Steady" Ed Headrick, the father of
+  disc golf, and the IV Recreation & Park District; 9 holes, 100–250 ft, through
+  Estero Park (889 Camino del Sur), the Sueño Orchard and Tipi Village; "from Hwy
+  101, exit Storke Rd." — right off the interchange. The Bottom Line, 5/17/2017.
+- **Evergreen Open Space** — 18 holes west of Goleta off the same Glen Annie/Storke
+  interchange; free, regulars from Goleta (UDisc). Which course the era's rounds ran:
+  memory.
+
+## Goleta deep history (added October 2026)
+
+- **Marine Corps Air Station Santa Barbara** — commissioned Dec 4, 1942 on the
+  Goleta airfield; "The Swamp"; Ellwood shelling (Feb 1942) drove round-the-clock
+  construction; peak ~500 officers + 3,100 enlisted + 440 women Marines; became the
+  Santa Barbara Airport, and its surplus barracks on Goleta Point became the first
+  UCSB campus. 1931 General Western hangars (Bldgs 248/249) survive (Goleta History;
+  Noozhawk reprint; SBA Historic Structures Report).
+- **German POW camp** — Edwards Ranch branch camp (Camp Cooke), Gatos Canyon beside
+  Hwy 101 ~9 mi west of Goleta; active Oct 20, 1944–Dec 1945; ~250 Afrika Korps POWs
+  picking lemons, packing walnuts at the Goleta Walnut Exchange on Kellogg Ave; water
+  tower still visible south of the 101 (Goleta History; Santa Maria Times;
+  militarymuseum.org).
+- **Fallout shelters** — early-1960s shelters against a Vandenberg strike (SB
+  Independent 2014); the University Art Museum mounted "Nuclear Families: The Home
+  Fallout Shelter Movement in California, 1950–1969" in Feb 2002, the author's first
+  year (LA Times 2/21/2002). Airport-shelter memory stays memory tier.
+- **The rails** — Pacific Surfliner (San Diegan extended to SB 1988; rebranded 2000)
+  into the 1902 Santa Barbara depot (rebuilt 2000) or the Goleta platform (opened
+  Sept 20, 1998; the 1901 depot is now at the South Coast Railroad Museum, Lake Los
+  Carneros); Amtrak Thruway Motorcoach to the UCSB campus — "sometimes a transfer
+  to the Amtrak bus" (memory).
 
 ## Media of the era
 
@@ -195,6 +235,8 @@ context: campus footprints, viewer geometry, **GHS commencement venue (Citrus
 College Stadium — tradition documented 2011–2026; 2001-specific date unverified)**.
 memory: application outcomes + essays, dorm order, RA, Slurpees, DLG sandwiches
 detail, commons-no-candy, Satellite Reprographics, JCreator trailer location,
-daily flush, Grad bar off Hollister, attendance at any resolved
-venue, leadership retreat, faire role, Magaly, Zekanis/DJ Headshot/Sam Cumulus/
-Sanchez/Fairweather, John Petered, 1803 staging.
+daily flush, Grad bar off Hollister (candidate: Monty's/No Town Tavern, 5114
+Hollister — pending author confirmation), Wild-Things-IV t-shirt, attendance at any
+resolved venue, leadership retreat, faire role, Magaly, Zekanis/DJ Headshot/Sam
+Cumulus/Sanchez/Fairweather, John Petered, Gavriel Popper Keiser, Melissa Asarch,
+1803 staging, MacroJump/PSS web work, Sealtight/Yardi/PSS employment eras.

@@ -124,6 +124,7 @@ export const LAYERS = [
   { id: "sb", label: "Santa Barbara & the pass", color: "#c9a2ff", on: true, era: [2001.6, 2004.5] },
   { id: "amgen", label: "Amgen Tour · GMR corridor", color: "#ffb020", on: true, era: [2006.1, 2019.5] },
   { id: "roads", label: "Roads & bus routes (context)", color: "#8fa3b8", on: true, era: [2000, 2020] },
+  { id: "fires", label: "Historical fires · WIFIRE/FRAP register", color: "#ff6a3d", on: true, era: [1990, 2018] },
 ];
 
 export const TIER_COLOR = {
@@ -332,7 +333,7 @@ export const NODES = [
     era: [2001.7, 2002.5],
     dateLabel: "2001–02",
     note:
-      "The freshman-year hall. On the 2001–02 register (UCSB Housing, Oct 2001 capture): one of six co-ed university-owned halls — with San Miguel, Santa Rosa, Anacapa, Santa Cruz and San Rafael — 2,600 spaces; double occupancy $7,984, single $8,899 with unlimited meals; live-in RD/ARD, RAs, RCCs (Resident Computer Coordinators), APAs and MAPs; ResNet Ethernet in the rooms. Freshmen were assigned by lottery to a university-owned or university-affiliated hall. The paperwork hunt — move-in records, the RA, 'the daily flush' — stays open, so residence itself lives in the memory tier.",
+      "The freshman-year hall. On the 2001–02 register (UCSB Housing, Oct 2001 capture): one of six co-ed university-owned halls — with San Miguel, Santa Rosa, Anacapa, Santa Cruz and San Rafael — 2,600 spaces; double occupancy $7,984, single $8,899 with unlimited meals; live-in RD/ARD, RAs, RCCs (Resident Computer Coordinators), APAs and MAPs; ResNet Ethernet in the rooms. Freshmen were assigned by lottery to a university-owned or university-affiliated hall. The paperwork hunt — move-in records, the RA, 'the daily flush' — stays open, so residence itself lives in the memory tier. The author's register of the year (October 2026): first floor.",
   }),
   N({
     id: "dlg",
@@ -860,6 +861,246 @@ export const NODES = [
     note:
       "Local-only: during the race's Glendora years, the bikes were parked in front of the 1803 house a couple of times. Public records align with a 1934, 1,405 sq ft two-bedroom profile at the address; the staging claim stays private until separately corroborated.",
   }),
+  /* ---- added October 2026: halls, parks, employers, rails, deep history, fires -- */
+  N({
+    id: "san-rafael",
+    short: "SAN RAF",
+    label: "San Rafael Hall — the summer stay (memory)",
+    tier: "memory",
+    layer: "ucsb",
+    kind: "dorm",
+    lon: -119.868,
+    lat: 34.4135,
+    era: [2001.4, 2002.8],
+    dateLabel: "built 1967 · summer stay (memory)",
+    note:
+      "Residence Hall #6 — Charles Luckman Associates, circa 1967 — UCSB's first co-educational residence hall, at the campus's western edge adjacent to Isla Vista, with Carrillo as its dining commons on the 2002–03 register (schematic pin). The author's summer stay — a bedroom and a Kmart futon ('just futons and bars, it folds out of metal pipe'), construction running on the adjacent Manzanita Village, completed for its Fall 2002 opening, and a roommate who ran Costco for the summer and played loud music — is memory tier.",
+  }),
+  N({
+    id: "iv-disc-golf",
+    short: "DISC",
+    label: "Isla Vista Peace Course — the frisbee golf course",
+    tier: "community",
+    layer: "iv",
+    kind: "park",
+    lon: -119.8631,
+    lat: 34.4134,
+    era: [2000.4, 2026],
+    dateLabel: "built 2000 · Ed Headrick",
+    note:
+      "The frisbee golf course of the memory list, resolved: Isla Vista's disc golf course was built in 2000 with 'Steady' Ed Headrick — the father of disc golf — who came to Isla Vista to design it with the Isla Vista Recreation and Park District. Nine holes, 100–250 ft, threading Estero Park (889 Camino del Sur; OSM node 6070196516), the Sueño Orchard and Tipi Village — 'from Hwy 101, exit Storke Rd., south toward ocean/UCSB' — right off the interchange. The Bottom Line profiled it in 2017. Attendance is memory.",
+  }),
+  N({
+    id: "evergreen-disc-golf",
+    short: "EVERG",
+    label: "Evergreen Open Space — 18 disc golf holes",
+    tier: "community",
+    layer: "iv",
+    kind: "park",
+    lon: -119.885,
+    lat: 34.4395,
+    era: [2000, 2026],
+    dateLabel: "Goleta's 18-hole course",
+    note:
+      "The area's other course, also off the 101's Glen Annie/Storke interchange: Evergreen Open Space west of Goleta — 18 holes, 'good variety of open long holes and tightly wooded ones,' free to play, with a regular Goleta following on UDisc (schematic pin; first tee near the path to the tennis courts). Which course the era's rounds ran — the Peace Course, Evergreen, or both — is memory.",
+  }),
+  N({
+    id: "sealtight",
+    short: "SEAL",
+    label: "Sealtight Fastener — 5370 Hollister Ave",
+    tier: "official",
+    layer: "iv",
+    kind: "work",
+    lon: -119.8118,
+    lat: 34.4353,
+    era: [1990, 2026],
+    dateLabel: "est. 1990 · President Larry Bogatz",
+    note:
+      "'Sealtightfastener' of the memory list, resolved: Sealtight Fastener, a bolts-nuts-screws-rivets-washers manufacturer established 1990 at 5370 Hollister Avenue #2, Santa Barbara / Goleta (OSM node 13167977938; ~28 employees), its president Larry Bogatz — the remembered 'Larry boats.' Bogatz is also the author of 'The Theory of Reality: Change Your Life and Live Your Dream' (Xlibris, November 2003, ISBN 978-1413422764). The claim that Sealtight fasteners flew on the Mars rovers and Phoenix missiles is unverified — sealtightfasteners.com has no Wayback captures and the current site is a slideshow — though its aerospace-and-defense market is documented. The author's work there is memory tier.",
+  }),
+  N({
+    id: "yardi",
+    short: "YARDI",
+    label: "Yardi Systems — 430 S. Fairview Ave, Goleta",
+    tier: "official",
+    layer: "iv",
+    kind: "work",
+    lon: -119.8284,
+    lat: 34.4333,
+    era: [1984, 2026],
+    dateLabel: "founded 1984 · Anant Yardi",
+    note:
+      "The global real-estate software company founded 1984 by Anant Yardi, headquartered at 430 South Fairview Avenue, Goleta (OSM node 6070156225) — the landmark the remembered 'Grad bar' sat in front of. James Beane — 'James Beane at Yardi Systems' on the memory list — is publicly indexed there: Senior Manager, Cloud Services, 23+ years at Yardi, Santa Barbara. The author's connection and its era are memory tier.",
+  }),
+  N({
+    id: "montys-bar",
+    short: "MONTYS",
+    label: "Monty's — 5114 Hollister (the 'Grad bar' candidate)",
+    tier: "community",
+    layer: "iv",
+    kind: "bar",
+    lon: -119.8029,
+    lat: 34.4355,
+    era: [1974, 2026],
+    dateLabel: "bar since the 1970s · now No Town Tavern",
+    note:
+      "A bar on this site for about fifty years — Monty's / Monty's Sports Bar (montyssportsbar.com), closed 2021, now the No Town Tavern (OSM node 1469690940) — on the Hollister airport corridor, 0.9 km east of Sealtight Fastener (5370 Hollister) and in the Yardi (430 S Fairview) corridor. The leading candidate for the remembered 'Grad bar' — 'right in front of Yardi, down the street from Larry Bogatz,' with a graduate student lounge — per the author's October 2026 clarification; confirmation pending. The graduate-student-lounge detail stays memory tier.",
+  }),
+  N({
+    id: "pss",
+    short: "PSS",
+    label: "Particle Sizing Systems — 75 Aero Camino",
+    tier: "official",
+    layer: "iv",
+    kind: "work",
+    lon: -119.849,
+    lat: 34.4351,
+    era: [1978, 2026],
+    dateLabel: "founded 1978 · Nicomp / AccuSizer",
+    note:
+      "Particle Sizing Systems — designer and manufacturer of particle-sizing instruments at 75 Aero Camino, Suite B (OSM way 658342264): the Nicomp 380/DLS submicron sizer (dynamic light scattering, 0.003–5 microns) and the AccuSizer 780/SPOS single-particle optical sizer. Founded 1978; acquired by Agilent Technologies in 2008, later an Entegris company. President David Nicoli (Harvard 1966–73). The author's website work for PSS — with Gavriel Popper Keiser, under the MacroJump name — is memory tier; pssnicomp.com is preserved in the Wayback Machine (340 captures, 1998–2026), though macrojump.com itself holds only hosting placeholders (2010–2025).",
+  }),
+  N({
+    id: "goleta-amtrak",
+    short: "AMTRAK",
+    label: "Goleta station & the Surfliner — the train home",
+    tier: "official",
+    layer: "iv",
+    kind: "rail",
+    lon: -119.8423,
+    lat: 34.4378,
+    era: [1998.7, 2026],
+    dateLabel: "platform opened Sept 20, 1998",
+    note:
+      "The Pacific Surfliner era (the San Diegan extended to Santa Barbara in 1988, rebranded 2000) with the Goleta platform opened September 20, 1998 — the original 1901 Goleta depot sits a half-mile away in the South Coast Railroad Museum at Lake Los Carneros, moved there in 1981 (OSM node 9642170470 marks the station point). The Amtrak Thruway Motorcoach connection served the UCSB campus from the train stations — 'sometimes a transfer to the Amtrak bus,' per the author's memory of the rides.",
+  }),
+  N({
+    id: "pow-camp",
+    short: "POW 44",
+    label: "German POW camp — Edwards Ranch, 1944–45",
+    tier: "official",
+    layer: "sb",
+    kind: "history",
+    lon: -119.96,
+    lat: 34.459,
+    era: [1944.8, 1945.95],
+    dateLabel: "Oct 1944 – Dec 1945",
+    note:
+      "The Goleta Prisoner of War Branch Camp on the Edwards Ranch at Gatos Canyon, beside Highway 101 about nine miles west of Goleta — a branch of Camp Cooke (now Vandenberg) activated October 20, 1944, holding roughly 250 German prisoners, most of them professional men from Rommel's elite Afrika Korps: six guard towers, fourteen Nissen/Quonset huts, and a water tower whose weathered frame is the last visible sign, still standing south of the 101 between El Capitan Ranch Road and Rancho Dos Pueblos. The POWs picked lemons, packed walnuts at the Goleta Walnut Exchange on Kellogg Avenue, and were paid in coupons for the camp store; the camp closed December 1945 and the huts burned in 1970. Italian POWs from Camp Cooke were brought into town for meals at Mom's Italian Village (schematic pin on the Gaviota coast).",
+  }),
+  N({
+    id: "mcas-goleta",
+    short: "MCAS",
+    label: "Marine Corps Air Station Santa Barbara — 1942",
+    tier: "official",
+    layer: "iv",
+    kind: "history",
+    lon: -119.8431,
+    lat: 34.4274,
+    era: [1942.9, 1946],
+    dateLabel: "commissioned Dec 4, 1942",
+    note:
+      "The airport's war chapter: the U.S. Marines arrived in 1942 and commissioned Marine Corps Air Station Santa Barbara on December 4, 1942 — nicknamed 'The Swamp' for the marshy slough, built round-the-clock after the February 1942 Japanese shelling of Ellwood, peaking at roughly 500 officers, 3,100 enlisted men and 440 women Marines. It trained carrier-attack squadrons for the Pacific; when the Marines left, the field became today's Santa Barbara Municipal Airport (OSM relation 9044579) and the surplus barracks on Goleta Point became the first UCSB campus — the airport and the university are both direct results of the base. The 1931 General Western hangars (Buildings 248/249) survive as historic resources.",
+  }),
+  /* ---- historical fires · WIFIRE Commons / CAL FIRE FRAP register ------- */
+  N({
+    id: "painted-cave-fire",
+    short: "1990",
+    label: "Painted Cave Fire — June 27–28, 1990",
+    tier: "official",
+    layer: "fires",
+    kind: "fire",
+    lon: -119.775,
+    lat: 34.476,
+    era: [1990.49, 1990.55],
+    dateLabel: "June 27–28, 1990",
+    note:
+      "Started near the Painted Cave community on San Marcos Pass at 6:02 p.m. June 27, 1990, and raced downslope under sundowner winds — five miles to the sea in two hours, jumping the 101 — to the edge of Hope Ranch: roughly 4,900 acres, 440 homes and 28 apartment complexes destroyed, one civilian death. Arson, never solved. One of the first wildland-urban-interface fires studied for structure survivability (schematic pin at the origin).",
+  }),
+  N({
+    id: "williams-fire",
+    short: "2002",
+    label: "Williams Fire — September 2002",
+    tier: "official",
+    layer: "fires",
+    kind: "fire",
+    lon: -117.855,
+    lat: 34.285,
+    era: [2002.72, 2002.76],
+    dateLabel: "Sept 22 – Oct 1, 2002",
+    note:
+      "Ignited near Camp Williams in the Angeles National Forest north of Glendora on Sunday, September 22, 2002; burned 38,094 acres of the San Gabriel high country before containment October 1 — the third-largest California fire of the 2002 season, destroying dozens of cabins at a $15 million suppression cost. The home-mountains fire of the UCSB years (schematic pin near the origin).",
+  }),
+  N({
+    id: "gap-fire",
+    short: "2008",
+    label: "Gap Fire — July 2008",
+    tier: "official",
+    layer: "fires",
+    kind: "fire",
+    lon: -119.87,
+    lat: 34.49,
+    era: [2008.5, 2008.6],
+    dateLabel: "July 2008",
+    note:
+      "Just under 10,000 acres in the mountains above Goleta on the West Camino Cielo ridge — the Lizard's Mouth and Glass Factory country of the full-moon era — with Goleta's agriculture belt serving as the buffer that saved the city. Part of the extraordinary 2008 Santa Barbara fire year (schematic pin above Goleta).",
+  }),
+  N({
+    id: "tea-fire",
+    short: "2008",
+    label: "Tea Fire — November 13–14, 2008",
+    tier: "official",
+    layer: "fires",
+    kind: "fire",
+    lon: -119.65,
+    lat: 34.44,
+    era: [2008.87, 2008.9],
+    dateLabel: "Nov 13–14, 2008",
+    note:
+      "1,940 acres and 210 homes destroyed in a single burn period: an illegal bonfire in the old Tea Gardens of a long-abandoned Montecito estate reignited on the evening of November 13 under one of the strongest sundowner events in recent memory — gusts to 85 mph (schematic pin in the Montecito hills).",
+  }),
+  N({
+    id: "jesusita-fire",
+    short: "2009",
+    label: "Jesusita Fire — May 5–18, 2009",
+    tier: "official",
+    layer: "fires",
+    kind: "fire",
+    lon: -119.716,
+    lat: 34.467,
+    era: [2009.35, 2009.4],
+    dateLabel: "May 5–18, 2009",
+    note:
+      "Started along the Jesusita Trail below Cathedral Peak on Cinco de Mayo 2009 — too remote for crews to reach before a sundowner pushed it into Mission and Rattlesnake Canyons: 8,733 acres, 80 homes and 79 outbuildings destroyed, called the county's worst disaster in 25 years (schematic pin in the trailhead country).",
+  }),
+  N({
+    id: "station-fire",
+    short: "2009",
+    label: "Station Fire — August–October 2009",
+    tier: "official",
+    layer: "fires",
+    kind: "fire",
+    lon: -118.05,
+    lat: 34.26,
+    era: [2009.65, 2009.85],
+    dateLabel: "Aug 26 – Oct 16, 2009",
+    note:
+      "160,577 acres — the largest fire in the recorded history of the Angeles National Forest: from the La Cañada foothills across the San Gabriel front country above Glendora, destroying 209 structures including 89 homes and killing firefighters Tedmund Hall and Arnaldo Quinones at Camp 16. The wildfire activity behind the book's NIFC/WIFIRE thread (schematic pin in the front country).",
+  }),
+  N({
+    id: "thomas-fire",
+    short: "2017",
+    label: "Thomas Fire — December 2017",
+    tier: "official",
+    layer: "fires",
+    kind: "fire",
+    lon: -119.07,
+    lat: 34.37,
+    era: [2017.92, 2018.05],
+    dateLabel: "Dec 2017 – Jan 2018",
+    note:
+      "281,893 acres from its origin near Santa Paula across Ventura and into Santa Barbara County to Carpinteria — the largest wildfire in California history at the time — followed on January 9, 2018 by the Montecito debris flows that killed 21. The closing event of the fire register's span (schematic pin near the origin).",
+  }),
 ];
 
 /* -------------------------------------------------------------- corridors */
@@ -981,7 +1222,11 @@ export const CORRIDORS = [
  * node (fly-to) or stand alone. Tier is the evidence class of the row.
  */
 export const TIMELINE = [
+  { sort: 1942.95, date: "Dec 4, 1942", tier: "official", nodeId: "mcas-goleta", text: "Marine Corps Air Station Santa Barbara commissioned on the Goleta airfield — the base that becomes both the airport and, on the point, UCSB." },
+  { sort: 1944.8, date: "Oct 20, 1944", tier: "official", nodeId: "pow-camp", text: "The German POW branch camp activates on the Edwards Ranch — 250 of Rommel's Afrika Korps picking lemons and packing walnuts until December 1945." },
+  { sort: 1990.49, date: "June 27–28, 1990", tier: "official", nodeId: "painted-cave-fire", text: "Painted Cave Fire: ~4,900 acres from the San Marcos Pass downslope across the 101 to Hope Ranch — 440+ homes lost, arson unsolved." },
   { sort: 1999.79, date: "Oct 1999", tier: "official", nodeId: "ivtv", text: "IVTV's first episode airs — the Isla Vista chronicle begins." },
+  { sort: 2000.4, date: "2000", tier: "community", nodeId: "iv-disc-golf", text: "Isla Vista's disc golf course is built with 'Steady' Ed Headrick, the father of disc golf — Estero Park, right off the Storke Road interchange." },
   { sort: 2000.75, date: "Oct–Nov 2000", tier: "official", nodeId: "app-fee", text: "UC applications filed for four campuses — UCSB, UCLA, UCSC, UCSD — at $40 each, $160 total (UC PATHWAYS fee schedule; the remembered $50 corrected)." },
   { sort: 2001.05, date: "Feb 2001", tier: "official", nodeId: "dlg", text: "Jack Johnson's Brushfire Fairytales — 'Bubble Toes' — is released with the D.L.G. lunch and the tar-ball lines." },
   { sort: 2001.12, date: "Feb 23, 2001", tier: "official", nodeId: "ivtv", text: "The Sabado Tarde crash — IVTV's later footage of the aftermath would be played at the Attias trial (May 2002)." },
@@ -991,6 +1236,7 @@ export const TIMELINE = [
   { sort: 2001.45, date: "Jun 2001", tier: "official", nodeId: "esgvrop-delnorte", text: "Summer job begins at ESGVROP — Del Norte Campus, West Covina — for Ryan Quesenberry, Project Facilitator-Technology." },
   { sort: 2001.5, date: "Summer 2001", tier: "memory", nodeId: "glendora-library", text: "Working for Quesenberry, who had previously run the computer lab at the Glendora library; lunches together." },
   { sort: 2001.5, date: "Summer 2001", tier: "context", nodeId: "camp-williams", text: "The Camp Williams country — East Fork, Azusa Canyon — as the summer's escape valve." },
+  { sort: 2001.6, date: "2001–04", tier: "context", nodeId: "coal-oil-point", text: "The recurring scene-set: Coal Oil Point seeps, Platform Holly offshore, tar on the beaches — monitored by UCSB teams 2001–03." },
   { sort: 2001.65, date: "Aug 24, 2001", tier: "official", nodeId: "camino-real-cinemas", text: "Jay and Silent Bob Strike Back opens in theaters." },
   { sort: 2001.69, date: "Sept 2001", tier: "memory", nodeId: "camino-real-cinemas", text: "Movie night off Hollister in Goleta — two weeks before the quarter. The Grad bar landmark, the drive-in memories." },
   { sort: 2001.7, date: "Sept 11, 2001", tier: "official", nodeId: null, text: "September 11 attacks — the world context the quarter opened under." },
@@ -1003,17 +1249,23 @@ export const TIMELINE = [
   { sort: 2001.8, date: "Oct 14, 2001", tier: "official", nodeId: "jcreator", text: "JCreator LE 2.5.0 ships — the IDE of the remembered trailer-classroom software drills." },
   { sort: 2001.83, date: "Nov 2001", tier: "memory", nodeId: "san-nicolas", text: "First-quarter dorm life: Slurpee runs, the commons open but no candy, DLG sandwiches, tar-ball walks, IVTV Wednesdays." },
   { sort: 2001.88, date: "Nov 12, 2001", tier: "official", nodeId: null, text: "Veterans Day holiday — the quarter's first long weekend." },
+  { sort: 2001.9, date: "2001–04", tier: "memory", nodeId: "iv-disc-golf", text: "Frisbee golf rounds 'right off the interchange' — the Peace Course and Evergreen Open Space (attendance memory)." },
   { sort: 2001.93, date: "Dec 5, 2001", tier: "official", nodeId: null, text: "Fall instruction ends; finals Dec 7–14; the first quarter closes Dec 14." },
   { sort: 2002.0, date: "2001–02", tier: "memory", nodeId: "davidson-mil", text: "The century plant blooms while on shift at the Map & Imagery Lab (memory; agave Americana blooms once after 10–25 years)." },
   { sort: 2002.1, date: "2001–02", tier: "official", nodeId: "los-ingenieros", text: "Los Ingenieros named UCSB Student Organization of the Year. NSBE and the engineering-society orbit." },
   { sort: 2002.15, date: "2001–05", tier: "memory", nodeId: "storke-tower", text: "Rappel off Storke Tower during a Military Science course — Army ROTC's tower, the 175-ft carillon above KCSB and the Daily Nexus (memory; course year unrecorded)." },
   { sort: 2002.35, date: "May 3, 2002", tier: "official", nodeId: "ivtv", text: "Daily Nexus: D.A. plays IVTV footage at the Attias trial." },
-  { sort: 2001.6, date: "2001–04", tier: "context", nodeId: "coal-oil-point", text: "The recurring scene-set: Coal Oil Point seeps, Platform Holly offshore, tar on the beaches — monitored by UCSB teams 2001–03." },
   { sort: 2002.5, date: "2001–04", tier: "context", nodeId: "bills-bus", text: "Bill's Bus downtown nights — the Arlington (1317 State St), State Street, and the Isla Vista addresses: Fontainebleu (6525 El Colegio), its Annex (811 Camino Pescadero), the Tiki House (6589 Del Playa)." },
   { sort: 2002.6, date: "2001–04", tier: "community", nodeId: "word-of-mouth", text: "Word of Mouth full-moon gatherings in the Santa Barbara mountains — Lizard's Mouth country; DJ Unagi's public bio credits his start to those sets." },
   { sort: 2002.65, date: "2001–04", tier: "official", nodeId: "shooting-range", text: "The Glass Factory shooting area on East Camino Cielo; Knapp's Castle sunsets; Cold Spring Tavern — the Wells Fargo-era stagecoach stop; Hope Ranch on the west side." },
   { sort: 2002.7, date: "2001–04", tier: "memory", nodeId: "live-oak-renfaire", text: "Renaissance faire at the golf course — Live Oak Camp by Rancho San Marcos, across from Lake Cachuma; the leadership retreat with Magaly." },
+  { sort: 2002.72, date: "Sept 22–Oct 1, 2002", tier: "official", nodeId: "williams-fire", text: "Williams Fire: 38,094 acres from Camp Williams through the San Gabriel high country north of Glendora — the home-mountains fire of the UCSB years." },
   { sort: 2006.1, date: "Feb 2006", tier: "official", nodeId: "gmr-turn", text: "The Amgen Tour of California runs its first edition — the bike-race chapter of the Glendora years opens." },
+  { sort: 2008.5, date: "July 2008", tier: "official", nodeId: "gap-fire", text: "Gap Fire: just under 10,000 acres on West Camino Cielo above Goleta — the Lizard's Mouth / Glass Factory country." },
+  { sort: 2008.87, date: "Nov 13–14, 2008", tier: "official", nodeId: "tea-fire", text: "Tea Fire: 1,940 acres, 210 homes lost in Montecito under 85-mph sundowners." },
+  { sort: 2009.35, date: "May 5–18, 2009", tier: "official", nodeId: "jesusita-fire", text: "Jesusita Fire: 8,733 acres from the Jesusita Trail into Mission and Rattlesnake Canyons — 80 homes lost." },
+  { sort: 2009.66, date: "Aug 26–Oct 16, 2009", tier: "official", nodeId: "station-fire", text: "Station Fire: 160,577 acres across the Angeles front country above Glendora — the largest in the forest's recorded history." },
+  { sort: 2017.92, date: "Dec 2017", tier: "official", nodeId: "thomas-fire", text: "Thomas Fire: 281,893 acres — then the largest in California history — into Santa Barbara County; the Montecito debris flows follow in January." },
   { sort: 2019.37, date: "2019", tier: "official", nodeId: "mt-baldy", text: "The Ontario-to-Mt.-Baldy Amgen stage through Glendora and up GMR — the race corridor this stage carries." },
 ];
 
@@ -1075,7 +1327,7 @@ export const VIEWS = [
   },
 ];
 
-export const TIME_MIN = 1999.5;
+export const TIME_MIN = 1942.0;
 export const TIME_MAX = 2020.0;
 export const DEFAULT_TIME = 2001.75;
 

@@ -53,9 +53,16 @@ ch. XVI gaps & private prompts).
    retrievable only by the author) would resolve course history, including
    the Military Science enrollment and the dorm assignment.
 8. Surviving Word of Mouth flyer or lineup — would date the crew's run.
-9. Names held private: Kyle & Rhonda Zekanis, DJ Headshot, Sam Cumulus, Sanchez,
-   Fairweather, Magaly, John Petered — publish only on the author's
-   release or documentation.
+9. The Grad bar identification — Monty's (5114 Hollister, now No Town Tavern) is
+   the leading candidate per the author's Yardi/Sealtight location clue; one author
+   confirmation promotes it.
+10. The MacroJump websites — pssnicomp.com is Wayback-preserved; macrojump.com and
+    sealtightfasteners.com are not; surviving MacroJump-era artifacts (screenshots,
+    invoices, the Mars-rover/Phoenix-missile documentation at Sealtight) would land
+    the claim.
+11. Names held private: Kyle & Rhonda Zekanis, DJ Headshot, Sam Cumulus, Sanchez,
+    Fairweather, Magaly, John Petered, Gavriel Popper Keiser, Melissa Asarch —
+    publish only on the author's release or documentation.
 
 ### Resolved October 2026 (moved off the queue)
 
@@ -83,6 +90,16 @@ ch. XVI gaps & private prompts).
   175-ft carillon tower above the Daily Nexus and KCSB; dedicated Sept 28,
   1969; OSM way 221236165. The rappel during a Military Science course (Army
   ROTC Surfrider Battalion, no-obligation Basic Course) stays memory tier.
+- **"The theory of reality"** = Larry Bogatz's book <em>Theory of Reality: Change
+  Your Life and Live Your Dream</em> (Xlibris, Nov 2003) — Bogatz is the president
+  of Sealtight Fastener (5370 Hollister).
+- **"Frisbee golf right off the interchange"** = the Isla Vista Peace Course (built
+  2000 with "Steady" Ed Headrick) and Evergreen Open Space.
+- **David Nicoli / pssnicomp** = Particle Sizing Systems, 75 Aero Camino, founded
+  1978; Nicomp 380/DLS + AccuSizer 780/SPOS; Agilent 2008, later Entegris; David
+  Nicoli, president.
+- **David Asarch** = publicly indexed as the Englewood, CO dermatologist (Asarch
+  Center); the family connection stays private.
 
 ## App ideas adjacent to the book
 
