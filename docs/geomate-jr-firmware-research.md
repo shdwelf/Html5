@@ -227,3 +227,43 @@ records loaded by the device would be user/community cache records with a
 snapshot date, not GNIS features and not firmware-derived facts. They must not
 be promoted to verified Gazetteer rows without the original GPX/database and
 its provenance.
+
+## Archive discovery: previously missed ZIP captures
+
+A broader CDX inventory search found two important archived ZIP records under the
+old website:
+
+- `GeomateandUpdateKit.zip` — `application/zip`, archived 2011-10-11,
+  advertised capture length 1,618,659 bytes, digest
+  `I5UJVNM2EXSSQ7OJZQOFUHPXJQHHEBX6`.
+- `UpdateKit.zip` — `application/zip`, archived 2011-10-11, advertised capture
+  length 727,077 bytes, digest `NU2RTCTP6PWJ7QVF5CYKQWMOFSG4JVS3`.
+
+The complete CDX inventory is visible here:
+
+[mygeomate ZIP CDX result](https://web.archive.org/cdx/search/cdx?url=mygeomate.com/*&output=json&filter=statuscode:200&collapse=urlkey)
+
+However, replaying either capture through Wayback currently returns “The
+Wayback Machine has not archived that URL,” including `id_`, `if_`, and the
+`www` hostname variants. The CDX rows therefore prove that the crawler indexed
+ZIP responses and preserve sizes/digests, but the payload is not currently
+retrievable through the replay service in this environment.
+
+The adjacent archived product page describes the Update Kit as providing
+current/worldwide cache databases, private caches, and Pocket Query import; it
+does not describe the ZIPs as firmware images:
+
+[Archived products page](https://web.archive.org/web/20110925133459id_/http://mygeomate.com/products.html)
+
+Because the ZIP names are also located in the site's `/zip/` web-asset area,
+not a documented firmware-download endpoint, their likely contents are
+website/product media bundles. This is a promising recovery lead, but not
+evidence that V1002 microcode is present. If the WARC payload becomes
+available, the next safe step is to hash and list the ZIP members before
+opening any PE files with Ghidra.
+
+Internet Archive full-text searches currently return zero items for both
+`geomateQtGuiApp` and `geomateloadersetup`; the only executable lead remains
+the third-party Software Informer listing. The repository's Ghidra workflows
+already use OpenJDK/Temurin on CI, so Java setup is not the blocker—the missing
+input bytes are.
