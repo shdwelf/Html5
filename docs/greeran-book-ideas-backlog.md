@@ -98,8 +98,13 @@ ch. XVI gaps & private prompts).
 - **David Nicoli / pssnicomp** = Particle Sizing Systems, 75 Aero Camino, founded
   1978; Nicomp 380/DLS + AccuSizer 780/SPOS; Agilent 2008, later Entegris; David
   Nicoli, president.
-- **David Asarch** = publicly indexed as the Englewood, CO dermatologist (Asarch
-  Center); the family connection stays private.
+- **"David Asarch"** = no David Asarch in the NPI registry (checked October 2026).
+  The Asarch Center dermatologist at 3701 S Clarkson St, Englewood CO is **Richard
+  G. Asarch, MD** (dermatology/MOHS); a second Asarch dermatologist, Adam D.
+  Asarch, MD, is indexed with Forefront Dermatology in Michigan. Which Asarch the
+  remembered "David" is stays open; the family connection and all personal history
+  stay private. The pssnicomp.com MacroJump-credit hunt is exhausted at the homepage
+  level: neither the 1998 nor the 2003 capture carries a designer credit.
 
 ## App ideas adjacent to the book
 
