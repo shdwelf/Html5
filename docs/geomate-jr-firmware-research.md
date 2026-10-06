@@ -312,3 +312,17 @@ This is a tooling limitation, not evidence that `GeomateandUpdateKit.zip` or
 artifact for those URLs. A Warrick run on a machine with its Perl dependencies
 and normal archive access is still a valid independent retry, but it cannot
 recover a payload absent from the archive's replay layer.
+
+## Mirror and backup discovery UI
+
+`warrick.html` now includes explicit discovery links for both CDX-listed names:
+`GeomateandUpdateKit.zip` (1,618,659 bytes, digest
+`I5UJVNM2EXSSQ7OJZQOFUHPXJQHHEBX6`) and `UpdateKit.zip` (727,077 bytes, digest
+`NU2RTCTP6PWJ7QVF5CYKQWMOFSG4JVS3`). For each it opens the exact-URL
+Wayback CDX query, a replay candidate, Arquivo.pt version-history search, a
+Common Crawl index query, and the `www.mygeomate.com` hostname variant.
+
+These are search/replay links only. A link, CDX row, or advertised length does
+not prove that a backup copy is downloadable. The app preserves the expected
+sizes and CDX digests so any recovered bytes can be checked before static
+analysis.
