@@ -267,3 +267,23 @@ Internet Archive full-text searches currently return zero items for both
 the third-party Software Informer listing. The repository's Ghidra workflows
 already use OpenJDK/Temurin on CI, so Java setup is not the blocker—the missing
 input bytes are.
+
+## Proxy/replay retry (2026-10-06)
+
+I retried the two archived ZIP captures through multiple retrieval paths:
+Wayback `id_`, `if_`, `oe_`, and `im_` modes; `r.jina.ai`; AllOrigins; a
+Wayback Archive-It route; and Arquivo.pt. Results were consistent:
+
+- Wayback still returns “has not archived that URL” for the ZIP payloads even
+  though CDX retains the 200/application-zip records.
+- `r.jina.ai` refuses to proxy Wayback with an abuse-alleviation 403.
+- AllOrigins times out against Wayback.
+- Archive-It returns an empty response.
+- Arquivo.pt has zero results for the exact ZIP URL.
+- The live `mygeomate.com` URL now resolves to a domain-for-sale page, not the
+  original asset.
+
+This rules out a simple CORS limitation as the cause. The metadata capture is
+available, but the archived response body is not exposed by the accessible
+replay/proxy services. No ZIP bytes or executable bytes were obtained, so no
+Ghidra input was created and no firmware claim was promoted.
