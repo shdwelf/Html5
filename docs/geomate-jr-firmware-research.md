@@ -194,3 +194,36 @@ correct next pass is: hash the ZIP, inventory its members, extract without
 executing, identify PE/installer payloads, then run the existing headless
 Ghidra workflow on each extracted PE and separately inspect any embedded GPX,
 SQLite, binary database, or device-protocol payload.
+
+## Verification of the latest firmware/error claims
+
+The supplied summary is partly supported, but some wording overstates the
+sources:
+
+- `V1002` is directly supported by the archived user guide's startup table.
+  The exact string `V1002 RE X2` was not found in the supplied pages or the
+  accessible archive records; it should remain an unverified variant claim
+  until a screenshot, firmware dump, or installer log supplies it.
+- The Varuste listing documents the Update Kit as a PC-only product for loading
+  current US/foreign cache lists and changing preferences; it does not prove
+  that the kit was an over-the-air firmware updater or that it could replace
+  the operating system.
+- The JustAnswer pages preserve user reports of `Flash Programming Failed`,
+  `Loader Error`, and unknown firmware/database versions. However, the visible
+  expert exchange asks diagnostic questions; the later page section labelled
+  “AI-generated” is explicitly not a manufacturer service procedure. The
+  battery-removal/USB-2.0 sequence should therefore be recorded as an
+  anecdotal troubleshooting suggestion, not a verified firmware fix.
+- The Geocaching forum evidence does support loading a custom GPX through the
+  Update Kit, including private/unofficial caches via GSAK. It does not show
+  the internal `.db` format, a database-packing specification, or custom
+  replacement firmware.
+- No source located in this pass demonstrates an open-source firmware project
+  or a third-party replacement operating system. That is an absence-of-evidence
+  result, not proof that no private project ever existed.
+
+The source-quality distinction matters for the planned Gazetteer import: GPX
+records loaded by the device would be user/community cache records with a
+snapshot date, not GNIS features and not firmware-derived facts. They must not
+be promoted to verified Gazetteer rows without the original GPX/database and
+its provenance.
