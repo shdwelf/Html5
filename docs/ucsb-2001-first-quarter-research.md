@@ -60,6 +60,16 @@ for the Goleta movie outing; 9/11 falls inside it.
 
 - Anacapa Hall first, then **San Nicolas** for the year; beds/furnishings assembled
   more than once. Open queue: move-in packet, housing assignment, RA name.
+- **The 2001–02 register, resolved (official)** — UCSB Housing's own Wayback pages:
+  six co-ed university-owned halls (San Miguel, San Nicolas, Santa Rosa, Anacapa,
+  Santa Cruz, San Rafael), 2,600 spaces, rates **$7,984 double / $8,899 single**
+  with unlimited meals, ResNet Ethernet in rooms, live-in RD/ARD/RA/RCC/APA/MAP
+  staff; three university-affiliated halls (Fontainebleu, Tropicana Gardens,
+  Francisco Torres) brought the system to 5,400 students "encompassing the
+  incoming first-year class"; freshmen were assigned by lottery across owned and
+  affiliated halls. Fontainebleu's own era page (updated 5 Dec 2001): 430 spaces,
+  Main (255) + Annex (175), 4–5-person suites, full meal service, $7,665–$8,875
+  for 2001–02, 6525 El Colegio Rd.
 
 ## Dining, the song, and the coast
 
@@ -159,18 +169,21 @@ for the Goleta movie outing; 9/11 falls inside it.
   2001-cycle primary source — current fee is $80).
 - Decisions, spring 2001: declined UCLA + UCSC; accepted UCSD + UCSB.
 - Glendora High School Class of 2001, graduated June 2001 (exact program date
-  unverified).
+  unverified; venue = Citrus College Stadium, the school's documented practice
+  2011–2026 — glendorahigh.net + SGV Tribune/Daily Breeze).
 
 ## Tier summary
 
 official: calendar dates, GOLD features, catalog courses, IVTV/Nexus/LAT items,
 Coal Oil Point/Platform Holly, monarchs, Bill's Bus, Cold Spring, Knapp's,
 Live Oak, Los Ingenieros award, Arlington, Fontainebleu + Annex addresses,
-Glass Factory, NSBE-UCSB founding.
+Glass Factory, NSBE-UCSB founding, **$40 application fee (PATHWAYS)**,
+**2001–02 housing register + rates**.
 community: Lizard's Mouth gatherings, Tiki House, Word of Mouth crew,
 drive-in/theater histories, IV eatery lineage.
-context: campus footprints, viewer geometry.
-memory: application outcomes + fee, dorm order, RA, Slurpees, DLG sandwiches
+context: campus footprints, viewer geometry, **GHS commencement venue (Citrus
+College Stadium — tradition documented 2011–2026; 2001-specific date unverified)**.
+memory: application outcomes + essays, dorm order, RA, Slurpees, DLG sandwiches
 detail, commons-no-candy, Satellite Reprographics, JCreator trailer location,
 daily flush, store tower, Grad bar off Hollister, attendance at any resolved
 venue, leadership retreat, faire role, Magaly, Zekanis/DJ Headshot/Sam Cumulus/

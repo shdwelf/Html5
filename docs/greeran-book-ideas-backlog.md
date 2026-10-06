@@ -35,24 +35,35 @@ ch. XVI gaps & private prompts).
 
 ## Open research queue (decidable lookups)
 
-1. UC application fee, fall-2001 cycle — fee chart or receipt (remembered $50;
-   today's published fee is $80).
-2. Glendora High Class of 2001 commencement program — exact date and venue.
-3. San Nicolas 2001–02 move-in paperwork — assignment packet, RA roster.
-4. "The daily flush" — any artifact carrying the title.
-5. Satellite Reprographics (Isla Vista) — receipt, phone-book ad, Nexus classified.
-6. The JCreator trailer — UCSB temporary building vs. ESGVROP portable.
-7. "Store tower" — Marc Germain / KABC / KCSB tower reference.
-8. The Grad bar off Hollister with its graduate student lounge — no public
+1. Glendora High Class of 2001 commencement program — the exact June 2001 date
+   (venue resolved: Citrus College Stadium; needs the program, yearbook, or an
+   unlocked SGV Tribune archive).
+2. San Nicolas 2001–02 move-in paperwork — assignment packet, RA roster. The
+   2001–02 hall register itself is resolved (see below).
+3. "The daily flush" — any artifact carrying the title.
+4. Satellite Reprographics (Isla Vista) — receipt, phone-book ad, Nexus classified.
+5. The JCreator trailer — UCSB temporary building vs. ESGVROP portable.
+6. "Store tower" — Marc Germain / KABC / KCSB tower reference; needs the author's
+   clarification of what the memory points at.
+7. The Grad bar off Hollister with its graduate student lounge — no public
    record of a Hollister-side Graduate; needs a Goleta phone book or Nexus ad
    from 2001–04.
-9. Surviving Word of Mouth flyer or lineup — would date the crew's run.
-10. Names held private: Kyle & Rhonda Zekanis, DJ Headshot, Sam Cumulus, Sanchez,
-    Fairweather, Magaly, John Petered — publish only on the author's
-    release or documentation.
+8. Surviving Word of Mouth flyer or lineup — would date the crew's run.
+9. Names held private: Kyle & Rhonda Zekanis, DJ Headshot, Sam Cumulus, Sanchez,
+   Fairweather, Magaly, John Petered — publish only on the author's
+   release or documentation.
 
 ### Resolved October 2026 (moved off the queue)
 
+- **UC application fee, fall-2001 cycle** = **$40 per campus, $160 for four** —
+  UC PATHWAYS' own applicant information (Wayback, 14 Feb 2001); the remembered
+  $50 corrects downward. PATHWAYS online filing closed Dec 2, 2000.
+- **The 2001–02 UCSB housing register** — six co-ed university-owned halls
+  ($7,984 double / $8,899 single, unlimited meals, ResNet Ethernet,
+  RD/ARD/RA/RCC/APA/MAP staff), freshman lottery across three affiliated halls;
+  Fontainebleu's own Dec 2001 page (Main 255 + Annex 175, $7,665–$8,875).
+- **GHS commencement venue** = Citrus College Stadium (school's documented
+  practice 2011–2026); the exact 2001 date stays open.
 - **"Fountain Blue / Fountain Bleu"** = Fontainebleu Apartments, 6525 El Colegio
   (late-1950s women's housing; Tropicana purchase 2010 → Tropicana Del Norte).
 - **"The annex"** = Fontainebleu Annex, 811 Camino Pescadero (→ "Villas at
@@ -91,3 +102,11 @@ ch. XVI gaps & private prompts).
   DJ Unagi's RA bio hit. Keep memory-tier unless a flyer surfaces.
 - "Graduate bar" searches surface only SLO (slograd.com), Stockton, and Oakland
   Graduates — wrong cities; a Hollister-side Grad exists in no public record.
+- "Satellite Reprographics" returns zero hits in news, LocalWiki, and general
+  search — the name as remembered has no indexed trace; needs a period phone
+  book or Nexus classified.
+- The GHS Class of 2001 exact graduation date is behind paywalls (SGV Tribune
+  June 2001 archives, classmates.com login); free sources only confirm the
+  Citrus College Stadium venue tradition (2011–2026).
+- UC fee: current-era pages dominate; the primary source is the archived UC
+  PATHWAYS applicant information (resolved Oct 2026 — $40 per campus).

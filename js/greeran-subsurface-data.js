@@ -158,7 +158,7 @@ export const NODES = [
     era: [1997.8, 2001.5],
     dateLabel: "graduated June 2001",
     note:
-      "1600 E Foothill Blvd, Glendora. OSM way 51207355, GNIS 271311. The diploma year that anchors the 2001 turning point — see the Glendora High 4Dwm viewer for the campus model.",
+      "1600 E Foothill Blvd, Glendora. OSM way 51207355, GNIS 271311. The diploma year that anchors the 2001 turning point — see the Glendora High 4Dwm viewer for the campus model. Commencements are held at Citrus College Stadium (the school's documented practice, 2011–2026); the exact June 2001 date remains unverified.",
   }),
   N({
     id: "ucla",
@@ -220,9 +220,9 @@ export const NODES = [
   }),
   N({
     id: "app-fee",
-    short: "$50",
-    label: "Four applications, $50 and a life story each",
-    tier: "memory",
+    short: "$40",
+    label: "Four applications, $40 and a life story each",
+    tier: "official",
     layer: "apps",
     kind: "memory",
     lon: -118.2,
@@ -230,7 +230,7 @@ export const NODES = [
     era: [2000.75, 2000.95],
     dateLabel: "Oct–Nov 2000 filing period",
     note:
-      "Recollection: $50 per application, and each one carried a life-story essay. Today's published UC fee is $80 per campus; the published fee schedule for the fall-2001 cycle is still to be verified in a primary source, so the number stays memory-tier.",
+      "The fee is on the record now: $40 per campus — $160 for the four (UCSB, UCLA, UCSC, UCSD) — per UC PATHWAYS' own fee schedule for fall-2001 applicants (Wayback capture, Feb 2001); the remembered '$50' corrected. Paper filing period Oct 1–Nov 30, 2000; the PATHWAYS online application closed Dec 2, 2000. Fee waivers covered up to four campuses. The life-story essays stay memory-tier.",
   }),
 
   /* ---- ESGVROP ------------------------------------------------------- */
@@ -332,7 +332,7 @@ export const NODES = [
     era: [2001.7, 2002.5],
     dateLabel: "2001–02",
     note:
-      "The freshman-year hall. The paperwork hunt — move-in records, the RA who would know, 'the daily flush' — is an open research item; none of it is in the public record yet, so it lives in the memory tier.",
+      "The freshman-year hall. On the 2001–02 register (UCSB Housing, Oct 2001 capture): one of six co-ed university-owned halls — with San Miguel, Santa Rosa, Anacapa, Santa Cruz and San Rafael — 2,600 spaces; double occupancy $7,984, single $8,899 with unlimited meals; live-in RD/ARD, RAs, RCCs (Resident Computer Coordinators), APAs and MAPs; ResNet Ethernet in the rooms. Freshmen were assigned by lottery to a university-owned or university-affiliated hall. The paperwork hunt — move-in records, the RA, 'the daily flush' — stays open, so residence itself lives in the memory tier.",
   }),
   N({
     id: "dlg",
@@ -544,7 +544,7 @@ export const NODES = [
     era: [1958, 2010.5],
     dateLabel: "1950s women's housing · 'Fountain Blue'",
     note:
-      "The 'Fountain Blue / Fountain Bleu' of the memory list, resolved: one of the three apartment complexes (with Tropicana Gardens and Westgate) that UCSB's Dean of Students had a Los Angeles developer build for female students in the late 1950s — security entrances, pools, cafeterias, a beauty parlor. The Annex at 811 Camino Pescadero was the Fontainebleu Annex. In 2010 Tropicana Gardens bought the complex; it is now Tropicana Del Norte, the Annex now 'Villas at Tropicana.' Attendance in the era: memory tier.",
+      "The 'Fountain Blue / Fountain Bleu' of the memory list, resolved: one of the three apartment complexes (with Tropicana Gardens and Westgate) that UCSB's Dean of Students had a Los Angeles developer build for female students in the late 1950s — security entrances, pools, cafeterias, a beauty parlor. The Annex at 811 Camino Pescadero was the Fontainebleu Annex. In 2010 Tropicana Gardens bought the complex; it is now Tropicana Del Norte, the Annex now 'Villas at Tropicana.' Era-primary confirmation: UCSB Housing's own site (captured Dec 2001/Jan 2002) listed Fontainebleu as one of three university-affiliated residence halls — 430 spaces, Main (255) and Annex (175), 4–5-person suites with full meal service in the Main; 2001–02 rates $7,665 double to $8,875 single with unlimited meals. Attendance in the era: memory tier.",
   }),
   N({
     id: "tiki-house",
@@ -968,12 +968,12 @@ export const CORRIDORS = [
  */
 export const TIMELINE = [
   { sort: 1999.79, date: "Oct 1999", tier: "official", nodeId: "ivtv", text: "IVTV's first episode airs — the Isla Vista chronicle begins." },
-  { sort: 2000.75, date: "Oct–Nov 2000", tier: "memory", nodeId: "app-fee", text: "UC applications filed for four campuses — UCSB, UCLA, UCSC, UCSD. $50 and a life story each (memory)." },
+  { sort: 2000.75, date: "Oct–Nov 2000", tier: "official", nodeId: "app-fee", text: "UC applications filed for four campuses — UCSB, UCLA, UCSC, UCSD — at $40 each, $160 total (UC PATHWAYS fee schedule; the remembered $50 corrected)." },
   { sort: 2001.05, date: "Feb 2001", tier: "official", nodeId: "dlg", text: "Jack Johnson's Brushfire Fairytales — 'Bubble Toes' — is released with the D.L.G. lunch and the tar-ball lines." },
   { sort: 2001.12, date: "Feb 23, 2001", tier: "official", nodeId: "ivtv", text: "The Sabado Tarde crash — IVTV's later footage of the aftermath would be played at the Attias trial (May 2002)." },
   { sort: 2001.37, date: "May 23, 2001", tier: "official", nodeId: "ivtv", text: "Daily Nexus: IVTV episode stalled over content, then aired after review." },
   { sort: 2001.42, date: "Spring 2001", tier: "memory", nodeId: "ucsb-admit", text: "Decisions: declined at UCSC and UCLA, accepted at UCSD and UCSB. UCSB it is." },
-  { sort: 2001.44, date: "Jun 2001", tier: "memory", nodeId: "ghs", text: "Glendora High School graduation — Class of 2001." },
+  { sort: 2001.44, date: "Jun 2001", tier: "memory", nodeId: "ghs", text: "Glendora High School graduation — Class of 2001; commencement at Citrus College Stadium per the school's long-standing practice (exact 2001 date unverified)." },
   { sort: 2001.45, date: "Jun 2001", tier: "official", nodeId: "esgvrop-delnorte", text: "Summer job begins at ESGVROP — Del Norte Campus, West Covina — for Ryan Quesenberry, Project Facilitator-Technology." },
   { sort: 2001.5, date: "Summer 2001", tier: "memory", nodeId: "glendora-library", text: "Working for Quesenberry, who had previously run the computer lab at the Glendora library; lunches together." },
   { sort: 2001.5, date: "Summer 2001", tier: "context", nodeId: "camp-williams", text: "The Camp Williams country — East Fork, Azusa Canyon — as the summer's escape valve." },
@@ -1063,3 +1063,4 @@ export const VIEWS = [
 export const TIME_MIN = 1999.5;
 export const TIME_MAX = 2020.0;
 export const DEFAULT_TIME = 2001.75;
+
