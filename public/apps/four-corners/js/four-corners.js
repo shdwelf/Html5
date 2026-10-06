@@ -12,38 +12,21 @@ import {
   META, LAYERS, BORDERS, SAN_JUAN_RIVER, GAZETTEER, SITES,
   TERRAIN_POINTS, VIEWS, CREDITS,
 } from "./four-corners-data.js";
+import {
+  UNITS_PER_KM, px, pz, lonFromX, latFromZ, elevAt,
+} from "./four-corners-geo.js";
 
 const $ = (id) => document.getElementById(id);
 const canvas = $("stage");
 
 /* ---------------------------------------------------------- projection -- */
+/* The projection itself, the IDW relief field and pathKm() live in
+   js/four-corners-geo.js, shared with four-corners-calc's converter. */
 
-const KM_PER_DEG_LAT = 111.32;
-const U = META.unitsPerKm; // 0.1 → 1 unit = 10 km
-const cosLat = Math.cos((META.center.lat * Math.PI) / 180);
-const kmPerDegLon = KM_PER_DEG_LAT * cosLat;
-const px = (lon) => (lon - META.center.lon) * kmPerDegLon * U;
-const pz = (lat) => -(lat - META.center.lat) * KM_PER_DEG_LAT * U;
-const lonFromX = (x) => META.center.lon + x / (kmPerDegLon * U);
-const latFromZ = (z) => META.center.lat - z / (KM_PER_DEG_LAT * U);
+const U = UNITS_PER_KM; // 0.1 → 1 unit = 10 km
 
 let exag = 6;
 const yFor = (elevM) => ((elevM || 1500) / 1000) * U * exag;
-
-/* IDW elevation sample (km distances, power 2.4) */
-function elevAt(lon, lat) {
-  let num = 0, den = 0;
-  for (const [plon, plat, pel] of TERRAIN_POINTS) {
-    const dx = (lon - plon) * kmPerDegLon;
-    const dy = (lat - plat) * KM_PER_DEG_LAT;
-    const d2 = dx * dx + dy * dy;
-    if (d2 < 0.25) return pel;
-    const w = 1 / Math.pow(d2, 1.2);
-    num += w * pel;
-    den += w;
-  }
-  return num / den;
-}
 
 /* ------------------------------------------------------------ renderer -- */
 

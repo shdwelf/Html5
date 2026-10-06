@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#07090b" />
+  <title>FOUR CORNERS · calculator port</title>
+  <link rel="stylesheet" href="./css/four-corners-calc.css" />
+  <link rel="icon" href="./icon.png" />
+  <script src="./webxdc.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>FOUR CORNERS · calculator port</h1>
+      <p>One C core · TI-83 / 83+ / 84+ · TI-89 · TI-92</p>
+    </div>
+    <nav class="links">
+      <a href="./four-corners.html">3D ORIGINAL</a>
+      <a href="./socal-calc.html">SOCAL BENCH</a>
+      <a href="./calc.html">SITE-K PORT</a>
+    </nav>
+  </header>
+
+  <main class="stage">
+    <section class="bench">
+      <div class="bezel" id="bezel">
+        <div class="screen">
+          <canvas id="lcd" width="96" height="64" aria-label="calculator LCD"></canvas>
+          <div class="grid-overlay" aria-hidden="true"></div>
+        </div>
+        <div class="brand"><span id="brand">TI-83</span><i id="brandSub">96×64 · 1BPP</i></div>
+      </div>
+
+      <div class="keypad" id="keypad" role="group" aria-label="calculator keypad"></div>
+
+      <p class="hint" id="hint">◄ ► step visible features · ▲ ▼ zoom · ENTER dossier · F1 section · 1–5 jump · CLEAR exits</p>
+
+      <div class="row">
+        <button type="button" id="btnPng" class="act">Save LCD PNG</button>
+        <button type="button" id="btnPause" class="act">Pause</button>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <h2>Device</h2>
+      <div class="devices" id="devices" role="group" aria-label="device"></div>
+
+      <h2>Screen</h2>
+      <div class="screens" id="screens" role="group" aria-label="screen"></div>
+
+      <h2>Selection</h2>
+      <table class="facts" id="facts"></table>
+
+      <h2>Layers <em id="layerCount"></em></h2>
+      <div class="layers" id="layers" role="group" aria-label="layers"></div>
+
+      <h2>Send it to real hardware</h2>
+      <pre class="cmd" id="cmd">make -C four-corners-calc ti83</pre>
+      <p class="note" id="buildNote"></p>
+
+      <p class="note">
+        This page is not a re-implementation. It runs
+        <code>four-corners-calc/core/*.c</code> transpiled by <code>calc/tools/c2js.py</code>
+        into <code>js/four-corners-core.js</code> — the same source sdcc builds for the Z80
+        and TIGCC builds for the 68k models. <code>make -C four-corners-calc test</code>
+        diffs this build against the gcc build for all three devices and requires
+        every framebuffer hash to match.
+      </p>
+      <p class="note">
+        Geometry is quantised to 1/2000° (~22 m worst case) straight out of
+        <code>four-corners.xdc</code>; relief is the app's own curated-IDW
+        control points reworked in fixed point, mean error 2 m against the
+        bundle's <code>elevAt()</code>. Only two features carry a schematic
+        depth — the Aneth reservoir at −1700 m and McElmo Dome's CO₂ at
+        −2400 m — hung on a log ramp under the terrain line.
+        <strong>Not a survey.</strong>
+      </p>
+    </aside>
+  </main>
+
+  <script type="module" src="./js/four-corners-calc.js"></script>
+</body>
+</html>

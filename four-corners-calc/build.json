@@ -1,0 +1,33 @@
+{
+  "_comment": "Retargets calc/tools/build_device.py at this port. Everything under calc/core listed here is shared with SITE-K and SOCAL SUBSURFACE and is NOT forked: tables.c (font + sine + log2), util.c (integer maths) and fb.c (1-bit framebuffer) are compiled straight out of the sibling tree. Only fctables.c, geo.c, fcdata.c and app.c belong to FOUR CORNERS.",
+  "app": "fcorner",
+  "core": [
+    "../calc/core/tables.c",
+    "../calc/core/util.c",
+    "../calc/core/fb.c",
+    "core/fctables.c",
+    "core/geo.c",
+    "core/fcdata.c",
+    "core/app.c"
+  ],
+  "includes": ["core", "../calc/core"],
+  "specs": {
+    "ti83": {
+      "toolchain": "sdcc",
+      "asm": ["plat/ti83/crt0.asm", "plat/ti83/lcd.asm"],
+      "main": "plat/ti83/main.c",
+      "org": "0x9D95",
+      "pack": true
+    },
+    "ti89": {
+      "toolchain": "tigcc",
+      "main": "plat/ti89/main.c",
+      "pack": false
+    },
+    "ti92": {
+      "toolchain": "tigcc",
+      "main": "plat/ti92/main.c",
+      "pack": false
+    }
+  }
+}
