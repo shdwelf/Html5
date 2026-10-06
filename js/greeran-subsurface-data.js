@@ -358,10 +358,10 @@ export const NODES = [
     kind: "library",
     lon: -119.8443,
     lat: 34.414,
-    era: [2001.6, 2004.6],
-    dateLabel: "2001–2004",
+    era: [2001.6, 2005.7],
+    dateLabel: "2001–2005",
     note:
-      "The MIL, first floor north of Davidson Library — one of the country's largest map, aerial and GIS collections. The resume's student-programmer post: Alexandria Digital Library work under Greg Janée. Recollection: the century plant bloomed while on shift here. Agave americana blooms once after 10–25 years, a stalk up to 8 inches a day — but no dated public record of that particular bloom has surfaced, so the bloom stays memory-tier.",
+      "The MIL, first floor north of Davidson Library — one of the country's largest map, aerial and GIS collections. The resume's student-programmer post: Alexandria Digital Library work under Greg Janée — and its second library post, Student Programmer II, June–September 2005, two floors up in Special Collections: the wax-cylinder recordings served to the Pegasus catalog by Library-of-Congress-approved Z39.50 ('mentioned in an Article in Time Magazine'). Recollection: the century plant bloomed while on shift here. Agave americana blooms once after 10–25 years, a stalk up to 8 inches a day — but no dated public record of that particular bloom has surfaced, so the bloom stays memory-tier.",
   }),
   N({
     id: "gold",
@@ -815,7 +815,7 @@ export const NODES = [
     era: [2001.6, 2004.6],
     dateLabel: "by Rancho San Marcos golf course",
     note:
-      "Live Oak Camp: the county's 40-acre group camp on the Santa Ynez River, reservation-only, sharing its entrance road with Rancho San Marcos golf course — 'the Renaissance fair at the golf course, across from Lake Cachuma.' The faire role and Magaly are memory; the camp and its geography are public record.",
+      "Live Oak Camp: the county's 40-acre group camp on the Santa Ynez River, reservation-only, sharing its entrance road with Rancho San Marcos golf course — 'the Renaissance fair at the golf course, across from Lake Cachuma.' The faire roles are on the author's public resume — “Rat Races” referee for Friends of the Paramount Ranch (wonderful wood-plated golden medallions to the winners, in character, period dress) and “Humble Servant” with Renaissance Entertainment Productions' fencing guild at Glen Helen, Devore; the leadership retreat with Magaly stays private.",
   }),
 
   /* ---- Amgen / GMR ---------------------------------------------------- */
@@ -916,7 +916,7 @@ export const NODES = [
     era: [1990, 2026],
     dateLabel: "est. 1990 · President Larry Bogatz",
     note:
-      "'Sealtightfastener' of the memory list, resolved: Sealtight Fastener, a bolts-nuts-screws-rivets-washers manufacturer established 1990 at 5370 Hollister Avenue #2, Santa Barbara / Goleta (OSM node 13167977938; ~28 employees), its president Larry Bogatz — the remembered 'Larry boats.' Bogatz is also the author of 'The Theory of Reality: Change Your Life and Live Your Dream' (Xlibris, November 2003, ISBN 978-1413422764). The claim that Sealtight fasteners flew on the Mars rovers and Phoenix missiles is unverified — sealtightfasteners.com has no Wayback captures and the current site is a slideshow — though its aerospace-and-defense market is documented. The author's work there is memory tier.",
+      "'Sealtightfastener' of the memory list, resolved: Sealtight Fastener, a bolts-nuts-screws-rivets-washers manufacturer established 1990 at 5370 Hollister Avenue #2, Santa Barbara / Goleta (OSM node 13167977938; ~28 employees), its president Larry Bogatz — the remembered 'Larry boats.' Bogatz is also the author of 'The Theory of Reality: Change Your Life and Live Your Dream' (Xlibris, November 2003, ISBN 978-1413422764). The author's public resume lists the role: website designer — the “Flash and HTML redesign.” The site is preserved (sealtightfastener.com — singular, the plural-domain check was the earlier miss; 90 Wayback captures 2003–2025; December 2003 reads “No web site is configured at this address,” so the redesign follows). The archived applications page carries the Mars claim in the company's own copy — “Product applications range from the Mars Rovers & Space Shuttles to Environmental Enclosures and Sheet Metal Products” — beside an Aerospace page of Space Shuttle, Various Missile Cases, Space Probes and Space Telescopes, and MS3212/MS3213 fasteners “used and trusted by the United States Armed Forces.” “Phoenix” is not named in the captures. The footer: B&B Hardware, Inc., 5370 Hollister #2, ©1990–2004; no MacroJump credit appears anywhere on the site.",
   }),
   N({
     id: "yardi",
@@ -930,7 +930,7 @@ export const NODES = [
     era: [1984, 2026],
     dateLabel: "founded 1984 · Anant Yardi",
     note:
-      "The global real-estate software company founded 1984 by Anant Yardi, headquartered at 430 South Fairview Avenue, Goleta (OSM node 6070156225) — the landmark the remembered 'Grad bar' sat in front of. James Beane — 'James Beane at Yardi Systems' on the memory list — is publicly indexed there: Senior Manager, Cloud Services, 23+ years at Yardi, Santa Barbara. The author's connection and its era are memory tier.",
+      "The global real-estate software company founded 1984 by Anant Yardi, headquartered at 430 South Fairview Avenue, Goleta (OSM node 6070156225) — the landmark the remembered 'Grad bar' sat in front of. James Beane — 'James Beane at Yardi Systems' on the memory list — is publicly indexed there: Senior Manager, Cloud Services, 23+ years at Yardi, Santa Barbara. No Yardi role appears on the author's public resume — a landmark of the Hollister corridor, not an employer.",
   }),
   N({
     id: "montys-bar",
@@ -958,7 +958,7 @@ export const NODES = [
     era: [1978, 2026],
     dateLabel: "founded 1978 · Nicomp / AccuSizer",
     note:
-      "Particle Sizing Systems — designer and manufacturer of particle-sizing instruments at 75 Aero Camino, Suite B (OSM way 658342264): the Nicomp 380/DLS submicron sizer (dynamic light scattering, 0.003–5 microns) and the AccuSizer 780/SPOS single-particle optical sizer. Founded 1978; acquired by Agilent Technologies in 2008, later an Entegris company. President David Nicoli (Harvard 1966–73). The author's website work for PSS — with Gavriel Popper Keiser, under the MacroJump name — is memory tier; pssnicomp.com is preserved in the Wayback Machine (340 captures, 1998–2026), though macrojump.com itself holds only hosting placeholders (2010–2025).",
+      "Particle Sizing Systems — designer and manufacturer of particle-sizing instruments at 75 Aero Camino, Suite B (OSM way 658342264): the Nicomp 380/DLS submicron sizer (dynamic light scattering, 0.003–5 microns) and the AccuSizer 780/SPOS single-particle optical sizer. Founded 1978; acquired by Agilent Technologies in 2008, later an Entegris company. President David Nicoli (Harvard 1966–73). The author's website work for PSS — with Gavriel Popper Keiser, under the MacroJump name — is memory tier; his public resume lists the client role as IT Computer Support (AUTOCAD backup and server specifications for a new system) and marks PSS “no longer a client, absorbed by Channel Data Systems” — which sits beside, unresolved, the public record of the 2008 Agilent acquisition. pssnicomp.com is preserved in the Wayback Machine (340 captures, 1998–2026); macrojump.com itself holds only hosting placeholders (2010–2025).",
   }),
   N({
     id: "goleta-amtrak",
@@ -1100,6 +1100,79 @@ export const NODES = [
     dateLabel: "Dec 2017 – Jan 2018",
     note:
       "281,893 acres from its origin near Santa Paula across Ventura and into Santa Barbara County to Carpinteria — the largest wildfire in California history at the time — followed on January 9, 2018 by the Montecito debris flows that killed 21. The closing event of the fire register's span (schematic pin near the origin).",
+  }),
+  N({
+    id: "channel-data-systems",
+    short: "CDS",
+    label: "Channel Data Systems — 4141 State St",
+    tier: "official",
+    layer: "sb",
+    kind: "work",
+    lon: -119.7613,
+    lat: 34.4398,
+    era: [2004.5, 2005.0],
+    dateLabel: "Jul–Dec 2004 · Computer Shop Manager",
+    note:
+      "'Santa Barbara's IT Resource' — network administration, repair and upgrades, data recovery, custom-built computers and servers at 4141 State Street #A-2, El Mercado Plaza (OSM node 6070217352; 805-964-6695). The author's public resume: Computer Shop Manager, July–December 2004 — mileage log for field work, opening and closing the store, scheduling repair, customer RMA through the secretary including billing, storefront stocked, building and branding OEM software and hardware with the company logo, Intel Corporation Channel Partner Wi-Max laptops. The shop that 'absorbed' the author's Sealtight and Particle Sizing Systems clients.",
+  }),
+  N({
+    id: "novacoast",
+    short: "NOVA",
+    label: "Novacoast — 1505 Chapala St",
+    tier: "official",
+    layer: "sb",
+    kind: "work",
+    lon: -119.7101,
+    lat: 34.4251,
+    era: [2004.9, 2005.2],
+    dateLabel: "Dec 2004–Feb 2005 · Programmer",
+    note:
+      "The Santa Barbara IT-services and cybersecurity company — BBB file opened August 1997, business started May 1999 — at 1505 Chapala Street (OSM node 6070274782). The author's public resume: Programmer, December 2004–February 2005 — 'create preliminary framework for proprietary programming language used in office for new product.'",
+  }),
+  N({
+    id: "crm-security",
+    short: "CRM",
+    label: "CRM Security — crmsecurity.com (schematic)",
+    tier: "official",
+    layer: "apps",
+    kind: "systems",
+    lon: -119.86,
+    lat: 34.413,
+    era: [2003.8, 2004.2],
+    dateLabel: "by Jan 2004 · telephony project",
+    schematic: true,
+    note:
+      "The resume's Projects register: a schematic coupling a physical phone line to the computer through an audio transformer to speaker and mic jacks — headset interaction for JSP-served clients, DTMF tones played onto the line for automatic dialing. crmsecurity.com is preserved in the Wayback Machine, capture of January 31, 2004. Pin schematic — a project, not a place.",
+  }),
+  N({
+    id: "dhammakaya",
+    short: "DIMC",
+    label: "Dhammakaya Int'l Meditation Center — Azusa (schematic)",
+    tier: "official",
+    layer: "esgvrop",
+    kind: "org",
+    lon: -117.89,
+    lat: 34.13,
+    era: [2006.0, 2007.9],
+    dateLabel: "2006–07 · ordained 2007",
+    schematic: true,
+    note:
+      "The resume's monastic register: volunteer 2006–2007 — traveling between monasteries to build assembly for Vesak (dates in the Thai lunar calendar), teaching basic yoga to lay persons, ordination set-up; ordained 2007 — 'Venerable' — the study of precepts and the English translation of the Tripiṭaka. See also peacepointmeditation.org and dhammakayacentral.com. Pin schematic at Azusa (dimc.net).",
+  }),
+  N({
+    id: "sgv-examiner",
+    short: "SGVE",
+    label: "San Gabriel Valley Examiner — Glendora (schematic)",
+    tier: "official",
+    layer: "esgvrop",
+    kind: "press",
+    lon: -117.875,
+    lat: 34.137,
+    era: [2011.5, 2013.1],
+    dateLabel: "Jul 2011–Jan 2013 · on payroll",
+    schematic: true,
+    note:
+      "The weekly foothill newspaper whose office sat next to the Naked Juice factory in Glendora. The author's public resume: on payroll July 2011–January 2013 — collating newspapers, cleaning the office, delivery of the weekly from the in-house printing press, OSHA standards near heavy machinery — promoted to Gardener. Pin schematic near the Foothill Boulevard office corridor.",
   }),
 ];
 
@@ -1260,11 +1333,20 @@ export const TIMELINE = [
   { sort: 2002.65, date: "2001–04", tier: "official", nodeId: "shooting-range", text: "The Glass Factory shooting area on East Camino Cielo; Knapp's Castle sunsets; Cold Spring Tavern — the Wells Fargo-era stagecoach stop; Hope Ranch on the west side." },
   { sort: 2002.7, date: "2001–04", tier: "memory", nodeId: "live-oak-renfaire", text: "Renaissance faire at the golf course — Live Oak Camp by Rancho San Marcos, across from Lake Cachuma; the leadership retreat with Magaly." },
   { sort: 2002.72, date: "Sept 22–Oct 1, 2002", tier: "official", nodeId: "williams-fire", text: "Williams Fire: 38,094 acres from Camp Williams through the San Gabriel high country north of Glendora — the home-mountains fire of the UCSB years." },
+  { sort: 2003.5, date: "circa 2002–04 (undated)", tier: "official", nodeId: "davidson-mil", text: "Student Programmer, Alexandria Digital Library — JSP interface and Perl utilities over the Map & Imagery Lab's terabytes of airphoto data (undated on the resume; slotted into the UCSB years)." },
+  { sort: 2003.8, date: "circa 2003–04", tier: "official", nodeId: "pss", text: "IT Computer Support for Particle Sizing Systems — AUTOCAD backup and server specifications for a new system; the client later 'absorbed by Channel Data Systems' (the author's public resume)." },
+  { sort: 2004.08, date: "by Jan 2004", tier: "official", nodeId: "crm-security", text: "The CRM Security project — a phone line coupled to the computer through an audio transformer: headset interaction for JSP-served clients and DTMF tones for automatic dialing; preserved in the Wayback Machine 31 January 2004." },
+  { sort: 2004.5, date: "circa 2004–05", tier: "official", nodeId: "sealtight", text: "The Sealtight Fastener website — the author's Flash + HTML redesign (his public resume); the archived copy carries 'Mars Rovers & Space Shuttles' in its applications text and a B&B Hardware footer, ©1990–2004." },
+  { sort: 2004.54, date: "Jul–Dec 2004", tier: "official", nodeId: "channel-data-systems", text: "Computer Shop Manager at Channel Data Systems, 4141 State Street (El Mercado Plaza) — opening and closing, repair scheduling, RMA billing, OEM branding, Intel Channel Partner Wi-Max laptops." },
+  { sort: 2004.96, date: "Dec 2004–Feb 2005", tier: "official", nodeId: "novacoast", text: "Programmer at Novacoast, 1505 Chapala Street — a preliminary framework for the office's proprietary language for a new product." },
+  { sort: 2005.46, date: "Jun–Sep 2005", tier: "official", nodeId: "davidson-mil", text: "Student Programmer II — Davidson Library Special Collections: the wax-cylinder recordings indexed by Z39.50 into the Pegasus catalog; 'mentioned in an Article in Time Magazine' (the resume)." },
+  { sort: 2006.0, date: "2006–07", tier: "official", nodeId: "dhammakaya", text: "Volunteer at Dhammakaya International Meditation Center, Azusa — Vesak set-up and basic yoga instruction; ordained 2007 ('Venerable'), the precepts and the Tripiṭaka." },
   { sort: 2006.1, date: "Feb 2006", tier: "official", nodeId: "gmr-turn", text: "The Amgen Tour of California runs its first edition — the bike-race chapter of the Glendora years opens." },
   { sort: 2008.5, date: "July 2008", tier: "official", nodeId: "gap-fire", text: "Gap Fire: just under 10,000 acres on West Camino Cielo above Goleta — the Lizard's Mouth / Glass Factory country." },
   { sort: 2008.87, date: "Nov 13–14, 2008", tier: "official", nodeId: "tea-fire", text: "Tea Fire: 1,940 acres, 210 homes lost in Montecito under 85-mph sundowners." },
   { sort: 2009.35, date: "May 5–18, 2009", tier: "official", nodeId: "jesusita-fire", text: "Jesusita Fire: 8,733 acres from the Jesusita Trail into Mission and Rattlesnake Canyons — 80 homes lost." },
   { sort: 2009.66, date: "Aug 26–Oct 16, 2009", tier: "official", nodeId: "station-fire", text: "Station Fire: 160,577 acres across the Angeles front country above Glendora — the largest in the forest's recorded history." },
+  { sort: 2011.54, date: "Jul 2011–Jan 2013", tier: "official", nodeId: "sgv-examiner", text: "On payroll at the San Gabriel Valley Examiner — collating the weekly, cleaning, delivery from the in-house press, OSHA compliance near the machinery; promoted to Gardener." },
   { sort: 2017.92, date: "Dec 2017", tier: "official", nodeId: "thomas-fire", text: "Thomas Fire: 281,893 acres — then the largest in California history — into Santa Barbara County; the Montecito debris flows follow in January." },
   { sort: 2019.37, date: "2019", tier: "official", nodeId: "mt-baldy", text: "The Ontario-to-Mt.-Baldy Amgen stage through Glendora and up GMR — the race corridor this stage carries." },
 ];

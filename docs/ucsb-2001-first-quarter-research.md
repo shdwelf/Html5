@@ -123,6 +123,34 @@ for the Goleta movie outing; 9/11 falls inside it.
   Carneros); Amtrak Thruway Motorcoach to the UCSB campus — "sometimes a transfer
   to the Amtrak bus" (memory).
 
+## The resume chronology (October 2026)
+
+The author's public resume — [rsm.io/sgreeran](http://rsm.io/sgreeran) →
+standardresume.co/r/sgreeran (src-9) — re-read in full and arranged in strict
+chronological order in **docs/sgreeran-resume-chronology.md**. Era-relevant spine:
+
+- **2001–2004**: UCSB College of Engineering, CMPSCI [dated on the resume].
+- **circa 2002–04 (undated)**: Alexandria Digital Library student programmer
+  (Davidson MIL — the davidson-mil node).
+- **circa 2003–04**: the client era — PSS (IT support: AUTOCAD backup, server specs),
+  Sealtight (the Flash + HTML redesign; archived site footer ©1990–2004, applications
+  copy "Mars Rovers & Space Shuttles"), CRM Security (crmsecurity.com, Wayback capture
+  31 Jan 2004) — all "absorbed by Channel Data Systems."
+- **Jul–Dec 2004**: Channel Data Systems, Computer Shop Manager, 4141 State St (El
+  Mercado Plaza) — new node.
+- **Dec 2004–Feb 2005**: Novacoast, programmer, 1505 Chapala St — new node.
+- **Feb–Jun 2005**: Botanic Garden volunteer ("laid off as manager"); **Apr–Jun 2005**:
+  Food Bank volunteer.
+- **Jun–Sep 2005**: Student Programmer II — Davidson Special Collections, the wax
+  cylinders by Z39.50/Pegasus ("mentioned in Time" per the resume).
+- **2006–07**: Dhammakaya International Meditation Center, Azusa (ordained 2007) — new
+  schematic node.
+- **Jul 2011–Jan 2013**: SGV Valley Examiner payroll, promoted to Gardener — new
+  schematic node.
+
+The user-agent note: the PDF variant is outdated (per the author); .pdf returns
+not-found; the Wayback Machine holds no captures of the resume; the live HTML rules.
+
 ## Media of the era
 
 - **IVTV** (Isla Vista Television): Greg Shields + Sevan Matossian; Cox public

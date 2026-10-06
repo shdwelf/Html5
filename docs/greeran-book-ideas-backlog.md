@@ -56,10 +56,14 @@ ch. XVI gaps & private prompts).
 9. The Grad bar identification — Monty's (5114 Hollister, now No Town Tavern) is
    the leading candidate per the author's Yardi/Sealtight location clue; one author
    confirmation promotes it.
-10. The MacroJump websites — pssnicomp.com is Wayback-preserved; macrojump.com and
-    sealtightfasteners.com are not; surviving MacroJump-era artifacts (screenshots,
-    invoices, the Mars-rover/Phoenix-missile documentation at Sealtight) would land
-    the claim.
+10. RESOLVED October 2026 (corrected): sealtightfastener.com — singular, the plural-domain
+    check was the miss — holds 90 Wayback captures (2003–2025) including the author's Flash +
+    HTML redesign; crmsecurity.com is preserved 31 Jan 2004. The Mars Rovers claim is verified
+    in the site's own applications copy ("Mars Rovers & Space Shuttles"); "Phoenix" is not
+    named in the captures ("Various Missile Cases," "missiles," MS3212/MS3213 "trusted by
+    the United States Armed Forces"). No MacroJump credit appears anywhere — the name stays
+    the author's and Gavriel Popper Keiser's. Full chronological arrangement of the resume:
+    docs/sgreeran-resume-chronology.md.
 11. Names held private: Kyle & Rhonda Zekanis, DJ Headshot, Sam Cumulus, Sanchez,
     Fairweather, Magaly, John Petered, Gavriel Popper Keiser, Melissa Asarch —
     publish only on the author's release or documentation.
@@ -98,6 +102,16 @@ ch. XVI gaps & private prompts).
 - **David Nicoli / pssnicomp** = Particle Sizing Systems, 75 Aero Camino, founded
   1978; Nicomp 380/DLS + AccuSizer 780/SPOS; Agilent 2008, later Entegris; David
   Nicoli, president.
+- **The employers, placed (October 2026)** — rsm.io/sgreeran: Sealtight + PSS were the
+  author's clients (website designer / IT computer support), both "absorbed by Channel Data
+  Systems," where he was Computer Shop Manager Jul–Dec 2004 (4141 State St); Novacoast
+  programmer Dec 2004–Feb 2005 (1505 Chapala St); "laid off as manager" → Botanic Garden +
+  Food Bank volunteering (Feb–Jun 2005); wax-cylinder post Jun–Sep 2005; Dhammakaya 2006–07
+  (ordained 2007); SGV Examiner payroll Jul 2011–Jan 2013 (promoted to Gardener); San
+  Bernardino County election clerk 2018. No Yardi role on the resume — landmark only.
+- **Resume variants (October 2026)** — the live HTML at standardresume.co/r/sgreeran is
+  current; the PDF-download variant some user agents serve is outdated (per the author);
+  /r/sgreeran.pdf returns not-found; no Wayback captures of the resume exist.
 - **"David Asarch"** = no David Asarch in the NPI registry (checked October 2026).
   The Asarch Center dermatologist at 3701 S Clarkson St, Englewood CO is **Richard
   G. Asarch, MD** (dermatology/MOHS); a second Asarch dermatologist, Adam D.
