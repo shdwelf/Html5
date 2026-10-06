@@ -1,0 +1,395 @@
+# GeoMate.jr firmware and cache-database research
+
+Research pass: 2026-10-06.
+
+## Identification
+
+The toy-like geocaching receiver described in the request is the **Geomate.jr**
+(the original product was associated with Apisphere/Geomate and later Brand 44),
+not the SG6 in the supplied support link. Contemporary product and review
+material describes the Geomate.jr as a dedicated children's geocaching GPS with
+approximately 250,000 preloaded traditional caches. The receiver exposes cache
+ID, coordinates, distance, direction, difficulty, terrain, and size; the update
+kit loads replacement cache lists over a proprietary USB cable.
+
+The best primary-ish historical lead is the Geomate.jr manufacturer's account
+on the Geocaching forums:
+
+- [The Geomate.jr Update Kit](https://forums.geocaching.com/GC/index.php?/topic/230764-the-geomatejr-update-kit/)
+- [page 2](https://forums.geocaching.com/GC/index.php?/topic/230764-the-geomatejr-update-kit/page/2/)
+- [page 3](https://forums.geocaching.com/GC/index.php?/topic/230764-the-geomatejr-update-kit/page/3/)
+
+The thread says the update kit was distributed through `mygeomate.com/updates`,
+that the unit reported firmware versions such as `V1002 RE X2`, and that the
+update process could report **“Flash Programming Failed.”** It also says the
+later updater fixed a USB-hardware/configuration problem. This is evidence of a
+firmware update path, but it is not itself a firmware image.
+
+Useful corroborating references:
+
+- [Geomate.jr review](https://techcrunch.com/2011/08/22/tc-tests-the-geomate-jr-a-geocaching-gps-unit-for-the-wee-ones/)
+- [Geomate.jr product/update-kit description](https://www.amazon.com/Geomate-Jr-Geocaching-GPS-Update/dp/B002MZZX9O)
+- [Offline-update report](https://spindocbob.wordpress.com/2012/01/27/have-a-geomate-jr-dont-panic/)
+- [Geomate.jr manual-input discussion](https://forums.geocaching.com/GC/index.php?/topic/306156-geomatejr-manually-input-coordinates/)
+
+The historical updater names found in those references include
+`geomateQtGuiApp.exe`, `geomategui.exe`, and `geomateloadersetup.exe`. The
+available descriptions indicate that the standalone loader can accept a GPX
+file and upload it to the unit. That is different from the web update process,
+which generated/downloaded a cache database and may also have delivered device
+firmware.
+
+## The supplied SG6 link is a different product
+
+The supplied support article currently resolves to **SG6_v1.5.2_20251226** and
+says “This is the firmware of SG6.” SG6 is a current Geomate land-survey GNSS
+receiver, not the Geomate.jr geocaching toy. Its download link is a hosted
+firmware package, but it must not be treated as the Geomate.jr firmware without
+an explicit device match. In particular, no SG6 bytes are imported into this
+repository and no SG6 update should be flashed to a Geomate.jr.
+
+- [Supplied SG6 support article](https://support.geomate.sg/portal/en/kb/articles/sg6-1-3-5-20241015)
+
+## Audit of firmware-like files already in this checkout
+
+I checked the existing firmware and executable corpus rather than treating an
+unrelated binary as the Geomate.jr update:
+
+| artifact | result |
+| --- | --- |
+| `samples/archive/glinet/openwrt-mt300n-v2-3.203-0805.bin` | A verified 12,583,196-byte GL-iNet MT300N-V2 OpenWrt image; the header identifies `MIPS OpenWrt Linux-4.14.221`, with U-Boot magic `0x27051956`, load/entry `0x80000000`, and LZMA-compressed image metadata. It is a router firmware image, not a Geomate device update. SHA-256: `111faa8e4b19a6de97495c9d89a38e4afaec07ac3be4dd6acc3ec7a94bbd4745`. |
+| `samples/avr/optiboot_atmega328.hex` | 512-byte Optiboot ATmega328P bootloader. The in-repo decoder agrees with the vendor `avr-objdump` listing on 225/225 instructions and 78/78 targets; reachable self-programming sites are identified. It contains no geocache/database strings and is not Geomate evidence. |
+| `samples/avr/micronucleus_m328p_extclock.hex` | 1,498-byte Micronucleus ATmega328P USB/HID bootloader. The walk finds 619/681 reachable instructions, 5 SPM sites, 3 LPM sites, and 2 watchdog sites. It is also unrelated to Geomate.jr. |
+| `abbottabad-ghidra/evidence/**` and `.relay/samples/**` | Existing Ghidra corpus is Windows software, installers, games, and unrelated utilities. The reports contain no Geomate, `mygeomate`, cache-database, or GPS-update identification. |
+
+The AVR pass is useful as a methodology check, but the vendored WASM Ghidra
+bridge cannot currently map its AVR word-addressed `code` space for
+Decompilation; the tool records the exact failure instead of emitting fake C.
+The GL-iNet image is MIPS and would require a MIPS-capable Ghidra headless
+analysis, but it is conclusively the wrong product before that work begins.
+
+The Geomate.jr cache corpus was **not hard-coded into the executable in the
+usual sense**. Public descriptions call it “preloaded”; the update-kit reports
+refer separately to the unit firmware and the unit database. The likely
+architecture is a firmware/application image plus a separately programmed
+cache database. A decompiler pass over only the updater would therefore first
+need to determine whether it contains an embedded device image, a downloader,
+a database encoder, or just a USB loader.
+
+No Geomate.jr firmware/update binary, installer, GPX export, or cache database
+is present in this checkout. Therefore this pass deliberately does **not**:
+
+- claim to have run Ghidra on the SG6 link or on a missing Geomate.jr binary;
+- invent cache coordinates or cache IDs;
+- copy the stale 2009–2012 preloaded corpus into the SoCal register; or
+- publish a firmware image or executable in Git.
+
+The forum and product references describe caches as ordinary geocaching.com
+records, including traditional-only filtering in the original preload. Cache
+coordinates and descriptions are also time-sensitive: archived caches can be
+removed or moved, so an import needs a dated source and a provenance record.
+
+## Planned static-analysis/import workflow
+
+When the actual Geomate.jr updater or firmware package is supplied, the safe
+workflow is:
+
+1. Preserve the original file outside Git and record SHA-256, size, and source
+   URL/date.
+2. Identify the container/installer and extract payloads without executing
+   them (`7z`, `innoextract`, or the package's documented archive format).
+3. Import candidate PE/ELF/flat-ROM payloads into **Ghidra headless** with the
+   matching processor/language; export strings, symbols, and decompiled code.
+4. Look for USB protocol code, flash/programming commands, database signatures,
+   GPX/XML strings, cache-code patterns (`GC` followed by digits), coordinate
+   encodings, and version/build strings. Treat strings alone as leads, not
+   decoded records.
+5. Validate any recovered record against the source GPX/database format and
+   keep a machine-readable extraction report with offsets and hashes.
+6. Convert only records with defensible coordinates and provenance into the
+   SoCal Gazetteer. They should be a separate `Geocache` class/FTT branch,
+   retain their cache code and source date in the note, and never be marked as
+   verified GNIS features.
+7. Rebuild and test `socal-subsurface.xdc` with
+   `node scripts/build-socal-subsurface-xdc.mjs`.
+
+The existing subsurface register is GNIS-oriented (`name + feature class +
+point + GNIS verification`), so geocaches should be added as a clearly
+separate community/source tier rather than silently mixed into GNIS rows.
+
+## Internet Archive / Wayback follow-up
+
+The archive search produced useful documentation but not the updater binary. The strongest archived record is the 2012 Geomate.jr shutdown page:
+
+- [Archived Geomate.jr shutdown page](https://web.archive.org/web/20120128184821id_/http://geomatejr.appspot.com:80/)
+- [2009 Geomate.jr unveiled press release](https://web.archive.org/web/20110206090823id_/http://mygeomate.com/2009-05-11_Geomatejr_Unveiled.pdf)
+- [Archived 2009 update page](https://web.archive.org/web/20090515130017id_/http://www.mygeomate.com:80/updates)
+- [Archived `mygeomate.com` CDX inventory](https://web.archive.org/cdx/search/cdx?url=mygeomate.com/*&output=json&filter=statuscode:200&collapse=urlkey)
+- [Archived `geomatejr.appspot.com` CDX inventory](https://web.archive.org/cdx/search/cdx?url=geomatejr.appspot.com/*&output=json&filter=statuscode:200&collapse=urlkey)
+
+The shutdown page explicitly links `geomateQtGuiApp.exe` and describes it as software that lets a user with an Update Kit and a PC load a Geocaching.com Pocket Query onto a Geomate.jr. The exact executable has no Wayback CDX capture; replaying the linked URL returns a 404. The archive therefore confirms the tool's role, but does not provide bytes for Ghidra.
+
+The press release confirms approximately 250,000 preloaded cache locations covering the US. The archived update page says the cache list could be changed, but required an Update Kit. This supports a separate programmable cache database rather than cache strings compiled into the application executable.
+
+## Source-check: archived manual anchors
+
+The archived user guide supplies concrete signatures for a future binary analysis:
+
+- startup displays `V1002`, followed by the month/day/year of the loaded cache list (example `4/19/2009`);
+- the connector cover is labelled for the Update Kit;
+- the device computes the closest 20 caches after a GPS fix;
+- each cache has a GC Code, size 1–4, terrain and difficulty ratings, and a found state;
+- the found list supports up to 1,000 finds;
+- navigation coordinates are WGS-84 decimal minutes and the receiver uses SiRFstarIII GPS technology.
+
+Sources: [archived User's Guide](https://web.archive.org/web/20111030143004id_/http://www.mygeomate.com:80/pdf/GeomatejrUsersGuide.pdf), [archived Quick Start Guide](https://web.archive.org/web/20111030143112id_/http://www.mygeomate.com:80/pdf/quick_start_guide.pdf), and [archived Update Kit page](https://web.archive.org/web/20090515130127id_/http://www.mygeomate.com/update_kit).
+
+The Update Kit page says it could replace the national cache list, load country/region lists, change units, assign a device name, and activate a bonus page. This implies separate configuration and cache-database payloads. The startup date is a practical signature for a recovered database image.
+
+The source check distinguishes the original embedded Geomate.jr application/firmware (`V1002`), the web Update Zone, and the later Qt GPX/Pocket Query loader (`geomateQtGuiApp.exe`). Only the third is named by the 2012 shutdown page, and its executable bytes remain uncaptured, so no responsible Ghidra report can yet be produced.
+
+## Follow-up source check: Geomate Loader and community reports
+
+The newly supplied sources add provenance for the loader, but still do not
+provide a binary that can be responsibly imported into Ghidra:
+
+- [Geomate Loader — Software Informer](https://geomate-loader.software.informer.com/download/)
+  lists **Geomate Loader 1.3 (x86/x64)**, updated 2014-10-30, filename
+  `geomateloadersetup.exe.zip`, advertised size 9.7 MB. It describes the
+  program as loading databases into a Geomate.jr and says its copy was scanned
+  by 76 antivirus engines on 2024-12-03. The page is a third-party download
+  catalog; it exposes no cryptographic hash or independently verifiable
+  publisher signature in the rendered record. Its download endpoint could not
+  be retrieved in this analysis environment, and the Wayback CDX inventory has
+  no capture for the executable or ZIP.
+- [FarrellCache profile](https://forums.geocaching.com/GC/index.php?/profile/6304715-farrellcache/content/)
+  records a 2013 report that `GeomateLoaderSetup.exe` could not be extracted by
+  the user's program. This is consistent with a Windows installer/archive
+  problem, not evidence that the file is firmware.
+- [altagal profile](https://forums.geocaching.com/GC/index.php?/profile/4505428-altagal/content/)
+  records a 2012 report that `geomateloadersetup.exe` downloaded but did
+  nothing when opened; company email and phone support also failed. This
+  places the loader in the original Update Kit support chain, but does not
+  reveal its container format.
+- [Geomate Loader version page](https://nc-geomate.software.informer.com/7.1/)
+  is a false lead for this task: it is **NC GeoMate 7.1** by Winter City
+  Software Corporation, with executable name `geomate.exe`. It is unrelated to
+  Geomate.jr and must not be analyzed as the update utility.
+
+The longer [Geomate.jr cannot update thread](https://forums.geocaching.com/GC/index.php?/topic/293100-apisphere-geomate-jr-cannot-update/)
+adds an important failure-mode detail: a failed web update could wipe the
+existing database before failing to upload the replacement. Users also report
+that the old web interface depended on Internet Explorer/Firefox-era browser
+add-ons, while a separate Pocket Query software path worked for some users.
+That supports a two-stage model: the website selected/generated data, while a
+local native loader performed the device/database transfer.
+
+### Ghidra disposition
+
+`geomateloadersetup.exe` and `geomateQtGuiApp.exe` remain **candidate inputs,
+not analyzed inputs**. No bytes, hash, or reproducible download was obtained
+from the supplied pages. The repository therefore contains no fabricated
+Ghidra report for them. If `geomateloadersetup.exe.zip` is recovered, the
+correct next pass is: hash the ZIP, inventory its members, extract without
+executing, identify PE/installer payloads, then run the existing headless
+Ghidra workflow on each extracted PE and separately inspect any embedded GPX,
+SQLite, binary database, or device-protocol payload.
+
+## Verification of the latest firmware/error claims
+
+The supplied summary is partly supported, but some wording overstates the
+sources:
+
+- `V1002` is directly supported by the archived user guide's startup table.
+  The exact string `V1002 RE X2` was not found in the supplied pages or the
+  accessible archive records; it should remain an unverified variant claim
+  until a screenshot, firmware dump, or installer log supplies it.
+- The Varuste listing documents the Update Kit as a PC-only product for loading
+  current US/foreign cache lists and changing preferences; it does not prove
+  that the kit was an over-the-air firmware updater or that it could replace
+  the operating system.
+- The JustAnswer pages preserve user reports of `Flash Programming Failed`,
+  `Loader Error`, and unknown firmware/database versions. However, the visible
+  expert exchange asks diagnostic questions; the later page section labelled
+  “AI-generated” is explicitly not a manufacturer service procedure. The
+  battery-removal/USB-2.0 sequence should therefore be recorded as an
+  anecdotal troubleshooting suggestion, not a verified firmware fix.
+- The Geocaching forum evidence does support loading a custom GPX through the
+  Update Kit, including private/unofficial caches via GSAK. It does not show
+  the internal `.db` format, a database-packing specification, or custom
+  replacement firmware.
+- No source located in this pass demonstrates an open-source firmware project
+  or a third-party replacement operating system. That is an absence-of-evidence
+  result, not proof that no private project ever existed.
+
+The source-quality distinction matters for the planned Gazetteer import: GPX
+records loaded by the device would be user/community cache records with a
+snapshot date, not GNIS features and not firmware-derived facts. They must not
+be promoted to verified Gazetteer rows without the original GPX/database and
+its provenance.
+
+## Archive discovery: previously missed ZIP captures
+
+A broader CDX inventory search found two important archived ZIP records under the
+old website:
+
+- `GeomateandUpdateKit.zip` — `application/zip`, archived 2011-10-11,
+  advertised capture length 1,618,659 bytes, digest
+  `I5UJVNM2EXSSQ7OJZQOFUHPXJQHHEBX6`.
+- `UpdateKit.zip` — `application/zip`, archived 2011-10-11, advertised capture
+  length 727,077 bytes, digest `NU2RTCTP6PWJ7QVF5CYKQWMOFSG4JVS3`.
+
+The complete CDX inventory is visible here:
+
+[mygeomate ZIP CDX result](https://web.archive.org/cdx/search/cdx?url=mygeomate.com/*&output=json&filter=statuscode:200&collapse=urlkey)
+
+However, replaying either capture through Wayback currently returns “The
+Wayback Machine has not archived that URL,” including `id_`, `if_`, and the
+`www` hostname variants. The CDX rows therefore prove that the crawler indexed
+ZIP responses and preserve sizes/digests, but the payload is not currently
+retrievable through the replay service in this environment.
+
+The adjacent archived product page describes the Update Kit as providing
+current/worldwide cache databases, private caches, and Pocket Query import; it
+does not describe the ZIPs as firmware images:
+
+[Archived products page](https://web.archive.org/web/20110925133459id_/http://mygeomate.com/products.html)
+
+Because the ZIP names are also located in the site's `/zip/` web-asset area,
+not a documented firmware-download endpoint, their likely contents are
+website/product media bundles. This is a promising recovery lead, but not
+evidence that V1002 microcode is present. If the WARC payload becomes
+available, the next safe step is to hash and list the ZIP members before
+opening any PE files with Ghidra.
+
+Internet Archive full-text searches currently return zero items for both
+`geomateQtGuiApp` and `geomateloadersetup`; the only executable lead remains
+the third-party Software Informer listing. The repository's Ghidra workflows
+already use OpenJDK/Temurin on CI, so Java setup is not the blocker—the missing
+input bytes are.
+
+## Proxy/replay retry (2026-10-06)
+
+I retried the two archived ZIP captures through multiple retrieval paths:
+Wayback `id_`, `if_`, `oe_`, and `im_` modes; `r.jina.ai`; AllOrigins; a
+Wayback Archive-It route; and Arquivo.pt. Results were consistent:
+
+- Wayback still returns “has not archived that URL” for the ZIP payloads even
+  though CDX retains the 200/application-zip records.
+- `r.jina.ai` refuses to proxy Wayback with an abuse-alleviation 403.
+- AllOrigins times out against Wayback.
+- Archive-It returns an empty response.
+- Arquivo.pt has zero results for the exact ZIP URL.
+- The live `mygeomate.com` URL now resolves to a domain-for-sale page, not the
+  original asset.
+
+This rules out a simple CORS limitation as the cause. The metadata capture is
+available, but the archived response body is not exposed by the accessible
+replay/proxy services. No ZIP bytes or executable bytes were obtained, so no
+Ghidra input was created and no firmware claim was promoted.
+
+## Warrick recovery attempt
+
+I cloned the maintained GitHub mirror of Warrick:
+
+- [oduwsdl/warrick](https://github.com/oduwsdl/warrick)
+
+Warrick is a Perl/Memento website reconstructor. Its documented behavior is to
+walk a seed site and recover archived external resources; it cannot reconstruct
+server-side files or payloads that an archive never exposes. I attempted to run
+it against `http://mygeomate.com/` with Internet Archive selected.
+
+The sandbox cannot run the upstream program as-is because its required Perl
+modules are absent (`LWP::UserAgent`, `HTTP::Cookies`, `HTTP::Status`, `URI`,
+`HTML::LinkExtractor`, `HTML::TagParser`, `CSS`, and `HTTP::Date`). The bundled
+installer also could not bootstrap CPAN here because direct CPAN TLS egress
+fails. More importantly, the earlier Memento/Wayback checks already show that
+the two ZIP response bodies are not exposed, so Warrick would record them as
+failed/missing resources rather than manufacture ZIP bytes.
+
+This is a tooling limitation, not evidence that `GeomateandUpdateKit.zip` or
+`UpdateKit.zip` contains firmware. The CDX metadata remains the only recovered
+artifact for those URLs. A Warrick run on a machine with its Perl dependencies
+and normal archive access is still a valid independent retry, but it cannot
+recover a payload absent from the archive's replay layer.
+
+## Mirror and backup discovery UI
+
+`warrick.html` now includes explicit discovery links for both CDX-listed names:
+`GeomateandUpdateKit.zip` (1,618,659 bytes, digest
+`I5UJVNM2EXSSQ7OJZQOFUHPXJQHHEBX6`) and `UpdateKit.zip` (727,077 bytes, digest
+`NU2RTCTP6PWJ7QVF5CYKQWMOFSG4JVS3`). For each it opens the exact-URL
+Wayback CDX query, a replay candidate, Arquivo.pt version-history search, a
+Common Crawl index query, and the `www.mygeomate.com` hostname variant.
+
+These are search/replay links only. A link, CDX row, or advertised length does
+not prove that a backup copy is downloadable. The app preserves the expected
+sizes and CDX digests so any recovered bytes can be checked before static
+analysis.
+
+## New updater recovery leads (2026-10-06)
+
+Searches found a more relevant historical updater trail than the generic ZIP
+names:
+
+- Darren Osborne's 2012 instructions link the standalone utility as
+  `http://geomatejr.appspot.com/geomateQtGuiApp.exe`, and the same page records a
+  community mirror at
+  `http://dl.dropbox.com/u/6158332/geomateQtGuiApp.exe.zip`.
+  [Source](https://spindocbob.wordpress.com/2012/01/27/have-a-geomate-jr-dont-panic/)
+- The page says the utility accepts a GPX pocket query and uploads it to the
+  device, so this is an updater/loader lead rather than proof of embedded
+  firmware.
+- The live App Engine URL now returns 404. The exact Dropbox URL currently has
+  no 200 CDX row in the accessible Wayback CDX query. No executable bytes were
+  recovered from either URL.
+- A separate Software Informer listing advertises `geomateloadersetup.exe.zip`,
+  version 1.3, approximately 9.7 MB, updated October 30, 2014:
+  [download listing](https://geomate-loader.software.informer.com/download/)
+  and [version page](https://geomate-loader.software.informer.com/1.3/).
+  Its page is a third-party listing and does not expose a verified byte stream
+  in this investigation.
+- A 2012 Geocaching forum result also preserves the Dropbox link and describes
+  `geomateQtGuiApp.exe` as the standalone GUI for GPX uploads:
+  [forum result](https://forums.geocaching.com/GC/index.php?/topic/287545-geomate-jr-update-kit-issues/).
+
+These leads should be prioritized for a human-provided archive or download.
+If a ZIP/EXE is obtained, record its URL, capture timestamp, byte length, and
+SHA-256; list ZIP members without executing anything; then import only the
+executable into Ghidra for static analysis. No Ghidra project has been created
+because no binary bytes are present in the workspace.
+
+### Archived updater landing page recovered
+
+The Wayback capture of `geomatejr.appspot.com/` at
+`20120128184821` is available and explicitly links to
+`geomateQtGuiApp.exe`. It says the software allows an Update Kit and PC to
+load a Pocket Query into a Geomate.jr. The linked executable itself is not
+captured: the replay resolves to a 404, and the exact executable has no 200
+CDX row. This confirms the utility's purpose and provenance, but does not
+supply bytes for Ghidra.
+
+I also tested replay variants (`id_`, `if_`, `oe_`) and query parameters while
+using browser-like retrieval paths. The proxy/CORS problem is not the only
+failure: the archive's metadata says no replayable executable body is
+available. A browser cannot set its own User-Agent, so the HTML5 app does not
+pretend that User-Agent rotation can recover a missing capture.
+
+## Direct updater retry (2026-10-06)
+
+I retried both user-supplied updater links directly:
+
+- `https://dl.dropbox.com/u/6158332/geomateQtGuiApp.exe.zip` — Dropbox returns
+  404 (“We can't find the page you're looking for”).
+- `https://geomatejr.appspot.com/geomateQtGuiApp.exe` — the live App Engine
+  endpoint returns a 404 page.
+
+The exact Wayback CDX query for
+`geomatejr.appspot.com/geomateQtGuiApp.exe` returns an empty result, so there
+is no archived 200 executable response to retrieve. The archived App Engine
+landing page remains available and links to the executable, but only the HTML
+landing page was captured.
+
+No bytes were downloaded; therefore no ZIP member listing, SHA-256, PE header
+inspection, or Ghidra project can truthfully be produced. Ghidra is not run
+against fabricated or HTML error responses.
