@@ -287,3 +287,28 @@ This rules out a simple CORS limitation as the cause. The metadata capture is
 available, but the archived response body is not exposed by the accessible
 replay/proxy services. No ZIP bytes or executable bytes were obtained, so no
 Ghidra input was created and no firmware claim was promoted.
+
+## Warrick recovery attempt
+
+I cloned the maintained GitHub mirror of Warrick:
+
+- [oduwsdl/warrick](https://github.com/oduwsdl/warrick)
+
+Warrick is a Perl/Memento website reconstructor. Its documented behavior is to
+walk a seed site and recover archived external resources; it cannot reconstruct
+server-side files or payloads that an archive never exposes. I attempted to run
+it against `http://mygeomate.com/` with Internet Archive selected.
+
+The sandbox cannot run the upstream program as-is because its required Perl
+modules are absent (`LWP::UserAgent`, `HTTP::Cookies`, `HTTP::Status`, `URI`,
+`HTML::LinkExtractor`, `HTML::TagParser`, `CSS`, and `HTTP::Date`). The bundled
+installer also could not bootstrap CPAN here because direct CPAN TLS egress
+fails. More importantly, the earlier Memento/Wayback checks already show that
+the two ZIP response bodies are not exposed, so Warrick would record them as
+failed/missing resources rather than manufacture ZIP bytes.
+
+This is a tooling limitation, not evidence that `GeomateandUpdateKit.zip` or
+`UpdateKit.zip` contains firmware. The CDX metadata remains the only recovered
+artifact for those URLs. A Warrick run on a machine with its Perl dependencies
+and normal archive access is still a valid independent retry, but it cannot
+recover a payload absent from the archive's replay layer.
