@@ -50,7 +50,23 @@ repository and no SG6 update should be flashed to a Geomate.jr.
 
 - [Supplied SG6 support article](https://support.geomate.sg/portal/en/kb/articles/sg6-1-3-5-20241015)
 
-## What can and cannot be concluded yet
+## Audit of firmware-like files already in this checkout
+
+I checked the existing firmware and executable corpus rather than treating an
+unrelated binary as the Geomate.jr update:
+
+| artifact | result |
+| --- | --- |
+| `samples/archive/glinet/openwrt-mt300n-v2-3.203-0805.bin` | A verified 12,583,196-byte GL-iNet MT300N-V2 OpenWrt image; the header identifies `MIPS OpenWrt Linux-4.14.221`, with U-Boot magic `0x27051956`, load/entry `0x80000000`, and LZMA-compressed image metadata. It is a router firmware image, not a Geomate device update. SHA-256: `111faa8e4b19a6de97495c9d89a38e4afaec07ac3be4dd6acc3ec7a94bbd4745`. |
+| `samples/avr/optiboot_atmega328.hex` | 512-byte Optiboot ATmega328P bootloader. The in-repo decoder agrees with the vendor `avr-objdump` listing on 225/225 instructions and 78/78 targets; reachable self-programming sites are identified. It contains no geocache/database strings and is not Geomate evidence. |
+| `samples/avr/micronucleus_m328p_extclock.hex` | 1,498-byte Micronucleus ATmega328P USB/HID bootloader. The walk finds 619/681 reachable instructions, 5 SPM sites, 3 LPM sites, and 2 watchdog sites. It is also unrelated to Geomate.jr. |
+| `abbottabad-ghidra/evidence/**` and `.relay/samples/**` | Existing Ghidra corpus is Windows software, installers, games, and unrelated utilities. The reports contain no Geomate, `mygeomate`, cache-database, or GPS-update identification. |
+
+The AVR pass is useful as a methodology check, but the vendored WASM Ghidra
+bridge cannot currently map its AVR word-addressed `code` space for
+Decompilation; the tool records the exact failure instead of emitting fake C.
+The GL-iNet image is MIPS and would require a MIPS-capable Ghidra headless
+analysis, but it is conclusively the wrong product before that work begins.
 
 The Geomate.jr cache corpus was **not hard-coded into the executable in the
 usual sense**. Public descriptions call it “preloaded”; the update-kit reports
