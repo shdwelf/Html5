@@ -147,3 +147,50 @@ Sources: [archived User's Guide](https://web.archive.org/web/20111030143004id_/h
 The Update Kit page says it could replace the national cache list, load country/region lists, change units, assign a device name, and activate a bonus page. This implies separate configuration and cache-database payloads. The startup date is a practical signature for a recovered database image.
 
 The source check distinguishes the original embedded Geomate.jr application/firmware (`V1002`), the web Update Zone, and the later Qt GPX/Pocket Query loader (`geomateQtGuiApp.exe`). Only the third is named by the 2012 shutdown page, and its executable bytes remain uncaptured, so no responsible Ghidra report can yet be produced.
+
+## Follow-up source check: Geomate Loader and community reports
+
+The newly supplied sources add provenance for the loader, but still do not
+provide a binary that can be responsibly imported into Ghidra:
+
+- [Geomate Loader — Software Informer](https://geomate-loader.software.informer.com/download/)
+  lists **Geomate Loader 1.3 (x86/x64)**, updated 2014-10-30, filename
+  `geomateloadersetup.exe.zip`, advertised size 9.7 MB. It describes the
+  program as loading databases into a Geomate.jr and says its copy was scanned
+  by 76 antivirus engines on 2024-12-03. The page is a third-party download
+  catalog; it exposes no cryptographic hash or independently verifiable
+  publisher signature in the rendered record. Its download endpoint could not
+  be retrieved in this analysis environment, and the Wayback CDX inventory has
+  no capture for the executable or ZIP.
+- [FarrellCache profile](https://forums.geocaching.com/GC/index.php?/profile/6304715-farrellcache/content/)
+  records a 2013 report that `GeomateLoaderSetup.exe` could not be extracted by
+  the user's program. This is consistent with a Windows installer/archive
+  problem, not evidence that the file is firmware.
+- [altagal profile](https://forums.geocaching.com/GC/index.php?/profile/4505428-altagal/content/)
+  records a 2012 report that `geomateloadersetup.exe` downloaded but did
+  nothing when opened; company email and phone support also failed. This
+  places the loader in the original Update Kit support chain, but does not
+  reveal its container format.
+- [Geomate Loader version page](https://nc-geomate.software.informer.com/7.1/)
+  is a false lead for this task: it is **NC GeoMate 7.1** by Winter City
+  Software Corporation, with executable name `geomate.exe`. It is unrelated to
+  Geomate.jr and must not be analyzed as the update utility.
+
+The longer [Geomate.jr cannot update thread](https://forums.geocaching.com/GC/index.php?/topic/293100-apisphere-geomate-jr-cannot-update/)
+adds an important failure-mode detail: a failed web update could wipe the
+existing database before failing to upload the replacement. Users also report
+that the old web interface depended on Internet Explorer/Firefox-era browser
+add-ons, while a separate Pocket Query software path worked for some users.
+That supports a two-stage model: the website selected/generated data, while a
+local native loader performed the device/database transfer.
+
+### Ghidra disposition
+
+`geomateloadersetup.exe` and `geomateQtGuiApp.exe` remain **candidate inputs,
+not analyzed inputs**. No bytes, hash, or reproducible download was obtained
+from the supplied pages. The repository therefore contains no fabricated
+Ghidra report for them. If `geomateloadersetup.exe.zip` is recovered, the
+correct next pass is: hash the ZIP, inventory its members, extract without
+executing, identify PE/installer payloads, then run the existing headless
+Ghidra workflow on each extracted PE and separately inspect any embedded GPX,
+SQLite, binary database, or device-protocol payload.
