@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glendora High 4Dwm — Class of 2001</title>
+<meta name="description" content="The 4Dwm window-manager treatment of the Glendora High School campus, framed for June 2001 and the Class of 2001. OSM building geometry (ODbL) with evidence-tiered Class-of-2001 memory pips.">
+<link rel="stylesheet" href="css/campus-4dwm.css">
+<script type="module" src="js/glendora-high-4dwm.js"></script>
+</head>
+<body>
+
+<canvas id="stage" aria-label="Glendora High campus 4Dwm viewer"></canvas>
+<div id="labels" aria-hidden="true"></div>
+
+<header class="topbar">
+  <h1>Glendora High <span style="color:var(--accent)">4Dwm</span>
+    <small>Class of 2001 · 1600 E Foothill Blvd · now that I am a graduate</small>
+  </h1>
+  <div class="actions">
+    <button id="btnReset" type="button">RESET</button>
+    <button id="btnLabels" type="button" aria-pressed="true">LABELS</button>
+    <button id="btnVrml" type="button">VRML ⤓</button>
+  </div>
+</header>
+
+<nav class="campusnav">
+  <a href="greeran-subsurface.html">Biography 4Dwm</a>
+  <a href="esgvrop-4dwm.html">ESGVROP 4Dwm</a>
+  <a href="greeran-book.html">Book lab</a>
+  <a href="glendora.html">GHS survey page</a>
+  <a href="index.html">SITE-K</a>
+</nav>
+
+<section class="pip" id="pipJump">
+  <header><b>JUMP LIST</b><button type="button" data-min aria-label="Minimize">–</button></header>
+  <div class="body"><div id="jumpList"></div></div>
+</section>
+
+<section class="pip" id="pipInfo">
+  <header><b>INSPECTOR</b><button type="button" data-min aria-label="Minimize">–</button></header>
+  <div class="body">
+    <h2 id="infoTitle">Scene notes</h2>
+    <div id="infoBody"></div>
+  </div>
+</section>
+
+<section class="pip" id="pipTiers">
+  <header><b>EVIDENCE TIERS</b><button type="button" data-min aria-label="Minimize">–</button></header>
+  <div class="body">
+    <div class="tier-row t-on"><i style="background:var(--official)"></i>official — OSM geometry &amp; public record</div>
+    <div class="tier-row"><i style="background:var(--community)"></i>community — sourced secondary</div>
+    <div class="tier-row"><i style="background:var(--ctx)"></i>context — schematic anchor</div>
+    <div class="tier-row"><i style="background:var(--memory)"></i>memory — private recollection, local-only</div>
+    <p style="font-size:10px;color:var(--dim);line-height:1.5;margin:8px 0 0">
+      Building geometry © OpenStreetMap contributors (ODbL), Overpass extract 2026-09-10.
+      The June 2001 framing and the memory pips belong to the biography file.
+    </p>
+  </div>
+</section>
+
+<div class="hudstrip" aria-hidden="true">
+  <span>GHS · OSM way 51207355</span>
+  <span>GNIS 271311</span>
+  <span id="hudFps">—</span>
+</div>
+<p id="status" role="status"></p>
+
+</body>
+</html>

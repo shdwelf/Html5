@@ -3,7 +3,7 @@
    service worker caches it on first use, so the lab still works offline after
    one visit without slowing down install for everyone else. */
 const CACHE_PREFIX = "sitek-html5-";
-const CACHE = `${CACHE_PREFIX}v29`;
+const CACHE = `${CACHE_PREFIX}v37`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -25,6 +25,16 @@ const PRECACHE = [
   "./css/glendora.css",
   "./js/glendora-app.js",
   "./js/ghs-data.js",
+  // Greeran biography 4Dwm family (added v30): the 2001 turning-point viewers.
+  "./greeran-subsurface.html",
+  "./css/greeran-subsurface.css",
+  "./js/greeran-subsurface.js",
+  "./js/greeran-subsurface-data.js",
+  "./glendora-high-4dwm.html",
+  "./css/campus-4dwm.css",
+  "./js/glendora-high-4dwm.js",
+  "./esgvrop-4dwm.html",
+  "./js/esgvrop-4dwm.js",
   "./js/ghs-model.js",
   "./js/ghs-vrml.js",
   "./js/wrl-parse.js",
