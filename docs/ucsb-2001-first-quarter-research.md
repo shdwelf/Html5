@@ -123,6 +123,27 @@ for the Goleta movie outing; 9/11 falls inside it.
   Carneros); Amtrak Thruway Motorcoach to the UCSB campus — "sometimes a transfer
   to the Amtrak bus" (memory).
 
+## The cylinder press register & the era's professors (October 2026)
+
+- **Second and third sources for the cylinders work** — the archive's own press page:
+  Daily Nexus 1/20/2006; APM Future Tense 2/2/2006; SB News-Press 2/12/2006; Wall
+  Street Journal 2/13/2006 ("Changing History"); **TIME "50 Best Websites of 2008"
+  (6/16/2008)** — the resume's Time claim, verified. SB Independent 1/14/2016 (the
+  third-floor Davidson workroom; the 2002 pilot; the autumn-2005 launch). UCSB Current
+  10/13/2015 (National Recording Registry; LoC National Recording Preservation Board).
+  LA Times 11/12/2020; Internet Archive blog 3/29/2019 (Seubert's DAHR exports for the
+  BPL 78rpm project — the archive.org angle). No personal Seubert blog surfaced; his
+  public writing lives on the DAHR news pages.
+- **Professors resolved**: José Cabezón (XIVth Dalai Lama Professor, faculty 2001);
+  Jatila van der Veen (CCS lecturer + Physics research associate — "for physics");
+  Eliot Jacobson (UCSB CS 1998–2009 — cardcounter.com, The Blackjack Zone, Jacobson
+  Gaming). **Open**: "Murat Kannorman" (databases) — spelling unconfirmed, no Murat on
+  the UCSB CS roster; Noah Sevy — no public trace (private register).
+- **Moffatt / Jacobs**: Daniel Scott Moffatt = CA bar 2005, Encino criminal defense,
+  ex-prosecutor, Meehan Law Firm. "Alexandria (Lexi) Jacobs" — no exact Cal Bar / BBB
+  match (closest: Alexandra Jacobs Mathias, Hastings 2018; Alexandre Pascal Jacobs,
+  USC 2000); disambiguation pending.
+
 ## The resume chronology (October 2026)
 
 The author's public resume — [rsm.io/sgreeran](http://rsm.io/sgreeran) →

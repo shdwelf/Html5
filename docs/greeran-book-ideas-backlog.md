@@ -65,8 +65,11 @@ ch. XVI gaps & private prompts).
     the author's and Gavriel Popper Keiser's. Full chronological arrangement of the resume:
     docs/sgreeran-resume-chronology.md.
 11. Names held private: Kyle & Rhonda Zekanis, DJ Headshot, Sam Cumulus, Sanchez,
-    Fairweather, Magaly, John Petered, Gavriel Popper Keiser, Melissa Asarch —
-    publish only on the author's release or documentation.
+    Fairweather, Magaly, John Petered, Gavriel Popper Keiser, Melissa Asarch, Noah Sevy,
+    Ryan Beck, Ashley Handley, Michael Tabb, Matt (of Cerritos), Cheyenne, Andrew,
+    Brian Turner, Logan Pribbianon, Keith Kikuhara, Bo Skellerup, Kyle Ferguson,
+    Mark (the hotel man), Daniel Moffatt, Alexandria "Lexi" Jacobs (spellings as
+    heard) — publish only on the author's release or documentation.
 
 ### Resolved October 2026 (moved off the queue)
 
@@ -112,6 +115,18 @@ ch. XVI gaps & private prompts).
 - **Resume variants (October 2026)** — the live HTML at standardresume.co/r/sgreeran is
   current; the PDF-download variant some user agents serve is outdated (per the author);
   /r/sgreeran.pdf returns not-found; no Wayback captures of the resume exist.
+- **The era's professors, resolved (October 2026)** — José Cabezón (XIVth Dalai Lama
+  Professor, UCSB faculty 2001; the Buddhist class); Jatila van der Veen (CCS lecturer +
+  Physics research associate; "Noether before Newton"; NASA Planck E/PO); Eliot Jacobson
+  (UCSB CS 1998–2009; cardcounter.com; The Blackjack Zone; Jacobson Gaming). Open:
+  "Murat Kannorman" (databases) — no Murat on the UCSB CS roster, spelling unconfirmed;
+  Noah Sevy — no public trace, private register. TIME claim verified: "50 Best Websites
+  of 2008," June 16, 2008, per the archive's press page (with WSJ Feb 13, 2006).
+- **Moffatt / Jacobs (October 2026)** — Daniel Scott Moffatt resolved (CA bar 2005,
+  Whittier 2003, CSULB 1998; Encino criminal defense; ex-prosecutor; Meehan Law Firm).
+  "Alexandria (Lexi) Jacobs": no exact Cal Bar / BBB match — Alexandra Jacobs Mathias
+  (Hastings 2018, San Jose) and Alexandre Pascal Jacobs (USC 2000) are the closest;
+  disambiguation pending with the author.
 - **"David Asarch"** = no David Asarch in the NPI registry (checked October 2026).
   The Asarch Center dermatologist at 3701 S Clarkson St, Englewood CO is **Richard
   G. Asarch, MD** (dermatology/MOHS); a second Asarch dermatologist, Adam D.
