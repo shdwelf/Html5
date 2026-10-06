@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESGVROP 4Dwm — Del Norte &amp; Sunflower campuses</title>
+<meta name="description" content="The ESGVROP deep-dive viewer: the Del Norte Campus (West Covina) and Sunflower Campus (Glendora) of the East San Gabriel Valley Regional Occupational Program & Technical Center, built from the archived esgvrop.org record, with the summer-2001 first-boss register as evidence-tiered pips.">
+<link rel="stylesheet" href="css/campus-4dwm.css">
+<script src="./webxdc.js"></script>
+  <script type="module" src="./"js/esgvrop-4dwm.js"></script>
+</head>
+<body>
+
+<canvas id="stage" aria-label="ESGVROP campuses 4Dwm viewer"></canvas>
+<div id="labels" aria-hidden="true"></div>
+
+<header class="topbar">
+  <h1>ESGVROP <span style="color:var(--accent)">4Dwm</span>
+    <small>East San Gabriel Valley ROP &amp; Technical Center · the summer-2001 deep dive</small>
+  </h1>
+  <div class="actions">
+    <button id="btnReset" type="button">RESET</button>
+    <button id="btnLabels" type="button" aria-pressed="true">LABELS</button>
+    <button id="btnVrml" type="button">VRML ⤓</button>
+  </div>
+</header>
+
+<nav class="campusnav">
+  <a href="greeran-subsurface.html">Biography 4Dwm</a>
+  <a href="glendora-high-4dwm.html">GHS Class of 2001</a>
+  <a href="greeran-book.html">Book lab</a>
+  <a href="index.html">SITE-K</a>
+</nav>
+
+<section class="pip" id="pipJump">
+  <header><b>JUMP LIST</b><button type="button" data-min aria-label="Minimize">–</button></header>
+  <div class="body"><div id="jumpList"></div></div>
+</section>
+
+<section class="pip" id="pipInfo" style="left:auto;right:10px;bottom:46px">
+  <header><b>INSPECTOR</b><button type="button" data-min aria-label="Minimize">–</button></header>
+  <div class="body">
+    <h2 id="infoTitle">Scene notes</h2>
+    <div id="infoBody"></div>
+  </div>
+</section>
+
+<section class="pip" id="pipTiers" style="right:auto;left:10px;top:auto;bottom:46px;width:290px">
+  <header><b>ARCHIVE REGISTER · WAYBACK</b><button type="button" data-min aria-label="Minimize">–</button></header>
+  <div class="body">
+    <div id="archiveList"></div>
+    <p style="font-size:10px;color:var(--dim);line-height:1.5;margin:8px 0 0">
+      Addresses, phones and staff from the archived key-contacts page; class sites from the
+      2002–03 schedule PDF. The summer-2001 job itself lives on the memory tier, local-only.
+    </p>
+  </div>
+</section>
+
+<div class="hudstrip" aria-hidden="true">
+  <span>esgvrop.org · 266 captures</span>
+  <span>JPA · 7 districts</span>
+  <span id="hudFps">—</span>
+</div>
+<p id="status" role="status"></p>
+
+</body>
+</html>

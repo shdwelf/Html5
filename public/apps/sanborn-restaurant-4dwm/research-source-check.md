@@ -1,6 +1,6 @@
 # Jim Sanborn / installation source check
 
-> **Bibliographic index:** [Source-check bibliography](../../../docs/source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
+> **Bibliographic index:** [Source-check bibliography](../docs/source-check-bibliography.md) — normalized references, source-status notes, and coverage audit.
 
 **Research pass:** 2026-10-02 (America/Puerto Rico)
 
