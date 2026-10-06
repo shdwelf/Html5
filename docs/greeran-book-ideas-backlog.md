@@ -43,12 +43,27 @@ ch. XVI gaps & private prompts).
 5. Satellite Reprographics (Isla Vista) — receipt, phone-book ad, Nexus classified.
 6. The JCreator trailer — UCSB temporary building vs. ESGVROP portable.
 7. "Store tower" — Marc Germain / KABC / KCSB tower reference.
-8. Fountain Blue / Fountain Bleu — downtown SB club listing under either spelling.
-9. The Annex, Tiki House (Del Playa), Word of Mouth (venue/promoter?), the
-   shooting range — identifications.
+8. The Grad bar off Hollister with its graduate student lounge — no public
+   record of a Hollister-side Graduate; needs a Goleta phone book or Nexus ad
+   from 2001–04.
+9. Surviving Word of Mouth flyer or lineup — would date the crew's run.
 10. Names held private: Kyle & Rhonda Zekanis, DJ Headshot, Sam Cumulus, Sanchez,
-    DJ Unagi, Fairweather, Magaly, John Petered — publish only on the author's
+    Fairweather, Magaly, John Petered — publish only on the author's
     release or documentation.
+
+### Resolved October 2026 (moved off the queue)
+
+- **"Fountain Blue / Fountain Bleu"** = Fontainebleu Apartments, 6525 El Colegio
+  (late-1950s women's housing; Tropicana purchase 2010 → Tropicana Del Norte).
+- **"The annex"** = Fontainebleu Annex, 811 Camino Pescadero (→ "Villas at
+  Tropicana").
+- **Tiki House** = 6589 Del Playa, ocean side (LocalWiki IV; assessor 1928;
+  cliff-setback move 2012).
+- **Word of Mouth** = the Santa Barbara-mountains full-moon gathering crew
+  (DJ Unagi's RA bio + r/SantaBarbara corroboration).
+- **"The shooting range"** = the Glass Factory, East Camino Cielo off Hwy 154
+  (designated shooting area; closed 2018).
+- **NSBE-UCSB** = founded 1970s under the MESA program (Daily Nexus via UC MESA).
 
 ## App ideas adjacent to the book
 
@@ -71,3 +86,8 @@ ch. XVI gaps & private prompts).
   off Hollister) — use Cinema Treasures / newspaper sources.
 - Current-era UC fee pages dominate web search; the 2001 fee needs a primary
   source (registrar fee chart, UCOP admissions page archive).
+- Stage-name searches for the 2001–04 SB underground (Sam Cumulus, Fairweather,
+  "augue Sanchez," DJ Headshot) return generic noise — no indexed records; only
+  DJ Unagi's RA bio hit. Keep memory-tier unless a flyer surfaces.
+- "Graduate bar" searches surface only SLO (slograd.com), Stockton, and Oakland
+  Graduates — wrong cities; a Hollister-side Grad exists in no public record.

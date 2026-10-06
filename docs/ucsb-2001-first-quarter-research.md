@@ -102,7 +102,9 @@ for the Goleta movie outing; 9/11 falls inside it.
   engineering students (first met in IV apartments); SHPE chapter since early
   1990s; partners with **NSBE** and El Congreso; **Student Organization of the
   Year 2001–02** (also 1998–99, 2008–09, 2010–11).
-- **NSBE** — National Society of Black Engineers, founded 1975.
+- **NSBE-UCSB** — campus chapter founded in the 1970s as a student organization
+  under the MESA program (Daily Nexus via UC MESA, 2/20/2020); NSBE national
+  founded 1975 at Purdue.
 
 ## Downtown and the pass
 
@@ -114,13 +116,36 @@ for the Goleta movie outing; 9/11 falls inside it.
 - **The Grad / Embarcadero Hall**: SB Independent 10/16/2008 — Embarcadero Hall
   (rebuilt BofA, burned 1970) → The Graduate → The Anaconda → IV Brewing → IV
   Billiards. The remembered "Grad bar off Hollister w/ graduate student lounge"
-  stays memory tier.
+  stays memory tier — no public record of a Hollister-side Graduate.
+- **Fontainebleu Apartments** (the remembered "Fountain Blue / Fountain Bleu") —
+  **6525 El Colegio**; one of the three late-1950s women's complexes (with
+  Tropicana Gardens 6585 El Colegio and Westgate) built after UCSB was criticized
+  over women's housing safety — security entrances, pools, cafeterias, beauty
+  parlor (Goleta History/Noozhawk, "Isla Vista History Part 2"). Bought by
+  Tropicana in 2010 → Tropicana Del Norte (Daily Nexus 1/13/2011; WSJ "deal of
+  the week").
+- **Fontainebleu Annex** — **811 Camino Pescadero**; in the same 2010 purchase,
+  now the "Villas at Tropicana."
+- **Tiki House** — **6589 Del Playa** (ocean side), IV's known party house;
+  assessor dates it 1928 (lore 1905); moved 30 ft back from the eroding bluff in
+  2012 (LocalWiki IV).
+- **Word of Mouth** — the Santa Barbara-mountains full-moon gathering crew:
+  DJ Unagi's RA bio credits "his sets at the Word of Mouth Full Moon gatherings"
+  as his start; r/SantaBarbara (Aug 2024) corroboration — "still around but not
+  throwing parties anymore." Lizard's Mouth = the remembered ground (attendance
+  stays memory).
+- **The Glass Factory** (the remembered "shooting range") — designated
+  target-shooting area on East Camino Cielo off Hwy 154, Los Padres NF (Arroyo
+  Burro designated shooting area); cleanup coverage Noozhawk 1/2013, SB
+  Independent 3/2016; closed after a fatal accident Feb 2018 (KEYT), shooting
+  suspended since. Winchester Canyon Gun Club (6622 W Camino Cielo) is the
+  managed range nearby.
 - **Cold Spring Tavern** — 5995 Stagecoach Rd, Hwy 154; stagecoach relay from 1868
   (the Wells Fargo-era stop); stages ended 1901.
 - **Knapp's Castle** — George Knapp's 1916 lodge, burned 1940; stone arches above
   Lake Cachuma.
 - **Lizard's Mouth** — sandstone fin on West Camino Cielo; full-moon gathering
-  spot (community knowledge; attendance memory).
+  ground of the Word of Mouth era (attendance memory).
 - **Live Oak Camp** — county's 40-acre reservation-only group camp on the Santa
   Ynez River, ~5 mi south of the Cachuma entrance on Hwy 154, **sharing its
   entrance road with Rancho San Marcos golf course** — "the Renaissance faire at
@@ -140,12 +165,13 @@ for the Goleta movie outing; 9/11 falls inside it.
 
 official: calendar dates, GOLD features, catalog courses, IVTV/Nexus/LAT items,
 Coal Oil Point/Platform Holly, monarchs, Bill's Bus, Cold Spring, Knapp's,
-Live Oak, Los Ingenieros award, Arlington.
-community: Lizard's Mouth gatherings, drive-in/theater histories, IV eatery
-lineage.
+Live Oak, Los Ingenieros award, Arlington, Fontainebleu + Annex addresses,
+Glass Factory, NSBE-UCSB founding.
+community: Lizard's Mouth gatherings, Tiki House, Word of Mouth crew,
+drive-in/theater histories, IV eatery lineage.
 context: campus footprints, viewer geometry.
 memory: application outcomes + fee, dorm order, RA, Slurpees, DLG sandwiches
 detail, commons-no-candy, Satellite Reprographics, JCreator trailer location,
-daily flush, store tower, Fountain Blue, Tiki House/Annex, shooting range,
-leadership retreat, faire role, Magaly, Zekanis/DJ Headshot/Sam Cumulus/
-Sanchez/DJ Unagi/Fairweather/Word of Mouth, John Petered, 1803 staging.
+daily flush, store tower, Grad bar off Hollister, attendance at any resolved
+venue, leadership retreat, faire role, Magaly, Zekanis/DJ Headshot/Sam Cumulus/
+Sanchez/Fairweather, John Petered, 1803 staging.
