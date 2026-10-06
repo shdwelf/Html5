@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Browser-based, dependency-free Memento and Wayback recovery assistant">
+  <title>Warrick HTML5 Recovery Lab</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body{max-width:1100px;margin:auto;padding:1.5rem;font-family:system-ui,sans-serif;background:#10151b;color:#e8edf2}
+    .panel{background:#18212b;border:1px solid #334252;border-radius:12px;padding:1rem;margin:1rem 0}
+    label{display:block;font-weight:650;margin:.7rem 0 .25rem} input,button{font:inherit;padding:.65rem;border-radius:7px;border:1px solid #526477} input{width:100%;box-sizing:border-box;background:#0e141a;color:inherit}button{background:#3a82c4;color:white;cursor:pointer;margin:.8rem .5rem 0 0}button.secondary{background:#303d4b} button:disabled{opacity:.5;cursor:wait}
+    table{width:100%;border-collapse:collapse;font-size:.9rem} th,td{text-align:left;border-bottom:1px solid #334252;padding:.55rem;vertical-align:top} th{color:#a9c8e7} a{color:#79c4ff;overflow-wrap:anywhere}.muted{color:#aab6c2}.ok{color:#8de0a6}.bad{color:#ff9b9b}.mono{font-family:ui-monospace,monospace}.status{white-space:pre-wrap}.hidden{display:none}
+  </style>
+</head>
+<body>
+  <header><p class="muted">HTML5 port / recovery assistant</p><h1>Warrick Recovery Lab</h1><p>Query Internet Archive CDX metadata, inspect captures, and attempt safe browser downloads. This port never executes recovered content.</p></header>
+  <section class="panel">
+    <label for="seed">Seed URL or wildcard</label><input id="seed" value="http://mygeomate.com/*" spellcheck="false">
+    <label for="cdx">CDX endpoint</label><input id="cdx" value="https://web.archive.org/cdx/search/cdx" spellcheck="false">
+    <label for="proxy">Optional fetch proxy prefix <span class="muted">(for example, a self-hosted CORS proxy)</span></label><input id="proxy" placeholder="Leave empty for direct browser fetch" spellcheck="false">
+    <button id="scan">Query captures</button><button id="clear" class="secondary">Clear</button>
+    <p id="status" class="status muted" role="status">No query run.</p>
+  </section>
+  <section id="resultsPanel" class="panel hidden"><div style="display:flex;justify-content:space-between;gap:1rem;align-items:center"><h2>Captures</h2><button id="downloadAll" class="secondary">Attempt selected downloads</button></div><div style="overflow:auto"><table><thead><tr><th><input id="selectAll" type="checkbox" aria-label="Select all"></th><th>Timestamp</th><th>Status</th><th>Type</th><th>Length</th><th>Digest</th><th>Replay</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+  <section class="panel"><h2>Safety and limitations</h2><ul><li>Only metadata and bytes are handled; archives are saved as downloads and are not opened or executed.</li><li>CDX indexing is not proof that replay bytes remain available. A missing replay is reported rather than synthesized.</li><li>Recursive link extraction is intentionally not attempted in the browser: it requires a server-side fetcher or a user-provided proxy and could cross trust boundaries.</li><li>This is a dependency-free HTML5 replacement for Warrick's recovery workflow, not a full drop-in Perl implementation.</li></ul></section>
+  <script type="module">
+    const $=id=>document.getElementById(id); const state={captures:[]};
+    const status=(text,kind='muted')=>{$('status').textContent=text;$('status').className=`status ${kind}`};
+    function replay(c){return `https://web.archive.org/web/${c.timestamp}id_/${c.original}`}
+    function rows(){ $('rows').innerHTML=state.captures.map((c,i)=>`<tr><td><input class="pick" data-i="${i}" type="checkbox"></td><td class="mono">${c.timestamp}</td><td>${c.status||''}</td><td>${c.mime||''}</td><td>${c.length||''}</td><td class="mono">${c.digest||''}</td><td><a target="_blank" rel="noreferrer" href="${replay(c)}">open</a></td></tr>`).join('');$('resultsPanel').classList.toggle('hidden',!state.captures.length)}
+    async function query(){const endpoint=$('cdx').value.trim(),seed=$('seed').value.trim();if(!endpoint||!seed)return status('CDX endpoint and seed are required.','bad');$('scan').disabled=true;status('Querying capture metadata…');try{const url=new URL(endpoint);url.searchParams.set('url',seed);url.searchParams.set('output','json');url.searchParams.set('filter','statuscode:200');url.searchParams.set('collapse','urlkey');const r=await fetch(url);if(!r.ok)throw Error(`CDX HTTP ${r.status}`);const data=await r.json();const head=data[0];state.captures=(data.slice(1).map(x=>Object.fromEntries(head.map((k,i)=>[k,x[i]]))));rows();status(`Loaded ${state.captures.length} capture(s). Metadata is not payload evidence.`, 'ok')}catch(e){status(`Query failed: ${e.message}\nThe browser may block cross-origin CDX access; use a CORS-enabled/self-hosted proxy.`, 'bad')}finally{$('scan').disabled=false}}
+    async function download(){const picks=[...document.querySelectorAll('.pick:checked')].map(x=>state.captures[+x.dataset.i]);if(!picks.length)return status('Select at least one capture.','bad');let done=0;for(const c of picks){try{const target=replay(c),url=$('proxy').value.trim()?$('proxy').value.trim()+target:target;const r=await fetch(url);if(!r.ok)throw Error(`HTTP ${r.status}`);const blob=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(c.original.split('/').pop()||'capture.bin');a.click();URL.revokeObjectURL(a.href);done++}catch(e){console.warn('capture unavailable',c,e)}}status(`Download attempts complete: ${done}/${picks.length} succeeded. No content was executed.`,done?'ok':'bad')}
+    $('scan').onclick=query;$('downloadAll').onclick=download;$('clear').onclick=()=>{state.captures=[];rows();status('Cleared.')};$('selectAll').onchange=e=>document.querySelectorAll('.pick').forEach(x=>x.checked=e.target.checked);
+  </script>
+</body></html>
