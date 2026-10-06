@@ -130,3 +130,20 @@ The archive search produced useful documentation but not the updater binary. The
 The shutdown page explicitly links `geomateQtGuiApp.exe` and describes it as software that lets a user with an Update Kit and a PC load a Geocaching.com Pocket Query onto a Geomate.jr. The exact executable has no Wayback CDX capture; replaying the linked URL returns a 404. The archive therefore confirms the tool's role, but does not provide bytes for Ghidra.
 
 The press release confirms approximately 250,000 preloaded cache locations covering the US. The archived update page says the cache list could be changed, but required an Update Kit. This supports a separate programmable cache database rather than cache strings compiled into the application executable.
+
+## Source-check: archived manual anchors
+
+The archived user guide supplies concrete signatures for a future binary analysis:
+
+- startup displays `V1002`, followed by the month/day/year of the loaded cache list (example `4/19/2009`);
+- the connector cover is labelled for the Update Kit;
+- the device computes the closest 20 caches after a GPS fix;
+- each cache has a GC Code, size 1–4, terrain and difficulty ratings, and a found state;
+- the found list supports up to 1,000 finds;
+- navigation coordinates are WGS-84 decimal minutes and the receiver uses SiRFstarIII GPS technology.
+
+Sources: [archived User's Guide](https://web.archive.org/web/20111030143004id_/http://www.mygeomate.com:80/pdf/GeomatejrUsersGuide.pdf), [archived Quick Start Guide](https://web.archive.org/web/20111030143112id_/http://www.mygeomate.com:80/pdf/quick_start_guide.pdf), and [archived Update Kit page](https://web.archive.org/web/20090515130127id_/http://www.mygeomate.com/update_kit).
+
+The Update Kit page says it could replace the national cache list, load country/region lists, change units, assign a device name, and activate a bonus page. This implies separate configuration and cache-database payloads. The startup date is a practical signature for a recovered database image.
+
+The source check distinguishes the original embedded Geomate.jr application/firmware (`V1002`), the web Update Zone, and the later Qt GPX/Pocket Query loader (`geomateQtGuiApp.exe`). Only the third is named by the 2012 shutdown page, and its executable bytes remain uncaptured, so no responsible Ghidra report can yet be produced.
