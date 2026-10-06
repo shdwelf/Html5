@@ -40,14 +40,18 @@ ch. XVI gaps & private prompts).
    unlocked SGV Tribune archive).
 2. San Nicolas 2001–02 move-in paperwork — assignment packet, RA roster. The
    2001–02 hall register itself is resolved (see below).
-3. "The daily flush" — any artifact carrying the title.
-4. Satellite Reprographics (Isla Vista) — receipt, phone-book ad, Nexus classified.
+3. "The daily flush" — author confirms (Oct 2026) it was a recurring dorm
+   newsletter-style sheet; any surviving copy would promote it.
+4. Satellite Reprographics (Isla Vista) — author confirms the name (Oct 2026);
+   needs a receipt, phone-book ad, or Nexus classified.
 5. The JCreator trailer — UCSB temporary building vs. ESGVROP portable.
-6. "Store tower" — Marc Germain / KABC / KCSB tower reference; needs the author's
-   clarification of what the memory points at.
-7. The Grad bar off Hollister with its graduate student lounge — no public
-   record of a Hollister-side Graduate; needs a Goleta phone book or Nexus ad
+6. The Grad bar off Hollister with its graduate student lounge — no public
+   record of a Hollister-side Graduate; the author does not recall the name,
+   only the location and the lounge; needs a Goleta phone book or Nexus ad
    from 2001–04.
+7. The author's own GOLD records (UCSB student portal — login required, so
+   retrievable only by the author) would resolve course history, including
+   the Military Science enrollment and the dorm assignment.
 8. Surviving Word of Mouth flyer or lineup — would date the crew's run.
 9. Names held private: Kyle & Rhonda Zekanis, DJ Headshot, Sam Cumulus, Sanchez,
    Fairweather, Magaly, John Petered — publish only on the author's
@@ -75,6 +79,10 @@ ch. XVI gaps & private prompts).
 - **"The shooting range"** = the Glass Factory, East Camino Cielo off Hwy 154
   (designated shooting area; closed 2018).
 - **NSBE-UCSB** = founded 1970s under the MESA program (Daily Nexus via UC MESA).
+- **"Store tower" = Storke Tower** (author clarification, Oct 2026) — UCSB's
+  175-ft carillon tower above the Daily Nexus and KCSB; dedicated Sept 28,
+  1969; OSM way 221236165. The rappel during a Military Science course (Army
+  ROTC Surfrider Battalion, no-obligation Basic Course) stays memory tier.
 
 ## App ideas adjacent to the book
 

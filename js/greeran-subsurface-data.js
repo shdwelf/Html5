@@ -444,7 +444,21 @@ export const NODES = [
     era: [2001.6, 2004.6],
     dateLabel: "2001–2004",
     note:
-      "UCSB's student-run station. The remembered listening runs alongside the LA talk dial: Marc Germain as 'Mr. KABC' on KABC 790 (1997–2007), earlier 'Mr. KFI' on KFI 640 (1993–96). The 'store tower' detail and any Germain-tower connection is unresolved memory.",
+      "UCSB's student-run station, broadcasting from Storke Tower — the 175-ft carillon campanile that also houses the Daily Nexus and La Cumbre beneath it. The remembered listening runs alongside the LA talk dial: Marc Germain as 'Mr. KABC' on KABC 790 (1997–2007), earlier 'Mr. KFI' on KFI 640 (1993–96). The memory-list 'store tower' is resolved as Storke Tower.",
+  }),
+  N({
+    id: "storke-tower",
+    short: "STORKE",
+    label: "Storke Tower — the 'store tower' of the memory list",
+    tier: "official",
+    layer: "ucsb",
+    kind: "tower",
+    lon: -119.8484,
+    lat: 34.4126,
+    era: [1969.7, 2026],
+    dateLabel: "dedicated Sept 28, 1969",
+    note:
+      "The 'store tower' of the memory list, resolved as Storke Tower: the 175-foot Brutalist carillon tower (Clark & Morgan), tallest structure in southern Santa Barbara County, dedicated September 28, 1969 and named for Thomas More Storke. Beneath it, the Storke Student Communications building houses the Daily Nexus, KCSB 91.9 and the La Cumbre yearbook; the 61-bell carillon plays 'Let There Be Light' at ten minutes to the hour. The rappelling off the tower during a Military Science course — UCSB's Army ROTC Surfrider Battalion, whose lower-division Basic Course carried no military obligation — is the author's memory; the enrollment would show in the author's own GOLD records.",
   }),
   N({
     id: "daily-nexus",
@@ -992,6 +1006,7 @@ export const TIMELINE = [
   { sort: 2001.93, date: "Dec 5, 2001", tier: "official", nodeId: null, text: "Fall instruction ends; finals Dec 7–14; the first quarter closes Dec 14." },
   { sort: 2002.0, date: "2001–02", tier: "memory", nodeId: "davidson-mil", text: "The century plant blooms while on shift at the Map & Imagery Lab (memory; agave Americana blooms once after 10–25 years)." },
   { sort: 2002.1, date: "2001–02", tier: "official", nodeId: "los-ingenieros", text: "Los Ingenieros named UCSB Student Organization of the Year. NSBE and the engineering-society orbit." },
+  { sort: 2002.15, date: "2001–05", tier: "memory", nodeId: "storke-tower", text: "Rappel off Storke Tower during a Military Science course — Army ROTC's tower, the 175-ft carillon above KCSB and the Daily Nexus (memory; course year unrecorded)." },
   { sort: 2002.35, date: "May 3, 2002", tier: "official", nodeId: "ivtv", text: "Daily Nexus: D.A. plays IVTV footage at the Attias trial." },
   { sort: 2001.6, date: "2001–04", tier: "context", nodeId: "coal-oil-point", text: "The recurring scene-set: Coal Oil Point seeps, Platform Holly offshore, tar on the beaches — monitored by UCSB teams 2001–03." },
   { sort: 2002.5, date: "2001–04", tier: "context", nodeId: "bills-bus", text: "Bill's Bus downtown nights — the Arlington (1317 State St), State Street, and the Isla Vista addresses: Fontainebleu (6525 El Colegio), its Annex (811 Camino Pescadero), the Tiki House (6589 Del Playa)." },

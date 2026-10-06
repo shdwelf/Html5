@@ -93,9 +93,19 @@ for the Goleta movie outing; 9/11 falls inside it.
   - Daily Nexus 5/3/2002: D.A. played IVTV footage of the Feb 23, 2001 Sabado
     Tarde crash aftermath at the Attias trial (IVTV creators testified).
   - Full series reuploaded: YouTube playlist PLiVZuhV7dEaEowg2AHUdIUWcxBimhf_4u.
-- **Daily Nexus** — the student daily; "the daily flush" remains unlocated.
-- **KCSB 91.9** — the campus station. **Marc Germain** = "Mr. KABC" (KABC 790,
-  1997–2007; "Mr. KFI" KFI 640 c. 1993–96). "Store tower" detail unresolved.
+- **Daily Nexus** — the student daily; "the daily flush" remains unlocated
+  (author confirms, Oct 2026: a recurring dorm newsletter-style sheet).
+- **KCSB 91.9** — the campus station, broadcasting from **Storke Tower**.
+  **Marc Germain** = "Mr. KABC" (KABC 790, 1997–2007; "Mr. KFI" KFI 640
+  c. 1993–96).
+- **Storke Tower** ("store tower" of the memory list, resolved Oct 2026) —
+  175-ft Brutalist carillon tower (Clark & Morgan), dedicated Sept 28, 1969,
+  named for Thomas More Storke; Daily Nexus + KCSB 91.9 + La Cumbre yearbook in
+  the Storke Student Communications building beneath; 61-bell carillon plays
+  "Let There Be Light" at ten-to-the-hour. SB Independent 7/28/2016; OSM way
+  221236165 (34.41264, -119.84839). The rappel off it during a Military
+  Science course — Army ROTC Surfrider Battalion, no-obligation Basic Course
+  — is memory (the author's GOLD records would confirm enrollment).
 
 ## The campus map and the monarchs
 
@@ -185,6 +195,6 @@ context: campus footprints, viewer geometry, **GHS commencement venue (Citrus
 College Stadium — tradition documented 2011–2026; 2001-specific date unverified)**.
 memory: application outcomes + essays, dorm order, RA, Slurpees, DLG sandwiches
 detail, commons-no-candy, Satellite Reprographics, JCreator trailer location,
-daily flush, store tower, Grad bar off Hollister, attendance at any resolved
+daily flush, Grad bar off Hollister, attendance at any resolved
 venue, leadership retreat, faire role, Magaly, Zekanis/DJ Headshot/Sam Cumulus/
 Sanchez/Fairweather, John Petered, 1803 staging.
