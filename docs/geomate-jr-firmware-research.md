@@ -116,3 +116,17 @@ workflow is:
 The existing subsurface register is GNIS-oriented (`name + feature class +
 point + GNIS verification`), so geocaches should be added as a clearly
 separate community/source tier rather than silently mixed into GNIS rows.
+
+## Internet Archive / Wayback follow-up
+
+The archive search produced useful documentation but not the updater binary. The strongest archived record is the 2012 Geomate.jr shutdown page:
+
+- [Archived Geomate.jr shutdown page](https://web.archive.org/web/20120128184821id_/http://geomatejr.appspot.com:80/)
+- [2009 Geomate.jr unveiled press release](https://web.archive.org/web/20110206090823id_/http://mygeomate.com/2009-05-11_Geomatejr_Unveiled.pdf)
+- [Archived 2009 update page](https://web.archive.org/web/20090515130017id_/http://www.mygeomate.com:80/updates)
+- [Archived `mygeomate.com` CDX inventory](https://web.archive.org/cdx/search/cdx?url=mygeomate.com/*&output=json&filter=statuscode:200&collapse=urlkey)
+- [Archived `geomatejr.appspot.com` CDX inventory](https://web.archive.org/cdx/search/cdx?url=geomatejr.appspot.com/*&output=json&filter=statuscode:200&collapse=urlkey)
+
+The shutdown page explicitly links `geomateQtGuiApp.exe` and describes it as software that lets a user with an Update Kit and a PC load a Geocaching.com Pocket Query onto a Geomate.jr. The exact executable has no Wayback CDX capture; replaying the linked URL returns a 404. The archive therefore confirms the tool's role, but does not provide bytes for Ghidra.
+
+The press release confirms approximately 250,000 preloaded cache locations covering the US. The archived update page says the cache list could be changed, but required an Update Kit. This supports a separate programmable cache database rather than cache strings compiled into the application executable.
