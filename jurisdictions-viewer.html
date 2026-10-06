@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jurisdictions Viewer · Classification Ladders, CARICOM Tiers & ICJ Docket</title>
+<style>
+  :root{
+    --bg:#0b0e13; --panel:#11151d; --panel2:#161b26; --line:#232b3a;
+    --ink:#d7e0ee; --dim:#7c8aa0; --acc:#6fb7ff; --gold:#c9b458; --grn:#5ad1a5; --red:#e0705f;
+    --mono:"IBM Plex Mono","JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:14px;line-height:1.55}
+  header{padding:18px 22px 10px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0e1420,#0b0e13)}
+  h1{margin:0;font-size:17px;letter-spacing:.14em;color:var(--acc)}
+  h1 small{color:var(--dim);letter-spacing:.04em;font-weight:400}
+  .sub{color:var(--dim);font-size:12px;margin-top:6px}
+  .sub a{color:#8ab8ff;text-decoration:none}
+  nav{display:flex;flex-wrap:wrap;gap:6px;padding:10px 22px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
+  nav button{background:var(--panel2);color:var(--dim);border:1px solid var(--line);border-radius:4px;padding:7px 14px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;cursor:pointer}
+  nav button.on{background:var(--acc);border-color:var(--acc);color:#081018}
+  main{max-width:1150px;margin:0 auto;padding:20px 22px 70px}
+  section.tab{display:none} section.tab.on{display:block}
+  h2{font-size:13px;letter-spacing:.16em;color:var(--acc);border-bottom:1px dashed var(--line);padding-bottom:6px;margin:26px 0 12px}
+  h2:first-child{margin-top:4px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+  .card h3{margin:0 0 6px;font-size:13px;color:var(--ink)}
+  .card .k{color:var(--gold);font-size:10px;letter-spacing:.1em}
+  .card p{margin:6px 0 0;font-size:12px;color:var(--ink)}
+  .card .src{margin-top:8px;font-size:10px;color:var(--dim)}
+  .tl{border-left:2px solid var(--line);margin:8px 0 8px 6px;padding-left:18px}
+  .tl .ev{position:relative;margin:0 0 14px}
+  .tl .ev::before{content:"";position:absolute;left:-24px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--acc)}
+  .tl .ev.hot::before{background:var(--red)}
+  .tl .d{color:var(--gold);font-size:11px;letter-spacing:.06em}
+  .tl .t{font-size:12.5px}
+  table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12px}
+  th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+  th{background:var(--panel2);color:var(--acc);letter-spacing:.06em;font-size:11px}
+  .tier-full{color:var(--grn)} .tier-assoc{color:var(--gold)} .tier-obs{color:var(--dim)}
+  .pill{display:inline-block;font-size:10px;letter-spacing:.08em;border:1px solid var(--line);border-radius:3px;padding:1px 7px;color:var(--dim);margin-left:6px}
+  .pill.live{color:var(--red);border-color:var(--red)}
+  .note{background:var(--panel);border-left:3px solid var(--gold);padding:10px 14px;font-size:12px;color:var(--ink);margin:12px 0}
+  /* doc reader */
+  .reader{display:grid;grid-template-columns:290px 1fr;gap:14px}
+  .doclist{display:flex;flex-direction:column;gap:6px}
+  .doclist button{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:5px;color:var(--ink);padding:9px 11px;font-family:var(--mono);font-size:11px;cursor:pointer;line-height:1.4}
+  .doclist button.on{border-color:var(--acc);color:var(--acc)}
+  .doclist .dt{color:var(--dim);font-size:10px}
+  #docpane{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px 22px;min-height:400px;overflow-x:auto}
+  #docpane h1d,#docpane .h1{display:block;color:var(--acc);font-size:16px;font-weight:700;margin:4px 0 10px}
+  #docpane .h2{display:block;color:var(--gold);font-size:13.5px;font-weight:700;margin:18px 0 8px;letter-spacing:.04em}
+  #docpane .h3{display:block;color:var(--ink);font-size:12.5px;font-weight:700;margin:14px 0 6px}
+  #docpane p,#docpane li{font-size:12.5px}
+  #docpane code{background:var(--panel2);border:1px solid var(--line);border-radius:3px;padding:0 4px;font-size:11.5px}
+  #docpane pre{background:#0d1118;border:1px solid var(--line);border-radius:5px;padding:12px;font-size:11px;overflow-x:auto}
+  #docpane pre code{background:none;border:0;padding:0}
+  #docpane blockquote{border-left:3px solid var(--gold);margin:10px 0;padding:4px 14px;color:var(--dim)}
+  #docpane a{color:#8ab8ff}
+  #docpane hr{border:0;border-top:1px dashed var(--line)}
+  #docpane em{color:var(--dim)}
+  @media(max-width:860px){.reader{grid-template-columns:1fr}}
+  footer{border-top:1px solid var(--line);color:var(--dim);font-size:11px;padding:14px 22px;line-height:1.7}
+</style>
+</head>
+<body>
+<header>
+  <h1>JURISDICTIONS VIEWER <small>· classification ladders · CARICOM tiers · Geneva/ICJ docket · snapshot 2026-10-06</small></h1>
+  <div class="sub">Second movement of the reclassification research program — from penal schedules to <em>jurisdictional</em> classes. Companion console: <a href="./reclassification-catalog.html">Reclassification Catalog</a>.</div>
+</header>
+<nav id="tabs">
+  <button data-t="ladders" class="on">TERRITORIAL LADDERS</button>
+  <button data-t="caricom">CARICOM TIERS</button>
+  <button data-t="icj">GENEVA / ICJ</button>
+  <button data-t="docs">RESEARCH DOCS</button>
+</nav>
+<main>
+
+<section class="tab on" id="tab-ladders">
+  <h2>ORGANIC ACTS — THE U.S. TERRITORIAL LADDER (PUERTO RICO TRACK)</h2>
+  <div class="tl">
+    <div class="ev"><div class="d">1898-12-10</div><div class="t">Treaty of Paris art. IX — Spain cedes Puerto Rico; Congress to set civil rights & political status.</div></div>
+    <div class="ev"><div class="d">1900-04-12</div><div class="t"><b>Foraker Act (Organic Act of 1900)</b> — first civil government; no U.S. citizenship.</div></div>
+    <div class="ev"><div class="d">1901</div><div class="t"><i>Downes v. Bidwell</i> — the Insular Cases invent the <b>unincorporated territory</b> class: "belongs to, but is not a part of."</div></div>
+    <div class="ev"><div class="d">1917-03-02</div><div class="t"><b>Jones–Shafroth Act</b> — collective U.S. citizenship, bill of rights, elected legislature.</div></div>
+    <div class="ev"><div class="d">1950 → 1952-07-25</div><div class="t"><b>Public Law 600</b> ("in the nature of a compact") → Commonwealth constitution. Internal text changes; external class doesn't.</div></div>
+    <div class="ev"><div class="d">2016–2022</div><div class="t"><i>Sánchez Valle</i> · <i>Aurelius</i> · <i>Vaello Madero</i> — Supreme Court reconfirms the unincorporated classification.</div></div>
+  </div>
+  <div class="note">Control case: <b>American Samoa</b> — no organic act at all ("unorganized"), proving the classification layer and the self-government layer are independent variables.</div>
+
+  <h2>BERMUDA — FROM VIRGINIA COLONY TO BOT, CHARTER BY CHARTER</h2>
+  <div class="tl">
+    <div class="ev"><div class="d">1609-07</div><div class="t"><i>Sea Venture</i> (Virginia Company Third Supply) wrecks on Bermuda — castaways build ships, reach Jamestown 1610.</div></div>
+    <div class="ev"><div class="d">1612-03-12</div><div class="t"><b>Virginia Company Third Charter</b> extends Virginia to include Bermuda ("Virgineola" → Somers Isles). The <i>Plough</i> settles St. George's. <b>Bermuda is legally part of the Virginia colony.</b></div></div>
+    <div class="ev"><div class="d">1615</div><div class="t">Spun off to the <b>Somers Isles Company</b> — corporate reclassification out of Virginia.</div></div>
+    <div class="ev"><div class="d">1620-08-01</div><div class="t">House of Assembly first sits — oldest continuously operating legislature in the Americas.</div></div>
+    <div class="ev"><div class="d">1684</div><div class="t">Company charter annulled → <b>Crown colony</b>.</div></div>
+    <div class="ev"><div class="d">2002</div><div class="t">British Overseas Territories Act — current class: <b>BOT</b> (the oldest).</div></div>
+  </div>
+
+  <h2>THE COMPARATIVE FRAME</h2>
+  <table>
+    <tr><th></th><th>Puerto Rico</th><th>Bermuda</th></tr>
+    <tr><td>Classifier</td><td>U.S. Congress (Territorial Clause)</td><td>UK Crown-in-Parliament</td></tr>
+    <tr><td>Instruments</td><td>Organic Acts 1900/1917 · PL 600 (1950)</td><td>Charters 1612/1615 · Crown colony 1684 · BOT Act 2002</td></tr>
+    <tr><td>Current class</td><td>Unincorporated organized territory</td><td>British Overseas Territory</td></tr>
+    <tr><td>CARICOM tier</td><td class="tier-obs">OBSERVER ("neutral" — no vote, no obligations)</td><td class="tier-assoc">ASSOCIATE MEMBER <span class="pill live">FULL-MEMBERSHIP BID LIVE</span></td></tr>
+    <tr><td>Self-reclassification?</td><td>No — plebiscites advisory; Congress decides</td><td>No — but 2016 UK entrustment letter lets it negotiate its regional tier</td></tr>
+  </table>
+</section>
+
+<section class="tab" id="tab-caricom">
+  <h2>CARICOM MEMBERSHIP CLASSIFICATION — AS OF 2026</h2>
+  <table>
+    <tr><th>Tier</th><th>Rights</th><th>Members</th></tr>
+    <tr><td class="tier-full">FULL (15)</td><td>Voice + vote; CSME</td><td>Antigua &amp; Barbuda · Bahamas · Barbados · Belize · Dominica · Grenada · Guyana · Haiti · Jamaica · Montserrat · St. Kitts &amp; Nevis · St. Lucia · St. Vincent &amp; the Grenadines · Suriname · Trinidad &amp; Tobago</td></tr>
+    <tr><td class="tier-assoc">ASSOCIATE (8)</td><td>Participation; treaty role "not yet established"</td><td>Anguilla (1999) · <b>Bermuda (2 Jul 2003)</b> · BVI (1991) · Cayman Is. (2002) · Turks &amp; Caicos (1991) · Curaçao · Martinique · French Guiana</td></tr>
+    <tr><td class="tier-obs">OBSERVER (7)</td><td>Technical committees only</td><td>Aruba · Colombia · Dominican Republic · Mexico · <b>Puerto Rico</b> · Sint Maarten · Venezuela</td></tr>
+  </table>
+  <div class="cards">
+    <div class="card"><div class="k">CLAIM CHECK ✅</div><h3>"Puerto Rico is a neutral observer to CARICOM"</h3><p>Confirmed — observer tier: no vote, no treaty obligations, technical-committee engagement only. The ceiling is structural: PR's organic-act classification leaves foreign affairs with Washington.</p><div class="src">Wikipedia (Sep 2026) · worldpopulationreview 2026</div></div>
+    <div class="card"><div class="k">CLAIM CHECK ✅</div><h3>"Bermuda is something else"</h3><p>Confirmed, and specifically: <b>Associate Member since 2 July 2003</b> (fifth associate), upgraded <i>from</i> observer after the 2002 Jennifer Smith application — and now running a formal campaign for <b>full membership</b> (2016 UK entrustment letter; CARICOM Legal Affairs Committee review; "Together for CARICOM" programme). Would be the first associate ever to climb to full.</p><div class="src">caricom.org · gov.bm (Nov 2023) · togetherforcaricom.gov.bm</div></div>
+    <div class="card"><div class="k">STRUCTURE</div><h3>A live jurisdictional reclassification docket</h3><p>Bermuda's tier climb is structurally parallel to the DEA Schedule I→III proceeding tracked in the companion console: an external classifier, a petitioning classified party, a staged procedure, and an undefined intermediate class ("associate" ≈ the April 2026 "hybrid schedule").</p><div class="src">Session synthesis — see deep-dive docs</div></div>
+  </div>
+</section>
+
+<section class="tab" id="tab-icj">
+  <h2>DISAMBIGUATION PANEL</h2>
+  <div class="cards">
+    <div class="card"><div class="k">TREATY</div><h3>Geneva Conventions (1949)</h3><p>Four IHL treaties + Protocols; 196 parties; guardian: ICRC. Not the basis of the South Africa case — but GC IV runs through the same facts.</p></div>
+    <div class="card"><div class="k">TREATY</div><h3>Genocide Convention (1948)</h3><p>Art. IX sends state-vs-state disputes to the ICJ. <b>This</b> is the treaty under which South Africa sued. Standing: <i>erga omnes partes</i> (<i>Gambia v. Myanmar</i>).</p></div>
+    <div class="card"><div class="k">COURT</div><h3>International Court of Justice</h3><p>UN principal judicial organ, The Hague, 15 judges, states only + advisory opinions. President: Yuji Iwasawa. Distinct from the ICC (individuals).</p></div>
+    <div class="card"><div class="k">NAME CHECK ⚠</div><h3>"South African Court of Justice"</h3><p>No court bears this name. Three resolutions: (a) South Africa <i>at</i> the ICJ (intended sense); (b) SA's Constitutional Court / SCA (<i>al-Bashir</i> 2016; ICC-withdrawal case 2017); (c) the AU's African Court of Justice — merged on paper (Malabo Protocol), never in force; the working court is the African Court on Human &amp; Peoples' Rights, Arusha.</p></div>
+  </div>
+
+  <h2>SOUTH AFRICA v. ISRAEL — ICJ DOCKET TIMELINE (STATUS 2026-10-06)</h2>
+  <div class="tl">
+    <div class="ev"><div class="d">2023-12-29</div><div class="t">Application filed under Genocide Convention art. IX + provisional-measures request.</div></div>
+    <div class="ev hot"><div class="d">2024-01-26</div><div class="t">First provisional measures: claims "plausible"; prevent acts under art. II, preserve evidence, enable aid, report. Binding (<i>LaGrand</i>) — but expressly not a merits finding.</div></div>
+    <div class="ev"><div class="d">2024-03-28 · 05-24</div><div class="t">Further measures (May order: Rafah offensive, crossings).</div></div>
+    <div class="ev"><div class="d">2024-07-19</div><div class="t">Parallel advisory opinion: Israel's occupation of Palestinian territory unlawful (UNGA request — separate proceeding).</div></div>
+    <div class="ev"><div class="d">2024-10-28</div><div class="t">South Africa files Memorial — ~750 pages + ~4,000 pages of exhibits.</div></div>
+    <div class="ev"><div class="d">2025-04-14 · 10-20</div><div class="t">Counter-memorial deadline extended twice (Jul 28 2025 → Jan 12 2026 → <b>Mar 12 2026</b>; order of President Iwasawa; SA opposed).</div></div>
+    <div class="ev"><div class="d">2025-12-23</div><div class="t">Belgium intervenes (art. 63) — joining Ireland, Spain, Mexico, Brazil, Colombia, Türkiye et al.</div></div>
+    <div class="ev hot"><div class="d">2026-03</div><div class="t"><b>Israel files Counter-Memorial.</b> Case in merits-pleading phase; further rounds reported to run 2027–2029; late-2025 ceasefire did not end the case.</div></div>
+  </div>
+  <div class="note"><b>Enforcement gap:</b> ICJ judgments route through the UN Security Council (Charter art. 94(2)), where the veto lives — the recurring theme of this whole research program: adjudication and enforcement are separate ladders.</div>
+</section>
+
+<section class="tab" id="tab-docs">
+  <h2>RESEARCH DOCUMENT READER</h2>
+  <div class="reader">
+    <div class="doclist" id="doclist"></div>
+    <div id="docpane"><p style="color:var(--dim)">Select a document. (Requires serving over HTTP — e.g. <code>python3 -m http.server</code>.)</p></div>
+  </div>
+</section>
+
+</main>
+<footer>
+  Session research console for <code>shdwelf/Html5</code> · claims graded in each doc's source table; C/D-graded items need primary-source verification before formal citation. Threads: penal reclassification → territorial classification → international adjudication → <a style="color:#8ab8ff" href="./docs/berlin-wall-monument-deep-dive-2026-10-05.md">Berlin Wall monument</a>.
+</footer>
+<script>
+// tabs
+document.getElementById("tabs").addEventListener("click",e=>{
+  if(!e.target.dataset.t)return;
+  document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b===e.target));
+  document.querySelectorAll("section.tab").forEach(s=>s.classList.toggle("on",s.id==="tab-"+e.target.dataset.t));
+});
+// doc reader
+const DOCS=[
+ ["territorial-classification-deep-dive-2026-10-06.md","Territorial Ladders · Organic Acts · Bermuda · CARICOM","2026-10-06"],
+ ["geneva-icj-research-2026-10-06.md","Geneva Conventions · UN · ICJ · South Africa","2026-10-06"],
+ ["federal-reclassification-deep-dive-2026-10-05.md","Federal Penal Reclassification — Deep Dive","2026-10-05"],
+ ["reclassification-legislation-catalog-2026-10-05.md","Legislation & Litigation Catalog","2026-10-05"],
+ ["reclassification-symbolic-logic-2026-10-05.md","Symbolic-Logic Proofs, Both Sides","2026-10-05"],
+ ["reclassification-budget-draft-bill-2026-10-05.md","Model Budget & Draft Bill","2026-10-05"],
+ ["reclassification-source-check-2026-10-05.md","Source Check — Reclassification Package","2026-10-05"],
+ ["berlin-wall-monument-deep-dive-2026-10-05.md","Berlin Wall Monument at CIA HQ","2026-10-05"],
+];
+const list=document.getElementById("doclist"),pane=document.getElementById("docpane");
+DOCS.forEach(([f,t,d],i)=>{
+  const b=document.createElement("button");
+  b.innerHTML=`${t}<br><span class="dt">docs/${f}</span>`;
+  b.onclick=()=>{document.querySelectorAll(".doclist button").forEach(x=>x.classList.remove("on"));b.classList.add("on");load(f);};
+  list.appendChild(b);
+});
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function inline(s){
+  return s
+    .replace(/`([^`]+)`/g,(m,c)=>"<code>"+c+"</code>")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>")
+    .replace(/\*([^*]+)\*/g,"<em>$1</em>");
+}
+function mdRender(md){
+  const lines=md.split("\n");let out=[],i=0,inCode=false,inList=false,inTable=false;
+  const closeAll=()=>{if(inList){out.push("</ul>");inList=false}if(inTable){out.push("</table>");inTable=false}};
+  while(i<lines.length){
+    let L=lines[i];
+    if(L.startsWith("```")){closeAll();if(!inCode){out.push("<pre><code>");inCode=true}else{out.push("</code></pre>");inCode=false}i++;continue;}
+    if(inCode){out.push(esc(L)+"\n");i++;continue;}
+    if(/^\s*---+\s*$/.test(L)){closeAll();out.push("<hr>");i++;continue;}
+    let h=L.match(/^(#{1,4})\s+(.*)/);
+    if(h){closeAll();const lvl=Math.min(h[1].length,3);out.push(`<span class="h${lvl}">${inline(esc(h[2]))}</span>`);i++;continue;}
+    if(L.startsWith("|")){
+      if(/^\s*\|[\s:|-]+\|\s*$/.test(L)){i++;continue;}
+      if(!inTable){closeAll();out.push("<table>");inTable=true;}
+      const cells=L.split("|").slice(1,-1).map(c=>inline(esc(c.trim())));
+      const tag=(out[out.length-1]==="<table>")?"th":"td";
+      out.push("<tr>"+cells.map(c=>`<${tag}>${c}</${tag}>`).join("")+"</tr>");
+      i++;continue;
+    } else if(inTable){out.push("</table>");inTable=false;}
+    let li=L.match(/^\s*(?:[-*]|\d+\.)\s+(.*)/);
+    if(li){if(!inList){out.push("<ul>");inList=true;}out.push("<li>"+inline(esc(li[1]))+"</li>");i++;continue;}
+    else if(inList){out.push("</ul>");inList=false;}
+    if(L.startsWith(">")){out.push("<blockquote>"+inline(esc(L.replace(/^>\s?/,"")))+"</blockquote>");i++;continue;}
+    if(L.trim()==="") {out.push("");i++;continue;}
+    out.push("<p>"+inline(esc(L))+"</p>");i++;
+  }
+  closeAll();if(inCode)out.push("</code></pre>");
+  return out.join("\n");
+}
+async function load(f){
+  pane.innerHTML='<p style="color:var(--dim)">loading…</p>';
+  try{
+    const r=await fetch("./docs/"+f);
+    if(!r.ok)throw new Error(r.status);
+    pane.innerHTML=mdRender(await r.text());
+  }catch(e){
+    pane.innerHTML=`<p style="color:var(--red)">Could not fetch docs/${f} (${esc(String(e.message||e))}). Serve the repo over HTTP, or open the file directly in the repo.</p>`;
+  }
+}
+</script>
+</body>
+</html>
