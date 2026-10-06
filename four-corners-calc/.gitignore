@@ -1,0 +1,3 @@
+# host binary, transpiled core and PBM previews — all regenerable:
+#   make -C four-corners-calc host web preview
+build/

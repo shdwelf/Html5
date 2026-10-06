@@ -75,6 +75,18 @@ workflow permission).
 - **[Helios Observatory](astronomy.html)** — time-propagated solar orrery, curated celestial catalog, Earth-centered NEO radar, and modeled meteor streams. See [ASTRONOMY.md](ASTRONOMY.md).
 - **[Flash Decompiler Timeline](flash-decompiler.html)** — Wayback/NATA2-style raw SWF retrieval, configurable CORS proxy triage, Behind The Dune version timeline, easter-egg notes, and a GitHub Actions path for JPEXS/FFDec decompilation without committing large NSFW binaries.
 - **[Greeran Family Tree · 4DWM](greeran-family-4dwm.html)** — the Drive family-tree Webxdc converted into an offline spinning globe with a playable 1774–2023 record timeline, dated kinship arcs, and an all-time aggregate view. See [the import/build notes](docs/greeran-family-4dwm.md).
+- **[FOUR CORNERS 4Dwm](four-corners.html)** — the only place four US states meet: the surveyed quadripoint, Navajo volcanic field necks, the San Juan energy basin, the uranium legacy, and the ancestral Puebloan core, over a curated IDW relief that is honest about not being a DEM. See [docs/four-corners.md](docs/four-corners.md). Ships as `four-corners.xdc` and as the [TI calculator port](#four-corners-on-ti-calculators-four-corners-calc) below.
+- **[Greeran Subsurface 4Dwm](greeran-subsurface.html)** — the Greeran book's 2001 biography deep-dive (Glendora → West Covina → Goleta → Santa Barbara) rendered as a SOCAL-style subsurface theater. Ships as `greeran-subsurface.xdc`.
+- **[Glendora High 4Dwm](glendora-high-4dwm.html)** — Class of 2001 at 1600 E Foothill Blvd, "now that I am a graduate". Ships as `glendora-high-4dwm.xdc`.
+- **[ESGVROP 4Dwm](esgvrop-4dwm.html)** — East San Gabriel Valley ROP & Technical Center, the summer-2001 deep dive across the Del Norte and Sunflower campuses. Ships as `esgvrop-4dwm.xdc`.
+- **[Dalton Race 4Dwm](dalton-race-4dwm.html)** — Big Dalton / Little Dalton terrain with pips, route pointers, and VRML export. Ships as `dalton-race-4dwm.xdc`.
+- **[FOUR CORNERS · calculator port](four-corners-calc.html)** — the bench for the TI-83/89/92 port: it runs the port's own C core transpiled to an ES module, so the preview *is* the port.
+
+Every 4Dwm-family Webxdc rebuilds from one command — `npm run build:4dwm`
+chains all eleven packagers (bluetops, cheyenne, dalton-race, esgvrop,
+four-corners, glendora-high, greeran-family, greeran-subsurface,
+sanborn-restaurant, socal-subsurface, vincennes); each app also has its own
+`npm run build:<name>`.
 
 ## Tools
 
@@ -747,3 +759,34 @@ is tested is the C those compilers consume, the platform glue, the container
 writer, and a differential test proving the browser build and the gcc build
 agree byte for byte. `build_device.py` reports the missing toolchain and stops
 rather than emitting anything.
+
+## FOUR CORNERS on TI calculators (`four-corners-calc/`)
+
+`four-corners.xdc` gets the same treatment: one integer-only C89 core, the
+same three targets (TI-83/83+/84+ Z80, TI-89 and TI-92 68k), six screens (boot,
+map, section, layers, dossier, device), and **6105 bytes** of data — 24.8 % of
+a TI-83's practical program budget — carrying 74 features (2 surveyed state
+lines + the San Juan River, 24 dossier sites, 47 register rows), 19 corridor
+vertices and the 31-point curated IDW relief, all quantised to 1/2000° from
+`-110.600, 35.800`.
+
+Open `four-corners-calc.html` for the bench: it runs the port's own core
+transpiled to `js/four-corners-core.js`, so the preview *is* the port. The
+terrain is the app's own `elevAt()` from `js/four-corners-geo.js` re-derived
+in fixed point — mean error 2 m, worst 13 m against 221 captured samples —
+and evidence tier survives as line style (official solid, community dashed,
+context dotted). The variable names differ from SITEK and SOCAL
+(`FOURCRNR`/`fourcrnr`) so all three ports can live on one calculator.
+
+```sh
+make -C four-corners-calc test      # 47 core checks, C/JS differential test, containers
+make -C four-corners-calc preview   # PBM frames for all three devices
+```
+
+The port reuses `calc/core/{tables,util,fb}.c` and the `calc/tools/*.py`
+unforked, exactly like `socal-calc/` — see
+[`four-corners-calc/README.md`](four-corners-calc/README.md) and
+[docs/four-corners.md](docs/four-corners.md) for the full architecture, the
+data ledger and the accuracy notes. The same not-built-or-run caveat applies:
+no calculator binary has ever been assembled here; what is verified is the C,
+the glue, the container writer, and the C/JS byte-identical differential test.
