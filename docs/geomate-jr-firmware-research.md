@@ -374,3 +374,22 @@ using browser-like retrieval paths. The proxy/CORS problem is not the only
 failure: the archive's metadata says no replayable executable body is
 available. A browser cannot set its own User-Agent, so the HTML5 app does not
 pretend that User-Agent rotation can recover a missing capture.
+
+## Direct updater retry (2026-10-06)
+
+I retried both user-supplied updater links directly:
+
+- `https://dl.dropbox.com/u/6158332/geomateQtGuiApp.exe.zip` — Dropbox returns
+  404 (“We can't find the page you're looking for”).
+- `https://geomatejr.appspot.com/geomateQtGuiApp.exe` — the live App Engine
+  endpoint returns a 404 page.
+
+The exact Wayback CDX query for
+`geomatejr.appspot.com/geomateQtGuiApp.exe` returns an empty result, so there
+is no archived 200 executable response to retrieve. The archived App Engine
+landing page remains available and links to the executable, but only the HTML
+landing page was captured.
+
+No bytes were downloaded; therefore no ZIP member listing, SHA-256, PE header
+inspection, or Ghidra project can truthfully be produced. Ghidra is not run
+against fabricated or HTML error responses.
