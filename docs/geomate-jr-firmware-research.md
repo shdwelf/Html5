@@ -358,3 +358,19 @@ If a ZIP/EXE is obtained, record its URL, capture timestamp, byte length, and
 SHA-256; list ZIP members without executing anything; then import only the
 executable into Ghidra for static analysis. No Ghidra project has been created
 because no binary bytes are present in the workspace.
+
+### Archived updater landing page recovered
+
+The Wayback capture of `geomatejr.appspot.com/` at
+`20120128184821` is available and explicitly links to
+`geomateQtGuiApp.exe`. It says the software allows an Update Kit and PC to
+load a Pocket Query into a Geomate.jr. The linked executable itself is not
+captured: the replay resolves to a 404, and the exact executable has no 200
+CDX row. This confirms the utility's purpose and provenance, but does not
+supply bytes for Ghidra.
+
+I also tested replay variants (`id_`, `if_`, `oe_`) and query parameters while
+using browser-like retrieval paths. The proxy/CORS problem is not the only
+failure: the archive's metadata says no replayable executable body is
+available. A browser cannot set its own User-Agent, so the HTML5 app does not
+pretend that User-Agent rotation can recover a missing capture.
