@@ -326,3 +326,35 @@ These are search/replay links only. A link, CDX row, or advertised length does
 not prove that a backup copy is downloadable. The app preserves the expected
 sizes and CDX digests so any recovered bytes can be checked before static
 analysis.
+
+## New updater recovery leads (2026-10-06)
+
+Searches found a more relevant historical updater trail than the generic ZIP
+names:
+
+- Darren Osborne's 2012 instructions link the standalone utility as
+  `http://geomatejr.appspot.com/geomateQtGuiApp.exe`, and the same page records a
+  community mirror at
+  `http://dl.dropbox.com/u/6158332/geomateQtGuiApp.exe.zip`.
+  [Source](https://spindocbob.wordpress.com/2012/01/27/have-a-geomate-jr-dont-panic/)
+- The page says the utility accepts a GPX pocket query and uploads it to the
+  device, so this is an updater/loader lead rather than proof of embedded
+  firmware.
+- The live App Engine URL now returns 404. The exact Dropbox URL currently has
+  no 200 CDX row in the accessible Wayback CDX query. No executable bytes were
+  recovered from either URL.
+- A separate Software Informer listing advertises `geomateloadersetup.exe.zip`,
+  version 1.3, approximately 9.7 MB, updated October 30, 2014:
+  [download listing](https://geomate-loader.software.informer.com/download/)
+  and [version page](https://geomate-loader.software.informer.com/1.3/).
+  Its page is a third-party listing and does not expose a verified byte stream
+  in this investigation.
+- A 2012 Geocaching forum result also preserves the Dropbox link and describes
+  `geomateQtGuiApp.exe` as the standalone GUI for GPX uploads:
+  [forum result](https://forums.geocaching.com/GC/index.php?/topic/287545-geomate-jr-update-kit-issues/).
+
+These leads should be prioritized for a human-provided archive or download.
+If a ZIP/EXE is obtained, record its URL, capture timestamp, byte length, and
+SHA-256; list ZIP members without executing anything; then import only the
+executable into Ghidra for static analysis. No Ghidra project has been created
+because no binary bytes are present in the workspace.
