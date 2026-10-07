@@ -117,3 +117,11 @@ class chips in the UI pass straight into the same filter predicates.
   standard layer toggle, x-ray/wireframe/labels globals, exaggeration slider,
   and the 811/excavation disclaimers — the register is a *names* layer, not a
   survey layer.
+
+## Geocache class (user-imported only)
+
+`Geocache` / `rec.geocache` rows are not shipped in the register. The GAZETTEER
+PiP can load a Pocket Query or GSAK GPX locally (`js/socal-geocache-gpx.js`);
+those rows are unverified, carry an 11th `metadata` element (`cacheCode`,
+`cacheType`, `difficulty`, `terrain`, `sourceFile`, `importedOn`) and are never
+assigned a GNIS FEATURE_ID. See `docs/geomate-jr-firmware-research.md`.

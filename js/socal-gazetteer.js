@@ -99,7 +99,8 @@ export const getCapabilities = (rows = DEFAULT_ROWS) => ({
   operations: ["get-capabilities", "search-name", "search-point", "search-box", "describe"],
   srs: "EPSG:4326",
   features: rows.length,
-  classes: [...new Set(rows.map((r) => r[1]))].sort(),
+  // Geocache is an importable rec.* class even when no local GPX has been loaded.
+  classes: [...new Set([...rows.map((r) => r[1]), "Geocache"])].sort(),
   facets: GAZ_FACETS.map((f) => f.fac || "all"),
 });
 
@@ -108,7 +109,8 @@ export const getCapabilities = (rows = DEFAULT_ROWS) => ({
  * 343-row pack costs near nothing at boot.
  */
 export const makeGazetteerIndex = (rows = DEFAULT_ROWS) => {
-  const entries = rows.map((r, i) => ({
+  const entries = [];
+  const toEntry = (r, i) => ({
     i,
     name: r[0],
     fclass: r[1],
@@ -120,16 +122,32 @@ export const makeGazetteerIndex = (rows = DEFAULT_ROWS) => {
     gnis: r[7],
     verified: r[8] === 1,
     note: r[9],
+    metadata: r[10] && typeof r[10] === "object" ? r[10] : null,
     norm: normalizeName(r[0]),
     countyNorm: normalizeName(r[3]),
     grams: null,
     countyGrams: null,
-  }));
+  });
+  for (const r of rows) entries.push(toEntry(r, entries.length));
   const ensure = (e, field = "grams") => {
     if (!e[field]) e[field] = trigrams(field === "grams" ? e.norm : e.countyNorm);
     return e[field];
   };
-  return { entries, ensure };
+  /** Append rows (e.g. a user GPX import); returns the new entries. */
+  const addRows = (newRows) => {
+    const added = [];
+    for (const r of newRows) {
+      const e = toEntry(r, entries.length);
+      entries.push(e);
+      added.push(e);
+    }
+    return added;
+  };
+  /** Drop imported tail entries back to `count` (the scene owner removes the pins). */
+  const truncate = (count) => {
+    if (Number.isInteger(count) && count >= 0 && count < entries.length) entries.length = count;
+  };
+  return { entries, ensure, addRows, truncate };
 };
 
 const facetMatch = (e, fac) => {
@@ -205,8 +223,8 @@ export const describe = (idx, i) => idx.entries[i] ?? null;
  * Class roll-up for the UI: [{ fclass, label, swatch, count }] sorted by
  * label, rows restricted to the loaded pack.
  */
-export const classRollup = (rows = DEFAULT_ROWS) => {
-  const counts = new Map();
+export const classRollup = (rows = DEFAULT_ROWS, includeClasses = ["Geocache"]) => {
+  const counts = new Map(includeClasses.map((fclass) => [fclass, 0]));
   for (const r of rows) counts.set(r[1], (counts.get(r[1]) ?? 0) + 1);
   return [...counts.entries()]
     .map(([fclass, count]) => ({

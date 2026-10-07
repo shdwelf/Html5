@@ -471,3 +471,93 @@ In line with this workspace's strict static analysis protocol:
 - Triage is performed using the workspace's in-memory static analysis tools: `casefiles.html`, `js/viruslab.js`, and the WebAssembly Ghidra decompiler engine (`tools/verify_ghidra.mjs`).
 - PE and MZ headers, imports, section entropy, and byte signatures are analyzed without host or virtual execution.
 
+
+## 2026-10-07 follow-up: binary still absent; placeholder caches removed; local GPX import added
+
+### Archive inventory re-read
+
+The complete Wayback CDX listing for `mygeomate.com/*` (200 responses,
+`collapse=urlkey`) was read end to end. It contains **no** `.exe`, `.msi`,
+`.gpx` or `.cry` capture. Its only archives are 17 ZIPs under `/zip/` and
+`/images/press_page_art/`, e.g. `ActionPhotos.zip`, `ComboBox.zip`,
+`FourAngles.zip`, `logo1-4.zip`, `Perspective.zip`, `StraightOnView.zip`,
+`TravelTag.zip`, `UpdateKitPerspective.zip` (620,655 bytes),
+`UpdateKit.zip` (727,077 bytes) and `GeomateandUpdateKit.zip` (1,618,659 bytes).
+Every sibling in that folder is marketing imagery, so the two named ZIPs are
+most plausibly product-photo bundles. That is an inference from naming and size,
+not something the bytes confirm. Replay of both (`…/web/2011101114…id_/…`)
+returned HTTP 500 from this sandbox.
+
+`geomatejr.appspot.com/*` has exactly one 200 capture (the 2012-01-28 landing
+page, 924 bytes). `geomatejr.appspot.com/geomateQtGuiApp.exe` and the Dropbox
+mirror have no 200 rows. The Software Informer "download now" endpoint
+(`?caad1ab`) also returned HTTP 500. **No Geomate.jr executable, installer or
+firmware was obtained, so no Ghidra analysis was run and none is claimed.**
+
+### New facts from the 2014 Brand 44 User's Guide (Home Science Tools mirror)
+
+Source: <https://www.homesciencetools.com/content/reference/Geomatejr_Users_Guide.pdf>
+
+- The Geomate Loader is a **Windows desktop app** (InstallShield `.msi`) that
+  installs the Silicon Labs **CP210x USB-to-UART bridge driver**. The Update Kit
+  cable is therefore a serial bridge, not a bespoke USB device.
+- Region databases are **`.cry` encrypted** files (up to 250,000 caches each);
+  Pocket Queries and custom lists are plain GPX 1.1; Custom Cache lists hold up
+  to 20 points.
+- Startup shows `V1004` in the 2013/2014 guide; the 2009 guide shows `V1002`.
+  The firmware therefore changed at least once after the 2009 Update Kit launch.
+- The licence text states the user "may not use, copy, modify, **reverse
+  engineer** or transfer this Software except as expressly provided". Anyone
+  analysing a recovered loader/firmware should read that clause first; this repo
+  does not distribute such binaries.
+- Because the region files are encrypted and the 20-nearest list is computed on
+  the device from a flash database, the "hard-coded geocaches" are best modelled
+  as an encrypted **data image**, not strings in the loader. Static analysis of
+  `geomateQtGuiApp.exe` could at best reveal the `.cry` cipher and the serial
+  protocol.
+- Spindocbob's 2012 write-up reports GSAK exports of up to 5,000 caches load
+  and display, a Pocket Query is capped at 1,000, each load overwrites the
+  previous list, and non-`GC` codes are truncated for display (`GA1234` → `GA123`).
+
+### Placeholder geocache rows were wrong and have been removed
+
+The Gazetteer previously carried ten `Geocache` rows whose names embedded GC
+codes and described them as Geomate.jr preload candidates. Each code was checked
+on geocaching.com on 2026-10-07; none is the California cache the row named:
+
+| row's code | geocaching.com listing |
+| --- | --- |
+| GC28 | "Beverly", Illinois |
+| GC40 | "Geocache", Namur, Belgium |
+| GC45 | "First New Zealand", North Island |
+| GC52 | "R&R 1", New South Wales |
+| GC78 | "Firestone", San Francisco Bay Area (California, but not the row's location) |
+| GC92 | "Un-Original Stash", Oregon |
+| GC99 | "First Chicago", Illinois |
+| GC133 | "Rock and Roll", North Carolina |
+| GC190 | "Open Space 6", New Mexico |
+| GCF | "The Original Stash", Oregon (Dave Ulmer, 2000-05-03) |
+
+The coordinates and "Geomate.jr candidate" notes had no source, so all ten rows
+were deleted from `js/socal-gazetteer-data.js`; `GAZ_META` counts now match the
+508 remaining rows. A regression test asserts no bundled `Geocache` rows.
+
+### What was added instead
+
+`js/socal-geocache-gpx.js` and a **LOAD GEOCACHE GPX** control in the GAZETTEER
+PiP of `socal-subsurface.html`. A user's own Pocket Query or GSAK export is read
+in the browser (≤ 20 MB, ≤ 5,000 waypoints), parsed with `DOMParser`, filtered to
+the SoCal frame, and drawn as `Geocache` / `rec.geocache` pins that are
+searchable by name, box and class. Nothing is uploaded or persisted; a second
+load replaces the first, matching the device's overwrite behaviour. Rows are
+`VERIFIED=0`, carry no GNIS id, record source file and import date, and the
+dossier states they are not GNIS features and may be archived. The rebuilt
+`socal-subsurface.xdc` includes the feature.
+
+### Still open
+
+- Obtain `geomateloadersetup.exe` / `geomateQtGuiApp.exe` (or a `.cry` region
+  file) from a person who still has them, record SHA-256, then run the headless
+  Ghidra workflow described above.
+- Other cities (Lawrence KS, Kansas City MO, Atlanta, Buffalo, Toronto) and the
+  other items in the broad request are separate pieces of work.

@@ -91,9 +91,15 @@
         <button type="button" id="gazClear">CLEAR</button>
         <span class="hint" id="gazCaps">—</span>
       </div>
+      <div class="gaz-gpx">
+        <label class="gaz-file" for="gazGpxFile">LOAD GEOCACHE GPX</label>
+        <input id="gazGpxFile" type="file" accept=".gpx,application/gpx+xml,text/xml,application/xml" />
+        <button type="button" id="gazGpxClear">CLEAR GPX</button>
+        <span class="hint" id="gazGpxStatus" aria-live="polite">no GPX loaded</span>
+      </div>
       <ol id="gazHits" class="gaz-hits"></ol>
       <p class="hint" style="margin-top:6px">
-        Curated seed register (343 entries) in the ADL GCS model — names set + EPSG:4326 footprint + FTT classification; FEATURE_IDs confirmed per entry where pinned.
+        Curated seed register (508 entries) in the ADL GCS model — names set + EPSG:4326 footprint + FTT classification; FEATURE_IDs confirmed per entry where pinned. Geocaches are never bundled: load your own Pocket Query / GSAK GPX (read locally, not uploaded).
       </p>
     </div>
   </section>

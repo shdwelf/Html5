@@ -63,8 +63,12 @@ describe("GAZ_ROWS register integrity (data/gnis build)", () => {
     expect(GAZ_ROWS.filter((r) => r[0] === "Crowley Lake")).toHaveLength(2); // Lake + Reservoir duplicate classes coexist
     expect(byNameClass.has("Point Conception|Cape")).toBe(true);
     expect(byNameClass.has("Manzanar National Historic Site|Park")).toBe(true);
-    expect(byNameClass.has("First California Geocache (GCF)|Geocache")).toBe(true);
-    expect(byNameClass.get("First California Geocache (GCF)|Geocache")).toMatchObject({ 1: "Geocache", 2: "rec.geocache", 8: 0 });
+  });
+
+  it("ships no bundled geocache rows (earlier placeholder GC codes belonged to caches elsewhere)", () => {
+    expect(GAZ_ROWS.filter((r) => r[1] === "Geocache")).toHaveLength(0);
+    expect(GAZ_ROWS.some((r) => /Geomate\.jr/i.test(String(r[9] ?? "")))).toBe(false);
+    expect(GAZ_META.rowCount).toBe(GAZ_ROWS.length);
   });
 });
 
@@ -100,8 +104,10 @@ describe("normalization + pg_trgm similarity", () => {
     const hydroOnly = searchName(idx, "lake", { facet: "hydro", limit: 60 });
     expect(hydroOnly.length).toBeGreaterThan(5);
     expect(hydroOnly.every((h) => h.ftt.startsWith("hydro."))).toBe(true);
-    const recOnly = searchName(idx, "cache", { facet: "rec", limit: 20 });
-    expect(recOnly.length).toBeGreaterThan(0);
+    const imported = makeGazetteerIndex(GAZ_ROWS);
+    imported.addRows([["Test Cache", "Geocache", "rec.geocache", "", 34.2, -117.5, null, null, 0, null]]);
+    const recOnly = searchName(imported, "test cache", { facet: "rec", limit: 20 });
+    expect(recOnly).toHaveLength(1);
     expect(recOnly.every((h) => h.ftt.startsWith("rec."))).toBe(true);
   });
 

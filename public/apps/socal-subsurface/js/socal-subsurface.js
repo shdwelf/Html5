@@ -44,6 +44,7 @@ import { buildOverlays } from "./socal-overlays.js";
 import { FIRE_SOURCE_URLS } from "./socal-overlays-data.js";
 import { OFF_FRAME } from "./socal-sites-extended.js";
 import { GAZ_META, GAZ_ROWS } from "./socal-gazetteer-data.js";
+import { MAX_GPX_BYTES, geocachesToGazetteerRows, parseGeocacheGpx } from "./socal-geocache-gpx.js";
 import {
   GAZ_CLASS_META,
   GAZ_FACETS,
@@ -416,7 +417,10 @@ const gazIdx = makeGazetteerIndex(GAZ_ROWS);
 const gazMeshes = [];
 const gazHeadByIdx = new Map();
 
-for (const e of gazIdx.entries) {
+const BASE_GAZ_COUNT = gazIdx.entries.length;
+
+function addGazPin(e) {
+  const isCache = e.fclass === "Geocache";
   const meta = GAZ_CLASS_META[e.fclass] ?? { swatch: "#9db2d1", short: "GNIS" };
   const color = new THREE.Color(meta.swatch);
   if (!e.verified) color.multiplyScalar(0.5);
@@ -446,21 +450,34 @@ for (const e of gazIdx.entries) {
     lat: e.lat,
     kind: "gaz",
     depthM: 0,
-    facts: [
-      `GNIS class: ${e.fclass} → ADL FTT facet ${e.ftt}`,
-      `county: ${e.county}`,
-      e.elev !== null
-        ? `elevation ${e.elev.toLocaleString()} m (${Math.round(e.elev * 3.281).toLocaleString()} ft)`
-        : "elevation not asserted (awaiting official extract coordinates)",
-      e.gnis
-        ? `GNIS FEATURE_ID ${e.gnis} — verified via ${GAZ_META.verified > 200 ? "USGS DomesticNames extract" : "Wikidata P590 anchor (CC0)"}`
-        : "position from the curated seed register — no verified FEATURE_ID yet",
-      ...(e.note ? [e.note] : []),
-    ],
-    sources: [
-      "USGS U.S. Board on Geographic Names / GNIS (17 USC 105)",
-      e.gnis ? "Wikidata P590 anchor, Wikimedia CC0, retrieved 2026-10-03" : "data/gnis/socal-gazetteer-seed.csv (curated, this repo)",
-    ],
+    facts: isCache
+      ? [
+          `Geocache (ADL FTT ${e.ftt}) — position from a GPX file you loaded in this session; nothing was uploaded.`,
+          ...(e.metadata?.cacheCode ? [`GC code ${e.metadata.cacheCode} as written in the GPX (not verified against geocaching.com)`] : []),
+          ...(e.metadata?.cacheType ? [`type: ${e.metadata.cacheType}`] : []),
+          ...(e.metadata?.difficulty != null || e.metadata?.terrain != null
+            ? [`difficulty ${e.metadata.difficulty ?? "—"} · terrain ${e.metadata.terrain ?? "—"}`]
+            : []),
+          e.elev !== null ? `elevation ${e.elev.toLocaleString()} m per the GPX` : "elevation not supplied by the GPX",
+          "Not a GNIS feature and never assigned a FEATURE_ID. Caches move and are archived; confirm on geocaching.com before relying on it.",
+        ]
+      : [
+          `GNIS class: ${e.fclass} → ADL FTT facet ${e.ftt}`,
+          `county: ${e.county}`,
+          e.elev !== null
+            ? `elevation ${e.elev.toLocaleString()} m (${Math.round(e.elev * 3.281).toLocaleString()} ft)`
+            : "elevation not asserted (awaiting official extract coordinates)",
+          e.gnis
+            ? `GNIS FEATURE_ID ${e.gnis} — verified via ${GAZ_META.verified > 200 ? "USGS DomesticNames extract" : "Wikidata P590 anchor (CC0)"}`
+            : "position from the curated seed register — no verified FEATURE_ID yet",
+          ...(e.note ? [e.note] : []),
+        ],
+    sources: isCache
+      ? [`${e.metadata?.sourceFile ?? "user GPX"} (imported ${e.metadata?.importedOn ?? "this session"})`]
+      : [
+          "USGS U.S. Board on Geographic Names / GNIS (17 USC 105)",
+          e.gnis ? "Wikidata P590 anchor, Wikimedia CC0, retrieved 2026-10-03" : "data/gnis/socal-gazetteer-seed.csv (curated, this repo)",
+        ],
   };
   head.userData = { record, kind: "gaz", gazIdx: e.i };
   g.add(head);
@@ -470,6 +487,8 @@ for (const e of gazIdx.entries) {
   gazMeshes.push({ entry: e, group: g, head });
   gazHeadByIdx.set(e.i, head);
 }
+
+for (const e of gazIdx.entries) addGazPin(e);
 
 /* --------------------------------------------------------------- overlays */
 
@@ -529,13 +548,14 @@ for (const { node } of nodeMeshes) {
 // Gazetteer labels work at register zoom only: the nearest few pins get
 // annotated, everything else stays a tick mark until searched or camera-close.
 const gazLabelEls = [];
-for (const { entry } of gazMeshes) {
+function addGazLabel(entry) {
   const el = document.createElement("div");
   el.className = `lbl gaz t-${entry.verified ? "official" : "community"}`;
   el.textContent = entry.name.slice(0, 34);
   labelHost.append(el);
   gazLabelEls.push(el);
 }
+for (const { entry } of gazMeshes) addGazLabel(entry);
 const gazHitIds = new Set(); // search-driven highlights stay labelled
 
 /* ------------------------------------------------------------------- HUD */
@@ -1067,7 +1087,7 @@ if (gazClassesHost) {
     txt.textContent = `${c.label} ${c.count}`;
     row.append(cb, dot, txt);
     gazClassesHost.append(row);
-    gazClassToggles.push({ el: cb, fclass: c.fclass });
+    gazClassToggles.push({ el: cb, fclass: c.fclass, txt, label: c.label });
   }
 }
 
@@ -1171,6 +1191,89 @@ if (gazCaps) {
   const caps = GAZ_META;
   gazCaps.textContent = `${caps.rowCount} names · ${caps.verified} id-verified · EPSG:4326`;
 }
+
+/* ------------------------------------------------ local GPX geocache import */
+
+// Geocaches are never bundled: the Geomate.jr loader accepted a user's own GPX
+// (Pocket Query / GSAK export), and so does this viewer. The file is read in
+// the browser, parsed locally, replaces the previous import, and is not stored.
+const gpxInput = $("gazGpxFile");
+const gpxClear = $("gazGpxClear");
+const gpxStatus = $("gazGpxStatus");
+
+function setGpxStatus(text) {
+  if (gpxStatus) gpxStatus.textContent = text;
+}
+
+function updateGeocacheChip() {
+  const toggle = gazClassToggles.find((t) => t.fclass === "Geocache");
+  if (!toggle) return;
+  const count = gazIdx.entries.length - BASE_GAZ_COUNT;
+  toggle.txt.textContent = `${toggle.label} ${count}`;
+}
+
+function clearImportedGeocaches() {
+  if (selected?.userData?.kind === "gaz" && selected.userData.gazIdx >= BASE_GAZ_COUNT) select(null);
+  const imported = gazMeshes.splice(BASE_GAZ_COUNT);
+  for (const { entry, group, head } of imported) {
+    groups.gazetteer.remove(group);
+    const at = PICKABLE.indexOf(head);
+    if (at >= 0) PICKABLE.splice(at, 1);
+    group.traverse((obj) => {
+      obj.geometry?.dispose?.();
+      obj.material?.dispose?.();
+    });
+    gazHeadByIdx.delete(entry.i);
+  }
+  for (const el of gazLabelEls.splice(BASE_GAZ_COUNT)) el.remove();
+  gazIdx.truncate(BASE_GAZ_COUNT);
+  gazHitIds.clear();
+  updateGeocacheChip();
+  refreshCounts();
+}
+
+async function importGpxFile(file) {
+  if (!file) return;
+  if (file.size > MAX_GPX_BYTES) {
+    setGpxStatus(`${file.name}: larger than ${Math.round(MAX_GPX_BYTES / 1048576)} MB, not loaded`);
+    return;
+  }
+  try {
+    const parsed = parseGeocacheGpx(await file.text());
+    const inFrame = parsed.caches.filter(
+      (c) => c.lat >= BBOX.lat0 && c.lat <= BBOX.lat1 && c.lon >= BBOX.lon0 && c.lon <= BBOX.lon1,
+    );
+    clearImportedGeocaches();
+    const rows = geocachesToGazetteerRows(inFrame, { sourceFile: file.name });
+    for (const entry of gazIdx.addRows(rows)) {
+      addGazPin(entry);
+      addGazLabel(entry);
+    }
+    updateGeocacheChip();
+    refreshCounts();
+    revealLayer("gazetteer");
+    const outside = parsed.caches.length - inFrame.length;
+    setGpxStatus(
+      `${file.name}: ${inFrame.length} cache${inFrame.length === 1 ? "" : "s"} drawn` +
+        (outside ? ` · ${outside} outside the SoCal frame` : "") +
+        (parsed.duplicates ? ` · ${parsed.duplicates} duplicate` : "") +
+        (parsed.invalidCoordinates ? ` · ${parsed.invalidCoordinates} bad coordinates` : ""),
+    );
+    setStatus(`geocache GPX · ${inFrame.length} loaded from ${file.name}`);
+  } catch (error) {
+    setGpxStatus(error instanceof Error ? error.message : "Could not read that GPX file.");
+  }
+}
+
+gpxInput?.addEventListener("change", async () => {
+  await importGpxFile(gpxInput.files?.[0]);
+  gpxInput.value = "";
+});
+gpxClear?.addEventListener("click", () => {
+  clearImportedGeocaches();
+  setGpxStatus("no GPX loaded");
+  setStatus("imported geocaches cleared");
+});
 
 const fireSrcHost = $("fireSources");
 if (fireSrcHost) {

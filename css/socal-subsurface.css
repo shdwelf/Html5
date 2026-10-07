@@ -292,6 +292,18 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .gaz-ops button:hover { background: rgba(31, 50, 71, 0.95); }
 .gaz-ops .hint { margin-left: auto; text-align: right; }
 
+.gaz-gpx { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.gaz-gpx input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.gaz-gpx .gaz-file, .gaz-gpx button {
+  background: rgba(21, 34, 49, 0.85); color: var(--ink);
+  border: 1px solid #274a63; border-radius: 3px;
+  font: inherit; font-size: 9px; letter-spacing: 0.08em;
+  padding: 3px 7px; cursor: pointer;
+}
+.gaz-gpx .gaz-file:hover, .gaz-gpx button:hover { background: rgba(31, 50, 71, 0.95); }
+.gaz-gpx input[type="file"]:focus-visible + button, .gaz-gpx .gaz-file:focus-within { outline: 2px solid var(--accent); }
+.gaz-gpx .hint { flex: 1 1 100%; }
+
 .gaz-hits { margin: 6px 0 0; padding: 0; list-style: none; }
 .gaz-hits li + li { margin-top: 2px; }
 .gaz-hit {
