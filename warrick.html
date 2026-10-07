@@ -473,33 +473,77 @@
     <div class="panel">
       <h2><span>🔬</span> Firmware Architecture & Ghidra Static Analysis Triage</h2>
       
-      <h3>Geomate.jr Device Architecture</h3>
+      <h3>The Three-Way "GeoMate" Name Disambiguation</h3>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Entity</th>
+              <th>Domain / Origin</th>
+              <th>Hardware / Platform</th>
+              <th>Role / Characteristics</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Apisphere Geomate.jr (2009–2012)</strong></td>
+              <td><code>mygeomate.com</code><br><code>geomatejr.appspot.com</code></td>
+              <td>Dedicated handheld toy; SiRFstarIII GPS core; MCU bootloader <code>V1002 RE X2</code>.</td>
+              <td>Preloaded ~250,000 traditional US caches in flash partition. Used Update Kit USB dongle and <code>geomateQtGuiApp.exe</code> to flash Pocket Query GPX files. Shut down Jan 2012.</td>
+            </tr>
+            <tr>
+              <td><strong>2. GeoMate Solutions</strong></td>
+              <td><code>geomate-solutions.com</code></td>
+              <td>Windows desktop engineering CAD/FEA.</td>
+              <td>Geotechnical, slope-stability, and soil-mechanics finite element analysis (version 2026.3.0, SHA-256 <code>8E2237C7...</code>). Completely unrelated to GPS or geocaching.</td>
+            </tr>
+            <tr>
+              <td><strong>3. GeoMate Positioning / CHCNav</strong></td>
+              <td><code>geomate.sg</code><br><code>geomate.jianguoyun.com</code></td>
+              <td>Survey-grade RTK GNSS receivers (models SG6, SG7, N72); 32-bit ARM Linux.</td>
+              <td>High-precision surveying with IMU 60° tilt compensation, dual-camera AR, UHF radio, and QZSS RINEX logging. Firmware v1.5.2 released Aug 2026 by CHC Navigation.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Reverse-Engineered GeoMate SG7/SG6 v1.5.2 Firmware Container</h3>
+      <p>
+        Payload <code>update_SG7_v1.5.2_b20260803.bin.dat</code> (32,320,808 bytes, header magic <code>0x77007702</code>)
+        was unpacked and structurally triaged:
+      </p>
       <ul>
-        <li><strong>Core MCU & GPS Engine:</strong> The device uses a low-power microcontroller coupled to a <strong>SiRFstarIII GPS receiver</strong>. It displays boot firmware version <code>V1002</code> (or community variant <code>V1002 RE X2</code>) followed by the date stamp of the currently installed cache database (e.g. <code>4/19/2009</code>).</li>
-        <li><strong>The "Hardcoded Geocaches" Architecture:</strong> Geocaches were <em>not compiled into executable machine code</em>. Instead, the device was manufactured with a preloaded indexed database containing ~250,000 traditional US caches in internal flash memory. Updating meant rewriting the cache partition table over the Update Kit USB dongle.</li>
-        <li><strong>Update Kit USB Dongle:</strong> A proprietary USB-to-serial adapter. Common user errors like <em>"Flash Programming Failed"</em> or <em>"Loader Error"</em> occurred when the legacy host USB driver dropped synchronization during bulk database writes.</li>
-        <li><strong>The Disambiguation:</strong> Firmware updates under names like <code>SG6_v1.5.2_20251226</code> belong to <strong>GEOMATE GNSS Systems (Singapore)</strong>, a professional land-survey equipment line. Flashing survey GNSS firmware onto an Apisphere geocaching toy is completely incompatible and destructive.</li>
+        <li><strong>Build Trace:</strong> Git commit <code>199cd11aa80860ac00af38373bb477bee98e68bd</code> on <code>RTK/x7/x7.git</code> by <code>embedded_sector@huacenav.com</code> (CHC Navigation / HuaceNav).</li>
+        <li><strong>Payload Breakdown:</strong>
+          <ul>
+            <li><code>install.sh</code> (8,069 B): Pre-flash backup of <code>/data/app/conf/n72.cfg</code>, network configs, and partition dd commands.</li>
+            <li><code>kernel.bin</code> (4,845,592 B): ARM Linux kernel zImage.</li>
+            <li><code>rootfs.bin</code> (143,396 B BZIP2 &rarr; 471,040 B TAR): Root filesystem overlay.</li>
+            <li><code>dtb.bin</code> (37,870 B): Flattened Device Tree Blob (magic <code>0xD00DFEED</code>).</li>
+            <li><code>app.bin</code> (27,038,081 B BZIP2 &rarr; 69,826,560 B TAR): 1,921 userland files including <code>app/bin/gnss</code>, <code>app/bin/imu</code>, <code>app/bin/camera</code>, and <code>app/bin/N72.fcgi</code> web server.</li>
+            <li><code>update_machine.bin</code> (246,425 B): 32-bit ARM Linux ELF binary flashing daughterboards <code>gnss_board_1</code> to <code>gnss_board_9</code>.</li>
+          </ul>
+        </li>
       </ul>
 
       <h3>Ghidra Headless / WASM Disassembly Pipeline</h3>
       <p>
         The repository maintains an automated Ghidra pipeline powered by <code>wasm/ghidra/ghidra_decompiler.wasm</code>
         and vendored SLEIGH specifications (x86 16/32/64-bit and Atmel AVR). When binary payloads for
-        <code>geomateQtGuiApp.exe</code> or raw ROM dumps are acquired, the workflow operates as follows:
+        <code>geomateQtGuiApp.exe</code>, community loaders, or malware samples from <code>ViewerMade</code> are inspected:
       </p>
 
       <div class="code-block">
-# 1. Inspect file signatures and PE headers without execution
-python3 tools/exe_triage.py candidate/geomateQtGuiApp.exe
+# 1. Inspect file signatures, PE/MZ/ELF headers without execution
+python3 tools/exe_triage.py candidate_file
 
 # 2. Extract strings, USB endpoints, and database magic bytes
-strings -a -n 6 candidate/geomateQtGuiApp.exe | grep -E "V1002|GC[0-9A-Z]{3,6}|SiRF|SQLite|USB"
+strings -a -n 6 candidate_file | grep -E "V1002|GC[0-9A-Z]{3,6}|SiRF|SQLite|USB"
 
-# 3. Disassemble entry point and export decompiled C via Ghidra
-node tools/verify_ghidra.mjs 8099 candidate/geomateQtGuiApp.exe
+# 3. Disassemble entry point and export decompiled C via Ghidra WASM
+node tools/verify_ghidra.mjs 8099 candidate_file
 
-# 4. Extract embedded cache database or GPX parsing routines
-python3 -c "import sqlite3; ..." # verify database format
+# 4. Safe triage protocol: all binaries stay in-memory; zero host execution.
       </div>
     </div>
   </section>

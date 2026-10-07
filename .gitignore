@@ -11,6 +11,8 @@ node_modules/
 # Drive sync payload: 33-96 MB snapshot tarballs fetched by a runner.
 # Only the manifests, diff reports and recovered files are committed.
 .arena-drive/payload/
+google_drive/
+extracted_sg7/
 
 # RTL simulation outputs (regenerable: python3 tools/verify_rtl.py)
 sim/*.cc
