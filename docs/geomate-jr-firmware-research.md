@@ -393,3 +393,81 @@ landing page was captured.
 No bytes were downloaded; therefore no ZIP member listing, SHA-256, PE header
 inspection, or Ghidra project can truthfully be produced. Ghidra is not run
 against fabricated or HTML error responses.
+
+## Google Drive Payload Acquisition & Firmware Analysis (2026-10-07)
+
+Two new primary artifacts were retrieved directly from Google Drive:
+1. `SG6_Firmware_152ReleaseNote_Geomate.pdf` (ID: `1uEvsWDwykI9pBC9nlZITJAd6X-EbcLQ2`, 316,160 bytes)
+2. `update_SG7_v1.5.2_b20260803.bin.dat` (ID: `1ngyoZrGL_HJXrkbw3NFYoXsPU7O2Xjt8`, 32,320,808 bytes)
+
+### Release Note Documentation Analysis
+
+The release note (`SG6_Firmware_152ReleaseNote_Geomate.pdf`) was issued on **January 21, 2026** by
+**GeoMate Positioning** (`www.geomate.sg`). Key specifications:
+- **Supported Models:** SG6 GNSS Part Number `A11561980007070507`.
+- **Upgrade Paths:** HTTP web management page on receiver port 80/443, or via Android field controller using MateSurvey software.
+- **Hosted Cloud Endpoint:** `https://geomate.jianguoyun.com/p/DZWLa4MQ86zaCxi_06IGIAA` (Nutstore / Jianguoyun cloud share).
+- **Firmware Features Added:** EU Safety Certification (mandatory initial Wi-Fi password setup), IMU antenna height resolution to 3 decimal places, web-based static RINEX data download/deletion, QZSS RINEX static survey logging expansion, and fix for external UHF radio mode position initialization errors.
+
+### Firmware Container Reverse Engineering (`update_SG7_v1.5.2_b20260803.bin.dat`)
+
+Binary analysis of the 32.3 MB payload revealed a structured multi-partition container:
+- **Header Magic:** `0x77007702` (`\x02w\x00w`)
+- **Hardware Model / PN:** `A19312435706050001` (SG7 / SG6 multi-model carrier board)
+- **Git Commit:** `199cd11aa80860ac00af38373bb477bee98e68bd` (`branch/x7_v1.3.11.2_b20250403-for/bug_fix` on `git@192.168.3.7:embedded_sector_code/RTK/x7/x7.git`)
+- **Manufacturer / Git Author:** `embedded_sector@huacenav.com` (**CHC Navigation / HuaceNav**)
+- **Build Timestamp:** `2026-08-03 13:48:11`
+- **Target OS:** Embedded Linux (32-bit ARM, `armhf`)
+
+#### Partition Table Layout
+
+| Sec ID | File Name | Offset | Length | Compression / Format | Description |
+|:---:|:---|:---:|:---:|:---|:---|
+| **01** | `install.sh` | `0x000000C4` | 8,069 B | Plain text POSIX shell | Pre-flash backup script (`/data/app/conf/n72.cfg`, network ifcfg), application shutdown (`killall`), partition dd flasher, and post-flash sync. |
+| **03** | `kernel.bin` | `0x0000204C` | 4,845,592 B | ARM Linux zImage | Kernel binary beginning with ARM NOP sled (`00 00 A0 E1`). |
+| **04** | `rootfs.bin` | `0x004A1064` | 143,396 B | BZIP2 (`tar.bz2`) | Root filesystem overlay (471,040 bytes uncompressed). |
+| **12** | `dtb.bin` | `0x004C4088` | 37,870 B | Flattened Device Tree | Device tree blob with magic `0xD00DFEED`. |
+| **13** | `app.bin` | `0x004CD478` | 27,038,081 B | BZIP2 (`tar.bz2`) | Userland application tree (69,826,560 bytes uncompressed; 1,921 files). Contains core GNSS daemons and web services. |
+| **30** | `update_info.bin` | `0x01E965FC` | 775 B | JSON | Package traceability metadata from CHCNav build farm. |
+| **31** | `update_machine.bin`| `0x01E96904` | 246,425 B | 32-bit ARM ELF | Flashing utility targeting OEM GNSS daughterboards (`gnss_board_1` through `gnss_board_9`). |
+| **33** | `md5sums` | `0x01ED2BA0` | 392 B | Text | Cryptographic verification hashes for all 7 payload sections. |
+
+#### Key Userland Binaries in `app.bin`
+
+- `/data/app/bin/gnss`: Multi-constellation RTK GNSS engine (GPS, GLONASS, Galileo, BeiDou, QZSS).
+- `/data/app/bin/imu`: Inertial measurement unit daemon handling pole-tilt compensation up to 60°.
+- `/data/app/bin/camera`: AR stakeout and video surveying sensor handler.
+- `/data/app/bin/N72.fcgi`: FastCGI receiver management web server.
+- `/data/app/bin/ui`: On-device OLED/LED display controller.
+- `/data/app/bin/res/brand_logo/`: Multi-tenant OEM branding assets for **GeoMate**, **CHCNav**, **Prince**, **TerraGenie**, and **iDig**.
+
+## The Three-Way "GeoMate" Disambiguation
+
+Our investigation confirms a critical real-world three-way name collision:
+
+1. **Apisphere Geomate.jr (2009–2012):**
+   - **Type:** Consumer children's geocaching toy GPS receiver.
+   - **Hardware:** Low-power MCU with SiRFstarIII GPS core; bootloader version `V1002 RE X2`.
+   - **Software:** Preloaded with ~250,000 traditional US caches in an indexed flash database partition; updated via the Update Kit USB dongle and `geomateQtGuiApp.exe` (hosted at `geomatejr.appspot.com`, mirrored by SpinDocBob and described in Home Science Tools manuals).
+   - **Current Status:** Defunct. Servers shut down January 2012.
+
+2. **GeoMate Solutions (geomate-solutions.com):**
+   - **Type:** Commercial geotechnical and soil-mechanics finite-element analysis software.
+   - **Current Version:** `2026.3.0` (Released July 25, 2026; SHA-256 `8E2237C7581237FE0A7FCCAD1B5F56FC4B9FBE03A984AE4020014E6171CD5666`).
+   - **Relevance:** Completely unrelated to GPS or geocaching; featured in AI search results due to keyword collisions on "GeoMate".
+
+3. **GeoMate Positioning / CHCNav (geomate.sg):**
+   - **Type:** High-precision survey-grade RTK GNSS receivers (models SG6, SG7, N72).
+   - **Hardware:** 32-bit ARM Linux system with IMU tilt sensor, UHF radio, 4G cellular, and dual-camera AR.
+   - **Firmware:** The v1.5.2 container (`update_SG7_v1.5.2_b20260803.bin.dat`) analyzed above.
+   - **Relevance:** Modern surveying hardware; completely incompatible with the 2009 Apisphere toy.
+
+## Static Analysis & Malware Triage Workbench (`ViewerMade`)
+
+The repository `https://github.com/N17Pro3426/ViewerMade` catalogs community-submitted GDI visual screen-corruptors, joke malware, and ransomware samples (`001.exe`, `APM 08279+5255`, `youaredied.zip`, `winRainbow.zip`).
+
+In line with this workspace's strict static analysis protocol:
+- Malicious binaries are **never executed** on the host.
+- Triage is performed using the workspace's in-memory static analysis tools: `casefiles.html`, `js/viruslab.js`, and the WebAssembly Ghidra decompiler engine (`tools/verify_ghidra.mjs`).
+- PE and MZ headers, imports, section entropy, and byte signatures are analyzed without host or virtual execution.
+

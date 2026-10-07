@@ -1,0 +1,49 @@
+Logging output to /home/user/Html5/research/warrick_geomate_audit/update_kit_zip_package/warrick.log
+
+in directory: /home/user/Html5/research/warrick_geomate_audit/update_kit_zip_package
+
+Warrick version 2.2.2 by Frank McCown, adapted by Justin F. Brunelle
+PID = 3222
+Machine name = e2b.local
+
+Setting up: Download to directory: /home/user/Html5/research/warrick_geomate_audit/update_kit_zip_package
+
+not using input file...
+
+Getting out of the get_memento function with http://mygeomate.com/UpdateKit.zip
+
+now dir is /home/user/Html5/research/warrick_geomate_audit/update_kit_zip_package
+
+Host comparison:  vs mygeomate.com
+
+
+
+removing duplicate paths 1: UpdateKit.zip =>targetpath: UpdateKit.zip
+
+made 
+
+
+
+ mcurling: /home/user/Html5/tools/warrick//mcurl.pl -D "/home/user/Html5/research/warrick_geomate_audit/update_kit_zip_package/logfile.o"  -tg "http://mementoproxy.cs.odu.edu/aggr/timegate" -L -o "/home/user/Html5/research/warrick_geomate_audit/update_kit_zip_package//UpdateKit.zip" "http://mygeomate.com/UpdateKit.zip"
+
+Reading logfile: /home/user/Html5/research/warrick_geomate_audit/update_kit_zip_package/logfile.o
+
+
+Unable to download...
+Download Error
+
+
+To stats FAILED:: http://mygeomate.com/UpdateKit.zip => ??? => /home/user/Html5/research/warrick_geomate_audit/update_kit_zip_package//UpdateKit.zip --> Stat Failure...
+
+Search HTML resource  for links to other missing resources...
+No such file 
+
+No Content in !
+
+Starting recovery at position 0 of -1
+
+Program terminated.
+
+-----------------------
+
+

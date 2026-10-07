@@ -11,6 +11,7 @@ const PRECACHE = [
   "./keyspace.html",
   "./validator.html",
   "./ghidra-lab.html",
+  "./warrick.html",
   "./flash-decompiler.html",
   "./distro-dossier.html",
   "./css/distro-dossier.css",

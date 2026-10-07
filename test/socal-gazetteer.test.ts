@@ -25,7 +25,7 @@ describe("GAZ_ROWS register integrity (data/gnis build)", () => {
       expect(r[4]).toBeLessThanOrEqual(GAZ_META.bbox.lat1);
       expect(r[5]).toBeGreaterThanOrEqual(GAZ_META.bbox.lon0);
       expect(r[5]).toBeLessThanOrEqual(GAZ_META.bbox.lon1);
-      expect(r[2]).toMatch(/^(phys|hydro|pop|admin|manmade)\./);
+      expect(r[2]).toMatch(/^(phys|hydro|pop|admin|manmade|rec)\./);
     }
   });
 
@@ -54,7 +54,7 @@ describe("GAZ_ROWS register integrity (data/gnis build)", () => {
   });
 
   it("merged register ships the requested classes (military / canal / census / cape)", () => {
-    expect(GAZ_CLASSES).toEqual(expect.arrayContaining(["Military", "Canal", "Census", "Cape", "Military"]));
+    expect(GAZ_CLASSES).toEqual(expect.arrayContaining(["Military", "Canal", "Census", "Cape", "Military", "Geocache"]));
     expect(byNameClass.has("Edwards Air Force Base|Military")).toBe(true);
     expect(byNameClass.has("March Air Reserve Base|Military")).toBe(true);
     expect(byNameClass.has("All American Canal|Canal")).toBe(true);
@@ -63,6 +63,8 @@ describe("GAZ_ROWS register integrity (data/gnis build)", () => {
     expect(GAZ_ROWS.filter((r) => r[0] === "Crowley Lake")).toHaveLength(2); // Lake + Reservoir duplicate classes coexist
     expect(byNameClass.has("Point Conception|Cape")).toBe(true);
     expect(byNameClass.has("Manzanar National Historic Site|Park")).toBe(true);
+    expect(byNameClass.has("First California Geocache (GCF)|Geocache")).toBe(true);
+    expect(byNameClass.get("First California Geocache (GCF)|Geocache")).toMatchObject({ 1: "Geocache", 2: "rec.geocache", 8: 0 });
   });
 });
 
@@ -98,6 +100,9 @@ describe("normalization + pg_trgm similarity", () => {
     const hydroOnly = searchName(idx, "lake", { facet: "hydro", limit: 60 });
     expect(hydroOnly.length).toBeGreaterThan(5);
     expect(hydroOnly.every((h) => h.ftt.startsWith("hydro."))).toBe(true);
+    const recOnly = searchName(idx, "cache", { facet: "rec", limit: 20 });
+    expect(recOnly.length).toBeGreaterThan(0);
+    expect(recOnly.every((h) => h.ftt.startsWith("rec."))).toBe(true);
   });
 
   it("county names act as a secondary match field", () => {

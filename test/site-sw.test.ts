@@ -30,7 +30,7 @@ function worker(keys: string[]) {
 
 describe('SITE-K service worker activation', () => {
   it('deletes only obsolete SITE-K caches, preserving current and unrelated caches', async () => {
-    const sw = worker(['sitek-html5-v1', 'sitek-html5-v23', 'sitek-html5-v29', 'book-v1', 'other-app-v2']);
+    const sw = worker(['sitek-html5-v1', 'sitek-html5-v23', 'sitek-html5-v37', 'book-v1', 'other-app-v2']);
     await sw.activate();
     expect(sw.caches.delete.mock.calls).toEqual([['sitek-html5-v1'], ['sitek-html5-v23']]);
     expect(sw.claim).toHaveBeenCalledOnce();
