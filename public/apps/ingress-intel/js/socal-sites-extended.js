@@ -1,0 +1,401 @@
+/**
+ * SOCAL SUBSURFACE — extended site register.
+ *
+ * Mining districts and ghost towns, the Angeles National Forest mine index,
+ * the Antelope Valley radar cross-section triad, and a quarantined layer for
+ * local-memory place names that public sources do not (yet) corroborate.
+ *
+ * Evidence tiers are enforced here as hard as anywhere in the repo:
+ *   official   — agency / operator / NRHP-grade published fact
+ *   community  — well-documented secondary sourcing
+ *   context    — LOCAL MEMORY ONLY. Plotted because the operator asked for it,
+ *                labelled as uncorroborated, never blended with the above.
+ */
+
+export const EXTRA_LAYERS = [
+  { id: "ghost", name: "Mining districts + ghost towns", color: "#d6b370", kind: "node", on: true },
+  { id: "mines", name: "Mines (Angeles NF index + desert)", color: "#e8e3d3", kind: "node", on: true },
+  { id: "rcs", name: "Radar cross-section ranges", color: "#67e8f9", kind: "node", on: true },
+  { id: "memory", name: "Local memory · UNCORROBORATED", color: "#ff6ec7", kind: "node", on: false },
+];
+
+export const EXTRA_NODES = [
+  /* --------------------------------------------- ghost towns / districts -- */
+  {
+    id: "randsburg",
+    layer: "ghost",
+    tier: "official",
+    name: "Randsburg + the Rand Mining District",
+    lon: -117.6564,
+    lat: 35.3697,
+    kind: "ghost",
+    depthM: -300,
+    facts: [
+      "Gold found on Rand Mountain in 1895; the Yellow Aster Mine made the camp and worked into the 1940s.",
+      "Three metals in one district and three booms to match: gold at Randsburg, tungsten at Atolia (critical in WWI), silver at the Kelly Mine from 1919.",
+      "A 'living ghost town' — never fully abandoned, still has a post office and a working saloon.",
+      "The district sits directly between the CALNEV corridor and the China Lake ranges.",
+    ],
+    sources: ["USGS Rand district mineral reports", "Kern County Museum / Rand Desert Museum", "BLM Rand Mountain management plan"],
+  },
+  {
+    id: "calico",
+    layer: "ghost",
+    tier: "official",
+    name: "Calico Ghost Town",
+    lon: -116.8642,
+    lat: 34.9483,
+    kind: "ghost",
+    depthM: -150,
+    facts: [
+      "Silver camp founded 1881; roughly $20 million in silver out of the Calico Mountains before the 1890s silver crash emptied it.",
+      "Walter Knott — of Knott's Berry Farm — worked in the district as a young man and bought the townsite in 1951 to restore it.",
+      "Knott deeded Calico to San Bernardino County in 1966; it is now a county regional park and a California Historical Landmark.",
+      "The Maggie Mine is the walk-in tour adit; the Silver King was the big producer.",
+    ],
+    sources: ["San Bernardino County Regional Parks — Calico", "California Historical Landmark No. 782", "Knott family / Knott's Berry Farm histories"],
+  },
+  {
+    id: "mulecanyon",
+    layer: "ghost",
+    tier: "community",
+    name: "Mule Canyon / Odessa Canyon, Calico Mountains",
+    lon: -116.775,
+    lat: 34.945,
+    kind: "ghost",
+    depthM: -120,
+    facts: [
+      "The working side of the Calico district: mudstone badlands cut by adits, shafts and the Mule Canyon road.",
+      "Borate as well as silver — the Calico Mountains produced colemanite and later borax at the Langford and Mule Canyon workings.",
+      "Miocene lakebed sediments; the same strata that make the badlands make the borates.",
+    ],
+    sources: ["USGS Calico Mountains geologic mapping", "BLM Barstow Field Office route designations"],
+  },
+  {
+    id: "dvjunction",
+    layer: "ghost",
+    tier: "official",
+    name: "Death Valley Junction (Amargosa)",
+    lon: -116.4106,
+    lat: 36.3033,
+    kind: "ghost",
+    depthM: 0,
+    facts: [
+      "Built by the Pacific Coast Borax Company as the junction of the Tonopah & Tidewater Railroad and the Death Valley Railroad.",
+      "The 1923 company town survives as the Amargosa Hotel and Opera House — Marta Becket painted an audience on the walls and performed to it for decades.",
+      "Borax, not silver: the T&T existed to move borate out of the Amargosa and Calico country.",
+    ],
+    sources: ["NRHP — Death Valley Junction Historic District", "Pacific Coast Borax / T&T Railroad records"],
+  },
+  {
+    id: "valleyoffire",
+    layer: "ghost",
+    tier: "official",
+    name: "Valley of Fire State Park, Nevada",
+    lon: -114.5153,
+    lat: 36.4283,
+    kind: "park",
+    depthM: 0,
+    facts: [
+      "Nevada's first and largest state park, dedicated 1935; ~46,000 acres of Aztec Sandstone.",
+      "Jurassic aeolian dune sand, iron-oxide stained — the 'fire' is oxidised iron in cross-bedded sandstone.",
+      "Sits just off the far end of the CALNEV run to Las Vegas, and inside the Lake Mead / Colorado River corridor that feeds the CRA.",
+    ],
+    sources: ["Nevada State Parks", "Nevada Bureau of Mines and Geology — Aztec Sandstone"],
+  },
+  {
+    id: "tehachapi-pass",
+    layer: "ghost",
+    tier: "official",
+    name: "Tehachapi Pass + Tehachapi Wind Resource Area",
+    lon: -118.3,
+    lat: 35.1,
+    kind: "park",
+    depthM: 0,
+    facts: [
+      "3,793 ft pass between the southern Sierra and the Transverse Ranges — the seam the railroad, the aqueduct and the grid all use.",
+      "One of the first large wind farms in the world (early 1980s); thousands of turbines, now repowered to fewer and far larger machines.",
+      "The State Water Project's Edmonston lift, the SP/UP rail crossing and the wind area are all within a few miles of each other.",
+    ],
+    sources: ["CEC wind resource area data", "Kern County planning records", "ASCE Tehachapi Loop landmark file"],
+  },
+
+  /* -------------------------------------------------------------- mines -- */
+  {
+    id: "bighorn-mine",
+    layer: "mines",
+    tier: "official",
+    name: "Big Horn Mine — Vincent Gap, Angeles National Forest",
+    lon: -117.7519,
+    lat: 34.3736,
+    kind: "mine",
+    depthM: -370,
+    facts: [
+      "Charles Tom Vincent — born Charles Vincent Dougherty, Civil War veteran — found the gold-bearing quartz vein in 1895 while hunting bighorn sheep on the face of Mount Baden-Powell.",
+      "Opened 1895, worked intermittently until 1985; total recorded production about 3,701 ounces of gold against wildly inflated early valuations.",
+      "Developed roughly 300 ft of drift with crosscuts to ~1,200 ft; the first mill ran on waterpower.",
+      "277 acres of private inholding bought back by the Wilderness Land Trust in 2006 and returned to Sheep Mountain Wilderness.",
+      "The mill structure burned in the 2024 Bridge Fire — the fire layer in this app is not a separate subject from the mine layer.",
+    ],
+    sources: ["USFS Angeles NF / Sheep Mountain Wilderness records", "Wilderness Land Trust acquisition file", "Wikipedia — Big Horn Mine"],
+  },
+  {
+    id: "vincent-cabin",
+    layer: "mines",
+    tier: "community",
+    name: "Vincent's Cabin, Vincent Gulch",
+    lon: -117.7556,
+    lat: 34.3703,
+    kind: "mine",
+    depthM: 0,
+    facts: [
+      "The hermit's cabin below the gap. Vincent lived in the San Gabriels roughly 40 years and died in 1926.",
+      "Vincent Gap, Vincent Gulch and the Big Horn are all one man's name on the map.",
+    ],
+    sources: ["USFS interpretive material", "Angeles NF cabin restoration records"],
+  },
+  {
+    id: "allison-mine",
+    layer: "mines",
+    tier: "community",
+    name: "Allison Mine — Iron Fork, East Fork San Gabriel",
+    lon: -117.79,
+    lat: 34.295,
+    kind: "mine",
+    depthM: -200,
+    facts: [
+      "Gold workings deep in the Sheep Mountain Wilderness above the East Fork; reachable only on foot.",
+      "Part of the East Fork district that also produced the Bridge to Nowhere, the 1930s road washout that ended organised access.",
+    ],
+    sources: ["USGS San Gabriel Mountains mineral resource reports", "Angeles NF district records"],
+  },
+  {
+    id: "monte-cristo",
+    layer: "mines",
+    tier: "community",
+    name: "Monte Cristo Mine — Chilao / Alder Creek",
+    lon: -118.115,
+    lat: 34.3,
+    kind: "mine",
+    depthM: -120,
+    facts: [
+      "Gold prospect in the upper Big Tujunga country, one of the many small workings strung along the Angeles Crest.",
+      "The San Gabriels were mined hard and produced little: steep, faulted, and short on continuous ore.",
+    ],
+    sources: ["USGS mineral resource reports", "Angeles NF historical mining summaries"],
+  },
+  {
+    id: "placerita",
+    layer: "mines",
+    tier: "official",
+    name: "Placerita Canyon — Oak of the Golden Dream",
+    lon: -118.4517,
+    lat: 34.3789,
+    kind: "mine",
+    depthM: 0,
+    facts: [
+      "6 March 1842: Francisco Lopez pulls wild onions under an oak and finds gold in the roots — the first documented gold discovery in California, six years before Sutter's Mill.",
+      "California Historical Landmark No. 168. The placer worked out fast; the story did not.",
+      "A first-in-California marker to set beside Ducommun's 1849 storefront.",
+    ],
+    sources: ["California Historical Landmark No. 168", "LA County Parks — Placerita Canyon Natural Area"],
+  },
+  {
+    id: "yellow-aster",
+    layer: "mines",
+    tier: "official",
+    name: "Yellow Aster Mine, Randsburg",
+    lon: -117.665,
+    lat: 35.362,
+    kind: "mine",
+    depthM: -300,
+    facts: [
+      "The mine that made Randsburg: located 1895, a 100-stamp mill by 1900, open-pit remnants still scarring Rand Mountain.",
+      "Gold; the district's silver came later at the Kelly, and tungsten at Atolia to the south.",
+    ],
+    sources: ["USGS Rand district reports", "California Division of Mines Bulletin series"],
+  },
+  {
+    id: "silver-king",
+    layer: "mines",
+    tier: "official",
+    name: "Silver King Mine, Calico",
+    lon: -116.8583,
+    lat: 34.9533,
+    kind: "mine",
+    depthM: -180,
+    facts: [
+      "Largest producer of the Calico district; silver chloride ore in Miocene volcanics and lakebeds.",
+      "The Maggie Mine next door is the one you can walk into — the Silver King is the one that paid.",
+    ],
+    sources: ["USGS Calico district reports", "San Bernardino County Regional Parks"],
+  },
+  {
+    id: "knotts-mine",
+    layer: "mines",
+    tier: "official",
+    name: "Calico Mine Ride, Knott's Berry Farm — Buena Park",
+    lon: -117.9981,
+    lat: 33.8442,
+    kind: "mine",
+    depthM: -20,
+    facts: [
+      "Opened 1960: a full-scale simulated silver mine built at a berry farm in Orange County, modelled on the Calico workings Walter Knott bought and restored 180 km away.",
+      "Designed by Bud Hurlbut; ore cars run through hand-sculpted stopes, a glory hole and a cathedral chamber.",
+      "The only mine in this app whose ore body is plaster — included because it is the same man, the same silver district, and the reason most Californians think they know what a mine looks like.",
+    ],
+    sources: ["Knott's Berry Farm / Bud Hurlbut design histories", "Orange County Register archive coverage"],
+  },
+
+  /* ---------------------------------------------- radar cross-section -- */
+  {
+    id: "rcs-helendale",
+    layer: "rcs",
+    tier: "official",
+    name: "Helendale Radar Cross-Section Facility (Lockheed Martin)",
+    lon: -117.3608,
+    lat: 34.8261,
+    kind: "rcs",
+    depthM: -20,
+    facts: [
+      "Built on a WWII auxiliary airfield six miles north of Helendale; measures the radar reflectivity of stealth aeroforms.",
+      "Test shapes are mounted on hydraulic pylons that rise through doors in the old runway surface — the assembly space is underneath.",
+      "Shown on the Los Angeles aviation sectional as a circle with an X. Two miles south of the Edwards restricted airspace.",
+      "One of three RCS ranges in the Antelope Valley / Victor Valley: Helendale, Tejon Ranch, Gray Butte.",
+    ],
+    sources: [
+      "Center for Land Use Interpretation — land use database",
+      "GlobalSecurity.org — Helendale Avionics Facility",
+      "LA sectional aeronautical chart",
+    ],
+  },
+  {
+    id: "rcs-tejon",
+    layer: "rcs",
+    tier: "official",
+    name: "Northrop Grumman Tejon Ranch RCS Facility",
+    lon: -118.6339,
+    lat: 34.9822,
+    kind: "rcs",
+    depthM: -20,
+    facts: [
+      "Built in the mid-1980s on Tejon Ranch land to develop stealth technology; still secure, still operating.",
+      "Same architecture as Helendale: dish array at one end, a ~50 ft triangular pedestal rising hydraulically out of the ground at the other, elaborate space below.",
+      "NOT Fort Tejon. The 1854 dragoon post is a separate site ~25 km west-southwest, on the Grapevine at the San Andreas.",
+    ],
+    sources: ["Center for Land Use Interpretation — Northrop Tejon Ranch RCS Facility", "Kern County assessor / aerial imagery"],
+  },
+  {
+    id: "rcs-graybutte",
+    layer: "rcs",
+    tier: "official",
+    name: "Gray Butte RCS Facility (McDonnell Douglas → Boeing → General Atomics)",
+    lon: -117.6797,
+    lat: 34.5636,
+    kind: "rcs",
+    depthM: -20,
+    facts: [
+      "The first of the three Antelope Valley RCS ranges, built in the 1970s by McDonnell Douglas near El Mirage Dry Lake.",
+      "Closed around 1999, sold, and converted by General Atomics into a UAV flight operations site.",
+      "Its movable gantry is visible from miles out; the white triangular pylons stand on the apron.",
+      "It is four miles from the Con Air lakebed set — the same playa serves stealth measurement and film pyrotechnics.",
+    ],
+    sources: ["Center for Land Use Interpretation", "General Atomics Gray Butte facility descriptions"],
+  },
+  {
+    id: "fort-tejon",
+    layer: "sites",
+    tier: "official",
+    name: "Fort Tejon State Historic Park",
+    lon: -118.8964,
+    lat: 34.8742,
+    kind: "first",
+    depthM: 0,
+    facts: [
+      "US Army dragoon post, 1854–1864, in Grapevine Canyon at the head of the Grapevine grade.",
+      "Sits astride the San Andreas fault: the M~7.9 Fort Tejon earthquake of 9 January 1857 ruptured ~350 km of the fault through here.",
+      "The 1857 rupture is the design earthquake everything in this app is quietly built against — aqueduct siphons, pipeline crossings, rail alignments.",
+      "Also the terminus of the US Camel Corps experiment.",
+    ],
+    sources: ["California State Parks — Fort Tejon SHP", "USGS 1857 Fort Tejon earthquake studies"],
+  },
+
+  /* ------------------------------------------------------ local memory -- */
+  {
+    id: "mem-littlebaldy",
+    layer: "memory",
+    tier: "context",
+    name: "«Little Baldy Water Company» — LOCAL MEMORY, uncorroborated",
+    lon: -117.6333,
+    lat: 34.3611,
+    kind: "memory",
+    depthM: -60,
+    facts: [
+      "Operator-supplied name. No public record found under this exact name in Wrightwood / Swarthout Valley sources.",
+      "CORROBORATED NEIGHBOURS, kept separate from the memory: Sheep Creek Water Company — private mutual formed 5 December 1913, first reservoir in Horse Canyon 1915, supply now a GRAVITY-FLOW TUNNEL north of Wrightwood delivering to Phelan; original steel pipe still visible east of Highway 2 south of Desert Front Road.",
+      "Also corroborated: Golden State Water Company has served Wrightwood since 1976 from canyon underflow, Swarthout Valley and Sheep Creek wells (~4,100 connections).",
+      "If the remembered company is a predecessor, a subsidiary ditch company, or a neighbourhood name for one of these systems, the archive to hit is the Sheep Creek Water Company's own 1913–2003 history PDFs and San Bernardino County water records.",
+    ],
+    sources: [
+      "sheepcreekwater.com — company history (1913)",
+      "Golden State Water Company — Wrightwood system",
+      "SWRCB consumer confidence report CA3610047",
+    ],
+  },
+  {
+    id: "mem-annendorf",
+    layer: "memory",
+    tier: "context",
+    name: "«Annendorf», Wrightwood — LOCAL MEMORY, unresolved",
+    lon: -117.6306,
+    lat: 34.3606,
+    kind: "memory",
+    depthM: 0,
+    facts: [
+      "Operator-supplied place name. Not found in GNIS, USGS 7.5′ quad names, San Bernardino County place-name indexes, or Wrightwood settlement histories.",
+      "Documented Swarthout Valley names it is NOT: Swarthout (1851 Mormon cattle brothers), Circle Mountain Ranch / Sumner B. Wright (subdivided 1924, named the town), Guffy's cabin, Heath's dairy, Big Pines (LA County camp, 1924).",
+      "Plotted only so the memory has a coordinate to be tested against. Do not cite this pin as evidence of anything.",
+    ],
+    sources: ["USGS GNIS query (no match)", "Wrightwood settlement histories — Wright / Swarthout / Big Pines"],
+  },
+  {
+    id: "mem-cucamonga-tram",
+    layer: "memory",
+    tier: "context",
+    name: "«Rancho Cucamonga tram to Lookout Point» — LOCAL MEMORY, unresolved",
+    lon: -117.575,
+    lat: 34.185,
+    kind: "memory",
+    depthM: 0,
+    facts: [
+      "Operator-supplied. No public record located of a passenger aerial tramway from Rancho Cucamonga to a 'Lookout Point'.",
+      "CORROBORATED NEIGHBOURS: the Pacific Electric Railway was extended through Cucamonga in 1913 for crop haulage; irrigation TUNNELS were driven into Cucamonga Canyon by Chinese labourers in 1887; the Santa Fe reached the area the same year.",
+      "Mountain-resort tramways in this range that do exist: the Mt. Baldy Notch lifts (Mt. Baldy Ski Lifts, 1952–), and further east the Palm Springs Aerial Tramway (1963).",
+      "Likeliest resolutions to check: a mining/quarry cable way in Cucamonga or Deer Canyon, a private incline at a canyon resort, or a conflation with the Baldy Notch lift.",
+    ],
+    sources: [
+      "Rancho Cucamonga civic history — 1887 canyon irrigation tunnels, 1913 Pacific Electric extension",
+      "Mt. Baldy Ski Lifts historical material",
+    ],
+  },
+];
+
+/**
+ * Sites the operator named that fall outside the frame. Rendered as an
+ * edge register rather than fake geometry — a pin at the wrong place is worse
+ * than no pin.
+ */
+export const OFF_FRAME = [
+  {
+    id: "valley-of-fires-nm",
+    name: "Valley of Fires Recreation Area, New Mexico",
+    lon: -105.9236,
+    lat: 33.6817,
+    facts: [
+      "BLM site on the Carrizozo Malpais — a basaltic lava flow ~5,000 years old, roughly 40 miles long, one of the youngest in the lower 48.",
+      "Different feature, near-identical name to Nevada's Valley of Fire: there the 'fire' is red Jurassic sandstone, here it is black young basalt.",
+      "About 1,050 km east of this frame's centre — off-map by design.",
+    ],
+    sources: ["BLM Roswell Field Office — Valley of Fires", "NM Bureau of Geology — Carrizozo flow"],
+  },
+];

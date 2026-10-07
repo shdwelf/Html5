@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>INGRESS INTEL 4Dwm — portal / link / field theater with a real connection ladder</title>
+  <meta name="description" content="A Three.js intel map for Ingress portals, mind links and control fields: globe and Los Angeles basin stages, a documented attempt ladder against the live intel API, capture and IITC-import readers, and a webxdc peer channel for agents." />
+  <link rel="stylesheet" href="./css/ingress-intel.css" />
+</head>
+<body>
+  <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
+  <div id="labels" aria-hidden="true"></div>
+  <div id="watermark" class="watermark" aria-live="polite">SIM</div>
+
+  <header class="topbar">
+    <div>
+      <h1>INGRESS INTEL 4Dwm</h1>
+      <p>portals · mind links · control fields · <span id="linkState" class="chip">link state unknown</span></p>
+    </div>
+    <div class="actions">
+      <select id="viewSelect" aria-label="Jump to view">
+        <option value="globe">VIEW · PLANET</option>
+        <option value="la">VIEW · LOS ANGELES</option>
+        <option value="socal">VIEW · SOCAL TRANSECT</option>
+      </select>
+      <select id="timeSelect" aria-label="Terminator time">
+        <option value="now">TIME · NOW (UTC)</option>
+        <option value="06">TIME · 06Z</option>
+        <option value="12">TIME · 12Z</option>
+        <option value="18">TIME · 18Z</option>
+      </select>
+      <button type="button" id="btnXray" aria-pressed="false">X-RAY</button>
+      <button type="button" id="btnLinks" aria-pressed="true">LINKS</button>
+      <button type="button" id="btnFields" aria-pressed="true">FIELDS</button>
+      <button type="button" id="btnLabels" aria-pressed="true">LABELS</button>
+      <button type="button" id="btnProbe">PROBE</button>
+      <button type="button" id="btnReset">RESET</button>
+    </div>
+  </header>
+
+  <!-- PIP: connection ladder ------------------------------------------- -->
+  <section class="pip" id="pipFeed">
+    <div class="pip-head"><h2>FEED · CONNECTION LADDER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div class="feed-summary">
+        <span class="kv-inline"><b>rung</b> <i id="feedRung">—</i></span>
+        <span class="kv-inline"><b>state</b> <i id="feedLive">—</i></span>
+        <span class="kv-inline"><b>age</b> <i id="feedAge">—</i></span>
+        <span class="kv-inline"><b>req</b> <i id="feedReq">0</i></span>
+      </div>
+      <div class="gaz-ops">
+        <button type="button" id="btnProbeFull">PROBE ALL RUNGS</button>
+        <button type="button" id="btnArm" aria-pressed="false">ARM POLL</button>
+        <button type="button" id="btnComms">GET COMMS</button>
+      </div>
+      <div id="ladderList" class="ladder"></div>
+      <details class="relay-config">
+        <summary>relay + proxy config</summary>
+        <label class="fld"><span>relay base (your forwarder, CORS-open)</span>
+          <input id="relayBase" type="text" placeholder="http://127.0.0.1:8799" spellcheck="false" autocomplete="off" /></label>
+        <label class="fld"><span>relay key (session only, never persisted)</span>
+          <input id="relayKey" type="password" placeholder="optional" autocomplete="off" /></label>
+        <div class="row2">
+          <label class="fld"><span>CORS proxy preset</span>
+            <select id="proxyPreset">
+              <option value="direct">direct (no proxy)</option>
+              <option value="allorigins">api.allorigins.win/raw</option>
+              <option value="corsproxy">corsproxy.io</option>
+            </select></label>
+          <label class="fld"><span>data zoom</span>
+            <input id="dataZoom" type="number" min="1" max="21" step="1" value="12" /></label>
+        </div>
+        <div class="row2">
+          <label class="fld"><span>refresh s</span><input id="refreshS" type="number" min="15" max="3600" step="5" value="60" /></label>
+          <label class="fld"><span>client v hint</span><input id="clientVersion" type="text" placeholder="relay reports it" spellcheck="false" /></label>
+        </div>
+        <p class="hint">The intel API answers only <code>intel.ingress.com</code> itself: it needs that origin's login cookie and CSRF token, so no other page — and no GET-only public proxy — can call it. A relay you run is the only non-same-origin path that returns real game state. Nothing in this app stores your credentials; the relay holds them.</p>
+      </details>
+      <div class="gaz-ops">
+        <button type="button" id="btnTilesHere">TILE REQUEST · THIS VIEW</button>
+        <button type="button" id="btnCopyReq">COPY JSON</button>
+        <button type="button" id="btnCopyIntel">COPY INTEL LINK</button>
+      </div>
+      <pre id="tileRequest" class="payload" hidden></pre>
+      <div class="import-zone">
+        <label for="intelPaste" class="hint">paste a captured payload, an intel link, or drop a file (JSON / GeoJSON / KML / CSV)</label>
+        <textarea id="intelPaste" rows="3" spellcheck="false" placeholder='{"result":{"map":{"12_…":{"gameEntities":[…]}}}}  ·  or https://intel.ingress.com/intel?ll=34.05,-118.24&amp;z=13'></textarea>
+        <div class="gaz-ops">
+          <button type="button" id="btnImport">READ IT</button>
+          <input type="file" id="intelFile" accept=".json,.geojson,.kml,.csv,.txt" />
+        </div>
+      </div>
+      <div class="gaz-ops">
+        <button type="button" id="btnExportGj">EXPORT · GEOJSON</button>
+        <button type="button" id="btnExportKml">KML</button>
+        <button type="button" id="btnExportCsv">CSV</button>
+      </div>
+      <ul class="srcs" id="feedSources"></ul>
+    </div>
+  </section>
+
+  <!-- PIP: HUD ---------------------------------------------------------- -->
+  <section class="pip" id="pipHud">
+    <div class="pip-head"><h2>HUD · FRAME</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <form class="search-row" id="viewSearch" role="search">
+        <label class="sr-only" for="searchBox">Search intel records, gazetteer names and places</label>
+        <input type="search" id="searchBox" placeholder="find portal · link · field · place…" autocomplete="off" />
+        <div id="searchResults" aria-live="polite"></div>
+      </form>
+      <dl class="kv">
+        <dt>stage</dt><dd id="hudStage">—</dd>
+        <dt>source</dt><dd id="hudSource">—</dd>
+        <dt>portals</dt><dd id="hudPortals">—</dd>
+        <dt>links / fields</dt><dd id="hudLF">—</dd>
+        <dt>tiles held</dt><dd id="hudTiles">—</dd>
+        <dt>camera</dt><dd id="hudCam">—</dd>
+        <dt>cursor</dt><dd id="hudLonLat">—</dd>
+        <dt>ground</dt><dd id="hudElev">—</dd>
+        <dt>terminator</dt><dd id="hudSun">—</dd>
+        <dt>pickable</dt><dd id="hudObjects">—</dd>
+        <dt>fps</dt><dd id="hudFps">—</dd>
+      </dl>
+      <div class="slider-row">
+        <label for="exag">relief exaggeration <span id="exagVal">3×</span></label>
+        <input type="range" id="exag" min="1" max="12" step="1" value="3" />
+      </div>
+      <div class="slider-row">
+        <label for="lift">link altitude <span id="liftVal">1.00×</span></label>
+        <input type="range" id="lift" min="0" max="6" step="0.25" value="1" />
+      </div>
+      <div class="slider-row">
+        <label for="linkMax">link filter ≤ <span id="linkMaxVal">160 km</span></label>
+        <input type="range" id="linkMax" min="1" max="160" step="1" value="160" />
+      </div>
+      <p class="hint" id="peer">webxdc · probing…</p>
+    </div>
+  </section>
+
+  <!-- PIP: layers ------------------------------------------------------- -->
+  <section class="pip" id="pipLayers">
+    <div class="pip-head"><h2>LAYERS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div id="layerList"></div>
+      <p class="hint" style="margin-top:8px">
+        Evidence tiers — <span style="color:#ffb020">official</span> from the intel wire or the game client,
+        <span style="color:#5cd6ff">community</span> imported from another tool,
+        <span style="color:#ff6ec7">context</span> generated for offline demo.
+      </p>
+    </div>
+  </section>
+
+  <!-- PIP: faction score ------------------------------------------------ -->
+  <section class="pip" id="pipScore">
+    <div class="pip-head"><h2>SCORE · MIND UNITS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div id="scoreBars"></div>
+      <dl class="kv" id="scoreStats"></dl>
+      <p class="hint" id="scoreNote">—</p>
+    </div>
+  </section>
+
+  <!-- PIP: comms timeline ----------------------------------------------- -->
+  <section class="pip" id="pipTimeline">
+    <div class="pip-head"><h2>COMMS · 24 H</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <canvas id="timelineCanvas" width="300" height="96" aria-label="24 hour activity histogram"></canvas>
+      <ol id="timelineList" class="plext-list"></ol>
+      <p class="hint">Bars are comms events per hour, stacked by faction. Click a row to fly to its portal.</p>
+    </div>
+  </section>
+
+  <!-- PIP: gazetteer ----------------------------------------------------- -->
+  <section class="pip" id="pipGaz">
+    <div class="pip-head"><h2>GAZETTEER · USGS GNIS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div class="gaz-controls">
+        <input id="gazQuery" type="search" placeholder="search-name (fuzzy, trigram)…" aria-label="Search place names" autocomplete="off" />
+        <button type="button" id="gazBox" class="tiny">SEARCH-BOX · VIEW</button>
+      </div>
+      <ol id="gazHits" class="gaz-hits"></ol>
+      <p class="hint" style="margin-top:6px">
+        The register that the offline SIM hangs on: real names and real coordinates, so a demo network still lands on real ground. Shared with
+        <code>socal-subsurface</code> — same module, same 343-entry seed register.
+      </p>
+    </div>
+  </section>
+
+  <!-- PIP: peers --------------------------------------------------------- -->
+  <section class="pip" id="pipShare">
+    <div class="pip-head"><h2>PEERS · WEBXDC</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <dl class="kv" id="shareStats"></dl>
+      <div class="gaz-ops">
+        <button type="button" id="btnDrop">DROP MARKER · TARGET</button>
+        <button type="button" id="btnBroadcast">BROADCAST FRAME</button>
+        <button type="button" id="btnDropClear">CLEAR</button>
+      </div>
+      <ol id="peerList" class="plext-list"></ol>
+      <p class="hint">Agents in the same chat receive drops and frames through the host's broadcast channel — the one network path here that needs no permission from anyone.</p>
+    </div>
+  </section>
+
+  <!-- PIP: dossier ------------------------------------------------------- -->
+  <section class="pip" id="pipDetail">
+    <div class="pip-head"><h2>DOSSIER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body" id="detailBody"></div>
+  </section>
+
+  <!-- PIP: plan view ----------------------------------------------------- -->
+  <section class="pip" id="pipMap">
+    <div class="pip-head"><h2>PLAN VIEW</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <canvas id="minimap" width="220" height="170" aria-label="Plan view of the intel frame"></canvas>
+      <p class="hint" style="margin:6px 0 0" id="miniNote">Equirect pass of the frame in view. White wedge is the camera.</p>
+    </div>
+  </section>
+
+  <footer class="statusbar">
+    <span id="status" aria-live="polite">booting…</span>
+    <span id="sysline">ladder idle</span>
+    <span>SIM data is never game state · intel belongs to its operators</span>
+  </footer>
+
+  <script src="./webxdc.js"></script>
+  <script type="module" src="./js/ingress-intel.js"></script>
+</body>
+</html>

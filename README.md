@@ -80,11 +80,12 @@ workflow permission).
 - **[Glendora High 4Dwm](glendora-high-4dwm.html)** — Class of 2001 at 1600 E Foothill Blvd, "now that I am a graduate". Ships as `glendora-high-4dwm.xdc`.
 - **[ESGVROP 4Dwm](esgvrop-4dwm.html)** — East San Gabriel Valley ROP & Technical Center, the summer-2001 deep dive across the Del Norte and Sunflower campuses. Ships as `esgvrop-4dwm.xdc`.
 - **[Dalton Race 4Dwm](dalton-race-4dwm.html)** — Big Dalton / Little Dalton terrain with pips, route pointers, and VRML export. Ships as `dalton-race-4dwm.xdc`.
+- **[INGRESS INTEL 4Dwm](ingress-intel.html)** — an Ingress intel theater that actually tries to connect: a six-rung connection ladder (same-origin → your relay → public CORS proxy → pasted capture → webxdc peer → offline register) with a verdict and a fix printed per rung, the same intel payload drawn on a planet globe with geodesic links, spherical control fields and a live day/night terminator *and* on the SoCal basin plate, and an honest `SIM` watermark whenever nothing live answered. Decodes/encodes `getEntities`, portal-detail and plext payloads, IITC GeoJSON/KML/CSV exports and intel permalinks. Ships as `ingress-intel.xdc`. See [docs/ingress-intel-map-viewer.md](docs/ingress-intel-map-viewer.md) and the [connector research](docs/ingress-intel-connector-research-2026-10-07.md).
 - **[FOUR CORNERS · calculator port](four-corners-calc.html)** — the bench for the TI-83/89/92 port: it runs the port's own C core transpiled to an ES module, so the preview *is* the port.
 
 Every 4Dwm-family Webxdc rebuilds from one command — `npm run build:4dwm`
-chains all eleven packagers (bluetops, cheyenne, dalton-race, esgvrop,
-four-corners, glendora-high, greeran-family, greeran-subsurface,
+chains all twelve packagers (bluetops, cheyenne, dalton-race, esgvrop,
+four-corners, glendora-high, greeran-family, greeran-subsurface, ingress-intel,
 sanborn-restaurant, socal-subsurface, vincennes); each app also has its own
 `npm run build:<name>`.
 
