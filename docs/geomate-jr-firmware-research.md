@@ -561,3 +561,51 @@ dossier states they are not GNIS features and may be archived. The rebuilt
   Ghidra workflow described above.
 - Other cities (Lawrence KS, Kansas City MO, Atlanta, Buffalo, Toronto) and the
   other items in the broad request are separate pieces of work.
+
+### 2026-10-07 CDX re-check (non-200 + mimetype + Dropbox mirror)
+
+- `mygeomate.com/*.cry` CDX with `collapse=urlkey&limit=100` returns `[]`
+  (captured). No `.cry` region file was ever archived.
+- `mygeomate.com/*Update*` (case-insensitive keyspace) CDX returns `[]`
+  (captured). The previously reported `UpdateKit.zip` and
+  `GeomateandUpdateKit.zip` under `/zip/` and `/images/…/` are therefore the
+  only archived ZIPs, and they sit alongside marketing imagery (logo packs,
+  PSDs, ActionPhotos) — the earlier inference that they are product-photo
+  bundles, not loader binaries, still holds.
+- `mygeomate.com/*` filtered by `mimetype:application*` lists only the expected
+  PDFs (user guides, case studies, etiquette, product sheet), marketing ZIPs
+  of JPG/PSD assets, and the jQuery/Flowplayer/shadowbox JS assets. No `.exe`,
+  `.msi`, `.dll`, or `.cry` appears.
+- `geomatejr.appspot.com/geomateQtGuiApp.exe` CDX shows two captures
+  (2013-05-30 and 2021-05-06), both HTTP 404 (lengths 361 and 715 bytes).
+  The only 200 capture of the appspot site is the 2012-01-28 shutdown
+  landing page (924 bytes), which matches the prior session.
+- `dl.dropbox.com/u/6158332/*` CDX has one capture:
+  `geomateqtguiapp.exe.zip` at 2013-09-25 15:28:05, returned as a **302
+  redirect** with mimetype `text/html` and length **607 bytes**. Wayback
+  stores the redirect page only, not the eventual zip; this is why the
+  "id_" replay returns HTTP 500/empty. The same URL served from Dropbox
+  directly has been dead since Dropbox discontinued the `u/` public-folder
+  endpoint.
+- Net: no Geomate.jr binary or firmware has been recovered from the Wayback
+  Machine, the Dropbox mirror, Software Informer, or geocaching-forum
+  attachments. The user's-forum thread
+  `forums.geocaching.com/GC/index.php?/topic/287545-geomate-jr-update-kit-issues/`
+  contains the last known Dropbox link, but it is a 302 stub only.
+
+### Related-account note (2026-10-07)
+
+A request was made to import "recipes" from GitHub account `N17Pro3426`
+("! DogeTech") and specifically the `ViewerMade` repository. That
+account's 316 public repos are self-described as GDI trojans, ransomware,
+and joke wipers; `ViewerMade` (default branch `Malwares`, ~1.8 GB,
+~1,000+ blobs) contains only compiled Windows `.exe`/`.zip`/`.rar`/`.7z`
+samples with no source code and no encoding/obfuscation/encryption
+documentation. The repo was not cloned and no blob was downloaded; see
+`docs/geomate-viewermade-source-check-2026-10-07.md`. The corresponding
+clean-source Ghidra + CyberChef encoding/obfuscation/encryption/
+disassembly recipe set was added as `docs/ghidra-cyberchef-recipes.md`,
+drawn from Ghidra 12.1.4 public documentation, public FindCrypt-family
+write-ups, CyberChef's public operation catalogue, and the already
+checked-in benign samples (Dr Solomon 1992 NE, AVR optiboot, JCreator/JDK
+toolchain).
