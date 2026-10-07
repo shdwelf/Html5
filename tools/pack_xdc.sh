@@ -34,6 +34,7 @@ four-corners.html
 convention-centers.html
 los-alamos.html
 ghidra-lab.html
+warrick.html
 flash-decompiler.html
 distro-dossier.html
 satellite-constellations.html

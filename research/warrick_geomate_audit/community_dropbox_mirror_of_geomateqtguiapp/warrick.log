@@ -1,0 +1,51 @@
+Logging output to /home/user/Html5/research/warrick_geomate_audit/community_dropbox_mirror_of_geomateqtguiapp/warrick.log
+
+in directory: /home/user/Html5/research/warrick_geomate_audit/community_dropbox_mirror_of_geomateqtguiapp
+
+Warrick version 2.2.2 by Frank McCown, adapted by Justin F. Brunelle
+PID = 3265
+Machine name = e2b.local
+
+Setting up: Download to directory: /home/user/Html5/research/warrick_geomate_audit/community_dropbox_mirror_of_geomateqtguiapp
+
+not using input file...
+
+Getting out of the get_memento function with http://dl.dropbox.com/u/6158332/geomateQtGuiApp.exe.zip
+
+now dir is /home/user/Html5/research/warrick_geomate_audit/community_dropbox_mirror_of_geomateqtguiapp
+
+Host comparison:  vs dl.dropbox.com
+
+
+
+removing duplicate paths 1: u/6158332/geomateQtGuiApp.exe.zip =>targetpath: u/6158332/geomateQtGuiApp.exe.zip
+
+made 
+
+Making directory .//u
+Making directory .//u/6158332
+
+
+ mcurling: /home/user/Html5/tools/warrick//mcurl.pl -D "/home/user/Html5/research/warrick_geomate_audit/community_dropbox_mirror_of_geomateqtguiapp/logfile.o"  -tg "http://mementoproxy.cs.odu.edu/aggr/timegate" -L -o "/home/user/Html5/research/warrick_geomate_audit/community_dropbox_mirror_of_geomateqtguiapp//u/6158332/geomateQtGuiApp.exe.zip" "http://dl.dropbox.com/u/6158332/geomateQtGuiApp.exe.zip"
+
+Reading logfile: /home/user/Html5/research/warrick_geomate_audit/community_dropbox_mirror_of_geomateqtguiapp/logfile.o
+
+
+Unable to download...
+Download Error
+
+
+To stats FAILED:: http://dl.dropbox.com/u/6158332/geomateQtGuiApp.exe.zip => ??? => /home/user/Html5/research/warrick_geomate_audit/community_dropbox_mirror_of_geomateqtguiapp//u/6158332/geomateQtGuiApp.exe.zip --> Stat Failure...
+
+Search HTML resource  for links to other missing resources...
+No such file 
+
+No Content in !
+
+Starting recovery at position 0 of -1
+
+Program terminated.
+
+-----------------------
+
+

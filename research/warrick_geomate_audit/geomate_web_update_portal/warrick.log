@@ -1,0 +1,51 @@
+Logging output to /home/user/Html5/research/warrick_geomate_audit/geomate_web_update_portal/warrick.log
+
+in directory: /home/user/Html5/research/warrick_geomate_audit/geomate_web_update_portal
+
+Warrick version 2.2.2 by Frank McCown, adapted by Justin F. Brunelle
+PID = 3190
+Machine name = e2b.local
+
+Setting up: Download to directory: /home/user/Html5/research/warrick_geomate_audit/geomate_web_update_portal
+
+not using input file...
+
+Getting out of the get_memento function with http://mygeomate.com/updates
+
+now dir is /home/user/Html5/research/warrick_geomate_audit/geomate_web_update_portal
+
+Host comparison:  vs mygeomate.com
+
+this path doesn't have an extension: updates so I'll add one
+
+
+removing duplicate paths 1: updates/index.html =>targetpath: updates/index.html
+
+made 
+
+Making directory .//updates
+
+
+ mcurling: /home/user/Html5/tools/warrick//mcurl.pl -D "/home/user/Html5/research/warrick_geomate_audit/geomate_web_update_portal/logfile.o"  -tg "http://mementoproxy.cs.odu.edu/aggr/timegate" -L -o "/home/user/Html5/research/warrick_geomate_audit/geomate_web_update_portal//updates/index.html" "http://mygeomate.com/updates"
+
+Reading logfile: /home/user/Html5/research/warrick_geomate_audit/geomate_web_update_portal/logfile.o
+
+
+Unable to download...
+Download Error
+
+
+To stats FAILED:: http://mygeomate.com/updates => ??? => /home/user/Html5/research/warrick_geomate_audit/geomate_web_update_portal//updates/index.html --> Stat Failure...
+
+Search HTML resource  for links to other missing resources...
+No such file 
+
+No Content in !
+
+Starting recovery at position 0 of -1
+
+Program terminated.
+
+-----------------------
+
+

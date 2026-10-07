@@ -46,6 +46,7 @@ export const GAZ_CLASS_META = {
   Census: { label: "Census/CDPs", short: "CDP", swatch: "#f0e6c8" },
   Military: { label: "Military", short: "MIL", swatch: "#9fb6a3" },
   "Populated Place": { label: "Populated places", short: "PPL", swatch: "#f8fafc" },
+  Geocache: { label: "Geocaches", short: "GC", swatch: "#34d399" },
 };
 
 /** FTT prefix → human label, for the facet dropdown. */
@@ -56,6 +57,7 @@ export const GAZ_FACETS = [
   { fac: "manmade", label: "manmade (manmade.*)" },
   { fac: "pop", label: "populated (pop.*)" },
   { fac: "admin", label: "administrative (admin.*)" },
+  { fac: "rec", label: "recreational (rec.*)" },
 ];
 
 export const normalizeName = (s) =>
