@@ -15,11 +15,19 @@ import { OrbitControls } from "../vendor/OrbitControls.js";
 import {
   GAZ_CLASS_META,
   GAZ_FACETS,
+  appendGazetteerRows,
   classRollup,
   makeGazetteerIndex,
   searchBox,
   searchName,
 } from "./city-gazetteer.js";
+import {
+  MAX_GPX_FILE_BYTES,
+  cacheToGazetteerRow,
+  createGpxPreservationBag,
+  parseGeomateGpx,
+  safeGpxFilename,
+} from "./gpx-geocache.js";
 
 const $ = (id) => document.getElementById(id);
 const CITY_ID = document.body.dataset.city || "lawrence";
@@ -409,11 +417,19 @@ for (const node of NODES) {
 
 /* ------------------------------------------------- ADL/GNIS + geocaches */
 
-const gazIdx = makeGazetteerIndex(GAZ_ROWS);
+// Label host first: addGazEntry() creates a callout per register row.
+const labelHost = $("labels");
+const gazRows = [...GAZ_ROWS];
+const gazIdx = makeGazetteerIndex(gazRows);
 const gazMeshes = [];
 const gazHeadByIdx = new Map();
 
-for (const e of gazIdx.entries) {
+/**
+ * Draw one ADL GCS entry as a pin. Called for the static pack at boot and again
+ * for every waypoint a local GPX import adds, so the register stays one code
+ * path for GNIS names and community geocaches.
+ */
+function addGazEntry(e) {
   const meta = GAZ_CLASS_META[e.fclass] ?? { swatch: "#9db2d1", short: "GNIS" };
   const color = new THREE.Color(meta.swatch);
   if (!e.verified) color.multiplyScalar(0.55);
@@ -469,13 +485,21 @@ for (const e of gazIdx.entries) {
   g.add(head);
   PICKABLE.push(head);
   groups[isCache ? "geocaches" : "gazetteer"].add(g);
-  gazMeshes.push({ entry: e, group: g, head });
+
+  const label = document.createElement("div");
+  label.className = `lbl gaz t-${e.verified ? "official" : "community"}`;
+  label.textContent = e.name.slice(0, 34);
+  labelHost.append(label);
+
+  gazMeshes.push({ entry: e, group: g, head, label });
   gazHeadByIdx.set(e.i, head);
+  refreshGazClasses();
 }
+
+for (const e of gazIdx.entries) addGazEntry(e);
 
 /* ----------------------------------------------------------------- labels */
 
-const labelHost = $("labels");
 const labelEls = new Map();
 for (const { node } of nodeMeshes) {
   const el = document.createElement("div");
@@ -484,13 +508,6 @@ for (const { node } of nodeMeshes) {
   labelHost.append(el);
   labelEls.set(node.id, el);
 }
-const gazLabelEls = gazMeshes.map(({ entry }) => {
-  const el = document.createElement("div");
-  el.className = `lbl gaz t-${entry.verified ? "official" : "community"}`;
-  el.textContent = entry.name.slice(0, 34);
-  labelHost.append(el);
-  return el;
-});
 const gazHitIds = new Set();
 
 /* ------------------------------------------------------------------- HUD */
@@ -570,8 +587,13 @@ if (gazFacetSel) {
   });
 }
 
-if (gazClassesHost) {
-  for (const cl of classRollup(GAZ_ROWS)) {
+/** Rebuild the class chips from whichever rows the register currently holds. */
+function refreshGazClasses() {
+  if (!gazClassesHost) return;
+  gazClassesHost.textContent = "";
+  gazClassToggles.length = 0;
+  gazState.classes = null;
+  for (const cl of classRollup(gazRows)) {
     const row = document.createElement("label");
     row.className = "gaz-chip";
     const cb = document.createElement("input");
@@ -671,6 +693,136 @@ $("gazClear")?.addEventListener("click", () => {
 if (gazCaps) {
   gazCaps.textContent = `${GAZ_META.rowCount} names · ${GAZ_META.verified} verified · EPSG:4326`;
 }
+
+/* ------------------------------------------ local GPX → geocache register */
+
+const gpxInput = $("gpxFile");
+const gpxImportButton = $("gpxImport");
+const gpxExportButton = $("gpxExportBag");
+const gpxClearButton = $("gpxClear");
+const gpxImportStatus = $("gpxImportStatus");
+let gpxImport = null;
+let importedEntries = [];
+
+function setGpxStatus(message) {
+  if (gpxImportStatus) gpxImportStatus.textContent = message;
+}
+
+/** Add parsed GPX caches to the live register and draw one pin per cache. */
+function addImportedRows(rows) {
+  const added = appendGazetteerRows(gazIdx, rows);
+  for (let i = 0; i < added.length; i += 1) {
+    gazRows.push(rows[i]);
+    addGazEntry(added[i]);
+    importedEntries.push(added[i]);
+  }
+  refreshCounts();
+}
+
+function clearImportedCaches() {
+  if (!importedEntries.length) {
+    setGpxStatus("No local GPX import to clear.");
+    return;
+  }
+  const removed = new Set(importedEntries.map((entry) => entry.i));
+  for (const entry of importedEntries) {
+    const foundIndex = gazMeshes.findIndex((m) => m.entry.i === entry.i);
+    if (foundIndex >= 0) {
+      const [mesh] = gazMeshes.splice(foundIndex, 1);
+      mesh.head.geometry.dispose();
+      mesh.head.material.dispose();
+      mesh.group.removeFromParent();
+      mesh.label.remove();
+      const pick = PICKABLE.indexOf(mesh.head);
+      if (pick >= 0) PICKABLE.splice(pick, 1);
+    }
+    gazHeadByIdx.delete(entry.i);
+    gazHitIds.delete(entry.i);
+  }
+  gazIdx.entries = gazIdx.entries.filter((entry) => !removed.has(entry.i));
+  gazRows.length = 0;
+  gazRows.push(...GAZ_ROWS);
+  importedEntries = [];
+  gpxImport = null;
+  if (gpxInput) gpxInput.value = "";
+  if (gpxExportButton) gpxExportButton.disabled = true;
+  if (gpxClearButton) gpxClearButton.disabled = true;
+  refreshGazClasses();
+  renderGazHits([], "name");
+  refreshCounts();
+  setGpxStatus("Local GPX import cleared. Nothing remains in this session.");
+  setStatus("geocache import cleared");
+}
+
+if (gpxImportButton) {
+  gpxImportButton.addEventListener("click", async () => {
+    const file = gpxInput?.files?.[0];
+    if (!file) {
+      setGpxStatus("Choose a .gpx file first.");
+      return;
+    }
+    if (file.size > MAX_GPX_FILE_BYTES) {
+      setGpxStatus(`Import refused: file exceeds ${Math.floor(MAX_GPX_FILE_BYTES / (1024 * 1024))} MiB.`);
+      return;
+    }
+    gpxImportButton.disabled = true;
+    setGpxStatus("Parsing GPX locally…");
+    try {
+      const parsed = parseGeomateGpx(await file.text(), { sourceName: file.name, bounds: BBOX });
+      clearImportedCaches();
+      addImportedRows(parsed.inFrameCaches.map((cache) => cacheToGazetteerRow(cache, parsed.sourceName)));
+      gpxImport = { parsed, sourceFile: file };
+      if (gpxExportButton) gpxExportButton.disabled = false;
+      if (gpxClearButton) gpxClearButton.disabled = false;
+      const { stats } = parsed;
+      setGpxStatus(
+        `${safeGpxFilename(file.name)} · GPX ${parsed.gpxVersion} · ${stats.cacheWaypoints} cache waypoint(s), ` +
+          `${stats.importedToMap} inside this frame, ${stats.outOfFrame} outside` +
+          `${stats.duplicates ? `, ${stats.duplicates} duplicate` : ""}` +
+          `${stats.invalidCoordinates ? `, ${stats.invalidCoordinates} invalid` : ""}. Held in memory only.`,
+      );
+      setStatus(`GPX import · ${stats.importedToMap} local cache(s) added to the gazetteer`);
+      runGazSearch();
+    } catch (error) {
+      gpxImport = null;
+      if (gpxExportButton) gpxExportButton.disabled = true;
+      if (gpxClearButton) gpxClearButton.disabled = true;
+      setGpxStatus(`Import failed: ${error.message}`);
+    } finally {
+      gpxImportButton.disabled = false;
+    }
+  });
+}
+
+if (gpxExportButton) {
+  gpxExportButton.addEventListener("click", async () => {
+    if (!gpxImport) return;
+    gpxExportButton.disabled = true;
+    setGpxStatus("Building the preservation bag…");
+    try {
+      const bag = await createGpxPreservationBag(gpxImport);
+      const url = URL.createObjectURL(new Blob([bag.bytes], { type: "application/zip" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = bag.fileName;
+      link.rel = "noopener";
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      setGpxStatus(
+        `Downloaded ${bag.fileName} · source SHA-256 ${bag.originalSha256} · bag SHA-256 ${bag.zipSha256}` +
+          `${bag.complete ? "" : " · normalized rendition is capped; the original is complete"}.`,
+      );
+    } catch (error) {
+      setGpxStatus(`Preservation export failed: ${error.message}`);
+    } finally {
+      gpxExportButton.disabled = false;
+    }
+  });
+}
+
+if (gpxClearButton) gpxClearButton.addEventListener("click", clearImportedCaches);
 
 /* --------------------------------------------------------- PIP + controls */
 
@@ -996,7 +1148,7 @@ function updateLabels() {
     el.style.top = `${((1 - v3.y) / 2) * h - 16}px`;
     el.style.opacity = String(Math.max(0.25, 1 - dist / 90));
   }
-  for (const el of gazLabelEls) el.style.display = "none";
+  for (const { label } of gazMeshes) label.style.display = "none";
   const near = [];
   for (let gi = 0; gi < gazMeshes.length; gi += 1) {
     const { entry, head } = gazMeshes[gi];
@@ -1008,7 +1160,7 @@ function updateLabels() {
   }
   near.sort((a, b) => a.dist - b.dist);
   for (const n of near.slice(0, 12)) {
-    const el = gazLabelEls[n.gi];
+    const el = gazMeshes[n.gi].label;
     n.head.getWorldPosition(v3);
     v3.project(camera);
     if (v3.z >= 1 || Math.abs(v3.x) > 1.05 || Math.abs(v3.y) > 1.05) continue;

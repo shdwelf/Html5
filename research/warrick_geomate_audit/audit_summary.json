@@ -1,0 +1,114 @@
+[
+  {
+    "target": {
+      "url": "http://mygeomate.com/",
+      "label": "Geomate Main Site Root",
+      "cdx_pattern": "http://mygeomate.com/*",
+      "expected_type": "text/html",
+      "notes": "Original company homepage (Apisphere / Brand 44)."
+    },
+    "status": "memento_frontier_exhausted_zero_bytes",
+    "warrick_exit_code": 0,
+    "warrick_stdout_snippet": "\n\n#########################################################################\n# Welcome to the Warrick Program!\n# Warrick is a website recovery tool out of Old Dominion University\n# Please provide feedback to Justin F. Brunelle at jbrunelle@cs.odu.edu\n#########################################################################\n\n\n\nArguments: -nr -D /home/user/Html5/research/warrick_geomate_audit/geomate"
+  },
+  {
+    "target": {
+      "url": "http://mygeomate.com/updates",
+      "label": "Geomate Web Update Portal",
+      "cdx_pattern": "http://mygeomate.com/updates*",
+      "expected_type": "text/html",
+      "notes": "Historical web-based update portal for loading regional cache databases."
+    },
+    "status": "memento_frontier_exhausted_zero_bytes",
+    "warrick_exit_code": 0,
+    "warrick_stdout_snippet": "\n\n#########################################################################\n# Welcome to the Warrick Program!\n# Warrick is a website recovery tool out of Old Dominion University\n# Please provide feedback to Justin F. Brunelle at jbrunelle@cs.odu.edu\n#########################################################################\n\n\n\nArguments: -nr -D /home/user/Html5/research/warrick_geomate_audit/geomate"
+  },
+  {
+    "target": {
+      "url": "http://mygeomate.com/GeomateandUpdateKit.zip",
+      "label": "Geomate & Update Kit Zip Package",
+      "cdx_pattern": "http://mygeomate.com/GeomateandUpdateKit.zip",
+      "expected_type": "application/zip",
+      "expected_size": 1618659,
+      "cdx_digest": "I5UJVNM2EXSSQ7OJZQOFUHPXJQHHEBX6",
+      "notes": "Archived 2011-10-11 in CDX. Web asset / media archive candidate."
+    },
+    "status": "memento_frontier_exhausted_zero_bytes",
+    "warrick_exit_code": 0,
+    "warrick_stdout_snippet": "\n\n#########################################################################\n# Welcome to the Warrick Program!\n# Warrick is a website recovery tool out of Old Dominion University\n# Please provide feedback to Justin F. Brunelle at jbrunelle@cs.odu.edu\n#########################################################################\n\n\n\nArguments: -nr -D /home/user/Html5/research/warrick_geomate_audit/geomate"
+  },
+  {
+    "target": {
+      "url": "http://mygeomate.com/UpdateKit.zip",
+      "label": "Update Kit Zip Package",
+      "cdx_pattern": "http://mygeomate.com/UpdateKit.zip",
+      "expected_type": "application/zip",
+      "expected_size": 727077,
+      "cdx_digest": "NU2RTCTP6PWJ7QVF5CYKQWMOFSG4JVS3",
+      "notes": "Archived 2011-10-11 in CDX. Documentation / media bundle candidate."
+    },
+    "status": "memento_frontier_exhausted_zero_bytes",
+    "warrick_exit_code": 0,
+    "warrick_stdout_snippet": "\n\n#########################################################################\n# Welcome to the Warrick Program!\n# Warrick is a website recovery tool out of Old Dominion University\n# Please provide feedback to Justin F. Brunelle at jbrunelle@cs.odu.edu\n#########################################################################\n\n\n\nArguments: -nr -D /home/user/Html5/research/warrick_geomate_audit/update_"
+  },
+  {
+    "target": {
+      "url": "http://geomatejr.appspot.com/",
+      "label": "Geomate.jr AppEngine Shutdown Portal",
+      "cdx_pattern": "http://geomatejr.appspot.com/*",
+      "expected_type": "text/html",
+      "notes": "2012 shutdown notice and community GPX loader distribution page."
+    },
+    "status": "memento_frontier_exhausted_zero_bytes",
+    "warrick_exit_code": 0,
+    "warrick_stdout_snippet": "\n\n#########################################################################\n# Welcome to the Warrick Program!\n# Warrick is a website recovery tool out of Old Dominion University\n# Please provide feedback to Justin F. Brunelle at jbrunelle@cs.odu.edu\n#########################################################################\n\n\n\nArguments: -nr -D /home/user/Html5/research/warrick_geomate_audit/geomate"
+  },
+  {
+    "target": {
+      "url": "http://geomatejr.appspot.com/geomateQtGuiApp.exe",
+      "label": "Geomate Qt GUI App Executable",
+      "cdx_pattern": "http://geomatejr.appspot.com/geomateQtGuiApp.exe",
+      "expected_type": "application/x-msdos-program",
+      "notes": "Standalone GPX pocket query loader binary for Update Kit USB dongle."
+    },
+    "status": "memento_frontier_exhausted_zero_bytes",
+    "warrick_exit_code": 0,
+    "warrick_stdout_snippet": "\n\n#########################################################################\n# Welcome to the Warrick Program!\n# Warrick is a website recovery tool out of Old Dominion University\n# Please provide feedback to Justin F. Brunelle at jbrunelle@cs.odu.edu\n#########################################################################\n\n\n\nArguments: -nr -D /home/user/Html5/research/warrick_geomate_audit/geomate"
+  },
+  {
+    "target": {
+      "url": "http://dl.dropbox.com/u/6158332/geomateQtGuiApp.exe.zip",
+      "label": "Community Dropbox Mirror of geomateQtGuiApp",
+      "cdx_pattern": "http://dl.dropbox.com/u/6158332/geomateQtGuiApp.exe.zip",
+      "expected_type": "application/zip",
+      "notes": "Darren Osborne / Spindocbob 2012 community emergency backup link."
+    },
+    "status": "memento_frontier_exhausted_zero_bytes",
+    "warrick_exit_code": 0,
+    "warrick_stdout_snippet": "\n\n#########################################################################\n# Welcome to the Warrick Program!\n# Warrick is a website recovery tool out of Old Dominion University\n# Please provide feedback to Justin F. Brunelle at jbrunelle@cs.odu.edu\n#########################################################################\n\n\n\nArguments: -nr -D /home/user/Html5/research/warrick_geomate_audit/communi"
+  },
+  {
+    "target": {
+      "url": "https://geomate-loader.software.informer.com/download/",
+      "label": "Geomate Loader 1.3 Installer (Software Informer)",
+      "cdx_pattern": "geomateloadersetup.exe*",
+      "expected_type": "application/zip",
+      "notes": "Advertised filename: geomateloadersetup.exe.zip (~9.7 MB)."
+    },
+    "status": "failed_timegate_reachability",
+    "warrick_exit_code": 0,
+    "warrick_stdout_snippet": "\n\n#########################################################################\n# Welcome to the Warrick Program!\n# Warrick is a website recovery tool out of Old Dominion University\n# Please provide feedback to Justin F. Brunelle at jbrunelle@cs.odu.edu\n#########################################################################\n\n\n\nArguments: -nr -D /home/user/Html5/research/warrick_geomate_audit/geomate"
+  },
+  {
+    "target": {
+      "url": "https://support.geomate.sg/portal/en/kb/articles/sg6-1-3-5-20241015",
+      "label": "GEOMATE SG6 Survey Receiver Firmware (Disambiguation Target)",
+      "cdx_pattern": "support.geomate.sg/*",
+      "expected_type": "text/html",
+      "notes": "Singapore land-surveying GNSS RTK hardware (SG6 v1.5.2) - NOT Geomate.jr."
+    },
+    "status": "failed_timegate_reachability",
+    "warrick_exit_code": 0,
+    "warrick_stdout_snippet": "\n\n#########################################################################\n# Welcome to the Warrick Program!\n# Warrick is a website recovery tool out of Old Dominion University\n# Please provide feedback to Justin F. Brunelle at jbrunelle@cs.odu.edu\n#########################################################################\n\n\n\nArguments: -nr -D /home/user/Html5/research/warrick_geomate_audit/geomate"
+  }
+]

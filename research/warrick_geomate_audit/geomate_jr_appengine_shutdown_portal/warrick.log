@@ -1,0 +1,47 @@
+Logging output to /home/user/Html5/research/warrick_geomate_audit/geomate_jr_appengine_shutdown_portal/warrick.log
+
+in directory: /home/user/Html5/research/warrick_geomate_audit/geomate_jr_appengine_shutdown_portal
+
+Warrick version 2.2.2 by Frank McCown, adapted by Justin F. Brunelle
+PID = 3237
+Machine name = e2b.local
+
+Setting up: Download to directory: /home/user/Html5/research/warrick_geomate_audit/geomate_jr_appengine_shutdown_portal
+
+not using input file...
+
+Getting out of the get_memento function with http://geomatejr.appspot.com/
+
+now dir is /home/user/Html5/research/warrick_geomate_audit/geomate_jr_appengine_shutdown_portal
+
+Host comparison: index.html vs geomatejr.appspot.com
+
+
+
+removing duplicate paths 1: index.html =>targetpath: index.html
+
+
+
+ mcurling: /home/user/Html5/tools/warrick//mcurl.pl -D "/home/user/Html5/research/warrick_geomate_audit/geomate_jr_appengine_shutdown_portal/logfile.o"  -tg "http://mementoproxy.cs.odu.edu/aggr/timegate" -L -o "/home/user/Html5/research/warrick_geomate_audit/geomate_jr_appengine_shutdown_portal/index.html" "http://geomatejr.appspot.com/"
+
+Reading logfile: /home/user/Html5/research/warrick_geomate_audit/geomate_jr_appengine_shutdown_portal/logfile.o
+
+
+Unable to download...
+Download Error
+
+
+To stats FAILED:: http://geomatejr.appspot.com/ => ??? => /home/user/Html5/research/warrick_geomate_audit/geomate_jr_appengine_shutdown_portal/index.html --> Stat Failure...
+
+Search HTML resource  for links to other missing resources...
+No such file 
+
+No Content in !
+
+Starting recovery at position 0 of -1
+
+Program terminated.
+
+-----------------------
+
+

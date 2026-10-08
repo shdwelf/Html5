@@ -8,8 +8,9 @@
  *   similarity(s1, s2) = |T(s1) ∩ T(s2)| / |T(s1) ∪ T(s2)|  ≥ τ
  * over space-padded character trigrams, plus prefix/substring boosts used by
  * the docker demo fuzzy-matcher. Facet filtering walks the FTT prefix tree,
- * so facet "phys" matches phys.range and facet "community" matches the
- * repository's geocache extension (community.geocache).
+ * so facet "phys" matches phys.range and facet "rec" matches the
+ * repository's geocache extension (rec.geocache), which the shared GPX
+ * importer in js/gpx-geocache.js also writes.
  *
  * Coordinates EPSG:4326, lon/lat order per ADL convention. No dependencies —
  * this module runs in vitest under plain node.
@@ -45,7 +46,7 @@ export const GAZ_CLASS_META = {
   Census: { label: "Census/CDPs", short: "CDP", swatch: "#f0e6c8" },
   Military: { label: "Military", short: "MIL", swatch: "#9fb6a3" },
   "Populated Place": { label: "Populated places", short: "PPL", swatch: "#f8fafc" },
-  Geocache: { label: "Geocaches", short: "GC", swatch: "#f472b6" },
+  Geocache: { label: "Geocaches", short: "GC", swatch: "#34d399" },
   Airport: { label: "Airports", short: "APT", swatch: "#fde047" },
   School: { label: "Schools / universities", short: "SCH", swatch: "#8ce29d" },
   Building: { label: "Buildings / landmarks", short: "BLD", swatch: "#b8c4d6" },
@@ -60,7 +61,7 @@ export const GAZ_FACETS = [
   { fac: "manmade", label: "manmade (manmade.*)" },
   { fac: "pop", label: "populated (pop.*)" },
   { fac: "admin", label: "administrative (admin.*)" },
-  { fac: "community", label: "community · geocaches (community.*)" },
+  { fac: "rec", label: "recreational · geocaches (rec.*)" },
 ];
 
 export const normalizeName = (s) =>
@@ -110,24 +111,41 @@ export const getCapabilities = (rows = DEFAULT_ROWS) => ({
  * Build a queryable index. Lazily counts trigram sets on first query so the
  * 343-row pack costs near nothing at boot.
  */
+export const makeGazEntry = (r, i) => ({
+  i,
+  name: r[0],
+  fclass: r[1],
+  ftt: r[2],
+  county: r[3],
+  lat: r[4],
+  lon: r[5],
+  elev: r[6],
+  gnis: r[7],
+  verified: r[8] === 1,
+  note: r[9],
+  source: r[10] ?? null,
+  norm: normalizeName(r[0]),
+  countyNorm: normalizeName(r[3]),
+  grams: null,
+  countyGrams: null,
+});
+
+/**
+ * Append tuple rows to a live index (the GPX import path). Returns the new
+ * entries so the caller can draw a pin per row.
+ */
+export const appendGazetteerRows = (idx, rows) => {
+  const added = [];
+  for (const row of rows) {
+    const entry = makeGazEntry(row, idx.entries.length);
+    idx.entries.push(entry);
+    added.push(entry);
+  }
+  return added;
+};
+
 export const makeGazetteerIndex = (rows = DEFAULT_ROWS) => {
-  const entries = rows.map((r, i) => ({
-    i,
-    name: r[0],
-    fclass: r[1],
-    ftt: r[2],
-    county: r[3],
-    lat: r[4],
-    lon: r[5],
-    elev: r[6],
-    gnis: r[7],
-    verified: r[8] === 1,
-    note: r[9],
-    norm: normalizeName(r[0]),
-    countyNorm: normalizeName(r[3]),
-    grams: null,
-    countyGrams: null,
-  }));
+  const entries = rows.map((r, i) => makeGazEntry(r, i));
   const ensure = (e, field = "grams") => {
     if (!e[field]) e[field] = trigrams(field === "grams" ? e.norm : e.countyNorm);
     return e[field];

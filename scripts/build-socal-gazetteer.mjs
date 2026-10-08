@@ -63,6 +63,7 @@ const FTT_FOR_CLASS = {
   Park: "admin.park",
   Reserve: "admin.reserve",
   Military: "admin.military",
+  Geocache: "rec.geocache",
 };
 
 const inBbox = (lat, lon) => lat >= BBOX.lat0 && lat <= BBOX.lat1 && lon >= BBOX.lon0 && lon <= BBOX.lon1;

@@ -3,38 +3,855 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Browser-based, dependency-free Memento and Wayback recovery assistant">
-  <title>Warrick HTML5 Recovery Lab</title>
+  <meta name="description" content="Browser-based, dependency-free Warrick website reconstructor, Memento timegate assistant, and Geomate.jr archival audit">
+  <title>Warrick HTML5 Web Site Reconstructor & Geomate Archival Suite</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    body{max-width:1100px;margin:auto;padding:1.5rem;font-family:system-ui,sans-serif;background:#10151b;color:#e8edf2}
-    .panel{background:#18212b;border:1px solid #334252;border-radius:12px;padding:1rem;margin:1rem 0}
-    label{display:block;font-weight:650;margin:.7rem 0 .25rem} input,button{font:inherit;padding:.65rem;border-radius:7px;border:1px solid #526477} input{width:100%;box-sizing:border-box;background:#0e141a;color:inherit}button{background:#3a82c4;color:white;cursor:pointer;margin:.8rem .5rem 0 0}button.secondary{background:#303d4b} button:disabled{opacity:.5;cursor:wait}
-    table{width:100%;border-collapse:collapse;font-size:.9rem} th,td{text-align:left;border-bottom:1px solid #334252;padding:.55rem;vertical-align:top} th{color:#a9c8e7} a{color:#79c4ff;overflow-wrap:anywhere}.muted{color:#aab6c2}.ok{color:#8de0a6}.bad{color:#ff9b9b}.mono{font-family:ui-monospace,monospace}.status{white-space:pre-wrap}.hidden{display:none}
+    :root {
+      --acid: #c8ff00;
+      --cyan: #18d7df;
+      --ink: #071117;
+      --panel: #0d1e26;
+      --border: #22424d;
+      --muted: #8ba3aa;
+      --ok: #4ade80;
+      --bad: #f87171;
+      --warn: #fbbf24;
+    }
+    body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      font-family: 'DM Mono', ui-monospace, monospace;
+      background: radial-gradient(circle at 80% 5%, #15343d 0, transparent 35rem), linear-gradient(135deg, #03080b 0%, #0a1b22 65%, #050d12 100%);
+      color: #e9f7f3;
+      min-height: 100vh;
+    }
+    header.masthead {
+      border-left: 4px solid var(--acid);
+      padding: 0.5rem 0 0.5rem 1.25rem;
+      margin-bottom: 2rem;
+    }
+    header h1 {
+      font: 800 clamp(24px, 4.5vw, 42px)/1.1 Orbitron, sans-serif;
+      color: #e8fff2;
+      margin: 0.25rem 0 0.5rem;
+    }
+    header h1 span { color: var(--acid); }
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .badge-acid { background: var(--acid); color: var(--ink); }
+    .badge-cyan { background: #12414a; color: var(--cyan); border: 1px solid var(--cyan); }
+    .badge-ok { background: #064e3b; color: var(--ok); border: 1px solid var(--ok); }
+    .badge-bad { background: #7f1d1d; color: var(--bad); border: 1px solid var(--bad); }
+    .badge-warn { background: #78350f; color: var(--warn); border: 1px solid var(--warn); }
+
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 2px solid var(--border);
+      margin: 1.5rem 0 1rem;
+      flex-wrap: wrap;
+    }
+    .nav-tab {
+      background: #091920;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      padding: 0.65rem 1.1rem;
+      border-radius: 6px 6px 0 0;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      transition: all 0.15s;
+    }
+    .nav-tab:hover { color: #fff; background: #132d38; }
+    .nav-tab.active {
+      color: var(--acid);
+      background: var(--panel);
+      border-color: var(--cyan);
+      border-bottom: 2px solid var(--panel);
+      margin-bottom: -2px;
+      font-weight: bold;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .panel h2 {
+      font: 700 1.25rem Orbitron, sans-serif;
+      color: var(--acid);
+      margin: 0 0 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .panel h3 {
+      font: 600 1rem Orbitron, sans-serif;
+      color: var(--cyan);
+      margin: 1rem 0 0.5rem;
+    }
+    .panel p, .panel li {
+      color: #cfe5de;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    label { display: block; font-weight: 600; font-size: 0.82rem; color: var(--cyan); margin: 0.75rem 0 0.35rem; }
+    input, select, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      background: #061117;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.65rem 0.8rem;
+      color: #e9f7f3;
+      font: inherit;
+      font-size: 0.9rem;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--cyan);
+      box-shadow: 0 0 8px rgba(24, 215, 223, 0.3);
+    }
+    button {
+      background: var(--acid);
+      color: var(--ink);
+      border: none;
+      border-radius: 6px;
+      padding: 0.65rem 1.1rem;
+      font: inherit;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      margin: 0.5rem 0.5rem 0 0;
+      transition: background 0.15s, transform 0.1s;
+    }
+    button:hover:not(:disabled) { background: #d7ff33; transform: translateY(-1px); }
+    button:active:not(:disabled) { transform: translateY(0); }
+    button.secondary { background: #1a3c47; color: var(--cyan); border: 1px solid var(--cyan); }
+    button.secondary:hover:not(:disabled) { background: #235160; color: #fff; }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .preset-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 1rem; }
+    .pill {
+      background: #06151c;
+      border: 1px solid #1c3b46;
+      border-radius: 20px;
+      color: var(--muted);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .pill:hover { border-color: var(--cyan); color: var(--cyan); background: #0c2530; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+      margin: 0.75rem 0;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.65rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    th { color: var(--cyan); font-weight: 700; background: #08161d; }
+    tr:hover td { background: rgba(24, 215, 223, 0.04); }
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; color: var(--acid); }
+
+    .status-box {
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+      border-left: 4px solid var(--cyan);
+      background: #081a22;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .status-box.ok { border-left-color: var(--ok); color: #86efac; }
+    .status-box.bad { border-left-color: var(--bad); color: #fca5a5; }
+    .status-box.warn { border-left-color: var(--warn); color: #fde047; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .code-block {
+      background: #040a0e;
+      border: 1px solid #162f38;
+      border-radius: 6px;
+      padding: 0.85rem;
+      font-size: 0.82rem;
+      overflow-x: auto;
+      color: #9fe2bf;
+      max-height: 280px;
+    }
   </style>
 </head>
 <body>
-  <header><p class="muted">HTML5 port / recovery assistant</p><h1>Warrick Recovery Lab</h1><p>Query Internet Archive CDX metadata, inspect captures, and attempt safe browser downloads. This port never executes recovered content.</p></header>
-  <section class="panel">
-    <label for="seed">Seed URL or wildcard</label><input id="seed" value="http://mygeomate.com/*" spellcheck="false">
-    <label for="cdx">CDX endpoint</label><input id="cdx" value="https://web.archive.org/cdx/search/cdx" spellcheck="false">
-    <label for="proxy">Optional fetch proxy prefix <span class="muted">(for example, a self-hosted CORS proxy)</span></label><input id="proxy" placeholder="Leave empty for direct browser fetch" spellcheck="false">
-    <button id="scan">Query captures</button><button id="clear" class="secondary">Clear</button>
-    <p id="status" class="status muted" role="status">No query run.</p>
+  <header class="masthead">
+    <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
+      <span class="badge badge-acid">Warrick 2.3 HTML5</span>
+      <span class="badge badge-cyan">Memento RFC 7089</span>
+      <span class="badge badge-ok">DOMParser Native Engine</span>
+      <span class="badge badge-warn">Geomate.jr Archival Pass</span>
+    </div>
+    <h1>Warrick <span>HTML5</span> Recovery Lab</h1>
+    <p class="subtitle">Client-Side Website Reconstruction · Memento TimeGate Traversal · Hardware Firmware Disambiguation</p>
+  </header>
+
+  <nav class="nav-tabs" role="tablist">
+    <button class="nav-tab active" data-tab="reconstructor">1. Warrick Reconstructor</button>
+    <button class="nav-tab" data-tab="geomate-audit">2. Geomate.jr Archival Matrix</button>
+    <button class="nav-tab" data-tab="dom-extractor">3. HTML5 DOM Link Extractor</button>
+    <button class="nav-tab" data-tab="firmware-ghidra">4. Firmware & Ghidra Triage</button>
+    <button class="nav-tab" data-tab="subsurface-gazetteer">5. Subsurface GPX Preservation</button>
+  </nav>
+
+  <!-- TAB 1: Warrick Reconstructor -->
+  <main id="tab-reconstructor" class="tab-content active">
+    <section class="panel">
+      <h2><span>⚡</span> Warrick Web Site Reconstructor (HTML5 Port)</h2>
+      <p>
+        Warrick was originally developed in Perl at Old Dominion University by Dr. Frank McCown and Justin F. Brunelle
+        to reconstruct lost websites by crawling Internet archives and web repositories. This pure HTML5 port provides
+        zero-dependency archival querying, Memento timegate resolution, WebCrypto digest checking, and local ZIP bundling.
+      </p>
+
+      <div class="preset-pills">
+        <span style="font-size:0.78rem;color:var(--muted);align-self:center">Geomate Targets:</span>
+        <button type="button" class="pill" data-set-seed="http://mygeomate.com/*">mygeomate.com/*</button>
+        <button type="button" class="pill" data-set-seed="http://mygeomate.com/updates">mygeomate.com/updates</button>
+        <button type="button" class="pill" data-set-seed="http://mygeomate.com/GeomateandUpdateKit.zip">GeomateandUpdateKit.zip</button>
+        <button type="button" class="pill" data-set-seed="http://mygeomate.com/UpdateKit.zip">UpdateKit.zip</button>
+        <button type="button" class="pill" data-set-seed="http://geomatejr.appspot.com/*">geomatejr.appspot.com/*</button>
+        <button type="button" class="pill" data-set-seed="http://geomatejr.appspot.com/geomateQtGuiApp.exe">geomateQtGuiApp.exe</button>
+        <button type="button" class="pill" data-set-seed="http://dl.dropbox.com/u/6158332/geomateQtGuiApp.exe.zip">Dropbox mirror ZIP</button>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label for="seedInput">Target URL or Wildcard Seed</label>
+          <input id="seedInput" value="http://mygeomate.com/*" spellcheck="false" placeholder="http://example.com/*">
+        </div>
+        <div>
+          <label for="archiveSelect">Archive Repository / CDX Endpoint</label>
+          <select id="archiveSelect">
+            <option value="https://web.archive.org/cdx/search/cdx" selected>Internet Archive Wayback Machine (CDX)</option>
+            <option value="https://arquivo.pt/textsearch">Arquivo.pt (Portuguese Web Archive)</option>
+            <option value="https://index.commoncrawl.org/CC-MAIN-2024-10-index">Common Crawl Index</option>
+            <option value="https://webarchive.nationalarchives.gov.uk/">UK National Archives</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label for="crawlDepth">Frontier Depth Limit (-l)</label>
+          <select id="crawlDepth">
+            <option value="0" selected>Depth 0 — Target resource only (-nr / non-recursive)</option>
+            <option value="1">Depth 1 — Target page + immediate page assets (images, CSS, JS)</option>
+            <option value="2">Depth 2 — Follow outbound internal hyperlinks up to 2 hops</option>
+          </select>
+        </div>
+        <div>
+          <label for="proxyInput">Optional CORS Proxy Prefix (e.g. self-hosted / worker)</label>
+          <input id="proxyInput" placeholder="Leave empty for direct browser fetch or browser extension CORS" spellcheck="false">
+        </div>
+      </div>
+
+      <div style="margin-top:1rem">
+        <button id="btnQueryCDX">Query Captures (CDX)</button>
+        <button id="btnRecoverSelected" class="secondary">Recover Selected (TimeGate)</button>
+        <button id="btnDownloadZip" class="secondary" disabled>Download Reconstruction ZIP</button>
+        <button id="btnClear" class="secondary">Clear Results</button>
+      </div>
+
+      <div id="statusReconstruct" class="status-box" role="status">Ready. Select a target seed and query captures.</div>
+
+      <div id="captureResultsWrapper" style="display:none;margin-top:1.5rem">
+        <h3>Discovered Mementos in Archive Index</h3>
+        <div style="overflow-x:auto">
+          <table id="capturesTable">
+            <thead>
+              <tr>
+                <th style="width:30px"><input type="checkbox" id="checkAllCaptures" title="Select All"></th>
+                <th>Original URL</th>
+                <th>Timestamp</th>
+                <th>Status</th>
+                <th>MIME</th>
+                <th>Size</th>
+                <th>SHA-1 Digest</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="capturesBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- TAB 2: Geomate.jr Archival Matrix -->
+  <section id="tab-geomate-audit" class="tab-content">
+    <div class="panel">
+      <h2><span>🛰️</span> Geomate.jr Full Archival Audit Matrix</h2>
+      <p>
+        This table records the official and community recovery candidates checked in the 2026-10-06/07 audit for the
+        <strong>Geomate.jr</strong> receiver, Update Kit, and community loaders; it is not an exhaustive web inventory.
+        The listed targets were checked via Wayback CDX, Memento timegates, and direct HTTP where applicable.
+      </p>
+
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Target Name</th>
+              <th>Expected Role</th>
+              <th>Target URL</th>
+              <th>Archival Disposition / Finding</th>
+              <th>CDX Digest</th>
+              <th>Ghidra Eligibility</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>mygeomate.com</strong></td>
+              <td>Main Portal</td>
+              <td><code>http://mygeomate.com/</code></td>
+              <td><span class="badge badge-ok">Captured</span> Richly archived (2009–2012). Products, manuals, guides.</td>
+              <td>Multiple captures</td>
+              <td>N/A (HTML / Media)</td>
+            </tr>
+            <tr>
+              <td><strong>Update Zone</strong></td>
+              <td>Web DB Updater</td>
+              <td><code>http://mygeomate.com/updates</code></td>
+              <td><span class="badge badge-ok">Captured</span> Archived pages document the update/download flow; no updater bytes were recovered. The 2014 guide describes `.cry` region downloads and GPX files loaded by Geomate Loader.</td>
+              <td>Indexed in CDX</td>
+              <td>N/A (Web UI)</td>
+            </tr>
+            <tr>
+              <td><strong>GeomateandUpdateKit.zip</strong></td>
+              <td>Product Archive</td>
+              <td><code>http://mygeomate.com/GeomateandUpdateKit.zip</code></td>
+              <td><span class="badge badge-warn">CDX Record Only</span> 1,618,659 bytes recorded 2011-10-11; Wayback WARC replay returns 404.</td>
+              <td><code>I5UJVNM2EXSSQ...</code></td>
+              <td>Awaiting byte recovery</td>
+            </tr>
+            <tr>
+              <td><strong>UpdateKit.zip</strong></td>
+              <td>Documentation Zip</td>
+              <td><code>http://mygeomate.com/UpdateKit.zip</code></td>
+              <td><span class="badge badge-warn">CDX Record Only</span> 727,077 bytes recorded 2011-10-11; Wayback WARC replay returns 404.</td>
+              <td><code>NU2RTCTP6PWJ...</code></td>
+              <td>Awaiting byte recovery</td>
+            </tr>
+            <tr>
+              <td><strong>geomatejr.appspot.com</strong></td>
+              <td>Shutdown Landing</td>
+              <td><code>http://geomatejr.appspot.com/</code></td>
+              <td><span class="badge badge-ok">Captured</span> 2012 shutdown notice preserved. Links to Qt loader tool.</td>
+              <td>Captured 20120128</td>
+              <td>N/A (HTML)</td>
+            </tr>
+            <tr>
+              <td><strong>geomateQtGuiApp.exe</strong></td>
+              <td>Standalone GPX Loader</td>
+              <td><code>http://geomatejr.appspot.com/geomateQtGuiApp.exe</code></td>
+              <td><span class="badge badge-bad">404 Missing</span> App Engine binary was never crawled into Wayback WARC storage.</td>
+              <td>No 200 capture</td>
+              <td>Missing bytes</td>
+            </tr>
+            <tr>
+              <td><strong>geomateQtGuiApp.exe.zip</strong></td>
+              <td>Dropbox Community Mirror</td>
+              <td><code>http://dl.dropbox.com/u/6158332/geomateQtGuiApp.exe.zip</code></td>
+              <td><span class="badge badge-bad">Dropbox 404</span> Mirror link dead; not archived in public web crawler indexes.</td>
+              <td>No capture</td>
+              <td>Missing bytes</td>
+            </tr>
+            <tr>
+              <td><strong>geomateloadersetup.exe.zip</strong></td>
+              <td>Software Informer Mirror</td>
+              <td><code>https://geomate-loader.software.informer.com/</code></td>
+              <td><span class="badge badge-warn">Catalog Listing</span> 9.7 MB listed; third-party wrapper; no standalone ROM.</td>
+              <td>Unverified host</td>
+              <td>Triage required</td>
+            </tr>
+            <tr>
+              <td><strong>GEOMATE SG6 Firmware</strong></td>
+              <td>Survey Equipment (Disambiguation)</td>
+              <td><code>https://support.geomate.sg/.../sg6-1-3-5-20241015</code></td>
+              <td><span class="badge badge-bad">False Positive</span> Modern 2024–2026 RTK GNSS surveying firmware (SG6 v1.5.2). NOT Geomate.jr.</td>
+              <td>Different product</td>
+              <td>Excluded (wrong device)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </section>
-  <section class="panel"><h2>Known Geomate archive candidates</h2><p class="muted">These are discovery links, not claims that a mirror has the ZIP bytes. They search alternate hostnames and archive indexes for the two CDX-listed names.</p><div style="overflow:auto"><table><thead><tr><th>File</th><th>Expected size</th><th>Discovery links</th></tr></thead><tbody id="known"></tbody></table></div></section>
-  <section id="resultsPanel" class="panel hidden"><div style="display:flex;justify-content:space-between;gap:1rem;align-items:center"><h2>Captures</h2><button id="downloadAll" class="secondary">Attempt selected downloads</button></div><div style="overflow:auto"><table><thead><tr><th><input id="selectAll" type="checkbox" aria-label="Select all"></th><th>Timestamp</th><th>Status</th><th>Type</th><th>Length</th><th>Digest</th><th>Replay</th></tr></thead><tbody id="rows"></tbody></table></div></section>
-  <section class="panel"><h2>Safety and limitations</h2><ul><li>Only metadata and bytes are handled; archives are saved as downloads and are not opened or executed.</li><li>CDX indexing is not proof that replay bytes remain available. A missing replay is reported rather than synthesized.</li><li>Recursive link extraction is intentionally not attempted in the browser: it requires a server-side fetcher or a user-provided proxy and could cross trust boundaries.</li><li>This is a dependency-free HTML5 replacement for Warrick's recovery workflow, not a full drop-in Perl implementation.</li></ul></section>
+
+  <!-- TAB 3: HTML5 DOM Link Extractor -->
+  <section id="tab-dom-extractor" class="tab-content">
+    <div class="panel">
+      <h2><span>🔍</span> HTML5 DOM Link Extractor & Frontier Generator</h2>
+      <p>
+        In Warrick's original Perl implementation, link discovery required <code>HTML::LinkExtractor</code> and
+        <code>HTML::TagParser</code>. In this HTML5 port, link extraction is handled natively by the browser's
+        built-in <code>DOMParser</code> and <code>TreeWalker</code> APIs, which parse full DOM trees with modern
+        HTML5 forgiving-grammar rules and zero external dependencies.
+      </p>
+
+      <label for="sampleHtmlInput">HTML Document Source to Extract Links From</label>
+      <textarea id="sampleHtmlInput" rows="7" spellcheck="false">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;link rel="stylesheet" href="/css/geomate.css"&gt;
+  &lt;script src="/js/loader_bridge.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Geomate.jr Update Portal&lt;/h1&gt;
+  &lt;a href="/updates/firmware_notes.html"&gt;Firmware V1002 Notes&lt;/a&gt;
+  &lt;a href="/zip/GeomateandUpdateKit.zip"&gt;Download Update Bundle&lt;/a&gt;
+  &lt;a href="http://geomatejr.appspot.com/geomateQtGuiApp.exe"&gt;Direct Loader App&lt;/a&gt;
+  &lt;img src="/images/geomate_unit.jpg" alt="Geomate.jr Receiver"&gt;
+  &lt;iframe src="/embed/faq.html"&gt;&lt;/iframe&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+
+      <div class="grid-2" style="margin-top:0.75rem">
+        <div>
+          <label for="baseUriInput">Base URL for Relative Resolution</label>
+          <input id="baseUriInput" value="http://www.mygeomate.com/updates/" spellcheck="false">
+        </div>
+        <div style="align-self:flex-end">
+          <button id="btnExtractLinks">Parse & Extract Links with DOMParser</button>
+        </div>
+      </div>
+
+      <div id="extractedLinksWrapper" style="display:none;margin-top:1.5rem">
+        <h3>Extracted Resources (<span id="extractedCount">0</span>)</h3>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Attribute</th>
+                <th>Raw Value</th>
+                <th>Resolved Canonical URL</th>
+              </tr>
+            </thead>
+            <tbody id="extractedLinksBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: Firmware & Ghidra Triage -->
+  <section id="tab-firmware-ghidra" class="tab-content">
+    <div class="panel">
+      <h2><span>🔬</span> Firmware Architecture & Ghidra Static Analysis Triage</h2>
+      
+      <h3>The Three-Way "GeoMate" Name Disambiguation</h3>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Entity</th>
+              <th>Domain / Origin</th>
+              <th>Hardware / Platform</th>
+              <th>Role / Characteristics</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Apisphere Geomate.jr (2009–2012)</strong></td>
+              <td><code>mygeomate.com</code><br><code>geomatejr.appspot.com</code></td>
+              <td>Dedicated handheld with SiRFstarIII GPS; historical reports show the device string <code>V1002 RE X2</code>. Its bootloader and firmware image have not been recovered here.</td>
+              <td>Manufacturer's guide says roughly 250,000 cache locations were preloaded; the storage implementation is unconfirmed. The Update Kit/Geomate Loader accepted Pocket Query GPX cache data. That is a data-loader path, not evidence of firmware flashing. Service shutdown was announced in Jan 2012.</td>
+            </tr>
+            <tr>
+              <td><strong>2. GeoMate Solutions</strong></td>
+              <td><code>geomate-solutions.com</code></td>
+              <td>Windows desktop engineering CAD/FEA.</td>
+              <td>Geotechnical, slope-stability, and soil-mechanics finite element analysis (version 2026.3.0, SHA-256 <code>8E2237C7...</code>). Completely unrelated to GPS or geocaching.</td>
+            </tr>
+            <tr>
+              <td><strong>3. GeoMate Positioning / CHCNav</strong></td>
+              <td><code>geomate.sg</code><br><code>geomate.jianguoyun.com</code></td>
+              <td>Survey-grade RTK GNSS receivers (models SG6, SG7, N72); 32-bit ARM Linux.</td>
+              <td>High-precision surveying with IMU 60° tilt compensation, dual-camera AR, UHF radio, and QZSS RINEX logging. Firmware v1.5.2 released Aug 2026 by CHC Navigation.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Modern SG6/SG7 Firmware: Separate Product Family</h3>
+      <p>
+        A separate <code>update_SG7_v1.5.2_b20260803.bin.dat</code> artifact (32,320,808 bytes) and SG6 release note are referenced
+        in <code>docs/geomate-jr-firmware-research.md</code> and were retrieved from the user's Drive. That report records a container
+        and payload analysis. The raw firmware is not committed to this repository, and this modern CHCNav survey-receiver package is
+        <strong>not</strong> Geomate.jr firmware; its analysis cannot fill the missing Geomate.jr updater/firmware evidence gap.
+      </p>
+
+      <h3>Static Triage / Ghidra Disposition</h3>
+      <p>
+        No byte-identical <code>geomateQtGuiApp.exe</code>, <code>geomateloadersetup.exe</code>, or Geomate.jr firmware image
+        is present in this checkout, so no Geomate-specific Ghidra analysis is claimed. The repository's
+        <code>tools/verify_ghidra.mjs</code> is a self-test for its bundled sample catalog; it is not a generic
+        <code>verify_ghidra.mjs &lt;binary&gt;</code> command. If a loader archive is recovered, hash it, inventory/extract
+        it without executing, identify each payload, then open the matching copy in a processor-appropriate Ghidra project.
+      </p>
+
+      <div class="code-block">
+# 1. Static first-pass header, offsets, hashes and printable strings
+python3 tools/exe_triage.py candidate_file.exe
+strings -a -n 6 candidate_file.exe | grep -E "V1002|GC[0-9A-Z]{3,6}|SiRF|SQLite|USB"
+
+# 2. Keep original bytes immutable; analyze an extracted copy in Ghidra
+# Select PE/ELF/raw-ROM language from the actual file header, not the filename.
+# Record project version, language ID, import options, hash, and analysis log.
+
+# 3. Never run an unknown loader or flash a Geomate.jr during analysis.
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 5: Subsurface GPX Gazetteer + preservation workflow -->
+  <section id="tab-subsurface-gazetteer" class="tab-content">
+    <div class="panel">
+      <h2><span>📍</span> Subsurface GPX Gazetteer & Preservation</h2>
+      <p>
+        The older draft listed ten "historical SoCal caches" with names, GC codes and coordinates but no source GPX,
+        listing-page evidence, or device dump. Those rows have been removed from the fixed compiled Gazetteer: the labels cannot
+        be treated as verified records. Independent listing pages show clear ID/name mismatches for <a href="https://www.geocaching.com/geocache/GC78">GC78</a>
+        (Firestone, San Francisco Bay Area), <a href="https://www.geocaching.com/geocache/GC40">GC40</a> (Namur, Belgium),
+        and <a href="https://www.geocaching.com/geocache/GC28">GC28</a> (Beverly, Illinois). The fixed Gazetteer now keeps
+        GNIS/curated place data separate; cache points are added only from a user-provided GPX file.
+      </p>
+
+      <h3>Verified device and file-format boundary</h3>
+      <ul>
+        <li><a href="https://www.homesciencetools.com/content/reference/Geomatejr_Users_Guide.pdf">The 2014 Geomate.jr User's Guide</a> documents Pocket Query and raw-GPS GPX 1.1 input for the desktop loader. The same guide distinguishes the site's encrypted regional <code>.cry</code> files from GPX.</li>
+        <li>The Subsurface import accepts GPX 1.0/1.1 only. It does not decrypt proprietary <code>.cry</code> region files, write to the device, or flash firmware.</li>
+        <li>No Geomate.jr updater/firmware bytes were recovered in this audit, so there is no honest Geomate target for a Ghidra run. The modern GeoMate SG6/SG7 firmware is a different product family and is not used as a stand-in.</li>
+      </ul>
+
+      <h3>Session-only import and Xena-inspired preservation</h3>
+      <p>
+        Launch <a href="socal-subsurface.html">SoCal Subsurface 4Dwm</a> and use the Gazetteer pane's local GPX controls.
+        The page reads waypoints without a network call, draws only caches inside the SoCal theater, and keeps imported records
+        in memory for the current session. It does not copy owner names, logs, hints or descriptions into the normalized register.
+      </p>
+      <p>
+        <a href="https://github.com/srnsw/xena">Xena</a>
+        is preservation-normalization software, not a universal filename/extension that this project can claim to emit. The
+        optional BagIt 1.0 <code>.zip</code> preserves the original GPX byte-for-byte and adds an application-defined XML/JSON
+        cache-register rendition, a preservation event note, and SHA-256 manifests. The <code>.xdc</code> is the offline viewer
+        application package, not a GPX or Xena data file.
+      </p>
+      <p class="hint">
+        Sources: <a href="https://www.rfc-editor.org/rfc/rfc8493.html">BagIt RFC 8493</a> ·
+        <a href="https://github.com/srnsw/xena">archived Xena source</a> ·
+        <a href="https://www.geocaching.com/geocache/GC78">GC78</a> ·
+        <a href="https://www.geocaching.com/geocache/GC40">GC40</a> ·
+        <a href="https://www.geocaching.com/geocache/GC28">GC28</a>
+      </p>
+    </div>
+  </section>
+
   <script type="module">
-    const $=id=>document.getElementById(id); const state={captures:[]};
-    const known=[['GeomateandUpdateKit.zip','1,618,659','I5UJVNM2EXSSQ7OJZQOFUHPXJQHHEBX6'],['UpdateKit.zip','727,077','NU2RTCTP6PWJ7QVF5CYKQWMOFSG4JVS3']];
-    const enc=s=>encodeURIComponent(s);
-    $('known').innerHTML=known.map(([name,size,digest])=>{const exact='http://mygeomate.com/'+name;const links=[['Wayback CDX',`https://web.archive.org/cdx/search/cdx?url=${enc(exact)}&output=json&filter=statuscode:200`],['Wayback replay',`https://web.archive.org/web/20110101000000id_/${exact}`],['Arquivo.pt',`https://arquivo.pt/textsearch?versionHistory=${enc(exact)}&maxItems=50`],['Common Crawl index',`https://index.commoncrawl.org/?url=${enc(exact)}&output=json`],['hostname variant',`http://www.mygeomate.com/${name}`]];return `<tr><td class="mono">${name}<br><span class="muted">digest ${digest}</span></td><td>${size}</td><td>${links.map(([label,url])=>`<a href="${url}" target="_blank" rel="noreferrer">${label}</a>`).join(' · ')}</td></tr>`}).join('');
-    const status=(text,kind='muted')=>{$('status').textContent=text;$('status').className=`status ${kind}`};
-    function replay(c){return `https://web.archive.org/web/${c.timestamp}id_/${c.original}`}
-    function rows(){ $('rows').innerHTML=state.captures.map((c,i)=>`<tr><td><input class="pick" data-i="${i}" type="checkbox"></td><td class="mono">${c.timestamp}</td><td>${c.status||''}</td><td>${c.mime||''}</td><td>${c.length||''}</td><td class="mono">${c.digest||''}</td><td><a target="_blank" rel="noreferrer" href="${replay(c)}">open</a></td></tr>`).join('');$('resultsPanel').classList.toggle('hidden',!state.captures.length)}
-    async function query(){const endpoint=$('cdx').value.trim(),seed=$('seed').value.trim();if(!endpoint||!seed)return status('CDX endpoint and seed are required.','bad');$('scan').disabled=true;status('Querying capture metadata…');try{const url=new URL(endpoint);url.searchParams.set('url',seed);url.searchParams.set('output','json');url.searchParams.set('filter','statuscode:200');url.searchParams.set('collapse','urlkey');const r=await fetch(url);if(!r.ok)throw Error(`CDX HTTP ${r.status}`);const data=await r.json();const head=data[0];state.captures=(data.slice(1).map(x=>Object.fromEntries(head.map((k,i)=>[k,x[i]]))));rows();status(`Loaded ${state.captures.length} capture(s). Metadata is not payload evidence.`, 'ok')}catch(e){status(`Query failed: ${e.message}\nThe browser may block cross-origin CDX access; use a CORS-enabled/self-hosted proxy.`, 'bad')}finally{$('scan').disabled=false}}
-    async function download(){const picks=[...document.querySelectorAll('.pick:checked')].map(x=>state.captures[+x.dataset.i]);if(!picks.length)return status('Select at least one capture.','bad');let done=0;for(const c of picks){try{const target=replay(c),url=$('proxy').value.trim()?$('proxy').value.trim()+target:target;const r=await fetch(url);if(!r.ok)throw Error(`HTTP ${r.status}`);const blob=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(c.original.split('/').pop()||'capture.bin');a.click();URL.revokeObjectURL(a.href);done++}catch(e){console.warn('capture unavailable',c,e)}}status(`Download attempts complete: ${done}/${picks.length} succeeded. No content was executed.`,done?'ok':'bad')}
-    $('scan').onclick=query;$('downloadAll').onclick=download;$('clear').onclick=()=>{state.captures=[];rows();status('Cleared.')};$('selectAll').onchange=e=>document.querySelectorAll('.pick').forEach(x=>x.checked=e.target.checked);
+    import { zipSync, strToU8 } from "./vendor/fflate/index.mjs";
+
+    const $ = (id) => document.getElementById(id);
+    const state = {
+      captures: [],
+      recoveredFiles: new Map(), // path -> Uint8Array
+    };
+
+    // Tab switcher
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        const targetId = `tab-${tab.dataset.tab}`;
+        const targetEl = $(targetId);
+        if (targetEl) targetEl.classList.add('active');
+      });
+    });
+
+    // Preset pills
+    document.querySelectorAll('.pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        $('seedInput').value = pill.dataset.setSeed;
+        queryCDX();
+      });
+    });
+
+    function setStatus(text, kind = 'info') {
+      const el = $('statusReconstruct');
+      el.textContent = text;
+      el.className = `status-box ${kind}`;
+    }
+
+    function replayUrl(c) {
+      return `https://web.archive.org/web/${c.timestamp}id_/${c.original}`;
+    }
+
+    // Base32 decoder for CDX SHA-1 digests
+    function base32ToHex(b32) {
+      if (!b32 || b32.length !== 32) return b32 || '';
+      const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+      let bits = '';
+      for (let i = 0; i < b32.length; i++) {
+        const val = alphabet.indexOf(b32[i].toUpperCase());
+        if (val === -1) return b32;
+        bits += val.toString(2).padStart(5, '0');
+      }
+      let hex = '';
+      for (let i = 0; i + 4 <= bits.length; i += 4) {
+        hex += parseInt(bits.substr(i, 4), 2).toString(16);
+      }
+      return hex.slice(0, 40);
+    }
+
+    // CDX query
+    async function queryCDX() {
+      const seed = $('seedInput').value.trim();
+      const endpoint = $('archiveSelect').value;
+      if (!seed) return setStatus('Please enter a target seed URL.', 'bad');
+
+      $('btnQueryCDX').disabled = true;
+      setStatus(`Querying ${endpoint} for "${seed}"...`);
+
+      try {
+        const url = new URL(endpoint);
+        url.searchParams.set('url', seed);
+        url.searchParams.set('output', 'json');
+        url.searchParams.set('filter', 'statuscode:200');
+        url.searchParams.set('collapse', 'urlkey');
+        url.searchParams.set('limit', '100');
+
+        const proxy = $('proxyInput').value.trim();
+        const fetchUrl = proxy ? proxy + url.toString() : url.toString();
+
+        const resp = await fetch(fetchUrl);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
+        const data = await resp.json();
+
+        if (!Array.isArray(data) || data.length < 2) {
+          state.captures = [];
+          renderCaptures();
+          return setStatus(`No 200 OK captures found for "${seed}". Metadata is absent in this index.`, 'warn');
+        }
+
+        const headers = data[0];
+        state.captures = data.slice(1).map(row => Object.fromEntries(headers.map((h, i) => [h, row[i]])));
+        renderCaptures();
+        setStatus(`Discovered ${state.captures.length} memento capture(s). Ready for TimeGate recovery.`, 'ok');
+      } catch (err) {
+        setStatus(`Archive Query Error: ${err.message}\n(Direct browser cross-origin requests to Wayback may require a CORS proxy).`, 'bad');
+      } finally {
+        $('btnQueryCDX').disabled = false;
+      }
+    }
+
+    function renderCaptures() {
+      const tbody = $('capturesBody');
+      tbody.innerHTML = '';
+      if (!state.captures.length) {
+        $('captureResultsWrapper').style.display = 'none';
+        return;
+      }
+      $('captureResultsWrapper').style.display = 'block';
+
+      state.captures.forEach((c, idx) => {
+        const tr = document.createElement('tr');
+        const hexDigest = base32ToHex(c.digest);
+        tr.innerHTML = `
+          <td><input type="checkbox" class="capture-check" data-index="${idx}"></td>
+          <td style="word-break:break-all"><code>${escapeHtml(c.original)}</code></td>
+          <td>${c.timestamp}</td>
+          <td><span class="badge badge-ok">${c.status || '200'}</span></td>
+          <td>${c.mimetype || c.mime || 'unknown'}</td>
+          <td>${formatBytes(c.length)}</td>
+          <td><code title="${c.digest}">${hexDigest ? hexDigest.slice(0, 10) + '…' : 'none'}</code></td>
+          <td>
+            <a href="${replayUrl(c)}" target="_blank" rel="noreferrer" class="badge badge-cyan">Replay</a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // TimeGate recovery
+    async function recoverSelected() {
+      const checkedBoxes = Array.from(document.querySelectorAll('.capture-check:checked'));
+      if (!checkedBoxes.length) return setStatus('Please select at least one capture to recover.', 'warn');
+
+      $('btnRecoverSelected').disabled = true;
+      setStatus(`Attempting TimeGate recovery of ${checkedBoxes.length} resource(s)...`);
+
+      let successCount = 0;
+      let failCount = 0;
+      const proxy = $('proxyInput').value.trim();
+
+      for (const box of checkedBoxes) {
+        const cap = state.captures[parseInt(box.dataset.index, 10)];
+        const target = replayUrl(cap);
+        const fetchUrl = proxy ? proxy + target : target;
+
+        try {
+          const resp = await fetch(fetchUrl);
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const buf = await resp.arrayBuffer();
+          const u8 = new Uint8Array(buf);
+
+          // Check SHA-1 if digest present
+          if (cap.digest && window.crypto && crypto.subtle) {
+            const hashBuf = await crypto.subtle.digest('SHA-1', buf);
+            const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+            const expectedHex = base32ToHex(cap.digest);
+            if (expectedHex && hashHex !== expectedHex) {
+              console.warn(`Integrity mismatch on ${cap.original}: expected ${expectedHex}, got ${hashHex}`);
+            }
+          }
+
+          const filename = cap.original.split('/').pop() || 'index.html';
+          state.recoveredFiles.set(filename, u8);
+          successCount++;
+        } catch (err) {
+          console.warn(`Recovery failed for ${cap.original}:`, err);
+          failCount++;
+        }
+      }
+
+      $('btnRecoverSelected').disabled = false;
+      if (state.recoveredFiles.size > 0) $('btnDownloadZip').disabled = false;
+
+      if (successCount > 0) {
+        setStatus(`Recovery complete: ${successCount} succeeded, ${failCount} failed. Ready to bundle into ZIP.`, 'ok');
+      } else {
+        setStatus(`All ${failCount} TimeGate retrieval attempts failed.\nNotice: Internet Archive CDX metadata confirms the URLs existed, but the replay body is unavailable or blocked by CORS.`, 'bad');
+      }
+    }
+
+    // Download reconstruction ZIP using fflate
+    function downloadReconstructionZip() {
+      if (!state.recoveredFiles.size) return;
+      const zipData = {};
+      state.recoveredFiles.forEach((bytes, name) => {
+        zipData[name] = bytes;
+      });
+      const zipped = zipSync(zipData);
+      const blob = new Blob([zipped], { type: 'application/zip' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'warrick-reconstructed-site.zip';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    // DOMParser Native Link Extractor
+    function extractLinksFromHtml() {
+      const htmlText = $('sampleHtmlInput').value;
+      const baseUri = $('baseUriInput').value.trim();
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlText, 'text/html');
+
+      const extracted = [];
+      const selectors = [
+        { sel: 'a[href]', attr: 'href', type: 'hyperlink' },
+        { sel: 'link[href]', attr: 'href', type: 'stylesheet/meta' },
+        { sel: 'script[src]', attr: 'src', type: 'script' },
+        { sel: 'img[src]', attr: 'src', type: 'image' },
+        { sel: 'iframe[src]', attr: 'src', type: 'frame' },
+        { sel: 'source[src]', attr: 'src', type: 'media' },
+        { sel: 'form[action]', attr: 'action', type: 'form' },
+      ];
+
+      selectors.forEach(({ sel, attr, type }) => {
+        doc.querySelectorAll(sel).forEach(el => {
+          const raw = el.getAttribute(attr);
+          if (!raw || raw.startsWith('#') || raw.startsWith('javascript:')) return;
+          let resolved = raw;
+          try {
+            resolved = new URL(raw, baseUri).toString();
+          } catch {
+            resolved = raw;
+          }
+          extracted.push({ type, attr, raw, resolved });
+        });
+      });
+
+      const tbody = $('extractedLinksBody');
+      tbody.innerHTML = '';
+      extracted.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span class="badge badge-cyan">${item.type}</span></td>
+          <td><code>${item.attr}</code></td>
+          <td style="word-break:break-all"><code>${escapeHtml(item.raw)}</code></td>
+          <td style="word-break:break-all"><a href="${escapeHtml(item.resolved)}" target="_blank" rel="noreferrer">${escapeHtml(item.resolved)}</a></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      $('extractedCount').textContent = extracted.length;
+      $('extractedLinksWrapper').style.display = 'block';
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes === '0') return '0 B';
+      const n = parseInt(bytes, 10);
+      if (isNaN(n)) return bytes;
+      if (n < 1024) return n + ' B';
+      if (n < 1048576) return (n / 1024).toFixed(1) + ' KB';
+      return (n / 1048576).toFixed(2) + ' MB';
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Wire events
+    $('btnQueryCDX').addEventListener('click', queryCDX);
+    $('btnRecoverSelected').addEventListener('click', recoverSelected);
+    $('btnDownloadZip').addEventListener('click', downloadReconstructionZip);
+    $('btnExtractLinks').addEventListener('click', extractLinksFromHtml);
+    $('btnClear').addEventListener('click', () => {
+      state.captures = [];
+      state.recoveredFiles.clear();
+      renderCaptures();
+      $('btnDownloadZip').disabled = true;
+      setStatus('Cleared.');
+    });
+    $('checkAllCaptures').addEventListener('change', (e) => {
+      document.querySelectorAll('.capture-check').forEach(cb => cb.checked = e.target.checked);
+    });
   </script>
-</body></html>
+</body>
+</html>

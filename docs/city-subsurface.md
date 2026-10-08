@@ -49,8 +49,8 @@ The user's request was "add geocaches" alongside GNIS names. The honest way to
 do that in a register that has a GNIS-verification discipline is a **separate
 source tier**, not a quiet merge. Geocaches use:
 
-- `fclass = "Geocache"`, `ftt = "community.geocache"` — a repository extension
-  to the ADL FTT tree, matched by the `community` facet;
+- `fclass = "Geocache"`, `ftt = "rec.geocache"` — the same extension the SoCal
+  GPX importer writes, matched by the `rec` facet;
 - `VERIFIED = 0` **always** — a cache listing is a community record, never a
   GNIS feature, and the build fails a Geocache row that tries to claim a
   FEATURE_ID;
@@ -63,7 +63,7 @@ posted coordinates:
 | --- | --- | --- |
 | Why Not Buffalo? #1 | `GCQ1T1` | the archived cache's own public description: *"CACHE MOVED on 12/7/15 … N 42 54.055 W 78 53.933"* |
 | Toronto's First Post Office | `GC7HT4Z` | the official Geocaching.com *Geocache of the Week* post (2024-12-04): *N 43° 39.111′ W 079° 22.221′* |
-| (Lawrence, Atlanta, Kansas City) | — | no row: no public source found that prints a posted coordinate |
+| (Lawrence, Atlanta, Kansas City) | — | no static row: no public source found that prints a posted coordinate. Those cities still take local GPX imports. |
 
 That last line is a deliberate result, not an omission. Searches across the
 current cache pages, the Geocaching.com blog index, the Kansas Society of Land
@@ -75,6 +75,28 @@ members-only; only caches whose coordinates appear in public body text (blog
 posts, owner instructions embedded in the description, local news) can be
 pinned. Inventing plausible-looking coordinates for the rest would violate the
 same rule the GNIS tier follows.
+
+## Local GPX import (shared with SoCal)
+
+The five city pages carry the same **LOCAL GPX → GEOCACHE REGISTER** control as
+`/socal-subsurface` and reuse `js/gpx-geocache.js` unchanged — one importer, one
+row shape, one preservation format:
+
+- pick a `.gpx` (GPX 1.0/1.1, ≤ 25 MiB, ≤ 5000 caches, DOCTYPE refused);
+- the file is parsed in the page, in memory, against **that city's** bbox, so a
+  Pocket Query / GSAK export / Geomate loader set shows only what belongs to the
+  frame. Out-of-frame caches are counted and reported, not silently dropped;
+- imported caches become `rec.geocache` rows (VERIFIED = 0, source metadata
+  attached) and draw as octahedron pins in the **Geocaches** layer, searchable
+  through the same gazetteer ops;
+- **PRESERVATION BAG (.ZIP)** writes the BagIt 1.0 archive — original GPX
+  byte-for-byte, normalized XML + JSON renditions, payload and tag SHA-256
+  manifests, and a PREMIS-style preservation event — from main's importer;
+- **CLEAR** removes the imported pins and restores the static register.
+
+Nothing is uploaded, written to a device, or retained between sessions. The
+static pack keeps its own two pinned caches (above); imports are session-only,
+which is also where the SoCal audit landed after removing unsupported rows.
 
 ## Geomate.jr / Geomate Loader firmware research — status
 
@@ -93,7 +115,9 @@ dump, a GSAK export, or a Pocket Query GPX is supplied:
 3. convert records to the Geocache row shape above, keeping the GC code, the
    snapshot date, and the cache type/size/difficulty/terrain fields;
 4. rebuild the city packs with `node scripts/build-city-subsurface.mjs` and the
-   bundles with `node scripts/build-city-subsurface-xdc.mjs`.
+   bundles with `node scripts/build-city-subsurface-xdc.mjs` — or, for a
+   one-off look, load the GPX through the page's own import control (above),
+   which needs no rebuild at all.
 
 The engine already renders the tier; the missing input is bytes, not code.
 

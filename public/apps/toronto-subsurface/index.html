@@ -81,6 +81,21 @@
         <span class="hint" id="gazCaps">—</span>
       </div>
       <ol id="gazHits" class="gaz-hits"></ol>
+      <h3>LOCAL GPX → GEOCACHE REGISTER</h3>
+      <p class="hint">
+        Import GPX 1.0/1.1 waypoints from a Pocket Query, GSAK export or Geomate.jr loader set. The file is read in this
+        session only — nothing is uploaded, written back to a device, or kept between visits.
+      </p>
+      <label class="gpx-file-label" for="gpxFile">Choose a GPX file</label>
+      <input id="gpxFile" type="file" accept=".gpx,application/gpx+xml,application/xml,text/xml" />
+      <div class="gaz-ops">
+        <button type="button" id="gpxImport">IMPORT GPX</button>
+        <button type="button" id="gpxExportBag" disabled>PRESERVATION BAG (.ZIP)</button>
+        <button type="button" id="gpxClear" disabled>CLEAR</button>
+      </div>
+      <p class="hint" id="gpxImportStatus" role="status" aria-live="polite">
+        No GPX loaded. Nothing is uploaded or saved between sessions.
+      </p>
       <p class="hint" style="margin-top:6px">
         Canada is outside USGS GNIS, so Toronto rows are a curated city gazetteer with public-source notes. Geocaches plot only when a public source prints the posted coordinates.
       </p>

@@ -1,0 +1,49 @@
+Logging output to /home/user/Html5/research/warrick_geomate_audit/geomate_qt_gui_app_executable/warrick.log
+
+in directory: /home/user/Html5/research/warrick_geomate_audit/geomate_qt_gui_app_executable
+
+Warrick version 2.2.2 by Frank McCown, adapted by Justin F. Brunelle
+PID = 3250
+Machine name = e2b.local
+
+Setting up: Download to directory: /home/user/Html5/research/warrick_geomate_audit/geomate_qt_gui_app_executable
+
+not using input file...
+
+Getting out of the get_memento function with http://geomatejr.appspot.com/geomateQtGuiApp.exe
+
+now dir is /home/user/Html5/research/warrick_geomate_audit/geomate_qt_gui_app_executable
+
+Host comparison:  vs geomatejr.appspot.com
+
+
+
+removing duplicate paths 1: geomateQtGuiApp.exe =>targetpath: geomateQtGuiApp.exe
+
+made 
+
+
+
+ mcurling: /home/user/Html5/tools/warrick//mcurl.pl -D "/home/user/Html5/research/warrick_geomate_audit/geomate_qt_gui_app_executable/logfile.o"  -tg "http://mementoproxy.cs.odu.edu/aggr/timegate" -L -o "/home/user/Html5/research/warrick_geomate_audit/geomate_qt_gui_app_executable//geomateQtGuiApp.exe" "http://geomatejr.appspot.com/geomateQtGuiApp.exe"
+
+Reading logfile: /home/user/Html5/research/warrick_geomate_audit/geomate_qt_gui_app_executable/logfile.o
+
+
+Unable to download...
+Download Error
+
+
+To stats FAILED:: http://geomatejr.appspot.com/geomateQtGuiApp.exe => ??? => /home/user/Html5/research/warrick_geomate_audit/geomate_qt_gui_app_executable//geomateQtGuiApp.exe --> Stat Failure...
+
+Search HTML resource  for links to other missing resources...
+No such file 
+
+No Content in !
+
+Starting recovery at position 0 of -1
+
+Program terminated.
+
+-----------------------
+
+

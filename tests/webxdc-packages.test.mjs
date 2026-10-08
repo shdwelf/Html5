@@ -67,9 +67,14 @@ test("SoCal Subsurface archive is current and closes its local module graph", ()
     "index.html", "manifest.toml", "css/socal-subsurface.css",
     "js/socal-subsurface.js", "js/socal-radio.js", "js/socal-radio-data.js",
     "js/socal-propagation.js", "js/socal-relief.js", "js/socal-utilities.js",
-    "js/socal-utilities-data.js", "js/socal-orbital.js",
+    "js/socal-utilities-data.js", "js/socal-orbital.js", "js/gpx-geocache.js",
+    "vendor/fflate/index.mjs", "vendor/fflate/LICENSE",
   ];
   for (const file of required) assert.ok(files[file], `archive is missing ${file}`);
+  assert.equal(text(files, "js/gpx-geocache.js"), source("js/gpx-geocache.js"));
+  assert.equal(text(files, "vendor/fflate/index.mjs"), source("vendor/fflate/index.mjs"));
+  assert.match(text(files, "index.html"), /LOCAL GPX → GEOCACHE REGISTER/);
+  assert.doesNotMatch(text(files, "js/socal-gazetteer-data.js"), /\["[^"]+","Geocache",/);
 
   // Every staged first-party source must be byte-identical to the working tree.
   // This catches archives that contain the right filename but stale contents.

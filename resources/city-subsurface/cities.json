@@ -465,7 +465,7 @@
         ["Buffalo Zoo", "Park", "admin.park", "Erie", 42.945, -78.889, null, null, 0, "Public zoo reference coordinate."],
         ["Lake Erie", "Lake", "hydro.lake", "Erie", 42.85, -78.88, 173, null, 0, "Lake Erie shoreline context; GNIS primary coordinate not claimed here."],
         ["Niagara River", "Stream", "hydro.stream", "Erie", 42.90, -78.90, null, null, 0, "River reach context; GNIS mouth coordinate not claimed here."],
-        ["Why Not Buffalo? #1 (GCQ1T1)", "Geocache", "community.geocache", "Erie", 42.9009166667, -78.8988833333, null, null, 0, "GCQ1T1 · archived traditional cache · public description prints N 42 54.055 W 078 53.933 after the 2015 move; community source, not GNIS."]
+        ["Why Not Buffalo? #1 (GCQ1T1)", "Geocache", "rec.geocache", "Erie", 42.9009166667, -78.8988833333, null, null, 0, "GCQ1T1 · archived traditional cache · public description prints N 42 54.055 W 078 53.933 after the 2015 move; community source, not GNIS."]
       ]
     },
     "toronto": {
@@ -579,7 +579,7 @@
         ["Toronto Islands", "Park", "admin.park", "Toronto", 43.62, -79.38, null, null, 0, "Public park reference coordinate."],
         ["Lake Ontario", "Lake", "hydro.lake", "Toronto", 43.62, -79.38, 74, null, 0, "Lake Ontario shoreline context; Canadian federal source, not GNIS."],
         ["Don River", "Stream", "hydro.stream", "Toronto", 43.70, -79.35, null, null, 0, "River reach context; Canadian source, not GNIS."],
-        ["Toronto's First Post Office (GC7HT4Z)", "Geocache", "community.geocache", "Toronto", 43.65185, -79.37035, null, null, 0, "GC7HT4Z · letterbox hybrid · official Geocaching.com Geocache of the Week (2024-12-04) prints N 43° 39.111′ W 079° 22.221′; community source, not GNIS."]
+        ["Toronto's First Post Office (GC7HT4Z)", "Geocache", "rec.geocache", "Toronto", 43.65185, -79.37035, null, null, 0, "GC7HT4Z · letterbox hybrid · official Geocaching.com Geocache of the Week (2024-12-04) prints N 43° 39.111′ W 079° 22.221′; community source, not GNIS."]
       ]
     }
   }

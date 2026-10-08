@@ -46,6 +46,7 @@ export const GAZ_CLASS_META = {
   Census: { label: "Census/CDPs", short: "CDP", swatch: "#f0e6c8" },
   Military: { label: "Military", short: "MIL", swatch: "#9fb6a3" },
   "Populated Place": { label: "Populated places", short: "PPL", swatch: "#f8fafc" },
+  Geocache: { label: "Geocaches", short: "GC", swatch: "#34d399" },
 };
 
 /** FTT prefix → human label, for the facet dropdown. */
@@ -56,6 +57,7 @@ export const GAZ_FACETS = [
   { fac: "manmade", label: "manmade (manmade.*)" },
   { fac: "pop", label: "populated (pop.*)" },
   { fac: "admin", label: "administrative (admin.*)" },
+  { fac: "rec", label: "recreational (rec.*)" },
 ];
 
 export const normalizeName = (s) =>
@@ -103,7 +105,7 @@ export const getCapabilities = (rows = DEFAULT_ROWS) => ({
 
 /**
  * Build a queryable index. Lazily counts trigram sets on first query so the
- * 343-row pack costs near nothing at boot.
+ * fixed register costs near nothing at boot; imported rows are added only in memory.
  */
 export const makeGazetteerIndex = (rows = DEFAULT_ROWS) => {
   const entries = rows.map((r, i) => ({
@@ -118,6 +120,12 @@ export const makeGazetteerIndex = (rows = DEFAULT_ROWS) => {
     gnis: r[7],
     verified: r[8] === 1,
     note: r[9],
+    source: r[10] ?? null,
+    cacheCode: r[10]?.cacheCode ?? null,
+    cacheType: r[10]?.cacheType ?? null,
+    container: r[10]?.container ?? null,
+    difficulty: r[10]?.difficulty ?? null,
+    terrain: r[10]?.terrain ?? null,
     norm: normalizeName(r[0]),
     countyNorm: normalizeName(r[3]),
     grams: null,
@@ -137,15 +145,65 @@ const facetMatch = (e, fac) => {
 };
 
 /**
+ * Keep only the best `limit` candidates in a max-heap whose root is the worst
+ * retained item. `compare(a, b) < 0` means a ranks before (better than) b.
+ * This avoids sorting every match when a Gazetteer query returns thousands.
+ */
+const makeTopK = (limit, compare) => {
+  const requested = Number(limit);
+  const capacity = Number.isFinite(requested) ? Math.max(0, Math.floor(requested)) : 0;
+  const heap = [];
+
+  const siftDown = (start) => {
+    let root = start;
+    while (true) {
+      const left = root * 2 + 1;
+      const right = left + 1;
+      let worst = root;
+      if (left < heap.length && compare(heap[left], heap[worst]) > 0) worst = left;
+      if (right < heap.length && compare(heap[right], heap[worst]) > 0) worst = right;
+      if (worst === root) break;
+      [heap[root], heap[worst]] = [heap[worst], heap[root]];
+      root = worst;
+    }
+  };
+
+  return {
+    add(item) {
+      if (!capacity) return;
+      if (heap.length < capacity) {
+        heap.push(item);
+        let child = heap.length - 1;
+        while (child > 0) {
+          const parent = Math.floor((child - 1) / 2);
+          if (compare(heap[child], heap[parent]) <= 0) break;
+          [heap[child], heap[parent]] = [heap[parent], heap[child]];
+          child = parent;
+        }
+      } else if (compare(item, heap[0]) < 0) {
+        heap[0] = item;
+        siftDown(0);
+      }
+    },
+    sorted() {
+      return heap.sort(compare);
+    },
+  };
+};
+
+const compareGazNames = (a, b) => a.name.localeCompare(b.name) || a.i - b.i;
+
+/**
  * ADL GSP search-name: fuzzy trigram match on name (+county context), with
- * exact/prefix/substring boosts. Returns hits sorted by score desc.
+ * exact/prefix/substring boosts. Returns only the best `limit` hits in score
+ * order; it does not sort the entire match set.
  */
 export const searchName = (idx, query, opts = {}) => {
   const { facet = "", classes = null, threshold = 0.26, limit = 12 } = opts;
   const norm = normalizeName(String(query ?? ""));
   if (!norm) return [];
-  const g = trigrams(norm);
-  const hits = [];
+  const compareHits = (a, b) => b.score - a.score || compareGazNames(a.entry, b.entry);
+  const hits = makeTopK(limit, compareHits);
   for (const e of idx.entries) {
     if (!facetMatch(e, facet)) continue;
     if (classes && !classes.has(e.fclass)) continue;
@@ -159,11 +217,10 @@ export const searchName = (idx, query, opts = {}) => {
     else if (e.countyNorm && similarity(norm, ensureFields(idx, e, "countyGrams")) > 0.8)
       score = Math.max(score, 0.55);
     if (score >= threshold || (score > 0 && norm.length <= 2 && nameNorm.startsWith(norm))) {
-      hits.push({ entry: e, score: Math.min(1, score) });
+      hits.add({ entry: e, score: Math.min(1, score) });
     }
   }
-  hits.sort((a, b) => b.score - a.score || a.entry.name.localeCompare(b.entry.name));
-  return hits.slice(0, limit).map((h) => ({ ...h.entry, score: h.score }));
+  return hits.sorted().map((h) => ({ ...h.entry, score: h.score }));
 };
 
 const ensureFields = (idx, e) => idx.ensure(e);
@@ -171,29 +228,28 @@ const ensureFields = (idx, e) => idx.ensure(e);
 /** ADL GSP search-point: radius in km around (lat, lon), nearest first. */
 export const searchPoint = (idx, lat, lon, opts = {}) => {
   const { radiusKm = 30, facet = "", classes = null, limit = 12 } = opts;
-  const hits = [];
+  const compareDistance = (a, b) => a.d - b.d || compareGazNames(a.e, b.e);
+  const hits = makeTopK(limit, compareDistance);
   for (const e of idx.entries) {
     if (!facetMatch(e, facet)) continue;
     if (classes && !classes.has(e.fclass)) continue;
     const d = haversineKm(lat, lon, e.lat, e.lon);
-    if (d <= radiusKm) hits.push({ e, d });
+    if (d <= radiusKm) hits.add({ e, d });
   }
-  hits.sort((a, b) => a.d - b.d);
-  return hits.slice(0, limit).map((h) => ({ ...h.e, distKm: h.d }));
+  return hits.sorted().map((h) => ({ ...h.e, distKm: h.d }));
 };
 
 /** ADL GSP search-box: EPSG:4326 lon/lat rectangle (six decimals accepted). */
 export const searchBox = (idx, box, opts = {}) => {
   const { facet = "", classes = null, limit = 200 } = opts;
   const { lat0, lat1, lon0, lon1 } = box;
-  const hits = [];
+  const hits = makeTopK(limit, compareGazNames);
   for (const e of idx.entries) {
     if (!facetMatch(e, facet)) continue;
     if (classes && !classes.has(e.fclass)) continue;
-    if (e.lat >= lat0 && e.lat <= lat1 && e.lon >= lon0 && e.lon <= lon1) hits.push(e);
+    if (e.lat >= lat0 && e.lat <= lat1 && e.lon >= lon0 && e.lon <= lon1) hits.add(e);
   }
-  hits.sort((a, b) => a.name.localeCompare(b.name));
-  return hits.slice(0, limit);
+  return hits.sorted();
 };
 
 /** ADL GSP describe: full entry record by index. */

@@ -305,6 +305,38 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 .gaz-hit-name { display: block; font-size: 11px; color: var(--ink); }
 .gaz-hit-meta { display: block; font-size: 9.5px; color: var(--dim); letter-spacing: 0.02em; }
 
+.gaz-import {
+  margin-top: 9px;
+  padding: 7px;
+  border: 1px solid #264157;
+  border-radius: 4px;
+  background: rgba(7, 15, 23, 0.72);
+}
+.gaz-import h3 {
+  margin: 0 0 5px;
+  color: #9be8d3;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+.gaz-import p { margin: 5px 0; }
+.gpx-file-label {
+  display: block;
+  margin: 5px 0 3px;
+  color: var(--ink);
+  font-size: 10px;
+}
+#gpxFile {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  color: var(--dim);
+  font: inherit;
+  font-size: 9px;
+}
+#gpxImportStatus { overflow-wrap: anywhere; }
+#gpxExportBag { color: #a7f3d0; border-color: #267455; }
+.gaz-import button:disabled { opacity: 0.45; cursor: not-allowed; }
+
 /* ---------- spectrum + relief PiPs ---------- */
 #pipRadio { top: 66px; right: 304px; width: 318px; }
 #pipRadio .pip-body { max-height: 54vh; }

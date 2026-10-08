@@ -40,7 +40,7 @@ test("every city app has a page, data packs, and a current Webxdc", async () => 
       assert.ok(row[5] >= gaz.GAZ_META.bbox.lon0 && row[5] <= gaz.GAZ_META.bbox.lon1, `${city}: ${row[0]} lon out of frame`);
       if (row[8] === 1) assert.match(String(row[7]), /^\d+$/, `${city}: verified row needs a GNIS id`);
       if (row[1] === "Geocache") {
-        assert.equal(row[2], "community.geocache", `${city}: geocache must use the community extension`);
+        assert.equal(row[2], "rec.geocache", `${city}: geocache must use the community extension`);
         assert.equal(row[8], 0, `${city}: geocache must not claim GNIS verification`);
         assert.match(row[9], /GC[A-Z0-9]+/, `${city}: geocache note must carry the cache code`);
       }
@@ -57,6 +57,59 @@ test("every city app has a page, data packs, and a current Webxdc", async () => 
       assert.deepEqual(Buffer.from(files[name]), readFileSync(path.join(root, name)), `${city}: ${name} is stale in the archive`);
     }
   }
+});
+
+test("local GPX imports land in a city register as rec.geocache rows", async () => {
+  const { JSDOM } = await import("jsdom");
+  const { parseGeomateGpx, cacheToGazetteerRow, safeGpxFilename } = await import("../js/gpx-geocache.js");
+  const { makeGazetteerIndex, appendGazetteerRows, searchName, classRollup } = await import("../js/city-gazetteer.js");
+  const lawrence = await import("../js/city-gazetteer-data-lawrence.js");
+
+  const gpx = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="unit-test" xmlns="http://www.topografix.com/GPX/1/1">
+  <wpt lat="38.9717" lon="-95.2353">
+    <name>GC12345</name>
+    <type>Geocache|Traditional Cache</type>
+    <sym>Geocache</sym>
+    <cache><name>Downtown test cache</name><type>Traditional Cache</type><container>micro</container><difficulty>2</difficulty><terrain>1.5</terrain></cache>
+  </wpt>
+  <wpt lat="39.7392" lon="-104.9903">
+    <name>GC99999</name>
+    <type>Geocache|Traditional Cache</type>
+    <sym>Geocache</sym>
+    <cache><name>Denver cache, outside the frame</name><type>Traditional Cache</type></cache>
+  </wpt>
+  <wpt lat="38.97" lon="-95.23"><name>Trailhead parking</name><sym>Parking Area</sym></wpt>
+</gpx>`;
+
+  const dom = new JSDOM("");
+  const parsed = parseGeomateGpx(gpx, { sourceName: "../../etc/passwd", bounds: lawrence.GAZ_META.bbox, DOMParserImpl: dom.window.DOMParser });
+  assert.equal(parsed.gpxVersion, "1.1");
+  assert.equal(parsed.sourceName, "passwd", "filename is reduced to a safe leaf");
+  assert.equal(parsed.stats.cacheWaypoints, 2);
+  assert.equal(parsed.stats.nonCacheWaypoints, 1);
+  assert.equal(parsed.stats.importedToMap, 1);
+  assert.equal(parsed.stats.outOfFrame, 1);
+
+  const rows = parsed.inFrameCaches.map((cache) => cacheToGazetteerRow(cache, parsed.sourceName));
+  assert.equal(rows.length, 1);
+  const [row] = rows;
+  assert.equal(row[1], "Geocache");
+  assert.equal(row[2], "rec.geocache");
+  assert.equal(row[8], 0, "an import may never claim GNIS verification");
+  assert.equal(row[10].type, "GPX");
+  assert.equal(row[10].cacheCode, "GC12345");
+  assert.equal(safeGpxFilename("a\\b/c 1.gpx"), "c_1.gpx", "paths are reduced to a sanitized leaf name");
+
+  const idx = makeGazetteerIndex(lawrence.GAZ_ROWS);
+  const added = appendGazetteerRows(idx, rows);
+  assert.equal(added.length, 1);
+  assert.equal(idx.entries.at(-1).fclass, "Geocache");
+  const hits = searchName(idx, "GC12345", { limit: 5 });
+  assert.equal(hits[0]?.name, "Downtown test cache (GC12345)");
+  assert.equal(hits[0]?.source?.type, "GPX");
+  assert.ok(classRollup([...lawrence.GAZ_ROWS, ...rows]).some((c) => c.fclass === "Geocache"));
+  dom.window.close();
 });
 
 test("city gazetteer engine searches names, facets, boxes, and geocaches", async () => {
