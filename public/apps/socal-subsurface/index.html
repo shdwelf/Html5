@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
   <title>SOCAL SUBSURFACE 4Dwm — underground pipeline theater</title>
-  <meta name="description" content="Three.js theater of Southern California's buried infrastructure with an offline USGS GNIS gazetteer: aqueducts, product pipelines, rail corridors, geothermal fields and desert sites." />
+  <meta name="description" content="Offline Three.js theater of Southern California infrastructure with an offline USGS GNIS gazetteer and optional local GPX geocaches." />
   <link rel="stylesheet" href="./css/socal-subsurface.css" />
 </head>
 <body>
@@ -40,7 +40,7 @@
     <div class="pip-body">
       <form class="search-row" id="gazetteerSearch" role="search">
         <label class="sr-only" for="searchBox">Search the offline USGS gazetteer and theater features</label>
-        <input type="search" id="searchBox" placeholder="find GNIS name or theater feature…" autocomplete="off" />
+        <input type="search" id="searchBox" placeholder="find GNIS name, local GPX cache or theater feature…" autocomplete="off" />
         <div id="searchResults" aria-live="polite"></div>
       </form>
       <dl class="kv">
@@ -79,7 +79,7 @@
 
   <!-- PIP: USGS GNIS gazetteer ------------------------------------------ -->
   <section class="pip" id="pipGaz">
-    <div class="pip-head"><h2>GAZETTEER · USGS GNIS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-head"><h2>GAZETTEER · GNIS + LOCAL GPX</h2><button type="button" data-min aria-label="Minimize">–</button></div>
     <div class="pip-body">
       <div class="gaz-controls">
         <input id="gazQuery" type="search" placeholder="search-name (fuzzy, trigram)…" aria-label="Search place names" autocomplete="off" />
@@ -92,8 +92,29 @@
         <span class="hint" id="gazCaps">—</span>
       </div>
       <ol id="gazHits" class="gaz-hits"></ol>
+      <div class="gaz-import">
+        <h3>LOCAL GPX → GEOCACHE REGISTER</h3>
+        <p class="hint">
+          Import GPX 1.0/1.1 waypoints from a Pocket Query or GSAK export. The original file stays in this browser session;
+          only SoCal-frame cache points appear on the map. Descriptions, hints, logs and owner names are not copied into the normalized register.
+        </p>
+        <label class="gpx-file-label" for="gpxFile">Choose a GPX file</label>
+        <input id="gpxFile" type="file" accept=".gpx,application/gpx+xml,application/xml,text/xml" />
+        <div class="gaz-ops">
+          <button type="button" id="gpxImport">IMPORT GPX</button>
+          <button type="button" id="gpxExportBag" disabled>EXPORT PRESERVATION BAG (.ZIP)</button>
+          <button type="button" id="gpxClear" disabled>CLEAR LOCAL IMPORT</button>
+        </div>
+        <p class="hint" id="gpxImportStatus" role="status" aria-live="polite">No GPX loaded. Nothing is uploaded or saved between sessions.</p>
+        <p class="hint">
+          Preservation export keeps the source GPX byte-for-byte and adds a normalized XML/JSON rendition plus BagIt SHA-256 manifests.
+          The derivative omits listing descriptions, hints, logs and owner names, but the verbatim source may contain them—review it before sharing the ZIP.
+          This is a Xena-inspired preservation workflow, not a native Xena file. The <code>.xdc</code> is the offline viewer app, not the GPX/database format.
+        </p>
+      </div>
       <p class="hint" style="margin-top:6px">
-        Curated seed register (343 entries) in the ADL GCS model — names set + EPSG:4326 footprint + FTT classification; FEATURE_IDs confirmed per entry where pinned.
+        Offline gazetteer: curated named-feature register in the ADL GCS model — EPSG:4326 point footprints + FTT classification;
+        GNIS IDs are verified only where pinned. Local cache imports remain community data, never GNIS-verified.
       </p>
     </div>
   </section>

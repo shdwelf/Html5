@@ -45,6 +45,12 @@ import { FIRE_SOURCE_URLS } from "./socal-overlays-data.js";
 import { OFF_FRAME } from "./socal-sites-extended.js";
 import { GAZ_META, GAZ_ROWS } from "./socal-gazetteer-data.js";
 import {
+  MAX_GPX_FILE_BYTES,
+  cacheToGazetteerRow,
+  createGpxPreservationBag,
+  parseGeomateGpx,
+} from "./gpx-geocache.js";
+import {
   GAZ_CLASS_META,
   GAZ_FACETS,
   classRollup,
@@ -412,9 +418,65 @@ for (const node of NODES) {
  * at full brightness; curated seed coordinates render muted — the same
  * official/community evidence-tier split the rest of the theater uses.
  */
-const gazIdx = makeGazetteerIndex(GAZ_ROWS);
+let gazRows = GAZ_ROWS;
+let gazIdx = makeGazetteerIndex(gazRows);
 const gazMeshes = [];
 const gazHeadByIdx = new Map();
+let importedPointCloud = null;
+let importedCacheEntries = [];
+
+function makeGazRecord(e) {
+  const importedCache = e.fclass === "Geocache";
+  const sourceFile = e.source?.file;
+  const facts = importedCache
+    ? [
+        "Feature class: Geocache → ADL FTT facet rec.geocache (community data; not GNIS).",
+        `Cache code: ${e.cacheCode || "not supplied"}`,
+        `Type: ${e.cacheType || "not supplied"}`,
+        `Container: ${e.container || "not supplied"}`,
+        `Difficulty / terrain: ${e.difficulty ?? "—"} / ${e.terrain ?? "—"}`,
+        `Coordinates came from the user-supplied GPX${sourceFile ? ` (${sourceFile})` : ""}; this import is held in memory only.`,
+        ...(e.note ? [e.note] : []),
+      ]
+    : [
+        `GNIS class: ${e.fclass} → ADL FTT facet ${e.ftt}`,
+        `county: ${e.county}`,
+        e.elev !== null
+          ? `elevation ${e.elev.toLocaleString()} m (${Math.round(e.elev * 3.281).toLocaleString()} ft)`
+          : "elevation not asserted in this compiled snapshot",
+        e.gnis
+          ? `GNIS FEATURE_ID ${e.gnis} — verified via ${GAZ_META.verified > 200 ? "USGS DomesticNames extract" : "Wikidata P590 anchor (CC0)"}`
+          : "position from the compiled curated snapshot — no verified FEATURE_ID yet",
+        ...(e.note ? [e.note] : []),
+      ];
+  const sources = importedCache
+    ? [
+        sourceFile ? `User-selected GPX file: ${sourceFile} (not uploaded)` : "User-supplied GPX record",
+        "Community cache coordinate; not GNIS/USGS-verified.",
+      ]
+    : [
+        "USGS U.S. Board on Geographic Names / GNIS (17 USC 105)",
+        e.gnis ? "Wikidata P590 anchor, Wikimedia CC0, retrieved 2026-10-03" : "Compiled curated snapshot (this repo; declared upstream seed absent)",
+      ];
+
+  return {
+    id: `gaz-${e.i}`,
+    name: e.name,
+    layer: "gazetteer",
+    tier: e.verified ? "official" : "community",
+    lon: e.lon,
+    lat: e.lat,
+    kind: "gaz",
+    depthM: 0,
+    featureClass: e.fclass,
+    county: importedCache ? null : e.county,
+    gnisId: e.gnis,
+    cacheCode: e.cacheCode,
+    source: e.source,
+    facts,
+    sources,
+  };
+}
 
 for (const e of gazIdx.entries) {
   const meta = GAZ_CLASS_META[e.fclass] ?? { swatch: "#9db2d1", short: "GNIS" };
@@ -437,32 +499,7 @@ for (const e of gazIdx.entries) {
     new THREE.MeshBasicMaterial({ color, transparent: true, opacity: e.verified ? 0.95 : 0.62 }),
   );
   head.position.y = 0.4;
-  const record = {
-    id: `gaz-${e.i}`,
-    name: e.name,
-    layer: "gazetteer",
-    tier: e.verified ? "official" : "community",
-    lon: e.lon,
-    lat: e.lat,
-    kind: "gaz",
-    depthM: 0,
-    facts: [
-      `GNIS class: ${e.fclass} → ADL FTT facet ${e.ftt}`,
-      `county: ${e.county}`,
-      e.elev !== null
-        ? `elevation ${e.elev.toLocaleString()} m (${Math.round(e.elev * 3.281).toLocaleString()} ft)`
-        : "elevation not asserted (awaiting official extract coordinates)",
-      e.gnis
-        ? `GNIS FEATURE_ID ${e.gnis} — verified via ${GAZ_META.verified > 200 ? "USGS DomesticNames extract" : "Wikidata P590 anchor (CC0)"}`
-        : "position from the curated seed register — no verified FEATURE_ID yet",
-      ...(e.note ? [e.note] : []),
-    ],
-    sources: [
-      "USGS U.S. Board on Geographic Names / GNIS (17 USC 105)",
-      e.gnis ? "Wikidata P590 anchor, Wikimedia CC0, retrieved 2026-10-03" : "data/gnis/socal-gazetteer-seed.csv (curated, this repo)",
-    ],
-  };
-  head.userData = { record, kind: "gaz", gazIdx: e.i };
+  head.userData = { record: makeGazRecord(e), kind: "gaz", gazIdx: e.i };
   g.add(head);
   PICKABLE.push(head);
 
@@ -1047,15 +1084,18 @@ if (gazFacetSel) {
   });
 }
 
-if (gazClassesHost) {
-  for (const c of classRollup(GAZ_ROWS)) {
+function rebuildGazClassFilters(rows) {
+  if (!gazClassesHost) return;
+  gazClassesHost.replaceChildren();
+  gazState.classes = null;
+  gazClassToggles = [];
+  for (const c of classRollup(rows)) {
     const row = document.createElement("label");
     row.className = "gaz-chip";
     const cb = document.createElement("input");
     cb.type = "checkbox";
     cb.checked = true;
     cb.addEventListener("change", () => {
-      // Sane Set detection: rebuild from the DOM
       const cls = gazClassToggles.filter((t) => t.el.checked).map((t) => t.fclass);
       gazState.classes = cls.length === gazClassToggles.length ? null : new Set(cls);
       runGazSearch();
@@ -1070,19 +1110,22 @@ if (gazClassesHost) {
     gazClassToggles.push({ el: cb, fclass: c.fclass });
   }
 }
+rebuildGazClassFilters(gazRows);
 
 /** Float the camera to a gazetteer entry and select its pin. */
 function focusGazEntry(e) {
   const head = gazHeadByIdx.get(e.i);
-  const { group } = gazMeshes.find((m) => m.entry.i === e.i) ?? {};
-  if (!group) return;
+  const isImported = e.source?.type === "GPX";
+  if (!head && !isImported) return;
   const [x, z] = project(e.lon, e.lat);
   const y = elevY(elevationAt(e.lon, e.lat));
   const span = Math.max(4, 20);
   camera.position.set(x + 6, y + span * 0.55, z + span * 0.72);
   controls.target.set(x, y, z);
   controls.update();
+  revealLayer("gazetteer");
   if (head) select(head);
+  else select(null, makeGazRecord(e));
   setStatus(`gazetteer · ${e.name} (${e.fclass})`);
 }
 
@@ -1097,10 +1140,11 @@ function renderGazHits(hits, mode) {
     btn.type = "button";
     btn.className = "gaz-hit" + (h.verified ? " verified" : "");
     const meta = GAZ_CLASS_META[h.fclass] ?? { short: "GNIS", swatch: "#9db2d1" };
+    const place = h.fclass === "Geocache" ? "local GPX" : h.county;
     const detail =
       mode === "point"
-        ? `${h.distKm.toFixed(1)} km · ${meta.short} · ${h.county}`
-        : `${meta.short} · ${h.county}${h.elev != null ? " · " + h.elev + " m" : ""}`;
+        ? `${h.distKm.toFixed(1)} km · ${meta.short} · ${place}`
+        : `${meta.short} · ${place}${h.elev != null ? " · " + h.elev + " m" : ""}`;
     btn.innerHTML = `<span class="gaz-hit-name"></span><span class="gaz-hit-meta"></span>`;
     btn.querySelector(".gaz-hit-name").textContent = h.name;
     btn.querySelector(".gaz-hit-meta").textContent = detail;
@@ -1167,9 +1211,150 @@ if (gazClearBtn) {
   });
 }
 
-if (gazCaps) {
-  const caps = GAZ_META;
-  gazCaps.textContent = `${caps.rowCount} names · ${caps.verified} id-verified · EPSG:4326`;
+function updateGazetteerCounts() {
+  if (!gazCaps) return;
+  const verified = gazRows.filter((row) => row[8] === 1).length;
+  const localCaches = gazRows.filter((row) => row[1] === "Geocache").length;
+  gazCaps.textContent = `${gazRows.length} names · ${verified} GNIS ID-verified · ${localCaches} local caches · EPSG:4326`;
+}
+updateGazetteerCounts();
+
+function replaceImportedCachePoints(entries) {
+  if (importedPointCloud) {
+    groups.gazetteer.remove(importedPointCloud);
+    const at = PICKABLE.indexOf(importedPointCloud);
+    if (at >= 0) PICKABLE.splice(at, 1);
+    importedPointCloud.geometry.dispose();
+    importedPointCloud.material.dispose();
+    importedPointCloud = null;
+  }
+  importedCacheEntries = entries;
+  if (!entries.length) return;
+
+  const positions = new Float32Array(entries.length * 3);
+  entries.forEach((entry, index) => {
+    const [x, z] = project(entry.lon, entry.lat);
+    positions[index * 3] = x;
+    positions[index * 3 + 1] = elevY(elevationAt(entry.lon, entry.lat)) + 0.32;
+    positions[index * 3 + 2] = z;
+  });
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const material = new THREE.PointsMaterial({
+    color: GAZ_CLASS_META.Geocache.swatch,
+    size: 0.23,
+    sizeAttenuation: true,
+    transparent: true,
+    opacity: 0.96,
+    depthWrite: false,
+  });
+  importedPointCloud = new THREE.Points(geometry, material);
+  importedPointCloud.userData.importedGeocachePoints = true;
+  groups.gazetteer.add(importedPointCloud);
+  PICKABLE.push(importedPointCloud);
+}
+
+function installImportedGpx(parsed, file) {
+  const rows = parsed.inFrameCaches.map((cache) => cacheToGazetteerRow(cache, file.name));
+  gazRows = [...GAZ_ROWS, ...rows];
+  gazIdx = makeGazetteerIndex(gazRows);
+  rebuildGazClassFilters(gazRows);
+  importedCacheEntries = gazIdx.entries.filter((entry) => entry.source?.type === "GPX");
+  replaceImportedCachePoints(importedCacheEntries);
+  updateGazetteerCounts();
+  runGazSearch();
+  refreshCounts();
+}
+
+let importedGpxFile = null;
+let importedGpxResult = null;
+const gpxInput = $("gpxFile");
+const gpxImportButton = $("gpxImport");
+const gpxExportButton = $("gpxExportBag");
+const gpxClearButton = $("gpxClear");
+const gpxImportStatus = $("gpxImportStatus");
+
+function setGpxStatus(message) {
+  if (gpxImportStatus) gpxImportStatus.textContent = message;
+}
+
+if (gpxImportButton) {
+  gpxImportButton.addEventListener("click", async () => {
+    const file = gpxInput?.files?.[0];
+    if (!file) {
+      setGpxStatus("Choose a .gpx file first.");
+      return;
+    }
+    if (file.size > MAX_GPX_FILE_BYTES) {
+      setGpxStatus(`Import refused: file exceeds ${Math.floor(MAX_GPX_FILE_BYTES / (1024 * 1024))} MiB.`);
+      return;
+    }
+
+    gpxImportButton.disabled = true;
+    setGpxStatus("Parsing GPX locally…");
+    try {
+      const parsed = parseGeomateGpx(await file.text(), { sourceName: file.name });
+      installImportedGpx(parsed, file);
+      importedGpxFile = file;
+      importedGpxResult = parsed;
+      if (gpxExportButton) gpxExportButton.disabled = false;
+      if (gpxClearButton) gpxClearButton.disabled = false;
+      const stats = parsed.stats;
+      const extra = stats.omittedBeyondLimit
+        ? ` · normalized cap reached; ${stats.omittedBeyondLimit} additional cache(s) remain only in the preserved original`
+        : "";
+      setGpxStatus(
+        `Loaded ${stats.importedToMap} SoCal cache(s) from ${parsed.sourceName}; ${stats.outOfFrame} outside this theater, ${stats.nonCacheWaypoints} non-cache waypoint(s), ${stats.invalidCoordinates} invalid coordinate(s), ${stats.duplicates} duplicate(s)${extra}. Session-only; no network upload.`,
+      );
+      setStatus(`GPX import · ${stats.importedToMap} local cache(s) added to the gazetteer`);
+    } catch (error) {
+      setGpxStatus(`Import failed: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      gpxImportButton.disabled = false;
+    }
+  });
+}
+
+if (gpxExportButton) {
+  gpxExportButton.addEventListener("click", async () => {
+    if (!importedGpxFile || !importedGpxResult) return;
+    gpxExportButton.disabled = true;
+    setGpxStatus("Building BagIt preservation ZIP and SHA-256 manifests…");
+    try {
+      const bag = await createGpxPreservationBag({ sourceFile: importedGpxFile, parsed: importedGpxResult });
+      const url = URL.createObjectURL(new Blob([bag.bytes], { type: "application/zip" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = bag.fileName;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setGpxStatus(`Downloaded ${bag.fileName} · source SHA-256 ${bag.originalSha256} · bag SHA-256 ${bag.zipSha256}${bag.complete ? "" : " · normalized rendition is capped; original is complete"}.`);
+    } catch (error) {
+      setGpxStatus(`Preservation export failed: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      gpxExportButton.disabled = false;
+    }
+  });
+}
+
+if (gpxClearButton) {
+  gpxClearButton.addEventListener("click", () => {
+    importedGpxFile = null;
+    importedGpxResult = null;
+    gazRows = GAZ_ROWS;
+    gazIdx = makeGazetteerIndex(gazRows);
+    rebuildGazClassFilters(gazRows);
+    replaceImportedCachePoints([]);
+    updateGazetteerCounts();
+    if (gpxInput) gpxInput.value = "";
+    gpxClearButton.disabled = true;
+    if (gpxExportButton) gpxExportButton.disabled = true;
+    renderGazHits([], "name");
+    runGazSearch();
+    refreshCounts();
+    setGpxStatus("Local GPX import cleared. Nothing remains in this session.");
+    setStatus("local GPX cache layer cleared");
+  });
 }
 
 const fireSrcHost = $("fireSources");
@@ -1249,6 +1434,9 @@ function renderDetail(record) {
   if (record.featureClass) rows.push(["GNIS class", record.featureClass]);
   if (record.county) rows.push(["county", record.county]);
   if (record.gnisId) rows.push(["GNIS feature ID", String(record.gnisId)]);
+  if (record.cacheCode) rows.push(["cache code", record.cacheCode]);
+  if (record.cacheType) rows.push(["cache type", record.cacheType]);
+  if (record.container) rows.push(["container", record.container]);
   if (record.path) {
     rows.push(["endpoints", `${fmtLL(record.path[0])} → ${fmtLL(record.path[record.path.length - 1])}`]);
     rows.push(["plotted", `${pathKm(record.path).toFixed(0)} km (generalized)`]);
@@ -1321,23 +1509,24 @@ renderDetail(null);
 
 const raycaster = new THREE.Raycaster();
 raycaster.params.Line = { threshold: 0.3 };
+raycaster.params.Points = { threshold: 0.32 };
 const pointer = new THREE.Vector2();
 let selected = null;
 let selectedMat = null;
 let selectedEmissive = null;
 
-function select(obj) {
+function select(obj, recordOverride = null) {
   if (selectedMat && selectedEmissive) selectedMat.emissive.copy(selectedEmissive);
   selected = obj || null;
   selectedMat = null;
   selectedEmissive = null;
-  if (!obj) {
+  const rec = recordOverride ?? obj?.userData?.record ?? null;
+  if (!rec) {
     renderDetail(null);
     setStatus("no selection");
     return;
   }
-  const rec = obj.userData.record;
-  if (obj.material && obj.material.emissive) {
+  if (obj?.material && obj.material.emissive) {
     selectedMat = obj.material;
     selectedEmissive = obj.material.emissive.clone();
     obj.material.emissive.setRGB(1, 1, 1).multiplyScalar(0.55);
@@ -1428,7 +1617,8 @@ function flyToRecord(record) {
 
   const nodeHit = nodeMeshes.find((entry) => entry.node === record)?.head;
   const corridorHit = corridorMeshes.find((entry) => entry.item === record)?.mesh;
-  select(nodeHit || corridorHit || null);
+  if (record.source?.type === "GPX") select(null, record);
+  else select(nodeHit || corridorHit || null);
   if (record.emitterId) {
     if (radioSelect) radioSelect.value = record.emitterId;
     showCoverageFor(record.emitterId);
@@ -1440,8 +1630,16 @@ function runSearch() {
   const query = foldSearch(searchInput.value.trim());
   searchResults.replaceChildren();
   if (query.length < 2) return;
-  const hits = searchIndex
-    .filter((item) => item.key.includes(query))
+  const baseHits = searchIndex.filter((item) => item.key.includes(query));
+  const localHits = importedCacheEntries.length
+    ? searchName(gazIdx, query, { facet: "rec", classes: new Set(["Geocache"]), limit: 12, threshold: 0.1 })
+      .map((entry) => ({
+        record: makeGazRecord(entry),
+        label: entry.name,
+        meta: `local GPX cache${entry.cacheCode ? ` · ${entry.cacheCode}` : ""} · ${entry.source?.file ?? "session import"}`,
+      }))
+    : [];
+  const hits = [...baseHits, ...localHits]
     .sort((a, b) => {
       const ar = foldSearch(a.label).startsWith(query) ? 0 : 1;
       const br = foldSearch(b.label).startsWith(query) ? 0 : 1;
@@ -1464,7 +1662,7 @@ function runSearch() {
   if (!hits.length) {
     const empty = document.createElement("p");
     empty.className = "hint";
-    empty.textContent = "No match in the embedded USGS gazetteer or theater register.";
+    empty.textContent = "No match in the embedded GNIS register, local GPX imports or theater features.";
     searchResults.append(empty);
   }
 }
@@ -1485,7 +1683,13 @@ renderer.domElement.addEventListener("pointerup", (e) => {
   pointer.y = -((e.clientY - r.top) / r.height) * 2 + 1;
   raycaster.setFromCamera(pointer, camera);
   const hits = raycaster.intersectObjects(PICKABLE.filter(isVisible), false);
-  select(hits.length ? hits[0].object : null);
+  const hit = hits[0];
+  if (hit?.object === importedPointCloud && Number.isInteger(hit.index)) {
+    const entry = importedCacheEntries[hit.index];
+    if (entry) select(null, makeGazRecord(entry));
+  } else {
+    select(hit?.object ?? null);
+  }
 });
 
 // Ground readout under the cursor.

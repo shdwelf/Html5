@@ -1,6 +1,6 @@
 # GeoMate.jr firmware and cache-database research
 
-Research pass: 2026-10-06.
+Research pass: 2026-10-06; follow-up audit: 2026-10-08.
 
 ## Identification
 
@@ -76,8 +76,10 @@ cache database. A decompiler pass over only the updater would therefore first
 need to determine whether it contains an embedded device image, a downloader,
 a database encoder, or just a USB loader.
 
-No Geomate.jr firmware/update binary, installer, GPX export, or cache database
-is present in this checkout. Therefore this pass deliberately does **not**:
+No Geomate.jr firmware/update binary, installer, device-origin GPX file, or
+cache-database dump is present in this checkout. The new browser GPX import and
+BagIt export are generic offline workflows, not recovered Geomate data. Therefore
+this pass deliberately does **not**:
 
 - claim to have run Ghidra on the SG6 link or on a missing Geomate.jr binary;
 - invent cache coordinates or cache IDs;
@@ -113,9 +115,11 @@ workflow is:
 7. Rebuild and test `socal-subsurface.xdc` with
    `node scripts/build-socal-subsurface-xdc.mjs`.
 
-The existing subsurface register is GNIS-oriented (`name + feature class +
-point + GNIS verification`), so geocaches should be added as a clearly
-separate community/source tier rather than silently mixed into GNIS rows.
+The fixed 508-row SoCal register is GNIS-oriented (`name + feature class +
+point + GNIS verification`) and contains no static Geocache rows. User-supplied
+GPX can now add a clearly separate, session-only `Geocache` class with source
+filename/cache code metadata; these records are never GNIS-verified. This is not
+a substitute for recovering and validating a dated Geomate-origin cache file.
 
 ## Internet Archive / Wayback follow-up
 

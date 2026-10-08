@@ -223,7 +223,7 @@
     <button class="nav-tab" data-tab="geomate-audit">2. Geomate.jr Archival Matrix</button>
     <button class="nav-tab" data-tab="dom-extractor">3. HTML5 DOM Link Extractor</button>
     <button class="nav-tab" data-tab="firmware-ghidra">4. Firmware & Ghidra Triage</button>
-    <button class="nav-tab" data-tab="subsurface-gazetteer">5. Subsurface Geocache Register</button>
+    <button class="nav-tab" data-tab="subsurface-gazetteer">5. Subsurface GPX Preservation</button>
   </nav>
 
   <!-- TAB 1: Warrick Reconstructor -->
@@ -315,9 +315,9 @@
     <div class="panel">
       <h2><span>🛰️</span> Geomate.jr Full Archival Audit Matrix</h2>
       <p>
-        The table below documents all known official and community-archived resources for the <strong>Geomate.jr</strong>
-        geocaching receiver, its proprietary Update Kit USB adapter, and community loaders. Every candidate was tested
-        via Wayback CDX, Memento timegates, and direct HTTP recovery.
+        This table records the official and community recovery candidates checked in the 2026-10-06/07 audit for the
+        <strong>Geomate.jr</strong> receiver, Update Kit, and community loaders; it is not an exhaustive web inventory.
+        The listed targets were checked via Wayback CDX, Memento timegates, and direct HTTP where applicable.
       </p>
 
       <div style="overflow-x:auto">
@@ -345,7 +345,7 @@
               <td><strong>Update Zone</strong></td>
               <td>Web DB Updater</td>
               <td><code>http://mygeomate.com/updates</code></td>
-              <td><span class="badge badge-ok">Captured</span> Required proprietary browser plugin to flash DB.</td>
+              <td><span class="badge badge-ok">Captured</span> Archived pages document the update/download flow; no updater bytes were recovered. The 2014 guide describes `.cry` region downloads and GPX files loaded by Geomate Loader.</td>
               <td>Indexed in CDX</td>
               <td>N/A (Web UI)</td>
             </tr>
@@ -488,8 +488,8 @@
             <tr>
               <td><strong>1. Apisphere Geomate.jr (2009–2012)</strong></td>
               <td><code>mygeomate.com</code><br><code>geomatejr.appspot.com</code></td>
-              <td>Dedicated handheld toy; SiRFstarIII GPS core; MCU bootloader <code>V1002 RE X2</code>.</td>
-              <td>Preloaded ~250,000 traditional US caches in flash partition. Used Update Kit USB dongle and <code>geomateQtGuiApp.exe</code> to flash Pocket Query GPX files. Shut down Jan 2012.</td>
+              <td>Dedicated handheld with SiRFstarIII GPS; historical reports show the device string <code>V1002 RE X2</code>. Its bootloader and firmware image have not been recovered here.</td>
+              <td>Manufacturer's guide says roughly 250,000 cache locations were preloaded; the storage implementation is unconfirmed. The Update Kit/Geomate Loader accepted Pocket Query GPX cache data. That is a data-loader path, not evidence of firmware flashing. Service shutdown was announced in Jan 2012.</td>
             </tr>
             <tr>
               <td><strong>2. GeoMate Solutions</strong></td>
@@ -507,181 +507,76 @@
         </table>
       </div>
 
-      <h3>Reverse-Engineered GeoMate SG7/SG6 v1.5.2 Firmware Container</h3>
+      <h3>Modern SG6/SG7 Firmware: Separate Product Family</h3>
       <p>
-        Payload <code>update_SG7_v1.5.2_b20260803.bin.dat</code> (32,320,808 bytes, header magic <code>0x77007702</code>)
-        was unpacked and structurally triaged:
+        A separate <code>update_SG7_v1.5.2_b20260803.bin.dat</code> artifact (32,320,808 bytes) and SG6 release note are referenced
+        in <code>docs/geomate-jr-firmware-research.md</code> and were retrieved from the user's Drive. That report records a container
+        and payload analysis. The raw firmware is not committed to this repository, and this modern CHCNav survey-receiver package is
+        <strong>not</strong> Geomate.jr firmware; its analysis cannot fill the missing Geomate.jr updater/firmware evidence gap.
       </p>
-      <ul>
-        <li><strong>Build Trace:</strong> Git commit <code>199cd11aa80860ac00af38373bb477bee98e68bd</code> on <code>RTK/x7/x7.git</code> by <code>embedded_sector@huacenav.com</code> (CHC Navigation / HuaceNav).</li>
-        <li><strong>Payload Breakdown:</strong>
-          <ul>
-            <li><code>install.sh</code> (8,069 B): Pre-flash backup of <code>/data/app/conf/n72.cfg</code>, network configs, and partition dd commands.</li>
-            <li><code>kernel.bin</code> (4,845,592 B): ARM Linux kernel zImage.</li>
-            <li><code>rootfs.bin</code> (143,396 B BZIP2 &rarr; 471,040 B TAR): Root filesystem overlay.</li>
-            <li><code>dtb.bin</code> (37,870 B): Flattened Device Tree Blob (magic <code>0xD00DFEED</code>).</li>
-            <li><code>app.bin</code> (27,038,081 B BZIP2 &rarr; 69,826,560 B TAR): 1,921 userland files including <code>app/bin/gnss</code>, <code>app/bin/imu</code>, <code>app/bin/camera</code>, and <code>app/bin/N72.fcgi</code> web server.</li>
-            <li><code>update_machine.bin</code> (246,425 B): 32-bit ARM Linux ELF binary flashing daughterboards <code>gnss_board_1</code> to <code>gnss_board_9</code>.</li>
-          </ul>
-        </li>
-      </ul>
 
-      <h3>Ghidra Headless / WASM Disassembly Pipeline</h3>
+      <h3>Static Triage / Ghidra Disposition</h3>
       <p>
-        The repository maintains an automated Ghidra pipeline powered by <code>wasm/ghidra/ghidra_decompiler.wasm</code>
-        and vendored SLEIGH specifications (x86 16/32/64-bit and Atmel AVR). When binary payloads for
-        <code>geomateQtGuiApp.exe</code>, community loaders, or malware samples from <code>ViewerMade</code> are inspected:
+        No byte-identical <code>geomateQtGuiApp.exe</code>, <code>geomateloadersetup.exe</code>, or Geomate.jr firmware image
+        is present in this checkout, so no Geomate-specific Ghidra analysis is claimed. The repository's
+        <code>tools/verify_ghidra.mjs</code> is a self-test for its bundled sample catalog; it is not a generic
+        <code>verify_ghidra.mjs &lt;binary&gt;</code> command. If a loader archive is recovered, hash it, inventory/extract
+        it without executing, identify each payload, then open the matching copy in a processor-appropriate Ghidra project.
       </p>
 
       <div class="code-block">
-# 1. Inspect file signatures, PE/MZ/ELF headers without execution
-python3 tools/exe_triage.py candidate_file
+# 1. Static first-pass header, offsets, hashes and printable strings
+python3 tools/exe_triage.py candidate_file.exe
+strings -a -n 6 candidate_file.exe | grep -E "V1002|GC[0-9A-Z]{3,6}|SiRF|SQLite|USB"
 
-# 2. Extract strings, USB endpoints, and database magic bytes
-strings -a -n 6 candidate_file | grep -E "V1002|GC[0-9A-Z]{3,6}|SiRF|SQLite|USB"
+# 2. Keep original bytes immutable; analyze an extracted copy in Ghidra
+# Select PE/ELF/raw-ROM language from the actual file header, not the filename.
+# Record project version, language ID, import options, hash, and analysis log.
 
-# 3. Disassemble entry point and export decompiled C via Ghidra WASM
-node tools/verify_ghidra.mjs 8099 candidate_file
-
-# 4. Safe triage protocol: all binaries stay in-memory; zero host execution.
+# 3. Never run an unknown loader or flash a Geomate.jr during analysis.
       </div>
     </div>
   </section>
 
-  <!-- TAB 5: Subsurface Geocache Register -->
+  <!-- TAB 5: Subsurface GPX Gazetteer + preservation workflow -->
   <section id="tab-subsurface-gazetteer" class="tab-content">
     <div class="panel">
-      <h2><span>📍</span> Subsurface XDC Gazetteer Geocaches Integration</h2>
+      <h2><span>📍</span> Subsurface GPX Gazetteer & Preservation</h2>
       <p>
-        In accordance with the repository's strict evidence-tier discipline, geocache records have been introduced
-        into the <strong>SoCal Subsurface 4Dwm</strong> gazetteer (<code>socal-subsurface.xdc</code>) under the
-        dedicated <strong><code>rec.geocache</code></strong> Feature Type Thesaurus (FTT) classification.
-        They maintain <code>verified: 0</code> and <code>gnisId: null</code> so they are never conflated with
-        official USGS GNIS geographic names.
+        The older draft listed ten "historical SoCal caches" with names, GC codes and coordinates but no source GPX,
+        listing-page evidence, or device dump. Those rows have been removed from the fixed compiled Gazetteer: the labels cannot
+        be treated as verified records. Independent listing pages show clear ID/name mismatches for <a href="https://www.geocaching.com/geocache/GC78">GC78</a>
+        (Firestone, San Francisco Bay Area), <a href="https://www.geocaching.com/geocache/GC40">GC40</a> (Namur, Belgium),
+        and <a href="https://www.geocaching.com/geocache/GC28">GC28</a> (Beverly, Illinois). The fixed Gazetteer now keeps
+        GNIS/curated place data separate; cache points are added only from a user-provided GPX file.
       </p>
 
-      <h3>Integrated Historical SoCal Geocaches (2000–2009 Era)</h3>
-      <div style="overflow-x:auto">
-        <table>
-          <thead>
-            <tr>
-              <th>Geocache Name & GC Code</th>
-              <th>Class</th>
-              <th>FTT Path</th>
-              <th>County</th>
-              <th>Latitude</th>
-              <th>Longitude</th>
-              <th>Elev (m)</th>
-              <th>Provenance & History</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>First California Geocache (GCF)</strong></td>
-              <td>Geocache</td>
-              <td><code>rec.geocache</code></td>
-              <td>San Diego</td>
-              <td>32.9617° N</td>
-              <td>117.1850° W</td>
-              <td>110 m</td>
-              <td>Placed Oct 2000. California's historic first geocache.</td>
-            </tr>
-            <tr>
-              <td><strong>Mount Wilson Observatory Cache (GC78)</strong></td>
-              <td>Geocache</td>
-              <td><code>rec.geocache</code></td>
-              <td>Los Angeles</td>
-              <td>34.2253° N</td>
-              <td>118.0611° W</td>
-              <td>1740 m</td>
-              <td>Placed 2001. San Gabriel Mountains overlook cache.</td>
-            </tr>
-            <tr>
-              <td><strong>Hollywood Sign Overlook (GC40)</strong></td>
-              <td>Geocache</td>
-              <td><code>rec.geocache</code></td>
-              <td>Los Angeles</td>
-              <td>34.1342° N</td>
-              <td>118.3217° W</td>
-              <td>470 m</td>
-              <td>Placed 2001. Mount Lee / Griffith Park traditional cache.</td>
-            </tr>
-            <tr>
-              <td><strong>Vasquez Rocks Classic (GC133)</strong></td>
-              <td>Geocache</td>
-              <td><code>rec.geocache</code></td>
-              <td>Los Angeles</td>
-              <td>34.4883° N</td>
-              <td>118.3183° W</td>
-              <td>680 m</td>
-              <td>Placed 2001. Agua Dulce iconic sandstone formation cache.</td>
-            </tr>
-            <tr>
-              <td><strong>Cajon Pass Summit Cache (GC190)</strong></td>
-              <td>Geocache</td>
-              <td><code>rec.geocache</code></td>
-              <td>San Bernardino</td>
-              <td>34.3167° N</td>
-              <td>117.4500° W</td>
-              <td>1150 m</td>
-              <td>Placed 2001. Historic Route 66 / Cajon summit corridor.</td>
-            </tr>
-            <tr>
-              <td><strong>Joshua Tree Hidden Valley (GC45)</strong></td>
-              <td>Geocache</td>
-              <td><code>rec.geocache</code></td>
-              <td>Riverside</td>
-              <td>34.0150° N</td>
-              <td>116.1650° W</td>
-              <td>1280 m</td>
-              <td>Placed 2001. Mojave / Colorado desert transition cache.</td>
-            </tr>
-            <tr>
-              <td><strong>Old Baldy Summit Cache (GC52)</strong></td>
-              <td>Geocache</td>
-              <td><code>rec.geocache</code></td>
-              <td>Los Angeles</td>
-              <td>34.2889° N</td>
-              <td>117.6467° W</td>
-              <td>3068 m</td>
-              <td>Placed 2001. Mount San Antonio peak summit container.</td>
-            </tr>
-            <tr>
-              <td><strong>Balboa Park Botanical Cache (GC28)</strong></td>
-              <td>Geocache</td>
-              <td><code>rec.geocache</code></td>
-              <td>San Diego</td>
-              <td>32.7314° N</td>
-              <td>117.1478° W</td>
-              <td>85 m</td>
-              <td>Placed 2001. Historic Balboa Park urban cache.</td>
-            </tr>
-            <tr>
-              <td><strong>Death Valley Badwater Basin Cache (GC92)</strong></td>
-              <td>Geocache</td>
-              <td><code>rec.geocache</code></td>
-              <td>Inyo</td>
-              <td>36.2503° N</td>
-              <td>116.8258° W</td>
-              <td>-86 m</td>
-              <td>Placed 2001. North American lowest elevation cache.</td>
-            </tr>
-            <tr>
-              <td><strong>Laguna Mountain Vista (GC99)</strong></td>
-              <td>Geocache</td>
-              <td><code>rec.geocache</code></td>
-              <td>San Diego</td>
-              <td>32.8667° N</td>
-              <td>116.4167° W</td>
-              <td>1750 m</td>
-              <td>Placed 2001. Cleveland National Forest high-country cache.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <h3>Verified device and file-format boundary</h3>
+      <ul>
+        <li><a href="https://www.homesciencetools.com/content/reference/Geomatejr_Users_Guide.pdf">The 2014 Geomate.jr User's Guide</a> documents Pocket Query and raw-GPS GPX 1.1 input for the desktop loader. The same guide distinguishes the site's encrypted regional <code>.cry</code> files from GPX.</li>
+        <li>The Subsurface import accepts GPX 1.0/1.1 only. It does not decrypt proprietary <code>.cry</code> region files, write to the device, or flash firmware.</li>
+        <li>No Geomate.jr updater/firmware bytes were recovered in this audit, so there is no honest Geomate target for a Ghidra run. The modern GeoMate SG6/SG7 firmware is a different product family and is not used as a stand-in.</li>
+      </ul>
 
-      <p style="margin-top:1rem">
-        Launch the updated theater application directly: <a href="socal-subsurface.html" class="badge badge-acid" style="font-size:0.85rem">Launch SoCal Subsurface 4Dwm</a>
+      <h3>Session-only import and Xena-inspired preservation</h3>
+      <p>
+        Launch <a href="socal-subsurface.html">SoCal Subsurface 4Dwm</a> and use the Gazetteer pane's local GPX controls.
+        The page reads waypoints without a network call, draws only caches inside the SoCal theater, and keeps imported records
+        in memory for the current session. It does not copy owner names, logs, hints or descriptions into the normalized register.
+      </p>
+      <p>
+        <a href="https://github.com/srnsw/xena">Xena</a>
+        is preservation-normalization software, not a universal filename/extension that this project can claim to emit. The
+        optional BagIt 1.0 <code>.zip</code> preserves the original GPX byte-for-byte and adds an application-defined XML/JSON
+        cache-register rendition, a preservation event note, and SHA-256 manifests. The <code>.xdc</code> is the offline viewer
+        application package, not a GPX or Xena data file.
+      </p>
+      <p class="hint">
+        Sources: <a href="https://www.rfc-editor.org/rfc/rfc8493.html">BagIt RFC 8493</a> ·
+        <a href="https://github.com/srnsw/xena">archived Xena source</a> ·
+        <a href="https://www.geocaching.com/geocache/GC78">GC78</a> ·
+        <a href="https://www.geocaching.com/geocache/GC40">GC40</a> ·
+        <a href="https://www.geocaching.com/geocache/GC28">GC28</a>
       </p>
     </div>
   </section>
