@@ -140,6 +140,15 @@ node tools/make-vincennes-dem.mjs >/dev/null || status=1
 node scripts/build-vincennes-xdc.mjs >/dev/null || status=1
 node tests/19-vincennes.mjs || status=1
 
+# Charge Pad Lab: the magnetic-link engine (filament inductance, coupling,
+# resonant link, cell) cross-checked against independent references, then the
+# page itself booted in jsdom by tests/wireless-charge.test.mjs under npm test.
+echo "──────────────────────────────────────────────"
+node tools/verify_wireless_charge.mjs || status=1
+
+echo "──────────────────────────────────────────────"
+node --test tests/wireless-charge.test.mjs || status=1
+
 echo "──────────────────────────────────────────────"
 [ "$status" -eq 0 ] && echo "all suites passed" || echo "FAILURES — see above"
 exit "$status"
