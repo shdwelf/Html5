@@ -22,3 +22,13 @@ test("generic Ghidra postScript exports reports without launching or emulating i
   assert.doesNotMatch(script, /ProcessBuilder|Runtime\.getRuntime\(\)\.exec|emulate\(|launchProgram\(/i);
   assert.match(read("docs/ghidra-headless-benign-sample-methodology.md"), /Geomate\.jr boundary/);
 });
+
+test("Geomate.jr analysis stays behind the Brand 44 EULA and explicit user direction", () => {
+  const research = read("docs/geomate-jr-firmware-research.md");
+  const recipes = read("docs/ghidra-cyberchef-recipes.md");
+  assert.match(research, /Brand 44 license hold for Geomate\.jr/);
+  assert.match(research, /user\s+has read that clause and explicitly directs the analysis/);
+  assert.match(recipes, /do not acquire, extract, or import\s+that installer or its payload/);
+  assert.match(recipes, /explicitly directs that work/);
+  assert.match(read("docs/geomate-viewermade-source-check-2026-10-07.md"), /NOT imported, NOT cloned, NOT analyzed/);
+});

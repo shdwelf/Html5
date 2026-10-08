@@ -91,35 +91,23 @@ records, including traditional-only filtering in the original preload. Cache
 coordinates and descriptions are also time-sensitive: archived caches can be
 removed or moved, so an import needs a dated source and a provenance record.
 
-## Planned static-analysis/import workflow
+## Geomate.jr analysis hold — no binary workflow is currently authorized
 
-When the actual Geomate.jr updater or firmware package is supplied, the safe
-workflow is:
+The 2014 Brand 44 User's Guide contains a clause prohibiting reverse
+engineering. **Do not acquire, extract, inspect, or import a Geomate.jr loader,
+firmware image, or encrypted `.cry` region file into Ghidra** unless the user
+has read that clause and explicitly directs the analysis. That explicit
+direction has not been given. This report therefore provides no step-by-step
+Geomate.jr binary workflow and makes no Ghidra findings claim. The separate
+benign-sample procedure in `docs/ghidra-headless-benign-sample-methodology.md`
+does not override this hold.
 
-1. Preserve the original file outside Git and record SHA-256, size, and source
-   URL/date.
-2. Identify the container/installer and extract payloads without executing
-   them (`7z`, `innoextract`, or the package's documented archive format).
-3. Import candidate PE/ELF/flat-ROM payloads into **Ghidra headless** with the
-   matching processor/language; export strings, symbols, and decompiled code.
-4. Look for USB protocol code, flash/programming commands, database signatures,
-   GPX/XML strings, cache-code patterns (`GC` followed by digits), coordinate
-   encodings, and version/build strings. Treat strings alone as leads, not
-   decoded records.
-5. Validate any recovered record against the source GPX/database format and
-   keep a machine-readable extraction report with offsets and hashes.
-6. Convert only records with defensible coordinates and provenance into the
-   SoCal Gazetteer. They should be a separate `Geocache` class/FTT branch,
-   retain their cache code and source date in the note, and never be marked as
-   verified GNIS features.
-7. Rebuild and test `socal-subsurface.xdc` with
-   `node scripts/build-socal-subsurface-xdc.mjs`.
-
-The fixed 508-row SoCal register is GNIS-oriented (`name + feature class +
-point + GNIS verification`) and contains no static Geocache rows. User-supplied
-GPX can now add a clearly separate, session-only `Geocache` class with source
-filename/cache code metadata; these records are never GNIS-verified. This is not
-a substitute for recovering and validating a dated Geomate-origin cache file.
+Local user-supplied GPX import is a distinct, in-browser feature: it does not
+inspect a Geomate.jr binary or `.cry` region file, does not write to a device,
+and does not authorize reverse engineering. Imported rows are session-only,
+source-marked, and never GNIS-verified. A recovered device database would
+require a separate user-directed review of provenance, format, license, and
+privacy before any analysis or publication.
 
 ## Internet Archive / Wayback follow-up
 
@@ -137,7 +125,7 @@ The press release confirms approximately 250,000 preloaded cache locations cover
 
 ## Source-check: archived manual anchors
 
-The archived user guide supplies concrete signatures for a future binary analysis:
+The archived user guide supplies device and data-format details for public-source research only; these do not authorize reverse engineering:
 
 - startup displays `V1002`, followed by the month/day/year of the loaded cache list (example `4/19/2009`);
 - the connector cover is labelled for the Update Kit;
@@ -150,12 +138,13 @@ Sources: [archived User's Guide](https://web.archive.org/web/20111030143004id_/h
 
 The Update Kit page says it could replace the national cache list, load country/region lists, change units, assign a device name, and activate a bonus page. This implies separate configuration and cache-database payloads. The startup date is a practical signature for a recovered database image.
 
-The source check distinguishes the original embedded Geomate.jr application/firmware (`V1002`), the web Update Zone, and the later Qt GPX/Pocket Query loader (`geomateQtGuiApp.exe`). Only the third is named by the 2012 shutdown page, and its executable bytes remain uncaptured, so no responsible Ghidra report can yet be produced.
+The source check distinguishes the original embedded Geomate.jr application/firmware (`V1002`), the web Update Zone, and the later Qt GPX/Pocket Query loader (`geomateQtGuiApp.exe`). Only the third is named by the 2012 shutdown page, and its executable bytes remain uncaptured. No Geomate.jr Ghidra work is authorized under the active Brand 44 hold; the user must read the restriction and explicitly direct any such analysis first.
 
 ## Follow-up source check: Geomate Loader and community reports
 
-The newly supplied sources add provenance for the loader, but still do not
-provide a binary that can be responsibly imported into Ghidra:
+The cited sources add provenance for the loader, but do not provide a verified
+binary. The Brand 44 hold also remains active: these historical listings are
+not authorization to obtain or import the loader into Ghidra.
 
 - [Geomate Loader — Software Informer](https://geomate-loader.software.informer.com/download/)
   lists **Geomate Loader 1.3 (x86/x64)**, updated 2014-10-30, filename
@@ -190,14 +179,13 @@ local native loader performed the device/database transfer.
 
 ### Ghidra disposition
 
-`geomateloadersetup.exe` and `geomateQtGuiApp.exe` remain **candidate inputs,
-not analyzed inputs**. No bytes, hash, or reproducible download was obtained
-from the supplied pages. The repository therefore contains no fabricated
-Ghidra report for them. If `geomateloadersetup.exe.zip` is recovered, the
-correct next pass is: hash the ZIP, inventory its members, extract without
-executing, identify PE/installer payloads, then run the existing headless
-Ghidra workflow on each extracted PE and separately inspect any embedded GPX,
-SQLite, binary database, or device-protocol payload.
+`geomateloadersetup.exe` and `geomateQtGuiApp.exe` are historical identifiers,
+not authorized analysis inputs. No bytes, hash, or reproducible download was
+obtained, and the repository contains no fabricated Ghidra report for them.
+Do not acquire, extract, or import either loader (or any embedded payload)
+while the Brand 44 hold is active. Any further reverse engineering requires
+the user to read the restriction and explicitly direct that work; this
+research document is not that direction.
 
 ## Verification of the latest firmware/error claims
 
@@ -261,10 +249,10 @@ does not describe the ZIPs as firmware images:
 
 Because the ZIP names are also located in the site's `/zip/` web-asset area,
 not a documented firmware-download endpoint, their likely contents are
-website/product media bundles. This is a promising recovery lead, but not
-evidence that V1002 microcode is present. If the WARC payload becomes
-available, the next safe step is to hash and list the ZIP members before
-opening any PE files with Ghidra.
+website/product media bundles. This is a recovery lead, but not evidence that
+V1002 microcode is present. Even if a WARC payload becomes available, the Brand
+44 hold remains: do not obtain, extract, or open its members in Ghidra unless
+the user has read the restriction and explicitly directs that analysis.
 
 Internet Archive full-text searches currently return zero items for both
 `geomateQtGuiApp` and `geomateloadersetup`; the only executable lead remains
@@ -357,11 +345,11 @@ names:
   `geomateQtGuiApp.exe` as the standalone GUI for GPX uploads:
   [forum result](https://forums.geocaching.com/GC/index.php?/topic/287545-geomate-jr-update-kit-issues/).
 
-These leads should be prioritized for a human-provided archive or download.
-If a ZIP/EXE is obtained, record its URL, capture timestamp, byte length, and
-SHA-256; list ZIP members without executing anything; then import only the
-executable into Ghidra for static analysis. No Ghidra project has been created
-because no binary bytes are present in the workspace.
+These are provenance leads only, not a request to obtain or recover the
+loader. The Brand 44 restriction remains an active hold: do not solicit,
+download, extract, or import a Geomate.jr ZIP/EXE unless the user has read the
+clause and explicitly directs the analysis. No Ghidra project has been created
+because no Geomate.jr binary bytes are present in the workspace.
 
 ### Archived updater landing page recovered
 
@@ -466,12 +454,27 @@ Our investigation confirms a critical real-world three-way name collision:
    - **Firmware:** The v1.5.2 container (`update_SG7_v1.5.2_b20260803.bin.dat`) analyzed above.
    - **Relevance:** Modern surveying hardware; completely incompatible with the 2009 Apisphere toy.
 
-## Static Analysis & Malware Triage Workbench (`ViewerMade`)
+## Brand 44 license hold for Geomate.jr
 
-The repository `https://github.com/N17Pro3426/ViewerMade` catalogs community-submitted GDI visual screen-corruptors, joke malware, and ransomware samples (`001.exe`, `APM 08279+5255`, `youaredied.zip`, `winRainbow.zip`).
+The 2014 Brand 44 User's Guide states that the user may not “reverse engineer”
+the software except as expressly provided. This is an active stop condition,
+not a generic malware-safety note: do not acquire, inspect, or import a
+Geomate.jr loader, firmware image, or encrypted `.cry` region file into Ghidra
+unless the user has read the restriction and explicitly directs that analysis.
+The user has not yet given that direction. Public-source research and local
+user-supplied GPX import may continue; they are not permission to reverse
+engineer the device or its software. No Geomate.jr binary was analyzed.
 
-In line with this workspace's strict static analysis protocol:
-- Malicious binaries are **never executed** on the host.
-- Triage is performed using the workspace's in-memory static analysis tools: `casefiles.html`, `js/viruslab.js`, and the WebAssembly Ghidra decompiler engine (`tools/verify_ghidra.mjs`).
-- PE and MZ headers, imports, section entropy, and byte signatures are analyzed without host or virtual execution.
+This restriction is specific to Apisphere / Brand 44 Geomate.jr. It must not be
+conflated with GeoMate Solutions, SG6/SG7 GeoMate Positioning / CHCNav, SG6,
+NC GeoMate, or other similarly named products.
 
+## ViewerMade source assessment — not imported, cloned, or analyzed
+
+`N17Pro3426/ViewerMade` is assessed in
+[`docs/geomate-viewermade-source-check-2026-10-07.md`](geomate-viewermade-source-check-2026-10-07.md).
+The GitHub metadata described an approximately 1.8 GB collection of compiled
+Windows malware samples, not a source-code or recipe library. No repository
+clone, fetch, blob download, import, or binary analysis was performed. No
+ViewerMade binary was touched. The safe CyberChef/Ghidra recipe set is based on
+public documentation and checked-in benign samples, not that repository.

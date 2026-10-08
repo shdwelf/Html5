@@ -1,58 +1,46 @@
-# LAWRENCE SUBSURFACE 4Dwm — Lawrence, Kansas
+# Lawrence Subsurface 4Dwm — reconciled into the shared city engine
 
-The Lawrence cut carries the SoCal Subsurface **4Dwm shell and offline
-Gazetteer interaction model** into a city-specific frame. It does not copy
-Southern California-only aqueduct, pipeline, fire, FCC-radio, or satellite
-content into Kansas. Its checked-in content is intentionally small: the local
-USGS 3DEP elevation sample grid, five verified USGS GNIS feature records, and
-an optional user-selected GPX file.
+Lawrence is now one configuration of the shared SoCal-family city theater, not
+an independent viewer. The checked-in Lawrence source set is deliberately
+small: one sparse USGS 3DEP sample grid, five verified USGS GNIS point records,
+and the shared local GPX importer. The city app keeps the shared Gazetteer,
+layer controls, plan view, evidence tiers, and Webxdc build path.
 
 ## Build and test
 
 ```sh
-node scripts/build-lawrence-dem-data.mjs
-node scripts/build-lawrence-subsurface-xdc.mjs
-node --test tests/lawrence-subsurface.test.mjs
+npm run build:city-subsurface
+node --test tests/city-subsurface.test.mjs
 ```
 
-Or run `npm run build:lawrence-subsurface` (the XDC build runs the data-module
-generator automatically). The deterministic Webxdc archive is
-`lawrence-subsurface.xdc`; its staged offline copy is under
-`public/apps/lawrence-subsurface/`. `npm run build:4dwm` includes this XDC.
+`data/lawrence/dem-anchors.json` is the DEM source register. The shared
+`scripts/build-city-dem-data.mjs` generates `js/city-dem-grid-lawrence.js`,
+then `scripts/build-city-subsurface.mjs` generates the page and city packs, and
+`scripts/build-city-subsurface-xdc.mjs` creates `lawrence-subsurface.xdc` and
+stages `public/apps/lawrence-subsurface/`. `npm run build:4dwm` includes the
+shared city build. Lawrence is marked `demRequired`; the XDC builder refuses to
+package it if its base DEM module is absent, and the viewer will not silently
+replace a missing Lawrence grid with synthetic relief.
 
-To preview the static app from the repository, open
-`lawrence-subsurface.html`; the main SITE-K dock links to
-`/apps/lawrence-subsurface/` after the app bundle has been built.
+Preview the shared shell at `lawrence-subsurface.html`; the packaged offline
+app is `lawrence-subsurface.xdc`.
 
 ## Elevation source and honest resolution
 
 - Frame: `[-95.31, 38.88, -95.15, 39.04]` in longitude/latitude order.
-- Source service: [USGS 3DEP ImageServer `getSamples`](https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples).
-- Retrieval date: 2026-10-08.
+- Source: [USGS 3DEP ImageServer `getSamples`](https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples), queried 2026-10-08.
 - Method: `esriGeometryEnvelope`, `sampleCount=64`,
-  `returnFirstValueOnly=true`, bilinear image-service sampling. The service
-  returned a regular **8 × 8** set of locations at `0.02°` intervals: about
-  `1.7 km` east-west and `2.2 km` north-south at Lawrence's latitude.
-- The service reported `resolution=1` on these points. Source-metadata spot
-  checks reported `Source=USGS`, `ProductName=USGS_3DEP`, and
-  `VerticalDatum=North American Vertical Datum of 1988 (NAVD 88)`; sampled
-  project rasters include `KS_SCentral_L1_2015` and
-  `KS_Statewide_2018_A18`. See `metadataSpotChecks` in
-  `data/lawrence/dem-anchors.json` for the exact four coordinates and raster
-  IDs.
-- The committed 8 × 8 values are **sparse samples from 1 m source pixels**, not
-  a 1 m raster. The viewer bilinearly interpolates between sample points; it
-  cannot show terrain features smaller than the multi-kilometre sample spacing.
-  The grid range is about **246.8–326.6 m**. Vertical exaggeration is an
-  interactive display parameter, not a change to the stored elevations.
-- USGS says 3DEP products vary by area and resolution, vertical datum is
-  typically NAVD88, and EPQS/3DEP point values are not surveyed control
-  elevations: [USGS DEM datum/resolution FAQ](https://www.usgs.gov/faqs/what-projection-horizontal-datum-vertical-datum-and-resolution-a-usgs-digital-elevation-model),
-  [USGS point-query accuracy FAQ](https://www.usgs.gov/faqs/how-accurate-are-elevations-generated-elevation-point-query-service-national-map).
-
-The compact source register is `data/lawrence/dem-anchors.json`; its generated
-browser module is `js/lawrence-dem-data.js`. The viewer labels the coarse grid
-as such. It does not claim to have a seamless, clipped, full-resolution DEM.
+  `returnFirstValueOnly=true`, and bilinear service sampling. The 8 × 8 sample
+  locations are spaced at `0.02°`, about 1.7 km east-west by 2.2 km north-south
+  at Lawrence's latitude.
+- The service reported `resolution=1` at the sample points. Source-metadata
+  spot checks reported USGS / `USGS_3DEP` / NAVD 88; the checked source-raster
+  IDs and point checks are recorded in `data/lawrence/dem-anchors.json`.
+- The 8 × 8 values are sparse point samples from 1 m source pixels, **not a
+  1 m grid or raster**. Values range about 246.8–326.6 m. The viewer
+  interpolates between sample nodes and clamps only the narrow frame rim to
+  the nearest sampled edge. It does not resolve features smaller than the
+  multi-kilometre spacing; these are not surveyed control elevations.
 
 ### Optional denser resample
 
@@ -60,63 +48,55 @@ On a network-connected machine with `numpy` and `rasterio` installed:
 
 ```sh
 python3 scripts/fetch-lawrence-dem.py --nx 160 --ny 160
-node scripts/build-lawrence-subsurface-xdc.mjs
+npm run build:city-subsurface
 ```
 
-This requests a compact USGS 3DEP ImageServer GeoTIFF covering the same frame,
-reprojects/crops it to the stated bounds, and writes the optional
-`js/lawrence-dem-grid.js`. When present, the viewer loads that **local file**
-before creating the terrain. The XDC builder follows the import and packs the
-optional module. The app makes no external service request at runtime; it only
-loads the optional grid as a same-origin asset if the file is present. The
-checked-in archive uses the sparse grid; the optional raster module is generated
-material and is not checked into the repository.
+This generates the optional `js/city-dem-grid-lawrence-highres.js`; the shared
+viewer prefers it when present and otherwise uses the checked-in 8 × 8 grid.
+The local runtime makes no USGS request. The optional resample's cell spacing
+is not the source raster resolution, and the script records its retrieval date
+and whole-metre rounding in its metadata.
 
-## Gazetteer rows
+## Verified GNIS records
 
-The checked-in feature rows come from the official USGS National Map Gazetteer
-ArcGIS service refreshed October 2026. In the local data file, the service's
-`gaz_id` is retained as the GNIS FEATURE_ID; coordinates are returned geometry
-in EPSG:4326. Every included feature has a non-null, service-verified ID:
+Only official USGS GNIS rows are seeded in the Lawrence Gazetteer. Coordinates
+are returned EPSG:4326 geometry points, not hand-placed city pins. Stream and
+lake point records are not complete lines or shoreline polygons.
 
-| Feature | GNIS ID | Class | Returned point (lat, lon) | Geometry note |
-| --- | ---: | --- | --- | --- |
-| Lawrence | 479145 | Populated Place | 38.971675824, -95.235257697 | GNIS gives a two-point multipoint; this row uses one point inside the frame. |
-| Kansas River | 485184 | Stream | 39.005563828, -95.247480004 | Representative returned Douglas County point; not a river line. |
-| Wakarusa River | 482756 | Stream | 38.911121513, -95.255813797 | Representative returned Douglas County point; not a channel trace. |
-| Lake View Lake | 478818 | Lake | 39.012230227, -95.301647519 | Returned GNIS point near the frame edge. |
-| Potter Lake | 479154 | Lake | 38.960326979, -95.248737398 | Returned GNIS point. |
+| Feature | GNIS FEATURE_ID | Class | Returned point (lat, lon) |
+| --- | ---: | --- | --- |
+| Lawrence | 479145 | Populated Place | 38.971675824, -95.235257697 |
+| Kansas River | 485184 | Stream | 39.005563828, -95.247480004 |
+| Wakarusa River | 482756 | Stream | 38.911121513, -95.255813797 |
+| Lake View Lake | 478818 | Lake | 39.012230227, -95.301647519 |
+| Potter Lake | 479154 | Lake | 38.960326979, -95.248737398 |
 
-The corresponding query layers are [3 · Populated Places](https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/3),
+The source layers are [3 · Populated Places](https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/3),
 [6 · Streams (Mouth)](https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/6),
 and [7 · Other Hydrographic Features](https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/7).
-For reproducibility, the checked-in rows retain a query URL in their metadata.
-A pin denotes the GNIS record's point or selected point within its multipoint;
-it is not the complete geometry of a stream or lake.
+The app seeds no campus, road, airport, rail, utility, cache, or generalized
+river-alignment coordinates. Such layers remain available in the shared UI but
+should be populated only after an authoritative or well-sourced geometry and
+its coordinates are checked.
 
-There are currently no community/context seed rows and no transportation,
-campus, road, or utility alignments. Those layers should only be added after
-an authoritative or well-sourced geometry and its coordinates are checked.
-No fake GNIS IDs or geocache coordinates are seeded. User GPX cache waypoints
-are parsed locally, tagged `GNIS FEATURE_ID=null`, never uploaded, and not
-persisted between reloads.
+## Geocache import and license boundary
 
-## Interface and layers
+The shared **LOCAL GPX → GEOCACHE REGISTER** control parses a user-selected
+GPX 1.0/1.1 file in the browser. Imported points use `fclass=Geocache`,
+`ftt=rec.geocache`, `VERIFIED=0`, and no GNIS ID; only in-frame caches are
+plotted, and nothing is uploaded or persisted. The fixed Lawrence register has
+no static cache rows.
 
-The app reuses the SoCal family’s WebGL stage, draggable/minimizable PiP
-windows, HUD, evidence legend, fuzzy Gazetteer `search-name`, FTT facets,
-`search-box` over the camera view, dossier, X-RAY / wireframe / labels controls,
-and local GPX import. Its city-specific layer checkboxes are:
+The 2014 Brand 44 Geomate.jr User's Guide contains a reverse-engineering
+prohibition. This GPX path is not permission to inspect `.cry` region files,
+the loader, or firmware. Keep Geomate.jr work at public-source research and
+user-directed local GPX import unless the user has read that clause and
+explicitly authorizes further analysis. No Geomate.jr binary has been
+analyzed. See `docs/geomate-jr-firmware-research.md` and
+`docs/ghidra-headless-benign-sample-methodology.md`.
 
-- USGS 3DEP terrain surface;
-- GNIS populated-place pins;
-- GNIS streams and lakes (point records only);
-- user-imported GPX geocaches;
-- schematic subsurface datum (no utilities are plotted);
-- coordinate reference grid.
+## References and source files
 
-## Provenance notes
-
-- USGS GNIS: [official GNIS overview](https://www.usgs.gov/tools/geographic-names-information-system-gnis) and the linked National Map ArcGIS query service above.
-- USGS 3DEP: [ImageServer metadata](https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer?f=pjson) reports the service's available-data date and its dynamic 3DEP DEM function; point-value and source-raster details are captured in the source register.
-- Source-control and interpolation code: `data/lawrence/dem-anchors.json`, `js/lawrence-dem-data.js`, `js/lawrence-geo.js`, `scripts/build-lawrence-dem-data.mjs`, and `scripts/fetch-lawrence-dem.py`.
+- USGS GNIS: [official GNIS overview](https://www.usgs.gov/tools/geographic-names-information-system-gnis) and the National Map MapServer layers linked above.
+- USGS 3DEP: [ImageServer metadata](https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer?f=pjson); point samples and checked raster metadata are recorded in the source JSON.
+- Source files: `data/lawrence/dem-anchors.json`, `resources/city-subsurface/cities.json`, `scripts/build-city-dem-data.mjs`, `scripts/build-city-subsurface.mjs`, `scripts/build-city-subsurface-xdc.mjs`, and `scripts/fetch-lawrence-dem.py`.

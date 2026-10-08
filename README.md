@@ -81,14 +81,14 @@ workflow permission).
 - **[ESGVROP 4Dwm](esgvrop-4dwm.html)** — East San Gabriel Valley ROP & Technical Center, the summer-2001 deep dive across the Del Norte and Sunflower campuses. Ships as `esgvrop-4dwm.xdc`.
 - **[Dalton Race 4Dwm](dalton-race-4dwm.html)** — Big Dalton / Little Dalton terrain with pips, route pointers, and VRML export. Ships as `dalton-race-4dwm.xdc`.
 - **[INGRESS INTEL 4Dwm](ingress-intel.html)** — an Ingress intel theater that actually tries to connect: a six-rung connection ladder (same-origin → your relay → public CORS proxy → pasted capture → webxdc peer → offline register) with a verdict and a fix printed per rung, the same intel payload drawn on a planet globe with geodesic links, spherical control fields and a live day/night terminator *and* on the SoCal basin plate, and an honest `SIM` watermark whenever nothing live answered. Decodes/encodes `getEntities`, portal-detail and plext payloads, IITC GeoJSON/KML/CSV exports and intel permalinks. Ships as `ingress-intel.xdc`. See [docs/ingress-intel-map-viewer.md](docs/ingress-intel-map-viewer.md) and the [connector research](docs/ingress-intel-connector-research-2026-10-07.md).
-- **[CITY SUBSURFACE 4Dwm](lawrence-subsurface.html)** — the SoCal subsurface engine reduced to a parametric city frame, shipped five times: Lawrence KS, Atlanta GA, Kansas City MO, Buffalo NY and Toronto ON. Each app keeps the full layer list, the offline gazetteer and a separate geocache source tier (`rec.geocache`) with a local GPX import and BagIt preservation export. Ships as `<city>-subsurface.xdc`; build with `npm run build:city-subsurface`. See [docs/city-subsurface.md](docs/city-subsurface.md).
+- **[CITY SUBSURFACE 4Dwm](lawrence-subsurface.html)** — the shared SoCal-family city engine ships as five apps: Lawrence KS, Atlanta GA, Kansas City MO, Buffalo NY and Toronto ON. Each keeps the Gazetteer, local `rec.geocache` GPX import, BagIt export and plan view. Lawrence has a disclosed 8×8 USGS 3DEP sample grid plus five verified GNIS points; Kansas City now has eight verified GNIS point records, but its exploratory 3DEP values were not saved, so its terrain remains explicitly synthetic rather than a claimed DEM. Build with `npm run build:city-subsurface`; see [the evidence/build notes](docs/city-subsurface.md).
 - **[FOUR CORNERS · calculator port](four-corners-calc.html)** — the bench for the TI-83/89/92 port: it runs the port's own C core transpiled to an ES module, so the preview *is* the port.
 
 Every 4Dwm-family Webxdc rebuilds from one command — `npm run build:4dwm`
-chains all twelve packagers (bluetops, cheyenne, dalton-race, esgvrop,
-four-corners, glendora-high, greeran-family, greeran-subsurface, ingress-intel,
-sanborn-restaurant, socal-subsurface, vincennes); each app also has its own
-`npm run build:<name>`.
+chains the twelve standalone packagers (bluetops, cheyenne, dalton-race,
+esgvrop, four-corners, glendora-high, greeran-family, greeran-subsurface,
+ingress-intel, sanborn-restaurant, socal-subsurface, vincennes), then builds
+the five shared city bundles; each app also has its own `npm run build:<name>`.
 
 ## Tools
 
@@ -322,6 +322,19 @@ Binary travels the text pipeline as a Latin-1 string (one code unit per byte)
 via `binStrFromBytes` / `bytesFromBinStr`. Verified on a 4096-byte adversarial
 payload including NULs and `0xFF`: the output equals Node's
 `Buffer.toString("base64")` exactly, while the old UTF-8 path does not.
+
+## Ghidra + CyberChef safe-source workflows
+
+The in-app recipe packs cover byte-safe encoding, toy XOR/crib work,
+round-trip cipher demonstrations, and static MZ-header preflight. They reuse
+existing CyberChef operations; they do not emulate or launch programs. The
+source assessment for `N17Pro3426/ViewerMade` records why that compiled malware
+zoo was **not cloned or imported**. See
+[`docs/ghidra-cyberchef-recipes.md`](docs/ghidra-cyberchef-recipes.md),
+[`docs/ghidra-headless-benign-sample-methodology.md`](docs/ghidra-headless-benign-sample-methodology.md),
+and [`docs/geomate-viewermade-source-check-2026-10-07.md`](docs/geomate-viewermade-source-check-2026-10-07.md).
+Geomate.jr analysis is separately gated by the reverse-engineering clause in
+the Brand 44 User's Guide; no Geomate.jr binary analysis is claimed.
 
 ## MonKey Miner
 

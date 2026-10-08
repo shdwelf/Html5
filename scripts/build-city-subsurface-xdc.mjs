@@ -70,6 +70,10 @@ async function walk(dir) {
 
 for (const [cityId, city] of Object.entries(config.cities)) {
   if (onlyCity && cityId !== onlyCity) continue;
+  const requiredDem = path.join(root, "js", `city-dem-grid-${cityId}.js`);
+  if (city.demRequired && !(await stat(requiredDem).catch(() => null))) {
+    throw new Error(`${cityId}: refusing to package a city marked demRequired without ${path.relative(root, requiredDem)}`);
+  }
   const appDir = path.join(root, "public", "apps", `${cityId}-subsurface`);
   const outName = `${cityId}-subsurface.xdc`;
   await rm(appDir, { recursive: true, force: true });

@@ -1,11 +1,13 @@
-# CITY SUBSURFACE 4Dwm — parametric city theaters + the geocache source tier
+# CITY SUBSURFACE 4Dwm — shared city theaters and geocache source tier
 
-Research pass and build: **2026-10-07** (branch `arena/4924b3bd-html5`).
+Reconciliation update: **2026-10-08**. The five city apps and shared engine
+arrived in merged PR #102; this note records how the useful Lawrence/GNIS/DEM
+work from PR #100 fits that system without adding a duplicate Kansas City app.
 
-## What this adds
+## Shared app and build
 
-The SOCAL SUBSURFACE engine that only ever rendered one frame now has a
-parametric city form. Five cities ship as their own apps and Webxdc bundles:
+The SoCal Subsurface engine now has five city configurations, each packaged as
+its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
 | --- | --- | --- | --- | --- |
@@ -13,136 +15,129 @@ parametric city form. Five cities ship as their own apps and Webxdc bundles:
 | Atlanta, Georgia | `atlanta-subsurface.html` | `js/city-subsurface-data-atlanta.js` | `js/city-gazetteer-data-atlanta.js` | `atlanta-subsurface.xdc` |
 | Kansas City, Missouri | `kansascity-subsurface.html` | `js/city-subsurface-data-kansascity.js` | `js/city-gazetteer-data-kansascity.js` | `kansascity-subsurface.xdc` |
 | Buffalo, New York | `buffalo-subsurface.html` | `js/city-subsurface-data-buffalo.js` | `js/city-gazetteer-data-buffalo.js` | `buffalo-subsurface.xdc` |
-| Toronto, Ontario 🍁 | `toronto-subsurface.html` | `js/city-subsurface-data-toronto.js` | `js/city-gazetteer-data-toronto.js` | `toronto-subsurface.xdc` |
+| Toronto, Ontario | `toronto-subsurface.html` | `js/city-subsurface-data-toronto.js` | `js/city-gazetteer-data-toronto.js` | `toronto-subsurface.xdc` |
 
-The engine is one module (`js/city-subsurface.js`) plus one gazetteer engine
-(`js/city-gazetteer.js`, the ADL GSP offline subset lifted from the SoCal
-build). Everything else is generated:
+There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
+engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
+and one app shell. `resources/city-subsurface/cities.json` supplies city
+configuration; checked-in DEM samples, when available, live in
+`data/<city>/dem-anchors.json`.
 
+```sh
+node scripts/build-city-dem-data.mjs
+node scripts/build-city-subsurface.mjs
+node scripts/build-city-subsurface-xdc.mjs
+npm run build:city-subsurface     # all three steps
+npm run build:4dwm                # includes the shared city build
 ```
-node scripts/build-city-subsurface.mjs       # pages + data packs from cities.json
-node scripts/build-city-subsurface-xdc.mjs   # public/apps/<city>-subsurface + .xdc
-npm run build:city-subsurface                # both
-```
 
-`resources/city-subsurface/cities.json` is the single source of truth;
-`resources/city-subsurface-template.html` is the page shell. The build validates
-that every gazetteer row has ten columns, sits inside its city bbox, and never
-claims a GNIS FEATURE_ID it cannot back — verified rows must carry a numeric id,
-unverified rows must not.
+The builders validate gazetteer row shape, frame bounds, and GNIS ID/evidence
+tier consistency. A city marked `demRequired` cannot be packaged without a
+valid local DEM module. The viewer never makes a runtime terrain-service
+request. See `resources/city-subsurface-template.html` for the shared shell.
 
-### Layer parity with SoCal
+## SoCal interface parity
 
-Each city ships the full layer list — terrain, gazetteer, **geocaches**,
-water, products, crude/gas, rail, power, sites, bases, trails, roads, aviation,
-harbors, offshore, industry, and **underground** — so the Toronto frame can
-carry a PATH spine and a Don River reach, Buffalo carries the Lake Erie shore,
-Niagara River and Erie Canal context, and every frame keeps the x-ray /
-wireframe / labels / exaggeration controls and the orthographic plan view.
+Each city keeps the shared Gazetteer, geocache layer, full layer controls,
+X-RAY / wireframe / labels / exaggeration controls, orthographic plan view,
+HUD, dossier, and local GPX import. Toronto and Buffalo have city-specific
+schematic corridors; those are expressly context layers, not surveyed or
+operational alignments. Call 811 before touching soil.
 
-Corridors are schematic register lines (5–15 km class accuracy), not
-alignments. Call 811.
+## Reconciled evidence and DEM status
 
-## The Geocache class
+### Lawrence, Kansas
 
-The user's request was "add geocaches" alongside GNIS names. The honest way to
-do that in a register that has a GNIS-verification discipline is a **separate
-source tier**, not a quiet merge. Geocaches use:
+The standalone Lawrence viewer from PR #100 is not retained beside the shared
+city app. Its useful evidence is integrated into the shared Lawrence config:
 
-- `fclass = "Geocache"`, `ftt = "rec.geocache"` — the same extension the SoCal
-  GPX importer writes, matched by the `rec` facet;
-- `VERIFIED = 0` **always** — a cache listing is a community record, never a
-  GNIS feature, and the build fails a Geocache row that tries to claim a
-  FEATURE_ID;
-- the cache code (`GC…`) in the note, with the source named.
+- Five verified USGS GNIS records (FEATURE_IDs `479145`, `485184`, `482756`,
+  `478818`, and `479154`) use returned EPSG:4326 point geometry. River records
+  are multipoints, not river centerlines; lake pins are not shore polygons.
+- The curated, unverified Lawrence landmarks and schematic corridors from the
+  old standalone app were not copied into the fixed register.
+- `data/lawrence/dem-anchors.json` holds the reproducible 8 × 8 USGS 3DEP
+  sample grid and source notes. It samples 1 m source rasters at roughly
+  1.7 km × 2.2 km spacing; **it is not a 1 m raster**. The shared viewer
+  interpolates between samples, clamps only the narrow frame rim, and labels
+  the limitations. Lawrence is `demRequired`; the XDC builder fails closed if
+  that grid module is absent.
 
-Three rows ship today, all pinned only because a public source prints the
-posted coordinates:
+Full Lawrence query notes, coordinates, and optional denser-resample steps are
+in [`docs/lawrence-kansas-subsurface.md`](lawrence-kansas-subsurface.md).
 
-| Row | Code | Source for the coordinate |
-| --- | --- | --- |
-| Why Not Buffalo? #1 | `GCQ1T1` | the archived cache's own public description: *"CACHE MOVED on 12/7/15 … N 42 54.055 W 78 53.933"* |
-| Toronto's First Post Office | `GC7HT4Z` | the official Geocaching.com *Geocache of the Week* post (2024-12-04): *N 43° 39.111′ W 079° 22.221′* |
-| (Lawrence, Atlanta, Kansas City) | — | no static row: no public source found that prints a posted coordinate. Those cities still take local GPX imports. |
+### Kansas City, Missouri / Kansas
 
-That last line is a deliberate result, not an omission. Searches across the
-current cache pages, the Geocaching.com blog index, the Kansas Society of Land
-Surveyors' NSPS geocaching pages, state society pages, and general web indexes
-recovered **cache identities but not posted coordinates** for Lawrence
-(`GCXWVE` NSPS, `GC4JKJT`, `GCA4JG9`, `GC5GFV9` …), Atlanta (`GC48X1E`,
-`GC919`) and Kansas City (`GC7WH54`). Coordinates on Geocaching.com are
-members-only; only caches whose coordinates appear in public body text (blog
-posts, owner instructions embedded in the description, local news) can be
-pinned. Inventing plausible-looking coordinates for the rest would violate the
-same rule the GNIS tier follows.
+The existing Kansas City app from PR #102 is retained; no second city app is
+created. Its former six unverified/context rows are replaced by eight USGS
+GNIS records with checked FEATURE_IDs and returned point coordinates:
 
-## Local GPX import (shared with SoCal)
+| Feature | GNIS FEATURE_ID | Class | Returned point (lat, lon) |
+| --- | ---: | --- | --- |
+| Kansas City | 748198 | Populated Place | 39.0997335832, -94.5785741344 |
+| Missouri River | 756398 | Stream | 39.1238999884, -94.5613514317 |
+| Kansas River | 485184 | Stream | 39.1152888843, -94.6105195447 |
+| Blue River | 479576 | Stream | 39.1300111950, -94.4707934079 |
+| Brush Creek | 479243 | Stream | 39.0389012766, -94.5205171127 |
+| Bales Lake | 713599 | Lake | 39.0799759781, -94.5144692796 |
+| Lake of the Woods | 758366 | Lake | 38.9952714242, -94.5194206174 |
+| Zajic Lake | 729219 | Lake | 39.1925420046, -94.5709122722 |
 
-The five city pages carry the same **LOCAL GPX → GEOCACHE REGISTER** control as
-`/socal-subsurface` and reuse `js/gpx-geocache.js` unchanged — one importer, one
-row shape, one preservation format:
+All rows are marked verified only because they carry the numeric GNIS
+`gaz_id`; county-repeated city/river multipoints are identified as such. A pin
+is one returned point, never a complete water geometry. The former hand-placed
+landmark and generalized Kansas City corridor coordinates were not retained.
 
-- pick a `.gpx` (GPX 1.0/1.1, ≤ 25 MiB, ≤ 5000 caches, DOCTYPE refused);
-- the file is parsed in the page, in memory, against **that city's** bbox, so a
-  Pocket Query / GSAK export / Geomate loader set shows only what belongs to the
-  frame. Out-of-frame caches are counted and reported, not silently dropped;
-- imported caches become `rec.geocache` rows (VERIFIED = 0, source metadata
-  attached) and draw as octahedron pins in the **Geocaches** layer, searchable
-  through the same gazetteer ops;
-- **PRESERVATION BAG (.ZIP)** writes the BagIt 1.0 archive — original GPX
-  byte-for-byte, normalized XML + JSON renditions, payload and tag SHA-256
-  manifests, and a PREMIS-style preservation event — from main's importer;
-- **CLEAR** removes the imported pins and restores the static register.
+The USGS 3DEP exploration for Kansas City used the compact frame
+`[-94.74, 38.97, -94.46, 39.23]` and returned 64 samples (8 × 8), about
+2.91 km east-west by 3.75 km north-south, with reported values spanning
+218.46–325.47 m and source-raster metadata spot checks reporting USGS,
+`USGS_3DEP`, and NAVD 88. **Those 64 point values were not saved into the
+workspace**, so no Kansas City DEM module is included and no grid has been
+reconstructed from the range or synthetic relief. The existing app therefore
+continues to show its explicitly labelled synthetic relief field. It must not
+be described as a USGS DEM until the point values and their source metadata are
+checked into a source register and built as a local module.
 
-Nothing is uploaded, written to a device, or retained between sessions. The
-static pack keeps its own two pinned caches (above); imports are session-only,
-which is also where the SoCal audit landed after removing unsupported rows.
+### Other city packs
 
-## Geomate.jr / Geomate Loader firmware research — status
+Atlanta, Buffalo, and Toronto retain PR #102's existing packs. Any
+non-GNIS/context coordinate stays at its stated evidence tier; no new
+coordinates or GNIS IDs were inferred for those cities in this reconciliation.
 
-The 2026-10-06 pass (`docs/geomate-jr-firmware-research.md`) is unchanged and
-still correct: the archived `geomateQtGuiApp.exe` /
-`geomateQtGuiApp.exe.zip` payloads have **no replayable Wayback capture**, the
-live App Engine and Dropbox URLs are 404, and no Geomate firmware bytes are in
-this checkout. Nothing has been fabricated to fill the gap.
+## Geocache class and local GPX import
 
-What the city work adds is the import *target*. When a Geomate.jr database
-dump, a GSAK export, or a Pocket Query GPX is supplied:
+Geocaches use a separate evidence tier rather than being quietly mixed with
+GNIS:
 
-1. hash and record the file (SHA-256, size, URL, date) outside Git;
-2. list/parse members without executing anything — the device database is the
-   payload, the loader is just a transport;
-3. convert records to the Geocache row shape above, keeping the GC code, the
-   snapshot date, and the cache type/size/difficulty/terrain fields;
-4. rebuild the city packs with `node scripts/build-city-subsurface.mjs` and the
-   bundles with `node scripts/build-city-subsurface-xdc.mjs` — or, for a
-   one-off look, load the GPX through the page's own import control (above),
-   which needs no rebuild at all.
+- `fclass = "Geocache"`, `ftt = "rec.geocache"`, matching the `rec` facet;
+- `VERIFIED = 0` always, with no GNIS FEATURE_ID;
+- only cache coordinates printed by a public source are bundled; otherwise a
+  user imports their own GPX locally.
 
-The engine already renders the tier; the missing input is bytes, not code.
+Two public-coordinate cache rows ship: Buffalo `GCQ1T1` and Toronto `GC7HT4Z`.
+Lawrence and Kansas City have no static cache rows. The app can still accept
+GPX 1.0/1.1 files (≤ 25 MiB, ≤ 5,000 caches, DOCTYPE refused) in the browser.
+Only in-frame cache points are added to the live `rec.geocache` register;
+out-of-frame items are counted. **PRESERVATION BAG (.ZIP)** exports the source
+GPX unchanged plus normalized XML/JSON, BagIt manifests, and a preservation
+event. Nothing is uploaded or written to a Geomate device; imported rows are
+session-only. See `docs/geomate-gpx-preservation.md` for scope and privacy
+notes.
 
-## Sources used for this pass
+## Geomate.jr license and analysis boundary
 
-- City coordinates/elevations: public city reference coordinates (documented
-  per row in the packs) for context rows.
-- Official GNIS rows: `City of Eudora` (FEATURE_ID **2394705**) and
-  `City of Lecompton` (FEATURE_ID **2395667**), from the USGS National Map
-  gazetteer service (`carto.nationalmap.gov/arcgis/rest/services/geonames/MapService`),
-  retrieved 2026-10-07 for the Lawrence frame. USGS GNIS factual data is a US
-  government work (17 USC §105).
-- River reach context: USGS Water Data site **06891080** (Kansas River at
-  Lawrence, KS) for the gauge coordinate; the corridor lines themselves are
-  schematic.
-- Buffalo cache: public Geocaching.com cache description for `GCQ1T1`.
-- Toronto cache: Geocaching.com blog, *Toronto's First Post Office — Geocache
-  of the Week*, 4 December 2024.
-- Toronto PATH: City of Toronto, *PATH — Toronto's Downtown Pedestrian
-  Walkway* (city page; more than 30 km, mostly underground). The plotted spine
-  is schematic.
-- Rock Chalk Park (Lawrence) and the Buffalo park landmarks: public listing
-  coordinates (Explore Lawrence; cached public references).
+The 2014 Brand 44 Geomate.jr User's Guide contains a clause prohibiting reverse
+engineering. The public-source research and local GPX import do not authorize
+analysis of its loader, firmware, or encrypted `.cry` region files. Do not
+acquire or import those artifacts into Ghidra unless the user has read the
+restriction and explicitly directs that work. No Geomate.jr firmware or loader
+analysis is claimed. Modern GeoMate Positioning / CHCNav products are a
+different product family and are not substitutes for Geomate.jr evidence.
 
-Rows that could not be traced to a published coordinate are marked `curated`
-in their note and stay `VERIFIED = 0`. Where a row is a *place* with an
-authoritative GNIS record but the pass did not retrieve the FEATURE_ID, the id
-column stays `null` rather than being guessed.
+## Sources
+
+- USGS GNIS: [official GNIS overview](https://www.usgs.gov/tools/geographic-names-information-system-gnis) and the National Map [MapServer](https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer), especially [layer 3 (Populated Places)](https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/3), [layer 6 (Streams)](https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/6), and [layer 7 (Other Hydrographic Features)](https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/7). The city-config row notes retain IDs and geometry limitations.
+- USGS 3DEP: [ImageServer metadata](https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer?f=pjson) and `getSamples`; Lawrence's sample register is `data/lawrence/dem-anchors.json`. Kansas City's exploratory sample values were not persisted, as disclosed above.
+- Geomate.jr: 2014 [Brand 44 User's Guide](https://www.homesciencetools.com/content/reference/Geomatejr_Users_Guide.pdf); see `docs/geomate-jr-firmware-research.md` for the research disposition and license caveat.
+- Local GPX import and BagIt preservation: `docs/geomate-gpx-preservation.md`, `js/gpx-geocache.js`, and `tests/city-subsurface.test.mjs`.

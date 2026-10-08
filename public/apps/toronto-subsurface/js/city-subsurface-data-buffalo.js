@@ -16,7 +16,8 @@ export const CITY = {
   "county": "Erie",
   "baseElevationM": 190,
   "roughnessM": 18,
-  "hasWater": true
+  "hasWater": true,
+  "requiresDem": false
 };
 
 export const BBOX = {"lon0":-78.98,"lat0":42.82,"lon1":-78.75,"lat1":42.96};

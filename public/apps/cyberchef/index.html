@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 478 recipes · Virus encyclopedia: Stoned/Michelangelo/Cascade/Jerusalem signatures &amp; boot-sector triage</div>
+  <div class="sub">HTML5 · 478 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -2668,6 +2668,7 @@ addOp('antiDebugScan','Anti-Debug / Anti-Disassembly Scan','EXE Protection',
    RECIPE PACKS (cipher suites)
 ============================================================ */
 const RECIPE_PACKS={
+ 'MZ Header Preflight — static triage before a Ghidra import':[['mzTriage',{}]],
  'Legacy P2PKH Coin Addresses (BTC, DOGE, DASH, LTC)':[['btcLegacyP2PKH',{}],['dogeLegacyP2PKH',{}],['dashLegacyP2PKH',{}],['ltcLegacyP2PKH',{}]],
  'Modern Card & Coin Marketplaces (Cardano Shelley & Tickers)':[['cardanoShelley',{}],['coinTicker',{view:'card'}],['stockTicker',{view:'card'}]],
  'Fam Secret Stock & Crypto Portfolio Sim':[['tickerQuoteSim',{currency:'USD'}],['coinTicker',{view:'table'}],['stockTicker',{view:'table'}]],
@@ -2711,6 +2712,14 @@ const RECIPE_PACKS={
  'Unicode Homoglyph & Zero-Width Scanner':[['unicodeConfusable',{}],['unicodeInspect',{}],['unicodeStyles',{}]],
  'GCWizard Trifid / Nihilist / Navajo / Wheel':[['gcwTrifid',{}],['gcwNihilist',{}],['gcwNavajo',{}],['gcwCipherWheel',{}]],
  'GCWizard BCD / Gray / Crosssum':[['gcwBcdGray',{}],['gcwCrosssum',{}]],
+ 'Encoding Lab — Base64, Base32, URL, Unicode, Hex, ROT47 round-trips':[['toB64',{}],['fromB64',{}],['toBase32',{}],['fromBase32',{}],['toURL',{}],['fromURL',{}],['toUnicode',{}],['fromUnicode',{}],['toHex',{sep:'none'}],['fromHex',{mode:'utf8'}],['rot47',{}],['rot47',{}]],
+ 'Binary File Lab — byte-exact Base64 round-trip (load a file first)':[['binToB64',{wrap:0}],['b64ToBin',{}]],
+ 'Obfuscation Lab — single-byte XOR with a toy ASCII input':[['xor',{key:'B',infmt:'text',outfmt:'text'}],['xorBrute',{}]],
+ 'Encryption Lab — AES-GCM password round-trip (demo text only)':[['aesGCM',{pass:'demo-only-not-secret',mode:'encrypt'}],['aesGCM',{pass:'demo-only-not-secret',mode:'decrypt'}]],
+ 'Encryption Lab — AES-CBC round-trip (legacy mode; demo text only)':[['aesCBC',{pass:'demo-only-not-secret',mode:'encrypt'}],['aesCBC',{pass:'demo-only-not-secret',mode:'decrypt'}]],
+ 'Block Cipher Lab — Camellia ECB round-trip (demo text only)':[['camellia',{key:'0123456789abcdeffedcba9876543210',mode:'encrypt'}],['camellia',{key:'0123456789abcdeffedcba9876543210',mode:'decrypt'}]],
+ 'Stream Cipher Lab — ChaCha20 round-trip (fixed test key/nonce only)':[['chacha20',{key:'000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',nonce:'000000000000004a00000000',counter:1,infmt:'text'}],['chacha20',{key:'000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',nonce:'000000000000004a00000000',counter:1,infmt:'hex'}]],
+ 'Legacy Cipher Lab — RC4 round-trip (analysis only; not secure)':[['rc4',{key:'Key',infmt:'text'}],['rc4',{key:'Key',infmt:'hex'}]],
  'EXE Packer Triage & LZEXE Unpack (Ghidra-verified)':[['mzTriage',{}],['lzexeDecode',{}]],
  'DOS Anti-Debug & Polymorphic Ops (TPE, Johansson)':[['antiDebugScan',{}],['tpeCrypt',{}],['opcodeSubst',{}]],
  'More Gutenberg Ainslie / Peterson / WU':[['gutenbergAinslie',{}],['gutenbergMore',{}]],

@@ -48,6 +48,11 @@ test("every city app has a page, data packs, and a current Webxdc", async () => 
     assert.equal(gaz.GAZ_META.rowCount, gaz.GAZ_ROWS.length);
 
     const files = archive(`${city}-subsurface.xdc`);
+    if (data.CITY.requiresDem) {
+      const demModule = `js/city-dem-grid-${city}.js`;
+      assert.ok(existsSync(path.join(root, demModule)), `${city}: required DEM module is missing`);
+      assert.deepEqual(Buffer.from(files[demModule]), readFileSync(path.join(root, demModule)), `${city}: required DEM is stale or absent in the XDC`);
+    }
     const index = decoder.decode(files["index.html"]);
     assert.match(index, new RegExp(`data-city="${city}"`));
     assert.match(index, /<script src="\.\/webxdc\.js"><\/script>/);
@@ -57,6 +62,50 @@ test("every city app has a page, data packs, and a current Webxdc", async () => 
       assert.deepEqual(Buffer.from(files[name]), readFileSync(path.join(root, name)), `${city}: ${name} is stale in the archive`);
     }
   }
+});
+
+test("Lawrence and Kansas City contain only the cross-checked GNIS seed points", async () => {
+  const lawrenceData = await import("../js/city-subsurface-data-lawrence.js");
+  const lawrence = await import("../js/city-gazetteer-data-lawrence.js");
+  const kansasCityData = await import("../js/city-subsurface-data-kansascity.js");
+  const kansasCity = await import("../js/city-gazetteer-data-kansascity.js");
+  const { DEM, DEM_META } = await import("../js/city-dem-grid-lawrence.js");
+  const anchors = JSON.parse(read("data/lawrence/dem-anchors.json"));
+
+  assert.equal(lawrenceData.CITY.requiresDem, true);
+  assert.equal(DEM.nx, 8);
+  assert.equal(DEM.ny, 8);
+  assert.equal(DEM.data.length, 64);
+  assert.deepEqual(Array.from(DEM.data), anchors.grid.values.map(Math.fround));
+  assert.match(DEM_META.disclosure, /not a 1 m raster/i);
+  assert.match(DEM.disclosure, /clamps only the narrow display-frame rim/i);
+  assert.equal(lawrence.GAZ_META.verified, 5);
+  assert.ok(lawrence.GAZ_ROWS.every((row) => row[8] === 1 && /^\d+$/.test(row[7])));
+  assert.ok(lawrence.GAZ_ROWS.every((row) => /USGS GNIS MapServer layer \d/.test(row[9])));
+
+  const expectedKansasCity = new Map([
+    ["Kansas City", ["748198", 39.099733583208469, -94.578574134442377]],
+    ["Missouri River", ["756398", 39.123899988352946, -94.561351431694305]],
+    ["Kansas River", ["485184", 39.115288884269113, -94.610519544672499]],
+    ["Blue River", ["479576", 39.130011195011377, -94.470793407864306]],
+    ["Brush Creek", ["479243", 39.038901276636359, -94.520517112676060]],
+    ["Bales Lake", ["713599", 39.079975978095113, -94.514469279585910]],
+    ["Lake of the Woods", ["758366", 38.995271424192886, -94.519420617362172]],
+    ["Zajic Lake", ["729219", 39.192542004572417, -94.570912272230103]],
+  ]);
+  assert.equal(kansasCity.GAZ_META.verified, expectedKansasCity.size);
+  assert.equal(kansasCity.GAZ_ROWS.length, expectedKansasCity.size);
+  for (const row of kansasCity.GAZ_ROWS) {
+    const [gnisId, lat, lon] = expectedKansasCity.get(row[0]) ?? [];
+    assert.ok(gnisId, `unexpected Kansas City row: ${row[0]}`);
+    assert.equal(row[7], gnisId, `${row[0]} GNIS FEATURE_ID`);
+    assert.equal(row[8], 1, `${row[0]} verification tier`);
+    assert.ok(Math.abs(row[4] - lat) < 1e-10, `${row[0]} latitude`);
+    assert.ok(Math.abs(row[5] - lon) < 1e-10, `${row[0]} longitude`);
+    assert.match(row[9], /USGS GNIS MapServer layer \d/);
+  }
+  assert.deepEqual(kansasCityData.CORRIDORS, [], "no unverified Kansas City corridor coordinates are seeded");
+  assert.deepEqual(kansasCityData.NODES, [], "no unverified Kansas City landmark coordinates are seeded");
 });
 
 test("local GPX imports land in a city register as rec.geocache rows", async () => {
@@ -122,7 +171,7 @@ test("city gazetteer engine searches names, facets, boxes, and geocaches", async
   const hits = searchName(idx, "lawrence", { limit: 5 });
   assert.ok(hits.some((h) => h.name === "Lawrence"));
   const box = searchBox(idx, lawrence.GAZ_META.bbox, { classes: new Set(["Populated Place"]) });
-  assert.ok(box.some((h) => h.name === "City of Eudora"));
+  assert.ok(box.some((h) => h.name === "Lawrence"));
 
   const buffaloIdx = makeGazetteerIndex(buffalo.GAZ_ROWS);
   const cache = searchName(buffaloIdx, "GCQ1T1", { limit: 5 });

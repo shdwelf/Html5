@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Fetch a compact USGS 3DEP GeoTIFF resample for Lawrence, Kansas.
+"""Fetch an optional denser USGS 3DEP resample for Lawrence, Kansas.
 
-The checked-in xdc includes an 8x8 point-sample grid so it works fully offline.
+The shared city XDC includes an 8x8 point-sample grid so it works fully offline.
 For a smoother local build, run this script in a network-connected environment
-with numpy+rasterio installed; it writes an optional high-resolution ES module
-that the Lawrence viewer loads before constructing its terrain mesh:
+with numpy+rasterio installed; it writes an optional high-resolution module
+that the shared city viewer prefers over the sparse grid:
 
     python3 scripts/fetch-lawrence-dem.py --nx 160 --ny 160
-    node scripts/build-lawrence-subsurface-xdc.mjs
+    npm run build:city-subsurface
 
 USGS 3DEP ImageServer is public domain. The requested BBOX is intentionally a
 compact 0.16-degree square around Lawrence (not a statewide download). The
@@ -108,14 +108,18 @@ def emit_module(values: list[float], nx: int, ny: int, out: Path) -> None:
         hi = max(hi, elevation)
         raw += struct.pack("<h", elevation)
     encoded = base64.b64encode(raw).decode("ascii")
+    spacing = f"approximately {(BBOX['lon1']-BBOX['lon0'])*111.32*math.cos(math.radians(38.96))/nx:.3f} km east-west × {(BBOX['lat1']-BBOX['lat0'])*111.32/ny:.3f} km north-south resample cells"
     meta = {
         **BBOX,
         "nx": nx,
         "ny": ny,
         "source": "USGS 3DEP dynamic ImageServer exportImage (elevation.nationalmap.gov)",
-        "resolution": f"Float32 GeoTIFF bilinearly resampled to {nx}x{ny}; approximately {(BBOX['lon1']-BBOX['lon0'])*111.32*math.cos(math.radians(38.96))/nx:.3f} km x {(BBOX['lat1']-BBOX['lat0'])*111.32/ny:.3f} km cells",
+        "resolution": f"Float32 GeoTIFF bilinearly resampled to {nx}x{ny}; stored elevations rounded to whole metres",
+        "sampleSpacing": spacing,
+        "sourceRasterResolutionMeters": None,
         "retrieved": dt.date.today().isoformat(),
-        "verticalDatum": "NAVD88 where reported by the selected 3DEP source raster; check source metadata",
+        "verticalDatum": "NAVD88 where reported by the selected 3DEP source raster; verify source metadata",
+        "disclosure": "Optional locally generated resample. Cell spacing is not the source raster pixel resolution, and values are rounded to whole metres. Not surveyed control elevations.",
         "min": lo,
         "max": hi,
     }
@@ -144,7 +148,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--nx", type=int, default=160, help="columns, default 160")
     parser.add_argument("--ny", type=int, default=160, help="rows, default 160")
-    parser.add_argument("--out", type=Path, default=Path("js/lawrence-dem-grid.js"))
+    parser.add_argument("--out", type=Path, default=Path("js/city-dem-grid-lawrence-highres.js"))
     parser.add_argument("--raw", type=Path, help="use a pre-downloaded GeoTIFF instead of requesting the ImageServer")
     args = parser.parse_args()
     if not (2 <= args.nx <= 2000 and 2 <= args.ny <= 2000):

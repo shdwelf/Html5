@@ -13,7 +13,10 @@
 
 The audience is someone running `analyzeHeadless` in CI (the same shape as
 `.github/workflows/drsolomon-ghidra.yml`) and reaching for CyberChef as a
-quick offline sanity check before writing a Ghidra postScript.
+quick offline sanity check before writing a Ghidra postScript. This document
+is not authorization to inspect Geomate.jr artifacts: its Brand 44 EULA hold
+requires the user to read the restriction and explicitly direct any analysis.
+See `docs/geomate-jr-firmware-research.md`.
 
 ---
 
@@ -65,9 +68,10 @@ and DecompInterface are available.
 
 ### 2b. Import a raw binary blob with a forced language/loader
 
-Use this for firmware dumps, ROM extracts, and anything without a header
-that the PE/NE/ELF/Mach-O loaders recognize (e.g. a SiLabs C8051 flash dump
-if a Geomate.jr region is ever recovered):
+Use this generic pattern only for a clean, authorized firmware dump, ROM
+extract, or other input without a header recognized by the PE/NE/ELF/Mach-O
+loaders. Verify the processor and base address from independent documentation;
+this example is not tied to Geomate.jr or any unverified target:
 
 ```bash
 "$GHIDRA/support/analyzeHeadless" \
@@ -314,22 +318,25 @@ from a constant to `aes_set_decrypt_key` / `AES_init_ctx` and traces the key
 argument; a constant search by itself cannot find the key. The Shielder
 write-up [5] also shows a false positive: BLAKE2b IV bytes overlap SHA-512 IV.
 
-### 4.4 OBFUSCATION — InstallShield / MSI unpacking before PE import
+### 4.4 OBFUSCATION — InstallShield / MSI triage for an authorized sample
 
-The Geomate.jr loader ships as an InstallShield `.msi` (per the 2014
-Brand 44 user's guide). **Do not run the installer.** Static-only
-unpack:
+Some Windows applications use InstallShield `.msi` packages. The Geomate.jr
+2014 Brand 44 guide identifies its loader as an MSI, but its reverse-engineering
+restriction is an active stop condition: **do not acquire, extract, or import
+that installer or its payload** unless the user has read the clause and
+explicitly directs analysis. That direction has not been given.
 
-- `lessmsi x file.msi out/` (open-source, cross-platform) or
-- `msiextract` from `msitools` (Linux) extracts the `File` table
-  without executing any custom action.
-- After extraction, import the PE payload (e.g. `geomateQtGuiApp.exe`)
-  with `analyzeHeadless` using `-loader PeLoader` (Ghidra picks it by
-  default for `.exe`/`.dll`).
+For an unrelated clean, licensed, authorized sample, a static-only inventory
+can use `lessmsi x file.msi out/` or `msiextract` from `msitools` to read the
+`File` table without executing custom actions. Only after the sample's source,
+license, and authorization have been reviewed should a selected PE payload be
+imported with the matching Ghidra loader. These generic commands are not a
+Geomate.jr procedure.
 
 CyberChef's **Magic** operation can identify the OLE Compound File header
 (`D0 CF 11 E0 A1 B1 1A E1`) used by traditional MSI containers. That header
-is only a format clue: do not execute the installer or any custom action.
+is only a format clue; it is not permission to execute, extract, or analyze a
+restricted installer.
 
 
 ### 4.5 ENCRYPTION — locate a custom cipher / XOR-with-key schedule in Ghidra
@@ -354,12 +361,11 @@ on a clean, authorized sample:
    the original input and record the transform, offsets, and hash of each
    output.
 
-This is the exact shape of analysis that would apply to a recovered
-`geomateQtGuiApp.exe` or `.cry` region image, *if and when* a copy is
-obtained from a trusted source and the Geomate.jr EULA is read first.
-The 2014 user's guide states "you may not … reverse engineer this
-Software", which the repo honours: no loader bytes are requested,
-shipped, or analyzed here.
+This is **not** a Geomate.jr analysis plan. The Brand 44 hold remains active:
+do not request, obtain, extract, or import `geomateQtGuiApp.exe`, firmware, or
+`.cry` bytes unless the user has read the reverse-engineering clause and
+explicitly directs that work. No such direction has been given, and no loader
+bytes are requested, shipped, or analyzed here.
 
 ### 4.6 DISASSEMBLY — 8-bit / 16-bit firmware disassembly (8051 / AVR)
 

@@ -47,7 +47,13 @@ const GAZ_LOADERS = {
   toronto: () => import("./city-gazetteer-data-toronto.js"),
 };
 const DEM_LOADERS = {
-  lawrence: () => import("./city-dem-grid-lawrence.js"),
+  lawrence: async () => {
+    try {
+      return await import("./city-dem-grid-lawrence-highres.js");
+    } catch {
+      return import("./city-dem-grid-lawrence.js");
+    }
+  },
   atlanta: () => import("./city-dem-grid-atlanta.js"),
   kansascity: () => import("./city-dem-grid-kansascity.js"),
   buffalo: () => import("./city-dem-grid-buffalo.js"),
@@ -127,9 +133,16 @@ function pathKm(path) {
 /* ------------------------------------------------------------- DEM hook */
 
 let DEM = null;
+let demDisclosure = "";
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 function installDem(grid) {
-  if (!grid || !grid.data || !grid.nx || !grid.ny) return false;
-  DEM = grid;
+  if (!grid || !Number.isInteger(grid.nx) || !Number.isInteger(grid.ny) || grid.nx < 2 || grid.ny < 2) return false;
+  if (![grid.lon0, grid.lon1, grid.lat0, grid.lat1].every(Number.isFinite) || !(grid.lon0 < grid.lon1 && grid.lat0 < grid.lat1)) return false;
+  if (!grid.data || grid.data.length !== grid.nx * grid.ny) return false;
+  if (grid.lon1 < BBOX.lon0 || grid.lon0 > BBOX.lon1 || grid.lat1 < BBOX.lat0 || grid.lat0 > BBOX.lat1) return false;
+  const samples = grid.data instanceof Int16Array || grid.data instanceof Float32Array ? grid.data : Float32Array.from(grid.data);
+  if (Array.from(samples).some((value) => !Number.isFinite(value))) return false;
+  DEM = { ...grid, data: samples };
   return true;
 }
 function demInfo() {
@@ -139,16 +152,21 @@ function demInfo() {
     ny: DEM.ny,
     bbox: { lon0: DEM.lon0, lat0: DEM.lat0, lon1: DEM.lon1, lat1: DEM.lat1 },
     source: DEM.source || "USGS 3DEP",
-    resolution: DEM.resolution || "unstated",
-    retrieved: DEM.retrieved || "unstated",
+    resolution: DEM.resolution || `${DEM.nx}×${DEM.ny} point samples (not a full-resolution raster)`,
+    sampleSpacing: DEM.sampleSpacing || "spacing not stated",
+    sourceRasterResolutionMeters: DEM.sourceRasterResolutionMeters ?? null,
+    verticalDatum: DEM.verticalDatum || "vertical datum not stated",
+    retrieved: DEM.retrieved || "retrieval date unstated",
+    disclosure: DEM.disclosure || "Sparse samples are interpolated for display, not survey control.",
   };
 }
 function demSample(lon, lat) {
-  if (!DEM) return null;
+  if (!DEM || lon < BBOX.lon0 || lon > BBOX.lon1 || lat < BBOX.lat0 || lat > BBOX.lat1) return null;
   const { lon0, lon1, lat0, lat1, nx, ny, data } = DEM;
-  if (lon < lon0 || lon > lon1 || lat < lat0 || lat > lat1) return null;
-  const fx = ((lon - lon0) / (lon1 - lon0)) * (nx - 1);
-  const fy = ((lat1 - lat) / (lat1 - lat0)) * (ny - 1);
+  // Sparse grids stop just inside the frame. Clamp only that narrow rim to
+  // the nearest sample; never extrapolate the surface outside the city frame.
+  const fx = clamp(((lon - lon0) / (lon1 - lon0)) * (nx - 1), 0, nx - 1);
+  const fy = clamp(((lat1 - lat) / (lat1 - lat0)) * (ny - 1), 0, ny - 1);
   const x0 = Math.floor(fx);
   const y0 = Math.floor(fy);
   const x1 = Math.min(x0 + 1, nx - 1);
@@ -184,13 +202,19 @@ let demStatus = "synthetic relief field (RELIEF gaussians)";
 try {
   const demMod = await DEM_LOADERS[CITY_ID]();
   const grid = demMod.DEM ?? demMod.default;
-  if (grid && installDem({ ...grid, data: grid.data instanceof Int16Array || grid.data instanceof Float32Array ? grid.data : Int16Array.from(grid.data) })) {
-    const info = demInfo();
-    demStatus = `USGS 3DEP grid ${info.nx}×${info.ny} · ${info.resolution} · retrieved ${info.retrieved}`;
-  }
-} catch {
-  /* no DEM asset present — the synthetic field stands in, as documented */
+  if (!grid || !installDem(grid)) throw new Error(`${CITY_ID} DEM grid is missing or invalid`);
+  const info = demInfo();
+  const sourcePixels = info.sourceRasterResolutionMeters == null
+    ? "source pixel resolution unstated"
+    : `${info.sourceRasterResolutionMeters} m source pixels (not grid spacing)`;
+  demStatus = `${info.source} · ${info.nx}×${info.ny} point samples · ${info.sampleSpacing} · ${sourcePixels} · ${info.verticalDatum} · ${info.retrieved}`;
+  demDisclosure = info.disclosure;
+} catch (error) {
+  if (CITY.requiresDem) throw new Error(`${CITY.title} requires a bundled, valid USGS DEM grid; refusing synthetic relief`, { cause: error });
+  /* Cities without a checked-in DEM remain explicitly labelled as synthetic. */
+  demDisclosure = "Synthetic RELIEF field; not USGS terrain.";
 }
+if (CITY.requiresDem && !DEM) throw new Error(`${CITY.title} requires a bundled DEM; refusing synthetic relief`);
 
 /* ------------------------------------------------------------------ scene */
 
@@ -1202,7 +1226,10 @@ function tick(now) {
   }
 }
 
-if ($("demSource")) $("demSource").textContent = `source · ${demStatus}`;
+if ($("demSource")) {
+  $("demSource").textContent = `source · ${demStatus}`;
+  $("demSource").title = demDisclosure;
+}
 flyTo(VIEWS[0]?.id);
 refreshCounts();
 setStatus(`ready · ${CITY.title} — schematic only; not a survey, not a dig ticket, call 811`);
