@@ -5,6 +5,11 @@ import { describe, expect, it, vi } from 'vitest';
 
 const source = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
 
+// The worker owns the current cache name; read it instead of hardcoding a
+// version here, so bumping CACHE in sw.js cannot silently break this test.
+const CURRENT_CACHE = source.match(/const CACHE = `\$\{CACHE_PREFIX\}(v\d+)`/)?.[1];
+if (!CURRENT_CACHE) throw new Error('could not read the current SITE-K cache name from sw.js');
+
 function worker(keys: string[]) {
   const handlers: Record<string, (event: { waitUntil: (task: Promise<unknown>) => void }) => void> = {};
   const caches = {
@@ -30,7 +35,7 @@ function worker(keys: string[]) {
 
 describe('SITE-K service worker activation', () => {
   it('deletes only obsolete SITE-K caches, preserving current and unrelated caches', async () => {
-    const sw = worker(['sitek-html5-v1', 'sitek-html5-v23', 'sitek-html5-v37', 'book-v1', 'other-app-v2']);
+    const sw = worker(['sitek-html5-v1', 'sitek-html5-v23', `sitek-html5-${CURRENT_CACHE}`, 'book-v1', 'other-app-v2']);
     await sw.activate();
     expect(sw.caches.delete.mock.calls).toEqual([['sitek-html5-v1'], ['sitek-html5-v23']]);
     expect(sw.claim).toHaveBeenCalledOnce();

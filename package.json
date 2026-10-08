@@ -8,8 +8,10 @@
     "build": "vite build && node scripts/build-xdc.mjs",
     "build:bluetops": "node scripts/build-bluetops-xdc.mjs",
     "build:cheyenne": "node scripts/build-cheyenne-xdc.mjs",
+    "build:city-subsurface": "node scripts/build-city-subsurface.mjs && node scripts/build-city-subsurface-xdc.mjs",
     "build:four-corners": "node scripts/build-four-corners-xdc.mjs",
     "build:cia-museum": "node scripts/build-cia-museum-xdc.mjs",
+    "build:cyberchef": "node scripts/build-cyberchef-xdc.mjs",
     "build:greeran-family": "node scripts/build-greeran-family-4dwm-xdc.mjs",
     "build:greeran-subsurface": "node scripts/build-greeran-subsurface-xdc.mjs",
     "build:glendora-high": "node scripts/build-glendora-high-4dwm-xdc.mjs",
@@ -24,6 +26,7 @@
     "preview": "vite preview",
     "serve:catalog": "node tools/z3950-server.mjs",
     "check:sources": "node tools/check-source-check-bibliography.mjs",
+    "sync:cyberchef": "node scripts/merge-cyberchef-recipes.mjs",
     "test": "vitest run && node --test tests/*.test.mjs"
   },
   "dependencies": {
@@ -47,6 +50,7 @@
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
+    "acorn": "^8.19.0",
     "esbuild": "^0.28.2",
     "fake-indexeddb": "^6.2.5",
     "fflate": "^0.8.3",

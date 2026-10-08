@@ -81,6 +81,7 @@ workflow permission).
 - **[ESGVROP 4Dwm](esgvrop-4dwm.html)** — East San Gabriel Valley ROP & Technical Center, the summer-2001 deep dive across the Del Norte and Sunflower campuses. Ships as `esgvrop-4dwm.xdc`.
 - **[Dalton Race 4Dwm](dalton-race-4dwm.html)** — Big Dalton / Little Dalton terrain with pips, route pointers, and VRML export. Ships as `dalton-race-4dwm.xdc`.
 - **[INGRESS INTEL 4Dwm](ingress-intel.html)** — an Ingress intel theater that actually tries to connect: a six-rung connection ladder (same-origin → your relay → public CORS proxy → pasted capture → webxdc peer → offline register) with a verdict and a fix printed per rung, the same intel payload drawn on a planet globe with geodesic links, spherical control fields and a live day/night terminator *and* on the SoCal basin plate, and an honest `SIM` watermark whenever nothing live answered. Decodes/encodes `getEntities`, portal-detail and plext payloads, IITC GeoJSON/KML/CSV exports and intel permalinks. Ships as `ingress-intel.xdc`. See [docs/ingress-intel-map-viewer.md](docs/ingress-intel-map-viewer.md) and the [connector research](docs/ingress-intel-connector-research-2026-10-07.md).
+- **[CITY SUBSURFACE 4Dwm](lawrence-subsurface.html)** — the SoCal subsurface engine reduced to a parametric city frame, shipped five times: Lawrence KS, Atlanta GA, Kansas City MO, Buffalo NY and Toronto ON. Each app keeps the full layer list, the offline gazetteer and a separate geocache source tier (`rec.geocache`) with a local GPX import and BagIt preservation export. Ships as `<city>-subsurface.xdc`; build with `npm run build:city-subsurface`. See [docs/city-subsurface.md](docs/city-subsurface.md).
 - **[FOUR CORNERS · calculator port](four-corners-calc.html)** — the bench for the TI-83/89/92 port: it runs the port's own C core transpiled to an ES module, so the preview *is* the port.
 
 Every 4Dwm-family Webxdc rebuilds from one command — `npm run build:4dwm`
@@ -259,7 +260,7 @@ over the dev server's origin rather than `file://`:
 | --- | --- |
 | `/apps/` | Index, with a live secure-context / microphone check |
 | `/apps/anc-studio/` | ANC Studio Ultra — adaptive multi-band FxLMS over AudioWorklet |
-| `/apps/cyberchef/` | CyberChef Renovated Kitchen — 372 recipes, plus file input and save |
+| `/apps/cyberchef/` | CyberChef Renovated Kitchen — 478 recipes after the Html5 ↔ Html5-sync-incoming merge, plus file input and save |
 | `/apps/cookbook/` | Crypto Cookbook — 83-section reference, framed by the Cookbook tab |
 | `/apps/cryptofountain-bbs/` | CryptoFountain BBS — P2P microblogging with erasure codes |
 
