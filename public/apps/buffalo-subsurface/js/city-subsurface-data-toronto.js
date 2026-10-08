@@ -16,7 +16,8 @@ export const CITY = {
   "county": "Toronto",
   "baseElevationM": 120,
   "roughnessM": 20,
-  "hasWater": true
+  "hasWater": true,
+  "requiresDem": false
 };
 
 export const BBOX = {"lon0":-79.55,"lat0":43.6,"lon1":-79.25,"lat1":43.76};

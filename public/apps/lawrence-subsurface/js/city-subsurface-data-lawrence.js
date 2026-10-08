@@ -10,58 +10,22 @@
 export const CITY = {
   "id": "lawrence",
   "title": "LAWRENCE SUBSURFACE 4Dwm",
-  "subtitle": "Kansas River · Wakarusa River · Mount Oread / KU — Douglas County, Kansas",
+  "subtitle": "Kansas River · Wakarusa River · Douglas County, Kansas",
   "state": "KS",
   "country": "United States",
   "county": "Douglas",
   "baseElevationM": 255,
   "roughnessM": 22,
-  "hasWater": false
+  "hasWater": false,
+  "requiresDem": true
 };
 
-export const BBOX = {"lon0":-95.45,"lat0":38.85,"lon1":-95.05,"lat1":39.1};
-export const CENTER = {"lon":-95.25,"lat":38.975};
+export const BBOX = {"lon0":-95.31,"lat0":38.88,"lon1":-95.15,"lat1":39.04};
+export const CENTER = {"lon":-95.23,"lat":38.96};
 export const KM_PER_DEG_LAT = 111.32;
 export const UNITS_PER_KM = 0.1;
 export const COAST = [];
-export const RELIEF = [
-  {
-    "name": "Kansas River valley",
-    "lon": -95.23,
-    "lat": 38.97,
-    "rx": 0.28,
-    "ry": 0.08,
-    "amp": -55,
-    "rot": -0.12
-  },
-  {
-    "name": "Wakarusa River valley",
-    "lon": -95.2,
-    "lat": 38.94,
-    "rx": 0.16,
-    "ry": 0.12,
-    "amp": -35,
-    "rot": 0.25
-  },
-  {
-    "name": "Mount Oread / KU rise",
-    "lon": -95.24,
-    "lat": 38.96,
-    "rx": 0.1,
-    "ry": 0.08,
-    "amp": 65,
-    "rot": 0
-  },
-  {
-    "name": "Clinton Lake basin",
-    "lon": -95.39,
-    "lat": 38.91,
-    "rx": 0.18,
-    "ry": 0.12,
-    "amp": -45,
-    "rot": 0
-  }
-];
+export const RELIEF = [];
 export const LAYERS = [
   {
     "id": "terrain",
@@ -189,227 +153,8 @@ export const TIER_COLOR = {
   "context": "#ff6ec7",
   "memory": "#ff6ec7"
 };
-export const CORRIDORS = [
-  {
-    "id": "kansas-river",
-    "layer": "water",
-    "tier": "context",
-    "name": "Kansas River (generalized reach)",
-    "short": "Kansas R",
-    "depthM": 0,
-    "path": [
-      [
-        -95.44,
-        38.965
-      ],
-      [
-        -95.36,
-        38.968
-      ],
-      [
-        -95.28,
-        38.972
-      ],
-      [
-        -95.22,
-        38.976
-      ],
-      [
-        -95.14,
-        38.978
-      ],
-      [
-        -95.06,
-        38.982
-      ]
-    ],
-    "facts": [
-      "Generalized Kansas River reach through Lawrence; not a surveyed centerline."
-    ],
-    "sources": [
-      "USGS Water Data site 06891080 (Kansas R at Lawrence, KS)"
-    ]
-  },
-  {
-    "id": "wakarusa-river",
-    "layer": "water",
-    "tier": "context",
-    "name": "Wakarusa River (generalized reach)",
-    "short": "Wakarusa R",
-    "depthM": 0,
-    "path": [
-      [
-        -95.08,
-        38.92
-      ],
-      [
-        -95.15,
-        38.94
-      ],
-      [
-        -95.2,
-        38.955
-      ],
-      [
-        -95.25,
-        38.965
-      ],
-      [
-        -95.31,
-        38.97
-      ],
-      [
-        -95.38,
-        38.975
-      ]
-    ],
-    "facts": [
-      "Generalized Wakarusa River reach southeast of downtown; schematic only."
-    ],
-    "sources": [
-      "City frame context"
-    ]
-  },
-  {
-    "id": "lawrence-rail",
-    "layer": "rail",
-    "tier": "context",
-    "name": "Lawrence rail corridor (BNSF context)",
-    "short": "BNSF",
-    "depthM": 0,
-    "path": [
-      [
-        -95.44,
-        38.985
-      ],
-      [
-        -95.34,
-        38.982
-      ],
-      [
-        -95.25,
-        38.978
-      ],
-      [
-        -95.16,
-        38.974
-      ],
-      [
-        -95.07,
-        38.972
-      ]
-    ],
-    "facts": [
-      "Generalized north-of-river rail corridor through Lawrence; context, not an alignment."
-    ],
-    "sources": [
-      "City frame context"
-    ]
-  },
-  {
-    "id": "lawrence-loop",
-    "layer": "trails",
-    "tier": "context",
-    "name": "Lawrence Loop / trail context",
-    "short": "Loop",
-    "depthM": 0,
-    "path": [
-      [
-        -95.28,
-        38.96
-      ],
-      [
-        -95.24,
-        38.945
-      ],
-      [
-        -95.18,
-        38.955
-      ],
-      [
-        -95.12,
-        38.98
-      ],
-      [
-        -95.16,
-        39.01
-      ],
-      [
-        -95.25,
-        39.03
-      ],
-      [
-        -95.32,
-        39.01
-      ],
-      [
-        -95.35,
-        38.99
-      ],
-      [
-        -95.32,
-        38.975
-      ]
-    ],
-    "facts": [
-      "Schematic Lawrence Loop / trail-system context; not a route survey."
-    ],
-    "sources": [
-      "City frame context"
-    ]
-  }
-];
-export const NODES = [
-  {
-    "id": "ku-mount-oread",
-    "name": "University of Kansas / Mount Oread",
-    "layer": "sites",
-    "tier": "official",
-    "kind": "university",
-    "lon": -95.243,
-    "lat": 38.96,
-    "depthM": 0,
-    "facts": [
-      "University of Kansas hill/Mount Oread anchor for the Lawrence frame.",
-      "Coordinates are the campus/Mount Oread context point, not a building entrance."
-    ],
-    "sources": [
-      "Public university/campus references"
-    ]
-  },
-  {
-    "id": "rock-chalk-park",
-    "name": "Rock Chalk Park",
-    "layer": "sites",
-    "tier": "community",
-    "kind": "park",
-    "lon": -95.3300888,
-    "lat": 38.980756,
-    "depthM": 0,
-    "facts": [
-      "KU athletics complex in west Lawrence; the frame's 2014-era cache-trail country."
-    ],
-    "sources": [
-      "Explore Lawrence listing — Rock Chalk Park"
-    ]
-  },
-  {
-    "id": "lawrence-municipal-airport",
-    "name": "Lawrence Municipal Airport (KLWC)",
-    "layer": "aviation",
-    "tier": "official",
-    "kind": "airport",
-    "lon": -95.216577,
-    "lat": 39.011152,
-    "depthM": 0,
-    "facts": [
-      "Lawrence Municipal Airport, northeast of the city."
-    ],
-    "sources": [
-      "Public airport reference (AirportsBase listing)"
-    ]
-  }
-];
+export const CORRIDORS = [];
+export const NODES = [];
 export const VIEWS = [
   {
     "id": "overview",
@@ -457,14 +202,14 @@ export const VIEWS = [
     "id": "waterfront",
     "label": "VIEW · WATERFRONT",
     "position": [
-      0.7615735412210443,
+      0.3046939301812659,
       10,
-      0.61226
+      0.39184639999999166
     ],
     "target": [
-      0.7615735412210443,
+      0.3046939301812659,
       0,
-      0.61226
+      0.39184639999999166
     ]
   }
 ];

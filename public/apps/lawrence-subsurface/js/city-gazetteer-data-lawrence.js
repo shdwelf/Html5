@@ -10,23 +10,23 @@
  */
 
 export const GAZ_META = {
-  "generated": "2026-10-07",
-  "source": "City frames are schematic context. GNIS rows are official USGS records where a FEATURE_ID is present; geocaches are community-source records and are never marked as GNIS features. Coordinates without a GNIS id are curated from the public sources named in each row note.",
+  "generated": "2026-10-08",
+  "source": "City frames are schematic context. Rows with VERIFIED=1 carry a numeric USGS GNIS FEATURE_ID; non-GNIS context coordinates remain VERIFIED=0 and cite their stated source in the row note. Geocaches are a separate community tier, always VERIFIED=0 and never GNIS features; only caches with a public posted coordinate are bundled, with others supplied by local GPX.",
   "crs": "EPSG:4326",
   "bbox": {
-    "lon0": -95.45,
-    "lat0": 38.85,
-    "lon1": -95.05,
-    "lat1": 39.1
+    "lon0": -95.31,
+    "lat0": 38.88,
+    "lon1": -95.15,
+    "lat1": 39.04
   },
-  "rowCount": 8,
-  "verified": 2,
-  "unverified": 6,
+  "rowCount": 5,
+  "verified": 5,
+  "unverified": 0,
   "license": "GNIS/USBGN factual data: USGS, US government work (17 USC 105). Geocaches: public Geocaching.com listing text, community tier. City landmarks: curated public-source coordinates.",
   "regen": "node scripts/build-city-subsurface.mjs"
 };
 
-export const GAZ_CLASSES = ["Airport","Park","Populated Place","Reservoir","Stream","Summit"];
+export const GAZ_CLASSES = ["Lake","Populated Place","Stream"];
 
 /** [name, fclass, ftt, county, lat, lon, elevM|null, gnisId|null, verified 0|1, note|null] */
-export const GAZ_ROWS = [["Lawrence","Populated Place","pop.ppl","Douglas",38.97167,-95.23525,267,null,0,"City coordinate from public city reference; GNIS FEATURE_ID not claimed."],["City of Eudora","Populated Place","pop.ppl","Douglas",38.93444170978187,-95.09569220684627,null,"2394705",1,"USGS GNIS incorporated place record."],["City of Lecompton","Populated Place","pop.ppl","Douglas",39.035827543664624,-95.3929612319216,null,"2395667",1,"USGS GNIS incorporated place record."],["Kansas River at Lawrence","Stream","hydro.stream","Douglas",38.9732777777778,-95.2321111111111,244,null,0,"USGS Water Data monitoring location USGS-06891080; official gauge coordinate, not a GNIS feature."],["Mount Oread","Summit","phys.summit","Douglas",38.959902,-95.253199,310,null,0,"Campus hill summit context; elevation from public topographic reference."],["Rock Chalk Park","Park","admin.park","Douglas",38.980756,-95.3300888,null,null,0,"Explore Lawrence listing coordinate."],["Lawrence Municipal Airport","Airport","manmade.airport","Douglas",39.011152,-95.216577,null,null,0,"Public airport reference coordinate (KLWC)."],["Clinton Lake","Reservoir","hydro.reservoir","Douglas",38.9167,-95.3833,265,null,0,"Clinton Lake southwest of Lawrence; curated reservoir context."]];
+export const GAZ_ROWS = [["Lawrence","Populated Place","pop.place","Douglas",38.971675824003874,-95.23525769703389,null,"479145",1,"USGS GNIS MapServer layer 3, gaz_id=479145. The record returns two points; this is the central in-frame point, not a boundary or street-address geocode."],["Kansas River","Stream","hydro.stream","Douglas",39.005563828421565,-95.24748000410972,null,"485184",1,"USGS GNIS MapServer layer 6, gaz_id=485184. The stream geometry is multipoint; this returned Douglas County point is not a river line."],["Wakarusa River","Stream","hydro.stream","Douglas",38.91112151269533,-95.25581379717137,null,"482756",1,"USGS GNIS MapServer layer 6, gaz_id=482756. Returned Douglas County point in frame; not a channel trace."],["Lake View Lake","Lake","hydro.lake","Douglas",39.01223022700798,-95.30164751922348,null,"478818",1,"USGS GNIS MapServer layer 7, gaz_id=478818. Official point near the frame edge; not a shoreline polygon."],["Potter Lake","Lake","hydro.lake","Douglas",38.96032697899164,-95.24873739757247,null,"479154",1,"USGS GNIS MapServer layer 7, gaz_id=479154. Official point record; not a shoreline polygon."]];

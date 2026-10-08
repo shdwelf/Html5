@@ -16,7 +16,8 @@ export const CITY = {
   "county": "Fulton",
   "baseElevationM": 300,
   "roughnessM": 28,
-  "hasWater": false
+  "hasWater": false,
+  "requiresDem": false
 };
 
 export const BBOX = {"lon0":-84.55,"lat0":33.6,"lon1":-84.25,"lat1":33.85};

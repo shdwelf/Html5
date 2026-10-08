@@ -2,6 +2,7 @@
 /**
  * Build the parametric CITY SUBSURFACE apps from resources/city-subsurface/cities.json.
  *
+ *   node scripts/build-city-dem-data.mjs                   # checked-in sparse DEM grids
  *   node scripts/build-city-subsurface.mjs                 # all cities
  *   node scripts/build-city-subsurface.mjs --city lawrence  # one city
  *
@@ -124,6 +125,7 @@ export const CITY = ${JSON.stringify({
     baseElevationM: city.baseElevationM,
     roughnessM: city.roughnessM,
     hasWater: city.hasWater,
+    requiresDem: city.demRequired === true,
   }, null, 2)};
 
 export const BBOX = ${JSON.stringify(city.bbox)};

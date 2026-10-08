@@ -10,17 +10,18 @@
 export const CITY = {
   "id": "kansascity",
   "title": "KANSAS CITY SUBSURFACE 4Dwm",
-  "subtitle": "Missouri River · Kansas River · Downtown / Crossroads — Jackson County, Missouri",
+  "subtitle": "Missouri River · Kansas River · Kansas City metro — Missouri / Kansas",
   "state": "MO",
   "country": "United States",
   "county": "Jackson",
   "baseElevationM": 280,
   "roughnessM": 24,
-  "hasWater": false
+  "hasWater": false,
+  "requiresDem": false
 };
 
-export const BBOX = {"lon0":-94.75,"lat0":38.95,"lon1":-94.45,"lat1":39.15};
-export const CENTER = {"lon":-94.58,"lat":39.05};
+export const BBOX = {"lon0":-94.74,"lat0":38.97,"lon1":-94.46,"lat1":39.23};
+export const CENTER = {"lon":-94.57857413444238,"lat":39.09973358320847};
 export const KM_PER_DEG_LAT = 111.32;
 export const UNITS_PER_KM = 0.1;
 export const COAST = [];
@@ -189,214 +190,8 @@ export const TIER_COLOR = {
   "context": "#ff6ec7",
   "memory": "#ff6ec7"
 };
-export const CORRIDORS = [
-  {
-    "id": "missouri-river",
-    "layer": "water",
-    "tier": "context",
-    "name": "Missouri River (generalized reach)",
-    "short": "Missouri R",
-    "depthM": 0,
-    "path": [
-      [
-        -94.75,
-        39.1
-      ],
-      [
-        -94.7,
-        39.09
-      ],
-      [
-        -94.64,
-        39.08
-      ],
-      [
-        -94.58,
-        39.075
-      ],
-      [
-        -94.52,
-        39.07
-      ],
-      [
-        -94.45,
-        39.06
-      ]
-    ],
-    "facts": [
-      "Generalized Missouri River reach along the north edge of downtown; schematic only."
-    ],
-    "sources": [
-      "City frame context"
-    ]
-  },
-  {
-    "id": "kansas-river",
-    "layer": "water",
-    "tier": "context",
-    "name": "Kansas River (generalized reach)",
-    "short": "Kansas R",
-    "depthM": 0,
-    "path": [
-      [
-        -94.75,
-        39.02
-      ],
-      [
-        -94.7,
-        39.03
-      ],
-      [
-        -94.66,
-        39.04
-      ],
-      [
-        -94.62,
-        39.045
-      ],
-      [
-        -94.58,
-        39.05
-      ],
-      [
-        -94.54,
-        39.055
-      ],
-      [
-        -94.45,
-        39.06
-      ]
-    ],
-    "facts": [
-      "Generalized Kansas River reach toward the Missouri confluence; schematic only."
-    ],
-    "sources": [
-      "City frame context"
-    ]
-  },
-  {
-    "id": "kc-rail",
-    "layer": "rail",
-    "tier": "context",
-    "name": "Kansas City rail corridor (BNSF/UP context)",
-    "short": "Rail",
-    "depthM": 0,
-    "path": [
-      [
-        -94.75,
-        39.09
-      ],
-      [
-        -94.68,
-        39.085
-      ],
-      [
-        -94.6,
-        39.08
-      ],
-      [
-        -94.52,
-        39.075
-      ],
-      [
-        -94.45,
-        39.07
-      ]
-    ],
-    "facts": [
-      "Generalized rail corridor through Kansas City; context, not an alignment."
-    ],
-    "sources": [
-      "City frame context"
-    ]
-  },
-  {
-    "id": "kc-streetcar",
-    "layer": "underground",
-    "tier": "context",
-    "name": "Downtown streetcar / tunnel context",
-    "short": "Transit",
-    "depthM": -12,
-    "path": [
-      [
-        -94.62,
-        39.09
-      ],
-      [
-        -94.59,
-        39.085
-      ],
-      [
-        -94.57,
-        39.08
-      ],
-      [
-        -94.55,
-        39.075
-      ],
-      [
-        -94.52,
-        39.07
-      ]
-    ],
-    "facts": [
-      "Schematic downtown transit/tunnel context; depths are class-typical, not measured cover."
-    ],
-    "sources": [
-      "City frame context"
-    ]
-  }
-];
-export const NODES = [
-  {
-    "id": "union-station",
-    "name": "Union Station Kansas City",
-    "layer": "sites",
-    "tier": "official",
-    "kind": "building",
-    "lon": -94.5856,
-    "lat": 39.0847,
-    "depthM": 0,
-    "facts": [
-      "Downtown rail station and science center anchor."
-    ],
-    "sources": [
-      "Public station reference"
-    ]
-  },
-  {
-    "id": "kansas-city-public-library",
-    "name": "Kansas City Public Library — Central Library",
-    "layer": "sites",
-    "tier": "community",
-    "kind": "building",
-    "lon": -94.5839,
-    "lat": 39.1027,
-    "depthM": 0,
-    "facts": [
-      "Central Library at 10th & Baltimore, downtown north edge."
-    ],
-    "sources": [
-      "Public library coordinate reference"
-    ]
-  },
-  {
-    "id": "liberty-memorial",
-    "name": "National WWI Museum / Liberty Memorial",
-    "layer": "sites",
-    "tier": "official",
-    "kind": "park",
-    "lon": -94.5861,
-    "lat": 39.0997,
-    "depthM": 0,
-    "facts": [
-      "South of Union Station, above the Missouri River valley."
-    ],
-    "sources": [
-      "Public museum reference"
-    ]
-  }
-];
+export const CORRIDORS = [];
+export const NODES = [];
 export const VIEWS = [
   {
     "id": "overview",
@@ -444,14 +239,14 @@ export const VIEWS = [
     "id": "waterfront",
     "label": "VIEW · WATERFRONT",
     "position": [
-      0.5705747529900672,
+      0.5321612449073572,
       10,
-      0.48980799999998953
+      0.6367503999999952
     ],
     "target": [
-      0.5705747529900672,
+      0.5321612449073572,
       0,
-      0.48980799999998953
+      0.6367503999999952
     ]
   }
 ];

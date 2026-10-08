@@ -10,8 +10,8 @@
  */
 
 export const GAZ_META = {
-  "generated": "2026-10-07",
-  "source": "City frames are schematic context. GNIS rows are official USGS records where a FEATURE_ID is present; geocaches are community-source records and are never marked as GNIS features. Coordinates without a GNIS id are curated from the public sources named in each row note.",
+  "generated": "2026-10-08",
+  "source": "City frames are schematic context. Rows with VERIFIED=1 carry a numeric USGS GNIS FEATURE_ID; non-GNIS context coordinates remain VERIFIED=0 and cite their stated source in the row note. Geocaches are a separate community tier, always VERIFIED=0 and never GNIS features; only caches with a public posted coordinate are bundled, with others supplied by local GPX.",
   "crs": "EPSG:4326",
   "bbox": {
     "lon0": -79.55,
