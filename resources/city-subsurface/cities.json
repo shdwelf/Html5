@@ -1,0 +1,608 @@
+{
+  "generated": "2026-10-08",
+  "sourceNote": "City frames are schematic context. Rows with VERIFIED=1 carry a numeric USGS GNIS FEATURE_ID; non-GNIS context coordinates remain VERIFIED=0 and cite their stated source in the row note. Geocaches are a separate community tier, always VERIFIED=0 and never GNIS features; only caches with a public posted coordinate are bundled, with others supplied by local GPX.",
+  "cities": {
+    "lawrence": {
+        "title": "LAWRENCE SUBSURFACE 4Dwm",
+        "subtitle": "Kansas River · Wakarusa River · Douglas County, Kansas",
+        "gazTitle": "USGS GNIS · GEOCACHES",
+        "gazNote": "Five official USGS GNIS point records with FEATURE_IDs; stream geometry is multipoint, not a line. User GPX geocaches remain separate rec.geocache rows and are never bundled.",
+        "state": "KS",
+        "country": "United States",
+        "county": "Douglas",
+        "bbox": {
+          "lon0": -95.31,
+          "lat0": 38.88,
+          "lon1": -95.15,
+          "lat1": 39.04
+        },
+        "center": {
+          "lon": -95.23,
+          "lat": 38.96
+        },
+        "baseElevationM": 255,
+        "roughnessM": 22,
+        "hasWater": false,
+        "coast": [],
+        "relief": [],
+        "corridors": [],
+        "nodes": [],
+        "gazetteerRows": [
+          [
+            "Lawrence",
+            "Populated Place",
+            "pop.place",
+            "Douglas",
+            38.971675824003874,
+            -95.23525769703389,
+            null,
+            "479145",
+            1,
+            "USGS GNIS MapServer layer 3, gaz_id=479145. The record returns two points; this is the central in-frame point, not a boundary or street-address geocode."
+          ],
+          [
+            "Kansas River",
+            "Stream",
+            "hydro.stream",
+            "Douglas",
+            39.005563828421565,
+            -95.24748000410972,
+            null,
+            "485184",
+            1,
+            "USGS GNIS MapServer layer 6, gaz_id=485184. The stream geometry is multipoint; this returned Douglas County point is not a river line."
+          ],
+          [
+            "Wakarusa River",
+            "Stream",
+            "hydro.stream",
+            "Douglas",
+            38.91112151269533,
+            -95.25581379717137,
+            null,
+            "482756",
+            1,
+            "USGS GNIS MapServer layer 6, gaz_id=482756. Returned Douglas County point in frame; not a channel trace."
+          ],
+          [
+            "Lake View Lake",
+            "Lake",
+            "hydro.lake",
+            "Douglas",
+            39.01223022700798,
+            -95.30164751922348,
+            null,
+            "478818",
+            1,
+            "USGS GNIS MapServer layer 7, gaz_id=478818. Official point near the frame edge; not a shoreline polygon."
+          ],
+          [
+            "Potter Lake",
+            "Lake",
+            "hydro.lake",
+            "Douglas",
+            38.96032697899164,
+            -95.24873739757247,
+            null,
+            "479154",
+            1,
+            "USGS GNIS MapServer layer 7, gaz_id=479154. Official point record; not a shoreline polygon."
+          ]
+        ],
+        "demRequired": true
+      },
+    "atlanta": {
+      "title": "ATLANTA SUBSURFACE 4Dwm",
+      "subtitle": "Chattahoochee · South River · Midtown / Downtown — Fulton County, Georgia",
+      "gazTitle": "USGS GNIS + GEOCACHES",
+      "gazNote": "USGS GNIS rows where a FEATURE_ID is present; city landmarks are curated context. Geocaches plot only when a public source prints the posted coordinates.",
+      "state": "GA",
+      "country": "United States",
+      "county": "Fulton",
+      "bbox": { "lon0": -84.55, "lat0": 33.60, "lon1": -84.25, "lat1": 33.85 },
+      "center": { "lon": -84.39, "lat": 33.75 },
+      "baseElevationM": 300,
+      "roughnessM": 28,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        { "name": "Chattahoochee River valley", "lon": -84.45, "lat": 33.78, "rx": 0.12, "ry": 0.28, "amp": -65, "rot": 0.25 },
+        { "name": "South River valley", "lon": -84.32, "lat": 33.72, "rx": 0.12, "ry": 0.22, "amp": -40, "rot": -0.2 },
+        { "name": "Midtown / Downtown rise", "lon": -84.39, "lat": 33.76, "rx": 0.16, "ry": 0.12, "amp": 55, "rot": 0 },
+        { "name": "Piedmont ridge context", "lon": -84.37, "lat": 33.79, "rx": 0.18, "ry": 0.12, "amp": 45, "rot": 0.1 }
+      ],
+      "corridors": [
+        {
+          "id": "chattahoochee",
+          "layer": "water",
+          "tier": "context",
+          "name": "Chattahoochee River (generalized reach)",
+          "short": "Chattahoochee",
+          "depthM": 0,
+          "path": [[-84.55, 33.82], [-84.50, 33.80], [-84.46, 33.78], [-84.42, 33.76], [-84.38, 33.73], [-84.34, 33.70], [-84.30, 33.68], [-84.25, 33.66]],
+          "facts": ["Generalized northwest-to-southeast river reach; schematic, not a centerline."],
+          "sources": ["City frame context"]
+        },
+        {
+          "id": "south-river",
+          "layer": "water",
+          "tier": "context",
+          "name": "South River (generalized reach)",
+          "short": "South R",
+          "depthM": 0,
+          "path": [[-84.25, 33.65], [-84.29, 33.69], [-84.32, 33.72], [-84.35, 33.75], [-84.39, 33.78], [-84.43, 33.81]],
+          "facts": ["Generalized South River reach east/southeast of downtown; schematic only."],
+          "sources": ["City frame context"]
+        },
+        {
+          "id": "atlanta-rail",
+          "layer": "rail",
+          "tier": "context",
+          "name": "Atlanta rail corridor (CSX/Norfolk Southern context)",
+          "short": "Rail",
+          "depthM": 0,
+          "path": [[-84.55, 33.76], [-84.48, 33.755], [-84.41, 33.75], [-84.34, 33.745], [-84.25, 33.74]],
+          "facts": ["Generalized rail corridor through downtown Atlanta; context, not an alignment."],
+          "sources": ["City frame context"]
+        },
+        {
+          "id": "marta-context",
+          "layer": "underground",
+          "tier": "context",
+          "name": "MARTA rail tunnel context",
+          "short": "MARTA",
+          "depthM": -18,
+          "path": [[-84.42, 33.75], [-84.40, 33.755], [-84.39, 33.76], [-84.38, 33.765], [-84.37, 33.77]],
+          "facts": ["Schematic downtown rail-tunnel context; depths are class-typical, not measured cover."],
+          "sources": ["City frame context"]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "georgia-tech",
+          "name": "Georgia Institute of Technology",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "university",
+          "lon": -84.3963,
+          "lat": 33.7756,
+          "depthM": 0,
+          "facts": ["Georgia Tech campus anchor northwest of downtown."],
+          "sources": ["Public university reference"]
+        },
+        {
+          "id": "centennial-park",
+          "name": "Centennial Olympic Park",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "park",
+          "lon": -84.3883,
+          "lat": 33.7655,
+          "depthM": 0,
+          "facts": ["Downtown Olympic legacy park, built for the 1996 Games."],
+          "sources": ["Public park reference"]
+        },
+        {
+          "id": "hartsfield-jackson",
+          "name": "Hartsfield-Jackson Atlanta International Airport (ATL)",
+          "layer": "aviation",
+          "tier": "official",
+          "kind": "airport",
+          "lon": -84.4277,
+          "lat": 33.6407,
+          "depthM": 0,
+          "facts": ["Atlanta's primary commercial airport, south of the city frame."],
+          "sources": ["Public airport reference"]
+        }
+      ],
+      "gazetteerRows": [
+        ["Atlanta", "Populated Place", "pop.ppl", "Fulton", 33.7501275, -84.3885209, 320, null, 0, "City coordinate from public city reference; GNIS FEATURE_ID not claimed."],
+        ["Georgia Institute of Technology", "School", "manmade.school", "Fulton", 33.7756, -84.3963, null, null, 0, "Public university reference coordinate."],
+        ["Centennial Olympic Park", "Park", "admin.park", "Fulton", 33.7655, -84.3883, null, null, 0, "Public park reference coordinate."],
+        ["Hartsfield-Jackson Atlanta International Airport", "Airport", "manmade.airport", "Fulton", 33.6407, -84.4277, 313, null, 0, "Public airport reference coordinate (ATL)."],
+        ["Chattahoochee River", "Stream", "hydro.stream", "Fulton", 33.78, -84.45, null, null, 0, "River reach context; GNIS mouth coordinate not claimed here."],
+        ["South River", "Stream", "hydro.stream", "Fulton", 33.72, -84.32, null, null, 0, "River reach context; GNIS mouth coordinate not claimed here."]
+      ]
+    },
+    "kansascity": {
+        "title": "KANSAS CITY SUBSURFACE 4Dwm",
+        "subtitle": "Missouri River · Kansas River · Kansas City metro — Missouri / Kansas",
+        "gazTitle": "USGS GNIS · GEOCACHES",
+        "gazNote": "Eight official USGS GNIS point records with FEATURE_IDs; stream and lake markers are points, not full geometries. Geocache points are added only by a local GPX import.",
+        "state": "MO",
+        "country": "United States",
+        "county": "Jackson",
+        "bbox": {
+          "lon0": -94.74,
+          "lat0": 38.97,
+          "lon1": -94.46,
+          "lat1": 39.23
+        },
+        "center": {
+          "lon": -94.57857413444238,
+          "lat": 39.09973358320847
+        },
+        "baseElevationM": 280,
+        "roughnessM": 24,
+        "hasWater": false,
+        "coast": [],
+        "relief": [
+          {
+            "name": "Missouri River valley",
+            "lon": -94.6,
+            "lat": 39.08,
+            "rx": 0.2,
+            "ry": 0.1,
+            "amp": -65,
+            "rot": 0.18
+          },
+          {
+            "name": "Kansas River valley",
+            "lon": -94.62,
+            "lat": 39.04,
+            "rx": 0.18,
+            "ry": 0.1,
+            "amp": -50,
+            "rot": -0.12
+          },
+          {
+            "name": "Downtown / Crossroads rise",
+            "lon": -94.58,
+            "lat": 39.08,
+            "rx": 0.14,
+            "ry": 0.1,
+            "amp": 40,
+            "rot": 0
+          },
+          {
+            "name": "Blue River valley",
+            "lon": -94.52,
+            "lat": 39.02,
+            "rx": 0.12,
+            "ry": 0.2,
+            "amp": -35,
+            "rot": 0.08
+          }
+        ],
+        "corridors": [],
+        "nodes": [],
+        "gazetteerRows": [
+          [
+            "Kansas City",
+            "Populated Place",
+            "pop.place",
+            "Multiple counties",
+            39.09973358320847,
+            -94.57857413444238,
+            null,
+            "748198",
+            1,
+            "USGS GNIS MapServer layer 3, gaz_id=748198. The multipoint is repeated across county rows; this is one returned in-frame point, not a municipal boundary."
+          ],
+          [
+            "Missouri River",
+            "Stream",
+            "hydro.stream",
+            "Multiple counties",
+            39.123899988352946,
+            -94.5613514316943,
+            null,
+            "756398",
+            1,
+            "USGS GNIS MapServer layer 6, gaz_id=756398. Returned multipoint point in frame; not a river centerline."
+          ],
+          [
+            "Kansas River",
+            "Stream",
+            "hydro.stream",
+            "Multiple counties",
+            39.11528888426911,
+            -94.6105195446725,
+            null,
+            "485184",
+            1,
+            "USGS GNIS MapServer layer 6, gaz_id=485184. Returned multipoint point in frame; not a river centerline."
+          ],
+          [
+            "Blue River",
+            "Stream",
+            "hydro.stream",
+            "Jackson",
+            39.13001119501138,
+            -94.4707934078643,
+            null,
+            "479576",
+            1,
+            "USGS GNIS MapServer layer 6, gaz_id=479576. Returned point in frame; not a channel trace."
+          ],
+          [
+            "Brush Creek",
+            "Stream",
+            "hydro.stream",
+            "Jackson",
+            39.03890127663636,
+            -94.52051711267606,
+            null,
+            "479243",
+            1,
+            "USGS GNIS MapServer layer 6, gaz_id=479243. Returned point in frame; not a channel trace."
+          ],
+          [
+            "Bales Lake",
+            "Lake",
+            "hydro.lake",
+            "Jackson",
+            39.07997597809511,
+            -94.51446927958591,
+            null,
+            "713599",
+            1,
+            "USGS GNIS MapServer layer 7, gaz_id=713599. Official point record; not a shoreline polygon."
+          ],
+          [
+            "Lake of the Woods",
+            "Lake",
+            "hydro.lake",
+            "Jackson",
+            38.995271424192886,
+            -94.51942061736217,
+            null,
+            "758366",
+            1,
+            "USGS GNIS MapServer layer 7, gaz_id=758366. Official point record; not a shoreline polygon."
+          ],
+          [
+            "Zajic Lake",
+            "Lake",
+            "hydro.lake",
+            "Clay",
+            39.19254200457242,
+            -94.5709122722301,
+            null,
+            "729219",
+            1,
+            "USGS GNIS MapServer layer 7, gaz_id=729219. Official point record; not a shoreline polygon."
+          ]
+        ]
+      },
+    "buffalo": {
+      "title": "BUFFALO SUBSURFACE 4Dwm",
+      "subtitle": "Lake Erie · Niagara River · Erie Canal · Downtown — Erie County, New York",
+      "gazTitle": "USGS GNIS + GEOCACHES",
+      "gazNote": "USGS GNIS rows where a FEATURE_ID is present; geocaches are community-source records. The plotted Buffalo cache is archived and its public description prints the moved coordinates.",
+      "state": "NY",
+      "country": "United States",
+      "county": "Erie",
+      "bbox": { "lon0": -78.98, "lat0": 42.82, "lon1": -78.75, "lat1": 42.96 },
+      "center": { "lon": -78.88, "lat": 42.89 },
+      "baseElevationM": 190,
+      "roughnessM": 18,
+      "hasWater": true,
+      "coast": [[-78.98, 42.88], [-78.94, 42.885], [-78.90, 42.875], [-78.86, 42.865], [-78.82, 42.855], [-78.78, 42.845], [-78.75, 42.84]],
+      "relief": [
+        { "name": "Lake Erie shore", "lon": -78.88, "lat": 42.85, "rx": 0.28, "ry": 0.08, "amp": -25, "rot": 0 },
+        { "name": "Niagara River gorge context", "lon": -78.90, "lat": 42.90, "rx": 0.08, "ry": 0.20, "amp": -55, "rot": 0.08 },
+        { "name": "Downtown / waterfront rise", "lon": -78.88, "lat": 42.89, "rx": 0.14, "ry": 0.08, "amp": 30, "rot": 0 },
+        { "name": "Erie Canal corridor", "lon": -78.86, "lat": 42.90, "rx": 0.20, "ry": 0.06, "amp": -20, "rot": 0.05 }
+      ],
+      "corridors": [
+        {
+          "id": "lake-erie-shore",
+          "layer": "water",
+          "tier": "context",
+          "name": "Lake Erie shoreline (generalized)",
+          "short": "Lake Erie",
+          "depthM": 0,
+          "path": [[-78.98, 42.88], [-78.94, 42.885], [-78.90, 42.875], [-78.86, 42.865], [-78.82, 42.855], [-78.78, 42.845], [-78.75, 42.84]],
+          "facts": ["Generalized Lake Erie shoreline; schematic only."],
+          "sources": ["City frame context"]
+        },
+        {
+          "id": "niagara-river",
+          "layer": "water",
+          "tier": "context",
+          "name": "Niagara River (generalized reach)",
+          "short": "Niagara R",
+          "depthM": 0,
+          "path": [[-78.98, 42.93], [-78.94, 42.92], [-78.91, 42.91], [-78.88, 42.90], [-78.85, 42.89], [-78.82, 42.88], [-78.78, 42.87], [-78.75, 42.86]],
+          "facts": ["Generalized Niagara River reach along the west edge; schematic only."],
+          "sources": ["City frame context"]
+        },
+        {
+          "id": "erie-canal",
+          "layer": "water",
+          "tier": "context",
+          "name": "Erie Canal / Black Rock Canal context",
+          "short": "Erie Canal",
+          "depthM": 0,
+          "path": [[-78.98, 42.91], [-78.93, 42.905], [-78.89, 42.90], [-78.85, 42.895], [-78.80, 42.89], [-78.75, 42.885]],
+          "facts": ["Generalized canal corridor through the waterfront; schematic only."],
+          "sources": ["City frame context"]
+        },
+        {
+          "id": "buffalo-rail",
+          "layer": "rail",
+          "tier": "context",
+          "name": "Buffalo rail corridor (CSX/NS context)",
+          "short": "Rail",
+          "depthM": 0,
+          "path": [[-78.98, 42.90], [-78.93, 42.895], [-78.88, 42.89], [-78.83, 42.885], [-78.78, 42.88], [-78.75, 42.875]],
+          "facts": ["Generalized rail corridor through Buffalo; context, not an alignment."],
+          "sources": ["City frame context"]
+        },
+        {
+          "id": "buffalo-tunnel",
+          "layer": "underground",
+          "tier": "context",
+          "name": "Downtown tunnel / utility context",
+          "short": "Tunnel",
+          "depthM": -15,
+          "path": [[-78.90, 42.89], [-78.88, 42.888], [-78.86, 42.886], [-78.84, 42.884], [-78.82, 42.882]],
+          "facts": ["Schematic downtown tunnel/utility context; depths are class-typical, not measured cover."],
+          "sources": ["City frame context"]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "buffalo-city-hall",
+          "name": "Buffalo City Hall",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -78.8785,
+          "lat": 42.8868,
+          "depthM": 0,
+          "facts": ["Downtown civic anchor near Niagara Square."],
+          "sources": ["Public city reference"]
+        },
+        {
+          "id": "front-park",
+          "name": "Front Park / Buffalo waterfront",
+          "layer": "sites",
+          "tier": "community",
+          "kind": "park",
+          "lon": -78.8988833,
+          "lat": 42.9009167,
+          "depthM": 0,
+          "facts": ["Frederick Law Olmsted park at the Lake Erie waterfront.", "Coordinate is the moved-cache coordinate printed in the public GCQ1T1 description; it is also the park context point here."],
+          "sources": ["Public Geocaching.com cache description (GCQ1T1)"]
+        },
+        {
+          "id": "buffalo-zoo",
+          "name": "Buffalo Zoo",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "park",
+          "lon": -78.889,
+          "lat": 42.945,
+          "depthM": 0,
+          "facts": ["Delaware Park zoo, north of downtown."],
+          "sources": ["Public zoo reference"]
+        }
+      ],
+      "gazetteerRows": [
+        ["Buffalo", "Populated Place", "pop.ppl", "Erie", 42.88645, -78.87837, 191, null, 0, "City coordinate from public city reference; GNIS FEATURE_ID not claimed."],
+        ["Buffalo City Hall", "Building", "manmade.building", "Erie", 42.8868, -78.8785, null, null, 0, "Public city reference coordinate."],
+        ["Front Park", "Park", "admin.park", "Erie", 42.9009167, -78.8988833, null, null, 0, "Park context coordinate; also the moved coordinate printed in the archived GCQ1T1 description."],
+        ["Buffalo Zoo", "Park", "admin.park", "Erie", 42.945, -78.889, null, null, 0, "Public zoo reference coordinate."],
+        ["Lake Erie", "Lake", "hydro.lake", "Erie", 42.85, -78.88, 173, null, 0, "Lake Erie shoreline context; GNIS primary coordinate not claimed here."],
+        ["Niagara River", "Stream", "hydro.stream", "Erie", 42.90, -78.90, null, null, 0, "River reach context; GNIS mouth coordinate not claimed here."],
+        ["Why Not Buffalo? #1 (GCQ1T1)", "Geocache", "rec.geocache", "Erie", 42.9009166667, -78.8988833333, null, null, 0, "GCQ1T1 · archived traditional cache · public description prints N 42 54.055 W 078 53.933 after the 2015 move; community source, not GNIS."]
+      ]
+    },
+    "toronto": {
+      "title": "TORONTO SUBSURFACE 4Dwm",
+      "subtitle": "Lake Ontario · PATH underground · Don Valley — Toronto, Ontario, Canada 🍁",
+      "gazTitle": "CITY GAZETTEER + GEOCACHES",
+      "gazNote": "Canada is outside USGS GNIS, so Toronto rows are a curated city gazetteer with public-source notes. Geocaches plot only when a public source prints the posted coordinates.",
+      "state": "ON",
+      "country": "Canada",
+      "county": "Toronto",
+      "bbox": { "lon0": -79.55, "lat0": 43.60, "lon1": -79.25, "lat1": 43.76 },
+      "center": { "lon": -79.38, "lat": 43.65 },
+      "baseElevationM": 120,
+      "roughnessM": 20,
+      "hasWater": true,
+      "coast": [[-79.55, 43.61], [-79.50, 43.615], [-79.45, 43.62], [-79.40, 43.625], [-79.35, 43.63], [-79.30, 43.635], [-79.25, 43.64]],
+      "relief": [
+        { "name": "Lake Ontario shore", "lon": -79.38, "lat": 43.62, "rx": 0.28, "ry": 0.08, "amp": -30, "rot": 0 },
+        { "name": "Don Valley", "lon": -79.35, "lat": 43.70, "rx": 0.10, "ry": 0.22, "amp": -45, "rot": 0.12 },
+        { "name": "Downtown ridge context", "lon": -79.38, "lat": 43.65, "rx": 0.16, "ry": 0.10, "amp": 25, "rot": 0 },
+        { "name": "Toronto Islands / harbour", "lon": -79.38, "lat": 43.61, "rx": 0.14, "ry": 0.06, "amp": -18, "rot": 0 }
+      ],
+      "corridors": [
+        {
+          "id": "lake-ontario-shore",
+          "layer": "water",
+          "tier": "context",
+          "name": "Lake Ontario shoreline (generalized)",
+          "short": "Lake Ontario",
+          "depthM": 0,
+          "path": [[-79.55, 43.61], [-79.50, 43.615], [-79.45, 43.62], [-79.40, 43.625], [-79.35, 43.63], [-79.30, 43.635], [-79.25, 43.64]],
+          "facts": ["Generalized Lake Ontario shoreline; schematic only."],
+          "sources": ["City frame context"]
+        },
+        {
+          "id": "don-river",
+          "layer": "water",
+          "tier": "context",
+          "name": "Don River (generalized reach)",
+          "short": "Don R",
+          "depthM": 0,
+          "path": [[-79.25, 43.64], [-79.30, 43.66], [-79.34, 43.68], [-79.36, 43.70], [-79.38, 43.72], [-79.40, 43.74]],
+          "facts": ["Generalized Don River reach into the harbour; schematic only."],
+          "sources": ["City frame context"]
+        },
+        {
+          "id": "toronto-path",
+          "layer": "underground",
+          "tier": "official",
+          "name": "PATH underground walkway (generalized spine)",
+          "short": "PATH",
+          "depthM": -12,
+          "path": [[-79.45, 43.645], [-79.42, 43.648], [-79.39, 43.65], [-79.38, 43.653], [-79.37, 43.66], [-79.35, 43.665]],
+          "facts": ["Generalized PATH spine from Union Station / waterfront toward the financial district.", "The City of Toronto describes PATH as a mostly underground pedestrian network of more than 30 km; this line is schematic, not a tunnel survey."],
+          "sources": ["City of Toronto — PATH, Toronto's Downtown Pedestrian Walkway"]
+        },
+        {
+          "id": "toronto-rail",
+          "layer": "rail",
+          "tier": "context",
+          "name": "Toronto rail corridor (GO/Union Station context)",
+          "short": "Rail",
+          "depthM": 0,
+          "path": [[-79.55, 43.65], [-79.50, 43.648], [-79.45, 43.646], [-79.40, 43.645], [-79.35, 43.644], [-79.30, 43.643], [-79.25, 43.642]],
+          "facts": ["Generalized rail corridor toward Union Station; context, not an alignment."],
+          "sources": ["City frame context"]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "cn-tower",
+          "name": "CN Tower",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -79.3871,
+          "lat": 43.6426,
+          "depthM": 0,
+          "facts": ["Downtown landmark on the Lake Ontario shore."],
+          "sources": ["Public landmark reference"]
+        },
+        {
+          "id": "union-station-toronto",
+          "name": "Union Station Toronto",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -79.3806,
+          "lat": 43.6453,
+          "depthM": 0,
+          "facts": ["Rail/GO station at the south edge of downtown and the PATH network."],
+          "sources": ["Public station reference"]
+        },
+        {
+          "id": "toronto-islands",
+          "name": "Toronto Islands / harbour",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "park",
+          "lon": -79.38,
+          "lat": 43.62,
+          "depthM": 0,
+          "facts": ["Island parkland across the harbour from downtown."],
+          "sources": ["Public park reference"]
+        }
+      ],
+      "gazetteerRows": [
+        ["Toronto", "Populated Place", "pop.ppl", "Toronto", 43.70643, -79.39864, 161, null, 0, "City coordinate from public city reference; outside USGS GNIS, so no FEATURE_ID is claimed."],
+        ["CN Tower", "Building", "manmade.building", "Toronto", 43.6426, -79.3871, null, null, 0, "Public landmark reference coordinate."],
+        ["Union Station", "Building", "manmade.building", "Toronto", 43.6453, -79.3806, null, null, 0, "Public station reference coordinate."],
+        ["Toronto Islands", "Park", "admin.park", "Toronto", 43.62, -79.38, null, null, 0, "Public park reference coordinate."],
+        ["Lake Ontario", "Lake", "hydro.lake", "Toronto", 43.62, -79.38, 74, null, 0, "Lake Ontario shoreline context; Canadian federal source, not GNIS."],
+        ["Don River", "Stream", "hydro.stream", "Toronto", 43.70, -79.35, null, null, 0, "River reach context; Canadian source, not GNIS."],
+        ["Toronto's First Post Office (GC7HT4Z)", "Geocache", "rec.geocache", "Toronto", 43.65185, -79.37035, null, null, 0, "GC7HT4Z · letterbox hybrid · official Geocaching.com Geocache of the Week (2024-12-04) prints N 43° 39.111′ W 079° 22.221′; community source, not GNIS."]
+      ]
+    }
+  }
+}

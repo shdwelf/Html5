@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0c14" />
+  <meta name="description" content="Design a wireless charging pad and the rechargeable mono Bluetooth speaker it charges: coil inductance from a filament model, coupling, resonant-link efficiency, charge time, thermal and mechanical fit — computed in this tab." />
+  <title>Charge Pad Lab · wireless power for a Ø12.7 mm mono speaker</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./css/validator.css" />
+  <link rel="stylesheet" href="./css/viruslab.css" />
+  <style>
+    .pad-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .kv td, .kv th { padding: 3px 8px; vertical-align: top; }
+    .kv td.n { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+    .ctl { display: grid; grid-template-columns: minmax(150px, 1.1fr) 96px; gap: 4px 8px; align-items: center; margin-bottom: 4px; }
+    .ctl label { font-size: 12px; opacity: .82; }
+    .ctl input { width: 100%; font: inherit; font-variant-numeric: tabular-nums; }
+    .chart { width: 100%; height: 200px; display: block; background: #0a0d16; border: 1px solid #1d2637; border-radius: 4px; }
+    .chart-cap { font-size: 11.5px; opacity: .7; margin: 4px 0 12px; }
+    .flag { display: block; padding: 5px 8px; border-left: 3px solid #333; margin-bottom: 3px; font-size: 13px; }
+    .flag.ok { border-left-color: #3fbf7f; }
+    .flag.no { border-left-color: #e0524d; }
+    .flag.na { border-left-color: #6b7688; opacity: .78; }
+    .flag b { display: inline-block; min-width: 62px; }
+    .flag .ref { display: block; font-size: 11px; opacity: .58; }
+    .stackbar { display: flex; height: 18px; border: 1px solid #26304a; border-radius: 2px; overflow: hidden; margin: 6px 0; }
+    .stackbar i { display: block; height: 100%; }
+    .verdict-hero { font-size: 15px; line-height: 1.5; border-left: 3px solid #d8a24a; padding: 8px 12px; background: #12131a; }
+    .downloads button { margin: 0 6px 6px 0; }
+    .schematic { width: 100%; height: auto; background: #0a0d16; border: 1px solid #1d2637; border-radius: 4px; }
+    .src { font-size: 12px; opacity: .72; }
+    .src li { margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html#grid" aria-label="Back to SITE-K">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-copy">
+          <strong>CHARGE PAD LAB</strong>
+          <small>MAGNETIC POWER LINK · WASM-FREE</small>
+        </span>
+      </a>
+      <div class="header-right">
+        <span class="local-status"><i></i>CLIENT-SIDE ONLY</span>
+        <a class="back-link" href="./index.html#grid" target="_top">SITE-K <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span>04</span><b></b>COIL GEOMETRY · COUPLING · RESONANT LINK · CELL</div>
+        <h1 id="page-title">Charge Pad<br /><em>for a ½" × 2" speaker</em></h1>
+        <p class="hero-copy">
+          A mono Bluetooth speaker <b>0.5 in (12.70 mm) across and 2 in (50.80 mm) tall</b>, plus the pad that
+          recharges it without contacts. Every number below is computed in this tab from the geometry you set:
+          coil inductance from a filament sum over Grover's elliptic-integral solution, coupling from the same
+          filaments, the resonant link solved exactly at the drive frequency, then the rectifier, the CC/CV
+          charge, the thermal rise and whether the parts physically fit in 50.80 mm.
+          The math lives in <code>js/wireless-charge.js</code> and is checked by
+          <code>node tools/verify_wireless_charge.mjs</code>.
+        </p>
+        <div class="verdict-hero" id="verdict">computing…</div>
+      </section>
+
+      <section aria-labelledby="preset-title">
+        <h2 id="preset-title">Three designs, one geometry</h2>
+        <p class="hero-copy">
+          The three presets answer the same brief three ways. <b>As stated (Qi band)</b> takes the dimensions
+          literally and runs the link in the WPC band — and fails, for a reason the frequency chart below makes
+          obvious. <b>Matched micro pair</b> keeps the body and moves the link to 6.78 MHz, which is what actually
+          works at this size. <b>Qi BPP</b> keeps the standard and enlarges the body.
+        </p>
+        <div class="preset-row" id="presets"></div>
+        <div class="pad-grid">
+          <div>
+            <h3>Body &amp; gap</h3>
+            <div id="in-body"></div>
+          </div>
+          <div>
+            <h3>Pad (transmitter) coil</h3>
+            <div id="in-tx"></div>
+          </div>
+          <div>
+            <h3>Speaker (receiver) coil</h3>
+            <div id="in-rx"></div>
+          </div>
+          <div>
+            <h3>Link, cell, audio</h3>
+            <div id="in-link"></div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="coil-title">
+        <h2 id="coil-title">Coils</h2>
+        <p class="hero-copy">
+          Self-inductance is the filament method: every pair of turns is coupled through Grover's closed form for
+          two coaxial circular filaments, and the diagonal uses the round-wire loop formula. Resistance is copper
+          at 40 °C with the skin-effect ratio from the exact Bessel solution, applied per litz strand. The
+          <em>proximity derate</em> multiplies it again for the turn-to-turn proximity effect this model does not
+          solve — set it above 1 and watch the answer move; that is how much of the result is uncertain.
+        </p>
+        <table class="kv" id="coils"></table>
+      </section>
+
+      <section aria-labelledby="link-title">
+        <h2 id="link-title">The link, solved at one frequency</h2>
+        <p class="hero-copy">
+          Both sides tuned to resonance, then the coupled 2×2 solved exactly. The drive voltage is not a
+          fixed 12 V: the tool solves for the voltage that delivers the power the charger asks for, which is what
+          a real transmitter does by walking its input.
+        </p>
+        <table class="kv" id="link"></table>
+        <h3>Where the power goes</h3>
+        <table class="kv" id="budget"></table>
+      </section>
+
+      <section aria-labelledby="chart-title">
+        <h2 id="chart-title">Curves</h2>
+        <canvas class="chart" id="chart-f" width="900" height="200" aria-label="Efficiency and pad coil current against drive frequency"></canvas>
+        <p class="chart-cap" id="cap-f"></p>
+        <canvas class="chart" id="chart-gap" width="900" height="200" aria-label="Coupling and efficiency against coil-to-coil gap"></canvas>
+        <p class="chart-cap" id="cap-gap"></p>
+        <canvas class="chart" id="chart-load" width="900" height="200" aria-label="Efficiency against load resistance"></canvas>
+        <p class="chart-cap" id="cap-load"></p>
+        <canvas class="chart" id="chart-offset" width="900" height="200" aria-label="Coupling against sideways misalignment"></canvas>
+        <p class="chart-cap" id="cap-offset"></p>
+      </section>
+
+      <section aria-labelledby="cell-title">
+        <h2 id="cell-title">Cell: charge and runtime</h2>
+        <div class="pad-grid">
+          <div>
+            <h3>CC/CV charge</h3>
+            <table class="kv" id="charge"></table>
+          </div>
+          <div>
+            <h3>Playback</h3>
+            <table class="kv" id="runtime"></table>
+          </div>
+        </div>
+        <canvas class="chart" id="chart-charge" width="900" height="200" aria-label="Cell voltage and charge current against time"></canvas>
+        <p class="chart-cap">Constant current until the cell terminal voltage reaches the CV knee, then constant
+          voltage with the current falling through the internal resistance. The model is an OCV(SOC) curve plus
+          one resistor — no diffusion tail, no temperature dependence.</p>
+      </section>
+
+      <section aria-labelledby="mech-title">
+        <h2 id="mech-title">Heat, fit and the drawing</h2>
+        <div class="pad-grid">
+          <div>
+            <h3>Thermal</h3>
+            <table class="kv" id="thermal"></table>
+          </div>
+          <div>
+            <h3>Axial stack — does it fit in 2 in?</h3>
+            <div class="stackbar" id="stackbar"></div>
+            <table class="kv" id="fit"></table>
+          </div>
+        </div>
+        <h3>Cross-section</h3>
+        <svg class="schematic" id="drawing" viewBox="0 0 900 300" role="img" aria-label="Dimensioned cross-section of the speaker body on the charging pad"></svg>
+        <h3>Receiver schematic</h3>
+        <svg class="schematic" id="schematic" viewBox="0 0 900 240" role="img" aria-label="Receiver block schematic"></svg>
+      </section>
+
+      <section aria-labelledby="check-title">
+        <h2 id="check-title">Checks</h2>
+        <div id="checks"></div>
+      </section>
+
+      <section aria-labelledby="bom-title">
+        <h2 id="bom-title">Bill of materials and exports</h2>
+        <p class="hero-copy">
+          Parts with a source string are real catalogue entries checked while writing this page — the Ø12 mm
+          receiver coil, the 6.3 µH A11 pad coil, the receiver IC, the amp. The rest are role descriptions:
+          pick the vendor. Everything here downloads from this tab; nothing is uploaded.
+        </p>
+        <table class="kv" id="bom"></table>
+        <div class="downloads">
+          <button type="button" id="dl-csv">BOM · CSV</button>
+          <button type="button" id="dl-netlist">Link · ngspice deck</button>
+          <button type="button" id="dl-scad-body">Speaker body · OpenSCAD</button>
+          <button type="button" id="dl-scad-pad">Pad · OpenSCAD</button>
+          <button type="button" id="dl-stl-body">Speaker body · STL</button>
+          <button type="button" id="dl-stl-pad">Pad · STL</button>
+          <button type="button" id="dl-report">Full report · text</button>
+        </div>
+        <table class="kv" id="solid"></table>
+      </section>
+
+      <section aria-labelledby="notes-title">
+        <h2 id="notes-title">What this page does and does not check</h2>
+        <ul class="notes">
+          <li><b>Checked here:</b> filament inductance against a brute-force Neumann double integral (they agree
+            to ~1e-13 relative), the link solve against the closed-form optimum-load efficiency, the rectifier
+            chain against the link's own power (they must be equal), CC/CV energy in vs stored + heat, and the
+            generated solids against the analytic volume of the profile they were lathed from. Run
+            <code>node tools/verify_wireless_charge.mjs</code>.</li>
+          <li><b>Not modelled:</b> ferrite field shaping (one measured multiplier, <code>ferriteFactor</code>),
+            turn-to-turn proximity effect (a derate you set), FOD and ASK communication margin, coil
+            self-resonance, and the driver's acoustics. A shipping product needs a network analyser on the real
+            coils and an anechoic measurement of the real driver.</li>
+          <li><b>The honest headline:</b> a Ø12 mm receiver cannot meet the WPC receiver-coil requirement
+            (Q ≥ 77) with the resistance a 12 mm winding actually has, and a Qi-band link between coils this
+            small runs at a few percent efficiency with amps of coil current. The design that works at this
+            diameter is a matched pair on a resonant link outside the Qi band — which means no WPC certification
+            and an FCC Part 18 filing instead of riding the Qi ecosystem.</li>
+          <li><b>Sources for the limits and parts:</b>
+            <ul class="src">
+              <li>WPC Qi band 110–205 kHz — ST, “Wireless Charging in Consumer Applications”; TDK Qi coil portfolio.</li>
+              <li>Receiver coil Q ≥ 77, Cs = 1/((2π·f<sub>s</sub>)²·Ls′), 25 V capacitors, X7R-vs-NP0 heating — TI <code>bq5105xB</code> datasheet and TI E2E guidance.</li>
+              <li>Typical WPC coupling 0.5–0.7, small-coil misalignment sensitivity, A11 ≈ 50 mm / 6.3 µH — TI SLYT570.</li>
+              <li>TDK <code>WR121210-27M8-ID</code> Ø12.0 × 0.34 mm, 8.32 µH at 100 kHz, 0.95–0.98 Ω DCR — Digi-Key 445-174577-ND.</li>
+              <li>TDK <code>WT505090-10F2-A11-G1</code> Ø51.4 mm, 6.3 µH at 100 kHz, 60 mΩ; Litz DCR 20–100 mΩ — TDK / NXP AN4866.</li>
+              <li>ADI <code>MAX98357A</code>: 3.2 W into 4 Ω at 5 V, 92 % at 1 W, 2.4 mA quiescent — ADI datasheet.</li>
+              <li>10440 Li-ion: Ø10–10.5 × 44 mm, 300–400 mAh typical.</li>
+              <li>WPT above 9 kHz is an intentional radiator under Part 15 and/or Part 18; Part 15 bars 90–110 kHz (§15.205); 6.78 MHz is ISM with no in-band Part 18 power limit — FCC KDB 680106.</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./js/wireless-charge-lab.js"></script>
+</body>
+</html>

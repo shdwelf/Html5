@@ -48,3 +48,30 @@ git fetch ../sync-outgoing/cyberchef-crow-field-recipes.bundle \
 To let the agent finish this automatically, grant the Arena GitHub app access
 to `shdwelf/Html5-sync-incoming` (GitHub → Settings → Applications →
 Arena → Repository access), then ask it to push and open the PR.
+
+## Retest — 2026-10-08
+
+Re-run from a fresh clone plus this bundle's branch, both channels still refuse
+the write for this integration:
+
+```
+$ git fetch ./cyberchef-crow-field-recipes.bundle \
+      refs/heads/sync/cyberchef-crow-field-recipes:refs/heads/sync/cyberchef-crow-field-recipes
+$ git push origin sync/cyberchef-crow-field-recipes:sync/cyberchef-crow-field-recipes
+remote: Permission to shdwelf/Html5-sync-incoming.git denied to shdwelf.
+fatal: unable to access 'https://github.com/shdwelf/Html5-sync-incoming.git/': The requested URL returned error: 403
+
+$ gh api -X POST repos/shdwelf/Html5-sync-incoming/git/refs \
+      --input - <<< '{"ref":"refs/heads/sync/cyberchef-crow-field-recipes","sha":"d9438294467006eda7179ce058ced49824f2dfd2"}'
+{"message":"Resource not accessible by integration", ... "status":"403"}
+```
+
+The branch does **not** exist in that repository; nothing was partially written
+(ref creation is atomic, and the refusal happens before any object is accepted).
+Read/write asymmetry is unchanged: `gh api repos/shdwelf/Html5-sync-incoming`
+reports `permissions.admin: true` from the app's own perspective, and
+`gh pr list` reads its merged PRs, while every write is refused.
+
+The six Crow/field-cipher recipes are no longer blocked on this push: they are
+merged into `shdwelf/Html5` itself (PR #102, `public/apps/cyberchef/index.html`,
+478 operations) and the sibling repository's copy is unchanged at 441.

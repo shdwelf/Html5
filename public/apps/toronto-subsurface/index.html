@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>TORONTO SUBSURFACE 4Dwm</title>
+  <meta name="description" content="TORONTO SUBSURFACE 4Dwm — Lake Ontario · PATH underground · Don Valley — Toronto, Ontario, Canada 🍁. Schematic city subsurface theater with an offline gazetteer and geocache source tier." />
+  <link rel="stylesheet" href="./css/city-subsurface.css" />
+</head>
+<body data-city="toronto">
+  <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
+  <div id="labels" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div>
+      <h1>TORONTO SUBSURFACE 4Dwm</h1>
+      <p>Lake Ontario · PATH underground · Don Valley — Toronto, Ontario, Canada 🍁 — schematic, not a survey</p>
+    </div>
+    <div class="actions">
+      <select id="viewSelect" aria-label="Jump to view"></select>
+      <button type="button" id="btnXray" aria-pressed="false">X-RAY</button>
+      <button type="button" id="btnWire" aria-pressed="false">WIREFRAME</button>
+      <button type="button" id="btnLabels" aria-pressed="true">LABELS</button>
+      <button type="button" id="btnReset">RESET</button>
+    </div>
+  </header>
+
+  <!-- PIP: HUD + offline gazetteer -------------------------------------- -->
+  <section class="pip" id="pipHud">
+    <div class="pip-head"><h2>HUD · GAZETTEER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <dl class="kv">
+        <dt>camera</dt><dd id="hudCam">—</dd>
+        <dt>target</dt><dd id="hudTarget">—</dd>
+        <dt>cursor</dt><dd id="hudLonLat">—</dd>
+        <dt>ground</dt><dd id="hudElev">—</dd>
+        <dt>layers on</dt><dd id="hudLayers">—</dd>
+        <dt>pickable</dt><dd id="hudObjects">—</dd>
+        <dt>fps</dt><dd id="hudFps">—</dd>
+      </dl>
+      <div class="slider-row">
+        <label for="vertExag">terrain exaggeration <span id="vertExagVal">6×</span></label>
+        <input type="range" id="vertExag" min="1" max="18" step="1" value="6" />
+      </div>
+      <div class="slider-row">
+        <label for="depthExag">depth scale (log) <span id="depthExagVal">14×</span></label>
+        <input type="range" id="depthExag" min="1" max="60" step="1" value="14" />
+      </div>
+      <p class="hint" id="demSource">source · —</p>
+      <p class="hint" id="peer">offline · standalone</p>
+    </div>
+  </section>
+
+  <!-- PIP: layers ------------------------------------------------------- -->
+  <section class="pip" id="pipLayers">
+    <div class="pip-head"><h2>LAYERS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div id="layerList"></div>
+      <p class="hint" style="margin-top:8px">
+        Evidence tiers — <span style="color:#ffb020">official</span> operator/agency fact,
+        <span style="color:#5cd6ff">community</span> well-sourced secondary,
+        <span style="color:#ff6ec7">context</span> schematic only.
+        Geocaches are a separate community source tier, never GNIS features.
+      </p>
+    </div>
+  </section>
+
+  <!-- PIP: gazetteer ----------------------------------------------------- -->
+  <section class="pip" id="pipGaz">
+    <div class="pip-head"><h2>GAZETTEER · CITY GAZETTEER + GEOCACHES</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div class="gaz-controls">
+        <input id="gazQuery" type="search" placeholder="search-name (fuzzy, trigram)…" aria-label="Search place names" autocomplete="off" />
+        <select id="gazFacet" aria-label="Feature type facet"></select>
+      </div>
+      <div class="gaz-classes" id="gazClasses" aria-label="Feature class filters"></div>
+      <div class="gaz-ops">
+        <button type="button" id="gazBox">SEARCH-BOX · CURRENT VIEW</button>
+        <button type="button" id="gazClear">CLEAR</button>
+        <span class="hint" id="gazCaps">—</span>
+      </div>
+      <ol id="gazHits" class="gaz-hits"></ol>
+      <h3>LOCAL GPX → GEOCACHE REGISTER</h3>
+      <p class="hint">
+        Import GPX 1.0/1.1 waypoints from a Pocket Query, GSAK export or Geomate.jr loader set. The file is read in this
+        session only — nothing is uploaded, written back to a device, or kept between visits.
+      </p>
+      <label class="gpx-file-label" for="gpxFile">Choose a GPX file</label>
+      <input id="gpxFile" type="file" accept=".gpx,application/gpx+xml,application/xml,text/xml" />
+      <div class="gaz-ops">
+        <button type="button" id="gpxImport">IMPORT GPX</button>
+        <button type="button" id="gpxExportBag" disabled>PRESERVATION BAG (.ZIP)</button>
+        <button type="button" id="gpxClear" disabled>CLEAR</button>
+      </div>
+      <p class="hint" id="gpxImportStatus" role="status" aria-live="polite">
+        No GPX loaded. Nothing is uploaded or saved between sessions.
+      </p>
+      <p class="hint" style="margin-top:6px">
+        Canada is outside USGS GNIS, so Toronto rows are a curated city gazetteer with public-source notes. Geocaches plot only when a public source prints the posted coordinates.
+      </p>
+    </div>
+  </section>
+
+  <!-- PIP: detail ------------------------------------------------------- -->
+  <section class="pip" id="pipDetail">
+    <div class="pip-head"><h2>DOSSIER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body" id="detailBody"></div>
+  </section>
+
+  <!-- PIP: minimap ------------------------------------------------------ -->
+  <section class="pip" id="pipMap">
+    <div class="pip-head"><h2>PLAN VIEW</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <canvas id="minimap" width="220" height="150" aria-label="Plan view of the city theater"></canvas>
+      <p class="hint" style="margin:6px 0 0">Orthographic plan pass. White wedge is the main camera.</p>
+    </div>
+  </section>
+
+  <footer class="statusbar">
+    <span id="status" aria-live="polite">booting…</span>
+    <span>Generalized corridor accuracy · call 811 before you dig</span>
+  </footer>
+
+  <script src="./webxdc.js"></script>
+  <script type="module" src="./js/city-subsurface.js"></script>
+</body>
+</html>
