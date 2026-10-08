@@ -150,6 +150,17 @@ node tests/20-wallplug.mjs || status=1
 node tests/21-jvmdis.mjs || status=1
 node tests/22-lantronix-lab.mjs || status=1
 
+# The wallplug family: three more generated boards (WiMAX mini-PCIe carrier,
+# Raspberry Pi Zero 2 W wall-socket carrier, HomePlug Green PHY ↔ Ethernet bridge)
+# built by the same design-agnostic emitter from footprints imported out of
+# published KiCad libraries, plus the sourced replacement-parts dataset.
+echo "──────────────────────────────────────────────"
+for design in plc-bridge wimax-cpe pi-wall-socket; do
+  node tools/build-wallplug-eagle.mjs --design="$design" --check || status=1
+done
+node tests/23-variants.mjs || status=1
+node tests/24-substitutes.mjs || status=1
+
 echo "──────────────────────────────────────────────"
 [ "$status" -eq 0 ] && echo "all suites passed" || echo "FAILURES — see above"
 exit "$status"

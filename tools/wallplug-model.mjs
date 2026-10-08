@@ -1074,3 +1074,31 @@ export function pinAbsolute(symName, pinName, inst) {
   const [dx, dy] = rotPt(pin.x, pin.y, inst.rot ?? 'R0');
   return { x: inst.x + dx, y: inst.y + dy, rot: pin.rot ?? 'R0', pin };
 }
+
+/* ------------------------------------------------- design-level metadata */
+
+/** Human title, used by the generator's BOM and library description. */
+export const TITLE = 'xPort Wallplug';
+/** Path of this module, so generated files can say where they came from. */
+export const MODEL_PATH = 'tools/wallplug-model.mjs';
+/** One-line summary, printed in the .sch description. */
+export const DESCRIPTION = 'mains-powered RS-232 ↔ Ethernet adapter around a Lantronix xPort Pro (16 MB flash)';
+/** Cross-reference printed in the sheet title block. */
+export const DOC_REF = 'see docs/lantronix-uclinux-deep-dive-2026-10-08.md';
+
+/** Net → EAGLE class: 1 = mains (own creepage), 2 = power rail, 0 = signal. */
+export const NET_CLASS = {
+  AC_L: 1, AC_L_F: 1, AC_N: 1,
+  '3V3_P': 2, '3V3': 2, GND: 2, CHASSIS: 2,
+};
+
+export const BOM_INTRO = `Fit either the RS-232 front end (U2 + JP1/JP2 + J2/J3) or the RS-485 option
+(U4 + R8/R9/R10 + J5); the module's TTL serial pins are shared. U3 is the
+optional modem-control (RTS/CTS/DTR/DCD) transceiver.`;
+
+export const SAFETY_NOTES = [
+  `Everything in the **mains** zone is at hazardous voltage. The isolation barrier is inside PS1 (3 kV reinforced); the PCB keeps ${BOARD.creepageMm} mm creepage / ${BOARD.clearanceMm} mm clearance between mains and SELV copper, enforced by \`--check\`.`,
+  'Fuse F1 is in the line conductor only; MOV1 sits after the fuse.',
+  'Do not power this board from a non-isolated capacitive dropper supply.',
+  'This is a design study: it has not been certified. Mains products need IEC/EN 62368-1 (or 60950-1) assessment, and the AC/DC module should be a certified part (RECOM RAC03-3.3SK, MEAN WELL IRM-03-3.3) rather than the budget HLK-PM03 if the enclosure is user-accessible.',
+];

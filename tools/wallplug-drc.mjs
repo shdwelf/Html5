@@ -4,12 +4,16 @@
  * tools/build-wallplug-eagle.mjs --check and tests/20-wallplug.mjs) and in the
  * browser (lantronix-lab.html renders the verdicts next to the copper).
  */
-import {
-  BOARD, PACKAGES, SYMBOLS, DEVICESETS, PARTS, NETS, PLACEMENT,
-  SCHEM_PLACEMENT, SHEET, padAbs, courtAbs, symbolBBox, STUB,
-} from './wallplug-model.mjs';
+import * as XPORT from './wallplug-model.mjs';
 
-export function collectPads() {
+/**
+ * Every check takes the design module as its first argument and defaults to the
+ * xPort wallplug, so the browser lab and tests/20 keep calling them with none.
+ */
+const DESTRUCTURE = 'const { BOARD, PACKAGES, SYMBOLS, DEVICESETS, PARTS, NETS, PLACEMENT, SCHEM_PLACEMENT, SHEET, padAbs, courtAbs, symbolBBox, STUB } = D;';
+
+export function collectPads(D = XPORT) {
+  const { PACKAGES, DEVICESETS, PARTS, PLACEMENT, padAbs } = D;
   const out = [];
   for (const part of PARTS) {
     const ds = DEVICESETS[part.set];
@@ -23,7 +27,7 @@ export function collectPads() {
         shape: p.smd
           ? { box: true, hw: (swap ? p.smd.dy : p.smd.dx) / 2, hh: (swap ? p.smd.dx : p.smd.dy) / 2 }
           : { box: false, r: (p.diameter ?? p.drill * 2) / 2 },
-        zone: part.padZones?.[pad.name] ?? part.zone, net: netOf(part.ref, ds, pad.name),
+        zone: part.padZones?.[pad.name] ?? part.zone, net: netOf(part.ref, ds, pad.name, D),
         drill: p.drill,
       });
     }
@@ -31,8 +35,9 @@ export function collectPads() {
   return out;
 }
 
-export function netOf(ref, ds, padName) {
-  const pin = Object.entries(ds.connects).find(([, pad]) => pad === padName)?.[0];
+export function netOf(ref, ds, padName, D = XPORT) {
+  const { NETS } = D;
+  const pin = Object.entries(ds.connects).find(([, pad]) => (Array.isArray(pad) ? pad.includes(padName) : pad === padName))?.[0];
   if (!pin) return null;
   for (const [net, members] of Object.entries(NETS)) {
     if (members.some(([r, p]) => r === ref && p === pin)) return net;
@@ -68,17 +73,17 @@ export function overlap(a, b, gap = 0) {
 }
 
 /** Pairs allowed to overlap (connector overhangs, mounting holes, test points). */
+/** Pairs allowed to overlap: the same part, and board-only mounting holes. */
 const OVERLAY_OK = (a, b) => {
-  const refs = [a.ref, b.ref].sort();
-  if (refs[0] === refs[1]) return true;
-  if (['H1', 'H2', 'H3', 'H4'].includes(a.ref) || ['H1', 'H2', 'H3', 'H4'].includes(b.ref)) return true;
-  return false;
+  if (a.ref === b.ref) return true;
+  return Boolean(a.part?.boardOnly) || Boolean(b.part?.boardOnly);
 };
 
-export function checkGeometry() {
+export function checkGeometry(D = XPORT) {
+  const { BOARD, PACKAGES, DEVICESETS, PARTS, PLACEMENT, courtAbs } = D;
   const errors = [];
   const notes = [];
-  const pads = collectPads();
+  const pads = collectPads(D);
   const placed = PARTS.map((part) => {
     const ds = DEVICESETS[part.set];
     const pkg = PACKAGES[ds.package];
@@ -145,7 +150,8 @@ export function checkGeometry() {
   return { errors, notes, pads, placed, worstCreepage: worst, worstPair };
 }
 
-export function checkSchematicLayout() {
+export function checkSchematicLayout(D = XPORT) {
+  const { DEVICESETS, PARTS, SCHEM_PLACEMENT, SHEET, SYMBOLS, symbolBBox, STUB } = D;
   const errors = [];
   const boxes = [];
   for (const part of PARTS.filter((p) => !p.boardOnly)) {
