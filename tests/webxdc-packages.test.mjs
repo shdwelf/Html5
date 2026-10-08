@@ -255,6 +255,18 @@ test("Headline Harry archive boots the js-dos v8 API with the complete engine", 
   assert.ok(rom["MAP.EXE"], "headline-harry.jsdos lost MAP.EXE");
 });
 
+test("merged CyberChef archive is current and self-contained", () => {
+  const files = archive("cyberchef.xdc");
+  assert.equal(text(files, "index.html"), source("public/apps/cyberchef/index.html"));
+  assert.match(text(files, "manifest.toml"), /CyberChef Kitchen \(Html5 merged\)/);
+  assert.match(text(files, "manifest.toml"), /478 operations/);
+  assert.match(text(files, "index.html"), /HTML5 · 478 recipes/);
+  for (const id of ["enigmaM4", "secomExact", "virusSigScan", "dosBootSector", "gcwBraille", "primesFactor"]) {
+    assert.match(text(files, "index.html"), new RegExp(`addOp\\(['"]${id}['"]`), `archive is missing ${id}`);
+  }
+  assert.ok(files["webxdc.js"], "cyberchef.xdc is missing the webxdc shim");
+});
+
 test("webxdc-dos archive boots js-dos v8 with complete engine and prebuilt bundles", () => {
   const files = archive("webxdc-dos/dos-binary-loader.xdc");
 
