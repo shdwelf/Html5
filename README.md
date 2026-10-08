@@ -258,9 +258,10 @@ over the dev server's origin rather than `file://`:
 | --- | --- |
 | `/apps/` | Index, with a live secure-context / microphone check |
 | `/apps/anc-studio/` | ANC Studio Ultra — adaptive multi-band FxLMS over AudioWorklet |
-| `/apps/cyberchef/` | CyberChef Renovated Kitchen — 372 recipes, plus file input and save |
+| `/apps/cyberchef/` | CyberChef Renovated Kitchen — 372 operations, safe-source encoding/cipher packs, Ghidra static preflight, file input and save |
 | `/apps/cookbook/` | Crypto Cookbook — 83-section reference, framed by the Cookbook tab |
 | `/apps/cryptofountain-bbs/` | CryptoFountain BBS — P2P microblogging with erasure codes |
+| `/apps/lawrence-subsurface/` | Lawrence Subsurface 4Dwm — sparse USGS 3DEP terrain + verified GNIS Gazetteer, offline XDC |
 
 The BBS shipped with a Cloudflare Insights beacon; it has been stripped so the
 page is fully self-contained and makes no external requests.

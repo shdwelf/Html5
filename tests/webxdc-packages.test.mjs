@@ -114,6 +114,59 @@ test("SoCal Subsurface archive is current and closes its local module graph", ()
   }
 });
 
+test("Lawrence Subsurface XDC is current and closes its local module graph", () => {
+  const files = archive("lawrence-subsurface.xdc");
+  for (const file of [
+    "index.html", "manifest.toml", "webxdc.js", "css/socal-subsurface.css",
+    "js/lawrence-subsurface.js", "js/lawrence-geo.js", "js/lawrence-dem-data.js",
+    "js/lawrence-gazetteer-data.js", "js/socal-gazetteer.js", "js/socal-gazetteer-data.js",
+    "js/socal-geocache-gpx.js", "vendor/three.module.min.js", "vendor/OrbitControls.js",
+  ]) assert.ok(files[file], `lawrence-subsurface.xdc is missing ${file}`);
+
+  assert.match(text(files, "manifest.toml"), /Lawrence Subsurface 4Dwm/);
+  const stagedIndex = text(files, "index.html");
+  assert.ok(stagedIndex.includes('<script src="./webxdc.js"></script>'));
+  assert.equal(stagedIndex.replace('<script src="./webxdc.js"></script>\n  ', ""), source("lawrence-subsurface.html"));
+  const geoSource = source("js/lawrence-geo.js");
+  assert.match(geoSource, /lawrence-dem-grid\.js/);
+  assert.match(geoSource, /catch\s*\{/);
+  if (existsSync(path.join(root, "js/lawrence-dem-grid.js"))) {
+    assert.deepEqual(Buffer.from(files["js/lawrence-dem-grid.js"]), readFileSync(path.join(root, "js/lawrence-dem-grid.js")));
+  } else {
+    assert.equal(files["js/lawrence-dem-grid.js"], undefined, "unbuilt optional DEM must not be copied");
+  }
+
+  for (const archived of Object.keys(files).filter((name) => /^(?:js|css)\//.test(name))) {
+    assert.deepEqual(Buffer.from(files[archived]), readFileSync(path.join(root, archived)), `${archived} in lawrence-subsurface.xdc is stale`);
+  }
+
+  const specifiers = (sourceText) => {
+    const found = [];
+    const patterns = [
+      /\b(?:import\s+(?:[^'";]*?\s+from\s*)?|export\s+[^'";]*?\s+from\s*)["']([^"']+)["']/g,
+      /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g,
+    ];
+    for (const pattern of patterns) for (const match of sourceText.matchAll(pattern)) found.push(match[1]);
+    return found;
+  };
+  const pending = ["js/lawrence-subsurface.js"];
+  const visited = new Set();
+  while (pending.length) {
+    const moduleName = pending.pop();
+    if (visited.has(moduleName)) continue;
+    visited.add(moduleName);
+    assert.ok(files[moduleName], `Lawrence module graph is missing ${moduleName}`);
+    const moduleSource = source(moduleName);
+    for (const specifier of specifiers(moduleSource)) {
+      if (!specifier.startsWith(".")) continue;
+      const dependency = path.posix.normalize(path.posix.join(path.posix.dirname(moduleName), specifier));
+      if (dependency.startsWith("vendor/")) continue;
+      if (existsSync(path.join(root, dependency))) pending.push(dependency);
+      else assert.match(moduleSource, /catch\s*\{/, `optional missing import ${specifier} must be guarded`);
+    }
+  }
+});
+
 test("Sanborn Installations archive carries both complete source applications", () => {
   const named = readFileSync(path.join(root, "sanborn-installations.xdc"));
   const compatibility = readFileSync(path.join(root, "sanborn-suite.xdc"));

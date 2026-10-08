@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>LAWRENCE SUBSURFACE 4Dwm — Kaw Valley / Lawrence, Kansas</title>
+  <meta name="description" content="Offline Three.js terrain and Gazetteer viewer for Lawrence, Kansas, using a minimal USGS 3DEP sample grid, verified GNIS features, layer controls, and private local GPX import." />
+  <link rel="stylesheet" href="./css/socal-subsurface.css" />
+</head>
+<body>
+  <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
+  <div id="labels" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div>
+      <h1>LAWRENCE SUBSURFACE 4Dwm</h1>
+      <p>Kaw Valley · Wakarusa · KU / Mount Oread · USGS 3DEP + GNIS — schematic, not a survey</p>
+    </div>
+    <div class="actions">
+      <select id="viewSelect" aria-label="Jump to view"></select>
+      <button type="button" id="btnXray" aria-pressed="false">X-RAY</button>
+      <button type="button" id="btnWire" aria-pressed="false">WIREFRAME</button>
+      <button type="button" id="btnLabels" aria-pressed="true">LABELS</button>
+      <button type="button" id="btnReset">RESET</button>
+    </div>
+  </header>
+
+  <!-- PiP: status, quick search and scene controls ---------------------- -->
+  <section class="pip" id="pipHud">
+    <div class="pip-head"><h2>HUD · USGS GAZETTEER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <form class="search-row" id="gazetteerSearch" role="search">
+        <label class="sr-only" for="searchBox">Quick search Lawrence GNIS features</label>
+        <input type="search" id="searchBox" placeholder="quick find a Lawrence GNIS name…" autocomplete="off" />
+        <div id="searchResults" aria-live="polite"></div>
+      </form>
+      <dl class="kv">
+        <dt>camera</dt><dd id="hudCam">—</dd>
+        <dt>target</dt><dd id="hudTarget">—</dd>
+        <dt>cursor</dt><dd id="hudLonLat">—</dd>
+        <dt>ground</dt><dd id="hudElev">—</dd>
+        <dt>layers on</dt><dd id="hudLayers">—</dd>
+        <dt>pickable</dt><dd id="hudObjects">—</dd>
+        <dt>fps</dt><dd id="hudFps">—</dd>
+      </dl>
+      <div class="slider-row">
+        <label for="vertExag">terrain exaggeration <span id="vertExagVal">18×</span></label>
+        <input type="range" id="vertExag" min="1" max="32" step="1" value="18" />
+      </div>
+      <div class="slider-row">
+        <label for="depthExag">subsurface depth scale <span id="depthExagVal">2×</span></label>
+        <input type="range" id="depthExag" min="1" max="6" step="0.5" value="2" />
+      </div>
+      <p class="hint" id="demNote">USGS 3DEP sparse sample grid · offline · schematic vertical scale</p>
+    </div>
+  </section>
+
+  <!-- PiP: selectable layers -------------------------------------------- -->
+  <section class="pip" id="pipLayers">
+    <div class="pip-head"><h2>LAYERS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div id="layerList"></div>
+      <p class="hint" style="margin-top:8px">
+        Evidence tiers — <span style="color:#ffb020">official</span> USGS GNIS / 3DEP,
+        <span style="color:#5cd6ff">community</span> cross-checked secondary,
+        <span style="color:#ff6ec7">context</span> interpretive only.
+      </p>
+      <p class="hint">The current seed set is official GNIS only. No street, campus, cache, or site coordinates are fabricated.</p>
+    </div>
+  </section>
+
+  <!-- PiP: Gazetteer, facets, box search, private GPX import -------------- -->
+  <section class="pip" id="pipGaz">
+    <div class="pip-head"><h2>GAZETTEER · USGS GNIS</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body">
+      <div class="gaz-controls">
+        <input id="gazQuery" type="search" placeholder="search-name (fuzzy, trigram)…" aria-label="Search Lawrence GNIS features" autocomplete="off" />
+        <select id="gazFacet" aria-label="Feature type facet"></select>
+      </div>
+      <div class="gaz-classes" id="gazClasses" aria-label="Feature class filters"></div>
+      <div class="gaz-ops">
+        <button type="button" id="gazBox">SEARCH-BOX · CURRENT VIEW</button>
+        <button type="button" id="gazClear">CLEAR</button>
+        <span class="hint" id="gazCaps">—</span>
+      </div>
+      <div class="gaz-gpx">
+        <label class="gaz-file" for="gazGpxFile">LOAD GEOCACHE GPX</label>
+        <input id="gazGpxFile" type="file" accept=".gpx,application/gpx+xml,text/xml,application/xml" />
+        <button type="button" id="gazGpxClear">CLEAR GPX</button>
+        <span class="hint" id="gazGpxStatus" aria-live="polite">no GPX loaded</span>
+      </div>
+      <ol id="gazHits" class="gaz-hits" aria-live="polite"></ol>
+      <p class="hint" style="margin-top:6px">
+        GNIS features are queried offline from the checked-in register. GPX is parsed locally in this browser only (≤20 MiB, ≤5,000 waypoints), not uploaded or saved, and is replaced on reload.
+      </p>
+    </div>
+  </section>
+
+  <!-- PiP: selected feature / terrain dossier --------------------------- -->
+  <section class="pip" id="pipDetail">
+    <div class="pip-head"><h2>DOSSIER</h2><button type="button" data-min aria-label="Minimize">–</button></div>
+    <div class="pip-body" id="detailBody">
+      <p class="hint">Select a GNIS pin or click the ground for its elevation estimate and data provenance.</p>
+    </div>
+  </section>
+
+  <script src="./webxdc.js"></script>
+  <script type="module" src="./js/lawrence-subsurface.js"></script>
+</body>
+</html>

@@ -1,15 +1,15 @@
 # Ghidra + CyberChef recipe card — encoding, obfuscation, encryption, disassembly
 
-> This is a **safe-source** recipe set. Every technique below uses (a) official
-> Ghidra 12.x public documentation, (b) open source plug-ins with published
-> source, (c) CyberChef's published operation list, or (d) a benign binary
-> already checked into the repo (the 1992 Dr Solomon's Win16 NE set under
-> `docs/dr-solomon-ghidra-evidence/`, the AVR corpus under `samples/avr/`, or
-> the JDK/JCreator evidence under `docs/jcreator-ghidra-evidence/`).
+> This is a **safe-source** recipe set. Techniques below use (a) official
+> Ghidra 12.x documentation, (b) public plug-in source and write-ups, (c) the
+> CyberChef operation catalogue, and (d) non-malware in-repo examples such as
+> the AVR bootloader corpus and JDK/JCreator toolchain evidence.
 >
-> **No recipe here is derived from `N17Pro3426/ViewerMade` or any other
-> unvetted malware zoo.** See `docs/geomate-viewermade-source-check-2026-10-07.md`
-> for why that account was rejected as a source.
+> The existing Dr Solomon workflow is cited **only as a hash-gated CI pattern**;
+> that workflow analyzes historical malware samples, and those binaries are
+> not used as recipe inputs, examples, or evidence here. No recipe is derived
+> from `N17Pro3426/ViewerMade` or any other unvetted malware zoo. See
+> `docs/geomate-viewermade-source-check-2026-10-07.md` for that account check.
 
 The audience is someone running `analyzeHeadless` in CI (the same shape as
 `.github/workflows/drsolomon-ghidra.yml`) and reaching for CyberChef as a
@@ -31,9 +31,11 @@ Before any binary ever reaches Ghidra in this repo, the CI job does:
    `Remove source binaries before artifact upload` step in the Dr Solomon
    workflow).
 
-This matches what `docs/dr-solomon-virus-encyclopaedia-ghidra.md` already
-follows for `DrSolomon.iso`. No future Ghidra workflow in this repo should
-skip this gate.
+The hash-gated, temporary-directory, report-only structure is modelled on
+`docs/dr-solomon-virus-encyclopaedia-ghidra.md`; that workflow's historical
+virus inputs are not used as recipe sources or copied into this cookbook. For
+new benign analyses, replace its input URL/hash with a clean, independently
+licensed sample and keep the same containment/cleanup gates.
 
 ---
 
@@ -52,13 +54,14 @@ GHIDRA="$RUNNER_TEMP/ghidra_12.1.4_PUBLIC"
   -import "$f" \
   -analysisTimeoutPerFile 300 \
   -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
-  -postScript EncyclopediaReport.java "$reports_dir" \
+  -postScript JdkToolchainReport.java "$reports_dir" \
   -deleteProject
 ```
 
-This is exactly the loop the Dr Solomon workflow uses over every expanded
-MZ/NE member. The post-script receives the program after auto-analysis, so
-Function, SymbolTable, Listing, and DecompInterface are all wired up.
+This follows the existing repository's `analyzeHeadless` loop shape, while
+using the JDK/JCreator report on a non-malware sample. A `-postScript` runs on
+the imported program after auto-analysis, so Function, SymbolTable, Listing,
+and DecompInterface are available.
 
 ### 2b. Import a raw binary blob with a forced language/loader
 
@@ -81,9 +84,9 @@ if a Geomate.jr region is ever recovered):
 Processor strings Ghidra ships for the small chips that are relevant to
 this repo's ongoing threads:
 
-| chip                              | `-processor` value             |
-| --------------------------------- | ------------------------------ |
-| 8051 / SiLabs C8051 (CP210x peer) | `8051:BE:16:default`           |
+| chip / image                         | `-processor` value             |
+| ------------------------------------ | ------------------------------ |
+| 8051 / SiLabs C8051 raw code image   | `8051:BE:16:default`           |
 | AVR (Optiboot/Micronucleus)       | `avr8:LE:16:atmega328p`        |
 | ARM Cortex-M (bare-metal)         | `ARM:LE:32:Cortex`             |
 | MIPS (GL-iNet MT300N-V2, etc.)    | `MIPS:BE:32:default`           |
@@ -97,7 +100,7 @@ this repo's ongoing threads:
 ```bash
 "$GHIDRA/support/analyzeHeadless" \
   "$RUNNER_TEMP/ghidra-projects" "existing_proj" \
-  -process "WVENCYCL.EXE" \
+  -process "JCreator.exe" \
   -noanalysis \
   -scriptPath tools/ghidra_scripts \
   -postScript MySecondPass.java "$reports_dir"
@@ -117,72 +120,86 @@ replacement).
 
 ```java
 // @category Html5
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import com.google.gson.*;
+import ghidra.app.decompiler.*;
 import ghidra.app.script.GhidraScript;
 import ghidra.program.model.listing.*;
 import ghidra.program.model.symbol.*;
-import ghidra.program.model.mem.Memory;
-import ghidra.app.decompiler.DecompInterface;
-import ghidra.app.decompiler.DecompileResults;
-import java.io.*;
-import java.util.*;
 
 public class TemplateReport extends GhidraScript {
     @Override
     public void run() throws Exception {
-        String outDir = getScriptArgs()[0];
+        String[] args = getScriptArgs();
+        if (args.length != 1) throw new IllegalArgumentException("usage: TemplateReport.java <out-dir>");
+        File outDir = new File(args[0]);
+        if (!outDir.isDirectory() && !outDir.mkdirs()) throw new IOException("cannot create " + outDir);
         Program p = currentProgram;
         String base = p.getName();
-
         Listing listing = p.getListing();
         FunctionManager fm = p.getFunctionManager();
-        SymbolTable st = p.getSymbolTable();
+        SymbolTable symbols = p.getSymbolTable();
 
-        // --- strings ----------------------------------------------------
         int nStrings = 0;
-        PrintWriter sw = new PrintWriter(new File(outDir, base + ".strings.txt"));
-        for (Data d : listing.getDefinedData(true)) {
-            if (d.hasStringValue()) {
-                String v = (String) d.getValue();
-                if (v != null && v.length() >= 4) {
-                    sw.printf("%s\t%s%n", d.getAddressString(false, true), v);
+        try (PrintWriter sw = new PrintWriter(new OutputStreamWriter(
+                new FileOutputStream(new File(outDir, base + ".strings.txt")), StandardCharsets.UTF_8))) {
+            DataIterator data = listing.getDefinedData(true);
+            while (data.hasNext() && !monitor.isCancelled()) {
+                Data d = data.next();
+                if (!d.hasStringValue() || d.getValue() == null) continue;
+                String value = String.valueOf(d.getValue());
+                if (value.length() >= 4) {
+                    sw.printf("%s\t%s%n", d.getAddress().toString(), value);
                     nStrings++;
                 }
             }
         }
-        sw.close();
 
-        // --- imports ----------------------------------------------------
-        Set<String> impLibs = new TreeSet<>();
-        Map<String, TreeSet<String>> impSyms = new TreeMap<>();
-        for (Symbol s : st.getExternalSymbols()) {
-            String lib = s.getParentNamespace().getName();
-            impLibs.add(lib);
-            impSyms.computeIfAbsent(lib, k -> new TreeSet<>()).add(s.getName());
+        Set<String> libraries = new TreeSet<>();
+        Map<String, TreeSet<String>> imports = new TreeMap<>();
+        SymbolIterator external = symbols.getExternalSymbols();
+        while (external.hasNext() && !monitor.isCancelled()) {
+            Symbol symbol = external.next();
+            Namespace parent = symbol.getParentNamespace();
+            String library = parent == null ? "" : parent.getName();
+            libraries.add(library);
+            imports.computeIfAbsent(library, unused -> new TreeSet<>()).add(symbol.getName());
         }
 
-        // --- decompile a capped set -------------------------------------
-        DecompInterface ifc = new DecompInterface();
-        ifc.openProgram(p);
-        int cap = 48, decompiled = 0;
-        PrintWriter cw = new PrintWriter(new File(outDir, base + ".c"));
-        for (Function f : fm.getFunctions(true)) {
-            if (decompiled >= cap) break;
-            DecompileResults r = ifc.decompileFunction(f, 30, monitor);
-            if (r.depiledFunction() != null) {
-                cw.printf("// %s%n%s%n%n", f.getEntryPoint(), r.getDecompiledFunction().getC());
-                decompiled++;
+        int decompiled = 0;
+        final int cap = 48;
+        DecompInterface decompiler = new DecompInterface();
+        decompiler.openProgram(p);
+        try (PrintWriter cw = new PrintWriter(new OutputStreamWriter(
+                new FileOutputStream(new File(outDir, base + ".c")), StandardCharsets.UTF_8))) {
+            FunctionIterator functions = fm.getFunctions(true);
+            while (functions.hasNext() && decompiled < cap && !monitor.isCancelled()) {
+                Function function = functions.next();
+                DecompileResults result = decompiler.decompileFunction(function, 30, monitor);
+                if (result != null && result.getDecompiledFunction() != null) {
+                    cw.printf("// %s%n%s%n%n", function.getEntryPoint(), result.getDecompiledFunction().getC());
+                    decompiled++;
+                }
             }
+        } finally {
+            decompiler.dispose();
         }
-        ifc.dispose();
-        cw.close();
 
-        // --- JSON summary -----------------------------------------------
-        PrintWriter jw = new PrintWriter(new File(outDir, base + ".ghidra.json"));
-        jw.printf("{\"name\":\"%s\",\"execFormat\":\"%s\",\"lang\":\"%s\"," +
-                  "\"functions\":%d,\"strings\":%d,\"imports\":%d}%n",
-            base, p.getExecutableFormat(), p.getLanguageID().getIdAsString(),
-            fm.getFunctionCount(), nStrings, impSyms.values().stream().mapToInt(Set::size).sum());
-        jw.close();
+        JsonObject summary = new JsonObject();
+        summary.addProperty("name", base);
+        summary.addProperty("execFormat", p.getExecutableFormat());
+        summary.addProperty("language", p.getLanguageID().getIdAsString());
+        summary.addProperty("functions", fm.getFunctionCount());
+        summary.addProperty("strings", nStrings);
+        summary.addProperty("libraries", libraries.size());
+        summary.addProperty("imports", imports.values().stream().mapToInt(Set::size).sum());
+        try (Writer writer = new OutputStreamWriter(
+                new FileOutputStream(new File(outDir, base + ".ghidra.json")), StandardCharsets.UTF_8)) {
+            new GsonBuilder().setPrettyPrinting().create().toJson(summary, writer);
+            writer.write("\n");
+        }
     }
 }
 ```
@@ -196,105 +213,106 @@ Every existing report in `docs/*-ghidra-evidence/` follows this structure
 
 ### 4.1 ENCODING — identify and decode common XOR/ADD/NOT/SUB string obfuscation
 
-**Where you'll see it.** A DOS/Win16/Win32 binary where the strings table
-is visibly packed (high entropy in `.data`, but the code uses lots of
-`XOR reg, imm8` / `ADD [mem], imm8` loops over byte buffers). The Dr
-Solomon `WVENCYCL.EXE` data segment, for example, is *not* obfuscated —
-its `Data15` block is 0.9 entropy and strings are in plain ASCII — so the
-first check is entropy:
+A common pattern is a byte loop with an immediate XOR/add/subtract and an
+index that wraps at a small key length. First distinguish code from data and
+measure entropy on the candidate bytes; high entropy alone does not prove
+obfuscation (it can also be compression, encrypted data, or a short sample).
+This card uses a **synthetic byte string**, so the recipe itself is
+reproducible without analyzing a malware sample.
 
-```bash
-# Within a Ghidra post-script: get the initialized block that has the
-# highest entropy; if < 4.0 it is most likely plain text/strings.
-python3 -c "import math; print('entropy of all-zeros:', -sum(1/256*math.log2(1/256) for _ in range(0)))"
-```
+**CyberChef worked check.** The ASCII bytes for `HELLO` XORed with `0x42` are
+`0a070e0e0d`. In CyberChef, add these operations in order:
 
-**CyberChef sanity check.** Before writing a Ghidra script, copy 64–256
-bytes out of the suspicious buffer via the Ghidra listing and paste into
-CyberChef:
+1. **From Hex** — delimiter `Auto`.
+2. **XOR Brute Force** — `Key length: 1`, `Sample length: 5`, `Sample offset: 0`,
+   `Scheme: Standard`, `Null preserving: false`, `Print key: true`,
+   `Output as hex: false`, `Crib: hello`.
 
-```
-From_Hex('Auto')
-XOR({'option':'Hex','string':'0x??'},'Standard',false)
-  ↳ brute-force single-byte XOR over the range 0x00–0xFF and scan the
-    output for 'http', '.dll', 'SOFTWARE\\', 'Geocache', 'GPX', 'SOH',
-    'STX' (GPX waypoint tags) and other dictionary words.
-```
+The output includes key `42` and plaintext `HELLO`. CyberChef currently caps
+this operation at a two-byte key because of browser-performance limits; it is
+not a four-byte/rolling-key solver. For a two-byte key, set `Key length: 2`
+and supply a longer crib. For longer schedules, script the loop over a
+small sample or use a Ghidra postScript; do not assume the brute-force
+operation covers it.
 
-For multi-byte/rolling XOR:
+For a real, benign binary, copy a bounded candidate byte range from Ghidra's
+Listing into **From Hex**, then use the smallest justified transform and a
+known-plaintext crib. Avoid uploading binary contents to an external service.
+For ADD/SUB/NOT, use CyberChef's **Add**, **Subtract**, or **NOT** operations
+with a tested candidate constant. **ROT13** is for alphabetic text; it is not
+an arbitrary-byte transform.
 
-```
-From_Hex('Auto')
-XOR_Bruteforce(4,'')   # key length up to 4, crib ''
-```
-
-For ADD/SUB/NOT obfuscation (common in skidded trojans and jokeware — but
-we apply this only against clean samples in this repo):
-
-```
-From_Hex('Auto')
-NOT() or ADD(0x??) or SUB(0x??) or ROT13(true,true,false)
-```
-
-**Ghidra recipe.** Once the key byte(s) are found in CyberChef, reproduce
-the decode in a post-script and re-write the decoded bytes into a new
-memory block so the rest of auto-analysis can pick up the cross-references:
+**Ghidra recipe.** After confirming a key on the bounded excerpt, repeat the
+operation against a copy of the full candidate buffer and export the decoded
+bytes to a separate file for a second static import. Do not overwrite the
+source program's memory or execute the output:
 
 ```java
-Memory mem = currentProgram.getMemory();
-MemoryBlock enc = mem.getBlock("Data15");           // example
-byte[] buf = new byte[(int) enc.getSize()];
-enc.getBytes(enc.getStart(), buf);
-byte key = 0x42;                                    // found via CyberChef
-for (int i = 0; i < buf.length; i++) buf[i] ^= key;
-MemoryBlock dec = mem.createInitializedBlock(
-    "Data15_decoded", enc.getStart(), new ByteArrayInputStream(buf),
-    buf.length, monitor, false);
-// the listing will now show decoded strings and xrefs should follow.
+MemoryBlock block = currentProgram.getMemory().getBlock("candidate_data");
+if (block == null || !block.isInitialized()) throw new Exception("no candidate block");
+if (block.getSize() > 1_000_000) throw new Exception("candidate exceeds review cap");
+byte[] decoded = new byte[(int) block.getSize()];
+int got = currentProgram.getMemory().getBytes(block.getStart(), decoded, 0, decoded.length);
+if (got != decoded.length) throw new Exception("short memory read");
+byte key = (byte) 0x42; // only after independently confirming the key
+for (int i = 0; i < decoded.length; i++) decoded[i] ^= key;
+java.nio.file.Files.write(java.nio.file.Path.of(getScriptArgs()[0], "decoded.bin"), decoded);
 ```
 
 ### 4.2 ENCODING — base64 / hex / URL-encoding detection inside strings
 
-CyberChef chain to detect whether a string blob is actually base-64:
+In CyberChef, use **Strings** (single-byte encoding, minimum length 4) to
+make candidate text visible, then **Regular expression** with
+`[A-Za-z0-9+/]{40,}={0,2}` to locate likely Base64 runs. Send a selected run
+to **From Base64** and inspect the result with **Strings**, **Magic**, or
+**Entropy**. Treat a regex hit as a candidate, not proof: Base64 text can be
+ordinary identifiers, and random-looking decoded bytes can still be wrong.
 
-```
-Strings('Single-byte',4,'All printable chars',false,false,false)
-Regular_expression('User defined','[A-Za-z0-9+/]{40,}={0,2}',true,true,false)
-From_Base64('A-Za-z0-9+/=',true,false)
-Entropy('Shannon',false)
-```
+For hex text, use **Regular expression** with
+`(?:[0-9A-Fa-f]{2}[\s,:-]*){8,}` and pass a selected run through **From Hex**.
+For percent-encoded text, search for `(?:%[0-9A-Fa-f]{2}){2,}` and use **URL
+Decode**. Inspect decoded output with **Strings** or **Magic**, and distinguish
+hex data from ordinary identifiers or serial fields before interpreting it.
 
-In Ghidra, `d.hasStringValue()` already catches printable strings; for
-base64 blobs stored in `byte[]` arrays, the detector pattern above is what
-you port into a post-script. Useful when hunting embedded exfil URLs,
-custom cache-list payloads, or serial-bridge commands.
+In Ghidra, `Data.hasStringValue()` catches printable strings. For Base64,
+hex, or percent-encoded blobs stored in byte arrays, search the loaded data for
+the relevant alphabet/escape pattern, then decode only a copied, bounded
+candidate. This can expose embedded URLs, serial-protocol strings, or
+file-format signatures without relying on any malware sample.
 
 ### 4.3 OBFUSCATION — detect embedded constants for known primitives (FindCrypt)
 
-**Tool:** `ghidra-findcrypt` (public, on GitHub; ships as a Ghidra script
-that runs against the loaded program's bytes and lists known S-boxes,
-IVs, permutation tables for AES, DES, RC4, ChaCha20, SHA-1/2, BLAKE2,
-etc.). The Dr Solomon run produced no Error/Warning bookmarks and no
-cryptographic constants of note, which is consistent with a plain NE
-informational browser.
+**Tool:** [TorgoTorgo/ghidra-findcrypt](https://github.com/TorgoTorgo/ghidra-findcrypt)
+is an open-source Ghidra auto-analysis extension that labels known
+cryptographic constants. Its README describes matches as hints for analysts,
+not proof that a particular call site uses that algorithm.
 
-**CyberChef cross-check.** When a FindCrypt hit fires (e.g. the AES S-box
-at `0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, …`), copy 256 bytes
-from that address and confirm in CyberChef:
+**Safe cross-check.** Select a hit in Ghidra and view/copy its bytes as hex.
+For an AES S-box candidate, compare the bytes with the published AES
+substitution table (FIPS 197); CyberChef's **From Hex** and **Find** operations
+can help inspect a copied range. Do not run AES Encrypt on the S-box and treat
+the result as validation: an S-box match alone does not establish a cipher
+implementation or key.
 
-```
-From_Hex('Auto')
-AES_Encrypt({'option':'Hex','string':'00000000000000000000000000000000'},
-            {'option':'ECB','string':'Hex','string':''})
-```
+For a separate known-answer test, CyberChef's **AES Encrypt** operation takes
+an explicit key, IV, mode, input representation, output representation,
+additional authenticated data, and IV-output option. For the FIPS 197 AES-128
+block vector, use key `000102030405060708090a0b0c0d0e0f`, plaintext
+`00112233445566778899aabbccddeeff`, mode `ECB/NoPadding`, input/output
+`Hex`, and compare with `69c4e0d86a7b0430d8cdb78070b4c55a`. This verifies a
+known-answer operation; it does not prove a binary uses AES or reveal its key.
 
-Caveat: FindCrypt hits only say "constant is present"; they don't say
-which cipher construction the program uses. Per the published write-up
-on Oppo ozip reversing [2], you then follow xrefs from the constant to
-the function that calls `aes_set_decrypt_key` / `AES_init_ctx` / the
-equivalent local routine, and read its first argument — that is where
-the key is loaded. (Also note the known false-positive: BLAKE2b IV bytes
-overlap SHA-512 IV, per the Shielder U-Boot write-up [5].)
+The inspected CyberChef operation catalog also provides **AES Encrypt/Decrypt**,
+**DES Encrypt/Decrypt**, **Triple DES Encrypt/Decrypt**, **RC4**, **RC4 Drop**,
+**ChaCha**, **Salsa20**, **Blowfish Encrypt/Decrypt**, **Twofish Encrypt/Decrypt**,
+**TEA Encrypt/Decrypt**, and **XTEA Encrypt/Decrypt**. Use these to reproduce a
+published known-answer vector with the correct key/nonce/mode/padding. Do not
+label deprecated algorithms such as DES or RC4 secure, and do not treat a
+successful toy test as evidence that a target binary uses that construction.
+Per the published Oppo ozip analysis [2], binary RE still follows references
+from a constant to `aes_set_decrypt_key` / `AES_init_ctx` and traces the key
+argument; a constant search by itself cannot find the key. The Shielder
+write-up [5] also shows a false positive: BLAKE2b IV bytes overlap SHA-512 IV.
 
 ### 4.4 OBFUSCATION — InstallShield / MSI unpacking before PE import
 
@@ -309,40 +327,32 @@ unpack:
   with `analyzeHeadless` using `-loader PeLoader` (Ghidra picks it by
   default for `.exe`/`.dll`).
 
-CyberChef helps to confirm the installer is actually an MSI:
+CyberChef's **Magic** operation can identify the OLE Compound File header
+(`D0 CF 11 E0 A1 B1 1A E1`) used by traditional MSI containers. That header
+is only a format clue: do not execute the installer or any custom action.
 
-```
-From_Hex('Auto')
-Drop_bytes(0,false)
-Regular_expression('User defined','.{0}Magic.{0}Number',true,true,false)
-```
-
-(MSI files are OLE compound documents and start with the magic bytes
-`D0 CF 11 E0 A1 B1 1A E1` — CyberChef's "Magic" operation identifies
-most container formats.)
 
 ### 4.5 ENCRYPTION — locate a custom cipher / XOR-with-key schedule in Ghidra
 
-If FindCrypt produces no AES/DES/RC4/ChaCha constants, the program may be
-using a short repeating-key XOR or a table-less stream cipher. Recipe:
+If FindCrypt produces no known-cipher constants, consider simple XOR/add/sub
+loops as hypotheses, not as conclusions. Use these static-analysis steps only
+on a clean, authorized sample:
 
-1. In the Symbol Tree, sort functions by size. The biggest non-import
-   function that takes two `byte *` arguments and a length is the
-   encrypt/decrypt candidate.
-2. In the Decompile window, look for nested loops over the input length
-   with an index taken modulo a small constant — that is the key
-   schedule. The Ghidra "Learning Ghidra" tutorial on the synthetic
-   `fw_decrypt` sample [4] is the textbook example: it shows a hard-coded
-   password string (`passwd.3309`), a pre-whitening XOR
-   (`^ 0xa7 ^ 0x8b ^ 0x2d ^ 0x05`), and a call into `ecb128Decrypt`.
-3. Copy any contiguous high-entropy bytes near the function (possible
-   S-box or key constant) into CyberChef and run the XOR/ADD/SUB
-   brute-forcer of §4.1 against a known-plaintext crib (e.g. `<?xml`,
-   `GPX`, `geocache`, `Groundspeak`, `wpt`, or the file's magic bytes
-   like `.cry` header candidate `00 00 00`).
-4. Once the key bytes are recovered, write a small Ghidra script to
-   patch-display the decrypted region (as in §4.1), then look at what
-   it contains — lat/lon floats, GPX XML, SQLite headers, whatever.
+1. Identify candidate functions through call sites, references to byte
+   buffers, and repeated operations; function size and pointer-like arguments
+   are weak heuristics, not reliable signatures.
+2. In the Decompile window, inspect loop bounds, key/index reuse, and the
+   output's data flow. The educational Ghidra tutorial [4] demonstrates a
+   `fw_decrypt` example with a pre-whitening XOR schedule and an
+   `ecb128Decrypt` call; it is a worked pattern, not a universal signature.
+3. Use CyberChef's **XOR Brute Force** only for one- or two-byte candidate
+   keys and only with a justified crib. For longer schedules, create a small
+   local script over a bounded sample. Do not guess a target file's magic
+   bytes; obtain a valid plaintext example or format specification first.
+4. Once a transform is established, export the decoded bytes to a separate
+   file and re-import that file statically for format recognition. Preserve
+   the original input and record the transform, offsets, and hash of each
+   output.
 
 This is the exact shape of analysis that would apply to a recovered
 `geomateQtGuiApp.exe` or `.cry` region image, *if and when* a copy is
@@ -353,105 +363,101 @@ shipped, or analyzed here.
 
 ### 4.6 DISASSEMBLY — 8-bit / 16-bit firmware disassembly (8051 / AVR)
 
-For the SiLabs CP210x-adjacent C8051 family (the bridge chip the Geomate
-update kit uses — that driver does not contain geocache caches, but it
-is the transport), Ghidra ships an 8051 SLEIGH module. Recipe:
+If a clean, licensed 8051 raw firmware image is available, Ghidra 12.1.4
+ships a matching SLEIGH language. This is a generic architecture recipe; it
+is **not** a claim that the CP210x Windows driver or a Geomate.jr cable
+contains an accessible C8051 flash dump.
 
-1. Import the raw flash binary with `-loader BinaryLoader -processor
-   8051:BE:16:default` (note big-endian; the banked 16-bit CODE space
-   maps at `0x0000`).
-2. The 8051 reset vector is at `0x0000`; if `0x0000` is `02 xx yy` (LJMP)
-   or `80 xx` (SJMP) or `e1 xx` (AJMP), that is the entry — see the
-   Reverse Engineering Stack Exchange 8051 thread [1].
-3. Note the standard pitfall: many C8051-family devices have a masked
-   on-chip ROM at the top of CODE space. Calls above the firmware's
-   load address are into ROM, not into your image; you cannot
-   disassemble them without dumping the ROM separately (see the
-   C8051F34x glitch work [3] for how that was done for a related SiLabs
-   part — not performed here).
+1. Import the raw image with `-loader BinaryLoader -processor
+   8051:BE:16:default` (verified in Ghidra 12.1.4's `8051.ldefs`; big-endian,
+   16-bit address space). Choose the base address from the device/format metadata; `0x0000` is only appropriate for an image mapped at the reset vector.
+2. The 8051 reset vector is at `0x0000`; common entry opcodes include `02 xx yy`
+   (LJMP) and `80 xx` (SJMP). Verify the target bytes and references rather
+   than assuming every image begins with executable code; see [1].
+3. Some C8051-family parts include masked on-chip ROM not present in a flash
+   dump. Calls outside the loaded image may be unresolved references, not
+   code that Ghidra missed. The C8051F34x glitch work [3] describes a related
+   research technique; no glitch hardware or device is used here.
 
 For AVR (Optiboot / Micronucleus), the repo's existing tool
-`tools/ghidra_avr.mjs` disagregates to 225/225 opcodes vs `avr-objdump`
-(`docs/GHIDRA_COOKBOOK.md`); for new AVR parts, use
-`-processor avr8:LE:16:<part>` and feed Ghidra the `.hex` or `.bin`.
+`tools/ghidra_avr.mjs` disaggregates to 225/225 opcodes vs `avr-objdump`
+(`docs/GHIDRA_COOKBOOK.md`). Ghidra 12.1.4's AVR language definition lists
+`avr8:LE:16:default`, `avr8:LE:16:extended`, `avr8:LE:16:atmega256`, and
+`avr8:LE:24:xmega`; use an ID from that shipped list rather than assuming a
+part-specific variant exists.
 
-### 4.7 DISASSEMBLY — NE/PE disassembly caveats observed on clean samples
+### 4.7 DISASSEMBLY — format-aware review checklist
 
-From the Dr Solomon run in this repo:
+Use the loader's metadata as a starting point, not as a complete explanation
+of the program:
 
-- **Win16 NE** uses segmented addressing; Ghidra prints entry points as
-  `SEG:OFFSET` (e.g. `1000:260b`). Treat the segment as part of the
-  address, not a selector to resolve.
-- **Pascal `ShortString`** is a one-byte length followed by text.
-  Ghidra's default string scanner often prints the length byte as a
-  printable prefix character (looking like "/A<…"), which is why the
-  report normalizes it by stripping the leading byte when it matches the
-  remaining length.
-- **DOS MZ** real-mode executables compiled with a single-segment model
-  frequently decompile as "1 function, ~300 instructions" with zero
-  imports — that's the tiny C runtime stub calling into an overlay or
-  `INT 21h` directly. Don't mistake that for "Ghidra missed the real
-  code"; the real code is entered via interrupt.
-- **`INT 21h`** is enumerated in the disassembly listing; in NE/PE,
-  imports through KERNEL/USER/GDI are enumerated as external symbols and
-  are the primary way to map what the program does.
+- For an **MZ** input, compare Ghidra's entry with the header's `CS:IP`, check
+  relocation/segment information, and look for overlays before concluding
+  that a small disassembly is the whole program.
+- For a **Win16 NE** input, keep segment:offset identity when documenting code
+  addresses; do not collapse a segmented entry to an offset alone.
+- For a **PE** input, record image base, entry point, sections, and imported
+  symbols. A static import table is a clue, not a complete API inventory:
+  dynamically resolved functions and packed/importless binaries need separate
+  handling. The Microsoft [PE/COFF specification](https://learn.microsoft.com/en-us/windows/win32/debug/pe-format)
+  defines the header/section/import structures Ghidra is presenting.
+- When a header value and Ghidra's language/loader choice disagree, stop and
+  correct the import configuration before interpreting decompiled functions.
+
+These are format-validation steps, not claims derived from a checked-in
+malware sample.
 
 ### 4.8 DISASSEMBLY — CyberChef as a pre-processor for raw hex
 
-When a binary blob's format is unknown, CyberChef is the fastest way to
-test hypotheses before it ever reaches Ghidra:
+Before importing an unknown, authorized binary, use CyberChef's **From Hex**
+(for a copied hex excerpt), **Magic**, **Entropy**, **Frequency**, and **Strings**
+operations to gather clues. Add **Regular expression** for likely Base64 text,
+or **XOR Brute Force** with a short, justified crib. Keep the byte excerpt
+bounded and local. The inspected CyberChef catalog also has **Disassemble ARM**
+and **Disassemble x86**; it does not provide an 8051 disassembler.
 
-```
-From_Hex('Auto')
-Entropy('Shannon',false)
-Frequency('Byte',false,false)
-Detect_File_Type(false,'')
-Strings('Single-byte',4,'All printable chars',false,false,false)
-Regular_expression('User defined','[A-Za-z0-9+/]{40,}={0,2}',true,true,false)
-XOR_Bruteforce(4,'')
-```
-
-A histogram that spikes at 16/32/64 equally spaced byte values is a sign
-of packed BCD or fixed-point numbers (relevant for GNSS lat/lon in
-32-bit fixed-point); a near-flat histogram with entropy > 7.5 is either
-compressed or encrypted.
+Entropy and byte-frequency plots are heuristics only. High entropy is
+consistent with compression, encryption, random data, or a small unrepresentative
+sample; it is not a verdict. A histogram can reveal repeated constants or
+text-like distributions, but does not identify a number encoding on its own.
 
 ---
 
 ## 5. Cross-reference table
 
-| Goal                                   | Ghidra                                   | CyberChef                                          |
-| -------------------------------------- | ---------------------------------------- | -------------------------------------------------- |
-| Identify a Windows PE                  | `-loader PeLoader` (default for `.exe`)  | `Detect_File_Type`                                 |
-| Identify an MSI/InstallShield          | extract with `msiextract` first          | `Magic` checks D0 CF 11 E0 OLE signature           |
-| Identify a raw 8051 flash dump         | `-loader BinaryLoader -processor 8051…`  | `Disassemble('8051','')` (if you have the opcodes) |
-| Find embedded AES/DES constants        | FindCrypt/ghidra-findcrypt post-script   | `AES_Encrypt` / `DES_Encrypt` with known key       |
-| Defeat single-byte XOR strings         | post-script patch into a decoded block   | `XOR_Bruteforce`                                  |
-| Decode base64/hex/URL blobs            | `Data.isString()` filter + manual        | `From_Base64`, `From_Hex`, `URL_Decode`            |
-| Cross-check 16-bit NE segmented calls  | Listing view, addresses are `SEG:OFF`    | —                                                  |
-| Pull imports (which DLLs/APIs used)    | `SymbolTable.getExternalSymbols()`       | `Strings` → regex for API names                    |
-| Capped decompile for audit             | `DecompInterface.decompileFunction` cap  | —                                                  |
+| Goal | Ghidra | CyberChef |
+| --- | --- | --- |
+| Identify a Windows PE | `-loader PeLoader` (normally auto-selected for PE) | **Magic** |
+| Identify an MSI container | Extract statically with `msiextract`/`lessmsi` first | **Magic** recognizes the OLE header; no execution |
+| Load raw 8051 bytes | `-loader BinaryLoader -processor 8051:BE:16:default` | No 8051 disassembler; **From Hex**, **Strings**, and **XOR Brute Force** are pre-screening aids |
+| Locate candidate crypto constants | ghidra-findcrypt analysis labels + xrefs | **From Hex** for byte inspection; a known-answer **AES Encrypt/Decrypt** test is separate and does not prove binary use |
+| Test a one-byte XOR hypothesis | Bounded postScript or separate decoded-file import | **XOR Brute Force**, key length 1, known crib |
+| Decode Base64/hex/URL text | Inspect defined strings and code/data references | **From Base64**, **From Hex**, **URL Decode** |
+| Review Win16 NE addresses | Inspect the loader's segment map; preserve segment:offset | No NE disassembler |
+| Pull imports/API references | `SymbolTable.getExternalSymbols()` + `ReferenceManager` | **Strings**/regex can hint at dynamic API names |
+| Capped decompile for audit | `DecompInterface.decompileFunction` with timeout/cap | — |
+
+## In-app recipe packs
+
+The custom offline kitchen at `public/apps/cyberchef/index.html` now exposes
+recipe packs for Base64/Base32/URL/Unicode/hex round-trips, byte-exact file
+Base64, a toy ASCII XOR/crib demonstration, AES-CBC/AES-GCM round-trips using
+an explicitly non-secret demo password, Camellia/ChaCha20/RC4 toy round-trips,
+and static MZ header triage before a Ghidra import. These packs reuse existing
+operations; they do not add a Ghidra runtime or disassembler to the browser.
+The MZ pack only inspects a supplied header. Actual disassembly still uses the
+headless workflow in `docs/ghidra-headless-benign-sample-methodology.md`.
 
 ## Sources
 
-- [1] Reverse Engineering Stack Exchange, *Reverse Engineering 8051
-  firmware* — 8051 reset-vector idioms (AJMP/LJMP at 0x0000, calls above
-  the load address indicating masked ROM).
-- [2] B. Kerler, *Reversing an Oppo ozip encryption key from encrypted
-  firmware* (2019) — following `aes_set_decrypt_key` xrefs to the key
-  bytes.
-- [3] `debug-silicon/C8051F34x_Glitch` (GitHub) — SiLabs C8051F34x flash
-  read via voltage glitch; BootROM discovery; security-lock SFR at 0xB4.
-  (Described for architecture reference; no glitch hardware is used in
-  this repo.)
-- [4] *Learning Ghidra — Second Tutorial: Breaking an embedded firmware
-  encryption scheme* — worked `fw_decrypt` example with XOR whitening,
-  `ecb128Decrypt`, CRC32, and key extraction.
-- [5] Shielder, *Reversing embedded device bootloader (U-Boot) p.1*
-  (2022) — ghidra-findcrypt usage, BLAKE2/SHA-512 false-positive.
-- Ghidra 12.1.4 `support/analyzeHeadlessREADME.html` (pinned SHA-256
-  `ddac49f9…0d4db`) — CLI flag reference.
-- Existing in-repo evidence: `docs/dr-solomon-virus-encyclopaedia-ghidra.md`,
-  `docs/jcreator-jdk-ghidra.md`, `docs/GHIDRA_COOKBOOK.md`,
-  `tools/ghidra_scripts/EncyclopediaReport.java`,
-  `tools/ghidra_scripts/JdkToolchainReport.java`.
+- [1] Reverse Engineering Stack Exchange, [*Reverse Engineering 8051 firmware*](https://reverseengineering.stackexchange.com/questions/17601/reverse-engineering-8051-firmware) (2018) — reset entry at `0x0000` and out-of-image calls as a possible indication of missing ROM; a forum answer, so verify against the actual device.
+- [2] B. Kerler, [*Reversing an Oppo ozip encryption key from encrypted firmware*](https://bkerler.github.io/reversing/2019/04/24/the-game-begins/) (2019) — following `aes_set_decrypt_key` cross-references to the supplied key.
+- [3] [debug-silicon/C8051F34x_Glitch](https://github.com/debug-silicon/C8051F34x_Glitch) — related SiLabs flash/BootROM security research; architecture reference only, no glitch technique is used in this repo.
+- [4] [Learning Ghidra — Second Tutorial: Breaking an embedded firmware encryption scheme](https://learning-ghidra.readthedocs.io/en/latest/tutorials/second-tutorial/second-tutorial/) — educational `fw_decrypt` example with XOR whitening and `ecb128Decrypt`.
+- [5] Shielder, [*Reversing embedded device bootloader (U-Boot) — p.1*](https://www.shielder.com/blog/2022/03/reversing-embedded-device-bootloader-u-boot-p.1/) (2022) — ghidra-findcrypt use and the BLAKE2/SHA-512 IV false-positive.
+- [Ghidra 12.1.4 Headless Analyzer README](https://ghidradocs.com/12.1.4_PUBLIC/support/analyzeHeadlessREADME.html) — release-pinned CLI documentation; the downloaded archive in the workflow is SHA-256 checked.
+- [Ghidra 12.1.4 8051 language definition](https://github.com/NationalSecurityAgency/ghidra/blob/Ghidra_12.1.4_build/Ghidra/Processors/8051/data/languages/8051.ldefs) and [AVR8 language definitions](https://github.com/NationalSecurityAgency/ghidra/blob/Ghidra_12.1.4_build/Ghidra/Processors/Atmel/data/languages/avr8.ldefs) — processor IDs listed above.
+- CyberChef source, pinned at commit [`609951ac13967da6d497e0600c922f56bfd0b7af`](https://github.com/gchq/CyberChef/tree/609951ac13967da6d497e0600c922f56bfd0b7af/src/core/operations): [XOR Brute Force](https://github.com/gchq/CyberChef/blob/609951ac13967da6d497e0600c922f56bfd0b7af/src/core/operations/XORBruteForce.mjs), [AES Encrypt](https://github.com/gchq/CyberChef/blob/609951ac13967da6d497e0600c922f56bfd0b7af/src/core/operations/AESEncrypt.mjs), [From Hex](https://github.com/gchq/CyberChef/blob/609951ac13967da6d497e0600c922f56bfd0b7af/src/core/operations/FromHex.mjs), and [Strings](https://github.com/gchq/CyberChef/blob/609951ac13967da6d497e0600c922f56bfd0b7af/src/core/operations/Strings.mjs). The checked source caps XOR brute-force key length at 2 bytes.
+- NIST, [FIPS 197 — Advanced Encryption Standard](https://csrc.nist.gov/pubs/fips/197/final) — AES-128 known-answer block used above.
+- Microsoft, [PE format](https://learn.microsoft.com/en-us/windows/win32/debug/pe-format) — header, section, and import-table reference.
+- In-repo automation/report references only: `docs/dr-solomon-virus-encyclopaedia-ghidra.md` (CI pattern for a historical malware corpus, **not a recipe sample**), `docs/jcreator-jdk-ghidra.md`, `docs/GHIDRA_COOKBOOK.md`, `tools/ghidra_scripts/EncyclopediaReport.java`, and `tools/ghidra_scripts/JdkToolchainReport.java`.

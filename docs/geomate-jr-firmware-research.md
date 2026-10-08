@@ -559,8 +559,9 @@ dossier states they are not GNIS features and may be archived. The rebuilt
 - Obtain `geomateloadersetup.exe` / `geomateQtGuiApp.exe` (or a `.cry` region
   file) from a person who still has them, record SHA-256, then run the headless
   Ghidra workflow described above.
-- Other cities (Lawrence KS, Kansas City MO, Atlanta, Buffalo, Toronto) and the
-  other items in the broad request are separate pieces of work.
+- Other cities (Kansas City MO, Atlanta, Buffalo, Toronto) and the other items
+  in the broad request are separate pieces of work. Lawrence KS received its
+  own minimal USGS 3DEP/GNIS Webxdc; see `docs/lawrence-kansas-subsurface.md`.
 
 ### 2026-10-07 CDX re-check (non-200 + mimetype + Dropbox mirror)
 
@@ -606,6 +607,7 @@ documentation. The repo was not cloned and no blob was downloaded; see
 clean-source Ghidra + CyberChef encoding/obfuscation/encryption/
 disassembly recipe set was added as `docs/ghidra-cyberchef-recipes.md`,
 drawn from Ghidra 12.1.4 public documentation, public FindCrypt-family
-write-ups, CyberChef's public operation catalogue, and the already
-checked-in benign samples (Dr Solomon 1992 NE, AVR optiboot, JCreator/JDK
-toolchain).
+write-ups, CyberChef's public operation catalogue, and non-malware examples
+such as the AVR bootloader and JDK/JCreator toolchain. The existing Dr Solomon
+headless workflow is referenced only as a CI pattern; its historical malware
+corpus is not used as a recipe source or example.

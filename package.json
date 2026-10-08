@@ -18,12 +18,14 @@
     "build:vincennes": "node scripts/build-vincennes-xdc.mjs",
     "build:sanborn-restaurant": "node scripts/build-sanborn-restaurant-xdc.mjs",
     "build:socal-subsurface": "node scripts/build-socal-subsurface-xdc.mjs",
-    "build:4dwm": "node scripts/build-bluetops-xdc.mjs && node scripts/build-cheyenne-xdc.mjs && node scripts/build-dalton-race-4dwm-xdc.mjs && node scripts/build-esgvrop-4dwm-xdc.mjs && node scripts/build-four-corners-xdc.mjs && node scripts/build-glendora-high-4dwm-xdc.mjs && node scripts/build-greeran-family-4dwm-xdc.mjs && node scripts/build-greeran-subsurface-xdc.mjs && node scripts/build-sanborn-restaurant-xdc.mjs && node scripts/build-socal-subsurface-xdc.mjs && node scripts/build-vincennes-xdc.mjs",
+    "build:4dwm": "node scripts/build-bluetops-xdc.mjs && node scripts/build-cheyenne-xdc.mjs && node scripts/build-dalton-race-4dwm-xdc.mjs && node scripts/build-esgvrop-4dwm-xdc.mjs && node scripts/build-four-corners-xdc.mjs && node scripts/build-glendora-high-4dwm-xdc.mjs && node scripts/build-greeran-family-4dwm-xdc.mjs && node scripts/build-greeran-subsurface-xdc.mjs && node scripts/build-sanborn-restaurant-xdc.mjs && node scripts/build-socal-subsurface-xdc.mjs && node scripts/build-vincennes-xdc.mjs && node scripts/build-lawrence-subsurface-xdc.mjs",
     "build:web": "vite build",
     "preview": "vite preview",
     "serve:catalog": "node tools/z3950-server.mjs",
     "check:sources": "node tools/check-source-check-bibliography.mjs",
-    "test": "vitest run && node --test tests/*.test.mjs"
+    "test": "vitest run && node --test tests/*.test.mjs",
+    "build:lawrence-dem": "node scripts/build-lawrence-dem-data.mjs",
+    "build:lawrence-subsurface": "node scripts/build-lawrence-subsurface-xdc.mjs"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",
