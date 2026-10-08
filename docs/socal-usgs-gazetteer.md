@@ -33,6 +33,10 @@ Row layout (see `js/socal-gazetteer-data.js` header):
 [name, fclass, ftt, county, lat, lon, elevM|null, gnisId|null, verified 0|1, note|null]
 ```
 
+The fixed snapshot uses these ten fields. Session-only GPX rows may append an
+optional source/cache metadata object as field 11; this extension is never
+written back to the static GNIS-oriented snapshot.
+
 `county` carries the state suffix for register fringes outside California
 (`Clark NV`, `Mohave AZ`), matching the convention the generated pack has
 always used.
@@ -56,22 +60,29 @@ side by side, matching the theater's evidence-tier discipline:
 
 ## Sources and regen
 
-- Canonical register: `data/gnis/socal-gazetteer-seed.csv` (pipe-delimited;
-  header documents the ten columns).
-- Anchor pull: `data/gnis/wikidata-anchors.json` (Wikidata Query Service
-  results; the labels-for-P590 pattern from
-  `docs/research/04_USGS_GNIS_POSTGIS_INTEGRATION.md`).
-- Official upgrade path: drop `data/gnis/DomesticNames_CA.txt` (the USGS GNIS
-  domestic names text extract, same layout as the PostGIS loader pipeline in
-  research/04). The build ingests in-bbox rows as VERIFIED=1 and lets them
-  override curated coordinates on name+class collisions.
+- The generated snapshot is `js/socal-gazetteer-data.js`. Its declared upstream
+  register (`data/gnis/socal-gazetteer-seed.csv`) and Wikidata anchor pull
+  (`data/gnis/wikidata-anchors.json`) are **absent from this checkout** as of
+  2026-10-08. The committed snapshot cannot be reproduced from the current
+  worktree; do not run the generator as if the missing sources were available.
+  Restore and audit those inputs before claiming reproducibility.
+- Official upgrade path: when the missing seed is restored, a staged
+  `data/gnis/DomesticNames_CA.txt` (USGS GNIS domestic names extract, matching
+  the PostGIS loader pipeline in research/04) can be used to confirm and
+  upgrade in-bbox rows. Do not treat this optional extract as a replacement
+  for the currently absent canonical seed.
 
-Rebuild:
+Rebuild the seed-derived pack only after restoring and auditing its inputs:
 
 ```
 node scripts/build-socal-gazetteer.mjs
 node scripts/build-socal-subsurface-xdc.mjs   # restages public/apps + .xdc
 ```
+
+The fixed snapshot currently has **508 rows, 26 classes, 69 FEATURE_ID-verified
+and 439 curated/community-tier entries**. Ten unsupported Geocache rows were
+removed on 2026-10-08. User GPX caches are separate session-only rows and are
+never committed into this snapshot.
 
 Frame: lon −121.6°…−114.0°, lat 32.45°…38.35°. Out-of-frame seed rows are
 dropped at build time (a deliberate register-vs-theater split), never pinned
@@ -113,7 +124,7 @@ class chips in the UI pass straight into the same filter predicates.
   verified = full brightness, curated = muted. Raw labels stay off at frame
   scale — search hits and register-zoom proximity annotate the nearest pins,
   and clicked pins keep their label until the selection clears.
-- All 26 classes (480 rows, 65 verified at the 2026-10-03 build) share the
+- All 26 classes (508 fixed-snapshot rows, 69 FEATURE_ID-verified as of the 2026-10-08 audit) share the
   standard layer toggle, x-ray/wireframe/labels globals, exaggeration slider,
   and the 811/excavation disclaimers — the register is a *names* layer, not a
   survey layer.

@@ -24,7 +24,7 @@ windows for HUD, layers, dossier and a plan-view minimap.
 | Crude + gas | San Joaquin heavy-crude trunk (Kern → LA refineries); SoCalGas Topock → basin backbone; Las Flores / Gaviota crude pipeline context |
 | Rail | Union Pacific LA Sub / ex-LA&SL over Cajon; BNSF Southern Transcon (ex-Santa Fe); Southern Pacific lineage over the Tehachapi Loop; BNSF Cushenbury Branch; Carson & Colorado / SP narrow gauge; Bodie Railway & Lumber Co. |
 | Power | Salton Sea Geothermal Field (CalEnergy, ~340–400 MW, the lithium brine), Coso at China Lake, IID collection corridor, Salton Buttes heat source, Big/Little Caliente, Sespe, Long Valley / Casa Diablo |
-| GNIS gazetteer | USGS GNIS register extract (480 entries, 26 classes, 65 FEATURE_ID-verified plus curated community-tier rows) — mast+pin markers with FTT-branch swatches, a GNIS GAZETTEER PiP with fuzzy trigram search-name / search-box / search-point ops and a get-capabilities caption; see `docs/socal-usgs-gazetteer.md` |
+| GNIS gazetteer | Fixed compiled snapshot (508 entries, 26 classes, 69 FEATURE_ID-verified plus curated community-tier rows) — mast+pin markers with FTT-branch swatches, fuzzy trigram search-name / search-box / search-point ops and a get-capabilities caption. Ten unsupported static Geocache rows were removed; local GPX imports are separate, session-only records. See `docs/socal-usgs-gazetteer.md` |
 | Sites | Ducommun (1849 — oldest continuously operating business in California), El Mirage Dry Lake (the *Con Air* "Lerner Airfield" set), Kern River Oil Field (1899, Bakersfield), Midway-Sunset / Lakeview Gusher, Knapp's Castle, Solvang, Mammoth Mountain Resort, Bodie / Mono Mills |
 | Bases | Edwards AFB, Fort Irwin NTC, NAWS China Lake, MCAGCC Twentynine Palms |
 | Trails | Pacific Crest Trail now drawn north to the Yosemite edge; John Muir Trail generalized from Happy Isles to Mount Whitney |
@@ -69,11 +69,16 @@ excavation data.
 - **WIREFRAME** overlays the DEM lattice; **LABELS** toggles the 2D callouts.
 - HUD sliders: terrain exaggeration (linear) and depth scale.
 - PiP windows drag by their title bar and collapse with the `–` button.
-- The GNIS GAZETTEER PiP searches the register offline: fuzzy name queries
+- The GAZETTEER PiP searches the fixed register plus any session-local GPX imports offline: fuzzy name queries
   (pg_trgm-style trigram similarity with prefix/substring boosts), FTT facet
   and GNIS class chips, an **in view** search-box under the camera, and a
-  click-to-fly result list whose pins open the full dossier (GNIS class →
+  click-to-fly result list whose pins open the full dossier (feature class →
   ADL FTT facet, county, elevation, FEATURE_ID or its absence).
+- The PiP also imports user-supplied GPX 1.0/1.1 files locally. Only unique,
+  coordinate-valid caches inside the SoCal frame are added to the live map;
+  records are tagged as user-supplied and never GNIS-verified. Imports are not
+  persisted between sessions. See `docs/geomate-gpx-preservation.md` for
+  format, privacy and export limitations.
 
 ## Honest scale notes
 
@@ -85,8 +90,9 @@ excavation data.
 - Gazetteer points are rounded GNIS primary/control locations. For a valley,
   range, basin, lake or channel the point identifies the name; it does **not**
   define the feature's extent. This is a curated landmark set, not every GNIS
-  record in the frame. Refresh/audit it with
-  `node tools/socal-gazetteer-query.mjs > /tmp/socal-gnis.json`.
+  record in the frame. The declared `data/gnis/` seed and Wikidata anchor files
+  are absent from this checkout, so the 508-row JS snapshot is not currently
+  reproducible; see `docs/socal-usgs-gazetteer.md` before attempting a rebuild.
 - **Depth is logarithmic.** A products line at 1.5 m and a geothermal
   production zone at 2,000 m cannot share a linear axis on a 700 km stage, so
   `depthY()` compresses with a log10 ramp. Ordering and magnitude survive;

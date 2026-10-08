@@ -24,7 +24,7 @@ export const UNITS_PER_KM = 0.1;
 
 const BASE_LAYERS = [
   { id: "terrain", name: "Terrain / basin shell", color: "#3c5a70", kind: "surface", on: true },
-  { id: "gazetteer", name: "USGS GNIS gazetteer · named features", color: "#b8c7d1", kind: "node", on: true },
+  { id: "gazetteer", name: "Gazetteer · GNIS features + local GPX caches", color: "#b8c7d1", kind: "node", on: true },
   { id: "water", name: "Aqueducts (surface + siphon)", color: "#38bdf8", kind: "line", on: true },
   { id: "products", name: "Refined-product pipelines", color: "#f59e0b", kind: "line", on: true },
   { id: "crude", name: "Crude + gas trunk lines", color: "#ef4444", kind: "line", on: true },

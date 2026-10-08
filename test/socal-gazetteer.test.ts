@@ -14,10 +14,10 @@ import {
 } from "../js/socal-gazetteer.js";
 
 const idx = makeGazetteerIndex(GAZ_ROWS);
-// raw rows are tuples: [name, fclass, ftt, county, lat, lon, elevM|null, gnisId|null, verified 0|1, note|null]
+// Fixed rows use ten tuple fields; session GPX rows may append source metadata as field 11.
 const byNameClass = new Map(GAZ_ROWS.map((r) => [`${r[0]}|${r[1]}`, r]));
 
-describe("GAZ_ROWS register integrity (data/gnis build)", () => {
+describe("fixed Gazetteer snapshot integrity", () => {
   it("has a healthy row count and bounded bbox", () => {
     expect(GAZ_ROWS.length).toBeGreaterThan(400);
     for (const r of GAZ_ROWS) {
@@ -53,8 +53,11 @@ describe("GAZ_ROWS register integrity (data/gnis build)", () => {
     expect(new Set(keys).size).toBe(keys.length);
   });
 
-  it("merged register ships the requested classes (military / canal / census / cape)", () => {
-    expect(GAZ_CLASSES).toEqual(expect.arrayContaining(["Military", "Canal", "Census", "Cape", "Military", "Geocache"]));
+  it("keeps unsupported cache records out of the fixed GNIS/curated seed pack", () => {
+    expect(GAZ_ROWS.length).toBe(GAZ_META.rowCount);
+    expect(GAZ_ROWS.some((row) => row[1] === "Geocache")).toBe(false);
+    expect(GAZ_CLASSES).not.toContain("Geocache");
+    expect(GAZ_CLASSES).toEqual(expect.arrayContaining(["Military", "Canal", "Census", "Cape"]));
     expect(byNameClass.has("Edwards Air Force Base|Military")).toBe(true);
     expect(byNameClass.has("March Air Reserve Base|Military")).toBe(true);
     expect(byNameClass.has("All American Canal|Canal")).toBe(true);
@@ -63,8 +66,6 @@ describe("GAZ_ROWS register integrity (data/gnis build)", () => {
     expect(GAZ_ROWS.filter((r) => r[0] === "Crowley Lake")).toHaveLength(2); // Lake + Reservoir duplicate classes coexist
     expect(byNameClass.has("Point Conception|Cape")).toBe(true);
     expect(byNameClass.has("Manzanar National Historic Site|Park")).toBe(true);
-    expect(byNameClass.has("First California Geocache (GCF)|Geocache")).toBe(true);
-    expect(byNameClass.get("First California Geocache (GCF)|Geocache")).toMatchObject({ 1: "Geocache", 2: "rec.geocache", 8: 0 });
   });
 });
 
@@ -100,8 +101,11 @@ describe("normalization + pg_trgm similarity", () => {
     const hydroOnly = searchName(idx, "lake", { facet: "hydro", limit: 60 });
     expect(hydroOnly.length).toBeGreaterThan(5);
     expect(hydroOnly.every((h) => h.ftt.startsWith("hydro."))).toBe(true);
-    const recOnly = searchName(idx, "cache", { facet: "rec", limit: 20 });
-    expect(recOnly.length).toBeGreaterThan(0);
+    expect(searchName(idx, "cache", { facet: "rec", limit: 20 })).toEqual([]);
+    const localCache = ["Example cache (GC123)", "Geocache", "rec.geocache", "Imported GPX", 34.05, -118.25, null, null, 0, "user-supplied GPX"];
+    const withLocalCache = makeGazetteerIndex([...GAZ_ROWS, localCache]);
+    const recOnly = searchName(withLocalCache, "cache", { facet: "rec", limit: 20 });
+    expect(recOnly).toHaveLength(1);
     expect(recOnly.every((h) => h.ftt.startsWith("rec."))).toBe(true);
   });
 
@@ -145,6 +149,47 @@ describe("GSP spatial ops", () => {
     const got = describeEntry(idx, pos);
     expect(got?.name).toBe("Mount Whitney");
     expect(got?.gnis).toBe("269051");
+  });
+});
+
+describe("bounded top-k ranking for larger local registers", () => {
+  const cacheRows = Array.from({ length: 2500 }, (_, i) => [
+    `Cache ${String(i).padStart(4, "0")}`,
+    "Geocache",
+    "rec.geocache",
+    "Imported GPX",
+    34 + i * 0.00001,
+    -118,
+    null,
+    null,
+    0,
+    "local test row",
+  ]);
+  const cacheIndex = makeGazetteerIndex(cacheRows);
+
+  it("returns the best name scores in deterministic order", () => {
+    const hits = searchName(cacheIndex, "cache", {
+      facet: "rec",
+      classes: new Set(["Geocache"]),
+      threshold: 0.5,
+      limit: 10,
+    });
+    expect(hits.map((entry) => entry.name)).toEqual(
+      Array.from({ length: 10 }, (_, i) => `Cache ${String(i).padStart(4, "0")}`),
+    );
+    expect(searchName(cacheIndex, "cache", { limit: 0 })).toEqual([]);
+  });
+
+  it("keeps only the nearest or alphabetically earliest spatial results", () => {
+    const nearest = searchPoint(cacheIndex, 34, -118, { radiusKm: 3, limit: 5 });
+    expect(nearest).toHaveLength(5);
+    expect(nearest[0].name).toBe("Cache 0000");
+    expect(nearest[4].name).toBe("Cache 0004");
+
+    const box = searchBox(cacheIndex, { lat0: 33, lat1: 35, lon0: -119, lon1: -117 }, { limit: 5 });
+    expect(box.map((entry) => entry.name)).toEqual(
+      Array.from({ length: 5 }, (_, i) => `Cache ${String(i).padStart(4, "0")}`),
+    );
   });
 });
 
