@@ -149,6 +149,27 @@ node tools/verify_wireless_charge.mjs || status=1
 echo "──────────────────────────────────────────────"
 node --test tests/wireless-charge.test.mjs || status=1
 
+# Lantronix Lab: the generated xPort Wallplug EAGLE design (model → .lbr/.sch/.brd,
+# reference resolution, connectivity, creepage/clearance, sheet readability), the
+# JVM class / Java Card CAP reader and bytecode disassembler, and the lab page
+# controller against the DOM stub.
+echo "──────────────────────────────────────────────"
+node tools/build-wallplug-eagle.mjs --check || status=1
+node tests/20-wallplug.mjs || status=1
+node tests/21-jvmdis.mjs || status=1
+node tests/22-lantronix-lab.mjs || status=1
+
+# The wallplug family: three more generated boards (WiMAX mini-PCIe carrier,
+# Raspberry Pi Zero 2 W wall-socket carrier, HomePlug Green PHY ↔ Ethernet bridge)
+# built by the same design-agnostic emitter from footprints imported out of
+# published KiCad libraries, plus the sourced replacement-parts dataset.
+echo "──────────────────────────────────────────────"
+for design in plc-bridge wimax-cpe pi-wall-socket; do
+  node tools/build-wallplug-eagle.mjs --design="$design" --check || status=1
+done
+node tests/23-variants.mjs || status=1
+node tests/24-substitutes.mjs || status=1
+
 echo "──────────────────────────────────────────────"
 [ "$status" -eq 0 ] && echo "all suites passed" || echo "FAILURES — see above"
 exit "$status"

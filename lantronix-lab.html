@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0c14" />
+  <meta name="description" content="Client-side deep dive: the Lantronix xPort Pro's µClinux stack, matching a firmware blob to its processor and kernel in Ghidra, the DistroWatch question about alternatives, the Java/JVM/Java Card side of the same device class, and a generated EAGLE design for a mains-powered RS-232 ↔ RJ45 wallplug. Nothing is uploaded." />
+  <title>Lantronix Lab · µClinux, Ghidra matching, and the xPort Wallplug</title>
+  <link rel="icon" href="./img/app-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="./img/apple-touch.png" sizes="180x180" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./css/validator.css" />
+  <link rel="stylesheet" href="./css/lantronix-lab.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html#grid" aria-label="Back to SITE-K">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-copy">
+          <strong>LANTRONIX LAB</strong>
+          <small>µCLINUX · GHIDRA MATCH · WALLPLUG EDA</small>
+        </span>
+      </a>
+      <div class="header-right">
+        <span class="local-status"><i></i>CLIENT-SIDE ONLY</span>
+        <a class="back-link" href="./ghidra-lab.html" target="_top">GHIDRA LAB <span aria-hidden="true">↗</span></a>
+        <a class="back-link" href="./distro-dossier.html" target="_top">DISTRO DOSSIER <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span>DEEP DIVE</span><b></b>xPORT PRO · 16 MB FLASH · RS-232 ↔ RJ45</div>
+        <h1 id="page-title">Lantronix,<br /><em>µClinux</em> and the wallplug</h1>
+        <p class="hero-copy">
+          One device — a thumb-sized Lantronix serial-to-Ethernet module with <b>16 MB of flash</b> — pulls five
+          threads together: the <b>µClinux</b> stack it runs, the <b>Ghidra</b> work needed to match an unknown
+          firmware blob to its processor and kernel, the <b>DistroWatch</b> question about what else could run on
+          that silicon, the <b>Java</b> side (JVM bytecode, Java Card, a wiki that ships as a jar, and ACME's tiny
+          web servers), and the <b>EAGLE</b> design for a mains-powered wallplug that carries it.
+          Every panel below runs in this tab: the triage tool and the class-file reader parse your bytes locally,
+          and the EDA view renders the generated <code>.sch</code>/<code>.brd</code> and re-runs the design-rule
+          checks in the browser. Companion write-up:
+          <a href="./docs/lantronix-uclinux-deep-dive-2026-10-08.md">docs/lantronix-uclinux-deep-dive-2026-10-08.md</a>.
+        </p>
+        <div class="protocol-strip" aria-label="Scope">
+          <span>DSTni-EX / DSTni-FX</span><span>COLDFIRE MCF5208</span><span>µCLINUX 2.6.30</span>
+          <span>dBUG + ROMFS/JFFS2</span><span>68000:BE:32:Coldfire</span><span>JVM:BE:32:default</span>
+          <span>EAGLE 9.6.2 XML</span><span>NO NETWORK</span>
+        </div>
+      </section>
+
+      <nav class="tabs" id="tabs" aria-label="Sections">
+        <button type="button" class="tab is-on" id="tabDevice" data-tab="device">DEVICE MATRIX</button>
+        <button type="button" class="tab" id="tabGhidra" data-tab="ghidra">GHIDRA MATCH</button>
+        <button type="button" class="tab" id="tabUclinux" data-tab="uclinux">µCLINUX &amp; ALTERNATIVES</button>
+        <button type="button" class="tab" id="tabJava" data-tab="java">JAVA / JVM / JCVM</button>
+        <button type="button" class="tab" id="tabEda" data-tab="eda">WALLPLUG EDA</button>
+        <button type="button" class="tab" id="tabSources" data-tab="sources">SOURCES</button>
+      </nav>
+
+      <!-- ---------------------------------------------------------- device -->
+      <section class="panel-set" id="panel-device">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Lantronix serial-to-Ethernet families</h2>
+            <span class="panel-tag" id="deviceCount">—</span>
+          </div>
+          <p class="panel-note">
+            The part that matters for reverse engineering is the silicon: Lantronix's <b>DSTni-EX</b> is an
+            x86-class 16-bit core that runs <b>Evolution OS</b>, and the <b>DSTni-FX</b> is a Freescale ColdFire
+            that runs either Evolution OS or the vendor's <b>µClinux</b>. Same RJ45, same 8-pin serial header,
+            two completely different Ghidra languages.
+          </p>
+          <input type="search" id="deviceSearch" class="search" placeholder="Filter: coldfire, dstni, 16 mb, linux, evolution…" autocomplete="off" />
+          <div class="chips" id="deviceFilters"></div>
+          <div class="table-wrap">
+            <table class="grid" id="deviceTable">
+              <thead>
+                <tr><th>Product</th><th>Processor</th><th>OS</th><th>Kernel</th><th>Flash / RAM</th><th>Ghidra language</th></tr>
+              </thead>
+              <tbody id="deviceBody"></tbody>
+            </table>
+          </div>
+          <div class="detail" id="deviceDetail" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- ---------------------------------------------------------- ghidra -->
+      <section class="panel-set" id="panel-ghidra" hidden>
+        <div class="console">
+          <aside class="rail">
+            <section class="panel">
+              <div class="panel-head"><h2>Firmware triage</h2><span class="panel-tag">LOCAL</span></div>
+              <p class="panel-note">
+                Drop a firmware blob (or paste hex) — nothing leaves the tab. The reader sniffs container magics,
+                decodes the ELF/uImage header fields that name the architecture, pulls version strings out of the
+                bytes, and prints the Ghidra language + loader recipe that follows from them.
+              </p>
+              <label class="drop" id="triageDrop">
+                <input type="file" id="triageFile" hidden />
+                <b>Drop a .rom / .bin / image here</b>
+                <small>or click to choose — first 4 MB are read</small>
+              </label>
+              <textarea id="triageHex" class="hex" rows="6" spellcheck="false"
+                placeholder="or paste hex, e.g.&#10;27 05 19 56 60 31 26 f3 …"></textarea>
+              <div class="row">
+                <button type="button" class="btn" id="triageRun">TRIAGE</button>
+                <button type="button" class="btn ghost" id="triageDemo">LOAD DEMO BLOB</button>
+                <button type="button" class="btn ghost" id="triageClear">CLEAR</button>
+              </div>
+              <div class="verdict" id="triageResult" aria-live="polite"></div>
+            </section>
+          </aside>
+
+          <div class="stack">
+            <section class="panel">
+              <div class="panel-head"><h2>Signature table</h2><span class="panel-tag" id="sigCount">—</span></div>
+              <div class="table-wrap">
+                <table class="grid" id="sigTable">
+                  <thead><tr><th>Bytes</th><th>What it is</th><th>What it tells you</th></tr></thead>
+                  <tbody id="sigBody"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head"><h2>Processor → Ghidra language</h2><span class="panel-tag">SLEIGH</span></div>
+              <p class="panel-note">
+                Language IDs quoted from Ghidra's own <code>.ldefs</code> files
+                (<code>Ghidra/Processors/…/data/languages</code>). ColdFire lives inside the 68000 module;
+                Java bytecode has a processor module of its own.
+              </p>
+              <div class="table-wrap">
+                <table class="grid" id="langTable">
+                  <thead><tr><th>Silicon / blob</th><th>Ghidra language id</th><th>Loader notes</th></tr></thead>
+                  <tbody id="langBody"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head"><h2>Kernel-matching workflow</h2><span class="panel-tag">7 STEPS</span></div>
+              <ol class="steps" id="workflow"></ol>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- --------------------------------------------------------- uclinux -->
+      <section class="panel-set" id="panel-uclinux" hidden>
+        <div class="panel">
+          <div class="panel-head"><h2>What Lantronix actually ships</h2><span class="panel-tag">SDK 900-548</span></div>
+          <p class="panel-note">
+            The Linux SDK for MatchPort AR / xPort Pro / EDS1100-2100 is a <b>µClinux-dist</b> tree: patched
+            kernel, uClibc, BusyBox and a hand-picked userland, built with a CodeSourcery
+            <code>m68k-uclinux</code> toolchain, booted by a two-stage loader (read-only Lantronix stage +
+            <b>dBUG</b>), with a ROMFS root and an optional JFFS2 partition in 16 MB of parallel flash.
+          </p>
+          <div class="table-wrap">
+            <table class="grid" id="sdkTable">
+              <thead><tr><th>Layer</th><th>What it is</th><th>Evidence in the image</th></tr></thead>
+              <tbody id="sdkBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Alternatives — and the DistroWatch trap</h2><span class="panel-tag" id="altCount">—</span></div>
+          <p class="panel-note" id="dwNote"></p>
+          <div class="table-wrap">
+            <table class="grid" id="altTable">
+              <thead><tr><th>Candidate</th><th>Kernel</th><th>m68k / ColdFire nommu?</th><th>Verdict for this device</th></tr></thead>
+              <tbody id="altBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>µClinux, in five dates</h2><span class="panel-tag">TIMELINE</span></div>
+          <ol class="steps" id="uclinuxTimeline"></ol>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------ java -->
+      <section class="panel-set" id="panel-java" hidden>
+        <div class="console">
+          <aside class="rail">
+            <section class="panel">
+              <div class="panel-head"><h2>Class / CAP reader</h2><span class="panel-tag">LOCAL</span></div>
+              <p class="panel-note">
+                Drop a <code>.class</code>, <code>.jar</code> or Java Card <code>.cap</code>. The reader parses
+                <code>CAFEBABE</code> (constant pool, methods, <code>Code</code>) or <code>DECAFFED</code> (CAP
+                components) and disassembles the bytecode — the same instruction stream Ghidra's
+                <code>JVM:BE:32:default</code> language loads.
+              </p>
+              <label class="drop" id="javaDrop">
+                <input type="file" id="javaFile" hidden />
+                <b>Drop a .class / .cap / .jar</b>
+                <small>jars are unzipped in-tab; first class wins</small>
+              </label>
+              <div class="row">
+                <button type="button" class="btn" id="javaDemo">LOAD DEMO CLASS</button>
+                <button type="button" class="btn ghost" id="javaClear">CLEAR</button>
+              </div>
+              <div class="verdict" id="javaResult" aria-live="polite"></div>
+              <pre class="listing" id="javaListing" hidden></pre>
+            </section>
+          </aside>
+
+          <div class="stack">
+            <section class="panel">
+              <div class="panel-head"><h2>JVM vs Java Card VM</h2><span class="panel-tag">BYTECODE</span></div>
+              <div class="table-wrap">
+                <table class="grid" id="jvmTable">
+                  <thead><tr><th></th><th>JVM (hotspot class file)</th><th>JCVM (Java Card)</th></tr></thead>
+                  <tbody id="jvmBody"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head"><h2>Tiny web servers on a device this small</h2><span class="panel-tag">HTTP</span></div>
+              <p class="panel-note" id="acmeNote"></p>
+              <div class="table-wrap">
+                <table class="grid" id="acmeTable">
+                  <thead><tr><th>Server</th><th>Language / size</th><th>Where it turns up</th></tr></thead>
+                  <tbody id="acmeBody"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head"><h2>"Wiki in a jar"</h2><span class="panel-tag">VERIFIED FROM THE JAR</span></div>
+              <div id="wikiCard" class="card"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------- eda -->
+      <section class="panel-set" id="panel-eda" hidden>
+        <div class="panel">
+          <div class="panel-head">
+            <h2>xPort Wallplug — generated EAGLE design</h2>
+            <span class="panel-tag" id="edaTag">—</span>
+          </div>
+          <p class="panel-note">
+            A mains-powered wallplug that carries the module: IEC-fused 230/120 V input → isolated 3.3 V AC/DC →
+            the xPort Pro's 8-pin header, with a MAX3232 giving a real RS-232 DE-9 and a DTE/DCE solder strap.
+            The <code>.lbr</code>, <code>.sch</code> and <code>.brd</code> below are generated from
+            <code>tools/wallplug-model.mjs</code> and verified by <code>--check</code>; this view re-runs the same
+            geometry rules in the browser.
+          </p>
+          <div class="row wrap">
+            <div class="seg" id="edaView">
+              <button type="button" class="seg-btn is-on" id="viewBoard" data-view="board">BOARD</button>
+              <button type="button" class="seg-btn" id="viewSchem" data-view="schem">SCHEMATIC</button>
+            </div>
+            <div class="seg" id="edaLayer">
+              <button type="button" class="seg-btn is-on" id="layerCu" data-layer="cu">COPPER + SILK</button>
+              <button type="button" class="seg-btn" id="layerZones" data-layer="zones">ZONES</button>
+              <button type="button" class="seg-btn" id="layerCourts" data-layer="courts">COURTYARDS</button>
+            </div>
+            <div class="downloads" id="downloads"></div>
+          </div>
+          <div class="canvas-wrap" id="canvasWrap">
+            <svg id="edaSvg" class="eda" viewBox="0 0 110 70" role="img" aria-label="Generated EAGLE board"></svg>
+          </div>
+          <div class="eda-legend" id="edaLegend"></div>
+          <div class="detail" id="edaDetail" aria-live="polite"></div>
+        </div>
+
+        <div class="console">
+          <aside class="rail">
+            <section class="panel">
+              <div class="panel-head"><h2>Nets</h2><span class="panel-tag" id="netCount">—</span></div>
+              <input type="search" id="netSearch" class="search" placeholder="Filter nets…" autocomplete="off" />
+              <ul class="netlist" id="netList"></ul>
+            </section>
+            <section class="panel">
+              <div class="panel-head"><h2>Design rules</h2><span class="panel-tag">IN-BROWSER</span></div>
+              <div class="verdict" id="drcReport" aria-live="polite"></div>
+            </section>
+          </aside>
+          <div class="stack">
+            <section class="panel">
+              <div class="panel-head"><h2>Bill of materials</h2><span class="panel-tag" id="bomCount">—</span></div>
+              <div class="chips" id="bomFilters"></div>
+              <div class="table-wrap">
+                <table class="grid" id="bomTable">
+                  <thead><tr><th>Ref</th><th>Value</th><th>Package</th><th>Fit</th><th>Zone</th><th>Note</th></tr></thead>
+                  <tbody id="bomBody"></tbody>
+                </table>
+              </div>
+            </section>
+            <section class="panel">
+              <div class="panel-head"><h2>Layout, routing and safety notes</h2><span class="panel-tag">READ BEFORE FAB</span></div>
+              <div id="edaNotes" class="card"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- --------------------------------------------------------- sources -->
+      <section class="panel-set" id="panel-sources" hidden>
+        <div class="panel">
+          <div class="panel-head"><h2>Sources</h2><span class="panel-tag" id="sourceCount">—</span></div>
+          <p class="panel-note">
+            Everything asserted in this lab and in the companion deep dive comes from one of these. Vendor PDFs
+            were read in full; GitHub facts were read from the repositories named, at the paths quoted.
+          </p>
+          <ul class="sources" id="sourceList"></ul>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <span>LANTRONIX LAB · generated from tools/wallplug-model.mjs · <a href="./docs/lantronix-uclinux-deep-dive-2026-10-08.md">deep dive</a></span>
+        <span>NO UPLOADS · NO EXECUTION · STATIC ANALYSIS ONLY</span>
+      </footer>
+    </main>
+  </div>
+  <script type="module" src="./js/lantronix-lab.js"></script>
+</body>
+</html>
