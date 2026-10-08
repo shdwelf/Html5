@@ -140,6 +140,16 @@ node tools/make-vincennes-dem.mjs >/dev/null || status=1
 node scripts/build-vincennes-xdc.mjs >/dev/null || status=1
 node tests/19-vincennes.mjs || status=1
 
+# Lantronix Lab: the generated xPort Wallplug EAGLE design (model → .lbr/.sch/.brd,
+# reference resolution, connectivity, creepage/clearance, sheet readability), the
+# JVM class / Java Card CAP reader and bytecode disassembler, and the lab page
+# controller against the DOM stub.
+echo "──────────────────────────────────────────────"
+node tools/build-wallplug-eagle.mjs --check || status=1
+node tests/20-wallplug.mjs || status=1
+node tests/21-jvmdis.mjs || status=1
+node tests/22-lantronix-lab.mjs || status=1
+
 echo "──────────────────────────────────────────────"
 [ "$status" -eq 0 ] && echo "all suites passed" || echo "FAILURES — see above"
 exit "$status"
