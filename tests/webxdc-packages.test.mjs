@@ -262,11 +262,16 @@ test("Headline Harry archive boots the js-dos v8 API with the complete engine", 
 
 test("merged CyberChef archive is current and self-contained", () => {
   const files = archive("cyberchef.xdc");
-  assert.equal(text(files, "index.html"), source("public/apps/cyberchef/index.html"));
+  const src = source("public/apps/cyberchef/index.html");
+  assert.equal(text(files, "index.html"), src);
   assert.match(text(files, "manifest.toml"), /CyberChef Kitchen \(Html5 merged\)/);
-  assert.match(text(files, "manifest.toml"), /478 operations/);
-  assert.match(text(files, "index.html"), /HTML5 · 478 recipes/);
-  for (const id of ["enigmaM4", "secomExact", "virusSigScan", "dosBootSector", "gcwBraille", "primesFactor"]) {
+  // Derive the operation count from the kitchen's own header badge: the manifest
+  // and the page must agree, and neither is pinned to a number that goes stale.
+  const badge = (src.match(/HTML5 · (\d+) recipes/) || [])[1];
+  assert.ok(badge, "kitchen header has no recipe-count badge");
+  assert.match(text(files, "manifest.toml"), new RegExp(`${badge} operations`));
+  assert.match(text(files, "index.html"), new RegExp(`HTML5 · ${badge} recipes`));
+  for (const id of ["enigmaM4", "secomExact", "virusSigScan", "dosBootSector", "gcwBraille", "primesFactor", "qr", "averyLabels"]) {
     assert.match(text(files, "index.html"), new RegExp(`addOp\\(['"]${id}['"]`), `archive is missing ${id}`);
   }
   assert.ok(files["webxdc.js"], "cyberchef.xdc is missing the webxdc shim");

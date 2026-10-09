@@ -29,18 +29,26 @@ function boot() {
 test("merged CyberChef keeps both repositories' recipe sets", () => {
   const { ops, ids, packs } = boot();
   assert.equal(new Set(ids).size, ids.length, "operation ids must stay unique");
-  assert.equal(ids.length, report.counts.mergedRuntime);
-  assert.equal(ops.length, report.counts.mergedRuntime);
-  assert.match(html, new RegExp(`HTML5 · ${report.counts.mergedRuntime} recipes`));
+  // The 2026-10-07 Html5 <-> Html5-sync-incoming merge produced counts.mergedRuntime
+  // operations. The build has grown locally since (QR Code + Avery label sheet),
+  // so the registry must be a superset of the merge, never a subset of it.
+  assert.ok(ids.length >= report.counts.mergedRuntime,
+    `registry (${ids.length}) must not lose operations from the merge (${report.counts.mergedRuntime})`);
+  assert.equal(ops.length, ids.length);
+  assert.match(html, new RegExp(`HTML5 · ${ids.length} recipes`), "header count matches the registry");
+
+  // Every operation the merge contributed is still present.
+  for (const id of report.onlyPorter) {
+    assert.ok(ids.includes(id), `lost merged recipe ${id}`);
+  }
+  // Locally added after the merge.
+  for (const id of ["qr", "averyLabels"]) {
+    assert.ok(ids.includes(id), `missing locally added recipe ${id}`);
+  }
 
   // Six Crow/field-cipher recipes were the original sync-outgoing payload.
   for (const id of ["enigmaM4", "secomSchedule", "odPoemKey", "secomExact", "iocFitness", "plugboardHillClimb"]) {
     assert.ok(ids.includes(id), `missing synced recipe ${id}`);
-  }
-
-  // Html5-only research recipes survive the incoming-base merge.
-  for (const id of report.onlyPorter) {
-    assert.ok(ids.includes(id), `missing Html5-only recipe ${id}`);
   }
 
   // Incoming-only upstream/research recipes are present too.

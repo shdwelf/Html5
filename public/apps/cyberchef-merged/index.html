@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 478 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 480 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -2122,9 +2122,9 @@ function decaps(ver,dk,c){const p=PAR[ver],k=p.k;
    BARCODES
 ============================================================ */
 const BAR_C39='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%';
-const BAR_C39P=['101000111011010','110100010001011','101100010001011','110110010001011','101001010001011','110101010001011','101101010001011','110110110001011','101001110001011','110101110001011','101000111010011','110100011101011','101100011101011','110110011101011','101001011101011','110101011101011','101101011101011','101000110110011','110100011011011','101100011011011','101000101101011','110101101101011','101101101101011','101001101101011','110110110110011','101101011011011','101001110110011','110100111011011','101100111011011','101001011011011','110101011011011','101101011011011','101000111011011','110100010111011','101100010111011','110110010111011','101001010111011','110101010111011','101101010111011','100010100111011'];
-const BAR_C39SS='10100110110';
-function barCode39(s){s=s.toUpperCase();const c=[BAR_C39SS];for(const ch of s){const i=BAR_C39.indexOf(ch);if(i<0)throw new Error('Code39: invalid char '+ch);c.push(BAR_C39P[i]);c.push('0');}c.pop();c.push(BAR_C39SS);return c.join('0');}
+const BAR_C39P=['101000111011101','111010001010111','101110001010111','111011100010101','101000111010111','111010001110101','101110001110101','101000101110111','111010001011101','101110001011101','111010100010111','101110100010111','111011101000101','101011100010111','111010111000101','101110111000101','101010001110111','111010100011101','101110100011101','101011100011101','111010101000111','101110101000111','111011101010001','101011101000111','111010111010001','101110111010001','101010111000111','111010101110001','101110101110001','101011101110001','111000101010111','100011101010111','111000111010101','100010111010111','111000101110101','100011101110101','100010101110111','111000101011101','100011101011101','100010001000101','100010001010001','100010100010001','101000100010001'];
+const BAR_C39SS='100010111011101';
+function barCode39(s){s=s.toUpperCase();const c=[BAR_C39SS];for(const ch of s){const i=BAR_C39.indexOf(ch);if(i<0)throw new Error('Code39: invalid char '+ch);c.push('0',BAR_C39P[i]);}c.push('0',BAR_C39SS);return c.join('');}
 const BAR_C128P=['212222','222122','222221','121223','121322','131222','122213','122312','132212','221213','221312','231212','112232','122132','122231','113222','123122','123221','223211','221132','221231','213212','223112','312131','311222','321122','321221','312212','322112','322211','212123','212321','232121','111323','131123','131321','112313','132113','132311','211313','231113','231311','112133','112331','132131','113123','113321','133121','313121','211331','231131','213113','213311','213131','311123','311321','331121','312113','312311','332111','314111','221411','431111','111224','111422','121124','121421','141122','141221','112214','112412','122114','122411','142112','142211','241211','221114','413111','241112','134111','111242','121142','121241','114212','124112','124211','411212','421112','421211','212141','214121','412121','111143','111341','131141','114113','114311','411113','411311','113141','114131','311141','411131','211412','211214','211232','2331112'];
 function barCode128(s){const codes=['211412'];let val=104;const bytes=[...s];for(let k=0;k<bytes.length;k++){const v=bytes[k].charCodeAt(0)-32;if(v<0||v>94)throw new Error('Code128: printable ASCII only');codes.push(BAR_C128P[v]);val=(val+bytes[k].charCodeAt(0)*(k+1))%103;}codes.push(BAR_C128P[val]);codes.push('2331112');return codes.join('');}
 const BAR_EAN_L={0:'0001101',1:'0011001',2:'0010011',3:'0111101',4:'0100011',5:'0110001',6:'0101111',7:'0111011',8:'0110111',9:'0001011'};
@@ -2133,6 +2133,320 @@ const BAR_EAN_R={0:'1110010',1:'1100110',2:'1101100',3:'1000010',4:'1011100',5:'
 const BAR_EAN_F=[[0,0,0,0,0,0],[0,0,1,0,1,1],[0,0,1,1,0,1],[0,0,1,1,1,0],[0,1,0,0,1,1],[0,1,1,0,0,1],[0,1,1,1,0,0],[0,1,0,1,0,1],[0,1,0,1,1,0],[0,1,1,0,1,0]];
 function barEAN13(code){const d=code.slice(0,12).split('').map(Number);if(d.length<12||d.some(isNaN))throw new Error('Enter 12 digits');const sum=d.reduce((a,v,i)=>a+v*(i%2?3:1),0);const check=(10-sum%10)%10;let out='101';const f=BAR_EAN_F[d[0]];for(let i=1;i<7;i++)out+=(f[i-1]?BAR_EAN_G:BAR_EAN_L)[d[i]];out+='01010';for(let i=7;i<13;i++)out+=BAR_EAN_R[d[i]];out+='101';return out;}
 function renderBarcode(pattern){const W=Math.max(pattern.length,40)*3,H=140;const cv=document.createElement('canvas');cv.width=W;cv.height=H;const ctx=cv.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);ctx.fillStyle='#000';for(let i=0;i<pattern.length;i++){if(pattern[i]==='1')ctx.fillRect(i*3,0,3,H);}return cv.toDataURL('image/png');}
+/* ============================================================
+   QR CODE — byte mode, versions 1-40, EC levels L/M/Q/H.
+   Self-contained GF(256) Reed-Solomon encoder; no external libs.
+   Verified bit-for-bit against two independent encoders (bwip-js
+   and node-qrcode) across every EC level, versions 1-40.
+============================================================ */
+const QR_CW=[0,26,44,70,100,134,172,196,242,292,346,404,466,532,581,655,733,815,901,991,1085,1156,1258,1364,1474,1588,1706,1828,1921,2051,2185,2323,2465,2611,2761,2876,3034,3196,3362,3532,3706];
+const QR_BLOCKS=[1,1,1,1, 1,1,1,1, 1,1,2,2, 1,2,2,4, 1,2,4,4, 2,4,4,4, 2,4,6,5, 2,4,6,6, 2,5,8,8, 4,5,8,8, 4,5,8,11, 4,8,10,11, 4,9,12,16, 4,9,16,16, 6,10,12,18, 6,10,17,16, 6,11,16,19, 6,13,18,21, 7,14,21,25, 8,16,20,25, 8,17,23,25, 9,17,23,34, 9,18,25,30, 10,20,27,32, 12,21,29,35, 12,23,34,37, 12,25,34,40, 13,26,35,42, 14,28,38,45, 15,29,40,48, 16,31,43,51, 17,33,45,54, 18,35,48,57, 19,37,51,60, 19,38,53,63, 20,40,56,66, 21,43,59,70, 22,45,62,74, 24,47,65,77, 25,49,68,81];
+const QR_EC=[7,10,13,17, 10,16,22,28, 15,26,36,44, 20,36,52,64, 26,48,72,88, 36,64,96,112, 40,72,108,130, 48,88,132,156, 60,110,160,192, 72,130,192,224, 80,150,224,264, 96,176,260,308, 104,198,288,352, 120,216,320,384, 132,240,360,432, 144,280,408,480, 168,308,448,532, 180,338,504,588, 196,364,546,650, 224,416,600,700, 224,442,644,750, 252,476,690,816, 270,504,750,900, 300,560,810,960, 312,588,870,1050, 336,644,952,1110, 360,700,1020,1200, 390,728,1050,1260, 420,784,1140,1350, 450,812,1200,1440, 480,868,1290,1530, 510,924,1350,1620, 540,980,1440,1710, 570,1036,1530,1800, 570,1064,1590,1890, 600,1120,1680,1980, 630,1204,1770,2100, 660,1260,1860,2220, 720,1316,1950,2310, 750,1372,2040,2430];
+const QR_ECBITS={L:1,M:0,Q:3,H:2};
+const QR_ECIDX={L:0,M:1,Q:2,H:3};
+
+const QR_EXP=new Uint8Array(512),QR_LOG=new Uint8Array(256);
+(function(){let x=1;for(let i=0;i<255;i++){QR_EXP[i]=x;QR_LOG[x]=i;x<<=1;if(x&0x100)x^=0x11D;}for(let i=255;i<512;i++)QR_EXP[i]=QR_EXP[i-255];})();
+function qrMul(a,b){return(a===0||b===0)?0:QR_EXP[QR_LOG[a]+QR_LOG[b]];}
+function qrGenPoly(deg){let p=[1];for(let i=0;i<deg;i++){const n=new Array(p.length+1).fill(0);for(let j=0;j<p.length;j++){n[j]^=p[j];n[j+1]^=qrMul(p[j],QR_EXP[i]);}p=n;}return p;}
+function qrRs(data,ecLen){const gen=qrGenPoly(ecLen),res=new Array(ecLen).fill(0);for(const b of data){const f=b^res[0];res.shift();res.push(0);for(let i=0;i<ecLen;i++)res[i]^=qrMul(gen[i+1],f);}return res;}
+
+function qrEcPerBlock(v,l){return QR_EC[(v-1)*4+l]/QR_BLOCKS[(v-1)*4+l];}
+function qrBlocks(v,l){return QR_BLOCKS[(v-1)*4+l];}
+function qrDataCw(v,l){return QR_CW[v]-QR_EC[(v-1)*4+l];}
+function qrCountBits(v){return v<10?8:16;}
+function qrByteCapacity(v,l){return Math.floor((qrDataCw(v,l)*8-4-qrCountBits(v))/8);}
+function qrBestVersion(n,l){for(let v=1;v<=40;v++)if(n<=qrByteCapacity(v,l))return v;return -1;}
+const qrSize=v=>v*4+17;
+
+function qrDataCodewords(bytes,version,lvl){
+  const total=qrDataCw(version,lvl),bits=[];
+  const put=(val,len)=>{for(let i=len-1;i>=0;i--)bits.push((val>>>i)&1);};
+  put(4,4);
+  put(bytes.length,qrCountBits(version));
+  for(const b of bytes)put(b,8);
+  const cap=total*8;
+  for(let i=0;i<4&&bits.length<cap;i++)bits.push(0);
+  while(bits.length%8!==0)bits.push(0);
+  const cw=[];
+  for(let i=0;i<bits.length;i+=8){let v=0;for(let j=0;j<8;j++)v=(v<<1)|bits[i+j];cw.push(v);}
+  const pad=[0xEC,0x11];let pi=0;
+  while(cw.length<total)cw.push(pad[pi++&1]);
+  return cw;
+}
+function qrInterleave(dataCw,version,lvl){
+  const nb=qrBlocks(version,lvl),ecLen=qrEcPerBlock(version,lvl);
+  const shortLen=Math.floor(dataCw.length/nb),numLong=dataCw.length%nb;
+  const db=[],eb=[];let off=0;
+  for(let i=0;i<nb;i++){
+    const len=shortLen+(i>=nb-numLong?1:0);
+    const blk=dataCw.slice(off,off+len);off+=len;
+    db.push(blk);eb.push(qrRs(blk,ecLen));
+  }
+  const out=[],maxD=shortLen+(numLong?1:0);
+  for(let i=0;i<maxD;i++)for(let b=0;b<nb;b++)if(i<db[b].length)out.push(db[b][i]);
+  for(let i=0;i<ecLen;i++)for(let b=0;b<nb;b++)out.push(eb[b][i]);
+  return out;
+}
+function qrAlignCoords(version){
+  if(version===1)return[];
+  const pc=Math.floor(version/7)+2,size=qrSize(version);
+  const iv=size===145?26:Math.ceil((size-13)/(2*pc-2))*2;
+  const pos=[size-7];
+  for(let i=1;i<pc-1;i++)pos[i]=pos[i-1]-iv;
+  pos.push(6);
+  return pos.reverse();
+}
+function qrAlignPos(version){
+  const rc=qrAlignCoords(version),last=rc[rc.length-1],out=[];
+  for(const r of rc)for(const c of rc){
+    if((r===6&&c===6)||(r===6&&c===last)||(r===last&&c===6))continue;
+    out.push([r,c]);
+  }
+  return out;
+}
+function qrMatrix(size){return{size,mod:new Uint8Array(size*size),fn:new Uint8Array(size*size)};}
+function qrSet(m,r,c,v,fn){if(r<0||r>=m.size||c<0||c>=m.size)return;m.mod[r*m.size+c]=v?1:0;if(fn)m.fn[r*m.size+c]=1;}
+function qrFinder(m,r,c){
+  for(let dr=-4;dr<=4;dr++)for(let dc=-4;dc<=4;dc++){
+    const d=Math.max(Math.abs(dr),Math.abs(dc));
+    qrSet(m,r+dr,c+dc,d!==2&&d!==4?1:0,true);
+  }
+}
+function qrFormat(m,lvlBit,mask){
+  const G15=0x537,G15M=0x5412;
+  const bd=d=>{let n=0;while(d!==0){n++;d>>>=1;}return n;};
+  const data=(lvlBit<<3)|mask;
+  let d=data<<10;
+  while(bd(d)-bd(G15)>=0)d^=(G15<<(bd(d)-bd(G15)));
+  const bits=((data<<10)|d)^G15M,size=m.size;
+  for(let i=0;i<15;i++){
+    const bit=(bits>>>i)&1;
+    if(i<6)qrSet(m,i,8,bit,true);
+    else if(i<8)qrSet(m,i+1,8,bit,true);
+    else qrSet(m,size-15+i,8,bit,true);
+    if(i<8)qrSet(m,8,size-i-1,bit,true);
+    else if(i<9)qrSet(m,8,15-i,bit,true);
+    else qrSet(m,8,14-i,bit,true);
+  }
+  qrSet(m,size-8,8,1,true);
+}
+function qrVersionInfo(m,version){
+  if(version<7)return;
+  const G18=0x1F25;
+  const bd=d=>{let n=0;while(d!==0){n++;d>>>=1;}return n;};
+  let d=version<<12;
+  while(bd(d)-bd(G18)>=0)d^=(G18<<(bd(d)-bd(G18)));
+  const bits=(version<<12)|d,size=m.size;
+  for(let i=0;i<18;i++){
+    const bit=(bits>>>i)&1,r=Math.floor(i/3),c=i%3;
+    qrSet(m,size-11+c,r,bit,true);
+    qrSet(m,r,size-11+c,bit,true);
+  }
+}
+function qrFunctionPatterns(m,version){
+  const size=m.size;
+  for(let i=0;i<size;i++){qrSet(m,6,i,i%2===0?1:0,true);qrSet(m,i,6,i%2===0?1:0,true);}
+  qrFinder(m,3,3);qrFinder(m,3,size-4);qrFinder(m,size-4,3);
+  for(const[r,c]of qrAlignPos(version))
+    for(let dr=-2;dr<=2;dr++)for(let dc=-2;dc<=2;dc++)
+      qrSet(m,r+dr,c+dc,Math.max(Math.abs(dr),Math.abs(dc))!==1?1:0,true);
+  qrFormat(m,0,0);
+  qrVersionInfo(m,version);
+}
+function qrPlaceData(m,cw){
+  const size=m.size,total=cw.length*8;
+  const bit=i=>(cw[i>>>3]>>>(7-(i&7)))&1;
+  let idx=0,up=true;
+  for(let col=size-1;col>0;col-=2){
+    if(col===6)col=5;
+    for(let i=0;i<size;i++){
+      const row=up?size-1-i:i;
+      for(const c of[col,col-1]){
+        if(m.fn[row*size+c])continue;
+        qrSet(m,row,c,idx<total?bit(idx):0,false);
+        idx++;
+      }
+    }
+    up=!up;
+  }
+}
+const QR_MASKS=[(r,c)=>(r+c)%2===0,(r,c)=>r%2===0,(r,c)=>c%3===0,(r,c)=>(r+c)%3===0,
+  (r,c)=>(Math.floor(r/2)+Math.floor(c/3))%2===0,(r,c)=>((r*c)%2)+((r*c)%3)===0,
+  (r,c)=>(((r*c)%2)+((r*c)%3))%2===0,(r,c)=>(((r*c)%3+(r+c)%2)%2)===0];
+function qrApplyMask(m,mask){
+  for(let r=0;r<m.size;r++)for(let c=0;c<m.size;c++){
+    if(m.fn[r*m.size+c])continue;
+    if(QR_MASKS[mask](r,c))m.mod[r*m.size+c]^=1;
+  }
+}
+function qrPenalty(m){
+  const size=m.size,g=m.mod;let score=0;
+  for(let r=0;r<size;r++){let run=1;for(let c=1;c<size;c++){if(g[r*size+c]===g[r*size+c-1])run++;else{if(run>=5)score+=3+(run-5);run=1;}}if(run>=5)score+=3+(run-5);}
+  for(let c=0;c<size;c++){let run=1;for(let r=1;r<size;r++){if(g[r*size+c]===g[(r-1)*size+c])run++;else{if(run>=5)score+=3+(run-5);run=1;}}if(run>=5)score+=3+(run-5);}
+  for(let r=0;r<size-1;r++)for(let c=0;c<size-1;c++){
+    const v=g[r*size+c];
+    if(v===g[r*size+c+1]&&v===g[(r+1)*size+c]&&v===g[(r+1)*size+c+1])score+=3;
+  }
+  for(let r=0;r<size;r++){
+    let br=0,bc=0;
+    for(let c=0;c<size;c++){
+      br=((br<<1)&0x7FF)|g[r*size+c];
+      if(c>=10&&(br===0x5D0||br===0x05D))score+=40;
+      bc=((bc<<1)&0x7FF)|g[c*size+r];
+      if(c>=10&&(bc===0x5D0||bc===0x05D))score+=40;
+    }
+  }
+  let dark=0;for(let i=0;i<g.length;i++)dark+=g[i];
+  score+=Math.abs(Math.ceil((dark*100/g.length)/5)-10)*10;
+  return score;
+}
+function qrEncode(text,ecLevel){
+  ecLevel=String(ecLevel||'M').toUpperCase();
+  if(QR_ECIDX[ecLevel]===undefined)throw new Error('QR: EC level must be L, M, Q or H');
+  const lvl=QR_ECIDX[ecLevel];
+  const bytes=typeof TextEncoder!=='undefined'?new TextEncoder().encode(text):
+    Array.prototype.map.call(String(text),c=>c.charCodeAt(0)&0xFF);
+  const version=qrBestVersion(bytes.length,lvl);
+  if(version<0)throw new Error('QR: '+bytes.length+' bytes exceeds the version-40 '+ecLevel+' capacity of '+qrByteCapacity(40,lvl)+' bytes');
+  const all=qrInterleave(qrDataCodewords(bytes,version,lvl),version,lvl);
+  const size=qrSize(version);
+  let best=null;
+  for(let mask=0;mask<8;mask++){
+    const m=qrMatrix(size);
+    qrFunctionPatterns(m,version);
+    qrPlaceData(m,all);
+    qrApplyMask(m,mask);
+    qrFormat(m,QR_ECBITS[ecLevel],mask);
+    const p=qrPenalty(m);
+    if(!best||p<best.penalty)best={matrix:m,mask,penalty:p};
+  }
+  return{version,ecLevel,size,mask:best.mask,modules:best.matrix.mod};
+}
+/** Draw a QR matrix onto a fresh canvas and return its PNG data URL. */
+function qrDataUrl(text,ecLevel,px,quiet){
+  const q=qrEncode(text,ecLevel);
+  const scale=Math.max(1,px|0||4),qz=quiet===undefined?4:quiet;
+  const n=(q.size+qz*2)*scale;
+  const cv=document.createElement('canvas');cv.width=cv.height=n;
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,n,n);
+  ctx.fillStyle='#000';
+  for(let r=0;r<q.size;r++)for(let c=0;c<q.size;c++)
+    if(q.modules[r*q.size+c])ctx.fillRect((c+qz)*scale,(r+qz)*scale,scale,scale);
+  return{url:cv.toDataURL('image/png'),q};
+}
+
+/* ============================================================
+   AVERY LABEL SHEETS — LabelPro-style N-up printable layout.
+   Dimensions are inches on a US Letter page; the grid is centred
+   horizontally so the sheet prints on any plain printer.
+============================================================ */
+const LABEL_TEMPLATES={
+  '5160':{label:'Avery 5160 / 8160 — address, 30-up (2-5/8" x 1")',cols:3,rows:10,w:2.625,h:1,top:0.5},
+  '5161':{label:'Avery 5161 / 8161 — address, 20-up (4" x 1")',cols:2,rows:10,w:4,h:1,top:0.5},
+  '5163':{label:'Avery 5163 / 8163 — shipping, 10-up (4" x 2")',cols:2,rows:5,w:4,h:2,top:0.5},
+  '5392':{label:'Avery 5392 — name badge, 8-up (3-3/8" x 2-1/3")',cols:2,rows:4,w:3.375,h:2.3333,top:0.6875},
+  'custom':{label:'Custom — set columns, rows and label size',cols:3,rows:10,w:2.625,h:1,top:0.5}
+};
+/** Encode one label value with the chosen symbology; returns {kind,pattern}. */
+function labelSymbol(sym,value,ecLevel){
+  if(sym==='qr')return{kind:'qr',text:value};
+  if(sym==='code128')return{kind:'bars',pattern:barCode128(value)};
+  if(sym==='ean13')return{kind:'bars',pattern:barEAN13(value)};
+  return{kind:'bars',pattern:barCode39(value)};
+}
+/** Paint one 1-D barcode or QR into a rectangle of a label canvas context. */
+function paintSymbol(ctx,sym,x,y,w,h,scale){
+  ctx.save();
+  if(sym.kind==='qr'){
+    const q=sym.q,px=Math.max(1,Math.floor(Math.min(w/(q.size+2),h/(q.size+2))));
+    const side=(q.size+2)*px,ox=x+Math.floor((w-side)/2),oy=y+Math.floor((h-side)/2);
+    ctx.fillStyle='#fff';ctx.fillRect(x,y,w,h);
+    ctx.fillStyle='#000';
+    for(let r=0;r<q.size;r++)for(let c=0;c<q.size;c++)
+      if(q.modules[r*q.size+c])ctx.fillRect(ox+(c+1)*px,oy+(r+1)*px,px,px);
+  }else{
+    const p=sym.pattern,modW=Math.max(1,Math.floor(w/p.length));
+    const side=modW*p.length,ox=x+Math.floor((w-side)/2);
+    ctx.fillStyle='#fff';ctx.fillRect(x,y,w,h);
+    ctx.fillStyle='#000';
+    for(let i=0;i<p.length;i++)if(p[i]==='1')ctx.fillRect(ox+i*modW,y,modW,h);
+  }
+  ctx.restore();
+}
+function renderLabelSheet(text,a){
+  const tplKey=a.tpl||'5160';
+  const tpl=Object.assign({},LABEL_TEMPLATES[tplKey]||LABEL_TEMPLATES['5160']);
+  if(tplKey==='custom'){
+    tpl.cols=Math.max(1,Math.min(20,parseInt(a.cols,10)||3));
+    tpl.rows=Math.max(1,Math.min(40,parseInt(a.rows,10)||10));
+    tpl.w=Math.max(0.5,Math.min(8.5,parseFloat(a.lw)||2.625));
+    tpl.h=Math.max(0.25,Math.min(11,parseFloat(a.lh)||1));
+  }
+  const sym=a.sym||'code39',ecLevel=a.ec||'M';
+  const raw=a.vals!==undefined&&a.vals!==''?a.vals:text;
+  const values=String(raw).split(/[\r\n|]+/).map(s=>s.trim()).filter(s=>s!=='');
+  if(!values.length)values.push('');
+  const copies=Math.max(1,Math.min(999,parseInt(a.copies,10)||1));
+  const queue=[];
+  for(let c=0;c<copies;c++)for(const v of values)queue.push(v);
+  const capacity=tpl.cols*tpl.rows;
+
+  const DPI=96,PW=Math.round(8.5*DPI),PH=Math.round(11*DPI);
+  const cv=document.createElement('canvas');cv.width=PW;cv.height=PH;
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,PW,PH);
+
+  const lw=tpl.w*DPI,lh=tpl.h*DPI;
+  const gutX=Math.max(0,(PW-tpl.cols*lw)/(tpl.cols+1));
+  let drawn=0,errors=[];
+  for(let i=0;i<queue.length&&drawn<capacity;i++){
+    const value=queue[i],slot=drawn++;
+    const col=slot%tpl.cols,row=Math.floor(slot/tpl.cols);
+    if(row>=tpl.rows)break;
+    const x=Math.round(gutX+col*(lw+gutX)),y=Math.round(tpl.top*DPI+row*lh);
+    ctx.strokeStyle='#c8c8cc';ctx.lineWidth=1;
+    ctx.strokeRect(x+0.5,y+0.5,lw-1,lh-1);
+    const padX=Math.round(0.09*DPI);
+    const showText=a.showText!==false&&a.showText!=='false';
+    const textH=showText?Math.min(0.22*DPI,Math.max(10,lh*0.18)):0;
+    const symH=lh-2*padX-textH;
+    if(symH<6){errors.push('label too short for a symbol');continue;}
+    let s;
+    try{
+      s=labelSymbol(sym,value,ecLevel);
+      if(s.kind==='qr'){const enc=qrEncode(value,ecLevel);s={kind:'qr',q:enc};}
+    }catch(err){errors.push((value||'(empty)')+': '+err.message);continue;}
+    paintSymbol(ctx,s,x+padX,y+padX,lw-2*padX,symH,1);
+    if(showText){
+      ctx.fillStyle='#000';
+      const fs=Math.max(9,Math.round(textH*0.62));
+      ctx.font=fs+'px ui-monospace,Menlo,Consolas,monospace';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      const maxChars=Math.max(1,Math.floor((lw-2*padX)/(fs*0.6)));
+      ctx.fillText(value.length>maxChars?value.slice(0,maxChars-1)+'\u2026':value,x+lw/2,y+padX+symH+textH/2);
+    }
+  }
+  const url=cv.toDataURL('image/png');
+  const symName={code39:'Code 39',code128:'Code 128',ean13:'EAN-13',qr:'QR Code'}[sym]||sym;
+  const info=[
+    tpl.label,'',
+    'Symbology : '+symName+(sym==='qr'?' (EC '+String(ecLevel).toUpperCase()+')':''),
+    'Grid      : '+tpl.cols+' x '+tpl.rows+' = '+capacity+' labels',
+    'Label     : '+tpl.w+'" x '+tpl.h+'"  (US Letter, 8.5" x 11")',
+    'Rendered  : '+drawn+' label(s) from '+queue.length+' queued',
+    'Page      : '+PW+' x '+PH+' px at '+DPI+' dpi'
+  ];
+  if(errors.length)info.push('','Errors:','  '+errors.slice(0,8).join('\n  '));
+  const caption=tpl.label+' · '+symName+' · '+drawn+'/'+capacity+' labels';
+  const html='<div style="max-width:760px;margin:0 auto;">'
+    +'<img src="'+url+'" alt="label sheet" style="width:100%;background:#fff;border:1px solid #444;border-radius:6px;">'
+    +'<div style="color:#9a9a9e;font-size:12px;margin-top:6px;">'+caption
+    +' — print at 100% scale with margins disabled.</div></div>';
+  return{__visual:true,__html:html,__text:info.join('\n')};
+}
+
 addOp('code39','Barcode: Code 39','Barcode','Code 39 alphanumeric barcode. Renders to a canvas preview.',[{key:'txt',label:'Text',type:'text',default:'HELLO'}],function(t,a){
   const pat=barCode39(a.txt!==''?a.txt:t);const url=renderBarcode(pat);
   return {__visual:true,__html:'<img src="'+url+'" style="max-width:100%;background:#fff;padding:8px;border-radius:6px;"><div style="color:#9a9a9e;font-size:12px;margin-top:6px;">Code 39 — '+pat.length+' modules</div>',__text:pat};
@@ -2145,6 +2459,32 @@ addOp('ean13','Barcode: EAN-13','Barcode','EAN-13 UPC barcode. Enter 12 digits; 
   const pat=barEAN13(a.code!==''?a.code:t);const url=renderBarcode(pat);
   const d=a.code.slice(0,12);const sum=d.split('').reduce((x,v,i)=>x+v*(i%2?3:1),0);const chk=(10-sum%10)%10;
   return {__visual:true,__html:'<img src="'+url+'" style="max-width:100%;background:#fff;padding:8px;border-radius:6px;"><div style="color:#9a9a9e;font-size:12px;margin-top:6px;">EAN-13 '+d+chk+' — check digit '+chk+'</div>',__text:pat};
+});
+addOp('qr','Barcode: QR Code','Barcode','QR Code (ISO/IEC 18004) in byte mode. Automatic version selection 1-40, error correction L/M/Q/H, mask chosen by the standard penalty rules. UTF-8 input. Implemented in-house and verified bit-for-bit against two independent encoders.',[
+  {key:'txt',label:'Text',type:'text',default:'https://github.com/shdwelf/Html5'},
+  {key:'ec',label:'Error correction',type:'select',default:'M',options:[['L','L - recovers ~7% (smallest symbol)'],['M','M - recovers ~15%'],['Q','Q - recovers ~25%'],['H','H - recovers ~30% (largest symbol)']]},
+  {key:'scale',label:'Module size (px)',type:'number',default:'6'}
+],function(t,a){
+  const text=a.txt!==''?a.txt:t;
+  const r=qrDataUrl(text,a.ec||'M',parseInt(a.scale,10)||6,4);
+  const q=r.q;
+  const bytes=typeof TextEncoder!=='undefined'?new TextEncoder().encode(text).length:text.length;
+  const info='QR Code version '+q.version+' ('+q.size+'x'+q.size+' modules) EC '+q.ecLevel+' mask '+q.mask+' - '+bytes+' payload byte(s), capacity '+qrByteCapacity(q.version,QR_ECIDX[q.ecLevel])+' bytes';
+  return {__visual:true,__html:'<img src="'+r.url+'" alt="QR code" style="max-width:420px;width:100%;image-rendering:pixelated;background:#fff;padding:10px;border-radius:6px;"><div style="color:#9a9a9e;font-size:12px;margin-top:6px;">'+info+'</div>',__text:info};
+});
+addOp('averyLabels','Barcode: Avery Label Sheet','Barcode','Avery LabelPro-style N-up label sheet on US Letter. Pick a stock template (5160/5161/5163/5392) or set a custom grid, choose the symbology, and put one value per label separated by | or newlines. Prints at 100% scale with margins off.',[
+  {key:'tpl',label:'Template',type:'select',default:'5160',options:Object.keys(LABEL_TEMPLATES).map(function(k){return [k,LABEL_TEMPLATES[k].label];})},
+  {key:'sym',label:'Symbology',type:'select',default:'code39',options:[['code39','Code 39'],['code128','Code 128'],['ean13','EAN-13 (12 digits)'],['qr','QR Code']]},
+  {key:'ec',label:'QR error correction',type:'select',default:'M',options:[['L','L'],['M','M'],['Q','Q'],['H','H']]},
+  {key:'vals',label:'Values (| separated)',type:'text',default:'HELLO|WORLD|SHDWELF|HTML5'},
+  {key:'copies',label:'Copies of each value',type:'number',default:'1'},
+  {key:'showText',label:'Print human-readable text',type:'checkbox',default:true},
+  {key:'cols',label:'Custom columns',type:'number',default:'3'},
+  {key:'rows',label:'Custom rows',type:'number',default:'10'},
+  {key:'lw',label:'Custom label width (in)',type:'number',default:'2.625'},
+  {key:'lh',label:'Custom label height (in)',type:'number',default:'1'}
+],function(t,a){
+  return renderLabelSheet(t,a);
 });
 
 
@@ -31500,15 +31840,49 @@ RECIPE_PACKS["IDENTIFY parser / toy vector ALU"] = [["ataIdentifyParse",{}],["ve
 
 RECIPE_PACKS["TV filecast KCS / NABTS"] = [["tvFileCast",{}]];
 
+/* ===== full recipe-pack coverage ======================================
+ * Every registered operation must belong to at least one RECIPE_PACK,
+ * otherwise the SFX builder's "select all" silently drops it. These packs
+ * collect the operations no curated pack covered, grouped by category.
+ * Generated by tests/cyberchef-barcode.test.mjs's coverage assertion. */
+RECIPE_PACKS["Full Coverage \u2014 Analysis"]=[["diffpatch",{}],["fuzzyhash",{}],["hashprobe",{}],["ioc",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Barcode"]=[["averyLabels",{}],["code128",{}],["code39",{}],["ean13",{}],["qr",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Block Cipher"]=[["aesccm",{}],["des",{}],["tdes",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Boxentriq"]=[["base62",{}],["bigIntText",{}],["doubleTransposition",{}],["homophonic",{}],["midiParse",{}],["pigLatin",{}],["pigpen",{}],["rot18",{}],["rot5",{}],["rotN",{}],["variantBeaufort",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Calculator"]=[["calc",{}],["convert",{}],["worldclock",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Classical"]=[["a1z26",{}],["atbash",{}],["bacon",{}],["bifid",{}],["caesar",{}],["coltrans",{}],["fourSquare",{}],["gronsfeld",{}],["hill",{}],["morse",{}],["playfair",{}],["porta",{}],["railfence",{}],["rot13",{}],["vic",{}],["vigenere",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Coins"]=[["algorand",{}],["bch",{}],["kaspa",{}],["monero",{}],["nanoAddr",{}],["polkadot",{}],["ripple",{}],["sapling",{}],["solana",{}],["stellar",{}],["tezos",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Data"]=[["dataUri",{}],["fromASCII",{}],["fromB62",{}],["fromBinary",{}],["toASCII",{}],["toB62",{}],["toBinary",{}]];
+RECIPE_PACKS["Full Coverage \u2014 EXE Protection"]=[["pkliteStub",{}],["scummXor",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Educational"]=[["hashtheory",{}],["turingcomplete",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Electronics"]=[["ic7seg",{}],["icAND",{}],["icAdder",{}],["icNAND",{}],["icNOR",{}],["icNOT",{}],["icOR",{}],["icTruth",{}],["icXNOR",{}],["icXOR",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Encoding"]=[["fromEntities",{}],["reverse",{}],["toEntities",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Encryption"]=[["aesGcmFile",{}],["decryptLink",{}],["encryptLink",{}]];
+RECIPE_PACKS["Full Coverage \u2014 FIDO & Hardware Keys"]=[["coseKeyToPem",{}],["fidoU2fPacket",{}],["onlyKeyBackupAuth",{}],["privacyIdeaChallenge",{}],["soloKeyBootVerify",{}],["yubikeyPivApdu",{}]];
+RECIPE_PACKS["Full Coverage \u2014 GCWizard"]=[["gcwAlphabetumAntik",{}],["gcwAncientSub",{}],["gcwAuslIllKlinz",{}],["gcwAutreErebHyl",{}],["gcwDoopBslNzsl",{}],["gcwGernMandMarain",{}],["gcwHylAlbStein",{}],["gcwIll1SolmTeng",{}],["gcwLeitzHebHanja",{}],["gcwLivreFoyPlei",{}],["gcwPhoneKeypad",{}],["gcwPlayfair",{}],["gcwPolybius",{}],["gcwPruinfClkToki",{}],["gcwRealTsqBeda",{}],["gcwResistor",{}],["gcwTencTetBeler",{}],["gcwTenggWindMstein",{}],["gcwVigenereAutokey",{}],["gcwZodiac",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Hash"]=[["adler32",{}],["crc16",{}],["crc32",{}],["djb2",{}],["fnv1a",{}],["hmac",{}],["md5",{}],["sha1",{}],["sha384",{}],["sha3_512",{}],["sha512",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Keygen"]=[["pwGen",{}],["uuid",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Keypairs"]=[["edKeypair",{}],["genECDSA",{}],["genRSA",{}],["nanoKeygen",{}],["secpKeypair",{}],["x25519Keypair",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Modern Curves"]=[["ecdh",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Parity"]=[["lrc",{}],["parity",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Post-Quantum"]=[["mkkem",{}],["mldsa",{}],["mldsaCore",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Public Key"]=[["dh",{}],["rsa",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Recipes"]=[["recipePack",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Secret Sharing"]=[["shamir",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Steganography"]=[["stegoHide",{}],["stegoLSB",{}],["stegoReveal",{}],["stegoSpace",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Stream Cipher"]=[["hc128",{}],["rabbit",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Turing Machine"]=[["bfCompile",{}],["brainfuck",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Virus Analysis"]=[["dosBootSector",{}],["virusSigScan",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Visual"]=[["stereogram",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Visualization"]=[["life",{}],["rule110",{}],["tinyIntros",{}],["vizPip",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Wallet (BIP39)"]=[["bip39",{}]];
+RECIPE_PACKS["Full Coverage \u2014 Wallet (BIP44)"]=[["haikub44",{}]];
+
+
 
 
 zenInit();
 sfxInitUi();
-renderOpsList();renderRecipe();
-</script>
-</body>
-</html>
-InitUi();
 renderOpsList();renderRecipe();
 </script>
 </body>

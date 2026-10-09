@@ -27,9 +27,14 @@ await mkdir(appDir, { recursive: true });
 await copyFile(path.join(root, "public", "apps", "cyberchef", "index.html"), path.join(appDir, "index.html"));
 await copyFile(path.join(root, "icon.png"), path.join(appDir, "icon.png"));
 
+// Read the operation count off the kitchen's own header badge so the manifest
+// description can never drift from the build it describes.
+const kitchenHtml = await readFile(path.join(root, "public", "apps", "cyberchef", "index.html"), "utf8");
+const opCount = (kitchenHtml.match(/HTML5 · (\d+) recipes/) || [])[1] || "0";
+
 const manifest = `name = "CyberChef Kitchen (Html5 merged)"
 source_code_url = "https://github.com/shdwelf/Html5"
-description = "Offline HTML5 CyberChef build — 478 operations after the Html5 / Html5-sync-incoming recipe merge."
+description = "Offline HTML5 CyberChef build — ${opCount} operations after the Html5 / Html5-sync-incoming recipe merge."
 icon = "icon.png"
 `;
 await writeFile(path.join(appDir, "manifest.toml"), manifest);
