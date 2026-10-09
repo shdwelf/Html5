@@ -216,15 +216,43 @@ const portedBlock = [
   "",
 ].join("\n\n");
 
-// Insert before the final UI bootstrap so renderOpsList() sees every operation.
-let insertAt = baseScript.lastIndexOf("zenInit();");
-if (insertAt < 0) insertAt = baseScript.lastIndexOf("InitUi();");
-if (insertAt < 0) insertAt = baseScript.lastIndexOf("renderOpsList();");
+/**
+ * Locate the final UI bootstrap call sequence in the base script.
+ *
+ * The kitchen has renamed its bootstrap entry points over time (`InitUi()` was
+ * replaced by `zenInit()` + `sfxInitUi()`), so match on a list of candidates in
+ * preference order and take the LAST occurrence of whichever marker exists.
+ * Matching a name that the build no longer defines used to leave the real
+ * bootstrap stranded outside the merged script.
+ */
+const BOOTSTRAP_MARKERS = ["zenInit();", "sfxInitUi();", "InitUi();", "renderOpsList();"];
+function findBootstrap(script) {
+  for (const marker of BOOTSTRAP_MARKERS) {
+    const at = script.lastIndexOf(marker);
+    if (at >= 0) return at;
+  }
+  return -1;
+}
+
+/**
+ * A single-file HTML app must end at its first `</html>`. Anything after it is
+ * reparsed by the browser as body text, which shows up as literal source on the
+ * rendered page. Repeated merges once accumulated a duplicate
+ * `</script></body></html>` tail that way, so truncate defensively.
+ */
+function endAtDocumentClose(html) {
+  const end = html.indexOf("</html>");
+  if (end < 0) throw new Error("no </html> in the merged document");
+  return `${html.slice(0, end + "</html>".length)}\n`;
+}
+
+const insertAt = findBootstrap(baseScript);
 if (insertAt < 0) throw new Error("could not find the final UI bootstrap in the base script");
 const mergedScript = `${baseScript.slice(0, insertAt)}\n${portedBlock}\n\n${baseScript.slice(insertAt)}`;
 
 let mergedHtml = baseHtml.replace(mainScript(baseHtml), () => mergedScript);
 mergedHtml = mergedHtml.replace(/HTML5 · \d+ recipes/g, `HTML5 · ${finalIds.size} recipes`);
+mergedHtml = endAtDocumentClose(mergedHtml);
 
 await writeFile(outPath, mergedHtml);
 const mergedIds = await runtimeOperationIds(await readFile(outPath, "utf8"));

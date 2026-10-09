@@ -63,7 +63,7 @@ describe("CyberChef EXE protection deep dive", () => {
       const added = ["mzTriage", "lzexeDecode", "tpeCrypt", "opcodeSubst", "antiDebugScan"];
       expect(ids).toEqual(expect.arrayContaining(added));
       expect(new Set(ids).size).toBe(ids.length);
-      expect(kitchen.html).toContain("478 recipes");
+      expect(kitchen.html).toContain(`${kitchen.operations.length} recipes`);
       expect(kitchen.html).toContain("EXE Packer Triage & LZEXE Unpack (Ghidra-verified)");
       expect(kitchen.html).toContain("DOS Anti-Debug & Polymorphic Ops (TPE, Johansson)");
       for (const id of added) expect(operationCategory(kitchen, id)).toBe("EXE Protection");
