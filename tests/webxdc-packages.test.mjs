@@ -264,8 +264,8 @@ test("merged CyberChef archive is current and self-contained", () => {
   const files = archive("cyberchef.xdc");
   assert.equal(text(files, "index.html"), source("public/apps/cyberchef/index.html"));
   assert.match(text(files, "manifest.toml"), /CyberChef Kitchen \(Html5 merged\)/);
-  assert.match(text(files, "manifest.toml"), /478 operations/);
-  assert.match(text(files, "index.html"), /HTML5 · 478 recipes/);
+  assert.match(text(files, "manifest.toml"), /479 operations/);
+  assert.match(text(files, "index.html"), /HTML5 · 479 recipes/);
   for (const id of ["enigmaM4", "secomExact", "virusSigScan", "dosBootSector", "gcwBraille", "primesFactor"]) {
     assert.match(text(files, "index.html"), new RegExp(`addOp\\(['"]${id}['"]`), `archive is missing ${id}`);
   }

@@ -56,7 +56,7 @@ describe("CyberChef classical-cipher deep dive", () => {
       ];
       expect(ids).toEqual(expect.arrayContaining(added));
       expect(new Set(ids).size).toBe(ids.length);
-      expect(kitchen.html).toContain("478 recipes");
+      expect(kitchen.html).toContain("479 recipes");
       expect(kitchen.html).toContain("Classical Deep Dive — Fractionation & Checkerboards");
       expect(kitchen.html).toContain("Classical Deep Dive — Running Keys & Routes");
 

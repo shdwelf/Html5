@@ -262,7 +262,7 @@ over the dev server's origin rather than `file://`:
 | --- | --- |
 | `/apps/` | Index, with a live secure-context / microphone check |
 | `/apps/anc-studio/` | ANC Studio Ultra — adaptive multi-band FxLMS over AudioWorklet |
-| `/apps/cyberchef/` | CyberChef Renovated Kitchen — 478 recipes after the Html5 ↔ Html5-sync-incoming merge, plus file input and save |
+| `/apps/cyberchef/` | CyberChef Renovated Kitchen — 479 recipes after the Html5 ↔ Html5-sync-incoming merge, plus file input and save |
 | `/apps/cookbook/` | Crypto Cookbook — 83-section reference, framed by the Cookbook tab |
 | `/apps/cryptofountain-bbs/` | CryptoFountain BBS — P2P microblogging with erasure codes |
 

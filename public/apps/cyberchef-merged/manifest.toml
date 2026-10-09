@@ -1,4 +1,4 @@
 name = "CyberChef Kitchen (Html5 merged)"
 source_code_url = "https://github.com/shdwelf/Html5"
-description = "Offline HTML5 CyberChef build — 478 operations after the Html5 / Html5-sync-incoming recipe merge."
+description = "Offline HTML5 CyberChef build — 479 operations: the 478-op Html5 / Html5-sync-incoming recipe merge plus the QR Code symbology."
 icon = "icon.png"

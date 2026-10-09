@@ -23,7 +23,7 @@ describe("museum and field-cipher research recipes", () => {
   it("registers auditable M4, SECOM schedule, and OD poem worksheets", () => {
     const k = kitchen();
     try {
-      expect(k.html).toContain("478 recipes");
+      expect(k.html).toContain("479 recipes");
       expect(k.html).toContain("Museum Rotor Machines — Enigma M3/M4");
       expect(k.html).toContain("Field Ciphers — SECOM & OD Poem Code");
       expect(k.html).toContain("repository probe reproduces the official full vector and rejects INMYMEMORYIWILLALWAY");
