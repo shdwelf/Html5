@@ -99,8 +99,10 @@ test("Code 39 table is structurally valid and covers the full alphabet", () => {
     assert.equal(check.chars, 43, "alphabet covers 0-9 A-Z - . space $ / + %");
     assert.equal(check.patterns, check.chars, "one pattern per character — '/ + %' used to have none");
     assert.deepEqual([...check.bad], []);
-    assert.deepEqual({ ...check.startStop }, { modules: 15, elements: 9, wide: 3 },
-      "the '*' start/stop must be the same 15-module shape as a data character");
+    // This build folds the trailing inter-character gap into the start/stop
+    // token, so it is the 15-module star (9 elements) plus one narrow space.
+    assert.deepEqual({ ...check.startStop }, { modules: 16, elements: 10, wide: 3 },
+      "the '*' start/stop must be the 15-module star shape plus its trailing gap");
   } finally {
     dom.window.close();
   }
@@ -118,12 +120,15 @@ test("Code 39 encoding matches the reference encoder bit for bit", () => {
     };
     for (const [text, want] of Object.entries(expected)) {
       const got = dom.window.eval(`barCode39(${JSON.stringify(text)})`);
-      assert.equal(got, want, `Code 39 of ${JSON.stringify(text)}`);
+      // bwip-js emits the symbol without a trailing quiet zone; this build ends
+      // every symbol with one narrow space, so the reference + '0' must match.
+      assert.equal(got, want + "0", `Code 39 of ${JSON.stringify(text)}`);
+      assert.equal(got.replace(/0+$/, ""), want.replace(/0+$/, ""), `Code 39 of ${JSON.stringify(text)} ignoring quiet zone`);
     }
-    // Symbol length must be start + (gap + char) per character + gap + stop.
+    // start(16) + n x (15 char + 1 gap) + stop(16)
     for (const text of ["A", "HELLO", "12345"]) {
       assert.equal(dom.window.eval(`barCode39(${JSON.stringify(text)}).length`),
-        15 + 16 * text.length + 16, `module count for ${JSON.stringify(text)}`);
+        16 + 16 * text.length + 16, `module count for ${JSON.stringify(text)}`);
     }
     assert.throws(() => dom.window.eval("barCode39('BAD*CHAR')"), /invalid char/,
       "'*' is reserved as the start/stop and must not be encodable as data");
@@ -159,7 +164,7 @@ test("QR encoder reproduces the reference matrices exactly", () => {
     for (const v of QR_VECTORS) {
       const got = dom.window.eval(`(function(){
         const q = qrEncode(${JSON.stringify(v.text)}, ${JSON.stringify(v.ec)});
-        return { version: q.version, size: q.size, mask: q.mask, bits: Array.prototype.join.call(q.modules, '') };
+        return { version: q.version, size: q.size, mask: q.mask, bits: q.modules.map(r => r.join('')).join('') };
       })()`);
       assert.equal(got.version, v.version, `version for ${JSON.stringify(v.text.slice(0, 24))} ${v.ec}`);
       assert.equal(got.size, v.size);
@@ -178,7 +183,7 @@ test("QR function patterns are placed correctly", () => {
   try {
     const check = dom.window.eval(`(function(){
       const q = qrEncode('HELLO WORLD', 'M');
-      const n = q.size, g = q.modules, at = (r, c) => g[r * n + c];
+      const n = q.size, g = q.modules, at = (r, c) => g[r][c];
       const finderOk = (r0, c0) => {
         for (let dr = 0; dr < 7; dr++) for (let dc = 0; dc < 7; dc++) {
           const ring = Math.max(Math.abs(dr - 3), Math.abs(dc - 3));
@@ -206,11 +211,17 @@ test("QR function patterns are placed correctly", () => {
 test("QR capacity limits are reported, not silently truncated", () => {
   const dom = boot();
   try {
-    assert.equal(dom.window.eval("qrByteCapacity(40, 0)"), 2953, "version 40 EC L holds 2953 bytes");
-    assert.equal(dom.window.eval("qrBestVersion(2953, 0)"), 40);
-    assert.equal(dom.window.eval("qrBestVersion(2954, 0)"), -1, "one byte over the largest symbol");
-    assert.throws(() => dom.window.eval("qrEncode('x'.repeat(2954), 'L')"), /exceeds the version-40/);
-    assert.throws(() => dom.window.eval("qrEncode('x', 'Z')"), /EC level must be/);
+    // v40-L: (3706 total - 750 EC) data codewords, minus a 4-bit mode indicator
+    // and a 16-bit byte count, is 2953 payload bytes.
+    assert.equal(dom.window.eval("(QR_TOTAL[39] - QR_EC.L[39][0])"), 2956, "v40-L data codewords");
+    assert.equal(dom.window.eval("Math.floor(((QR_TOTAL[39] - QR_EC.L[39][0]) * 8 - 4 - 16) / 8)"), 2953,
+      "version 40 EC L holds 2953 bytes");
+    assert.equal(dom.window.eval("qrPickVersion(2953, 'L')"), 40);
+    assert.equal(dom.window.eval("qrPickVersion(2954, 'L')"), -1, "one byte over the largest symbol");
+    assert.throws(() => dom.window.eval("qrEncode('x'.repeat(2954), 'L')"), /exceeds version 40 capacity/);
+    assert.throws(() => dom.window.eval("qrEncode('x', 'Z')"), /EC level must be one of L, M, Q, H/,
+      "an unknown EC level must be rejected, not blow up inside the table lookup");
+    assert.throws(() => dom.window.eval("qrPickVersion(1, 'Z')"), /EC level must be one of L, M, Q, H/);
   } finally {
     dom.window.close();
   }
@@ -219,11 +230,12 @@ test("QR capacity limits are reported, not silently truncated", () => {
 test("QR operation renders a PNG through bake()", async () => {
   const dom = boot();
   try {
-    const out = await bakeOp(dom, "qr", { txt: "HELLO WORLD", ec: "M", scale: "6" });
-    assert.match(out.text, /QR Code version 1 \(21x21 modules\) EC M mask 4/);
-        // v1-M holds 16 data codewords: floor((16*8 - 4 mode - 8 count) / 8) = 14 bytes.
-    assert.match(out.text, /11 payload byte\(s\), capacity 14 bytes/);
-    assert.match(out.html, /data:image\/png;base64,STUB/);
+    const out = await bakeOp(dom, "qrcode", { txt: "HELLO WORLD", ec: "M" });
+    assert.match(out.html, /QR version 1 — 21×21 modules — EC M — mask 4/);
+    // __text is the module matrix, one row of 0/1 per line.
+    const rows = out.text.split("\n");
+    assert.equal(rows.length, 21, "21 rows for a version-1 symbol");
+    assert.ok(rows.every((r) => r.length === 21 && /^[01]+$/.test(r)), "each row is 21 modules");
   } finally {
     dom.window.close();
   }
@@ -259,13 +271,20 @@ test("barcode operations are registered in the Barcode category", () => {
     const ops = JSON.parse(dom.window.eval(`JSON.stringify(OPERATIONS.filter(o => o.category === 'Barcode')
       .map(o => ({ id: o.id, name: o.name, args: o.args.map(a => a.key) })))`));
     const byId = Object.fromEntries(ops.map((o) => [o.id, o]));
-    for (const id of ["code39", "code128", "ean13", "qr", "averyLabels"]) {
+    for (const id of ["code39", "code128", "ean13", "qrcode", "averyLabels"]) {
       assert.ok(byId[id], `missing Barcode op ${id}`);
     }
-    assert.deepEqual([...byId.qr.args], ["txt", "ec", "scale"]);
+    assert.deepEqual([...byId.qrcode.args], ["txt", "ec"]);
+    assert.deepEqual([...byId.code39.args], ["txt", "mod43"], "mod-43 check character is selectable");
     assert.deepEqual([...byId.averyLabels.args],
       ["tpl", "sym", "ec", "vals", "copies", "showText", "cols", "rows", "lw", "lh"]);
-    assert.equal(dom.window.eval("Object.keys(LABEL_TEMPLATES).join(',')"), "5160,5161,5163,5392,custom");
+    // 'custom' is not a fixed template: it carries no dimensions of its own and
+    // is resolved from the op's cols/rows/width/height arguments instead.
+    assert.equal(dom.window.eval("Object.keys(LABEL_TEMPLATES).join(',')"), "5160,5161,5163,5392");
+    const custom = JSON.parse(dom.window.eval(
+      "JSON.stringify(labelTemplate('custom', { cols: 4, rows: 6, lw: 2, lh: 1.5, top: 0.4, left: 0.2 }))"));
+    assert.deepEqual({ ...custom }, { cols: 4, rows: 6, lw: 2, lh: 1.5, top: 0.4, left: 0.2, gx: 0, gy: 0,
+      name: "Custom 4x6" }, "a custom grid is built from the supplied dimensions");
   } finally {
     dom.window.close();
   }

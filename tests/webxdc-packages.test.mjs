@@ -271,7 +271,7 @@ test("merged CyberChef archive is current and self-contained", () => {
   assert.ok(badge, "kitchen header has no recipe-count badge");
   assert.match(text(files, "manifest.toml"), new RegExp(`${badge} operations`));
   assert.match(text(files, "index.html"), new RegExp(`HTML5 · ${badge} recipes`));
-  for (const id of ["enigmaM4", "secomExact", "virusSigScan", "dosBootSector", "gcwBraille", "primesFactor", "qr", "averyLabels"]) {
+  for (const id of ["enigmaM4", "secomExact", "virusSigScan", "dosBootSector", "gcwBraille", "primesFactor", "qrcode", "averyLabels"]) {
     assert.match(text(files, "index.html"), new RegExp(`addOp\\(['"]${id}['"]`), `archive is missing ${id}`);
   }
   assert.ok(files["webxdc.js"], "cyberchef.xdc is missing the webxdc shim");
