@@ -18,6 +18,7 @@
     "build:esgvrop": "node scripts/build-esgvrop-4dwm-xdc.mjs",
     "build:dalton-race": "node scripts/build-dalton-race-4dwm-xdc.mjs",
     "build:vincennes": "node scripts/build-vincennes-xdc.mjs",
+    "build:red-october": "node scripts/build-red-october-xdc.mjs",
     "build:sanborn-restaurant": "node scripts/build-sanborn-restaurant-xdc.mjs",
     "build:socal-subsurface": "node scripts/build-socal-subsurface-xdc.mjs",
     "build:ingress-intel": "node scripts/build-ingress-intel-xdc.mjs",
