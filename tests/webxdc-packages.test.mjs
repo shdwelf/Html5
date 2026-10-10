@@ -248,16 +248,45 @@ test("Headline Harry archive boots the js-dos v8 API with the complete engine", 
 
   const shell = text(files, "index.html");
   assert.equal(shell, source("public/apps/headline-harry/index.html"), "packed shell is stale");
+  assert.equal(
+    source("webxdc-headline-harry/app/index.html"),
+    source("public/apps/headline-harry/index.html"),
+    "staged app shell is stale versus its canonical source",
+  );
   assert.doesNotMatch(shell, /dosInstance\.run\(/, "v7 dosInstance.run() crept back into the shell");
   assert.match(shell, /url:\s*"roms\/headline-harry\.jsdos"/);
   assert.match(shell, /pathPrefix:\s*"js-dos\/"/);
 
   // The roms bundle must be a real .jsdos bundle: autoexec mounts C: and boots.
+  assert.ok(files["roms/headline-harry.jsdos"], "headline-harry.xdc lost the js-dos bundle");
+  const sourceBundle = readFileSync(path.join(root, "webxdc-headline-harry", "app", "roms", "headline-harry.jsdos"));
+  assert.deepEqual(
+    Buffer.from(files["roms/headline-harry.jsdos"]),
+    sourceBundle,
+    "packed js-dos bundle is stale versus its tracked source",
+  );
   const rom = unzipSync(files["roms/headline-harry.jsdos"]);
   const conf = decoder.decode(rom[".jsdos/dosbox.conf"]);
   assert.match(conf, /\[autoexec\]/);
   assert.match(conf, /mount c \./);
-  assert.ok(rom["MAP.EXE"], "headline-harry.jsdos lost MAP.EXE");
+  const autoexec = conf.split(/^\[autoexec\]\s*$/im)[1] ?? "";
+  assert.match(autoexec, /^[ \t]*MAP(?:\.EXE)?[ \t]*$/im, "autoexec must start the game directly");
+  assert.doesNotMatch(autoexec, /^[ \t]*INTRO(?:\.EXE)?[ \t]*$/im, "autoexec must skip the hanging intro");
+
+  // The shipped archive must contain the installer-recovered MZ executables,
+  // not the packed floppy copies whose first bytes are `ff 4d 5a`.
+  for (const name of ["INTRO.EXE", "MAP.EXE"]) {
+    const executable = rom[name];
+    assert.ok(executable, `headline-harry.jsdos lost ${name}`);
+    assert.equal(executable[0], 0x4d, `${name} does not begin with MZ`);
+    assert.equal(executable[1], 0x5a, `${name} does not begin with MZ`);
+  }
+
+  assert.deepEqual(
+    readFileSync(path.join(root, "webxdc-headline-harry", "headline-harry.xdc")),
+    readFileSync(path.join(root, "headline-harry.xdc")),
+    "the package-directory XDC copy must match the root deliverable",
+  );
 });
 
 test("merged CyberChef archive is current and self-contained", () => {
@@ -312,10 +341,29 @@ test("webxdc-dos archive boots js-dos v8 with complete engine and prebuilt bundl
     ["roms/SNEAKERS.jsdos", "RUN.BAT", "SNEAKERS.EXE"],
   ]) {
     assert.ok(files[bundle], `dos-binary-loader.xdc is missing ${bundle}`);
+    assert.deepEqual(
+      Buffer.from(files[bundle]),
+      readFileSync(path.join(root, "webxdc-dos", "public", "roms", path.basename(bundle))),
+      `${bundle} is stale versus the prebuilt source`,
+    );
     const inner = unzipSync(files[bundle]);
     const conf = decoder.decode(inner[".jsdos/dosbox.conf"]);
     assert.match(conf, /\[autoexec\]/, `${bundle} has no autoexec`);
     assert.ok(conf.trimEnd().endsWith(launcher), `${bundle} autoexec does not run ${launcher}`);
     assert.ok(inner[payload], `${bundle} lost ${payload}`);
+
+    if (bundle === "roms/SNEAKERS.jsdos") {
+      assert.ok(inner["RUN.BAT"], "SNEAKERS.jsdos lost RUN.BAT");
+      assert.match(decoder.decode(inner["RUN.BAT"]), /SNEAKERS\.EXE/i);
+      assert.equal(inner[payload][0], 0x4d, "SNEAKERS.EXE does not begin with MZ");
+      assert.equal(inner[payload][1], 0x5a, "SNEAKERS.EXE does not begin with MZ");
+      const exe = Buffer.from(inner[payload]);
+      const lastPageBytes = exe.readUInt16LE(2);
+      const pageCount = exe.readUInt16LE(4);
+      const declaredBytes = lastPageBytes ? (pageCount - 1) * 512 + lastPageBytes : pageCount * 512;
+      assert.equal(declaredBytes, exe.length, "SNEAKERS.EXE MZ header size is inconsistent");
+      const autoexec = conf.split(/^\[autoexec\]\s*$/im)[1] ?? "";
+      assert.match(autoexec, /^[ \t]*RUN\.BAT[ \t]*$/im, "SNEAKERS autoexec must run RUN.BAT");
+    }
   }
 });

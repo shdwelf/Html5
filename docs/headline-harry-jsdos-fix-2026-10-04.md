@@ -113,6 +113,32 @@ on boot (`setTimeout`), on the `ci-ready` event, and on every `pointerdown` /
 `c7a97f532b334e35967622e1d760899fb8b844e3701f7c28a11fc3fee45d15a8`. Repacked by
 `scripts/fix-headline-harry-xdc.mjs`; `tests/webxdc-packages.test.mjs` (Headline
 Harry case) passes. **Caveat:** the sandbox cannot reach a webxdc client or
-dosinstance.run, so the focus fix is verified statically (present in the packed
-shell, engine complete, package test green) but not confirmed at runtime on the
+DOSBox, so the focus fix is verified statically (present in the packed shell,
+engine complete, package test green) but not confirmed at runtime on the
 failing host.
+
+## Follow-up: `INTRO.EXE` stalls; launch `MAP.EXE` directly (2026-10-10)
+
+Reported symptom: booting the Webxdc reaches the DOS command-line intro and
+stops instead of entering the game. Two packaging problems were confirmed:
+
+- the shipped inner `.jsdos` bundle contained the packed floppy copies of
+  `INTRO.EXE` and `MAP.EXE` (`ff 4d 5a`), despite the earlier recovery notes
+  describing the clean installer outputs (both begin `MZ`);
+- its autoexec launched `INTRO` before `MAP`, so it depended on the intro
+  returning successfully in the Webxdc host.
+
+The package build now requires `.xfer/harry/installed/{INTRO,MAP}.EXE` to have
+clean `MZ` headers and has no raw-floppy fallback. It preserves `INTRO.EXE` for
+reference but the DOSBox autoexec starts `MAP.EXE` directly. The canonical
+shell explains the startup path, and `scripts/fix-headline-harry-xdc.mjs`
+rejects a stale/packed bundle, checks the direct-MAP autoexec, and synchronizes
+both tracked XDC copies. The inner ZIP build now uses a fixed timestamp and
+stable ordering, so repeated builds are byte-identical.
+
+The sandbox has no DOSBox or browser, but the GitHub DOSBox workflow completed
+successfully after this change. Its 15–90 second screenshots show the U.S.
+Daily Star **Press Pass** form, rather than the reported command-line stall
+(`.xfer/harry/install/game-shots/`). That confirms `MAP.EXE` reaches an
+interactive screen. The smoke step does not enter a name or verify the screen
+after **OK**, so full gameplay beyond the press-pass form remains unconfirmed.

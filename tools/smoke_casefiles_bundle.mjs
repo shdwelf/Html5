@@ -11,13 +11,25 @@
  * GhidraWasm, artifacts, krome-catalog, makint, the demo bytes and the
  * embedded wasm/ghidra asset store.
  */
-import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdtempSync, rmSync, readdirSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const html = readFileSync(join(root, "casefiles-inlined.html"), "utf8");
+
+function countFiles(dir) {
+  return readdirSync(dir).reduce((count, name) => {
+    const file = join(dir, name);
+    return count + (statSync(file).isDirectory() ? countFiles(file) : 1);
+  }, 0);
+}
+const ghidraRoot = join(root, "wasm", "ghidra");
+const expectedAssetCount = countFiles(ghidraRoot);
+const expectedProcessorCount = JSON.parse(readFileSync(join(ghidraRoot, "processors.json"), "utf8")).length;
+const expectedDecompilerBytes = statSync(join(ghidraRoot, "ghidra_decompiler.wasm")).size;
+const expectedX86SlaBytes = statSync(join(ghidraRoot, "Processors", "x86", "data", "languages", "x86.sla")).size;
 
 const open = html.indexOf('<script type="module">');
 const close = html.lastIndexOf("</script>");
@@ -42,7 +54,7 @@ writeFileSync(
     `
 const assert = (c, m) => { if (!c) { console.error("FAIL:", m); process.exit(1); } };
 assert(typeof __GHIDRA_ASSETS === "object", "asset store present");
-assert(Object.keys(__GHIDRA_ASSETS).length === 18, "18 embedded wasm/ghidra assets");
+assert(Object.keys(__GHIDRA_ASSETS).length === ${expectedAssetCount}, "${expectedAssetCount} embedded wasm/ghidra assets");
 assert(typeof __ghidraFetch === "function" && typeof __ghidraUrl === "function", "asset helpers");
 assert(typeof unzipSync === "function" && typeof unzlibSync === "function", "fflate sync api");
 assert(typeof analyze === "function" && typeof entropyWindows === "function", "x86dis api");
@@ -57,11 +69,11 @@ assert(unz["a.txt"] && unz["a.txt"][0] === 104 && unz["a.txt"][1] === 105, "ffla
 const r = await __ghidraFetch("processors.json");
 assert(r.ok, "processors.json fetch ok");
 const j = await r.json();
-assert(Array.isArray(j) && j.length === 6, "processors.json lists 6 languages");
+assert(Array.isArray(j) && j.length === ${expectedProcessorCount}, "processors.json lists ${expectedProcessorCount} languages");
 const wasmBuf = await (await __ghidraFetch("ghidra_decompiler.wasm")).arrayBuffer();
-assert(wasmBuf.byteLength === 2631174, "ghidra_decompiler.wasm byte length (" + wasmBuf.byteLength + ")");
+assert(wasmBuf.byteLength === ${expectedDecompilerBytes}, "ghidra_decompiler.wasm byte length (" + wasmBuf.byteLength + ")");
 const spec = await (await __ghidraFetch("Processors/x86/data/languages/x86.sla")).arrayBuffer();
-assert(spec.byteLength === 432470, "x86.sla byte length (" + spec.byteLength + ")");
+assert(spec.byteLength === ${expectedX86SlaBytes}, "x86.sla byte length (" + spec.byteLength + ")");
 console.log("ALL SMOKE CHECKS PASSED");
 `
 );

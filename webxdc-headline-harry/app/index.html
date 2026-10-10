@@ -98,7 +98,7 @@
     </div>
   </div>
 
-  <div id="status">press BOOT to start the 1991 pressroom…</div>
+  <div id="status">press BOOT to open the 1991 Press Pass screen…</div>
 
   <details>
     <summary>about · controls · provenance</summary>
@@ -113,6 +113,12 @@
       <span style="font-family:var(--mono)">roms/headline-harry.jsdos</span>, booted
       by js-dos 8.4.1 (DOSBox → WebAssembly). No files leave the app; webxdc CSP
       keeps it fully offline.</p>
+      <p><b>Startup:</b> starts the recovered <code>MAP.EXE</code> directly,
+      bypassing the intro program's observed command-line stall. The game opens
+      at its U.S. Daily Star <b>Press Pass</b> form; enter a name and activate
+      <b>OK</b> to continue. The packed disk executables are not runnable, and
+      <code>INTRO.EXE</code> remains in the bundle for reference but is skipped
+      at boot.</p>
       <p><b>Legal:</b> abandonware is not public domain — © Davidson &amp;
       Associates. For personal archival/preservation use only; please don't
       redistribute this .xdc.</p>
@@ -134,6 +140,21 @@
     overlay.style.display = "none";
     status("loading DOSBox (WASM) from app bundle…");
 
+    // Keyboard/mouse reach DOSBox only when its canvas has focus. Inside a
+    // webxdc iframe the canvas is NOT focused by default, so window keydown
+    // events never arrive ("no keyboard"), and the first click can be eaten
+    // before the canvas takes focus ("no mouse"). Give the canvas a tab stop
+    // and focus it on boot, on ready, and on every pointer-down.
+    var focusDos = function () {
+      var c = container.querySelector("canvas");
+      if (c) {
+        if (!c.hasAttribute("tabindex")) c.setAttribute("tabindex", "0");
+        try { c.focus({ preventScroll: true }); } catch (_) { c.focus(); }
+      }
+    };
+    container.addEventListener("pointerdown", focusDos, true);
+    container.addEventListener("keydown", focusDos, true);
+
     // js-dos v8 API: the bundle URL goes in the options and the player
     // auto-starts — there is no .run() method (that was the v7 API; calling
     // it threw "dosInstance.run is not a function" and the game never booted).
@@ -148,10 +169,11 @@
         if (event === "emu-ready") {
           status("DOSBox (WASM) engine loaded from the app bundle…");
         } else if (event === "bnd-play") {
-          status("booting HEADLINE HARRY (1991)…");
+          status("starting recovered MAP.EXE directly (intro skipped)…");
         } else if (event === "ci-ready") {
           status("DOSBox ready — HEADLINE HARRY (1991). " +
                  "js-dos sidebar: ☰ = keyboard/gamepad, 💾 = actions");
+          focusDos();
         } else if (event === "emu-error" || event === "bnd-error") {
           status("DOSBox error — see console. ⟳ RETRY to boot again.");
           overlay.style.display = "flex";
@@ -162,6 +184,7 @@
 
     try {
       dosInstance = window.Dos(container, opts);
+      setTimeout(focusDos, 0);
     } catch (e) {
       status("failed to start js-dos: " + (e && e.message ? e.message : e));
       console.error(e);

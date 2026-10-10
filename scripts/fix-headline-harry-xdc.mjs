@@ -1,11 +1,8 @@
-// Repack headline-harry.xdc with the corrected index.html.
-//
-// The archive is the only home of the big binary payloads (the four-floppy
-// roms/headline-harry.jsdos bundle and the js-dos 8.4.1 engine incl.
-// wdosbox.wasm), so unlike the other theaters there is no full source
-// staging dir — the canonical, reviewable source of the shell page lives at
-// public/apps/headline-harry/index.html and this script splices it into the
-// existing archive, leaving every other entry byte-identical.
+// Repack both tracked Headline Harry XDC copies from the reviewable shell and
+// embedded game bundle. The archive contains the large js-dos 8.4.1 engine;
+// this script preserves those payloads, validates that the game bundle holds
+// installer-recovered MZ executables and starts MAP.EXE directly, then applies
+// the canonical shell and deterministic ZIP metadata.
 //
 // Why: the shipped shell booted the v7 API (`Dos(el, opts)` followed by
 // `dosInstance.run(bundleUrl)`) against the bundled js-dos v8 engine, which
@@ -21,6 +18,8 @@ import { unzipSync, zipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const XDC = path.join(root, "headline-harry.xdc");
+const PACKAGE_XDC = path.join(root, "webxdc-headline-harry", "headline-harry.xdc");
+const APP_SHELL = path.join(root, "webxdc-headline-harry", "app", "index.html");
 const SHELL = path.join(root, "public", "apps", "headline-harry", "index.html");
 const ENGINE_DIR = path.join(root, "webxdc-headline-harry", "app", "js-dos");
 
@@ -43,6 +42,24 @@ const ENGINE_FILES = [
 const files = unzipSync(readFileSync(XDC));
 if (!files["index.html"]) throw new Error("headline-harry.xdc has no index.html");
 
+// Do not bless/repackage the previous packed floppy payload. Those source
+// files start with `ff 4d 5a`; only the installer's output is a runnable MZ.
+const gameBundle = files["roms/headline-harry.jsdos"];
+if (!gameBundle) throw new Error("headline-harry.xdc has no roms/headline-harry.jsdos");
+const gameFiles = unzipSync(gameBundle);
+for (const name of ["INTRO.EXE", "MAP.EXE"]) {
+  const executable = gameFiles[name];
+  if (!executable || executable[0] !== 0x4d || executable[1] !== 0x5a) {
+    throw new Error(`game bundle ${name} is missing or not a clean MZ executable`);
+  }
+}
+const decoder = new TextDecoder();
+const dosboxConf = decoder.decode(gameFiles[".jsdos/dosbox.conf"] ?? new Uint8Array());
+const autoexec = dosboxConf.split(/^\[autoexec\]\s*$/im)[1] ?? "";
+if (!/^[ \t]*MAP(?:\.EXE)?[ \t]*$/im.test(autoexec) || /^[ \t]*INTRO(?:\.EXE)?[ \t]*$/im.test(autoexec)) {
+  throw new Error("game bundle must start MAP.EXE directly and must not run INTRO.EXE at boot");
+}
+
 const shell = readFileSync(SHELL);
 const shellText = shell.toString("utf8");
 if (/dosInstance\.run\(/.test(shellText)) {
@@ -52,6 +69,7 @@ if (!/url:\s*"roms\/headline-harry\.jsdos"/.test(shellText)) {
   throw new Error("staged shell does not point js-dos v8 at roms/headline-harry.jsdos");
 }
 files["index.html"] = new Uint8Array(shell);
+writeFileSync(APP_SHELL, shell);
 
 // Engine completeness: splice in any vendored 8.4.1 file the archive is
 // missing (this is how the wlibzip pair was added after the v8 boot fix).
@@ -80,7 +98,9 @@ for (const name of Object.keys(files).sort()) {
 }
 const zipped = zipSync(ordered);
 writeFileSync(XDC, zipped);
+writeFileSync(PACKAGE_XDC, zipped);
 
 const sha = createHash("sha256").update(zipped).digest("hex");
 console.log(`headline-harry.xdc: ${zipped.length} bytes, ${Object.keys(files).length} entries`);
 console.log(`sha256 ${sha}`);
+console.log("synchronized webxdc-headline-harry/headline-harry.xdc");
