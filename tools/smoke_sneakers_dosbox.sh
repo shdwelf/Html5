@@ -117,7 +117,7 @@ if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
     printf '%s\n' '```'
   } >> "$GITHUB_STEP_SUMMARY"
 fi
-if ! grep -q 'accessgranted' <<<"$normalized" || ! grep -q 'sneakerspresskit' <<<"$normalized" || ! grep -q 'select' <<<"$normalized"; then
+if ! grep -q 'sneakerspresskit' <<<"$normalized" || ! grep -q 'select' <<<"$normalized" || ! grep -q 'exit' <<<"$normalized"; then
   summary="$(tr '\n' ' ' < "$WORK_DIR/ocr.txt")"
   window="$(cat "$WORK_DIR/window.id" 2>/dev/null || true)"
   echo "::error title=Sneakers DOSBox screen did not reach the press-kit menu::window=$window colors=$colors OCR=$summary"
