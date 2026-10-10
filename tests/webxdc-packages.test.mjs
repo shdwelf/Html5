@@ -341,10 +341,29 @@ test("webxdc-dos archive boots js-dos v8 with complete engine and prebuilt bundl
     ["roms/SNEAKERS.jsdos", "RUN.BAT", "SNEAKERS.EXE"],
   ]) {
     assert.ok(files[bundle], `dos-binary-loader.xdc is missing ${bundle}`);
+    assert.deepEqual(
+      Buffer.from(files[bundle]),
+      readFileSync(path.join(root, "webxdc-dos", "public", "roms", path.basename(bundle))),
+      `${bundle} is stale versus the prebuilt source`,
+    );
     const inner = unzipSync(files[bundle]);
     const conf = decoder.decode(inner[".jsdos/dosbox.conf"]);
     assert.match(conf, /\[autoexec\]/, `${bundle} has no autoexec`);
     assert.ok(conf.trimEnd().endsWith(launcher), `${bundle} autoexec does not run ${launcher}`);
     assert.ok(inner[payload], `${bundle} lost ${payload}`);
+
+    if (bundle === "roms/SNEAKERS.jsdos") {
+      assert.ok(inner["RUN.BAT"], "SNEAKERS.jsdos lost RUN.BAT");
+      assert.match(decoder.decode(inner["RUN.BAT"]), /SNEAKERS\.EXE/i);
+      assert.equal(inner[payload][0], 0x4d, "SNEAKERS.EXE does not begin with MZ");
+      assert.equal(inner[payload][1], 0x5a, "SNEAKERS.EXE does not begin with MZ");
+      const exe = Buffer.from(inner[payload]);
+      const lastPageBytes = exe.readUInt16LE(2);
+      const pageCount = exe.readUInt16LE(4);
+      const declaredBytes = lastPageBytes ? (pageCount - 1) * 512 + lastPageBytes : pageCount * 512;
+      assert.equal(declaredBytes, exe.length, "SNEAKERS.EXE MZ header size is inconsistent");
+      const autoexec = conf.split(/^\[autoexec\]\s*$/im)[1] ?? "";
+      assert.match(autoexec, /^[ \t]*RUN\.BAT[ \t]*$/im, "SNEAKERS autoexec must run RUN.BAT");
+    }
   }
 });

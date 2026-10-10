@@ -1,0 +1,51 @@
+name: arena-sneakers-smoke
+
+on:
+  push:
+    branches: [main, 'arena/**']
+    paths:
+      - '.github/workflows/arena-sneakers-smoke.yml'
+      - 'webxdc-dos/index.html'
+      - 'webxdc-dos/scripts/build-rom-bundles.mjs'
+      - 'webxdc-dos/public/roms/SNEAKERS*'
+      - 'webxdc-dos/public/roms/README_SNEAKERS.md'
+      - 'tests/webxdc-packages.test.mjs'
+      - 'tools/smoke_sneakers_dosbox.sh'
+  pull_request:
+    paths:
+      - '.github/workflows/arena-sneakers-smoke.yml'
+      - 'webxdc-dos/index.html'
+      - 'webxdc-dos/scripts/build-rom-bundles.mjs'
+      - 'webxdc-dos/public/roms/SNEAKERS*'
+      - 'webxdc-dos/public/roms/README_SNEAKERS.md'
+      - 'tests/webxdc-packages.test.mjs'
+      - 'tools/smoke_sneakers_dosbox.sh'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dosbox-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install DOSBox and headless display tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq dosbox xvfb xdotool imagemagick unzip
+
+      - name: Run the packaged Sneakers password gate under DOSBox
+        env:
+          SNEAKERS_SMOKE_DIR: ${{ runner.temp }}/sneakers-smoke
+        run: bash tools/smoke_sneakers_dosbox.sh
+
+      - name: Upload DOSBox screenshot and log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sneakers-dosbox-smoke
+          path: ${{ runner.temp }}/sneakers-smoke/
+          if-no-files-found: error
