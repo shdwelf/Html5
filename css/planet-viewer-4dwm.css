@@ -1,0 +1,133 @@
+/* PLANET VIEWER · 4DWM
+   Survey palette: hypsometric terrain reads against a cool survey sky.
+   Overrides the shared pip window-manager variables from css/project-y-4dwm.css. */
+
+:root {
+  --bg: #0a1016;
+  --sea: #0a1016;
+  --panel: rgba(8, 14, 19, 0.92);
+  --panel-edge: #23333d;
+
+  --accent: #5cd6ff;
+  --muted: #7d8f99;
+  --ink: #d7e3e8;
+  --dim: #8a9aa3;
+  --paper: #e8e0cc;
+  --good: #7fd18a;
+  --bad: #ff8a6b;
+  --warn: #ffb020;
+  --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0; height: 100%;
+  overflow: hidden;
+  background: var(--bg); color: var(--ink);
+  font-family: var(--mono); font-size: 13px;
+}
+
+#stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+#labels { position: fixed; inset: 0; pointer-events: none; z-index: 6; overflow: hidden; }
+#labels .lbl {
+  position: absolute; left: 0; top: 0;
+  font-size: 10px; letter-spacing: 0.08em; color: var(--warn);
+  text-shadow: 0 0 6px #000, 0 0 2px #000; white-space: nowrap; opacity: 0.9;
+}
+
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding: 10px 16px;
+  background: linear-gradient(180deg, rgba(6, 9, 12, 0.97), rgba(6, 9, 12, 0.5) 78%, transparent);
+  z-index: 20; pointer-events: none;
+}
+.topbar > * { pointer-events: auto; }
+.topbar h1 { margin: 0; font-size: 15px; letter-spacing: 0.18em; color: var(--accent); }
+.topbar p { margin: 3px 0 0; font-size: 11px; color: var(--dim); max-width: 60ch; line-height: 1.4; }
+.top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+button {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+  padding: 6px 10px; background: rgba(9, 17, 23, 0.9); color: var(--dim);
+  border: 1px solid var(--panel-edge); cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+button:hover { color: var(--ink); border-color: var(--accent); }
+button.active { color: #05080b; background: var(--accent); border-color: var(--accent); }
+
+.plate-switch, .mode-switch { display: flex; border: 1px solid var(--panel-edge); }
+.plate-switch button, .mode-switch button { border: 0; border-right: 1px solid var(--panel-edge); }
+.plate-switch button:last-child, .mode-switch button:last-child { border-right: 0; }
+.mode-switch button.active { background: var(--warn); border-color: var(--warn); }
+
+.panel {
+  position: fixed; top: 76px; bottom: 60px; width: 330px;
+  overflow-y: auto; overflow-x: hidden; z-index: 15;
+  display: flex; flex-direction: column; gap: 10px; padding: 0 4px;
+  scrollbar-width: thin; scrollbar-color: var(--panel-edge) transparent;
+}
+.panel-left { left: 12px; }
+.panel-right { right: 12px; }
+
+.card { background: var(--panel); border: 1px solid var(--panel-edge); border-top: 2px solid var(--panel-edge); padding: 10px 12px; backdrop-filter: blur(3px); }
+.card h2 { margin: 0 0 8px; font-size: 10px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; font-weight: 500; }
+.card p { margin: 0 0 6px; line-height: 1.5; }
+.small { font-size: 11px; color: var(--dim); line-height: 1.5; }
+.tiny { font-size: 10px; color: var(--dim); line-height: 1.45; margin: 6px 0 0; }
+.dim { color: var(--muted); }
+
+.tier { font-size: 9px; letter-spacing: 0.1em; padding: 1px 4px; border: 1px solid currentColor; }
+.t-official { color: var(--warn); }
+.t-community { color: var(--accent); }
+.t-context { color: #ff6ec7; }
+
+.search-row { position: relative; }
+.search-row input[type="search"] {
+  width: 100%; padding: 7px 9px; background: rgba(9, 17, 23, 0.9);
+  border: 1px solid var(--panel-edge); color: var(--ink); font-family: var(--mono); font-size: 11px;
+}
+#searchResults { display: flex; flex-direction: column; gap: 1px; margin-top: 4px; }
+#searchResults .res { text-align: left; border: 0; background: transparent; padding: 4px 6px; font-size: 11px; letter-spacing: 0; }
+#searchResults .res:hover { background: rgba(255, 255, 255, 0.05); }
+#searchResults .res span { color: var(--muted); font-size: 9px; margin-left: 6px; }
+
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+.legend-row { display: flex; align-items: center; gap: 8px; font-size: 11px; padding: 4px 5px; border-left: 2px solid var(--panel-edge); color: var(--dim); }
+.legend-row .swatch { width: 10px; height: 10px; flex: 0 0 10px; background: currentColor; opacity: 0.85; }
+.legend-row .lname { flex: 1; }
+.legend-row .lval { font-size: 9px; color: var(--muted); }
+.s-surface { color: #7a8c66; }
+.s-wire { color: #2b4a5a; }
+.s-contour { color: var(--accent); }
+.s-gnis { color: var(--warn); }
+
+.slider-row { margin-top: 8px; }
+.slider-row label { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+.slider-row input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+.check-list { display: flex; flex-direction: column; gap: 6px; }
+.check { display: flex; gap: 7px; border: 1px solid var(--panel-edge); border-left: 2px solid var(--muted); padding: 6px 8px; font-size: 11px; }
+.check.ok { border-left-color: var(--good); }
+.check.bad { border-left-color: var(--bad); }
+.check b { font-weight: 500; color: var(--ink); line-height: 1.35; display: block; }
+.check em { font-style: normal; font-size: 9px; letter-spacing: 0.12em; color: var(--warn); margin-left: 5px; }
+.check .dot { width: 7px; height: 7px; flex: 0 0 7px; margin-top: 4px; background: var(--muted); border-radius: 50%; }
+.check.ok .dot { background: var(--good); box-shadow: 0 0 6px var(--good); }
+.check.bad .dot { background: var(--bad); box-shadow: 0 0 6px var(--bad); }
+
+.card-list { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.card-list .card { text-align: left; padding: 6px 8px; display: flex; flex-direction: column; gap: 2px; }
+.card-list .card b { color: var(--ink); font-weight: 500; font-size: 10px; }
+.card-list .card span { color: var(--muted); font-size: 9px; letter-spacing: 0.08em; }
+.pip-act { margin-top: 8px; width: 100%; }
+
+.statusbar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  display: flex; gap: 18px; padding: 6px 16px;
+  background: rgba(4, 7, 10, 0.95); border-top: 1px solid var(--panel-edge);
+  font-size: 10px; letter-spacing: 0.08em; color: var(--muted); z-index: 20;
+}
+.statusbar #status { margin-left: auto; color: var(--accent); }
+
+@media (max-width: 1100px) { .panel { width: 268px; } }

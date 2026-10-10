@@ -28,7 +28,8 @@
     "serve:catalog": "node tools/z3950-server.mjs",
     "check:sources": "node tools/check-source-check-bibliography.mjs",
     "sync:cyberchef": "node scripts/merge-cyberchef-recipes.mjs",
-    "test": "vitest run && node --test tests/*.test.mjs"
+    "test": "vitest run && node --test tests/*.test.mjs",
+    "build:planet": "node scripts/build-planet-viewer-xdc.mjs"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",
