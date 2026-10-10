@@ -18,6 +18,7 @@
     "build:esgvrop": "node scripts/build-esgvrop-4dwm-xdc.mjs",
     "build:dalton-race": "node scripts/build-dalton-race-4dwm-xdc.mjs",
     "build:vincennes": "node scripts/build-vincennes-xdc.mjs",
+    "build:red-october": "node scripts/build-red-october-xdc.mjs",
     "build:sanborn-restaurant": "node scripts/build-sanborn-restaurant-xdc.mjs",
     "build:socal-subsurface": "node scripts/build-socal-subsurface-xdc.mjs",
     "build:ingress-intel": "node scripts/build-ingress-intel-xdc.mjs",
@@ -27,7 +28,9 @@
     "serve:catalog": "node tools/z3950-server.mjs",
     "check:sources": "node tools/check-source-check-bibliography.mjs",
     "sync:cyberchef": "node scripts/merge-cyberchef-recipes.mjs",
-    "test": "vitest run && node --test tests/*.test.mjs"
+    "test": "vitest run && node --test tests/*.test.mjs",
+    "build:planet": "node scripts/build-planet-viewer-xdc.mjs",
+    "build:virus-xena": "node tools/build_virus_xena.mjs"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",

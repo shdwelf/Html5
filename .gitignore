@@ -26,3 +26,6 @@ sim/transcript.diff
 
 __pycache__/
 data/
+
+# ECJ bootclasspath (58MB Java7 rt.jar); fetch with tools/java-compiler/fetch-rtjar.sh
+tools/java-compiler/.rt/

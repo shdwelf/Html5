@@ -64,7 +64,8 @@ export function serve(root = ROOT) {
     const type =
       ext === "wasm" ? "application/wasm"
         : ext === "js" || ext === "mjs" ? "text/javascript"
-          : ext === "html" ? "text/html; charset=utf-8"
+        : ext === "css" ? "text/css; charset=utf-8"
+        : ext === "html" ? "text/html; charset=utf-8"
             : ext === "json" ? "application/json"
               : "application/octet-stream";
     res.writeHead(200, { "content-type": type, "cache-control": "no-store" });

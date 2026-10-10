@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>RED OCTOBER · CUTAWAY 4DWM</title>
+  <meta name="description" content="Project 941, USS Dallas and Project 971 as DK cross-section geometry — cutaway, x-ray, wireframe and apparition views over a four-dimensional timeline of the novel, with a VRML export and cross-checks between published dimensions." />
+  <link rel="stylesheet" href="./css/project-y-4dwm.css" />
+  <link rel="stylesheet" href="./css/red-october-4dwm.css" />
+</head>
+<body data-mode="section">
+  <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
+  <div id="labels" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="title-block">
+      <h1>RED OCTOBER · CUTAWAY</h1>
+      <p id="subtitle">Three hulls, one novel — drawn from published dimensions.</p>
+    </div>
+    <div class="top-actions">
+      <div class="boat-switch" role="group" aria-label="Boat">
+        <button type="button" data-boat="typhoon" class="active">941 · TYPHOON</button>
+        <button type="button" data-boat="dallas">688 · DALLAS</button>
+        <button type="button" data-boat="akula">971 · AKULA</button>
+      </div>
+      <div class="mode-switch" role="group" aria-label="View mode">
+        <button type="button" data-mode="relief">RELIEF</button>
+        <button type="button" data-mode="section" class="active">DK SECTION</button>
+        <button type="button" data-mode="xray">X-RAY</button>
+        <button type="button" data-mode="wire">WIRE</button>
+        <button type="button" data-mode="ghost">APPARITION</button>
+      </div>
+      <button type="button" id="btnLabels" class="active" aria-pressed="true">LABELS</button>
+      <button type="button" id="btnVrml" title="Export the current boat as a VRML 2.0 cross-section">VRML ↓</button>
+      <button type="button" id="btnReset">RESET</button>
+    </div>
+  </header>
+
+  <aside class="panel panel-left">
+    <section class="card">
+      <h2>Hull</h2>
+      <dl class="kv-table" id="hullTable"></dl>
+    </section>
+
+    <section class="card">
+      <h2>Layers</h2>
+      <ul class="legend" id="layerList"></ul>
+      <p class="tiny">Click a layer to hide or show it. The DK section clips the light hull at the centreline so the pressure hull inside is visible; the clip position slides below.</p>
+      <div class="slider-row">
+        <label for="cutSlider">cut plane <span id="cutVal">0.0 m</span></label>
+        <input type="range" id="cutSlider" min="0" max="100" step="1" value="50" />
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Cross-checks</h2>
+      <div id="checkList" class="check-list"></div>
+      <p class="tiny">A check compares two numbers that reached this model down independent paths. Green means they agree inside the stated tolerance. A <em>contradiction</em> check passes while the sources still disagree — the spread is printed rather than averaged away, because Project 941 and 971 figures were never published in full by their builders.</p>
+    </section>
+  </aside>
+
+  <aside class="panel panel-right">
+    <section class="card">
+      <h2 id="infoTitle">Inspector</h2>
+      <div id="infoBody">
+        <p class="small">Click the hull, a silo, a pressure hull or a screw. Everything carries the figure it was drawn from.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Jump to beat</h2>
+      <div id="jumpList" class="jump-list"></div>
+    </section>
+
+    <section class="card">
+      <h2>Boats &amp; sources</h2>
+      <div id="cardList" class="card-list"></div>
+      <p class="tiny">Each opens its own 4Dwm window. Sources carry the tier they were read at; the fictional fit is labelled as fiction wherever it appears.</p>
+    </section>
+  </aside>
+
+  <div class="statusbar">
+    <span id="statHull">hull: —</span>
+    <span id="statChecks">checks: —</span>
+    <span id="hudFps">fps: —</span>
+    <span id="status">boot…</span>
+  </div>
+
+  <div class="timeline">
+    <span class="tlabel">4D · time</span>
+    <button type="button" id="btnPlay">▶</button>
+    <input type="range" id="timeSlider" min="0" max="1000" step="1" value="1000" aria-label="Time" />
+    <span class="date" id="timeReadout">—</span>
+    <button type="button" id="btnSpeed" data-rate="1" title="Playback rate">1×</button>
+  </div>
+
+  <div class="pip-layer" id="pipLayer"></div>
+  <div class="wm4d" id="wm4dDesk" hidden>
+    <div class="wm4d-tray" id="wm4dTray"></div>
+    <div class="wm4d-status" id="wm4dStatus">no windows</div>
+  </div>
+
+  <script type="module" src="./js/red-october-4dwm.js"></script>
+</body>
+</html>

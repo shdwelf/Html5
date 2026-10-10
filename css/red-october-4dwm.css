@@ -1,0 +1,323 @@
+/* RED OCTOBER · CUTAWAY 4DWM
+   Cold-water palette: the hull reads as steel over black water, and the
+   apparition mode is the only place a warm colour is allowed near it.
+   Overrides the shared pip window-manager variables from
+   css/project-y-4dwm.css. */
+
+:root {
+  --bg: #05080b;
+  --sea: #08141c;
+  --panel: rgba(8, 14, 19, 0.92);
+  --panel-edge: #1e3340;
+
+  /* shared pip-wm variables, re-pointed for this app */
+  --accent: #5cd6ff;
+  --muted: #7d8f99;
+  --ink: #d7e3e8;
+
+  --dim: #8a9aa3;
+  --paper: #e8e0cc;
+  --steel: #9fb0b8;
+  --pressure: #d8b968;
+  --fiction: #b48cff;
+  --ghost: #63f5c0;
+  --good: #7fd18a;
+  --bad: #ff8a6b;
+  --warn: #ffb020;
+  --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+#stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+#labels {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  overflow: hidden;
+}
+#labels .lbl {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  color: var(--paper);
+  text-shadow: 0 0 6px #000, 0 0 2px #000;
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+/* The apparition mode gets its own wash so the hull reads as light, not metal. */
+body[data-mode="ghost"] {
+  background: radial-gradient(ellipse at 50% 45%, #0a2a22 0%, #04120e 60%, #020907 100%);
+}
+body[data-mode="ghost"] .topbar h1 { color: var(--ghost); }
+
+/* ---------- top bar ---------- */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: linear-gradient(180deg, rgba(4, 7, 10, 0.97), rgba(4, 7, 10, 0.5) 78%, transparent);
+  z-index: 20;
+  pointer-events: none;
+}
+.topbar > * { pointer-events: auto; }
+.topbar h1 {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+}
+.topbar p {
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: var(--dim);
+  max-width: 58ch;
+  line-height: 1.4;
+}
+.top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+button {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 6px 10px;
+  background: rgba(9, 17, 23, 0.9);
+  color: var(--dim);
+  border: 1px solid var(--panel-edge);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+button:hover { color: var(--ink); border-color: var(--accent); }
+button.active { color: #05080b; background: var(--accent); border-color: var(--accent); }
+
+.boat-switch, .mode-switch { display: flex; border: 1px solid var(--panel-edge); }
+.boat-switch button, .mode-switch button { border: 0; border-right: 1px solid var(--panel-edge); }
+.boat-switch button:last-child, .mode-switch button:last-child { border-right: 0; }
+.mode-switch button.active { background: var(--pressure); border-color: var(--pressure); }
+body[data-mode="ghost"] .mode-switch button[data-mode="ghost"].active {
+  background: var(--ghost); border-color: var(--ghost);
+}
+
+/* ---------- panels ---------- */
+.panel {
+  position: fixed;
+  top: 76px;
+  bottom: 86px;
+  width: 330px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--panel-edge) transparent;
+}
+.panel-left { left: 12px; }
+.panel-right { right: 12px; }
+.panel::-webkit-scrollbar { width: 6px; }
+.panel::-webkit-scrollbar-thumb { background: var(--panel-edge); }
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-top: 2px solid var(--panel-edge);
+  padding: 10px 12px;
+  backdrop-filter: blur(3px);
+}
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.card p { margin: 0 0 6px; line-height: 1.5; }
+.small { font-size: 11px; color: var(--dim); line-height: 1.5; }
+.tiny { font-size: 10px; color: var(--dim); line-height: 1.45; margin: 6px 0 0; }
+.tiny.dim, .dim { color: var(--muted); }
+
+/* ---------- hull table ---------- */
+.kv-table { margin: 0; }
+.kv-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 3px 0;
+  border-bottom: 1px dotted rgba(125, 143, 153, 0.18);
+  font-size: 11px;
+}
+.kv-row dt { color: var(--muted); letter-spacing: 0.06em; }
+.kv-row dd { margin: 0; color: var(--ink); text-align: right; }
+
+/* ---------- evidence tiers ---------- */
+.tier {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 1px 4px;
+  border: 1px solid currentColor;
+  opacity: 0.9;
+}
+.t-official { color: var(--warn); }
+.t-community { color: var(--accent); }
+.t-context { color: #ff6ec7; }
+.t-fiction { color: var(--fiction); }
+
+/* ---------- layer list ---------- */
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  padding: 4px 5px;
+  cursor: pointer;
+  border-left: 2px solid var(--panel-edge);
+  color: var(--dim);
+}
+.legend-row:hover { background: rgba(255, 255, 255, 0.04); color: var(--ink); }
+.legend-row.off { opacity: 0.4; border-left-color: transparent; }
+.legend-row .swatch { width: 10px; height: 10px; flex: 0 0 10px; background: currentColor; opacity: 0.85; }
+.legend-row .lname { flex: 1; }
+.legend-row .lval { font-size: 9px; color: var(--muted); }
+.s-hull { color: var(--steel); }
+.s-pressure { color: var(--pressure); }
+.s-silo { color: #5c808e; }
+.s-compartment { color: #3f7d86; }
+.s-sail { color: #78838a; }
+.s-shaft { color: #8d9499; }
+.s-fiction { color: var(--fiction); }
+
+.slider-row { margin-top: 8px; }
+.slider-row label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.slider-row input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+/* ---------- checks ---------- */
+.check-list { display: flex; flex-direction: column; gap: 6px; }
+.check {
+  display: flex;
+  gap: 7px;
+  border: 1px solid var(--panel-edge);
+  border-left: 2px solid var(--muted);
+  padding: 6px 8px;
+  font-size: 11px;
+}
+.check.ok { border-left-color: var(--good); }
+.check.bad { border-left-color: var(--bad); }
+.check b { font-weight: 500; color: var(--ink); line-height: 1.35; display: block; }
+.check em { font-style: normal; font-size: 9px; letter-spacing: 0.12em; color: var(--warn); margin-left: 5px; }
+.check .dot {
+  width: 7px; height: 7px; flex: 0 0 7px; margin-top: 4px;
+  background: var(--muted); border-radius: 50%;
+}
+.check.ok .dot { background: var(--good); box-shadow: 0 0 6px var(--good); }
+.check.bad .dot { background: var(--bad); box-shadow: 0 0 6px var(--bad); }
+
+/* ---------- jump list ---------- */
+.jump-list { display: flex; flex-direction: column; gap: 1px; max-height: 280px; overflow-y: auto; }
+.jump-list .jump {
+  text-align: left;
+  border: 0;
+  border-left: 2px solid transparent;
+  background: transparent;
+  padding: 5px 7px;
+  font-size: 11px;
+  letter-spacing: 0;
+  line-height: 1.35;
+  display: block;
+}
+.jump-list .jump:hover { background: rgba(255, 255, 255, 0.05); }
+.jump-list .jump.active { border-left-color: var(--accent); background: rgba(92, 214, 255, 0.07); }
+.jump-list .jday { display: block; font-size: 9px; letter-spacing: 0.12em; color: var(--muted); }
+.jump-list .jtitle { color: var(--ink); }
+
+/* ---------- cards ---------- */
+.card-list { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.card-list .card-btn, .card-list .card {
+  text-align: left;
+  padding: 6px 8px;
+  font-size: 10px;
+  line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.card-list .card b { color: var(--ink); font-weight: 500; font-size: 10px; }
+.card-list .card span { color: var(--muted); font-size: 9px; letter-spacing: 0.08em; }
+.pip-act { margin-top: 8px; width: 100%; }
+
+/* ---------- status + timeline ---------- */
+.statusbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  gap: 18px;
+  padding: 6px 16px;
+  background: rgba(4, 7, 10, 0.95);
+  border-top: 1px solid var(--panel-edge);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  z-index: 20;
+}
+.statusbar #status { margin-left: auto; color: var(--accent); }
+
+.timeline {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 34px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  z-index: 18;
+  min-width: 460px;
+}
+.timeline .tlabel { font-size: 9px; letter-spacing: 0.16em; color: var(--muted); }
+.timeline input[type="range"] { flex: 1; accent-color: var(--accent); }
+.timeline .date { font-size: 10px; letter-spacing: 0.1em; color: var(--paper); min-width: 62px; }
+
+/* ---------- narrow screens ---------- */
+@media (max-width: 1100px) {
+  .panel { width: 268px; }
+  .timeline { min-width: 0; width: calc(100% - 32px); }
+}
+@media (max-width: 780px) {
+  .panel-left, .panel-right { position: static; width: auto; }
+  body { overflow-y: auto; }
+  #stage { position: fixed; height: 52vh; }
+  .panel { margin: 54vh 12px 12px; }
+  .timeline { bottom: auto; top: 52vh; transform: none; left: 12px; right: 12px; width: auto; }
+}

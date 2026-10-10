@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>PLANET VIEWER · 4DWM — USGS 3DEP terrain + GNIS</title>
+  <meta name="description" content="Offline USGS 3DEP terrain plates with wireframe, x-ray, VRML, labels and relief modes over an offline USGS GNIS gazetteer, in the socal-subsurface viewer idiom." />
+  <link rel="stylesheet" href="./css/project-y-4dwm.css" />
+  <link rel="stylesheet" href="./css/planet-viewer-4dwm.css" />
+</head>
+<body data-mode="relief">
+  <canvas id="stage">This visualization needs a canvas-capable browser.</canvas>
+  <div id="labels" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="title-block">
+      <h1>PLANET VIEWER · 4DWM</h1>
+      <p>USGS 3DEP control-point terrain · offline GNIS · schematic, not a survey product</p>
+    </div>
+    <div class="top-actions">
+      <div class="plate-switch" role="group" aria-label="Plate">
+        <button type="button" data-plate="chey" class="active">CHEYENNE</button>
+        <button type="button" data-plate="ange">SAN GABRIEL</button>
+        <button type="button" data-plate="lawrence">LAWRENCE</button>
+      </div>
+      <div class="mode-switch" role="group" aria-label="View mode">
+        <button type="button" data-mode="relief" class="active">RELIEF</button>
+        <button type="button" data-mode="wire">WIREFRAME</button>
+        <button type="button" data-mode="xray">X-RAY</button>
+      </div>
+      <button type="button" id="btnLabels" class="active" aria-pressed="true">LABELS</button>
+      <button type="button" id="btnVrml" title="Export the current plate as a VRML 2.0 terrarium">VRML ↓</button>
+      <button type="button" id="btnReset">RESET</button>
+    </div>
+  </header>
+
+  <aside class="panel panel-left">
+    <section class="card">
+      <h2>Gazetteer · GNIS</h2>
+      <form class="search-row" role="search" onsubmit="return false">
+        <input type="search" id="searchBox" placeholder="find GNIS name (fuzzy trigram)…" autocomplete="off" />
+        <div id="searchResults" aria-live="polite"></div>
+      </form>
+      <p class="tiny">Offline USGS GNIS subset (five packed cities). Mountain plates legitimately have no points; the box-search check says so.</p>
+      <div class="slider-row">
+        <label for="vertExag">vertical exaggeration <span id="vertExagVal">3×</span></label>
+        <input type="range" id="vertExag" min="1" max="12" step="1" value="3" />
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Layers</h2>
+      <ul class="legend" id="layerList"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Cross-checks</h2>
+      <div id="checkList" class="check-list"></div>
+      <p class="tiny">A check compares two numbers that reached the model down independent paths. A <em>contradiction</em> check passes while the sources still disagree — interpolated grain between 3DEP control points is disclosed, not hidden.</p>
+    </section>
+  </aside>
+
+  <aside class="panel panel-right">
+    <section class="card">
+      <h2 id="infoTitle">Inspector</h2>
+      <div id="infoBody"><p class="small">Click a GNIS marker. Every point carries its GNIS class and coordinates.</p></div>
+    </section>
+
+    <section class="card">
+      <h2>Plates &amp; sources</h2>
+      <div id="cardList" class="card-list"></div>
+      <p class="tiny">Each opens its own 4Dwm window. DATUM NAVD 88; horizontal NAD83/EPSG:4326.</p>
+    </section>
+  </aside>
+
+  <div class="statusbar">
+    <span id="statPlate">plate: —</span>
+    <span id="statChecks">checks: —</span>
+    <span id="hudFps">fps: —</span>
+    <span id="status">boot…</span>
+  </div>
+
+  <div class="pip-layer" id="pipLayer"></div>
+  <div class="wm4d" id="wm4dDesk" hidden>
+    <div class="wm4d-tray" id="wm4dTray"></div>
+    <div class="wm4d-status" id="wm4dStatus">no windows</div>
+  </div>
+
+  <script type="module" src="./js/planet-viewer-4dwm.js"></script>
+</body>
+</html>
