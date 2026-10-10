@@ -117,7 +117,7 @@ DOSBox, so the focus fix is verified statically (present in the packed shell,
 engine complete, package test green) but not confirmed at runtime on the
 failing host.
 
-## Follow-up: `INTRO.EXE` stalls; boot the game menu directly (2026-10-10)
+## Follow-up: `INTRO.EXE` stalls; launch `MAP.EXE` directly (2026-10-10)
 
 Reported symptom: booting the Webxdc reaches the DOS command-line intro and
 stops instead of entering the game. Two packaging problems were confirmed:
@@ -132,11 +132,13 @@ The package build now requires `.xfer/harry/installed/{INTRO,MAP}.EXE` to have
 clean `MZ` headers and has no raw-floppy fallback. It preserves `INTRO.EXE` for
 reference but the DOSBox autoexec starts `MAP.EXE` directly. The canonical
 shell explains the startup path, and `scripts/fix-headline-harry-xdc.mjs`
-rejects a stale/packed bundle, checks the direct-to-game autoexec, and
-synchronizes both tracked XDC copies. The DOSBox CI smoke path likewise starts
-`MAP.EXE` directly.
+rejects a stale/packed bundle, checks the direct-MAP autoexec, and synchronizes
+both tracked XDC copies. The inner ZIP build now uses a fixed timestamp and
+stable ordering, so repeated builds are byte-identical.
 
-Local verification is structural (archive contents, executable signatures,
-boot config, shell and package tests). This sandbox has no DOSBox or browser,
-so the game menu itself could not be observed here; the installer workflow is
-the available place for the actual emulator smoke run.
+The sandbox has no DOSBox or browser, but the GitHub DOSBox workflow completed
+successfully after this change. Its 15–90 second screenshots show the U.S.
+Daily Star **Press Pass** form, rather than the reported command-line stall
+(`.xfer/harry/install/game-shots/`). That confirms `MAP.EXE` reaches an
+interactive screen. The smoke step does not enter a name or verify the screen
+after **OK**, so full gameplay beyond the press-pass form remains unconfirmed.

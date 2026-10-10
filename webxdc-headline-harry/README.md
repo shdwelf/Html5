@@ -42,12 +42,13 @@ e134a66120ce989e1344dfb90d363eb2f36e2975  disk4.img
 
 Boot sequence discovered from `HARRY.BAT`: `memtest` → `intro` → `map`.
 The Webxdc bundle starts the recovered `MAP.EXE` directly: the packed floppy
-EXEs are not runnable, and the standalone intro stalls before handing control
-to the game in the js-dos host. `INTRO.EXE` is kept in the bundle for reference
-but is skipped at boot; MEMTEST would only gate the game on conventional-memory
-checks. The bundle contains the **original installer-recovered `C:\HH`
-directory** (see *Recovery*): `SETUP.INF` = VGA + AdLib,
-`HARRY.BAT`/`SETUP.BAT`/`INSTALL.EXE` kept untouched.
+EXEs are not runnable, and the standalone intro reaches a command-line stall
+instead of handing control to the game. This launches at the U.S. Daily Star
+**Press Pass** form; type a name and activate **OK** to continue.
+`INTRO.EXE` is kept in the bundle for reference but skipped at boot; MEMTEST
+would only gate the game on conventional-memory checks. The bundle contains the
+**original installer-recovered `C:\HH` directory** (see *Recovery*):
+`SETUP.INF` = VGA + AdLib, `HARRY.BAT`/`SETUP.BAT`/`INSTALL.EXE` kept untouched.
 
 ## Recovery (how the retail floppies became runnable files)
 
