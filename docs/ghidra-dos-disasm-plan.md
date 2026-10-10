@@ -8,19 +8,33 @@
 - **WarGames** (DOS)
 - **Balance of Power** (1985, Chris Crawford / Mindscape)
 
-## Blocker (verified 2026-10-09)
-
-This repo's agent sandbox **cannot run Ghidra** and **cannot fetch the
-binaries**:
+## Status (verified 2026-10-09/10)
 
 | need | status | evidence |
 | --- | --- | --- |
-| DOS binaries | unreachable | `archive.org`, `myabandonware.com`, IA file host all return HTTP `000` |
-| Ghidra | unobtainable | release assets redirect to `objects.githubusercontent.com`, which returns `000` (CDN outside the egress allowlist) |
-| a JVM to run Ghidra | none present, none obtainable | no `java`/`javac` on the filesystem; `node-jre` and Adoptium both pull from the same blocked CDN |
+| DOS binaries | **obtained** | uploaded to Google Drive; pulled into the workspace via the Drive connector (`google_drive/`, gitignored) |
+| a JVM to run Ghidra | none present, none obtainable | no `java`/`javac` on the filesystem; release assets and `node-jre` pull from `objects.githubusercontent.com`, which returns `000` |
+| Ghidra | unobtainable here | same blocked CDN |
+| capstone (disassembler) | **installed** | `pip install --break-system-packages capstone` → 5.0.7 |
 
-No disassembly is fabricated. What exists here is a **ready-to-run harness** to
-execute on a machine that has Ghidra + a JDK 21+.
+So Ghidra cannot run in the sandbox (no JVM), but the binaries are in hand and
+**real 16-bit disassembly was done with capstone** via `scripts/dos-disasm.py`.
+
+## What was actually disassembled
+
+From the Drive uploads: `SHADOW.EXE` (Shadow President, 1.44 MB code, 540,510
+instructions), `EGAGAME.EXE`, `HFROEGA.EXE`, `HFROVGA.EXE`, `HFRO.COM` (Hunt for
+Red October). WarGames and Balance of Power were **not** in Drive (Drive-wide
+search returned 0).
+
+The capstone scan (`docs/ghidra/dos-disasm-report.md`) flags candidate
+nested-loop/array shapes, but **manual inspection of the top candidates found no
+array sort** — they are an `itoa` number formatter, a bounding-box hit-test
+search, a DOS `int 21h` file-I/O routine, and a 4-element threshold scan. The
+`xchg`/`cmp`/backward-jump signature over raw assembly also matches those, so
+asm-level detection is too noisy to be reliable. **A decompiler is required to
+confirm sorts** — that is what `scripts/ghidra-dos-disasm.sh` is for, on a host
+with a JVM. Nothing here is fabricated.
 
 ## Harness
 
