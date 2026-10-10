@@ -665,3 +665,27 @@ disproof of authenticity.
 and `tools/verify_lecture_hall.mjs` now checks the parsed values and the updated
 record. The lecture hall remains at **10 records**; this is a source-check
 upgrade to the Cicada record, not an asserted eleventh solution.
+
+## §14 — Wave 9: DR7 BA1FB AVR programmer, static disassembly (2026-10-10)
+
+Detailed register: [`resources/src-75-dr7-fbprg16-disassembly.md`](../resources/src-75-dr7-fbprg16-disassembly.md).
+This follow-on deliberately selects a different DR7 artifact from the previously documented
+Disavr3: `FBPRG16.EXE` in `avrprogrammer.zip` and `avrsetup.zip`. The two archived members are
+byte-identical (42,746 bytes, SHA-256 `acf0ae1f…e44a7c5`); their three-byte `FBPRG.CFG` snapshots
+are not. This is one executable, not two software versions.
+
+`tools/game_triage.py` classifies it as plain 16-bit DOS MZ with 129 relocations, not LZEXE,
+PKLITE, or an LE extender. The local Ghidra-WASM decompiler maps its CRT entry at `0x12D4E` and
+application routine at `0x10010`. Embedded strings identify BA1FB's AT90S programmer, five device
+groups, Flash/EEPROM HEX-file operations, lock options, and its 25-pin printer-port schematic.
+
+The key cross-check is electrical and programmatic: the GIF labels **RESET=DB-25 pin 6, MOSI=7,
+SCK=8, MISO=10/ACK, GND=25**; the disassembly sets/clears the corresponding LPT data bits
+(`0x10`, `0x20`, `0x40`) and samples status-register bit `0x40` for MISO. The byte shifter at
+`0x123F2` is MSB-first. The enable path at `0x12314` sends `AC 53`, clocks `FF`, and expects a
+`53` response before proceeding. Flash/EEPROM read, write, erase and lock operations were then
+traced at their call sites, with all command bytes and unresolved details kept in the register.
+
+No EXE was run and no programmer hardware was connected. The three-byte config format, the stale
+V1.10 debug-export string, and the separate `AVRSETUP.EXE`/`HEXCSUM.EXE` remain open; the next
+work does not assume those are resolved by this pass.
