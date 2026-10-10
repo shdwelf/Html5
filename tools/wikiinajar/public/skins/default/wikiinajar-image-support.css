@@ -1,0 +1,68 @@
+.wiki-image {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  margin: 0.8em 0;
+}
+
+.wiki-djvu-embed {
+  box-sizing: border-box;
+  max-width: 100%;
+  margin: 1em 0;
+  padding: 0.75em;
+  border: 1px solid #d4d4d4;
+  background: #fafafa;
+}
+
+.wiki-djvu-fallback {
+  display: inline-block;
+  margin-bottom: 0.5em;
+}
+
+.wiki-djvu-viewer {
+  max-width: 100%;
+  overflow: auto;
+  background: #e8e8e8;
+}
+
+.wiki-djvu-canvas {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #fff;
+}
+
+.wiki-djvu-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  padding: 0.5em;
+}
+
+.wiki-djvu-button {
+  padding: 0.35em 0.7em;
+  border: 1px solid #9a9a9a;
+  border-radius: 3px;
+  background: #fff;
+  color: #222;
+  cursor: pointer;
+}
+
+.wiki-djvu-button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.wiki-djvu-page-label,
+.wiki-djvu-status {
+  color: #555;
+  font-size: 0.9em;
+}
+
+.wiki-djvu-error,
+.wiki-image-error {
+  color: #8d1c1c;
+}
