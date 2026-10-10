@@ -58,13 +58,28 @@ emulator_pid=$!
 (
   set -x
   sleep 5
-  # In a fresh Xvfb there is no window manager; DOSBox's SDL window is the
-  # only application window and owns X input focus. Omit --window so xdotool
-  # uses XTest rather than XSendEvent (which SDL can ignore).
+  # Find the SDL window for a focused XTest keyboard stream and a screenshot
+  # of the window itself (Xvfb's root image does not composite child windows).
+  window=""
+  for _ in $(seq 1 40); do
+    window="$(xdotool search --onlyvisible --name '.*[Dd][Oo][Ss][Bb][Oo][Xx].*' 2>/dev/null | head -n1 || true)"
+    if [[ -z "$window" ]]; then
+      window="$(xdotool search --onlyvisible --class '.*[Dd][Oo][Ss][Bb][Oo][Xx].*' 2>/dev/null | head -n1 || true)"
+    fi
+    if [[ -n "$window" ]]; then break; fi
+    sleep 0.25
+  done
+  if [[ -z "$window" ]]; then
+    listing="$(xdotool search --onlyvisible --name '.*' 2>/dev/null | while read -r id; do printf '%s %s\\n' "$id" "$(xdotool getwindowname "$id" 2>/dev/null || true)"; done)"
+    echo "DOSBox window not found; visible windows: $listing" >&2
+    echo "::error title=Sneakers DOSBox window missing::$listing"
+    exit 1
+  fi
+  xdotool windowfocus --sync "$window" 2>/dev/null || true
   xdotool type --clearmodifiers --delay 45 'setec astronomy'
   xdotool key Return
   sleep 3
-  import -window root "$WORK_DIR/after-password.png"
+  import -window "$window" "$WORK_DIR/after-password.png"
   xdotool type --clearmodifiers '7'
   xdotool key Return
 ) > "$WORK_DIR/input.log" 2>&1 &
