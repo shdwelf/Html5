@@ -1873,6 +1873,42 @@
   </div>
 
   <hr class="hr">
+
+  <h2 id="barcode-symbologies"><span class="n">23.</span>Code 39 Repair, QR Code v1&ndash;40 &amp; Avery Label Sheets</h2>
+  <p class="tagline" style="margin-top:-8px;">Barcode order: fix the linear symbology that was producing unscannable output, extend QR past version 10, then lay any of them out on a printable label sheet.</p>
+
+  <div class="card">
+    <div class="cat">Barcode &middot; Code 39 / USS 3-of-9 &middot; verified against BWIPP</div>
+    <h3>Code 39 module table (<span class="kbd">code39</span>)</h3>
+    <p>Three independent defects made the previous output unscannable. The pattern table held 40 entries for a 43-character alphabet, so <span class="kbd">/</span>, <span class="kbd">+</span> and <span class="kbd">%</span> indexed past the end and emitted the literal string <span class="kbd">undefined</span>. The <span class="kbd">*</span> start/stop was 11 modules across 8 elements while every data character is 15 modules across 9. And the encoder supplied two inter-character gaps per symbol while dropping the one before the stop.</p>
+    <div class="math">A Code&nbsp;39 character = 9 elements (5 bars, 4 spaces), exactly 3 wide, 15 modules at a 3:1 ratio, bar first and bar last. Symbol = start + (gap + character) &times; n + gap + stop.</div>
+    <p>Known answers: <span class="kbd">A</span> &rarr; 48 modules, <span class="kbd">HELLO</span> &rarr; 112, <span class="kbd">12345</span> &rarr; 112, <span class="kbd">$/+%</span> &rarr; 96, <span class="kbd">THE QUICK BROWN FOX</span> &rarr; 336.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> module-for-module against BWIPP (bwip-js), with and without the optional Mod-43 check character.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Barcode &middot; QR Code &middot; ISO/IEC 18004</div>
+    <h3>QR Code versions 1&ndash;40 (<span class="kbd">qrcode</span>)</h3>
+    <p>Byte mode, error correction L/M/Q/H, mask selected by the standard N1&ndash;N4 penalty rules. The encoder previously stopped at version 10 &mdash; 271 bytes at level L &mdash; so a long URL or any larger payload threw instead of encoding. <span class="kbd">QR_TOTAL</span> and <span class="kbd">QR_EC</span> now cover all 40 versions, and the hardcoded 10-entry alignment table is replaced by the Annex E position formula shared by the reserved-area and matrix builders.</p>
+    <div class="math">size = 4v + 17 &nbsp;&middot;&nbsp; alignment centres: step = 2&lceil;(size &minus; 13) / (2&lceil;v/7&rceil; &minus; 2)&rceil;, skipping the three finder corners &nbsp;&middot;&nbsp; v40-L holds 2953 bytes</div>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; 8 of 8 matrices byte-identical to node-qrcode in forced byte mode, spanning versions 1, 2, 3, 7, 13 and 29.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Barcode &middot; Label layout &middot; Avery LabelPro templates</div>
+    <h3>Avery label sheet (<span class="kbd">averyLabels</span>)</h3>
+    <p>N-up label layout on US Letter at 96 dpi, rendered to 816 &times; 1056. Templates <span class="kbd">5160</span> (address, 3&times;10), <span class="kbd">5161</span> (shipping, 2&times;10), <span class="kbd">5163</span> (shipping, 2&times;5) and <span class="kbd">5392</span> (name badge, 2&times;4), plus a custom grid built from the supplied columns, rows and label size. Any of Code 39, Code 128, EAN-13 or QR can fill the cells; values split on newlines or <span class="kbd">|</span>.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; all five templates rasterise a full sheet with a symbol in the first cell, and a QR drawn onto a label decodes back to the reference version-3 matrix with 0 of 841 modules differing.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Packaging &middot; SFX recipe packs</div>
+    <h3>Full-coverage recipe packs</h3>
+    <p>147 of the 480 operations belonged to no <span class="kbd">RECIPE_PACK</span>, so the self-extracting pack builder&rsquo;s &ldquo;select all&rdquo; produced 333 recipes and silently dropped the rest. Thirty-one <span class="kbd">Full Coverage &mdash; &lt;category&gt;</span> packs close the gap.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; select all now loads 480 of 480, and the sync test fails if any operation is ever left out of every pack again.</p>
+  </div>
+
+  <hr class="hr">
   <div class="foot">
     Crypto Cookbook · pairs with the CyberChef kitchen (cyberchef.html) where these recipes are live operations.
     Verified statuses are backed by published test vectors. Educational/reference items are for learning, not production.
