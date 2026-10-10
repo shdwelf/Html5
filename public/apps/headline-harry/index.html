@@ -98,7 +98,7 @@
     </div>
   </div>
 
-  <div id="status">press BOOT to start the 1991 pressroom…</div>
+  <div id="status">press BOOT to open the 1991 game menu…</div>
 
   <details>
     <summary>about · controls · provenance</summary>
@@ -113,6 +113,10 @@
       <span style="font-family:var(--mono)">roms/headline-harry.jsdos</span>, booted
       by js-dos 8.4.1 (DOSBox → WebAssembly). No files leave the app; webxdc CSP
       keeps it fully offline.</p>
+      <p><b>Startup:</b> starts the recovered <code>MAP.EXE</code> game menu
+      directly. The disk's packed executables are not runnable, and the intro
+      program stalled before it could hand control to the game; <code>INTRO.EXE</code>
+      remains in the bundle for reference but is skipped at boot.</p>
       <p><b>Legal:</b> abandonware is not public domain — © Davidson &amp;
       Associates. For personal archival/preservation use only; please don't
       redistribute this .xdc.</p>
@@ -163,7 +167,7 @@
         if (event === "emu-ready") {
           status("DOSBox (WASM) engine loaded from the app bundle…");
         } else if (event === "bnd-play") {
-          status("booting HEADLINE HARRY (1991)…");
+          status("starting the recovered MAP.EXE game menu directly (intro skipped)…");
         } else if (event === "ci-ready") {
           status("DOSBox ready — HEADLINE HARRY (1991). " +
                  "js-dos sidebar: ☰ = keyboard/gamepad, 💾 = actions");

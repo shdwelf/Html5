@@ -248,16 +248,45 @@ test("Headline Harry archive boots the js-dos v8 API with the complete engine", 
 
   const shell = text(files, "index.html");
   assert.equal(shell, source("public/apps/headline-harry/index.html"), "packed shell is stale");
+  assert.equal(
+    source("webxdc-headline-harry/app/index.html"),
+    source("public/apps/headline-harry/index.html"),
+    "staged app shell is stale versus its canonical source",
+  );
   assert.doesNotMatch(shell, /dosInstance\.run\(/, "v7 dosInstance.run() crept back into the shell");
   assert.match(shell, /url:\s*"roms\/headline-harry\.jsdos"/);
   assert.match(shell, /pathPrefix:\s*"js-dos\/"/);
 
   // The roms bundle must be a real .jsdos bundle: autoexec mounts C: and boots.
+  assert.ok(files["roms/headline-harry.jsdos"], "headline-harry.xdc lost the js-dos bundle");
+  const sourceBundle = readFileSync(path.join(root, "webxdc-headline-harry", "app", "roms", "headline-harry.jsdos"));
+  assert.deepEqual(
+    Buffer.from(files["roms/headline-harry.jsdos"]),
+    sourceBundle,
+    "packed js-dos bundle is stale versus its tracked source",
+  );
   const rom = unzipSync(files["roms/headline-harry.jsdos"]);
   const conf = decoder.decode(rom[".jsdos/dosbox.conf"]);
   assert.match(conf, /\[autoexec\]/);
   assert.match(conf, /mount c \./);
-  assert.ok(rom["MAP.EXE"], "headline-harry.jsdos lost MAP.EXE");
+  const autoexec = conf.split(/^\[autoexec\]\s*$/im)[1] ?? "";
+  assert.match(autoexec, /^[ \t]*MAP(?:\.EXE)?[ \t]*$/im, "autoexec must start the game directly");
+  assert.doesNotMatch(autoexec, /^[ \t]*INTRO(?:\.EXE)?[ \t]*$/im, "autoexec must skip the hanging intro");
+
+  // The shipped archive must contain the installer-recovered MZ executables,
+  // not the packed floppy copies whose first bytes are `ff 4d 5a`.
+  for (const name of ["INTRO.EXE", "MAP.EXE"]) {
+    const executable = rom[name];
+    assert.ok(executable, `headline-harry.jsdos lost ${name}`);
+    assert.equal(executable[0], 0x4d, `${name} does not begin with MZ`);
+    assert.equal(executable[1], 0x5a, `${name} does not begin with MZ`);
+  }
+
+  assert.deepEqual(
+    readFileSync(path.join(root, "webxdc-headline-harry", "headline-harry.xdc")),
+    readFileSync(path.join(root, "headline-harry.xdc")),
+    "the package-directory XDC copy must match the root deliverable",
+  );
 });
 
 test("merged CyberChef archive is current and self-contained", () => {

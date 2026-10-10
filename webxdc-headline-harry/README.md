@@ -6,7 +6,7 @@ runs inside ArcaneChat / Delta Chat — or any browser — completely offline.
 
 ## TL;DR
 
-- Deliverable: **`../headline-harry.xdc`** (repo root, 2.9 MB) — send it as a file
+- Deliverable: **`../headline-harry.xdc`** (repo root, 2.7 MB) — send it as a file
   attachment in ArcaneChat and tap **Start**.
 - It is not a recompilation. The original 1991 DOS binaries are bundled and booted
   by **js-dos 8.4.1** (DOSBox compiled to WebAssembly). See *"Why not Ghidra"*
@@ -17,7 +17,7 @@ runs inside ArcaneChat / Delta Chat — or any browser — completely offline.
 
 | artifact | size | what it is |
 |---|---|---|
-| `roms/headline-harry.jsdos` | 2.0 MB | js-dos bundle = all extracted game files + `.jsdos/dosbox.conf` |
+| `roms/headline-harry.jsdos` | 1.84 MB | js-dos bundle = installer-recovered game files + `.jsdos/dosbox.conf` |
 | `js-dos/` | 2.2 MB | vendored js-dos 8.4.1 player — full engine set: `js-dos.js`, `js-dos.css`, `emulators.js`, `wdosbox.js`, `wdosbox.wasm`, **`wlibzip.js`, `wlibzip.wasm`** (the libzip pair the v8 bundle loader fetches; without it `Dos()` 404s before the game starts) |
 | `index.html` | | pressroom-themed player page; boots the bundle via the js-dos v8 options API: `Dos(el, { url: "roms/headline-harry.jsdos", pathPrefix: "js-dos/", autoStart: true, … })` |
 | `icon.png` | 115 KB | 256×256 app icon |
@@ -41,10 +41,13 @@ e134a66120ce989e1344dfb90d363eb2f36e2975  disk4.img
 `002379-HeadlineHarryAndTheGreatPaperRace`.)
 
 Boot sequence discovered from `HARRY.BAT`: `memtest` → `intro` → `map`.
-The bundle's autoexec runs `INTRO` then `MAP` directly (MEMTEST would only gate
-the game on conventional-memory checks). The bundle contains the **original
-installer-recovered `C:\HH` directory** (see *Recovery*): `SETUP.INF` = VGA +
-AdLib, `HARRY.BAT`/`SETUP.BAT`/`INSTALL.EXE` kept untouched.
+The Webxdc bundle starts the recovered `MAP.EXE` directly: the packed floppy
+EXEs are not runnable, and the standalone intro stalls before handing control
+to the game in the js-dos host. `INTRO.EXE` is kept in the bundle for reference
+but is skipped at boot; MEMTEST would only gate the game on conventional-memory
+checks. The bundle contains the **original installer-recovered `C:\HH`
+directory** (see *Recovery*): `SETUP.INF` = VGA + AdLib,
+`HARRY.BAT`/`SETUP.BAT`/`INSTALL.EXE` kept untouched.
 
 ## Recovery (how the retail floppies became runnable files)
 
@@ -54,10 +57,13 @@ script-driven unpacker that identifies disks only via per-disk CHECK_FILEs, so
 the fetch workflow merges the four SHA-1-verified images into one `B:\` source
 dir and drives the original installer through it unattended (DOSBox/Xvfb
 keybot, VGA+AdLib chosen in its menus). The resulting `C:\HH` passes clean-`MZ`
-checks (MAP.EXE 122,638→217,743 B, INTRO.EXE 47,851→82,525 B), and a DOSBox
-game-run is screenshot-verified each build (`.xfer/harry/install/`).
-Ghidra consumes these recovered executables — `ghidra/` holds the disassembly,
-decompilation, strings and metadata reports for INTRO.EXE and MAP.EXE
+checks (MAP.EXE 122,638→217,743 B, INTRO.EXE 47,851→82,525 B). The checked-in
+Webxdc is built from these clean installer outputs, never from the packed
+floppy EXEs. The workflow records DOSBox logs/screenshots under
+`.xfer/harry/install/`; those artifacts are diagnostic and do not by themselves
+prove that the game menu rendered. Ghidra consumes the recovered executables —
+`ghidra/` holds the disassembly, decompilation, strings and metadata reports for
+INTRO.EXE and MAP.EXE
 (`ANALYSIS.md` summarizes; note: the tiny real-mode programs yield 0 named
 functions in auto-analysis, so reports are linear disassembly + strings).
 
@@ -68,10 +74,10 @@ digitized audio instead, re-run `SETUP.BAT` inside the app (menu-driven).
 
 ```
 archive.org/HeadlineHarry  ──(GitHub runner; sandbox egress is allowlisted)──▶
-.xfer/harry/disks/disk{1..4}.img  ──(mtools: mdir verify + mcopy merge)──▶
-.xfer/harry/game/  ──(+ .jsdos/dosbox.conf, zip -9)──▶
+.xfer/harry/disks/disk{1..4}.img  ──(mtools + original installer)──▶
+.xfer/harry/installed/  ──(require clean MZ; autoexec MAP.EXE; zip -9)──▶
 app/roms/headline-harry.jsdos  ──(+ index.html + js-dos/ + icon + manifest)──▶
-headline-harry.xdc
+headline-harry.xdc (mirrored to webxdc-headline-harry/headline-harry.xdc)
 ```
 
 Automation (both follow the repo's existing arena-* workflow patterns):
@@ -87,15 +93,18 @@ Ghidra disassembles machine code for *analysis*; it has no path that recompiles 
 16-bit real-mode DOS game into HTML5/wasm, and a .xdc is a zip of web assets, not
 a binary container. Porting properly means reverse-engineering the engine and
 rewriting it (months of work). The practical, faithful "conversion" is emulation:
-the untouched binaries run under DOSBox→WASM, byte-identical to the archived
-floppies. What Ghidra *is* good for here it did: a documented static analysis of
-the executables (`ghidra/` — functions, strings, entry points, C pseudocode)
+the original game runs under DOSBox→WASM. The packaged EXEs are the clean files
+produced by the original installer, so they are **not byte-identical** to the
+packed floppy entries (which begin `ff 4d 5a`). What Ghidra *is* good for here
+it did: a documented static analysis of the recovered executables (`ghidra/` —
+functions, strings, entry points, C pseudocode)
 for anyone who does want to study or eventually port the engine.
 
 ## Rebuild
 
 ```bash
-./build-xdc.sh          # needs .xfer/harry/game present; rewrites ../headline-harry.xdc
+./build-xdc.sh          # needs .xfer/harry/installed with clean INTRO/MAP MZ files
+                         # rebuilds both XDC copies; refuses packed raw floppy EXEs
 ```
 
 ## In ArcaneChat

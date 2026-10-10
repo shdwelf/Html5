@@ -1,30 +1,43 @@
 #!/usr/bin/env bash
-# Rebuild headline-harry.xdc from the extracted game files.
-# Requires: .xfer/harry/game (produced by the arena-headline-harry workflow).
+# Rebuild the Headline Harry Webxdc from the installer-recovered game files.
+#
+# Raw floppy executables start with `ff 4d 5a` and are packed; shipping those
+# as INTRO.EXE/MAP.EXE makes DOSBox stall at the intro command. This build
+# intentionally refuses that source and uses the clean MZ files recovered by
+# the arena-headline-harry workflow. It boots MAP.EXE directly because the
+# standalone intro does not return reliably in the js-dos Webxdc host.
 set -euo pipefail
-cd "$(dirname "$0")"
 
-APP="app"
-OUT="../headline-harry.xdc"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+APP="$ROOT/webxdc-headline-harry/app"
+GAME_DIR="$ROOT/.xfer/harry/installed"
+BUILD_DIR="$(mktemp -d)"
+trap 'rm -rf "$BUILD_DIR"' EXIT
 
-# Prefer the installer-recovered clean executables; fall back to the raw
-# floppy extraction (which is packed/scrambled and won't boot) with a warning.
-if [ -f ../.xfer/harry/installed/MAP.EXE ]; then
-  GAME_DIR="../.xfer/harry/installed"
-elif [ -f ../.xfer/harry/game-raw/MAP.EXE ]; then
-  GAME_DIR="../.xfer/harry/game-raw"
-  echo "WARNING: using raw floppy files (packed, will not run) - run the install workflow first" >&2
-else
-  echo "missing game files (run the fetch workflow first)" >&2; exit 1
+if [[ ! -f "$GAME_DIR/INTRO.EXE" || ! -f "$GAME_DIR/MAP.EXE" ]]; then
+  echo "missing installer-recovered game files in $GAME_DIR" >&2
+  echo "Run the arena-headline-harry workflow first; raw floppy files are packed and are not a runnable fallback." >&2
+  exit 1
 fi
 
-test -f "$GAME_DIR/MAP.EXE" || { echo "missing $GAME_DIR/MAP.EXE" >&2; exit 1; }
+# Fail closed if this is the `ff MZ` packed floppy copy rather than the
+# installer output. Both app executables must have a normal DOS MZ header.
+for exe in INTRO.EXE MAP.EXE; do
+  magic="$(od -An -N2 -tx1 "$GAME_DIR/$exe" | tr -d '[:space:]')"
+  if [[ "$magic" != "4d5a" ]]; then
+    echo "$GAME_DIR/$exe is not a clean MZ executable (header: $magic); refusing to package it" >&2
+    exit 1
+  fi
+done
 
-# 1) js-dos bundle: game files + .jsdos/dosbox.conf
-rm -rf .bundle
-mkdir -p .bundle/.jsdos
-cp "$GAME_DIR"/* .bundle/
-cat > .bundle/.jsdos/dosbox.conf <<'CONF'
+mkdir -p "$BUILD_DIR/.jsdos" "$APP/roms"
+while IFS= read -r -d '' file; do
+  cp -p "$file" "$BUILD_DIR/"
+done < <(find "$GAME_DIR" -maxdepth 1 -type f -print0)
+
+# Skip INTRO.EXE's interactive command-line stall and enter the game menu.
+# The original HARRY.BAT remains in the bundle unchanged for reference.
+cat > "$BUILD_DIR/.jsdos/dosbox.conf" <<'CONF'
 [jsdos]
 # js-dos bundle for Headline Harry and The Great Paper Race (1991, DOS)
 [cpu]
@@ -44,14 +57,22 @@ pcspeaker=true
 [autoexec]
 mount c .
 c:
-intro
-map
+MAP.EXE
 CONF
 
-( cd .bundle && rm -f "../$APP/roms/headline-harry.jsdos" && zip -q -9 -r "../$APP/roms/headline-harry.jsdos" . )
+# 1) deterministic source payload; the outer repacker below normalizes ZIP
+# metadata and verifies that the local engine set is complete.
+rm -f "$APP/roms/headline-harry.jsdos"
+(cd "$BUILD_DIR" && zip -q -9 -r "$APP/roms/headline-harry.jsdos" .)
 
-# 2) webxdc package: everything under app/, index.html at zip root
-( cd "$APP" && rm -f "../headline-harry.xdc" "$OUT" && zip -q -9 -r "$OUT" . -x '*.DS_Store' )
+# Keep the packaged shell in sync with its canonical, reviewable source.
+cp "$ROOT/public/apps/headline-harry/index.html" "$APP/index.html"
 
-echo "built $OUT"
-unzip -l "$OUT"
+# 2) package the webxdc, then canonicalize the archive; the repacker mirrors
+# the exact deliverable into both tracked XDC paths.
+rm -f "$ROOT/headline-harry.xdc"
+(cd "$APP" && zip -q -9 -r "$ROOT/headline-harry.xdc" . -x '*.DS_Store')
+node "$ROOT/scripts/fix-headline-harry-xdc.mjs"
+
+printf 'Built %s from clean MZ executables; autoexec starts MAP.EXE directly.\n' "$ROOT/headline-harry.xdc"
+unzip -l "$ROOT/headline-harry.xdc"

@@ -127,7 +127,7 @@ jobs:
             echo "source=" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Smoke test — boot the installed game in DOSBox and screenshot it
+      - name: Smoke test — boot MAP.EXE directly in DOSBox and screenshot it
         if: steps.install.outputs.source == 'installer'
         run: |
           set +e
@@ -144,8 +144,10 @@ jobs:
             done
           ) &
           sp=$!
+          # Match the Webxdc launch path: bypass the INTRO.EXE prompt/stall
+          # and enter the recovered game's MAP.EXE menu directly.
           timeout 130 dosbox \
-            -c "mount c $work/hd" -c "c:" -c "cd hh" -c "harry.bat" \
+            -c "mount c $work/hd" -c "c:" -c "cd hh" -c "map.exe" \
             > "$work/game-run.log" 2>&1
           kill $sp 2>/dev/null
           mkdir -p .xfer/harry/install/game-shots
