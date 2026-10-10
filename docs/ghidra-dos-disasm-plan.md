@@ -66,9 +66,28 @@ Gang of Four framing for the rewrite: a **Strategy** object for the comparator
 (`Comparator`), the sort itself as a **Template Method** over the comparison,
 and a **Factory** selecting quicksort vs mergesort by size/stability needs.
 
-## To actually run it
+## OpenJVM + encryption finder (2026-10-09)
 
-1. Obtain the binaries (outside this sandbox) and put them somewhere reachable.
-2. On a host with Ghidra 12.x + JDK 21+:
-   `GHIDRA_HOME=/opt/ghidra scripts/ghidra-dos-disasm.sh SP.COM WAR.EXE BOP.EXE`
-3. Read `docs/ghidra/ghidra-report-*.md`, then rewrite the flagged sorts.
+**OpenJVM works.** `pip install --break-system-packages jdk4py` pulls a bundled
+Temurin **OpenJDK 25.0.2 JRE** from PyPI (`files.pythonhosted.org`, reachable) —
+`java -version` runs. It is runtime-only (no `javac`/`jdk.compiler`, no
+single-file source mode), so it **runs JARs/.class but cannot compile**. That
+unblocks executing any Java tool or JAR (e.g. `wiki.in.a.jar`) that can be
+delivered to the workspace.
+
+**Ghidra is still unobtainable**, for two independent reasons: its ~400 MB
+release zip is on the blocked `objects.githubusercontent.com` CDN *and* exceeds
+the Drive connector's 100 MB `download_file` cap; building from source needs
+Maven Central (blocked). So there is no x86 decompiler here. (The PyPI `cfr`
+package is a name collision — a climate-science library, not the CFR Java
+decompiler.)
+
+**Encryption finder delivered.** `scripts/crypto-find.py` is the Ghidra "Find
+Crypt" concept, dependency-free: it scans for AES/DES S-boxes, MD5/SHA round
+constants and IVs, Blowfish/RC5/TEA constants, Base64 alphabets, and CRC-32
+tables, in both byte orders. Run over the DOS binaries
+(`docs/ghidra/dos-crypto-scan.md`): **no real cryptography** — SHADOW.EXE has one
+hit, `0x00808200` at `0xE4863`, which is a coincidental match inside a
+little-endian pointer/offset table, not a DES S-box. Every other executable has
+zero known crypto constants. Any game-data scrambling these titles use is
+custom, not a standard algorithm with recognizable constants.
