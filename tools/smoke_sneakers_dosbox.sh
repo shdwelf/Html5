@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Run the checked-in Sneakers js-dos payload in native DOSBox under Xvfb.
 # Writes DOSBox diagnostics, a post-password screenshot, and OCR output to SNEAKERS_SMOKE_DIR.
-set -euo pipefail
+set -eEuo pipefail
+trap 'code=$?; echo "::error title=Sneakers smoke failure::line $LINENO: $BASH_COMMAND (exit $code)"; exit "$code"' ERR
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BUNDLE="$ROOT/webxdc-dos/public/roms/SNEAKERS.jsdos"
@@ -55,34 +56,26 @@ dosbox \
 emulator_pid=$!
 
 (
+  set -x
   sleep 5
-  window=""
-  for _ in $(seq 1 40); do
-    window="$(xdotool search --onlyvisible --class '.*[Dd][Oo][Ss][Bb][Oo][Xx].*' 2>/dev/null | head -n1 || true)"
-    if [[ -z "$window" ]]; then
-      window="$(xdotool search --onlyvisible --name '.*[Dd][Oo][Ss][Bb][Oo][Xx].*' 2>/dev/null | head -n1 || true)"
-    fi
-    if [[ -n "$window" ]]; then break; fi
-    sleep 0.25
-  done
-  if [[ -z "$window" ]]; then
-    echo "DOSBox window was not found under DISPLAY=$DISPLAY" >&2
-    exit 1
-  fi
-  xdotool windowfocus --sync "$window" 2>/dev/null || true
+  # In a fresh Xvfb there is no window manager; DOSBox's SDL window is the
+  # only application window and owns X input focus. Omit --window so xdotool
+  # uses XTest rather than XSendEvent (which SDL can ignore).
   xdotool type --clearmodifiers --delay 45 'setec astronomy'
   xdotool key Return
   sleep 3
   import -window root "$WORK_DIR/after-password.png"
   xdotool type --clearmodifiers '7'
   xdotool key Return
-) &
+) > "$WORK_DIR/input.log" 2>&1 &
 bot_pid=$!
 bot_status=0
 wait "$bot_pid" || bot_status=$?
 if [[ "$bot_status" -ne 0 ]]; then
+  cat "$WORK_DIR/input.log" >&2
   cat "$WORK_DIR/dosbox.log" >&2
-  echo "DOSBox input automation failed with status $bot_status" >&2
+  summary="$(tr '\n' ' ' < "$WORK_DIR/input.log")"
+  echo "::error title=Sneakers keyboard automation failed::$summary"
   exit "$bot_status"
 fi
 
