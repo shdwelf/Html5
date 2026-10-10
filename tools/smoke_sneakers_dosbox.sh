@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the checked-in Sneakers js-dos payload in native DOSBox under Xvfb.
-# On success, writes dosbox.log, after-password.png, and ocr.txt to SNEAKERS_SMOKE_DIR.
+# Writes DOSBox diagnostics, a post-password screenshot, and OCR output to SNEAKERS_SMOKE_DIR.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -31,14 +31,22 @@ if [[ -z "${DISPLAY:-}" ]]; then
   export DISPLAY=:99
   Xvfb "$DISPLAY" -screen 0 800x600x24 >/dev/null 2>&1 &
   xvfb_pid=$!
-  trap 'kill "$xvfb_pid" 2>/dev/null || true' EXIT
-  sleep 2
 fi
+emulator_pid=""
+cleanup() {
+  if [[ -n "$emulator_pid" ]] && kill -0 "$emulator_pid" 2>/dev/null; then
+    kill -TERM "$emulator_pid" 2>/dev/null || true
+  fi
+  if [[ -n "${xvfb_pid:-}" ]]; then
+    kill "$xvfb_pid" 2>/dev/null || true
+  fi
+}
+trap cleanup EXIT
+sleep 2
 
-# DOSBox enters the password field, shows the press-kit menu on success, and
-# accepts menu choice 7 to exit. Use XTest keyboard events (no --window), since
-# SDL ignores XSendEvent events on some headless displays.
-timeout 35s dosbox \
+# The emulator may keep its DOS prompt open after the game's menu exits, so
+# capture the verified screen first and terminate DOSBox after the interaction.
+dosbox \
   -c "mount c $GAME_DIR" \
   -c "c:" \
   -c "RUN.BAT" \
@@ -70,26 +78,21 @@ emulator_pid=$!
   xdotool key Return
 ) &
 bot_pid=$!
-
 bot_status=0
 wait "$bot_pid" || bot_status=$?
 if [[ "$bot_status" -ne 0 ]]; then
-  kill "$emulator_pid" 2>/dev/null || true
-  wait "$emulator_pid" 2>/dev/null || true
   cat "$WORK_DIR/dosbox.log" >&2
   echo "DOSBox input automation failed with status $bot_status" >&2
   exit "$bot_status"
 fi
 
-set +e
-wait "$emulator_pid"
-status=$?
-set -e
-if [[ "$status" -ne 0 ]]; then
-  cat "$WORK_DIR/dosbox.log" >&2
-  echo "DOSBox exited with status $status" >&2
-  exit "$status"
+sleep 2
+if kill -0 "$emulator_pid" 2>/dev/null; then
+  echo "DOSBox remained open after the exit selection; stopping it after screen capture."
+  kill -TERM "$emulator_pid" 2>/dev/null || true
 fi
+wait "$emulator_pid" 2>/dev/null || true
+emulator_pid=""
 
 test -s "$WORK_DIR/after-password.png"
 colors="$(identify -format '%k' "$WORK_DIR/after-password.png")"
@@ -106,8 +109,10 @@ if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
     printf '%s\n' '```'
   } >> "$GITHUB_STEP_SUMMARY"
 fi
-grep -q 'accessgranted' <<<"$normalized"
-grep -q 'sneakerspresskit' <<<"$normalized"
-grep -q 'select' <<<"$normalized"
-printf 'DOSBox booted the press-kit menu; screenshot has %s colors.\n' "$colors"
+if ! grep -q 'accessgranted' <<<"$normalized" || ! grep -q 'sneakerspresskit' <<<"$normalized" || ! grep -q 'select' <<<"$normalized"; then
+  summary="$(tr '\n' ' ' < "$WORK_DIR/ocr.txt")"
+  echo "::error title=Sneakers DOSBox screen did not reach the press-kit menu::$summary"
+  exit 1
+fi
+printf 'DOSBox reached the Sneakers press-kit menu; screenshot has %s colors.\n' "$colors"
 cat "$WORK_DIR/dosbox.log"
