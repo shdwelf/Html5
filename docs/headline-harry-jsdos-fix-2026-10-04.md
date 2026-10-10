@@ -90,3 +90,29 @@ and refuses to pack an incomplete engine.
 `headline-harry.xdc`: 2,910,703 bytes, 14 entries, sha256
 `19083399eee04d70218627d9fe07341528961385ce2b23e29609a670a13337ae`.
 All non-engine entries remain byte-identical to the previous archive.
+
+## Follow-up: keyboard/mouse capture in a webxdc iframe (2026-10-09)
+
+Reported symptom: the game boots but there is **no keyboard or mouse**.
+
+Diagnosis (from the bundled `js-dos/js-dos.js`, v8.4.1): the engine binds
+`keydown`/`keyup` on the window and captures the mouse with
+`requestPointerLock`. Both require the DOSBox **canvas to have focus**. Inside a
+webxdc host the app runs in an iframe/webview whose canvas is not focused on
+load, so window key events never reach DOSBox and the first click is consumed
+before the canvas takes focus. (Pointer-lock can also be denied unless the host
+iframe sets `allow="pointer-lock"` — outside this app's control.)
+
+Fix in `public/apps/headline-harry/index.html`: give the canvas a tab stop and
+focus it — `focusDos()` sets `tabindex="0"` and calls `canvas.focus()`, invoked
+on boot (`setTimeout`), on the `ci-ready` event, and on every `pointerdown` /
+`keydown` (capture phase) on the container. This is the standard remedy for
+"DOSBox-in-iframe gets no keyboard."
+
+`headline-harry.xdc`: 2,911,034 bytes, 14 entries, sha256
+`c7a97f532b334e35967622e1d760899fb8b844e3701f7c28a11fc3fee45d15a8`. Repacked by
+`scripts/fix-headline-harry-xdc.mjs`; `tests/webxdc-packages.test.mjs` (Headline
+Harry case) passes. **Caveat:** the sandbox cannot reach a webxdc client or
+dosinstance.run, so the focus fix is verified statically (present in the packed
+shell, engine complete, package test green) but not confirmed at runtime on the
+failing host.

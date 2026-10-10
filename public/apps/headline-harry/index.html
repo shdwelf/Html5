@@ -134,6 +134,21 @@
     overlay.style.display = "none";
     status("loading DOSBox (WASM) from app bundle…");
 
+    // Keyboard/mouse reach DOSBox only when its canvas has focus. Inside a
+    // webxdc iframe the canvas is NOT focused by default, so window keydown
+    // events never arrive ("no keyboard"), and the first click can be eaten
+    // before the canvas takes focus ("no mouse"). Give the canvas a tab stop
+    // and focus it on boot, on ready, and on every pointer-down.
+    var focusDos = function () {
+      var c = container.querySelector("canvas");
+      if (c) {
+        if (!c.hasAttribute("tabindex")) c.setAttribute("tabindex", "0");
+        try { c.focus({ preventScroll: true }); } catch (_) { c.focus(); }
+      }
+    };
+    container.addEventListener("pointerdown", focusDos, true);
+    container.addEventListener("keydown", focusDos, true);
+
     // js-dos v8 API: the bundle URL goes in the options and the player
     // auto-starts — there is no .run() method (that was the v7 API; calling
     // it threw "dosInstance.run is not a function" and the game never booted).
@@ -152,6 +167,7 @@
         } else if (event === "ci-ready") {
           status("DOSBox ready — HEADLINE HARRY (1991). " +
                  "js-dos sidebar: ☰ = keyboard/gamepad, 💾 = actions");
+          focusDos();
         } else if (event === "emu-error" || event === "bnd-error") {
           status("DOSBox error — see console. ⟳ RETRY to boot again.");
           overlay.style.display = "flex";
@@ -162,6 +178,7 @@
 
     try {
       dosInstance = window.Dos(container, opts);
+      setTimeout(focusDos, 0);
     } catch (e) {
       status("failed to start js-dos: " + (e && e.message ? e.message : e));
       console.error(e);
