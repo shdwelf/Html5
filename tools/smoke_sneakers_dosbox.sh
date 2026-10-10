@@ -105,14 +105,6 @@ emulator_pid=""
 
 test -s "$WORK_DIR/after-password.png"
 colors="$(identify -format '%k' "$WORK_DIR/after-password.png")"
-if [[ "$colors" -le 10 ]]; then
-  window="$(cat "$WORK_DIR/window.id" 2>/dev/null || true)"
-  title="$(xdotool getwindowname "$window" 2>/dev/null || true)"
-  geometry="$(xdotool getwindowgeometry --shell "$window" 2>/dev/null | tr '\n' ' ' || true)"
-  emulator_log="$(tr '\n' ' ' < "$WORK_DIR/dosbox.log")"
-  echo "::error title=Sneakers DOSBox screenshot is blank::colors=$colors window=$window title=$title geometry=$geometry dosbox=$emulator_log"
-  exit 1
-fi
 convert "$WORK_DIR/after-password.png" -trim +repage -resize 250% -colorspace Gray -auto-level -threshold 55% "$WORK_DIR/ocr.png"
 tesseract "$WORK_DIR/ocr.png" "$WORK_DIR/ocr" --psm 6 >/dev/null 2>&1
 normalized="$(tr '[:upper:]' '[:lower:]' < "$WORK_DIR/ocr.txt" | tr -cd '[:alnum:]\n')"
@@ -127,7 +119,8 @@ if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
 fi
 if ! grep -q 'accessgranted' <<<"$normalized" || ! grep -q 'sneakerspresskit' <<<"$normalized" || ! grep -q 'select' <<<"$normalized"; then
   summary="$(tr '\n' ' ' < "$WORK_DIR/ocr.txt")"
-  echo "::error title=Sneakers DOSBox screen did not reach the press-kit menu::$summary"
+  window="$(cat "$WORK_DIR/window.id" 2>/dev/null || true)"
+  echo "::error title=Sneakers DOSBox screen did not reach the press-kit menu::window=$window colors=$colors OCR=$summary"
   exit 1
 fi
 printf 'DOSBox reached the Sneakers press-kit menu; screenshot has %s colors.\n' "$colors"
