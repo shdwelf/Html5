@@ -6,7 +6,7 @@ runs inside ArcaneChat / Delta Chat — or any browser — completely offline.
 
 ## TL;DR
 
-- Deliverable: **`../headline-harry.xdc`** (repo root, 2.7 MB) — send it as a file
+- Deliverable: **`../headline-harry.xdc`** (repo root, 2.75 MB) — send it as a file
   attachment in ArcaneChat and tap **Start**.
 - It is not a recompilation. The original 1991 DOS binaries are bundled and booted
   by **js-dos 8.4.1** (DOSBox compiled to WebAssembly). See *"Why not Ghidra"*
@@ -17,7 +17,7 @@ runs inside ArcaneChat / Delta Chat — or any browser — completely offline.
 
 | artifact | size | what it is |
 |---|---|---|
-| `roms/headline-harry.jsdos` | 1.84 MB | js-dos bundle = installer-recovered game files + `.jsdos/dosbox.conf` |
+| `roms/headline-harry.jsdos` | 1.87 MB | js-dos bundle = installer-recovered game files + `.jsdos/dosbox.conf` |
 | `js-dos/` | 2.2 MB | vendored js-dos 8.4.1 player — full engine set: `js-dos.js`, `js-dos.css`, `emulators.js`, `wdosbox.js`, `wdosbox.wasm`, **`wlibzip.js`, `wlibzip.wasm`** (the libzip pair the v8 bundle loader fetches; without it `Dos()` 404s before the game starts) |
 | `index.html` | | pressroom-themed player page; boots the bundle via the js-dos v8 options API: `Dos(el, { url: "roms/headline-harry.jsdos", pathPrefix: "js-dos/", autoStart: true, … })` |
 | `icon.png` | 115 KB | 256×256 app icon |
@@ -75,7 +75,7 @@ digitized audio instead, re-run `SETUP.BAT` inside the app (menu-driven).
 ```
 archive.org/HeadlineHarry  ──(GitHub runner; sandbox egress is allowlisted)──▶
 .xfer/harry/disks/disk{1..4}.img  ──(mtools + original installer)──▶
-.xfer/harry/installed/  ──(require clean MZ; autoexec MAP.EXE; zip -9)──▶
+.xfer/harry/installed/  ──(clean-MZ gate; fixed-date js-dos ZIP; MAP.EXE)──▶
 app/roms/headline-harry.jsdos  ──(+ index.html + js-dos/ + icon + manifest)──▶
 headline-harry.xdc (mirrored to webxdc-headline-harry/headline-harry.xdc)
 ```
