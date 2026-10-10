@@ -75,6 +75,7 @@ emulator_pid=$!
     echo "::error title=Sneakers DOSBox window missing::$listing"
     exit 1
   fi
+  printf '%s\n' "$window" > "$WORK_DIR/window.id"
   xdotool windowfocus --sync "$window" 2>/dev/null || true
   xdotool type --clearmodifiers --delay 45 'setec astronomy'
   xdotool key Return
@@ -104,7 +105,14 @@ emulator_pid=""
 
 test -s "$WORK_DIR/after-password.png"
 colors="$(identify -format '%k' "$WORK_DIR/after-password.png")"
-test "$colors" -gt 10
+if [[ "$colors" -le 10 ]]; then
+  window="$(cat "$WORK_DIR/window.id" 2>/dev/null || true)"
+  title="$(xdotool getwindowname "$window" 2>/dev/null || true)"
+  geometry="$(xdotool getwindowgeometry --shell "$window" 2>/dev/null | tr '\n' ' ' || true)"
+  emulator_log="$(tr '\n' ' ' < "$WORK_DIR/dosbox.log")"
+  echo "::error title=Sneakers DOSBox screenshot is blank::colors=$colors window=$window title=$title geometry=$geometry dosbox=$emulator_log"
+  exit 1
+fi
 convert "$WORK_DIR/after-password.png" -trim +repage -resize 250% -colorspace Gray -auto-level -threshold 55% "$WORK_DIR/ocr.png"
 tesseract "$WORK_DIR/ocr.png" "$WORK_DIR/ocr" --psm 6 >/dev/null 2>&1
 normalized="$(tr '[:upper:]' '[:lower:]' < "$WORK_DIR/ocr.txt" | tr -cd '[:alnum:]\n')"
