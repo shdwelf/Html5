@@ -35,7 +35,7 @@ jobs:
       - name: Install DOSBox and headless display tools
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq dosbox xvfb xdotool imagemagick unzip
+          sudo apt-get install -y -qq dosbox xvfb xdotool imagemagick unzip tesseract-ocr
 
       - name: Run the packaged Sneakers password gate under DOSBox
         env:

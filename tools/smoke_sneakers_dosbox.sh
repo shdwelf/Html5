@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the checked-in Sneakers js-dos payload in native DOSBox under Xvfb.
-# On success, writes dosbox.log and after-password.png to SNEAKERS_SMOKE_DIR.
+# On success, writes dosbox.log, after-password.png, and ocr.txt to SNEAKERS_SMOKE_DIR.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -35,8 +35,17 @@ if [[ -z "${DISPLAY:-}" ]]; then
   sleep 2
 fi
 
-# Focus DOSBox, enter the documented password, capture the result screen, then
-# dismiss its final key wait so the emulator exits instead of timing out.
+# DOSBox enters the password field, shows the press-kit menu on success, and
+# accepts menu choice 7 to exit. Use XTest keyboard events (no --window), since
+# SDL ignores XSendEvent events on some headless displays.
+timeout 35s dosbox \
+  -c "mount c $GAME_DIR" \
+  -c "c:" \
+  -c "RUN.BAT" \
+  -c "exit" \
+  > "$WORK_DIR/dosbox.log" 2>&1 &
+emulator_pid=$!
+
 (
   sleep 5
   window=""
@@ -52,25 +61,30 @@ fi
     echo "DOSBox window was not found under DISPLAY=$DISPLAY" >&2
     exit 1
   fi
-  xdotool windowfocus "$window" 2>/dev/null || true
-  xdotool type --window "$window" --clearmodifiers --delay 45 'setec astronomy'
-  xdotool key --window "$window" Return
+  xdotool windowfocus --sync "$window" 2>/dev/null || true
+  xdotool type --clearmodifiers --delay 45 'setec astronomy'
+  xdotool key Return
   sleep 3
   import -window root "$WORK_DIR/after-password.png"
-  xdotool key --window "$window" Return
+  xdotool type --clearmodifiers '7'
+  xdotool key Return
 ) &
 bot_pid=$!
 
+bot_status=0
+wait "$bot_pid" || bot_status=$?
+if [[ "$bot_status" -ne 0 ]]; then
+  kill "$emulator_pid" 2>/dev/null || true
+  wait "$emulator_pid" 2>/dev/null || true
+  cat "$WORK_DIR/dosbox.log" >&2
+  echo "DOSBox input automation failed with status $bot_status" >&2
+  exit "$bot_status"
+fi
+
 set +e
-timeout 35s dosbox \
-  -c "mount c $GAME_DIR" \
-  -c "c:" \
-  -c "RUN.BAT" \
-  -c "exit" \
-  > "$WORK_DIR/dosbox.log" 2>&1
+wait "$emulator_pid"
 status=$?
 set -e
-wait "$bot_pid" || true
 if [[ "$status" -ne 0 ]]; then
   cat "$WORK_DIR/dosbox.log" >&2
   echo "DOSBox exited with status $status" >&2
@@ -78,7 +92,22 @@ if [[ "$status" -ne 0 ]]; then
 fi
 
 test -s "$WORK_DIR/after-password.png"
-colors="$(magick "$WORK_DIR/after-password.png" -format '%k' info:)"
+colors="$(identify -format '%k' "$WORK_DIR/after-password.png")"
 test "$colors" -gt 10
-printf 'DOSBox exited cleanly; post-password screenshot has %s colors.\n' "$colors"
+convert "$WORK_DIR/after-password.png" -trim +repage -resize 250% -colorspace Gray -auto-level -threshold 55% "$WORK_DIR/ocr.png"
+tesseract "$WORK_DIR/ocr.png" "$WORK_DIR/ocr" --psm 6 >/dev/null 2>&1
+normalized="$(tr '[:upper:]' '[:lower:]' < "$WORK_DIR/ocr.txt" | tr -cd '[:alnum:]\n')"
+printf '%s\n' '--- DOSBox screen OCR ---'
+cat "$WORK_DIR/ocr.txt"
+if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+  {
+    printf '%s\n' '### Sneakers DOSBox smoke test' '' "Screenshot colors: $colors" '' '```text'
+    cat "$WORK_DIR/ocr.txt"
+    printf '%s\n' '```'
+  } >> "$GITHUB_STEP_SUMMARY"
+fi
+grep -q 'accessgranted' <<<"$normalized"
+grep -q 'sneakerspresskit' <<<"$normalized"
+grep -q 'select' <<<"$normalized"
+printf 'DOSBox booted the press-kit menu; screenshot has %s colors.\n' "$colors"
 cat "$WORK_DIR/dosbox.log"
