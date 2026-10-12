@@ -45,7 +45,9 @@ for page in $site_pages; do
   cp "$page" "$tmp/"
 done
 
-cp manifest.webmanifest webxdc.js sw.js "$tmp/"
+# demo.exe is 63 bytes and it is what lets the CASEFILES lab — and its 4DWM
+# bit-plane plate — be checked offline with nothing fetched from an archive.
+cp manifest.webmanifest webxdc.js sw.js demo.exe "$tmp/"
 cp icon.png "$tmp/" 2>/dev/null || true
 
 # The repository root manifest is for the Art Studio standalone app.  SITE-K

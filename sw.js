@@ -3,7 +3,7 @@
    service worker caches it on first use, so the lab still works offline after
    one visit without slowing down install for everyone else. */
 const CACHE_PREFIX = "sitek-html5-";
-const CACHE = `${CACHE_PREFIX}v37`;
+const CACHE = `${CACHE_PREFIX}v38`;
 const PRECACHE = [
   "./",
   "./index.html",
@@ -61,6 +61,7 @@ const PRECACHE = [
   "./css/viruslab.css",
   "./css/flash-decompiler.css",
   "./css/casefiles.css",
+  "./css/casefiles-4dwm.css",
   "./css/studio.css",
   "./css/calc.css",
   "./css/poetry-book.css",
@@ -126,6 +127,7 @@ const PRECACHE = [
   "./js/x86dis.js",
   "./js/ghidra-wasm.js",
   "./js/casefiles.js",
+  "./js/casefiles-4dwm.js",
   "./js/krome-catalog.js",
   "./js/artifacts.js",
   "./js/studio.js",

@@ -432,6 +432,29 @@ console.log("── artifact dissectors");
     cf.includes("GHIDRA SWEEP") && cf.includes("kromeGhidraReport") && cf.includes("dssGhidraReport"),
     "casefiles wiring: ghidraSweep + fetchVerified + staticPass + structure views + both sweep buttons",
   );
+
+  // The 4DWM plate is a sibling module, mounted lazily and observed — not a
+  // second controller that can take the lab down when the canvas is missing.
+  const cf4 = readFileSync(join(ROOT, "js", "casefiles-4dwm.js"), "utf8");
+  const cfHtml = readFileSync(join(ROOT, "casefiles.html"), "utf8");
+  check(
+    cf.includes('from "./casefiles-4dwm.js"') && cf.includes("function ensureTheater()") &&
+    cf.includes("const tellTheater = (method, ...args) =>") && cf.includes('id === "theater"') &&
+    cf.includes('TABS = ["dossier", "theater"'),
+    "4dwm wiring: lazy mount, observer calls, theater tab registered",
+  );
+  check(
+    /export function buildShelfField/.test(cf4) && /export function buildByteField/.test(cf4) &&
+    /export function columnsUpTo/.test(cf4) && /export function fieldToVrml/.test(cf4) &&
+    !/^import .*three/m.test(cf4),
+    "4dwm plate: two fields + the 4th-axis filter + its own VRML writer, and no WebGL dependency",
+  );
+  check(
+    cfHtml.includes('data-view="theater"') && cfHtml.includes('id="cf4Canvas"') &&
+    cfHtml.includes('id="cf4PipLayer"') && cfHtml.includes('id="cf4Desk"') &&
+    cfHtml.includes("./css/casefiles-4dwm.css") && cfHtml.includes("./css/project-y-4dwm.css"),
+    "4dwm markup: canvas, label layer, pip layer and 4Dwm desk are all in the page",
+  );
 }
 
 /* --------------------------------------------------------------- base32 */

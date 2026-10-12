@@ -74,6 +74,28 @@ const wasmBuf = await (await __ghidraFetch("ghidra_decompiler.wasm")).arrayBuffe
 assert(wasmBuf.byteLength === ${expectedDecompilerBytes}, "ghidra_decompiler.wasm byte length (" + wasmBuf.byteLength + ")");
 const spec = await (await __ghidraFetch("Processors/x86/data/languages/x86.sla")).arrayBuffer();
 assert(spec.byteLength === ${expectedX86SlaBytes}, "x86.sla byte length (" + spec.byteLength + ")");
+// The 4DWM theater rides in the same flat scope: its API must survive the
+// export-stripping, and its fields must stay finite (a NaN elevation or
+// coordinate makes a canvas polygon vanish instead of throwing).
+assert(typeof initCasefilesTheater === "function", "4dwm theater entry point");
+assert(typeof shelfColumns === "function" && typeof buildShelfField === "function", "4dwm shelf builders");
+assert(typeof buildByteField === "function" && typeof byteMarkers === "function", "4dwm byte builders");
+assert(typeof TIERS === "object" && TIERS.length === 3, "4dwm evidence tiers");
+assert(typeof fieldToVrml === "function", "4dwm vrml writer");
+assert(typeof initPipWm === "function" && typeof cascadePosition === "function", "4dwm window manager");
+assert(typeof downloadText === "function", "vrml download helper");
+const __cols = shelfColumns({});
+assert(__cols.length > 100, "theater has " + __cols.length + " capture columns");
+assert(__cols.every((c) => Number.isFinite(c.year) && c.tier in { verified: 1, indexed: 1, claimed: 1 }), "every column: finite year, known tier");
+const __f = buildShelfField(__cols, { bins: 24 });
+assert(__f.nx === 24 && __f.ny === 5 && __f.elev.length === 120, "shelf grid is 24 x 5");
+assert([...__f.elev].every((v) => Number.isFinite(v) && v >= 0), "shelf elevations finite and non-negative");
+const __b = buildByteField(__demoBytes(), { bins: 12 });
+assert(__b.nx > 0 && __b.ny === 8 && __b.max > 0, "byte plate has relief");
+assert(__b.rows.every((r) => Number.isFinite(r.entropy) && r.entropy >= 0 && r.entropy <= 8), "window entropy in range");
+const __w = fieldToVrml(__f, { title: "smoke", provenance: "smoke" });
+assert(__w.startsWith("#VRML V2.0 utf8") && __w.includes("IndexedFaceSet"), "vrml 2.0 written");
+console.log("theater checks: 4 builders, 3 tiers, 2 fields, 1 vrml writer");
 console.log("ALL SMOKE CHECKS PASSED");
 `
 );

@@ -27,6 +27,7 @@ import {
   MAK_HEADER, makeMakLines, etuUs, CRYSTALS, atrBuild, atrParse,
   t0Frame, makeCardImage, resetAndAnswer, cuecatSections, SCOPE,
 } from "./makint.js";
+import { initCasefilesTheater } from "./casefiles-4dwm.js";
 const $ = (id) => document.getElementById(id);
 const isHexAddr = (s) => /^(0x)?[0-9a-f]+$/i.test(s.trim());
 
@@ -35,6 +36,8 @@ const state = {
   engineState: "loading",
   caseId: null,          // "ramrod" | "krome" | "demo" | "local"
   recovered: new Map(),  // name -> {bytes, verified, expected, ts, kind}
+  verified: new Set(),   // names whose bytes passed the SHA-1 gate this session
+  theater: null,         // the 4DWM plate, mounted on first use
   members: new Map(),    // zip member name -> Uint8Array
   memberSrc: "",         // provenance string for the current zip
   artifact: null,        // {name, bytes, meta, analysis, techniques, symbols}
@@ -221,6 +224,7 @@ function loadArtifact(name, bytes, provenance = "") {
   syncLangControls();
   renderArtifact();
   if (analysis) showTab("listing"); else showTab("hex");
+  tellTheater("setArtifact", state.artifact);
   logTo(`loaded ${name} — ${meta.note || meta.kind}`, "ok");
 }
 
@@ -514,6 +518,7 @@ function selectCase(id) {
   if (id === "demo") loadArtifact("demo.exe", DEMO_BYTES, "repository demo.exe");
   renderDossier();
   showTab(id === "demo" ? "listing" : "dossier");
+  tellTheater("setCase", id);
 }
 
 /* ---- rodger ramrod panel ---- */
@@ -687,6 +692,10 @@ async function recoverCapture({ name, url, ts, digest, hostId = "kromeRecovered"
       verified, bytes: bytes.length, expected, ts,
     }, hostId));
     logTo(`${name} · ${verified ? "VERIFIED" : "MISMATCH"} · sha1 ${got}`, verified ? "ok" : "error");
+    if (verified) {
+      state.verified.add(name);
+      tellTheater("verificationChanged", state.verified);
+    }
     if (!verified) return;
     // 4. open
     if (bytes[0] === 0x50 && bytes[1] === 0x4b) {
@@ -1268,6 +1277,7 @@ async function ghidraSweep({ files, nameOf, caseLabel, statusId, btnId, cardHost
           okFiles++;
           const members = bytes[0] === 0x50 && bytes[1] === 0x4b ? unzipSync(bytes) : { [name]: bytes };
           state.recovered.set(name, { caseId: state.caseId, members, verified, expected: got, ts: f.ts });
+          state.verified.add(f.name);
           recovered.push({ zip: name, members });
         }
       } catch (err) {
@@ -1277,6 +1287,7 @@ async function ghidraSweep({ files, nameOf, caseLabel, statusId, btnId, cardHost
       }
       await sleep(400); // be polite to the archive
     }
+    tellTheater("verificationChanged", state.verified);
 
     const rows = [];
     let budget = decompileBudget;
@@ -1669,12 +1680,86 @@ function renderResearch() {
 
 /* ------------------------------------------------------------------- tabs */
 
-const TABS = ["dossier", "listing", "c", "hex", "research"];
+const TABS = ["dossier", "theater", "listing", "c", "hex", "research"];
 
 function showTab(id) {
+  if (!TABS.includes(id)) id = "dossier";
   document.querySelectorAll(".tab[data-view]").forEach((t) => t.classList.toggle("on", t.dataset.view === id));
   document.querySelectorAll(".view[data-view]").forEach((v) => { v.hidden = v.dataset.view !== id; });
+  // The 4DWM desk (floating pips + tray) belongs to the theater tab only.
+  document.body.classList.toggle("cf4-on", id === "theater");
+  if (id === "theater") ensureTheater()?.show?.();
 }
+
+/**
+ * Mount the 4DWM theater once, on first use. The plate reads the lab's state
+ * directly (artifact, recovered set, current case) and hands actions back:
+ * a pip's RECOVER button runs the same Wayback + SHA-1 gate as the rail, and a
+ * marker's GO TO button sends an address through selectAddress, exactly like
+ * clicking a row in the disassembly.
+ */
+function ensureTheater() {
+  if (state.theater) return state.theater;
+  if (state.theater === false) return null;   // already tried and failed
+  try {
+    const theater = initCasefilesTheater({
+      getState: () => state,
+      log: logTo,
+      recover: recoverCorpusRow,
+      openRecovered: (name) => openRecovered(name),
+      inspectAddress: (addr) => selectAddress(addr),
+    });
+    state.theater = theater || false;
+    state.theater && state.theater.setArtifact(state.artifact);
+    state.theater && state.theater.setCase(state.caseId || "krome");
+  } catch (err) {
+    state.theater = false;
+    logTo(`4DWM theater unavailable: ${err.message}`, "error");
+  }
+  return state.theater || null;
+}
+
+/** Tell the plate something changed. It is an observer, never a dependency:
+ *  a theater that cannot draw must not take the lab down with it. */
+const tellTheater = (method, ...args) => {
+  try { state.theater?.[method]?.(...args); } catch (err) { logTo(`4DWM: ${err.message}`, "warn"); }
+};
+
+/** Recover a theater column with the gate its own case panel uses. */
+function recoverCorpusRow(entry) {
+  if (!entry) return false;
+  const hostId = {
+    krome: "kromeRecovered", dss: "dssRecovered", shadowelf: "shadowRecovered",
+    vcl: "vclRecovered", trojanslair: "trojanRecovered", huunloop: "huRecovered",
+    makint: "miRecovered",
+  }[state.caseId];
+  if (!hostId) return false;
+  if (state.caseId === "krome") { recoverKrome(entry); return true; }
+  if (!entry.url || !entry.ts) return false;
+  recoverCapture({ name: entry.name, url: entry.url, ts: entry.ts, digest: entry.digest, hostId });
+  return true;
+}
+
+/** Open a capture the gate already verified — straight from the bytes in memory. */
+function openRecovered(name) {
+  let key = state.recovered.has(name) ? name : null;
+  if (!key) {
+    // A bulk sweep stores rows under their full archival name; match on the tail.
+    key = [...state.recovered.keys()].find((k) => k.endsWith(`/${name}`)) || null;
+  }
+  const rec = key ? state.recovered.get(key) : null;
+  if (!rec?.members) return false;
+  const members = rec.members;
+  const keys = Object.keys(members);
+  if (keys.length === 1) {
+    loadArtifact(keys[0], members[keys[0]], `${name} · recovered · sha1 ✓`);
+    return true;
+  }
+  openMemberPicker(name, members, { ts: rec.ts, provenance: null });
+  showTab("dossier");
+  return true;
+}
+
 
 /* -------------------------------------------------------------- drop zone */
 

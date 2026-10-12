@@ -5,14 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#0a0c14" />
-  <meta name="description" content="Static Ghidra case files: the 1998 kr0me corp underground library recovered from the Wayback Machine with SHA-1 verification, and the 1996 Rodger Ramrod DOS4GW package from archive.org. Nothing is executed." />
-  <title>GHIDRA CASEFILES · kr0me corp and Rodger Ramrod</title>
+  <meta name="description" content="Static Ghidra case files: the 1998 kr0me corp underground library recovered from the Wayback Machine with SHA-1 verification, and the 1996 Rodger Ramrod DOS4GW package from archive.org — plus a 4DWM theater that draws the capture corpus and the bit-plane relief in 3D over a fourth axis of time. Nothing is executed." />
+  <title>CASEFILES · GHIDRA CASE FILES + 4DWM THEATER</title>
   <link rel="icon" href="./img/app-192.png" sizes="192x192" />
   <link rel="apple-touch-icon" href="./img/apple-touch.png" sizes="180x180" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="stylesheet" href="./css/validator.css" />
   <link rel="stylesheet" href="./css/viruslab.css" />
   <link rel="stylesheet" href="./css/casefiles.css" />
+  <link rel="stylesheet" href="./css/project-y-4dwm.css" />
+  <link rel="stylesheet" href="./css/casefiles-4dwm.css" />
 </head>
 <body>
   <div class="page-shell">
@@ -57,7 +59,7 @@
           </div>
         </div>
         <div class="protocol-strip" aria-label="Lab stack">
-          <span>WAYBACK CDX → SHA-1 GATE</span><span>FFLATE UNZIP</span><span>SLEIGH x86 16/32</span><span>GHIDRA DECOMPILER → WASM</span>
+          <span>WAYBACK CDX → SHA-1 GATE</span><span>FFLATE UNZIP</span><span>SLEIGH x86 16/32</span><span>GHIDRA DECOMPILER → WASM</span><span>4DWM PLATE: BYTES × ENTROPY × TIME</span>
         </div>
       </section>
 
@@ -104,6 +106,7 @@
         <section class="work">
           <div class="tabs" role="tablist" aria-label="Views">
             <button type="button" class="tab on" data-view="dossier" role="tab">DOSSIER</button>
+            <button type="button" class="tab" data-view="theater" role="tab">THEATER · 4DWM</button>
             <button type="button" class="tab" data-view="listing" role="tab">DISASSEMBLY</button>
             <button type="button" class="tab" data-view="c" role="tab">GHIDRA C</button>
             <button type="button" class="tab" data-view="tech" role="tab">TECHNIQUES</button>
@@ -119,6 +122,43 @@
               <span class="mini-note">provenance, manifests and recovered members for the selected case</span>
             </div>
             <div class="code-scroll" id="dossierBody"></div>
+          </div>
+
+          <div class="view" data-view="theater" hidden role="tabpanel" aria-label="4DWM theater">
+            <div class="view-bar">
+              <span class="mini-note dim" role="group" aria-label="Plate">PLATE</span>
+              <button type="button" class="mini on" data-cf4-plate="shelf" aria-pressed="true">CAPTURE CORPUS</button>
+              <button type="button" class="mini" data-cf4-plate="bytes" aria-pressed="false">BIT-PLANE RELIEF</button>
+              <span class="mini-note dim" role="group" aria-label="Shading mode">MODE</span>
+              <button type="button" class="mini on" data-cf4-mode="relief" aria-pressed="true">RELIEF</button>
+              <button type="button" class="mini" data-cf4-mode="wire" aria-pressed="false">WIRE</button>
+              <button type="button" class="mini" data-cf4-mode="xray" aria-pressed="false">X-RAY</button>
+              <button type="button" class="mini on" id="cf4Labels" aria-pressed="true">LABELS</button>
+              <button type="button" class="mini" id="cf4PipAll" title="Load a floating 4Dwm window for each verified record">PIP ALL</button>
+              <button type="button" class="mini" id="cf4Spin" aria-pressed="false">SPIN</button>
+              <button type="button" class="mini" id="cf4Vrml" title="Write the current plate as a VRML 2.0 terrarium">VRML ↓</button>
+              <button type="button" class="mini" id="cf4Reset">RESET VIEW</button>
+            </div>
+
+            <div id="cf4Stage">
+              <canvas id="cf4Canvas" aria-label="4DWM plate: drag to orbit, scroll to zoom, click a pip to open its record">This theater needs a canvas-capable browser. Every other tab works without it.</canvas>
+              <div class="cf4-labels" id="cf4LabelLayer" aria-hidden="true"></div>
+              <p class="cf4-hud" id="cf4Hud">theater idle</p>
+              <p class="cf4-fps" id="cf4Fps">fps —</p>
+              <p class="cf4-corner">4DWM · READ ONLY</p>
+              <p class="cf4-empty" id="cf4Empty" hidden></p>
+            </div>
+
+            <div class="cf4-time">
+              <label for="cf4Time" id="cf4TimeCaption">4th axis</label>
+              <output for="cf4Time" id="cf4TimeLabel">—</output>
+              <input type="range" id="cf4Time" min="0" max="1" step="0.01" value="1" aria-label="timeline cursor" />
+              <button type="button" class="mini" id="cf4Play" aria-pressed="false">PLAY</button>
+              <button type="button" class="mini" id="cf4AllTime">ALL TIME</button>
+            </div>
+
+            <p class="stat-line" id="cf4Stat" aria-live="polite"></p>
+            <ul class="cf4-legend" id="cf4Legend"></ul>
           </div>
 
           <div class="view" data-view="listing" hidden role="tabpanel">
@@ -169,6 +209,15 @@
       <span>CASEFILES · STATIC ANALYSIS ONLY · NOTHING EXECUTED, NOTHING UPLOADED</span>
       <span>SOURCES: WEB.ARCHIVE.ORG CDX · ARCHIVE.ORG METADATA · GHIDRA WASM (APACHE-2.0)</span>
     </footer>
+  </div>
+
+  <div class="pip-layer" id="cf4PipLayer"></div>
+  <div class="wm4d" id="cf4Desk" hidden>
+    <div class="wm4d-tray" id="cf4Tray"></div>
+    <button type="button" class="wm4d-btn" data-wm4d="desk" title="Iconify every pip, or restore them">DESK</button>
+    <button type="button" class="wm4d-btn" data-wm4d="tile" title="Tile the open pips">TILE</button>
+    <button type="button" class="wm4d-btn" data-wm4d="clear" title="Close every pip">CLEAR</button>
+    <span class="wm4d-status" id="cf4WmStatus">4Dwm desk</span>
   </div>
 
   <script type="module" src="./js/casefiles.js"></script>
