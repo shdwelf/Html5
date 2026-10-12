@@ -1,28 +1,31 @@
 #!/usr/bin/env node
 /*
- * build_casefiles.mjs — regenerate the CASEFILES lab's derived artifacts.
+ * build_casefiles.mjs — regenerate the CASEFILES lab's single-file build.
  *
- *   node tools/build_casefiles.mjs            # build inlined HTML + webxdc
+ *   node tools/build_casefiles.mjs            # build casefiles-inlined.html
  *   node tools/build_casefiles.mjs --check    # verify only; exit 1 on drift
  *
- * Two artifacts are derived from tracked sources and must never be hand-edited:
+ * casefiles-inlined.html is derived from tracked sources and must never be
+ * hand-edited. It is casefiles.html with ./css/validator.css,
+ * ./css/viruslab.css, ./css/casefiles.css, ./css/project-y-4dwm.css and
+ * ./css/casefiles-4dwm.css inlined into <style> elements, and the whole ES
+ * module graph behind ./js/casefiles.js (x86dis, ghidra-wasm, artifacts,
+ * krome-catalog, makint, the 4DWM theater, its window manager, the VRML writer,
+ * vendor/fflate) inlined into a single <script type="module">. The vendored
+ * Ghidra decompiler bundle (wasm/ghidra/*) and the demo.exe sanity binary are
+ * embedded as base64 so the single file runs with no server and no network.
  *
- *   1. casefiles-inlined.html
- *      casefiles.html with ./css/validator.css, ./css/viruslab.css and
- *      ./css/casefiles.css inlined into <style> elements, and the whole ES
- *      module graph behind ./js/casefiles.js (x86dis, ghidra-wasm, artifacts,
- *      krome-catalog, makint, vendor/fflate) inlined into a single
- *      <script type="module">. The vendored Ghidra decompiler bundle
- *      (wasm/ghidra/*) and the demo.exe sanity binary are embedded as base64
- *      so the single file runs with no server and no network.
+ * The inlining flattens every module into one scope, so a top-level name
+ * declared twice is a hard error: section 4 diffs the declarations across the
+ * bundle and refuses to write the file otherwise.
  *
- *   2. casefiles.xdc
- *      A webxdc package in this repo's established NUL-delimited layout:
- *      entries written as name + NUL + content, with a final NUL terminator.
- *      Entry order is manifest.json, index.html (the inlined file), icon.png.
+ * casefiles.xdc is NOT produced here. The webxdc ships the multi-file 4DWM
+ * family layout — a real deflated ZIP with manifest.toml, js/, css/, wasm/ and
+ * demo.exe as separate entries — and scripts/build-casefiles-xdc.mjs owns it:
  *
- * --check compares both regenerated artifacts against the files on disk, so CI
- * or a pre-commit run can prove the checked-in artifacts match their sources.
+ *   node scripts/build-casefiles-xdc.mjs       # repack
+ *   node scripts/build-casefiles-xdc.mjs --check
+ *   npm run build:casefiles / npm run check:casefiles
  */
 import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -36,7 +39,7 @@ const checkOnly = process.argv.includes("--check");
 
 // --- 1. inline the stylesheets ----------------------------------------------
 let inlined = read("casefiles.html").toString("utf8");
-for (const name of ["validator.css", "viruslab.css", "casefiles.css"]) {
+for (const name of ["validator.css", "viruslab.css", "casefiles.css", "project-y-4dwm.css", "casefiles-4dwm.css"]) {
   const css = read(`css/${name}`).toString("utf8");
   const tag = `  <link rel="stylesheet" href="./css/${name}" />`;
   if (!inlined.includes(tag)) {
@@ -149,16 +152,52 @@ const __DEMO_B64 = "${demoB64}";
 function __demoBytes() { return __b64bytes(__DEMO_B64); }
 `;
 
-const bundle = [
-  preamble,
-  fflate,
-  read("js/x86dis.js").toString("utf8").replace(/^export\s+/gm, ""),
-  ghidra,
-  read("js/artifacts.js").toString("utf8").replace(/^export\s+/gm, ""),
-  read("js/krome-catalog.js").toString("utf8").replace(/^export\s+/gm, ""),
-  read("js/makint.js").toString("utf8").replace(/^export\s+/gm, ""),
-  casefiles,
-].join("\n");
+const flat = (p) => stripExports(read(p).toString("utf8"));
+const bundleModules = [
+  ["asset store", preamble],
+  ["vendor/fflate", fflate],
+  ["js/x86dis.js", flat("js/x86dis.js")],
+  ["js/ghidra-wasm.js", ghidra],
+  ["js/artifacts.js", flat("js/artifacts.js")],
+  ["js/krome-catalog.js", flat("js/krome-catalog.js")],
+  ["js/makint.js", flat("js/makint.js")],
+  ["js/vrml-export.js", flat("js/vrml-export.js")],
+  ["js/project-y-4dwm.js", flat("js/project-y-4dwm.js")],
+  ["js/casefiles-4dwm.js", flat("js/casefiles-4dwm.js")],
+  ["js/casefiles.js", casefiles],
+];
+
+// --- 3b. one scope, one name each -----------------------------------------
+// Every module is concatenated into a single <script type="module">, so two
+// top-level `const x` declarations would be a SyntaxError at load time, far
+// from the file that caused it. Catch it here, where the message can name both.
+function topLevelNames(src) {
+  const names = new Map();
+  const decl = /^(?:async\s+)?(?:export\s+)?(?:function|class|const|let|var)\s+([A-Za-z_$][\w$]*)/gm;
+  for (const m of src.matchAll(decl)) if (!names.has(m[1])) names.set(m[1], "");
+  const destructuring = /^(?:const|let|var)\s+\{([^}]*)\}\s*=/gm;
+  for (const m of src.matchAll(destructuring)) {
+    for (const part of m[1].split(",")) {
+      const name = part.split(":").pop().split("=")[0].trim();
+      if (/^[A-Za-z_$][\w$]*$/.test(name) && !names.has(name)) names.set(name, "");
+    }
+  }
+  return names;
+}
+
+const seen = new Map();
+for (const [label, src] of bundleModules) {
+  for (const name of topLevelNames(src).keys()) {
+    if (seen.has(name)) {
+      console.error(`build_casefiles: top-level name collides in the flat bundle: ${name} in ${seen.get(name)} and ${label}`);
+      console.error("             rename one of them; the inlined build is one scope.");
+      process.exit(2);
+    }
+    seen.set(name, label);
+  }
+}
+
+const bundle = bundleModules.map(([, src]) => src).join("\n");
 
 const SCRIPT_TAG = '  <script type="module" src="./js/casefiles.js"></script>';
 if (!inlined.includes(SCRIPT_TAG)) {
@@ -175,42 +214,12 @@ for (const bad of ['<link rel="stylesheet"', "<script src="]) {
   }
 }
 
-// --- 4. pack the webxdc -----------------------------------------------------
-// Comma/colon spacing matches the manifest the original packer wrote
-// (Python json.dumps defaults). Keep it byte-stable.
-const jsonDumps = (value) => {
-  if (value === null) return "null";
-  if (Array.isArray(value)) return `[${value.map(jsonDumps).join(", ")}]`;
-  if (typeof value === "object") {
-    return `{${Object.entries(value).map(([k, v]) => `${JSON.stringify(k)}: ${jsonDumps(v)}`).join(", ")}}`;
-  }
-  return JSON.stringify(value);
-};
-
-const manifest = jsonDumps({
-  name: "Ghidra Casefiles",
-  source_code_url: "https://github.com/shdwelf/Html5",
-  version: "1.0.0",
-  min_api: 1,
-  webxdc: "index.html",
-});
-
-const NUL = Buffer.from([0]);
-const parts = [];
-for (const [name, content] of [
-  ["manifest.json", manifest],
-  ["index.html", inlined],
-  ["icon.png", read("icon.png")],
-]) {
-  parts.push(Buffer.from(name, "utf8"), NUL, Buffer.from(content), NUL);
-}
-const xdc = Buffer.concat(parts);
-
-// --- 5. write or verify -----------------------------------------------------
-const targets = [
-  ["casefiles-inlined.html", Buffer.from(inlined, "utf8")],
-  ["casefiles.xdc", xdc],
-];
+// --- 4. write or verify the single file ------------------------------------
+// The inlined HTML is what ships as the repo's no-server, no-network build.
+// casefiles.xdc is packed by scripts/build-casefiles-xdc.mjs (the 4DWM-family
+// ZIP layout) out of the *authored* sources, not out of this file — the wasm
+// belongs in the archive as bytes, not as base64 inside a <script>.
+const targets = [["casefiles-inlined.html", Buffer.from(inlined, "utf8")]];
 
 let drift = 0;
 for (const [rel, want] of targets) {
@@ -234,25 +243,30 @@ for (const [rel, want] of targets) {
   }
 }
 
-// --- 6. self-verification ---------------------------------------------------
+// --- 5. self-verification ---------------------------------------------------
 if (!checkOnly) {
-  const fields = xdc.toString("latin1").split("\0");
-  if (
-    fields[0] !== "manifest.json" ||
-    !fields[1].includes('"name": "Ghidra Casefiles"') ||
-    fields[2] !== "index.html" ||
-    !fields[3].startsWith("<!DOCTYPE html>") ||
-    fields[4] !== "icon.png"
-  ) {
-    console.error("build_casefiles: container round-trip failed — layout corrupt");
+  const text = inlined;
+  const mustSee = [
+    ["4DWM tab", 'data-view="theater"'],
+    ["4DWM canvas", 'id="cf4Canvas"'],
+    ["4DWM desk", 'id="cf4Desk"'],
+    ["theater module", "initCasefilesTheater"],
+    ["window manager", "initPipWm"],
+    ["VRML writer", "fieldToVrml"],
+    ["flat-scope asset store", "__GHIDRA_ASSETS"],
+  ];
+  const missing = mustSee.filter(([, needle]) => !text.includes(needle)).map(([what]) => what);
+  if (missing.length) {
+    console.error(`build_casefiles: inlined build is missing ${missing.join(", ")}`);
     process.exit(1);
   }
-  console.log(`container verified: ${fields[4] === "icon.png" ? "3" : "?"} entries, layout intact`);
-  console.log(`bundle modules: fflate + x86dis + ghidra-wasm + artifacts + krome-catalog + makint + casefiles`);
+  console.log(`bundle modules: ${bundleModules.map(([label]) => label).join(" + ")}`);
   console.log(`embedded assets: ${Object.keys(assets).length} wasm/ghidra files + demo.exe`);
+  console.log(`theater hooks: ${mustSee.length} checked in the written file`);
+  console.log("next: node scripts/build-casefiles-xdc.mjs   (repacks casefiles.xdc)");
 }
 
 if (checkOnly && drift) {
-  console.error(`\n${drift} derived artifact(s) out of date — run: node tools/build_casefiles.mjs`);
+  console.error(`\n${drift} derived artifact(s) out of date — run: npm run build:casefiles`);
   process.exit(1);
 }
