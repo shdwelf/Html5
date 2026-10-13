@@ -122,7 +122,7 @@ def triage(apk: pathlib.Path) -> str:
         activities, services = a.get_activities() or [], a.get_services() or []
         receivers, providers = a.get_receivers() or [], a.get_providers() or []
         for cert in a.get_certificates():
-            cert_fps.append(cert.fingerprint('SHA256').hex() if hasattr(cert, 'fingerprint') else str(cert))
+            cert_fps.append(hashlib.sha256(cert.dump()).hexdigest())
         try:
             sig_schemes = [s for s, ok in (('v1', a.is_signed_v1()), ('v2', a.is_signed_v2()), ('v3', a.is_signed_v3())) if ok]
         except Exception:  # noqa: BLE001
@@ -146,7 +146,7 @@ def triage(apk: pathlib.Path) -> str:
 
     lines += ['## Components', '',
               f'- Activities: {len(activities)} · services: {len(services)} · receivers: {len(receivers)} · providers: {len(providers)}',
-              f'- Main activity: {activities[:1]}', '']
+              f'- Main activity: {(a.get_main_activity() if 'a' in dir() else None) or (activities[:1])}', '']
 
     # --- string / IOC extraction over DEX + native + assets (bounded reads) ---
     blob = b''
