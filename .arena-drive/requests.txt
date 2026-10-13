@@ -52,3 +52,4 @@
 # Sizes from Drive metadata read 2026-10-13.
 1UB-k8GlBCR8Spis9aac880dONn9WPIRe  Z-Lib_1.11.4_APKPure.apk  33076250
 1Ew8C3txveLlGBH07k9gzPYILtboCCpos  z+Library_1.0.5_APKPure.apk  47786920
+# triage tooling refreshed (cert fingerprint printout fix); requeueing fetch
