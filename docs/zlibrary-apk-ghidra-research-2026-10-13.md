@@ -21,8 +21,12 @@ indicators, and a ready-to-run triage pipeline for an APK you supply.*
 | Google Drive | `search_files`: `name contains 'zlib'`; `name contains '.txt' and (… 'lib'/'mirror')`; `mimeType = 'application/vnd.android.package-archive'` | No `zlib.txt`, **no APK at all** in Drive. |
 | Google Drive (context) | `name contains 'zlibrary' / 'z-lib' / 'apk'` | **8 ebook files** whose filenames carry `(z-library.sk, 1lib.sk, z-lib.sk)` provenance (Nancy Drew / Hardy Boys / Agatha Christie sets, *The Hunt for Red October*), uploaded 2026-10-09. So a **book backup exists in Drive — an APK backup does not.** (Files not opened or downloaded for this research.) |
 
-**Blocker:** there is currently no APK to analyse. Supply one (drop the
-`.apk` in Drive or the repo) and §4 runs as-is.
+**Blocker (resolved same day):** the user supplied two APKs via Drive;
+§7 is the completed triage. §4's pipeline is what ran (runner-side:
+GitHub Actions fetched the link-shared files into gitignored payload —
+briefly made link-readable with the owner's authorisation, reverted to
+private immediately after the fetch — and `tools/apk_triage.py` under
+Temurin JDK 21 did the analysis; binaries never entered git history).
 
 ## 2. z-lib.se — what it actually is in 2026
 
@@ -94,7 +98,55 @@ Drive-backed sets (Christie, Nancy Drew, Hardy Boys) straddle
 public-domain boundaries by country, which Open Library handles
 correctly per-title.
 
-## 6. Sources (2026-10-13)
+## 7. User-supplied APKs — completed triage (2026-10-13)
+
+Two samples arrived via Drive (both APKPure-sourced), analysed by
+`tools/apk_triage.py` on the Actions runner (Temurin 21; reports:
+[`docs/zlib-apk-triage/`](zlib-apk-triage/SUMMARY.md)). Static only —
+nothing installed or executed.
+
+| | **A: Z-Lib_1.11.4_APKPure.apk** | **B: z+Library_1.0.5_APKPure.apk** |
+| --- | --- | --- |
+| SHA-256 | `159a142595ab2f6be62a4b231d5d6193739607bfe1d816271bf52f217de32120` | `86baf591e1b05b80f93cc73f4b98c7c87747c28c5464287f0a7280543d5f02c2` |
+| Package / label | `com.positron_it.zlib` / “Z-Lib” | `com.zlib.zlibrary` / “ZLibrary” |
+| Version (SDK) | 1.11.4 (21), min 19 / target 33 | 1.0.5 (14), min 21 / target 34 |
+| Stack | Kotlin + OkHttp + Firebase; 1 DEX; embedded **Tor** (torproject/onion strings ×35) | **Flutter** (3 DEX, 30 native libs); no Tor strings |
+| Signer | Self-signed **CN=Positron_IT**, minted 2021-07-15, SHA-256 `dffe2363…1f3b` | Self-issued cert claiming **CN=Android, O=Google Inc.** (the AOSP test-key identity), minted 2023-10-05, SHA-256 `d9f7cd88…6d` |
+| Permissions | 10 total; storage, CAMERA, REQUEST_INSTALL_PACKAGES | 34 total; **FINE_LOCATION**, RECEIVE_BOOT_COMPLETED, media ×3, AD_ID, launcher-badge set |
+| Indicators | no SMS/contacts/location; dynamic-load ×2 (Tor transports); device-id strings ×17 (analytics/Tor libs) | accessibility ×5, WebView JS/file-access ×7, reflection ×4 |
+
+**Verdicts.**
+
+- **Sample A is internally consistent with a genuine long-lived client.**
+  A stable named-developer certificate in continuous use since 2021, a
+  permission set that maps 1:1 onto its features (storage = book files,
+  camera = QR login, install-packages = self-update for a sideloaded
+  app), and embedded Tor — matching the project's known onion-access
+  model. Caveat, stated plainly: “consistent” is not “proven”. APKPure
+  is a repackaging intermediary, and without a reference fingerprint
+  from the developer's own channel no third-party copy can be
+  cryptographically certified. The hash above is the identity to pin.
+- **Sample B cannot be trusted as official — treat as untrusted.**
+  Its signing certificate *impersonates the AOSP “Android / Google
+  Inc.” identity*: self-issued, and matching Android's public test-key
+  profile, whose private keys are public by design — **anyone on Earth
+  can sign an APK that looks exactly like this.** There is no
+  provenance to verify, and its behaviour profile argues against it
+  anyway: precise location, boot persistence and an ad-ID in an ebook
+  reader. If B is installed anywhere: remove it; if credentials were
+  ever typed into it, change that password anywhere it was reused.
+- The two are *different applications* (different packages, signers,
+  stacks) both presenting as the same service — the fake-clone pattern
+  from §2, found in the wild in the user's own uploads.
+
+Signal-vs-noise note: the generated endpoint tables include string-regex
+fallout from bundled ML/JS libraries (TensorFlow `.cc` operator names,
+JS `this.*` tokens); the identity, signer and permission findings above
+are manifest/certificate facts, not string inference. A deeper
+Ghidra 12.1.4 + Temurin pass over B's native libraries remains
+available on the runner if IOC-level certainty is ever needed.
+
+## 8. Sources (2026-10-13)
 
 Drive `search_files` × 4 queries + repo/home `find` (results table §1) ·
 JDK parts sha256 re-computed locally; `java -version` output quoted ·
