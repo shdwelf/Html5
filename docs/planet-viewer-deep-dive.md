@@ -2,6 +2,13 @@
 
 *2026-10-09 · `planet-viewer-4dwm.html` · companion to `js/planet-viewer-*.js`*
 
+> **Distribution note (2026-10-13):** At the user's direction, the existing
+> `planet-viewer-4dwm.xdc` filename now carries the **SoCal Subsurface 4Dwm**
+> package instead of the Planet page. It is byte-identical to
+> `socal-subsurface.xdc`, with a truthful SoCal manifest; `npm run build:planet`
+> rebuilds both artifacts. The interactive Planet HTML and its sources/tests
+> remain available separately for browser use.
+
 USGS 3DEP terrain, drawn three ways, over an offline USGS GNIS gazetteer, in
 the `socal-subsurface` viewer idiom. It is the second item of the agreed order
 and reuses the committed control-point machinery rather than fetching anything:
@@ -58,4 +65,4 @@ elevation; famous summits land in a sanity window).
   draws terrain, survives every plate × mode transition, exports a `.wrl` from
   the page, and the scoped `[data-mode]` selector guard holds (a stray click
   cannot reset the view).
-- `npm run build:planet` → Webxdc bundle.
+- `npm run build:planet` → rebuilds `socal-subsurface.xdc` and writes the same bytes to the compatibility filename `planet-viewer-4dwm.xdc`; `tests/webxdc-packages.test.mjs` asserts the replacement payload and manifest.

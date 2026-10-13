@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 480 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 482 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -16981,11 +16981,11 @@ function rmParts(ch){
   if(i<0) return null;
   return {top:RM_PAT[Math.floor(i/6)], bot:RM_PAT[i%6], tv:Math.floor(i/6)+1, bv:(i%6)+1};
 }
-function rmBarsOf(top,bot){
+function rmBarsOf(top,bot,fullState='F'){
   let out='';
   for(let i=0;i<4;i++){
     const t=top[i]==='1', b=bot[i]==='1';
-    out+= t&&b ? 'F' : t ? 'A' : b ? 'D' : 'T';
+    out+= t&&b ? fullState : t ? 'A' : b ? 'D' : 'T';
   }
   return out;
 }
@@ -17007,7 +17007,7 @@ function rmEncode(s, kind){
   const rows=[];
   for(const c of body){
     const p=rmParts(c);
-    const bars=rmBarsOf(p.top,p.bot);
+    const bars=rmBarsOf(p.top,p.bot,kind==='kix'?'H':'F');
     daft+=bars;
     rows.push(c+'  '+bars+'  top '+p.top+' bot '+p.bot+'  (T'+p.tv+'/B'+p.bv+')');
   }
@@ -17019,15 +17019,16 @@ function rmAscii(daft){
   for(const c of daft){
     if(c==='A'){ top+='|'; mid+='|'; bot+=' '; }
     else if(c==='D'){ top+=' '; mid+='|'; bot+='|'; }
-    else if(c==='F'){ top+='|'; mid+='|'; bot+='|'; }
+    else if(c==='F'||c==='H'){ top+='|'; mid+='|'; bot+='|'; }
     else { top+=' '; mid+='|'; bot+=' '; }
   }
   return top+'\n'+mid+'\n'+bot;
 }
-function rmDecodeDaft(s){
-  const t=(s||'').toUpperCase().replace(/[^ADFT]/g,'');
+function rmDecodeDaft(s,kind){
+  const raw=(s||'').toUpperCase();
+  const t=kind==='kix'?raw.replace(/[^ADHTF]/g,'').replace(/H/g,'F'):raw.replace(/[^ADFT]/g,'');
   let body=t;
-  if(body[0]==='A' && (body[body.length-1]==='F'||body[body.length-1]==='D')) body=body.slice(1,-1);
+  if(kind!=='kix' && body[0]==='A' && body[body.length-1]==='F') body=body.slice(1,-1);
   if(body.length%4) return {ok:false, msg:'Need 4-bar groups (got '+body.length+').'};
   let out='';
   for(let i=0;i<body.length;i+=4){
@@ -17156,7 +17157,7 @@ const ALCHEMY={
 };
 
 addOp('gcwPostal','POSTNET / PLANET / RM4SCC','GCWizard',
-  'USPS POSTNET & PLANET (2-of-5 tall/short bars, mod-10 check, frame bars) and Royal Mail RM4SCC / KIX (4-state A/D/F/T, mod-6 top+bottom check). Verified encodings. 12345 POSTNET check 5; PLANET is the bit-inverse. RM4SCC start=A stop=F.',
+  'USPS POSTNET & PLANET (2-of-5 tall/short bars, mod-10 check, frame bars), Royal Mail RM4SCC (A/D/F/T states, mod-6 row/column check, A/F guards), and PostNL KIX (T/A/D/H states with no guards or check character). 12345 POSTNET check 5; PLANET inverts the digit patterns.',
   [
     {key:'kind',label:'Symbology',type:'select',default:'postnet',options:[['postnet','USPS POSTNET'],['planet','USPS PLANET'],['rm4scc','Royal Mail RM4SCC'],['kix','PostNL KIX (no start/check)']]},
     {key:'mode',label:'Mode',type:'select',default:'encode',options:[['encode','Digits/text → bars'],['decode','Bars → digits/text'],['list','Show tables']]}
@@ -17170,7 +17171,8 @@ addOp('gcwPostal','POSTNET / PLANET / RM4SCC','GCWizard',
         'Frame bars: tall. Check = (10 - sum%10)%10. ZIP 12345 check 5.',
         '33727-1426 check 5 (3+3+7+2+7+1+4+2+6=35).',
         '',
-        'RM4SCC 4-state: T tracker  A ascender  D descender  F full',
+        'RM4SCC: T tracker  A ascender  D descender  F full; guards A…F',
+        'PostNL KIX uses H for full bars and has no start/stop or check character.',
         'Top/Bot patterns 0011,0101,0110,1001,1010,1100 = values 1..6',
         'Char = topRow*6 + botCol over 0-9A-Z. Check = (sumTop%6 or 6, sumBot%6 or 6).',
         'Wikipedia sample BX11LT1A check I. Start A, stop F. KIX omits both + check.'];
@@ -17196,21 +17198,185 @@ addOp('gcwPostal','POSTNET / PLANET / RM4SCC','GCWizard',
       return kitCard(title+' encode','check '+chk,body,tok);
     }
     if(a.mode==='decode'){
-      const r=rmDecodeDaft(t||'');
+      const r=rmDecodeDaft(t||'',kind);
       if(!r.ok) throw new Error(r.msg);
       let msg=r.text;
       if(kind!=='kix' && r.text.length>1){
         const payload=r.text.slice(0,-1), chk=r.text.slice(-1);
         const expect=rmCheckChar(payload);
-        msg=payload+'  check '+chk+(chk===expect?' (ok)':' (expected '+expect+')');
+        msg=payload+' check '+chk+(chk===expect?' (ok)':' (expected '+expect+')');
       }
       return kitCard('RM4SCC decode',kind,kitMono(msg),msg);
     }
     const enc=rmEncode(t||'SW1A1AA', kind);
     const art=rmAscii(enc.daft);
-    const body=kitRow('Data',enc.chars)+kitRow('Check',enc.check)+kitRow('DAFT',enc.daft)+kitMono(enc.rows.join('\n')+'\n'+art);
-    return kitCard(kind==='kix'?'KIX encode':'RM4SCC encode','check '+enc.check,body,enc.daft);
+    const body=kitRow('Data',enc.chars)+(kind==='kix'?'':kitRow('Check',enc.check))+kitRow('DAFT',enc.daft)+kitMono(enc.rows.join('\n')+'\n'+art);
+    return kitCard(kind==='kix'?'KIX encode':'RM4SCC encode',kind==='kix'?'4-state · no start/check':'check '+enc.check,body,enc.daft);
   }
+);
+
+/* ===== educational algorithmic complexity + symbolic logic labs ===== */
+function complexityLabRun(input,args){
+  const tokens=String(input??'').trim().split(/[\s,;]+/).filter(Boolean);
+  if(!tokens.length)throw new Error('Enter numeric values separated by spaces, commas, or semicolons');
+  if(tokens.length>50000)throw new Error('Limit is 50,000 values per run');
+  const rows=tokens.map(function(raw,index){
+    const value=Number(raw);
+    if(!Number.isFinite(value))throw new Error('Not a finite number: '+raw);
+    return {value:value,raw:raw,index:index};
+  });
+  const algorithm=args.algorithm==='insertion'?'insertion':'merge';
+  const direction=args.order==='desc'?-1:1;
+  if(algorithm==='insertion'&&rows.length>5000)throw new Error('Insertion sort is quadratic; limit this demonstration to 5,000 values');
+  let comparisons=0,writes=0,sorted;
+  if(algorithm==='merge'){
+    let source=rows.slice(),target=new Array(source.length);
+    for(let width=1;width<source.length;width*=2){
+      for(let start=0;start<source.length;start+=width*2){
+        const middle=Math.min(start+width,source.length),end=Math.min(start+width*2,source.length);
+        let left=start,right=middle,out=start;
+        while(left<middle&&right<end){
+          comparisons++;
+          const takeLeft=direction===1?source[left].value<=source[right].value:source[left].value>=source[right].value;
+          target[out++]=takeLeft?source[left++]:source[right++];writes++;
+        }
+        while(left<middle){target[out++]=source[left++];writes++;}
+        while(right<end){target[out++]=source[right++];writes++;}
+      }
+      const swap=source;source=target;target=swap;
+    }
+    sorted=source;
+  }else{
+    sorted=rows.slice();
+    for(let i=1;i<sorted.length;i++){
+      const current=sorted[i];let j=i-1;
+      while(j>=0){
+        comparisons++;
+        const outOfOrder=direction===1?sorted[j].value>current.value:sorted[j].value<current.value;
+        if(!outOfOrder)break;
+        sorted[j+1]=sorted[j];writes++;j--;
+      }
+      sorted[j+1]=current;writes++;
+    }
+  }
+  const name=algorithm==='merge'?'Bottom-up stable merge sort':'Stable insertion sort';
+  const time=algorithm==='merge'
+    ?'best Θ(n log n) · average Θ(n log n) · worst Θ(n log n)'
+    :'best Θ(n) · average Θ(n²) · worst Θ(n²)';
+  const space=algorithm==='merge'?'Θ(n) auxiliary space':'Θ(1) algorithm workspace';
+  return [
+    'ALGORITHM COMPLEXITY LAB',
+    'Algorithm: '+name,
+    'Items: '+rows.length+' · order: '+(direction===1?'ascending':'descending'),
+    'Observed comparisons: '+comparisons+' · writes: '+writes,
+    'Asymptotic time: '+time,
+    'Extra space: '+space+' · stable: yes',
+    'Sorted values:',
+    sorted.map(function(row){return String(row.value);}).join(' ')
+  ].join('\n');
+}
+
+function symbolicLogicTokens(source){
+  const text=String(source||'');const tokens=[];let index=0;
+  while(index<text.length){
+    if(/\s/.test(text[index])){index++;continue;}
+    const match=text.slice(index).match(/^(<=>|<->|->|=>|&&|\|\||[()!~&|^]|[A-Za-z][A-Za-z0-9_]*|[01])/);
+    if(!match)throw new Error('Unexpected logic token near: '+text.slice(index,index+18));
+    const raw=match[0];index+=raw.length;
+    let value=raw.toLowerCase();
+    if(value==='! '||value==='~')value='not';
+    if(value==='!')value='not';
+    if(value==='&&'||value==='&')value='and';
+    if(value==='||'||value==='|')value='or';
+    if(value==='^')value='xor';
+    if(value==='->'||value==='=>')value='implies';
+    if(value==='<->'||value==='<=>')value='iff';
+    if(value==='('||value===')')tokens.push({kind:'paren',value:value});
+    else if(value==='not'||value==='and'||value==='or'||value==='xor'||value==='implies'||value==='iff'){
+      tokens.push({kind:'operator',value:value});
+    }else if(value==='true'||value==='1')tokens.push({kind:'constant',value:true});
+    else if(value==='false'||value==='0')tokens.push({kind:'constant',value:false});
+    else if(/^[a-z][a-z0-9_]*$/i.test(raw))tokens.push({kind:'variable',value:raw.toUpperCase()});
+    else throw new Error('Unknown logic token: '+raw);
+    if(tokens.length>240)throw new Error('Expression is too long (limit 240 tokens)');
+  }
+  if(!tokens.length)throw new Error('Enter a Boolean expression, such as A AND (B OR NOT C)');
+  return tokens;
+}
+function symbolicLogicParse(source){
+  const tokens=symbolicLogicTokens(source);let at=0;
+  function peek(){return tokens[at]||null;}
+  function accept(value){if(peek()&&peek().value===value){at++;return true;}return false;}
+  function parsePrimary(){
+    const token=peek();
+    if(!token)throw new Error('Expected a variable, constant, or parenthesized expression');
+    if(accept('(')){const node=parseIff();if(!accept(')'))throw new Error('Missing closing parenthesis');return node;}
+    if(token.kind==='variable'||token.kind==='constant'){at++;return [token.kind,token.value];}
+    throw new Error('Expected a variable or parenthesized expression before '+token.value);
+  }
+  function parseUnary(){if(accept('not'))return ['not',parseUnary()];return parsePrimary();}
+  function parseAnd(){let node=parseUnary();while(accept('and'))node=['and',node,parseUnary()];return node;}
+  function parseXor(){let node=parseAnd();while(accept('xor'))node=['xor',node,parseAnd()];return node;}
+  function parseOr(){let node=parseXor();while(accept('or'))node=['or',node,parseXor()];return node;}
+  function parseImp(){const left=parseOr();if(accept('implies'))return ['implies',left,parseImp()];return left;}
+  function parseIff(){let node=parseImp();while(accept('iff'))node=['iff',node,parseImp()];return node;}
+  const ast=parseIff();
+  if(at!==tokens.length)throw new Error('Unexpected token after expression: '+tokens[at].value);
+  const names=new Set();
+  (function walk(node){if(node[0]==='variable')names.add(node[1]);else for(let i=1;i<node.length;i++)if(Array.isArray(node[i]))walk(node[i]);})(ast);
+  const variables=Array.from(names).sort();
+  if(variables.length>8)throw new Error('Limit is 8 distinct variables (256 truth-table rows)');
+  return {ast:ast,variables:variables};
+}
+function symbolicLogicEval(node,values){
+  if(node[0]==='variable')return !!values[node[1]];
+  if(node[0]==='constant')return node[1];
+  if(node[0]==='not')return !symbolicLogicEval(node[1],values);
+  const left=symbolicLogicEval(node[1],values),right=symbolicLogicEval(node[2],values);
+  if(node[0]==='and')return left&&right;
+  if(node[0]==='or')return left||right;
+  if(node[0]==='xor')return left!==right;
+  if(node[0]==='implies')return !left||right;
+  if(node[0]==='iff')return left===right;
+  throw new Error('Unsupported Boolean operator: '+node[0]);
+}
+function symbolicLogicRun(input){
+  const parsed=symbolicLogicParse(input);
+  const variables=parsed.variables;
+  const rows=[];
+  const count=1<<variables.length;
+  for(let mask=0;mask<count;mask++){
+    const values={};
+    variables.forEach(function(name,index){values[name]=!!(mask&(1<<(variables.length-index-1)));});
+    rows.push({values:values,result:symbolicLogicEval(parsed.ast,values)});
+  }
+  const header=(variables.length?variables.join(' '):'(no variables)')+' | OUT';
+  const body=rows.map(function(row){
+    const bits=variables.map(function(name){return row.values[name]?'1':'0';}).join(' ');
+    return (bits||'—')+' | '+(row.result?'1':'0');
+  });
+  return [
+    'SYMBOLIC LOGIC · TRUTH TABLE',
+    'Expression: '+String(input).trim(),
+    'Variables: '+(variables.join(', ')||'none')+' · rows: '+rows.length+' · true rows: '+rows.filter(function(row){return row.result;}).length,
+    header,
+    ...body
+  ].join('\n');
+}
+
+addOp('complexityLab','Algorithm Complexity Lab','Html5',
+  'Compare a stable bottom-up merge sort with stable insertion sort using observed comparison/write counts and the algorithms’ asymptotic time/space bounds. Numeric input only; insertion mode is deliberately capped to keep the quadratic demonstration responsive.',
+  [
+    {key:'algorithm',label:'Algorithm',type:'select',default:'merge',options:[['merge','Bottom-up merge sort'],['insertion','Insertion sort']]},
+    {key:'order',label:'Order',type:'select',default:'asc',options:[['asc','Ascending'],['desc','Descending']]}
+  ],
+  function(text,args){return complexityLabRun(text,args||{});}
+);
+
+addOp('symbolicLogic','Symbolic Logic Truth Table','Html5',
+  'Parse a small Boolean expression without JavaScript eval and emit its truth table. Operators: NOT / ! / ~, AND / &, XOR / ^, OR / |, implication -> / =>, biconditional <-> / <=>, parentheses, TRUE/FALSE, and up to eight variables.',
+  [],
+  function(text){return symbolicLogicRun(text);}
 );
 
 addOp('gcwNyctography','Nyctography / Moon / ASL','GCWizard',
@@ -31918,10 +32084,12 @@ RECIPE_PACKS["IDENTIFY parser / toy vector ALU"] = [["ataIdentifyParse",{}],["ve
 
 RECIPE_PACKS["TV filecast KCS / NABTS"] = [["tvFileCast",{}]];
 RECIPE_PACKS['Avery label sheets — one symbol per template']=[['averyLabels',{tpl:'5160',sym:'code39'}],['averyLabels',{tpl:'5161',sym:'qr'}],['averyLabels',{tpl:'5163',sym:'code128'}],['averyLabels',{tpl:'5392',sym:'qr'}],['averyLabels',{tpl:'custom',sym:'qr',cols:'4',rows:'6'}]];
+RECIPE_PACKS['Algorithm Complexity & Symbolic Logic']=[['complexityLab',{algorithm:'merge',order:'asc'}],['symbolicLogic',{}]];
 
 /* Every operation belongs to at least one pack, so the SFX builder's
    "select all" always produces the complete registry instead of silently
    dropping the operations no curated pack happened to mention. */
+RECIPE_PACKS["Full Coverage — Algorithms & Logic"] = [["complexityLab",{}],["symbolicLogic",{}]];
 RECIPE_PACKS["Full Coverage — Analysis"] = [["ioc",{}],["fuzzyhash",{}],["diffpatch",{}],["hashprobe",{}]];
 RECIPE_PACKS["Full Coverage — Block Cipher"] = [["des",{}],["tdes",{}],["aesccm",{}]];
 RECIPE_PACKS["Full Coverage — Boxentriq"] = [["doubleTransposition",{}],["homophonic",{}],["pigpen",{}],["rotN",{}],["rot5",{}],["rot18",{}],["variantBeaufort",{}],["base62",{}],["bigIntText",{}],["pigLatin",{}],["midiParse",{}]];

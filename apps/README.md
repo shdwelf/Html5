@@ -68,7 +68,7 @@ Files originally saved as `index (N).html` on a mobile device were renamed from 
 | `cryptopoly-the-crypto-nft-board-game` | Cryptopoly - The Crypto & NFT Board Game | 29 KB | _(from `index (11).html`)_ |
 | `cryptopoly.html` | Cryptopoly - The Crypto & NFT Board Game | 32 KB |  |
 | `cyberchef-the-cyber-swiss-army-knife` | CyberChef - The Cyber Swiss Army Knife | 1 KB | _(from `index (21).html`)_ |
-| `cyberchef.html` | CyberChef — HTML5 (Renovated Kitchen) | 177 KB | _(fourteen IACR/lecture/research/prerequisite recipe packs added 2026-09-28; see `docs/iacr-research-watch-2026-09-28.md`)_ |
+| `cyberchef.html` | Redirect to the current merged CyberChef kitchen | 1 KB | The older 106-recipe file is preserved as `cyberchef-legacy-106.html`; use `/apps/cyberchef/` for the current build. |
 | `cybervault-1781736948866.html` | The Vault - Members Only | 1.66 MB |  |
 | `cybervault-webos-members-only-portal-screensavers` | CyberVault WebOS • Members Only Portal & Screensavers | 1 KB | _(from `index (24).html`)_ |
 | `dna_dashboard.html` | Family DNA Inheritance Dashboard | 11 KB |  |

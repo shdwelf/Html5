@@ -1,0 +1,4 @@
+name = "Red October 4D Command Theater"
+source_code_url = "https://github.com/shdwelf/Html5"
+description = "Offline fictionalized story-index globe and schematic profile viewer. No real submarine track data or detailed internal layout."
+icon = "icon.png"
