@@ -77,6 +77,7 @@ workflow permission).
 - **[Red October · 4D Command Theater](public/apps/red-october-command-viewer/)** — an offline story-index globe, selectable schematic silhouettes, story/time controls, VRML 2.0 and Xena XML export. The map markers are fictionalized narrative anchors, not real track data; the hull model has no precise internal layout. Ships as `red-october-command-viewer.xdc`; see [the viewer source/provenance research](docs/red-october-4dwm-research-2026-10-09.md) and [the Archive.org/Jane’s/Bulletin source audit](apps/red-october-command-viewer/data-sources/archive-research.md).
 - **[Greeran Family Tree · 4DWM](greeran-family-4dwm.html)** — the Drive family-tree Webxdc converted into an offline spinning globe with a playable 1774–2023 record timeline, dated kinship arcs, and an all-time aggregate view. See [the import/build notes](docs/greeran-family-4dwm.md).
 - **[FOUR CORNERS 4Dwm](four-corners.html)** — the only place four US states meet: the surveyed quadripoint, Navajo volcanic field necks, the San Juan energy basin, the uranium legacy, and the ancestral Puebloan core, over a curated IDW relief that is honest about not being a DEM. See [docs/four-corners.md](docs/four-corners.md). Ships as `four-corners.xdc` and as the [TI calculator port](#four-corners-on-ti-calculators-four-corners-calc) below.
+- **[SoCal Subsurface 4Dwm](socal-subsurface.html)** — an offline basin theater with terrain, geocache GPX import, radio/propagation and orbital views. Ships as `socal-subsurface.xdc`; the legacy download name `planet-viewer-4dwm.xdc` now carries this same SoCal package and manifest.
 - **[Greeran Subsurface 4Dwm](greeran-subsurface.html)** — the Greeran book's 2001 biography deep-dive (Glendora → West Covina → Goleta → Santa Barbara) rendered as a SOCAL-style subsurface theater. Ships as `greeran-subsurface.xdc`.
 - **[Glendora High 4Dwm](glendora-high-4dwm.html)** — Class of 2001 at 1600 E Foothill Blvd, "now that I am a graduate". Ships as `glendora-high-4dwm.xdc`.
 - **[ESGVROP 4Dwm](esgvrop-4dwm.html)** — East San Gabriel Valley ROP & Technical Center, the summer-2001 deep dive across the Del Norte and Sunflower campuses. Ships as `esgvrop-4dwm.xdc`.
@@ -91,8 +92,9 @@ workflow permission).
 Every 4Dwm-family Webxdc rebuilds from one command — `npm run build:4dwm`
 chains the thirteen standalone packagers (casefiles, bluetops, cheyenne,
 dalton-race, esgvrop, four-corners, glendora-high, greeran-family,
-greeran-subsurface, ingress-intel, sanborn-restaurant, socal-subsurface,
-vincennes), then builds the five shared city bundles; each app also has its own
+greeran-subsurface, ingress-intel, sanborn-restaurant, SoCal Subsurface (also
+mirrored to the legacy `planet-viewer-4dwm.xdc` filename), vincennes), then
+builds the five shared city bundles; each app also has its own
 `npm run build:<name>`, and `npm run check:casefiles` proves CASEFILES' two
 derived artifacts still match their sources byte for byte.
 

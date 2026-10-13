@@ -25,7 +25,7 @@
     "build:sanborn-restaurant": "node scripts/build-sanborn-restaurant-xdc.mjs",
     "build:socal-subsurface": "node scripts/build-socal-subsurface-xdc.mjs",
     "build:ingress-intel": "node scripts/build-ingress-intel-xdc.mjs",
-    "build:4dwm": "npm run build:casefiles && node scripts/build-bluetops-xdc.mjs && node scripts/build-cheyenne-xdc.mjs && node scripts/build-dalton-race-4dwm-xdc.mjs && node scripts/build-esgvrop-4dwm-xdc.mjs && node scripts/build-four-corners-xdc.mjs && node scripts/build-glendora-high-4dwm-xdc.mjs && node scripts/build-greeran-family-4dwm-xdc.mjs && node scripts/build-greeran-subsurface-xdc.mjs && node scripts/build-sanborn-restaurant-xdc.mjs && node scripts/build-socal-subsurface-xdc.mjs && node scripts/build-ingress-intel-xdc.mjs && node scripts/build-vincennes-xdc.mjs && npm run build:city-subsurface",
+    "build:4dwm": "npm run build:casefiles && node scripts/build-bluetops-xdc.mjs && node scripts/build-cheyenne-xdc.mjs && node scripts/build-dalton-race-4dwm-xdc.mjs && node scripts/build-esgvrop-4dwm-xdc.mjs && node scripts/build-four-corners-xdc.mjs && node scripts/build-glendora-high-4dwm-xdc.mjs && node scripts/build-greeran-family-4dwm-xdc.mjs && node scripts/build-greeran-subsurface-xdc.mjs && node scripts/build-sanborn-restaurant-xdc.mjs && npm run build:planet && node scripts/build-ingress-intel-xdc.mjs && node scripts/build-vincennes-xdc.mjs && npm run build:city-subsurface",
     "build:web": "vite build",
     "preview": "vite preview",
     "serve:catalog": "node tools/z3950-server.mjs",
