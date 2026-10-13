@@ -55,6 +55,30 @@ test("engine implements the documented advanced syntax", () => {
   assert.ok(html.includes("parser/parse?command="), "install URL documented");
 });
 
+test("every command has researched open-source backing; proprietary endpoints replaced", () => {
+  const rows = registryRows();
+  const m = html.match(/const BACKING = \{([\s\S]*?)\n\};/);
+  assert.ok(m, "BACKING map found in yubnub.html");
+  const backing = new Function("return {" + m[1] + "}")();
+  for (const [name] of rows) {
+    assert.ok(backing[name], `no backing research recorded for: ${name}`);
+    assert.match(backing[name], /^(open|api|local|prop|dead):/, `${name}: backing needs a kind prefix`);
+  }
+  const tpl = Object.fromEntries(rows.map((r) => [String(r[0]).toLowerCase(), r[1]]));
+  // Replaced with open-source-backed endpoints (2026-10-13 audit)
+  assert.ok(tpl["gm"].includes("openstreetmap.org"), "gm -> OpenStreetMap");
+  assert.ok(tpl["gim"].includes("openverse.org"), "gim -> Openverse");
+  assert.ok(tpl["g"].includes("search.inetol.net"), "g -> SearXNG instance");
+  assert.ok(tpl["xe"].includes("api.frankfurter.dev"), "xe -> Frankfurter API");
+  assert.ok(tpl["weather"].includes("wttr.in"), "weather -> wttr.in");
+  assert.ok(tpl["tr"].includes("libretranslate.com"), "tr -> LibreTranslate");
+  // The old proprietary endpoints must stay gone
+  // streetview is the documented exception: open street imagery needs coordinates, no address drop-in
+  const all = rows.filter((r) => r[0] !== "streetview").map((r) => r[1]).join("\n");
+  for (const dead of ["maps.google.com", "images.google.com/images", "xe.com/ucc", "finance.yahoo.com", "wunderground.com", "youtube.com/results?search_query", "allmusic.com/search"]) {
+    assert.ok(!all.includes(dead), `proprietary endpoint crept back: ${dead}`);
+  }
+});
 test("xdc bundle is a zip rooted at index.html + manifest.toml", async () => {
   const bytes = await readFile(path.join(root, "yubnub.xdc"));
   assert.equal(bytes[0], 0x50); // 'P'

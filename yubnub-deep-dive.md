@@ -120,6 +120,12 @@ In the registry each entry is flagged **updated** (endpoint modernised),
   (Google Reader, closed 2013 — now lands on Google News).
 - **New (2026):** `bing`, `brave`, `mdn`, `so`, `gh`, `npm`, `pypi`,
   `rfc` (`rfc 2616` → the RFC text, `[no url encoding]`), `letterboxd`, `leo2`.
+- **Open-source re-backed (2026-10-13):** after the per-command GitHub audit in
+  [`docs/yubnub-opensource-backing-2026-10-13.md`](./docs/yubnub-opensource-backing-2026-10-13.md),
+  32 commands were replaced with GitHub open-source-backed endpoints
+  (SearXNG, Openverse, OpenStreetMap, Invidious, LibreTranslate, wttr.in,
+  Frankfurter, MusicBrainz, Wiktionary, ICANN RDAP…) and every command now
+  carries a researched `backing:` line in-app.
 - **Local/offline (were server helpers):** `echo`, `random`
   (`rand -min/-max/-num`, random.org semantics), `%`, `strReplace`,
   `strFind`, `strLength`, `ucase`, `lcase`, `ifThen`, `ifEmpty`,

@@ -102,7 +102,7 @@ footer{max-width:1060px;margin:0 auto;padding:8px 16px 30px;color:var(--dim);fon
     <div class="card">
       <h2>Output</h2>
       <div id="consoleOut">Type a command above. Try <span class="kbd">ls music</span>, <span class="kbd">man gim</span>, <span class="kbd">url gim porsche 911</span>, <span class="kbd">random -num 5 -max 20</span>, <span class="kbd">mash porsche g wp gim</span>.
-Unknown commands fall back to Google — exactly like yubnub.org.</div>
+Unknown commands fall back to web search (SearXNG) — like yubnub.org's Google fallback, on open infrastructure.</div>
       <div class="row" style="margin-top:10px">
         <a class="btn hot" id="btnOpen" href="#" target="_blank" rel="noopener" hidden>OPEN RESULT ↗</a>
         <button class="btn" id="btnCopy" type="button" hidden>Copy URL</button>
@@ -133,7 +133,7 @@ Unknown commands fall back to Google — exactly like yubnub.org.</div>
         <thead><tr><th>Command</th><th>Description</th><th>URL template</th><th>Uses*</th><th></th></tr></thead>
         <tbody id="lsBody"></tbody>
       </table></div>
-      <p class="dim small">*Use counts are the live counters read from <span class="mono">yubnub.org/kernel/most_used_commands</span> on 2026-10-13 (top rows only). <span class="tag upd">updated</span> = endpoint modernised (http→https / moved service) · <span class="tag new">new</span> = added in this rebuild · <span class="tag dead">dead</span> = service gone, kept for history. Full audit in <span class="mono">yubnub-deep-dive.md</span>.</p>
+      <p class="dim small">*Use counts are the live counters read from <span class="mono">yubnub.org/kernel/most_used_commands</span> on 2026-10-13 (top rows only). <span class="tag upd">updated</span> = endpoint modernised (http→https / moved service) · <span class="tag new">new</span> = added in this rebuild · <span class="tag dead">dead</span> = service gone, kept for history · <span class="tag new">open source</span> = endpoint replaced with / backed by GitHub open-source code (researched per command) · proprietary* = researched, no open drop-in exists. Full audit in <span class="mono">docs/yubnub-opensource-backing-2026-10-13.md</span>.</p>
     </div>
   </section>
 
@@ -201,21 +201,21 @@ Unknown commands fall back to Google — exactly like yubnub.org.</div>
    flags: E=golden egg, U=endpoint updated, N=new in this rebuild,
           D=dead service (historical), L=local/offline, M=app meta       */
 const REGISTRY = [
-["g","https://www.google.com/search?q=%s","Performs a Google search using the given keywords. Example: g YubNub","search","E",23429935],
-["gg","https://www.google.com/search?q=%s","Performs a Google search using the given keywords. Example: gg YubNub","search","E",293834],
-["gim","https://www.google.com/search?q=%s&um=1&ie=UTF-8&hl=en&tbm=isch","Performs a Google Image search. Example: gim porsche 911","images","EU",1191666],
-["gi","https://www.google.com/search?q=%s&um=1&ie=UTF-8&tbm=isch","Google Images.","images","U",388655],
-["gfl","https://www.google.com/search?q=%s&btnI=I%27m+Feeling+Lucky","Google's I'm Feeling Lucky — takes you to the 1st result.","search","U",170656],
-["gnews","https://news.google.com/search?q=%s","Google News search.","news","U",null],
-["gn","https://news.google.com/search?q=%s","Grabs news from many sources, courtesy of Google News.","news","EU",null],
-["gnws","https://news.google.com/search?q=%s","Google News (was: UTF-8 RSS output).","news","U",16760211],
-["gde","https://www.google.de/search?hl=de&q=%s","Search in google.de (language-specific Google).","search","U",362356],
+["g","https://search.inetol.net/search?q=%s","Web search via SearXNG, the open-source metasearch engine (public instance; self-hostable). Originally Google. Example: g YubNub","search","E",23429935],
+["gg","https://search.inetol.net/search?q=%s","SearXNG web search (was Google 'gg'). Example: gg YubNub","search","E",293834],
+["gim","https://openverse.org/search/image?q=%s","Openly-licensed image search via Openverse (open source). Originally Google Images. Example: gim porsche 911","images","EU",1191666],
+["gi","https://openverse.org/search/image?q=%s","Openverse image search (was Google Images).","images","U",388655],
+["gfl","https://duckduckgo.com/?q=%5C%s","DuckDuckGo I'm-Feeling-Lucky (backslash query) - first result directly. Was Google btnI.","search","U",170656],
+["gnews","https://search.inetol.net/search?q=%s&categories=news","News search via SearXNG news category (was Google News).","news","U",null],
+["gn","https://search.inetol.net/search?q=%s&categories=news","News from many sources via SearXNG (was Google News 'gn').","news","EU",null],
+["gnws","https://search.inetol.net/search?q=%s&categories=news","News search via SearXNG (was Google News RSS 'gnws').","news","U",16760211],
+["gde","https://search.inetol.net/search?q=%s&language=de","German-language web search via SearXNG (was google.de).","search","U",362356],
 ["wp","https://en.wikipedia.org/?search=%s","English Wikipedia search. Example: wp freebsd","reference","EU",2763328],
 ["wiki","https://en.wikipedia.org/wiki/Special:Search?search=%s&fulltext=Search","Full-text search for Wikipedia articles.","reference","EU",393898],
 ["wpde","https://de.wikipedia.org/?search=%s","German Wikipedia search.","reference","EU",247090],
 ["wpms","https://en.m.wikipedia.org/?search=%s","Open a Wikipedia page using the mobile interface.","reference","U",388],
-["yt","https://www.youtube.com/results?search_query=%s","Search YouTube. Like Flickr for videos.","video","EU",1716410],
-["youtube","https://www.youtube.com/results?search_query=%s","Searches on YouTube, in case yt is too hard to remember.","video","U",163043],
+["yt","https://inv.nadeko.net/search?q=%s","YouTube search via Invidious, the open-source front-end (public instance - instances rotate, see api.invidious.io).","video","EU",1716410],
+["youtube","https://inv.nadeko.net/search?q=%s","YouTube search via Invidious (open-source front-end), in case yt is too hard to remember.","video","U",163043],
 ["am","https://www.amazon.com/s?k=%s","Searches Amazon.com. Example: am a brief history of time","shopping","EU",256384],
 ["ebay","https://www.ebay.com/sch/i.html?_nkw=%s","eBay auction item search.","shopping","EU",163967],
 ["ddg","https://duckduckgo.com/?q=%s","Use the DuckDuckGo search engine. Example: ddg Linux","search","U",213252],
@@ -226,35 +226,38 @@ const REGISTRY = [
 ["ud","https://www.urbandictionary.com/define.php?term=%s","Urban Dictionary definition. From the yub.js audit.","dictionary","N",null],
 ["brave","https://search.brave.com/search?q=%s","Brave Search — independent index.","search","N",null],
 ["y","https://search.yahoo.com/search?p=%s","Yahoo! web search.","search","U",null],
-["gm","https://maps.google.com/maps?q=%s","Google Maps. Example: gm 123 Maple Dr. Detroit, MI — or 'pizza in Detroit', or 'from A to B'.","maps","EU",409878],
-["gmaps","https://maps.google.com/maps?q=%s","Google Maps search — address, business+place, or directions.","maps","EU",232054],
-["gmap","https://maps.google.com/maps?q=%s","Google Maps.","maps","U",152868],
+["gm","https://www.openstreetmap.org/search?query=%s","OpenStreetMap place search - open data, open-source site (was Google Maps). Address, business+place, or directions.","maps","EU",409878],
+["gmaps","https://www.openstreetmap.org/search?query=%s","OpenStreetMap search (was Google Maps). Example: gmaps pizza in Detroit","maps","EU",232054],
+["gmap","https://www.openstreetmap.org/search?query=%s","OpenStreetMap (was Google Maps 'gmap').","maps","U",152868],
+["osm","https://www.openstreetmap.org/search?query=%s","OpenStreetMap place search - open data, open-source site.","maps","N",null],
+["ol","https://openlibrary.org/search?q=%s","Open Library book search (Internet Archive; open-source code, open data).","reference","N",null],
+["wd","https://www.wikidata.org/wiki/Special:Search?search=%s","Wikidata structured-data search (Wikimedia, open).","reference","N",null],
 ["streetview","https://maps.google.com/maps?q=%s&layer=c&z=17","Address → Google Maps Street View (if available).","maps","U",926],
 ["imdb","https://www.imdb.com/find?q=%s","Searches anything on the Internet Movie Database.","movies","EU",542005],
 ["letterboxd","https://letterboxd.com/search/%s/","Letterboxd film search (modern movie companion to imdb).","movies","N",null],
-["xe","https://www.xe.com/currencyconverter/convert/?Amount=${amount}&From=${from}&To=${to}","Performs a currency conversion. Usage: xe -amount 100 -from USD -to EUR","finance","EU",72029],
-["stock","https://finance.yahoo.com/quote/%s","Yahoo! Finance stock quote for a ticker symbol.","finance","U",null],
-["onelook","https://www.onelook.com/?w=%s&ls=a","Dictionary search using OneLook. Example: onelook duplicity","dictionary","U",1615608],
-["olrd","https://www.onelook.com/?w=*&loc=revfp&clue=%s","OneLook Reverse Dictionary — find a word by its definition. Example: olrd barrel maker → cooper","dictionary","U",12578531],
-["dict","https://www.dictionary.com/browse/%s","English dictionary (was Answers.com meta-search 'd'/'a').","dictionary","U",null],
+["xe","https://api.frankfurter.dev/v1/latest?amount=${amount}&from=${from}&to=${to}","Currency conversion via the Frankfurter open-source API (ECB reference rates; JSON result). Usage: xe -amount 100 -from USD -to EUR. Was xe.com.","finance","EU",72029],
+["stock","https://stooq.com/q/l/?s=%s.us&i=d","Stock quote CSV from Stooq (free data endpoint; US tickers get .us automatically here). Was Yahoo Finance.","finance","U",null],
+["onelook","https://en.wiktionary.org/wiki/%s","Dictionary via English Wiktionary (Wikimedia, open). Was OneLook. Example: onelook duplicity","dictionary","U",1615608],
+["olrd","https://api.datamuse.com/words?ml=%s","Reverse dictionary via the Datamuse API (JSON, means-like). Was OneLook: olrd barrel maker returns cooper","dictionary","U",12578531],
+["dict","https://en.wiktionary.org/wiki/%s","English dictionary via Wiktionary (open). Was Dictionary.com / Answers.com.","dictionary","U",null],
 ["mw","https://www.merriam-webster.com/dictionary/%s","Merriam-Webster dictionary.","dictionary","U",null],
-["thes","https://www.thesaurus.com/browse/%s","Find another way to say something.","dictionary","U",null],
+["thes","https://en.wiktionary.org/wiki/Thesaurus:%s","Thesaurus via Wiktionary (open). Was Thesaurus.com.","dictionary","U",null],
 ["leo","https://dict.leo.org/?search=%s","German ↔ English translation lookup (LEO).","translate","U",276708],
-["e-f","https://translate.google.com/?sl=en&tl=fr&text=%s&op=translate","Translate English → French (Google Translate).","translate","U",2652],
-["f-e","https://translate.google.com/?sl=fr&tl=en&text=%s&op=translate","Translate French → English (Google Translate).","translate","U",1229],
-["tr","https://translate.google.com/?sl=auto&tl=en&text=%s&op=translate","Translate anything into English (auto-detect source).","translate","U",null],
+["e-f","https://libretranslate.com/?source=en&target=fr&q=%s","Translate English to French via LibreTranslate (open-source MT, self-hostable). Was Google Translate.","translate","U",2652],
+["f-e","https://libretranslate.com/?source=fr&target=en&q=%s","Translate French to English via LibreTranslate (open source). Was Google Translate.","translate","U",1229],
+["tr","https://libretranslate.com/?source=auto&target=en&q=%s","Translate anything into English via LibreTranslate (open source, auto-detect).","translate","U",null],
 ["leo2","https://dict.leo.org/englisch-deutsch/%s","LEO English–German direct entry.","translate","N",null],
-["weather","https://weather.com/weather/today/l/%s","Weather for a ZIP code / place (The Weather Channel).","weather","U",null],
-["wu","https://www.wunderground.com/weather/%s","Weather Underground forecast.","weather","U",null],
-["w","https://weather.com/weather/today/l/%s","The Weather Channel (w).","weather","U",null],
+["weather","https://wttr.in/%s","Weather via wttr.in - open-source terminal weather (chubin/wttr.in). ZIP or place name. Was Weather.com.","weather","U",null],
+["wu","https://wttr.in/%s","Weather via wttr.in (open source). Was Weather Underground 'wu'.","weather","U",null],
+["w","https://wttr.in/%s","Weather via wttr.in (open source). Was The Weather Channel 'w'.","weather","U",null],
 ["cnn","https://www.cnn.com/search?q=%s","CNN site search (search term required).","news","U",null],
 ["espn","https://www.espn.com/search/_/q/%s","ESPN search.","news","U",null],
-["allmusic","https://www.allmusic.com/search/all/%s","AllMusic.com search by artist name.","music","U",null],
+["allmusic","https://musicbrainz.org/search?query=%s&type=all&method=indexed","Music search via MusicBrainz - open data, open-source server (was AllMusic).","music","U",null],
 ["tpb","https://thepiratebay.org/search/%s/0/7/0","Search The Pirate Bay. (Mirror domains rotate; template kept as crawled.)","search","",170120],
-["flk","https://www.flickr.com/search/?text=%s","Flickr photo search (tags/titles/descriptions).","images","U",null],
-["fl","https://www.flickr.com/search/?text=%s&sort=interestingness-desc","Flickr search sorted by interestingness.","images","U",null],
+["flk","https://openverse.org/search/image?q=%s","Openly-licensed image search via Openverse (was Flickr tags).","images","U",null],
+["fl","https://openverse.org/search/?q=%s","Openly-licensed media search via Openverse (was Flickr).","images","U",null],
 ["fb","https://www.facebook.com/search/top?q=%s","Facebook keyword search (crawled name: FB).","social","U",189767],
-["whois","https://www.whois.com/whois/%s","Who owns a domain name or IP address?","whois","U",null],
+["whois","https://lookup.icann.org/rdap/domain/%s","Domain lookup via ICANN RDAP - the open RDAP protocol (RFC 9082). Was whois.com.","whois","U",null],
 ["php","https://www.php.net/manual-lookup.php?pattern=%s","Retrieve the PHP manual page for a function (exact name required).","dev","U",null],
 ["mdn","https://developer.mozilla.org/en-US/search?q=%s","MDN Web Docs search — the modern programmer's reference.","dev","N",null],
 ["so","https://stackoverflow.com/search?q=%s","Stack Overflow search.","dev","N",null],
@@ -265,11 +268,11 @@ const REGISTRY = [
 ["arch","https://web.archive.org/web/*/%s[no url encoding]","Internet Archive Wayback Machine for a URL.","reference","U",null],
 ["deli","http://del.icio.us/tag/%s","del.icio.us tag bookmarks — SERVICE CLOSED (2017). Kept for history; try pinboard-style tag search instead.","social","D",null],
 ["tec","http://technorati.com/search/%s","Technorati blog search — SERVICE CLOSED (2016). Kept for history.","social","D",null],
-["gbs","https://www.google.com/search?tbm=blg&q=%s","Google Blog Search (folded into Google News/verbatim era).","social","U",null],
+["gbs","https://search.inetol.net/search?q=%s","Blog/web search via SearXNG (Google Blog Search retired).","social","U",null],
 ["groups","https://groups.google.com/search?q=%s","Google Groups (Usenet) search.","social","U",null],
 ["gs","https://scholar.google.com/scholar?q=%s","Google Scholar — academic papers online.","reference","U",null],
 ["a9","http://a9.com/%s","A9.com search — RETIRED. Kept for history; use ddg/bing.","search","D",null],
-["froogle","https://www.google.com/search?tbm=shop&q=%s","Froogle → Google Shopping price comparison.","shopping","U",null],
+["froogle","https://search.inetol.net/search?q=%s","Product search via SearXNG (Froogle became Google Shopping; both proprietary).","shopping","U",null],
 ["gma","https://mail.google.com/","Bookmark: Gmail.","bookmarks","U",null],
 ["/.","https://slashdot.org/","Bookmark: Slashdot ('/.' command).","bookmarks","U",null],
 ["gread","https://news.google.com/","Google Reader bookmark — Reader closed 2013; lands on Google News now.","bookmarks","UD",null],
@@ -296,6 +299,25 @@ const REGISTRY = [
 ["mash2","local:mash2","mash2 [KEYWORDS] -cmd [COMMANDS...] — mash results on one page.","meta","M",205950],
 ["help","local:help","This app: list core commands.","core","M",null]
 ];
+
+/* Open-source backing per command, researched 2026-10-13 by reading each
+   GitHub repo / API (see docs/yubnub-opensource-backing-2026-10-13.md).
+   Prefix: open: GitHub OSS powers the endpoint · api: open protocol/free API
+   local: implemented in this file · prop: no open drop-in found (researched)
+   dead: service gone */
+const BACKING = {
+"g":"open:gh:searxng/searxng (metasearch; instance search.inetol.net, self-hostable)","gg":"open:gh:searxng/searxng","gim":"open:gh:WordPress/openverse (openly-licensed media)","gi":"open:gh:WordPress/openverse","gfl":"api:DuckDuckGo lucky query (gh:duckduckgo/duckduckgo archived 2022)","gnews":"open:gh:searxng/searxng news category","gn":"open:gh:searxng/searxng","gnws":"open:gh:searxng/searxng","gde":"open:gh:searxng/searxng (language=de)",
+"wp":"open:gh:wikimedia/mediawiki (Wikipedia itself is OSS)","wiki":"open:gh:wikimedia/mediawiki","wpde":"open:gh:wikimedia/mediawiki","wpms":"open:gh:wikimedia/mediawiki","yt":"open:gh:iv-org/invidious (instance inv.nadeko.net; rotate via api.invidious.io)","youtube":"open:gh:iv-org/invidious","am":"prop:Amazon - no open marketplace drop-in; books: use ol (gh:internetarchive/openlibrary)","ebay":"prop:eBay - no open drop-in found","ddg":"api:DuckDuckGo HTML (company service; gh:duckduckgo/duckduckgo archived)","bing":"prop:Microsoft Bing - open alternative is g (SearXNG)","sp":"prop:Startpage (company) - from yub.js audit; open alternative is g","gmails":"prop:Google account service - no open drop-in","gdrive":"prop:Google account service - no open drop-in","ud":"prop:Urban Dictionary - Wiktionary (dict) is the open cousin","brave":"prop:Brave Search (company index) - open alternative is g","y":"prop:Yahoo Search - open alternative is g",
+"gm":"open:gh:openstreetmap/openstreetmap-website (open data)","gmaps":"open:gh:openstreetmap/openstreetmap-website","gmap":"open:gh:openstreetmap/openstreetmap-website","osm":"open:gh:openstreetmap/openstreetmap-website","streetview":"prop:Google Street View - open imagery (Mapillary/KartaView) needs coordinates, no address drop-in","ol":"open:gh:internetarchive/openlibrary","wd":"open:gh:wikimedia/mediawiki (Wikidata/Wikibase)","imdb":"prop:IMDb (Amazon) - open data alternative is wd/ol","letterboxd":"prop:Letterboxd - no open drop-in found","xe":"open:gh:lineofflight/frankfurter (api.frankfurter.dev, ECB rates - verified live JSON)","stock":"api:Stooq free CSV data (no OSS code; researched Yahoo/Tiingo/AlphaVantage - key or proprietary)","onelook":"open:gh:wikimedia/mediawiki (Wiktionary)","olrd":"api:Datamuse free API (JSON; service code not OSS)","dict":"open:gh:wikimedia/mediawiki (Wiktionary)","mw":"prop:Merriam-Webster - open alternative is dict","thes":"open:gh:wikimedia/mediawiki (Wiktionary Thesaurus)","leo":"prop:LEO/dict.cc - open alternative is dict (Wiktionary)","leo2":"prop:LEO - open alternative is dict","e-f":"open:gh:LibreTranslate/LibreTranslate (self-hostable MT)","f-e":"open:gh:LibreTranslate/LibreTranslate","tr":"open:gh:LibreTranslate/LibreTranslate","weather":"open:gh:chubin/wttr.in (one-line weather, self-hostable)","w":"open:gh:chubin/wttr.in","wu":"open:gh:chubin/wttr.in","cnn":"prop:CNN - headlines via gn (SearXNG news)","espn":"prop:ESPN - no open drop-in found","allmusic":"open:gh:metabrainz/musicbrainz-server (open data)","tpb":"prop:The Pirate Bay (index site; engine gh: not applicable)","flk":"open:gh:WordPress/openverse","fl":"open:gh:WordPress/openverse","fb":"prop:Facebook - no open drop-in","whois":"api:ICANN RDAP lookup (RFC 9082 open protocol)","php":"open:php.net (gh:php/web-php)","mdn":"open:MDN content (gh:mdn/content, CC-BY-SA)","so":"prop:Stack Overflow (CC content, proprietary engine)","gh":"prop:GitHub platform (API used; code search is the service)","npm":"api:npm registry (gh:npm/cli is OSS; registry is a company service)","pypi":"open:PyPI (gh:pypi/warehouse is OSS)","rfc":"open:IETF RFC Editor (open standards)","arch":"open:Internet Archive (Wayback; gh:internetarchive org)","deli":"dead:del.icio.us (2017) - kept for history","tec":"dead:Technorati (2016) - kept for history","gbs":"open:gh:searxng/searxng","groups":"prop:Google Groups - no open drop-in (Usenet via gmane-era archives)","gs":"prop:Google Scholar - open alternative: gh:openalex (api.openalex.org)","a9":"dead:A9 (retired) - kept for history","froogle":"open:gh:searxng/searxng","gma":"prop:Gmail bookmark","/.":"prop:Slashdot bookmark","gread":"dead:Google Reader (2013) - lands on Google News",
+"ls":"local:this file (orig. gh:JonathanAquino/yubnub kernel)","ge":"local:this file (Golden Eggs corpus)","man":"local:this file","create":"local:this file (orig. command/new)","url":"local:this file (orig. parser/url)","echo":"local:this file (orig. example/echo; cf. gh:dohliam/yub)","random":"local:this file (random.org semantics in man random)","%":"local:this file (orig. jonathanaquino.com/yubtools/split.php)","strReplace":"local:this file (orig. yubscripts stringmanip.php)","strFind":"local:this file","strLength":"local:this file","ucase":"local:this file","lcase":"local:this file","ifThen":"local:this file (orig. ifthen.php)","ifEmpty":"local:this file","explode":"local:this file (orig. yubnub-explode.php)","date":"local:this file","switch":"local:this file","split":"local:this file (orig. example/split)","mash":"local:this file","mash2":"local:this file (orig. mash2 via split/foreach helpers)","help":"local:this file"
+};
+function backingHtml(name){
+  const b = BACKING[name] || BACKING[(name||"").toLowerCase()] || "";
+  if (!b) return "";
+  const linked = esc(b).replace(/gh:([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)/g, '<a href="https://github.com/$1" target="_blank" rel="noopener">gh:$1</a>');
+  return '<br /><span class="dim">backing: '+linked+"</span>";
+}
+function isOpen(name){ const b=BACKING[name]||""; return b.startsWith("open:")||b.startsWith("local:"); }
 
 /* crawled link inventory: [href, what, status, inApp] */
 const LINKS = [
@@ -502,7 +524,7 @@ $("btnShare").addEventListener("click",()=>{
 function manHtml(name){
   const c = byName.get((name||"").toLowerCase());
   if (!c) return '<span class="err">man: no manual for "'+esc(name)+'" — try ls to browse, or create it in the Create tab.</span>';
-  return '<span class="ok">'+esc(c.n)+"</span>"+(c.f.includes("E")?' <span class="tag egg">Golden Egg</span>':"")+"\n"+esc(c.d)+"\nTemplate: "+esc(c.u)+(c.uses?"\nUses (2026-10-13 crawl): "+c.uses.toLocaleString():"")+"\nTry it: type '"+esc(c.n)+" …' above.";
+  return '<span class="ok">'+esc(c.n)+"</span>"+(c.f.includes("E")?' <span class="tag egg">Golden Egg</span>':"")+"\n"+esc(c.d)+"\nTemplate: "+esc(c.u)+"\nBacking: "+(BACKING[c.n]||"")+(c.uses?"\nUses (2026-10-13 crawl): "+c.uses.toLocaleString():"")+"\nTry it: type '"+esc(c.n)+" …' above.";
 }
 function splitUrls(kind, argStr){
   if (kind==="mash2"){ const c = parseArgs(argStr,[{name:"cmd",def:""}]); const cmds = tokens(c.switches.cmd||""); const kw = c.positional; return cmds.map(n=>({n, url:resolveCommandLine(n+" "+kw,"url")})); }
@@ -561,8 +583,8 @@ function renderLs(){
   });
   $("lsCount").textContent = list.length+" command(s)"+(q?' matching "'+q+'"':"")+(eggs?" · Golden Eggs only":"");
   $("lsBody").innerHTML = list.map(c=>{
-    const tags = ((c.f||"").includes("E")?'<span class="tag egg">Golden Egg</span> ':"")+((c.f||"").includes("N")?'<span class="tag new">new</span> ':"")+((c.f||"").includes("U")?'<span class="tag upd">updated</span> ':"")+((c.f||"").includes("D")?'<span class="tag dead">dead</span> ':"")+((c.f||"").includes("L")?'<span class="tag">offline</span> ':"")+(c.custom?'<span class="tag new">yours</span> ':"");
-    return "<tr><td><button class='cmdname' data-cmd=\""+esc(c.n)+"\">"+esc(c.n)+"</button><br />"+tags+"</td><td>"+esc(c.d)+"</td><td class='mono small'>"+esc(c.u)+"</td><td>"+(c.uses?c.uses.toLocaleString():"—")+'</td><td><button class="btn" data-man="'+esc(c.n)+'">man</button></td></tr>';
+    const tags = ((c.f||"").includes("E")?'<span class="tag egg">Golden Egg</span> ':"")+((c.f||"").includes("N")?'<span class="tag new">new</span> ':"")+((c.f||"").includes("U")?'<span class="tag upd">updated</span> ':"")+((c.f||"").includes("D")?'<span class="tag dead">dead</span> ':"")+((c.f||"").includes("L")?'<span class="tag">offline</span> ':"")+(isOpen(c.n)?'<span class="tag new">open source</span> ':"")+((BACKING[c.n]||"").startsWith("prop:")?'<span class="tag">proprietary*</span> ':"")+(c.custom?'<span class="tag new">yours</span> ':"");
+    return "<tr><td><button class='cmdname' data-cmd=\""+esc(c.n)+"\">"+esc(c.n)+"</button><br />"+tags+"</td><td>"+esc(c.d)+"</td><td class='mono small'>"+esc(c.u)+backingHtml(c.n)+"</td><td>"+(c.uses?c.uses.toLocaleString():"—")+'</td><td><button class="btn" data-man="'+esc(c.n)+'">man</button></td></tr>';
   }).join("") || '<tr><td colspan="5" class="dim">No commands match — try ls with another word.</td></tr>';
 }
 $("lsQuery").addEventListener("input",renderLs); $("lsCat").addEventListener("change",renderLs); $("lsEggs").addEventListener("change",renderLs);
