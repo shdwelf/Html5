@@ -61,12 +61,12 @@ Static disassembly inventory (JADX + strings + Ghidra). Nothing executed.
 <details><summary>analyzeHeadless log tail</summary>
 
 ```
-ERROR REPORT SCRIPT ERROR: CryptoInventory.java /tmp/apk-disasm/ghidra-report.txt : Script not found: CryptoInventory.java /tmp/apk-disasm/ghidra-report.txt (HeadlessAnalyzer)  
-ERROR Abort due to Headless analyzer error: Invalid script: CryptoInventory.java /tmp/apk-disasm/ghidra-report.txt (HeadlessAnalyzer) java.lang.IllegalArgumentException: Invalid script: CryptoInventory.java /tmp/apk-disasm/ghidra-report.txt
-	at ghidra.app.util.headless.HeadlessAnalyzer.checkScript(HeadlessAnalyzer.java:799)
-	at ghidra.app.util.headless.HeadlessAnalyzer.checkScriptsList(HeadlessAnalyzer.java:812)
-	at ghidra.app.util.headless.HeadlessAnalyzer.compileScripts(HeadlessAnalyzer.java:846)
-	at ghidra.app.util.headless.HeadlessAnalyzer.processLocal(HeadlessAnalyzer.java:415)
+    /tmp/ghidra/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/ghidra_scripts (HeadlessAnalyzer)  
+INFO  HEADLESS: execution starts (HeadlessAnalyzer)  
+INFO  Creating temporary project: /tmp/apk-disasm/gproj/ApkNat (HeadlessAnalyzer)  
+ERROR Abort due to Headless analyzer error: Directory not found: /tmp/apk-disasm/gproj (HeadlessAnalyzer) java.io.FileNotFoundException: Directory not found: /tmp/apk-disasm/gproj
+	at ghidra.framework.project.DefaultProjectManager.createProject(DefaultProjectManager.java:100)
+	at ghidra.app.util.headless.HeadlessAnalyzer.processLocal(HeadlessAnalyzer.java:439)
 	at ghidra.app.util.headless.AnalyzeHeadless.launch(AnalyzeHeadless.java:199)
 	at ghidra.GhidraLauncher.launch(GhidraLauncher.java:81)
 	at ghidra.Ghidra.main(Ghidra.java:54)
