@@ -7,7 +7,7 @@
  * error, and exports a .wrl from inside the page.
  *
  * Skips cleanly when the browser deps are absent, like the other browser
- * suites:  npm i --no-save puppeteer-core @sparticized/chromium
+ * suites:  npm i --no-save puppeteer-core @sparticuz/chromium
  */
 import test from "node:test";
 import assert from "node:assert/strict";
