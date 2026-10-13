@@ -200,7 +200,20 @@ legitimate takeaway stands: A's networking stack is ordinary OSS all
 the way down; nothing about its crypto inventory is exotic — its
 risks are plaintext token storage, an EOL Tor, and provenance.
 
-**Ghidra headless outcome:** GHIDRA-RESULT-PENDING
+**Ghidra headless outcome (completed):** `analyzeHeadless`
+(CryptoInventory.java, Temurin 21) exit 0 on both lead native
+libraries. A's `libtor.so` (sha256 `cf36154c…b18e4`): 14,104
+functions, 60 crypto-named (`tor_main`, `tor_init`, …), 30,843
+defined strings of which 7,291 crypto-matching — a genuine,
+self-contained Tor build, exactly as its version strings claimed.
+B's `libflutter.so` (sha256 `7eb2fb3f…0194`): 25,724 functions but
+only 6 crypto-named (BoringSSL memory wrappers) and 728
+crypto-matching strings — an engine binary; B's actual logic sits in
+Dart `libapp.so`, which neither JADX nor this pass reads. Net
+encryption verdict: **A's crypto is Tor/OpenSSL doing what Tor does,
+plus mediocre local-storage hygiene; B's crypto is unauditable
+engine+Dart bulk wrapped around ads/push SDKs — combined with its
+impersonated test-key signature (§7), “untrusted” stands.**
 
 ## 9. Sources (2026-10-13)
 
