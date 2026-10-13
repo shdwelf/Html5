@@ -58,3 +58,22 @@ Static disassembly inventory (JADX + strings + Ghidra). Nothing executed.
 (no GHIDRA-REPORT lines produced)
 ```
 
+<details><summary>analyzeHeadless log tail</summary>
+
+```
+ERROR REPORT SCRIPT ERROR: CryptoInventory.java /tmp/apk-disasm/ghidra-report.txt : Script not found: CryptoInventory.java /tmp/apk-disasm/ghidra-report.txt (HeadlessAnalyzer)  
+ERROR Abort due to Headless analyzer error: Invalid script: CryptoInventory.java /tmp/apk-disasm/ghidra-report.txt (HeadlessAnalyzer) java.lang.IllegalArgumentException: Invalid script: CryptoInventory.java /tmp/apk-disasm/ghidra-report.txt
+	at ghidra.app.util.headless.HeadlessAnalyzer.checkScript(HeadlessAnalyzer.java:799)
+	at ghidra.app.util.headless.HeadlessAnalyzer.checkScriptsList(HeadlessAnalyzer.java:812)
+	at ghidra.app.util.headless.HeadlessAnalyzer.compileScripts(HeadlessAnalyzer.java:846)
+	at ghidra.app.util.headless.HeadlessAnalyzer.processLocal(HeadlessAnalyzer.java:415)
+	at ghidra.app.util.headless.AnalyzeHeadless.launch(AnalyzeHeadless.java:199)
+	at ghidra.GhidraLauncher.launch(GhidraLauncher.java:81)
+	at ghidra.Ghidra.main(Ghidra.java:54)
+openjdk version "21.0.12.1" 2026-08-18 LTS
+OpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode)
+```
+
+</details>
+
