@@ -86,6 +86,20 @@ jobs:
           done
           for z in .arena-drive/payload/*.zip; do unzip -o "$z" -d .arena-drive/payload/unzipped; done
 
+      - name: Set up Temurin JDK 21 (APK triage)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: APK static triage (payload APKs, if any)
+        run: |
+          shopt -s nullglob
+          apks=(.arena-drive/payload/*.apk)
+          if [ ${#apks[@]} -eq 0 ]; then echo "no payload APKs; skipping"; exit 0; fi
+          pip install -q androguard || echo "androguard install failed; stdlib fallback in triage script"
+          python3 tools/apk_triage.py "${apks[@]}"
+
       - name: Re-check the ledger
         if: always()
         run: node scripts/drive-sync-audit.mjs || true

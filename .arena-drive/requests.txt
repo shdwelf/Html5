@@ -45,3 +45,10 @@
 #
 # Full 2026-09-28 working tree — the only source for 559fb69's evidence.
 # 1eCBX34mZ4DXrntc-Wp2vlgnZ1gXMKwu7  Html5-worktree-2026-09-28-ee1ec85.tar.gz  97889803
+
+# ---------------------------------------------------------------- APKs
+# User-supplied 2026-10-13 for static triage (never committed; fetched to
+# gitignored payload, analysed by tools/apk_triage.py in-arena-drive-sync).
+# Sizes from Drive metadata read 2026-10-13.
+1UB-k8GlBCR8Spis9aac880dONn9WPIRe  Z-Lib_1.11.4_APKPure.apk  33076250
+1Ew8C3txveLlGBH07k9gzPYILtboCCpos  z+Library_1.0.5_APKPure.apk  47786920
