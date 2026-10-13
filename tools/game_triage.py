@@ -39,56 +39,91 @@ def parse_mz(data: bytes) -> dict | None:
 
 
 def le_header(data: bytes):
-    """Locate and decode a Linear Executable header (DOS/4GW et al.).
+    """Find and validate a Linear Executable header (DOS/4GW et al.).
 
-    Field offsets are from the LE specification. The two that are easy to
-    transpose — and that produce spectacular nonsense when you do — are
-    0x40 = object table offset and 0x44 = object count, in that order.
+    A two-byte ``LE`` string in an MZ overlay is not enough to classify the
+    file: installers and compressed payloads can contain that byte sequence.
+    Search candidates, then require plausible byte order, CPU/OS, page geometry,
+    object-table bounds, and entry/stack references before accepting one.
+
+    Field offsets are from the LE specification. The two easy-to-transpose
+    fields are 0x40 = object table offset and 0x44 = object count, in that order.
     """
-    off = data.find(b"LE\x00\x00")
-    if off < 0:
-        off = data.find(b"LX\x00\x00")
-        if off < 0:
-            return None
-    if off + 0xC4 > len(data):
-        return None
-    u32 = lambda o: struct.unpack_from("<I", data, off + o)[0]  # noqa: E731
-    u16 = lambda o: struct.unpack_from("<H", data, off + o)[0]  # noqa: E731
-    le = {
-        "kind": data[off:off + 2].decode(),
-        "file_off": off,
-        "byte_order": data[off + 2],
-        "word_order": data[off + 3],
-        "cpu": u16(0x08),
-        "os": u16(0x0A),
-        "module_flags": u32(0x10),
-        "pages": u32(0x14),
-        "eip_object": u32(0x18),
-        "eip": u32(0x1C),
-        "esp_object": u32(0x20),
-        "esp": u32(0x24),
-        "page_size": u32(0x28),
-        "fixup_size": u32(0x30),
-        "loader_size": u32(0x38),
-        "objtab_off": u32(0x40),
-        "num_objects": u32(0x44),
-        "data_pages_off": u32(0x80),
-    }
-    objs = []
-    base = off + le["objtab_off"]
-    for i in range(min(le["num_objects"], 32)):
-        o = base + i * 24
-        if o + 24 > len(data):
-            break
-        vsize, reloc, flags, pagemap, pagecount = struct.unpack_from("<IIIII", data, o)
-        objs.append({
-            "n": i + 1, "vsize": vsize, "base": reloc, "flags": flags,
-            "pagemap": pagemap, "pages": pagecount,
-            "perm": "".join(c for c, bit in (("R", 1), ("W", 2), ("X", 4)) if flags & bit),
-            "big": bool(flags & 0x2000),
-        })
-    le["objects"] = objs
-    return le
+    signatures = (b"LE\x00\x00", b"LX\x00\x00")
+    candidates = []
+    # Prefer the standard extended-MZ pointer when it points at an LE/LX header.
+    if len(data) >= 0x40 and data[:2] in (b"MZ", b"ZM"):
+        mz_pointer = struct.unpack_from("<I", data, 0x3C)[0]
+        if mz_pointer + 4 <= len(data) and data[mz_pointer:mz_pointer + 4] in signatures:
+            candidates.append(mz_pointer)
+    # DOS/4GW images in this corpus carry their LE header in an overlay and
+    # leave e_lfanew unusable, so retain a validated signature scan as fallback.
+    for signature in signatures:
+        start = 0
+        while True:
+            off = data.find(signature, start)
+            if off < 0:
+                break
+            candidates.append(off)
+            start = off + 1
+
+    for off in dict.fromkeys(candidates):
+        if off + 0xC4 > len(data):
+            continue
+        u32 = lambda o: struct.unpack_from("<I", data, off + o)[0]  # noqa: E731
+        u16 = lambda o: struct.unpack_from("<H", data, off + o)[0]  # noqa: E731
+        le = {
+            "kind": data[off:off + 2].decode(),
+            "file_off": off,
+            "byte_order": data[off + 2],
+            "word_order": data[off + 3],
+            "cpu": u16(0x08),
+            "os": u16(0x0A),
+            "module_flags": u32(0x10),
+            "pages": u32(0x14),
+            "eip_object": u32(0x18),
+            "eip": u32(0x1C),
+            "esp_object": u32(0x20),
+            "esp": u32(0x24),
+            "page_size": u32(0x28),
+            "fixup_size": u32(0x30),
+            "loader_size": u32(0x38),
+            "objtab_off": u32(0x40),
+            "num_objects": u32(0x44),
+            "data_pages_off": u32(0x80),
+        }
+        if (le["byte_order"] != 0 or le["word_order"] != 0
+                or le["cpu"] not in CPU_NAMES or le["os"] not in OS_NAMES
+                or not 1 <= le["pages"] <= 1_000_000
+                or not 512 <= le["page_size"] <= 65536
+                or le["page_size"] & (le["page_size"] - 1)
+                or not 1 <= le["num_objects"] <= 256
+                or le["objtab_off"] < 0xC4
+                or not 1 <= le["eip_object"] <= le["num_objects"]
+                or not 1 <= le["esp_object"] <= le["num_objects"]):
+            continue
+        base = off + le["objtab_off"]
+        table_end = base + le["num_objects"] * 24
+        if table_end > len(data):
+            continue
+        objs = []
+        for i in range(le["num_objects"]):
+            o = base + i * 24
+            vsize, reloc, flags, pagemap, pagecount = struct.unpack_from("<IIIII", data, o)
+            objs.append({
+                "n": i + 1, "vsize": vsize, "base": reloc, "flags": flags,
+                "pagemap": pagemap, "pages": pagecount,
+                "perm": "".join(c for c, bit in (("R", 1), ("W", 2), ("X", 4)) if flags & bit),
+                "big": bool(flags & 0x2000),
+            })
+        if (not all(obj["vsize"] for obj in objs)
+                or sum(obj["pages"] for obj in objs) != le["pages"]
+                or le["eip"] >= objs[le["eip_object"] - 1]["vsize"]
+                or le["esp"] > objs[le["esp_object"] - 1]["vsize"]):
+            continue
+        le["objects"] = objs
+        return le
+    return None
 
 
 CPU_NAMES = {1: "80286", 2: "80386", 3: "80486", 4: "Pentium"}
