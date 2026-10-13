@@ -15,7 +15,7 @@ import { browserDeps, serve, unpackLibs } from "./lib-browser.mjs";
 
 const deps = await browserDeps();
 if (!deps) {
-  console.log("red-october browser: SKIPPED (npm i --no-save puppeteer-core @sparticized/chromium)");
+  console.log("red-october browser: SKIPPED (npm i --no-save puppeteer-core @sparticuz/chromium)");
   process.exit(0);
 }
 unpackLibs();
