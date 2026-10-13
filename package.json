@@ -13,6 +13,7 @@
     "build:four-corners": "node scripts/build-four-corners-xdc.mjs",
     "build:cia-museum": "node scripts/build-cia-museum-xdc.mjs",
     "build:cyberchef": "node scripts/build-cyberchef-xdc.mjs",
+    "build:yubnub": "node scripts/build-yubnub-xdc.mjs",
     "build:greeran-family": "node scripts/build-greeran-family-4dwm-xdc.mjs",
     "build:greeran-subsurface": "node scripts/build-greeran-subsurface-xdc.mjs",
     "build:glendora-high": "node scripts/build-glendora-high-4dwm-xdc.mjs",

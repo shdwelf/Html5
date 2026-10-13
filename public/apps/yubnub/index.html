@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0f0a" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="YUBNUB" />
+<meta name="description" content="Yubnub — a (social) command line for the web, rebuilt as an offline HTML5 / webxdc app. Type 'gim porsche 911', 'random 100', 'man random', 'xe -amount 100 -from USD -to EUR'. Registry crawled from yubnub.org 2026-10-13; dead endpoints updated or flagged." />
+<title>Yubnub · HTML5 command line for the web</title>
+<link rel="icon" href="./icon.png" sizes="512x512" />
+<script src="./webxdc.js"></script>
+<style>
+:root{--bg:#0a0f0a;--panel:#10160f;--panel2:#141d12;--line:#2a3a24;--ink:#e6f2df;--dim:#9db892;--acc:#8ee06c;--acc2:#ffd75e;--bad:#ff7a6b;--mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+a{color:var(--acc)}button{cursor:pointer;font:inherit}
+header.top{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#131f10,#0a0f0a)}
+header.top .logo{font-size:34px;line-height:1}header.top h1{margin:0;font-size:22px;letter-spacing:.06em}
+header.top h1 b{color:var(--acc)}header.top p{margin:2px 0 0;color:var(--dim);font-size:12.5px}
+header.top .sp{flex:1}.chip{border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:11.5px;color:var(--dim);background:var(--panel)}
+.chip b{color:var(--acc2)}
+main{max-width:1060px;margin:0 auto;padding:16px}
+.cmdbar{display:flex;gap:8px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
+.cmdbar .prompt{font-family:var(--mono);color:var(--acc);align-self:center;font-weight:700}
+#cmdInput{flex:1;min-width:220px;background:#060806;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:11px 12px;font-family:var(--mono);font-size:15px}
+#cmdInput:focus{outline:2px solid var(--acc);outline-offset:0}
+.btn{background:#1d2f18;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:10px 16px}
+.btn:hover{border-color:var(--acc)}.btn.hot{background:var(--acc);color:#0a1405;border-color:var(--acc);font-weight:700}
+.btn.gold{background:var(--acc2);color:#171106;border-color:var(--acc2);font-weight:700}
+.examples{display:flex;gap:6px;flex-wrap:wrap;margin:10px 2px 0}
+.examples button{background:var(--panel2);color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-family:var(--mono);font-size:12.5px}
+.examples button:hover{color:var(--ink);border-color:var(--acc)}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 12px}
+nav.tabs button{background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:9px;padding:8px 14px}
+nav.tabs button[aria-selected="true"]{background:var(--panel2);color:var(--ink);border-color:var(--acc)}
+section.tab{display:none}section.tab.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px}
+.card h2{margin:0 0 8px;font-size:17px}.card h3{margin:14px 0 6px;font-size:14.5px}
+.mono{font-family:var(--mono)} .dim{color:var(--dim)} .small{font-size:12.5px}
+#consoleOut{font-family:var(--mono);font-size:13.5px;white-space:pre-wrap;word-break:break-word;background:#060806;border:1px solid var(--line);border-radius:10px;padding:12px;min-height:86px}
+#consoleOut .err{color:var(--bad)}#consoleOut .ok{color:var(--acc)}#consoleOut .url{color:var(--acc2)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=text],input[type=search],select,textarea{background:#060806;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:inherit}
+textarea{width:100%;font-family:var(--mono);font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border-bottom:1px solid var(--line);text-align:left;padding:7px 8px;vertical-align:top}
+th{color:var(--dim);font-weight:600}
+.tag{display:inline-block;border-radius:99px;padding:1px 8px;font-size:11px;border:1px solid var(--line);color:var(--dim)}
+.tag.egg{color:#171106;background:var(--acc2);border-color:var(--acc2);font-weight:700}
+.tag.new{color:#0a1405;background:var(--acc);border-color:var(--acc);font-weight:700}
+.tag.dead{color:#fff;background:#7a2a22;border-color:#7a2a22}
+.tag.upd{color:var(--acc2);border-color:var(--acc2)}
+.cmdname{font-family:var(--mono);font-weight:700;color:var(--acc);cursor:pointer;background:none;border:0;padding:0;font-size:13.5px;text-align:left}
+.cmdname:hover{text-decoration:underline}
+.splitgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.splitgrid figure{margin:0;background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.splitgrid figcaption{padding:8px 10px;font-family:var(--mono);font-size:12px;word-break:break-all}
+.splitgrid iframe{width:100%;height:340px;border:0;background:#fff}
+.kbd{font-family:var(--mono);background:#060806;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;font-size:12.5px}
+.hist button{background:none;border:0;color:var(--dim);font-family:var(--mono);font-size:12.5px;padding:2px 4px;text-align:left}
+.hist button:hover{color:var(--acc)}
+footer{max-width:1060px;margin:0 auto;padding:8px 16px 30px;color:var(--dim);font-size:12.5px}
+@media (max-width:640px){.splitgrid iframe{height:260px}header.top .logo{font-size:26px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo" aria-hidden="true">⌘</div>
+  <div>
+    <h1>YUB<b>NUB</b></h1>
+    <p>A (social) command line for the web · HTML5 / webxdc rebuild · registry crawled from yubnub.org 2026-10-13</p>
+  </div>
+  <div class="sp"></div>
+  <span class="chip">commands <b id="statCount">–</b></span>
+  <span class="chip">engine <b>offline · inline</b></span>
+  <span class="chip" id="netChip">source <b>yubnub.org</b></span>
+</header>
+
+<main>
+  <form class="cmdbar" id="cmdForm" autocomplete="off">
+    <span class="prompt" aria-hidden="true">yn&gt;</span>
+    <input id="cmdInput" type="text" placeholder="gim porsche 911   ·   random 100   ·   man random   ·   xe -amount 100 -from USD -to EUR" aria-label="Yubnub command" />
+    <button class="btn hot" type="submit" id="btnGo">GO ↵</button>
+    <button class="btn" type="button" id="btnUrl" title="Resolve to a URL without leaving the app (the 'url' command)">URL ONLY</button>
+    <button class="btn gold" type="button" id="btnShare" title="Broadcast this command to the chat (webxdc)">SHARE</button>
+  </form>
+  <div class="examples" id="examples" aria-label="Examples from yubnub.org"></div>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="console">Console</button>
+    <button role="tab" aria-selected="false" data-tab="commands">Commands · ls</button>
+    <button role="tab" aria-selected="false" data-tab="create">Create</button>
+    <button role="tab" aria-selected="false" data-tab="syntax">Advanced syntax</button>
+    <button role="tab" aria-selected="false" data-tab="links">Link crawl</button>
+  </nav>
+
+  <section class="tab on" id="tab-console">
+    <div class="card">
+      <h2>Output</h2>
+      <div id="consoleOut">Type a command above. Try <span class="kbd">ls music</span>, <span class="kbd">man gim</span>, <span class="kbd">url gim porsche 911</span>, <span class="kbd">random -num 5 -max 20</span>, <span class="kbd">mash porsche g wp gim</span>.
+Unknown commands fall back to Google — exactly like yubnub.org.</div>
+      <div class="row" style="margin-top:10px">
+        <a class="btn hot" id="btnOpen" href="#" target="_blank" rel="noopener" hidden>OPEN RESULT ↗</a>
+        <button class="btn" id="btnCopy" type="button" hidden>Copy URL</button>
+        <span class="dim small" id="resolveNote"></span>
+      </div>
+    </div>
+    <div class="card" id="splitCard" hidden>
+      <h2>Split / mash view</h2>
+      <p class="dim small">Panes are best-effort: many sites refuse framing (<span class="mono">X-Frame-Options</span>). Use “OPEN RESULT” / the caption link when a pane stays blank — the resolved URL is always correct.</p>
+      <div class="splitgrid" id="splitGrid"></div>
+    </div>
+    <div class="card">
+      <h2>History</h2>
+      <div class="hist" id="history"><span class="dim small">Nothing yet this session.</span></div>
+    </div>
+  </section>
+
+  <section class="tab" id="tab-commands">
+    <div class="card">
+      <h2>Command registry <span class="dim small">— the <span class="mono">ls</span> / <span class="mono">ge</span> corpus, embedded</span></h2>
+      <div class="row">
+        <input type="search" id="lsQuery" placeholder="ls [word or phrase] — search names, descriptions, URLs…" style="flex:1;min-width:200px" />
+        <select id="lsCat" aria-label="Category"></select>
+        <label class="small dim"><input type="checkbox" id="lsEggs" /> Golden Eggs only (<span class="mono">ge</span>)</label>
+      </div>
+      <p class="dim small" id="lsCount"></p>
+      <div style="overflow-x:auto"><table>
+        <thead><tr><th>Command</th><th>Description</th><th>URL template</th><th>Uses*</th><th></th></tr></thead>
+        <tbody id="lsBody"></tbody>
+      </table></div>
+      <p class="dim small">*Use counts are the live counters read from <span class="mono">yubnub.org/kernel/most_used_commands</span> on 2026-10-13 (top rows only). <span class="tag upd">updated</span> = endpoint modernised (http→https / moved service) · <span class="tag new">new</span> = added in this rebuild · <span class="tag dead">dead</span> = service gone, kept for history. Full audit in <span class="mono">yubnub-deep-dive.md</span>.</p>
+    </div>
+  </section>
+
+  <section class="tab" id="tab-create">
+    <div class="card">
+      <h2>Create a new command</h2>
+      <p class="dim">Mirrors <span class="mono">yubnub.org/command/new</span>: ① pick an unused name ② paste a URL with <span class="kbd">%s</span> (or <span class="kbd">${switch=default}</span> — see Advanced syntax) ③ test it ④ describe it. Here your command is saved <b>locally in the app</b> (and can be shared to the chat); it is not posted to yubnub.org.</p>
+      <div class="row"><label class="small">Name<br /><input type="text" id="newName" placeholder="e.g. gim" /></label>
+      <label class="small">Category<br /><input type="text" id="newCat" value="custom" /></label></div>
+      <p class="small" style="margin-bottom:4px">URL template</p>
+      <input type="text" id="newUrl" style="width:100%" placeholder="http://images.google.com/images?q=%s" />
+      <p class="small" style="margin-bottom:4px">Description (examples help!)</p>
+      <textarea id="newDesc" rows="3" placeholder="Google Maps Search. Example: gmaps pizza in Detroit"></textarea>
+      <div class="row" style="margin-top:10px">
+        <label class="small">Test args <input type="text" id="newTest" value="porsche 911" /></label>
+        <button class="btn" type="button" id="btnTestNew">TEST</button>
+        <button class="btn hot" type="button" id="btnSaveNew">SAVE COMMAND</button>
+        <button class="btn" type="button" id="btnExport">EXPORT JSON</button>
+        <button class="btn" type="button" id="btnImport">IMPORT JSON</button>
+      </div>
+      <div id="createOut" class="mono small" style="margin-top:10px;white-space:pre-wrap;word-break:break-word"></div>
+    </div>
+  </section>
+
+  <section class="tab" id="tab-syntax">
+    <div class="card">
+      <h2>Advanced syntax <span class="dim small">— condensed from yubnub.org/documentation/describe_advanced_syntax, all of it implemented in this app</span></h2>
+      <h3>%s — the argument</h3>
+      <p class="small">Template <span class="kbd">http://images.google.com/images?q=%s</span> + <span class="kbd">gim porsche 911</span> → <span class="mono">…?q=porsche+911</span>. Spaces become <span class="mono">+</span>; other characters are URL-encoded (<span class="mono">Mork &amp; Mindy</span> → <span class="mono">Mork+%26+Mindy</span>).</p>
+      <h3>${switch} and ${switch=default} — multiple parameters</h3>
+      <p class="small">Template <span class="kbd">…?q=${what}&amp;near=${where=Washington, DC}</span> + <span class="kbd">gloc -what pizza -where Poughkeepsie, NY</span>. Dashes are a tribute to command-line heritage — <span class="mono">-what</span> is the “what switch”.</p>
+      <h3>{ nested commands } — pipes</h3>
+      <p class="small"><span class="kbd">g {random 100}</span>, <span class="kbd">gloc -what {% 1 %s} -where {% 2 %s}[no url encoding]</span>. Braces are evaluated innermost-first; a nested command's text output (or its URL, via <span class="mono">url</span>) is spliced in.</p>
+      <h3>Directives (stripped from the final URL)</h3>
+      <p class="small"><span class="kbd">[no url encoding]</span> — e.g. Wayback: <span class="mono">http://web.archive.org/web/*/%s[no url encoding]</span><br />
+      <span class="kbd">[use %20 for spaces]</span> / <span class="kbd">[use - for spaces]</span> — pick the space character.<br />
+      <span class="kbd">[post]</span> — GET→POST forms (Sean O'Hagan's get2post). This app flags it and shows the URL; it cannot POST-redirect offline.</p>
+      <h3>Commands that make commands</h3>
+      <p class="small"><span class="kbd">url gim porsche 911</span> returns the URL instead of going there · <span class="kbd">% 2- one two three</span> extracts tokens (CUT-style ranges: <span class="mono">N</span>, <span class="mono">N-</span>, <span class="mono">N-M</span>, <span class="mono">-M</span>) · <span class="kbd">strReplace -find a -replace o -string Banana</span> · <span class="kbd">ifThen -value1 … -test EQUAL -then … -else …</span> · <span class="kbd">switch</span>: <span class="mono">{ switch ${plat} | xbox =&gt; 13, * =&gt; 0 }</span>. <span class="mono">echo</span>, <span class="mono">random</span>, <span class="mono">%</span>, <span class="mono">strReplace</span>, <span class="mono">strFind</span>, <span class="mono">strLength</span>, <span class="mono">ucase/lcase</span>, <span class="mono">ifThen</span>, <span class="mono">ifEmpty</span>, <span class="mono">explode</span>, <span class="mono">date</span> all run <b>locally, offline</b> in this rebuild.</p>
+      <h3>Installing Yubnub (the 2005 way, still true)</h3>
+      <p class="small">Add a custom search engine / keyword with the URL <span class="kbd">http://yubnub.org/parser/parse?command=%s</span> — or point it at this app hosted anywhere: <span class="kbd">…/yubnub.html?command=%s</span> (the app auto-runs <span class="mono">?command=</span>). Full per-browser history (Firefox search plugin, IE registry file, Safari Sogudi, Opera, Konqueror <span class="mono">\{@}</span>, LaunchBar, Conkeror…) is archived in the Link crawl tab and <span class="mono">yubnub-deep-dive.md</span>.</p>
+    </div>
+  </section>
+
+  <section class="tab" id="tab-links">
+    <div class="card">
+      <h2>Link crawl — yubnub.org, 2026-10-13</h2>
+      <p class="dim small">Every link on the homepage plus the kernel/parser/documentation endpoints behind it. “Verified” = fetched live for this rebuild; the rest were confirmed via the search index. Dead services inside command templates are flagged per-command in the registry. Full report: <span class="mono">yubnub-deep-dive.md</span> in this repo.</p>
+      <div style="overflow-x:auto"><table>
+        <thead><tr><th>Link</th><th>What it is</th><th>Status</th><th>In this app</th></tr></thead>
+        <tbody id="linkBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Yubnub was created by Jonathan Aquino for Rails Day 2005 (MIT-licensed source: github.com/jcnetdev/yubnub). This is an independent offline rebuild in this repo's HTML5 → .xdc tradition — not affiliated with yubnub.org. Commands still resolve live against the real services when you open a result; the registry, parser and docs work fully offline. · <a href="./index.html">SITE-K home</a>
+</footer>
+
+<script>
+"use strict";
+/* ================= registry (crawled 2026-10-13) =================
+   [name, urlTemplate, description, category, flags, uses]
+   flags: E=golden egg, U=endpoint updated, N=new in this rebuild,
+          D=dead service (historical), L=local/offline, M=app meta       */
+const REGISTRY = [
+["g","https://www.google.com/search?q=%s","Performs a Google search using the given keywords. Example: g YubNub","search","E",23429935],
+["gg","https://www.google.com/search?q=%s","Performs a Google search using the given keywords. Example: gg YubNub","search","E",293834],
+["gim","https://www.google.com/search?q=%s&um=1&ie=UTF-8&hl=en&tbm=isch","Performs a Google Image search. Example: gim porsche 911","images","EU",1191666],
+["gi","https://www.google.com/search?q=%s&um=1&ie=UTF-8&tbm=isch","Google Images.","images","U",388655],
+["gfl","https://www.google.com/search?q=%s&btnI=I%27m+Feeling+Lucky","Google's I'm Feeling Lucky — takes you to the 1st result.","search","U",170656],
+["gnews","https://news.google.com/search?q=%s","Google News search.","news","U",null],
+["gn","https://news.google.com/search?q=%s","Grabs news from many sources, courtesy of Google News.","news","EU",null],
+["gnws","https://news.google.com/search?q=%s","Google News (was: UTF-8 RSS output).","news","U",16760211],
+["gde","https://www.google.de/search?hl=de&q=%s","Search in google.de (language-specific Google).","search","U",362356],
+["wp","https://en.wikipedia.org/?search=%s","English Wikipedia search. Example: wp freebsd","reference","EU",2763328],
+["wiki","https://en.wikipedia.org/wiki/Special:Search?search=%s&fulltext=Search","Full-text search for Wikipedia articles.","reference","EU",393898],
+["wpde","https://de.wikipedia.org/?search=%s","German Wikipedia search.","reference","EU",247090],
+["wpms","https://en.m.wikipedia.org/?search=%s","Open a Wikipedia page using the mobile interface.","reference","U",388],
+["yt","https://www.youtube.com/results?search_query=%s","Search YouTube. Like Flickr for videos.","video","EU",1716410],
+["youtube","https://www.youtube.com/results?search_query=%s","Searches on YouTube, in case yt is too hard to remember.","video","U",163043],
+["am","https://www.amazon.com/s?k=%s","Searches Amazon.com. Example: am a brief history of time","shopping","EU",256384],
+["ebay","https://www.ebay.com/sch/i.html?_nkw=%s","eBay auction item search.","shopping","EU",163967],
+["ddg","https://duckduckgo.com/?q=%s","Use the DuckDuckGo search engine. Example: ddg Linux","search","U",213252],
+["bing","https://www.bing.com/search?q=%s","Bing web search (modern counterpart to the retired Yahoo/A9/Blingo commands).","search","N",null],
+["brave","https://search.brave.com/search?q=%s","Brave Search — independent index.","search","N",null],
+["y","https://search.yahoo.com/search?p=%s","Yahoo! web search.","search","U",null],
+["gm","https://maps.google.com/maps?q=%s","Google Maps. Example: gm 123 Maple Dr. Detroit, MI — or 'pizza in Detroit', or 'from A to B'.","maps","EU",409878],
+["gmaps","https://maps.google.com/maps?q=%s","Google Maps search — address, business+place, or directions.","maps","EU",232054],
+["gmap","https://maps.google.com/maps?q=%s","Google Maps.","maps","U",152868],
+["streetview","https://maps.google.com/maps?q=%s&layer=c&z=17","Address → Google Maps Street View (if available).","maps","U",926],
+["imdb","https://www.imdb.com/find?q=%s","Searches anything on the Internet Movie Database.","movies","EU",542005],
+["letterboxd","https://letterboxd.com/search/%s/","Letterboxd film search (modern movie companion to imdb).","movies","N",null],
+["xe","https://www.xe.com/currencyconverter/convert/?Amount=${amount}&From=${from}&To=${to}","Performs a currency conversion. Usage: xe -amount 100 -from USD -to EUR","finance","EU",72029],
+["stock","https://finance.yahoo.com/quote/%s","Yahoo! Finance stock quote for a ticker symbol.","finance","U",null],
+["onelook","https://www.onelook.com/?w=%s&ls=a","Dictionary search using OneLook. Example: onelook duplicity","dictionary","U",1615608],
+["olrd","https://www.onelook.com/?w=*&loc=revfp&clue=%s","OneLook Reverse Dictionary — find a word by its definition. Example: olrd barrel maker → cooper","dictionary","U",12578531],
+["dict","https://www.dictionary.com/browse/%s","English dictionary (was Answers.com meta-search 'd'/'a').","dictionary","U",null],
+["mw","https://www.merriam-webster.com/dictionary/%s","Merriam-Webster dictionary.","dictionary","U",null],
+["thes","https://www.thesaurus.com/browse/%s","Find another way to say something.","dictionary","U",null],
+["leo","https://dict.leo.org/?search=%s","German ↔ English translation lookup (LEO).","translate","U",276708],
+["e-f","https://translate.google.com/?sl=en&tl=fr&text=%s&op=translate","Translate English → French (Google Translate).","translate","U",2652],
+["f-e","https://translate.google.com/?sl=fr&tl=en&text=%s&op=translate","Translate French → English (Google Translate).","translate","U",1229],
+["tr","https://translate.google.com/?sl=auto&tl=en&text=%s&op=translate","Translate anything into English (auto-detect source).","translate","U",null],
+["leo2","https://dict.leo.org/englisch-deutsch/%s","LEO English–German direct entry.","translate","N",null],
+["weather","https://weather.com/weather/today/l/%s","Weather for a ZIP code / place (The Weather Channel).","weather","U",null],
+["wu","https://www.wunderground.com/weather/%s","Weather Underground forecast.","weather","U",null],
+["w","https://weather.com/weather/today/l/%s","The Weather Channel (w).","weather","U",null],
+["cnn","https://www.cnn.com/search?q=%s","CNN site search (search term required).","news","U",null],
+["espn","https://www.espn.com/search/_/q/%s","ESPN search.","news","U",null],
+["allmusic","https://www.allmusic.com/search/all/%s","AllMusic.com search by artist name.","music","U",null],
+["tpb","https://thepiratebay.org/search/%s/0/7/0","Search The Pirate Bay. (Mirror domains rotate; template kept as crawled.)","search","",170120],
+["flk","https://www.flickr.com/search/?text=%s","Flickr photo search (tags/titles/descriptions).","images","U",null],
+["fl","https://www.flickr.com/search/?text=%s&sort=interestingness-desc","Flickr search sorted by interestingness.","images","U",null],
+["fb","https://www.facebook.com/search/top?q=%s","Facebook keyword search (crawled name: FB).","social","U",189767],
+["whois","https://www.whois.com/whois/%s","Who owns a domain name or IP address?","whois","U",null],
+["php","https://www.php.net/manual-lookup.php?pattern=%s","Retrieve the PHP manual page for a function (exact name required).","dev","U",null],
+["mdn","https://developer.mozilla.org/en-US/search?q=%s","MDN Web Docs search — the modern programmer's reference.","dev","N",null],
+["so","https://stackoverflow.com/search?q=%s","Stack Overflow search.","dev","N",null],
+["gh","https://github.com/search?q=%s&type=repositories","GitHub repository search.","dev","N",null],
+["npm","https://www.npmjs.com/search?q=%s","npm package search.","dev","N",null],
+["pypi","https://pypi.org/search/?q=%s","PyPI package search.","dev","N",null],
+["rfc","https://www.rfc-editor.org/rfc/rfc%s.txt[no url encoding]","Read an RFC by number. Example: rfc 2616","dev","N",null],
+["arch","https://web.archive.org/web/*/%s[no url encoding]","Internet Archive Wayback Machine for a URL.","reference","U",null],
+["deli","http://del.icio.us/tag/%s","del.icio.us tag bookmarks — SERVICE CLOSED (2017). Kept for history; try pinboard-style tag search instead.","social","D",null],
+["tec","http://technorati.com/search/%s","Technorati blog search — SERVICE CLOSED (2016). Kept for history.","social","D",null],
+["gbs","https://www.google.com/search?tbm=blg&q=%s","Google Blog Search (folded into Google News/verbatim era).","social","U",null],
+["groups","https://groups.google.com/search?q=%s","Google Groups (Usenet) search.","social","U",null],
+["gs","https://scholar.google.com/scholar?q=%s","Google Scholar — academic papers online.","reference","U",null],
+["a9","http://a9.com/%s","A9.com search — RETIRED. Kept for history; use ddg/bing.","search","D",null],
+["froogle","https://www.google.com/search?tbm=shop&q=%s","Froogle → Google Shopping price comparison.","shopping","U",null],
+["gma","https://mail.google.com/","Bookmark: Gmail.","bookmarks","U",null],
+["/.","https://slashdot.org/","Bookmark: Slashdot ('/.' command).","bookmarks","U",null],
+["gread","https://news.google.com/","Google Reader bookmark — Reader closed 2013; lands on Google News now.","bookmarks","UD",null],
+["ls","local:ls","Lists information about all commands. 'ls music' searches names, descriptions and URLs. (App meta-command.)","core","EM",745920],
+["ge","local:ge","Golden Eggs — particularly useful commands. 'ge dictionary' filters them.","core","EM",405978],
+["man","local:man","Displays help for a command. Example: man gim. ('man' = manual.)","core","EM",181380],
+["create","local:create","Creates a new command with the given name (must not already exist). Opens the Create tab here.","core","EM",351984],
+["url","local:url","Converts a Yubnub command to its URL. Example: url gim porsche 911","core","EM",4561666],
+["echo","local:echo","Display a line of text. Example: echo Hello, World!","meta","EL",1371054],
+["random","local:random","Random numbers, courtesy of random.org semantics: random 49 · random -min 1998 -max 2005 · random -num 5 -max 20","meta","EL",147873],
+["%","local:percent","Returns a sublist of words: % [RANGE] [PHRASE] — N, N-, N-M, -M (CUT-style). Example: % 2- one two three","meta","EL",3101791],
+["strReplace","local:strReplace","Replace all instances: strReplace -find pizza -replace hot dogs -string I like pizza.","meta","EL",283220],
+["strFind","local:strFind","Position of a string (0 = not found): strFind -find b -string abcabc → 2","meta","EL",247854],
+["strLength","local:strLength","Returns the length of a string.","meta","EL",null],
+["ucase","local:ucase","Make text UPPER CASE.","meta","L",null],
+["lcase","local:lcase","Make text lower case.","meta","L",null],
+["ifThen","local:ifThen","ifThen -value1 X -value2 Y -test EQUAL -then A -else B","meta","EL",1090467],
+["ifEmpty","local:ifEmpty","ifEmpty -value X -then nothing -else something","meta","EL",59106],
+["explode","local:explode","Explode a string to a list: explode 1,2,3,4 · explode 1+2+3 -token +","meta","EL",211559],
+["date","local:date","Prints a date (today by default) — date · date 2026-10-13","meta","L",null],
+["switch","local:switch","switch VALUE | key => result, * => default","meta","L",null],
+["split","local:split","Displays several webpages on a single screen: split {url g porsche} {url y porsche} — or plain URLs.","meta","EM",285988],
+["mash","local:mash","Run several commands on one argument: mash porsche g wp gim","meta","M",null],
+["mash2","local:mash2","mash2 [KEYWORDS] -cmd [COMMANDS...] — mash results on one page.","meta","M",205950],
+["help","local:help","This app: list core commands.","core","M",null]
+];
+
+/* crawled link inventory: [href, what, status, inApp] */
+const LINKS = [
+["https://yubnub.org/","Homepage + command box (gim / random / man / xe examples, Popular Searches table)","Verified live 2026-10-13","Console + examples, embedded"],
+["https://yubnub.org/parser/parse?command=%s","THE endpoint — every install (Chrome/Firefox/Opera/Konqueror/LaunchBar…) points here","Live (redirect engine)","Reimplemented offline in this app"],
+["https://yubnub.org/parser/url?command=%s","Backing service for the 'url' command","Live","local:url"],
+["https://yubnub.org/kernel/ls?args=%s","Command List (ls) — 10,500+ commands, paged","Live","Registry tab (curated corpus)"],
+["https://yubnub.org/kernel/man?args=%s","Manual pages (man gim, man xe, man random…)","Verified live 2026-10-13","local:man panel"],
+["https://yubnub.org/kernel/golden_eggs","Golden Eggs (ge) — notable commands","Verified live 2026-10-13","ge filter in registry"],
+["https://yubnub.org/kernel/most_used_commands","Most-Used Commands with live use counters (g = 23.4M)","Verified live 2026-10-13","Uses* column, top rows"],
+["https://yubnub.org/command/new","Create A New Command form (name → URL with %s → test → description)","Verified live 2026-10-13","Create tab (local save)"],
+["https://yubnub.org/documentation/describe_advanced_syntax","Advanced Syntax: %s, ${switch=default}, [no url encoding], [use X for spaces], [post], {pipes}, switch","Verified live 2026-10-13","Syntax tab — fully implemented"],
+["https://yubnub.org/documentation/describe_installation","Installing Yubnub: Firefox plugin, IE6/7, Safari, Opera, Chrome, Camino, Maxthon, Konqueror, OmniWeb, Quicksilver, BlackBerry, iPhone…","Verified live 2026-10-13","Syntax tab summary + deep-dive archive"],
+["https://yubnub.org/documentation/jeremys_picks","Jeremy's Picks (2006) — category map of the whole corpus","Verified live 2026-10-13","Registry categories follow it"],
+["https://yubnub.org/documentation/describe_upcoming_features","Upcoming Features (historical roadmap — multi-params, ls search… all shipped)","Indexed; historical","Deep-dive notes"],
+["https://yubnub.org/example/echo?text=%s","Backing page for 'echo'","Live (via most-used)","local:echo (offline)"],
+["https://yubnub.org/example/split?type=t&urls=%s","Backing page for 'split' frames","Live (via man split)","Split/mash view"],
+["http://yubnub.org/images/yubnub.png","Logo (also yubnub_small.png)","Live","— (emoji ⌘ used offline)"],
+["https://github.com/jcnetdev/yubnub","Source Code (v3) — Ruby on Rails, MIT. Yubnub by Jonathan Aquino, Rails Day 2005","Live on GitHub","Footer credit"],
+["http://yubnub.blogspot.com/","Yubnub Blog (pipes announcement, positional parameters, ifThen…)","Historical","Deep-dive sources"],
+["https://en.wikibooks.org/wiki/Yubnub","Wiki — Wikibooks Yubnub command book","Live","Deep-dive sources"],
+["http://groups-beta.google.com/group/YubNub","Community (Google Group)","Defunct URL form","Deep-dive notes"]
+];
+
+/* ================= engine ================= */
+const $ = (id) => document.getElementById(id);
+const byName = new Map();
+function regAdd(c){ byName.set(c.n.toLowerCase(), c); }
+REGISTRY.forEach(([n,u,d,c,f,uses]) => regAdd({n,u,d,c,f:f||"",uses:uses||null,custom:false}));
+let customCmds = [];
+try { customCmds = JSON.parse(localStorage.getItem("yubnub.custom")||"[]"); } catch(e){ customCmds = []; }
+customCmds.forEach((c)=>{ c.custom = true; regAdd(c); });
+
+function encVal(v, flags){
+  if (flags.noEnc) return v;
+  let e = encodeURIComponent(v);
+  return e.replace(/%20/g, flags.spaceTok || "+");
+}
+function parseTemplate(tpl){
+  const flags = { noEnc:false, spaceTok:"+", post:false };
+  let t = tpl;
+  if (/\[no url encoding\]/i.test(t)) flags.noEnc = true;
+  const m = t.match(/\[use (.+?) for spaces\]/i); if (m) flags.spaceTok = (m[1] === "%20" ? "%20" : m[1]);
+  if (/\[post\]/i.test(t)) flags.post = true;
+  t = t.replace(/\[(?:no url encoding|use .+? for spaces|post)\]/gi, "");
+  return { t, flags };
+}
+function declaredSwitches(t){
+  const out = []; const re = /\$\{([A-Za-z0-9_]+)(?:=([^}]*))?\}/g; let m;
+  while ((m = re.exec(t))) if (!out.find(s=>s.name===m[1])) out.push({name:m[1], def:(m[2]!==undefined?m[2]:"")});
+  return out;
+}
+/* split "-name value" switches (declared names only); rest = positional (%s) */
+function parseArgs(argStr, declared){
+  const switches = {}; let rest = " " + argStr.trim() + " ";
+  const names = declared.map(s=>s.name).sort((a,b)=>b.length-a.length);
+  for (const name of names){
+    const marker = " -" + name + " ";
+    let idx = rest.toLowerCase().indexOf(marker.toLowerCase());
+    if (idx < 0 && rest.toLowerCase().endsWith(" -"+name.toLowerCase())) { switches[name]=""; rest = rest.slice(0, rest.length-name.length-2)+" "; continue; }
+    if (idx < 0) continue;
+    let end = rest.length;
+    for (const other of names){ if (other===name) continue; const j = rest.toLowerCase().indexOf(" -"+other.toLowerCase()+" ", idx+marker.length); if (j>=0 && j<end) end = j; }
+    switches[name] = rest.slice(idx+marker.length, end).trim();
+    rest = rest.slice(0, idx) + " " + rest.slice(end);
+  }
+  return { switches, positional: rest.trim().replace(/\s+/g," ") };
+}
+function switchVal(ctx, decl){ const v = ctx.switches[decl.name]; return (v===undefined||v==="") ? decl.def : v; }
+
+/* evaluate { ... } pipes typed by the user, e.g. g {random 100} */
+function evalArgBraces(text){
+  let guard = 0;
+  while (/\{[^{}]*\}/.test(text) && guard++ < 12){
+    const outer = text.replace(/\{[^{}]*\}/g, "").trim().replace(/\s+/g, " ");
+    const next = text.replace(/\{([^{}]*)\}/, (w, inner) => resolveCommandLine(inner.replace(/%s/g, outer), "text"));
+    if (next === text) break; text = next;
+  }
+  return text;
+}
+function resolveCommandLine(line, mode){
+  line = (line||"").trim(); if (!line) return "";
+  const sp = line.search(/\s/);
+  const name = sp<0 ? line : line.slice(0, sp);
+  const args = evalArgBraces(sp<0 ? "" : line.slice(sp+1).trim());
+  const cmd = byName.get(name.toLowerCase());
+  if (!cmd) { /* Yubnub fallback: treat as Google search */
+    const g = byName.get("g"); return resolveTemplate(g, line, mode);
+  }
+  return resolveTemplate(cmd, args, mode);
+}
+function resolveTemplate(cmd, argStr, mode){
+  if (cmd.u.startsWith("local:")) return runLocal(cmd.u.slice(6), argStr, mode);
+  const { t, flags } = parseTemplate(cmd.u);
+  const decl = declaredSwitches(t);
+  const ctx = parseArgs(argStr, decl);
+  /* shield ${switch} from the {pipe} evaluator with a placeholder */
+  const PH = "";
+  let work = t.split("${").join(PH);
+  /* evaluate innermost { ... } pipes, with outer %s / ${} spliced in raw */
+  let guard = 0;
+  while (/\{[^{}]*\}/.test(work) && guard++ < 12){
+    work = work.replace(/\{([^{}]*)\}/g, (whole, inner) => {
+      let spliced = inner.replace(/%s/g, ctx.positional || argStr);
+      for (const d of decl) spliced = spliced.split(PH+d.name+"}").join(switchVal(ctx,d)).replace(new RegExp(PH+d.name+"=[^}]*\\}","g"), switchVal(ctx,d));
+      return resolveCommandLine(spliced, "text");
+    });
+  }
+  work = work.split(PH).join("${");
+  const pct = ctx.positional !== "" ? ctx.positional : (decl.length ? "" : argStr);
+  work = work.replace(/\$\{([A-Za-z0-9_]+)(?:=([^}]*))?\}/g, (w, n, def) => {
+    const d = decl.find(s=>s.name===n) || {name:n, def:def||""};
+    return encVal(switchVal(ctx, d), flags);
+  });
+  work = work.split("%s").join(encVal(pct, flags));
+  if (flags.post) work += "\n[post] note: original command POSTs via get2post — open the URL and submit the form there.";
+  return work;
+}
+/* ---- local (offline) commands ---- */
+function tokens(s){ return (s||"").trim().split(/\s+/).filter(Boolean); }
+function runLocal(kind, argStr, mode){
+  const sw = (names) => parseArgs(argStr, names.map(n=>({name:n, def:""})));
+  switch(kind){
+    case "echo": return argStr;
+    case "random": {
+      const c = sw(["min","max","num"]); const pos = tokens(c.positional);
+      let min = parseInt(c.switches.min||"1",10), max = parseInt(c.switches.max||(pos[0]||"100"),10), num = parseInt(c.switches.num||"1",10);
+      if (isNaN(min)) min=1; if (isNaN(max)) max=100; if (isNaN(num)||num<1) num=1; if (num>100) num=100;
+      const out=[]; for(let i=0;i<num;i++) out.push(String(Math.floor(Math.random()*(max-min+1))+min));
+      return out.join(" ");
+    }
+    case "percent": {
+      const t = tokens(argStr); if (t.length<2) return argStr;
+      const range = t[0], words = t.slice(1);
+      let a, b; const m1 = range.match(/^(\d+)-$/), m2 = range.match(/^(\d+)-(\d+)$/), m3 = range.match(/^-(\d+)$/), m4 = range.match(/^(\d+)$/);
+      if (m1){ a=+m1[1]; b=words.length; } else if (m2){ a=+m2[1]; b=+m2[2]; } else if (m3){ a=1; b=+m3[1]; } else if (m4){ a=b=+m4[1]; } else return argStr;
+      return words.slice(Math.max(0,a-1), b).join(" ");
+    }
+    case "strReplace": { const c=sw(["find","replace","string"]); const s=c.switches.string||c.positional; return (s||"").split(c.switches.find||"").join(c.switches.replace||""); }
+    case "strFind": { const c=sw(["find","string","reverse"]); const s=c.switches.string||"", f=c.switches.find||""; const i = (c.switches.reverse||"").toLowerCase()==="true" ? s.lastIndexOf(f) : s.indexOf(f); return String(i<0?0:i+1); }
+    case "strLength": return String((argStr||"").length);
+    case "ucase": return argStr.toUpperCase();
+    case "lcase": return argStr.toLowerCase();
+    case "ifThen": {
+      const c=sw(["value1","value2","test","then","else","redirect"]); let v1=c.switches.value1??"", v2=c.switches.value2??"", test=(c.switches.test||"EQUAL").toUpperCase();
+      let ok; if (test==="EQUAL") ok = v1===v2; else if (test==="NOTEQUAL") ok = v1!==v2;
+      else if (test==="GREATERTHAN") ok = (+v1>+v2); else if (test==="LESSTHAN") ok = (+v1<+v2); else ok = v1===v2;
+      return ok ? (c.switches.then||"") : (c.switches["else"]||"");
+    }
+    case "ifEmpty": { const c=sw(["value","then","else"]); return (c.switches.value||"").trim()==="" ? (c.switches.then||"") : (c.switches["else"]||""); }
+    case "explode": { const c=sw(["token","as"]); const tok=c.switches.token||","; return (c.switches.string||c.positional||"").split(tok).map(s=>s.trim()).join("\n"); }
+    case "date": return argStr ? argStr : new Date().toISOString().slice(0,10);
+    case "switch": {
+      const parts = argStr.split("|"); const val=(parts[0]||"").trim(); const opts=(parts[1]||"").split(",").map(s=>s.trim());
+      for (const o of opts){ const kv=o.split("=>").map(s=>s.trim()); if (kv.length===2 && (kv[0]===val || kv[0]==="*")) return kv[1]; } return "";
+    }
+    case "ls": return "__SHOW_LS__:" + argStr;
+    case "ge": return "__SHOW_GE__:" + argStr;
+    case "man": return "__SHOW_MAN__:" + argStr;
+    case "create": return "__SHOW_CREATE__";
+    case "url": { const inner = argStr; const sp2 = inner.search(/\s/); const n2 = sp2<0?inner:inner.slice(0,sp2); const c2 = byName.get(n2.toLowerCase()); if(!c2) return resolveCommandLine(inner,"url"); return resolveTemplate(c2, sp2<0?"":inner.slice(sp2+1), "url"); }
+    case "help": return "Core: ls · ge · man · create · url · echo · random · % · gim · wp · xe — type 'man <command>' for help, 'ls' to browse.";
+    case "split": case "mash": case "mash2": return "__SHOW_SPLIT__:" + kind + ":" + argStr;
+  }
+  return argStr;
+}
+
+/* ================= UI ================= */
+const EXAMPLES = ["gim porsche 911","random 100","man random","xe -amount 100 -from USD -to EUR","ls music","url gim porsche 911","mash porsche g wp gim","% 2- one two three","create"];
+$("examples").innerHTML = EXAMPLES.map(e=>'<button type="button" data-ex="'+e.replace(/"/g,"&quot;")+'">'+e+"</button>").join("");
+$("examples").addEventListener("click",(ev)=>{ const b=ev.target.closest("[data-ex]"); if(!b) return; $("cmdInput").value=b.dataset.ex; execute(b.dataset.ex,"go"); });
+
+document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("nav.tabs button").forEach(x=>x.setAttribute("aria-selected","false")); b.setAttribute("aria-selected","true");
+  document.querySelectorAll("section.tab").forEach(s=>s.classList.remove("on")); $("tab-"+b.dataset.tab).classList.add("on");
+}));
+function showTab(name){ document.querySelector('nav.tabs button[data-tab="'+name+'"]').click(); }
+
+let historyList = [];
+function printOut(html){ $("consoleOut").innerHTML = html; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+let lastUrl = "";
+function setResult(url, note){
+  lastUrl = url||"";
+  $("btnOpen").hidden = !url; $("btnCopy").hidden = !url;
+  if (url) $("btnOpen").href = url;
+  $("resolveNote").textContent = note||"";
+}
+function pushHistory(line){ historyList.unshift(line); if(historyList.length>30) historyList.pop();
+  $("history").innerHTML = historyList.map(h=>'<button type="button" data-h="'+esc(h).replace(/"/g,"&quot;")+'">'+esc(h)+"</button>").join("<br />");
+}
+$("history").addEventListener("click",(ev)=>{ const b=ev.target.closest("[data-h]"); if(b){ $("cmdInput").value=b.dataset.h; execute(b.dataset.h,"go"); }});
+$("btnCopy").addEventListener("click",()=>{ if(lastUrl && navigator.clipboard) navigator.clipboard.writeText(lastUrl); $("resolveNote").textContent="Copied."; });
+$("btnShare").addEventListener("click",()=>{
+  const line = $("cmdInput").value.trim(); if(!line) return;
+  try { if (window.webxdc && webxdc.sendUpdate) webxdc.sendUpdate({payload:{yubnub:line, url:lastUrl}, info:"Yubnub: "+line}); $("resolveNote").textContent="Shared to chat."; }
+  catch(e){ $("resolveNote").textContent="Sharing unavailable here."; }
+});
+
+function manHtml(name){
+  const c = byName.get((name||"").toLowerCase());
+  if (!c) return '<span class="err">man: no manual for "'+esc(name)+'" — try ls to browse, or create it in the Create tab.</span>';
+  return '<span class="ok">'+esc(c.n)+"</span>"+(c.f.includes("E")?' <span class="tag egg">Golden Egg</span>':"")+"\n"+esc(c.d)+"\nTemplate: "+esc(c.u)+(c.uses?"\nUses (2026-10-13 crawl): "+c.uses.toLocaleString():"")+"\nTry it: type '"+esc(c.n)+" …' above.";
+}
+function splitUrls(kind, argStr){
+  if (kind==="mash2"){ const c = parseArgs(argStr,[{name:"cmd",def:""}]); const cmds = tokens(c.switches.cmd||""); const kw = c.positional; return cmds.map(n=>({n, url:resolveCommandLine(n+" "+kw,"url")})); }
+  if (kind==="mash"){ const t = tokens(argStr); const cmds=[]; while(t.length && byName.has(t[t.length-1].toLowerCase())) cmds.unshift(t.pop()); const kw=t.join(" "); if(!cmds.length) return []; return cmds.map(n=>({n, url:resolveCommandLine(n+" "+kw,"url")})); }
+  /* split: braces already handled? raw split args are URLs or command lines */
+  const parts = argStr.match(/\{[^{}]*\}|[^\s]+/g)||[];
+  return parts.map(p=>{ if(p.startsWith("{")) return {n:p, url:resolveCommandLine(p.slice(1,-1),"url")}; if(/^https?:\/\//i.test(p)) return {n:p, url:p}; return {n:p, url:resolveCommandLine(p,"url")}; });
+}
+function showSplit(kind, argStr){
+  const items = splitUrls(kind, argStr);
+  if (!items.length){ printOut('<span class="err">Nothing to split. Try: mash porsche g wp gim</span>'); return; }
+  $("splitCard").hidden = false;
+  $("splitGrid").innerHTML = items.map(it=>'<figure><iframe loading="lazy" sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer" src="'+esc(it.url)+'"></iframe><figcaption><a href="'+esc(it.url)+'" target="_blank" rel="noopener">'+esc(it.n)+"</a><br />"+esc(it.url)+"</figcaption></figure>").join("");
+  printOut('<span class="ok">Split/mash:</span> '+items.length+" panes below.\n"+items.map(i=>i.n+" → "+i.url).join("\n"));
+  setResult("", "Split view — open panes individually.");
+}
+function execute(line, mode){
+  line=(line||"").trim(); if(!line) return;
+  pushHistory(line); $("splitCard").hidden = true;
+  const result = resolveCommandLine(line, mode==="urlonly"?"url":"go");
+  if (result.startsWith("__SHOW_LS__:")){ showTab("commands"); $("lsQuery").value=result.slice(12); renderLs(); printOut('<span class="ok">ls</span> — registry filtered in the Commands tab.'); setResult(""); return; }
+  if (result.startsWith("__SHOW_GE__:")){ showTab("commands"); $("lsQuery").value=result.slice(12); $("lsEggs").checked=true; renderLs(); printOut('<span class="ok">ge</span> — Golden Eggs in the Commands tab.'); setResult(""); return; }
+  if (result.startsWith("__SHOW_MAN__:")){ printOut(manHtml(result.slice(13).trim())); setResult(""); return; }
+  if (result==="__SHOW_CREATE__"){ showTab("create"); printOut('<span class="ok">create</span> — Create tab opened.'); setResult(""); return; }
+  if (result.startsWith("__SHOW_SPLIT__:")){ const rest=result.slice(15); const k=rest.slice(0,rest.indexOf(":")); showSplit(k, rest.slice(rest.indexOf(":")+1)); return; }
+  const sp = line.search(/\s/); const name=(sp<0?line:line.slice(0,sp)).toLowerCase(); const cmd=byName.get(name);
+  const isLocal = cmd && cmd.u.startsWith("local:");
+  if (/^https?:\/\//i.test(result) && !isLocal){
+    printOut('<span class="ok">'+esc(cmd?cmd.n:"g (fallback)")+'</span> → <span class="url">'+esc(result)+"</span>\nPress OPEN RESULT to go there (the app stays offline until you do).");
+    setResult(result, cmd && cmd.f.includes("D") ? "⚠ dead service — see registry note." : "");
+  } else {
+    printOut('<span class="ok">'+esc(cmd?cmd.n:line)+'</span>\n'+esc(result));
+    setResult("");
+  }
+}
+$("cmdForm").addEventListener("submit",(ev)=>{ ev.preventDefault(); execute($("cmdInput").value,"go"); });
+$("btnUrl").addEventListener("click",()=>execute($("cmdInput").value,"urlonly"));
+$("cmdInput").addEventListener("keydown",(ev)=>{ if(ev.key==="Enter"){ /* form submit handles it */ }});
+
+/* ---- registry (ls) rendering ---- */
+const cats = [...new Set(REGISTRY.map(r=>r[3]))].sort();
+$("lsCat").innerHTML = '<option value="">all categories</option>'+cats.map(c=>'<option>'+c+"</option>").join("");
+function renderLs(){
+  const q=($("lsQuery").value||"").toLowerCase(), cat=$("lsCat").value, eggs=$("lsEggs").checked;
+  const rows=[];
+  byName.forEach((c)=>{ /* dedupe aliases */
+  });
+  const seen=new Set(); const all=[];
+  REGISTRY.forEach(([n,u,d,c,f,uses])=>{ const key=n.toLowerCase(); if(seen.has(key))return; seen.add(key); all.push({n,u,d,c,f:f||"",uses}); });
+  customCmds.forEach(c=>{ if(!seen.has(c.n.toLowerCase())) all.push(c); });
+  const list = all.filter(c=>{
+    if (cat && c.c!==cat) return false;
+    if (eggs && !(c.f||"").includes("E")) return false;
+    if (q && !(c.n+" "+c.d+" "+c.u).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  $("lsCount").textContent = list.length+" command(s)"+(q?' matching "'+q+'"':"")+(eggs?" · Golden Eggs only":"");
+  $("lsBody").innerHTML = list.map(c=>{
+    const tags = ((c.f||"").includes("E")?'<span class="tag egg">Golden Egg</span> ':"")+((c.f||"").includes("N")?'<span class="tag new">new</span> ':"")+((c.f||"").includes("U")?'<span class="tag upd">updated</span> ':"")+((c.f||"").includes("D")?'<span class="tag dead">dead</span> ':"")+((c.f||"").includes("L")?'<span class="tag">offline</span> ':"")+(c.custom?'<span class="tag new">yours</span> ':"");
+    return "<tr><td><button class='cmdname' data-cmd=\""+esc(c.n)+"\">"+esc(c.n)+"</button><br />"+tags+"</td><td>"+esc(c.d)+"</td><td class='mono small'>"+esc(c.u)+"</td><td>"+(c.uses?c.uses.toLocaleString():"—")+'</td><td><button class="btn" data-man="'+esc(c.n)+'">man</button></td></tr>';
+  }).join("") || '<tr><td colspan="5" class="dim">No commands match — try ls with another word.</td></tr>';
+}
+$("lsQuery").addEventListener("input",renderLs); $("lsCat").addEventListener("change",renderLs); $("lsEggs").addEventListener("change",renderLs);
+$("lsBody").addEventListener("click",(ev)=>{
+  const m=ev.target.closest("[data-man]"); if(m){ showTab("console"); printOut(manHtml(m.dataset.man)); setResult(""); return; }
+  const b=ev.target.closest("[data-cmd]"); if(b){ $("cmdInput").value=b.dataset.cmd+" "; $("cmdInput").focus(); showTab("console"); }
+});
+$("statCount").textContent = String(byName.size);
+renderLs();
+
+/* ---- link crawl rendering ---- */
+$("linkBody").innerHTML = LINKS.map(l=>"<tr><td class='mono small'><a href='"+esc(l[0])+"' target='_blank' rel='noopener'>"+esc(l[0])+"</a></td><td>"+esc(l[1])+"</td><td>"+esc(l[2])+"</td><td>"+esc(l[3])+"</td></tr>").join("");
+
+/* ---- create tab ---- */
+function testNew(){
+  const name=$("newName").value.trim(), tpl=$("newUrl").value.trim(), args=$("newTest").value;
+  if(!name || !tpl) return "Name and URL template are required.";
+  const tmp={n:name,u:tpl,d:$("newDesc").value,c:$("newCat").value||"custom",f:"",uses:null};
+  return name+" "+args+"  →  "+resolveTemplate(tmp,args,"url");
+}
+$("btnTestNew").addEventListener("click",()=>{ $("createOut").textContent=testNew(); });
+$("btnSaveNew").addEventListener("click",()=>{
+  const name=$("newName").value.trim(), tpl=$("newUrl").value.trim();
+  if(!name || !tpl){ $("createOut").textContent="Name and URL template are required."; return; }
+  if (byName.has(name.toLowerCase()) && !customCmds.find(c=>c.n.toLowerCase()===name.toLowerCase())){ $("createOut").textContent="'"+name+"' already exists (create requires an unused name)."; return; }
+  const c={n:name,u:tpl,d:$("newDesc").value.trim()||"(no description)",c:$("newCat").value.trim()||"custom",f:"",uses:null,custom:true};
+  customCmds = customCmds.filter(x=>x.n.toLowerCase()!==name.toLowerCase()); customCmds.push(c); regAdd(c);
+  try{ localStorage.setItem("yubnub.custom", JSON.stringify(customCmds)); }catch(e){}
+  $("statCount").textContent=String(byName.size); renderLs();
+  $("createOut").textContent="Saved '"+name+"'. Try it above: "+name+" "+$("newTest").value+"\nTest: "+testNew();
+});
+$("btnExport").addEventListener("click",()=>{ $("createOut").textContent = JSON.stringify(customCmds,null,2) || "[]"; });
+$("btnImport").addEventListener("click",()=>{
+  const txt=$("newDesc").value; /* reuse desc box as paste target if it holds JSON */
+  try{ const arr=JSON.parse($("createOut").textContent||"[]"); if(!Array.isArray(arr)) throw 0;
+    arr.forEach(c=>{ if(c.n&&c.u){ c.custom=true; customCmds.push(c); regAdd(c);} });
+    localStorage.setItem("yubnub.custom", JSON.stringify(customCmds)); renderLs(); $("createOut").textContent="Imported. Registry now has "+byName.size+" commands.";
+  }catch(e){ $("createOut").textContent="Import expects the exported JSON pasted into the Output box first (Export → copy → paste → Import). Simpler: re-create the command above."; }
+});
+
+/* ---- webxdc shared commands + ?command= install ---- */
+try {
+  if (window.webxdc && webxdc.setUpdateListener) webxdc.setUpdateListener((u)=>{
+    const p=u && u.payload; if(p && p.yubnub){ const li=document.createElement("div"); li.innerHTML='<span class="dim small">shared:</span> '; const b=document.createElement("button"); b.className="btn"; b.textContent=p.yubnub; b.addEventListener("click",()=>{ $("cmdInput").value=p.yubnub; execute(p.yubnub,"go"); }); li.appendChild(b); $("history").prepend(li); }
+  });
+} catch(e){}
+(function(){ const q=new URLSearchParams(location.search); const c=q.get("command")||q.get("q"); if(c){ $("cmdInput").value=c; execute(c,"go"); } })();
+</script>
+</body>
+</html>
