@@ -70,7 +70,6 @@ def jadx_phase(apk: pathlib.Path, lines: list) -> pathlib.Path | None:
         return re.findall(pat, blob, flags)
 
     lines += ['### API surface (paths counted, never printed)', '']
-    gets, posts = hits(r'@(GET|POST|PUT|DELETE|PATCH)\("([^"]+)"\)'), None
     ann = re.findall(r'@(GET|POST|PUT|DELETE|PATCH)\("([^"]+)"\)', blob)
     cnt = collections.Counter(m for m, _ in ann)
     segs = collections.Counter('/'.join(p.split('/')[:2]) for _, p in ann)
@@ -149,7 +148,7 @@ def ghidra_phase(so: pathlib.Path, lines: list):
     proj = WORK / 'gproj'
     rc, out = sh([str(headless), str(proj), 'ApkNat', '-import', str(so),
                   '-scriptPath', str(ROOT / 'tools' / 'ghidra_scripts'),
-                  '-postScript', f'CryptoInventory.java {report}',
+                  '-postScript', 'CryptoInventory.java', str(report),
                   '-deleteProject', '-analysisTimeoutPerFile', '1200'], timeout=1700)
     body = report.read_text(errors='replace') if report.exists() else ''
     keep = [ln for ln in body.splitlines() if ln.startswith('GHIDRA-')][:80]

@@ -146,7 +146,63 @@ are manifest/certificate facts, not string inference. A deeper
 Ghidra 12.1.4 + Temurin pass over B's native libraries remains
 available on the runner if IOC-level certainty is ever needed.
 
-## 8. Sources (2026-10-13)
+## 8. Deep disassembly + encryption check (2026-10-13)
+
+JADX 1.5.6 decompilation (7,159 / 8,386 Java files recovered), native
+string census, and a bounded Ghidra 12.1.4 headless pass
+(`CryptoInventory.java`, Temurin 21) — reports in
+[`docs/zlib-apk-triage/disasm-*`](zlib-apk-triage/SUMMARY.md).
+Endpoints are reported at registrable-domain level; one onion host
+that slipped through in raw form was redacted (follow-up commit; the
+value remains in this branch's early bot commits and is, in any case,
+the same address long published on Reddit/Wikipedia).
+
+**Sample A (Z-Lib 1.11.4)** — a real API client: 32 Retrofit
+endpoints (22 GET / 10 POST) under one API prefix, dual base URLs
+(clearnet + onion), 4 Authorization-header constructions. Crypto:
+`AES/CBC/PKCS5Padding` ×2, **no ECB** ✓, but legacy MD5/SHA-1 digests
+present (consistent with content hashing), 14 SecretKeySpec literals
+and 2 hard-coded-IV candidates to audit before trusting local
+encryption, **no Android Keystore and no EncryptedSharedPreferences**
+— 21 plain SharedPreferences files, so any stored session token sits
+in plaintext app storage. TLS: one obfuscated custom
+X509TrustManager with an empty `checkServerTrusted` body found (may
+belong to a bundled component — flagged, not convicted), 23
+CertificatePinner refs, 131 cleartext-http literals (Tor transports
+and library noise dominate). Native: `libtor.so` per ABI carrying
+**Tor 0.4.7.14 with OpenSSL 1.1.1u strings — a 2022-era Tor, EOL**;
+`libbarhopper` explains the CAMERA permission (ML barcode/QR).
+
+**Sample B (z+Library 1.0.5)** — a WebView shell wearing a reader's
+clothes: exactly **1** Retrofit endpoint in 8,386 files; the bulk is
+**Unity Ads** (`com.unity3d.services` ×469), **OneSignal** push
+(×173 — explains boot receiver + AD_ID), Jackson/Spring bulk, a
+PDFium fork for rendering, 10 JavaScript interfaces, and the
+`trust_location` plugin behind ACCESS_FINE_LOCATION. No app-level
+Cipher transformations visible to JADX (Dart-side code in
+`libapp.so` is opaque to it — stated as a limit, not an all-clear).
+
+**GitHub source-tracing from the disassembly** (the “search GitHub
+for the API/libraries” ask): every load-bearing component in A is
+traceable to public source — OkHttp (`lysine-dev/okhttp` ★47.1k,
+ex-square org), Retrofit (`lysine-dev/retrofit` ★44.0k),
+`drewnoakes/metadata-extractor` ★2.8k, Tor (canonical source on
+Tor Project's GitLab; stale GitHub mirror `torproject/tor` ★5.1k),
+and Guardian Project's `guardianproject/tor-android` ★291 (pushed
+2026-10-13). B's are likewise public: `flutter/flutter` ★180k,
+`OneSignal/OneSignal-Android-SDK` ★631, PDFium via
+`bblanchon/pdfium-binaries` ★1.5k, `FasterXML/jackson-core` ★2.4k.
+Unofficial “zlibrary API” client repos also exist on GitHub (several
+hundred stars at the top) — noted as landscape, deliberately not
+linked: they are operational clients for the service in §2, and the
+apps' own API routes stay redacted here for the same reason. The
+legitimate takeaway stands: A's networking stack is ordinary OSS all
+the way down; nothing about its crypto inventory is exotic — its
+risks are plaintext token storage, an EOL Tor, and provenance.
+
+**Ghidra headless outcome:** GHIDRA-RESULT-PENDING
+
+## 9. Sources (2026-10-13)
 
 Drive `search_files` × 4 queries + repo/home `find` (results table §1) ·
 JDK parts sha256 re-computed locally; `java -version` output quoted ·
