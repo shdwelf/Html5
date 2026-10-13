@@ -9497,6 +9497,13 @@ function sxSeq(text){
   const idx=[...text].map((ch,i)=>({ch,i})).sort((a,b)=>a.ch<b.ch?-1:a.ch>b.ch?1:a.i-b.i);
   const out=new Array(text.length);idx.forEach((x,r)=>out[x.i]=(r+1)%10);return out.join('');
 }
+// SECOM sequences numeric rows in the order 1…9,0; JavaScript's ordinary
+// lexical sort puts 0 first. Keep this separate from sxSeq, which ranks the
+// alphabetic key-phrase halves.
+function sxDigitSeq(text){
+  const idx=[...text].map((ch,i)=>({ch:Number(ch),i})).sort((a,b)=>(a.ch===0?10:a.ch)-(b.ch===0?10:b.ch)||a.i-b.i);
+  const out=new Array(text.length);idx.forEach((x,r)=>out[x.i]=(r+1)%10);return out.join('');
+}
 function sxChain(seed,count){
   const a=[...seed].map(Number);
   for(let i=0;i<count;i++)a.push((a[i]+a[i+1])%10);
@@ -9507,7 +9514,7 @@ function sxSchedule(phrase){
   if(p.length!==20)throw new Error('SECOM requires at least 20 letters; spaces are ignored');
   const a=sxSeq(p.slice(0,10)),b=sxSeq(p.slice(10));
   let seed='';for(let i=0;i<10;i++)seed+=(Number(a[i])+Number(b[i]))%10;
-  const block=sxChain(seed,50),board=sxSeq(block.slice(-10));
+  const block=sxChain(seed,50),board=sxDigitSeq(block.slice(-10));
   const rev=[...block].reverse(),seen=new Set(),widths=[];let total=0;
   for(const x of rev){
     if(seen.has(x))continue;

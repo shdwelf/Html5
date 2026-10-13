@@ -1,8 +1,19 @@
-# sync-outgoing — ready-to-apply changeset for shdwelf/Html5-sync-incoming
+# sync-outgoing — prepared changeset for shdwelf/Html5-sync-incoming
 
 The Arena GitHub integration is currently scoped to `shdwelf/Html5` only, so
 the prepared commit for `shdwelf/Html5-sync-incoming` could not be pushed
 (HTTP 403 on both push and fork). This directory preserves that commit intact.
+
+## Follow-up required — 2026-10-13
+
+The parked `0001` patch and bundle predate the SECOM board-order correction in
+`shdwelf/Html5`. Their `secomExact` sorts the derived digit row lexically
+(`0…9`) and their Crow golden test expects the now-obsolete output. **Do not
+apply or land that snapshot by itself.** A follow-up change must carry the
+`1…9,0` numeric board ranking and refresh the golden test before the sibling
+copy is considered aligned. The current repository's source and `cyberchef.xdc`
+are fixed and verified; the sibling repository remains unchanged because the
+integration previously refused writes with HTTP 403.
 
 ## What the commit contains
 
