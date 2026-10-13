@@ -137,15 +137,16 @@ def native_phase(apk: pathlib.Path, lines: list) -> list:
     return largest
 
 
-def ghidra_phase(so: pathlib.Path, lines: list):
+def ghidra_phase(so: pathlib.Path, lines: list, stem: str = 'app'):
     home = os.environ.get('GHIDRA_HOME', '')
     headless = pathlib.Path(home) / 'support' / 'analyzeHeadless'
     lines += [f'## Ghidra headless — `{so.name}`', '']
     if not headless.exists():
         lines += ['- (analyzeHeadless not available on this runner)', '']
         return
-    report = WORK / 'ghidra-report.txt'
+    report = WORK / f'ghidra-report-{stem}.txt'
     proj = WORK / 'gproj'
+    proj.mkdir(parents=True, exist_ok=True)
     rc, out = sh([str(headless), str(proj), 'ApkNat', '-import', str(so),
                   '-scriptPath', str(ROOT / 'tools' / 'ghidra_scripts'),
                   '-postScript', 'CryptoInventory.java', str(report),
@@ -168,7 +169,7 @@ def main() -> int:
         jadx_phase(apk, lines)
         largest = native_phase(apk, lines)
         if largest:
-            ghidra_phase(largest[0], lines)
+            ghidra_phase(largest[0], lines, apk.stem)
         out = OUT / f'disasm-{apk.stem}.md'
         out.write_text('\n'.join(lines) + '\n', encoding='utf-8')
         print(f'wrote {out}')
