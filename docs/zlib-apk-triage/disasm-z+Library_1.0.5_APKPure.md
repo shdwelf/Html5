@@ -54,24 +54,76 @@ Static disassembly inventory (JADX + strings + Ghidra). Nothing executed.
 
 ## Ghidra headless — `libflutter.so`
 
-- analyzeHeadless exit 1; report lines: 0
+- analyzeHeadless exit 0; report lines: 53
 
 ```
-(no GHIDRA-REPORT lines produced)
+GHIDRA-REPORT program=libflutter.so language=x86:LE:64:default sha256=7eb2fb3ff4637811477b394810758a285b525804177fc4ffb7f02ac7c3e80194
+GHIDRA-REPORT functions_total=25724 functions_crypto_named=6
+GHIDRA-FN OPENSSL_memory_alloc
+GHIDRA-FN OPENSSL_memory_free
+GHIDRA-FN OPENSSL_memory_get_size
+GHIDRA-FN OPENSSL_memory_alloc
+GHIDRA-FN OPENSSL_memory_free
+GHIDRA-FN OPENSSL_memory_get_size
+GHIDRA-REPORT external_symbols=451 external_crypto_named=3
+GHIDRA-IMPORT OPENSSL_memory_alloc
+GHIDRA-IMPORT OPENSSL_memory_free
+GHIDRA-IMPORT OPENSSL_memory_get_size
+GHIDRA-REPORT defined_strings=15776 strings_http=30 strings_crypto=728
+GHIDRA-STR OPENSSL_memory_alloc
+GHIDRA-STR OPENSSL_memory_free
+GHIDRA-STR OPENSSL_memory_get_size
+GHIDRA-STR ChaCha20 for x86_64, CRYPTOGAMS by <appro@openssl.org>
+GHIDRA-STR AES-NI GCM module for x86_64, CRYPTOGAMS by <appro@openssl.org>
+GHIDRA-STR AES for Intel AES-NI, CRYPTOGAMS by <appro@openssl.org>
+GHIDRA-STR GHASH for x86_64, CRYPTOGAMS by <appro@openssl.org>
+GHIDRA-STR SHA1 block transform for x86_64, CRYPTOGAMS by <appro@openssl.org>
+GHIDRA-STR SHA256 block transform for x86_64, CRYPTOGAMS by <appro@openssl.org>
+GHIDRA-STR SHA512 block transform for x86_64, CRYPTOGAMS by <appro@openssl.org>
+GHIDRA-STR Vector Permutation AES for x86_64/SSSE3, Mike Hamburg (Stanford University)
+GHIDRA-STR Montgomery Multiplication with scatter/gather for x86_64, CRYPTOGAMS by <appro@openssl.org>
+GHIDRA-STR X509_StartValidity
+GHIDRA-STR X509_EndValidity
+GHIDRA-STR Ffi_dl_processLibrary
+GHIDRA-STR Dart_ClassLibrary
+GHIDRA-STR encipherOnly
+GHIDRA-STR decipherOnly
+GHIDRA-STR Encipher Only
+GHIDRA-STR Decipher Only
+GHIDRA-STR X509v3 Inhibit Any Policy
+GHIDRA-STR X509v3 Any Policy
+GHIDRA-STR smimeencrypt
+GHIDRA-STR setext-genCrypt
+GHIDRA-STR EnterSafepoint
+GHIDRA-STR X509v3 Issuing Distribution Point
+GHIDRA-STR keyEncipherment
+GHIDRA-STR dataEncipherment
+GHIDRA-STR Key Encipherment
+GHIDRA-STR Data Encipherment
+GHIDRA-STR sslclient
+GHIDRA-STR ssl_client
+GHIDRA-STR SSL client
+GHIDRA-STR SSL Client
+GHIDRA-STR DescriptorSet
+GHIDRA-STR id-GostR3411-94-CryptoProParamSet
+GHIDRA-STR id-Gost28147-89-CryptoPro-D-ParamSet
+GHIDRA-STR id-GostR3410-94-CryptoPro-D-ParamSet
+GHIDRA-STR id-GostR3410-94-CryptoPro-XchC-ParamSet
+GHIDRA-STR id-Gost28147-89-CryptoPro-C-ParamSet
 ```
 
 <details><summary>analyzeHeadless log tail</summary>
 
 ```
-    /tmp/ghidra/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/ghidra_scripts (HeadlessAnalyzer)  
-INFO  HEADLESS: execution starts (HeadlessAnalyzer)  
-INFO  Creating temporary project: /tmp/apk-disasm/gproj/ApkNat (HeadlessAnalyzer)  
-ERROR Abort due to Headless analyzer error: Directory not found: /tmp/apk-disasm/gproj (HeadlessAnalyzer) java.io.FileNotFoundException: Directory not found: /tmp/apk-disasm/gproj
-	at ghidra.framework.project.DefaultProjectManager.createProject(DefaultProjectManager.java:100)
-	at ghidra.app.util.headless.HeadlessAnalyzer.processLocal(HeadlessAnalyzer.java:439)
-	at ghidra.app.util.headless.AnalyzeHeadless.launch(AnalyzeHeadless.java:199)
-	at ghidra.GhidraLauncher.launch(GhidraLauncher.java:81)
-	at ghidra.Ghidra.main(Ghidra.java:54)
+ (AutoAnalysisManager)  
+INFO  REPORT: Analysis succeeded for file: file:///tmp/apk-disasm/z+Library_1.0.5_APKPure-so/libflutter.so (HeadlessAnalyzer)  
+INFO  REPORT: Execute script: CryptoInventory.java '/tmp/apk-disasm/ghidra-report-z+Library_1.0.5_APKPure.txt'  (HeadlessAnalyzer)  
+INFO  SCRIPT: /home/runner/work/Html5/Html5/tools/ghidra_scripts/CryptoInventory.java (HeadlessAnalyzer)  
+INFO  ANALYZING changes made by post scripts: file:///tmp/apk-disasm/z+Library_1.0.5_APKPure-so/libflutter.so (HeadlessAnalyzer)  
+INFO  REPORT: Post-analysis succeeded for file: file:///tmp/apk-disasm/z+Library_1.0.5_APKPure-so/libflutter.so (HeadlessAnalyzer)  
+INFO  /libflutter.so: file created (runner) (LocalFileSystem)  
+INFO  REPORT: Save succeeded for: /libflutter.so (ApkNat:/libflutter.so) (HeadlessAnalyzer)  
+INFO  REPORT: Import succeeded (HeadlessAnalyzer)  
 openjdk version "21.0.12.1" 2026-08-18 LTS
 OpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)
 OpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode)
