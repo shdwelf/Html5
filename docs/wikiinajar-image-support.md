@@ -1,101 +1,102 @@
-# WikiInAJar 0.8 — investigation + image-support design
+# Wiki-in-a-Jar 0.8 image and DjVu support
 
-Date 2026-10-10. Requested: get `wiki.in.a.jar` from Drive, investigate the source
-(openhub.net/p/wiki-in-a-jar), and add image support — in that order.
+Investigation and implementation notes for the Drive-backed
+`WikiInAJar-0.8-20081128-bin.zip`.
 
-## 1. Retrieved from Google Drive (done)
+## Source and runtime investigation
 
-`WikiInAJar-0.8-20081128-bin.zip` (123,402 B, Drive id `1uKnAjh5zlgq_4iAQZ3Hw_CsNFPAEc2br`)
-→ `google_drive/WikiInAJar-0.8-20081128-bin.zip`, extracted to `google_drive/wiaj/`.
-Layout: `wiki.in.a.jar/` (dir) → `wiki.in.a.jar` (the 98,464 B jar), `bin/start.sh|cmd`,
-`public/` (XSL skins, views, CSS, PNG). No `.java` source is shipped in the binary zip.
+- The binary was retrieved from Google Drive (`WikiInAJar-0.8-20081128-bin.zip`,
+  123,402 bytes) and extracted only into ignored working files. Its inner jar is
+  98,464 bytes and carries `org.rgse.wikiinajar.server.Server` as its main class.
+- The 0.8 application jar contains no `ImageController`, `ImageFilter`, or
+  `img`/`image`/`djvu` namespace. `WikiLinkFilter` recognizes `[[...]]` and
+  delegates links to `WikiLink`; `RenderEngine` then applies the existing filter
+  chain. The skin's article XSL copies rendered article content as HTML.
+- The GitHub mirror [`astecenko/Wiki-in-a-Jar`](https://github.com/astecenko/Wiki-in-a-Jar)
+  has the exact 2008-11-28 `v0.8 update` source commit
+  `a56cfdfc8d343f60c915825a01af24577846cede`. A later 2012 fork,
+  [`hugcoday/WikiInAJar`](https://github.com/hugcoday/WikiInAJar), adds an
+  `img:` namespace and an image route, confirming the intended extension point;
+  its path handling is not safe enough to reuse unchanged.
+- The previously reported compiler blocker is resolved. The split, ignored
+  `.relay/jdk/jdk21.tar.gz.part-*` files reassemble to the SHA-256 recorded in
+  `.relay/jdk/jdk21.sha256`; the extracted Temurin JDK is 21.0.12.1 and includes
+  `javac`, `jar`, and `javap`. No credential or Drive files were changed.
 
-## 2. Ran it on the Temurin JRE (done, verified)
+## What the extension adds
 
-```
-$(JAVA_HOME)/bin/java -jar wiki.in.a.jar 3003
-```
-Boots, binds `0.0.0.0:3003`, and `GET /wiki → 200` (1893 B) returning the wiki XML page
-(`<?xml-stylesheet ... master.xsl?>` + `<page>…`). Running as a live preview on port 3003.
-JRE = `jdk4py` Temurin 25.0.2.1+11.
+The build script compiles source patches against the original 0.8 jar and
+repackages the full installation:
 
-## 3. Source investigation
+1. `WikiLink` recognizes `img:`, `image:`, and `djvu:` namespaces. It produces
+   escaped local `<img>` markup for supported raster files and an accessible
+   DjVu figure with a persistent download link for `.djvu`/`.djv` files.
+2. `ImageController` serves only supported image/DjVu suffixes beneath
+   `public/docs/image`. Canonical-path checks reject `..`, traversal, and
+   symlinks that resolve outside the image directory.
+3. The patched server registers `ImageController`. The static skin controller
+   also checks canonical paths before opening resources.
+4. `ControllerResponse` supplies correct case-insensitive MIME types for the
+   supported raster formats, DjVu, JavaScript modules, WebAssembly, and JSON.
+5. The skin loads a vendored MIT-licensed `djvu-rs` 0.42.0 WebAssembly decoder.
+   DjVu placeholders are activated lazily near the viewport, render one page
+   at a time, and include previous/next controls. The download link remains
+   usable when JavaScript/WebAssembly is disabled.
+6. A demo article, a sample PNG taken from the original distribution, and a
+   small attributed DjVu smoke fixture make the feature visible in the rebuilt
+   package.
 
-**openhub.net is unreachable from this sandbox (`000`)**, so the openhub page could not be
-fetched. The architecture was mapped directly from the jar instead:
+Wikitext examples:
 
-- `Main-Class: org.rgse.wikiinajar.server.Server`; 63 classes.
-- HTTP layer: a bundled **NanoHTTPD** (`net.sf.wikiinajar.xrays.NanoHTTPD`), MVC-ish
-  (`ActionMapping`, `ControllerResponse`, controllers under `org.rgse.wikiinajar.controllers`).
-- Wikitext render pipeline: `org.rgse.wikiinajar.helpers.wiki.render.RenderEngine` drives a
-  **filter chain** (`filters/`): `BreakFilter, HeadingFilter, HrFilter, HtmlTagsFilter,
-  IntendedFilter, ListFilter, NoWikiCapture/InsertFilter, SectionFilter, Strong/Stronger/
-  StrongestFilter, TableFilter, UrlFilter, WikiLinkFilter` (all extend `LineByLineFilter`,
-  implement `Filter`). `WikiLink` handles `[[links]]`.
-- Presentation: `public/skins/default/wiki/show-article.xsl` does
-  `<xsl:copy-of select="content/*"/>` — *"just copy everything as it is expected to be HTML."*
-
-**Finding: WikiInAJar 0.8 has NO image support.** The jar has zero `image`/`img`/`picture`/
-`attach` references and no `ImageFilter`. The XSL already passes rendered HTML straight
-through, so the missing piece is purely a render filter that emits `<img>`.
-
-## 4. Image-support design (the extension point)
-
-Add one filter to the chain that turns image wikitext into an `<img>`; the existing
-`show-article.xsl` passthrough then renders it with no XSL change.
-
-- Syntax: `[[Image:src|alt]]` (and/or `[[image:src]]`), mirroring the `WikiLinkFilter` style.
-- Output: `<img src="SRC" alt="ALT" class="wiki-image"/>` (escape `src`/`alt`).
-- Registration: append `new ImageFilter()` to the filter list built in `RenderEngine`.
-- Serving the bytes is a separate concern: reference already-served files (e.g. under
-  `public/`) or add an upload/attachment route — out of scope for the render filter alone.
-
-Sketch (see `tools/wikiinajar/ImageFilter.java`):
-
-```java
-package org.rgse.wikiinajar.helpers.wiki.render.filters;
-
-import java.util.regex.*;
-import org.rgse.wikiinajar.helpers.wiki.render.LineByLineFilter;
-
-public class ImageFilter extends LineByLineFilter {
-    private static final Pattern IMG =
-        Pattern.compile("\\[\\[[Ii]mage:([^|\\]]+)(?:\\|([^\\]]+))?\\]\\]");
-    @Override public String filterLine(String line) {
-        Matcher m = IMG.matcher(line);
-        StringBuffer sb = new StringBuffer();
-        while (m.find()) {
-            String src = m.group(1).trim();
-            String alt = m.group(2) == null ? src : m.group(2).trim();
-            m.appendReplacement(sb, Matcher.quoteReplacement(
-                "<img src=\"" + esc(src) + "\" alt=\"" + esc(alt) + "\" class=\"wiki-image\"/>"));
-        }
-        m.appendTail(sb);
-        return sb.toString();
-    }
-    private static String esc(String s) {
-        return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace("\"","&quot;");
-    }
-}
+```text
+[[image:diagram.png|Diagram alt text]]
+[[img:maps/toronto.webp|Map of Toronto]]
+[[djvu:reference.djvu|Read the reference]]
 ```
 
-## 5. Blocker — cannot compile here
+Local media belongs under `public/docs/image`. No upload endpoint is added.
 
-Producing a rebuilt jar with image support needs a Java **compiler** and a way to edit
-`RenderEngine`, and this sandbox has neither:
+## Build and validation
 
-- **No `javac`.** `jdk4py` ships a **JRE** (`bin/` = java, jcmd, jfr, jinfo, jmap, jps,
-  jrunscript, jstack, jstat, jwebserver, keytool, rmiregistry — no `javac`/`jar`/`javap`).
-  PyPI `jdk` = "a small example package", `zulu` = a datetime library (both unrelated);
-  `install-jdk` downloads a JDK from the **blocked** Adoptium CDN; Adoptium/GitHub release
-  assets are `000`. So no full JDK is obtainable.
-- **No Java decompiler.** To register the filter I must modify `RenderEngine.class`; the
-  real decompilers (CFR/Vineflower/Procyon) are not on PyPI under usable names (`cfr` on PyPI
-  is a climate-science package) and their real hosts are blocked.
-- **openhub source unreachable** (`000`), so I can't rebuild from original `.java` either.
+Run `tools/wikiinajar/build-image-support.sh` with the Drive distribution zip
+and an output zip path. The script targets Java 8 bytecode, compiles the patched
+classes, runs `ImageSupportSmokeTest.java`, overlays the skin assets and demo,
+and creates a replacement installation archive. See
+[`tools/wikiinajar/README.md`](../tools/wikiinajar/README.md).
 
-The `ImageFilter.java` above is therefore an **uncompiled sketch** — the exact `Filter`/
-`LineByLineFilter` method signatures must be confirmed against the real classes when a JDK is
-available. To finish: obtain a JDK with `javac` **and** either the original source or a Java
-decompiler, then `javac -cp wiki.in.a.jar ImageFilter.java`, add `new ImageFilter()` to
-`RenderEngine`'s chain, and repackage the jar.
+The vendored browser decoder is validated by a Node test that initializes the
+same scalar/SIMD WebAssembly package shipped with the app, parses a real DjVu
+fixture, and renders its first page to RGBA pixels. This is separate from the
+Java server smoke test.
+
+Validation completed:
+
+- The rebuilt jar boots under the recovered Temurin JDK. Java assertions cover
+  `img:`, `image:`, and `djvu:` markup, output escaping, traversal rejection,
+  unsupported suffixes, and case-insensitive MIME selection.
+- The packaged demo server returned HTTP 200 for the demo article. The rendered
+  XML contained one raster `<img>` and one DjVu viewer figure; the code examples
+  stayed literal. PNG/DjVu/JavaScript/WebAssembly routes returned their expected
+  MIME types, and image/static-path traversal probes returned 404.
+- `node --test tests/wikiinajar-djvu.test.mjs` passed. Full `npm test` passed:
+  34 Vitest files / 300 tests, plus 183 Node tests passed and 5 optional Node
+  tests were skipped.
+
+## Limitations and safety
+
+- The old NanoHTTPD does not implement byte-range requests. The reader downloads
+  a DjVu file in full when it is near the viewport; use smaller files where
+  browser memory is constrained.
+- The app has no authentication. Do not expose its default server directly to
+  the public Internet.
+- The image endpoint does not accept remote URLs and does not add image-upload
+  functionality. User-provided files must be copied into the local image
+  directory.
+- Browser rendering requires modern JavaScript, WebAssembly, and Canvas. The
+  original file can still be downloaded without the viewer.
+
+## Third-party notices
+
+See [`tools/wikiinajar/THIRD_PARTY_NOTICES.md`](../tools/wikiinajar/THIRD_PARTY_NOTICES.md)
+for GPL source provenance, the MIT WebAssembly package, and the smoke-fixture
+attribution.
