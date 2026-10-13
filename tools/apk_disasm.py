@@ -74,7 +74,8 @@ def jadx_phase(apk: pathlib.Path, lines: list) -> pathlib.Path | None:
     ann = re.findall(r'@(GET|POST|PUT|DELETE|PATCH)\("([^"]+)"\)', blob)
     cnt = collections.Counter(m for m, _ in ann)
     segs = collections.Counter('/'.join(p.split('/')[:2]) for _, p in ann)
-    baseurls = collections.Counter(regdom(h) for h in re.findall(r'baseUrl\("https?://([\w.\-]+)', blob))
+    baseurls = collections.Counter(('<redacted>.onion' if h.endswith('.onion') else regdom(h))
+                                   for h in re.findall(r'baseUrl\("https?://([\w.\-]+)', blob))
     lines += [f'- Retrofit-style endpoints declared: {len(ann)} '
               f'({", ".join(f"{k} {v}" for k, v in sorted(cnt.items())) or "none"})',
               f'- First-segment groups: ' + (', '.join(f'`{s}` ×{c}' for s, c in segs.most_common(8)) or '—'),
@@ -149,11 +150,13 @@ def ghidra_phase(so: pathlib.Path, lines: list):
     rc, out = sh([str(headless), str(proj), 'ApkNat', '-import', str(so),
                   '-scriptPath', str(ROOT / 'tools' / 'ghidra_scripts'),
                   '-postScript', f'CryptoInventory.java {report}',
-                  '-deleteProject'], timeout=1500)
+                  '-deleteProject', '-analysisTimeoutPerFile', '1200'], timeout=1700)
     body = report.read_text(errors='replace') if report.exists() else ''
     keep = [ln for ln in body.splitlines() if ln.startswith('GHIDRA-')][:80]
+    tail = [ln for ln in out.splitlines() if ln.strip()][-12:]
     lines += [f'- analyzeHeadless exit {rc}; report lines: {len(keep)}', '']
-    lines += ['```'] + (keep or ['(no GHIDRA-REPORT lines produced)']) + ['```', '']
+    lines += ['```'] + (keep or ['(no GHIDRA-REPORT lines produced)']) + ['```', '',
+              '<details><summary>analyzeHeadless log tail</summary>', '', '```'] + tail + ['```', '', '</details>', '']
 
 
 def main() -> int:

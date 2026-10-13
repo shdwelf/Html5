@@ -11,7 +11,7 @@ Static disassembly inventory (JADX + strings + Ghidra). Nothing executed.
 
 - Retrofit-style endpoints declared: 32 (GET 22, POST 10)
 - First-segment groups: `/eapi` ×31, `eapi/book` ×1
-- baseUrl() hosts: `zlibrary.se` ×1, `bookszlibb74ugqojhzhg2a63w5i2atv5bqarulgczawnbmsb6s6qead.onion` ×1
+- baseUrl() hosts: `zlibrary.se` ×1, `<redacted>.onion` ×1
 - Authorization-header constructions: 4 refs; Bearer literals: 0; API-key header refs: 0
 
 ### Encryption & transport posture

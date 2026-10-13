@@ -89,3 +89,18 @@ test("xdc bundle is a zip rooted at index.html + manifest.toml", async () => {
   const staged = await readFile(path.join(root, "public", "apps", "yubnub", "index.html"), "utf8");
   assert.equal(staged, html, "staged public/apps/yubnub/index.html matches yubnub.html");
 });
+
+test("live templates are HTTPS-only (dead historical entries exempt)", () => {
+  const rows = registryRows();
+  for (const [name, template, , , flags] of rows) {
+    if (String(flags || "").includes("D")) continue; // dead services kept for history
+    if (/^https?:\/\//.test(template)) {
+      assert.ok(template.startsWith("https://"), `${name} template must be https: ${template}`);
+    }
+  }
+});
+
+test("legal book shelves are wired (guten / ia / ol)", () => {
+  const names = new Set(registryRows().map((r) => r[0]));
+  for (const n of ["guten", "ia", "ol"]) assert.ok(names.has(n), `missing ${n}`);
+});
