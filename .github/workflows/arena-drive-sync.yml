@@ -35,7 +35,7 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 100
     steps:
       - uses: actions/checkout@v4
         with:
@@ -85,6 +85,33 @@ jobs:
             node scripts/drive-sync-apply.mjs --manifest "$man" --snapshot "$root" --write
           done
           for z in .arena-drive/payload/*.zip; do unzip -o "$z" -d .arena-drive/payload/unzipped; done
+
+      - name: Set up Temurin JDK 21 (APK triage)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: APK static triage (payload APKs, if any)
+        run: |
+          shopt -s nullglob
+          apks=(.arena-drive/payload/*.apk)
+          if [ ${#apks[@]} -eq 0 ]; then echo "no payload APKs; skipping"; exit 0; fi
+          pip install -q androguard || echo "androguard install failed; stdlib fallback in triage script"
+          python3 tools/apk_triage.py "${apks[@]}"
+
+      - name: Deep disassembly (JADX + Ghidra crypto inventory)
+        run: |
+          shopt -s nullglob
+          apks=(.arena-drive/payload/*.apk)
+          if [ ${#apks[@]} -eq 0 ]; then echo "no payload APKs; skipping"; exit 0; fi
+          set -x
+          curl -sL -o /tmp/jadx.zip https://github.com/skylot/jadx/releases/download/v1.5.6/jadx-1.5.6.zip && unzip -q -o /tmp/jadx.zip -d /tmp/jadx || echo "jadx fetch failed"
+          curl -sL -o /tmp/ghidra.zip https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.4_build/ghidra_12.1.4_PUBLIC_20260921.zip && unzip -q -o /tmp/ghidra.zip -d /tmp/ghidra || echo "ghidra fetch failed"
+          set +x
+          export JADX=/tmp/jadx/bin/jadx
+          export GHIDRA_HOME=$(ls -d /tmp/ghidra/ghidra_*_PUBLIC 2>/dev/null | head -1)
+          python3 tools/apk_disasm.py "${apks[@]}" || echo "disasm phase failed (triage report above still stands)"
 
       - name: Re-check the ledger
         if: always()
