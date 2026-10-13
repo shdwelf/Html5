@@ -28,8 +28,10 @@ day as the crawl (`g` last used 2026-10-13 04:53, 23,429,935 uses total).
 
 ## 1. What Yubnub is
 
-A web-based command line (Jonathan Aquino, Rails Day 2005; Ruby on Rails,
-MIT — [github.com/jcnetdev/yubnub](https://github.com/jcnetdev/yubnub)). Type
+A web-based command line (Jonathan Aquino, Rails Day 2005 —
+[github.com/JonathanAquino/yubnub](https://github.com/JonathanAquino/yubnub);
+[jcnetdev/yubnub](https://github.com/jcnetdev/yubnub) is the frozen Rails
+2.1 “v3” refactor). Type
 `gim porsche 911` → Google Image search; `random 100` → random number;
 anyone can `create` a command by giving a URL with `%s` in it. 10,500+
 commands existed by 2006; the homepage's “Popular Searches” table
@@ -137,7 +139,17 @@ deterministic webxdc zip (`index.html` + `manifest.toml` + `webxdc.js` +
 `icon.png`) staged at `public/apps/yubnub/`; `tests/yubnub.test.mjs`
 guards the registry/engine invariants.
 
-## 6. Sources
+## 6. Ecosystem follow-up
+
+GitHub / archive.org / Blue Squirrel research (dohliam/yub's 138 engines,
+bunnylol.rs, DuckDuckGo !bangs, the WikiTeam wiki dump, WebWhacker /
+Grab-a-Site preservation — and why Blue Squirrel is *not* abandonware)
+lives in
+[`docs/yubnub-github-archive-research-2026-10-13.md`](./docs/yubnub-github-archive-research-2026-10-13.md).
+Four commands from that audit (`sp`, `gmails`, `gdrive`, `ud`) were imported
+into the registry.
+
+## 7. Sources
 
 Fetched 2026-10-13: yubnub.org `/`, `/documentation/jeremys_picks`,
 `/documentation/describe_advanced_syntax`, `/documentation/describe_installation`,
