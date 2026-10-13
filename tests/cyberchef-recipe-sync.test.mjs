@@ -29,7 +29,7 @@ function boot() {
 // Operations added after the 2026-10-07 merge baseline recorded in docs/.
 // The report stays a faithful record of what the merge produced; the kitchen has
 // since grown, so the expected total is baseline + these additions.
-const POST_MERGE_OPS = ["qrcode", "averyLabels"];
+const POST_MERGE_OPS = ["qrcode", "averyLabels", "complexityLab", "symbolicLogic"];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {
   const { ops, ids, packs } = boot();

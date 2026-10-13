@@ -145,6 +145,7 @@ describe("CyberChef kitchen bootstrap", () => {
         expect(k.win.eval(`typeof ${fn}`), fn).toBe("function");
       }
       expect(k.win.eval("typeof InitUi")).toBe("undefined");
+      expect(k.html).toMatch(/zenInit\(\);\s*sfxInitUi\(\);\s*renderOpsList\(\);renderRecipe\(\);/);
       expect(k.document.getElementById("ops-list")!.children.length).toBeGreaterThan(100);
       expect(k.ops.length).toBeGreaterThan(400);
     } finally { k.close(); }
