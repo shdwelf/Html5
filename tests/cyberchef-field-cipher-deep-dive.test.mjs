@@ -86,6 +86,13 @@ const VIC_DIAG_PLAIN = "ABCDEFGHIJKLMONPQRSTUVWXabcdefghijklmnopqrstuvwx01234567
 const VIC_DIAG_CT =
   "pGKPVbg269qsLQvch37YBEIOTXe0lnrtuRwxi48ZADHMSWdjkmCFJNUaf15o";
 
+// Published 2016 example, second (diagonal) transposition: the raw second key and
+// the pre-final output it produces, plus the header row of its tableau.
+const VIC_BLOG_K2 = "248992486743";
+const VIC_BLOG_PREFINAL =
+  "4844550444515839435550568149887405477951640777152402410775193478627582";
+const VIC_BLOG_TABLE_ORDER = [0, 5, 11, 1, 6, 10, 8, 9, 2, 7, 3, 4];
+
 // Published Diana field-procedure vector (Programming Praxis, 2014-12-19).
 const DIANA_LINE = "UKVTF WZHOK GORWY WETFR COYET";
 const DIANA_SENT = "UKVTF WZHOK TSPDZ TVNRI BYEXH";
@@ -348,6 +355,67 @@ test("Diana reproduces the published field-procedure example", () => {
     );
     // Without an indicator the operation keeps its plain single-key behaviour.
     assert.equal(run("diana", "ATTACK", { key: "BKOEX", clear: "0", group: "0" }), "YWSVAO");
+  } finally {
+    dom.window.close();
+  }
+});
+
+test("primary-source D-area rule (Kahn, CIA 1993) and the 2016 divergence", () => {
+  const { run, dom } = boot();
+  try {
+    const ev = (code) => dom.window.eval(code);
+
+    // David Kahn, "Number One From Moscow" (CIA, 1993) — text-only micro-vectors
+    // that the same primitives must satisfy.
+    assert.equal(ev('fdSeqLetters("BABY")'), "2134");          // literal key → sequential key
+    assert.equal(ev('fdSeqDigits("39646")'), "15324");         // breeder key → sequential key
+    assert.equal(ev('fdChainExt("3964",10)'), "2506756321");   // chain addition extension
+    // The hollow-nickel message: keygroup 20818 − date 39194 = 91724 (Line C).
+    assert.equal(ev('fdNoCarrySub("20818","39194")'), "91724");
+
+    // Kahn's D areas, as quoted in docs §2b: the first area begins in the top row
+    // under keynumber 1 and runs to the right side; each following row begins one
+    // column further right; when the columns are exhausted, one row is skipped and
+    // the next area starts under keynumber 2.  The kitchen's triangle construct
+    // must reproduce exactly that partition.
+    const w = 12, counts = [12, 12, 12, 12, 12, 10];
+    const pos = {};
+    VIC_BLOG_TABLE_ORDER.forEach((column, label) => { pos[label + 1] = column; });
+    const kahn = new Set();
+    let row = 0, label = 1;
+    while (row < counts.length && label <= w) {
+      let start = pos[label], r = row;
+      while (r < counts.length && start < counts[r]) {
+        for (let c = start; c < counts[r]; c++) kahn.add(r * w + c);
+        start += 1; r += 1;
+      }
+      if (r >= counts.length) break;
+      row = r + 1; label += 1;
+    }
+    const kitchen = [...ev(`[...sxTriangles(70,"${VIC_BLOG_K2}")].sort((a,b)=>a-b)`)];
+    assert.equal(kitchen.length, kahn.size, "same number of disrupted cells");
+    assert.equal(kitchen.join(","), [...kahn].sort((a, b) => a - b).join(","), "same disrupted cells");
+
+    // The one published table that does NOT follow that rule: the 2016 worked
+    // example's own second tableau is a left-prefix staircase (row widths
+    // 5,6,7,8,9, with the short last row filled in the first phase).  It does
+    // reproduce that article's published 70-digit output — uniquely among prefix
+    // partitions — so the divergence is in that source's tool, not in this test.
+    const cell = {};
+    let i = 0;
+    for (let r = 0; r < 5; r++) for (let c = 0; c < 5 + r; c++) cell[`${r},${c}`] = VIC_BLOG_D1[i++];
+    for (let c = 0; c < 10; c++) cell[`5,${c}`] = VIC_BLOG_D1[i++];
+    for (let r = 0; r < 5; r++) for (let c = 5 + r; c < 12; c++) cell[`${r},${c}`] = VIC_BLOG_D1[i++];
+    let blog = "";
+    for (const c of VIC_BLOG_TABLE_ORDER) {
+      for (let r = 0; r < counts.length; r++) if (cell[`${r},${c}`] !== undefined) blog += cell[`${r},${c}`];
+    }
+    assert.equal(blog, VIC_BLOG_PREFINAL, "the 2016 prefix staircase reproduces its published output");
+    assert.notEqual(
+      ev(`sxTransEnc(${JSON.stringify(VIC_BLOG_D1)},"${VIC_BLOG_K2}",true)`),
+      VIC_BLOG_PREFINAL,
+      "the Kahn rule and the 2016 table must not be silently conflated",
+    );
   } finally {
     dom.window.close();
   }

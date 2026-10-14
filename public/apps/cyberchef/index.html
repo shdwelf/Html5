@@ -9529,6 +9529,15 @@ function sxSchedule(phrase){
 }
 function sxKeyCols(key){const out=[];for(const d of '1234567890')for(let i=0;i<key.length;i++)if(key[i]===d)out.push(i);return out;}
 function sxCellIds(n,w){const out=[],rows=Math.ceil(n/w);for(let r=0;r<rows;r++)for(let c=0;c<w;c++)if(r*w+c<n)out.push(r*w+c);return out;}
+/* Kahn's disruption rule for the second (diagonal) VIC/SECOM tableau, quoted in
+   docs/field-cipher-deep-dive-2026-10-14.md §2b: the first D area begins in the top row
+   under keynumber 1 and runs to the right side of that row; each following row begins one
+   column further right; when the columns are exhausted one row is skipped and the next area
+   starts under keynumber 2, and so on.  A test asserts this partition equals the primary
+   source rule cell-for-cell, and that the left widths it implies are the published
+   crunchbangle/vic-ts vector (3,4,5,6,4,5,6,1,2,3 for key 536124, 60 digits).  The one
+   published table that follows a different (left-prefix staircase) shape is pinned in the
+   same test so the two can never be silently conflated. */
 function sxTriangles(n,key){
   const w=key.length,rows=Math.ceil(n/w),cells=new Set(sxCellIds(n,w)),tri=new Set();let row=0;
   for(const col of sxKeyCols(key)){

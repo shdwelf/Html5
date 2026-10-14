@@ -4,9 +4,10 @@ Date: 2026-10-14
 Kitchen: `public/apps/cyberchef/index.html` → 492 operations, 216 packs, 639 pack entries
 New recipes: `odPoemExact`, `vicSchedule`, `vicExact`, `diana`, `dianaTable`,
 `gronsfeldAnalyze`, `toHexdump`, `fromHexdump`, `toOctal`, `fromOctal`
-Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 9/9 pass,
-every published control vector below reproduced digit for digit (the two added tests cover
-the VIC diagonal transposition rule and the Diana field-procedure example — see §2b and §0).
+Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 10/10 pass,
+every published control vector below reproduced digit for digit (the three added tests cover
+the VIC diagonal transposition rule, the Diana field-procedure example, and the primary-source
+micro-vectors — see §2b and §0).
 
 This note records the deep dive requested for the hand ciphers already in the kitchen
 (OD poem code, VIC, Gronsfeld, SECOM), the identification and implementation of the
@@ -260,13 +261,44 @@ The kitchen now uses that rule (`fdVicLeftWidths`, `fdVicDiagEnc`, `fdVicDiagDec
 blog's own illustrated pattern — width 6 with labels 1, 2, 3 in columns 2, 4, 1, giving rows
 `2,3,4,5,6 | 4,5,6 | 1,2,3,4,5,6` — is pinned by a test as well.
 
-**One published table still does not reproduce**, and the note records it rather than hiding
-it: the same blog's second-transposition table implies left widths `5,6,7,8,9` for a key whose
-smallest label sits in column 0. That is consistent with the rule above only if the key labels
-are zero-based *and* the walk starts at the label `1` (skipping `0`) — i.e. the author's tool
-used 0-based sequence labels, while every other source numbers them 1…n. Everything else in
-that example (key derivation, checkerboard, first transposition, keygroup insertion) matches
-this kitchen exactly, so the discrepancy is localised to that one table.
+**The primary source for the rule.** David Kahn's CIA article "Number One From Moscow" (1993,
+reissued from his 1960 booklet *Two Soviet Spy Ciphers*) describes the second tableau's
+disruption directly:
+
+> "The first D area begins in the top row under keynumber 1 and runs to the right side of that
+> row. In each of the following rows, it begins one column to the right. When the columns are
+> exhausted, one row is skipped and another D area is started in the following row with the
+> column under keynumber 2, and so forth for as many rows as are needed to accommodate all the
+> cipher digits." … "The cipher digits taken vertically from the first tableau are inscribed
+> horizontally from left to right into the rows of the second tableau, but leaving the D areas
+> blank. When the non-D portions of all rows have been filled, the remaining digits are written
+> in from left to right in the D areas, starting with the top row."
+
+That is exactly what the kitchen's triangle construct implements, and a test now proves the
+two partitions are identical cell-for-cell for the 2016 example's key (55 disrupted cells).
+Equivalently, the *left* (non-D) widths implied by that partition are the vector published by
+`crunchbangle/vic-ts` — `3,4,5,6,4,5,6,1,2,3` for key `536124` and 60 digits — which is why
+the four implementations agree: they describe the same staircase from the two sides.
+
+Kahn's article also supplies the key material of the hollow-nickel message (date 391945, so
+Line B `39194`; keygroup `20818`; personal number 13; phrase the first 20 letters of the song
+"The Lone Accordion"), and three text-only micro-vectors that are now pinned by tests:
+
+| Micro-vector | Published | Kitchen |
+| --- | --- | --- |
+| Literal key `BABY` → sequential key | `2134` | `fdSeqLetters` → same |
+| Breeder key `39646` → sequential key | `15324` | `fdSeqDigits` → same |
+| Chain addition of `3964` (ten more digits) | `2506756321` | `fdChainExt` → same |
+| Line C for the nickel message: `20818 − 39194` | `91724` | `fdNoCarrySub` → same |
+
+**The one table that does not follow the primary-source rule** is the 2016 blog's own second
+tableau. Its first-filled region is a *left-prefix staircase* — row widths `5,6,7,8,9` with the
+short last row (10 cells) entirely in the first phase — not Kahn's right-hand D areas. That
+staircase does reproduce the article's published 70-digit output (and an exhaustive search over
+all left-prefix partitions of that tableau, 13⁵ × 2 candidates, finds it as the *only* one that
+does), while the Kahn partition produces a different 70-digit string. The deviation is
+therefore in that article's own tool, not in the primary source: both facts are pinned side by
+side in the tests so the two can never be silently conflated.
 
 ---
 
@@ -349,7 +381,7 @@ node scripts/audit-cyberchef-sfx-coverage.mjs
 # OPERATIONS registered: 492 (492 unique ids); RECIPE_PACKS packs: 216 (639 entries)
 # dangling (no op): 0 ; orphaned ops: 0 ; VERDICT: SFX select-all covers the full registry
 
-node --test tests/cyberchef-field-cipher-deep-dive.test.mjs      # 9/9 pass
+node --test tests/cyberchef-field-cipher-deep-dive.test.mjs      # 10/10 pass
 node --test tests/cyberchef-*.test.mjs                            # registry, pack, SFX, cookbook suites pass
 node scripts/build-cyberchef-xdc.mjs                              # merged index.html + manifest + cyberchef.xdc
 ```
@@ -379,11 +411,11 @@ respectively); this note is the current record.
 2. **Diana + transposition variant.** zappi-tkn/Diana chains a columnar transposition
    after the trigraph step. If a published worked example surfaces, it can be added as a
    `mode` on `diana` rather than a new operation.
-3. **VIC: one table to reconcile.** Everything in the 2016 blog example reproduces except
-   its second-transposition table, which implies zero-based sequence labels (see §2b). A
-   second *published* vector that exercises the diagonal stage — for instance a scan of the
-   "Number One From Moscow" figures or a training manual — would settle whether the 0-based
-   reading is ever correct in the field.
+3. **VIC: one source tool to explain.** Everything in the 2016 blog example reproduces except
+   its second-transposition table, which uses a left-prefix staircase rather than the D areas
+   described by Kahn (see §2b). A *published* diagonal-stage output from a third source — for
+   instance a legible scan of Figure 2 of "Number One From Moscow", or a training manual — would
+   show whether the staircase is a one-off bug in that article or a real variant used somewhere.
 4. **VIC message-stage variants.** The Wikipedia example exercises one cut point and no
    keygroup; the recipe now covers transpositions and keygroup insertion and round-trips
    them, but a published vector with both would pin the defaults even harder.
