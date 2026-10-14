@@ -63,11 +63,13 @@ describe("museum and field-cipher research recipes", () => {
       // …and round-trips it.
       const dec = k.run("secomExact", VEC, { phrase: "MAKE NEW FRIENDS BUT KEEP THE OLD", mode: "decrypt" }) as string;
       expect(dec).toContain("Plain  : RV TOMORROW AT 1400PM TO COMPLETE TRANSACTION USE DEADDROP AS USUAL");
-      // The failed Crow candidate stays a failed candidate: the exact model
-      // emits the same recorded letter soup, not silently "improved" output.
+      // The failed Crow candidate stays a failed candidate. This exact output
+      // is the corrected 1..9,0 board result; the old lexical 0..9 ordering
+      // produced a different (and inconsistent) checkerboard decode.
       const CROW = "81232 44783 73232 32263 75722 86365 51963 87366 03222 72668 33331 27230 52235 23366 23822 87373 75343 52352 22233 29348 72314 63282 03622 22824 35552 23820 28242 22051 38253 78435 26882 44825 82262 72736 59828 70417 82232 22288 22682 21731 65838 47821 47438 75321 25803 22980 25288 84853 83221 55566 12882 32833 56821 61483 61322 52289 29223 38362 64330 03281 04482 38254 24393 22203 85563 42714 75854 33606 22125 32227 32427 54827 34541 73353 02673 22537 58933 02858 78627 23216 18332 58738 17238 27432 75818 78175 22327 21458 58181 16284 32082 36857 60426 34562 34873 32531 48845 26072 42848 81358 26533 52733 04602 28232 38732 23385 38336 23731 83852 72638 08538 20333 27838 52662 13523 27833 39332 81488 25260 82636";
       const crow = k.run("secomExact", CROW, { phrase: "IN MY MEMORY I WILL ALWAYS SEE", mode: "decrypt" }) as string;
-      expect(crow).toContain("Plain  : OYSASOXVEMSA 0OYVEAAPSFPSMSFITOTSHAOSHSS");
+      expect(crow).toContain("Plain  : NTISETNAIZPTTIRNENRTNAFNYNNAIOSKESIHNINENBAPNAIENNQOSRSTI1RPNITVIRSTNXINP5NNIVUTRAKPIZINONEIIXTREBNVSZAYAIEIIASEEPEIXARS");
+      expect(crow).not.toContain("Plain  : OYSASOXVEMSA 0OYVEAAPSFPSMSFITOTSHAOSHSS");
 
       // The fitness instruments report English-like vs soup-like IoC.
       const english = "THE OLD CROWS ARE ON THE WATCH AND THE TOWN REMEMBERS EVERY WINTER OF GRIEF AND EVERY NAME OF THE LOST";

@@ -24,6 +24,25 @@ requests. Keep large documents in a separate viewer or use smaller documents.
 The application has no authentication and is intended for a trusted local
 network only.
 
+## Repository notes
+
+`sync-docs.mjs` copies the newest dated notes from the repository's `docs/` directory
+into the wiki content set (`public/docs/wiki/*.wiki`) and writes
+`wiki-pages.json` as the manifest:
+
+```sh
+node tools/wikiinajar/sync-docs.mjs            # newest nine dated notes
+node tools/wikiinajar/sync-docs.mjs --count 3  # newest three
+node tools/wikiinajar/sync-docs.mjs --check    # fail if any page has drifted from its note
+```
+
+Each page keeps the note verbatim except for its headings, which are promoted to
+`=`-style wiki headings, and carries a `Source: docs/...` line plus a link back to the
+Main Page. `build-image-support.sh` copies the whole content set and appends a
+"Repository notes" section to the Main Page, newest first, straight from the manifest.
+The Node suite (`tests/wikiinajar-docs-sync.test.mjs`) runs `--check`, so a page that
+outlives the note it came from fails the tests rather than shipping silently.
+
 ## Build
 
 The original 123,402-byte `WikiInAJar-0.8-20081128-bin.zip` is in the connected

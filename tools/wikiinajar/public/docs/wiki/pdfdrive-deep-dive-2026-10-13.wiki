@@ -1,0 +1,91 @@
+== PDFDrive deep dive — pdfdrive.org / .net / .com family (2026-10-13) ==
+
+Source: docs/pdfdrive-deep-dive-2026-10-13.md — synced 2026-10-14 by tools/wikiinajar/sync-docs.mjs.
+Back to [[Main Page]].
+
+= PDFDrive deep dive — pdfdrive.org / .net / .com family (2026-10-13) =
+
+*Ask: deep-dive the three PDFDrive domains and “link:pdfdrive” into
+the Yubnub CLI. As with Z-Library (§2 of the companion doc), this is a
+provenance/safety dive: PDF Drive is a shadow-library search engine
+whose index points overwhelmingly at unauthorised copies, so no live
+search command or mirror link is wired into the app. What you get:
+what happened to the domain family, why every surviving lookalike is
+suspect, and the legal shelves that replaced it in the CLI (`guten`,
+`ia`, `ol` — new this round).*
+
+Companion: `docs/zlibrary-apk-ghidra-research-2026-10-13.md`.
+
+== 1. What PDF Drive was ==
+
+A “PDF search engine” claiming tens of millions of indexed ebooks,
+monetised with premium accounts. Its own framing (“we host nothing,
+we only link”) never changed the underlying fact pattern: the index
+was built from, and delivered, copyrighted books without licences —
+the same legal category as Z-Library, minus the criminal case (so
+far, enforcement against PDF Drive has been DMCA/domain pressure
+rather than indictments).
+
+== 2. The domain churn — org / net / com ==
+
+- The service **migrated pdfdrive.net → pdfdrive.com** amid copyright
+  disputes; paid-plan features disappeared mid-migration (MobiSystems'
+  safety review documents the sequence).
+- **pdfdrive.org** has cycled between parked, redirect and clone duty
+  over the same period — the three TLDs the user listed have never
+  been simultaneously authoritative, which is precisely the ambiguity
+  clone operators farm.
+- **~1 May 2023: the service effectively died.** Download buttons
+  across the main domain began redirecting to `#top` / nowhere;
+  status trackers and forums converge on “disabled by the devs”
+  from that week. Intermittent partial returns (2024) never restored
+  a stable search.
+
+== 3. The clone ecology (why no link gets wired in) ==
+
+Every post-2023 “PDF Drive” surface inherits a poisoned namespace:
+
+- Download buttons redirecting to **betting and malware-laced ad
+  pages** (user reports on updownradar/Trustpilot, 2023–2024, incl.
+  CDN-subdomain virus pages).
+- **Fake-VPN coercion popups** (“your carrier blocks downloads —
+  install DomVPN”) documented on the .to clone.
+- **Un-cancellable “premium” subscriptions**: Trustpilot complaints of
+  charges with no working cancel path — card-harvest pattern, same as
+  the fake-Z-Library playbook.
+- Search broken or index-gutted on most clones within months; the
+  name persists because the *brand* still converts search traffic.
+
+Verification heuristic is identical to §2/§7 of the Z-Library doc:
+with the original operator gone dark, *any* domain answering to this
+name in 2026 is either a squatter, an ad farm, or a harvest page.
+There is no certificate, signature or authority record that could
+rehabilitate one.
+
+== 4. What the Yubnub CLI does instead (link:pdfdrive, answered) ==
+
+Wired this round (registry 100 → 102, all HTTPS, tests 8/8):
+
+| Command | Shelf | Why it replaces a pdfdrive search |
+| --- | --- | --- |
+| `guten` | Project Gutenberg search | Public-domain full texts, direct files, zero clone risk |
+| `ia` | Internet Archive catalog search | Texts + audio + film + software; controlled lending for in-copyright |
+| `ol` | Open Library (already present) | Per-edition records; correct PD/lending status per country |
+
+And the cross-links now exist in both directions: the Z-Library doc's
+§5 legal shelves and this doc §4 name the same three commands, and
+both docs are linked from each other — the “link:pdfdrive” trail
+leads to the research, not to a clone.
+
+== 5. Sources (2026-10-13) ==
+
+web_search reporting: MobiSystems “Is PDF Drive Safe” (net→com
+migration, feature loss), PDFExtra safety review (domain history,
+copyright posture), r/Piracy May-2023 breakage threads (downloads
+dead from ~2023-05-01; DomVPN popup on clone), updownradar
+pdfdrive.com status comments (ad/virus redirects via CDN subdomains),
+Trustpilot pdfdrive.com reviews (subscription-cancellation failures,
+“viruses and ads” since May 2023), 2024 “is it back” threads (search
+still broken). Domain claims are reported speech from those sources,
+not first-party verification — by design, the live domains were not
+visited for this research.

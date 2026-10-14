@@ -7,9 +7,10 @@ each candidate repo (stars/push dates as observed 2026-10-13), plus live
 endpoint checks noted inline. Companion:
 [`yubnub-github-archive-research-2026-10-13.md`](./yubnub-github-archive-research-2026-10-13.md).*
 
-**Result: 32 commands replaced, 3 added, every one of the 97 commands now
-carries a `backing:` line in the app (open / api / local / proprietary* /
-dead), guarded by `tests/yubnub.test.mjs`.**
+**At the 2026-10-13 audit:** 32 commands replaced and 3 added; all 97 entries
+then had a `backing:` line. The 2026-10-14 full-catalog follow-up keeps that
+provenance map complete for the current **102-entry** offline registry; the
+test requires a backing record for every row.
 
 ---
 

@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="YUBNUB" />
-<meta name="description" content="Yubnub — a (social) command line for the web, rebuilt as an offline HTML5 / webxdc app. Type 'gim porsche 911', 'random 100', 'man random', 'xe -amount 100 -from USD -to EUR'. Registry crawled from yubnub.org 2026-10-13; dead endpoints updated or flagged." />
+<meta name="description" content="Yubnub — a (social) command line for the web, rebuilt as an offline HTML5 / webxdc app. Type 'gim porsche 911', 'random 100', 'man random', 'xe -amount 100 -from USD -to EUR'. Curated 102-command offline index plus paginated live ls access; dead endpoints updated or flagged." />
 <title>Yubnub · HTML5 command line for the web</title>
 <link rel="icon" href="./icon.png" sizes="512x512" />
 <script src="./webxdc.js"></script>
@@ -122,10 +122,18 @@ Unknown commands fall back to web search (SearXNG) — like yubnub.org's Google 
 
   <section class="tab" id="tab-commands">
     <div class="card">
-      <h2>Command registry <span class="dim small">— the <span class="mono">ls</span> / <span class="mono">ge</span> corpus, embedded</span></h2>
+      <h2>Command registry <span class="dim small">— offline <span class="mono">ls</span> snapshot + the live catalogue</span></h2>
+      <div class="live-catalog" style="border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:10px 0;background:var(--panel2)">
+        <p class="dim small" style="margin:0 0 8px"><b>Live directory:</b> the official server-side <span class="mono">ls</span> searches and paginates public commands. This offline snapshot is a curated subset. The audited upstream controller displays 49 rows while advancing page offsets by 50, so a row may be skipped at each page boundary; live entries are user-submitted, so review destinations before opening them.</p>
+        <div class="row" style="align-items:end">
+          <label class="small">Live <span class="mono">ls</span> page (49 rows; upstream offset 50)<br /><input type="number" id="lsLivePage" min="1" step="1" value="1" style="width:150px" /></label>
+          <a class="btn hot" id="btnOpenLiveLs" href="https://yubnub.org/kernel/ls?args=&amp;page=1" target="_blank" rel="noopener noreferrer">Open live ls · page 1</a>
+          <a class="btn" href="https://yubnub.org/kernel/most_used_commands" target="_blank" rel="noopener noreferrer">Most-used ranking</a>
+        </div>
+      </div>
       <div class="row">
-        <input type="search" id="lsQuery" placeholder="ls [word or phrase] — search names, descriptions, URLs…" style="flex:1;min-width:200px" />
-        <select id="lsCat" aria-label="Category"></select>
+        <input type="search" id="lsQuery" placeholder="ls [word or phrase] — search local names, descriptions, URLs…" style="flex:1;min-width:200px" />
+        <select id="lsCat" aria-label="Local snapshot category"></select>
         <label class="small dim"><input type="checkbox" id="lsEggs" /> Golden Eggs only (<span class="mono">ge</span>)</label>
       </div>
       <p class="dim small" id="lsCount"></p>
@@ -133,7 +141,7 @@ Unknown commands fall back to web search (SearXNG) — like yubnub.org's Google 
         <thead><tr><th>Command</th><th>Description</th><th>URL template</th><th>Uses*</th><th></th></tr></thead>
         <tbody id="lsBody"></tbody>
       </table></div>
-      <p class="dim small">*Use counts are the live counters read from <span class="mono">yubnub.org/kernel/most_used_commands</span> on 2026-10-13 (top rows only). <span class="tag upd">updated</span> = endpoint modernised (http→https / moved service) · <span class="tag new">new</span> = added in this rebuild · <span class="tag dead">dead</span> = service gone, kept for history · <span class="tag new">open source</span> = endpoint replaced with / backed by GitHub open-source code (researched per command) · proprietary* = researched, no open drop-in exists. Full audit in <span class="mono">docs/yubnub-opensource-backing-2026-10-13.md</span>.</p>
+      <p class="dim small">The offline snapshot has 102 curated command entries; dated use counters are present only where captured from the live Most-Used ranking (2026-10-13), not as a complete ranking. Use the live <span class="mono">ls</span> control above to search/page the public directory. <span class="tag upd">updated</span> = endpoint modernised (http→https / moved service) · <span class="tag new">new</span> = added in this rebuild · <span class="tag dead">dead</span> = service gone, kept for history · <span class="tag new">open source</span> = endpoint replaced with / backed by GitHub open-source code (researched per command) · proprietary* = researched, no open drop-in exists. Full audit in <span class="mono">docs/yubnub-opensource-backing-2026-10-13.md</span>.</p>
     </div>
   </section>
 
@@ -191,12 +199,12 @@ Unknown commands fall back to web search (SearXNG) — like yubnub.org's Google 
 </main>
 
 <footer>
-  Yubnub was created by Jonathan Aquino for Rails Day 2005 (MIT-licensed source: github.com/jcnetdev/yubnub). This is an independent offline rebuild in this repo's HTML5 → .xdc tradition — not affiliated with yubnub.org. Commands still resolve live against the real services when you open a result; the registry, parser and docs work fully offline. · <a href="./index.html">SITE-K home</a>
+  Yubnub was created by Jonathan Aquino for Rails Day 2005 (source: github.com/JonathanAquino/yubnub). This is an independent offline rebuild in this repo's HTML5 → .xdc tradition — not affiliated with yubnub.org. The curated registry, parser and docs work offline; the live public directory is available through YubNub's paginated <span class="mono">ls</span> endpoint (with the page-boundary caveat above). · <a href="./index.html">SITE-K home</a>
 </footer>
 
 <script>
 "use strict";
-/* ================= registry (crawled 2026-10-13) =================
+/* ============== curated offline registry (102 entries; 2026-10-14) ==============
    [name, urlTemplate, description, category, flags, uses]
    flags: E=golden egg, U=endpoint updated, N=new in this rebuild,
           D=dead service (historical), L=local/offline, M=app meta       */
@@ -281,7 +289,7 @@ const REGISTRY = [
 ["gma","https://mail.google.com/","Bookmark: Gmail.","bookmarks","U",null],
 ["/.","https://slashdot.org/","Bookmark: Slashdot ('/.' command).","bookmarks","U",null],
 ["gread","https://news.google.com/","Google Reader bookmark — Reader closed 2013; lands on Google News now.","bookmarks","UD",null],
-["ls","local:ls","Lists information about all commands. 'ls music' searches names, descriptions and URLs. (App meta-command.)","core","EM",745920],
+["ls","local:ls","Searches the curated offline command index; use the Live ls controls for YubNub's public directory (paginated, with an upstream page-boundary caveat). 'ls music' filters the local index. (App meta-command.)","core","EM",745920],
 ["ge","local:ge","Golden Eggs — particularly useful commands. 'ge dictionary' filters them.","core","EM",405978],
 ["man","local:man","Displays help for a command. Example: man gim. ('man' = manual.)","core","EM",181380],
 ["create","local:create","Creates a new command with the given name (must not already exist). Opens the Create tab here.","core","EM",351984],
@@ -330,7 +338,7 @@ const LINKS = [
 ["https://yubnub.org/","Homepage + command box (gim / random / man / xe examples, Popular Searches table)","Verified live 2026-10-13","Console + examples, embedded"],
 ["https://yubnub.org/parser/parse?command=%s","THE endpoint — every install (Chrome/Firefox/Opera/Konqueror/LaunchBar…) points here","Live (redirect engine)","Reimplemented offline in this app"],
 ["https://yubnub.org/parser/url?command=%s","Backing service for the 'url' command","Live","local:url"],
-["https://yubnub.org/kernel/ls?args=%s","Command List (ls) — 10,500+ commands, paged","Live","Registry tab (curated corpus)"],
+["https://yubnub.org/kernel/ls?args=%s","Public command directory (ls) — live search and pagination; see upstream page-boundary caveat","Live","Live ls controls + curated offline snapshot"],
 ["https://yubnub.org/kernel/man?args=%s","Manual pages (man gim, man xe, man random…)","Verified live 2026-10-13","local:man panel"],
 ["https://yubnub.org/kernel/golden_eggs","Golden Eggs (ge) — notable commands","Verified live 2026-10-13","ge filter in registry"],
 ["https://yubnub.org/kernel/most_used_commands","Most-Used Commands with live use counters (g = 23.4M)","Verified live 2026-10-13","Uses* column, top rows"],
@@ -572,8 +580,18 @@ $("cmdInput").addEventListener("keydown",(ev)=>{ if(ev.key==="Enter"){ /* form s
 
 /* ---- registry (ls) rendering ---- */
 const cats = [...new Set(REGISTRY.map(r=>r[3]))].sort();
-$("lsCat").innerHTML = '<option value="">all categories</option>'+cats.map(c=>'<option>'+c+"</option>").join("");
+$("lsCat").innerHTML = '<option value="">all local categories</option>'+cats.map(c=>'<option>'+c+"</option>").join("");
+function updateLiveLsLink(){
+  const pageInput = Number.parseInt($("lsLivePage").value, 10);
+  const page = Number.isSafeInteger(pageInput) && pageInput > 0 ? pageInput : 1;
+  const url = new URL("https://yubnub.org/kernel/ls");
+  url.searchParams.set("args", ($("lsQuery").value||"").trim());
+  url.searchParams.set("page", String(page));
+  $("btnOpenLiveLs").href = url.toString();
+  $("btnOpenLiveLs").textContent = "Open live ls · page " + page;
+}
 function renderLs(){
+  updateLiveLsLink();
   const q=($("lsQuery").value||"").toLowerCase(), cat=$("lsCat").value, eggs=$("lsEggs").checked;
   const rows=[];
   byName.forEach((c)=>{ /* dedupe aliases */
@@ -587,13 +605,14 @@ function renderLs(){
     if (q && !(c.n+" "+c.d+" "+c.u).toLowerCase().includes(q)) return false;
     return true;
   });
-  $("lsCount").textContent = list.length+" command(s)"+(q?' matching "'+q+'"':"")+(eggs?" · Golden Eggs only":"");
+  $("lsCount").textContent = list.length+" local command(s)"+(q?' matching "'+q+'"':"")+(eggs?" · Golden Eggs only":"")+" · curated offline snapshot";
   $("lsBody").innerHTML = list.map(c=>{
     const tags = ((c.f||"").includes("E")?'<span class="tag egg">Golden Egg</span> ':"")+((c.f||"").includes("N")?'<span class="tag new">new</span> ':"")+((c.f||"").includes("U")?'<span class="tag upd">updated</span> ':"")+((c.f||"").includes("D")?'<span class="tag dead">dead</span> ':"")+((c.f||"").includes("L")?'<span class="tag">offline</span> ':"")+(isOpen(c.n)?'<span class="tag new">open source</span> ':"")+((BACKING[c.n]||"").startsWith("prop:")?'<span class="tag">proprietary*</span> ':"")+(c.custom?'<span class="tag new">yours</span> ':"");
     return "<tr><td><button class='cmdname' data-cmd=\""+esc(c.n)+"\">"+esc(c.n)+"</button><br />"+tags+"</td><td>"+esc(c.d)+"</td><td class='mono small'>"+esc(c.u)+backingHtml(c.n)+"</td><td>"+(c.uses?c.uses.toLocaleString():"—")+'</td><td><button class="btn" data-man="'+esc(c.n)+'">man</button></td></tr>';
-  }).join("") || '<tr><td colspan="5" class="dim">No commands match — try ls with another word.</td></tr>';
+  }).join("") || '<tr><td colspan="5" class="dim">No local commands match. Use Open live ls above to search the public directory.</td></tr>';
 }
 $("lsQuery").addEventListener("input",renderLs); $("lsCat").addEventListener("change",renderLs); $("lsEggs").addEventListener("change",renderLs);
+$("lsLivePage").addEventListener("input",updateLiveLsLink);
 $("lsBody").addEventListener("click",(ev)=>{
   const m=ev.target.closest("[data-man]"); if(m){ showTab("console"); printOut(manHtml(m.dataset.man)); setResult(""); return; }
   const b=ev.target.closest("[data-cmd]"); if(b){ $("cmdInput").value=b.dataset.cmd+" "; $("cmdInput").focus(); showTab("console"); }

@@ -308,7 +308,7 @@ test("Java edition ships the same documentation as a .wiki page", () => {
   assert.ok(wiki.includes("public/docs/image"), "Java doc page names the media folder");
   assert.ok(wiki.includes("no authentication"), "Java doc page keeps the safety warning");
   const build = readFileSync(path.join(root, "tools", "wikiinajar", "build-image-support.sh"), "utf8");
-  assert.ok(build.includes("Wiki in a Jar.wiki"), "Java build ships the documentation page");
+  assert.ok(build.includes('public/docs/wiki/*.wiki'), "Java build ships every wiki page, including the documentation page");
 });
 
 test("md2wiki converts the constructs this corpus actually uses", () => {

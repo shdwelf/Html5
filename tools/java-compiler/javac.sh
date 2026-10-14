@@ -11,10 +11,23 @@
 # Usage:  javac.sh -d OUTDIR [-cp CLASSPATH] FILE.java [FILE.java ...]
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-JAVA="$(python3 -c 'import jdk4py; print(jdk4py.JAVA_HOME)' 2>/dev/null)/bin/java"
+JAVA_BIN="${JAVA:-}"
+if [ -z "$JAVA_BIN" ] && [ -n "${JAVA_HOME:-}" ] && [ -x "$JAVA_HOME/bin/java" ]; then
+  JAVA_BIN="$JAVA_HOME/bin/java"
+fi
+if [ -z "$JAVA_BIN" ]; then
+  JAVA_BIN="$(command -v java || true)"
+fi
+if [ -z "$JAVA_BIN" ]; then
+  JDK4PY_HOME="$(python3 -c 'import jdk4py; print(jdk4py.JAVA_HOME)' 2>/dev/null || true)"
+  [ -z "$JDK4PY_HOME" ] || JAVA_BIN="$JDK4PY_HOME/bin/java"
+fi
+if [ -n "$JAVA_BIN" ] && [ ! -x "$JAVA_BIN" ]; then
+  JAVA_BIN="$(command -v "$JAVA_BIN" || true)"
+fi
 ECJ="$HERE/ecj-4.4.jar"
 RT="$HERE/.rt/rt.jar"
-[ -x "$JAVA" ] || { echo "no jdk4py java" >&2; exit 1; }
+[ -x "$JAVA_BIN" ] || { echo "no Java runtime: set JAVA or JAVA_HOME, put java on PATH, or install jdk4py" >&2; exit 1; }
 [ -f "$ECJ" ] || { echo "missing $ECJ" >&2; exit 1; }
 [ -f "$RT" ]  || "$HERE/fetch-rtjar.sh"
-exec "$JAVA" -jar "$ECJ" -bootclasspath "$RT" -source 1.7 -target 1.7 -encoding UTF-8 "$@"
+exec "$JAVA_BIN" -jar "$ECJ" -bootclasspath "$RT" -source 1.7 -target 1.7 -encoding UTF-8 "$@"
