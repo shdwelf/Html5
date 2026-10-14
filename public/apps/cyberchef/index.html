@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 493 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 495 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -9415,6 +9415,76 @@ function enigmaCrypt(text,opts){
   }
   return out;
 }
+/* Churchhouse, Codes and Ciphers (CUP, 2004), ch. 9 "The indicator chains in the
+   Enigma", pp. 125-126: join the enciphered indicator doublets wherever the second
+   letter of one is the first letter of the next, and stop when a letter repeats.  The
+   Polish discovery the chapter reports is that the resulting chain lengths come in
+   pairs — the property that let Rejewski and his colleagues pick the right wheel. */
+function fdEnigmaChainReport(text,mode){
+  const letters=String(text||'').toUpperCase().replace(/[^A-Z]/g,'');
+  if(!letters)throw new Error('No letters in the input — paste the enciphered indicator doublets');
+  const doublets=[];
+  if(mode==='text'){
+    if(letters.length%2)throw new Error('Continuous mode needs an even number of letters; this input has '+letters.length);
+    for(let i=0;i<letters.length;i+=2)doublets.push(letters.slice(i,i+2));
+  }else{
+    for(const token of String(text||'').toUpperCase().split(/[^A-Z]+/).filter(Boolean)){
+      if(token.length%2)throw new Error('"'+token+'" has an odd number of letters — a doublet is two letters');
+      for(let i=0;i<token.length;i+=2)doublets.push(token.slice(i,i+2));
+    }
+  }
+  const starts=new Map(),duplicates=[];
+  for(const d of doublets){
+    if(starts.has(d[0])){duplicates.push(d[0]);continue;}
+    starts.set(d[0],d);
+  }
+  const used=new Set(),chains=[];
+  for(const d of doublets){
+    if(used.has(d))continue;
+    used.add(d);
+    if(d[0]===d[1]){chains.push({text:d,length:1,kind:'fixed point'});continue;}
+    const path=[d[0]],seen=new Set(path);
+    let cur=d[0],kind='closed',tail=d;
+    for(;;){
+      const pair=starts.get(cur);
+      if(!pair){kind='open';break;}
+      used.add(pair);
+      path.push(pair[1]);
+      tail=pair;
+      if(seen.has(pair[1]))break;
+      seen.add(pair[1]);
+      cur=pair[1];
+    }
+    if(kind==='closed')path.pop();
+    chains.push({text:path.join(''),length:path.length,kind,tail});
+  }
+  const lengths=chains.map(c=>c.length);
+  const counts=new Map();
+  for(const len of lengths)counts.set(len,(counts.get(len)||0)+1);
+  const paired=[...counts.values()].every(v=>v%2===0);
+  const fixed=chains.filter(c=>c.kind==='fixed point').length;
+  const open=chains.filter(c=>c.kind==='open').length;
+  const lines=[];
+  lines.push('════ Enigma indicator chains ════');
+  lines.push('Doublets   : '+doublets.length+', '+starts.size+' distinct first letters'+(duplicates.length?' — '+duplicates.join(', ')+' start more than one doublet and only the first of each was followed':' — no letter starts two doublets'));
+  chains.forEach((c,i)=>{
+    const note=c.kind==='open'?'open — no doublet starts with "'+c.text.slice(-1)+'"'
+      :(c.kind==='fixed point'?'fixed point — the doublet enciphers its letter to itself'
+      :'closed — '+c.tail[0]+c.tail[1]+' returns to '+c.text[0]);
+    lines.push(('Chain '+(i+1)).padEnd(10)+': '+c.text.padEnd(12)+'length '+String(c.length).padEnd(4)+' '+note);
+  });
+  lines.push('Lengths    : '+(lengths.length?lengths.join(', '):'(none)')+' — '+(paired?'every length occurs an even number of times, the Polish pairing property the chapter reports':'at least one length occurs an odd number of times, so this is a partial or corrupted set'));
+  lines.push('Structure  : '+(chains.length-open-fixed)+' closed chain'+(chains.length-open-fixed===1?'':'s')+', '+open+' open, '+fixed+' fixed point'+(fixed===1?'':'s')+'; longest '+Math.max(...lengths)+' letters, shortest '+Math.min(...lengths));
+  lines.push('Method     : join doublets where the second letter of one is the first letter of the next, stopping when a letter repeats (a plain–cipher pair is reversible at the same wheel setting, which is why the chains pair up)');
+  lines.push('Source     : R. F. Churchhouse, Codes and Ciphers: Julius Caesar, the Enigma and the internet (CUP, 2004), ch. 9 "The indicator chains in the Enigma", Examples 9.1 and 9.2, pp. 125-126');
+  lines.push('Caution    : a chain analysis narrows the wheel order and the ground setting from a batch of doubly enciphered indicators; it is not itself a decryption of the message traffic.');
+  return lines.join('\n');
+}
+addOp('enigmaChains','Enigma indicator chains (Polish pairing analysis)','Classical',
+  'The 1932 Polish attack on Enigma indicators, as a worksheet: given the doublets that come out of enciphering a batch of same-letter indicator pairs at a common ground setting, join them wherever the second letter of one doublet is the first letter of the next and stop when a letter repeats. The chains that fall out are the structure the Polish cryptanalysts used to identify the right-hand wheel and its setting, and their lengths come in pairs — a fixed point such as "DD" counts as a chain of one, and two such fixed points are themselves a pair. Control vectors are the two printed in Churchhouse, Codes and Ciphers (CUP, 2004), ch. 9: the 12 mini-Enigma doublets AK BL CI DD EB FG GE HH IA JC KJ LF, whose chains the book states as two of five letters and two of one (AKJCI, BLFGE, DD, HH); and the 26 doublets of Example 9.2, where the book prints ABQNUMLPIR and CDKSJTVYGH, both of length 10, and the remaining six doublets close out as EZ, WX, FF and OO. Chain analysis is a step towards reading traffic, not a decryption: it says which wheel and setting to test, and nothing about the plaintext.',
+  [
+    {key:'mode',label:'Input',type:'select',default:'doublets',options:[['doublets','Doublets (space or line separated)'],['text','Continuous cipher text']]}
+  ],function(text,args){return fdEnigmaChainReport(text,args.mode);});
 addOp('enigma','Enigma I (Wehrmacht)','Classical',
   'Wehrmacht Enigma I with rotors I–V, reflectors B/C, ring settings, start positions, plugboard, and the middle-rotor double-step. Reciprocal: encrypt = decrypt. Verified against the Wikipedia vector I-II-III / UKW-B / rings AAA / start AAA / AAAAA → BDZGO. GCWizard leftover.',
   [
@@ -24713,6 +24783,266 @@ addOp('pgpArmorCheck','OpenPGP Radix-64 armor check (CRC-24)','Modern',
       'Caution    : a checksum detects transcription damage only — it is not a MAC, and a mismatch can equally mean the wrong block was pasted.'].join('\n');
   });
 
+/* ---- OpenPGP string-to-key needs a hash inside the page: the iterated count may
+   reach 65,011,712 octets (count byte 0xFF), so SHA-1 and SHA-256 are streamed in
+   64 KiB chunks and the repeated salt+phrase is never materialised. Both cores are
+   checked against the FIPS 180-4 vectors for "abc" in the test suite. ---- */
+function fdSha1New(){return{h:[0x67452301,0xefcdab89,0x98badcfe,0x10325476,0xc3d2e1f0],buf:new Uint8Array(64),n:0,len:0};}
+function fdSha1Compress(st,src,off){
+  const w=new Int32Array(80);
+  for(let i=0;i<16;i++)w[i]=(src[off+4*i]<<24)|(src[off+4*i+1]<<16)|(src[off+4*i+2]<<8)|src[off+4*i+3];
+  for(let i=16;i<80;i++){const x=w[i-3]^w[i-8]^w[i-14]^w[i-16];w[i]=(x<<1)|(x>>>31);}
+  let a=st.h[0],b=st.h[1],c=st.h[2],d=st.h[3],e=st.h[4];
+  for(let i=0;i<80;i++){
+    let f,k;
+    if(i<20){f=(b&c)|(~b&d);k=0x5a827999;}
+    else if(i<40){f=b^c^d;k=0x6ed9eba1;}
+    else if(i<60){f=(b&c)|(b&d)|(c&d);k=0x8f1bbcdc;}
+    else{f=b^c^d;k=0xca62c1d6;}
+    const t=((((a<<5)|(a>>>27))+f+e+k+w[i])|0);
+    e=d;d=c;c=(b<<30)|(b>>>2);b=a;a=t;
+  }
+  st.h[0]=(st.h[0]+a)|0;st.h[1]=(st.h[1]+b)|0;st.h[2]=(st.h[2]+c)|0;st.h[3]=(st.h[3]+d)|0;st.h[4]=(st.h[4]+e)|0;
+}
+function fdSha1Update(st,src){
+  st.len+=src.length;
+  let i=0;
+  if(st.n){const take=Math.min(64-st.n,src.length);st.buf.set(src.subarray(0,take),st.n);st.n+=take;i=take;if(st.n===64){fdSha1Compress(st,st.buf,0);st.n=0;}}
+  for(;i+64<=src.length;i+=64)fdSha1Compress(st,src,i);
+  if(i<src.length){st.buf.set(src.subarray(i),0);st.n=src.length-i;}
+}
+function fdSha1Finish(st){
+  const hi=Math.floor(st.len/536870912),lo=(st.len*8)>>>0;
+  st.buf[st.n++]=0x80;
+  if(st.n>56){while(st.n<64)st.buf[st.n++]=0;fdSha1Compress(st,st.buf,0);st.n=0;}
+  while(st.n<56)st.buf[st.n++]=0;
+  for(let i=0;i<4;i++)st.buf[56+i]=(hi>>>(8*(3-i)))&0xff;
+  for(let i=0;i<4;i++)st.buf[60+i]=(lo>>>(8*(3-i)))&0xff;
+  fdSha1Compress(st,st.buf,0);
+  const out=new Uint8Array(20);
+  for(let i=0;i<5;i++)for(let j=0;j<4;j++)out[4*i+j]=(st.h[i]>>>(8*(3-j)))&0xff;
+  return out;
+}
+const FD_SHA256_K=new Uint32Array([0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2]);
+function fdSha256New(){return{h:new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]),buf:new Uint8Array(64),n:0,len:0};}
+function fdSha256Compress(st,src,off){
+  const w=new Uint32Array(64);
+  for(let i=0;i<16;i++)w[i]=(((src[off+4*i]<<24)|(src[off+4*i+1]<<16)|(src[off+4*i+2]<<8)|src[off+4*i+3])>>>0);
+  for(let i=16;i<64;i++){
+    const x=w[i-15],y=w[i-2];
+    const s0=((x>>>7)|(x<<25))^((x>>>18)|(x<<14))^(x>>>3);
+    const s1=((y>>>17)|(y<<15))^((y>>>19)|(y<<13))^(y>>>10);
+    w[i]=(w[i-16]+s0+w[i-7]+s1)>>>0;
+  }
+  let a=st.h[0],b=st.h[1],c=st.h[2],d=st.h[3],e=st.h[4],f=st.h[5],g=st.h[6],hh=st.h[7];
+  for(let i=0;i<64;i++){
+    const S1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7));
+    const ch=(e&f)^((~e)&g);
+    const t1=(hh+S1+ch+FD_SHA256_K[i]+w[i])>>>0;
+    const S0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10));
+    const maj=(a&b)^(a&c)^(b&c);
+    const t2=(S0+maj)>>>0;
+    hh=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;
+  }
+  st.h[0]=(st.h[0]+a)>>>0;st.h[1]=(st.h[1]+b)>>>0;st.h[2]=(st.h[2]+c)>>>0;st.h[3]=(st.h[3]+d)>>>0;
+  st.h[4]=(st.h[4]+e)>>>0;st.h[5]=(st.h[5]+f)>>>0;st.h[6]=(st.h[6]+g)>>>0;st.h[7]=(st.h[7]+hh)>>>0;
+}
+function fdSha256Update(st,src){
+  st.len+=src.length;
+  let i=0;
+  if(st.n){const take=Math.min(64-st.n,src.length);st.buf.set(src.subarray(0,take),st.n);st.n+=take;i=take;if(st.n===64){fdSha256Compress(st,st.buf,0);st.n=0;}}
+  for(;i+64<=src.length;i+=64)fdSha256Compress(st,src,i);
+  if(i<src.length){st.buf.set(src.subarray(i),0);st.n=src.length-i;}
+}
+function fdSha256Finish(st){
+  const hi=Math.floor(st.len/536870912),lo=(st.len*8)>>>0;
+  st.buf[st.n++]=0x80;
+  if(st.n>56){while(st.n<64)st.buf[st.n++]=0;fdSha256Compress(st,st.buf,0);st.n=0;}
+  while(st.n<56)st.buf[st.n++]=0;
+  for(let i=0;i<4;i++)st.buf[56+i]=(hi>>>(8*(3-i)))&0xff;
+  for(let i=0;i<4;i++)st.buf[60+i]=(lo>>>(8*(3-i)))&0xff;
+  fdSha256Compress(st,st.buf,0);
+  const out=new Uint8Array(32);
+  for(let i=0;i<8;i++)for(let j=0;j<4;j++)out[4*i+j]=(st.h[i]>>>(8*(3-j)))&0xff;
+  return out;
+}
+function fdHasher(name){
+  if(name==='SHA-1')return{size:20,mk:fdSha1New,up:fdSha1Update,fin:fdSha1Finish};
+  if(name==='SHA-256')return{size:32,mk:fdSha256New,up:fdSha256Update,fin:fdSha256Finish};
+  throw new Error('No in-page implementation of '+name+' — this recipe streams SHA-1 and SHA-256');
+}
+function fdHashBytes(name,bytes){const spec=fdHasher(name);const st=spec.mk();spec.up(st,bytes);return spec.fin(st);}
+function fdHex(bytes){return Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join('');}
+const FD_PGP_HASHES={1:'MD5',2:'SHA-1',3:'RIPEMD-160',8:'SHA-256',9:'SHA-384',10:'SHA-512',11:'SHA-224'};
+const FD_PGP_CIPHERS={1:'IDEA',2:'Triple-DES',3:'CAST5',4:'Blowfish',7:'AES-128',8:'AES-192',9:'AES-256',10:'Twofish'};
+/* RFC 4880 §3.7.1.3 iterated-and-salted string-to-key: hash (salt||phrase) repeated
+   until `count` octets have been consumed, prefixing each extra round with that many
+   zero octets.  Iterating inside the digest is the whole point of the form. */
+function fdPgpS2k(pass,type,hashId,salt,countByte,keyLen){
+  const hname=FD_PGP_HASHES[hashId]||('hash '+hashId);
+  if(hname!=='SHA-1'&&hname!=='SHA-256')throw new Error('S2K hash id '+hashId+' ('+hname+') has no in-page implementation — these recipes cover SHA-1 and SHA-256');
+  if(type!==3)throw new Error('S2K type '+type+' is '+(type===0?'the simple form':type===1?'the salted form':'reserved')+' — this recipe implements the iterated-and-salted form (type 3), which is what both control vectors and current GnuPG use');
+  const spec=fdHasher(hname);
+  const pw=utf8Encode(String(pass));
+  const unit=new Uint8Array(salt.length+pw.length);
+  unit.set(salt,0);unit.set(pw,salt.length);
+  const count=(16+(countByte&15))<<((countByte>>4)+6);
+  const key=new Uint8Array(keyLen);
+  let filled=0,round=0;
+  const reps=Math.max(1,Math.floor(65536/unit.length));
+  const chunk=new Uint8Array(unit.length*reps);
+  for(let i=0;i<reps;i++)chunk.set(unit,i*unit.length);
+  while(filled<keyLen){
+    const st=spec.mk();
+    if(round)spec.up(st,new Uint8Array(round));
+    let left=count;
+    while(left>=chunk.length){spec.up(st,chunk);left-=chunk.length;}
+    if(left>0)spec.up(st,chunk.subarray(0,left));
+    const dig=spec.fin(st);
+    const take=Math.min(dig.length,keyLen-filled);
+    key.set(dig.subarray(0,take),filled);
+    filled+=take;round++;
+  }
+  return {key,count,hashName:hname,rounds:round};
+}
+function fdPgpPackets(bytes){
+  const out=[];
+  let i=0;
+  while(i<bytes.length){
+    const head=bytes[i++];
+    if(!(head&0x80))throw new Error('Byte '+i+' is not an OpenPGP packet header (bit 7 clear) — this is not a packet stream');
+    let tag,len;
+    if(head&0x40){
+      tag=head&0x3f;
+      const l1=bytes[i++];
+      if(l1<192)len=l1;
+      else if(l1<224){len=((l1-192)<<8)+bytes[i++]+192;}
+      else if(l1===255){len=((bytes[i]<<24)|(bytes[i+1]<<16)|(bytes[i+2]<<8)|bytes[i+3])>>>0;i+=4;}
+      else throw new Error('Partial packet lengths (first length octet 224–254) are not implemented');
+    }else{
+      tag=(head&0x3f)>>2;
+      const lt=head&3;
+      if(lt===0)len=bytes[i++];
+      else if(lt===1){len=(bytes[i]<<8)|bytes[i+1];i+=2;}
+      else if(lt===2){len=((bytes[i]<<24)|(bytes[i+1]<<16)|(bytes[i+2]<<8)|bytes[i+3])>>>0;i+=4;}
+      else len=bytes.length-i;
+    }
+    if(i+len>bytes.length)throw new Error('Packet tag '+tag+' claims '+len+' octets but only '+(bytes.length-i)+' remain — the stream is truncated');
+    out.push({tag,len,body:bytes.subarray(i,i+len)});
+    i+=len;
+  }
+  return out;
+}
+/* RFC 4880 §13.9: the sender prefixes BS+2 random octets whose last two repeat the
+   two before them; the ciphertext itself is CFB with 128-bit feedback and a zero IV. */
+function fdPgpCfbDecrypt(key,ct){
+  const rkb=aesKeyExpand(key);
+  const out=new Uint8Array(ct.length);
+  let prev=new Uint8Array(16);
+  for(let pos=0;pos<ct.length;pos+=16){
+    const ks=aesEncBlockA(prev,rkb);
+    const n=Math.min(16,ct.length-pos);
+    for(let i=0;i<n;i++)out[pos+i]=ct[pos+i]^ks[i];
+    const next=new Uint8Array(16);
+    for(let i=0;i<n;i++)next[i]=ct[pos+i];
+    prev=next;
+  }
+  return out;
+}
+function fdAscii(bytes){
+  let printable=0;
+  for(const b of bytes)if(b===9||b===10||b===13||(b>=32&&b<127))printable++;
+  return bytes.length>0&&printable===bytes.length;
+}
+function fdUtc(secs){
+  const d=new Date((secs>>>0)*1000);
+  const p=n=>String(n).padStart(2,'0');
+  return d.getUTCFullYear()+'-'+p(d.getUTCMonth()+1)+'-'+p(d.getUTCDate())+'T'+p(d.getUTCHours())+':'+p(d.getUTCMinutes())+':'+p(d.getUTCSeconds())+'Z';
+}
+addOp('pgpSymDecrypt','OpenPGP symmetric-key decrypt (SKESK + SEIPD)','Modern',
+  'Reads a passphrase-protected OpenPGP message end to end and says exactly what it found: the Symmetric-Key Encrypted Session Key packet (RFC 4880 §5.3), the iterated-and-salted string-to-key of §3.7.1.3, the CFB decryption of §13.9 and the Modification Detection Code of §5.13, including the two extra prefix octets that repeat the pair before them. The session key is derived in-page, the plaintext is recovered, and the MDC is recomputed — the trailing SHA-1 over every octet that precedes it — so a wrong passphrase or a damaged message is reported instead of silently returning noise. Control vectors: GnuPG\'s own test blobs tests/openpgp/samplemsgs/enc-sym-cfb-1.asc (AES-128) and enc-sym-cfb-2.asc (AES-256), both the passphrase "password", both decrypting "Hello, world!\\n" with a matching MDC; the in-page hash cores are checked against the FIPS 180-4 vectors for "abc". Scope: the iterated-and-salted S2K (type 3) with SHA-1 or SHA-256, AES-128/192/256, and the CFB+MDC profile — public-key (PKESK) messages, the S2K encrypted-session-key form and AEAD (OCB, RFC 9580) are refused with the reason rather than guessed at.',
+  [
+    {key:'pass',label:'Passphrase',type:'string',default:'password'},
+    {key:'mode',label:'Input',type:'select',default:'armor',options:[['armor','Armored message'],['raw','Raw packet bytes']]},
+    {key:'infmt',label:'Raw format',type:'select',default:'hex',options:[['hex','Hex'],['base64','Base64']]}
+  ],function(text,args){
+    const src=String(text||'');
+    let bytes,armorNote='';
+    if(args.mode==='armor'){
+      const split=fdArmorSplit(src);
+      const payload=split.payload.join('');
+      if(!payload)throw new Error('The armored block carries no payload lines');
+      bytes=bytesFromB64(payload);
+      if(split.checksum){
+        const crc=fdCrc24(bytes);
+        const line=b64FromBytes(new Uint8Array([(crc>>16)&255,(crc>>8)&255,crc&255]));
+        armorNote='Armor      : '+bytes.length+' octets, CRC-24 line ='+split.checksum+' '+(line===split.checksum?'OK':'MISMATCH (recomputed ='+line+')');
+      }else{
+        armorNote='Armor      : '+bytes.length+' octets, no "=XXXX" CRC line to check';
+      }
+    }else{
+      bytes=args.infmt==='base64'?bytesFromB64(src):bytesFromHex(src);
+      armorNote='Input      : '+bytes.length+' octets of packet stream ('+(args.infmt==='base64'?'base64':'hex')+')';
+    }
+    const pkts=fdPgpPackets(bytes);
+    const sk=pkts.find(p=>p.tag===3);
+    const seipd=pkts.find(p=>p.tag===18);
+    const pkesk=pkts.find(p=>p.tag===1);
+    if(pkesk&&!sk)throw new Error('This message is encrypted to a public key (PKESK, tag 1): it takes the recipient secret key, not a passphrase');
+    if(!sk)throw new Error('No Symmetric-Key Encrypted Session Key packet (tag 3). Packets present: '+pkts.map(p=>p.tag).join(', '));
+    if(!seipd)throw new Error('No Symmetrically Encrypted Integrity Protected Data packet (tag 18)'+(pkts.some(p=>p.tag===20)?' — this message is AEAD Encrypted Data (tag 20, RFC 9580), a different recipe':'')+'. Packets present: '+pkts.map(p=>p.tag).join(', '));
+    const version=sk.body[0],cipherId=sk.body[1],s2kType=sk.body[2],hashId=sk.body[3];
+    const cipherName=FD_PGP_CIPHERS[cipherId]||('cipher '+cipherId);
+    if(!/^AES-/.test(cipherName))throw new Error('Cipher id '+cipherId+' ('+cipherName+') is not in this recipe — AES-128/192/256 are');
+    if(version!==4)throw new Error('SKESK version '+version+' — this recipe reads version 4 (RFC 4880 §5.3)');
+    const esk=sk.body.subarray(13);
+    if(esk.length)throw new Error('This SKESK also carries a '+esk.length+'-octet encrypted session key, which needs the CFB unwrap step of RFC 4880 §5.3; the plain passphrase form is what the control vectors use');
+    const salt=sk.body.subarray(4,12),countByte=sk.body[12];
+    const keyLen=cipherId===9?32:cipherId===8?24:16;
+    const s2k=fdPgpS2k(args.pass,s2kType,hashId,salt,countByte,keyLen);
+    const seipdVersion=seipd.body[0];
+    if(seipdVersion!==1)throw new Error('SEIPD version '+seipdVersion+' is not the CFB+MDC form (version 1) — AEAD packets (RFC 9580) are a different recipe');
+    const ct=seipd.body.subarray(1);
+    if(ct.length<40)throw new Error('SEIPD body is only '+ct.length+' octets — too short to hold a prefix and an MDC');
+    const pt=fdPgpCfbDecrypt(s2k.key,ct);
+    const prefix=pt.subarray(0,18);
+    const resync=prefix[16]===prefix[14]&&prefix[17]===prefix[15];
+    const inner=pt.subarray(18,pt.length-22);
+    const storedMdc=pt.subarray(pt.length-20);
+    const d3=pt[pt.length-22],d4=pt[pt.length-21];
+    const computedMdc=fdHashBytes(s2k.hashName,pt.subarray(0,pt.length-20));
+    const mdcOk=d3===0xd3&&d4===0x14&&fdHex(computedMdc)===fdHex(storedMdc);
+    const lines=[];
+    lines.push('════ OpenPGP symmetric-key message ════');
+    lines.push(armorNote);
+    lines.push('Packets    : SKESK v4 (tag 3, '+sk.len+' octets) · SEIPD v1 (tag 18, '+seipd.len+' octets)'+(pkts.length>2?' · also tag '+pkts.filter(p=>p.tag!==3&&p.tag!==18).map(p=>p.tag).join(', '):''));
+    lines.push('Cipher     : '+cipherName+' (id '+cipherId+') · CFB, '+keyLen*8+'-bit feedback, IV = 0  (RFC 4880 §13.9)');
+    lines.push('S2K        : iterated + salted, '+s2k.hashName+' (hash id '+hashId+'), salt '+fdHex(salt)+', count 0x'+countByte.toString(16).toUpperCase().padStart(2,'0')+' → '+s2k.count+' octets, '+s2k.rounds+' digest round'+(s2k.rounds===1?'':'s'));
+    lines.push('Session key: '+fdHex(s2k.key)+'  (derived from the passphrase, not read out of the packet)');
+    lines.push('Prefix     : '+fdHex(prefix.subarray(0,16))+' | '+fdHex(prefix.subarray(16))+'  quick check '+(resync?'OK — the last two octets repeat the pair before them':'FAILED — a damaged prefix means the passphrase or the packet is wrong'));
+    let innerPkts=null,innerErr='';
+    try{innerPkts=fdPgpPackets(inner);}catch(e){innerErr=e.message;}
+    if(innerPkts&&innerPkts.length&&innerPkts[0].tag===11){
+      const lit=innerPkts[0].body;
+      const format=lit[0],nameLen=lit[1],name=lit.subarray(2,2+nameLen);
+      const time=((lit[2+nameLen]<<24)|(lit[3+nameLen]<<16)|(lit[4+nameLen]<<8)|lit[5+nameLen])>>>0;
+      const data=lit.subarray(6+nameLen);
+      lines.push('Inner      : literal data (tag 11, '+innerPkts[0].len+' octets) · format "'+String.fromCharCode(format)+'" · filename '+(nameLen?'"'+utf8Decode(name)+'"':'(none)')+' · stored '+fdUtc(time));
+      lines.push('MDC        : '+(mdcOk?'OK — hash of the '+pt.length+' octets that precede the 20-octet MDC matches it, and the D3 14 packet octets are where they belong':'MISMATCH — recomputed 0x'+fdHex(computedMdc.subarray(0,6))+'… against stored 0x'+fdHex(storedMdc.subarray(0,6))+'…; the passphrase is wrong or the message was altered'));
+      lines.push('Payload    : '+data.length+' octets');
+      lines.push(data.length?(fdAscii(data)?utf8Decode(data):'['+fdHex(data)+']'):'(empty)');
+    }else{
+      let innerLine;
+      if(innerErr)innerLine='the decrypted stream does not parse as packets ('+innerErr+') — the passphrase is wrong or the message is damaged, and the MDC line below is the authority';
+      else if(innerPkts.length)innerLine='first inner packet is tag '+innerPkts[0].tag+' — only literal data (tag 11) is rendered here';
+      else innerLine='(no inner packets)';
+      lines.push('Inner      : '+innerLine);
+      lines.push('MDC        : '+(mdcOk?'OK':'MISMATCH — recomputed 0x'+fdHex(computedMdc.subarray(0,6))+'… against stored 0x'+fdHex(storedMdc.subarray(0,6))+'…'));
+    }
+    lines.push('RFC        : 4880 §5.3 (SKESK), §3.7.1.3 (iterated string-to-key), §13.9 (CFB), §5.13 (MDC)');
+    lines.push('Caution    : the MDC shows the message was not altered in transit; it is not a signature, and the session key is only as strong as the passphrase. A passphrase that is merely wrong is reported, never silently returned as garbage.');
+    return lines.join('\n');
+  });
 function fdVicSchedule(phrase,date,personal,keygroup){
   const p=fdVicPhrase(phrase);
   if(p.length<20)throw new Error('VIC needs a key phrase of at least 20 letters');
@@ -32847,6 +33177,8 @@ RECIPE_PACKS["Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld"] = [
 // The Kleopatra/GnuPG thread (docs/recipe-sourcing-round-4-2026-10-14.md): the
 // armor checksum that GnuPG prints under every armored block.
 RECIPE_PACKS["OpenPGP Armor (Kleopatra / GnuPG)"] = [["pgpArmorCheck",{}]];
+RECIPE_PACKS["OpenPGP Symmetric Message (SKESK / SEIPD)"] = [["pgpSymDecrypt",{}]];
+RECIPE_PACKS["Enigma Indicator Chains (Polish, 1932)"] = [["enigmaChains",{}]];
 RECIPE_PACKS["Binary Bytes Lab — Hexdump & Octal"] = [["toHexdump",{}],["fromHexdump",{}],["toOctal",{}],["fromOctal",{}],["toHex",{sep:'space'}],["fromHex",{mode:'utf8'}],["toBinary",{}],["fromBinary",{}]];
 
 

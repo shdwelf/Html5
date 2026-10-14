@@ -47,6 +47,8 @@ const POST_MERGE_OPS = [
   "fromOctal",
   // 2026-10-14 recipe sourcing (docs/recipe-sourcing-round-4-2026-10-14.md).
   "pgpArmorCheck",
+  "pgpSymDecrypt",
+  "enigmaChains",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

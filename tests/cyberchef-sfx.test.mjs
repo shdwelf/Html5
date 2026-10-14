@@ -7,8 +7,10 @@ const appHtml = readFileSync(new URL("../public/apps/cyberchef/index.html", impo
 const report = JSON.parse(readFileSync(new URL("../docs/cyberchef-recipe-sync-2026-10-07.json", import.meta.url), "utf8"));
 // Post-merge additions: QR/Avery/complexity-lab/symbolic-logic, then the
 // 2026-10-14 field-cipher deep dive (OD message, VIC schedule + message stage,
-// Diana table + cipher, Gronsfeld analysis, hexdump/octal byte recipes).
-const expectedCount = report.counts.mergedRuntime + 15;
+// Diana table + cipher, Gronsfeld analysis, hexdump/octal byte recipes), then the
+// 2026-10-14 recipe sourcing (OpenPGP armor CRC-24, OpenPGP symmetric-key decrypt,
+// Enigma indicator chains).
+const expectedCount = report.counts.mergedRuntime + 17;
 
 function createDom(html = appHtml) {
   return new JSDOM(html, {

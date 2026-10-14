@@ -1,7 +1,7 @@
 # Field-cipher deep dive — OD poem code, VIC, Gronsfeld, SECOM, and the Diana cryptosystem
 
 Date: 2026-10-14
-Kitchen: `public/apps/cyberchef/index.html` → 493 operations, 217 packs, 640 pack entries
+Kitchen: `public/apps/cyberchef/index.html` → 495 operations, 219 packs, 642 pack entries
 New recipes: `odPoemExact`, `vicSchedule`, `vicExact`, `diana`, `dianaTable`,
 `gronsfeldAnalyze`, `toHexdump`, `fromHexdump`, `toOctal`, `fromOctal`
 Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 15/15 pass,
@@ -527,7 +527,7 @@ Two new packs make this reachable from the SFX "select all" installer:
 | Kitchen badge / registry | 482 | 492 |
 | Recipe packs | 214 | 216 |
 | Pack entries | 621 | 639 |
-| `cyberchef.xdc` | 482-era build | regenerated, `manifest.toml` reads 493 operations |
+| `cyberchef.xdc` | 482-era build | regenerated; `manifest.toml` then read 493 operations (494 after the §4b recipe in the round-4 note) |
 
 Commands run and their results:
 
@@ -548,11 +548,14 @@ Files touched by this dive: `public/apps/cyberchef/index.html`,
 `tests/cyberchef-sfx.test.mjs`, `tests/cyberchef-recipe-sync.test.mjs`,
 `tests/cyberchef-cookbook.test.mjs`, `README.md`.
 
-**Round-4 follow-up (same day):** the registry has since grown to **493** with one further recipe,
-`pgpArmorCheck` (OpenPGP Radix-64 armor CRC-24), which belongs to the Kleopatra/GnuPG thread rather
-than to this dive; the badge, the Cookbook card and the registry tests were moved to 493 with it, and
-the sources are recorded in `docs/recipe-sourcing-round-4-2026-10-14.md`. It arrived with its own pack,
-`OpenPGP Armor (Kleopatra / GnuPG)`, so packs and pack entries moved with it (216 / 639 → 217 / 640).
+**Round-4 follow-up (same day):** the registry has since grown to **495** with three further recipes,
+`pgpArmorCheck` (OpenPGP Radix-64 armor CRC-24), `pgpSymDecrypt` (OpenPGP symmetric-key decrypt —
+iterated string-to-key, the §13.9 CFB stream of this note's subject in its *integrity-protected* form,
+and the §5.13 MDC) and `enigmaChains` (the 1932 Polish indicator-chain analysis, from Churchhouse's
+worked examples); the sources are recorded in `docs/recipe-sourcing-round-4-2026-10-14.md` (§4, §4b and
+§5b). They arrived in three packs of their own — `OpenPGP Armor (Kleopatra / GnuPG)`, `OpenPGP Symmetric
+Message (SKESK / SEIPD)` and `Enigma Indicator Chains (Polish, 1932)` — so packs and pack entries moved
+from 216 / 639 to **219 / 642**.
 
 Deliberately left alone: `docs/cyberchef-sfx-coverage-audit-2026-10-13.md` and the
 2026-10-09 audit are dated records of what was true then (482 and 480 operations
