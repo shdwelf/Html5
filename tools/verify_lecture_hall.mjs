@@ -770,7 +770,7 @@ if (!existsSync(SUITE)) {
 
   const pc = literalAt(src, "Pc=[");
   const records = vm.runInNewContext(`(${pc.text})`, Object.create(null), { timeout: 2000 });
-  check(Array.isArray(records) && records.length === 31, `lecture hall holds ${records.length} records`);
+  check(Array.isArray(records) && records.length === 33, `lecture hall holds ${records.length} records`);
 
   const required = ["id", "title", "period", "location", "confidence", "summary", "facts", "sourceLinks", "caution"];
   const shapeOk = records.every((r) =>
@@ -787,7 +787,8 @@ if (!existsSync(SUITE)) {
     "dos-packer-obfuscation",
     "kgb-museum-auction", "international-spy-museum-machines",
     "crows-cryptogram-secom", "kryptos-enigma-hypothesis",
-    "sylichenko-enigma-hillclimb",
+    "sylichenko-enigma-hillclimb", "hollow-nickel-vic",
+    "kahn-figure-2-widths",
   ];
   const raisedBarOk = RAISED.every((id) => {
     const r = records.find((x) => x.id === id);
@@ -800,6 +801,54 @@ if (!existsSync(SUITE)) {
   });
   check(raisedBarOk, "every record added or rewritten since 2026-09-14 meets the raised bar: ≥ 8 facts, ≥ 4 links, ≥ 200-char summary and caution, no asserted answers");
   check(new Set(records.map((r) => r.id)).size === records.length, "record ids are unique");
+
+  // The hollow-nickel record is a reproduction claim, so it is checked against
+  // the artifact that reproduces it: the CyberChef field-cipher test file. If
+  // either side drifts — the record's numbers or the test's constants — this
+  // fails here rather than in a reader's head.
+  {
+    const nickel = records.find((r) => r.id === "hollow-nickel-vic");
+    const text = nickel ? JSON.stringify(nickel) : "";
+    const testFile = join(ROOT, "tests", "cyberchef-field-cipher-deep-dive.test.mjs");
+    if (!nickel || !existsSync(testFile)) {
+      check(false, `hollow-nickel record and its test file must both exist (record ${!!nickel}, test ${existsSync(testFile)})`);
+    } else {
+      const testSrc = readFileSync(testFile, "utf8");
+      const digits = (name) => {
+        const m = testSrc.match(new RegExp("const " + name + " = `([\\s\\S]*?)`"));
+        return m ? m[1].replace(/\s+/g, "") : "";
+      };
+      const afterT1 = digits("NICKEL_AFTER_T1");
+      const finalText = digits("NICKEL_FINAL");
+      const diffs = testSrc.match(/const NICKEL_EXPECTED_DIFFS = \[([^\]]*)\]/);
+      const positions = diffs ? diffs[1].split(",").map((v) => v.trim()) : [];
+      const fixesAt = testSrc.indexOf("const NICKEL_DIGIT_FIXES");
+      const fixesDecl = fixesAt < 0 ? "" : testSrc.slice(fixesAt, testSrc.indexOf(";", fixesAt));
+      const indices = [...fixesDecl.matchAll(/\[\s*(\d+)\s*,/g)].map((m) => m[1]);
+      check(
+        afterT1.length === 1030 && finalText.length === 1035 && /207 groups \(1 035 digits\)/.test(text) &&
+          text.includes("1 029 of the 1 035"),
+        `the record's digit counts match the test vectors (${afterT1.length} digits before, ${finalText.length} after)`,
+      );
+      check(
+        positions.length === 6 && positions.every((v) => text.includes(v)) &&
+          indices.length === 6 && indices.every((v) => text.includes(v)),
+        `every reconciled position and T1 index is named in the record: ${positions.join(", ")} ← ${indices.join(", ")}`,
+      );
+      check(
+        text.includes("9603318366469047530274304287712") && text.includes("5938991898") && text.includes("91724"),
+        "the record carries the schedule lines the kitchen reproduces (C, H and the 31-digit key set)",
+      );
+      check(
+        /fifth from the end/.test(text) && /L\+1−p/.test(text) && /any alphabet/.test(text),
+        "the record states the keygroup rule and the any-alphabet key phrase fix",
+      );
+      check(
+        /defected in 1957|1957/.test(text) && /Häyhänen/.test(text),
+        "the record names the 1957 defection that identified the system",
+      );
+    }
+  }
 
   // The Sylichenko record is about method provenance, so its own claims must
   // be checkable against the cited repository and the probe in this checkout.

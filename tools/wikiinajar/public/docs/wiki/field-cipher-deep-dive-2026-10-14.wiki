@@ -1,0 +1,614 @@
+== Field-cipher deep dive — OD poem code, VIC, Gronsfeld, SECOM, and the Diana cryptosystem ==
+
+Source: docs/field-cipher-deep-dive-2026-10-14.md — synced 2026-10-14 by tools/wikiinajar/sync-docs.mjs.
+Back to [[Main Page]].
+
+= Field-cipher deep dive — OD poem code, VIC, Gronsfeld, SECOM, and the Diana cryptosystem =
+
+Date: 2026-10-14
+Kitchen: `public/apps/cyberchef/index.html` → 497 operations, 221 packs, 644 pack entries
+New recipes: `odPoemExact`, `vicSchedule`, `vicExact`, `diana`, `dianaTable`,
+`gronsfeldAnalyze`, `toHexdump`, `fromHexdump`, `toOctal`, `fromOctal`
+Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 15/15 pass,
+every published control vector below reproduced digit for digit (the added tests cover the VIC
+diagonal transposition rule, the Diana field-procedure example, the primary-source
+micro-vectors, the real hollow-nickel message, Kahn's Figure 2 width page (§2d), the 1940
+Infantry Journal statement of the Gronsfeld rule (§3), and a consistency check that keeps this
+note's evidence trail — the six reconciled nickel positions, the keygroup rule, the FM 31-20
+citation — in step with the code; see §2b, §2c, §2d, §3 and §0).
+
+This note records the deep dive requested for the hand ciphers already in the kitchen
+(OD poem code, VIC, Gronsfeld, SECOM), the identification and implementation of the
+"Diane" cipher, and the binary-byte recipe pack. Each claim is tied to a public source,
+and each implementation is tied to a published control vector so the recipes can fail
+loudly if they ever drift.
+
+---
+
+== 0. The "Diane" cipher is the Diana cryptosystem ==
+
+No hand cipher named *Diane* exists. Searches for "Diane cipher", "Diane code" and
+"Diane hand cipher" return only a person named Diane in a Cipher Mysteries comment
+thread; the repository has no `diane` reference either. The requested cipher is the
+**Diana cryptosystem**: an NSA-developed one-time-pad trigraph used by US Army Special
+Forces in Vietnam (and by allied services afterwards), the last physical wheel/table
+cipher issued for field Morse traffic. Sources reviewed 2026-10-14:
+
+* blogbyben.com, "Trigraphs, Diana Pads and Zombies" (2014-12-08) — SF Morse traffic,
+  pads of random five-letter groups (30 words per page), and the property that any three
+  letters of a trio close in **every** order (`BKO`, `KOB`, `OBK`, `BOK`, …).
+* krypto431 / CADCRYS (sa6mwa) — reciprocal table (normal alphabet against the reversed
+  alphabet), same column for encrypt and decrypt, `Z` as operator/fill.
+* courtneyimbert/diana — a Python OTP implementation described as "similar to Vernam or
+  Vigenère"; zappi-tkn/Diana — Diana followed by a columnar transposition.
+* creativecrafthouse.com — the US Army Special Forces cipher disk ("the last physical
+  wheel-based cipher used by the U.S. military").
+* **FM 31-20, *Special Forces Operational Techniques* (Headquarters, Department of the Army,
+  30 December 1965), chapter 9 "Communications", paragraphs 108–118, read from the scanned
+  text at archive.org (item `FM_31_20_S_F_O_T_1965`, public domain, 540 pages).** This is the
+  manual that governed the detachments that used the pads, and it fixes the working
+  environment the forum testimony describes. §111a: "Radio personnel assigned to Special
+  Forces operational detachments are confronted with problems different from those faced by
+  radio operators assigned to a conventional military unit. … **Messages are encrypted using
+  pencil and paper rather than machine systems.**" §114 breaks communication security into
+  physical, transmission and cryptographic security, and adds the handling rules that a
+  26-page-pad system implies: cryptographic material is carried on the person or under
+  constant guard (§114b(2)), "Information on cryptographic systems used by Special Forces is
+  never released to indigenous personnel" (§114b(1)), "Detachment cryptographic systems and
+  SOI's must not fall into enemy hands … destruction by burning is not complete unless the
+  ashes are destroyed" (§114b(3)), and "Specific instructions, techniques, and methods to be
+  used are covered in premission briefings on a need-to-know basis" (§114d) — which is
+  precisely why the pad's own form is documented by testimony rather than by a manual scan.
+  (The same chapter's §111b sets the Morse standard at 18 wpm under ACP-124B, and §109c
+  lists the clandestine means.)
+* sfrvn.net (Special Forces in Vietnam, C-1 commo history) — the operational procedure and
+  the pad layout described above; crypto.stackexchange (2019-06-16) resolves that the
+  "5-letter words" are independently drawn letters, not dictionary words.
+* Programming Praxis, "Diana Cryptosystem" (2014-12-19) — the worked example reproduced
+  below, including the two clear indicator groups.
+
+Operational procedure (Special Forces in Vietnam, C-1 comms section — sfrvn.net, and
+the same account quoted by Programming Praxis and the crypto.stackexchange discussion of
+those pads):
+
+* The pads were a matched *tablet pair*; each sheet was pre-printed with **five five-letter
+  random groups per line** (30 groups to a page, so six lines), generated by picking each
+  letter independently — "words" in the field slang, but not dictionary words.
+* The sending operator keyed the message **over** the pad groups and published the **first
+  two groups of the line used, unencrypted**, as the indicator; the receiving station found
+  the matching line from them and worked the trigraph back to plaintext.
+* With one page per A-Team and the headquarters copy, the same sheet was never reused, which
+  is what made the system a one-time pad rather than a repeating-key cipher.
+
+Mechanics implemented (`diana`, `dianaTable`):
+
+```
+c = 25 − (k + p) mod 26       k = pad/key letter, p = plaintext letter
+```
+
+The full field procedure is a `clear` argument on the `diana` recipe (two clear groups plus
+the published example's `XYZ` filler reproduce the textbook output exactly):
+
+```
+pad line  UKVTF WZHOK GORWY WETFR COYET
+plain     ATTAC KATDA WNXYZ            (ATTACK AT DAWN + filler)
+sent      UKVTF WZHOK TSPDZ TVNRI BYEXH
+```
+
+Control for that vector: Programming Praxis, "Diana Cryptosystem" (2014-12-19), which prints
+the same three lines; the arithmetic is the same reciprocal table as `table[B][K] = O`.
+
+Because `25 − (k + p)` is symmetric in `k` and `p`, the table is **reciprocal**: the same
+entry enciphers and deciphers, and a trio `{a,b,c}` closes in all six orders. Control
+vector used in the tests: `table[B][K] = O`, and all six orders of `{B, K, O}` must close.
+`dianaTable` prints the full 26×26 worksheet and self-tests all 676 entries for
+reciprocity (`PASS`).
+
+One question the published example invites: the first two pad groups travel in clear, so can
+the rest of the line be reconstructed from them? No — check it arithmetically. Treating the
+ten clear letters as a repeating key and working `25 − (k + p)` over the 15 known plaintext
+letters agrees with the transmitted groups at **1 of 15** positions, and taking the three
+unknown pad groups to be any simple function of the clear letters and the ciphertext (`25−(a+b)`,
+`a+b`, `a−b`, `b−a`) recovers **0, 2, 1 and 2 of 15** letters respectively, against a random-key
+baseline of ≈1/26 (measured 2,866/75,000 = 0.038 over 5,000 random 15-letter pairs). The example's
+five groups are independent draws, which is exactly what makes the clear indicator harmless as
+long as the pad is one-time: the two clear groups identify *which* line was used, not what the
+other three letters are. The real risk in the field was pad capture, not the indicator.
+
+Design notes:
+
+* Pad/key letters repeat for demonstration only; in the field the pad is one-time and
+  destroyed after use. The recipe description says so, and the operation exists to teach
+  the arithmetic and the trio property, not to protect traffic.
+* Case and non-letters pass through unchanged so formatted messages stay readable;
+  `group=5` collapses the output to classic five-letter groups.
+* `diana` is not the same as the kitchen's existing `vic`/`straddlingCheckerboard`
+  digit encodings — Diana never leaves the 26 letters.
+
+---
+
+== 1. OD poem code — from key worksheet to full message ==
+
+The kitchen already had `odPoemKey` (indicator/key worksheet: poem, word positions,
+secret → words, key, ranks, indicator, check group). What was missing was the message
+stage. `odPoemExact` now performs the complete procedure:
+
+1. Number the first 20 words of the agreed poem.
+2. Key words are picked by position; the key is their concatenation
+   (`ONZE WAS ZIEN ALLE` → `ONZEWASZIENALLE` by the published example).
+3. Message is uppercased, `.` becomes `STOP`, spaces are dropped, the random three-letter
+   callsign is appended, and pad letters are prepended until the length is a multiple of
+   five (the published example pads `QW` to reach 130 letters = 26 groups).
+4. A columnar transposition keyed by those words produces the groups.
+5. The indicator hides the word positions under the pre-agreed five-digit secret
+   (`A=1…Z=26`, zero-padded left to five slots), and the check group is the indicator
+   put through the published two-column swap (C↔M, R↔H, U–Z unchanged).
+
+Control vector (Crypto Museum, Ton van Schendel / Ordedienst worksheet):
+
+| Element | Published | Kitchen |
+| --- | --- | --- |
+| Words | ONZE(2) WAS(6) ZIEN(11) ALLE(15) | same |
+| Secret | `58265` | same |
+| Indicator | `EJHQT` | `EJHQT` |
+| Message | 26 groups, starting `DTAOR AAROC FATSA FUEWH` and ending `… SFPAD EITNU` | exact, all 26 groups |
+| Check | `OTRGJ` | `OTRGJ` |
+
+Two source quirks are recorded rather than reproduced:
+
+* The Crypto Museum worked row computes the fourth position as **14** in the arithmetic
+  display while its prose (and the resulting indicator `EJHQT`) require **15**. The
+  kitchen uses ALLE = 15, which is what reproduces the published indicator.
+* The published message only reaches 130 letters with the two pad letters included; the
+  plaintext itself is 128. The recipe states the pad it inserted so the arithmetic is
+  auditable, and on decryption it strips the pad (toggleable) and reports the check
+  comparison — a wrong check group is printed as `MISMATCH — expected …, got …`.
+
+Not to be confused with the kitchen's `soePoemCode` (SOE/SAS poem code, Jabberwocky
+default, single/double transposition), which is a different procedure from the same era.
+
+---
+
+== 2. VIC cipher — schedule and message stage, both against the published example ==
+
+The kitchen's `vic` operation was checkerboard-only (text ↔ digits). The deep dive added
+the other two halves of the cipher:
+
+* `vicSchedule` — the key schedule, labelled line by line the way the CIA analysis does:
+  `A` keygroup, `B` date, `C = A − B` **without borrowing**, `D` first 20 phrase letters,
+  `E.1/E.2` sequencing of each ten-letter half, `F.1` five chain digits appended to `C`,
+  `F.2` the aide row, `G = E.1 + F.1` digit-wise mod 10, `H` = `G` encoded under `E.2`
+  (the ten digits that carry the real strength), `J` the sequencing of `H` (column order),
+  `K–P` the five ten-digit lines from 50 chain digits, then `Q` (columnar key) and
+  `R` (diagonal key) as the first `a` and next `b` digits of the column read, where `a`
+  and `b` come from the last two non-equal digits of `P` plus the personal number, and
+  finally `S`, the checkerboard header row.
+* `vicExact` — message stage: bisect the plaintext and swap the halves (optional literal
+  marker), straddling-checkerboard encode with the `S` header, pad to fives, optional
+  columnar (`Q`) and diagonal/triangular-disrupted (`R`) transpositions, optional
+  cleartext keygroup insertion `P` groups from the end. `decrypt` inverts each step in
+  reverse order and strips up to four trailing pad digits.
+
+Control vector (published worked example: personal number 6, date `139195`, phrase
+"Twas the night before Christmas", keygroup `72401`):
+
+| Line | Published | Kitchen |
+| --- | --- | --- |
+| C | `69592` | `69592` |
+| E.1 / E.2 | `8017942653` / `6013589427` | same |
+| F.1 / F.2 | `6959254417` / `1234567890` | same |
+| G | `4966196060` | `4966196060` |
+| H | `3288628787` | `3288628787` |
+| J | `3178429506` | `3178429506` |
+| K / L / M / N / P | `5064805552` / `5602850077` / `1620350748` / `7823857125` / `5051328370` | same |
+| Key lengths | 13 and 6 | 13 and 6 |
+| Q | `0668005552551` | `0668005552551` |
+| R | `758838` | `758838` |
+| S (checkerboard header) | `5961328470` | `5961328470` |
+| Message code | 99 digits, `602538000055500000080873198000099911155580677642881866676667549976028759956964596658338765886658337` | exact |
+
+Checkerboard encoding rules that had to be rediscovered from the vector (each one is a
+silent-failure trap, so they are asserted in the test):
+
+* The eight single-digit letters are the second row `AT ONE SIR` — the two blanks become
+  the row heads (here `6` and `8`); the remaining 28 symbols fill the two ten-column rows.
+* Digits are sent as **three identical digits**, wrapped by the `/` (class `80`) shift
+  symbol before and after each number run.
+* Spaces are dropped entirely: VIC has no space symbol, so word division is read by
+  sense. The published message uses `/` as a visual half-marker in the article; it is not
+  a cipher symbol, and inserting it desynchronises everything after it.
+* The bisected halves are concatenated with no separator. With spaces and the article's
+  visual `/` removed, the published message is 55 characters and is cut **20** into it:
+  `ATTACKATDAWN.BYDAWNI` + `MEAN0500.NOT0915LIKEYOUDIDLASTTIME.`, and the halves are sent
+  swapped. Getting this cut wrong is invisible until the last digit, which is exactly why
+  it is an asserted test vector.
+
+Three implementation bugs were found and fixed by exactly this vector, and are worth
+remembering: (1) chain addition must *extend* the seed rather than re-deriving from the
+original digits (symptom: lines K–P all shifted, widths 11/8); (2) sequencing must treat
+`0` as **10** (sorts last) with ties resolved left-to-right (symptom: `S` came out
+`7183540692` instead of `5961328470`); (3) lines `Q`/`R` are read column by column under
+`J` in digit order 1…10 **continuing across** columns (symptom: `R` wrong while `Q` was
+right).
+
+Round-trip evidence in the test: the message `ATTACK AT DAWN …` cut at 20, double
+transposition and keygroup insertion produces 20 complete five-digit groups containing
+the keygroup `72401`, and decrypting that ciphertext with the same key material recovers
+the plaintext exactly, with the two pad digits identified and removed.
+
+=== 2a-bis. The published micro-vectors for the three primitives ===
+
+The same article that documents the recipe publishes three one-line examples, and all three
+are now pinned by tests (they also confirm the "zero is ten" rule that `main` had to fix on
+the SECOM side):
+
+| Primitive | Published | Kitchen |
+| --- | --- | --- |
+| Sequencing a word (`Octopus`) | `2163475` | `fdSeqLetters` → same |
+| Sequencing digits (`90210`, zero valued at 10) | `34215` | `fdSeqDigits` → same |
+| Chain addition (seed `90210`, five steps) | `92319` | `fdChainExt` → same |
+| Digit encoding (`90210` under key `6013589427`) | `27067` | `fdVicDigitEncode` → same |
+
+The encoding rule is worth stating precisely because it is easy to get backwards: the aide
+row `1234567890` is written under the key row, and each digit of the number is replaced by
+the key digit **above** it (`0 → 7`, `9 → 2`, `2 → 0`, `1 → 6`, `0 → 7` for the example
+above), which is how Line-G becomes Line-H in the schedule.
+
+=== 2b. A second published example — and the diagonal transposition it corrected ===
+
+A second, fully worked VIC example exists (Basic Cryptography, "The Soviet Spy Hand Cipher
+That Resisted NSA in Cold War: VIC", 2016-11-06). Its key material is entirely different —
+short phrase `a sin to er`, 20-letter phrase "put on your thinking cap", date `921945`
+(2 Sept 1945), agent number 05, message ID `54213`, message "You have been discovered destroy
+the document and retreat" — so it is an independent check of the same algorithm:
+
+| Stage | Published | Kitchen |
+| --- | --- | --- |
+| Sequencing of both phrase halves (A, B) | `4962103857`, `4587693210` | same |
+| Line-E expansion F, G, H | `6812949313`, `0774042160`, `0337075490` | same |
+| Line-J (sequencing of H, 0 valued at 10) | `8125964370` | same |
+| 50-digit chain block (I) and its column read | `3607729393…`, `66348 07147 32489 …` | same |
+| Widths from the last two non-equal digits (6, 7) + agent 05 | 11 and 12 | 11 and 12 |
+| First transposition (plain columnar, key = first 11 block digits) | `431168 5592445 237414 …` | reproduced exactly |
+| Second (diagonal) transposition | see below | corrected |
+
+The first transposition reproduces digit for digit, and so does everything up to it, which
+pins the plain-transposition stage to a second independent vector.
+
+The *second* transposition is the reason this example matters: it exposed a real defect. The
+deep dive originally reused the SECOM triangular construct for VIC's diagonal transposition,
+which round-trips with itself but is not the VIC rule. Four independent implementations agree
+on the rule actually used by VIC:
+
+* `kyrias/vic` (Python) — `build_disruption_table`: the left (undisrupted) part of each row
+  starts at the column labelled with the smallest key value and grows one column per row,
+  restarting at the next label in ascending order; the grid is filled left parts → short row
+  → right parts and read out column by column in label order.
+* `pavelanni/vic-cipher` (Go) — `ALGORITHM.md`: "the disruption starts at the column whose key
+  value is smallest … a right-triangle of right cells that expands one column per row".
+* `Csi18nAlistairMann/vic-cipher` (PHP, from the CIA "Two Soviet Spy Cyphers" figures) —
+  `generateDisruptionData()` walks columns 1, 2, … and grows the undisrupted width by one per
+  row.
+* `crunchbangle/vic-ts` (TypeScript) — `getDiagonalLengths()`, whose published test vector is
+  reproduced here: key `536124`, 60 digits → left widths `3,4,5,6,4,5,6,1,2,3`, and the
+  diagonalised grid reads out as
+  `pGKPVbg269qsLQvch37YBEIOTXe0lnrtuRwxi48ZADHMSWdjkmCFJNUaf15o`.
+
+The kitchen now uses that rule (`fdVicLeftWidths`, `fdVicDiagEnc`, `fdVicDiagDec`), and the
+blog's own illustrated pattern — width 6 with labels 1, 2, 3 in columns 2, 4, 1, giving rows
+`2,3,4,5,6 | 4,5,6 | 1,2,3,4,5,6` — is pinned by a test as well.
+
+**The primary source for the rule.** David Kahn's CIA article "Number One From Moscow" (1993,
+reissued from his 1960 booklet *Two Soviet Spy Ciphers*) describes the second tableau's
+disruption directly:
+
+> "The first D area begins in the top row under keynumber 1 and runs to the right side of that
+> row. In each of the following rows, it begins one column to the right. When the columns are
+> exhausted, one row is skipped and another D area is started in the following row with the
+> column under keynumber 2, and so forth for as many rows as are needed to accommodate all the
+> cipher digits." … "The cipher digits taken vertically from the first tableau are inscribed
+> horizontally from left to right into the rows of the second tableau, but leaving the D areas
+> blank. When the non-D portions of all rows have been filled, the remaining digits are written
+> in from left to right in the D areas, starting with the top row."
+
+That is exactly what the kitchen's triangle construct implements, and a test now proves the
+two partitions are identical cell-for-cell for the 2016 example's key (55 disrupted cells).
+Equivalently, the *left* (non-D) widths implied by that partition are the vector published by
+`crunchbangle/vic-ts` — `3,4,5,6,4,5,6,1,2,3` for key `536124` and 60 digits — which is why
+the four implementations agree: they describe the same staircase from the two sides.
+
+The rule is not only textual: the same triangle construct drives the SECOM side of the
+kitchen, whose exact operation reproduces the **official SECOM 105-digit ciphertext** (plaintext
+"RV TOMORROW AT 1400PM TO COMPLETE TRANSACTION USE DEADDROP AS USUAL", phrase "MAKE NEW FRIENDS
+BUT KEEP THE OLD") — pinned by `tests/secom-exact.test.mjs` and re-run by
+`tools/secom_probe.py`. Disabling the disruption makes that published vector fail, so a
+published field ciphertext independently validates the partition the VIC code uses.
+
+Kahn's article also supplies the key material of the hollow-nickel message (date 391945, so
+Line B `39194`; keygroup `20818`; personal number 13; phrase the first 20 letters of the song
+"The Lone Accordion"), and three text-only micro-vectors that are now pinned by tests:
+
+| Micro-vector | Published | Kitchen |
+| --- | --- | --- |
+| Literal key `BABY` → sequential key | `2134` | `fdSeqLetters` → same |
+| Breeder key `39646` → sequential key | `15324` | `fdSeqDigits` → same |
+| Chain addition of `3964` (ten more digits) | `2506756321` | `fdChainExt` → same |
+| Line C for the nickel message: `20818 − 39194` | `91724` | `fdNoCarrySub` → same |
+
+**The one table that does not follow the primary-source rule** is the 2016 blog's own second
+tableau. Its first-filled region is a *left-prefix staircase* — row widths `5,6,7,8,9` with the
+short last row (10 cells) entirely in the first phase — not Kahn's right-hand D areas. That
+staircase does reproduce the article's published 70-digit output (and an exhaustive search over
+all left-prefix partitions of that tableau, 13⁵ × 2 candidates, finds it as the *only* one that
+does), while the Kahn partition produces a different 70-digit string. The deviation is
+therefore in that article's own tool, not in the primary source: both facts are pinned side by
+side in the tests so the two can never be silently conflated.
+
+=== 2c. The real hollow-nickel message — third example, and the first field traffic ===
+
+The Russian Wikipedia article «Шифр ВИК» (sourced to А. В. Синельников, *Шифры советской
+разведки*, 2016 — the same booklet family as Kahn's) works the **actual message found in the
+hollow nickel in 1953**, not a teaching example. Its key material agrees with Kahn's article:
+date `391945`, keygroup `20818`, personal number 13, the Cyrillic first line of "The Lone
+Accordion" as the key phrase, and a 17/14 column pair.
+
+Everything that is language-independent is reproduced by the kitchen line for line:
+
+| Line | Published | Kitchen |
+| --- | --- | --- |
+| C: `20818 − 39194` | `91724` | same |
+| F.1: C chain-extended | `9172408964` | same |
+| E.1 / E.2 (sequencing the two ten-letter halves) | `7420156398` / `6871954032` | same |
+| G: E.1 + F.1 | `6592554252` | same |
+| H: G encoded under E.2 | `5938991898` | same |
+| Key lengths: personal 13 + last two non-equal digits of the block (4, 1) | 17 and 14 | same |
+| The 31 key digits read column-wise from the block | `9603318366469047530274304287712` | same |
+
+E.1 and E.2 are *Cyrillic* sequencings, which exposed two things worth fixing:
+
+* the VIC key phrase is now treated as letters in **any** alphabet (`fdVicPhrase`, code-point
+  ordering — correct for Latin, Greek and Cyrillic, with Ё the one Russian letter that sorts
+  out of place), so `vicSchedule` reproduces the historical Russian schedule;
+* the **keygroup placement was off by one**. The date's unused sixth digit means "the p-th
+  group from the end", and the hollow-nickel message pins what that means: `20818` is the
+  fifth group from the end of the printed ciphertext (`…15764 96851 20818 22370…`). The
+  insert/remove pair was self-consistent, so round-trip tests could not see it; the published
+  field message could. Both helpers now use index `L+1−p` / `L−p`, and the test asserts the
+  keygroup's position in the published tail.
+
+The article also publishes the **whole ciphertext stream**, which lets the diagonal stage be
+checked against real traffic: taking the printed 1030-digit sequence *after* the first
+transposition, the kitchen's disrupted transposition with the published 14-digit key, followed
+by keygroup insertion, reproduces the printed ciphertext — 1029 of 1035 digits exactly, with
+the remaining six positions being a defect of the article's own pair of matrices: the
+pre-transposition matrix it prints and the ciphertext it prints cannot both be right, and both
+were re-fetched and re-read from the source to confirm the copies in the test file are faithful.
+The six differing digits are therefore single-character errors in the published example itself.
+Named for anyone re-checking the source, as (ciphertext position / index into the printed
+1 030-digit sequence / printed digit / digit that reconciles the pair):
+
+| # | position in the printed ciphertext | index in the printed T1 | printed | reconciles as |
+| --- | --- | --- | --- | --- |
+| 1 | 118 | 389 | `6` | `3` |
+| 2 | 251 | 834 | `6` | `8` |
+| 3 | 258 | 862 | `5` | `9` |
+| 4 | 501 | 536 | `5` | `6` |
+| 5 | 624 | 295 | `5` | `6` |
+| 6 | 1027 | 597 | `6` | `5` |
+
+(Position 1027 is the sixth-from-the-end *content* digit: it sits before the trailing
+keygroup, which is why an earlier pass that spliced the keygroup one group too early placed
+it at 1022.)
+Reconciling exactly those six, with the printed ciphertext as the reference, makes the
+reproduction exact: **all 1035 digits**, keygroup in place. Both states are asserted, so the
+discrepancy is visible in the tests rather than smoothed over.
+
+Still out of reach: the historical **Russian checkerboard** (a 40-cell, 4-row table with the
+Cyrillic alphabet and the `п/л`, `н/ц`, `н/т`, `пвт` signs) — the kitchen implements the Latin
+variant described by the CIA article, so the nickel message can be driven through the schedule
+and the transpositions, but its substitution layer is not reproduced.
+
+---
+
+=== 2d. Kahn's Figure 2 width page — where the two widths come from ===
+
+The last unread piece of the schedule was the page that introduces the second tableau: the
+width rule. `Number One From Moscow` prints Line P as `4 0 6 2 7 8 3 4 1 1` and states it
+outright:
+
+> The widths of the two transposition tableaux are found by adding respectively the eighth and
+> ninth numbers — or perhaps the last two dissimilar numbers — in Line P to the agent's personal
+> number, in this case 13. The first tableau will therefore have 17 columns and the second 14.
+
+The article's own key table carries the same arithmetic, annotating its rows `13+4=17
+(tableau 1)` and `13+1=14 (tableau 2)`. The hedge costs nothing here: Line P ends `… 1 1`, so
+the eighth number (4) and the ninth (1) *are* the last two dissimilar digits.
+
+| Quantity | Value | Origin |
+| --- | --- | --- |
+| Line P | `4062783411` | chain addition of H, extended to 50 digits |
+| Eighth / ninth numbers | `4` / `1` | read left to right |
+| Tableau widths | `13+4 = 17`, `13+1 = 14` | personal number + those two |
+| Line Q (tableau 1 breeder) | `96033183664690475` — 17 digits | column read under key J |
+| Line R (tableau 2 breeder) | `30274304287712` — 14 digits | the remainder of that read |
+| Line S | `5073894612` | sequential key of P — the checkerboard's header row |
+
+So the widths are not an independent parameter at all: they are the lengths of the two breeder
+keys, and those lengths follow from Line P and the personal number. The 1956 change of
+Hayhanen's personal number from 13 to 20 is the same arithmetic one step on — the widths become
+`20+4 = 24` and `20+1 = 21`, and the breeder keys lengthen to
+`960331836646904753027430` and `428771231408872709558` in the schedule output — while Line S,
+and with it the checkerboard, is untouched. That is the design intent the article states for the
+raise: widen the transposition and leave the substitution alone. The 14th test pins both readings
+of the rule, the two width pairs and the invariance of Line S.
+
+---
+
+== 3. Gronsfeld and SECOM ==
+
+**Gronsfeld** (`gronsfeld`, existing) is the numeric-key Vigenère (`C = P + k mod 26`).
+The deep dive added `gronsfeldAnalyze` because the weakness is the point: a digit key has
+only ten candidates per column, so the analyser ranks key lengths 1…12 by average column
+index of coincidence and then solves each column by English letter frequency. Control:
+the analyser recovers key `3141` and the exact plaintext from 61 letters of ciphertext
+produced by the kitchen's own `gronsfeld`, with the true length (`4`, IoC ≈ 0.067, the
+English value) ranked first.
+
+**SECOM** already had its full implementation (`secomSchedule`, `secomExact`) added with
+the previous field-cipher work and verified against the 105-digit publisher example in
+`tools/secom_probe.py`. While this dive was in progress, `main` independently landed the same
+class of fix on the SECOM side — `sxDigitSeq` sequences a numeric row in the order `1…9,0`
+instead of letting JavaScript's lexical sort put `0` first — with `tests/secom-exact.test.mjs`
+as its guard; this branch merged that fix, so the VIC `S` line and the SECOM board row are now
+the two places where the "zero is ten" rule is pinned by tests. The current note only re-checks
+that the pack lists them (`Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld`) and that
+coverage stays at zero dangling / zero orphaned entries. SECOM is the extended-checkerboard VIC
+variant (the VIC article itself links to it as such), which is why the two are trained together.
+
+**Related Crow follow-up (2026-10-14, separate note):** the claim that the 600-digit
+Crow intercept holds 217 English letters is arithmetically impossible —
+`docs/crow-217-letter-claim-check-2026-10-14.md`, `tools/crow_letter_count_bounds.py`.
+Nothing about that finding changed in this deep dive; the SECOM arithmetic is reused
+unchanged.
+
+
+=== 3a. A 1940 primary source for the Gronsfeld rule ===
+
+The analyser had been written from the modern one-line characterisation ("Vigenère with a numeric
+key"). A contemporaneous statement turned up in a US Army publication — Captain John V. Grombach,
+"The Invisible Weapon", *Infantry Journal*, July–August 1940, pp. 340–344 (archive.org item
+`invisible-weapon-grombach`):
+
+> In the Gronsfeld, there is a set of key numbers in a series that can be easily memorized. These
+> numbers are written down over the "clear" and repeated as often as necessary. Each letter of the
+> "clear" is then represented in the written message by a letter which is the number of letters
+> further in the alphabet called for by the key number over it.
+
+Two details in that sentence are load-bearing. The direction is *forward* — `p + k mod 26`, which
+is what the recipe implements and what the article's own words say. And the same article recommends
+"a reverse of the Gronsfeld cipher especially adapted for radio", so a reader working only from 1940
+material can meet either sign; the recipe therefore takes direction from its mode switch instead of
+normalising the ambiguity away. The article gives no worked example, so the test constructs the
+vector from the stated rule (`ATTACKATDAWN` under key `3141` → `DUXBFLEUGBAO`; the reverse reading →
+`XSPZZJWSAZSM`) and labels it as constructed. The same page also sketches the grille or "cardan"
+method and a "radio adaptation of the Nihilist Bacon biliteral" with its own key square; otherwise
+those pages are a 1940 staff view of radio espionage rather than a cipher manual.
+
+---
+
+== 4. Binary recipes ==
+
+The kitchen already had `toHex`, `fromHex`, `toBinary`, `fromBinary`, `toASCII`,
+`fromASCII`. What was missing for actual binary work was an offset-based dump and base-8
+bytes:
+
+* `toHexdump` / `fromHexdump` — 16-byte (or 8/32) lines with an eight-digit offset, two
+  hex groups, and an ASCII gutter. `fromHexdump` reads only the offset and hex columns
+  and **ignores the ASCII gutter**, so a corrupted or re-rendered gutter cannot inject
+  bytes; the test feeds a poisoned gutter (`Hello 6f6f6f!`) and still recovers
+  `Hello World!`.
+* `toOctal` / `fromOctal` — space-separated octal bytes with three-digit padding or
+  minimal width, and a reader that accepts three-digit groups, minimal values and the
+  historical GNU/`od`-style tokens alike. Round trips are asserted against `toHex`.
+
+Both dumps take the same `source` selector as the rest of the kitchen, so `Load File`
+bytes (the raw byte string) can be dumped directly instead of being forced through UTF-8.
+
+Two new packs make this reachable from the SFX "select all" installer:
+
+* `Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld`
+  (`odPoemExact`, `vicSchedule`, `vicExact`, `diana`, `dianaTable`, `gronsfeld`,
+  `gronsfeldAnalyze`, `odPoemKey`, `secomExact`, `straddlingCheckerboard`)
+* `Binary Bytes Lab — Hexdump & Octal`
+  (`toHexdump`, `fromHexdump`, `toOctal`, `fromOctal`, `toHex`, `fromHex`, `toBinary`,
+  `fromBinary`)
+
+---
+
+== 5. Counters and verification ==
+
+| Artifact | Before | After |
+| --- | --- | --- |
+| Kitchen badge / registry | 482 | 492 |
+| Recipe packs | 214 | 216 |
+| Pack entries | 621 | 639 |
+| `cyberchef.xdc` | 482-era build | regenerated; `manifest.toml` then read 493 operations (494 after the §4b recipe in the round-4 note) |
+
+Commands run and their results:
+
+```bash
+node scripts/audit-cyberchef-sfx-coverage.mjs
+= OPERATIONS registered: 492 (492 unique ids); RECIPE_PACKS packs: 216 (639 entries) =
+= dangling (no op): 0 ; orphaned ops: 0 ; VERDICT: SFX select-all covers the full registry =
+
+node --test tests/cyberchef-field-cipher-deep-dive.test.mjs      # 15/15 pass
+node --test tests/cyberchef-*.test.mjs                            # registry, pack, SFX, cookbook suites pass
+node scripts/build-cyberchef-xdc.mjs                              # merged index.html + manifest + cyberchef.xdc
+```
+
+Files touched by this dive: `public/apps/cyberchef/index.html`,
+`public/apps/cyberchef-merged/**` (regenerated), `cyberchef.xdc` (regenerated),
+`public/apps/cookbook/index.html` (status card now says 492/492),
+`tests/cyberchef-field-cipher-deep-dive.test.mjs` (new),
+`tests/cyberchef-sfx.test.mjs`, `tests/cyberchef-recipe-sync.test.mjs`,
+`tests/cyberchef-cookbook.test.mjs`, `README.md`.
+
+**Round-4 follow-up (same day):** the registry grew to **495** with three further recipes,
+`pgpArmorCheck` (OpenPGP Radix-64 armor CRC-24), `pgpSymDecrypt` (OpenPGP symmetric-key decrypt —
+iterated string-to-key, the §13.9 CFB stream of this note's subject in its *integrity-protected* form,
+and the §5.13 MDC) and `enigmaChains` (the 1932 Polish indicator-chain analysis, from Churchhouse's
+worked examples); the sources are recorded in `docs/recipe-sourcing-round-4-2026-10-14.md` (§4, §4b and
+§5b). They arrived in three packs of their own — `OpenPGP Armor (Kleopatra / GnuPG)`, `OpenPGP Symmetric
+Message (SKESK / SEIPD)` and `Enigma Indicator Chains (Polish, 1932)` — so packs and pack entries moved
+from 216 / 639 to **219 / 642**.
+
+**Round 5 (same day):** the registry has since grown to **497** with the 1914 British War Office
+*Manual of Cryptography*'s two worked transposition ciphers, `zigzagTransposition` (ch. III(a) §2) and
+`nihilistSquare` (§4), each controlled by the cryptogram the manual itself prints; source and
+verification in `docs/recipe-sourcing-round-5-2026-10-14.md`. They arrived in two packs of their own —
+`Zigzag Transposition (War Office 1914)` and `Nihilists' Cipher (War Office 1914)` — so packs and pack
+entries moved from 219 / 642 to **221 / 644**.
+
+Deliberately left alone: `docs/cyberchef-sfx-coverage-audit-2026-10-13.md` and the
+2026-10-09 audit are dated records of what was true then (482 and 480 operations
+respectively); this note is the current record.
+
+---
+
+== 6. Open threads for continued research ==
+
+0. **archive.org is now searched (2026-10-14).** Results, so the channel is not re-tread:
+   the VIC-cipher "collection" there (`fav-vic_cipher`) is one user's bookmark folder whose
+   only member is a 1940s-50s radio workbook (`workbookforradio0010bush`, 294 pages,
+   borrow-only text layer), and the two items titled "poem code" (`poem-code-1`,
+   `poem-code-2`, 2009) are Sharon Hopkins' *Perl poems* — `listen (a perl poem)`, not cipher
+   material. Kahn's 1960 booklet *Two Soviet Spy Cyphers* and its 1993 reissue *Number One
+   From Moscow* are not on archive.org (the CIA copy at cryptome remains the source used in
+   §2b). The one real find is FM 31-20 (1965) above. Leads still open there: FM 31-20 (1971
+   edition, `FM_31_20_S_F_O_T_1971`) for a later communications chapter, and STP 31-18E34-SM-TG
+   (2003) for how the peacetime training pipeline described cryptography.
+
+1. **Diana pad provenance — partly closed.** The layout and generation are now documented
+   (matched tablet pair, five random five-letter groups per line, 30 groups per page,
+   first two groups of the line sent in clear as the indicator, one page per A-Team). What
+   is still missing is any surviving pad *book* scan: the letter alphabet used (24 letters
+   with `Z` as operator/fill, per the CADCRYS description, versus all 26), and whether the
+   page's group order carried any structure. A scan would let the recipe emit a realistic
+   pad page.
+2. **Diana + transposition variant.** zappi-tkn/Diana chains a columnar transposition
+   after the trigraph step. If a published worked example surfaces, it can be added as a
+   `mode` on `diana` rather than a new operation.
+3. **VIC: the Russian (historical) checkerboard.** The hollow-nickel message is now driven
+   through the schedule and both transpositions (§2c); what is still missing is the 40-cell,
+   four-row Cyrillic board with its signs (`п/л`, `н/ц`, `н/т`, `пвт`, comma, full stop) and the
+   "message starts" marker that the bisection uses in the Russian variant. Implementing it would
+   let the kitchen encipher/decipher the nickel message end to end.
+4. **VIC message-stage variants.** The Wikipedia example exercises one cut point and no
+   keygroup; the recipe now covers transpositions and keygroup insertion and round-trips
+   them, but a published vector with both would pin the defaults even harder.
+5. **Gronsfeld history.** The cipher is usually attributed to Count Gronsfeld (17th c.);
+   a primary source for the digit-key convention would let the recipe cite it instead of
+   the generic Vigenère relationship.
+6. **SECOM/Crow.** The 600-digit intercept still has no published plaintext; the bounds
+   tool (`tools/crow_letter_count_bounds.py`) is the standing falsifier for any new
+   letter-count claim, and `tools/secom_probe.py` re-checks the 105-digit example.

@@ -1,0 +1,60 @@
+== Yubnub CLI — encryption & transport audit (2026-10-13) ==
+
+Source: docs/yubnub-crypto-transport-audit-2026-10-13.md — synced 2026-10-14 by tools/wikiinajar/sync-docs.mjs.
+Back to [[Main Page]].
+
+= Yubnub CLI — encryption & transport audit (2026-10-13) =
+
+*The “Ghidra encryption check,” applied to the Yubnub CLI itself
+(and cross-read against the APK findings in
+`docs/zlibrary-apk-ghidra-research-2026-10-13.md` §8). Static audit
+of `yubnub.html` + registry data; new tests pin the invariants.*
+
+== Registry transport (the part that touches the network) ==
+
+- 94 URL templates: **74 HTTPS**, 17 `local:` (in-app commands),
+  **3 HTTP — `deli`, `tec`, `a9`, all D-flagged dead services**
+  (del.icio.us 2017, Technorati 2016, A9 retired) kept as historical
+  records. No *live* command resolves over cleartext.
+- New test: “live templates are HTTPS-only (dead historical entries
+  exempt)” — fails the build if a future live `http://` template
+  lands. Second new test pins the legal book trio `guten`/`ia`/`ol`.
+  Suite: **8/8 pass**; rebuilt `yubnub.xdc` 152,189 B,
+  sha256 `138373c75c02351bf89161dcc9e8514e10d20b96f6fa327b9a272544d7eb14d6`.
+
+== Engine posture ==
+
+- No `eval(`, no WebSocket, no remote script/style fetches — the app
+  is one self-contained file; command resolution is string-template
+  substitution ending in `window.open` / fetch-free navigation.
+- The `{…}` pipe evaluator and `${…}` shielding (the two historical
+  engine bugs) mean *user-typed* braces are data, not code — there is
+  no path from a typed command line to script execution beyond the
+  registered template the user invoked.
+- **Custom commands (`yubnub.custom`) persist in localStorage in
+  plaintext** — the same plaintext-storage pattern flagged in Z-Lib
+  sample A (21 plain SharedPreferences, no Keystore). On a single-user
+  browser profile this is low-risk (any script running as the page
+  already owns the data), and there is no credential material in a
+  Yubnub template by design; noted, accepted, documented rather than
+  “fixed” with fake crypto.
+
+== webxdc transport ==
+
+Inside Delta Chat, the `.xdc` is exchanged over the chat's
+Autocrypt/OpenPGP end-to-end encryption — transport confidentiality
+comes from the host messenger, not from the app, which correctly
+implements none of its own. Status updates use the webxdc sendUpdate
+channel; the app stores nothing server-side because there is no
+server.
+
+== Cross-read vs the APKs (why this audit exists) ==
+
+The Ghidra/JADX pass set the bar the CLI was then measured against:
+cipher inventory (A: AES/CBC, no ECB ✓), plaintext token storage
+(A ✗ / CLI: plaintext-by-design, no tokens), TLS behaviour (A: one
+empty `checkServerTrusted` flagged; CLI: inherits browser TLS with
+HTTPS-only live templates ✓), and provenance (A/B signers vs the
+CLI's deterministic, sha256-pinned, in-repo build — anyone can
+rebuild `yubnub.xdc` and compare hashes, the property sample B's
+impersonated test-key signature can never offer).
