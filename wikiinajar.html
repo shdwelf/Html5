@@ -209,7 +209,7 @@ footer{max-width:1180px;margin:0 auto;padding:8px 16px 30px;color:var(--dim);fon
     <section id="view-calendar" hidden>
       <div class="card">
         <h2>Calendar</h2>
-        <p class="small dim">The 0.8 Calendar view surfaces dated PIM entries; this rebuild lists contact birthdays (<span class="mono">BDAY</span>) plus any page lines beginning <span class="mono">Date: YYYY-MM-DD</span>. Labelled as an adaptation in the deep dive — the original calendar semantics are still being researched.</p>
+        <p class="small dim">Faithful to 0.8 (<span class="mono">CalendarController</span> → <span class="mono">Month.loadEvents()</span>, recovered 2026-10-14): one month at a time, holding <strong>contact birthdays</strong> (<span class="mono">BDAY</span>, recurring yearly) and <strong>pages whose title contains a date</strong> — <span class="mono">2026-11-05 Dentist</span> is an event; a date in the body is not. Dated pages also auto-tag with their month and year.</p>
         <div id="calendarList"></div>
       </div>
     </section>
@@ -294,10 +294,15 @@ function wikiInline(escaped,ctx){
   const codeSpans=[]; /* EXT: `code` spans (md2wiki output) render as <code> */
   const protectedText=escaped.replace(/`([^`\n]+)`/g,(m,c)=>{codeSpans.push(c);return "\u0002"+(codeSpans.length-1)+"\u0002";});
   return protectedText.replace(/\[\[([^\]]+)\]\]/g,(m,inner)=>wikiRenderLink(inner,ctx))
+    .replace(/''''(.+?)''''/g,"<em><strong>$1</strong></em>") /* 0.8 StrongestFilter */
     .replace(/'''([^'][\s\S]*?)'''/g,"<strong>$1</strong>")
     .replace(/''([^'][\s\S]*?)''/g,"<em>$1</em>")
-    .replace(/(^|[\s(])((?:https?:\/\/)[^\s<]+)/g,'$1<a href="$2" target="_blank" rel="noopener noreferrer">$2</a>')
-    .replace(/\u0002(\d+)\u0002/g,(m,n)=>"<code>"+codeSpans[Number(n)]+"</code>");
+    .replace(/(^|[\s(])((?:(?:https?|ftp):\/\/)[^\s<]+)/g,'$1<a href="$2" target="_blank" rel="noopener noreferrer">$2</a>')
+    .replace(/\u0002(\d+)\u0002/g,(m,n)=>"<code>"+codeSpans[Number(n)]+"</code>")
+    /* 0.8 BreakFilter + HtmlTagsFilter: literal <br/> stays a break; the
+       code/tt/pre tags revive (their contents remain escaped text). */
+    .replace(/&lt;br\s*\/?&gt;/gi,"<br/>")
+    .replace(/&lt;(pre|code|tt)&gt;/gi,"<$1>").replace(/&lt;\/(pre|code|tt)&gt;/gi,"</$1>");
 }
 function renderWiki(source,ctx){
   ctx=ctx||{};
@@ -308,11 +313,26 @@ function renderWiki(source,ctx){
   while(i<lines.length){
     const raw=lines[i];
     if(/^\s*$/.test(raw)){closeLists(0);i++;continue;}
-    const hm=raw.match(/^(={2,4})\s*(.+?)\s*\1\s*$/);
+    const hm=raw.match(/^(={1,6})\s*(.+?)\s*\1\s*$/);
     if(hm){closeLists(0);const lvl=hm[1].length;out.push("<h"+lvl+">"+wikiInline(wikiEscape(hm[2]),ctx)+"</h"+lvl+">");i++;continue;}
     if(/^\s*-{4,}\s*$/.test(raw)){closeLists(0);out.push("<hr />");i++;continue;}
     if(raw.startsWith(" ")){closeLists(0);const buf=[];while(i<lines.length&&lines[i].startsWith(" ")){buf.push(lines[i].slice(1));i++;}out.push("<pre>"+wikiEscape(buf.join("\n"))+"</pre>");continue;}
-    const lm=raw.match(/^([*#]+)\s+(.*)$/);
+    if(raw.trim().startsWith("{|")){ /* 0.8 TableFilter: MediaWiki-style tables */
+      closeLists(0);const rows=[];let cur=null;i++;
+      while(i<lines.length&&!lines[i].trim().startsWith("|}")){
+        const l=lines[i].trim();
+        if(l.startsWith("|-")){cur=[];rows.push(cur);}
+        else if(l.startsWith("|")||l.startsWith("!")){
+          if(!cur){cur=[];rows.push(cur);}
+          const header=l.startsWith("!");
+          for(const cell of l.slice(1).split(header?"!!":"||"))cur.push({header,text:cell.trim()});
+        }
+        i++;
+      }
+      i++; /* consume |} */
+      out.push("<table>"+rows.map((r)=>"<tr>"+r.map((c)=>c.header?"<th>"+wikiInline(wikiEscape(c.text),ctx)+"</th>":"<td>"+wikiInline(wikiEscape(c.text),ctx)+"</td>").join("")+"</tr>").join("")+"</table>");continue;
+    }
+    const lm=raw.match(/^([*#-]+)\s+(.*)$/);
     if(lm){
       const depth=lm[1].length, type=lm[1].endsWith("#")?"ol":"ul";
       while(listStack.length>depth){out.push(listStack.pop()==="ul"?"</ul>":"</ol>");}
@@ -325,12 +345,36 @@ function renderWiki(source,ctx){
       out.push("<table>"+rows.map((r,ri)=>"<tr>"+r.map((c)=>ri===0?"<th>"+wikiInline(wikiEscape(c),ctx)+"</th>":"<td>"+wikiInline(wikiEscape(c),ctx)+"</td>").join("")+"</tr>").join("")+"</table>");continue;
     }
     const para=[raw];i++;
-    while(i<lines.length&&!/^\s*$/.test(lines[i])&&!/^(={2,4})\s/.test(lines[i])&&!/^([*#]+)\s/.test(lines[i])&&!lines[i].startsWith(" ")&&!/^\s*-{4,}\s*$/.test(lines[i])){para.push(lines[i]);i++;}
+    while(i<lines.length&&!/^\s*$/.test(lines[i])&&!/^(={1,6})\s/.test(lines[i])&&!/^([*#-]+)\s/.test(lines[i])&&!lines[i].startsWith(" ")&&!/^\s*-{4,}\s*$/.test(lines[i])&&!lines[i].trim().startsWith("{|")){para.push(lines[i]);i++;}
     const paraHtml=wikiInline(wikiEscape(para.join(" ")),ctx);
     if(paraHtml.trim())out.push("<p>"+paraHtml+"</p>");
   }
   closeLists(0);
   return out.join("\n").replace(/\u0001(\d+)\u0001/g,(m,n)=>"<pre>"+wikiEscape(nowiki[Number(n)])+"</pre>");
+}
+const WIKI_MONTHS=["january","february","march","april","may","june","july","august","september","october","november","december"];
+/* 0.8 WikiArticle.getDueDate(): a date inside the page TITLE (regex on the
+   title only — the body is never scanned). */
+function wikiTitleDate(title){
+  const m=String(title).match(/(\d{4})-(\d{2})-(\d{2})/);
+  if(!m)return null;
+  const y=Number(m[1]),mo=Number(m[2]),d=Number(m[3]);
+  if(mo<1||mo>12||d<1||d>31)return null;
+  return {y,m:mo,d,key:m[1]+"-"+m[2]+"-"+m[3]};
+}
+/* 0.8: dated articles and birthdays auto-tag with month name + year. */
+function wikiEventTags(title){
+  const date=wikiTitleDate(title);
+  return date?[WIKI_MONTHS[date.m-1],String(date.y)]:[];
+}
+/* 0.8 DateUtils.parseDate(): accepts yyyy-MM-dd and yyyyMMdd. */
+function wikiParseBday(value){
+  const v=String(value||"").trim();
+  let m=v.match(/^(\d{4})-(\d{2})-(\d{2})/)||v.match(/^(\d{4})(\d{2})(\d{2})$/);
+  if(m)return {y:Number(m[1]),m:Number(m[2]),d:Number(m[3])};
+  m=v.match(/^--(\d{2})-(\d{2})$/);
+  if(m)return {y:null,m:Number(m[1]),d:Number(m[2])};
+  return null;
 }
 function wikiCollectTags(source){
   const tags=new Set();
@@ -527,7 +571,7 @@ function renderPage(title){
     $("pageBacklinks").innerHTML=""; return;
   }
   $("pageMeta").textContent=rec.bundled?("bundled documentation · "+rec.source):("updated "+String(rec.updated||"").replace("T"," ").slice(0,16));
-  const tags=wikiCollectTags(rec.body);
+  const tags=[...new Set([...wikiCollectTags(rec.body),...(rec.bundled?[]:wikiEventTags(title))])];
   $("pageTags").innerHTML=tags.map((t)=>'<a class="tag" href="#/tags">'+wikiEscape(t)+"</a>").join("");
   renderInto($("pageBody"),title);
   if(rec.bundled){
@@ -575,7 +619,10 @@ function renderIndex(){
 function renderTags(filter){
   show("tags"); renderSidebar();
   const byTag={};
-  for(const [t,r] of allPages()) for(const tag of wikiCollectTags(r.body)) (byTag[tag]=byTag[tag]||[]).push(t);
+  for(const [t,r] of allPages()){
+    const tags=new Set([...wikiCollectTags(r.body),...(r.bundled?[]:wikiEventTags(t))]);
+    for(const tag of tags) (byTag[tag]=byTag[tag]||[]).push(t);
+  }
   const names=Object.keys(byTag).sort();
   $("tagCloud").innerHTML=names.map((t)=>'<a class="tag" href="#/tags" data-tag="'+wikiEscape(t)+'">'+wikiEscape(t)+" ("+byTag[t].length+")</a>").join("")||'<span class="dim">No tags yet — add [[tags:demo]] to a page.</span>';
   $("tagCloud").querySelectorAll("[data-tag]").forEach((a)=>a.addEventListener("click",(ev)=>{ev.preventDefault();renderTags(a.dataset.tag);}));
@@ -613,13 +660,37 @@ function renderContacts(){
     +'<div class="small">'+[c.tel,c.email,c.bday?("🎂 "+wikiEscape(c.bday)):""].filter(Boolean).map(wikiEscape).join(" · ")+"</div></div>").join("")
     :'<p class="dim">No contacts yet. Import a .vcf via “Import…” — Wiki in a Jar has doubled as an address book since 2007.</p>';
 }
+let calCursor=null; // {y, m} — defaults to the current month, like defaultAction
+function calendarEvents(y,m){
+  const events=[];
+  for(const c of contacts){
+    const b=wikiParseBday(c.bday);
+    if(b&&b.m===m)events.push({d:b.d,kind:"🎂 birthday",label:c.fn+(b.y?" (born "+b.y+")":""),title:null});
+  }
+  for(const [t,rec] of Object.entries(pages)){
+    if(rec.deleted)continue;
+    const date=wikiTitleDate(t);
+    if(date&&date.y===y&&date.m===m)events.push({d:date.d,kind:"📌 page",label:t,title:t});
+  }
+  return events.sort((a,b)=>a.d-b.d);
+}
 function renderCalendar(){
   show("calendar"); renderSidebar();
-  const rows=[];
-  for(const c of contacts) if(c.bday) rows.push({date:c.bday,label:"🎂 "+c.fn+" (birthday)"});
-  for(const [t,r] of Object.entries(pages)) for(const m of r.body.matchAll(/^Date:\s*(\d{4}-\d{2}-\d{2})\s*(.*)$/gim)) rows.push({date:m[1],label:t+(m[2]?" — "+m[2]:"")});
-  rows.sort((a,b)=>a.date.localeCompare(b.date));
-  $("calendarList").innerHTML=rows.length?"<ul>"+rows.map((r)=>'<li><span class="mono">'+wikiEscape(r.date)+"</span> "+wikiEscape(r.label)+"</li>").join("")+"</ul>":'<p class="dim">Nothing dated yet. Add a contact birthday or a “Date: YYYY-MM-DD” line to a page.</p>';
+  if(!calCursor){ const now=new Date(); calCursor={y:now.getFullYear(),m:now.getMonth()+1}; }
+  const {y,m}=calCursor;
+  const events=calendarEvents(y,m);
+  const monthName=WIKI_MONTHS[m-1][0].toUpperCase()+WIKI_MONTHS[m-1].slice(1);
+  $("calendarList").innerHTML=
+    '<div class="row"><button class="btn" id="calPrev" type="button">← Prev</button>'
+    +"<h3 style=\"margin:0\">"+monthName+" "+y+"</h3>"
+    +'<button class="btn" id="calNext" type="button">Next →</button>'
+    +'<button class="btn" id="calToday" type="button">Today</button></div>'
+    +(events.length?"<ul>"+events.map((e)=>'<li><span class="mono">'+y+"-"+String(m).padStart(2,"0")+"-"+String(e.d).padStart(2,"0")+"</span> "+e.kind+" — "+(e.title?'<a href="#/page/'+encodeURIComponent(e.title)+'">'+wikiEscape(e.label)+"</a>":wikiEscape(e.label))+"</li>").join("")+"</ul>"
+      :'<p class="dim">No events this month. Import a contact with a birthday, or create a page titled e.g. “'+y+"-"+String(m).padStart(2,"0")+'-15 Something due”.</p>');
+  const shift=(delta)=>{ const total=y*12+(m-1)+delta; calCursor={y:Math.floor(total/12),m:(total%12)+1}; renderCalendar(); };
+  $("calPrev").addEventListener("click",()=>shift(-1));
+  $("calNext").addEventListener("click",()=>shift(1));
+  $("calToday").addEventListener("click",()=>{ calCursor=null; renderCalendar(); });
 }
 function renderSearch(q){
   show("search"); renderSidebar();

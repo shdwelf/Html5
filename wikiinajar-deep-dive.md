@@ -112,10 +112,27 @@ Lantronix deep dive §5.3–5.4 maps the ACME family separately so the two
 are never conflated again).
 
 **Content model.** Pages are files: `public/docs/wiki/<Title>.wiki`.
-Contacts are `.vcf` files surfaced through the Vcard controller; the
-Calendar controller surfaces dated PIM entries (**inferred** in detail —
-the exact date syntax is agenda R3; the browser rebuild therefore
-documents its `Date: YYYY-MM-DD` + `BDAY` rule as an adaptation, in-app).
+Contacts are `.vcf` files surfaced through the Vcard controller.
+
+**Calendar, due dates and auto-tags (recovered 2026-10-14, R3).** The
+mirror source settles what the Calendar actually does.
+`CalendarController` serves one month at a time (twelve actions, year
+from the URL id, defaulting to the current month), and
+`Month.loadEvents()` fills it from exactly two sources: (1) every
+vCard whose `BDAY` falls in that month — an anniversary, matched on
+month alone via `Vcard.isBirthdayInMonth()`; and (2) every wiki
+article whose **title** contains a date —
+`WikiArticle.getDueDate()` runs `.*(\d{4})-(\d{2})-(\d{2}).*` over the
+title only, never the body. So `2026-11-05 Dentist` is a calendar
+event and a dated body line is not. The same machinery auto-tags:
+dated articles and birthday contacts silently gain their month-name
+and year as tags (on top of every article's default `all`, `wiki` and
+first-letter tags, which this rebuild does not reproduce).
+`DateUtils.parseDate()` accepts `yyyy-MM-dd` and `yyyyMMdd`. The
+browser Calendar view and tag cloud were rewritten to these exact
+semantics — the earlier `Date: YYYY-MM-DD` body-line rule shipped in
+the first conversion was an adaptation, and is now recorded here as a
+corrected mistake, not quietly deleted.
 
 **Rendering.** `WikiLinkFilter` recognises `[[...]]` and delegates to
 `WikiLink`, which splits `namespace:page|label` on the first `:` and `|`
@@ -210,7 +227,7 @@ fallback — precisely the Java edition's no-JS contract.
 | `WikiLink` namespaces (`wiki`, `vcard`, `tags`, `tagtree`, `sidebar`) | same dispatch, same hidden `tags:`/`sidebar:`, same `(Unknown namespace: ns)` literal | pinned by renderer tests; `SideBar` is a real editable page rendered in the rail |
 | — (hugcoday / this repo's patch) `img:`/`image:`/`djvu:` | same namespaces, same error strings, same 120 DPI / 2200 px DjVu viewer constants | media lives in a per-device library (`public/docs/image` analogue); **not** synced — update payloads are the wrong truck for megabytes |
 | Vcard controller + `.vcf` files | Contacts view; `.vcf` import (`FN/TEL/EMAIL/ORG/BDAY`); `[[vcard:Name]]` links | vCard 2.1 quoted-printable edge cases: agenda R6 |
-| Calendar controller | Calendar view: contact `BDAY`s + `Date: YYYY-MM-DD` page lines | **adaptation, labelled in-app** — original semantics unrecovered (R3) |
+| Calendar controller (one month, `Month.loadEvents()`) | Calendar view with month navigation: contact `BDAY`s (monthly recurrence) + pages whose **title** contains `YYYY-MM-DD`; dated pages auto-tag month + year in both editions | **aligned 2026-10-14 (R3)** — the first conversion's body-line `Date:` rule was wrong and was replaced; default `all`/`wiki`/first-letter tags not reproduced |
 | XSL skins | one inline stylesheet + print CSS | — |
 | multi-user via shared server | multi-user via webxdc: page saves `sendUpdate({wikiinajar:{type:"page",…}})`, newest `updated` wins per page; deletes propagate | last-writer-wins is a research topic, not a solved one (R4); outside a chat, a simulator shim keeps the file fully functional |
 | no byte-range requests (NanoHTTPD) | no byte-range fetches (ZIP-served statics) | DjVu whole-file-on-approach in both editions (R5) |
@@ -313,21 +330,44 @@ are recorded in `docs/wikiinajar-image-support.md`.
 Open, numbered, and deliberately falsifiable — pick one up by citing its
 number:
 
-- **R1 — Fork diff.** Clone `hugcoday/WikiInAJar` beside
-  `astecenko/Wiki-in-a-Jar@a56cfdf`, diff its `img:` route against
-  `tools/wikiinajar/src/.../ImageController.java` line by line, and
-  record which of its behaviours (caching? resizing? MIME table?) this
-  repo should adopt or explicitly reject.
+- **R1 — Fork diff. ✅ Resolved 2026-10-14.** Both mirrors cloned and
+  diffed (`astecenko/Wiki-in-a-Jar@a56cfdf` trunk vs
+  `hugcoday/WikiInAJar`, whose `Image.java` is credited to “han.xx”).
+  The fork adds exactly three things: `models/Image` (a docroot
+  constant), an `ImageController`, and `IMG_NAMESPACE` dispatch in
+  `WikiLink`. Verdict — **adopt: nothing; reject, with reasons:**
+  (1) its markup is `"<IMG src=\"/image/show/" + link + "\">" + link +
+  "</IMG>"` — the path is concatenated **unescaped**, there is no alt
+  text, and the fork's `WikiLink` actually *deletes* the 0.8 `|label`
+  machinery (`splitByNamespace` replaces `splitWikiLink`), so
+  `[[img:x.png|label]]` cannot even be expressed; (2) its controller
+  is `new File(Image.getImageDir()+"/" + request.getPath().getId())`
+  with an `exists()` check — no canonicalisation, no segment rules, no
+  extension whitelist, so `../` walks out of the image directory and
+  any file type inside it is served; (3) a miss returns an
+  `errorResponse("找不到！ …")` instead of a 404. It also predates the
+  label support it regressed, i.e. it forked an older snapshot than
+  0.8. This repo's patch (escaped labels, per-segment + canonical
+  checks, suffix whitelist, subdirectories, DjVu, MIME table) stands
+  as the safer superset; the fork remains valuable as proof that
+  `img:` was the community's chosen extension point (§2).
 - **R2 — “More Wiki in a Jar” recovery.** The 0.9.9 changelog currently
   rests on one Soft112 line (“Several fixes and updates”, 2009-01-07)
   [4](https://more-wiki-in-a-jar.soft112.com/). Find the
   `morewikiinajar.sf.net` downloads (Wayback), extract a real feature
   list, and check whether 0.9.9's “full Wiki formatting syntax” implies
   markup this renderer should grow (tables? footnotes? templates?).
-- **R3 — Calendar semantics.** Read `CalendarController` in the 0.6.1/0.8
-  source and state exactly what it aggregates (page dates? vCard
-  `BDAY`? anniversaries?), then align or deliberately diverge the
-  browser Calendar view, which is currently a labelled adaptation.
+  *Attempted 2026-10-14:* Soft112 re-fetched — it adds only metadata
+  (437 downloads, Windows XP/Vista/7 listing, file size N/A, no binary
+  hosted there); the Wayback availability API returned HTTP 429.
+  Next step: retry via the CDX API for `morewikiinajar.sourceforge.net`
+  snapshots when the rate limit clears.
+- **R3 — Calendar semantics. ✅ Resolved 2026-10-14** — see §3
+  (“Calendar, due dates and auto-tags”). The browser Calendar, page
+  tag chips and Tags view now implement the recovered semantics
+  (title-dates + `BDAY` anniversaries, month navigation, month/year
+  auto-tags); the previous body-line adaptation was replaced, and a
+  test greps that it stays gone.
 - **R4 — Sync conflicts.** Last-writer-wins per page is the webxdc
   default of least surprise, not a merging strategy. Prototype a
   line-based three-way merge (the per-page history already keeps the
@@ -342,10 +382,27 @@ number:
   quoted-printable, folded lines, `CHARSET`) break naive parsers;
   build a fixture corpus and harden `parseVcards` against it, checking
   what 0.8's Vcard model actually retained.
-- **R7 — Renderer conformance.** Fuzz the browser renderer against the
-  Java `WikiLinkFilter` chain on the demo corpus (nested lists, pipes
-  inside labels, `&amp;` reversal) and publish the diff table; the
-  pipe-table and bare-URL behaviours are already marked EXT in code.
+- **R7 — Renderer conformance. ◐ In progress (first pass 2026-10-14).**
+  The 0.8 chain is now enumerated from `RenderEngine` (NoWikiCapture →
+  Section → Heading → Hr → Intended → Url → List → Strongest →
+  Stronger → Strong → WikiLink → Break → HtmlTags → Table →
+  NoWikiInsert) over `escapeHtmlChars` output — the same escape-first
+  order this renderer uses. Aligned in this pass: `''''x''''` →
+  `<em><strong>` (StrongestFilter), `= H =` → `<h1>` (HeadingFilter
+  emits `<h` + count), `-` list bullets (ListFilter's `[-#*]+`),
+  MediaWiki `{| … |}` tables (TableFilter — the pipe-table form
+  remains a marked md2wiki EXT), and `ftp://` autolinks (UrlFilter).
+  Also aligned: literal `<br/>` in wikitext stays a break
+  (BreakFilter un-escapes exactly that), and the HtmlTagsFilter
+  allowlist (`code`, `tt`, `pre`) is un-escaped after markup — safe
+  here because all user text was escaped first, so only the tag
+  brackets revive, never injected markup. Known remaining
+  divergences, deliberately kept and documented here rather than in
+  code comments alone: SectionFilter's blank-line `<p>&#160;</p>`
+  spacers (this renderer uses real paragraph separation), and
+  HeadingFilter emitting invalid `<h7>`+ for long `=` runs (capped
+  at 6 here). Still to do: the automated fuzz diff over the demo
+  corpus (nested lists, pipes inside labels, `&amp;` reversal).
 - **R8 — Print & longevity.** The Java pitch was “readable in fifty
   years”. Verify the exported jar JSON + `.wiki` files round-trip
   through the *unpatched* 0.8 binary, and give the browser edition a
@@ -360,6 +417,19 @@ number:
   Java documentation pages, and `tests/wikiinajar.test.mjs`. Next
   actions queued as R1–R8 above; R1 and R3 are pure source-reading and
   need no network beyond the two GitHub mirrors.
+- **2026-10-14 (continued research: R1, R3, R7, R2-attempt)** —
+  Cloned both GitHub mirrors into a scratch dir (not committed) and
+  read the 0.8 sources directly. R3 resolved from
+  `Month.loadEvents()` / `WikiArticle.getDueDate()` /
+  `Vcard.isBirthdayInMonth()` / `DateUtils.DATE_FORMATS`; the app's
+  Calendar was rewritten to the recovered semantics (its first-pass
+  body-line rule is preserved above as a corrected mistake) and dated
+  pages now auto-tag month + year. R1 resolved with an adopt-nothing
+  verdict and three cited defects in the hugcoday route (§10). R7
+  first pass: filter chain enumerated, five behaviours aligned in the
+  renderer, four divergences documented as deliberate. R2 attempted:
+  Soft112 metadata only; Wayback availability API 429 — retry via CDX
+  queued in R2. Tests: 16/16 (wikiinajar + DjVu).
 - **2026-10-14 (documentation rebuild)** — “A page for each `*.md`”:
   added `tools/wikiinajar/md2wiki.mjs` (Markdown → wikitext), taught
   the build to bundle all 139 root + `docs/*.md` files as `docs.json`,

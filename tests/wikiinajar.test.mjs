@@ -98,6 +98,36 @@ test("tags and backlink collection read the same wikitext", () => {
   assert.deepEqual(wikiCollectLinks("[[Main Page]] [[image:a.png]] [[Other Page|label]]"), ["Main Page", "Other Page"]);
 });
 
+test("renderer: 0.8 conformance — strongest emphasis, =h1=, mediawiki tables, ftp, dated titles", () => {
+  const { renderWiki, wikiTitleDate, wikiEventTags, wikiParseBday } = new Function(
+    html.match(/\/\*WIKI-RENDER-BEGIN\*\/([\s\S]*?)\/\*WIKI-RENDER-END\*\//)[1]
+    + "\nreturn { renderWiki, wikiTitleDate, wikiEventTags, wikiParseBday };",
+  )();
+  assert.match(renderWiki("''''both''''", CTX), /<em><strong>both<\/strong><\/em>/, "'''' -> StrongestFilter <i><b>");
+  assert.match(renderWiki("= Top =", CTX), /<h1>Top<\/h1>/, "= H = is an h1 in HeadingFilter");
+  assert.match(renderWiki("- dash item", CTX), /<ul>\s*<li>dash item<\/li>\s*<\/ul>/, "ListFilter accepts - bullets");
+  const table = renderWiki("{|\n|-\n! Name\n! Kind\n|-\n| jar\n| wiki\n|}", CTX);
+  assert.match(table, /<th>Name<\/th>/);
+  assert.match(table, /<td>jar<\/td>/);
+  assert.match(renderWiki("see ftp://example.org/f", CTX), /href="ftp:\/\/example\.org\/f"/, "UrlFilter links ftp:// too");
+  assert.match(renderWiki("one<br/>two", CTX), /one<br\/>two/, "BreakFilter: literal <br/> stays a break");
+  assert.doesNotMatch(renderWiki("<div>x</div>", CTX), /<div>/, "non-allowlisted tags stay escaped");
+  assert.deepEqual(wikiTitleDate("2026-11-05 Dentist"), { y: 2026, m: 11, d: 5, key: "2026-11-05" });
+  assert.equal(wikiTitleDate("Dentist on 2026-13-40"), null, "impossible dates are not due dates");
+  assert.equal(wikiTitleDate("No date here"), null);
+  assert.deepEqual(wikiEventTags("2026-11-05 Dentist"), ["november", "2026"], "0.8 auto-tags: month + year");
+  assert.deepEqual(wikiParseBday("1970-01-02"), { y: 1970, m: 1, d: 2 });
+  assert.deepEqual(wikiParseBday("19700102"), { y: 1970, m: 1, d: 2 }, "yyyyMMdd accepted, as in DateUtils");
+  assert.equal(wikiParseBday("Jan 2"), null);
+});
+
+test("calendar in the app uses title-dates + birthdays (0.8 Month.loadEvents)", () => {
+  assert.ok(html.includes("function calendarEvents(y,m)"), "month-at-a-time event loader present");
+  assert.ok(html.includes("wikiTitleDate(t)"), "events come from page titles");
+  assert.doesNotMatch(html, /Date:\\s\*\(\\d\{4\}/, "the old body-line Date: adaptation is gone");
+  assert.ok(html.includes("Month.loadEvents()"), "view documents its primary source");
+});
+
 test("xdc bundle is a zip rooted at index.html + manifest.toml + DjVu reader", () => {
   const bytes = readFileSync(path.join(root, "wikiinajar.xdc"));
   assert.equal(bytes[0], 0x50); // 'P'
