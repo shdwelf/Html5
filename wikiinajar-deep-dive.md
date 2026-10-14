@@ -326,7 +326,8 @@ passes added: R1 rejection checks and the Java-patch cross-reference,
 the R3 Calendar semantics regression lock, the R7 conformance corpus,
 the R6 vCard fixture corpus, the R5 lazy-DjVu transport probe, and
 the R4 three-way merge algebra, and the R8 print/round-trip
-contract — 21 Node tests, all green. The Java
+contract, plus the R4 two-client sync simulation — 22 Node tests,
+all green. The Java
 smoke test and full-suite results for the patch predate this turn and
 are recorded in `docs/wikiinajar-image-support.md`.
 
@@ -402,9 +403,13 @@ number:
   an `unbased`/`force`/`delete` conflict flag; explicit Share is the
   only forcing path. Deletes racing newer edits keep the page and
   flag `delete`. Covered by the R4 test (merge algebra + wire-format
-  pins); an interactive two-client chat simulation remains the honest
-  next step before calling collaboration *proven* rather than
-  *implemented*.
+  pins). The receiver was since factored into the pure
+  `wikiApplySync`, and a two-client protocol simulation in the same
+  suite now proves convergence for disjoint edits, no-loss flagged
+  conflicts for same-line edits, and correct delete/edit races —
+  against the shipped code, not a reimplementation. Still unproven,
+  honestly: a live two-device Delta Chat session, which needs the
+  chat host this sandbox cannot run.
 - **R5 — DjVu range loading. ✅ Assessed 2026-10-14 — API proven,
   transport is the blocker; whole-file loading kept deliberately.**
   The vendored decoder exports `WasmLazyDocument.open(totalLen,
@@ -560,7 +565,9 @@ number:
   rejection with its exact error text (R7 entry). The same compiled
   original then served this rebuild's seed + converted pages as
   `.wiki` files — the R8 round-trip — while the browser edition
-  gained a tested print stylesheet. 21 Node tests green. Scratch
+  gained a tested print stylesheet; the sync receiver was factored
+  into pure `wikiApplySync` and a two-client protocol simulation
+  added to the suite. 22 Node tests green. Scratch
   clones and the corpus harness live outside the repo and are
   reproducible from the commands in the R7/R8 entries.
 

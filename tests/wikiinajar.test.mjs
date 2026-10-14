@@ -208,6 +208,45 @@ test("R4: three-way merge combines disjoint edits, marks real conflicts", () => 
   assert.match(html, /⚠ sync /);
 });
 
+test("R4: two-client sync simulation converges (shipped wikiApplySync)", () => {
+  const m = html.match(/function wikiTextHash[\s\S]*?function wikiApplySync[\s\S]*?\n\}/);
+  assert.ok(m, "sync helpers found in app script");
+  const { wikiTextHash, wikiApplySync } = new Function(m[0] + "\nreturn { wikiTextHash, wikiApplySync };")();
+  // sender side mirrors savePage: the update names the revision it edited
+  const send = (jar, title, body, updated) => {
+    const prev = jar[title];
+    jar[title] = { body, updated, history: prev ? [...(prev.history || []), { body: prev.body, updated: prev.updated }].slice(-10) : [] };
+    return { type: "page", title, body, updated, baseUpdated: prev ? prev.updated : "", baseHash: wikiTextHash(prev ? prev.body : "") };
+  };
+  const seedJar = () => ({ Notes: { body: "l1\nl2\nl3", updated: "t0", history: [] } });
+  // disjoint concurrent edits converge byte-identically, no conflict
+  const A = seedJar(), B = seedJar();
+  const uA = send(A, "Notes", "L1\nl2\nl3", "t1");
+  const uB = send(B, "Notes", "l1\nl2\nL3", "t1");
+  wikiApplySync(A, uB, "t2"); wikiApplySync(B, uA, "t2");
+  assert.equal(A.Notes.body, "L1\nl2\nL3");
+  assert.equal(B.Notes.body, A.Notes.body);
+  assert.ok(!A.Notes.conflict && !B.Notes.conflict);
+  // same-line concurrent edits: both devices keep BOTH texts, flagged
+  const C = seedJar(), D = seedJar();
+  const uC = send(C, "Notes", "l1\nfrom C\nl3", "t1");
+  const uD = send(D, "Notes", "l1\nfrom D\nl3", "t1");
+  wikiApplySync(C, uD, "t2"); wikiApplySync(D, uC, "t2");
+  for (const jar of [C, D]) {
+    assert.equal(jar.Notes.conflict, "merge");
+    assert.ok(jar.Notes.body.includes("from C") && jar.Notes.body.includes("from D"), "no edit lost");
+    assert.ok(jar.Notes.history.some((h) => h.body.includes("l2")), "pre-merge body in history");
+  }
+  // a delete older than a local edit loses; the page survives, flagged
+  const E = seedJar();
+  send(E, "Notes", "l1\nedited\nl3", "t5");
+  wikiApplySync(E, { type: "delete", title: "Notes", updated: "t4" }, "t6");
+  assert.ok(!E.Notes.deleted && E.Notes.conflict === "delete");
+  // a newer delete wins but keeps the body recoverable in history
+  wikiApplySync(E, { type: "delete", title: "Notes", updated: "t9" }, "t9");
+  assert.ok(E.Notes.deleted && E.Notes.history.some((h) => h.body.includes("edited")));
+});
+
 test("R8: print stylesheet flattens the jar; seeds are plain .wiki files", () => {
   const print = html.match(/@media print\{([\s\S]*?)\n\}/);
   assert.ok(print, "@media print block present");

@@ -721,6 +721,37 @@ function wikiMerge3(base,ours,theirs){
   while(i<b.length){ out.push(b[i]); i++; }
   return {body:out.join("\n"),conflicts};
 }
+function wikiApplySync(pages,p,now){
+  /* Receiver side of sync protocol v2 (pure: mutates and returns `pages`).
+     Nothing is ever dropped silently — superseded bodies land in the
+     10-deep history and divergences carry a `conflict` reason. */
+  const cur=pages[p.title];
+  const stash=(rec)=>[...(rec.history||[]),{body:rec.body,updated:rec.updated}].slice(-10);
+  if(p.type==="delete"){
+    if(cur&&!cur.deleted&&String(cur.updated||"")>String(p.updated||""))pages[p.title]={...cur,conflict:"delete"};
+    else if(cur&&!cur.deleted)pages[p.title]={body:"",updated:p.updated||now,history:stash(cur),deleted:true};
+    else if(!cur)pages[p.title]={body:"",updated:p.updated||now,history:[],deleted:true};
+    return pages;
+  }
+  if(p.type==="page"&&typeof p.body==="string"){
+    if(!cur||cur.deleted)pages[p.title]={body:p.body,updated:p.updated||now,history:[]};
+    else if(cur.body!==p.body){
+      let base=null;
+      if(p.baseHash){
+        if(wikiTextHash(cur.body)===p.baseHash)base=cur.body;
+        else { const hit=(cur.history||[]).find((h)=>wikiTextHash(h.body)===p.baseHash); if(hit)base=hit.body; }
+      }
+      if(p.force)pages[p.title]={body:p.body,updated:p.updated||now,history:stash(cur),conflict:"force"};
+      else if(base!==null){
+        const merged=wikiMerge3(base,cur.body,p.body);
+        pages[p.title]={body:merged.body,updated:now,history:stash(cur),...(merged.conflicts?{conflict:"merge"}:{})};
+      }
+      else if(String(p.updated||"")>=String(cur.updated||""))pages[p.title]={body:p.body,updated:p.updated||now,history:stash(cur),conflict:"unbased"};
+      else pages[p.title]={...cur,conflict:"unbased"};
+    }
+  }
+  return pages;
+}
 function parseVcards(text){
   /* Real-world .vcf: folded lines (CRLF + space), quoted-printable values
      (vCard 2.1 exports), itemN. group prefixes, ;PARAMS, escaped \, \; \n. */
@@ -907,39 +938,8 @@ try{
       const p=u&&u.payload&&u.payload.wikiinajar; if(!p||!p.title)return;
       applyingRemote=true;
       try{
-        const cur=pages[p.title];
-        const stash=(rec)=>[...(rec.history||[]),{body:rec.body,updated:rec.updated}].slice(-10);
-        if(p.type==="delete"){
-          if(cur&&!cur.deleted&&String(cur.updated||"")>String(p.updated||"")){
-            pages[p.title]={...cur,conflict:"delete"}; // edited after the delete: keep, flag it
-          }else if(cur&&!cur.deleted){
-            pages[p.title]={body:"",updated:p.updated||nowISO(),history:stash(cur),deleted:true};
-          }else if(!cur){ pages[p.title]={body:"",updated:p.updated||nowISO(),history:[],deleted:true}; }
-          saveJSON(LS_PAGES,pages);
-        }
-        else if(p.type==="page"&&typeof p.body==="string"){
-          if(!cur||cur.deleted){ pages[p.title]={body:p.body,updated:p.updated||nowISO(),history:[]}; }
-          else if(cur.body!==p.body){
-            /* R4: find the common ancestor by hash — current body first,
-               then the 10-deep local history; merge when found. */
-            let base=null;
-            if(p.baseHash){
-              if(wikiTextHash(cur.body)===p.baseHash)base=cur.body;
-              else { const hit=(cur.history||[]).find((h)=>wikiTextHash(h.body)===p.baseHash); if(hit)base=hit.body; }
-            }
-            if(p.force){
-              pages[p.title]={body:p.body,updated:p.updated||nowISO(),history:stash(cur),conflict:"force"};
-            }else if(base!==null){
-              const merged=wikiMerge3(base,cur.body,p.body);
-              pages[p.title]={body:merged.body,updated:nowISO(),history:stash(cur),...(merged.conflicts?{conflict:"merge"}:{})};
-            }else if(String(p.updated||"")>=String(cur.updated||"")){
-              pages[p.title]={body:p.body,updated:p.updated||nowISO(),history:stash(cur),conflict:"unbased"}; // nothing lost: old body is in History
-            }else{
-              pages[p.title]={...cur,conflict:"unbased"};
-            }
-          }
-          saveJSON(LS_PAGES,pages);
-        }
+        pages=wikiApplySync(pages,p,nowISO());
+        saveJSON(LS_PAGES,pages);
         stats(); if(location.hash.includes(encodeURIComponent(p.title)))route(); else renderSidebar();
       }finally{ applyingRemote=false; }
     });
