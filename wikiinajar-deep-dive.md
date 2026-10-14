@@ -324,8 +324,8 @@ all 139 converted pages go through the shipped renderer without
 producing script or undefined output (1.78 M HTML chars). Later
 passes added: R1 rejection checks and the Java-patch cross-reference,
 the R3 Calendar semantics regression lock, the R7 conformance corpus,
-the R6 vCard fixture corpus, and the R5 lazy-DjVu transport probe —
-19 Node tests, all green. The Java
+the R6 vCard fixture corpus, the R5 lazy-DjVu transport probe, and
+the R4 three-way merge algebra — 20 Node tests, all green. The Java
 smoke test and full-suite results for the patch predate this turn and
 are recorded in `docs/wikiinajar-image-support.md`.
 
@@ -385,11 +385,25 @@ number:
   (title-dates + `BDAY` anniversaries, month navigation, month/year
   auto-tags); the previous body-line adaptation was replaced, and a
   test greps that it stays gone.
-- **R4 — Sync conflicts.** Last-writer-wins per page is the webxdc
-  default of least surprise, not a merging strategy. Prototype a
-  line-based three-way merge (the per-page history already keeps the
-  last 10 revisions locally) and measure update-payload sizes against
-  real chat limits before promising collaboration.
+- **R4 — Sync conflicts. ✅ Resolved 2026-10-14.** The sync protocol
+  is now v2: a save update carries `baseHash` (djb2 of the revision
+  the edit started from) plus `baseUpdated` — 63 bytes of overhead on
+  a median-corpus page (8,040 → 8,103 bytes measured against the 139
+  bundled pages, median 7,940 chars), against ~15,990 bytes had the
+  base *text* been shipped. The receiver looks the hash up in its
+  current body, then its 10-deep history, and runs `wikiMerge3`: an
+  LCS line-diff three-way merge where disjoint edits combine,
+  same-anchor appends concatenate, identical edits deduplicate, and
+  overlapping edits land as visible `<<<<<<< yours / ======= /
+  >>>>>>> theirs` markers with a ⚠ flag in the page meta. When no
+  common ancestor survives, nothing is silently lost either: the
+  newer body wins and the superseded one is stashed in History with
+  an `unbased`/`force`/`delete` conflict flag; explicit Share is the
+  only forcing path. Deletes racing newer edits keep the page and
+  flag `delete`. Covered by the R4 test (merge algebra + wire-format
+  pins); an interactive two-client chat simulation remains the honest
+  next step before calling collaboration *proven* rather than
+  *implemented*.
 - **R5 — DjVu range loading. ✅ Assessed 2026-10-14 — API proven,
   transport is the blocker; whole-file loading kept deliberately.**
   The vendored decoder exports `WasmLazyDocument.open(totalLen,
@@ -488,6 +502,14 @@ number:
   unbalanced-heading quirks — one corpus expectation was wrong on
   inspection (typed `&amp;` *should* stay visible, matching Java),
   which is exactly what the corpus is for. 19 Node tests green.
+- **2026-10-14 (continued research: R4)** — Sync grew a protocol v2:
+  saves name their base revision by hash (63 bytes median overhead,
+  measured), receivers three-way merge via `wikiMerge3` when the
+  base survives in current body or history, and every fallback path
+  (no base, forced Share, delete races) preserves the superseded
+  body in History behind a visible ⚠ conflict flag instead of
+  overwriting silently. The seeded documentation page now describes
+  merging rather than newest-wins. 20 Node tests green.
 
 ## 11. Sources
 

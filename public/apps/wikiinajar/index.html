@@ -397,7 +397,7 @@ function wikiCollectLinks(source){
 
 const SEED_PAGES = {
 "Main Page": "== Welcome to your jar ==\n\nThis is a '''personal wiki in a jar''': your notebook, address book and calendar, carried like the 2008 original — on a stick, offline, with no account and no server. Start with the documentation page: [[Wiki in a Jar]].\n\n* Write: click '''+ New page''', or follow a [[missing link]] and create it.\n* Organise: tag pages with the hidden link [[tags:home]] (try [[tags:demo,guide]] on a page and watch the Tags view).\n* Illustrate: embed local files with [[image:demo.png|Bundled example icon]] and read scanned books with [[djvu:djvu-smoke.djvu|Open the bundled DjVu sample]] — see [[Image Support Demo]].\n* Learn the markup: [[Wiki Syntax]].\n* Read the library: the '''Docs''' tab carries every repository deep dive and docs/*.md page, converted to wikitext — see [[Documentation]].\n* Play safely: [[SandBox]].\n\n----\n\n''The jar is small on purpose. It holds what you put in it — nothing else is watching.''\n\n[[tags:home]]",
-"Wiki in a Jar": "== Wiki in a Jar — documentation ==\n\n'''Wiki in a Jar''' is a small wiki written in Java with a great focus on simplicity. It is intended to run on a USB stick as a replacement for a paper note- and address book — a personal information manager (PIM). That is the 2008 pitch, preserved verbatim in spirit: this page documents both the original program and this HTML5 / webxdc rebuild, which is the same jar with the Java runtime swapped for the browser you already carry.\n\n=== The original (2008) ===\n\n* Author: rico_g; licence GPL; project: SourceForge ''wiki-in-a-jar''.\n* Latest release: WikiInAJar-0.8-20081128-bin.zip (123,402 bytes, 2008-11-28). Inside, wiki.in.a.jar (98,464 bytes) carries the main class org.rgse.wikiinajar.server.Server.\n* Run it: unzip anywhere (a USB stick is the canonical home), then bin/start.sh or: java -jar wiki.in.a.jar 3003 — and open http://localhost:3003/wiki .\n* Pages are plain .wiki text files under public/docs/wiki — one file per page, filename equals page title. Contacts are vCard (.vcf) files; the calendar surfaces dated PIM entries.\n* The embedded HTTP server is the project's own XRays framework on a relocated NanoHTTPD — not ACME — with XSL skins. It has '''no authentication''': keep it on a trusted local network, never expose it directly to the public Internet.\n\n=== This rebuild (HTML5 / webxdc) ===\n\n* wikiinajar.html is the whole wiki in one offline file; wikiinajar.xdc is the same file packaged for Delta Chat / ArcaneChat (ZIP rooted at index.html + manifest.toml).\n* Pages live in this browser's local storage and can be exported as one jar JSON or as individual .wiki files that the Java original can read.\n* Inside a chat, saved pages also sync to the group through webxdc updates (newest timestamp wins per page). Media files do '''not''' sync — import them per device under Media & DjVu.\n* Rebuild the bundle from the repository root: npm run build:wikiinajar (script: scripts/build-wikiinajar-xdc.mjs).\n\n=== Namespaces (WikiLink) ===\n\nThe 0.8 WikiLink splits [[namespace:page|label]] and dispatches on the namespace. This rebuild keeps the table:\n\n| Namespace | Meaning | Example |\n| wiki (default) | link to a page; missing pages invite creation | [[Wiki Syntax]] |\n| img / image | embed a local raster image, or a DjVu reader for .djvu/.djv | [[image:diagram.png|Diagram alt text]] |\n| djvu | embed the DjVu reader (requires .djvu/.djv) | [[djvu:reference.djvu|Read the reference]] |\n| tags | hidden: tag the current page | (renders nothing) |\n| tagtree | link to the tag tree | [[tagtree:all|All tags]] |\n| vcard | link to an imported contact | [[vcard:Ada Lovelace]] |\n| sidebar | hidden: sidebar material | (renders nothing) |\n\nAnything else renders as ''page (Unknown namespace: ns)'' — the original's own error text.\n\n=== Images and DjVu ===\n\nLocal media belongs under public/docs/image in the Java install, and in the Media & DjVu library here. Supported raster types: PNG, JPEG, GIF, WebP, BMP, AVIF. DjVu pages render in-browser with the bundled djvu-rs WebAssembly decoder (one page at a time, Previous/Next controls); the download link always works, even without JavaScript or WebAssembly. The old NanoHTTPD has no byte-range requests, and neither does this rebuild: a DjVu file downloads in full when its viewer scrolls near — keep large books small, or open them from disk.\n\n=== Safety notes ===\n\n* Neither edition has accounts or access control. The Java server trusts its network; this edition trusts your browser profile and your chat.\n* Image paths must be safe relative paths: no .. , no leading slash, no remote URLs. Traversal and unsupported suffixes are rejected in both editions.\n* All wikitext output is HTML-escaped before markup is applied, so a page cannot inject script into its readers.\n\n=== Bundled documentation (one page per *.md) ===\n\nThe .xdc bundle ships the repository's whole Markdown library as wiki pages: every root *.md (the deep dives and viewer docs) and every docs/*.md file, converted Markdown-to-wikitext by tools/wikiinajar/md2wiki.mjs into docs.json. Open the '''Docs''' tab to browse them grouped by folder, or follow the [[...]] links the converter made between documents. Bundled pages are read-only until you edit one: saving copies it into your jar, and your version wins on this device. Deleting a bundled page hides it locally; deleting your local copy brings the bundled original back.\n\n=== See also ===\n\n* [[Wiki Syntax]] — the full markup guide.\n* [[Image Support Demo]] — live image and DjVu embeds.\n* The deep dive: wikiinajar-deep-dive.md in the repository (history, forks, architecture, security audit, and the open research agenda).\n* The Java patch that adds image/DjVu support to the 0.8 jar: tools/wikiinajar/ in the repository.\n\n[[tags:documentation,guide]]",
+"Wiki in a Jar": "== Wiki in a Jar — documentation ==\n\n'''Wiki in a Jar''' is a small wiki written in Java with a great focus on simplicity. It is intended to run on a USB stick as a replacement for a paper note- and address book — a personal information manager (PIM). That is the 2008 pitch, preserved verbatim in spirit: this page documents both the original program and this HTML5 / webxdc rebuild, which is the same jar with the Java runtime swapped for the browser you already carry.\n\n=== The original (2008) ===\n\n* Author: rico_g; licence GPL; project: SourceForge ''wiki-in-a-jar''.\n* Latest release: WikiInAJar-0.8-20081128-bin.zip (123,402 bytes, 2008-11-28). Inside, wiki.in.a.jar (98,464 bytes) carries the main class org.rgse.wikiinajar.server.Server.\n* Run it: unzip anywhere (a USB stick is the canonical home), then bin/start.sh or: java -jar wiki.in.a.jar 3003 — and open http://localhost:3003/wiki .\n* Pages are plain .wiki text files under public/docs/wiki — one file per page, filename equals page title. Contacts are vCard (.vcf) files; the calendar surfaces dated PIM entries.\n* The embedded HTTP server is the project's own XRays framework on a relocated NanoHTTPD — not ACME — with XSL skins. It has '''no authentication''': keep it on a trusted local network, never expose it directly to the public Internet.\n\n=== This rebuild (HTML5 / webxdc) ===\n\n* wikiinajar.html is the whole wiki in one offline file; wikiinajar.xdc is the same file packaged for Delta Chat / ArcaneChat (ZIP rooted at index.html + manifest.toml).\n* Pages live in this browser's local storage and can be exported as one jar JSON or as individual .wiki files that the Java original can read.\n* Inside a chat, saved pages also sync to the group through webxdc updates. Each save names the revision it started from (a short hash), so a receiving device that still holds that revision merges both edits line-by-line instead of overwriting; overlapping edits arrive as visible conflict markers (yours / theirs) for a human to resolve, and no version is ever dropped silently — superseded bodies stay under History. Media files do '''not''' sync — import them per device under Media & DjVu.\n* Rebuild the bundle from the repository root: npm run build:wikiinajar (script: scripts/build-wikiinajar-xdc.mjs).\n\n=== Namespaces (WikiLink) ===\n\nThe 0.8 WikiLink splits [[namespace:page|label]] and dispatches on the namespace. This rebuild keeps the table:\n\n| Namespace | Meaning | Example |\n| wiki (default) | link to a page; missing pages invite creation | [[Wiki Syntax]] |\n| img / image | embed a local raster image, or a DjVu reader for .djvu/.djv | [[image:diagram.png|Diagram alt text]] |\n| djvu | embed the DjVu reader (requires .djvu/.djv) | [[djvu:reference.djvu|Read the reference]] |\n| tags | hidden: tag the current page | (renders nothing) |\n| tagtree | link to the tag tree | [[tagtree:all|All tags]] |\n| vcard | link to an imported contact | [[vcard:Ada Lovelace]] |\n| sidebar | hidden: sidebar material | (renders nothing) |\n\nAnything else renders as ''page (Unknown namespace: ns)'' — the original's own error text.\n\n=== Images and DjVu ===\n\nLocal media belongs under public/docs/image in the Java install, and in the Media & DjVu library here. Supported raster types: PNG, JPEG, GIF, WebP, BMP, AVIF. DjVu pages render in-browser with the bundled djvu-rs WebAssembly decoder (one page at a time, Previous/Next controls); the download link always works, even without JavaScript or WebAssembly. The old NanoHTTPD has no byte-range requests, and neither does this rebuild: a DjVu file downloads in full when its viewer scrolls near — keep large books small, or open them from disk.\n\n=== Safety notes ===\n\n* Neither edition has accounts or access control. The Java server trusts its network; this edition trusts your browser profile and your chat.\n* Image paths must be safe relative paths: no .. , no leading slash, no remote URLs. Traversal and unsupported suffixes are rejected in both editions.\n* All wikitext output is HTML-escaped before markup is applied, so a page cannot inject script into its readers.\n\n=== Bundled documentation (one page per *.md) ===\n\nThe .xdc bundle ships the repository's whole Markdown library as wiki pages: every root *.md (the deep dives and viewer docs) and every docs/*.md file, converted Markdown-to-wikitext by tools/wikiinajar/md2wiki.mjs into docs.json. Open the '''Docs''' tab to browse them grouped by folder, or follow the [[...]] links the converter made between documents. Bundled pages are read-only until you edit one: saving copies it into your jar, and your version wins on this device. Deleting a bundled page hides it locally; deleting your local copy brings the bundled original back.\n\n=== See also ===\n\n* [[Wiki Syntax]] — the full markup guide.\n* [[Image Support Demo]] — live image and DjVu embeds.\n* The deep dive: wikiinajar-deep-dive.md in the repository (history, forks, architecture, security audit, and the open research agenda).\n* The Java patch that adds image/DjVu support to the 0.8 jar: tools/wikiinajar/ in the repository.\n\n[[tags:documentation,guide]]",
 "Wiki Syntax": "== Wiki syntax ==\n\nThe 0.8 subset, plus clearly-marked browser extensions. Type wikitext; the renderer escapes HTML first, then applies markup — pages cannot inject script.\n\n=== Blocks ===\n\n* Headings: == Heading ==, === Subheading ===, ==== Smaller ====\n* Rule: ---- on its own line.\n* Lists: lines starting with * (bullets) or # (numbered); repeat the marker for nesting.\n* Preformatted: indent a line with a space, or wrap literal text in <nowiki> tags (the demo pages use <pre><nowiki> to show syntax literally).\n* Tables (browser extension): lines like | Cell | Cell | — first row becomes the header.\n\n=== Inline ===\n\n* '''bold''' and ''italic'' (three and two apostrophes).\n* [[Page Name]] links a page; [[Page Name|any label]] labels it. A [[Red Link]] invites creation.\n* [[image:file.png|Alt text]] and the alias [[img:file.png|Alt text]] embed media from the library (public/docs/image in the Java jar). Subfolders are fine: [[img:maps/toronto.webp|Map of Toronto]]\n* [[djvu:book.djvu|Read it]] embeds the DjVu reader; [[img:scan.djv|Scan]] works too.\n* [[vcard:Full Name]] links an imported contact; [[tagtree:x|Tags]] opens the tag tree.\n* Hidden links: [[tags:one,two]] tags this page; [[sidebar:x]] renders nothing here (edit the SideBar page instead).\n* Bare http:// and https:// URLs autolink (browser extension; the Java WikiLink reports them as an unknown namespace).\n\n=== Rules the renderer enforces ===\n\n* Media paths must be safe relative paths — no .. , no leading /, no drive or URL tricks — in both editions.\n* Only .png .jpg .jpeg .gif .webp .bmp .avif and .djvu/.djv embed; anything else shows [Unsupported image type.]\n* Unknown namespaces show the original message: page (Unknown namespace: ns)\n\n[[tags:documentation,guide]]",
 "Documentation": "== Bundled documentation ==\n\nThis jar doubles as the repository's reading room. At build time (npm run build:wikiinajar), every Markdown document — the root deep dives (*-deep-dive.md, PRIME, KEYSPACE, ASTRONOMY, GODSEYE and friends) and all of docs/*.md — is converted to native wikitext by tools/wikiinajar/md2wiki.mjs and bundled as docs.json, one wiki page per file.\n\n* Browse: the '''Docs''' tab groups the pages by folder, with a filter box.\n* Read: headings, lists, tables and code survive conversion; links between documents became [[wiki links]], so the library cross-references itself.\n* Annotate: press '''Edit''' on any bundled page to copy it into your jar — your copy wins on this device, and the bundled original returns if you delete your copy.\n* Provenance: every converted page ends with its source path, so a page can always be traced back to its .md file.\n\nThe conversion is deliberately plain: anything md2wiki does not recognise arrives as readable text rather than broken markup. Rebuilding regenerates the bundled copies; it never touches pages you have edited or created.\n\n[[tags:documentation,guide]]",
 "Image Support Demo": "== Images and DjVu ==\n\nWiki image files live in the installation's public/docs/image directory (Java) or the Media & DjVu library (this rebuild). Supported raster formats include PNG, JPEG, GIF, WebP, BMP, and AVIF.\n\nBundled raster image (import demo.png under Media & DjVu to light this up here; the Java build copies it automatically):\n\n[[image:demo.png|Bundled example icon]]\n\nExample syntax for a raster image:\n\n<pre><nowiki>[[image:demo.png|Bundled example icon]]</nowiki></pre>\n\nThe img: namespace is an alias, and names may include safe relative subdirectories:\n\n<pre><nowiki>[[img:maps/toronto.png|Toronto map]]</nowiki></pre>\n\nDjVu documents can be embedded with the page viewer. The document is fetched only when its placeholder scrolls near the viewport; each page is rendered locally in the browser using WebAssembly. The original file remains available through the download link. In the .xdc bundle the smoke document ships as media/djvu-smoke.djvu:\n\n[[djvu:djvu-smoke.djvu|Open the bundled DjVu sample]]\n\nExample syntax for a DjVu file:\n\n<pre><nowiki>[[djvu:djvu-smoke.djvu|Open the bundled DjVu sample]]</nowiki></pre>\n\nThe bundled smoke document is a small DjVu.js test asset under the Unlicense. To use your own documents, import them under Media & DjVu and replace djvu-smoke.djvu with the file name you added.\n\n[[tags:demo,media]]",
@@ -414,7 +414,7 @@ let currentTitle="Main Page", editingTitle=null;
 function getPage(title){
   const local=pages[title];
   if(local&&local.deleted)return null;
-  if(local)return {body:local.body,updated:local.updated,history:local.history||[],bundled:false};
+  if(local)return {body:local.body,updated:local.updated,history:local.history||[],bundled:false,conflict:local.conflict||""};
   const bundled=bundledDocs.get(title);
   if(bundled)return {body:bundled.body,updated:"bundled documentation",history:[],bundled:true,source:bundled.source};
   return null;
@@ -573,7 +573,7 @@ function renderPage(title){
     $("pageBody").innerHTML='<p>This page does not exist yet. <a href="#/edit/'+encodeURIComponent(title)+'">Create “'+wikiEscape(title)+'”</a> — in 0.8 the same click opens the editor for a new .wiki file.</p>';
     $("pageBacklinks").innerHTML=""; return;
   }
-  $("pageMeta").textContent=rec.bundled?("bundled documentation · "+rec.source):("updated "+String(rec.updated||"").replace("T"," ").slice(0,16));
+  $("pageMeta").textContent=(rec.bundled?("bundled documentation · "+rec.source):("updated "+String(rec.updated||"").replace("T"," ").slice(0,16)))+(rec.conflict?(" · ⚠ sync "+rec.conflict+" conflict — edit to resolve; earlier versions under History"):"");
   const tags=[...new Set([...wikiCollectTags(rec.body),...(rec.bundled?[]:wikiEventTags(title))])];
   $("pageTags").innerHTML=tags.map((t)=>'<a class="tag" href="#/tags">'+wikiEscape(t)+"</a>").join("");
   renderInto($("pageBody"),title);
@@ -646,6 +646,68 @@ function renderMedia(){
   }).join("")||'<p class="dim">No media imported yet. The bundled DjVu smoke file is referenced as djvu-smoke.djvu and ships inside the .xdc.</p>';
   $("mediaGrid").querySelectorAll("[data-copy]").forEach((b)=>b.addEventListener("click",async ()=>{ try{await navigator.clipboard.writeText(b.dataset.copy); note("mediaNote","Copied: "+b.dataset.copy);}catch(e){ note("mediaNote",b.dataset.copy); } }));
   $("mediaGrid").querySelectorAll("[data-del]").forEach((b)=>b.addEventListener("click",()=>{ delete media[b.dataset.del]; saveJSON(LS_MEDIA,media); renderMedia(); }));
+}
+function wikiTextHash(text){
+  let h=5381; const s=String(text);
+  for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;
+  return h.toString(16).padStart(8,"0");
+}
+function wikiDiffHunks(baseLines,sideLines){
+  /* LCS-based line diff: hunks {start,end,lines} replacing baseLines[start..end). */
+  const n=baseLines.length, m=sideLines.length;
+  if(n*m>4000000)return [{start:0,end:n,lines:sideLines.slice()}];
+  const dp=Array.from({length:n+1},()=>new Uint32Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)
+    dp[i][j]=baseLines[i]===sideLines[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+  const hunks=[]; let bi=0, sj=0, cur=null;
+  const flush=()=>{ if(cur){ hunks.push(cur); cur=null; } };
+  while(bi<n||sj<m){
+    if(bi<n&&sj<m&&baseLines[bi]===sideLines[sj]){ flush(); bi++; sj++; }
+    else if(sj<m&&(bi>=n||dp[bi][sj+1]>=dp[bi+1][sj])){ if(!cur)cur={start:bi,end:bi,lines:[]}; cur.lines.push(sideLines[sj]); sj++; }
+    else if(bi<n){ if(!cur)cur={start:bi,end:bi,lines:[]}; cur.end=bi+1; bi++; }
+  }
+  flush();
+  return hunks;
+}
+function wikiMerge3(base,ours,theirs){
+  /* Line-based three-way merge. Disjoint edits combine; same-anchor pure
+     insertions concatenate (wiki append-append); overlapping edits get
+     git-style conflict markers. Returns {body, conflicts}. */
+  base=String(base); ours=String(ours); theirs=String(theirs);
+  if(ours===theirs)return {body:ours,conflicts:0};
+  if(base===ours)return {body:theirs,conflicts:0};
+  if(base===theirs)return {body:ours,conflicts:0};
+  const b=base.split("\n");
+  const hunksO=wikiDiffHunks(b,ours.split("\n")), hunksT=wikiDiffHunks(b,theirs.split("\n"));
+  const out=[]; let i=0, io=0, it=0, conflicts=0;
+  const sameHunk=(x,y)=>x&&y&&x.start===y.start&&x.end===y.end&&x.lines.join("\n")===y.lines.join("\n");
+  while(io<hunksO.length||it<hunksT.length){
+    const o=hunksO[io], t=hunksT[it];
+    const next=Math.min(o?o.start:Infinity,t?t.start:Infinity);
+    while(i<next){ out.push(b[i]); i++; }
+    if(sameHunk(o,t)){ out.push(...o.lines); i=o.end; io++; it++; continue; }
+    if(o&&t&&o.start===o.end&&t.start===t.end&&o.start===t.start){ out.push(...o.lines,...t.lines); io++; it++; continue; }
+    const overlaps=o&&t&&(o.start<t.end&&t.start<o.end||o.start===t.start);
+    if(overlaps){
+      let end=Math.max(o.end,t.end), grew=true;
+      while(grew){ grew=false;
+        for(const pair of [[hunksO,io],[hunksT,it]]){ let k=pair[1]; while(k<pair[0].length&&pair[0][k].start<end){ if(pair[0][k].end>end){ end=pair[0][k].end; grew=true; } k++; } }
+      }
+      const applyRegion=(hunks,from)=>{
+        const lines=[]; let p=Math.min(o.start,t.start), k=from;
+        while(k<hunks.length&&hunks[k].start<end){ const h=hunks[k]; while(p<h.start)lines.push(b[p++]); lines.push(...h.lines); p=h.end; k++; }
+        while(p<end)lines.push(b[p++]);
+        return {lines,next:k};
+      };
+      const rO=applyRegion(hunksO,io), rT=applyRegion(hunksT,it);
+      out.push("<<<<<<< yours (this device)"); out.push(...rO.lines); out.push("======="); out.push(...rT.lines); out.push(">>>>>>> theirs (from chat)");
+      conflicts++; i=end; io=rO.next; it=rT.next; continue;
+    }
+    const h=(t===undefined||(o&&o.start<=t.start))?o:t;
+    out.push(...h.lines); i=h.end; if(h===o)io++; else it++;
+  }
+  while(i<b.length){ out.push(b[i]); i++; }
+  return {body:out.join("\n"),conflicts};
 }
 function parseVcards(text){
   /* Real-world .vcf: folded lines (CRLF + space), quoted-printable values
@@ -727,7 +789,9 @@ function savePage(title,body,silent){
   pages[title]={body,updated:nowISO(),history};
   saveJSON(LS_PAGES,pages); stats();
   if(!silent&&!applyingRemote&&window.webxdc&&webxdc.sendUpdate){
-    try{ webxdc.sendUpdate({payload:{wikiinajar:{type:"page",title,body,updated:pages[title].updated}}},"Wiki: "+title); }catch(e){}
+    /* v2 payload: baseHash names the revision this edit started from, so
+       receivers with that revision in history can three-way merge (R4). */
+    try{ webxdc.sendUpdate({payload:{wikiinajar:{type:"page",title,body,updated:pages[title].updated,baseUpdated:prev?prev.updated:"",baseHash:wikiTextHash(prev?prev.body:"")}}},"Wiki: "+title); }catch(e){}
   }
 }
 function openEdit(title){
@@ -762,7 +826,7 @@ $("btnHistory").addEventListener("click",()=>{
 });
 $("btnShare").addEventListener("click",()=>{
   const rec=getPage(currentTitle);
-  if(window.webxdc&&webxdc.sendUpdate){ try{ webxdc.sendUpdate({payload:{wikiinajar:{type:"page",title:currentTitle,body:rec?rec.body:"",updated:nowISO()}}},"Wiki: "+currentTitle); note("ioNote","Shared “"+currentTitle+"” to the chat."); }catch(e){ note("ioNote","Sharing needs a webxdc host (Delta Chat / ArcaneChat)."); } }
+  if(window.webxdc&&webxdc.sendUpdate){ try{ webxdc.sendUpdate({payload:{wikiinajar:{type:"page",title:currentTitle,body:rec?rec.body:"",updated:nowISO(),force:true}}},"Wiki: "+currentTitle); note("ioNote","Shared “"+currentTitle+"” to the chat."); }catch(e){ note("ioNote","Sharing needs a webxdc host (Delta Chat / ArcaneChat)."); } }
   else note("ioNote","Open wikiinajar.xdc inside a chat to share pages with the group.");
 });
 $("btnNew").addEventListener("click",()=>{ const t=prompt("New page title:"); if(t&&t.trim()) location.hash="#/edit/"+encodeURIComponent(t.trim()); });
@@ -831,10 +895,38 @@ try{
       const p=u&&u.payload&&u.payload.wikiinajar; if(!p||!p.title)return;
       applyingRemote=true;
       try{
-        if(p.type==="delete"){ if(pages[p.title]){ delete pages[p.title]; saveJSON(LS_PAGES,pages); } }
+        const cur=pages[p.title];
+        const stash=(rec)=>[...(rec.history||[]),{body:rec.body,updated:rec.updated}].slice(-10);
+        if(p.type==="delete"){
+          if(cur&&!cur.deleted&&String(cur.updated||"")>String(p.updated||"")){
+            pages[p.title]={...cur,conflict:"delete"}; // edited after the delete: keep, flag it
+          }else if(cur&&!cur.deleted){
+            pages[p.title]={body:"",updated:p.updated||nowISO(),history:stash(cur),deleted:true};
+          }else if(!cur){ pages[p.title]={body:"",updated:p.updated||nowISO(),history:[],deleted:true}; }
+          saveJSON(LS_PAGES,pages);
+        }
         else if(p.type==="page"&&typeof p.body==="string"){
-          const cur=pages[p.title];
-          if(!cur||String(p.updated||"")>=String(cur.updated||"")){ pages[p.title]={body:p.body,updated:p.updated||nowISO(),history:cur?cur.history||[]:[]}; saveJSON(LS_PAGES,pages); }
+          if(!cur||cur.deleted){ pages[p.title]={body:p.body,updated:p.updated||nowISO(),history:[]}; }
+          else if(cur.body!==p.body){
+            /* R4: find the common ancestor by hash — current body first,
+               then the 10-deep local history; merge when found. */
+            let base=null;
+            if(p.baseHash){
+              if(wikiTextHash(cur.body)===p.baseHash)base=cur.body;
+              else { const hit=(cur.history||[]).find((h)=>wikiTextHash(h.body)===p.baseHash); if(hit)base=hit.body; }
+            }
+            if(p.force){
+              pages[p.title]={body:p.body,updated:p.updated||nowISO(),history:stash(cur),conflict:"force"};
+            }else if(base!==null){
+              const merged=wikiMerge3(base,cur.body,p.body);
+              pages[p.title]={body:merged.body,updated:nowISO(),history:stash(cur),...(merged.conflicts?{conflict:"merge"}:{})};
+            }else if(String(p.updated||"")>=String(cur.updated||"")){
+              pages[p.title]={body:p.body,updated:p.updated||nowISO(),history:stash(cur),conflict:"unbased"}; // nothing lost: old body is in History
+            }else{
+              pages[p.title]={...cur,conflict:"unbased"};
+            }
+          }
+          saveJSON(LS_PAGES,pages);
         }
         stats(); if(location.hash.includes(encodeURIComponent(p.title)))route(); else renderSidebar();
       }finally{ applyingRemote=false; }

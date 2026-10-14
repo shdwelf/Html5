@@ -177,6 +177,37 @@ test("R7 conformance corpus: browser vs 0.8 filter chain, divergences pinned", (
   assert.match(renderWiki("[[a/b]]", CTX), /href="#\/page\/a%2Fb"/);
 });
 
+test("R4: three-way merge combines disjoint edits, marks real conflicts", () => {
+  const m = html.match(/function wikiTextHash[\s\S]*?function wikiMerge3[\s\S]*?\n\}/);
+  assert.ok(m, "merge helpers found in app script");
+  const { wikiTextHash, wikiMerge3 } = new Function(m[0] + "\nreturn { wikiTextHash, wikiMerge3 };")();
+  const base = "one\ntwo\nthree\nfour\nfive";
+  // fast paths
+  assert.equal(wikiMerge3(base, base, "one\nTWO\nthree\nfour\nfive").body, "one\nTWO\nthree\nfour\nfive");
+  assert.equal(wikiMerge3(base, base, base).conflicts, 0);
+  // disjoint line edits combine cleanly
+  const merged = wikiMerge3(base, "ONE\ntwo\nthree\nfour\nfive", "one\ntwo\nthree\nfour\nFIVE");
+  assert.equal(merged.conflicts, 0);
+  assert.equal(merged.body, "ONE\ntwo\nthree\nfour\nFIVE");
+  // identical edits on both sides are not a conflict
+  assert.equal(wikiMerge3(base, "one\ntwo\n3\nfour\nfive", "one\ntwo\n3\nfour\nfive").conflicts, 0);
+  // same-line divergent edits produce visible markers, nothing dropped
+  const clash = wikiMerge3(base, "one\nyours\nthree\nfour\nfive", "one\ntheirs\nthree\nfour\nfive");
+  assert.equal(clash.conflicts, 1);
+  assert.match(clash.body, /<<<<<<< yours \(this device\)\nyours\n=======\ntheirs\n>>>>>>> theirs \(from chat\)/);
+  // append-append at the same anchor concatenates instead of conflicting
+  const appended = wikiMerge3(base, base + "\nfrom A", base + "\nfrom B");
+  assert.equal(appended.conflicts, 0);
+  assert.match(appended.body, /five\nfrom A\nfrom B$/);
+  // hash is stable and content-sensitive (it names sync base revisions)
+  assert.equal(wikiTextHash("abc"), wikiTextHash("abc"));
+  assert.notEqual(wikiTextHash("abc"), wikiTextHash("abd"));
+  // the wire format carries the base hash, the UI surfaces conflicts
+  assert.match(html, /baseHash:wikiTextHash\(prev\?prev\.body:""\)/);
+  assert.match(html, /wikiMerge3\(base,cur\.body,p\.body\)/);
+  assert.match(html, /⚠ sync /);
+});
+
 test("xdc bundle is a zip rooted at index.html + manifest.toml + DjVu reader", () => {
   const bytes = readFileSync(path.join(root, "wikiinajar.xdc"));
   assert.equal(bytes[0], 0x50); // 'P'
