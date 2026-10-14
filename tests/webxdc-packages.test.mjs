@@ -119,6 +119,18 @@ test("SoCal Subsurface archive is current and closes its local module graph", ()
   }
 });
 
+test("legacy Planet XDC filename now ships the SoCal Subsurface 4Dwm app", () => {
+  const planetAlias = readFileSync(path.join(root, "planet-viewer-4dwm.xdc"));
+  const canonical = readFileSync(path.join(root, "socal-subsurface.xdc"));
+  assert.deepEqual(planetAlias, canonical, "Planet compatibility XDC must mirror the canonical SoCal package");
+
+  const files = unzipSync(planetAlias);
+  assert.match(text(files, "manifest.toml"), /^name = \"SoCal Subsurface 4Dwm\"/);
+  assert.ok(files["js/socal-subsurface.js"], "replacement archive must include the SoCal 4DWM entry module");
+  assert.ok(!files["js/planet-viewer-4dwm.js"], "legacy filename must not deliver the Planet app payload");
+  assert.match(text(files, "index.html"), /LOCAL GPX → GEOCACHE REGISTER/);
+});
+
 test("Sanborn Installations archive carries both complete source applications", () => {
   const named = readFileSync(path.join(root, "sanborn-installations.xdc"));
   const compatibility = readFileSync(path.join(root, "sanborn-suite.xdc"));

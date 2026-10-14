@@ -18,9 +18,10 @@
  *
  * DEM / SAR / QUAD FRAMES
  * -----------------------
- * The graticules are the real index frames of the data, drawn at their real
- * spacing: USGS 7.5-minute quadrangles (0.125°), 1×1 degree 1/3 arc-second DEM
- * tiles, and a Sentinel-1 IW descending swath at its real 250 km width.
+ * The USGS graticules are real index frames drawn at their nominal spacing
+ * (7.5-minute quadrangles and 1×1 degree 1/3 arc-second DEM tiles). The SAR
+ * layer only borrows the nominal 250 km Sentinel-1 IW width: it is an
+ * illustrative footprint, not a dated acquisition or measured product.
  */
 
 export const FIRE_SOURCE_URLS = [
@@ -230,9 +231,9 @@ export const FRAMES = {
 };
 
 /**
- * Sentinel-1 style descending swath. Real IW geometry: 250 km swath, ~98.6°
- * inclination, descending pass crosses SoCal on a NNE→SSW heading in the
- * morning of local time. Drawn as a ribbon, not a claim about a specific frame.
+ * Authored Sentinel-1 IW-style swath sketch. The 250 km value is nominal
+ * mission-mode context only; the map anchor, heading, and ribbon are not an
+ * orbit solution, scene footprint, acquisition, or measured data.
  */
 export const SAR_SWATHS = [
   {
@@ -244,30 +245,31 @@ export const SAR_SWATHS = [
     widthKm: 250,
     color: "#a3e635",
     notes: [
-      "C-band, 5.405 GHz, 5.6 cm wavelength. IW mode: 250 km swath, 5 × 20 m resolution.",
-      "12-day repeat per satellite. Repeat-pass interferometry resolves line-of-sight ground motion at centimetre to millimetre scale.",
-      "This is how subsidence over pumped aquifers, creep on the San Andreas, and burn-scar roughness change get measured without anyone driving out there.",
+      "Mission-mode context only: C-band, 5.405 GHz, 5.6 cm wavelength; nominal IW width about 250 km. This is not an acquired image footprint.",
+      "No scene ID, acquisition date, relative orbit, source raster, DEM-assisted processing, coherence layer, or displacement product is present in this synthetic overlay.",
+      "The 12-day repeat value is mission context, not a date or recurrence for this drawing.",
+      "SAR/InSAR can measure surface change, but this schematic contains no acquired imagery, interferogram, or displacement measurements.",
     ],
   },
 ];
 
-/** InSAR-detectable deformation bowls inside the frame. */
+/** Authored schematic examples of regional InSAR monitoring contexts; not measured bowls. */
 export const DEFORMATION = [
   {
     id: "antelope",
-    name: "Antelope Valley subsidence bowl",
+    name: "Illustrative Antelope Valley subsidence setting",
     lon: -118.05,
     lat: 34.72,
     radiusKm: 28,
     color: "#facc15",
     notes: [
       "Groundwater-pumping subsidence around Lancaster / Edwards; decades of it, metres in total, and it is why parts of Rogers Dry Lake have had to be re-surveyed.",
-      "Classic InSAR target: no vegetation, no rain, high coherence, huge signal.",
+      "Representative setting for InSAR subsidence monitoring; actual coherence and displacement depend on the selected scenes and processing.",
     ],
   },
   {
     id: "sanjoaquin",
-    name: "San Joaquin Valley subsidence",
+    name: "Illustrative San Joaquin Valley subsidence setting",
     lon: -119.45,
     lat: 35.7,
     radiusKm: 45,
@@ -276,12 +278,12 @@ export const DEFORMATION = [
   },
   {
     id: "saltoncreep",
-    name: "Salton Trough deformation / geothermal drawdown",
+    name: "Illustrative Salton Trough deformation setting",
     lon: -115.6,
     lat: 33.2,
     radiusKm: 22,
     color: "#facc15",
-    notes: ["Tectonic spreading plus production-induced surface change over the geothermal field — both visible in the same interferogram."],
+    notes: ["Tectonic and production-related changes are possible regional study topics; this geometry does not identify or measure either signal."],
   },
 ];
 

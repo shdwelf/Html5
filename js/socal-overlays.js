@@ -6,7 +6,7 @@
  *
  *   fires   historical fire perimeters (WIFIRE / CAL FIRE FRAP lineage)
  *   frames  USGS 7.5′ quad graticule + 1° 3DEP DEM delivery tiles
- *   sar     Sentinel-1 style descending swath + InSAR deformation bowls
+ *   sar     illustrative Sentinel-1-width swath + synthetic deformation sketches (not a measured scene)
  *   clui    Center for Land Use Interpretation register captions
  *
  * Everything is drawn from lon/lat through the shared projection in
@@ -298,10 +298,13 @@ export function buildOverlays() {
       record: {
         id: swath.id,
         layer: "sar",
-        tier: "official",
+        tier: "context",
         name: swath.name,
-        facts: swath.notes,
-        sources: ["ESA Copernicus Sentinel-1 product specification", "NASA/ISRO NISAR mission documentation", "JPL ARIA / UAVSAR"],
+        facts: [
+          ...swath.notes,
+          "Illustrative geometry only: no Sentinel-1 product ID, acquisition date, orbit file, source raster or measured footprint is bundled.",
+        ],
+        sources: ["ESA Copernicus Sentinel-1 mode specifications (context only)", "NASA/ISRO NISAR mission documentation (context only)", "JPL ARIA / UAVSAR (context only)"],
       },
     };
     g.add(ribbonMesh);
@@ -322,15 +325,19 @@ export function buildOverlays() {
       const geo = new THREE.BufferGeometry().setFromPoints(drapedPoints(ring, 0.07, false));
       const line = new THREE.Line(geo, new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.25 + k * 0.15 }));
       line.userData = {
-        kind: "sar",
-        record: {
-          id: d.id,
-          layer: "sar",
-          tier: "community",
-          name: d.name,
-          facts: [...(d.notes || []), `Drawn as concentric fringes at ${d.radiusKm} km — a cartoon of an interferogram, not one.`],
-          sources: ["USGS / JPL InSAR subsidence studies", "CA DWR SGMA subsidence monitoring"],
-        },
+          kind: "sar",
+          record: {
+            id: d.id,
+            layer: "sar",
+            tier: "context",
+            name: d.name,
+            facts: [
+              ...(d.notes || []),
+              `Drawn as concentric fringes at ${d.radiusKm} km — a cartoon of an interferogram, not one.`,
+              "No scene-specific InSAR raster, measured boundary, pair date, or displacement value is included.",
+            ],
+            sources: ["USGS / JPL InSAR subsidence studies (background context only)", "CA DWR SGMA subsidence monitoring (background context only)"],
+          },
       };
       g.add(line);
       pickables.push(line);

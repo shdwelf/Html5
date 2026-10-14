@@ -85,6 +85,20 @@ html, body {
   letter-spacing: 0.04em;
 }
 .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.actions .app-link {
+  display: inline-flex;
+  align-items: center;
+  font: inherit;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  background: rgba(12, 22, 33, 0.9);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 5px 8px;
+  text-decoration: none;
+}
+.actions .app-link:hover { border-color: var(--accent); color: #fff; }
 
 button, select, input[type="search"] {
   font: inherit;

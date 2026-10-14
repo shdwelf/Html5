@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#061019" />
+  <title>Red October · 4D Command Theater</title>
+  <meta name="description" content="An offline, fictionalized story-index globe and schematic model viewer inspired by The Hunt for Red October. No real submarine tracks or precise internal layouts." />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #061019;
+      --panel: rgba(10, 24, 35, 0.96);
+      --panel2: #0b1b27;
+      --line: #1c3b4c;
+      --muted: #8ca8b6;
+      --ink: #dcecf2;
+      --mint: #59e0bf;
+      --blue: #79b9ff;
+      --amber: #ffc06e;
+      --warn: #ffcf69;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: var(--mono);
+      background: var(--bg);
+      color: var(--ink);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 13% -10%, rgba(30, 91, 116, .22), transparent 40%),
+        linear-gradient(145deg, #061019 0%, #07131c 54%, #091722 100%);
+    }
+    button, select, input { font: inherit; }
+    button, select {
+      color: var(--ink);
+      background: #0c202d;
+      border: 1px solid #285064;
+      border-radius: 4px;
+      padding: 8px 10px;
+    }
+    button { cursor: pointer; transition: border-color .14s, background .14s, transform .14s; }
+    button:hover, select:hover { border-color: var(--mint); background: #102a38; }
+    button:active { transform: translateY(1px); }
+    button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible {
+      outline: 2px solid var(--mint); outline-offset: 2px;
+    }
+    a { color: #9bd9ff; }
+    .shell { max-width: 1600px; margin: auto; padding: 18px clamp(12px, 2.2vw, 32px) 24px; }
+    .masthead {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; align-items: center;
+      padding: 15px 18px; border: 1px solid var(--line); border-radius: 8px;
+      background: linear-gradient(110deg, rgba(13, 35, 48, .97), rgba(7, 18, 27, .94));
+      box-shadow: 0 14px 45px rgba(0,0,0,.23);
+    }
+    .brand { display: flex; gap: 13px; align-items: center; min-width: 0; }
+    .brand-mark {
+      width: 42px; height: 42px; flex: 0 0 42px; border: 1px solid rgba(89,224,191,.66); border-radius: 50%;
+      display: grid; place-items: center; color: var(--mint); font-size: 16px; font-weight: 900;
+      box-shadow: inset 0 0 18px rgba(89,224,191,.1), 0 0 20px rgba(89,224,191,.08);
+    }
+    h1 { margin: 0; font-size: clamp(18px, 2.2vw, 27px); letter-spacing: .1em; line-height: 1.15; }
+    .subtitle { margin: 6px 0 0; color: var(--muted); font: 12px/1.45 var(--sans); letter-spacing: .015em; }
+    .top-status { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; align-items: center; }
+    .chip { display: inline-flex; gap: 7px; align-items: center; border: 1px solid #285064; background: rgba(4,14,22,.7); border-radius: 100px; padding: 7px 10px; color: #b4cdd6; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+    .chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 9px var(--mint); }
+    .chip.warning { border-color: #7a5b2e; color: #ffe0a0; }
+    .chip.warning .dot { background: var(--warn); box-shadow: 0 0 9px var(--warn); }
+    .main-grid {
+      margin-top: 14px;
+      display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(330px, .84fr);
+      grid-template-rows: auto auto auto; gap: 14px; align-items: stretch;
+    }
+    .panel {
+      min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 7px;
+      background: linear-gradient(155deg, rgba(13, 30, 42, .97), rgba(7, 18, 27, .98));
+      box-shadow: 0 12px 34px rgba(0,0,0,.19);
+    }
+    .panel-head {
+      min-height: 43px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 10px 13px; border-bottom: 1px solid rgba(28,59,76,.78); background: rgba(10,25,36,.75);
+    }
+    .panel-head h2 { margin: 0; font-size: 11px; letter-spacing: .16em; color: #bcd3dc; }
+    .panel-head .meta { color: #6f909e; font-size: 9px; letter-spacing: .11em; text-align: right; }
+    .globe-panel { grid-row: span 2; }
+    .globe-wrap { position: relative; min-height: 380px; background: #040d15; }
+    #globeCanvas { width: 100%; height: min(56vw, 560px); min-height: 380px; display: block; touch-action: none; cursor: grab; }
+    #globeCanvas.dragging { cursor: grabbing; }
+    .globe-tag {
+      position: absolute; top: 12px; left: 12px; border: 1px solid rgba(89,224,191,.32); border-radius: 4px;
+      padding: 6px 8px; background: rgba(3, 13, 19, .74); color: #9ee7d7; font-size: 9px; letter-spacing: .1em;
+      pointer-events: none;
+    }
+    .globe-compass { position: absolute; top: 14px; right: 16px; color: rgba(203,227,234,.65); font-size: 10px; line-height: 1.15; text-align: center; pointer-events:none; }
+    .globe-compass::before { content: "▲"; display:block; color: var(--mint); font-size: 13px; }
+    .globe-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 7px; padding: 9px 12px; border-top: 1px solid rgba(28,59,76,.55); color: var(--muted); font-size: 10px; }
+    .model-panel { min-height: 315px; }
+    #modelCanvas { display:block; width:100%; height:220px; background: radial-gradient(ellipse at 50% 75%, rgba(32,90,104,.19), transparent 56%), #07131d; }
+    .model-caption { display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; padding:0 12px 11px; color:var(--muted); font-size:9px; line-height:1.4; }
+    .story-panel { min-height: 280px; }
+    .story-body { padding: 13px; }
+    .beat-kicker { color: var(--mint); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; }
+    .story-title { margin: 7px 0 5px; font-size: 18px; letter-spacing: .055em; }
+    .story-region { margin: 0 0 10px; color: var(--amber); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+    .story-summary { min-height: 55px; margin: 0; color: #b4c7ce; font: 13px/1.55 var(--sans); }
+    .story-readout { margin-top: 13px; padding-top: 11px; border-top: 1px solid rgba(28,59,76,.65); display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .readout-cell { min-width:0; }
+    .readout-cell .label { display:block; color:#6f909e; font-size:8px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:4px; }
+    .readout-cell .value { color:#d5e7ec; font-size:10px; overflow-wrap:anywhere; }
+    .timeline-panel, .sources-panel { grid-column: 1 / -1; }
+    .timeline-body { padding: 12px 14px 13px; }
+    .timeline-control { display:grid; grid-template-columns:minmax(100px, auto) minmax(150px,1fr) auto; gap:12px; align-items:center; }
+    .clock-label { color:#7695a3; font-size:9px; letter-spacing:.13em; text-transform:uppercase; }
+    #progress { width:100%; accent-color:var(--mint); cursor:pointer; }
+    .clock-select { display:flex; align-items:center; gap:8px; }
+    .clock-select label { color:#7695a3; font-size:9px; letter-spacing:.12em; white-space:nowrap; }
+    #clockScale { min-width:135px; font-size:10px; }
+    .beat-markers { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:6px; margin-top:12px; }
+    .beat-button { padding:7px 6px; text-align:left; border-color:rgba(39,74,92,.72); background:rgba(5,16,24,.76); color:#8ca8b6; font-size:9px; line-height:1.3; letter-spacing:.01em; }
+    .beat-button[aria-current="step"] { color:#dbfff7; border-color:rgba(89,224,191,.8); background:rgba(22,67,69,.43); }
+    .beat-button .num { display:block; color:var(--mint); font-size:8px; margin-bottom:3px; letter-spacing:.12em; }
+    .timeline-foot { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; margin-top:10px; color:#7895a3; font-size:9px; }
+    .export-actions { display:flex; flex-wrap:wrap; gap:8px; padding:12px 13px; }
+    .export-actions button { font-size:9px; letter-spacing:.12em; }
+    .export-actions .primary { border-color:#32957d; background:#10392f; color:#bdffec; }
+    .export-actions .secondary { border-color:#594a36; background:#292116; color:#ffe1a4; }
+    .export-hint { padding:0 13px 13px; margin:0; color:#89a3ad; font:11px/1.5 var(--sans); }
+    details { border-top:1px solid rgba(28,59,76,.72); }
+    summary { padding:11px 13px; color:#a8c2cd; font-size:10px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; }
+    .details-body { padding:0 15px 15px; color:#a5bbc4; font:12px/1.55 var(--sans); }
+    .details-body h3 { color:#cce1e7; font:10px var(--mono); letter-spacing:.13em; margin:12px 0 5px; }
+    .details-body p { margin:6px 0; }
+    .details-body ul { margin:6px 0 8px; padding-left:18px; }
+    .source-list { list-style:none; padding:0 !important; display:grid; gap:8px; }
+    .source-list li { padding:8px 9px; border:1px solid rgba(28,59,76,.68); background:rgba(3,13,20,.43); border-radius:4px; }
+    .source-list a { font-family:var(--mono); font-size:10px; }
+    .source-list p { margin:4px 0 0; color:#91aab4; font-size:11px; }
+    .footer-note { margin:14px 2px 0; color:#7895a3; font:11px/1.55 var(--sans); text-align:center; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    #appStatus { min-height:17px; padding:0 13px 12px; color:#83a29f; font-size:9px; }
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns:minmax(0,1fr) minmax(290px,.85fr); }
+      .globe-panel { grid-row:span 1; grid-column:1/-1; }
+      #globeCanvas { height: min(70vw, 520px); }
+    }
+    @media (max-width: 640px) {
+      .shell { padding:10px 9px 18px; }
+      .masthead { grid-template-columns:1fr; padding:12px; }
+      .top-status { justify-content:flex-start; }
+      .main-grid { grid-template-columns:1fr; gap:10px; margin-top:10px; }
+      .globe-panel,.timeline-panel,.sources-panel { grid-column:1; }
+      .globe-wrap { min-height:320px; }
+      #globeCanvas { height: 72vw; min-height:320px; }
+      .timeline-control { grid-template-columns:1fr; gap:8px; }
+      .clock-select { justify-content:space-between; }
+      #clockScale { flex:1; }
+      .beat-markers { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .beat-button { min-height:48px; }
+      .panel-head .meta { max-width:55%; }
+    }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">RO</div>
+        <div>
+          <h1>RED OCTOBER · 4D COMMAND THEATER</h1>
+          <p class="subtitle">A story-index globe and schematic model viewer — a fictionalized reconstruction, not a tactical or historical simulator.</p>
+        </div>
+      </div>
+      <div class="top-status" aria-label="Scene status">
+        <span class="chip"><i class="dot" aria-hidden="true"></i>OFFLINE SCENE</span>
+        <span class="chip warning"><i class="dot" aria-hidden="true"></i>SCHEMATIC · NOT TRACK DATA</span>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <section class="panel globe-panel" aria-labelledby="globeTitle">
+        <div class="panel-head">
+          <h2 id="globeTitle">THEATER GLOBE</h2>
+          <span class="meta">NATURAL EARTH OUTLINES · NO TERRAIN / NO LIVE DATA</span>
+        </div>
+        <div class="globe-wrap">
+          <canvas id="globeCanvas" role="img" aria-label="Rotatable orthographic globe with a fictionalized story-index marker, not an actual submarine track">
+            A canvas-capable browser is needed to render the schematic globe.
+          </canvas>
+          <div class="globe-tag">STORY POSITION · REGION-LEVEL ONLY</div>
+          <div class="globe-compass" aria-hidden="true">N</div>
+        </div>
+        <div class="globe-foot">
+          <span id="globeStatus" aria-live="polite">Loading bundled coastline outlines…</span>
+          <span>Drag to rotate · scroll/pinch to zoom · coordinates intentionally omitted</span>
+        </div>
+      </section>
+
+      <section class="panel model-panel" aria-labelledby="modelTitle">
+        <div class="panel-head">
+          <h2 id="modelTitle">SCHEMATIC HULL PROFILE</h2>
+          <span class="meta">NORMALIZED · NOT TO SCALE</span>
+        </div>
+        <canvas id="modelCanvas" role="img" aria-label="Illustrative submarine hull silhouette; no engineering dimensions or precise internal layout">
+          A canvas-capable browser is needed to render the schematic hull profile.
+        </canvas>
+        <div class="model-caption">
+          <span id="modelCaption">Generic exterior silhouette · no machinery or compartments</span>
+          <span>PROFILE VIEW</span>
+        </div>
+      </section>
+
+      <section class="panel story-panel" aria-labelledby="storyPanelTitle">
+        <div class="panel-head">
+          <h2 id="storyPanelTitle">NARRATIVE INDEX</h2>
+          <span class="meta">AUTHORED STORY STAGES</span>
+        </div>
+        <div class="story-body">
+          <div class="beat-kicker" id="beatKicker">STORY STAGE 01 / 06</div>
+          <h2 class="story-title" id="beatTitle">Northern patrol</h2>
+          <p class="story-region" id="beatRegion">Barents Sea region</p>
+          <p class="story-summary" id="beatSummary">The viewer opens in a broad northern sector.</p>
+          <div class="story-readout">
+            <div class="readout-cell"><span class="label">Selected subject</span><span class="value" id="selectedSubject">Red October</span></div>
+            <div class="readout-cell"><span class="label">Clock</span><span class="value" id="clockReadout">CHAPTER 01 / 06 · Northern patrol</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel timeline-panel" aria-labelledby="timelineTitle">
+        <div class="panel-head">
+          <h2 id="timelineTitle">4D STORY CLOCK</h2>
+          <span class="meta">CHAPTER ORDER IS NOT A HISTORICAL TIMESTAMP</span>
+        </div>
+        <div class="timeline-body">
+          <div class="timeline-control">
+            <label class="clock-label" for="progress">STORY INDEX <span id="progressValue">00%</span></label>
+            <input id="progress" type="range" min="0" max="1000" step="1" value="0" aria-label="Story progression from opening to resolution" />
+            <div class="clock-select">
+              <label for="clockScale">TIME VIEW</label>
+              <select id="clockScale" aria-label="Select time representation">
+                <option value="story">Story chapter</option>
+                <option value="utc">UTC wall clock</option>
+                <option value="local">Local wall clock</option>
+                <option value="unix">Unix time</option>
+                <option value="julian">Julian Date</option>
+              </select>
+            </div>
+          </div>
+          <div class="beat-markers" id="beatMarkers" aria-label="Narrative stage shortcuts"></div>
+          <div class="timeline-foot">
+            <span id="timeFoot">Wall-clock formats show the user's present time; they are not dates from the story.</span>
+            <span>Scene stage: <b id="beatShortLabel">NORTHERN PATROL</b></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel sources-panel" aria-labelledby="sourcesTitle">
+        <div class="panel-head">
+          <h2 id="sourcesTitle">EXPORTS · PROVENANCE · LIMITS</h2>
+          <span class="meta">NO NETWORK REQUESTS ARE MADE BY THIS APP</span>
+        </div>
+        <div class="export-actions">
+          <label class="sr-only" for="vesselSelect">Choose a schematic subject</label>
+          <select id="vesselSelect" aria-label="Select a story subject">
+            <option value="red-october">Red October · fictional</option>
+            <option value="dallas">USS Dallas · fictionalized placement</option>
+            <option value="akula-contact">Akula-class contact · generic</option>
+          </select>
+          <button type="button" id="toggleXray" aria-pressed="false">X-RAY</button>
+          <button type="button" id="toggleWire" aria-pressed="false">WIREFRAME</button>
+          <button type="button" id="toggleLabels" aria-pressed="true">LABELS</button>
+          <button type="button" id="toggleRelief" aria-pressed="false">PROFILE RELIEF · SCHEMATIC</button>
+          <button type="button" class="primary" id="exportVrml">EXPORT VRML 2.0</button>
+          <button type="button" class="secondary" id="exportXena">EXPORT XENA XML</button>
+          <button type="button" id="exportManifest">EXPORT SCENE JSON</button>
+        </div>
+        <p class="export-hint">VRML export uses normalized display units. The Xena export wraps that VRML in the documented Xena default-package and Binary object schemas; a SHA-256 manifest downloads beside it. No real track, time, sensor data, bathymetry, or detailed internal arrangement is included.</p>
+        <div id="appStatus" aria-live="polite">Starting offline viewer…</div>
+        <details>
+          <summary>Source notes and interpretation guardrails</summary>
+          <div class="details-body">
+            <h3>WHAT THE MAP IS</h3>
+            <p>The globe uses the repository's low-resolution Natural Earth country-outline GeoJSON for geographic context only. The colored route is a viewer-authored story index. Numeric coordinates are not displayed or exported as claimed historical locations.</p>
+            <p>The submarine is a deliberately generic outer silhouette. X-ray mode shows a generic inner volume only; it does not map compartments, machinery, weapons, acoustic systems, or an engineering layout. “Profile relief” is a decorative synthetic curve, not bathymetry.</p>
+            <h3>ARCHIVAL / GAME IDENTIFICATION</h3>
+            <p>Internet Archive has separate 1987 and 1990 DOS listings for The Hunt for Red October and a separate Grandslam manual record; the app keeps them distinct. Shadow President (1993 DOS) is the identified presidential geopolitical/nuclear-command simulator, not an FPS and not a source for this viewer’s fictional submarine anchors. The original manual should be consulted before asserting detailed launch or retaliation mechanics.</p>
+            <h3>TIME REPRESENTATIONS</h3>
+            <p>Story chapter is an ordinal viewer index. UTC, local time, Unix time, and Julian Date show the current wall clock only. None is presented as a date or timestamp for the fictional vessel.</p>
+            <h3>XENA EXPORT</h3>
+            <p>The XML uses the Xena default package wrapper and the NAA Binary object namespace to Base64-wrap the exported VRML. It preserves the model bytes; it does not normalize the fictional scene into a more open 3D model format. The sidecar JSON records the checksum and provenance limits.</p>
+            <h3>REFERENCES</h3>
+            <p><a href="./data-sources/archive-research.md" target="_blank" rel="noopener noreferrer">Open the Archive.org / Jane’s / Bulletin source audit</a> · catalog metadata and discovery pointers only; rights and access stay with each provider.</p>
+            <ul class="source-list" id="sourceList"></ul>
+          </div>
+        </details>
+      </section>
+    </main>
+    <p class="footer-note">For research and preservation experiments only. This schematic scene is not real submarine track data, a naval chart, a tactical simulation, or a precise internal-layout drawing.</p>
+  </div>
+  <script src="./webxdc.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

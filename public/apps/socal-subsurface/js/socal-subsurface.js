@@ -542,7 +542,7 @@ const OVERLAY_DEFS = [
   { id: "orbital", name: "Satellite ground track + swath", color: "#22d3ee", on: true, group: () => utilities.groups.orbital },
   { id: "quad", name: "USGS 7.5′ quad graticule", color: "#6b8ba3", on: false, group: () => overlays.groups.frames.getObjectByName("quad") },
   { id: "demTile", name: "1° 3DEP DEM delivery tiles", color: "#2dd4bf", on: true, group: () => overlays.groups.frames.getObjectByName("demTile") },
-  { id: "sar", name: "SAR swath + InSAR deformation", color: "#a3e635", on: false, group: () => overlays.groups.sar },
+  { id: "sar", name: "SAR / InSAR sketch (not measured data)", color: "#a3e635", on: false, group: () => overlays.groups.sar },
   { id: "clui", name: "CLUI register captions", color: "#e5e7eb", on: false, group: () => overlays.groups.clui },
 ];
 for (const def of OVERLAY_DEFS) {

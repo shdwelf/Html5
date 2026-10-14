@@ -215,11 +215,11 @@ number the layer exists to show.
 
 ### Why these five
 
-The existing `sar` overlay already documents Sentinel-1's 250 km IW swath and
-NISAR's millimetre-scale deformation sensitivity over the Antelope Valley
-aquifer and the San Andreas. The orbital layer answers the next question —
-*when does it come back* — and makes the pairing with the InSAR deformation
-bowls explicit: a 12-day interferogram is two of these windows.
+The separate `sar` overlay is a schematic Sentinel-1 IW-style ribbon that
+borrows the nominal 250 km width; it is not an orbit solution or acquired
+footprint. Its deformation rings are illustrative regional contexts, not
+measurements. The orbital layer independently draws nominal pass windows; a
+12-day revisit interval alone does not define a valid interferogram pair.
 
 ---
 

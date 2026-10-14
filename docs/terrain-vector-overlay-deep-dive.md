@@ -17,7 +17,7 @@ floats off the hillsides.
 | `fires` | 12 historical fire perimeters, coloured by decade the way FRAP symbolizes its own layer | on |
 | `demTile` | 1° × 1° 3DEP DEM delivery tiles | on |
 | `quad` | USGS 7.5-minute quadrangle graticule (0.125°) | off |
-| `sar` | Sentinel-1-style descending swath at true 250 km width + three InSAR deformation bowls | off |
+| `sar` | Authored Sentinel-1 IW-style swath sketch and three schematic regional deformation examples; not a scene or measured InSAR product | off |
 | `clui` | Center for Land Use Interpretation register captions | off |
 
 ### The Cajon result
@@ -186,12 +186,17 @@ prefers the filed figure and says so.
 
 ## 4. SAR — what radar adds that a DEM cannot
 
-A DEM is one surface at one time. SAR is the same surface repeatedly, at
-millimetre sensitivity, through cloud and at night.
+A DEM is an elevation surface; SAR measures radar backscatter, and repeat-pass
+InSAR can estimate line-of-sight change when a suitable pair, orbit data,
+processing chain, and coherence support are available. The overlay here is
+only an authored illustration: no SAR scenes or measured displacements ship
+with this app.
 
 - **Sentinel-1** (ESA Copernicus): C-band, 5.405 GHz, 5.6 cm wavelength.
-  Interferometric Wide mode — **250 km swath, 5 × 20 m resolution**, 12-day
-  repeat per satellite. The `sar` overlay draws that swath at its true width.
+  Interferometric Wide mode has a nominal **250 km swath and 5 × 20 m
+  resolution**, with a 12-day repeat cycle per satellite. The app's `sar`
+  ribbon borrows the nominal width; its anchor and outline are not a real orbit
+  solution, scene footprint, or acquisition.
 - **Repeat-pass InSAR** differences the phase of two passes: line-of-sight
   ground motion at centimetre-to-millimetre scale, over whole basins, with no
   one standing in the desert holding a rod.
@@ -204,17 +209,13 @@ millimetre sensitivity, through cloud and at night.
 - **UAVSAR** (JPL, L-band, airborne) for targeted campaigns; **ARIA** products
   for event response.
 
-**What it sees inside this frame** — the three bowls in the `sar` overlay:
-Antelope Valley pumping subsidence around Lancaster and Edwards (why parts of
-Rogers Dry Lake get re-surveyed); San Joaquin Valley subsidence, which has
-physically deformed the California Aqueduct and cut its design capacity; and
-the Salton Trough, where tectonic spreading and geothermal production show up
-in the *same* interferogram and have to be separated by argument, not by data.
-Also: burn scars change surface roughness and coherence, so SAR maps fire
-effects and post-fire debris-flow risk on the Cajon slopes directly.
-
-The app draws the deformation bowls as three concentric fringes. That is a
-cartoon of an interferogram, not one, and it is labelled as such in the dossier.
+The three map anchors (Antelope Valley, San Joaquin Valley, and Salton Trough)
+are **illustrative regional study contexts**, not assertions that these exact
+shapes, boundaries, or values were measured at those coordinates. The app draws
+concentric rings as a visual shorthand; they are not interferogram fringes.
+SAR can support deformation and burn-scar studies, but a real product must be
+traceable to the scene pair, orbit, processing, coherence mask, units, and
+georeferenced output. None is bundled here.
 
 ---
 
