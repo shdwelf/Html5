@@ -6,7 +6,7 @@ Back to [[Main Page]].
 = Field-cipher deep dive — OD poem code, VIC, Gronsfeld, SECOM, and the Diana cryptosystem =
 
 Date: 2026-10-14
-Kitchen: `public/apps/cyberchef/index.html` → 495 operations, 219 packs, 642 pack entries
+Kitchen: `public/apps/cyberchef/index.html` → 497 operations, 221 packs, 644 pack entries
 New recipes: `odPoemExact`, `vicSchedule`, `vicExact`, `diana`, `dianaTable`,
 `gronsfeldAnalyze`, `toHexdump`, `fromHexdump`, `toOctal`, `fromOctal`
 Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 15/15 pass,
@@ -553,7 +553,7 @@ Files touched by this dive: `public/apps/cyberchef/index.html`,
 `tests/cyberchef-sfx.test.mjs`, `tests/cyberchef-recipe-sync.test.mjs`,
 `tests/cyberchef-cookbook.test.mjs`, `README.md`.
 
-**Round-4 follow-up (same day):** the registry has since grown to **495** with three further recipes,
+**Round-4 follow-up (same day):** the registry grew to **495** with three further recipes,
 `pgpArmorCheck` (OpenPGP Radix-64 armor CRC-24), `pgpSymDecrypt` (OpenPGP symmetric-key decrypt —
 iterated string-to-key, the §13.9 CFB stream of this note's subject in its *integrity-protected* form,
 and the §5.13 MDC) and `enigmaChains` (the 1932 Polish indicator-chain analysis, from Churchhouse's
@@ -561,6 +561,13 @@ worked examples); the sources are recorded in `docs/recipe-sourcing-round-4-2026
 §5b). They arrived in three packs of their own — `OpenPGP Armor (Kleopatra / GnuPG)`, `OpenPGP Symmetric
 Message (SKESK / SEIPD)` and `Enigma Indicator Chains (Polish, 1932)` — so packs and pack entries moved
 from 216 / 639 to **219 / 642**.
+
+**Round 5 (same day):** the registry has since grown to **497** with the 1914 British War Office
+*Manual of Cryptography*'s two worked transposition ciphers, `zigzagTransposition` (ch. III(a) §2) and
+`nihilistSquare` (§4), each controlled by the cryptogram the manual itself prints; source and
+verification in `docs/recipe-sourcing-round-5-2026-10-14.md`. They arrived in two packs of their own —
+`Zigzag Transposition (War Office 1914)` and `Nihilists' Cipher (War Office 1914)` — so packs and pack
+entries moved from 219 / 642 to **221 / 644**.
 
 Deliberately left alone: `docs/cyberchef-sfx-coverage-audit-2026-10-13.md` and the
 2026-10-09 audit are dated records of what was true then (482 and 480 operations

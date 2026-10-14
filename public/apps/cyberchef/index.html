@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 495 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 497 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -480,6 +480,98 @@ addOp('coltrans','Columnar Transposition','Classical',
       for(let r=0;r<rows;r++)for(let c=0;c<klen;c++)out+=grid[r][c];
       return out.replace(/_+$/g,'');
     }
+  });
+
+/* War Office *Manual of Cryptography* (1914), ch. III(a) §2 — the Zigzag
+   Transposition cipher. The message is written down columns of a fixed length,
+   alternating direction column by column, and the cryptogram is read off the
+   lines. The book's worked example (p. 22) uses "A reconnaissance made
+   yesterday across the river found no traces of the enemy" with 8-letter columns
+   and the dummies FULLSTO, printing AMAOSNOMY… as the cryptogram. */
+function zigzagTrail(cols,colLen,startTop){
+  const trail=[];
+  for(let c=0;c<cols;c++){
+    const down=(c%2===0)===startTop;
+    if(down)for(let r=0;r<colLen;r++)trail.push([r,c]);
+    else for(let r=colLen-1;r>=0;r--)trail.push([r,c]);
+  }
+  return trail;
+}
+addOp('zigzagTransposition','Zigzag Transposition (War Office 1914)','Classical',
+  'The Zigzag Transposition cipher of the British War Office Manual of Cryptography (1914), ch. III(a) §2: write the message down columns of a fixed length, alternating direction column by column (down, up, down, …), then read the lines. The book\'s example — "A reconnaissance made yesterday across the river found no traces of the enemy" in 8-letter columns with the dummies FULLSTO — gives AMAOSNOMY… Spare cells are filled with the padding letters, cycled when shorter than the gap.',
+  [
+    {key:'length',label:'Letters per column',type:'number',default:'8'},
+    {key:'start',label:'First column runs',type:'select',default:'top',options:[['top','Top → bottom'],['bottom','Bottom → top']]},
+    {key:'pad',label:'Padding (dummy) letters',type:'text',default:'X'},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]}
+  ],
+  function(text,args){
+    const colLen=Math.max(2,Math.min(99,parseInt(args.length)||8));
+    const startTop=args.start!=='bottom';
+    const source0=toUpperLetters(String(text||''));
+    if(!source0.length)throw new Error('Enter a message for the zigzag transposition');
+    let source=source0;
+    const pad=String(args.pad||'X')||'X';
+    if(args.mode==='encrypt'){
+      const rem=source.length%colLen;
+      if(rem)source+=pad.repeat(Math.ceil((colLen-rem)/pad.length)).slice(0,colLen-rem);
+      const cols=source.length/colLen;
+      const grid=Array.from({length:colLen},()=>Array(cols).fill(''));
+      zigzagTrail(cols,colLen,startTop).forEach((cell,i)=>{grid[cell[0]][cell[1]]=source[i];});
+      return grid.map(row=>row.join('')).join('');
+    }
+    if(source.length%colLen)throw new Error('The cryptogram does not divide into '+colLen+'-letter columns — check the agreed column length');
+    const cols=source.length/colLen;
+    const grid=Array.from({length:colLen},(_,r)=>source.slice(r*cols,(r+1)*cols).split(''));
+    return zigzagTrail(cols,colLen,startTop).map(cell=>grid[cell[0]][cell[1]]).join('');
+  });
+
+/* War Office *Manual of Cryptography* (1914), ch. III(a) §4 — the Nihilists'
+   Cipher, "based upon the principle of double transposition". The keyword's
+   alphabetical ranks (Thames → 631425) re-label both sides of a second square;
+   the letters keep their coordinates, and the cryptogram is read off the lines.
+   The book's example — "The sixth division will attack at dawn" under Thames
+   with the dummies QXYZ — prints ZQWXNYIOSNIWXETSHIAALTLTIDTIHVAACTKD. */
+addOp('nihilistSquare','Nihilists\' Square (War Office 1914)','Classical',
+  'The "Nihilists\' Cipher" of the British War Office Manual of Cryptography (1914), ch. III(a) §4, a double transposition: write the message into a square whose side is the keyword length, take the keyword\'s alphabetical ranks (Thames → 631425), re-label both sides of a second square with them, and read off the lines. The book\'s example — "The sixth division will attack at dawn" under Thames with the dummies QXYZ — prints ZQWXNYIOSNIWXETSHIAALTLTIDTIHVAACTKD.',
+  [
+    {key:'key',label:'Keyword',type:'text',default:'Thames'},
+    {key:'pad',label:'Padding (dummy) letters',type:'text',default:'X'},
+    {key:'mode',label:'Mode',type:'select',default:'encrypt',options:[['encrypt','Encrypt'],['decrypt','Decrypt']]}
+  ],
+  function(text,args){
+    const key=toUpperLetters(String(args.key||''));
+    if(!key.length)throw new Error('Enter a keyword');
+    const side=key.length;
+    if(side<2)throw new Error('The keyword needs at least two letters');
+    const cells=side*side;
+    const label=[];
+    key.split('').map((ch,i)=>[ch,i]).sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:a[1]-b[1]).forEach((pair,rank)=>{label[pair[1]]=rank;});
+    const source0=toUpperLetters(String(text||''));
+    if(!source0.length)throw new Error('Enter a message for the Nihilists\' square');
+    let source=source0;
+    const pad=String(args.pad||'X')||'X';
+    // The manual's §4 note: a message may need "one or more tables", and every
+    // table is filled completely - so the transform runs per side×side square.
+    if(args.mode==='encrypt'){
+      const rem=source.length%cells;
+      if(rem)source+=pad.repeat(Math.ceil((cells-rem)/pad.length)).slice(0,cells-rem);
+      let out='';
+      for(let at=0;at<source.length;at+=cells){
+        const square=Array.from({length:side},(_,r)=>source.slice(at+r*side,at+(r+1)*side).split(''));
+        for(let i=0;i<side;i++)for(let j=0;j<side;j++)out+=square[label[i]][label[j]];
+      }
+      return out;
+    }
+    if(source.length%cells)throw new Error('The cryptogram does not fill '+side+'×'+side+' squares — check the keyword');
+    const inv=[];
+    label.forEach((pos,i)=>{inv[pos]=i;});
+    let out='';
+    for(let at=0;at<source.length;at+=cells){
+      const square=Array.from({length:side},(_,r)=>source.slice(at+r*side,at+(r+1)*side).split(''));
+      for(let i=0;i<side;i++)for(let j=0;j<side;j++)out+=square[inv[i]][inv[j]];
+    }
+    return out;
   });
 
 /* Playfair */
@@ -33179,6 +33271,10 @@ RECIPE_PACKS["Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld"] = [
 RECIPE_PACKS["OpenPGP Armor (Kleopatra / GnuPG)"] = [["pgpArmorCheck",{}]];
 RECIPE_PACKS["OpenPGP Symmetric Message (SKESK / SEIPD)"] = [["pgpSymDecrypt",{}]];
 RECIPE_PACKS["Enigma Indicator Chains (Polish, 1932)"] = [["enigmaChains",{}]];
+// The 1914 British War Office manual thread (docs/recipe-sourcing-round-5-2026-10-14.md):
+// the manual’s two worked field-cipher examples.
+RECIPE_PACKS["Zigzag Transposition (War Office 1914)"] = [["zigzagTransposition",{}]];
+RECIPE_PACKS["Nihilists' Cipher (War Office 1914)"] = [["nihilistSquare",{}]];
 RECIPE_PACKS["Binary Bytes Lab — Hexdump & Octal"] = [["toHexdump",{}],["fromHexdump",{}],["toOctal",{}],["fromOctal",{}],["toHex",{sep:'space'}],["fromHex",{mode:'utf8'}],["toBinary",{}],["fromBinary",{}]];
 
 

@@ -13,8 +13,8 @@
       "page": "field-cipher-deep-dive-2026-10-14",
       "source": "docs/field-cipher-deep-dive-2026-10-14.md",
       "date": "2026-10-14",
-      "bytes": 38108,
-      "sha256": "9a679f87c552957a899a97ad0d25874a24a9e99dff75792bb5d571793bf65f2f"
+      "bytes": 38651,
+      "sha256": "c7f16c7fc3f9a7154b71b0abb2733532cb9a96278dbc53da6ebd6718d2d73f53"
     },
     {
       "page": "recipe-sourcing-round-4-2026-10-14",
@@ -22,6 +22,13 @@
       "date": "2026-10-14",
       "bytes": 27222,
       "sha256": "7e9e84f2bfbcce87825764ffd1d18dce09e351140a95ab899fae7fad5e0b49f7"
+    },
+    {
+      "page": "recipe-sourcing-round-5-2026-10-14",
+      "source": "docs/recipe-sourcing-round-5-2026-10-14.md",
+      "date": "2026-10-14",
+      "bytes": 10772,
+      "sha256": "9020ecb05e395df565b3d4110e4bdf1c33f64085d3396d536e207ec4f80bca1f"
     },
     {
       "page": "cyberchef-sfx-coverage-audit-2026-10-13",
@@ -57,13 +64,6 @@
       "date": "2026-10-13",
       "bytes": 10088,
       "sha256": "cef2ca8d184a43c35f43e53a312ee4d1674a49e8be04a1b0af65d602664d39e7"
-    },
-    {
-      "page": "yubnub-opensource-backing-2026-10-13",
-      "source": "docs/yubnub-opensource-backing-2026-10-13.md",
-      "date": "2026-10-13",
-      "bytes": 7044,
-      "sha256": "e548a283a91daf460582230d3cbfd75e13ac325ab3d6fdd7f95e9ced1ceb7dbe"
     }
   ]
 }

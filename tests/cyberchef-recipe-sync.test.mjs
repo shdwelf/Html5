@@ -49,6 +49,9 @@ const POST_MERGE_OPS = [
   "pgpArmorCheck",
   "pgpSymDecrypt",
   "enigmaChains",
+  // 2026-10-14 recipe sourcing, round 5 (docs/recipe-sourcing-round-5-2026-10-14.md).
+  "zigzagTransposition",
+  "nihilistSquare",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {
