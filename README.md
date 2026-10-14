@@ -70,7 +70,7 @@ workflow permission).
 
 ## Standalone viewers
 
-- **[Wiki in a Jar](wikiinajar.html)** — the 2008 USB-stick personal wiki (`wiki.in.a.jar` 0.8) rebuilt as one offline HTML file and a Webxdc bundle: same `.wiki` page model, same `[[wiki:]]`/`[[img:]]`/`[[djvu:]]`/`[[tags:]]` namespaces, vCard contacts, DjVu reading via the vendored WASM decoder, and webxdc chat sync. Ships as `wikiinajar.xdc` (`npm run build:wikiinajar`); see [the deep dive](wikiinajar-deep-dive.md), the seeded **Wiki in a Jar** documentation page inside the app, and the Java-side patch in [tools/wikiinajar/](tools/wikiinajar/).
+- **[Wiki in a Jar](wikiinajar.html)** — the 2008 USB-stick personal wiki (`wiki.in.a.jar` 0.8) rebuilt as one offline HTML file and a Webxdc bundle: same `.wiki` page model, same `[[wiki:]]`/`[[img:]]`/`[[djvu:]]`/`[[tags:]]` namespaces, vCard contacts, DjVu reading via the vendored WASM decoder, and webxdc chat sync. Ships as `wikiinajar.xdc` (`npm run build:wikiinajar`) with all 139 repository Markdown documents (root deep dives + `docs/*.md`) converted to wiki pages in its Docs tab; see [the deep dive](wikiinajar-deep-dive.md), the seeded **Wiki in a Jar** documentation page inside the app, and the Java-side patch in [tools/wikiinajar/](tools/wikiinajar/).
 - **[Keyspace Viewer](keyspace.html)** — BIP-39 geometry, measured statistical layers, wallet derivatives, and keyspace projections.
 - **[Prime Viewer](prime.html)** — exact prime atlas, residue-class solar system, prime constellations, counting statistics, gaps, and integer inspection. See [PRIME.md](PRIME.md).
 - **[Helios Observatory](astronomy.html)** — time-propagated solar orrery, curated celestial catalog, Earth-centered NEO radar, and modeled meteor streams. See [ASTRONOMY.md](ASTRONOMY.md).

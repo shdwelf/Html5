@@ -215,11 +215,39 @@ fallback — precisely the Java edition's no-JS contract.
 | multi-user via shared server | multi-user via webxdc: page saves `sendUpdate({wikiinajar:{type:"page",…}})`, newest `updated` wins per page; deletes propagate | last-writer-wins is a research topic, not a solved one (R4); outside a chat, a simulator shim keeps the file fully functional |
 | no byte-range requests (NanoHTTPD) | no byte-range fetches (ZIP-served statics) | DjVu whole-file-on-approach in both editions (R5) |
 
-The seeded jar ships six pages — **Main Page**, **Wiki in a Jar** (the
-documentation page, §7), **Wiki Syntax**, **Image Support Demo**,
-**SideBar**, **SandBox** — so a fresh bundle is self-documenting before
-the first edit, exactly as the Java build's Main Page now links its
-documentation and demo.
+The seeded jar ships seven pages — **Main Page**, **Wiki in a Jar** (the
+documentation page, §7), **Documentation**, **Wiki Syntax**,
+**Image Support Demo**, **SideBar**, **SandBox** — so a fresh bundle is
+self-documenting before the first edit, exactly as the Java build's Main
+Page now links its documentation and demo.
+
+**Bundled documentation (rebuilt 2026-10-14, one page per `*.md`).** At
+build time the script also converts the repository's whole Markdown
+library — all 11 root `*.md` (the five `*-deep-dive.md` plus PRIME,
+KEYSPACE, ASTRONOMY, GODSEYE, the 4DWM review and the README) and all
+128 `docs/*.md` files, **139 pages / 1.44 M source chars** — into native
+wikitext with `tools/wikiinajar/md2wiki.mjs` and ships them as
+`docs.json` (1.54 MB, beside `index.html` in the bundle; the converter
+is dependency-free and deterministic). Conversion is structural, not
+verbatim: ATX/setext headings become `==` headings, `**`/`*` become
+`'''`/`''`, fences become space-indented pre blocks (including fences
+indented inside list items), pipe tables survive as pipe tables, tasks
+become ☐/☑ list items, and — the point of doing it — **links between
+corpus documents become real `[[wiki links]]`** (587 generated across
+the corpus), while non-corpus relative links keep their target as an
+inline-code annotation and remote links stay remote. Titles come from
+each file's first H1 (sanitised: `:` → ` -`, no `[]|`), disambiguated
+on collision; every converted page ends with a provenance footer naming
+its source file and `[[tags:documentation,…]]`. In the app the corpus
+is *virtual*: a **Docs tab** groups the pages by folder, Index/Tags/
+Search treat them as first-class pages, and nothing touches
+`localStorage` until a page is edited — saving materialises a local
+copy that shadows the bundle, deleting the copy reveals the bundled
+original, and deleting a bundled-only page writes a local tombstone.
+Rebuilding regenerates the bundled copies and never touches local
+pages. (The Java edition was deliberately *not* flooded with 139
+`.wiki` files — that was the unchosen scope; its documentation page
+remains §7's single hub.)
 
 ## 7. The documentation page (both editions, one text)
 
@@ -264,12 +292,19 @@ tools/wikiinajar/build-image-support.sh <WikiInAJar-0.8-20081128-bin.zip> build/
 ```
 
 Validation for this conversion (2026-10-14): bundle builds
-deterministically (645 KB, 11 entries: `index.html`, `manifest.toml`,
-`webxdc.js`, `icon.png`, `media/djvu-smoke.djvu`, `djvu-rs/` scalar +
-SIMD WASM); the new test file pins the offline single-file shape, the
-seed documentation, renderer semantics (headings/lists/links/namespaces/
-error strings/escape-first XSS), tag & backlink collection, the bundle
-shape, the Java `.wiki` page and this document's cross-links. The Java
+deterministically (≈1.26 MB, 12 entries: `index.html`,
+`manifest.toml`, `webxdc.js`, `icon.png`, `media/djvu-smoke.djvu`,
+`docs.json`, `djvu-rs/` scalar + SIMD WASM); the test file pins the
+offline single-file shape, the seed documentation, renderer semantics
+(headings/lists/links/namespaces/error strings/escape-first XSS,
+md2wiki `` `code` `` spans), tag & backlink collection, the bundle
+shape, the Java `.wiki` page and this document's cross-links. The
+documentation rebuild adds: md2wiki unit conversions, a corpus census
+asserting one unique-titled page per root/`docs/*.md` file with
+provenance footers and no surviving fences, a byte-level check that the
+`.xdc`'s `docs.json` matches the staged one, and a full render pass —
+all 139 converted pages go through the shipped renderer without
+producing script or undefined output (1.78 M HTML chars). The Java
 smoke test and full-suite results for the patch predate this turn and
 are recorded in `docs/wikiinajar-image-support.md`.
 
@@ -325,6 +360,17 @@ number:
   Java documentation pages, and `tests/wikiinajar.test.mjs`. Next
   actions queued as R1–R8 above; R1 and R3 are pure source-reading and
   need no network beyond the two GitHub mirrors.
+- **2026-10-14 (documentation rebuild)** — “A page for each `*.md`”:
+  added `tools/wikiinajar/md2wiki.mjs` (Markdown → wikitext), taught
+  the build to bundle all 139 root + `docs/*.md` files as `docs.json`,
+  and gave the app virtual bundled pages (Docs tab, copy-on-edit,
+  tombstone deletes) plus a seeded **Documentation** guide. Converter
+  bugs found and fixed on the way: relative-link annotations
+  duplicating `[path](path)` labels, and fences indented inside list
+  items leaking literal fence markers into pages. Follow-ups worth queuing:
+  reference-style links and setext-heavy sources are rare in this
+  corpus (0 files use link definitions) but md2wiki's coverage should
+  be re-audited whenever a new documentation style lands — see R7.
 
 ## 11. Sources
 

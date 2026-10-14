@@ -6,10 +6,12 @@
  * technique as tests/yubnub.test.mjs) so the shipped parser is the tested one.
  */
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
+import { buildDocs, convertMarkdown } from "../tools/wikiinajar/md2wiki.mjs";
+import { unzipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const html = readFileSync(path.join(root, "wikiinajar.html"), "utf8");
@@ -118,6 +120,68 @@ test("Java edition ships the same documentation as a .wiki page", () => {
   assert.ok(wiki.includes("no authentication"), "Java doc page keeps the safety warning");
   const build = readFileSync(path.join(root, "tools", "wikiinajar", "build-image-support.sh"), "utf8");
   assert.ok(build.includes("Wiki in a Jar.wiki"), "Java build ships the documentation page");
+});
+
+test("md2wiki converts the constructs this corpus actually uses", () => {
+  const linkMap = new Map([["docs/other.md", "Other Page"]]);
+  const wiki = convertMarkdown(
+    "# Title\n\nSome **bold** and *ital* and `code()`.\n\n- one\n  - nested\n1. first\n\n```sh\necho hi # not a heading\n```\n\n| A | B |\n|---|---|\n| 1 | 2 |\n\nSee [the other doc](other.md) and [a file](../src/app.js) and [web](https://example.org).",
+    "docs/here.md",
+    linkMap,
+  );
+  assert.match(wiki, /== Title ==/);
+  assert.match(wiki, /'''bold''' and ''ital'' and `code\(\)`/);
+  assert.match(wiki, /^\* one$/m);
+  assert.match(wiki, /^\*\* nested$/m);
+  assert.match(wiki, /^# first$/m);
+  assert.match(wiki, /^ echo hi # not a heading$/m, "fence content becomes indented pre, markers untouched");
+  assert.doesNotMatch(wiki, /```/);
+  assert.match(wiki, /^\| A \| B \|$/m);
+  assert.doesNotMatch(wiki, /\|---\|/, "table separator row dropped");
+  assert.match(wiki, /\[\[Other Page\|the other doc\]\]/, "corpus .md links become wiki links");
+  assert.match(wiki, /\[\[https:\/\/example\.org\|web\]\]/, "remote links stay links");
+  const docs = buildDocs([
+    { source: "b.md", markdown: "# Same\n\nBody B." },
+    { source: "a.md", markdown: "# Same\n\nBody A links [B](b.md)." },
+  ]);
+  assert.equal(docs.length, 2);
+  assert.notEqual(docs[0].title, docs[1].title, "duplicate H1 titles are disambiguated");
+  assert.ok(docs.every((d) => d.body.includes("[[tags:documentation,")), "every converted page is footered + tagged");
+});
+
+test("renderer: md2wiki code spans render as <code>, contents stay literal", () => {
+  const { renderWiki } = renderer();
+  const out = renderWiki("Run `npm run build:wikiinajar` — not `'''inside code'''`", CTX);
+  assert.match(out, /<code>npm run build:wikiinajar<\/code>/);
+  assert.match(out, /<code>'''inside code'''<\/code>/, "markup inside backticks stays literal");
+  assert.doesNotMatch(out, /<strong>/);
+});
+
+test("bundled documentation: one converted page per root/docs *.md", () => {
+  const rootMd = readdirSync(root).filter((f) => f.endsWith(".md")).length;
+  const docsMd = readdirSync(path.join(root, "docs")).filter((f) => f.endsWith(".md")).length;
+  const staged = JSON.parse(readFileSync(path.join(root, "public", "apps", "wikiinajar", "docs.json"), "utf8"));
+  assert.equal(staged.format, "wikiinajar-docs");
+  assert.equal(staged.count, rootMd + docsMd, "one page per .md file");
+  assert.equal(staged.pages.length, staged.count);
+  const titles = new Set(staged.pages.map((p) => p.title.toLowerCase()));
+  assert.equal(titles.size, staged.pages.length, "page titles are unique");
+  for (const page of staged.pages) {
+    assert.match(page.source, /\.md$/, "page records its source");
+    assert.ok(page.body.includes("[[tags:documentation,"), `${page.source}: footer tags present`);
+    assert.ok(page.body.includes("Bundled documentation — converted from `" + page.source + "`"), `${page.source}: provenance footer`);
+    assert.ok(!page.body.includes("```"), `${page.source}: no fences survive conversion`);
+  }
+  const dive = staged.pages.find((p) => p.source === "wikiinajar-deep-dive.md");
+  assert.ok(dive, "this deep dive is itself a bundled page");
+  assert.ok(staged.pages.some((p) => p.body.includes("[[" ) && p.body.includes("image and DjVu support")), "cross-document wiki links were generated");
+  // the .xdc carries the same corpus the staged tree advertises
+  const bundle = unzipSync(new Uint8Array(readFileSync(path.join(root, "wikiinajar.xdc"))));
+  assert.ok(bundle["docs.json"], "xdc contains docs.json");
+  const inBundle = JSON.parse(new TextDecoder().decode(bundle["docs.json"]));
+  assert.equal(inBundle.count, staged.count, "bundled docs.json matches staged docs.json");
+  assert.ok(html.includes("./docs.json") && html.includes('#/docs'), "app loads docs.json and routes the Docs view");
+  assert.ok(seeds()["Documentation"], "fresh jars seed a Documentation guide page");
 });
 
 test("deep dive documents the conversion and links every artifact", () => {

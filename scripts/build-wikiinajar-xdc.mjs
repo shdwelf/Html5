@@ -12,6 +12,9 @@
  *   djvu-rs/   vendored MIT djvu-rs 0.42.0 decoder (from tools/wikiinajar,
  *              provenance in tools/wikiinajar/THIRD_PARTY_NOTICES.md)
  *   media/djvu-smoke.djvu   the Unlicense smoke fixture the demo page embeds
+ *   docs.json  every root *.md + docs/*.md converted Markdown -> wikitext
+ *              by tools/wikiinajar/md2wiki.mjs (one bundled page per file;
+ *              the app loads them as virtual pages, Edit copies to local)
  *
  *   node scripts/build-wikiinajar-xdc.mjs   (or: npm run build:wikiinajar)
  */
@@ -39,6 +42,32 @@ await mkdir(path.join(appDir, "media"), { recursive: true });
 
 // Inline authoring source -> bundle index.html (unchanged: fully self-contained).
 await copyFile(path.join(root, "wikiinajar.html"), path.join(appDir, "index.html"));
+
+// Documentation corpus: every root *.md + docs/*.md, one wiki page each.
+const { buildDocs } = await import("../tools/wikiinajar/md2wiki.mjs");
+async function mdFiles(dir, prefix) {
+  const names = (await readdir(path.join(root, dir), { withFileTypes: true }))
+    .filter((e) => e.isFile() && e.name.endsWith(".md"))
+    .map((e) => e.name).sort();
+  return Promise.all(names.map(async (name) => ({
+    source: prefix + name,
+    markdown: await readFile(path.join(root, dir, name), "utf8"),
+  })));
+}
+const corpus = [...await mdFiles(".", ""), ...await mdFiles("docs", "docs/")];
+const docPages = buildDocs(corpus);
+if (new Set(docPages.map((p) => p.title.toLowerCase())).size !== docPages.length) {
+  throw new Error("documentation page titles are not unique");
+}
+await writeFile(path.join(appDir, "docs.json"), JSON.stringify({
+  format: "wikiinajar-docs",
+  version: 1,
+  generated: "2026-10-14",
+  converter: "tools/wikiinajar/md2wiki.mjs",
+  count: docPages.length,
+  pages: docPages,
+}));
+console.log(`Documentation: ${docPages.length} markdown files -> wiki pages`);
 
 // DjVu decoder (scalar + SIMD variants) so [[djvu:...]] renders inside the chat.
 async function copyTree(src, dst) {
@@ -84,7 +113,7 @@ for (const abs of (await walk(appDir)).sort()) {
   const rel = path.relative(appDir, abs).split(path.sep).join("/");
   archive[rel] = [new Uint8Array(await readFile(abs)), { level: 9, mtime }];
 }
-for (const required of ["index.html", "manifest.toml", "djvu-rs/djvu_rs.js", "media/djvu-smoke.djvu"]) {
+for (const required of ["index.html", "manifest.toml", "djvu-rs/djvu_rs.js", "media/djvu-smoke.djvu", "docs.json"]) {
   if (!archive[required]) throw new Error(`bundle missing ${required}`);
 }
 
