@@ -280,6 +280,13 @@ Equivalently, the *left* (non-D) widths implied by that partition are the vector
 `crunchbangle/vic-ts` — `3,4,5,6,4,5,6,1,2,3` for key `536124` and 60 digits — which is why
 the four implementations agree: they describe the same staircase from the two sides.
 
+The rule is not only textual: the same triangle construct drives the SECOM side of the
+kitchen, whose exact operation reproduces the **official SECOM 105-digit ciphertext** (plaintext
+"RV TOMORROW AT 1400PM TO COMPLETE TRANSACTION USE DEADDROP AS USUAL", phrase "MAKE NEW FRIENDS
+BUT KEEP THE OLD") — pinned by `tests/secom-exact.test.mjs` and re-run by
+`tools/secom_probe.py`. Disabling the disruption makes that published vector fail, so a
+published field ciphertext independently validates the partition the VIC code uses.
+
 Kahn's article also supplies the key material of the hollow-nickel message (date 391945, so
 Line B `39194`; keygroup `20818`; personal number 13; phrase the first 20 letters of the song
 "The Lone Accordion"), and three text-only micro-vectors that are now pinned by tests:
