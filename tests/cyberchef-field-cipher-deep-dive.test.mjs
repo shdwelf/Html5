@@ -535,3 +535,61 @@ test("the real hollow-nickel message: key schedule (Cyrillic phrase) and diagona
     dom.window.close();
   }
 });
+
+// The note is the deliverable's evidence trail, so drift between it and the code
+// is a real defect: the six reconciled positions must be named in the note, the
+// keygroup placement rule must be stated, and the archive.org primary source
+// (FM 31-20, chapter 9) must stay cited.
+// The encyclopedia article the CIA analysis also feeds states four primitive
+// rules in its own words ("sequenced", chain addition, digit encoding), each with
+// a worked micro-vector; run them through the same helpers the schedule uses.
+test("VIC primitives match the published micro-vectors", () => {
+  const { dom } = boot();
+  try {
+    const ev = (code) => dom.window.eval(code);
+    // Letters: "Octopus" → 2163475 (case-insensitive, ties keep their order).
+    assert.equal(ev("fdSeqLetters('OCTOPUS')"), "2163475");
+    // Numbers: "90210" → 34215, with zero valued at 10, so it sorts last.
+    assert.equal(ev("fdSeqDigits('90210')"), "34215");
+    // …and that is exactly the rule that turns line P into line S:
+    assert.equal(ev("fdSeqDigits('5051328370')"), "5961328470");
+    // Chain addition: 90210 → 9 (9+0), 2 (0+2), 3 (2+1), 1 (1+0), 9 (0+9).
+    assert.equal(ev("fdChainExt('90210',5)"), "92319");
+    // Digit encoding: each digit of the number is replaced by the key digit above
+    // it in the aide (1234567890 under 6013589427 → 90210 becomes 27067).
+    assert.equal(ev("(function(){let o='';for(const ch of '90210')o+='6013589427'['1234567890'.indexOf(ch)];return o;})()"), "27067");
+  } finally {
+    dom.window.close();
+  }
+});
+
+test("the deep-dive note keeps its evidence trail in sync with the tests", () => {
+  const note = readFileSync(new URL("../docs/field-cipher-deep-dive-2026-10-14.md", import.meta.url), "utf8");
+  const positionToIndex = { 118: 389, 251: 834, 258: 862, 501: 536, 624: 295, 1027: 597 };
+  assert.deepEqual(
+    NICKEL_EXPECTED_DIFFS,
+    Object.keys(positionToIndex).map(Number),
+    "the test file itself must pair each position with the T1 index the note names",
+  );
+  for (const position of NICKEL_EXPECTED_DIFFS) {
+    const index = positionToIndex[position];
+    const fixed = NICKEL_DIGIT_FIXES.find(([i]) => i === index);
+    const printed = NICKEL_AFTER_T1[index];
+    assert.ok(fixed, `T1 index ${index} must be one of the reconciled digits`);
+    assert.match(
+      note,
+      new RegExp(`^\\| \\d+ \\| ${position} \\| ${index} \\| \`${printed}\` \\| \`${fixed[1]}\` \\|$`, "m"),
+      `the note must table position ${position} (T1 index ${index}, ${printed} → ${fixed[1]})`,
+    );
+  }
+  assert.match(note, /fifth group from the end/, "the keygroup placement rule must be stated");
+  assert.match(note, /fdVicPhrase/, "the any-alphabet key-phrase fix must be recorded");
+  assert.match(note, /FM_31_20_S_F_O_T_1965/, "the archive.org FM 31-20 scan must stay cited");
+  assert.match(note, /Messages are encrypted using\s+pencil and paper rather than machine systems/);
+  // The note states how many tests this file has; count them here so adding a test
+  // without updating the note (or vice versa) fails.
+  const suite = readFileSync(new URL("../tests/cyberchef-field-cipher-deep-dive.test.mjs", import.meta.url), "utf8");
+  const total = suite.split("\n").filter((line) => line.startsWith("test(")).length;
+  assert.ok(total > 1, "found the test declarations");
+  assert.match(note, new RegExp(`\\b${total}/${total} pass`), `the note must say ${total}/${total} pass`);
+});

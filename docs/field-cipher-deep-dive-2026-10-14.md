@@ -4,10 +4,12 @@ Date: 2026-10-14
 Kitchen: `public/apps/cyberchef/index.html` → 492 operations, 216 packs, 639 pack entries
 New recipes: `odPoemExact`, `vicSchedule`, `vicExact`, `diana`, `dianaTable`,
 `gronsfeldAnalyze`, `toHexdump`, `fromHexdump`, `toOctal`, `fromOctal`
-Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 11/11 pass,
+Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 13/13 pass,
 every published control vector below reproduced digit for digit (the added tests cover the VIC
 diagonal transposition rule, the Diana field-procedure example, the primary-source
-micro-vectors, and the real hollow-nickel message — see §2b, §2c and §0).
+micro-vectors, the real hollow-nickel message, and a consistency check that keeps this note's
+evidence trail — the six reconciled nickel positions, the keygroup rule, the FM 31-20 citation
+— in step with the code; see §2b, §2c and §0).
 
 This note records the deep dive requested for the hand ciphers already in the kitchen
 (OD poem code, VIC, Gronsfeld, SECOM), the identification and implementation of the
@@ -35,6 +37,24 @@ cipher issued for field Morse traffic. Sources reviewed 2026-10-14:
   Vigenère"; zappi-tkn/Diana — Diana followed by a columnar transposition.
 * creativecrafthouse.com — the US Army Special Forces cipher disk ("the last physical
   wheel-based cipher used by the U.S. military").
+* **FM 31-20, *Special Forces Operational Techniques* (Headquarters, Department of the Army,
+  30 December 1965), chapter 9 "Communications", paragraphs 108–118, read from the scanned
+  text at archive.org (item `FM_31_20_S_F_O_T_1965`, public domain, 540 pages).** This is the
+  manual that governed the detachments that used the pads, and it fixes the working
+  environment the forum testimony describes. §111a: "Radio personnel assigned to Special
+  Forces operational detachments are confronted with problems different from those faced by
+  radio operators assigned to a conventional military unit. … **Messages are encrypted using
+  pencil and paper rather than machine systems.**" §114 breaks communication security into
+  physical, transmission and cryptographic security, and adds the handling rules that a
+  26-page-pad system implies: cryptographic material is carried on the person or under
+  constant guard (§114b(2)), "Information on cryptographic systems used by Special Forces is
+  never released to indigenous personnel" (§114b(1)), "Detachment cryptographic systems and
+  SOI's must not fall into enemy hands … destruction by burning is not complete unless the
+  ashes are destroyed" (§114b(3)), and "Specific instructions, techniques, and methods to be
+  used are covered in premission briefings on a need-to-know basis" (§114d) — which is
+  precisely why the pad's own form is documented by testimony rather than by a manual scan.
+  (The same chapter's §111b sets the Morse standard at 18 wpm under ACP-124B, and §109c
+  lists the clandestine means.)
 * sfrvn.net (Special Forces in Vietnam, C-1 commo history) — the operational procedure and
   the pad layout described above; crypto.stackexchange (2019-06-16) resolves that the
   "5-letter words" are independently drawn letters, not dictionary words.
@@ -358,6 +378,21 @@ the remaining six positions being a defect of the article's own pair of matrices
 pre-transposition matrix it prints and the ciphertext it prints cannot both be right, and both
 were re-fetched and re-read from the source to confirm the copies in the test file are faithful.
 The six differing digits are therefore single-character errors in the published example itself.
+Named for anyone re-checking the source, as (ciphertext position / index into the printed
+1 030-digit sequence / printed digit / digit that reconciles the pair):
+
+| # | position in the printed ciphertext | index in the printed T1 | printed | reconciles as |
+| --- | --- | --- | --- | --- |
+| 1 | 118 | 389 | `6` | `3` |
+| 2 | 251 | 834 | `6` | `8` |
+| 3 | 258 | 862 | `5` | `9` |
+| 4 | 501 | 536 | `5` | `6` |
+| 5 | 624 | 295 | `5` | `6` |
+| 6 | 1027 | 597 | `6` | `5` |
+
+(Position 1027 is the sixth-from-the-end *content* digit: it sits before the trailing
+keygroup, which is why an earlier pass that spliced the keygroup one group too early placed
+it at 1022.)
 Reconciling exactly those six, with the printed ciphertext as the reference, makes the
 reproduction exact: **all 1035 digits**, keygroup in place. Both states are asserted, so the
 discrepancy is visible in the tests rather than smoothed over.
@@ -448,7 +483,7 @@ node scripts/audit-cyberchef-sfx-coverage.mjs
 # OPERATIONS registered: 492 (492 unique ids); RECIPE_PACKS packs: 216 (639 entries)
 # dangling (no op): 0 ; orphaned ops: 0 ; VERDICT: SFX select-all covers the full registry
 
-node --test tests/cyberchef-field-cipher-deep-dive.test.mjs      # 11/11 pass
+node --test tests/cyberchef-field-cipher-deep-dive.test.mjs      # 13/13 pass
 node --test tests/cyberchef-*.test.mjs                            # registry, pack, SFX, cookbook suites pass
 node scripts/build-cyberchef-xdc.mjs                              # merged index.html + manifest + cyberchef.xdc
 ```
@@ -467,6 +502,17 @@ respectively); this note is the current record.
 ---
 
 ## 6. Open threads for continued research
+
+0. **archive.org is now searched (2026-10-14).** Results, so the channel is not re-tread:
+   the VIC-cipher "collection" there (`fav-vic_cipher`) is one user's bookmark folder whose
+   only member is a 1940s-50s radio workbook (`workbookforradio0010bush`, 294 pages,
+   borrow-only text layer), and the two items titled "poem code" (`poem-code-1`,
+   `poem-code-2`, 2009) are Sharon Hopkins' *Perl poems* — `listen (a perl poem)`, not cipher
+   material. Kahn's 1960 booklet *Two Soviet Spy Cyphers* and its 1993 reissue *Number One
+   From Moscow* are not on archive.org (the CIA copy at cryptome remains the source used in
+   §2b). The one real find is FM 31-20 (1965) above. Leads still open there: FM 31-20 (1971
+   edition, `FM_31_20_S_F_O_T_1971`) for a later communications chapter, and STP 31-18E34-SM-TG
+   (2003) for how the peacetime training pipeline described cryptography.
 
 1. **Diana pad provenance — partly closed.** The layout and generation are now documented
    (matched tablet pair, five random five-letter groups per line, 30 groups per page,
