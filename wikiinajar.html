@@ -13,60 +13,96 @@
 <link rel="icon" href="./icon.png" sizes="512x512" />
 <script src="./webxdc.js"></script>
 <style>
-:root{--bg:#f7f3e8;--panel:#fffdf4;--panel2:#f1ead6;--line:#d8cfb4;--ink:#2b2618;--dim:#7a7057;--acc:#8a5a12;--acc2:#1f6f4a;--bad:#a12622;--mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;--sans:ui-sans,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+:root{--bg:#f7f3e8;--panel:#fffdf4;--panel2:#f1ead6;--line:#d8cfb4;--ink:#2b2618;--dim:#7a7057;--acc:#8a5a12;--acc2:#1f6f4a;--bad:#a12622;--mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;--sans:ui-sans,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--serif:Georgia,'Iowan Old Style','Times New Roman',serif;--font:var(--sans);--heading-font:var(--sans);--radius:14px;--border:1px;--shadow:0 1px 2px rgb(0 0 0/.05);--input:#fffefa;--pre-bg:#241f12;--pre-ink:#f3ead2;--header-bg:linear-gradient(180deg,#fffdf4,#f3ecd9);--pattern:none;--pattern-size:auto;--heading-transform:none;--heading-spacing:.01em;--on-accent:#fff8e8;--on-accent2:#eefaf2}
+html[data-zen-font="serif"]{--font:var(--serif);--heading-font:var(--serif)}
+html[data-zen-font="mono"]{--font:var(--mono);--heading-font:var(--mono);--heading-transform:uppercase}
+html[data-zen-font="slab"]{--font:var(--serif);--heading-font:Rockwell,'Courier New',var(--serif);--heading-spacing:.04em}
+html[data-zen-font="humanist"]{--font:'Trebuchet MS',Verdana,var(--sans);--heading-font:'Trebuchet MS',Verdana,var(--sans)}
+html[data-zen-font="display"]{--font:var(--sans);--heading-font:'Arial Black',Impact,var(--sans);--heading-transform:uppercase;--heading-spacing:.05em}
+html[data-zen-shape="sharp"]{--radius:2px;--shadow:none}
+html[data-zen-shape="round"]{--radius:24px;--shadow:0 12px 30px rgb(0 0 0/.12)}
+html[data-zen-shape="brutal"]{--radius:0;--border:3px;--shadow:8px 8px 0 var(--line)}
+html[data-zen-shape="glass"]{--radius:19px;--shadow:0 16px 42px rgb(0 0 0/.16)}
+html[data-zen-shape="editorial"]{--radius:4px;--shadow:none}
+html[data-zen-pattern="dots"]{--pattern:radial-gradient(circle at 1px 1px,color-mix(in srgb,var(--acc) 24%,transparent) 1.6px,transparent 0);--pattern-size:22px 22px}
+html[data-zen-pattern="grid"]{--pattern:linear-gradient(color-mix(in srgb,var(--acc) 12%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--acc) 12%,transparent) 1px,transparent 1px);--pattern-size:28px 28px}
+html[data-zen-pattern="diagonal"]{--pattern:repeating-linear-gradient(135deg,color-mix(in srgb,var(--acc) 10%,transparent) 0 2px,transparent 2px 16px);--pattern-size:auto}
+html[data-zen-pattern="rings"]{--pattern:radial-gradient(circle at center,transparent 0 7px,color-mix(in srgb,var(--acc) 18%,transparent) 8px,transparent 9px);--pattern-size:34px 34px}
+html[data-zen-pattern="checker"]{--pattern:conic-gradient(color-mix(in srgb,var(--acc) 10%,transparent) 25%,transparent 0 50%,color-mix(in srgb,var(--acc) 10%,transparent) 0 75%,transparent 0);--pattern-size:32px 32px}
+html[data-zen-pattern="waves"]{--pattern:radial-gradient(circle at 50% 0,color-mix(in srgb,var(--acc2) 16%,transparent) 0 12px,transparent 13px),radial-gradient(circle at 50% 100%,color-mix(in srgb,var(--acc) 14%,transparent) 0 12px,transparent 13px);--pattern-size:42px 42px}
+html[data-zen-layout="compact"] body{font-size:14px}
+html[data-zen-layout="poster"] header.top h1{font-size:clamp(28px,5vw,48px)}
+html[data-zen-layout="poster"] .wiki-body h2{font-size:clamp(25px,4vw,38px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans)}
-a{color:var(--acc2)} a.missing{color:var(--bad);text-decoration-style:dotted}
+body{margin:0;background-color:var(--bg);background-image:var(--pattern);background-size:var(--pattern-size);color:var(--ink);font:15px/1.55 var(--font);transition:background-color .25s ease,color .25s ease}
+a{color:color-mix(in srgb,var(--acc2) 68%,var(--ink))} a.missing{color:var(--bad);text-decoration-style:dotted}
 button{font:inherit;cursor:pointer}
-header.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fffdf4,#f3ecd9);position:sticky;top:0;z-index:5}
+header.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-bottom:var(--border) solid var(--line);background:var(--header-bg);position:sticky;top:0;z-index:5}
 header.top .jar{font-size:30px;line-height:1}
-header.top h1{margin:0;font-size:20px;letter-spacing:.02em}
+header.top h1{margin:0;font:700 20px/1.15 var(--heading-font);letter-spacing:var(--heading-spacing);text-transform:var(--heading-transform)}
 header.top h1 b{color:var(--acc)}
 header.top p{margin:1px 0 0;color:var(--dim);font-size:12.5px}
 header.top .sp{flex:1}
 .chip{border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:11.5px;color:var(--dim);background:var(--panel)}
 .chip b{color:var(--acc2)}
-.btn{background:#efe7cf;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 13px}
+.btn{background:var(--panel2);color:var(--ink);border:var(--border) solid var(--line);border-radius:calc(var(--radius)*.65);padding:8px 13px;transition:border-color .2s ease,transform .2s ease,background .2s ease}
 .btn:hover{border-color:var(--acc)}
-.btn.hot{background:var(--acc);color:#fff8e8;border-color:var(--acc);font-weight:700}
-.btn.green{background:var(--acc2);color:#eefaf2;border-color:var(--acc2);font-weight:700}
+.btn.hot{background:var(--acc);color:var(--on-accent);border-color:var(--acc);font-weight:700}
+.btn.green{background:var(--acc2);color:var(--on-accent2);border-color:var(--acc2);font-weight:700}
 .btn:disabled{opacity:.5;cursor:default}
-#searchInput{background:#fffefa;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 11px;font:inherit;min-width:170px}
+.style-picker{display:flex;align-items:center;gap:6px;color:var(--dim);font-size:12px}
+.style-picker select{max-width:190px;background:var(--input);color:var(--ink);border:var(--border) solid var(--line);border-radius:calc(var(--radius)*.65);padding:8px 9px;font:inherit}
+.style-dice{font-size:19px;line-height:1;padding:7px 10px}
+.style-dice.rolling{animation:zen-dice-roll .6s ease}
+@keyframes zen-dice-roll{0%{transform:rotate(0) scale(1)}35%{transform:rotate(18deg) scale(1.16)}70%{transform:rotate(-14deg) scale(1.08)}100%{transform:rotate(0) scale(1)}}
+a.chip{text-decoration:none} a.chip:hover{border-color:var(--acc);color:var(--acc)}
+#searchInput{background:var(--input);color:var(--ink);border:var(--border) solid var(--line);border-radius:calc(var(--radius)*.65);padding:8px 11px;font:inherit;min-width:170px}
 .layout{display:flex;gap:16px;max-width:1180px;margin:0 auto;padding:16px;align-items:flex-start}
+html[data-zen-layout="editorial"] .layout{max-width:940px;flex-direction:column}
+html[data-zen-layout="editorial"] aside.rail{width:100%;position:static;order:2}
+html[data-zen-layout="editorial"] main{width:100%}
+html[data-zen-layout="compact"] .layout{max-width:1420px}
+html[data-zen-layout="gallery"] .layout{max-width:1280px;flex-direction:row-reverse}
+html[data-zen-layout="workshop"] .layout{max-width:1040px;flex-direction:column}
+html[data-zen-layout="workshop"] aside.rail{width:100%;position:static;order:2}
+html[data-zen-layout="workshop"] main{width:100%}
 aside.rail{width:250px;flex:none;position:sticky;top:76px}
 aside.rail .card{margin-bottom:12px}
 aside.rail h3{margin:0 0 6px;font-size:12px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
 aside.rail ul{margin:0;padding-left:18px}
 main{flex:1;min-width:0}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px}
-.card h2{margin:0 0 8px;font-size:19px}
-.card h3{margin:16px 0 6px;font-size:15px}
+.card{background:var(--panel);border:var(--border) solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:0 0 14px}
+.card h2{margin:0 0 8px;font:700 19px/1.25 var(--heading-font);letter-spacing:var(--heading-spacing);text-transform:var(--heading-transform)}
+.card h3{margin:16px 0 6px;font:700 15px/1.3 var(--heading-font);letter-spacing:var(--heading-spacing);text-transform:var(--heading-transform)}
+html[data-zen-layout="compact"] .card{padding:11px}
+html[data-zen-layout="poster"] .card{padding:22px}
 .mono{font-family:var(--mono)} .dim{color:var(--dim)} .small{font-size:12.5px} .bad{color:var(--bad)}
 nav.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
-nav.tabs a{background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:9px;padding:7px 13px;text-decoration:none}
+nav.tabs a{background:color-mix(in srgb,var(--panel) 72%,transparent);color:var(--dim);border:var(--border) solid var(--line);border-radius:calc(var(--radius)*.65);padding:7px 13px;text-decoration:none}
 nav.tabs a.on{background:var(--panel2);color:var(--ink);border-color:var(--acc)}
-.wiki-body h2{border-bottom:1px solid var(--line);padding-bottom:4px;margin:22px 0 8px}
+.wiki-body h2,.wiki-body h3,.wiki-body h4,.wiki-body h5,.wiki-body h6{font-family:var(--heading-font);letter-spacing:var(--heading-spacing);text-transform:var(--heading-transform)}
+.wiki-body h2{border-bottom:var(--border) solid var(--line);padding-bottom:4px;margin:22px 0 8px}
 .wiki-body h3{margin:18px 0 6px}
-.wiki-body pre{background:#241f12;color:#f3ead2;border-radius:10px;padding:12px;overflow:auto;font-family:var(--mono);font-size:13px}
-.wiki-body code{font-family:var(--mono);background:var(--panel2);padding:1px 5px;border-radius:4px;font-size:.92em}
+.wiki-body pre{background:var(--pre-bg);color:var(--pre-ink);border-radius:calc(var(--radius)*.7);padding:12px;overflow:auto;font-family:var(--mono);font-size:13px}
+.wiki-body code{font-family:var(--mono);background:var(--panel2);padding:1px 5px;border-radius:calc(var(--radius)*.3);font-size:.92em}
 .wiki-body pre code{background:none;padding:0}
 .wiki-body table{border-collapse:collapse;margin:10px 0}
-.wiki-body th,.wiki-body td{border:1px solid var(--line);padding:5px 9px;text-align:left}
-.wiki-image{display:block;height:auto;max-width:100%;margin:.8em 0;border-radius:8px}
-.wiki-image-missing{border:1px dashed var(--bad);border-radius:10px;padding:12px;margin:.8em 0;background:#fdf3f2}
-.wiki-djvu-embed{box-sizing:border-box;max-width:100%;margin:1em 0;padding:.75em;border:1px solid var(--line);border-radius:10px;background:#faf6ea}
+.wiki-body th,.wiki-body td{border:var(--border) solid var(--line);padding:5px 9px;text-align:left}
+.wiki-image{display:block;height:auto;max-width:100%;margin:.8em 0;border-radius:calc(var(--radius)*.6)}
+.wiki-image-missing{border:1px dashed var(--bad);border-radius:calc(var(--radius)*.7);padding:12px;margin:.8em 0;background:color-mix(in srgb,var(--panel) 88%,var(--bad) 12%)}
+.wiki-djvu-embed{box-sizing:border-box;max-width:100%;margin:1em 0;padding:.75em;border:var(--border) solid var(--line);border-radius:calc(var(--radius)*.7);background:var(--panel2)}
 .wiki-djvu-canvas{display:block;max-width:100%;margin:0 auto;background:#fff}
 .wiki-djvu-controls{display:flex;align-items:center;justify-content:center;gap:.6em;padding:.5em}
 .wiki-djvu-status,.wiki-djvu-page-label{color:var(--dim);font-size:.9em}
 .wiki-image-error,.wiki-djvu-error{color:var(--bad)}
-.tag{display:inline-block;border-radius:99px;padding:1px 9px;font-size:11.5px;border:1px solid var(--line);color:var(--acc);background:var(--panel2);text-decoration:none;margin:0 4px 4px 0}
-textarea#editor{width:100%;min-height:340px;font-family:var(--mono);font-size:13.5px;background:#fffefa;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px}
-input[type=text]{background:#fffefa;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:inherit}
+.tag{display:inline-block;border-radius:99px;padding:1px 9px;font-size:11.5px;border:var(--border) solid var(--line);color:color-mix(in srgb,var(--acc) 72%,var(--ink));background:var(--panel2);text-decoration:none;margin:0 4px 4px 0}
+textarea#editor{width:100%;min-height:340px;font-family:var(--mono);font-size:13.5px;background:var(--input);color:var(--ink);border:var(--border) solid var(--line);border-radius:calc(var(--radius)*.7);padding:12px}
+input[type=text]{background:var(--input);color:var(--ink);border:var(--border) solid var(--line);border-radius:calc(var(--radius)*.6);padding:9px 10px;font:inherit}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .pagelist{list-style:none;margin:0;padding:0}
 .pagelist li{padding:7px 2px;border-bottom:1px solid var(--line)}
 .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
-.media-grid figure{margin:0;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--panel)}
+.media-grid figure{margin:0;border:var(--border) solid var(--line);border-radius:calc(var(--radius)*.7);padding:10px;background:var(--panel)}
 .media-grid img{max-width:100%;height:auto;border-radius:6px}
 footer{max-width:1180px;margin:0 auto;padding:8px 16px 30px;color:var(--dim);font-size:12.5px}
 @media (max-width:820px){.layout{flex-direction:column}aside.rail{width:100%;position:static}}
@@ -75,7 +111,7 @@ footer{max-width:1180px;margin:0 auto;padding:8px 16px 30px;color:var(--dim);fon
      prints ([hidden] sections stay hidden), dark panels go white. */
   header.top,aside.rail,nav.tabs,footer,button,.no-print,.wiki-djvu-controls{display:none!important}
   [hidden]{display:none!important}
-  body{background:#fff;color:#000}
+  body{background:#fff;background-image:none;color:#000}
   .layout{display:block} main{max-width:none;margin:0;padding:0}
   .card,section{background:#fff!important;border:none!important;box-shadow:none!important}
   .wiki-body pre{background:#fff;color:#000;border:1px solid #999;white-space:pre-wrap}
@@ -96,6 +132,11 @@ footer{max-width:1180px;margin:0 auto;padding:8px 16px 30px;color:var(--dim);fon
   <span class="chip" id="syncChip">storage: <b>this browser</b></span>
   <span class="chip"><span id="statPages">0</span> pages · <span id="statMedia">0</span> media</span>
   <input type="search" id="searchInput" placeholder="Search pages…" aria-label="Search pages" />
+  <label class="style-picker" for="zenStyleSelect"><span aria-hidden="true">🎨</span><span>Style</span>
+    <select id="zenStyleSelect" aria-label="Choose a CSS Zen Garden style adaptation"></select>
+  </label>
+  <button class="btn style-dice" type="button" id="btnRandomStyle" aria-label="Roll for a random CSS Zen Garden style" title="Roll for a random style">🎲</button>
+  <a class="chip" id="zenStyleCredit" href="https://csszengarden.com/" target="_blank" rel="noopener noreferrer" title="About the style gallery">Jar Original</a>
   <button class="btn hot" type="button" id="btnNew">+ New page</button>
 </header>
 
@@ -108,6 +149,10 @@ footer{max-width:1180px;margin:0 auto;padding:8px 16px 30px;color:var(--dim);fon
     <div class="card">
       <h3>Recent pages</h3>
       <ul id="recentList"></ul>
+    </div>
+    <div class="card">
+      <h3>CSS Zen Garden styles</h3>
+      <p class="small dim">Fifty offline adaptations named for designs in the CSS Zen Garden. Pick one in the header or tap 🎲; each credit links to the original design. The original stylesheets target the Garden’s fixed HTML and image assets, so these preserve their names, designers and visual spirit without phoning home.</p>
     </div>
     <div class="card">
       <h3>The jar</h3>
@@ -409,7 +454,7 @@ function wikiCollectLinks(source){
 
 const SEED_PAGES = {
 "Main Page": "== Welcome to your jar ==\n\nThis is a '''personal wiki in a jar''': your notebook, address book and calendar, carried like the 2008 original — on a stick, offline, with no account and no server. Start with the documentation page: [[Wiki in a Jar]].\n\n* Write: click '''+ New page''', or follow a [[missing link]] and create it.\n* Organise: tag pages with the hidden link [[tags:home]] (try [[tags:demo,guide]] on a page and watch the Tags view).\n* Illustrate: embed local files with [[image:demo.png|Bundled example icon]] and read scanned books with [[djvu:djvu-smoke.djvu|Open the bundled DjVu sample]] — see [[Image Support Demo]].\n* Learn the markup: [[Wiki Syntax]].\n* Read the library: the '''Docs''' tab carries every repository deep dive and docs/*.md page, converted to wikitext — see [[Documentation]].\n* Play safely: [[SandBox]].\n\n----\n\n''The jar is small on purpose. It holds what you put in it — nothing else is watching.''\n\n[[tags:home]]",
-"Wiki in a Jar": "== Wiki in a Jar — documentation ==\n\n'''Wiki in a Jar''' is a small wiki written in Java with a great focus on simplicity. It is intended to run on a USB stick as a replacement for a paper note- and address book — a personal information manager (PIM). That is the 2008 pitch, preserved verbatim in spirit: this page documents both the original program and this HTML5 / webxdc rebuild, which is the same jar with the Java runtime swapped for the browser you already carry.\n\n=== The original (2008) ===\n\n* Author: rico_g; licence GPL; project: SourceForge ''wiki-in-a-jar''.\n* Latest release: WikiInAJar-0.8-20081128-bin.zip (123,402 bytes, 2008-11-28). Inside, wiki.in.a.jar (98,464 bytes) carries the main class org.rgse.wikiinajar.server.Server.\n* Run it: unzip anywhere (a USB stick is the canonical home), then bin/start.sh or: java -jar wiki.in.a.jar 3003 — and open http://localhost:3003/wiki .\n* Pages are plain .wiki text files under public/docs/wiki — one file per page, filename equals page title. Contacts are vCard (.vcf) files; the calendar surfaces dated PIM entries.\n* The embedded HTTP server is the project's own XRays framework on a relocated NanoHTTPD — not ACME — with XSL skins. It has '''no authentication''': keep it on a trusted local network, never expose it directly to the public Internet.\n\n=== This rebuild (HTML5 / webxdc) ===\n\n* wikiinajar.html is the whole wiki in one offline file; wikiinajar.xdc is the same file packaged for Delta Chat / ArcaneChat (ZIP rooted at index.html + manifest.toml).\n* Pages live in this browser's local storage and can be exported as one jar JSON or as individual .wiki files that the Java original can read.\n* Inside a chat, saved pages also sync to the group through webxdc updates. Each save names the revision it started from (a short hash), so a receiving device that still holds that revision merges both edits line-by-line instead of overwriting; overlapping edits arrive as visible conflict markers (yours / theirs) for a human to resolve, and no version is ever dropped silently — superseded bodies stay under History. Media files do '''not''' sync — import them per device under Media & DjVu.\n* Rebuild the bundle from the repository root: npm run build:wikiinajar (script: scripts/build-wikiinajar-xdc.mjs).\n\n=== Namespaces (WikiLink) ===\n\nThe 0.8 WikiLink splits [[namespace:page|label]] and dispatches on the namespace. This rebuild keeps the table:\n\n| Namespace | Meaning | Example |\n| wiki (default) | link to a page; missing pages invite creation | [[Wiki Syntax]] |\n| img / image | embed a local raster image, or a DjVu reader for .djvu/.djv | [[image:diagram.png|Diagram alt text]] |\n| djvu | embed the DjVu reader (requires .djvu/.djv) | [[djvu:reference.djvu|Read the reference]] |\n| tags | hidden: tag the current page | (renders nothing) |\n| tagtree | link to the tag tree | [[tagtree:all|All tags]] |\n| vcard | link to an imported contact | [[vcard:Ada Lovelace]] |\n| sidebar | hidden: sidebar material | (renders nothing) |\n\nAnything else renders as ''page (Unknown namespace: ns)'' — the original's own error text.\n\n=== Images and DjVu ===\n\nLocal media belongs under public/docs/image in the Java install, and in the Media & DjVu library here. Supported raster types: PNG, JPEG, GIF, WebP, BMP, AVIF. DjVu pages render in-browser with the bundled djvu-rs WebAssembly decoder (one page at a time, Previous/Next controls); the download link always works, even without JavaScript or WebAssembly. The old NanoHTTPD has no byte-range requests, and neither does this rebuild: a DjVu file downloads in full when its viewer scrolls near — keep large books small, or open them from disk.\n\n=== Safety notes ===\n\n* Neither edition has accounts or access control. The Java server trusts its network; this edition trusts your browser profile and your chat.\n* Image paths must be safe relative paths: no .. , no leading slash, no remote URLs. Traversal and unsupported suffixes are rejected in both editions.\n* All wikitext output is HTML-escaped before markup is applied, so a page cannot inject script into its readers.\n\n=== Bundled documentation (one page per *.md) ===\n\nThe .xdc bundle ships the repository's whole Markdown library as wiki pages: every root *.md (the deep dives and viewer docs) and every docs/*.md file, converted Markdown-to-wikitext by tools/wikiinajar/md2wiki.mjs into docs.json. Open the '''Docs''' tab to browse them grouped by folder, or follow the [[...]] links the converter made between documents. Bundled pages are read-only until you edit one: saving copies it into your jar, and your version wins on this device. Deleting a bundled page hides it locally; deleting your local copy brings the bundled original back.\n\n=== See also ===\n\n* [[Wiki Syntax]] — the full markup guide.\n* [[Image Support Demo]] — live image and DjVu embeds.\n* The deep dive: wikiinajar-deep-dive.md in the repository (history, forks, architecture, security audit, and the open research agenda).\n* The Java patch that adds image/DjVu support to the 0.8 jar: tools/wikiinajar/ in the repository.\n\n[[tags:documentation,guide]]",
+"Wiki in a Jar": "== Wiki in a Jar — documentation ==\n\n'''Wiki in a Jar''' is a small wiki written in Java with a great focus on simplicity. It is intended to run on a USB stick as a replacement for a paper note- and address book — a personal information manager (PIM). That is the 2008 pitch, preserved verbatim in spirit: this page documents both the original program and this HTML5 / webxdc rebuild, which is the same jar with the Java runtime swapped for the browser you already carry.\n\n=== The original (2008) ===\n\n* Author: rico_g; licence GPL; project: SourceForge ''wiki-in-a-jar''.\n* Latest release: WikiInAJar-0.8-20081128-bin.zip (123,402 bytes, 2008-11-28). Inside, wiki.in.a.jar (98,464 bytes) carries the main class org.rgse.wikiinajar.server.Server.\n* Run it: unzip anywhere (a USB stick is the canonical home), then bin/start.sh or: java -jar wiki.in.a.jar 3003 — and open http://localhost:3003/wiki .\n* Pages are plain .wiki text files under public/docs/wiki — one file per page, filename equals page title. Contacts are vCard (.vcf) files; the calendar surfaces dated PIM entries.\n* The embedded HTTP server is the project's own XRays framework on a relocated NanoHTTPD — not ACME — with XSL skins. It has '''no authentication''': keep it on a trusted local network, never expose it directly to the public Internet.\n\n=== This rebuild (HTML5 / webxdc) ===\n\n* wikiinajar.html is the whole wiki in one offline file; wikiinajar.xdc is the same file packaged for Delta Chat / ArcaneChat (ZIP rooted at index.html + manifest.toml).\n* Pages live in this browser's local storage and can be exported as one jar JSON or as individual .wiki files that the Java original can read.\n* Inside a chat, saved pages also sync to the group through webxdc updates. Each save names the revision it started from (a short hash), so a receiving device that still holds that revision merges both edits line-by-line instead of overwriting; overlapping edits arrive as visible conflict markers (yours / theirs) for a human to resolve, and no version is ever dropped silently — superseded bodies stay under History. Media files do '''not''' sync — import them per device under Media & DjVu.\n* Rebuild the bundle from the repository root: npm run build:wikiinajar (script: scripts/build-wikiinajar-xdc.mjs).\n* Restyle the jar from the header: the Style picker carries fifty offline CSS Zen Garden adaptations, and the dice button rolls another at random. The choice is saved in this browser; the credit beside the dice links to the original design at csszengarden.com.\n\n=== Namespaces (WikiLink) ===\n\nThe 0.8 WikiLink splits [[namespace:page|label]] and dispatches on the namespace. This rebuild keeps the table:\n\n| Namespace | Meaning | Example |\n| wiki (default) | link to a page; missing pages invite creation | [[Wiki Syntax]] |\n| img / image | embed a local raster image, or a DjVu reader for .djvu/.djv | [[image:diagram.png|Diagram alt text]] |\n| djvu | embed the DjVu reader (requires .djvu/.djv) | [[djvu:reference.djvu|Read the reference]] |\n| tags | hidden: tag the current page | (renders nothing) |\n| tagtree | link to the tag tree | [[tagtree:all|All tags]] |\n| vcard | link to an imported contact | [[vcard:Ada Lovelace]] |\n| sidebar | hidden: sidebar material | (renders nothing) |\n\nAnything else renders as ''page (Unknown namespace: ns)'' — the original's own error text.\n\n=== Images and DjVu ===\n\nLocal media belongs under public/docs/image in the Java install, and in the Media & DjVu library here. Supported raster types: PNG, JPEG, GIF, WebP, BMP, AVIF. DjVu pages render in-browser with the bundled djvu-rs WebAssembly decoder (one page at a time, Previous/Next controls); the download link always works, even without JavaScript or WebAssembly. The old NanoHTTPD has no byte-range requests, and neither does this rebuild: a DjVu file downloads in full when its viewer scrolls near — keep large books small, or open them from disk.\n\n=== Safety notes ===\n\n* Neither edition has accounts or access control. The Java server trusts its network; this edition trusts your browser profile and your chat.\n* Image paths must be safe relative paths: no .. , no leading slash, no remote URLs. Traversal and unsupported suffixes are rejected in both editions.\n* All wikitext output is HTML-escaped before markup is applied, so a page cannot inject script into its readers.\n\n=== Bundled documentation (one page per *.md) ===\n\nThe .xdc bundle ships the repository's whole Markdown library as wiki pages: every root *.md (the deep dives and viewer docs) and every docs/*.md file, converted Markdown-to-wikitext by tools/wikiinajar/md2wiki.mjs into docs.json. Open the '''Docs''' tab to browse them grouped by folder, or follow the [[...]] links the converter made between documents. Bundled pages are read-only until you edit one: saving copies it into your jar, and your version wins on this device. Deleting a bundled page hides it locally; deleting your local copy brings the bundled original back.\n\n=== See also ===\n\n* [[Wiki Syntax]] — the full markup guide.\n* [[Image Support Demo]] — live image and DjVu embeds.\n* The deep dive: wikiinajar-deep-dive.md in the repository (history, forks, architecture, security audit, and the open research agenda).\n* The Java patch that adds image/DjVu support to the 0.8 jar: tools/wikiinajar/ in the repository.\n\n[[tags:documentation,guide]]",
 "Wiki Syntax": "== Wiki syntax ==\n\nThe 0.8 subset, plus clearly-marked browser extensions. Type wikitext; the renderer escapes HTML first, then applies markup — pages cannot inject script.\n\n=== Blocks ===\n\n* Headings: == Heading ==, === Subheading ===, ==== Smaller ====\n* Rule: ---- on its own line.\n* Lists: lines starting with * (bullets) or # (numbered); repeat the marker for nesting.\n* Preformatted: indent a line with a space, or wrap literal text in <nowiki> tags (the demo pages use <pre><nowiki> to show syntax literally).\n* Tables (browser extension): lines like | Cell | Cell | — first row becomes the header.\n\n=== Inline ===\n\n* '''bold''' and ''italic'' (three and two apostrophes).\n* [[Page Name]] links a page; [[Page Name|any label]] labels it. A [[Red Link]] invites creation.\n* [[image:file.png|Alt text]] and the alias [[img:file.png|Alt text]] embed media from the library (public/docs/image in the Java jar). Subfolders are fine: [[img:maps/toronto.webp|Map of Toronto]]\n* [[djvu:book.djvu|Read it]] embeds the DjVu reader; [[img:scan.djv|Scan]] works too.\n* [[vcard:Full Name]] links an imported contact; [[tagtree:x|Tags]] opens the tag tree.\n* Hidden links: [[tags:one,two]] tags this page; [[sidebar:x]] renders nothing here (edit the SideBar page instead).\n* Bare http:// and https:// URLs autolink (browser extension; the Java WikiLink reports them as an unknown namespace).\n\n=== Rules the renderer enforces ===\n\n* Media paths must be safe relative paths — no .. , no leading /, no drive or URL tricks — in both editions.\n* Only .png .jpg .jpeg .gif .webp .bmp .avif and .djvu/.djv embed; anything else shows [Unsupported image type.]\n* Unknown namespaces show the original message: page (Unknown namespace: ns)\n\n[[tags:documentation,guide]]",
 "Documentation": "== Bundled documentation ==\n\nThis jar doubles as the repository's reading room. At build time (npm run build:wikiinajar), every Markdown document — the root deep dives (*-deep-dive.md, PRIME, KEYSPACE, ASTRONOMY, GODSEYE and friends) and all of docs/*.md — is converted to native wikitext by tools/wikiinajar/md2wiki.mjs and bundled as docs.json, one wiki page per file.\n\n* Browse: the '''Docs''' tab groups the pages by folder, with a filter box.\n* Read: headings, lists, tables and code survive conversion; links between documents became [[wiki links]], so the library cross-references itself.\n* Annotate: press '''Edit''' on any bundled page to copy it into your jar — your copy wins on this device, and the bundled original returns if you delete your copy.\n* Provenance: every converted page ends with its source path, so a page can always be traced back to its .md file.\n\nThe conversion is deliberately plain: anything md2wiki does not recognise arrives as readable text rather than broken markup. Rebuilding regenerates the bundled copies; it never touches pages you have edited or created.\n\n[[tags:documentation,guide]]",
 "Image Support Demo": "== Images and DjVu ==\n\nWiki image files live in the installation's public/docs/image directory (Java) or the Media & DjVu library (this rebuild). Supported raster formats include PNG, JPEG, GIF, WebP, BMP, and AVIF.\n\nBundled raster image (import demo.png under Media & DjVu to light this up here; the Java build copies it automatically):\n\n[[image:demo.png|Bundled example icon]]\n\nExample syntax for a raster image:\n\n<pre><nowiki>[[image:demo.png|Bundled example icon]]</nowiki></pre>\n\nThe img: namespace is an alias, and names may include safe relative subdirectories:\n\n<pre><nowiki>[[img:maps/toronto.png|Toronto map]]</nowiki></pre>\n\nDjVu documents can be embedded with the page viewer. The document is fetched only when its placeholder scrolls near the viewport; each page is rendered locally in the browser using WebAssembly. The original file remains available through the download link. In the .xdc bundle the smoke document ships as media/djvu-smoke.djvu:\n\n[[djvu:djvu-smoke.djvu|Open the bundled DjVu sample]]\n\nExample syntax for a DjVu file:\n\n<pre><nowiki>[[djvu:djvu-smoke.djvu|Open the bundled DjVu sample]]</nowiki></pre>\n\nThe bundled smoke document is a small DjVu.js test asset under the Unlicense. To use your own documents, import them under Media & DjVu and replace djvu-smoke.djvu with the file name you added.\n\n[[tags:demo,media]]",
@@ -417,8 +462,157 @@ const SEED_PAGES = {
 "SandBox": "== SandBox ==\n\nScratch space — edit freely, nothing here matters. Try '''bold''', ''italic'', a [[Main Page|link home]], and a list:\n\n* one\n* two\n** nested\n\n[[tags:demo]]"
 };
 
-const LS_PAGES="wikiinajar.pages.v1", LS_MEDIA="wikiinajar.media.v1", LS_CONTACTS="wikiinajar.contacts.v1";
+const LS_PAGES="wikiinajar.pages.v1", LS_MEDIA="wikiinajar.media.v1", LS_CONTACTS="wikiinajar.contacts.v1", LS_STYLE="wikiinajar.style.v1";
 const $=(id)=>document.getElementById(id);
+
+/* Fifty offline CSS Zen Garden adaptations. Names/designers and the
+   official design numbers follow csszengarden.com/pages/alldesigns/;
+   the CSS itself is local and wiki-shaped because the Garden originals
+   target that site's fixed HTML and hosted image assets. */
+const ZEN_LOOKS=[
+  {font:"display",shape:"glass",layout:"poster",pattern:"rings"},
+  {font:"humanist",shape:"sharp",layout:"gallery",pattern:"checker"},
+  {font:"mono",shape:"brutal",layout:"compact",pattern:"grid"},
+  {font:"serif",shape:"editorial",layout:"editorial",pattern:"plain"},
+  {font:"display",shape:"soft",layout:"poster",pattern:"diagonal"},
+  {font:"serif",shape:"round",layout:"gallery",pattern:"waves"},
+  {font:"mono",shape:"brutal",layout:"workshop",pattern:"grid"},
+  {font:"humanist",shape:"glass",layout:"standard",pattern:"dots"},
+  {font:"serif",shape:"round",layout:"gallery",pattern:"waves"},
+  {font:"display",shape:"editorial",layout:"poster",pattern:"diagonal"}
+];
+const ZEN_STYLES=[
+  {id:221,title:"Mid Century Modern",by:"Andrew Lohman",bg:"#f6efe5",panel:"#fffaf0",ink:"#0d2c40",acc:"#dd6b4d",acc2:"#16817a",look:0},
+  {id:220,title:"Garments",by:"Dan Mall",bg:"#f3eee7",panel:"#ffffff",ink:"#20242a",acc:"#bc3f35",acc2:"#a97b12",look:1},
+  {id:219,title:"Steel",by:"Steffen Knoeller",bg:"#dfe3e6",panel:"#f7f9fa",ink:"#1c252b",acc:"#607d8b",acc2:"#c55302",look:2},
+  {id:218,title:"Apothecary",by:"Trent Walton",bg:"#f4ecd9",panel:"#fffaf0",ink:"#342717",acc:"#8a5a2b",acc2:"#52796f",look:3},
+  {id:217,title:"Screen Filler",by:"Elliot Jay Stocks",bg:"#111827",panel:"#1f2937",ink:"#f8fafc",acc:"#38bdf8",acc2:"#f472b6",look:4},
+  {id:216,title:"Fountain Kiss",by:"Jeremy Carlson",bg:"#f7ecec",panel:"#fffafa",ink:"#41272d",acc:"#d96c85",acc2:"#5b8e7d",look:5},
+  {id:215,title:"A Robot Named Jimmy",by:"meltmedia",bg:"#e8eef2",panel:"#ffffff",ink:"#17242e",acc:"#e4572e",acc2:"#2a9d8f",look:6},
+  {id:214,title:"Verde Moderna",by:"Dave Shea",bg:"#eef4e6",panel:"#fcfff7",ink:"#21381f",acc:"#5b8c5a",acc2:"#e07a5f",look:7},
+  {id:213,title:"Under the Sea!",by:"Eric Stoltz",bg:"#d9f2f1",panel:"#f2ffff",ink:"#073b4c",acc:"#118ab2",acc2:"#06d6a0",look:8},
+  {id:212,title:"Make ’em Proud",by:"Michael McAghon and Scotty Reifsnyder",bg:"#f6f1e7",panel:"#ffffff",ink:"#1f2a44",acc:"#b91c1c",acc2:"#1d4ed8",look:9},
+  {id:211,title:"Orchid Beauty",by:"Kevin Addison",bg:"#f6e8f3",panel:"#fff7fd",ink:"#3f2340",acc:"#a855f7",acc2:"#db2777",look:5},
+  {id:210,title:"Oceanscape",by:"Justin Gray",bg:"#dff3f7",panel:"#f7feff",ink:"#083344",acc:"#0284c7",acc2:"#14b8a6",look:8},
+  {id:209,title:"CSS Co., Ltd.",by:"Benjamin Klemm",bg:"#edf0f2",panel:"#ffffff",ink:"#17202a",acc:"#005bac",acc2:"#e60012",look:1},
+  {id:208,title:"Sakura",by:"Tatsuya Uchida",bg:"#fff0f3",panel:"#fffafa",ink:"#44252d",acc:"#ec7fa5",acc2:"#8a9a5b",look:5},
+  {id:207,title:"Kyoto Forest",by:"John Politowski",bg:"#e9efe3",panel:"#fbfcf6",ink:"#21351f",acc:"#52796f",acc2:"#bc6c25",look:3},
+  {id:206,title:"A Walk in the Garden",by:"Simon Van Hauwermeiren",bg:"#f0f5e9",panel:"#fdfff8",ink:"#26351f",acc:"#74a12e",acc2:"#e09f3e",look:7},
+  {id:205,title:"spring360",by:"Rene Hornig",bg:"#eef8e8",panel:"#fcfff9",ink:"#20331f",acc:"#64a832",acc2:"#d99a16",look:7},
+  {id:203,title:"Tiny Blue",by:"Timo Virtanen",bg:"#e3f2fd",panel:"#f8fcff",ink:"#12355b",acc:"#4dabf7",acc2:"#1971c2",look:7},
+  {id:202,title:"Retro Theater",by:"Eric Rogé",bg:"#241417",panel:"#3a1d22",ink:"#fff1e6",acc:"#e0a100",acc2:"#e06c75",look:4},
+  {id:201,title:"Lily Pond",by:"Rose Thorogood",bg:"#e6f4ea",panel:"#fbfffc",ink:"#17351f",acc:"#4c956c",acc2:"#7fb069",look:8},
+  {id:200,title:"Icicle Outback",by:"Timo Virtanen",bg:"#eef7f7",panel:"#ffffff",ink:"#17323f",acc:"#57a7b8",acc2:"#d99058",look:7},
+  {id:199,title:"CSS ZEN ARMY",by:"Carl Desmond",bg:"#e7e5da",panel:"#f8f7ef",ink:"#26331f",acc:"#556b2f",acc2:"#a63d40",look:6},
+  {id:198,title:"The Original",by:"Joachim Shotter",bg:"#f5f1e6",panel:"#fffdf4",ink:"#263238",acc:"#5b7c5a",acc2:"#b5651d",look:3},
+  {id:197,title:"Floral Touch",by:"Jadas Jimmy",bg:"#fdf0ec",panel:"#fffafa",ink:"#402b25",acc:"#d96c47",acc2:"#7a9e43",look:5},
+  {id:196,title:"Elegance in Simplicity",by:"Mani Sheriar",bg:"#f7f7f2",panel:"#ffffff",ink:"#222222",acc:"#777777",acc2:"#b08d57",look:3},
+  {id:195,title:"Dazzling Beauty",by:"Deny Sri Supriyono",bg:"#fff4d6",panel:"#fffaf0",ink:"#402f10",acc:"#e3a008",acc2:"#d6336c",look:0},
+  {id:194,title:"Dark Rose",by:"Rose Fu",bg:"#24151c",panel:"#38202b",ink:"#ffeef5",acc:"#e75480",acc2:"#9b5de5",look:5},
+  {id:193,title:"Leggo My Ego",by:"Jon Tan",bg:"#ffeeb2",panel:"#fff9db",ink:"#2f2504",acc:"#d97706",acc2:"#1971c2",look:9},
+  {id:192,title:"LuGoZee",by:"Viallon Pierre-Antoine",bg:"#e7f5ff",panel:"#ffffff",ink:"#172b3a",acc:"#228be6",acc2:"#fd7e14",look:1},
+  {id:191,title:"The Diary",by:"Alexander Shabuniewicz",bg:"#f7ecd7",panel:"#fff8ea",ink:"#3d2c1e",acc:"#9a6b3f",acc2:"#6d8f71",look:3},
+  {id:190,title:"Lonely Flower",by:"Mitja Ribic",bg:"#f5ecef",panel:"#fffafa",ink:"#3a2430",acc:"#b0526b",acc2:"#758e4f",look:5},
+  {id:189,title:"Mozart",by:"Andrew Brundle",bg:"#f4efe6",panel:"#fffaf0",ink:"#252033",acc:"#6c5b7b",acc2:"#c9a227",look:3},
+  {id:188,title:"Organica Creativa",by:"Eduardo Cesario",bg:"#e9f2df",panel:"#fcfff5",ink:"#24351d",acc:"#74a12e",acc2:"#e07a5f",look:7},
+  {id:187,title:"Wilderness",by:"Aadesh Mistry",bg:"#e7eadf",panel:"#fafbf3",ink:"#25321f",acc:"#687d3c",acc2:"#a15c2d",look:7},
+  {id:186,title:"Faded Flowers",by:"Mani Sheriar",bg:"#f3e9e4",panel:"#fffaf7",ink:"#40312b",acc:"#b5836d",acc2:"#7d8c74",look:5},
+  {id:185,title:"Manhattan Edition",by:"José Tomás Tocino García",bg:"#e8e8e3",panel:"#ffffff",ink:"#111111",acc:"#d92323",acc2:"#0057a8",look:9},
+  {id:184,title:"Peace Of Mind",by:"Carlos Varela",bg:"#eef3ee",panel:"#fdfffc",ink:"#20312a",acc:"#6a994e",acc2:"#4dabf7",look:7},
+  {id:182,title:"45 RPM",by:"Thomas Michaud",bg:"#171717",panel:"#262626",ink:"#f5f0e6",acc:"#e5383b",acc2:"#f4a261",look:6},
+  {id:181,title:"Pretty in Pink",by:"Jordi Romkema",bg:"#ffe3ee",panel:"#fff7fa",ink:"#46202f",acc:"#e64980",acc2:"#9775fa",look:5},
+  {id:180,title:"Vertigo",by:"Antonio Cella",bg:"#101418",panel:"#1b222b",ink:"#edf6ff",acc:"#4dabf7",acc2:"#ff8787",look:2},
+  {id:179,title:"Vin Rouge",by:"Thorsten Bopp",bg:"#3a1118",panel:"#4a1b22",ink:"#fff0f0",acc:"#e06c75",acc2:"#d9a441",look:3},
+  {id:178,title:"Pinups",by:"Emiliano Pennisi",bg:"#fff1e6",panel:"#fffafa",ink:"#3e2222",acc:"#d94848",acc2:"#b8860b",look:0},
+  {id:177,title:"Zen City Morning",by:"Ray Henry",bg:"#e8f4f8",panel:"#ffffff",ink:"#20313d",acc:"#e8890c",acc2:"#228be6",look:1},
+  {id:176,title:"Kelmscott",by:"Bronwen Hodgkinson",bg:"#efe6d0",panel:"#fbf3df",ink:"#322619",acc:"#7a4b21",acc2:"#355e3b",look:3},
+  {id:175,title:"Business Style",by:"Gunta Klavina",bg:"#edf1f5",panel:"#ffffff",ink:"#17202b",acc:"#2456a6",acc2:"#6c757d",look:1},
+  {id:174,title:"Simple",by:"Shawn Chin",bg:"#fafafa",panel:"#ffffff",ink:"#202124",acc:"#5f6368",acc2:"#1a73e8",look:3},
+  {id:173,title:"Red Stars",by:"Shafiq Rizwan",bg:"#200f14",panel:"#32151d",ink:"#fff1f2",acc:"#e5383b",acc2:"#f4a261",look:4},
+  {id:172,title:"blackcomb*75",by:"Bryan Carichner",bg:"#11161c",panel:"#1d252f",ink:"#eef4f8",acc:"#74c0fc",acc2:"#ffa94d",look:2},
+  {id:171,title:"Shaolin Yokobue",by:"Javier Cabrera",bg:"#f3ead8",panel:"#fff7e8",ink:"#2c2115",acc:"#b23a2e",acc2:"#355070",look:3},
+  {id:170,title:"Love Is In The Air",by:"Nele Goetz",bg:"#fff0f3",panel:"#fffafa",ink:"#43222c",acc:"#e64980",acc2:"#74c0fc",look:5}
+];
+let currentZenStyle="", zenRollTimer=null;
+function zenLuminance(hex){
+  const n=parseInt(hex.slice(1),16), r=(n>>16)&255, g=(n>>8)&255, b=n&255;
+  return (0.2126*r+0.7152*g+0.0722*b)/255;
+}
+function zenOnColor(hex){ return zenLuminance(hex)>0.62?"#201a12":"#ffffff"; }
+function pickRandomZenStyle(currentId,random=Math.random){
+  const pool=ZEN_STYLES.filter((style)=>String(style.id)!==String(currentId));
+  return String(pool[Math.min(pool.length-1,Math.floor(random()*pool.length))].id);
+}
+function applyZenStyle(id,save=true){
+  const root=document.documentElement, select=$("zenStyleSelect"), credit=$("zenStyleCredit"), meta=document.querySelector('meta[name="theme-color"]');
+  const style=ZEN_STYLES.find((candidate)=>String(candidate.id)===String(id));
+  const props=["--bg","--panel","--panel2","--line","--ink","--dim","--acc","--acc2","--bad","--input","--pre-bg","--pre-ink","--header-bg","--on-accent","--on-accent2"];
+  if(!style){
+    currentZenStyle="";
+    for(const prop of props)root.style.removeProperty(prop);
+    for(const key of ["zenFont","zenShape","zenLayout","zenPattern","zenStyle"])delete root.dataset[key];
+    if(select)select.value="";
+    if(credit){ credit.textContent="Jar Original"; credit.href="https://csszengarden.com/"; credit.title="CSS Zen Garden home"; }
+    if(meta)meta.setAttribute("content","#f7f3e8");
+    if(save){ try{ localStorage.removeItem(LS_STYLE); }catch(e){} }
+    return null;
+  }
+  const look=ZEN_LOOKS[style.look]||ZEN_LOOKS[0], dark=zenLuminance(style.ink)>0.62;
+  currentZenStyle=String(style.id);
+  root.dataset.zenFont=look.font; root.dataset.zenShape=look.shape; root.dataset.zenLayout=look.layout; root.dataset.zenPattern=look.pattern; root.dataset.zenStyle=String(style.id);
+  root.style.setProperty("--bg",style.bg);
+  root.style.setProperty("--panel",style.panel);
+  root.style.setProperty("--panel2",`color-mix(in srgb, ${style.panel} 82%, ${style.acc} 18%)`);
+  root.style.setProperty("--line",`color-mix(in srgb, ${style.ink} 24%, ${style.panel})`);
+  root.style.setProperty("--ink",style.ink);
+  root.style.setProperty("--dim",`color-mix(in srgb, ${style.ink} 62%, ${style.bg})`);
+  root.style.setProperty("--acc",style.acc);
+  root.style.setProperty("--acc2",style.acc2);
+  root.style.setProperty("--bad",dark?"#ff9d94":"#a12622");
+  root.style.setProperty("--input",`color-mix(in srgb, ${style.panel} 94%, ${style.bg})`);
+  root.style.setProperty("--pre-bg",dark?"#0b0f14":style.ink);
+  root.style.setProperty("--pre-ink",dark?"#f4f7fb":style.panel);
+  root.style.setProperty("--header-bg",`linear-gradient(135deg, color-mix(in srgb, ${style.panel} 68%, ${style.acc} 32%), ${style.panel})`);
+  root.style.setProperty("--on-accent",zenOnColor(style.acc));
+  root.style.setProperty("--on-accent2",zenOnColor(style.acc2));
+  if(select)select.value=currentZenStyle;
+  if(credit){
+    credit.textContent="#"+style.id+" "+style.title+" — "+style.by+" ↗";
+    credit.href="https://csszengarden.com/"+style.id+"/";
+    credit.title="Open "+style.title+" by "+style.by+" at CSS Zen Garden";
+  }
+  if(meta)meta.setAttribute("content",style.bg);
+  if(save){ try{ localStorage.setItem(LS_STYLE,currentZenStyle); }catch(e){} }
+  return style;
+}
+function rollZenStyle(){
+  const button=$("btnRandomStyle");
+  if(!button||zenRollTimer!==null)return;
+  button.classList.add("rolling");
+  let ticks=0, candidate=currentZenStyle;
+  zenRollTimer=setInterval(()=>{
+    ticks++;
+    candidate=pickRandomZenStyle(currentZenStyle);
+    applyZenStyle(candidate,false);
+    if(ticks>=7){
+      clearInterval(zenRollTimer); zenRollTimer=null;
+      button.classList.remove("rolling");
+      applyZenStyle(candidate,true);
+    }
+  },60);
+}
+function initZenStyles(){
+  const select=$("zenStyleSelect"), button=$("btnRandomStyle");
+  if(select){
+    select.innerHTML="<option value=\"\">Jar Original</option>"+ZEN_STYLES.map((style)=>"<option value=\""+style.id+"\">#"+style.id+" · "+style.title+" — "+style.by+"</option>").join("");
+    select.addEventListener("change",()=>applyZenStyle(select.value,true));
+  }
+  if(button)button.addEventListener("click",rollZenStyle);
+  let stored="";
+  try{ stored=localStorage.getItem(LS_STYLE)||""; }catch(e){}
+  applyZenStyle(ZEN_STYLES.some((style)=>String(style.id)===stored)?stored:"",false);
+}
+
 let pages={}, media={}, contacts=[], applyingRemote=false;
 let bundledDocs=new Map(); // title -> {body, source, bytes}; virtual until edited
 let currentTitle="Main Page", editingTitle=null;
@@ -948,6 +1142,7 @@ try{
 
 $("docsFilter").addEventListener("input",()=>{ if(!$("view-docs").hidden)renderDocs(); });
 
+initZenStyles();
 seedIfEmpty();
 route();
 loadBundledDocs().then((loaded)=>{ if(loaded){ stats(); route(); } });

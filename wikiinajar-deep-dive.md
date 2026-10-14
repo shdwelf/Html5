@@ -228,7 +228,7 @@ fallback — precisely the Java edition's no-JS contract.
 | — (hugcoday / this repo's patch) `img:`/`image:`/`djvu:` | same namespaces, same error strings, same 120 DPI / 2200 px DjVu viewer constants | media lives in a per-device library (`public/docs/image` analogue); **not** synced — update payloads are the wrong truck for megabytes |
 | Vcard controller + `.vcf` files | Contacts view; `.vcf` import (`FN/TEL/EMAIL/ORG/BDAY`); `[[vcard:Name]]` links | vCard 2.1 quoted-printable edge cases: agenda R6 |
 | Calendar controller (one month, `Month.loadEvents()`) | Calendar view with month navigation: contact `BDAY`s (monthly recurrence) + pages whose **title** contains `YYYY-MM-DD`; dated pages auto-tag month + year in both editions | **aligned 2026-10-14 (R3)** — the first conversion's body-line `Date:` rule was wrong and was replaced; default `all`/`wiki`/first-letter tags not reproduced |
-| XSL skins | one inline stylesheet + print CSS | — |
+| XSL skins | one inline stylesheet + print CSS + fifty CSS Zen Garden style adaptations and a dice roller | originals are credited and linked; adaptations are fully offline |
 | multi-user via shared server | multi-user via webxdc: page saves `sendUpdate({wikiinajar:{type:"page",…}})`, newest `updated` wins per page; deletes propagate | last-writer-wins is a research topic, not a solved one (R4); outside a chat, a simulator shim keeps the file fully functional |
 | no byte-range requests (NanoHTTPD) | no byte-range fetches (ZIP-served statics) | DjVu whole-file-on-approach in both editions (R5) |
 
@@ -237,6 +237,23 @@ documentation page, §7), **Documentation**, **Wiki Syntax**,
 **Image Support Demo**, **SideBar**, **SandBox** — so a fresh bundle is
 self-documenting before the first edit, exactly as the Java build's Main
 Page now links its documentation and demo.
+
+**CSS Zen Garden styles (added 2026-10-14).** The header now carries a
+style picker, a 🎲 dice button and a credit chip beside the current
+design. The catalogue is the first fifty entries in the official All
+Designs index, from #221 *Mid Century Modern* through #170 *Love Is In
+The Air* [15](https://csszengarden.com/pages/alldesigns/). The 🎲
+button briefly cycles candidates and lands on a different style; the
+dropdown exposes every design by number, title and designer, and the
+selection persists in `localStorage` (`wikiinajar.style.v1`). These are
+deliberately **adaptations, not vendored copies**: the Garden's own
+explanation is that selecting a design changes only its external CSS
+while that site's HTML remains fixed [16](https://csszengarden.com/),
+and its stylesheets target that fixed DOM and hosted assets. Each local
+entry therefore translates the credited design into a Wiki-shaped
+palette plus one of ten typography, layout, shape and pattern looks.
+It works in the bare HTML and inside the network-isolated `.xdc`; the
+credit chip is the only part that needs the network, and only if clicked.
 
 **Bundled documentation (rebuilt 2026-10-14, one page per `*.md`).** At
 build time the script also converts the repository's whole Markdown
@@ -326,8 +343,8 @@ passes added: R1 rejection checks and the Java-patch cross-reference,
 the R3 Calendar semantics regression lock, the R7 conformance corpus,
 the R6 vCard fixture corpus, the R5 lazy-DjVu transport probe, and
 the R4 three-way merge algebra, and the R8 print/round-trip
-contract, plus the R4 two-client sync simulation — 22 Node tests,
-all green. The Java
+contract, plus the R4 two-client sync simulation and the fifty-style
+CSS Zen Garden catalogue/dice checks — 23 Node tests, all green. The Java
 smoke test and full-suite results for the patch predate this turn and
 are recorded in `docs/wikiinajar-image-support.md`.
 
@@ -570,6 +587,11 @@ number:
   added to the suite. 22 Node tests green. Scratch
   clones and the corpus harness live outside the repo and are
   reproducible from the commands in the R7/R8 entries.
+- **2026-10-14 (CSS Zen Garden styles)** — Added the first fifty
+  designs from the official All Designs index as offline Wiki-shaped
+  adaptations, with designer credits, links to each original, a
+  persistent header picker and an animated 🎲 random-style button.
+  23 Node tests green.
 
 ## 11. Sources
 
@@ -587,3 +609,5 @@ number:
 12. In-repo: `docs/wikiinajar-image-support.md`; `docs/lantronix-uclinux-deep-dive-2026-10-08.md` §5.3–5.4; `tools/wikiinajar/` (patch sources, build, notices); GitHub mirrors `astecenko/Wiki-in-a-Jar` and `hugcoday/WikiInAJar` as recorded there.
 13. Internet Archive Wayback Machine — More Wiki in a Jar homepage, captured 2009-01-14: “More wiki in a jar”, ©2008/2009 Jens Fauth, complete 0.9.0→0.9.9 release notes, screenshots and roadmap. https://web.archive.org/web/20090114071254/http://morewikiinajar.sourceforge.net:80/
 14. Internet Archive CDX API — capture index for `morewikiinajar.sourceforge.net` (2008–2025), used after the availability API returned 429. http://web.archive.org/cdx/search/cdx?url=morewikiinajar.sourceforge.net*&output=text&limit=20
+15. CSS Zen Garden — All Designs index (the first fifty entries, #221–#170, supplied the local style catalogue, titles and designer credits). https://csszengarden.com/pages/alldesigns/
+16. CSS Zen Garden — home and participation notes (fixed example HTML, replaceable external CSS, designer copyright and Creative Commons CSS terms). https://csszengarden.com/

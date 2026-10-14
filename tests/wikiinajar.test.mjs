@@ -264,6 +264,29 @@ test("R8: print stylesheet flattens the jar; seeds are plain .wiki files", () =>
   }
 });
 
+test("CSS Zen Garden: fifty credited styles and a dice roll", () => {
+  const m = html.match(/const ZEN_STYLES=\[([\s\S]*?)\n\];/);
+  assert.ok(m, "ZEN_STYLES catalogue found");
+  const styles = new Function("return [" + m[1] + "]")();
+  assert.equal(styles.length, 50, "exactly fifty Zen Garden styles");
+  assert.equal(new Set(styles.map((style) => style.id)).size, 50, "style ids are unique");
+  assert.deepEqual(styles.slice(0, 3).map((style) => style.id), [221, 220, 219]);
+  assert.equal(styles.at(-1).id, 170);
+  for (const style of styles) {
+    assert.ok(style.title && style.by, "style has title and designer credit");
+    for (const field of ["bg", "panel", "ink", "acc", "acc2"]) assert.match(style[field], /^#[0-9a-f]{6}$/i, style.title + " " + field);
+    assert.ok(Number.isInteger(style.look) && style.look >= 0 && style.look < 10, "style has a layout/typography look");
+  }
+  const picker = html.match(/function pickRandomZenStyle\([\s\S]*?\n\}/);
+  assert.ok(picker, "random style picker found");
+  const pickRandomZenStyle = new Function("ZEN_STYLES", picker[0] + "\nreturn pickRandomZenStyle;")(styles);
+  assert.equal(pickRandomZenStyle("221", () => 0), "220", "dice cannot immediately repeat the current style");
+  assert.equal(pickRandomZenStyle("", () => 0.999999), "170");
+  for (const needle of ["zenStyleSelect", "btnRandomStyle", "zenStyleCredit", "wikiinajar.style.v1", "https://csszengarden.com/", "initZenStyles();", "rollZenStyle"]) {
+    assert.ok(html.includes(needle), "style switcher includes " + needle);
+  }
+});
+
 test("xdc bundle is a zip rooted at index.html + manifest.toml + DjVu reader", () => {
   const bytes = readFileSync(path.join(root, "wikiinajar.xdc"));
   assert.equal(bytes[0], 0x50); // 'P'
