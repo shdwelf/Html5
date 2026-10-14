@@ -1,0 +1,47 @@
+== Wiki in a Jar ==
+
+'''Wiki in a Jar''' is a small Wiki written in Java with great focus on simplicity. It is intended to run on a USB stick as a replacement for a paper note- and address book as a Personal Information Manager (PIM). It supports vcard (vcf) contact files.
+
+This page is the documentation hub for this installation. It ships with the image/DjVu extension build (see [[Image Support Demo]]) and is mirrored, page for page, inside the HTML5 / webxdc rebuild (wikiinajar.html / wikiinajar.xdc) documented in the repository file wikiinajar-deep-dive.md.
+
+=== Running the jar ===
+
+Unzip the distribution anywhere -- a USB stick is the canonical home -- then start the bundled script or run:
+
+<pre><nowiki>java -jar wiki.in.a.jar 3003</nowiki></pre>
+
+Open http://localhost:3003/wiki in a browser. Pages are plain text files under public/docs/wiki; one file per page, and the file name is the page title. There is no database server and no container: the jar carries its own XRays web framework on a relocated NanoHTTPD, with XSL skins.
+
+'''There is no authentication.''' Keep the server on a trusted local network; do not expose it directly to the public Internet.
+
+=== Namespaces ===
+
+A wiki link is split as namespace, page name and optional label: [[Wiki Syntax]] links a page, and a page that does not exist yet invites you to create it. The namespaces this build understands:
+
+* wiki -- the default: another wiki page.
+* img and image -- embed a local image, or a DjVu reader for .djvu/.djv files: [[image:diagram.png|Diagram alt text]]
+* djvu -- embed the DjVu reader (the file must end in .djvu or .djv): [[djvu:reference.djvu|Read the reference]]
+* tags -- hidden: tags the current page, for example [[tags:documentation,guide]] (renders nothing).
+* tagtree -- links the tag tree.
+* vcard -- links a stored contact.
+* sidebar -- hidden sidebar material (renders nothing).
+
+Any other namespace is reported in the page text as an unknown namespace.
+
+=== Images and DjVu ===
+
+Put local image and DjVu files beneath public/docs/image; subdirectories are allowed. Supported raster suffixes are .png, .jpg, .jpeg, .gif, .webp, .bmp and .avif; .djvu and .djv are served for the browser reader. Paths must stay inside the image directory: parent-directory traversal, absolute paths and unsupported suffixes are refused.
+
+DjVu pages render in the browser with a locally bundled WebAssembly decoder, one page at a time, only when the viewer scrolls near. The original file can always be downloaded, including with JavaScript or WebAssembly disabled. The old HTTP server does not implement byte-range requests, so a DjVu document downloads in full when its viewer approaches the viewport; prefer smaller documents.
+
+Worked examples live on [[Image Support Demo]].
+
+=== The webxdc edition ===
+
+The same wiki also ships as a single offline HTML file (wikiinajar.html) and as a Webxdc bundle (wikiinajar.xdc) for Delta Chat / ArcaneChat. Pages exported there as .wiki text can be dropped into public/docs/wiki here, and pages written here can be imported there. Media does not travel with page text in either direction: copy the files into public/docs/image (here) or import them into the media library (there).
+
+=== Provenance ===
+
+Upstream: SourceForge project wiki-in-a-jar by rico_g, GPL. Latest upstream release: WikiInAJar-0.8-20081128-bin.zip (2008-11-28). This installation adds the image/DjVu extension built by tools/wikiinajar/build-image-support.sh; third-party notices for the DjVu decoder and the smoke-test document ship with that tool. Full history, fork census, security audit and the open research agenda: wikiinajar-deep-dive.md in the repository.
+
+[[tags:documentation,guide]]

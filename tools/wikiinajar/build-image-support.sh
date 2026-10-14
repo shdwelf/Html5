@@ -84,6 +84,8 @@ mkdir -p "$APP_ROOT/public/docs/image"
 cp -R "$SCRIPT_DIR/public/skins/default/." "$APP_ROOT/public/skins/default/"
 cp "$SCRIPT_DIR/public/docs/wiki/Image Support Demo.wiki" \
   "$APP_ROOT/public/docs/wiki/Image Support Demo.wiki"
+cp "$SCRIPT_DIR/public/docs/wiki/Wiki in a Jar.wiki" \
+  "$APP_ROOT/public/docs/wiki/Wiki in a Jar.wiki"
 cp "$APP_ROOT/public/skins/default/common/mag.png" \
   "$APP_ROOT/public/docs/image/demo.png"
 cp "$SCRIPT_DIR/test/fixtures/boy.djvu" \
@@ -95,6 +97,9 @@ cp "$SCRIPT_DIR/INSTALLATION-README.txt" "$APP_ROOT/README-image-support.txt"
 MAIN_PAGE="$APP_ROOT/public/docs/wiki/Main Page.wiki"
 if ! grep -Fq '[[Image Support Demo]]' "$MAIN_PAGE"; then
   printf '\n* Try the image and DjVu demo: [[Image Support Demo]]\n' >> "$MAIN_PAGE"
+fi
+if ! grep -Fq '[[Wiki in a Jar]]' "$MAIN_PAGE"; then
+  printf '* Documentation: [[Wiki in a Jar]]\n' >> "$MAIN_PAGE"
 fi
 node "$SCRIPT_DIR/patch-public.mjs" "$APP_ROOT"
 

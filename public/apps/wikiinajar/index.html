@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light" />
+<meta name="theme-color" content="#f7f3e8" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Wiki in a Jar" />
+<meta name="description" content="Wiki in a Jar — the 2008 USB-stick personal wiki (wikiinajar 0.8) rebuilt as an offline HTML5 / webxdc app. Same wikitext namespaces (wiki, img, image, djvu, tags, tagtree, vcard, sidebar), same .wiki pages, no server: pages live in this browser and sync through the chat when run as a webxdc." />
+<title>Wiki in a Jar · HTML5 / webxdc personal wiki</title>
+<link rel="icon" href="./icon.png" sizes="512x512" />
+<script src="./webxdc.js"></script>
+<style>
+:root{--bg:#f7f3e8;--panel:#fffdf4;--panel2:#f1ead6;--line:#d8cfb4;--ink:#2b2618;--dim:#7a7057;--acc:#8a5a12;--acc2:#1f6f4a;--bad:#a12622;--mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;--sans:ui-sans,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans)}
+a{color:var(--acc2)} a.missing{color:var(--bad);text-decoration-style:dotted}
+button{font:inherit;cursor:pointer}
+header.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fffdf4,#f3ecd9);position:sticky;top:0;z-index:5}
+header.top .jar{font-size:30px;line-height:1}
+header.top h1{margin:0;font-size:20px;letter-spacing:.02em}
+header.top h1 b{color:var(--acc)}
+header.top p{margin:1px 0 0;color:var(--dim);font-size:12.5px}
+header.top .sp{flex:1}
+.chip{border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:11.5px;color:var(--dim);background:var(--panel)}
+.chip b{color:var(--acc2)}
+.btn{background:#efe7cf;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 13px}
+.btn:hover{border-color:var(--acc)}
+.btn.hot{background:var(--acc);color:#fff8e8;border-color:var(--acc);font-weight:700}
+.btn.green{background:var(--acc2);color:#eefaf2;border-color:var(--acc2);font-weight:700}
+.btn:disabled{opacity:.5;cursor:default}
+#searchInput{background:#fffefa;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 11px;font:inherit;min-width:170px}
+.layout{display:flex;gap:16px;max-width:1180px;margin:0 auto;padding:16px;align-items:flex-start}
+aside.rail{width:250px;flex:none;position:sticky;top:76px}
+aside.rail .card{margin-bottom:12px}
+aside.rail h3{margin:0 0 6px;font-size:12px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+aside.rail ul{margin:0;padding-left:18px}
+main{flex:1;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px}
+.card h2{margin:0 0 8px;font-size:19px}
+.card h3{margin:16px 0 6px;font-size:15px}
+.mono{font-family:var(--mono)} .dim{color:var(--dim)} .small{font-size:12.5px} .bad{color:var(--bad)}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+nav.tabs a{background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:9px;padding:7px 13px;text-decoration:none}
+nav.tabs a.on{background:var(--panel2);color:var(--ink);border-color:var(--acc)}
+.wiki-body h2{border-bottom:1px solid var(--line);padding-bottom:4px;margin:22px 0 8px}
+.wiki-body h3{margin:18px 0 6px}
+.wiki-body pre{background:#241f12;color:#f3ead2;border-radius:10px;padding:12px;overflow:auto;font-family:var(--mono);font-size:13px}
+.wiki-body code{font-family:var(--mono);background:var(--panel2);padding:1px 5px;border-radius:4px;font-size:.92em}
+.wiki-body pre code{background:none;padding:0}
+.wiki-body table{border-collapse:collapse;margin:10px 0}
+.wiki-body th,.wiki-body td{border:1px solid var(--line);padding:5px 9px;text-align:left}
+.wiki-image{display:block;height:auto;max-width:100%;margin:.8em 0;border-radius:8px}
+.wiki-image-missing{border:1px dashed var(--bad);border-radius:10px;padding:12px;margin:.8em 0;background:#fdf3f2}
+.wiki-djvu-embed{box-sizing:border-box;max-width:100%;margin:1em 0;padding:.75em;border:1px solid var(--line);border-radius:10px;background:#faf6ea}
+.wiki-djvu-canvas{display:block;max-width:100%;margin:0 auto;background:#fff}
+.wiki-djvu-controls{display:flex;align-items:center;justify-content:center;gap:.6em;padding:.5em}
+.wiki-djvu-status,.wiki-djvu-page-label{color:var(--dim);font-size:.9em}
+.wiki-image-error,.wiki-djvu-error{color:var(--bad)}
+.tag{display:inline-block;border-radius:99px;padding:1px 9px;font-size:11.5px;border:1px solid var(--line);color:var(--acc);background:var(--panel2);text-decoration:none;margin:0 4px 4px 0}
+textarea#editor{width:100%;min-height:340px;font-family:var(--mono);font-size:13.5px;background:#fffefa;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px}
+input[type=text]{background:#fffefa;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:inherit}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pagelist{list-style:none;margin:0;padding:0}
+.pagelist li{padding:7px 2px;border-bottom:1px solid var(--line)}
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.media-grid figure{margin:0;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--panel)}
+.media-grid img{max-width:100%;height:auto;border-radius:6px}
+footer{max-width:1180px;margin:0 auto;padding:8px 16px 30px;color:var(--dim);font-size:12.5px}
+@media (max-width:820px){.layout{flex-direction:column}aside.rail{width:100%;position:static}}
+@media print{header.top,aside.rail,nav.tabs,.no-print{display:none}body{background:#fff}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="jar" aria-hidden="true">🫙</div>
+  <div>
+    <h1>WIKI IN A <b>JAR</b></h1>
+    <p>Personal wiki &amp; PIM · HTML5 / webxdc rebuild of wikiinajar 0.8 (2008) · offline, no server</p>
+  </div>
+  <div class="sp"></div>
+  <span class="chip" id="syncChip">storage: <b>this browser</b></span>
+  <span class="chip"><span id="statPages">0</span> pages · <span id="statMedia">0</span> media</span>
+  <input type="search" id="searchInput" placeholder="Search pages…" aria-label="Search pages" />
+  <button class="btn hot" type="button" id="btnNew">+ New page</button>
+</header>
+
+<div class="layout">
+  <aside class="rail">
+    <div class="card" id="sidebarCard">
+      <h3>Sidebar</h3>
+      <div class="wiki-body small" id="sidebarBody"></div>
+    </div>
+    <div class="card">
+      <h3>Recent pages</h3>
+      <ul id="recentList"></ul>
+    </div>
+    <div class="card">
+      <h3>The jar</h3>
+      <p class="small dim">Pages are stored locally in your browser (the USB stick, 2026 edition). Export the jar regularly — the browser is the stick now, and sticks get lost.</p>
+      <div class="row">
+        <button class="btn" type="button" id="btnExport">Export jar</button>
+        <button class="btn" type="button" id="btnImport">Import…</button>
+        <input type="file" id="importFile" accept=".json,.wiki,.txt,.vcf,text/*" hidden />
+      </div>
+      <p class="small dim" id="ioNote" role="status"></p>
+    </div>
+  </aside>
+
+  <main>
+    <nav class="tabs" aria-label="Wiki views">
+      <a href="#/page/Main Page" data-tab="page">📖 Page</a>
+      <a href="#/index" data-tab="index">📑 Index</a>
+      <a href="#/tags" data-tab="tags">🏷 Tags</a>
+      <a href="#/media" data-tab="media">🖼 Media &amp; DjVu</a>
+      <a href="#/contacts" data-tab="contacts">👤 Contacts</a>
+      <a href="#/calendar" data-tab="calendar">📅 Calendar</a>
+    </nav>
+
+    <section id="view-page">
+      <div class="card">
+        <div class="row">
+          <h2 id="pageTitle" style="margin:0">Main Page</h2>
+          <div class="sp" style="flex:1"></div>
+          <span class="small dim" id="pageMeta"></span>
+          <button class="btn" type="button" id="btnEdit">Edit</button>
+          <button class="btn" type="button" id="btnHistory">History</button>
+          <button class="btn" type="button" id="btnShare">Share to chat</button>
+        </div>
+        <div id="pageTags" style="margin-top:8px"></div>
+        <article class="wiki-body" id="pageBody"></article>
+        <div id="pageBacklinks" class="small dim"></div>
+      </div>
+      <div class="card" id="historyCard" hidden>
+        <h3>History (this browser)</h3>
+        <div id="historyList" class="small"></div>
+      </div>
+    </section>
+
+    <section id="view-edit" hidden>
+      <div class="card">
+        <h2 id="editTitle">Edit</h2>
+        <p class="small dim">Wikitext — the 0.8 syntax: <span class="mono">== Heading ==</span>, <span class="mono">'''bold'''</span>, <span class="mono">''italic''</span>, <span class="mono">[[Page]]</span>, <span class="mono">[[Page|label]]</span>, <span class="mono">[[image:file.png|alt]]</span>, <span class="mono">[[djvu:book.djvu|label]]</span>, <span class="mono">[[tags:a,b]]</span>. Full guide: <a href="#/page/Wiki Syntax">Wiki Syntax</a>.</p>
+        <textarea id="editor" spellcheck="false" aria-label="Page wikitext"></textarea>
+        <div class="row" style="margin-top:10px">
+          <button class="btn green" type="button" id="btnSave">Save page</button>
+          <button class="btn" type="button" id="btnPreview">Preview</button>
+          <button class="btn" type="button" id="btnCancelEdit">Cancel</button>
+          <button class="btn" type="button" id="btnDelete">Delete page</button>
+          <span class="small dim" id="editNote" role="status"></span>
+        </div>
+        <article class="wiki-body" id="editPreview" style="margin-top:14px"></article>
+      </div>
+    </section>
+
+    <section id="view-index" hidden>
+      <div class="card">
+        <h2>Index — every page in the jar</h2>
+        <p class="small dim">The Java original keeps one <span class="mono">.wiki</span> file per page under <span class="mono">public/docs/wiki</span>; this rebuild keeps the same one-page-one-record model in browser storage and exports real <span class="mono">.wiki</span> text.</p>
+        <ul class="pagelist" id="indexList"></ul>
+      </div>
+    </section>
+
+    <section id="view-tags" hidden>
+      <div class="card">
+        <h2>Tags &amp; tag tree</h2>
+        <p class="small dim">Tag a page with the hidden link <span class="mono">[[tags:topic,subtopic]]</span> — exactly as in 0.8, where <span class="mono">tags:</span> and <span class="mono">tagtree:</span> are WikiLink namespaces that render nothing themselves.</p>
+        <div id="tagCloud"></div>
+        <div id="tagResults"></div>
+      </div>
+    </section>
+
+    <section id="view-media" hidden>
+      <div class="card">
+        <h2>Media &amp; DjVu library</h2>
+        <p class="small">The Java extension serves local files from <span class="mono">public/docs/image</span> at <span class="mono">/image/show/…</span>. Here the same folder becomes an in-browser library: import PNG/JPEG/GIF/WebP/BMP/AVIF or <span class="mono">.djvu/.djv</span>, then embed with <span class="mono">[[image:name.png|alt]]</span> / <span class="mono">[[djvu:name.djvu|label]]</span>. Media stays on this device (it is not synced through the chat — files are too big for update payloads).</p>
+        <div class="row">
+          <button class="btn hot" type="button" id="btnAddMedia">Add image / DjVu…</button>
+          <input type="file" id="mediaFile" accept=".png,.jpg,.jpeg,.gif,.webp,.bmp,.avif,.djvu,.djv,image/*" multiple hidden />
+          <span class="small dim" id="mediaNote" role="status"></span>
+        </div>
+        <div class="media-grid" id="mediaGrid" style="margin-top:12px"></div>
+      </div>
+    </section>
+
+    <section id="view-contacts" hidden>
+      <div class="card">
+        <h2>Contacts (vCard)</h2>
+        <p class="small">Wiki in a Jar doubles as an address book: it reads vCard (<span class="mono">.vcf</span>) contacts, and pages link them with <span class="mono">[[vcard:Full Name]]</span>. Import a <span class="mono">.vcf</span> file (or use Import… in the sidebar) to fill this book.</p>
+        <div id="contactList"></div>
+      </div>
+    </section>
+
+    <section id="view-calendar" hidden>
+      <div class="card">
+        <h2>Calendar</h2>
+        <p class="small dim">The 0.8 Calendar view surfaces dated PIM entries; this rebuild lists contact birthdays (<span class="mono">BDAY</span>) plus any page lines beginning <span class="mono">Date: YYYY-MM-DD</span>. Labelled as an adaptation in the deep dive — the original calendar semantics are still being researched.</p>
+        <div id="calendarList"></div>
+      </div>
+    </section>
+
+    <section id="view-search" hidden>
+      <div class="card">
+        <h2>Search results</h2>
+        <ul class="pagelist" id="searchList"></ul>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  Wiki in a Jar (0.8, © 2007–2008 rico_g, GPL) rebuilt as a single offline HTML file + webxdc.
+  Research &amp; conversion notes: <span class="mono">wikiinajar-deep-dive.md</span> · Java image/DjVu patch: <span class="mono">tools/wikiinajar/</span> ·
+  This app collects nothing and phones nowhere; pages never leave this browser except through an explicit Export or, inside a chat, webxdc sync.
+</footer>
+
+<script>
+"use strict";
+/*WIKI-RENDER-BEGIN*/
+/* Pure wikitext renderer — no DOM. Mirrors org.rgse.wikiinajar WikiLink /
+   ImageFilter semantics where the 0.8 source defines them; browser
+   extensions are marked EXT. ctx = { exists(title), pageHref(title),
+   mediaHref(name) -> href|null, contactHref(name) } */
+const WIKI_RASTER = new Set(["png","jpg","jpeg","gif","webp","bmp","avif"]);
+function wikiEscape(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function wikiExt(p){const s=String(p),d=s.lastIndexOf("."),sl=s.lastIndexOf("/");return d>sl&&d<s.length-1?s.slice(d+1).toLowerCase():"";}
+function wikiSafePath(p){
+  if(!p||p.length>1024||p.startsWith("/")||p.endsWith("/"))return false;
+  for(const seg of p.split("/")){
+    if(!seg||seg==="."||seg==="..")return false;
+    for(const c of seg){const n=c.codePointAt(0);if(n<=0x1f||n===0x7f||"\\:?#*\"<>|".includes(c))return false;}
+  }
+  return true;
+}
+function wikiEncodePath(p){return p.split("/").map((s)=>encodeURIComponent(s)).join("/");}
+function wikiSplitLink(plain, defNs){
+  let rest=String(plain).replace(/&amp;/g,"&"), ns=defNs;
+  const ci=rest.indexOf(":");
+  if(ci!==-1){ns=rest.slice(0,ci).trim();rest=rest.slice(ci+1).trim();}
+  let page=rest, label=rest;
+  const pi=rest.indexOf("|");
+  if(pi!==-1){page=rest.slice(0,pi).trim();label=rest.slice(pi+1).trim();}
+  if(!label)label=page; if(!ns)ns=defNs;
+  return {ns,page,label};
+}
+function wikiImageError(m){return '<span class="wiki-image-error">['+wikiEscape(m)+"]</span>";}
+function wikiRenderMedia(ns,page,label,ctx){
+  const path=String(page||"").trim();
+  if(!wikiSafePath(path))return wikiImageError("Image path must be a safe relative file path.");
+  const ext=wikiExt(path), isDjvu=ext==="djvu"||ext==="djv";
+  if(ns==="djvu"&&!isDjvu)return wikiImageError("DjVu links must point to a .djvu or .djv file.");
+  if(ns!=="djvu"&&!isDjvu&&!WIKI_RASTER.has(ext))return wikiImageError("Unsupported image type.");
+  const href=ctx.mediaHref?ctx.mediaHref(path):null;
+  const lab=label&&label.trim()?label.trim():path.split("/").pop();
+  if(isDjvu){
+    return '<figure class="wiki-djvu-embed" data-djvu-media="'+wikiEscape(path)+'"'+(href?' data-djvu-src="'+wikiEscape(href)+'"':"")+'><a class="wiki-djvu-fallback" href="'+wikiEscape(href||("#/media"))+'" download>'+wikiEscape(lab)+" (download DjVu)</a>"+'<p class="wiki-djvu-status" role="status">DjVu reader loads when this item is visible.</p></figure>';
+  }
+  if(!href)return '<figure class="wiki-image-missing"><strong>Missing media:</strong> <span class="mono">'+wikiEscape(path)+'</span><br><span class="small">Import it under Media &amp; DjVu, then this embed renders. (In the Java jar it would live at <span class="mono">public/docs/image/'+wikiEscape(path)+"</span>.)</span></figure>";
+  return '<img class="wiki-image" src="'+wikiEscape(href)+'" alt="'+wikiEscape(lab)+'" loading="lazy" decoding="async" />';
+}
+function wikiRenderLink(plain,ctx){
+  const {ns,page,label}=wikiSplitLink(plain,"wiki"), low=ns.toLowerCase();
+  if(low==="http"||low==="https"){ /* EXT: Java reports Unknown namespace */
+    const url=ns+":"+page;
+    return '<a href="'+wikiEscape(url)+'" target="_blank" rel="noopener noreferrer">'+wikiEscape(label)+"</a>";
+  }
+  if(low==="img"||low==="image")return wikiRenderMedia("image",page,label,ctx);
+  if(low==="djvu")return wikiRenderMedia("djvu",page,label,ctx);
+  if(low==="tags"||low==="sidebar")return "";
+  if(low==="tagtree")return '<a href="#/tags">'+wikiEscape(label)+"</a>";
+  if(low==="vcard")return '<a class="vcard-link" href="'+wikiEscape(ctx.contactHref?ctx.contactHref(page):"#/contacts")+'">'+wikiEscape(label)+"</a>";
+  if(low==="wiki"||low===""){
+    const exists=ctx.exists?ctx.exists(page):false;
+    return '<a href="'+wikiEscape(ctx.pageHref(page))+'"'+(exists?"":' class="missing" title="Page does not exist yet — click to create"')+">"+wikiEscape(label)+"</a>";
+  }
+  return wikiEscape(page)+" (Unknown namespace: "+wikiEscape(ns)+") ";
+}
+function wikiInline(escaped,ctx){
+  return escaped.replace(/\[\[([^\]]+)\]\]/g,(m,inner)=>wikiRenderLink(inner,ctx))
+    .replace(/'''([^'][\s\S]*?)'''/g,"<strong>$1</strong>")
+    .replace(/''([^'][\s\S]*?)''/g,"<em>$1</em>")
+    .replace(/(^|[\s(])((?:https?:\/\/)[^\s<]+)/g,'$1<a href="$2" target="_blank" rel="noopener noreferrer">$2</a>');
+}
+function renderWiki(source,ctx){
+  ctx=ctx||{};
+  const nowiki=[];
+  let text=String(source==null?"":source).replace(/<nowiki>([\s\S]*?)<\/nowiki>/gi,(m,c)=>{nowiki.push(c);return "\u0001"+(nowiki.length-1)+"\u0001";});
+  const lines=text.split(/\r?\n/), out=[]; let i=0, listStack=[];
+  const closeLists=(to)=>{while(listStack.length>to){out.push(listStack.pop()==="ul"?"</ul>":"</ol>");}};
+  while(i<lines.length){
+    const raw=lines[i];
+    if(/^\s*$/.test(raw)){closeLists(0);i++;continue;}
+    const hm=raw.match(/^(={2,4})\s*(.+?)\s*\1\s*$/);
+    if(hm){closeLists(0);const lvl=hm[1].length;out.push("<h"+lvl+">"+wikiInline(wikiEscape(hm[2]),ctx)+"</h"+lvl+">");i++;continue;}
+    if(/^\s*-{4,}\s*$/.test(raw)){closeLists(0);out.push("<hr />");i++;continue;}
+    if(raw.startsWith(" ")){closeLists(0);const buf=[];while(i<lines.length&&lines[i].startsWith(" ")){buf.push(lines[i].slice(1));i++;}out.push("<pre>"+wikiEscape(buf.join("\n"))+"</pre>");continue;}
+    const lm=raw.match(/^([*#]+)\s+(.*)$/);
+    if(lm){
+      const depth=lm[1].length, type=lm[1].endsWith("#")?"ol":"ul";
+      while(listStack.length>depth){out.push(listStack.pop()==="ul"?"</ul>":"</ol>");}
+      if(listStack.length<depth){for(let k=listStack.length;k<depth;k++){out.push("<"+type+">");listStack.push(type);}}
+      out.push("<li>"+wikiInline(wikiEscape(lm[2]),ctx)+"</li>");i++;continue;
+    }
+    closeLists(0);
+    if(raw.trim().startsWith("|")&&raw.trim().endsWith("|")){ /* EXT: pipe tables */
+      const rows=[];while(i<lines.length&&lines[i].trim().startsWith("|")&&lines[i].trim().endsWith("|")){rows.push(lines[i].trim().slice(1,-1).split("|").map((c)=>c.trim()));i++;}
+      out.push("<table>"+rows.map((r,ri)=>"<tr>"+r.map((c)=>ri===0?"<th>"+wikiInline(wikiEscape(c),ctx)+"</th>":"<td>"+wikiInline(wikiEscape(c),ctx)+"</td>").join("")+"</tr>").join("")+"</table>");continue;
+    }
+    const para=[raw];i++;
+    while(i<lines.length&&!/^\s*$/.test(lines[i])&&!/^(={2,4})\s/.test(lines[i])&&!/^([*#]+)\s/.test(lines[i])&&!lines[i].startsWith(" ")&&!/^\s*-{4,}\s*$/.test(lines[i])){para.push(lines[i]);i++;}
+    const paraHtml=wikiInline(wikiEscape(para.join(" ")),ctx);
+    if(paraHtml.trim())out.push("<p>"+paraHtml+"</p>");
+  }
+  closeLists(0);
+  return out.join("\n").replace(/\u0001(\d+)\u0001/g,(m,n)=>"<pre>"+wikiEscape(nowiki[Number(n)])+"</pre>");
+}
+function wikiCollectTags(source){
+  const tags=new Set();
+  for(const m of String(source||"").matchAll(/\[\[\s*tags\s*:([^\]]+)\]\]/gi))
+    for(const t of m[1].split(",")){const v=t.trim().toLowerCase();if(v)tags.add(v);}
+  return [...tags].sort();
+}
+function wikiCollectLinks(source){
+  const links=[];
+  for(const m of String(source||"").matchAll(/\[\[([^\]]+)\]\]/g)){
+    const {ns,page}=wikiSplitLink(m[1],"wiki");
+    if(["wiki",""].includes(ns.toLowerCase()))links.push(page);
+  }
+  return links;
+}
+/*WIKI-RENDER-END*/
+
+const SEED_PAGES = {
+"Main Page": "== Welcome to your jar ==\n\nThis is a '''personal wiki in a jar''': your notebook, address book and calendar, carried like the 2008 original — on a stick, offline, with no account and no server. Start with the documentation page: [[Wiki in a Jar]].\n\n* Write: click '''+ New page''', or follow a [[missing link]] and create it.\n* Organise: tag pages with the hidden link [[tags:home]] (try [[tags:demo,guide]] on a page and watch the Tags view).\n* Illustrate: embed local files with [[image:demo.png|Bundled example icon]] and read scanned books with [[djvu:djvu-smoke.djvu|Open the bundled DjVu sample]] — see [[Image Support Demo]].\n* Learn the markup: [[Wiki Syntax]].\n* Play safely: [[SandBox]].\n\n----\n\n''The jar is small on purpose. It holds what you put in it — nothing else is watching.''\n\n[[tags:home]]",
+"Wiki in a Jar": "== Wiki in a Jar — documentation ==\n\n'''Wiki in a Jar''' is a small wiki written in Java with a great focus on simplicity. It is intended to run on a USB stick as a replacement for a paper note- and address book — a personal information manager (PIM). That is the 2008 pitch, preserved verbatim in spirit: this page documents both the original program and this HTML5 / webxdc rebuild, which is the same jar with the Java runtime swapped for the browser you already carry.\n\n=== The original (2008) ===\n\n* Author: rico_g; licence GPL; project: SourceForge ''wiki-in-a-jar''.\n* Latest release: WikiInAJar-0.8-20081128-bin.zip (123,402 bytes, 2008-11-28). Inside, wiki.in.a.jar (98,464 bytes) carries the main class org.rgse.wikiinajar.server.Server.\n* Run it: unzip anywhere (a USB stick is the canonical home), then bin/start.sh or: java -jar wiki.in.a.jar 3003 — and open http://localhost:3003/wiki .\n* Pages are plain .wiki text files under public/docs/wiki — one file per page, filename equals page title. Contacts are vCard (.vcf) files; the calendar surfaces dated PIM entries.\n* The embedded HTTP server is the project's own XRays framework on a relocated NanoHTTPD — not ACME — with XSL skins. It has '''no authentication''': keep it on a trusted local network, never expose it directly to the public Internet.\n\n=== This rebuild (HTML5 / webxdc) ===\n\n* wikiinajar.html is the whole wiki in one offline file; wikiinajar.xdc is the same file packaged for Delta Chat / ArcaneChat (ZIP rooted at index.html + manifest.toml).\n* Pages live in this browser's local storage and can be exported as one jar JSON or as individual .wiki files that the Java original can read.\n* Inside a chat, saved pages also sync to the group through webxdc updates (newest timestamp wins per page). Media files do '''not''' sync — import them per device under Media & DjVu.\n* Rebuild the bundle from the repository root: npm run build:wikiinajar (script: scripts/build-wikiinajar-xdc.mjs).\n\n=== Namespaces (WikiLink) ===\n\nThe 0.8 WikiLink splits [[namespace:page|label]] and dispatches on the namespace. This rebuild keeps the table:\n\n| Namespace | Meaning | Example |\n| wiki (default) | link to a page; missing pages invite creation | [[Wiki Syntax]] |\n| img / image | embed a local raster image, or a DjVu reader for .djvu/.djv | [[image:diagram.png|Diagram alt text]] |\n| djvu | embed the DjVu reader (requires .djvu/.djv) | [[djvu:reference.djvu|Read the reference]] |\n| tags | hidden: tag the current page | (renders nothing) |\n| tagtree | link to the tag tree | [[tagtree:all|All tags]] |\n| vcard | link to an imported contact | [[vcard:Ada Lovelace]] |\n| sidebar | hidden: sidebar material | (renders nothing) |\n\nAnything else renders as ''page (Unknown namespace: ns)'' — the original's own error text.\n\n=== Images and DjVu ===\n\nLocal media belongs under public/docs/image in the Java install, and in the Media & DjVu library here. Supported raster types: PNG, JPEG, GIF, WebP, BMP, AVIF. DjVu pages render in-browser with the bundled djvu-rs WebAssembly decoder (one page at a time, Previous/Next controls); the download link always works, even without JavaScript or WebAssembly. The old NanoHTTPD has no byte-range requests, and neither does this rebuild: a DjVu file downloads in full when its viewer scrolls near — keep large books small, or open them from disk.\n\n=== Safety notes ===\n\n* Neither edition has accounts or access control. The Java server trusts its network; this edition trusts your browser profile and your chat.\n* Image paths must be safe relative paths: no .. , no leading slash, no remote URLs. Traversal and unsupported suffixes are rejected in both editions.\n* All wikitext output is HTML-escaped before markup is applied, so a page cannot inject script into its readers.\n\n=== See also ===\n\n* [[Wiki Syntax]] — the full markup guide.\n* [[Image Support Demo]] — live image and DjVu embeds.\n* The deep dive: wikiinajar-deep-dive.md in the repository (history, forks, architecture, security audit, and the open research agenda).\n* The Java patch that adds image/DjVu support to the 0.8 jar: tools/wikiinajar/ in the repository.\n\n[[tags:documentation,guide]]",
+"Wiki Syntax": "== Wiki syntax ==\n\nThe 0.8 subset, plus clearly-marked browser extensions. Type wikitext; the renderer escapes HTML first, then applies markup — pages cannot inject script.\n\n=== Blocks ===\n\n* Headings: == Heading ==, === Subheading ===, ==== Smaller ====\n* Rule: ---- on its own line.\n* Lists: lines starting with * (bullets) or # (numbered); repeat the marker for nesting.\n* Preformatted: indent a line with a space, or wrap literal text in <nowiki> tags (the demo pages use <pre><nowiki> to show syntax literally).\n* Tables (browser extension): lines like | Cell | Cell | — first row becomes the header.\n\n=== Inline ===\n\n* '''bold''' and ''italic'' (three and two apostrophes).\n* [[Page Name]] links a page; [[Page Name|any label]] labels it. A [[Red Link]] invites creation.\n* [[image:file.png|Alt text]] and the alias [[img:file.png|Alt text]] embed media from the library (public/docs/image in the Java jar). Subfolders are fine: [[img:maps/toronto.webp|Map of Toronto]]\n* [[djvu:book.djvu|Read it]] embeds the DjVu reader; [[img:scan.djv|Scan]] works too.\n* [[vcard:Full Name]] links an imported contact; [[tagtree:x|Tags]] opens the tag tree.\n* Hidden links: [[tags:one,two]] tags this page; [[sidebar:x]] renders nothing here (edit the SideBar page instead).\n* Bare http:// and https:// URLs autolink (browser extension; the Java WikiLink reports them as an unknown namespace).\n\n=== Rules the renderer enforces ===\n\n* Media paths must be safe relative paths — no .. , no leading /, no drive or URL tricks — in both editions.\n* Only .png .jpg .jpeg .gif .webp .bmp .avif and .djvu/.djv embed; anything else shows [Unsupported image type.]\n* Unknown namespaces show the original message: page (Unknown namespace: ns)\n\n[[tags:documentation,guide]]",
+"Image Support Demo": "== Images and DjVu ==\n\nWiki image files live in the installation's public/docs/image directory (Java) or the Media & DjVu library (this rebuild). Supported raster formats include PNG, JPEG, GIF, WebP, BMP, and AVIF.\n\nBundled raster image (import demo.png under Media & DjVu to light this up here; the Java build copies it automatically):\n\n[[image:demo.png|Bundled example icon]]\n\nExample syntax for a raster image:\n\n<pre><nowiki>[[image:demo.png|Bundled example icon]]</nowiki></pre>\n\nThe img: namespace is an alias, and names may include safe relative subdirectories:\n\n<pre><nowiki>[[img:maps/toronto.png|Toronto map]]</nowiki></pre>\n\nDjVu documents can be embedded with the page viewer. The document is fetched only when its placeholder scrolls near the viewport; each page is rendered locally in the browser using WebAssembly. The original file remains available through the download link. In the .xdc bundle the smoke document ships as media/djvu-smoke.djvu:\n\n[[djvu:djvu-smoke.djvu|Open the bundled DjVu sample]]\n\nExample syntax for a DjVu file:\n\n<pre><nowiki>[[djvu:djvu-smoke.djvu|Open the bundled DjVu sample]]</nowiki></pre>\n\nThe bundled smoke document is a small DjVu.js test asset under the Unlicense. To use your own documents, import them under Media & DjVu and replace djvu-smoke.djvu with the file name you added.\n\n[[tags:demo,media]]",
+"SideBar": "'''Jar menu'''\n\n* [[Main Page]]\n* [[Wiki in a Jar]]\n* [[Wiki Syntax]]\n* [[Image Support Demo]]\n* [[SandBox]]",
+"SandBox": "== SandBox ==\n\nScratch space — edit freely, nothing here matters. Try '''bold''', ''italic'', a [[Main Page|link home]], and a list:\n\n* one\n* two\n** nested\n\n[[tags:demo]]"
+};
+
+const LS_PAGES="wikiinajar.pages.v1", LS_MEDIA="wikiinajar.media.v1", LS_CONTACTS="wikiinajar.contacts.v1";
+const $=(id)=>document.getElementById(id);
+let pages={}, media={}, contacts=[], applyingRemote=false;
+let currentTitle="Main Page", editingTitle=null;
+
+function loadJSON(key, fallback){ try{ const v=localStorage.getItem(key); return v?JSON.parse(v):fallback; }catch(e){ return fallback; } }
+function saveJSON(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){ note("ioNote","Storage full or blocked — export the jar now."); } }
+function note(id,msg){ const el=$(id); if(el) el.textContent=msg; }
+function nowISO(){ return new Date().toISOString(); }
+
+function seedIfEmpty(){
+  pages=loadJSON(LS_PAGES,null);
+  if(!pages||!Object.keys(pages).length){
+    pages={};
+    for(const [title,body] of Object.entries(SEED_PAGES)) pages[title]={body,updated:nowISO(),history:[]};
+    saveJSON(LS_PAGES,pages);
+  }
+  media=loadJSON(LS_MEDIA,{});
+  contacts=loadJSON(LS_CONTACTS,[]);
+}
+function ctx(){
+  return {
+    exists:(t)=>Object.prototype.hasOwnProperty.call(pages,t),
+    pageHref:(t)=>"#/page/"+encodeURIComponent(t),
+    contactHref:(n)=>"#/contacts",
+    mediaHref:(name)=>{
+      if(media[name])return media[name].dataUrl;
+      if(name==="djvu-smoke.djvu")return "./media/djvu-smoke.djvu";
+      return null;
+    }
+  };
+}
+function renderInto(el,title){
+  const rec=pages[title];
+  el.innerHTML=rec?renderWiki(rec.body,ctx()):"";
+  hydrateDjvu(el);
+}
+function stats(){
+  $("statPages").textContent=String(Object.keys(pages).length);
+  $("statMedia").textContent=String(Object.keys(media).length);
+}
+
+/* ---------- DjVu lazy viewer (mirrors wikiinajar-djvu-viewer.js) ---------- */
+const DJVU_DPI=120, DJVU_MAX_EDGE=2200;
+let djvuDecoderPromise=null;
+function ensureDjvuDecoder(){
+  if(!djvuDecoderPromise){
+    djvuDecoderPromise=import("./djvu-rs/djvu_rs.js").then(async (d)=>{ await d.default(); return d; })
+      .catch((e)=>{ djvuDecoderPromise=null; throw e; });
+  }
+  return djvuDecoderPromise;
+}
+async function openDjvu(fig){
+  if(fig.dataset.loading==="true"||fig.dataset.loaded==="true")return;
+  fig.dataset.loading="true";
+  const status=fig.querySelector(".wiki-djvu-status");
+  const name=fig.dataset.djvuMedia;
+  try{
+    if(status)status.textContent="Loading the DjVu reader…";
+    const decoder=await ensureDjvuDecoder();
+    let bytes=null;
+    if(media[name]&&media[name].dataUrl){
+      bytes=new Uint8Array(await (await fetch(media[name].dataUrl)).arrayBuffer());
+    }else{
+      const src=fig.dataset.djvuSrc||("./media/"+wikiEncodePath(name));
+      const resp=await fetch(src);
+      if(!resp.ok)throw new Error("document returned HTTP "+resp.status);
+      bytes=new Uint8Array(await resp.arrayBuffer());
+    }
+    const doc=decoder.WasmDocument.from_bytes(bytes);
+    const count=doc.page_count();
+    if(!count)throw new Error("This DjVu document contains no pages.");
+    const viewer=document.createElement("div"); viewer.className="wiki-djvu-viewer"; viewer.setAttribute("role","group"); viewer.setAttribute("aria-label","DjVu document viewer");
+    const canvas=document.createElement("canvas"); canvas.className="wiki-djvu-canvas"; canvas.setAttribute("aria-label","Rendered DjVu page");
+    const controls=document.createElement("div"); controls.className="wiki-djvu-controls";
+    const label=document.createElement("span"); label.className="wiki-djvu-page-label"; label.setAttribute("aria-live","polite");
+    const mk=(txt,aria,fn)=>{const b=document.createElement("button");b.type="button";b.className="btn";b.textContent=txt;b.setAttribute("aria-label",aria);b.addEventListener("click",fn);return b;};
+    let idx=0;
+    const prev=mk("Previous","Previous DjVu page",()=>{if(idx>0)draw(idx-1);});
+    const next=mk("Next","Next DjVu page",()=>{if(idx+1<count)draw(idx+1);});
+    controls.append(prev,label,next); viewer.append(canvas,controls); fig.appendChild(viewer);
+    function draw(n){
+      const page=doc.page(n);
+      try{
+        const bw=page.width_at(DJVU_DPI), bh=page.height_at(DJVU_DPI), edge=Math.max(bw,bh);
+        const dpi=edge>DJVU_MAX_EDGE?DJVU_DPI*(DJVU_MAX_EDGE/edge):DJVU_DPI;
+        const w=page.width_at(dpi), h=page.height_at(dpi), pixels=page.render(dpi);
+        const c2=canvas.getContext("2d"); if(!c2)throw new Error("This browser cannot create a 2D canvas.");
+        canvas.width=w; canvas.height=h;
+        c2.putImageData(new ImageData(new Uint8ClampedArray(pixels),w,h),0,0);
+        idx=n; prev.disabled=idx===0; next.disabled=idx+1>=count;
+        label.textContent="Page "+(idx+1)+" of "+count;
+        if(status)status.textContent="DjVu page rendered.";
+      }finally{ if(typeof page.free==="function")page.free(); }
+    }
+    draw(0); fig.dataset.loaded="true";
+  }catch(e){
+    if(status){ status.textContent="DjVu preview unavailable: "+(e&&e.message?e.message:String(e))+" — the download link above still works. (The reader ships inside wikiinajar.xdc; the bare .html has no decoder beside it.)"; status.classList.add("wiki-djvu-error"); }
+  }finally{ fig.dataset.loading="false"; }
+}
+function hydrateDjvu(scope){
+  const figs=[...scope.querySelectorAll(".wiki-djvu-embed")];
+  if(!figs.length)return;
+  if("IntersectionObserver" in window){
+    const obs=new IntersectionObserver((entries)=>{for(const en of entries){if(en.isIntersecting){obs.unobserve(en.target);openDjvu(en.target);}}},{rootMargin:"300px"});
+    figs.forEach((f)=>obs.observe(f));
+  }else figs.forEach(openDjvu);
+}
+
+/* ---------- Views ---------- */
+const VIEWS=["page","edit","index","tags","media","contacts","calendar","search"];
+function show(view){
+  for(const v of VIEWS){ const el=$("view-"+v); if(el) el.hidden=v!==view; }
+  document.querySelectorAll("nav.tabs a").forEach((a)=>a.classList.toggle("on",a.dataset.tab===view||(view==="edit"&&a.dataset.tab==="page")));
+  stats();
+}
+function renderSidebar(){
+  const rec=pages["SideBar"];
+  $("sidebarBody").innerHTML=rec?renderWiki(rec.body,ctx()):'<a href="#/edit/SideBar">Create the SideBar page</a>';
+  hydrateDjvu($("sidebarBody"));
+  const recent=Object.entries(pages).sort((a,b)=>String(b[1].updated).localeCompare(String(a[1].updated))).slice(0,8);
+  $("recentList").innerHTML=recent.map(([t])=>'<li><a href="#/page/'+encodeURIComponent(t)+'">'+wikiEscape(t)+"</a></li>").join("");
+}
+function renderPage(title){
+  currentTitle=title;
+  const rec=pages[title];
+  show("page"); renderSidebar();
+  $("pageTitle").textContent=title;
+  $("btnEdit").textContent=rec?"Edit":"Create";
+  if(!rec){
+    $("pageMeta").textContent="not created yet";
+    $("pageTags").innerHTML="";
+    $("pageBody").innerHTML='<p>This page does not exist yet. <a href="#/edit/'+encodeURIComponent(title)+'">Create “'+wikiEscape(title)+'”</a> — in 0.8 the same click opens the editor for a new .wiki file.</p>';
+    $("pageBacklinks").innerHTML=""; return;
+  }
+  $("pageMeta").textContent="updated "+String(rec.updated||"").replace("T"," ").slice(0,16);
+  const tags=wikiCollectTags(rec.body);
+  $("pageTags").innerHTML=tags.map((t)=>'<a class="tag" href="#/tags">'+wikiEscape(t)+"</a>").join("");
+  renderInto($("pageBody"),title);
+  const backs=Object.entries(pages).filter(([t,r])=>t!==title&&wikiCollectLinks(r.body).includes(title)).map(([t])=>t);
+  $("pageBacklinks").innerHTML=backs.length?("<hr />Linked from: "+backs.map((t)=>'<a href="#/page/'+encodeURIComponent(t)+'">'+wikiEscape(t)+"</a>").join(", ")):"";
+  $("historyCard").hidden=true;
+}
+function renderIndex(){
+  show("index"); renderSidebar();
+  const titles=Object.keys(pages).sort((a,b)=>a.localeCompare(b));
+  $("indexList").innerHTML=titles.map((t)=>{
+    const r=pages[t], tags=wikiCollectTags(r.body);
+    return '<li><a href="#/page/'+encodeURIComponent(t)+'"><strong>'+wikiEscape(t)+"</strong></a> "
+      +'<span class="dim small">'+String(r.updated||"").slice(0,10)+" · "+r.body.length+" chars</span> "
+      +tags.map((x)=>'<span class="tag">'+wikiEscape(x)+"</span>").join("")+"</li>";
+  }).join("")||'<li class="dim">The jar is empty.</li>';
+}
+function renderTags(filter){
+  show("tags"); renderSidebar();
+  const byTag={};
+  for(const [t,r] of Object.entries(pages)) for(const tag of wikiCollectTags(r.body)) (byTag[tag]=byTag[tag]||[]).push(t);
+  const names=Object.keys(byTag).sort();
+  $("tagCloud").innerHTML=names.map((t)=>'<a class="tag" href="#/tags" data-tag="'+wikiEscape(t)+'">'+wikiEscape(t)+" ("+byTag[t].length+")</a>").join("")||'<span class="dim">No tags yet — add [[tags:demo]] to a page.</span>';
+  $("tagCloud").querySelectorAll("[data-tag]").forEach((a)=>a.addEventListener("click",(ev)=>{ev.preventDefault();renderTags(a.dataset.tag);}));
+  if(filter&&byTag[filter]){
+    $("tagResults").innerHTML="<h3>"+wikiEscape(filter)+"</h3><ul>"+byTag[filter].map((t)=>'<li><a href="#/page/'+encodeURIComponent(t)+'">'+wikiEscape(t)+"</a></li>").join("")+"</ul>";
+  }else $("tagResults").innerHTML="";
+}
+function renderMedia(){
+  show("media"); renderSidebar();
+  const names=Object.keys(media).sort();
+  $("mediaGrid").innerHTML=names.map((n)=>{
+    const m=media[n], isDjvu=/\.djvu?$/i.test(n);
+    const embed=isDjvu?("[[djvu:"+n+"|"+n+"]]"):("[[image:"+n+"|"+n+"]]");
+    return "<figure>"+(isDjvu?'<div style="font-size:34px">📚</div>':'<img src="'+m.dataUrl+'" alt="'+wikiEscape(n)+'" />')
+      +"<figcaption class='small'><span class='mono'>"+wikiEscape(n)+"</span><br><span class='dim'>"+Math.round((m.dataUrl.length*3/4)/1024)+" KB</span><br>"
+      +"<button class='btn' data-copy='"+wikiEscape(embed)+"'>Copy wikitext</button> "
+      +"<button class='btn' data-del='"+wikiEscape(n)+"'>Delete</button></figcaption></figure>";
+  }).join("")||'<p class="dim">No media imported yet. The bundled DjVu smoke file is referenced as djvu-smoke.djvu and ships inside the .xdc.</p>';
+  $("mediaGrid").querySelectorAll("[data-copy]").forEach((b)=>b.addEventListener("click",async ()=>{ try{await navigator.clipboard.writeText(b.dataset.copy); note("mediaNote","Copied: "+b.dataset.copy);}catch(e){ note("mediaNote",b.dataset.copy); } }));
+  $("mediaGrid").querySelectorAll("[data-del]").forEach((b)=>b.addEventListener("click",()=>{ delete media[b.dataset.del]; saveJSON(LS_MEDIA,media); renderMedia(); }));
+}
+function parseVcards(text){
+  const out=[];
+  for(const block of String(text).split(/BEGIN:VCARD/i).slice(1)){
+    const get=(k)=>{ const m=block.match(new RegExp("^"+k+"[^:\\r\\n]*:([^\\r\\n]+)","im")); return m?m[1].trim():""; };
+    const fn=get("FN"); if(!fn)continue;
+    out.push({fn,tel:get("TEL"),email:get("EMAIL"),bday:get("BDAY"),org:get("ORG")});
+  }
+  return out;
+}
+function renderContacts(){
+  show("contacts"); renderSidebar();
+  $("contactList").innerHTML=contacts.length?contacts.map((c)=>'<div class="card" style="margin:8px 0"><strong>'+wikiEscape(c.fn)+"</strong>"
+    +(c.org?' <span class="dim">'+wikiEscape(c.org)+"</span>":"")
+    +'<div class="small">'+[c.tel,c.email,c.bday?("🎂 "+wikiEscape(c.bday)):""].filter(Boolean).map(wikiEscape).join(" · ")+"</div></div>").join("")
+    :'<p class="dim">No contacts yet. Import a .vcf via “Import…” — Wiki in a Jar has doubled as an address book since 2007.</p>';
+}
+function renderCalendar(){
+  show("calendar"); renderSidebar();
+  const rows=[];
+  for(const c of contacts) if(c.bday) rows.push({date:c.bday,label:"🎂 "+c.fn+" (birthday)"});
+  for(const [t,r] of Object.entries(pages)) for(const m of r.body.matchAll(/^Date:\s*(\d{4}-\d{2}-\d{2})\s*(.*)$/gim)) rows.push({date:m[1],label:t+(m[2]?" — "+m[2]:"")});
+  rows.sort((a,b)=>a.date.localeCompare(b.date));
+  $("calendarList").innerHTML=rows.length?"<ul>"+rows.map((r)=>'<li><span class="mono">'+wikiEscape(r.date)+"</span> "+wikiEscape(r.label)+"</li>").join("")+"</ul>":'<p class="dim">Nothing dated yet. Add a contact birthday or a “Date: YYYY-MM-DD” line to a page.</p>';
+}
+function renderSearch(q){
+  show("search"); renderSidebar();
+  const needle=q.toLowerCase();
+  const hits=Object.entries(pages).filter(([t,r])=>t.toLowerCase().includes(needle)||r.body.toLowerCase().includes(needle));
+  $("searchList").innerHTML=hits.map(([t])=>'<li><a href="#/page/'+encodeURIComponent(t)+'">'+wikiEscape(t)+"</a></li>").join("")||'<li class="dim">No pages match “'+wikiEscape(q)+'”.</li>';
+}
+
+/* ---------- Editing / sync ---------- */
+function savePage(title,body,silent){
+  const prev=pages[title];
+  const history=prev?[...(prev.history||[]),{body:prev.body,updated:prev.updated}].slice(-10):[];
+  pages[title]={body,updated:nowISO(),history};
+  saveJSON(LS_PAGES,pages); stats();
+  if(!silent&&!applyingRemote&&window.webxdc&&webxdc.sendUpdate){
+    try{ webxdc.sendUpdate({payload:{wikiinajar:{type:"page",title,body,updated:pages[title].updated}}},"Wiki: "+title); }catch(e){}
+  }
+}
+function openEdit(title){
+  editingTitle=title; show("edit"); renderSidebar();
+  $("editTitle").textContent=(pages[title]?"Edit: ":"Create: ")+title;
+  $("editor").value=pages[title]?pages[title].body:"== "+title+" ==\n\n";
+  $("editPreview").innerHTML=""; note("editNote","");
+}
+$("btnSave").addEventListener("click",()=>{ savePage(editingTitle,$("editor").value); location.hash="#/page/"+encodeURIComponent(editingTitle); });
+$("btnPreview").addEventListener("click",()=>{ $("editPreview").innerHTML=renderWiki($("editor").value,ctx()); hydrateDjvu($("editPreview")); });
+$("btnCancelEdit").addEventListener("click",()=>{ location.hash="#/page/"+encodeURIComponent(editingTitle||"Main Page"); });
+$("btnDelete").addEventListener("click",()=>{
+  if(!editingTitle||!pages[editingTitle])return;
+  if(!confirm("Delete page “"+editingTitle+"”?"))return;
+  delete pages[editingTitle]; saveJSON(LS_PAGES,pages);
+  if(window.webxdc&&webxdc.sendUpdate){ try{ webxdc.sendUpdate({payload:{wikiinajar:{type:"delete",title:editingTitle,updated:nowISO()}}},"Wiki delete: "+editingTitle); }catch(e){} }
+  location.hash="#/index";
+});
+$("btnEdit").addEventListener("click",()=>{ location.hash="#/edit/"+encodeURIComponent(currentTitle); });
+$("btnHistory").addEventListener("click",()=>{
+  const rec=pages[currentTitle]; const card=$("historyCard");
+  card.hidden=!card.hidden; if(card.hidden)return;
+  const items=[...(rec&&rec.history?rec.history:[])].reverse();
+  $("historyList").innerHTML=items.length?items.map((h,n)=>'<div style="border-bottom:1px solid var(--line);padding:8px 0"><span class="dim">'+wikiEscape(String(h.updated||"").replace("T"," ").slice(0,16))+'</span> <button class="btn" data-restore="'+(items.length-1-n)+'">Restore</button><pre style="white-space:pre-wrap">'+wikiEscape(h.body.slice(0,400))+"</pre></div>").join(""):'<span class="dim">No earlier revisions kept yet (last 10 are kept per page).</span>';
+  $("historyList").querySelectorAll("[data-restore]").forEach((b)=>b.addEventListener("click",()=>{ const h=(pages[currentTitle].history||[])[Number(b.dataset.restore)]; if(h){ savePage(currentTitle,h.body); renderPage(currentTitle); } }));
+});
+$("btnShare").addEventListener("click",()=>{
+  if(window.webxdc&&webxdc.sendUpdate){ try{ webxdc.sendUpdate({payload:{wikiinajar:{type:"page",title:currentTitle,body:pages[currentTitle]?pages[currentTitle].body:"",updated:nowISO()}}},"Wiki: "+currentTitle); note("ioNote","Shared “"+currentTitle+"” to the chat."); }catch(e){ note("ioNote","Sharing needs a webxdc host (Delta Chat / ArcaneChat)."); } }
+  else note("ioNote","Open wikiinajar.xdc inside a chat to share pages with the group.");
+});
+$("btnNew").addEventListener("click",()=>{ const t=prompt("New page title:"); if(t&&t.trim()) location.hash="#/edit/"+encodeURIComponent(t.trim()); });
+$("searchInput").addEventListener("change",()=>{ const q=$("searchInput").value.trim(); if(q) location.hash="#/search?q="+encodeURIComponent(q); });
+
+/* ---------- Import / export ---------- */
+function download(name,text){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([text],{type:"text/plain;charset=utf-8"})); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+$("btnExport").addEventListener("click",()=>{ download("wikiinajar-jar.json",JSON.stringify({format:"wikiinajar-jar",version:1,exported:nowISO(),pages,contacts},null,2)); note("ioNote","Jar exported (pages + contacts; media stays per-device)."); });
+$("btnImport").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",async ()=>{
+  const f=$("importFile").files[0]; if(!f)return;
+  const text=await f.text();
+  try{
+    if(/\.vcf$/i.test(f.name)||text.includes("BEGIN:VCARD")){
+      const found=parseVcards(text); contacts=[...contacts,...found.filter((c)=>!contacts.some((x)=>x.fn===c.fn))];
+      saveJSON(LS_CONTACTS,contacts); note("ioNote","Imported "+found.length+" contact(s)."); location.hash="#/contacts";
+    }else if(/\.json$/i.test(f.name)){
+      const jar=JSON.parse(text); if(!jar.pages)throw new Error("no pages");
+      for(const [t,r] of Object.entries(jar.pages)) if(r&&typeof r.body==="string") pages[t]={body:r.body,updated:r.updated||nowISO(),history:r.history||[]};
+      if(Array.isArray(jar.contacts)) contacts=jar.contacts;
+      saveJSON(LS_PAGES,pages); saveJSON(LS_CONTACTS,contacts); note("ioNote","Jar imported."); renderPage("Main Page");
+    }else{
+      const title=f.name.replace(/\.(wiki|txt)$/i,"");
+      savePage(title,text); note("ioNote","Imported page “"+title+"”."); location.hash="#/page/"+encodeURIComponent(title);
+    }
+  }catch(e){ note("ioNote","Import failed: "+e.message); }
+  $("importFile").value="";
+});
+$("btnAddMedia").addEventListener("click",()=>$("mediaFile").click());
+$("mediaFile").addEventListener("change",async ()=>{
+  for(const f of $("mediaFile").files){
+    const ext=(f.name.split(".").pop()||"").toLowerCase();
+    if(!WIKI_RASTER.has(ext)&&ext!=="djvu"&&ext!=="djv"){ note("mediaNote","Skipped unsupported file: "+f.name); continue; }
+    if(f.size>4*1024*1024){ note("mediaNote","Skipped "+f.name+": over the 4 MB in-browser guard — keep the jar light, or serve it from disk in the Java edition."); continue; }
+    const dataUrl=await new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(f); });
+    media[f.name]={dataUrl,added:nowISO()}; note("mediaNote","Added "+f.name+" — embed it as [[image:"+f.name+"|alt]]");
+  }
+  saveJSON(LS_MEDIA,media); renderMedia(); $("mediaFile").value="";
+});
+
+/* ---------- Router ---------- */
+function route(){
+  const hash=location.hash||"#/page/Main%20Page";
+  const m=hash.match(/^#\/(page|edit)\/(.+)$/);
+  if(m){ const title=decodeURIComponent(m[2]); if(m[1]==="page")renderPage(title); else openEdit(title); return; }
+  if(hash.startsWith("#/search")){ renderSearch(new URLSearchParams(hash.split("?")[1]||"").get("q")||""); return; }
+  if(hash==="#/index")renderIndex();
+  else if(hash==="#/tags")renderTags();
+  else if(hash==="#/media")renderMedia();
+  else if(hash==="#/contacts")renderContacts();
+  else if(hash==="#/calendar")renderCalendar();
+  else renderPage("Main Page");
+}
+window.addEventListener("hashchange",route);
+
+/* ---------- webxdc sync ---------- */
+try{
+  if(window.webxdc&&webxdc.setUpdateListener){
+    $("syncChip").innerHTML="sync: <b>webxdc chat</b>";
+    webxdc.setUpdateListener((u)=>{
+      const p=u&&u.payload&&u.payload.wikiinajar; if(!p||!p.title)return;
+      applyingRemote=true;
+      try{
+        if(p.type==="delete"){ if(pages[p.title]){ delete pages[p.title]; saveJSON(LS_PAGES,pages); } }
+        else if(p.type==="page"&&typeof p.body==="string"){
+          const cur=pages[p.title];
+          if(!cur||String(p.updated||"")>=String(cur.updated||"")){ pages[p.title]={body:p.body,updated:p.updated||nowISO(),history:cur?cur.history||[]:[]}; saveJSON(LS_PAGES,pages); }
+        }
+        stats(); if(location.hash.includes(encodeURIComponent(p.title)))route(); else renderSidebar();
+      }finally{ applyingRemote=false; }
+    });
+  }
+}catch(e){}
+
+seedIfEmpty();
+route();
+</script>
+</body>
+</html>

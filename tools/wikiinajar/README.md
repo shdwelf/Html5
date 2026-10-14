@@ -1,5 +1,13 @@
 # Wiki-in-a-Jar 0.8 image and DjVu extension
 
+> **Editions:** this tool patches the Java original. The same wiki also
+> ships as a single offline HTML file ([`wikiinajar.html`](../../wikiinajar.html))
+> and a Webxdc bundle (`wikiinajar.xdc`, `npm run build:wikiinajar`); the
+> documentation page [`public/docs/wiki/Wiki in a Jar.wiki`](public/docs/wiki/Wiki%20in%20a%20Jar.wiki)
+> installed by the build below is mirrored as the seeded “Wiki in a Jar”
+> page there. History, architecture, security audit and the open research
+> agenda: [`wikiinajar-deep-dive.md`](../../wikiinajar-deep-dive.md).
+
 This extension rebuilds the Drive-backed Wiki-in-a-Jar 0.8 distribution with:
 
 - `[[img:file.png|Alt text]]` and `[[image:file.webp|Alt text]]` raster syntax;
