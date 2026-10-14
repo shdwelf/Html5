@@ -13,8 +13,15 @@
       "page": "field-cipher-deep-dive-2026-10-14",
       "source": "docs/field-cipher-deep-dive-2026-10-14.md",
       "date": "2026-10-14",
-      "bytes": 33922,
-      "sha256": "4e35083e8fc89da71cda4f9b338998d5454a70acde16f66b4c65fc422ea182b8"
+      "bytes": 37805,
+      "sha256": "86b3d4009ea6711c67e691174f8048135bf1339594cf3ef82cab17757990fe82"
+    },
+    {
+      "page": "recipe-sourcing-round-4-2026-10-14",
+      "source": "docs/recipe-sourcing-round-4-2026-10-14.md",
+      "date": "2026-10-14",
+      "bytes": 15382,
+      "sha256": "f3c0133e58bbe961fc4199378030de4795a6711875a487716d1c64fd64957623"
     },
     {
       "page": "cyberchef-sfx-coverage-audit-2026-10-13",
@@ -57,13 +64,6 @@
       "date": "2026-10-13",
       "bytes": 7044,
       "sha256": "e548a283a91daf460582230d3cbfd75e13ac325ab3d6fdd7f95e9ced1ceb7dbe"
-    },
-    {
-      "page": "zlibrary-apk-ghidra-research-2026-10-13",
-      "source": "docs/zlibrary-apk-ghidra-research-2026-10-13.md",
-      "date": "2026-10-13",
-      "bytes": 14776,
-      "sha256": "bcdf19cf0dd229f80786b3268744fd4282845dc80aa73f96929b5d820b21d391"
     }
   ]
 }

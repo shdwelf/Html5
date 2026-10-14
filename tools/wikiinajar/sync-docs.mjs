@@ -26,7 +26,7 @@
  */
 
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, rmSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -40,6 +40,9 @@ const args = process.argv.slice(2);
 const checkOnly = args.includes("--check");
 const countArg = args.indexOf("--count");
 const COUNT = countArg >= 0 ? Number(args[countArg + 1]) : 9;
+// pages this script manages all end with a date suffix, which is how a stale one
+// left behind by an earlier run is told apart from the application's own pages
+const DATE_SUFFIX = "-\\d{4}-\\d{2}-\\d{2}";
 
 /** the newest notes by the date embedded in their file name */
 function newestDocs(limit) {
@@ -120,6 +123,16 @@ if (checkOnly) {
     }
     console.log(`✓ ${entry.page} ← ${entry.source} (${entry.bytes} bytes)`);
   }
+  // A page left behind by an earlier run is worse than a missing one: the build
+  // copies every *.wiki in this directory into the application.
+  const dated = new RegExp(`${DATE_SUFFIX}\\.wiki$`);
+  const known = new Set(manifest.pages.map((entry) => `${entry.page}.wiki`));
+  for (const file of readdirSync(WIKI)) {
+    if (dated.test(file) && !known.has(file)) {
+      console.error(`✗ ${file} is not in the manifest — run sync-docs.mjs again to prune it`);
+      failures++;
+    }
+  }
   console.log(
     failures === 0
       ? `\nAll ${manifest.pages.length} pages match their notes (synced ${manifest.syncedOn}).`
@@ -136,6 +149,17 @@ for (const { name, date } of docs) {
   writeFileSync(join(WIKI, `${page}.wiki`), body, "utf8");
   pages.push({ page, source: `docs/${name}`, date, bytes: Buffer.byteLength(body, "utf8"), sha256: sha256(body) });
   console.log(`wrote ${page}.wiki ← docs/${name} (${pages[pages.length - 1].bytes} bytes)`);
+}
+
+// Drop pages this run did not produce, so the set in the directory is exactly the
+// set in the manifest (Image Support Demo.wiki is the application's own page).
+const produced = new Set(pages.map((entry) => `${entry.page}.wiki`));
+const dated = new RegExp(`${DATE_SUFFIX}\\.wiki$`);
+for (const file of readdirSync(WIKI)) {
+  if (dated.test(file) && !produced.has(file)) {
+    rmSync(join(WIKI, file));
+    console.log(`pruned ${file} (no longer among the newest ${COUNT} notes)`);
+  }
 }
 
 writeFileSync(

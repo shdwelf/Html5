@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -37,6 +37,15 @@ test("the wiki content set carries the newest repository notes, in sync", () => 
   // No page may shadow the application's own pages.
   const names = manifest.pages.map((entry) => entry.page);
   assert.ok(!names.includes("Main Page") && !names.includes("Image Support Demo"));
+
+  // The directory holds exactly the manifest's pages and nothing else dated: a
+  // page left behind by an earlier run would be copied into the application
+  // without any link pointing at it.
+  const pageDir = path.join(wikiRoot, "public", "docs", "wiki");
+  const datedInDir = readdirSync(pageDir)
+    .filter((file) => /-\d{4}-\d{2}-\d{2}\.wiki$/.test(file))
+    .sort();
+  assert.deepEqual(datedInDir, names.map((name) => `${name}.wiki`).sort(), "stale synced pages must be pruned");
 });
 
 test("sync-docs.mjs --check proves every page still matches its note", () => {
