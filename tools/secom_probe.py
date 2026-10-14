@@ -21,9 +21,19 @@ CROW_CIPHERTEXT = '''
 
 
 def sequence(text):
-    # Stable alphabetical/numeric rank, with 0 denoting rank 10.
+    # Stable alphabetical rank, with rank 10 encoded as 0.
     out = [None] * len(text)
     for rank, i in enumerate(sorted(range(len(text)), key=lambda i: (text[i], i)), 1):
+        out[i] = rank % 10
+    return ''.join(map(str, out))
+
+
+def digit_sequence(text):
+    # The derived numeric row is sequenced 1..9,0, not lexical 0..9.
+    # Stable ties matter because the chain can repeat digits.
+    out = [None] * len(text)
+    for rank, i in enumerate(
+            sorted(range(len(text)), key=lambda i: (10 if text[i] == '0' else int(text[i]), i)), 1):
         out[i] = rank % 10
     return ''.join(map(str, out))
 
@@ -42,7 +52,7 @@ def schedule(phrase):
     a, b = sequence(p[:10]), sequence(p[10:])
     seed = ''.join(str((int(x) + int(y)) % 10) for x, y in zip(a, b))
     block = chain(seed)
-    board = sequence(block[-10:])
+    board = digit_sequence(block[-10:])
     # Widths: unique digits right-to-left, continuing after first sum exceeds 9.
     rev, seen, widths, total = block[::-1], set(), [], 0
     for x in rev:
@@ -313,7 +323,34 @@ def scan_candidates(bigram_floor, chi2_ceiling, ioc_ceiling):
     return rows, survivors
 
 
+def scan_title_extensions(bigram_floor, chi2_ceiling, ioc_ceiling):
+    """Test all 26 one-letter completions of the 19-letter title fragment."""
+    base = 'THETOWNILOVEDSOWELL'
+    rows = []
+    for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+        phrase = base + letter
+        plain, _, _ = decrypt(CROW_CIPHERTEXT, phrase)
+        m = metrics(plain)
+        ok = (m['bigram'] >= bigram_floor and m['chi2'] <= chi2_ceiling
+              and m['ioc'] <= ioc_ceiling)
+        rows.append((phrase, m, ok))
+    return rows, [row for row in rows if row[2]]
+
+
 if __name__ == '__main__':
+    schedule_check = schedule('THE TOWN I LOVED SO WELL A')
+    expected_schedule = {
+        'first': '8219605347',
+        'second': '9328704561',
+        'seed': '7537309808',
+        'block': '28003978800803265680883581148861839252647912177801',
+        'board': '5914267803',
+        'keys': ['7515788819035320', '03818642820'],
+    }
+    if any(schedule_check[k] != v for k, v in expected_schedule.items()):
+        raise SystemExit('SECOM numeric checkerboard ranking vector mismatch: ' + repr(schedule_check))
+    print('SECOM numeric checkerboard ranking vector: PASS')
+
     example_plain='RV TOMORROW AT 1400PM TO COMPLETE TRANSACTION USE DEADDROP AS USUAL'
     expected='777193862200032042396003829683146080607178016736060606463536069686740369681890014021906662606660863160549'
     got=encrypt(example_plain, 'MAKE NEW FRIENDS BUT KEEP THE OLD')
@@ -326,7 +363,7 @@ if __name__ == '__main__':
 
     candidate, _, _ = decrypt(CROW_CIPHERTEXT, 'IN MY MEMORY I WILL ALWAYS SEE')
     digest = hashlib.sha256(candidate.encode()).hexdigest()
-    expected_digest = '4eea6f3be82930d27e5af3f438c34ee1bea353569e0a04e1dcb6737c4f8c1fe5'
+    expected_digest = '36bcfa0f15fd2acb0d23ae011824be4cc775e9b22e9f4b7020087f30839d1000'
     if digest != expected_digest:
         raise SystemExit('Crow candidate result changed: ' + digest)
     print('Crow opening-line candidate: REJECTED (non-English output)')
@@ -388,3 +425,11 @@ if __name__ == '__main__':
         print('verdict: every documented hint-derived candidate is REJECTED by')
         print('         the calibrated ladder. The phrase remains unknown; the')
         print('         negative result is the research product.')
+
+    print()
+    print('=== One-letter completions of the 19-letter title fragment ===')
+    title_rows, title_survivors = scan_title_extensions(bigram_floor, chi2_ceiling, ioc_ceiling)
+    print('title extensions scanned: %d; survivors: %d' % (len(title_rows), len(title_survivors)))
+    for phrase, m, _ in title_survivors:
+        print('  SURVIVOR %s IoC %.4f chi2 %.1f bigram %+.3f' %
+              (phrase, m['ioc'], m['chi2'], m['bigram']))

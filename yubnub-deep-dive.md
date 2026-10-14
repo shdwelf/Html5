@@ -42,10 +42,10 @@ on-ramp. Unknown commands fall back to Google search.
 
 Homepage navigation (verified from the fetched homepage + search index):
 
-| Link | Target | Status 2026-10-13 | Rebuilt as |
+| Link | Target | Status | Rebuilt as |
 | --- | --- | --- | --- |
 | What Is This Thing? | homepage explainer | live | app header + this doc §1 |
-| List All Commands (`ls`) | `kernel/ls?args=%s` | live | Commands tab (`local:ls`) |
+| List All Commands (`ls`) | `kernel/ls?args=%s&page=N` | live; public directory, searchable/paginated (upstream boundary caveat) | Commands tab: 102-entry curated offline index plus live page/search link (§8) |
 | Create a New Command | `command/new` | **verified** | Create tab (`local:create`, local save) |
 | Installing Yubnub | `documentation/describe_installation` | **verified** | Syntax tab summary (§4 below) |
 | Advanced Syntax | `documentation/describe_advanced_syntax` | **verified** | Syntax tab — engine implements all of it |
@@ -136,9 +136,12 @@ In the registry each entry is flagged **updated** (endpoint modernised),
 
 `yubnub.html` is one inline file (CSS+JS embedded, `webxdc.js` shim beside
 it): command box with the homepage's own examples, a faithful parser
-(§3), the curated registry with `ls`/`ge`/`man`, a Create tab mirroring
-`command/new`'s four steps (name → URL → test → description; saved to
-localStorage, export/import JSON, duplicate-name rejection), split/mash
+(§3), a **102-entry curated offline registry** with local `ls`/`ge`/`man`,
+and live `ls` search/page controls that open YubNub's public catalogue
+without pretending the offline snapshot is exhaustive. The live controller's
+page-boundary mismatch is documented in §8. It also has a Create tab
+mirroring `command/new`'s four steps (name → URL → test → description; saved
+to localStorage, export/import JSON, duplicate-name rejection), split/mash
 panes, history, `?command=` auto-run for search-engine installation, and
 webxdc `sendUpdate` sharing of executed commands. `yubnub.xdc` is the
 deterministic webxdc zip (`index.html` + `manifest.toml` + `webxdc.js` +
@@ -161,6 +164,33 @@ Fetched 2026-10-13: yubnub.org `/`, `/documentation/jeremys_picks`,
 `/documentation/describe_advanced_syntax`, `/documentation/describe_installation`,
 `/kernel/most_used_commands` (pp.1–4 chunks), `/kernel/golden_eggs`,
 `/kernel/man?args=xe`, `/kernel/man?args=random`, `/command/new`.
-Indexed: Linux.com “Yubnub: A command line for the web” (2006), Lifehacker
-(2007, `split`/`mash` usage), Engadget Quicksilver+YubNub (2007),
-Wikibooks *Yubnub*, github.com/jcnetdev/yubnub (MIT, Rails Day 2005).
+Fetched 2026-10-14: `/kernel/ls?args=&page=1` and `page=2` (live listing behavior);
+GitHub API source for `JonathanAquino/yubnub` `KernelController.php` and
+`CommandStore.php` (pagination/search implementation). Indexed: Linux.com
+“Yubnub: A command line for the web” (2006), Lifehacker (2007, `split`/`mash`
+usage), Engadget Quicksilver+YubNub (2007), Wikibooks *Yubnub*,
+github.com/jcnetdev/yubnub (MIT, Rails Day 2005).
+
+## 8. Full-catalog `ls` follow-up (2026-10-14)
+
+The offline table is **102 curated commands**, not a full mirror of the live
+community database; only the entries with observed counters carry a use count.
+The Commands tab now exposes the official live `ls` route with a search term
+and page number, so `ls <query>` can be carried to the online directory and
+pages can be opened without expanding the offline snapshot blindly.
+
+The public source controller
+([`KernelController.php`](https://github.com/JonathanAquino/yubnub/blob/master/app/controllers/KernelController.php))
+sets `PAGE_SIZE = 50`, asks for 51 results, reports the next page when the
+result count exceeds 50, then slices the displayed array to 49 rows. The next
+page's start index advances by 50. If the live deployment matches this
+controller, that means one result can be omitted at every 50-row boundary;
+the app therefore labels the route as a live directory, not a verified
+lossless export. `CommandStore.php` confirms `ls` searches command names,
+descriptions, and URLs; an empty query sorts by creation date, while a query
+sorts by uses. The UI warns that live commands are user-submitted and keeps
+the offline index curated rather than importing arbitrary URLs automatically.
+
+Sources: [live `ls`, page 1](https://yubnub.org/kernel/ls?args=&page=1),
+[live `ls`, page 2](https://yubnub.org/kernel/ls?args=&page=2),
+[`CommandStore.php`](https://github.com/JonathanAquino/yubnub/blob/master/app/helpers/CommandStore.php).

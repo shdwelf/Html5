@@ -68,11 +68,23 @@ annotations, no lambdas, no `String` — the subset test in
 `tests/14-javacard.mjs` enforces the JavaCard 2.2.2 side of that (banned
 tokens, brace balance, one applet class, real API constants only).
 
-Honest boundary: the sandbox has no `java` on PATH, so no `javac` parse was
-run here — conformance is structural, by construction plus test 14, not by
-invoking the parser. The file is **not** vendored (OpenJDK is GPL-2.0 with
-the Classpath exception; method names and line numbers are cited, not
-copied). The natural next step, if the Ghidra-headless question is ever
-answered "yes", is an Actions job that fetches the JDK (the channel is
-proven: `.relay/jdk/` exists) and runs `javac -proc:none -d /tmp` over
-`samples/javacard/` as a parse gate — proposed, not claimed.
+The compiler is now exercised without adding a JDK binary to Git. The ignored
+`.relay/jdk/jdk21.tar.gz.part-*` files reassemble to the checksum recorded in
+`.relay/jdk/jdk21.sha256`; the recovered Temurin JDK is 21.0.12.1. To reproduce
+from a checkout that has those relay parts:
+
+```sh
+cat .relay/jdk/jdk21.tar.gz.part-* > /tmp/jdk21.tar.gz
+sha256sum -c .relay/jdk/jdk21.sha256
+tar xzf /tmp/jdk21.tar.gz -C /tmp/jdk21
+JAVA=/tmp/jdk21/jdk-21.0.12.1+1/bin/java
+"$JAVA" tools/verify_javacard_parse.java samples/javacard/*.java
+```
+
+`tools/verify_javacard_parse.java` calls the JDK's `JavacTask.parse()` and does
+not run attribution or code generation. Result: **6 compilation units parsed,
+0 syntax errors**. This is a real parser check, but not a JavaCard API type
+check or CAP build: the JavaCard SDK is not in this repository. Test 14 remains
+the separate structural/API-constant check. The upstream OpenJDK file is **not**
+vendored (GPL-2.0 with the Classpath exception); only method names and line
+numbers are cited here.
