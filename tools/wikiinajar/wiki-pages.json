@@ -1,0 +1,69 @@
+{
+  "syncedOn": "2026-10-14",
+  "rule": "newest 9 dated notes in docs/",
+  "pages": [
+    {
+      "page": "crow-217-letter-claim-check-2026-10-14",
+      "source": "docs/crow-217-letter-claim-check-2026-10-14.md",
+      "date": "2026-10-14",
+      "bytes": 7478,
+      "sha256": "132c7b1a38ba159217bc5e2571c2ac4e269a8b67b476ccbd4e00ae9e388d014b"
+    },
+    {
+      "page": "field-cipher-deep-dive-2026-10-14",
+      "source": "docs/field-cipher-deep-dive-2026-10-14.md",
+      "date": "2026-10-14",
+      "bytes": 33922,
+      "sha256": "4e35083e8fc89da71cda4f9b338998d5454a70acde16f66b4c65fc422ea182b8"
+    },
+    {
+      "page": "cyberchef-sfx-coverage-audit-2026-10-13",
+      "source": "docs/cyberchef-sfx-coverage-audit-2026-10-13.md",
+      "date": "2026-10-13",
+      "bytes": 3111,
+      "sha256": "ab7f4bfdfb7c4f3d63970bf1a6077075e7039637101a5bfdaf62ffd4eb275ef8"
+    },
+    {
+      "page": "pdfdrive-deep-dive-2026-10-13",
+      "source": "docs/pdfdrive-deep-dive-2026-10-13.md",
+      "date": "2026-10-13",
+      "bytes": 4541,
+      "sha256": "6df7c43e2c5cb46a5b8320589310bbfd8d952d220ca909f4115138004f6eb36c"
+    },
+    {
+      "page": "yubnub-crypto-transport-audit-2026-10-13",
+      "source": "docs/yubnub-crypto-transport-audit-2026-10-13.md",
+      "date": "2026-10-13",
+      "bytes": 3019,
+      "sha256": "c6ac901d2d39ca479dc616561742b24741027cb59cbc1825bfff8a528ef2ca69"
+    },
+    {
+      "page": "yubnub-description-matches-2026-10-13",
+      "source": "docs/yubnub-description-matches-2026-10-13.md",
+      "date": "2026-10-13",
+      "bytes": 6845,
+      "sha256": "4cb48cf064ffbadbbf96f2cba2a204eca8d5a7a6990ba4d36876dcc0358902ad"
+    },
+    {
+      "page": "yubnub-github-archive-research-2026-10-13",
+      "source": "docs/yubnub-github-archive-research-2026-10-13.md",
+      "date": "2026-10-13",
+      "bytes": 10088,
+      "sha256": "cef2ca8d184a43c35f43e53a312ee4d1674a49e8be04a1b0af65d602664d39e7"
+    },
+    {
+      "page": "yubnub-opensource-backing-2026-10-13",
+      "source": "docs/yubnub-opensource-backing-2026-10-13.md",
+      "date": "2026-10-13",
+      "bytes": 7044,
+      "sha256": "e548a283a91daf460582230d3cbfd75e13ac325ab3d6fdd7f95e9ced1ceb7dbe"
+    },
+    {
+      "page": "zlibrary-apk-ghidra-research-2026-10-13",
+      "source": "docs/zlibrary-apk-ghidra-research-2026-10-13.md",
+      "date": "2026-10-13",
+      "bytes": 14776,
+      "sha256": "bcdf19cf0dd229f80786b3268744fd4282845dc80aa73f96929b5d820b21d391"
+    }
+  ]
+}

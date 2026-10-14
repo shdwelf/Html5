@@ -1,0 +1,143 @@
+== Crow cryptogram — "217 English letters" claim check (2026-10-14) ==
+
+Source: docs/crow-217-letter-claim-check-2026-10-14.md — synced 2026-10-14 by tools/wikiinajar/sync-docs.mjs.
+Back to [[Main Page]].
+
+= Crow cryptogram — "217 English letters" claim check (2026-10-14) =
+
+== The claim as received ==
+
+> "Look through research for 217 English letters from the crow cipher — it said it
+> decrypted SECOM."
+
+Answered as asked: the repository research record, the challenge's own publisher page
+(live and archived), and public sources were searched for any statement that the
+Crow's Cryptogram has been decrypted into **217 English letters** by **SECOM**.
+
+== Verdict ==
+
+**No such claim exists in the record.** The research says the opposite, and says it
+in numbers:
+
+- The Crow's Cryptogram is **unsolved in this repository**. The largest scan on
+  record covers 6,480 unique 20-letter key-phrase candidates and 12,767
+  decrypt-and-score events across both checkerboard-numbering modes, with
+  **0 survivors** (`docs/crow-gemini-battery-2026-10-03-output.txt`).
+- `docs/crow-source-check-2026-10-02.md`: "there is still no source-supported Crow
+  plaintext or key phrase in the public material inspected… A solve claim should
+  therefore remain provisional unless it includes the key phrase, recovered
+  plaintext, and an exact 600-digit re-encryption match."
+- The publisher's page (fetched 2026-10-14; the 2022-02-16 Wayback capture agrees)
+  publishes only the 600-digit ciphertext, the six-line hint, the statement "The text
+  is in English, encrypted with nothing more than pencil, paper and a secret key
+  phrase", and the table of honor (Oleksii Sylichenko 08 Feb 2023; Daisuke Kondo
+  05 Sep 2026). **It publishes no plaintext, no key, and no letter count.**
+- In the Crow material the string `217` occurs only inside the ciphertext itself
+  (`… 22682 21731`, line 4 of 12). It is not a letter count of anything.
+
+== What the record *does* say was decrypted ==
+
+There is exactly one decryption in this line of research, and it is of **SECOM's own
+worked example**, not of the Crow:
+
+- SECOM page example: plaintext `RV TOMORROW AT 1400PM TO COMPLETE TRANSACTION USE
+  DEADDROP AS USUAL`, key `MAKE NEW FRIENDS BUT KEEP THE OLD`, 105-digit ciphertext.
+- `python3 tools/secom_probe.py` → `official SECOM 105-digit encrypt/decrypt vector:
+  PASS`. The CyberChef `secomExact` op reproduces it too
+  (`test/cyberchef-field-museum.test.ts`).
+- The same exact model run **on the Crow** with the best-known opening-line candidate
+  returns letter soup — `OYSASOXVEMSA 0OYVEAAPSFPSMSFITOTSHAOSHSS…` — a recorded
+  rejection, not a solve.
+
+So "it decrypted SECOM" is true of the *system's published example*. It has never
+been true of the Crow ciphertext.
+
+The other decrypt-shaped results in the suite are unrelated: the Enigma plugboard
+benchmark (`EN RT OS AI`, synthetic Enigma data — see
+`docs/crow-cryptogram-stecker-audit-2026-10-02.md`), and the ArcaneChat lab's own
+training cryptogram (`MEET AT THE OLD OAK`, regenerated on every **NEW CROW** press).
+
+== Why a 217-letter claim fails SECOM's own arithmetic ==
+
+SECOM's straddling checkerboard encodes each plaintext symbol in **one digit** (exactly
+seven letters) or **two digits** (every other letter, the space, the numerals), and
+the publisher caps padding at **≤ 4 null digits** ("up to four null digits could be
+added to complete a block of five" — SECOM page). That fixes an identity any claimed
+plaintext length must satisfy:
+
+```text
+600 - pad = a + 2 * (T - a),   pad ∈ [0, 4],   0 <= a <= L <= T
+```
+
+where `T` is the number of plaintext symbols (letters + spaces + numerals), `L` the
+letters among them and `a` the symbols written in a single digit. The identity is
+self-checked in the tool against the publisher's worked example: 67 symbols (53
+letters, 10 spaces, 4 numerals), 30 one-digit symbols → 104 digits, completed to 105
+with one null digit. PASS.
+
+Consequences for the Crow's 600 digits:
+
+| Claimed plaintext | Symbols at 4.7 letters/word | Digits it can write | Verdict |
+| --- | ---: | ---: | --- |
+| 217 letters (the claim) | 263 | 309–526 | **REJECTED** — 70+ digits short of 596 even at maximum padding |
+| 300 letters | 364 | 428–728 | arithmetically possible (one-digit share 43%) |
+| 324 letters | 393 | 462–786 | possible only if the key's seven letters are the seven commonest |
+
+- **T ≥ 298 symbols.** 217 letters would allow at most 81 non-letter symbols
+  (space/numerals) — i.e. ≤ 2.68 letters per word, against 4.7 in ordinary English
+  prose. Closing the digit shortfall would need 35+ two-digit null pairs against a
+  documented allowance of 4 digits.
+- **The English-prose window for 600 SECOM digits is 252–324 letters**: 252 if the
+  key's seven one-digit letters are the seven rarest in English (Z Q J X K V B,
+  ~3.7% share), 324 if they are the seven commonest (E T A O I N S, ~57.5%). A genuine
+  English plaintext of the Crow should therefore sit in the low 300s of letters.
+- The claim is not *strictly* impossible — a telegraphic 217-letter text with ≥ 81
+  spaces would fit — but it matches no source, no published hint, and no analysis in
+  this repository.
+
+The falsifier is executable:
+
+```sh
+python3 tools/crow_letter_count_bounds.py 217 300 324
+```
+
+== Search log (what "look through research" covered) ==
+
+- **Repository, all file types**: `217 letters`, `217 English`, `two hundred
+  seventeen`, and a standalone-`217` scan of every file that mentions "crow". Hits:
+  the ciphertext group `21731`, the patch holding it, and unrelated offsets/hashes in
+  other projects (Dr. Solomon disassembly, WiMAX, Z-Library SHA-256, `slip44.json`).
+  Nothing in any `docs/crow-*.md`, `tools/secom_*.py`, `tools/crow_gemini_battery.py`,
+  `tools/search_crow_extractions.py`, `apps/Cipher-Machines-and-Cryptology-Suite-*.html`,
+  the `sync-outgoing/` bundle and patch, or the `.arena-drive`/`.arena-archive`
+  request manifests.
+- **Git history**: `git log --all -S "217 letters"`, `-S "217 English"`,
+  `--grep 217` — no commit in the repository's history has ever contained the claim.
+- **Publisher**: live `crow.htm` plus the 2022-02-16 Wayback capture — no plaintext,
+  no length, no key, and the older capture still says "unsolved to this day".
+- **Web**: the Crow's Cryptogram, the Crow Language cipher from the *Catastrophe Crow*
+  ARG (a monoalphabetic substitution, no SECOM content) and
+  `adam.levav.net/CrowCiphers` (a Crow/Vigenère teaching page) are different puzzles;
+  no page ties 217 letters to this ciphertext or to a SECOM decryption.
+
+== What a real Crow solve has to include ==
+
+Unchanged from `docs/crow-source-check-2026-10-02.md`: the 20-letter key phrase, the
+recovered plaintext, an exact re-encryption of all 600 digits with ≤ 4 null digits,
+and the transposition-invariant histogram match. A length alone is not evidence; a
+length that contradicts SECOM's own arithmetic is a refutation.
+
+If the "217 English letters" figure came from a chat, a generated summary or a page,
+it can be turned into a verdict in one line:
+
+```sh
+python3 tools/crow_letter_count_bounds.py 217
+```
+
+== Reproduce ==
+
+```sh
+python3 tools/crow_letter_count_bounds.py 217 300 324   # claim check + model self-check
+python3 tools/secom_probe.py                            # official vector PASS, Crow candidates rejected
+node --test tests/crow-letter-count-bounds.test.mjs     # regression test for this note
+```

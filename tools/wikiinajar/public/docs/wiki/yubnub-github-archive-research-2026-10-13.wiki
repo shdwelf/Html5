@@ -1,0 +1,160 @@
+== Yubnub ecosystem research — GitHub, archive.org, Blue Squirrel (2026-10-13) ==
+
+Source: docs/yubnub-github-archive-research-2026-10-13.md — synced 2026-10-14 by tools/wikiinajar/sync-docs.mjs.
+Back to [[Main Page]].
+
+= Yubnub ecosystem research — GitHub, archive.org, Blue Squirrel (2026-10-13) =
+
+*Follow-up to [`../yubnub-deep-dive.md`](../yubnub-deep-dive.md): where does
+Yubnub live on in code, what replaced it, and what do the archives hold?
+Method: `gh search repos` / `gh repo view` / GitHub API (authenticated),
+archive.org AdvancedSearch + Metadata + Wayback CDX APIs, vendor site fetch.
+All counts are as observed 2026-10-13.*
+
+---
+
+== 1. GitHub — the original and its clients ==
+
+| Repo | ★ | Last push | What it is |
+| --- | --- | --- | --- |
+| [JonathanAquino/yubnub](https://github.com/JonathanAquino/yubnub) | 57 | 2026-10-01 | **The original author's repo** — "A social command line for the web". GitHub now classes it as PHP (the production codebase outgrew the 2005 Rails Day entry). This is the link to cite. |
+| [jcnetdev/yubnub](https://github.com/jcnetdev/yubnub) | 31 | ~2021 | The Rails 2.1 refactor ("Source Code (v3)" era). Historically important, effectively frozen. |
+| [hrichardlee/YubNubEx](https://github.com/hrichardlee/YubNubEx) | 2 | 2021 | Chrome extension — the one linked from yubnub.org's *Installing* page. Local overrides + multi-tab searches. |
+| [lilyball/yubnubsearch](https://github.com/lilyball/yubnubsearch) | 3 | 2019 | SIMBL plugin turning Safari's search field into a Yubnub field (the Kevin Ballard plugin the docs mention). |
+| [titosemi/yubnub](https://github.com/titosemi/yubnub) | 2 | 2014 | Bash console client (`curl`/`wget` against `parser/parse`, pluggable openers incl. w3m). |
+| jontsao/NoStone · Natook/Yubnub-widget | 1 | 2014 | Chrome extension / widget experiments. |
+
+Noise to ignore when searching: at least four unrelated repos named
+`YubNub`/`Yubnub` (a Discord music bot, SWAPI iOS app, streaming site,
+school project) — "yub nub" is also the Ewok celebration song from
+*Return of the Jedi*, which pollutes every search (see §3).
+
+== 2. GitHub — clones, replacements, and the successor lineage ==
+
+**Direct clones / self-hosted replacements** (the "run your own Yubnub" idea):
+
+| Repo | ★ | Last push | Notes |
+| --- | --- | --- | --- |
+| [dohliam/yub](https://github.com/dohliam/yub) | 14 | 2022 | **yub.js** — the closest living relative. Fully client-side, hosted at dohliam.github.io/yub. `js/engines.js` counted for this research: **138 engines** (`g`, `gim`, `sp`, `ix`, `gmail`, `drive`, `wbm`…). Explicitly born from a bookmark file of ex-Yubnub commands. |
+| [cldwalker/queriac](https://github.com/cldwalker/queriac) | 7 | 2008 | "Picking up where Yubnub left off" — the earliest successor attempt, Ruby. |
+| [pesterhazy/shub](https://github.com/pesterhazy/shub) | 3 | 2023 | "Search Engine Hub, like yubnub" — minimal redirect service for Chrome/Opera. |
+| [arne-schroppe/webcmd](https://github.com/arne-schroppe/webcmd) | 2 | 2017 | Locally hosted replacement; `~/.webcmd.json`, browser engine at `localhost:8000/?q=%s`. |
+| [profmaad/webcli](https://github.com/profmaad/webcli) | 2 | archived | "A yubnub-style search provider, running locally." |
+| [sabberworm/YoubNub](https://github.com/sabberworm/YoubNub) | 1 | 2015 | JavaScript "YubNub clone". |
+| [szaboat/nodenub](https://github.com/szaboat/nodenub) | 1 | 2015 | "Yubnub like server written in node.js." |
+| [asymmetric/RubNub](https://github.com/asymmetric/RubNub) | 0 | archived | Ruby clone (not the Firefox RubNub extension of the same name). |
+
+**The idea, productised elsewhere:**
+
+- **Bunnylol / bunny1 lineage** — Facebook's internal "smart bookmarks"
+  (`gh` → GitHub, etc.), open-sourced as
+  [facebook/bunnylol.rs](https://github.com/facebook/bunnylol.rs)
+  (149 ★, Rust, pushed 2026-10-10 — actively maintained), plus
+  rithik/bunnylol (66 ★), taneliang/neh (34 ★), markusdosch/gopherlol (Go),
+  mic47/platypuslol (Rust). Same insight as Yubnub — one keyword router for
+  the whole web — but private/team-scoped instead of a public commons.
+- **golinks** — [prologic/golinks](https://github.com/prologic/golinks)
+  (16 ★) and dhutty/golinks (3 ★): "smart bookmarks, commands and aliases
+  by pointing your browser's default search engine at a running instance.
+  Similar to bunny1, yubnub." This is the entry **awesome-selfhosted**
+  carries — which explains §3's archive noise.
+- **DuckDuckGo !bangs** — the mainstream successor UX (suffix `!g`/`!w`
+  instead of Yubnub's prefix). Ecosystem repos: zmwangx/ddg-bangs
+  (scraper/registry), ewasion/everybody-do-the-bang (kept-current list),
+  jameshealyio/bang-bookmarks (124 ★, Firefox Keymarks), dkarter/Bang
+  (Alfred). Bangs won on distribution; Yubnub's `${switches}` + `{pipes}`
+  remain strictly more expressive.
+- **AlternativeTo** lists only Ubiquity (Mozilla's natural-language
+  commander, discontinued) and Shortmarks for Yubnub — both effectively
+  historical. LibHunt's yub.js alternatives page corroborates the
+  bunnylol/bangs neighbourhood.
+
+**Verdict:** no maintained public Yubnub clone exists. The maintained code
+is (a) Aquino's own repo, (b) yub.js for client-side use, (c) bunnylol.rs
+for team use. That's precisely the gap this repo's offline
+[`yubnub.html`](../yubnub.html) fills.
+
+== 3. archive.org — crawlers, and a homonym trap ==
+
+- Text search `yubnub` → **46 hits, almost all noise**: awesome-selfhosted
+  GitHub mirrors (they mention golinks, above) and Ewok material.
+- ⚠️ Identifier [`YubNub`](https://archive.org/details/YubNub) is **not
+  software** — it's the "Ewok Celebration (Yub Nub)" MP3 from the 1983
+  *Return of the Jedi* theatrical cut. Do not cite it as a Yubnub archive.
+- The real software-history item:
+  [`wiki-editthisinfo_yubnub`](https://archive.org/details/wiki-editthisinfo_yubnub)
+  — a **WikiTeam dump (2014-01-17)** of the Yubnub wiki
+  (`editthis.info/yubnub`, the wiki the homepage links to): MediaWiki XML
+  dump + full history, 7z, uploaded 2014-07-21. The only preserved copy of
+  the community command documentation wiki.
+- **Wayback CDX**: `yubnub.org` is captured from **2005-06-20** (days after
+  the Rails Day launch) continuously to the present — the command corpus
+  (`kernel/ls` pages) is replayable there even though the live corpus is
+  not bulk-downloadable.
+- **Crawler software in the Tucows Software Library** (donated by Tucows
+  "for long term preservation"): `tucows_336323_Grab-A-Site` (2003),
+  `tucows_205130_WebWhacker` (2000), `tucows_193819_WebWhacker` (2002),
+  `WEBWHK_zip_20` (WebWhacker v2.0 Beta, 1996), `DGRAB3_ZIP`
+  (Grab a Site v3, 1996), plus manuals (`manualzilla` WebWhacker /
+  Grab-a-Site). These are the period-correct tools for crawling a site
+  like yubnub.org wholesale — the 1996–2003 ancestors of `wget --mirror`.
+
+== 4. Blue Squirrel — not abandonware (yet) ==
+
+Blue Squirrel (founded 1995, Utah — bluesquirrel.com) matters here twice
+over:
+
+1. **Conceptual ancestor.** Their first product was **SQURL — "Search and
+   Query URLs"** — replaced by **WebSeeker**, a meta-search/query-URL tool
+   that, in their words, was "searching the entire web before Google was
+   born". SQURL→WebSeeker is the commercial 1995 expression of the same
+   idea Yubnub socialised in 2005: named, parameterised query URLs.
+   Sibling "Seeker" products: TechSeeker, LegalSeeker.
+2. **The crawlers.** **WebWhacker** ("the first offline browser" — copy a
+   whole site to hard drive/CD and browse it as if online) and
+   **Grab-a-Site** (multi-threaded site mirroring with file-type filters)
+   are exactly the "archive.org crawlers" class of tool. ForeFront
+   (NASDAQ: FFGI) acquired Blue Squirrel in 1997 as its Internet Content
+   Management Division, keeping the product names.
+
+**Abandonware status: NO.** Verified 2026-10-13: bluesquirrel.com is live
+and selling (ClickBook for Windows/Mac — Mac at version 5; 30-day
+money-back guarantee page up). WebWhacker's latest build is **5.0.0.18
+(2020-10-24)**, $49.95 shareware per the Software Informer listing.
+What *is* legitimately preserved on archive.org:
+
+- [`blue-squirrel-catalog-vol-1`](https://archive.org/details/blue-squirrel-catalog-vol-1)
+  — the 1998-05-15 retail CD (62.5 MB, "imaged from an original disc with
+  no errors"): WebSeeker, TechSeeker, LegalSeeker, WebWhacker,
+  Grab-a-Site, GrabNet, LinkSync, ClickBook, Internet Automation System.
+- The Tucows items in §3 (Tucows-donated preservation copies).
+
+So: cite and link these, don't redistribute the binaries in this repo —
+the vendor is alive, and the archive.org copies already do the
+preservation job properly.
+
+== 5. What this changed in the app ==
+
+- Registry: imported 4 commands from the yub.js audit with modernised
+  hosts — `sp` (Startpage), `gmails` (Gmail search), `gdrive`
+  (Drive search), `ud` (Urban Dictionary) — flagged **new**.
+- Link crawl tab: added JonathanAquino/yubnub (primary source),
+  dohliam/yub, facebook/bunnylol.rs, the Blue Squirrel catalog CD, and
+  the WikiTeam Yubnub dump; corrected the Source Code credit (was
+  jcnetdev only).
+- [`yubnub-deep-dive.md`](../yubnub-deep-dive.md) §1/§6 source lines
+  updated to match.
+
+== 6. Sources (all accessed 2026-10-13) ==
+
+`gh search repos yubnub|bunnylol|"duckduckgo bangs"|yub` · `gh repo view`
+for JonathanAquino/yubnub, jcnetdev/yubnub, dohliam/yub, cldwalker/queriac,
+prologic/golinks, sabberworm/YoubNub, szaboat/nodenub, facebook/bunnylol.rs
+· GitHub API raw `dohliam/yub/js/engines.js` (138 engines counted) ·
+archive.org AdvancedSearch (`yubnub` → 46; `(webwhacker OR "grab-a-site"
+OR "blue squirrel")` → 39), Metadata API (`YubNub`,
+`wiki-editthisinfo_yubnub`, `blue-squirrel-catalog-vol-1`,
+`tucows_336323_Grab-A-Site`), Wayback CDX (`yubnub.org`, from 2005) ·
+bluesquirrel.com homepage fetch · LinkedIn company history (SQURL 1995,
+Grab-a-Site/IAS 1996, ForeFront 1997) · Software Informer WebWhacker
+5.0.0.18 listing · AlternativeTo/LibHunt Yubnub-alternative pages.
