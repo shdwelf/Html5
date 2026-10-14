@@ -24628,8 +24628,14 @@ addOp('odPoemExact','OD Poem-Code Message Cipher','Classical',
 /* ---- 43. VIC cipher key schedule (Häyhänen, 1950s). Verified line by line
    against the Wikipedia worked example: personal number 6, date 13 Sept 1959
    (139195), phrase “Twas the night before Christmas”, keygroup 72401. */
+/* VIC key phrases may be written in any alphabet: the historical Russian messages
+   used the Cyrillic first line of "The Lone Accordion".  Sequencing sorts by code
+   point, which is the collation order for Latin, Greek and Cyrillic (Ё is the one
+   Russian letter that sits out of order, so a phrase containing it should be
+   supplied transliterated). */
+function fdVicPhrase(phrase){return String(phrase||'').toUpperCase().replace(/[^\p{L}]/gu,'');}
 function fdVicSchedule(phrase,date,personal,keygroup){
-  const p=onlyAZ(phrase);
+  const p=fdVicPhrase(phrase);
   if(p.length<20)throw new Error('VIC needs a key phrase of at least 20 letters');
   const d=String(date||'').replace(/\D/g,'');
   if(d.length<6)throw new Error('VIC needs the date as at least six digits (its sixth digit marks the keygroup)');
@@ -24745,21 +24751,27 @@ function fdVicDiagDec(text,key){
   for(let r=0;r<g.full;r++)for(let c=g.widths[r];c<g.w;c++)out+=g.grid[r][c];
   return out;
 }
+/* The keygroup is the p-th group from the end, where p is the date's unused sixth
+   digit.  Inserting into L groups therefore puts it at index L+1-p so that in the
+   L+1-group message it is the p-th from the end; removing it from an L'-group
+   message takes index L'-p.  (The hollow-nickel message of 3 Dec 1952 is what pins
+   this: its keygroup 20818 is the fifth group from the end, i.e. …15764 96851 20818
+   22370…, which tests/cyberchef-field-cipher-deep-dive.test.mjs asserts.) */
 function fdVicInsertKeygroup(digits,keygroup,p){
   const groups=digits.match(/.{5}/g)||[];
-  const at=Math.max(0,groups.length-Number(p));
+  const at=Math.min(groups.length,Math.max(0,groups.length+1-Number(p)));
   groups.splice(at,0,keygroup);
   return {cipher:groups.join(''),at};
 }
 function fdVicRemoveKeygroup(cipher,p){
   const groups=String(cipher||'').replace(/\D/g,'').match(/.{5}/g)||[];
-  const at=Math.max(0,groups.length-1-Number(p));   // inverse of fdVicInsertKeygroup
+  const at=Math.max(0,groups.length-Number(p));      // inverse of fdVicInsertKeygroup
   const keygroup=groups[at]||'';
   groups.splice(at,1);
   return {keygroup,digits:groups.join(''),at};
 }
 addOp('vicSchedule','VIC Key Schedule (Häyhänen)','Classical',
-  'The VIC cipher key schedule, line A to line S, exactly as the CIA analysis labels it: keygroup minus the date (no borrowing), the first twenty phrase letters sequenced, chain addition, the encoding step, and the five ten-digit lines whose column read yields the two transposition keys (with the personal number added to the last two non-equal digits of line P). Verified against the published worked example (personal 6, 139195, “Twas the night before Christmas”, keygroup 72401 → keys 13 and 6, checkerboard header 5961328470).',
+  'The VIC cipher key schedule, line A to line S, exactly as the CIA analysis labels it: keygroup minus the date (no borrowing), the first twenty phrase letters sequenced, chain addition, the encoding step, and the five ten-digit lines whose column read yields the two transposition keys (with the personal number added to the last two non-equal digits of line P). Verified against two published examples: the CIA worked example (personal 6, date 139195, phrase “Twas the night before Christmas”, keygroup 72401 → keys 13 and 6, checkerboard header 5961328470) and the real hollow-nickel message (personal 13, date 391945, the Cyrillic phrase ТОЛЬКОСЛЫШНОНАУЛИЦЕГ from “The Lone Accordion”, keygroup 20818 → keys 17 and 14 and the published 31-digit key sequence), so the phrase may be written in any alphabet.',
   [
     {key:'phrase',label:'Phrase (20+ letters)',type:'text',default:'Twas the night before Christmas'},
     {key:'date',label:'Date (six digits)',type:'text',default:'139195'},

@@ -4,10 +4,10 @@ Date: 2026-10-14
 Kitchen: `public/apps/cyberchef/index.html` → 492 operations, 216 packs, 639 pack entries
 New recipes: `odPoemExact`, `vicSchedule`, `vicExact`, `diana`, `dianaTable`,
 `gronsfeldAnalyze`, `toHexdump`, `fromHexdump`, `toOctal`, `fromOctal`
-Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 10/10 pass,
-every published control vector below reproduced digit for digit (the three added tests cover
-the VIC diagonal transposition rule, the Diana field-procedure example, and the primary-source
-micro-vectors — see §2b and §0).
+Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 11/11 pass,
+every published control vector below reproduced digit for digit (the added tests cover the VIC
+diagonal transposition rule, the Diana field-procedure example, the primary-source
+micro-vectors, and the real hollow-nickel message — see §2b, §2c and §0).
 
 This note records the deep dive requested for the hand ciphers already in the kitchen
 (OD poem code, VIC, Gronsfeld, SECOM), the identification and implementation of the
@@ -77,6 +77,17 @@ entry enciphers and deciphers, and a trio `{a,b,c}` closes in all six orders. Co
 vector used in the tests: `table[B][K] = O`, and all six orders of `{B, K, O}` must close.
 `dianaTable` prints the full 26×26 worksheet and self-tests all 676 entries for
 reciprocity (`PASS`).
+
+One question the published example invites: the first two pad groups travel in clear, so can
+the rest of the line be reconstructed from them? No — check it arithmetically. Treating the
+ten clear letters as a repeating key and working `25 − (k + p)` over the 15 known plaintext
+letters agrees with the transmitted groups at **1 of 15** positions, and taking the three
+unknown pad groups to be any simple function of the clear letters and the ciphertext (`25−(a+b)`,
+`a+b`, `a−b`, `b−a`) recovers **0, 2, 1 and 2 of 15** letters respectively, against a random-key
+baseline of ≈1/26 (measured 2,866/75,000 = 0.038 over 5,000 random 15-letter pairs). The example's
+five groups are independent draws, which is exactly what makes the clear indicator harmless as
+long as the pad is one-time: the two clear groups identify *which* line was used, not what the
+other three letters are. The real risk in the field was pad capture, not the indicator.
 
 Design notes:
 
@@ -307,6 +318,55 @@ does), while the Kahn partition produces a different 70-digit string. The deviat
 therefore in that article's own tool, not in the primary source: both facts are pinned side by
 side in the tests so the two can never be silently conflated.
 
+### 2c. The real hollow-nickel message — third example, and the first field traffic
+
+The Russian Wikipedia article «Шифр ВИК» (sourced to А. В. Синельников, *Шифры советской
+разведки*, 2016 — the same booklet family as Kahn's) works the **actual message found in the
+hollow nickel in 1953**, not a teaching example. Its key material agrees with Kahn's article:
+date `391945`, keygroup `20818`, personal number 13, the Cyrillic first line of "The Lone
+Accordion" as the key phrase, and a 17/14 column pair.
+
+Everything that is language-independent is reproduced by the kitchen line for line:
+
+| Line | Published | Kitchen |
+| --- | --- | --- |
+| C: `20818 − 39194` | `91724` | same |
+| F.1: C chain-extended | `9172408964` | same |
+| E.1 / E.2 (sequencing the two ten-letter halves) | `7420156398` / `6871954032` | same |
+| G: E.1 + F.1 | `6592554252` | same |
+| H: G encoded under E.2 | `5938991898` | same |
+| Key lengths: personal 13 + last two non-equal digits of the block (4, 1) | 17 and 14 | same |
+| The 31 key digits read column-wise from the block | `9603318366469047530274304287712` | same |
+
+E.1 and E.2 are *Cyrillic* sequencings, which exposed two things worth fixing:
+
+* the VIC key phrase is now treated as letters in **any** alphabet (`fdVicPhrase`, code-point
+  ordering — correct for Latin, Greek and Cyrillic, with Ё the one Russian letter that sorts
+  out of place), so `vicSchedule` reproduces the historical Russian schedule;
+* the **keygroup placement was off by one**. The date's unused sixth digit means "the p-th
+  group from the end", and the hollow-nickel message pins what that means: `20818` is the
+  fifth group from the end of the printed ciphertext (`…15764 96851 20818 22370…`). The
+  insert/remove pair was self-consistent, so round-trip tests could not see it; the published
+  field message could. Both helpers now use index `L+1−p` / `L−p`, and the test asserts the
+  keygroup's position in the published tail.
+
+The article also publishes the **whole ciphertext stream**, which lets the diagonal stage be
+checked against real traffic: taking the printed 1030-digit sequence *after* the first
+transposition, the kitchen's disrupted transposition with the published 14-digit key, followed
+by keygroup insertion, reproduces the printed ciphertext — 1029 of 1035 digits exactly, with
+the remaining six positions being a defect of the article's own pair of matrices: the
+pre-transposition matrix it prints and the ciphertext it prints cannot both be right, and both
+were re-fetched and re-read from the source to confirm the copies in the test file are faithful.
+The six differing digits are therefore single-character errors in the published example itself.
+Reconciling exactly those six, with the printed ciphertext as the reference, makes the
+reproduction exact: **all 1035 digits**, keygroup in place. Both states are asserted, so the
+discrepancy is visible in the tests rather than smoothed over.
+
+Still out of reach: the historical **Russian checkerboard** (a 40-cell, 4-row table with the
+Cyrillic alphabet and the `п/л`, `н/ц`, `н/т`, `пвт` signs) — the kitchen implements the Latin
+variant described by the CIA article, so the nickel message can be driven through the schedule
+and the transpositions, but its substitution layer is not reproduced.
+
 ---
 
 ## 3. Gronsfeld and SECOM
@@ -388,7 +448,7 @@ node scripts/audit-cyberchef-sfx-coverage.mjs
 # OPERATIONS registered: 492 (492 unique ids); RECIPE_PACKS packs: 216 (639 entries)
 # dangling (no op): 0 ; orphaned ops: 0 ; VERDICT: SFX select-all covers the full registry
 
-node --test tests/cyberchef-field-cipher-deep-dive.test.mjs      # 10/10 pass
+node --test tests/cyberchef-field-cipher-deep-dive.test.mjs      # 11/11 pass
 node --test tests/cyberchef-*.test.mjs                            # registry, pack, SFX, cookbook suites pass
 node scripts/build-cyberchef-xdc.mjs                              # merged index.html + manifest + cyberchef.xdc
 ```
@@ -418,11 +478,11 @@ respectively); this note is the current record.
 2. **Diana + transposition variant.** zappi-tkn/Diana chains a columnar transposition
    after the trigraph step. If a published worked example surfaces, it can be added as a
    `mode` on `diana` rather than a new operation.
-3. **VIC: one source tool to explain.** Everything in the 2016 blog example reproduces except
-   its second-transposition table, which uses a left-prefix staircase rather than the D areas
-   described by Kahn (see §2b). A *published* diagonal-stage output from a third source — for
-   instance a legible scan of Figure 2 of "Number One From Moscow", or a training manual — would
-   show whether the staircase is a one-off bug in that article or a real variant used somewhere.
+3. **VIC: the Russian (historical) checkerboard.** The hollow-nickel message is now driven
+   through the schedule and both transpositions (§2c); what is still missing is the 40-cell,
+   four-row Cyrillic board with its signs (`п/л`, `н/ц`, `н/т`, `пвт`, comma, full stop) and the
+   "message starts" marker that the bisection uses in the Russian variant. Implementing it would
+   let the kitchen encipher/decipher the nickel message end to end.
 4. **VIC message-stage variants.** The Wikipedia example exercises one cut point and no
    keygroup; the recipe now covers transpositions and keygroup insertion and round-trips
    them, but a published vector with both would pin the defaults even harder.

@@ -86,6 +86,73 @@ const VIC_DIAG_PLAIN = "ABCDEFGHIJKLMONPQRSTUVWXabcdefghijklmnopqrstuvwx01234567
 const VIC_DIAG_CT =
   "pGKPVbg269qsLQvch37YBEIOTXe0lnrtuRwxi48ZADHMSWdjkmCFJNUaf15o";
 
+// ══ The real hollow-nickel message (the 1953 field ciphertext) ══════════════════
+// Transcribed from the Russian Wikipedia article «Шифр ВИК», which sources its
+// worked example to А. В. Синельников, «Шифры советской разведки» (2016), and
+// matches Kahn's CIA article "Number One From Moscow" for the key material:
+// date 391945, keygroup 20818, personal number 13, Cyrillic phrase
+// ТОЛЬКОСЛЫШНОНАУЛИЦЕГ (the first line of "The Lone Accordion"), and the 17/14
+// column widths.  NICKEL_AFTER_T1 is the published 1030-digit stream *after* the
+// first transposition (206 groups); NICKEL_FINAL is the published ciphertext with
+// the cleartext keygroup 20818 inserted fifth from the end (207 groups).
+const NICKEL_AFTER_T1 = `
+65730 94337 57918 93912 33454 79336 09626 19501 25307 11389
+39831 27711 22124 67057 18113 69528 25846 62487 14525 19541
+59657 49882 53977 55521 12020 22616 19691 39210 50224 19061
+15015 85111 16771 66813 26469 24410 13061 79325 69169 36190
+37853 81829 12416 70771 26347 31641 18190 58767 26821 07219
+87801 55852 16927 93461 17925 60061 39822 18702 55133 51295
+91830 31616 00124 04173 12730 22194 70117 97051 79172 09917
+64726 29717 64102 11544 95219 37741 30511 66516 99557 15416
+95676 56980 15856 70225 18606 34127 31225 69809 83128 21126
+06292 37794 12197 07819 88905 23574 27822 93667 51381 22871
+22721 14616 02102 79589 15076 12839 68815 85113 92076 16299
+51385 50029 69000 99173 75061 38422 73611 33394 29221 11693
+87051 94122 09761 14517 17023 75574 13191 70751 19127 59011
+21067 11215 92161 24149 11316 90666 62820 21503 18146 55162
+64262 80016 59256 93006 01166 81349 12714 85268 85671 93721
+60921 43689 53044 81554 79513 14822 96519 82092 01166 18974
+21279 68401 71492 87172 16657 77796 50716 16161 22032 91749
+95102 03521 91561 22679 62982 79566 89671 08561 73352 96829
+17607 92209 60569 21508 32391 18551 38533 65545 74181 55386
+86641 11121 36411 10154 26496 32273 42349 03091 29316 31287
+51622 09150 32227 68367 69665 18322
+`.replace(/\s+/g, "");
+
+const NICKEL_FINAL = `
+14546 36056 64211 08919 18710 71187 71215 02906 66036 10922
+11375 61238 65634 39175 37378 31013 22596 19291 17463 23551
+88527 10130 01767 12336 16669 97846 76559 50062 91171 72332
+19262 69849 90251 11576 46121 24666 05902 19229 56150 23521
+51911 78912 32939 31966 12096 12060 89748 25362 43167 99841
+78271 31194 26838 77221 58343 61164 14349 01241 26269 71578
+31734 27562 51236 12982 18089 66218 22577 09454 81216 71953
+26986 89779 54197 11990 23881 48884 22165 62992 36449 41742
+30267 77614 31565 30902 85812 16112 93312 71220 60369 12872
+12458 19081 97117 70107 06391 71114 19459 59586 80317 07522
+76509 11111 36990 32666 04411 51532 91184 23162 82011 19185
+56110 28876 76718 03563 28222 31674 39023 07623 93513 97175
+29816 95761 69483 32951 97686 34992 61109 95090 24092 71008
+90061 14790 15154 14655 29011 57206 77195 01256 69250 62901
+39179 71229 23299 84164 45900 42227 65853 17591 60182 06315
+65812 01378 14566 87719 92507 79517 99651 82155 58118 67197
+30015 70687 36201 56531 56721 26306 87185 91796 51341 07796
+76655 62716 33588 21932 16224 87721 85519 23191 20665 45140
+66098 60959 71521 02334 21212 51110 85227 98768 11125 05321
+53152 14191 12166 12715 03116 43041 74822 72759 29130 21947
+15764 96851 20818 22370 11391 83520 62297
+`.replace(/\s+/g, "");
+
+// The two published matrices disagree at exactly six digits.  The transcriptions
+// above reproduce the article's own text at all six places (re-checked against a
+// re-fetch), so the inconsistency is in the published pair, not in this file.
+// Positions (0-based in NICKEL_AFTER_T1) and the digits the printed ciphertext
+// implies there:
+const NICKEL_DIGIT_FIXES = [[295, "6"], [389, "3"], [536, "6"], [597, "5"], [834, "8"], [862, "9"]];
+// …which sit at these positions of the final ciphertext:
+const NICKEL_EXPECTED_DIFFS = [118, 251, 258, 501, 624, 1027];
+const NICKEL_R_KEY = "30274304287712";
+
 // Published 2016 example, second (diagonal) transposition: the raw second key and
 // the pre-final output it produces, plus the header row of its tableau.
 const VIC_BLOG_K2 = "248992486743";
@@ -416,6 +483,54 @@ test("primary-source D-area rule (Kahn, CIA 1993) and the 2016 divergence", () =
       VIC_BLOG_PREFINAL,
       "the Kahn rule and the 2016 table must not be silently conflated",
     );
+  } finally {
+    dom.window.close();
+  }
+});
+
+test("the real hollow-nickel message: key schedule (Cyrillic phrase) and diagonal stage", () => {
+  const { run, dom } = boot();
+  try {
+    const ev = (code) => dom.window.eval(code);
+
+    // The key schedule of the 1953 message, from a Cyrillic phrase.
+    const sched = run("vicSchedule", "", {
+      phrase: "ТОЛЬКОСЛЫШНОНАУЛИЦЕГ",
+      date: "391945",
+      personal: "13",
+      keygroup: "20818",
+      row2: "AT ONE SIR",
+    });
+    assert.match(sched, /Phrase {4}: ТОЛЬКОСЛЫШ НОНАУЛИЦЕГ/, sched);
+    assert.match(sched, /C {9}: 91724 {3}\(A − B, no borrowing\)/, sched);
+    assert.match(sched, /E\.1 \/ E\.2 : 7420156398 \/ 6871954032/, sched);
+    assert.match(sched, /F\.1 \/ F\.2 : 9172408964 \/ 1234567890/, sched);
+    assert.match(sched, /G {9}: 6592554252/, sched);
+    assert.match(sched, /H {9}: 5938991898/, sched);
+    assert.match(sched, /Key lengths: 4 and 1 \(last two non-equal digits of P\) \+ personal 13 → 17 and 14/, sched);
+    assert.match(sched, /Q {9}: 96033183664690475 {3}\(17 digits — columnar transposition key\)/, sched);
+    assert.match(sched, /R {9}: 30274304287712 {3}\(14 digits — diagonal transposition key\)/, sched);
+
+    // The diagonal stage against the published final ciphertext.
+    assert.equal(NICKEL_AFTER_T1.length, 1030);
+    assert.equal(NICKEL_FINAL.length, 1035);
+    assert.equal(NICKEL_AFTER_T1.length % 5, 0);
+    const transposed = ev(`sxTransEnc(${JSON.stringify(NICKEL_AFTER_T1)},${JSON.stringify(NICKEL_R_KEY)},true)`);
+    const asSent = ev(`fdVicInsertKeygroup(${JSON.stringify(transposed)},"20818","5").cipher`);
+    assert.equal(asSent.length, NICKEL_FINAL.length, "same number of groups");
+    assert.equal(asSent.slice(-25, -20), "20818", "the keygroup is the fifth group from the end");
+    // (Every other position is checked by the diff assertion below.)
+    const diffs = [];
+    for (let i = 0; i < asSent.length; i += 1) if (asSent[i] !== NICKEL_FINAL[i]) diffs.push(i);
+    assert.deepEqual(diffs, NICKEL_EXPECTED_DIFFS, `six single-digit discrepancies expected, got ${diffs.length}`);
+
+    // Reconciling those six characters against the printed ciphertext makes the
+    // reproduction exact — every one of the 1035 digits.
+    const reconciled = [...NICKEL_AFTER_T1];
+    for (const [position, digit] of NICKEL_DIGIT_FIXES) reconciled[position] = digit;
+    const exact = ev(`sxTransEnc(${JSON.stringify(reconciled.join(""))},${JSON.stringify(NICKEL_R_KEY)},true)`);
+    const exactSent = ev(`fdVicInsertKeygroup(${JSON.stringify(exact)},"20818","5").cipher`);
+    assert.equal(exactSent, NICKEL_FINAL, "the hollow-nickel ciphertext reproduces digit for digit");
   } finally {
     dom.window.close();
   }
