@@ -57,7 +57,7 @@ test("renderer: headings, emphasis, lists, rules, pre", () => {
   const { renderWiki } = renderer();
   const out = renderWiki("== Title ==\n\n'''bold''' and ''ital''\n\n* one\n* two\n\n----\n\n indented", CTX);
   assert.match(out, /<h2>Title<\/h2>/);
-  assert.match(out, /<strong>bold<\/strong> and <em>ital<\/em>/);
+  assert.match(out, /<b>bold<\/b> and <i>ital<\/i>/);
   assert.match(out, /<ul>\s*<li>one<\/li>\s*<li>two<\/li>\s*<\/ul>/);
   assert.match(out, /<hr \/>/);
   assert.match(out, /<pre>indented<\/pre>/);
@@ -103,7 +103,7 @@ test("renderer: 0.8 conformance — strongest emphasis, =h1=, mediawiki tables, 
     html.match(/\/\*WIKI-RENDER-BEGIN\*\/([\s\S]*?)\/\*WIKI-RENDER-END\*\//)[1]
     + "\nreturn { renderWiki, wikiTitleDate, wikiEventTags, wikiParseBday };",
   )();
-  assert.match(renderWiki("''''both''''", CTX), /<em><strong>both<\/strong><\/em>/, "'''' -> StrongestFilter <i><b>");
+  assert.match(renderWiki("''''both''''", CTX), /<i><b>both<\/b><\/i>/, "'''' -> StrongestFilter <i><b>");
   assert.match(renderWiki("= Top =", CTX), /<h1>Top<\/h1>/, "= H = is an h1 in HeadingFilter");
   assert.match(renderWiki("- dash item", CTX), /<ul>\s*<li>dash item<\/li>\s*<\/ul>/, "ListFilter accepts - bullets");
   const table = renderWiki("{|\n|-\n! Name\n! Kind\n|-\n| jar\n| wiki\n|}", CTX);
@@ -206,6 +206,23 @@ test("R4: three-way merge combines disjoint edits, marks real conflicts", () => 
   assert.match(html, /baseHash:wikiTextHash\(prev\?prev\.body:""\)/);
   assert.match(html, /wikiMerge3\(base,cur\.body,p\.body\)/);
   assert.match(html, /⚠ sync /);
+});
+
+test("R8: print stylesheet flattens the jar; seeds are plain .wiki files", () => {
+  const print = html.match(/@media print\{([\s\S]*?)\n\}/);
+  assert.ok(print, "@media print block present");
+  for (const needle of ["header.top", "aside.rail", "nav.tabs", "[hidden]", "background:#fff", "break-after:avoid"]) {
+    assert.ok(print[1].includes(needle), "print CSS covers " + needle);
+  }
+  // the round-trip contract with the Java original is the .wiki file:
+  // every seed title must be a legal 0.8 filename (WikiLink forbids
+  // \ * / : ? " < > |) and every body plain text
+  const pages = seeds();
+  for (const [title, body] of Object.entries(pages)) {
+    assert.doesNotMatch(title, /[\\\/:*?"<>|]/, "seed title not Java-safe: " + title);
+    assert.equal(typeof body, "string");
+    assert.ok(!body.includes("\u0000"), "seed body not plain text: " + title);
+  }
 });
 
 test("xdc bundle is a zip rooted at index.html + manifest.toml + DjVu reader", () => {

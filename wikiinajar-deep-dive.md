@@ -325,7 +325,8 @@ producing script or undefined output (1.78 M HTML chars). Later
 passes added: R1 rejection checks and the Java-patch cross-reference,
 the R3 Calendar semantics regression lock, the R7 conformance corpus,
 the R6 vCard fixture corpus, the R5 lazy-DjVu transport probe, and
-the R4 three-way merge algebra — 20 Node tests, all green. The Java
+the R4 three-way merge algebra, and the R8 print/round-trip
+contract — 21 Node tests, all green. The Java
 smoke test and full-suite results for the patch predate this turn and
 are recorded in `docs/wikiinajar-image-support.md`.
 
@@ -425,13 +426,16 @@ number:
   divergence: 0.8's `Vcard` retains all properties generically;
   this rebuild keeps the five displayed PIM fields
   (FN/TEL/EMAIL/BDAY/ORG) and promises nothing else.
-- **R7 — Renderer conformance. ◐ In progress (first pass 2026-10-14).**
+- **R7 — Renderer conformance. ✅ Resolved 2026-10-14** (first pass
+  plus the executed Java corpus below).
   The 0.8 chain is now enumerated from `RenderEngine` (NoWikiCapture →
   Section → Heading → Hr → Intended → Url → List → Strongest →
   Stronger → Strong → WikiLink → Break → HtmlTags → Table →
   NoWikiInsert) over `escapeHtmlChars` output — the same escape-first
   order this renderer uses. Aligned in this pass: `''''x''''` →
-  `<em><strong>` (StrongestFilter), `= H =` → `<h1>` (HeadingFilter
+  `<i><b>` (StrongestFilter; tag names corrected to Java's own after
+  the executed corpus below first read them as `<em><strong>`),
+  `= H =` → `<h1>` (HeadingFilter
   emits `<h` + count), `-` list bullets (ListFilter's `[-#*]+`),
   MediaWiki `{| … |}` tables (TableFilter — the pipe-table form
   remains a marked md2wiki EXT), and `ftp://` autolinks (UrlFilter).
@@ -450,12 +454,48 @@ number:
   quirks — including one case, `== H ===`, where Java and this
   renderer produce the same `<h2>H =</h2>` by different mechanics,
   and the mirrored `=== H ==`, where they genuinely diverge).
-  Still to do: run the same corpus through the real Java filters
-  under the recovered JDK for a byte-level diff.
-- **R8 — Print & longevity.** The Java pitch was “readable in fifty
-  years”. Verify the exported jar JSON + `.wiki` files round-trip
-  through the *unpatched* 0.8 binary, and give the browser edition a
-  tested print stylesheet so a jar can still be flattened to paper.
+  **✅ Executed 2026-10-14:** the corpus (extended to 18 cases) was
+  run through the real filters — the astecenko trunk + XRays sources
+  compiled unmodified under Temurin 21 (`RenderEngine.render(
+  escapeHtmlChars(x))`, cwd seeded with `Main Page.wiki` to mirror
+  the Node context). Results after normalising href prefixes and
+  the documented SectionFilter spacers: 2 byte-identical, the rest
+  classified — presentational only (`<li >` spacing, table
+  `class='even|odd'` rows, `<pre id='intended'>`, `<hr/>` spelling),
+  paragraph model (Java leaves body text bare; this renderer wraps
+  `<p>`), route encoding (`Main+Page` form-encoding + `title=`
+  attributes vs hash routes), and browser-side improvements kept on
+  purpose (`target=_blank rel=noopener` on external links). Two
+  facts were *proven* rather than inferred: `=== H ==` stays raw in
+  Java (the pinned divergence is real), and anchor links are absent
+  from 0.8 — `[[Main Page#Top]]` becomes an edit link for a page
+  literally named `Main Page#Top`, so anchors stay credited to More
+  0.9.8 alone. One new discovery: `WikiLink` rejects targets
+  containing `\ * / : ? " < > |` with the literal text `(Link must
+  not contain: \*/:?"<>|)` — the browser keeps `/`-titles as a
+  documented storage-key divergence, now with the exact Java error
+  string on record. Remaining R7 work: none queued; further cases
+  belong in the Node corpus first.
+- **R8 — Print & longevity. ✅ Resolved 2026-10-14.** Print: the
+  `@media print` block now hides all chrome and non-visible views,
+  flattens panels to white, wraps `<pre>`, and keeps headings with
+  their text (`break-after: avoid`) — a jar page prints as a clean
+  document; a test pins the rules. Round-trip: the unpatched 0.8
+  *binary* is unreachable from this sandbox (SourceForge is outside
+  its egress), so the original was instead compiled unmodified from
+  the recovered trunk sources (wiki + XRays framework, Temurin 21)
+  and booted on port 3003. Every seed page plus three converted
+  corpus pages were written as `.wiki` files into its
+  `public/docs/wiki/` — all render (`<h2>` structure intact, index
+  lists them, calendar answers 200, no unescaped script). Boundaries
+  found, honestly: jar JSON remains a browser-side format (Java has
+  no JSON import — the `.wiki` file is the interchange, and always
+  was), extension namespaces degrade to 0.8's own `Unknown
+  namespace: …` text rather than corrupting pages, and titles must
+  satisfy the Java filename rules (`\ * / : ? " < > |` forbidden) —
+  a test now pins every seed title as Java-safe. “Readable in fifty
+  years” holds for exactly the layer rico_g designed it for: plain
+  text files with the title as the filename.
 
 ### Research log
 
@@ -510,6 +550,19 @@ number:
   body in History behind a visible ⚠ conflict flag instead of
   overwriting silently. The seeded documentation page now describes
   merging rather than newest-wins. 20 Node tests green.
+- **2026-10-14 (continued research: R7 executed corpus, R8)** — The
+  staged JDK 21 tarball in `.relay/jdk/` was reassembled (SHA-256
+  verified) and the astecenko trunk + XRays sources compiled
+  unmodified. The 18-case corpus ran through the real
+  `RenderEngine`, confirming the pinned divergences by execution
+  (raw `=== H ==`, no anchors in 0.8), correcting the emphasis tag
+  names to `<b>`/`<i>`, and surfacing the `WikiLink` forbidden-char
+  rejection with its exact error text (R7 entry). The same compiled
+  original then served this rebuild's seed + converted pages as
+  `.wiki` files — the R8 round-trip — while the browser edition
+  gained a tested print stylesheet. 21 Node tests green. Scratch
+  clones and the corpus harness live outside the repo and are
+  reproducible from the commands in the R7/R8 entries.
 
 ## 11. Sources
 
