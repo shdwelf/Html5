@@ -5,7 +5,10 @@ import { JSDOM } from "jsdom";
 
 const appHtml = readFileSync(new URL("../public/apps/cyberchef/index.html", import.meta.url), "utf8");
 const report = JSON.parse(readFileSync(new URL("../docs/cyberchef-recipe-sync-2026-10-07.json", import.meta.url), "utf8"));
-const expectedCount = report.counts.mergedRuntime + 4;
+// Post-merge additions: QR/Avery/complexity-lab/symbolic-logic, then the
+// 2026-10-14 field-cipher deep dive (OD message, VIC schedule + message stage,
+// Diana table + cipher, Gronsfeld analysis, hexdump/octal byte recipes).
+const expectedCount = report.counts.mergedRuntime + 14;
 
 function createDom(html = appHtml) {
   return new JSDOM(html, {
@@ -37,7 +40,7 @@ test("generated Select All SFX boots the complete recipe registry offline", () =
     assert.doesNotMatch(sfxHtml, /^\s*var SFX_PACKS=null;/m, "the standalone is not left in unconfigured state");
 
     // Keep the shipped bootstrap and SFX installation path intact while
-    // suppressing the expensive act of executing all 482 operations in series.
+    // suppressing the expensive act of executing all 492 operations in series.
     const instrumented = sfxHtml.replace("\nsfxInitUi();", "\nwindow.bake=()=>Promise.resolve();\nsfxInitUi();");
     assert.notEqual(instrumented, sfxHtml, "test harness found the real SFX bootstrap call");
     packaged = createDom(instrumented);
@@ -53,7 +56,7 @@ test("generated Select All SFX boots the complete recipe registry offline", () =
       assert.ok(loadedIds.includes(id), `SFX Select All omitted ${id}`);
     }
     assert.match(packaged.window.document.getElementById("sfx-banner").textContent, new RegExp(`${expectedCount} ops loaded`));
-    assert.match(appHtml, /HTML5 · 482 recipes/);
+    assert.match(appHtml, new RegExp(`HTML5 · ${expectedCount} recipes`));
     assert.match(appHtml, /zenInit\(\);\s*sfxInitUi\(\);\s*renderOpsList\(\);renderRecipe\(\);/);
   } finally {
     packaged?.window.close();

@@ -1,0 +1,277 @@
+# Field-cipher deep dive — OD poem code, VIC, Gronsfeld, SECOM, and the Diana cryptosystem
+
+Date: 2026-10-14
+Kitchen: `public/apps/cyberchef/index.html` → 492 operations, 216 packs, 639 pack entries
+New recipes: `odPoemExact`, `vicSchedule`, `vicExact`, `diana`, `dianaTable`,
+`gronsfeldAnalyze`, `toHexdump`, `fromHexdump`, `toOctal`, `fromOctal`
+Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 7/7 pass,
+every published control vector below reproduced digit for digit.
+
+This note records the deep dive requested for the hand ciphers already in the kitchen
+(OD poem code, VIC, Gronsfeld, SECOM), the identification and implementation of the
+"Diane" cipher, and the binary-byte recipe pack. Each claim is tied to a public source,
+and each implementation is tied to a published control vector so the recipes can fail
+loudly if they ever drift.
+
+---
+
+## 0. The "Diane" cipher is the Diana cryptosystem
+
+No hand cipher named *Diane* exists. Searches for "Diane cipher", "Diane code" and
+"Diane hand cipher" return only a person named Diane in a Cipher Mysteries comment
+thread; the repository has no `diane` reference either. The requested cipher is the
+**Diana cryptosystem**: an NSA-developed one-time-pad trigraph used by US Army Special
+Forces in Vietnam (and by allied services afterwards), the last physical wheel/table
+cipher issued for field Morse traffic. Sources reviewed 2026-10-14:
+
+* blogbyben.com, "Trigraphs, Diana Pads and Zombies" (2014-12-08) — SF Morse traffic,
+  pads of random five-letter groups (30 words per page), and the property that any three
+  letters of a trio close in **every** order (`BKO`, `KOB`, `OBK`, `BOK`, …).
+* krypto431 / CADCRYS (sa6mwa) — reciprocal table (normal alphabet against the reversed
+  alphabet), same column for encrypt and decrypt, `Z` as operator/fill.
+* courtneyimbert/diana — a Python OTP implementation described as "similar to Vernam or
+  Vigenère"; zappi-tkn/Diana — Diana followed by a columnar transposition.
+* creativecrafthouse.com — the US Army Special Forces cipher disk ("the last physical
+  wheel-based cipher used by the U.S. military").
+
+Mechanics implemented (`diana`, `dianaTable`):
+
+```
+c = 25 − (k + p) mod 26       k = pad/key letter, p = plaintext letter
+```
+
+Because `25 − (k + p)` is symmetric in `k` and `p`, the table is **reciprocal**: the same
+entry enciphers and deciphers, and a trio `{a,b,c}` closes in all six orders. Control
+vector used in the tests: `table[B][K] = O`, and all six orders of `{B, K, O}` must close.
+`dianaTable` prints the full 26×26 worksheet and self-tests all 676 entries for
+reciprocity (`PASS`).
+
+Design notes:
+
+* Pad/key letters repeat for demonstration only; in the field the pad is one-time and
+  destroyed after use. The recipe description says so, and the operation exists to teach
+  the arithmetic and the trio property, not to protect traffic.
+* Case and non-letters pass through unchanged so formatted messages stay readable;
+  `group=5` collapses the output to classic five-letter groups.
+* `diana` is not the same as the kitchen's existing `vic`/`straddlingCheckerboard`
+  digit encodings — Diana never leaves the 26 letters.
+
+---
+
+## 1. OD poem code — from key worksheet to full message
+
+The kitchen already had `odPoemKey` (indicator/key worksheet: poem, word positions,
+secret → words, key, ranks, indicator, check group). What was missing was the message
+stage. `odPoemExact` now performs the complete procedure:
+
+1. Number the first 20 words of the agreed poem.
+2. Key words are picked by position; the key is their concatenation
+   (`ONZE WAS ZIEN ALLE` → `ONZEWASZIENALLE` by the published example).
+3. Message is uppercased, `.` becomes `STOP`, spaces are dropped, the random three-letter
+   callsign is appended, and pad letters are prepended until the length is a multiple of
+   five (the published example pads `QW` to reach 130 letters = 26 groups).
+4. A columnar transposition keyed by those words produces the groups.
+5. The indicator hides the word positions under the pre-agreed five-digit secret
+   (`A=1…Z=26`, zero-padded left to five slots), and the check group is the indicator
+   put through the published two-column swap (C↔M, R↔H, U–Z unchanged).
+
+Control vector (Crypto Museum, Ton van Schendel / Ordedienst worksheet):
+
+| Element | Published | Kitchen |
+| --- | --- | --- |
+| Words | ONZE(2) WAS(6) ZIEN(11) ALLE(15) | same |
+| Secret | `58265` | same |
+| Indicator | `EJHQT` | `EJHQT` |
+| Message | 26 groups, starting `DTAOR AAROC FATSA FUEWH` and ending `… SFPAD EITNU` | exact, all 26 groups |
+| Check | `OTRGJ` | `OTRGJ` |
+
+Two source quirks are recorded rather than reproduced:
+
+* The Crypto Museum worked row computes the fourth position as **14** in the arithmetic
+  display while its prose (and the resulting indicator `EJHQT`) require **15**. The
+  kitchen uses ALLE = 15, which is what reproduces the published indicator.
+* The published message only reaches 130 letters with the two pad letters included; the
+  plaintext itself is 128. The recipe states the pad it inserted so the arithmetic is
+  auditable, and on decryption it strips the pad (toggleable) and reports the check
+  comparison — a wrong check group is printed as `MISMATCH — expected …, got …`.
+
+Not to be confused with the kitchen's `soePoemCode` (SOE/SAS poem code, Jabberwocky
+default, single/double transposition), which is a different procedure from the same era.
+
+---
+
+## 2. VIC cipher — schedule and message stage, both against the published example
+
+The kitchen's `vic` operation was checkerboard-only (text ↔ digits). The deep dive added
+the other two halves of the cipher:
+
+* `vicSchedule` — the key schedule, labelled line by line the way the CIA analysis does:
+  `A` keygroup, `B` date, `C = A − B` **without borrowing**, `D` first 20 phrase letters,
+  `E.1/E.2` sequencing of each ten-letter half, `F.1` five chain digits appended to `C`,
+  `F.2` the aide row, `G = E.1 + F.1` digit-wise mod 10, `H` = `G` encoded under `E.2`
+  (the ten digits that carry the real strength), `J` the sequencing of `H` (column order),
+  `K–P` the five ten-digit lines from 50 chain digits, then `Q` (columnar key) and
+  `R` (diagonal key) as the first `a` and next `b` digits of the column read, where `a`
+  and `b` come from the last two non-equal digits of `P` plus the personal number, and
+  finally `S`, the checkerboard header row.
+* `vicExact` — message stage: bisect the plaintext and swap the halves (optional literal
+  marker), straddling-checkerboard encode with the `S` header, pad to fives, optional
+  columnar (`Q`) and diagonal/triangular-disrupted (`R`) transpositions, optional
+  cleartext keygroup insertion `P` groups from the end. `decrypt` inverts each step in
+  reverse order and strips up to four trailing pad digits.
+
+Control vector (published worked example: personal number 6, date `139195`, phrase
+"Twas the night before Christmas", keygroup `72401`):
+
+| Line | Published | Kitchen |
+| --- | --- | --- |
+| C | `69592` | `69592` |
+| E.1 / E.2 | `8017942653` / `6013589427` | same |
+| F.1 / F.2 | `6959254417` / `1234567890` | same |
+| G | `4966196060` | `4966196060` |
+| H | `3288628787` | `3288628787` |
+| J | `3178429506` | `3178429506` |
+| K / L / M / N / P | `5064805552` / `5602850077` / `1620350748` / `7823857125` / `5051328370` | same |
+| Key lengths | 13 and 6 | 13 and 6 |
+| Q | `0668005552551` | `0668005552551` |
+| R | `758838` | `758838` |
+| S (checkerboard header) | `5961328470` | `5961328470` |
+| Message code | 99 digits, `602538000055500000080873198000099911155580677642881866676667549976028759956964596658338765886658337` | exact |
+
+Checkerboard encoding rules that had to be rediscovered from the vector (each one is a
+silent-failure trap, so they are asserted in the test):
+
+* The eight single-digit letters are the second row `AT ONE SIR` — the two blanks become
+  the row heads (here `6` and `8`); the remaining 28 symbols fill the two ten-column rows.
+* Digits are sent as **three identical digits**, wrapped by the `/` (class `80`) shift
+  symbol before and after each number run.
+* Spaces are dropped entirely: VIC has no space symbol, so word division is read by
+  sense. The published message uses `/` as a visual half-marker in the article; it is not
+  a cipher symbol, and inserting it desynchronises everything after it.
+* The bisected halves are concatenated with no separator. With spaces and the article's
+  visual `/` removed, the published message is 55 characters and is cut **20** into it:
+  `ATTACKATDAWN.BYDAWNI` + `MEAN0500.NOT0915LIKEYOUDIDLASTTIME.`, and the halves are sent
+  swapped. Getting this cut wrong is invisible until the last digit, which is exactly why
+  it is an asserted test vector.
+
+Three implementation bugs were found and fixed by exactly this vector, and are worth
+remembering: (1) chain addition must *extend* the seed rather than re-deriving from the
+original digits (symptom: lines K–P all shifted, widths 11/8); (2) sequencing must treat
+`0` as **10** (sorts last) with ties resolved left-to-right (symptom: `S` came out
+`7183540692` instead of `5961328470`); (3) lines `Q`/`R` are read column by column under
+`J` in digit order 1…10 **continuing across** columns (symptom: `R` wrong while `Q` was
+right).
+
+Round-trip evidence in the test: the message `ATTACK AT DAWN …` cut at 20, double
+transposition and keygroup insertion produces 20 complete five-digit groups containing
+the keygroup `72401`, and decrypting that ciphertext with the same key material recovers
+the plaintext exactly, with the two pad digits identified and removed.
+
+---
+
+## 3. Gronsfeld and SECOM
+
+**Gronsfeld** (`gronsfeld`, existing) is the numeric-key Vigenère (`C = P + k mod 26`).
+The deep dive added `gronsfeldAnalyze` because the weakness is the point: a digit key has
+only ten candidates per column, so the analyser ranks key lengths 1…12 by average column
+index of coincidence and then solves each column by English letter frequency. Control:
+the analyser recovers key `3141` and the exact plaintext from 61 letters of ciphertext
+produced by the kitchen's own `gronsfeld`, with the true length (`4`, IoC ≈ 0.067, the
+English value) ranked first.
+
+**SECOM** already had its full implementation (`secomSchedule`, `secomExact`) added with
+the previous field-cipher work and verified against the 105-digit publisher example in
+`tools/secom_probe.py`. The current note only re-checks that the pack lists them
+(`Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld`) and that coverage stays at
+zero dangling / zero orphaned entries. SECOM is the extended-checkerboard VIC variant
+(the VIC article itself links to it as such), which is why the two are trained together.
+
+**Related Crow follow-up (2026-10-14, separate note):** the claim that the 600-digit
+Crow intercept holds 217 English letters is arithmetically impossible —
+`docs/crow-217-letter-claim-check-2026-10-14.md`, `tools/crow_letter_count_bounds.py`.
+Nothing about that finding changed in this deep dive; the SECOM arithmetic is reused
+unchanged.
+
+---
+
+## 4. Binary recipes
+
+The kitchen already had `toHex`, `fromHex`, `toBinary`, `fromBinary`, `toASCII`,
+`fromASCII`. What was missing for actual binary work was an offset-based dump and base-8
+bytes:
+
+* `toHexdump` / `fromHexdump` — 16-byte (or 8/32) lines with an eight-digit offset, two
+  hex groups, and an ASCII gutter. `fromHexdump` reads only the offset and hex columns
+  and **ignores the ASCII gutter**, so a corrupted or re-rendered gutter cannot inject
+  bytes; the test feeds a poisoned gutter (`Hello 6f6f6f!`) and still recovers
+  `Hello World!`.
+* `toOctal` / `fromOctal` — space-separated octal bytes with three-digit padding or
+  minimal width, and a reader that accepts three-digit groups, minimal values and the
+  historical GNU/`od`-style tokens alike. Round trips are asserted against `toHex`.
+
+Both dumps take the same `source` selector as the rest of the kitchen, so `Load File`
+bytes (the raw byte string) can be dumped directly instead of being forced through UTF-8.
+
+Two new packs make this reachable from the SFX "select all" installer:
+
+* `Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld`
+  (`odPoemExact`, `vicSchedule`, `vicExact`, `diana`, `dianaTable`, `gronsfeld`,
+  `gronsfeldAnalyze`, `odPoemKey`, `secomExact`, `straddlingCheckerboard`)
+* `Binary Bytes Lab — Hexdump & Octal`
+  (`toHexdump`, `fromHexdump`, `toOctal`, `fromOctal`, `toHex`, `fromHex`, `toBinary`,
+  `fromBinary`)
+
+---
+
+## 5. Counters and verification
+
+| Artifact | Before | After |
+| --- | --- | --- |
+| Kitchen badge / registry | 482 | 492 |
+| Recipe packs | 214 | 216 |
+| Pack entries | 621 | 639 |
+| `cyberchef.xdc` | 482-era build | regenerated, `manifest.toml` reads 492 operations |
+
+Commands run and their results:
+
+```bash
+node scripts/audit-cyberchef-sfx-coverage.mjs
+# OPERATIONS registered: 492 (492 unique ids); RECIPE_PACKS packs: 216 (639 entries)
+# dangling (no op): 0 ; orphaned ops: 0 ; VERDICT: SFX select-all covers the full registry
+
+node --test tests/cyberchef-field-cipher-deep-dive.test.mjs      # 7/7 pass
+node --test tests/cyberchef-*.test.mjs                            # registry, pack, SFX, cookbook suites pass
+node scripts/build-cyberchef-xdc.mjs                              # merged index.html + manifest + cyberchef.xdc
+```
+
+Files touched by this dive: `public/apps/cyberchef/index.html`,
+`public/apps/cyberchef-merged/**` (regenerated), `cyberchef.xdc` (regenerated),
+`public/apps/cookbook/index.html` (status card now says 492/492),
+`tests/cyberchef-field-cipher-deep-dive.test.mjs` (new),
+`tests/cyberchef-sfx.test.mjs`, `tests/cyberchef-recipe-sync.test.mjs`,
+`tests/cyberchef-cookbook.test.mjs`, `README.md`.
+
+Deliberately left alone: `docs/cyberchef-sfx-coverage-audit-2026-10-13.md` and the
+2026-10-09 audit are dated records of what was true then (482 and 480 operations
+respectively); this note is the current record.
+
+---
+
+## 6. Open threads for continued research
+
+1. **Diana pad provenance.** The published material describes *what* the pads were
+   (random five-letter groups, 30 words per page, one-time) but no generator or pad book
+   is reproduced anywhere accessible. Any historical pad-generation rule (alphabet,
+   Z-as-fill/operator usage, group ordering) would let the recipe emulate a pad page.
+2. **Diana + transposition variant.** zappi-tkn/Diana chains a columnar transposition
+   after the trigraph step. If a published worked example surfaces, it can be added as a
+   `mode` on `diana` rather than a new operation.
+3. **VIC message-stage variants.** The published example exercises one cut point and no
+   keygroup; a second control vector (keygroup inserted, transpositions applied) from a
+   manual excerpt would pin `cut`-default and pad-stripping behaviour even harder.
+4. **Gronsfeld history.** The cipher is usually attributed to Count Gronsfeld (17th c.);
+   a primary source for the digit-key convention would let the recipe cite it instead of
+   the generic Vigenère relationship.
+5. **SECOM/Crow.** The 600-digit intercept still has no published plaintext; the bounds
+   tool (`tools/crow_letter_count_bounds.py`) is the standing falsifier for any new
+   letter-count claim, and `tools/secom_probe.py` re-checks the 105-digit example.
