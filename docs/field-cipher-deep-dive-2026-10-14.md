@@ -198,6 +198,24 @@ transposition and keygroup insertion produces 20 complete five-digit groups cont
 the keygroup `72401`, and decrypting that ciphertext with the same key material recovers
 the plaintext exactly, with the two pad digits identified and removed.
 
+### 2a-bis. The published micro-vectors for the three primitives
+
+The same article that documents the recipe publishes three one-line examples, and all three
+are now pinned by tests (they also confirm the "zero is ten" rule that `main` had to fix on
+the SECOM side):
+
+| Primitive | Published | Kitchen |
+| --- | --- | --- |
+| Sequencing a word (`Octopus`) | `2163475` | `fdSeqLetters` → same |
+| Sequencing digits (`90210`, zero valued at 10) | `34215` | `fdSeqDigits` → same |
+| Chain addition (seed `90210`, five steps) | `92319` | `fdChainExt` → same |
+| Digit encoding (`90210` under key `6013589427`) | `27067` | `fdVicDigitEncode` → same |
+
+The encoding rule is worth stating precisely because it is easy to get backwards: the aide
+row `1234567890` is written under the key row, and each digit of the number is replaced by
+the key digit **above** it (`0 → 7`, `9 → 2`, `2 → 0`, `1 → 6`, `0 → 7` for the example
+above), which is how Line-G becomes Line-H in the schedule.
+
 ### 2b. A second published example — and the diagonal transposition it corrected
 
 A second, fully worked VIC example exists (Basic Cryptography, "The Soviet Spy Hand Cipher

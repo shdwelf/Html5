@@ -293,6 +293,18 @@ test("VIC diagonal transposition follows the published rule, not a triangle gues
     // Published first-transposition vector of the 2016 example (plain columnar).
     assert.equal(ev(`sxTransEnc(${JSON.stringify(VIC_BLOG_D0)},"${VIC_BLOG_Q}",false)`), VIC_BLOG_D1);
 
+    // Published micro-vectors from the same article that documents the recipe:
+    // sequencing of letters and of digits (0 valued at 10), chain addition, and
+    // the digit-encoding step (90210 with key 6013589427 → 27067).
+    assert.equal(ev('fdSeqLetters("OCTOPUS")'), "2163475");
+    assert.equal(ev('fdSeqDigits("90210")'), "34215");
+    assert.equal(ev('fdChainExt("90210",5)'), "92319");
+    assert.equal(ev('fdVicDigitEncode("90210","1234567890","6013589427")'), "27067");
+    // …and the encoding step is what vicSchedule uses for Line H.
+    const schedule = run("vicSchedule", "", VIC_KEY);
+    assert.match(schedule, /H {9}: 3288628787/);
+    assert.equal(ev(`fdVicDigitEncode("4966196060","1234567890","6013589427")`), "3288628787");
+
     // Every transposition setting must round-trip through the recipe.
     const message = "ATTACK AT DAWN BY DAWN I MEAN 0500 NOT 0915 LIKE YOU DID LAST TIME";
     for (const transp of ["none", "single", "double"]) {
