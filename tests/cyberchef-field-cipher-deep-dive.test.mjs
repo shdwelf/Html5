@@ -593,3 +593,90 @@ test("the deep-dive note keeps its evidence trail in sync with the tests", () =>
   assert.ok(total > 1, "found the test declarations");
   assert.match(note, new RegExp(`\\b${total}/${total} pass`), `the note must say ${total}/${total} pass`);
 });
+
+test("Kahn's Figure 2 width page: the personal number plus Line P's last two dissimilar digits", () => {
+  const { run, dom } = boot();
+  try {
+    const ev = (code) => dom.window.eval(code);
+    const KEY = { phrase: "ТОЛЬКОСЛЫШНОНАУЛИЦЕГ", date: "391945", personal: "13", keygroup: "20818", row2: "AT ONE SIR" };
+
+    // "Number One From Moscow" prints Line P as 4 0 6 2 7 8 3 4 1 1 and annotates
+    // its own rows "13+4=17 (tableau 1)" and "13+1=14 (tableau 2)":
+    // "The widths of the two transposition tableaux are found by adding respectively
+    // the eighth and ninth numbers -- or perhaps the last two dissimilar numbers --
+    // in Line P to the agent's personal number, in this case 13."
+    const lineP = "4062783411";
+    const eighth = Number(lineP[7]);
+    const ninth = Number(lineP[8]);
+    assert.deepEqual([eighth, ninth], [4, 1], "the eighth and ninth numbers of Line P");
+    assert.deepEqual([13 + eighth, 13 + ninth], [17, 14], "13 + 4 and 13 + 1 columns");
+    // Line P ends "... 1 1", so the hedge costs nothing: the last two dissimilar
+    // digits are those same two, read 4 then 1.
+    const reversed = [...lineP].reverse();
+    const lastDissimilar = reversed.find((digit) => digit !== reversed[0]);
+    assert.equal(lastDissimilar, "4", "the last digit that differs from the final one");
+    assert.deepEqual([13 + Number(lastDissimilar), 13 + Number(reversed[0])], [17, 14], "same widths by the hedge");
+
+    // The schedule carries Line P, the two widths and the two breeder keys whose
+    // lengths are exactly those widths.
+    const sched = run("vicSchedule", "", KEY);
+    assert.match(sched, /P {9}: 4062783411 {3}\(chain addition of H for 50 digits\)/, sched);
+    assert.match(sched, /Key lengths: 4 and 1 \(last two non-equal digits of P\) \+ personal 13 → 17 and 14/, sched);
+    assert.match(sched, /Q {9}: 96033183664690475 {3}\(17 digits — columnar transposition key\)/, sched);
+    assert.match(sched, /R {9}: 30274304287712 {3}\(14 digits — diagonal transposition key\)/, sched);
+    assert.equal(ev('fdVicSchedule("ТОЛЬКОСЛЫШНОНАУЛИЦЕГ","391945",13,"20818").Q.length'), 17);
+    assert.equal(ev('fdVicSchedule("ТОЛЬКОСЛЫШНОНАУЛИЦЕГ","391945",13,"20818").R.length'), 14);
+    // Line S is the sequential key of Line P, and it is the digit sequence printed
+    // across the top of the published checkerboard.
+    assert.equal(ev('fdSeqDigits("4062783411")'), "5073894612");
+    assert.match(sched, /S {9}: 5073894612 {3}\(checkerboard header row\)/, sched);
+
+    // "In 1956 Hayhanen's personal number was changed from 13 to 20, so that the
+    // width of the transposition tableaux was increased" — 20+4 and 20+1, and both
+    // breeder keys grow with them.
+    const wide = run("vicSchedule", "", { ...KEY, personal: "20" });
+    assert.match(wide, /Key lengths: 4 and 1 \(last two non-equal digits of P\) \+ personal 20 → 24 and 21/, wide);
+    assert.match(wide, /Q {9}: 960331836646904753027430 {3}\(24 digits — columnar transposition key\)/, wide);
+    assert.match(wide, /R {9}: 428771231408872709558 {3}\(21 digits — diagonal transposition key\)/, wide);
+    assert.match(wide, /S {9}: 5073894612 {3}\(checkerboard header row\)/, "Line S does not depend on the personal number");
+  } finally {
+    dom.window.close();
+  }
+});
+
+test("the 1940 Infantry Journal Gronsfeld rule: key digits run the clear forward, radio runs it back", () => {
+  const { run, dom } = boot();
+  try {
+    // Captain John V. Grombach, "The Invisible Weapon", Infantry Journal, July-August
+    // 1940, p. 342 (archive.org/details/invisible-weapon-grombach): "In the Gronsfeld,
+    // there is a set of key numbers in a series that can be easily memorized. These
+    // numbers are written down over the 'clear' and repeated as often as necessary.
+    // Each letter of the 'clear' is then represented in the written message by a
+    // letter which is the number of letters further in the alphabet called for by the
+    // key number over it." The same article recommends "a reverse of the Gronsfeld
+    // cipher especially adapted for radio", so the direction is a property of the
+    // source, not a preference.
+    const clear = "ATTACKATDAWN";
+    const key = "3141";
+    const digits = [...key].map(Number);
+    const forward = [...clear]
+      .map((ch, i) => String.fromCharCode(65 + ((ch.charCodeAt(0) - 65 + digits[i % digits.length]) % 26)))
+      .join("");
+    const backward = [...clear]
+      .map((ch, i) => String.fromCharCode(65 + ((ch.charCodeAt(0) - 65 - digits[i % digits.length] + 26) % 26)))
+      .join("");
+    assert.equal(forward, "DUXBFLEUGBAO", "plaintext letter moved that many letters further on");
+    assert.equal(backward, "XSPZZJWSAZSM", "the radio variant moves it back instead");
+    assert.notEqual(forward, backward, "direction must not be silently normalized");
+
+    assert.equal(run("gronsfeld", clear, { key, mode: "encrypt" }), forward);
+    assert.equal(run("gronsfeld", forward, { key, mode: "decrypt" }), clear, "round trip");
+    assert.equal(run("gronsfeld", backward, { key, mode: "encrypt" }), clear, "the backward reading undoes the forward one");
+    // The key is read as digits only, and a letter that is not A-Z passes through
+    // without consuming a key digit — both properties observable at a glance.
+    assert.equal(run("gronsfeld", clear, { key: "3x1y4z1", mode: "encrypt" }), forward);
+    assert.equal(run("gronsfeld", "ATTACK AT DAWN", { key, mode: "encrypt" }), "DUXBFL EU GBAO");
+  } finally {
+    dom.window.close();
+  }
+});

@@ -8,7 +8,7 @@ const report = JSON.parse(readFileSync(new URL("../docs/cyberchef-recipe-sync-20
 // Post-merge additions: QR/Avery/complexity-lab/symbolic-logic, then the
 // 2026-10-14 field-cipher deep dive (OD message, VIC schedule + message stage,
 // Diana table + cipher, Gronsfeld analysis, hexdump/octal byte recipes).
-const expectedCount = report.counts.mergedRuntime + 14;
+const expectedCount = report.counts.mergedRuntime + 15;
 
 function createDom(html = appHtml) {
   return new JSDOM(html, {
@@ -40,7 +40,7 @@ test("generated Select All SFX boots the complete recipe registry offline", () =
     assert.doesNotMatch(sfxHtml, /^\s*var SFX_PACKS=null;/m, "the standalone is not left in unconfigured state");
 
     // Keep the shipped bootstrap and SFX installation path intact while
-    // suppressing the expensive act of executing all 492 operations in series.
+    // suppressing the expensive act of executing all 493 operations in series.
     const instrumented = sfxHtml.replace("\nsfxInitUi();", "\nwindow.bake=()=>Promise.resolve();\nsfxInitUi();");
     assert.notEqual(instrumented, sfxHtml, "test harness found the real SFX bootstrap call");
     packaged = createDom(instrumented);

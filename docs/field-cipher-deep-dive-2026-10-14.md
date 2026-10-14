@@ -1,15 +1,16 @@
 # Field-cipher deep dive — OD poem code, VIC, Gronsfeld, SECOM, and the Diana cryptosystem
 
 Date: 2026-10-14
-Kitchen: `public/apps/cyberchef/index.html` → 492 operations, 216 packs, 639 pack entries
+Kitchen: `public/apps/cyberchef/index.html` → 493 operations, 217 packs, 640 pack entries
 New recipes: `odPoemExact`, `vicSchedule`, `vicExact`, `diana`, `dianaTable`,
 `gronsfeldAnalyze`, `toHexdump`, `fromHexdump`, `toOctal`, `fromOctal`
-Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 13/13 pass,
+Verification: `node --test tests/cyberchef-field-cipher-deep-dive.test.mjs` — 15/15 pass,
 every published control vector below reproduced digit for digit (the added tests cover the VIC
 diagonal transposition rule, the Diana field-procedure example, the primary-source
-micro-vectors, the real hollow-nickel message, and a consistency check that keeps this note's
-evidence trail — the six reconciled nickel positions, the keygroup rule, the FM 31-20 citation
-— in step with the code; see §2b, §2c and §0).
+micro-vectors, the real hollow-nickel message, Kahn's Figure 2 width page (§2d), the 1940
+Infantry Journal statement of the Gronsfeld rule (§3), and a consistency check that keeps this
+note's evidence trail — the six reconciled nickel positions, the keygroup rule, the FM 31-20
+citation — in step with the code; see §2b, §2c, §2d, §3 and §0).
 
 This note records the deep dive requested for the hand ciphers already in the kitchen
 (OD poem code, VIC, Gronsfeld, SECOM), the identification and implementation of the
@@ -404,6 +405,40 @@ and the transpositions, but its substitution layer is not reproduced.
 
 ---
 
+### 2d. Kahn's Figure 2 width page — where the two widths come from
+
+The last unread piece of the schedule was the page that introduces the second tableau: the
+width rule. `Number One From Moscow` prints Line P as `4 0 6 2 7 8 3 4 1 1` and states it
+outright:
+
+> The widths of the two transposition tableaux are found by adding respectively the eighth and
+> ninth numbers — or perhaps the last two dissimilar numbers — in Line P to the agent's personal
+> number, in this case 13. The first tableau will therefore have 17 columns and the second 14.
+
+The article's own key table carries the same arithmetic, annotating its rows `13+4=17
+(tableau 1)` and `13+1=14 (tableau 2)`. The hedge costs nothing here: Line P ends `… 1 1`, so
+the eighth number (4) and the ninth (1) *are* the last two dissimilar digits.
+
+| Quantity | Value | Origin |
+| --- | --- | --- |
+| Line P | `4062783411` | chain addition of H, extended to 50 digits |
+| Eighth / ninth numbers | `4` / `1` | read left to right |
+| Tableau widths | `13+4 = 17`, `13+1 = 14` | personal number + those two |
+| Line Q (tableau 1 breeder) | `96033183664690475` — 17 digits | column read under key J |
+| Line R (tableau 2 breeder) | `30274304287712` — 14 digits | the remainder of that read |
+| Line S | `5073894612` | sequential key of P — the checkerboard's header row |
+
+So the widths are not an independent parameter at all: they are the lengths of the two breeder
+keys, and those lengths follow from Line P and the personal number. The 1956 change of
+Hayhanen's personal number from 13 to 20 is the same arithmetic one step on — the widths become
+`20+4 = 24` and `20+1 = 21`, and the breeder keys lengthen to
+`960331836646904753027430` and `428771231408872709558` in the schedule output — while Line S,
+and with it the checkerboard, is untouched. That is the design intent the article states for the
+raise: widen the transposition and leave the substitution alone. The 14th test pins both readings
+of the rule, the two width pairs and the invariance of Line S.
+
+---
+
 ## 3. Gronsfeld and SECOM
 
 **Gronsfeld** (`gronsfeld`, existing) is the numeric-key Vigenère (`C = P + k mod 26`).
@@ -417,24 +452,42 @@ English value) ranked first.
 **SECOM** already had its full implementation (`secomSchedule`, `secomExact`) added with
 the previous field-cipher work and verified against the 105-digit publisher example in
 `tools/secom_probe.py`. While this dive was in progress, `main` independently landed the same
-"zero is ten" rule as a fix on the SECOM side (`sxDigitSeq` sequences a numeric row in the
-order 1…9,0 instead of letting JavaScript's lexical sort put `0` first), guarded by
-`tests/secom-exact.test.mjs`; this branch merged that fix, so the VIC `S` line and the SECOM
-board row are now the two places where the rule is pinned by tests. While this dive was in progress, `main` independently landed the
-same class of fix on the SECOM side — `sxDigitSeq` sequences a numeric row in the order
-`1…9,0` instead of letting JavaScript's lexical sort put `0` first — with
-`tests/secom-exact.test.mjs` as its guard; this branch merged that fix, and the VIC `S`
-line plus the SECOM board row are now the two places where the "zero is ten" rule is
-pinned by tests. The current note only re-checks that the pack lists them
-(`Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld`) and that coverage stays at
-zero dangling / zero orphaned entries. SECOM is the extended-checkerboard VIC variant
-(the VIC article itself links to it as such), which is why the two are trained together.
+class of fix on the SECOM side — `sxDigitSeq` sequences a numeric row in the order `1…9,0`
+instead of letting JavaScript's lexical sort put `0` first — with `tests/secom-exact.test.mjs`
+as its guard; this branch merged that fix, so the VIC `S` line and the SECOM board row are now
+the two places where the "zero is ten" rule is pinned by tests. The current note only re-checks
+that the pack lists them (`Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld`) and that
+coverage stays at zero dangling / zero orphaned entries. SECOM is the extended-checkerboard VIC
+variant (the VIC article itself links to it as such), which is why the two are trained together.
 
 **Related Crow follow-up (2026-10-14, separate note):** the claim that the 600-digit
 Crow intercept holds 217 English letters is arithmetically impossible —
 `docs/crow-217-letter-claim-check-2026-10-14.md`, `tools/crow_letter_count_bounds.py`.
 Nothing about that finding changed in this deep dive; the SECOM arithmetic is reused
 unchanged.
+
+
+### 3a. A 1940 primary source for the Gronsfeld rule
+
+The analyser had been written from the modern one-line characterisation ("Vigenère with a numeric
+key"). A contemporaneous statement turned up in a US Army publication — Captain John V. Grombach,
+"The Invisible Weapon", *Infantry Journal*, July–August 1940, pp. 340–344 (archive.org item
+`invisible-weapon-grombach`):
+
+> In the Gronsfeld, there is a set of key numbers in a series that can be easily memorized. These
+> numbers are written down over the "clear" and repeated as often as necessary. Each letter of the
+> "clear" is then represented in the written message by a letter which is the number of letters
+> further in the alphabet called for by the key number over it.
+
+Two details in that sentence are load-bearing. The direction is *forward* — `p + k mod 26`, which
+is what the recipe implements and what the article's own words say. And the same article recommends
+"a reverse of the Gronsfeld cipher especially adapted for radio", so a reader working only from 1940
+material can meet either sign; the recipe therefore takes direction from its mode switch instead of
+normalising the ambiguity away. The article gives no worked example, so the test constructs the
+vector from the stated rule (`ATTACKATDAWN` under key `3141` → `DUXBFLEUGBAO`; the reverse reading →
+`XSPZZJWSAZSM`) and labels it as constructed. The same page also sketches the grille or "cardan"
+method and a "radio adaptation of the Nihilist Bacon biliteral" with its own key square; otherwise
+those pages are a 1940 staff view of radio espionage rather than a cipher manual.
 
 ---
 
@@ -474,7 +527,7 @@ Two new packs make this reachable from the SFX "select all" installer:
 | Kitchen badge / registry | 482 | 492 |
 | Recipe packs | 214 | 216 |
 | Pack entries | 621 | 639 |
-| `cyberchef.xdc` | 482-era build | regenerated, `manifest.toml` reads 492 operations |
+| `cyberchef.xdc` | 482-era build | regenerated, `manifest.toml` reads 493 operations |
 
 Commands run and their results:
 
@@ -483,7 +536,7 @@ node scripts/audit-cyberchef-sfx-coverage.mjs
 # OPERATIONS registered: 492 (492 unique ids); RECIPE_PACKS packs: 216 (639 entries)
 # dangling (no op): 0 ; orphaned ops: 0 ; VERDICT: SFX select-all covers the full registry
 
-node --test tests/cyberchef-field-cipher-deep-dive.test.mjs      # 13/13 pass
+node --test tests/cyberchef-field-cipher-deep-dive.test.mjs      # 15/15 pass
 node --test tests/cyberchef-*.test.mjs                            # registry, pack, SFX, cookbook suites pass
 node scripts/build-cyberchef-xdc.mjs                              # merged index.html + manifest + cyberchef.xdc
 ```
@@ -494,6 +547,12 @@ Files touched by this dive: `public/apps/cyberchef/index.html`,
 `tests/cyberchef-field-cipher-deep-dive.test.mjs` (new),
 `tests/cyberchef-sfx.test.mjs`, `tests/cyberchef-recipe-sync.test.mjs`,
 `tests/cyberchef-cookbook.test.mjs`, `README.md`.
+
+**Round-4 follow-up (same day):** the registry has since grown to **493** with one further recipe,
+`pgpArmorCheck` (OpenPGP Radix-64 armor CRC-24), which belongs to the Kleopatra/GnuPG thread rather
+than to this dive; the badge, the Cookbook card and the registry tests were moved to 493 with it, and
+the sources are recorded in `docs/recipe-sourcing-round-4-2026-10-14.md`. It arrived with its own pack,
+`OpenPGP Armor (Kleopatra / GnuPG)`, so packs and pack entries moved with it (216 / 639 → 217 / 640).
 
 Deliberately left alone: `docs/cyberchef-sfx-coverage-audit-2026-10-13.md` and the
 2026-10-09 audit are dated records of what was true then (482 and 480 operations

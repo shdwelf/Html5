@@ -45,6 +45,8 @@ const POST_MERGE_OPS = [
   "fromHexdump",
   "toOctal",
   "fromOctal",
+  // 2026-10-14 recipe sourcing (docs/recipe-sourcing-round-4-2026-10-14.md).
+  "pgpArmorCheck",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

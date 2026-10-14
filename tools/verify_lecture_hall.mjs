@@ -770,7 +770,7 @@ if (!existsSync(SUITE)) {
 
   const pc = literalAt(src, "Pc=[");
   const records = vm.runInNewContext(`(${pc.text})`, Object.create(null), { timeout: 2000 });
-  check(Array.isArray(records) && records.length === 32, `lecture hall holds ${records.length} records`);
+  check(Array.isArray(records) && records.length === 33, `lecture hall holds ${records.length} records`);
 
   const required = ["id", "title", "period", "location", "confidence", "summary", "facts", "sourceLinks", "caution"];
   const shapeOk = records.every((r) =>
@@ -788,6 +788,7 @@ if (!existsSync(SUITE)) {
     "kgb-museum-auction", "international-spy-museum-machines",
     "crows-cryptogram-secom", "kryptos-enigma-hypothesis",
     "sylichenko-enigma-hillclimb", "hollow-nickel-vic",
+    "kahn-figure-2-widths",
   ];
   const raisedBarOk = RAISED.every((id) => {
     const r = records.find((x) => x.id === id);

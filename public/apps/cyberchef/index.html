@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 492 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 493 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -24634,6 +24634,85 @@ addOp('odPoemExact','OD Poem-Code Message Cipher','Classical',
    Russian letter that sits out of order, so a phrase containing it should be
    supplied transliterated). */
 function fdVicPhrase(phrase){return String(phrase||'').toUpperCase().replace(/[^\p{L}]/gu,'');}
+// ── OpenPGP Radix-64 armor checksum (RFC 4880 §6.1) ─────────────────────────
+// 24-bit CRC, polynomial 0x1864CFB, initial value 0xB704CE, no final inversion,
+// written as three bytes of Radix-64 after the payload's own base64 block and
+// prefixed with '='.  Control: GnuPG's own test blob tests/openpgp/bug1223-good.asc
+// ends "=xsEd" (0xC6C11D) — see docs/recipe-sourcing-round-4-2026-10-14.md.
+function fdCrc24(bytes){
+  let crc=0xB704CE;
+  for(const b of bytes){
+    crc^=(b&0xFF)<<16;
+    for(let i=0;i<8;i++){crc<<=1;if(crc&0x1000000)crc^=0x1864CFB;}
+  }
+  return crc&0xFFFFFF;
+}
+function fdArmorSplit(text){
+  const lines=String(text||'').replace(/\r/g,'').split('\n');
+  const begin=lines.findIndex(line=>/^-----BEGIN PGP /.test(line.trim()));
+  if(begin<0)throw new Error('No "-----BEGIN PGP …" armor header found — paste an armored block or switch to Data mode');
+  let i=begin+1;
+  for(;i<lines.length;i++){          // armor headers (Version:, Comment:) end at a blank line
+    const line=lines[i].trim();
+    if(!line)continue;
+    if(/^[A-Za-z][A-Za-z0-9-]*:/.test(line))continue;
+    break;
+  }
+  const payload=[];
+  let checksum='';
+  for(;i<lines.length;i++){
+    const line=lines[i].trim();
+    if(!line)continue;
+    if(line.startsWith('=')){checksum=line.slice(1);break;}
+    if(line.startsWith('-----END'))break;
+    if(line.startsWith('-----'))break;
+    payload.push(line);
+  }
+  return {payload,checksum,begin};
+}
+addOp('pgpArmorCheck','OpenPGP Radix-64 armor check (CRC-24)','Modern',
+  'The integrity line at the foot of a PGP/OpenPGP armored block, in both directions. Armor mode reads a "-----BEGIN PGP …" block, takes the 24-bit CRC of its base64 payload and compares it with the printed "=XXXX" line, so transcription damage in a pasted key or message is visible immediately; Data mode computes that same checksum for text, hex or base64 input and prints the exact line a writer would append. The CRC is polynomial 0x1864CFB with initial value 0xB704CE and no final inversion, and the three result bytes are re-encoded in Radix-64 (RFC 4880 §6.1). Control vector: GnuPG\'s own repository test blob tests/openpgp/bug1223-good.asc ends "=xsEd", which is 0xC6C11D over its 592-byte payload. This is integrity, not secrecy and not authentication: an armor checksum catches a dropped or altered line, nothing more.',
+  [
+    {key:'mode',label:'Mode',type:'select',default:'armor',options:[['armor','Armor: verify a block'],['data','Data: print the checksum line']]},
+    {key:'infmt',label:'Input fmt (Data mode)',type:'select',default:'text',options:[['text','Text (UTF-8)'],['hex','Hex'],['base64','Base64']]}
+  ],function(text,args){
+    let bytes,printed='';
+    if(args.mode==='armor'){
+      const split=fdArmorSplit(text);
+      printed=split.checksum;
+      const payload=split.payload.join('');
+      if(!payload)throw new Error('The armored block carries no payload lines');
+      bytes=bytesFromB64(payload);
+    }else if(args.infmt==='hex'){
+      bytes=bytesFromHex(String(text||''));
+    }else if(args.infmt==='base64'){
+      bytes=bytesFromB64(String(text||''));
+    }else{
+      bytes=utf8Encode(String(text||''));
+    }
+    const crc=fdCrc24(bytes);
+    const hex=crc.toString(16).toUpperCase().padStart(6,'0');
+    const line='='+b64FromBytes(new Uint8Array([(crc>>16)&255,(crc>>8)&255,crc&255]));
+    if(args.mode==='data'){
+      return ['════ OpenPGP armor checksum ════',
+        'Input      : '+bytes.length+' byte'+(bytes.length===1?'':'s'),
+        'CRC-24     : 0x'+hex+'  (poly 0x1864CFB, init 0xB704CE, no final XOR)',
+        'Armor line : '+line,
+        'GnuPG      : gpg --enarmor prints the same line; gpg --dearmor recomputes it',
+        'RFC        : 4880 §6.1 — Radix-64 with a 24-bit CRC over the binary packet stream'].join('\n');
+    }
+    const verdict=printed
+      ?(printed===line.slice(1)?'OK — the printed checksum matches the payload':'MISMATCH — the payload was altered or truncated after it was armored')
+      :'NO CHECKSUM LINE — this block ends without an "=XXXX" CRC line, so nothing can be verified';
+    return ['════ OpenPGP armor check ════',
+      'Payload    : '+bytes.length+' bytes of decoded packet stream',
+      'Printed    : '+(printed?'='+printed:'(none)'),
+      'Computed   : '+line+'  (0x'+hex+')',
+      'Verdict    : '+verdict,
+      'RFC        : 4880 §6.1 (Radix-64, 24-bit CRC, polynomial 0x1864CFB)',
+      'Caution    : a checksum detects transcription damage only — it is not a MAC, and a mismatch can equally mean the wrong block was pasted.'].join('\n');
+  });
+
 function fdVicSchedule(phrase,date,personal,keygroup){
   const p=fdVicPhrase(phrase);
   if(p.length<20)throw new Error('VIC needs a key phrase of at least 20 letters');
@@ -32765,6 +32844,9 @@ RECIPE_PACKS["Full Coverage — Wallet (BIP39)"] = [["bip39",{}]];
 RECIPE_PACKS["Full Coverage — Wallet (BIP44)"] = [["haikub44",{}]];
 
 RECIPE_PACKS["Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld"] = [["odPoemExact",{}],["vicSchedule",{}],["vicExact",{}],["diana",{}],["dianaTable",{}],["gronsfeld",{key:'123'}],["gronsfeldAnalyze",{}],["odPoemKey",{}],["secomExact",{}],["straddlingCheckerboard",{}]];
+// The Kleopatra/GnuPG thread (docs/recipe-sourcing-round-4-2026-10-14.md): the
+// armor checksum that GnuPG prints under every armored block.
+RECIPE_PACKS["OpenPGP Armor (Kleopatra / GnuPG)"] = [["pgpArmorCheck",{}]];
 RECIPE_PACKS["Binary Bytes Lab — Hexdump & Octal"] = [["toHexdump",{}],["fromHexdump",{}],["toOctal",{}],["fromOctal",{}],["toHex",{sep:'space'}],["fromHex",{mode:'utf8'}],["toBinary",{}],["fromBinary",{}]];
 
 
