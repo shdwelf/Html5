@@ -39,3 +39,34 @@ test("vendored djvu-rs parses and renders a DjVu page", async () => {
     doc.free();
   }
 });
+
+test("R5 probe: WasmLazyDocument renders via a range-fetch callback (transport permitting)", async () => {
+  const modulePath = pathToFileURL(path.join(djvuPackage, "djvu_rs.js")).href;
+  const decoder = await import(modulePath);
+  const variant = decoder.wasmSimd128Supported() ? "simd128" : "scalar";
+  const wasmBytes = new Uint8Array(
+    readFileSync(path.join(djvuPackage, variant, "djvu_rs_bg.wasm")),
+  );
+  await decoder.default(wasmBytes);
+  assert.equal(typeof decoder.WasmLazyDocument?.open, "function", "lazy API exported by the vendored decoder");
+
+  const bytes = new Uint8Array(readFileSync(fixturePath));
+  const fetched = [];
+  // In-memory random access stands in for HTTP Range: the API only ever
+  // asks for (offset, len) slices, which is the whole point of R5.
+  const doc = await decoder.WasmLazyDocument.open(bytes.length, async (offset, len) => {
+    fetched.push([offset, len]);
+    return bytes.slice(offset, offset + len);
+  });
+  try {
+    assert.equal(doc.page_count(), 1);
+    const info = await doc.page_info(0);
+    assert.ok(info[0] > 0 && info[1] > 0, "page_info returns dimensions");
+    const pixmap = await doc.render_page(0, 72);
+    const pixels = typeof pixmap.to_bytes === "function" ? pixmap.to_bytes() : pixmap.view();
+    assert.ok(pixels.length > 0, "lazy render produces pixels");
+    assert.ok(fetched.length > 0, "pages arrived through the range callback");
+  } finally {
+    doc.free();
+  }
+});

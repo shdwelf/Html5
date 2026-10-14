@@ -98,6 +98,9 @@ MAIN_PAGE="$APP_ROOT/public/docs/wiki/Main Page.wiki"
 if ! grep -Fq '[[Image Support Demo]]' "$MAIN_PAGE"; then
   printf '\n* Try the image and DjVu demo: [[Image Support Demo]]\n' >> "$MAIN_PAGE"
 fi
+if ! grep -Fq '[[Wiki in a Jar]]' "$MAIN_PAGE"; then
+  printf '* Documentation: [[Wiki in a Jar]]\n' >> "$MAIN_PAGE"
+fi
 # Link every synced repository note, newest first, straight from the manifest, so
 # a page added to docs/ (and re-synced) shows up without editing this script.
 if [[ -f "$SCRIPT_DIR/wiki-pages.json" ]]; then
