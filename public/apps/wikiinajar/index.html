@@ -285,8 +285,11 @@ function wikiRenderLink(plain,ctx){
   if(low==="tagtree")return '<a href="#/tags">'+wikiEscape(label)+"</a>";
   if(low==="vcard")return '<a class="vcard-link" href="'+wikiEscape(ctx.contactHref?ctx.contactHref(page):"#/contacts")+'">'+wikiEscape(label)+"</a>";
   if(low==="wiki"||low===""){
-    const exists=ctx.exists?ctx.exists(page):false;
-    return '<a href="'+wikiEscape(ctx.pageHref(page))+'"'+(exists?"":' class="missing" title="Page does not exist yet — click to create"')+">"+wikiEscape(label)+"</a>";
+    /* More-wiki 0.9.8 anchor links: [[Page#Heading]] targets the page */
+    const anchorAt=page.indexOf("#");
+    const target=anchorAt===-1?page:page.slice(0,anchorAt);
+    const exists=ctx.exists?ctx.exists(target):false;
+    return '<a href="'+wikiEscape(ctx.pageHref(target))+(anchorAt===-1?"":wikiEscape(page.slice(anchorAt)))+'"'+(exists?"":' class="missing" title="Page does not exist yet — click to create"')+">"+wikiEscape(label)+"</a>";
   }
   return wikiEscape(page)+" (Unknown namespace: "+wikiEscape(ns)+") ";
 }
@@ -645,9 +648,27 @@ function renderMedia(){
   $("mediaGrid").querySelectorAll("[data-del]").forEach((b)=>b.addEventListener("click",()=>{ delete media[b.dataset.del]; saveJSON(LS_MEDIA,media); renderMedia(); }));
 }
 function parseVcards(text){
+  /* Real-world .vcf: folded lines (CRLF + space), quoted-printable values
+     (vCard 2.1 exports), itemN. group prefixes, ;PARAMS, escaped \, \; \n. */
+  const unfolded=String(text).replace(/=\r?\n/g,"") // QP soft breaks first
+    .replace(/\r\n[ \t]/g,"").replace(/\n[ \t]/g,""); // then folding
+  const decodeQP=(value)=>{
+    const bytes=[];
+    for(let i=0;i<value.length;i++){
+      if(value[i]==="="&&/^[0-9A-Fa-f]{2}$/.test(value.slice(i+1,i+3))){ bytes.push(parseInt(value.slice(i+1,i+3),16)); i+=2; }
+      else bytes.push(value.charCodeAt(i)&0xff);
+    }
+    try{ return new TextDecoder("utf-8").decode(new Uint8Array(bytes)); }catch(e){ return value; }
+  };
   const out=[];
-  for(const block of String(text).split(/BEGIN:VCARD/i).slice(1)){
-    const get=(k)=>{ const m=block.match(new RegExp("^"+k+"[^:\\r\\n]*:([^\\r\\n]+)","im")); return m?m[1].trim():""; };
+  for(const block of unfolded.split(/BEGIN:VCARD/i).slice(1)){
+    const get=(k)=>{
+      const m=block.match(new RegExp("^(?:item\\d+\\.)?"+k+"((?:;[^:\\r\\n]*)?):([^\\r\\n]*)","im"));
+      if(!m)return "";
+      let value=m[2].trim();
+      if(/ENCODING=QUOTED-PRINTABLE/i.test(m[1]||""))value=decodeQP(value);
+      return value.replace(/\\n/gi," ").replace(/\\,/g,",").replace(/\\;/g,";").replace(/\\\\/g,"\\").trim();
+    };
     const fn=get("FN"); if(!fn)continue;
     out.push({fn,tel:get("TEL"),email:get("EMAIL"),bday:get("BDAY"),org:get("ORG")});
   }

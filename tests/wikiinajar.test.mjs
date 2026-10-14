@@ -128,6 +128,55 @@ test("calendar in the app uses title-dates + birthdays (0.8 Month.loadEvents)", 
   assert.ok(html.includes("Month.loadEvents()"), "view documents its primary source");
 });
 
+test("R6: parseVcards survives real-world .vcf (folding, quoted-printable, itemN., escapes)", () => {
+  const m = html.match(/function parseVcards\(text\)\{[\s\S]*?\n\}/);
+  assert.ok(m, "parseVcards found in app script");
+  const parseVcards = new Function(m[0] + "\nreturn parseVcards;")();
+  const fixture = [
+    "BEGIN:VCARD\r\nVERSION:2.1\r\n",
+    "FN;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:J=C3=BCrgen M=C3=BCller\r\n",
+    "item1.EMAIL;TYPE=INTERNET:j@example.org\r\n",
+    "TEL;TYPE=CELL,VOICE:+1-555-0100\r\n",
+    "ORG:Example\\, Inc.\r\n",
+    "BDAY:19700102\r\nEND:VCARD\r\n",
+    "BEGIN:VCARD\nVERSION:3.0\nFN:Ada Lovelace\n",
+    "NOTE:a folded long line that contin\n ues here\n",
+    "BDAY:--12-10\nEND:VCARD\n",
+  ].join("");
+  const cards = parseVcards(fixture);
+  assert.equal(cards.length, 2);
+  assert.equal(cards[0].fn, "Jürgen Müller", "QP UTF-8 value decoded");
+  assert.equal(cards[0].email, "j@example.org", "itemN. group prefix accepted");
+  assert.equal(cards[0].tel, "+1-555-0100", ";TYPE params skipped");
+  assert.equal(cards[0].org, "Example, Inc.", "escaped comma unescaped");
+  assert.equal(cards[0].bday, "19700102");
+  assert.equal(cards[1].fn, "Ada Lovelace");
+  assert.equal(cards[1].bday, "--12-10", "no-year birthday kept for wikiParseBday");
+});
+
+test("R7 conformance corpus: browser vs 0.8 filter chain, divergences pinned", () => {
+  const { renderWiki } = renderer();
+  // nested lists: marker count = depth (ListFilter)
+  const nested = renderWiki("* a\n** b\n* c", CTX);
+  assert.match(nested, /<ul>\s*<li>a<\/li>\s*<ul>\s*<li>b<\/li>\s*<\/ul>\s*<li>c<\/li>\s*<\/ul>/);
+  // label may itself contain | (WikiLink splits on the FIRST |, like Java)
+  assert.match(renderWiki("[[Main Page|a|b]]", CTX), />a\|b<\/a>/);
+  // &amp; reversal before dispatch (WikiLink constructor comment):
+  // a plainly-typed & displays as &, a literally-typed &amp; as "&amp;"
+  assert.match(renderWiki("[[Main Page|Tom & Jerry]]", CTX), />Tom &amp; Jerry<\/a>/);
+  assert.match(renderWiki("[[Main Page|Tom &amp; Jerry]]", CTX), />Tom &amp;amp; Jerry<\/a>/);
+  // More-wiki 0.9.8 anchor links target the page, anchor preserved
+  assert.match(renderWiki("[[Main Page#Top]]", CTX), /href="#\/page\/Main%20Page#Top"/);
+  // unbalanced headings: Java strips leading-run length from BOTH ends,
+  // so "== H ===" is an h2 "H =" there — and, by backtracking, here too
+  assert.match(renderWiki("== H ===", CTX), /<h2>H =<\/h2>/);
+  // mirrored case diverges: Java leaves "=== H ==" raw (trailing run is
+  // shorter than the leading run); this renderer still finds an h2
+  assert.match(renderWiki("=== H ==", CTX), /<h2>= H<\/h2>/);
+  // titles Java forbids as filenames are plain storage keys here
+  assert.match(renderWiki("[[a/b]]", CTX), /href="#\/page\/a%2Fb"/);
+});
+
 test("xdc bundle is a zip rooted at index.html + manifest.toml + DjVu reader", () => {
   const bytes = readFileSync(path.join(root, "wikiinajar.xdc"));
   assert.equal(bytes[0], 0x50); // 'P'

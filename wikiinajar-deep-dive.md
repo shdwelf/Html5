@@ -79,7 +79,7 @@ almost mechanically: §6 is a mapping table, not a redesign.
 | 2007 | 0.x line by rico_g; XRays framework + wiki grow together (GPL headers dated 2007 in the patched sources) | **verified (repo)** |
 | 2008-09-16/19 | Axel C. Kramer prototype: Wikipedia-API import into Wiki in a Jar, images in an `/image` subdirectory, templates in a Derby `WikiDB` | **verified live**: SourceForge forum thread “Storing Wikipedia pages” [3](https://sourceforge.net/p/wiki-in-a-jar/discussion/467591/thread/578566c1/) — the earliest known “images in the wiki” fork conversation, two months before 0.8 |
 | **2008-11-28** | **0.8 release** — `WikiInAJar-0.8-20081128-bin.zip` (123.4 kB), still the “latest version” on SourceForge | **verified live** [2](https://sourceforge.net/projects/wiki-in-a-jar/files/) |
-| 2009-01-07 | **More Wiki in a Jar 0.9.9** (`morewikiinajar.sf.net`) — “improved version of Wiki in a jar by rico_g”, “full Wiki formatting syntax”, Windows-listed | **verified live**: Soft112 version history (“posted on 2009-01-07”, “Several fixes and updates”) [4](https://more-wiki-in-a-jar.soft112.com/) |
+| 2008-09-27 → 2009-01-07 | **More Wiki in a Jar 0.9.0→0.9.9** by **Jens Fauth (IceMan6paq)** — a German-magazine reader's fork after rico_g went quiet “more than a year”: full UTF-8, table/definition/indent support, nowiki/`<pre>`/comment fixes, anchor links (0.9.8), `<div>`/`<span>` (0.9.9, Arne Lottmann); **image linking still only “Planed”** in Jan 2009 | **verified live 2026-10-14**: Wayback snapshot of the project homepage (2009-01-14 capture) carries the complete release notes [13](https://web.archive.org/web/20090114071254/http://morewikiinajar.sourceforge.net:80/) [14](http://web.archive.org/cdx/search/cdx?url=morewikiinajar.sourceforge.net*&output=text&limit=20); Soft112 metadata [4](https://more-wiki-in-a-jar.soft112.com/) |
 | 2009-10-12 | **Wiki in a Jar ²** (`wikiinajar2`) — “Some improvements of more Wiki In A Jar”, DokuWiki/Wikipedia-style edit support, PortableApps starter | **verified live**: SourceForge project page + 2009-10-12 review thread [5](https://sourceforge.net/projects/wikiinajar2/) |
 | (mirror) | GitHub mirror `astecenko/Wiki-in-a-Jar`, exact 2008-11-28 `v0.8 update` source commit `a56cfdfc8d343f60c915825a01af24577846cede` | **verified (repo)**, recorded in `docs/wikiinajar-image-support.md` |
 | 2012 | Fork `hugcoday/WikiInAJar` adds an `img:` namespace and an image route | **verified (repo)**, ibid. — proof the extension point is the intended one; its path handling is not safe enough to reuse unchanged |
@@ -321,7 +321,11 @@ asserting one unique-titled page per root/`docs/*.md` file with
 provenance footers and no surviving fences, a byte-level check that the
 `.xdc`'s `docs.json` matches the staged one, and a full render pass —
 all 139 converted pages go through the shipped renderer without
-producing script or undefined output (1.78 M HTML chars). The Java
+producing script or undefined output (1.78 M HTML chars). Later
+passes added: R1 rejection checks and the Java-patch cross-reference,
+the R3 Calendar semantics regression lock, the R7 conformance corpus,
+the R6 vCard fixture corpus, and the R5 lazy-DjVu transport probe —
+19 Node tests, all green. The Java
 smoke test and full-suite results for the patch predate this turn and
 are recorded in `docs/wikiinajar-image-support.md`.
 
@@ -360,8 +364,21 @@ number:
   *Attempted 2026-10-14:* Soft112 re-fetched — it adds only metadata
   (437 downloads, Windows XP/Vista/7 listing, file size N/A, no binary
   hosted there); the Wayback availability API returned HTTP 429.
-  Next step: retry via the CDX API for `morewikiinajar.sourceforge.net`
-  snapshots when the rate limit clears.
+  **✅ Resolved later the same day** via the CDX API: 26 captures
+  (2008-10-09 → 2025) [14](http://web.archive.org/cdx/search/cdx?url=morewikiinajar.sourceforge.net*&output=text&limit=20),
+  and the 2009-01-14 homepage snapshot carries the complete release
+  notes [13](https://web.archive.org/web/20090114071254/http://morewikiinajar.sourceforge.net:80/).
+  Author: **Jens Fauth (IceMan6paq)** — found the wiki through a
+  German computer magazine, missed the standard formatting, forked
+  after rico_g had been quiet “more than a year”. Release train:
+  full UTF-8 + indent/definitions/`<pre>`/comments (0.9.0, Frank Dietrich),
+  tables + `<tt>` (0.9.5), `=`-in-heading fix (0.9.6), **anchor links**
+  (0.9.8 — adopted into this renderer the same day), `<span>`/`<div>`
+  (0.9.9, Arne Lottmann — not adopted: escape-first is the security
+  boundary). Still “Planed” in January 2009: **image linking** (the
+  second independent confirmation it was the missing feature), a
+  print view, a sidebar and version diffs — the roadmap this
+  rebuild's print CSS, SideBar page and per-page history echo.
 - **R3 — Calendar semantics. ✅ Resolved 2026-10-14** — see §3
   (“Calendar, due dates and auto-tags”). The browser Calendar, page
   tag chips and Tags view now implement the recovered semantics
@@ -373,15 +390,27 @@ number:
   line-based three-way merge (the per-page history already keeps the
   last 10 revisions locally) and measure update-payload sizes against
   real chat limits before promising collaboration.
-- **R5 — DjVu range loading.** NanoHTTPD lacks Range; the webxdc static
-  host is no better. Assess `WasmLazyDocument`/indirect documents in
-  djvu-rs 0.42 for page-at-a-time fetching, or accept whole-file loads
-  with a documented size budget (the 4 MB import guard is a guess —
-  replace it with a measured one).
-- **R6 — vCard fidelity.** Real-world `.vcf` exports (2.1
-  quoted-printable, folded lines, `CHARSET`) break naive parsers;
-  build a fixture corpus and harden `parseVcards` against it, checking
-  what 0.8's Vcard model actually retained.
+- **R5 — DjVu range loading. ✅ Assessed 2026-10-14 — API proven,
+  transport is the blocker; whole-file loading kept deliberately.**
+  The vendored decoder exports `WasmLazyDocument.open(totalLen,
+  fetchCb)`, indexing from head bytes and fetching only each
+  requested page's range; a Node test in
+  `tests/wikiinajar-djvu.test.mjs` proves the flow (range callback →
+  `page_info` → `render_page` pixels) on the smoke fixture. None of
+  this repo's transports can feed it ranges today: NanoHTTPD has no
+  Range, the webxdc host serves whole ZIP entries, media items are
+  already whole data URLs. Unblock condition, recorded instead of
+  coded speculatively: a Range-capable HTTP origin for DjVu files.
+  The 4 MB import guard stays a labelled guess.
+- **R6 — vCard fidelity. ✅ Resolved 2026-10-14.** `parseVcards` now
+  unfolds folded lines, strips QP soft breaks first, decodes
+  `ENCODING=QUOTED-PRINTABLE` (UTF-8), accepts `itemN.` prefixes and
+  `;TYPE=` params, unescapes `\,`/`\;`/`\n`, and keeps `BDAY` in
+  `yyyy-MM-dd` / `yyyyMMdd` / `--MM-dd` forms. A two-card fixture
+  corpus (2.1 QP + folded 3.0) pins it in the test suite. Recorded
+  divergence: 0.8's `Vcard` retains all properties generically;
+  this rebuild keeps the five displayed PIM fields
+  (FN/TEL/EMAIL/BDAY/ORG) and promises nothing else.
 - **R7 — Renderer conformance. ◐ In progress (first pass 2026-10-14).**
   The 0.8 chain is now enumerated from `RenderEngine` (NoWikiCapture →
   Section → Heading → Hr → Intended → Url → List → Strongest →
@@ -401,8 +430,14 @@ number:
   code comments alone: SectionFilter's blank-line `<p>&#160;</p>`
   spacers (this renderer uses real paragraph separation), and
   HeadingFilter emitting invalid `<h7>`+ for long `=` runs (capped
-  at 6 here). Still to do: the automated fuzz diff over the demo
-  corpus (nested lists, pipes inside labels, `&amp;` reversal).
+  at 6 here). The automated side now exists as the **R7 conformance
+  corpus** in the test suite (nested lists, first-`|` labels, `&amp;`
+  reversal at both typing layers, anchor links, unbalanced-heading
+  quirks — including one case, `== H ===`, where Java and this
+  renderer produce the same `<h2>H =</h2>` by different mechanics,
+  and the mirrored `=== H ==`, where they genuinely diverge).
+  Still to do: run the same corpus through the real Java filters
+  under the recovered JDK for a byte-level diff.
 - **R8 — Print & longevity.** The Java pitch was “readable in fifty
   years”. Verify the exported jar JSON + `.wiki` files round-trip
   through the *unpatched* 0.8 binary, and give the browser edition a
@@ -441,6 +476,18 @@ number:
   reference-style links and setext-heavy sources are rare in this
   corpus (0 files use link definitions) but md2wiki's coverage should
   be re-audited whenever a new documentation style lands — see R7.
+- **2026-10-14 (continued research: R2, R5, R6, R7 corpus)** — The
+  Wayback CDX snapshot of the More Wiki in a Jar homepage resolved
+  R2 (Jens Fauth's 0.9.0→0.9.9 release notes; the census above and
+  the R2 entry carry the detail), and its 0.9.8 anchor links were
+  implemented in the browser renderer the same day. R5's lazy DjVu
+  opening is proven in Node but transport-blocked in-app (see the
+  R5 entry). R6's vCard fixtures are in the suite and `parseVcards`
+  hardened accordingly. The R7 conformance corpus codified nested
+  lists, first-`|` labels, both `&amp;` typing layers and the
+  unbalanced-heading quirks — one corpus expectation was wrong on
+  inspection (typed `&amp;` *should* stay visible, matching Java),
+  which is exactly what the corpus is for. 19 Node tests green.
 
 ## 11. Sources
 
@@ -456,3 +503,5 @@ number:
 10. Webxdc JavaScript API (`sendUpdate` / `setUpdateListener`, network isolation). https://webxdc.org/docs/spec/api.html
 11. TiddlyWiki — single-HTML-file portable personal wiki. https://github.com/Tiddly-Wiki
 12. In-repo: `docs/wikiinajar-image-support.md`; `docs/lantronix-uclinux-deep-dive-2026-10-08.md` §5.3–5.4; `tools/wikiinajar/` (patch sources, build, notices); GitHub mirrors `astecenko/Wiki-in-a-Jar` and `hugcoday/WikiInAJar` as recorded there.
+13. Internet Archive Wayback Machine — More Wiki in a Jar homepage, captured 2009-01-14: “More wiki in a jar”, ©2008/2009 Jens Fauth, complete 0.9.0→0.9.9 release notes, screenshots and roadmap. https://web.archive.org/web/20090114071254/http://morewikiinajar.sourceforge.net:80/
+14. Internet Archive CDX API — capture index for `morewikiinajar.sourceforge.net` (2008–2025), used after the availability API returned 429. http://web.archive.org/cdx/search/cdx?url=morewikiinajar.sourceforge.net*&output=text&limit=20
