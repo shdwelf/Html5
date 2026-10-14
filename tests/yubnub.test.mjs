@@ -22,7 +22,7 @@ function registryRows() {
 
 test("registry is a non-trivial corpus with unique names", () => {
   const rows = registryRows();
-  assert.ok(rows.length >= 80, `expected >=80 commands, got ${rows.length}`);
+  assert.equal(rows.length, 102, `documented curated offline snapshot count, got ${rows.length}`);
   const seen = new Set();
   for (const [name] of rows) {
     const key = String(name).toLowerCase();
@@ -36,6 +36,18 @@ test("core commands from the yubnub.org homepage are present", () => {
   for (const core of ["g", "gim", "random", "man", "ls", "ge", "create", "url", "wp", "am", "xe", "echo", "%", "split", "mash2"]) {
     assert.ok(names.has(core), `missing core command: ${core}`);
   }
+});
+
+test("ls exposes paginated live search and clearly labels the offline registry as a subset", () => {
+  const ls = registryRows().find((row) => row[0] === "ls");
+  assert.ok(ls, "local ls command exists");
+  assert.match(ls[2], /curated offline command index/);
+  assert.ok(html.includes('id="lsLivePage"'), "live page selector exists");
+  assert.ok(html.includes('id="btnOpenLiveLs"'), "live ls link exists");
+  assert.ok(html.includes('url.searchParams.set("args"'), "live link carries the search query");
+  assert.ok(html.includes('url.searchParams.set("page"'), "live link carries the page number");
+  assert.ok(html.includes("displays 49 rows while advancing page offsets by 50"), "upstream pagination caveat is disclosed");
+  assert.ok(html.includes("Use the live <span class=\"mono\">ls</span> control above"), "local use-count note points to the full live directory");
 });
 
 test("every URL template is navigable or local, and %s templates parse", () => {
