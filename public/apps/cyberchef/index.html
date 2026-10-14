@@ -24684,6 +24684,54 @@ function fdVicDecode(digits,board){
   }
   return out;
 }
+/* VIC diagonal (disrupted) transposition.  The left (undisrupted) part of each
+   row starts at the width of the column carrying the smallest key label and grows
+   by one column per row; when it would pass the table width the next label in
+   ascending order starts the next run (cycling when the labels run out).  Left
+   parts are filled first, then the short row, then the right parts; the grid is
+   read out column by column in label order.  Cross-checked against four
+   independent implementations — kyrias/vic, pavelanni/vic-cipher,
+   Csi18nAlistairMann/vic-cipher (from the CIA “Two Soviet Spy Cyphers”
+   description) and crunchbangle/vic-ts, whose published test vector
+   (key 536124, 60 digits → left widths 3,4,5,6,4,5,6,1,2,3) is in the tests.
+   The one published example that does not follow this rule is noted in
+   docs/field-cipher-deep-dive-2026-10-14.md. */
+function fdVicLeftWidths(key,n){
+  const w=key.length,rows=Math.ceil(n/w),order=sxKeyCols(key),widths=[];
+  let i=0;
+  while(widths.length<rows){
+    let width=order[i%order.length];i++;
+    while(width<=w&&widths.length<rows)widths.push(width++);
+  }
+  return widths;
+}
+function fdVicDiagGrid(key,n){
+  const w=key.length,full=Math.floor(n/w),short=n%w,grid=[];
+  for(let r=0;r<full;r++)grid.push(new Array(w).fill(null));
+  if(short)grid.push(new Array(short).fill(null));
+  return {w,full,short,grid,widths:fdVicLeftWidths(key,n),order:sxKeyCols(key)};
+}
+function fdVicDiagRead(g){
+  let out='';
+  for(const c of g.order)for(let r=0;r<g.grid.length;r++)if(c<g.grid[r].length)out+=g.grid[r][c];
+  return out;
+}
+function fdVicDiagEnc(text,key){
+  const g=fdVicDiagGrid(key,text.length);let i=0;
+  for(let r=0;r<g.full;r++)for(let c=0;c<g.widths[r]&&c<g.w;c++)g.grid[r][c]=text[i++];
+  for(let c=0;c<g.short;c++)g.grid[g.full][c]=text[i++];
+  for(let r=0;r<g.full;r++)for(let c=g.widths[r];c<g.w;c++)g.grid[r][c]=text[i++];
+  return fdVicDiagRead(g);
+}
+function fdVicDiagDec(text,key){
+  const g=fdVicDiagGrid(key,text.length);let i=0;
+  for(const c of g.order)for(let r=0;r<g.grid.length;r++)if(c<g.grid[r].length)g.grid[r][c]=text[i++];
+  let out='';
+  for(let r=0;r<g.full;r++)for(let c=0;c<g.widths[r]&&c<g.w;c++)out+=g.grid[r][c];
+  for(let c=0;c<g.short;c++)out+=g.grid[g.full][c];
+  for(let r=0;r<g.full;r++)for(let c=g.widths[r];c<g.w;c++)out+=g.grid[r][c];
+  return out;
+}
 function fdVicInsertKeygroup(digits,keygroup,p){
   const groups=digits.match(/.{5}/g)||[];
   const at=Math.max(0,groups.length-Number(p));
@@ -24761,8 +24809,8 @@ addOp('vicExact','VIC Message Stage Encrypt/Decrypt','Classical',
       if(!digits)throw new Error('Give VIC ciphertext digits');
       let removed='none';
       if(a.insert!=='no'){const r=fdVicRemoveKeygroup(digits,keyP);digits=r.digits;removed=r.keygroup||'(none)';}
-      if(a.transp==='double')digits=sxTransDec(digits,s.R,true);
-      if(a.transp!=='none')digits=sxTransDec(digits,s.Q,false);
+      if(a.transp==='double')digits=sxTransDec(fdVicDiagDec(digits,s.R),s.Q,false);
+      else if(a.transp==='single')digits=sxTransDec(digits,s.Q,false);
       let text=fdVicDecode(digits,board);
       let pads=0;
       if(a.pad!=='no'&&board.dec['0']){
@@ -24801,7 +24849,7 @@ addOp('vicExact','VIC Message Stage Encrypt/Decrypt','Classical',
     const beforePad=digits.length;
     if(a.pad!=='no'){while(digits.length%5)digits+='0';}
     let stage='checkerboard only';
-    if(a.transp==='double'){digits=sxTransEnc(sxTransEnc(digits,s.Q,false),s.R,true);stage='columnar (Line-Q) + diagonal (Line-R)';}
+    if(a.transp==='double'){digits=fdVicDiagEnc(sxTransEnc(digits,s.Q,false),s.R);stage='columnar (Line-Q) + diagonal (Line-R)';}
     else if(a.transp==='single'){digits=sxTransEnc(digits,s.Q,false);stage='columnar (Line-Q)';}
     let keygroupNote='not inserted';
     if(a.insert!=='no'){const r=fdVicInsertKeygroup(digits,s.keygroup,keyP);digits=r.cipher;keygroupNote=s.keygroup+' inserted at index '+r.at+' of '+(digits.length/5)+' groups, i.e. '+keyP+' groups from the end (sixth date digit)';}
@@ -24809,7 +24857,7 @@ addOp('vicExact','VIC Message Stage Encrypt/Decrypt','Classical',
       '════ VIC encrypt ════',
       'Checkerboard: header '+s.S+' with "'+String(a.row2).toUpperCase()+'" (row heads '+board.heads[0]+'/'+board.heads[1]+'; number shift '+board.enc['/']+')',
       'Keys        : Q('+s.a+')='+s.Q+'  R('+s.b+')='+s.R,
-      'Plain       : '+message+'   ('+message.length+' chars, spaces dropped'+(enc.skipped?(', '+enc.skipped+' skipped'):'')+')',
+      'Plain       : '+message+'   ('+message.length+' symbols, spaces dropped — the cut and every width index this stream'+(enc.skipped?(', '+enc.skipped+' skipped'):'')+')',
       'Bisected    : cut '+cut+(marker?(' with marker "'+marker+'"'):', no marker')+' → '+bisected.slice(0,60)+(bisected.length>60?'…':''),
       'Digits      : '+beforePad+' before padding'+(a.pad!=='no'?(', '+digits.length+' after padding to fives'):' (no padding)'),
       'Transposition: '+stage,
@@ -24827,27 +24875,56 @@ addOp('vicExact','VIC Message Stage Encrypt/Decrypt','Classical',
 function dianaTri(k,p){return (25-((k+p)%26)+26)%26;}
 function dianaLetterCode(ch,key){return String.fromCharCode(65+dianaTri(ch.charCodeAt(0)-65,key.charCodeAt(0)-65));}
 addOp('diana','Diana Cryptosystem (Trigraph OTP)','Classical',
-  'The Diana cryptosystem, the NSA cipher US Special Forces used with one-time pads in Vietnam (and in allied practice for decades after): a reciprocal trigraph table where any three letters {a,b,c} close in every order, so one table both enciphers and deciphers. Feed the pad group as the key; the key repeats only for demonstration. Control: table[B][K] = O, and {B, K, O} closes in all six orders.',
+  'The Diana cryptosystem, the NSA cipher US Special Forces used with one-time pads in Vietnam (and in allied practice for decades after): a reciprocal trigraph table where any three letters {a,b,c} close in every order, so one table both enciphers and deciphers. Controls: table[B][K] = O and {B, K, O} closes in all six orders; with the field procedure on (two clear indicator groups, the first two groups of the pad line), the published Programming Praxis example — pad line UKVTF WZHOK GORWY WETFR COYET, message ATTACK AT DAWN padded with XYZ — produces UKVTF WZHOK TSPDZ TVNRI BYEXH. The key repeats only for demonstration; the real pad is one-time.',
   [
-    {key:'key',label:'Pad / key letters (one-time pad group)',type:'text',default:'BKO'},
+    {key:'key',label:'Pad line (one-time pad group)',type:'text',default:'BKO'},
+    {key:'clear',label:'Indicator groups sent in clear (field procedure)',type:'text',default:'0'},
+    {key:'padText',label:'Padding letters (used with the indicator)',type:'text',default:'X'},
     {key:'group',label:'Output grouping (letters per group, 0 = keep layout)',type:'text',default:'5'},
     {key:'mode',label:'Direction (the table is its own inverse)',type:'select',default:'encrypt',options:[['encrypt','Encipher'],['decrypt','Decipher (same table)']]}
   ],function(t,a){
     const key=onlyAZ(a.key);
     if(!key)throw new Error('Diana needs pad/key letters');
     const group=Number(a.group)||0;
-    let i=0,out='';
-    for(const ch of String(t||'')){
-      const up=ch>='A'&&ch<='Z',lo=ch>='a'&&ch<='z';
-      if(!up&&!lo){out+=ch;continue;}
-      const c=dianaLetterCode(ch.toUpperCase(),key[i%key.length]);i++;
-      out+=up?c:c.toLowerCase();
+    const clear=Math.max(0,Math.min(20,Number(a.clear)||0));
+    const size=group>0?group:5;
+    const clearLen=clear*size, indicator=key.slice(0,clearLen), pad=key.slice(clearLen);
+    if(clearLen>=key.length)throw new Error('The clear indicator groups must be shorter than the pad line');
+    const transpose=(input,keyLetters)=>{
+      let i=0,out='';
+      for(const ch of input){
+        const up=ch>='A'&&ch<='Z',lo=ch>='a'&&ch<='z';
+        if(!up&&!lo){out+=ch;continue;}
+        const c=dianaLetterCode(ch.toUpperCase(),keyLetters[i%keyLetters.length]);i++;
+        out+=up?c:c.toLowerCase();
+      }
+      return out;
+    };
+    if(clearLen===0){
+      let out=transpose(String(t||''),pad.length?pad:key);
+      if(group>0)out=fdFive(out.toUpperCase().replace(/[^A-Z]/g,''),group);
+      return out;
     }
-    if(group>0){
-      const lettersOut=out.toUpperCase().replace(/[^A-Z]/g,'');
-      out=fdFive(lettersOut,group);
+    if(a.mode==='decrypt'){
+      const letters=String(t||'').toUpperCase().replace(/[^A-Z]/g,'');
+      if(letters.length<=clearLen)throw new Error('The received message is shorter than the clear indicator groups');
+      const ind=letters.slice(0,clearLen),body=letters.slice(clearLen);
+      const plain=transpose(body,pad);
+      return [
+        '════ Diana decrypt — field procedure ════',
+        'Indicator : '+fdFive(ind,size)+'   ('+clear+' clear group'+(clear===1?'':'s')+' of the pad line)',
+        'Pad line  : '+(key.startsWith(ind)?'supplied pad line starts with this indicator — OK':'MISMATCH: the supplied pad line does not start with the indicator'),
+        'Key used  : '+fdFive(pad,size)+'   (continues after the indicator)',
+        'Recovered : '+plain,
+        'Note      : any agreed padding letters (default X) at the end are the sender’s filler, not message text.'
+      ].join('\n');
     }
-    return out;
+    let letters=String(t||'').toUpperCase().replace(/[^A-Z]/g,'');
+    if(!letters)throw new Error('Give a message to encipher');
+    const fill=String(a.padText||'').toUpperCase().replace(/[^A-Z]/g,'');
+    if(fill)while(letters.length%size)letters+=fill[(letters.length-size*(1))%fill.length<0?0:letters.length%fill.length];
+    const out=transpose(letters,pad);
+    return (fdFive(indicator,size)+' '+fdFive(out,size)).trim();
   });
 addOp('dianaTable','Diana Trigraph Table (worksheet)','Classical',
   'The full 26×26 reciprocal trigraph table behind the Diana cryptosystem, with the reciprocity self-test: every one of the 676 entries must close as a trio {row, column, entry}, which is why the single table serves for both enciphering and deciphering and why letter order inside a trio never matters.',

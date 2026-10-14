@@ -8,8 +8,14 @@
 //   * VIC cipher — the worked example used by the CIA analysis and Wikipedia
 //     (personal number 6, date 139195, phrase "Twas the night before Christmas",
 //     keygroup 72401 → Q 0668005552551, R 758838, checkerboard header 5961328470,
-//     99-digit message code).
-//   * Diana cryptosystem — reciprocal trigraph table; control trio {B, K, O}.
+//     99-digit message code), plus the second published vector used for the
+//     diagonal transposition (crunchbangle/vic-ts: key 536124, 60 digits →
+//     left widths 3,4,5,6,4,5,6,1,2,3) and the 2016 blog's first-transposition
+//     and Diana vectors recorded in the deep-dive note.
+//   * Diana cryptosystem — reciprocal trigraph table; control trio {B, K, O};
+//     Programming Praxis field procedure (pad line UKVTF WZHOK GORWY WETFR COYET,
+//     two clear indicator groups, ATTACK AT DAWN padded with XYZ →
+//     UKVTF WZHOK TSPDZ TVNRI BYEXH).
 //   * Gronsfeld — digit-key recovery over ten candidates per column.
 //   * Binary byte recipes — hexdump and octal round trips, ASCII gutter immunity.
 import { test } from "node:test";
@@ -65,6 +71,24 @@ const OD_PLAIN_NO_PAD = "READYFORACTIONNOWSTOPCONFIRMGOAHEADASPLANNEDBYBROADCAST
 const VIC_KEY = { phrase: "Twas the night before Christmas", date: "139195", personal: "6", keygroup: "72401", row2: "AT ONE SIR" };
 const VIC_99 =
   "602538000055500000080873198000099911155580677642881866676667549976028759956964596658338765886658337";
+
+// Second published VIC vector (Basic Cryptography, 2016-11-06): columnar
+// transposition of the 70-digit checkerboard stream, and the diagonal stage's
+// published widths from crunchbangle/vic-ts.
+const VIC_BLOG_D0 =
+  "9255076458271547043013589409410775525476174451443586871274494585848057";
+const VIC_BLOG_D1 =
+  "4311685592445237414544544750078597555282185170644685817478070439709754";
+const VIC_BLOG_Q = "66348071473";
+const VIC_DIAG_WIDTHS = [3, 4, 5, 6, 4, 5, 6, 1, 2, 3];
+const VIC_DIAG_KEY = "536124";
+const VIC_DIAG_PLAIN = "ABCDEFGHIJKLMONPQRSTUVWXabcdefghijklmnopqrstuvwx0123456789YZ";
+const VIC_DIAG_CT =
+  "pGKPVbg269qsLQvch37YBEIOTXe0lnrtuRwxi48ZADHMSWdjkmCFJNUaf15o";
+
+// Published Diana field-procedure vector (Programming Praxis, 2014-12-19).
+const DIANA_LINE = "UKVTF WZHOK GORWY WETFR COYET";
+const DIANA_SENT = "UKVTF WZHOK TSPDZ TVNRI BYEXH";
 
 test("the deep-dive recipes are registered, packed and counted", () => {
   const { run, ops, dom } = boot();
@@ -247,6 +271,71 @@ test("binary byte recipes round-trip through hexdump and octal", () => {
       run("fromHexdump", wide, { outfmt: "hex" }),
       run("toHex", "abcdefghijklmnopqrstuvwxyz0123456789", { sep: "none" }),
     );
+  } finally {
+    dom.window.close();
+  }
+});
+
+test("VIC diagonal transposition follows the published rule, not a triangle guess", () => {
+  const { run, dom } = boot();
+  try {
+    const ev = (code) => dom.window.eval(code);
+    // Published widths from crunchbangle/vic-ts (key 536124, 60 digits) — four
+    // independent implementations agree on this rule (see docs §2b).
+    // (spread into a local array: values from the jsdom realm have a different prototype)
+    assert.deepEqual([...ev(`fdVicLeftWidths("${VIC_DIAG_KEY}",60)`)], VIC_DIAG_WIDTHS);
+    // The blog's own illustrated pattern: key 431526 puts labels 1, 2, 3 in
+    // columns 2, 4, 1, so the left widths run 2,3,4,5,6 | 4,5,6 | 1,2,3,4,5,6.
+    assert.deepEqual([...ev('fdVicLeftWidths("431526",84)')], [2, 3, 4, 5, 6, 4, 5, 6, 1, 2, 3, 4, 5, 6]);
+    // Encipher/decipher are inverses and the stage is a permutation of the digits.
+    assert.equal(ev(`fdVicDiagEnc(${JSON.stringify(VIC_DIAG_PLAIN)},"${VIC_DIAG_KEY}")`), VIC_DIAG_CT);
+    assert.equal(ev(`fdVicDiagDec(${JSON.stringify(VIC_DIAG_CT)},"${VIC_DIAG_KEY}")`), VIC_DIAG_PLAIN);
+    // Published first-transposition vector of the 2016 example (plain columnar).
+    assert.equal(ev(`sxTransEnc(${JSON.stringify(VIC_BLOG_D0)},"${VIC_BLOG_Q}",false)`), VIC_BLOG_D1);
+
+    // Every transposition setting must round-trip through the recipe.
+    const message = "ATTACK AT DAWN BY DAWN I MEAN 0500 NOT 0915 LIKE YOU DID LAST TIME";
+    for (const transp of ["none", "single", "double"]) {
+      for (const insert of ["no", "yes"]) {
+        const enc = run("vicExact", message, { ...VIC_KEY, cut: "25", transp, insert, pad: "yes" });
+        const ct = (enc.match(/Ciphertext {2}: ([\d ]+)/) || [])[1].replace(/ /g, "");
+        assert.equal(ct.length % 5, 0, "sent groups are complete fives");
+        const dec = run("vicExact", ct, { ...VIC_KEY, mode: "decrypt", cut: "25", transp, insert, pad: "yes" });
+        assert.ok(
+          dec.includes(`Recovered   : ${message.replace(/ /g, "")}`),
+          `transp=${transp} insert=${insert} round trip failed:\n${dec}`,
+        );
+      }
+    }
+  } finally {
+    dom.window.close();
+  }
+});
+
+test("Diana reproduces the published field-procedure example", () => {
+  const { run, dom } = boot();
+  try {
+    // Pad line, two clear indicator groups and XYZ filler, as published.
+    const enc = run("diana", "ATTACK AT DAWN", { key: DIANA_LINE, clear: "2", padText: "XYZ", group: "5" });
+    assert.equal(enc, DIANA_SENT);
+
+    const dec = run("diana", DIANA_SENT, { key: DIANA_LINE, clear: "2", padText: "XYZ", group: "5", mode: "decrypt" });
+    assert.match(dec, /Indicator : UKVTF WZHOK {3}\(2 clear groups of the pad line\)/, dec);
+    assert.match(dec, /Pad line {2}: supplied pad line starts with this indicator — OK/, dec);
+    assert.match(dec, /Key used {2}: GORWY WETFR COYET {3}\(continues after the indicator\)/, dec);
+    assert.match(dec, /Recovered : ATTACKATDAWNXYZ/, dec);
+
+    // A pad line that does not start with the received indicator must be flagged.
+    const wrong = run("diana", DIANA_SENT, { key: "ZZZZZ WZHOK GORWY WETFR COYET", clear: "2", group: "5", mode: "decrypt" });
+    assert.match(wrong, /MISMATCH: the supplied pad line does not start with the indicator/, wrong);
+
+    // The indicator groups must be shorter than the pad line.
+    assert.throws(
+      () => run("diana", "ATTACK AT DAWN", { key: "BKOEX", clear: "2", group: "5" }),
+      /clear indicator groups must be shorter than the pad line/,
+    );
+    // Without an indicator the operation keeps its plain single-key behaviour.
+    assert.equal(run("diana", "ATTACK", { key: "BKOEX", clear: "0", group: "0" }), "YWSVAO");
   } finally {
     dom.window.close();
   }
