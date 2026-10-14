@@ -200,6 +200,15 @@ decompression code** to unpack `DN3DSW13.SHR` at install time.
 The distinction matters and the triage tool makes it: the marker is only
 a packer identification if it sits in the first 0x200 bytes.
 
+A follow-up regression caught a second trap in that installer: the overlay
+contains the four bytes `LE\x00\x00` at `0x1C15C`, which fooled the old
+signature-only scanner into calling it DOS/4GW. The MZ `e_lfanew` field is not a
+usable LE pointer, and the candidate's CPU/OS IDs, page geometry, and object
+table are nonsense. `game_triage.py` now validates these structural fields
+before accepting an LE/LX candidate. The installer is correctly reported as
+real-mode MZ, while the real DOOM and Heretic LE headers still pass; regression
+controls cover all three plus the PKLITE payload.
+
 `docs/exe-protection-deep-dive.md` §2 recorded PKLITE as a deliberate
 non-implementation ("detected but not decoded — honest deferral"). That
 deferral stands. What has changed is that the corpus now has a **second,

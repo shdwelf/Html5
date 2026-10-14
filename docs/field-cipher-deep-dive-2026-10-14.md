@@ -181,7 +181,12 @@ English value) ranked first.
 
 **SECOM** already had its full implementation (`secomSchedule`, `secomExact`) added with
 the previous field-cipher work and verified against the 105-digit publisher example in
-`tools/secom_probe.py`. The current note only re-checks that the pack lists them
+`tools/secom_probe.py`. While this dive was in progress, `main` independently landed the
+same class of fix on the SECOM side — `sxDigitSeq` sequences a numeric row in the order
+`1…9,0` instead of letting JavaScript's lexical sort put `0` first — with
+`tests/secom-exact.test.mjs` as its guard; this branch merged that fix, and the VIC `S`
+line plus the SECOM board row are now the two places where the "zero is ten" rule is
+pinned by tests. The current note only re-checks that the pack lists them
 (`Field Cipher Deep Dive — OD Message, VIC, Diana, Gronsfeld`) and that coverage stays at
 zero dangling / zero orphaned entries. SECOM is the extended-checkerboard VIC variant
 (the VIC article itself links to it as such), which is why the two are trained together.
