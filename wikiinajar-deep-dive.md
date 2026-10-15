@@ -1,5 +1,12 @@
 # Deep Dive: Wiki in a Jar — `wiki.in.a.jar`, from USB stick to webxdc
 
+> **2026-10-15 continuation:** [Repository-wide editions and source check](docs/wiki-workspace-research-2026-10-15.md)
+> adds new ACME-hosted executable JARs, native TiddlyWiki/Webxdc, an exact-byte
+> repository vault, Haiku-v1 encrypted exchange, MediaWiki conversion and an
+> always-visible calendar. [Build instructions](tools/wiki-workspace/README.md).
+> These new editions do not change the historical 0.8/NanoHTTPD provenance below
+> and are not the unrecovered historical More Wiki 0.9.9 binary.
+
 *A provenance, architecture and conversion walkthrough of **Wiki in a Jar**
 (0.8, 2008) — the 123 KB Java personal wiki that runs from a USB stick —
 written to pair with this repo's Java image/DjVu patch

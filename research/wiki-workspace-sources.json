@@ -1,0 +1,228 @@
+{
+  "format": "wiki-workspace-source-check",
+  "version": 1,
+  "checkedOn": "2026-10-15",
+  "report": "docs/wiki-workspace-research-2026-10-15.md",
+  "sources": [
+    {
+      "id": 1,
+      "title": "ACME/TJWS server source",
+      "url": "https://github.com/drogatkin/TJWS2/blob/33920d0e429d3271796b3fd2d838cd0a47208846/1.x/src/Acme/Serve/Serve.java",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "33920d0e429d3271796b3fd2d838cd0a47208846",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 2,
+      "title": "Tomcat Servlet API source mirror",
+      "url": "https://github.com/xcf007/tomcat4/tree/dbed311153d1d97d7c92534d173c853130b08fb4/apache-tomcat-4.1.40-src/servletapi",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "dbed311153d1d97d7c92534d173c853130b08fb4",
+      "limitations": "Third-party mirror; archive hash verifies identity, not official Apache release signatures."
+    },
+    {
+      "id": 3,
+      "title": "Secret Space Encryptor Encryptor.java",
+      "url": "https://github.com/sdatar59/Paranoia_Works-Secret_Space_Encryptor_for_Android/blob/31a19a4c8a5ea8fb8bce6a2a1b6f5cc40cc8f2f3/MainApp/src/main/java/com/paranoiaworks/unicus/android/sse/utils/Encryptor.java",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "31a19a4c8a5ea8fb8bce6a2a1b6f5cc40cc8f2f3",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 4,
+      "title": "SSEBase64 alphabet and padding",
+      "url": "https://github.com/sdatar59/Paranoia_Works-Secret_Space_Encryptor_for_Android/blob/31a19a4c8a5ea8fb8bce6a2a1b6f5cc40cc8f2f3/CryptoLibs/src/main/java/sse/org/bouncycastle/util/encoders/SSEBase64Encoder.java",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "31a19a4c8a5ea8fb8bce6a2a1b6f5cc40cc8f2f3",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 5,
+      "title": "SSEBase64 decoding wrapper",
+      "url": "https://github.com/sdatar59/Paranoia_Works-Secret_Space_Encryptor_for_Android/blob/31a19a4c8a5ea8fb8bce6a2a1b6f5cc40cc8f2f3/CryptoLibs/src/main/java/sse/org/bouncycastle/util/encoders/SSEBase64.java",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "31a19a4c8a5ea8fb8bce6a2a1b6f5cc40cc8f2f3",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 6,
+      "title": "Eclipse Temurin build provenance",
+      "url": "https://github.com/adoptium/temurin-build/blob/2dd5226b8fbfc3d075a9d5a75a1a4f710f4e306c/README.md",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "2dd5226b8fbfc3d075a9d5a75a1a4f710f4e306c",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 7,
+      "title": "OpenJDK Applet API removal commit",
+      "url": "https://github.com/openjdk/jdk/commit/5cf672e7784b9a9a82f29977a072b162cc240fd1",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "5cf672e7784b9a9a82f29977a072b162cc240fd1",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 8,
+      "title": "Ghidra JVM language definition",
+      "url": "https://github.com/NationalSecurityAgency/ghidra/blob/61f664ff30d9bd7d5501956751d46553728c5f6b/Ghidra/Processors/JVM/data/languages/JVM.ldefs",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "61f664ff30d9bd7d5501956751d46553728c5f6b",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 9,
+      "title": "openjvm-wasm architecture claims",
+      "url": "https://github.com/pmietlicki/openjvm-wasm/blob/03ec1f7c21ca9880661911617bf12e02069d8462/README.md",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "03ec1f7c21ca9880661911617bf12e02069d8462",
+      "limitations": "Upstream README claims only; not built or benchmarked locally."
+    },
+    {
+      "id": 10,
+      "title": "JavaCardOS pyResMan APDU tooling",
+      "url": "https://github.com/JavaCardOS/pyResMan/blob/9a518dfdca087335628e184212aaa44d35f470f2/README.md",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "9a518dfdca087335628e184212aaa44d35f470f2",
+      "limitations": "Tool source read; no smart-card connection or CAP install."
+    },
+    {
+      "id": 11,
+      "title": "QEMU qcow2 encryption metadata",
+      "url": "https://github.com/qemu/qemu/blob/d5b5083cb783c447001e862c2b525e59f48ad78c/docs/interop/qcow2.rst",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "d5b5083cb783c447001e862c2b525e59f48ad78c",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 12,
+      "title": "TiddlyWiki 5.4.1 engine and boot format",
+      "url": "https://github.com/TiddlyWiki/TiddlyWiki5/tree/v5.4.1",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned npm package source + browser runtime",
+      "revision": "v5.4.1",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 13,
+      "title": "Tiddlyhost controller",
+      "url": "https://github.com/tiddlyhost/tiddlyhost-com/blob/d573a5964a0e0b226f36aecfdc8b6362f09a0f14/rails/app/controllers/tiddlywiki_controller.rb",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "d573a5964a0e0b226f36aecfdc8b6362f09a0f14",
+      "limitations": "Source behavior only; live host not queried."
+    },
+    {
+      "id": 14,
+      "title": "Tiddlyhost routes",
+      "url": "https://github.com/tiddlyhost/tiddlyhost-com/blob/d573a5964a0e0b226f36aecfdc8b6362f09a0f14/rails/config/routes.rb",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "d573a5964a0e0b226f36aecfdc8b6362f09a0f14",
+      "limitations": "Source routes only; live host not queried."
+    },
+    {
+      "id": 15,
+      "title": "MediaWiki project identity",
+      "url": "https://github.com/wikimedia/mediawiki/blob/4f6bde3101f3a445f01418b143e043e976b77e40/README.md",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "4f6bde3101f3a445f01418b143e043e976b77e40",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 16,
+      "title": "MediaWiki export-0.11 schema",
+      "url": "https://github.com/wikimedia/mediawiki/blob/4f6bde3101f3a445f01418b143e043e976b77e40/docs/export-0.11.xsd",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "4f6bde3101f3a445f01418b143e043e976b77e40",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 17,
+      "title": "W3C XML namespace schema mirror",
+      "url": "https://github.com/wikimedia/mediawiki/blob/4f6bde3101f3a445f01418b143e043e976b77e40/tests/phpunit/maintenance/xml.xsd",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "4f6bde3101f3a445f01418b143e043e976b77e40",
+      "limitations": "See the linked research report for runtime and security boundaries."
+    },
+    {
+      "id": 18,
+      "title": "MediaWiki revision-query API",
+      "url": "https://github.com/wikimedia/mediawiki/blob/4f6bde3101f3a445f01418b143e043e976b77e40/includes/Api/ApiQueryRevisions.php",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "4f6bde3101f3a445f01418b143e043e976b77e40",
+      "limitations": "Source read only; no live wiki queried."
+    },
+    {
+      "id": 19,
+      "title": "MediaWiki import API",
+      "url": "https://github.com/wikimedia/mediawiki/blob/4f6bde3101f3a445f01418b143e043e976b77e40/includes/Api/ApiImport.php",
+      "checkedOn": "2026-10-15",
+      "verification": "pinned GitHub source read",
+      "revision": "4f6bde3101f3a445f01418b143e043e976b77e40",
+      "limitations": "Source read only; no remote import performed."
+    }
+  ],
+  "localEvidence": [
+    {
+      "path": "src/lib/vaultfile.ts",
+      "scope": "existing Haiku v1 wire format; bidirectional WebCrypto compatibility test"
+    },
+    {
+      "path": "src/lib/vfs.ts",
+      "scope": "existing IndexedDB content-addressed attachment store; not automatically mounted"
+    },
+    {
+      "path": "sse-webxdc/index.html",
+      "scope": "SSE identity and existing crypto/codecs; not converted to Haiku v1"
+    },
+    {
+      "path": "tools/wikiinajar/README.md",
+      "scope": "historical 0.8 patch, distinct from the new executable host"
+    }
+  ],
+  "negativeSearches": [
+    {
+      "host": "api.github.com",
+      "query": "morewikiinajar in:name",
+      "totalCount": 0,
+      "date": "2026-10-15"
+    },
+    {
+      "host": "api.github.com",
+      "query": "\"more-wiki-in-a-jar\" in:name",
+      "totalCount": 0,
+      "date": "2026-10-15"
+    }
+  ],
+  "pendingQueries": [
+    {
+      "url": "https://gitlab.com/api/v4/projects?search=wiki%20in%20a%20jar&simple=true&per_page=100",
+      "executed": false,
+      "reason": "host outside network allowlist"
+    },
+    {
+      "url": "https://archive.org/advancedsearch.php?q=title%3A%22Wiki%20in%20a%20Jar%22&output=json",
+      "executed": false,
+      "reason": "host outside network allowlist"
+    },
+    {
+      "url": "https://web.archive.org/cdx/search/cdx?url=morewikiinajar.sourceforge.net/*&output=json&filter=statuscode:200&collapse=digest",
+      "executed": false,
+      "reason": "host outside network allowlist"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 == Description matching — other GitHub projects that match each command's description (2026-10-13) ==
 
-Source: docs/yubnub-description-matches-2026-10-13.md — synced 2026-10-14 by tools/wikiinajar/sync-docs.mjs.
+Source: docs/yubnub-description-matches-2026-10-13.md — synced 2026-10-15 by tools/wikiinajar/sync-docs.mjs.
 Back to [[Main Page]].
 
 = Description matching — other GitHub projects that match each command's description (2026-10-13) =

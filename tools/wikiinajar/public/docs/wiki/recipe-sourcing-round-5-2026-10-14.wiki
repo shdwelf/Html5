@@ -1,6 +1,6 @@
 == Recipe sourcing, round 5 — the 1914 War Office Manual of Cryptography: the Zigzag Transposition and the Nihilists' square ==
 
-Source: docs/recipe-sourcing-round-5-2026-10-14.md — synced 2026-10-14 by tools/wikiinajar/sync-docs.mjs.
+Source: docs/recipe-sourcing-round-5-2026-10-14.md — synced 2026-10-15 by tools/wikiinajar/sync-docs.mjs.
 Back to [[Main Page]].
 
 = Recipe sourcing, round 5 — the 1914 War Office Manual of Cryptography: the Zigzag Transposition and the Nihilists' square =

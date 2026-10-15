@@ -1,5 +1,10 @@
 # Wiki-in-a-Jar 0.8 image and DjVu extension
 
+> For the **new self-contained ACME repository JARs**, native TiddlyWiki/Webxdc,
+> revision store and encrypted vault exchange, use
+> [`../wiki-workspace/README.md`](../wiki-workspace/README.md).
+> The build on this page remains the separate historical 0.8 patch.
+
 > **Editions:** this tool patches the Java original. The same wiki also
 > ships as a single offline HTML file ([`wikiinajar.html`](../../wikiinajar.html))
 > and a Webxdc bundle (`wikiinajar.xdc`, `npm run build:wikiinajar`); the

@@ -1,6 +1,6 @@
 == PDFDrive deep dive — pdfdrive.org / .net / .com family (2026-10-13) ==
 
-Source: docs/pdfdrive-deep-dive-2026-10-13.md — synced 2026-10-14 by tools/wikiinajar/sync-docs.mjs.
+Source: docs/pdfdrive-deep-dive-2026-10-13.md — synced 2026-10-15 by tools/wikiinajar/sync-docs.mjs.
 Back to [[Main Page]].
 
 = PDFDrive deep dive — pdfdrive.org / .net / .com family (2026-10-13) =

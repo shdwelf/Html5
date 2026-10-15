@@ -1,6 +1,6 @@
 == CyberChef SFX coverage verification — 2026-10-13 ==
 
-Source: docs/cyberchef-sfx-coverage-audit-2026-10-13.md — synced 2026-10-14 by tools/wikiinajar/sync-docs.mjs.
+Source: docs/cyberchef-sfx-coverage-audit-2026-10-13.md — synced 2026-10-15 by tools/wikiinajar/sync-docs.mjs.
 Back to [[Main Page]].
 
 = CyberChef SFX coverage verification — 2026-10-13 =
