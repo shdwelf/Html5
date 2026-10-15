@@ -187,11 +187,22 @@ backup. A real messenger/device round trip still needs user validation.
 
 ## JavaCard and bytecode research
 
-`javacard/VaultDigestApplet.java` is a **source prototype only** for a JavaCard
-Classic snapshot-digest service. It stores 32 bytes and gates updates with an
-installation-supplied PIN. There is no CAP build, SDK type-check, simulator run,
-card install, HTTP stack or proof of hardware security. Its APDU contract and
-limitations are in [javacard/README.md](javacard/README.md).
+`javacard/VaultDigestApplet.java` is a **source prototype**, now API-compiled and
+protocol-tested against a pinned, test-only jCardSim 2.2.2 implementation. It
+stores 32 bytes and gates updates with an installation-supplied PIN. This is
+not a CAP build, Oracle/card-vendor SDK verification, physical-card installation,
+HTTP stack or proof of hardware security. The APDU contract, strict failure
+policy and simulator limitations are in [javacard/README.md](javacard/README.md).
+
+```sh
+npm run test:wiki-javacard             # optional; JDK 11+, pinned test-only API
+npm run test:wiki-javacard -- --offline
+```
+
+The 28 scoped checks include two probes confirming limitations, not validating
+rollback/Le behavior. No physical reader is accessed; the old simulator is never
+added to the wiki runtime. See the
+[before/after validation report](../../docs/wiki-javacard-validation-2026-10-15.md).
 
 The PC/SC host client is compiled into the server JAR but never invoked by HTTP:
 

@@ -9,8 +9,9 @@ Machine-readable bibliography: [research/wiki-workspace-sources.json](../researc
 Follow-up: [verified Drive backup and historical 0.8 rebuild](drive-backup-wiki-2026-10-15.md).
 The committed baseline was backed up before continuation; the original 0.8
 archive is now locally recovered and its patched installation has fresh HTTP
-checks. The separate More 0.9.9, JavaCard, Ghidra/native and live-service limits
-below remain unchanged.
+checks. A further [JavaCard validation pass](wiki-javacard-validation-2026-10-15.md) adds
+real API-surface compilation and scoped in-memory protocol checks. More 0.9.9
+recovery, CAP/hardware, Ghidra/native and live-service limits remain open.
 
 **Evidence labels:** *source-read* means the named files were retrieved from a
 pinned GitHub commit and inspected this turn; *local test* means code actually
@@ -24,7 +25,7 @@ prior investigations is not presented as a new live check of its remote sources.
 | 1 — `wiki.in.a.jar` | New self-contained Java 11+ executable JAR with the classic browser wiki as its landing page, real ACME/TJWS HTTP, bundled docs/DjVu and exact repository bytes | This is a new host for the HTML5 conversion, **not** Java source translated from every HTML/JS application and **not** the original 0.8 binary |
 | 2 — `more.wiki.in.a.jar` | Repository library landing page, one page per eligible file, explicit references/backlinks, immutable revision chain, optimistic write preconditions, encrypted page/file exchange | New “repository edition 1,” **not** a claim to have recovered Jens Fauth's historical 0.9.9 source |
 | 3 — JVM / OpenJDK / Temurin / Ghidra | Compiled and executed with recovered Temurin 21.0.12.1+1; real `javap` disassembly; Java 8 applet reader; optional Ghidra inspection command | No full headless Ghidra installation was run; no JVM-to-C++ or native-assembly equivalence claim |
-| 4 — ACME + DjVu + vault + JavaCard | Actual `Acme.Serve.Serve`, local WASM DjVu decoder, content-addressed vault, Haiku-v1-compatible WebCrypto exchange, JavaCard digest-applet source and compiled read-only PC/SC client | No CAP conversion, JavaCard SDK type-check, simulator/card deployment, encrypted mounted filesystem or QEMU port |
+| 4 — ACME + DjVu + vault + JavaCard | Actual `Acme.Serve.Serve`, local WASM DjVu decoder, content-addressed vault, Haiku-v1-compatible WebCrypto exchange, JavaCard digest applet with pinned jCardSim API/protocol checks and a compiled read-only PC/SC client | No CAP conversion, Oracle/card-vendor SDK verification, physical-card testing, encrypted mounted filesystem or QEMU port |
 | 5 — TiddlyWiki / Webxdc | Native TiddlyWiki **5.4.1**, importable tiddlers, self-contained HTML engine, `.xdc` package with bounded plain-text chat updates and conflict copies | HTML/XDC contain source previews, metadata and a DjVu demo, **not** the entire binary vault; real messenger/device sync remains a deployment check |
 | 6 — cross-checks / bibliography / MediaWiki | Per-file provenance and SHA-256, resolved links/backlinks and unresolved links, extracted URL bibliography, existing browser JSON converter, schema-valid MediaWiki 0.11 XML | No remote wiki was changed. XML schema validation is not an actual MediaWiki server import; attachments, contacts and dialect-specific namespaces need migration review |
 
@@ -237,8 +238,13 @@ profile. `VaultDigestApplet.java` stores a 32-byte snapshot digest, validates an
 installation-supplied PIN, reads short APDUs and transactionally updates the
 anchor. The host-side `CardAnchorClient` compiles with standard PC/SC APIs and
 only selects/reads the applet on explicit CLI invocation. The HTTP server does
-not expose a raw APDU endpoint. The JavaCard source passed the existing JDK
-**parse-only** checker; no CAP, SDK verification, simulator or card test occurred.
+not expose a raw APDU endpoint. The first check was JDK **parse-only**. The
+[follow-up validation](wiki-javacard-validation-2026-10-15.md) now compiles against
+real jCardSim 2.2.2 API classes and passes 28 scoped checks (25 applet/parser,
+1 host-framing, 2 limitation probes). It also tightens install bounds and revokes
+stale update grants on malformed commands. This is not Oracle/card-vendor SDK
+verification, CAP conversion or physical-card testing; fragmented transport,
+Le enforcement and EEPROM rollback/power loss are explicitly unvalidated.
 See [the APDU contract and pending tests](../tools/wiki-workspace/javacard/README.md).
 
 The inspected QEMU qcow2 specification distinguishes encryption method values
@@ -385,10 +391,13 @@ Completed local checks (commands in the tool README):
   mobile layouts have no horizontal overflow; busy calendar days use counts
   and a full expandable agenda rather than giant wrapped title columns. No
   page JavaScript errors were observed in the completed smoke run.
-- JavaCard grammar: one source parsed by the real JDK parser, zero syntax errors.
+- JavaCard: initial grammar check passed; a later pinned jCardSim 2.2.2 API
+  compilation/in-memory suite passed all 28 scoped checks. Its two explicit
+  limitation probes are not CAP, Le-conformance or rollback verification.
 
 Pending acceptance checks are **not** hidden behind passing unit tests: historical
-More Wiki source recovery; full Ghidra import/decompilation; JavaCard API/CAP and
-hardware simulation; legacy appletviewer execution; messenger/device sync;
+More Wiki source recovery; full Ghidra import/decompilation; card-vendor SDK/CAP,
+physical-card and faithful transport/persistence validation; legacy appletviewer
+execution; messenger/device sync;
 actual MediaWiki instance import; live Tiddlyhost API behavior; GitLab/Archive
 recovery; AOT/WASM performance and storage benchmarks; public-facing security review.

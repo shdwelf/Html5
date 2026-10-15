@@ -10,11 +10,18 @@
       "sha256": "62009a4dec952b1c07ded94411371f042b5bed3666513a5979c3f88b3a2e1a4a"
     },
     {
+      "page": "wiki-javacard-validation-2026-10-15",
+      "source": "docs/wiki-javacard-validation-2026-10-15.md",
+      "date": "2026-10-15",
+      "bytes": 8837,
+      "sha256": "9d1a322c6377c4d14ada6ca7c169b0c54fd634129bf52ec7c33140da994ec49a"
+    },
+    {
       "page": "wiki-workspace-research-2026-10-15",
       "source": "docs/wiki-workspace-research-2026-10-15.md",
       "date": "2026-10-15",
-      "bytes": 26826,
-      "sha256": "ceaf630cd47b3e9d63f8e2a54666ac6e5a4755eb086234155800c3ea197a6618"
+      "bytes": 27583,
+      "sha256": "2922a615e7a8ba426ecaf7971149993abee3aa0ec9d4eb271d6e9a278f8a3960"
     },
     {
       "page": "crow-217-letter-claim-check-2026-10-14",
@@ -57,13 +64,6 @@
       "date": "2026-10-13",
       "bytes": 4541,
       "sha256": "7d806f6b04f4d33928499cb98ac4d4dcd6c5badc61125c39f25f5cf60f83cdac"
-    },
-    {
-      "page": "yubnub-crypto-transport-audit-2026-10-13",
-      "source": "docs/yubnub-crypto-transport-audit-2026-10-13.md",
-      "date": "2026-10-13",
-      "bytes": 3019,
-      "sha256": "b899ea9dff10b4c0046f0c3d020377e390e6d5b0d902affca5f1d2370dc41a2c"
     }
   ]
 }

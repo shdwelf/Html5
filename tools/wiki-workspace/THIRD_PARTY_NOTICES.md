@@ -59,3 +59,20 @@ The adjacent `COPYING` preserves the upstream license.
 
 The SHA-256 values for downloaded build dependencies are in `deps.mjs` and the
 JAR's `dependencies.json`. Checksums establish identity, not safety or authorship.
+
+## Optional JavaCard simulator tests (not a wiki runtime dependency)
+
+`javacard/test.mjs` downloads the historical `jcardsim-2.2.2-all.jar` only for
+explicit in-memory validation. Pin: `licel/jcardsim` commit
+`cd479018d16b1467f075d2c5d9a1064d724269cb`, Git blob
+`0ac10c0143f06fb4b256dc5877010450351b7812`, SHA-256
+`33c167e9bf989c3fca692f8053b8032280a1cbca79df818e131c486dd174746a`.
+The framework sources and POM identify Apache-2.0. Bundled Bouncy Castle code
+has its separate MIT-style notice in the upstream
+[NOTICE](https://github.com/licel/jcardsim/blob/cd479018d16b1467f075d2c5d9a1064d724269cb/NOTICE).
+
+The publisher's binary is kept unchanged in ignored cache storage, never added
+to the production JAR/XDC or exposed as a service. Its age and simulated
+transport/transaction limitations make it unsuitable as a security-certification
+or production crypto dependency. The API compilation does not constitute an
+Oracle SDK/CAP verification. No Oracle SDK binaries are downloaded by this test.
