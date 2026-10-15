@@ -6,6 +6,12 @@ This continues [the Wiki in a Jar deep dive](../wikiinajar-deep-dive.md),
 is in [tools/wiki-workspace](../tools/wiki-workspace/README.md).
 Machine-readable bibliography: [research/wiki-workspace-sources.json](../research/wiki-workspace-sources.json).
 
+Follow-up: [verified Drive backup and historical 0.8 rebuild](drive-backup-wiki-2026-10-15.md).
+The committed baseline was backed up before continuation; the original 0.8
+archive is now locally recovered and its patched installation has fresh HTTP
+checks. The separate More 0.9.9, JavaCard, Ghidra/native and live-service limits
+below remain unchanged.
+
 **Evidence labels:** *source-read* means the named files were retrieved from a
 pinned GitHub commit and inspected this turn; *local test* means code actually
 ran here; *proposal/pending* means it did not. Repository documentation from

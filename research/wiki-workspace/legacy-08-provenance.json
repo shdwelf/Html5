@@ -1,0 +1,12 @@
+{
+  "name": "WikiInAJar-0.8-20081128-bin.zip",
+  "driveId": "1uKnAjh5zlgq_4iAQZ3Hw_CsNFPAEc2br",
+  "bytes": 123402,
+  "sha256": "4db47b0f712f50a7416ed1f0c65c06229d6820855cc18825e0ad3f9bd8a5bd47",
+  "md5": "45943d5150400ae59f739a32dc475585",
+  "archiveEntries": 83,
+  "innerJarBytes": 98464,
+  "innerJarSHA256": "7927d3d7b8e1c4df414a27026e80517adfe39b7bb57d08e37c3d86f7655f764f",
+  "mainClass": "org.rgse.wikiinajar.server.Server",
+  "symlinksOrTraversal": false
+}

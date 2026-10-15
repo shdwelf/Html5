@@ -85,6 +85,25 @@ The selected output/staging directories are recreated on each build, including
 before rebuilding the JAR it is using. Byte-identical repeats require the same
 Node/JDK toolchains; the fixture was built twice with matching artifact hashes.
 
+## Drive backup and recovery
+
+The committed PR #116 baseline and its release outputs have a
+[verified Drive backup and continuation record](../../docs/drive-backup-wiki-2026-10-15.md).
+The shared JAR bytes are split below the upload limit and deduplicated across
+editions; the supplied restore helper reproduces all twelve release artifacts
+without recompression. It can also extract the eligible source tree, but does
+not claim to restore missing Git history, private runtime data or browser drafts.
+
+```sh
+python3 tools/wiki-workspace/restore-backup.py --backup /path/to/downloads \
+  --output /path/to/new-restored-directory --extract-source
+npm run test:wiki-backup
+```
+
+The backup is pinned to its named commit/snapshot. Later work is recorded as a
+separate continuation rather than overwriting that baseline. SHA-256 checks and
+an output-directory overwrite refusal are mandatory in the restore helper.
+
 ## Revisions and vault
 
 Read-only is the default. To enable persistence, supply a newly generated

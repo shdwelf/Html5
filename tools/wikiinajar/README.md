@@ -48,6 +48,29 @@ Main Page. `build-image-support.sh` copies the whole content set and appends a
 The Node suite (`tests/wikiinajar-docs-sync.test.mjs`) runs `--check`, so a page that
 outlives the note it came from fails the tests rather than shipping silently.
 
+## Recovered distribution and runtime verification
+
+The original 123,402-byte distribution was retrieved again on 2026-10-15 after
+the PR #116 Drive backup completed. Its identity, fresh patch build and nine
+loopback HTTP checks are recorded in
+[the backup/continuation note](../../docs/drive-backup-wiki-2026-10-15.md).
+This is historical 0.8 / XRays / NanoHTTPD, **not** ACME or More Wiki 0.9.9.
+
+For a trusted rebuilt installation, the bounded harness starts and stops its
+own JVM and refuses a configuration that enables remote clients:
+
+```sh
+python3 tools/wikiinajar/test/http-smoke.py --app /path/to/extracted/wiki.in.a.jar \
+  --report /path/to/http-smoke.json
+```
+
+`--app` names the installation directory containing both `wiki.in.a.jar` and
+`public/`, not the JAR file itself. Java lookup follows `JAVA_HOME`, the recovered
+local JDK, then PATH. The historical socket binds all interfaces and filters
+non-loopback peers by default; this is not authentication. The readiness check
+sends a complete HTTP request because a bare connect/close probe can terminate
+the old accept loop. This harness does not fix or harden that legacy engine.
+
 ## Build
 
 The original 123,402-byte `WikiInAJar-0.8-20081128-bin.zip` is in the connected

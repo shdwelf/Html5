@@ -1,0 +1,64 @@
+{
+  "format": "wikiinajar-legacy-http-smoke",
+  "version": 1,
+  "engine": "XRays/NanoHTTPD, not ACME",
+  "defaultOnlyLocalConnections": true,
+  "serverStopped": true,
+  "requests": [
+    {
+      "path": "/wiki/show/Image%20Support%20Demo",
+      "status": 200,
+      "contentType": "text/xml",
+      "bytes": 2364
+    },
+    {
+      "path": "/image/show/demo.png",
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 1148
+    },
+    {
+      "path": "/image/show/djvu-smoke.djvu",
+      "status": 200,
+      "contentType": "image/vnd.djvu",
+      "bytes": 4803
+    },
+    {
+      "path": "/public/skins/default/wikiinajar-djvu-viewer.js",
+      "status": 200,
+      "contentType": "text/javascript",
+      "bytes": 4968
+    },
+    {
+      "path": "/public/skins/default/djvu-rs/scalar/djvu_rs_bg.wasm",
+      "status": 200,
+      "contentType": "application/wasm",
+      "bytes": 572658
+    },
+    {
+      "path": "/image/show/../wiki/Main%20Page.wiki",
+      "status": 404,
+      "contentType": "text/html",
+      "bytes": 16
+    },
+    {
+      "path": "/image/show/%2e%2e/wiki/Main%20Page.wiki",
+      "status": 404,
+      "contentType": "text/html",
+      "bytes": 16
+    },
+    {
+      "path": "/public/skins/../../wiki.in.a.jar",
+      "status": 404,
+      "contentType": "text/html",
+      "bytes": 24
+    },
+    {
+      "path": "/image/show/missing.svg",
+      "status": 404,
+      "contentType": "text/html",
+      "bytes": 16
+    }
+  ],
+  "limits": "GET-only smoke on a trusted package; no auth, range, browser, or Internet-security certification."
+}
