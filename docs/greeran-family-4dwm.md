@@ -38,14 +38,41 @@ At build time this produces **567 dated geocoded records** (432 birth, 135 death
 **39 dated kinship links**, and a **1774–2023** playable range. These are derived
 views; the underlying source arrays are not rewritten.
 
+## Keepsake files and research status
+
+The **📖 Tree of Life** tab adds a family preface and inside-back-cover panel. The
+reproducible Webxdc package now contains `index.html`, `manifest.toml`, `icon.png`,
+`greeran-family-4dwm.ged`, and `assets/greeran/world-english-bible.epub`. The page's
+QR images are embedded as data URIs; its GEDCOM and EPUB download links point to the
+files bundled beside the HTML.
+
+`greeran-family-4dwm.ged` is a **baseline export**, not an update to an unavailable
+source GEDCOM and not the requested Kirkpatrick first-name merge. It exports the
+existing embedded dataset (2,089 source people, 588 families), with one blank
+individual stub to preserve an otherwise orphaned family reference. No name data
+was extracted from the local `FNA102B.ZIP`: it is shareware First Name Almanac
+material in a ZIP, not an ARJ, and its notice limits redistribution to its original
+form. See `docs/greeran-family-tree-ebook-and-data-status.md` for provenance and
+rebuild details.
+
+The inside back cover offers a complete World English Bible (WEB) EPUB (66 books,
+31,103 verses). WEB was selected as a public-domain translation; the text is
+unchanged, and the EPUB adds only reading structure and navigation. The two QR
+panels are collapsed until opened and point to the family-tree package and Bible
+ebook repository file pages. The app itself remains offline and self-contained; it
+does not fetch scripts, styles, fonts, maps, or family data from the network.
+
 ## Build and verification
 
 ```bash
+node scripts/build-greeran-family-qr.mjs --write
 npm run build:greeran-family
+npm run check:greeran-gedcom
 npx vitest run test/greeran-family-4dwm.test.ts
 unzip -t greeran-family-4dwm.xdc
 ```
 
-The reproducible package contains exactly `index.html`, `manifest.toml`, and
-`icon.png`. It is self-contained and does not load scripts, styles, fonts, maps, or
-data from the network.
+The Bible EPUB generator is `tools/build_world_english_bible_epub.py`; rebuilding it
+requires a local checkout of the documented English WEB JSON source. The
+`build:greeran-family` npm script verifies the embedded QR targets and repackages
+the HTML, GEDCOM, and EPUB deterministically.

@@ -32,6 +32,18 @@ describe("Greeran Family Tree 4DWM", () => {
     }
   });
 
+  it("adds an accessible keepsake preface, baseline GEDCOM, and inside-cover Bible link", () => {
+    expect(html).toContain('data-t="book"');
+    expect(html).toContain('id="p-book"');
+    expect(html).toContain("THE TREE OF LIFE");
+    expect(html).toContain("Inside back cover");
+    expect(html).toContain('href="./greeran-family-4dwm.ged" download');
+    expect(html).toContain('href="./assets/greeran/world-english-bible.epub" download');
+    expect(html.match(/<details class="kp-qr-card" id="qr-/g)).toHaveLength(2);
+    expect(html).not.toContain("PLACEHOLDER_FAMILY_QR");
+    expect(html).not.toContain("PLACEHOLDER_BIBLE_QR");
+  });
+
   it("contains an offline time-scrubbable globe with all-time fallback", () => {
     expect(html).toContain('id="time-slider"');
     expect(html).toContain('id="time-window"');
@@ -45,15 +57,55 @@ describe("Greeran Family Tree 4DWM", () => {
     expect(html).not.toMatch(/\bfetch\s*\(/);
   });
 
-  it("packages the same application in a valid reproducible Webxdc", () => {
+  it("packages the application and its companion files in a valid Webxdc", () => {
     const xdc = readFileSync(path.join(root, "greeran-family-4dwm.xdc"));
     const files = unzipSync(new Uint8Array(xdc));
-    expect(Object.keys(files).sort()).toEqual(["icon.png", "index.html", "manifest.toml"]);
+    expect(Object.keys(files).sort()).toEqual([
+      "assets/greeran/world-english-bible.epub",
+      "greeran-family-4dwm.ged",
+      "icon.png",
+      "index.html",
+      "manifest.toml",
+    ]);
     expect(Buffer.from(files["index.html"]).equals(htmlBytes)).toBe(true);
     expect(strFromU8(files["manifest.toml"])).toContain('name = "Greeran Family Tree · 4DWM"');
     expect(strFromU8(files["manifest.toml"])).toContain("https://github.com/shdwelf/Html5");
     expect(files["icon.png"].slice(0, 8)).toEqual(
       new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]),
     );
+
+    const gedcom = strFromU8(files["greeran-family-4dwm.ged"]);
+    expect((gedcom.match(/^0 @[^\r\n]+@ INDI$/gm) ?? [])).toHaveLength(2090);
+    expect((gedcom.match(/^0 @[^\r\n]+@ FAM$/gm) ?? [])).toHaveLength(588);
+    expect(gedcom).toContain("Baseline GEDCOM export");
+    expect(gedcom).toContain("no Kirkpatrick or first-name-meaning data has been merged");
+    expect(gedcom).toContain("0 @INEW001@ INDI");
+    expect(gedcom).toContain("Blank placeholder");
+    const individualIds = new Set(
+      [...gedcom.matchAll(/^0 (@[A-Z0-9]+@) INDI$/gm)].map((match) => match[1]),
+    );
+    const familyIds = new Set(
+      [...gedcom.matchAll(/^0 (@[A-Z0-9]+@) FAM$/gm)].map((match) => match[1]),
+    );
+    for (const line of gedcom.split(/\r?\n/)) {
+      const familyMember = line.match(/^1 (?:HUSB|WIFE|CHIL) (@[A-Z0-9]+@)$/);
+      if (familyMember) expect(individualIds.has(familyMember[1])).toBe(true);
+      const personFamily = line.match(/^1 (?:FAMS|FAMC) (@[A-Z0-9]+@)$/);
+      if (personFamily) expect(familyIds.has(personFamily[1])).toBe(true);
+    }
+
+    const epubBytes = files["assets/greeran/world-english-bible.epub"];
+    expect(Buffer.from(epubBytes).equals(readFileSync(path.join(root, "assets/greeran/world-english-bible.epub")))).toBe(true);
+    const epub = unzipSync(new Uint8Array(epubBytes));
+    expect(strFromU8(epub["mimetype"])).toBe("application/epub+zip");
+    expect(strFromU8(epub["OEBPS/package.opf"])).toContain("World English Bible (WEB)");
+    expect(strFromU8(epub["OEBPS/about.xhtml"])).toContain("public-domain");
+    const bookDocs = Object.entries(epub).filter(([name]) => /^OEBPS\/book-\d{2}-.+\.xhtml$/.test(name));
+    expect(bookDocs).toHaveLength(66);
+    const verseCount = bookDocs.reduce(
+      (sum, [, bytes]) => sum + (strFromU8(bytes).match(/class="verse" id=/g) ?? []).length,
+      0,
+    );
+    expect(verseCount).toBe(31_103);
   });
 });
