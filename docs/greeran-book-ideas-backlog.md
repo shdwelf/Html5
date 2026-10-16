@@ -18,9 +18,11 @@ ch. XVI gaps & private prompts).
 
 ## Future format ideas (author's list)
 
-- **Myst/Riven walk-through framing** — the biography modeled as an explorable
-  age-linking world; the 4Dwm viewers are the first step (walk the Glendora age,
-  the ESGVROP age, the UCSB age).
+- **Myst/Riven walk-through framing — phase 1 implemented** — the Greeran Book
+  now opens with an original foggy fly-in to a floating volume and a magical
+  cover reveal, with replay, keyboard skip, and a reduced-motion path. The larger
+  explorable age-linking world remains future work; the 4Dwm viewers are still
+  the first step (walk the Glendora age, the ESGVROP age, the UCSB age).
 - **Van Gogh immersive** — a projected/immersive treatment of a chapter; the
   style deck's 50 themes are the palette sandbox.
 - **DVD secret-menu page-turn** — chapters that behave like a DVD's hidden
@@ -37,7 +39,10 @@ ch. XVI gaps & private prompts).
 
 1. Glendora High Class of 2001 commencement program — the exact June 2001 date
    (venue resolved: Citrus College Stadium; needs the program, yearbook, or an
-   unlocked SGV Tribune archive).
+   unlocked SGV Tribune archive). The 16 Oct 2026 pass confirmed the venue in a
+   2011 newspaper schedule and on the current school page, but found no 2001
+   primary date; keep it open. See
+   `docs/greeran-commencement-research-2026-10-16.md`.
 2. San Nicolas 2001–02 move-in paperwork — assignment packet, RA roster. The
    2001–02 hall register itself is resolved (see below).
 3. "The daily flush" — author confirms (Oct 2026) it was a recurring dorm

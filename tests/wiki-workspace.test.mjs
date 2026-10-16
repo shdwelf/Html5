@@ -87,3 +87,13 @@ test('Base64url is a strict encoding adapter, not a Base65 cipher',()=>{
   const bytes=new Uint8Array([0,255,254,252]);const url=toBase64url(bytes);assert.match(url,/^[\w-]+$/);assert.deepEqual(fromBase64url(url),bytes);
   for(const bad of ['a','AA==','A+','AB'])assert.throws(()=>fromBase64url(bad));
 });
+test('native TiddlyWiki explains the sample, exact-file vault and Drive archive separately',()=>{
+  const build=readFileSync(path.join(root,'tools/wiki-workspace/build.mjs'),'utf8');
+  const readme=readFileSync(path.join(root,'tools/wiki-workspace/README.md'),'utf8');
+  assert.ok(build.includes('[[Sample files and vault]]'));
+  assert.ok(build.includes("title:'Sample files and vault'"));
+  assert.ok(build.includes('files/tiddlywiki.xdc'));
+  assert.ok(build.includes('wiki/media/djvu-smoke.djvu'));
+  assert.ok(build.includes("path.join(web,'wiki/djvu-rs')"));
+  assert.ok(readme.includes('the full repository sample set remains in the JAR'));
+});

@@ -62,7 +62,11 @@ previews are capped at 96 KiB; portable native HTML/XDC previews default to 4 Ki
 per source file. Both limits are clearly marked; exact bytes remain in the JAR
 vault. TiddlyWiki HTML/XDC carry previews and the catalog, **not the complete
 binary vault**. Use `--tw-preview-bytes 16384` to choose another native preview
-limit (512–98304 bytes), accepting a larger HTML/XDC file.
+limit (512–98304 bytes), accepting a larger HTML/XDC file. The native
+TiddlyWiki landing page links to **Sample files and vault**, which distinguishes
+its bundled DjVu demo from the full JAR vault and points to the verified Drive
+restore map. The Webxdc includes `wiki/media/djvu-smoke.djvu` and the local
+WebAssembly decoder assets; the full repository sample set remains in the JAR.
 
 Add explicitly chosen local checkouts:
 
