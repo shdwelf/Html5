@@ -339,6 +339,13 @@ test("merged CyberChef archive is current and self-contained", () => {
   assert.ok(files["webxdc.js"], "cyberchef.xdc is missing the webxdc shim");
 });
 
+test("Sneakers DOSBox smoke keeps the interactive window alive and detectable", () => {
+  const smoke = source("tools/smoke_sneakers_dosbox.sh");
+  assert.ok(smoke.includes('-c "RUN.BAT"'));
+  assert.doesNotMatch(smoke, /-c "exit"/, "the exit command can close DOSBox before input/screenshot capture");
+  assert.match(smoke, /visible_windows.*-eq 1/s, "SDL window-title variation needs a single-window fallback");
+});
+
 test("webxdc-dos archive boots js-dos v8 with complete engine and prebuilt bundles", () => {
   const files = archive("webxdc-dos/dos-binary-loader.xdc");
 
