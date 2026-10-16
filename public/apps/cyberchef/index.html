@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 482 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 485 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -176,6 +176,8 @@
   <span id="recipe-count"></span>
 </footer>
 
+<script src="./vendor/bwip-js.min.js"></script>
+<script src="./vendor/zxing-library.min.js"></script>
 <script>
 var SFX_PACKS=null;
 /* ============================================================
@@ -2458,6 +2460,104 @@ addOp('qrcode','Barcode: QR Code','Barcode','QR Code (ISO/IEC 18004). Byte mode,
   const q=qrEncode(a.txt!==''?a.txt:t,(a.ec||'M').toUpperCase());const url=renderMatrix(q.modules);
   return {__visual:true,__html:'<img src="'+url+'" style="max-width:100%;background:#fff;padding:8px;border-radius:6px;image-rendering:pixelated;"><div style="color:#9a9a9e;font-size:12px;margin-top:6px;">QR version '+q.version+' — '+q.size+'×'+q.size+' modules — EC '+q.ecLevel+' — mask '+q.mask+'</div>',__text:q.modules.map(r=>r.join('')).join('\n')};
 });
+addOp('aztecCode','Barcode: Aztec Code','Barcode','Aztec Code (ISO/IEC 24778) rendered by bundled bwip-js 4.7.0. Error correction is a percentage; the symbol is encoded locally.',[{key:'txt',label:'Text',type:'text',default:'AZTEC 123'},{key:'ec',label:'Error correction (%)',type:'number',default:'23'}],function(t,a){
+  const value=a.txt!==''?a.txt:t,symbol=bwipAztecSvg(value,a.ec||23),url=svgDataUrl(symbol.svg);
+  return {__visual:true,__html:'<img src="'+url+'" style="max-width:100%;max-height:70vh;background:#fff;padding:8px;border-radius:6px;image-rendering:pixelated;" alt="Aztec Code"><div style="color:#9a9a9e;font-size:12px;margin-top:6px;">Aztec Code · ISO/IEC 24778 · EC '+(a.ec||23)+'%</div>',__text:'Aztec Code (ISO/IEC 24778) · '+value+' · EC '+(a.ec||23)+'%'};
+});
+
+const CUECAT_ALPHABET='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-';
+function cuecatDecodeSection(section){
+  const pos=new Map();for(let i=0;i<CUECAT_ALPHABET.length;i++)pos.set(CUECAT_ALPHABET[i],i);
+  const vals=[];for(const ch of String(section))if(pos.has(ch))vals.push(pos.get(ch));
+  const out=[];
+  for(let i=0;i<vals.length;i+=4){
+    const v=vals.slice(i,i+4),bytes=[];
+    if(v.length>=2)bytes.push(((v[0]<<2)|(v[1]>>4))&255);
+    if(v.length>=3)bytes.push((((v[1]&15)<<4)|(v[2]>>2))&255);
+    if(v.length>=4)bytes.push((((v[2]&3)<<6)|v[3])&255);
+    for(const b of bytes){let ch=(b^3)+64;if(ch>128)ch-=128;out.push(ch);}
+  }
+  return String.fromCharCode(...out);
+}
+function cuecatDecodeScan(raw){
+  const parts=String(raw).replace(/^[.\s]+|[.\s]+$/g,'').split('.');
+  return {parts,serial:cuecatDecodeSection(parts[0]||''),type:cuecatDecodeSection(parts[1]||''),code:cuecatDecodeSection(parts[2]||'')};
+}
+addOp('cuecatDecode','CueCat Scan Decoder','Barcode','Decode the RadioShack :CueCat keyboard-wedge stream (modified Base64). This is separate from Aztec Code; enter a raw scan or one encoded section.',[{key:'format',label:'Input format',type:'select',default:'auto',options:[['auto','Auto-detect full scan'],['full','Full scan: .serial.type.code.'],['section','Single encoded section']]}],function(t,a){
+  const raw=String(t||'').trim();if(!raw)throw new Error('Enter a CueCat scan string.');
+  const parsed=cuecatDecodeScan(raw),full=a.format==='full'||(a.format==='auto'&&parsed.parts.length>=3&&raw.includes('.'));
+  if(full){
+    if(parsed.parts.length<3)throw new Error('A full CueCat scan needs three dot-delimited sections.');
+    return 'CueCat scan (modified Base64) | Serial: '+parsed.serial+' | Type: '+parsed.type+' | Code: '+parsed.code+' | Sections: '+parsed.parts.length;
+  }
+  return cuecatDecodeSection(raw);
+});
+
+function aztecImageInput(text,source){
+  const raw=String(text||'');
+  if(source==='data-url'){
+    const match=raw.trim().match(/^data:(image\/[a-z0-9.+-]+)?(;base64)?,([\s\S]*)$/i);
+    if(!match)throw new Error('Paste a valid image data URL, or choose another Aztec image input format.');
+    const mime=match[1]||'image/png',payload=match[3];
+    const bytes=match[2]?bytesFromB64(payload):utf8Encode(decodeURIComponent(payload));
+    return {bytes,mime};
+  }
+  if(source==='base64'){
+    const compact=raw.replace(/\s+/g,'');
+    if(!compact||!/^[A-Za-z0-9+/]*={0,2}$/.test(compact))throw new Error('Input is not valid Base64 image data.');
+    return {bytes:bytesFromB64(compact),mime:'application/octet-stream'};
+  }
+  const loaded=window.FILE_INPUT;
+  if(loaded&&loaded.bin===raw)return {bytes:bytesFromBinStr(raw),mime:loaded.type||'application/octet-stream'};
+  if(!raw.length)throw new Error('Load an image with the Load File button before decoding Aztec.');
+  return {bytes:bytesFromBinStr(raw),mime:'application/octet-stream'};
+}
+async function aztecCreateImage(bytes,mime){
+  const blob=new Blob([bytes],{type:mime||'application/octet-stream'});
+  if(typeof createImageBitmap==='function'){
+    try{return await createImageBitmap(blob);}catch(e){/* SVG / browser fallback below. */}
+  }
+  return await new Promise((resolve,reject)=>{
+    const url=URL.createObjectURL(blob),img=new Image();
+    img.onload=()=>{URL.revokeObjectURL(url);resolve(img);};
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Input is not a readable image. Use PNG, JPEG, WebP, BMP, GIF, or a browser-supported image.'));};
+    img.src=url;
+  });
+}
+async function aztecDecodeImage(text,args){
+  const z=(typeof window!=='undefined'&&window.ZXing)||null;
+  if(!z||typeof z.AztecCodeReader!=='function')throw new Error('The bundled offline Aztec decoder is missing.');
+  const input=aztecImageInput(text,args.source||'file');
+  if(!input.bytes.length)throw new Error('The selected image is empty.');
+  let image;
+  try{image=await aztecCreateImage(input.bytes,input.mime);}catch(e){throw new Error(e.message||'Could not open the image.');}
+  const sourceW=image.width||image.naturalWidth,sourceH=image.height||image.naturalHeight;
+  if(!sourceW||!sourceH){if(typeof image.close==='function')image.close();throw new Error('The image has no readable dimensions.');}
+  const maxPixels=16000000,scale=Math.min(1,Math.sqrt(maxPixels/(sourceW*sourceH)));
+  const width=Math.max(1,Math.round(sourceW*scale)),height=Math.max(1,Math.round(sourceH*scale));
+  const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  if(!ctx){if(typeof image.close==='function')image.close();throw new Error('This browser cannot read image pixels from a canvas.');}
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);ctx.drawImage(image,0,0,width,height);
+  if(typeof image.close==='function')image.close();
+  let rgba;
+  try{rgba=ctx.getImageData(0,0,width,height).data;}catch(e){throw new Error('The image pixels could not be read by the browser.');}
+  const luminance=new Uint8ClampedArray(width*height);
+  for(let i=0,j=0;i<rgba.length;i+=4,j++)luminance[j]=(rgba[i]*299+rgba[i+1]*587+rgba[i+2]*114)/1000;
+  const bitmap=new z.BinaryBitmap(new z.HybridBinarizer(new z.RGBLuminanceSource(luminance,width,height)));
+  const reader=new z.AztecCodeReader(),hints=new Map();
+  if(z.DecodeHintType&&z.DecodeHintType.TRY_HARDER!==undefined)hints.set(z.DecodeHintType.TRY_HARDER,true);
+  let result;
+  try{result=reader.decode(bitmap,hints);}catch(e){
+    const downscaled=scale<1?' The image was downscaled to 16 megapixels; crop closer and retry if the code is small.':'';
+    throw new Error('No Aztec symbol decoded. Load a clear image containing one Aztec code, or crop a multi-label sheet to one label. A CueCat cannot read Aztec codes.'+downscaled);
+  }finally{reader.reset();}
+  const rawBytes=result.getRawBytes?result.getRawBytes():null;
+  const hex=rawBytes&&rawBytes.length?Array.from(rawBytes).map(b=>b.toString(16).padStart(2,'0')).join(' '):'(not available)';
+  const payload=result.getText?result.getText():'';
+  return 'Aztec Code decoded (ISO/IEC 24778)\n\nPayload:\n'+(payload||'(empty payload)')+'\n\nRaw bytes (hex): '+hex+'\nImage: '+sourceW+' × '+sourceH+(scale<1?' (downscaled for decoding)':'');
+}
+addOp('aztecDecode','Aztec Code — Decode Image','Barcode','Decode one Aztec Code from a loaded image, a Base64 image, or a data URL. Runs locally with bundled ZXing; no network request. Crop multi-label sheets to one symbol before decoding.',[{key:'source',label:'Image input',type:'select',default:'file',options:[['file','Loaded image file'],['base64','Base64-encoded image'],['data-url','Image data URL']]}],aztecDecodeImage);
 
 
 /* ============================================================
@@ -2487,6 +2587,38 @@ function labelTemplate(id,a){
     t.name='Custom '+t.cols+'x'+t.rows;}
   return t;
 }
+function bwipAztecSvg(text,ecLevel){
+  const lib=(typeof window!=='undefined'&&(window.bwipjs||window.BWIPJS))||null;
+  if(!lib||typeof lib.toSVG!=='function')throw new Error('Aztec support requires the bundled bwip-js browser renderer.');
+  const requested=Number(ecLevel);
+  const level=Number.isFinite(requested)?Math.max(5,Math.min(95,Math.round(requested))):23;
+  const svg=lib.toSVG({bcid:'azteccode',text:String(text),scale:2,padding:2,eclevel:level,includetext:false});
+  const match=String(svg).match(/<svg\b([^>]*)>([\s\S]*?)<\/svg>/i);
+  const viewBox=match&&match[1].match(/\bviewBox=["']([^"']+)["']/i);
+  if(!match||!viewBox)throw new Error('bwip-js returned Aztec SVG without a viewBox.');
+  return {svg:String(svg),viewBox:viewBox[1],inner:match[2]};
+}
+function svgDataUrl(svg){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);}
+function xmlEscape(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[ch]));}
+function renderAztecLabelSheet(tpl,values,a){
+  const t=labelTemplate(tpl,a),W=Math.round(8.5*LABEL_DPI),H=Math.round(11*LABEL_DPI);
+  const showText=a.showText!==false,ec=a.aztecEc||23;
+  const copies=Math.max(1,(+a.copies|0)||1),want=values.length*copies;
+  const cells=[];let idx=0;
+  for(let r=0;r<t.rows&&idx<want;r++)for(let c=0;c<t.cols&&idx<want;c++,idx++){
+    const value=values[idx%values.length];
+    const x=(t.left+c*(t.lw+t.gx))*LABEL_DPI,y=(t.top+r*(t.lh+t.gy))*LABEL_DPI;
+    const w=t.lw*LABEL_DPI,h=t.lh*LABEL_DPI,pad=Math.max(4,Math.min(w,h)*0.08);
+    const textH=showText?Math.min(16,Math.max(10,h*0.17)):0;
+    const side=Math.max(1,Math.min(w-pad*2,h-pad*2-textH));
+    const sx=x+(w-side)/2,sy=y+pad+(h-pad*2-textH-side)/2;
+    const symbol=bwipAztecSvg(value,ec);
+    cells.push('<svg x="'+sx+'" y="'+sy+'" width="'+side+'" height="'+side+'" viewBox="'+symbol.viewBox+'" preserveAspectRatio="xMidYMid meet">'+symbol.inner+'</svg>');
+    if(showText)cells.push('<text x="'+(x+w/2)+'" y="'+(y+h-pad/2)+'" text-anchor="middle" font-size="11" font-family="sans-serif">'+xmlEscape(value)+'</text>');
+  }
+  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'"><rect width="100%" height="100%" fill="#fff"/>'+cells.join('')+'</svg>';
+  return svgDataUrl(svg);
+}
 /** Draw one symbol centred inside a label box, into a canvas ctx or an SVG rect list. */
 function labelSymbol(kind,sym,ec,x,y,w,h,px,showText,out){
   const pad=Math.max(3,Math.min(w,h)*0.09);
@@ -2507,6 +2639,7 @@ function labelSymbol(kind,sym,ec,x,y,w,h,px,showText,out){
   return {text:sym,x:x+pad,y:y+h-pad-textH*0.2,w:boxW,textH};
 }
 function renderLabelSheet(tpl,sym,ec,values,a){
+  if(sym==='aztec')return renderAztecLabelSheet(tpl,values,a);
   const t=labelTemplate(tpl,a);
   const W=Math.round(8.5*LABEL_DPI), H=Math.round(11*LABEL_DPI);
   const cv=document.createElement('canvas');cv.width=W;cv.height=H;
@@ -2547,14 +2680,14 @@ function renderLabelSheet(tpl,sym,ec,values,a){
   for(const t2 of texts)cells+='<text x="'+t2.x+'" y="'+t2.y+'" text-anchor="middle" font-size="12" font-family="sans-serif">'+String(t2.s).replace(/[<&]/g,(m)=>m==='<'?'&lt;':'&amp;')+'</text>';
   return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'"><rect width="100%" height="100%" fill="#fff"/><g fill="#000">'+cells+'</g></svg>');
 }
-addOp('averyLabels','Barcode: Avery Label Sheet','Barcode','Lay out barcodes or QR codes on an Avery LabelPro sheet (5160/5161/5163/5392 or a custom grid), US Letter, print-ready. One value per line, or separate with "|".',[{key:'tpl',label:'Sheet',type:'select',default:'5160',options:[['5160','Avery 5160 — address, 3x10 (2.625"x1")'],['5161','Avery 5161 — shipping, 2x10 (4"x1")'],['5163','Avery 5163 — shipping, 2x5 (4"x2")'],['5392','Avery 5392 — name badge, 2x4'],['custom','Custom grid (set cols/rows/size below)']]},{key:'sym',label:'Symbol',type:'select',default:'qr',options:[['qr','QR Code'],['code39','Code 39'],['code128','Code 128'],['ean13','EAN-13']]},{key:'ec',label:'QR error correction',type:'select',default:'M',options:[['L','L'],['M','M'],['Q','Q'],['H','H']]},{key:'vals',label:'Values (one per line, or | separated)',type:'text',default:'SHDWELF\nHTML5 KITCHEN\nhttps://github.com/shdwelf/Html5'},{key:'copies',label:'Copies of the list',type:'text',default:'1'},{key:'showText',label:'Print value under each symbol',type:'checkbox',default:true},{key:'cols',label:'Custom columns',type:'text',default:'3'},{key:'rows',label:'Custom rows',type:'text',default:'8'},{key:'lw',label:'Custom label width (in)',type:'text',default:'2.625'},{key:'lh',label:'Custom label height (in)',type:'text',default:'1'}],function(t,a){
+addOp('averyLabels','Barcode: Avery Label Sheet','Barcode','Lay out barcodes, QR, or Aztec codes on an Avery LabelPro sheet (5160/5161/5163/5392 or a custom grid), US Letter, print-ready. One value per line, or separate with "|".',[{key:'tpl',label:'Sheet',type:'select',default:'5160',options:[['5160','Avery 5160 — address, 3x10 (2.625"x1")'],['5161','Avery 5161 — shipping, 2x10 (4"x1")'],['5163','Avery 5163 — shipping, 2x5 (4"x2")'],['5392','Avery 5392 — name badge, 2x4'],['custom','Custom grid (set cols/rows/size below)']]},{key:'sym',label:'Symbol',type:'select',default:'qr',options:[['qr','QR Code'],['aztec','Aztec Code'],['code39','Code 39'],['code128','Code 128'],['ean13','EAN-13']]},{key:'ec',label:'QR error correction',type:'select',default:'M',options:[['L','L'],['M','M'],['Q','Q'],['H','H']]},{key:'aztecEc',label:'Aztec error correction (%)',type:'number',default:'23'},{key:'vals',label:'Values (one per line, or | separated)',type:'text',default:'SHDWELF\nHTML5 KITCHEN\nhttps://github.com/shdwelf/Html5'},{key:'copies',label:'Copies of the list',type:'text',default:'1'},{key:'showText',label:'Print value under each symbol',type:'checkbox',default:true},{key:'cols',label:'Custom columns',type:'text',default:'3'},{key:'rows',label:'Custom rows',type:'text',default:'8'},{key:'lw',label:'Custom label width (in)',type:'text',default:'2.625'},{key:'lh',label:'Custom label height (in)',type:'text',default:'1'}],function(t,a){
   const vals=(a.vals!==''?a.vals:t).split(/[\r\n|]+/).map(v=>v.trim()).filter(Boolean);
   if(!vals.length)throw new Error('no label values given');
   const copies=Math.max(1,(+a.copies|0)||1);
   const tmpl=labelTemplate(a.tpl,a);
   const cap=tmpl.cols*tmpl.rows;
   const want=vals.length*copies;
-  const url=renderLabelSheet(a.tpl,(a.sym||'qr').toLowerCase(),a.ec,vals,{copies:copies,showText:a.showText!==false,cols:a.cols,rows:a.rows,lw:a.lw,lh:a.lh,top:a.top,left:a.left});
+  const url=renderLabelSheet(a.tpl,(a.sym||'qr').toLowerCase(),a.ec,vals,{copies:copies,showText:a.showText!==false,cols:a.cols,rows:a.rows,lw:a.lw,lh:a.lh,top:a.top,left:a.left,aztecEc:a.aztecEc});
   const rows=[];
   for(let r=0;r<tmpl.rows;r++){const line=[];for(let c=0;c<tmpl.cols;c++){const i=r*tmpl.cols+c;line.push(i<want?vals[i%vals.length]:'');}rows.push(line);}
   return {__visual:true,__html:'<img src="'+url+'" style="max-width:100%;background:#fff;border:1px solid #2e2e33;border-radius:6px;" alt="Label sheet"><div style="color:#9a9a9e;font-size:12px;margin-top:6px;">'+tmpl.name+' — 8.5" x 11" at '+LABEL_DPI+' dpi — '+Math.min(want,cap)+' of '+cap+' labels filled'+(want>cap?' ('+(want-cap)+' would spill to a second sheet)':'')+'</div>',__text:'Avery '+String(a.tpl).toUpperCase()+' label sheet\n'+tmpl.name+'\nLabels: '+Math.min(want,cap)+' of '+cap+'\nSymbol: '+(a.sym||'qr')+'\n\n'+rows.map(r=>r.join('\t')).join('\n')};
@@ -23782,20 +23915,40 @@ function applyRecipePacks(names){
 function sfxSelectedPacks(){
   return Array.prototype.slice.call(document.querySelectorAll('#sfx-list input:checked')).map(function(el){return el.value;});
 }
-function sfxSerialize(packs){
-  const src='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
-  if(!packs) return src;
+async function sfxSerialize(packs){
+  let src='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  const scriptEnd='<'+'/script>';
+  const libraries=[
+    {path:'./vendor/bwip-js.min.js',label:'bwip-js 4.7.0 (MIT)'},
+    {path:'./vendor/zxing-library.min.js',label:'ZXing JavaScript 0.21.3 (MIT)'},
+  ];
+  for(const library of libraries){
+    const external='<script src="'+library.path+'"><'+'/script>';
+    if(!src.includes(external))continue;
+    const response=await fetch(new URL(library.path,document.baseURI));
+    if(!response.ok)throw new Error('Could not bundle '+library.label+' into this standalone copy.');
+    const vendor=await response.text();
+    const safeVendor=vendor.replace(/<\/script/gi,'<\\/script');
+    const inlined='<script>\n/* '+library.label+' inlined for standalone SFX use. */\n'+safeVendor+'\n'+scriptEnd;
+    src=src.replace(external,inlined);
+  }
+  if(!packs)return src;
   return src.replace('var SFX_PACKS=null;','var SFX_PACKS='+JSON.stringify(packs)+';');
 }
-function sfxDownload(filename, packs){
-  const blob=new Blob([sfxSerialize(packs)],{type:'text/html;charset=utf-8'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(function(){ try{ URL.revokeObjectURL(a.href); }catch(e){} }, 1500);
+async function sfxDownload(filename, packs){
+  try{
+    const source=await sfxSerialize(packs);
+    const blob=new Blob([source],{type:'text/html;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ try{ URL.revokeObjectURL(a.href); }catch(e){} }, 1500);
+  }catch(e){
+    $('foot-info').textContent='Could not build standalone copy: '+(e.message||e);
+  }
 }
 function sfxFillList(){
   const box=$('sfx-list'); if(!box) return;
@@ -32090,7 +32243,11 @@ RECIPE_PACKS["ATA hdparm / PCB viz / TrID TRD"] = [["ataHdparmIde",{}],["hddPcbV
 RECIPE_PACKS["IDENTIFY parser / toy vector ALU"] = [["ataIdentifyParse",{}],["vecAlu",{}]];
 
 RECIPE_PACKS["TV filecast KCS / NABTS"] = [["tvFileCast",{}]];
-RECIPE_PACKS['Avery label sheets — one symbol per template']=[['averyLabels',{tpl:'5160',sym:'code39'}],['averyLabels',{tpl:'5161',sym:'qr'}],['averyLabels',{tpl:'5163',sym:'code128'}],['averyLabels',{tpl:'5392',sym:'qr'}],['averyLabels',{tpl:'custom',sym:'qr',cols:'4',rows:'6'}]];
+RECIPE_PACKS['Avery label sheets — one symbol per template']=[['averyLabels',{tpl:'5160',sym:'code39'}],['averyLabels',{tpl:'5161',sym:'qr'}],['averyLabels',{tpl:'5163',sym:'code128'}],['averyLabels',{tpl:'5392',sym:'qr'}],['averyLabels',{tpl:'custom',sym:'qr',cols:'4',rows:'6'}],['averyLabels',{tpl:'5392',sym:'aztec',aztecEc:'23',vals:'SITE-K',showText:false}]];
+RECIPE_PACKS['Aztec Code — direct symbol']=[['aztecCode',{txt:'AZTEC 123',ec:'23'}]];
+RECIPE_PACKS['Aztec Code — decode image']=[['aztecDecode',{source:'file'}]];
+RECIPE_PACKS['Avery LabelPro — Aztec Code']=[['averyLabels',{tpl:'5392',sym:'aztec',aztecEc:'23',vals:'SITE-K | WIKI-IN-A-JAR',copies:'1',showText:false}]];
+RECIPE_PACKS['CueCat — modified Base64 scan decoder']=[['cuecatDecode',{format:'full'}]];
 RECIPE_PACKS['Algorithm Complexity & Symbolic Logic']=[['complexityLab',{algorithm:'merge',order:'asc'}],['symbolicLogic',{}]];
 
 /* Every operation belongs to at least one pack, so the SFX builder's
@@ -32129,7 +32286,11 @@ RECIPE_PACKS["Full Coverage — Visualization"] = [["vizPip",{}],["rule110",{}],
 RECIPE_PACKS["Full Coverage — Wallet (BIP39)"] = [["bip39",{}]];
 RECIPE_PACKS["Full Coverage — Wallet (BIP44)"] = [["haikub44",{}]];
 
-
+// Recipe packs are appended throughout this merged kitchen; refresh the
+// Recipe Pack operation's selector only after the full registry is defined.
+const recipePackOp=OPERATIONS.find(op=>op.id==='recipePack');
+const recipePackArg=recipePackOp&&recipePackOp.args.find(arg=>arg.key==='pack');
+if(recipePackArg){recipePackArg.options=Object.keys(RECIPE_PACKS).map(name=>[name,name]);recipePackOp.args=[recipePackArg];}
 
 zenInit();
 sfxInitUi();

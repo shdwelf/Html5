@@ -18,9 +18,11 @@ ch. XVI gaps & private prompts).
 
 ## Future format ideas (author's list)
 
-- **Myst/Riven walk-through framing** — the biography modeled as an explorable
-  age-linking world; the 4Dwm viewers are the first step (walk the Glendora age,
-  the ESGVROP age, the UCSB age).
+- **Myst/Riven walk-through framing (in progress)** — the biography modeled as
+  an explorable age-linking world; the 4Dwm viewers are the first step (walk the
+  Glendora age, the ESGVROP age, the UCSB age). The book now has an original,
+  local CSS opening sequence: it flies into view, lands, and opens to the paper
+  spread. It is replayable, skippable, and respects reduced-motion preferences.
 - **Van Gogh immersive** — a projected/immersive treatment of a chapter; the
   style deck's 50 themes are the palette sandbox.
 - **DVD secret-menu page-turn** — chapters that behave like a DVD's hidden

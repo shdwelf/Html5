@@ -1,3 +1,5 @@
+import { scanFlashCoordinateCandidates } from "./flash-coordinates.js";
+
 const $ = (id) => document.getElementById(id);
 
 const TAGS = {
@@ -195,8 +197,10 @@ async function parseSwf(buf) {
   const height = Math.round((rect.ymax - rect.ymin) / 20);
   const frameRate = ((frameRateFixed >> 8) + ((frameRateFixed & 0xff) / 256)).toFixed(2);
   const tagInfo = parseTags(bytes, off);
-  const strings = asciiStrings(bytes).filter((s) => /https?:|getURL|Behind|Dune|Balsamique|Patreon|lollipop|camera|library|jessica|duncan|alia|spice/i.test(s)).slice(0, 160);
-  return { signature, version, declaredLen, actualLen: raw.length, inflatedLen: bytes.length, width, height, frameRate, frameCount, ...tagInfo, strings };
+  const allStrings = asciiStrings(bytes);
+  const strings = allStrings.filter((s) => /https?:|getURL|Behind|Dune|Balsamique|Patreon|lollipop|camera|library|jessica|duncan|alia|spice/i.test(s)).slice(0, 160);
+  const coordinateCandidates = scanFlashCoordinateCandidates(allStrings);
+  return { signature, version, declaredLen, actualLen: raw.length, inflatedLen: bytes.length, width, height, frameRate, frameCount, ...tagInfo, strings, coordinateCandidates };
 }
 
 async function fetchSelected() {
@@ -227,6 +231,12 @@ async function fetchSelected() {
       `Fetched length: ${fmtBytes(parsed.actualLen)} (${parsed.actualLen})`,
       `Inflated length: ${fmtBytes(parsed.inflatedLen)} (${parsed.inflatedLen})`,
       `Stage: ${parsed.width}×${parsed.height} · ${parsed.frameRate} fps · ${parsed.frameCount} frames`,
+      "",
+      "Textual coordinate candidates (unverified):",
+      ...(parsed.coordinateCandidates.length
+        ? parsed.coordinateCandidates.flatMap((candidate) => [`  ${candidate.format}: ${candidate.text}`, `    ${candidate.summary}`])
+        : ["  — none in printable strings"]),
+      "  Scan scope: printable SWF strings only; calculated or binary-encoded coordinates are not covered.",
       "",
       "Top tags:",
       ...topTags.map(([name, count]) => `  ${String(count).padStart(5)}  ${name}`),

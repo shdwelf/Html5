@@ -1,12 +1,22 @@
-/* SITE-K HTML5 app cache.
-   The 2.6 MB ghidra_decompiler.wasm is intentionally *not* precached: the
-   service worker caches it on first use, so the lab still works offline after
-   one visit without slowing down install for everyone else. */
+/* SITE-K HTML5 app cache. Ghidra's WASM module is precached so the first
+   visit to the lab works offline too; it is already part of the SITE-K XDC. */
 const CACHE_PREFIX = "sitek-html5-";
-const CACHE = `${CACHE_PREFIX}v38`;
+const CACHE = `${CACHE_PREFIX}v39`;
 const PRECACHE = [
   "./",
   "./index.html",
+  "./4dwm-ports.html",
+  "./bluetops-gso-4dwm.html",
+  "./dalton-race-4dwm.html",
+  "./esgvrop-4dwm.html",
+  "./glendora-high-4dwm.html",
+  "./greeran-family-4dwm.html",
+  "./greeran-subsurface.html",
+  "./planet-viewer-4dwm.html",
+  "./red-october-4dwm.html",
+  "./sanborn-restaurant-4dwm.html",
+  "./socal-subsurface.html",
+  "./vincennes-4dwm.html",
   "./adl.html",
   "./keyspace.html",
   "./validator.html",
@@ -27,14 +37,11 @@ const PRECACHE = [
   "./js/glendora-app.js",
   "./js/ghs-data.js",
   // Greeran biography 4Dwm family (added v30): the 2001 turning-point viewers.
-  "./greeran-subsurface.html",
   "./css/greeran-subsurface.css",
   "./js/greeran-subsurface.js",
   "./js/greeran-subsurface-data.js",
-  "./glendora-high-4dwm.html",
   "./css/campus-4dwm.css",
   "./js/glendora-high-4dwm.js",
-  "./esgvrop-4dwm.html",
   "./js/esgvrop-4dwm.js",
   "./js/ghs-model.js",
   "./js/ghs-vrml.js",
@@ -68,6 +75,7 @@ const PRECACHE = [
   "./css/wm.css",
   "./js/app.js",
   "./js/sitek-catalog.js",
+  "./js/sitek-modes.js",
   "./js/adl-studio.js",
   "./js/adl-map.js",
   "./js/adl-data.js",
@@ -122,6 +130,7 @@ const PRECACHE = [
   "./js/validator.js",
   "./js/viruslab.js",
   "./js/flash-decompiler.js",
+  "./js/flash-coordinates.js",
   "./data/flash-decompiler-targets.json",
   "./js/virus-catalog.js",
   "./js/x86dis.js",
@@ -144,10 +153,19 @@ const PRECACHE = [
   "./vendor/OrbitControls.js",
   "./wasm/entropy.wasm",
   "./wasm/ghidra/ghidra_decompiler.js",
+  "./wasm/ghidra/ghidra_decompiler.wasm",
   "./wasm/ghidra/processors.json",
   "./wasm/ghidra/Processors/x86/data/languages/x86.sla",
+  "./wasm/ghidra/Processors/x86/data/languages/x86.pspec",
+  "./wasm/ghidra/Processors/x86/data/languages/x86gcc.cspec",
+  "./wasm/ghidra/Processors/x86/data/languages/x86win.cspec",
   "./wasm/ghidra/Processors/x86/data/languages/x86-16-real.pspec",
+  "./wasm/ghidra/Processors/x86/data/languages/x86-16.pspec",
   "./wasm/ghidra/Processors/x86/data/languages/x86-16.cspec",
+  "./wasm/ghidra/Processors/x86/data/languages/x86-64.sla",
+  "./wasm/ghidra/Processors/x86/data/languages/x86-64.pspec",
+  "./wasm/ghidra/Processors/x86/data/languages/x86-64-gcc.cspec",
+  "./wasm/ghidra/Processors/x86/data/languages/x86-64-win.cspec",
   "./samples/bin/michelangelo.bin",
   "./samples/bin/malmsey-habitat-13.bin",
   "./samples/bin/zippy.bin",

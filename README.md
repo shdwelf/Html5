@@ -268,7 +268,7 @@ over the dev server's origin rather than `file://`:
 | --- | --- |
 | `/apps/` | Index, with a live secure-context / microphone check |
 | `/apps/anc-studio/` | ANC Studio Ultra — adaptive multi-band FxLMS over AudioWorklet |
-| `/apps/cyberchef/` | CyberChef Renovated Kitchen — 482 recipes after the Html5 ↔ Html5-sync-incoming merge and later algorithm/logic additions, plus file input and save. Includes QR Code (ISO/IEC 18004, versions 1–40, EC L/M/Q/H), postal barcode recipes, an Avery LabelPro-style N-up label sheet, and a full-registry SFX Select All bootstrap test; see the [current coverage audit](docs/cyberchef-sfx-coverage-audit-2026-10-13.md). |
+| `/apps/cyberchef/` | CyberChef Renovated Kitchen — 485 operations after the Html5 ↔ Html5-sync-incoming merge and later additions, plus file input and save. Includes QR and Aztec Code generation/image decoding, CueCat scan decoding, postal barcodes, Avery LabelPro Aztec labels, and offline SFX support; see the [barcode notes](docs/cyberchef-aztec-cuecat.md) and [SFX coverage audit](docs/cyberchef-sfx-coverage-audit-2026-10-13.md). |
 | `/apps/red-october-command-viewer/` | Offline fictionalized story-index globe and schematic profile viewer; exports VRML 2.0 and a Xena binary-preservation XML wrapper. No real submarine tracks or precise internal layouts. Ships as `red-october-command-viewer.xdc`. |
 | `/apps/cookbook/` | Crypto Cookbook — 83-section reference, framed by the Cookbook tab |
 | `/apps/cryptofountain-bbs/` | CryptoFountain BBS — P2P microblogging with erasure codes |

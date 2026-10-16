@@ -13,6 +13,33 @@
 <body data-paper="field-notebook">
   <div id="progress" aria-hidden="true"></div>
 
+  <div class="book-intro" id="bookIntro" role="dialog" aria-modal="true" aria-labelledby="bookIntroTitle" aria-hidden="true" hidden>
+    <div class="intro-stars" aria-hidden="true"></div>
+    <div class="intro-haze" aria-hidden="true"></div>
+    <h2 id="bookIntroTitle" class="visually-hidden">The Greeran Book Model opening</h2>
+    <p class="intro-caption" aria-hidden="true">A quiet signal crosses the dark.</p>
+    <div class="intro-book-stage" aria-hidden="true">
+      <div class="intro-book-shadow"></div>
+      <div class="intro-book-object">
+        <div class="intro-book-spread">
+          <div class="intro-leaf intro-leaf-left"><span>THE RECORD</span><i></i><i></i><i></i></div>
+          <div class="intro-leaf intro-leaf-right"><span>THE LIFE AROUND IT</span><i></i><i></i><i></i></div>
+          <div class="intro-book-gutter"></div>
+        </div>
+        <div class="intro-book-cover">
+          <span class="intro-cover-rule"></span>
+          <span class="intro-cover-mark">FIELD BOOK · 01</span>
+          <span class="intro-cover-title">A life,<br>set down in evidence.</span>
+          <span class="intro-cover-subtitle">Steven Thomas Greeran · Book Model</span>
+          <span class="intro-cover-sigil">✧</span>
+        </div>
+        <div class="intro-book-light"></div>
+      </div>
+    </div>
+    <p class="intro-caption intro-caption-bottom" aria-hidden="true">The binding stirs. The pages open.</p>
+    <button class="intro-skip" id="skipBookIntro" type="button">Skip to the book</button>
+  </div>
+
   <header class="studio-bar">
     <div class="brand-block">
       <div class="eyebrow">HTML5 BOOK LAB · source-balanced life file</div>
@@ -33,6 +60,7 @@
         <select id="paperSelect" aria-label="Select notebook paper style"></select>
       </label>
       <button type="button" class="btn" id="storeStyle">Store style</button>
+      <button type="button" class="btn ghost" id="replayBookIntro" aria-controls="bookIntro">Replay opening</button>
       <a class="btn ghost" href="./greeran-subsurface.html">Biography 4Dwm</a>
       <a class="btn ghost" href="./glendora-high-4dwm.html">GHS 2001</a>
       <a class="btn ghost" href="./esgvrop-4dwm.html">ESGVROP 4Dwm</a>
@@ -102,7 +130,7 @@
       </section>
     </aside>
 
-    <article class="book" id="book">
+    <article class="book" id="book" tabindex="-1">
       <section class="page cover" id="premise">
         <div class="chapter-no">I</div>
         <div class="page-kicker">Editorial premise</div>
@@ -2325,6 +2353,7 @@
   </main>
 
   <script src="./js/greeran-book.js"></script>
+  <script src="./js/greeran-book-intro.js"></script>
 </body>
 </html>
 cript src="./js/greeran-book.js"></script>

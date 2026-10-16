@@ -2,10 +2,11 @@
 /**
  * Package the Drive-sourced Greeran Family Tree 4DWM globe as Webxdc.
  *
- * The application is deliberately a single offline HTML document: its family
- * data, coastline geometry, styles, renderer, and webxdc fallback are embedded.
- * This packer adds only the standard manifest and icon and writes a reproducible
- * ZIP to the repository root and the ignored dist/ directory.
+ * The family data, coastline geometry, styles, renderer, and webxdc fallback
+ * remain embedded in the HTML. This packer adds the offline WEBU Bible dataset,
+ * its attribution/license, the untouched FNA102B shareware ZIP, and the standard
+ * manifest/icon, then writes a reproducible archive to the repository root and
+ * ignored dist/ directory.
  *
  *   node scripts/build-greeran-family-4dwm-xdc.mjs
  */
@@ -25,6 +26,11 @@ const enc = new TextEncoder();
 
 const html = await readFile(source);
 const icon = await readFile(path.join(root, "img/greeran-family-4dwm-icon.png"));
+const bibleData = await readFile(path.join(root, "public/apps/greeran-family-bible/complete-bible.json"));
+const bibleMetadata = await readFile(path.join(root, "public/apps/greeran-family-bible/metadata.json"));
+const bibleLicense = await readFile(path.join(root, "public/apps/greeran-family-bible/LICENSE"));
+const bibleReadme = await readFile(path.join(root, "public/apps/greeran-family-bible/README.md"));
+const fnaArchive = await readFile(path.join(root, "samples/archive/kirkpatrick/FNA102B.ZIP"));
 const manifest = `name = "Greeran Family Tree · 4DWM"
 orientation = "landscape"
 source_code_url = "https://github.com/shdwelf/Html5"
@@ -34,6 +40,11 @@ const archive = {
   "icon.png": [new Uint8Array(icon), { level: 9, mtime }],
   "index.html": [new Uint8Array(html), { level: 9, mtime }],
   "manifest.toml": [enc.encode(manifest), { level: 9, mtime }],
+  "public/apps/greeran-family-bible/complete-bible.json": [new Uint8Array(bibleData), { level: 9, mtime }],
+  "public/apps/greeran-family-bible/metadata.json": [new Uint8Array(bibleMetadata), { level: 9, mtime }],
+  "public/apps/greeran-family-bible/LICENSE": [new Uint8Array(bibleLicense), { level: 9, mtime }],
+  "public/apps/greeran-family-bible/README.md": [new Uint8Array(bibleReadme), { level: 9, mtime }],
+  "samples/archive/kirkpatrick/FNA102B.ZIP": [new Uint8Array(fnaArchive), { level: 9, mtime }],
 };
 const bytes = zipSync(archive, { level: 9, mtime });
 

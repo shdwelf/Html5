@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#06100d" />
+  <title>SITE-K · 4DWM Ports</title>
+  <style>
+    :root { color-scheme: dark; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #06100d; color: #d7e9dc; }
+    * { box-sizing: border-box; }
+    body { min-height: 100vh; margin: 0; background: radial-gradient(ellipse at 50% 0, #14251a, #06100d 62%); }
+    header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem clamp(1rem, 4vw, 3rem); border-bottom: 1px solid #28422e; background: #07130fe8; }
+    h1 { margin: 0; color: #d9b568; font-size: clamp(1.1rem, 3vw, 1.55rem); letter-spacing: .15em; }
+    .eyebrow { margin: 0 0 .4rem; color: #75a381; font-size: .7rem; letter-spacing: .2em; }
+    header a { color: #a8d5b1; font-size: .78rem; text-decoration: none; border: 1px solid #365840; padding: .7rem .85rem; }
+    header a:hover, header a:focus-visible { color: #fff; background: #16311d; outline: 2px solid #d9b568; outline-offset: 2px; }
+    main { width: min(1100px, 100%); margin: 0 auto; padding: 2rem clamp(1rem, 4vw, 2.5rem) 4rem; }
+    .intro { max-width: 68ch; margin: 0 0 1.5rem; color: #98b3a0; font: .9rem/1.7 system-ui, sans-serif; }
+    .ports { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: .8rem; }
+    .port { min-height: 138px; display: flex; flex-direction: column; gap: .7rem; padding: 1rem; border: 1px solid #294334; background: linear-gradient(135deg, #0e1b14, #09120e); color: inherit; text-decoration: none; transition: border-color .15s, transform .15s, background .15s; }
+    .port:hover, .port:focus-visible { border-color: #d9b568; background: #14241a; transform: translateY(-2px); outline: none; }
+    .port b { color: #d9b568; font-size: .95rem; letter-spacing: .08em; }
+    .port span { color: #9bb5a2; font: .82rem/1.5 system-ui, sans-serif; }
+    .port small { margin-top: auto; color: #668875; font-size: .65rem; letter-spacing: .13em; }
+    footer { margin-top: 2rem; border-top: 1px solid #20372a; padding-top: 1rem; color: #6e8977; font: .75rem/1.6 system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <header>
+    <div><p class="eyebrow">SITE-K / APPLICATION DIRECTORY</p><h1>4DWM PORTS</h1></div>
+    <a href="./index.html#grid">← RETURN TO SITE-K</a>
+  </header>
+  <main>
+    <p class="intro">Launch the standalone 4DWM theaters and reconstruction apps directly. The links stay in the SITE-K dock as regular page URLs; they are not rewritten into shell hash routes.</p>
+    <nav class="ports" aria-label="4DWM applications">
+      <a class="port" href="./casefiles.html"><b>CASEFILES</b><span>Ghidra case files and layered 4DWM theater.</span><small>4DWM / GHIDRA</small></a>
+      <a class="port" href="./bluetops-gso-4dwm.html"><b>BLUETOPS GSO</b><span>Contract-logistics globe and location layers.</span><small>4DWM / GLOBE</small></a>
+      <a class="port" href="./dalton-race-4dwm.html"><b>DALTON RACE</b><span>Terrain-centered reconstruction and timeline.</span><small>4DWM / TERRAIN</small></a>
+      <a class="port" href="./esgvrop-4dwm.html"><b>ESGVROP</b><span>Del Norte and Sunflower campus reconstruction.</span><small>4DWM / CAMPUSES</small></a>
+      <a class="port" href="./glendora-high-4dwm.html"><b>GLENDORA HIGH</b><span>Class of 2001 layered campus view.</span><small>4DWM / CAMPUS</small></a>
+      <a class="port" href="./greeran-family-4dwm.html"><b>GREERAN FAMILY</b><span>Family-tree globe and source-linked reconstruction.</span><small>4DWM / FAMILY</small></a>
+      <a class="port" href="./greeran-subsurface.html"><b>GREERAN SUBSURFACE</b><span>Biography deep-dive and underground layers.</span><small>4DWM / SUBSURFACE</small></a>
+      <a class="port" href="./planet-viewer-4dwm.html"><b>PLANET VIEWER</b><span>USGS 3DEP terrain and GNIS place layers.</span><small>4DWM / TERRAIN</small></a>
+      <a class="port" href="./red-october-4dwm.html"><b>RED OCTOBER</b><span>Cutaway theater with layered submarine views.</span><small>4DWM / CUTAWAY</small></a>
+      <a class="port" href="./sanborn-restaurant-4dwm.html"><b>SANBORN RESTAURANT</b><span>Historic Sanborn restaurant study and XDC viewer.</span><small>4DWM / ARCHIVE</small></a>
+      <a class="port" href="./socal-subsurface.html"><b>SOCAL SUBSURFACE</b><span>Underground pipeline theater and 4DWM views.</span><small>4DWM / SUBSURFACE</small></a>
+      <a class="port" href="./vincennes-4dwm.html"><b>VINCENNES LOGS</b><span>Layered reconstruction and logbook timeline.</span><small>4DWM / ARCHIVE</small></a>
+    </nav>
+    <footer>Use the browser back control or the return link to return to SITE-K. Some scenes load large local datasets on first open.</footer>
+  </main>
+</body>
+</html>
