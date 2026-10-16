@@ -1,0 +1,14 @@
+{
+  "format": "wiki-javacard-simulator-pin",
+  "version": 1,
+  "name": "jCardSim",
+  "apiVersion": "2.2.2",
+  "repository": "licel/jcardsim",
+  "commit": "cd479018d16b1467f075d2c5d9a1064d724269cb",
+  "file": "jcardsim-2.2.2-all.jar",
+  "gitBlob": "0ac10c0143f06fb4b256dc5877010450351b7812",
+  "bytes": 394661,
+  "sha256": "33c167e9bf989c3fca692f8053b8032280a1cbca79df818e131c486dd174746a",
+  "license": "Apache-2.0; bundled Bouncy Castle components have their own MIT-style notice",
+  "scope": "Historical, test-only, in-memory JavaCard Classic API implementation. Not a current Oracle SDK, CAP verifier, cryptographic security test or hardware simulator certification. Never bundled into the wiki JAR/XDC or exposed as a service."
+}

@@ -1,0 +1,94 @@
+{
+  "format": "drive-backup-upload-receipt",
+  "version": 1,
+  "verifiedAt": "2026-10-15T16:59:12.430016+00:00",
+  "commit": "70596d89ee69b984c1ffb0997761ca281cae264d",
+  "folder": "https://drive.google.com/drive/folders/1yZhxIeQDNTgO5UXdhttAsiID2On_Eqgr",
+  "verifiedFiles": 11,
+  "payloadBytes": 176506246,
+  "remoteVerification": "Drive directory listing: every file name, byte size and server MD5 matched the local upload input. Files were not re-downloaded.",
+  "localRestoreVerification": {
+    "releaseArtifactsByteIdentical": 12,
+    "sourceFilesSHA256Matched": 2333,
+    "gitBundlePrerequisite": "a4e75d12d85c627e57e31ea03bf7c5ef4fcabe5e"
+  },
+  "files": [
+    {
+      "name": "BACKUP-MANIFEST-20261015-pr116.md",
+      "bytes": 4088,
+      "sha256": "4f16d5373429fe1428b90a99960860166620e2d3bc1d89449b392511a53691e1",
+      "md5": "46b88987a96b3fcb96eedbc9505aaaa9",
+      "driveId": "1wpkfBlDYPUE7DsbeRi7gUi24kHawaHbo"
+    },
+    {
+      "name": "html5-changed-20261015-pr116.tar.gz",
+      "bytes": 2251641,
+      "sha256": "b21c32d79f2843fe255d08eb2791d150b48ec22227c9e86f1592cc1474d3ffb9",
+      "md5": "069b61b6926a38ad78acf4b8204ce95a",
+      "driveId": "1QD3YWSJHjV6hcXwVp5a71NcXCefCWP6V"
+    },
+    {
+      "name": "html5-changed-files-20261015-pr116.tsv",
+      "bytes": 6827,
+      "sha256": "1c5d51fc302c45d3698f211673dbe1dcc8b12329eda0ffb35a78c334811d848c",
+      "md5": "d89c804cea88fd3323be16fba11f6416",
+      "driveId": "1i1uldPK-cKpTG8Sn4emUFWe6-hp4tCyK"
+    },
+    {
+      "name": "html5-session-20261015-pr116.bundle",
+      "bytes": 334452,
+      "sha256": "c27dbe48f60168f3049159f9277fe0217665700245cf01bfecb7b79650086207",
+      "md5": "2702496bf86f8ff579a4d199d868003c",
+      "driveId": "1znudw2nTarC20zyUYDYLE0Kkff1z8fzr"
+    },
+    {
+      "name": "more.wiki.in.a.jar.part-00",
+      "bytes": 94371840,
+      "sha256": "7c9f8b10a2f8437b7d3150dc80d6b40c0de12d51fa034d48d9cc308d3e32740e",
+      "md5": "741f839a3c5af48788fe0afc04106ab5",
+      "driveId": "1QIdtCbboHZkf-QIJA-wDbSxeCTTllPiu"
+    },
+    {
+      "name": "more.wiki.in.a.jar.part-01",
+      "bytes": 74460882,
+      "sha256": "5cb2850485e4b59dcaa300b689ffa92c80492d4b4d1b76fd63da0246f8e71d3e",
+      "md5": "123d779ac01fa48f093cc6a1c9d85621",
+      "driveId": "1xbE_EFJ6WheMslLithgfyRSR-6CLZD_X"
+    },
+    {
+      "name": "pr-116.json",
+      "bytes": 255,
+      "sha256": "8547b26d5456b37ff5e07b2954eff9774e1cb2f81a20186df9af748841b7aed5",
+      "md5": "da929760e1268b9ededdc228c94ca3c7",
+      "driveId": "14V5b6ND_rXUVP21X8XZZQfA3jNAroM9o"
+    },
+    {
+      "name": "restore-wiki-backup.py",
+      "bytes": 7541,
+      "sha256": "e064665ab8de737a0b0a21523f03270bd3b15aeb42a3592a0ffb26b48879fe05",
+      "md5": "9c9a42e420dba865287957f7af8d6c53",
+      "driveId": "1ZeMfcbx5lGIerzg2CZOgPxp4MG8KbopI"
+    },
+    {
+      "name": "wiki-backup.json",
+      "bytes": 6006,
+      "sha256": "4c514f383cf20a077e2de3b2c1a5a5f19aaaf1236b8eb046be54dc8ceeef77d7",
+      "md5": "5aa2cd1226da22ada2be6d4cb5548968",
+      "driveId": "1yyrDLWWYv_6--e1XUb3W4VoFhe1aPfP0"
+    },
+    {
+      "name": "wiki-editions-supplement.zip",
+      "bytes": 5061774,
+      "sha256": "7e7956aa95722f16c9ebb19566d1e6e4f1111ca31f15ea95c264eae8bd390b55",
+      "md5": "91cf3db1dc052134f41616cf506c42e6",
+      "driveId": "1Ll4k1Jhj5oBNhEG8ZcBIrdWl_YnQr8Fb"
+    },
+    {
+      "name": "SHA256SUMS",
+      "bytes": 940,
+      "sha256": "013c6145c5a03f9d8c1d0f317eb68c9d74c5520cc3d8f91c49fafe34b26a3e5f",
+      "md5": "dcd30be101dfbeac55ae965480f1d066",
+      "driveId": "1aSC-6HZTMxBvVSCNjWSHcpfZ9Ozgpojq"
+    }
+  ]
+}

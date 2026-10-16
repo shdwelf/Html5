@@ -1,6 +1,6 @@
 == Field-cipher deep dive — OD poem code, VIC, Gronsfeld, SECOM, and the Diana cryptosystem ==
 
-Source: docs/field-cipher-deep-dive-2026-10-14.md — synced 2026-10-14 by tools/wikiinajar/sync-docs.mjs.
+Source: docs/field-cipher-deep-dive-2026-10-14.md — synced 2026-10-15 by tools/wikiinajar/sync-docs.mjs.
 Back to [[Main Page]].
 
 = Field-cipher deep dive — OD poem code, VIC, Gronsfeld, SECOM, and the Diana cryptosystem =

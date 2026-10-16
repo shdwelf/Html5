@@ -1,6 +1,6 @@
 == Recipe sourcing, round 4 — Kahn's Figure 2 width page, the 1940 Gronsfeld source, army manuals, and the PGP armoring recipe ==
 
-Source: docs/recipe-sourcing-round-4-2026-10-14.md — synced 2026-10-14 by tools/wikiinajar/sync-docs.mjs.
+Source: docs/recipe-sourcing-round-4-2026-10-14.md — synced 2026-10-15 by tools/wikiinajar/sync-docs.mjs.
 Back to [[Main Page]].
 
 = Recipe sourcing, round 4 — Kahn's Figure 2 width page, the 1940 Gronsfeld source, army manuals, and the PGP armoring recipe =

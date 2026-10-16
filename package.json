@@ -35,7 +35,13 @@
     "sync:cyberchef": "node scripts/merge-cyberchef-recipes.mjs",
     "test": "vitest run && node --test tests/*.test.mjs",
     "build:planet": "node scripts/build-planet-viewer-xdc.mjs",
-    "build:virus-xena": "node tools/build_virus_xena.mjs"
+    "build:virus-xena": "node tools/build_virus_xena.mjs",
+    "build:wiki-workspace": "node tools/wiki-workspace/build.mjs",
+    "convert:wiki-json": "node tools/wiki-workspace/convert.mjs",
+    "test:wiki-workspace": "node --test tests/wiki-workspace.test.mjs tests/wiki-calendar.test.mjs tests/wiki-webxdc.test.mjs tests/wiki-tiddlywiki.test.mjs tests/wikiinajar-djvu.test.mjs && vitest run test/wiki-vault-interop.test.ts",
+    "test:wiki-server": "node tools/wiki-workspace/build.mjs --fixture && WIKI_JAR_INTEGRATION=1 node --test tests/wiki-server.test.mjs",
+    "test:wiki-backup": "python3 tools/wiki-workspace/test-backup.py",
+    "test:wiki-javacard": "node --test tests/wiki-javacard.test.mjs && node tools/wiki-workspace/javacard/test.mjs"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",
@@ -64,6 +70,7 @@
     "fflate": "^0.8.3",
     "jsdom": "^30.0.1",
     "tailwindcss": "4.1.17",
+    "tiddlywiki": "5.4.1",
     "typescript": "5.9.3",
     "vite": "7.3.2",
     "vite-plugin-singlefile": "2.3.0",

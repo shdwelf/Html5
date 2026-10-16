@@ -1,0 +1,379 @@
+{
+  "format": "wiki-javacard-validation-evidence",
+  "version": 1,
+  "date": "2026-10-15",
+  "baselineCommit": "7e5a1c35cb01971879373b48ca72950d0ee21d76",
+  "baselineAppletSHA256": "16431299687efa6c3fd68d489f055dc1f0d5d43e8874a583607f55f0acd6da45",
+  "baseline": {
+    "format": "wiki-javacard-simulator-tests",
+    "version": 1,
+    "simulator": "jCardSim 2.2.2",
+    "apiLevel": "JavaCard Classic 2.2.2 implementation",
+    "tests": 28,
+    "passed": 17,
+    "failed": 11,
+    "cases": [
+      {
+        "scope": "applet",
+        "name": "install/select/public digest",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "offset and opaque control-info installation",
+        "passed": true
+      },
+      {
+        "scope": "install-parser",
+        "name": "null buffer rejected with ISO status",
+        "passed": false,
+        "error": "NullPointerException: Cannot load from byte/boolean array because \"<parameter1>\" is null"
+      },
+      {
+        "scope": "install-parser",
+        "name": "negative offset rejected with ISO status",
+        "passed": false,
+        "error": "ArrayIndexOutOfBoundsException: Index -1 out of bounds for length 60"
+      },
+      {
+        "scope": "install-parser",
+        "name": "array overrun rejected with ISO status",
+        "passed": false,
+        "error": "ArrayIndexOutOfBoundsException: Index 8 out of bounds for length 3"
+      },
+      {
+        "scope": "install-parser",
+        "name": "short offset arithmetic cannot wrap",
+        "passed": false,
+        "error": "ArrayIndexOutOfBoundsException: Index -32516 out of bounds for length 32767"
+      },
+      {
+        "scope": "install-parser",
+        "name": "missing or oversized container fields",
+        "passed": true
+      },
+      {
+        "scope": "install-parser",
+        "name": "application length and PIN bounds",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "all supported PIN lengths 8 through 16",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "unauthorized update does not change digest",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "verified update changes all 32 bytes",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "successful update consumes authorization",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "wrong PIN decrements tries and stays blocked",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "correct PIN restores retry budget",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "valid-size wrong PIN length counts as an attempt",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "malformed VERIFY revokes an earlier grant",
+        "passed": false,
+        "error": "AssertionError: Expected SW 6982, got 9000"
+      },
+      {
+        "scope": "applet",
+        "name": "malformed SET consumes an earlier grant",
+        "passed": false,
+        "error": "AssertionError: Expected SW 6982, got 9000"
+      },
+      {
+        "scope": "applet",
+        "name": "unsupported CLA revokes authorization",
+        "passed": false,
+        "error": "AssertionError: Expected SW 6982, got 9000"
+      },
+      {
+        "scope": "applet",
+        "name": "invalid P1/P2 revoke authorization",
+        "passed": false,
+        "error": "AssertionError: Expected SW 6982, got 9000"
+      },
+      {
+        "scope": "applet",
+        "name": "unknown INS revokes authorization",
+        "passed": false,
+        "error": "AssertionError: Expected SW 6982, got 9000"
+      },
+      {
+        "scope": "applet",
+        "name": "reselection revokes authorization",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "reset then selection revokes authorization",
+        "passed": false,
+        "error": "AssertionError: Expected SW 6982, got 9000"
+      },
+      {
+        "scope": "applet",
+        "name": "selection and reset do not unblock a failed PIN",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "public reads do not refill the retry budget",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "transaction-start failure consumes authorization",
+        "passed": false,
+        "error": "AssertionError: Expected SW 6982, got 9000"
+      },
+      {
+        "scope": "host-framing",
+        "name": "JDK rejects a truncated short APDU before simulation",
+        "passed": true
+      },
+      {
+        "scope": "simulator-limit",
+        "name": "abort does not roll back persistent array data",
+        "passed": true
+      },
+      {
+        "scope": "simulator-limit",
+        "name": "Le is reported as 256 even for a request of 1",
+        "passed": true
+      }
+    ],
+    "notValidated": [
+      "CAP conversion or verification",
+      "Oracle/card-vendor SDK conformance",
+      "physical cards or secure provisioning",
+      "fragmented T=0/T=1 transport",
+      "Le enforcement",
+      "EEPROM rollback or power-loss durability",
+      "constant-time PIN or crypto security"
+    ]
+  },
+  "afterHardening": {
+    "format": "wiki-javacard-simulator-tests",
+    "version": 1,
+    "simulator": "jCardSim 2.2.2",
+    "apiLevel": "JavaCard Classic 2.2.2 implementation",
+    "tests": 28,
+    "passed": 28,
+    "failed": 0,
+    "cases": [
+      {
+        "scope": "applet",
+        "name": "install/select/public digest",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "offset and opaque control-info installation",
+        "passed": true
+      },
+      {
+        "scope": "install-parser",
+        "name": "null buffer rejected with ISO status",
+        "passed": true
+      },
+      {
+        "scope": "install-parser",
+        "name": "negative offset rejected with ISO status",
+        "passed": true
+      },
+      {
+        "scope": "install-parser",
+        "name": "array overrun rejected with ISO status",
+        "passed": true
+      },
+      {
+        "scope": "install-parser",
+        "name": "short offset arithmetic cannot wrap",
+        "passed": true
+      },
+      {
+        "scope": "install-parser",
+        "name": "missing or oversized container fields",
+        "passed": true
+      },
+      {
+        "scope": "install-parser",
+        "name": "application length and PIN bounds",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "all supported PIN lengths 8 through 16",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "unauthorized update does not change digest",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "verified update changes all 32 bytes",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "successful update consumes authorization",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "wrong PIN decrements tries and stays blocked",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "correct PIN restores retry budget",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "valid-size wrong PIN length counts as an attempt",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "malformed VERIFY revokes an earlier grant",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "malformed SET consumes an earlier grant",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "unsupported CLA revokes authorization",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "invalid P1/P2 revoke authorization",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "unknown INS revokes authorization",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "reselection revokes authorization",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "reset then selection revokes authorization",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "selection and reset do not unblock a failed PIN",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "public reads do not refill the retry budget",
+        "passed": true
+      },
+      {
+        "scope": "applet",
+        "name": "transaction-start failure consumes authorization",
+        "passed": true
+      },
+      {
+        "scope": "host-framing",
+        "name": "JDK rejects a truncated short APDU before simulation",
+        "passed": true
+      },
+      {
+        "scope": "simulator-limit",
+        "name": "abort does not roll back persistent array data",
+        "passed": true
+      },
+      {
+        "scope": "simulator-limit",
+        "name": "Le is reported as 256 even for a request of 1",
+        "passed": true
+      }
+    ],
+    "notValidated": [
+      "CAP conversion or verification",
+      "Oracle/card-vendor SDK conformance",
+      "physical cards or secure provisioning",
+      "fragmented T=0/T=1 transport",
+      "Le enforcement",
+      "EEPROM rollback or power-loss durability",
+      "constant-time PIN or crypto security"
+    ],
+    "validatedAt": "2026-10-15T18:15:20.492Z",
+    "dependency": {
+      "format": "wiki-javacard-simulator-pin",
+      "version": 1,
+      "name": "jCardSim",
+      "apiVersion": "2.2.2",
+      "repository": "licel/jcardsim",
+      "commit": "cd479018d16b1467f075d2c5d9a1064d724269cb",
+      "file": "jcardsim-2.2.2-all.jar",
+      "gitBlob": "0ac10c0143f06fb4b256dc5877010450351b7812",
+      "bytes": 394661,
+      "sha256": "33c167e9bf989c3fca692f8053b8032280a1cbca79df818e131c486dd174746a",
+      "license": "Apache-2.0; bundled Bouncy Castle components have their own MIT-style notice",
+      "scope": "Historical, test-only, in-memory JavaCard Classic API implementation. Not a current Oracle SDK, CAP verifier, cryptographic security test or hardware simulator certification. Never bundled into the wiki JAR/XDC or exposed as a service."
+    },
+    "toolchain": {
+      "javaVersion": "openjdk version \"21.0.12.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode, sharing)",
+      "appletRelease": 8,
+      "hostHarnessRelease": 11,
+      "appletClassMajorVersion": 52
+    },
+    "sources": {
+      "appletSHA256": "ace06990c860977b9695d93bd091f6309f60e5e81553be33b6c16a2c46b63978",
+      "harnessSHA256": "277181f178071ed7ee7a78e97882ac576ec556dbe90581f9b025df7eba1b9e4a"
+    },
+    "outputs": {
+      "appletClassSHA256": "0d3b82967fa696311d3df2b6226e0055dc7de180fdfb7e63c552eb908f32ddc1"
+    },
+    "scopeCounts": {
+      "applet": 19,
+      "install-parser": 6,
+      "host-framing": 1,
+      "simulator-limit": 2
+    },
+    "boundaries": [
+      "Only direct, in-memory jCardSim calls; no physical card or terminal access",
+      "The historical simulator has known transport/reset/transaction limitations",
+      "No Oracle SDK tools or simulator binaries were downloaded",
+      "This is API-surface compilation and protocol regression testing, not CAP verification"
+    ]
+  },
+  "classification": "API-surface compilation plus in-memory protocol regression tests. Simulator limitation probes are separate from applet checks. No CAP, Oracle SDK acceptance, card installation, or physical security claim."
+}

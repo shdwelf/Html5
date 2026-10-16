@@ -1,0 +1,408 @@
+== Repository wiki editions — source check and implementation, 2026-10-15 ==
+
+Source: docs/wiki-workspace-research-2026-10-15.md — synced 2026-10-15 by tools/wikiinajar/sync-docs.mjs.
+Back to [[Main Page]].
+
+= Repository wiki editions — source check and implementation, 2026-10-15 =
+
+This continues [the Wiki in a Jar deep dive](../wikiinajar-deep-dive.md),
+[the historical image/DjVu patch](wikiinajar-image-support.md), and the
+[Haiku vault implementation](../src/lib/vaultfile.ts). The new executable build
+is in [tools/wiki-workspace](../tools/wiki-workspace/README.md).
+Machine-readable bibliography: [research/wiki-workspace-sources.json](../research/wiki-workspace-sources.json).
+
+Follow-up: [verified Drive backup and historical 0.8 rebuild](drive-backup-wiki-2026-10-15.md).
+The committed baseline was backed up before continuation; the original 0.8
+archive is now locally recovered and its patched installation has fresh HTTP
+checks. A further [JavaCard validation pass](wiki-javacard-validation-2026-10-15.md) adds
+real API-surface compilation and scoped in-memory protocol checks. More 0.9.9
+recovery, CAP/hardware, Ghidra/native and live-service limits remain open.
+
+**Evidence labels:** *source-read* means the named files were retrieved from a
+pinned GitHub commit and inspected this turn; *local test* means code actually
+ran here; *proposal/pending* means it did not. Repository documentation from
+prior investigations is not presented as a new live check of its remote sources.
+
+== 1. The six requested steps, without mixing incompatible runtimes ==
+
+| Step | Delivered | Boundary / pending work |
+| --- | --- | --- |
+| 1 — `wiki.in.a.jar` | New self-contained Java 11+ executable JAR with the classic browser wiki as its landing page, real ACME/TJWS HTTP, bundled docs/DjVu and exact repository bytes | This is a new host for the HTML5 conversion, **not** Java source translated from every HTML/JS application and **not** the original 0.8 binary |
+| 2 — `more.wiki.in.a.jar` | Repository library landing page, one page per eligible file, explicit references/backlinks, immutable revision chain, optimistic write preconditions, encrypted page/file exchange | New “repository edition 1,” **not** a claim to have recovered Jens Fauth's historical 0.9.9 source |
+| 3 — JVM / OpenJDK / Temurin / Ghidra | Compiled and executed with recovered Temurin 21.0.12.1+1; real `javap` disassembly; Java 8 applet reader; optional Ghidra inspection command | No full headless Ghidra installation was run; no JVM-to-C++ or native-assembly equivalence claim |
+| 4 — ACME + DjVu + vault + JavaCard | Actual `Acme.Serve.Serve`, local WASM DjVu decoder, content-addressed vault, Haiku-v1-compatible WebCrypto exchange, JavaCard digest applet with pinned jCardSim API/protocol checks and a compiled read-only PC/SC client | No CAP conversion, Oracle/card-vendor SDK verification, physical-card testing, encrypted mounted filesystem or QEMU port |
+| 5 — TiddlyWiki / Webxdc | Native TiddlyWiki **5.4.1**, importable tiddlers, self-contained HTML engine, `.xdc` package with bounded plain-text chat updates and conflict copies | HTML/XDC contain source previews, metadata and a DjVu demo, **not** the entire binary vault; real messenger/device sync remains a deployment check |
+| 6 — cross-checks / bibliography / MediaWiki | Per-file provenance and SHA-256, resolved links/backlinks and unresolved links, extracted URL bibliography, existing browser JSON converter, schema-valid MediaWiki 0.11 XML | No remote wiki was changed. XML schema validation is not an actual MediaWiki server import; attachments, contacts and dialect-specific namespaces need migration review |
+
+All three executable JARs share one server implementation and complete snapshot;
+only their default landing pages differ. The separate `wiki-reader-applet.jar`
+is an AWT **read-only source reader**, with same-origin access to that snapshot.
+It is not the JavaCard applet and does not run a server inside a browser plug-in.
+
+== 2. Historical versions and the ACME correction ==
+
+The repository's original patch points at Wiki in a Jar 0.8, the
+`astecenko/Wiki-in-a-Jar` mirror commit
+`a56cfdfc8d343f60c915825a01af24577846cede`, and the Drive-backed distribution
+that was recovered in an earlier turn. That patch remains separate and
+unchanged. Its XRays/NanoHTTPD provenance is documented in the previous
+[image investigation](wikiinajar-image-support.md), with the exact distinction
+also recorded in [the Lantronix deep dive](lantronix-uclinux-deep-dive-2026-10-08.md).
+
+The new server really compiles `Acme/Serve/Serve.java`, not a JDK HTTP server
+renamed “ACME.” Source-read: TJWS commit
+`33920d0e429d3271796b3fd2d838cd0a47208846`, whose header credits Jef Poskanzer
+and Dmitriy Rogatkin, whose `Serve` constructor accepts `ARG_PORT` and
+`ARG_BINDADDRESS`, and whose servlet registry accepts the new wiki handler.
+[1](https://github.com/drogatkin/TJWS2/blob/33920d0e429d3271796b3fd2d838cd0a47208846/1.x/src/Acme/Serve/Serve.java)
+
+The small base container requires the older Servlet API plus TJWS compatibility
+classes. Here they are compiled from the **source** of Tomcat 4.1.40's servletapi
+in a pinned third-party mirror. This is not an official Apache-release signature
+verification. Source archive hashes, original source and license notices are
+included in every executable JAR; no precompiled mirror JAR is trusted as the
+build input. [2](https://github.com/xcf007/tomcat4/tree/dbed311153d1d97d7c92534d173c853130b08fb4/apache-tomcat-4.1.40-src/servletapi)
+
+GitHub repository searches for `morewikiinajar in:name` and
+`"more-wiki-in-a-jar" in:name` returned zero results on this date. That is a
+**narrow negative result**, not proof the historical source no longer exists.
+The earlier deep dive's SourceForge/Wayback references are useful leads but
+were not re-fetched here. The release identity must stay distinct until source
+or binaries are recovered, hashed and compared.
+
+=== HTTP/storage boundaries implemented ===
+
+- Bind to loopback by default; `--bind 0.0.0.0` is explicit. Preview routing uses
+  same-origin relative URLs, never a browser request to a sandbox's localhost.
+- No stock file/CGI servlet, arbitrary filesystem route, WAR deployment, proxy,
+  remote-URL fetch or code execution endpoint is registered.
+- Only an explicit packaged asset manifest is served. Private paths, invalid
+  encoding, dot segments, backslashes and traversal are rejected.
+- `/vault/<sha256>` always downloads source bytes as octet-stream attachments.
+  `/media/<sha256>` only accepts allowlisted raster/DjVu entries; HTML/SVG never
+  become active vault content at the server's origin.
+- Server persistence is opt-in with a high-entropy bearer token. Page writes
+  require the current ETag, cap their body size, reject malformed UTF-8 and
+  preserve immutable parent-linked revisions. Stale saves return 409.
+- Private encrypted envelopes require the token for reads as well as writes.
+  The server has no vault passphrase and cannot decrypt them.
+- The public repository catalog, pages and page revisions are **not encrypted**.
+  Anyone who can reach the HTTP server can read them. This is a local tool, not
+  a hardened multi-tenant service or an ACME/TJWS security audit.
+
+== 3. “Everything has a page” and versioning ==
+
+`catalog.mjs` enumerates tracked files plus non-ignored workspace additions for
+explicitly registered local repositories. It does not crawl all of a user's
+GitHub/GitLab repositories or fetch linked websites. Registration is repeatable:
+
+```sh
+npm run build:wiki-workspace
+node tools/wiki-workspace/build.mjs --repo OtherProject=/absolute/local/checkout
+```
+
+Each included regular file has a stable page id, source path, repository id,
+SHA-256, byte length, MIME classification, preview hash, explicit outgoing
+references and backlinks. Binary files get a metadata page rather than being
+pretended to be readable source. Duplicate byte strings share one vault blob.
+The snapshot digest covers sorted repository/path/content-hash tuples; source
+Git commit ids are recorded separately. **This is a working-tree snapshot and
+wiki revision system, not an embedded copy of the complete Git commit graph.**
+
+Each exclusion is named in the manifest: `.git`, relay/Arena caches, private
+import/export areas, known credential filenames, encrypted personal vaults,
+build outputs and symlinks. Some caches were historically tracked despite
+`.gitignore`, so the publication filter applies even to tracked paths. It is a
+filename/path policy, **not a secret scanner**. Review source contents, licenses
+and the manifest before distributing a snapshot.
+
+The library follows explicit Markdown links, HTML `href`/`src` values and relative
+module imports. Resolved links and backlinks are concrete edges, not an AI
+assertion that two topics corroborate one another. Unresolved paths stay visible.
+Extracted bibliographic URLs are marked **not automatically verified**. The
+curated research bibliography below distinguishes them from the sources actually
+inspected this turn.
+
+Page edits do not change repository files. Initial text is a bounded preview
+(96 KiB, explicitly marked if truncated); exact source bytes remain in the JAR.
+Subsequent wiki page revisions live under `--data`, survive restart and can be
+restored as new revisions. Local browser drafts are separate from that server
+history and should be exported for backup.
+
+== 4. Vault, S.S.E., Base64url and the “Base65” question ==
+
+The existing Workbench has **two** separate mechanisms: `BookVfs` stores
+content-addressed attachment bytes in IndexedDB, while `vaultfile.ts` encrypts
+JSON exchange files. Neither automatically exposes a mounted encrypted filesystem
+to Java. This build reuses the content-addressing design and the exact exchange
+wire format; it does not silently read a user's existing wallet database.
+
+The compatible format is:
+
+```text
+haiku-vault-v1. + Base64(01 | salt[16] | iv[12] | AES-256-GCM ciphertext+tag)
+PBKDF2-HMAC-SHA256, 120000 iterations, UTF-8 passphrase
+```
+
+Local tests exercised both directions between the existing Noble-based
+`src/lib/vaultfile.ts` and the new browser WebCrypto implementation, including
+non-ASCII passphrases. Wrong-password and tamper rejection are tested. A decrypted
+wallet/seed payload is **not** automatically turned into public wiki pages.
+The new wiki requires a separate nonempty passphrase and has no default password.
+
+In this repository, S.S.E. is **Secret Space Encryptor**, as shown by
+[`sse-webxdc/index.html`](../sse-webxdc/index.html), not an implemented
+server-sent-events or searchable-symmetric-encryption system. Source-read of
+its referenced Android fork's `Encryptor.java` shows version-3 paths using
+Argon2id and EAX and output codecs including HybridBase62 and SSEBase64.
+This is a different container/KDF/AEAD combination from Haiku vault v1.
+[3](https://github.com/sdatar59/Paranoia_Works-Secret_Space_Encryptor_for_Android/blob/31a19a4c8a5ea8fb8bce6a2a1b6f5cc40cc8f2f3/MainApp/src/main/java/com/paranoiaworks/unicus/android/sse/utils/Encryptor.java)
+
+The inspected `SSEBase64Encoder` has 64 data symbols, uses `)` and `]` instead
+of `+` and `/`, and declares `.` as padding. Its `SSEBase64` byte-array decoder
+adds missing padding. These are precise source facts; they do **not** make it
+RFC-style Base64url or a newly specified Base65 format.
+[4](https://github.com/sdatar59/Paranoia_Works-Secret_Space_Encryptor_for_Android/blob/31a19a4c8a5ea8fb8bce6a2a1b6f5cc40cc8f2f3/CryptoLibs/src/main/java/sse/org/bouncycastle/util/encoders/SSEBase64Encoder.java)
+[5](https://github.com/sdatar59/Paranoia_Works-Secret_Space_Encryptor_for_Android/blob/31a19a4c8a5ea8fb8bce6a2a1b6f5cc40cc8f2f3/CryptoLibs/src/main/java/sse/org/bouncycastle/util/encoders/SSEBase64.java)
+
+**Decision:** keep format compatibility explicit. The new helper implements
+strict, canonical, unpadded Base64url for transport where needed; the Haiku
+file stays ordinary Base64. Encoding is not encryption. “Base65” remains
+unspecified: no matching format was found in the inspected code. If it denotes
+another custom alphabet/framing scheme, obtain that specification and test
+vectors before implementing it. No SSE ciphertext is relabelled as a Haiku file.
+A future Argon2id envelope would need a new version and migration tests, not an
+unannounced change to version 1.
+
+== 5. OpenJDK, Temurin, applets, Ghidra, native code and WASM ==
+
+The recovered split JDK archive was reassembled only after its SHA-256 matched
+`.relay/jdk/jdk21.sha256`. `java -version` reported **Temurin 21.0.12.1+1-LTS**.
+The executable server targets Java 11 bytecode; the historical reader and
+upstream container target Java 8. Adoptium's own repository describes Temurin
+as OpenJDK binary builds, not a separate applet architecture.
+[6](https://github.com/adoptium/temurin-build/blob/2dd5226b8fbfc3d075a9d5a75a1a4f710f4e306c/README.md)
+
+“JVM” is the execution model, “JDK” the development tools/runtime, and “JRE” a
+runtime distribution. No particular “OpenJRE” project was identified by the
+request; it is not silently treated as a fourth interoperable SDK. Use a
+maintained runtime matching the build target and verify distribution provenance.
+
+Modern browsers do not provide the old Java plug-in model. The OpenJDK commit
+implementing JEP 504 removes the Applet API; its actual commit was inspected,
+not inferred from a misspelled product name. The compatibility reader is
+therefore deliberately isolated from the modern server entry point. It was
+compiled, but not run in a legacy browser or appletviewer here.
+[7](https://github.com/openjdk/jdk/commit/5cf672e7784b9a9a82f29977a072b162cc240fd1)
+
+Ghidra source contains `JVM:BE:32:default`, with a `JVM.sla` processor and
+compiler specification. That supports a meaningful static-inspection path for
+class files. It does not establish a correct Java-to-C++ translator.
+[8](https://github.com/NationalSecurityAgency/ghidra/blob/61f664ff30d9bd7d5501956751d46553728c5f6b/Ghidra/Processors/JVM/data/languages/JVM.ldefs)
+
+The build **actually ran** `javap -c -p -s` and emits `WikiServer.javap.txt`.
+`inspect-jvm.sh` also produces verbose output and, **only when GHIDRA_HOME is
+supplied**, imports the class into headless Ghidra using the repository's existing
+`GenericProgramReport.java`. No Ghidra run or native instruction listing is
+claimed in this report. A `.c` suffix from a decompiler would denote C-like
+pseudocode, not a validated C/C++ port preserving JVM exceptions, GC, reflection,
+class loading, strings and concurrency.
+
+A GitHub search also located **pmietlicki/openjvm-wasm**. Its pinned README
+claims OpenJDK 17 Zero via Emscripten, a canvas AWT/Swing toolkit, same-origin
+network proxy and WebSocket-to-TCP bridge. It documents secure-context and
+COOP/COEP requirements, and source builds rather than a trivial JAR rename.
+These are **upstream claims read from source**, not reproduced locally. Its
+application-specific SSO/proxy and JAR transformation features are not imported
+into the vault's trust boundary.
+[9](https://github.com/pmietlicki/openjvm-wasm/blob/03ec1f7c21ca9880661911617bf12e02069d8462/README.md)
+
+=== Recommended options, in order ===
+
+1. **Executable Java host + existing browser clients:** implemented, smallest
+   semantic change, inspectable dependency sources, no legacy browser plug-in.
+2. **Native TiddlyWiki / Webxdc:** implemented for portable notes and source
+   previews; keep large binaries in the host's vault rather than chat updates.
+3. **Native/AOT host:** investigate a supported Java AOT toolchain with explicit
+   resource/reflection configuration and rerun the same HTTP/crypto tests. Not
+   implemented or benchmarked; do not promise that reflective TJWS is automatic.
+4. **JVM-on-WASM:** research prototype only; test startup size, interpreter cost,
+   memory, browser storage and proxy isolation before choosing it for this app.
+5. **C++ rewrite:** a separate implementation project with protocol, renderer,
+   cryptographic and persistence parity tests—not “compile Ghidra output.”
+
+== 6. JavaCardOS, QEMU and qcow2 ==
+
+JavaCardOS's `pyResMan` describes an APDU/resource-management tool with
+pyScard/GlobalPlatform dependencies. This is evidence for an ISO-7816 host/card
+workflow, not evidence that an ordinary Java servlet/JVM runs on a card.
+[10](https://github.com/JavaCardOS/pyResMan/blob/9a518dfdca087335628e184212aaa44d35f470f2/README.md)
+
+The prototype here targets **JavaCard Classic**, not every possible JavaCard
+profile. `VaultDigestApplet.java` stores a 32-byte snapshot digest, validates an
+installation-supplied PIN, reads short APDUs and transactionally updates the
+anchor. The host-side `CardAnchorClient` compiles with standard PC/SC APIs and
+only selects/reads the applet on explicit CLI invocation. The HTTP server does
+not expose a raw APDU endpoint. The first check was JDK **parse-only**. The
+[follow-up validation](wiki-javacard-validation-2026-10-15.md) now compiles against
+real jCardSim 2.2.2 API classes and passes 28 scoped checks (25 applet/parser,
+1 host-framing, 2 limitation probes). It also tightens install bounds and revokes
+stale update grants on malformed commands. This is not Oracle/card-vendor SDK
+verification, CAP conversion or physical-card testing; fragmented transport,
+Le enforcement and EEPROM rollback/power loss are explicitly unvalidated.
+See [the APDU contract and pending tests](../tools/wiki-workspace/javacard/README.md).
+
+The inspected QEMU qcow2 specification distinguishes encryption method values
+and an explicit LUKS encryption-header pointer extension. A qcow2 image is a
+virtual block-device container, not the browser's content-addressed vault or a
+JavaCard filesystem. This build neither implements it nor claims encryption by
+renaming an archive. A WASM emulator also does not provide a physical secure
+element's tamper resistance.
+[11](https://github.com/qemu/qemu/blob/d5b5083cb783c447001e862c2b525e59f48ad78c/docs/interop/qcow2.rst)
+
+== 7. Native TiddlyWiki, Tiddlyhost API and Webxdc ==
+
+The npm package is locked to **5.4.1**. This build invokes its real engine with
+the official vanilla/snowwhite themes and browser-storage plugin. In this version,
+the boot JSON deserializer requires string-valued fields; array-valued `tags`
+caused the initial fixture to become one raw JSON tiddler. A browser smoke test
+caught that defect. Exporting `tags` as a string fixed it, and a regression test
+now pins the rule. This is a useful source-level check, not merely a screenshot
+of a page styled to resemble TiddlyWiki.
+[12](https://github.com/TiddlyWiki/TiddlyWiki5/tree/v5.4.1)
+
+A full-repository browser test caught a second, scale-dependent defect: a
+browser-storage filter starting with `all[tiddlers]` discarded the plugin's
+change iterator and attempted to save the entire corpus on every event. Storage
+quota alerts then triggered more saves. The filter now retains only changed
+non-system notes and selected state tiddlers, excludes alert/popup tiddlers,
+and has a regression test using the **actual** 5.4.1 filter engine. A real browser
+confirmed that a local note survives reload without copying the source corpus
+into localStorage. Native HTML/XDC source previews additionally default to
+4 KiB per file for portability; `--tw-preview-bytes` is configurable. Larger
+96 KiB previews remain in the JSON/XML exchange and the host library, while
+exact bytes are still in the JAR vault.
+
+Repository sources stay `text/plain`, including HTML/JS. The generated trusted
+metadata view provides outgoing links, backlinks and bibliographic fields.
+The Webxdc module rejects system/plugin tiddler updates, caps message size and
+retains concurrent changes as separate conflict tiddlers. Local browser-storage
+and explicit HTML/JSON exports are the persistence path; binary attachments are
+not smuggled through a note update.
+
+=== Tiddlyhost: source-verified endpoints ===
+
+Inspected commit `d573a5964a0e0b226f36aecfdc8b6362f09a0f14`, controller and routes:
+[13](https://github.com/tiddlyhost/tiddlyhost-com/blob/d573a5964a0e0b226f36aecfdc8b6362f09a0f14/rails/app/controllers/tiddlywiki_controller.rb)
+[14](https://github.com/tiddlyhost/tiddlyhost-com/blob/d573a5964a0e0b226f36aecfdc8b6362f09a0f14/rails/config/routes.rb)
+
+| Route on an individual site | Observed behavior in source |
+| --- | --- |
+| `GET /` / `HEAD /` / `OPTIONS /` | wiki delivery and ETag; optional DAV header advertises PUT saving |
+| `GET /tiddlers.json` | visibility-checked export; supports `include_system=1`, `skinny=1`, `title`, `pretty=1` |
+| `GET /text/:title.tid` | one visible tiddler in `.tid` format |
+| `GET /download` | HTML download, subject to visibility and the site's download setting |
+| `GET /info` | save capability; last-saved metadata only when saveable |
+| `PUT /` | owner/session-gated **whole-wiki** save; supplied stale `If-Match` can produce 412, unless the site's override disables this check |
+| `POST /` | upload-saver whole-wiki flow, not an anonymous tiddler CRUD API |
+
+The controller applies permissive CORS headers to the JSON/TID read endpoints,
+not a blanket anonymous write API. Tiddlyhost's whole-file save semantics must
+not be confused with the new host's per-page revision API. No Tiddlyhost account,
+site identifier or target was supplied, and its host is not reachable here;
+there was **no live API request or upload**. A future importer should default
+to public, non-system tiddlers, record the source ETag, reject executable fields,
+and require an explicit target and user confirmation before any whole-wiki save.
+
+== 8. MediaWiki, not an invented “Wikimedia JSON format” ==
+
+The inspected `wikimedia/mediawiki` repository identifies MediaWiki as PHP wiki
+software used by Wikipedia and other Wikimedia projects. Wikimedia is not a
+single writable wiki endpoint. The conversion targets a **MediaWiki import
+format**, not a claim that arbitrary repository data belongs on Wikipedia.
+[15](https://github.com/wikimedia/mediawiki/blob/4f6bde3101f3a445f01418b143e043e976b77e40/README.md)
+
+The converter accepts the existing `wikiinajar-jar` JSON version 1, retains
+saved revisions and text, skips deleted pages and maps every title into a safe
+`Repository/…` main-namespace title. Known internal links are rewritten; the
+report retains original-to-imported title mappings. Raw source files render
+literally in `<pre>` rather than becoming wiki templates. Unicode byte counts,
+XML escaping, revision ids, origin ids and SHA-1 fields are generated explicitly.
+
+The actual **0.11 XSD** was fetched from the pinned repository. It requires a
+revision `<origin>` element: validating the first fixture exposed that missing
+field, which is now generated and tested. The schema's W3C XML namespace import
+is resolved to a second pinned local fixture; validation does not need network
+access. Full validation uses `validate-mediawiki.py` and optional Python lxml.
+[16](https://github.com/wikimedia/mediawiki/blob/4f6bde3101f3a445f01418b143e043e976b77e40/docs/export-0.11.xsd)
+[17](https://github.com/wikimedia/mediawiki/blob/4f6bde3101f3a445f01418b143e043e976b77e40/tests/phpunit/maintenance/xml.xsd)
+
+Source-read API examples include revision content with `rvslots` and `rvprop`.
+The import implementation checks `importupload` permission for XML uploads and
+requires POST/write mode. No remote API was called and no credentials were
+requested. Read-only research queries for a user-chosen MediaWiki would look
+like this (not an executed request):
+
+```text
+/api.php?action=query&prop=revisions&titles=Some_page&rvslots=main&rvprop=ids|timestamp|content&format=json&formatversion=2
+```
+
+An authenticated import/edit workflow additionally needs the target's permission,
+authentication and token rules. Prefer a disposable local wiki and inspect the
+conversion report before enabling any write integration.
+[18](https://github.com/wikimedia/mediawiki/blob/4f6bde3101f3a445f01418b143e043e976b77e40/includes/Api/ApiQueryRevisions.php)
+[19](https://github.com/wikimedia/mediawiki/blob/4f6bde3101f3a445f01418b143e043e976b77e40/includes/Api/ApiImport.php)
+
+== 9. GitLab and Internet Archive: explicitly pending ==
+
+Only the allowed GitHub/npm/Python hosts are reachable in this sandbox. GitLab,
+Archive.org, Wayback, SourceForge, Tiddlyhost and live Wikimedia sites were not
+queried. No GitHub Actions relay or third-party proxy was used to evade that
+restriction. Useful follow-up queries, **not new evidence**, are:
+
+- GitLab Projects API: search `wiki in a jar`, `morewikiinajar`, `tiddlywiki`,
+  record pagination, project id, commit, license and source archive SHA-256.
+- Internet Archive advanced search: title/identifier queries for `WikiInAJar`,
+  `morewikiinajar`, and `WikiInAJar-0.8-20081128-bin.zip`; inspect item metadata
+  and checksums before downloading executables.
+- Wayback CDX for `morewikiinajar.sourceforge.net/*`: list captures by timestamp,
+  collapse duplicate digests, recover source archives/changelogs and distinguish
+  an archived page about a file from the actual file bytes.
+
+Recovering one of those artifacts would justify a separate historical build and
+three-way source/bytecode comparison. Until then, the new release names retain
+“repository edition” labels and do not claim historical byte identity.
+
+== 10. Validation and remaining acceptance checks ==
+
+Completed local checks (commands in the tool README):
+
+- Targeted catalog/exchange/calendar/TiddlyWiki/Webxdc/DjVu suite: **22 Node tests**;
+  **2 Workbench ↔ WebCrypto interoperability tests**. The complete project suite
+  also passes; Java/server integration is run separately from its default skip.
+- Executable-JAR integration: actual ACME requests from an otherwise empty
+  working directory; all three edition redirects; raster/DjVu/WASM handling;
+  exact-byte vault digest; path/encoding/symlink rejection; unauthorized, stale,
+  missing-precondition, oversized and malformed-UTF-8 saves; concurrent writes;
+  restore and restart persistence; protected opaque vault envelopes; read-only mode.
+- Two consecutive fixture builds produced identical `SHA256SUMS`.
+- Both fixture and full-repository MediaWiki XML validated against the pinned
+  0.11 XSD with offline imports; every unique full-snapshot vault blob was read
+  back from the JAR and checked for byte length and SHA-256.
+- Real headless Chromium: library loads a source page, the calendar shows all 31
+  October days, event creation navigates to the dated page, native TiddlyWiki
+  boots into **Repository Home**, all source tiddlers and metadata links are
+  present, edits survive reload, and the local DjVu sample renders. Full-size
+  mobile layouts have no horizontal overflow; busy calendar days use counts
+  and a full expandable agenda rather than giant wrapped title columns. No
+  page JavaScript errors were observed in the completed smoke run.
+- JavaCard: initial grammar check passed; a later pinned jCardSim 2.2.2 API
+  compilation/in-memory suite passed all 28 scoped checks. Its two explicit
+  limitation probes are not CAP, Le-conformance or rollback verification.
+
+Pending acceptance checks are **not** hidden behind passing unit tests: historical
+More Wiki source recovery; full Ghidra import/decompilation; card-vendor SDK/CAP,
+physical-card and faithful transport/persistence validation; legacy appletviewer
+execution; messenger/device sync;
+actual MediaWiki instance import; live Tiddlyhost API behavior; GitLab/Archive
+recovery; AOT/WASM performance and storage benchmarks; public-facing security review.

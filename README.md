@@ -68,9 +68,34 @@ URL fragment, so only a real browser can decrypt it. It runs anywhere
 playwright + chromium are installed (a laptop, a GitHub runner with the
 workflow permission).
 
+## Repository-wide Java / TiddlyWiki editions
+
+The new [Repository Wiki build](tools/wiki-workspace/README.md) produces actual
+ACME/TJWS-hosted `wiki.in.a.jar`, `more.wiki.in.a.jar`, and `tiddlywiki.in.a.jar`,
+plus a native TiddlyWiki HTML/Webxdc edition and MediaWiki XML export. Each JAR
+contains a per-file source catalog and a deduplicated exact-byte repository vault,
+with private caches/credential paths explicitly excluded. The extended library
+adds backlinks, bibliographic URLs, revision conflicts/history and Haiku-v1
+compatible encrypted page/file exchange. These are **new repository editions**,
+not a claim to have recovered historical More Wiki 0.9.9 or translated arbitrary
+JavaScript into JavaCard. See the [source-checked research and limitations](docs/wiki-workspace-research-2026-10-15.md).
+
+```sh
+npm ci
+npm run build:wiki-workspace           # JDK 11+, Python 3, tar, curl; outputs dist/wiki/
+java -jar dist/wiki/more.wiki.in.a.jar 3003
+npm run test:wiki-workspace
+npm run test:wiki-server               # real executable-JAR HTTP + persistence tests
+```
+
+The classic wiki's Calendar now uses font-independent SVG navigation, an
+always-visible month grid and an event-page form; no pre-existing events are
+required. TiddlyWiki HTML/XDC carry previews and metadata; the complete eligible
+binary vault lives in the JAR editions. Nothing is uploaded to a remote wiki.
+
 ## Standalone viewers
 
-- **[Wiki in a Jar](wikiinajar.html)** — the 2008 USB-stick personal wiki (`wiki.in.a.jar` 0.8) rebuilt as one offline HTML file and a Webxdc bundle: same `.wiki` page model, same `[[wiki:]]`/`[[img:]]`/`[[djvu:]]`/`[[tags:]]` namespaces, vCard contacts, DjVu reading via the vendored WASM decoder, and webxdc chat sync. Ships as `wikiinajar.xdc` (`npm run build:wikiinajar`) with all 139 repository Markdown documents (root deep dives + `docs/*.md`) converted to wiki pages in its Docs tab; see [the deep dive](wikiinajar-deep-dive.md), the seeded **Wiki in a Jar** documentation page inside the app, and the Java-side patch in [tools/wikiinajar/](tools/wikiinajar/).
+- **[Wiki in a Jar](wikiinajar.html)** — the 2008 USB-stick personal wiki (`wiki.in.a.jar` 0.8) rebuilt as one offline HTML file and a Webxdc bundle: same `.wiki` page model, same `[[wiki:]]`/`[[img:]]`/`[[djvu:]]`/`[[tags:]]` namespaces, vCard contacts, DjVu reading via the vendored WASM decoder, and webxdc chat sync. Ships as `wikiinajar.xdc` (`npm run build:wikiinajar`) with the repository Markdown library (root deep dives + `docs/*.md`) converted to wiki pages in its Docs tab; see [the deep dive](wikiinajar-deep-dive.md), the seeded **Wiki in a Jar** documentation page inside the app, and the Java-side patch in [tools/wikiinajar/](tools/wikiinajar/).
 - **[Keyspace Viewer](keyspace.html)** — BIP-39 geometry, measured statistical layers, wallet derivatives, and keyspace projections.
 - **[Prime Viewer](prime.html)** — exact prime atlas, residue-class solar system, prime constellations, counting statistics, gaps, and integer inspection. See [PRIME.md](PRIME.md).
 - **[Helios Observatory](astronomy.html)** — time-propagated solar orrery, curated celestial catalog, Earth-centered NEO radar, and modeled meteor streams. See [ASTRONOMY.md](ASTRONOMY.md).
