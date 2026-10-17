@@ -17,6 +17,8 @@ Folder: **Html5 backup — 2026-10-17 (FIRST NAME ALMANAC v1.02b Xena preservati
 | `MANIFEST.sha256` | 315 | — | SHA-256 of every file above |
 | `README.txt` | 1,800 | — | restore recipe and the scope/gap statement |
 | `fna102b-xena-2026-10-17.zip` | 13,848 | `1431d9b3f7c0af711cfe7e53eadd2ab6e88f88cc4540f6320beccebe7ab8bd85` | the BagIt 1.0 bag itself — all 13 files, added because `dist/` is gitignored so the bag exists nowhere else durable |
+| `KGK.EXE` | 551,767 | `19ac8ee1ec0b3c635699597d65b420dbe1afbc7355a4ce1a5ec932eecd0e3b02` | reconstructed self-extracting ARJ — `MEANINGS.OVL + NAMES.OVL` concatenated as `INSTALL.COM`'s batch template does; ARJSFX stub + the byte-identical `KGK.ARJ`. No decryption involved |
+| `DERIVED-MANIFEST.txt` | 184 | — | SHA-256 of the derived artifacts |
 
 The folder listing was re-read after the first upload and returned those four
 objects with matching byte counts; the bag zip was added afterwards and

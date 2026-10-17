@@ -141,6 +141,43 @@ Identical CRC-32 **and** identical length: these are the same two documents, and
 readable in the clear inside the ZIP. That is why the preservation bag can carry them verbatim
 without touching the garble — and why nothing about the encrypted name data changes either way.
 
+### The two .OVL halves are the whole archive
+
+The CRC match above turns out to be a special case of something stronger.
+Concatenating the ZIP's two `.OVL` members exactly as the installer's batch
+template does — `COPY/B MEANINGS.OVL+NAMES.OVL KGK.EXE`, a plain binary
+concatenation requiring no decryption — yields:
+
+```
+MEANINGS.OVL   275,968 B
+NAMES.OVL      275,799 B
+KGK.EXE        551,767 B   sha256 19ac8ee1ec0b3c635699597d65b420dbe1afbc7355a4ce1a5ec932eecd0e3b02
+  ├─ 0x0000–0x3A09   14,858 B  ARJSFX stub, valid MZ
+  └─ 0x3A0A–EOF     536,909 B  sha256 a90974a7655c852e889011db38a2cf2eb147b977bb3e76fbde3f9d4c9db1d238
+```
+
+The embedded archive is **byte-identical to `KGK.ARJ`** — same 536,909 bytes,
+same SHA-256, same 19 GARBLED members, same CRCs, terminated by the empty
+header `60 EA 00 00`. `FNA102B.ZIP` therefore contains the complete v1.02b
+distribution, and the standalone `KGK.ARJ` is that archive with the SFX stub
+stripped. Verified by direct comparison, not inferred from the CRC table.
+
+The stub is 14.5 KB, which matches the ARJ technical note's "standard 15K byte
+ARJSFX module" — the one that *does not* support ARJ-SECURITY. That explains the
+`OLD_SECURED_FLAG` set with a security-envelope position pointing past EOF,
+noted in [`arj-garble-format-notes.md`](arj-garble-format-notes.md): the flag is
+inherited from the archive, but the stub shipped cannot honour it.
+
+Both artifacts are rebuildable and are recorded in the Drive backup as
+`KGK.EXE` and `DERIVED-MANIFEST.txt`:
+
+```sh
+python3 -c "import zipfile;z=zipfile.ZipFile('samples/archive/kirkpatrick/FNA102B.ZIP');\
+open('KGK.EXE','wb').write(z.read('MEANINGS.OVL')+z.read('NAMES.OVL'))"
+```
+
+Nothing here decrypts anything; the 19 members are exactly as garbled as before.
+
 ## Version note — 1.02a vs 1.02b
 
 The request named `FNA102A.ZIP`. The repository holds **`FNA102B.ZIP`** (v1.02b) and the sandbox has
