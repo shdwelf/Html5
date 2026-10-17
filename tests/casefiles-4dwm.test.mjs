@@ -459,7 +459,7 @@ test("the single-file build and the archive are the same lab, both with a theate
 
 test("the multi-page SITE-K archive carries the theater as well", () => {
   const files = unzipSync(new Uint8Array(readFileSync(path.join(root, "sitek.xdc"))));
-  for (const rel of ["casefiles.html", "js/casefiles.js", "js/casefiles-4dwm.js", "css/casefiles-4dwm.css", "js/book-builder.js", "sw.js", "demo.exe"]) {
+  for (const rel of ["casefiles.html", "js/casefiles.js", "js/casefiles-4dwm.js", "css/casefiles-4dwm.css", "js/book-builder.js", "js/book-builder-retrowave.js", "sw.js", "demo.exe"]) {
     assert.ok(files[rel], `sitek.xdc is missing ${rel}`);
     if (/\.(html|js|css)$/.test(rel)) {
       assert.equal(decoder.decode(files[rel]), source(rel), `sitek.xdc ships a stale ${rel}`);

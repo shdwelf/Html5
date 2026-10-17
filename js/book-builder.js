@@ -545,6 +545,12 @@
       label: "U.S. Geological Survey Water Data — LITTLE DALTON C NR GLENDORA CA, site 11086500 (official USGS monitoring page, accessed Aug. 28, 2026)",
       url: "https://waterdata.usgs.gov/monitoring-location/USGS-11086500/",
       tier: "official"
+    },
+    {
+      id: "src-90",
+      label: "OpenStreetMap — El Mercado Plaza / Channel Data Systems vicinity, Santa Barbara (map node 6070217352)",
+      url: "https://www.openstreetmap.org/node/6070217352",
+      tier: "community"
     }
   ];
 
@@ -688,6 +694,16 @@
       source: "src-9, src-12, src-14, src-17, src-18, src-28, src-29",
       exportable: true,
       summary: "The self-published resume places Greeran at UCSB and in Santa Barbara-area library, food-bank, and botanic-garden work; UCSB officially documents the Alexandria Digital Library / Map & Imagery Lab context, the Cylinder Audio Archive credits Steven Greeran on its programming/interface staff page, the Geospatial Collection publicly describes one of the country's largest academic map and aerial-photo collections, the UCSB Alumni site describes Mosher Alumni House on Mesa Road as a central alumni facility, and the alumni-history page traces organized alumni activity back to 1919 and says Mosher Alumni House and All Gaucho Reunion launched in 2007. The Foodbank of Santa Barbara County also publicly confirms current South County volunteer operations in Santa Barbara and Goleta. [9][12][14][17][18][28][29]"
+    },
+    {
+      id: "channel-data-systems",
+      name: "Channel Data Systems, Santa Barbara, California",
+      lat: 34.4398,
+      lon: -119.7613,
+      lane: "self-published",
+      source: "src-9, src-90",
+      exportable: true,
+      summary: "The self-published resume dates the Computer Shop Manager role at Channel Data Systems to July–December 2004; the mapped workplace coordinate follows the existing repository's OpenStreetMap node 6070217352. This 2004 workplace record is kept distinct from the user's separate 2003 Toyota pickup-to-Corolla recollection; it does not establish where that vehicle exchange or summer-place move occurred. [9][90]"
     },
     {
       id: "wrightwood",
@@ -979,6 +995,7 @@
 
   const $ = (id) => document.getElementById(id);
   const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+  const RETRO = window.BookBuilderRetrowave;
 
   const state = {
     project: loadProject(),
@@ -997,6 +1014,7 @@
     selectedChapterIndex: null,
     selectedCastId: "",
     selectedGooglePathId: "",
+    selectedTimelineId: "",
     pendingPhotoSlotId: "",
     pendingMilestonePhotoId: "",
     dragChapterIndex: null,
@@ -1004,7 +1022,11 @@
     mapHits: [],
     castHits: [],
     incoming: [],
-    previewTimer: 0
+    previewTimer: 0,
+    timelinePlaybackTimer: 0,
+    routeAnimationFrame: 0,
+    routeAnimationPoints: [],
+    routePlayback: { pathId: "", progress: 0, startedAt: 0, durationMs: 0, playing: false }
   };
 
   function loadProject() {
@@ -2952,6 +2974,7 @@
       "san-dimas": ["san dimas"],
       pomona: ["pomona", "cal poly pomona"],
       goleta: ["goleta", "live oak camp", "rat races", "renaissance pleasure faire", "renaissance faire"],
+      "channel-data-systems": ["channel data systems", "channel data", "4141 state street", "el mercado plaza"],
       "paramount-ranch": ["paramount ranch", "agoura", "agoura hills", "cornell road", "original renaissance pleasure faire"],
       "glen-helen-devore": ["glen helen", "glen helen pavilion", "devore"],
       "freedom-acres-private": ["freedom acres", "deer park", "deer park nudist resort"],
@@ -4012,33 +4035,46 @@
     const items = [
       {
         id: "pasadena-private",
+        year: 1982,
         label: "1982 · Pasadena origin marker",
         lane: "private",
         note: "Private-lane birth/origin note supplied in chat; kept local-only unless intentionally published."
       },
       {
         id: "glendora",
+        year: 1997,
         label: "1997–2001 · Glendora High School era",
         lane: "self-published",
         note: "School-era anchor from the self-published resume. [9]"
       },
       {
         id: "pomona",
+        year: 1998,
         label: "1998 · Cal Poly Pomona summer study",
         lane: "self-published",
         note: "Pomona-area summer-school anchor from the self-published resume. [9]"
       },
       {
+        id: "goleta",
+        year: 2000,
+        label: "2000s · Goleta reference",
+        lane: "self-published",
+        note: "Rat Races / Santa Barbara Renaissance Pleasure Faire / Live Oak Camp / Goleta appear on the self-published resume; the venue itself is publicly documented. [9][13]"
+      },
+      {
         id: "santa-barbara",
+        year: 2001,
         label: "2001–2004 · UCSB / Santa Barbara years",
         lane: "self-published",
         note: "UCSB and Santa Barbara-area work/volunteer references, plus UCSB Cylinder Audio Archive programming/interface credit. [9][12]"
       },
       {
-        id: "goleta",
-        label: "2000s · Goleta reference",
+        id: "channel-data-systems-2004",
+        year: 2004,
+        placeId: "channel-data-systems",
+        label: "Jul–Dec 2004 · Channel Data Systems Computer Shop Manager",
         lane: "self-published",
-        note: "Rat Races / Santa Barbara Renaissance Pleasure Faire / Live Oak Camp / Goleta appear on the self-published resume; the venue itself is publicly documented. [9][13]"
+        note: "The self-published résumé dates this documented role to July–December 2004. Keep it separate from the user's 2003 vehicle-swap recollection; the recollection's route and location remain unknown. [9]"
       },
       {
         id: "wrightwood",
@@ -4054,12 +4090,14 @@
       },
       {
         id: "st-croix",
+        year: 2022,
         label: "2022 · St. Croix registration",
         lane: "official",
         note: "Initial USVI registration date reported by VIDOJ. [1]"
       },
       {
         id: "frederiksted",
+        year: 2025,
         label: "2025 · Frederiksted detention",
         lane: "official",
         note: "Detention near Midre Cummings Park reported in official/public sources. [2][7][8]"
@@ -4068,11 +4106,17 @@
     const privateMilestoneItems = (state.privateMilestones || []).map((entry) => timelineEntryForPrivateMilestone(entry));
     const glendoraIndex = items.findIndex((item) => item.id === "glendora");
     if (privateMilestoneItems.length) items.splice(glendoraIndex >= 0 ? glendoraIndex + 1 : items.length, 0, ...privateMilestoneItems);
+    const orderedItems = RETRO.sortTimelineItems(items);
     host.replaceChildren();
-    items.forEach((item) => {
+    orderedItems.forEach((item) => {
       const card = document.createElement("div");
       card.className = `timeline-item ${item.lane === "self-published" ? "resume" : item.lane}`;
-      card.classList.toggle("active", item.id === state.selectedPlaceId || (!!item.placeId && item.placeId === state.selectedPlaceId));
+      card.dataset.timelineId = item.id;
+      if (Number.isInteger(item.year)) card.dataset.timelineYear = String(item.year);
+      if (item.placeId) card.dataset.placeId = item.placeId;
+      const isSelected = item.id === state.selectedTimelineId || item.id === state.selectedPlaceId || (!!item.placeId && item.placeId === state.selectedPlaceId);
+      card.classList.toggle("active", isSelected);
+      card.classList.toggle("timeline-playing", item.id === state.selectedTimelineId);
       const b = document.createElement("b");
       b.style.color = laneColor(item.lane);
       b.textContent = item.label;
@@ -4080,6 +4124,9 @@
       small.textContent = item.note;
       card.append(b, small);
       card.addEventListener("click", () => {
+        stopPersonalTimeline("Timeline anchor selected.");
+        stopGoogleRoutePlayback("");
+        state.selectedTimelineId = item.id;
         state.selectedPlaceId = item.placeId || item.id;
         state.selectedGooglePathId = "";
         renderResearchMap();
@@ -4088,19 +4135,76 @@
     });
   }
 
+  function setTimelinePlaybackStatus(message) {
+    const status = $("timelinePlaybackStatus");
+    if (status) status.textContent = message;
+  }
+
+  function stopPersonalTimeline(message = "Timeline playback stopped.") {
+    if (state.timelinePlaybackTimer) window.clearInterval(state.timelinePlaybackTimer);
+    state.timelinePlaybackTimer = 0;
+    setTimelinePlaybackStatus(message);
+  }
+
+  function playPersonalTimeline() {
+    stopGoogleRoutePlayback("");
+    stopPersonalTimeline("Preparing dated timeline anchors…");
+    const host = $("timelineLane");
+    const datedItems = Array.from(host?.querySelectorAll(".timeline-item[data-timeline-year]") || []).map((card) => ({
+      id: card.dataset.timelineId,
+      year: Number(card.dataset.timelineYear),
+      placeId: card.dataset.placeId || ""
+    }));
+    if (!datedItems.length) {
+      setTimelinePlaybackStatus("No precisely dated anchors are available to play yet.");
+      return;
+    }
+
+    let index = 0;
+    const step = () => {
+      if (index >= datedItems.length) {
+        stopPersonalTimeline("Playback complete · undated memories remain unplaced on the year rail.");
+        return;
+      }
+      const item = datedItems[index];
+      index += 1;
+      state.selectedTimelineId = item.id;
+      state.selectedPlaceId = item.placeId || item.id;
+      state.selectedGooglePathId = "";
+      renderResearchMap();
+      const active = Array.from(host?.querySelectorAll(".timeline-item") || []).find((card) => card.dataset.timelineId === item.id);
+      active?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      setTimelinePlaybackStatus(`EVENT ${index}/${datedItems.length} · ${item.year} · ${active?.querySelector("b")?.textContent || item.id}`);
+    };
+    step();
+    state.timelinePlaybackTimer = window.setInterval(step, 1500);
+  }
+
   function renderGoogleTimeline() {
     const meta = $("googleTimelineMeta");
     const list = $("googleTimelineList");
     if (!meta || !list) return;
     meta.replaceChildren();
     list.replaceChildren();
+    const playButton = $("playGoogleRouteBtn");
+    const stopButton = $("stopGoogleRouteBtn");
+    const playbackStatus = $("routePlaybackStatus");
     const data = state.googleTimeline || emptyGoogleTimeline();
     const hasImport = data.places.length || data.events.length || data.paths.length;
+    if (playButton) playButton.disabled = !data.paths.length;
+    if (stopButton) stopButton.disabled = !state.routePlayback.playing;
     if (!hasImport) {
       const note = document.createElement("p");
       note.textContent = "No Google Timeline import yet. Use exported location-history.json or Takeout-style JSON files. Imported data stays local-only.";
       meta.append(note);
+      if (playbackStatus) playbackStatus.textContent = "Import a recorded route before starting map playback.";
       return;
+    }
+    const selectedRoute = data.paths.find((path) => path.id === state.selectedGooglePathId);
+    if (playbackStatus && !state.routePlayback.playing) {
+      playbackStatus.textContent = selectedRoute
+        ? `READY · ${selectedRoute.label} · imported coordinates only.`
+        : `${data.paths.length} imported route${data.paths.length === 1 ? "" : "s"} ready · select a route to play.`;
     }
 
     const summary = document.createElement("p");
@@ -4142,6 +4246,8 @@
       card.append(b, small);
       if (event.placeId || event.routeId) {
         card.addEventListener("click", () => {
+          stopGoogleRoutePlayback("");
+          state.selectedTimelineId = "";
           state.selectedGooglePathId = event.routeId || "";
           state.selectedPlaceId = event.placeId || "";
           renderResearchMap();
@@ -4149,6 +4255,119 @@
       }
       list.append(card);
     });
+  }
+
+  function clearRouteAnimationCanvas() {
+    const canvas = $("routeAnimationCanvas");
+    const ctx = canvas?.getContext("2d");
+    if (canvas && ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function setRoutePlaybackStatus(message) {
+    const status = $("routePlaybackStatus");
+    if (status) status.textContent = message;
+  }
+
+  function stopGoogleRoutePlayback(message = "Route playback stopped.") {
+    if (state.routeAnimationFrame) window.cancelAnimationFrame(state.routeAnimationFrame);
+    state.routeAnimationFrame = 0;
+    state.routePlayback = { pathId: "", progress: 0, startedAt: 0, durationMs: 0, playing: false, statusMessage: message };
+    clearRouteAnimationCanvas();
+    const stopButton = $("stopGoogleRouteBtn");
+    if (stopButton) stopButton.disabled = true;
+    setRoutePlaybackStatus(message);
+  }
+
+  function drawGoogleRoutePlayback() {
+    const canvas = $("routeAnimationCanvas");
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const playback = state.routePlayback;
+    if (!playback.pathId || !state.routeAnimationPoints.length) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const tail = RETRO.pointAlongPolyline(state.routeAnimationPoints, Math.max(0, playback.progress - 0.075));
+    const head = RETRO.pointAlongPolyline(state.routeAnimationPoints, playback.progress);
+    if (!head) return;
+    if (tail) {
+      const glow = ctx.createLinearGradient(tail.x, tail.y, head.x, head.y);
+      glow.addColorStop(0, "rgba(83,247,255,0.10)");
+      glow.addColorStop(1, "rgba(255,80,218,0.95)");
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      ctx.strokeStyle = glow;
+      ctx.lineWidth = 5 * dpr;
+      ctx.shadowColor = "#ff52dc";
+      ctx.shadowBlur = 14 * dpr;
+      ctx.beginPath();
+      ctx.moveTo(tail.x, tail.y);
+      ctx.lineTo(head.x, head.y);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // A square, pixel-like neon marker distinguishes playback from a static pin.
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.shadowColor = "#ff52dc";
+    ctx.shadowBlur = 18 * dpr;
+    ctx.fillStyle = "#ff52dc";
+    ctx.fillRect(Math.round(head.x - 7 * dpr), Math.round(head.y - 7 * dpr), 14 * dpr, 14 * dpr);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#fff4a8";
+    ctx.fillRect(Math.round(head.x - 3 * dpr), Math.round(head.y - 3 * dpr), 6 * dpr, 6 * dpr);
+    ctx.restore();
+  }
+
+  function playSelectedGoogleRoute() {
+    stopPersonalTimeline("Route playback started.");
+    const paths = state.googleTimeline?.paths || [];
+    const route = paths.find((path) => path.id === state.selectedGooglePathId) || paths[0];
+    if (!route || !Array.isArray(route.points) || route.points.length < 2) {
+      setRoutePlaybackStatus("No imported route with at least two recorded points is available.");
+      return;
+    }
+    stopGoogleRoutePlayback("");
+    state.mapFilter = "private";
+    state.selectedTimelineId = "";
+    state.selectedGooglePathId = route.id;
+    state.routePlayback = {
+      pathId: route.id,
+      progress: 0,
+      startedAt: 0,
+      durationMs: Math.max(5000, Math.min(12000, route.points.length * 130)),
+      playing: true,
+      statusMessage: ""
+    };
+    renderResearchMap();
+    if (state.routeAnimationPoints.length < 2) {
+      stopGoogleRoutePlayback("Route coordinates are outside the current map view; playback was not started.");
+      return;
+    }
+
+    const playback = state.routePlayback;
+    playback.startedAt = performance.now();
+    const stopButton = $("stopGoogleRouteBtn");
+    if (stopButton) stopButton.disabled = false;
+    const tick = (now) => {
+      if (!state.routePlayback.playing || state.routePlayback.pathId !== route.id) return;
+      const active = state.routePlayback;
+      active.progress = Math.max(0, Math.min(1, (now - active.startedAt) / active.durationMs));
+      drawGoogleRoutePlayback();
+      const percent = Math.round(active.progress * 100);
+      setRoutePlaybackStatus(`PLAYING · ${route.label} · ${percent}% · imported route only`);
+      if (active.progress >= 1) {
+        active.playing = false;
+        state.routeAnimationFrame = 0;
+        if (stopButton) stopButton.disabled = true;
+        active.statusMessage = `COMPLETE · ${route.label} · imported coordinates only`;
+        setRoutePlaybackStatus(active.statusMessage);
+        return;
+      }
+      state.routeAnimationFrame = window.requestAnimationFrame(tick);
+    };
+    state.routeAnimationFrame = window.requestAnimationFrame(tick);
   }
 
   function renderManualPins() {
@@ -4206,6 +4425,7 @@
     const matchedPlace = findPlaceByAlias(entry.place);
     return {
       id: entry.id,
+      year: RETRO.parseTimelineYear(entry.era),
       placeId: matchedPlace?.id || "",
       label: [entry.era || "School-era memory", entry.title, entry.people].filter(Boolean).join(" · "),
       lane: "private",
@@ -5069,6 +5289,12 @@
     if (!canvas || !detail || !list || !legend) return;
 
     const visible = filteredPlaces();
+    const googleRoutesVisible = state.mapFilter === "all" || state.mapFilter === "private";
+    const googleRoutes = googleRoutesVisible ? (state.googleTimeline?.paths || []) : [];
+    const routeCoordinates = googleRoutes.flatMap((route) => route.points || []);
+    if (!googleRoutesVisible && state.routePlayback.playing) {
+      stopGoogleRoutePlayback("Playback paused because imported private routes are hidden.");
+    }
     const chapterLinkedIds = state.selectedChapterIndex != null
       ? chapterPlaceIds(state.project.chapters[state.selectedChapterIndex])
       : [];
@@ -5104,8 +5330,8 @@
     });
     const legendNote = document.createElement("small");
     legendNote.textContent = chapterLinkedIds.length
-      ? `Chapter focus active: ${chapterLinkedIds.length} linked place${chapterLinkedIds.length === 1 ? "" : "s"}.`
-      : "Tip: use a chapter link or chapter Map button to highlight related places.";
+      ? `Chapter focus active: ${chapterLinkedIds.length} linked place${chapterLinkedIds.length === 1 ? "" : "s"}. Dashed connections are schematic, not traveled routes.`
+      : "Tip: use a chapter link or chapter Map button to highlight related places. Place pins are not joined into an inferred route.";
     legend.append(legendNote);
 
     renderChapterLinkList();
@@ -5126,6 +5352,7 @@
       small.textContent = localTag;
       button.append(b, small);
       button.addEventListener("click", () => {
+        state.selectedTimelineId = "";
         state.selectedPlaceId = place.id;
         state.selectedGooglePathId = "";
         renderResearchMap();
@@ -5139,10 +5366,10 @@
       : null;
     const selectedLinked = chapterLinkedIds.includes(state.selectedPlaceId);
     const chapterName = state.selectedChapterIndex != null ? state.project.chapters[state.selectedChapterIndex]?.title : "";
-    detail.innerHTML = selected
-      ? `<b style="color:${laneColor(selected.lane)}">${escapeHtml(selected.name)}</b><small>${escapeHtml(selected.lane)} · ${escapeHtml(selected.source)}</small><p>${escapeHtml(selected.summary)}</p><small>${selected.exportable ? "Eligible for public/exported map contexts." : "Local-only marker; excluded from exports and webxdc share."}${selectedLinked && chapterName ? ` Linked to chapter: ${escapeHtml(chapterName)}.` : ""}</small>`
-      : selectedRoute
-        ? `<b style="color:#7db7ff">${escapeHtml(selectedRoute.label)}</b><small>private · google timeline route</small><p>${escapeHtml(selectedRoute.note || "Imported Google Timeline path.")}</p><small>${selectedRoute.points.length} plotted point${selectedRoute.points.length === 1 ? "" : "s"}${selectedRoute.startTime ? ` · ${escapeHtml(shortDateTime(selectedRoute.startTime))}` : ""}${selectedRoute.endTime ? ` → ${escapeHtml(shortDateTime(selectedRoute.endTime))}` : ""}</small>`
+    detail.innerHTML = selectedRoute
+      ? `<b style="color:#7db7ff">${escapeHtml(selectedRoute.label)}</b><small>private · google timeline route</small><p>${escapeHtml(selectedRoute.note || "Imported Google Timeline path.")}</p><small>${selectedRoute.points.length} plotted point${selectedRoute.points.length === 1 ? "" : "s"}${selectedRoute.startTime ? ` · ${escapeHtml(shortDateTime(selectedRoute.startTime))}` : ""}${selectedRoute.endTime ? ` → ${escapeHtml(shortDateTime(selectedRoute.endTime))}` : ""}</small>`
+      : selected
+        ? `<b style="color:${laneColor(selected.lane)}">${escapeHtml(selected.name)}</b><small>${escapeHtml(selected.lane)} · ${escapeHtml(selected.source)}</small><p>${escapeHtml(selected.summary)}</p><small>${selected.exportable ? "Eligible for public/exported map contexts." : "Local-only marker; excluded from exports and webxdc share."}${selectedLinked && chapterName ? ` Linked to chapter: ${escapeHtml(chapterName)}.` : ""}</small>`
         : '<b>No places visible</b><p>Choose a different filter.</p>';
 
     const rect = canvas.getBoundingClientRect();
@@ -5153,14 +5380,19 @@
       canvas.width = width;
       canvas.height = height;
     }
+    const routeCanvas = $("routeAnimationCanvas");
+    if (routeCanvas && (routeCanvas.width !== width || routeCanvas.height !== height)) {
+      routeCanvas.width = width;
+      routeCanvas.height = height;
+    }
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, width, height);
     const pad = 52 * dpr;
     const innerW = width - pad * 2;
     const innerH = height - pad * 2;
 
-    const lons = visible.map((place) => place.lon);
-    const lats = visible.map((place) => place.lat);
+    const lons = [...visible.map((place) => place.lon), ...routeCoordinates.map((point) => point.lon)];
+    const lats = [...visible.map((place) => place.lat), ...routeCoordinates.map((point) => point.lat)];
     const minLon = Math.min(...lons, -120) - 3;
     const maxLon = Math.max(...lons, -64) + 3;
     const minLat = Math.min(...lats, 17) - 2;
@@ -5206,12 +5438,12 @@
     const plotted = visible.map((place) => ({ ...place, ...project(place.lon, place.lat) }));
     state.mapHits = plotted.map((place) => ({ id: place.id, x: place.x, y: place.y, r: 12 * dpr }));
 
-    const googleRoutesVisible = state.mapFilter === "all" || state.mapFilter === "private";
-    const googleRoutes = googleRoutesVisible ? (state.googleTimeline?.paths || []) : [];
+    state.routeAnimationPoints = [];
     googleRoutes.forEach((route) => {
       const points = (route.points || []).map((point) => project(point.lon, point.lat));
       if (points.length < 2) return;
       const active = route.id === state.selectedGooglePathId;
+      if (active) state.routeAnimationPoints = points;
       ctx.beginPath();
       points.forEach((point, index) => {
         if (!index) ctx.moveTo(point.x, point.y);
@@ -5237,7 +5469,7 @@
 
     const route = chapterLinkedIds.length > 1
       ? plotted.filter((place) => chapterLinkedIds.includes(place.id))
-      : plotted;
+      : [];
     if (route.length > 1) {
       ctx.strokeStyle = chapterLinkedIds.length ? "rgba(140,232,220,0.55)" : "rgba(255,255,255,0.18)";
       ctx.lineWidth = chapterLinkedIds.length ? 2.25 * dpr : 1.5 * dpr;
@@ -5378,6 +5610,7 @@
       (place) => place.lon >= -64.95 && place.lon <= -64.62 && place.lat >= 17.68 && place.lat <= 17.79,
       "rgba(242,201,132,0.95)"
     );
+    drawGoogleRoutePlayback();
   }
 
   function slugify(value) {
@@ -6208,6 +6441,7 @@ iframe{width:100%;min-height:78vh;border:0;border-top:1px solid var(--line);back
     $("googleTimelineInput")?.addEventListener("change", async (event) => {
       const files = Array.from(event.target.files || []);
       if (!files.length) return;
+      stopGoogleRoutePlayback("");
       try {
         const imported = await importGoogleTimelineFiles(files);
         state.googleTimeline = imported;
@@ -6227,6 +6461,7 @@ iframe{width:100%;min-height:78vh;border:0;border-top:1px solid var(--line);back
       const hasImport = state.googleTimeline?.places?.length || state.googleTimeline?.events?.length;
       if (!hasImport) return;
       if (!window.confirm("Clear imported Google Timeline data from this browser?")) return;
+      stopGoogleRoutePlayback("Imported route data cleared.");
       state.googleTimeline = emptyGoogleTimeline();
       state.selectedGooglePathId = "";
       saveGoogleTimeline();
@@ -6272,6 +6507,7 @@ iframe{width:100%;min-height:78vh;border:0;border-top:1px solid var(--line);back
           }
         });
         if (best) {
+          state.selectedTimelineId = "";
           state.selectedPlaceId = best;
           state.selectedGooglePathId = "";
           renderResearchMap();
@@ -6331,6 +6567,10 @@ iframe{width:100%;min-height:78vh;border:0;border-top:1px solid var(--line);back
     $("downloadInstallerBtn").addEventListener("click", exportInstallerHtml);
     $("downloadQuineBtn").addEventListener("click", exportQuineSfx);
     $("shareWebxdcBtn").addEventListener("click", shareToWebxdc);
+    $("playPersonalTimelineBtn")?.addEventListener("click", playPersonalTimeline);
+    $("stopPersonalTimelineBtn")?.addEventListener("click", () => stopPersonalTimeline());
+    $("playGoogleRouteBtn")?.addEventListener("click", playSelectedGoogleRoute);
+    $("stopGoogleRouteBtn")?.addEventListener("click", () => stopGoogleRoutePlayback());
     $("exportGoogleTimelineCsvBtn")?.addEventListener("click", exportGoogleTimelineCsv);
     $("exportGoogleTimelineKmlBtn")?.addEventListener("click", exportGoogleTimelineKml);
     $("importProjectInput").addEventListener("change", (event) => {
