@@ -100,6 +100,9 @@ for (const [cityId, city] of Object.entries(config.cities)) {
   for (const f of ["three.module.min.js", "OrbitControls.js", "THREE_LICENSE"]) {
     await copyFile(path.join(root, "vendor", f), path.join(appDir, "vendor", f));
   }
+  await mkdir(path.join(appDir, "vendor", "fflate"), { recursive: true });
+  await copyFile(path.join(root, "vendor", "fflate", "browser.mjs"), path.join(appDir, "vendor", "fflate", "browser.mjs"));
+  await copyFile(path.join(root, "vendor", "fflate", "LICENSE"), path.join(appDir, "vendor", "fflate", "LICENSE"));
   await writeFile(path.join(appDir, "webxdc.js"), `/* webxdc simulator shim - the host overrides this file at runtime. */
 window.webxdc = window.webxdc || {
   selfAddr: "local@device",

@@ -83,11 +83,13 @@ test("SoCal Subsurface archive is current and closes its local module graph", ()
     "js/socal-subsurface.js", "js/socal-radio.js", "js/socal-radio-data.js",
     "js/socal-propagation.js", "js/socal-relief.js", "js/socal-utilities.js",
     "js/socal-utilities-data.js", "js/socal-orbital.js", "js/gpx-geocache.js",
-    "vendor/fflate/index.mjs", "vendor/fflate/LICENSE",
+    "vendor/fflate/browser.mjs", "vendor/fflate/LICENSE",
   ];
   for (const file of required) assert.ok(files[file], `archive is missing ${file}`);
   assert.equal(text(files, "js/gpx-geocache.js"), source("js/gpx-geocache.js"));
-  assert.equal(text(files, "vendor/fflate/index.mjs"), source("vendor/fflate/index.mjs"));
+  const browserFflate = text(files, "vendor/fflate/browser.mjs");
+  assert.equal(browserFflate, source("vendor/fflate/browser.mjs"));
+  assert.doesNotMatch(browserFflate, /from ['"](?:node:)?module['"]/);
   assert.match(text(files, "index.html"), /LOCAL GPX → GEOCACHE REGISTER/);
   assert.doesNotMatch(text(files, "js/socal-gazetteer-data.js"), /\["[^"]+","Geocache",/);
 
