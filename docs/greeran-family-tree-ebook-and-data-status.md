@@ -117,6 +117,21 @@ arj x -g<password> -y /path/to/KGK.ARJ.xml out/
 Authorization to fold the name database into the family-tree app remains a separate question from
 the password: the same document that protects the data limits redistribution.
 
+### Garble format research (17 October 2026)
+
+The format itself was researched and written up in
+[`arj-garble-format-notes.md`](arj-garble-format-notes.md). Summary: this archive is format
+revision 4 (ARJ 2.30 layout) stamped 1993-12-15, which places it on the original **XOR garbling**
+path — GOST 28147-89 only arrives with ARJCRYPT at v2.60/2.62. The per-file `modifier` that
+`garble_init(char modifier)` consumes is a **plaintext byte at local-header offset 11**, verified
+here against five members, so it is a public salt and adds no secrecy.
+
+That note also withdraws two claims made earlier in this investigation — that the varying
+per-member modifiers, or the absence of an embedded key in `INSTALL.COM`, were obstacles to
+cryptanalysis. Neither is: the modifier is in the clear, and the constant in this scheme lives in
+the header rather than the archiver binary. The decision not to attack the archive never rested on
+technical difficulty, and the reason recorded above is unchanged.
+
 ## Name-resource follow-up (16 October 2026)
 
 The six supplied name resources were reviewed for meanings, matching data, provenance, and reuse terms. Profiles with a usable first name now offer optional NameAlmanac and Wiktionary links, and six entries have concise, attributed Wiktionary-derived etymology notes in the app. Lookups are user-initiated; the app makes no background request. No meanings or statistics were added to the GEDCOM, and person records remain unchanged. See [`greeran-name-resources.md`](greeran-name-resources.md) for the source-by-source findings, license notes, and guardrails.
