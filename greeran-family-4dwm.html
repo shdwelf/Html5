@@ -160,6 +160,8 @@ html,body{height:100%;overflow:hidden;font-family:Georgia,serif;
 .dp-l{color:var(--mut);min-width:58px;flex-shrink:0;font-size:.58rem}
 .dp-v{color:#f0e0c8}
 .dp-nt{font-size:.56rem;color:#7a9aaa;margin-top:5px;line-height:1.5;border-top:1px solid rgba(255,255,255,.05);padding-top:5px;font-style:italic}
+.dp-name-link{display:inline-block;color:var(--gold);font-size:.64rem;text-decoration:underline;text-underline-offset:2px}
+.dp-name-link:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
 
 /* STATS BOXES */
 .sbr{display:grid;grid-template-columns:repeat(auto-fit,minmax(68px,1fr));gap:6px;margin-bottom:12px}
@@ -713,6 +715,20 @@ function sw(id){
 }
 function tSB(s){document.getElementById('sb-'+s).classList.toggle('off');}
 
+// Optional, user-initiated name research; no third-party lookup runs on page load.
+function firstGivenName(fullName){
+  const token=String(fullName||'').trim().split(/[\s\/\\]+/u)[0]||'';
+  const match=token.match(/^[\p{L}\p{M}]+(?:[.'’\-][\p{L}\p{M}]+)*/u);
+  return match?match[0].replace(/[.'’\-]+$/u,''):'';
+}
+function nameAlmanacUrl(name){
+  const slug=String(name||'').normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  return slug?`https://namealmanac.com/name/${slug}`:'';
+}
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
 // ══════════ PERSON DETAIL ══════════
 function showP(pid){
   const p=PM[pid];if(!p)return;
@@ -739,6 +755,14 @@ function showP(pid){
   if(isNew(p))h+=`<div class="dp-r" style="color:var(--grn)"><span class="dp-l">Status</span><span class="dp-v">✦ Newly Found</span></div>`;
   if(COR.has(pid))h+=`<div class="dp-r" style="color:var(--blu)"><span class="dp-l">Status</span><span class="dp-v">✓ Data Corrected</span></div>`;
   h+='</div>';
+  const givenName=firstGivenName(p.n);
+  const nameUrl=givenName.length>1?nameAlmanacUrl(givenName):'';
+  if(nameUrl){
+    h+=`<div class="dp-s" style="grid-column:1/-1"><div class="dp-st">Name Research</div>
+      <a class="dp-name-link" href="${escapeHtml(nameUrl)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Open “${escapeHtml(givenName)}” on NameAlmanac ↗</a>
+      <div class="dp-nt">Optional external lookup using only this first name. It opens only when selected; the app does not send a name lookup in the background. NameAlmanac offers U.S. SSA name history and may show a Wiktionary-sourced meaning when available; it is not a genealogical source.</div>
+    </div>`;
+  }
   if(pars.length||fams.length){
     h+='<div class="dp-s"><div class="dp-st">Family</div>';
     pars.forEach(pf=>{

@@ -7,6 +7,7 @@ import { strFromU8, unzipSync } from "fflate";
 const root = process.cwd();
 const htmlBytes = readFileSync(path.join(root, "greeran-family-4dwm.html"));
 const html = htmlBytes.toString("utf8");
+const nameResourceReview = readFileSync(path.join(root, "docs/greeran-name-resources.md"), "utf8");
 const sha256 = (value: string | Uint8Array) =>
   createHash("sha256").update(value).digest("hex");
 
@@ -42,6 +43,31 @@ describe("Greeran Family Tree 4DWM", () => {
     expect(html.match(/<details class="kp-qr-card" id="qr-/g)).toHaveLength(2);
     expect(html).not.toContain("PLACEHOLDER_FAMILY_QR");
     expect(html).not.toContain("PLACEHOLDER_BIBLE_QR");
+  });
+
+  it("offers an explicit, first-name-only NameAlmanac lookup without background requests", () => {
+    expect(html).toContain("function firstGivenName(fullName)");
+    expect(html).toContain("function nameAlmanacUrl(name)");
+    expect(html).toContain("https://namealmanac.com/name/${slug}");
+    expect(html).toContain('target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"');
+    expect(html).toContain("Optional external lookup using only this first name.");
+    expect(html).toContain("the app does not send a name lookup in the background");
+  });
+
+  it("records provenance and reuse terms for all six supplied name resources", () => {
+    for (const url of [
+      "https://github.com/tfmorris/Names",
+      "https://namealmanac.com/about",
+      "https://github.com/FinNLP/humannames",
+      "https://github.com/teamclairvoyant/NameDatabases",
+      "https://github.com/KarlAmort/firstname-database",
+      "https://github.com/Debdut/names.io",
+    ]) {
+      expect(nameResourceReview).toContain(url);
+    }
+    expect(nameResourceReview).toContain("CC BY 4.0");
+    expect(nameResourceReview).toContain("CC BY-SA 4.0");
+    expect(nameResourceReview).toContain("No meaning, frequency, gender classification, or name variant has been copied into the GEDCOM");
   });
 
   it("contains an offline time-scrubbable globe with all-time fallback", () => {

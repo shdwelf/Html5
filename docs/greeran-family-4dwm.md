@@ -63,8 +63,12 @@ The inside back cover offers a complete World English Bible (WEB) EPUB (66 books
 31,103 verses). WEB was selected as a public-domain translation; the text is
 unchanged, and the EPUB adds only reading structure and navigation. The two QR
 panels are collapsed until opened and point to the family-tree package and Bible
-ebook repository file pages. The app itself remains offline and self-contained; it
-does not fetch scripts, styles, fonts, maps, or family data from the network.
+ebook repository file pages. The app itself remains offline and self-contained.
+It does not fetch scripts, styles, fonts, maps, or family data from the network. A
+selected person's detail view offers an optional, user-initiated first-name link
+to NameAlmanac; it opens an external site only when selected. No lookup runs in
+the background, and no name meanings or statistics are bundled. See the
+[name-resource review](greeran-name-resources.md) for source and license notes.
 
 ## Build and verification
 
