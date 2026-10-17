@@ -143,11 +143,41 @@ is green.
 
 - **Nothing is fabricated or fitted.** No board house, no assembly, no powered-up
   card. This is a checked netlist and layout, not a working device.
-- **No firmware exists yet.** The UART bridge and the T.30 Class 1 state machine
-  are specified above but not written. Nothing has carried a fax page.
+- **The firmware has never run on hardware.** `firmware/xport-v92/` is written
+  and passes 883 host-side checks, but there is no STM32 `hal.c`, no flashed
+  board, and no page-image source wired into `bridge.c`. Nothing has carried a
+  fax page.
 - **No EIO pinout.** Deliberate — see the section above.
 - **The Nucleo header positions are approximate**, as noted.
 - **The modem pin order is a class representative**, not a specific bought part.
+
+## The bridge firmware
+
+`firmware/xport-v92/` is portable C: everything except `bridge.c` compiles and
+is tested on the host against `hal.h`, and the same sources go into an STM32
+build with only a different `hal.c`.
+
+| module | what it does |
+| --- | --- |
+| `fcs.c` | HDLC FCS-16 (CRC-16/X.25), checked against the published `0x906E` value and the `0xF0B8` good-frame residue |
+| `dle.c` | the T.31 transparent-data escape layer: `10 10`, `10 1A`, `10 03`, `10 04`, `10 11`, `10 13` |
+| `at.c` | byte-fed AT result parser — no line buffer beyond one line, never blocks |
+| `fax1.c` | frame assembly, receive reassembly with FCS verification, and the T.30 phase machine |
+| `xport.c` | guard-time `+++` escape detector and monitor-mode command formatting |
+| `bridge.c` | the two-UART bridge loop; type-checked, not unit-tested |
+
+Build and run:
+
+```sh
+make -C firmware/xport-v92 test           # 883 checks
+make -C firmware/xport-v92 compile-check  # bridge.c type-checks
+node --test tests/xport-v92-firmware.test.mjs
+```
+
+`DLE <ferr>` — the sequence a DCE uses to say "that frame had a bad FCS" — is
+named by T.31 but the octet after DLE is implementation-defined, so the decoder
+does not guess it: it comes back as `DLE_EV_UNKNOWN` with the octet preserved
+and the caller decides. Worth confirming against whichever module gets bought.
 
 ## Regulatory
 

@@ -118,6 +118,20 @@ V.21/V.17/V.29/V.27ter modulation; the host drives the T.30 session with
 14.4 kbps. `+FAA=1` gives adaptive answer — answer as fax or fall back to data
 on the same call, which is what a printer sharing one line wants.
 
+Three details the firmware in `firmware/xport-v92/` encodes because they are
+easy to get wrong:
+
+* **The DCE generates the FCS on transmit.** The host sends address + control +
+  information only on `+FTH`. On `+FRH` the DCE hands back the frame *including*
+  its two FCS octets, so the host verifies on receive and never computes on send.
+* **The P/F bit decides whether the call stays up.** Bit 4 of the control octet:
+  clear, and the modem answers `CONNECT` and keeps transmitting flags; set, and
+  it answers `OK` and drops carrier. That is how TSI and DCS go out in one
+  `+FTH` burst — first frame P/F=0, last frame P/F=1.
+* **DLE is a second escape layer, not part of HDLC.** `10 10` is one literal
+  DLE, `10 1A` is two, `10 03` ends the frame, `10 04` aborts. A 0x10 in a page
+  image that is not escaped reads as a control command.
+
 ## Bring-up
 
 1. Power from a fused 12 V tap at J1. Check 3.3 V at TP4. The LM2576's ON/OFF is
@@ -161,8 +175,12 @@ on the same call, which is what a printer sharing one line wants.
 
 * **No routing.** The board is placed and rule-checked; traces, ground-pour
   stitching and the analogue/DAA separation are left to whoever builds it.
-* **No firmware.** The UART bridge and the T.30 Class 1 state machine are
-  specified but not written. Nothing has carried a fax page.
+* **The firmware is written and unit-tested, but has never run on hardware.**
+  `firmware/xport-v92/` holds the AT parser, the DLE transparent-data codec,
+  HDLC FCS-16, the T.30 Class 1 phase machine and the bridge loop, with 883
+  host-side checks passing under `-Wall -Wextra -Werror`. Nothing has carried a
+  fax page: there is no STM32 `hal.c`, no flashed board, and no page-image
+  source wired into `bridge.c`.
 * **No EIO pinout.** Deliberate — see above.
 * **Not certified.** Telephone-line equipment needs local homologation, and a
   card living inside a printer interacts with that printer's own safety
