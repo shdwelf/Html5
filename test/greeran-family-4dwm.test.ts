@@ -7,6 +7,8 @@ import { strFromU8, unzipSync } from "fflate";
 const root = process.cwd();
 const htmlBytes = readFileSync(path.join(root, "greeran-family-4dwm.html"));
 const html = htmlBytes.toString("utf8");
+const nameResourceReview = readFileSync(path.join(root, "docs/greeran-name-resources.md"), "utf8");
+const wiktionaryNotice = readFileSync(path.join(root, "assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"), "utf8");
 const sha256 = (value: string | Uint8Array) =>
   createHash("sha256").update(value).digest("hex");
 
@@ -62,6 +64,44 @@ describe("Greeran Family Tree 4DWM", () => {
     expect(html).toContain("No overlay has been decrypted, extracted, or used");
   });
 
+  it("offers explicit, first-name-only NameAlmanac and English Wiktionary lookups", () => {
+    expect(html).toContain("function firstGivenName(fullName)");
+    expect(html).toContain("function nameAlmanacUrl(name)");
+    expect(html).toContain("function wiktionaryUrl(name)");
+    expect(html).toContain("https://namealmanac.com/name/${slug}");
+    expect(html).toContain("https://en.wiktionary.org/wiki/${encodeURIComponent(title)}#English");
+    expect(html).toContain('target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"');
+    expect(html).toContain("Optional external links use only this first name");
+    expect(html).toContain("the app makes no background lookup");
+  });
+
+  it("includes attributed Wiktionary etymology notes for a small reviewed set", () => {
+    for (const name of ["mary", "john", "william", "bernard", "hugh", "catherine"]) {
+      expect(html).toContain(`${name}:{note:`);
+      expect(wiktionaryNotice).toContain(`wiki/${name[0].toUpperCase()}${name.slice(1)}#English`);
+    }
+    expect(html).toContain("CC BY-SA 4.0");
+    expect(html).toContain('href="./assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"');
+    expect(wiktionaryNotice).toContain("https://creativecommons.org/licenses/by-sa/4.0/");
+    expect(wiktionaryNotice).toContain("Changes by this project");
+  });
+
+  it("records provenance and reuse terms for all six supplied name resources", () => {
+    for (const url of [
+      "https://github.com/tfmorris/Names",
+      "https://namealmanac.com/about",
+      "https://github.com/FinNLP/humannames",
+      "https://github.com/teamclairvoyant/NameDatabases",
+      "https://github.com/KarlAmort/firstname-database",
+      "https://github.com/Debdut/names.io",
+    ]) {
+      expect(nameResourceReview).toContain(url);
+    }
+    expect(nameResourceReview).toContain("CC BY 4.0");
+    expect(nameResourceReview).toContain("CC BY-SA 4.0");
+    expect(nameResourceReview).toContain("No meaning, frequency, gender classification, or name variant has been copied into the GEDCOM");
+  });
+
   it("contains an offline time-scrubbable globe with all-time fallback", () => {
     expect(html).toContain('id="time-slider"');
     expect(html).toContain('id="time-window"');
@@ -81,6 +121,7 @@ describe("Greeran Family Tree 4DWM", () => {
     const xdc = readFileSync(path.join(root, "greeran-family-4dwm.xdc"));
     const files = unzipSync(new Uint8Array(xdc));
     expect(Object.keys(files).sort()).toEqual([
+      "assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md",
       "assets/greeran/world-english-bible.epub",
       "greeran-family-4dwm.ged",
       "icon.png",
@@ -99,6 +140,9 @@ describe("Greeran Family Tree 4DWM", () => {
     expect(Buffer.from(files["samples/archive/kirkpatrick/FNA102B.ZIP"]).equals(
       readFileSync(path.join(root, "samples/archive/kirkpatrick/FNA102B.ZIP")),
     )).toBe(true);
+    const packedNotice = strFromU8(files["assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"]);
+    expect(packedNotice).toBe(wiktionaryNotice);
+    expect(packedNotice).toContain("CC BY-SA 4.0");
     expect(strFromU8(files["manifest.toml"])).toContain('name = "Greeran Family Tree · 4DWM"');
     expect(strFromU8(files["manifest.toml"])).toContain("https://github.com/shdwelf/Html5");
     expect(files["icon.png"].slice(0, 8)).toEqual(

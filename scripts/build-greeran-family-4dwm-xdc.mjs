@@ -4,8 +4,8 @@
  *
  * The interactive application remains a single offline HTML document. The
  * package includes the baseline GEDCOM export, WEB EPUB, lazy-loaded WEBU reader
- * data and notices, and the unchanged Kirkpatrick shareware ZIP, plus the standard
- * manifest and icon.
+ * data and notices, unchanged Kirkpatrick shareware ZIP, Wiktionary name-note
+ * attribution notice, and the standard manifest and icon.
  * The ZIP is written reproducibly to the repository root and ignored dist/.
  *
  *   node scripts/build-greeran-family-4dwm-xdc.mjs
@@ -37,6 +37,7 @@ const webuMetadata = await readFile(path.join(webuDir, "metadata.json"));
 const webuLicense = await readFile(path.join(webuDir, "LICENSE"));
 const webuReadme = await readFile(path.join(webuDir, "README.md"));
 const fnaArchive = await readFile(path.join(root, "samples/archive/kirkpatrick/FNA102B.ZIP"));
+const wiktionaryNotice = await readFile(path.join(root, "assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"));
 const icon = await readFile(path.join(root, "img/greeran-family-4dwm-icon.png"));
 const manifest = `name = "Greeran Family Tree · 4DWM"
 orientation = "landscape"
@@ -55,6 +56,7 @@ const archive = {
   "public/apps/greeran-family-bible/LICENSE": [new Uint8Array(webuLicense), { level: 9, mtime }],
   "public/apps/greeran-family-bible/README.md": [new Uint8Array(webuReadme), { level: 9, mtime }],
   "samples/archive/kirkpatrick/FNA102B.ZIP": [new Uint8Array(fnaArchive), { level: 9, mtime }],
+  "assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md": [new Uint8Array(wiktionaryNotice), { level: 9, mtime }],
 };
 const bytes = zipSync(archive, { level: 9, mtime });
 

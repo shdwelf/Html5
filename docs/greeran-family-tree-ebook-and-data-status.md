@@ -49,3 +49,7 @@ npm run check:greeran-gedcom
 ```
 
 The original Kirkpatrick/ARJ enrichment remains pending until the actual source GEDCOM, the intended ARJ, and authorization to use its name data are supplied. The baseline export should not be described as that merge.
+
+## Name-resource follow-up (16 October 2026)
+
+The six supplied name resources were reviewed for meanings, matching data, provenance, and reuse terms. Profiles with a usable first name now offer optional NameAlmanac and Wiktionary links, and six entries have concise, attributed Wiktionary-derived etymology notes in the app. Lookups are user-initiated; the app makes no background request. No meanings or statistics were added to the GEDCOM, and person records remain unchanged. See [`greeran-name-resources.md`](greeran-name-resources.md) for the source-by-source findings, license notes, and guardrails.

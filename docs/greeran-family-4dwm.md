@@ -83,6 +83,10 @@ must remain in its original form. No Kirkpatrick first-name data were added to t
 tree. See `docs/greeran-family-tree-ebook-and-data-status.md` for provenance and
 rebuild notes.
 
+## Name research and Wiktionary notes
+
+Profiles with a usable first-name token offer optional NameAlmanac and English Wiktionary links. They open only when selected, carry only the first name, and do not trigger a background lookup. Profiles for six names also show concise paraphrased Wiktionary etymology notes: Mary, John, William, Bernard, Hugh, and Catherine. The notes describe name forms—not an individual's identity or heritage—and preserve uncertainty in disputed or tentative etymologies. NameAlmanac statistics are not copied, and neither meanings nor external name data have been added to the baseline GEDCOM. The notes are adapted under CC BY-SA 4.0; the app links to the bundled attribution notice at `assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md`. See the [name-resource review](greeran-name-resources.md) for source and license details.
+
 ## Build and verification
 
 ```bash
