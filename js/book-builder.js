@@ -1681,7 +1681,7 @@
         era: "2003",
         place: "",
         marking: "5BZZ601 · GRYGHST / GRYGHOST · plate frame: my other ride is a U-2 Dragon Lady",
-        note: "User-supplied private recollection. Keep local-only unless corroborated or intentionally published."
+        note: "User-supplied personal recollection; the user explicitly authorized public inclusion. In 2003, while working at Channel Data Systems, they traded a Toyota pickup with a camper shell for this gray 4-door Corolla because they could not afford the truck's gas. The pickup had been used to move into a summer place. The exact truck model/year, summer-place location, and route are not remembered. The public résumé separately dates the documented Channel Data Systems Computer Shop Manager role to July–December 2004; retain the user's 2003 date as recollection, not independently verified employment chronology."
       },
       {
         signature: "thumb sensor color change health food store",
@@ -1740,7 +1740,17 @@
     ];
     let changed = false;
     seeds.forEach((seed, index) => {
-      if (state.artifactLane.some((entry) => normalizeText([entry.title, entry.marking, entry.note].join(" ")).includes(seed.signature))) return;
+      const existing = state.artifactLane.find((entry) => normalizeText([entry.title, entry.marking, entry.note].join(" ")).includes(seed.signature));
+      if (existing) {
+        // Update an earlier local copy of the Corolla note without overwriting
+        // any user-added notes; the seed's publication choice is explicit.
+        if (seed.signature === "5bzz601" && !normalizeText(existing.note).includes("explicitly authorized public inclusion")) {
+          const legacy = "User-supplied private recollection. Keep local-only unless corroborated or intentionally published.";
+          existing.note = [String(existing.note || "").replace(legacy, "").trim(), seed.note].filter(Boolean).join(" ");
+          changed = true;
+        }
+        return;
+      }
       state.artifactLane.unshift({
         id: `artifact-seed-${Date.now().toString(36)}-${index}`,
         title: seed.title,
@@ -1767,6 +1777,17 @@
         photoDataUrl: "",
         category: "wedding-ceremony",
         note: "User-supplied private recollection: went there and graduated in 2001. Keep local-only until sourced or intentionally published."
+      },
+      {
+        id: "milestone-seed-corolla-truck-swap-2003",
+        title: "Toyota pickup → gray Corolla fuel-cost swap",
+        era: "2003 (user recollection)",
+        place: "",
+        people: "",
+        linkedCastNames: [],
+        photoDataUrl: "",
+        category: "other",
+        note: "User-supplied personal recollection; the user explicitly authorized public inclusion. In 2003, while working at Channel Data Systems, they traded a Toyota pickup with a camper shell for the gray 4-door 2003 Corolla S-type because they could not afford the truck's gas. The pickup had been used to move into a summer place. The exact truck model/year, summer-place location, and route are not remembered, so no map route is inferred. The public résumé separately dates the documented Channel Data Systems Computer Shop Manager role to July–December 2004; retain the user's 2003 date as recollection, not independently verified employment chronology."
       },
       {
         id: "milestone-seed-sadie-stacy-hall",
