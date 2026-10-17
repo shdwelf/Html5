@@ -190,6 +190,53 @@ produced "created 2027-07-06, modified 2004-10-13". Both were artifacts. With
 the words in the correct order the created stamp is 1993-12-15 11:55:12, which
 agrees with `arj l` exactly. The archive's created date was never wrong.
 
+## The ARJSFX stub
+
+The 14,858-byte stub at the front of the reconstructed `KGK.EXE`
+(SHA-256 `c0f6c74457b91c3cfaae5d3b1df6f5879e5d28198e444c2c12fb297375c7aa71`)
+was disassembled with the repository's Ghidra-WASM path
+(`tools/decompile_mz.mjs`, `x86:LE:16:Real Mode`, 172 ms).
+
+MZ header: 30 pages, last page 10 bytes, 2 header paragraphs → a 14,826-byte
+load image, `ss:sp = 0x53d:0x80`, entry `cs:ip = 0x388:0x0e` → linear
+`0x1388e`. The entry point decompiles to a backward byte-copy loop reading the
+relocation count at `0x0c` and the relocation offset at `0x0a` — a standard
+self-relocating prologue, structurally the same shape as `INSTALL.COM`'s.
+
+Its string table is packed and only survives in fragments, but the identifying
+ones are intact:
+
+```
+12821  ARJSFX        12837  (c)        12842  ,91 R
+12854  K Jung. r     12881  -? for h   12897  Archi
+12965   URITY        13853  unW!Garb   13551  Skipp
+12529  o C++ -       12544  ght 1990 Borland
+```
+
+That is `ARJSFX (c) 1991 Robert K Jung`, built with Borland Turbo C++ (1990
+runtime), with `ARJ-SECURITY` and `Garbled` among its messages.
+
+A token scan of the whole 14,858 bytes returns **zero hits** for `assword`,
+`ASSWORD`, `garble`, `GOST` or `gost`. The only attribution strings are the
+vendor's. This is generic 1991 ARJ code, byte-for-byte the same module shipped
+in every ARJ self-extractor of the period — which is precisely why it cannot
+hold a per-archive key.
+
+## What a "rainbow table" would and would not apply to
+
+Recorded because it was asked. A rainbow table inverts a **one-way hash**: you
+precompute digest → candidate pairs and look a digest up. The ARJ garble is not
+a hash. It is a reversible stream cipher — a keystream derived from the
+password combined with the per-file modifier byte, applied by XOR. Nothing in
+the scheme produces a digest to invert, so there is no table to build and
+nothing to look up.
+
+The attack class that does apply to a reversible stream cipher is a dictionary
+or brute-force search over the password space, using the stored CRC-32 of each
+member as the verifier. That is the same circumvention declined throughout this
+record, and it is not performed here. No candidate password was generated,
+tested, or tabulated.
+
 ## Dead ends
 
 **`SpellBoundSec/Xor-Obfuscation-Python3`** — surfaced by a GitHub search for
