@@ -190,6 +190,26 @@ produced "created 2027-07-06, modified 2004-10-13". Both were artifacts. With
 the words in the correct order the created stamp is 1993-12-15 11:55:12, which
 agrees with `arj l` exactly. The archive's created date was never wrong.
 
+## Dead ends
+
+**`SpellBoundSec/Xor-Obfuscation-Python3`** — surfaced by a GitHub search for
+"elcomsoft" and worth recording so it is not re-investigated. Despite the name,
+it is not an ARJ tool. `main.py` reads `sys.argv[1]` as an Excel workbook and
+applies the **Excel 4.0/5.0/6.0 XOR obfuscation** scheme, using the
+`obfuscation_array`, `InitialCode`, `XorMatrix` and `PadArray` constants from
+MS-OFFCRYPTO; it bundles `office2john.py`. The string `arj` appears zero times
+in `main.py`, `utils.py`, `arrays.py` or `stenglish.py`.
+
+It would not run against this archive even in principle, and as committed it
+does not run at all: the decryption call uses a hardcoded literal
+(`decrypt_data_method1("password123", data, 0)`) and the final statement
+references an undefined `password`, raising `NameError`. The repository has 4
+stars, no licence, and was last pushed 2020-07-19.
+
+An earlier draft of this note described it as "aimed at exactly the
+circumvention" declined below. That was inferred from a one-line search snippet
+and was wrong; it is corrected here.
+
 ## What this repository does with that knowledge
 
 Nothing that recovers plaintext. The weakness of ARJ's pre-2.60 garbling is
