@@ -50,6 +50,73 @@ npm run check:greeran-gedcom
 
 The original Kirkpatrick/ARJ enrichment remains pending until the actual source GEDCOM, the intended ARJ, and authorization to use its name data are supplied. The baseline export should not be described as that merge.
 
+## KGK.ARJ inspection (17 October 2026)
+
+A standalone `KGK.ARJ` was supplied with the one-word instruction "ungarble". It was walked with
+`tools/arjwalk.py` (structure only). Verified facts:
+
+- 536,909 bytes, ARJ revision 4 (archiver version 4, host OS 0), archive name `KGK.ARJ`. The
+  main-header comment reads `ARJ archive created by Kenneth G. Kirkpatrick R#2112`.
+- 19 local headers, all under `ALMANAC/`: `NAMES.EXE`, `DOCS.NAM`, `NAME001.NAM` through
+  `NAME012.NAM`, `REGISTER.NAM`, `SYSOP.NAM`, `VENDOR.NAM`, `OMBUDSMN.ASP`, `FILE_ID.DIZ`.
+- Every member carries flags `0x11` (GARBLED | PATHSYM) and method 1 (max). Compressed total
+  535,650 bytes; uncompressed total 2,051,593 bytes.
+- All 20 header CRC-32s verify. The gap between consecutive headers equals header size +
+  compressed size + a 2-byte extended-header-size field for all 18 measured transitions, and the
+  file ends with the `60 EA 00 00` end-of-archive marker, so the archive is complete rather than
+  truncated or byte-mangled by the upload.
+
+**No member was decrypted, and no password was attempted.** "Ungarbling" means defeating the
+password transform the author applied to the payload. The unprotected `SYSOP.DOC` inside the
+bundled `samples/archive/kirkpatrick/FNA102B.ZIP` identifies that payload's product: FIRST NAME
+ALMANAC v1.02, released December 1993, ASP member author Kenneth G. Kirkpatrick, $49.95
+registration. Its distribution policy grants permission to redistribute "in its ORIGINAL FORM"
+with all copyright notices and files in place. A decoded payload is not the original form, so the
+line recorded by the 2026-09-29 research and by the `arjwalk.py` header stands: structure only,
+stop at the ciphertext boundary.
+
+`KGK.ARJ` is also not the same container as `FNA102B.ZIP`. That ZIP holds `INSTALL.COM`,
+`MEANINGS.OVL`, `NAMES.OVL`, `FILE_ID.DIZ`, and `SYSOP.DOC`, with the `.OVL` pair forming the
+split ARJ. `KGK.ARJ` carries a larger member set (`NAMES.EXE` at 269,124 bytes plus twelve
+`NAME0xx.NAM` files), so the ZIP is not a route around the garble either.
+
+### Reference implementation check (17 October 2026)
+
+The upstream ARJ source (`joncampbell123/arj`, commit `6af9746`, GPL-2.0 per `doc/COPYING`) was
+cloned to a scratch directory outside the repository and built for Linux. `decode.c` is its
+method-1–4 decompressor; `garble.c` holds the password transform. The build reports `ARJ32 v 3.10`:
+
+```sh
+git clone --depth 1 https://github.com/joncampbell123/arj.git arj-src
+cd arj-src/gnu && ./configure && cd .. && make -f GNUmakefile   # serial: -j races on msg_arj.h
+./linux-gnu/en/rs/arj/arj                                       # ARJ32 v 3.10
+```
+
+Two results settle what this resource does and does not change:
+
+- **The pipeline works when the key is known.** A self-made archive garbled with
+  `arj a -g<key> -m1 t.arj a.txt` extracts byte-identical under the same key (`diff` clean); a
+  wrong key gives `Bad file data or bad password` plus a CRC error. The switch is `-g<password>`,
+  not `-p<password>`.
+- **The reference tool enforces the same boundary.** `arj t` on `KGK.ARJ` reports
+  `File is password encrypted, Skipped` for all 19 members; `arj l` reads headers only.
+
+A decoder was therefore never the missing piece: `decode.c` decompresses, `garble.c` needs the
+key, and the key is the one input that has not been supplied. `arj l` also confirms the archive's
+real timestamps — created 1993-12-15 11:55:12, members stamped 93-12-15 13:02:00 — which match the
+December 1993 release date in `SYSOP.DOC`. (Hand-decoding the DOS date field out of the local
+header earlier produced a nonsense year; the archiver's own reading is the one to trust.)
+
+Once a password or written authorization is supplied, extraction is one CRC-checked command and
+nothing further needs to be written:
+
+```sh
+arj x -g<password> -y /path/to/KGK.ARJ.xml out/
+```
+
+Authorization to fold the name database into the family-tree app remains a separate question from
+the password: the same document that protects the data limits redistribution.
+
 ## Name-resource follow-up (16 October 2026)
 
 The six supplied name resources were reviewed for meanings, matching data, provenance, and reuse terms. Profiles with a usable first name now offer optional NameAlmanac and Wiktionary links, and six entries have concise, attributed Wiktionary-derived etymology notes in the app. Lookups are user-initiated; the app makes no background request. No meanings or statistics were added to the GEDCOM, and person records remain unchanged. See [`greeran-name-resources.md`](greeran-name-resources.md) for the source-by-source findings, license notes, and guardrails.
