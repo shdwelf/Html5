@@ -7,7 +7,11 @@ const appHtml = readFileSync(new URL("../public/apps/cyberchef/index.html", impo
 const bwipSource = readFileSync(new URL("../public/apps/cyberchef/vendor/bwip-js.min.js", import.meta.url), "utf8");
 const zxingSource = readFileSync(new URL("../public/apps/cyberchef/vendor/zxing-library.min.js", import.meta.url), "utf8");
 const report = JSON.parse(readFileSync(new URL("../docs/cyberchef-recipe-sync-2026-10-07.json", import.meta.url), "utf8"));
-const expectedCount = report.counts.mergedRuntime + 7;
+// Four barcode/logic additions, three PR #118 Aztec/CueCat operations, the
+// 2026-10-14 field-cipher deep dive (OD message, VIC schedule + message stage,
+// Diana table + cipher, Gronsfeld analysis, hexdump/octal byte recipes), the
+// OpenPGP and Enigma recipes, and the two War Office manual recipes.
+const expectedCount = report.counts.mergedRuntime + 22;
 
 function createDom(html = appHtml) {
   return new JSDOM(html, {
@@ -53,8 +57,8 @@ test("generated Select All SFX boots the complete recipe registry offline", asyn
     const instrumented = sfxHtml.replace("\nsfxInitUi();", "\nwindow.bake=()=>Promise.resolve();\nsfxInitUi();");
     assert.notEqual(instrumented, sfxHtml, "test harness found the real SFX bootstrap call");
     packaged = createDom(instrumented);
-    assert.equal(packaged.window.eval("typeof bwipjs.toSVG"), "function", "the standalone SFX can still create Aztec SVGs offline");
-    assert.equal(packaged.window.eval("typeof ZXing.AztecCodeReader"), "function", "the standalone SFX can decode Aztec images offline");
+    assert.equal(packaged.window.eval("typeof bwipjs.toSVG"), "function", "standalone SFX can still create Aztec SVGs offline");
+    assert.equal(packaged.window.eval("typeof ZXing.AztecCodeReader"), "function", "standalone SFX can decode Aztec images offline");
 
     const operations = packaged.window.eval("OPERATIONS");
     const loaded = packaged.window.eval("recipe");

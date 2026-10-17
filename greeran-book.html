@@ -11,34 +11,39 @@
   <link rel="stylesheet" href="./css/greeran-book.css" />
 </head>
 <body data-paper="field-notebook">
-  <div id="progress" aria-hidden="true"></div>
-
-  <div class="book-intro" id="bookIntro" role="dialog" aria-modal="true" aria-labelledby="bookIntroTitle" aria-hidden="true" hidden>
-    <div class="intro-stars" aria-hidden="true"></div>
-    <div class="intro-haze" aria-hidden="true"></div>
-    <h2 id="bookIntroTitle" class="visually-hidden">The Greeran Book Model opening</h2>
-    <p class="intro-caption" aria-hidden="true">A quiet signal crosses the dark.</p>
-    <div class="intro-book-stage" aria-hidden="true">
-      <div class="intro-book-shadow"></div>
-      <div class="intro-book-object">
-        <div class="intro-book-spread">
-          <div class="intro-leaf intro-leaf-left"><span>THE RECORD</span><i></i><i></i><i></i></div>
-          <div class="intro-leaf intro-leaf-right"><span>THE LIFE AROUND IT</span><i></i><i></i><i></i></div>
-          <div class="intro-book-gutter"></div>
+  <section class="book-intro" id="bookIntro" role="dialog" aria-modal="true" aria-labelledby="introHeading" aria-describedby="introCaption">
+    <div class="intro-world" aria-hidden="true">
+      <div class="intro-stars"></div>
+      <div class="intro-moon"></div>
+      <div class="intro-ridge intro-ridge--far"></div>
+      <div class="intro-ridge intro-ridge--near"></div>
+      <div class="intro-water"></div>
+      <div class="intro-light"></div>
+      <div class="intro-book-flight">
+        <div class="intro-book">
+          <div class="intro-book-block"></div>
+          <div class="intro-leaf intro-leaf--left"><span></span></div>
+          <div class="intro-leaf intro-leaf--right"><span></span></div>
+          <div class="intro-book-cover">
+            <span class="intro-cover-mark">S · T · G</span>
+            <span class="intro-cover-rule"></span>
+            <strong>THE LIFE FILE</strong>
+            <span class="intro-cover-name">STEVEN THOMAS GREERAN</span>
+          </div>
         </div>
-        <div class="intro-book-cover">
-          <span class="intro-cover-rule"></span>
-          <span class="intro-cover-mark">FIELD BOOK · 01</span>
-          <span class="intro-cover-title">A life,<br>set down in evidence.</span>
-          <span class="intro-cover-subtitle">Steven Thomas Greeran · Book Model</span>
-          <span class="intro-cover-sigil">✧</span>
-        </div>
-        <div class="intro-book-light"></div>
       </div>
+      <div class="intro-sparks"></div>
     </div>
-    <p class="intro-caption intro-caption-bottom" aria-hidden="true">The binding stirs. The pages open.</p>
-    <button class="intro-skip" id="skipBookIntro" type="button">Skip to the book</button>
-  </div>
+    <div class="intro-copy">
+      <div class="intro-kicker">THE GREERAN BOOK · AN OPENING</div>
+      <h2 id="introHeading">A book waits beyond the fog.</h2>
+      <p id="introCaption">Follow the light. The record is about to open.</p>
+      <button type="button" class="intro-enter" id="introSkip">Skip to the book</button>
+    </div>
+    <p class="sr-only" id="introStatus" role="status" aria-live="polite"></p>
+  </section>
+
+  <div id="progress" aria-hidden="true"></div>
 
   <header class="studio-bar">
     <div class="brand-block">
@@ -55,12 +60,12 @@
 
     <div class="control-cluster">
       <button type="button" class="btn primary" id="rollStyle">🎲 Random style</button>
+      <button type="button" class="btn ghost" id="replayIntro">Replay opening</button>
       <label>
         <span>Paper</span>
         <select id="paperSelect" aria-label="Select notebook paper style"></select>
       </label>
       <button type="button" class="btn" id="storeStyle">Store style</button>
-      <button type="button" class="btn ghost" id="replayBookIntro" aria-controls="bookIntro">Replay opening</button>
       <a class="btn ghost" href="./greeran-subsurface.html">Biography 4Dwm</a>
       <a class="btn ghost" href="./glendora-high-4dwm.html">GHS 2001</a>
       <a class="btn ghost" href="./esgvrop-4dwm.html">ESGVROP 4Dwm</a>
@@ -130,7 +135,7 @@
       </section>
     </aside>
 
-    <article class="book" id="book" tabindex="-1">
+    <article class="book" id="book">
       <section class="page cover" id="premise">
         <div class="chapter-no">I</div>
         <div class="page-kicker">Editorial premise</div>
@@ -2353,7 +2358,6 @@
   </main>
 
   <script src="./js/greeran-book.js"></script>
-  <script src="./js/greeran-book-intro.js"></script>
 </body>
 </html>
 cript src="./js/greeran-book.js"></script>

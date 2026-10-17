@@ -11,6 +11,6 @@ export default defineConfig({
     // file: URLs).  Running them through Vite transforms `import.meta.url`
     // into a non-file URL, so keep the two runners separate; package.json
     // invokes these files with `node --test` after Vitest completes.
-    exclude: ["**/node_modules/**", "tests/**/*.test.mjs"],
+    exclude: ["**/node_modules/**", "**/.cache/**", "**/build/**", "**/.relay/**", "tests/**/*.test.mjs"],
   },
 });

@@ -1,8 +1,8 @@
 # CyberChef SFX coverage verification — updated 2026-10-15
 
-## Current Html5 result
+## Verified snapshot — 2026-10-15 (485 operations)
 
-The current `public/apps/cyberchef/index.html` registers **485 unique operations**. Running the page's real `applyRecipePacks(Object.keys(RECIPE_PACKS))` path produces a 485-operation recipe:
+This dated snapshot recorded the Html5 kitchen before the later field-cipher, OpenPGP, Enigma, and War Office additions on `main`. At that point, `public/apps/cyberchef/index.html` registered **485 unique operations**. The merged PR #118 build now has 500; rerun the audit command below for its current count. The 2026-10-15 snapshot's real `applyRecipePacks(Object.keys(RECIPE_PACKS))` path produced a 485-operation recipe:
 
 | Measurement | Result |
 | --- | ---: |
@@ -20,7 +20,7 @@ Reproduce with:
 node scripts/audit-cyberchef-sfx-coverage.mjs
 ```
 
-This checks the **installer's coverage**: that every operation is represented in the serialized pack list and is loaded into the SFX recipe. It does not execute all 485 operations as one long transformation chain.
+This checks the **installer's coverage**: that every operation is represented in the serialized pack list and is loaded into the SFX recipe. The historical run did not execute all 485 operations as one long transformation chain.
 
 ## Aztec and CueCat additions
 
@@ -60,3 +60,4 @@ The reported 117-of-478 result did not occur in that checkout's Html5 SFX build.
 - The QR Code and Avery label operations brought the kitchen to **480**.
 - `complexityLab` and `symbolicLogic` brought it to **482**.
 - `aztecCode` and `cuecatDecode` brought this checkout to **484**; the new `aztecDecode` image operation raises it to **485**.
+- The later `main` additions account for 15 more unique operations (field-cipher deep dive, OpenPGP, Enigma-chain, and War Office recipes), bringing that line to **497**. PR #118 contributes the three unique Aztec/CueCat operations to that line, yielding the merged **500-operation** kitchen.

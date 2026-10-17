@@ -1,67 +1,52 @@
-import { test } from "node:test";
-import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { JSDOM } from "jsdom";
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { JSDOM } from 'jsdom';
 
-const html = readFileSync(new URL("../greeran-book.html", import.meta.url), "utf8");
-const css = readFileSync(new URL("../css/greeran-book.css", import.meta.url), "utf8");
-const script = readFileSync(new URL("../js/greeran-book-intro.js", import.meta.url), "utf8");
+const html = readFileSync(new URL('../greeran-book.html', import.meta.url), 'utf8');
+const script = readFileSync(new URL('../js/greeran-book.js', import.meta.url), 'utf8');
+const css = readFileSync(new URL('../css/greeran-book.css', import.meta.url), 'utf8');
 
-function boot() {
+function createBook(storageSeen = false) {
   const dom = new JSDOM(html, {
-    runScripts: "dangerously",
-    url: "https://example.test/greeran-book.html",
+    url: 'https://book.test/greeran-book.html',
+    runScripts: 'outside-only',
     pretendToBeVisual: true,
-    beforeParse(window) {
-      window.matchMedia = () => ({ matches: true });
-      window.HTMLElement.prototype.scrollIntoView = () => undefined;
-    },
   });
+  dom.window.matchMedia = () => ({ matches: false });
+  if (storageSeen) dom.window.localStorage.setItem('greeran-book-intro-seen-v1', 'seen');
   dom.window.eval(script);
   return dom;
 }
 
-test("the Greeran book opening is original, local, skippable, and replayable", () => {
-  assert.match(html, /id="bookIntro"[^>]*aria-modal="true"/);
-  assert.match(html, /id="skipBookIntro"/);
-  assert.match(html, /id="replayBookIntro"[^>]*aria-controls="bookIntro"/);
-  assert.match(html, /src="\.\/js\/greeran-book-intro\.js"/);
-  assert.match(css, /@keyframes intro-book-flight/);
-  assert.match(css, /@keyframes intro-cover-open/);
-  assert.match(css, /\.intro-book-cover\s*\{[^}]*backface-visibility:\s*hidden/s,
-    "the cover must not show mirrored lettering on its reverse side");
-  assert.match(css, /\.intro-book-cover > \*\s*\{[^}]*backface-visibility:\s*hidden/s,
-    "cover lettering stays hidden when the cover flips open");
-  assert.match(css, /translate3d\(0,0,95px\) scale\(1\)/,
-    "the open spread remains centered after the flight");
-  assert.match(css, /prefers-reduced-motion: reduce/);
-  const dom = new JSDOM(html);
-  try {
-    assert.equal(dom.window.document.querySelector("#bookIntro img[src^='http']"), null,
-      "the intro uses original CSS artwork instead of external images");
-  } finally { dom.window.close(); }
+test('first visit plays the opening and the skip control closes it accessibly', (t) => {
+  const dom = createBook();
+  t.after(() => dom.window.close());
+  const { document, localStorage } = dom.window;
+  const intro = document.getElementById('bookIntro');
+  const skip = document.getElementById('introSkip');
+
+  assert.equal(intro.hidden, false);
+  assert.ok(document.body.classList.contains('intro-active'));
+  assert.equal(document.activeElement, skip);
+  assert.equal(skip.textContent, 'Skip to the book');
+  skip.click();
+  assert.ok(intro.classList.contains('is-closing'));
+  assert.equal(localStorage.getItem('greeran-book-intro-seen-v1'), 'seen');
 });
 
-test("reduced-motion users skip autoplay but can replay and dismiss the opening", async () => {
-  const dom = boot();
+test('seen opening can be replayed, and reduced-motion support is present', (t) => {
+  const dom = createBook(true);
+  t.after(() => dom.window.close());
   const { document } = dom.window;
-  try {
-    const intro = document.getElementById("bookIntro");
-    const header = document.querySelector(".studio-bar");
-    assert.equal(intro.hidden, true, "reduced-motion preference suppresses auto-play");
+  const intro = document.getElementById('bookIntro');
 
-    document.getElementById("replayBookIntro").click();
-    assert.equal(intro.hidden, false);
-    assert.ok(intro.classList.contains("is-playing"));
-    assert.equal(document.body.classList.contains("book-intro-active"), true);
-    assert.equal(header.getAttribute("aria-hidden"), "true");
-
-    document.getElementById("skipBookIntro").click();
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    assert.equal(intro.hidden, true);
-    assert.equal(document.body.classList.contains("book-intro-active"), false);
-    assert.equal(header.hasAttribute("aria-hidden"), false, "page accessibility is restored after dismissal");
-  } finally {
-    dom.window.close();
-  }
+  assert.equal(intro.hidden, true);
+  document.getElementById('replayIntro').click();
+  assert.equal(intro.hidden, false);
+  assert.ok(intro.classList.contains('is-playing'));
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(css, /@keyframes\s+intro-flight/);
+  assert.match(html, /aria-modal="true"/);
+  assert.match(html, /id="introSkip"/);
 });

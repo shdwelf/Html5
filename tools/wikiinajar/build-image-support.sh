@@ -82,8 +82,10 @@ TEST_SOURCE="$SCRIPT_DIR/test/java/org/rgse/wikiinajar/helpers/wiki/render/Image
 
 mkdir -p "$APP_ROOT/public/docs/image"
 cp -R "$SCRIPT_DIR/public/skins/default/." "$APP_ROOT/public/skins/default/"
-cp "$SCRIPT_DIR/public/docs/wiki/Image Support Demo.wiki" \
-  "$APP_ROOT/public/docs/wiki/Image Support Demo.wiki"
+# every .wiki page in the content set ships, including the notes synced from docs/
+for page in "$SCRIPT_DIR"/public/docs/wiki/*.wiki; do
+  cp "$page" "$APP_ROOT/public/docs/wiki/$(basename "$page")"
+done
 cp "$APP_ROOT/public/skins/default/common/mag.png" \
   "$APP_ROOT/public/docs/image/demo.png"
 cp "$SCRIPT_DIR/test/fixtures/boy.djvu" \
@@ -95,6 +97,22 @@ cp "$SCRIPT_DIR/INSTALLATION-README.txt" "$APP_ROOT/README-image-support.txt"
 MAIN_PAGE="$APP_ROOT/public/docs/wiki/Main Page.wiki"
 if ! grep -Fq '[[Image Support Demo]]' "$MAIN_PAGE"; then
   printf '\n* Try the image and DjVu demo: [[Image Support Demo]]\n' >> "$MAIN_PAGE"
+fi
+if ! grep -Fq '[[Wiki in a Jar]]' "$MAIN_PAGE"; then
+  printf '* Documentation: [[Wiki in a Jar]]\n' >> "$MAIN_PAGE"
+fi
+# Link every synced repository note, newest first, straight from the manifest, so
+# a page added to docs/ (and re-synced) shows up without editing this script.
+if [[ -f "$SCRIPT_DIR/wiki-pages.json" ]]; then
+  if ! grep -Fq '== Repository notes ==' "$MAIN_PAGE"; then
+    printf '\n== Repository notes ==\n\nNotes synced from the Html5 repository, newest first:\n' >> "$MAIN_PAGE"
+  fi
+  python3 - "$SCRIPT_DIR/wiki-pages.json" >> "$MAIN_PAGE" <<'PYJSON'
+import json, sys
+manifest = json.load(open(sys.argv[1], encoding="utf-8"))
+for entry in manifest["pages"]:
+    print(f'* [[{entry["page"]}]] — {entry["source"]} ({entry["date"]})')
+PYJSON
 fi
 node "$SCRIPT_DIR/patch-public.mjs" "$APP_ROOT"
 

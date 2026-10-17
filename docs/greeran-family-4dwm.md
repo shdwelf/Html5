@@ -38,53 +38,62 @@ At build time this produces **567 dated geocoded records** (432 birth, 135 death
 **39 dated kinship links**, and a **1774–2023** playable range. These are derived
 views; the underlying source arrays are not rewritten.
 
-## Tree of Life and Bible eBook
+## Keepsake, Bible resources, and research status
 
-The **🎄 Tree of Life · eBook** tab adds an original family preface, followed by an
-inside-back-cover WEBU reader. The reader loads its data only when opened, directly
-from the XDC's local files; it offers book/chapter navigation, text search, and a
-short genealogy-reading trail (Genesis 5 and 10, Ruth 4, 1 Chronicles 1, Matthew 1,
-and Luke 3). Scripture is a reading resource, not proof of a Greeran relationship.
+The **📖 Tree of Life** tab combines a family-history preface, an inside-back-cover
+reading panel, an interactive offline WEBU reader, and two collapsed QR panels. The
+embedded family relationships remain the app's source data; Bible material is a
+reading resource, not proof of a Greeran relationship.
 
-- Translation: **World English Bible Updated (WEBU)**, sourced from eBible.org.
-- Dataset: `ringletech/webu-open-bible`, commit
-  `44ce9156b77649adf11c0bbcee89c1d80e2c1f1c`; 66 books, 1,189 chapters, 31,098
-  verses.
-- License: CC0 1.0 / public domain. The upstream license and metadata are bundled
-  unchanged with the data in `public/apps/greeran-family-bible/`.
-- The app can download a GEDCOM 5.5.1 snapshot built only from the 2,089 people and
-  588 families already embedded in this XDC. No standalone source GEDCOM was found
-  in the repository or Drive, so this is clearly labeled as a derived snapshot,
-  not an update to an original file. It retains embedded notes, puts dates it cannot
-  normalize into notes, and omits map coordinates rather than asserting they are
-  person-level evidence. No new relationships or source citations are invented.
+The inside-back-cover panel offers:
 
-## Kirkpatrick archive and QR-code check
+- A complete **World English Bible (WEB)** EPUB: 66 books and 31,103 verses. The
+  public-domain text is unchanged; the EPUB adds only reading structure and
+  navigation. `tools/build_world_english_bible_epub.py` documents how to recreate it
+  from the cited English WEB JSON source.
+- A downloadable **baseline GEDCOM 5.5.1** generated from the data already embedded
+  in the HTML: 2,089 source people and 588 families, plus one blank individual stub
+  to preserve an otherwise orphaned family reference. It is not an update to an
+  unavailable original GEDCOM or the requested Kirkpatrick first-name merge. Dates
+  that cannot be normalized are kept in notes; map coordinates are not promoted to
+  person-level evidence. No relationships or citations are invented by the exporter.
+- Two generated QR panels, hidden until opened, that link to the explicitly named
+  GitHub pages for the family-tree package and WEB EPUB. The imported source app and
+  its checked emblem icon contained no identifiable QR payloads; these current,
+  visible-purpose links are new and are not presented as recovered hidden codes.
 
-The app offers `samples/archive/kirkpatrick/FNA102B.ZIP` byte-for-byte as the
-original First Name Almanac 1.02B shareware archive (SHA-256
-`341271dbce5aa7ed864fd9fd2d9fd41c1c17f2ccaf524178ac945ad1e9d94caf`). The file is
-not an ARJ archive; its ZIP contains internally protected commercial overlays.
-The package does not extract, decrypt, or use the name meanings as genealogical
-evidence. Its included shareware notices remain intact; redistribution is limited
-to the terms stated in those notices.
+The local **World English Bible Updated (WEBU)** reader loads its dataset only when
+the tab is opened. It supports book/chapter navigation, text search, and a short
+reading trail (Genesis 5 and 10, Ruth 4, 1 Chronicles 1, Matthew 1, and Luke 3).
+Its data are bundled at `public/apps/greeran-family-bible/`:
 
-The original Greeran XDC was ZIP-inspected (only `icon.png`, `index.html`, and
-`manifest.toml` were present); its HTML was searched, and the emblem icon was
-checked visually and with a local ZXing QR decoder (no code detected). No second
-source image/artifact or destination was supplied, so no codes were guessed or
-inserted. If “two hidden QR codes” meant two new codes, their payloads and intended
-hiding location are still needed.
+- Source: eBible.org; dataset `ringletech/webu-open-bible`, commit
+  `44ce9156b77649adf11c0bbcee89c1d80e2c1f1c`.
+- Contents: 66 books, 1,189 chapters, 31,098 verses.
+- License: CC0 1.0 / public domain. Upstream metadata, license, and README are
+  included unchanged with the dataset.
+
+The app also retains the untouched `samples/archive/kirkpatrick/FNA102B.ZIP`
+shareware archive (SHA-256
+`341271dbce5aa7ed864fd9fd2d9fd41c1c17f2ccaf524178ac945ad1e9d94caf`) with its
+notices. It is a ZIP, not the split ARJ archive; the internally protected commercial
+name-meaning overlays are not extracted, decrypted, or used as genealogical
+evidence. Redistribution remains subject to the archive's own terms, and the file
+must remain in its original form. No Kirkpatrick first-name data were added to the
+tree. See `docs/greeran-family-tree-ebook-and-data-status.md` for provenance and
+rebuild notes.
 
 ## Build and verification
 
 ```bash
+node scripts/build-greeran-family-qr.mjs --write
 npm run build:greeran-family
+npm run check:greeran-gedcom
 npx vitest run test/greeran-family-4dwm.test.ts
 unzip -t greeran-family-4dwm.xdc
 ```
 
-The reproducible XDC includes the app `index.html`, `manifest.toml`, `icon.png`,
-the local WEBU data/metadata/license/README, and the untouched FNA ZIP. It requires
-no network for its reader, styles, scripts, maps, or genealogy data; its source
-links are optional references only.
+The deterministic XDC includes the HTML, manifest, icon, generated GEDCOM, WEB
+EPUB, WEBU JSON/metadata/license/README, and unchanged FNA ZIP. It needs no external
+scripts, styles, fonts, maps, or genealogy data; online source links are optional
+references only.

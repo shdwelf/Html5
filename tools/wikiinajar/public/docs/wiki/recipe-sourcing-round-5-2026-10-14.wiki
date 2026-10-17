@@ -1,0 +1,167 @@
+== Recipe sourcing, round 5 — the 1914 War Office Manual of Cryptography: the Zigzag Transposition and the Nihilists' square ==
+
+Source: docs/recipe-sourcing-round-5-2026-10-14.md — synced 2026-10-16 by tools/wikiinajar/sync-docs.mjs.
+Back to [[Main Page]].
+
+= Recipe sourcing, round 5 — the 1914 War Office Manual of Cryptography: the Zigzag Transposition and the Nihilists' square =
+
+Date: 2026-10-14
+Kitchen after this round: `public/apps/cyberchef/index.html` → **497 operations**, 221 packs, 644 pack entries
+New recipes this round: `zigzagTransposition` (ch. III(a) §2) and `nihilistSquare` (§4) — the manual's two
+worked transposition ciphers, each controlled by its own printed example
+Companion notes: `docs/field-cipher-deep-dive-2026-10-14.md` (the current record of the registry),
+`docs/recipe-sourcing-round-4-2026-10-14.md` (§5 captured this manual's contents page and named the
+backlog this round starts)
+Verification: `node --test tests/war-office-manual-ciphers.test.mjs` → 4/4 (both printed cryptograms
+byte-for-byte, plus hand-checkable mini cases), `node scripts/audit-cyberchef-sfx-coverage.mjs`
+(497 ops / 221 packs / 644 entries, 0 dangling, 0 orphaned), `node tools/verify_lecture_hall.mjs`
+(33 records), plus the registry/SFX/cookbook suites.
+
+---
+
+== 1. The source, and the extraction that had been the blocker ==
+
+The British **War Office, *Manual of Cryptography*** — the copy in the project Drive
+(`1nQQ0JYItDYDCdPL7PxsmS6XCB1tZwPJS`, 5,883,419 bytes), a rip of the Aegean Park Press facsimile
+(ISBN 0-89412-042-5, "Reproduction of a classical, historical document, c. 1914"; the original's
+print code, "(B364) 20, 10/14 H&S 1139wo", is on its title page). Round 4 had opened the book only
+far enough to capture its contents page and list of works consulted, on the assumption that its
+diagrams would not survive extraction. The diagrams don't — the tables are bitmap figures — but the
+**rules and the printed cryptograms are plain text**, and that is all a recipe needs.
+
+*Reading method, because it shaped the round:* `read_file_text` on the Drive PDF returns the text
+from the start, and past a certain size the harness returns the start and the end of the requested
+window with the middle elided; the same call with the same arguments reproduces the same window, so
+each pass moved the window by changing `max_chars` (15 000 → 52 000 → 56 000 → 60 000) until
+chapter III(a) fell inside it. Recorded for the next book: the fix is to slide the window, not to
+re-request it.
+
+*What turned out not to be needed:* archive.org's own scan of this manual, referred to by the
+facsimile's credit line as `manualofcryptogrO00Obrit`; its `_djvu.txt` is not served ("the item you
+have requested has a problem with one or more of the metadata files"), and the only identifier
+matching `manualofcryptogr*` there remains Sacco's unrelated manual. The Wikimedia Commons 1911
+scan (108 pages, 12.12 MB, photographed from the Marshall Foundation's copy) was located as an
+alternative source, but the Drive copy's text layer made it unnecessary.
+
+== 2. Chapter III(a) §2 — the Zigzag Transposition cipher ==
+
+The rule, as printed (p. 21): *"In this cipher the letters of the text are written out in columns,
+each containing a pre-arranged number of spaces. The letters are written up and down alternate
+columns, beginning at the top or bottom of a certain column, and the cryptogram is formed by reading
+off the lines of letters."* — the starting end ("top or bottom of a certain column") is part of what
+the correspondents agree.
+
+The worked example, on p. 22, takes the same sentence §1 had used, "**A reconnaissance made
+yesterday across the river found no traces of the enemy**", with **8 letters to a column**,
+*"dummy letters being used, if necessary, to complete the table"*, and prints the cryptogram in
+five-letter groups:
+
+```
+AMAOS NOMYR EDRSD TEFEC ECTNR NUCNY
+AHUAE LOAEY EOCEL NSSAR FEHSN STDIR
+STTAI ERVEO FO
+```
+
+**The convention the vector fixes.** The sentence is 65 letters; 8-letter columns give a 9-column
+table, so 72 cells and **7 dummies**, and the book's cryptogram is 72 letters. Reconstructing the
+table from the printed cryptogram shows exactly one reading that returns the sentence: column 1 is
+written **top to bottom**, column 2 bottom to top, alternating; the dummies are the trail's last
+seven cells and read `FULLSTO`. The trail is the sentence followed by `FULLSTO`, and every one of
+the 65 message letters lands on its printed letter; the alternatives were checked and rejected
+(starting at the bottom, 6/65 matches; an eight-column table, 5/65). The book's own diagram, which
+would have shown the arrows, is one of the bitmap figures that did not survive.
+
+**The recipe.** `zigzagTransposition` — *Zigzag Transposition (War Office 1914)*, category
+Classical. Arguments: letters per column (default 8), the end the first column starts at, the
+padding letters (cycled when shorter than the gap), and the mode. Like the manual, the text is
+taken as capitals with non-letters dropped. `tests/war-office-manual-ciphers.test.mjs` pins the
+printed cryptogram (and reads it back in the book's five-letter groups), two hand-checkable
+12-letter mini cases — `ABCDEFGHIJKL` in 3-letter columns → `AFGLBEHKCDIJ`, and the bottom-start
+variant → `CDIJBEHKAFGL` — the padding cycle, and the refusal when a received cryptogram is not a
+whole number of columns.
+
+== 3. Chapter III(a) §4 — the Nihilists' Cipher ==
+
+The printed rule (p. 26): *"This cipher, which is said to have been used by Nihilists, is based upon
+the principle of double transposition. A keyword is agreed upon by the correspondents, and a number
+is obtained from the alphabetical order of the letters forming it. Thus the word 'Thames' would
+represent 631425, T being the 6th letter in alphabetical order of the six letters forming the
+keyword, H the 3rd letter, and so on."* A square is filled with the message in its natural order;
+a second square re-labels both sides with those numbers and the letters keep their coordinates;
+the cryptogram is read off the lines. The N.B.: blanks are filled with dummy letters, *"the less
+frequently occurring letters of the alphabet being used for this purpose"* — here `QXYZ`.
+
+The example's keyword is **Thames** (side 6, so 36 cells) and the message **"The sixth division
+will attack at dawn"** — 32 letters, four dummies — printed as:
+
+```
+ZQWXNYIOSNIWXETSHIAALTLT
+IDTIHVAACTKD
+```
+
+**The transform the vector fixes.** With `P` the keyword's ranks in position order
+(`Thames → [6,3,1,4,2,5]`), the cryptogram square is `C[i][j] = orig[P[i]][P[j]]` (1-based): both
+sides of the square are re-labelled by the same permutation. Under that rule the message plus
+`QXYZ` reproduces the printed 36 letters **byte for byte**, and the inverse reading returns
+`THESIXTHDIVISIONWILLATTACKATDAWNQXYZ` — the direction is confirmed rather than assumed, which
+matters because the printed coordinate sentence ("the letter W given by the co-ordinates 5 and 3 …
+is placed in the column marked 5 in the line marked 3") is ambiguous without the figure.
+
+**One or more tables.** The section closes by noting that *"the tables used must always be
+completely filled"* and that a longer message needs *"one or more tables"* — so the recipe fills
+successive side×side squares, each with the same permutation, padding only the last. A
+hand-checkable case caught the omission when this was first coded: a 13-letter message under a
+three-letter keyword silently lost everything past the first nine letters until the chunking was
+added. The new test pins the multi-table path (`DEFENDTHEEASTTWENTYTWO` under `ABC` → itself plus
+five dummies, decrypt back) as well as the single-table examples.
+
+**The recipe.** `nihilistSquare` — *Nihilists' Square (War Office 1914)*, category Classical:
+keyword, padding letters, mode; capitals with non-letters dropped. Refusals: an empty keyword, a
+one-letter keyword, a cryptogram that does not fill whole squares, an empty message.
+
+== 4. What the manual still offers ==
+
+The contents page was captured in round 4; with chapter III(a) now legible, the remaining backlog
+is specific:
+
+* **§1, the Hebrew Transposition cipher** — the same reconnaissance sentence written in 23-letter
+  lines and read another way; the rule text came through but its worked grid is a bitmap, so it is
+  a candidate, not yet a vector.
+* **§3, the Permutation cipher** — permutations of four figures (the book names 1324, 1243, 3214)
+  applied in succession to "Delay departure of transports until you receive further orders from
+  headquarters"; a keyed multiple-permutation transposition with no equivalent in the kitchen.
+  The next candidate from this source.
+* **§5, the Federal Army cipher (A)** — word transposition along a six-column route (up the sixth,
+  down the first, up the fifth, down the second, up the fourth, down the third); the manual prints
+  the route but no cryptogram.
+* **Chapters IV–V** — diagonal transposition, stencil, Federal Army (B), double slide figure,
+  Bacon's, the vowel cipher, Napoleon's cipher or *tableau de Porta*, Wheatstone's cryptograph,
+  Marmont's figure cipher, the Masonic cipher, Schotti's dot cipher, the line cipher.
+
+== 5. Surfaces and counters ==
+
+* Counters moved together to **497 operations / 221 packs / 644 entries**: the kitchen badge, the
+  cookbook card and its test, the SFX test (`mergedRuntime + 19`), the recipe-sync test's
+  post-merge list, the README row, and the deep-dive note's current-record block.
+* Two packs of their own, as for every recipe in this series: `Zigzag Transposition (War Office
+  1914)` and `Nihilists' Cipher (War Office 1914)`.
+* `cyberchef.xdc` rebuilt: **682,368 bytes, 4 entries, sha256
+  `6c7e9dcc763e08d00f655fb0fa9ba770aa34c6b08228e49cbe4ae1b13a3dc51e`**.
+* `tests/war-office-manual-ciphers.test.mjs` — 4 tests, described above; the registry, SFX and
+  cookbook suites were updated for the new ids and totals.
+* wiki-in-a-jar re-synced — this note enters the newest-nine set, displacing the oldest page.
+
+== 6. Ledger ==
+
+Closed:
+
+* **The 1914 War Office manual's cipher backlog** — the round-4 ledger's first item. Both named
+  ciphers shipped with their own control vectors: the zigzag (§2) and the Nihilists' square (§3).
+
+Open:
+
+* The manual's remaining sections, permutation cipher first (§4 above); then chapters IV–V.
+* A Hagelin recipe from Churchhouse chapter 10, if a copy with a usable text layer turns up.
+* Friedman's 1951 translation notes on Sacco, and the 1971 edition of FM 31-20.
+* The Cold War pocket manual's "Code and Cipher-Breaking Challenge": still no published answer set,
+  so it cannot be a control vector and stays a lead.

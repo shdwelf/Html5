@@ -68,14 +68,40 @@ URL fragment, so only a real browser can decrypt it. It runs anywhere
 playwright + chromium are installed (a laptop, a GitHub runner with the
 workflow permission).
 
+## Repository-wide Java / TiddlyWiki editions
+
+The new [Repository Wiki build](tools/wiki-workspace/README.md) produces actual
+ACME/TJWS-hosted `wiki.in.a.jar`, `more.wiki.in.a.jar`, and `tiddlywiki.in.a.jar`,
+plus a native TiddlyWiki HTML/Webxdc edition and MediaWiki XML export. Each JAR
+contains a per-file source catalog and a deduplicated exact-byte repository vault,
+with private caches/credential paths explicitly excluded. The extended library
+adds backlinks, bibliographic URLs, revision conflicts/history and Haiku-v1
+compatible encrypted page/file exchange. These are **new repository editions**,
+not a claim to have recovered historical More Wiki 0.9.9 or translated arbitrary
+JavaScript into JavaCard. See the [source-checked research and limitations](docs/wiki-workspace-research-2026-10-15.md).
+
+```sh
+npm ci
+npm run build:wiki-workspace           # JDK 11+, Python 3, tar, curl; outputs dist/wiki/
+java -jar dist/wiki/more.wiki.in.a.jar 3003
+npm run test:wiki-workspace
+npm run test:wiki-server               # real executable-JAR HTTP + persistence tests
+```
+
+The classic wiki's Calendar now uses font-independent SVG navigation, an
+always-visible month grid and an event-page form; no pre-existing events are
+required. TiddlyWiki HTML/XDC carry previews and metadata; the complete eligible
+binary vault lives in the JAR editions. Nothing is uploaded to a remote wiki.
+
 ## Standalone viewers
 
+- **[Wiki in a Jar](wikiinajar.html)** — the 2008 USB-stick personal wiki (`wiki.in.a.jar` 0.8) rebuilt as one offline HTML file and a Webxdc bundle: same `.wiki` page model, same `[[wiki:]]`/`[[img:]]`/`[[djvu:]]`/`[[tags:]]` namespaces, vCard contacts, DjVu reading via the vendored WASM decoder, and webxdc chat sync. Ships as `wikiinajar.xdc` (`npm run build:wikiinajar`) with the repository Markdown library (root deep dives + `docs/*.md`) converted to wiki pages in its Docs tab; see [the deep dive](wikiinajar-deep-dive.md), the seeded **Wiki in a Jar** documentation page inside the app, and the Java-side patch in [tools/wikiinajar/](tools/wikiinajar/).
 - **[Keyspace Viewer](keyspace.html)** — BIP-39 geometry, measured statistical layers, wallet derivatives, and keyspace projections.
 - **[Prime Viewer](prime.html)** — exact prime atlas, residue-class solar system, prime constellations, counting statistics, gaps, and integer inspection. See [PRIME.md](PRIME.md).
 - **[Helios Observatory](astronomy.html)** — time-propagated solar orrery, curated celestial catalog, Earth-centered NEO radar, and modeled meteor streams. See [ASTRONOMY.md](ASTRONOMY.md).
 - **[Flash Decompiler Timeline](flash-decompiler.html)** — Wayback/NATA2-style raw SWF retrieval, configurable CORS proxy triage, Behind The Dune version timeline, easter-egg notes, and a GitHub Actions path for JPEXS/FFDec decompilation without committing large NSFW binaries.
 - **[Red October · 4D Command Theater](public/apps/red-october-command-viewer/)** — an offline story-index globe, selectable schematic silhouettes, story/time controls, VRML 2.0 and Xena XML export. The map markers are fictionalized narrative anchors, not real track data; the hull model has no precise internal layout. Ships as `red-october-command-viewer.xdc`; see [the viewer source/provenance research](docs/red-october-4dwm-research-2026-10-09.md) and [the Archive.org/Jane’s/Bulletin source audit](apps/red-october-command-viewer/data-sources/archive-research.md).
-- **[Greeran Family Tree · 4DWM](greeran-family-4dwm.html)** — the Drive family-tree Webxdc converted into an offline spinning globe with a playable 1774–2023 record timeline, dated kinship arcs, and an all-time aggregate view. See [the import/build notes](docs/greeran-family-4dwm.md).
+- **[Greeran Family Tree · 4DWM](greeran-family-4dwm.html)** — the Drive family-tree Webxdc with an offline spinning globe, playable 1774–2023 record timeline, Tree-of-Life preface, baseline GEDCOM export, and public-domain World English Bible EPUB. The first-name merge remains pending until an authorized Kirkpatrick ARJ and raw GEDCOM are available. See [the import/build notes](docs/greeran-family-4dwm.md) and [the ebook/data status](docs/greeran-family-tree-ebook-and-data-status.md).
 - **[FOUR CORNERS 4Dwm](four-corners.html)** — the only place four US states meet: the surveyed quadripoint, Navajo volcanic field necks, the San Juan energy basin, the uranium legacy, and the ancestral Puebloan core, over a curated IDW relief that is honest about not being a DEM. See [docs/four-corners.md](docs/four-corners.md). Ships as `four-corners.xdc` and as the [TI calculator port](#four-corners-on-ti-calculators-four-corners-calc) below.
 - **[SoCal Subsurface 4Dwm](socal-subsurface.html)** — an offline basin theater with terrain, geocache GPX import, radio/propagation and orbital views. Ships as `socal-subsurface.xdc`; the legacy download name `planet-viewer-4dwm.xdc` now carries this same SoCal package and manifest.
 - **[Greeran Subsurface 4Dwm](greeran-subsurface.html)** — the Greeran book's 2001 biography deep-dive (Glendora → West Covina → Goleta → Santa Barbara) rendered as a SOCAL-style subsurface theater. Ships as `greeran-subsurface.xdc`.
@@ -268,7 +294,7 @@ over the dev server's origin rather than `file://`:
 | --- | --- |
 | `/apps/` | Index, with a live secure-context / microphone check |
 | `/apps/anc-studio/` | ANC Studio Ultra — adaptive multi-band FxLMS over AudioWorklet |
-| `/apps/cyberchef/` | CyberChef Renovated Kitchen — 485 operations after the Html5 ↔ Html5-sync-incoming merge and later additions, plus file input and save. Includes QR and Aztec Code generation/image decoding, CueCat scan decoding, postal barcodes, Avery LabelPro Aztec labels, and offline SFX support; see the [barcode notes](docs/cyberchef-aztec-cuecat.md) and [SFX coverage audit](docs/cyberchef-sfx-coverage-audit-2026-10-13.md). |
+| `/apps/cyberchef/` | CyberChef Renovated Kitchen — 500 recipes after unioning the Html5 and Html5-sync-incoming recipe sets, plus file input and save. Includes QR/Aztec generation and image decoding, CueCat and postal barcode recipes, Avery LabelPro-style N-up labels, and offline SFX support. See the [barcode notes](docs/cyberchef-aztec-cuecat.md), [SFX coverage audit](docs/cyberchef-sfx-coverage-audit-2026-10-13.md), [field-cipher deep dive](docs/field-cipher-deep-dive-2026-10-14.md), and [recipe-sourcing notes](docs/recipe-sourcing-round-4-2026-10-14.md) and [round 5](docs/recipe-sourcing-round-5-2026-10-14.md) for the tested cryptography and historical recipes. |
 | `/apps/red-october-command-viewer/` | Offline fictionalized story-index globe and schematic profile viewer; exports VRML 2.0 and a Xena binary-preservation XML wrapper. No real submarine tracks or precise internal layouts. Ships as `red-october-command-viewer.xdc`. |
 | `/apps/cookbook/` | Crypto Cookbook — 83-section reference, framed by the Cookbook tab |
 | `/apps/cryptofountain-bbs/` | CryptoFountain BBS — P2P microblogging with erasure codes |
