@@ -89,6 +89,82 @@ full set as `0xE6, 0xEA, 0xEB, 0xEF, 0xF3, 0xF3, 0xF3, 0xF4, 0xF4, 0xF4, 0xF4,
 The consequence is worth stating plainly: **the modifier contributes no
 secrecy.** It is a per-file salt carried in the clear, by design.
 
+## Full main-header decode
+
+Parsed against the layout in *ARJ Technical Information* and the
+`struct arj_main_header` in TestDisk's `file_arj.c`:
+
+| Offset | Field | Value |
+| --- | --- | --- |
+| 0 | header id | `0xEA60` |
+| 2 | basic header size | 92 |
+| 4 | first_hdr_size | 30 — `34 − 4`, i.e. the rev-4 layout with **no encryption-version byte** |
+| 5 | archiver version | 4 |
+| 6 | min version to extract | 1 |
+| 7 | host OS | 0 = MS-DOS |
+| 8 | arj flags | `0x12` = `OLD_SECURED_FLAG` \| `PATHSYM_FLAG` |
+| 9 | security version | 0 (spec: 2 = current) |
+| 10 | file type | 2 — matches the spec's "must equal 2", which validates the offsets |
+| 11 | reserved | `0xE6` |
+| 12 | created | `0x1B8F5EE6` → **1993-12-15 11:55:12** |
+| 16 | modified | `0x0008314D` → month field is 0, i.e. unset |
+| 20 | archive size | 2,019,859,109 — the file is 536,909 bytes |
+| 24 | security envelope position | 902,150,269 — far past EOF |
+| 28 | filespec position | 0 |
+| 30 | security envelope length | 23 |
+| 32 | unused | 0 |
+| 34 | archive name | `KGK.ARJ` |
+| 42 | comment | `ARJ archive created by Kenneth G. Kirkpatrick R#2112` |
+| 96 | basic header CRC | `71990718` — recomputed over bytes 4–96, **matches** |
+
+The `first_hdr_size` of 30 is the strongest single indicator: the
+encryption-version byte (`0/1` = old, `2` = new, `4` = 40-bit GOST) documented
+in the September 2001 TECHNOTE does not exist in this header at all. The
+archive predates the field. Corroborating constants in `defines.h`:
+`ARJ_G_VERSION 9` ("enhanced garble version") and `ARJ_NEWCRYPT_VERSION 10`
+("New encryption standard version") both sit far above archiver version 4.
+
+The created timestamp decodes to exactly what `arj l` reports. Note that DOS
+date/time packs the **date in the high word and the time in the low word** —
+reading them the other way round produces plausible-looking nonsense (this note
+was drafted with that bug in it once, and the correction is recorded below).
+
+### ARJ-SECURITY
+
+`OLD_SECURED_FLAG` is set and the envelope length reads 23, but the envelope
+position points ~899 MB past the end of a 537 KB file and the security version
+is 0 rather than the specified 2. Those main-header fields are unreliable here;
+the per-member headers are the trustworthy source, which is why `arj l` prints
+correct per-file dates (93-12-15 13:02:00 for all 19) without flagging the
+main header at all.
+
+Separately, ARJ-SECURITY was a registered feature even in code, not just in
+licensing: `arjsec_h.c` begins
+
+```c
+int get_arjsec_signature(FILE *stream, long offset, char *signature, int iter)
+{
+#if SFX_LEVEL<=ARJSFXV&&!defined(COMMERCIAL)
+ return(0);
+```
+
+Signature verification compiles to a no-op unless the build is commercial or
+the full ARJSFXV stub is in use.
+
+## Open-source ecosystem
+
+A GitHub repository search for open ARJ implementations returns little of
+substance — the term collides badly with the AR.js augmented-reality library.
+The genuinely relevant hits are `joncampbell123/arj` (the GPL reference
+implementation used here), `peazip/PeaZip`, `Hawkynt/CompressionWorkbench`
+(clean-room C# primitives) and `new-the-unarchiver/newtua-formats` (pure-Rust
+legacy decoders). The format is registered as PRONOM `fmt/610`.
+
+For a preservation record the practical conclusion is that no maintained open
+reader will recover these members either — every implementation needs the same
+key, which is why the reference `arj t` skips all 19 with
+`File is password encrypted`.
+
 ## Corrections to earlier statements in this session
 
 Two claims made earlier in the investigation were wrong or misleading and are
@@ -107,6 +183,12 @@ withdrawn:
 
 Neither correction changes the decision recorded below; the reason for that
 decision was never technical difficulty.
+
+A third correction came out of drafting this note: an initial decode of the
+main-header timestamps read the DOS date and time words the wrong way round and
+produced "created 2027-07-06, modified 2004-10-13". Both were artifacts. With
+the words in the correct order the created stamp is 1993-12-15 11:55:12, which
+agrees with `arj l` exactly. The archive's created date was never wrong.
 
 ## What this repository does with that knowledge
 
@@ -151,3 +233,12 @@ all 19 members verifiable against their stored CRC-32s.
   <https://www.elcomsoft.com/help/en/archpr/known_plaintext_attack_(arj).html>
 - The cpsr.org note quoted in the request is reproduced as the accepted answer
   to <https://crypto.stackexchange.com/questions/59668/>
+- Main-header layout, incl. `OLD_SECURED_FLAG` and the security-envelope
+  fields, *ARJ Technical Information*, September 2001:
+  <http://www.sima.cat/baixar/ZIP/ARJ.282/TECHNOTE.TXT>
+- `struct arj_main_header` (C transcription of the same layout), TestDisk
+  `src/file_arj.c`: <https://git.cgsecurity.org/cgit/testdisk/tree/src/file_arj.c>
+- Alternate transcriptions of the April 1993 technical note:
+  <https://mdfs.net/Docs/Comp/FileFormat/ARJ>,
+  <https://www.fileformat.info/format/arj/corion.htm>
+- PRONOM registration `fmt/610`: <http://fileformats.archiveteam.org/wiki/ARJ>
