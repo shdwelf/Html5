@@ -36,6 +36,10 @@ DjVu pages render in the browser with a locally bundled WebAssembly decoder, one
 
 Worked examples live on [[Image Support Demo]].
 
+=== Repository samples and vault ===
+
+The modern repository editions distinguish lightweight TiddlyWiki previews from the exact source-file vault. The offline TiddlyWiki Webxdc carries a small attributed DjVu demonstration file and its local decoder; the complete set of eligible binary samples remains in the content-addressed vault inside the More Wiki JAR. See [[Sample Files and Vault]] for the file map, Drive location, and safe restore instructions.
+
 === The webxdc edition ===
 
 The same wiki also ships as a single offline HTML file (wikiinajar.html) and as a Webxdc bundle (wikiinajar.xdc) for Delta Chat / ArcaneChat. Pages exported there as .wiki text can be dropped into public/docs/wiki here, and pages written here can be imported there. Media does not travel with page text in either direction: copy the files into public/docs/image (here) or import them into the media library (there).

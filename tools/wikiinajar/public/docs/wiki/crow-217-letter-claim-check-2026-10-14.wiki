@@ -1,6 +1,6 @@
 == Crow cryptogram — "217 English letters" claim check (2026-10-14) ==
 
-Source: docs/crow-217-letter-claim-check-2026-10-14.md — synced 2026-10-15 by tools/wikiinajar/sync-docs.mjs.
+Source: docs/crow-217-letter-claim-check-2026-10-14.md — synced 2026-10-16 by tools/wikiinajar/sync-docs.mjs.
 Back to [[Main Page]].
 
 = Crow cryptogram — "217 English letters" claim check (2026-10-14) =

@@ -41,7 +41,7 @@ test("app is a single offline file with the webxdc hook", () => {
 
 test("seed jar ships the documentation page and its neighbours", () => {
   const pages = seeds();
-  for (const title of ["Main Page", "Wiki in a Jar", "Wiki Syntax", "Image Support Demo", "SideBar", "SandBox"]) {
+  for (const title of ["Main Page", "Wiki in a Jar", "Wiki Syntax", "Image Support Demo", "Sample Files and Vault", "SideBar", "SandBox"]) {
     assert.ok(pages[title], `missing seed page: ${title}`);
   }
   const doc = pages["Wiki in a Jar"];
@@ -50,7 +50,13 @@ test("seed jar ships the documentation page and its neighbours", () => {
   assert.ok(doc.includes("[[djvu:reference.djvu|Read the reference]]"), "doc page documents djvu syntax");
   assert.ok(doc.includes("public/docs/image"), "doc page names the Java media folder");
   assert.ok(pages["Main Page"].includes("[[Wiki in a Jar]]"), "Main Page links the documentation page");
+  assert.ok(pages["Main Page"].includes("[[Sample Files and Vault]]"), "Main Page links the sample/vault map");
+  assert.ok(pages["SideBar"].includes("[[Sample Files and Vault]]"), "sidebar links the sample/vault map");
   assert.ok(pages["Image Support Demo"].includes("[[djvu:djvu-smoke.djvu|"), "demo page embeds the smoke DjVu");
+  const sampleMap = pages["Sample Files and Vault"];
+  assert.ok(sampleMap.includes("wiki-editions-supplement.zip"), "sample map identifies the nested TiddlyWiki XDC");
+  assert.ok(sampleMap.includes("more.wiki.in.a.jar.part-00"), "sample map identifies the shared vault payload");
+  assert.ok(sampleMap.includes("/vault/<sha256>"), "sample map distinguishes exact source files from previews");
 });
 
 test("renderer: headings, emphasis, lists, rules, pre", () => {
@@ -307,6 +313,10 @@ test("Java edition ships the same documentation as a .wiki page", () => {
   assert.ok(wiki.includes("[[Image Support Demo]]"), "Java doc page links the demo");
   assert.ok(wiki.includes("public/docs/image"), "Java doc page names the media folder");
   assert.ok(wiki.includes("no authentication"), "Java doc page keeps the safety warning");
+  assert.ok(wiki.includes("[[Sample Files and Vault]]"), "Java doc page links the sample/vault map");
+  const sampleMap = readFileSync(path.join(root, "tools", "wikiinajar", "public", "docs", "wiki", "Sample Files and Vault.wiki"), "utf8");
+  assert.ok(sampleMap.includes("wiki-editions-supplement.zip"), "classic wiki identifies the nested XDC file");
+  assert.ok(sampleMap.includes("more.wiki.in.a.jar.part-00"), "classic wiki identifies split JAR payload");
   const build = readFileSync(path.join(root, "tools", "wikiinajar", "build-image-support.sh"), "utf8");
   assert.ok(build.includes('public/docs/wiki/*.wiki'), "Java build ships every wiki page, including the documentation page");
 });

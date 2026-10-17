@@ -1,0 +1,44 @@
+# Greeran Book research pass: GHS commencement date — 2026-10-16
+
+## Question
+
+What exact date did Glendora High School's Class of 2001 commencement take place?
+The existing chapter already uses Citrus College Stadium as the likely venue;
+the date needs a contemporaneous record before it can be added to the timeline.
+
+## Findings
+
+- Glendora High School's official graduation page currently gives **Wednesday,
+  May 27, 2026** at **Citrus College Stadium**. It confirms the present venue
+  and shows that the school's current graduation page is year-specific; it does
+  not identify the 2001 ceremony. [Official GHS graduation page](https://www.glendorahigh.net/apps/pages/index.jsp?uREC_ID=537515&type=d)
+- A San Gabriel Valley Tribune regional schedule published **May 25, 2011**
+  lists Glendora High School at Citrus College on **June 8, 2011, 6 p.m.** This
+  independently confirms the venue by 2011, but cannot be projected backward
+  fifteen years to supply the 2001 date. [SGV Tribune 2011 schedule](https://www.sgvtribune.com/2011/05/25/san-gabriel-valley-area-high-school-and-college-graduation-schedule/)
+- A third-party Glendora alumni yearbook index lists a **2001 yearbook** and
+  advertises an online viewer. This is a possible retrieval lead, not a school
+  record and not evidence of the ceremony date until the dated page or program
+  is inspected. [Yearbook index](https://glendorahighschoolalumni.com/yearbooks.html)
+- A personal-history video titled **“Final Day at GHS: June 2001”** is described
+  by its uploader as footage of the last day at Glendora High School. Its
+  transcript mentions seeing a classmate at graduation but gives no ceremony
+  date. This is a lead to the school-year context, not a commencement schedule
+  or proof that the ceremony occurred on the filming day. [Video and transcript](https://www.youtube.com/watch?v=yqI93R_e28A)
+
+## Editorial decision
+
+The exact June 2001 date remains **open**. No date was inferred from later
+commencements and no event was added to the master timeline. Keep the venue
+attributed to its existing evidence tier; promote a date only from the actual
+2001 commencement program, a dated contemporary school publication/yearbook, or
+a contemporaneous newspaper schedule.
+
+## Next research step
+
+Try to access the 2001 yearbook viewer and inspect its commencement page and
+photo captions; separately request or locate the printed commencement program
+through Glendora High/Citrus College records. If neither survives, search a
+contemporary SGV Tribune archive around the final week of May and first week of
+June 2001. Record a negative result if the viewer is inaccessible rather than
+replacing the missing date with a pattern-based guess.

@@ -1,0 +1,35 @@
+== Sample Files and Vault ==
+
+This page distinguishes three things that are easy to mistake for one another: TiddlyWiki preview tiddlers, the repository's exact-file vault, and local browser drafts.
+
+=== What is shipped with the offline TiddlyWiki ===
+
+The native TiddlyWiki XDC includes the [[DjVu demo]]: the original `boy.djvu` test fixture, the demo page, and the bundled djvu-rs WebAssembly decoder. The demo's **Download original sample** link saves the fixture. It is a small format-rendering example, not the complete repository sample library. Its provenance and license are in `tools/wikiinajar/test/fixtures/ATTRIBUTION.md` (djvu-rs test corpus; fixture attributed to djvu.js; Unlicense).
+
+TiddlyWiki HTML/XDC also includes the repository catalog, metadata and bounded plain-text source previews. It intentionally does **not** embed every binary file: the previews are a portable index, not a byte-for-byte copy of the source tree.
+
+=== Where exact source files live ===
+
+The self-contained More Wiki JAR holds exact eligible repository files, including sample files, in a content-addressed vault. Each binary is addressed by its SHA-256 below `/vault/<sha256>` and is served as a download, not executed by the wiki server. The library page and catalog link the file metadata to the matching digest.
+
+This JAR vault is distinct from both the browser's local note-editing storage and The Greeran Book's localStorage draft vault. A TiddlyWiki preview is not a backup of either one.
+
+=== Find the TiddlyWiki files on Google Drive ===
+
+[Open the Html5 backup folder](https://drive.google.com/drive/folders/1yZhxIeQDNTgO5UXdhttAsiID2On_Eqgr).
+
+The Drive backup is organized as a shared-JAR payload plus a supplement; the native TiddlyWiki files are not all standalone items at the folder's top level:
+
+* `more.wiki.in.a.jar.part-00` and `more.wiki.in.a.jar.part-01` are the two exact-byte parts of the canonical More Wiki JAR. Its `web/tiddlywiki.html` and content-addressed `web/vault/` are restored from this payload.
+* `wiki-editions-supplement.zip` contains the native Webxdc at `files/tiddlywiki.xdc`.
+* `wiki-backup.json` is the versioned restoration recipe; `restore-wiki-backup.py` reconstructs the release artifacts; `SHA256SUMS` verifies the downloaded files.
+* [Open the supplement ZIP](https://drive.google.com/file/d/1Ll4k1Jhj5oBNhEG8ZcBIrdWl_YnQr8Fb/view?usp=drivesdk) directly.
+
+Download the required files without renaming them. From the directory holding the downloaded backup files, verify and restore with:
+
+<pre><nowiki>sha256sum -c SHA256SUMS
+python3 restore-wiki-backup.py --output restored-wiki --extract-source</nowiki></pre>
+
+The helper refuses to overwrite an existing output directory and checks the declared sizes and SHA-256 values. The exact payload is a backup; do not launch or execute archived sample programs as part of restoring it. Inspect old or executable samples as inert data in a suitable analysis environment.
+
+[[tags:documentation,guide,samples,vault]]

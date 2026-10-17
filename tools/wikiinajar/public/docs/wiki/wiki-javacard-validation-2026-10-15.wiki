@@ -1,6 +1,6 @@
 == Wiki digest applet — real API compilation and scoped simulation, 2026-10-15 ==
 
-Source: docs/wiki-javacard-validation-2026-10-15.md — synced 2026-10-15 by tools/wikiinajar/sync-docs.mjs.
+Source: docs/wiki-javacard-validation-2026-10-15.md — synced 2026-10-16 by tools/wikiinajar/sync-docs.mjs.
 Back to [[Main Page]].
 
 = Wiki digest applet — real API compilation and scoped simulation, 2026-10-15 =

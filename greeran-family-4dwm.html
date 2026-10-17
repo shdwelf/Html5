@@ -266,6 +266,69 @@ html,body{height:100%;overflow:hidden;font-family:Georgia,serif;
   #timebar label{display:none}#time-window{max-width:70px}.tb-btn{padding:5px 7px}
   #ginfo,#gleg{bottom:72px}#gleg{display:none}#ginfo .gst:last-child{display:none}
 }
+
+/* TREE OF LIFE / KEEPSAKE PAGES */
+#p-book{background:radial-gradient(ellipse at top,#182535 0%,#07101a 65%,#04080f 100%);padding:clamp(12px,3vw,30px)}
+.keepsake-flow{max-width:1080px;margin:0 auto;display:grid;gap:18px;padding-bottom:20px}
+.keepsake-page{position:relative;overflow:hidden;border:1px solid #c6a75e;border-radius:14px;
+  background:linear-gradient(135deg,#fbf7eb 0%,#f4ead4 48%,#eee0c2 100%);color:#30291d;
+  padding:clamp(22px,4vw,48px);box-shadow:0 16px 44px rgba(0,0,0,.38),inset 0 0 0 5px rgba(255,255,255,.36)}
+.keepsake-page:before{content:"";position:absolute;inset:12px;border:1px solid rgba(137,101,37,.18);border-radius:9px;pointer-events:none}
+.kp-kicker{position:relative;color:#856a2b;font-size:.62rem;font-weight:700;letter-spacing:.19em;text-transform:uppercase;margin-bottom:24px}
+.kp-grid{position:relative;display:grid;grid-template-columns:minmax(0,1.28fr) minmax(220px,.72fr);gap:clamp(22px,5vw,58px);align-items:center}
+.kp-copy{max-width:650px}
+.kp-overline{color:#80601e;font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin:0 0 10px}
+#p-book h1,#p-book h2,#p-book h3{font-family:Georgia,'Times New Roman',serif;color:#342817;line-height:1.15}
+#p-book h1{font-size:clamp(1.65rem,4vw,2.8rem);font-weight:500;margin:0 0 18px}
+#p-book h2{position:relative;font-size:clamp(1.5rem,3.5vw,2.25rem);font-weight:500;margin:0 0 22px}
+#p-book h3{font-size:1.2rem;font-weight:600;margin:0 0 12px}
+#p-book .kp-copy p:not(.kp-overline),#p-book .kp-resource p:not(.kp-overline),#p-book .kp-qr-card p{font-size:.94rem;line-height:1.75;color:#514734;margin:0 0 13px}
+.kp-tree-art{position:relative;margin:0;text-align:center}
+.kp-tree-art svg{display:block;width:min(100%,320px);height:auto;margin:0 auto;filter:drop-shadow(0 9px 12px rgba(84,60,20,.12))}
+.kp-tree-art figcaption{font-size:.7rem;color:#776744;font-style:italic;margin-top:8px}
+.kp-footnote{position:relative;margin-top:28px;padding-top:14px;border-top:1px solid rgba(132,100,42,.25);color:#796744;font-size:.7rem;letter-spacing:.03em}
+.kp-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.kp-button{border:1px solid #72531c;border-radius:7px;background:#735719;color:#fff9e9;padding:10px 13px;
+  font:700 .76rem Georgia,serif;cursor:pointer;transition:background .18s,transform .18s}
+.kp-button:hover{background:#8d6a24;transform:translateY(-1px)}
+.kp-button.secondary{background:transparent;color:#60491e;border-color:#aa8b4d}
+.kp-button.secondary:hover{background:rgba(128,96,30,.1)}
+.inside-back-cover{background:linear-gradient(140deg,#f7f1e2 0%,#f1e5cc 54%,#e9d8b4 100%)}
+.kp-resource-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:4px 0 16px}
+.kp-resource{border:1px solid rgba(133,99,35,.28);border-radius:10px;background:rgba(255,255,255,.47);padding:18px}
+.kp-resource p.kp-small{font-size:.72rem!important;line-height:1.55!important;color:#74684f!important;margin:13px 0 0!important}
+.kp-resource a:not(.kp-download),.kp-qr-card a{color:#684e18;text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}
+.kp-download{display:inline-flex;align-items:center;gap:7px;border:1px solid #72531c;border-radius:7px;background:#735719;color:#fff9e9;
+  text-decoration:none;padding:10px 12px;font-size:.77rem;font-weight:700;line-height:1.4}
+.kp-download:hover{background:#8d6a24}
+.kp-research-note{position:relative;border-left:4px solid #a07a2c;border-radius:5px;background:rgba(133,99,35,.09);
+  padding:12px 15px;color:#594b31;font-size:.78rem;line-height:1.65;margin:14px 0 20px}
+.kp-qr-heading{position:relative;margin:18px 0 10px}
+.kp-qr-heading p:last-child{max-width:760px;color:#74684f;font-size:.78rem;line-height:1.55}
+.kp-qr-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kp-qr-card{border:1px solid rgba(133,99,35,.35);border-radius:9px;background:rgba(255,255,255,.44);overflow:hidden}
+.kp-qr-card summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;
+  color:#4a3c22;font-size:.81rem;font-weight:700;cursor:pointer;user-select:none}
+.kp-qr-card summary::-webkit-details-marker{display:none}
+.kp-qr-card summary:focus-visible{outline:3px solid #b78b32;outline-offset:-3px}
+.kp-qr-plus{font-size:1.1rem;color:#82601e;transition:transform .2s}
+.kp-qr-card[open] .kp-qr-plus{transform:rotate(45deg)}
+.kp-qr-body{display:grid;grid-template-columns:minmax(130px,190px) minmax(0,1fr);align-items:center;gap:16px;border-top:1px solid rgba(133,99,35,.2);padding:14px}
+.kp-qr-body img{display:block;width:min(100%,190px);height:auto;aspect-ratio:1;background:#fff;border:5px solid #fff;border-radius:4px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.kp-qr-body a{font-size:.75rem;font-weight:700}
+.kp-closing{position:relative;text-align:center;margin:24px 0 0;color:#80632c;font-style:italic;font-size:.9rem}
+@media(max-width:760px){
+  .kp-grid{grid-template-columns:1fr}
+  .kp-tree-art{max-width:280px;margin:4px auto 0}
+  .kp-resource-grid,.kp-qr-grid{grid-template-columns:1fr}
+  .kp-qr-body{grid-template-columns:minmax(120px,180px) minmax(0,1fr)}
+}
+@media(max-width:430px){
+  .kp-actions{display:grid}
+  .kp-button{width:100%}
+  .kp-qr-body{grid-template-columns:1fr}
+  .kp-qr-body img{margin:0 auto}
+}
 </style>
 </head>
 <body>
@@ -314,6 +377,7 @@ html,body{height:100%;overflow:hidden;font-family:Georgia,serif;
   <div class="tab" data-t="people" onclick="sw('people')">👥 All People</div>
   <div class="tab" data-t="fixes" onclick="sw('fixes')">✏️ Corrections</div>
   <div class="tab" data-t="next" onclick="sw('next')">🔎 Next Steps</div>
+  <div class="tab" data-t="book" onclick="sw('book')">📖 Tree of Life</div>
 </div>
 <div id="pnls">
 
@@ -451,6 +515,114 @@ html,body{height:100%;overflow:hidden;font-family:Georgia,serif;
 <div class="step"><div class="stn">8</div><div class="stt"><b>Griffith's Valuation / PRONI</b> — Greeran farm Ballymacarney ~1864. Identify Bernard Sr.'s father. <a href="#" >askaboutireland.ie</a></div></div>
 <div class="step"><div class="stn">9</div><div class="stt"><b>publicrecords.directory</b> — Historical addresses: Duarte/Covina (Hewitt/Greeran), Pasadena/Altadena (Dunn), Elmhurst NY (James T. Greeran).</div></div>
 <div class="step"><div class="stn">10</div><div class="stt"><b>CA Marriage Index 1960–1985</b> — Terry Greeran × Miller; Patricia Greeran × Dunn. (Ancestry @S327785611@)</div></div>
+</div>
+
+<div class="pnl" id="p-book">
+  <div class="keepsake-flow">
+    <section class="keepsake-page family-preface" aria-labelledby="tree-preface-title">
+      <div class="kp-kicker">Greeran Family Tree · Preface</div>
+      <div class="kp-grid">
+        <div class="kp-copy">
+          <p class="kp-overline">THE TREE OF LIFE</p>
+          <h1 id="tree-preface-title">A family is a constellation of names, places, and stories.</h1>
+          <p>Every family history begins with a question: who came before, and what can the records actually tell us? This tree brings names and relationships into view without mistaking a line on a chart for proof.</p>
+          <p>Dates, places, and family links are preserved as the source presents them. Gaps and uncertainty remain part of the story; they are invitations to research, not permission to guess. Follow the branches with curiosity, and return to the records whenever a detail matters.</p>
+          <p>This keepsake joins the Greeran family with the many connected lines recorded in the tree. It is offered as a living map: something to explore, question, and carefully pass forward.</p>
+          <div class="kp-actions">
+            <button type="button" class="kp-button" onclick="sw('tree')">🌳 Explore the family tree</button>
+            <button type="button" class="kp-button secondary" onclick="sw('globe')">🌍 Open the 4DWM globe</button>
+          </div>
+        </div>
+        <figure class="kp-tree-art">
+          <svg viewBox="0 0 320 360" role="img" aria-labelledby="tree-svg-title tree-svg-desc">
+            <title id="tree-svg-title">Tree of Life</title>
+            <desc id="tree-svg-desc">An illustrated tree with branching limbs, leaves, and spreading roots.</desc>
+            <defs>
+              <linearGradient id="tree-trunk" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#62451d"/><stop offset="1" stop-color="#a5772c"/>
+              </linearGradient>
+              <radialGradient id="tree-leaf">
+                <stop offset="0" stop-color="#e8c979"/><stop offset="1" stop-color="#b48738"/>
+              </radialGradient>
+            </defs>
+            <circle cx="160" cy="128" r="108" fill="#f8efd9" stroke="#d9c28e" stroke-width="2"/>
+            <g fill="none" stroke="url(#tree-trunk)" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M160 290 C151 247 160 205 158 169 C156 132 137 103 109 79" stroke-width="13"/>
+              <path d="M160 255 C178 221 184 188 181 151 C178 115 194 88 219 68" stroke-width="10"/>
+              <path d="M158 213 C136 188 117 174 87 164" stroke-width="7"/>
+              <path d="M180 195 C207 177 226 165 252 158" stroke-width="7"/>
+              <path d="M152 173 C128 143 127 120 131 99" stroke-width="5"/>
+              <path d="M181 157 C204 132 211 112 207 91" stroke-width="5"/>
+              <path d="M160 289 C142 308 119 318 98 325 M160 289 C174 311 195 321 220 328 M159 291 C157 319 151 333 143 345 M164 292 C168 318 174 335 185 347" stroke-width="5"/>
+            </g>
+            <g fill="url(#tree-leaf)" stroke="#9a702e" stroke-width="1.5">
+              <circle cx="102" cy="75" r="17"/><circle cx="126" cy="58" r="17"/><circle cx="151" cy="71" r="17"/>
+              <circle cx="200" cy="62" r="18"/><circle cx="224" cy="80" r="17"/><circle cx="238" cy="108" r="17"/>
+              <circle cx="83" cy="139" r="17"/><circle cx="111" cy="120" r="18"/><circle cx="143" cy="108" r="17"/>
+              <circle cx="183" cy="107" r="17"/><circle cx="214" cy="127" r="18"/><circle cx="256" cy="147" r="16"/>
+              <circle cx="93" cy="177" r="15"/><circle cx="229" cy="177" r="15"/>
+            </g>
+            <circle cx="160" cy="197" r="10" fill="#f4e5c2" stroke="#876327" stroke-width="2"/>
+          </svg>
+          <figcaption>Roots below; branches reaching across generations.</figcaption>
+        </figure>
+      </div>
+      <div class="kp-footnote">A keepsake for the Greeran family — with each branch read alongside its evidence.</div>
+    </section>
+
+    <section class="keepsake-page inside-back-cover" aria-labelledby="inside-back-title">
+      <div class="kp-kicker">Inside back cover · Keepsake edition</div>
+      <h2 id="inside-back-title">Words to carry, and a tree to revisit</h2>
+      <div class="kp-resource-grid">
+        <article class="kp-resource">
+          <p class="kp-overline">COMPANION READING</p>
+          <h3>World English Bible (WEB)</h3>
+          <p>The complete 66-book English Bible, prepared as a reflowable EPUB for offline reading. The WEB text is public domain and is included unchanged; the ebook is a companion resource, not a source for family-history claims.</p>
+          <a class="kp-download" href="./assets/greeran/world-english-bible.epub" download>⬇ Download the Bible ebook · EPUB</a>
+          <p class="kp-small">Text source: <a href="https://ebible.org/pdf/eng-web/eng-web_all.pdf" target="_blank" rel="noopener">eBible.org · World English Bible</a>. “World English Bible” is a trademark; the text in this ebook has not been altered.</p>
+        </article>
+        <article class="kp-resource">
+          <p class="kp-overline">FAMILY RECORD</p>
+          <h3>Download the GEDCOM snapshot</h3>
+          <p>A baseline export of the data already embedded in this tree: 2,089 source people and 588 families, plus one blank reference stub to preserve a family link that has no person record in the embedded data.</p>
+          <a class="kp-download" href="./greeran-family-4dwm.ged" download>⬇ Download baseline GEDCOM</a>
+          <p class="kp-small">This snapshot is not a merge with the requested Kirkpatrick first-name data. It preserves the current tree relationships and labels its provenance in the GEDCOM header.</p>
+        </article>
+      </div>
+      <div class="kp-research-note" role="note">
+        <b>Research status:</b> no raw GEDCOM or authorized Kirkpatrick ARJ was available. The local 1993 First Name Almanac is a shareware ZIP, not an ARJ; its notice limits redistribution to the original form. No member or name data was extracted or used. A verified GEDCOM and permission for the intended name-data source are still needed for that merge.
+      </div>
+      <div class="kp-qr-heading">
+        <div>
+          <p class="kp-overline">TWO HIDDEN LINKS</p>
+          <p>Open a reveal to show a scan-ready QR code. Each panel also provides its direct link for accessibility and for devices that cannot scan from this screen.</p>
+        </div>
+      </div>
+      <div class="kp-qr-grid">
+        <details class="kp-qr-card" id="qr-family">
+          <summary><span>🌳 Reveal the family-tree QR</span><span class="kp-qr-plus" aria-hidden="true">+</span></summary>
+          <div class="kp-qr-body">
+            <img data-qr-image="family" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMjAiIGhlaWdodD0iMzIwIiB2aWV3Qm94PSIwIDAgNDMgNDMiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyI+PHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTAgMGg0M3Y0M0gweiIvPjxwYXRoIHN0cm9rZT0iIzEwMTgyMCIgZD0iTTMgMy41aDdtMSAwaDFtMSAwaDJtMiAwaDNtMiAwaDNtMyAwaDFtMSAwaDFtMiAwaDdNMyA0LjVoMW01IDBoMW0yIDBoMW0zIDBoMW0xIDBoNW0yIDBoM20xIDBoMW0xIDBoMW0xIDBoMW01IDBoMU0zIDUuNWgxbTEgMGgzbTEgMGgxbTMgMGgxbTEgMGgzbTIgMGgxbTMgMGgybTEgMGgxbTEgMGgybTIgMGgxbTEgMGgzbTEgMGgxTTMgNi41aDFtMSAwaDNtMSAwaDFtMSAwaDFtMSAwaDJtMSAwaDJtMSAwaDFtMSAwaDFtNiAwaDJtMSAwaDFtMSAwaDFtMSAwaDNtMSAwaDFNMyA3LjVoMW0xIDBoM20xIDBoMW0xIDBoNG0xIDBoM20xIDBoMm00IDBoMW0xIDBoNG0xIDBoMW0xIDBoM20xIDBoMU0zIDguNWgxbTUgMGgxbTEgMGgxbTIgMGgxbTIgMGg0bTEgMGgxbTUgMGgxbTQgMGgxbTUgMGgxTTMgOS41aDdtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDdNMTEgMTAuNWgybTEgMGgxbTEgMGg0bTIgMGgzbTEgMGgyTTMgMTEuNWgxbTMgMGgxbTEgMGgzbTEgMGgzbTEgMGgzbTMgMGgxbTMgMGgxbTIgMGgxbTEgMGg1bTIgMGgxTTcgMTIuNWgxbTggMGgybTIgMGgzbTIgMGgxbTEgMGgxbTEgMGgybTQgMGgxbTIgMGgxTTQgMTMuNWgzbTIgMGgxbTIgMGg1bTEgMGgxbTEgMGgzbTMgMGg1bTMgMGgxbTEgMGgxTTMgMTQuNWgybTYgMGg0bTEgMGg1bTEgMGg0bTMgMGgzbTEgMGgzbTEgMGgyTTQgMTUuNWgzbTIgMGgybTUgMGgybTIgMGgxbTIgMGgybTIgMGgxbTIgMGgxbTEgMGgzbTIgMGgzTTMgMTYuNWgzbTEgMGgxbTQgMGgzbTMgMGgybTEgMGgxbTEgMGgybTEgMGgxbTEgMGgzbTQgMGgybTEgMGgxTTQgMTcuNWgybTMgMGgybTMgMGg1bTEgMGgxbTIgMGgxbTIgMGgybTEgMGgzbTIgMGg0TTMgMTguNWgxbTEgMGgybTEgMGgxbTIgMGgzbTEgMGgybTEgMGg0bTEgMGgxbTEgMGgxbTEgMGgxbTMgMGg1bTEgMGgxbTEgMGgxTTQgMTkuNWgxbTEgMGgxbTIgMGgzbTMgMGgxbTEgMGgybTIgMGgybTIgMGgxbTEgMGgxbTMgMGg0bTEgMGg0TTMgMjAuNWgybTEgMGgxbTMgMGgzbTEgMGgxbTQgMGgybTEgMGgzbTEgMGgxbTMgMGgybTIgMGgzbTEgMGgxTTUgMjEuNWgybTIgMGgxbTEgMGgxbTEgMGgxbTEgMGgxbTMgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTIgMGg1bTEgMGgxbTEgMGgxTTMgMjIuNWgybTMgMGgxbTEgMGgxbTIgMGgxbTIgMGgxbTMgMGgybTIgMGgxbTEgMGgybTEgMGgybTMgMGgybTEgMGgyTTUgMjMuNWgybTIgMGgybTEgMGgzbTMgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTMgMGgybTEgMGgzbTIgMGgxTTMgMjQuNWgxbTEgMGgybTYgMGgzbTIgMGg0bTEgMGgxbTIgMGgxbTEgMGg1bTEgMGgyTTMgMjUuNWgybTQgMGgxbTEgMGgxbTIgMGgybTIgMGgxbTIgMGgxbTIgMGgzbTEgMGgzbTEgMGgxbTEgMGg0TTQgMjYuNWgxbTEgMGgxbTEgMGgxbTMgMGg0bTEgMGgzbTMgMGgybTEgMGgybTEgMGgybTMgMGgybTEgMGgxbTEgMGgxTTUgMjcuNWgxbTEgMGgxbTEgMGgxbTEgMGgxbTEgMGg1bTEgMGgxbTMgMGgxbTMgMGgxbTQgMGgzbTEgMGgzTTMgMjguNWgybTEgMGgybTMgMGgybTEgMGgxbTIgMGgxbTMgMGgybTEgMGgzbTIgMGgzbTMgMGgyTTUgMjkuNWgybTIgMGgybTEgMGg3bTMgMGgxbTEgMGgzbTEgMGgzbTMgMGgxbTIgMGgxTTggMzAuNWgxbTIgMGgybTMgMGgxbTEgMGgzbTEgMGg1bTIgMGg0bTQgMGgzTTMgMzEuNWgybTEgMGgxbTEgMGgzbTEgMGgybTEgMGgxbTEgMGgxbTIgMGgybTEgMGg1bTIgMGg4bTEgMGgxTTExIDMyLjVoMW0xIDBoM20yIDBoMm0xIDBoMW0yIDBoM20zIDBoMm0zIDBoMU0zIDMzLjVoN20xIDBoMW02IDBoMW0xIDBoMW0yIDBoMW0yIDBoMW0yIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0yIDBoMU0zIDM0LjVoMW01IDBoMW0yIDBoMW0xIDBoM20xIDBoMW0xIDBoMm0xIDBoMW0xIDBoMm0yIDBoMW0xIDBoMW0zIDBoNU0zIDM1LjVoMW0xIDBoM20xIDBoMW0xIDBoMW0zIDBoMW0xIDBoMm0yIDBoMW0zIDBoMm0yIDBoMW0xIDBoOE0zIDM2LjVoMW0xIDBoM20xIDBoMW0yIDBoM20xIDBoMm0xIDBoMm0xIDBoMm0yIDBoMW0xIDBoMm0yIDBoM200IDBoMU0zIDM3LjVoMW0xIDBoM20xIDBoMW0zIDBoMW0zIDBoMW0xIDBoMW0xIDBoMW0xIDBoMm0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMm0yIDBoMU0zIDM4LjVoMW01IDBoMW0yIDBoMW0xIDBoMm00IDBoMm0yIDBoMm0xIDBoMW0xIDBoMm0yIDBoMW0xIDBoMW0xIDBoMk0zIDM5LjVoN20xIDBoMW0xIDBoMW0yIDBoM20xIDBoMW0xIDBoNm0yIDBoMW0xIDBoM20yIDBoMyIvPjwvc3ZnPgo=" alt="QR code for the Greeran Family Tree 4DWM download" width="220" height="220">
+            <div>
+              <p>Scan to open the current GitHub file page for the Greeran Family Tree Webxdc.</p>
+              <a data-qr-target href="https://github.com/shdwelf/Html5/blob/main/greeran-family-4dwm.xdc" target="_blank" rel="noopener">Open family-tree download page</a>
+            </div>
+          </div>
+        </details>
+        <details class="kp-qr-card" id="qr-bible">
+          <summary><span>📖 Reveal the Bible ebook QR</span><span class="kp-qr-plus" aria-hidden="true">+</span></summary>
+          <div class="kp-qr-body">
+            <img data-qr-image="bible" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMjAiIGhlaWdodD0iMzIwIiB2aWV3Qm94PSIwIDAgNDMgNDMiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyI+PHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTAgMGg0M3Y0M0gweiIvPjxwYXRoIHN0cm9rZT0iIzEwMTgyMCIgZD0iTTMgMy41aDdtMyAwaDJtMSAwaDFtMSAwaDFtMiAwaDNtMiAwaDFtMiAwaDFtMSAwaDFtMSAwaDdNMyA0LjVoMW01IDBoMW0zIDBoMW0xIDBoMW0xIDBoMW0xIDBoM20yIDBoMm0yIDBoMW0xIDBoMm0xIDBoMW01IDBoMU0zIDUuNWgxbTEgMGgzbTEgMGgxbTEgMGgxbTEgMGgzbTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgybTEgMGgxbTIgMGgxbTEgMGgxbTEgMGgxbTEgMGgzbTEgMGgxTTMgNi41aDFtMSAwaDNtMSAwaDFtMSAwaDJtMiAwaDRtMSAwaDFtMSAwaDFtMiAwaDFtMSAwaDNtMyAwaDFtMSAwaDNtMSAwaDFNMyA3LjVoMW0xIDBoM20xIDBoMW0xIDBoMW0xIDBoMm0xIDBoMW0xIDBoMm0xIDBoM20yIDBoMW00IDBoMW0xIDBoMW0xIDBoM20xIDBoMU0zIDguNWgxbTUgMGgxbTEgMGgxbTEgMGgxbTIgMGgybTUgMGgzbTIgMGgzbTIgMGgxbTUgMGgxTTMgOS41aDdtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDdNMTEgMTAuNWg0bTIgMGgybTMgMGgzbTQgMGgxbTEgMGgxTTMgMTEuNWgxbTEgMGg1bTMgMGgybTEgMGg3bTIgMGgxbTEgMGgzbTMgMGg1TTQgMTIuNWg1bTEgMGgxbTMgMGgxbTEgMGgxbTEgMGgxbTEgMGg1bTEgMGgxbTEgMGgxbTMgMGgxbTEgMGgxbTEgMGgxbTEgMGgxTTQgMTMuNWgybTMgMGgxbTIgMGgybTEgMGgybTEgMGgybTUgMGgxbTEgMGg0bTEgMGg0bTEgMGgzTTMgMTQuNWgzbTEgMGgxbTIgMGgzbTEgMGgzbTEgMGgxbTIgMGgybTEgMGgxbTEgMGgxbTIgMGgxbTEgMGgybTEgMGgxbTQgMGgxTTcgMTUuNWgxbTEgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTEgMGgxbTEgMGgxbTUgMGg0bTIgMGgybTEgMGgxbTEgMGgzTTMgMTYuNWgxbTIgMGgybTIgMGgybTMgMGgybTIgMGg0bTMgMGgxbTEgMGgxbTUgMGgxbTMgMGgxTTQgMTcuNWgxbTQgMGgxbTQgMGg3bTIgMGgybTMgMGgzbTIgMGg0bTEgMGgyTTMgMTguNWgybTEgMGgybTIgMGg0bTEgMGg0bTIgMGgxbTEgMGg0bTIgMGgxbTQgMGgybTIgMGgyTTMgMTkuNWgxbTEgMGgxbTMgMGgybTEgMGg1bTMgMGgxbTQgMGgxbTEgMGg0bTEgMGgybTEgMGgxbTEgMGgxbTEgMGgxTTMgMjAuNWgzbTIgMGgxbTMgMGgxbTEgMGgxbTEgMGgxbTEgMGg2bTEgMGgybTEgMGgybTEgMGgxbTIgMGgxbTEgMGgxbTEgMGgxTTMgMjEuNWg1bTEgMGgybTEgMGgxbTEgMGgxbTEgMGgybTIgMGgxbTIgMGgxbTEgMGgxbTMgMGgzbTIgMGgybTEgMGgzTTMgMjIuNWgzbTIgMGgxbTIgMGgxbTEgMGgzbTMgMGgxbTQgMGgybTMgMGgybTEgMGg0bTMgMGgxTTMgMjMuNWg5bTQgMGgybTIgMGgxbTEgMGg0bTIgMGgxbTEgMGgxbTEgMGgybTEgMGgzTTMgMjQuNWgybTIgMGgxbTUgMGg0bTIgMGgxbTEgMGgybTEgMGgxbTEgMGgxbTQgMGgybTMgMGgxTTMgMjUuNWgybTIgMGgxbTEgMGgxbTEgMGgybTEgMGgybTIgMGgybTcgMGgybTEgMGg3bTEgMGgyTTQgMjYuNWgybTEgMGgybTIgMGgxbTIgMGg1bTQgMGgzbTQgMGg2bTIgMGgxTTMgMjcuNWgxbTEgMGgzbTEgMGg0bTIgMGg0bTEgMGgxbTEgMGgxbTIgMGgxbTEgMGg0bTEgMGgybTEgMGgxbTEgMGgyTTMgMjguNWg0bTUgMGgybTIgMGgzbTMgMGgybTIgMGgxbTEgMGgxbTIgMGgxTTMgMjkuNWgxbTUgMGgxbTEgMGgzbTQgMGgxbTEgMGgybTIgMGgxbTMgMGgzbTEgMGg0bTIgMGgyTTMgMzAuNWgxbTMgMGgybTQgMGgxbTEgMGgxbTUgMGgybTEgMGgxbTQgMGgxbTMgMGgxTTMgMzEuNWgxbTIgMGgxbTIgMGg0bTEgMGgybTIgMGgxbTEgMGgybTMgMGgxMW0xIDBoMW0xIDBoMU0xMSAzMi41aDFtMSAwaDFtMSAwaDNtMSAwaDFtMSAwaDNtMSAwaDJtMSAwaDJtMSAwaDFtMyAwaDJNMyAzMy41aDdtMiAwaDFtMSAwaDFtMiAwaDNtMSAwaDFtMSAwaDJtMiAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFNMyAzNC41aDFtNSAwaDFtMSAwaDJtMSAwaDJtMSAwaDNtMSAwaDFtMSAwaDJtMiAwaDFtMyAwaDFtMyAwaDJNMyAzNS41aDFtMSAwaDNtMSAwaDFtMSAwaDRtMiAwaDFtMiAwaDFtMSAwaDFtMyAwaDEwbTEgMGgyTTMgMzYuNWgxbTEgMGgzbTEgMGgxbTEgMGgxbTMgMGgxbTMgMGgybTEgMGgzbTEgMGgybTIgMGgxbTEgMGgybTEgMGgxbTIgMGgyTTMgMzcuNWgxbTEgMGgzbTEgMGgxbTEgMGgybTIgMGgxbTIgMGgzbTIgMGgzbTEgMGgybTEgMGgybTQgMGgxbTEgMGgyTTMgMzguNWgxbTUgMGgxbTIgMGg0bTIgMGgybTMgMGgybTQgMGgxbTEgMGgzbTEgMGgxbTMgMGgxTTMgMzkuNWg3bTEgMGgybTEgMGgxbTIgMGgybTEgMGgxbTEgMGgxbTIgMGgxbTEgMGgzbTIgMGgybTEgMGgxbTEgMGgzIi8+PC9zdmc+Cg==" alt="QR code for the World English Bible EPUB" width="220" height="220">
+            <div>
+              <p>Scan to open the current GitHub file page for the World English Bible EPUB.</p>
+              <a data-qr-target href="https://github.com/shdwelf/Html5/blob/main/assets/greeran/world-english-bible.epub" target="_blank" rel="noopener">Open Bible ebook page</a>
+            </div>
+          </div>
+        </details>
+      </div>
+      <p class="kp-closing">May the branches be remembered, the evidence kept close, and the stories passed on with care.</p>
+    </section>
+  </div>
 </div>
 
 </div></div>
