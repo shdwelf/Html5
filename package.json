@@ -45,7 +45,8 @@
     "test:wiki-backup": "python3 tools/wiki-workspace/test-backup.py",
     "test:wiki-javacard": "node --test tests/wiki-javacard.test.mjs && node tools/wiki-workspace/javacard/test.mjs",
     "build:xport-v92-faxcard": "node tools/build-wallplug-eagle.mjs --check --design xport-v92-faxcard",
-    "test:xport-v92-firmware": "node --test tests/xport-v92-firmware.test.mjs"
+    "test:xport-v92-firmware": "node --test tests/xport-v92-firmware.test.mjs",
+    "build:xport-v92-audiobridge": "node tools/build-wallplug-eagle.mjs --design xport-v92-audiobridge"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",
