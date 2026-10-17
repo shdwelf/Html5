@@ -16,9 +16,11 @@ Folder: **Html5 backup — 2026-10-17 (FIRST NAME ALMANAC v1.02b Xena preservati
 | `0001-Add-FIRST-NAME-ALMANAC-v1.02b-Xena-inspired-preserva.patch` | 37,753 | `9ea0efad2c44967898a6b7cb8e4c5093c27e2ff8ea16f7baba709b6df0f17d5d` | commit `eb099fb` as `git format-patch --binary` |
 | `MANIFEST.sha256` | 315 | — | SHA-256 of every file above |
 | `README.txt` | 1,800 | — | restore recipe and the scope/gap statement |
+| `fna102b-xena-2026-10-17.zip` | 13,848 | `1431d9b3f7c0af711cfe7e53eadd2ab6e88f88cc4540f6320beccebe7ab8bd85` | the BagIt 1.0 bag itself — all 13 files, added because `dist/` is gitignored so the bag exists nowhere else durable |
 
-The folder listing was re-read after upload and returned exactly these four
-objects with matching byte counts.
+The folder listing was re-read after the first upload and returned those four
+objects with matching byte counts; the bag zip was added afterwards and
+verified at 13,848 bytes.
 
 Pull request: <https://github.com/shdwelf/Html5/pull/120>
 
@@ -44,10 +46,12 @@ git am ./0001-Add-FIRST-NAME-ALMANAC-v1.02b-Xena-inspired-preserva.patch
   [`drive-repo-sync-2026-10-04.md`](drive-repo-sync-2026-10-04.md) ("no Git
   history on Drive") is still open for the whole repository — this branch is
   simply no longer only on GitHub.
-- **The preservation bag itself is not in this backup.** `dist/fna102b-xena/`
-  is gitignored and is rebuilt byte-for-byte by `npm run build:fna-xena` from
+- **The preservation bag is in the backup as `fna102b-xena-2026-10-17.zip`,**
+  added after the initial four files. `dist/fna102b-xena/` is gitignored, so
+  without it the bag existed only in the sandbox working tree. It is also
+  rebuilt byte-for-byte by `npm run build:fna-xena` from
   `samples/archive/kirkpatrick/FNA102B.ZIP`, which is already in the repository
-  and provenance-recorded.
+  and provenance-recorded — the zip is a convenience copy, not the only route.
 - **No decrypted content exists to back up.** `MEANINGS.OVL` and `NAMES.OVL`
   are the halves of a split ARJ archive whose members carry the GARBLED flag.
   They are recorded by SHA-256 and format identification only. No ARJ member
