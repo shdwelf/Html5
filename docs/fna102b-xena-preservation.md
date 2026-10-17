@@ -84,6 +84,50 @@ Recorded in `normalized/install-com-ghidra.txt`:
 No garble key appears in the plaintext string table. The invocation template at offset 3022 reads
 `KGK -Y -g`, with the key supplied at runtime rather than stored as a visible string.
 
+## Registration mechanism — what the installer checks
+
+Recorded because it was asked, and because the answer is that there is nothing
+to find.
+
+`REGISTER.NAM` is **not a member of `FNA102B.ZIP`.** The ZIP has exactly five
+members (`INSTALL.COM`, `MEANINGS.OVL`, `NAMES.OVL`, `FILE_ID.DIZ`,
+`SYSOP.DOC`). `REGISTER.NAM` is garbled member 15 of `KGK.ARJ` — 2,359 bytes,
+CRC `CBC41884`, modifier `0x00` — and it is a `.NAM` text document in the same
+family as `SYSOP.NAM`, `VENDOR.NAM`, `DOCS.NAM`, `CONFIG.NAM` and
+`COPYRITE.NAM`. It is a registration form, not code. There is nothing in it to
+disassemble.
+
+A token scan of the full 3,988-byte `INSTALL.COM` image for `serial`, `key`,
+`valid`, `regist`, `expire`, `trial`, `licen` and `password` (both cases)
+returns **zero hits for every one of them.** The installer performs no
+credential check of any kind. Its batch-file template, read out of the image at
+offsets 2955–3125, is:
+
+```bat
+ECHO OFF
+COPY/B MEANINGS.OVL+NAMES.OVL KGK.EXE
+KGK -Y -g<password>
+cd\almanac
+:: writes \ALMANAC\CONFIG.NAM and \ALMANAC\COPYRITE.NAM
+:: "To Start FIRST NAME ALMANAC type: NAMES"
+```
+
+So the two `.OVL` halves are concatenated into `KGK.EXE` — a self-extracting
+ARJ — which is then invoked with `-Y` and `-g<password>`. The password is the
+only credential in the entire distribution, and it is a runtime argument, not a
+computed value.
+
+**There is no key algorithm in the shipped software, so there is no keygen to
+write or find.** The registration artefact was a password the vendor mailed to
+the registrant: `SYSOP.DOC`, which is in the clear in this ZIP and preserved in
+the bag, gives the route as $49.95 to Kenneth G. Kirkpatrick, P.O. Box 981,
+Taft CA 93268-0981, CompuServe 72712,3156.
+
+The only place a serial or licence check could plausibly live is `NAMES.EXE`
+(269,124 bytes), which is itself a garbled member of `KGK.ARJ` and cannot be
+examined. That is the same blocker as the rest of the archive, and it is not
+worked around here.
+
 ## A provenance cross-check with KGK.ARJ
 
 The ZIP's own CRC-32 values confirm which documents the two archives share:
