@@ -1,18 +1,14 @@
 /** SITE-K HTML5 app shell — hash modes: #grid | #terrarium | #keyspace | #validator | #studio | #ghidra | #flash | #dossier */
 import { initWm } from "./wm.js";
 import { SITEK_APP_BY_ID } from "./sitek-catalog.js";
+import { framePageForMode, isSitekFrameMode, normalizeSitekMode, syncSitekDockLink } from "./sitek-modes.js";
 
 document.documentElement.dataset.shell = "1";
 
 const $ = (id) => document.getElementById(id);
 
 function currentMode() {
-  const raw = (location.hash || "#grid").replace(/^#\/?/, "").split("?")[0];
-  const normalized = raw === "artstudio" || raw === "art-studio" ? "studio"
-    : raw === "distro-dossier" || raw === "distro" ? "dossier"
-    : raw === "flash-decompiler" || raw === "swf" ? "flash" : raw;
-  if (["terrarium", "keyspace", "validator", "studio", "enso", "ghidra", "flash", "dossier", "grid"].includes(normalized)) return normalized;
-  return "grid";
+  return normalizeSitekMode(location.hash);
 }
 
 function isStandalone() {
@@ -25,12 +21,10 @@ function isStandalone() {
 
 function markDock(mode) {
   document.body.dataset.mode = mode;
+  document.body.dataset.shellView = isSitekFrameMode(mode) ? "frame" : "map";
   document.body.dataset.display = isStandalone() ? "standalone" : "browser";
   document.body.dataset.net = navigator.onLine ? "on" : "off";
-  document.querySelectorAll(".app-dock a").forEach((a) => {
-    a.classList.toggle("on", a.dataset.mode === mode);
-    a.setAttribute("href", `#${a.dataset.mode}`);
-  });
+  document.querySelectorAll(".app-dock a").forEach((a) => syncSitekDockLink(a, mode));
   window.SITEK_WM?.sync?.();
   const net = $("netChip");
   if (net) net.hidden = navigator.onLine;
@@ -102,14 +96,9 @@ let started = null;
 async function start(mode) {
   markDock(mode);
 
-  if (mode === "keyspace" || mode === "validator" || mode === "studio" || mode === "enso" || mode === "ghidra" || mode === "flash" || mode === "dossier") {
+  const view = framePageForMode(mode);
+  if (view) {
     const frame = $("keyframe");
-    const view = (mode === "studio" || mode === "enso") ? "./art-studio.html"
-      : mode === "validator" ? "./validator.html"
-      : mode === "ghidra" ? "./ghidra-lab.html"
-      : mode === "flash" ? "./flash-decompiler.html"
-      : mode === "dossier" ? "./distro-dossier.html"
-      : "./keyspace.html";
     if (frame && frame.getAttribute("src") !== view) frame.src = view;
     const titles = {
       studio: "Ensō & Haiku Wallet Forging Engine · Art Studio",

@@ -8,7 +8,7 @@
  * (retain source + create an open normalized rendition), not a native Xena file.
  */
 
-import { zipSync } from "../vendor/fflate/index.mjs";
+import { zipSync } from "../vendor/fflate/browser.mjs";
 
 export const MAX_GPX_FILE_BYTES = 25 * 1024 * 1024;
 export const MAX_GEOCACHES = 5000;

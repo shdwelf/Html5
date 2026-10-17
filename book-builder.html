@@ -605,7 +605,10 @@
               </div>
             </div>
             <div class="map-stage">
-              <canvas id="researchMap" width="1200" height="700" aria-label="Interactive research map"></canvas>
+              <div class="map-canvas-wrap">
+                <canvas id="researchMap" width="1200" height="700" aria-label="Interactive research map"></canvas>
+                <canvas id="routeAnimationCanvas" width="1200" height="700" aria-hidden="true"></canvas>
+              </div>
               <div class="map-aside">
                 <div id="mapLegend" class="map-legend"></div>
 
@@ -619,12 +622,17 @@
 
                 <div id="mapPlaceList" class="map-place-list"></div>
 
-                <section class="map-block">
+                <section class="map-block retro-timeline-block">
                   <div class="map-block-head">
-                    <b>Private origin timeline</b>
-                    <small>local-only lane</small>
+                    <b>8-bit personal timeline</b>
+                    <small>dated records · undated memories stay undated</small>
                   </div>
-                  <div id="timelineLane" class="timeline-lane"></div>
+                  <div class="retro-timeline-controls">
+                    <button type="button" id="playPersonalTimelineBtn">Play timeline</button>
+                    <button type="button" id="stopPersonalTimelineBtn">Stop</button>
+                  </div>
+                  <p id="timelinePlaybackStatus" class="retro-playback-status" aria-live="polite">Press Play to step through dated timeline anchors.</p>
+                  <div id="timelineLane" class="timeline-lane retro-timeline"></div>
                 </section>
 
                 <section class="map-block google-timeline-block">
@@ -632,16 +640,19 @@
                     <b>Google Timeline import</b>
                     <small>local-only alternative</small>
                   </div>
-                  <p class="google-timeline-note">Import exported Google Maps Timeline JSON as a local-only alternative to hand-entered pins. Parsed places and visit notes stay in this browser and remain excluded from viewer, SFX, project export, and webxdc sharing unless you manually promote them into chapter text.</p>
+                  <p class="google-timeline-note">Import exported Google Maps Timeline JSON as a local-only alternative to hand-entered pins. Parsed places and visit notes stay in this browser and remain excluded from viewer, SFX, project export, and webxdc sharing unless you manually promote them into chapter text. Route playback uses only imported coordinates; the 2003 Corolla memory has no confirmed start or end coordinates, so it stays on the timeline and is not drawn as a map route.</p>
                   <label class="google-timeline-upload">
                     <span>Timeline JSON file(s)</span>
                     <input id="googleTimelineInput" type="file" accept=".json,application/json" multiple />
                   </label>
                   <div class="map-pin-actions">
+                    <button type="button" id="playGoogleRouteBtn" disabled>Play selected route</button>
+                    <button type="button" id="stopGoogleRouteBtn" disabled>Stop route</button>
                     <button type="button" id="exportGoogleTimelineCsvBtn">Export CSV</button>
                     <button type="button" id="exportGoogleTimelineKmlBtn">Export KML</button>
                     <button type="button" id="clearGoogleTimelineBtn">Clear Google Timeline</button>
                   </div>
+                  <p id="routePlaybackStatus" class="retro-playback-status" aria-live="polite">Import a route to animate its recorded path.</p>
                   <div id="googleTimelineMeta" class="google-timeline-meta"></div>
                   <div id="googleTimelineList" class="timeline-lane google-timeline-list"></div>
                 </section>
@@ -742,6 +753,7 @@
     </main>
   </div>
 
+  <script src="./js/book-builder-retrowave.js"></script>
   <script src="./js/book-builder.js"></script>
 </body>
 </html>

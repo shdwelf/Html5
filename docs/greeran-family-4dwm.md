@@ -38,33 +38,50 @@ At build time this produces **567 dated geocoded records** (432 birth, 135 death
 **39 dated kinship links**, and a **1774–2023** playable range. These are derived
 views; the underlying source arrays are not rewritten.
 
-## Keepsake files and research status
+## Keepsake, Bible resources, and research status
 
-The **📖 Tree of Life** tab adds a family preface and inside-back-cover panel. The
-reproducible Webxdc package now contains `index.html`, `manifest.toml`, `icon.png`,
-`greeran-family-4dwm.ged`, and `assets/greeran/world-english-bible.epub`. The page's
-QR images are embedded as data URIs; its GEDCOM and EPUB download links point to the
-files bundled beside the HTML.
+The **📖 Tree of Life** tab combines a family-history preface, an inside-back-cover
+reading panel, an interactive offline WEBU reader, and two collapsed QR panels. The
+embedded family relationships remain the app's source data; Bible material is a
+reading resource, not proof of a Greeran relationship.
 
-`greeran-family-4dwm.ged` is a **baseline export**, not an update to an unavailable
-source GEDCOM and not the requested Kirkpatrick first-name merge. It exports the
-existing embedded dataset (2,089 source people, 588 families), with one blank
-individual stub to preserve an otherwise orphaned family reference. No name data
-was extracted from the local `FNA102B.ZIP`. Its outer container is a ZIP; Drive
-research reports that `MEANINGS.OVL` and `NAMES.OVL` together form a split ARJ
-archive with GARBLED members. The Drive research backup contains analysis notes
-and a structure-only header walker, not decrypted names. The separate Setup Factory
-9 installer was inspected statically only and not run. The shareware notice limits
-redistribution to its original form. See
-`docs/greeran-family-tree-ebook-and-data-status.md` for provenance and rebuild
-details.
+The inside-back-cover panel offers:
 
-The inside back cover offers a complete World English Bible (WEB) EPUB (66 books,
-31,103 verses). WEB was selected as a public-domain translation; the text is
-unchanged, and the EPUB adds only reading structure and navigation. The two QR
-panels are collapsed until opened and point to the family-tree package and Bible
-ebook repository file pages. The app itself remains offline and self-contained; it
-does not fetch scripts, styles, fonts, maps, or family data from the network.
+- A complete **World English Bible (WEB)** EPUB: 66 books and 31,103 verses. The
+  public-domain text is unchanged; the EPUB adds only reading structure and
+  navigation. `tools/build_world_english_bible_epub.py` documents how to recreate it
+  from the cited English WEB JSON source.
+- A downloadable **baseline GEDCOM 5.5.1** generated from the data already embedded
+  in the HTML: 2,089 source people and 588 families, plus one blank individual stub
+  to preserve an otherwise orphaned family reference. It is not an update to an
+  unavailable original GEDCOM or the requested Kirkpatrick first-name merge. Dates
+  that cannot be normalized are kept in notes; map coordinates are not promoted to
+  person-level evidence. No relationships or citations are invented by the exporter.
+- Two generated QR panels, hidden until opened, that link to the explicitly named
+  GitHub pages for the family-tree package and WEB EPUB. The imported source app and
+  its checked emblem icon contained no identifiable QR payloads; these current,
+  visible-purpose links are new and are not presented as recovered hidden codes.
+
+The local **World English Bible Updated (WEBU)** reader loads its dataset only when
+the tab is opened. It supports book/chapter navigation, text search, and a short
+reading trail (Genesis 5 and 10, Ruth 4, 1 Chronicles 1, Matthew 1, and Luke 3).
+Its data are bundled at `public/apps/greeran-family-bible/`:
+
+- Source: eBible.org; dataset `ringletech/webu-open-bible`, commit
+  `44ce9156b77649adf11c0bbcee89c1d80e2c1f1c`.
+- Contents: 66 books, 1,189 chapters, 31,098 verses.
+- License: CC0 1.0 / public domain. Upstream metadata, license, and README are
+  included unchanged with the dataset.
+
+The app also retains the untouched `samples/archive/kirkpatrick/FNA102B.ZIP`
+shareware archive (SHA-256
+`341271dbce5aa7ed864fd9fd2d9fd41c1c17f2ccaf524178ac945ad1e9d94caf`) with its
+notices. It is a ZIP, not the split ARJ archive; the internally protected commercial
+name-meaning overlays are not extracted, decrypted, or used as genealogical
+evidence. Redistribution remains subject to the archive's own terms, and the file
+must remain in its original form. No Kirkpatrick first-name data were added to the
+tree. See `docs/greeran-family-tree-ebook-and-data-status.md` for provenance and
+rebuild notes.
 
 ## Build and verification
 
@@ -76,7 +93,7 @@ npx vitest run test/greeran-family-4dwm.test.ts
 unzip -t greeran-family-4dwm.xdc
 ```
 
-The Bible EPUB generator is `tools/build_world_english_bible_epub.py`; rebuilding it
-requires a local checkout of the documented English WEB JSON source. The
-`build:greeran-family` npm script verifies the embedded QR targets and repackages
-the HTML, GEDCOM, and EPUB deterministically.
+The deterministic XDC includes the HTML, manifest, icon, generated GEDCOM, WEB
+EPUB, WEBU JSON/metadata/license/README, and unchanged FNA ZIP. It needs no external
+scripts, styles, fonts, maps, or genealogy data; online source links are optional
+references only.

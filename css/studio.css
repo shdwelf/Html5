@@ -359,7 +359,7 @@ textarea::placeholder { color: #4f5362; }
 .anagram-readout > span { color: var(--cyan); }
 
 .mint-workspace { display: grid; grid-template-columns: minmax(220px, .74fr) minmax(0, 1.26fr); gap: 14px; margin-top: 16px; }
-.mint-card-frame { position: relative; overflow: hidden; max-width: 315px; margin: 0 auto; border: 1px solid rgba(242,201,132,.4); border-radius: 11px; background: #121826; box-shadow: 0 15px 32px rgba(0,0,0,.23); }
+.mint-card-frame { position: relative; align-self: start; overflow: hidden; width: min(100%, 315px); max-width: 315px; margin: 0 auto; border: 1px solid rgba(242,201,132,.4); border-radius: 11px; background: #121826; box-shadow: 0 15px 32px rgba(0,0,0,.23); }
 #mintCanvas { display: block; width: 100%; height: auto; aspect-ratio: 720 / 920; }
 .mint-frame-label { position: absolute; right: 10px; bottom: 9px; color: rgba(242,201,132,.55); font: 7px var(--mono); letter-spacing: .11em; pointer-events: none; }
 .mint-controls { min-width: 0; display: grid; align-content: start; gap: 10px; }

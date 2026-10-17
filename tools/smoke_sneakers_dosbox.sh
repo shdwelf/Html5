@@ -45,13 +45,13 @@ cleanup() {
 trap cleanup EXIT
 sleep 2
 
-# The emulator may keep its DOS prompt open after the game's menu exits, so
-# capture the verified screen first and terminate DOSBox after the interaction.
+# Leave DOSBox at its DOS prompt if the game returns. An explicit `-c exit`
+# can close the SDL window before the keyboard driver locates it, hiding both
+# a successful game return and a failed autoexec from the diagnostic capture.
 dosbox \
   -c "mount c $GAME_DIR" \
   -c "c:" \
   -c "RUN.BAT" \
-  -c "exit" \
   > "$WORK_DIR/dosbox.log" 2>&1 &
 emulator_pid=$!
 
@@ -66,12 +66,20 @@ emulator_pid=$!
     if [[ -z "$window" ]]; then
       window="$(xdotool search --onlyvisible --class '.*[Dd][Oo][Ss][Bb][Oo][Xx].*' 2>/dev/null | head -n1 || true)"
     fi
+    # DOSBox/SDL builds differ in WM_NAME/WM_CLASS; on the workflow's bare
+    # Xvfb display, accept the sole visible client as the emulator window.
+    if [[ -z "$window" ]]; then
+      mapfile -t visible_windows < <(xdotool search --onlyvisible --name '.*' 2>/dev/null || true)
+      if [[ ${#visible_windows[@]} -eq 1 ]]; then window="${visible_windows[0]}"; fi
+    fi
     if [[ -n "$window" ]]; then break; fi
+    if ! kill -0 "$emulator_pid" 2>/dev/null; then break; fi
     sleep 0.25
   done
   if [[ -z "$window" ]]; then
-    listing="$(xdotool search --onlyvisible --name '.*' 2>/dev/null | while read -r id; do printf '%s %s\\n' "$id" "$(xdotool getwindowname "$id" 2>/dev/null || true)"; done)"
-    echo "DOSBox window not found; visible windows: $listing" >&2
+    listing="$(xdotool search --onlyvisible --name '.*' 2>/dev/null | while read -r id; do printf '%s %s\n' "$id" "$(xdotool getwindowname "$id" 2>/dev/null || true)"; done)"
+    echo "DOSBox window not found; visible windows: ${listing:-none}; emulator alive: $(kill -0 "$emulator_pid" 2>/dev/null && echo yes || echo no)" >&2
+    cat "$WORK_DIR/dosbox.log" >&2
     echo "::error title=Sneakers DOSBox window missing::$listing"
     exit 1
   fi

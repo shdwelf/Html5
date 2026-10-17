@@ -27,6 +27,16 @@ louisiana.html
 glendora.html
 calc.html
 casefiles.html
+4dwm-ports.html
+bluetops-gso-4dwm.html
+dalton-race-4dwm.html
+esgvrop-4dwm.html
+glendora-high-4dwm.html
+greeran-family-4dwm.html
+greeran-subsurface.html
+planet-viewer-4dwm.html
+red-october-4dwm.html
+sanborn-restaurant-4dwm.html
 socal-calc.html
 socal-subsurface.html
 cheyenne.html
