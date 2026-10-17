@@ -1,9 +1,11 @@
 # Drive backup — 2026-10-17
 
-Branch `arena/c0c51527-html5` tip `eb099fb`, backed up to Google Drive from this
-session via the Drive connector (the sandbox's own egress is allowlisted to
-GitHub/PyPI/npm and cannot reach Drive; the connector can). Follows the pattern
-in [`drive-backup-2026-10-08.md`](drive-backup-2026-10-08.md).
+Branch `arena/c0c51527-html5` at commit `eb099fb`, backed up to Google Drive
+from this session via the Drive connector (the sandbox's own egress is
+allowlisted to GitHub/PyPI/npm and cannot reach Drive; the connector can).
+Follows the pattern in [`drive-backup-2026-10-08.md`](drive-backup-2026-10-08.md).
+The bundle covers `eb099fb` (the preservation work); this record was added in a
+follow-up commit after the bundle was taken, so it is not inside the bundle.
 
 Folder: **Html5 backup — 2026-10-17 (FIRST NAME ALMANAC v1.02b Xena preservation bag)**
 `https://drive.google.com/drive/folders/1QqaSEhpzYrEW5DjgPSQusZBNtv9rChoK`
