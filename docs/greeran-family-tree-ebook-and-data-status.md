@@ -7,7 +7,9 @@
 
 ### 1. Family-name merge: blocked; no data was merged
 
-The checkout and searched Drive backup did not contain a raw GEDCOM or an authorized Kirkpatrick ARJ. The only local Kirkpatrick candidate is `samples/archive/kirkpatrick/FNA102B.ZIP`. Its archive signature confirms it is a ZIP, not an ARJ; its notice identifies the First Name Almanac as shareware and limits redistribution to its original form. No member was extracted or used, and no first-name meanings were added.
+A follow-up Drive search returned no raw GEDCOM by name. It found a separate `first_name_almanac_installer.exe` and an ARJ research report/backup, but those research materials contained no license or permission to use and redistribute the database. The installer was inspected statically only, never run: it identifies as a PE32/i386 GUI Setup Factory 9 installer; the scan found no ARJ SFX marker or CRC-valid embedded ARJ headers. The research backup contains a report and `arjwalk.py`, a structure-only header walker—not an ARJ payload, password, or decoded names. The report describes the legacy GARBLED transform but explicitly records no password attempt or extraction. Its per-member password modifier also means the pasted Gemini example's `0x27` is not a verified archive-wide value.
+
+The local `samples/archive/kirkpatrick/FNA102B.ZIP` is a ZIP container, not a standalone ARJ. The Drive report explains that its `MEANINGS.OVL` and `NAMES.OVL` files together form a split ARJ archive with GARBLED members. No member was decrypted, extracted, or used, and no first-name meanings were added. The shareware notice limits redistribution to the original form.
 
 ### 2. Baseline GEDCOM and XDC repackaging
 

@@ -50,10 +50,14 @@ files bundled beside the HTML.
 source GEDCOM and not the requested Kirkpatrick first-name merge. It exports the
 existing embedded dataset (2,089 source people, 588 families), with one blank
 individual stub to preserve an otherwise orphaned family reference. No name data
-was extracted from the local `FNA102B.ZIP`: it is shareware First Name Almanac
-material in a ZIP, not an ARJ, and its notice limits redistribution to its original
-form. See `docs/greeran-family-tree-ebook-and-data-status.md` for provenance and
-rebuild details.
+was extracted from the local `FNA102B.ZIP`. Its outer container is a ZIP; Drive
+research reports that `MEANINGS.OVL` and `NAMES.OVL` together form a split ARJ
+archive with GARBLED members. The Drive research backup contains analysis notes
+and a structure-only header walker, not decrypted names. The separate Setup Factory
+9 installer was inspected statically only and not run. The shareware notice limits
+redistribution to its original form. See
+`docs/greeran-family-tree-ebook-and-data-status.md` for provenance and rebuild
+details.
 
 The inside back cover offers a complete World English Bible (WEB) EPUB (66 books,
 31,103 verses). WEB was selected as a public-domain translation; the text is
