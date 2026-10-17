@@ -334,6 +334,58 @@ html,body{height:100%;overflow:hidden;font-family:Georgia,serif;
   .kp-qr-body{grid-template-columns:1fr}
   .kp-qr-body img{margin:0 auto}
 }
+
+
+/* Offline WEBU reader and original archive card */
+.tree-preface,.bible-card,.archive-card,.qr-note{border:1px solid var(--bdr);border-radius:12px;background:rgba(10,20,34,.9);box-shadow:0 10px 32px rgba(0,0,0,.22)}
+.tree-preface{position:relative;overflow:hidden;padding:25px 30px 22px;background:linear-gradient(135deg,rgba(201,168,76,.11),transparent 48%),linear-gradient(110deg,#101b20,#0a1422 68%)}
+.tree-preface:after{content:"";position:absolute;inset:12px;border:1px solid rgba(201,168,76,.15);border-radius:8px;pointer-events:none}
+.tree-preface-mark{position:relative;width:42px;height:46px;margin-bottom:8px;filter:drop-shadow(0 0 9px rgba(201,168,76,.35))}
+.tree-preface-mark:before{content:"";position:absolute;left:4px;top:5px;width:34px;height:32px;background:linear-gradient(135deg,#47845b,#174b3d 70%,#0c3029);clip-path:polygon(50% 0,63% 22%,77% 22%,68% 39%,86% 39%,74% 57%,96% 57%,50% 100%,4% 57%,26% 57%,14% 39%,32% 39%,23% 22%,37% 22%)}
+.tree-preface-mark:after{content:"";position:absolute;left:18px;top:34px;width:7px;height:10px;border-radius:1px;background:linear-gradient(90deg,#725126,#c9a84c,#725126)}
+.tree-preface-mark span{position:absolute;z-index:1;left:16px;top:0;width:10px;height:10px;background:#f0d870;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.tree-preface-kicker,.bible-overline{font:700 .52rem/1.5 Georgia,serif;color:var(--gold);letter-spacing:.17em;text-transform:uppercase}
+.tree-preface h2,.bible-card h2,.archive-card h2{color:#f2dfb5;font-size:1.38rem;font-weight:500;letter-spacing:.04em;margin:5px 0 13px}
+.tree-preface p,.bible-intro,.bible-caution,.archive-card p{font-size:.7rem;line-height:1.85;color:#b9c1bd;max-width:850px;margin:0 0 10px}
+.tree-preface-signoff{color:#e3c980!important;font-style:italic;margin-top:15px!important}
+.tree-preface-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:17px;padding-top:13px;border-top:1px solid var(--bdr);font-size:.58rem;color:var(--mut)}
+.book-action{display:inline-flex;align-items:center;justify-content:center;gap:5px;background:rgba(201,168,76,.13);border:1px solid var(--bdr2);border-radius:7px;padding:7px 10px;color:#f1d47d;font:700 .58rem/1.1 Georgia,serif;text-decoration:none;cursor:pointer;white-space:nowrap}
+.book-action:hover{background:rgba(201,168,76,.25);color:#fff}
+.bible-card,.archive-card{padding:18px 20px}
+.bible-caution{border-left:3px solid var(--gold);padding:8px 11px;background:rgba(201,168,76,.06);margin:11px 0;color:#d4c7a6}
+.bible-caution strong{color:#f0d870}
+.bible-source{font-size:.56rem;color:var(--mut);margin:5px 0 12px}
+.bible-source a{color:#e1c267}
+.bible-reader{border:1px solid rgba(201,168,76,.22);border-radius:9px;padding:12px;background:rgba(0,0,0,.18)}
+.bible-controls{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap}
+.bible-controls label{display:flex;flex-direction:column;gap:4px;font-size:.5rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+#bible-book,#bible-chapter,#bible-search{background:#071221;color:var(--txt);border:1px solid var(--bdr);border-radius:6px;padding:7px 9px;font: .66rem Georgia,serif;outline:none}
+#bible-book{min-width:195px}#bible-chapter{min-width:82px}
+#bible-book:focus,#bible-chapter:focus,#bible-search:focus{border-color:var(--gold)}
+.bible-search-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:11px 0 6px}
+.bible-search-label{font-size:.56rem;color:var(--mut)}#bible-search{flex:1;min-width:180px}
+.bible-status{font-size:.55rem;color:var(--mut);min-height:18px;margin:5px 1px}
+.bible-text{max-height:min(48vh,510px);overflow:auto;border:1px solid rgba(201,168,76,.14);border-radius:7px;background:#101b22;padding:16px 18px;line-height:1.75}
+.bible-empty{font-size:.65rem;color:var(--mut);text-align:center;padding:32px 10px}
+.bible-chapter-title{font-size:.95rem;color:#f0d991;margin-bottom:12px}
+.bible-verse{font-family:Georgia,serif;font-size:.76rem;color:#e4dccb;line-height:1.9;margin:0 0 7px}
+.bible-vnum{display:inline-block;min-width:25px;margin-right:5px;color:#c6a753;font:700 .54rem/1.5 monospace;vertical-align:baseline}
+.bible-results{max-height:190px;overflow:auto;padding:6px 8px;margin:7px 0;border:1px solid rgba(201,168,76,.2);border-radius:7px;background:rgba(0,0,0,.22)}
+.bible-result{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.05);padding:7px 2px;color:#c8d1cb;font: .58rem/1.55 Georgia,serif;cursor:pointer}
+.bible-result:hover{color:#f0d870}.bible-result b{color:#e9cd7d}
+.bible-quicklinks{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-top:10px;font-size:.54rem;color:var(--mut)}
+.bible-quicklinks button{background:rgba(201,168,76,.08);border:1px solid var(--bdr);border-radius:12px;color:#d9c27d;padding:4px 8px;font: .53rem Georgia,serif;cursor:pointer}
+.bible-quicklinks button:hover{background:rgba(201,168,76,.2)}
+.archive-card{background:linear-gradient(135deg,rgba(255,136,68,.045),transparent 65%),rgba(10,20,34,.9)}
+.archive-card code{font-size:.62rem;color:#f2d78a}
+.archive-download{margin:3px 0 8px}
+.archive-notice{font-size:.55rem!important;color:#d3aa77!important;border-top:1px solid rgba(255,136,68,.18);padding-top:9px;margin-top:6px!important}
+.qr-note{padding:11px 14px;color:#9aa9b2;font-size:.59rem;line-height:1.6;background:rgba(201,168,76,.035)}
+.qr-note strong{color:var(--gold)}
+@media(max-width:700px){
+  .tree-preface{padding:20px 17px}.tree-preface h2,.bible-card h2,.archive-card h2{font-size:1.1rem}
+  .bible-card,.archive-card{padding:15px 13px}#bible-book{min-width:155px}.bible-text{max-height:45vh;padding:12px}
+}
 </style>
 </head>
 <body>
@@ -625,6 +677,48 @@ html,body{height:100%;overflow:hidden;font-family:Georgia,serif;
           </div>
         </details>
       </div>
+      <div class="kp-local-reader" aria-label="Local reading resources">
+    <section class="bible-card" aria-labelledby="bible-title">
+      <div class="bible-overline">INSIDE BACK COVER · OFFLINE EBOOK</div>
+      <h2 id="bible-title">The Holy Bible · World English Bible Updated</h2>
+      <p class="bible-intro">A complete, locally bundled WEBU reader: 66 books, 1,189 chapters, and 31,098 verses. The text is public domain and the dataset is released under CC0 1.0. This reader works offline.</p>
+      <p class="bible-caution"><strong>Genealogy note:</strong> Bible family lists are provided as scripture and literature, not as evidence of a historical or biological relationship to the Greeran family.</p>
+      <div class="bible-source">Text: <a href="https://ebible.org/find/details.php?id=engwebu" target="_blank" rel="noreferrer">eBible.org · WEBU</a> · <a href="https://ebible.org/engwebp/copyright.htm" target="_blank" rel="noreferrer">public-domain terms</a> · Dataset: <a href="https://github.com/ringletech/webu-open-bible" target="_blank" rel="noreferrer">ringletech/webu-open-bible</a> · <a href="./public/apps/greeran-family-bible/LICENSE" download>CC0 license</a></div>
+      <div class="bible-reader">
+        <div class="bible-controls">
+          <label>Book<select id="bible-book" aria-label="Bible book" onchange="selectBibleBook()" disabled><option>Loading…</option></select></label>
+          <label>Chapter<select id="bible-chapter" aria-label="Bible chapter" onchange="renderBibleChapter()" disabled></select></label>
+          <button class="book-action" type="button" onclick="stepBibleChapter(-1)" aria-label="Previous chapter">← Prev</button>
+          <button class="book-action" type="button" onclick="stepBibleChapter(1)" aria-label="Next chapter">Next →</button>
+        </div>
+        <div class="bible-search-row">
+          <label class="bible-search-label" for="bible-search">Find a passage</label>
+          <input id="bible-search" type="search" placeholder="Search the Bible text…" autocomplete="off">
+          <button class="book-action" type="button" onclick="searchBibleText()">Search</button>
+        </div>
+        <div id="bible-status" class="bible-status" role="status">The offline eBook loads when this tab is opened.</div>
+        <div id="bible-results" class="bible-results" hidden></div>
+        <div id="bible-text" class="bible-text" aria-live="polite"><div class="bible-empty">Open the reader to load the eBook.</div></div>
+        <div class="bible-quicklinks" aria-label="Genealogy reading trail">
+          <span>Genealogy reading trail:</span>
+          <button type="button" onclick="openBiblePassage('Genesis',5)">Genesis 5</button>
+          <button type="button" onclick="openBiblePassage('Genesis',10)">Genesis 10</button>
+          <button type="button" onclick="openBiblePassage('Ruth',4)">Ruth 4</button>
+          <button type="button" onclick="openBiblePassage('1 Chronicles',1)">1 Chronicles 1</button>
+          <button type="button" onclick="openBiblePassage('Matthew',1)">Matthew 1</button>
+          <button type="button" onclick="openBiblePassage('Luke',3)">Luke 3</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="archive-card" aria-labelledby="fna-title">
+      <div class="bible-overline">KIRKPATRICK SUITE · ORIGINAL SHAREWARE ARCHIVE</div>
+      <h2 id="fna-title">First Name Almanac 1.02B</h2>
+      <p>The original <code>FNA102B.ZIP</code> is preserved without modification. Inspection found that it is a ZIP containing an internally protected commercial name-meaning overlay; it is not the ARJ archive or a genealogical source. No overlay has been decrypted, extracted, or used to change family records.</p>
+      <a class="book-action archive-download" href="./samples/archive/kirkpatrick/FNA102B.ZIP" download>Download original FNA102B.ZIP</a>
+      <p class="archive-notice">Share only in the archive's original form and keep its included notices intact. The ZIP's own documentation controls redistribution; the surrounding package does not remove or relax those terms.</p>
+    </section>
+      </div>
       <p class="kp-closing">May the branches be remembered, the evidence kept close, and the stories passed on with care.</p>
     </section>
   </div>
@@ -708,6 +802,112 @@ const COR=new Set(['@I142778831422@','@I142778831424@','@I142778829932@','@I1427
   '@I142780053800@','@I142780053848@','@I142778829721@','@I142780067590@','@I142780067591@',
   '@I142780053381@','@I142780053320@','@I142780226896@']);
 
+// ══════════ OFFLINE BIBLE EBOOK ══════════
+let BIBLE_BOOKS=[];
+let BIBLE_READY=false;
+let BIBLE_LOADING=null;
+const BIBLE_DATA_URL='./public/apps/greeran-family-bible/complete-bible.json';
+
+async function ensureBibleLoaded(){
+  if(BIBLE_READY)return;
+  if(BIBLE_LOADING)return BIBLE_LOADING;
+  const status=document.getElementById('bible-status');
+  if(status)status.textContent='Loading the locally bundled WEBU eBook…';
+  BIBLE_LOADING=(async()=>{
+    const response=await fetch(BIBLE_DATA_URL);
+    if(!response.ok)throw new Error('Local Bible data was not found in this package.');
+    const rows=await response.json();
+    if(!Array.isArray(rows)||rows.length!==31098)throw new Error('The WEBU dataset did not pass its verse-count check.');
+    const byBook=new Map();
+    rows.forEach(row=>{
+      if(!row||typeof row.book!=='string'||!Number.isInteger(row.chapter)||!Number.isInteger(row.verse)||typeof row.text!=='string')return;
+      if(!byBook.has(row.book))byBook.set(row.book,{name:row.book,chapters:[]});
+      const book=byBook.get(row.book);
+      while(book.chapters.length<row.chapter)book.chapters.push({number:book.chapters.length+1,verses:[]});
+      book.chapters[row.chapter-1].verses.push({number:row.verse,text:row.text});
+    });
+    BIBLE_BOOKS=[...byBook.values()];
+    const verseCount=BIBLE_BOOKS.reduce((sum,book)=>sum+book.chapters.reduce((n,ch)=>n+ch.verses.length,0),0);
+    if(BIBLE_BOOKS.length!==66||verseCount!==31098)throw new Error('The WEBU dataset is incomplete or malformed.');
+    const bookSelect=document.getElementById('bible-book');
+    bookSelect.replaceChildren();
+    BIBLE_BOOKS.forEach(book=>{const option=document.createElement('option');option.value=book.name;option.textContent=book.name;bookSelect.appendChild(option);});
+    bookSelect.disabled=false;
+    BIBLE_READY=true;
+    selectBibleBook();
+    if(status)status.textContent=`Loaded offline · ${BIBLE_BOOKS.length} books · ${BIBLE_BOOKS.reduce((n,b)=>n+b.chapters.length,0).toLocaleString()} chapters · ${verseCount.toLocaleString()} verses.`;
+  })().catch(error=>{
+    if(status)status.textContent=`Could not load the offline eBook: ${error.message}`;
+    BIBLE_LOADING=null;
+    throw error;
+  });
+  return BIBLE_LOADING;
+}
+function selectBibleBook(){
+  if(!BIBLE_READY)return;
+  const name=document.getElementById('bible-book').value;
+  const book=BIBLE_BOOKS.find(item=>item.name===name);
+  const chapterSelect=document.getElementById('bible-chapter');
+  chapterSelect.replaceChildren();
+  (book?.chapters||[]).forEach(chapter=>{const option=document.createElement('option');option.value=String(chapter.number);option.textContent=String(chapter.number);chapterSelect.appendChild(option);});
+  chapterSelect.disabled=!book;
+  renderBibleChapter();
+}
+function renderBibleChapter(){
+  if(!BIBLE_READY)return;
+  const name=document.getElementById('bible-book').value;
+  const number=Number(document.getElementById('bible-chapter').value||1);
+  const book=BIBLE_BOOKS.find(item=>item.name===name);
+  const chapter=book?.chapters[number-1];
+  const panel=document.getElementById('bible-text');
+  panel.replaceChildren();
+  if(!chapter){panel.textContent='Choose a book and chapter to read.';return;}
+  const title=document.createElement('h3');title.className='bible-chapter-title';title.textContent=`${book.name} ${chapter.number}`;panel.appendChild(title);
+  chapter.verses.forEach(verse=>{
+    const line=document.createElement('p');line.className='bible-verse';
+    const numberSpan=document.createElement('span');numberSpan.className='bible-vnum';numberSpan.textContent=String(verse.number);
+    line.append(numberSpan,document.createTextNode(verse.text));panel.appendChild(line);
+  });
+}
+function openBiblePassage(bookName,chapterNumber){
+  if(!BIBLE_READY){ensureBibleLoaded().then(()=>openBiblePassage(bookName,chapterNumber)).catch(()=>{});return;}
+  const book=BIBLE_BOOKS.find(item=>item.name===bookName);
+  if(!book)return;
+  document.getElementById('bible-book').value=bookName;
+  selectBibleBook();
+  document.getElementById('bible-chapter').value=String(Math.max(1,Math.min(book.chapters.length,chapterNumber)));
+  renderBibleChapter();
+  document.getElementById('bible-results').hidden=true;
+}
+function stepBibleChapter(step){
+  if(!BIBLE_READY){ensureBibleLoaded().then(()=>stepBibleChapter(step)).catch(()=>{});return;}
+  let bookIndex=BIBLE_BOOKS.findIndex(book=>book.name===document.getElementById('bible-book').value);
+  let chapterNumber=Number(document.getElementById('bible-chapter').value||1)+step;
+  if(chapterNumber<1){bookIndex=Math.max(0,bookIndex-1);chapterNumber=BIBLE_BOOKS[bookIndex].chapters.length;}
+  if(chapterNumber>BIBLE_BOOKS[bookIndex].chapters.length){bookIndex=Math.min(BIBLE_BOOKS.length-1,bookIndex+1);chapterNumber=1;}
+  openBiblePassage(BIBLE_BOOKS[bookIndex].name,chapterNumber);
+}
+function searchBibleText(){
+  const query=document.getElementById('bible-search').value.trim().toLocaleLowerCase();
+  const status=document.getElementById('bible-status');
+  const results=document.getElementById('bible-results');
+  if(!query){status.textContent='Enter a word or phrase to search the eBook.';results.hidden=true;return;}
+  if(!BIBLE_READY){ensureBibleLoaded().then(searchBibleText).catch(()=>{});return;}
+  const matches=[];
+  outer:for(const book of BIBLE_BOOKS)for(const chapter of book.chapters)for(const verse of chapter.verses){
+    if(verse.text.toLocaleLowerCase().includes(query)){matches.push({book:book.name,chapter:chapter.number,verse:verse.number,text:verse.text});if(matches.length>=80)break outer;}
+  }
+  results.replaceChildren();results.hidden=false;
+  if(!matches.length){results.textContent='No matches found.';status.textContent='Search complete · no matches.';return;}
+  matches.forEach(match=>{
+    const button=document.createElement('button');button.type='button';button.className='bible-result';
+    button.textContent=`${match.book} ${match.chapter}:${match.verse} — ${match.text}`;
+    button.addEventListener('click',()=>{openBiblePassage(match.book,match.chapter);document.getElementById('bible-results').hidden=true;});
+    results.appendChild(button);
+  });
+  status.textContent=`Showing ${matches.length}${matches.length===80?' or more':''} match${matches.length===1?'':'es'} for “${query}”.`;
+}
+
 // ══════════ TABS ══════════
 function sw(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.t===id));
@@ -715,6 +915,10 @@ function sw(id){
   if(id==='globe'){setTimeout(()=>{resizeGlobe();startGlobe();},50);}
   if(id==='tree'&&!treeBuilt)buildTree();
   if(id==='people')filtP('');
+  if(id==='book'){
+    if(window.innerWidth<=700){document.getElementById('sb-L').classList.add('off');document.getElementById('sb-R').classList.add('off');}
+    ensureBibleLoaded().catch(()=>{});
+  }
 }
 function tSB(s){document.getElementById('sb-'+s).classList.toggle('off');}
 
@@ -1407,6 +1611,8 @@ function resetView(){rotLon=-20;rotLat=20;tZoom=1;}
 window.addEventListener('DOMContentLoaded',()=>{
   buildSidebar();
   buildRightSidebar();
+  const bibleSearch=document.getElementById('bible-search');
+  if(bibleSearch)bibleSearch.addEventListener('keydown',event=>{if(event.key==='Enter')searchBibleText();});
 
   // Detail panel
   const dpEl=document.getElementById('dp');

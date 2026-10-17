@@ -46,7 +46,25 @@ describe("Greeran Family Tree 4DWM", () => {
     expect(html).not.toContain("PLACEHOLDER_BIBLE_QR");
   });
 
-  it("offers explicit, first-name-only NameAlmanac and Wiktionary lookups", () => {
+  it("includes the locally bundled WEBU reader and untouched Kirkpatrick ZIP", () => {
+    const biblePath = path.join(root, "public/apps/greeran-family-bible/complete-bible.json");
+    const bibleBytes = readFileSync(biblePath);
+    const verses = JSON.parse(bibleBytes.toString("utf8"));
+    const metadata = JSON.parse(readFileSync(path.join(root, "public/apps/greeran-family-bible/metadata.json"), "utf8"));
+    const fnaBytes = readFileSync(path.join(root, "samples/archive/kirkpatrick/FNA102B.ZIP"));
+    expect(verses).toHaveLength(31_098);
+    expect(sha256(bibleBytes)).toBe("9ea9afde1fbcdf521025a56c055c738c87d357bf6874f66f240d583afda94d3f");
+    expect(sha256(fnaBytes)).toBe("341271dbce5aa7ed864fd9fd2d9fd41c1c17f2ccaf524178ac945ad1e9d94caf");
+    expect(new Set(verses.map((verse: { book: string }) => verse.book)).size).toBe(66);
+    expect(metadata.translation.code).toBe("WEBU");
+    expect(metadata.translation.license).toContain("CC0-1.0");
+    expect(html).toContain("The Holy Bible · World English Bible Updated");
+    expect(html).toContain("not as evidence of a historical or biological relationship");
+    expect(html).toContain("./samples/archive/kirkpatrick/FNA102B.ZIP");
+    expect(html).toContain("No overlay has been decrypted, extracted, or used");
+  });
+
+  it("offers explicit, first-name-only NameAlmanac and English Wiktionary lookups", () => {
     expect(html).toContain("function firstGivenName(fullName)");
     expect(html).toContain("function nameAlmanacUrl(name)");
     expect(html).toContain("function wiktionaryUrl(name)");
@@ -65,7 +83,7 @@ describe("Greeran Family Tree 4DWM", () => {
     expect(html).toContain("CC BY-SA 4.0");
     expect(html).toContain('href="./assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"');
     expect(wiktionaryNotice).toContain("https://creativecommons.org/licenses/by-sa/4.0/");
-    expect(wiktionaryNotice).toContain("Changes made");
+    expect(wiktionaryNotice).toContain("Changes by this project");
   });
 
   it("records provenance and reuse terms for all six supplied name resources", () => {
@@ -94,7 +112,9 @@ describe("Greeran Family Tree 4DWM", () => {
     expect(html).toContain("frameLocs=timeMode?temporalLocations():LOCS");
     expect(html).not.toMatch(/<script[^>]+src=/i);
     expect(html).not.toMatch(/<link[^>]+href=/i);
-    expect(html).not.toMatch(/\bfetch\s*\(/);
+    expect(html).toContain("const BIBLE_DATA_URL='./public/apps/greeran-family-bible/complete-bible.json'");
+    expect(html).toMatch(/fetch\(BIBLE_DATA_URL\)/);
+    expect(html).not.toMatch(/fetch\(\s*['\"`]https?:/i);
   });
 
   it("packages the application and its companion files in a valid Webxdc", () => {
@@ -107,8 +127,22 @@ describe("Greeran Family Tree 4DWM", () => {
       "icon.png",
       "index.html",
       "manifest.toml",
+      "public/apps/greeran-family-bible/LICENSE",
+      "public/apps/greeran-family-bible/README.md",
+      "public/apps/greeran-family-bible/complete-bible.json",
+      "public/apps/greeran-family-bible/metadata.json",
+      "samples/archive/kirkpatrick/FNA102B.ZIP",
     ]);
     expect(Buffer.from(files["index.html"]).equals(htmlBytes)).toBe(true);
+    expect(Buffer.from(files["public/apps/greeran-family-bible/complete-bible.json"]).equals(
+      readFileSync(path.join(root, "public/apps/greeran-family-bible/complete-bible.json")),
+    )).toBe(true);
+    expect(Buffer.from(files["samples/archive/kirkpatrick/FNA102B.ZIP"]).equals(
+      readFileSync(path.join(root, "samples/archive/kirkpatrick/FNA102B.ZIP")),
+    )).toBe(true);
+    const packedNotice = strFromU8(files["assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"]);
+    expect(packedNotice).toBe(wiktionaryNotice);
+    expect(packedNotice).toContain("CC BY-SA 4.0");
     expect(strFromU8(files["manifest.toml"])).toContain('name = "Greeran Family Tree · 4DWM"');
     expect(strFromU8(files["manifest.toml"])).toContain("https://github.com/shdwelf/Html5");
     expect(files["icon.png"].slice(0, 8)).toEqual(
@@ -134,10 +168,6 @@ describe("Greeran Family Tree 4DWM", () => {
       const personFamily = line.match(/^1 (?:FAMS|FAMC) (@[A-Z0-9]+@)$/);
       if (personFamily) expect(familyIds.has(personFamily[1])).toBe(true);
     }
-
-    const packedNotice = strFromU8(files["assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"]);
-    expect(packedNotice).toBe(wiktionaryNotice);
-    expect(packedNotice).toContain("CC BY-SA 4.0");
 
     const epubBytes = files["assets/greeran/world-english-bible.epub"];
     expect(Buffer.from(epubBytes).equals(readFileSync(path.join(root, "assets/greeran/world-english-bible.epub")))).toBe(true);

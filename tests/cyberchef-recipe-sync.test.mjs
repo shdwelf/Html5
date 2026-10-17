@@ -34,6 +34,10 @@ const POST_MERGE_OPS = [
   "averyLabels",
   "complexityLab",
   "symbolicLogic",
+  // PR #118 barcode work (Aztec encoder, image decoder, and CueCat scans).
+  "aztecCode",
+  "cuecatDecode",
+  "aztecDecode",
   // 2026-10-14 field-cipher deep dive (docs/field-cipher-deep-dive-2026-10-14.md).
   "odPoemExact",
   "vicSchedule",

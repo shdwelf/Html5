@@ -48,6 +48,10 @@ test("every city app has a page, data packs, and a current Webxdc", async () => 
     assert.equal(gaz.GAZ_META.rowCount, gaz.GAZ_ROWS.length);
 
     const files = archive(`${city}-subsurface.xdc`);
+    assert.ok(files["vendor/fflate/browser.mjs"], `${city}: browser ZIP helper is missing`);
+    assert.equal(decoder.decode(files["vendor/fflate/browser.mjs"]), read("vendor/fflate/browser.mjs"));
+    assert.ok(files["vendor/fflate/LICENSE"], `${city}: browser ZIP helper license is missing`);
+    assert.doesNotMatch(decoder.decode(files["vendor/fflate/browser.mjs"]), /from ['\"](?:node:)?module['\"]/);
     if (data.CITY.requiresDem) {
       const demModule = `js/city-dem-grid-${city}.js`;
       assert.ok(existsSync(path.join(root, demModule)), `${city}: required DEM module is missing`);

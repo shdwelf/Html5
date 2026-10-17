@@ -26,6 +26,11 @@ await mkdir(appDir, { recursive: true });
 
 await copyFile(path.join(root, "public", "apps", "cyberchef", "index.html"), path.join(appDir, "index.html"));
 await copyFile(path.join(root, "icon.png"), path.join(appDir, "icon.png"));
+await mkdir(path.join(appDir, "vendor"), { recursive: true });
+await copyFile(path.join(root, "public", "apps", "cyberchef", "vendor", "bwip-js.min.js"), path.join(appDir, "vendor", "bwip-js.min.js"));
+await copyFile(path.join(root, "public", "apps", "cyberchef", "vendor", "bwip-js.LICENSE"), path.join(appDir, "vendor", "bwip-js.LICENSE"));
+await copyFile(path.join(root, "public", "apps", "cyberchef", "vendor", "zxing-library.min.js"), path.join(appDir, "vendor", "zxing-library.min.js"));
+await copyFile(path.join(root, "public", "apps", "cyberchef", "vendor", "zxing-library.LICENSE"), path.join(appDir, "vendor", "zxing-library.LICENSE"));
 
 // Read the operation count off the kitchen's own header badge so the manifest
 // description can never drift from the build it describes.
@@ -51,7 +56,11 @@ window.webxdc = window.webxdc || {
 `,
 );
 
-const files = ["icon.png", "index.html", "manifest.toml", "webxdc.js"];
+const files = [
+  "icon.png", "index.html", "manifest.toml", "webxdc.js",
+  "vendor/bwip-js.min.js", "vendor/bwip-js.LICENSE",
+  "vendor/zxing-library.min.js", "vendor/zxing-library.LICENSE",
+];
 const archive = {};
 for (const rel of files) {
   archive[rel] = [new Uint8Array(await readFile(path.join(appDir, rel))), { level: 9, mtime }];

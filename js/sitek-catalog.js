@@ -2,7 +2,7 @@
  * window manager, and offline worker agree on the public integrations. */
 export const SITEK_APPS = Object.freeze([
   { id: "lecturehall", label: "LECTURE HALL", route: "./index.html#grid", preserved: true },
-  { id: "four-dwm", label: "4DWM", route: "./index.html#grid", preserved: true },
+  { id: "four-dwm", label: "4DWM PORTS", route: "./4dwm-ports.html", preserved: true },
   { id: "enso", label: "ENSŌ GENERATOR", route: "./index.html#enso", entry: "./art-studio.html", offline: true },
 ]);
 
