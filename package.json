@@ -43,7 +43,8 @@
     "test:wiki-workspace": "node --test tests/wiki-workspace.test.mjs tests/wiki-calendar.test.mjs tests/wiki-webxdc.test.mjs tests/wiki-tiddlywiki.test.mjs tests/wikiinajar-djvu.test.mjs && vitest run test/wiki-vault-interop.test.ts",
     "test:wiki-server": "node tools/wiki-workspace/build.mjs --fixture && WIKI_JAR_INTEGRATION=1 node --test tests/wiki-server.test.mjs",
     "test:wiki-backup": "python3 tools/wiki-workspace/test-backup.py",
-    "test:wiki-javacard": "node --test tests/wiki-javacard.test.mjs && node tools/wiki-workspace/javacard/test.mjs"
+    "test:wiki-javacard": "node --test tests/wiki-javacard.test.mjs && node tools/wiki-workspace/javacard/test.mjs",
+    "build:xport-v92-faxcard": "node tools/build-wallplug-eagle.mjs --check --design xport-v92-faxcard"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",
