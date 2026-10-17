@@ -65,10 +65,12 @@ unchanged, and the EPUB adds only reading structure and navigation. The two QR
 panels are collapsed until opened and point to the family-tree package and Bible
 ebook repository file pages. The app itself remains offline and self-contained.
 It does not fetch scripts, styles, fonts, maps, or family data from the network. A
-selected person's detail view offers an optional, user-initiated first-name link
-to NameAlmanac; it opens an external site only when selected. No lookup runs in
-the background, and no name meanings or statistics are bundled. See the
-[name-resource review](greeran-name-resources.md) for source and license notes.
+selected person's detail view offers optional, user-initiated first-name links
+to NameAlmanac and Wiktionary. External lookups open only when selected; no
+lookup runs in the background. Six paraphrased Wiktionary etymology notes are
+bundled under CC BY-SA 4.0 with a linked package attribution notice; NameAlmanac
+statistics are not copied. See the [name-resource review](greeran-name-resources.md)
+for source and license notes.
 
 ## Build and verification
 

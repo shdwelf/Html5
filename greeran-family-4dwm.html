@@ -160,8 +160,11 @@ html,body{height:100%;overflow:hidden;font-family:Georgia,serif;
 .dp-l{color:var(--mut);min-width:58px;flex-shrink:0;font-size:.58rem}
 .dp-v{color:#f0e0c8}
 .dp-nt{font-size:.56rem;color:#7a9aaa;margin-top:5px;line-height:1.5;border-top:1px solid rgba(255,255,255,.05);padding-top:5px;font-style:italic}
+.dp-name-links{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:5px}
 .dp-name-link{display:inline-block;color:var(--gold);font-size:.64rem;text-decoration:underline;text-underline-offset:2px}
 .dp-name-link:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
+.dp-name-note{font-size:.62rem;color:#b8c6d1;line-height:1.55}
+.dp-name-note a{color:var(--gold);text-decoration:underline;text-underline-offset:2px}
 
 /* STATS BOXES */
 .sbr{display:grid;grid-template-columns:repeat(auto-fit,minmax(68px,1fr));gap:6px;margin-bottom:12px}
@@ -725,6 +728,21 @@ function nameAlmanacUrl(name){
   const slug=String(name||'').normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
   return slug?`https://namealmanac.com/name/${slug}`:'';
 }
+function wiktionaryUrl(name){
+  const title=String(name||'').trim().replace(/\s+/g,'_');
+  return title?`https://en.wiktionary.org/wiki/${encodeURIComponent(title)}#English`:'';
+}
+function wiktionaryNameKey(name){
+  return String(name||'').normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+}
+const WIKTIONARY_NAME_NOTES=Object.freeze({
+  mary:{note:'The English entry traces Mary through Maria and earlier Greek, Latin, Hebrew, and Aramaic forms; it describes the original meaning as uncertain.',source:'https://en.wiktionary.org/wiki/Mary#English'},
+  john:{note:'The English entry traces John to Hebrew Yôḥānān. “God is gracious” is presented as a possible expansion, not a certain meaning.',source:'https://en.wiktionary.org/wiki/John#English'},
+  william:{note:'The English entry traces William to Germanic elements glossed as will or desire and helmet. This is an etymological analysis, not a definite meaning for an individual.',source:'https://en.wiktionary.org/wiki/William#English'},
+  bernard:{note:'The English entry traces Bernard through medieval French and Latin to a Germanic name; its proper-noun entry does not give one definitive English meaning.',source:'https://en.wiktionary.org/wiki/Bernard#English'},
+  hugh:{note:'The English entry traces Hugh through French to Germanic name elements; it relates the root to heart or mind, while noting historical variants and usage.',source:'https://en.wiktionary.org/wiki/Hugh#English'},
+  catherine:{note:'The English entry traces Catherine through French to Ancient Greek and says the etymology is debated. Its link to katharos (“pure”) is identified as a folk etymology.',source:'https://en.wiktionary.org/wiki/Catherine#English'},
+});
 function escapeHtml(value){
   return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
@@ -757,10 +775,16 @@ function showP(pid){
   h+='</div>';
   const givenName=firstGivenName(p.n);
   const nameUrl=givenName.length>1?nameAlmanacUrl(givenName):'';
-  if(nameUrl){
+  const wiktionaryLink=givenName.length>1?wiktionaryUrl(givenName):'';
+  const nameNote=WIKTIONARY_NAME_NOTES[wiktionaryNameKey(givenName)];
+  if(nameUrl||wiktionaryLink){
     h+=`<div class="dp-s" style="grid-column:1/-1"><div class="dp-st">Name Research</div>
-      <a class="dp-name-link" href="${escapeHtml(nameUrl)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Open “${escapeHtml(givenName)}” on NameAlmanac ↗</a>
-      <div class="dp-nt">Optional external lookup using only this first name. It opens only when selected; the app does not send a name lookup in the background. NameAlmanac offers U.S. SSA name history and may show a Wiktionary-sourced meaning when available; it is not a genealogical source.</div>
+      <div class="dp-name-links">
+        ${nameUrl?`<a class="dp-name-link" href="${escapeHtml(nameUrl)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">NameAlmanac: “${escapeHtml(givenName)}” ↗</a>`:''}
+        ${wiktionaryLink?`<a class="dp-name-link" href="${escapeHtml(wiktionaryLink)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Wiktionary: “${escapeHtml(givenName)}” ↗</a>`:''}
+      </div>
+      ${nameNote?`<div class="dp-name-note"><b>Curated etymology note:</b> ${escapeHtml(nameNote.note)} <a href="${escapeHtml(nameNote.source)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Wiktionary source entry ↗</a></div>`:''}
+      <div class="dp-nt">Optional external links use only this first name and open only when selected; the app makes no background lookup. These notes describe name forms, not an individual's identity or heritage; Wiktionary entries may give theories rather than a certain meaning. Curated notes are paraphrases under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">CC BY-SA 4.0</a>; see the <a href="./assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md" target="_blank" rel="noopener noreferrer">attribution notice</a>. Neither site is genealogical evidence.</div>
     </div>`;
   }
   if(pars.length||fams.length){

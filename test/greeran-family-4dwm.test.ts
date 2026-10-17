@@ -8,6 +8,7 @@ const root = process.cwd();
 const htmlBytes = readFileSync(path.join(root, "greeran-family-4dwm.html"));
 const html = htmlBytes.toString("utf8");
 const nameResourceReview = readFileSync(path.join(root, "docs/greeran-name-resources.md"), "utf8");
+const wiktionaryNotice = readFileSync(path.join(root, "assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"), "utf8");
 const sha256 = (value: string | Uint8Array) =>
   createHash("sha256").update(value).digest("hex");
 
@@ -45,13 +46,26 @@ describe("Greeran Family Tree 4DWM", () => {
     expect(html).not.toContain("PLACEHOLDER_BIBLE_QR");
   });
 
-  it("offers an explicit, first-name-only NameAlmanac lookup without background requests", () => {
+  it("offers explicit, first-name-only NameAlmanac and Wiktionary lookups", () => {
     expect(html).toContain("function firstGivenName(fullName)");
     expect(html).toContain("function nameAlmanacUrl(name)");
+    expect(html).toContain("function wiktionaryUrl(name)");
     expect(html).toContain("https://namealmanac.com/name/${slug}");
+    expect(html).toContain("https://en.wiktionary.org/wiki/${encodeURIComponent(title)}#English");
     expect(html).toContain('target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"');
-    expect(html).toContain("Optional external lookup using only this first name.");
-    expect(html).toContain("the app does not send a name lookup in the background");
+    expect(html).toContain("Optional external links use only this first name");
+    expect(html).toContain("the app makes no background lookup");
+  });
+
+  it("includes attributed Wiktionary etymology notes for a small reviewed set", () => {
+    for (const name of ["mary", "john", "william", "bernard", "hugh", "catherine"]) {
+      expect(html).toContain(`${name}:{note:`);
+      expect(wiktionaryNotice).toContain(`wiki/${name[0].toUpperCase()}${name.slice(1)}#English`);
+    }
+    expect(html).toContain("CC BY-SA 4.0");
+    expect(html).toContain('href="./assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"');
+    expect(wiktionaryNotice).toContain("https://creativecommons.org/licenses/by-sa/4.0/");
+    expect(wiktionaryNotice).toContain("Changes made");
   });
 
   it("records provenance and reuse terms for all six supplied name resources", () => {
@@ -87,6 +101,7 @@ describe("Greeran Family Tree 4DWM", () => {
     const xdc = readFileSync(path.join(root, "greeran-family-4dwm.xdc"));
     const files = unzipSync(new Uint8Array(xdc));
     expect(Object.keys(files).sort()).toEqual([
+      "assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md",
       "assets/greeran/world-english-bible.epub",
       "greeran-family-4dwm.ged",
       "icon.png",
@@ -119,6 +134,10 @@ describe("Greeran Family Tree 4DWM", () => {
       const personFamily = line.match(/^1 (?:FAMS|FAMC) (@[A-Z0-9]+@)$/);
       if (personFamily) expect(familyIds.has(personFamily[1])).toBe(true);
     }
+
+    const packedNotice = strFromU8(files["assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"]);
+    expect(packedNotice).toBe(wiktionaryNotice);
+    expect(packedNotice).toContain("CC BY-SA 4.0");
 
     const epubBytes = files["assets/greeran/world-english-bible.epub"];
     expect(Buffer.from(epubBytes).equals(readFileSync(path.join(root, "assets/greeran/world-english-bible.epub")))).toBe(true);

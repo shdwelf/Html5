@@ -52,4 +52,4 @@ The original Kirkpatrick/ARJ enrichment remains pending until the actual source 
 
 ## Name-resource follow-up (16 October 2026)
 
-The six supplied name resources were reviewed for meanings, matching data, provenance, and reuse terms. The app now offers an optional, user-initiated NameAlmanac link in each person's detail view; it performs no background request and copies no meanings or statistics. The GEDCOM and person records remain unchanged. See [`greeran-name-resources.md`](greeran-name-resources.md) for the source-by-source findings, license notes, and guardrails.
+The six supplied name resources were reviewed for meanings, matching data, provenance, and reuse terms. Profiles with a usable first name now offer optional NameAlmanac and Wiktionary links, and six entries have concise, attributed Wiktionary-derived etymology notes in the app. Lookups are user-initiated; the app makes no background request. No meanings or statistics were added to the GEDCOM, and person records remain unchanged. See [`greeran-name-resources.md`](greeran-name-resources.md) for the source-by-source findings, license notes, and guardrails.

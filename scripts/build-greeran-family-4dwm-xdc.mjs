@@ -3,8 +3,8 @@
  * Package the Greeran Family Tree 4DWM globe and keepsake pages as Webxdc.
  *
  * The interactive application remains a single offline HTML document. The
- * package additionally includes the baseline GEDCOM export and the WEB EPUB
- * linked from its keepsake panel, plus the standard manifest and icon.
+ * package additionally includes the baseline GEDCOM export, the WEB EPUB,
+ * the Wiktionary-name-note attribution notice, and the standard manifest/icon.
  * The ZIP is written reproducibly to the repository root and ignored dist/.
  *
  *   node scripts/build-greeran-family-4dwm-xdc.mjs
@@ -30,6 +30,7 @@ const gedcom = Buffer.from(gedcomResult.text, "utf8");
 const gedcomName = "greeran-family-4dwm.ged";
 const biblePath = path.join(root, "assets/greeran/world-english-bible.epub");
 const bible = await readFile(biblePath);
+const wiktionaryNotice = await readFile(path.join(root, "assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md"));
 const icon = await readFile(path.join(root, "img/greeran-family-4dwm-icon.png"));
 const manifest = `name = "Greeran Family Tree · 4DWM"
 orientation = "landscape"
@@ -43,6 +44,7 @@ const archive = {
   "manifest.toml": [enc.encode(manifest), { level: 9, mtime }],
   [gedcomName]: [new Uint8Array(gedcom), { level: 9, mtime }],
   "assets/greeran/world-english-bible.epub": [new Uint8Array(bible), { level: 9, mtime }],
+  "assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md": [new Uint8Array(wiktionaryNotice), { level: 9, mtime }],
 };
 const bytes = zipSync(archive, { level: 9, mtime });
 
