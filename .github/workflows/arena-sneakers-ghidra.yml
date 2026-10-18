@@ -1,0 +1,272 @@
+name: Sneakers original — Ghidra + FindCrypt
+
+# Static-only comparison of the original promotional ZIP members and the
+# repository reconstruction. Ghidra runs on
+# GitHub Actions with Eclipse Temurin/OpenJDK 21; FindCrypt is built from a
+# pinned source commit against the pinned official Ghidra release. No program
+# is executed or emulated in this workflow.
+
+on:
+  push:
+    branches: ['arena/7c16e993-html5']
+    paths:
+      - '.github/workflows/arena-sneakers-ghidra.yml'
+      - 'webxdc-sneakers-exact/source/Sneakers_Promotional_Diskette.zip'
+      - 'webxdc-dos/public/roms/SNEAKERS.EXE'
+      - 'tools/ghidra_scripts/GenericProgramReport.java'
+      - 'tools/ghidra_scripts/SneakersFindCryptReport.java'
+      - 'tools/summarize_sneakers_ghidra.py'
+  pull_request:
+    paths:
+      - '.github/workflows/arena-sneakers-ghidra.yml'
+      - 'webxdc-sneakers-exact/source/Sneakers_Promotional_Diskette.zip'
+      - 'webxdc-dos/public/roms/SNEAKERS.EXE'
+      - 'tools/ghidra_scripts/GenericProgramReport.java'
+      - 'tools/ghidra_scripts/SneakersFindCryptReport.java'
+      - 'tools/summarize_sneakers_ghidra.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  static-analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GHIDRA_VERSION: '12.1.4'
+      GHIDRA_DATE: '20260921'
+      GHIDRA_SHA256: 'ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db'
+      FINDCRYPT_COMMIT: '5c2fd5bb50d13a4092da136dc7004becd8129c7b'
+      SNEAKERS_ZIP_SHA256: 'b6e3d2a99de90b6de401a5d8d0023299c632e65ca98246bbe5d4842336f01eef'
+      RECONSTRUCTED_EXE_SHA256: '52e66ef4e192b4a368c0de58cac79a8e81d7ec06180da15bba2675614a0f1920'
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.3'
+
+      - name: Record the OpenJDK runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          java -version 2>&1 | tee "$RUNNER_TEMP/java-version.txt"
+          gradle --version | tee "$RUNNER_TEMP/gradle-version.txt"
+
+      - name: Install the pinned official Ghidra release
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/ghidra.zip"
+          url="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_build/ghidra_${GHIDRA_VERSION}_PUBLIC_${GHIDRA_DATE}.zip"
+          curl -fL --retry 6 --retry-all-errors --connect-timeout 30 "$url" -o "$archive"
+          echo "$GHIDRA_SHA256  $archive" | sha256sum --check --strict
+          unzip -q "$archive" -d "$RUNNER_TEMP"
+          ghidra_home="$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC"
+          test -x "$ghidra_home/support/analyzeHeadless"
+          printf 'GHIDRA_HOME=%s\n' "$ghidra_home" >> "$GITHUB_ENV"
+          printf 'Ghidra %s (%s), SHA-256 %s\n' "$GHIDRA_VERSION" "$GHIDRA_DATE" "$GHIDRA_SHA256" | tee "$RUNNER_TEMP/ghidra-version.txt"
+
+      - name: Build pinned Ghidra FindCrypt extension
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_dir="$RUNNER_TEMP/ghidra-findcrypt-src"
+          git init "$source_dir"
+          git -C "$source_dir" remote add origin https://github.com/TorgoTorgo/ghidra-findcrypt.git
+          git -C "$source_dir" fetch --no-tags --depth=1 origin "$FINDCRYPT_COMMIT"
+          git -C "$source_dir" checkout --detach FETCH_HEAD
+          test "$(git -C "$source_dir" rev-parse HEAD)" = "$FINDCRYPT_COMMIT"
+          printf 'TorgoTorgo/ghidra-findcrypt commit %s\n' "$FINDCRYPT_COMMIT" | tee "$RUNNER_TEMP/findcrypt-version.txt"
+          cd "$source_dir/FindCrypt"
+          GHIDRA_INSTALL_DIR="$GHIDRA_HOME" gradle --no-daemon
+          extension_zip="$(find dist -maxdepth 1 -type f -name '*.zip' -print -quit)"
+          test -n "$extension_zip"
+          unzip -l "$extension_zip" > "$RUNNER_TEMP/findcrypt-extension-list.txt"
+          grep -q 'extension.properties' "$RUNNER_TEMP/findcrypt-extension-list.txt"
+          extension_root="$GHIDRA_HOME/Ghidra/Extensions"
+          mkdir -p "$extension_root"
+          unzip -q "$extension_zip" -d "$extension_root"
+          find "$extension_root" -name extension.properties -print -quit | grep -q .
+
+      - name: Verify and extract the original archive members
+        shell: bash
+        run: |
+          set -euo pipefail
+          input="$RUNNER_TEMP/sneakers-original/input"
+          reports="$RUNNER_TEMP/sneakers-original/reports"
+          logs="$RUNNER_TEMP/sneakers-original/logs"
+          mkdir -p "$input" "$reports/mz" "$reports/findcrypt" "$logs"
+          python3 - "$GITHUB_WORKSPACE/webxdc-sneakers-exact/source/Sneakers_Promotional_Diskette.zip" "$input" <<'PY'
+          from hashlib import sha256
+          from pathlib import Path
+          from zipfile import ZipFile
+          import sys
+
+          source, output = Path(sys.argv[1]), Path(sys.argv[2])
+          assert sha256(source.read_bytes()).hexdigest() == "b6e3d2a99de90b6de401a5d8d0023299c632e65ca98246bbe5d4842336f01eef"
+          expected = {
+              "SNEAKERS.EXE": (2_219_117, "d5738c9a4050d69ca205a03229dad1616d681fbc9312859be3e629f4b3905961"),
+              "SNEAK.EXE": (1_074_631, "4710858f7be6461a6d3a267cbc2dec8ca2594e70d28695298ecfb682d99f33bb"),
+          }
+          with ZipFile(source) as archive:
+              assert archive.testzip() is None, "source archive CRC failure"
+              assert sorted(archive.namelist()) == sorted(expected), archive.namelist()
+              for name, (size, digest) in expected.items():
+                  data = archive.read(name)
+                  assert len(data) == size and sha256(data).hexdigest() == digest, name
+                  assert data[:2] == b"MZ", f"{name} is not an MZ executable"
+                  (output / name).write_bytes(data)
+                  print(f"{name}: {size} bytes sha256={digest}")
+          PY
+          python3 - "$GITHUB_WORKSPACE/webxdc-dos/public/roms/SNEAKERS.EXE" "$input/RECONSTRUCTED_SNEAKERS.EXE" <<'PY'
+          from hashlib import sha256
+          from pathlib import Path
+          import sys
+
+          source, output = Path(sys.argv[1]), Path(sys.argv[2])
+          data = source.read_bytes()
+          assert len(data) == 4_221
+          assert sha256(data).hexdigest() == "52e66ef4e192b4a368c0de58cac79a8e81d7ec06180da15bba2675614a0f1920"
+          output.write_bytes(data)
+          print(f"repository reconstruction comparator: {len(data)} bytes sha256={sha256(data).hexdigest()}")
+          PY
+          printf 'Original source ZIP SHA-256: %s\n' "$SNEAKERS_ZIP_SHA256" | tee "$RUNNER_TEMP/sneakers-original/input.txt"
+          printf 'Reconstructed comparator SHA-256: %s\n' "$RECONSTRUCTED_EXE_SHA256" | tee -a "$RUNNER_TEMP/sneakers-original/input.txt"
+
+      - name: Check FindCrypt on a known AES test signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          findcrypt_db="$RUNNER_TEMP/ghidra-findcrypt-src/FindCrypt/data/database.json"
+          python3 - "$findcrypt_db" "$RUNNER_TEMP/sneakers-original/aes-signature-test.bin" <<'PY'
+          import json, pathlib, sys
+          rows = json.loads(pathlib.Path(sys.argv[1]).read_text())
+          signature = next(row for row in rows if row["name"] == "AES_Encryption_SBox")
+          pathlib.Path(sys.argv[2]).write_bytes(bytes.fromhex(signature["hexBytes"]))
+          PY
+          headless="$GHIDRA_HOME/support/analyzeHeadless"
+          projects="$RUNNER_TEMP/sneakers-original/projects"
+          sentinel_log="$RUNNER_TEMP/sneakers-original/logs/findcrypt-sentinel.log"
+          if ! timeout 10m "$headless" "$projects" "Sneakers_FindCrypt_Sentinel" \
+            -import "$RUNNER_TEMP/sneakers-original/aes-signature-test.bin" \
+            -loader BinaryLoader -loader-baseAddr 0x0 -processor x86:LE:32:default \
+            -analysisTimeoutPerFile 300 -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+            -postScript SneakersFindCryptReport.java "$RUNNER_TEMP/sneakers-original/reports/findcrypt" "aes-signature-test.bin" \
+            -deleteProject > "$sentinel_log" 2>&1; then
+            tail -n 160 "$sentinel_log"
+            exit 1
+          fi
+          grep -q 'CRYPT_AES_Encryption_SBox' "$RUNNER_TEMP/sneakers-original/reports/findcrypt/aes-signature-test.bin.findcrypt.md"
+          echo 'FindCrypt positive control: AES S-box was detected and labeled.'
+
+      - name: Disassemble the MZ programs and FindCrypt-scan every original byte
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/sneakers-original"
+          headless="$GHIDRA_HOME/support/analyzeHeadless"
+          for name in SNEAKERS.EXE SNEAK.EXE RECONSTRUCTED_SNEAKERS.EXE; do
+            stem="${name%.EXE}"
+            echo "===== Native Ghidra MZ analysis: $name ====="
+            mz_log="$root/logs/${stem}-mz.log"
+            if ! timeout 25m "$headless" "$root/projects" "Sneakers_${stem}_MZ" \
+              -import "$root/input/$name" \
+              -analysisTimeoutPerFile 600 -max-cpu 2 \
+              -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+              -postScript GenericProgramReport.java "$root/reports/mz" \
+              -deleteProject > "$mz_log" 2>&1; then
+              tail -n 180 "$mz_log"
+              exit 1
+            fi
+            grep -E 'GENERIC_REPORT|ERROR|Exception' "$mz_log" | tail -n 20 || true
+
+            echo "===== Native Ghidra FindCrypt scan of the complete file: $name ====="
+            findcrypt_log="$root/logs/${stem}-findcrypt.log"
+            if ! timeout 20m "$headless" "$root/projects" "Sneakers_${stem}_Raw" \
+              -import "$root/input/$name" \
+              -loader BinaryLoader -loader-baseAddr 0x0 -processor x86:LE:32:default \
+              -analysisTimeoutPerFile 600 -max-cpu 2 \
+              -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+              -postScript SneakersFindCryptReport.java "$root/reports/findcrypt" "$name" \
+              -deleteProject > "$findcrypt_log" 2>&1; then
+              tail -n 180 "$findcrypt_log"
+              exit 1
+            fi
+            cat "$root/reports/findcrypt/$name.findcrypt.md"
+          done
+          test "$(find "$root/reports/mz" -maxdepth 1 -name '*.ghidra.json' | wc -l)" -eq 3
+          test "$(find "$root/reports/findcrypt" -maxdepth 1 -name '*.findcrypt.md' ! -name 'aes-signature-test.bin.findcrypt.md' | wc -l)" -eq 3
+          {
+            echo '# Original Sneakers — native Ghidra + FindCrypt'
+            echo
+            cat "$RUNNER_TEMP/java-version.txt"
+            cat "$RUNNER_TEMP/gradle-version.txt"
+            cat "$RUNNER_TEMP/ghidra-version.txt"
+            cat "$RUNNER_TEMP/findcrypt-version.txt"
+            echo
+            cat "$root/reports/findcrypt/SNEAKERS.EXE.findcrypt.md"
+            echo
+            cat "$root/reports/findcrypt/SNEAK.EXE.findcrypt.md"
+            echo
+            cat "$root/reports/findcrypt/RECONSTRUCTED_SNEAKERS.EXE.findcrypt.md"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Summarize native disassembly and FindCrypt results
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/sneakers-original"
+          python3 tools/summarize_sneakers_ghidra.py \
+            --mz-dir "$root/reports/mz" \
+            --findcrypt-dir "$root/reports/findcrypt" \
+            --sentinel-report "$root/reports/findcrypt/aes-signature-test.bin.findcrypt.md" \
+            --runtime-dir "$RUNNER_TEMP" \
+            --output "$root/native-summary.md"
+          cat "$root/native-summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit compact native-analysis evidence to the session branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/arena/7c16e993-html5'
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/sneakers-original"
+          evidence="$GITHUB_WORKSPACE/docs/ghidra/sneakers-original-native-evidence"
+          mkdir -p "$evidence"
+          cp "$root/native-summary.md" "$GITHUB_WORKSPACE/docs/ghidra/sneakers-original-native-ghidra-2026-10-18.md"
+          cp "$root/reports/mz"/*.ghidra.json "$evidence/"
+          for name in SNEAKERS.EXE SNEAK.EXE RECONSTRUCTED_SNEAKERS.EXE; do
+            cp "$root/reports/findcrypt/$name.findcrypt.md" "$evidence/"
+          done
+          git config user.name arena-ghidra-research
+          git config user.email arena-ghidra-research@users.noreply.github.com
+          git add docs/ghidra/sneakers-original-native-ghidra-2026-10-18.md docs/ghidra/sneakers-original-native-evidence/
+          if git diff --cached --quiet; then
+            echo 'No generated Ghidra evidence changes to commit.'
+            exit 0
+          fi
+          git commit -m "Record native Ghidra and FindCrypt Sneakers analysis"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Upload static-analysis reports and logs
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: sneakers-original-ghidra-findcrypt-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/java-version.txt
+            ${{ runner.temp }}/gradle-version.txt
+            ${{ runner.temp }}/ghidra-version.txt
+            ${{ runner.temp }}/findcrypt-version.txt
+            ${{ runner.temp }}/sneakers-original/input.txt
+            ${{ runner.temp }}/sneakers-original/native-summary.md
+            ${{ runner.temp }}/sneakers-original/reports
+            ${{ runner.temp }}/sneakers-original/logs
+          if-no-files-found: warn
+          retention-days: 30

@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build && node scripts/build-xdc.mjs",
     "build:sneakers-press-kit": "node scripts/build-sneakers-press-kit-xdc.mjs",
+    "build:sneakers-press-kit-exact": "node scripts/build-sneakers-press-kit-exact-xdc.mjs",
     "build:bluetops": "node scripts/build-bluetops-xdc.mjs",
     "build:casefiles": "node tools/build_casefiles.mjs && node scripts/build-casefiles-xdc.mjs",
     "build:cheyenne": "node scripts/build-cheyenne-xdc.mjs",

@@ -8,6 +8,7 @@ This wiki is a guide to the `shdwelf/Html5` source repository, its research note
 
 - [The Greeran Book](Greeran-Book) — source-tiered biography and its new cinematic opening.
 - [Wiki samples and vault](Wiki-Samples-and-Vault) — where the demo sample, complete source vault, and TiddlyWiki Drive backup live.
+- [Sneakers original archive and static analysis](Sneakers-Archive-and-Ghidra) — exact ZIP provenance, original-vs-reconstruction cipher correction, Ghidra-WASM/native-Ghidra FindCrypt workflow, and DOSBox/Xvfb research.
 - [Repository README](https://github.com/shdwelf/Html5/blob/main/README.md)
 - [Wiki workspace build guide](https://github.com/shdwelf/Html5/blob/main/tools/wiki-workspace/README.md)
 

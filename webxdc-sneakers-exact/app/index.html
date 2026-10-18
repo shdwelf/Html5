@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08171b">
+  <title>SNEAKERS · Original DOS Press Kit (1992)</title>
+  <link rel="stylesheet" href="./js-dos/js-dos.css">
+  <script src="./js-dos/js-dos.js"></script>
+  <!-- The messenger supplies its real Webxdc API; this stub is for local preview. -->
+  <script src="./webxdc.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f0f4e9;
+      --muted: #9aa9a0;
+      --dim: #687b73;
+      --bg: #08171b;
+      --panel: #102328;
+      --line: #2a4b49;
+      --mint: #83ead3;
+      --lime: #d7ef70;
+      --amber: #e9b478;
+      --mono: "Courier New", Courier, monospace;
+      --serif: Georgia, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; }
+    body { overflow: hidden; color: var(--ink); background: var(--bg); font-family: var(--mono); }
+    button, a { font: inherit; }
+    #app { width: 100%; height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
+    header {
+      flex: 0 0 auto; min-height: 58px; padding: 8px 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(110deg, #122b2b, #0a191c 72%);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .brand-mark {
+      flex: 0 0 auto; width: 32px; height: 32px; display: grid; place-items: center;
+      border: 1px solid var(--mint); border-radius: 50%; color: var(--mint);
+      font: 700 17px/1 var(--serif); box-shadow: 0 0 14px #83ead32c;
+    }
+    header h1 { margin: 0; font: 700 16px/1.1 var(--mono); letter-spacing: .17em; }
+    header p { margin: 4px 0 0; color: var(--muted); font-size: 9px; letter-spacing: .12em; }
+    .header-meta { flex: 0 0 auto; text-align: right; color: var(--muted); font-size: 9px; line-height: 1.5; }
+    .header-meta strong { color: var(--lime); font-weight: 700; }
+
+    #stage { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; background: #000; }
+    #dosbox-container { position: absolute; inset: 0; background: #000; }
+    #overlay {
+      position: absolute; z-index: 5; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 13px; padding: 20px;
+      overflow: auto; text-align: center;
+      background:
+        repeating-linear-gradient(0deg, #83ead308 0 1px, transparent 1px 4px),
+        radial-gradient(ellipse at 50% 38%, #1b4841 0, #112c2b 38%, #08171b 76%);
+    }
+    .kicker { color: var(--amber); font-size: 9px; letter-spacing: .22em; text-transform: uppercase; }
+    .title-lockup {
+      width: min(100%, 470px); padding: 14px 22px 13px;
+      border-top: 3px double var(--mint); border-bottom: 3px double var(--mint);
+      text-shadow: 0 0 20px #83ead33a;
+    }
+    .title-lockup h2 { margin: 0; color: #f6fff3; font: 700 clamp(34px, 8vw, 62px)/.95 var(--mono); letter-spacing: .18em; }
+    .title-lockup p { margin: 8px 0 0; color: var(--mint); font-size: 10px; letter-spacing: .22em; }
+    .tagline { margin: 0; color: var(--lime); font: italic 17px/1.25 var(--serif); }
+    .intro { max-width: 60ch; margin: 0; color: #bfcbc0; font: 12px/1.65 var(--serif); }
+    .notice {
+      max-width: 74ch; padding: 8px 11px; border: 1px solid #e9b47855;
+      background: #e9b4780b; color: #dfc9ae; font: 10px/1.6 var(--mono);
+      overflow-wrap: anywhere;
+    }
+    .notice strong { color: var(--amber); }
+    #start {
+      min-height: 44px; padding: 11px 22px; border: 1px solid #a9c553; border-radius: 3px;
+      background: var(--lime); color: #152019; box-shadow: 0 3px 0 #77913a;
+      cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: .1em;
+    }
+    #start:hover { background: #e7fba5; }
+    #start:active { transform: translateY(2px); box-shadow: 0 1px 0 #77913a; }
+    #start:disabled { opacity: .65; cursor: progress; }
+    .controls-hint { max-width: 70ch; color: var(--dim); font-size: 9px; line-height: 1.65; }
+
+    #status {
+      flex: 0 0 auto; min-height: 25px; padding: 5px 12px; overflow: hidden;
+      border-top: 1px solid var(--line); background: #0a1c1f; color: var(--muted);
+      font-size: 9px; text-overflow: ellipsis; white-space: nowrap;
+    }
+    #status[data-kind="error"] { color: #ff9a85; }
+    details {
+      flex: 0 0 auto; max-height: 39vh; overflow: auto; border-top: 1px solid var(--line);
+      background: var(--panel); scrollbar-color: var(--line) var(--panel);
+    }
+    summary {
+      position: sticky; top: 0; padding: 6px 12px; background: var(--panel);
+      color: var(--mint); cursor: pointer; font-size: 9px; letter-spacing: .12em;
+      list-style-position: inside; text-transform: uppercase;
+    }
+    .about { padding: 8px 14px 13px; border-top: 1px dashed var(--line); color: #b7c4ba; font: 11px/1.6 var(--serif); }
+    .about p { margin: 7px 0; }
+    .about strong { color: var(--ink); }
+    .about code { color: var(--lime); font: 10px var(--mono); overflow-wrap: anywhere; }
+    .about a { color: var(--mint); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    .about a:hover { color: var(--lime); }
+    .hashes { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 3px 12px; margin: 8px 0; font-size: 10px; }
+    .hashes dt { color: var(--muted); }
+    .hashes dd { margin: 0; color: var(--lime); overflow-wrap: anywhere; }
+    .legal { color: var(--muted); font-size: 10px; }
+
+    @media (max-width: 520px) {
+      header { min-height: 52px; padding: 7px 10px; }
+      .brand-mark { width: 28px; height: 28px; }
+      header h1 { font-size: 13px; }
+      header p { max-width: 56vw; overflow: hidden; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+      .header-meta { font-size: 8px; }
+      .intro { font-size: 11px; }
+      .notice { font-size: 9px; }
+      details { max-height: 44vh; }
+    }
+    @media (max-height: 520px) {
+      #overlay { gap: 7px; padding: 8px 16px; }
+      .title-lockup { padding: 8px 14px; }
+      .title-lockup h2 { font-size: clamp(26px, 7vh, 42px); }
+      .title-lockup p { margin-top: 4px; }
+      .tagline { font-size: 15px; }
+      .intro { font-size: 10px; }
+      .notice { padding: 5px 8px; }
+      #start { min-height: 38px; padding: 8px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <div>
+          <h1>SNEAKERS</h1>
+          <p>ORIGINAL PROMOTIONAL DISKETTE ZIP · BYTE-VERIFIED</p>
+        </div>
+      </div>
+      <div class="header-meta"><strong>DOS · 1992</strong><br>ORIGINAL EXECUTABLE</div>
+    </header>
+
+    <main id="stage" aria-label="Original Sneakers DOS press-kit player">
+      <div id="dosbox-container"></div>
+      <section id="overlay" aria-labelledby="splash-title">
+        <div class="kicker">Original Archive · offline DOS session</div>
+        <div class="title-lockup">
+          <h2 id="splash-title">SNEAKERS</h2>
+          <p>COMPUTER PRESS KIT · 1992</p>
+        </div>
+        <p class="tagline">Original DOS program. Original archive. Browser controls.</p>
+        <p class="intro">Boot the original <code>SNEAKERS.EXE</code> from the promotional ZIP you supplied. The original ZIP is embedded unchanged, and both original executable files are retained byte-for-byte in the DOS bundle.</p>
+        <div class="notice"><strong>Archive check:</strong> ZIP · 2,066,643 bytes · SHA-256 <code>b6e3d2a99de90b6de401a5d8d0023299c632e65ca98246bbe5d4842336f01eef</code></div>
+        <button id="start" type="button">▶&nbsp; BOOT THE ORIGINAL PRESS KIT</button>
+        <div class="controls-hint">Touch or click the DOS display for mouse input. For keyboard input, open js-dos’ ☰ sidebar and choose its on-screen keyboard; this app configures letters, digits, arrows, Enter, Escape, Backspace, Tab, and Space. A physical keyboard or mouse is not required.</div>
+      </section>
+    </main>
+
+    <div id="status" role="status" aria-live="polite">READY · press BOOT to start the original offline DOS session</div>
+
+    <details>
+      <summary>About · controls · source verification</summary>
+      <div class="about">
+        <p><strong>Original ZIP.</strong> The XDC contains the user-supplied <code>Sneakers_Promotional_Diskette.zip</code> at <code>original/Sneakers_Promotional_Diskette.zip</code>, unchanged. Its MD5 and SHA-1 match the Archive.org item metadata. The ZIP contains two executables, not a floppy image: <code>SNEAKERS.EXE</code> and <code>SNEAK.EXE</code>. The separate Archive.org <code>sneakers.img</code> is not represented as part of this ZIP.</p>
+        <dl class="hashes">
+          <dt>ZIP · MD5</dt><dd>7ee0f238f94fbbe06649d719d92fc769</dd>
+          <dt>ZIP · SHA-1</dt><dd>a94c7ef89f60c37f488d6163f5f8d7bc05b9cd31</dd>
+          <dt>ZIP · SHA-256</dt><dd>b6e3d2a99de90b6de401a5d8d0023299c632e65ca98246bbe5d4842336f01eef</dd>
+          <dt>SNEAKERS.EXE</dt><dd>2,219,117 bytes · SHA-256 d5738c9a4050d69ca205a03229dad1616d681fbc9312859be3e629f4b3905961</dd>
+          <dt>SNEAK.EXE</dt><dd>1,074,631 bytes · SHA-256 4710858f7be6461a6d3a267cbc2dec8ca2594e70d28695298ecfb682d99f33bb</dd>
+        </dl>
+        <p><strong>Launch path.</strong> The player launches the original <code>SNEAKERS.EXE</code> directly. <code>SNEAK.EXE</code> is retained as supplied; it identifies as an LHA SFX companion with an embedded member named <code>SNEAKERS.EXE</code>. The JS-DOS bundle adds only its local DOSBox configuration; neither executable is patched or reconstructed.</p>
+        <p><strong>Keyboard and mouse.</strong> The DOS canvas receives focus on boot, on DOS-ready, and on pointer-down, following the working Headline Harry Webxdc behavior. Pointer capture is disabled; touch/clicks over the display are available as DOS mouse input. The ☰ sidebar's on-screen keyboard uses a touch-friendly key layout, so a physical keyboard and mouse are optional. If the original program pauses at a key prompt, open that keyboard and press a key.</p>
+        <p><strong>Runtime.</strong> This is a self-contained Webxdc with the vendored js-dos 8.4.1 runtime, no CDN or remote game download, and no cloud save. The distinct <code>sneakers-press-kit.xdc</code> remains the earlier repository-built reconstruction.</p>
+        <p><strong>Source:</strong> <a href="https://archive.org/details/Sneakers_Film_Promotional_Floppy" target="_blank" rel="noopener noreferrer">Internet Archive · Sneakers Film Promotional Floppy</a>. <strong>Rights:</strong> © Universal City Studios and other respective rights holders. “Abandonware” does not mean public domain.</p>
+      </div>
+    </details>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+      var statusEl = document.getElementById("status");
+      var overlay = document.getElementById("overlay");
+      var startButton = document.getElementById("start");
+      var container = document.getElementById("dosbox-container");
+      var dosInstance = null;
+      var starting = false;
+      var touchKeyboardLayout = [
+        "{esc} {f1} {f2} {f3} {f4} {f5} {f6} {f7} {f8} {f9} {f10}",
+        "1 2 3 4 5 6 7 8 9 0 {bksp}",
+        "q w e r t y u i o p",
+        "a s d f g h j k l {enter}",
+        "{shift} z x c v b n m {space}",
+        "{tab} {ctrl} {alt} {up} {down} {left} {right}"
+      ];
+
+      function status(message, kind) {
+        statusEl.textContent = message;
+        statusEl.dataset.kind = kind || "info";
+      }
+
+      // In a Webxdc iframe the DOS canvas may not receive focus automatically.
+      // This mirrors the verified Headline Harry player behavior: focus it on
+      // startup, on readiness, and before routing pointer/keyboard input.
+      function focusDos() {
+        var canvas = container.querySelector("canvas");
+        if (!canvas) return;
+        if (!canvas.hasAttribute("tabindex")) canvas.setAttribute("tabindex", "0");
+        try { canvas.focus({ preventScroll: true }); } catch (_) { canvas.focus(); }
+      }
+
+      function showError(message) {
+        starting = false;
+        startButton.disabled = false;
+        startButton.textContent = "↻ RETRY BOOT";
+        overlay.style.display = "flex";
+        status(message, "error");
+      }
+
+      function boot() {
+        if (starting) return;
+        if (typeof window.Dos !== "function") {
+          showError("js-dos is unavailable · local engine files did not load");
+          return;
+        }
+        starting = true;
+        startButton.disabled = true;
+        overlay.style.display = "none";
+        status("LOADING DOSBOX WASM · original files stay local");
+
+        container.addEventListener("pointerdown", focusDos, true);
+        container.addEventListener("keydown", focusDos, true);
+        if (dosInstance) {
+          try { dosInstance.stop(); } catch (_) {}
+          dosInstance = null;
+        }
+        container.replaceChildren();
+
+        try {
+          // js-dos v8 options API. All URLs resolve inside this Webxdc.
+          dosInstance = window.Dos(container, {
+            url: "roms/SNEAKERS.jsdos",
+            pathPrefix: "js-dos/",
+            autoStart: true,
+            noCloud: true,
+            kiosk: false,
+            onEvent: function (event) {
+              if (event === "emu-ready") {
+                status("DOSBOX WASM READY · preparing the original promotional program");
+              } else if (event === "bnd-play") {
+                status("LAUNCHING ORIGINAL SNEAKERS.EXE · verified source bytes");
+              } else if (event === "ci-ready") {
+                starting = false;
+                startButton.disabled = false;
+                startButton.textContent = "↻ RESTART DOS SESSION";
+                status("DOS READY · tap the display for mouse; ☰ sidebar opens the touch keyboard");
+                focusDos();
+              } else if (event === "emu-error" || event === "bnd-error") {
+                showError("DOSBOX ERROR · check the console, then retry");
+              }
+            }
+          });
+          // No pointer lock: mouse/touch input remains usable in the embedded
+          // player. The sidebar keyboard gets a useful layout for this program.
+          if (dosInstance && typeof dosInstance.setMouseCapture === "function") {
+            dosInstance.setMouseCapture(false);
+          }
+          if (dosInstance && typeof dosInstance.setSoftKeyboardLayout === "function") {
+            dosInstance.setSoftKeyboardLayout(touchKeyboardLayout);
+          }
+          if (dosInstance && typeof dosInstance.setThinSidebar === "function") {
+            dosInstance.setThinSidebar(false);
+          }
+          setTimeout(focusDos, 0);
+        } catch (error) {
+          console.error(error);
+          showError("BOOT FAILED · " + (error && error.message ? error.message : String(error)));
+        }
+      }
+
+      startButton.addEventListener("click", boot);
+    })();
+  </script>
+</body>
+</html>

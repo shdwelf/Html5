@@ -1,5 +1,7 @@
 # Sneakers (1992) Film Promotional Floppy — Reverse Engineering Analysis
 
+> **Source correction — 2026-10-18:** The original `Sneakers_Promotional_Diskette.zip` was obtained from the user's Google Drive and verified byte-for-byte against the Archive.org metadata hashes. The 2,066,643-byte ZIP contains `SNEAKERS.EXE` (2,219,117 bytes) and `SNEAK.EXE` (1,074,631 bytes), not `sneakers.img` plus a README. The separate Archive.org `sneakers.img` is a different item file. The 2026-08-21 inferences in §19.2 and §19.4 about the ZIP's contents and original executable are superseded by the direct inspection summarized in `webxdc-sneakers-exact/README.md`; the compact files documented in §§1–18 remain the repository's reconstruction, not those original bytes.
+
 ## Archive.org Source
 **Identifier**: `Sneakers_Film_Promotional_Floppy`
 **URL**: https://archive.org/details/Sneakers_Film_Promotional_Floppy
@@ -735,44 +737,43 @@ The *metadata* **did** fetch (2 chunks, `fetch_page`):
  ],"workable_servers":["ia902908.us.archive.org","ia802908.us.archive.org"]}
 ```
 
-* **`sneakers.img` 1 474 560 B** = **1440 KiB floppy** (`2880×512`) — matches our FAT12 `§1` Boot Sector (`2880 sectors, 9 SPT, 0x55AA`).
-* **`Sneakers_Promotional_Diskette.zip` 2 066 643 B, filecount 2** — the *original* distribution ZIP (2 files inside, not our js-dos 9-file `SNEAKERS.ZIP` 9 128 B). Our `SNEAKERS.ZIP` is a **reconstructed js-dos subset** (EXE+DAT+CROSSWORD+PRINT+3×PCX+RUN/PRINT.BAT) for browser emulation; the original ZIP's 2 files are likely the raw `sneakers.img` + a `README` or `INSTALL.BAT` (not yet extracted). **Size difference is expected** — we document it.
+* **`sneakers.img` 1 474 560 B** is a separate Archive.org item file; it is not one of the two members in `Sneakers_Promotional_Diskette.zip`.
+* The user-supplied Drive copy of the **original ZIP** was downloaded and verified against its listed MD5 and SHA-1. Its exact members are `SNEAKERS.EXE` (2,219,117 B; CRC32 `e4412a23`) and `SNEAK.EXE` (1,074,631 B; CRC32 `8c6ab890`). `SNEAK.EXE` identifies as an LHA SFX 2.12S and contains an LHA member named `SNEAKERS.EXE`.
+* ZIP hashes: MD5 `7ee0f238f94fbbe06649d719d92fc769`; SHA-1 `a94c7ef89f60c37f488d6163f5f8d7bc05b9cd31`; SHA-256 `b6e3d2a99de90b6de401a5d8d0023299c632e65ca98246bbe5d4842336f01eef`. The compact `SNEAKERS.ZIP` described in §§1–18 is a **separate repository reconstruction**, not the contents of the original promotional ZIP.
 
 ### 19.3 Cross-check: Screenshots & Torrent
 * **16 PNG screenshots** (`screenshot_00.png` 22 574 B … `screenshot_14.png` 20 167 B) listed in metadata — our `README §5-6` title screen `00_coverscreenshot.png` 26 768 B matches `Sneakers_Film_Promotional_Floppy.gif` 39 284 B.
 * **Torrent** `Sneakers_Film_Promotional_Floppy_archive.torrent` (9 570 B, `c4589...`) fetched via `fetch_page` as bencoded `d8:announce...5:filesld5:crc32...` — confirms the 48-file manifest; `filecount 2` for the ZIP is also in the torrent's `files` array.
 * **Press package** `press_package.jpg` 208 072 B (`DD_NzOnVYAApt6Z.jpg`) is the paper folder with install instructions (mentalfloss “Play the Sneakers Press Kit”).
 
-### 19.4 Our Reconstructed `SNEAKERS.EXE` vs Original (Inferred)
-We cannot `hexdump -C` the original 2 M ZIP, but we can compare **MZ header invariants** from the torrent's `md5`/`sha1` + our Keystone build:
+### 19.4 Direct file-level verification (2026-10-18)
 
-| Field | Original (inferred from `sneakers.img` FAT12) | Ours `SNEAKERS.EXE` 4221 B | Match |
-|---|---|---|---|
-| `e_magic` | `4D 5A` | `4D 5A` | ✓ |
-| `e_cparhdr` | `0x0002` (32 B) | `0x0002` | ✓ |
-| `e_cp` | `Ceil(1474560/512)=2880` for img, but for EXE inside `Ceil(4221/512)=9` | `09 00` | plausible (floppy img vs EXE) |
-| `e_cblp` | `1474560%512=0` | `7D 00` (125) for 4221 | ✓ (different file) |
-| `filecount` in ZIP | 2 | 9 (js-dos expanded) | documented difference |
-| `INT 21h AH=09h/0Ah/40h/3Dh/3Eh/4Ch`, `INT 10h 00h/02h`, `INT 16h 00h` | seen in screenshots `screenshot_00..14.png` (title, prompt, menu, gallery) | same in our `0229h` `disasm` | ✓ |
-| `LPT1` print | `jasomill.at/sneakers.txt` 122K 35 pages, Epson `1B 40/33 18/2A 73` | our `PRINT.TXT` 2163 B + `gallery_msg` `0E61h` | ✓ (truncated for ZIP) |
-| `PCX` | `00_coverscreenshot.png` 26K → PCX 320×200 | our `IMAGES/*.pcx` 907 B minimal valid `0A 05 01 08` + LSB stego | ✓ (header-valid) |
+The Archive.org promotional ZIP supplied through Google Drive was inspected locally after the earlier direct binary-fetch failures documented in §19.1. The ZIP integrity check passed, its byte size/MD5/SHA-1 match the Archive.org metadata above, and its SHA-256 is `b6e3d2a99de90b6de401a5d8d0023299c632e65ca98246bbe5d4842336f01eef`.
 
-**Conclusion:** Our 4.2 K EXE is a **hand-crafted, WASM-safe subset** that reproduces the original's *interface* (title → password `setec astronomy` → decrypt → menu → print/gallery) and *all 4 ciphers* (XOR/ROT13/Caesar/Scrabble) while the original's larger 2 M ZIP likely contains the full 1.4 M `sneakers.img` plus ancillary files. The hidden messages we added (matrix col 0 `SETEC ASTRONOMY`, Bishop/Cosmos at `05C6h/0778h`, crossword at `091Dh` ROT13, Werner at `0B72h` Caesar, PCX LSB `SETEC...`, MZ `SETEC AS` at `18/1A/1C/1E`) are **consistent** with the 1992 *“Too many secrets”* theme and are **additive** — they do not contradict the original's `00_coverscreenshot.png` or `sneakers.img` FAT12.
+| Original ZIP member | Size | CRC32 | SHA-256 |
+|---|---:|---|---|
+| `SNEAKERS.EXE` | 2,219,117 B | `e4412a23` | `d5738c9a4050d69ca205a03229dad1616d681fbc9312859be3e629f4b3905961` |
+| `SNEAK.EXE` | 1,074,631 B | `8c6ab890` | `4710858f7be6461a6d3a267cbc2dec8ca2594e70d28695298ecfb682d99f33bb` |
 
-*If direct binary fetch is later unblocked, verify with:*
+Both are original DOS MZ executables. `SNEAK.EXE` contains the LHA SFX 2.12S signature and an embedded archive member named `SNEAKERS.EXE`; the package boots the directly included `SNEAKERS.EXE` and keeps `SNEAK.EXE` alongside it. The main executable's file contains its own substantial overlay/resources and strings for the press-kit files and graphics engine.
+
+The reconstructed 4.2 K `SNEAKERS.EXE` documented in §§1–18 is **not** a comparable or byte-identical copy of this original 2.2 MB executable. It remains a separate browser-oriented reconstruction. The new `sneakers-press-kit-exact.xdc` preserves the original ZIP byte-for-byte and checks that both executable members in its runnable js-dos bundle match those original ZIP members.
+
+Recheck the preserved input and XDC with:
+
 ```bash
-curl -k -L -o original.zip https://archive.org/download/Sneakers_Film_Promotional_Floppy/Sneakers_Promotional_Diskette.zip
-unzip -l original.zip          # should show 2 files
-7z l original.zip
-md5sum original.zip             # 7ee0f238f94fbbe06649d719d92fc769
-sha1sum original.zip            # a94c7ef89f60c37f488d6163f5f8d7bc05b9cd31
-# or via torrent (webseed):
-aria2c --check-certificate=false Sneakers_Film_Promotional_Floppy_archive.torrent
-# then:
-unzip -p original.zip | strings | grep -a "SETEC\|Werner\|SETEC ASTRONOMY"
-# and:
-xxd sneakers.img | head -1      # should start EB 3C 90 (boot) and contain "MSDOS5.0" at 0x03
+unzip -t webxdc-sneakers-exact/source/Sneakers_Promotional_Diskette.zip
+md5sum webxdc-sneakers-exact/source/Sneakers_Promotional_Diskette.zip
+sha1sum webxdc-sneakers-exact/source/Sneakers_Promotional_Diskette.zip
+sha256sum webxdc-sneakers-exact/source/Sneakers_Promotional_Diskette.zip
+node scripts/build-sneakers-press-kit-exact-xdc.mjs --check
 ```
+
+### 19.5 Cipher-claim audit (2026-10-18)
+
+The XOR `0x5A`, ROT13, Caesar `+7`, `setec astronomy` access gate, and Scrabble/password analysis in §§6–18 describe the **4,221-byte repository reconstruction**, not the original 2,219,117-byte `SNEAKERS.EXE` from the Archive.org ZIP. Those earlier sections are retained as reconstruction notes, but their references to “original” or “the real floppy” must not be read as verified facts about the original executable.
+
+The original `SNEAKERS.EXE` and `SNEAK.EXE` were scanned with `scripts/crypto-find.py`: **zero known standard crypto/hash constant hits**. A bounded ASCII and single-byte-XOR search for selected `SETEC`/password strings also found no matches. This does not prove there is no custom or resource-specific transform; the heuristic cannot detect arbitrary cipher code. The LHA marker in `SNEAK.EXE` indicates compressed archive data, not encryption. See `docs/sneakers-original-ghidra-wasm-2026-10-18.md` and `docs/ghidra/sneakers-original-crypto-scan-2026-10-18.md`.
 
 ---
 
