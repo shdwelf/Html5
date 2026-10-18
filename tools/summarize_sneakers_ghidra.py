@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 
@@ -36,6 +37,51 @@ def asm_excerpt(path: Path, limit: int = 18) -> list[str]:
     for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
         if not line.strip() or line.lstrip().startswith(";"):
             continue
+        rows.append(line.rstrip())
+        if len(rows) >= limit:
+            break
+    return rows
+
+
+def entry_address(metadata: dict) -> str:
+    explicit = str(metadata.get("entryPoint", ""))
+    if explicit:
+        return explicit
+    for row in metadata.get("decompilations", []):
+        if row.get("name") == "entry":
+            return str(row.get("address", ""))
+    return "not recorded"
+
+
+def real_mode_linear(address: str) -> int | None:
+    match = re.fullmatch(r"([0-9a-fA-F]{1,4}):([0-9a-fA-F]{1,4})", address)
+    return int(match.group(1), 16) * 16 + int(match.group(2), 16) if match else None
+
+
+def asm_excerpt_at_entry(path: Path, address: str, limit: int = 24) -> list[str]:
+    if not path.exists() or address == "not recorded":
+        return []
+    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    target = real_mode_linear(address)
+    start = None
+    for index, line in enumerate(lines):
+        match = re.match(r"^\s*([0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})\s+", line)
+        if not match:
+            continue
+        candidate = match.group(1)
+        if candidate.lower() == address.lower() or (
+            target is not None and real_mode_linear(candidate) == target
+        ):
+            start = index
+            break
+    if start is None:
+        return []
+    rows = []
+    for line in lines[start:]:
+        if not line.strip() or line.lstrip().startswith(";"):
+            continue
+        if not re.match(r"^\s*[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4}\s+", line):
+            break
         rows.append(line.rstrip())
         if len(rows) >= limit:
             break
@@ -101,8 +147,8 @@ def main() -> None:
         "",
         "## MZ loader analyses",
         "",
-        "| Input / provenance | SHA-256 | Ghidra format | Language | Image base | Memory blocks / bytes | Functions | Instructions | Defined strings | Decompilations completed |",
-        "|---|---|---|---|---|---:|---:|---:|---:|---:|",
+        "| Input / provenance | SHA-256 | Ghidra format | Language | Image base | Entry point | Memory blocks / bytes | Functions | Instructions | Defined strings | Decompilations completed |",
+        "|---|---|---|---|---|---|---:|---:|---:|---:|---:|",
     ]
 
     for name, label in LABELS.items():
@@ -111,16 +157,18 @@ def main() -> None:
         block_bytes = sum(int(block.get("bytes", 0)) for block in blocks)
         decompilations = metadata.get("decompilations", [])
         decomp_ok = sum(bool(row.get("completed")) for row in decompilations)
+        entry = entry_address(metadata)
         asm_stem = json_path.name.removesuffix(".ghidra.json")
         asm_path = args.mz_dir / f"{asm_stem}.asm"
         output.append(
-            "| `{}` — {} | `{}` | `{}` | `{}` | `{}` | {} / {} B | {} | {} | {} | {}/{} |".format(
+            "| `{}` — {} | `{}` | `{}` | `{}` | `{}` | `{}` | {} / {} B | {} | {} | {} | {}/{} |".format(
                 name,
                 label,
                 metadata.get("sha256", ""),
                 metadata.get("executableFormat", ""),
                 metadata.get("language", ""),
                 metadata.get("imageBase", ""),
+                entry,
                 len(blocks),
                 block_bytes,
                 metadata.get("functions", 0),
@@ -142,6 +190,20 @@ def main() -> None:
                 *excerpt,
                 "```",
             ])
+        entry_excerpt = asm_excerpt_at_entry(asm_path, entry)
+        if entry_excerpt:
+            output.extend([
+                "",
+                f"### Native disassembly at Ghidra entry point — `{name}` (`{entry}`)",
+                "",
+                "For real-mode addresses, the listing may display an equivalent canonical segment:offset alias for the same linear address:",
+                "",
+                "```asm",
+                *entry_excerpt,
+                "```",
+            ])
+        else:
+            output.extend(["", f"No entry-point disassembly excerpt was found for `{name}` at `{entry}`."])
         output.extend(["", f"Full `.asm`, `.c`, and `.strings.txt` files are retained in the CI artifact for `{name}`.", ""])
 
     output.extend([
