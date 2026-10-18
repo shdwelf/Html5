@@ -1,0 +1,15 @@
+item,qty,description,detail,provenance
+1,1,"Front panel, 19 in rack","19 x 3.5 in, EIA-310-D",standard
+2,8,Rack mounting hole,0.625 in vertical pitch,standard
+3,2,IEC 60603-7 8P8C (RJ45) receptacle,LAN 10/100/1000 + WAN 10/100,spec
+4,1,DE-15 (HD-15) VGA receptacle,maintenance console,spec
+5,2,Mini-DIN-6 (PS/2) receptacle,keyboard + mouse,spec
+6,1,DE-9 serial receptacle,maintenance console,spec
+7,1,USB Type-A receptacle,maintenance console,spec
+8,1,Enclosure,"2U, 19 in rack, ~8.6 lbs",spec
+9,1,CPU / system-on-module,not disclosed by vendor,NOT PUBLISHED
+10,1,Gigabit Ethernet MAC/PHY,not disclosed by vendor,NOT PUBLISHED
+11,1,Persistent storage,not disclosed by vendor,NOT PUBLISHED
+12,1,Power supply,not disclosed by vendor,NOT PUBLISHED
+13,1,S-Key authentication module,vendor states 'integrated S-Key technology'; whether this is RFC 1760/2289 S/KEY is not stated,NOT PUBLISHED
+14,1,PCB,no schematic or board image is public,NOT PUBLISHED
