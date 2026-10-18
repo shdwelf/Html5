@@ -50,7 +50,7 @@
   "decompilations": [
     {
       "name": "entry",
-      "address": "1000:0000",
+      "address": "0ff0:0100",
       "completed": true,
       "message": ""
     },

@@ -73,9 +73,107 @@ For real-mode addresses, the listing may display an equivalent canonical segment
 1000:031a          7303                           JNC 0x1000:031f
 ```
 
+### Ghidra decompiler excerpt — `SNEAKERS.EXE` entry function
+
+C-like pseudocode generated from the native MZ-loader program database; this is not original source:
+
+```c
+/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
+/* WARNING: This function may have set the stack pointer */
+void entry(void)
+{
+  undefined2 *puVar1;
+  undefined2 *puVar2;
+  code *pcVar3;
+  int iVar4;
+  uint uVar5;
+  uint uVar6;
+  int iVar7;
+  undefined2 *puVar8;
+  undefined2 *puVar9;
+  int iVar10;
+  undefined2 *puVar11;
+  undefined2 unaff_DS;
+  undefined2 uVar12;
+  byte in_AF;
+  byte in_TF;
+  byte in_IF;
+  byte in_NT;
+  uint uVar13;
+  DAT_2a40_004d = 0x2d1a;
+  DAT_2a40_004f = 0x100;
+  DAT_2a40_0053 = unaff_DS;
+  if (DAT_2a40_22ba < *(uint *)0x2) {
+    uVar5 = *(uint *)0x2 - DAT_2a40_22ba;
+    if (0x3a40 < uVar5) {
+      uVar5 = 0x3a40;
+    }
+    if ((0x2ca8 < uVar5) && (uVar5 = uVar5 + 0xd358, DAT_2a40_22b8 <= uVar5)) {
+      if (DAT_2a40_0cf6 < uVar5) {
+        uVar5 = DAT_2a40_0cf6;
+      }
+      iVar10 = 0x2a40;
+      uVar6 = uVar5 + 0x268;
+      uVar13 = uVar6;
+      if (0xfff < uVar6 && uVar5 != 0xd98) {
+        uVar6 = 0x1000;
+        iVar10 = uVar5 + 0x1ca8;
+        uVar13 = uVar5 + 0x2ca8;
+      }
+      uVar5 = uVar6 * 0x10;
+      uVar13 = (uint)(in_NT & 1) * 0x4000 | (uint)SBORROW2(uVar13,0x1000) * 0x800 |
+               (uint)(in_IF & 1) * 0x200 | (uint)(in_TF & 1) * 0x100 | (uint)((int)uVar5 < 0) * 0x80
+               | (uint)(uVar5 == 0) * 0x40 | (uint)(in_AF & 1) * 0x10 |
+               (uint)((POPCOUNT(uVar5 & 0xff) & 1U) == 0) * 4 | (uint)((int)(uVar6 << 3) < 0);
+      DAT_2ca8_081e = uVar13;
+      *(undefined2 *)(uVar5 - 2) = 0;
+      *(uint *)(uVar5 - 4) = uVar13;
+      puVar8 = (undefined2 *)(uVar5 - 4);
+      *(undefined2 *)(uVar5 - 4) = unaff_DS;
+      pcVar3 = (code *)swi(0x21);
+      (*pcVar3)();
+      uVar12 = *puVar8;
+      puVar9 = (undefined2 *)0x80;
+      iVar4 = -((byte)(*(char *)0x80 + 3U) & 0xfe);
+      puVar11 = (undefined2 *)((int)puVar8 + iVar4 + 2);
+      for (uVar5 = (uint)((byte)(*(char *)0x80 + 3U) >> 1); uVar5 != 0; uVar5 = uVar5 - 1) {
+        puVar2 = puVar11;
+        puVar11 = puVar11 + 1;
+        puVar1 = puVar9;
+        puVar9 = puVar9 + 1;
+        *puVar2 = *puVar1;
+      }
+      *(undefined1 **)((int)puVar8 + iVar4) = (undefined1 *)((int)puVar8 + iVar4 + 2);
+      puVar9 = (undefined2 *)0x268e;
+      for (iVar7 = 0x389; iVar7 != 0; iVar7 = iVar7 + -1) {
+        puVar1 = puVar9;
+        puVar9 = puVar9 + 1;
+        *puVar1 = 0;
+      }
+      *(undefined1 *)puVar9 = 0;
+      *(undefined2 *)((int)puVar8 + iVar4 + -2) = 0x398;
+      FUN_1000_043a();
+      DAT_2a40_0043 = 0x2da2;
+      DAT_2a40_0045 = DAT_2a40_0043;
+      DAT_2a40_004b = DAT_2a40_0043;
+      *(undefined2 *)((int)puVar8 + iVar4 + -2) = 0x1000;
+      *(undefined2 *)((int)puVar8 + iVar4 + -4) = 0x3ad;
+      FUN_1fc3_4aab();
+      FUN_1000_042e();
+      return;
+    }
+  }
+  pcVar3 = (code *)swi(0x21);
+  (*pcVar3)();
+  pcVar3 = (code *)swi(0x21);
+  (*pcVar3)();
+  return;
+/* excerpt truncated; full decompilation is in the CI artifact */
+```
+
 Full `.asm`, `.c`, and `.strings.txt` files are retained in the CI artifact for `SNEAKERS.EXE`.
 
-| `SNEAK.EXE` — original LHA SFX companion | `4710858f7be6461a6d3a267cbc2dec8ca2594e70d28695298ecfb682d99f33bb` | `Old-style DOS Executable (MZ)` | `x86:LE:16:Real Mode` | `0000:0000` | `1000:0000` | 3 / 67172 B | 21 | 605 | 7 | 21/21 |
+| `SNEAK.EXE` — original LHA SFX companion | `4710858f7be6461a6d3a267cbc2dec8ca2594e70d28695298ecfb682d99f33bb` | `Old-style DOS Executable (MZ)` | `x86:LE:16:Real Mode` | `0000:0000` | `0ff0:0100` | 3 / 67172 B | 21 | 605 | 7 | 21/21 |
 
 ### Address-order disassembly excerpt — `SNEAK.EXE`
 
@@ -102,7 +200,7 @@ These are the first instructions in the exported listing, not a claim that the f
 1000:009c          368e062c00                     MOV ES,word ptr SS:[0x2c]
 ```
 
-### Native disassembly at Ghidra entry point — `SNEAK.EXE` (`1000:0000`)
+### Native disassembly at Ghidra entry point — `SNEAK.EXE` (`0ff0:0100`)
 
 For real-mode addresses, the listing may display an equivalent canonical segment:offset alias for the same linear address:
 
@@ -131,6 +229,70 @@ For real-mode addresses, the listing may display an equivalent canonical segment
 1000:00a8          f2ae                           SCASB.REPNE ES:DI
 1000:00aa          ae                             SCASB ES:DI
 1000:00ab          75fb                           JNZ 0x1000:00a8
+```
+
+### Ghidra decompiler excerpt — `SNEAK.EXE` entry function
+
+C-like pseudocode generated from the native MZ-loader program database; this is not original source:
+
+```c
+/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
+/* WARNING: This function may have set the stack pointer */
+void entry(void)
+{
+  int *piVar1;
+  code *pcVar2;
+  byte bVar3;
+  int iVar4;
+  undefined1 *puVar5;
+  undefined1 *puVar6;
+  int *piVar7;
+  uRam0000fffe = 0x8f;
+  FUN_1000_02ea();
+  puVar5 = (undefined1 *)0x100;
+  uRam0000fffe = 0x1088;
+  pcVar2 = (code *)swi(0x21);
+  bVar3 = (*pcVar2)();
+  *(undefined2 *)(puVar5 + -2) = 0x1088;
+  if (2 < bVar3) {
+    piVar7 = (int *)0x0;
+    iVar4 = -1;
+LAB_1000_00a8:
+    do {
+      if (iVar4 != 0) {
+        iVar4 = iVar4 + -1;
+        piVar1 = piVar7;
+        piVar7 = (int *)((int)piVar7 + 1);
+        if ((char)*piVar1 != '\0') goto LAB_1000_00a8;
+      }
+      piVar1 = piVar7;
+      piVar7 = (int *)((int)piVar7 + 1);
+    } while ((char)*piVar1 != '\0');
+    iVar4 = *piVar7;
+    *(undefined2 *)(puVar5 + -4) = uRam0000ff2c;
+    if (iVar4 == 1) {
+      *(undefined2 *)(puVar5 + -4) = 0xb8;
+      FUN_1000_00da();
+    }
+  }
+  *(undefined2 *)(puVar5 + -4) = 0x1000;
+  *(undefined2 *)(puVar5 + -4) = 0xc0;
+  FUN_1000_00da();
+  puVar6 = puVar5 + -2;
+  if (bVar3 == 2) {
+    *(undefined2 *)(puVar5 + -4) = 0xd4;
+    FUN_1000_00da();
+    puVar6 = puVar5 + -2;
+  }
+  do {
+    *(undefined2 *)(puVar6 + -2) = 0x245;
+    FUN_1000_02ea();
+    pcVar2 = (code *)swi(0x21);
+    (*pcVar2)();
+    *(undefined2 *)(puVar6 + -2) = 0x22a;
+    FUN_1000_02de();
+  } while( true );
+}
 ```
 
 Full `.asm`, `.c`, and `.strings.txt` files are retained in the CI artifact for `SNEAK.EXE`.
@@ -191,6 +353,104 @@ For real-mode addresses, the listing may display an equivalent canonical segment
 1000:012a          cd21                           INT 0x21
 1000:012c          83f900                         CMP CX,0x0
 1000:012f          be8104                         MOV SI,0x481
+```
+
+### Ghidra decompiler excerpt — `RECONSTRUCTED_SNEAKERS.EXE` entry function
+
+C-like pseudocode generated from the native MZ-loader program database; this is not original source:
+
+```c
+/* WARNING: Control flow encountered bad instruction data */
+/* WARNING: Instruction at (ram,0x0001101d) overlaps instruction at (ram,0x0001101c)
+    */
+/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
+/* WARNING: This function may have set the stack pointer */
+/* WARNING: Removing unreachable block (ram,0x00011045) */
+/* WARNING: Removing unreachable block (ram,0x000110b9) */
+/* WARNING: Removing unreachable block (ram,0x00011020) */
+/* WARNING: Removing unreachable block (ram,0x00010e4a) */
+/* WARNING: Removing unreachable block (ram,0x00010e50) */
+/* WARNING: Removing unreachable block (ram,0x00010de2) */
+/* WARNING: Removing unreachable block (ram,0x00010de5) */
+/* WARNING: Removing unreachable block (ram,0x00010dea) */
+/* WARNING: Removing unreachable block (ram,0x00010ded) */
+/* WARNING: Removing unreachable block (ram,0x00010e1b) */
+/* WARNING: Removing unreachable block (ram,0x00010e7c) */
+/* WARNING: Removing unreachable block (ram,0x00010ddb) */
+/* WARNING: Removing unreachable block (ram,0x00010d59) */
+/* WARNING: Removing unreachable block (ram,0x00010dd1) */
+/* WARNING: Removing unreachable block (ram,0x00010dcf) */
+/* WARNING: Removing unreachable block (ram,0x00010df1) */
+/* WARNING: Removing unreachable block (ram,0x00010def) */
+/* WARNING: Removing unreachable block (ram,0x00010e68) */
+/* WARNING: Removing unreachable block (ram,0x00010df4) */
+/* WARNING: Removing unreachable block (ram,0x00010df8) */
+/* WARNING: Removing unreachable block (ram,0x00010dfa) */
+/* WARNING: Removing unreachable block (ram,0x00010e60) */
+/* WARNING: Removing unreachable block (ram,0x00010dfc) */
+/* WARNING: Removing unreachable block (ram,0x00010dff) */
+/* WARNING: Removing unreachable block (ram,0x00010e2d) */
+/* WARNING: Removing unreachable block (ram,0x00010e62) */
+/* WARNING: Removing unreachable block (ram,0x00010e63) */
+/* WARNING: Removing unreachable block (ram,0x00010e85) */
+/* WARNING: Removing unreachable block (ram,0x00010e65) */
+/* WARNING: Removing unreachable block (ram,0x00010e69) */
+/* WARNING: Removing unreachable block (ram,0x00010e6e) */
+/* WARNING: Removing unreachable block (ram,0x00010d3e) */
+/* WARNING: Removing unreachable block (ram,0x00010d44) */
+/* WARNING: Removing unreachable block (ram,0x00010d65) */
+/* WARNING: Removing unreachable block (ram,0x00010c2c) */
+/* WARNING: Removing unreachable block (ram,0x00010c4f) */
+/* WARNING: Removing unreachable block (ram,0x00010c2f) */
+/* WARNING: Removing unreachable block (ram,0x00010a8c) */
+/* WARNING: Removing unreachable block (ram,0x00010a8f) */
+/* WARNING: Removing unreachable block (ram,0x00010af7) */
+/* WARNING: Removing unreachable block (ram,0x000109eb) */
+/* WARNING: Removing unreachable block (ram,0x000109ff) */
+/* WARNING: Removing unreachable block (ram,0x00010a01) */
+/* WARNING: Removing unreachable block (ram,0x00010855) */
+/* WARNING: Removing unreachable block (ram,0x0001085d) */
+/* WARNING: Removing unreachable block (ram,0x000108c0) */
+/* WARNING: Removing unreachable block (ram,0x000108c5) */
+/* WARNING: Removing unreachable block (ram,0x000104e0) */
+/* WARNING: Removing unreachable block (ram,0x00010359) */
+/* WARNING: Removing unreachable block (ram,0x0001035b) */
+/* WARNING: Removing unreachable block (ram,0x0001035d) */
+/* WARNING: Removing unreachable block (ram,0x00010361) */
+/* WARNING: Removing unreachable block (ram,0x000103d1) */
+/* WARNING: Removing unreachable block (ram,0x00010363) */
+/* WARNING: Removing unreachable block (ram,0x00010366) */
+/* WARNING: Removing unreachable block (ram,0x0001036e) */
+/* WARNING: Removing unreachable block (ram,0x00010378) */
+/* WARNING: Removing unreachable block (ram,0x0001037a) */
+/* WARNING: Removing unreachable block (ram,0x00010386) */
+/* WARNING: Removing unreachable block (ram,0x0001039a) */
+/* WARNING: Removing unreachable block (ram,0x00010254) */
+/* WARNING: Removing unreachable block (ram,0x00010256) */
+/* WARNING: Removing unreachable block (ram,0x00010302) */
+/* WARNING: Removing unreachable block (ram,0x0001031a) */
+/* WARNING: Removing unreachable block (ram,0x00010354) */
+/* WARNING: Removing unreachable block (ram,0x000103c1) */
+/* WARNING: Removing unreachable block (ram,0x00010406) */
+/* WARNING: Removing unreachable block (ram,0x0001040b) */
+/* WARNING: Removing unreachable block (ram,0x00010439) */
+/* WARNING: Removing unreachable block (ram,0x0001046b) */
+/* WARNING: Removing unreachable block (ram,0x0001046d) */
+/* WARNING: Removing unreachable block (ram,0x00010472) */
+/* WARNING: Removing unreachable block (ram,0x00010926) */
+/* WARNING: Removing unreachable block (ram,0x00010929) */
+/* WARNING: Removing unreachable block (ram,0x0001090a) */
+/* WARNING: Removing unreachable block (ram,0x00010a57) */
+/* WARNING: Removing unreachable block (ram,0x00010a59) */
+/* WARNING: Removing unreachable block (ram,0x00010a5a) */
+/* WARNING: Removing unreachable block (ram,0x00010a60) */
+/* WARNING: Removing unreachable block (ram,0x00010a61) */
+/* WARNING: Removing unreachable block (ram,0x00010bc4) */
+/* WARNING: Removing unreachable block (ram,0x00010bcb) */
+/* WARNING: Removing unreachable block (ram,0x00010c35) */
+/* WARNING: Removing unreachable block (ram,0x00010bcd) */
+/* WARNING: Removing unreachable block (ram,0x00010bdc) */
+/* excerpt truncated; full decompilation is in the CI artifact */
 ```
 
 Full `.asm`, `.c`, and `.strings.txt` files are retained in the CI artifact for `RECONSTRUCTED_SNEAKERS.EXE`.
