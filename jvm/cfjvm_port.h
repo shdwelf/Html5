@@ -46,6 +46,7 @@ static inline void cfj_free(void *p) { free(p); }
 
 /* Diagnostics. */
 static inline int cfj_vfprintf(FILE *f, const char *fmt, va_list ap) { return vfprintf(f, fmt, ap); }
+static inline int cfj_fgetc(FILE *f) { return fgetc(f); }
 static inline int cfj_fputc(int c, FILE *f) { return fputc(c, f); }
 static inline int cfj_fputs(const char *s, FILE *f) { return fputs(s, f); }
 static inline size_t cfj_fwrite(const void *p, size_t sz, size_t n, FILE *f) { return fwrite(p, sz, n, f); }
