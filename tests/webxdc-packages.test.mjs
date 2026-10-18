@@ -318,7 +318,7 @@ test("Headline Harry archive boots the js-dos v8 API with the complete engine", 
   );
 });
 
-test("Headline Harry DOSBox smoke enters the Press Pass and preserves review screenshots", () => {
+test("Headline Harry DOSBox smoke drives Press Pass input and checks for a transition", () => {
   const smoke = source("tools/smoke_headline_harry_dosbox.sh");
   const workflow = source(".github/workflows/arena-headline-harry.yml");
 
@@ -327,7 +327,10 @@ test("Headline Harry DOSBox smoke enters the Press Pass and preserves review scr
   assert.match(smoke, /press-pass-before\.png/);
   assert.match(smoke, /press-pass-filled\.png/);
   assert.match(smoke, /after-press-pass\.png/);
-  assert.match(smoke, /mousemove --window/);
+  assert.match(smoke, /mousemove --sync --window/);
+  assert.match(smoke, /xdotool key --clearmodifiers Tab/);
+  assert.match(smoke, /xdotool key --clearmodifiers Return/);
+  assert.match(smoke, /submit_delta < 1500/);
   assert.match(workflow, /tools\/smoke_headline_harry_dosbox\.sh/);
   assert.match(workflow, /game-shots\/press-pass/);
   assert.ok(workflow.includes("Upload Press Pass runtime evidence"));
