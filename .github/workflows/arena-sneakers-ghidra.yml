@@ -2,9 +2,9 @@ name: Sneakers original — Ghidra + FindCrypt
 
 # Static-only comparison of the original promotional ZIP members and the
 # repository reconstruction. Ghidra runs on
-# GitHub Actions with Eclipse Temurin/OpenJDK 21; FindCrypt is built from a
-# pinned source commit against the pinned official Ghidra release. No program
-# is executed or emulated in this workflow.
+# GitHub Actions with Eclipse Temurin/OpenJDK 21; a pinned FindCrypt signature
+# database is applied through Ghidra's byte-search API. No program is executed
+# or emulated in this workflow.
 
 on:
   push:
@@ -38,6 +38,7 @@ jobs:
       GHIDRA_DATE: '20260921'
       GHIDRA_SHA256: 'ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db'
       FINDCRYPT_COMMIT: '5c2fd5bb50d13a4092da136dc7004becd8129c7b'
+      FINDCRYPT_DB_SHA256: 'ec3f54412ea1a1ddca05ec39eaa8ad1a9c38ce021297f359dbc0a58b9c7a8897'
       SNEAKERS_ZIP_SHA256: 'b6e3d2a99de90b6de401a5d8d0023299c632e65ca98246bbe5d4842336f01eef'
       RECONSTRUCTED_EXE_SHA256: '52e66ef4e192b4a368c0de58cac79a8e81d7ec06180da15bba2675614a0f1920'
     steps:
@@ -48,16 +49,11 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.14.3'
-
       - name: Record the OpenJDK runtime
         shell: bash
         run: |
           set -euo pipefail
           java -version 2>&1 | tee "$RUNNER_TEMP/java-version.txt"
-          gradle --version | tee "$RUNNER_TEMP/gradle-version.txt"
 
       - name: Install the pinned official Ghidra release
         shell: bash
@@ -73,7 +69,7 @@ jobs:
           printf 'GHIDRA_HOME=%s\n' "$ghidra_home" >> "$GITHUB_ENV"
           printf 'Ghidra %s (%s), SHA-256 %s\n' "$GHIDRA_VERSION" "$GHIDRA_DATE" "$GHIDRA_SHA256" | tee "$RUNNER_TEMP/ghidra-version.txt"
 
-      - name: Build pinned Ghidra FindCrypt extension
+      - name: Fetch the pinned FindCrypt signature database
         shell: bash
         run: |
           set -euo pipefail
@@ -83,17 +79,34 @@ jobs:
           git -C "$source_dir" fetch --no-tags --depth=1 origin "$FINDCRYPT_COMMIT"
           git -C "$source_dir" checkout --detach FETCH_HEAD
           test "$(git -C "$source_dir" rev-parse HEAD)" = "$FINDCRYPT_COMMIT"
-          printf 'TorgoTorgo/ghidra-findcrypt commit %s\n' "$FINDCRYPT_COMMIT" | tee "$RUNNER_TEMP/findcrypt-version.txt"
-          cd "$source_dir/FindCrypt"
-          GHIDRA_INSTALL_DIR="$GHIDRA_HOME" gradle --no-daemon
-          extension_zip="$(find dist -maxdepth 1 -type f -name '*.zip' -print -quit)"
-          test -n "$extension_zip"
-          unzip -l "$extension_zip" > "$RUNNER_TEMP/findcrypt-extension-list.txt"
-          grep -q 'extension.properties' "$RUNNER_TEMP/findcrypt-extension-list.txt"
-          extension_root="$GHIDRA_HOME/Ghidra/Extensions"
-          mkdir -p "$extension_root"
-          unzip -q "$extension_zip" -d "$extension_root"
-          find "$extension_root" -name extension.properties -print -quit | grep -q .
+          database="$source_dir/FindCrypt/data/database.json"
+          echo "$FINDCRYPT_DB_SHA256  $database" | sha256sum --check --strict
+          python3 - "$database" "$RUNNER_TEMP/findcrypt-signatures.tsv" "$RUNNER_TEMP/findcrypt-version.txt" "$FINDCRYPT_COMMIT" "$FINDCRYPT_DB_SHA256" <<'PY'
+          from hashlib import sha256
+          import json
+          from pathlib import Path
+          import sys
+
+          database, output, version = map(Path, sys.argv[1:4])
+          commit, expected_sha = sys.argv[4:6]
+          raw = database.read_bytes()
+          assert sha256(raw).hexdigest() == expected_sha
+          rows = json.loads(raw)
+          assert isinstance(rows, list) and len(rows) == 126
+          for row in rows:
+              name, encoded = row["name"], row["hexBytes"]
+              assert name and "\t" not in name and "\n" not in name
+              assert encoded and len(encoded) % 2 == 0
+              bytes.fromhex(encoded)
+          assert any(row["name"] == "AES_Encryption_SBox" for row in rows)
+          output.write_text("".join(f"{row['name']}\t{row['hexBytes']}\n" for row in rows), encoding="utf-8")
+          version.write_text(
+              f"TorgoTorgo/ghidra-findcrypt database commit {commit}; "
+              f"{len(rows)} signatures; database SHA-256 {expected_sha}\n",
+              encoding="utf-8",
+          )
+          print(f"verified {len(rows)} pinned FindCrypt signatures; wrote {output}")
+          PY
 
       - name: Verify and extract the original archive members
         shell: bash
@@ -157,14 +170,14 @@ jobs:
           if ! timeout 10m "$headless" "$projects" "Sneakers_FindCrypt_Sentinel" \
             -import "$RUNNER_TEMP/sneakers-original/aes-signature-test.bin" \
             -loader BinaryLoader -loader-baseAddr 0x0 -processor x86:LE:32:default \
-            -analysisTimeoutPerFile 300 -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
-            -postScript SneakersFindCryptReport.java "$RUNNER_TEMP/sneakers-original/reports/findcrypt" "aes-signature-test.bin" \
+            -noanalysis -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+            -postScript SneakersFindCryptReport.java "$RUNNER_TEMP/sneakers-original/reports/findcrypt" "aes-signature-test.bin" "$RUNNER_TEMP/findcrypt-signatures.tsv" \
             -deleteProject > "$sentinel_log" 2>&1; then
             tail -n 160 "$sentinel_log"
             exit 1
           fi
           grep -q 'CRYPT_AES_Encryption_SBox' "$RUNNER_TEMP/sneakers-original/reports/findcrypt/aes-signature-test.bin.findcrypt.md"
-          echo 'FindCrypt positive control: AES S-box was detected and labeled.'
+          echo 'FindCrypt positive control: AES S-box signature was matched and reported.'
 
       - name: Disassemble the MZ programs and FindCrypt-scan every original byte
         shell: bash
@@ -192,9 +205,9 @@ jobs:
             if ! timeout 20m "$headless" "$root/projects" "Sneakers_${stem}_Raw" \
               -import "$root/input/$name" \
               -loader BinaryLoader -loader-baseAddr 0x0 -processor x86:LE:32:default \
-              -analysisTimeoutPerFile 600 -max-cpu 2 \
+              -noanalysis \
               -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
-              -postScript SneakersFindCryptReport.java "$root/reports/findcrypt" "$name" \
+              -postScript SneakersFindCryptReport.java "$root/reports/findcrypt" "$name" "$RUNNER_TEMP/findcrypt-signatures.tsv" \
               -deleteProject > "$findcrypt_log" 2>&1; then
               tail -n 180 "$findcrypt_log"
               exit 1
@@ -207,7 +220,6 @@ jobs:
             echo '# Original Sneakers — native Ghidra + FindCrypt'
             echo
             cat "$RUNNER_TEMP/java-version.txt"
-            cat "$RUNNER_TEMP/gradle-version.txt"
             cat "$RUNNER_TEMP/ghidra-version.txt"
             cat "$RUNNER_TEMP/findcrypt-version.txt"
             echo
@@ -261,7 +273,6 @@ jobs:
           name: sneakers-original-ghidra-findcrypt-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/java-version.txt
-            ${{ runner.temp }}/gradle-version.txt
             ${{ runner.temp }}/ghidra-version.txt
             ${{ runner.temp }}/findcrypt-version.txt
             ${{ runner.temp }}/sneakers-original/input.txt

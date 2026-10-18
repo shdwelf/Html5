@@ -85,11 +85,6 @@ def main() -> None:
     if set(findcrypt_reports) != set(LABELS):
         raise SystemExit(f"expected FindCrypt reports for {sorted(LABELS)}, found {sorted(findcrypt_reports)}")
 
-    gradle_output = text_file(args.runtime_dir / "gradle-version.txt")
-    gradle_version = next(
-        (line.strip() for line in gradle_output.splitlines() if line.strip().startswith("Gradle ")),
-        "not recorded",
-    )
     output: list[str] = [
         "# Sneakers: native Ghidra + FindCrypt results",
         "",
@@ -99,10 +94,10 @@ def main() -> None:
         "",
         f"- Ghidra: `{first_line(args.runtime_dir / 'ghidra-version.txt')}`",
         f"- Eclipse Temurin/OpenJDK runtime: `{first_line(args.runtime_dir / 'java-version.txt')}`",
-        f"- Gradle: `{gradle_version}`",
-        f"- FindCrypt source: `{first_line(args.runtime_dir / 'findcrypt-version.txt')}`",
-        "- The official Ghidra archive was SHA-256 checked before extraction; FindCrypt was built against that installation.",
-        "- FindCrypt passed a positive-control scan: its database AES encryption S-box was detected as `CRYPT_AES_Encryption_SBox`.",
+        f"- FindCrypt database: `{first_line(args.runtime_dir / 'findcrypt-version.txt')}`",
+        "- The official Ghidra archive and FindCrypt database were SHA-256 checked before analysis.",
+        "- The database-driven scan passed a positive control: its AES encryption S-box matched `CRYPT_AES_Encryption_SBox`.",
+        "- This run uses the pinned FindCrypt signature database through Ghidra's `Memory.findBytes` API; it does not claim that the separately compiled FindCrypt extension loaded.",
         "",
         "## MZ loader analyses",
         "",
@@ -153,7 +148,7 @@ def main() -> None:
         "",
         "## Native FindCrypt results",
         "",
-        "The FindCrypt analyzer was applied to each complete input file using Ghidra's BinaryLoader at base address zero. This byte-oriented pass covers the MZ header and any file overlay, not just the DOS-loaded image. The separate MZ-loader analyses above are the source for code disassembly and decompilation.",
+        "The pinned TorgoTorgo FindCrypt database was scanned inside native Ghidra with `Memory.findBytes` against each complete file imported through `BinaryLoader` at base address zero. This pass covers the MZ header and any file overlay, not just the DOS-loaded image. It uses the extension's signature data, but is a Ghidra script rather than the compiled GUI/auto-analysis extension. The separate MZ-loader analyses above are the source for code disassembly and decompilation.",
         "",
     ])
     for name, label in LABELS.items():
@@ -163,7 +158,7 @@ def main() -> None:
     output.extend([
         "## Interpretation limits",
         "",
-        "A FindCrypt zero-hit result means only that this pinned extension did not label any byte sequence in its signature database. It does not rule out custom/table-free cryptography, XOR/add/sub transforms, compressed or encoded resources, or algorithms with different constants. A hit would still require disassembly and cross-reference review before attributing an algorithm to the program.",
+        "A FindCrypt zero-hit result means only that this pinned database's signatures did not match the bytes scanned. It does not rule out custom/table-free cryptography, XOR/add/sub transforms, compressed or encoded resources, or algorithms with different constants. A hit would still require disassembly and cross-reference review before attributing an algorithm to the program.",
         "",
         "The reconstruction comparator is included only to keep its previous puzzle/cipher claims distinct from the original promotional binaries. Do not transfer reconstruction behavior to either original EXE.",
         "",
