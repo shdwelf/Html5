@@ -61,6 +61,6 @@ node tools/decompile_mz.mjs "$tmp/SNEAKERS.EXE" entry --list 102d8:10520
 
 ## Open work
 
-1. Review additional native-Ghidra functions and resource references beyond the entry-point excerpts in [`the completed native report`](ghidra/sneakers-original-native-ghidra-2026-10-18.md); the full `.asm`/`.c` outputs are attached to CI run 39160712053.
+1. Review additional native-Ghidra functions and resource references beyond the entry-point excerpts in [`the completed native report`](ghidra/sneakers-original-native-ghidra-2026-10-18.md); the full `.asm`/`.c` outputs are attached to CI run 39161148148.
 2. Inspect the 2.1 MB overlay and GRASP resource representation before claiming any resource-encryption scheme.
-3. Review the original DOSBox/Xvfb screenshots from smoke run 39159330499. The automation passed, but the sandbox could not retrieve the uploaded artifact, so no particular screen is claimed here.
+3. Review the original DOSBox/Xvfb screenshots from smoke run 39161148174. The automation passed, but the sandbox could not retrieve the uploaded artifact, so no particular screen is claimed here.
