@@ -51,8 +51,13 @@ function fakeJvm(name, body) {
 test("cfjvm's implemented class set is read out of its own source", () => {
   const r = run(["--target", "jvm/tests", "--jvm", "jvm/cfjvm.c"]);
   assert.equal(r.status, 0, r.stderr);
-  assert.match(r.stdout, /classes implemented: 9/);
-  for (const c of ["java/lang/String", "java/lang/System", "java/io/PrintStream"]) {
+  // This count is meant to break. It is the acknowledgement step when the
+  // interpreter's class library changes, which is exactly what happened when
+  // java/io/InputStream was added for standard input: the count went 9 -> 10
+  // and this test failed until it was updated on purpose.
+  assert.match(r.stdout, /classes implemented: 10/);
+  for (const c of ["java/lang/String", "java/lang/System", "java/io/PrintStream",
+                   "java/io/InputStream"]) {
     assert.ok(r.stdout.includes(c), `cfjvm class list missing ${c}`);
   }
   // It must not claim anything beyond the class library.
@@ -122,7 +127,8 @@ test("exit status distinguishes can-run from cannot-run", () => {
 test("--json is parseable and agrees with the text verdict", () => {
   const r = run(["--target", "jvm/tests", "--jvm", "jvm/cfjvm.c", "--json"]);
   const j = JSON.parse(r.stdout);
-  assert.equal(j.jvm.classes.length, 9);
+  assert.equal(j.jvm.classes.length, 10);
+  assert.ok(j.jvm.classes.includes("java/io/InputStream"));
   assert.equal(j.results.length, 1);
   assert.equal(j.results[0].files, 1);
   assert.deepEqual(j.results[0].missing, []);

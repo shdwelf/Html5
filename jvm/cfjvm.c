@@ -303,7 +303,8 @@ static ClassFile *find_class(const char *name) {
 static int is_builtin(const char *n) {
   static const char *b[] = {
     "java/lang/Object", "java/lang/String", "java/lang/StringBuilder",
-    "java/lang/System", "java/io/PrintStream", "java/lang/Math",
+    "java/lang/System", "java/io/PrintStream", "java/io/InputStream",
+    "java/lang/Math",
     "java/lang/Integer", "java/lang/Long", "java/lang/Class", NULL,
   };
   for (int i = 0; b[i]; i++) if (strcmp(b[i], n) == 0) return 1;
@@ -615,6 +616,22 @@ static int native_method(const char *cls, const char *name, const char *desc,
     if (!strcmp(name, "flush")) return 1;
     return 0;
   }
+  if (!strcmp(cls, "java/io/InputStream")) {
+    /* The only input path this interpreter has. read() returns 0..255, or -1 at
+       end of input, exactly as java.io.InputStream.read() does, so a caller can
+       loop on -1 rather than on an exception -- which matters here, because
+       this interpreter has no exception tables. */
+    if (!strcmp(name, "read") && !strcmp(desc, "()I")) {
+      int c = cfj_fgetc(stdin);
+      out->i = (c == EOF) ? -1 : (c & 0xFF);
+      return 1;
+    }
+    /* Honestly zero: with a blocking single-threaded interpreter there is no
+       buffered look-ahead to report. Callers must not rely on it. */
+    if (!strcmp(name, "available") && !strcmp(desc, "()I")) { out->i = 0; return 1; }
+    if (!strcmp(name, "close")) return 1;
+    return 0;
+  }
   if (!strcmp(cls, "java/lang/Math")) {
     /* int overloads only. The double forms are deliberately absent: with no
        floating point in this interpreter, implementing Math.sqrt(double) as an
@@ -712,6 +729,12 @@ static Obj *g_stdout;
 
 static void ensure_stdout(void) {
   if (!g_stdout) g_stdout = new_obj(KIND_INSTANCE, "java/io/PrintStream");
+}
+
+static Obj *g_stdin;
+
+static void ensure_stdin(void) {
+  if (!g_stdin) g_stdin = new_obj(KIND_INSTANCE, "java/io/InputStream");
 }
 
 /*
@@ -919,6 +942,11 @@ static void run_method(ClassFile *cls, Member *m, Value *args, int nargs, Value 
         if (op == 0xB2 && !strcmp(cn, "java/lang/System") && !strcmp(fn, "out")) {
           ensure_stdout();
           push(&fr, vr(g_stdout));
+          break;
+        }
+        if (op == 0xB2 && !strcmp(cn, "java/lang/System") && !strcmp(fn, "in")) {
+          ensure_stdin();
+          push(&fr, vr(g_stdin));
           break;
         }
         ClassFile *oc = find_class(cn);
