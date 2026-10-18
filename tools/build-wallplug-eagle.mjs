@@ -34,6 +34,9 @@ import * as XPORT from './wallplug-model.mjs';
 import * as PI_SOCKET from './pi-socket-model.mjs';
 import * as WIMAX_CPE from './wimax-cpe-model.mjs';
 import * as PLC_BRIDGE from './plc-bridge-model.mjs';
+import * as V92_FAXCARD from './xport-v92-faxcard-model.mjs';
+import * as V92_AUDIO from './xport-v92-audiobridge-model.mjs';
+import * as V92_TESTSET from './xport-v92-linetestset-model.mjs';
 import { checkGeometry, checkSchematicLayout } from './wallplug-drc.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -50,6 +53,9 @@ export const DESIGNS = {
   'pi-wall-socket': PI_SOCKET,
   'wimax-cpe': WIMAX_CPE,
   'plc-bridge': PLC_BRIDGE,
+  'xport-v92-faxcard': V92_FAXCARD,
+  'xport-v92-audiobridge': V92_AUDIO,
+  'xport-v92-linetestset': V92_TESTSET,
 };
 
 /** The design the emitters read. useDesign() switches it; default is the xPort wallplug. */
