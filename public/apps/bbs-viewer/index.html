@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BBS viewer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #000; color: #aaa; font: 13px/1.2 ui-monospace, Menlo, Consolas, monospace; }
+  header { padding: 10px 14px; border-bottom: 1px solid #222; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  h1 { font-size: 14px; margin: 0; color: #0aa; font-weight: bold; }
+  header .hint { color: #555; font-size: 12px; }
+  #screen { padding: 12px 14px; white-space: pre; overflow-x: auto; }
+  .bbs-line { min-height: 1.2em; }
+  textarea { display: block; width: calc(100% - 28px); margin: 0 14px 12px; height: 90px;
+    background: #080808; color: #7a7; border: 1px solid #222; font: 12px ui-monospace, monospace; padding: 6px; }
+  .row { display: flex; gap: 8px; align-items: center; }
+  button { background: #111; color: #0aa; border: 1px solid #0aa; padding: 3px 10px; font: inherit; cursor: pointer; }
+  #stats { color: #555; font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>BBS viewer</h1>
+  <span class="hint">Paste an ANSI capture, or drop a <code>.ans</code> file.</span>
+  <span id="stats"></span>
+</header>
+<textarea id="input" spellcheck="false"
+  placeholder="Paste a capture here. Escapes may be literal ESC bytes or \x1b sequences."></textarea>
+<div class="row" style="padding:0 14px 12px">
+  <button id="render">Render</button>
+  <button id="sample">Load sample</button>
+  <input type="file" id="file" accept=".ans,.txt,.bin">
+</div>
+<div id="screen"></div>
+
+<script type="module">
+// The model is imported, never reimplemented: js/ansi-model.js is the same code
+// the tests exercise, so what renders here is what the tests verify.
+import { createScreen, feed, toHtml, CP437_HIGH }
+  from "../../../js/ansi-model.js";
+
+const COLS = 80, ROWS = 25;
+const screenEl = document.getElementById("screen");
+const inputEl = document.getElementById("input");
+const statsEl = document.getElementById("stats");
+
+/** Turn pasted text into bytes, honouring \xNN and \e escapes. */
+function toBytes(text) {
+  const out = [];
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === "\\" && (text[i + 1] === "x" || text[i + 1] === "X")) {
+      const h = text.slice(i + 2, i + 4);
+      if (/^[0-9a-fA-F]{2}$/.test(h)) { out.push(parseInt(h, 16)); i += 3; continue; }
+    }
+    if (c === "\\" && text[i + 1] === "e") { out.push(0x1b); i += 1; continue; }
+    if (c === "\\" && text[i + 1] === "n") { out.push(0x0a); i += 1; continue; }
+    if (c === "\\" && text[i + 1] === "r") { out.push(0x0d); i += 1; continue; }
+    const cp = text.codePointAt(i);
+    if (cp > 0xffff) i++;
+    if (cp < 0x100) out.push(cp);
+  }
+  return new Uint8Array(out);
+}
+
+function render(bytes) {
+  const s = feed(createScreen({ cols: COLS, rows: ROWS }), bytes, { cp437: CP437_HIGH });
+  screenEl.innerHTML = toHtml(s);
+  statsEl.textContent =
+    `${bytes.length} bytes \u2022 ${s.written} chars \u2022 ${s.sequences} CSI sequences`;
+  return s;
+}
+
+document.getElementById("render").onclick = () => render(toBytes(inputEl.value));
+
+document.getElementById("file").onchange = (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  f.arrayBuffer().then((b) => render(new Uint8Array(b)));
+};
+
+// Drop anywhere: a capture is usually a file.
+document.addEventListener("dragover", (e) => e.preventDefault());
+document.addEventListener("drop", (e) => {
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  if (f) f.arrayBuffer().then((b) => render(new Uint8Array(b)));
+});
+
+export { render, toBytes };
+</script>
+</body>
+</html>
