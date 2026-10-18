@@ -88,6 +88,30 @@ def asm_excerpt_at_entry(path: Path, address: str, limit: int = 24) -> list[str]
     return rows
 
 
+def decompiled_function_excerpt(path: Path, function_name: str, limit: int = 90) -> list[str]:
+    if not path.exists():
+        return []
+    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    marker = re.compile(r"^/\*\s+(.+?)\s+@\s+[^ ]+\s+completed=(?:true|false)\s+\*/$")
+    start = None
+    for index, line in enumerate(lines):
+        match = marker.match(line)
+        if match and match.group(1) == function_name:
+            start = index + 1
+            break
+    if start is None:
+        return []
+    end = len(lines)
+    for index in range(start, len(lines)):
+        if marker.match(lines[index]):
+            end = index
+            break
+    body = [line.rstrip() for line in lines[start:end] if line.strip()]
+    if len(body) > limit:
+        body = body[:limit] + ["/* excerpt truncated; full decompilation is in the CI artifact */"]
+    return body
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mz-dir", type=Path, required=True)
@@ -204,6 +228,19 @@ def main() -> None:
             ])
         else:
             output.extend(["", f"No entry-point disassembly excerpt was found for `{name}` at `{entry}`."])
+        c_path = args.mz_dir / f"{asm_stem}.c"
+        c_excerpt = decompiled_function_excerpt(c_path, "entry")
+        if c_excerpt:
+            output.extend([
+                "",
+                f"### Ghidra decompiler excerpt — `{name}` entry function",
+                "",
+                "C-like pseudocode generated from the native MZ-loader program database; this is not original source:",
+                "",
+                "```c",
+                *c_excerpt,
+                "```",
+            ])
         output.extend(["", f"Full `.asm`, `.c`, and `.strings.txt` files are retained in the CI artifact for `{name}`.", ""])
 
     output.extend([

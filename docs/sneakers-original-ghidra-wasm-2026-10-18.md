@@ -1,5 +1,7 @@
 # Sneakers original DOS executable · Ghidra-WASM triage · 2026-10-18
 
+> **Follow-up:** Native Ghidra 12.1.4 analysis later completed in CI; its verified entry-point disassembly and pinned FindCrypt database scan are documented in [the native report](ghidra/sneakers-original-native-ghidra-2026-10-18.md). This file remains the historical WASM-only triage and should not be mistaken for the native export.
+
 ## Scope and provenance
 
 Static-only analysis of the original `SNEAKERS.EXE` extracted from the user-supplied `Sneakers_Promotional_Diskette.zip`:
@@ -12,7 +14,7 @@ The ZIP entries are the two executables above. `SNEAK.EXE` identifies as LHA SFX
 
 ## Which Ghidra was run
 
-Native Ghidra `analyzeHeadless` is not installed in this sandbox, so **there is no official headless-Ghidra project/export for the original Sneakers binary in this report**. The analysis below uses the repository's vendored Ghidra decompiler compiled to WebAssembly through `tools/decompile_mz.mjs`, with the `x86:LE:16:Real Mode` language. It is a useful static triage, not a substitute for native Ghidra's full DOS loader, reference analysis, or analyst naming. The executable was not run during this analysis.
+Native Ghidra `analyzeHeadless` was not installed in this sandbox, so **this report itself contains no native headless-Ghidra project/export**. Its analysis uses the repository's vendored Ghidra decompiler compiled to WebAssembly through `tools/decompile_mz.mjs`, with the `x86:LE:16:Real Mode` language. A separate native CI run is now available at [`docs/ghidra/sneakers-original-native-ghidra-2026-10-18.md`](ghidra/sneakers-original-native-ghidra-2026-10-18.md). The executable was not run during either static analysis.
 
 ## MZ header and entry point
 
@@ -45,7 +47,7 @@ The repository's earlier reverse-engineering note described XOR `0x5A`, ROT13, C
 
 The original `SNEAKERS.EXE` and `SNEAK.EXE` were scanned with `scripts/crypto-find.py`, the repository's dependency-free known-constant heuristic inspired by Ghidra's “Find Crypt” concept. It found **zero known standard crypto constants** in either original. A bounded single-byte-XOR scan for selected known strings also found no matches. `SNEAK.EXE` is LHA compression; that is not encryption. See [`ghidra/sneakers-original-crypto-scan-2026-10-18.md`](ghidra/sneakers-original-crypto-scan-2026-10-18.md).
 
-**Conclusion:** no encryption algorithm has yet been identified in the original Sneakers binary. The static evidence does not rule out custom, table-free, or resource-specific transformations. The previous XOR/ROT13/Caesar claims are not evidence for the original.
+**Conclusion:** no encryption algorithm has been identified in the original Sneakers binaries. The subsequent native Ghidra scan also matched zero of the pinned FindCrypt database's 126 signatures against the complete original files (see the native report). This still does not rule out custom, table-free, or resource-specific transformations. The previous XOR/ROT13/Caesar claims are not evidence for the original.
 
 ## Reproduce the Ghidra-WASM triage
 
@@ -59,6 +61,6 @@ node tools/decompile_mz.mjs "$tmp/SNEAKERS.EXE" entry --list 102d8:10520
 
 ## Open work
 
-1. Review the pending [native Ghidra + FindCrypt workflow](../.github/workflows/arena-sneakers-ghidra.yml), which uses Temurin/OpenJDK 21 and Ghidra 12.1.4 for the original MZ files and a reconstruction comparator; this WASM-only report does not include that run's results.
+1. Review additional native-Ghidra functions and resource references beyond the entry-point excerpts in [`the completed native report`](ghidra/sneakers-original-native-ghidra-2026-10-18.md); the full `.asm`/`.c` outputs are attached to CI run 39160712053.
 2. Inspect the 2.1 MB overlay and GRASP resource representation before claiming any resource-encryption scheme.
-3. Run the original binary under isolated DOSBox/Xvfb and retain the screenshot/log as a runtime observation. No DOSBox runtime result is claimed in this static report.
+3. Review the original DOSBox/Xvfb screenshots from smoke run 39159330499. The automation passed, but the sandbox could not retrieve the uploaded artifact, so no particular screen is claimed here.
