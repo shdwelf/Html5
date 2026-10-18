@@ -13,13 +13,15 @@ name: arena-headline-harry
 # Fallback: try a couple of known pre-installed mirrors. Either way the
 # recovered installed directory is committed so the sandbox can `git pull` it.
 #
-# Trigger is a change to .arena-relay/harry-fetch.txt or this file (or manual
-# dispatch), so the commit this job makes does not retrigger it.
+# Trigger is a change to .arena-relay/harry-fetch.txt, this runtime smoke
+# script, or this file (or manual dispatch), so the .xfer commit does not
+# retrigger the workflow.
 
 on:
   push:
     paths:
       - '.arena-relay/harry-fetch.txt'
+      - 'tools/smoke_headline_harry_dosbox.sh'
       - '.github/workflows/arena-headline-harry.yml'
   workflow_dispatch:
 
