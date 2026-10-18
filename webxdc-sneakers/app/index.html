@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07131d">
+  <title>SNEAKERS · Computer Press Kit (1992)</title>
+  <link rel="stylesheet" href="./js-dos/js-dos.css">
+  <script src="./js-dos/js-dos.js"></script>
+  <!-- The messenger supplies its real Webxdc API; this stub is for local preview. -->
+  <script src="./webxdc.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #e8f2ed;
+      --muted: #8ba6a6;
+      --dim: #526c72;
+      --bg: #07131d;
+      --panel: #0b1e29;
+      --panel-hi: #102935;
+      --line: #244552;
+      --cyan: #5be7dc;
+      --lime: #d2ff63;
+      --orange: #ffb25c;
+      --mono: "Courier New", Courier, monospace;
+      --serif: Georgia, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; }
+    body {
+      overflow: hidden;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: var(--mono);
+    }
+    button, a { font: inherit; }
+    #app { width: 100%; height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
+    header {
+      flex: 0 0 auto;
+      min-height: 58px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(110deg, #0c202b, #08141e 68%);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .brand-mark {
+      flex: 0 0 auto;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--cyan);
+      border-radius: 50%;
+      color: var(--cyan);
+      font: 700 17px/1 var(--serif);
+      box-shadow: 0 0 14px #5be7dc30;
+    }
+    header h1 { margin: 0; font: 700 16px/1.1 var(--mono); letter-spacing: .17em; }
+    header p { margin: 4px 0 0; color: var(--muted); font-size: 9px; letter-spacing: .12em; }
+    .header-meta { flex: 0 0 auto; text-align: right; color: var(--muted); font-size: 9px; line-height: 1.5; }
+    .header-meta strong { color: var(--lime); font-weight: 700; }
+
+    #stage { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; background: #000; }
+    #dosbox-container { position: absolute; inset: 0; background: #000; }
+    #overlay {
+      position: absolute;
+      z-index: 5;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 13px;
+      padding: 20px;
+      overflow: auto;
+      text-align: center;
+      background:
+        repeating-linear-gradient(0deg, #5be7dc08 0 1px, transparent 1px 4px),
+        radial-gradient(ellipse at 50% 38%, #16414a 0, #0a202b 38%, #07131d 76%);
+    }
+    .kicker { color: var(--orange); font-size: 9px; letter-spacing: .22em; text-transform: uppercase; }
+    .title-lockup {
+      width: min(100%, 460px);
+      padding: 14px 22px 13px;
+      border-top: 3px double var(--cyan);
+      border-bottom: 3px double var(--cyan);
+      text-shadow: 0 0 20px #5be7dc42;
+    }
+    .title-lockup h2 { margin: 0; color: #f4fff9; font: 700 clamp(34px, 8vw, 62px)/.95 var(--mono); letter-spacing: .18em; }
+    .title-lockup p { margin: 8px 0 0; color: var(--cyan); font-size: 10px; letter-spacing: .24em; }
+    .tagline { margin: 0; color: var(--lime); font: italic 18px/1.2 var(--serif); }
+    .intro {
+      max-width: 57ch;
+      margin: 0;
+      color: #a8babb;
+      font: 12px/1.65 var(--serif);
+    }
+    .notice {
+      max-width: 66ch;
+      padding: 8px 11px;
+      border: 1px solid #ffb25c55;
+      background: #ffb25c0b;
+      color: #dfc6a7;
+      font: 10px/1.55 var(--mono);
+    }
+    #start {
+      min-height: 44px;
+      padding: 11px 22px;
+      border: 1px solid #a9dd53;
+      border-radius: 3px;
+      background: var(--lime);
+      color: #112018;
+      box-shadow: 0 3px 0 #7da532;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .1em;
+    }
+    #start:hover { background: #e1ff9a; }
+    #start:active { transform: translateY(2px); box-shadow: 0 1px 0 #7da532; }
+    #start:disabled { opacity: .65; cursor: progress; }
+    .controls-hint { color: var(--dim); font-size: 9px; line-height: 1.55; }
+
+    #status {
+      flex: 0 0 auto;
+      min-height: 25px;
+      padding: 5px 12px;
+      overflow: hidden;
+      border-top: 1px solid var(--line);
+      background: #091923;
+      color: var(--muted);
+      font-size: 9px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #status[data-kind="error"] { color: #ff9a85; }
+    details {
+      flex: 0 0 auto;
+      max-height: 38vh;
+      overflow: auto;
+      border-top: 1px solid var(--line);
+      background: var(--panel);
+      scrollbar-color: var(--line) var(--panel);
+    }
+    summary {
+      position: sticky;
+      top: 0;
+      padding: 6px 12px;
+      background: var(--panel);
+      color: var(--cyan);
+      cursor: pointer;
+      font-size: 9px;
+      letter-spacing: .12em;
+      list-style-position: inside;
+      text-transform: uppercase;
+    }
+    .about {
+      padding: 8px 14px 13px;
+      border-top: 1px dashed var(--line);
+      color: #aabbb9;
+      font: 11px/1.6 var(--serif);
+    }
+    .about p { margin: 7px 0; }
+    .about strong { color: var(--ink); }
+    .about code { color: var(--lime); font: 10px var(--mono); }
+    .sources { display: flex; flex-wrap: wrap; gap: 5px 17px; padding: 0; margin: 8px 0; list-style: none; }
+    .sources a { color: var(--cyan); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    .sources a:hover { color: var(--lime); }
+    .legal { color: var(--muted); font-size: 10px; }
+
+    @media (max-width: 520px) {
+      header { min-height: 52px; padding: 7px 10px; }
+      .brand-mark { width: 28px; height: 28px; }
+      header h1 { font-size: 13px; }
+      header p { max-width: 56vw; overflow: hidden; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+      .header-meta { font-size: 8px; }
+      .intro { font-size: 11px; }
+      .notice { font-size: 9px; }
+      details { max-height: 44vh; }
+    }
+    @media (max-height: 520px) {
+      #overlay { gap: 7px; padding: 8px 16px; }
+      .title-lockup { padding: 8px 14px; }
+      .title-lockup h2 { font-size: clamp(26px, 7vh, 42px); }
+      .title-lockup p { margin-top: 4px; }
+      .tagline { font-size: 15px; }
+      .intro { font-size: 10px; }
+      .notice { padding: 5px 8px; }
+      #start { min-height: 38px; padding: 8px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <div>
+          <h1>SNEAKERS</h1>
+          <p>COMPUTER PRESS KIT · UNIVERSAL CITY STUDIOS</p>
+        </div>
+      </div>
+      <div class="header-meta"><strong>1992</strong><br>LOCAL DOS SESSION</div>
+    </header>
+
+    <main id="stage" aria-label="DOS press-kit player">
+      <div id="dosbox-container"></div>
+      <section id="overlay" aria-labelledby="splash-title">
+        <div class="kicker">Archive desk · interactive preview</div>
+        <div class="title-lockup">
+          <h2 id="splash-title">SNEAKERS</h2>
+          <p>COMPUTER PRESS KIT · 1992</p>
+        </div>
+        <p class="tagline">“My voice is my passport. Verify me.”</p>
+        <p class="intro">Boot a locally bundled DOS preview of the film’s promotional press kit. The emulator and its game bundle are stored inside this Webxdc and make no network requests.</p>
+        <div class="notice"><strong>Preservation note:</strong> the bundled program is a repository-built reconstruction, not a byte-for-byte copy of the original Archive.org floppy or ZIP.</div>
+        <button id="start" type="button">▶&nbsp; BOOT THE PRESS KIT</button>
+        <div class="controls-hint">Keyboard: enter <code>setec astronomy</code> at the access prompt, then use the menu keys.<br>Touch: open js-dos’ ☰ sidebar for its on-screen keyboard.</div>
+      </section>
+    </main>
+
+    <div id="status" role="status" aria-live="polite">READY · press BOOT to start the offline DOS session</div>
+
+    <details>
+      <summary>About · controls · provenance</summary>
+      <div class="about">
+        <p><strong>What this is.</strong> An offline Webxdc shell around the repository’s compact <code>SNEAKERS.jsdos</code> bundle, using js-dos 8.4.1 (DOSBox compiled to WebAssembly). Press <strong>BOOT</strong>, type <code>setec astronomy</code> at the password prompt, then choose a menu option with the keyboard.</p>
+        <p><strong>What it is not.</strong> The original item contains a 1.44 MB floppy image and a larger distribution ZIP. This package does not include those original files: its DOS program and companion assets are a locally reconstructed, browser-ready subset. The reconstruction should not be presented as a verified byte-identical preservation copy.</p>
+        <p><strong>References supplied for this build:</strong></p>
+        <ul class="sources">
+          <li><a href="https://retrogames.pro/2023/06/23/sneakers-computer-press-kit-universal-city-studios-pc-dos-play-online-in-your-browser/" target="_blank" rel="noopener noreferrer">Retrogames.pro · browser-play article</a></li>
+          <li><a href="https://archive.org/details/Sneakers_Film_Promotional_Floppy" target="_blank" rel="noopener noreferrer">Internet Archive · floppy record</a></li>
+          <li><a href="https://www.ebay.com/itm/365528826482" target="_blank" rel="noopener noreferrer">eBay · item 365528826482</a></li>
+        </ul>
+        <p class="legal"><strong>Rights:</strong> © Universal City Studios and other respective rights holders. The press kit is copyrighted; “abandonware” does not mean public domain. The source links are references only and are never contacted by the emulator.</p>
+      </div>
+    </details>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+      var statusEl = document.getElementById("status");
+      var overlay = document.getElementById("overlay");
+      var startButton = document.getElementById("start");
+      var container = document.getElementById("dosbox-container");
+      var dosInstance = null;
+      var starting = false;
+
+      function status(message, kind) {
+        statusEl.textContent = message;
+        statusEl.dataset.kind = kind || "info";
+      }
+
+      function focusDos() {
+        var canvas = container.querySelector("canvas");
+        if (!canvas) return;
+        if (!canvas.hasAttribute("tabindex")) canvas.setAttribute("tabindex", "0");
+        try { canvas.focus({ preventScroll: true }); } catch (_) { canvas.focus(); }
+      }
+
+      function showError(message) {
+        starting = false;
+        startButton.disabled = false;
+        startButton.textContent = "↻ RETRY BOOT";
+        overlay.style.display = "flex";
+        status(message, "error");
+      }
+
+      function boot() {
+        if (starting) return;
+        if (typeof window.Dos !== "function") {
+          showError("js-dos is unavailable · the local engine files did not load");
+          return;
+        }
+        starting = true;
+        startButton.disabled = true;
+        overlay.style.display = "none";
+        status("LOADING DOSBOX WASM · everything is bundled locally");
+
+        container.addEventListener("pointerdown", focusDos, true);
+        container.addEventListener("keydown", focusDos, true);
+        if (dosInstance) {
+          try { dosInstance.stop(); } catch (_) {}
+          dosInstance = null;
+        }
+        container.replaceChildren();
+
+        try {
+          // js-dos v8 options API. No CDN, cloud save, or remote game URL.
+          dosInstance = window.Dos(container, {
+            url: "roms/SNEAKERS.jsdos",
+            pathPrefix: "js-dos/",
+            autoStart: true,
+            noCloud: true,
+            kiosk: false,
+            onEvent: function (event) {
+              if (event === "emu-ready") {
+                status("DOSBOX WASM READY · opening the press-kit bundle");
+              } else if (event === "bnd-play") {
+                status("STARTING SNEAKERS.EXE · local reconstructed bundle");
+              } else if (event === "ci-ready") {
+                starting = false;
+                startButton.disabled = false;
+                status("DOS SESSION READY · enter the access code, then use the keyboard menu");
+                focusDos();
+              } else if (event === "emu-error" || event === "bnd-error") {
+                showError("DOSBOX ERROR · check the console, then retry");
+              }
+            }
+          });
+          setTimeout(focusDos, 0);
+        } catch (error) {
+          console.error(error);
+          showError("BOOT FAILED · " + (error && error.message ? error.message : String(error)));
+        }
+      }
+
+      startButton.addEventListener("click", boot);
+    })();
+  </script>
+</body>
+</html>
