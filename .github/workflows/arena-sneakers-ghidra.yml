@@ -266,6 +266,39 @@ jobs:
           git commit -m "Record native Ghidra and FindCrypt Sneakers analysis"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
+      - name: Preserve native-analysis failure details for diagnosis
+        if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/arena/7c16e993-html5'
+        shell: bash
+        run: |
+          set -euo pipefail
+          diagnostic="$GITHUB_WORKSPACE/docs/ghidra/sneakers-native-failure-${GITHUB_RUN_ID}.md"
+          mkdir -p "$(dirname "$diagnostic")"
+          {
+            echo "# Sneakers native-analysis diagnostic — run $GITHUB_RUN_ID"
+            echo
+            for log in "$RUNNER_TEMP"/sneakers-original/logs/*.log; do
+              [[ -f "$log" ]] || continue
+              echo "## $(basename "$log")"
+              echo
+              echo '```text'
+              tail -n 180 "$log"
+              echo '```'
+              echo
+            done
+            for report in "$RUNNER_TEMP"/sneakers-original/reports/findcrypt/*.findcrypt.md; do
+              [[ -f "$report" ]] || continue
+              echo "## Report: $(basename "$report")"
+              echo
+              cat "$report"
+              echo
+            done
+          } > "$diagnostic"
+          git config user.name arena-ghidra-research
+          git config user.email arena-ghidra-research@users.noreply.github.com
+          git add "$diagnostic"
+          git commit -m "Capture Sneakers native-analysis failure diagnostics"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
       - name: Upload static-analysis reports and logs
         if: always()
         uses: actions/upload-artifact@v5
