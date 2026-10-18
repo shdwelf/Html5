@@ -318,6 +318,22 @@ test("Headline Harry archive boots the js-dos v8 API with the complete engine", 
   );
 });
 
+test("Headline Harry DOSBox smoke enters the Press Pass and preserves review screenshots", () => {
+  const smoke = source("tools/smoke_headline_harry_dosbox.sh");
+  const workflow = source(".github/workflows/arena-headline-harry.yml");
+
+  assert.match(smoke, /MAP\.EXE/);
+  assert.match(smoke, /ARENA REPORTER/);
+  assert.match(smoke, /press-pass-before\.png/);
+  assert.match(smoke, /press-pass-filled\.png/);
+  assert.match(smoke, /after-press-pass\.png/);
+  assert.match(smoke, /mousemove --window/);
+  assert.match(workflow, /tools\/smoke_headline_harry_dosbox\.sh/);
+  assert.match(workflow, /game-shots\/press-pass/);
+  assert.ok(workflow.includes("Upload Press Pass runtime evidence"));
+  assert.ok(workflow.includes('cp -r "$work/hd/HH/." .xfer/harry/installed/'));
+});
+
 test("merged CyberChef archive is current and self-contained", () => {
   const files = archive("cyberchef.xdc");
   const src = source("public/apps/cyberchef/index.html");
