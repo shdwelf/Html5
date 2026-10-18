@@ -20,7 +20,14 @@
 # The fetched toolchains land in .cache/ (gitignored). Oracle's jars are not
 # committed: they are redistributable by Feitian, not by this repository.
 #
-#   tools/build_mealplan_applet.sh
+#   tools/build_mealplan_applet.sh          build the CAP
+#   tools/build_mealplan_applet.sh --sim    ... and build the simulator harness
+#
+# --sim additionally fetches easymock/objenesis and compiles it, plus the two
+# shim trees under tools/sim/, so that tools/run_mealplan_sim.mjs can drive the
+# converted applet headlessly. See docs/feitian-javacard-toolchain.md for why
+# the shims exist at all: the free simulator's Signature, OwnerPIN and HMAC key
+# support are declared but not implemented.
 #
 set -euo pipefail
 
@@ -29,6 +36,7 @@ CACHE="$ROOT/.cache/applet-toolchain"
 JDK_DIR="$CACHE/zulu8.68.0.19-ca-jdk8.0.362-linux_x64"
 APG_DIR="$CACHE/AppletPlayground"
 KIT="$APG_DIR/ext/java_card_kit-3_0_3"
+VJCRE="$APG_DIR/lib/vjcre.jar"
 SRC="$ROOT/smartcard/mealplan/src"
 OUT="$ROOT/build/mealplan"
 
@@ -99,3 +107,63 @@ echo ">> EXP          $OUT/cap/com/shdwelf/mealplan/javacard/mealplan.exp"
 echo
 echo "Components inside the CAP:"
 unzip -l "$CAP" | awk 'NR>3 && $4 != "" {printf "  %-24s %6s bytes\n", $4, $1}' | grep '\.cap'
+
+if [ "${1:-}" != "--sim" ]; then exit 0; fi
+
+# ------------------------------------------------------------------ simulator
+
+# jcardsim instantiates applet classes without calling their constructors, via
+# objenesis. Only two objenesis classes are referenced, but they pull in the
+# whole instantiator tree, and no reachable host carries the jar -- so compile
+# it from the official source.
+if [ ! -f "$CACHE/objenesis.jar" ]; then
+  echo
+  echo ">> fetching easymock/objenesis and compiling it"
+  rm -rf "$CACHE/objenesis-src"
+  git clone --quiet --depth 1 https://github.com/easymock/objenesis.git "$CACHE/objenesis-src"
+  rm -rf "$CACHE/objenesis-classes"; mkdir -p "$CACHE/objenesis-classes"
+  find "$CACHE/objenesis-src/main/src/main/java" -name '*.java' > "$CACHE/objenesis-src.txt"
+  javac -nowarn -encoding UTF-8 -d "$CACHE/objenesis-classes" \
+    "@$CACHE/objenesis-src.txt" 2>&1 | grep -viE 'Unsafe is internal|^Note:' || true
+  jar cf "$CACHE/objenesis.jar" -C "$CACHE/objenesis-classes" .
+  rm -rf "$CACHE/objenesis-src" "$CACHE/objenesis-classes"
+fi
+echo ">> objenesis $CACHE/objenesis.jar ($(wc -c < "$CACHE/objenesis.jar") bytes)"
+
+# The shims replace the simulator's unimplemented Signature, OwnerPIN and HMAC
+# key support, and occupy the org.bouncycastle provider name that VRE's
+# verifier insists on resolving. Both trees are host-side Java: they are
+# compiled without -target 1.6 and are never part of the CAP.
+rm -rf "$OUT/shim-classes" "$OUT/sim-classes"
+mkdir -p "$OUT/shim-classes" "$OUT/sim-classes"
+
+echo ">> compiling simulator shims"
+find "$ROOT/tools/sim/simshim" -name '*.java' > "$OUT/shim-srcs.txt"
+javac -nowarn -encoding UTF-8 -classpath "$VJCRE" \
+  -d "$OUT/shim-classes" "@$OUT/shim-srcs.txt" 2>&1 | grep -viE '^Note:' || true
+
+echo ">> compiling simulator harness"
+# api_classic.jar must come FIRST. vjcre.jar carries its own copy of the Java
+# Card API and at least one constant in it is wrong: its ISO7816.SW_WRONG_DATA
+# is 26368 (0x6700), the same value as SW_WRONG_LENGTH, where Oracle's is 27264
+# (0x6A80). Compiling the applet against vjcre therefore bakes a wrong status
+# word into the class file, and the simulator then faithfully reports a card
+# that no real card would be. Compiling against the real API inlines the right
+# value; at runtime the classes still resolve to vjcre's implementations, which
+# is the normal compile-against-api / run-against-simulator split.
+javac -nowarn -encoding UTF-8 -source 1.6 -target 1.6 \
+  -classpath "$KIT/lib/api_classic.jar:$VJCRE" \
+  -d "$OUT/sim-classes" \
+  "$SRC/com/shdwelf/mealplan/MealPlanApplet.java" \
+  "$ROOT/tools/sim/MealPlanSim.java" \
+  "$ROOT/tools/sim/bcshim/org/bouncycastle/jce/provider/BouncyCastleProvider.java" 2>&1 \
+  | grep -viE 'bootstrap class path|source value|target value|deprecat' || true
+
+test -f "$OUT/sim-classes/MealPlanSim.class" || { echo "!! harness did not compile"; exit 1; }
+test -f "$OUT/shim-classes/pro/javacard/vre/vSignature.class" \
+  || { echo "!! shims did not compile"; exit 1; }
+
+echo
+echo ">> simulator ready"
+echo ">>   shims  $OUT/shim-classes"
+echo ">>   harness $OUT/sim-classes"

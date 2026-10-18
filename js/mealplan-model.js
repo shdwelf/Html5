@@ -104,12 +104,22 @@ export function mac(key, ...parts) {
 /**
  * Per-card key diversification.
  *
- * The issuer keeps one master key. Each card gets mac(master, "MP-I" || uid).
- * Compromising one card therefore reveals nothing about any other card, and the
- * master key never has to leave the backend HSM.
+ * The issuer keeps one master key. Each card gets HMAC(master, label || uid)
+ * truncated to ISSUER_KEY_LEN. Compromising one card therefore reveals nothing
+ * about any other card, and the master key never has to leave the backend HSM.
+ *
+ * This deliberately does not go through mac(), even though mac() is the same
+ * HMAC: mac() truncates to MAC_LEN, which is 8 bytes, because that is the tag
+ * width on the wire. A derived key truncated the same way would be 64 bits --
+ * weaker than the 64-bit tag it is supposed to protect, and half the KEY_LEN the
+ * applet personalises. The applet is the authority on key length here, so this
+ * takes the width from the exported constant rather than from the MAC.
  */
 export function deriveKey(master, label, uid) {
-  return mac(master, Buffer.from(label, 'utf8'), Buffer.from(uid));
+  const h = createHmac('sha256', Buffer.from(master));
+  h.update(Buffer.from(label, 'utf8'));
+  h.update(Buffer.from(uid));
+  return h.digest().subarray(0, ISSUER_KEY_LEN);
 }
 
 const be16 = (n) => {
@@ -140,6 +150,15 @@ export class MealPlanCard {
       throw new TypeError('maxBalance must be a positive integer (cents)');
     if (!Number.isInteger(opts.maxDebit) || opts.maxDebit <= 0)
       throw new TypeError('maxDebit must be a positive integer (cents)');
+    // Checked because the applet personalises KEY_LEN bytes and will reject a
+    // short key at install. Without this the model happily runs an 8-byte key
+    // that no card could ever be provisioned with, and the two implementations
+    // drift apart while every test still passes.
+    for (const name of ['issuerKey', 'accessKey']) {
+      const k = opts[name];
+      if (!k || k.length !== ISSUER_KEY_LEN)
+        throw new TypeError(`${name} must be exactly ${ISSUER_KEY_LEN} bytes, got ${k ? k.length : 0}`);
+    }
 
     this.uid = Buffer.from(opts.uid);
     this.issuerKey = Buffer.from(opts.issuerKey);

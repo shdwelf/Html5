@@ -92,6 +92,9 @@ public class MealPlanApplet extends Applet {
     public static final byte MAC_LEN         = (byte) 8;   // truncated HMAC-SHA-256
     public static final byte KEY_LEN         = (byte) 16;  // 128-bit HMAC key
 
+    /** issuer key + access key + PIN + maxBalance(4) + maxDebit(4) */
+    public static final short APP_DATA_LEN   = (short) (2 * KEY_LEN + PIN_LEN + 8);
+
     /* P1 for SET_STATE: provision the terminal key. */
     public static final byte P1_SET_TERMINAL = (byte) 0x01;
 
@@ -120,6 +123,31 @@ public class MealPlanApplet extends Applet {
     private final byte[] maxDebit;     // cents, big-endian
 
     private MealPlanApplet(byte[] b, short off, byte len) {
+        /*
+         * GlobalPlatform INSTALL FOR INSTALL parameter block, offsets from b[off]:
+         *
+         *   aidLen || instanceAID || controlLen || controlInfo || dataLen || appData
+         *
+         * An earlier version of this constructor skipped only the first length
+         * byte and read key material from b[off+1], which is where the instance
+         * AID sits. Nothing caught it: the array is long enough that the length
+         * check passed, so the card personalised without complaint and then
+         * rejected every legitimate MAC, because its issuer key was derived from
+         * an AID that is public by design. Walking the structure properly is not
+         * defensive padding, it is the only way to find the app data at all.
+         */
+        short p = off;
+        short aidLen = b[p];                                        p += 1;
+        if (aidLen < (short) 5 || aidLen > (short) 16
+                || (short) (p + aidLen) > (short) (off + len))
+            ISOException.throwIt(ISO7816.SW_WRONG_DATA);
+        p = (short) (p + aidLen);                                   // instance AID
+        short ctlLen = b[p];                                        p += 1;
+        p = (short) (p + ctlLen);                                   // privileged control info
+        short dataLen = b[p];                                       p += 1;
+        if (dataLen < APP_DATA_LEN || (short) (p + dataLen) > (short) (off + len))
+            ISOException.throwIt(ISO7816.SW_WRONG_DATA);
+
         pin = new OwnerPIN(PIN_MAX_TRIES, PIN_LEN);
         balance = new byte[4];
         challenge = JCSystem.makeTransientByteArray(CHALLENGE_LEN, JCSystem.CLEAR_ON_DESELECT);
@@ -128,34 +156,40 @@ public class MealPlanApplet extends Applet {
         maxDebit = new byte[4];
         pinValidated = JCSystem.makeTransientBooleanArray((short) 1, JCSystem.CLEAR_ON_DESELECT);
 
-        issuerKey   = (HMACKey) KeyBuilder.buildKey(KeyBuilder.TYPE_HMAC_TRANSIENT_RESET,
+        /*
+         * TYPE_HMAC, not TYPE_HMAC_TRANSIENT_RESET. These keys are written once
+         * at personalisation and the balance they protect is persistent, so a
+         * key that the platform clears at card reset would leave a card holding
+         * money it can no longer authenticate a transaction against. Transient
+         * keys are for session material; this is not session material.
+         */
+        issuerKey   = (HMACKey) KeyBuilder.buildKey(KeyBuilder.TYPE_HMAC,
                                                     KeyBuilder.LENGTH_HMAC_SHA_256_BLOCK_64, false);
-        accessKey   = (HMACKey) KeyBuilder.buildKey(KeyBuilder.TYPE_HMAC_TRANSIENT_RESET,
+        accessKey   = (HMACKey) KeyBuilder.buildKey(KeyBuilder.TYPE_HMAC,
                                                     KeyBuilder.LENGTH_HMAC_SHA_256_BLOCK_64, false);
-        terminalKey = (HMACKey) KeyBuilder.buildKey(KeyBuilder.TYPE_HMAC_TRANSIENT_RESET,
+        terminalKey = (HMACKey) KeyBuilder.buildKey(KeyBuilder.TYPE_HMAC,
                                                     KeyBuilder.LENGTH_HMAC_SHA_256_BLOCK_64, false);
 
         mac = Signature.getInstance(Signature.ALG_HMAC_SHA_256, false);
         atc = 0;
-        personalise(b, off, len);
+        personalise(b, p, dataLen);
     }
 
     /**
-     * Install data layout, offsets from b[off]:
-     *   [0]        length byte L (JC install convention)
-     *   [1..16]    issuer key
-     *   [17..32]   access key
-     *   [33..36]   PIN
-     *   [37..40]   maxBalance, cents, big-endian
-     *   [41..44]   maxDebit, cents, big-endian
+     * App data layout, as built by the issuer and passed as the GlobalPlatform
+     * install data field (offsets relative to the start of appData):
+     *   [0..15]    issuer key
+     *   [16..31]   access key
+     *   [32..35]   PIN
+     *   [36..39]   maxBalance, cents, big-endian
+     *   [40..43]   maxDebit, cents, big-endian
      *
      * Deliberately no terminal key here: the terminal secret is provisioned
      * later over an authenticated SET_STATE, so it never has to travel in the
      * personalisation blob that the card factory sees.
      */
-    private void personalise(byte[] b, short off, byte len) {
-        short p = (short) (off + 1);
-        if (len < (byte) 44) ISOException.throwIt(ISO7816.SW_WRONG_DATA);
+    private void personalise(byte[] b, short off, short len) {
+        short p = off;
 
         issuerKey.setKey(b, p, KEY_LEN);           p += KEY_LEN;
         accessKey.setKey(b, p, KEY_LEN);           p += KEY_LEN;
@@ -202,7 +236,11 @@ public class MealPlanApplet extends Applet {
     private void getStatus(APDU apdu) {
         byte[] buf = apdu.getBuffer();
         short o = 0;
-        o += Util.arrayCopyNonAtomic(balance, (short) 0, buf, o, (short) 4);
+        // arrayCopyNonAtomic returns destOffset + length, the NEW offset, not the
+        // length. Assigning it is correct; adding it to o is a double count that
+        // only looks safe here because o starts at zero. commit() had the same
+        // line with o already at 2 and put the receipt MAC two bytes late.
+        o = Util.arrayCopyNonAtomic(balance, (short) 0, buf, o, (short) 4);
         buf[o++] = (byte) (atc >> 8);
         buf[o++] = (byte) atc;
         buf[o++] = pin.getTriesRemaining();
@@ -312,7 +350,14 @@ public class MealPlanApplet extends Applet {
         short n = apdu.setIncomingAndReceive();
         if (n != CHALLENGE_LEN) ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 
-        byte[] tmp = JCSystem.makeTransientByteArray((short) (CHALLENGE_LEN + 2 + MAC_LEN),
+        /*
+         * Room for the whole signature, not for the truncated one. sign() writes
+         * the full 32-byte HMAC-SHA-256 output before this code truncates it to
+         * MAC_LEN, so a buffer sized for the truncated length overflows by 24
+         * bytes on the first door read. Sizing the buffer by what comes out of
+         * the API rather than by what is kept is the only way to get this right.
+         */
+        byte[] tmp = JCSystem.makeTransientByteArray((short) (CHALLENGE_LEN + 2 + 32),
                                                      JCSystem.CLEAR_ON_RESET);
         Util.arrayCopyNonAtomic(buf, ISO7816.OFFSET_CDATA, tmp, (short) 0, CHALLENGE_LEN);
         tmp[CHALLENGE_LEN]     = (byte) (atc >> 8);
@@ -427,7 +472,13 @@ public class MealPlanApplet extends Applet {
         short o = 0;
         buf[o++] = (byte) (atc >> 8);
         buf[o++] = (byte) atc;
-        o += Util.arrayCopyNonAtomic(balance, (short) 0, buf, o, (short) 4);
+        // Assign, do not accumulate: the return value is already the new offset.
+        // As `o +=` this made o 8 instead of 6, so the receipt went out as
+        // ATC || balance || two bytes of stale buffer || MAC -- 16 bytes where
+        // the documented layout is 14. Every MAC still verified, because both
+        // sides used the same wrong offset; only a backend reading the layout
+        // as documented would have caught it, and it would have failed there.
+        o = Util.arrayCopyNonAtomic(balance, (short) 0, buf, o, (short) 4);
         Util.arrayCopyNonAtomic(out, (short) 0, buf, o, MAC_LEN);
         o += MAC_LEN;
         apdu.setOutgoingAndSend((short) 0, o);
