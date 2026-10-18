@@ -13,9 +13,9 @@ Static analysis only. None of the input executables were launched or emulated by
 
 ## MZ loader analyses
 
-| Input / provenance | SHA-256 | Ghidra format | Language | Image base | Memory blocks / bytes | Functions | Instructions | Defined strings | Decompilations completed |
-|---|---|---|---|---|---:|---:|---:|---:|---:|
-| `SNEAKERS.EXE` — original promotional program | `d5738c9a4050d69ca205a03229dad1616d681fbc9312859be3e629f4b3905961` | `Old-style DOS Executable (MZ)` | `x86:LE:16:Real Mode` | `0000:0000` | 7 / 124077 B | 600 | 40570 | 239 | 48/48 |
+| Input / provenance | SHA-256 | Ghidra format | Language | Image base | Entry point | Memory blocks / bytes | Functions | Instructions | Defined strings | Decompilations completed |
+|---|---|---|---|---|---|---:|---:|---:|---:|---:|
+| `SNEAKERS.EXE` — original promotional program | `d5738c9a4050d69ca205a03229dad1616d681fbc9312859be3e629f4b3905961` | `Old-style DOS Executable (MZ)` | `x86:LE:16:Real Mode` | `0000:0000` | `1000:02d8` | 7 / 124077 B | 600 | 40570 | 239 | 48/48 |
 
 ### Address-order disassembly excerpt — `SNEAKERS.EXE`
 
@@ -42,9 +42,40 @@ These are the first instructions in the exported listing, not a claim that the f
 1000:0021          7d12                           JGE 0x1000:0035
 ```
 
+### Native disassembly at Ghidra entry point — `SNEAKERS.EXE` (`1000:02d8`)
+
+For real-mode addresses, the listing may display an equivalent canonical segment:offset alias for the same linear address:
+
+```asm
+1000:02d8          8cd8                           MOV AX,DS
+1000:02da          8ec0                           MOV AX,ES
+1000:02dc          b8402a                         MOV AX,0x2a40
+1000:02df          8ed8                           MOV AX,DS
+1000:02e1          8c065300                       MOV word ptr [0x53],ES
+1000:02e5          8c164d00                       MOV word ptr [0x4d],SS
+1000:02e9          89264f00                       MOV word ptr [0x4f],SP
+1000:02ed          26a10200                       MOV AX,ES:[0x2]
+1000:02f1          3b06ba22                       CMP AX,word ptr [0x22ba]
+1000:02f5          7703                           JA 0x1000:02fa
+1000:02f7          e9b700                         JMP 0x1000:03b1
+1000:02fa          2b06ba22                       SUB AX,word ptr [0x22ba]
+1000:02fe          8cdf                           MOV DI,DS
+1000:0300          81c70010                       ADD DI,0x1000
+1000:0304          3bf8                           CMP DI,AX
+1000:0306          7302                           JNC 0x1000:030a
+1000:0308          8bc7                           MOV AX,DI
+1000:030a          bea82c                         MOV SI,0x2ca8
+1000:030d          3bf0                           CMP SI,AX
+1000:030f          7203                           JC 0x1000:0314
+1000:0311          e99d00                         JMP 0x1000:03b1
+1000:0314          2bc6                           SUB AX,SI
+1000:0316          3b06b822                       CMP AX,word ptr [0x22b8]
+1000:031a          7303                           JNC 0x1000:031f
+```
+
 Full `.asm`, `.c`, and `.strings.txt` files are retained in the CI artifact for `SNEAKERS.EXE`.
 
-| `SNEAK.EXE` — original LHA SFX companion | `4710858f7be6461a6d3a267cbc2dec8ca2594e70d28695298ecfb682d99f33bb` | `Old-style DOS Executable (MZ)` | `x86:LE:16:Real Mode` | `0000:0000` | 3 / 67172 B | 21 | 605 | 7 | 21/21 |
+| `SNEAK.EXE` — original LHA SFX companion | `4710858f7be6461a6d3a267cbc2dec8ca2594e70d28695298ecfb682d99f33bb` | `Old-style DOS Executable (MZ)` | `x86:LE:16:Real Mode` | `0000:0000` | `1000:0000` | 3 / 67172 B | 21 | 605 | 7 | 21/21 |
 
 ### Address-order disassembly excerpt — `SNEAK.EXE`
 
@@ -71,9 +102,40 @@ These are the first instructions in the exported listing, not a claim that the f
 1000:009c          368e062c00                     MOV ES,word ptr SS:[0x2c]
 ```
 
+### Native disassembly at Ghidra entry point — `SNEAK.EXE` (`1000:0000`)
+
+For real-mode addresses, the listing may display an equivalent canonical segment:offset alias for the same linear address:
+
+```asm
+1000:0000          eb79                           JMP 0x1000:007b
+1000:007b          fc                             CLD
+1000:007c          bc0001                         MOV SP,0x100
+1000:007f          8cc8                           MOV AX,CS
+1000:0081          058800                         ADD AX,0x88
+1000:0084          8ec0                           MOV AX,ES
+1000:0086          eb01                           JMP 0x1000:0089
+1000:0089          bb0401                         MOV BX,0x104
+1000:008c          e85b02                         CALL 0x1000:02ea
+1000:008f          06                             PUSH ES
+1000:0090          1f                             POP DS
+1000:0091          b430                           MOV AH,0x30
+1000:0093          cd21                           INT 0x21
+1000:0095          8bd8                           MOV BX,AX
+1000:0097          1e                             PUSH DS
+1000:0098          3c03                           CMP AL,0x3
+1000:009a          721c                           JC 0x1000:00b8
+1000:009c          368e062c00                     MOV ES,word ptr SS:[0x2c]
+1000:00a1          33c0                           XOR AX,AX
+1000:00a3          8bf8                           MOV DI,AX
+1000:00a5          b9ffff                         MOV CX,0xffff
+1000:00a8          f2ae                           SCASB.REPNE ES:DI
+1000:00aa          ae                             SCASB ES:DI
+1000:00ab          75fb                           JNZ 0x1000:00a8
+```
+
 Full `.asm`, `.c`, and `.strings.txt` files are retained in the CI artifact for `SNEAK.EXE`.
 
-| `RECONSTRUCTED_SNEAKERS.EXE` — repository reconstruction (comparison only) | `52e66ef4e192b4a368c0de58cac79a8e81d7ec06180da15bba2675614a0f1920` | `Old-style DOS Executable (MZ)` | `x86:LE:16:Real Mode` | `0000:0000` | 2 / 4221 B | 1 | 1837 | 0 | 1/1 |
+| `RECONSTRUCTED_SNEAKERS.EXE` — repository reconstruction (comparison only) | `52e66ef4e192b4a368c0de58cac79a8e81d7ec06180da15bba2675614a0f1920` | `Old-style DOS Executable (MZ)` | `x86:LE:16:Real Mode` | `0000:0000` | `1000:0100` | 2 / 4221 B | 1 | 1837 | 0 | 1/1 |
 
 ### Address-order disassembly excerpt — `RECONSTRUCTED_SNEAKERS.EXE`
 
@@ -98,6 +160,37 @@ These are the first instructions in the exported listing, not a claim that the f
 1000:0112          040d                           ADD AL,0xd
 1000:0114          eb0a                           JMP 0x1000:0120
 1000:0116          3c4d                           CMP AL,0x4d
+```
+
+### Native disassembly at Ghidra entry point — `RECONSTRUCTED_SNEAKERS.EXE` (`1000:0100`)
+
+For real-mode addresses, the listing may display an equivalent canonical segment:offset alias for the same linear address:
+
+```asm
+1000:0100          7614                           JBE 0x1000:0116
+1000:0102          3c61                           CMP AL,0x61
+1000:0104          721c                           JC 0x1000:0122
+1000:0106          3c7a                           CMP AL,0x7a
+1000:0108          7718                           JA 0x1000:0122
+1000:010a          3c6d                           CMP AL,0x6d
+1000:010c          7604                           JBE 0x1000:0112
+1000:010e          2c0d                           SUB AL,0xd
+1000:0110          eb0e                           JMP 0x1000:0120
+1000:0112          040d                           ADD AL,0xd
+1000:0114          eb0a                           JMP 0x1000:0120
+1000:0116          3c4d                           CMP AL,0x4d
+1000:0118          7604                           JBE 0x1000:011e
+1000:011a          2c0d                           SUB AL,0xd
+1000:011c          eb02                           JMP 0x1000:0120
+1000:011e          040d                           ADD AL,0xd
+1000:0120          8804                           MOV byte ptr [SI],AL
+1000:0122          46                             INC SI
+1000:0123          e2cf                           LOOP 0x1000:00f4
+1000:0125          b409                           MOV AH,0x9
+1000:0127          ba1d09                         MOV DX,0x91d
+1000:012a          cd21                           INT 0x21
+1000:012c          83f900                         CMP CX,0x0
+1000:012f          be8104                         MOV SI,0x481
 ```
 
 Full `.asm`, `.c`, and `.strings.txt` files are retained in the CI artifact for `RECONSTRUCTED_SNEAKERS.EXE`.
