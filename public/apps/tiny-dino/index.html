@@ -1,0 +1,119 @@
+<!doctype html>
+<!--
+  tiny-dino - an endless runner in the size-coded demo spirit.
+
+  The point of this page is the byte budget, so it is measured and asserted by
+  tests/tiny-dino.test.mjs rather than merely claimed. The game logic is NOT
+  duplicated here: it imports ../../js/tiny-dino-model.js, which is the same
+  module the tests exercise. Inlining a copy would mean the browser and the
+  test suite run different code.
+
+  See docs/size-coding-256b-notes.md for where the constraint comes from.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tiny-dino</title>
+<style>
+  html,body{margin:0;height:100%;background:#0b0d10;color:#e8e6e3;
+    font:14px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+  main{max-width:520px;margin:0 auto;padding:20px}
+  h1{font-size:16px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 4px}
+  p.sub{margin:0 0 14px;color:#8b9098;font-size:12px}
+  canvas{width:100%;height:auto;background:#11151a;border:1px solid #232a33;
+    image-rendering:pixelated;display:block}
+  .row{display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:#8b9098}
+  .row b{color:#e8e6e3;font-weight:400}
+  button{margin-top:12px;background:#1b222b;color:#e8e6e3;border:1px solid #2c3540;
+    padding:8px 14px;font:inherit;cursor:pointer}
+  button:hover{background:#232c37}
+  kbd{border:1px solid #2c3540;padding:1px 5px;border-radius:3px}
+</style>
+</head>
+<body>
+<main>
+  <h1>tiny-dino</h1>
+  <p class="sub">Space / click to jump</p>
+  <canvas id="c" width="480" height="140"></canvas>
+  <div class="row">
+    <span>score <b id="score">0</b></span>
+    <span>best <b id="best">0</b></span>
+    <span>speed <b id="speed">0</b> px/s</span>
+  </div>
+  <button id="restart" hidden>run again</button>
+  <p class="sub" id="msg" style="margin-top:12px"></p>
+</main>
+
+<script type="module">
+import { createState, step, runSpeedFor, WORLD, STEP } from "../../js/tiny-dino-model.js";
+
+const cv = document.getElementById("c");
+const ctx = cv.getContext("2d");
+const el = { score: document.getElementById("score"), best: document.getElementById("best"),
+             speed: document.getElementById("speed"), msg: document.getElementById("msg"),
+             restart: document.getElementById("restart") };
+
+let state = createState((Date.now() & 0xffff) || 1);
+let held = { jump: false };
+
+function groundY() { return cv.height - 22; }
+
+function draw() {
+  ctx.fillStyle = "#11151a";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+
+  // ground line
+  ctx.fillStyle = "#2c3540";
+  ctx.fillRect(0, groundY() + 1, cv.width, 1);
+
+  // obstacles
+  ctx.fillStyle = "#7fd1a0";
+  for (const o of state.obstacles) ctx.fillRect(o.x | 0, groundY() - o.h, o.w, o.h);
+
+  // dino
+  const h = WORLD.dino.h;
+  ctx.fillStyle = state.alive ? "#e8e6e3" : "#e06c75";
+  ctx.fillRect(24, groundY() - state.y - h, WORLD.dino.w, h);
+
+  el.score.textContent = state.score;
+  el.best.textContent = state.best;
+  el.speed.textContent = Math.round(runSpeedFor(state));
+  if (!state.alive) {
+    el.msg.textContent = "hit at " + state.score + " — " + state.t.toFixed(1) + "s survived";
+    el.restart.hidden = false;
+  }
+}
+
+function reset() {
+  state = createState((Date.now() & 0xffff) || 1);
+  el.msg.textContent = "";
+  el.restart.hidden = true;
+}
+
+// Fixed-timestep accumulator: the simulation rate is decoupled from the display
+// rate, so the physics the tests verify are the physics that run here.
+let last = performance.now(), acc = 0;
+function frame(now) {
+  acc += Math.min(0.25, (now - last) / 1000);
+  last = now;
+  while (acc >= STEP) {
+    step(state, { jump: held.jump });
+    acc -= STEP;
+  }
+  held.jump = false; // a jump is an edge, not a level
+  draw();
+  requestAnimationFrame(frame);
+}
+
+addEventListener("keydown", (e) => {
+  if (e.code === "Space" || e.code === "ArrowUp") { held.jump = true; e.preventDefault(); }
+  if (!state.alive && e.code === "Space") reset();
+});
+cv.addEventListener("pointerdown", () => { if (state.alive) held.jump = true; else reset(); });
+el.restart.addEventListener("click", reset);
+
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
