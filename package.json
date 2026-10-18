@@ -48,7 +48,8 @@
     "test:xport-v92-firmware": "node --test tests/xport-v92-firmware.test.mjs",
     "build:xport-v92-audiobridge": "node tools/build-wallplug-eagle.mjs --design xport-v92-audiobridge",
     "gen:dtmf-vectors": "node tools/gen_dtmf_vectors.mjs",
-    "test:dtmf": "node --test tests/dtmf-rtl.test.mjs"
+    "test:dtmf": "node --test tests/dtmf-rtl.test.mjs",
+    "build:xport-v92-linetestset": "node tools/build-wallplug-eagle.mjs --design xport-v92-linetestset"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",
