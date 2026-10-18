@@ -139,6 +139,38 @@ stable ordering, so repeated builds are byte-identical.
 The sandbox has no DOSBox or browser, but the GitHub DOSBox workflow completed
 successfully after this change. Its 15–90 second screenshots show the U.S.
 Daily Star **Press Pass** form, rather than the reported command-line stall
-(`.xfer/harry/install/game-shots/`). That confirms `MAP.EXE` reaches an
-interactive screen. The smoke step does not enter a name or verify the screen
-after **OK**, so full gameplay beyond the press-pass form remains unconfirmed.
+(`.xfer/harry/install/game-shots/`). That confirmed `MAP.EXE` reached an interactive screen. At that stage, the
+smoke did not enter a name or inspect the screen after **OK**; the follow-up
+below records that missing runtime check.
+
+## Follow-up: submit the Press Pass under native DOSBox (2026-10-18)
+
+The checked-in runtime smoke now types a throwaway reporter name and tries to
+activate the form, retaining before/after screenshots and DOSBox logs. GitHub
+Actions run `39139204391` completed successfully on this branch using the
+installer-recovered `MAP.EXE` in native DOSBox.
+
+Observed input/result:
+
+- Before input, the U.S. Daily Star Press Pass form is blank.
+- Typing `ARENA REPORTER` visibly fills the field (880 changed pixels in the
+  form crop).
+- A mouse click at the **OK** button's X11 location (`X=400`, `Y=344`) changes
+  only 36 pixels and leaves the form in place; the click path did not advance.
+- `Tab` followed by `Enter` changes 125,064 pixels in the form crop. The
+  resulting screenshot is a full-screen illustrated beach scene, no longer
+  the Press Pass form.
+
+This verifies that the reporter-name gate can be accepted and that `MAP.EXE`
+reaches a subsequent graphical scene. It does **not** yet establish that the
+scene is interactive gameplay or test movement/controls; no claim beyond the
+observed transition is made. The smoke script (`tools/smoke_headline_harry_dosbox.sh`)
+now checks that the field text rendered, tries the mouse path, falls back to
+`Tab` + `Enter` and then Space only if needed, and fails if no clear screen
+transition is detected.
+
+Evidence is checked in under
+`.xfer/harry/install/game-shots/press-pass/` (`press-pass-before.png`,
+`press-pass-filled.png`, `after-mouse-click.png`,
+`after-keyboard-submit.png`, and `after-press-pass.png`) and uploaded as the
+`headline-harry-press-pass-39139204391` Actions artifact.

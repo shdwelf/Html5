@@ -13,13 +13,15 @@ name: arena-headline-harry
 # Fallback: try a couple of known pre-installed mirrors. Either way the
 # recovered installed directory is committed so the sandbox can `git pull` it.
 #
-# Trigger is a change to .arena-relay/harry-fetch.txt or this file (or manual
-# dispatch), so the commit this job makes does not retrigger it.
+# Trigger is a change to .arena-relay/harry-fetch.txt, this runtime smoke
+# script, or this file (or manual dispatch), so the .xfer commit does not
+# retrigger the workflow.
 
 on:
   push:
     paths:
       - '.arena-relay/harry-fetch.txt'
+      - 'tools/smoke_headline_harry_dosbox.sh'
       - '.github/workflows/arena-headline-harry.yml'
   workflow_dispatch:
 
@@ -119,7 +121,8 @@ jobs:
           if [ -d "$work/hd/HH" ] && head -c2 "$work/hd/HH/MAP.EXE" 2>/dev/null | grep -q MZ; then
             echo "INSTALL_OK"
             echo "source=installer" >> "$GITHUB_OUTPUT"
-            cp -r "$work/hd/HH" .xfer/harry/installed
+            mkdir -p .xfer/harry/installed
+            cp -r "$work/hd/HH/." .xfer/harry/installed/
           else
             echo "INSTALL_FAILED or still scrambled"
             find "$work/hd" -maxdepth 2 | head -40
@@ -127,33 +130,27 @@ jobs:
             echo "source=" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Smoke test — boot MAP.EXE directly in DOSBox and screenshot it
+      - name: Smoke test — submit the Headline Harry Press Pass in DOSBox
         if: steps.install.outputs.source == 'installer'
         run: |
-          set +e
-          # DISPLAY/Xvfb don't persist across steps: re-export and respawn
-          pgrep -x Xvfb >/dev/null || { Xvfb :99 -screen 0 800x600x24 >/dev/null 2>&1 & sleep 3; }
-          export DISPLAY=:99
+          set -euo pipefail
           work="$RUNNER_TEMP/hhwork"
           mkdir -p "$work/game-shots"
-          (
-            sleep 12
-            for i in 1 2 3 4 5 6; do
-              import -window root "$work/game-shots/game_$((i*15))s.png" 2>/dev/null
-              sleep 15
-            done
-          ) &
-          sp=$!
-          # Match the Webxdc launch path: bypass the INTRO.EXE prompt/stall
-          # and enter the recovered game's MAP.EXE menu directly.
-          timeout 130 dosbox \
-            -c "mount c $work/hd" -c "c:" -c "cd hh" -c "map.exe" \
-            > "$work/game-run.log" 2>&1
-          kill $sp 2>/dev/null
-          mkdir -p .xfer/harry/install/game-shots
-          cp "$work"/game-shots/*.png .xfer/harry/install/game-shots/ 2>/dev/null
-          cp "$work/game-run.log" .xfer/harry/install/ 2>/dev/null
-          ls .xfer/harry/install/game-shots/
+          HEADLINE_HARRY_GAME_DIR="$work/hd/HH" \
+          HEADLINE_HARRY_SMOKE_DIR="$work/game-shots" \
+            tools/smoke_headline_harry_dosbox.sh
+          mkdir -p .xfer/harry/install/game-shots/press-pass
+          cp -R "$work/game-shots/." .xfer/harry/install/game-shots/press-pass/
+          cp "$work/game-shots/dosbox.log" .xfer/harry/install/game-run.log
+          ls .xfer/harry/install/game-shots/press-pass/
+
+      - name: Upload Press Pass runtime evidence
+        if: always() && steps.install.outputs.source == 'installer'
+        uses: actions/upload-artifact@v4
+        with:
+          name: headline-harry-press-pass-${{ github.run_id }}
+          path: ${{ runner.temp }}/hhwork/game-shots/
+          if-no-files-found: warn
 
       - name: Fallback — try pre-installed mirror URLs
         if: steps.install.outputs.source != 'installer'
@@ -181,7 +178,8 @@ jobs:
             if head -c2 "$dir/MAP.EXE" | grep -q MZ; then
               echo "MIRROR_OK $ok"
               echo "source=$ok" >> "$GITHUB_OUTPUT"
-              cp -r "$dir" .xfer/harry/installed
+              mkdir -p .xfer/harry/installed
+              cp -r "$dir/." .xfer/harry/installed/
             else
               echo "mirror zip but MAP.EXE still scrambled?!"
             fi

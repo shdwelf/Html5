@@ -1,0 +1,4 @@
+reporter-name changed pixels: 880
+mouse-click changed pixels: 36
+mouse click produced no clear screen transition; trying Tab + Enter
+Tab+Enter changed pixels: 125064
