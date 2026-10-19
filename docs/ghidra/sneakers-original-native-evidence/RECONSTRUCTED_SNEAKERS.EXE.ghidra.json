@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "program": "RECONSTRUCTED_SNEAKERS.EXE",
+  "ghidraVersion": "12.1.4",
+  "executableFormat": "Old-style DOS Executable (MZ)",
+  "executablePath": "/home/runner/work/_temp/sneakers-original/input/RECONSTRUCTED_SNEAKERS.EXE",
+  "md5": "7717db1b64d1fb8fcd261a59772f34c6",
+  "sha256": "52e66ef4e192b4a368c0de58cac79a8e81d7ec06180da15bba2675614a0f1920",
+  "language": "x86:LE:16:Real Mode",
+  "compiler": "default",
+  "imageBase": "0000:0000",
+  "minAddress": "1000:0000",
+  "maxAddress": "HEADER::0000001f",
+  "memoryBlocks": [
+    {
+      "name": "CODE_0",
+      "start": "1000:0000",
+      "end": "1000:105c",
+      "bytes": 4189,
+      "read": true,
+      "write": true,
+      "execute": true,
+      "initialized": true
+    },
+    {
+      "name": "HEADER",
+      "start": "HEADER::00000000",
+      "end": "HEADER::0000001f",
+      "bytes": 32,
+      "read": false,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    }
+  ],
+  "imports": [],
+  "definedStrings": 0,
+  "instructions": 1837,
+  "functions": 1,
+  "decompilations": [
+    {
+      "name": "entry",
+      "address": "1000:0100",
+      "completed": true,
+      "message": ""
+    }
+  ]
+}
