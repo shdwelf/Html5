@@ -117,8 +117,8 @@
         "docs/game-corpus-evidence/"
       ],
       "next_actions": [
-        "Corpus answered + Secret Cow Level investigation written (docs/john-ghidra-diablo-research.md, round 7); binary-side sweep in tools/cow_level_xgrep.mjs",
-        "GFI LANguard NSS research note done (docs/gfi-languard-nss-research.md, round 7); next: specimen triage on user-supplied era binaries"
+        "Corpus answered + Secret Cow Level investigation (round 7) + Jeopardy!/Wheel of Fortune corpus & Snopes forensics deep dive + Radmin/SMTP research notes (round 8, docs/backlog-execution-round-8-2026-10-21.md)",
+        "Next: specimen-level passes (game puzzle-DB extraction, Radmin handshake/crypto claim verification) on user-supplied captures"
       ]
     },
     {
