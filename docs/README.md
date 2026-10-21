@@ -14,6 +14,7 @@ standing boundaries.
 
 - [agent-backlog-2026-10-21.md](agent-backlog-2026-10-21.md) — agent backlog 2026 10 21
 - [backlog-execution-round-1-2026-10-21.md](backlog-execution-round-1-2026-10-21.md) — backlog execution round 1 2026 10 21
+- [backlog-execution-round-10-2026-10-21.md](backlog-execution-round-10-2026-10-21.md) — backlog execution round 10 2026 10 21
 - [backlog-execution-round-2-2026-10-21.md](backlog-execution-round-2-2026-10-21.md) — backlog execution round 2 2026 10 21
 - [backlog-execution-round-3-2026-10-21.md](backlog-execution-round-3-2026-10-21.md) — backlog execution round 3 2026 10 21
 - [backlog-execution-round-4-2026-10-21.md](backlog-execution-round-4-2026-10-21.md) — backlog execution round 4 2026 10 21
@@ -21,9 +22,11 @@ standing boundaries.
 - [backlog-execution-round-6-2026-10-21.md](backlog-execution-round-6-2026-10-21.md) — backlog execution round 6 2026 10 21
 - [backlog-execution-round-7-2026-10-21.md](backlog-execution-round-7-2026-10-21.md) — backlog execution round 7 2026 10 21
 - [backlog-execution-round-8-2026-10-21.md](backlog-execution-round-8-2026-10-21.md) — backlog execution round 8 2026 10 21
+- [backlog-execution-round-9-2026-10-21.md](backlog-execution-round-9-2026-10-21.md) — backlog execution round 9 2026 10 21
 
 ## Research deep dives (the “ghirdra” line)
 
+- [abandonware-download-portals-2026-10-21.md](abandonware-download-portals-2026-10-21.md) — abandonware download portals 2026 10 21
 - [game-show-ghidra-research-2026-10-21.md](game-show-ghidra-research-2026-10-21.md) — game show ghidra research 2026 10 21
 - [gfi-languard-nss-research.md](gfi-languard-nss-research.md) — gfi languard nss research
 - [john-ghidra-diablo-research.md](john-ghidra-diablo-research.md) — john ghidra diablo research

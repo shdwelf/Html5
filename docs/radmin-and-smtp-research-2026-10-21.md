@@ -105,6 +105,8 @@ against third-party mail servers (same authorization rule as Radmin).
 
 ## Cross-links
 
+- Obtainment hygiene + mirrors for Radmin VPN, plus the LAN-gaming/DOSBox-IPX
+  use case: [`abandonware-download-portals-2026-10-21.md`](abandonware-download-portals-2026-10-21.md) §1.
 - Network-scanner tooling of the same era: [`gfi-languard-nss-research.md`](gfi-languard-nss-research.md).
 - Remote-admin boundary language: [`software-protection-encyclopedia.md`](software-protection-encyclopedia.md)
   “Radmin and remote administration tools”.

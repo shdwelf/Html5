@@ -164,7 +164,10 @@ cross-title sweep).
    project environment? (Record the pair from the Ghidra release notes at
    install time — Ghidra 11.x requires JDK 21 — and keep the pair in the
    analysis header.)
-3. Can a small, redistributable toy binary demonstrate the same loader and
-   resource-analysis techniques without proprietary game assets?
+3. ~~Can a small, redistributable toy binary demonstrate the same loader and
+   resource-analysis techniques without proprietary game assets?~~ **Answered
+   yes (round 10):** `tools/toy_mz_demo.mjs` builds/parses a self-contained DOS
+   MZ fixture (relocation entry + int 21h stub + RSRC string table) with 6
+   passing tests in `tests/toy-mz-demo.test.mjs`.
 4. Can John's existing test vectors be wired into a local, non-secret audit
    regression test?

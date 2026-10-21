@@ -34,6 +34,11 @@ Catalog cross-check: MyAbandonware lists the same DOS line (Jeopardy! 1987,
 ratings — consistent with the IA items. As with the Diablo corpus: **link only**;
 install locally from your own media or a capture you are entitled to use.
 
+**Annex (round 10):** later editions (WoF 1998 Hasbro/Artech, WoF Deluxe 2005,
+New Second Edition 1988), the retro espionage-spy index (Covert Action, Floor 13,
+Spy Fox), download-portal verification status, and DOSBox quick-config live in
+[`abandonware-download-portals-2026-10-21.md`](abandonware-download-portals-2026-10-21.md).
+
 ## 2. What to disassemble (the interesting data is the question database)
 
 Game-show games are unusually honest RE targets: the *content* (clue/answer
