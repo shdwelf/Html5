@@ -293,6 +293,55 @@ export function encodeGB(address, value, key) {
   return code;
 }
 
+/* ------------------------------------------- Game Gear Game Genie (SMS Power) */
+// Sega Game Gear Game Genie (Codemasters/Galoob, 1994) — NOT the Game Boy
+// format above. Code = 2 or 3 groups of 3 hex digits, DDA-AAA[-RRR], parsed
+// big-endian to a 36-bit value per smspower.org/Development/GameGenie:
+//   DD      = patch value (plain)
+//   AAAA    = Z80 address; nibbles d2 d3 d4 d5 with the LAST digit moved to
+//             the front and bit-inverted:  addr = ((code>>16)&0xfff) |
+//             ((code&0xf000)^0xf000)
+//   RRR     = optional cloak^reference: cloak = d6^d7 (always 8 in known
+//             codes), reference = ror2((d6<<4)|d8)^0xba pins the original
+//             byte at the address. Encode is the exact inverse (the RRR
+//             triple is uniquely determined given cloak=8).
+
+function ror2(x) { return ((x >>> 2) | ((x & 3) << 6)) & 0xff; }
+function rol2(x) { return ((x << 2) | (x >>> 6)) & 0xff; }
+
+export function decodeGGG(code) {
+  const c = code.replace(/[^0-9A-Fa-f]/g, "").toUpperCase();
+  if (c.length !== 6 && c.length !== 9) return false;
+  if (c.replace(/[0-9A-F]/g, "").length !== 0) return false;
+  const d = c.split("").map((ch) => parseInt(ch, 16));
+  const value = c.slice(0, 2);
+  const address = (((~d[5]) & 0xf) << 12 | d[2] << 8 | d[3] << 4 | d[4])
+    .toString(16).toUpperCase().padStart(4, "0");
+  if (c.length === 6) return { value, address, cloak: null, reference: null };
+  const cloak = d[6] ^ d[7];
+  const reference = (ror2((d[6] << 4) | d[8]) ^ 0xba)
+    .toString(16).toUpperCase().padStart(2, "0");
+  return { value, address, cloak, reference };
+}
+
+export function encodeGGG(value, address, reference, cloak = 8) {
+  const v = String(value).toUpperCase(), a = String(address).toUpperCase();
+  const r = reference == null ? null : String(reference).toUpperCase();
+  if (v.length !== 2 || a.length !== 4 || (r !== null && r.length !== 2)) return false;
+  if ((v + a + (r || "")).replace(/[0-9A-F]/g, "").length !== 0) return false;
+  const addr = parseInt(a, 16);
+  const d5 = (~(addr >> 12)) & 0xf;
+  let out = v + a[1] + a[2] + a[3] + d5.toString(16).toUpperCase();
+  if (r !== null) {
+    const y = rol2(parseInt(r, 16) ^ 0xba);
+    const d6 = y >> 4, d8 = y & 0xf, d7 = d6 ^ (cloak & 0xf);
+    out += d6.toString(16).toUpperCase() + d7.toString(16).toUpperCase() +
+      d8.toString(16).toUpperCase();
+    return out.slice(0, 3) + "-" + out.slice(3, 6) + "-" + out.slice(6, 9);
+  }
+  return out.slice(0, 3) + "-" + out.slice(3, 6);
+}
+
 /* ------------------------------------------------------------- vectors */
 
 // 88a — published pairs from Stefan Wolff's UHS2HTML primer file listing.
@@ -345,6 +394,20 @@ export const GB_VECTORS = [
   ["12B-CD5", "ABCD", "12", null],
   ["00F-FF0-E6A", "FFFF", "00", "00"],
   ["562-34E-7FC", "1234", "56", "A5"],
+];
+
+// Sega Game Gear Game Genie — published codes (gamegenie.com Sonic 1/2 GG
+// lists, corroborated by etherealgames.com + consoledatabase.com). Fields are
+// [code, address, value, reference]; cloak is 8 in every known code.
+export const GGG_VECTORS = [
+  ["007-01A-3BE", "5701", "00", "35"], // Sonic 1 GG: infinite lives
+  ["013-7DE-E66", "137D", "01", "03"], // Sonic 1 GG: start with 1 life
+  ["053-7DE-E66", "137D", "05", "03"], // …start with 5 lives (same address)
+  ["093-7DE-E66", "137D", "09", "03"], // …start with 9 lives (same address)
+  ["020-54A-E6E", "5054", "02", "01"], // Sonic 1 GG: rings worth 2 points
+  ["3A0-21C-2A2", "3021", "3A", "32"], // Sonic 1 GG: never lose rings
+  ["003-F8C-3B7", "33F8", "00", "77"], // Sonic 1 GG: stop timer
+  ["009-04F-3BE", "0904", "00", "35"], // Sonic 2 GG: infinite lives
 ];
 
 /* ---------------------------------------------------------------- report */
@@ -414,7 +477,7 @@ export function runChecks(log = console.log) {
       `addr=${address} value=${value}`);
   }
 
-  log("### Game Boy/Game Gear Game Genie (gjbianco upstream-generated)");
+  log("### Game Boy Game Genie (gjbianco upstream-generated)");
   for (const [code, address, value, key] of GB_VECTORS) {
     const got = decodeGB(code);
     check(`GB ${code}`,
@@ -422,6 +485,16 @@ export function runChecks(log = console.log) {
         got.address === address && got.value === value &&
         (key === null ? got.key === false : got.key === key),
       `addr=${address} value=${value} compare=${key ?? "-"}`);
+  }
+
+  log("### Sega Game Gear Game Genie (published codes, SMSPower format)");
+  for (const [code, address, value, reference] of GGG_VECTORS) {
+    const got = decodeGGG(code);
+    check(`GGG ${code}`,
+      encodeGGG(value, address, reference) === code &&
+        got.address === address && got.value === value &&
+        got.reference === reference && got.cloak === 8,
+      `addr=${address} value=${value} ref=${reference} cloak=8`);
   }
 
   return { ok: failures.length === 0, failures };

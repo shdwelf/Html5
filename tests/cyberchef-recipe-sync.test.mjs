@@ -56,6 +56,13 @@ const POST_MERGE_OPS = [
   // 2026-10-14 recipe sourcing, round 5 (docs/recipe-sourcing-round-5-2026-10-14.md).
   "zigzagTransposition",
   "nihilistSquare",
+  // 2026-10-21 backlog round 5 (docs/backlog-execution-round-5-2026-10-21.md).
+  "gtaText",
+  "base45",
+  "aesCmac",
+  "aesKeySched",
+  "gf256",
+  "mignotte",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

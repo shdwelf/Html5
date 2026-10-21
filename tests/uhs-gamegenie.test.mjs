@@ -7,9 +7,10 @@ import {
   generateKey, decryptNest, encryptNest, decryptTextHunk, encryptTextHunk,
   decodeGG, encodeGG,
   decodeSNES, encodeSNES, decodeGEN, encodeGEN, decodeGB, encodeGB,
+  decodeGGG, encodeGGG,
   UHS88A_VECTORS, UHS_TITLE, UHS_KEY, UHS_NEST_VECTORS, UHS_TEXT_VECTORS,
   GG_VECTORS, GG_ENCODE_VECTOR, GG_CROSS_VECTOR,
-  SNES_VECTORS, GEN_VECTORS, GB_VECTORS,
+  SNES_VECTORS, GEN_VECTORS, GB_VECTORS, GGG_VECTORS,
   runChecks,
 } from "../tools/verify_uhs_gamegenie.mjs";
 
@@ -77,7 +78,7 @@ test("Genesis Game Genie upstream-generated vectors round-trip", () => {
   }
 });
 
-test("Game Boy/Game Gear Game Genie vectors round-trip, keyed and unkeyed", () => {
+test("Game Boy Game Genie vectors round-trip, keyed and unkeyed", () => {
   for (const [code, address, value, key] of GB_VECTORS) {
     assert.equal(encodeGB(address, value, key ?? undefined), code);
     const got = decodeGB(code);
@@ -86,6 +87,24 @@ test("Game Boy/Game Gear Game Genie vectors round-trip, keyed and unkeyed", () =
     if (key === null) assert.equal(got.key, false);
     else assert.equal(got.key, key);
   }
+});
+
+test("Sega Game Gear Game Genie published codes round-trip (SMSPower format)", () => {
+  for (const [code, address, value, reference] of GGG_VECTORS) {
+    assert.equal(encodeGGG(value, address, reference), code);
+    const got = decodeGGG(code);
+    assert.equal(got.address, address);
+    assert.equal(got.value, value);
+    assert.equal(got.reference, reference);
+    assert.equal(got.cloak, 8, "cloak is 8 in every published code");
+  }
+  // home-made short form: two groups only (no cloak/reference), per SMSPower
+  const short = encodeGGG("00", "5701", null);
+  assert.equal(short, "007-01A");
+  assert.deepEqual(decodeGGG(short), { value: "00", address: "5701", cloak: null, reference: null });
+  // the 1/5/9-lives family is the same patch address with only DD changed
+  assert.equal(decodeGGG("053-7DE-E66").address, decodeGGG("013-7DE-E66").address);
+  assert.equal(decodeGGG("053-7DE-E66").address, decodeGGG("093-7DE-E66").address);
 });
 
 test("full report passes", () => {

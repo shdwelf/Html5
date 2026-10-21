@@ -374,3 +374,11 @@ If they are wanted, the honest path is a PE + section triage tool and a
 | Tetris 1986 | classified (Turbo Pascal 3 COM) + entry decompiled |
 | Half-Life, Unreal Tournament | not attempted — §8 |
 | `tools/exeprotect.py` | **bug fixed**, ATR.EXE vectors unchanged |
+
+## Related (round-5 sweep feed)
+
+The 2026-10-21 S3 sweep ([`sierra-shadow-president-sweep-2026-10-21.md`](sierra-shadow-president-sweep-2026-10-21.md))
+adds two targets for this line: **Shadow President** (D.C. True, 1993) ShadowNetwork
+variable tables vs the 1990 CIA World Factbook, and the **Game Wizard 32** installer's
+BIOS-checksum machine binding. It also records the Sierra AGI/SCI cross-series
+message-table Easter-egg pattern (grep sibling titles' known strings).

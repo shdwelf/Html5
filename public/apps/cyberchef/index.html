@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 500 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 506 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -3332,6 +3332,10 @@ const RECIPE_PACKS={
  'Keygen → Encrypt (AES)':[['keyRandom',{}],['aesGCM',{mode:'encrypt'}]],
  'Hash Collection':[['allhash',{}]],
  'Boxentriq Puzzle & Code-Breaking Pack (Deferred Four — AMSCO · Morbit · Pollux · Nak-Nak)':[['amsco',{}],['morbit',{}],['pollux',{}],['naknak',{}]],
+ 'RFC 4493 / RFC 9285 — AES-CMAC & Base45 vectors':[['aesCmac',{infmt:'hex'}],['base45',{mode:'encode'}]],
+ 'FIPS 197 — AES Key Schedule & GF(2^8) Field Math':[['aesKeySched',{show:'rounds'}],['gf256',{op:'mul'}]],
+ 'Mignotte CRT Threshold Sharing (Stinson)':[['mignotte',{mode:'split'}]],
+ 'Retro Text — GTA asc+1 Codec':[['gtaText',{mode:'decode'}]],
 };
 addOp('recipePack','Recipe Pack','Recipes','Load a predefined cipher-suite recipe pack into the Recipe panel.',Object.keys(RECIPE_PACKS).map((name,i)=>({key:'pack',label:'Pack',type:'select',default:Object.keys(RECIPE_PACKS)[0],options:Object.keys(RECIPE_PACKS).map(n=>[n,n])})),function(t,a){
   const n=applyRecipePack(a.pack);
@@ -33452,6 +33456,207 @@ function renderAztecLabelSheet(tpl,values,a){
   const svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'"><rect width="100%" height="100%" fill="#fff"/>'+cells.join('')+'</svg>';
   return svgDataUrl(svg);
 }
+
+/* ============ ROUND 5 sourced ops (2026-10-21): thin-category vectors ============ */
+
+/* GTA text codec — retro-game asc()+1 obfuscation. */
+addOp('gtaText','GTA Text (asc+1)','Text',
+  'Grand Theft Auto family text obfuscation: each stored byte is the character code plus one (BASIC asc(c)+1). Decode subtracts 1 from every byte, encode adds 1; arithmetic is byte-wise mod 256 (Latin-1). Recipe specified by the requester; round-trip pinned in tests/cyberchef-round5-ops.test.mjs.',
+  [
+    {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode (asc-1)'],['encode','Encode (asc+1)']]}
+  ],
+  function(t,a){
+    const delta = a.mode==='encode' ? 1 : -1;
+    const out = [];
+    for (const ch of (t||'')) out.push(String.fromCharCode((((ch.charCodeAt(0) + delta) % 256) + 256) % 256));
+    return out.join('');
+  })
+
+/* Base45 — RFC 9285 (QR Alphanumeric alphabet). */
+addOp('base45','Base45 (RFC 9285)','Text',
+  'RFC 9285 Base45: QR Alphanumeric-mode alphabet 0-9 A-Z space $%*+-./: , two bytes to three characters, one byte to two, no padding. Verified against the RFC examples: AB->BB8, Hello!!->%69 VD92EX0, base-45->UJCLQE7W581, QED8WEX0->ietf!.',
+  [
+    {key:'mode',label:'Mode',type:'select',default:'encode',options:[['encode','Encode'],['decode','Decode']]}
+  ],
+  function(t,a){
+    const A = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+    const idx = {}; for (let i=0;i<45;i++) idx[A[i]] = i;
+    if (a.mode==='encode') {
+      const b = utf8Encode(t||'');
+      let out = '';
+      for (let i=0;i+1<b.length;i+=2) {
+        const n = b[i]*256 + b[i+1], c = n%45, d = Math.floor(n/45)%45, e = Math.floor(n/2025);
+        out += A[c]+A[d]+A[e];
+      }
+      if (b.length%2) { const v = b[b.length-1], c = v%45, d = Math.floor(v/45); out += A[c]+A[d]; }
+      return out;
+    }
+    const s = (t||'').trim();
+    if (s.length%3===1) throw new Error('Base45: invalid length');
+    const out = [];
+    for (let i=0;i<s.length;i+=3) {
+      for (let j=i;j<Math.min(i+3,s.length);j++) if (idx[s[j]]===undefined) throw new Error('Base45: character outside the RFC 9285 alphabet');
+      const c = idx[s[i]], d = idx[s[i+1]];
+      if (i+2<s.length) {
+        const n = c + d*45 + idx[s[i+2]]*2025;
+        if (n>65535) throw new Error('Base45: group overflows 16 bits');
+        out.push(n>>8, n&0xff);
+      } else out.push(c + d*45);
+    }
+    return new TextDecoder('utf-8').decode(new Uint8Array(out));
+  })
+
+/* AES-CMAC — RFC 4493 (via WebCrypto single-block AES = ECB). */
+addOp('aesCmac','AES-CMAC (RFC 4493)','MAC',
+  'AES-128-CMAC per RFC 4493 (OMAC1 / NIST SP 800-38B): subkeys K1/K2 from AES-128(0^128) with Rb=0x87, CBC chain over 16-byte blocks with 10* padding. Verified against all four RFC 4493 examples (empty, 16, 40 and 64-byte messages).',
+  [
+    {key:'key',label:'Key (hex, 16B)',type:'text',default:'2b7e151628aed2a6abf7158809cf4f3c'},
+    {key:'infmt',label:'Input',type:'select',default:'hex',options:[['hex','Hex'],['text','Text']]}
+  ],
+  async function(t,a){
+    const key = Array.from(bytesFromHex(a.key||''));
+    if (key.length!==16) throw new Error('CMAC key must be 16 bytes hex');
+    const msg = a.infmt==='hex' ? Array.from(bytesFromHex(t||'')) : Array.from(utf8Encode(t||''));
+    const k = await crypto.subtle.importKey('raw', new Uint8Array(key), 'AES-CBC', false, ['encrypt']);
+    const aes1 = async (blk) => Array.from(new Uint8Array(
+      await crypto.subtle.encrypt({name:'AES-CBC', iv:new Uint8Array(16)}, k, new Uint8Array(blk))).slice(0,16));
+    const shift = (b) => { const o=[]; let c=0; for (let i=15;i>=0;i--) { o[i]=((b[i]<<1)|c)&0xff; c=b[i]>>7; } return o; };
+    const xor128 = (x,y) => x.map((v,i)=>v^y[i]);
+    const msb = (b) => (b[0]&0x80)!==0;
+    const Rb = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0x87];
+    const L = await aes1(new Array(16).fill(0));
+    let K1 = shift(L); if (msb(L)) K1 = xor128(K1, Rb);
+    let K2 = shift(K1); if (msb(K1)) K2 = xor128(K2, Rb);
+    const complete = msg.length>0 && msg.length%16===0;
+    const nFull = complete ? msg.length/16-1 : Math.floor(msg.length/16);
+    let x = new Array(16).fill(0);
+    for (let i=0;i<nFull;i++) x = await aes1(xor128(x, msg.slice(i*16, i*16+16)));
+    let last = msg.slice(nFull*16);
+    if (complete) last = xor128(last, K1);
+    else {
+      const tail = last.concat([0x80]); while (tail.length<16) tail.push(0);
+      last = xor128(tail, K2);
+    }
+    const mac = await aes1(xor128(x, last));
+    return hexFromBytes(new Uint8Array(mac));
+  })
+
+/* AES Key Schedule — FIPS 197 section 5.2 (Fig. 11). */
+addOp('aesKeySched','AES Key Schedule (FIPS 197)','Crypto',
+  'FIPS 197 Key Expansion inspector (Fig. 11): RotWord, SubWord (Fig. 7 S-box) and Rcon = x^(i-1) in GF(2^8). Prints the round keys the way Appendix C.1 does. Verified against FIPS 197 Appendix A.1 words (2b7e…: w4=a0fafe17, w6=23a33939) and the full C.1 round-key table for key 000102…0f.',
+  [
+    {key:'key',label:'Key (hex 16/24/32B)',type:'text',default:'000102030405060708090a0b0c0d0e0f'},
+    {key:'show',label:'Show',type:'select',default:'rounds',options:[['rounds','Round keys'],['words','All words + Rcon steps']]}
+  ],
+  function(t,a){
+    const S = '637c777bf26b6fc53001672bfed7ab76ca82c97dfa5947f0add4a2af9ca472c0'+
+      'b7fd9326363ff7cc34a5e5f171d8311504c723c31896059a071280e2eb27b275'+
+      '09832c1a1b6e5aa0523bd6b329e32f8453d100ed20fcb15b6acbbe394a4c58cf'+
+      'd0efaafb434d338545f9027f503c9fa851a3408f929d38f5bcb6da2110fff3d2'+
+      'cd0c13ec5f974417c4a77e3d645d197360814fdc222a908846eeb814de5e0bdb'+
+      'e0323a0a4906245cc2d3ac629195e479e7c8376d8dd54ea96c56f4ea657aae08'+
+      'ba78252e1ca6b4c6e8dd741f4bbd8b8a703eb5664803f60e613557b986c11d9e'+
+      'e1f8981169d98e949b1e87e9ce5528df8ca1890dbfe6426841992d0fb054bb16';
+    const SBOX = []; for (let i=0;i<256;i++) SBOX.push(parseInt(S.substr(i*2,2),16));
+    const key = bytesFromHex(a.key||'');
+    if (![16,24,32].includes(key.length)) throw new Error('key must be 16, 24 or 32 bytes hex');
+    const Nk = key.length/4, Nr = Nk+6;
+    const w = [];
+    for (let i=0;i<Nk;i++) w.push([key[4*i],key[4*i+1],key[4*i+2],key[4*i+3]]);
+    const hexw = (x) => x.map(v=>v.toString(16).padStart(2,'0')).join('');
+    const lines = [];
+    for (let i=Nk;i<4*(Nr+1);i++) {
+      let temp = w[i-1].slice();
+      let rcon = 0;
+      if (i%Nk===0) {
+        temp = temp.slice(1).concat(temp[0]);            // RotWord
+        temp = temp.map(v=>SBOX[v]);                     // SubWord
+        let rc = 1; for (let j=1;j<i/Nk;j++) rc = ((rc<<1)^((rc&0x80)?0x1b:0))&0xff;
+        rcon = rc; temp[0] ^= rcon;
+      } else if (Nk>6 && i%Nk===4) temp = temp.map(v=>SBOX[v]);
+      w.push(w[i-Nk].map((v,j)=>v^temp[j]));
+      if (a.show==='words') lines.push('w['+i+'] temp='+hexw(temp)+' Rcon[i/Nk]='+rcon.toString(16).padStart(2,'0')+' -> '+hexw(w[i]));
+    }
+    const out = ['AES-'+(Nk*32)+' key schedule, '+Nr+' rounds, '+(4*(Nr+1))+' words:'];
+    for (let r=0;r<=Nr;r++) out.push('round['+r+'].k_sch   '+w.slice(r*4,r*4+4).map(hexw).join(' '));
+    if (a.show==='words') out.push('', ...lines);
+    return out.join('\n');
+  })
+
+/* GF(2^8) field math — FIPS 197 section 4 (Rijndael field). */
+addOp('gf256','GF(2^8) field math (AES)','Math',
+  'Rijndael field arithmetic over GF(2^8) with m(x)=x^8+x^4+x^3+x+1 (FIPS 197 §4): XOR addition, xtime-based multiplication, inverse by a^254. Verified against the FIPS worked examples: {57}+{83}={d4}, {57}*{83}={c1}, xtime chain {ae}/{47}/{8e}/{07}, {57}*{13}={fe}, and inv({53})={ca} (the S-box construction input for S[{53}]={ed}).',
+  [
+    {key:'a',label:'a (hex byte)',type:'text',default:'57'},
+    {key:'b',label:'b (hex byte)',type:'text',default:'83'},
+    {key:'op',label:'Operation',type:'select',default:'mul',options:[['add','a+b (XOR)'],['mul','a*b'],['inv','a^-1'],['pow','a^e'],['xtime','xtime chain of a']]}
+  ],
+  function(t,a){
+    const A = parseInt((a.a||'0').replace(/[^0-9a-fA-F]/g,''),16)&0xff;
+    const B = parseInt((a.b||'0').replace(/[^0-9a-fA-F]/g,''),16)&0xff;
+    const hx = (v) => v.toString(16).padStart(2,'0');
+    const xtime = (v) => ((v<<1)^((v&0x80)?0x1b:0))&0xff;
+    const mul = (x,y) => { let r=0; while (y) { if (y&1) r^=x; x=xtime(x); y>>=1; } return r; };
+    const inv = (x) => { let r=1, base=x, e=254; while (e) { if (e&1) r=mul(r,base); base=mul(base,base); e>>=1; } return r; };
+    switch (a.op) {
+      case 'add': return 'add: '+hx(A)+' + '+hx(B)+' = '+hx(A^B);
+      case 'mul': return 'mul: '+hx(A)+' * '+hx(B)+' = '+hx(mul(A,B));
+      case 'inv': return 'inv: '+hx(A)+'^-1 = '+hx(inv(A))+'  (check: '+hx(A)+'*'+hx(inv(A))+' = '+hx(mul(A,inv(A)))+')';
+      case 'pow': {
+        let r=1, base=A, e=B; while (e) { if (e&1) r=mul(r,base); base=mul(base,base); e>>=1; }
+        return 'pow: '+hx(A)+'^'+B+' = '+hx(r);
+      }
+      default: {
+        const chain=[]; let v=A;
+        for (let i=0;i<4;i++) { v=xtime(v); chain.push(hx(1<<(i+1))+'='+hx(v)); }
+        return 'xtime chain of '+hx(A)+': '+chain.join(' ');
+      }
+    }
+  })
+
+/* Mignotte CRT threshold sharing — Stinson, Cryptography: Theory and Practice. */
+addOp('mignotte','Mignotte CRT threshold sharing','Secret Sharing',
+  'Mignotte scheme (classic CRT secret sharing — Stinson, Cryptography: Theory and Practice): shares a_i = S mod m_i over strictly-increasing pairwise-coprime moduli; any K shares reconstruct S by CRT when m_1·…·m_K > S > m_{n-K+2}·…·m_n. Labelling: classic textbook scheme, verified by CRT round-trip and threshold-bound checks in tests; no published KAT is claimed.',
+  [
+    {key:'mode',label:'Mode',type:'select',default:'split',options:[['split','Split'],['combine','Combine']]},
+    {key:'n',label:'Shares (N)',type:'number',default:'5'},
+    {key:'k',label:'Threshold (K)',type:'number',default:'3'},
+    {key:'secret',label:'Secret S (decimal)',type:'text',default:'1234'},
+    {key:'moduli',label:'Moduli m1..mn (commas)',type:'text',default:'11,13,17,19,23'}
+  ],
+  function(t,a){
+    const gcd = (x,y) => y?gcd(y,x%y):x;
+    const lines = (t||'').split('\n').map(s=>s.trim()).filter(Boolean);
+    const pair = (s) => { const m = s.match(/m=(\d+)\D+a=(\d+)/); return m ? [BigInt(m[1]), BigInt(m[2])] : null; };
+    if (a.mode==='combine') {
+      const shares = lines.map(pair).filter(Boolean);
+      if (shares.length<2) throw new Error('paste at least two share lines');
+      let S = shares[0][1], M = shares[0][0];
+      for (let i=1;i<shares.length;i++) {
+        const [m, s] = shares[i];
+        if (gcd(M,m)!==1n) throw new Error('moduli must be pairwise coprime');
+        let d = 0n; for (let x=0n;x<m;x++) if ((M*x)%m === ((s-S)%m+m)%m) { d=x; break; }
+        S = S + M*d; M = M*m; S = ((S%M)+M)%M;
+      }
+      return 'Mignotte CRT combine ('+shares.length+' shares): S = '+S;
+    }
+    const N = Math.max(2, parseInt(a.n)||5), K = Math.min(N, Math.max(2, parseInt(a.k)||3));
+    const S = BigInt((a.secret||'0').trim()||'0');
+    const moduli = (a.moduli||'').split(',').map(s=>BigInt(s.trim())).filter(v=>v>1n);
+    if (moduli.length!==N) throw new Error('need exactly N = '+N+' moduli');
+    for (let i=0;i<N;i++) {
+      if (i && moduli[i]<=moduli[i-1]) throw new Error('moduli must be strictly increasing');
+      for (let j=0;j<i;j++) if (gcd(moduli[i],moduli[j])!==1n) throw new Error('moduli must be pairwise coprime');
+    }
+    let lo = 1n, hi = 1n;
+    for (let i=0;i<K;i++) hi *= moduli[i];
+    for (let i=N-K+1;i<N;i++) lo *= moduli[i];
+    if (S<=lo || S>=hi) throw new Error('Mignotte bound violated: need m_{n-K+2}·…·m_n < S < m_1·…·m_K');
+    const out = ['MIGNOTTE CRT SHARING — N='+N+' K='+K+' (any '+K+' shares reconstruct S)','S = '+S+' (secret, keep private)','bounds: '+lo+' < S < '+hi,''];
+    moduli.forEach((m,i) => out.push('Share '+(i+1)+': m='+m+' a='+(S%m)));
+    out.push('', 'Combine by pasting any '+K+' share lines into "Combine".');
+    return out.join('\n');
+  })
 
 const recipePackOp=OPERATIONS.find(op=>op.id==='recipePack');
 
