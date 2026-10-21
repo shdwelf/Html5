@@ -117,8 +117,8 @@
         "docs/game-corpus-evidence/"
       ],
       "next_actions": [
-        "Corpus answered + Secret Cow Level investigation (round 7) + Jeopardy!/Wheel of Fortune corpus & Snopes forensics deep dive + Radmin/SMTP research notes (round 8, docs/backlog-execution-round-8-2026-10-21.md)",
-        "Next: specimen-level passes (game puzzle-DB extraction, Radmin handshake/crypto claim verification) on user-supplied captures"
+        "Rounds 7–9: cow-level investigation, Jeopardy/WoF + Snopes forensics, Radmin/SMTP, polyglot + omniglot deep dives, docs/README.md wiki index (docs/backlog-execution-round-{7,8,9}-2026-10-21.md)",
+        "Next: specimen-level passes on user-supplied captures; HVD/Puzzle Code glyph tiles pending font terms; polyglotScan cyberchef op if CLI proves out"
       ]
     },
     {
