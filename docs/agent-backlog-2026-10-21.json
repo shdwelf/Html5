@@ -117,8 +117,8 @@
         "docs/game-corpus-evidence/"
       ],
       "next_actions": [
-        "GitHub/archive.org sweep for Game Genie, Game Wizard, Universal Hint System format docs and open-source reimplementations",
-        "Sierra abandonware Easter-egg/walkthrough catalog; 'Shadow President' sample pass"
+        "Corpus answered + Secret Cow Level investigation written (docs/john-ghidra-diablo-research.md, round 7); binary-side sweep in tools/cow_level_xgrep.mjs",
+        "GFI LANguard NSS research note done (docs/gfi-languard-nss-research.md, round 7); next: specimen triage on user-supplied era binaries"
       ]
     },
     {
