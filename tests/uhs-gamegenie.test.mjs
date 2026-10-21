@@ -6,8 +6,11 @@ import {
   decrypt88a, encrypt88a,
   generateKey, decryptNest, encryptNest, decryptTextHunk, encryptTextHunk,
   decodeGG, encodeGG,
+  decodeSNES, encodeSNES, decodeGEN, encodeGEN, decodeGB, encodeGB,
   UHS88A_VECTORS, UHS_TITLE, UHS_KEY, UHS_NEST_VECTORS, UHS_TEXT_VECTORS,
-  GG_VECTORS, GG_ENCODE_VECTOR, runChecks,
+  GG_VECTORS, GG_ENCODE_VECTOR, GG_CROSS_VECTOR,
+  SNES_VECTORS, GEN_VECTORS, GB_VECTORS,
+  runChecks,
 } from "../tools/verify_uhs_gamegenie.mjs";
 
 test("UHS 88a published primer pairs decrypt and re-encrypt", () => {
@@ -49,6 +52,40 @@ test("NES Game Genie README vectors decode and encode", () => {
   }
   const e = GG_ENCODE_VECTOR;
   assert.equal(encodeGG(e.address, e.value, e.key), e.code);
+});
+
+test("NES cross-vector ATVATGSL = 60:0466?B5 (ggencoder-java README)", () => {
+  const x = GG_CROSS_VECTOR;
+  const got = decodeGG(x.code);
+  assert.equal(got.value, x.value);
+  assert.equal(got.address, x.address);
+  assert.equal(got.key, x.key);
+  assert.equal(encodeGG(x.address, x.value, x.key), x.code);
+});
+
+test("SNES Game Genie upstream-generated vectors round-trip", () => {
+  for (const [code, address, value] of SNES_VECTORS) {
+    assert.equal(encodeSNES(address, value), code);
+    assert.deepEqual(decodeSNES(code), { address, value });
+  }
+});
+
+test("Genesis Game Genie upstream-generated vectors round-trip", () => {
+  for (const [code, address, value] of GEN_VECTORS) {
+    assert.equal(encodeGEN(address, value), code);
+    assert.deepEqual(decodeGEN(code), { address, value });
+  }
+});
+
+test("Game Boy/Game Gear Game Genie vectors round-trip, keyed and unkeyed", () => {
+  for (const [code, address, value, key] of GB_VECTORS) {
+    assert.equal(encodeGB(address, value, key ?? undefined), code);
+    const got = decodeGB(code);
+    assert.equal(got.address, address);
+    assert.equal(got.value, value);
+    if (key === null) assert.equal(got.key, false);
+    else assert.equal(got.key, key);
+  }
 });
 
 test("full report passes", () => {
