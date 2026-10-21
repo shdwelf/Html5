@@ -126,6 +126,29 @@ The wizard can reveal hints progressively, log pedagogical events locally,
 and support a “show solution” mode for testing. No license key, serial
 formula, or vendor check is involved.
 
+## Machine-binding installers: Game Wizard 32's BIOS checksum
+
+A different lesson sits in the DOS trainer **Game Wizard / Game Wizard 32 / 32
+Pro** (Ray Hsu & Gerald Rickman, Enhanced Software Design — the same tool line
+catalogued in [`sierra-shadow-president-sweep-2026-10-21.md`](sierra-shadow-president-sweep-2026-10-21.md)
+§4). Its installer **binds the installed executable to a checksum of the
+machine's BIOS/video-BIOS ROM**, taken at install time: after a BIOS or VGA-BIOS
+change the installed copy stops working and must be reinstalled. This is
+*hardware fingerprinting at install time* — a copy-protection posture distinct
+from the in-file packers (PKLITE/LZEXE/TPE) in
+[`exe-protection-deep-dive.md`](exe-protection-deep-dive.md): the secret is not
+in the file at all, but in the platform it was installed on.
+
+Study it the same way as the hint-layer material above: model the installer as a
+state machine (collect ROM checksums → embed or compare at launch → refuse or
+fall back), document the fingerprint inputs, and treat any reimplementation as
+clean-room with newly chosen checks. Do not publish install-bypass patches. Two
+practical notes preserved from period community reports (VOGONS/VCFed threads
+quoted in the sweep doc): under DOSBox the trainer's memory-state save/load
+cannot work (missing internal DOS structures), and `ems` must be `false` or
+`ems=emsboard` for its extended-memory search — a reminder that fingerprinting
+*and* trainer behavior both assume a real DOS memory map.
+
 ## Abandonware, commercial game series, and system internals
 
 “Abandonware” is a preservation label, not a copyright exception. A product

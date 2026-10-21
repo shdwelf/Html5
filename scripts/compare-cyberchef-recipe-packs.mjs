@@ -21,8 +21,10 @@ import path from "node:path";
 import process from "node:process";
 import { JSDOM, VirtualConsole } from "jsdom";
 
+const args = process.argv.slice(2).filter((a) => !a.startsWith("--"));
+const wantSpotlights = process.argv.includes("--spotlights");
 const target = path.resolve(
-  process.argv[2] || "public/apps/cyberchef/index.html",
+  args[0] || "public/apps/cyberchef/index.html",
 );
 const html = await readFile(target, "utf8");
 const errors = [];
@@ -107,3 +109,19 @@ for (const [id, c] of hubs) {
 console.log("");
 console.log(`lonely ops (exactly one pack): ${lonely} (${(100 * lonely / Object.keys(freq).length).toFixed(1)}% of union)`);
 console.log(`pack pairs sharing >=1 id: ${pairs.length} of ${names.length * (names.length - 1) / 2}`);
+
+if (wantSpotlights) {
+  const isTour = (n) => /full coverage/i.test(n);
+  const packsOf = (id) => names.filter((n) => packSets[n].has(id));
+  const tourOnly = ops.filter((o) => {
+    const where = packsOf(o.id);
+    return where.length > 0 && where.every(isTour);
+  });
+  const orphan = ops.filter((o) => !(o.id in freq));
+  console.log("");
+  console.log("## Spotlight gaps (ops without a thematic pack)");
+  console.log(`tour-only ops (every pack containing them is a Full Coverage tour): ${tourOnly.length}`);
+  for (const o of tourOnly) console.log(`| ${o.id} | ${o.category} | ${packsOf(o.id).join("; ")} |`);
+  console.log(`orphan ops (in no pack at all): ${orphan.length}`);
+  for (const o of orphan) console.log(`| ${o.id} | ${o.category} | - |`);
+}

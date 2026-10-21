@@ -135,3 +135,17 @@ next concrete targets it feeds are (a) Shadow President's ShadowNetwork tables a
 - `tools/verify_uhs_gamegenie.mjs` now covers **all five** Galoob Game Genie formats
   (NES, SNES, Genesis, Game Boy, Game Gear) — 32 vector checks + full report.
 - Round-5 test tally: `tests/uhs-gamegenie.test.mjs` 11 tests, all green.
+
+## 7. Round-6 follow-up: the cross-grep pass is a tool now
+
+The §2 recommendation (“grep sibling titles' known strings”) is implemented as
+**`tools/sierra_xgrep.mjs`** (`tests/sierra-xgrep.test.mjs`, 5 tests): a
+byte-level, case-insensitive sweep of a resource corpus against a conservative
+manifest of documented egg strings (`KEN SENT ME`, `CROWE`, `RICK CAVIN`, …),
+each carrying its source (Sierra Chest / Sierra Help). Run
+`node tools/sierra_xgrep.mjs <games-dir>` over locally owned dumps; it reports
+file, offset, and printable context. No game data ships with the repo — tests
+use synthetic fixtures. The Game Wizard 32 machine-binding note (§4) also landed
+in [`software-protection-encyclopedia.md`](software-protection-encyclopedia.md)
+(“Machine-binding installers” section), and the LHA/ACE password follow-through
+is [`arj-lha-ace-password-notes-2026-10-21.md`](arj-lha-ace-password-notes-2026-10-21.md).

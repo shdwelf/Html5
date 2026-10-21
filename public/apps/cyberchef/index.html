@@ -3336,6 +3336,19 @@ const RECIPE_PACKS={
  'FIPS 197 — AES Key Schedule & GF(2^8) Field Math':[['aesKeySched',{show:'rounds'}],['gf256',{op:'mul'}]],
  'Mignotte CRT Threshold Sharing (Stinson)':[['mignotte',{mode:'split'}]],
  'Retro Text — GTA asc+1 Codec':[['gtaText',{mode:'decode'}]],
+ 'Spotlight — Caesar & ROT family':[['caesar',{}],['rot13',{}],['rotN',{}],['rot5',{}],['rot18',{}]],
+ 'Spotlight — Classical grids & fractionation (Playfair · Bifid · Four-square)':[['playfair',{}],['fourSquare',{}],['bifid',{}],['porta',{}]],
+ 'Spotlight — Classic hashes (MD5 · SHA-1 · CRC32 · FNV · djb2)':[['md5',{}],['sha1',{}],['crc32',{}],['fnv1a',{}],['djb2',{}]],
+ 'Spotlight — Block & stream ciphers (DES · 3DES · AES-CCM · Rabbit · HC-128)':[['des',{}],['tdes',{}],['aesccm',{}],['rabbit',{}],['hc128',{}]],
+ 'Spotlight — Steganography lab (LSB · whitespace · hide/reveal)':[['stegoLSB',{}],['stegoSpace',{}],['stegoHide',{}],['stegoReveal',{}]],
+ 'Spotlight — Post-quantum KEM & signatures (ML-KEM · ML-DSA)':[['mkkem',{}],['mldsa',{}],['mldsaCore',{}]],
+ 'Spotlight — FIDO & hardware keys (U2F · PIV · OnlyKey · SoloKey)':[['fidoU2fPacket',{}],['yubikeyPivApdu',{}],['onlyKeyBackupAuth',{}],['soloKeyBootVerify',{}]],
+ 'Spotlight — Esolangs & cellular automata (Brainfuck · Rule 110 · Life)':[['brainfuck',{}],['bfCompile',{}],['rule110',{}],['life',{}]],
+ 'Spotlight — EXE protection triage (PKLITE stub · Scumm XOR)':[['pkliteStub',{}],['scummXor',{}]],
+ 'Spotlight — Virus analysis (signature scan · boot sector)':[['virusSigScan',{}],['dosBootSector',{}]],
+ 'Spotlight — GCWizard ciphers (Polybius · Playfair · autokey · phone keypad)':[['gcwPolybius',{}],['gcwPlayfair',{}],['gcwVigenereAutokey',{}],['gcwPhoneKeypad',{}]],
+ 'Spotlight — Coin addresses & keypairs (Nano · Solana · Stellar · Tezos)':[['nanoAddr',{}],['solana',{}],['stellar',{}],['tezos',{}]],
+ 'Spotlight — Public-key classics (RSA · Diffie-Hellman)':[['rsa',{}],['dh',{}],['genRSA',{}]],
 };
 addOp('recipePack','Recipe Pack','Recipes','Load a predefined cipher-suite recipe pack into the Recipe panel.',Object.keys(RECIPE_PACKS).map((name,i)=>({key:'pack',label:'Pack',type:'select',default:Object.keys(RECIPE_PACKS)[0],options:Object.keys(RECIPE_PACKS).map(n=>[n,n])})),function(t,a){
   const n=applyRecipePack(a.pack);

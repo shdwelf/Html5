@@ -53,7 +53,11 @@
       "id": "S1",
       "title": "Archive formats & crypto-forensics corpus",
       "status": "partial",
-      "tasks": ["T1.1", "T1.2", "T1.3"],
+      "tasks": [
+        "T1.1",
+        "T1.2",
+        "T1.3"
+      ],
       "refs": [
         "docs/arj-garble-format-notes.md",
         "docs/fna102b-xena-preservation.md",
@@ -74,7 +78,11 @@
       "id": "S2",
       "title": "Sneakers press kit: Ghidra, js-dos xdc, wiki",
       "status": "partial",
-      "tasks": ["T2.1", "T2.2", "T2.3"],
+      "tasks": [
+        "T2.1",
+        "T2.2",
+        "T2.3"
+      ],
       "refs": [
         "sneakers-press-kit.xdc",
         "sneakers-press-kit-exact.xdc",
@@ -97,7 +105,9 @@
       "id": "S3",
       "title": "Retro gaming RE: Game Genie / Game Wizard / UHS / Sierra",
       "status": "partial",
-      "tasks": ["T3.1"],
+      "tasks": [
+        "T3.1"
+      ],
       "refs": [
         "docs/dos-game-disassembly.md",
         "docs/spycraft-research.md",
@@ -115,7 +125,9 @@
       "id": "S4",
       "title": "Subsurface viewers: California -> 50 states -> country -> planet",
       "status": "partial",
-      "tasks": ["T4.1"],
+      "tasks": [
+        "T4.1"
+      ],
       "refs": [
         "socal-subsurface.html",
         "socal-subsurface.xdc",
@@ -139,7 +151,9 @@
       "id": "S5",
       "title": "Live incident, camera & sensor layers",
       "status": "open",
-      "tasks": ["T5.1"],
+      "tasks": [
+        "T5.1"
+      ],
       "refs": [
         "docs/terrain-vector-overlay-deep-dive.md",
         "docs/satellite-constellations.md",
@@ -155,7 +169,11 @@
       "id": "S6",
       "title": "BBS & telecom history: Keyhole, FidoNet/ARPANET, payphones, ColdFire ports",
       "status": "partial",
-      "tasks": ["T6.1", "T6.2", "T6.3"],
+      "tasks": [
+        "T6.1",
+        "T6.2",
+        "T6.3"
+      ],
       "refs": [
         "docs/xport-bbs-deployment.md",
         "docs/bbs-abandonware-coldfire-port.md",
@@ -175,7 +193,10 @@
       "id": "S7",
       "title": "Goldkey / Gina.dll parity backup, CAD + BOM, uClinux fax",
       "status": "partial",
-      "tasks": ["T7.1", "T7.2"],
+      "tasks": [
+        "T7.1",
+        "T7.2"
+      ],
       "refs": [
         "docs/goldkey-parity-gina-and-units.md",
         "tools/gina-driver-guide-check.mjs",
@@ -194,7 +215,11 @@
       "id": "S8",
       "title": "Mobile & device lab: Android/QEMU, SIM, xdc ports, VoIP/iParty, Hotline/KDX",
       "status": "open",
-      "tasks": ["T8.1", "T8.2", "T8.3"],
+      "tasks": [
+        "T8.1",
+        "T8.2",
+        "T8.3"
+      ],
       "refs": [
         "docs/RESEARCH_SMARTCARD.md",
         "docs/feitian-javacard-toolchain.md"
@@ -210,7 +235,12 @@
       "id": "S9",
       "title": "Vault, stego & smartcard filesystems: shufflecake, haiku vault, boot-chain",
       "status": "partial",
-      "tasks": ["T9.1", "T9.2", "T9.3", "T9.4"],
+      "tasks": [
+        "T9.1",
+        "T9.2",
+        "T9.3",
+        "T9.4"
+      ],
       "refs": [
         "README.md",
         "docs/wiki-workspace-research-2026-10-15.md",
@@ -230,7 +260,11 @@
       "id": "S10",
       "title": "CyberChef & recipe corpus optimization, lecture hall, UCSB course readers",
       "status": "partial",
-      "tasks": ["T10.1", "T10.2", "T10.3"],
+      "tasks": [
+        "T10.1",
+        "T10.2",
+        "T10.3"
+      ],
       "refs": [
         "cyberchef.xdc",
         "docs/cyberchef-recipe-sync-2026-10-07.json",
@@ -251,7 +285,9 @@
       "id": "S11",
       "title": "Wallets, mnemonics, classified name generator, cold-war spy book challenges",
       "status": "partial",
-      "tasks": ["T11.1"],
+      "tasks": [
+        "T11.1"
+      ],
       "refs": [
         "README.md",
         "docs/bip-standards.md",
@@ -270,7 +306,9 @@
       "id": "S12",
       "title": "Web archaeology: Cicada 3301, Warrick recovery, Geomate Jr",
       "status": "partial",
-      "tasks": ["T12.1"],
+      "tasks": [
+        "T12.1"
+      ],
       "refs": [
         "docs/dss-casefiles-riddle-warrick.md",
         "docs/geomate-gpx-preservation.md",
@@ -290,7 +328,9 @@
       "id": "S13",
       "title": "Intelligence-archive research: bin Laden hard drive release",
       "status": "open",
-      "tasks": ["T13.1"],
+      "tasks": [
+        "T13.1"
+      ],
       "refs": [],
       "next_actions": [
         "Archival research pass over the publicly released (CIA/FOIA/archive.org) material only; produce a source-checked research note in house style"
@@ -300,41 +340,238 @@
       "id": "S14",
       "title": "Changelly drainer script analysis",
       "status": "done",
-      "tasks": ["T14.1"],
-      "refs": ["docs/changelly-drainer-analysis.md"],
+      "tasks": [
+        "T14.1"
+      ],
+      "refs": [
+        "docs/changelly-drainer-analysis.md"
+      ],
       "next_actions": []
     }
   ],
   "tasks": [
-    {"id": "T1.1", "line": 2, "stream": "S1", "text": "Ghidra/encryption research over the Osama bin Laden hard-drive release (cia.gov, archive.org)", "status": "open"},
-    {"id": "T1.2", "line": 3, "stream": "S1", "text": "Universal decompressor recipes (ace rar arj uue zip 7z iso img peazip 7zip pkware) via GitHub + Ghidra", "status": "partial", "note": "recipe matrix in docs/decompressor-recipe-matrix-2026-10-21.md (round 2); NaCl/AES crypto recipe vectors verified (round 4, docs/aes-nacl-recipe-checks-2026-10-21.md)"},
-    {"id": "T1.3", "line": 11, "stream": "S1", "text": "Elcomsoft / John the Ripper / rainbow tables / HaveIBeenPwned; ARJ & SFX password recipes for the cookbook", "status": "partial", "note": "line 82 duplicates line 11; regex-scan notes at lines 12-14 preserved here and in docs/ghidra evidence"},
-    {"id": "T2.1", "line": 157, "stream": "S2", "text": "FindCrypt + Ghidra (Temurin JVM) over the Sneakers press kit; disassemble; update wiki", "status": "partial"},
-    {"id": "T2.2", "line": 158, "stream": "S2", "text": "Investigate retrogames.pro article, archive.org Sneakers_Film_Promotional_Floppy, ebay item 365528826482", "status": "partial"},
-    {"id": "T2.3", "line": 164, "stream": "S2", "text": "Create xdc like headline-harry.xdc for the Sneakers press kit (keyboard/mouse side, js-dos)", "status": "partial"},
-    {"id": "T3.1", "line": 4, "stream": "S3", "text": "Game Genie / Game Wizard / Universal Hint System; Sierra abandonware Easter eggs & walkthroughs; Shadow President; Ghidra encryption", "status": "partial", "note": "UHS + NES/SNES/Genesis/GB Game Genie recipe cards verified (rounds 2-3) + CyberChef-to-Game Boy ROM recipe (round 4) + Game Gear Game Genie format/vectors closed and Sierra/Shadow President/Game Wizard sweep written (round 5, docs/sierra-shadow-president-sweep-2026-10-21.md); remaining: Sierra message-table cross-grep RE pass"},
-    {"id": "T4.1", "line": 6, "stream": "S4", "status": "partial", "text": "GIS mega-task: Keyhole/In-Q-Tel context; FidoNet+ARPANET+payphone layers; political/evacuation/fire/transit layers; California state viewer (Nike sites, Aerojet, Morris Dam, Manzanar, Goleta, Western White House, vineyards, UC campuses, Sierra Club huts, mine maps, dish-pointing, factory outlets); Nevada/Arizona; all 50 states + territories + Midway; PC Globe-style country viewer + CIA Factbook notes; Ghidra PC Globe->Java; Red October globe -> planet viewer", "split": ["S4", "S5", "S6"]},
-    {"id": "T5.1", "line": 6, "stream": "S5", "text": "Live data layers: NIFC historical fires, WiFire, WREN cameras, WildCAD, interagency per-state incidents, CALTRANS/state DOT cameras, cad.chp.ca.gov API, liveuamap API, NOTAMs, fire lookouts, KiwiSDR locations, tv.garden/radio.garden transcription + PR", "status": "open"},
-    {"id": "T6.1", "line": 6, "stream": "S6", "text": "Keyhole BBS + forum deep dive; In-Q-Tel VC/angel-investor identification", "status": "open"},
-    {"id": "T6.2", "line": 6, "stream": "S6", "text": "FidoNet + ARPANET map layers; Mojave payphones, rest stops, ZIP codes", "status": "open"},
-    {"id": "T6.3", "line": 167, "stream": "S6", "text": "BBS servers on archive.org + GitHub OSS BBS; convert to ColdFire / JAR for ColdFireJVM", "status": "partial"},
-    {"id": "T7.1", "line": 166, "stream": "S7", "text": "Parity backup system with gold key drivers; Ghidra Gina.dll (DriverGuide); master/grandmaster key hierarchy; CAD + BOM per unit; science.edu/earth vitamins research", "status": "partial"},
-    {"id": "T7.2", "line": 8, "stream": "S7", "text": "JAR for uClinux transcription + softmodem fax", "status": "partial"},
-    {"id": "T8.1", "line": 10, "stream": "S8", "text": "Android virtualization lab (SDK, Ubuntu One, replacement OSes, model locks, number porting, unlocking caselaw, Eagle CAD schematics, ADB sideload); Ghidra whole toolchain on Temurin/Zulu", "status": "open"},
-    {"id": "T8.2", "line": 10, "stream": "S8", "text": "Convert xdc apps to TI-calc + Android/F-Droid (socal-subsurface first); TransMac/Pluralsight; Hotline/KDX/FXP", "status": "open"},
-    {"id": "T8.3", "line": 10, "stream": "S8", "text": "Intel iParty + Creative Labs FCC schematics; VoIP Blaster; Ghidra iParty codecs; DUCK codecs; lossless comms room; Tetrinet", "status": "open"},
-    {"id": "T8.4", "line": 168, "stream": "S8", "text": "SIM lock research (LexisNexis + alternatives, GitHub/GitLab); QEMU phone lab; xdc format conversions", "status": "open"},
-    {"id": "T9.1", "line": 9, "stream": "S9", "text": "Shufflecake + steganography -> CyberChef; haiku vault + vault recipe; algorithms book; BasicCard/JavaCard virtualized reader; smartcard filesystem choice (4MB XPort Pro budget); boot-chain (GRUB/LILO/LUKS, liveboot, AES dongle/dock concept)", "status": "open"},
-    {"id": "T9.2", "line": 171, "stream": "S9", "text": "Catalog OCR haiku into haiku vault; enso generators + haiku randomizers vs standard vault format; endpoints + filesystem persistence", "status": "partial"},
-    {"id": "T9.3", "line": 171, "stream": "S9", "text": "chmod 777 globally in the developed repository", "status": "declined", "flag": "F1"},
-    {"id": "T9.4", "line": 171, "stream": "S9", "text": "Quine -> S.S.E. URL with password + QR/data-matrix export (Avery Label Pro); RFC drafts for BagIt and haiku-vault formats", "status": "partial", "note": "RFC-style haiku-vault-v1 spec + BagIt profile in docs/haiku-vault-format-draft.md (round 2); S.S.E. URL/QR export remains"},
-    {"id": "T10.1", "line": 7, "stream": "S10", "text": "Comparative optimization of all CyberChef recipes", "status": "partial", "note": "comparative pass done in docs/cyberchef-recipe-comparison-2026-10-21.md (round 3); AES + NaCl recipes pinned to known-answer vectors (round 4); thin categories closed with 5 sourced RFC/FIPS ops + GTA asc+1 codec and 4 spotlight packs (round 5, docs/backlog-execution-round-5-2026-10-21.md); remaining: full-coverage hub spotlight packs"},
-    {"id": "T10.2", "line": 169, "stream": "S10", "text": "Ghidra DTSearch; Granite Island TCSM; cipher machine / virtual intelligence lecture hall / cookbook recipes; algorithms book cross-check", "status": "partial"},
-    {"id": "T10.3", "line": 169, "stream": "S10", "text": "Course readers from class schedule / bookstore catalog / cs.ucsb.edu", "status": "partial"},
-    {"id": "T11.1", "line": 5, "stream": "S11", "text": "Wallet crypto cards + mnemonics; classified random name generator; password books; 18 challenges at the end of the cold-war spy book -> recipes", "status": "partial"},
-    {"id": "T12.1", "line": 170, "stream": "S12", "text": "Cicada 3301 QR + lat/long research -> US subsurface viewer; CyberChef/cipher-machine recipes; Hall of Fame lecture; Warrick recovery of lost sites; Geomate Jr firmware + geocaching points", "status": "partial"},
-    {"id": "T13.1", "line": 2, "stream": "S13", "text": "Archival research on the bin Laden hard-drive release (see T1.1; grouped for execution)", "status": "open"},
-    {"id": "T14.1", "line": 153, "stream": "S1", "text": "BagIt + Xena + Ghidra the Google Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I with its Drive PDF; KGK.EXE from the two .OVL halves; ARJ decrypt/disassemble/decompile fna102b", "status": "partial", "flag": "F2", "note": "Preservation path already built (docs/fna102b-xena-preservation.md); ungarble application is out of scope per standing decision"},
-    {"id": "T15.1", "line": 155, "stream": "S14", "text": "Changelly/docs.google.com drainer script fragment", "status": "done"}
+    {
+      "id": "T1.1",
+      "line": 2,
+      "stream": "S1",
+      "text": "Ghidra/encryption research over the Osama bin Laden hard-drive release (cia.gov, archive.org)",
+      "status": "open"
+    },
+    {
+      "id": "T1.2",
+      "line": 3,
+      "stream": "S1",
+      "text": "Universal decompressor recipes (ace rar arj uue zip 7z iso img peazip 7zip pkware) via GitHub + Ghidra",
+      "status": "partial",
+      "note": "recipe/decompressor matrix + ARJ garble format notes (round 3); LHA/ARJ/ACE password cookbook notes + SFX identification recipe added (round 6, docs/arj-lha-ace-password-notes-2026-10-21.md); remaining: ZIP legacy garble/ZipCrypto note"
+    },
+    {
+      "id": "T1.3",
+      "line": 11,
+      "stream": "S1",
+      "text": "Elcomsoft / John the Ripper / rainbow tables / HaveIBeenPwned; ARJ & SFX password recipes for the cookbook",
+      "status": "partial",
+      "note": "line 82 duplicates line 11; regex-scan notes at lines 12-14 preserved here and in docs/ghidra evidence"
+    },
+    {
+      "id": "T2.1",
+      "line": 157,
+      "stream": "S2",
+      "text": "FindCrypt + Ghidra (Temurin JVM) over the Sneakers press kit; disassemble; update wiki",
+      "status": "partial"
+    },
+    {
+      "id": "T2.2",
+      "line": 158,
+      "stream": "S2",
+      "text": "Investigate retrogames.pro article, archive.org Sneakers_Film_Promotional_Floppy, ebay item 365528826482",
+      "status": "partial"
+    },
+    {
+      "id": "T2.3",
+      "line": 164,
+      "stream": "S2",
+      "text": "Create xdc like headline-harry.xdc for the Sneakers press kit (keyboard/mouse side, js-dos)",
+      "status": "partial"
+    },
+    {
+      "id": "T3.1",
+      "line": 4,
+      "stream": "S3",
+      "text": "Game Genie / Game Wizard / Universal Hint System; Sierra abandonware Easter eggs & walkthroughs; Shadow President; Ghidra encryption",
+      "status": "partial",
+      "note": "UHS + NES/SNES/Genesis/GB Game Genie recipe cards (rounds 2-3) + CyberChef-to-Game Boy ROM recipe (round 4) + Game Gear Game Genie format/vectors + Sierra/Shadow President/Game Wizard sweep (round 5); cross-title egg-string sweep implemented as tools/sierra_xgrep.mjs + Game Wizard 32 machine-binding entry in the protection encyclopedia (round 6, docs/backlog-execution-round-6-2026-10-21.md)"
+    },
+    {
+      "id": "T4.1",
+      "line": 6,
+      "stream": "S4",
+      "status": "partial",
+      "text": "GIS mega-task: Keyhole/In-Q-Tel context; FidoNet+ARPANET+payphone layers; political/evacuation/fire/transit layers; California state viewer (Nike sites, Aerojet, Morris Dam, Manzanar, Goleta, Western White House, vineyards, UC campuses, Sierra Club huts, mine maps, dish-pointing, factory outlets); Nevada/Arizona; all 50 states + territories + Midway; PC Globe-style country viewer + CIA Factbook notes; Ghidra PC Globe->Java; Red October globe -> planet viewer",
+      "split": [
+        "S4",
+        "S5",
+        "S6"
+      ]
+    },
+    {
+      "id": "T5.1",
+      "line": 6,
+      "stream": "S5",
+      "text": "Live data layers: NIFC historical fires, WiFire, WREN cameras, WildCAD, interagency per-state incidents, CALTRANS/state DOT cameras, cad.chp.ca.gov API, liveuamap API, NOTAMs, fire lookouts, KiwiSDR locations, tv.garden/radio.garden transcription + PR",
+      "status": "open"
+    },
+    {
+      "id": "T6.1",
+      "line": 6,
+      "stream": "S6",
+      "text": "Keyhole BBS + forum deep dive; In-Q-Tel VC/angel-investor identification",
+      "status": "open"
+    },
+    {
+      "id": "T6.2",
+      "line": 6,
+      "stream": "S6",
+      "text": "FidoNet + ARPANET map layers; Mojave payphones, rest stops, ZIP codes",
+      "status": "open"
+    },
+    {
+      "id": "T6.3",
+      "line": 167,
+      "stream": "S6",
+      "text": "BBS servers on archive.org + GitHub OSS BBS; convert to ColdFire / JAR for ColdFireJVM",
+      "status": "partial"
+    },
+    {
+      "id": "T7.1",
+      "line": 166,
+      "stream": "S7",
+      "text": "Parity backup system with gold key drivers; Ghidra Gina.dll (DriverGuide); master/grandmaster key hierarchy; CAD + BOM per unit; science.edu/earth vitamins research",
+      "status": "partial"
+    },
+    {
+      "id": "T7.2",
+      "line": 8,
+      "stream": "S7",
+      "text": "JAR for uClinux transcription + softmodem fax",
+      "status": "partial"
+    },
+    {
+      "id": "T8.1",
+      "line": 10,
+      "stream": "S8",
+      "text": "Android virtualization lab (SDK, Ubuntu One, replacement OSes, model locks, number porting, unlocking caselaw, Eagle CAD schematics, ADB sideload); Ghidra whole toolchain on Temurin/Zulu",
+      "status": "open"
+    },
+    {
+      "id": "T8.2",
+      "line": 10,
+      "stream": "S8",
+      "text": "Convert xdc apps to TI-calc + Android/F-Droid (socal-subsurface first); TransMac/Pluralsight; Hotline/KDX/FXP",
+      "status": "open"
+    },
+    {
+      "id": "T8.3",
+      "line": 10,
+      "stream": "S8",
+      "text": "Intel iParty + Creative Labs FCC schematics; VoIP Blaster; Ghidra iParty codecs; DUCK codecs; lossless comms room; Tetrinet",
+      "status": "open"
+    },
+    {
+      "id": "T8.4",
+      "line": 168,
+      "stream": "S8",
+      "text": "SIM lock research (LexisNexis + alternatives, GitHub/GitLab); QEMU phone lab; xdc format conversions",
+      "status": "open"
+    },
+    {
+      "id": "T9.1",
+      "line": 9,
+      "stream": "S9",
+      "text": "Shufflecake + steganography -> CyberChef; haiku vault + vault recipe; algorithms book; BasicCard/JavaCard virtualized reader; smartcard filesystem choice (4MB XPort Pro budget); boot-chain (GRUB/LILO/LUKS, liveboot, AES dongle/dock concept)",
+      "status": "open"
+    },
+    {
+      "id": "T9.2",
+      "line": 171,
+      "stream": "S9",
+      "text": "Catalog OCR haiku into haiku vault; enso generators + haiku randomizers vs standard vault format; endpoints + filesystem persistence",
+      "status": "partial"
+    },
+    {
+      "id": "T9.3",
+      "line": 171,
+      "stream": "S9",
+      "text": "chmod 777 globally in the developed repository",
+      "status": "declined",
+      "flag": "F1"
+    },
+    {
+      "id": "T9.4",
+      "line": 171,
+      "stream": "S9",
+      "text": "Quine -> S.S.E. URL with password + QR/data-matrix export (Avery Label Pro); RFC drafts for BagIt and haiku-vault formats",
+      "status": "partial",
+      "note": "RFC-style haiku-vault-v1 spec + BagIt profile in docs/haiku-vault-format-draft.md (round 2); S.S.E. URL/QR export remains"
+    },
+    {
+      "id": "T10.1",
+      "line": 7,
+      "stream": "S10",
+      "text": "Comparative optimization of all CyberChef recipes",
+      "status": "partial",
+      "note": "comparative pass (round 3); AES+NaCl known-answer vectors (round 4); thin categories closed with 5 sourced ops + GTA codec (round 5); compare --spotlights enumerator + 13 themed spotlight packs for tour-only ops (round 6); remaining: spotlight batches for the rest of the 144 tour-only ops"
+    },
+    {
+      "id": "T10.2",
+      "line": 169,
+      "stream": "S10",
+      "text": "Ghidra DTSearch; Granite Island TCSM; cipher machine / virtual intelligence lecture hall / cookbook recipes; algorithms book cross-check",
+      "status": "partial"
+    },
+    {
+      "id": "T10.3",
+      "line": 169,
+      "stream": "S10",
+      "text": "Course readers from class schedule / bookstore catalog / cs.ucsb.edu",
+      "status": "partial"
+    },
+    {
+      "id": "T11.1",
+      "line": 5,
+      "stream": "S11",
+      "text": "Wallet crypto cards + mnemonics; classified random name generator; password books; 18 challenges at the end of the cold-war spy book -> recipes",
+      "status": "partial"
+    },
+    {
+      "id": "T12.1",
+      "line": 170,
+      "stream": "S12",
+      "text": "Cicada 3301 QR + lat/long research -> US subsurface viewer; CyberChef/cipher-machine recipes; Hall of Fame lecture; Warrick recovery of lost sites; Geomate Jr firmware + geocaching points",
+      "status": "partial"
+    },
+    {
+      "id": "T13.1",
+      "line": 2,
+      "stream": "S13",
+      "text": "Archival research on the bin Laden hard-drive release (see T1.1; grouped for execution)",
+      "status": "open"
+    },
+    {
+      "id": "T14.1",
+      "line": 153,
+      "stream": "S1",
+      "text": "BagIt + Xena + Ghidra the Google Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I with its Drive PDF; KGK.EXE from the two .OVL halves; ARJ decrypt/disassemble/decompile fna102b",
+      "status": "partial",
+      "flag": "F2",
+      "note": "Preservation path already built (docs/fna102b-xena-preservation.md); ungarble application is out of scope per standing decision"
+    },
+    {
+      "id": "T15.1",
+      "line": 155,
+      "stream": "S14",
+      "text": "Changelly/docs.google.com drainer script fragment",
+      "status": "done"
+    }
   ]
 }
