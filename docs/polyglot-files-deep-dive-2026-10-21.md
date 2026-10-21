@@ -87,10 +87,11 @@ exploitable-by-design.
   the SFX/GIFAR shape).
   Sibling to `tools/carve.mjs` / `tools/fnaf_xcarve.mjs` and the XDC
   `extractStream.js` sigScan approach; 8 fixture-based tests, no game data.
-- **Recipe angle (CyberChef):** the registry's archive ops (`paranoidUnzip`,
-  `arjHeader`, `lhaHeader`, `aceHeader`) are the natural place to surface
-  “trailing data beyond EOCD / SFX stub present” findings; a `polyglotScan`
-  op is the follow-up if the CLI tool proves out.
+- **Recipe angle (CyberChef):** `polyglotScan` is now a registry op (round 12,
+  category Data) mirroring the CLI tool; the archive-side follow-ups
+  (`paranoidUnzip`, `arjHeader`, `lhaHeader`, `aceHeader`) remain **not yet
+  implemented** in the registry — flagged here so this doc stops implying they
+  exist. SFX-as-polyglot context: [`zip-garble-format-notes.md`](zip-garble-format-notes.md) §4.
 - Cross-links: SFX-as-polyglot in the password-notes docs; carving protocol in
   [`dos-game-disassembly.md`](dos-game-disassembly.md).
 

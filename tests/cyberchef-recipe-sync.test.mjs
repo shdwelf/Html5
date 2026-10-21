@@ -63,6 +63,8 @@ const POST_MERGE_OPS = [
   "aesKeySched",
   "gf256",
   "mignotte",
+  // 2026-10-21 backlog round 12 (docs/backlog-execution-round-12-2026-10-21.md).
+  "polyglotScan",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {

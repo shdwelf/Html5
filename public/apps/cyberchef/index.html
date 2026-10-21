@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 506 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 507 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -3349,6 +3349,7 @@ const RECIPE_PACKS={
  'Spotlight — GCWizard ciphers (Polybius · Playfair · autokey · phone keypad)':[['gcwPolybius',{}],['gcwPlayfair',{}],['gcwVigenereAutokey',{}],['gcwPhoneKeypad',{}]],
  'Spotlight — Coin addresses & keypairs (Nano · Solana · Stellar · Tezos)':[['nanoAddr',{}],['solana',{}],['stellar',{}],['tezos',{}]],
  'Spotlight — Public-key classics (RSA · Diffie-Hellman)':[['rsa',{}],['dh',{}],['genRSA',{}]],
+ 'Spotlight — Polyglot & format triage':[['polyglotScan',{}],['toHexdump',{}],['crc32',{}]],
 };
 addOp('recipePack','Recipe Pack','Recipes','Load a predefined cipher-suite recipe pack into the Recipe panel.',Object.keys(RECIPE_PACKS).map((name,i)=>({key:'pack',label:'Pack',type:'select',default:Object.keys(RECIPE_PACKS)[0],options:Object.keys(RECIPE_PACKS).map(n=>[n,n])})),function(t,a){
   const n=applyRecipePack(a.pack);
@@ -33669,6 +33670,66 @@ addOp('mignotte','Mignotte CRT threshold sharing','Secret Sharing',
     moduli.forEach((m,i) => out.push('Share '+(i+1)+': m='+m+' a='+(S%m)));
     out.push('', 'Combine by pasting any '+K+' share lines into "Combine".');
     return out.join('\n');
+  })
+
+addOp('polyglotScan','Polyglot / multi-format scan','Data',
+  'Scans input bytes for known format magics at every offset and classifies: single · parasite-or-stack (format at 0 + later magics — SFX/GIFAR shape) · multi-offset · chimera-candidate (overlapping match ranges). Mirrors tools/polyglot_scan.mjs (docs/polyglot-files-deep-dive-2026-10-21.md). Input = hex bytes (whitespace ok) or raw latin1 text.',
+  [{key:'inputfmt',label:'Input as',type:'select',default:'auto',options:[['auto','Auto (hex if possible)'],['hex','Hex'],['text','Raw text']]}],
+  function(t,a){
+    const s = String(t==null?'':t);
+    const fmt = (a && a.inputfmt) ? a.inputfmt : 'auto';
+    const hexish = /^[0-9a-fA-F\s]+$/.test(s) && (s.replace(/\s+/g,'').length % 2 === 0);
+    const hexMode = fmt === 'hex' || (fmt === 'auto' && hexish);
+    const bytes = [];
+    if (hexMode) { const h = s.replace(/\s+/g,''); for (let i=0;i<h.length;i+=2) bytes.push(parseInt(h.substr(i,2),16)); }
+    else { for (let i=0;i<s.length;i++) bytes.push(s.charCodeAt(i) & 0xff); }
+    const SIGS = [
+      {id:'jpeg',name:'JPEG',magic:[0xff,0xd8,0xff],anywhere:true},
+      {id:'png',name:'PNG',magic:[0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a],anywhere:true},
+      {id:'gif87',name:'GIF87a',magic:[0x47,0x49,0x46,0x38,0x37,0x61],anywhere:true},
+      {id:'gif89',name:'GIF89a',magic:[0x47,0x49,0x46,0x38,0x39,0x61],anywhere:true},
+      {id:'zip',name:'ZIP local file',magic:[0x50,0x4b,0x03,0x04],anywhere:true},
+      {id:'zip-eocd',name:'ZIP empty',magic:[0x50,0x4b,0x05,0x06],anywhere:true},
+      {id:'rar',name:'RAR',magic:[0x52,0x61,0x72,0x21,0x1a,0x07],anywhere:true},
+      {id:'7z',name:'7-Zip',magic:[0x37,0x7a,0xbc,0xaf,0x27,0x1c],anywhere:true},
+      {id:'pdf',name:'PDF',magic:[0x25,0x50,0x44,0x46,0x2d],anywhere:true},
+      {id:'elf',name:'ELF',magic:[0x7f,0x45,0x4c,0x46],anywhere:true},
+      {id:'class',name:'Java class/JAR',magic:[0xca,0xfe,0xba,0xbe],anywhere:true},
+      {id:'gzip',name:'gzip',magic:[0x1f,0x8b,0x08],anywhere:true},
+      {id:'bzip2',name:'bzip2',magic:[0x42,0x5a,0x68],anywhere:true},
+      {id:'xz',name:'xz',magic:[0xfd,0x37,0x7a,0x58,0x5a,0x00],anywhere:true},
+      {id:'cab',name:'CAB',magic:[0x4d,0x53,0x43,0x46],anywhere:true},
+      {id:'arj',name:'ARJ',magic:[0x60,0xea],anywhere:true},
+      {id:'tiff',name:'TIFF',magic:[0x49,0x49,0x2a,0x00],anywhere:true},
+      {id:'bmp',name:'BMP',magic:[0x42,0x4d],anywhere:true},
+      {id:'mz',name:'MZ executable',magic:[0x4d,0x5a],anywhere:false}
+    ];
+    const matches = [];
+    for (const sig of SIGS) {
+      const max = sig.anywhere ? bytes.length - sig.magic.length : 0;
+      for (let off=0; off<=max; off++) {
+        let ok = true;
+        for (let i=0;i<sig.magic.length;i++) { if (bytes[off+i] !== sig.magic[i]) { ok=false; break; } }
+        if (ok) matches.push({id:sig.id,name:sig.name,offset:off,end:off+sig.magic.length});
+      }
+    }
+    matches.sort((x,y)=> x.offset-y.offset || x.end-y.end);
+    let cls = 'unknown';
+    if (matches.length === 1) cls = 'single';
+    else if (matches.length > 1) {
+      let overlap = false;
+      for (let i=0;i<matches.length && !overlap;i++)
+        for (let j=i+1;j<matches.length;j++)
+          if (matches[i].offset < matches[j].end && matches[j].offset < matches[i].end) { overlap=true; break; }
+      cls = overlap ? 'chimera-candidate' : (matches.some(m=>m.offset===0) ? 'parasite-or-stack' : 'multi-offset');
+    }
+    const lines = ['POLYGLOT SCAN — ' + cls, 'bytes: ' + bytes.length, ''];
+    if (!matches.length) lines.push('(no known format signatures)');
+    for (const m of matches) lines.push('+' + m.offset + '  ' + m.name);
+    const warn = (cls === 'chimera-candidate' || cls === 'parasite-or-stack') ? ' — investigate: file is valid-shaped as multiple formats' : '';
+    lines.push('', 'verdict: ' + cls + warn);
+    const text = lines.join('\n');
+    return kitCard('Polyglot scan', cls, kitMono(text), text);
   })
 
 const recipePackOp=OPERATIONS.find(op=>op.id==='recipePack');

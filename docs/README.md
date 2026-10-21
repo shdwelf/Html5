@@ -40,12 +40,13 @@ never replay a client's `Content-Type`; always send
 `Content-Disposition: attachment` unless display is intended. Registry:
 IANA media types (RFC 6838 / BCP 13).
 
-
 ## Backlog execution (21 Oct 2026)
 
 - [agent-backlog-2026-10-21.md](agent-backlog-2026-10-21.md) — agent backlog 2026 10 21
 - [backlog-execution-round-1-2026-10-21.md](backlog-execution-round-1-2026-10-21.md) — backlog execution round 1 2026 10 21
 - [backlog-execution-round-10-2026-10-21.md](backlog-execution-round-10-2026-10-21.md) — backlog execution round 10 2026 10 21
+- [backlog-execution-round-11-2026-10-21.md](backlog-execution-round-11-2026-10-21.md) — backlog execution round 11 2026 10 21
+- [backlog-execution-round-12-2026-10-21.md](backlog-execution-round-12-2026-10-21.md) — backlog execution round 12 2026 10 21
 - [backlog-execution-round-2-2026-10-21.md](backlog-execution-round-2-2026-10-21.md) — backlog execution round 2 2026 10 21
 - [backlog-execution-round-3-2026-10-21.md](backlog-execution-round-3-2026-10-21.md) — backlog execution round 3 2026 10 21
 - [backlog-execution-round-4-2026-10-21.md](backlog-execution-round-4-2026-10-21.md) — backlog execution round 4 2026 10 21
@@ -82,6 +83,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [software-protection-encyclopedia.md](software-protection-encyclopedia.md) — software protection encyclopedia
 - [spycraft-ghidra-analysis.md](spycraft-ghidra-analysis.md) — spycraft ghidra analysis
 - [spycraft-research.md](spycraft-research.md) — spycraft research
+- [zip-garble-format-notes.md](zip-garble-format-notes.md) — zip garble format notes
 - [zlibrary-apk-ghidra-research-2026-10-13.md](zlibrary-apk-ghidra-research-2026-10-13.md) — zlibrary apk ghidra research 2026 10 13
 
 ## Archives, carving & formats
