@@ -11,7 +11,7 @@ const report = JSON.parse(readFileSync(new URL("../docs/cyberchef-recipe-sync-20
 // 2026-10-14 field-cipher deep dive (OD message, VIC schedule + message stage,
 // Diana table + cipher, Gronsfeld analysis, hexdump/octal byte recipes), the
 // OpenPGP and Enigma recipes, and the two War Office manual recipes.
-const expectedCount = report.counts.mergedRuntime + 22;
+const expectedCount = report.counts.mergedRuntime + 29;
 
 function createDom(html = appHtml) {
   return new JSDOM(html, {
