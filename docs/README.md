@@ -9,6 +9,37 @@ link/relay only); reverse-engineering is recipe/notes level (F4); cracking
 procedures are out of scope; see `software-protection-encyclopedia.md` for the
 standing boundaries.
 
+## MIME quick reference
+
+*Full study: [`mime-types-deep-dive-2026-10-21.md`](mime-types-deep-dive-2026-10-21.md).
+Tooling: `tools/mime_lookup.mjs` (sniff + extension + claimed-vs-actual checks).*
+
+| Bytes / extension | Media type | Notes |
+| --- | --- | --- |
+| `FF D8 FF` / .jpg .jpeg | `image/jpeg` | |
+| `89 50 4E 47 0D 0A 1A 0A` / .png | `image/png` | |
+| `GIF87a`·`GIF89a` / .gif | `image/gif` | GIFAR target type (polyglot §2) |
+| `%PDF-` / .pdf | `application/pdf` | hybrid PDFs exist |
+| `PK\x03\x04` / .zip .jar .apk .docx | `application/zip` | also `PK\x05\x06` (empty) |
+| `1F 8B 08` / .gz | `application/gzip` | |
+| `BZh` / .bz2 | `application/x-bzip2` | 3-byte magic — short |
+| `37 7A BC AF 27 1C` / .7z | `application/x-7z-compressed` | |
+| `Rar!\x1A\x07` / .rar | `application/vnd.rar` | |
+| `60 EA` / .arj | `application/x-arj` | 2-byte magic |
+| `MZ` / .exe .dll | `application/x-msdownload` | PE lives *inside* |
+| `7F ELF` / .elf .so | `application/x-executable` | |
+| `CA FE BA BE` / .class | `application/java-vm` | GIFAR payload |
+| .lzh .ace | `application/x-lzh-compressed` · `application/x-ace-compressed` | extension-mapped |
+| .wasm | `application/wasm` | RFC-consistent; `text/javascript` is canonical for .js (RFC 9239) |
+| .txt .csv .json .html .css .xml .md | `text/plain` · `text/csv` · `application/json` · `text/html` · `text/css` · `application/xml` · `text/markdown` | |
+| .mp3 .wav .ogg .mp4 | `audio/mpeg` · `audio/wav` · `audio/ogg` · `video/mp4` | |
+
+**Serving rule of thumb:** derive the type from your own sniff + allow-list,
+never replay a client's `Content-Type`; always send
+`X-Content-Type-Options: nosniff`; uploads as `application/octet-stream` +
+`Content-Disposition: attachment` unless display is intended. Registry:
+IANA media types (RFC 6838 / BCP 13).
+
 
 ## Backlog execution (21 Oct 2026)
 
@@ -30,6 +61,7 @@ standing boundaries.
 - [game-show-ghidra-research-2026-10-21.md](game-show-ghidra-research-2026-10-21.md) — game show ghidra research 2026 10 21
 - [gfi-languard-nss-research.md](gfi-languard-nss-research.md) — gfi languard nss research
 - [john-ghidra-diablo-research.md](john-ghidra-diablo-research.md) — john ghidra diablo research
+- [mime-types-deep-dive-2026-10-21.md](mime-types-deep-dive-2026-10-21.md) — mime types deep dive 2026 10 21
 - [omniglot-recipes-deep-dive-2026-10-21.md](omniglot-recipes-deep-dive-2026-10-21.md) — omniglot recipes deep dive 2026 10 21
 - [polyglot-files-deep-dive-2026-10-21.md](polyglot-files-deep-dive-2026-10-21.md) — polyglot files deep dive 2026 10 21
 - [radmin-and-smtp-research-2026-10-21.md](radmin-and-smtp-research-2026-10-21.md) — radmin and smtp research 2026 10 21

@@ -117,8 +117,8 @@
         "docs/game-corpus-evidence/"
       ],
       "next_actions": [
-        "Rounds 7–10: cow-level, Jeopardy/WoF + Snopes, Radmin/SMTP, polyglot + omniglot, download portals + toy MZ demo (docs/backlog-execution-round-{7..10}-2026-10-21.md)",
-        "Next: ZIP legacy-garble note (S1 close), polyglotScan cyberchef op, John test-vector regression (open question 4), spotlight packs"
+        "Rounds 7–11: cow-level, Jeopardy/WoF+Snopes, Radmin/SMTP, polyglot+omniglot, download portals + toy MZ, MIME deep dive + JtR sha256crypt vector audit (docs/backlog-execution-round-{7..11}-2026-10-21.md). All 4 John/Ghidra open questions now answered.",
+        "Next: ZIP legacy-garble note (S1 close), polyglotScan cyberchef op, spotlight packs; optional md5crypt/sha512crypt vectors"
       ]
     },
     {

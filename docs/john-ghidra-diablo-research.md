@@ -169,5 +169,8 @@ cross-title sweep).
    yes (round 10):** `tools/toy_mz_demo.mjs` builds/parses a self-contained DOS
    MZ fixture (relocation entry + int 21h stub + RSRC string table) with 6
    passing tests in `tests/toy-mz-demo.test.mjs`.
-4. Can John's existing test vectors be wired into a local, non-secret audit
-   regression test?
+4. ~~Can John's existing test vectors be wired into a local, non-secret audit
+   regression test?~~ **Answered yes (round 11):** `tests/john-test-vectors-audit.test.mjs`
+   runs JtR's published sha256crypt `fmt_tests` vectors (openwall/john
+   `src/sha256crypt_common.h` @ `5184bc0b8c10`) against a spec-clean verifier
+   (`tools/sha256crypt.mjs`) — public fixtures only, no secrets, offline.
