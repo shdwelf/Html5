@@ -148,9 +148,19 @@
         "nevada-subsurface.xdc",
         "arizona-subsurface.html",
         "arizona-subsurface.xdc",
-        "resources/city-subsurface/gnis-state-source-register-2026-10-22.json"
+        "resources/city-subsurface/gnis-state-source-register-2026-10-22.json",
+        "guam-subsurface.html",
+        "guam-subsurface.xdc",
+        "americansamoa-subsurface.html",
+        "americansamoa-subsurface.xdc",
+        "usvirginislands-subsurface.html",
+        "usvirginislands-subsurface.xdc",
+        "midway-subsurface.html",
+        "midway-subsurface.xdc",
+        "resources/city-subsurface/gnis-territory-source-register-2026-10-22.json"
       ],
       "next_actions": [
+        "Round 17 (2026-10-22): territory sequence SHIPPED — Guam, American Samoa (Tutuila–Manuʻa frame only; Swains Island and Rose Atoll explicitly omitted), U.S. Virgin Islands, and Midway are city-subsurface configurations 9-12 with 12/12/12/6 VERIFIED=1 GNIS starter rows, generalized multi-polyline coasts, synthetic relief, and no DEM. Hagåtña is GNIS Civil 1389443 (not a populated place); Midway used bounded queries because State=null and states=UM returned no suggestions. Machine-readable provenance: resources/city-subsurface/gnis-territory-source-register-2026-10-22.json. Shared engine is now hemisphere-aware and accepts one or several coastline polylines. Remaining: remaining states next in dated per-row source-register batches; archived-class CA features only under a separate dated archival-GNIS treatment; bulk CA layers only with per-row registers; country/PC Globe thread open.",
         "Round 16 (2026-10-22): California per-ID GNIS extract SHIPPED — 27 rows total: 16 VERIFIED=1 (LA/SF/Sacramento/San Diego/Oakville/Manzanar locality, Whitney/Shasta/Death Valley, Sacramento/San Joaquin/Russian rivers, Lake Tahoe/Salton Sea/Morris Reservoir/Tule Lake Swamp) and the 11 round-15 cultural rows retained VERIFIED=0. Same-name guards are explicit: Manzanar locality does not verify the National Historic Site, Morris Reservoir does not verify Morris Dam, and Tule Lake Swamp does not verify the relocation center. Nevada + Arizona SHIPPED as the 7th/8th city-subsurface configurations, each with a 12/12 VERIFIED=1 GNIS starter register, generalized relief/corridors, and no DEM. Machine-readable provenance: resources/city-subsurface/gnis-state-source-register-2026-10-22.json. Remaining: archived-class CA features only under a separate dated archival-GNIS treatment; bulk CA layers only with per-row registers; territories next before remaining states; country/PC Globe thread open.",
         "Round 15 (2026-10-22): California statewide frame SHIPPED as 6th config of the city-subsurface build (california-subsurface.html/.xdc) with a 16-row VERIFIED=0 starter gazetteer (LA/SF/Sacramento/San Diego anchors; UC Berkeley+UCLA; Manzanar; Tule Lake; Nike SF-88L; Morris Dam; Aerojet Rancho Cordova; Empire Mine; La Casa Pacifica; Stow House/Rancho La Patera; Clair Tappaan Lodge; Oakville/Mondavi), scale-aware views+fog, generalized coast/relief/corridors. Remaining: GNIS-verified statewide extract (Lawrence/KC treatment), bulk layers only with per-row source registers, ephemeral categories (factory outlets, Renaissance faires, Red Cross/evacuation) catalogued as planned layers in docs/city-subsurface.md — not data rows. Then Nevada/Arizona as before.",
         "California state-wide viewer: extend DEM/state layers from socal-subsurface pattern; state layer catalog (Nike sites, Aerojet, Morris Dam, Manzanar/POW camps, Western White House, vineyards-by-vintner, UC campuses, Sierra Club huts, mine maps, factory outlets, Renaissance faires, Red Cross/evacuation centers)",
@@ -194,9 +204,14 @@
         "docs/phreaking-boxes-vlsi-notes.md",
         "docs/xport-pro-synchronet-fit.md",
         "docs/keyhole-disambiguation-deep-dive-2026-10-22.md",
-        "docs/historical-network-viewer-scope-2026-10-22.md"
+        "docs/historical-network-viewer-scope-2026-10-22.md",
+        "docs/historical-network-keyhole-fixture-2026-10-22.md",
+        "historical-network-viewer.html",
+        "js/historical-network.js",
+        "resources/historical-network/keyhole-evidence-pack-2026-10-22.json"
       ],
       "next_actions": [
+        "Round 17 (2026-10-22): S6 Phase 0 SHIPPED — observation-first Keyhole evidence fixture, standalone historical-network-viewer.html, shared js/historical-network.js validator/merge rules, deterministic generated data module, and a local TEXTFILES-style BBS-list importer (docs/historical-network-keyhole-fixture-2026-10-22.md). Rights decision: USBBS is citation-only in-repo and local-import-only for bulk data, so the fixture is structurally valid but captureReady=false (uncaptured snapshots, null SHA-256, restrictive rights). TEXTFILES.COM 303 historical list repeats Denver Keyhole BBS with a retrospective 1994-1996 span, but its per-record source is unstated, so independence from USBBS remains unresolved. Exact NodelistDB system/sysop searches found no Denver FidoNet match; the distinct 818 Keyhole BBS is a rejected same-name match. Remaining: lawfully capture and hash redistributable source snapshots under F3 before bundled datasets; then one complete FidoNet nodelist + applied diff, dated ARPANET textual snapshot, and local payphone imports; forum archaeology + angel mapping beyond IQT remain open.",
         "Round 16 (2026-10-22): consumer historical-network viewer SCOPED in docs/historical-network-viewer-scope-2026-10-22.md — a separate offline map/topology/records product with an observation-first schema, explicit place granularity, edge-geometry basis, snapshot diffs, source drawer, and acceptance gates. No ARPANET/FidoNet/payphone dataset was seeded. Keyhole BBS: a second dated listing was located in USBBS134.LST (Jul 1995), repeating 303-477-6337 / Denver / Linda McCraw / Keyhole BBS with first-listed code 123; this is temporal persistence in the same publication lineage, NOT a second independent listing. Indexed exact/FidoNet-oriented searches on 2026-10-22 found no Boardwatch/FidoNet listing. Remaining: USBBS rights decision (its header restricts modification/bundling), lawful F3 captures of Denver-area FidoNet nodelists/Boardwatch, Phase-1 Keyhole vertical slice, then FidoNet/ARPANET adapters and local payphone imports; forum archaeology + angel mapping beyond IQT remain open.",
         "Round 15 (2026-10-22): Keyhole disambiguation DEEP DIVE DONE (docs/keyhole-disambiguation-deep-dive-2026-10-22.md) — 'Keyhole BBS' is a documented Denver dial-up board (USBBS #127, Nov 1994, 303-477-6337, sysop Linda McCraw), unrelated to Keyhole Inc./EarthViewer; In-Q-Tel investment pinned from IQT's primary 2003-06-25 release (invested Feb 2003, first engagement for NIMA). Remaining: second independent listing for the Denver board (FidoNet nodelists/Boardwatch; F3 capture rules), angel-investor mapping beyond IQT, and FidoNet/ARPANET/payphone LAYER DATASETS — deferred to a round that builds a consumer historical-network viewer (the california frame deliberately does not absorb S6 layers).",
         "Keyhole BBS + forum deep dive; In-Q-Tel / VC / angel-investor mapping",
@@ -430,7 +445,7 @@
         "S5",
         "S6"
       ],
-      "note": "round 16: CA now has 16 per-ID GNIS VERIFIED=1 rows + 11 curated VERIFIED=0 rows; Nevada/Arizona frames shipped with 12/12 GNIS rows each; source register at resources/city-subsurface/gnis-state-source-register-2026-10-22.json; S6 historical-network layers scoped separately, not absorbed into city-subsurface; round 15: California state viewer delivered via the shared city-subsurface system as a statewide frame with a sourced starter gazetteer (no GNIS ids claimed); Keyhole/In-Q-Tel context split to S6 doc (docs/keyhole-disambiguation-deep-dive-2026-10-22.md); FidoNet/ARPANET/payphone + political/evacuation/fire/transit layers, NV/AZ, 50-state and PC Globe threads remain open"
+      "note": "round 17: Guam/American Samoa (Tutuila–Manuʻa only)/USVI/Midway frames shipped as configurations 9-12 with 12/12/12/6 GNIS VERIFIED=1 rows; hemisphere-aware formatting and disconnected coastlines are in the shared engine; territory register at resources/city-subsurface/gnis-territory-source-register-2026-10-22.json; remaining states and PC Globe threads remain open; round 16: CA now has 16 per-ID GNIS VERIFIED=1 rows + 11 curated VERIFIED=0 rows; Nevada/Arizona frames shipped with 12/12 GNIS rows each; source register at resources/city-subsurface/gnis-state-source-register-2026-10-22.json; S6 historical-network layers scoped separately, not absorbed into city-subsurface; round 15: California state viewer delivered via the shared city-subsurface system as a statewide frame with a sourced starter gazetteer (no GNIS ids claimed); Keyhole/In-Q-Tel context split to S6 doc (docs/keyhole-disambiguation-deep-dive-2026-10-22.md); FidoNet/ARPANET/payphone + political/evacuation/fire/transit layers, NV/AZ, 50-state and PC Globe threads remain open"
     },
     {
       "id": "T5.1",
@@ -445,7 +460,7 @@
       "stream": "S6",
       "text": "Keyhole BBS + forum deep dive; In-Q-Tel VC/angel-investor identification",
       "status": "partial",
-      "note": "round 16: USBBS134 (Jul 1995) repeats the Denver Keyhole BBS listing and gives first-listed code 123, but it is the same publication lineage—not independent corroboration; consumer historical-network viewer scoped in docs/historical-network-viewer-scope-2026-10-22.md; round 15: deep dive done — Denver 'Keyhole BBS' (USBBS127, 1994) disambiguated from Keyhole Inc.; In-Q-Tel role identified from primary source; remaining: forum-thread archaeology + angel mapping beyond IQT + second-source BBS listing (F3)"
+      "note": "round 17: Keyhole Phase 0 evidence fixture/viewer/local importer shipped; TEXTFILES 303 compilation gives a 1994-1996 retrospective span but per-record independence from USBBS is unresolved; exact NodelistDB searches found no Denver match; distinct 818 Keyhole BBS remains rejected; round 16: USBBS134 (Jul 1995) repeats the Denver Keyhole BBS listing and gives first-listed code 123, but it is the same publication lineage—not independent corroboration; consumer historical-network viewer scoped in docs/historical-network-viewer-scope-2026-10-22.md; round 15: deep dive done — Denver 'Keyhole BBS' (USBBS127, 1994) disambiguated from Keyhole Inc.; In-Q-Tel role identified from primary source; remaining: forum-thread archaeology + angel mapping beyond IQT + second-source BBS listing (F3)"
     },
     {
       "id": "T6.2",
@@ -453,7 +468,7 @@
       "stream": "S6",
       "text": "FidoNet + ARPANET map layers; Mojave payphones, rest stops, ZIP codes",
       "status": "open",
-      "note": "round 16: consumer historical-network viewer scoped (docs/historical-network-viewer-scope-2026-10-22.md); datasets deliberately not seeded until source rights/captures and observation schema fixtures exist. Status remains open."
+      "note": "round 17: observation schema, validator, one-system viewer, and local BBS-list adapter shipped, but no bundled FidoNet/ARPANET/payphone dataset was seeded because snapshots remain uncaptured/unhashed and rights-restricted; status remains open for the datasets themselves; round 16: consumer historical-network viewer scoped (docs/historical-network-viewer-scope-2026-10-22.md); datasets deliberately not seeded until source rights/captures and observation schema fixtures exist. Status remains open."
     },
     {
       "id": "T6.3",

@@ -14,10 +14,18 @@ the seventh and eighth configurations. The machine-readable evidence for the
 new verified state rows is
 [`resources/city-subsurface/gnis-state-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-state-source-register-2026-10-22.json).
 
+Round 17 update: **2026-10-22**. `guam`, `americansamoa`, `usvirginislands`,
+and `midway` join as the ninth through twelfth configurations. They required
+the shared engine to become hemisphere-aware (east longitude for Guam, south
+latitude for American Samoa) and to render either one coastline polyline or
+several disconnected island polylines. Their machine-readable evidence is
+[`resources/city-subsurface/gnis-territory-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-territory-source-register-2026-10-22.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has eight configurations — five cities and
-three statewide frames — each packaged as its own offline Webxdc:
+The SoCal Subsurface engine now has twelve configurations — five cities,
+three statewide frames, and four territory/atoll frames — each packaged as
+its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
 | --- | --- | --- | --- | --- |
@@ -29,6 +37,10 @@ three statewide frames — each packaged as its own offline Webxdc:
 | California (statewide) | `california-subsurface.html` | `js/city-subsurface-data-california.js` | `js/city-gazetteer-data-california.js` | `california-subsurface.xdc` |
 | Nevada (statewide) | `nevada-subsurface.html` | `js/city-subsurface-data-nevada.js` | `js/city-gazetteer-data-nevada.js` | `nevada-subsurface.xdc` |
 | Arizona (statewide) | `arizona-subsurface.html` | `js/city-subsurface-data-arizona.js` | `js/city-gazetteer-data-arizona.js` | `arizona-subsurface.xdc` |
+| Guam | `guam-subsurface.html` | `js/city-subsurface-data-guam.js` | `js/city-gazetteer-data-guam.js` | `guam-subsurface.xdc` |
+| American Samoa (Tutuila–Manuʻa) | `americansamoa-subsurface.html` | `js/city-subsurface-data-americansamoa.js` | `js/city-gazetteer-data-americansamoa.js` | `americansamoa-subsurface.xdc` |
+| U.S. Virgin Islands | `usvirginislands-subsurface.html` | `js/city-subsurface-data-usvirginislands.js` | `js/city-gazetteer-data-usvirginislands.js` | `usvirginislands-subsurface.xdc` |
+| Midway Atoll | `midway-subsurface.html` | `js/city-subsurface-data-midway.js` | `js/city-gazetteer-data-midway.js` | `midway-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
@@ -44,9 +56,13 @@ npm run build:city-subsurface     # all three steps
 npm run build:4dwm                # includes the shared city build
 ```
 
-The builders validate gazetteer row shape, frame bounds, and GNIS ID/evidence
-tier consistency. A city marked `demRequired` cannot be packaged without a
-valid local DEM module. The viewer never makes a runtime terrain-service
+The builders validate gazetteer row shape, frame bounds, GNIS ID/evidence
+tier consistency, and coastline shape. `coast` remains backward-compatible:
+existing frames may supply one polyline of `[lon, lat]` points, while island
+frames may supply an array of disconnected polylines. The shared detail and
+HUD coordinate formatters select `N/S` and `E/W` from the numeric signs rather
+than assuming the northern/western hemispheres. A city marked `demRequired`
+cannot be packaged without a valid local DEM module. The viewer never makes a runtime terrain-service
 request. Optional DEM packs are loaded through the engine's variable-
 specifier `importDem()` helper: a missing optional pack rejects into the
 labelled synthetic-relief fallback at runtime instead of failing Vite's
@@ -254,6 +270,81 @@ gaussians, generalized corridor polylines, and rectangular frames—not terrain
 rasters, surveyed routes, or state-boundary clipping masks. Both omit a
 Colorado River gazetteer row for the same out-of-frame primary-point reason
 recorded for California.
+
+### Territory and Midway frames (round 17, 2026-10-22)
+
+The four territory frames use the stricter Nevada/Arizona rule: every seeded
+row is an identity-safe per-ID GNIS record. The USGS GNIS Geocoder was used
+as the discovery service, and a row was accepted only when exact official
+name, returned grouped Type, state/territory, returned county or district,
+FEATURE_ID, and primary point all matched. The grouped Geocoder Type is
+preserved in each note while the gazetteer class uses the corresponding GNIS
+feature class (`Cities & Populated Places` → `Populated Place`, `Islands` →
+`Island`, `Bays & Harbors` → `Bay`, `Streams & Canals` → `Stream`). `Bay`,
+`Island`, and `Civil` now have explicit metadata in `js/city-gazetteer.js`.
+The territory JSON register reproduces every generated row byte-semantically
+and is pinned by `tests/city-subsurface.test.mjs`.
+
+**Guam** spans lon 144.58…144.99, lat 13.22…13.69. Its 12 rows are Guam
+Island (`1389704`), Hagåtña (`1389443`), Dededo (`1389637`), Tamuning
+(`1390090`), Yigo (`1390188`), Mangilao (`2414264`), Barrigada (`1389569`),
+Santa Rita (`1390020`), Inarajan (`1389737`), Mount Lamlam (`1389785`), Apra
+Harbor (`1389489`), and Talofofo River (`1390088`). Hagåtña is deliberately
+labelled **Civil**: GNIS Domestic Names and MapServer layer 1 both return
+`Class=Civil` for 1389443. It must not be described as a GNIS populated-place
+record or a municipal polygon. Hagåtña CDP 2414024, Hagatna Election District
+1927061, and West Hagåtña Beach 1948047 are different records. Mangilao and
+Santa Rita populated places likewise use their populated-place IDs, not the
+separate election-district/CDP records returned in the same searches.
+
+**American Samoa** is explicitly a **Tutuila–Manuʻa frame**, lon
+−170.88…−169.37, lat −14.42…−14.10. Its 12 rows are Pago Pago (`1389119`),
+Fagatogo (`1388792`), Tāfuna (`1669450`), Nuʻuuli (`1389088`), Leone
+(`1388922`), Ofu (`1389091`), Olosega (`1389103`), Ta‘ū (`1389249`), Tutuila
+Island (`1389316`), Pago Pago Harbor (`1389120`), Matafao Peak (`1389004`),
+and Lata Mountain (`1388875`). Distant **Swains Island and Rose Atoll are
+omitted**; the subtitle, register, docs, and tests all say so. A full
+political-extent rectangle would have been mostly ocean and would have made
+the inhabited groups harder to read, but this frame must never be presented
+as the territory's full extent. Tutuila Island preserves the Geocoder's
+returned Eastern District county value for that record; that is record
+provenance, not a claim that the whole island lies in one district. The
+official name for the high point commonly called Mount Lata is returned as
+**Lata Mountain**.
+
+**U.S. Virgin Islands** spans lon −65.12…−64.52, lat 17.65…18.44. Its 12
+rows are Charlotte Amalie (`1613808`), Christiansted (`1613811`),
+Frederiksted (`1613945`), Cruz Bay populated place (`1613859`), Cruz Bay Bay
+(`1613858`), Water Island (`1614413`), Buck Island (`1613753`), Crown
+Mountain (`1613857`), Bordeaux Mountain (`1613741`), Mount Eagle (`1613894`),
+Magens Bay (`1614115`), and Christiansted Harbor (`1613812`). Cruz Bay is an
+intentional same-name pair in two classes. Buck Island is the Saint Croix
+record, not the Saint Thomas same-name record 1613754. Exact searches for
+Saint Thomas/Saint John/Saint Croix “Island” returned political-division
+records rather than physical Island records, so those political records were
+not mislabeled as island landforms.
+
+**Midway** spans lon −177.44…−177.29, lat 28.175…28.245. Its six rows are
+Midway Islands (`1393085`), Sand Island (`1393170`), Eastern Island
+(`1393009`), Welles Harbor (`1393264`), Seward Roads (`1393174`), and Frigate
+Point (`1393020`). The Geocoder returns `State=null` for Midway, and a
+`states=UM` filter returned no suggestions during the 2026-10-22 check;
+accepted rows therefore came from exact-name **bounded queries** using
+`latitudeMin`, `longitudeMin`, `latitudeMax`, and `longitudeMax`. Midway
+Islands uses the Islands record, not political-division record 1802699 at the
+same point. Eastern Island 1393009 is the Midway record, not same-name U.S.
+Minor Outlying Islands record 1390268 far outside the frame. Spit Island,
+Midway Lagoon, Brooks Channel, and Henderson Field were not seeded because
+the bounded exact-name queries returned no matching GNIS records; lagoon,
+reef, and channel lines remain generalized `context` corridors only.
+
+No territory frame bundles a DEM. Relief is a labelled synthetic gaussian
+field, the frame is rectangular, and all coastlines are generalized
+orientation lines—two lines for Guam/Cocos, five for Tutuila/Aunuʻu/Ofu/
+Olosega/Ta‘ū, five for the U.S. Virgin Islands, and three for Midway. They are
+not shoreline surveys, territorial boundaries, ferry routes, or navigation
+data. Scene nodes reuse their gazetteer GNIS points exactly, a contract the
+test checks rather than a convention left to inspection.
 
 ## Geocache class and local GPX import
 

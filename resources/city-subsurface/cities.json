@@ -1599,6 +1599,871 @@
         ["Mount Graham", "Summit", "phys.summit", "Graham", 32.70173, -109.8714579, null, "5204", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=5204; exact official name and Summit type in Graham County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."],
         ["Grand Canyon", "Valley", "phys.valley", "Mohave", 36.112764, -113.9960696, null, "23907", 1, "The GNIS Valley record was selected rather than the separate Grand Canyon populated place (FEATURE_ID 5213). USGS GNIS Geocoder (GNIS), FEATURE_ID=23907; exact official name and Valley type in Mohave County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a canyon outline, national-park boundary, or visitor-center point."]
       ]
+    },
+    "guam": {
+      "title": "GUAM SUBSURFACE 4Dwm",
+      "subtitle": "Hagåtña · Apra Harbor · Mount Lamlam — island frame, Guam",
+      "gazTitle": "GUAM USGS GNIS REGISTER",
+      "gazNote": "Round 17 starter register (2026-10-22): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, returned type, state/county, FEATURE_ID, and GNIS primary point. Hagåtña is the GNIS Civil record, not a populated-place or municipal-polygon record. Pins are not boundaries, shorelines, or river centerlines.",
+      "state": "GU",
+      "country": "United States",
+      "county": "Territory of Guam",
+      "bbox": {
+        "lon0": 144.58,
+        "lat0": 13.22,
+        "lon1": 144.99,
+        "lat1": 13.69
+      },
+      "center": {
+        "lon": 144.785,
+        "lat": 13.455
+      },
+      "baseElevationM": -35,
+      "roughnessM": 10,
+      "hasWater": true,
+      "coast": [
+        [[144.84, 13.655], [144.95, 13.61], [144.93, 13.53], [144.865, 13.44], [144.8, 13.36], [144.765, 13.31], [144.75, 13.27], [144.67, 13.265], [144.705, 13.285], [144.66, 13.3], [144.635, 13.36], [144.63, 13.43], [144.69, 13.46], [144.75, 13.49], [144.78, 13.52], [144.81, 13.59], [144.84, 13.655]],
+        [[144.656, 13.238], [144.665, 13.242], [144.676, 13.238], [144.665, 13.233], [144.656, 13.238]]
+      ],
+      "relief": [
+        {
+          "name": "Northern limestone plateau",
+          "lon": 144.84,
+          "lat": 13.55,
+          "rx": 0.13,
+          "ry": 0.09,
+          "amp": 170,
+          "rot": 0.2
+        },
+        {
+          "name": "Central Guam hills",
+          "lon": 144.77,
+          "lat": 13.45,
+          "rx": 0.12,
+          "ry": 0.08,
+          "amp": 100,
+          "rot": 0.1
+        },
+        {
+          "name": "Southern volcanic mountains",
+          "lon": 144.72,
+          "lat": 13.32,
+          "rx": 0.11,
+          "ry": 0.09,
+          "amp": 330,
+          "rot": 0.3
+        },
+        {
+          "name": "Mount Lamlam",
+          "lon": 144.6625418,
+          "lat": 13.3385693,
+          "rx": 0.025,
+          "ry": 0.025,
+          "amp": 90,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "guam-route-1",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Marine Corps Drive / Route 1 west-coast corridor (generalized)",
+          "short": "Route 1",
+          "depthM": 0,
+          "path": [
+            [144.6688889, 13.3861111],
+            [144.6527859, 13.4527367],
+            [144.7477778, 13.4741667],
+            [144.7766667, 13.4838889],
+            [144.8361111, 13.5152778],
+            [144.8855556, 13.5344444]
+          ],
+          "facts": [
+            "Generalized west-coast village-to-village road context; schematic polyline through selected GNIS points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public Guam highway references; GNIS points per gazetteer rows"
+          ]
+        },
+        {
+          "id": "guam-southern-coastal-road",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Southern coastal road context (generalized)",
+          "short": "Southern coast road",
+          "depthM": 0,
+          "path": [
+            [144.7477778, 13.4741667],
+            [144.79, 13.42],
+            [144.7597222, 13.3372222],
+            [144.7433333, 13.2755556],
+            [144.7, 13.27],
+            [144.6688889, 13.3861111]
+          ],
+          "facts": [
+            "Generalized southern coastal road context linking the capital area, Talofofo/Inarajan side, and Santa Rita; not a surveyed route."
+          ],
+          "sources": [
+            "Generalized from public Guam road references; GNIS points per gazetteer rows"
+          ]
+        },
+        {
+          "id": "talofofo-river-reach",
+          "layer": "water",
+          "tier": "context",
+          "name": "Talofofo River (generalized reach)",
+          "short": "Talofofo River",
+          "depthM": 0,
+          "path": [
+            [144.72, 13.38],
+            [144.735, 13.355],
+            [144.7597222, 13.3372222],
+            [144.775, 13.325]
+          ],
+          "facts": [
+            "Generalized river reach ending at the GNIS primary point; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1390088 for the primary point"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "hagatna",
+          "name": "Hagåtña",
+          "layer": "bases",
+          "tier": "official",
+          "kind": "building",
+          "lon": 144.7477778,
+          "lat": 13.4741667,
+          "depthM": 0,
+          "facts": [
+            "Capital of Guam. Node coordinate is the GNIS Civil primary point from the gazetteer row; it is not a municipal polygon."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1389443; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "dededo",
+          "name": "Dededo",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": 144.8361111,
+          "lat": 13.5152778,
+          "depthM": 0,
+          "facts": [
+            "Northern population anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1389637; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "apra-harbor",
+          "name": "Apra Harbor",
+          "layer": "harbors",
+          "tier": "official",
+          "kind": "harbor",
+          "lon": 144.6527859,
+          "lat": 13.4527367,
+          "depthM": 0,
+          "facts": [
+            "West-coast harbor anchor; node coordinate is the GNIS Bay primary point, not a port boundary or navigation channel."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1389489; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mount-lamlam",
+          "name": "Mount Lamlam",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": 144.6625418,
+          "lat": 13.3385693,
+          "depthM": 0,
+          "facts": [
+            "Southern summit anchor; node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1389785; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Guam", "Island", "phys.island", "Territory of Guam", 13.4444444, 144.7366667, null, "1389704", 1, "Island frame anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=1389704; exact official name and Islands type in Territory of Guam cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a island polygon, shoreline, or land-area centroid."],
+        ["Hagåtña", "Civil", "admin.civil", "Territory of Guam", 13.4741667, 144.7477778, null, "1389443", 1, "Capital of Guam. USGS GNIS Geocoder (GNIS), FEATURE_ID=1389443, returned Counties & Political Divisions in Territory of Guam; GNIS Domestic Names detail for the same ID confirms Class=Civil, Primary State=Guam, and Primary County=Guam, cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a populated-place record, municipal boundary, street-address geocode, or generic centroid."],
+        ["Dededo", "Populated Place", "pop.place", "Territory of Guam", 13.5152778, 144.8361111, null, "1389637", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1389637; exact official name and Cities & Populated Places type in Territory of Guam cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Tamuning", "Populated Place", "pop.place", "Territory of Guam", 13.4838889, 144.7766667, null, "1390090", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1390090; exact official name and Cities & Populated Places type in Territory of Guam cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Yigo", "Populated Place", "pop.place", "Territory of Guam", 13.5344444, 144.8855556, null, "1390188", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1390188; exact official name and Cities & Populated Places type in Territory of Guam cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Mangilao", "Populated Place", "pop.place", "Territory of Guam", 13.448767, 144.800239, null, "2414264", 1, "The populated-place record was selected rather than the separate Mangilao Election District (FEATURE_ID 1927063) or Mangilao Census Designated Place (FEATURE_ID 2414097). USGS GNIS Geocoder (GNIS), FEATURE_ID=2414264; exact official name and Cities & Populated Places type in Territory of Guam cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Barrigada", "Populated Place", "pop.place", "Territory of Guam", 13.4683333, 144.7988889, null, "1389569", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1389569; exact official name and Cities & Populated Places type in Territory of Guam cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Santa Rita", "Populated Place", "pop.place", "Territory of Guam", 13.3861111, 144.6688889, null, "1390020", 1, "The populated-place record was selected rather than the Sånta Rita-Sumai Election District or Census Designated Place records returned for the same search. USGS GNIS Geocoder (GNIS), FEATURE_ID=1390020; exact official name and Cities & Populated Places type in Territory of Guam cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Inarajan", "Populated Place", "pop.place", "Territory of Guam", 13.2755556, 144.7433333, null, "1389737", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1389737; exact official name and Cities & Populated Places type in Territory of Guam cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Mount Lamlam", "Summit", "phys.summit", "Territory of Guam", 13.3385693, 144.6625418, null, "1389785", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1389785; exact official name and Summit type in Territory of Guam cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."],
+        ["Apra Harbor", "Bay", "hydro.bay", "Territory of Guam", 13.4527367, 144.6527859, null, "1389489", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1389489; exact official name and Bays & Harbors type in Territory of Guam cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, harbor boundary, or navigation channel."],
+        ["Talofofo River", "Stream", "hydro.stream", "Territory of Guam", 13.3372222, 144.7597222, null, "1390088", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1390088; exact official name and Streams & Canals type in Territory of Guam cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline."]
+      ]
+    },
+    "americansamoa": {
+      "title": "AMERICAN SAMOA SUBSURFACE 4Dwm",
+      "subtitle": "Tutuila · Aunuʻu · Manuʻa Islands — territory frame; Swains Island and Rose Atoll omitted",
+      "gazTitle": "AMERICAN SAMOA USGS GNIS REGISTER",
+      "gazNote": "Round 17 starter register (2026-10-22): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, returned type, state/district, FEATURE_ID, and GNIS primary point. This is a Tutuila–Manuʻa frame; distant Swains Island and Rose Atoll are deliberately omitted rather than compressed into the legible island frame.",
+      "state": "AS",
+      "country": "United States",
+      "county": "Tutuila and Manuʻa Districts",
+      "bbox": {
+        "lon0": -170.88,
+        "lat0": -14.42,
+        "lon1": -169.37,
+        "lat1": -14.1
+      },
+      "center": {
+        "lon": -170.125,
+        "lat": -14.26
+      },
+      "baseElevationM": -45,
+      "roughnessM": 12,
+      "hasWater": true,
+      "coast": [
+        [[-170.825, -14.325], [-170.78, -14.26], [-170.68, -14.245], [-170.56, -14.25], [-170.545, -14.278], [-170.64, -14.315], [-170.68, -14.31], [-170.72, -14.335], [-170.795, -14.36], [-170.825, -14.325]],
+        [[-170.572, -14.286], [-170.56, -14.278], [-170.548, -14.286], [-170.56, -14.294], [-170.572, -14.286]],
+        [[-169.695, -14.18], [-169.675, -14.163], [-169.65, -14.175], [-169.655, -14.195], [-169.682, -14.198], [-169.695, -14.18]],
+        [[-169.64, -14.18], [-169.62, -14.163], [-169.598, -14.176], [-169.605, -14.196], [-169.632, -14.197], [-169.64, -14.18]],
+        [[-169.53, -14.235], [-169.49, -14.198], [-169.435, -14.21], [-169.42, -14.245], [-169.46, -14.272], [-169.515, -14.262], [-169.53, -14.235]]
+      ],
+      "relief": [
+        {
+          "name": "Tutuila volcanic ridge",
+          "lon": -170.72,
+          "lat": -14.3,
+          "rx": 0.13,
+          "ry": 0.035,
+          "amp": 560,
+          "rot": 0.1
+        },
+        {
+          "name": "Matafao Peak",
+          "lon": -170.7035117,
+          "lat": -14.2948785,
+          "rx": 0.018,
+          "ry": 0.018,
+          "amp": 120,
+          "rot": 0
+        },
+        {
+          "name": "Aunuʻu Island",
+          "lon": -170.56,
+          "lat": -14.285,
+          "rx": 0.012,
+          "ry": 0.01,
+          "amp": 90,
+          "rot": 0
+        },
+        {
+          "name": "Ofu Island",
+          "lon": -169.67,
+          "lat": -14.178,
+          "rx": 0.018,
+          "ry": 0.015,
+          "amp": 480,
+          "rot": 0
+        },
+        {
+          "name": "Olosega Island",
+          "lon": -169.618,
+          "lat": -14.178,
+          "rx": 0.018,
+          "ry": 0.015,
+          "amp": 620,
+          "rot": 0
+        },
+        {
+          "name": "Taʻū Island / Lata Mountain",
+          "lon": -169.47,
+          "lat": -14.235,
+          "rx": 0.045,
+          "ry": 0.035,
+          "amp": 930,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "tutuila-south-shore-road",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Tutuila south-shore road context (generalized)",
+          "short": "Tutuila shore road",
+          "depthM": 0,
+          "path": [
+            [-170.785, -14.3438889],
+            [-170.717368, -14.317199],
+            [-170.700588, -14.311876],
+            [-170.69, -14.2825],
+            [-170.7025, -14.2780556]
+          ],
+          "facts": [
+            "Generalized south-shore village road context through selected GNIS points; schematic, not a road alignment."
+          ],
+          "sources": [
+            "Generalized from public American Samoa road references; GNIS points per gazetteer rows"
+          ]
+        },
+        {
+          "id": "pago-pago-harbor-axis",
+          "layer": "water",
+          "tier": "context",
+          "name": "Pago Pago Harbor axis (generalized)",
+          "short": "Pago Pago Harbor",
+          "depthM": 0,
+          "path": [
+            [-170.66, -14.325],
+            [-170.679517, -14.27318],
+            [-170.69, -14.2825],
+            [-170.7025, -14.2780556]
+          ],
+          "facts": [
+            "Generalized harbor axis using the GNIS Bay primary point; not a navigation channel, harbor boundary, or shoreline."
+          ],
+          "sources": [
+            "Generalized harbor context; GNIS FEATURE_ID 1389120 for the Bay primary point"
+          ]
+        },
+        {
+          "id": "tutuila-manua-sea-lane",
+          "layer": "offshore",
+          "tier": "context",
+          "name": "Tutuila–Manuʻa interisland sea-lane context (generalized)",
+          "short": "Interisland sea lane",
+          "depthM": 0,
+          "path": [
+            [-170.679517, -14.27318],
+            [-170.2, -14.22],
+            [-169.6775, -14.1752778],
+            [-169.6225, -14.1816667],
+            [-169.5144444, -14.2336111]
+          ],
+          "facts": [
+            "Generalized interisland context line between Tutuila and the Manuʻa villages; it is not a ferry timetable, surveyed route, or navigation channel."
+          ],
+          "sources": [
+            "Generalized interisland context; GNIS points per gazetteer rows"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "fagatogo",
+          "name": "Fagatogo",
+          "layer": "bases",
+          "tier": "official",
+          "kind": "building",
+          "lon": -170.69,
+          "lat": -14.2825,
+          "depthM": 0,
+          "facts": [
+            "Territorial seat-of-government village on Pago Pago Harbor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1388792; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "pago-pago",
+          "name": "Pago Pago",
+          "layer": "harbors",
+          "tier": "official",
+          "kind": "harbor",
+          "lon": -170.7025,
+          "lat": -14.2780556,
+          "depthM": 0,
+          "facts": [
+            "Capital and harbor village anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1389119; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "lata-mountain",
+          "name": "Lata Mountain",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -169.4578885,
+          "lat": -14.2322439,
+          "depthM": 0,
+          "facts": [
+            "Highest-point anchor on Ta‘ū; node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1388875; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "tau",
+          "name": "Ta‘ū",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -169.5144444,
+          "lat": -14.2336111,
+          "depthM": 0,
+          "facts": [
+            "Manuʻa village anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1389249; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Pago Pago", "Populated Place", "pop.place", "Eastern District", -14.2780556, -170.7025, null, "1389119", 1, "Capital and harbor village. USGS GNIS Geocoder (GNIS), FEATURE_ID=1389119; exact official name and Cities & Populated Places type in Eastern District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Fagatogo", "Populated Place", "pop.place", "Eastern District", -14.2825, -170.69, null, "1388792", 1, "Territorial seat-of-government village. USGS GNIS Geocoder (GNIS), FEATURE_ID=1388792; exact official name and Cities & Populated Places type in Eastern District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Tāfuna", "Populated Place", "pop.place", "Western District", -14.317199, -170.717368, null, "1669450", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1669450; exact official name and Cities & Populated Places type in Western District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Nuʻuuli", "Populated Place", "pop.place", "Eastern District", -14.311876, -170.700588, null, "1389088", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1389088; exact official name and Cities & Populated Places type in Eastern District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Leone", "Populated Place", "pop.place", "Western District", -14.3438889, -170.785, null, "1388922", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1388922; exact official name and Cities & Populated Places type in Western District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Ofu", "Populated Place", "pop.place", "Manu`a District", -14.1752778, -169.6775, null, "1389091", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1389091; exact official name and Cities & Populated Places type in Manu`a District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Olosega", "Populated Place", "pop.place", "Manu`a District", -14.1816667, -169.6225, null, "1389103", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1389103; exact official name and Cities & Populated Places type in Manu`a District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Ta‘ū", "Populated Place", "pop.place", "Manu`a District", -14.2336111, -169.5144444, null, "1389249", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1389249; exact official name and Cities & Populated Places type in Manu`a District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Tutuila Island", "Island", "phys.island", "Eastern District", -14.2997222, -170.7225, null, "1389316", 1, "The Geocoder returned Eastern District as this island record's county value; that returned primary-county value is preserved and is not a claim that Tutuila lies only in the Eastern District. USGS GNIS Geocoder (GNIS), FEATURE_ID=1389316; exact official name and Islands type in Eastern District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a island polygon, shoreline, or land-area centroid."],
+        ["Pago Pago Harbor", "Bay", "hydro.bay", "Eastern District", -14.27318, -170.679517, null, "1389120", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1389120; exact official name and Bays & Harbors type in Eastern District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, harbor boundary, or navigation channel."],
+        ["Matafao Peak", "Summit", "phys.summit", "Eastern District", -14.2948785, -170.7035117, null, "1389004", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1389004; exact official name and Summit type in Eastern District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."],
+        ["Lata Mountain", "Summit", "phys.summit", "Manu`a District", -14.2322439, -169.4578885, null, "1388875", 1, "The GNIS official name returned for the high point commonly called Mount Lata is Lata Mountain. USGS GNIS Geocoder (GNIS), FEATURE_ID=1388875; exact official name and Summit type in Manu`a District cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."]
+      ]
+    },
+    "usvirginislands": {
+      "title": "U.S. VIRGIN ISLANDS SUBSURFACE 4Dwm",
+      "subtitle": "Saint Thomas · Saint John · Saint Croix — territory frame, U.S. Virgin Islands",
+      "gazTitle": "U.S. VIRGIN ISLANDS USGS GNIS REGISTER",
+      "gazNote": "Round 17 starter register (2026-10-22): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, returned type, state/island county, FEATURE_ID, and GNIS primary point. Cruz Bay is carried as both the populated place and the distinct Bay record; Buck Island is the Saint Croix record, not the Saint Thomas same-name island.",
+      "state": "VI",
+      "country": "United States",
+      "county": "Saint Thomas, Saint John, and Saint Croix Islands",
+      "bbox": {
+        "lon0": -65.12,
+        "lat0": 17.65,
+        "lon1": -64.52,
+        "lat1": 18.44
+      },
+      "center": {
+        "lon": -64.82,
+        "lat": 18.045
+      },
+      "baseElevationM": -40,
+      "roughnessM": 10,
+      "hasWater": true,
+      "coast": [
+        [[-65.085, 18.345], [-65.03, 18.39], [-64.95, 18.41], [-64.88, 18.36], [-64.845, 18.315], [-64.91, 18.315], [-64.98, 18.325], [-65.085, 18.345]],
+        [[-64.959, 18.321], [-64.951, 18.327], [-64.944, 18.321], [-64.951, 18.314], [-64.959, 18.321]],
+        [[-64.8, 18.332], [-64.76, 18.365], [-64.7, 18.36], [-64.67, 18.325], [-64.7, 18.3], [-64.77, 18.303], [-64.8, 18.332]],
+        [[-64.905, 17.71], [-64.83, 17.775], [-64.7, 17.775], [-64.565, 17.725], [-64.62, 17.685], [-64.78, 17.69], [-64.88, 17.695], [-64.905, 17.71]],
+        [[-64.627, 17.787], [-64.619, 17.793], [-64.612, 17.787], [-64.619, 17.781], [-64.627, 17.787]]
+      ],
+      "relief": [
+        {
+          "name": "Saint Thomas ridge",
+          "lon": -64.95,
+          "lat": 18.345,
+          "rx": 0.09,
+          "ry": 0.025,
+          "amp": 430,
+          "rot": 0.1
+        },
+        {
+          "name": "Crown Mountain",
+          "lon": -64.9730485,
+          "lat": 18.3569309,
+          "rx": 0.015,
+          "ry": 0.012,
+          "amp": 80,
+          "rot": 0
+        },
+        {
+          "name": "Water Island",
+          "lon": -64.9512572,
+          "lat": 18.3207894,
+          "rx": 0.012,
+          "ry": 0.008,
+          "amp": 80,
+          "rot": 0
+        },
+        {
+          "name": "Saint John ridge",
+          "lon": -64.75,
+          "lat": 18.33,
+          "rx": 0.055,
+          "ry": 0.025,
+          "amp": 350,
+          "rot": 0
+        },
+        {
+          "name": "Bordeaux Mountain",
+          "lon": -64.7279775,
+          "lat": 18.333996,
+          "rx": 0.015,
+          "ry": 0.012,
+          "amp": 80,
+          "rot": 0
+        },
+        {
+          "name": "Saint Croix ridge",
+          "lon": -64.77,
+          "lat": 17.735,
+          "rx": 0.16,
+          "ry": 0.035,
+          "amp": 280,
+          "rot": 0
+        },
+        {
+          "name": "Mount Eagle",
+          "lon": -64.8116247,
+          "lat": 17.761275,
+          "rx": 0.018,
+          "ry": 0.014,
+          "amp": 80,
+          "rot": 0
+        },
+        {
+          "name": "Buck Island",
+          "lon": -64.6193064,
+          "lat": 17.7869174,
+          "rx": 0.01,
+          "ry": 0.007,
+          "amp": 90,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "saint-thomas-saint-john-ferry",
+          "layer": "offshore",
+          "tier": "context",
+          "name": "Saint Thomas–Saint John ferry sea-lane context (generalized)",
+          "short": "STT–STJ sea lane",
+          "depthM": 0,
+          "path": [
+            [-64.9307007, 18.3419004],
+            [-64.9512572, 18.3207894],
+            [-64.86, 18.32],
+            [-64.7976387, 18.3318986],
+            [-64.7937497, 18.331343]
+          ],
+          "facts": [
+            "Generalized interisland sea-lane context; not a ferry schedule, surveyed route, or navigation channel."
+          ],
+          "sources": [
+            "Generalized from public ferry references; GNIS points per gazetteer rows"
+          ]
+        },
+        {
+          "id": "saint-croix-north-shore-road",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Saint Croix north-shore road context (generalized)",
+          "short": "North Shore Road",
+          "depthM": 0,
+          "path": [
+            [-64.8815352, 17.7124746],
+            [-64.85, 17.75],
+            [-64.8116247, 17.761275],
+            [-64.75, 17.75],
+            [-64.7031977, 17.7466397],
+            [-64.65, 17.74]
+          ],
+          "facts": [
+            "Generalized north-shore road context between Frederiksted and Christiansted; schematic, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public Saint Croix road references; GNIS points per gazetteer rows"
+          ]
+        },
+        {
+          "id": "saint-john-centerline-road",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Saint John Centerline Road context (generalized)",
+          "short": "Centerline Road",
+          "depthM": 0,
+          "path": [
+            [-64.7937497, 18.331343],
+            [-64.76, 18.34],
+            [-64.7279775, 18.333996],
+            [-64.7, 18.325],
+            [-64.68, 18.32]
+          ],
+          "facts": [
+            "Generalized Cruz Bay-to-eastern Saint John road context; schematic, not a road alignment."
+          ],
+          "sources": [
+            "Generalized from public Saint John road references; GNIS points per gazetteer rows"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "charlotte-amalie",
+          "name": "Charlotte Amalie",
+          "layer": "bases",
+          "tier": "official",
+          "kind": "building",
+          "lon": -64.9307007,
+          "lat": 18.3419004,
+          "depthM": 0,
+          "facts": [
+            "Territorial capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1613808; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "christiansted",
+          "name": "Christiansted",
+          "layer": "harbors",
+          "tier": "official",
+          "kind": "harbor",
+          "lon": -64.7031977,
+          "lat": 17.7466397,
+          "depthM": 0,
+          "facts": [
+            "Saint Croix town and harbor anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1613811; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "cruz-bay",
+          "name": "Cruz Bay",
+          "layer": "harbors",
+          "tier": "official",
+          "kind": "harbor",
+          "lon": -64.7937497,
+          "lat": 18.331343,
+          "depthM": 0,
+          "facts": [
+            "Saint John town/port anchor. This node uses the populated-place row; the distinct Cruz Bay Bay record is carried separately in the gazetteer."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1613859; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "water-island",
+          "name": "Water Island",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "island",
+          "lon": -64.9512572,
+          "lat": 18.3207894,
+          "depthM": 0,
+          "facts": [
+            "Island anchor south of Saint Thomas; node coordinate is the GNIS Island primary point, not an island polygon."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1614413; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Charlotte Amalie", "Populated Place", "pop.place", "Saint Thomas Island", 18.3419004, -64.9307007, null, "1613808", 1, "Territorial capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=1613808; exact official name and Cities & Populated Places type in Saint Thomas Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Christiansted", "Populated Place", "pop.place", "Saint Croix Island", 17.7466397, -64.7031977, null, "1613811", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1613811; exact official name and Cities & Populated Places type in Saint Croix Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Frederiksted", "Populated Place", "pop.place", "Saint Croix Island", 17.7124746, -64.8815352, null, "1613945", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1613945; exact official name and Cities & Populated Places type in Saint Croix Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Cruz Bay", "Populated Place", "pop.place", "Saint John Island", 18.331343, -64.7937497, null, "1613859", 1, "This is the populated-place record, distinct from the Cruz Bay Bay record (FEATURE_ID 1613858) carried below. USGS GNIS Geocoder (GNIS), FEATURE_ID=1613859; exact official name and Cities & Populated Places type in Saint John Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal or village boundary, street-address geocode, or generic centroid."],
+        ["Cruz Bay", "Bay", "hydro.bay", "Saint John Island", 18.3318986, -64.7976387, null, "1613858", 1, "This is the Bay record, distinct from the Cruz Bay populated place (FEATURE_ID 1613859) carried above. USGS GNIS Geocoder (GNIS), FEATURE_ID=1613858; exact official name and Bays & Harbors type in Saint John Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, harbor boundary, or navigation channel."],
+        ["Water Island", "Island", "phys.island", "Saint Thomas Island", 18.3207894, -64.9512572, null, "1614413", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1614413; exact official name and Islands type in Saint Thomas Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a island polygon, shoreline, or land-area centroid."],
+        ["Buck Island", "Island", "phys.island", "Saint Croix Island", 17.7869174, -64.6193064, null, "1613753", 1, "The Saint Croix Island county record was selected rather than the same-name Buck Island in Saint Thomas Island county (FEATURE_ID 1613754). USGS GNIS Geocoder (GNIS), FEATURE_ID=1613753; exact official name and Islands type in Saint Croix Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a island polygon, shoreline, or land-area centroid."],
+        ["Crown Mountain", "Summit", "phys.summit", "Saint Thomas Island", 18.3569309, -64.9730485, null, "1613857", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1613857; exact official name and Summit type in Saint Thomas Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."],
+        ["Bordeaux Mountain", "Summit", "phys.summit", "Saint John Island", 18.333996, -64.7279775, null, "1613741", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1613741; exact official name and Summit type in Saint John Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."],
+        ["Mount Eagle", "Summit", "phys.summit", "Saint Croix Island", 17.761275, -64.8116247, null, "1613894", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1613894; exact official name and Summit type in Saint Croix Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."],
+        ["Magens Bay", "Bay", "hydro.bay", "Saint Thomas Island", 18.3707888, -64.9357004, null, "1614115", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1614115; exact official name and Bays & Harbors type in Saint Thomas Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, harbor boundary, or navigation channel."],
+        ["Christiansted Harbor", "Bay", "hydro.bay", "Saint Croix Island", 17.7530284, -64.7031975, null, "1613812", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1613812; exact official name and Bays & Harbors type in Saint Croix Island cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, harbor boundary, or navigation channel."]
+      ]
+    },
+    "midway": {
+      "title": "MIDWAY SUBSURFACE 4Dwm",
+      "subtitle": "Sand Island · Eastern Island · Welles Harbor — Midway Atoll, U.S. Minor Outlying Islands",
+      "gazTitle": "MIDWAY USGS GNIS REGISTER",
+      "gazNote": "Round 17 starter register (2026-10-22): all 6 rows are VERIFIED=1 USGS GNIS records found with bounded Geocoder queries because the service returns State=null for Midway and a states=UM filter returned no rows. Midway Islands uses the Islands record (FEATURE_ID 1393085), not the separate political-division record (FEATURE_ID 1802699).",
+      "state": "UM",
+      "country": "United States",
+      "county": "U.S. Minor Outlying Islands",
+      "bbox": {
+        "lon0": -177.44,
+        "lat0": 28.175,
+        "lon1": -177.29,
+        "lat1": 28.245
+      },
+      "center": {
+        "lon": -177.365,
+        "lat": 28.21
+      },
+      "baseElevationM": -18,
+      "roughnessM": 2,
+      "hasWater": true,
+      "coast": [
+        [[-177.392, 28.204], [-177.385, 28.211], [-177.372, 28.212], [-177.363, 28.205], [-177.368, 28.197], [-177.382, 28.196], [-177.392, 28.204]],
+        [[-177.339, 28.206], [-177.333, 28.211], [-177.325, 28.208], [-177.324, 28.202], [-177.333, 28.2], [-177.339, 28.206]],
+        [[-177.418, 28.222], [-177.4, 28.234], [-177.37, 28.238], [-177.34, 28.23], [-177.318, 28.217]]
+      ],
+      "relief": [
+        {
+          "name": "Sand Island low coral island",
+          "lon": -177.3783333,
+          "lat": 28.2041667,
+          "rx": 0.012,
+          "ry": 0.006,
+          "amp": 28,
+          "rot": 0.2
+        },
+        {
+          "name": "Eastern Island low coral island",
+          "lon": -177.3302778,
+          "lat": 28.2061111,
+          "rx": 0.009,
+          "ry": 0.005,
+          "amp": 24,
+          "rot": 0.1
+        },
+        {
+          "name": "Northern reef / Spit Island context",
+          "lon": -177.365,
+          "lat": 28.229,
+          "rx": 0.035,
+          "ry": 0.006,
+          "amp": 8,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "seward-roads-welles-harbor",
+          "layer": "water",
+          "tier": "context",
+          "name": "Seward Roads–Welles Harbor approach context (generalized)",
+          "short": "Harbor approach",
+          "depthM": 0,
+          "path": [
+            [-177.4166667, 28.2269444],
+            [-177.4047222, 28.2180556],
+            [-177.39, 28.21],
+            [-177.3783333, 28.2041667]
+          ],
+          "facts": [
+            "Generalized harbor-approach context through GNIS Bay and Island primary points; not a dredged channel or navigation route."
+          ],
+          "sources": [
+            "Generalized harbor context; GNIS FEATURE_IDs 1393174, 1393264, and 1393170 for the named points"
+          ]
+        },
+        {
+          "id": "brooks-channel-context",
+          "layer": "water",
+          "tier": "context",
+          "name": "Brooks Channel between Sand and Eastern Islands (generalized)",
+          "short": "Brooks Channel",
+          "depthM": 0,
+          "path": [
+            [-177.3783333, 28.2041667],
+            [-177.355, 28.207],
+            [-177.3302778, 28.2061111]
+          ],
+          "facts": [
+            "Generalized inter-island channel context. No separate Brooks Channel gazetteer row is claimed because the bounded GNIS query returned no exact record."
+          ],
+          "sources": [
+            "Generalized from public Midway Atoll references; GNIS island points per gazetteer rows"
+          ]
+        },
+        {
+          "id": "midway-lagoon-reef-margin",
+          "layer": "offshore",
+          "tier": "context",
+          "name": "Midway lagoon / reef-margin context (generalized)",
+          "short": "Lagoon reef margin",
+          "depthM": 0,
+          "path": [
+            [-177.418, 28.222],
+            [-177.4, 28.234],
+            [-177.37, 28.238],
+            [-177.34, 28.23],
+            [-177.318, 28.217],
+            [-177.3302778, 28.2061111]
+          ],
+          "facts": [
+            "Schematic northern reef-margin context; not a surveyed reef edge, lagoon boundary, or navigation line."
+          ],
+          "sources": [
+            "Generalized from public Midway Atoll references; no lagoon GNIS row claimed"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "sand-island",
+          "name": "Sand Island",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "island",
+          "lon": -177.3783333,
+          "lat": 28.2041667,
+          "depthM": 0,
+          "facts": [
+            "Principal inhabited island anchor; node coordinate is the GNIS Island primary point, not an island polygon or airfield coordinate."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1393170; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "eastern-island",
+          "name": "Eastern Island",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "island",
+          "lon": -177.3302778,
+          "lat": 28.2061111,
+          "depthM": 0,
+          "facts": [
+            "Eastern island anchor; node coordinate is the GNIS Island primary point, not an island polygon."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1393009; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "welles-harbor",
+          "name": "Welles Harbor",
+          "layer": "harbors",
+          "tier": "official",
+          "kind": "harbor",
+          "lon": -177.4047222,
+          "lat": 28.2180556,
+          "depthM": 0,
+          "facts": [
+            "Harbor anchor northwest of Sand Island; node coordinate is the GNIS Bay primary point, not a harbor boundary or channel."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1393264; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Midway Islands", "Island", "phys.island", "U.S. Minor Outlying Islands", 28.2052778, -177.3613889, null, "1393085", 1, "The Islands record was selected rather than the separate Midway Islands Counties & Political Divisions record (FEATURE_ID 1802699) at the same returned point. USGS GNIS Geocoder (GNIS), bounded query (latitudeMin/longitudeMin/latitudeMax/longitudeMax around Midway; State returned null), FEATURE_ID=1393085; exact official name and Islands type in U.S. Minor Outlying Islands cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a island polygon, shoreline, or land-area centroid."],
+        ["Sand Island", "Island", "phys.island", "U.S. Minor Outlying Islands", 28.2041667, -177.3783333, null, "1393170", 1, "Bounded query isolates the Midway Sand Island from the many same-name island records elsewhere. USGS GNIS Geocoder (GNIS), bounded query (latitudeMin/longitudeMin/latitudeMax/longitudeMax around Midway; State returned null), FEATURE_ID=1393170; exact official name and Islands type in U.S. Minor Outlying Islands cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a island polygon, shoreline, or land-area centroid."],
+        ["Eastern Island", "Island", "phys.island", "U.S. Minor Outlying Islands", 28.2061111, -177.3302778, null, "1393009", 1, "The Midway record was selected rather than another same-name U.S. Minor Outlying Islands record (FEATURE_ID 1390268) whose returned point lies far outside the Midway frame. USGS GNIS Geocoder (GNIS), bounded query (latitudeMin/longitudeMin/latitudeMax/longitudeMax around Midway; State returned null), FEATURE_ID=1393009; exact official name and Islands type in U.S. Minor Outlying Islands cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a island polygon, shoreline, or land-area centroid."],
+        ["Welles Harbor", "Bay", "hydro.bay", "U.S. Minor Outlying Islands", 28.2180556, -177.4047222, null, "1393264", 1, "USGS GNIS Geocoder (GNIS), bounded query (latitudeMin/longitudeMin/latitudeMax/longitudeMax around Midway; State returned null), FEATURE_ID=1393264; exact official name and Bays & Harbors type in U.S. Minor Outlying Islands cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, harbor boundary, or navigation channel."],
+        ["Seward Roads", "Bay", "hydro.bay", "U.S. Minor Outlying Islands", 28.2269444, -177.4166667, null, "1393174", 1, "USGS GNIS Geocoder (GNIS), bounded query (latitudeMin/longitudeMin/latitudeMax/longitudeMax around Midway; State returned null), FEATURE_ID=1393174; exact official name and Bays & Harbors type in U.S. Minor Outlying Islands cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, harbor boundary, or navigation channel."],
+        ["Frigate Point", "Cape", "phys.cape", "U.S. Minor Outlying Islands", 28.1927778, -177.3938889, null, "1393020", 1, "USGS GNIS Geocoder (GNIS), bounded query (latitudeMin/longitudeMin/latitudeMax/longitudeMax around Midway; State returned null), FEATURE_ID=1393020; exact official name and Beaches & Capes type in U.S. Minor Outlying Islands cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or surveyed cape outline."]
+      ]
     }
   }
 }

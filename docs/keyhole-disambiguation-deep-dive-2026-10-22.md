@@ -1,7 +1,9 @@
 # "Keyhole" disambiguation — the Denver BBS vs. Keyhole, Inc. (EarthViewer)
 
 **Date:** 2026-10-22 · **Backlog stream:** S6 (historical networks / map layers) ·
-**Type:** research note; no code or dataset changes.
+**Type:** research note; no code or dataset changes in Round 15. A Round 17
+implementation addendum appears below and in
+[`historical-network-keyhole-fixture-2026-10-22.md`](historical-network-keyhole-fixture-2026-10-22.md).
 
 ## Task
 
@@ -74,22 +76,50 @@ source consulted for this note** and is left as folklore, not fact.
 | Oct 2004 | Google acquires Keyhole |
 | 28 Jun 2005 | Relaunch as Google Earth; KML preserves the Keyhole name |
 
+## Round 17 addendum — separate compilation, FidoNet check, and a namesake
+
+Three source checks refine the fixture without changing the Round 15
+identification:
+
+1. TEXTFILES.COM's undated retrospective “Historical List of BBSes in the
+   303 Area Code” carries `303-477-6337 | Keyhole BBS | DENVER, CO
+   (1994-1996)`. It is a separate publication from USBBS and extends the
+   claimed activity span through 1996, but its header says only that it was
+   created “From Many Sources.” Because the per-record source is not printed,
+   the underlying observation cannot yet be called independent of USBBS.
+2. Exact historical searches against the NodelistDB API for
+   `system_name=Keyhole BBS`/`Keyhole_BBS` and `sysop_name=Linda McCraw`/
+   `Linda_McCraw` returned no Denver match. A broad `system_name=Keyhole`
+   query returned an unrelated fuzzy Phoenix/Barnaul result. This negative
+   indexed-archive result does not prove the board was never in FidoNet, and
+   no FidoNet address or edge is inferred.
+3. *THE BBS List 02-94* includes a distinct “The Keyhole BBS” at
+   `818-545-0870`, sysop Greg Hiscott, software XBBS. It is a same-name
+   namesake, not Linda McCraw Denver board, and is the concrete counterexample
+   behind the evidence model's “never merge by display name alone” rule.
+
+Round 17 turns those findings into a machine-readable Phase 0 fixture and a
+standalone historical-network viewer. The USBBS rights decision remains
+conservative: short cited fixture records in the repository, bulk USBBS data
+only through local import unless another rights basis is documented.
+
 ## Disposition for the backlog
 
 - The backlog's "Keyhole BBS" is most defensibly the **Denver dial-up board**
   — it is the only BBS-era referent found, and it is unrelated to Keyhole,
   Inc. Any future S6 work must keep the two separate and should cite this
   note rather than the bare name.
-- No dataset was created this round. The S6 layer datasets named in the
-  backlog (ARPANET nodes, FidoNet, payphone layers, …) still have no
-  consumer viewer; per the round-15 scoping they wait for a round that
-  builds one. The new statewide `california` frame (round 15, S4) is a city/
-  state-subsurface viewer, not a historical-network viewer, and deliberately
-  does not absorb S6 layers.
-- Follow-up questions for a future research round, subject to flag F3
-  (external hosts need repo-capture): does the Denver Keyhole BBS appear in
-  FidoNet nodelists or other BBS lists (Boardwatch, USBBS other editions),
-  and can its software/dates be pinned from a second independent listing?
+- No dataset was created in Round 15. Round 16 scoped a separate
+  historical-network viewer, and Round 17 shipped its Phase 0 Keyhole
+  fixture/local-import slice. The statewide `california` frame remains a
+  city/state-subsurface viewer, not a historical-network viewer, and
+  deliberately does not absorb S6 layers.
+- Follow-up questions remain, subject to flag F3 (external hosts need
+  lawful capture): can a contemporaneous FidoNet or Boardwatch capture be
+  obtained, can the TEXTFILES record's underlying source be identified, and
+  can the board's software or exact start/end dates be pinned? The Round 17
+  NodelistDB result is negative evidence over that archive, not a final
+  answer.
 
 ## Sources (retrieved 2026-10-22)
 
@@ -98,6 +128,15 @@ source consulted for this note** and is left as folklore, not fact.
   "Keyhole BBS" line quoted above (located via web-search snippet).
 - TEXTFILES.COM Historical BBS List, <http://bbslist.textfiles.com/> —
   general finding aid for dial-up-era boards.
+- TEXTFILES.COM, “Historical List of BBSes in the 303 Area Code,”
+  <http://bbslist.textfiles.com/303/303.txt> — Denver Keyhole BBS record
+  with the retrospective `(1994-1996)` span (Round 17).
+- NodelistDB historical node API,
+  <https://nodelist.fidonet.cc/api/nodes> — exact Keyhole/Linda McCraw negative
+  searches (Round 17).
+- *THE BBS List 02-94*, indexed at
+  <https://groups.google.com/g/alt.bbs.lists/c/ojbvcXr5ZUc/m/0fxdmVAbkoUJ>
+  — distinct 818 “The Keyhole BBS” namesake (Round 17).
 - In-Q-Tel, "In-Q-Tel Announces Strategic Investment in Keyhole"
   (25 June 2003), <https://www.iqt.org/library/in-q-tel-announces-strategic-investment-in-keyhole>
   — primary source for the February 2003 investment and NIMA engagement.
