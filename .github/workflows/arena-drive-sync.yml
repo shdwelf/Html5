@@ -79,13 +79,24 @@ jobs:
         run: |
           shopt -s nullglob
           for t in .arena-drive/payload/*.tar.gz; do
-            mkdir -p /tmp/snap && tar xzf "$t" -C /tmp/snap
-            root=$(find /tmp/snap -maxdepth 1 -mindepth 1 -type d | head -1)
+            rm -rf /tmp/snap && mkdir -p /tmp/snap && tar xzf "$t" -C /tmp/snap
             base=$(basename "$t" .tar.gz)
             stamp=${base##*-}                       # e.g. 12c463f
             man=$(ls .arena-drive/payload/*"$stamp"*.sha256 docs/drive-sync/*"$stamp"*.sha256 2>/dev/null | head -1)
             [ -n "$man" ] || { echo "no manifest matching $stamp; skipping $t"; continue; }
-            node scripts/drive-sync-apply.mjs --manifest "$man" --snapshot "$root" --write
+            # Snapshot root = the directory actually holding the tree. The old
+            # `find -maxdepth 1 -type d | head -1` picked the first subdir
+            # (e.g. apps/) when the tarball also carries top-level files, so
+            # drive-sync-apply found 0 candidates and silently restored
+            # nothing. Locate a known top-level file instead.
+            root=/tmp/snap
+            if [ ! -f "$root/chipwright.html" ]; then
+              f=$(find /tmp/snap -name chipwright.html -print -quit)
+              [ -n "$f" ] && root=$(dirname "$f")
+            fi
+            echo "restore: tarball=$t stamp=$stamp manifest=$man root=$root"
+            find /tmp/snap -maxdepth 2 | head -20
+            node scripts/drive-sync-apply.mjs --manifest "$man" --snapshot "$root" --write 2>&1 | tee "docs/drive-sync/restore-$stamp.log"
           done
           for z in .arena-drive/payload/*.zip; do unzip -o "$z" -d .arena-drive/payload/unzipped; done
 
