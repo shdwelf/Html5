@@ -41,7 +41,7 @@
 # 18353TsKE03vnXnbDT4jg2yKFTO6rNpmv  chipwright-xdc-12c463f.zip  400183
 #
 # Full 2026-09-27 working tree — the only source for the 25 chipwright files.
-# 1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV  Html5-worktree-2026-09-27-12c463f.tar.gz  33141885
+1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV  Html5-worktree-2026-09-27-12c463f.tar.gz  33141885
 #
 # Full 2026-09-28 working tree — the only source for 559fb69's evidence.
 # 1eCBX34mZ4DXrntc-Wp2vlgnZ1gXMKwu7  Html5-worktree-2026-09-28-ee1ec85.tar.gz  97889803

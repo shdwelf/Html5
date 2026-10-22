@@ -72,7 +72,10 @@ jobs:
           [ "$found" = 1 ] || echo "No manifests arrived — see .arena-drive/fetch.log (likely NOT-SHARED)."
 
       - name: Restore the delta
-        if: inputs.restore
+        # Runs on dispatch with restore=true, and on push whenever the fetch
+        # step actually landed a snapshot tarball in payload/ (the loop below
+        # is nullglob-guarded, so it is a no-op when there is nothing to do).
+        if: ${{ !cancelled() }}
         run: |
           shopt -s nullglob
           for t in .arena-drive/payload/*.tar.gz; do
