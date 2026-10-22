@@ -1,5 +1,6 @@
 FAIL  Html5-file-manifest-2026-09-27-12c463f.sha256  NOT-SHARED (Drive returned a sign-in page; the file is not link-readable)
 FAIL  Html5-file-manifest-2026-09-29-6635490.sha256  NOT-SHARED (Drive returned a sign-in page; the file is not link-readable)
 FAIL  Html5-file-manifest-2026-09-28-ee1ec85.sha256  NOT-SHARED (Drive returned a sign-in page; the file is not link-readable)
+OK    Html5-worktree-2026-09-27-12c463f.tar.gz  33141885 bytes  sha256 c4cb0bc0276e2af4
 FAIL  Z-Lib_1.11.4_APKPure.apk  NOT-SHARED (Drive returned a sign-in page; the file is not link-readable)
 FAIL  z+Library_1.0.5_APKPure.apk  NOT-SHARED (Drive returned a sign-in page; the file is not link-readable)
