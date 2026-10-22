@@ -168,8 +168,12 @@ def main() -> int:
                  'Static disassembly inventory (JADX + strings + Ghidra). Nothing executed.', '']
         jadx_phase(apk, lines)
         largest = native_phase(apk, lines)
-        if largest:
-            ghidra_phase(largest[0], lines, apk.stem)
+        targets = list(largest[:1])
+        app_so = [t for t in largest if t.name == 'libapp.so']
+        if app_so and app_so[0] not in targets:
+            targets.append(app_so[0])  # Flutter/Dart AOT core (sample B)
+        for t in targets:
+            ghidra_phase(t, lines, apk.stem)
         out = OUT / f'disasm-{apk.stem}.md'
         out.write_text('\n'.join(lines) + '\n', encoding='utf-8')
         print(f'wrote {out}')
