@@ -1,0 +1,82 @@
+rsync-style diff — Drive snapshot vs working tree
+  manifest       .arena-drive/payload/Html5-file-manifest-2026-09-29-6635490.sha256
+  drive side     1342 files
+  this side      2685 files (git-tracked only)
+
+  = identical         1239  (92.3% of the snapshot)
+  ~ differing          103
+  < only on Drive        0  ← recoverable content
+  > only in repo      1343  ← added since the snapshot
+
+DIFFERING (same path, different bytes)
+  2158c2fb10cd… → bc4c40d270e1…  .gitignore
+  c03ff1801c27… → e83e165d94a9…  README.md
+  aaa5722ca723… → 3693369e2b2e…  adl.xdc
+  9c79ce9d09c5… → 1409508923d8…  apps/Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html
+  30cbd5385f70… → 4bca65fcc804…  apps/Rodger_Ramrod_HTML5_Quine.html
+  9cce520a4b8a… → 1b0241467f93…  apps/cyberchef.html
+  529c6372714b… → 3a5b6f3f4bca…  apps/gedcom-family-tree-viewer-1
+  8e5d2c83f311… → f2b0b0668900…  apps/kryptos_vrml.html
+  4ac6c7caf7c0… → afa16eed3e4a…  apps/rodger-ramrod.html
+  f89e4638e45a… → fc1c6f6510c2…  astronomy.xdc
+  0381bf5b45d2… → 84f7d5b7513f…  calc/core/fb.c
+  df2c1846b362… → 9c27a452b872…  calc/tools/build_device.py
+  a20c285c6df8… → d68868501fbd…  calc/tools/c2js.py
+  7c0bba4c05d2… → f27613b08459…  calc/tools/difftest.py
+  35fd71d0071e… → 7fb5e0cc33af…  calc/tools/ti_pack.py
+  e9c95f7dd75d… → a34cfd42af89…  casefiles-inlined.html
+  54411682c703… → 3eb91630a636…  casefiles.html
+  bd00bc696176… → 1b435fef2b30…  casefiles.xdc
+  8a52148788b8… → 8534933c487e…  css/los-alamos.css
+  0ee0701332ec… → c071418d21b8…  css/project-y-sites.css
+  89db0cb6edcf… → 8a76849f39f3…  css/socal-subsurface.css
+  ee2952554d78… → eaf88215a95d…  dalton-race-4dwm.html
+  e8479f7bafc7… → 41a4bce279d3…  docs/convention-venues.md
+  67d0d26918bc… → c3fd5f0e090a…  docs/dss-casefiles-riddle-warrick.md
+  dbf5b2855053… → f68140333c3f…  docs/for-dummies-source-check.md
+  ca74bf8d61ff… → 6bc52ee7079a…  docs/lecture-hall-research-2026-09-20.md
+  43decc009ec4… → c32742a3d09f…  docs/lecture-hall-research-2026-09-27.md
+  1e926e5721f0… → 6300d8e3e702…  docs/los-alamos-bulletin.md
+  b1774f866d1f… → db5272b0d7bc…  docs/project-y-catalog.md
+  46e750ecb5c0… → 4bd094b5283d…  docs/project-y-sites.md
+  b5b79d117c9a… → 9772c99527c5…  docs/sanborn-kryptos-webxdc.md
+  0d11a883e071… → f24a360974c2…  docs/sanborn-suite-deep-dive.md
+  ac5504a75a36… → f42e3154ec18…  docs/socal-subsurface.md
+  a70da7af357f… → 5e514c9932c5…  docs/source-check-2026-09-28.md
+  6cef641c7bc0… → 0b90d566b34e…  docs/source-check-2026-09-29.md
+  4d5d876ddc08… → 50ff4d2f44f3…  docs/terrain-vector-overlay-deep-dive.md
+  602eff573306… → 9237d980b50c…  glendora.html
+  300dbbed75c5… → 4852b690dac6…  greeran-book-bibliography.html
+  431a171f9e73… → 85becc3b9cb4…  greeran-book.html
+  377fb2e8f765… → afac760dd803…  index.html
+  … and 63 more
+
+ONLY IN REPO (newer than the snapshot)
+  .arena-archive/fetch.log
+  .arena-archive/fetch.py
+  .arena-archive/requests.txt
+  .arena-drive/fetch.log
+  .arena-drive/fetch.py
+  .arena-drive/requests.txt
+  .arena-relay/artifact-probe
+  .arena-relay/extract1
+  .arena-relay/harry-fetch.txt
+  .arena-relay/harry-ghidra.txt
+  .arena-relay/probe-results.txt
+  .arena-relay/run3
+  .arena-relay/run4
+  .arena-relay/run5
+  .arena-relay/run6
+  .arena-relay/run7
+  .arena-relay/run8
+  .arena-relay/scripts/extract.py
+  .arena-relay/scripts/extract.txt
+  .arena-relay/scripts/fetch_jdk.sh
+  .arena-relay/scripts/recon.py
+  .arena-relay/trigger
+  .github/workflows/arena-drive-sync.yml
+  .github/workflows/arena-headline-harry-ghidra.yml
+  .github/workflows/arena-headline-harry.yml
+  … and 1318 more
+
+Out of sync: 0 missing, 103 changed.

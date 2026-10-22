@@ -1,0 +1,109 @@
+rsync-style diff — Drive snapshot vs working tree
+  manifest       .arena-drive/payload/Html5-file-manifest-2026-09-27-12c463f.sha256
+  drive side     827 files
+  this side      2685 files (git-tracked only)
+
+  = identical          733  (88.6% of the snapshot)
+  ~ differing           69
+  < only on Drive       25  ← recoverable content
+  > only in repo      1883  ← added since the snapshot
+
+ONLY ON DRIVE (missing here)
+  0133376aabe8…  CHIPWRIGHT.md
+  46070aba6f49…  chipwright.html
+  0e6a47dc25a7…  chipwright.xdc
+  008408811a68…  css/chipwright.css
+  818caa51bf51…  js/cw-app.js
+  e648c1c9c23e…  js/cw-arch.js
+  726a5bdf7da5…  js/cw-data-firmware.js
+  b07252a0f96a…  js/cw-data-jvm.js
+  ff1f18000aa8…  js/cw-data-onewire.js
+  fc19430b3020…  js/cw-data-storage.js
+  2cafa7e96ff7…  js/cw-data-uefi.js
+  3dd2fdeb061e…  js/cw-data.js
+  495132a6401c…  js/cw-firmware.js
+  8af9dbe11799…  js/cw-prime.js
+  8791a705f5a1…  js/cw-probe.js
+  08a0f242c6e1…  js/cw-subst.js
+  43cda11f777c…  js/cw-synth.js
+  e7ac2feb83fb…  js/cw-tap.js
+  0dbe167c3b78…  js/cw-webxdc.js
+  37504bd00ef6…  js/cw-xdc.js
+  b4d734cc38af…  tools/chipwright-dom.mjs
+  b1337a0f2364…  tools/pack_chipwright_xdc.sh
+  84853771874f…  tools/test_chipwright_webxdc.mjs
+  9c80a24ac41e…  tools/verify_chipwright.mjs
+  064b6eeac50e…  tools/verify_chipwright_xdc.mjs
+
+DIFFERING (same path, different bytes)
+  735c9179f753… → bc4c40d270e1…  .gitignore
+  a3fe8a66c061… → 2ee8c8f39c9f…  KEYSPACE.md
+  3d9f0a9b1c48… → e83e165d94a9…  README.md
+  0662bf25a865… → 3693369e2b2e…  adl.xdc
+  d7133822c534… → 1409508923d8…  apps/Cipher-Machines-and-Cryptology-Suite-2026-08-02 (1).html
+  f0b60abfa26b… → 1f61694affd9…  apps/README.md
+  30cbd5385f70… → 4bca65fcc804…  apps/Rodger_Ramrod_HTML5_Quine.html
+  286ded82d496… → 1b0241467f93…  apps/cyberchef.html
+  529c6372714b… → 3a5b6f3f4bca…  apps/gedcom-family-tree-viewer-1
+  f9f04ba9bec5… → f2b0b0668900…  apps/kryptos_vrml.html
+  4ac6c7caf7c0… → afa16eed3e4a…  apps/rodger-ramrod.html
+  54411682c703… → 3eb91630a636…  casefiles.html
+  241c9e98f638… → 921f68ada699…  css/app.css
+  3e9f630023dc… → bd51ea562e1e…  css/dalton-race-4dwm.css
+  9d5a5037ab8c… → 1f91bc284086…  css/jp-grid.css
+  d72de235aa12… → 2f53c1e4e006…  css/viewer.css
+  f60e5efb3df4… → 04ca05b71b8f…  css/wm.css
+  ee2952554d78… → eaf88215a95d…  dalton-race-4dwm.html
+  42c3cf40266b… → c3fd5f0e090a…  docs/dss-casefiles-riddle-warrick.md
+  b5b79d117c9a… → 9772c99527c5…  docs/sanborn-kryptos-webxdc.md
+  d28d05e32d2a… → f0e3e450a32d…  ghidra-lab.html
+  602eff573306… → 9237d980b50c…  glendora.html
+  300dbbed75c5… → 4852b690dac6…  greeran-book-bibliography.html
+  cd193ffe09ff… → 85becc3b9cb4…  greeran-book.html
+  a22456a2bf37… → afac760dd803…  index.html
+  ac42fb811d6f… → 0f2e6c70e212…  js/app.js
+  2172e41cc052… → 5709fb95d649…  js/bip39.js
+  a951202e78e1… → d79f786ce86b…  js/casefiles.js
+  ccde472423fa… → dcabc756906c…  js/dalton-race-4dwm.js
+  d8f46d977f5b… → 70478257a240…  js/enso-id.js
+  c29eb42268f0… → 5a3be9b5e9c2…  js/forms3d.js
+  ceb6a77d9ce1… → e9705843b7f5…  js/ghidra-wasm.js
+  cc3f3fb28515… → dd57bb4a4890…  js/jp-grid.js
+  6161b4287c74… → 5d3ffea24c42…  js/site-id.js
+  a03089bb3afa… → ea915383c6c0…  js/studio.js
+  a3d65d24e5aa… → 3c9c5f07f723…  js/viewer.js
+  b274562b482f… → 2b802bb1fd91…  js/vrml-export.js
+  76dad9b0255c… → b9e40d08367f…  keyspace.html
+  0a89d9ee4412… → 2b235a587e35…  keyspace.xdc
+  8a4eb7f19d50… → 63cf53d82a5f…  kryptos-vrml.xdc
+  … and 29 more
+
+ONLY IN REPO (newer than the snapshot)
+  .arena-archive/fetch.log
+  .arena-archive/fetch.py
+  .arena-archive/requests.txt
+  .arena-drive/fetch.log
+  .arena-drive/fetch.py
+  .arena-drive/requests.txt
+  .arena-relay/artifact-probe
+  .arena-relay/extract1
+  .arena-relay/harry-fetch.txt
+  .arena-relay/harry-ghidra.txt
+  .arena-relay/probe-results.txt
+  .arena-relay/run3
+  .arena-relay/run4
+  .arena-relay/run5
+  .arena-relay/run6
+  .arena-relay/run7
+  .arena-relay/run8
+  .arena-relay/scripts/extract.py
+  .arena-relay/scripts/extract.txt
+  .arena-relay/scripts/fetch_jdk.sh
+  .arena-relay/scripts/recon.py
+  .arena-relay/trigger
+  .github/workflows/arena-archive-fetch.yml
+  .github/workflows/arena-deep2.yml
+  .github/workflows/arena-deep3.yml
+  … and 1858 more
+
+Out of sync: 25 missing, 69 changed.
