@@ -39,6 +39,8 @@ const DATA_LOADERS = {
   buffalo: () => import("./city-subsurface-data-buffalo.js"),
   toronto: () => import("./city-subsurface-data-toronto.js"),
   california: () => import("./city-subsurface-data-california.js"),
+  nevada: () => import("./city-subsurface-data-nevada.js"),
+  arizona: () => import("./city-subsurface-data-arizona.js"),
 };
 const GAZ_LOADERS = {
   lawrence: () => import("./city-gazetteer-data-lawrence.js"),
@@ -47,20 +49,30 @@ const GAZ_LOADERS = {
   buffalo: () => import("./city-gazetteer-data-buffalo.js"),
   toronto: () => import("./city-gazetteer-data-toronto.js"),
   california: () => import("./city-gazetteer-data-california.js"),
+  nevada: () => import("./city-gazetteer-data-nevada.js"),
+  arizona: () => import("./city-gazetteer-data-arizona.js"),
 };
+// DEM packs are optional for every frame except a config marked
+// demRequired. Route them through a variable-specifier import so a missing
+// optional pack rejects into the catch below instead of failing a bundler's
+// static import analysis. The XDC builder explicitly scans importDem()
+// calls when collecting the offline module graph.
+const importDem = (specifier) => import(/* @vite-ignore */ specifier);
 const DEM_LOADERS = {
   lawrence: async () => {
     try {
-      return await import("./city-dem-grid-lawrence-highres.js");
+      return await importDem("./city-dem-grid-lawrence-highres.js");
     } catch {
-      return import("./city-dem-grid-lawrence.js");
+      return importDem("./city-dem-grid-lawrence.js");
     }
   },
-  atlanta: () => import("./city-dem-grid-atlanta.js"),
-  kansascity: () => import("./city-dem-grid-kansascity.js"),
-  buffalo: () => import("./city-dem-grid-buffalo.js"),
-  toronto: () => import("./city-dem-grid-toronto.js"),
-  california: () => import("./city-dem-grid-california.js"),
+  atlanta: () => importDem("./city-dem-grid-atlanta.js"),
+  kansascity: () => importDem("./city-dem-grid-kansascity.js"),
+  buffalo: () => importDem("./city-dem-grid-buffalo.js"),
+  toronto: () => importDem("./city-dem-grid-toronto.js"),
+  california: () => importDem("./city-dem-grid-california.js"),
+  nevada: () => importDem("./city-dem-grid-nevada.js"),
+  arizona: () => importDem("./city-dem-grid-arizona.js"),
 };
 
 if (!DATA_LOADERS[CITY_ID] || !GAZ_LOADERS[CITY_ID]) {
@@ -1108,9 +1120,9 @@ renderer.domElement.addEventListener("pointermove", (e) => {
   const hit = raycaster.intersectObjects([terrain], false)[0];
   if (!hit) return;
   const [lon, lat] = lonLatFromXZ(hit.point.x, hit.point.z);
-  const e = elevationAt(lon, lat);
+  const elev = elevationAt(lon, lat);
   if (hud.lonlat) hud.lonlat.textContent = `${lat.toFixed(3)}N ${Math.abs(lon).toFixed(3)}W`;
-  if (hud.elev) hud.elev.textContent = `${Math.round(e)} m (${Math.round(e * 3.281)} ft)`;
+  if (hud.elev) hud.elev.textContent = `${Math.round(elev)} m (${Math.round(elev * 3.281)} ft)`;
 });
 
 /* ------------------------------------------------------------ webxdc wire */

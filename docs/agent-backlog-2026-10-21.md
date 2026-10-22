@@ -82,6 +82,15 @@ Midway) → remaining states → PC-Globe-style country viewer with CIA Factbook
 anthem/instrument) → Ghidra PC Globe→Java experiment → reuse the Red October globe for the
 planet viewer.
 
+**Round 16 status (2026-10-22): partial.** California now has 16 per-ID
+`VERIFIED=1` GNIS rows beside 11 retained curated `VERIFIED=0` rows; Nevada
+and Arizona shipped as the seventh/eighth frames with 12/12 GNIS starter rows
+each. The source contract and identity rejections are in
+[`../resources/city-subsurface/gnis-state-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-state-source-register-2026-10-22.json)
+and [`city-subsurface.md`](city-subsurface.md). Next in sequence: territories
+before the remaining states; bulk California themes and archived-class
+features still require dated per-row source registers.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
@@ -94,6 +103,15 @@ several docs already ([`bbs-abandonware-coldfire-port.md`](bbs-abandonware-coldf
 [`java-bbs-coldfire-survey.md`](java-bbs-coldfire-survey.md),
 [`xport-bbs-deployment.md`](xport-bbs-deployment.md)). Adds FidoNet + ARPANET map layers and a
 payphone census (Mojave, rest stops, ZIP-coded).
+
+**Round 16 status (2026-10-22): partial.** The consumer historical-network
+viewer is scoped in
+[`historical-network-viewer-scope-2026-10-22.md`](historical-network-viewer-scope-2026-10-22.md)
+as a separate offline map/topology/records product; no ARPANET/FidoNet/
+payphone dataset has been seeded. USBBS #134 (July 1995) repeats the Denver
+Keyhole BBS listing, but it is the same publication lineage as #127—not the
+requested second independent listing. Next: source-rights decision, lawful
+F3 captures, and a one-snapshot Keyhole vertical slice before adapters.
 
 ### S7 · Goldkey / Gina.dll parity backup, CAD + BOM, uClinux fax — *partial*
 Continue [`goldkey-parity-gina-and-units.md`](goldkey-parity-gina-and-units.md) with the
