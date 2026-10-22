@@ -32,6 +32,8 @@ export const GAZ_CLASS_META = {
   Reservoir: { label: "Reservoirs", short: "RSV", swatch: "#4c7fd6" },
   Spring: { label: "Springs", short: "SPR", swatch: "#54e0c7" },
   Stream: { label: "Streams", short: "STM", swatch: "#9db2e8" },
+  Swamp: { label: "Swamps / marshes", short: "SWP", swatch: "#54e0c7" },
+  Dam: { label: "Dams", short: "DAM", swatch: "#4c7fd6" },
   Mine: { label: "Mines", short: "MNE", swatch: "#e0876c" },
   Oilfield: { label: "Oil fields", short: "OIL", swatch: "#c7894f" },
   Tunnel: { label: "Tunnels", short: "TUN", swatch: "#b9a08e" },

@@ -89,9 +89,12 @@ exploitable-by-design.
   `extractStream.js` sigScan approach; 8 fixture-based tests, no game data.
 - **Recipe angle (CyberChef):** `polyglotScan` is now a registry op (round 12,
   category Data) mirroring the CLI tool; the archive-side follow-ups
-  (`paranoidUnzip`, `arjHeader`, `lhaHeader`, `aceHeader`) remain **not yet
-  implemented** in the registry — flagged here so this doc stops implying they
-  exist. SFX-as-polyglot context: [`zip-garble-format-notes.md`](zip-garble-format-notes.md) §4.
+  (`paranoidUnzip`, `arjHeader`, `lhaHeader`, `aceHeader`) were **implemented
+  in round 13** (2026-10-22) as header-only inspectors in the same category —
+  they parse and cross-check header bytes and never extract, inflate or
+  decrypt member data, which keeps the polyglot/SFX triage flow
+  inspection-only. SFX-as-polyglot context: [`zip-garble-format-notes.md`](zip-garble-format-notes.md) §4;
+  round detail: [`backlog-execution-round-13-2026-10-22.md`](backlog-execution-round-13-2026-10-22.md).
 - Cross-links: SFX-as-polyglot in the password-notes docs; carving protocol in
   [`dos-game-disassembly.md`](dos-game-disassembly.md).
 

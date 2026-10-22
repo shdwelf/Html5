@@ -47,6 +47,10 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-10-2026-10-21.md](backlog-execution-round-10-2026-10-21.md) — backlog execution round 10 2026 10 21
 - [backlog-execution-round-11-2026-10-21.md](backlog-execution-round-11-2026-10-21.md) — backlog execution round 11 2026 10 21
 - [backlog-execution-round-12-2026-10-21.md](backlog-execution-round-12-2026-10-21.md) — backlog execution round 12 2026 10 21
+- [backlog-execution-round-13-2026-10-22.md](backlog-execution-round-13-2026-10-22.md) — backlog execution round 13 2026 10 22
+- [backlog-execution-round-14-2026-10-22.md](backlog-execution-round-14-2026-10-22.md) — backlog execution round 14 2026 10 22
+- [backlog-execution-round-15-2026-10-22.md](backlog-execution-round-15-2026-10-22.md) — backlog execution round 15 2026 10 22
+- [backlog-execution-round-16-2026-10-22.md](backlog-execution-round-16-2026-10-22.md) — backlog execution round 16 2026 10 22
 - [backlog-execution-round-2-2026-10-21.md](backlog-execution-round-2-2026-10-21.md) — backlog execution round 2 2026 10 21
 - [backlog-execution-round-3-2026-10-21.md](backlog-execution-round-3-2026-10-21.md) — backlog execution round 3 2026 10 21
 - [backlog-execution-round-4-2026-10-21.md](backlog-execution-round-4-2026-10-21.md) — backlog execution round 4 2026 10 21
@@ -184,10 +188,12 @@ IANA media types (RFC 6838 / BCP 13).
 - [gta-text-decoder-2026-10-21.md](gta-text-decoder-2026-10-21.md) — gta text decoder 2026 10 21
 - [haiku-vault-format-draft.md](haiku-vault-format-draft.md) — haiku vault format draft
 - [headline-harry-jsdos-fix-2026-10-04.md](headline-harry-jsdos-fix-2026-10-04.md) — headline harry jsdos fix 2026 10 04
+- [historical-network-viewer-scope-2026-10-22.md](historical-network-viewer-scope-2026-10-22.md) — historical network viewer scope 2026 10 22
 - [hp-aio-xport-modem-adapter-feasibility.md](hp-aio-xport-modem-adapter-feasibility.md) — hp aio xport modem adapter feasibility
 - [iacr-research-watch-2026-09-28.md](iacr-research-watch-2026-09-28.md) — iacr research watch 2026 09 28
 - [jcreator-jdk-coupling.md](jcreator-jdk-coupling.md) — jcreator jdk coupling
 - [jsdos-cdn-deep-dive-2026-10-04.md](jsdos-cdn-deep-dive-2026-10-04.md) — jsdos cdn deep dive 2026 10 04
+- [keyhole-disambiguation-deep-dive-2026-10-22.md](keyhole-disambiguation-deep-dive-2026-10-22.md) — keyhole disambiguation deep dive 2026 10 22
 - [kromecorp-rodger-ramrod-casefile.md](kromecorp-rodger-ramrod-casefile.md) — kromecorp rodger ramrod casefile
 - [lantronix-uclinux-deep-dive-2026-10-08.md](lantronix-uclinux-deep-dive-2026-10-08.md) — lantronix uclinux deep dive 2026 10 08
 - [lawrence-kansas-subsurface.md](lawrence-kansas-subsurface.md) — lawrence kansas subsurface

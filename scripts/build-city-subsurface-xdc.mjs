@@ -29,8 +29,9 @@ const mtime = new Date("2026-10-07T00:00:00.000Z");
 function moduleSpecifiers(source) {
   const specs = [];
   const staticImport = /\b(?:import\s+(?:[^'";]*?\s+from\s*)?|export\s+[^'";]*?\s+from\s*)["']([^"']+)["']/g;
-  const dynamicImport = /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g;
-  for (const pattern of [staticImport, dynamicImport]) {
+  const dynamicImport = /\bimport\s*\(\s*(?:\/\*.*?\*\/\s*)?["']([^"']+)["']\s*\)/g;
+  const optionalDemImport = /\bimportDem\s*\(\s*["']([^"']+)["']\s*\)/g;
+  for (const pattern of [staticImport, dynamicImport, optionalDemImport]) {
     for (const match of source.matchAll(pattern)) specs.push(match[1]);
   }
   return specs;

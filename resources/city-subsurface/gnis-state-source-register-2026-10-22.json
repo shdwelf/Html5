@@ -1,0 +1,654 @@
+{
+  "generated": "2026-10-22",
+  "title": "Round 16 state-frame USGS GNIS source register",
+  "scope": "Identity-safe verified rows added to California and the all-GNIS starter registers for Nevada and Arizona. California rows that remain VERIFIED=0 retain their public-source notes in resources/city-subsurface/cities.json and are not repeated as GNIS evidence here.",
+  "services": {
+    "gnisMapServer": {
+      "endpoint": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer",
+      "layersUsed": {
+        "3": "Populated Places",
+        "5": "Landforms",
+        "6": "Streams"
+      },
+      "use": "Exact-name / per-ID checks with outSR=4326. For a cited geometry row, the stored coordinate is one returned EPSG:4326 point as described in the row note—not a boundary, shoreline, peak polygon, or stream line."
+    },
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<state>&include=gnis&maxSuggestions=<n>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Similar names and divisions were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
+      "use": "Per-ID identity confirmation (official name, feature class, primary state/county) and coordinate sequence 1 for active hydrographic records that the current cartographic hydro layers did not return during the 2026-10-22 check."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
+    "A stored multipoint coordinate is disclosed as one point. It is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, canyon outline, or stream centerline.",
+    "If the current GNIS class coverage omits the intended cultural feature, or a same-name record denotes a different feature, the curated row remains VERIFIED=0 with GNIS null.",
+    "No coordinate was copied from the non-reproducible js/socal-gazetteer-data.js snapshot for this round; that file was background only."
+  ],
+  "frames": {
+    "california": {
+      "totalRows": 27,
+      "verifiedRows": [
+        {
+          "name": "Los Angeles",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Los Angeles",
+          "latitude": 34.0522390563,
+          "longitude": -118.2436970875,
+          "featureId": "1662328",
+          "verified": 1,
+          "pointBasis": "First returned point of the cited GNIS MapServer geometry, unless the row note identifies a single returned point",
+          "sourceNote": "State-frame anchor city. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=1662328; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."
+        },
+        {
+          "name": "San Francisco",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "San Francisco",
+          "latitude": 37.77500494,
+          "longitude": -122.41945762,
+          "featureId": "277593",
+          "verified": 1,
+          "pointBasis": "First returned point of the cited GNIS MapServer geometry, unless the row note identifies a single returned point",
+          "sourceNote": "State-frame anchor city. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=277593; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."
+        },
+        {
+          "name": "Sacramento",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Sacramento",
+          "latitude": 38.58157698,
+          "longitude": -121.49441277,
+          "featureId": "1659564",
+          "verified": 1,
+          "pointBasis": "First returned point of the cited GNIS MapServer geometry, unless the row note identifies a single returned point",
+          "sourceNote": "State capital and state-frame anchor city. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=1659564; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."
+        },
+        {
+          "name": "San Diego",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "San Diego",
+          "latitude": 32.71533396,
+          "longitude": -117.157267,
+          "featureId": "1661377",
+          "verified": 1,
+          "pointBasis": "First returned point of the cited GNIS MapServer geometry, unless the row note identifies a single returned point",
+          "sourceNote": "State-frame anchor city. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=1661377; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."
+        },
+        {
+          "name": "Oakville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Napa",
+          "latitude": 38.4368599,
+          "longitude": -122.40221399,
+          "featureId": "229899",
+          "verified": 1,
+          "pointBasis": "First returned point of the cited GNIS MapServer geometry, unless the row note identifies a single returned point",
+          "sourceNote": "Napa Valley wine-country anchor in the Oakville AVA; Robert Mondavi Winery (est. 1966) is the vintner-layer exemplar, not the feature represented by this GNIS point. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=229899; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."
+        },
+        {
+          "name": "Manzanar",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Inyo",
+          "latitude": 36.73993695,
+          "longitude": -118.08065811,
+          "featureId": "1659050",
+          "verified": 1,
+          "pointBasis": "First returned point of the cited GNIS MapServer geometry, unless the row note identifies a single returned point",
+          "sourceNote": "USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=1659050; stored coordinate is the returned point for the locality named Manzanar, not a boundary or street-address geocode. This populated-place record is distinct from, and does not verify, the separate VERIFIED=0 Manzanar National Historic Site row. Cross-checked 2026-10-22."
+        },
+        {
+          "name": "Mount Whitney",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Multiple counties",
+          "latitude": 36.57857512,
+          "longitude": -118.29243423,
+          "featureId": "269051",
+          "verified": 1,
+          "pointBasis": "First returned point of the cited GNIS MapServer geometry, unless the row note identifies a single returned point",
+          "sourceNote": "USGS GNIS MapServer layer 5 (Landforms), FEATURE_ID=269051. Stored coordinate is the returned official summit point, not a peak-area polygon. Cross-checked 2026-10-22."
+        },
+        {
+          "name": "Mount Shasta",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Siskiyou",
+          "latitude": 41.40917524,
+          "longitude": -122.19485877,
+          "featureId": "266054",
+          "verified": 1,
+          "pointBasis": "First returned point of the cited GNIS MapServer geometry, unless the row note identifies a single returned point",
+          "sourceNote": "USGS GNIS MapServer layer 5 (Landforms), FEATURE_ID=266054. Stored coordinate is the returned official summit point, not a peak-area polygon. Cross-checked 2026-10-22."
+        },
+        {
+          "name": "Death Valley",
+          "featureClass": "Basin",
+          "ftt": "phys.basin",
+          "county": "Multiple counties",
+          "latitude": 36.24662318,
+          "longitude": -116.81700764,
+          "featureId": "270787",
+          "verified": 1,
+          "pointBasis": "First returned point of the cited GNIS MapServer geometry, unless the row note identifies a single returned point",
+          "sourceNote": "USGS GNIS MapServer layer 5 (Landforms), FEATURE_ID=270787. Stored coordinate is the first returned point of the official multipoint basin record, not a basin outline, park boundary, or low-point survey mark. Cross-checked 2026-10-22."
+        },
+        {
+          "name": "Sacramento River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Multiple counties",
+          "latitude": 38.0632528,
+          "longitude": -121.8527357,
+          "featureId": "1654949",
+          "verified": 1,
+          "pointBasis": "GNIS primary point (Domestic Names coordinate sequence 1), corroborated as stated in the row note",
+          "sourceNote": "USGS GNIS Domestic Names detail record, FEATURE_ID=1654949 (Class Stream; primary county Contra Costa), coordinate sequence 1; the same ID/name/class were attribute-confirmed in GNIS MapServer layer 6 and the point was corroborated by the USGS GNIS Geocoder on 2026-10-22. Stored coordinate is the GNIS primary point, not a river centerline."
+        },
+        {
+          "name": "San Joaquin River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Multiple counties",
+          "latitude": 38.06659111,
+          "longitude": -121.85108216,
+          "featureId": "273488",
+          "verified": 1,
+          "pointBasis": "First returned point of the cited GNIS MapServer geometry, unless the row note identifies a single returned point",
+          "sourceNote": "USGS GNIS MapServer layer 6 (Streams), FEATURE_ID=273488. Stored coordinate is the first returned point of the official multipoint stream record, not a river centerline. Cross-checked 2026-10-22."
+        },
+        {
+          "name": "Russian River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Multiple counties",
+          "latitude": 38.45047475,
+          "longitude": -123.1294616,
+          "featureId": "267200",
+          "verified": 1,
+          "pointBasis": "First returned point of the cited GNIS MapServer geometry, unless the row note identifies a single returned point",
+          "sourceNote": "USGS GNIS MapServer layer 6 (Streams), FEATURE_ID=267200. Stored coordinate is the first returned point of the official multipoint stream record, not a river centerline. Cross-checked 2026-10-22."
+        },
+        {
+          "name": "Lake Tahoe",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Placer",
+          "latitude": 39.0960755,
+          "longitude": -120.0333974,
+          "featureId": "1654975",
+          "verified": 1,
+          "pointBasis": "GNIS primary point (Domestic Names coordinate sequence 1), corroborated as stated in the row note",
+          "sourceNote": "USGS GNIS Domestic Names detail record, FEATURE_ID=1654975 (Class Lake; primary state/county California/Placer), coordinate sequence 1, corroborated by the USGS GNIS Geocoder on 2026-10-22. The current GNIS cartographic hydro layers checked that day did not return this active record, so the stored GNIS primary point rests on the detail record plus Geocoder—not on an inferred lake centroid—and is not a shoreline polygon. The lake also extends into Nevada."
+        },
+        {
+          "name": "Salton Sea",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Imperial",
+          "latitude": 33.313568,
+          "longitude": -115.816772,
+          "featureId": "248771",
+          "verified": 1,
+          "pointBasis": "GNIS primary point (Domestic Names coordinate sequence 1), corroborated as stated in the row note",
+          "sourceNote": "USGS GNIS Domestic Names detail record, FEATURE_ID=248771 (Class Lake; primary county Imperial), coordinate sequence 1, corroborated by the USGS GNIS Geocoder on 2026-10-22. The current GNIS cartographic hydro layers checked that day did not return this active record, so the stored GNIS primary point rests on the detail record plus Geocoder—not on an inferred lake centroid—and is not a shoreline polygon. The feature also extends into Riverside County."
+        },
+        {
+          "name": "Morris Reservoir",
+          "featureClass": "Reservoir",
+          "ftt": "hydro.reservoir",
+          "county": "Los Angeles",
+          "latitude": 34.183909,
+          "longitude": -117.870436,
+          "featureId": "272561",
+          "verified": 1,
+          "pointBasis": "GNIS primary point (Domestic Names coordinate sequence 1), corroborated as stated in the row note",
+          "sourceNote": "USGS GNIS Domestic Names detail record, FEATURE_ID=272561 (Class Reservoir; Los Angeles County), coordinate sequence 1, corroborated by the USGS GNIS Geocoder on 2026-10-22. The current GNIS cartographic hydro layers checked that day did not return this active record, so the stored GNIS primary point rests on the detail record plus Geocoder. This reservoir record is separate from, and does not verify, the VERIFIED=0 Morris Dam structure row; the point is not a shoreline polygon."
+        },
+        {
+          "name": "Tule Lake",
+          "featureClass": "Swamp",
+          "ftt": "hydro.swamp",
+          "county": "Siskiyou",
+          "latitude": 41.890068,
+          "longitude": -121.5057865,
+          "featureId": "268456",
+          "verified": 1,
+          "pointBasis": "GNIS primary point (Domestic Names coordinate sequence 1), corroborated as stated in the row note",
+          "sourceNote": "USGS GNIS Domestic Names detail record, FEATURE_ID=268456 (Class Swamp; primary county Siskiyou), coordinate sequence 1, corroborated by the USGS GNIS Geocoder on 2026-10-22. Stored coordinate is the GNIS primary point for the perennial swamp/marsh, not a wetland polygon. This hydrographic feature is distinct from, and does not verify, the separate VERIFIED=0 Tule Lake War Relocation Center row."
+        }
+      ],
+      "unverifiedRowsRetained": [
+        {
+          "name": "University of California, Berkeley",
+          "featureClass": "School",
+          "verified": 0,
+          "featureId": null
+        },
+        {
+          "name": "University of California, Los Angeles",
+          "featureClass": "School",
+          "verified": 0,
+          "featureId": null
+        },
+        {
+          "name": "Manzanar",
+          "featureClass": "Park",
+          "verified": 0,
+          "featureId": null
+        },
+        {
+          "name": "Tule Lake War Relocation Center",
+          "featureClass": "Park",
+          "verified": 0,
+          "featureId": null
+        },
+        {
+          "name": "Empire Mine State Historic Park",
+          "featureClass": "Park",
+          "verified": 0,
+          "featureId": null
+        },
+        {
+          "name": "Nike Missile Site SF-88L",
+          "featureClass": "Military",
+          "verified": 0,
+          "featureId": null
+        },
+        {
+          "name": "Morris Dam",
+          "featureClass": "Dam",
+          "verified": 0,
+          "featureId": null
+        },
+        {
+          "name": "La Casa Pacifica",
+          "featureClass": "Building",
+          "verified": 0,
+          "featureId": null
+        },
+        {
+          "name": "Stow House",
+          "featureClass": "Building",
+          "verified": 0,
+          "featureId": null
+        },
+        {
+          "name": "Clair Tappaan Lodge",
+          "featureClass": "Building",
+          "verified": 0,
+          "featureId": null
+        },
+        {
+          "name": "Aerojet General Corporation Site",
+          "featureClass": "Locale",
+          "verified": 0,
+          "featureId": null
+        }
+      ]
+    },
+    "nevada": {
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Carson City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Carson City",
+          "latitude": 39.1637984,
+          "longitude": -119.7674034,
+          "featureId": "863976",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than the separate Carson City county-equivalent record (FEATURE_ID 863219). USGS GNIS Geocoder (GNIS), FEATURE_ID=863976; exact official name and Cities & Populated Places type in Carson City cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Reno",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Washoe",
+          "latitude": 39.5296329,
+          "longitude": -119.8138027,
+          "featureId": "861100",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=861100; exact official name and Cities & Populated Places type in Washoe County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Las Vegas",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Clark",
+          "latitude": 36.1749705,
+          "longitude": -115.137223,
+          "featureId": "847388",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=847388; exact official name and Cities & Populated Places type in Clark County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Elko",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Elko",
+          "latitude": 40.8324211,
+          "longitude": -115.7631232,
+          "featureId": "845452",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=845452; exact official name and Cities & Populated Places type in Elko County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Winnemucca",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Humboldt",
+          "latitude": 40.9729584,
+          "longitude": -117.7356849,
+          "featureId": "844996",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=844996; exact official name and Cities & Populated Places type in Humboldt County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Ely",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "White Pine",
+          "latitude": 39.2474393,
+          "longitude": -114.8886296,
+          "featureId": "859671",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=859671; exact official name and Cities & Populated Places type in White Pine County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Tonopah",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Nye",
+          "latitude": 38.0671553,
+          "longitude": -117.2300825,
+          "featureId": "845985",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=845985; exact official name and Cities & Populated Places type in Nye County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Pyramid Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Washoe",
+          "latitude": 40.0449368,
+          "longitude": -119.565083,
+          "featureId": "856349",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=856349; exact official name and Lakes & Reservoirs type in Washoe County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon."
+        },
+        {
+          "name": "Walker Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Mineral",
+          "latitude": 38.6954696,
+          "longitude": -118.7177623,
+          "featureId": "844615",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Lakes & Reservoirs record was selected rather than the separate Walker Lake populated place (FEATURE_ID 854682). USGS GNIS Geocoder (GNIS), FEATURE_ID=844615; exact official name and Lakes & Reservoirs type in Mineral County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon."
+        },
+        {
+          "name": "Humboldt River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Churchill",
+          "latitude": 39.9879663,
+          "longitude": -118.6009823,
+          "featureId": "860071",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=860071; exact official name and Streams & Canals type in Churchill County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline."
+        },
+        {
+          "name": "Boundary Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Esmeralda",
+          "latitude": 37.846072,
+          "longitude": -118.3510759,
+          "featureId": "857652",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=857652; exact official name and Summit type in Esmeralda County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."
+        },
+        {
+          "name": "Wheeler Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "White Pine",
+          "latitude": 38.9857693,
+          "longitude": -114.313966,
+          "featureId": "861956",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=861956; exact official name and Summit type in White Pine County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."
+        }
+      ]
+    },
+    "arizona": {
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Phoenix",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Maricopa",
+          "latitude": 33.4483771,
+          "longitude": -112.0740373,
+          "featureId": "44784",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=44784; exact official name and Cities & Populated Places type in Maricopa County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Tucson",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Pima",
+          "latitude": 32.2217429,
+          "longitude": -110.926479,
+          "featureId": "43534",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=43534; exact official name and Cities & Populated Places type in Pima County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Flagstaff",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Coconino",
+          "latitude": 35.1980671,
+          "longitude": -111.6512725,
+          "featureId": "29046",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=29046; exact official name and Cities & Populated Places type in Coconino County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Yuma",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Yuma",
+          "latitude": 32.7253249,
+          "longitude": -114.624397,
+          "featureId": "14111",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=14111; exact official name and Cities & Populated Places type in Yuma County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Prescott",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Yavapai",
+          "latitude": 34.5400242,
+          "longitude": -112.4685025,
+          "featureId": "33189",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=33189; exact official name and Cities & Populated Places type in Yavapai County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Kingman",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Mohave",
+          "latitude": 35.189443,
+          "longitude": -114.0530065,
+          "featureId": "6704",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=6704; exact official name and Cities & Populated Places type in Mohave County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Salt River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Maricopa",
+          "latitude": 33.3811546,
+          "longitude": -112.3129333,
+          "featureId": "33995",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Streams & Canals record was selected rather than the separate Salt River populated place (FEATURE_ID 44982). USGS GNIS Geocoder (GNIS), FEATURE_ID=33995; exact official name and Streams & Canals type in Maricopa County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline."
+        },
+        {
+          "name": "Gila River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Yuma",
+          "latitude": 32.7197692,
+          "longitude": -114.5552281,
+          "featureId": "42838",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=42838; exact official name and Streams & Canals type in Yuma County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline."
+        },
+        {
+          "name": "Verde River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Maricopa",
+          "latitude": 33.5469892,
+          "longitude": -111.660693,
+          "featureId": "35768",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=35768; exact official name and Streams & Canals type in Maricopa County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline."
+        },
+        {
+          "name": "Humphreys Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Coconino",
+          "latitude": 35.3463151,
+          "longitude": -111.6779884,
+          "featureId": "30290",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=30290; exact official name and Summit type in Coconino County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."
+        },
+        {
+          "name": "Mount Graham",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Graham",
+          "latitude": 32.70173,
+          "longitude": -109.8714579,
+          "featureId": "5204",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=5204; exact official name and Summit type in Graham County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."
+        },
+        {
+          "name": "Grand Canyon",
+          "featureClass": "Valley",
+          "ftt": "phys.valley",
+          "county": "Mohave",
+          "latitude": 36.112764,
+          "longitude": -113.9960696,
+          "featureId": "23907",
+          "verified": 1,
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The GNIS Valley record was selected rather than the separate Grand Canyon populated place (FEATURE_ID 5213). USGS GNIS Geocoder (GNIS), FEATURE_ID=23907; exact official name and Valley type in Mohave County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a canyon outline, national-park boundary, or visitor-center point."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Manzanar, FEATURE_ID 1659050, Populated Place",
+      "decision": "Added as a distinct locality row.",
+      "notClaimed": "It does not verify the separately sourced Manzanar National Historic Site / War Relocation Center Park row, which remains VERIFIED=0."
+    },
+    {
+      "candidate": "Morris Reservoir, FEATURE_ID 272561, Reservoir",
+      "decision": "Added as a distinct reservoir row using Domestic Names coordinate sequence 1.",
+      "notClaimed": "It does not verify the Morris Dam structure row. A Geocoder search for “Morris Dam” returned a Mendocino County record, so no Los Angeles County dam ID was inferred."
+    },
+    {
+      "candidate": "Tule Lake, FEATURE_ID 268456, Swamp",
+      "decision": "Added as the perennial hydrographic swamp/marsh.",
+      "notClaimed": "It does not verify Tule Lake War Relocation Center / National Monument, which remains VERIFIED=0."
+    },
+    {
+      "candidate": "Colorado River, FEATURE_ID 45730",
+      "decision": "Omitted from California, Nevada, and Arizona gazetteer rows in this round.",
+      "reason": "The returned GNIS primary point (31.9, -114.9508333) lies outside all three frame bounding boxes. Colorado River reaches appear only as generalized context corridors."
+    },
+    {
+      "candidate": "California universities, Empire Mine State Historic Park, Nike site, historic houses, and Morris Dam",
+      "decision": "Retained at VERIFIED=0.",
+      "reason": "Exact identity-safe current GNIS records were not established. Current GNIS Domestic Names coverage omits multiple classes archived in 2021, including School, Park, Mine, and Dam; an archived-download treatment would require a separate dated archival source decision."
+    },
+    {
+      "candidate": "Lake Tahoe (1654975), Salton Sea (248771), and Morris Reservoir (272561)",
+      "decision": "Accepted on GNIS Domestic Names detail records plus matching USGS Geocoder primary points.",
+      "reason": "The current cartographic GNIS hydro layers searched on 2026-10-22 did not return these active records. The rows state that service discrepancy rather than pretending MapServer supplied their geometry."
+    },
+    {
+      "candidate": "Carson City populated place 863976 vs Carson City county-equivalent 863219",
+      "decision": "Used 863976.",
+      "reason": "The frame row represents the populated place/capital anchor, not the county-equivalent record."
+    },
+    {
+      "candidate": "Walker Lake lake 844615 vs Walker Lake populated place 854682",
+      "decision": "Used 844615.",
+      "reason": "The intended feature is the lake, not the settlement of the same name."
+    },
+    {
+      "candidate": "Salt River stream 33995 vs Salt River populated place 44982",
+      "decision": "Used 33995.",
+      "reason": "The intended feature is the river, not the settlement."
+    },
+    {
+      "candidate": "Grand Canyon Valley 23907 vs Grand Canyon populated place 5213",
+      "decision": "Used 23907.",
+      "reason": "The intended feature is the canyon landform, not Grand Canyon Village/populated place. Its primary point is in the western canyon and must not be read as a visitor-center location."
+    }
+  ],
+  "knownLimitations": [
+    "Nevada and Arizona are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; the exact-match screening above is part of the evidence, and every accepted row names the returned type/county in cities.json.",
+    "GNIS point data do not supply the displayed terrain. Nevada and Arizona, like California, use explicitly synthetic relief gaussians and generalized context corridors.",
+    "State frames are rectangles, not state-boundary clipping masks."
+  ]
+}

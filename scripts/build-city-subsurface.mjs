@@ -68,9 +68,12 @@ function viewsFor(city) {
   const w = x1 - x0;
   const d = z1 - z0;
   return [
-    { id: "overview", label: "VIEW · OVERVIEW", position: [0, 20, 32], target: [0, 0, 0] },
+    // Overview/underground pull back with frame width so a statewide frame
+    // (w ≈ 92 units) opens framed like a city frame (w ≈ 3) does; the max()
+    // floors keep every existing city frame's views byte-identical.
+    { id: "overview", label: "VIEW · OVERVIEW", position: [0, Math.max(20, w * 0.45), Math.max(32, w * 0.7)], target: [0, 0, 0] },
     { id: "downtown", label: "VIEW · DOWNTOWN", position: [0, 7, 10], target: [0, 0, 0] },
-    { id: "underground", label: "VIEW · UNDERGROUND", position: [0, 4, 20], target: [0, -5, 0] },
+    { id: "underground", label: "VIEW · UNDERGROUND", position: [0, 4, Math.max(20, w * 0.45)], target: [0, -5, 0] },
     { id: "waterfront", label: "VIEW · WATERFRONT", position: [w * 0.22, 10, d * 0.22], target: [w * 0.22, 0, d * 0.22] },
   ];
 }

@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 507 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 511 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -3350,6 +3350,29 @@ const RECIPE_PACKS={
  'Spotlight — Coin addresses & keypairs (Nano · Solana · Stellar · Tezos)':[['nanoAddr',{}],['solana',{}],['stellar',{}],['tezos',{}]],
  'Spotlight — Public-key classics (RSA · Diffie-Hellman)':[['rsa',{}],['dh',{}],['genRSA',{}]],
  'Spotlight — Polyglot & format triage':[['polyglotScan',{}],['toHexdump',{}],['crc32',{}]],
+ 'Spotlight — Archive header triage (ARJ · LHA · ACE · ZIP, headers only)':[['polyglotScan',{}],['arjHeader',{}],['lhaHeader',{}],['aceHeader',{}],['paranoidUnzip',{}]],
+ 'Spotlight — TomTom slash round-trip (A-tom-tom encode → decode)':[['gcwTomTinesWin',{table:'tomtom',mode:'encode'}],['gcwTomTinesWin',{table:'tomtom',mode:'decode'}]],
+ 'Spotlight — SHA-2 & checksums (SHA-384 · SHA-512 · SHA3-512 · CRC16 · Adler-32)':[['sha384',{}],['sha512',{}],['sha3_512',{}],['crc16',{}],['adler32',{}]],
+ 'Spotlight — Data encodings (Base62 · data URI · ASCII codes)':[['toB62',{}],['fromB62',{}],['dataUri',{}],['toASCII',{}],['fromASCII',{}]],
+ /* Round-14 spotlight closure: every tour-only op gets a thematic pack. */
+ 'Spotlight — Classical ciphers II (Vigenère · VIC · Hill · Morse · Bacon)':[['vigenere',{}],['vic',{}],['atbash',{}],['railfence',{}],['coltrans',{}],['hill',{}],['a1z26',{}],['bacon',{}],['morse',{}]],
+ 'Spotlight — File & link encryption (AES-GCM file · encrypt/decrypt link)':[['aesGcmFile',{}],['encryptLink',{}],['decryptLink',{}]],
+ 'Spotlight — Analysis toolkit (index of coincidence · fuzzy hash · hash probe · diff/patch)':[['ioc',{}],['fuzzyhash',{}],['hashprobe',{}],['diffpatch',{}]],
+ 'Spotlight — Text encodings II (HTML entities · reverse)':[['toEntities',{}],['fromEntities',{}],['reverse',{}]],
+ 'Spotlight — Electronics lab (logic gates · adder · 7-segment · truth tables)':[['icAND',{}],['icOR',{}],['icXOR',{}],['icNAND',{}],['icNOR',{}],['icXNOR',{}],['icNOT',{}],['icAdder',{}],['ic7seg',{}],['icTruth',{}]],
+ 'Spotlight — Keypairs, agreement & generators (ECDSA · Ed25519 · X25519 · ECDH · UUID)':[['genECDSA',{}],['secpKeypair',{}],['edKeypair',{}],['x25519Keypair',{}],['nanoKeygen',{}],['ecdh',{}],['pwGen',{}],['uuid',{}]],
+ 'Spotlight — Coin addresses II (Sapling · Algorand · Polkadot · Monero · Ripple · BCH · Kaspa)':[['sapling',{}],['algorand',{}],['polkadot',{}],['monero',{}],['ripple',{}],['bch',{}],['kaspa',{}]],
+ 'Spotlight — Parity, LRC & HMAC (integrity checks)':[['parity',{}],['lrc',{}],['hmac',{}]],
+ 'Spotlight — Wallets & secret sharing (BIP-39 · BIP-44 haiku · Shamir)':[['bip39',{}],['haikub44',{}],['shamir',{}]],
+ 'Spotlight — Hardware-key extras (COSE to PEM · privacyIDEA challenge)':[['coseKeyToPem',{}],['privacyIdeaChallenge',{}]],
+ 'Spotlight — Calculator & converters (calc · unit convert · world clock)':[['calc',{}],['convert',{}],['worldclock',{}]],
+ 'Spotlight — Educational & visual lab (hash theory · Turing completeness · stereogram · tiny intros)':[['hashtheory',{}],['turingcomplete',{}],['stereogram',{}],['vizPip',{}],['tinyIntros',{}]],
+ 'Spotlight — Recipe pack loader':[['recipePack',{}]],
+ 'Spotlight — GCWizard tools (resistor codes · zodiac · ancient substitutions)':[['gcwResistor',{}],['gcwZodiac',{}],['gcwAncientSub',{}]],
+ 'Spotlight — GCWizard alphabet bundles I (Gern/Marain → Leitz/Hanja)':[['gcwGernMandMarain',{}],['gcwAlphabetumAntik',{}],['gcwAuslIllKlinz',{}],['gcwLivreFoyPlei',{}],['gcwDoopBslNzsl',{}],['gcwAutreErebHyl',{}],['gcwLeitzHebHanja',{}]],
+ 'Spotlight — GCWizard alphabet bundles II (Hyl/Stein → Toki/clocks)':[['gcwHylAlbStein',{}],['gcwRealTsqBeda',{}],['gcwTencTetBeler',{}],['gcwIll1SolmTeng',{}],['gcwTenggWindMstein',{}],['gcwPruinfClkToki',{}]],
+ 'Spotlight — Boxentriq ciphers (double transposition · homophonic · pigpen · variant Beaufort)':[['doubleTransposition',{}],['homophonic',{}],['pigpen',{}],['variantBeaufort',{}]],
+ 'Spotlight — Boxentriq utilities (Base62 · big-int text · Pig Latin · MIDI)':[['base62',{}],['bigIntText',{}],['pigLatin',{}],['midiParse',{}]],
 };
 addOp('recipePack','Recipe Pack','Recipes','Load a predefined cipher-suite recipe pack into the Recipe panel.',Object.keys(RECIPE_PACKS).map((name,i)=>({key:'pack',label:'Pack',type:'select',default:Object.keys(RECIPE_PACKS)[0],options:Object.keys(RECIPE_PACKS).map(n=>[n,n])})),function(t,a){
   const n=applyRecipePack(a.pack);
@@ -33673,7 +33696,7 @@ addOp('mignotte','Mignotte CRT threshold sharing','Secret Sharing',
   })
 
 addOp('polyglotScan','Polyglot / multi-format scan','Data',
-  'Scans input bytes for known format magics at every offset and classifies: single · parasite-or-stack (format at 0 + later magics — SFX/GIFAR shape) · multi-offset · chimera-candidate (overlapping match ranges). Mirrors tools/polyglot_scan.mjs (docs/polyglot-files-deep-dive-2026-10-21.md). Input = hex bytes (whitespace ok) or raw latin1 text.',
+  'Scans input bytes for known format magics at every offset and classifies: single · parasite-or-stack (format at 0 + later magics — SFX/GIFAR shape) · multi-offset · chimera-candidate (overlapping match ranges). Mirrors tools/polyglot_scan.mjs incl. IANA MIME labels (docs/polyglot-files-deep-dive-2026-10-21.md). Input = hex bytes (whitespace ok) or raw latin1 text.',
   [{key:'inputfmt',label:'Input as',type:'select',default:'auto',options:[['auto','Auto (hex if possible)'],['hex','Hex'],['text','Raw text']]}],
   function(t,a){
     const s = String(t==null?'':t);
@@ -33684,25 +33707,25 @@ addOp('polyglotScan','Polyglot / multi-format scan','Data',
     if (hexMode) { const h = s.replace(/\s+/g,''); for (let i=0;i<h.length;i+=2) bytes.push(parseInt(h.substr(i,2),16)); }
     else { for (let i=0;i<s.length;i++) bytes.push(s.charCodeAt(i) & 0xff); }
     const SIGS = [
-      {id:'jpeg',name:'JPEG',magic:[0xff,0xd8,0xff],anywhere:true},
-      {id:'png',name:'PNG',magic:[0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a],anywhere:true},
-      {id:'gif87',name:'GIF87a',magic:[0x47,0x49,0x46,0x38,0x37,0x61],anywhere:true},
-      {id:'gif89',name:'GIF89a',magic:[0x47,0x49,0x46,0x38,0x39,0x61],anywhere:true},
-      {id:'zip',name:'ZIP local file',magic:[0x50,0x4b,0x03,0x04],anywhere:true},
-      {id:'zip-eocd',name:'ZIP empty',magic:[0x50,0x4b,0x05,0x06],anywhere:true},
-      {id:'rar',name:'RAR',magic:[0x52,0x61,0x72,0x21,0x1a,0x07],anywhere:true},
-      {id:'7z',name:'7-Zip',magic:[0x37,0x7a,0xbc,0xaf,0x27,0x1c],anywhere:true},
-      {id:'pdf',name:'PDF',magic:[0x25,0x50,0x44,0x46,0x2d],anywhere:true},
-      {id:'elf',name:'ELF',magic:[0x7f,0x45,0x4c,0x46],anywhere:true},
-      {id:'class',name:'Java class/JAR',magic:[0xca,0xfe,0xba,0xbe],anywhere:true},
-      {id:'gzip',name:'gzip',magic:[0x1f,0x8b,0x08],anywhere:true},
-      {id:'bzip2',name:'bzip2',magic:[0x42,0x5a,0x68],anywhere:true},
-      {id:'xz',name:'xz',magic:[0xfd,0x37,0x7a,0x58,0x5a,0x00],anywhere:true},
-      {id:'cab',name:'CAB',magic:[0x4d,0x53,0x43,0x46],anywhere:true},
-      {id:'arj',name:'ARJ',magic:[0x60,0xea],anywhere:true},
-      {id:'tiff',name:'TIFF',magic:[0x49,0x49,0x2a,0x00],anywhere:true},
-      {id:'bmp',name:'BMP',magic:[0x42,0x4d],anywhere:true},
-      {id:'mz',name:'MZ executable',magic:[0x4d,0x5a],anywhere:false}
+      {id:'jpeg',name:'JPEG',mime:'image/jpeg',magic:[0xff,0xd8,0xff],anywhere:true},
+      {id:'png',name:'PNG',mime:'image/png',magic:[0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a],anywhere:true},
+      {id:'gif87',name:'GIF87a',mime:'image/gif',magic:[0x47,0x49,0x46,0x38,0x37,0x61],anywhere:true},
+      {id:'gif89',name:'GIF89a',mime:'image/gif',magic:[0x47,0x49,0x46,0x38,0x39,0x61],anywhere:true},
+      {id:'zip',name:'ZIP local file',mime:'application/zip',magic:[0x50,0x4b,0x03,0x04],anywhere:true},
+      {id:'zip-eocd',name:'ZIP empty',mime:'application/zip',magic:[0x50,0x4b,0x05,0x06],anywhere:true},
+      {id:'rar',name:'RAR',mime:'application/vnd.rar',magic:[0x52,0x61,0x72,0x21,0x1a,0x07],anywhere:true},
+      {id:'7z',name:'7-Zip',mime:'application/x-7z-compressed',magic:[0x37,0x7a,0xbc,0xaf,0x27,0x1c],anywhere:true},
+      {id:'pdf',name:'PDF',mime:'application/pdf',magic:[0x25,0x50,0x44,0x46,0x2d],anywhere:true},
+      {id:'elf',name:'ELF',mime:'application/x-executable',magic:[0x7f,0x45,0x4c,0x46],anywhere:true},
+      {id:'class',name:'Java class/JAR',mime:'application/java-vm',magic:[0xca,0xfe,0xba,0xbe],anywhere:true},
+      {id:'gzip',name:'gzip',mime:'application/gzip',magic:[0x1f,0x8b,0x08],anywhere:true},
+      {id:'bzip2',name:'bzip2',mime:'application/x-bzip2',magic:[0x42,0x5a,0x68],anywhere:true},
+      {id:'xz',name:'xz',mime:'application/x-xz',magic:[0xfd,0x37,0x7a,0x58,0x5a,0x00],anywhere:true},
+      {id:'cab',name:'CAB',mime:'application/vnd.ms-cab-compressed',magic:[0x4d,0x53,0x43,0x46],anywhere:true},
+      {id:'arj',name:'ARJ',mime:'application/x-arj',magic:[0x60,0xea],anywhere:true},
+      {id:'tiff',name:'TIFF',mime:'image/tiff',magic:[0x49,0x49,0x2a,0x00],anywhere:true},
+      {id:'bmp',name:'BMP',mime:'image/bmp',magic:[0x42,0x4d],anywhere:true},
+      {id:'mz',name:'MZ executable',mime:'application/x-msdownload',magic:[0x4d,0x5a],anywhere:false}
     ];
     const matches = [];
     for (const sig of SIGS) {
@@ -33710,7 +33733,7 @@ addOp('polyglotScan','Polyglot / multi-format scan','Data',
       for (let off=0; off<=max; off++) {
         let ok = true;
         for (let i=0;i<sig.magic.length;i++) { if (bytes[off+i] !== sig.magic[i]) { ok=false; break; } }
-        if (ok) matches.push({id:sig.id,name:sig.name,offset:off,end:off+sig.magic.length});
+        if (ok) matches.push({id:sig.id,name:sig.name,mime:sig.mime,offset:off,end:off+sig.magic.length});
       }
     }
     matches.sort((x,y)=> x.offset-y.offset || x.end-y.end);
@@ -33725,11 +33748,432 @@ addOp('polyglotScan','Polyglot / multi-format scan','Data',
     }
     const lines = ['POLYGLOT SCAN — ' + cls, 'bytes: ' + bytes.length, ''];
     if (!matches.length) lines.push('(no known format signatures)');
-    for (const m of matches) lines.push('+' + m.offset + '  ' + m.name);
+    for (const m of matches) lines.push('+' + m.offset + '  ' + m.name + ' (' + m.mime + ')');
     const warn = (cls === 'chimera-candidate' || cls === 'parasite-or-stack') ? ' — investigate: file is valid-shaped as multiple formats' : '';
     lines.push('', 'verdict: ' + cls + warn);
     const text = lines.join('\n');
     return kitCard('Polyglot scan', cls, kitMono(text), text);
+  })
+
+/* ===== Round-13 archive header triage (ARJ / LHA / ACE / ZIP) =====
+   Header bytes only: no decompression, no decryption, no extraction
+   (standing flags F2/F4). Format references are pinned per op below;
+   see docs/backlog-execution-round-13-2026-10-22.md. Input convention
+   mirrors polyglotScan (hex with whitespace ok, or raw latin1 text);
+   an op's select default is NOT auto-applied for programmatic calls,
+   so `undefined` is treated as the default inside archHdrBytes. */
+function archHdrBytes(t,a){
+  const s = String(t==null?'':t);
+  const fmt = (a && a.inputfmt) ? a.inputfmt : 'auto';
+  const hexish = /^[0-9a-fA-F\s]+$/.test(s) && (s.replace(/\s+/g,'').length % 2 === 0);
+  const hexMode = fmt === 'hex' || (fmt === 'auto' && hexish);
+  const out = [];
+  if (hexMode) { const h = s.replace(/\s+/g,''); for (let i=0;i<h.length;i+=2) out.push(parseInt(h.substr(i,2),16)); }
+  else { for (let i=0;i<s.length;i++) out.push(s.charCodeAt(i) & 0xff); }
+  return out;
+}
+const ARCH_HDR_FMT_ARG = [{key:'inputfmt',label:'Input as',type:'select',default:'auto',options:[['auto','Auto (hex if possible)'],['hex','Hex'],['text','Raw text']]}];
+let archHdrCrcTable = null;
+function archHdrCrc32(b, start, end){ /* standard CRC-32 (PKZIP/zlib semantics) */
+  if (!archHdrCrcTable) {
+    archHdrCrcTable = [];
+    for (let n=0;n<256;n++) { let c = n; for (let k=0;k<8;k++) c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1); archHdrCrcTable.push(c >>> 0); }
+  }
+  let c = 0xffffffff;
+  for (let i=start;i<end;i++) c = (archHdrCrcTable[(c ^ b[i]) & 0xff] ^ (c >>> 8)) >>> 0;
+  return (c ^ 0xffffffff) >>> 0;
+}
+function archHdrAceCrc16(b, start, end){ /* ACE: low 16 bits of CRC-32 without the final inversion (acefile AceCRC16) */
+  return ((archHdrCrc32(b, start, end) ^ 0xffffffff) >>> 0) & 0xffff;
+}
+let archHdrLhaTable = null;
+function archHdrLhaCrc16(b, start, end, zeroAt){ /* LHA CRC-16: poly 0xA001, init 0 (lha crcio.c/lha_macro.h) */
+  if (!archHdrLhaTable) {
+    archHdrLhaTable = [];
+    for (let n=0;n<256;n++) { let r = n; for (let k=0;k<8;k++) r = (r & 1) ? ((r >> 1) ^ 0xa001) : (r >> 1); archHdrLhaTable.push(r & 0xffff); }
+  }
+  let crc = 0;
+  for (let i=start;i<end;i++) { const v = (zeroAt && (i === zeroAt[0] || i === zeroAt[1])) ? 0 : b[i]; crc = (archHdrLhaTable[(crc ^ v) & 0xff] ^ (crc >> 8)) & 0xffff; }
+  return crc;
+}
+function archHdrU16(b, o){ return (o >= 0 && o+2 <= b.length) ? (b[o] | (b[o+1] << 8)) : null; }
+function archHdrU32(b, o){ return o+4 <= b.length ? ((b[o] | (b[o+1] << 8) | (b[o+2] << 16) | (b[o+3] << 24)) >>> 0) : null; }
+function archHdrU64(b, o){ const lo = archHdrU32(b, o), hi = archHdrU32(b, o+4); return (lo === null || hi === null) ? null : (BigInt(hi) << 32n) | BigInt(lo); }
+function archHdrHex2(n){ return ('0' + (n & 0xff).toString(16)).slice(-2); }
+function archHdrHex(n, width){ return ('00000000' + (n >>> 0).toString(16)).slice(-width); }
+function archHdrName(b, start, len){
+  let s = '';
+  for (let i=0;i<len && start+i < b.length;i++) { const c = b[start+i]; s += (c >= 32 && c <= 126) ? String.fromCharCode(c) : ('\\x' + archHdrHex2(c)); }
+  return s;
+}
+function archHdrDosTime(v){ /* DOS date/time u32: date in the HIGH word, time in the LOW word */
+  if (v === null) return '?';
+  const date = (v >>> 16) & 0xffff, time = v & 0xffff;
+  const y = 1980 + (date >> 9), mo = (date >> 5) & 0xf, d = date & 0x1f;
+  const hh = (time >> 11) & 0x1f, mm = (time >> 5) & 0x3f, ss = (time & 0x1f) * 2;
+  if (!mo || !d) return 'unset (0x' + archHdrHex(v, 8) + ')';
+  const p = (x) => ('0' + x).slice(-2);
+  return y + '-' + p(mo) + '-' + p(d) + ' ' + p(hh) + ':' + p(mm) + ':' + p(ss);
+}
+function archHdrReport(title, badge, lines){ const text = lines.join('\n'); return kitCard(title, badge, kitMono(text), text); }
+
+addOp('arjHeader','ARJ header walk (structure only)','Data',
+  'Walks ARJ main + local file headers (magic 60 EA, per-header CRC-32 verified) and reports names, methods, flags (incl. GARBLED), sizes and member CRCs. Mirrors tools/arjwalk.py and docs/arj-garble-format-notes.md. Structure only — no member is decompressed or decrypted (F2). Input = hex bytes or raw latin1 text.',
+  ARCH_HDR_FMT_ARG,
+  function(t,a){
+    const b = archHdrBytes(t, a);
+    const lines = ['ARJ HEADER WALK — structure only (no member decrypted)', 'bytes: ' + b.length, ''];
+    const FLAG_NAMES = {1:'GARBLED',2:'VOLUMES',4:'EXTFILE',8:'EXTFILE2',16:'PATHSYM',32:'BACKUP',64:'NTSPECIAL'};
+    const METHODS = {0:'stored',1:'max',2:'fast',3:'faster',4:'fastest'};
+    const HOSTS = {0:'MS-DOS'};
+    const cand = [];
+    for (let i=0; i+1 < b.length; i++) {
+      if (b[i] !== 0x60 || b[i+1] !== 0xea) continue;
+      const hlen = archHdrU16(b, i+2);
+      if (hlen === null || hlen === 0 || hlen > 2600) continue;
+      if (i+4+hlen+4 > b.length) continue;
+      if (archHdrCrc32(b, i+4, i+4+hlen) !== archHdrU32(b, i+4+hlen)) continue;
+      const first = b[i+4];
+      if (first < 12 || first > hlen) continue;
+      cand.push({off:i, hlen, first});
+    }
+    if (!cand.length) {
+      lines.push('(no CRC-valid ARJ headers found — truncated input, wrong format, or headers still hidden behind a stub? polyglotScan first)');
+      lines.push('', 'verdict: not-arj');
+      return archHdrReport('ARJ header walk', 'no ARJ headers', lines);
+    }
+    if (cand[0].off > 0) lines.push('note: ' + cand[0].off + ' byte(s) before the first header (SFX stub?)', '');
+    const splitTail = (c) => {
+      const start = c.off + 4 + c.first, end = c.off + 4 + c.hlen;
+      const parts = [[]];
+      for (let i=start;i<end;i++) { if (b[i] === 0) parts.push([]); else parts[parts.length-1].push(b[i]); }
+      return parts.map(p => archHdrName(p, 0, p.length));
+    };
+    const shown = Math.min(cand.length, 101);
+    let garbled = 0;
+    for (let idx=0; idx<shown; idx++) {
+      const c = cand[idx], h = c.off + 4;
+      const flags = b[h+4];
+      const flagNames = Object.keys(FLAG_NAMES).map(Number).filter(bit => flags & bit).map(bit => FLAG_NAMES[bit]);
+      const names = splitTail(c);
+      if (idx === 0) {
+        lines.push('main header @+' + c.off);
+        lines.push('  archive name: "' + (names[0] || '') + '"' + (names[1] ? '  comment: "' + names[1] + '"' : ''));
+        lines.push('  format rev: ' + b[h+1] + '  min version: ' + b[h+2] + '  host OS: ' + b[h+3] + ' (' + (HOSTS[b[h+3]] || '?') + ')');
+        lines.push('  first_hdr_size: ' + c.first + (c.first === 30 ? ' (rev-4 layout, no encryption-version byte)' : '') + '  header size: ' + c.hlen + '  header CRC-32: ok');
+        lines.push('  flags: 0x' + archHdrHex2(flags) + (flags & 1 ? ' (GARBLED at archive level)' : '') + '  security version: ' + b[h+5] + '  file type: ' + b[h+6] + (b[h+6] === 2 ? ' (spec-mandated 2)' : ' (!= 2, unusual)'));
+        lines.push('  created: ' + archHdrDosTime(archHdrU32(b, h+8)));
+      } else {
+        if (flags & 1) garbled++;
+        const csize = archHdrU32(b, h+12), osize = archHdrU32(b, h+16), ocrc = archHdrU32(b, h+20);
+        lines.push('[' + idx + '] @+' + c.off + '  "' + (names[0] || '') + '"');
+        lines.push('     method=' + b[h+5] + ' (' + (METHODS[b[h+5]] || '?') + ')  flags=0x' + archHdrHex2(flags) + ' (' + (flagNames.join('|') || '0') + ')' +
+          '  csize=' + csize + '  osize=' + osize + '  crc=' + archHdrHex(ocrc === null ? 0 : ocrc, 8) +
+          '  modified=' + archHdrDosTime(archHdrU32(b, h+8)) + ((flags & 1) ? '  <GARBLED — left encrypted>' : ''));
+      }
+    }
+    if (cand.length > shown) lines.push('... and ' + (cand.length - shown) + ' more header(s) not shown');
+    lines.push('', 'verdict: ' + (cand.length - 1) + ' member header(s)' + (garbled ? ', ' + garbled + ' garbled (structure only per F2)' : ''));
+    return archHdrReport('ARJ header walk', (cand.length - 1) + ' member(s)', lines);
+  })
+
+addOp('lhaHeader','LHA / LZH header walk','Data',
+  'Parses LHA/LZH level-0/1/2 member headers (method at +2, level at +20; jca02266/lha header.doc.md + src/header.c): method, packed/original sizes, file CRC-16, level-0/1 header sum and level-2 header CRC verified, extended filename/dirname headers resolved. LHA has no in-format encryption (docs/arj-lha-ace-password-notes-2026-10-21.md §2). Headers only — no decompression. Input = hex or raw latin1.',
+  ARCH_HDR_FMT_ARG,
+  function(t,a){
+    const b = archHdrBytes(t, a);
+    const lines = ['LHA/LZH HEADER WALK — headers only (format carries no encryption)', 'bytes: ' + b.length, ''];
+    function methodAt(pos){
+      if (pos + 7 > b.length) return null;
+      const m = archHdrName(b, pos+2, 5);
+      return /^-l[hz][0-9ds]-$/.test(m) || /^-pm[0-9]-$/.test(m) ? m : null;
+    }
+    function sumOk(pos){ /* level 0/1: sum of the header_size bytes starting at the method */
+      const hsz = b[pos]; let s = 0;
+      for (let i=0;i<hsz && pos+2+i < b.length;i++) s = (s + b[pos+2+i]) & 0xff;
+      return pos+2+hsz <= b.length && s === b[pos+1];
+    }
+    function walkExt(pos, firstSize, bound){
+      const exts = []; let size = firstSize, p = pos, total = 0, cursor0 = -1, storedHcrc = null;
+      while (size && exts.length < 32) {
+        if (size < 3 || p + size > bound) { exts.push({bad:'size ' + size + ' out of range'}); break; }
+        const type = b[p];
+        const payload = archHdrName(b, p+1, size-3);
+        if (type === 0 && size >= 5) { storedHcrc = archHdrU16(b, p+1); cursor0 = p+1; }
+        exts.push({type, payload, size, at:p});
+        total += size;
+        size = archHdrU16(b, p + size - 2);
+        p = pos + total;
+      }
+      return {exts, total, storedHcrc, cursor0};
+    }
+    function headerName(exts, baseName){
+      let dir = '', name = baseName;
+      for (const e of exts) {
+        if (e.type === 1) name = e.payload;
+        if (e.type === 2) dir = e.payload.split('\\xff').join('/');
+      }
+      return dir ? dir + '/' + name : name;
+    }
+    let start = 0;
+    if (!methodAt(0)) {
+      let found = -1;
+      for (let p=2; p+7 <= b.length && found < 0; p++) {
+        if (methodAt(p-2)) {
+          const lvl = b[p-2+20];
+          if (lvl === 2 || ((lvl === 0 || lvl === 1) && sumOk(p-2))) found = p-2;
+        }
+      }
+      if (found > 0) { lines.push('note: first plausible header at +' + found + ' (' + found + ' byte(s) of prefix — SFX stub?)', ''); start = found; }
+    }
+    let pos = start, idx = 0;
+    while (pos < b.length && idx < 100) {
+      if (b[pos] === 0 && idx > 0) { lines.push('@+' + pos + '  end-of-archive mark'); pos = b.length; break; }
+      const method = methodAt(pos);
+      if (!method) { lines.push('walk stopped @+' + pos + ' (no LHA method ID here — truncated or not LHA)'); break; }
+      const level = b[pos+20];
+      const packed = archHdrU32(b, pos+7), orig = archHdrU32(b, pos+11);
+      idx++;
+      if (level === 0 || level === 1) {
+        const hsz = b[pos], total = hsz + 2, nlen = b[pos+21];
+        const name = archHdrName(b, pos+22, nlen);
+        const crcPresent = (total - nlen - 24) >= 0;
+        const fileCrc = crcPresent ? archHdrU16(b, pos+22+nlen) : null;
+        if (level === 0) {
+          lines.push('[' + idx + '] @+' + pos + '  "' + name + '"');
+          lines.push('     level=0  method=' + method + '  packed=' + packed + '  orig=' + orig + '  fileCRC=' + (fileCrc === null ? 'none (field absent)' : archHdrHex(fileCrc, 4)) + '  sum=' + (sumOk(pos) ? 'ok' : 'MISMATCH') + '  modified=' + archHdrDosTime(archHdrU32(b, pos+15)));
+          pos = pos + total + (packed || 0);
+        } else {
+          const osid = (pos+24+nlen < b.length) ? String.fromCharCode(b[pos+24+nlen]) : '?';
+          const firstExt = archHdrU16(b, pos + total - 2);
+          const ext = walkExt(pos + total, firstExt || 0, b.length);
+          const truePacked = (packed || 0) - ext.total;
+          lines.push('[' + idx + '] @+' + pos + '  "' + headerName(ext.exts, name) + '"');
+          lines.push('     level=1  method=' + method + '  skip=' + packed + '  packed(data)=' + truePacked + '  orig=' + orig + '  fileCRC=' + archHdrHex(archHdrU16(b, pos+22+nlen) || 0, 4) + '  os=' + osid + '  sum=' + (sumOk(pos) ? 'ok' : 'MISMATCH') + '  ext headers: ' + ext.exts.filter(e => e.type !== undefined).map(e => '0x' + archHdrHex2(e.type)).join(' ') + '  modified=' + archHdrDosTime(archHdrU32(b, pos+15)));
+          pos = pos + total + (packed || 0);
+        }
+      } else if (level === 2) {
+        const total = archHdrU16(b, pos) || 0;
+        const fileCrc = archHdrU16(b, pos+21);
+        const osid = (pos+23 < b.length) ? String.fromCharCode(b[pos+23]) : '?';
+        const firstExt = archHdrU16(b, pos+24);
+        const ext = walkExt(pos + 26, firstExt || 0, Math.min(pos + total, b.length));
+        let hcrcNote = 'n/a';
+        if (ext.storedHcrc !== null && total > 0 && pos + total <= b.length) {
+          const calc = archHdrLhaCrc16(b, pos, pos + total, [ext.cursor0, ext.cursor0 + 1]);
+          hcrcNote = (calc === ext.storedHcrc) ? 'ok' : 'MISMATCH';
+        }
+        const unixTime = archHdrU32(b, pos+15);
+        lines.push('[' + idx + '] @+' + pos + '  "' + (headerName(ext.exts, '') || '(unnamed - no filename ext header)') + '"');
+        lines.push('     level=2  method=' + method + '  packed=' + packed + '  orig=' + orig + '  fileCRC=' + archHdrHex(fileCrc || 0, 4) + '  os=' + osid + '  headerCRC=' + hcrcNote + '  ext headers: ' + ext.exts.filter(e => e.type !== undefined).map(e => '0x' + archHdrHex2(e.type)).join(' ') + '  modified(unix)=' + unixTime);
+        pos = pos + total + (packed || 0);
+      } else {
+        lines.push('walk stopped @+' + pos + ' (unknown header level 0x' + archHdrHex2(level) + ')');
+        break;
+      }
+    }
+    if (!idx) lines.push('(no LHA headers parsed)');
+    lines.push('', 'verdict: ' + idx + ' member header(s)');
+    return archHdrReport('LHA/LZH header walk', idx + ' member(s)', lines);
+  })
+
+addOp('aceHeader','ACE header walk (headers only)','Data',
+  'Walks ACE blocks (MAIN signature **ACE**; header CRC-16 = low half of the un-inverted CRC-32, verified): MAIN versions/host/flags and FILE32/64 names, sizes, compression type/quality and the PASSWORD flag (bit 14 — acefile + unace agree; see round-13 erratum to the password-notes doc). Treat ACE samples as hostile (CVE-2018-20250): headers only — nothing is decompressed or decrypted. Input = hex or raw latin1.',
+  ARCH_HDR_FMT_ARG,
+  function(t,a){
+    const b = archHdrBytes(t, a);
+    const lines = ['ACE BLOCK WALK — headers only (hostile-format posture, CVE-2018-20250)', 'bytes: ' + b.length, ''];
+    const TYPES = ['MAIN','FILE32','RECOVERY32','FILE64','RECOVERY64A','RECOVERY64B'];
+    const HOSTS = ['MS-DOS','OS/2','Win32','Unix','Mac OS','Win NT','Primos','Apple GS','ATARI','VAX VMS','AMIGA','NeXT','Linux'];
+    const COMP = ['stored','lz77','blocked'];
+    const QUAL = ['store','fastest','fast','normal','good','best'];
+    const MAIN_FLAGS = {1:'ADDSIZE',2:'COMMENT',256:'V20FORMAT',512:'SFX',1024:'LIMITSFXJR',2048:'MULTIVOLUME',4096:'ADVERT',8192:'RECOVERY',16384:'LOCKED',32768:'SOLID'};
+    const FILE_FLAGS = {1:'ADDSIZE',2:'COMMENT',4:'64BIT',1024:'NTSECURITY',4096:'CONTPREV',8192:'CONTNEXT',16384:'PASSWORD',32768:'SOLID'};
+    function flagList(flags, table){ return Object.keys(table).map(Number).filter(bit => flags & bit).map(bit => table[bit]).join('|') || '0'; }
+    let start = -1;
+    for (let i=7; i+7 <= b.length; i++) {
+      if (b[i] === 0x2a && b[i+1] === 0x2a && b[i+2] === 0x41 && b[i+3] === 0x43 && b[i+4] === 0x45 && b[i+5] === 0x2a && b[i+6] === 0x2a) { start = i - 7; break; }
+    }
+    if (start < 0) {
+      lines.push('(no **ACE** main-header signature found)');
+      lines.push('', 'verdict: not-ace');
+      return archHdrReport('ACE header walk', 'no ACE signature', lines);
+    }
+    if (start > 0) lines.push('note: ' + start + ' byte(s) before the MAIN block (SFX stub?)', '');
+    let pos = start, blocks = 0, members = 0, encrypted = 0;
+    while (pos + 4 <= b.length && blocks < 100) {
+      const hcrc = archHdrU16(b, pos), hsize = archHdrU16(b, pos+2);
+      if (hsize === null || hsize < 3 || pos + 4 + hsize > b.length) { lines.push('walk stopped @+' + pos + ' (truncated block)'); break; }
+      const crcOk = archHdrAceCrc16(b, pos+4, pos+4+hsize) === hcrc;
+      const htype = b[pos+4], hflags = archHdrU16(b, pos+5) || 0;
+      const buf = pos + 4; /* header body start; type at +0, flags at +1 */
+      blocks++;
+      if (htype === 0) {
+        lines.push('MAIN @+' + pos + '  headerCRC=' + (crcOk ? 'ok' : 'MISMATCH'));
+        lines.push('  magic: "' + archHdrName(b, buf+3, 7) + '"  extract ver: ' + b[buf+10] + '  creator ver: ' + b[buf+11] + '  host: ' + b[buf+12] + ' (' + (HOSTS[b[buf+12]] || '?') + ')  volume: ' + b[buf+13]);
+        lines.push('  flags: 0x' + archHdrHex(hflags, 4) + ' (' + flagList(hflags, MAIN_FLAGS) + ')  created: ' + archHdrDosTime(archHdrU32(b, buf+14)));
+        let i = 26;
+        if (buf + i < buf + hsize) {
+          const avsz = b[buf+i]; i++;
+          if (avsz) lines.push('  advert (' + avsz + ' bytes): "' + archHdrName(b, buf+i, avsz) + '"');
+          i += avsz;
+        }
+        if (hflags & 2) lines.push('  archive comment present (stored compressed — not decompressed here)');
+        pos = pos + 4 + hsize;
+      } else if (htype === 1 || htype === 3) {
+        members++;
+        let i = 3, pack, orig;
+        if (hflags & 4) { pack = archHdrU64(b, buf+i); orig = archHdrU64(b, buf+i+8); i += 16; }
+        else { pack = archHdrU32(b, buf+i); orig = archHdrU32(b, buf+i+4); i += 8; }
+        const dt = archHdrU32(b, buf+i), attribs = archHdrU32(b, buf+i+4), mcrc = archHdrU32(b, buf+i+8);
+        const comptype = b[buf+i+12], compqual = b[buf+i+13];
+        const fnsz = archHdrU16(b, buf+i+18) || 0;
+        const fname = archHdrName(b, buf+i+20, fnsz);
+        const isEnc = (hflags & 16384) !== 0;
+        if (isEnc) encrypted++;
+        lines.push('[' + members + '] @+' + pos + '  "' + fname + '"  headerCRC=' + (crcOk ? 'ok' : 'MISMATCH'));
+        lines.push('     type=' + TYPES[htype] + '  packed=' + String(pack) + '  orig=' + String(orig) + '  memberCRC=' + archHdrHex(mcrc || 0, 8) +
+          '  compression=' + comptype + ' (' + (COMP[comptype] || '?') + '/' + (QUAL[compqual] || compqual) + ')  attribs=0x' + archHdrHex(attribs || 0, 8) +
+          '  flags=0x' + archHdrHex(hflags, 4) + ' (' + flagList(hflags, FILE_FLAGS) + ')  modified=' + archHdrDosTime(dt) + (isEnc ? '  <PASSWORD — not decrypted>' : ''));
+        const packNum = (pack === null) ? 0 : Number(pack);
+        if (!(packNum >= 0) || packNum > b.length) { lines.push('     (packed size runs past input — walk stops)'); break; }
+        pos = pos + 4 + hsize + packNum;
+      } else if (htype === 2 || htype === 4 || htype === 5) {
+        const rcvr = (hflags & 4) ? archHdrU64(b, buf+3) : archHdrU32(b, buf+3);
+        lines.push('RECOVERY (' + TYPES[htype] + ') @+' + pos + '  data size=' + String(rcvr) + '  headerCRC=' + (crcOk ? 'ok' : 'MISMATCH'));
+        const n = (rcvr === null) ? 0 : Number(rcvr);
+        if (!(n >= 0) || n > b.length) break;
+        pos = pos + 4 + hsize + n;
+      } else {
+        lines.push('unknown block type ' + htype + ' @+' + pos + '  headerCRC=' + (crcOk ? 'ok' : 'MISMATCH') + ' — cannot resynchronize, walk stops');
+        break;
+      }
+    }
+    lines.push('', 'verdict: ' + blocks + ' block(s), ' + members + ' member(s)' + (encrypted ? ', ' + encrypted + ' password-encrypted (headers only)' : ''));
+    return archHdrReport('ACE header walk', members + ' member(s)', lines);
+  })
+
+addOp('paranoidUnzip','ZIP central-directory audit (no extraction)','Data',
+  'Audits a ZIP from its End-of-Central-Directory and central headers (PKWARE APPNOTE layout) and cross-checks every local header — name/method/flag agreement, encryption bits 0/6, UTF-8 bit 11 (the filename-garble risk in docs/zip-garble-format-notes.md), data descriptors, SFX prefix, duplicate/traversal/symlink names, overlapping ranges, trailing bytes. Report only: nothing is inflated, extracted or decrypted. Input = hex or raw latin1.',
+  ARCH_HDR_FMT_ARG,
+  function(t,a){
+    const b = archHdrBytes(t, a);
+    const lines = ['ZIP CENTRAL-DIRECTORY AUDIT — no extraction, no decryption', 'bytes: ' + b.length, ''];
+    const METHODS = {0:'stored',8:'deflate',9:'deflate64',12:'bzip2',14:'lzma',93:'zstd',95:'xz',98:'ppmd',99:'aes (WinZip)'};
+    const warnings = [];
+    /* Locate EOCD: scan the trailing window backwards for 50 4B 05 06 with a consistent comment length. */
+    let eocd = -1;
+    const windowStart = Math.max(0, b.length - 65557);
+    for (let i = b.length - 22; i >= windowStart; i--) {
+      if (b[i] === 0x50 && b[i+1] === 0x4b && b[i+2] === 0x05 && b[i+3] === 0x06) {
+        const clen = archHdrU16(b, i+20);
+        if (clen !== null && i + 22 + clen === b.length) { eocd = i; break; }
+        if (clen !== null && i + 22 + clen < b.length && eocd < 0) eocd = i; /* tolerate trailing bytes, reported below */
+      }
+    }
+    if (eocd < 0) {
+      lines.push('(no End-of-Central-Directory record found — truncated, spanned, or not a ZIP)');
+      lines.push('', 'verdict: not-zip');
+      return archHdrReport('ZIP audit', 'no EOCD', lines);
+    }
+    const trailing = b.length - (eocd + 22 + (archHdrU16(b, eocd+20) || 0));
+    let totalEntries = archHdrU16(b, eocd+10), cdSize = archHdrU32(b, eocd+12), cdOffset = archHdrU32(b, eocd+16);
+    let zip64 = false;
+    if (totalEntries === 0xffff || cdSize === 0xffffffff || cdOffset === 0xffffffff) {
+      zip64 = true;
+      const loc = eocd - 20;
+      if (loc >= 0 && archHdrU32(b, loc) === 0x07064b50) {
+        const recOff = archHdrU64(b, loc+8);
+        const rec = (recOff === null) ? -1 : Number(recOff);
+        if (rec >= 0 && archHdrU32(b, rec) === 0x06064b50) {
+          totalEntries = Number(archHdrU64(b, rec+32) || 0n);
+          cdSize = Number(archHdrU64(b, rec+40) || 0n);
+          cdOffset = Number(archHdrU64(b, rec+48) || 0n);
+        } else warnings.push('ZIP64 locator present but record unreadable — counts below may be wrong');
+      } else warnings.push('EOCD fields saturated (ZIP64) but no locator found');
+    }
+    const delta = eocd - ((cdOffset || 0) + (cdSize || 0));
+    lines.push('EOCD @+' + eocd + '  entries: ' + totalEntries + '  central directory: ' + cdSize + ' bytes @+' + cdOffset + (zip64 ? '  (ZIP64)' : ''));
+    if (delta > 0) lines.push('prefix: ' + delta + ' byte(s) before the archive proper (SFX stub — local offsets adjusted)');
+    if (delta < 0) warnings.push('central directory claims to end ' + (-delta) + ' byte(s) after the EOCD (overlap/corruption)');
+    if (trailing > 0) warnings.push(trailing + ' trailing byte(s) after EOCD + comment');
+    const disk = archHdrU16(b, eocd+4), cdDisk = archHdrU16(b, eocd+6);
+    if (disk || cdDisk) warnings.push('multi-disk archive (disk ' + disk + ', CD on disk ' + cdDisk + ') — single-file audit only');
+    /* Walk central headers at the delta-corrected offset. */
+    const entries = [];
+    let p = (cdOffset || 0) + Math.max(delta, 0);
+    while (p + 46 <= b.length && archHdrU32(b, p) === 0x02014b50 && entries.length < 1000) {
+      const madeBy = archHdrU16(b, p+4), flags = archHdrU16(b, p+8) || 0, method = archHdrU16(b, p+10);
+      let csize = archHdrU32(b, p+20), usize = archHdrU32(b, p+24);
+      const nlen = archHdrU16(b, p+28) || 0, elen = archHdrU16(b, p+30) || 0, clen2 = archHdrU16(b, p+32) || 0;
+      const extAttr = archHdrU32(b, p+38) || 0;
+      let lho = archHdrU32(b, p+42);
+      const name = archHdrName(b, p+46, nlen);
+      if (usize === 0xffffffff || csize === 0xffffffff || lho === 0xffffffff) {
+        let ex = p + 46 + nlen; const exEnd = ex + elen;
+        while (ex + 4 <= exEnd) {
+          const tag = archHdrU16(b, ex), sz = archHdrU16(b, ex+2) || 0;
+          if (tag === 1) { let q = ex + 4;
+            if (usize === 0xffffffff) { usize = Number(archHdrU64(b, q) || 0n); q += 8; }
+            if (csize === 0xffffffff) { csize = Number(archHdrU64(b, q) || 0n); q += 8; }
+            if (lho === 0xffffffff) { lho = Number(archHdrU64(b, q) || 0n); }
+            break;
+          }
+          ex += 4 + sz;
+        }
+      }
+      entries.push({at:p, madeBy, flags, method, csize, usize, extAttr, lho, name, elen, nlen, extraAt:p+46+nlen});
+      p += 46 + nlen + elen + clen2;
+    }
+    if (entries.length !== totalEntries) warnings.push('EOCD claims ' + totalEntries + ' entries but ' + entries.length + ' central headers parsed');
+    const seen = {}, ranges = [];
+    let encCount = 0;
+    entries.forEach((e, k) => {
+      const enc = (e.flags & 1) !== 0, strong = (e.flags & 0x20) !== 0, utf8 = (e.flags & 0x800) !== 0, dd = (e.flags & 8) !== 0;
+      if (enc) encCount++;
+      if (seen[e.name]) warnings.push('duplicate member name: "' + e.name + '"');
+      seen[e.name] = 1;
+      if (/(^|\/)\.\.(\/|$)/.test(e.name) || /^\//.test(e.name) || /^[A-Za-z]:/.test(e.name) || e.name.indexOf('\\') >= 0)
+        warnings.push('path-traversal-shaped name: "' + e.name + '"');
+      if (((e.madeBy || 0) >> 8) === 3 && ((e.extAttr >>> 16) & 0xf000) === 0xa000)
+        warnings.push('unix symlink member: "' + e.name + '"');
+      if (!utf8 && /\\x[89a-f][0-9a-f]/.test(e.name))
+        warnings.push('non-ASCII name without UTF-8 flag (code-page garble risk): "' + e.name + '"');
+      if (e.csize && e.usize && e.usize / Math.max(e.csize, 1) > 200 && e.usize > 1048576)
+        warnings.push('extreme compression ratio on "' + e.name + '" (' + e.usize + '/' + e.csize + ') — bomb-shaped if extracted');
+      /* Local header cross-check at the corrected offset. */
+      let localNote = 'local: not checked';
+      const lp = (e.lho || 0) + Math.max(delta, 0);
+      if (archHdrU32(b, lp) === 0x04034b50) {
+        const lflags = archHdrU16(b, lp+6) || 0, lmethod = archHdrU16(b, lp+8);
+        const lnlen = archHdrU16(b, lp+26) || 0, lelen = archHdrU16(b, lp+28) || 0;
+        const lname = archHdrName(b, lp+30, lnlen);
+        const issues = [];
+        if (lname !== e.name) issues.push('name differs ("' + lname + '")');
+        if (lmethod !== e.method) issues.push('method differs');
+        if (lflags !== e.flags) issues.push('flags differ');
+        localNote = 'local: ' + (issues.length ? issues.join(', ') : 'agrees');
+        if (issues.length) warnings.push('local/central mismatch on "' + e.name + '": ' + issues.join(', '));
+        const dataStart = lp + 30 + lnlen + lelen;
+        let dataEnd = dataStart + (e.csize || 0);
+        if (dd) dataEnd += (archHdrU32(b, dataEnd) === 0x08074b50) ? 16 : 12;
+        ranges.push([dataStart, dataEnd, e.name]);
+      } else {
+        localNote = 'local: MISSING/bad signature @+' + lp;
+        warnings.push('no local header for "' + e.name + '" at claimed offset +' + lp);
+      }
+      lines.push('[' + (k+1) + '] "' + e.name + '"');
+      lines.push('     method=' + e.method + ' (' + (METHODS[e.method] || '?') + ')  csize=' + e.csize + '  usize=' + e.usize +
+        '  flags=0x' + archHdrHex(e.flags, 4) + (enc ? ' ENCRYPTED' + (strong ? '/strong' : '/ZipCrypto-era') + ' — not decrypted' : '') + (dd ? ' descriptor' : '') + (utf8 ? ' utf8' : '') + '  ' + localNote);
+    });
+    ranges.sort((x, y) => x[0] - y[0]);
+    for (let i=1; i<ranges.length; i++) {
+      if (ranges[i][0] < ranges[i-1][1]) warnings.push('overlapping member data: "' + ranges[i-1][2] + '" / "' + ranges[i][2] + '"');
+    }
+    lines.push('');
+    if (warnings.length) { lines.push('warnings (' + warnings.length + '):'); warnings.forEach(w => lines.push('  ! ' + w)); lines.push(''); }
+    lines.push('verdict: ' + entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies') + ', ' + warnings.length + ' warning(s)' + (encCount ? ', ' + encCount + ' encrypted (headers only)' : ''));
+    return archHdrReport('ZIP central-directory audit', entries.length + ' entries · ' + warnings.length + ' warning(s)', lines);
   })
 
 const recipePackOp=OPERATIONS.find(op=>op.id==='recipePack');
