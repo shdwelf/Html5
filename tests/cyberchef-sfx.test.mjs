@@ -10,8 +10,9 @@ const report = JSON.parse(readFileSync(new URL("../docs/cyberchef-recipe-sync-20
 // Four barcode/logic additions, three PR #118 Aztec/CueCat operations, the
 // 2026-10-14 field-cipher deep dive (OD message, VIC schedule + message stage,
 // Diana table + cipher, Gronsfeld analysis, hexdump/octal byte recipes), the
-// OpenPGP and Enigma recipes, and the two War Office manual recipes.
-const expectedCount = report.counts.mergedRuntime + 29;
+// OpenPGP and Enigma recipes, and the two War Office manual recipes, the
+// round-12 polyglotScan op, and the four round-13 archive-header ops.
+const expectedCount = report.counts.mergedRuntime + 33;
 
 function createDom(html = appHtml) {
   return new JSDOM(html, {

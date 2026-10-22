@@ -55,6 +55,12 @@ Suggested follow-ups (not added this round — pack-count machinery unchanged):
 a “TomTom slash round-trip” spotlight (`gcwTomTinesWin` encode→decode) once
 spotlight batches resume, and an HVD glyph pack **when** bitmap tiles exist.
 
+**Update (2026-10-22, backlog round 13):** the TomTom-slash spotlight pack
+landed (`Spotlight — TomTom slash round-trip (A-tom-tom encode → decode)`),
+and the round-trip is now test-pinned (`tests/cyberchef-archive-headers.test.mjs`:
+the `ANZ` vector above plus a full-alphabet encode→decode identity). The HVD
+glyph pack remains gated on font/image terms, unchanged.
+
 ## 5. Open items
 
 1. HVD font acquisition + bitmap tiles (glyph-gated, see §2).

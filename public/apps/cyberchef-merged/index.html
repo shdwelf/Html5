@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 500 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 511 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -3332,6 +3332,28 @@ const RECIPE_PACKS={
  'Keygen → Encrypt (AES)':[['keyRandom',{}],['aesGCM',{mode:'encrypt'}]],
  'Hash Collection':[['allhash',{}]],
  'Boxentriq Puzzle & Code-Breaking Pack (Deferred Four — AMSCO · Morbit · Pollux · Nak-Nak)':[['amsco',{}],['morbit',{}],['pollux',{}],['naknak',{}]],
+ 'RFC 4493 / RFC 9285 — AES-CMAC & Base45 vectors':[['aesCmac',{infmt:'hex'}],['base45',{mode:'encode'}]],
+ 'FIPS 197 — AES Key Schedule & GF(2^8) Field Math':[['aesKeySched',{show:'rounds'}],['gf256',{op:'mul'}]],
+ 'Mignotte CRT Threshold Sharing (Stinson)':[['mignotte',{mode:'split'}]],
+ 'Retro Text — GTA asc+1 Codec':[['gtaText',{mode:'decode'}]],
+ 'Spotlight — Caesar & ROT family':[['caesar',{}],['rot13',{}],['rotN',{}],['rot5',{}],['rot18',{}]],
+ 'Spotlight — Classical grids & fractionation (Playfair · Bifid · Four-square)':[['playfair',{}],['fourSquare',{}],['bifid',{}],['porta',{}]],
+ 'Spotlight — Classic hashes (MD5 · SHA-1 · CRC32 · FNV · djb2)':[['md5',{}],['sha1',{}],['crc32',{}],['fnv1a',{}],['djb2',{}]],
+ 'Spotlight — Block & stream ciphers (DES · 3DES · AES-CCM · Rabbit · HC-128)':[['des',{}],['tdes',{}],['aesccm',{}],['rabbit',{}],['hc128',{}]],
+ 'Spotlight — Steganography lab (LSB · whitespace · hide/reveal)':[['stegoLSB',{}],['stegoSpace',{}],['stegoHide',{}],['stegoReveal',{}]],
+ 'Spotlight — Post-quantum KEM & signatures (ML-KEM · ML-DSA)':[['mkkem',{}],['mldsa',{}],['mldsaCore',{}]],
+ 'Spotlight — FIDO & hardware keys (U2F · PIV · OnlyKey · SoloKey)':[['fidoU2fPacket',{}],['yubikeyPivApdu',{}],['onlyKeyBackupAuth',{}],['soloKeyBootVerify',{}]],
+ 'Spotlight — Esolangs & cellular automata (Brainfuck · Rule 110 · Life)':[['brainfuck',{}],['bfCompile',{}],['rule110',{}],['life',{}]],
+ 'Spotlight — EXE protection triage (PKLITE stub · Scumm XOR)':[['pkliteStub',{}],['scummXor',{}]],
+ 'Spotlight — Virus analysis (signature scan · boot sector)':[['virusSigScan',{}],['dosBootSector',{}]],
+ 'Spotlight — GCWizard ciphers (Polybius · Playfair · autokey · phone keypad)':[['gcwPolybius',{}],['gcwPlayfair',{}],['gcwVigenereAutokey',{}],['gcwPhoneKeypad',{}]],
+ 'Spotlight — Coin addresses & keypairs (Nano · Solana · Stellar · Tezos)':[['nanoAddr',{}],['solana',{}],['stellar',{}],['tezos',{}]],
+ 'Spotlight — Public-key classics (RSA · Diffie-Hellman)':[['rsa',{}],['dh',{}],['genRSA',{}]],
+ 'Spotlight — Polyglot & format triage':[['polyglotScan',{}],['toHexdump',{}],['crc32',{}]],
+ 'Spotlight — Archive header triage (ARJ · LHA · ACE · ZIP, headers only)':[['polyglotScan',{}],['arjHeader',{}],['lhaHeader',{}],['aceHeader',{}],['paranoidUnzip',{}]],
+ 'Spotlight — TomTom slash round-trip (A-tom-tom encode → decode)':[['gcwTomTinesWin',{table:'tomtom',mode:'encode'}],['gcwTomTinesWin',{table:'tomtom',mode:'decode'}]],
+ 'Spotlight — SHA-2 & checksums (SHA-384 · SHA-512 · SHA3-512 · CRC16 · Adler-32)':[['sha384',{}],['sha512',{}],['sha3_512',{}],['crc16',{}],['adler32',{}]],
+ 'Spotlight — Data encodings (Base62 · data URI · ASCII codes)':[['toB62',{}],['fromB62',{}],['dataUri',{}],['toASCII',{}],['fromASCII',{}]],
 };
 addOp('recipePack','Recipe Pack','Recipes','Load a predefined cipher-suite recipe pack into the Recipe panel.',Object.keys(RECIPE_PACKS).map((name,i)=>({key:'pack',label:'Pack',type:'select',default:Object.keys(RECIPE_PACKS)[0],options:Object.keys(RECIPE_PACKS).map(n=>[n,n])})),function(t,a){
   const n=applyRecipePack(a.pack);
@@ -33452,6 +33474,688 @@ function renderAztecLabelSheet(tpl,values,a){
   const svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'"><rect width="100%" height="100%" fill="#fff"/>'+cells.join('')+'</svg>';
   return svgDataUrl(svg);
 }
+
+/* ============ ROUND 5 sourced ops (2026-10-21): thin-category vectors ============ */
+
+/* GTA text codec — retro-game asc()+1 obfuscation. */
+addOp('gtaText','GTA Text (asc+1)','Text',
+  'Grand Theft Auto family text obfuscation: each stored byte is the character code plus one (BASIC asc(c)+1). Decode subtracts 1 from every byte, encode adds 1; arithmetic is byte-wise mod 256 (Latin-1). Recipe specified by the requester; round-trip pinned in tests/cyberchef-round5-ops.test.mjs.',
+  [
+    {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode (asc-1)'],['encode','Encode (asc+1)']]}
+  ],
+  function(t,a){
+    const delta = a.mode==='encode' ? 1 : -1;
+    const out = [];
+    for (const ch of (t||'')) out.push(String.fromCharCode((((ch.charCodeAt(0) + delta) % 256) + 256) % 256));
+    return out.join('');
+  })
+
+/* Base45 — RFC 9285 (QR Alphanumeric alphabet). */
+addOp('base45','Base45 (RFC 9285)','Text',
+  'RFC 9285 Base45: QR Alphanumeric-mode alphabet 0-9 A-Z space $%*+-./: , two bytes to three characters, one byte to two, no padding. Verified against the RFC examples: AB->BB8, Hello!!->%69 VD92EX0, base-45->UJCLQE7W581, QED8WEX0->ietf!.',
+  [
+    {key:'mode',label:'Mode',type:'select',default:'encode',options:[['encode','Encode'],['decode','Decode']]}
+  ],
+  function(t,a){
+    const A = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+    const idx = {}; for (let i=0;i<45;i++) idx[A[i]] = i;
+    if (a.mode==='encode') {
+      const b = utf8Encode(t||'');
+      let out = '';
+      for (let i=0;i+1<b.length;i+=2) {
+        const n = b[i]*256 + b[i+1], c = n%45, d = Math.floor(n/45)%45, e = Math.floor(n/2025);
+        out += A[c]+A[d]+A[e];
+      }
+      if (b.length%2) { const v = b[b.length-1], c = v%45, d = Math.floor(v/45); out += A[c]+A[d]; }
+      return out;
+    }
+    const s = (t||'').trim();
+    if (s.length%3===1) throw new Error('Base45: invalid length');
+    const out = [];
+    for (let i=0;i<s.length;i+=3) {
+      for (let j=i;j<Math.min(i+3,s.length);j++) if (idx[s[j]]===undefined) throw new Error('Base45: character outside the RFC 9285 alphabet');
+      const c = idx[s[i]], d = idx[s[i+1]];
+      if (i+2<s.length) {
+        const n = c + d*45 + idx[s[i+2]]*2025;
+        if (n>65535) throw new Error('Base45: group overflows 16 bits');
+        out.push(n>>8, n&0xff);
+      } else out.push(c + d*45);
+    }
+    return new TextDecoder('utf-8').decode(new Uint8Array(out));
+  })
+
+/* AES-CMAC — RFC 4493 (via WebCrypto single-block AES = ECB). */
+addOp('aesCmac','AES-CMAC (RFC 4493)','MAC',
+  'AES-128-CMAC per RFC 4493 (OMAC1 / NIST SP 800-38B): subkeys K1/K2 from AES-128(0^128) with Rb=0x87, CBC chain over 16-byte blocks with 10* padding. Verified against all four RFC 4493 examples (empty, 16, 40 and 64-byte messages).',
+  [
+    {key:'key',label:'Key (hex, 16B)',type:'text',default:'2b7e151628aed2a6abf7158809cf4f3c'},
+    {key:'infmt',label:'Input',type:'select',default:'hex',options:[['hex','Hex'],['text','Text']]}
+  ],
+  async function(t,a){
+    const key = Array.from(bytesFromHex(a.key||''));
+    if (key.length!==16) throw new Error('CMAC key must be 16 bytes hex');
+    const msg = a.infmt==='hex' ? Array.from(bytesFromHex(t||'')) : Array.from(utf8Encode(t||''));
+    const k = await crypto.subtle.importKey('raw', new Uint8Array(key), 'AES-CBC', false, ['encrypt']);
+    const aes1 = async (blk) => Array.from(new Uint8Array(
+      await crypto.subtle.encrypt({name:'AES-CBC', iv:new Uint8Array(16)}, k, new Uint8Array(blk))).slice(0,16));
+    const shift = (b) => { const o=[]; let c=0; for (let i=15;i>=0;i--) { o[i]=((b[i]<<1)|c)&0xff; c=b[i]>>7; } return o; };
+    const xor128 = (x,y) => x.map((v,i)=>v^y[i]);
+    const msb = (b) => (b[0]&0x80)!==0;
+    const Rb = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0x87];
+    const L = await aes1(new Array(16).fill(0));
+    let K1 = shift(L); if (msb(L)) K1 = xor128(K1, Rb);
+    let K2 = shift(K1); if (msb(K1)) K2 = xor128(K2, Rb);
+    const complete = msg.length>0 && msg.length%16===0;
+    const nFull = complete ? msg.length/16-1 : Math.floor(msg.length/16);
+    let x = new Array(16).fill(0);
+    for (let i=0;i<nFull;i++) x = await aes1(xor128(x, msg.slice(i*16, i*16+16)));
+    let last = msg.slice(nFull*16);
+    if (complete) last = xor128(last, K1);
+    else {
+      const tail = last.concat([0x80]); while (tail.length<16) tail.push(0);
+      last = xor128(tail, K2);
+    }
+    const mac = await aes1(xor128(x, last));
+    return hexFromBytes(new Uint8Array(mac));
+  })
+
+/* AES Key Schedule — FIPS 197 section 5.2 (Fig. 11). */
+addOp('aesKeySched','AES Key Schedule (FIPS 197)','Crypto',
+  'FIPS 197 Key Expansion inspector (Fig. 11): RotWord, SubWord (Fig. 7 S-box) and Rcon = x^(i-1) in GF(2^8). Prints the round keys the way Appendix C.1 does. Verified against FIPS 197 Appendix A.1 words (2b7e…: w4=a0fafe17, w6=23a33939) and the full C.1 round-key table for key 000102…0f.',
+  [
+    {key:'key',label:'Key (hex 16/24/32B)',type:'text',default:'000102030405060708090a0b0c0d0e0f'},
+    {key:'show',label:'Show',type:'select',default:'rounds',options:[['rounds','Round keys'],['words','All words + Rcon steps']]}
+  ],
+  function(t,a){
+    const S = '637c777bf26b6fc53001672bfed7ab76ca82c97dfa5947f0add4a2af9ca472c0'+
+      'b7fd9326363ff7cc34a5e5f171d8311504c723c31896059a071280e2eb27b275'+
+      '09832c1a1b6e5aa0523bd6b329e32f8453d100ed20fcb15b6acbbe394a4c58cf'+
+      'd0efaafb434d338545f9027f503c9fa851a3408f929d38f5bcb6da2110fff3d2'+
+      'cd0c13ec5f974417c4a77e3d645d197360814fdc222a908846eeb814de5e0bdb'+
+      'e0323a0a4906245cc2d3ac629195e479e7c8376d8dd54ea96c56f4ea657aae08'+
+      'ba78252e1ca6b4c6e8dd741f4bbd8b8a703eb5664803f60e613557b986c11d9e'+
+      'e1f8981169d98e949b1e87e9ce5528df8ca1890dbfe6426841992d0fb054bb16';
+    const SBOX = []; for (let i=0;i<256;i++) SBOX.push(parseInt(S.substr(i*2,2),16));
+    const key = bytesFromHex(a.key||'');
+    if (![16,24,32].includes(key.length)) throw new Error('key must be 16, 24 or 32 bytes hex');
+    const Nk = key.length/4, Nr = Nk+6;
+    const w = [];
+    for (let i=0;i<Nk;i++) w.push([key[4*i],key[4*i+1],key[4*i+2],key[4*i+3]]);
+    const hexw = (x) => x.map(v=>v.toString(16).padStart(2,'0')).join('');
+    const lines = [];
+    for (let i=Nk;i<4*(Nr+1);i++) {
+      let temp = w[i-1].slice();
+      let rcon = 0;
+      if (i%Nk===0) {
+        temp = temp.slice(1).concat(temp[0]);            // RotWord
+        temp = temp.map(v=>SBOX[v]);                     // SubWord
+        let rc = 1; for (let j=1;j<i/Nk;j++) rc = ((rc<<1)^((rc&0x80)?0x1b:0))&0xff;
+        rcon = rc; temp[0] ^= rcon;
+      } else if (Nk>6 && i%Nk===4) temp = temp.map(v=>SBOX[v]);
+      w.push(w[i-Nk].map((v,j)=>v^temp[j]));
+      if (a.show==='words') lines.push('w['+i+'] temp='+hexw(temp)+' Rcon[i/Nk]='+rcon.toString(16).padStart(2,'0')+' -> '+hexw(w[i]));
+    }
+    const out = ['AES-'+(Nk*32)+' key schedule, '+Nr+' rounds, '+(4*(Nr+1))+' words:'];
+    for (let r=0;r<=Nr;r++) out.push('round['+r+'].k_sch   '+w.slice(r*4,r*4+4).map(hexw).join(' '));
+    if (a.show==='words') out.push('', ...lines);
+    return out.join('\n');
+  })
+
+/* GF(2^8) field math — FIPS 197 section 4 (Rijndael field). */
+addOp('gf256','GF(2^8) field math (AES)','Math',
+  'Rijndael field arithmetic over GF(2^8) with m(x)=x^8+x^4+x^3+x+1 (FIPS 197 §4): XOR addition, xtime-based multiplication, inverse by a^254. Verified against the FIPS worked examples: {57}+{83}={d4}, {57}*{83}={c1}, xtime chain {ae}/{47}/{8e}/{07}, {57}*{13}={fe}, and inv({53})={ca} (the S-box construction input for S[{53}]={ed}).',
+  [
+    {key:'a',label:'a (hex byte)',type:'text',default:'57'},
+    {key:'b',label:'b (hex byte)',type:'text',default:'83'},
+    {key:'op',label:'Operation',type:'select',default:'mul',options:[['add','a+b (XOR)'],['mul','a*b'],['inv','a^-1'],['pow','a^e'],['xtime','xtime chain of a']]}
+  ],
+  function(t,a){
+    const A = parseInt((a.a||'0').replace(/[^0-9a-fA-F]/g,''),16)&0xff;
+    const B = parseInt((a.b||'0').replace(/[^0-9a-fA-F]/g,''),16)&0xff;
+    const hx = (v) => v.toString(16).padStart(2,'0');
+    const xtime = (v) => ((v<<1)^((v&0x80)?0x1b:0))&0xff;
+    const mul = (x,y) => { let r=0; while (y) { if (y&1) r^=x; x=xtime(x); y>>=1; } return r; };
+    const inv = (x) => { let r=1, base=x, e=254; while (e) { if (e&1) r=mul(r,base); base=mul(base,base); e>>=1; } return r; };
+    switch (a.op) {
+      case 'add': return 'add: '+hx(A)+' + '+hx(B)+' = '+hx(A^B);
+      case 'mul': return 'mul: '+hx(A)+' * '+hx(B)+' = '+hx(mul(A,B));
+      case 'inv': return 'inv: '+hx(A)+'^-1 = '+hx(inv(A))+'  (check: '+hx(A)+'*'+hx(inv(A))+' = '+hx(mul(A,inv(A)))+')';
+      case 'pow': {
+        let r=1, base=A, e=B; while (e) { if (e&1) r=mul(r,base); base=mul(base,base); e>>=1; }
+        return 'pow: '+hx(A)+'^'+B+' = '+hx(r);
+      }
+      default: {
+        const chain=[]; let v=A;
+        for (let i=0;i<4;i++) { v=xtime(v); chain.push(hx(1<<(i+1))+'='+hx(v)); }
+        return 'xtime chain of '+hx(A)+': '+chain.join(' ');
+      }
+    }
+  })
+
+/* Mignotte CRT threshold sharing — Stinson, Cryptography: Theory and Practice. */
+addOp('mignotte','Mignotte CRT threshold sharing','Secret Sharing',
+  'Mignotte scheme (classic CRT secret sharing — Stinson, Cryptography: Theory and Practice): shares a_i = S mod m_i over strictly-increasing pairwise-coprime moduli; any K shares reconstruct S by CRT when m_1·…·m_K > S > m_{n-K+2}·…·m_n. Labelling: classic textbook scheme, verified by CRT round-trip and threshold-bound checks in tests; no published KAT is claimed.',
+  [
+    {key:'mode',label:'Mode',type:'select',default:'split',options:[['split','Split'],['combine','Combine']]},
+    {key:'n',label:'Shares (N)',type:'number',default:'5'},
+    {key:'k',label:'Threshold (K)',type:'number',default:'3'},
+    {key:'secret',label:'Secret S (decimal)',type:'text',default:'1234'},
+    {key:'moduli',label:'Moduli m1..mn (commas)',type:'text',default:'11,13,17,19,23'}
+  ],
+  function(t,a){
+    const gcd = (x,y) => y?gcd(y,x%y):x;
+    const lines = (t||'').split('\n').map(s=>s.trim()).filter(Boolean);
+    const pair = (s) => { const m = s.match(/m=(\d+)\D+a=(\d+)/); return m ? [BigInt(m[1]), BigInt(m[2])] : null; };
+    if (a.mode==='combine') {
+      const shares = lines.map(pair).filter(Boolean);
+      if (shares.length<2) throw new Error('paste at least two share lines');
+      let S = shares[0][1], M = shares[0][0];
+      for (let i=1;i<shares.length;i++) {
+        const [m, s] = shares[i];
+        if (gcd(M,m)!==1n) throw new Error('moduli must be pairwise coprime');
+        let d = 0n; for (let x=0n;x<m;x++) if ((M*x)%m === ((s-S)%m+m)%m) { d=x; break; }
+        S = S + M*d; M = M*m; S = ((S%M)+M)%M;
+      }
+      return 'Mignotte CRT combine ('+shares.length+' shares): S = '+S;
+    }
+    const N = Math.max(2, parseInt(a.n)||5), K = Math.min(N, Math.max(2, parseInt(a.k)||3));
+    const S = BigInt((a.secret||'0').trim()||'0');
+    const moduli = (a.moduli||'').split(',').map(s=>BigInt(s.trim())).filter(v=>v>1n);
+    if (moduli.length!==N) throw new Error('need exactly N = '+N+' moduli');
+    for (let i=0;i<N;i++) {
+      if (i && moduli[i]<=moduli[i-1]) throw new Error('moduli must be strictly increasing');
+      for (let j=0;j<i;j++) if (gcd(moduli[i],moduli[j])!==1n) throw new Error('moduli must be pairwise coprime');
+    }
+    let lo = 1n, hi = 1n;
+    for (let i=0;i<K;i++) hi *= moduli[i];
+    for (let i=N-K+1;i<N;i++) lo *= moduli[i];
+    if (S<=lo || S>=hi) throw new Error('Mignotte bound violated: need m_{n-K+2}·…·m_n < S < m_1·…·m_K');
+    const out = ['MIGNOTTE CRT SHARING — N='+N+' K='+K+' (any '+K+' shares reconstruct S)','S = '+S+' (secret, keep private)','bounds: '+lo+' < S < '+hi,''];
+    moduli.forEach((m,i) => out.push('Share '+(i+1)+': m='+m+' a='+(S%m)));
+    out.push('', 'Combine by pasting any '+K+' share lines into "Combine".');
+    return out.join('\n');
+  })
+
+addOp('polyglotScan','Polyglot / multi-format scan','Data',
+  'Scans input bytes for known format magics at every offset and classifies: single · parasite-or-stack (format at 0 + later magics — SFX/GIFAR shape) · multi-offset · chimera-candidate (overlapping match ranges). Mirrors tools/polyglot_scan.mjs (docs/polyglot-files-deep-dive-2026-10-21.md). Input = hex bytes (whitespace ok) or raw latin1 text.',
+  [{key:'inputfmt',label:'Input as',type:'select',default:'auto',options:[['auto','Auto (hex if possible)'],['hex','Hex'],['text','Raw text']]}],
+  function(t,a){
+    const s = String(t==null?'':t);
+    const fmt = (a && a.inputfmt) ? a.inputfmt : 'auto';
+    const hexish = /^[0-9a-fA-F\s]+$/.test(s) && (s.replace(/\s+/g,'').length % 2 === 0);
+    const hexMode = fmt === 'hex' || (fmt === 'auto' && hexish);
+    const bytes = [];
+    if (hexMode) { const h = s.replace(/\s+/g,''); for (let i=0;i<h.length;i+=2) bytes.push(parseInt(h.substr(i,2),16)); }
+    else { for (let i=0;i<s.length;i++) bytes.push(s.charCodeAt(i) & 0xff); }
+    const SIGS = [
+      {id:'jpeg',name:'JPEG',magic:[0xff,0xd8,0xff],anywhere:true},
+      {id:'png',name:'PNG',magic:[0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a],anywhere:true},
+      {id:'gif87',name:'GIF87a',magic:[0x47,0x49,0x46,0x38,0x37,0x61],anywhere:true},
+      {id:'gif89',name:'GIF89a',magic:[0x47,0x49,0x46,0x38,0x39,0x61],anywhere:true},
+      {id:'zip',name:'ZIP local file',magic:[0x50,0x4b,0x03,0x04],anywhere:true},
+      {id:'zip-eocd',name:'ZIP empty',magic:[0x50,0x4b,0x05,0x06],anywhere:true},
+      {id:'rar',name:'RAR',magic:[0x52,0x61,0x72,0x21,0x1a,0x07],anywhere:true},
+      {id:'7z',name:'7-Zip',magic:[0x37,0x7a,0xbc,0xaf,0x27,0x1c],anywhere:true},
+      {id:'pdf',name:'PDF',magic:[0x25,0x50,0x44,0x46,0x2d],anywhere:true},
+      {id:'elf',name:'ELF',magic:[0x7f,0x45,0x4c,0x46],anywhere:true},
+      {id:'class',name:'Java class/JAR',magic:[0xca,0xfe,0xba,0xbe],anywhere:true},
+      {id:'gzip',name:'gzip',magic:[0x1f,0x8b,0x08],anywhere:true},
+      {id:'bzip2',name:'bzip2',magic:[0x42,0x5a,0x68],anywhere:true},
+      {id:'xz',name:'xz',magic:[0xfd,0x37,0x7a,0x58,0x5a,0x00],anywhere:true},
+      {id:'cab',name:'CAB',magic:[0x4d,0x53,0x43,0x46],anywhere:true},
+      {id:'arj',name:'ARJ',magic:[0x60,0xea],anywhere:true},
+      {id:'tiff',name:'TIFF',magic:[0x49,0x49,0x2a,0x00],anywhere:true},
+      {id:'bmp',name:'BMP',magic:[0x42,0x4d],anywhere:true},
+      {id:'mz',name:'MZ executable',magic:[0x4d,0x5a],anywhere:false}
+    ];
+    const matches = [];
+    for (const sig of SIGS) {
+      const max = sig.anywhere ? bytes.length - sig.magic.length : 0;
+      for (let off=0; off<=max; off++) {
+        let ok = true;
+        for (let i=0;i<sig.magic.length;i++) { if (bytes[off+i] !== sig.magic[i]) { ok=false; break; } }
+        if (ok) matches.push({id:sig.id,name:sig.name,offset:off,end:off+sig.magic.length});
+      }
+    }
+    matches.sort((x,y)=> x.offset-y.offset || x.end-y.end);
+    let cls = 'unknown';
+    if (matches.length === 1) cls = 'single';
+    else if (matches.length > 1) {
+      let overlap = false;
+      for (let i=0;i<matches.length && !overlap;i++)
+        for (let j=i+1;j<matches.length;j++)
+          if (matches[i].offset < matches[j].end && matches[j].offset < matches[i].end) { overlap=true; break; }
+      cls = overlap ? 'chimera-candidate' : (matches.some(m=>m.offset===0) ? 'parasite-or-stack' : 'multi-offset');
+    }
+    const lines = ['POLYGLOT SCAN — ' + cls, 'bytes: ' + bytes.length, ''];
+    if (!matches.length) lines.push('(no known format signatures)');
+    for (const m of matches) lines.push('+' + m.offset + '  ' + m.name);
+    const warn = (cls === 'chimera-candidate' || cls === 'parasite-or-stack') ? ' — investigate: file is valid-shaped as multiple formats' : '';
+    lines.push('', 'verdict: ' + cls + warn);
+    const text = lines.join('\n');
+    return kitCard('Polyglot scan', cls, kitMono(text), text);
+  })
+
+/* ===== Round-13 archive header triage (ARJ / LHA / ACE / ZIP) =====
+   Header bytes only: no decompression, no decryption, no extraction
+   (standing flags F2/F4). Format references are pinned per op below;
+   see docs/backlog-execution-round-13-2026-10-22.md. Input convention
+   mirrors polyglotScan (hex with whitespace ok, or raw latin1 text);
+   an op's select default is NOT auto-applied for programmatic calls,
+   so `undefined` is treated as the default inside archHdrBytes. */
+function archHdrBytes(t,a){
+  const s = String(t==null?'':t);
+  const fmt = (a && a.inputfmt) ? a.inputfmt : 'auto';
+  const hexish = /^[0-9a-fA-F\s]+$/.test(s) && (s.replace(/\s+/g,'').length % 2 === 0);
+  const hexMode = fmt === 'hex' || (fmt === 'auto' && hexish);
+  const out = [];
+  if (hexMode) { const h = s.replace(/\s+/g,''); for (let i=0;i<h.length;i+=2) out.push(parseInt(h.substr(i,2),16)); }
+  else { for (let i=0;i<s.length;i++) out.push(s.charCodeAt(i) & 0xff); }
+  return out;
+}
+const ARCH_HDR_FMT_ARG = [{key:'inputfmt',label:'Input as',type:'select',default:'auto',options:[['auto','Auto (hex if possible)'],['hex','Hex'],['text','Raw text']]}];
+let archHdrCrcTable = null;
+function archHdrCrc32(b, start, end){ /* standard CRC-32 (PKZIP/zlib semantics) */
+  if (!archHdrCrcTable) {
+    archHdrCrcTable = [];
+    for (let n=0;n<256;n++) { let c = n; for (let k=0;k<8;k++) c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1); archHdrCrcTable.push(c >>> 0); }
+  }
+  let c = 0xffffffff;
+  for (let i=start;i<end;i++) c = (archHdrCrcTable[(c ^ b[i]) & 0xff] ^ (c >>> 8)) >>> 0;
+  return (c ^ 0xffffffff) >>> 0;
+}
+function archHdrAceCrc16(b, start, end){ /* ACE: low 16 bits of CRC-32 without the final inversion (acefile AceCRC16) */
+  return ((archHdrCrc32(b, start, end) ^ 0xffffffff) >>> 0) & 0xffff;
+}
+let archHdrLhaTable = null;
+function archHdrLhaCrc16(b, start, end, zeroAt){ /* LHA CRC-16: poly 0xA001, init 0 (lha crcio.c/lha_macro.h) */
+  if (!archHdrLhaTable) {
+    archHdrLhaTable = [];
+    for (let n=0;n<256;n++) { let r = n; for (let k=0;k<8;k++) r = (r & 1) ? ((r >> 1) ^ 0xa001) : (r >> 1); archHdrLhaTable.push(r & 0xffff); }
+  }
+  let crc = 0;
+  for (let i=start;i<end;i++) { const v = (zeroAt && (i === zeroAt[0] || i === zeroAt[1])) ? 0 : b[i]; crc = (archHdrLhaTable[(crc ^ v) & 0xff] ^ (crc >> 8)) & 0xffff; }
+  return crc;
+}
+function archHdrU16(b, o){ return (o >= 0 && o+2 <= b.length) ? (b[o] | (b[o+1] << 8)) : null; }
+function archHdrU32(b, o){ return o+4 <= b.length ? ((b[o] | (b[o+1] << 8) | (b[o+2] << 16) | (b[o+3] << 24)) >>> 0) : null; }
+function archHdrU64(b, o){ const lo = archHdrU32(b, o), hi = archHdrU32(b, o+4); return (lo === null || hi === null) ? null : (BigInt(hi) << 32n) | BigInt(lo); }
+function archHdrHex2(n){ return ('0' + (n & 0xff).toString(16)).slice(-2); }
+function archHdrHex(n, width){ return ('00000000' + (n >>> 0).toString(16)).slice(-width); }
+function archHdrName(b, start, len){
+  let s = '';
+  for (let i=0;i<len && start+i < b.length;i++) { const c = b[start+i]; s += (c >= 32 && c <= 126) ? String.fromCharCode(c) : ('\\x' + archHdrHex2(c)); }
+  return s;
+}
+function archHdrDosTime(v){ /* DOS date/time u32: date in the HIGH word, time in the LOW word */
+  if (v === null) return '?';
+  const date = (v >>> 16) & 0xffff, time = v & 0xffff;
+  const y = 1980 + (date >> 9), mo = (date >> 5) & 0xf, d = date & 0x1f;
+  const hh = (time >> 11) & 0x1f, mm = (time >> 5) & 0x3f, ss = (time & 0x1f) * 2;
+  if (!mo || !d) return 'unset (0x' + archHdrHex(v, 8) + ')';
+  const p = (x) => ('0' + x).slice(-2);
+  return y + '-' + p(mo) + '-' + p(d) + ' ' + p(hh) + ':' + p(mm) + ':' + p(ss);
+}
+function archHdrReport(title, badge, lines){ const text = lines.join('\n'); return kitCard(title, badge, kitMono(text), text); }
+
+addOp('arjHeader','ARJ header walk (structure only)','Data',
+  'Walks ARJ main + local file headers (magic 60 EA, per-header CRC-32 verified) and reports names, methods, flags (incl. GARBLED), sizes and member CRCs. Mirrors tools/arjwalk.py and docs/arj-garble-format-notes.md. Structure only — no member is decompressed or decrypted (F2). Input = hex bytes or raw latin1 text.',
+  ARCH_HDR_FMT_ARG,
+  function(t,a){
+    const b = archHdrBytes(t, a);
+    const lines = ['ARJ HEADER WALK — structure only (no member decrypted)', 'bytes: ' + b.length, ''];
+    const FLAG_NAMES = {1:'GARBLED',2:'VOLUMES',4:'EXTFILE',8:'EXTFILE2',16:'PATHSYM',32:'BACKUP',64:'NTSPECIAL'};
+    const METHODS = {0:'stored',1:'max',2:'fast',3:'faster',4:'fastest'};
+    const HOSTS = {0:'MS-DOS'};
+    const cand = [];
+    for (let i=0; i+1 < b.length; i++) {
+      if (b[i] !== 0x60 || b[i+1] !== 0xea) continue;
+      const hlen = archHdrU16(b, i+2);
+      if (hlen === null || hlen === 0 || hlen > 2600) continue;
+      if (i+4+hlen+4 > b.length) continue;
+      if (archHdrCrc32(b, i+4, i+4+hlen) !== archHdrU32(b, i+4+hlen)) continue;
+      const first = b[i+4];
+      if (first < 12 || first > hlen) continue;
+      cand.push({off:i, hlen, first});
+    }
+    if (!cand.length) {
+      lines.push('(no CRC-valid ARJ headers found — truncated input, wrong format, or headers still hidden behind a stub? polyglotScan first)');
+      lines.push('', 'verdict: not-arj');
+      return archHdrReport('ARJ header walk', 'no ARJ headers', lines);
+    }
+    if (cand[0].off > 0) lines.push('note: ' + cand[0].off + ' byte(s) before the first header (SFX stub?)', '');
+    const splitTail = (c) => {
+      const start = c.off + 4 + c.first, end = c.off + 4 + c.hlen;
+      const parts = [[]];
+      for (let i=start;i<end;i++) { if (b[i] === 0) parts.push([]); else parts[parts.length-1].push(b[i]); }
+      return parts.map(p => archHdrName(p, 0, p.length));
+    };
+    const shown = Math.min(cand.length, 101);
+    let garbled = 0;
+    for (let idx=0; idx<shown; idx++) {
+      const c = cand[idx], h = c.off + 4;
+      const flags = b[h+4];
+      const flagNames = Object.keys(FLAG_NAMES).map(Number).filter(bit => flags & bit).map(bit => FLAG_NAMES[bit]);
+      const names = splitTail(c);
+      if (idx === 0) {
+        lines.push('main header @+' + c.off);
+        lines.push('  archive name: "' + (names[0] || '') + '"' + (names[1] ? '  comment: "' + names[1] + '"' : ''));
+        lines.push('  format rev: ' + b[h+1] + '  min version: ' + b[h+2] + '  host OS: ' + b[h+3] + ' (' + (HOSTS[b[h+3]] || '?') + ')');
+        lines.push('  first_hdr_size: ' + c.first + (c.first === 30 ? ' (rev-4 layout, no encryption-version byte)' : '') + '  header size: ' + c.hlen + '  header CRC-32: ok');
+        lines.push('  flags: 0x' + archHdrHex2(flags) + (flags & 1 ? ' (GARBLED at archive level)' : '') + '  security version: ' + b[h+5] + '  file type: ' + b[h+6] + (b[h+6] === 2 ? ' (spec-mandated 2)' : ' (!= 2, unusual)'));
+        lines.push('  created: ' + archHdrDosTime(archHdrU32(b, h+8)));
+      } else {
+        if (flags & 1) garbled++;
+        const csize = archHdrU32(b, h+12), osize = archHdrU32(b, h+16), ocrc = archHdrU32(b, h+20);
+        lines.push('[' + idx + '] @+' + c.off + '  "' + (names[0] || '') + '"');
+        lines.push('     method=' + b[h+5] + ' (' + (METHODS[b[h+5]] || '?') + ')  flags=0x' + archHdrHex2(flags) + ' (' + (flagNames.join('|') || '0') + ')' +
+          '  csize=' + csize + '  osize=' + osize + '  crc=' + archHdrHex(ocrc === null ? 0 : ocrc, 8) +
+          '  modified=' + archHdrDosTime(archHdrU32(b, h+8)) + ((flags & 1) ? '  <GARBLED — left encrypted>' : ''));
+      }
+    }
+    if (cand.length > shown) lines.push('... and ' + (cand.length - shown) + ' more header(s) not shown');
+    lines.push('', 'verdict: ' + (cand.length - 1) + ' member header(s)' + (garbled ? ', ' + garbled + ' garbled (structure only per F2)' : ''));
+    return archHdrReport('ARJ header walk', (cand.length - 1) + ' member(s)', lines);
+  })
+
+addOp('lhaHeader','LHA / LZH header walk','Data',
+  'Parses LHA/LZH level-0/1/2 member headers (method at +2, level at +20; jca02266/lha header.doc.md + src/header.c): method, packed/original sizes, file CRC-16, level-0/1 header sum and level-2 header CRC verified, extended filename/dirname headers resolved. LHA has no in-format encryption (docs/arj-lha-ace-password-notes-2026-10-21.md §2). Headers only — no decompression. Input = hex or raw latin1.',
+  ARCH_HDR_FMT_ARG,
+  function(t,a){
+    const b = archHdrBytes(t, a);
+    const lines = ['LHA/LZH HEADER WALK — headers only (format carries no encryption)', 'bytes: ' + b.length, ''];
+    function methodAt(pos){
+      if (pos + 7 > b.length) return null;
+      const m = archHdrName(b, pos+2, 5);
+      return /^-l[hz][0-9ds]-$/.test(m) || /^-pm[0-9]-$/.test(m) ? m : null;
+    }
+    function sumOk(pos){ /* level 0/1: sum of the header_size bytes starting at the method */
+      const hsz = b[pos]; let s = 0;
+      for (let i=0;i<hsz && pos+2+i < b.length;i++) s = (s + b[pos+2+i]) & 0xff;
+      return pos+2+hsz <= b.length && s === b[pos+1];
+    }
+    function walkExt(pos, firstSize, bound){
+      const exts = []; let size = firstSize, p = pos, total = 0, cursor0 = -1, storedHcrc = null;
+      while (size && exts.length < 32) {
+        if (size < 3 || p + size > bound) { exts.push({bad:'size ' + size + ' out of range'}); break; }
+        const type = b[p];
+        const payload = archHdrName(b, p+1, size-3);
+        if (type === 0 && size >= 5) { storedHcrc = archHdrU16(b, p+1); cursor0 = p+1; }
+        exts.push({type, payload, size, at:p});
+        total += size;
+        size = archHdrU16(b, p + size - 2);
+        p = pos + total;
+      }
+      return {exts, total, storedHcrc, cursor0};
+    }
+    function headerName(exts, baseName){
+      let dir = '', name = baseName;
+      for (const e of exts) {
+        if (e.type === 1) name = e.payload;
+        if (e.type === 2) dir = e.payload.split('\\xff').join('/');
+      }
+      return dir ? dir + '/' + name : name;
+    }
+    let start = 0;
+    if (!methodAt(0)) {
+      let found = -1;
+      for (let p=2; p+7 <= b.length && found < 0; p++) {
+        if (methodAt(p-2)) {
+          const lvl = b[p-2+20];
+          if (lvl === 2 || ((lvl === 0 || lvl === 1) && sumOk(p-2))) found = p-2;
+        }
+      }
+      if (found > 0) { lines.push('note: first plausible header at +' + found + ' (' + found + ' byte(s) of prefix — SFX stub?)', ''); start = found; }
+    }
+    let pos = start, idx = 0;
+    while (pos < b.length && idx < 100) {
+      if (b[pos] === 0 && idx > 0) { lines.push('@+' + pos + '  end-of-archive mark'); pos = b.length; break; }
+      const method = methodAt(pos);
+      if (!method) { lines.push('walk stopped @+' + pos + ' (no LHA method ID here — truncated or not LHA)'); break; }
+      const level = b[pos+20];
+      const packed = archHdrU32(b, pos+7), orig = archHdrU32(b, pos+11);
+      idx++;
+      if (level === 0 || level === 1) {
+        const hsz = b[pos], total = hsz + 2, nlen = b[pos+21];
+        const name = archHdrName(b, pos+22, nlen);
+        const crcPresent = (total - nlen - 24) >= 0;
+        const fileCrc = crcPresent ? archHdrU16(b, pos+22+nlen) : null;
+        if (level === 0) {
+          lines.push('[' + idx + '] @+' + pos + '  "' + name + '"');
+          lines.push('     level=0  method=' + method + '  packed=' + packed + '  orig=' + orig + '  fileCRC=' + (fileCrc === null ? 'none (field absent)' : archHdrHex(fileCrc, 4)) + '  sum=' + (sumOk(pos) ? 'ok' : 'MISMATCH') + '  modified=' + archHdrDosTime(archHdrU32(b, pos+15)));
+          pos = pos + total + (packed || 0);
+        } else {
+          const osid = (pos+24+nlen < b.length) ? String.fromCharCode(b[pos+24+nlen]) : '?';
+          const firstExt = archHdrU16(b, pos + total - 2);
+          const ext = walkExt(pos + total, firstExt || 0, b.length);
+          const truePacked = (packed || 0) - ext.total;
+          lines.push('[' + idx + '] @+' + pos + '  "' + headerName(ext.exts, name) + '"');
+          lines.push('     level=1  method=' + method + '  skip=' + packed + '  packed(data)=' + truePacked + '  orig=' + orig + '  fileCRC=' + archHdrHex(archHdrU16(b, pos+22+nlen) || 0, 4) + '  os=' + osid + '  sum=' + (sumOk(pos) ? 'ok' : 'MISMATCH') + '  ext headers: ' + ext.exts.filter(e => e.type !== undefined).map(e => '0x' + archHdrHex2(e.type)).join(' ') + '  modified=' + archHdrDosTime(archHdrU32(b, pos+15)));
+          pos = pos + total + (packed || 0);
+        }
+      } else if (level === 2) {
+        const total = archHdrU16(b, pos) || 0;
+        const fileCrc = archHdrU16(b, pos+21);
+        const osid = (pos+23 < b.length) ? String.fromCharCode(b[pos+23]) : '?';
+        const firstExt = archHdrU16(b, pos+24);
+        const ext = walkExt(pos + 26, firstExt || 0, Math.min(pos + total, b.length));
+        let hcrcNote = 'n/a';
+        if (ext.storedHcrc !== null && total > 0 && pos + total <= b.length) {
+          const calc = archHdrLhaCrc16(b, pos, pos + total, [ext.cursor0, ext.cursor0 + 1]);
+          hcrcNote = (calc === ext.storedHcrc) ? 'ok' : 'MISMATCH';
+        }
+        const unixTime = archHdrU32(b, pos+15);
+        lines.push('[' + idx + '] @+' + pos + '  "' + (headerName(ext.exts, '') || '(unnamed - no filename ext header)') + '"');
+        lines.push('     level=2  method=' + method + '  packed=' + packed + '  orig=' + orig + '  fileCRC=' + archHdrHex(fileCrc || 0, 4) + '  os=' + osid + '  headerCRC=' + hcrcNote + '  ext headers: ' + ext.exts.filter(e => e.type !== undefined).map(e => '0x' + archHdrHex2(e.type)).join(' ') + '  modified(unix)=' + unixTime);
+        pos = pos + total + (packed || 0);
+      } else {
+        lines.push('walk stopped @+' + pos + ' (unknown header level 0x' + archHdrHex2(level) + ')');
+        break;
+      }
+    }
+    if (!idx) lines.push('(no LHA headers parsed)');
+    lines.push('', 'verdict: ' + idx + ' member header(s)');
+    return archHdrReport('LHA/LZH header walk', idx + ' member(s)', lines);
+  })
+
+addOp('aceHeader','ACE header walk (headers only)','Data',
+  'Walks ACE blocks (MAIN signature **ACE**; header CRC-16 = low half of the un-inverted CRC-32, verified): MAIN versions/host/flags and FILE32/64 names, sizes, compression type/quality and the PASSWORD flag (bit 14 — acefile + unace agree; see round-13 erratum to the password-notes doc). Treat ACE samples as hostile (CVE-2018-20250): headers only — nothing is decompressed or decrypted. Input = hex or raw latin1.',
+  ARCH_HDR_FMT_ARG,
+  function(t,a){
+    const b = archHdrBytes(t, a);
+    const lines = ['ACE BLOCK WALK — headers only (hostile-format posture, CVE-2018-20250)', 'bytes: ' + b.length, ''];
+    const TYPES = ['MAIN','FILE32','RECOVERY32','FILE64','RECOVERY64A','RECOVERY64B'];
+    const HOSTS = ['MS-DOS','OS/2','Win32','Unix','Mac OS','Win NT','Primos','Apple GS','ATARI','VAX VMS','AMIGA','NeXT','Linux'];
+    const COMP = ['stored','lz77','blocked'];
+    const QUAL = ['store','fastest','fast','normal','good','best'];
+    const MAIN_FLAGS = {1:'ADDSIZE',2:'COMMENT',256:'V20FORMAT',512:'SFX',1024:'LIMITSFXJR',2048:'MULTIVOLUME',4096:'ADVERT',8192:'RECOVERY',16384:'LOCKED',32768:'SOLID'};
+    const FILE_FLAGS = {1:'ADDSIZE',2:'COMMENT',4:'64BIT',1024:'NTSECURITY',4096:'CONTPREV',8192:'CONTNEXT',16384:'PASSWORD',32768:'SOLID'};
+    function flagList(flags, table){ return Object.keys(table).map(Number).filter(bit => flags & bit).map(bit => table[bit]).join('|') || '0'; }
+    let start = -1;
+    for (let i=7; i+7 <= b.length; i++) {
+      if (b[i] === 0x2a && b[i+1] === 0x2a && b[i+2] === 0x41 && b[i+3] === 0x43 && b[i+4] === 0x45 && b[i+5] === 0x2a && b[i+6] === 0x2a) { start = i - 7; break; }
+    }
+    if (start < 0) {
+      lines.push('(no **ACE** main-header signature found)');
+      lines.push('', 'verdict: not-ace');
+      return archHdrReport('ACE header walk', 'no ACE signature', lines);
+    }
+    if (start > 0) lines.push('note: ' + start + ' byte(s) before the MAIN block (SFX stub?)', '');
+    let pos = start, blocks = 0, members = 0, encrypted = 0;
+    while (pos + 4 <= b.length && blocks < 100) {
+      const hcrc = archHdrU16(b, pos), hsize = archHdrU16(b, pos+2);
+      if (hsize === null || hsize < 3 || pos + 4 + hsize > b.length) { lines.push('walk stopped @+' + pos + ' (truncated block)'); break; }
+      const crcOk = archHdrAceCrc16(b, pos+4, pos+4+hsize) === hcrc;
+      const htype = b[pos+4], hflags = archHdrU16(b, pos+5) || 0;
+      const buf = pos + 4; /* header body start; type at +0, flags at +1 */
+      blocks++;
+      if (htype === 0) {
+        lines.push('MAIN @+' + pos + '  headerCRC=' + (crcOk ? 'ok' : 'MISMATCH'));
+        lines.push('  magic: "' + archHdrName(b, buf+3, 7) + '"  extract ver: ' + b[buf+10] + '  creator ver: ' + b[buf+11] + '  host: ' + b[buf+12] + ' (' + (HOSTS[b[buf+12]] || '?') + ')  volume: ' + b[buf+13]);
+        lines.push('  flags: 0x' + archHdrHex(hflags, 4) + ' (' + flagList(hflags, MAIN_FLAGS) + ')  created: ' + archHdrDosTime(archHdrU32(b, buf+14)));
+        let i = 26;
+        if (buf + i < buf + hsize) {
+          const avsz = b[buf+i]; i++;
+          if (avsz) lines.push('  advert (' + avsz + ' bytes): "' + archHdrName(b, buf+i, avsz) + '"');
+          i += avsz;
+        }
+        if (hflags & 2) lines.push('  archive comment present (stored compressed — not decompressed here)');
+        pos = pos + 4 + hsize;
+      } else if (htype === 1 || htype === 3) {
+        members++;
+        let i = 3, pack, orig;
+        if (hflags & 4) { pack = archHdrU64(b, buf+i); orig = archHdrU64(b, buf+i+8); i += 16; }
+        else { pack = archHdrU32(b, buf+i); orig = archHdrU32(b, buf+i+4); i += 8; }
+        const dt = archHdrU32(b, buf+i), attribs = archHdrU32(b, buf+i+4), mcrc = archHdrU32(b, buf+i+8);
+        const comptype = b[buf+i+12], compqual = b[buf+i+13];
+        const fnsz = archHdrU16(b, buf+i+18) || 0;
+        const fname = archHdrName(b, buf+i+20, fnsz);
+        const isEnc = (hflags & 16384) !== 0;
+        if (isEnc) encrypted++;
+        lines.push('[' + members + '] @+' + pos + '  "' + fname + '"  headerCRC=' + (crcOk ? 'ok' : 'MISMATCH'));
+        lines.push('     type=' + TYPES[htype] + '  packed=' + String(pack) + '  orig=' + String(orig) + '  memberCRC=' + archHdrHex(mcrc || 0, 8) +
+          '  compression=' + comptype + ' (' + (COMP[comptype] || '?') + '/' + (QUAL[compqual] || compqual) + ')  attribs=0x' + archHdrHex(attribs || 0, 8) +
+          '  flags=0x' + archHdrHex(hflags, 4) + ' (' + flagList(hflags, FILE_FLAGS) + ')  modified=' + archHdrDosTime(dt) + (isEnc ? '  <PASSWORD — not decrypted>' : ''));
+        const packNum = (pack === null) ? 0 : Number(pack);
+        if (!(packNum >= 0) || packNum > b.length) { lines.push('     (packed size runs past input — walk stops)'); break; }
+        pos = pos + 4 + hsize + packNum;
+      } else if (htype === 2 || htype === 4 || htype === 5) {
+        const rcvr = (hflags & 4) ? archHdrU64(b, buf+3) : archHdrU32(b, buf+3);
+        lines.push('RECOVERY (' + TYPES[htype] + ') @+' + pos + '  data size=' + String(rcvr) + '  headerCRC=' + (crcOk ? 'ok' : 'MISMATCH'));
+        const n = (rcvr === null) ? 0 : Number(rcvr);
+        if (!(n >= 0) || n > b.length) break;
+        pos = pos + 4 + hsize + n;
+      } else {
+        lines.push('unknown block type ' + htype + ' @+' + pos + '  headerCRC=' + (crcOk ? 'ok' : 'MISMATCH') + ' — cannot resynchronize, walk stops');
+        break;
+      }
+    }
+    lines.push('', 'verdict: ' + blocks + ' block(s), ' + members + ' member(s)' + (encrypted ? ', ' + encrypted + ' password-encrypted (headers only)' : ''));
+    return archHdrReport('ACE header walk', members + ' member(s)', lines);
+  })
+
+addOp('paranoidUnzip','ZIP central-directory audit (no extraction)','Data',
+  'Audits a ZIP from its End-of-Central-Directory and central headers (PKWARE APPNOTE layout) and cross-checks every local header — name/method/flag agreement, encryption bits 0/6, UTF-8 bit 11 (the filename-garble risk in docs/zip-garble-format-notes.md), data descriptors, SFX prefix, duplicate/traversal/symlink names, overlapping ranges, trailing bytes. Report only: nothing is inflated, extracted or decrypted. Input = hex or raw latin1.',
+  ARCH_HDR_FMT_ARG,
+  function(t,a){
+    const b = archHdrBytes(t, a);
+    const lines = ['ZIP CENTRAL-DIRECTORY AUDIT — no extraction, no decryption', 'bytes: ' + b.length, ''];
+    const METHODS = {0:'stored',8:'deflate',9:'deflate64',12:'bzip2',14:'lzma',93:'zstd',95:'xz',98:'ppmd',99:'aes (WinZip)'};
+    const warnings = [];
+    /* Locate EOCD: scan the trailing window backwards for 50 4B 05 06 with a consistent comment length. */
+    let eocd = -1;
+    const windowStart = Math.max(0, b.length - 65557);
+    for (let i = b.length - 22; i >= windowStart; i--) {
+      if (b[i] === 0x50 && b[i+1] === 0x4b && b[i+2] === 0x05 && b[i+3] === 0x06) {
+        const clen = archHdrU16(b, i+20);
+        if (clen !== null && i + 22 + clen === b.length) { eocd = i; break; }
+        if (clen !== null && i + 22 + clen < b.length && eocd < 0) eocd = i; /* tolerate trailing bytes, reported below */
+      }
+    }
+    if (eocd < 0) {
+      lines.push('(no End-of-Central-Directory record found — truncated, spanned, or not a ZIP)');
+      lines.push('', 'verdict: not-zip');
+      return archHdrReport('ZIP audit', 'no EOCD', lines);
+    }
+    const trailing = b.length - (eocd + 22 + (archHdrU16(b, eocd+20) || 0));
+    let totalEntries = archHdrU16(b, eocd+10), cdSize = archHdrU32(b, eocd+12), cdOffset = archHdrU32(b, eocd+16);
+    let zip64 = false;
+    if (totalEntries === 0xffff || cdSize === 0xffffffff || cdOffset === 0xffffffff) {
+      zip64 = true;
+      const loc = eocd - 20;
+      if (loc >= 0 && archHdrU32(b, loc) === 0x07064b50) {
+        const recOff = archHdrU64(b, loc+8);
+        const rec = (recOff === null) ? -1 : Number(recOff);
+        if (rec >= 0 && archHdrU32(b, rec) === 0x06064b50) {
+          totalEntries = Number(archHdrU64(b, rec+32) || 0n);
+          cdSize = Number(archHdrU64(b, rec+40) || 0n);
+          cdOffset = Number(archHdrU64(b, rec+48) || 0n);
+        } else warnings.push('ZIP64 locator present but record unreadable — counts below may be wrong');
+      } else warnings.push('EOCD fields saturated (ZIP64) but no locator found');
+    }
+    const delta = eocd - ((cdOffset || 0) + (cdSize || 0));
+    lines.push('EOCD @+' + eocd + '  entries: ' + totalEntries + '  central directory: ' + cdSize + ' bytes @+' + cdOffset + (zip64 ? '  (ZIP64)' : ''));
+    if (delta > 0) lines.push('prefix: ' + delta + ' byte(s) before the archive proper (SFX stub — local offsets adjusted)');
+    if (delta < 0) warnings.push('central directory claims to end ' + (-delta) + ' byte(s) after the EOCD (overlap/corruption)');
+    if (trailing > 0) warnings.push(trailing + ' trailing byte(s) after EOCD + comment');
+    const disk = archHdrU16(b, eocd+4), cdDisk = archHdrU16(b, eocd+6);
+    if (disk || cdDisk) warnings.push('multi-disk archive (disk ' + disk + ', CD on disk ' + cdDisk + ') — single-file audit only');
+    /* Walk central headers at the delta-corrected offset. */
+    const entries = [];
+    let p = (cdOffset || 0) + Math.max(delta, 0);
+    while (p + 46 <= b.length && archHdrU32(b, p) === 0x02014b50 && entries.length < 1000) {
+      const madeBy = archHdrU16(b, p+4), flags = archHdrU16(b, p+8) || 0, method = archHdrU16(b, p+10);
+      let csize = archHdrU32(b, p+20), usize = archHdrU32(b, p+24);
+      const nlen = archHdrU16(b, p+28) || 0, elen = archHdrU16(b, p+30) || 0, clen2 = archHdrU16(b, p+32) || 0;
+      const extAttr = archHdrU32(b, p+38) || 0;
+      let lho = archHdrU32(b, p+42);
+      const name = archHdrName(b, p+46, nlen);
+      if (usize === 0xffffffff || csize === 0xffffffff || lho === 0xffffffff) {
+        let ex = p + 46 + nlen; const exEnd = ex + elen;
+        while (ex + 4 <= exEnd) {
+          const tag = archHdrU16(b, ex), sz = archHdrU16(b, ex+2) || 0;
+          if (tag === 1) { let q = ex + 4;
+            if (usize === 0xffffffff) { usize = Number(archHdrU64(b, q) || 0n); q += 8; }
+            if (csize === 0xffffffff) { csize = Number(archHdrU64(b, q) || 0n); q += 8; }
+            if (lho === 0xffffffff) { lho = Number(archHdrU64(b, q) || 0n); }
+            break;
+          }
+          ex += 4 + sz;
+        }
+      }
+      entries.push({at:p, madeBy, flags, method, csize, usize, extAttr, lho, name, elen, nlen, extraAt:p+46+nlen});
+      p += 46 + nlen + elen + clen2;
+    }
+    if (entries.length !== totalEntries) warnings.push('EOCD claims ' + totalEntries + ' entries but ' + entries.length + ' central headers parsed');
+    const seen = {}, ranges = [];
+    let encCount = 0;
+    entries.forEach((e, k) => {
+      const enc = (e.flags & 1) !== 0, strong = (e.flags & 0x20) !== 0, utf8 = (e.flags & 0x800) !== 0, dd = (e.flags & 8) !== 0;
+      if (enc) encCount++;
+      if (seen[e.name]) warnings.push('duplicate member name: "' + e.name + '"');
+      seen[e.name] = 1;
+      if (/(^|\/)\.\.(\/|$)/.test(e.name) || /^\//.test(e.name) || /^[A-Za-z]:/.test(e.name) || e.name.indexOf('\\') >= 0)
+        warnings.push('path-traversal-shaped name: "' + e.name + '"');
+      if (((e.madeBy || 0) >> 8) === 3 && ((e.extAttr >>> 16) & 0xf000) === 0xa000)
+        warnings.push('unix symlink member: "' + e.name + '"');
+      if (!utf8 && /\\x[89a-f][0-9a-f]/.test(e.name))
+        warnings.push('non-ASCII name without UTF-8 flag (code-page garble risk): "' + e.name + '"');
+      if (e.csize && e.usize && e.usize / Math.max(e.csize, 1) > 200 && e.usize > 1048576)
+        warnings.push('extreme compression ratio on "' + e.name + '" (' + e.usize + '/' + e.csize + ') — bomb-shaped if extracted');
+      /* Local header cross-check at the corrected offset. */
+      let localNote = 'local: not checked';
+      const lp = (e.lho || 0) + Math.max(delta, 0);
+      if (archHdrU32(b, lp) === 0x04034b50) {
+        const lflags = archHdrU16(b, lp+6) || 0, lmethod = archHdrU16(b, lp+8);
+        const lnlen = archHdrU16(b, lp+26) || 0, lelen = archHdrU16(b, lp+28) || 0;
+        const lname = archHdrName(b, lp+30, lnlen);
+        const issues = [];
+        if (lname !== e.name) issues.push('name differs ("' + lname + '")');
+        if (lmethod !== e.method) issues.push('method differs');
+        if (lflags !== e.flags) issues.push('flags differ');
+        localNote = 'local: ' + (issues.length ? issues.join(', ') : 'agrees');
+        if (issues.length) warnings.push('local/central mismatch on "' + e.name + '": ' + issues.join(', '));
+        const dataStart = lp + 30 + lnlen + lelen;
+        let dataEnd = dataStart + (e.csize || 0);
+        if (dd) dataEnd += (archHdrU32(b, dataEnd) === 0x08074b50) ? 16 : 12;
+        ranges.push([dataStart, dataEnd, e.name]);
+      } else {
+        localNote = 'local: MISSING/bad signature @+' + lp;
+        warnings.push('no local header for "' + e.name + '" at claimed offset +' + lp);
+      }
+      lines.push('[' + (k+1) + '] "' + e.name + '"');
+      lines.push('     method=' + e.method + ' (' + (METHODS[e.method] || '?') + ')  csize=' + e.csize + '  usize=' + e.usize +
+        '  flags=0x' + archHdrHex(e.flags, 4) + (enc ? ' ENCRYPTED' + (strong ? '/strong' : '/ZipCrypto-era') + ' — not decrypted' : '') + (dd ? ' descriptor' : '') + (utf8 ? ' utf8' : '') + '  ' + localNote);
+    });
+    ranges.sort((x, y) => x[0] - y[0]);
+    for (let i=1; i<ranges.length; i++) {
+      if (ranges[i][0] < ranges[i-1][1]) warnings.push('overlapping member data: "' + ranges[i-1][2] + '" / "' + ranges[i][2] + '"');
+    }
+    lines.push('');
+    if (warnings.length) { lines.push('warnings (' + warnings.length + '):'); warnings.forEach(w => lines.push('  ! ' + w)); lines.push(''); }
+    lines.push('verdict: ' + entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies') + ', ' + warnings.length + ' warning(s)' + (encCount ? ', ' + encCount + ' encrypted (headers only)' : ''));
+    return archHdrReport('ZIP central-directory audit', entries.length + ' entries · ' + warnings.length + ' warning(s)', lines);
+  })
 
 const recipePackOp=OPERATIONS.find(op=>op.id==='recipePack');
 

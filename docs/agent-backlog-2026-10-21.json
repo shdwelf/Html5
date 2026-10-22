@@ -52,7 +52,7 @@
     {
       "id": "S1",
       "title": "Archive formats & crypto-forensics corpus",
-      "status": "partial",
+      "status": "done",
       "tasks": [
         "T1.1",
         "T1.2",
@@ -69,6 +69,7 @@
         "research/kgk-arj-listing-extract.txt"
       ],
       "next_actions": [
+        "Closed round 12 (ZIP legacy-garble note was the last open item; docs/backlog-execution-round-12-2026-10-21.md). Round 13 added header-walk ops (arjHeader/lhaHeader/aceHeader/paranoidUnzip, header-only per F2/F4). T1.1 stays grouped under S13 for execution.",
         "Decompressor recipe matrix (ace rar arj uue zip 7z iso img peazip pkware) as GHIDRA_COOKBOOK additions + CyberChef recipes",
         "Keep ARJ/SFX password work at recipe level per F2",
         "BagIt the Google Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I together with its Drive PDF once relay fetch is available (task line 16/153)"
@@ -117,7 +118,7 @@
         "docs/game-corpus-evidence/"
       ],
       "next_actions": [
-        "Rounds 7–12: cow-level, Jeopardy/WoF+Snopes, Radmin/SMTP, polyglot+omniglot, portals + toy MZ, MIME + JtR audit, ZIP garble note + polyglotScan op (docs/backlog-execution-round-{7..12}-2026-10-21.md). S1 closed.",
+        "Round 13 (2026-10-22): header ops implemented, spotlight batch (archive triage, TomTom round-trip, SHA-2/checksums, data encodings; tour-only 95->85), md5crypt/sha512crypt JtR-vector audit added. Next: remaining tour-only spotlight batches; optional polyglot_scan MIME fields.",
         "Next: header/ACE/LHA/unzip ops (flagged missing), spotlight packs, md5crypt/sha512crypt vectors"
       ]
     },
@@ -520,7 +521,7 @@
       "stream": "S10",
       "text": "Comparative optimization of all CyberChef recipes",
       "status": "partial",
-      "note": "comparative pass (round 3); AES+NaCl known-answer vectors (round 4); thin categories closed with 5 sourced ops + GTA codec (round 5); compare --spotlights enumerator + 13 themed spotlight packs for tour-only ops (round 6); remaining: spotlight batches for the rest of the 144 tour-only ops"
+      "note": "comparative pass (round 3); AES+NaCl known-answer vectors (round 4); thin categories closed with 5 sourced ops + GTA codec (round 5); compare --spotlights enumerator + 13 themed spotlight packs for tour-only ops (round 6); remaining: spotlight batches for the rest of the 144 tour-only ops; round 13: +4 archive-header ops (507->511) with archive-triage spotlight, TomTom round-trip + 2 tour-only batches (85 tour-only ops remain), cookbook/xdc/wiki-corpus staleness swept"
     },
     {
       "id": "T10.2",
