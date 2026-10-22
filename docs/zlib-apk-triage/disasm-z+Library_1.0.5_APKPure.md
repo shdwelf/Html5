@@ -136,59 +136,6 @@ OpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode)
 - analyzeHeadless exit 0; report lines: 80
 
 ```
-GHIDRA-REPORT program=libflutter.so language=x86:LE:64:default sha256=7eb2fb3ff4637811477b394810758a285b525804177fc4ffb7f02ac7c3e80194
-GHIDRA-REPORT functions_total=25724 functions_crypto_named=6
-GHIDRA-FN OPENSSL_memory_alloc
-GHIDRA-FN OPENSSL_memory_free
-GHIDRA-FN OPENSSL_memory_get_size
-GHIDRA-FN OPENSSL_memory_alloc
-GHIDRA-FN OPENSSL_memory_free
-GHIDRA-FN OPENSSL_memory_get_size
-GHIDRA-REPORT external_symbols=451 external_crypto_named=3
-GHIDRA-IMPORT OPENSSL_memory_alloc
-GHIDRA-IMPORT OPENSSL_memory_free
-GHIDRA-IMPORT OPENSSL_memory_get_size
-GHIDRA-REPORT defined_strings=15776 strings_http=30 strings_crypto=728
-GHIDRA-STR OPENSSL_memory_alloc
-GHIDRA-STR OPENSSL_memory_free
-GHIDRA-STR OPENSSL_memory_get_size
-GHIDRA-STR ChaCha20 for x86_64, CRYPTOGAMS by <appro@openssl.org>
-GHIDRA-STR AES-NI GCM module for x86_64, CRYPTOGAMS by <appro@openssl.org>
-GHIDRA-STR AES for Intel AES-NI, CRYPTOGAMS by <appro@openssl.org>
-GHIDRA-STR GHASH for x86_64, CRYPTOGAMS by <appro@openssl.org>
-GHIDRA-STR SHA1 block transform for x86_64, CRYPTOGAMS by <appro@openssl.org>
-GHIDRA-STR SHA256 block transform for x86_64, CRYPTOGAMS by <appro@openssl.org>
-GHIDRA-STR SHA512 block transform for x86_64, CRYPTOGAMS by <appro@openssl.org>
-GHIDRA-STR Vector Permutation AES for x86_64/SSSE3, Mike Hamburg (Stanford University)
-GHIDRA-STR Montgomery Multiplication with scatter/gather for x86_64, CRYPTOGAMS by <appro@openssl.org>
-GHIDRA-STR X509_StartValidity
-GHIDRA-STR X509_EndValidity
-GHIDRA-STR Ffi_dl_processLibrary
-GHIDRA-STR Dart_ClassLibrary
-GHIDRA-STR encipherOnly
-GHIDRA-STR decipherOnly
-GHIDRA-STR Encipher Only
-GHIDRA-STR Decipher Only
-GHIDRA-STR X509v3 Inhibit Any Policy
-GHIDRA-STR X509v3 Any Policy
-GHIDRA-STR smimeencrypt
-GHIDRA-STR setext-genCrypt
-GHIDRA-STR EnterSafepoint
-GHIDRA-STR X509v3 Issuing Distribution Point
-GHIDRA-STR keyEncipherment
-GHIDRA-STR dataEncipherment
-GHIDRA-STR Key Encipherment
-GHIDRA-STR Data Encipherment
-GHIDRA-STR sslclient
-GHIDRA-STR ssl_client
-GHIDRA-STR SSL client
-GHIDRA-STR SSL Client
-GHIDRA-STR DescriptorSet
-GHIDRA-STR id-GostR3411-94-CryptoProParamSet
-GHIDRA-STR id-Gost28147-89-CryptoPro-D-ParamSet
-GHIDRA-STR id-GostR3410-94-CryptoPro-D-ParamSet
-GHIDRA-STR id-GostR3410-94-CryptoPro-XchC-ParamSet
-GHIDRA-STR id-Gost28147-89-CryptoPro-C-ParamSet
 GHIDRA-REPORT program=libapp.so language=ARM:LE:32:v8 sha256=ac96095d192f9f49de23299e37ee86afcc7a58ea38b7cbe254b5989307ba6adf
 GHIDRA-REPORT functions_total=0 functions_crypto_named=0
 GHIDRA-REPORT external_symbols=0 external_crypto_named=0

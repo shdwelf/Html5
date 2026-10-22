@@ -144,7 +144,7 @@ def ghidra_phase(so: pathlib.Path, lines: list, stem: str = 'app'):
     if not headless.exists():
         lines += ['- (analyzeHeadless not available on this runner)', '']
         return
-    report = WORK / f'ghidra-report-{stem}.txt'
+    report = WORK / f'ghidra-report-{stem}-{so.stem}.txt'  # per-binary: shared per-app file duplicated blocks
     proj = WORK / 'gproj'
     proj.mkdir(parents=True, exist_ok=True)
     rc, out = sh([str(headless), str(proj), 'ApkNat', '-import', str(so),
