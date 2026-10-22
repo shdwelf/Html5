@@ -49,6 +49,10 @@ jobs:
           node-version: '22'
 
       - name: Fetch Drive artifacts
+        env:
+          # Dropbox temporary link for the Chipwright tarball, set as a repo
+          # secret when Drive's anonymous download quota is exhausted.
+          ARENA_FETCH_URL_1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV: ${{ secrets.CHIPWRIGHT_TARBALL_URL }}
         run: |
           pip install -q gdown || echo "gdown install failed; plain endpoints only"
           python3 .arena-drive/fetch.py

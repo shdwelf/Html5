@@ -36,6 +36,7 @@ the bytes are the right ones.
 """
 
 import hashlib
+import os
 import pathlib
 import subprocess
 import re
@@ -126,11 +127,18 @@ def main() -> int:
             ok += 1
             continue
 
+        # Optional per-file URL override (e.g. a Dropbox temporary link handed
+        # to the runner as an Actions secret when Drive's anonymous endpoints
+        # are quota-blocked): ARENA_FETCH_URL_<id with non-alnum -> '_'>.
+        san = re.sub(r"[^A-Za-z0-9]", "_", item["id"])
+        override = os.environ.get(f"ARENA_FETCH_URL_{san}")
+        urls = ([override] if override else []) + [tmpl.format(id=item["id"]) for tmpl in ENDPOINTS]
+
         body, err = None, None
         errs = []
-        for tmpl in ENDPOINTS:
+        for url in urls:
             try:
-                candidate = get(tmpl.format(id=item["id"]))
+                candidate = get(url)
             except urllib.error.HTTPError as e:
                 err = f"HTTP {e.code}"
                 errs.append(err)
