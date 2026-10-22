@@ -54,7 +54,9 @@ UA = "arena-drive-sync/1.0 (+https://github.com/shdwelf/Html5; backup reconcilia
 # serves them directly with confirm=t.
 ENDPOINTS = (
     "https://drive.usercontent.google.com/download?id={id}&export=download&confirm=t",
+    "https://drive.usercontent.google.com/download?id={id}&export=download&confirm=t&supportsAllDrives=true&acknowledgeAbuse=true",
     "https://drive.google.com/uc?export=download&id={id}&confirm=t",
+    "https://drive.google.com/uc?export=download&id={id}&confirm=t&supportsAllDrives=true",
 )
 
 
