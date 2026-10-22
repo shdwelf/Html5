@@ -14,13 +14,17 @@ import { JSDOM } from "jsdom";
  */
 
 const html = readFileSync(new URL("../public/apps/cyberchef/index.html", import.meta.url), "utf8");
+const bwipSource = readFileSync(new URL("../public/apps/cyberchef/vendor/bwip-js.min.js", import.meta.url), "utf8");
+const zxingSource = readFileSync(new URL("../public/apps/cyberchef/vendor/zxing-library.min.js", import.meta.url), "utf8");
 
-function boot() {
+function boot({ withBwip = false, withZxing = false } = {}) {
   const dom = new JSDOM(html, {
     runScripts: "dangerously",
     url: "https://example.test/apps/cyberchef/",
     pretendToBeVisual: true,
     beforeParse(window) {
+      if (withBwip) window.eval(bwipSource);
+      if (withZxing) window.eval(zxingSource);
       window.alert = () => undefined;
       window.confirm = () => false;
       window.prompt = () => null;
@@ -241,6 +245,85 @@ test("QR operation renders a PNG through bake()", async () => {
   }
 });
 
+test("the browser bundle initializes bwip-js and generates an Aztec SVG", () => {
+  const dom = boot({ withBwip: true });
+  try {
+    const result = JSON.parse(dom.window.eval(`JSON.stringify((function(){
+      const symbol=bwipAztecSvg('AZTEC 123',23);
+      return {api:typeof window.bwipjs.toSVG,viewBox:symbol.viewBox,svg:symbol.svg.slice(0,40)};
+    })())`));
+    assert.equal(result.api, "function", "the pinned browser bundle publishes toSVG");
+    assert.match(result.viewBox, /^0 0 \d+ \d+$/);
+    assert.match(result.svg, /^<svg/);
+  } finally {
+    dom.window.close();
+  }
+});
+
+test("Aztec Code operation renders through the real recipe pipeline", async () => {
+  const dom = boot({ withBwip: true });
+  try {
+    const out = await bakeOp(dom, "aztecCode", { txt: "AZTEC 123", ec: "23" });
+    assert.match(out.html, /data:image\/svg\+xml;charset=utf-8,/);
+    assert.match(decodeURIComponent(out.html.match(/src="data:image\/svg\+xml;charset=utf-8,([^"]+)"/)[1]), /<svg[^>]*viewBox=/);
+    assert.match(out.text, /ISO\/IEC 24778/);
+  } finally {
+    dom.window.close();
+  }
+});
+
+test("Aztec image reader is registered for offline decode and rejects missing files clearly", async () => {
+  const dom = boot({ withZxing: true });
+  try {
+    assert.equal(dom.window.eval("typeof ZXing.AztecCodeReader"), "function");
+    assert.equal(dom.window.eval("OPERATIONS.find(o => o.id === 'aztecDecode').category"), "Barcode");
+    await assert.rejects(
+      () => dom.window.eval("aztecDecodeImage('', { source: 'file' })"),
+      /Load an image with the Load File button/,
+    );
+  } finally { dom.window.close(); }
+});
+
+test("Avery 5392 label sheet can render Aztec symbols as print-sized SVGs", async () => {
+  const dom = boot({ withBwip: true });
+  try {
+    const out = await bakeOp(dom, "averyLabels", {
+      tpl: "5392", sym: "aztec", aztecEc: "23", vals: "SITE-K|WIKI-IN-A-JAR", copies: "1", showText: false,
+    });
+    const source = out.html.match(/src="data:image\/svg\+xml;charset=utf-8,([^"]+)"/);
+    assert.ok(source, "label preview is an SVG data URL, not an empty sheet");
+    const svg = decodeURIComponent(source[1]);
+    assert.match(svg, /width="816" height="1056" viewBox="0 0 816 1056"/);
+    assert.equal((svg.match(/<svg x=/g) || []).length, 2, "one nested Aztec symbol per requested label");
+    assert.match(out.text, /SITE-K/);
+  } finally {
+    dom.window.close();
+  }
+});
+
+test("CueCat scans decode the published vectors in the Barcode operation", async () => {
+  const dom = boot();
+  try {
+    const raw = ".C3nZC3nZC3nZE3r0Chr3CNnY.cGf2.ENr7C3n1C3PWD3rYCxzYChnZ.";
+    dom.window.document.getElementById("input").value = raw;
+    const out = await bakeOp(dom, "cuecatDecode", { format: "full" });
+    assert.match(out.text, /Serial: 000000000877374101/);
+    assert.match(out.text, /Type: IB5/);
+    assert.match(out.text, /Code: 978006093471251300/);
+    const vectors = [
+      ["ENr7C3n1C3PWD3rYCxzYChnZ", "978006093471251300"],
+      ["Dhf2Cxr3E3bYDNT1C3a", "72527483158603"],
+      ["fbmxChO", "WPT39"],
+      ["C3DZCxPWCNzWDNnX", "040293153502"],
+    ];
+    for (const [encoded, expected] of vectors) {
+      assert.equal(dom.window.eval(`cuecatDecodeSection(${JSON.stringify(encoded)})`), expected);
+    }
+  } finally {
+    dom.window.close();
+  }
+});
+
 test("every operation belongs to a recipe pack so SFX can output them all", () => {
   const dom = boot();
   try {
@@ -271,13 +354,16 @@ test("barcode operations are registered in the Barcode category", () => {
     const ops = JSON.parse(dom.window.eval(`JSON.stringify(OPERATIONS.filter(o => o.category === 'Barcode')
       .map(o => ({ id: o.id, name: o.name, args: o.args.map(a => a.key) })))`));
     const byId = Object.fromEntries(ops.map((o) => [o.id, o]));
-    for (const id of ["code39", "code128", "ean13", "qrcode", "averyLabels"]) {
+    for (const id of ["code39", "code128", "ean13", "qrcode", "aztecCode", "aztecDecode", "cuecatDecode", "averyLabels"]) {
       assert.ok(byId[id], `missing Barcode op ${id}`);
     }
     assert.deepEqual([...byId.qrcode.args], ["txt", "ec"]);
+    assert.deepEqual([...byId.aztecCode.args], ["txt", "ec"]);
+    assert.deepEqual([...byId.aztecDecode.args], ["source"]);
+    assert.deepEqual([...byId.cuecatDecode.args], ["format"]);
     assert.deepEqual([...byId.code39.args], ["txt", "mod43"], "mod-43 check character is selectable");
     assert.deepEqual([...byId.averyLabels.args],
-      ["tpl", "sym", "ec", "vals", "copies", "showText", "cols", "rows", "lw", "lh"]);
+      ["tpl", "sym", "ec", "aztecEc", "vals", "copies", "showText", "cols", "rows", "lw", "lh"]);
     // 'custom' is not a fixed template: it carries no dimensions of its own and
     // is resolved from the op's cols/rows/width/height arguments instead.
     assert.equal(dom.window.eval("Object.keys(LABEL_TEMPLATES).join(',')"), "5160,5161,5163,5392");

@@ -63,3 +63,10 @@ No defined executable string in this corpus matched CIA, KGB, or Spycraft narrat
 - Former officials' participation and stock footage do not imply institutional endorsement.
 - Ghidra generates analytic reconstructions; its function names, types, control flow, and C-like output are not Activision source code.
 - This project documents provenance and static findings so another researcher can reproduce or challenge the interpretation without redistributing the game.
+
+## Related (round-5 sweep feed)
+
+See [`sierra-shadow-president-sweep-2026-10-21.md`](sierra-shadow-president-sweep-2026-10-21.md)
+for the *Shadow President* / *CyberJudas* dossier (D.C. True geopolitical sims,
+1993/1996; period CIA-World-Factbook data-sourcing claims labelled as such) and the
+Game Wizard 32 DOS-trainer notes — both feed the spycraft simulation/tooling line.

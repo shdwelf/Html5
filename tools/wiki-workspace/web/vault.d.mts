@@ -1,0 +1,10 @@
+export const MAGIC: string;
+export const ITERATIONS: number;
+export function toBase64(bytes: Uint8Array): string;
+export function fromBase64(value: string): Uint8Array;
+export function toBase64url(bytes: Uint8Array): string;
+export function fromBase64url(value: string): Uint8Array;
+export function encryptVault(value: unknown, password: string): Promise<string>;
+export function decryptVault(value: string, password: string): Promise<unknown>;
+export function digest(value: string | Uint8Array | ArrayBuffer): Promise<string>;
+export function validateWorkspaceVault(value: unknown): Promise<unknown>;

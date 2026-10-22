@@ -144,7 +144,7 @@ def ghidra_phase(so: pathlib.Path, lines: list, stem: str = 'app'):
     if not headless.exists():
         lines += ['- (analyzeHeadless not available on this runner)', '']
         return
-    report = WORK / f'ghidra-report-{stem}-{so.stem}.txt'  # per-binary: shared per-app file duplicated blocks
+    report = WORK / f'ghidra-report-{stem}.txt'
     proj = WORK / 'gproj'
     proj.mkdir(parents=True, exist_ok=True)
     rc, out = sh([str(headless), str(proj), 'ApkNat', '-import', str(so),
@@ -168,12 +168,8 @@ def main() -> int:
                  'Static disassembly inventory (JADX + strings + Ghidra). Nothing executed.', '']
         jadx_phase(apk, lines)
         largest = native_phase(apk, lines)
-        targets = list(largest[:1])
-        app_so = [t for t in largest if t.name == 'libapp.so']
-        if app_so and app_so[0] not in targets:
-            targets.append(app_so[0])  # Flutter/Dart AOT core (sample B)
-        for t in targets:
-            ghidra_phase(t, lines, apk.stem)
+        if largest:
+            ghidra_phase(largest[0], lines, apk.stem)
         out = OUT / f'disasm-{apk.stem}.md'
         out.write_text('\n'.join(lines) + '\n', encoding='utf-8')
         print(f'wrote {out}')

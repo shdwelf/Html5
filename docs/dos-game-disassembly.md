@@ -200,6 +200,15 @@ decompression code** to unpack `DN3DSW13.SHR` at install time.
 The distinction matters and the triage tool makes it: the marker is only
 a packer identification if it sits in the first 0x200 bytes.
 
+A follow-up regression caught a second trap in that installer: the overlay
+contains the four bytes `LE\x00\x00` at `0x1C15C`, which fooled the old
+signature-only scanner into calling it DOS/4GW. The MZ `e_lfanew` field is not a
+usable LE pointer, and the candidate's CPU/OS IDs, page geometry, and object
+table are nonsense. `game_triage.py` now validates these structural fields
+before accepting an LE/LX candidate. The installer is correctly reported as
+real-mode MZ, while the real DOOM and Heretic LE headers still pass; regression
+controls cover all three plus the PKLITE payload.
+
 `docs/exe-protection-deep-dive.md` §2 recorded PKLITE as a deliberate
 non-implementation ("detected but not decoded — honest deferral"). That
 deferral stands. What has changed is that the corpus now has a **second,
@@ -365,3 +374,11 @@ If they are wanted, the honest path is a PE + section triage tool and a
 | Tetris 1986 | classified (Turbo Pascal 3 COM) + entry decompiled |
 | Half-Life, Unreal Tournament | not attempted — §8 |
 | `tools/exeprotect.py` | **bug fixed**, ATR.EXE vectors unchanged |
+
+## Related (round-5 sweep feed)
+
+The 2026-10-21 S3 sweep ([`sierra-shadow-president-sweep-2026-10-21.md`](sierra-shadow-president-sweep-2026-10-21.md))
+adds two targets for this line: **Shadow President** (D.C. True, 1993) ShadowNetwork
+variable tables vs the 1990 CIA World Factbook, and the **Game Wizard 32** installer's
+BIOS-checksum machine binding. It also records the Sierra AGI/SCI cross-series
+message-table Easter-egg pattern (grep sibling titles' known strings).

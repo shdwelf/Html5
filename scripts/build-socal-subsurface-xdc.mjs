@@ -93,7 +93,7 @@ for (const f of ["three.module.min.js", "OrbitControls.js", "THREE_LICENSE"]) {
   await copyFile(path.join(root, "vendor", f), path.join(appDir, "vendor", f));
 }
 await mkdir(path.join(appDir, "vendor", "fflate"), { recursive: true });
-await copyFile(path.join(root, "vendor", "fflate", "index.mjs"), path.join(appDir, "vendor", "fflate", "index.mjs"));
+await copyFile(path.join(root, "vendor", "fflate", "browser.mjs"), path.join(appDir, "vendor", "fflate", "browser.mjs"));
 await copyFile(path.join(root, "vendor", "fflate", "LICENSE"), path.join(appDir, "vendor", "fflate", "LICENSE"));
 
 // Simulator shim: Delta Chat replaces webxdc.js at runtime, but shipping one

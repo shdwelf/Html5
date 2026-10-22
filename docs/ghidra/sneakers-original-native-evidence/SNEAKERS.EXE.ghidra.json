@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 1,
+  "program": "SNEAKERS.EXE",
+  "ghidraVersion": "12.1.4",
+  "executableFormat": "Old-style DOS Executable (MZ)",
+  "executablePath": "/home/runner/work/_temp/sneakers-original/input/SNEAKERS.EXE",
+  "md5": "216035ffd406ec703aac917470973723",
+  "sha256": "d5738c9a4050d69ca205a03229dad1616d681fbc9312859be3e629f4b3905961",
+  "language": "x86:LE:16:Real Mode",
+  "compiler": "default",
+  "imageBase": "0000:0000",
+  "minAddress": "1000:0000",
+  "maxAddress": "HEADER::000011ff",
+  "memoryBlocks": [
+    {
+      "name": "CODE_0",
+      "start": "1000:0000",
+      "end": "1000:fc2f",
+      "bytes": 64560,
+      "read": true,
+      "write": true,
+      "execute": true,
+      "initialized": true
+    },
+    {
+      "name": "CODE_1",
+      "start": "1fc3:0000",
+      "end": "1fc3:a64f",
+      "bytes": 42576,
+      "read": true,
+      "write": true,
+      "execute": true,
+      "initialized": true
+    },
+    {
+      "name": "CODE_2",
+      "start": "2a28:0000",
+      "end": "2a28:017f",
+      "bytes": 384,
+      "read": true,
+      "write": true,
+      "execute": true,
+      "initialized": true
+    },
+    {
+      "name": "CODE_3",
+      "start": "2a40:0000",
+      "end": "2a40:267f",
+      "bytes": 9856,
+      "read": true,
+      "write": true,
+      "execute": true,
+      "initialized": true
+    },
+    {
+      "name": "CODE_4",
+      "start": "2ca8:0000",
+      "end": "2ca8:000c",
+      "bytes": 13,
+      "read": true,
+      "write": true,
+      "execute": true,
+      "initialized": true
+    },
+    {
+      "name": "DATA",
+      "start": "2ca8:000d",
+      "end": "2ca8:082c",
+      "bytes": 2080,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": false
+    },
+    {
+      "name": "HEADER",
+      "start": "HEADER::00000000",
+      "end": "HEADER::000011ff",
+      "bytes": 4608,
+      "read": false,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    }
+  ],
+  "imports": [],
+  "definedStrings": 239,
+  "instructions": 40570,
+  "functions": 600,
+  "decompilations": [
+    {
+      "name": "FUN_1000_0014",
+      "address": "1000:0014",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_00ba",
+      "address": "1000:00ba",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_00ee",
+      "address": "1000:00ee",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0196",
+      "address": "1000:0196",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_01a2",
+      "address": "1000:01a2",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_01c4",
+      "address": "1000:01c4",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_01e8",
+      "address": "1000:01e8",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0258",
+      "address": "1000:0258",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0264",
+      "address": "1000:0264",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0270",
+      "address": "1000:0270",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "entry",
+      "address": "1000:02d8",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_03bd",
+      "address": "1000:03bd",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_042e",
+      "address": "1000:042e",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_043a",
+      "address": "1000:043a",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_04a5",
+      "address": "1000:04a5",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_04c2",
+      "address": "1000:04c2",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_04e8",
+      "address": "1000:04e8",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_05bb",
+      "address": "1000:05bb",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0667",
+      "address": "1000:0667",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_09fe",
+      "address": "1000:09fe",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0ab8",
+      "address": "1000:0ab8",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0afc",
+      "address": "1000:0afc",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0b6c",
+      "address": "1000:0b6c",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0b99",
+      "address": "1000:0b99",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0dc2",
+      "address": "1000:0dc2",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0fd3",
+      "address": "1000:0fd3",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1208",
+      "address": "1000:1208",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_139a",
+      "address": "1000:139a",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_13c5",
+      "address": "1000:13c5",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1521",
+      "address": "1000:1521",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_17b6",
+      "address": "1000:17b6",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1caa",
+      "address": "1000:1caa",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1d74",
+      "address": "1000:1d74",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1e06",
+      "address": "1000:1e06",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1e3c",
+      "address": "1000:1e3c",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1e7d",
+      "address": "1000:1e7d",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_1f60",
+      "address": "1000:1f60",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_2075",
+      "address": "1000:2075",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_2110",
+      "address": "1000:2110",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_2270",
+      "address": "1000:2270",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_228f",
+      "address": "1000:228f",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_23b4",
+      "address": "1000:23b4",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_244c",
+      "address": "1000:244c",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_25ec",
+      "address": "1000:25ec",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_262c",
+      "address": "1000:262c",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_268e",
+      "address": "1000:268e",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_28bb",
+      "address": "1000:28bb",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_297f",
+      "address": "1000:297f",
+      "completed": true,
+      "message": ""
+    }
+  ]
+}

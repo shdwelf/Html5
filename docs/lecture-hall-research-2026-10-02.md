@@ -91,6 +91,13 @@ candidate `INMYMEMORYIWILLALWAY` does **not** produce coherent English from the
 lead. Several direct combinations of the six hint lines failed as well; this was
 a small hypothesis test, not a dictionary or lyric-key exhaustion.
 
+**Correction (2026-10-13):** a cross-check found that the exact path had sorted the
+derived digit row lexically (`0…9`) while the inspector uses SECOM order
+(`1…9,0`). The exact decrypt and independent Python probe now share the latter.
+The opening-line candidate still fails; the corrected output begins
+`NTISETNAIZPTTIRNENRTNAFNYNNAIOS...`. Its prior `OYSASOXV...` output was from
+the ordering bug, not an alternate accepted plaintext.
+
 The CyberChef `secomSchedule` recipe remains a transparent schedule worksheet,
 and now directs users to the exact probe instead of implying that schedule
 agreement can validate a solve. Confirmation of another phrase still requires

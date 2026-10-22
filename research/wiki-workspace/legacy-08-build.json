@@ -1,0 +1,183 @@
+{
+  "format": "wikiinajar-legacy-build-evidence",
+  "version": 1,
+  "builtOn": "2026-10-15",
+  "sourceBaseCommit": "70596d89ee69b984c1ffb0997761ca281cae264d",
+  "scope": "Existing GPL 0.8 patches plus current follow-up documentation. The input hashes, not the base commit alone, identify all packaged inputs.",
+  "inputArchive": {
+    "name": "WikiInAJar-0.8-20081128-bin.zip",
+    "driveId": "1uKnAjh5zlgq_4iAQZ3Hw_CsNFPAEc2br",
+    "bytes": 123402,
+    "sha256": "4db47b0f712f50a7416ed1f0c65c06229d6820855cc18825e0ad3f9bd8a5bd47",
+    "md5": "45943d5150400ae59f739a32dc475585",
+    "archiveEntries": 83,
+    "innerJarBytes": 98464,
+    "innerJarSHA256": "7927d3d7b8e1c4df414a27026e80517adfe39b7bb57d08e37c3d86f7655f764f",
+    "mainClass": "org.rgse.wikiinajar.server.Server",
+    "symlinksOrTraversal": false
+  },
+  "output": {
+    "name": "WikiInAJar-0.8-image-support-pr116.zip",
+    "bytes": 669231,
+    "sha256": "bbdadd9acb8938afbc78f5abf1e91421c360db2f58465832796573911a020366",
+    "md5": "368be54408c422589fb80315fe9a7cf0",
+    "innerJarBytes": 104153,
+    "innerJarSHA256": "7dd01c8ac19a573f69c7fb0c3b84f49701d2528a68b9c6d1125ea5eea18f0e3c"
+  },
+  "patchedClassMajorVersion": 52,
+  "engine": "XRays/NanoHTTPD; not ACME and not historical More Wiki 0.9.9",
+  "reproducibility": "Contents are pinned by this inventory; the historical builder retains build-time ZIP/JAR timestamps, so repeated output archives need not be byte-identical.",
+  "httpHarnessSHA256": "119432f0fa5250b12a002184a794f3b231dde869b265ceaa8eeb48020b84b89f",
+  "inputs": [
+    {
+      "path": "tools/wikiinajar/build-image-support.sh",
+      "bytes": 5192,
+      "sha256": "7bc43eeaa1d5bee48653a6fee2c8ee5487904bf6179413e6bd4d4798118e8bf2"
+    },
+    {
+      "path": "tools/wikiinajar/patch-public.mjs",
+      "bytes": 1140,
+      "sha256": "20e02e50edc82d6834a6f128e360092c90141fd714990257b658366a4a10554d"
+    },
+    {
+      "path": "tools/wikiinajar/wiki-pages.json",
+      "bytes": 2432,
+      "sha256": "a8b23388eb772dd4ac75e9c5307d96c1d0df17729decaf9b961f198138ceb8ae"
+    },
+    {
+      "path": "tools/wikiinajar/INSTALLATION-README.txt",
+      "bytes": 1065,
+      "sha256": "16843d9b7fae188a27a00e05a42f84286f9dec696c1c259466bfc16fd5e5c910"
+    },
+    {
+      "path": "tools/wikiinajar/src/net/sf/wikiinajar/xrays/ControllerResponse.java",
+      "bytes": 6188,
+      "sha256": "eb3fe41086c56a4f214f1fe99b421883496227ea9f4eacfafd8f526720e720b4"
+    },
+    {
+      "path": "tools/wikiinajar/src/net/sf/wikiinajar/xrays/PublicController.java",
+      "bytes": 2200,
+      "sha256": "dbd22369edf097689e24782da8b104d614dbf57d36539e47a330f402914adb04"
+    },
+    {
+      "path": "tools/wikiinajar/src/org/rgse/wikiinajar/controllers/ImageController.java",
+      "bytes": 3692,
+      "sha256": "5d3e14d3a389ac0bc09ce0cfb868636f1b07fc955025510202cf57eba925c51f"
+    },
+    {
+      "path": "tools/wikiinajar/src/org/rgse/wikiinajar/helpers/wiki/render/WikiLink.java",
+      "bytes": 7207,
+      "sha256": "c88ad23798d5cc33bad92b4986180f9f0b0065f77a44daaf12971b9349529c24"
+    },
+    {
+      "path": "tools/wikiinajar/src/org/rgse/wikiinajar/helpers/wiki/render/filters/ImageFilter.java",
+      "bytes": 6526,
+      "sha256": "97000f6d28ea42a9ee3f0156091011401a9be6245d81e597fa8e11692b3eb528"
+    },
+    {
+      "path": "tools/wikiinajar/src/org/rgse/wikiinajar/server/Server.java",
+      "bytes": 3904,
+      "sha256": "0172d790f452b66c5475a67dd244c216958d122f53a73af3a303490f2d92a37f"
+    },
+    {
+      "path": "tools/wikiinajar/test/java/org/rgse/wikiinajar/helpers/wiki/render/ImageSupportSmokeTest.java",
+      "bytes": 2972,
+      "sha256": "a3829cf67e512ce00fb3e311d199795d1033b4998c5f16b784803fc315b25296"
+    },
+    {
+      "path": "tools/wikiinajar/public/docs/wiki/Image Support Demo.wiki",
+      "bytes": 1142,
+      "sha256": "c628a703a1a812c819660e3904a4dce73d53d84b41604dd8ce0c139780065a4b"
+    },
+    {
+      "path": "tools/wikiinajar/public/docs/wiki/Wiki in a Jar.wiki",
+      "bytes": 3702,
+      "sha256": "ce758cdb72d7bca820dd90c2aca7e004604720a987e99cf1a675eefeb7eca8f3"
+    },
+    {
+      "path": "tools/wikiinajar/public/docs/wiki/crow-217-letter-claim-check-2026-10-14.wiki",
+      "bytes": 7478,
+      "sha256": "88ac5838e68afe5b2162511fe614c5e99b1f9b8c7acc7274acddbaf465f5971c"
+    },
+    {
+      "path": "tools/wikiinajar/public/docs/wiki/cyberchef-sfx-coverage-audit-2026-10-13.wiki",
+      "bytes": 3111,
+      "sha256": "12c5241152346b0dfb0d050829e73e3ab94cbaa4c8a6a9514a9dfa067e866d19"
+    },
+    {
+      "path": "tools/wikiinajar/public/docs/wiki/drive-backup-wiki-2026-10-15.wiki",
+      "bytes": 7747,
+      "sha256": "62009a4dec952b1c07ded94411371f042b5bed3666513a5979c3f88b3a2e1a4a"
+    },
+    {
+      "path": "tools/wikiinajar/public/docs/wiki/field-cipher-deep-dive-2026-10-14.wiki",
+      "bytes": 38651,
+      "sha256": "db4114e2d73f2d2ccab52cd4e91ea2cb5a5594aa20ddf4a8571a1107666a3733"
+    },
+    {
+      "path": "tools/wikiinajar/public/docs/wiki/pdfdrive-deep-dive-2026-10-13.wiki",
+      "bytes": 4541,
+      "sha256": "7d806f6b04f4d33928499cb98ac4d4dcd6c5badc61125c39f25f5cf60f83cdac"
+    },
+    {
+      "path": "tools/wikiinajar/public/docs/wiki/recipe-sourcing-round-4-2026-10-14.wiki",
+      "bytes": 27222,
+      "sha256": "d28c2e4fae5bde6fa809c9102d9dd74fb913b92eaa4e44a8e0c50773a59fa216"
+    },
+    {
+      "path": "tools/wikiinajar/public/docs/wiki/recipe-sourcing-round-5-2026-10-14.wiki",
+      "bytes": 10772,
+      "sha256": "6df1fb526841e1047adfe6387b124f5ad319f5383e8b9effe37404abb9958156"
+    },
+    {
+      "path": "tools/wikiinajar/public/docs/wiki/wiki-workspace-research-2026-10-15.wiki",
+      "bytes": 26826,
+      "sha256": "ceaf630cd47b3e9d63f8e2a54666ac6e5a4755eb086234155800c3ea197a6618"
+    },
+    {
+      "path": "tools/wikiinajar/public/docs/wiki/yubnub-crypto-transport-audit-2026-10-13.wiki",
+      "bytes": 3019,
+      "sha256": "b899ea9dff10b4c0046f0c3d020377e390e6d5b0d902affca5f1d2370dc41a2c"
+    },
+    {
+      "path": "tools/wikiinajar/public/skins/default/djvu-rs/LICENSE",
+      "bytes": 1071,
+      "sha256": "9b634d974fb7ccacccc877fa6b36016eb48884b09732485d7ad92b6294699163"
+    },
+    {
+      "path": "tools/wikiinajar/public/skins/default/djvu-rs/djvu_rs.js",
+      "bytes": 1806,
+      "sha256": "f6f06f420cb48461c501e090a741702d3c1be1a8e2bba4719b713fc02196e0da"
+    },
+    {
+      "path": "tools/wikiinajar/public/skins/default/djvu-rs/scalar/djvu_rs.js",
+      "bytes": 47534,
+      "sha256": "0a457939c4ef40bd29f8284cc821c3e1286ca71b6acc253dfdf85f87232b0495"
+    },
+    {
+      "path": "tools/wikiinajar/public/skins/default/djvu-rs/scalar/djvu_rs_bg.wasm",
+      "bytes": 572658,
+      "sha256": "7005a038d10a793cd6923e16bc864e4089cd133cd5b81cb14034a6c605258389"
+    },
+    {
+      "path": "tools/wikiinajar/public/skins/default/djvu-rs/simd128/djvu_rs.js",
+      "bytes": 47534,
+      "sha256": "0a457939c4ef40bd29f8284cc821c3e1286ca71b6acc253dfdf85f87232b0495"
+    },
+    {
+      "path": "tools/wikiinajar/public/skins/default/djvu-rs/simd128/djvu_rs_bg.wasm",
+      "bytes": 582245,
+      "sha256": "4e860106f3733b11f5b2bd5d0ec66f600967c3d9db2d3e438bf9e44b71915e02"
+    },
+    {
+      "path": "tools/wikiinajar/public/skins/default/wikiinajar-djvu-viewer.js",
+      "bytes": 4968,
+      "sha256": "7ebf198547e8e59c0a009e55914b21b005c4a4874baa72602b3285879d1019e5"
+    },
+    {
+      "path": "tools/wikiinajar/public/skins/default/wikiinajar-image-support.css",
+      "bytes": 1014,
+      "sha256": "03e4f169763f92211a6b5e9e3e1e3177f3a9345446cd7dfa469d8cb73df2aa40"
+    }
+  ]
+}

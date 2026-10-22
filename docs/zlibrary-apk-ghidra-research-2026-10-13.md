@@ -215,22 +215,6 @@ plus mediocre local-storage hygiene; B's crypto is unauditable
 engine+Dart bulk wrapped around ads/push SDKs — combined with its
 impersonated test-key signature (§7), “untrusted” stands.**
 
-**Backlog completion (same day, owner-approved):** the
-`libapp.so` pass ran — Ghidra imports the Dart AOT snapshot
-(ARM:LE:32) but recovers **0 functions / 0 external symbols**; only
-10,127 defined strings (59 http, 62 crypto-matching, incl. PDF
-AES-encryption strings from its renderer). As predicted, Dart AOT
-yields string-level IOCs only; the §7/§8 verdict on B needs no
-revision. In the same runner round, the three Drive backup
-manifests were reconciled (`docs/drive-sync/`): snapshots are
-88.6–92.3% identical to the repo, with **25 + 2 + 0 files present
-only on the Drive side** (recoverable content, listed in the diffs)
-and 1,343–1,883 repo-side additions since. All five temporarily
-link-shared Drive files (3 manifests + 2 APKs) were reverted to
-private immediately after the fetch. Session backups were mirrored
-to Google Drive and Dropbox (`/Html5-Backups/`, content-hash
-verified) — see PR discussion for file IDs and hashes.
-
 ## 9. Sources (2026-10-13)
 
 Drive `search_files` × 4 queries + repo/home `find` (results table §1) ·

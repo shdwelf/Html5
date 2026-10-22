@@ -96,13 +96,14 @@ test("the documented registry and pack counts match the live registry", () => {
   const dom = bootKitchen();
   try {
     const ids = dom.window.eval("OPERATIONS.map(o => o.id)");
-    assert.equal(ids.length, 480, "the kitchen's registry size changed — update the cookbook");
+    assert.equal(ids.length, 511, "the kitchen's registry size changed — update the cookbook");
     const selectAll = dom.window.eval("applyRecipePacks(Object.keys(RECIPE_PACKS))");
     assert.equal(selectAll, ids.length, "SFX select-all must load the whole registry");
-    assert.ok(text.includes("147 of the 480"), "the card must state how many operations were unpacked");
-    assert.ok(text.includes("333 recipes"), "the card must state what select-all used to produce");
-    assert.ok(text.includes("480 of 480"), "the card must state the fixed coverage");
+    assert.ok(text.includes("147 of the then-480"), "the card must preserve the historical audit count");
+    assert.ok(text.includes("333 recipes"), "the card must state what the old select-all produced");
+    assert.ok(text.includes("511 of 511"), "the card must state the current full coverage");
     assert.ok(ids.includes("averyLabels") && ids.includes("qrcode"), "the documented ops exist");
+    assert.ok(ids.includes("complexityLab") && ids.includes("symbolicLogic"), "the local logic operations exist");
   } finally { dom.window.close(); }
 });
 
@@ -111,7 +112,7 @@ test("every documented barcode op id exists in the kitchen", () => {
   const dom = bootKitchen();
   try {
     // Op ids appear in the card as <span class="kbd">name</span> headings.
-    for (const id of ["code39", "qrcode", "averyLabels"]) {
+    for (const id of ["code39", "qrcode", "aztecCode", "aztecDecode", "cuecatDecode", "averyLabels"]) {
       assert.ok(text.includes(id), `the card must name the ${id} op`);
       assert.equal(dom.window.eval(`OPERATIONS.some(o => o.id === ${JSON.stringify(id)})`), true,
         `${id} is documented but not implemented`);

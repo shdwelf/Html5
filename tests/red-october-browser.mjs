@@ -7,7 +7,7 @@
  * error, and exports a .wrl from inside the page.
  *
  * Skips cleanly when the browser deps are absent, like the other browser
- * suites:  npm i --no-save puppeteer-core @sparticized/chromium
+ * suites:  npm i --no-save puppeteer-core @sparticuz/chromium
  */
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -15,7 +15,7 @@ import { browserDeps, serve, unpackLibs } from "./lib-browser.mjs";
 
 const deps = await browserDeps();
 if (!deps) {
-  console.log("red-october browser: SKIPPED (npm i --no-save puppeteer-core @sparticized/chromium)");
+  console.log("red-october browser: SKIPPED (npm i --no-save puppeteer-core @sparticuz/chromium)");
   process.exit(0);
 }
 unpackLibs();

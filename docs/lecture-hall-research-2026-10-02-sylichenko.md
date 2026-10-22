@@ -61,10 +61,12 @@ and not used.
 - **`secomExact`** — full SECOM encrypt/decrypt with the authoritative
   triangular disruption, byte-for-byte the algorithm of
   `tools/secom_probe.py`. Control: the official worksheet phrase and plaintext
-  reproduce the published 105-digit vector, and the vector round-trips. The
-  rejected Crow candidate decrypts to the same recorded letter soup
-  (`OYSASOXVEMSA 0OYVEAAPSFPSMSFITOTSHAOSHSS…`) — the exact model, not a
-  "repaired" one.
+  reproduce the published 105-digit vector, and the vector round-trips. A
+  2026-10-13 cross-check corrected a drift bug: the derived digit row must be
+  sequenced `1…9,0`, not lexical `0…9`, to match the schedule inspector. The
+  opening-line Crow candidate remains rejected; its corrected output begins
+  `NTISETNAIZPTTIRNENRTNAFNYNNAIOS...` (IoC 0.0966, chi-squared 824.9,
+  bigram −0.447). The older `OYSASOXVEMSA...` decode came from the fixed bug.
 - **`iocFitness`** — the measuring instruments: Friedman IoC, the Σh² integer
   shortcut, English chi-squared, compact bigram log-score, with the Stage-1
   calibration rule printed in the output.

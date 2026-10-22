@@ -1,16 +1,14 @@
-XDC_NAME := dist/sneakers-press-kit.xdc
-XDC_FILES := index.html analyzer.html styles.css app.js analyzer.js manifest.toml icon.png README.md
+XDC_NAME := sneakers-press-kit.xdc
 
-.PHONY: webxdc clean
+.PHONY: webxdc webxdc-exact clean
 
-# A webxdc is a deflated ZIP with an .xdc extension. The package deliberately
-# excludes downloaded archival media and generated third-party graphics.
+# Build the self-contained DOSBox/WASM player from the reconstructed bundle.
 webxdc:
-	@mkdir -p dist
-	@rm -f $(XDC_NAME)
-	@zip -q -9 $(XDC_NAME) $(XDC_FILES)
-	@echo "Created $(XDC_NAME)"
-	@unzip -t $(XDC_NAME) >/dev/null
+	@node scripts/build-sneakers-press-kit-xdc.mjs
+
+# Build a distinct player that preserves and launches the original ZIP files.
+webxdc-exact:
+	@node scripts/build-sneakers-press-kit-exact-xdc.mjs
 
 clean:
-	@rm -rf dist
+	@rm -f $(XDC_NAME) sneakers-press-kit-exact.xdc

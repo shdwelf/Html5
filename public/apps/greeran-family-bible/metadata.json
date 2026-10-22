@@ -1,0 +1,104 @@
+{
+  "translation": {
+    "code": "WEBU",
+    "name": "World English Bible Updated",
+    "publisher": "eBible.org",
+    "language": "en",
+    "license": "CC0-1.0 (Public Domain)",
+    "source": "https://ebible.org/find/details.php?id=engwebu",
+    "source_date": "2025-10-28",
+    "description": "A public-domain updated edition of the World English Bible with modernized language, spelling, and grammar."
+  },
+
+  "dataset": {
+    "name": "WEBU JSON and SQL Dataset",
+    "version": "2025.10.28",
+    "generated_on": "2025-11-29",
+    "format_version": "1.0.0",
+    "verse_count": 31098,
+    "book_count": 66,
+    "chapter_count": 1189,
+    "structure": {
+      "json": {
+        "complete": "json/complete-bible.json",
+        "per_book": "json/books/*.json"
+      },
+      "sql": {
+        "schema": "sql/schema.sql",
+        "seed": "sql/seed_webu.sql"
+      }
+    }
+  },
+
+  "schema": {
+    "translation_table": {
+      "primary_key": "id",
+      "unique_fields": ["code"],
+      "fields": {
+        "id": "SERIAL",
+        "code": "VARCHAR(10)",
+        "name": "VARCHAR(255)",
+        "publisher": "VARCHAR(255)",
+        "year": "INTEGER",
+        "copyright": "TEXT",
+        "license_type": "VARCHAR(50)",
+        "language": "VARCHAR(20)",
+        "created_at": "TIMESTAMP"
+      }
+    },
+    "book_table": {
+      "primary_key": "id",
+      "unique_fields": ["translation_id", "slug", "order_index"],
+      "fields": {
+        "id": "SERIAL",
+        "translation_id": "INTEGER",
+        "name": "VARCHAR(255)",
+        "slug": "VARCHAR(50)",
+        "abbrev": "VARCHAR(20)",
+        "testament": "VARCHAR(10)",
+        "order_index": "INTEGER",
+        "chapter_count": "INTEGER"
+      }
+    },
+    "verse_table": {
+      "primary_key": "id",
+      "unique_fields": ["canonical_ref"],
+      "fields": {
+        "id": "SERIAL",
+        "translation_id": "INTEGER",
+        "book_id": "INTEGER",
+        "chapter": "INTEGER",
+        "verse_number": "INTEGER",
+        "text": "TEXT",
+        "canonical_ref": "VARCHAR(100)",
+        "order_index": "BIGINT",
+        "created_at": "TIMESTAMP"
+      }
+    }
+  },
+
+  "canonical": {
+    "order": [
+      "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy",
+      "Joshua", "Judges", "Ruth", "1 Samuel", "2 Samuel",
+      "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Ezra",
+      "Nehemiah", "Esther", "Job", "Psalms", "Proverbs",
+      "Ecclesiastes", "Song of Solomon", "Isaiah", "Jeremiah", "Lamentations",
+      "Ezekiel", "Daniel", "Hosea", "Joel", "Amos",
+      "Obadiah", "Jonah", "Micah", "Nahum", "Habakkuk",
+      "Zephaniah", "Haggai", "Zechariah", "Malachi",
+      "Matthew", "Mark", "Luke", "John", "Acts",
+      "Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians",
+      "Philippians", "Colossians", "1 Thessalonians", "2 Thessalonians",
+      "1 Timothy", "2 Timothy", "Titus", "Philemon", "Hebrews",
+      "James", "1 Peter", "2 Peter", "1 John", "2 John",
+      "3 John", "Jude", "Revelation"
+    ]
+  },
+
+  "notes": {
+    "verse_count_note": "WEBU contains 31,098 verses, whereas the KJV typically counts 31,102. Minor differences are due to verse segmentation and numbering traditions, especially in the Old Testament and certain poetic passages.",
+    "public_domain_note": "Both the WEB and WEBU are fully public domain. This dataset is also released into the public domain under CC0 1.0.",
+    "modifications": "Text was not modified except where necessary to normalize whitespace (no content changes)."
+  }
+}

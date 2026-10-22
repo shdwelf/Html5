@@ -1,6 +1,81 @@
 (function () {
   const STYLE_KEY = 'greeran-book-style-v1';
   const VAULT_KEY = 'greeran-book-vault-v1';
+  const INTRO_KEY = 'greeran-book-intro-seen-v1';
+
+  const bookIntro = document.getElementById('bookIntro');
+  const introHeading = document.getElementById('introHeading');
+  const introCaption = document.getElementById('introCaption');
+  const introStatus = document.getElementById('introStatus');
+  const introSkip = document.getElementById('introSkip');
+  const replayIntro = document.getElementById('replayIntro');
+  const reducedMotion = Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+  let introTimer = null;
+  let introCloseTimer = null;
+
+  function revealOpenBook() {
+    if (!bookIntro || bookIntro.hidden) return;
+    bookIntro.classList.remove('is-playing');
+    bookIntro.classList.add('is-open');
+    if (introHeading) introHeading.textContent = 'The first page opens.';
+    if (introCaption) introCaption.textContent = 'A source-balanced life file, ready to be read.';
+    if (introSkip) introSkip.textContent = 'Open the book';
+    if (introStatus) introStatus.textContent = 'The book has opened. Choose Open the book to continue.';
+  }
+
+  function closeIntro() {
+    if (!bookIntro || bookIntro.hidden) return;
+    window.clearTimeout(introTimer);
+    window.clearTimeout(introCloseTimer);
+    bookIntro.classList.remove('is-playing');
+    bookIntro.classList.add('is-closing');
+    bookIntro.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('intro-active');
+    localStorage.setItem(INTRO_KEY, 'seen');
+    introCloseTimer = window.setTimeout(function () {
+      bookIntro.hidden = true;
+      bookIntro.classList.remove('is-closing', 'is-open');
+      if (replayIntro) replayIntro.focus({ preventScroll: true });
+    }, reducedMotion ? 40 : 580);
+  }
+
+  function startIntro() {
+    if (!bookIntro) return;
+    window.clearTimeout(introTimer);
+    window.clearTimeout(introCloseTimer);
+    bookIntro.hidden = false;
+    bookIntro.setAttribute('aria-hidden', 'false');
+    bookIntro.classList.remove('is-closing', 'is-open', 'is-playing');
+    document.body.classList.add('intro-active');
+    if (introHeading) introHeading.textContent = 'A book waits beyond the fog.';
+    if (introCaption) introCaption.textContent = 'Follow the light. The record is about to open.';
+    if (introSkip) introSkip.textContent = 'Skip to the book';
+    if (introStatus) introStatus.textContent = 'A quiet flight toward the book begins.';
+    void bookIntro.offsetWidth;
+    bookIntro.classList.add('is-playing');
+    if (introSkip) introSkip.focus({ preventScroll: true });
+    introTimer = window.setTimeout(revealOpenBook, reducedMotion ? 180 : 5400);
+  }
+
+  if (bookIntro && introSkip) {
+    introSkip.addEventListener('click', closeIntro);
+    bookIntro.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeIntro();
+      } else if (event.key === 'Tab') {
+        event.preventDefault();
+        introSkip.focus({ preventScroll: true });
+      }
+    });
+    if (replayIntro) replayIntro.addEventListener('click', startIntro);
+    if (localStorage.getItem(INTRO_KEY) === 'seen') {
+      bookIntro.hidden = true;
+      bookIntro.setAttribute('aria-hidden', 'true');
+    } else {
+      startIntro();
+    }
+  }
 
   // --- Quote of the Day engine ---
   const QOTD_QUOTES = [

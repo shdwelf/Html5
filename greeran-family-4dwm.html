@@ -160,6 +160,11 @@ html,body{height:100%;overflow:hidden;font-family:Georgia,serif;
 .dp-l{color:var(--mut);min-width:58px;flex-shrink:0;font-size:.58rem}
 .dp-v{color:#f0e0c8}
 .dp-nt{font-size:.56rem;color:#7a9aaa;margin-top:5px;line-height:1.5;border-top:1px solid rgba(255,255,255,.05);padding-top:5px;font-style:italic}
+.dp-name-links{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:5px}
+.dp-name-link{display:inline-block;color:var(--gold);font-size:.64rem;text-decoration:underline;text-underline-offset:2px}
+.dp-name-link:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
+.dp-name-note{font-size:.62rem;color:#b8c6d1;line-height:1.55}
+.dp-name-note a{color:var(--gold);text-decoration:underline;text-underline-offset:2px}
 
 /* STATS BOXES */
 .sbr{display:grid;grid-template-columns:repeat(auto-fit,minmax(68px,1fr));gap:6px;margin-bottom:12px}
@@ -266,6 +271,121 @@ html,body{height:100%;overflow:hidden;font-family:Georgia,serif;
   #timebar label{display:none}#time-window{max-width:70px}.tb-btn{padding:5px 7px}
   #ginfo,#gleg{bottom:72px}#gleg{display:none}#ginfo .gst:last-child{display:none}
 }
+
+/* TREE OF LIFE / KEEPSAKE PAGES */
+#p-book{background:radial-gradient(ellipse at top,#182535 0%,#07101a 65%,#04080f 100%);padding:clamp(12px,3vw,30px)}
+.keepsake-flow{max-width:1080px;margin:0 auto;display:grid;gap:18px;padding-bottom:20px}
+.keepsake-page{position:relative;overflow:hidden;border:1px solid #c6a75e;border-radius:14px;
+  background:linear-gradient(135deg,#fbf7eb 0%,#f4ead4 48%,#eee0c2 100%);color:#30291d;
+  padding:clamp(22px,4vw,48px);box-shadow:0 16px 44px rgba(0,0,0,.38),inset 0 0 0 5px rgba(255,255,255,.36)}
+.keepsake-page:before{content:"";position:absolute;inset:12px;border:1px solid rgba(137,101,37,.18);border-radius:9px;pointer-events:none}
+.kp-kicker{position:relative;color:#856a2b;font-size:.62rem;font-weight:700;letter-spacing:.19em;text-transform:uppercase;margin-bottom:24px}
+.kp-grid{position:relative;display:grid;grid-template-columns:minmax(0,1.28fr) minmax(220px,.72fr);gap:clamp(22px,5vw,58px);align-items:center}
+.kp-copy{max-width:650px}
+.kp-overline{color:#80601e;font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin:0 0 10px}
+#p-book h1,#p-book h2,#p-book h3{font-family:Georgia,'Times New Roman',serif;color:#342817;line-height:1.15}
+#p-book h1{font-size:clamp(1.65rem,4vw,2.8rem);font-weight:500;margin:0 0 18px}
+#p-book h2{position:relative;font-size:clamp(1.5rem,3.5vw,2.25rem);font-weight:500;margin:0 0 22px}
+#p-book h3{font-size:1.2rem;font-weight:600;margin:0 0 12px}
+#p-book .kp-copy p:not(.kp-overline),#p-book .kp-resource p:not(.kp-overline),#p-book .kp-qr-card p{font-size:.94rem;line-height:1.75;color:#514734;margin:0 0 13px}
+.kp-tree-art{position:relative;margin:0;text-align:center}
+.kp-tree-art svg{display:block;width:min(100%,320px);height:auto;margin:0 auto;filter:drop-shadow(0 9px 12px rgba(84,60,20,.12))}
+.kp-tree-art figcaption{font-size:.7rem;color:#776744;font-style:italic;margin-top:8px}
+.kp-footnote{position:relative;margin-top:28px;padding-top:14px;border-top:1px solid rgba(132,100,42,.25);color:#796744;font-size:.7rem;letter-spacing:.03em}
+.kp-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.kp-button{border:1px solid #72531c;border-radius:7px;background:#735719;color:#fff9e9;padding:10px 13px;
+  font:700 .76rem Georgia,serif;cursor:pointer;transition:background .18s,transform .18s}
+.kp-button:hover{background:#8d6a24;transform:translateY(-1px)}
+.kp-button.secondary{background:transparent;color:#60491e;border-color:#aa8b4d}
+.kp-button.secondary:hover{background:rgba(128,96,30,.1)}
+.inside-back-cover{background:linear-gradient(140deg,#f7f1e2 0%,#f1e5cc 54%,#e9d8b4 100%)}
+.kp-resource-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:4px 0 16px}
+.kp-resource{border:1px solid rgba(133,99,35,.28);border-radius:10px;background:rgba(255,255,255,.47);padding:18px}
+.kp-resource p.kp-small{font-size:.72rem!important;line-height:1.55!important;color:#74684f!important;margin:13px 0 0!important}
+.kp-resource a:not(.kp-download),.kp-qr-card a{color:#684e18;text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}
+.kp-download{display:inline-flex;align-items:center;gap:7px;border:1px solid #72531c;border-radius:7px;background:#735719;color:#fff9e9;
+  text-decoration:none;padding:10px 12px;font-size:.77rem;font-weight:700;line-height:1.4}
+.kp-download:hover{background:#8d6a24}
+.kp-research-note{position:relative;border-left:4px solid #a07a2c;border-radius:5px;background:rgba(133,99,35,.09);
+  padding:12px 15px;color:#594b31;font-size:.78rem;line-height:1.65;margin:14px 0 20px}
+.kp-qr-heading{position:relative;margin:18px 0 10px}
+.kp-qr-heading p:last-child{max-width:760px;color:#74684f;font-size:.78rem;line-height:1.55}
+.kp-qr-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kp-qr-card{border:1px solid rgba(133,99,35,.35);border-radius:9px;background:rgba(255,255,255,.44);overflow:hidden}
+.kp-qr-card summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;
+  color:#4a3c22;font-size:.81rem;font-weight:700;cursor:pointer;user-select:none}
+.kp-qr-card summary::-webkit-details-marker{display:none}
+.kp-qr-card summary:focus-visible{outline:3px solid #b78b32;outline-offset:-3px}
+.kp-qr-plus{font-size:1.1rem;color:#82601e;transition:transform .2s}
+.kp-qr-card[open] .kp-qr-plus{transform:rotate(45deg)}
+.kp-qr-body{display:grid;grid-template-columns:minmax(130px,190px) minmax(0,1fr);align-items:center;gap:16px;border-top:1px solid rgba(133,99,35,.2);padding:14px}
+.kp-qr-body img{display:block;width:min(100%,190px);height:auto;aspect-ratio:1;background:#fff;border:5px solid #fff;border-radius:4px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.kp-qr-body a{font-size:.75rem;font-weight:700}
+.kp-closing{position:relative;text-align:center;margin:24px 0 0;color:#80632c;font-style:italic;font-size:.9rem}
+@media(max-width:760px){
+  .kp-grid{grid-template-columns:1fr}
+  .kp-tree-art{max-width:280px;margin:4px auto 0}
+  .kp-resource-grid,.kp-qr-grid{grid-template-columns:1fr}
+  .kp-qr-body{grid-template-columns:minmax(120px,180px) minmax(0,1fr)}
+}
+@media(max-width:430px){
+  .kp-actions{display:grid}
+  .kp-button{width:100%}
+  .kp-qr-body{grid-template-columns:1fr}
+  .kp-qr-body img{margin:0 auto}
+}
+
+
+/* Offline WEBU reader and original archive card */
+.tree-preface,.bible-card,.archive-card,.qr-note{border:1px solid var(--bdr);border-radius:12px;background:rgba(10,20,34,.9);box-shadow:0 10px 32px rgba(0,0,0,.22)}
+.tree-preface{position:relative;overflow:hidden;padding:25px 30px 22px;background:linear-gradient(135deg,rgba(201,168,76,.11),transparent 48%),linear-gradient(110deg,#101b20,#0a1422 68%)}
+.tree-preface:after{content:"";position:absolute;inset:12px;border:1px solid rgba(201,168,76,.15);border-radius:8px;pointer-events:none}
+.tree-preface-mark{position:relative;width:42px;height:46px;margin-bottom:8px;filter:drop-shadow(0 0 9px rgba(201,168,76,.35))}
+.tree-preface-mark:before{content:"";position:absolute;left:4px;top:5px;width:34px;height:32px;background:linear-gradient(135deg,#47845b,#174b3d 70%,#0c3029);clip-path:polygon(50% 0,63% 22%,77% 22%,68% 39%,86% 39%,74% 57%,96% 57%,50% 100%,4% 57%,26% 57%,14% 39%,32% 39%,23% 22%,37% 22%)}
+.tree-preface-mark:after{content:"";position:absolute;left:18px;top:34px;width:7px;height:10px;border-radius:1px;background:linear-gradient(90deg,#725126,#c9a84c,#725126)}
+.tree-preface-mark span{position:absolute;z-index:1;left:16px;top:0;width:10px;height:10px;background:#f0d870;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.tree-preface-kicker,.bible-overline{font:700 .52rem/1.5 Georgia,serif;color:var(--gold);letter-spacing:.17em;text-transform:uppercase}
+.tree-preface h2,.bible-card h2,.archive-card h2{color:#f2dfb5;font-size:1.38rem;font-weight:500;letter-spacing:.04em;margin:5px 0 13px}
+.tree-preface p,.bible-intro,.bible-caution,.archive-card p{font-size:.7rem;line-height:1.85;color:#b9c1bd;max-width:850px;margin:0 0 10px}
+.tree-preface-signoff{color:#e3c980!important;font-style:italic;margin-top:15px!important}
+.tree-preface-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:17px;padding-top:13px;border-top:1px solid var(--bdr);font-size:.58rem;color:var(--mut)}
+.book-action{display:inline-flex;align-items:center;justify-content:center;gap:5px;background:rgba(201,168,76,.13);border:1px solid var(--bdr2);border-radius:7px;padding:7px 10px;color:#f1d47d;font:700 .58rem/1.1 Georgia,serif;text-decoration:none;cursor:pointer;white-space:nowrap}
+.book-action:hover{background:rgba(201,168,76,.25);color:#fff}
+.bible-card,.archive-card{padding:18px 20px}
+.bible-caution{border-left:3px solid var(--gold);padding:8px 11px;background:rgba(201,168,76,.06);margin:11px 0;color:#d4c7a6}
+.bible-caution strong{color:#f0d870}
+.bible-source{font-size:.56rem;color:var(--mut);margin:5px 0 12px}
+.bible-source a{color:#e1c267}
+.bible-reader{border:1px solid rgba(201,168,76,.22);border-radius:9px;padding:12px;background:rgba(0,0,0,.18)}
+.bible-controls{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap}
+.bible-controls label{display:flex;flex-direction:column;gap:4px;font-size:.5rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+#bible-book,#bible-chapter,#bible-search{background:#071221;color:var(--txt);border:1px solid var(--bdr);border-radius:6px;padding:7px 9px;font: .66rem Georgia,serif;outline:none}
+#bible-book{min-width:195px}#bible-chapter{min-width:82px}
+#bible-book:focus,#bible-chapter:focus,#bible-search:focus{border-color:var(--gold)}
+.bible-search-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:11px 0 6px}
+.bible-search-label{font-size:.56rem;color:var(--mut)}#bible-search{flex:1;min-width:180px}
+.bible-status{font-size:.55rem;color:var(--mut);min-height:18px;margin:5px 1px}
+.bible-text{max-height:min(48vh,510px);overflow:auto;border:1px solid rgba(201,168,76,.14);border-radius:7px;background:#101b22;padding:16px 18px;line-height:1.75}
+.bible-empty{font-size:.65rem;color:var(--mut);text-align:center;padding:32px 10px}
+.bible-chapter-title{font-size:.95rem;color:#f0d991;margin-bottom:12px}
+.bible-verse{font-family:Georgia,serif;font-size:.76rem;color:#e4dccb;line-height:1.9;margin:0 0 7px}
+.bible-vnum{display:inline-block;min-width:25px;margin-right:5px;color:#c6a753;font:700 .54rem/1.5 monospace;vertical-align:baseline}
+.bible-results{max-height:190px;overflow:auto;padding:6px 8px;margin:7px 0;border:1px solid rgba(201,168,76,.2);border-radius:7px;background:rgba(0,0,0,.22)}
+.bible-result{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.05);padding:7px 2px;color:#c8d1cb;font: .58rem/1.55 Georgia,serif;cursor:pointer}
+.bible-result:hover{color:#f0d870}.bible-result b{color:#e9cd7d}
+.bible-quicklinks{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-top:10px;font-size:.54rem;color:var(--mut)}
+.bible-quicklinks button{background:rgba(201,168,76,.08);border:1px solid var(--bdr);border-radius:12px;color:#d9c27d;padding:4px 8px;font: .53rem Georgia,serif;cursor:pointer}
+.bible-quicklinks button:hover{background:rgba(201,168,76,.2)}
+.archive-card{background:linear-gradient(135deg,rgba(255,136,68,.045),transparent 65%),rgba(10,20,34,.9)}
+.archive-card code{font-size:.62rem;color:#f2d78a}
+.archive-download{margin:3px 0 8px}
+.archive-notice{font-size:.55rem!important;color:#d3aa77!important;border-top:1px solid rgba(255,136,68,.18);padding-top:9px;margin-top:6px!important}
+.qr-note{padding:11px 14px;color:#9aa9b2;font-size:.59rem;line-height:1.6;background:rgba(201,168,76,.035)}
+.qr-note strong{color:var(--gold)}
+@media(max-width:700px){
+  .tree-preface{padding:20px 17px}.tree-preface h2,.bible-card h2,.archive-card h2{font-size:1.1rem}
+  .bible-card,.archive-card{padding:15px 13px}#bible-book{min-width:155px}.bible-text{max-height:45vh;padding:12px}
+}
 </style>
 </head>
 <body>
@@ -314,6 +434,7 @@ html,body{height:100%;overflow:hidden;font-family:Georgia,serif;
   <div class="tab" data-t="people" onclick="sw('people')">👥 All People</div>
   <div class="tab" data-t="fixes" onclick="sw('fixes')">✏️ Corrections</div>
   <div class="tab" data-t="next" onclick="sw('next')">🔎 Next Steps</div>
+  <div class="tab" data-t="book" onclick="sw('book')">📖 Tree of Life</div>
 </div>
 <div id="pnls">
 
@@ -453,6 +574,156 @@ html,body{height:100%;overflow:hidden;font-family:Georgia,serif;
 <div class="step"><div class="stn">10</div><div class="stt"><b>CA Marriage Index 1960–1985</b> — Terry Greeran × Miller; Patricia Greeran × Dunn. (Ancestry @S327785611@)</div></div>
 </div>
 
+<div class="pnl" id="p-book">
+  <div class="keepsake-flow">
+    <section class="keepsake-page family-preface" aria-labelledby="tree-preface-title">
+      <div class="kp-kicker">Greeran Family Tree · Preface</div>
+      <div class="kp-grid">
+        <div class="kp-copy">
+          <p class="kp-overline">THE TREE OF LIFE</p>
+          <h1 id="tree-preface-title">A family is a constellation of names, places, and stories.</h1>
+          <p>Every family history begins with a question: who came before, and what can the records actually tell us? This tree brings names and relationships into view without mistaking a line on a chart for proof.</p>
+          <p>Dates, places, and family links are preserved as the source presents them. Gaps and uncertainty remain part of the story; they are invitations to research, not permission to guess. Follow the branches with curiosity, and return to the records whenever a detail matters.</p>
+          <p>This keepsake joins the Greeran family with the many connected lines recorded in the tree. It is offered as a living map: something to explore, question, and carefully pass forward.</p>
+          <div class="kp-actions">
+            <button type="button" class="kp-button" onclick="sw('tree')">🌳 Explore the family tree</button>
+            <button type="button" class="kp-button secondary" onclick="sw('globe')">🌍 Open the 4DWM globe</button>
+          </div>
+        </div>
+        <figure class="kp-tree-art">
+          <svg viewBox="0 0 320 360" role="img" aria-labelledby="tree-svg-title tree-svg-desc">
+            <title id="tree-svg-title">Tree of Life</title>
+            <desc id="tree-svg-desc">An illustrated tree with branching limbs, leaves, and spreading roots.</desc>
+            <defs>
+              <linearGradient id="tree-trunk" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#62451d"/><stop offset="1" stop-color="#a5772c"/>
+              </linearGradient>
+              <radialGradient id="tree-leaf">
+                <stop offset="0" stop-color="#e8c979"/><stop offset="1" stop-color="#b48738"/>
+              </radialGradient>
+            </defs>
+            <circle cx="160" cy="128" r="108" fill="#f8efd9" stroke="#d9c28e" stroke-width="2"/>
+            <g fill="none" stroke="url(#tree-trunk)" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M160 290 C151 247 160 205 158 169 C156 132 137 103 109 79" stroke-width="13"/>
+              <path d="M160 255 C178 221 184 188 181 151 C178 115 194 88 219 68" stroke-width="10"/>
+              <path d="M158 213 C136 188 117 174 87 164" stroke-width="7"/>
+              <path d="M180 195 C207 177 226 165 252 158" stroke-width="7"/>
+              <path d="M152 173 C128 143 127 120 131 99" stroke-width="5"/>
+              <path d="M181 157 C204 132 211 112 207 91" stroke-width="5"/>
+              <path d="M160 289 C142 308 119 318 98 325 M160 289 C174 311 195 321 220 328 M159 291 C157 319 151 333 143 345 M164 292 C168 318 174 335 185 347" stroke-width="5"/>
+            </g>
+            <g fill="url(#tree-leaf)" stroke="#9a702e" stroke-width="1.5">
+              <circle cx="102" cy="75" r="17"/><circle cx="126" cy="58" r="17"/><circle cx="151" cy="71" r="17"/>
+              <circle cx="200" cy="62" r="18"/><circle cx="224" cy="80" r="17"/><circle cx="238" cy="108" r="17"/>
+              <circle cx="83" cy="139" r="17"/><circle cx="111" cy="120" r="18"/><circle cx="143" cy="108" r="17"/>
+              <circle cx="183" cy="107" r="17"/><circle cx="214" cy="127" r="18"/><circle cx="256" cy="147" r="16"/>
+              <circle cx="93" cy="177" r="15"/><circle cx="229" cy="177" r="15"/>
+            </g>
+            <circle cx="160" cy="197" r="10" fill="#f4e5c2" stroke="#876327" stroke-width="2"/>
+          </svg>
+          <figcaption>Roots below; branches reaching across generations.</figcaption>
+        </figure>
+      </div>
+      <div class="kp-footnote">A keepsake for the Greeran family — with each branch read alongside its evidence.</div>
+    </section>
+
+    <section class="keepsake-page inside-back-cover" aria-labelledby="inside-back-title">
+      <div class="kp-kicker">Inside back cover · Keepsake edition</div>
+      <h2 id="inside-back-title">Words to carry, and a tree to revisit</h2>
+      <div class="kp-resource-grid">
+        <article class="kp-resource">
+          <p class="kp-overline">COMPANION READING</p>
+          <h3>World English Bible (WEB)</h3>
+          <p>The complete 66-book English Bible, prepared as a reflowable EPUB for offline reading. The WEB text is public domain and is included unchanged; the ebook is a companion resource, not a source for family-history claims.</p>
+          <a class="kp-download" href="./assets/greeran/world-english-bible.epub" download>⬇ Download the Bible ebook · EPUB</a>
+          <p class="kp-small">Text source: <a href="https://ebible.org/pdf/eng-web/eng-web_all.pdf" target="_blank" rel="noopener">eBible.org · World English Bible</a>. “World English Bible” is a trademark; the text in this ebook has not been altered.</p>
+        </article>
+        <article class="kp-resource">
+          <p class="kp-overline">FAMILY RECORD</p>
+          <h3>Download the GEDCOM snapshot</h3>
+          <p>A baseline export of the data already embedded in this tree: 2,089 source people and 588 families, plus one blank reference stub to preserve a family link that has no person record in the embedded data.</p>
+          <a class="kp-download" href="./greeran-family-4dwm.ged" download>⬇ Download baseline GEDCOM</a>
+          <p class="kp-small">This snapshot is not a merge with the requested Kirkpatrick first-name data. It preserves the current tree relationships and labels its provenance in the GEDCOM header.</p>
+        </article>
+      </div>
+      <div class="kp-research-note" role="note">
+        <b>Research status:</b> no raw GEDCOM or authorized Kirkpatrick ARJ was available. The local 1993 First Name Almanac is a shareware ZIP, not an ARJ; its notice limits redistribution to the original form. No member or name data was extracted or used. A verified GEDCOM and permission for the intended name-data source are still needed for that merge.
+      </div>
+      <div class="kp-qr-heading">
+        <div>
+          <p class="kp-overline">TWO HIDDEN LINKS</p>
+          <p>Open a reveal to show a scan-ready QR code. Each panel also provides its direct link for accessibility and for devices that cannot scan from this screen.</p>
+        </div>
+      </div>
+      <div class="kp-qr-grid">
+        <details class="kp-qr-card" id="qr-family">
+          <summary><span>🌳 Reveal the family-tree QR</span><span class="kp-qr-plus" aria-hidden="true">+</span></summary>
+          <div class="kp-qr-body">
+            <img data-qr-image="family" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMjAiIGhlaWdodD0iMzIwIiB2aWV3Qm94PSIwIDAgNDMgNDMiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyI+PHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTAgMGg0M3Y0M0gweiIvPjxwYXRoIHN0cm9rZT0iIzEwMTgyMCIgZD0iTTMgMy41aDdtMSAwaDFtMSAwaDJtMiAwaDNtMiAwaDNtMyAwaDFtMSAwaDFtMiAwaDdNMyA0LjVoMW01IDBoMW0yIDBoMW0zIDBoMW0xIDBoNW0yIDBoM20xIDBoMW0xIDBoMW0xIDBoMW01IDBoMU0zIDUuNWgxbTEgMGgzbTEgMGgxbTMgMGgxbTEgMGgzbTIgMGgxbTMgMGgybTEgMGgxbTEgMGgybTIgMGgxbTEgMGgzbTEgMGgxTTMgNi41aDFtMSAwaDNtMSAwaDFtMSAwaDFtMSAwaDJtMSAwaDJtMSAwaDFtMSAwaDFtNiAwaDJtMSAwaDFtMSAwaDFtMSAwaDNtMSAwaDFNMyA3LjVoMW0xIDBoM20xIDBoMW0xIDBoNG0xIDBoM20xIDBoMm00IDBoMW0xIDBoNG0xIDBoMW0xIDBoM20xIDBoMU0zIDguNWgxbTUgMGgxbTEgMGgxbTIgMGgxbTIgMGg0bTEgMGgxbTUgMGgxbTQgMGgxbTUgMGgxTTMgOS41aDdtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDdNMTEgMTAuNWgybTEgMGgxbTEgMGg0bTIgMGgzbTEgMGgyTTMgMTEuNWgxbTMgMGgxbTEgMGgzbTEgMGgzbTEgMGgzbTMgMGgxbTMgMGgxbTIgMGgxbTEgMGg1bTIgMGgxTTcgMTIuNWgxbTggMGgybTIgMGgzbTIgMGgxbTEgMGgxbTEgMGgybTQgMGgxbTIgMGgxTTQgMTMuNWgzbTIgMGgxbTIgMGg1bTEgMGgxbTEgMGgzbTMgMGg1bTMgMGgxbTEgMGgxTTMgMTQuNWgybTYgMGg0bTEgMGg1bTEgMGg0bTMgMGgzbTEgMGgzbTEgMGgyTTQgMTUuNWgzbTIgMGgybTUgMGgybTIgMGgxbTIgMGgybTIgMGgxbTIgMGgxbTEgMGgzbTIgMGgzTTMgMTYuNWgzbTEgMGgxbTQgMGgzbTMgMGgybTEgMGgxbTEgMGgybTEgMGgxbTEgMGgzbTQgMGgybTEgMGgxTTQgMTcuNWgybTMgMGgybTMgMGg1bTEgMGgxbTIgMGgxbTIgMGgybTEgMGgzbTIgMGg0TTMgMTguNWgxbTEgMGgybTEgMGgxbTIgMGgzbTEgMGgybTEgMGg0bTEgMGgxbTEgMGgxbTEgMGgxbTMgMGg1bTEgMGgxbTEgMGgxTTQgMTkuNWgxbTEgMGgxbTIgMGgzbTMgMGgxbTEgMGgybTIgMGgybTIgMGgxbTEgMGgxbTMgMGg0bTEgMGg0TTMgMjAuNWgybTEgMGgxbTMgMGgzbTEgMGgxbTQgMGgybTEgMGgzbTEgMGgxbTMgMGgybTIgMGgzbTEgMGgxTTUgMjEuNWgybTIgMGgxbTEgMGgxbTEgMGgxbTEgMGgxbTMgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTIgMGg1bTEgMGgxbTEgMGgxTTMgMjIuNWgybTMgMGgxbTEgMGgxbTIgMGgxbTIgMGgxbTMgMGgybTIgMGgxbTEgMGgybTEgMGgybTMgMGgybTEgMGgyTTUgMjMuNWgybTIgMGgybTEgMGgzbTMgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTMgMGgybTEgMGgzbTIgMGgxTTMgMjQuNWgxbTEgMGgybTYgMGgzbTIgMGg0bTEgMGgxbTIgMGgxbTEgMGg1bTEgMGgyTTMgMjUuNWgybTQgMGgxbTEgMGgxbTIgMGgybTIgMGgxbTIgMGgxbTIgMGgzbTEgMGgzbTEgMGgxbTEgMGg0TTQgMjYuNWgxbTEgMGgxbTEgMGgxbTMgMGg0bTEgMGgzbTMgMGgybTEgMGgybTEgMGgybTMgMGgybTEgMGgxbTEgMGgxTTUgMjcuNWgxbTEgMGgxbTEgMGgxbTEgMGgxbTEgMGg1bTEgMGgxbTMgMGgxbTMgMGgxbTQgMGgzbTEgMGgzTTMgMjguNWgybTEgMGgybTMgMGgybTEgMGgxbTIgMGgxbTMgMGgybTEgMGgzbTIgMGgzbTMgMGgyTTUgMjkuNWgybTIgMGgybTEgMGg3bTMgMGgxbTEgMGgzbTEgMGgzbTMgMGgxbTIgMGgxTTggMzAuNWgxbTIgMGgybTMgMGgxbTEgMGgzbTEgMGg1bTIgMGg0bTQgMGgzTTMgMzEuNWgybTEgMGgxbTEgMGgzbTEgMGgybTEgMGgxbTEgMGgxbTIgMGgybTEgMGg1bTIgMGg4bTEgMGgxTTExIDMyLjVoMW0xIDBoM20yIDBoMm0xIDBoMW0yIDBoM20zIDBoMm0zIDBoMU0zIDMzLjVoN20xIDBoMW02IDBoMW0xIDBoMW0yIDBoMW0yIDBoMW0yIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0yIDBoMU0zIDM0LjVoMW01IDBoMW0yIDBoMW0xIDBoM20xIDBoMW0xIDBoMm0xIDBoMW0xIDBoMm0yIDBoMW0xIDBoMW0zIDBoNU0zIDM1LjVoMW0xIDBoM20xIDBoMW0xIDBoMW0zIDBoMW0xIDBoMm0yIDBoMW0zIDBoMm0yIDBoMW0xIDBoOE0zIDM2LjVoMW0xIDBoM20xIDBoMW0yIDBoM20xIDBoMm0xIDBoMm0xIDBoMm0yIDBoMW0xIDBoMm0yIDBoM200IDBoMU0zIDM3LjVoMW0xIDBoM20xIDBoMW0zIDBoMW0zIDBoMW0xIDBoMW0xIDBoMW0xIDBoMm0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMm0yIDBoMU0zIDM4LjVoMW01IDBoMW0yIDBoMW0xIDBoMm00IDBoMm0yIDBoMm0xIDBoMW0xIDBoMm0yIDBoMW0xIDBoMW0xIDBoMk0zIDM5LjVoN20xIDBoMW0xIDBoMW0yIDBoM20xIDBoMW0xIDBoNm0yIDBoMW0xIDBoM20yIDBoMyIvPjwvc3ZnPgo=" alt="QR code for the Greeran Family Tree 4DWM download" width="220" height="220">
+            <div>
+              <p>Scan to open the current GitHub file page for the Greeran Family Tree Webxdc.</p>
+              <a data-qr-target href="https://github.com/shdwelf/Html5/blob/main/greeran-family-4dwm.xdc" target="_blank" rel="noopener">Open family-tree download page</a>
+            </div>
+          </div>
+        </details>
+        <details class="kp-qr-card" id="qr-bible">
+          <summary><span>📖 Reveal the Bible ebook QR</span><span class="kp-qr-plus" aria-hidden="true">+</span></summary>
+          <div class="kp-qr-body">
+            <img data-qr-image="bible" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMjAiIGhlaWdodD0iMzIwIiB2aWV3Qm94PSIwIDAgNDMgNDMiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyI+PHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTAgMGg0M3Y0M0gweiIvPjxwYXRoIHN0cm9rZT0iIzEwMTgyMCIgZD0iTTMgMy41aDdtMyAwaDJtMSAwaDFtMSAwaDFtMiAwaDNtMiAwaDFtMiAwaDFtMSAwaDFtMSAwaDdNMyA0LjVoMW01IDBoMW0zIDBoMW0xIDBoMW0xIDBoMW0xIDBoM20yIDBoMm0yIDBoMW0xIDBoMm0xIDBoMW01IDBoMU0zIDUuNWgxbTEgMGgzbTEgMGgxbTEgMGgxbTEgMGgzbTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgybTEgMGgxbTIgMGgxbTEgMGgxbTEgMGgxbTEgMGgzbTEgMGgxTTMgNi41aDFtMSAwaDNtMSAwaDFtMSAwaDJtMiAwaDRtMSAwaDFtMSAwaDFtMiAwaDFtMSAwaDNtMyAwaDFtMSAwaDNtMSAwaDFNMyA3LjVoMW0xIDBoM20xIDBoMW0xIDBoMW0xIDBoMm0xIDBoMW0xIDBoMm0xIDBoM20yIDBoMW00IDBoMW0xIDBoMW0xIDBoM20xIDBoMU0zIDguNWgxbTUgMGgxbTEgMGgxbTEgMGgxbTIgMGgybTUgMGgzbTIgMGgzbTIgMGgxbTUgMGgxTTMgOS41aDdtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDdNMTEgMTAuNWg0bTIgMGgybTMgMGgzbTQgMGgxbTEgMGgxTTMgMTEuNWgxbTEgMGg1bTMgMGgybTEgMGg3bTIgMGgxbTEgMGgzbTMgMGg1TTQgMTIuNWg1bTEgMGgxbTMgMGgxbTEgMGgxbTEgMGgxbTEgMGg1bTEgMGgxbTEgMGgxbTMgMGgxbTEgMGgxbTEgMGgxbTEgMGgxTTQgMTMuNWgybTMgMGgxbTIgMGgybTEgMGgybTEgMGgybTUgMGgxbTEgMGg0bTEgMGg0bTEgMGgzTTMgMTQuNWgzbTEgMGgxbTIgMGgzbTEgMGgzbTEgMGgxbTIgMGgybTEgMGgxbTEgMGgxbTIgMGgxbTEgMGgybTEgMGgxbTQgMGgxTTcgMTUuNWgxbTEgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTEgMGgxbTEgMGgxbTUgMGg0bTIgMGgybTEgMGgxbTEgMGgzTTMgMTYuNWgxbTIgMGgybTIgMGgybTMgMGgybTIgMGg0bTMgMGgxbTEgMGgxbTUgMGgxbTMgMGgxTTQgMTcuNWgxbTQgMGgxbTQgMGg3bTIgMGgybTMgMGgzbTIgMGg0bTEgMGgyTTMgMTguNWgybTEgMGgybTIgMGg0bTEgMGg0bTIgMGgxbTEgMGg0bTIgMGgxbTQgMGgybTIgMGgyTTMgMTkuNWgxbTEgMGgxbTMgMGgybTEgMGg1bTMgMGgxbTQgMGgxbTEgMGg0bTEgMGgybTEgMGgxbTEgMGgxbTEgMGgxTTMgMjAuNWgzbTIgMGgxbTMgMGgxbTEgMGgxbTEgMGgxbTEgMGg2bTEgMGgybTEgMGgybTEgMGgxbTIgMGgxbTEgMGgxbTEgMGgxTTMgMjEuNWg1bTEgMGgybTEgMGgxbTEgMGgxbTEgMGgybTIgMGgxbTIgMGgxbTEgMGgxbTMgMGgzbTIgMGgybTEgMGgzTTMgMjIuNWgzbTIgMGgxbTIgMGgxbTEgMGgzbTMgMGgxbTQgMGgybTMgMGgybTEgMGg0bTMgMGgxTTMgMjMuNWg5bTQgMGgybTIgMGgxbTEgMGg0bTIgMGgxbTEgMGgxbTEgMGgybTEgMGgzTTMgMjQuNWgybTIgMGgxbTUgMGg0bTIgMGgxbTEgMGgybTEgMGgxbTEgMGgxbTQgMGgybTMgMGgxTTMgMjUuNWgybTIgMGgxbTEgMGgxbTEgMGgybTEgMGgybTIgMGgybTcgMGgybTEgMGg3bTEgMGgyTTQgMjYuNWgybTEgMGgybTIgMGgxbTIgMGg1bTQgMGgzbTQgMGg2bTIgMGgxTTMgMjcuNWgxbTEgMGgzbTEgMGg0bTIgMGg0bTEgMGgxbTEgMGgxbTIgMGgxbTEgMGg0bTEgMGgybTEgMGgxbTEgMGgyTTMgMjguNWg0bTUgMGgybTIgMGgzbTMgMGgybTIgMGgxbTEgMGgxbTIgMGgxTTMgMjkuNWgxbTUgMGgxbTEgMGgzbTQgMGgxbTEgMGgybTIgMGgxbTMgMGgzbTEgMGg0bTIgMGgyTTMgMzAuNWgxbTMgMGgybTQgMGgxbTEgMGgxbTUgMGgybTEgMGgxbTQgMGgxbTMgMGgxTTMgMzEuNWgxbTIgMGgxbTIgMGg0bTEgMGgybTIgMGgxbTEgMGgybTMgMGgxMW0xIDBoMW0xIDBoMU0xMSAzMi41aDFtMSAwaDFtMSAwaDNtMSAwaDFtMSAwaDNtMSAwaDJtMSAwaDJtMSAwaDFtMyAwaDJNMyAzMy41aDdtMiAwaDFtMSAwaDFtMiAwaDNtMSAwaDFtMSAwaDJtMiAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFNMyAzNC41aDFtNSAwaDFtMSAwaDJtMSAwaDJtMSAwaDNtMSAwaDFtMSAwaDJtMiAwaDFtMyAwaDFtMyAwaDJNMyAzNS41aDFtMSAwaDNtMSAwaDFtMSAwaDRtMiAwaDFtMiAwaDFtMSAwaDFtMyAwaDEwbTEgMGgyTTMgMzYuNWgxbTEgMGgzbTEgMGgxbTEgMGgxbTMgMGgxbTMgMGgybTEgMGgzbTEgMGgybTIgMGgxbTEgMGgybTEgMGgxbTIgMGgyTTMgMzcuNWgxbTEgMGgzbTEgMGgxbTEgMGgybTIgMGgxbTIgMGgzbTIgMGgzbTEgMGgybTEgMGgybTQgMGgxbTEgMGgyTTMgMzguNWgxbTUgMGgxbTIgMGg0bTIgMGgybTMgMGgybTQgMGgxbTEgMGgzbTEgMGgxbTMgMGgxTTMgMzkuNWg3bTEgMGgybTEgMGgxbTIgMGgybTEgMGgxbTEgMGgxbTIgMGgxbTEgMGgzbTIgMGgybTEgMGgxbTEgMGgzIi8+PC9zdmc+Cg==" alt="QR code for the World English Bible EPUB" width="220" height="220">
+            <div>
+              <p>Scan to open the current GitHub file page for the World English Bible EPUB.</p>
+              <a data-qr-target href="https://github.com/shdwelf/Html5/blob/main/assets/greeran/world-english-bible.epub" target="_blank" rel="noopener">Open Bible ebook page</a>
+            </div>
+          </div>
+        </details>
+      </div>
+      <div class="kp-local-reader" aria-label="Local reading resources">
+    <section class="bible-card" aria-labelledby="bible-title">
+      <div class="bible-overline">INSIDE BACK COVER · OFFLINE EBOOK</div>
+      <h2 id="bible-title">The Holy Bible · World English Bible Updated</h2>
+      <p class="bible-intro">A complete, locally bundled WEBU reader: 66 books, 1,189 chapters, and 31,098 verses. The text is public domain and the dataset is released under CC0 1.0. This reader works offline.</p>
+      <p class="bible-caution"><strong>Genealogy note:</strong> Bible family lists are provided as scripture and literature, not as evidence of a historical or biological relationship to the Greeran family.</p>
+      <div class="bible-source">Text: <a href="https://ebible.org/find/details.php?id=engwebu" target="_blank" rel="noreferrer">eBible.org · WEBU</a> · <a href="https://ebible.org/engwebp/copyright.htm" target="_blank" rel="noreferrer">public-domain terms</a> · Dataset: <a href="https://github.com/ringletech/webu-open-bible" target="_blank" rel="noreferrer">ringletech/webu-open-bible</a> · <a href="./public/apps/greeran-family-bible/LICENSE" download>CC0 license</a></div>
+      <div class="bible-reader">
+        <div class="bible-controls">
+          <label>Book<select id="bible-book" aria-label="Bible book" onchange="selectBibleBook()" disabled><option>Loading…</option></select></label>
+          <label>Chapter<select id="bible-chapter" aria-label="Bible chapter" onchange="renderBibleChapter()" disabled></select></label>
+          <button class="book-action" type="button" onclick="stepBibleChapter(-1)" aria-label="Previous chapter">← Prev</button>
+          <button class="book-action" type="button" onclick="stepBibleChapter(1)" aria-label="Next chapter">Next →</button>
+        </div>
+        <div class="bible-search-row">
+          <label class="bible-search-label" for="bible-search">Find a passage</label>
+          <input id="bible-search" type="search" placeholder="Search the Bible text…" autocomplete="off">
+          <button class="book-action" type="button" onclick="searchBibleText()">Search</button>
+        </div>
+        <div id="bible-status" class="bible-status" role="status">The offline eBook loads when this tab is opened.</div>
+        <div id="bible-results" class="bible-results" hidden></div>
+        <div id="bible-text" class="bible-text" aria-live="polite"><div class="bible-empty">Open the reader to load the eBook.</div></div>
+        <div class="bible-quicklinks" aria-label="Genealogy reading trail">
+          <span>Genealogy reading trail:</span>
+          <button type="button" onclick="openBiblePassage('Genesis',5)">Genesis 5</button>
+          <button type="button" onclick="openBiblePassage('Genesis',10)">Genesis 10</button>
+          <button type="button" onclick="openBiblePassage('Ruth',4)">Ruth 4</button>
+          <button type="button" onclick="openBiblePassage('1 Chronicles',1)">1 Chronicles 1</button>
+          <button type="button" onclick="openBiblePassage('Matthew',1)">Matthew 1</button>
+          <button type="button" onclick="openBiblePassage('Luke',3)">Luke 3</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="archive-card" aria-labelledby="fna-title">
+      <div class="bible-overline">KIRKPATRICK SUITE · ORIGINAL SHAREWARE ARCHIVE</div>
+      <h2 id="fna-title">First Name Almanac 1.02B</h2>
+      <p>The original <code>FNA102B.ZIP</code> is preserved without modification. Inspection found that it is a ZIP containing an internally protected commercial name-meaning overlay; it is not the ARJ archive or a genealogical source. No overlay has been decrypted, extracted, or used to change family records.</p>
+      <a class="book-action archive-download" href="./samples/archive/kirkpatrick/FNA102B.ZIP" download>Download original FNA102B.ZIP</a>
+      <p class="archive-notice">Share only in the archive's original form and keep its included notices intact. The ZIP's own documentation controls redistribution; the surrounding package does not remove or relax those terms.</p>
+    </section>
+      </div>
+      <p class="kp-closing">May the branches be remembered, the evidence kept close, and the stories passed on with care.</p>
+    </section>
+  </div>
+</div>
+
 </div></div>
 
 <div class="sb R" id="sb-R">
@@ -531,6 +802,112 @@ const COR=new Set(['@I142778831422@','@I142778831424@','@I142778829932@','@I1427
   '@I142780053800@','@I142780053848@','@I142778829721@','@I142780067590@','@I142780067591@',
   '@I142780053381@','@I142780053320@','@I142780226896@']);
 
+// ══════════ OFFLINE BIBLE EBOOK ══════════
+let BIBLE_BOOKS=[];
+let BIBLE_READY=false;
+let BIBLE_LOADING=null;
+const BIBLE_DATA_URL='./public/apps/greeran-family-bible/complete-bible.json';
+
+async function ensureBibleLoaded(){
+  if(BIBLE_READY)return;
+  if(BIBLE_LOADING)return BIBLE_LOADING;
+  const status=document.getElementById('bible-status');
+  if(status)status.textContent='Loading the locally bundled WEBU eBook…';
+  BIBLE_LOADING=(async()=>{
+    const response=await fetch(BIBLE_DATA_URL);
+    if(!response.ok)throw new Error('Local Bible data was not found in this package.');
+    const rows=await response.json();
+    if(!Array.isArray(rows)||rows.length!==31098)throw new Error('The WEBU dataset did not pass its verse-count check.');
+    const byBook=new Map();
+    rows.forEach(row=>{
+      if(!row||typeof row.book!=='string'||!Number.isInteger(row.chapter)||!Number.isInteger(row.verse)||typeof row.text!=='string')return;
+      if(!byBook.has(row.book))byBook.set(row.book,{name:row.book,chapters:[]});
+      const book=byBook.get(row.book);
+      while(book.chapters.length<row.chapter)book.chapters.push({number:book.chapters.length+1,verses:[]});
+      book.chapters[row.chapter-1].verses.push({number:row.verse,text:row.text});
+    });
+    BIBLE_BOOKS=[...byBook.values()];
+    const verseCount=BIBLE_BOOKS.reduce((sum,book)=>sum+book.chapters.reduce((n,ch)=>n+ch.verses.length,0),0);
+    if(BIBLE_BOOKS.length!==66||verseCount!==31098)throw new Error('The WEBU dataset is incomplete or malformed.');
+    const bookSelect=document.getElementById('bible-book');
+    bookSelect.replaceChildren();
+    BIBLE_BOOKS.forEach(book=>{const option=document.createElement('option');option.value=book.name;option.textContent=book.name;bookSelect.appendChild(option);});
+    bookSelect.disabled=false;
+    BIBLE_READY=true;
+    selectBibleBook();
+    if(status)status.textContent=`Loaded offline · ${BIBLE_BOOKS.length} books · ${BIBLE_BOOKS.reduce((n,b)=>n+b.chapters.length,0).toLocaleString()} chapters · ${verseCount.toLocaleString()} verses.`;
+  })().catch(error=>{
+    if(status)status.textContent=`Could not load the offline eBook: ${error.message}`;
+    BIBLE_LOADING=null;
+    throw error;
+  });
+  return BIBLE_LOADING;
+}
+function selectBibleBook(){
+  if(!BIBLE_READY)return;
+  const name=document.getElementById('bible-book').value;
+  const book=BIBLE_BOOKS.find(item=>item.name===name);
+  const chapterSelect=document.getElementById('bible-chapter');
+  chapterSelect.replaceChildren();
+  (book?.chapters||[]).forEach(chapter=>{const option=document.createElement('option');option.value=String(chapter.number);option.textContent=String(chapter.number);chapterSelect.appendChild(option);});
+  chapterSelect.disabled=!book;
+  renderBibleChapter();
+}
+function renderBibleChapter(){
+  if(!BIBLE_READY)return;
+  const name=document.getElementById('bible-book').value;
+  const number=Number(document.getElementById('bible-chapter').value||1);
+  const book=BIBLE_BOOKS.find(item=>item.name===name);
+  const chapter=book?.chapters[number-1];
+  const panel=document.getElementById('bible-text');
+  panel.replaceChildren();
+  if(!chapter){panel.textContent='Choose a book and chapter to read.';return;}
+  const title=document.createElement('h3');title.className='bible-chapter-title';title.textContent=`${book.name} ${chapter.number}`;panel.appendChild(title);
+  chapter.verses.forEach(verse=>{
+    const line=document.createElement('p');line.className='bible-verse';
+    const numberSpan=document.createElement('span');numberSpan.className='bible-vnum';numberSpan.textContent=String(verse.number);
+    line.append(numberSpan,document.createTextNode(verse.text));panel.appendChild(line);
+  });
+}
+function openBiblePassage(bookName,chapterNumber){
+  if(!BIBLE_READY){ensureBibleLoaded().then(()=>openBiblePassage(bookName,chapterNumber)).catch(()=>{});return;}
+  const book=BIBLE_BOOKS.find(item=>item.name===bookName);
+  if(!book)return;
+  document.getElementById('bible-book').value=bookName;
+  selectBibleBook();
+  document.getElementById('bible-chapter').value=String(Math.max(1,Math.min(book.chapters.length,chapterNumber)));
+  renderBibleChapter();
+  document.getElementById('bible-results').hidden=true;
+}
+function stepBibleChapter(step){
+  if(!BIBLE_READY){ensureBibleLoaded().then(()=>stepBibleChapter(step)).catch(()=>{});return;}
+  let bookIndex=BIBLE_BOOKS.findIndex(book=>book.name===document.getElementById('bible-book').value);
+  let chapterNumber=Number(document.getElementById('bible-chapter').value||1)+step;
+  if(chapterNumber<1){bookIndex=Math.max(0,bookIndex-1);chapterNumber=BIBLE_BOOKS[bookIndex].chapters.length;}
+  if(chapterNumber>BIBLE_BOOKS[bookIndex].chapters.length){bookIndex=Math.min(BIBLE_BOOKS.length-1,bookIndex+1);chapterNumber=1;}
+  openBiblePassage(BIBLE_BOOKS[bookIndex].name,chapterNumber);
+}
+function searchBibleText(){
+  const query=document.getElementById('bible-search').value.trim().toLocaleLowerCase();
+  const status=document.getElementById('bible-status');
+  const results=document.getElementById('bible-results');
+  if(!query){status.textContent='Enter a word or phrase to search the eBook.';results.hidden=true;return;}
+  if(!BIBLE_READY){ensureBibleLoaded().then(searchBibleText).catch(()=>{});return;}
+  const matches=[];
+  outer:for(const book of BIBLE_BOOKS)for(const chapter of book.chapters)for(const verse of chapter.verses){
+    if(verse.text.toLocaleLowerCase().includes(query)){matches.push({book:book.name,chapter:chapter.number,verse:verse.number,text:verse.text});if(matches.length>=80)break outer;}
+  }
+  results.replaceChildren();results.hidden=false;
+  if(!matches.length){results.textContent='No matches found.';status.textContent='Search complete · no matches.';return;}
+  matches.forEach(match=>{
+    const button=document.createElement('button');button.type='button';button.className='bible-result';
+    button.textContent=`${match.book} ${match.chapter}:${match.verse} — ${match.text}`;
+    button.addEventListener('click',()=>{openBiblePassage(match.book,match.chapter);document.getElementById('bible-results').hidden=true;});
+    results.appendChild(button);
+  });
+  status.textContent=`Showing ${matches.length}${matches.length===80?' or more':''} match${matches.length===1?'':'es'} for “${query}”.`;
+}
+
 // ══════════ TABS ══════════
 function sw(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.t===id));
@@ -538,8 +915,41 @@ function sw(id){
   if(id==='globe'){setTimeout(()=>{resizeGlobe();startGlobe();},50);}
   if(id==='tree'&&!treeBuilt)buildTree();
   if(id==='people')filtP('');
+  if(id==='book'){
+    if(window.innerWidth<=700){document.getElementById('sb-L').classList.add('off');document.getElementById('sb-R').classList.add('off');}
+    ensureBibleLoaded().catch(()=>{});
+  }
 }
 function tSB(s){document.getElementById('sb-'+s).classList.toggle('off');}
+
+// Optional, user-initiated name research; no third-party lookup runs on page load.
+function firstGivenName(fullName){
+  const token=String(fullName||'').trim().split(/[\s\/\\]+/u)[0]||'';
+  const match=token.match(/^[\p{L}\p{M}]+(?:[.'’\-][\p{L}\p{M}]+)*/u);
+  return match?match[0].replace(/[.'’\-]+$/u,''):'';
+}
+function nameAlmanacUrl(name){
+  const slug=String(name||'').normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  return slug?`https://namealmanac.com/name/${slug}`:'';
+}
+function wiktionaryUrl(name){
+  const title=String(name||'').trim().replace(/\s+/g,'_');
+  return title?`https://en.wiktionary.org/wiki/${encodeURIComponent(title)}#English`:'';
+}
+function wiktionaryNameKey(name){
+  return String(name||'').normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+}
+const WIKTIONARY_NAME_NOTES=Object.freeze({
+  mary:{note:'The English entry traces Mary through Maria and earlier Greek, Latin, Hebrew, and Aramaic forms; it describes the original meaning as uncertain.',source:'https://en.wiktionary.org/wiki/Mary#English'},
+  john:{note:'The English entry traces John to Hebrew Yôḥānān. “God is gracious” is presented as a possible expansion, not a certain meaning.',source:'https://en.wiktionary.org/wiki/John#English'},
+  william:{note:'The English entry traces William to Germanic elements glossed as will or desire and helmet. This is an etymological analysis, not a definite meaning for an individual.',source:'https://en.wiktionary.org/wiki/William#English'},
+  bernard:{note:'The English entry traces Bernard through medieval French and Latin to a Germanic name; its proper-noun entry does not give one definitive English meaning.',source:'https://en.wiktionary.org/wiki/Bernard#English'},
+  hugh:{note:'The English entry traces Hugh through French to Germanic name elements; it relates the root to heart or mind, while noting historical variants and usage.',source:'https://en.wiktionary.org/wiki/Hugh#English'},
+  catherine:{note:'The English entry traces Catherine through French to Ancient Greek and says the etymology is debated. Its link to katharos (“pure”) is identified as a folk etymology.',source:'https://en.wiktionary.org/wiki/Catherine#English'},
+});
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
 
 // ══════════ PERSON DETAIL ══════════
 function showP(pid){
@@ -567,6 +977,20 @@ function showP(pid){
   if(isNew(p))h+=`<div class="dp-r" style="color:var(--grn)"><span class="dp-l">Status</span><span class="dp-v">✦ Newly Found</span></div>`;
   if(COR.has(pid))h+=`<div class="dp-r" style="color:var(--blu)"><span class="dp-l">Status</span><span class="dp-v">✓ Data Corrected</span></div>`;
   h+='</div>';
+  const givenName=firstGivenName(p.n);
+  const nameUrl=givenName.length>1?nameAlmanacUrl(givenName):'';
+  const wiktionaryLink=givenName.length>1?wiktionaryUrl(givenName):'';
+  const nameNote=WIKTIONARY_NAME_NOTES[wiktionaryNameKey(givenName)];
+  if(nameUrl||wiktionaryLink){
+    h+=`<div class="dp-s" style="grid-column:1/-1"><div class="dp-st">Name Research</div>
+      <div class="dp-name-links">
+        ${nameUrl?`<a class="dp-name-link" href="${escapeHtml(nameUrl)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">NameAlmanac: “${escapeHtml(givenName)}” ↗</a>`:''}
+        ${wiktionaryLink?`<a class="dp-name-link" href="${escapeHtml(wiktionaryLink)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Wiktionary: “${escapeHtml(givenName)}” ↗</a>`:''}
+      </div>
+      ${nameNote?`<div class="dp-name-note"><b>Curated etymology note:</b> ${escapeHtml(nameNote.note)} <a href="${escapeHtml(nameNote.source)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Wiktionary source entry ↗</a></div>`:''}
+      <div class="dp-nt">Optional external links use only this first name and open only when selected; the app makes no background lookup. These notes describe name forms, not an individual's identity or heritage; Wiktionary entries may give theories rather than a certain meaning. Curated notes are paraphrases under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">CC BY-SA 4.0</a>; see the <a href="./assets/greeran/WIKTIONARY-NAME-NOTES-LICENSE.md" target="_blank" rel="noopener noreferrer">attribution notice</a>. Neither site is genealogical evidence.</div>
+    </div>`;
+  }
   if(pars.length||fams.length){
     h+='<div class="dp-s"><div class="dp-st">Family</div>';
     pars.forEach(pf=>{
@@ -1187,6 +1611,8 @@ function resetView(){rotLon=-20;rotLat=20;tZoom=1;}
 window.addEventListener('DOMContentLoaded',()=>{
   buildSidebar();
   buildRightSidebar();
+  const bibleSearch=document.getElementById('bible-search');
+  if(bibleSearch)bibleSearch.addEventListener('keydown',event=>{if(event.key==='Enter')searchBibleText();});
 
   // Detail panel
   const dpEl=document.getElementById('dp');

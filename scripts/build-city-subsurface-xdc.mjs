@@ -29,8 +29,9 @@ const mtime = new Date("2026-10-07T00:00:00.000Z");
 function moduleSpecifiers(source) {
   const specs = [];
   const staticImport = /\b(?:import\s+(?:[^'";]*?\s+from\s*)?|export\s+[^'";]*?\s+from\s*)["']([^"']+)["']/g;
-  const dynamicImport = /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g;
-  for (const pattern of [staticImport, dynamicImport]) {
+  const dynamicImport = /\bimport\s*\(\s*(?:\/\*.*?\*\/\s*)?["']([^"']+)["']\s*\)/g;
+  const optionalDemImport = /\bimportDem\s*\(\s*["']([^"']+)["']\s*\)/g;
+  for (const pattern of [staticImport, dynamicImport, optionalDemImport]) {
     for (const match of source.matchAll(pattern)) specs.push(match[1]);
   }
   return specs;
@@ -100,6 +101,9 @@ for (const [cityId, city] of Object.entries(config.cities)) {
   for (const f of ["three.module.min.js", "OrbitControls.js", "THREE_LICENSE"]) {
     await copyFile(path.join(root, "vendor", f), path.join(appDir, "vendor", f));
   }
+  await mkdir(path.join(appDir, "vendor", "fflate"), { recursive: true });
+  await copyFile(path.join(root, "vendor", "fflate", "browser.mjs"), path.join(appDir, "vendor", "fflate", "browser.mjs"));
+  await copyFile(path.join(root, "vendor", "fflate", "LICENSE"), path.join(appDir, "vendor", "fflate", "LICENSE"));
   await writeFile(path.join(appDir, "webxdc.js"), `/* webxdc simulator shim - the host overrides this file at runtime. */
 window.webxdc = window.webxdc || {
   selfAddr: "local@device",

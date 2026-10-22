@@ -11,6 +11,38 @@
   <link rel="stylesheet" href="./css/greeran-book.css" />
 </head>
 <body data-paper="field-notebook">
+  <section class="book-intro" id="bookIntro" role="dialog" aria-modal="true" aria-labelledby="introHeading" aria-describedby="introCaption">
+    <div class="intro-world" aria-hidden="true">
+      <div class="intro-stars"></div>
+      <div class="intro-moon"></div>
+      <div class="intro-ridge intro-ridge--far"></div>
+      <div class="intro-ridge intro-ridge--near"></div>
+      <div class="intro-water"></div>
+      <div class="intro-light"></div>
+      <div class="intro-book-flight">
+        <div class="intro-book">
+          <div class="intro-book-block"></div>
+          <div class="intro-leaf intro-leaf--left"><span></span></div>
+          <div class="intro-leaf intro-leaf--right"><span></span></div>
+          <div class="intro-book-cover">
+            <span class="intro-cover-mark">S · T · G</span>
+            <span class="intro-cover-rule"></span>
+            <strong>THE LIFE FILE</strong>
+            <span class="intro-cover-name">STEVEN THOMAS GREERAN</span>
+          </div>
+        </div>
+      </div>
+      <div class="intro-sparks"></div>
+    </div>
+    <div class="intro-copy">
+      <div class="intro-kicker">THE GREERAN BOOK · AN OPENING</div>
+      <h2 id="introHeading">A book waits beyond the fog.</h2>
+      <p id="introCaption">Follow the light. The record is about to open.</p>
+      <button type="button" class="intro-enter" id="introSkip">Skip to the book</button>
+    </div>
+    <p class="sr-only" id="introStatus" role="status" aria-live="polite"></p>
+  </section>
+
   <div id="progress" aria-hidden="true"></div>
 
   <header class="studio-bar">
@@ -28,6 +60,7 @@
 
     <div class="control-cluster">
       <button type="button" class="btn primary" id="rollStyle">🎲 Random style</button>
+      <button type="button" class="btn ghost" id="replayIntro">Replay opening</button>
       <label>
         <span>Paper</span>
         <select id="paperSelect" aria-label="Select notebook paper style"></select>

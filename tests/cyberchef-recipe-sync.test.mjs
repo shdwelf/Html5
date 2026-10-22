@@ -29,7 +29,48 @@ function boot() {
 // Operations added after the 2026-10-07 merge baseline recorded in docs/.
 // The report stays a faithful record of what the merge produced; the kitchen has
 // since grown, so the expected total is baseline + these additions.
-const POST_MERGE_OPS = ["qrcode", "averyLabels"];
+const POST_MERGE_OPS = [
+  "qrcode",
+  "averyLabels",
+  "complexityLab",
+  "symbolicLogic",
+  // PR #118 barcode work (Aztec encoder, image decoder, and CueCat scans).
+  "aztecCode",
+  "cuecatDecode",
+  "aztecDecode",
+  // 2026-10-14 field-cipher deep dive (docs/field-cipher-deep-dive-2026-10-14.md).
+  "odPoemExact",
+  "vicSchedule",
+  "vicExact",
+  "diana",
+  "dianaTable",
+  "gronsfeldAnalyze",
+  "toHexdump",
+  "fromHexdump",
+  "toOctal",
+  "fromOctal",
+  // 2026-10-14 recipe sourcing (docs/recipe-sourcing-round-4-2026-10-14.md).
+  "pgpArmorCheck",
+  "pgpSymDecrypt",
+  "enigmaChains",
+  // 2026-10-14 recipe sourcing, round 5 (docs/recipe-sourcing-round-5-2026-10-14.md).
+  "zigzagTransposition",
+  "nihilistSquare",
+  // 2026-10-21 backlog round 5 (docs/backlog-execution-round-5-2026-10-21.md).
+  "gtaText",
+  "base45",
+  "aesCmac",
+  "aesKeySched",
+  "gf256",
+  "mignotte",
+  // 2026-10-21 backlog round 12 (docs/backlog-execution-round-12-2026-10-21.md).
+  "polyglotScan",
+  // 2026-10-22 backlog round 13 (docs/backlog-execution-round-13-2026-10-22.md).
+  "arjHeader",
+  "lhaHeader",
+  "aceHeader",
+  "paranoidUnzip",
+];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {
   const { ops, ids, packs } = boot();

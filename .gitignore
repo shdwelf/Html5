@@ -1,6 +1,9 @@
 # regenerable exporter output (node tools/check_ghs.mjs --write)
 dist/
 node_modules/
+.cache/
+build/
+.wiki-data/
 *.local
 .DS_Store
 

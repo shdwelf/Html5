@@ -23,7 +23,7 @@ The local exact implementation models the published SECOM-style pipeline:
 3. apply the two transpositions and triangular disruption;
 4. compare the resulting 600-digit multiset and decoded text.
 
-Applying the known opening-line candidate produces the recorded non-English output beginning `OYSASOXVEMSA...`, so it is rejected. The 111 documented hint-derived candidates also fail the calibrated English/IoC checks. The six-line hint cannot simply be used as a plaintext or as an Enigma plugboard key.
+Applying the known opening-line candidate with the corrected SECOM `1…9,0` board produces non-English output beginning `NTISETNAIZPTTIRNENRTNAFNYNNAIOS...`, so it is rejected (IoC 0.0966, chi-squared 824.9, bigram −0.447). The earlier `OYSASOXVEMSA...` prefix came from the exact path's lexical `0…9` board-ordering bug, fixed on 2026-10-13. The 111 documented hint-derived candidates and all 26 one-letter completions of `THETOWNILOVEDSOWELL` were rechecked against the corrected decoder; none pass the calibrated English/IoC checks. The six-line hint cannot simply be used as a plaintext or as an Enigma plugboard key.
 
 ## What the Sylichenko resource establishes
 

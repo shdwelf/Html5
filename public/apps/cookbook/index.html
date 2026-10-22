@@ -1874,8 +1874,8 @@
 
   <hr class="hr">
 
-  <h2 id="barcode-symbologies"><span class="n">23.</span>Code 39 Repair, QR Code v1&ndash;40 &amp; Avery Label Sheets</h2>
-  <p class="tagline" style="margin-top:-8px;">Barcode order: fix the linear symbology that was producing unscannable output, extend QR past version 10, then lay any of them out on a printable label sheet.</p>
+  <h2 id="barcode-symbologies"><span class="n">23.</span>Code 39 Repair, QR v1&ndash;40, Aztec, CueCat &amp; Avery Labels</h2>
+  <p class="tagline" style="margin-top:-8px;">Barcode order: repair the linear encoder, extend QR past version 10, generate and decode Aztec locally, decode legacy CueCat scans, then print supported symbols on LabelPro stock.</p>
 
   <div class="card">
     <div class="cat">Barcode &middot; Code 39 / USS 3-of-9 &middot; verified against BWIPP</div>
@@ -1895,17 +1895,38 @@
   </div>
 
   <div class="card">
+    <div class="cat">Barcode &middot; Aztec Code &middot; ISO/IEC 24778</div>
+    <h3>Aztec Code (<span class="kbd">aztecCode</span>)</h3>
+    <p>Generates a local SVG symbol with the pinned <span class="kbd">bwip-js</span> 4.7.0 browser renderer; no barcode service or network request is needed. The error-correction control is a percentage (default 23%), not the L/M/Q/H selector used by QR.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; the bundled renderer produces an Aztec SVG in Chromium, and the operation runs through CyberChef&rsquo;s real recipe pipeline.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Barcode &middot; Aztec image reader &middot; ZXing JavaScript</div>
+    <h3>Aztec image decode (<span class="kbd">aztecDecode</span>)</h3>
+    <p>Reads one Aztec symbol from a loaded image file, Base64 image, or image data URL with the locally bundled ZXing 0.21.3 reader. Crop multi-label sheets to one label before decoding; no image is uploaded or fetched remotely.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; Chromium decoded both sample payloads from the generated Avery 5392 sheet after rasterizing the SVG at print resolution. This validates the generated vectors and app decoder, not a physical printer or reader.</p>
+  </div>
+
+  <div class="card">
+    <div class="cat">Barcode &middot; CueCat &middot; legacy keyboard-wedge scan format</div>
+    <h3>CueCat scan decoder (<span class="kbd">cuecatDecode</span>)</h3>
+    <p>Decodes the RadioShack :CueCat&rsquo;s modified-Base64 scan text as either one encoded section or a full dot-delimited scan with serial, type and barcode-data sections. CueCat data is useful when you have a raw scan from a barcode that the reader supports; it is not an Aztec payload and cannot decode a printed Aztec symbol.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; full scans and single-section values match published vectors; the operation is included in the offline recipe packs.</p>
+  </div>
+
+  <div class="card">
     <div class="cat">Barcode &middot; Label layout &middot; Avery LabelPro templates</div>
     <h3>Avery label sheet (<span class="kbd">averyLabels</span>)</h3>
-    <p>N-up label layout on US Letter at 96 dpi, rendered to 816 &times; 1056. Templates <span class="kbd">5160</span> (address, 3&times;10), <span class="kbd">5161</span> (shipping, 2&times;10), <span class="kbd">5163</span> (shipping, 2&times;5) and <span class="kbd">5392</span> (name badge, 2&times;4), plus a custom grid built from the supplied columns, rows and label size. Any of Code 39, Code 128, EAN-13 or QR can fill the cells; values split on newlines or <span class="kbd">|</span>.</p>
-    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; all five templates rasterise a full sheet with a symbol in the first cell, and a QR drawn onto a label decodes back to the reference version-3 matrix with 0 of 841 modules differing.</p>
+    <p>N-up label layout on US Letter at 96 dpi, rendered to 816 &times; 1056. Templates <span class="kbd">5160</span> (address, 3&times;10), <span class="kbd">5161</span> (shipping, 2&times;10), <span class="kbd">5163</span> (shipping, 2&times;5) and <span class="kbd">5392</span> (name badge, 2&times;4), plus a custom grid built from the supplied columns, rows and label size. Code 39, Code 128, EAN-13, QR or Aztec can fill the cells; values split on newlines or <span class="kbd">|</span>.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; all five templates rasterise a full sheet; QR output matches its reference matrix, and the Avery 5392 Aztec path generates two printable labels in Chromium. Print at actual size and test on plain paper first because printer margins vary.</p>
   </div>
 
   <div class="card">
     <div class="cat">Packaging &middot; SFX recipe packs</div>
     <h3>Full-coverage recipe packs</h3>
-    <p>147 of the 480 operations belonged to no <span class="kbd">RECIPE_PACK</span>, so the self-extracting pack builder&rsquo;s &ldquo;select all&rdquo; produced 333 recipes and silently dropped the rest. Thirty-one <span class="kbd">Full Coverage &mdash; &lt;category&gt;</span> packs close the gap.</p>
-    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; select all now loads 480 of 480, and the sync test fails if any operation is ever left out of every pack again.</p>
+    <p>The 2026-10-09 audit found that 147 of the then-480 operations belonged to no <span class="kbd">RECIPE_PACK</span>, so the old self-extracting pack builder&rsquo;s &ldquo;select all&rdquo; produced 333 recipes. Thirty-one <span class="kbd">Full Coverage &mdash; &lt;category&gt;</span> packs closed that gap. Later additions include Algorithm Complexity, Symbolic Logic, Aztec generation and image decoding, CueCat decoding, the field-cipher deep-dive recipes, OpenPGP and Enigma recipes, the two War Office manual recipes, the round-5 vectors (GTA text, Base45, AES-CMAC, AES key schedule, GF(2^8), Mignotte), the round-12 polyglot scanner, and the round-13 archive header triage ops (ARJ / LHA / ACE / ZIP, headers only); each is included in the offline recipe packs.</p>
+    <p class="status">Status: <span class="badge b-ok">Verified</span> &mdash; the current kitchen has 511 operations and SFX select-all loads 511 of 511; tests fail if any operation is ever left out of every pack again.</p>
   </div>
 
   <hr class="hr">

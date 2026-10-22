@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "program": "SNEAK.EXE",
+  "ghidraVersion": "12.1.4",
+  "executableFormat": "Old-style DOS Executable (MZ)",
+  "executablePath": "/home/runner/work/_temp/sneakers-original/input/SNEAK.EXE",
+  "md5": "3219a4175024c1312683ec80a5dbedb6",
+  "sha256": "4710858f7be6461a6d3a267cbc2dec8ca2594e70d28695298ecfb682d99f33bb",
+  "language": "x86:LE:16:Real Mode",
+  "compiler": "default",
+  "imageBase": "0000:0000",
+  "minAddress": "1000:0000",
+  "maxAddress": "HEADER::0000001f",
+  "memoryBlocks": [
+    {
+      "name": "CODE_0",
+      "start": "1000:0000",
+      "end": "1000:0643",
+      "bytes": 1604,
+      "read": true,
+      "write": true,
+      "execute": true,
+      "initialized": true
+    },
+    {
+      "name": "DATA",
+      "start": "1000:0644",
+      "end": "2000:0643",
+      "bytes": 65536,
+      "read": true,
+      "write": true,
+      "execute": false,
+      "initialized": false
+    },
+    {
+      "name": "HEADER",
+      "start": "HEADER::00000000",
+      "end": "HEADER::0000001f",
+      "bytes": 32,
+      "read": false,
+      "write": false,
+      "execute": false,
+      "initialized": true
+    }
+  ],
+  "imports": [],
+  "definedStrings": 7,
+  "instructions": 605,
+  "functions": 21,
+  "decompilations": [
+    {
+      "name": "entry",
+      "address": "0ff0:0100",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_007b",
+      "address": "1000:007b",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_00da",
+      "address": "1000:00da",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0249",
+      "address": "1000:0249",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0269",
+      "address": "1000:0269",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_026f",
+      "address": "1000:026f",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_02ac",
+      "address": "1000:02ac",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_02da",
+      "address": "1000:02da",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_02de",
+      "address": "1000:02de",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_02e7",
+      "address": "1000:02e7",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_02ea",
+      "address": "1000:02ea",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_02f2",
+      "address": "1000:02f2",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0303",
+      "address": "1000:0303",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0336",
+      "address": "1000:0336",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_039b",
+      "address": "1000:039b",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0410",
+      "address": "1000:0410",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_04c9",
+      "address": "1000:04c9",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_050d",
+      "address": "1000:050d",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_0546",
+      "address": "1000:0546",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_05ed",
+      "address": "1000:05ed",
+      "completed": true,
+      "message": ""
+    },
+    {
+      "name": "FUN_1000_05fe",
+      "address": "1000:05fe",
+      "completed": true,
+      "message": ""
+    }
+  ]
+}

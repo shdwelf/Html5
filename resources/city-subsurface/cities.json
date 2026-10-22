@@ -603,6 +603,1002 @@
         ["Don River", "Stream", "hydro.stream", "Toronto", 43.70, -79.35, null, null, 0, "River reach context; Canadian source, not GNIS."],
         ["Toronto's First Post Office (GC7HT4Z)", "Geocache", "rec.geocache", "Toronto", 43.65185, -79.37035, null, null, 0, "GC7HT4Z · letterbox hybrid · official Geocaching.com Geocache of the Week (2024-12-04) prints N 43° 39.111′ W 079° 22.221′; community source, not GNIS."]
       ]
+    },
+    "california": {
+      "title": "CALIFORNIA SUBSURFACE 4Dwm",
+      "subtitle": "Sierra Nevada · Central Valley · Pacific Coast — statewide frame, California",
+      "gazTitle": "CALIFORNIA USGS GNIS + CURATED REGISTER",
+      "gazNote": "Round 16 register (2026-10-22): 16 of 27 rows are VERIFIED=1 per-ID USGS GNIS point records; the 11 round-15 cultural/landmark rows remain VERIFIED=0 with named public sources. GNIS pins are not boundaries, shorelines, peak polygons, or stream centerlines.",
+      "state": "CA",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -124.48,
+        "lat0": 32.53,
+        "lon1": -114.13,
+        "lat1": 42.01
+      },
+      "center": {
+        "lon": -119.305,
+        "lat": 37.27
+      },
+      "baseElevationM": 250,
+      "roughnessM": 120,
+      "hasWater": true,
+      "coast": [
+        [
+          -117.25,
+          32.55
+        ],
+        [
+          -117.6,
+          33.4
+        ],
+        [
+          -118.45,
+          33.75
+        ],
+        [
+          -118.9,
+          34.0
+        ],
+        [
+          -119.8,
+          34.42
+        ],
+        [
+          -120.6,
+          34.58
+        ],
+        [
+          -120.9,
+          35.2
+        ],
+        [
+          -121.9,
+          36.6
+        ],
+        [
+          -122.4,
+          37.1
+        ],
+        [
+          -122.52,
+          37.83
+        ],
+        [
+          -123.1,
+          38.9
+        ],
+        [
+          -123.8,
+          39.7
+        ],
+        [
+          -124.1,
+          40.4
+        ],
+        [
+          -124.21,
+          41.0
+        ],
+        [
+          -124.21,
+          41.75
+        ],
+        [
+          -124.1,
+          42.0
+        ]
+      ],
+      "relief": [
+        {
+          "name": "Sierra Nevada",
+          "lon": -119.0,
+          "lat": 37.6,
+          "rx": 0.85,
+          "ry": 2.4,
+          "amp": 2200,
+          "rot": 0.52
+        },
+        {
+          "name": "Southern Cascades",
+          "lon": -121.6,
+          "lat": 40.6,
+          "rx": 0.8,
+          "ry": 1.1,
+          "amp": 1500,
+          "rot": 0.3
+        },
+        {
+          "name": "Klamath Mountains / North Coast Ranges",
+          "lon": -123.4,
+          "lat": 40.8,
+          "rx": 0.7,
+          "ry": 1.0,
+          "amp": 900,
+          "rot": 0.15
+        },
+        {
+          "name": "Central Coast Ranges",
+          "lon": -121.2,
+          "lat": 37.6,
+          "rx": 0.6,
+          "ry": 1.6,
+          "amp": 800,
+          "rot": 0.55
+        },
+        {
+          "name": "Transverse Ranges",
+          "lon": -118.6,
+          "lat": 34.35,
+          "rx": 1.5,
+          "ry": 0.45,
+          "amp": 1600,
+          "rot": 0
+        },
+        {
+          "name": "Peninsular Ranges",
+          "lon": -116.7,
+          "lat": 33.3,
+          "rx": 0.6,
+          "ry": 0.9,
+          "amp": 1300,
+          "rot": 0.5
+        },
+        {
+          "name": "Mojave Desert / Basin and Range",
+          "lon": -116.2,
+          "lat": 35.6,
+          "rx": 1.6,
+          "ry": 1.4,
+          "amp": 700,
+          "rot": 0.2
+        },
+        {
+          "name": "Great Central Valley",
+          "lon": -120.6,
+          "lat": 37.6,
+          "rx": 0.75,
+          "ry": 2.6,
+          "amp": -180,
+          "rot": 0.5
+        },
+        {
+          "name": "Death Valley trough",
+          "lon": -116.9,
+          "lat": 36.4,
+          "rx": 0.35,
+          "ry": 0.7,
+          "amp": -240,
+          "rot": 0.45
+        }
+      ],
+      "corridors": [
+        {
+          "id": "el-camino-real-101",
+          "layer": "roads",
+          "tier": "context",
+          "name": "El Camino Real / US-101 coastal corridor (generalized)",
+          "short": "US-101",
+          "depthM": 0,
+          "path": [
+            [
+              -117.16,
+              32.72
+            ],
+            [
+              -117.6,
+              33.39
+            ],
+            [
+              -118.25,
+              34.05
+            ],
+            [
+              -118.85,
+              34.02
+            ],
+            [
+              -119.7,
+              34.42
+            ],
+            [
+              -120.5,
+              34.61
+            ],
+            [
+              -120.64,
+              35.27
+            ],
+            [
+              -121.66,
+              36.68
+            ],
+            [
+              -122.03,
+              37.37
+            ],
+            [
+              -122.42,
+              37.78
+            ],
+            [
+              -122.7,
+              38.54
+            ],
+            [
+              -123.8,
+              39.74
+            ],
+            [
+              -124.16,
+              40.8
+            ],
+            [
+              -124.21,
+              41.76
+            ]
+          ],
+          "facts": [
+            "Generalized coastal highway corridor following the historic El Camino Real mission road; schematic polyline, not a surveyed alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (US-101 routing)"
+          ]
+        },
+        {
+          "id": "california-aqueduct",
+          "layer": "water",
+          "tier": "context",
+          "name": "California Aqueduct (generalized reach)",
+          "short": "CA Aqueduct",
+          "depthM": 0,
+          "path": [
+            [
+              -121.6,
+              38.05
+            ],
+            [
+              -121.3,
+              37.4
+            ],
+            [
+              -120.8,
+              36.6
+            ],
+            [
+              -120.1,
+              35.7
+            ],
+            [
+              -119.3,
+              35.1
+            ],
+            [
+              -118.9,
+              34.85
+            ],
+            [
+              -118.4,
+              34.55
+            ],
+            [
+              -117.9,
+              34.3
+            ],
+            [
+              -117.4,
+              34.05
+            ],
+            [
+              -117.13,
+              33.87
+            ]
+          ],
+          "facts": [
+            "Generalized reach of the California Aqueduct (State Water Project) from the Sacramento-San Joaquin Delta toward Lake Perris; schematic, not a centerline."
+          ],
+          "sources": [
+            "California Department of Water Resources, State Water Project overview (generalized)"
+          ]
+        },
+        {
+          "id": "overland-route-donner",
+          "layer": "rail",
+          "tier": "context",
+          "name": "Overland Route via Donner Pass (generalized)",
+          "short": "Overland Route",
+          "depthM": 0,
+          "path": [
+            [
+              -121.49,
+              38.58
+            ],
+            [
+              -121.29,
+              38.75
+            ],
+            [
+              -120.95,
+              39.1
+            ],
+            [
+              -120.65,
+              39.24
+            ],
+            [
+              -120.33,
+              39.31
+            ],
+            [
+              -120.18,
+              39.33
+            ],
+            [
+              -120.0,
+              39.32
+            ]
+          ],
+          "facts": [
+            "Generalized Overland Route of the first transcontinental railroad, Sacramento to the Nevada line over Donner Pass; schematic, not a track alignment."
+          ],
+          "sources": [
+            "Generalized from public railroad references (Roseville Subdivision routing)"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "manzanar",
+          "name": "Manzanar National Historic Site",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "park",
+          "lon": -118.15444,
+          "lat": 36.72833,
+          "depthM": 0,
+          "facts": [
+            "Manzanar War Relocation Center (1942-1945); preserved as a National Historic Site."
+          ],
+          "sources": [
+            "National Park Service (nps.gov/manz); coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "empire-mine",
+          "name": "Empire Mine State Historic Park",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "park",
+          "lon": -121.04278,
+          "lat": 39.20361,
+          "depthM": 0,
+          "facts": [
+            "Published park descriptions document 367 miles of underground passages in the Empire Mine workings - the mine-map exemplar for the S4 brief."
+          ],
+          "sources": [
+            "California State Parks; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "nike-sf88l",
+          "name": "Nike Missile Site SF-88L",
+          "layer": "bases",
+          "tier": "official",
+          "kind": "building",
+          "lon": -122.52778,
+          "lat": 37.82694,
+          "depthM": 0,
+          "facts": [
+            "Decommissioned Nike launch site (1954-1974) preserved by the National Park Service in the Marin Headlands."
+          ],
+          "sources": [
+            "National Park Service, Golden Gate NRA; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "morris-dam",
+          "name": "Morris Dam / Morris Reservoir",
+          "layer": "industry",
+          "tier": "official",
+          "kind": "building",
+          "lon": -117.88111,
+          "lat": 34.17472,
+          "depthM": 0,
+          "facts": [
+            "Morris Reservoir was used for underwater missile testing from the 1940s to the 1990s."
+          ],
+          "sources": [
+            "Wikipedia, 'Morris Dam' (retrieved 2026-10-22); coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "aerojet-rancho-cordova",
+          "name": "Aerojet General Corporation Site",
+          "layer": "industry",
+          "tier": "official",
+          "kind": "building",
+          "lon": -121.169,
+          "lat": 38.642,
+          "depthM": 0,
+          "facts": [
+            "Former rocket propulsion development and testing facility; EPA National Priorities List site since 1983."
+          ],
+          "sources": [
+            "US EPA Superfund site profile CAD980358832; coordinate per gazetteer row"
+          ]
+        }
+      ],
+        "gazetteerRows": [
+        ["Los Angeles", "Populated Place", "pop.place", "Los Angeles", 34.0522390563, -118.2436970875, null, "1662328", 1, "State-frame anchor city. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=1662328; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."],
+        ["San Francisco", "Populated Place", "pop.place", "San Francisco", 37.77500494, -122.41945762, null, "277593", 1, "State-frame anchor city. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=277593; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."],
+        ["Sacramento", "Populated Place", "pop.place", "Sacramento", 38.58157698, -121.49441277, null, "1659564", 1, "State capital and state-frame anchor city. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=1659564; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."],
+        ["San Diego", "Populated Place", "pop.place", "San Diego", 32.71533396, -117.157267, null, "1661377", 1, "State-frame anchor city. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=1661377; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."],
+        ["Oakville", "Populated Place", "pop.place", "Napa", 38.4368599, -122.40221399, null, "229899", 1, "Napa Valley wine-country anchor in the Oakville AVA; Robert Mondavi Winery (est. 1966) is the vintner-layer exemplar, not the feature represented by this GNIS point. USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=229899; stored coordinate is the first returned point of the official multipoint, not a municipal boundary, street-address geocode, or generic city centroid. Cross-checked 2026-10-22."],
+        ["University of California, Berkeley", "School", "manmade.school", "Alameda", 37.8719, -122.2583, null, null, 0, "University of California campus anchor (S4 brief: UC system). Coordinate from the Wikipedia article 'University of California, Berkeley' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["University of California, Los Angeles", "School", "manmade.school", "Los Angeles", 34.0722, -118.4427, null, null, 0, "University of California campus anchor (S4 brief: UC system). Coordinate from the Wikipedia article 'University of California, Los Angeles' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Manzanar", "Park", "admin.park", "Inyo", 36.72833, -118.15444, null, null, 0, "Manzanar War Relocation Center, preserved as a National Historic Site (NPS). Coordinate from the Wikipedia article 'Manzanar' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed. The separate GNIS Manzanar populated-place row is a different record and does not verify this historic-site row."],
+        ["Tule Lake War Relocation Center", "Park", "admin.park", "Modoc", 41.88944, -121.37472, null, null, 0, "Wartime segregation center; NPS Tule Lake National Monument (site spans the Modoc/Siskiyou county line). Coordinate from the Wikipedia article 'Tule Lake War Relocation Center' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed. The GNIS Tule Lake Swamp row is a different hydrographic feature and does not verify this relocation-center row."],
+        ["Empire Mine State Historic Park", "Park", "admin.park", "Nevada", 39.20361, -121.04278, null, null, 0, "Historic hard-rock gold mine; published descriptions document 367 miles of underground passages. Coordinate from the Wikipedia article 'Empire Mine State Historic Park' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Nike Missile Site SF-88L", "Military", "manmade.military", "Marin", 37.82694, -122.52778, null, null, 0, "Preserved Nike launch site at Fort Barry (operational 1954-1974), now part of Golden Gate National Recreation Area. Coordinate from the Wikipedia article 'Nike Missile Site SF-88L' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Morris Dam", "Dam", "hydro.dam", "Los Angeles", 34.17472, -117.88111, 351, null, 0, "Morris Reservoir was used for underwater missile testing from the 1940s to the 1990s. Coordinate and normal elevation (351 m) from the Wikipedia article 'Morris Dam' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed. Morris Reservoir is carried as a separate GNIS Reservoir row; that reservoir record does not verify this dam-structure row."],
+        ["La Casa Pacifica", "Building", "manmade.building", "Orange", 33.39099, -117.59708, null, null, 0, "San Clemente estate that served as the 'Western White House'. Coordinate from the Wikipedia article 'La Casa Pacifica' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Stow House", "Building", "manmade.building", "Santa Barbara", 34.44278, -119.85083, null, null, 0, "1873 ranch headquarters of Rancho La Patera in Goleta (NRHP 00001166). Coordinate from the Wikipedia article 'Stow House' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Clair Tappaan Lodge", "Building", "manmade.building", "Nevada", 39.31791, -120.35103, null, null, 0, "Sierra Club lodge at Donner Pass, built by volunteers in 1934. Coordinate from the lodge's published location data (clairtappaanlodge.com, retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Aerojet General Corporation Site", "Locale", "manmade.locale", "Sacramento", 38.642, -121.169, null, null, 0, "Former liquid- and solid-propellant rocket manufacturing and testing site near Rancho Cordova; EPA Superfund site CAD980358832 (NPL 1983). Coordinate from the US EPA TRI facility profile for Aerojet - Sacramento Operations (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Manzanar", "Populated Place", "pop.place", "Inyo", 36.73993695, -118.08065811, null, "1659050", 1, "USGS GNIS MapServer layer 3 (Populated Places), FEATURE_ID=1659050; stored coordinate is the returned point for the locality named Manzanar, not a boundary or street-address geocode. This populated-place record is distinct from, and does not verify, the separate VERIFIED=0 Manzanar National Historic Site row. Cross-checked 2026-10-22."],
+        ["Mount Whitney", "Summit", "phys.summit", "Multiple counties", 36.57857512, -118.29243423, null, "269051", 1, "USGS GNIS MapServer layer 5 (Landforms), FEATURE_ID=269051. Stored coordinate is the returned official summit point, not a peak-area polygon. Cross-checked 2026-10-22."],
+        ["Mount Shasta", "Summit", "phys.summit", "Siskiyou", 41.40917524, -122.19485877, null, "266054", 1, "USGS GNIS MapServer layer 5 (Landforms), FEATURE_ID=266054. Stored coordinate is the returned official summit point, not a peak-area polygon. Cross-checked 2026-10-22."],
+        ["Death Valley", "Basin", "phys.basin", "Multiple counties", 36.24662318, -116.81700764, null, "270787", 1, "USGS GNIS MapServer layer 5 (Landforms), FEATURE_ID=270787. Stored coordinate is the first returned point of the official multipoint basin record, not a basin outline, park boundary, or low-point survey mark. Cross-checked 2026-10-22."],
+        ["Sacramento River", "Stream", "hydro.stream", "Multiple counties", 38.0632528, -121.8527357, null, "1654949", 1, "USGS GNIS Domestic Names detail record, FEATURE_ID=1654949 (Class Stream; primary county Contra Costa), coordinate sequence 1; the same ID/name/class were attribute-confirmed in GNIS MapServer layer 6 and the point was corroborated by the USGS GNIS Geocoder on 2026-10-22. Stored coordinate is the GNIS primary point, not a river centerline."],
+        ["San Joaquin River", "Stream", "hydro.stream", "Multiple counties", 38.06659111, -121.85108216, null, "273488", 1, "USGS GNIS MapServer layer 6 (Streams), FEATURE_ID=273488. Stored coordinate is the first returned point of the official multipoint stream record, not a river centerline. Cross-checked 2026-10-22."],
+        ["Russian River", "Stream", "hydro.stream", "Multiple counties", 38.45047475, -123.1294616, null, "267200", 1, "USGS GNIS MapServer layer 6 (Streams), FEATURE_ID=267200. Stored coordinate is the first returned point of the official multipoint stream record, not a river centerline. Cross-checked 2026-10-22."],
+        ["Lake Tahoe", "Lake", "hydro.lake", "Placer", 39.0960755, -120.0333974, null, "1654975", 1, "USGS GNIS Domestic Names detail record, FEATURE_ID=1654975 (Class Lake; primary state/county California/Placer), coordinate sequence 1, corroborated by the USGS GNIS Geocoder on 2026-10-22. The current GNIS cartographic hydro layers checked that day did not return this active record, so the stored GNIS primary point rests on the detail record plus Geocoder—not on an inferred lake centroid—and is not a shoreline polygon. The lake also extends into Nevada."],
+        ["Salton Sea", "Lake", "hydro.lake", "Imperial", 33.313568, -115.816772, null, "248771", 1, "USGS GNIS Domestic Names detail record, FEATURE_ID=248771 (Class Lake; primary county Imperial), coordinate sequence 1, corroborated by the USGS GNIS Geocoder on 2026-10-22. The current GNIS cartographic hydro layers checked that day did not return this active record, so the stored GNIS primary point rests on the detail record plus Geocoder—not on an inferred lake centroid—and is not a shoreline polygon. The feature also extends into Riverside County."],
+        ["Morris Reservoir", "Reservoir", "hydro.reservoir", "Los Angeles", 34.183909, -117.870436, null, "272561", 1, "USGS GNIS Domestic Names detail record, FEATURE_ID=272561 (Class Reservoir; Los Angeles County), coordinate sequence 1, corroborated by the USGS GNIS Geocoder on 2026-10-22. The current GNIS cartographic hydro layers checked that day did not return this active record, so the stored GNIS primary point rests on the detail record plus Geocoder. This reservoir record is separate from, and does not verify, the VERIFIED=0 Morris Dam structure row; the point is not a shoreline polygon."],
+        ["Tule Lake", "Swamp", "hydro.swamp", "Siskiyou", 41.890068, -121.5057865, null, "268456", 1, "USGS GNIS Domestic Names detail record, FEATURE_ID=268456 (Class Swamp; primary county Siskiyou), coordinate sequence 1, corroborated by the USGS GNIS Geocoder on 2026-10-22. Stored coordinate is the GNIS primary point for the perennial swamp/marsh, not a wetland polygon. This hydrographic feature is distinct from, and does not verify, the separate VERIFIED=0 Tule Lake War Relocation Center row."]
+      ]
+    },
+    "nevada": {
+      "title": "NEVADA SUBSURFACE 4Dwm",
+      "subtitle": "Great Basin · Sierra Nevada Front · Colorado River — statewide frame, Nevada",
+      "gazTitle": "NEVADA USGS GNIS REGISTER",
+      "gazNote": "Round 16 starter register (2026-10-22): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, or river centerlines.",
+      "state": "NV",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -120.03,
+        "lat0": 34.88,
+        "lon1": -113.95,
+        "lat1": 42.03
+      },
+      "center": {
+        "lon": -116.99,
+        "lat": 38.47
+      },
+      "baseElevationM": 1500,
+      "roughnessM": 150,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Sierra Nevada front",
+          "lon": -119.6,
+          "lat": 39.3,
+          "rx": 0.45,
+          "ry": 1.7,
+          "amp": 1000,
+          "rot": 0.4
+        },
+        {
+          "name": "Ruby Mountains",
+          "lon": -115.45,
+          "lat": 40.6,
+          "rx": 0.45,
+          "ry": 0.8,
+          "amp": 1100,
+          "rot": 0.3
+        },
+        {
+          "name": "Snake Range",
+          "lon": -114.25,
+          "lat": 39.0,
+          "rx": 0.35,
+          "ry": 0.8,
+          "amp": 1400,
+          "rot": 0.1
+        },
+        {
+          "name": "Spring Mountains",
+          "lon": -115.65,
+          "lat": 36.25,
+          "rx": 0.5,
+          "ry": 0.7,
+          "amp": 1300,
+          "rot": 0.45
+        },
+        {
+          "name": "Central Nevada ranges",
+          "lon": -117.0,
+          "lat": 39.2,
+          "rx": 0.7,
+          "ry": 1.1,
+          "amp": 900,
+          "rot": 0.25
+        },
+        {
+          "name": "Black Rock Desert basin",
+          "lon": -119.0,
+          "lat": 41.0,
+          "rx": 0.8,
+          "ry": 0.7,
+          "amp": -350,
+          "rot": 0.2
+        },
+        {
+          "name": "Las Vegas Valley",
+          "lon": -115.15,
+          "lat": 36.15,
+          "rx": 0.45,
+          "ry": 0.4,
+          "amp": -800,
+          "rot": 0
+        },
+        {
+          "name": "Lower Colorado River trough",
+          "lon": -114.45,
+          "lat": 35.6,
+          "rx": 0.35,
+          "ry": 0.9,
+          "amp": -900,
+          "rot": 0.05
+        }
+      ],
+      "corridors": [
+        {
+          "id": "overland-route-i80",
+          "layer": "rail",
+          "tier": "context",
+          "name": "Overland Route / Interstate 80 corridor (generalized)",
+          "short": "Overland / I-80",
+          "depthM": 0,
+          "path": [
+            [-120.0, 39.33],
+            [-119.8138027, 39.5296329],
+            [-119.22, 39.52],
+            [-118.47, 40.18],
+            [-117.7356849, 40.9729584],
+            [-116.93, 40.64],
+            [-115.7631232, 40.8324211],
+            [-114.96, 41.11],
+            [-114.07, 40.74]
+          ],
+          "facts": [
+            "Generalized west-east Overland Route / Interstate 80 corridor across northern Nevada; schematic polyline, not a track or highway alignment."
+          ],
+          "sources": [
+            "Generalized from public railroad and highway references (Overland Route and Interstate 80 routing)"
+          ]
+        },
+        {
+          "id": "humboldt-river-reach",
+          "layer": "water",
+          "tier": "context",
+          "name": "Humboldt River (generalized reach)",
+          "short": "Humboldt River",
+          "depthM": 0,
+          "path": [
+            [-114.96, 41.1],
+            [-115.7631232, 40.8324211],
+            [-116.1, 40.71],
+            [-116.93, 40.64],
+            [-117.7356849, 40.9729584],
+            [-118.47, 40.18],
+            [-118.6009823, 39.9879663]
+          ],
+          "facts": [
+            "Generalized Humboldt River reach from northeastern Nevada toward Humboldt Sink; schematic, not a channel centerline. The final vertex is the GNIS primary point used by the gazetteer row."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 860071 for the terminal primary point"
+          ]
+        },
+        {
+          "id": "us95-nevada",
+          "layer": "roads",
+          "tier": "context",
+          "name": "US-95 Nevada corridor (generalized)",
+          "short": "US-95",
+          "depthM": 0,
+          "path": [
+            [-115.137223, 36.1749705],
+            [-115.67, 36.57],
+            [-116.76, 36.91],
+            [-117.24, 37.71],
+            [-117.2300825, 38.0671553],
+            [-118.62, 38.52],
+            [-118.78, 39.47],
+            [-119.8138027, 39.5296329]
+          ],
+          "facts": [
+            "Generalized US-95 corridor from Las Vegas through Tonopah toward Fallon and Reno; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (US-95 routing)"
+          ]
+        },
+        {
+          "id": "colorado-river-nevada-border",
+          "layer": "water",
+          "tier": "context",
+          "name": "Colorado River Nevada border reach (generalized)",
+          "short": "Colorado River",
+          "depthM": 0,
+          "path": [
+            [-114.05, 36.99],
+            [-114.4, 36.25],
+            [-114.74, 36.02],
+            [-114.57, 35.17],
+            [-114.6, 34.92]
+          ],
+          "facts": [
+            "Generalized Colorado River reach along the Nevada-Arizona border; schematic, not a channel centerline or state-boundary survey. No Colorado River gazetteer row is claimed because the GNIS primary point returned for FEATURE_ID 45730 is outside this frame."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS primary-point exclusion recorded in the round-16 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "carson-city",
+          "name": "Carson City",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -119.7674034,
+          "lat": 39.1637984,
+          "depthM": 0,
+          "facts": [
+            "Nevada state capital and western state-frame anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 863976; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "las-vegas",
+          "name": "Las Vegas",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -115.137223,
+          "lat": 36.1749705,
+          "depthM": 0,
+          "facts": [
+            "Southern Nevada state-frame anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 847388; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "boundary-peak",
+          "name": "Boundary Peak",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -118.3510759,
+          "lat": 37.846072,
+          "depthM": 0,
+          "facts": [
+            "Nevada's highest summit; node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 857652; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "pyramid-lake",
+          "name": "Pyramid Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -119.565083,
+          "lat": 40.0449368,
+          "depthM": 0,
+          "facts": [
+            "Great Basin lake anchor north of Reno; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 856349; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Carson City", "Populated Place", "pop.place", "Carson City", 39.1637984, -119.7674034, null, "863976", 1, "State capital. The populated-place record was selected rather than the separate Carson City county-equivalent record (FEATURE_ID 863219). USGS GNIS Geocoder (GNIS), FEATURE_ID=863976; exact official name and Cities & Populated Places type in Carson City cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Reno", "Populated Place", "pop.place", "Washoe", 39.5296329, -119.8138027, null, "861100", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=861100; exact official name and Cities & Populated Places type in Washoe County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Las Vegas", "Populated Place", "pop.place", "Clark", 36.1749705, -115.137223, null, "847388", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=847388; exact official name and Cities & Populated Places type in Clark County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Elko", "Populated Place", "pop.place", "Elko", 40.8324211, -115.7631232, null, "845452", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=845452; exact official name and Cities & Populated Places type in Elko County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Winnemucca", "Populated Place", "pop.place", "Humboldt", 40.9729584, -117.7356849, null, "844996", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=844996; exact official name and Cities & Populated Places type in Humboldt County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Ely", "Populated Place", "pop.place", "White Pine", 39.2474393, -114.8886296, null, "859671", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=859671; exact official name and Cities & Populated Places type in White Pine County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Tonopah", "Populated Place", "pop.place", "Nye", 38.0671553, -117.2300825, null, "845985", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=845985; exact official name and Cities & Populated Places type in Nye County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Pyramid Lake", "Lake", "hydro.lake", "Washoe", 40.0449368, -119.565083, null, "856349", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=856349; exact official name and Lakes & Reservoirs type in Washoe County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon."],
+        ["Walker Lake", "Lake", "hydro.lake", "Mineral", 38.6954696, -118.7177623, null, "844615", 1, "The Lakes & Reservoirs record was selected rather than the separate Walker Lake populated place (FEATURE_ID 854682). USGS GNIS Geocoder (GNIS), FEATURE_ID=844615; exact official name and Lakes & Reservoirs type in Mineral County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon."],
+        ["Humboldt River", "Stream", "hydro.stream", "Churchill", 39.9879663, -118.6009823, null, "860071", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=860071; exact official name and Streams & Canals type in Churchill County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline."],
+        ["Boundary Peak", "Summit", "phys.summit", "Esmeralda", 37.846072, -118.3510759, null, "857652", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=857652; exact official name and Summit type in Esmeralda County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."],
+        ["Wheeler Peak", "Summit", "phys.summit", "White Pine", 38.9857693, -114.313966, null, "861956", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=861956; exact official name and Summit type in White Pine County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."]
+      ]
+    },
+    "arizona": {
+      "title": "ARIZONA SUBSURFACE 4Dwm",
+      "subtitle": "Colorado Plateau · Sonoran Desert · Gila and Salt Rivers — statewide frame, Arizona",
+      "gazTitle": "ARIZONA USGS GNIS REGISTER",
+      "gazNote": "Round 16 starter register (2026-10-22): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, canyon outlines, or river centerlines.",
+      "state": "AZ",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -114.82,
+        "lat0": 31.33,
+        "lon1": -109.05,
+        "lat1": 37.01
+      },
+      "center": {
+        "lon": -111.935,
+        "lat": 34.17
+      },
+      "baseElevationM": 1250,
+      "roughnessM": 180,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Colorado Plateau",
+          "lon": -111.4,
+          "lat": 36.2,
+          "rx": 1.7,
+          "ry": 0.65,
+          "amp": 900,
+          "rot": 0
+        },
+        {
+          "name": "San Francisco Peaks",
+          "lon": -111.68,
+          "lat": 35.35,
+          "rx": 0.35,
+          "ry": 0.3,
+          "amp": 1500,
+          "rot": 0.2
+        },
+        {
+          "name": "Mogollon Rim",
+          "lon": -111.0,
+          "lat": 34.25,
+          "rx": 1.5,
+          "ry": 0.35,
+          "amp": 900,
+          "rot": -0.15
+        },
+        {
+          "name": "White Mountains",
+          "lon": -109.65,
+          "lat": 33.9,
+          "rx": 0.55,
+          "ry": 0.5,
+          "amp": 1100,
+          "rot": 0.3
+        },
+        {
+          "name": "Southeastern Basin and Range",
+          "lon": -110.3,
+          "lat": 32.2,
+          "rx": 1.0,
+          "ry": 0.6,
+          "amp": 500,
+          "rot": 0.35
+        },
+        {
+          "name": "Sonoran Desert lowland",
+          "lon": -112.8,
+          "lat": 33.1,
+          "rx": 1.0,
+          "ry": 0.7,
+          "amp": -800,
+          "rot": 0.2
+        },
+        {
+          "name": "Lower Colorado River trough",
+          "lon": -114.55,
+          "lat": 33.7,
+          "rx": 0.28,
+          "ry": 1.5,
+          "amp": -1000,
+          "rot": 0.05
+        },
+        {
+          "name": "Hualapai and Black Mountains",
+          "lon": -113.9,
+          "lat": 35.2,
+          "rx": 0.5,
+          "ry": 0.7,
+          "amp": 700,
+          "rot": 0.2
+        }
+      ],
+      "corridors": [
+        {
+          "id": "colorado-river-arizona-border",
+          "layer": "water",
+          "tier": "context",
+          "name": "Colorado River Arizona border reach (generalized)",
+          "short": "Colorado River",
+          "depthM": 0,
+          "path": [
+            [-114.05, 36.99],
+            [-114.63, 36.15],
+            [-114.57, 35.17],
+            [-114.51, 34.3],
+            [-114.52, 33.6],
+            [-114.624397, 32.7253249],
+            [-114.81, 32.52]
+          ],
+          "facts": [
+            "Generalized Colorado River reach forming most of the Arizona-California/Nevada border; schematic, not a channel centerline or state-boundary survey. No Colorado River gazetteer row is claimed because the GNIS primary point returned for FEATURE_ID 45730 is outside this frame."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS primary-point exclusion recorded in the round-16 source register"
+          ]
+        },
+        {
+          "id": "gila-river-reach",
+          "layer": "water",
+          "tier": "context",
+          "name": "Gila River (generalized Arizona reach)",
+          "short": "Gila River",
+          "depthM": 0,
+          "path": [
+            [-109.05, 33.05],
+            [-109.7, 32.85],
+            [-110.4, 33.07],
+            [-111.3, 33.07],
+            [-112.3129333, 33.3811546],
+            [-113.0, 33.05],
+            [-114.5552281, 32.7197692]
+          ],
+          "facts": [
+            "Generalized Gila River reach from the New Mexico line to the Colorado River confluence near Yuma; schematic, not a channel centerline. Endpoints at the Salt River and Gila River GNIS primary points are identified in the gazetteer rows."
+          ],
+          "sources": [
+            "Generalized from public river references; USGS GNIS FEATURE_IDs 33995 and 42838 for named primary points"
+          ]
+        },
+        {
+          "id": "i40-route66-arizona",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 40 / historic Route 66 corridor (generalized)",
+          "short": "I-40 / Route 66",
+          "depthM": 0,
+          "path": [
+            [-114.0530065, 35.189443],
+            [-112.49, 35.22],
+            [-112.19, 35.25],
+            [-111.6512725, 35.1980671],
+            [-110.7, 35.02],
+            [-110.17, 34.9],
+            [-109.05, 35.17]
+          ],
+          "facts": [
+            "Generalized northern Arizona Interstate 40 / historic Route 66 corridor; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 40 and historic Route 66 routing)"
+          ]
+        },
+        {
+          "id": "i17-phoenix-flagstaff",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 17 Phoenix-Flagstaff corridor (generalized)",
+          "short": "I-17",
+          "depthM": 0,
+          "path": [
+            [-112.0740373, 33.4483771],
+            [-112.07, 34.3],
+            [-111.85, 34.56],
+            [-111.6512725, 35.1980671]
+          ],
+          "facts": [
+            "Generalized Interstate 17 corridor from Phoenix to Flagstaff; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 17 routing)"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "phoenix",
+          "name": "Phoenix",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -112.0740373,
+          "lat": 33.4483771,
+          "depthM": 0,
+          "facts": [
+            "Arizona state capital and central state-frame anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 44784; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "grand-canyon",
+          "name": "Grand Canyon (GNIS Valley point)",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "valley",
+          "lon": -113.9960696,
+          "lat": 36.112764,
+          "depthM": 0,
+          "facts": [
+            "Western Grand Canyon anchor at the GNIS Valley primary point; not a national-park boundary, visitor-center point, or canyon outline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 23907; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "humphreys-peak",
+          "name": "Humphreys Peak",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -111.6779884,
+          "lat": 35.3463151,
+          "depthM": 0,
+          "facts": [
+            "Arizona's highest summit; node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 30290; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "Yuma",
+          "name": "Yuma",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -114.624397,
+          "lat": 32.7253249,
+          "depthM": 0,
+          "facts": [
+            "Lower Colorado / Gila confluence anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 14111; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Phoenix", "Populated Place", "pop.place", "Maricopa", 33.4483771, -112.0740373, null, "44784", 1, "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=44784; exact official name and Cities & Populated Places type in Maricopa County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Tucson", "Populated Place", "pop.place", "Pima", 32.2217429, -110.926479, null, "43534", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=43534; exact official name and Cities & Populated Places type in Pima County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Flagstaff", "Populated Place", "pop.place", "Coconino", 35.1980671, -111.6512725, null, "29046", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=29046; exact official name and Cities & Populated Places type in Coconino County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Yuma", "Populated Place", "pop.place", "Yuma", 32.7253249, -114.624397, null, "14111", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=14111; exact official name and Cities & Populated Places type in Yuma County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Prescott", "Populated Place", "pop.place", "Yavapai", 34.5400242, -112.4685025, null, "33189", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=33189; exact official name and Cities & Populated Places type in Yavapai County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Kingman", "Populated Place", "pop.place", "Mohave", 35.189443, -114.0530065, null, "6704", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=6704; exact official name and Cities & Populated Places type in Mohave County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Salt River", "Stream", "hydro.stream", "Maricopa", 33.3811546, -112.3129333, null, "33995", 1, "The Streams & Canals record was selected rather than the separate Salt River populated place (FEATURE_ID 44982). USGS GNIS Geocoder (GNIS), FEATURE_ID=33995; exact official name and Streams & Canals type in Maricopa County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline."],
+        ["Gila River", "Stream", "hydro.stream", "Yuma", 32.7197692, -114.5552281, null, "42838", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=42838; exact official name and Streams & Canals type in Yuma County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline."],
+        ["Verde River", "Stream", "hydro.stream", "Maricopa", 33.5469892, -111.660693, null, "35768", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=35768; exact official name and Streams & Canals type in Maricopa County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline."],
+        ["Humphreys Peak", "Summit", "phys.summit", "Coconino", 35.3463151, -111.6779884, null, "30290", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=30290; exact official name and Summit type in Coconino County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."],
+        ["Mount Graham", "Summit", "phys.summit", "Graham", 32.70173, -109.8714579, null, "5204", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=5204; exact official name and Summit type in Graham County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon."],
+        ["Grand Canyon", "Valley", "phys.valley", "Mohave", 36.112764, -113.9960696, null, "23907", 1, "The GNIS Valley record was selected rather than the separate Grand Canyon populated place (FEATURE_ID 5213). USGS GNIS Geocoder (GNIS), FEATURE_ID=23907; exact official name and Valley type in Mohave County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a canyon outline, national-park boundary, or visitor-center point."]
+      ]
     }
   }
 }

@@ -30,16 +30,31 @@ function source(name) {
 test("SITE-K archive contains the current shell and complete Project Y exhibit", () => {
   const files = archive("sitek.xdc");
   for (const file of [
-    "index.html", "manifest.toml", "los-alamos.html",
-    "css/project-y-sites.css", "css/project-y-4dwm.css",
+    "index.html", "manifest.toml", "los-alamos.html", "4dwm-ports.html",
+    "bluetops-gso-4dwm.html", "dalton-race-4dwm.html", "esgvrop-4dwm.html",
+    "glendora-high-4dwm.html", "greeran-family-4dwm.html", "greeran-subsurface.html",
+    "planet-viewer-4dwm.html", "red-october-4dwm.html", "sanborn-restaurant-4dwm.html",
+    "socal-subsurface.html", "vincennes-4dwm.html", "wasm/ghidra/ghidra_decompiler.wasm",
+    "css/app.css", "css/wm.css", "css/project-y-sites.css", "css/project-y-4dwm.css",
+    "js/sitek-modes.js", "js/flash-coordinates.js",
     "js/project-y-sites-data.js", "js/project-y-sites.js", "js/project-y-4dwm.js",
     "vendor/three.module.min.js", "vendor/OrbitControls.js",
   ]) text(files, file);
 
   assert.match(text(files, "manifest.toml"), /SITE-K · Offline Site Collection/);
+  assert.equal(text(files, "index.html"), source("index.html"));
+  assert.equal(text(files, "4dwm-ports.html"), source("4dwm-ports.html"));
+  assert.equal(text(files, "js/sitek-modes.js"), source("js/sitek-modes.js"));
   assert.equal(text(files, "los-alamos.html"), source("los-alamos.html"));
   assert.equal(text(files, "js/project-y-sites-data.js"), source("js/project-y-sites-data.js"));
-  assert.equal(text(files, "sw.js"), source("sw.js"));
+  const worker = text(files, "sw.js");
+  assert.equal(worker, source("sw.js"));
+  const portTargets = [...text(files, "4dwm-ports.html").matchAll(/href="\.\/([^"#?]+\.html)"/g)].map((match) => match[1]);
+  for (const target of portTargets) {
+    assert.ok(files[target], `${target} is missing from SITE-K XDC`);
+    assert.ok(worker.includes(`"./${target}"`), `${target} is not precached`);
+  }
+  assert.ok(worker.includes("\"./wasm/ghidra/ghidra_decompiler.wasm\""));
 
   for (const id of ["los-alamos", "oak-ridge", "hanford", "trinity", "ivy-mike", "castle-bravo"]) {
     const model = `models/project-y/${id}.wrl`;
@@ -68,11 +83,13 @@ test("SoCal Subsurface archive is current and closes its local module graph", ()
     "js/socal-subsurface.js", "js/socal-radio.js", "js/socal-radio-data.js",
     "js/socal-propagation.js", "js/socal-relief.js", "js/socal-utilities.js",
     "js/socal-utilities-data.js", "js/socal-orbital.js", "js/gpx-geocache.js",
-    "vendor/fflate/index.mjs", "vendor/fflate/LICENSE",
+    "vendor/fflate/browser.mjs", "vendor/fflate/LICENSE",
   ];
   for (const file of required) assert.ok(files[file], `archive is missing ${file}`);
   assert.equal(text(files, "js/gpx-geocache.js"), source("js/gpx-geocache.js"));
-  assert.equal(text(files, "vendor/fflate/index.mjs"), source("vendor/fflate/index.mjs"));
+  const browserFflate = text(files, "vendor/fflate/browser.mjs");
+  assert.equal(browserFflate, source("vendor/fflate/browser.mjs"));
+  assert.doesNotMatch(browserFflate, /from ['"](?:node:)?module['"]/);
   assert.match(text(files, "index.html"), /LOCAL GPX → GEOCACHE REGISTER/);
   assert.doesNotMatch(text(files, "js/socal-gazetteer-data.js"), /\["[^"]+","Geocache",/);
 
@@ -117,6 +134,18 @@ test("SoCal Subsurface archive is current and closes its local module graph", ()
       if (existsSync(path.join(root, dependency))) pending.push(dependency);
     }
   }
+});
+
+test("legacy Planet XDC filename now ships the SoCal Subsurface 4Dwm app", () => {
+  const planetAlias = readFileSync(path.join(root, "planet-viewer-4dwm.xdc"));
+  const canonical = readFileSync(path.join(root, "socal-subsurface.xdc"));
+  assert.deepEqual(planetAlias, canonical, "Planet compatibility XDC must mirror the canonical SoCal package");
+
+  const files = unzipSync(planetAlias);
+  assert.match(text(files, "manifest.toml"), /^name = \"SoCal Subsurface 4Dwm\"/);
+  assert.ok(files["js/socal-subsurface.js"], "replacement archive must include the SoCal 4DWM entry module");
+  assert.ok(!files["js/planet-viewer-4dwm.js"], "legacy filename must not deliver the Planet app payload");
+  assert.match(text(files, "index.html"), /LOCAL GPX → GEOCACHE REGISTER/);
 });
 
 test("Sanborn Installations archive carries both complete source applications", () => {
@@ -289,6 +318,25 @@ test("Headline Harry archive boots the js-dos v8 API with the complete engine", 
   );
 });
 
+test("Headline Harry DOSBox smoke drives Press Pass input and checks for a transition", () => {
+  const smoke = source("tools/smoke_headline_harry_dosbox.sh");
+  const workflow = source(".github/workflows/arena-headline-harry.yml");
+
+  assert.match(smoke, /MAP\.EXE/);
+  assert.match(smoke, /ARENA REPORTER/);
+  assert.match(smoke, /press-pass-before\.png/);
+  assert.match(smoke, /press-pass-filled\.png/);
+  assert.match(smoke, /after-press-pass\.png/);
+  assert.match(smoke, /mousemove --sync --window/);
+  assert.match(smoke, /xdotool key --clearmodifiers Tab/);
+  assert.match(smoke, /xdotool key --clearmodifiers Return/);
+  assert.match(smoke, /submit_delta < 1500/);
+  assert.match(workflow, /tools\/smoke_headline_harry_dosbox\.sh/);
+  assert.match(workflow, /game-shots\/press-pass/);
+  assert.ok(workflow.includes("Upload Press Pass runtime evidence"));
+  assert.ok(workflow.includes('cp -r "$work/hd/HH/." .xfer/harry/installed/'));
+});
+
 test("merged CyberChef archive is current and self-contained", () => {
   const files = archive("cyberchef.xdc");
   const src = source("public/apps/cyberchef/index.html");
@@ -300,10 +348,23 @@ test("merged CyberChef archive is current and self-contained", () => {
   assert.ok(badge, "kitchen header has no recipe-count badge");
   assert.match(text(files, "manifest.toml"), new RegExp(`${badge} operations`));
   assert.match(text(files, "index.html"), new RegExp(`HTML5 · ${badge} recipes`));
-  for (const id of ["enigmaM4", "secomExact", "virusSigScan", "dosBootSector", "gcwBraille", "primesFactor", "qrcode", "averyLabels"]) {
+  for (const id of ["enigmaM4", "secomExact", "virusSigScan", "dosBootSector", "gcwBraille", "primesFactor", "qrcode", "aztecCode", "cuecatDecode", "averyLabels"]) {
     assert.match(text(files, "index.html"), new RegExp(`addOp\\(['"]${id}['"]`), `archive is missing ${id}`);
   }
+  assert.ok(text(files, "index.html").includes("src=\"./vendor/bwip-js.min.js\""));
+  assert.ok(text(files, "index.html").includes("src=\"./vendor/zxing-library.min.js\""));
+  assert.equal(text(files, "vendor/bwip-js.min.js"), source("public/apps/cyberchef/vendor/bwip-js.min.js"));
+  assert.equal(text(files, "vendor/bwip-js.LICENSE"), source("public/apps/cyberchef/vendor/bwip-js.LICENSE"));
+  assert.equal(text(files, "vendor/zxing-library.min.js"), source("public/apps/cyberchef/vendor/zxing-library.min.js"));
+  assert.equal(text(files, "vendor/zxing-library.LICENSE"), source("public/apps/cyberchef/vendor/zxing-library.LICENSE"));
   assert.ok(files["webxdc.js"], "cyberchef.xdc is missing the webxdc shim");
+});
+
+test("Sneakers DOSBox smoke keeps the interactive window alive and detectable", () => {
+  const smoke = source("tools/smoke_sneakers_dosbox.sh");
+  assert.ok(smoke.includes('-c "RUN.BAT"'));
+  assert.doesNotMatch(smoke, /-c "exit"/, "the exit command can close DOSBox before input/screenshot capture");
+  assert.match(smoke, /visible_windows.*-eq 1/s, "SDL window-title variation needs a single-window fallback");
 });
 
 test("webxdc-dos archive boots js-dos v8 with complete engine and prebuilt bundles", () => {

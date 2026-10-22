@@ -56,4 +56,3 @@
 # disassembly round: JADX + Ghidra crypto inventory for the same two APKs
 # ghidra postScript argv fix; final disassembly round
 # ghidra project-dir + per-app report fix
-# backlog round: manifest reconciliation + libapp.so Ghidra pass (sharing toggled by owner request, reverted after)

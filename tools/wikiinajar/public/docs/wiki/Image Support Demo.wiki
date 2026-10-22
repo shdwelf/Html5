@@ -1,0 +1,27 @@
+== Images and DjVu ==
+
+Wiki image files live in the installation's `public/docs/image` directory. Supported raster formats include PNG, JPEG, GIF, WebP, BMP, and AVIF.
+
+Bundled raster image:
+
+[[image:demo.png|Bundled example icon]]
+
+Example syntax for a raster image:
+
+<pre><nowiki>[[image:demo.png|Bundled example icon]]</nowiki></pre>
+
+The `img:` namespace is an alias, and names may include safe relative subdirectories:
+
+<pre><nowiki>[[img:maps/toronto.png|Toronto map]]</nowiki></pre>
+
+DjVu documents can be embedded with the page viewer. The document is fetched only when its placeholder scrolls near the viewport; each page is rendered locally in the browser using WebAssembly. The original file remains available through the download link.
+
+Bundled DjVu reader:
+
+[[djvu:djvu-smoke.djvu|Open the bundled DjVu sample]]
+
+Example syntax for a DjVu file:
+
+<pre><nowiki>[[djvu:djvu-smoke.djvu|Open the bundled DjVu sample]]</nowiki></pre>
+
+The bundled smoke document is a small DjVu.js test asset under the Unlicense. To use your own documents, copy them into `public/docs/image` and replace `djvu-smoke.djvu` with the file name you added.
