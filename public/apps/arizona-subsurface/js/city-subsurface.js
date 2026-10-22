@@ -45,6 +45,9 @@ const DATA_LOADERS = {
   americansamoa: () => import("./city-subsurface-data-americansamoa.js"),
   usvirginislands: () => import("./city-subsurface-data-usvirginislands.js"),
   midway: () => import("./city-subsurface-data-midway.js"),
+  utah: () => import("./city-subsurface-data-utah.js"),
+  colorado: () => import("./city-subsurface-data-colorado.js"),
+  newmexico: () => import("./city-subsurface-data-newmexico.js"),
 };
 const GAZ_LOADERS = {
   lawrence: () => import("./city-gazetteer-data-lawrence.js"),
@@ -59,6 +62,9 @@ const GAZ_LOADERS = {
   americansamoa: () => import("./city-gazetteer-data-americansamoa.js"),
   usvirginislands: () => import("./city-gazetteer-data-usvirginislands.js"),
   midway: () => import("./city-gazetteer-data-midway.js"),
+  utah: () => import("./city-gazetteer-data-utah.js"),
+  colorado: () => import("./city-gazetteer-data-colorado.js"),
+  newmexico: () => import("./city-gazetteer-data-newmexico.js"),
 };
 // DEM packs are optional for every frame except a config marked
 // demRequired. Route them through a variable-specifier import so a missing
@@ -85,6 +91,9 @@ const DEM_LOADERS = {
   americansamoa: () => importDem("./city-dem-grid-americansamoa.js"),
   usvirginislands: () => importDem("./city-dem-grid-usvirginislands.js"),
   midway: () => importDem("./city-dem-grid-midway.js"),
+  utah: () => importDem("./city-dem-grid-utah.js"),
+  colorado: () => importDem("./city-dem-grid-colorado.js"),
+  newmexico: () => importDem("./city-dem-grid-newmexico.js"),
 };
 
 if (!DATA_LOADERS[CITY_ID] || !GAZ_LOADERS[CITY_ID]) {

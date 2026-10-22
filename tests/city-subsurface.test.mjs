@@ -9,7 +9,7 @@ import { unzipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const decoder = new TextDecoder();
-const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway"];
+const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway", "utah", "colorado", "newmexico"];
 
 function read(name) {
   return readFileSync(path.join(root, name), "utf8");
@@ -550,6 +550,156 @@ test("territory frames ship hemisphere-aware, multi-coast GNIS starter registers
   assert.match(engine, /lat >= 0 \? "N" : "S"/, "shared engine must format south latitude");
   assert.match(engine, /lon >= 0 \? "E" : "W"/, "shared engine must format east longitude");
   assert.match(engine, /Array\.isArray\(COAST\[0\]\?\.\[0\]\)/, "shared engine must normalize single- and multi-polyline coasts");
+  for (const frameId of Object.keys(expectations)) {
+    assert.match(engine, new RegExp(`city-subsurface-data-${frameId}\\.js`), `${frameId}: data loader`);
+    assert.match(engine, new RegExp(`city-gazetteer-data-${frameId}\\.js`), `${frameId}: gazetteer loader`);
+    assert.match(engine, new RegExp(`city-dem-grid-${frameId}\\.js`), `${frameId}: optional DEM loader`);
+  }
+});
+
+test("Utah, Colorado, and New Mexico complete the Four Corners GNIS state batch", async () => {
+  const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json"));
+  const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
+  const expectations = {
+    utah: {
+      state: "UT",
+      bbox: { lon0: -114.25, lat0: 36.95, lon1: -108.85, lat1: 42.05 },
+      rows: new Map([
+        ["Salt Lake City|Populated Place", "1454997"],
+        ["Provo|Populated Place", "1444661"],
+        ["Ogden|Populated Place", "1444049"],
+        ["Saint George|Populated Place", "1455098"],
+        ["Moab|Populated Place", "1430389"],
+        ["Logan|Populated Place", "1442849"],
+        ["Great Salt Lake|Lake", "1441459"],
+        ["Utah Lake|Lake", "1446894"],
+        ["Green River|Stream", "1428399"],
+        ["Sevier River|Stream", "1445451"],
+        ["Kings Peak|Summit", "1442332"],
+        ["Bonneville Salt Flats|Flat", "1425872"],
+      ]),
+      anchor: ["Salt Lake City|Populated Place", 40.7607794, -111.8910474],
+    },
+    colorado: {
+      state: "CO",
+      bbox: { lon0: -109.07, lat0: 36.98, lon1: -102.04, lat1: 41.02 },
+      rows: new Map([
+        ["Denver|Populated Place", "201738"],
+        ["Colorado Springs|Populated Place", "204797"],
+        ["Boulder|Populated Place", "178680"],
+        ["Fort Collins|Populated Place", "204673"],
+        ["Aspen|Populated Place", "204686"],
+        ["Durango|Populated Place", "202983"],
+        ["Mount Elbert|Summit", "180381"],
+        ["Pikes Peak|Summit", "204770"],
+        ["South Platte River|Stream", "201759"],
+        ["Grand Lake|Lake", "204950"],
+        ["Blue Mesa Reservoir|Reservoir", "186973"],
+        ["San Luis Valley|Valley", "1930540"],
+      ]),
+      anchor: ["Denver|Populated Place", 39.7391536, -104.9847034],
+    },
+    newmexico: {
+      state: "NM",
+      bbox: { lon0: -109.06, lat0: 31.32, lon1: -102.99, lat1: 37.01 },
+      rows: new Map([
+        ["Santa Fe|Populated Place", "936823"],
+        ["Albuquerque|Populated Place", "928679"],
+        ["Las Cruces|Populated Place", "899715"],
+        ["Roswell|Populated Place", "894171"],
+        ["Farmington|Populated Place", "902246"],
+        ["Taos|Populated Place", "911545"],
+        ["Wheeler Peak|Summit", "928839"],
+        ["Sierra Blanca Peak|Summit", "920702"],
+        ["Elephant Butte Reservoir|Reservoir", "888840"],
+        ["Rio Chama|Stream", "923661"],
+        ["Animas River|Stream", "900284"],
+        ["Conchas Lake|Lake", "897344"],
+      ]),
+      anchor: ["Santa Fe|Populated Place", 35.6869752, -105.937799],
+    },
+  };
+
+  for (const [frameId, expected] of Object.entries(expectations)) {
+    const data = await import(`../js/city-subsurface-data-${frameId}.js`);
+    const gaz = await import(`../js/city-gazetteer-data-${frameId}.js`);
+
+    assert.equal(data.CITY.id, frameId);
+    assert.equal(data.CITY.state, expected.state);
+    assert.equal(data.CITY.requiresDem, false, `${frameId}: statewide frame uses labelled synthetic relief, not a DEM`);
+    assert.deepEqual(data.BBOX, expected.bbox, `${frameId}: statewide frame bbox`);
+    const overview = data.VIEWS.find((v) => v.id === "overview");
+    assert.ok(overview.position[1] > 20 && overview.position[2] > 32, `${frameId}: overview must be scale-aware`);
+    assert.deepEqual(data.COAST, [], `${frameId}: inland state frame has no coastline`);
+
+    assert.equal(gaz.GAZ_ROWS.length, expected.rows.size, `${frameId}: starter row count`);
+    assert.equal(gaz.GAZ_META.verified, expected.rows.size, `${frameId}: starter register is all-GNIS`);
+    assert.equal(gaz.GAZ_META.unverified, 0);
+    for (const row of gaz.GAZ_ROWS) {
+      const key = `${row[0]}|${row[1]}`;
+      assert.equal(row[8], 1, `${frameId}: ${key} must be VERIFIED=1`);
+      assert.equal(row[7], expected.rows.get(key), `${frameId}: ${key} FEATURE_ID`);
+      assert.ok(GAZ_CLASS_META[row[1]], `${frameId}: ${row[1]} needs gazetteer UI metadata`);
+      assert.match(row[9], /USGS GNIS Geocoder/, `${frameId}: ${key} must name the USGS service`);
+      assert.match(row[9], new RegExp(`FEATURE_ID=${row[7]}`), `${frameId}: ${key} note must name its FEATURE_ID`);
+      assert.match(row[9], /cross-checked 2026-10-22/, `${frameId}: ${key} note must date the cross-check`);
+      assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
+      assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
+    }
+
+    const [anchorKey, anchorLat, anchorLon] = expected.anchor;
+    const anchor = gaz.GAZ_ROWS.find((r) => `${r[0]}|${r[1]}` === anchorKey);
+    assert.ok(Math.abs(anchor[4] - anchorLat) < 1e-10, `${frameId}: capital anchor latitude`);
+    assert.ok(Math.abs(anchor[5] - anchorLon) < 1e-10, `${frameId}: capital anchor longitude`);
+
+    const registerFrame = register.frames[frameId];
+    assert.equal(registerFrame.totalRows, gaz.GAZ_ROWS.length, `${frameId}: register row count`);
+    assert.deepEqual(registerFrame.bbox, data.BBOX, `${frameId}: register bbox`);
+    const registerRows = registerFrame.verifiedRows.map((r) => [r.name, r.featureClass, r.ftt, r.county, r.latitude, r.longitude, null, r.featureId, r.verified, r.sourceNote]);
+    assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-2 source register must reproduce the generated rows exactly`);
+    for (const registerRow of registerFrame.verifiedRows) {
+      assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
+      assert.ok(registerRow.geocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county`);
+    }
+
+    assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
+    assert.ok(data.CORRIDORS.every((c) => c.tier === "context"), `${frameId}: corridors remain context tier`);
+    const rowPoint = new Set(gaz.GAZ_ROWS.map((r) => `${r[0]}|${r[5]}|${r[4]}`));
+    for (const node of data.NODES) {
+      assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
+      assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
+    }
+  }
+
+  const utahGaz = await import("../js/city-gazetteer-data-utah.js");
+  const greenRiver = utahGaz.GAZ_ROWS.find((r) => r[0] === "Green River" && r[1] === "Stream");
+  assert.match(greenRiver[9], /FEATURE_ID 1428398/, "Green River note must reject the same-name populated place");
+  assert.ok(!utahGaz.GAZ_ROWS.some((r) => r[0] === "Bear Lake"), "ambiguous Bear Lake candidates must not be seeded");
+
+  const coloradoData = await import("../js/city-subsurface-data-colorado.js");
+  const coloradoGaz = await import("../js/city-gazetteer-data-colorado.js");
+  const grandLake = coloradoGaz.GAZ_ROWS.find((r) => r[0] === "Grand Lake" && r[1] === "Lake");
+  assert.match(grandLake[9], /FEATURE_ID 202505/, "Grand Lake note must distinguish the town record");
+  const southPlatte = coloradoGaz.GAZ_ROWS.find((r) => r[0] === "South Platte River");
+  assert.match(southPlatte[9], /GNIS Domestic Names detail/);
+  assert.match(southPlatte[9], /Class=Stream/);
+  assert.match(southPlatte[9], /Primary County field/);
+  assert.match(southPlatte[9], /sequence 1/);
+  assert.ok(!coloradoGaz.GAZ_ROWS.some((r) => ["Arkansas River", "Rio Grande", "Colorado River"].includes(r[0])), "unreturned or out-of-frame Colorado river records must remain context corridors only");
+  assert.ok(coloradoData.CORRIDORS.some((c) => /Colorado River/.test(c.name) && /No Colorado River gazetteer row/.test(c.facts[0])));
+
+  const newMexicoData = await import("../js/city-subsurface-data-newmexico.js");
+  const newMexicoGaz = await import("../js/city-gazetteer-data-newmexico.js");
+  assert.ok(!newMexicoGaz.GAZ_ROWS.some((r) => ["Pecos River", "Rio Grande", "San Juan River"].includes(r[0])), "ambiguous or unreturned New Mexico river records must not be seeded");
+  assert.ok(newMexicoData.CORRIDORS.some((c) => /Pecos River/.test(c.name) && /two exact Eddy County Stream records/.test(c.facts[0])));
+  const animas = newMexicoGaz.GAZ_ROWS.find((r) => r[0] === "Animas River");
+  assert.match(animas[9], /FEATURE_ID 900283/, "Animas River note must reject the Hidalgo County same-name stream");
+  const sierraBlanca = newMexicoGaz.GAZ_ROWS.find((r) => r[0] === "Sierra Blanca Peak");
+  assert.match(sierraBlanca[9], /FEATURE_ID 912567/, "Sierra Blanca Peak note must distinguish the mountain-range record");
+  const wheeler = newMexicoGaz.GAZ_ROWS.find((r) => r[0] === "Wheeler Peak");
+  assert.match(wheeler[9], /Nevada's Wheeler Peak/, "New Mexico Wheeler Peak must not be conflated with the Nevada record");
+
+  const engine = read("js/city-subsurface.js");
   for (const frameId of Object.keys(expectations)) {
     assert.match(engine, new RegExp(`city-subsurface-data-${frameId}\\.js`), `${frameId}: data loader`);
     assert.match(engine, new RegExp(`city-gazetteer-data-${frameId}\\.js`), `${frameId}: gazetteer loader`);

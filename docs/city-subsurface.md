@@ -21,10 +21,16 @@ latitude for American Samoa) and to render either one coastline polyline or
 several disconnected island polylines. Their machine-readable evidence is
 [`resources/city-subsurface/gnis-territory-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-territory-source-register-2026-10-22.json).
 
+Round 18 update: **2026-10-22**. `utah`, `colorado`, and `newmexico` join as
+the thirteenth through fifteenth configurations, completing the Four Corners
+state set beside Arizona. Each starts with twelve all-GNIS `VERIFIED=1` rows.
+Their machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has twelve configurations — five cities,
-three statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has fifteen configurations — five cities,
+six statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -41,6 +47,9 @@ its own offline Webxdc:
 | American Samoa (Tutuila–Manuʻa) | `americansamoa-subsurface.html` | `js/city-subsurface-data-americansamoa.js` | `js/city-gazetteer-data-americansamoa.js` | `americansamoa-subsurface.xdc` |
 | U.S. Virgin Islands | `usvirginislands-subsurface.html` | `js/city-subsurface-data-usvirginislands.js` | `js/city-gazetteer-data-usvirginislands.js` | `usvirginislands-subsurface.xdc` |
 | Midway Atoll | `midway-subsurface.html` | `js/city-subsurface-data-midway.js` | `js/city-gazetteer-data-midway.js` | `midway-subsurface.xdc` |
+| Utah (statewide) | `utah-subsurface.html` | `js/city-subsurface-data-utah.js` | `js/city-gazetteer-data-utah.js` | `utah-subsurface.xdc` |
+| Colorado (statewide) | `colorado-subsurface.html` | `js/city-subsurface-data-colorado.js` | `js/city-gazetteer-data-colorado.js` | `colorado-subsurface.xdc` |
+| New Mexico (statewide) | `newmexico-subsurface.html` | `js/city-subsurface-data-newmexico.js` | `js/city-gazetteer-data-newmexico.js` | `newmexico-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
@@ -346,6 +355,65 @@ not shoreline surveys, territorial boundaries, ferry routes, or navigation
 data. Scene nodes reuse their gazetteer GNIS points exactly, a contract the
 test checks rather than a convention left to inspection.
 
+### Utah, Colorado, and New Mexico statewide frames (round 18, 2026-10-22)
+
+The second state batch completes the Four Corners set. It uses the strict
+Nevada/Arizona recipe: candidate discovery through the USGS GNIS Geocoder,
+acceptance only on an exact official name, compatible returned type, state,
+returned primary county, permanent FEATURE_ID, and returned primary point.
+The JSON batch register preserves the Geocoder type/county for every row and
+reproduces the generated gazetteer rows exactly. Current `tests/city-subsurface.test.mjs`
+pins that synchronization, scene-node reuse of GNIS points, loader entries,
+and the exclusions below.
+
+**Utah** spans lon −114.25…−108.85, lat 36.95…42.05—a rectangular frame
+with modest visual margins around the state, not a boundary mask. Its 12
+rows are Salt Lake City (`1454997`), Provo (`1444661`), Ogden (`1444049`),
+Saint George (`1455098`), Moab (`1430389`), Logan (`1442849`), Great Salt
+Lake (`1441459`), Utah Lake (`1446894`), Green River (`1428399`, the Stream
+record, not the same-name populated place `1428398`), Sevier River
+(`1445451`), Kings Peak (`1442332`), and Bonneville Salt Flats (`1425872`).
+Bear Lake was not seeded: the state screen returned several same-name lake
+records, including two in Rich County, and no per-ID statewide-lake identity
+was established in this batch.
+
+**Colorado** spans lon −109.07…−102.04, lat 36.98…41.02. Its 12 rows are
+Denver (`201738`), Colorado Springs (`204797`), Boulder (`178680`), Fort
+Collins (`204673`), Aspen (`204686`), Durango (`202983`), Mount Elbert
+(`180381`), Pikes Peak (`204770`), South Platte River (`201759`), Grand Lake
+(`204950`, the Lake record, not the populated place `202505`), Blue Mesa
+Reservoir (`186973`), and San Luis Valley (`1930540`). South Platte River
+also received a GNIS Domestic Names per-ID check: it confirms `Class=Stream`,
+describes the 439-mile tributary, and returns the stored point as coordinate
+sequence 1. Both USGS services say Logan County in their primary-county
+field, although sequence 1 is a headwaters-area point from the Deckers map;
+the row preserves that returned primary-county provenance and expressly does
+not assert that sequence 1 lies in Logan County. The Colorado, Arkansas,
+and Rio Grande rivers are generalized `context` corridors only: the Colorado
+River primary point is outside the frame, and the state-filtered Geocoder
+screens did not return the intended Arkansas/Rio Grande stream records.
+
+**New Mexico** spans lon −109.06…−102.99, lat 31.32…37.01, including the
+bootheel latitude. Its 12 rows are Santa Fe (`936823`), Albuquerque
+(`928679`), Las Cruces (`899715`), Roswell (`894171`), Farmington
+(`902246`), Taos (`911545`), Wheeler Peak (`928839`), Sierra Blanca Peak
+(`920702`, the Summit record, not the near-coincident Sierra Blanca range
+`912567`), Elephant Butte Reservoir (`888840`), Rio Chama (`923661`), Animas
+River (`900284`, the San Juan County record, not the Hidalgo County
+same-name stream `900283`), and Conchas Lake (`897344`). The Rio Grande and
+Pecos River are context corridors only. Rio Grande's exact stream record was
+not returned under `states=NM`; Pecos returned Eddy County records `900170`,
+`900171`, and `900172`, which per-ID checks identify as Canal, Stream, and
+Stream respectively. Neither Stream record is distinguished as the statewide
+Pecos River record, so choosing one would have violated the identity-safe
+rule. New Mexico's Wheeler Peak is also deliberately distinct from Nevada's
+same-name state high point (`861956`).
+
+None of these frames bundles a DEM. As with California/Nevada/Arizona, the
+displayed terrain is a labelled synthetic gaussian field and the corridors
+are generalized context—not river centerlines, highway alignments,
+shorelines, or a state-boundary clipping mask.
+
 ## Geocache class and local GPX import
 
 Geocaches use a separate evidence tier rather than being quietly mixed with
@@ -384,3 +452,4 @@ different product family and are not substitutes for Geomate.jr evidence.
 - Local GPX import and BagIt preservation: `docs/geomate-gpx-preservation.md`, `js/gpx-geocache.js`, and `tests/city-subsurface.test.mjs`.
 - California starter rows (round 15): per-row notes in `js/city-gazetteer-data-california.js` name the source for every retained unverified coordinate — Wikipedia article infoboxes, the [US EPA TRI facility profile](https://enviro.epa.gov/triexplorer/transfer_fac_profile?tri=95670RJTGNAEROJ&trilib=TRIQ1&year=2001) for Aerojet Sacramento Operations (38.642, −121.169), the EPA Superfund profile for site CAD980358832, and Clair Tappaan Lodge's published location data; all retrieved 2026-10-22.
 - Round-16 state GNIS records: [`resources/city-subsurface/gnis-state-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-state-source-register-2026-10-22.json) records the service endpoints, selection rules, all 40 verified California/Nevada/Arizona state-frame rows, and the identity rejections/exclusions. In addition to GNIS MapServer, the checks used the [USGS GNIS Geocoder endpoint](https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0) and the GNIS Domestic Names per-ID record route (`https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}`). The Geocoder was treated as a fuzzy candidate service, never as an unfiltered bulk import.
+- Round-18 Four Corners state GNIS records: [`resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json) records the 36 verified Utah/Colorado/New Mexico rows, returned Geocoder type/county fields, identity decisions, ambiguous-candidate exclusions, and the South Platte/Pecos per-ID checks.

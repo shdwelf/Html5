@@ -7,10 +7,15 @@ import { fileURLToPath } from "node:url";
 
 import { KEYHOLE_EVIDENCE_PACK } from "../js/historical-network-keyhole-data.js";
 import {
+  applyFidonetNodediff,
+  applyFidonetNodediffChain,
   assessMergeCandidate,
+  detectHistoricalImportFormat,
   observationsToCsv,
+  parseFidonetNodelist,
   parseTextfilesHistoricalList,
   searchObservations,
+  sha256Hex,
   summarizeEvidencePack,
   validateEvidencePack,
 } from "../js/historical-network.js";
@@ -169,11 +174,143 @@ test("search and CSV export operate on observations, not inferred claims", () =>
   assert.ok(!csv.includes("Keyhole, Inc."), "rejected matches are not exported as observations");
 });
 
+test("FidoNet nodelist parser derives addresses without canonicalizing systems", async () => {
+  assert.equal(
+    await sha256Hex("abc"),
+    "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+  );
+  assert.equal(await sha256Hex(new TextEncoder().encode("abc")), await sha256Hex("abc"));
+
+  const text = [
+    ";A FidoNet Nodelist for Friday, September 9, 1994 -- Day number 252 : 12345",
+    ";A Synthetic parser fixture; no historical listing is reproduced.",
+    ";THE ordinary comment is not an error-interest comment.",
+    ";SE Synthetic nodelist-processor error comment.",
+    "Zone,1,Zone_One,Example_CO,Zone_Operator,1-303-555-0101,9600,CM",
+    "Region,19,Example_Region,Example_CO,Region_Operator,1-303-555-0102,9600,CM",
+    "Host,104,Example_Net,Denver_CO,Net_Operator,1-303-555-0103,9600,CM",
+    "Hub,300,Example_Hub,Denver_CO,Hub_Operator,1-303-555-0104,9600,CM",
+    ",301,Example_BBS,Denver_CO,Example_Sysop,1-303-555-0100,14400,V32B,CM",
+    "Pvt,302,Quiet_Node,Denver_CO,Private_Sysop,-Unpublished-,300",
+    "Down,303,Retired_Node,Denver_CO,Former_Sysop,-Unpublished-,300",
+  ].join("\r\n") + "\r\n" + String.fromCharCode(26);
+
+  assert.equal(detectHistoricalImportFormat(text), "fidonet-nodelist");
+  const sha256 = await sha256Hex(text);
+  const parsed = parseFidonetNodelist(text, {
+    captureUri: "local-file:synthetic-nodelist.252",
+    sha256,
+    byteLength: new TextEncoder().encode(text).length,
+  });
+
+  assert.equal(parsed.snapshot.rightsStatus, "local-import-only");
+  assert.equal(parsed.snapshot.issued, "1994-09-09");
+  assert.equal(parsed.snapshot.header.dayNumber, 252);
+  assert.equal(parsed.snapshot.header.crc, "12345");
+  assert.equal(parsed.snapshot.sha256, sha256);
+  assert.equal(parsed.observations.length, 7);
+  assert.deepEqual(
+    parsed.observations.map((observation) => observation.fields.fidonetAddress),
+    ["1:1/0", "1:19/0", "1:104/0", "1:104/300", "1:104/301", "1:104/302", "1:104/303"],
+  );
+  assert.ok(parsed.warnings.some((warning) => /CRC 12345 was preserved but not verified/.test(warning)));
+  assert.deepEqual(
+    parsed.warnings.filter((warning) => /nodelist error comment/.test(warning)),
+    ["line 4: nodelist error comment preserved as a warning: ;SE Synthetic nodelist-processor error comment."],
+  );
+
+  const member = parsed.observations.find((observation) => observation.fields.fidonetAddress === "1:104/301");
+  assert.equal(member.fields.name, "Example BBS");
+  assert.equal(member.fields.locality, "Denver");
+  assert.equal(member.fields.state, "CO");
+  assert.equal(member.fields.sysop, "Example Sysop");
+  assert.equal(member.fields.phone, "303-555-0100");
+  assert.equal(member.fields.phoneRaw, "1-303-555-0100");
+  assert.deepEqual(member.fields.flags, ["V32B", "CM"]);
+  assert.equal(member.observedAt, "1994-09-09");
+
+  const quiet = parsed.observations.find((observation) => observation.fields.fidonetAddress === "1:104/302");
+  assert.equal(quiet.fields.phone, null);
+  assert.equal(quiet.fields.phoneUnpublished, true);
+  assert.ok(quiet.warnings.some((warning) => /do not dial or probe/i.test(warning)));
+  assert.ok(parsed.observations.every((observation) => /no canonical merge/.test(observation.warnings.join(" "))));
+
+  const localPack = {
+    schemaVersion: 1,
+    id: "local-fidonet-test",
+    title: "Local FidoNet parser test",
+    snapshots: [parsed.snapshot],
+    observations: parsed.observations,
+    places: [],
+    nodes: [],
+    edges: [],
+    mergeLog: [],
+    rejectedMatches: [],
+    negativeSearches: [],
+  };
+  const validation = validateEvidencePack(localPack);
+  assert.equal(validation.valid, true, validation.errors.join("\n"));
+  assert.equal(validation.captureReady, false, "a hashed local FidoNet import remains rights-blocked for bundled redistribution");
+  assert.equal(searchObservations(localPack, "1:104/301").length, 1);
+  assert.ok(observationsToCsv(localPack).includes("1:104/301"));
+});
+
+test("FidoNet nodediff application is edition-checked and refuses partial edits", () => {
+  const previous = [
+    ";A FidoNet Nodelist for Friday, September 2, 1994 -- Day number 245 : 11111",
+    "Zone,1,Example_Zone,Denver_CO,Zone_Operator,1-303-555-0101,9600",
+    "Host,104,Example_Net,Denver_CO,Net_Operator,1-303-555-0102,9600",
+    ",301,Old_Example_BBS,Denver_CO,Example_Sysop,1-303-555-0100,9600",
+    "; synthetic end",
+  ].join("\r\n") + "\r\n" + String.fromCharCode(26);
+  const newHeader = ";A FidoNet Nodelist for Friday, September 9, 1994 -- Day number 252 : 22222";
+  const diff = [
+    previous.split("\r\n")[0],
+    "D1",
+    "A1",
+    newHeader,
+    "C2",
+    "D1",
+    "A1",
+    ",301,Example_BBS,Denver_CO,Example_Sysop,1-303-555-0100,14400,V32B",
+    "C1",
+  ].join("\r\n");
+  assert.equal(detectHistoricalImportFormat(diff), "fidonet-nodediff");
+
+  const applied = applyFidonetNodediff(previous, diff);
+  assert.deepEqual(applied.errors, []);
+  assert.equal(applied.lines[0], newHeader);
+  assert.match(applied.lines[3], /Example_BBS/);
+  assert.ok(applied.text.endsWith(String.fromCharCode(26)));
+  assert.equal(applied.stats.copiedLines, 3);
+  assert.equal(applied.stats.deletedLines, 2);
+  assert.equal(parseFidonetNodelist(applied.text).observations.at(-1).fields.name, "Example BBS");
+
+  const thirdHeader = ";A FidoNet Nodelist for Friday, September 16, 1994 -- Day number 259 : 33333";
+  const secondDiff = [newHeader, "D1", "A1", thirdHeader, "C4"].join("\r\n");
+  const chain = applyFidonetNodediffChain(previous, [diff, secondDiff]);
+  assert.deepEqual(chain.errors, []);
+  assert.match(chain.text, new RegExp(thirdHeader.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+
+  const wrongEdition = applyFidonetNodediff(previous, secondDiff);
+  assert.equal(wrongEdition.text, null);
+  assert.ok(wrongEdition.errors.some((error) => /does not exactly match/.test(error)));
+
+  const partial = applyFidonetNodediff(previous, [previous.split("\r\n")[0], "D1", "A1", newHeader, "C1"].join("\r\n"));
+  assert.equal(partial.text, null);
+  assert.ok(partial.errors.some((error) => /refusing a partial edit/.test(error)));
+});
+
 test("historical viewer uses the shared model and exposes the local-only slice", () => {
   const html = readFileSync(path.join(root, "historical-network-viewer.html"), "utf8");
   assert.match(html, /from "\.\/js\/historical-network-keyhole-data\.js"/);
   assert.match(html, /from "\.\/js\/historical-network\.js"/);
   assert.match(html, /Local BBS-list import/);
+  assert.match(html, /parseFidonetNodelist/);
+  assert.match(html, /detectHistoricalImportFormat/);
+  assert.match(html, /sha256Hex/);
+  assert.match(html, /FidoNet nodelist \(FTS-5000\)/);
+  assert.match(html, /will not fabricate a standalone snapshot/);
   assert.match(html, /not geocoded/);
   assert.match(html, /do not dial or probe it/i);
   assert.doesNotMatch(html, /href="tel:/, "historical numbers must never become dial links");

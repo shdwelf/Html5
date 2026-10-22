@@ -102,6 +102,20 @@ Next in sequence: remaining states in source-register batches; bulk
 California themes and archived-class features still require dated per-row
 registers and an explicit archival-source decision.
 
+**Round 18 status (2026-10-22): partial.** Utah, Colorado, and New Mexico
+shipped as configurations 13–15 and complete the Four Corners state batch,
+each with a 12/12 per-ID `VERIFIED=1` GNIS starter register, synthetic
+relief, and generalized context corridors. Provenance, identity decisions,
+and deliberately unseeded candidates are in
+[`../resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json).
+Important guards include Green River Stream versus town; Grand Lake lake
+versus town; South Platte's returned Logan County primary-county provenance
+versus its sequence-1 point; and Pecos River remaining a corridor because
+two Eddy County Stream records are indistinguishable.
+Next in sequence: remaining states in dated per-row source-register batches;
+bulk California themes and archived-class features still require separate
+explicit source decisions before any new verified rows.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
@@ -136,6 +150,19 @@ span, but its per-record source—and therefore independence from USBBS—is
 unresolved. Exact NodelistDB historical searches found no Denver match.
 Next: lawfully capture and hash redistributable snapshots before bundled
 FidoNet/ARPANET/payphone datasets.
+
+**Round 18 status (2026-10-22): partial.** The FidoNet Phase 2 local
+adapter shipped: an FTS-5000 nodelist parser that derives `zone:net/node`
+addresses and preserves branch/status/flag observations, local SHA-256
+capture metadata in the viewer, format detection, and edition-checked
+nodediff/chain application in the shared model. See
+[`historical-network-fidonet-adapter-2026-10-22.md`](historical-network-fidonet-adapter-2026-10-22.md).
+No historical nodelist was bundled: checked prologues allow intra-FidoNet
+use/distribution but reserve other uses absent express written consent, so
+a hashed local import remains local-only and `captureReady` remains false.
+No new Keyhole evidence was claimed. Next: obtain a lawfully redistributable
+complete snapshot/diff chain before deriving hierarchy/route edges; then a
+dated ARPANET textual source and local payphone observations.
 
 ### S7 · Goldkey / Gina.dll parity backup, CAD + BOM, uClinux fax — *partial*
 Continue [`goldkey-parity-gina-and-units.md`](goldkey-parity-gina-and-units.md) with the

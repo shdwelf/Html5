@@ -5,12 +5,18 @@ from the Round 16 scope to a tested observation schema, one-system evidence
 fixture, standalone viewer, and local BBS-list adapter. It does **not** seed
 a bundled ARPANET, FidoNet, BBS, or payphone dataset.*
 
+*Round 18 update: a local-only FTS-5000 FidoNet nodelist/nodediff adapter and
+browser SHA-256 capture metadata were added; see
+[`historical-network-fidonet-adapter-2026-10-22.md`](historical-network-fidonet-adapter-2026-10-22.md).
+No historical nodelist was parsed into this fixture and the Keyhole evidence
+conclusion below is unchanged.*
+
 ## What shipped
 
 | Artifact | Purpose |
 | --- | --- |
 | [`resources/historical-network/keyhole-evidence-pack-2026-10-22.json`](../resources/historical-network/keyhole-evidence-pack-2026-10-22.json) | Canonical Phase 0 evidence fixture: three snapshots, three Keyhole observations, one city-level place, one canonical node, zero edges, two merge decisions, two rejected matches, and two negative searches. |
-| [`js/historical-network.js`](../js/historical-network.js) | Pure validator, summary/search helpers, merge-candidate rules, TEXTFILES-style historical-list parser, and observation CSV export. |
+| [`js/historical-network.js`](../js/historical-network.js) | Pure validator, summary/search helpers, merge-candidate rules, TEXTFILES-style historical-list parser, observation CSV export, and—from Round 18—FTS-5000 FidoNet nodelist/nodediff adapters plus a SHA-256 helper. |
 | [`scripts/build-historical-network.mjs`](../scripts/build-historical-network.mjs) | Deterministic JSON → browser data-module builder, with `--check`. Run `npm run build:historical-network` after editing the fixture. |
 | [`js/historical-network-keyhole-data.js`](../js/historical-network-keyhole-data.js) | Generated browser module; tests require it to deep-equal the JSON fixture. |
 | [`historical-network-viewer.html`](../historical-network-viewer.html) | Standalone one-system records/place/topology slice with snapshot/year/search controls, a source drawer, merge log, negative searches, exports, and local list import. |
@@ -110,8 +116,9 @@ It returns a local snapshot object with:
 
 - `captureStatus: "user-supplied-local-text"`;
 - `rightsStatus: "local-import-only"`;
-- `sha256: null` (the synchronous parser does not pretend to have captured
-  archival bytes);
+- `sha256: null` unless the caller supplies a hash of the exact local bytes
+  (the synchronous parser does not pretend to have captured archival bytes;
+  from Round 18 the viewer supplies this hash and byte length);
 - one observation per telephone-keyed record, with line locator, locality,
   state, printed year range, sysop, software, comments, and the user-supplied
   raw block retained locally.
@@ -149,7 +156,9 @@ The standalone viewer is intentionally a Phase 0/1 slice:
 2. If USBBS bulk data is ever desired, obtain or document a different
    permission/rights basis; otherwise keep it local-import-only.
 3. Apply the same snapshot discipline to one complete FidoNet nodelist and
-   one proven applied diff before drawing hierarchy or route edges.
+   one proven applied diff before drawing hierarchy or route edges. The
+   Round 18 adapter/diff engine now exists; a redistributable historical
+   snapshot and derived-edge semantics remain missing.
 4. Add ARPANET host/IMP snapshots from dated textual sources before map
    transcription.
 5. Add payphone imports as dated observations, never as an undated “current”

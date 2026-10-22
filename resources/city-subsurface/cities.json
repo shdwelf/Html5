@@ -2464,6 +2464,793 @@
         ["Seward Roads", "Bay", "hydro.bay", "U.S. Minor Outlying Islands", 28.2269444, -177.4166667, null, "1393174", 1, "USGS GNIS Geocoder (GNIS), bounded query (latitudeMin/longitudeMin/latitudeMax/longitudeMax around Midway; State returned null), FEATURE_ID=1393174; exact official name and Bays & Harbors type in U.S. Minor Outlying Islands cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, harbor boundary, or navigation channel."],
         ["Frigate Point", "Cape", "phys.cape", "U.S. Minor Outlying Islands", 28.1927778, -177.3938889, null, "1393020", 1, "USGS GNIS Geocoder (GNIS), bounded query (latitudeMin/longitudeMin/latitudeMax/longitudeMax around Midway; State returned null), FEATURE_ID=1393020; exact official name and Beaches & Capes type in U.S. Minor Outlying Islands cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or surveyed cape outline."]
       ]
+    },
+    "utah": {
+      "title": "UTAH SUBSURFACE 4Dwm",
+      "subtitle": "Wasatch Front · Great Salt Lake · Colorado Plateau — statewide frame, Utah",
+      "gazTitle": "UTAH USGS GNIS REGISTER",
+      "gazNote": "Round 18 starter register (2026-10-22): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, salt-flat polygons, or river centerlines.",
+      "state": "UT",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -114.25,
+        "lat0": 36.95,
+        "lon1": -108.85,
+        "lat1": 42.05
+      },
+      "center": {
+        "lon": -111.55,
+        "lat": 39.5
+      },
+      "baseElevationM": 1700,
+      "roughnessM": 170,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Wasatch Range",
+          "lon": -111.65,
+          "lat": 40.5,
+          "rx": 0.35,
+          "ry": 1.3,
+          "amp": 1200,
+          "rot": 0.1
+        },
+        {
+          "name": "Uinta Mountains",
+          "lon": -110.7,
+          "lat": 40.75,
+          "rx": 0.8,
+          "ry": 0.35,
+          "amp": 1500,
+          "rot": 0
+        },
+        {
+          "name": "Great Salt Lake basin",
+          "lon": -112.5,
+          "lat": 41.15,
+          "rx": 0.8,
+          "ry": 0.45,
+          "amp": -450,
+          "rot": 0
+        },
+        {
+          "name": "Bonneville basin",
+          "lon": -113.7,
+          "lat": 40.7,
+          "rx": 0.55,
+          "ry": 0.5,
+          "amp": -350,
+          "rot": 0
+        },
+        {
+          "name": "Colorado Plateau",
+          "lon": -110.7,
+          "lat": 38.3,
+          "rx": 1.2,
+          "ry": 0.8,
+          "amp": 500,
+          "rot": 0
+        },
+        {
+          "name": "Markagunt and Paunsaugunt plateaus",
+          "lon": -112.45,
+          "lat": 37.6,
+          "rx": 0.65,
+          "ry": 0.45,
+          "amp": 1100,
+          "rot": 0.1
+        },
+        {
+          "name": "La Sal Mountains",
+          "lon": -109.25,
+          "lat": 38.45,
+          "rx": 0.25,
+          "ry": 0.25,
+          "amp": 1000,
+          "rot": 0
+        },
+        {
+          "name": "Sevier basin",
+          "lon": -112.6,
+          "lat": 39.1,
+          "rx": 0.6,
+          "ry": 0.7,
+          "amp": -200,
+          "rot": 0.1
+        }
+      ],
+      "corridors": [
+        {
+          "id": "wasatch-front-i15",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Wasatch Front / Interstate 15 corridor (generalized)",
+          "short": "Wasatch Front / I-15",
+          "depthM": 0,
+          "path": [
+            [-111.834388, 41.7354862],
+            [-111.9738304, 41.223],
+            [-111.8910474, 40.7607794],
+            [-111.6585337, 40.2338438],
+            [-111.9, 39.0],
+            [-112.6, 38.0],
+            [-113.5841233, 37.1041476]
+          ],
+          "facts": [
+            "Generalized north-south Wasatch Front and Interstate 15 corridor; schematic polyline through GNIS populated-place anchors, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 15 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "green-river-utah",
+          "layer": "water",
+          "tier": "context",
+          "name": "Green River Utah reach (generalized)",
+          "short": "Green River",
+          "depthM": 0,
+          "path": [
+            [-109.7, 41.9],
+            [-109.55, 40.5],
+            [-110.0, 39.2],
+            [-109.8854026, 38.189153],
+            [-109.55, 38.2]
+          ],
+          "facts": [
+            "Generalized Green River reach from northeastern Utah toward its Colorado River confluence; schematic, not a channel centerline. One vertex is the GNIS primary point used by the gazetteer row."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1428399 for the named primary point"
+          ]
+        },
+        {
+          "id": "sevier-river-utah",
+          "layer": "water",
+          "tier": "context",
+          "name": "Sevier River (generalized reach)",
+          "short": "Sevier River",
+          "depthM": 0,
+          "path": [
+            [-112.35, 37.65],
+            [-112.15, 38.75],
+            [-112.05, 39.35],
+            [-113.1339425, 39.0489161]
+          ],
+          "facts": [
+            "Generalized Sevier River reach through central Utah toward its Millard County terminus; schematic, not a channel centerline. The final vertex is the GNIS primary point used by the gazetteer row."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1445451 for the terminal primary point"
+          ]
+        },
+        {
+          "id": "lucin-cutoff",
+          "layer": "rail",
+          "tier": "context",
+          "name": "Lucin Cutoff / transcontinental rail corridor (generalized)",
+          "short": "Lucin Cutoff",
+          "depthM": 0,
+          "path": [
+            [-111.9738304, 41.223],
+            [-112.5353656, 41.1628677],
+            [-113.8000029, 40.7996521],
+            [-114.03, 40.75]
+          ],
+          "facts": [
+            "Generalized westward rail corridor across Great Salt Lake and the Bonneville basin; schematic polyline, not a track, causeway, or shoreline alignment."
+          ],
+          "sources": [
+            "Generalized from public railroad references (Lucin Cutoff routing); GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "salt-lake-city",
+          "name": "Salt Lake City",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -111.8910474,
+          "lat": 40.7607794,
+          "depthM": 0,
+          "facts": [
+            "Utah state capital and Wasatch Front anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1454997; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "saint-george",
+          "name": "Saint George",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -113.5841233,
+          "lat": 37.1041476,
+          "depthM": 0,
+          "facts": [
+            "Southwestern Utah state-frame anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1455098; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "kings-peak",
+          "name": "Kings Peak",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -110.3728037,
+          "lat": 40.7763756,
+          "depthM": 0,
+          "facts": [
+            "Utah's highest summit; node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1442332; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "great-salt-lake",
+          "name": "Great Salt Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -112.5353656,
+          "lat": 41.1628677,
+          "depthM": 0,
+          "facts": [
+            "Great Basin lake anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1441459; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Salt Lake City", "Populated Place", "pop.place", "Salt Lake", 40.7607794, -111.8910474, null, "1454997", 1, "State capital. The populated-place record was selected rather than the separate Salt Lake City Division record (FEATURE_ID 1939415). USGS GNIS Geocoder (GNIS), FEATURE_ID=1454997; exact official name and Cities & Populated Places type in Salt Lake County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Provo", "Populated Place", "pop.place", "Utah", 40.2338438, -111.6585337, null, "1444661", 1, "The populated-place record was selected rather than the Provo-Orem Division record (FEATURE_ID 1939408). USGS GNIS Geocoder (GNIS), FEATURE_ID=1444661; exact official name and Cities & Populated Places type in Utah County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Ogden", "Populated Place", "pop.place", "Weber", 41.223, -111.9738304, null, "1444049", 1, "The populated-place record was selected rather than the Ogden Division and other political-division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1444049; exact official name and Cities & Populated Places type in Weber County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Saint George", "Populated Place", "pop.place", "Washington", 37.1041476, -113.5841233, null, "1455098", 1, "The populated-place record was selected rather than the Saint George Division record (FEATURE_ID 1939413). USGS GNIS Geocoder (GNIS), FEATURE_ID=1455098; exact official name and Cities & Populated Places type in Washington County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Moab", "Populated Place", "pop.place", "Grand", 38.5733155, -109.5498395, null, "1430389", 1, "The populated-place record was selected rather than the Moab Division, Moab Valley, and Moab Canyon records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1430389; exact official name and Cities & Populated Places type in Grand County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Logan", "Populated Place", "pop.place", "Cache", 41.7354862, -111.834388, null, "1442849", 1, "The populated-place record was selected rather than the Logan Division record (FEATURE_ID 1939386). USGS GNIS Geocoder (GNIS), FEATURE_ID=1442849; exact official name and Cities & Populated Places type in Cache County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Great Salt Lake", "Lake", "hydro.lake", "Box Elder", 41.1628677, -112.5353656, null, "1441459", 1, "The lake record was selected rather than the separate Great Salt Lake Desert Plain record (FEATURE_ID 1455061). USGS GNIS Geocoder (GNIS), FEATURE_ID=1441459; exact official name and Lakes & Reservoirs type in Box Elder County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Utah Lake", "Lake", "hydro.lake", "Utah", 40.2099837, -111.8241534, null, "1446894", 1, "The lake record was selected rather than the Utah Lake distributing/district canal records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1446894; exact official name and Lakes & Reservoirs type in Utah County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Green River", "Stream", "hydro.stream", "Wayne", 38.189153, -109.8854026, null, "1428399", 1, "The stream record was selected rather than the same-name Green River populated place (FEATURE_ID 1428398) and Green River Division (FEATURE_ID 1939372). USGS GNIS Geocoder (GNIS), FEATURE_ID=1428399; exact official name and Streams & Canals type in Wayne County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Sevier River", "Stream", "hydro.stream", "Millard", 39.0489161, -113.1339425, null, "1445451", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1445451; exact official name and Streams & Canals type in Millard County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Kings Peak", "Summit", "phys.summit", "Duchesne", 40.7763756, -110.3728037, null, "1442332", 1, "Utah's highest summit. USGS GNIS Geocoder (GNIS), FEATURE_ID=1442332; exact official name and Summit type in Duchesne County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Bonneville Salt Flats", "Flat", "phys.flat", "Tooele", 40.7996521, -113.8000029, null, "1425872", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1425872; exact official name and Flat type in Tooele County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a salt-flat polygon or surveyed surface boundary."]
+      ]
+    },
+    "colorado": {
+      "title": "COLORADO SUBSURFACE 4Dwm",
+      "subtitle": "Front Range · Southern Rocky Mountains · High Plains — statewide frame, Colorado",
+      "gazTitle": "COLORADO USGS GNIS REGISTER",
+      "gazNote": "Round 18 starter register (2026-10-22): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, valley outlines, or river centerlines.",
+      "state": "CO",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -109.07,
+        "lat0": 36.98,
+        "lon1": -102.04,
+        "lat1": 41.02
+      },
+      "center": {
+        "lon": -105.55,
+        "lat": 39.0
+      },
+      "baseElevationM": 2100,
+      "roughnessM": 220,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Front Range",
+          "lon": -105.55,
+          "lat": 39.7,
+          "rx": 0.5,
+          "ry": 1.4,
+          "amp": 1500,
+          "rot": 0.1
+        },
+        {
+          "name": "Sawatch Range",
+          "lon": -106.45,
+          "lat": 39.1,
+          "rx": 0.55,
+          "ry": 0.7,
+          "amp": 1800,
+          "rot": 0.2
+        },
+        {
+          "name": "San Juan Mountains",
+          "lon": -107.6,
+          "lat": 37.75,
+          "rx": 0.8,
+          "ry": 0.5,
+          "amp": 1600,
+          "rot": 0.2
+        },
+        {
+          "name": "Sangre de Cristo Range",
+          "lon": -105.4,
+          "lat": 37.7,
+          "rx": 0.35,
+          "ry": 0.75,
+          "amp": 1500,
+          "rot": 0.25
+        },
+        {
+          "name": "Colorado Plateau",
+          "lon": -108.4,
+          "lat": 38.9,
+          "rx": 0.6,
+          "ry": 0.9,
+          "amp": 700,
+          "rot": 0
+        },
+        {
+          "name": "High Plains",
+          "lon": -103.5,
+          "lat": 39.0,
+          "rx": 1.0,
+          "ry": 1.2,
+          "amp": -900,
+          "rot": 0
+        },
+        {
+          "name": "San Luis Valley floor",
+          "lon": -105.85,
+          "lat": 37.65,
+          "rx": 0.55,
+          "ry": 0.4,
+          "amp": -250,
+          "rot": 0
+        },
+        {
+          "name": "Park Range and Yampa Plateau",
+          "lon": -107.0,
+          "lat": 40.5,
+          "rx": 0.8,
+          "ry": 0.45,
+          "amp": 900,
+          "rot": 0.1
+        }
+      ],
+      "corridors": [
+        {
+          "id": "front-range-urban-corridor",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Front Range urban corridor / Interstate 25 (generalized)",
+          "short": "Front Range / I-25",
+          "depthM": 0,
+          "path": [
+            [-105.084423, 40.5852602],
+            [-105.2705456, 40.0149856],
+            [-104.9847034, 39.7391536],
+            [-104.8213634, 38.8338816],
+            [-104.6, 38.0]
+          ],
+          "facts": [
+            "Generalized Front Range urban corridor through GNIS populated-place anchors; schematic polyline, not an Interstate 25 or arterial-road alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 25 and the Front Range urban corridor); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "south-platte-river-colorado",
+          "layer": "water",
+          "tier": "context",
+          "name": "South Platte River Colorado reach (generalized)",
+          "short": "South Platte River",
+          "depthM": 0,
+          "path": [
+            [-105.2088815, 39.2916567],
+            [-104.9847034, 39.7391536],
+            [-104.0, 40.0],
+            [-102.2, 40.7]
+          ],
+          "facts": [
+            "Generalized South Platte River reach from the Front Range through Denver toward northeastern Colorado; schematic, not a channel centerline. The first vertex is the GNIS sequence-1 primary point used by the gazetteer row."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 201759 and Domestic Names coordinate sequence 1 for the named primary point"
+          ]
+        },
+        {
+          "id": "colorado-river-headwaters",
+          "layer": "water",
+          "tier": "context",
+          "name": "Colorado River headwaters and western-slope reach (generalized)",
+          "short": "Colorado River",
+          "depthM": 0,
+          "path": [
+            [-105.8146544, 40.2435656],
+            [-106.35, 39.9],
+            [-107.3, 39.55],
+            [-108.55, 39.1],
+            [-109.05, 39.05]
+          ],
+          "facts": [
+            "Generalized Colorado River corridor from the Grand Lake headwaters area across the western slope; schematic, not a channel centerline. No Colorado River gazetteer row is claimed because the GNIS primary point for FEATURE_ID 45730 lies outside this frame."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS primary-point exclusion recorded in the round-18 source register"
+          ]
+        },
+        {
+          "id": "arkansas-river-headwaters",
+          "layer": "water",
+          "tier": "context",
+          "name": "Arkansas River headwaters corridor (generalized)",
+          "short": "Arkansas River",
+          "depthM": 0,
+          "path": [
+            [-106.2, 39.1],
+            [-105.4, 38.48],
+            [-104.6, 38.25],
+            [-102.8, 38.05]
+          ],
+          "facts": [
+            "Generalized Arkansas River corridor from the Sawatch headwaters toward southeastern Colorado; schematic, not a channel centerline. No Arkansas River gazetteer row is claimed because the 2026-10-22 states=CO Geocoder screen returned Arkansas River Canyon rather than the stream record."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-18 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "denver",
+          "name": "Denver",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -104.9847034,
+          "lat": 39.7391536,
+          "depthM": 0,
+          "facts": [
+            "Colorado state capital and Front Range anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 201738; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "colorado-springs",
+          "name": "Colorado Springs",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -104.8213634,
+          "lat": 38.8338816,
+          "depthM": 0,
+          "facts": [
+            "Southern Front Range state-frame anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 204797; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mount-elbert",
+          "name": "Mount Elbert",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -106.4452569,
+          "lat": 39.1178687,
+          "depthM": 0,
+          "facts": [
+            "Colorado's highest summit; node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 180381; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "san-luis-valley",
+          "name": "San Luis Valley",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "valley",
+          "lon": -105.8505761,
+          "lat": 37.7250001,
+          "depthM": 0,
+          "facts": [
+            "Southern Colorado valley anchor; node coordinate is the GNIS Valley primary point from the gazetteer row, not a valley outline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1930540; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Denver", "Populated Place", "pop.place", "Denver", 39.7391536, -104.9847034, null, "201738", 1, "State capital. The populated-place record was selected rather than the separate Denver County (FEATURE_ID 198131) and Denver Division (FEATURE_ID 1935444) records. USGS GNIS Geocoder (GNIS), FEATURE_ID=201738; exact official name and Cities & Populated Places type in Denver County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Colorado Springs", "Populated Place", "pop.place", "El Paso", 38.8338816, -104.8213634, null, "204797", 1, "The populated-place record was selected rather than the Colorado Springs Division record (FEATURE_ID 1935430). USGS GNIS Geocoder (GNIS), FEATURE_ID=204797; exact official name and Cities & Populated Places type in El Paso County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Boulder", "Populated Place", "pop.place", "Boulder", 40.0149856, -105.2705456, null, "178680", 1, "The populated-place record was selected rather than the Boulder County (FEATURE_ID 198122) and Boulder Division (FEATURE_ID 1935409) records. USGS GNIS Geocoder (GNIS), FEATURE_ID=178680; exact official name and Cities & Populated Places type in Boulder County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Fort Collins", "Populated Place", "pop.place", "Larimer", 40.5852602, -105.084423, null, "204673", 1, "The populated-place record was selected rather than the Fort Collins Division record (FEATURE_ID 1935463). USGS GNIS Geocoder (GNIS), FEATURE_ID=204673; exact official name and Cities & Populated Places type in Larimer County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Aspen", "Populated Place", "pop.place", "Pitkin", 39.1910983, -106.8175387, null, "204686", 1, "The Pitkin County populated-place record was selected rather than the Aspen Division and the same-name populated-place records in other counties. USGS GNIS Geocoder (GNIS), FEATURE_ID=204686; exact official name and Cities & Populated Places type in Pitkin County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Durango", "Populated Place", "pop.place", "La Plata", 37.27528, -107.8800667, null, "202983", 1, "The populated-place record was selected rather than the Durango division and school-district records. USGS GNIS Geocoder (GNIS), FEATURE_ID=202983; exact official name and Cities & Populated Places type in La Plata County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Mount Elbert", "Summit", "phys.summit", "Lake", 39.1178687, -106.4452569, null, "180381", 1, "Colorado's highest summit. The Summit record was selected rather than Mount Elbert Forebay (FEATURE_ID 197617). USGS GNIS Geocoder (GNIS), FEATURE_ID=180381; exact official name and Summit type in Lake County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Pikes Peak", "Summit", "phys.summit", "El Paso", 38.8405839, -105.0449035, null, "204770", 1, "The Summit record was selected rather than the Pikes Peak Division record (FEATURE_ID 1935546). USGS GNIS Geocoder (GNIS), FEATURE_ID=204770; exact official name and Summit type in El Paso County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["South Platte River", "Stream", "hydro.stream", "Logan", 39.2916567, -105.2088815, null, "201759", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=201759; exact official name and Streams & Canals type cross-checked 2026-10-22. GNIS Domestic Names detail confirms Class=Stream, describes the 439-mile tributary of the North Platte River, and gives the stored coordinate as sequence 1; its Primary County field and the Geocoder County field both say Logan County, preserved here as returned primary-county provenance rather than a claim about the county containing sequence 1. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Grand Lake", "Lake", "hydro.lake", "Grand", 40.2435656, -105.8146544, null, "204950", 1, "The lake record was selected rather than the separate Grand Lake populated place (FEATURE_ID 202505). USGS GNIS Geocoder (GNIS), FEATURE_ID=204950; exact official name and Lakes & Reservoirs type in Grand County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Blue Mesa Reservoir", "Reservoir", "hydro.reservoir", "Gunnison", 38.4713913, -107.2113433, null, "186973", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=186973; exact official name and Lakes & Reservoirs type in Gunnison County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, dam structure, or reservoir-area centroid."],
+        ["San Luis Valley", "Valley", "phys.valley", "Alamosa", 37.7250001, -105.8505761, null, "1930540", 1, "The Valley record was selected rather than the San Luis Valley Canal and irrigation-drain records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1930540; exact official name and Valley type in Alamosa County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a valley outline or valley-floor polygon."]
+      ]
+    },
+    "newmexico": {
+      "title": "NEW MEXICO SUBSURFACE 4Dwm",
+      "subtitle": "Rio Grande Rift · Sangre de Cristo · Llano Estacado — statewide frame, New Mexico",
+      "gazTitle": "NEW MEXICO USGS GNIS REGISTER",
+      "gazNote": "Round 18 starter register (2026-10-22): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, or river centerlines.",
+      "state": "NM",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -109.06,
+        "lat0": 31.32,
+        "lon1": -102.99,
+        "lat1": 37.01
+      },
+      "center": {
+        "lon": -106.03,
+        "lat": 34.17
+      },
+      "baseElevationM": 1800,
+      "roughnessM": 200,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Sangre de Cristo Mountains",
+          "lon": -105.55,
+          "lat": 36.25,
+          "rx": 0.45,
+          "ry": 0.7,
+          "amp": 1500,
+          "rot": 0.25
+        },
+        {
+          "name": "Jemez Mountains",
+          "lon": -106.55,
+          "lat": 35.9,
+          "rx": 0.45,
+          "ry": 0.4,
+          "amp": 1100,
+          "rot": 0
+        },
+        {
+          "name": "Mogollon Mountains",
+          "lon": -108.2,
+          "lat": 33.35,
+          "rx": 0.65,
+          "ry": 0.6,
+          "amp": 1200,
+          "rot": 0.3
+        },
+        {
+          "name": "Sacramento Mountains",
+          "lon": -105.65,
+          "lat": 32.9,
+          "rx": 0.55,
+          "ry": 0.6,
+          "amp": 1300,
+          "rot": 0.1
+        },
+        {
+          "name": "Tularosa Basin",
+          "lon": -106.1,
+          "lat": 32.9,
+          "rx": 0.5,
+          "ry": 0.8,
+          "amp": -500,
+          "rot": 0
+        },
+        {
+          "name": "Llano Estacado",
+          "lon": -103.7,
+          "lat": 34.4,
+          "rx": 0.75,
+          "ry": 1.1,
+          "amp": -400,
+          "rot": 0
+        },
+        {
+          "name": "Colorado Plateau",
+          "lon": -108.2,
+          "lat": 36.4,
+          "rx": 0.7,
+          "ry": 0.45,
+          "amp": 700,
+          "rot": 0
+        },
+        {
+          "name": "Rio Grande rift",
+          "lon": -106.75,
+          "lat": 34.6,
+          "rx": 0.35,
+          "ry": 1.5,
+          "amp": -350,
+          "rot": 0.1
+        }
+      ],
+      "corridors": [
+        {
+          "id": "rio-grande-new-mexico",
+          "layer": "water",
+          "tier": "context",
+          "name": "Rio Grande New Mexico corridor (generalized)",
+          "short": "Rio Grande",
+          "depthM": 0,
+          "path": [
+            [-105.5730665, 36.4072485],
+            [-106.1, 36.0],
+            [-106.6511367, 35.0844909],
+            [-107.1747822, 33.2386283],
+            [-106.7783374, 32.3123157]
+          ],
+          "facts": [
+            "Generalized Rio Grande corridor through northern, central, and southern New Mexico; schematic, not a channel centerline. No Rio Grande gazetteer row is claimed because the 2026-10-22 states=NM Geocoder screen did not return the exact stream record."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-18 source register"
+          ]
+        },
+        {
+          "id": "pecos-river-new-mexico",
+          "layer": "water",
+          "tier": "context",
+          "name": "Pecos River New Mexico corridor (generalized)",
+          "short": "Pecos River",
+          "depthM": 0,
+          "path": [
+            [-105.7, 35.9],
+            [-105.4, 35.2],
+            [-104.5230242, 33.3942655],
+            [-104.3, 32.63],
+            [-104.25, 31.8]
+          ],
+          "facts": [
+            "Generalized Pecos River corridor from the Sangre de Cristo headwaters through Roswell toward southeastern New Mexico; schematic, not a channel centerline. No Pecos River gazetteer row is claimed because two exact Eddy County Stream records remain indistinguishable as the statewide river record."
+          ],
+          "sources": [
+            "Generalized from public river references; per-ID ambiguity recorded in the round-18 source register"
+          ]
+        },
+        {
+          "id": "san-juan-animas-new-mexico",
+          "layer": "water",
+          "tier": "context",
+          "name": "San Juan and Animas rivers corridor (generalized)",
+          "short": "San Juan / Animas",
+          "depthM": 0,
+          "path": [
+            [-107.88, 36.99],
+            [-108.2217411, 36.7138917],
+            [-108.2186856, 36.7280583],
+            [-108.7, 36.75],
+            [-109.05, 36.99]
+          ],
+          "facts": [
+            "Generalized Animas-to-San-Juan corridor across northwestern New Mexico; schematic, not a channel centerline. The Animas River gazetteer row supplies one named primary point; no San Juan River row is claimed from the empty states=NM exact-name screen."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 900284 for the Animas River primary point"
+          ]
+        },
+        {
+          "id": "el-camino-real-i25-new-mexico",
+          "layer": "roads",
+          "tier": "context",
+          "name": "El Camino Real / Interstate 25 corridor (generalized)",
+          "short": "Camino Real / I-25",
+          "depthM": 0,
+          "path": [
+            [-105.937799, 35.6869752],
+            [-106.6511367, 35.0844909],
+            [-106.85, 34.0],
+            [-107.1747822, 33.2386283],
+            [-106.7783374, 32.3123157]
+          ],
+          "facts": [
+            "Generalized historic and modern north-south corridor through the Rio Grande valley; schematic polyline through GNIS anchors, not a trail, road, or highway alignment."
+          ],
+          "sources": [
+            "Generalized from public trail and highway references (El Camino Real de Tierra Adentro and Interstate 25); GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "santa-fe",
+          "name": "Santa Fe",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -105.937799,
+          "lat": 35.6869752,
+          "depthM": 0,
+          "facts": [
+            "New Mexico state capital and northern state-frame anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 936823; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "albuquerque",
+          "name": "Albuquerque",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -106.6511367,
+          "lat": 35.0844909,
+          "depthM": 0,
+          "facts": [
+            "Central Rio Grande valley anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 928679; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "wheeler-peak",
+          "name": "Wheeler Peak",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -105.416856,
+          "lat": 36.5569142,
+          "depthM": 0,
+          "facts": [
+            "New Mexico's highest summit; node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 928839; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "elephant-butte-reservoir",
+          "name": "Elephant Butte Reservoir",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -107.1747822,
+          "lat": 33.2386283,
+          "depthM": 0,
+          "facts": [
+            "Rio Grande reservoir anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline or dam."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 888840; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Santa Fe", "Populated Place", "pop.place", "Santa Fe", 35.6869752, -105.937799, null, "936823", 1, "State capital. The populated-place record was selected rather than the Santa Fe County, division, and grant records. USGS GNIS Geocoder (GNIS), FEATURE_ID=936823; exact official name and Cities & Populated Places type in Santa Fe County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Albuquerque", "Populated Place", "pop.place", "Bernalillo", 35.0844909, -106.6511367, null, "928679", 1, "The populated-place record was selected rather than the Albuquerque Division record (FEATURE_ID 1937492). USGS GNIS Geocoder (GNIS), FEATURE_ID=928679; exact official name and Cities & Populated Places type in Bernalillo County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Las Cruces", "Populated Place", "pop.place", "Dona Ana", 32.3123157, -106.7783374, null, "899715", 1, "The populated-place record was selected rather than the Las Cruces Division record (FEATURE_ID 1937547). USGS GNIS Geocoder (GNIS), FEATURE_ID=899715; exact official name and Cities & Populated Places type in Dona Ana County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Roswell", "Populated Place", "pop.place", "Chaves", 33.3942655, -104.5230242, null, "894171", 1, "The populated-place record was selected rather than the Roswell Division record (FEATURE_ID 1937579). USGS GNIS Geocoder (GNIS), FEATURE_ID=894171; exact official name and Cities & Populated Places type in Chaves County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Farmington", "Populated Place", "pop.place", "San Juan", 36.7280583, -108.2186856, null, "902246", 1, "The populated-place record was selected rather than the Farmington Division record (FEATURE_ID 1937532). USGS GNIS Geocoder (GNIS), FEATURE_ID=902246; exact official name and Cities & Populated Places type in San Juan County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Taos", "Populated Place", "pop.place", "Taos", 36.4072485, -105.5730665, null, "911545", 1, "The Taos populated-place record was selected rather than Taos County, the division records, and the separate Taos Pueblo records. USGS GNIS Geocoder (GNIS), FEATURE_ID=911545; exact official name and Cities & Populated Places type in Taos County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Wheeler Peak", "Summit", "phys.summit", "Taos", 36.5569142, -105.416856, null, "928839", 1, "New Mexico's highest summit; this is the Taos County record, not Nevada's Wheeler Peak (FEATURE_ID 861956). USGS GNIS Geocoder (GNIS), FEATURE_ID=928839; exact official name and Summit type in Taos County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Sierra Blanca Peak", "Summit", "phys.summit", "Otero", 33.3742819, -105.8087673, null, "920702", 1, "The Summit record was selected rather than the near-coincident Sierra Blanca Mountain Ranges record (FEATURE_ID 912567). USGS GNIS Geocoder (GNIS), FEATURE_ID=920702; exact official name and Summit type in Otero County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Elephant Butte Reservoir", "Reservoir", "hydro.reservoir", "Sierra", 33.2386283, -107.1747822, null, "888840", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=888840; exact official name and Lakes & Reservoirs type in Sierra County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, dam structure, or reservoir-area centroid."],
+        ["Rio Chama", "Stream", "hydro.stream", "Rio Arriba", 36.042245, -106.0878013, null, "923661", 1, "The stream record was selected rather than the Rio Chama Division record (FEATURE_ID 1937577). USGS GNIS Geocoder (GNIS), FEATURE_ID=923661; exact official name and Streams & Canals type in Rio Arriba County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Animas River", "Stream", "hydro.stream", "San Juan", 36.7138917, -108.2217411, null, "900284", 1, "The San Juan County stream record was selected rather than the separate same-name Hidalgo County stream record (FEATURE_ID 900283). USGS GNIS Geocoder (GNIS), FEATURE_ID=900284; exact official name and Streams & Canals type in San Juan County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Conchas Lake", "Lake", "hydro.lake", "San Miguel", 35.3849418, -104.2179539, null, "897344", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=897344; exact official name and Lakes & Reservoirs type in San Miguel County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."]
+      ]
     }
   }
 }

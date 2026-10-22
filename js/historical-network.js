@@ -54,6 +54,21 @@ export const normalizeText = (value) =>
 
 const normalizeBoardName = (value) => normalizeText(value).replace(/^the\s+/, "");
 
+/** Lowercase SHA-256 for a string, ArrayBuffer, typed array, or Blob. */
+export async function sha256Hex(data) {
+  if (!globalThis.crypto?.subtle?.digest) {
+    throw new Error("WebCrypto SHA-256 is unavailable in this runtime");
+  }
+  let bytes;
+  if (typeof data === "string") bytes = new TextEncoder().encode(data);
+  else if (data instanceof ArrayBuffer) bytes = new Uint8Array(data);
+  else if (ArrayBuffer.isView(data)) bytes = new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
+  else if (typeof Blob !== "undefined" && data instanceof Blob) bytes = new Uint8Array(await data.arrayBuffer());
+  else throw new TypeError("sha256Hex expects a string, ArrayBuffer, typed array, or Blob");
+  const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
 function assertUniqueIds(items, collection, errors) {
   const seen = new Set();
   for (const [index, item] of items.entries()) {
@@ -359,6 +374,11 @@ export function searchObservations(pack, query) {
       fields.sysop,
       fields.software,
       fields.years,
+      fields.phoneRaw,
+      fields.location,
+      fields.fidonetAddress,
+      fields.fidonetKeyword,
+      asArray(fields.flags).join(" "),
     ].filter(Boolean).join(" "));
     return haystack.includes(needle);
   });
@@ -443,6 +463,8 @@ export function parseTextfilesHistoricalList(text, {
   snapshotId = "local-textfiles-historical-list",
   title = "Local TEXTFILES historical BBS list import",
   captureUri = "local-file:user-supplied",
+  sha256 = null,
+  byteLength = null,
 } = {}) {
   const lines = String(text ?? "").replace(/\r\n?/g, "\n").split("\n");
   const observations = [];
@@ -555,13 +577,467 @@ export function parseTextfilesHistoricalList(text, {
       validTo: null,
       captureUri,
       captureStatus: "user-supplied-local-text",
-      sha256: null,
+      sha256,
+      byteLength,
       rightsStatus: "local-import-only",
       rightsNote: "Parsed in the browser or caller from user-supplied text. This adapter does not grant redistribution rights and does not upload the list.",
       parser: "js/historical-network.js parseTextfilesHistoricalList/1",
     },
     observations,
     warnings,
+  };
+}
+
+const FIDONET_MONTHS = {
+  january: "01",
+  february: "02",
+  march: "03",
+  april: "04",
+  may: "05",
+  june: "06",
+  july: "07",
+  august: "08",
+  september: "09",
+  october: "10",
+  november: "11",
+  december: "12",
+};
+
+const FIDONET_KEYWORDS = new Map([
+  ["", ""],
+  ["pvt", "Pvt"],
+  ["hold", "Hold"],
+  ["down", "Down"],
+  ["hub", "Hub"],
+  ["host", "Host"],
+  ["region", "Region"],
+  ["zone", "Zone"],
+]);
+
+const FIDONET_ADMIN_KEYWORDS = new Set(["Zone", "Region", "Host", "Hub"]);
+const NODEDIFF_COMMAND_RE = /^([ACD])(\d{1,5})$/;
+
+function splitHistoricalLines(text) {
+  let value = String(text ?? "");
+  const eofIndex = value.indexOf("\u001a");
+  const dataAfterEof = eofIndex >= 0 ? value.slice(eofIndex + 1).trim().length > 0 : false;
+  if (eofIndex >= 0) value = value.slice(0, eofIndex);
+  const lines = value.replace(/\r\n?/g, "\n").split("\n");
+  if (lines.at(-1) === "") lines.pop();
+  return { lines, hadEof: eofIndex >= 0, dataAfterEof };
+}
+
+function parseFidonetHeader(line) {
+  if (!nonEmpty(line)) return null;
+  const dateMatch = line.match(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s*(\d{4})\b/i);
+  let issued = null;
+  let computedDayNumber = null;
+  if (dateMatch) {
+    const month = FIDONET_MONTHS[dateMatch[1].toLowerCase()];
+    const day = Number(dateMatch[2]);
+    const year = Number(dateMatch[3]);
+    const candidate = new Date(Date.UTC(year, Number(month) - 1, day));
+    if (
+      candidate.getUTCFullYear() === year
+      && candidate.getUTCMonth() === Number(month) - 1
+      && candidate.getUTCDate() === day
+    ) {
+      issued = `${year}-${month}-${String(day).padStart(2, "0")}`;
+      computedDayNumber = Math.round((candidate.valueOf() - Date.UTC(year, 0, 0)) / 86_400_000);
+    }
+  }
+  const dayMatch = line.match(/\bDay number\s+(\d{1,3})\b/i);
+  const crcMatch = line.match(/:\s*(\d{5})\s*$/);
+  return {
+    raw: line,
+    issued,
+    dayNumber: dayMatch ? Number(dayMatch[1]) : null,
+    computedDayNumber,
+    crc: crcMatch ? crcMatch[1] : null,
+  };
+}
+
+const decodeFidonetField = (value) => String(value ?? "").replace(/_+/g, " ").trim();
+
+function parseFidonetLocation(locationRaw) {
+  const raw = String(locationRaw ?? "").trim();
+  const suffix = raw.match(/^(.*)_([A-Z]{2})$/);
+  if (suffix) {
+    return {
+      locality: decodeFidonetField(suffix[1]) || null,
+      state: suffix[2],
+      location: decodeFidonetField(raw) || null,
+    };
+  }
+  const locality = decodeFidonetField(raw) || null;
+  return { locality, state: null, location: locality };
+}
+
+function parseFidonetPhone(phoneRaw) {
+  const raw = String(phoneRaw ?? "").trim();
+  if (raw === "-Unpublished-") return { phone: null, unpublished: true, encodedIpv4: false };
+  const parts = raw.split("-").filter(Boolean);
+  if (parts[0] === "000") return { phone: null, unpublished: false, encodedIpv4: true };
+  const groups = parts.length >= 4 ? parts.slice(-3) : parts;
+  if (
+    groups.length === 3
+    && /^\d{3}$/.test(groups[0])
+    && /^\d{3}$/.test(groups[1])
+    && /^\d{4}$/.test(groups[2])
+  ) {
+    return { phone: groups.join("-"), unpublished: false, encodedIpv4: false };
+  }
+  return { phone: null, unpublished: false, encodedIpv4: false };
+}
+
+/** Conservative local-import format detection for the supported adapters. */
+export function detectHistoricalImportFormat(text) {
+  const { lines } = splitHistoricalLines(text);
+  const nonEmptyLines = lines.map((line) => line.trim()).filter(Boolean);
+  if (
+    nonEmptyLines[0]?.startsWith(";")
+    && NODEDIFF_COMMAND_RE.test(nonEmptyLines[1] ?? "")
+  ) {
+    return "fidonet-nodediff";
+  }
+  const sample = nonEmptyLines.slice(0, 30);
+  if (sample.some((line) => /^(?:Zone|Region|Host|Hub|Pvt|Hold|Down)?,\d+,/.test(line))) {
+    return "fidonet-nodelist";
+  }
+  return "textfiles-historical-list";
+}
+
+/**
+ * Parse a user-supplied FidoNet distribution nodelist (FTS-5000 shape).
+ *
+ * Data lines become observations, including Zone/Region/Host/Hub branch
+ * records. The parser derives the zone:net/node address from the flat-file
+ * administrative context, but it does not canonicalize systems, infer
+ * physical routes, or claim that a Hub/Host relationship is a physical edge.
+ * The header CRC is preserved as source metadata; this evidence adapter
+ * does not verify it.
+ */
+export function parseFidonetNodelist(text, {
+  snapshotId = "local-fidonet-nodelist",
+  title = "Local FidoNet nodelist import",
+  captureUri = "local-file:user-supplied",
+  sha256 = null,
+  byteLength = null,
+  defaultZone = null,
+  issuedOverride = null,
+} = {}) {
+  const { lines, dataAfterEof } = splitHistoricalLines(text);
+  const observations = [];
+  const warnings = [];
+  const stats = { commentLines: 0, dataLines: 0, skippedLines: 0, duplicateAddresses: 0 };
+  if (dataAfterEof) warnings.push("Data after the Ctrl-Z EOF marker was ignored, as required for a distribution nodelist.");
+
+  const firstLineIndex = lines.findIndex((line) => line.trim().length > 0);
+  const headerLine = firstLineIndex >= 0 && lines[firstLineIndex].trimStart().startsWith(";")
+    ? lines[firstLineIndex].trim()
+    : null;
+  const header = parseFidonetHeader(headerLine);
+  const issued = issuedOverride ?? header?.issued ?? null;
+  if (!headerLine) warnings.push("No FTS-5000 special-header comment was found on the first non-empty line.");
+  if (header && !header.issued && !issuedOverride) warnings.push("The FidoNet header date could not be parsed; observations will be undated until the caller supplies one.");
+  if (
+    header?.dayNumber != null
+    && header?.computedDayNumber != null
+    && header.dayNumber !== header.computedDayNumber
+  ) {
+    warnings.push(`Header day number ${header.dayNumber} does not match the day-of-year ${header.computedDayNumber} computed from ${header.issued}.`);
+  }
+  if (header?.crc) warnings.push(`Header CRC ${header.crc} was preserved but not verified by this evidence adapter.`);
+
+  let context = {
+    zone: Number.isInteger(defaultZone) && defaultZone >= 1 && defaultZone <= 32767 ? defaultZone : null,
+    region: null,
+    net: null,
+    hub: null,
+    branchKind: null,
+  };
+  if (defaultZone != null && context.zone == null) warnings.push(`Ignoring invalid defaultZone ${defaultZone}; expected an integer from 1 to 32767.`);
+  const addressLines = new Map();
+
+  lines.forEach((line, index) => {
+    const lineNo = index + 1;
+    const trimmed = line.trim();
+    if (!trimmed) return;
+    if (trimmed.startsWith(";")) {
+      stats.commentLines += 1;
+      if (/^;[SUFAE]*E[SUFAE]*(?:\s|$)/.test(trimmed)) warnings.push(`line ${lineNo}: nodelist error comment preserved as a warning: ${trimmed}`);
+      return;
+    }
+
+    const fieldsRaw = line.split(",");
+    if (fieldsRaw.length < 7) {
+      stats.skippedLines += 1;
+      warnings.push(`line ${lineNo}: skipped; a FidoNet data line needs at least seven comma-separated fields.`);
+      return;
+    }
+
+    const keywordRaw = fieldsRaw[0].trim();
+    const keyword = FIDONET_KEYWORDS.get(keywordRaw.toLowerCase()) ?? keywordRaw;
+    if (!FIDONET_KEYWORDS.has(keywordRaw.toLowerCase())) {
+      warnings.push(`line ${lineNo}: unrecognized FidoNet keyword ${keywordRaw || "<empty>"}; record kept as an observation without changing branch context.`);
+    }
+    const nodeFieldRaw = fieldsRaw[1].trim();
+    const nodeNumber = /^\d+$/.test(nodeFieldRaw) ? Number(nodeFieldRaw) : null;
+    if (nodeNumber == null || nodeNumber < 1 || nodeNumber > 32767) {
+      stats.skippedLines += 1;
+      warnings.push(`line ${lineNo}: skipped; node-number field must be an integer from 1 to 32767.`);
+      return;
+    }
+
+    let fidonetAddress = null;
+    let branchKind = context.branchKind;
+    if (keyword === "Zone") {
+      context = { zone: nodeNumber, region: nodeNumber, net: nodeNumber, hub: null, branchKind: "zone" };
+      branchKind = "zone";
+      fidonetAddress = `${nodeNumber}:${nodeNumber}/0`;
+    } else if (keyword === "Region") {
+      branchKind = "region";
+      if (context.zone == null) {
+        warnings.push(`line ${lineNo}: Region appears before a Zone or defaultZone, so no full address was derived.`);
+      } else {
+        context = { ...context, region: nodeNumber, net: nodeNumber, hub: null, branchKind: "region" };
+        fidonetAddress = `${context.zone}:${nodeNumber}/0`;
+      }
+    } else if (keyword === "Host") {
+      branchKind = "host";
+      if (context.zone == null) {
+        warnings.push(`line ${lineNo}: Host appears before a Zone or defaultZone, so no full address was derived.`);
+      } else {
+        context = { ...context, net: nodeNumber, hub: null, branchKind: "host" };
+        fidonetAddress = `${context.zone}:${nodeNumber}/0`;
+      }
+    } else if (keyword === "Hub") {
+      branchKind = "hub";
+      if (context.zone == null || context.net == null) {
+        warnings.push(`line ${lineNo}: Hub appears before Zone/Host context, so no full address was derived.`);
+      } else {
+        context = { ...context, hub: nodeNumber, branchKind: "hub" };
+        fidonetAddress = `${context.zone}:${context.net}/${nodeNumber}`;
+      }
+    } else if (context.zone == null || context.net == null) {
+      warnings.push(`line ${lineNo}: member record appears before Zone/Host context, so no full address was derived.`);
+    } else {
+      fidonetAddress = `${context.zone}:${context.net}/${nodeNumber}`;
+    }
+
+    const locationRaw = fieldsRaw[3].trim();
+    const location = parseFidonetLocation(locationRaw);
+    const phoneRaw = fieldsRaw[5].trim();
+    const phone = parseFidonetPhone(phoneRaw);
+    const flags = fieldsRaw.slice(7).map((flag) => flag.trim()).filter(Boolean);
+    const name = decodeFidonetField(fieldsRaw[2]) || null;
+    const sysop = decodeFidonetField(fieldsRaw[4]) || null;
+    const observationWarnings = [
+      "Parsed locally from a user-supplied FidoNet nodelist; no canonical merge has been performed.",
+    ];
+    if (FIDONET_ADMIN_KEYWORDS.has(keyword)) {
+      observationWarnings.push("Administrative branch record; source-stated hierarchy alone does not prove a physical route, session, or edge geometry.");
+    }
+    if (["Pvt", "Hold", "Down"].includes(keyword)) {
+      observationWarnings.push(`${keyword} is a historical listing status only; do not dial or probe the listed system.`);
+    }
+    if (phone.unpublished) observationWarnings.push("Phone field is -Unpublished-; no dial string is exposed.");
+    if (phone.encodedIpv4) {
+      observationWarnings.push("Phone field begins with 000 and appears to encode an IPv4 address; it is preserved as phoneRaw and is not treated as a telephone number.");
+    }
+    if (!fidonetAddress) {
+      observationWarnings.push("Full FidoNet address could not be derived from the preceding administrative context.");
+    }
+    if (!name) warnings.push(`line ${lineNo}: data line has no node name.`);
+
+    if (fidonetAddress) {
+      const seen = addressLines.get(fidonetAddress) ?? [];
+      seen.push(lineNo);
+      addressLines.set(fidonetAddress, seen);
+    }
+    const addressSlug = fidonetAddress ? fidonetAddress.replace(/[^a-zA-Z0-9]+/g, "-") : "unaddressed";
+    stats.dataLines += 1;
+    observations.push({
+      id: `local-fido-${String(observations.length + 1).padStart(4, "0")}-${addressSlug}-line-${lineNo}`,
+      snapshotId,
+      locator: `line ${lineNo}: FidoNet data line${fidonetAddress ? ` for ${fidonetAddress}` : ""}`,
+      observedAt: issued,
+      validFrom: null,
+      validTo: null,
+      evidenceTier: "local-user-import",
+      rawTextStatus: "user-supplied-local-text",
+      rawText: line,
+      fields: {
+        name,
+        phone: phone.phone,
+        phoneRaw: phoneRaw || null,
+        phoneUnpublished: phone.unpublished,
+        locality: location.locality,
+        state: location.state,
+        location: location.location,
+        locationRaw: locationRaw || null,
+        sysop,
+        software: null,
+        years: null,
+        comments: null,
+        fidonetAddress,
+        fidonetKeyword: keyword || "Node",
+        fidonetZone: context.zone,
+        fidonetRegion: context.region,
+        fidonetNet: context.net,
+        fidonetHub: context.hub,
+        fidonetBranch: branchKind ? `${branchKind} segment` : null,
+        nodeNumber,
+        dceSpeed: fieldsRaw[6].trim() || null,
+        flags,
+      },
+      warnings: observationWarnings,
+    });
+  });
+
+  for (const [address, lineNumbers] of addressLines) {
+    if (lineNumbers.length < 2) continue;
+    stats.duplicateAddresses += 1;
+    warnings.push(`Duplicate FidoNet address ${address} at lines ${lineNumbers.join(", ")}; observations were kept separate for review.`);
+  }
+
+  return {
+    snapshot: {
+      id: snapshotId,
+      title,
+      publisher: "user-supplied local text",
+      editor: null,
+      issued,
+      issuedLabel: headerLine ? `FTS-5000 header: ${headerLine}` : "Imported locally; source publication date must be supplied by the user before dataset use",
+      validFrom: null,
+      validTo: null,
+      captureUri,
+      captureStatus: "user-supplied-local-text",
+      sha256,
+      byteLength,
+      format: "FidoNet distribution nodelist (FTS-5000.005)",
+      header,
+      rightsStatus: "local-import-only",
+      rightsNote: "Parsed locally from user-supplied text. Historical FidoNet nodelist prologues checked for this adapter grant use/intra-FidoNet distribution for FidoNet communication and reserve other uses absent express written consent; this adapter therefore does not claim bundled-redistribution rights.",
+      parser: "js/historical-network.js parseFidonetNodelist/1 (FTS-5000.005)",
+    },
+    observations,
+    warnings,
+    stats,
+  };
+}
+
+/**
+ * Apply one FTS-5000 nodediff editing script to a previous nodelist.
+ *
+ * The first nodediff line must exactly match the previous nodelist's first
+ * line (after line-ending normalization). A/C/D commands are applied in
+ * order, and the script must consume the complete previous file. Output is
+ * returned in memory only; the resulting header CRC is parsed but not
+ * verified.
+ */
+export function applyFidonetNodediff(previousText, diffText, {
+  appendEof = true,
+  lineEnding = "\r\n",
+} = {}) {
+  const previous = splitHistoricalLines(previousText);
+  const diff = splitHistoricalLines(diffText);
+  const errors = [];
+  const warnings = [];
+  const stats = { commands: 0, addedLines: 0, copiedLines: 0, deletedLines: 0 };
+  if (diff.hadEof) warnings.push("Nodediff contains a Ctrl-Z marker; FTS-5000 says a nodediff has no terminating EOF character, so parsing stopped there.");
+  if (previous.lines.length === 0) errors.push("Previous nodelist is empty.");
+  if (diff.lines.length === 0) errors.push("Nodediff is empty.");
+  if (previous.lines.length > 0 && diff.lines.length > 0 && diff.lines[0] !== previous.lines[0]) {
+    errors.push("Nodediff first line does not exactly match the previous nodelist first line; refusing to apply it to the wrong edition.");
+  }
+
+  const output = [];
+  let previousIndex = 0;
+  let diffIndex = 1;
+  while (errors.length === 0 && diffIndex < diff.lines.length) {
+    const commandLine = diff.lines[diffIndex].trim();
+    const commandLineNo = diffIndex + 1;
+    diffIndex += 1;
+    const match = commandLine.match(NODEDIFF_COMMAND_RE);
+    if (!match) {
+      errors.push(`Nodediff line ${commandLineNo}: expected an A, C, or D command, got ${JSON.stringify(commandLine)}.`);
+      break;
+    }
+    const [, command, countRaw] = match;
+    const count = Number(countRaw);
+    if (count < 1 || count > 32767) {
+      errors.push(`Nodediff line ${commandLineNo}: command count must be from 1 to 32767.`);
+      break;
+    }
+    stats.commands += 1;
+    if (command === "A") {
+      if (diffIndex + count > diff.lines.length) {
+        errors.push(`Nodediff line ${commandLineNo}: A${count} needs ${count} following lines, but only ${diff.lines.length - diffIndex} remain.`);
+        break;
+      }
+      output.push(...diff.lines.slice(diffIndex, diffIndex + count));
+      diffIndex += count;
+      stats.addedLines += count;
+    } else if (command === "C") {
+      if (previousIndex + count > previous.lines.length) {
+        errors.push(`Nodediff line ${commandLineNo}: C${count} exceeds the remaining previous-nodelist lines.`);
+        break;
+      }
+      output.push(...previous.lines.slice(previousIndex, previousIndex + count));
+      previousIndex += count;
+      stats.copiedLines += count;
+    } else {
+      if (previousIndex + count > previous.lines.length) {
+        errors.push(`Nodediff line ${commandLineNo}: D${count} exceeds the remaining previous-nodelist lines.`);
+        break;
+      }
+      previousIndex += count;
+      stats.deletedLines += count;
+    }
+  }
+  if (errors.length === 0 && previousIndex !== previous.lines.length) {
+    errors.push(`Nodediff consumed ${previousIndex} of ${previous.lines.length} previous-nodelist lines; refusing a partial edit.`);
+  }
+
+  const previousHeader = parseFidonetHeader(previous.lines[0] ?? null);
+  const outputHeader = errors.length === 0 ? parseFidonetHeader(output[0] ?? null) : null;
+  if (outputHeader?.crc) warnings.push(`Output header CRC ${outputHeader.crc} was parsed but not verified.`);
+  return {
+    text: errors.length === 0
+      ? `${output.join(lineEnding)}${output.length ? lineEnding : ""}${appendEof ? "\u001a" : ""}`
+      : null,
+    lines: errors.length === 0 ? output : [],
+    previousHeader,
+    outputHeader,
+    errors,
+    warnings,
+    stats,
+  };
+}
+
+/** Apply an ordered chain of nodediffs; stop at the first edition mismatch. */
+export function applyFidonetNodediffChain(initialText, diffTexts, options = {}) {
+  let text = initialText;
+  const results = [];
+  for (const diffText of asArray(diffTexts)) {
+    const result = applyFidonetNodediff(text, diffText, options);
+    results.push(result);
+    if (result.errors.length > 0) {
+      return {
+        text: null,
+        results,
+        errors: result.errors,
+        warnings: results.flatMap((item) => item.warnings),
+      };
+    }
+    text = result.text;
+  }
+  return {
+    text,
+    results,
+    errors: [],
+    warnings: results.flatMap((item) => item.warnings),
   };
 }
 
@@ -587,6 +1063,10 @@ export function observationsToCsv(pack) {
     "sysop",
     "software",
     "years",
+    "fidonet_address",
+    "fidonet_keyword",
+    "phone_raw",
+    "fidonet_flags",
   ];
   const rows = asArray(pack?.observations).map((observation) => {
     const fields = observation.fields ?? {};
@@ -605,6 +1085,10 @@ export function observationsToCsv(pack) {
       fields.sysop,
       fields.software,
       fields.years,
+      fields.fidonetAddress,
+      fields.fidonetKeyword,
+      fields.phoneRaw,
+      asArray(fields.flags).join(" "),
     ].map(csvCell).join(",");
   });
   return [headers.join(","), ...rows].join("\n") + "\n";

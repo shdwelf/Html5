@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Historical Network Viewer — Keyhole BBS evidence slice</title>
-  <meta name="description" content="Offline Phase 0/1 historical-network evidence viewer for the Denver Keyhole BBS, with observation-first provenance and local BBS-list import.">
+  <meta name="description" content="Offline historical-network evidence viewer for the Denver Keyhole BBS, with observation-first provenance plus local TEXTFILES and FidoNet nodelist import.">
   <style>
     :root {
       color-scheme: dark;
@@ -158,7 +158,15 @@
 
     <section class="card" style="margin-top:18px" aria-labelledby="importHeading">
       <h2 id="importHeading">Local BBS-list import</h2>
-      <p class="muted">Paste or load a TEXTFILES-style historical list (<code>303.txt</code> shape). Parsing happens locally in this page; nothing is uploaded and no canonical merge is performed automatically. The comparison column shows why same-name records are not merged by name alone.</p>
+      <p class="muted">Paste or load a TEXTFILES-style historical list (<code>303.txt</code> shape) or an FTS-5000 FidoNet distribution nodelist. Parsing and SHA-256 hashing happen locally in this page; nothing is uploaded and no canonical merge is performed automatically. A nodediff is an editing script, not a standalone list: this single-text slice detects it and refuses to guess its previous edition, while the shared model exposes edition-checked diff application for callers that supply both inputs.</p>
+      <label>Import format
+        <select id="importFormat">
+          <option value="auto" selected>Auto-detect</option>
+          <option value="textfiles-historical-list">TEXTFILES historical list</option>
+          <option value="fidonet-nodelist">FidoNet nodelist (FTS-5000)</option>
+          <option value="fidonet-nodediff">FidoNet nodediff (detect only here)</option>
+        </select>
+      </label>
       <label>List text
         <textarea id="importText" spellcheck="false">303-477-6337 | Keyhole BBS
               | DENVER, CO (1994-1996)
@@ -170,7 +178,7 @@
       </label>
       <div class="import-actions">
         <label class="file-label">Load a local text file
-          <input id="importFile" type="file" accept=".txt,.lst,.text,text/plain">
+          <input id="importFile" type="file">
         </label>
         <button id="parseImport" type="button">Parse locally</button>
         <button id="downloadImport" type="button" class="secondary" disabled>Download parsed JSON</button>
@@ -188,16 +196,20 @@
   <footer>
     Source fixture: <code>resources/historical-network/keyhole-evidence-pack-2026-10-22.json</code> ·
     Scope: <a href="docs/historical-network-viewer-scope-2026-10-22.md">historical-network viewer scope</a> ·
-    Fixture notes: <a href="docs/historical-network-keyhole-fixture-2026-10-22.md">Round 17 Keyhole fixture</a>
+    Fixture notes: <a href="docs/historical-network-keyhole-fixture-2026-10-22.md">Round 17 Keyhole fixture</a> ·
+    FidoNet adapter: <a href="docs/historical-network-fidonet-adapter-2026-10-22.md">Round 18 local import and nodediff contract</a>
   </footer>
 
   <script type="module">
     import { KEYHOLE_EVIDENCE_PACK } from "./js/historical-network-keyhole-data.js";
     import {
       assessMergeCandidate,
+      detectHistoricalImportFormat,
       observationsToCsv,
+      parseFidonetNodelist,
       parseTextfilesHistoricalList,
       searchObservations,
+      sha256Hex,
       summarizeEvidencePack,
       validateEvidencePack,
     } from "./js/historical-network.js";
@@ -209,6 +221,7 @@
     const summary = summarizeEvidencePack(pack);
     let selectedObservationId = pack.observations[0]?.id ?? null;
     let localPack = null;
+    let importByteBuffer = null;
     const MAX_IMPORT_BYTES = 5_000_000;
 
     const el = (tag, className = "", text = "") => {
@@ -404,14 +417,47 @@
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
-    function renderLocalImport() {
-      const parsed = parseTextfilesHistoricalList($("importText").value, {
-        captureUri: $("importFile").files?.[0]?.name ? `local-file:${$("importFile").files[0].name}` : "local-textarea:user-supplied",
-      });
+    async function renderLocalImport() {
+      const text = $("importText").value;
+      const requestedFormat = $("importFormat").value;
+      const detectedFormat = detectHistoricalImportFormat(text);
+      const format = requestedFormat === "auto" ? detectedFormat : requestedFormat;
+      const encodedText = new TextEncoder().encode(text);
+      const byteLength = importByteBuffer?.byteLength ?? encodedText.byteLength;
+      let sha256 = null;
+      let hashNote = "SHA-256 unavailable in this browser context";
+      try {
+        sha256 = await sha256Hex(importByteBuffer ?? encodedText);
+        hashNote = `SHA-256 ${sha256} over ${byteLength} ${importByteBuffer ? "original file" : "textarea UTF-8"} bytes`;
+      } catch {
+        // Keep parsing usable if WebCrypto is unavailable; the snapshot
+        // remains explicitly unhashed instead of inventing a checksum.
+      }
+
+      if (format === "fidonet-nodediff") {
+        localPack = null;
+        $("importSummary").textContent = `FidoNet nodediff detected (${hashNote}). A nodediff only edits a specific previous nodelist, so this single-text import will not fabricate a standalone snapshot. Use the shared model's edition-checked diff application with both the previous nodelist and this diff.`;
+        $("downloadImport").disabled = true;
+        const tbody = $("importRows");
+        tbody.textContent = "";
+        const tr = document.createElement("tr");
+        const td = el("td", "muted", "No observations were parsed from the nodediff by itself.");
+        td.colSpan = 6;
+        tr.append(td);
+        tbody.append(tr);
+        return;
+      }
+
+      const captureUri = $("importFile").files?.[0]?.name ? `local-file:${$("importFile").files[0].name}` : "local-textarea:user-supplied";
+      const parsed = format === "fidonet-nodelist"
+        ? parseFidonetNodelist(text, { captureUri, sha256, byteLength })
+        : parseTextfilesHistoricalList(text, { captureUri, sha256, byteLength });
       localPack = {
         schemaVersion: 1,
-        id: "local-textfiles-import",
-        title: "Local TEXTFILES historical-list import (observations only)",
+        id: format === "fidonet-nodelist" ? "local-fidonet-import" : "local-textfiles-import",
+        title: format === "fidonet-nodelist"
+          ? "Local FidoNet nodelist import (observations only)"
+          : "Local TEXTFILES historical-list import (observations only)",
         status: "local-import-not-merged",
         snapshots: [parsed.snapshot],
         observations: parsed.observations,
@@ -423,7 +469,8 @@
         negativeSearches: [],
       };
       const localValidation = validateEvidencePack(localPack);
-      $("importSummary").textContent = `${parsed.observations.length} observations parsed locally. Structural validation: ${localValidation.valid ? "valid" : `invalid (${localValidation.errors.join("; ")})`}. Rights remain local-import-only; no nodes or edges were inferred.`;
+      const formatLabel = format === "fidonet-nodelist" ? "FidoNet nodelist (FTS-5000)" : "TEXTFILES historical list";
+      $("importSummary").textContent = `${parsed.observations.length} observations parsed locally as ${formatLabel}. ${hashNote}. Structural validation: ${localValidation.valid ? "valid" : `invalid (${localValidation.errors.join("; ")})`}. Rights remain local-import-only; no nodes or edges were inferred.`;
       $("downloadImport").disabled = parsed.observations.length === 0;
 
       const fixtureObservation = pack.observations[0];
@@ -431,14 +478,18 @@
       tbody.textContent = "";
       for (const observation of parsed.observations.slice(0, 100)) {
         const assessment = assessMergeCandidate(fixtureObservation, observation);
+        const comparison = ["Zone", "Region", "Host", "Hub"].includes(observation.fields.fidonetKeyword)
+          ? "administrative branch observation — not a canonical BBS merge candidate"
+          : `${assessment.decision} (${assessment.confidence}) — ${assessment.reason}`;
+        const span = dateSpan(observation);
         const tr = document.createElement("tr");
         const values = [
           observation.locator,
-          observation.fields.phone,
+          observation.fields.phone ?? observation.fields.phoneRaw ?? "not stated",
           observation.fields.name,
-          `${placeText(observation)}${observation.fields.years ? ` (${observation.fields.years})` : ""}`,
+          `${placeText(observation)}${span && span !== "undated" ? ` (${span})` : ""}`,
           observation.fields.sysop ?? "not stated",
-          `${assessment.decision} (${assessment.confidence}) — ${assessment.reason}`,
+          comparison,
         ];
         for (const value of values) tr.append(el("td", "", value));
         tbody.append(tr);
@@ -480,9 +531,14 @@
     });
     $("downloadJson").addEventListener("click", () => download("keyhole-evidence-pack.json", `${JSON.stringify(pack, null, 2)}\n`, "application/json"));
     $("downloadCsv").addEventListener("click", () => download("keyhole-observations.csv", observationsToCsv(pack), "text/csv"));
-    $("parseImport").addEventListener("click", renderLocalImport);
+    $("parseImport").addEventListener("click", () => { void renderLocalImport(); });
     $("downloadImport").addEventListener("click", () => {
       if (localPack) download("local-bbs-list-observations.json", `${JSON.stringify(localPack, null, 2)}\n`, "application/json");
+    });
+    $("importText").addEventListener("input", () => {
+      // Editing the textarea means its bytes, not the previously loaded
+      // file's bytes, are now the text that will be hashed and parsed.
+      importByteBuffer = null;
     });
     $("importFile").addEventListener("change", async () => {
       const file = $("importFile").files?.[0];
@@ -491,8 +547,9 @@
         $("importSummary").textContent = `Local file is ${file.size} bytes; this slice accepts at most ${MAX_IMPORT_BYTES} bytes.`;
         return;
       }
-      $("importText").value = await file.text();
-      renderLocalImport();
+      importByteBuffer = await file.arrayBuffer();
+      $("importText").value = new TextDecoder().decode(importByteBuffer);
+      await renderLocalImport();
     });
 
     renderValidation();

@@ -13,6 +13,16 @@ This still ships **no bundled ARPANET/FidoNet/BBS/payphone dataset**: the
 USBBS rights decision is citation-only/local-import-only, and the validator
 reports the fixture as structurally valid but not capture-ready.*
 
+*Round 18 update, 2026-10-22: the FidoNet Phase 2 adapter now exists in the
+shared model and viewer as a **local-import-only** FTS-5000 nodelist parser,
+SHA-256 capture hashing for user-supplied bytes, format detection, and
+edition-checked nodediff/chain application for programmatic callers. See
+[`historical-network-fidonet-adapter-2026-10-22.md`](historical-network-fidonet-adapter-2026-10-22.md).
+No historical nodelist was bundled: checked prologues reserve non-FidoNet
+uses absent express written consent. The correct bundled-dataset state is
+therefore still blocked, but the parser/diff tooling is no longer the
+blocker.*
+
 ## Decision
 
 Build the historical-network material as a separate, offline-first consumer
@@ -162,11 +172,23 @@ default is therefore:
 
 ### FidoNet nodelists and diffs
 
-A nodelist adapter should parse the record grammar, flags, hierarchy, phone
-or IP fields, and publication epoch, and should preserve the raw line. A diff
-is not a complete snapshot unless its parent snapshot and application result
-are recorded. Private/unpublished nodes, points, and hold/down states need
-first-class display states rather than deletion.
+**Round 18 status: adapter implemented; bundled snapshot still rights-gated.**
+`parseFidonetNodelist` parses the FTS-5000 record grammar, flags, special
+header, branch hierarchy, phone/IP field forms, and publication date, and
+preserves the raw line. `Zone`/`Region`/`Host`/`Hub` context derives
+`zone:net/node` addresses without inferring physical edges. `Pvt`, `Hold`,
+`Down`, and `-Unpublished-` remain first-class non-dialing states.
+`applyFidonetNodediff` and `applyFidonetNodediffChain` implement the A/C/D
+editing script with exact first-line edition checks and partial-edit
+refusal. The viewer hashes user-supplied bytes locally and can import a
+complete nodelist; it detects a standalone diff rather than guessing the
+previous edition. Header CRC values are preserved but not verified.
+
+Historical nodelist prologues checked in Round 18 grant intra-FidoNet
+use/distribution for FidoNet communication and reserve other uses absent
+express written consent. The safe repository treatment therefore matches
+USBBS: local user import and synthetic tests now; no transformed bundled
+nodelist until a rights basis is documented.
 
 ### ARPANET material
 
@@ -258,9 +280,18 @@ snapshots remain open.**
 
 ### Phase 2 — FidoNet adapter
 
-- Import one complete nodelist and one applied diff.
-- Render hierarchy/routes as dated logical edges.
-- Add snapshot diff tests.
+**Round 18 status: parser and diff engine implemented; historical snapshot
+and derived graph still open.**
+
+- Import one complete nodelist and one applied diff. *The adapter and
+  edition-checked diff/chain application are implemented and tested with
+  synthetic text. A historical snapshot remains unbundled for rights
+  reasons.*
+- Render hierarchy/routes as dated logical edges. *Not yet: administrative
+  lines are observations with branch metadata, deliberately not edges until
+  parent-versus-route semantics are designed and reviewed.*
+- Add snapshot diff tests. *Diff-application tests are done;
+  observation-level snapshot comparison and merge review remain open.*
 
 ### Phase 3 — ARPANET adapter
 
@@ -328,6 +359,9 @@ Primary web citations for this ledger:
   [`keyhole-disambiguation-deep-dive-2026-10-22.md`](keyhole-disambiguation-deep-dive-2026-10-22.md)
 - Round-17 fixture, rights decision, and parser:
   [`historical-network-keyhole-fixture-2026-10-22.md`](historical-network-keyhole-fixture-2026-10-22.md)
+- Round-18 FidoNet adapter, nodediff contract, local hashing, and rights
+  gate:
+  [`historical-network-fidonet-adapter-2026-10-22.md`](historical-network-fidonet-adapter-2026-10-22.md)
 
 ## Decisions and remaining build questions
 
@@ -342,13 +376,14 @@ Primary web citations for this ledger:
    confidence. Display-name equality alone is rejected, and a changed number
    with persistent name/sysop/city remains manual review rather than an
    automatic merge.
-4. **Graph semantics:** still open. No FidoNet edge is drawn in the Keyhole
-   slice, so administrative-parent versus mail-route layers remain a design
-   decision for the nodelist adapter.
+4. **Graph semantics:** still open. The Round 18 parser emits branch
+   observations and metadata but draws no FidoNet edge in the Keyhole slice,
+   so administrative-parent versus mail-route layers remain a design
+   decision before derived graph work.
 5. **Bundle size:** still follow measured captured-fixture sizes. The
    one-system citation pack does not answer snapshot/year/locality packing.
 
-The correct state is therefore **Phase 0 built, bundled datasets still
-blocked**. That is preferable to seeding ARPANET/FidoNet/payphone claims
-without captured snapshots and hashes or hiding their dates and
-uncertainties inside an unrelated viewer.
+The correct state is therefore **Phase 0 built, Phase 2 local adapter
+built, bundled datasets still blocked**. That is preferable to seeding
+ARPANET/FidoNet/payphone claims without captured snapshots, rights, and
+hashes or hiding their dates and uncertainties inside an unrelated viewer.
