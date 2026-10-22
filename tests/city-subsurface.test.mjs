@@ -7,7 +7,7 @@ import { unzipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const decoder = new TextDecoder();
-const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto"];
+const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california"];
 
 function read(name) {
   return readFileSync(path.join(root, name), "utf8");
@@ -189,4 +189,42 @@ test("city gazetteer engine searches names, facets, boxes, and geocaches", async
   assert.ok(path.length >= 0); // PATH is a corridor/node, not necessarily a gazetteer row
   const firstPost = searchName(torontoIdx, "First Post Office", { limit: 5 });
   assert.equal(firstPost[0]?.fclass, "Geocache");
+});
+
+test("California statewide frame is a sourced starter gazetteer with scale-aware views", async () => {
+  const data = await import("../js/city-subsurface-data-california.js");
+  const gaz = await import("../js/city-gazetteer-data-california.js");
+
+  assert.equal(data.CITY.id, "california");
+  assert.equal(data.CITY.state, "CA");
+  assert.equal(data.CITY.requiresDem, false, "statewide frame uses the labelled synthetic relief field");
+  assert.ok(data.BBOX.lat1 - data.BBOX.lat0 > 9, "frame spans the state, not a city");
+  assert.ok(data.BBOX.lon1 - data.BBOX.lon0 > 10, "frame spans the state, not a city");
+
+  // Scale-aware views: the statewide overview must pull back past the city
+  // floors (y=20, z=32) or the frame opens inside its own terrain.
+  const overview = data.VIEWS.find((v) => v.id === "overview");
+  assert.ok(overview.position[1] > 20 && overview.position[2] > 32, `overview ${overview.position} must exceed city-scale floors`);
+  const underground = data.VIEWS.find((v) => v.id === "underground");
+  assert.ok(underground.position[2] > 20, "underground view must also scale with frame width");
+
+  // Starter-gazetteer contract (round 15): every row is VERIFIED=0, carries
+  // no GNIS id, and names its public source in the note.
+  assert.ok(gaz.GAZ_ROWS.length >= 15, "starter register should cover the anchored S4 exemplars");
+  assert.equal(gaz.GAZ_META.verified, 0, "no California row may claim GNIS verification yet");
+  for (const row of gaz.GAZ_ROWS) {
+    assert.equal(row[8], 0, `${row[0]}: starter rows are VERIFIED=0`);
+    assert.equal(row[7], null, `${row[0]}: starter rows carry no GNIS id`);
+    assert.match(row[9], /GNIS FEATURE_ID not claimed/, `${row[0]}: note must disclaim a GNIS id`);
+    assert.match(row[9], /retrieved 2026-10-22/, `${row[0]}: note must date its source retrieval`);
+  }
+  const names = new Set(gaz.GAZ_ROWS.map((r) => r[0]));
+  for (const needed of ["Los Angeles", "San Francisco", "Sacramento", "San Diego", "Manzanar", "Nike Missile Site SF-88L", "Morris Dam", "Aerojet General Corporation Site"]) {
+    assert.ok(names.has(needed), `starter register is missing ${needed}`);
+  }
+
+  // Generalized context only: corridors stay schematic tiers, never official alignments.
+  assert.ok(data.CORRIDORS.length >= 3);
+  assert.ok(data.CORRIDORS.every((c) => c.tier === "context"), "statewide corridors are generalized context, not alignments");
+  assert.ok(data.COAST.length > 10, "generalized coastline polyline is present");
 });

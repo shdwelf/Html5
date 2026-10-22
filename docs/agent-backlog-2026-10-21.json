@@ -141,9 +141,12 @@
         "docs/gazetteer-sync-2026-10-04.md",
         "planet-viewer-4dwm.html",
         "docs/planet-viewer-deep-dive.md",
-        "red-october-4dwm.html"
+        "red-october-4dwm.html",
+        "california-subsurface.html",
+        "california-subsurface.xdc"
       ],
       "next_actions": [
+        "Round 15 (2026-10-22): California statewide frame SHIPPED as 6th config of the city-subsurface build (california-subsurface.html/.xdc) with a 16-row VERIFIED=0 starter gazetteer (LA/SF/Sacramento/San Diego anchors; UC Berkeley+UCLA; Manzanar; Tule Lake; Nike SF-88L; Morris Dam; Aerojet Rancho Cordova; Empire Mine; La Casa Pacifica; Stow House/Rancho La Patera; Clair Tappaan Lodge; Oakville/Mondavi), scale-aware views+fog, generalized coast/relief/corridors. Remaining: GNIS-verified statewide extract (Lawrence/KC treatment), bulk layers only with per-row source registers, ephemeral categories (factory outlets, Renaissance faires, Red Cross/evacuation) catalogued as planned layers in docs/city-subsurface.md — not data rows. Then Nevada/Arizona as before.",
         "California state-wide viewer: extend DEM/state layers from socal-subsurface pattern; state layer catalog (Nike sites, Aerojet, Morris Dam, Manzanar/POW camps, Western White House, vineyards-by-vintner, UC campuses, Sierra Club huts, mine maps, factory outlets, Renaissance faires, Red Cross/evacuation centers)",
         "Nevada + Arizona next; then territories (Guam, American Samoa, USVI, Midway) before the other states",
         "Country viewer merge a la PC Globe + CIA Factbook notes (anthem/instrument); PC Globe abandonware study and Ghidra->Java experiment; reuse Red October globe in planet viewer"
@@ -183,9 +186,11 @@
         "docs/bbs-viewer-and-netcat-capture.md",
         "docs/synchronet-build-and-uclinux-notes.md",
         "docs/phreaking-boxes-vlsi-notes.md",
-        "docs/xport-pro-synchronet-fit.md"
+        "docs/xport-pro-synchronet-fit.md",
+        "docs/keyhole-disambiguation-deep-dive-2026-10-22.md"
       ],
       "next_actions": [
+        "Round 15 (2026-10-22): Keyhole disambiguation DEEP DIVE DONE (docs/keyhole-disambiguation-deep-dive-2026-10-22.md) — 'Keyhole BBS' is a documented Denver dial-up board (USBBS #127, Nov 1994, 303-477-6337, sysop Linda McCraw), unrelated to Keyhole Inc./EarthViewer; In-Q-Tel investment pinned from IQT's primary 2003-06-25 release (invested Feb 2003, first engagement for NIMA). Remaining: second independent listing for the Denver board (FidoNet nodelists/Boardwatch; F3 capture rules), angel-investor mapping beyond IQT, and FidoNet/ARPANET/payphone LAYER DATASETS — deferred to a round that builds a consumer historical-network viewer (the california frame deliberately does not absorb S6 layers).",
         "Keyhole BBS + forum deep dive; In-Q-Tel / VC / angel-investor mapping",
         "FidoNet + ARPANET map layers; payphone census (Mojave, rest stops, ZIP-coded)",
         "BBS abandonware survey on archive.org + GitHub OSS BBS -> ColdFire JAR for ColdFireJVM continuation"
@@ -208,6 +213,7 @@
         "docs/lantronix-uclinux-deep-dive-2026-10-08.md"
       ],
       "next_actions": [
+        "Round 15 (2026-10-22): re-audited during scoping — hierarchy write-up (goldkey doc §3) and escrow model already exist; CAD/gina checks green in round 14. Remainder is FULLY EXTERNALLY BLOCKED per docs/goldkey-parity-gina-and-units.md §7 (needs a gina.dll binary + JDK/Ghidra, a physical board teardown, or proprietary GoldKey drivers). No code this round by decision; do not invent substitutes.",
         "Round-14 audit (2026-10-22): check:unit-cad 54/54 + gina suite 29/29 green; one vendor spec conflict on record (nMU 2U dims). Remaining = hierarchy write-up + uClinux fax JAR (JDK-gated in sandbox).",
         "Finish master/grandmaster key hierarchy write-up and per-unit CAD/BOM completeness check",
         "Parity backup system design in tandem with gold key drivers",
@@ -415,7 +421,8 @@
         "S4",
         "S5",
         "S6"
-      ]
+      ],
+      "note": "round 15: California state viewer delivered via the shared city-subsurface system as a statewide frame with a sourced starter gazetteer (no GNIS ids claimed); Keyhole/In-Q-Tel context split to S6 doc (docs/keyhole-disambiguation-deep-dive-2026-10-22.md); FidoNet/ARPANET/payphone + political/evacuation/fire/transit layers, NV/AZ, 50-state and PC Globe threads remain open"
     },
     {
       "id": "T5.1",
@@ -429,7 +436,8 @@
       "line": 6,
       "stream": "S6",
       "text": "Keyhole BBS + forum deep dive; In-Q-Tel VC/angel-investor identification",
-      "status": "open"
+      "status": "partial",
+      "note": "round 15: deep dive done — Denver 'Keyhole BBS' (USBBS127, 1994) disambiguated from Keyhole Inc.; In-Q-Tel role identified from primary source; remaining: forum-thread archaeology + angel mapping beyond IQT + second-source BBS listing (F3)"
     },
     {
       "id": "T6.2",

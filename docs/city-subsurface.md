@@ -4,10 +4,14 @@ Reconciliation update: **2026-10-08**. The five city apps and shared engine
 arrived in merged PR #102; this note records how the useful Lawrence/GNIS/DEM
 work from PR #100 fits that system without adding a duplicate Kansas City app.
 
+Round 15 update: **2026-10-22**. A sixth frame, `california`, applies the same
+parametric build at statewide scale (backlog stream S4); see the California
+section below.
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has five city configurations, each packaged as
-its own offline Webxdc:
+The SoCal Subsurface engine now has six configurations — five cities and one
+statewide frame — each packaged as its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
 | --- | --- | --- | --- | --- |
@@ -16,6 +20,7 @@ its own offline Webxdc:
 | Kansas City, Missouri | `kansascity-subsurface.html` | `js/city-subsurface-data-kansascity.js` | `js/city-gazetteer-data-kansascity.js` | `kansascity-subsurface.xdc` |
 | Buffalo, New York | `buffalo-subsurface.html` | `js/city-subsurface-data-buffalo.js` | `js/city-gazetteer-data-buffalo.js` | `buffalo-subsurface.xdc` |
 | Toronto, Ontario | `toronto-subsurface.html` | `js/city-subsurface-data-toronto.js` | `js/city-gazetteer-data-toronto.js` | `toronto-subsurface.xdc` |
+| California (statewide) | `california-subsurface.html` | `js/city-subsurface-data-california.js` | `js/city-gazetteer-data-california.js` | `california-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
@@ -105,6 +110,57 @@ Atlanta, Buffalo, and Toronto retain PR #102's existing packs. Any
 non-GNIS/context coordinate stays at its stated evidence tier; no new
 coordinates or GNIS IDs were inferred for those cities in this reconciliation.
 
+### California statewide frame (round 15, 2026-10-22)
+
+Backlog stream S4 asked for a California viewer. Rather than a one-off page,
+California ships as the sixth configuration of this parametric system, with a
+statewide bounding frame (lon −124.48…−114.13, lat 32.53…42.01). Two small
+scale fixes were required, both written so existing city frames are provably
+unchanged (rebuilding all cities after the change produces zero diff on the
+five existing data packs):
+
+- `viewsFor` in `scripts/build-city-subsurface.mjs` now pulls the overview
+  and underground cameras back with frame width (`max(20, w·0.45)` /
+  `max(32, w·0.7)`); at city scale the floors reproduce the old constants.
+- Fog range in `js/city-subsurface.js` scales with the frame diagonal
+  (`max(45, d·0.55)` / `max(130, d·1.9)`); at city scale it is the old 45/130.
+
+**Starter gazetteer.** Sixteen rows, every one `VERIFIED=0` with no GNIS
+FEATURE_ID claimed, each naming its public source and retrieval date
+(2026-10-22) in the row note. The register anchors the state (Los Angeles,
+San Francisco, Sacramento, San Diego) and seeds the S4 brief's durable
+categories with one sourced exemplar each: UC campuses (Berkeley, Los
+Angeles), wartime relocation sites (Manzanar, Tule Lake), a preserved Nike
+site (SF-88L), the Morris Dam underwater-weapons test reservoir, the Aerojet
+Rancho Cordova rocket-test/Superfund site, the Empire Mine (published
+descriptions document 367 miles of underground passages), La Casa Pacifica,
+the Rancho La Patera Stow House, Clair Tappaan Lodge at Donner Pass, and
+Oakville for the Napa Valley vintner layer. Sources are Wikipedia article
+coordinates, the US EPA TRI facility profile (Aerojet), and the lodge's own
+published location data. A GNIS-verified statewide extract (the Lawrence /
+Kansas City treatment) is a later data round; until then the register must
+not be described as GNIS data.
+
+**Planned layers, not data rows.** Several S4 categories are ephemeral or
+commercial (factory outlet centers, Renaissance faire sites, Red Cross /
+evacuation points, seasonal events). Coordinates for those churn and go
+stale; they are catalogued here as planned context layers for a future data
+round with a dated source register, and are deliberately **not** seeded as
+gazetteer rows. The same applies to bulk themes named in the brief (Nike
+sites statewide, UC/CSU campuses beyond the two anchors, mine-map coverage
+beyond Empire Mine, ranchos beyond Rancho La Patera): exemplar first,
+bulk import only with per-row sources.
+
+**Schematic context.** Coastline, nine relief gaussians (Sierra Nevada,
+Cascades, Coast Ranges, Transverse/Peninsular Ranges, Central Valley,
+Death Valley trough, …), and three corridors (El Camino Real / US-101,
+California Aqueduct, Overland Route via Donner Pass) are generalized
+sketches at the `context` tier, not surveyed geometry. Terrain is the
+labelled synthetic RELIEF field — no California DEM is bundled, and the
+frame is a rectangle, not a state outline. `tests/city-subsurface.test.mjs`
+pins the starter-register contract (all rows unverified, sourced, and
+GNIS-free) and the scale-aware views.
+
 ## Geocache class and local GPX import
 
 Geocaches use a separate evidence tier rather than being quietly mixed with
@@ -141,3 +197,4 @@ different product family and are not substitutes for Geomate.jr evidence.
 - USGS 3DEP: [ImageServer metadata](https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer?f=pjson) and `getSamples`; Lawrence's sample register is `data/lawrence/dem-anchors.json`. Kansas City's exploratory sample values were not persisted, as disclosed above.
 - Geomate.jr: 2014 [Brand 44 User's Guide](https://www.homesciencetools.com/content/reference/Geomatejr_Users_Guide.pdf); see `docs/geomate-jr-firmware-research.md` for the research disposition and license caveat.
 - Local GPX import and BagIt preservation: `docs/geomate-gpx-preservation.md`, `js/gpx-geocache.js`, and `tests/city-subsurface.test.mjs`.
+- California starter rows (round 15): per-row notes in `js/city-gazetteer-data-california.js` name the source for every coordinate — Wikipedia article infoboxes, the [US EPA TRI facility profile](https://enviro.epa.gov/triexplorer/transfer_fac_profile?tri=95670RJTGNAEROJ&trilib=TRIQ1&year=2001) for Aerojet Sacramento Operations (38.642, −121.169), the EPA Superfund profile for site CAD980358832, and Clair Tappaan Lodge's published location data; all retrieved 2026-10-22.

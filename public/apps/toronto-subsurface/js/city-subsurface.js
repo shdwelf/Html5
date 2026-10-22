@@ -38,6 +38,7 @@ const DATA_LOADERS = {
   kansascity: () => import("./city-subsurface-data-kansascity.js"),
   buffalo: () => import("./city-subsurface-data-buffalo.js"),
   toronto: () => import("./city-subsurface-data-toronto.js"),
+  california: () => import("./city-subsurface-data-california.js"),
 };
 const GAZ_LOADERS = {
   lawrence: () => import("./city-gazetteer-data-lawrence.js"),
@@ -45,6 +46,7 @@ const GAZ_LOADERS = {
   kansascity: () => import("./city-gazetteer-data-kansascity.js"),
   buffalo: () => import("./city-gazetteer-data-buffalo.js"),
   toronto: () => import("./city-gazetteer-data-toronto.js"),
+  california: () => import("./city-gazetteer-data-california.js"),
 };
 const DEM_LOADERS = {
   lawrence: async () => {
@@ -58,6 +60,7 @@ const DEM_LOADERS = {
   kansascity: () => import("./city-dem-grid-kansascity.js"),
   buffalo: () => import("./city-dem-grid-buffalo.js"),
   toronto: () => import("./city-dem-grid-toronto.js"),
+  california: () => import("./city-dem-grid-california.js"),
 };
 
 if (!DATA_LOADERS[CITY_ID] || !GAZ_LOADERS[CITY_ID]) {
@@ -220,7 +223,12 @@ if (CITY.requiresDem && !DEM) throw new Error(`${CITY.title} requires a bundled 
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x05080d);
-const FOG = new THREE.Fog(0x05080d, 45, 130);
+// Fog range scales with the frame diagonal so a statewide frame is not
+// fogged out at its far edge; city frames keep the original 45/130 range.
+const [fogX0, fogZ0] = project(BBOX.lon0, BBOX.lat1);
+const [fogX1, fogZ1] = project(BBOX.lon1, BBOX.lat0);
+const frameDiag = Math.hypot(fogX1 - fogX0, fogZ1 - fogZ0);
+const FOG = new THREE.Fog(0x05080d, Math.max(45, frameDiag * 0.55), Math.max(130, frameDiag * 1.9));
 scene.fog = FOG;
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });

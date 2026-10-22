@@ -603,6 +603,451 @@
         ["Don River", "Stream", "hydro.stream", "Toronto", 43.70, -79.35, null, null, 0, "River reach context; Canadian source, not GNIS."],
         ["Toronto's First Post Office (GC7HT4Z)", "Geocache", "rec.geocache", "Toronto", 43.65185, -79.37035, null, null, 0, "GC7HT4Z · letterbox hybrid · official Geocaching.com Geocache of the Week (2024-12-04) prints N 43° 39.111′ W 079° 22.221′; community source, not GNIS."]
       ]
+    },
+    "california": {
+      "title": "CALIFORNIA SUBSURFACE 4Dwm",
+      "subtitle": "Sierra Nevada · Central Valley · Pacific Coast — statewide frame, California",
+      "gazTitle": "CALIFORNIA STARTER GAZETTEER",
+      "gazNote": "Round 15 starter register (2026-10-22): every row is VERIFIED=0, carries no GNIS FEATURE_ID, and names its public source in the row note. A GNIS-verified statewide extract is a later data round.",
+      "state": "CA",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -124.48,
+        "lat0": 32.53,
+        "lon1": -114.13,
+        "lat1": 42.01
+      },
+      "center": {
+        "lon": -119.305,
+        "lat": 37.27
+      },
+      "baseElevationM": 250,
+      "roughnessM": 120,
+      "hasWater": true,
+      "coast": [
+        [
+          -117.25,
+          32.55
+        ],
+        [
+          -117.6,
+          33.4
+        ],
+        [
+          -118.45,
+          33.75
+        ],
+        [
+          -118.9,
+          34.0
+        ],
+        [
+          -119.8,
+          34.42
+        ],
+        [
+          -120.6,
+          34.58
+        ],
+        [
+          -120.9,
+          35.2
+        ],
+        [
+          -121.9,
+          36.6
+        ],
+        [
+          -122.4,
+          37.1
+        ],
+        [
+          -122.52,
+          37.83
+        ],
+        [
+          -123.1,
+          38.9
+        ],
+        [
+          -123.8,
+          39.7
+        ],
+        [
+          -124.1,
+          40.4
+        ],
+        [
+          -124.21,
+          41.0
+        ],
+        [
+          -124.21,
+          41.75
+        ],
+        [
+          -124.1,
+          42.0
+        ]
+      ],
+      "relief": [
+        {
+          "name": "Sierra Nevada",
+          "lon": -119.0,
+          "lat": 37.6,
+          "rx": 0.85,
+          "ry": 2.4,
+          "amp": 2200,
+          "rot": 0.52
+        },
+        {
+          "name": "Southern Cascades",
+          "lon": -121.6,
+          "lat": 40.6,
+          "rx": 0.8,
+          "ry": 1.1,
+          "amp": 1500,
+          "rot": 0.3
+        },
+        {
+          "name": "Klamath Mountains / North Coast Ranges",
+          "lon": -123.4,
+          "lat": 40.8,
+          "rx": 0.7,
+          "ry": 1.0,
+          "amp": 900,
+          "rot": 0.15
+        },
+        {
+          "name": "Central Coast Ranges",
+          "lon": -121.2,
+          "lat": 37.6,
+          "rx": 0.6,
+          "ry": 1.6,
+          "amp": 800,
+          "rot": 0.55
+        },
+        {
+          "name": "Transverse Ranges",
+          "lon": -118.6,
+          "lat": 34.35,
+          "rx": 1.5,
+          "ry": 0.45,
+          "amp": 1600,
+          "rot": 0
+        },
+        {
+          "name": "Peninsular Ranges",
+          "lon": -116.7,
+          "lat": 33.3,
+          "rx": 0.6,
+          "ry": 0.9,
+          "amp": 1300,
+          "rot": 0.5
+        },
+        {
+          "name": "Mojave Desert / Basin and Range",
+          "lon": -116.2,
+          "lat": 35.6,
+          "rx": 1.6,
+          "ry": 1.4,
+          "amp": 700,
+          "rot": 0.2
+        },
+        {
+          "name": "Great Central Valley",
+          "lon": -120.6,
+          "lat": 37.6,
+          "rx": 0.75,
+          "ry": 2.6,
+          "amp": -180,
+          "rot": 0.5
+        },
+        {
+          "name": "Death Valley trough",
+          "lon": -116.9,
+          "lat": 36.4,
+          "rx": 0.35,
+          "ry": 0.7,
+          "amp": -240,
+          "rot": 0.45
+        }
+      ],
+      "corridors": [
+        {
+          "id": "el-camino-real-101",
+          "layer": "roads",
+          "tier": "context",
+          "name": "El Camino Real / US-101 coastal corridor (generalized)",
+          "short": "US-101",
+          "depthM": 0,
+          "path": [
+            [
+              -117.16,
+              32.72
+            ],
+            [
+              -117.6,
+              33.39
+            ],
+            [
+              -118.25,
+              34.05
+            ],
+            [
+              -118.85,
+              34.02
+            ],
+            [
+              -119.7,
+              34.42
+            ],
+            [
+              -120.5,
+              34.61
+            ],
+            [
+              -120.64,
+              35.27
+            ],
+            [
+              -121.66,
+              36.68
+            ],
+            [
+              -122.03,
+              37.37
+            ],
+            [
+              -122.42,
+              37.78
+            ],
+            [
+              -122.7,
+              38.54
+            ],
+            [
+              -123.8,
+              39.74
+            ],
+            [
+              -124.16,
+              40.8
+            ],
+            [
+              -124.21,
+              41.76
+            ]
+          ],
+          "facts": [
+            "Generalized coastal highway corridor following the historic El Camino Real mission road; schematic polyline, not a surveyed alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (US-101 routing)"
+          ]
+        },
+        {
+          "id": "california-aqueduct",
+          "layer": "water",
+          "tier": "context",
+          "name": "California Aqueduct (generalized reach)",
+          "short": "CA Aqueduct",
+          "depthM": 0,
+          "path": [
+            [
+              -121.6,
+              38.05
+            ],
+            [
+              -121.3,
+              37.4
+            ],
+            [
+              -120.8,
+              36.6
+            ],
+            [
+              -120.1,
+              35.7
+            ],
+            [
+              -119.3,
+              35.1
+            ],
+            [
+              -118.9,
+              34.85
+            ],
+            [
+              -118.4,
+              34.55
+            ],
+            [
+              -117.9,
+              34.3
+            ],
+            [
+              -117.4,
+              34.05
+            ],
+            [
+              -117.13,
+              33.87
+            ]
+          ],
+          "facts": [
+            "Generalized reach of the California Aqueduct (State Water Project) from the Sacramento-San Joaquin Delta toward Lake Perris; schematic, not a centerline."
+          ],
+          "sources": [
+            "California Department of Water Resources, State Water Project overview (generalized)"
+          ]
+        },
+        {
+          "id": "overland-route-donner",
+          "layer": "rail",
+          "tier": "context",
+          "name": "Overland Route via Donner Pass (generalized)",
+          "short": "Overland Route",
+          "depthM": 0,
+          "path": [
+            [
+              -121.49,
+              38.58
+            ],
+            [
+              -121.29,
+              38.75
+            ],
+            [
+              -120.95,
+              39.1
+            ],
+            [
+              -120.65,
+              39.24
+            ],
+            [
+              -120.33,
+              39.31
+            ],
+            [
+              -120.18,
+              39.33
+            ],
+            [
+              -120.0,
+              39.32
+            ]
+          ],
+          "facts": [
+            "Generalized Overland Route of the first transcontinental railroad, Sacramento to the Nevada line over Donner Pass; schematic, not a track alignment."
+          ],
+          "sources": [
+            "Generalized from public railroad references (Roseville Subdivision routing)"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "manzanar",
+          "name": "Manzanar National Historic Site",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "park",
+          "lon": -118.15444,
+          "lat": 36.72833,
+          "depthM": 0,
+          "facts": [
+            "Manzanar War Relocation Center (1942-1945); preserved as a National Historic Site."
+          ],
+          "sources": [
+            "National Park Service (nps.gov/manz); coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "empire-mine",
+          "name": "Empire Mine State Historic Park",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "park",
+          "lon": -121.04278,
+          "lat": 39.20361,
+          "depthM": 0,
+          "facts": [
+            "Published park descriptions document 367 miles of underground passages in the Empire Mine workings - the mine-map exemplar for the S4 brief."
+          ],
+          "sources": [
+            "California State Parks; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "nike-sf88l",
+          "name": "Nike Missile Site SF-88L",
+          "layer": "bases",
+          "tier": "official",
+          "kind": "building",
+          "lon": -122.52778,
+          "lat": 37.82694,
+          "depthM": 0,
+          "facts": [
+            "Decommissioned Nike launch site (1954-1974) preserved by the National Park Service in the Marin Headlands."
+          ],
+          "sources": [
+            "National Park Service, Golden Gate NRA; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "morris-dam",
+          "name": "Morris Dam / Morris Reservoir",
+          "layer": "industry",
+          "tier": "official",
+          "kind": "building",
+          "lon": -117.88111,
+          "lat": 34.17472,
+          "depthM": 0,
+          "facts": [
+            "Morris Reservoir was used for underwater missile testing from the 1940s to the 1990s."
+          ],
+          "sources": [
+            "Wikipedia, 'Morris Dam' (retrieved 2026-10-22); coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "aerojet-rancho-cordova",
+          "name": "Aerojet General Corporation Site",
+          "layer": "industry",
+          "tier": "official",
+          "kind": "building",
+          "lon": -121.169,
+          "lat": 38.642,
+          "depthM": 0,
+          "facts": [
+            "Former rocket propulsion development and testing facility; EPA National Priorities List site since 1983."
+          ],
+          "sources": [
+            "US EPA Superfund site profile CAD980358832; coordinate per gazetteer row"
+          ]
+        }
+      ],
+        "gazetteerRows": [
+        ["Los Angeles", "Populated Place", "pop.ppl", "Los Angeles", 34.05, -118.25, null, null, 0, "State-frame anchor city. Coordinate from the Wikipedia article 'Los Angeles' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["San Francisco", "Populated Place", "pop.ppl", "San Francisco", 37.7775, -122.41639, null, null, 0, "State-frame anchor city. Coordinate from the Wikipedia article 'San Francisco' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Sacramento", "Populated Place", "pop.ppl", "Sacramento", 38.58167, -121.49444, null, null, 0, "State capital and state-frame anchor city. Coordinate from the Wikipedia article 'Sacramento, California' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["San Diego", "Populated Place", "pop.ppl", "San Diego", 32.715, -117.1625, null, null, 0, "State-frame anchor city. Coordinate from the Wikipedia article 'San Diego' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Oakville", "Populated Place", "pop.ppl", "Napa", 38.43694, -122.40111, 47, null, 0, "Napa Valley wine-country anchor in the Oakville AVA; Robert Mondavi Winery (est. 1966) is the vintner-layer exemplar for the S4 brief. Coordinate and elevation from the Wikipedia article 'Oakville, California' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["University of California, Berkeley", "School", "manmade.school", "Alameda", 37.8719, -122.2583, null, null, 0, "University of California campus anchor (S4 brief: UC system). Coordinate from the Wikipedia article 'University of California, Berkeley' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["University of California, Los Angeles", "School", "manmade.school", "Los Angeles", 34.0722, -118.4427, null, null, 0, "University of California campus anchor (S4 brief: UC system). Coordinate from the Wikipedia article 'University of California, Los Angeles' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Manzanar", "Park", "admin.park", "Inyo", 36.72833, -118.15444, null, null, 0, "Manzanar War Relocation Center, preserved as a National Historic Site (NPS). Coordinate from the Wikipedia article 'Manzanar' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Tule Lake War Relocation Center", "Park", "admin.park", "Modoc", 41.88944, -121.37472, null, null, 0, "Wartime segregation center; NPS Tule Lake National Monument (site spans the Modoc/Siskiyou county line). Coordinate from the Wikipedia article 'Tule Lake War Relocation Center' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Empire Mine State Historic Park", "Park", "admin.park", "Nevada", 39.20361, -121.04278, null, null, 0, "Historic hard-rock gold mine; published descriptions document 367 miles of underground passages. Coordinate from the Wikipedia article 'Empire Mine State Historic Park' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Nike Missile Site SF-88L", "Military", "manmade.military", "Marin", 37.82694, -122.52778, null, null, 0, "Preserved Nike launch site at Fort Barry (operational 1954-1974), now part of Golden Gate National Recreation Area. Coordinate from the Wikipedia article 'Nike Missile Site SF-88L' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Morris Dam", "Dam", "hydro.dam", "Los Angeles", 34.17472, -117.88111, 351, null, 0, "Morris Reservoir was used for underwater missile testing from the 1940s to the 1990s. Coordinate and normal elevation (351 m) from the Wikipedia article 'Morris Dam' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["La Casa Pacifica", "Building", "manmade.building", "Orange", 33.39099, -117.59708, null, null, 0, "San Clemente estate that served as the 'Western White House'. Coordinate from the Wikipedia article 'La Casa Pacifica' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Stow House", "Building", "manmade.building", "Santa Barbara", 34.44278, -119.85083, null, null, 0, "1873 ranch headquarters of Rancho La Patera in Goleta (NRHP 00001166). Coordinate from the Wikipedia article 'Stow House' (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Clair Tappaan Lodge", "Building", "manmade.building", "Nevada", 39.31791, -120.35103, null, null, 0, "Sierra Club lodge at Donner Pass, built by volunteers in 1934. Coordinate from the lodge's published location data (clairtappaanlodge.com, retrieved 2026-10-22); GNIS FEATURE_ID not claimed."],
+        ["Aerojet General Corporation Site", "Locale", "manmade.locale", "Sacramento", 38.642, -121.169, null, null, 0, "Former liquid- and solid-propellant rocket manufacturing and testing site near Rancho Cordova; EPA Superfund site CAD980358832 (NPL 1983). Coordinate from the US EPA TRI facility profile for Aerojet - Sacramento Operations (retrieved 2026-10-22); GNIS FEATURE_ID not claimed."]
+      ]
     }
   }
 }
