@@ -118,6 +118,7 @@
         "docs/game-corpus-evidence/"
       ],
       "next_actions": [
+        "Round 14 (2026-10-22): spotlight closure complete (tour-only 85->0, pinned by tests/cyberchef-spotlight-coverage.test.mjs) and polyglot_scan MIME fields landed (CLI + registry op). Next: S4/S6 stream work; registry line idle until new ops arrive.",
         "Round 13 (2026-10-22): header ops implemented, spotlight batch (archive triage, TomTom round-trip, SHA-2/checksums, data encodings; tour-only 95->85), md5crypt/sha512crypt JtR-vector audit added. Next: remaining tour-only spotlight batches; optional polyglot_scan MIME fields.",
         "Next: header/ACE/LHA/unzip ops (flagged missing), spotlight packs, md5crypt/sha512crypt vectors"
       ]
@@ -207,6 +208,7 @@
         "docs/lantronix-uclinux-deep-dive-2026-10-08.md"
       ],
       "next_actions": [
+        "Round-14 audit (2026-10-22): check:unit-cad 54/54 + gina suite 29/29 green; one vendor spec conflict on record (nMU 2U dims). Remaining = hierarchy write-up + uClinux fax JAR (JDK-gated in sandbox).",
         "Finish master/grandmaster key hierarchy write-up and per-unit CAD/BOM completeness check",
         "Parity backup system design in tandem with gold key drivers",
         "uClinux transcription + softmodem fax JAR build"
@@ -521,7 +523,7 @@
       "stream": "S10",
       "text": "Comparative optimization of all CyberChef recipes",
       "status": "partial",
-      "note": "comparative pass (round 3); AES+NaCl known-answer vectors (round 4); thin categories closed with 5 sourced ops + GTA codec (round 5); compare --spotlights enumerator + 13 themed spotlight packs for tour-only ops (round 6); remaining: spotlight batches for the rest of the 144 tour-only ops; round 13: +4 archive-header ops (507->511) with archive-triage spotlight, TomTom round-trip + 2 tour-only batches (85 tour-only ops remain), cookbook/xdc/wiki-corpus staleness swept"
+      "note": "comparative pass (round 3); AES+NaCl known-answer vectors (round 4); thin categories closed with 5 sourced ops + GTA codec (round 5); compare --spotlights enumerator + 13 themed spotlight packs for tour-only ops (round 6); remaining: spotlight batches for the rest of the 144 tour-only ops; round 13: +4 archive-header ops (507->511) with archive-triage spotlight, TomTom round-trip + 2 tour-only batches (85 tour-only ops remain), cookbook/xdc/wiki-corpus staleness swept; round 14: spotlight sub-item CLOSED (18 packs, tour-only 0, guard test added); polyglot MIME fields done"
     },
     {
       "id": "T10.2",
