@@ -12,6 +12,7 @@
     "build:casefiles": "node tools/build_casefiles.mjs && node scripts/build-casefiles-xdc.mjs",
     "build:cheyenne": "node scripts/build-cheyenne-xdc.mjs",
     "build:city-subsurface": "node scripts/build-city-dem-data.mjs && node scripts/build-city-subsurface.mjs && node scripts/build-city-subsurface-xdc.mjs",
+    "build:historical-network": "node scripts/build-historical-network.mjs",
     "build:four-corners": "node scripts/build-four-corners-xdc.mjs",
     "build:cia-museum": "node scripts/build-cia-museum-xdc.mjs",
     "build:cyberchef": "node scripts/build-cyberchef-xdc.mjs",

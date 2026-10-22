@@ -91,6 +91,31 @@ and [`city-subsurface.md`](city-subsurface.md). Next in sequence: territories
 before the remaining states; bulk California themes and archived-class
 features still require dated per-row source registers.
 
+**Round 17 status (2026-10-22): partial.** Guam, American Samoa
+(Tutuila–Manuʻa only; Swains Island/Rose Atoll explicitly omitted), the U.S.
+Virgin Islands, and Midway shipped as configurations 9–12 with 12/12/12/6
+per-ID GNIS starter rows. The shared engine now formats N/S/E/W by sign and
+renders disconnected coastline polylines; Hagåtña is correctly retained as
+GNIS Civil rather than a populated place. Provenance and rejections are in
+[`../resources/city-subsurface/gnis-territory-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-territory-source-register-2026-10-22.json).
+Next in sequence: remaining states in source-register batches; bulk
+California themes and archived-class features still require dated per-row
+registers and an explicit archival-source decision.
+
+**Round 18 status (2026-10-22): partial.** Utah, Colorado, and New Mexico
+shipped as configurations 13–15 and complete the Four Corners state batch,
+each with a 12/12 per-ID `VERIFIED=1` GNIS starter register, synthetic
+relief, and generalized context corridors. Provenance, identity decisions,
+and deliberately unseeded candidates are in
+[`../resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json).
+Important guards include Green River Stream versus town; Grand Lake lake
+versus town; South Platte's returned Logan County primary-county provenance
+versus its sequence-1 point; and Pecos River remaining a corridor because
+two Eddy County Stream records are indistinguishable.
+Next in sequence: remaining states in dated per-row source-register batches;
+bulk California themes and archived-class features still require separate
+explicit source decisions before any new verified rows.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
@@ -112,6 +137,32 @@ payphone dataset has been seeded. USBBS #134 (July 1995) repeats the Denver
 Keyhole BBS listing, but it is the same publication lineage as #127—not the
 requested second independent listing. Next: source-rights decision, lawful
 F3 captures, and a one-snapshot Keyhole vertical slice before adapters.
+
+**Round 17 status (2026-10-22): partial.** Phase 0 shipped as a tested
+Keyhole evidence fixture, standalone
+[`historical-network-viewer.html`](../historical-network-viewer.html), shared
+validator/merge rules, and a local TEXTFILES-style BBS-list importer; see
+[`historical-network-keyhole-fixture-2026-10-22.md`](historical-network-keyhole-fixture-2026-10-22.md).
+The USBBS rights decision is conservative: short cited fixtures and local
+import only, so the fixture is structurally valid but not capture-ready.
+TEXTFILES.COM's 303 compilation repeats the Denver record with a 1994–1996
+span, but its per-record source—and therefore independence from USBBS—is
+unresolved. Exact NodelistDB historical searches found no Denver match.
+Next: lawfully capture and hash redistributable snapshots before bundled
+FidoNet/ARPANET/payphone datasets.
+
+**Round 18 status (2026-10-22): partial.** The FidoNet Phase 2 local
+adapter shipped: an FTS-5000 nodelist parser that derives `zone:net/node`
+addresses and preserves branch/status/flag observations, local SHA-256
+capture metadata in the viewer, format detection, and edition-checked
+nodediff/chain application in the shared model. See
+[`historical-network-fidonet-adapter-2026-10-22.md`](historical-network-fidonet-adapter-2026-10-22.md).
+No historical nodelist was bundled: checked prologues allow intra-FidoNet
+use/distribution but reserve other uses absent express written consent, so
+a hashed local import remains local-only and `captureReady` remains false.
+No new Keyhole evidence was claimed. Next: obtain a lawfully redistributable
+complete snapshot/diff chain before deriving hierarchy/route edges; then a
+dated ARPANET textual source and local payphone observations.
 
 ### S7 · Goldkey / Gina.dll parity backup, CAD + BOM, uClinux fax — *partial*
 Continue [`goldkey-parity-gina-and-units.md`](goldkey-parity-gina-and-units.md) with the

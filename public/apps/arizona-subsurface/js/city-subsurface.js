@@ -41,6 +41,13 @@ const DATA_LOADERS = {
   california: () => import("./city-subsurface-data-california.js"),
   nevada: () => import("./city-subsurface-data-nevada.js"),
   arizona: () => import("./city-subsurface-data-arizona.js"),
+  guam: () => import("./city-subsurface-data-guam.js"),
+  americansamoa: () => import("./city-subsurface-data-americansamoa.js"),
+  usvirginislands: () => import("./city-subsurface-data-usvirginislands.js"),
+  midway: () => import("./city-subsurface-data-midway.js"),
+  utah: () => import("./city-subsurface-data-utah.js"),
+  colorado: () => import("./city-subsurface-data-colorado.js"),
+  newmexico: () => import("./city-subsurface-data-newmexico.js"),
 };
 const GAZ_LOADERS = {
   lawrence: () => import("./city-gazetteer-data-lawrence.js"),
@@ -51,6 +58,13 @@ const GAZ_LOADERS = {
   california: () => import("./city-gazetteer-data-california.js"),
   nevada: () => import("./city-gazetteer-data-nevada.js"),
   arizona: () => import("./city-gazetteer-data-arizona.js"),
+  guam: () => import("./city-gazetteer-data-guam.js"),
+  americansamoa: () => import("./city-gazetteer-data-americansamoa.js"),
+  usvirginislands: () => import("./city-gazetteer-data-usvirginislands.js"),
+  midway: () => import("./city-gazetteer-data-midway.js"),
+  utah: () => import("./city-gazetteer-data-utah.js"),
+  colorado: () => import("./city-gazetteer-data-colorado.js"),
+  newmexico: () => import("./city-gazetteer-data-newmexico.js"),
 };
 // DEM packs are optional for every frame except a config marked
 // demRequired. Route them through a variable-specifier import so a missing
@@ -73,6 +87,13 @@ const DEM_LOADERS = {
   california: () => importDem("./city-dem-grid-california.js"),
   nevada: () => importDem("./city-dem-grid-nevada.js"),
   arizona: () => importDem("./city-dem-grid-arizona.js"),
+  guam: () => importDem("./city-dem-grid-guam.js"),
+  americansamoa: () => importDem("./city-dem-grid-americansamoa.js"),
+  usvirginislands: () => importDem("./city-dem-grid-usvirginislands.js"),
+  midway: () => importDem("./city-dem-grid-midway.js"),
+  utah: () => importDem("./city-dem-grid-utah.js"),
+  colorado: () => importDem("./city-dem-grid-colorado.js"),
+  newmexico: () => importDem("./city-dem-grid-newmexico.js"),
 };
 
 if (!DATA_LOADERS[CITY_ID] || !GAZ_LOADERS[CITY_ID]) {
@@ -321,8 +342,15 @@ const sea = new THREE.Mesh(
 );
 if (CITY.hasWater) groups.terrain.add(sea);
 
-if (COAST && COAST.length > 1) {
-  const pts = COAST.map(([lon, lat]) => {
+// COAST is backward-compatible: either one polyline ([[lon, lat], ...]) or
+// several disconnected island polylines ([[[lon, lat], ...], ...]).
+const coastLines = !COAST?.length
+  ? []
+  : Array.isArray(COAST[0]?.[0])
+    ? COAST.filter((line) => Array.isArray(line) && line.length > 1)
+    : [COAST];
+for (const line of coastLines) {
+  const pts = line.map(([lon, lat]) => {
     const [x, z] = project(lon, lat);
     return new THREE.Vector3(x, elevY(Math.max(0, elevationAt(lon, lat))) + 0.05, z);
   });
@@ -1003,7 +1031,7 @@ function rebuildDepths() {
 /* ----------------------------------------------------------- detail panel */
 
 const detailBody = $("detailBody");
-const fmtLL = ([lon, lat]) => `${lat.toFixed(3)}°N ${Math.abs(lon).toFixed(3)}°W`;
+const fmtLL = ([lon, lat]) => `${Math.abs(lat).toFixed(3)}°${lat >= 0 ? "N" : "S"} ${Math.abs(lon).toFixed(3)}°${lon >= 0 ? "E" : "W"}`;
 
 function renderDetail(record) {
   if (!record) {
@@ -1121,7 +1149,7 @@ renderer.domElement.addEventListener("pointermove", (e) => {
   if (!hit) return;
   const [lon, lat] = lonLatFromXZ(hit.point.x, hit.point.z);
   const elev = elevationAt(lon, lat);
-  if (hud.lonlat) hud.lonlat.textContent = `${lat.toFixed(3)}N ${Math.abs(lon).toFixed(3)}W`;
+  if (hud.lonlat) hud.lonlat.textContent = `${Math.abs(lat).toFixed(3)}${lat >= 0 ? "N" : "S"} ${Math.abs(lon).toFixed(3)}${lon >= 0 ? "E" : "W"}`;
   if (hud.elev) hud.elev.textContent = `${Math.round(elev)} m (${Math.round(elev * 3.281)} ft)`;
 });
 
@@ -1231,7 +1259,7 @@ function tick(now) {
   if (hud.cam) hud.cam.textContent = `${camera.position.x.toFixed(1)}, ${camera.position.y.toFixed(1)}, ${camera.position.z.toFixed(1)}`;
   if (hud.target) {
     const [lon, lat] = lonLatFromXZ(controls.target.x, controls.target.z);
-    hud.target.textContent = `${lat.toFixed(3)}N ${Math.abs(lon).toFixed(3)}W`;
+    hud.target.textContent = `${Math.abs(lat).toFixed(3)}${lat >= 0 ? "N" : "S"} ${Math.abs(lon).toFixed(3)}${lon >= 0 ? "E" : "W"}`;
   }
   renderer.render(scene, camera);
   if (miniRenderer && miniCam) {

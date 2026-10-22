@@ -1,9 +1,27 @@
 # Historical network viewer — consumer scope
 
 *Round 16 scoping note, 2026-10-22. This is a product/data contract for
-backlog stream S6. It deliberately ships **no viewer and no network dataset
-yet**: its purpose is to give ARPANET, FidoNet, BBS-list, and payphone records
-an evidence model before any of them are plotted.*
+backlog stream S6. Its purpose is to give ARPANET, FidoNet, BBS-list, and
+payphone records an evidence model before any of them are plotted.*
+
+*Round 17 update, 2026-10-22: Phase 0 is now implemented as a tested
+one-system citation fixture, a standalone
+[`historical-network-viewer.html`](../historical-network-viewer.html), and a
+local TEXTFILES-style list importer. See
+[`historical-network-keyhole-fixture-2026-10-22.md`](historical-network-keyhole-fixture-2026-10-22.md).
+This still ships **no bundled ARPANET/FidoNet/BBS/payphone dataset**: the
+USBBS rights decision is citation-only/local-import-only, and the validator
+reports the fixture as structurally valid but not capture-ready.*
+
+*Round 18 update, 2026-10-22: the FidoNet Phase 2 adapter now exists in the
+shared model and viewer as a **local-import-only** FTS-5000 nodelist parser,
+SHA-256 capture hashing for user-supplied bytes, format detection, and
+edition-checked nodediff/chain application for programmatic callers. See
+[`historical-network-fidonet-adapter-2026-10-22.md`](historical-network-fidonet-adapter-2026-10-22.md).
+No historical nodelist was bundled: checked prologues reserve non-FidoNet
+uses absent express written consent. The correct bundled-dataset state is
+therefore still blocked, but the parser/diff tooling is no longer the
+blocker.*
 
 ## Decision
 
@@ -154,11 +172,23 @@ default is therefore:
 
 ### FidoNet nodelists and diffs
 
-A nodelist adapter should parse the record grammar, flags, hierarchy, phone
-or IP fields, and publication epoch, and should preserve the raw line. A diff
-is not a complete snapshot unless its parent snapshot and application result
-are recorded. Private/unpublished nodes, points, and hold/down states need
-first-class display states rather than deletion.
+**Round 18 status: adapter implemented; bundled snapshot still rights-gated.**
+`parseFidonetNodelist` parses the FTS-5000 record grammar, flags, special
+header, branch hierarchy, phone/IP field forms, and publication date, and
+preserves the raw line. `Zone`/`Region`/`Host`/`Hub` context derives
+`zone:net/node` addresses without inferring physical edges. `Pvt`, `Hold`,
+`Down`, and `-Unpublished-` remain first-class non-dialing states.
+`applyFidonetNodediff` and `applyFidonetNodediffChain` implement the A/C/D
+editing script with exact first-line edition checks and partial-edit
+refusal. The viewer hashes user-supplied bytes locally and can import a
+complete nodelist; it detects a standalone diff rather than guessing the
+previous edition. Header CRC values are preserved but not verified.
+
+Historical nodelist prologues checked in Round 18 grant intra-FidoNet
+use/distribution for FidoNet communication and reserve other uses absent
+express written consent. The safe repository treatment therefore matches
+USBBS: local user import and synthetic tests now; no transformed bundled
+nodelist until a rights basis is documented.
 
 ### ARPANET material
 
@@ -221,24 +251,47 @@ keep each bundle small, as the city-subsurface packs already do.
 
 ### Phase 0 — provenance spike
 
+**Round 17 status: implemented as a citation fixture; capture-ready sample
+snapshots remain open.**
+
 - Decide the rights treatment for USBBS and any Boardwatch scans.
+  *Round 17 decision: USBBS is citation-only in the repository and
+  local-import-only for bulk work until permission or another rights basis is
+  documented. TEXTFILES historical compilations receive the same treatment.*
 - Capture two or three lawfully usable sample snapshots with hashes.
+  *Still open: the shipped fixture is intentionally `captureReady: false`.*
 - Write schema fixtures by hand, including ambiguous and rejected matches.
+  *Done for Keyhole, including Keyhole Inc. and the distinct 818 Keyhole BBS
+  as rejected matches.*
 
 ### Phase 1 — vertical slice
 
+**Round 17 status: one-system slice shipped; full geographic map deferred.**
+
 - One snapshot, one locality, and one named system rendered in map, graph,
-  and record views.
+  and record views. *The shipped page renders the place as a Denver
+  city-level schematic uncertainty area rather than a geographic pin, shows
+  one node with zero edges, and gives the full record/source view.*
 - Keyhole BBS is the natural fixture because it is small, dated, and tests
   city-level place precision, same-name disambiguation, and repeated-listing
   persistence.
-- No bulk import yet.
+- No bulk import yet. *Bulk text can be parsed locally, but no resulting
+  dataset is bundled or canonicalized automatically.*
 
 ### Phase 2 — FidoNet adapter
 
-- Import one complete nodelist and one applied diff.
-- Render hierarchy/routes as dated logical edges.
-- Add snapshot diff tests.
+**Round 18 status: parser and diff engine implemented; historical snapshot
+and derived graph still open.**
+
+- Import one complete nodelist and one applied diff. *The adapter and
+  edition-checked diff/chain application are implemented and tested with
+  synthetic text. A historical snapshot remains unbundled for rights
+  reasons.*
+- Render hierarchy/routes as dated logical edges. *Not yet: administrative
+  lines are observations with branch metadata, deliberately not edges until
+  parent-versus-route semantics are designed and reviewed.*
+- Add snapshot diff tests. *Diff-application tests are done;
+  observation-level snapshot comparison and merge review remain open.*
 
 ### Phase 3 — ARPANET adapter
 
@@ -273,43 +326,64 @@ A dataset is not ready to ship unless tests can prove that:
 
 Round 15 established the essential disambiguation: the BBS referent is the
 Denver dial-up board, not Keyhole, Inc./EarthViewer. Round 16 adds a second
-dated listing, with an important qualification.
+dated USBBS listing, and Round 17 adds a separate retrospective compilation;
+each carries a qualification that must remain attached to the claim.
 
 | Date | Source | Record | What it proves | Limit |
 | --- | --- | --- | --- | --- |
 | Nov 1994 | USBBS list #127 | Denver, Colorado; `303-477-6337`; sysop Linda McCraw; “Keyhole BBS” | A board of that name was listed in Denver in 1994. | One compiled BBS list; no street address or network affiliation should be inferred. |
 | Jul 1995 | `USBBS134.LST`, Darwin Systems/USBBS list #134 | The same number, city, sysop, and “Keyhole BBS” name recur; the line's first-listed code is `123` under the header's column key. | The listing persisted across USBBS editions into mid-1995 and had first appeared by list #123. | This is a second *edition of the same publication lineage*, not a second independent publisher/listing. |
+| 1994–1996 span (retrospective) | TEXTFILES.COM, “Historical List of BBSes in the 303 Area Code” | `303-477-6337`, “Keyhole BBS”, `DENVER, CO (1994-1996)`; no sysop or software printed. | A separate compilation repeats the number/name/city and extends the claimed span through 1996. | The compilation says it was created from many sources but does not identify this record's source, so independence from USBBS is unresolved; the span is one retrospective claim, not annual observations. |
 
-On 2026-10-22, exact searches for the number, board name, and sysop, plus a
-FidoNet-nodelist-oriented query, located the USBBS #134 repetition but no
-Boardwatch or FidoNet listing in the indexed results consulted. That is a
-negative search result, not proof that no other listing exists. The next
-capture targets remain dated Denver-area FidoNet nodelists/diffs and lawful
-Boardwatch captures under F3.
+On 2026-10-22, Round 17 repeated exact searches for the number, board name,
+and sysop; queried the NodelistDB historical API by exact system and sysop
+with `latest_only=false`; and inspected the TEXTFILES 303 historical list.
+No exact FidoNet or Boardwatch listing was located. A broad
+`system_name=Keyhole` NodelistDB query returned an irrelevant fuzzy
+Phoenix/Barnaul node, which the fixture records as a search artifact rather
+than a candidate. Indexed February 1994 text also surfaced a distinct
+`818-545-0870` “The Keyhole BBS” run by Greg Hiscott; that record is a rejected
+same-name match, not the Denver board. Negative results do not prove that no
+other Denver listing exists. The next capture targets remain lawfully usable
+Denver-area FidoNet nodelists/diffs and Boardwatch captures under F3.
 
 Primary web citations for this ledger:
 
 - USBBS #134 file and header/column key:
   <https://textfiles.meulie.net/bbs/BBSLISTS/USBBS/usbbs134.lst>
-- TEXTFILES.COM historical 303 BBS index (capture target and cross-check
-  corpus): <http://bbslist.textfiles.com/303/>
+- TEXTFILES.COM historical 303 BBS text (Keyhole record keyed by
+  `303-477-6337`): <http://bbslist.textfiles.com/303/303.txt>
+- NodelistDB historical node API:
+  <https://nodelist.fidonet.cc/api/nodes>
 - Round-15 disambiguation and the #127 evidence:
   [`keyhole-disambiguation-deep-dive-2026-10-22.md`](keyhole-disambiguation-deep-dive-2026-10-22.md)
+- Round-17 fixture, rights decision, and parser:
+  [`historical-network-keyhole-fixture-2026-10-22.md`](historical-network-keyhole-fixture-2026-10-22.md)
+- Round-18 FidoNet adapter, nodediff contract, local hashing, and rights
+  gate:
+  [`historical-network-fidonet-adapter-2026-10-22.md`](historical-network-fidonet-adapter-2026-10-22.md)
 
-## Open decisions for the build round
+## Decisions and remaining build questions
 
-1. **Rights:** Can transformed USBBS records be bundled, or is USBBS limited
-   to local user import plus short cited fixtures?
-2. **Place gazetteer:** Which city/site reference set supplies coarse place
-   points, and what uncertainty radius is assigned per granularity?
-3. **Identity keys:** Which fields are sufficient to merge BBS records across
-   lists when a number changes but name/sysop/city persist?
-4. **Graph semantics:** Which FidoNet relationships count as edges in the
-   default topology—administrative parent, mail routing, or both as separate
-   edge layers?
-5. **Bundle size:** One pack per snapshot, per network/year, or per locality?
-   This should follow measured fixture sizes, not be guessed in the scope.
+1. **Rights — resolved conservatively in Round 17:** transformed USBBS
+   records are not bundled. USBBS is limited to local user import plus short
+   cited fixtures unless permission or another rights basis is documented.
+2. **Place gazetteer:** still open for a future multi-system map. The
+   Keyhole slice avoids the question by storing no coordinate for Denver;
+   it does not assign a city centroid or radius.
+3. **Identity keys — partial rule implemented:** telephone + board name +
+   locality can produce a merge candidate; sysop agreement raises
+   confidence. Display-name equality alone is rejected, and a changed number
+   with persistent name/sysop/city remains manual review rather than an
+   automatic merge.
+4. **Graph semantics:** still open. The Round 18 parser emits branch
+   observations and metadata but draws no FidoNet edge in the Keyhole slice,
+   so administrative-parent versus mail-route layers remain a design
+   decision before derived graph work.
+5. **Bundle size:** still follow measured captured-fixture sizes. The
+   one-system citation pack does not answer snapshot/year/locality packing.
 
-Until those are answered, the correct state is scoped but unbuilt. That is
-preferable to seeding ARPANET/FidoNet/payphone coordinates into an unrelated
-viewer where their dates and uncertainties would be invisible.
+The correct state is therefore **Phase 0 built, Phase 2 local adapter
+built, bundled datasets still blocked**. That is preferable to seeding
+ARPANET/FidoNet/payphone claims without captured snapshots, rights, and
+hashes or hiding their dates and uncertainties inside an unrelated viewer.

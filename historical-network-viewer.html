@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Historical Network Viewer — Keyhole BBS evidence slice</title>
+  <meta name="description" content="Offline historical-network evidence viewer for the Denver Keyhole BBS, with observation-first provenance plus local TEXTFILES and FidoNet nodelist import.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07111f;
+      --panel: #0d1b2e;
+      --panel-2: #10243e;
+      --ink: #eef7ff;
+      --muted: #9db4ca;
+      --line: #264563;
+      --accent: #67e8f9;
+      --warn: #fbbf24;
+      --bad: #fb7185;
+      --ok: #86efac;
+      --radius: 16px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: radial-gradient(circle at 20% 0%, #12365d 0, transparent 36rem), var(--bg); color: var(--ink); }
+    a { color: var(--accent); }
+    header, main, footer { width: min(1220px, calc(100% - 32px)); margin: 0 auto; }
+    header { padding: 42px 0 20px; }
+    .eyebrow { color: var(--accent); font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { margin: .35rem 0 .6rem; font-size: clamp(2rem, 5vw, 4.2rem); line-height: .98; letter-spacing: -.045em; }
+    h2 { margin: 0 0 .8rem; font-size: 1.25rem; }
+    h3 { margin: 1rem 0 .45rem; font-size: 1rem; }
+    p, li { line-height: 1.58; }
+    .lede { max-width: 850px; color: var(--muted); font-size: 1.06rem; }
+    .grid { display: grid; grid-template-columns: minmax(320px, .9fr) minmax(0, 1.6fr); gap: 18px; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+    .card, .stat { background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018)); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; box-shadow: 0 18px 50px rgba(0,0,0,.18); }
+    .stat strong { display: block; font-size: 1.65rem; line-height: 1; }
+    .stat span { color: var(--muted); font-size: .86rem; }
+    .notice { border-color: #66531e; background: #241d0d; }
+    .notice strong { color: var(--warn); }
+    .controls { display: grid; grid-template-columns: 1.4fr .9fr .8fr auto auto; gap: 12px; align-items: end; margin: 18px 0; }
+    label { display: grid; gap: 7px; color: var(--muted); font-size: .88rem; font-weight: 650; }
+    input, select, textarea, button { border: 1px solid var(--line); border-radius: 10px; background: #081729; color: var(--ink); padding: 10px 12px; font: inherit; }
+    button { cursor: pointer; background: #12365d; font-weight: 700; }
+    button:hover { border-color: var(--accent); }
+    button.secondary { background: #0d1b2e; }
+    textarea { width: 100%; min-height: 170px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .86rem; }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { border-bottom: 1px solid rgba(98, 140, 180, .22); padding: 10px 8px; text-align: left; vertical-align: top; }
+    th { color: var(--muted); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+    .table-wrap { overflow-x: auto; }
+    .pill { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; font-size: .78rem; color: var(--muted); white-space: nowrap; }
+    .pill.ok { color: var(--ok); border-color: #2f6b43; }
+    .pill.warn { color: var(--warn); border-color: #66531e; }
+    .pill.bad { color: var(--bad); border-color: #71384a; }
+    dl { display: grid; grid-template-columns: 150px 1fr; gap: 7px 14px; }
+    dt { color: var(--muted); font-weight: 700; }
+    dd { margin: 0; overflow-wrap: anywhere; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #050b14; border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+    .muted { color: var(--muted); }
+    .small { font-size: .88rem; }
+    .stack { display: grid; gap: 18px; }
+    .import-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin: 12px 0; }
+    .file-label { max-width: 360px; }
+    .svg-wrap { background: #050b14; border: 1px solid var(--line); border-radius: 12px; padding: 8px; }
+    svg text { fill: var(--ink); font-family: inherit; }
+    svg .muted-text { fill: var(--muted); }
+    footer { color: var(--muted); padding: 24px 0 42px; }
+    @media (max-width: 900px) {
+      .grid, .controls { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      dl { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">S6 · Historical networks · Phase 0/1 vertical slice</div>
+    <h1>Keyhole BBS, as evidence—not as a pin.</h1>
+    <p class="lede">A one-system historical-network slice for the Denver dial-up board documented in 1994–1996. Every normalized claim resolves to a dated observation, a snapshot locator, a rights status, and an explicit statement of what the record does not prove.</p>
+  </header>
+
+  <main>
+    <section class="card notice" aria-label="Safety and evidence notice">
+      <strong>Historical record only.</strong>
+      The telephone number below belongs to dated 1990s listings; do not dial or probe it. Denver is a city-level place label with no plotted coordinate. USBBS remains citation-only in this repository, and the TEXTFILES record is a retrospective compilation whose per-record source is unresolved.
+    </section>
+
+    <section class="stats" aria-label="Evidence pack summary">
+      <div class="stat"><strong id="statObservations">—</strong><span>observations</span></div>
+      <div class="stat"><strong id="statSnapshots">—</strong><span>source snapshots</span></div>
+      <div class="stat"><strong id="statSpan">—</strong><span>derived observation span</span></div>
+      <div class="stat"><strong id="statReady">—</strong><span>capture-ready dataset?</span></div>
+    </section>
+
+    <section class="card controls" aria-label="Record controls">
+      <label>Search observations
+        <input id="searchInput" type="search" placeholder="Name, phone, sysop, locality…">
+      </label>
+      <label>Snapshot
+        <select id="snapshotSelect"><option value="">All snapshots</option></select>
+      </label>
+      <label>Year <span id="yearOutput">all years</span>
+        <input id="yearInput" type="range" min="1993" max="1997" step="1" value="1993">
+      </label>
+      <button id="downloadJson" type="button">Export pack JSON</button>
+      <button id="downloadCsv" type="button" class="secondary">Export observations CSV</button>
+    </section>
+
+    <div class="grid">
+      <div class="stack">
+        <section class="card" aria-labelledby="placeHeading">
+          <h2 id="placeHeading">Place / topology — schematic, not a map</h2>
+          <div class="svg-wrap">
+            <svg viewBox="0 0 520 250" width="100%" role="img" aria-labelledby="svgTitle svgDesc">
+              <title id="svgTitle">Denver city-level uncertainty box containing one Keyhole BBS node</title>
+              <desc id="svgDesc">The sources name Denver only. There is no exact site coordinate and no network edge.</desc>
+              <rect x="35" y="30" width="450" height="180" rx="24" fill="rgba(103,232,249,.07)" stroke="#67e8f9" stroke-dasharray="8 7"></rect>
+              <text x="55" y="62" font-size="18" font-weight="700">Denver, Colorado</text>
+              <text class="muted-text" x="55" y="86" font-size="13">city-level place · not geocoded · no exact pin</text>
+              <circle cx="260" cy="140" r="28" fill="#12365d" stroke="#67e8f9" stroke-width="2"></circle>
+              <text x="260" y="136" font-size="13" font-weight="700" text-anchor="middle">KEYHOLE</text>
+              <text class="muted-text" x="260" y="155" font-size="11" text-anchor="middle">BBS</text>
+              <text class="muted-text" x="260" y="192" font-size="12" text-anchor="middle">3 observations · 0 edges</text>
+            </svg>
+          </div>
+          <p class="small muted">No FidoNet address, mail route, physical cable, street address, or current telephone assignment is inferred. A negative NodelistDB search is recorded below, not converted into proof of absence.</p>
+          <div id="validationSummary"></div>
+        </section>
+
+        <section class="card" aria-labelledby="mergeHeading">
+          <h2 id="mergeHeading">Merge log and rejected matches</h2>
+          <div id="mergeList"></div>
+          <h3>Negative searches</h3>
+          <div id="negativeSearchList"></div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="card" aria-labelledby="recordHeading">
+          <h2 id="recordHeading">Records</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date / span</th><th>Snapshot</th><th>System</th><th>Place</th><th>Tier</th><th></th></tr></thead>
+              <tbody id="recordRows"></tbody>
+            </table>
+          </div>
+          <p id="recordCount" class="muted small"></p>
+        </section>
+
+        <section class="card" aria-labelledby="detailHeading">
+          <h2 id="detailHeading">Source drawer</h2>
+          <div id="observationDetail" class="muted">Select a record to inspect its locator, snapshot rights, fields, warnings, and allowed excerpt.</div>
+        </section>
+      </div>
+    </div>
+
+    <section class="card" style="margin-top:18px" aria-labelledby="importHeading">
+      <h2 id="importHeading">Local BBS-list import</h2>
+      <p class="muted">Paste or load a TEXTFILES-style historical list (<code>303.txt</code> shape) or an FTS-5000 FidoNet distribution nodelist. Parsing and SHA-256 hashing happen locally in this page; nothing is uploaded and no canonical merge is performed automatically. A nodediff is an editing script, not a standalone list: this single-text slice detects it and refuses to guess its previous edition, while the shared model exposes edition-checked diff application for callers that supply both inputs.</p>
+      <label>Import format
+        <select id="importFormat">
+          <option value="auto" selected>Auto-detect</option>
+          <option value="textfiles-historical-list">TEXTFILES historical list</option>
+          <option value="fidonet-nodelist">FidoNet nodelist (FTS-5000)</option>
+          <option value="fidonet-nodediff">FidoNet nodediff (detect only here)</option>
+        </select>
+      </label>
+      <label>List text
+        <textarea id="importText" spellcheck="false">303-477-6337 | Keyhole BBS
+              | DENVER, CO (1994-1996)
+--------------+-----------------------------------------------------------
+818-545-0870 | The Keyhole BBS
+              | UNKNOWN, CA (1994)
+        SYSOP | Greg Hiscott
+     SOFTWARE | XBBS</textarea>
+      </label>
+      <div class="import-actions">
+        <label class="file-label">Load a local text file
+          <input id="importFile" type="file">
+        </label>
+        <button id="parseImport" type="button">Parse locally</button>
+        <button id="downloadImport" type="button" class="secondary" disabled>Download parsed JSON</button>
+      </div>
+      <div id="importSummary" class="muted">No local import parsed yet.</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Locator</th><th>Phone</th><th>System</th><th>Place / years</th><th>Sysop</th><th>Comparison with Denver fixture</th></tr></thead>
+          <tbody id="importRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Source fixture: <code>resources/historical-network/keyhole-evidence-pack-2026-10-22.json</code> ·
+    Scope: <a href="docs/historical-network-viewer-scope-2026-10-22.md">historical-network viewer scope</a> ·
+    Fixture notes: <a href="docs/historical-network-keyhole-fixture-2026-10-22.md">Round 17 Keyhole fixture</a> ·
+    FidoNet adapter: <a href="docs/historical-network-fidonet-adapter-2026-10-22.md">Round 18 local import and nodediff contract</a>
+  </footer>
+
+  <script type="module">
+    import { KEYHOLE_EVIDENCE_PACK } from "./js/historical-network-keyhole-data.js";
+    import {
+      assessMergeCandidate,
+      detectHistoricalImportFormat,
+      observationsToCsv,
+      parseFidonetNodelist,
+      parseTextfilesHistoricalList,
+      searchObservations,
+      sha256Hex,
+      summarizeEvidencePack,
+      validateEvidencePack,
+    } from "./js/historical-network.js";
+
+    const $ = (id) => document.getElementById(id);
+    const pack = KEYHOLE_EVIDENCE_PACK;
+    const snapshots = new Map(pack.snapshots.map((snapshot) => [snapshot.id, snapshot]));
+    const validation = validateEvidencePack(pack);
+    const summary = summarizeEvidencePack(pack);
+    let selectedObservationId = pack.observations[0]?.id ?? null;
+    let localPack = null;
+    let importByteBuffer = null;
+    const MAX_IMPORT_BYTES = 5_000_000;
+
+    const el = (tag, className = "", text = "") => {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text) node.textContent = text;
+      return node;
+    };
+
+    const dateSpan = (observation) => {
+      if (observation.fields?.years) return observation.fields.years;
+      if (observation.observedAt) return observation.observedAt;
+      return [observation.validFrom, observation.validTo].filter(Boolean).join(" → ") || "undated";
+    };
+
+    const placeText = (observation) => {
+      const fields = observation.fields ?? {};
+      return [fields.locality, fields.state].filter(Boolean).join(", ") || "not stated";
+    };
+
+    function includesSelectedYear(observation) {
+      const selected = Number($("yearInput").value);
+      if (selected <= 1993) return true;
+      const start = Date.parse(observation.validFrom ?? observation.observedAt ?? "");
+      const end = Date.parse(observation.validTo ?? observation.observedAt ?? observation.validFrom ?? "");
+      const yearStart = Date.UTC(selected, 0, 1);
+      const yearEnd = Date.UTC(selected, 11, 31);
+      return Number.isFinite(start) && Number.isFinite(end) && start <= yearEnd && end >= yearStart;
+    }
+
+    function currentObservations() {
+      const searched = searchObservations(pack, $("searchInput").value);
+      const snapshotId = $("snapshotSelect").value;
+      return searched.filter((observation) =>
+        (!snapshotId || observation.snapshotId === snapshotId) && includesSelectedYear(observation));
+    }
+
+    function renderRecords() {
+      const rows = currentObservations();
+      const tbody = $("recordRows");
+      tbody.textContent = "";
+      for (const observation of rows) {
+        const tr = document.createElement("tr");
+        const snapshot = snapshots.get(observation.snapshotId);
+        const button = el("button", observation.id === selectedObservationId ? "" : "secondary", "Inspect");
+        button.type = "button";
+        button.addEventListener("click", () => {
+          selectedObservationId = observation.id;
+          renderRecords();
+          renderDetail();
+        });
+        const cells = [
+          dateSpan(observation),
+          snapshot?.title ?? observation.snapshotId,
+          `${observation.fields.name ?? "Unnamed"}\n${observation.fields.phone ?? ""}`,
+          placeText(observation),
+          observation.evidenceTier,
+        ];
+        for (const value of cells) {
+          const td = el("td", "", value);
+          td.style.whiteSpace = "pre-line";
+          tr.append(td);
+        }
+        const action = document.createElement("td");
+        action.append(button);
+        tr.append(action);
+        tbody.append(tr);
+      }
+      $("recordCount").textContent = `${rows.length} of ${pack.observations.length} observations shown.`;
+      if (rows.length && !rows.some((row) => row.id === selectedObservationId)) {
+        selectedObservationId = rows[0].id;
+        renderDetail();
+      }
+    }
+
+    function appendDefinition(list, term, value) {
+      list.append(el("dt", "", term), el("dd", "", value ?? "not stated"));
+    }
+
+    function renderDetail() {
+      const host = $("observationDetail");
+      host.textContent = "";
+      host.classList.remove("muted");
+      const observation = pack.observations.find((row) => row.id === selectedObservationId);
+      if (!observation) {
+        host.append(el("p", "muted", "No observation selected."));
+        return;
+      }
+      const snapshot = snapshots.get(observation.snapshotId);
+      const fields = observation.fields ?? {};
+      host.append(el("h3", "", fields.name ?? observation.id));
+
+      const status = el("p");
+      const tier = el("span", "pill", observation.evidenceTier);
+      const rights = el("span", snapshot?.rightsStatus === "bundling-permitted" ? "pill ok" : "pill warn", snapshot?.rightsStatus ?? "rights unknown");
+      status.append(tier, document.createTextNode(" "), rights);
+      host.append(status);
+
+      const list = document.createElement("dl");
+      appendDefinition(list, "Observation ID", observation.id);
+      appendDefinition(list, "Snapshot", snapshot ? `${snapshot.title} (${snapshot.id})` : observation.snapshotId);
+      appendDefinition(list, "Issued", snapshot?.issued ?? snapshot?.issuedLabel);
+      appendDefinition(list, "Locator", observation.locator);
+      appendDefinition(list, "Date / span", dateSpan(observation));
+      appendDefinition(list, "Historical phone", fields.phone);
+      appendDefinition(list, "Place", `${placeText(observation)} (city-level; not geocoded)`);
+      appendDefinition(list, "Sysop", fields.sysop);
+      appendDefinition(list, "Software", fields.software);
+      appendDefinition(list, "Capture status", snapshot?.captureStatus);
+      appendDefinition(list, "SHA-256", snapshot?.sha256 ?? "null — not locally captured");
+      appendDefinition(list, "Citation URI", snapshot?.captureUri);
+      appendDefinition(list, "Rights note", snapshot?.rightsNote);
+      host.append(list);
+
+      if (observation.rawText) {
+        host.append(el("h3", "", "Allowed short excerpt"));
+        host.append(el("pre", "", observation.rawText));
+      }
+      if (observation.warnings?.length) {
+        host.append(el("h3", "", "What this does not prove"));
+        const ul = document.createElement("ul");
+        for (const warning of observation.warnings) ul.append(el("li", "", warning));
+        host.append(ul);
+      }
+    }
+
+    function renderValidation() {
+      const host = $("validationSummary");
+      host.textContent = "";
+      const heading = el("h3", "", "Validation");
+      const result = el("p");
+      result.append(
+        el("span", validation.valid ? "pill ok" : "pill bad", validation.valid ? "structurally valid" : "invalid"),
+        document.createTextNode(" "),
+        el("span", validation.captureReady ? "pill ok" : "pill warn", validation.captureReady ? "capture-ready" : "not capture-ready"),
+      );
+      host.append(heading, result);
+      const details = el("p", "small muted", validation.captureReady
+        ? "All snapshots are locally captured, hashed, and bundling-permitted."
+        : "This is intentionally a citation fixture: uncaptured snapshots, null hashes, and restrictive rights keep it out of the capture-ready dataset tier.");
+      host.append(details);
+      if (validation.warnings.length) {
+        const ul = document.createElement("ul");
+        ul.className = "small muted";
+        for (const warning of validation.warnings) ul.append(el("li", "", warning));
+        host.append(ul);
+      }
+    }
+
+    function renderMerges() {
+      const host = $("mergeList");
+      host.textContent = "";
+      for (const merge of pack.mergeLog) {
+        const item = el("article");
+        const title = el("h3", "", merge.id);
+        const meta = el("p");
+        meta.append(el("span", "pill ok", merge.decision), document.createTextNode(` confidence ${merge.confidence}`));
+        item.append(
+          title,
+          meta,
+          el("p", "small", `Matched: ${merge.matchedFields.join(", ")}. ${merge.note}`),
+          el("p", "small muted", `Independence: ${merge.independence}`),
+        );
+        host.append(item);
+      }
+      for (const rejected of pack.rejectedMatches) {
+        const item = el("article");
+        const meta = el("p");
+        meta.append(el("span", "pill bad", "rejected"));
+        item.append(el("h3", "", rejected.label), meta, el("p", "small", rejected.reason), el("p", "small muted", rejected.evidenceStatus));
+        host.append(item);
+      }
+
+      const searches = $("negativeSearchList");
+      searches.textContent = "";
+      for (const search of pack.negativeSearches) {
+        const item = el("article");
+        item.append(
+          el("h3", "", search.source),
+          el("p", "small", `${search.date}: ${search.result}`),
+          el("p", "small muted", search.note),
+        );
+        searches.append(item);
+      }
+    }
+
+    function download(filename, text, type) {
+      const url = URL.createObjectURL(new Blob([text], { type }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    async function renderLocalImport() {
+      const text = $("importText").value;
+      const requestedFormat = $("importFormat").value;
+      const detectedFormat = detectHistoricalImportFormat(text);
+      const format = requestedFormat === "auto" ? detectedFormat : requestedFormat;
+      const encodedText = new TextEncoder().encode(text);
+      const byteLength = importByteBuffer?.byteLength ?? encodedText.byteLength;
+      let sha256 = null;
+      let hashNote = "SHA-256 unavailable in this browser context";
+      try {
+        sha256 = await sha256Hex(importByteBuffer ?? encodedText);
+        hashNote = `SHA-256 ${sha256} over ${byteLength} ${importByteBuffer ? "original file" : "textarea UTF-8"} bytes`;
+      } catch {
+        // Keep parsing usable if WebCrypto is unavailable; the snapshot
+        // remains explicitly unhashed instead of inventing a checksum.
+      }
+
+      if (format === "fidonet-nodediff") {
+        localPack = null;
+        $("importSummary").textContent = `FidoNet nodediff detected (${hashNote}). A nodediff only edits a specific previous nodelist, so this single-text import will not fabricate a standalone snapshot. Use the shared model's edition-checked diff application with both the previous nodelist and this diff.`;
+        $("downloadImport").disabled = true;
+        const tbody = $("importRows");
+        tbody.textContent = "";
+        const tr = document.createElement("tr");
+        const td = el("td", "muted", "No observations were parsed from the nodediff by itself.");
+        td.colSpan = 6;
+        tr.append(td);
+        tbody.append(tr);
+        return;
+      }
+
+      const captureUri = $("importFile").files?.[0]?.name ? `local-file:${$("importFile").files[0].name}` : "local-textarea:user-supplied";
+      const parsed = format === "fidonet-nodelist"
+        ? parseFidonetNodelist(text, { captureUri, sha256, byteLength })
+        : parseTextfilesHistoricalList(text, { captureUri, sha256, byteLength });
+      localPack = {
+        schemaVersion: 1,
+        id: format === "fidonet-nodelist" ? "local-fidonet-import" : "local-textfiles-import",
+        title: format === "fidonet-nodelist"
+          ? "Local FidoNet nodelist import (observations only)"
+          : "Local TEXTFILES historical-list import (observations only)",
+        status: "local-import-not-merged",
+        snapshots: [parsed.snapshot],
+        observations: parsed.observations,
+        places: [],
+        nodes: [],
+        edges: [],
+        mergeLog: [],
+        rejectedMatches: [],
+        negativeSearches: [],
+      };
+      const localValidation = validateEvidencePack(localPack);
+      const formatLabel = format === "fidonet-nodelist" ? "FidoNet nodelist (FTS-5000)" : "TEXTFILES historical list";
+      $("importSummary").textContent = `${parsed.observations.length} observations parsed locally as ${formatLabel}. ${hashNote}. Structural validation: ${localValidation.valid ? "valid" : `invalid (${localValidation.errors.join("; ")})`}. Rights remain local-import-only; no nodes or edges were inferred.`;
+      $("downloadImport").disabled = parsed.observations.length === 0;
+
+      const fixtureObservation = pack.observations[0];
+      const tbody = $("importRows");
+      tbody.textContent = "";
+      for (const observation of parsed.observations.slice(0, 100)) {
+        const assessment = assessMergeCandidate(fixtureObservation, observation);
+        const comparison = ["Zone", "Region", "Host", "Hub"].includes(observation.fields.fidonetKeyword)
+          ? "administrative branch observation — not a canonical BBS merge candidate"
+          : `${assessment.decision} (${assessment.confidence}) — ${assessment.reason}`;
+        const span = dateSpan(observation);
+        const tr = document.createElement("tr");
+        const values = [
+          observation.locator,
+          observation.fields.phone ?? observation.fields.phoneRaw ?? "not stated",
+          observation.fields.name,
+          `${placeText(observation)}${span && span !== "undated" ? ` (${span})` : ""}`,
+          observation.fields.sysop ?? "not stated",
+          comparison,
+        ];
+        for (const value of values) tr.append(el("td", "", value));
+        tbody.append(tr);
+      }
+      if (parsed.observations.length > 100) {
+        const tr = document.createElement("tr");
+        const td = el("td", "muted", `Showing first 100 of ${parsed.observations.length} parsed observations. Download the JSON for the complete local result.`);
+        td.colSpan = 6;
+        tr.append(td);
+        tbody.append(tr);
+      }
+      for (const warning of parsed.warnings) {
+        const tr = document.createElement("tr");
+        const td = el("td", "muted", warning);
+        td.colSpan = 6;
+        tr.append(td);
+        tbody.append(tr);
+      }
+    }
+
+    for (const snapshot of pack.snapshots) {
+      const option = document.createElement("option");
+      option.value = snapshot.id;
+      option.textContent = snapshot.title;
+      $("snapshotSelect").append(option);
+    }
+
+    $("statObservations").textContent = String(summary.observationCount);
+    $("statSnapshots").textContent = String(summary.snapshotCount);
+    $("statSpan").textContent = `${summary.firstObserved?.slice(0, 4)}–${summary.lastObserved?.slice(0, 4)}`;
+    $("statReady").textContent = validation.captureReady ? "YES" : "NO";
+
+    $("searchInput").addEventListener("input", renderRecords);
+    $("snapshotSelect").addEventListener("change", renderRecords);
+    $("yearInput").addEventListener("input", () => {
+      const year = Number($("yearInput").value);
+      $("yearOutput").textContent = year <= 1993 ? "all years" : String(year);
+      renderRecords();
+    });
+    $("downloadJson").addEventListener("click", () => download("keyhole-evidence-pack.json", `${JSON.stringify(pack, null, 2)}\n`, "application/json"));
+    $("downloadCsv").addEventListener("click", () => download("keyhole-observations.csv", observationsToCsv(pack), "text/csv"));
+    $("parseImport").addEventListener("click", () => { void renderLocalImport(); });
+    $("downloadImport").addEventListener("click", () => {
+      if (localPack) download("local-bbs-list-observations.json", `${JSON.stringify(localPack, null, 2)}\n`, "application/json");
+    });
+    $("importText").addEventListener("input", () => {
+      // Editing the textarea means its bytes, not the previously loaded
+      // file's bytes, are now the text that will be hashed and parsed.
+      importByteBuffer = null;
+    });
+    $("importFile").addEventListener("change", async () => {
+      const file = $("importFile").files?.[0];
+      if (!file) return;
+      if (file.size > MAX_IMPORT_BYTES) {
+        $("importSummary").textContent = `Local file is ${file.size} bytes; this slice accepts at most ${MAX_IMPORT_BYTES} bytes.`;
+        return;
+      }
+      importByteBuffer = await file.arrayBuffer();
+      $("importText").value = new TextDecoder().decode(importByteBuffer);
+      await renderLocalImport();
+    });
+
+    renderValidation();
+    renderMerges();
+    renderRecords();
+    renderDetail();
+  </script>
+</body>
+</html>

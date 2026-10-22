@@ -51,6 +51,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-14-2026-10-22.md](backlog-execution-round-14-2026-10-22.md) — backlog execution round 14 2026 10 22
 - [backlog-execution-round-15-2026-10-22.md](backlog-execution-round-15-2026-10-22.md) — backlog execution round 15 2026 10 22
 - [backlog-execution-round-16-2026-10-22.md](backlog-execution-round-16-2026-10-22.md) — backlog execution round 16 2026 10 22
+- [backlog-execution-round-17-2026-10-22.md](backlog-execution-round-17-2026-10-22.md) — backlog execution round 17 2026 10 22
+- [backlog-execution-round-18-2026-10-22.md](backlog-execution-round-18-2026-10-22.md) — backlog execution round 18 2026 10 22
 - [backlog-execution-round-2-2026-10-21.md](backlog-execution-round-2-2026-10-21.md) — backlog execution round 2 2026 10 21
 - [backlog-execution-round-3-2026-10-21.md](backlog-execution-round-3-2026-10-21.md) — backlog execution round 3 2026 10 21
 - [backlog-execution-round-4-2026-10-21.md](backlog-execution-round-4-2026-10-21.md) — backlog execution round 4 2026 10 21
@@ -188,6 +190,8 @@ IANA media types (RFC 6838 / BCP 13).
 - [gta-text-decoder-2026-10-21.md](gta-text-decoder-2026-10-21.md) — gta text decoder 2026 10 21
 - [haiku-vault-format-draft.md](haiku-vault-format-draft.md) — haiku vault format draft
 - [headline-harry-jsdos-fix-2026-10-04.md](headline-harry-jsdos-fix-2026-10-04.md) — headline harry jsdos fix 2026 10 04
+- [historical-network-fidonet-adapter-2026-10-22.md](historical-network-fidonet-adapter-2026-10-22.md) — historical network fidonet adapter 2026 10 22
+- [historical-network-keyhole-fixture-2026-10-22.md](historical-network-keyhole-fixture-2026-10-22.md) — historical network keyhole fixture 2026 10 22
 - [historical-network-viewer-scope-2026-10-22.md](historical-network-viewer-scope-2026-10-22.md) — historical network viewer scope 2026 10 22
 - [hp-aio-xport-modem-adapter-feasibility.md](hp-aio-xport-modem-adapter-feasibility.md) — hp aio xport modem adapter feasibility
 - [iacr-research-watch-2026-09-28.md](iacr-research-watch-2026-09-28.md) — iacr research watch 2026 09 28

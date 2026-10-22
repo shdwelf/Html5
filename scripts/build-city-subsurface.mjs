@@ -78,6 +78,24 @@ function viewsFor(city) {
   ];
 }
 
+function validateCoast(cityId, coast) {
+  if (!Array.isArray(coast)) throw new Error(`${cityId}: coast must be an array`);
+  if (coast.length === 0) return;
+  // Backward-compatible shape: one polyline of [lon, lat] points, or an
+  // array of disconnected polylines for island frames.
+  const lines = Array.isArray(coast[0]?.[0]) ? coast : [coast];
+  lines.forEach((line, lineIndex) => {
+    if (!Array.isArray(line) || line.length < 2) {
+      throw new Error(`${cityId}: coast line ${lineIndex} must contain at least two points`);
+    }
+    line.forEach((point, pointIndex) => {
+      if (!Array.isArray(point) || point.length !== 2 || !point.every(Number.isFinite)) {
+        throw new Error(`${cityId}: coast line ${lineIndex} point ${pointIndex} must be a finite [lon, lat] pair`);
+      }
+    });
+  });
+}
+
 function validateRows(cityId, city, rows) {
   const seen = new Set();
   rows.forEach((row, i) => {
@@ -106,6 +124,7 @@ function validateRows(cityId, city, rows) {
 
 for (const [cityId, city] of Object.entries(config.cities)) {
   if (onlyCity && cityId !== onlyCity) continue;
+  validateCoast(cityId, city.coast);
   validateRows(cityId, city, city.gazetteerRows);
 
   const views = viewsFor(city);
