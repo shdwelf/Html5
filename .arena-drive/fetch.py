@@ -37,6 +37,7 @@ the bytes are the right ones.
 
 import hashlib
 import pathlib
+import subprocess
 import re
 import sys
 import urllib.error
@@ -126,20 +127,51 @@ def main() -> int:
             continue
 
         body, err = None, None
+        errs = []
         for tmpl in ENDPOINTS:
             try:
                 candidate = get(tmpl.format(id=item["id"]))
             except urllib.error.HTTPError as e:
                 err = f"HTTP {e.code}"
+                errs.append(err)
                 continue
             except Exception as e:                      # noqa: BLE001
                 err = type(e).__name__
+                errs.append(err)
                 continue
             if looks_like_html(candidate):
                 err = describe_block(candidate)
+                errs.append(err)
                 continue
             body = candidate
             break
+
+        if body is None:
+            # Last resort: gdown implements Drive's confirm-token / quota
+            # interstitial flow that the plain uc endpoints have been
+            # 404ing on for the 33 MB worktree tarball (fetched fine once,
+            # then 404 on every later run despite anyoneWithLink + canDownload).
+            tmp = DEST / (name + ".gdown.part")
+            try:
+                r = subprocess.run(
+                    [sys.executable, "-m", "gdown", "--quiet", "-O", str(tmp),
+                     f"https://drive.google.com/uc?id={item['id']}"],
+                    capture_output=True, text=True, timeout=1200)
+                if r.returncode == 0 and tmp.exists() and tmp.stat().st_size > 0:
+                    candidate = tmp.read_bytes()
+                    if not looks_like_html(candidate):
+                        body = candidate
+                        print(f"gdown fallback succeeded for {name} ({len(candidate)} bytes)")
+                    else:
+                        errs.append("gdown: HTML interstitial")
+                else:
+                    errs.append(f"gdown rc={r.returncode}: {(r.stderr or '')[-200:]}")
+            except Exception as e:                      # noqa: BLE001
+                errs.append(f"gdown {type(e).__name__}")
+            finally:
+                tmp.unlink(missing_ok=True)
+            if body is None and errs:
+                err = "; ".join(errs)
 
         if body is None:
             log.append(f"FAIL  {name}  {err or 'no response'}")

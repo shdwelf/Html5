@@ -49,7 +49,9 @@ jobs:
           node-version: '22'
 
       - name: Fetch Drive artifacts
-        run: python3 .arena-drive/fetch.py
+        run: |
+          pip install -q gdown || echo "gdown install failed; plain endpoints only"
+          python3 .arena-drive/fetch.py
 
       - name: Diff every manifest against this tree
         run: |
