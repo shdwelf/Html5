@@ -3350,6 +3350,7 @@ const RECIPE_PACKS={
  'Spotlight — Coin addresses & keypairs (Nano · Solana · Stellar · Tezos)':[['nanoAddr',{}],['solana',{}],['stellar',{}],['tezos',{}]],
  'Spotlight — Public-key classics (RSA · Diffie-Hellman)':[['rsa',{}],['dh',{}],['genRSA',{}]],
  'Spotlight — Polyglot & format triage':[['polyglotScan',{}],['toHexdump',{}],['crc32',{}]],
+ 'Spotlight — Omniglot & A-tom-tom slash alphabet':[['gcwTomTinesWin',{table:'tomtom',mode:'encode'}]],
 };
 addOp('recipePack','Recipe Pack','Recipes','Load a predefined cipher-suite recipe pack into the Recipe panel.',Object.keys(RECIPE_PACKS).map((name,i)=>({key:'pack',label:'Pack',type:'select',default:Object.keys(RECIPE_PACKS)[0],options:Object.keys(RECIPE_PACKS).map(n=>[n,n])})),function(t,a){
   const n=applyRecipePack(a.pack);
