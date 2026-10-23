@@ -383,6 +383,11 @@ recipes.
 `codename.html`; seeded operation/cryptonym/project-word formats, repeat-free batches,
 honest ~11-bit entropy note; `tests/codename.test.mjs` 3/3). Spy-book challenges await
 the source book.
+*2026-10-23 round (T11.1, cont.):* wallet-card deltas closed —
+[`wallet-card-deltas-2026-10-23.md`](wallet-card-deltas-2026-10-23.md):
+`js/wallet-card.js` renders/parses strict-BIP-39 wallet cards (public
+verification data only; haiku input fails closed); `tests/wallet-card.test.mjs` 4/4.
+Only the spy-book challenges remain, blocked on the source book.
 
 ### S12 · Web archaeology: Cicada 3301, Warrick recovery, Geomate Jr — *done (T12.1)*
 Cicada QR + lat/long hunt → US subsurface viewer and cipher-machine Hall-of-Fame lecture;

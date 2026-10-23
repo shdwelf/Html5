@@ -657,7 +657,7 @@
       "stream": "S11",
       "text": "Wallet crypto cards + mnemonics; classified random name generator; password books; 18 challenges at the end of the cold-war spy book -> recipes",
       "status": "partial",
-      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand)."
+      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand). Wallet-card deltas closed 2026-10-23 (docs/wallet-card-deltas-2026-10-23.md): js/wallet-card.js renders/parses a strict-BIP-39 wallet card (numbered grid, master fingerprint, zpub + first address as public-only verification, passphrase indicator never the passphrase; non-standard layouts refused; haiku input fails closed). tests/wallet-card.test.mjs 4/4 pinning the canonical abandon-x11+about values (73c5da0a / bc1qcr8te4...306fyu). Remaining T11.1: only the spy-book 18 challenges, still blocked on locating the source book."
     },
     {
       "id": "T12.1",
