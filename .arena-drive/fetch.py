@@ -86,14 +86,17 @@ def looks_like_html(body: bytes) -> bool:
 
 def describe_block(body: bytes) -> str:
     """Why Drive gave us a page instead of a file."""
-    text = body[:200_000].decode("utf-8", "replace").lower()
+    raw = body[:200_000].decode("utf-8", "replace")
+    m = re.search(r"<title[^>]*>(.*?)</title>", raw, re.I | re.S)
+    title = re.sub(r"\s+", " ", m.group(1)).strip()[:120] if m else ""
+    text = raw.lower()
     if "sign in" in text or "accounts.google.com" in text:
-        return "NOT-SHARED (Drive returned a sign-in page; the file is not link-readable)"
+        return f"NOT-SHARED sign-in page (title: {title!r})"
     if "quota" in text or "too many" in text:
-        return "RATE-LIMITED (Drive download quota exceeded for this file)"
+        return f"RATE-LIMITED page (title: {title!r})"
     if "can't scan" in text or "virus" in text:
         return "SCAN-INTERSTITIAL (confirm token not accepted)"
-    return "HTML page returned instead of file bytes"
+    return f"HTML page instead of file bytes (title: {title!r})" if title else "HTML page returned instead of file bytes"
 
 
 BROWSER_UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
