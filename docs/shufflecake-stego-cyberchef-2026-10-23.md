@@ -53,14 +53,18 @@ carries a custom stego op family and a spotlight recipe —
 | `stegoAcro` | acrostic (first letters of words) | working text op |
 | recipe "Spotlight — Steganography lab (LSB · whitespace · hide/reveal)" | chains the above | shipped |
 
-Honest gap, recorded rather than papered over: **real-image LSB extraction**
-(drop a PNG, read pixels, walk channels/bit-planes in order) is the one
-stego capability the lab lacks — the op explains the mechanism instead of
-performing it on user files. That is the correct next build if this stream
-continues: a pixel-ingesting variant (canvas-decoded input, selectable
-channel order and bit depth, length-prefixed as well as terminator framing),
-with test vectors generated in-repo. Until then the lab teaches the
-mechanism without claiming forensic capability.
+Gap closed the same day (round 20 follow-on): `stegoLSB` decode now reads
+**real pixels**. In the browser it accepts an image as a data URL / bare
+base64 (canvas-decoded), and in any environment it accepts a raw RGBA dump
+as hex (`source=rgba-hex`, pipeline-friendly). Channel order is selectable
+(`R`, `RG`, `RGB`…), and framing supports the encoder's 0xFF terminator, a
+32-bit length prefix, or a fixed byte count; length prefixes that exceed
+pixel capacity fail closed. Known-answer tests with synthetic pixel
+fixtures: `tests/cyberchef-stego-lsb.test.mjs` (3/3; full cyberchef suites
+85 pass). One honest limit remains: JPEG input is decoded by the browser to
+pixels *after* lossy compression, so LSB payloads hidden in JPEGs will
+generally not survive — the op decodes what the pixels actually say and
+reports printability rather than inventing output.
 
 ## Relation to the vault work (T9.2)
 

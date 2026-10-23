@@ -546,7 +546,7 @@
       "stream": "S9",
       "text": "Shufflecake + steganography -> CyberChef; haiku vault + vault recipe; algorithms book; BasicCard/JavaCard virtualized reader; smartcard filesystem choice (4MB XPort Pro budget); boot-chain (GRUB/LILO/LUKS, liveboot, AES dongle/dock concept)",
       "status": "partial",
-      "note": "2026-10-23: Shufflecake + steganography halves closed (docs/shufflecake-stego-cyberchef-2026-10-23.md): Shufflecake documented not ported (kernel block layer); repo CyberChef stego ops audited, real-image LSB op named as follow-on. BasicCard/JavaCard virtual reader, smartcard filesystem choice, algorithms book, and boot-chain parts remain open."
+      "note": "2026-10-23: Shufflecake + steganography halves closed (docs/shufflecake-stego-cyberchef-2026-10-23.md): Shufflecake documented not ported (kernel block layer); repo CyberChef stego ops audited, real-image LSB op named as follow-on. BasicCard/JavaCard virtual reader, smartcard filesystem choice, algorithms book, and boot-chain parts remain open. Follow-on built 2026-10-23 (round 20): stegoLSB decode now ingests real pixels (data-URL/base64 image via canvas, or RGBA hex), selectable channel order, terminator/length32/fixed framing, fail-closed capacity checks; synced to cyberchef-merged; tests/cyberchef-stego-lsb.test.mjs 3/3, cyberchef suites 85 pass."
     },
     {
       "id": "T9.2",
