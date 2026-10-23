@@ -42,6 +42,7 @@
     "build:planet": "node scripts/build-planet-viewer-xdc.mjs",
     "build:virus-xena": "node tools/build_virus_xena.mjs",
     "build:fna-xena": "node tools/build_fna_xena.mjs",
+    "build:changelly-xena": "node tools/build_changelly_drainer_xena.mjs",
     "build:wiki-workspace": "node tools/wiki-workspace/build.mjs",
     "convert:wiki-json": "node tools/wiki-workspace/convert.mjs",
     "test:wiki-workspace": "node --test tests/wiki-workspace.test.mjs tests/wiki-calendar.test.mjs tests/wiki-webxdc.test.mjs tests/wiki-tiddlywiki.test.mjs tests/wikiinajar-djvu.test.mjs && vitest run test/wiki-vault-interop.test.ts",

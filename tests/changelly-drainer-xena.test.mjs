@@ -5,9 +5,13 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { unzipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(root, "dist", "changelly-drainer-xena");
+const ZIP_OUT = `${OUT}.zip`;
+const XENA_OUT = `${OUT}.xena`;
+const XENA_SIDECAR = `${OUT}.xena.json`;
 const BUILDER = path.join(root, "tools", "build_changelly_drainer_xena.mjs");
 
 const sha256 = (b) => createHash("sha256").update(b).digest("hex");
@@ -159,6 +163,66 @@ test("no payload file is oversized", () => {
     const size = statSync(path.join(OUT, rel)).size;
     assert.ok(size < 16 * 1024, `${rel} is ${size} bytes, over the 16 KiB bound`);
   }
+});
+
+test("the bag carries the deep dive, attack chain, detection rules, and bag-info", () => {
+  build();
+  for (const rel of [
+    path.join("data", "normalized", "deep-dive.md"),
+    path.join("data", "normalized", "attack-chain.json"),
+    path.join("data", "normalized", "detection-rules.txt"),
+    "bag-info.txt",
+  ]) {
+    assert.ok(existsSync(path.join(OUT, rel)), `missing ${rel}`);
+  }
+  const info = readFileSync(path.join(OUT, "bag-info.txt"), "utf8");
+  assert.match(info, /Payload-Oxum: \d+\.7/, "bag-info should record the 7-file payload oxum");
+  const chain = JSON.parse(readFileSync(path.join(OUT, "data/normalized/attack-chain.json"), "utf8"));
+  assert.equal(chain.observedSecondStage, false);
+  assert.equal(chain.stages.length, 7);
+  assert.equal(chain.stages.at(-1).status.includes("unobserved"), true);
+  const rules = readFileSync(path.join(OUT, "data/normalized/detection-rules.txt"), "utf8");
+  assert.match(rules, /rule Changelly_Exploit_First_Stage_Loader/);
+  assert.match(rules, /Do not use these rules to retrieve the live payload/);
+  const dive = readFileSync(path.join(OUT, "data/normalized/deep-dive.md"), "utf8");
+  assert.match(dive, /## Verdict/);
+  assert.match(dive, /precise behaviour of the second stage/);
+});
+
+test("stage two serializes the bag and wraps it in a Xena binary record", () => {
+  build();
+  assert.ok(existsSync(ZIP_OUT), "serialized BagIt ZIP should exist");
+  assert.ok(existsSync(XENA_OUT), "Xena record should exist");
+  assert.ok(existsSync(XENA_SIDECAR), "Xena sidecar should exist");
+
+  const zipBytes = readFileSync(ZIP_OUT);
+  const entries = unzipSync(new Uint8Array(zipBytes));
+  const bagFiles = walk(OUT).map((rel) => rel.split(path.sep).join("/")).sort();
+  assert.deepEqual(Object.keys(entries).sort(), bagFiles, "the ZIP should serialize exactly the bag files");
+  for (const rel of bagFiles) {
+    assert.deepEqual(Buffer.from(entries[rel]), readFileSync(path.join(OUT, rel)), `ZIP entry differs from bag file: ${rel}`);
+  }
+
+  const sidecar = JSON.parse(readFileSync(XENA_SIDECAR, "utf8"));
+  assert.equal(sidecar.serializedBag.sha256, sha256(zipBytes));
+  assert.equal(sidecar.serializedBag.bytes, zipBytes.length);
+  assert.equal(sidecar.xena.processedByXena, false, "the record is hand-built to the schemas, not Xena output");
+  assert.equal(sidecar.safety.secondStageFetched, false);
+  assert.equal(sidecar.safety.loaderExecuted, false);
+
+  const xenaBytes = readFileSync(XENA_OUT);
+  assert.equal(sidecar.xena.sha256, sha256(xenaBytes));
+  assert.equal(sidecar.xena.bytes, xenaBytes.length);
+  const xena = xenaBytes.toString("utf8");
+  assert.match(xena, /<\?xml version="1\.0" encoding="UTF-8"\?>/);
+  assert.match(xena, /<meta_data_wrapper_name>Default Package Wrapper<\/meta_data_wrapper_name>/);
+  assert.match(xena, /BinaryToXenaBinaryNormaliser/);
+  assert.match(xena, /binary-object:binary-object/);
+
+  const m = xena.match(/<binary-object:binary-object[^>]*>([\s\S]*?)<\/binary-object:binary-object>/);
+  assert.ok(m, "Xena record should carry a binary-object payload");
+  const wrapped = Buffer.from(m[1].replace(/\s+/g, ""), "base64");
+  assert.deepEqual(wrapped, zipBytes, "decoding the Xena record should reproduce the serialized BagIt ZIP byte for byte");
 });
 
 test("the builder fails closed if a pin drifts", () => {

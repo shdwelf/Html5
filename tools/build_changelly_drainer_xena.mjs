@@ -4,10 +4,16 @@
  * loader, following the same shape as tools/build_fna_xena.mjs.
  *
  * WHAT THIS IS
- * A defensive evidence artifact. It preserves the loader's source as inert
- * text, the decoded command-and-control location, a machine-readable IOC set,
- * and the analysis that explains why the thing is a drainer rather than the
- * arbitrage bug its cover document claims.
+ * A defensive evidence artifact in two preservation stages. Stage one is a
+ * BagIt 1.0 (RFC 8493) bag preserving the loader's source as inert text, the
+ * decoded command-and-control location, a machine-readable IOC set, an
+ * attack-chain record, defensive detection rules, and the deep-dive analysis
+ * that explains why the thing is a drainer rather than the arbitrage bug its
+ * cover document claims. Stage two serializes that bag to a ZIP and wraps
+ * the ZIP bytes in a Xena binary-normalisation record (Default Package
+ * Wrapper + Binary object schemas), with a JSON sidecar pinning every stage
+ * by SHA-256. The .xena record is hand-built to those documented schemas; it
+ * was not produced by running NAA Xena, and the sidecar says so.
  *
  * WHAT THIS IS NOT
  * It does not execute, fetch, or reproduce the payload. The loader is stored
@@ -25,10 +31,15 @@ import { createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { zipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.resolve(root, process.argv[2] || "dist/changelly-drainer-xena");
+const ZIP_OUT = `${OUT}.zip`;
+const XENA_OUT = `${OUT}.xena`;
+const XENA_SIDECAR_OUT = `${OUT}.xena.json`;
 const NOW = "2026-10-18T15:10:00Z";
+const DEEP_DIVE_AT = "2026-10-23T00:00:00Z";
 const TOOL = "build_changelly_drainer_xena.mjs";
 
 const sha256 = (b) => createHash("sha256").update(b).digest("hex");
@@ -233,6 +244,348 @@ function ioc(decoded) {
   }, null, 2) + "\n";
 }
 
+function deepDive(decoded) {
+  return `# "Changelly Exploit" — deep dive
+
+Generated ${DEEP_DIVE_AT} by ${TOOL}. **Static analysis only: the loader was
+not executed and the second-stage payload was not fetched.**
+
+## Verdict
+
+This is a first-stage remote-code loader delivered by a social-engineering
+lure. The evidence for that classification is in the loader itself, not in the
+cover document's branding:
+
+- the visible Changelly URL is split apart and never fetched;
+- the suffix base64-decodes to a Google Sheets \`gviz/tq\` query;
+- two attacker-controlled cells (\`node\` and \`path\`) are concatenated;
+- the result is assigned to a new \`<script>\` element and injected into the
+  page, then the element is removed.
+
+That is enough to classify the delivery mechanism with **high confidence**.
+The precise behaviour of the second stage — which exchange API calls, wallet
+prompts, or exfiltration it performs — is **not observed**, because it was
+deliberately not retrieved. Any report claiming those specifics from this
+artifact alone would be overclaiming.
+
+## Evidence basis and limits
+
+Preserved evidence:
+
+1. the first-stage loader, byte-pinned through its base64 blob;
+2. the decoded payload locator (below);
+3. the cover document's claims, recorded as claims rather than facts;
+4. the parser and injection behaviour visible in the loader source.
+
+Not preserved, by design:
+
+- the live spreadsheet response;
+- the second-stage JavaScript;
+- the cover document's step-by-step operating instructions;
+- any victim, wallet, session, or transaction data.
+
+## Decoded payload locator
+
+\`\`\`
+${decoded.url}
+\`\`\`
+
+| Component | Value | Why it matters |
+| --- | --- | --- |
+| Scheme/host | \`${decoded.scheme}://${decoded.host}\` | The real network destination is Google, not Changelly. |
+| Spreadsheet id | \`${decoded.spreadsheetId}\` | Durable IOC for the attacker-controlled payload store. |
+| Sheet tab | \`${decoded.sheet}\` | The query reads a tab named \`API\`, styled to look like infrastructure. |
+| Headers | \`${decoded.headers}\` | One header row is excluded from the returned rows. |
+| Query | \`${decoded.query}\` | Selects columns A/B only where A is \`node\` or \`path\`. |
+| URL SHA-256 | \`${decoded.sha256}\` | Pins the locator without needing to fetch it again. |
+
+The base64 blob is ${"`"}cf9da67cf95d9a4cfc31c3f71e0b51ffc81b9ac97738ad18f2f8301438762da2${"`"}
+(SHA-256). It has no integrity relationship to Changelly; it is simply an
+opaque string carried inside a Changelly-looking URL.
+
+## Data-flow reconstruction
+
+\`\`\`
+cover lure
+  -> victim manually runs first-stage loader in a page context
+  -> string split on "authentication?="
+  -> atob(suffix)
+  -> fetch(Google Sheets gviz URL)
+  -> text response
+  -> regex capture around google.visualization.Query.setResponse(...)
+  -> JSON.parse(capture)
+  -> rows -> Map { "node" -> cell B, "path" -> cell B }
+  -> node + path
+  -> script.textContent = concatenated string
+  -> appendChild(script)  [executes in the page]
+  -> script.remove()
+\`\`\`
+
+Three properties do the defensive work:
+
+1. **Origin inheritance.** A script injected this way runs as page script. It
+   is not sandboxed by virtue of arriving as \`textContent\`; once appended it
+   has the page's DOM and same-origin privileges.
+2. **Mutability.** The operator can change the spreadsheet cells after the
+   lure is distributed. Every old copy of the loader then retrieves new code.
+3. **Split assembly.** Neither selected cell needs to contain a complete
+   script. Simple string scanning of one cell misses the assembled program.
+
+## Parser notes (what the code assumes)
+
+The loader is small and brittle, which is itself informative:
+
+- It assumes the delimiter \`authentication?=\` occurs in the carrier string.
+- It assumes \`atob\` yields the intended URL; malformed base64 aborts it.
+- It assumes the response matches
+  \`google.visualization.Query.setResponse(...)\` closely enough for its
+  regular expression to capture the JSON argument.
+- It assumes \`table.rows[*].c[0].v\` and \`c[1].v\` exist. A null/empty cell in
+  the Google Visualization row format can make the mapping throw.
+- It performs no signature check, hash check, origin allowlist beyond the
+  hard-coded locator, or error reporting. Failure is silent.
+
+Those assumptions fit disposable campaign infrastructure: if one spreadsheet
+or lure copy breaks, another can be issued, while successful runs leave little
+on-page evidence.
+
+## Browser-security reading
+
+The delivery depends on **self-XSS**: the victim is persuaded to run code in a
+context the browser otherwise protects. Modern browsers strip or block pasted
+\`javascript:\` schemes and warn on console pasting because this exact pattern
+turns a trusted page into an attacker-scripted one.
+
+Relevant defences, stated without reproducing the lure's walkthrough:
+
+- browser paste warnings and address-bar scheme handling raise the cost;
+- a strict Content-Security-Policy can reduce injected inline-script and
+  unexpected \`connect-src\` opportunities on first-party pages;
+- HttpOnly cookies limit direct cookie reading, but do **not** make a
+  same-origin injected script harmless — it can still act through the page;
+- exchange session controls, API-key IP allowlists, withdrawal allowlists,
+  and step-up confirmation limit what a hijacked page context can finalise.
+
+## Campaign/lure analysis
+
+The cover story combines four credibility devices:
+
+1. a real brand and documentation-looking domain;
+2. an "internal loader / deprecated node" explanation for why a hidden
+   function would exist;
+3. a trivial password, which makes the supposed back door feel discovered
+   rather than granted;
+4. a rate-arbitrage payout with named assets and a minimum amount.
+
+The economics fail independently of the code: a persistent, publicly
+reachable ~50% pricing error on a major venue would be exhausted or closed
+quickly. The minimum and asset list are better explained as victim-selection
+and pre-commitment devices.
+
+## ATT&CK-style mapping (defensive, approximate)
+
+| Behaviour | Mapping | Confidence |
+| --- | --- | --- |
+| Brand-led lure document | Phishing / social engineering | High |
+| Victim manually runs supplied code | User Execution | High |
+| JavaScript loader and injected script | Command and Scripting Interpreter: JavaScript | High |
+| Google Sheets query as payload store | Application Layer Protocol: Web Protocols; legitimate web service as infrastructure | High |
+| Payload split across cells | Obfuscated Files or Information / indicator removal by assembly | Medium |
+| Script element removed after injection | Indicator Removal: Clear Persistence / fileless execution analogue | Medium |
+| Wallet or session theft by second stage | Plausible objective, specific technique unobserved | Low until independently evidenced |
+
+## Detection priorities
+
+Highest-signal first:
+
+1. a page on an exchange/finance origin fetching
+   \`docs.google.com/spreadsheets/*/gviz/tq\`;
+2. script text or network data containing both
+   \`google.visualization.Query.setResponse\` and row keys \`node\`/\`path\`;
+3. \`atob(...split("authentication?=")...)\` in pasted/bookmarklet code;
+4. dynamic \`<script>\` creation where \`textContent\` comes from a fetch
+   response, followed by immediate removal;
+5. support-desk reports mentioning a rate "node", an old version, and a manual
+   browser-paste step.
+
+See \`detection-rules.txt\` for a YARA rule and hunt queries.
+
+## Response guidance
+
+If someone ran the loader:
+
+- treat the browser profile and any exchange/wallet session used in it as
+  compromised;
+- from a clean device, revoke sessions, rotate API keys, review withdrawals
+  and connected applications;
+- preserve browser history, downloads, the lure document, timestamps, and any
+  transaction identifiers for the venue's security team;
+- do not "test" the loader again to see what happens.
+
+## Preservation decision
+
+The BagIt bag preserves the first-stage loader as **inert text** and records
+the second stage as a location only. That is the defensible archival unit:
+enough to reproduce the analysis and detections, not enough to operate the
+campaign. The serialized bag is then wrapped by the sibling Xena binary
+record; the sidecar JSON pins both artifacts by SHA-256.
+
+## References
+
+- BagIt File Packaging Format, RFC 8493.
+- Google Visualization API Query Language and \`gviz/tq\` response format
+  (\`google.visualization.Query.setResponse\`, table rows/cells).
+- Xena — XML Electronic Normalising for Archives, National Archives of
+  Australia; Default Package Wrapper and Binary object schemas.
+`;
+}
+
+function attackChain(decoded) {
+  return JSON.stringify({
+    schema: "changelly-drainer-attack-chain/1",
+    generated: DEEP_DIVE_AT,
+    sourceAnalysisDate: NOW,
+    observedSecondStage: false,
+    stages: [
+      {
+        n: 1,
+        name: "lure distribution",
+        status: "documented from cover-document claims",
+        detail: "A PDF presents a supposed Changelly rate-node exploit and persuades the reader to run supplied code manually.",
+      },
+      {
+        n: 2,
+        name: "self-XSS execution",
+        status: "observed in loader design",
+        detail: "The first-stage loader is intended to run in a victim-controlled browser/page context after manual paste or equivalent user execution.",
+      },
+      {
+        n: 3,
+        name: "locator decode",
+        status: "observed",
+        detail: "The suffix after authentication?= is base64-decoded; the Changelly-looking prefix is not fetched.",
+        iocs: { decodedUrl: decoded.url, decodedUrlSha256: decoded.sha256 },
+      },
+      {
+        n: 4,
+        name: "payload retrieval",
+        status: "mechanism observed; response not retrieved",
+        detail: "The loader queries a Google Sheets gviz endpoint for rows named node and path on the API tab.",
+        iocs: { host: decoded.host, spreadsheetId: decoded.spreadsheetId, sheet: decoded.sheet, query: decoded.query },
+      },
+      {
+        n: 5,
+        name: "payload assembly",
+        status: "observed",
+        detail: "The node and path cell values are concatenated into one script string, so neither cell need hold the complete payload.",
+      },
+      {
+        n: 6,
+        name: "in-page execution and cleanup",
+        status: "observed",
+        detail: "The concatenated string is assigned to a script element, appended to execute, then the element is removed.",
+      },
+      {
+        n: 7,
+        name: "financial theft objective",
+        status: "inferred from lure; second-stage behaviour unobserved",
+        detail: "The cover story primes a swap/deposit. Specific wallet, API, or exfiltration behaviour cannot be evidenced without the second stage and is not claimed here.",
+      },
+    ],
+  }, null, 2) + "\n";
+}
+
+function detectionRules(decoded) {
+  return `Defensive detection material for the "Changelly Exploit" first-stage loader.
+Static analysis only. Do not use these rules to retrieve the live payload.
+
+== YARA (text/source hunting) ==
+
+rule Changelly_Exploit_First_Stage_Loader
+{
+    meta:
+        description = "First-stage loader that decodes a Google Sheets gviz locator and injects node+path as script"
+        classification = "cryptocurrency drainer delivery / remote code loader"
+        second_stage_retrieved = "false"
+    strings:
+        $carrier = "docs.changelly.com/development/authentication?=" ascii
+        $split = "atob(URL.split(\\"authentication?=\\")[1])" ascii
+        $gviz = "docs.google.com/spreadsheets/d/${decoded.spreadsheetId}/gviz/tq" ascii
+        $response = "googlevisualizationQuerysetResponse" ascii
+        $create = "document.createElement(\\"script\\")" ascii
+        $remove = ".remove()" ascii
+        $key_node = "\\"node\\"" ascii
+        $key_path = "\\"path\\"" ascii
+    condition:
+        ($carrier and $split) or ($gviz and $response) or (all of ($create, $remove, $key_node, $key_path))
+}
+
+== Network hunt (proxy / DNS / TLS SNI) ==
+
+Look for finance or exchange browsing contexts followed by:
+  host = "docs.google.com"
+  path contains "/spreadsheets/d/${decoded.spreadsheetId}/gviz/tq"
+  query contains "sheet=API"
+  query contains "select A,B" and ("node" or "path")
+
+A docs.google.com Sheets query is not malicious by itself. The high-signal
+case is an exchange-origin page or a user report tying it to a manual paste,
+a supposed rate node, or an unexpected swap/withdrawal flow.
+
+== Browser / endpoint hunt ==
+
+Search saved pages, bookmarklets, clipboard-manager snippets, support tickets,
+and incident notes for:
+  "authentication?=" near "atob("
+  "googlevisualizationQuerysetResponse"
+  "createElement(\\"script\\")" with textContent assigned from fetched text
+  a script element appended and immediately removed
+  "allow pasting" in the same ticket/report as an exchange-rate claim
+
+== Response triage questions ==
+
+1. Which page origin was active when the code ran?
+2. Were exchange or wallet sessions signed in in that browser profile?
+3. Were API keys, withdrawal addresses, or connected apps changed afterwards?
+4. What is the timestamp, transaction id, destination, and asset/amount?
+5. Is the lure PDF/document still available for hashing and preservation?
+`;
+}
+
+function xmlEscape(value) {
+  return String(value).replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;",
+  }[c]));
+}
+
+/**
+ * Wrap the serialized BagIt ZIP in the documented Xena Default Package
+ * Wrapper + Binary object form. This is a hand-built record following those
+ * schemas (the same shape apps/red-october-command-viewer emits); it is not
+ * output produced by running NAA Xena, and the sidecar says so.
+ */
+function xenaRecord(zipBytes) {
+  const zipSha256 = sha256(zipBytes);
+  const base64 = Buffer.from(zipBytes).toString("base64").match(/.{1,76}/g).join("\n");
+  const sourceUri = "urn:shdwelf:html5:changelly-drainer:bagit-bag-2026-10-18";
+  const description = "The following data is a MIME-compliant (RFC 2045) PEM base64 (RFC 1421) representation of the original file contents.";
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<xena xmlns="http://preservation.naa.gov.au/xena/1.0">
+  <meta_data>
+    <meta_data_wrapper_name>Default Package Wrapper</meta_data_wrapper_name>
+    <normaliser_name>au.gov.naa.digipres.xena.kernel.normalise.BinaryToXenaBinaryNormaliser</normaliser_name>
+    <input_source_uri>${xmlEscape(sourceUri)}</input_source_uri>
+  </meta_data>
+  <content>
+    <binary-object:binary-object xmlns:binary-object="http://preservation.naa.gov.au/binary-object/1.0" binary-object:description="${xmlEscape(description)}">
+${base64.split("\n").map((line) => `      ${line}`).join("\n")}
+    </binary-object:binary-object>
+  </content>
+</xena>
+<!-- Original format: ZIP serialization of a BagIt 1.0 (RFC 8493) bag; generated ${DEEP_DIVE_AT}; BagIt ZIP ${zipBytes.length} bytes, SHA-256 ${zipSha256}; static defensive preservation only: loader not executed, second-stage payload not fetched. -->
+`;
+}
+
 function preservationEvent(decoded) {
   return JSON.stringify({
     eventType: "normalization",
@@ -244,9 +597,19 @@ function preservationEvent(decoded) {
       "Read the cover PDF's extracted text and the first-stage loader it "
       + "distributes, decoded the loader's base64 payload locator locally, and "
       + "preserved the loader verbatim as inert text together with the decoded "
-      + "command-and-control location, a machine-readable IOC set, and a "
-      + "written analysis. Static analysis only: nothing was executed and the "
-      + "second-stage payload was never fetched.",
+      + "command-and-control location, a machine-readable IOC set, a written "
+      + "analysis, a deep-dive report, an attack-chain record, and defensive "
+      + "detection rules. The BagIt bag is serialized to a sibling ZIP and "
+      + "that ZIP is wrapped by a sibling Xena binary-normalisation record. "
+      + "Static analysis only: nothing was executed and the second-stage "
+      + "payload was never fetched.",
+    supplementalEvents: [
+      {
+        eventType: "deep-dive, BagIt serialization, and Xena binary wrapping",
+        timestamp: DEEP_DIVE_AT,
+        outputs: ["sibling .zip serialization of this BagIt bag", "sibling .xena record wrapping the ZIP bytes", "sibling .xena.json hash sidecar"],
+      },
+    ],
     exclusions: {
       executed: [],
       fetched: [],
@@ -258,11 +621,16 @@ function preservationEvent(decoded) {
         + "not reproduced, because redistributing the lure helps the attacker.",
     },
     xenaRelationship:
-      "Xena-inspired (source object + documented rendition + preservation "
-      + "event). Not processed by Xena; not a native .xena object.",
+      "Two-layer preservation: this BagIt bag is Xena-inspired (source object "
+      + "+ documented renditions + preservation event), and the serialized "
+      + "bag ZIP is additionally wrapped by a sibling .xena record built to "
+      + "the documented Xena Default Package Wrapper and Binary object "
+      + "schemas. That record was hand-built by this tool, not produced or "
+      + "validated by a National Archives of Australia Xena installation.",
     counts: {
       iocs: 2,
       loaderSteps: LOADER_STEPS.length,
+      deepDiveFiles: 3,
       secondStageRetrieved: false,
     },
     pins: PINS,
@@ -298,11 +666,21 @@ async function main() {
   // treat the preserved loader as executable.
   payload.set("data/original/loader-bookmarklet.txt", Buffer.from(LOADER_SOURCE + "\n"));
   payload.set("data/normalized/loader-analysis.md", Buffer.from(analysis(decoded)));
+  payload.set("data/normalized/deep-dive.md", Buffer.from(deepDive(decoded)));
+  payload.set("data/normalized/attack-chain.json", Buffer.from(attackChain(decoded)));
+  payload.set("data/normalized/detection-rules.txt", Buffer.from(detectionRules(decoded)));
   payload.set("data/normalized/ioc.json", Buffer.from(ioc(decoded)));
   payload.set("data/normalized/loader-decoded.json", Buffer.from(JSON.stringify(decoded, null, 2) + "\n"));
 
+  const payloadOxum = `${[...payload.values()].reduce((n, b) => n + b.length, 0)}.${payload.size}`;
   const tags = new Map([
     ["bagit.txt", Buffer.from("BagIt-Version: 1.0\nTag-File-Character-Encoding: UTF-8\n")],
+    ["bag-info.txt", Buffer.from(
+      "Bag-Software-Agent: tools/build_changelly_drainer_xena.mjs\n"
+      + `Bagging-Date: ${DEEP_DIVE_AT.slice(0, 10)}\n`
+      + "Source-Organization: shdwelf/Html5 defensive preservation\n"
+      + "External-Description: Changelly Exploit first-stage drainer loader; static analysis only; second-stage payload recorded as a location and never fetched\n"
+      + `Payload-Oxum: ${payloadOxum}\n`)],
     ["metadata/preservation-event.json", Buffer.from(preservationEvent(decoded))],
   ]);
   tags.set("manifest-sha256.txt",
@@ -310,15 +688,72 @@ async function main() {
   tags.set("tagmanifest-sha256.txt",
     Buffer.from([...tags].map(([p, b]) => `${sha256(b)}  ${p}`).sort().join("\n") + "\n"));
 
-  for (const [rel, buf] of [...payload, ...tags]) {
+  const bagFiles = new Map([...payload, ...tags]);
+  for (const [rel, buf] of bagFiles) {
     const fp = path.join(OUT, rel);
     await mkdir(path.dirname(fp), { recursive: true });
     await writeFile(fp, buf);
   }
 
+  // Stage 2a: serialize the completed BagIt bag as a ZIP (fixed entry order
+  // and timestamps, so the bytes — and therefore the Xena wrapper and every
+  // hash in the sidecar — are reproducible).
+  const zipEntries = {};
+  for (const rel of [...bagFiles.keys()].sort()) {
+    zipEntries[rel] = new Uint8Array(bagFiles.get(rel));
+  }
+  const zipBytes = Buffer.from(zipSync(zipEntries, { level: 9, mtime: new Date(DEEP_DIVE_AT) }));
+  await mkdir(path.dirname(ZIP_OUT), { recursive: true });
+  await writeFile(ZIP_OUT, zipBytes);
+
+  // Stage 2b: wrap the serialized bag in a Xena binary-normalisation record,
+  // with a JSON sidecar pinning the bag, the ZIP, and the record itself.
+  const xenaBytes = Buffer.from(xenaRecord(zipBytes));
+  await writeFile(XENA_OUT, xenaBytes);
+  const sidecar = {
+    schema: "changelly-drainer-xena-wrap/1",
+    generated: DEEP_DIVE_AT,
+    tool: TOOL,
+    safety: {
+      loaderExecuted: false,
+      secondStageFetched: false,
+      secondStageRecordedAs: "location only",
+      loaderPreservedAs: "data/original/loader-bookmarklet.txt",
+    },
+    pins: PINS,
+    bagit: {
+      format: "BagIt 1.0 (RFC 8493)",
+      directory: path.relative(root, OUT),
+      payloadOxum,
+      payloadFiles: payload.size,
+      tagFiles: tags.size,
+    },
+    serializedBag: {
+      file: path.relative(root, ZIP_OUT),
+      bytes: zipBytes.length,
+      sha256: sha256(zipBytes),
+      serialization: "ZIP, entries sorted, fixed mtime for reproducibility",
+    },
+    xena: {
+      file: path.relative(root, XENA_OUT),
+      bytes: xenaBytes.length,
+      sha256: sha256(xenaBytes),
+      wrapper: "Default Package Wrapper",
+      normaliser: "au.gov.naa.digipres.xena.kernel.normalise.BinaryToXenaBinaryNormaliser",
+      contentSchema: "http://preservation.naa.gov.au/binary-object/1.0",
+      wrappedObject: "Base64 of the serialized BagIt ZIP bytes",
+      processedByXena: false,
+      note: "Hand-built to the documented Xena Default Package Wrapper and Binary object schemas; not produced or validated by a National Archives of Australia Xena installation.",
+    },
+  };
+  await writeFile(XENA_SIDECAR_OUT, JSON.stringify(sidecar, null, 2) + "\n");
+
   console.log(`Xena-inspired BagIt bag: ${path.relative(root, OUT)}`);
   console.log(`  pins verified: base64 blob, decoded URL hash + length, spreadsheet id`);
   console.log(`  payload files: ${payload.size}  tag files: ${tags.size}`);
+  console.log(`Serialized BagIt ZIP: ${path.relative(root, ZIP_OUT)} (${zipBytes.length} bytes, sha256 ${sha256(zipBytes).slice(0, 16)}…)`);
+  console.log(`Xena binary record: ${path.relative(root, XENA_OUT)} (${xenaBytes.length} bytes, sha256 ${sha256(xenaBytes).slice(0, 16)}…)`);
+  console.log(`Xena sidecar: ${path.relative(root, XENA_SIDECAR_OUT)}`);
   console.log(`  second-stage payload fetched: no`);
   console.log(`  loader executed: no`);
 }
