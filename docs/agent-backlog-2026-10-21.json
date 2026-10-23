@@ -266,7 +266,10 @@
       ],
       "refs": [
         "docs/RESEARCH_SMARTCARD.md",
-        "docs/feitian-javacard-toolchain.md"
+        "docs/feitian-javacard-toolchain.md",
+        "docs/apache-struts-jsf-tomcat-xdc-war-2026-10-23.md",
+        "xdc-viewer.html",
+        "tools/build_xdc_wars.mjs"
       ],
       "next_actions": [
         "QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock/number-porting caselaw notes via LexisNexis alternatives)",
@@ -524,7 +527,8 @@
       "line": 10,
       "stream": "S8",
       "text": "Convert xdc apps to TI-calc + Android/F-Droid (socal-subsurface first); TransMac/Pluralsight; Hotline/KDX/FXP",
-      "status": "open"
+      "status": "open",
+      "note": "2026-10-23: Java-server port shipped — tools/build_xdc_wars.mjs converts all repo-root .xdc to deterministic Tomcat WARs (54 built; greeran-book.xdc skipped, not a ZIP) + xdc-viewer.war catalogue/player (xdc-viewer.html); Struts 7 / Jakarta Faces 4 investigated and not adopted for static apps (docs/apache-struts-jsf-tomcat-xdc-war-2026-10-23.md). TI-calc and Android/F-Droid ports remain open."
     },
     {
       "id": "T8.3",

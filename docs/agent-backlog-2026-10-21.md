@@ -196,6 +196,12 @@ QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock / number-porti
 SIM-lock research, Eagle CAD unlock schematics, xdc → TI-calc / Android / F-Droid ports
 (socal-subsurface first), Hotline/KDX/FXP, Intel iParty + Creative Labs FCC schematics,
 VoIP Blaster, DUCK codecs, lossless comms room, Tetrinet.
+*2026-10-23 round:* the xdc-port family gained its Java-server path — all 55
+repo `.xdc` converted to deterministic Tomcat WARs (54 built, `greeran-book.xdc`
+skipped as not-a-ZIP) with an `xdc-viewer.war` catalogue/player; Struts/JSF
+investigated and deliberately not adopted for static apps
+([`apache-struts-jsf-tomcat-xdc-war-2026-10-23.md`](apache-struts-jsf-tomcat-xdc-war-2026-10-23.md)).
+TI-calc/F-Droid and the device-lab items remain open.
 
 ### S9 · Vault, stego & smartcard filesystems: shufflecake, haiku vault, boot-chain — *partial*
 Catalog the OCR haiku into the haiku vault and verify the enso generators + haiku randomizers

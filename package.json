@@ -56,7 +56,8 @@
     "test:dtmf": "node --test tests/dtmf-rtl.test.mjs",
     "build:xport-v92-linetestset": "node tools/build-wallplug-eagle.mjs --design xport-v92-linetestset",
     "build:unit-cad": "node tools/build_unit_cad.mjs --emit --out-dir cad/out",
-    "check:unit-cad": "node tools/build_unit_cad.mjs --check"
+    "check:unit-cad": "node tools/build_unit_cad.mjs --check",
+    "build:xdc-wars": "node tools/build_xdc_wars.mjs"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",
