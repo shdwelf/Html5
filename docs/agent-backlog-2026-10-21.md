@@ -335,6 +335,9 @@ remains unproven. See
 [`feitian-javacard-toolchain.md`](feitian-javacard-toolchain.md) and
 [`github-jdk-runtime-research-2026-10-23.md`](github-jdk-runtime-research-2026-10-23.md).
 
+*2026-10-23 round (T9.4):* quine → S.S.E. URL shipped — `js/quine-sse.js` +
+`quine-sse.html` (execution-verified quines, password-sealed `quine-sse-v1.` fragments,
+Avery 5160 QR label sheet; `tests/quine-sse.test.mjs` 4/4). **T9.4 complete.**
 ### S10 · CyberChef & recipe corpus, lecture hall, UCSB course readers — *partial*
 Comparative optimization of the whole recipe set (line 7), DTSearch + Granite Island TCSM
 sweep, cipher-machine / virtual-intelligence lecture-hall material, course-reader sourcing

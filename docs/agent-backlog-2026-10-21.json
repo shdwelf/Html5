@@ -623,8 +623,8 @@
       "line": 171,
       "stream": "S9",
       "text": "Quine -> S.S.E. URL with password + QR/data-matrix export (Avery Label Pro); RFC drafts for BagIt and haiku-vault formats",
-      "status": "partial",
-      "note": "RFC-style haiku-vault-v1 spec + BagIt profile in docs/haiku-vault-format-draft.md (round 2); S.S.E. URL/QR export remains"
+      "status": "done",
+      "note": "RFC-style haiku-vault-v1 spec + BagIt profile in docs/haiku-vault-format-draft.md (round 2); S.S.E. URL/QR export remains S.S.E. URL/QR half closed 2026-10-23: js/quine-sse.js + quine-sse.html - quines are verified by execution (byte-identical output) before packing, sealed under a password into a quine-sse-v1. URL fragment (PBKDF2/AES-GCM house envelope, explicitly NOT Paranoia Works SSE v3 byte-compat, which stays in sse-webxdc), with QR-budget verdicts and an Avery 5160 QR label sheet. tests/quine-sse.test.mjs 4/4. T9.4 complete (RFC drafts were round 2)."
     },
     {
       "id": "T10.1",
