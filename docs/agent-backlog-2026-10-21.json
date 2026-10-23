@@ -504,7 +504,7 @@
       "stream": "S6",
       "text": "BBS servers on archive.org + GitHub OSS BBS; convert to ColdFire / JAR for ColdFireJVM",
       "status": "partial",
-      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink."
+      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean)."
     },
     {
       "id": "T7.1",
@@ -519,7 +519,7 @@
       "stream": "S7",
       "text": "JAR for uClinux transcription + softmodem fax",
       "status": "partial",
-      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink."
+      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean)."
     },
     {
       "id": "T8.1",

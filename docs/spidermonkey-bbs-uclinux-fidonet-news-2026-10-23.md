@@ -97,6 +97,13 @@ binaries**. Phases, each independently checkable:
 4. **Sync acceptance.** Synthetic PKT fixtures (the JS suite's vectors
    ported to C asserts) round-trip losslessly; a gated article keeps its
    Message-ID across FTN→NNTP→FTN; SEEN-BY/PATH never leak to news.
+   *Started 2026-10-23:* `tools/bbs/ftnpkt.c` is the C99 reference
+   implementation of the packet layer (dump + `--news` gateway views),
+   cross-checked against the JS implementation on identical fixtures —
+   `tests/fidonet-pkt-c.test.mjs` compiles it `-Wall -Wextra -Werror`
+   clean and asserts output parity, truncation behaviour, and exit
+   codes. It is deliberately uClinux-shaped: one translation unit, no
+   fork/threads, bounded buffers, capped input.
 
 **Bottom line:** Synchronet remains the hosted flagship (already building
 here, SpiderMonkey and all); the uClinux deliverable is an MBSE-derived

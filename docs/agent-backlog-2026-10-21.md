@@ -199,6 +199,9 @@ over Synchronet (hosted flagship) and WWIV (fallback); Wildcat excluded
 (FTS-0001 + MSGID→Message-ID mapping, 5/5 tests).
 [`spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md`](spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md).
 Remaining: the m68k-uclinux C port itself; no live FTN peering fabricated.
+*Conversion started:* `tools/bbs/ftnpkt.c` (C99 FTS-0001 parser + `--news`
+mapper) cross-checked against the JS implementation with a `-Werror` test
+harness — the first uClinux-shaped C artifact of the MBSE-subset plan.
 
 ### S8 · Mobile & device lab: Android/QEMU, SIM, xdc ports, VoIP/iParty — *open*
 QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock / number-porting caselaw),
