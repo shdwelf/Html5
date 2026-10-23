@@ -342,6 +342,9 @@ remains unproven. See
 *2026-10-23 round (T9.4):* quine → S.S.E. URL shipped — `js/quine-sse.js` +
 `quine-sse.html` (execution-verified quines, password-sealed `quine-sse-v1.` fragments,
 Avery 5160 QR label sheet; `tests/quine-sse.test.mjs` 4/4). **T9.4 complete.**
+*2026-10-23 round (T9.1):* virtualized card reader built — `js/cardreader.js` (ISO 7816-4
+APDU codec, MF/DF/EF tree, PIN lockout, applet-AID routing; `tests/cardreader.test.mjs` 6/6).
+Smartcard-filesystem choice, algorithms book and boot-chain strands remain.
 ### S10 · CyberChef & recipe corpus, lecture hall, UCSB course readers — *partial*
 Comparative optimization of the whole recipe set (line 7), DTSearch + Granite Island TCSM
 sweep, cipher-machine / virtual-intelligence lecture-hall material, course-reader sourcing
@@ -354,6 +357,9 @@ Island / cookbook strands remain.
 [`ucsb-course-readers-2026-10-23.md`](ucsb-course-readers-2026-10-23.md) (eleven UCSB CS
 texts sourced; CS 32's SBPrinter reader located; algorithms cross-check: Weiss/Sahni,
 not CLRS). **T10.3 complete.**
+*2026-10-23 round (T10.1):* final audit — `--spotlights` enumerator reports 515 ops,
+tour-only 0, orphans 0; guard suites green. Every enumerated sub-item is delivered;
+**T10.1 complete** (comparative tuning continues as a standing activity).
 
 ### S11 · Wallets, mnemonics, classified name generator, spy-book challenges — *partial*
 Wallet crypto-card + mnemonic work feeds the existing bip39-haiku workbench; the “classified
