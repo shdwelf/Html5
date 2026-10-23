@@ -1,0 +1,5 @@
+# m68k cross-build requests (T6.3 / T7.2)
+# Each run of arena-m68k-crossbuild compiles tools/bbs/ftnpkt.c for
+# m68k-linux-gnu on the runner, executes it under qemu-m68k against the
+# synthetic fixture, and commits .arena-m68k/result.md back to the branch.
+build ftnpkt.c for m68k-linux-gnu; verify dump + --news parity vs host build under qemu-m68k
