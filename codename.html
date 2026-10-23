@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Classified Name Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:system-ui,sans-serif;margin:2rem auto;max-width:46rem;padding:0 1rem;line-height:1.5}
+  #out{font-family:ui-monospace,monospace;font-size:1.6rem;letter-spacing:.08em;background:#111;color:#e8e3c8;padding:1rem;border-radius:.4rem;min-height:2.2rem;text-align:center}
+  .meta{color:#555}
+  button,select,input{font:inherit;padding:.3rem .6rem}
+  li{font-family:ui-monospace,monospace}
+</style>
+</head>
+<body>
+<h1>Classified Name Generator</h1>
+<p>Operation names, cryptonyms and project words in the historical shapes — seeded,
+so a name minuted in a meeting can be re-derived later from its seed. Entropy is
+printed on purpose: these are codenames, <em>not</em> passwords.</p>
+
+<p>
+  <label>Format
+    <select id="format">
+      <option value="operation">Operation (ADJECTIVE NOUN)</option>
+      <option value="cryptonym">Cryptonym (DIGRAPH+STEM)</option>
+      <option value="project">Project word</option>
+    </select></label>
+  <label>Seed <input id="seed" type="number" value="1234" style="width:8rem"></label>
+  <button id="one" type="button">Generate</button>
+  <button id="batch" type="button">Batch of 10</button>
+</p>
+<div id="out"></div>
+<p id="entropy" class="meta"></p>
+<ol id="list"></ol>
+
+<script type="module">
+import { generateCodename, generateBatch, entropyBits, spaceSize } from "./js/codename.js";
+const $ = (id) => document.getElementById(id);
+function show() {
+  const format = $("format").value;
+  $("out").textContent = generateCodename(Number($("seed").value) || 0, format);
+  $("entropy").textContent = `${spaceSize(format)} possible names ≈ ${entropyBits(format).toFixed(1)} bits`;
+  $("list").innerHTML = "";
+}
+$("one").addEventListener("click", show);
+$("format").addEventListener("change", show);
+$("batch").addEventListener("click", () => {
+  const names = generateBatch(Number($("seed").value) || 0, 10, $("format").value);
+  $("list").innerHTML = names.map((n) => `<li>${n}</li>`).join("");
+});
+show();
+</script>
+</body>
+</html>

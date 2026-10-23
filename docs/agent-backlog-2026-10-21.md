@@ -254,6 +254,10 @@ Wallet crypto-card + mnemonic work feeds the existing bip39-haiku workbench; the
 random name generator” links to the First Name Almanac `NAMES.EXE` lineage (historical
 context only — F2); locate the cold-war spy book’s 18 end-of-book challenges and distill
 recipes.
+*2026-10-23 round (T11.1):* classified name generator built (`js/codename.js` +
+`codename.html`; seeded operation/cryptonym/project-word formats, repeat-free batches,
+honest ~11-bit entropy note; `tests/codename.test.mjs` 3/3). Spy-book challenges await
+the source book.
 
 ### S12 · Web archaeology: Cicada 3301, Warrick recovery, Geomate Jr — *partial*
 Cicada QR + lat/long hunt → US subsurface viewer and cipher-machine Hall-of-Fame lecture;

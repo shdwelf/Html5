@@ -609,7 +609,8 @@
       "line": 5,
       "stream": "S11",
       "text": "Wallet crypto cards + mnemonics; classified random name generator; password books; 18 challenges at the end of the cold-war spy book -> recipes",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand)."
     },
     {
       "id": "T12.1",
