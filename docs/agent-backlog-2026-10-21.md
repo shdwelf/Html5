@@ -318,6 +318,13 @@ iParty is 1995 Intel software (no FCC filing; ACM-delegated codec), the VoIP
 Blaster is Part 15B wired (no FCC schematics exist), DUCK/TrueMotion lineage
 ends in WebM with FFmpeg decoders source-available. T8.3 now *partial*;
 lossless comms room + Tetrinet remain.
+*2026-10-23 round (T8.3, cont.):* the Ghidra pass ran —
+`.github/workflows/arena-iparty-ghidra.yml` (run 40030773332) put pinned
+Temurin 21 + Ghidra 12.1.4 over the hash-verified IPL 1.2 binaries
+(`.arena-iparty/result.md`): the iParty codec is **statically linked
+libgsm — GSM 06.10** (the `gsm_create.c` RCS string names libgsm 1.0;
+zero MSACM imports), closing the iParty-codecs strand at identification
+and re-proving the T8.1 Ghidra toolchain claim on this branch.
 *2026-10-23 round (T8.4):* SIM-lock research delivered —
 [`sim-lock-research-2026-10-23.md`](sim-lock-research-2026-10-23.md):
 §1201 exemption timeline (2006→Pub. L. 113-144→89 FR 85437 in 2024), CTIA

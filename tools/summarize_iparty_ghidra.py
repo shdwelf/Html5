@@ -61,9 +61,15 @@ def main() -> int:
         frags = []
         if c_file.exists():
             text = c_file.read_text(encoding="utf-8", errors="replace")
+            seen = set()
             for m in C_RE.finditer(text):
                 start = max(0, text.rfind("\n", 0, max(0, m.start() - 400)))
-                frags.append(text[start:m.start() + 400].strip())
+                frag = text[start:m.start() + 400].strip()
+                key = frag[:200]
+                if key in seen:
+                    continue
+                seen.add(key)
+                frags.append(frag)
                 if len(frags) >= 6:
                     break
         lines.append(f"### Decompiled fragments touching ACM/WAVEFORMAT ({len(frags)} shown)")

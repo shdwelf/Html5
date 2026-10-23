@@ -571,7 +571,7 @@
       "stream": "S8",
       "text": "Android virtualization lab (SDK, Ubuntu One, replacement OSes, model locks, number porting, unlocking caselaw, Eagle CAD schematics, ADB sideload); Ghidra whole toolchain on Temurin/Zulu",
       "status": "open",
-      "note": "round 19: Temurin/Zulu/Ghidra toolchain research refreshed in docs/github-jdk-runtime-research-2026-10-23.md; Android virtualization lab itself remains open and no Ghidra whole-toolchain claim was made."
+      "note": "round 19: Temurin/Zulu/Ghidra toolchain research refreshed in docs/github-jdk-runtime-research-2026-10-23.md; Android virtualization lab itself remains open and no Ghidra whole-toolchain claim was made. Ghidra whole-toolchain re-proven on this branch 2026-10-23: arena-iparty-ghidra (run 40030773332) ran pinned Temurin 21 + Ghidra 12.1.4 (SHA-256 verified release) over hash-verified PE32 targets and committed a full GenericProgramReport summary (.arena-iparty/result.md); the toolchain claim is discharged, the Android virtualization lab itself remains open."
     },
     {
       "id": "T8.2",
@@ -587,7 +587,7 @@
       "stream": "S8",
       "text": "Intel iParty + Creative Labs FCC schematics; VoIP Blaster; Ghidra iParty codecs; DUCK codecs; lossless comms room; Tetrinet",
       "status": "partial",
-      "note": "Research cluster closed 2026-10-23 (docs/iparty-voipblaster-duck-2026-10-23.md): Intel iParty = Internet Party Line (1995, queued push-to-talk clips, IPARTYD port 6004, iparty:// sessions) - software, so no FCC filing exists; its codec is not bespoke: binaries (GitHub mirror inspected) delegate to Windows ACM via a CCodec class with negotiated speech formats, leaving only the default WAVEFORMAT tags as a small runner/Ghidra target. VoIP Blaster (Creative TP0001, InnoMedia USB 1292:0258, G.723.1 per fobbit-era RE) is FCC Part 15B wired - no OET schematic exhibit exists; recon trail is UL E220702 + fobbit + Creative drivers. DUCK = Duck Corp TrueMotion (S -> TM20 -> VP3/Theora -> VP8/WebM); decoders source-available in FFmpeg, so format docs not disassembly. Remaining: lossless comms room, Tetrinet, iParty format-tag Ghidra pass."
+      "note": "Research cluster closed 2026-10-23 (docs/iparty-voipblaster-duck-2026-10-23.md): Intel iParty = Internet Party Line (1995, queued push-to-talk clips, IPARTYD port 6004, iparty:// sessions) - software, so no FCC filing exists; its codec is not bespoke: binaries (GitHub mirror inspected) delegate to Windows ACM via a CCodec class with negotiated speech formats, leaving only the default WAVEFORMAT tags as a small runner/Ghidra target. VoIP Blaster (Creative TP0001, InnoMedia USB 1292:0258, G.723.1 per fobbit-era RE) is FCC Part 15B wired - no OET schematic exhibit exists; recon trail is UL E220702 + fobbit + Creative drivers. DUCK = Duck Corp TrueMotion (S -> TM20 -> VP3/Theora -> VP8/WebM); decoders source-available in FFmpeg, so format docs not disassembly. Remaining: lossless comms room, Tetrinet, iParty format-tag Ghidra pass. Ghidra pass executed 2026-10-23 (.github/workflows/arena-iparty-ghidra.yml, run 40030773332; .arena-iparty/result.md): IPL codec identified as statically linked libgsm GSM 06.10 (Jutta Degener gsm-1.0, CGSMPub610 class; zero MSACM imports, WINMM only for PCM I/O) - the Ghidra iParty-codecs strand closes at identification. Remaining T8.3: lossless comms room, Tetrinet."
     },
     {
       "id": "T8.4",

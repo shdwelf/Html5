@@ -18,17 +18,27 @@ records an utterance clip, the daemon (`IPARTYD.EXE`, default port
 order — IRC semantics with audio. Sessions are `.ipl` files addressed
 by an `iparty://` URL scheme.
 
-**The codec question, answered without Ghidra:** the binaries carry
-a `CCodec` class and the strings "Can't open audio compressor",
-"Can't create audio decompressor", "received unknown speech
-format." — iParty delegates compression to the **Windows Audio
-Compression Manager (ACM)** and negotiates a speech-format
-descriptor on the wire. There is no bespoke Intel codec to
-disassemble; the tractable remainder of the "Ghidra iParty codecs"
-strand is identifying the default WAVEFORMAT tag values IPL 1.2
-proposes (a small, well-posed target for the runner/JVM Ghidra route
-shared with T1.2/T2.1). Clip-queueing *is* the compression strategy:
-at 28.8 kbps, store-and-forward of utterances beats streaming.
+**The codec question, answered by the pinned Ghidra pass**
+(`.arena-iparty/result.md`, run 40030773332; Temurin 21 + Ghidra
+12.1.4, binaries hash-verified, static analysis only): IPL 1.2 has
+**no MSACM imports at all**. WINMM appears only as raw `waveIn*` /
+`waveOut*` PCM capture and playback. The compression lives in a
+`CCodec` class backed by `CGSMPub610` — and an RCS string names the
+source: `/home/kbs/jutta/src/gsm/gsm-1.0/src/RCS/gsm_create.c`
+(1994-05-10). That is **Jutta Degener GSM 06.10 reference
+implementation (libgsm 1.0)** compiled straight into both binaries:
+the "audio compressor" the error strings can't open is IPL's own
+codec object, not a system ACM driver. So the negotiated "speech
+format" ("received unknown speech format.") is IPL's internal
+format negotiation, with GSM 06.10 full-rate as the codec on the
+table — the era's 13 kbps workhorse, chosen because a 28.8 kbps
+modem link survives it alongside signalling. The "Ghidra iParty
+codecs" strand therefore closes at identification: there was never
+a proprietary codec to reverse, just a famous open one to recognise.
+(The daemon linking the full codec stack too is consistent with a
+shared static library across both executables; whether IPARTYD ever
+transcodes is a question its relay design doesn't require, and is
+left unclaimed.)
 
 ## Creative VoIP Blaster — and why there are no FCC schematics
 
