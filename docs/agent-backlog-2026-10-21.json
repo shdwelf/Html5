@@ -366,7 +366,8 @@
         "docs/recipe-sourcing-round-5-2026-10-14.md",
         "docs/virtual-intelligence-lecture-hall-update-2026-10-05.md",
         "docs/ucsb-2001-first-quarter-research.md",
-        "docs/arxiv-course-reader-research-2026-09-28.md"
+        "docs/arxiv-course-reader-research-2026-09-28.md",
+    "docs/ucsb-course-readers-2026-10-23.md"
       ],
       "next_actions": [
         "Comparative pass over all CyberChef recipes for optimal enhancement (task line 7)",
@@ -647,7 +648,8 @@
       "line": 169,
       "stream": "S10",
       "text": "Course readers from class schedule / bookstore catalog / cs.ucsb.edu",
-      "status": "partial"
+      "status": "done",
+      "note": "2026-10-23: sourcing round delivered in docs/ucsb-course-readers-2026-10-23.md - Campus Store lookup + Library Course Reserves as catalogues of record; eleven UCSB CS course texts sourced with editions/terms from cs.ucsb.edu course pages (Savitch, Main & Savitch, Rosen, Weiss, Sahni, AIMA, OSTEP, Mitzenmacher & Upfal); the one true printed reader in the sample located (CS 32, SBPrinter/UCEN); algorithms cross-check answered (Weiss/Sahni/Mitzenmacher-Upfal assigned, not CLRS). T10.3 complete as scoped."
     },
     {
       "id": "T11.1",
