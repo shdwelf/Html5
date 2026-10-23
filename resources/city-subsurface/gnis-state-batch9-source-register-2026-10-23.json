@@ -1,0 +1,467 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 26 West North Central closing and Gulf opening state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Minnesota and Louisiana. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned primary point. Eagle Mountain, Lake of the Woods, and Driskill Mountain additionally carry GNIS Domestic Names per-ID checks.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<MN|LA>&include=gnis&maxSuggestions=10",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Parishes, counties, reservations, divisions, census areas, islands, springs, bays, harbors, canals, deltas, air stations, air bases, historical places, and same-name records of another class or county were rejected explicitly where relevant. Punctuation variants (St. versus Saint) were screened both ways and recorded."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
+      "use": "Per-ID identity checks for Eagle Mountain (656081 plus rejected 656080 and 643035), confirming the Minnesota High Point description; Lake of the Woods (654378 plus rejected 1930543), confirming the Board decisions and multi-sequence record; Red River of the North (1035890), confirming the river description while the returned primary point sits in Canada; and Driskill Mountain (542199), confirming the Louisiana High Point description."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, the state-filtered screen returns no intended feature record, the returned record does not match the intended name and type, or the returned primary point does not identify an in-frame reach of the intended feature, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied. Louisiana ships a labelled generalized Gulf coast line that is not a shoreline survey."
+  ],
+  "frames": {
+    "minnesota": {
+      "title": "Minnesota statewide frame",
+      "state": "MN",
+      "bbox": {
+        "lon0": -97.3,
+        "lat0": 43.4,
+        "lon1": -89.4,
+        "lat1": 49.4
+      },
+      "frameNote": "West North Central closing batch: the Saint Paul, Minneapolis, Duluth, Rochester, Mankato, Saint Cloud, and International Falls anchors are balanced with per-ID Eagle Mountain (disambiguated from two undesignated same-name summits), the Board-decision Lake of the Woods record, Mille Lacs Lake, Lake Minnetonka, and the Minnesota River. St./Saint spelling gates, the Mississippi reservoir-only screen, the Red River of the North Canada-primary point, and the Lake Superior/St. Croix empty screens are recorded.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Saint Paul",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Ramsey",
+          "latitude": 44.9444101,
+          "longitude": -93.0932742,
+          "featureId": "662851",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Ramsey County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The official name uses the Saint spelling: the St. Paul term returned an empty states=MN screen on 2026-10-23 while Saint Paul returned this populated place. Rejected: Saint Paul Church (FEATURE_ID 662341), Saint Paul Park (FEATURE_ID 650970), and Saint Paul Island (FEATURE_ID 662342). USGS GNIS Geocoder (GNIS), FEATURE_ID=662851; exact official name and Cities & Populated Places type in Ramsey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Minneapolis",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hennepin",
+          "latitude": 44.9799654,
+          "longitude": -93.2638361,
+          "featureId": "655030",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hennepin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the Minneapolis-Saint Paul International Airport Air Reserve Station record (FEATURE_ID 2512487). USGS GNIS Geocoder (GNIS), FEATURE_ID=655030; exact official name and Cities & Populated Places type in Hennepin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Duluth",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Saint Louis",
+          "latitude": 46.7832731,
+          "longitude": -92.1065787,
+          "featureId": "661145",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Saint Louis County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: Duluth Heights (FEATURE_ID 661147), Duluth Junction (FEATURE_ID 654681), the Duluth Entry stream record (FEATURE_ID 660579), and Duluth International Airport (FEATURE_ID 2832676). USGS GNIS Geocoder (GNIS), FEATURE_ID=661145; exact official name and Cities & Populated Places type in Saint Louis County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Rochester",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Olmsted",
+          "latitude": 44.0216306,
+          "longitude": -92.4698992,
+          "featureId": "650180",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Olmsted County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the historical Rochester Air Force Station record (FEATURE_ID 2090202). USGS GNIS Geocoder (GNIS), FEATURE_ID=650180; exact official name and Cities & Populated Places type in Olmsted County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Mankato",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Blue Earth",
+          "latitude": 44.1635775,
+          "longitude": -93.9993996,
+          "featureId": "647438",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Blue Earth County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: Mankato Spring (FEATURE_ID 647440). USGS GNIS Geocoder (GNIS), FEATURE_ID=647438; exact official name and Cities & Populated Places type in Blue Earth County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Saint Cloud",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Stearns",
+          "latitude": 45.5607986,
+          "longitude": -94.1624895,
+          "featureId": "650559",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Stearns County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The official name uses the Saint spelling: the St. Cloud term returned an empty states=MN screen on 2026-10-23 while Saint Cloud returned this populated place. USGS GNIS Geocoder (GNIS), FEATURE_ID=650559; exact official name and Cities & Populated Places type in Stearns County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "International Falls",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Koochiching",
+          "latitude": 48.6010491,
+          "longitude": -93.4109824,
+          "featureId": "645435",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Koochiching County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=645435; exact official name and Cities & Populated Places type in Koochiching County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Eagle Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Cook",
+          "latitude": 47.8973467,
+          "longitude": -90.5606387,
+          "featureId": "656081",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Cook County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Minnesota's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check showed the description Highest elevation in MN at 2301 feet, Located 20 mi NW of Grand Marais, Primary County Cook County, Primary Map Eagle Mountain, and coordinate sequence 1 marked High Point at the stored point. The 2026-10-23 Geocoder screen returned three exact-name Summit records and listed the undesignated Lutsen-quad summit (FEATURE_ID 656080) first; that record and the Todd County Eagle Mountain (FEATURE_ID 643035) are rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=656081; exact official name and Summit type in Cook County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Lake of the Woods",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Lake of the Woods",
+          "latitude": 49.0519679,
+          "longitude": -94.9545392,
+          "featureId": "654378",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Lake of the Woods County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Seeded FEATURE_ID 654378: the per-ID check shows Board Decisions making the name official in 1911 and 1953 with 18 coordinate sequences around the lake, and sequence 1 matches this screen. Rejected: Lake of the Woods County (FEATURE_ID 659483), the single-point 2001 text record of the same name (FEATURE_ID 1930543), and the Sherburne County swamp of the same name (FEATURE_ID 654379). USGS GNIS Geocoder (GNIS), FEATURE_ID=654378; exact official name and Lakes & Reservoirs type in Lake of the Woods County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Mille Lacs Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Mille Lacs",
+          "latitude": 46.2425615,
+          "longitude": -93.6462512,
+          "featureId": "647859",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Mille Lacs County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The official GNIS name is Mille Lacs Lake: the screen term Mille Lacs returned this record exactly. Rejected: Mille Lacs County (FEATURE_ID 659493), Mille Lacs Reservation (FEATURE_ID 2419017), and Mille Lacs Meadows (FEATURE_ID 647860). USGS GNIS Geocoder (GNIS), FEATURE_ID=647859; exact official name and Lakes & Reservoirs type in Mille Lacs County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Lake Minnetonka",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Hennepin",
+          "latitude": 44.9416763,
+          "longitude": -93.5502789,
+          "featureId": "647954",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Hennepin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=647954; exact official name and Lakes & Reservoirs type in Hennepin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Minnesota River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Dakota",
+          "latitude": 44.89691,
+          "longitude": -93.1491088,
+          "featureId": "659759",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Dakota County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the Minnesota River Reservoir record (FEATURE_ID 1776150). The point is the Dakota County mouth sequence near the Mississippi confluence, not the channel through the Twin Cities. USGS GNIS Geocoder (GNIS), FEATURE_ID=659759; exact official name and Streams & Canals type in Dakota County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    },
+    "louisiana": {
+      "title": "Louisiana statewide frame",
+      "state": "LA",
+      "bbox": {
+        "lon0": -94.1,
+        "lat0": 28.7,
+        "lon1": -88.7,
+        "lat1": 33.1
+      },
+      "frameNote": "Gulf opening batch: New Orleans, Baton Rouge, Shreveport, Lafayette, Lake Charles, and Natchitoches are balanced with per-ID Driskill Mountain (535 feet), Lake Pontchartrain, Lake Maurepas, and the first seeded Mississippi River row (Plaquemines) plus the Red River West Feliciana record closing the four-state chain. The Lafayette parish trap, Lake Charles city/lake split, Monroe two-parish ambiguity, and Toledo Bend empty screens are recorded.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "New Orleans",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Orleans",
+          "latitude": 29.9546482,
+          "longitude": -90.075072,
+          "featureId": "1629985",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Orleans Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the historical New Orleans Navigation Canal (FEATURE_ID 549902), the New Orleans Station Census Designated Place in Plaquemines Parish (FEATURE_ID 2804360), and the historical New Orleans Army Air Base (FEATURE_ID 2085459). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629985; exact official name and Cities & Populated Places type in Orleans Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Baton Rouge",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "East Baton Rouge",
+          "latitude": 30.4507462,
+          "longitude": -91.154551,
+          "featureId": "1629914",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "East Baton Rouge Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. Rejected: Baton Rouge Terrace (FEATURE_ID 559362). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629914; exact official name and Cities & Populated Places type in East Baton Rouge Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Shreveport",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Caddo",
+          "latitude": 32.5251516,
+          "longitude": -93.7501789,
+          "featureId": "1630015",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Caddo Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1630015; exact official name and Cities & Populated Places type in Caddo Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Lafayette",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Lafayette",
+          "latitude": 30.2240897,
+          "longitude": -92.0198427,
+          "featureId": "1629965",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Lafayette Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: Lafayette Parish (FEATURE_ID 558059) and the historical Orleans Parish Lafayette record (FEATURE_ID 559614). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629965; exact official name and Cities & Populated Places type in Lafayette Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Lake Charles",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Calcasieu",
+          "latitude": 30.2265949,
+          "longitude": -93.2173759,
+          "featureId": "1629966",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Calcasieu Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the same-name Lake Charles lake record (FEATURE_ID 553954, identity-safe but held to starter scope), the historical Lake Charles Air Force Station (FEATURE_ID 2087773), and the historical Lake Charles Army Air Field (FEATURE_ID 2085457). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629966; exact official name and Cities & Populated Places type in Calcasieu Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Natchitoches",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Natchitoches",
+          "latitude": 31.7607195,
+          "longitude": -93.0862749,
+          "featureId": "1629983",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Natchitoches Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: Natchitoches Parish (FEATURE_ID 558108), the Natchitoches State Designated Tribal Statistical Area (FEATURE_ID 2813264), and Natchitoches Island (FEATURE_ID 549598). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629983; exact official name and Cities & Populated Places type in Natchitoches Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Driskill Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Bienville",
+          "latitude": 32.4250483,
+          "longitude": -92.8969723,
+          "featureId": "542199",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Bienville Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Louisiana's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check showed the description Highest elevation in LA at 535 feet, Primary County Bienville Parish, Primary Map Bryceland, and coordinate sequence 1 marked High Point at the stored point; the coordinate matches the Geocoder exactly. USGS GNIS Geocoder (GNIS), FEATURE_ID=542199; exact official name and Summit type in Bienville Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Lake Pontchartrain",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Saint Tammany",
+          "latitude": 30.184045,
+          "longitude": -90.125542,
+          "featureId": "1627974",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Saint Tammany Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1627974; exact official name and Lakes & Reservoirs type in Saint Tammany Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Lake Maurepas",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Livingston",
+          "latitude": 30.2522478,
+          "longitude": -90.5015554,
+          "featureId": "1627626",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Livingston Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1627626; exact official name and Lakes & Reservoirs type in Livingston Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Mississippi River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Plaquemines",
+          "latitude": 29.1510582,
+          "longitude": -89.2533842,
+          "featureId": "1629903",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Plaquemines Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The first seeded Mississippi River row: the 2026-10-23 Iowa screen returned an empty array, the Missouri screen returned only the Mississippi River Hills Area record (FEATURE_ID 758109), and the Minnesota screen returned only the Mississippi River Reservoir lake (FEATURE_ID 1776673). This Plaquemines Parish sequence identifies the lower river. Rejected: the Mississippi River-Gulf Outlet Canal (FEATURE_ID 1627674) and the Mississippi River Delta Area record (FEATURE_ID 557096). The point is not a channel centerline and does not verify the upstream reaches. USGS GNIS Geocoder (GNIS), FEATURE_ID=1629903; exact official name and Streams & Canals type in Plaquemines Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Atchafalaya River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Saint Martin",
+          "latitude": 30.2846418,
+          "longitude": -91.6720574,
+          "featureId": "559801",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Saint Martin Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=559801; exact official name and Streams & Canals type in Saint Martin Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Red River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "West Feliciana",
+          "latitude": 31.0193471,
+          "longitude": -91.7478975,
+          "featureId": "558728",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "West Feliciana Parish",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Seeded the West Feliciana Parish stream record, closing the Red River chain: empty states=ND and states=OK screens, a Brown County Texas record rejected in round 24, and the Minnesota-registered Red River of the North whose returned primary point sits in Canada. Rejected: Red River Parish (FEATURE_ID 559472), Red River Landing (FEATURE_ID 543612), and the Red River Bay records (FEATURE_ID 538527, 555770). This is the southern Red River, distinct from FEATURE_ID 1035890 (Red River of the North). USGS GNIS Geocoder (GNIS), FEATURE_ID=558728; exact official name and Streams & Canals type in West Feliciana Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Eagle Mountain, FEATURE_ID 656081 versus two undesignated same-name summits",
+      "decision": "Seeded the Cook County record 656081 after a GNIS Domestic Names per-ID check showed the description Highest elevation in MN at 2301 feet, Located 20 mi NW of Grand Marais, Primary Map Eagle Mountain, and coordinate sequence 1 marked High Point at the stored point. Rejected the undesignated Lutsen-quad summit 656080 and the Todd County Eagle Mountain 643035.",
+      "knownServiceDiscrepancy": "The 2026-10-23 Geocoder screen returned all three exact-name Summit records and listed 656080 first; suggestion order is not identity evidence, and only the per-ID description identifies the state high point."
+    },
+    {
+      "candidate": "Lake of the Woods, FEATURE_ID 654378 versus 1930543",
+      "decision": "Seeded 654378: the per-ID check shows Board Decisions making the name official in 1911 and 1953, 18 coordinate sequences around the lake, and sequence 1 matching this screen. Rejected the same-name county record 659483, the single-point 2001 text record 1930543, and the Sherburne County swamp 654379.",
+      "notClaimed": "The primary point is not the shoreline of the lake, and the rejected 2001 record is not verified as a separate feature."
+    },
+    {
+      "candidate": "Driskill Mountain, FEATURE_ID 542199",
+      "decision": "Seeded after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Louisiana, Primary County=Bienville Parish, coordinate sequence 1 at the stored point marked High Point, and the description Highest elevation in LA at 535 feet; the Geocoder returned a single exact Summit record and the coordinate matches.",
+      "notClaimed": "The primary point is not a surveyed boundary of the high ground."
+    },
+    {
+      "candidate": "St. versus Saint spelling gates in Minnesota: St. Paul and St. Cloud under states=MN",
+      "decision": "Both St.-spelled screens returned empty arrays on 2026-10-23; the Saint-spelled screens returned Saint Paul 662851 (Ramsey) and Saint Cloud 650559 (Stearns). Both Saint records are seeded; the Saint Paul Church/Park/Island pile is rejected in the row note.",
+      "reason": "Fourth spelling gate after St. Louis and St. Joseph (round 25): the official GNIS name field uses the Saint spelling, so the punctuation screen is an identity gate rather than a second feature."
+    },
+    {
+      "candidate": "Mississippi River under states=IA, states=MO, states=MN, and states=LA",
+      "decision": "Seeded only in Louisiana at the returned Plaquemines Parish sequence (29.1510582, -89.2533842), FEATURE_ID 1629903, the first seeded Mississippi River row. Iowa returned an empty array, Missouri returned only the Mississippi River Hills Area record 758109, and Minnesota returned only the Mississippi River Reservoir lake 1776673; those frames keep border corridors only.",
+      "knownServiceDiscrepancy": "Three distinct failure modes precede the Louisiana success: empty screen, name mismatch, and type mismatch. The Louisiana point identifies the lower river only and does not verify the upstream reaches."
+    },
+    {
+      "candidate": "Red River chain: ND/OK empty, TX Brown County, MN Red River of the North, LA West Feliciana",
+      "decision": "Seeded the Louisiana stream 558728 at the returned West Feliciana Parish sequence (31.0193471, -91.7478975). Not seeded: North Dakota and Oklahoma screens returned empty (round 22), the Texas screen returned a Brown County record rejected in round 24, and the Minnesota screen returned exact Red River of the North 1035890 but without an in-frame primary point.",
+      "knownServiceDiscrepancy": "For 1035890 the Geocoder reported the returned primary point (50.4002778, -96.8000000) with County=Kittson County, while the per-ID check marks sequence 1 with no state or map unit because the point sits in Canada at the Lake Winnipeg terminus. Minnesota sequences exist on the record but were not the returned primary, so the Minnesota frame keeps a generalized border corridor only."
+    },
+    {
+      "candidate": "Monroe under states=LA",
+      "decision": "No row seeded: the screen returned two exact-name populated places, Monroe in Ouachita Parish 1629977 and Monroe in Union Parish 544877, which the returned fields alone cannot distinguish for the intended city.",
+      "reason": "Indistinguishable exact-name candidates stay unseeded under the selection rules; the frame keeps six other populated places."
+    },
+    {
+      "candidate": "Lafayette and Natchitoches parish-name traps",
+      "decision": "Lafayette seeds the populated place 1629965 and rejects Lafayette Parish 558059 plus the historical Orleans Parish Lafayette 559614; Natchitoches seeds the populated place 1629983 and rejects Natchitoches Parish 558108, the State Designated Tribal Statistical Area 2813264, and Natchitoches Island 549598.",
+      "notClaimed": "No parish, statistical area, island, or historical record point verifies its namesake city."
+    },
+    {
+      "candidate": "Lake Charles city and lake, FEATURE_ID 1629966 versus 553954",
+      "decision": "Seeded the Calcasieu Parish populated place; rejected the same-name lake record 553954 (identity-safe but held to starter scope), the historical Air Force Station 2087773, and the historical Army Air Field 2085457.",
+      "notClaimed": "The city point does not verify the lake, and the lake is not presented as a shoreline."
+    },
+    {
+      "candidate": "New Orleans same-name piles",
+      "decision": "Seeded Orleans Parish 1629985; rejected the historical Navigation Canal 549902, the Plaquemines Station census record 2804360, and the historical Army Air Base 2085459.",
+      "notClaimed": "No canal, census place, or air base point verifies the city."
+    },
+    {
+      "candidate": "Mille Lacs screen-term versus official name",
+      "decision": "The screen term Mille Lacs returned the exact official record Mille Lacs Lake 647859 in Mille Lacs County; the county 659493, reservation 2419017, and Mille Lacs Meadows swamp 647860 are rejected.",
+      "notClaimed": "No county, reservation, or meadows point verifies the lake, and the lake point is not a shoreline."
+    },
+    {
+      "candidate": "Minneapolis, Duluth, Rochester, Mankato, and Saint Paul same-name piles",
+      "decision": "Minneapolis rejects the airport Air Reserve Station 2512487; Duluth rejects Duluth Heights 661147, Duluth Junction 654681, the Duluth Entry stream 660579, and Duluth International Airport 2832676; Rochester rejects the historical Air Force Station 2090202; Mankato rejects Mankato Spring 647440; Saint Paul rejects Saint Paul Church 662341, Saint Paul Park 650970, and Saint Paul Island 662342.",
+      "notClaimed": "No height, junction, entry, airport, station, spring, church, park, or island point verifies its namesake city."
+    },
+    {
+      "candidate": "Lake Superior and St. Croix River under states=MN; Toledo Bend Reservoir under states=LA",
+      "decision": "No rows seeded: Lake Superior and St. Croix River screens returned empty arrays on 2026-10-23, and Toledo Bend Reservoir returned empty on both the full term and the Toledo Bend retry.",
+      "reason": "Empty screens stay unseeded; no corridor was drawn because the Minnesota frame already carries five context corridors and the Louisiana frame draws its water corridors around the seeded rivers."
+    },
+    {
+      "candidate": "Rainy Lake and Calcasieu Lake starter-scope holds",
+      "decision": "Rainy Lake returned four same-name lake records (Cass 657973, Koochiching 662245 and 1776935, Otter Tail 649799) that the screens do not disambiguate; Calcasieu Lake returned under the Bays & Harbors type 559665. Both hold to starter scope alongside Waterloo (round 25), Salina (round 23), and the Lake Charles lake.",
+      "notClaimed": "No exclusion on identity grounds for Calcasieu; Rainy Lake remains ambiguous and is not seeded on identity grounds."
+    }
+  ],
+  "knownLimitations": [
+    "Minnesota and Louisiana are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence, and the returned county is primary-county provenance. Eagle Mountain, Lake of the Woods, and Driskill Mountain additionally carry per-ID Domestic Names detail checks.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines; the Louisiana coast line is generalized, not a shoreline survey.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include small areas outside their state outlines (including Canadian waters north of Minnesota); no boundary geometry is claimed."
+  ]
+}

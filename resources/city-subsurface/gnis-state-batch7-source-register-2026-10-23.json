@@ -1,0 +1,472 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 24 Southern Plains state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Oklahoma and Texas. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned primary point. Guadalupe Peak additionally carries a GNIS Domestic Names per-ID check; the Red River returned record was reviewed per-ID and rejected for the intended feature.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<OK|TX>&include=gnis&maxSuggestions=<10|25>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Political divisions, counties, colonias, channels, historical air fields, airports, branches, bayous, and same-name records of another class or county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
+      "use": "Per-ID identity checks for Guadalupe Peak (1358489), confirming the Texas High Point description and variant names, and for the rejected Red River record (1344947), whose coordinate sequences sit in Brown County rather than the intended Texas-Oklahoma border reach."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, Bays & Harbors to Bay, Valley to Valley, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline or bay polygon, canyon rim, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, the state-filtered screen returns no intended feature record, or the returned record does not identify the intended feature, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors plus one labelled generalized Gulf coast line for Texas; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "oklahoma": {
+      "title": "Oklahoma statewide frame",
+      "state": "OK",
+      "bbox": {
+        "lon0": -103.1,
+        "lat0": 33.5,
+        "lon1": -94.3,
+        "lat1": 37.05
+      },
+      "frameNote": "Southern Plains batch: the Oklahoma City, Tulsa, and Lawton anchors are balanced with Mount Scott, the Texoma/Grand Lake/Tenkiller reservoirs, and the Canadian/Illinois river records. Black Mesa (state high point), Red River, and Arkansas River stay unseeded after empty or mismatched screens.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Oklahoma City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Oklahoma",
+          "latitude": 35.4675602,
+          "longitude": -97.5164276,
+          "featureId": "1102140",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Oklahoma County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than the four Oklahoma City Division records (FEATURE_IDs 2584398, 2584399, 2584400, 2584401), the Oklahoma City census Division (FEATURE_ID 1937816), and the historical Oklahoma City Air Force Station (FEATURE_ID 2089738). USGS GNIS Geocoder (GNIS), FEATURE_ID=1102140; exact official name and Cities & Populated Places type in Oklahoma County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Tulsa",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Tulsa",
+          "latitude": 36.1539816,
+          "longitude": -95.992775,
+          "featureId": "1100962",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Tulsa County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Tulsa County record (FEATURE_ID 1101859), the Tulsa Division (FEATURE_ID 1937890), the Tulsa Non-Community census record (FEATURE_ID 2631190), the historical Tulsa Army Air Field (FEATURE_ID 2096587), and Tulsa International Airport (FEATURE_ID 2832946). USGS GNIS Geocoder (GNIS), FEATURE_ID=1100962; exact official name and Cities & Populated Places type in Tulsa County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Lawton",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Comanche",
+          "latitude": 34.6086854,
+          "longitude": -98.3903305,
+          "featureId": "1094539",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Comanche County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Lawton Division (FEATURE_ID 1937755) and the near-name Lawtonka Acres populated place (FEATURE_ID 1102161). USGS GNIS Geocoder (GNIS), FEATURE_ID=1094539; exact official name and Cities & Populated Places type in Comanche County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Norman",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Cleveland",
+          "latitude": 35.2225668,
+          "longitude": -97.4394777,
+          "featureId": "1095903",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Cleveland County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Norman Division (FEATURE_ID 1937781). USGS GNIS Geocoder (GNIS), FEATURE_ID=1095903; exact official name and Cities & Populated Places type in Cleveland County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Stillwater",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Payne",
+          "latitude": 36.1156071,
+          "longitude": -97.0583681,
+          "featureId": "1098541",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Payne County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Stillwater Division (FEATURE_ID 1937879), Stillwater Creek (FEATURE_ID 1098542), and the Stillwater Creek Site reservoir records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1098541; exact official name and Cities & Populated Places type in Payne County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Enid",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Garfield",
+          "latitude": 36.3955891,
+          "longitude": -97.8783911,
+          "featureId": "1092626",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Garfield County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Enid Division (FEATURE_ID 1937708). USGS GNIS Geocoder (GNIS), FEATURE_ID=1092626; exact official name and Cities & Populated Places type in Garfield County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Mount Scott",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Comanche",
+          "latitude": 34.7442068,
+          "longitude": -98.5318669,
+          "featureId": "1102047",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Comanche County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Wichita Mountains summit; it is not Oklahoma's state high point. The exact-name Black Mesa states=OK screens returned empty arrays on 2026-10-23 (maxSuggestions 10 and 25), so this starter carries no high-point row and none was forced. The same-name Mount Scotts Boy Summit (FEATURE_ID 1102048) is rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=1102047; exact official name and Summit type in Comanche County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Lake Texoma",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Marshall",
+          "latitude": 33.8833546,
+          "longitude": -96.6947918,
+          "featureId": "1102966",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Marshall County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1102966; exact official name and Lakes & Reservoirs type in Marshall County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Grand Lake O' The Cherokees",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Delaware",
+          "latitude": 36.6033203,
+          "longitude": -94.8627777,
+          "featureId": "1102836",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Delaware County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Stored with the official apostrophe spelling returned by the screen; the Grand Lake of the Cherokees spelling returned an empty states=OK array on 2026-10-23. USGS GNIS Geocoder (GNIS), FEATURE_ID=1102836; exact official name and Lakes & Reservoirs type in Delaware County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Tenkiller Ferry Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Cherokee",
+          "latitude": 35.68829,
+          "longitude": -94.976394,
+          "featureId": "1098801",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Cherokee County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1098801; exact official name and Lakes & Reservoirs type in Cherokee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Canadian River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Haskell",
+          "latitude": 35.453429,
+          "longitude": -95.0327334,
+          "featureId": "1101881",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Haskell County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1101881; exact official name and Streams & Canals type in Haskell County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Illinois River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Sequoyah",
+          "latitude": 35.4892627,
+          "longitude": -95.0977362,
+          "featureId": "1094043",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Sequoyah County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1094043; exact official name and Streams & Canals type in Sequoyah County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    },
+    "texas": {
+      "title": "Texas statewide frame",
+      "state": "TX",
+      "bbox": {
+        "lon0": -106.75,
+        "lat0": 25.75,
+        "lon1": -93.3,
+        "lat1": 36.65
+      },
+      "frameNote": "Southern Plains batch: six metros are balanced with per-ID Guadalupe Peak, the Brazos/Rio Grande/Trinity mouth records, Galveston Bay, and Palo Duro Canyon stored under the returned Valley class. The Red River stream record was rejected for the intended border reach because its coordinate sequences sit in Brown County; the Gulf shoreline is a labelled generalized coast line, not a survey.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Austin",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Travis",
+          "latitude": 30.267153,
+          "longitude": -97.7430608,
+          "featureId": "1384879",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Travis County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than Austin County (FEATURE_ID 1383793), the Austin Division (FEATURE_ID 1938508), Austin Gardens Colonia (FEATURE_ID 2009938), Austin Branch streams (FEATURE_ID 1329844 in Bosque County and FEATURE_ID 1383021 in Houston County), and Austin Bayou (FEATURE_ID 1351332). USGS GNIS Geocoder (GNIS), FEATURE_ID=1384879; exact official name and Cities & Populated Places type in Travis County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Houston",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Harris",
+          "latitude": 29.7632836,
+          "longitude": -95.3632715,
+          "featureId": "1380948",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Harris County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than Houston County (FEATURE_ID 1383898), the Houston Division (FEATURE_ID 1938848), Houston Heights (FEATURE_ID 1374161), the Houston Ship Channel (FEATURE_ID 1381003), the Houston Road East Colonia (FEATURE_ID 2010265), and the Houston Creek/Lake records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1380948; exact official name and Cities & Populated Places type in Harris County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Dallas",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Dallas",
+          "latitude": 32.7830556,
+          "longitude": -96.8066667,
+          "featureId": "1380944",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Dallas County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than Dallas County (FEATURE_ID 1383842), the Dallas Floodway (FEATURE_ID 1333886), and the Dallas Branch stream in Jasper County (FEATURE_ID 1383074). USGS GNIS Geocoder (GNIS), FEATURE_ID=1380944; exact official name and Cities & Populated Places type in Dallas County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "San Antonio",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Bexar",
+          "latitude": 29.4241219,
+          "longitude": -98.4936282,
+          "featureId": "1380951",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Bexar County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the seven San Antonio Division records (FEATURE_IDs 2628567 through 2628573), San Antonio Prairie (FEATURE_ID 2034765), and San Antonio Viejo (FEATURE_ID 1346310). USGS GNIS Geocoder (GNIS), FEATURE_ID=1380951; exact official name and Cities & Populated Places type in Bexar County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "El Paso",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "El Paso",
+          "latitude": 31.7587198,
+          "longitude": -106.4869314,
+          "featureId": "1380946",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "El Paso County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than El Paso County (FEATURE_ID 1383855), the El Paso Division records (FEATURE_IDs 1938721 through 1938724), the El Paso Electric Company Lake (FEATURE_ID 1865087), and the historical El Paso Army Air Field (FEATURE_ID 2091966). USGS GNIS Geocoder (GNIS), FEATURE_ID=1380946; exact official name and Cities & Populated Places type in El Paso County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Fort Worth",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Tarrant",
+          "latitude": 32.725409,
+          "longitude": -97.3208496,
+          "featureId": "1380947",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Tarrant County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Fort Worth Division (FEATURE_ID 1938753) and the historical Fort Worth Army Air Field (FEATURE_ID 2091972). USGS GNIS Geocoder (GNIS), FEATURE_ID=1380947; exact official name and Cities & Populated Places type in Tarrant County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Guadalupe Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Culberson",
+          "latitude": 31.8914269,
+          "longitude": -104.8606624,
+          "featureId": "1358489",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Culberson County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Texas's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Texas, Primary County=Culberson County, coordinate sequence 1 marked High Point at the stored point, the description Highest elevation in TX at 8749 feet in Guadalupe Mountains National Park, and a 1936 Board decision; coordinate matches the Geocoder exactly. The per-ID variant names El Capitan Peak, Signal Peak, and the Guadaloupe misspelling are variants of this same record, not separate features. USGS GNIS Geocoder (GNIS), FEATURE_ID=1358489; exact official name and Summit type in Culberson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Brazos River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Brazoria",
+          "latitude": 28.8758063,
+          "longitude": -95.3782747,
+          "featureId": "1384148",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Brazoria County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1384148; exact official name and Streams & Canals type in Brazoria County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Rio Grande",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Cameron",
+          "latitude": 25.9561917,
+          "longitude": -97.1452477,
+          "featureId": "1385432",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Cameron County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The stream record at the Gulf mouth in Cameron County; distinct from the Rio Grande City populated place (FEATURE_ID 1388199), Rio Grande Village (FEATURE_ID 2033923), and the Rio Grande City Division (FEATURE_ID 1939129). The Rio Grande stayed unseeded in the round-18 New Mexico batch; this states=TX screen returned the exact stream record. The point is the river mouth, not a border trace. USGS GNIS Geocoder (GNIS), FEATURE_ID=1385432; exact official name and Streams & Canals type in Cameron County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Trinity River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Chambers",
+          "latitude": 29.7430556,
+          "longitude": -94.7033333,
+          "featureId": "1348789",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Chambers County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The stream record was selected rather than the Trinity River Lake Estates populated place (FEATURE_ID 1384193) and the Trinity River Channel stream (FEATURE_ID 1376507). USGS GNIS Geocoder (GNIS), FEATURE_ID=1348789; exact official name and Streams & Canals type in Chambers County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Galveston Bay",
+          "featureClass": "Bay",
+          "ftt": "hydro.bay",
+          "county": "Chambers",
+          "latitude": 29.5696734,
+          "longitude": -94.936592,
+          "featureId": "1381144",
+          "verified": 1,
+          "geocoderType": "Bays & Harbors",
+          "geocoderCounty": "Chambers County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "GNIS returned Class=Bays & Harbors; the row stores the Bay class at the returned Chambers County primary point, which is a mapped bay point, not a shoreline polygon or bay-area centroid. The Galveston Bay Entrance Channel stream (FEATURE_ID 1384774) is rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=1381144; exact official name and Bays & Harbors type in Chambers County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or bay-area centroid."
+        },
+        {
+          "name": "Palo Duro Canyon",
+          "featureClass": "Valley",
+          "ftt": "phys.valley",
+          "county": "Hall",
+          "latitude": 34.6292188,
+          "longitude": -100.9451353,
+          "featureId": "1375340",
+          "verified": 1,
+          "geocoderType": "Valley",
+          "geocoderCounty": "Hall County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "GNIS returned the exact-name record under Class=Valley, so the row stores the returned Valley class rather than an invented Canyon class; the Hall County primary point is the mapped canyon location, not a rim or boundary. USGS GNIS Geocoder (GNIS), FEATURE_ID=1375340; exact official name and Valley type in Hall County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a canyon-rim polygon or valley boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Guadalupe Peak, FEATURE_ID 1358489",
+      "decision": "Seeded after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Texas, Primary County=Culberson County, coordinate sequence 1 at the stored point marked High Point, the description Highest elevation in TX at 8749 feet in Guadalupe Mountains National Park, and a January 1 1936 Board decision; the Geocoder returned a single exact Summit record and the coordinate matches.",
+      "notClaimed": "The primary point is not a surveyed boundary of the Guadalupe Mountains or the park. The per-ID variant names El Capitan Peak, Signal Peak, and Guadaloupe Peak (misspelled) are variants of this same record, not separate features, and are not seeded as rows."
+    },
+    {
+      "candidate": "Black Mesa (Oklahoma high point)",
+      "decision": "No row seeded. The exact-name states=OK Geocoder screens returned empty arrays twice on 2026-10-23 (maxSuggestions 10 and 25).",
+      "reason": "An empty screen for the intended exact record stays unseeded under the round-20/21/22/23 rule; no substitute feature is promoted to high point. Mount Scott is seeded as a Wichita Mountains summit and its note states it is not the state high point."
+    },
+    {
+      "candidate": "Red River: states=OK screen empty; states=TX stream record 1344947 reviewed per-ID",
+      "decision": "No Red River row seeded in either frame; generalized border corridor only.",
+      "knownServiceDiscrepancy": "The states=TX screen returned an exact-name Stream record, but the per-ID check shows Primary State=Texas, Primary County=Brown County, and coordinate sequences 1 and 2 near 31.95 N / 99.07 W in Brown County with no description. That record does not identify the intended Texas-Oklahoma border reach (roughly 34.4 N), so it was rejected rather than seeded; Red River County (1383979), Red River City (1377149), and Red River Army Depot (2511991) are further same-name rejections. Consistent with the round-22 Red River of the North empty screens in North Dakota."
+    },
+    {
+      "candidate": "Arkansas River under states=OK; Gloss Mountains under states=OK",
+      "decision": "No gazetteer rows seeded; generalized context corridor for the Arkansas River.",
+      "reason": "Both exact-name state-filtered screens returned empty arrays. The Arkansas result is the third consecutive empty screen for the same intended stream after round-18 Colorado and round-23 Kansas."
+    },
+    {
+      "candidate": "Oklahoma City, FEATURE_ID 1102140 versus Division and military records",
+      "decision": "Seeded the populated place only; rejected Division records 2584398-2584401 and 1937816 plus historical Air Force Station 2089738.",
+      "notClaimed": "The capital point does not verify any division or the historical military site."
+    },
+    {
+      "candidate": "Tulsa, FEATURE_ID 1100962 versus county, division, census, and airfield records",
+      "decision": "Seeded the populated place only; rejected Tulsa County 1101859, Tulsa Division 1937890, Tulsa Non-Community 2631190, historical Tulsa Army Air Field 2096587, and Tulsa International Airport 2832946.",
+      "notClaimed": "The city point does not verify the county, division, or airport."
+    },
+    {
+      "candidate": "Lawton, Norman, Stillwater, and Enid Division piles",
+      "decision": "Seeded the four populated places only; rejected Lawton Division 1937755 (plus near-name Lawtonka Acres 1102161), Norman Division 1937781, Stillwater Division 1937879 (plus Stillwater Creek 1098542 and its reservoir records), and Enid Division 1937708.",
+      "notClaimed": "No division, creek, or reservoir point verifies its namesake city."
+    },
+    {
+      "candidate": "Mount Scott 1102047 versus Mount Scotts Boy 1102048",
+      "decision": "Seeded Mount Scott only; the same-name Boy summit rejected in its note.",
+      "notClaimed": "Neither summit point verifies the other or implies the state high point."
+    },
+    {
+      "candidate": "Grand Lake O' The Cherokees spelling",
+      "decision": "Seeded the returned official apostrophe form (FEATURE_ID 1102836); the Grand Lake of the Cherokees spelling returned an empty states=OK screen and is recorded as a spelling variant that screens empty, not a second feature.",
+      "notClaimed": "The lake point is not a shoreline polygon."
+    },
+    {
+      "candidate": "Austin, Houston, Dallas, San Antonio, El Paso, and Fort Worth same-name piles",
+      "decision": "Seeded the six Travis/Harris/Dallas/Bexar/El Paso/Tarrant populated places only; the register source notes reject Austin County 1383793 and the Austin Division/Colonia/Branch/Bayou records, Houston County 1383898 and the Division/Heights/Ship Channel/Colonia records, Dallas County 1383842 and Dallas Floodway 1333886 plus Dallas Branch 1383074, the seven San Antonio Division records 2628567-2628573 plus San Antonio Prairie 2034765 and San Antonio Viejo 1346310, El Paso County 1383855 plus Division records 1938721-1938724 and El Paso Electric Company Lake 1865087 plus historical Air Field 2091966, and Fort Worth Division 1938753 plus historical Air Field 2091972.",
+      "notClaimed": "No capital, county, division, colonia, channel, or airfield point verifies its namesake city."
+    },
+    {
+      "candidate": "Rio Grande, FEATURE_ID 1385432",
+      "decision": "Seeded the states=TX stream record at the Gulf mouth (Cameron County); rejected Rio Grande City 1388199, Rio Grande Village 2033923, and Rio Grande City Division 1939129.",
+      "notClaimed": "The mouth point is not a border trace or channel centerline, and it does not re-verify the New Mexico reach that stayed unseeded in the round-18 batch."
+    },
+    {
+      "candidate": "Trinity River, FEATURE_ID 1348789 versus same-name non-channel records",
+      "decision": "Seeded the stream record only; rejected Trinity River Lake Estates populated place 1384193 and Trinity River Channel stream 1376507.",
+      "notClaimed": "The Chambers County mouth point is not the channel or the Dallas reach."
+    },
+    {
+      "candidate": "Galveston Bay, FEATURE_ID 1381144",
+      "decision": "Seeded under the returned Bays & Harbors type as the Bay class at the Chambers County primary point; rejected Galveston Bay Entrance Channel stream 1384774.",
+      "notClaimed": "The primary point is not a shoreline polygon, bay-area centroid, or the bay extent."
+    },
+    {
+      "candidate": "Palo Duro Canyon, FEATURE_ID 1375340",
+      "decision": "Seeded under the returned Class=Valley; the gazetteer stores Valley rather than an invented Canyon class, following the returned type.",
+      "notClaimed": "The Hall County primary point is not a canyon-rim polygon or valley boundary."
+    },
+    {
+      "candidate": "Colorado River (TX) 1384149, Quartz Mountain 1096991, Padre Island 1375326",
+      "decision": "Identity-safe but left out of the 12-row starters, the same starter-scope treatment as Rogue River (round 20), Belle Fourche river/reservoir (round 22), and Salina (round 23).",
+      "notClaimed": "No exclusion on identity grounds; the screen results are recorded here so the omissions are visible."
+    }
+  ],
+  "knownLimitations": [
+    "Oklahoma and Texas are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence, and the returned county is primary-county provenance. Guadalupe Peak additionally carries a per-ID Domestic Names detail check, and the Red River record was reviewed per-ID before rejection.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines; the Texas Gulf coast line is labelled generalized context, not a survey.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include small areas outside their state outlines, and the Texas rectangle also includes open Gulf area beyond the coast line; no boundary geometry is claimed."
+  ]
+}

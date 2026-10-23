@@ -54,10 +54,55 @@ with the per-ID “highest elevation” descriptions preserved in their
 notes). Their machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json).
 
+Round 24 update: **2026-10-23**. `oklahoma` and `texas` join as the
+twenty-fifth and twenty-sixth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows; Guadalupe Peak additionally carries a GNIS
+Domestic Names per-ID detail check (Texas high point, “8749 feet”), and
+the returned Red River record was reviewed per-ID and rejected because
+its Brown County sequences do not identify the intended border reach.
+Texas ships a labelled generalized Gulf coast line. Their machine-readable
+evidence is
+[`resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json).
+
+Round 25 update: **2026-10-23**. `iowa` and `missouri` join as the
+twenty-seventh and twenty-eighth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows; Hawkeye Point and Taum Sauk Mountain
+additionally carry GNIS Domestic Names per-ID detail checks (both state
+high points, “1670 feet” and “1772 feet”). Missouri carries the first
+statewide Missouri River row after six empty upstream state screens, and
+the St./Saint spelling gates for Saint Louis and Saint Joseph are recorded.
+Their machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json).
+
+Round 26 update: **2026-10-23**. `minnesota` and `louisiana` join as the
+twenty-ninth and thirtieth configurations, closing the West North Central
+division and opening the Gulf thread. Each starts with twelve all-GNIS
+`VERIFIED=1` rows; Eagle Mountain and Driskill Mountain additionally carry
+GNIS Domestic Names per-ID detail checks (“2301 feet” disambiguated from
+two undesignated same-name summits, and “535 feet”), Lake of the Woods
+carries a Board-decision per-ID check, Louisiana seeds the **first
+statewide Mississippi River row** (Plaquemines) after three distinct state
+screen failures, and the Red River chain closes at the West Feliciana
+record. Louisiana ships a labelled generalized Gulf coast line. Their
+machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json).
+
+Round 27 update: **2026-10-23**. `mississippi` and `alabama` join as the
+thirty-first and thirty-second configurations, opening the Gulf state pair
+east of Texas. Each starts with twelve all-GNIS `VERIFIED=1` rows;
+Woodall Mountain and Cheaha Mountain additionally carry GNIS Domestic
+Names per-ID detail checks (“806 feet” and “2407 feet”), Guntersville Lake
+and Wheeler Lake carry decision-card per-ID checks that resolve a parallel
+duplicate and a separate same-name lake, and both frames ship labelled
+generalized Gulf coast lines. The Mississippi main stem stays corridor-only
+in its own state after a fifth empty/mismatched screen, and Tombigbee
+seeds only in Alabama. Their machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has twenty-four configurations — five cities,
-fifteen statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has thirty-two configurations — five cities,
+twenty-three statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -86,6 +131,14 @@ its own offline Webxdc:
 | South Dakota (statewide) | `southdakota-subsurface.html` | `js/city-subsurface-data-southdakota.js` | `js/city-gazetteer-data-southdakota.js` | `southdakota-subsurface.xdc` |
 | Nebraska (statewide) | `nebraska-subsurface.html` | `js/city-subsurface-data-nebraska.js` | `js/city-gazetteer-data-nebraska.js` | `nebraska-subsurface.xdc` |
 | Kansas (statewide) | `kansas-subsurface.html` | `js/city-subsurface-data-kansas.js` | `js/city-gazetteer-data-kansas.js` | `kansas-subsurface.xdc` |
+| Oklahoma (statewide) | `oklahoma-subsurface.html` | `js/city-subsurface-data-oklahoma.js` | `js/city-gazetteer-data-oklahoma.js` | `oklahoma-subsurface.xdc` |
+| Texas (statewide) | `texas-subsurface.html` | `js/city-subsurface-data-texas.js` | `js/city-gazetteer-data-texas.js` | `texas-subsurface.xdc` |
+| Iowa (statewide) | `iowa-subsurface.html` | `js/city-subsurface-data-iowa.js` | `js/city-gazetteer-data-iowa.js` | `iowa-subsurface.xdc` |
+| Missouri (statewide) | `missouri-subsurface.html` | `js/city-subsurface-data-missouri.js` | `js/city-gazetteer-data-missouri.js` | `missouri-subsurface.xdc` |
+| Minnesota (statewide) | `minnesota-subsurface.html` | `js/city-subsurface-data-minnesota.js` | `js/city-gazetteer-data-minnesota.js` | `minnesota-subsurface.xdc` |
+| Louisiana (statewide) | `louisiana-subsurface.html` | `js/city-subsurface-data-louisiana.js` | `js/city-gazetteer-data-louisiana.js` | `louisiana-subsurface.xdc` |
+| Mississippi (statewide) | `mississippi-subsurface.html` | `js/city-subsurface-data-mississippi.js` | `js/city-gazetteer-data-mississippi.js` | `mississippi-subsurface.xdc` |
+| Alabama (statewide) | `alabama-subsurface.html` | `js/city-subsurface-data-alabama.js` | `js/city-gazetteer-data-alabama.js` | `alabama-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

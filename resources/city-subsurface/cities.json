@@ -5614,6 +5614,2245 @@
         ["Republican River", "Stream", "hydro.stream", "Geary", 39.0599979, -96.8013971, null, "485443", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=485443; exact official name and Streams & Canals type in Geary County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
         ["Smoky Hill River", "Stream", "hydro.stream", "Geary", 39.0599979, -96.8011193, null, "485314", 1, "The Smoky Hill record at the Geary County confluence area; distinct from the neighboring Republican River record (FEATURE_ID 485443), whose point is about 22 metres away, and it does not verify the Nebraska Republican River screen (empty under states=NE). USGS GNIS Geocoder (GNIS), FEATURE_ID=485314; exact official name and Streams & Canals type in Geary County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
       ]
+    },
+    "oklahoma": {
+      "title": "OKLAHOMA SUBSURFACE 4Dwm",
+      "subtitle": "Red Bed plains · Wichita Mountains · Ozarks and Ouachitas — statewide frame, Oklahoma",
+      "gazTitle": "OKLAHOMA USGS GNIS REGISTER",
+      "gazNote": "Round 24 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "OK",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -103.1,
+        "lat0": 33.5,
+        "lon1": -94.3,
+        "lat1": 37.05
+      },
+      "center": {
+        "lon": -97.5,
+        "lat": 35.5
+      },
+      "baseElevationM": 400,
+      "roughnessM": 65,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "High Plains panhandle",
+          "lon": -102.2,
+          "lat": 36.6,
+          "rx": 0.8,
+          "ry": 0.4,
+          "amp": 500,
+          "rot": 0
+        },
+        {
+          "name": "Cimarron Notch",
+          "lon": -103.0,
+          "lat": 37.0,
+          "rx": 0.3,
+          "ry": 0.15,
+          "amp": 340,
+          "rot": 0
+        },
+        {
+          "name": "Salt Fork prairies",
+          "lon": -99.8,
+          "lat": 36.4,
+          "rx": 0.9,
+          "ry": 0.5,
+          "amp": 200,
+          "rot": 0
+        },
+        {
+          "name": "Red Bed plains and Wichita Mountains",
+          "lon": -98.5,
+          "lat": 34.7,
+          "rx": 0.6,
+          "ry": 0.5,
+          "amp": 220,
+          "rot": 0
+        },
+        {
+          "name": "Cross Timbers",
+          "lon": -97.3,
+          "lat": 35.6,
+          "rx": 0.3,
+          "ry": 0.6,
+          "amp": 120,
+          "rot": 0
+        },
+        {
+          "name": "Ozark plateau",
+          "lon": -95.1,
+          "lat": 36.6,
+          "rx": 0.7,
+          "ry": 0.4,
+          "amp": 260,
+          "rot": 0
+        },
+        {
+          "name": "Ouachita mountains",
+          "lon": -95.2,
+          "lat": 34.5,
+          "rx": 0.6,
+          "ry": 0.4,
+          "amp": 280,
+          "rot": 0
+        },
+        {
+          "name": "Arkansas and Canadian lowlands",
+          "lon": -96.3,
+          "lat": 35.4,
+          "rx": 0.8,
+          "ry": 0.3,
+          "amp": -80,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i40-oklahoma",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 40 corridor (generalized)",
+          "short": "I-40",
+          "depthM": 0,
+          "path": [
+            [-103.0, 35.5],
+            [-101.0, 35.5],
+            [-99.4, 35.5],
+            [-98.9, 35.5],
+            [-97.5164276, 35.4675602],
+            [-96.0, 35.45],
+            [-94.5, 35.4]
+          ],
+          "facts": [
+            "Generalized Interstate 40 corridor across Oklahoma from the Texas panhandle through Oklahoma City to the Arkansas border; schematic polyline through a named anchor and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 40 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i44-oklahoma",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 44 corridor (generalized)",
+          "short": "I-44",
+          "depthM": 0,
+          "path": [
+            [-95.992775, 36.1539816],
+            [-97.5164276, 35.4675602],
+            [-98.3903305, 34.6086854],
+            [-98.4, 34.2]
+          ],
+          "facts": [
+            "Generalized Interstate 44 corridor from Tulsa through Oklahoma City and Lawton to the Red River area; schematic polyline through named anchors and a generalized point, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 44 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "red-river-oklahoma",
+          "layer": "water",
+          "tier": "context",
+          "name": "Red River border reach (generalized)",
+          "short": "Red River",
+          "depthM": 0,
+          "path": [
+            [-102.9, 34.5],
+            [-101.0, 34.55],
+            [-99.6, 34.5],
+            [-98.4, 34.15],
+            [-96.8, 33.95],
+            [-95.4, 33.72],
+            [-94.6, 33.65]
+          ],
+          "facts": [
+            "No Red River gazetteer row is seeded in either Southern Plains frame: the states=OK screen returned an empty array, and the states=TX screen returned a Brown County stream record (FEATURE_ID 1344947, coordinate sequences near 31.95 N) that does not identify the intended Texas-Oklahoma border reach. Generalized context reach along the southern border; schematic, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder screening recorded in the round-24 source register"
+          ]
+        },
+        {
+          "id": "arkansas-river-oklahoma",
+          "layer": "water",
+          "tier": "context",
+          "name": "Arkansas River reach (generalized)",
+          "short": "Arkansas River",
+          "depthM": 0,
+          "path": [
+            [-97.05, 36.95],
+            [-96.85, 36.4],
+            [-96.5, 36.1],
+            [-96.0, 35.95],
+            [-95.7, 35.65],
+            [-95.5, 35.5]
+          ],
+          "facts": [
+            "No Arkansas River gazetteer row is seeded in the Oklahoma frame: the 2026-10-23 states=OK Geocoder screen returned an empty array for the intended exact stream record, matching the round-18 Colorado and round-23 Kansas empty screens for the same intended stream. Generalized context reach past the Tulsa area; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-24 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "oklahoma-city",
+          "name": "Oklahoma City",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -97.5164276,
+          "lat": 35.4675602,
+          "depthM": 0,
+          "facts": [
+            "State capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1102140; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "tulsa",
+          "name": "Tulsa",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -95.992775,
+          "lat": 36.1539816,
+          "depthM": 0,
+          "facts": [
+            "Northeastern anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1100962; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mount-scott",
+          "name": "Mount Scott",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -98.5318669,
+          "lat": 34.7442068,
+          "depthM": 0,
+          "facts": [
+            "Wichita Mountains summit anchor (not the state high point); node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1102047; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "lake-texoma",
+          "name": "Lake Texoma",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -96.6947918,
+          "lat": 33.8833546,
+          "depthM": 0,
+          "facts": [
+            "Red River reservoir anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1102966; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Oklahoma City", "Populated Place", "pop.place", "Oklahoma", 35.4675602, -97.5164276, null, "1102140", 1, "State capital. The populated-place record was selected rather than the four Oklahoma City Division records (FEATURE_IDs 2584398, 2584399, 2584400, 2584401), the Oklahoma City census Division (FEATURE_ID 1937816), and the historical Oklahoma City Air Force Station (FEATURE_ID 2089738). USGS GNIS Geocoder (GNIS), FEATURE_ID=1102140; exact official name and Cities & Populated Places type in Oklahoma County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Tulsa", "Populated Place", "pop.place", "Tulsa", 36.1539816, -95.992775, null, "1100962", 1, "The populated-place record was selected rather than the Tulsa County record (FEATURE_ID 1101859), the Tulsa Division (FEATURE_ID 1937890), the Tulsa Non-Community census record (FEATURE_ID 2631190), the historical Tulsa Army Air Field (FEATURE_ID 2096587), and Tulsa International Airport (FEATURE_ID 2832946). USGS GNIS Geocoder (GNIS), FEATURE_ID=1100962; exact official name and Cities & Populated Places type in Tulsa County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Lawton", "Populated Place", "pop.place", "Comanche", 34.6086854, -98.3903305, null, "1094539", 1, "The populated-place record was selected rather than the Lawton Division (FEATURE_ID 1937755) and the near-name Lawtonka Acres populated place (FEATURE_ID 1102161). USGS GNIS Geocoder (GNIS), FEATURE_ID=1094539; exact official name and Cities & Populated Places type in Comanche County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Norman", "Populated Place", "pop.place", "Cleveland", 35.2225668, -97.4394777, null, "1095903", 1, "The populated-place record was selected rather than the Norman Division (FEATURE_ID 1937781). USGS GNIS Geocoder (GNIS), FEATURE_ID=1095903; exact official name and Cities & Populated Places type in Cleveland County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Stillwater", "Populated Place", "pop.place", "Payne", 36.1156071, -97.0583681, null, "1098541", 1, "The populated-place record was selected rather than the Stillwater Division (FEATURE_ID 1937879), Stillwater Creek (FEATURE_ID 1098542), and the Stillwater Creek Site reservoir records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1098541; exact official name and Cities & Populated Places type in Payne County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Enid", "Populated Place", "pop.place", "Garfield", 36.3955891, -97.8783911, null, "1092626", 1, "The populated-place record was selected rather than the Enid Division (FEATURE_ID 1937708). USGS GNIS Geocoder (GNIS), FEATURE_ID=1092626; exact official name and Cities & Populated Places type in Garfield County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Mount Scott", "Summit", "phys.summit", "Comanche", 34.7442068, -98.5318669, null, "1102047", 1, "Wichita Mountains summit; it is not Oklahoma's state high point. The exact-name Black Mesa states=OK screens returned empty arrays on 2026-10-23 (maxSuggestions 10 and 25), so this starter carries no high-point row and none was forced. The same-name Mount Scotts Boy Summit (FEATURE_ID 1102048) is rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=1102047; exact official name and Summit type in Comanche County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Lake Texoma", "Lake", "hydro.lake", "Marshall", 33.8833546, -96.6947918, null, "1102966", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1102966; exact official name and Lakes & Reservoirs type in Marshall County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Grand Lake O' The Cherokees", "Lake", "hydro.lake", "Delaware", 36.6033203, -94.8627777, null, "1102836", 1, "Stored with the official apostrophe spelling returned by the screen; the Grand Lake of the Cherokees spelling returned an empty states=OK array on 2026-10-23. USGS GNIS Geocoder (GNIS), FEATURE_ID=1102836; exact official name and Lakes & Reservoirs type in Delaware County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Tenkiller Ferry Lake", "Lake", "hydro.lake", "Cherokee", 35.68829, -94.976394, null, "1098801", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1098801; exact official name and Lakes & Reservoirs type in Cherokee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Canadian River", "Stream", "hydro.stream", "Haskell", 35.453429, -95.0327334, null, "1101881", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1101881; exact official name and Streams & Canals type in Haskell County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Illinois River", "Stream", "hydro.stream", "Sequoyah", 35.4892627, -95.0977362, null, "1094043", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1094043; exact official name and Streams & Canals type in Sequoyah County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
+    },
+    "texas": {
+      "title": "TEXAS SUBSURFACE 4Dwm",
+      "subtitle": "Balcones and Edwards Plateau · Southern High Plains · Trans-Pecos · Gulf Coast — statewide frame, Texas",
+      "gazTitle": "TEXAS USGS GNIS REGISTER",
+      "gazNote": "Round 24 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Guadalupe Peak additionally carries a GNIS Domestic Names per-ID check. Pins are not boundaries, shorelines, bay polygons, canyon rims, or river centerlines.",
+      "state": "TX",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -106.75,
+        "lat0": 25.75,
+        "lon1": -93.3,
+        "lat1": 36.65
+      },
+      "center": {
+        "lon": -99.5,
+        "lat": 31.5
+      },
+      "baseElevationM": 500,
+      "roughnessM": 85,
+      "hasWater": true,
+      "coast": [
+        [-93.85, 29.7],
+        [-94.7, 29.65],
+        [-95.15, 29.25],
+        [-95.4, 28.95],
+        [-96.0, 28.5],
+        [-96.6, 28.35],
+        [-97.05, 27.85],
+        [-97.35, 27.1],
+        [-97.4, 26.5],
+        [-97.45, 25.95]
+      ],
+      "relief": [
+        {
+          "name": "Trans-Pecos and Guadalupe Mountains",
+          "lon": -104.3,
+          "lat": 31.3,
+          "rx": 1.0,
+          "ry": 0.8,
+          "amp": 900,
+          "rot": 0
+        },
+        {
+          "name": "Llano Estacado",
+          "lon": -101.6,
+          "lat": 33.8,
+          "rx": 1.0,
+          "ry": 1.1,
+          "amp": 700,
+          "rot": 0
+        },
+        {
+          "name": "Edwards Plateau",
+          "lon": -99.8,
+          "lat": 30.3,
+          "rx": 1.2,
+          "ry": 0.9,
+          "amp": 400,
+          "rot": 0
+        },
+        {
+          "name": "Balcones escarpment",
+          "lon": -98.6,
+          "lat": 29.8,
+          "rx": 0.4,
+          "ry": 0.9,
+          "amp": 260,
+          "rot": 0
+        },
+        {
+          "name": "Gulf coastal plain",
+          "lon": -95.9,
+          "lat": 29.0,
+          "rx": 1.0,
+          "ry": 0.6,
+          "amp": -200,
+          "rot": 0
+        },
+        {
+          "name": "East Texas timberlands",
+          "lon": -95.2,
+          "lat": 31.8,
+          "rx": 0.7,
+          "ry": 0.8,
+          "amp": 140,
+          "rot": 0
+        },
+        {
+          "name": "Panhandle breaks and Palo Duro",
+          "lon": -101.3,
+          "lat": 34.9,
+          "rx": 0.5,
+          "ry": 0.4,
+          "amp": -150,
+          "rot": 0
+        },
+        {
+          "name": "Rio Grande valley and South Texas",
+          "lon": -98.8,
+          "lat": 27.5,
+          "rx": 1.2,
+          "ry": 0.5,
+          "amp": -100,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i35-texas",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 35 corridor (generalized)",
+          "short": "I-35",
+          "depthM": 0,
+          "path": [
+            [-99.48, 27.5],
+            [-98.6, 28.6],
+            [-98.4936282, 29.4241219],
+            [-97.7430608, 30.267153],
+            [-97.1, 31.55],
+            [-96.8066667, 32.7830556],
+            [-96.9, 33.55]
+          ],
+          "facts": [
+            "Generalized Interstate 35 corridor from the Laredo border through San Antonio, Austin, and Waco to Dallas and the Red River; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 35 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i10-texas",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 10 corridor (generalized)",
+          "short": "I-10",
+          "depthM": 0,
+          "path": [
+            [-106.4869314, 31.7587198],
+            [-104.4, 30.7],
+            [-103.2, 29.4],
+            [-101.5, 30.2],
+            [-98.4936282, 29.4241219],
+            [-97.8, 29.6],
+            [-95.3632715, 29.7632836],
+            [-94.85, 29.7]
+          ],
+          "facts": [
+            "Generalized Interstate 10 corridor from El Paso across the Trans-Pecos through San Antonio and Houston to the Louisiana border; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 10 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "rio-grande-texas",
+          "layer": "water",
+          "tier": "context",
+          "name": "Rio Grande border reach (generalized)",
+          "short": "Rio Grande",
+          "depthM": 0,
+          "path": [
+            [-97.1452477, 25.9561917],
+            [-97.7, 26.6],
+            [-99.1, 27.6],
+            [-101.4, 29.4],
+            [-102.9, 29.2],
+            [-104.5, 29.8],
+            [-105.8, 31.2],
+            [-106.5, 31.8]
+          ],
+          "facts": [
+            "Generalized Rio Grande reach from the Gulf mouth anchor west along the international border to the El Paso area; schematic polyline, not a channel centerline or border definition. The first vertex is the GNIS primary point used by the gazetteer row."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1385432 for the mouth primary point"
+          ]
+        },
+        {
+          "id": "brazos-river-texas",
+          "layer": "water",
+          "tier": "context",
+          "name": "Brazos River reach (generalized)",
+          "short": "Brazos River",
+          "depthM": 0,
+          "path": [
+            [-101.5, 33.5],
+            [-99.6, 32.6],
+            [-98.4, 31.6],
+            [-97.0, 31.0],
+            [-96.0, 30.6],
+            [-95.6, 29.6],
+            [-95.3782747, 28.8758063]
+          ],
+          "facts": [
+            "Generalized Brazos River reach from the High Plains headwater area to the Gulf mouth anchor; schematic polyline, not a channel centerline. The last vertex is the GNIS primary point used by the gazetteer row."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1384148 for the mouth primary point"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "austin",
+          "name": "Austin",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -97.7430608,
+          "lat": 30.267153,
+          "depthM": 0,
+          "facts": [
+            "Texas state capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1384879; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "guadalupe-peak",
+          "name": "Guadalupe Peak",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -104.8606624,
+          "lat": 31.8914269,
+          "depthM": 0,
+          "facts": [
+            "Texas's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1358489; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "galveston-bay",
+          "name": "Galveston Bay",
+          "layer": "harbors",
+          "tier": "official",
+          "kind": "harbor",
+          "lon": -94.936592,
+          "lat": 29.5696734,
+          "depthM": 0,
+          "facts": [
+            "Gulf coast bay anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1381144; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "palo-duro-canyon",
+          "name": "Palo Duro Canyon",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "valley",
+          "lon": -100.9451353,
+          "lat": 34.6292188,
+          "depthM": 0,
+          "facts": [
+            "Panhandle canyon anchor; node coordinate is the GNIS Valley primary point from the gazetteer row, not a rim polygon."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1375340; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Austin", "Populated Place", "pop.place", "Travis", 30.267153, -97.7430608, null, "1384879", 1, "State capital. The populated-place record was selected rather than Austin County (FEATURE_ID 1383793), the Austin Division (FEATURE_ID 1938508), Austin Gardens Colonia (FEATURE_ID 2009938), Austin Branch streams (FEATURE_ID 1329844 in Bosque County and FEATURE_ID 1383021 in Houston County), and Austin Bayou (FEATURE_ID 1351332). USGS GNIS Geocoder (GNIS), FEATURE_ID=1384879; exact official name and Cities & Populated Places type in Travis County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Houston", "Populated Place", "pop.place", "Harris", 29.7632836, -95.3632715, null, "1380948", 1, "The populated-place record was selected rather than Houston County (FEATURE_ID 1383898), the Houston Division (FEATURE_ID 1938848), Houston Heights (FEATURE_ID 1374161), the Houston Ship Channel (FEATURE_ID 1381003), the Houston Road East Colonia (FEATURE_ID 2010265), and the Houston Creek/Lake records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1380948; exact official name and Cities & Populated Places type in Harris County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Dallas", "Populated Place", "pop.place", "Dallas", 32.7830556, -96.8066667, null, "1380944", 1, "The populated-place record was selected rather than Dallas County (FEATURE_ID 1383842), the Dallas Floodway (FEATURE_ID 1333886), and the Dallas Branch stream in Jasper County (FEATURE_ID 1383074). USGS GNIS Geocoder (GNIS), FEATURE_ID=1380944; exact official name and Cities & Populated Places type in Dallas County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["San Antonio", "Populated Place", "pop.place", "Bexar", 29.4241219, -98.4936282, null, "1380951", 1, "The populated-place record was selected rather than the seven San Antonio Division records (FEATURE_IDs 2628567 through 2628573), San Antonio Prairie (FEATURE_ID 2034765), and San Antonio Viejo (FEATURE_ID 1346310). USGS GNIS Geocoder (GNIS), FEATURE_ID=1380951; exact official name and Cities & Populated Places type in Bexar County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["El Paso", "Populated Place", "pop.place", "El Paso", 31.7587198, -106.4869314, null, "1380946", 1, "The populated-place record was selected rather than El Paso County (FEATURE_ID 1383855), the El Paso Division records (FEATURE_IDs 1938721 through 1938724), the El Paso Electric Company Lake (FEATURE_ID 1865087), and the historical El Paso Army Air Field (FEATURE_ID 2091966). USGS GNIS Geocoder (GNIS), FEATURE_ID=1380946; exact official name and Cities & Populated Places type in El Paso County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Fort Worth", "Populated Place", "pop.place", "Tarrant", 32.725409, -97.3208496, null, "1380947", 1, "The populated-place record was selected rather than the Fort Worth Division (FEATURE_ID 1938753) and the historical Fort Worth Army Air Field (FEATURE_ID 2091972). USGS GNIS Geocoder (GNIS), FEATURE_ID=1380947; exact official name and Cities & Populated Places type in Tarrant County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Guadalupe Peak", "Summit", "phys.summit", "Culberson", 31.8914269, -104.8606624, null, "1358489", 1, "Texas's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Texas, Primary County=Culberson County, coordinate sequence 1 marked High Point at the stored point, the description Highest elevation in TX at 8749 feet in Guadalupe Mountains National Park, and a 1936 Board decision; coordinate matches the Geocoder exactly. The per-ID variant names El Capitan Peak, Signal Peak, and the Guadaloupe misspelling are variants of this same record, not separate features. USGS GNIS Geocoder (GNIS), FEATURE_ID=1358489; exact official name and Summit type in Culberson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Brazos River", "Stream", "hydro.stream", "Brazoria", 28.8758063, -95.3782747, null, "1384148", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1384148; exact official name and Streams & Canals type in Brazoria County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Rio Grande", "Stream", "hydro.stream", "Cameron", 25.9561917, -97.1452477, null, "1385432", 1, "The stream record at the Gulf mouth in Cameron County; distinct from the Rio Grande City populated place (FEATURE_ID 1388199), Rio Grande Village (FEATURE_ID 2033923), and the Rio Grande City Division (FEATURE_ID 1939129). The Rio Grande stayed unseeded in the round-18 New Mexico batch; this states=TX screen returned the exact stream record. The point is the river mouth, not a border trace. USGS GNIS Geocoder (GNIS), FEATURE_ID=1385432; exact official name and Streams & Canals type in Cameron County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Trinity River", "Stream", "hydro.stream", "Chambers", 29.7430556, -94.7033333, null, "1348789", 1, "The stream record was selected rather than the Trinity River Lake Estates populated place (FEATURE_ID 1384193) and the Trinity River Channel stream (FEATURE_ID 1376507). USGS GNIS Geocoder (GNIS), FEATURE_ID=1348789; exact official name and Streams & Canals type in Chambers County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Galveston Bay", "Bay", "hydro.bay", "Chambers", 29.5696734, -94.936592, null, "1381144", 1, "GNIS returned Class=Bays & Harbors; the row stores the Bay class at the returned Chambers County primary point, which is a mapped bay point, not a shoreline polygon or bay-area centroid. The Galveston Bay Entrance Channel stream (FEATURE_ID 1384774) is rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=1381144; exact official name and Bays & Harbors type in Chambers County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or bay-area centroid."],
+        ["Palo Duro Canyon", "Valley", "phys.valley", "Hall", 34.6292188, -100.9451353, null, "1375340", 1, "GNIS returned the exact-name record under Class=Valley, so the row stores the returned Valley class rather than an invented Canyon class; the Hall County primary point is the mapped canyon location, not a rim or boundary. USGS GNIS Geocoder (GNIS), FEATURE_ID=1375340; exact official name and Valley type in Hall County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a canyon-rim polygon or valley boundary."]
+      ]
+    },
+    "iowa": {
+      "title": "IOWA SUBSURFACE 4Dwm",
+      "subtitle": "Loess Hills · Des Moines Lobe · driftless northeast — statewide frame, Iowa",
+      "gazTitle": "IOWA USGS GNIS REGISTER",
+      "gazNote": "Round 25 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Hawkeye Point additionally carries a GNIS Domestic Names per-ID check. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "IA",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -96.8,
+        "lat0": 40.3,
+        "lon1": -90.0,
+        "lat1": 43.6
+      },
+      "center": {
+        "lon": -93.5,
+        "lat": 42.0
+      },
+      "baseElevationM": 280,
+      "roughnessM": 50,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Loess Hills",
+          "lon": -96.3,
+          "lat": 41.6,
+          "rx": 0.3,
+          "ry": 0.7,
+          "amp": 140,
+          "rot": 0
+        },
+        {
+          "name": "Northwestern plains",
+          "lon": -95.6,
+          "lat": 43.0,
+          "rx": 0.7,
+          "ry": 0.5,
+          "amp": 120,
+          "rot": 0
+        },
+        {
+          "name": "Des Moines Lobe",
+          "lon": -93.8,
+          "lat": 42.4,
+          "rx": 0.7,
+          "ry": 0.5,
+          "amp": 60,
+          "rot": 0
+        },
+        {
+          "name": "Paleozoic plateau",
+          "lon": -91.4,
+          "lat": 42.7,
+          "rx": 0.6,
+          "ry": 0.5,
+          "amp": 190,
+          "rot": 0
+        },
+        {
+          "name": "Southern Iowa till plain",
+          "lon": -93.3,
+          "lat": 41.1,
+          "rx": 1.0,
+          "ry": 0.4,
+          "amp": 90,
+          "rot": 0
+        },
+        {
+          "name": "Mississippi bluffs",
+          "lon": -90.7,
+          "lat": 41.7,
+          "rx": 0.25,
+          "ry": 0.7,
+          "amp": 160,
+          "rot": 0
+        },
+        {
+          "name": "Missouri valley",
+          "lon": -96.4,
+          "lat": 40.6,
+          "rx": 0.4,
+          "ry": 0.4,
+          "amp": -70,
+          "rot": 0
+        },
+        {
+          "name": "Iowa and Cedar river lows",
+          "lon": -91.7,
+          "lat": 41.7,
+          "rx": 0.3,
+          "ry": 0.5,
+          "amp": -50,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i80-iowa",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 80 corridor (generalized)",
+          "short": "I-80",
+          "depthM": 0,
+          "path": [
+            [-95.86, 41.26],
+            [-93.6091064, 41.6005448],
+            [-93.1, 41.7],
+            [-91.5301683, 41.6611277],
+            [-90.5776367, 41.5236437],
+            [-90.15, 41.55]
+          ],
+          "facts": [
+            "Generalized Interstate 80 corridor from the Council Bluffs border through Des Moines, Iowa City, and Davenport to the Illinois border; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 80 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i35-iowa",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 35 corridor (generalized)",
+          "short": "I-35",
+          "depthM": 0,
+          "path": [
+            [-93.55, 43.55],
+            [-93.6, 42.6],
+            [-93.6091064, 41.6005448],
+            [-93.55, 41.0],
+            [-93.5, 40.55]
+          ],
+          "facts": [
+            "Generalized Interstate 35 corridor from the Minnesota border through Des Moines to the Missouri border; schematic polyline through a named anchor and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 35 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "mississippi-river-iowa",
+          "layer": "water",
+          "tier": "context",
+          "name": "Mississippi River Iowa reach (generalized)",
+          "short": "Mississippi River",
+          "depthM": 0,
+          "path": [
+            [-91.1, 43.1],
+            [-90.5, 42.7],
+            [-90.2, 42.2],
+            [-90.4, 41.7],
+            [-90.9, 41.0],
+            [-91.39, 40.45]
+          ],
+          "facts": [
+            "No Mississippi River gazetteer row is seeded in the Iowa frame: the 2026-10-23 states=IA Geocoder screen returned an empty array for the intended exact stream record. Generalized context reach along the eastern border; schematic, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-25 source register"
+          ]
+        },
+        {
+          "id": "missouri-river-iowa",
+          "layer": "water",
+          "tier": "context",
+          "name": "Missouri River Iowa reach (generalized)",
+          "short": "Missouri River",
+          "depthM": 0,
+          "path": [
+            [-96.45, 43.5],
+            [-96.05, 42.7],
+            [-95.85, 42.4],
+            [-95.93, 41.6],
+            [-95.77, 41.25],
+            [-95.9, 40.6]
+          ],
+          "facts": [
+            "No Missouri River gazetteer row is seeded in the Iowa frame: the 2026-10-23 states=IA Geocoder screen returned an empty array, the sixth consecutive empty upstream screen after Montana, North Dakota, South Dakota, Nebraska, and Kansas. Generalized context reach along the western border; schematic, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-25 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "des-moines",
+          "name": "Des Moines",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -93.6091064,
+          "lat": 41.6005448,
+          "depthM": 0,
+          "facts": [
+            "State capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 465961; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "hawkeye-point",
+          "name": "Hawkeye Point",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -95.7087663,
+          "lat": 43.4603174,
+          "depthM": 0,
+          "facts": [
+            "Iowa's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1851955; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "west-okoboji",
+          "name": "West Okoboji Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -95.1594407,
+          "lat": 43.3844078,
+          "depthM": 0,
+          "facts": [
+            "Iowa Great Lakes anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 462893; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "dubuque",
+          "name": "Dubuque",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -90.6645718,
+          "lat": 42.5005583,
+          "depthM": 0,
+          "facts": [
+            "Mississippi bluff-city anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 456040; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Des Moines", "Populated Place", "pop.place", "Polk", 41.6005448, -93.6091064, null, "465961", 1, "State capital. The populated-place record was selected rather than Des Moines County (FEATURE_ID 465217), the same-name Des Moines River record (FEATURE_ID 465582, seeded below), Des Moines Beach (FEATURE_ID 465336), Des Moines International Airport (FEATURE_ID 2832672), and the historical Des Moines Ordnance Plant (FEATURE_ID 2650335). USGS GNIS Geocoder (GNIS), FEATURE_ID=465961; exact official name and Cities & Populated Places type in Polk County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Cedar Rapids", "Populated Place", "pop.place", "Linn", 42.0083328, -91.6440683, null, "465941", 1, "The populated-place record was selected rather than the same-name Cedar Rapids Beach in Dickinson County (FEATURE_ID 1907561). USGS GNIS Geocoder (GNIS), FEATURE_ID=465941; exact official name and Cities & Populated Places type in Linn County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Davenport", "Populated Place", "pop.place", "Scott", 41.5236437, -90.5776367, null, "455799", 1, "The populated-place record was selected rather than the same-name Davenport Harbor record (FEATURE_ID 455800). USGS GNIS Geocoder (GNIS), FEATURE_ID=455799; exact official name and Cities & Populated Places type in Scott County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Iowa City", "Populated Place", "pop.place", "Johnson", 41.6611277, -91.5301683, null, "457827", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=457827; exact official name and Cities & Populated Places type in Johnson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Sioux City", "Populated Place", "pop.place", "Woodbury", 42.4999942, -96.4003069, null, "461653", 1, "The populated-place record was selected rather than the historical Sioux City Army Air Base (FEATURE_ID 2096207). USGS GNIS Geocoder (GNIS), FEATURE_ID=461653; exact official name and Cities & Populated Places type in Woodbury County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Dubuque", "Populated Place", "pop.place", "Dubuque", 42.5005583, -90.6645718, null, "456040", 1, "The populated-place record was selected rather than Dubuque County (FEATURE_ID 465219) and the Dubuque Hills mountain range record (FEATURE_ID 1930549). USGS GNIS Geocoder (GNIS), FEATURE_ID=456040; exact official name and Cities & Populated Places type in Dubuque County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Hawkeye Point", "Summit", "phys.summit", "Osceola", 43.4603174, -95.7087663, null, "1851955", 1, "Iowa's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Iowa, Primary County=Osceola County, coordinate sequence 1 marked High Point at the stored point, and the description Highest elevation in IA at 1670 feet on a farm south of the Iowa-Minnesota border; coordinate matches the Geocoder exactly. USGS GNIS Geocoder (GNIS), FEATURE_ID=1851955; exact official name and Summit type in Osceola County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["West Okoboji Lake", "Lake", "hydro.lake", "Dickinson", 43.3844078, -95.1594407, null, "462893", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=462893; exact official name and Lakes & Reservoirs type in Dickinson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Saylorville Lake", "Lake", "hydro.lake", "Polk", 41.7552981, -93.7321414, null, "461452", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=461452; exact official name and Lakes & Reservoirs type in Polk County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Lake Red Rock", "Lake", "hydro.lake", "Marion", 41.4009842, -93.0583071, null, "460560", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=460560; exact official name and Lakes & Reservoirs type in Marion County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Des Moines River", "Stream", "hydro.stream", "Lee", 41.3811553, -91.4223753, null, "465582", 1, "The stream record; distinct from the same-name Des Moines populated place (FEATURE_ID 465961), which rejects it in its own note, plus Des Moines County (465217) and Des Moines Beach (465336). The point is the Lee County primary sequence near the mouth, not the channel through the capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=465582; exact official name and Streams & Canals type in Lee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Iowa River", "Stream", "hydro.stream", "Louisa", 41.1605885, -91.0237563, null, "457834", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=457834; exact official name and Streams & Canals type in Louisa County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
+    },
+    "missouri": {
+      "title": "MISSOURI SUBSURFACE 4Dwm",
+      "subtitle": "Ozarks · northern plains · Missouri and Mississippi confluence — statewide frame, Missouri",
+      "gazTitle": "MISSOURI USGS GNIS REGISTER",
+      "gazNote": "Round 25 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Taum Sauk Mountain additionally carries a GNIS Domestic Names per-ID check. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "MO",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -95.9,
+        "lat0": 35.9,
+        "lon1": -89.0,
+        "lat1": 40.7
+      },
+      "center": {
+        "lon": -92.5,
+        "lat": 38.5
+      },
+      "baseElevationM": 220,
+      "roughnessM": 60,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Ozark plateau",
+          "lon": -92.6,
+          "lat": 37.3,
+          "rx": 1.3,
+          "ry": 0.8,
+          "amp": 320,
+          "rot": 0
+        },
+        {
+          "name": "St. Francois mountains",
+          "lon": -90.6,
+          "lat": 37.6,
+          "rx": 0.5,
+          "ry": 0.4,
+          "amp": 400,
+          "rot": 0
+        },
+        {
+          "name": "Springfield plateau",
+          "lon": -93.7,
+          "lat": 37.1,
+          "rx": 0.7,
+          "ry": 0.5,
+          "amp": 250,
+          "rot": 0
+        },
+        {
+          "name": "Northern plains",
+          "lon": -92.6,
+          "lat": 39.6,
+          "rx": 1.5,
+          "ry": 0.7,
+          "amp": 130,
+          "rot": 0
+        },
+        {
+          "name": "Northwestern glacial till",
+          "lon": -94.6,
+          "lat": 40.1,
+          "rx": 0.8,
+          "ry": 0.4,
+          "amp": 150,
+          "rot": 0
+        },
+        {
+          "name": "Missouri River bottoms",
+          "lon": -93.2,
+          "lat": 38.7,
+          "rx": 1.6,
+          "ry": 0.2,
+          "amp": -70,
+          "rot": 0
+        },
+        {
+          "name": "Mississippi bluffs",
+          "lon": -89.9,
+          "lat": 38.5,
+          "rx": 0.3,
+          "ry": 0.9,
+          "amp": 180,
+          "rot": 0
+        },
+        {
+          "name": "Osage plains",
+          "lon": -94.3,
+          "lat": 38.4,
+          "rx": 0.7,
+          "ry": 0.5,
+          "amp": 120,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i70-missouri",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 70 corridor (generalized)",
+          "short": "I-70",
+          "depthM": 0,
+          "path": [
+            [-94.5785667, 39.0997266],
+            [-92.3340724, 38.9517053],
+            [-90.85, 38.8],
+            [-90.1978889, 38.6272733],
+            [-89.65, 38.62]
+          ],
+          "facts": [
+            "Generalized Interstate 70 corridor from Kansas City through Columbia and Wentzville to Saint Louis and the Illinois border; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 70 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i44-missouri",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 44 corridor (generalized)",
+          "short": "I-44",
+          "depthM": 0,
+          "path": [
+            [-90.1978889, 38.6272733],
+            [-91.8, 37.9],
+            [-93.2982436, 37.215326],
+            [-94.5, 37.05],
+            [-94.9, 36.95]
+          ],
+          "facts": [
+            "Generalized Interstate 44 corridor from Saint Louis through Rolla and Springfield to Joplin and the Oklahoma border; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 44 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "missouri-river-missouri",
+          "layer": "water",
+          "tier": "context",
+          "name": "Missouri River reach (generalized)",
+          "short": "Missouri River",
+          "depthM": 0,
+          "path": [
+            [-94.5785667, 39.0997266],
+            [-93.3, 38.7],
+            [-92.2, 38.6],
+            [-91.0, 38.75],
+            [-90.1198297, 38.8136597]
+          ],
+          "facts": [
+            "Generalized Missouri River reach from the Kansas City anchor to the Saint Charles confluence sequence used by the gazetteer row; the first corridor to accompany a seeded Missouri River row after six empty upstream state screens. Schematic, not a channel centerline; the last vertex is the GNIS primary point."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 756398 for the confluence primary point"
+          ]
+        },
+        {
+          "id": "mississippi-river-missouri",
+          "layer": "water",
+          "tier": "context",
+          "name": "Mississippi River Missouri reach (generalized)",
+          "short": "Mississippi River",
+          "depthM": 0,
+          "path": [
+            [-89.7, 40.6],
+            [-89.4, 39.9],
+            [-89.1, 39.4],
+            [-89.2, 38.8],
+            [-89.4, 38.4],
+            [-89.5, 37.8],
+            [-90.1, 36.9]
+          ],
+          "facts": [
+            "No Mississippi River gazetteer row is seeded in the Missouri frame: the 2026-10-23 states=MO Geocoder screen returned only a same-prefix Mississippi River Hills Area record (FEATURE_ID 758109, Knox County), which does not match the intended stream name or type. Generalized context reach along the eastern border and Bootheel; schematic, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder screening recorded in the round-25 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "jefferson-city",
+          "name": "Jefferson City",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -92.1735164,
+          "lat": 38.5767017,
+          "depthM": 0,
+          "facts": [
+            "State capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 758233; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "saint-louis",
+          "name": "Saint Louis",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -90.1978889,
+          "lat": 38.6272733,
+          "depthM": 0,
+          "facts": [
+            "Mississippi confluence anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 765765; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "taum-sauk",
+          "name": "Taum Sauk Mountain",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -90.7291683,
+          "lat": 37.5712766,
+          "depthM": 0,
+          "facts": [
+            "Missouri's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 752501; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "lake-of-the-ozarks",
+          "name": "Lake of the Ozarks",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -92.9654568,
+          "lat": 38.1671829,
+          "depthM": 0,
+          "facts": [
+            "Ozark reservoir anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 729600; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Jefferson City", "Populated Place", "pop.place", "Cole", 38.5767017, -92.1735164, null, "758233", 1, "State capital. The populated-place record was selected rather than the same-name Jefferson City Reach river bend record (FEATURE_ID 2123475). USGS GNIS Geocoder (GNIS), FEATURE_ID=758233; exact official name and Cities & Populated Places type in Cole County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Saint Louis", "Populated Place", "pop.place", "City of Saint Louis", 38.6272733, -90.1978889, null, "765765", 1, "The official name uses the Saint spelling: the St. Louis term returned an empty states=MO screen on 2026-10-23 while Saint Louis returned this populated place. Rejected: Saint Louis County (FEATURE_ID 758549), Saint Louis Place (FEATURE_ID 2469207), and the historical Saint Louis Air Force Station (FEATURE_ID 2832924). USGS GNIS Geocoder (GNIS), FEATURE_ID=765765; exact official name and Cities & Populated Places type in City of Saint Louis cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Kansas City", "Populated Place", "pop.place", "Jackson", 39.0997266, -94.5785667, null, "748198", 1, "The Missouri-side populated place in Jackson County; the same FEATURE_ID also appears in the Kansas City city frame at a higher-precision returned series (39.09973358320847, -94.57857413444238, county recorded as Multiple counties) from an earlier extraction, and this batch stores the values returned by this screen. The same-name Kansas City Reach river bend record (FEATURE_ID 2107891) and the Kansas-side Kansas City record (FEATURE_ID 478635) are rejected here. USGS GNIS Geocoder (GNIS), FEATURE_ID=748198; exact official name and Cities & Populated Places type in Jackson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Columbia", "Populated Place", "pop.place", "Boone", 38.9517053, -92.3340724, null, "716133", 1, "The populated-place record was selected rather than the same-name Columbia Bottom river bend record in Saint Louis County (FEATURE_ID 755913). USGS GNIS Geocoder (GNIS), FEATURE_ID=716133; exact official name and Cities & Populated Places type in Boone County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Springfield", "Populated Place", "pop.place", "Greene", 37.215326, -93.2982436, null, "735864", 1, "The populated-place record was selected rather than Springfield Plain (FEATURE_ID 758114) and Springfield Hollow (FEATURE_ID 752327). USGS GNIS Geocoder (GNIS), FEATURE_ID=735864; exact official name and Cities & Populated Places type in Greene County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Saint Joseph", "Populated Place", "pop.place", "Buchanan", 39.7686055, -94.8466322, null, "730205", 1, "The official name uses the Saint spelling: the St. Joseph term returned an empty states=MO screen on 2026-10-23 while Saint Joseph returned this populated place. Rejected: Saint Joseph Lake (FEATURE_ID 760517) and the historical Saint Joseph Army Air Field (FEATURE_ID 2095889). USGS GNIS Geocoder (GNIS), FEATURE_ID=730205; exact official name and Cities & Populated Places type in Buchanan County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Branson", "Populated Place", "pop.place", "Taney", 36.6436731, -93.2185144, null, "739970", 1, "The populated-place record was selected rather than Branson West in Stone County (FEATURE_ID 1669588). USGS GNIS Geocoder (GNIS), FEATURE_ID=739970; exact official name and Cities & Populated Places type in Taney County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Taum Sauk Mountain", "Summit", "phys.summit", "Iron", 37.5712766, -90.7291683, null, "752501", 1, "Missouri's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Missouri, Primary County=Iron County, coordinate sequence 1 marked High Point (the per-ID page prints -90.7291684, a one-in-a-hundred-millionth-degree rounding difference from the Geocoder value stored here, same mapped point), the description Highest elevation in MO at 1772 feet, and a 1938 Board decision. The per-ID variant name Tom Sauk Mountain (Board revision) is a variant of this same record, not a separate feature. USGS GNIS Geocoder (GNIS), FEATURE_ID=752501; exact official name and Summit type in Iron County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Missouri River", "Stream", "hydro.stream", "Saint Charles", 38.8136597, -90.1198297, null, "756398", 1, "The first statewide Missouri River row after empty screens in Montana, North Dakota, South Dakota, Nebraska, Kansas, and Iowa. This multipoint FEATURE_ID also appears in the Kansas City city frame with a different returned sequence (39.123899988352946, -94.5613514316943, county recorded as Multiple counties); this batch stores the Saint Charles confluence sequence returned by this screen. The point is the confluence area, not a channel trace, and it does not verify the upstream reaches whose state screens were empty. USGS GNIS Geocoder (GNIS), FEATURE_ID=756398; exact official name and Streams & Canals type in Saint Charles County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Meramec River", "Stream", "hydro.stream", "Jefferson", 38.3897761, -90.3442847, null, "756378", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=756378; exact official name and Streams & Canals type in Jefferson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Lake of the Ozarks", "Lake", "hydro.lake", "Camden", 38.1671829, -92.9654568, null, "729600", 1, "The lake record was selected rather than the Lake of the Ozarks Planning Region record (FEATURE_ID 754105). USGS GNIS Geocoder (GNIS), FEATURE_ID=729600; exact official name and Lakes & Reservoirs type in Camden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Mark Twain Lake", "Lake", "hydro.lake", "Monroe", 39.5008627, -91.7761635, null, "766204", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=766204; exact official name and Lakes & Reservoirs type in Monroe County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."]
+      ]
+    },
+    "minnesota": {
+      "title": "MINNESOTA SUBSURFACE 4Dwm",
+      "subtitle": "Arrowhead highlands · Red River valley · Minnesota and Mississippi headwaters — statewide frame, Minnesota",
+      "gazTitle": "MINNESOTA USGS GNIS REGISTER",
+      "gazNote": "Round 26 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Eagle Mountain and Lake of the Woods additionally carry GNIS Domestic Names per-ID checks. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "MN",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -97.3,
+        "lat0": 43.4,
+        "lon1": -89.4,
+        "lat1": 49.4
+      },
+      "center": {
+        "lon": -93.4,
+        "lat": 46.4
+      },
+      "baseElevationM": 350,
+      "roughnessM": 70,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Arrowhead highlands",
+          "lon": -91.6,
+          "lat": 47.6,
+          "rx": 0.5,
+          "ry": 0.8,
+          "amp": 420,
+          "rot": 0
+        },
+        {
+          "name": "Mesabi Range",
+          "lon": -92.6,
+          "lat": 47.4,
+          "rx": 0.7,
+          "ry": 0.2,
+          "amp": 350,
+          "rot": 0
+        },
+        {
+          "name": "Coteau des Prairies",
+          "lon": -96.3,
+          "lat": 44.3,
+          "rx": 0.4,
+          "ry": 0.9,
+          "amp": 180,
+          "rot": 0
+        },
+        {
+          "name": "Red River valley lowland",
+          "lon": -96.8,
+          "lat": 47.3,
+          "rx": 0.35,
+          "ry": 1.3,
+          "amp": -80,
+          "rot": 0
+        },
+        {
+          "name": "Central glacial till plain",
+          "lon": -94.3,
+          "lat": 45.5,
+          "rx": 0.9,
+          "ry": 0.7,
+          "amp": 90,
+          "rot": 0
+        },
+        {
+          "name": "Minnesota River valley",
+          "lon": -94.1,
+          "lat": 44.6,
+          "rx": 0.6,
+          "ry": 0.15,
+          "amp": -60,
+          "rot": 0
+        },
+        {
+          "name": "Mississippi bluffs",
+          "lon": -92.5,
+          "lat": 44.6,
+          "rx": 0.2,
+          "ry": 0.6,
+          "amp": 140,
+          "rot": 0
+        },
+        {
+          "name": "Northwestern plains",
+          "lon": -96.0,
+          "lat": 48.6,
+          "rx": 0.7,
+          "ry": 0.5,
+          "amp": 60,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i35-minnesota",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 35 corridor (generalized)",
+          "short": "I-35",
+          "depthM": 0,
+          "path": [
+            [-93.5, 49.3],
+            [-92.1065787, 46.7832731],
+            [-93.3, 46.6],
+            [-93.0932742, 44.9444101],
+            [-93.4, 45.2],
+            [-93.9993996, 44.1635775],
+            [-94.05, 43.55]
+          ],
+          "facts": [
+            "Generalized Interstate 35 corridor from the Canadian border through Duluth, Saint Paul, and Mankato to the Iowa border; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 35 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i90-minnesota",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 90 corridor (generalized)",
+          "short": "I-90",
+          "depthM": 0,
+          "path": [
+            [-97.15, 43.6],
+            [-96.0, 43.6],
+            [-94.9, 43.6],
+            [-94.0, 43.65],
+            [-93.2, 43.75],
+            [-92.8, 43.85],
+            [-91.3, 43.85]
+          ],
+          "facts": [
+            "Generalized Interstate 90 corridor along the southern tier from the South Dakota border through Albert Lea and Austin to the Wisconsin border; schematic polyline of generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 90 routing)"
+          ]
+        },
+        {
+          "id": "i94-minnesota",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 94 corridor (generalized)",
+          "short": "I-94",
+          "depthM": 0,
+          "path": [
+            [-93.0932742, 44.9444101],
+            [-94.0, 45.6],
+            [-94.7, 46.0],
+            [-95.5, 46.3],
+            [-96.5, 46.5],
+            [-97.2, 46.6]
+          ],
+          "facts": [
+            "Generalized Interstate 94 corridor from Saint Paul through St. Cloud and Detroit Lakes to the North Dakota border; schematic polyline through a named anchor and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 94 routing); GNIS rows supply the named anchor"
+          ]
+        },
+        {
+          "id": "mississippi-river-minnesota",
+          "layer": "water",
+          "tier": "context",
+          "name": "Mississippi River Minnesota reach (generalized)",
+          "short": "Mississippi River",
+          "depthM": 0,
+          "path": [
+            [-95.9, 47.15],
+            [-95.4, 46.7],
+            [-94.7, 46.3],
+            [-94.1, 45.7],
+            [-93.6, 45.35],
+            [-93.0932742, 44.9444101],
+            [-93.0, 44.5],
+            [-92.9, 44.0],
+            [-93.6, 43.7],
+            [-94.1, 43.55]
+          ],
+          "facts": [
+            "No Mississippi River gazetteer row is seeded in the Minnesota frame: the 2026-10-23 states=MN Geocoder screen returned only a Mississippi River Reservoir lake record (FEATURE_ID 1776673, Stearns County), which does not match the intended stream name or type, after an empty Iowa screen and a Missouri name mismatch. Schematic context reach from the Itasca country headwaters through Saint Paul to the Iowa border, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder screening recorded in the round-26 source register"
+          ]
+        },
+        {
+          "id": "red-river-of-the-north-minnesota",
+          "layer": "water",
+          "tier": "context",
+          "name": "Red River of the North reach (generalized)",
+          "short": "Red River of the North",
+          "depthM": 0,
+          "path": [
+            [-96.4, 49.0],
+            [-96.6, 48.6],
+            [-96.9, 48.3],
+            [-97.0, 47.5],
+            [-97.15, 46.9],
+            [-97.05, 46.5],
+            [-96.9, 46.0],
+            [-96.75, 46.25]
+          ],
+          "facts": [
+            "No Red River of the North gazetteer row is seeded in the Minnesota frame: the 2026-10-23 states=MN screen returned the exact stream record 1035890 but its returned primary point (50.4002778, -96.8000000) lies in Canada at the Lake Winnipeg terminus, which the per-ID check marks with no state. Generalized context reach along the western border, schematic, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder screening and per-ID check recorded in the round-26 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "saint-paul",
+          "name": "Saint Paul",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -93.0932742,
+          "lat": 44.9444101,
+          "depthM": 0,
+          "facts": [
+            "State capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 662851; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "minneapolis",
+          "name": "Minneapolis",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -93.2638361,
+          "lat": 44.9799654,
+          "depthM": 0,
+          "facts": [
+            "Twin Cities anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 655030; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "eagle-mountain",
+          "name": "Eagle Mountain",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -90.5606387,
+          "lat": 47.8973467,
+          "depthM": 0,
+          "facts": [
+            "Minnesota's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 656081; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "duluth",
+          "name": "Duluth",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -92.1065787,
+          "lat": 46.7832731,
+          "depthM": 0,
+          "facts": [
+            "Lake Superior port anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 661145; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Saint Paul", "Populated Place", "pop.place", "Ramsey", 44.9444101, -93.0932742, null, "662851", 1, "State capital. The official name uses the Saint spelling: the St. Paul term returned an empty states=MN screen on 2026-10-23 while Saint Paul returned this populated place. Rejected: Saint Paul Church (FEATURE_ID 662341), Saint Paul Park (FEATURE_ID 650970), and Saint Paul Island (FEATURE_ID 662342). USGS GNIS Geocoder (GNIS), FEATURE_ID=662851; exact official name and Cities & Populated Places type in Ramsey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Minneapolis", "Populated Place", "pop.place", "Hennepin", 44.9799654, -93.2638361, null, "655030", 1, "Rejected: the Minneapolis-Saint Paul International Airport Air Reserve Station record (FEATURE_ID 2512487). USGS GNIS Geocoder (GNIS), FEATURE_ID=655030; exact official name and Cities & Populated Places type in Hennepin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Duluth", "Populated Place", "pop.place", "Saint Louis", 46.7832731, -92.1065787, null, "661145", 1, "Rejected: Duluth Heights (FEATURE_ID 661147), Duluth Junction (FEATURE_ID 654681), the Duluth Entry stream record (FEATURE_ID 660579), and Duluth International Airport (FEATURE_ID 2832676). USGS GNIS Geocoder (GNIS), FEATURE_ID=661145; exact official name and Cities & Populated Places type in Saint Louis County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Rochester", "Populated Place", "pop.place", "Olmsted", 44.0216306, -92.4698992, null, "650180", 1, "Rejected: the historical Rochester Air Force Station record (FEATURE_ID 2090202). USGS GNIS Geocoder (GNIS), FEATURE_ID=650180; exact official name and Cities & Populated Places type in Olmsted County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Mankato", "Populated Place", "pop.place", "Blue Earth", 44.1635775, -93.9993996, null, "647438", 1, "Rejected: Mankato Spring (FEATURE_ID 647440). USGS GNIS Geocoder (GNIS), FEATURE_ID=647438; exact official name and Cities & Populated Places type in Blue Earth County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Saint Cloud", "Populated Place", "pop.place", "Stearns", 45.5607986, -94.1624895, null, "650559", 1, "The official name uses the Saint spelling: the St. Cloud term returned an empty states=MN screen on 2026-10-23 while Saint Cloud returned this populated place. USGS GNIS Geocoder (GNIS), FEATURE_ID=650559; exact official name and Cities & Populated Places type in Stearns County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["International Falls", "Populated Place", "pop.place", "Koochiching", 48.6010491, -93.4109824, null, "645435", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=645435; exact official name and Cities & Populated Places type in Koochiching County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Eagle Mountain", "Summit", "phys.summit", "Cook", 47.8973467, -90.5606387, null, "656081", 1, "Minnesota's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check showed the description Highest elevation in MN at 2301 feet, Located 20 mi NW of Grand Marais, Primary County Cook County, Primary Map Eagle Mountain, and coordinate sequence 1 marked High Point at the stored point. The 2026-10-23 Geocoder screen returned three exact-name Summit records and listed the undesignated Lutsen-quad summit (FEATURE_ID 656080) first; that record and the Todd County Eagle Mountain (FEATURE_ID 643035) are rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=656081; exact official name and Summit type in Cook County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Lake of the Woods", "Lake", "hydro.lake", "Lake of the Woods", 49.0519679, -94.9545392, null, "654378", 1, "Seeded FEATURE_ID 654378: the per-ID check shows Board Decisions making the name official in 1911 and 1953 with 18 coordinate sequences around the lake, and sequence 1 matches this screen. Rejected: Lake of the Woods County (FEATURE_ID 659483), the single-point 2001 text record of the same name (FEATURE_ID 1930543), and the Sherburne County swamp of the same name (FEATURE_ID 654379). USGS GNIS Geocoder (GNIS), FEATURE_ID=654378; exact official name and Lakes & Reservoirs type in Lake of the Woods County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Mille Lacs Lake", "Lake", "hydro.lake", "Mille Lacs", 46.2425615, -93.6462512, null, "647859", 1, "The official GNIS name is Mille Lacs Lake: the screen term Mille Lacs returned this record exactly. Rejected: Mille Lacs County (FEATURE_ID 659493), Mille Lacs Reservation (FEATURE_ID 2419017), and Mille Lacs Meadows (FEATURE_ID 647860). USGS GNIS Geocoder (GNIS), FEATURE_ID=647859; exact official name and Lakes & Reservoirs type in Mille Lacs County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Lake Minnetonka", "Lake", "hydro.lake", "Hennepin", 44.9416763, -93.5502789, null, "647954", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=647954; exact official name and Lakes & Reservoirs type in Hennepin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Minnesota River", "Stream", "hydro.stream", "Dakota", 44.89691, -93.1491088, null, "659759", 1, "Rejected: the Minnesota River Reservoir record (FEATURE_ID 1776150). The point is the Dakota County mouth sequence near the Mississippi confluence, not the channel through the Twin Cities. USGS GNIS Geocoder (GNIS), FEATURE_ID=659759; exact official name and Streams & Canals type in Dakota County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
+    },
+    "louisiana": {
+      "title": "LOUISIANA SUBSURFACE 4Dwm",
+      "subtitle": "Mississippi and Atchafalaya delta · coastal prairie · Red River hills — statewide frame, Louisiana",
+      "gazTitle": "LOUISIANA USGS GNIS REGISTER",
+      "gazNote": "Round 26 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Driskill Mountain additionally carries a GNIS Domestic Names per-ID check. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "LA",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -94.1,
+        "lat0": 28.7,
+        "lon1": -88.7,
+        "lat1": 33.1
+      },
+      "center": {
+        "lon": -91.4,
+        "lat": 30.9
+      },
+      "baseElevationM": 40,
+      "roughnessM": 20,
+      "hasWater": true,
+      "coast": [
+        [-93.85, 29.7],
+        [-93.4, 29.75],
+        [-93.1, 29.55],
+        [-92.7, 29.45],
+        [-92.1, 29.5],
+        [-91.6, 29.35],
+        [-91.15, 29.45],
+        [-90.7, 29.25],
+        [-90.2, 29.25],
+        [-89.6, 29.1],
+        [-89.2, 29.0],
+        [-89.1, 29.35],
+        [-89.35, 30.1]
+      ],
+      "relief": [
+        {
+          "name": "Eastern gulf coastal plain",
+          "lon": -91.6,
+          "lat": 31.3,
+          "rx": 1.2,
+          "ry": 0.5,
+          "amp": 70,
+          "rot": 0
+        },
+        {
+          "name": "Kisatchie hills",
+          "lon": -92.9,
+          "lat": 31.4,
+          "rx": 0.6,
+          "ry": 0.5,
+          "amp": 90,
+          "rot": 0
+        },
+        {
+          "name": "Western prairie",
+          "lon": -93.4,
+          "lat": 30.6,
+          "rx": 0.5,
+          "ry": 0.5,
+          "amp": 40,
+          "rot": 0
+        },
+        {
+          "name": "Mississippi-Atchafalaya delta plain",
+          "lon": -91.4,
+          "lat": 30.1,
+          "rx": 1.0,
+          "ry": 0.4,
+          "amp": -35,
+          "rot": 0
+        },
+        {
+          "name": "Chenier coastal marsh",
+          "lon": -93.0,
+          "lat": 29.6,
+          "rx": 0.8,
+          "ry": 0.2,
+          "amp": -25,
+          "rot": 0
+        },
+        {
+          "name": "Pearl river hills",
+          "lon": -90.3,
+          "lat": 30.8,
+          "rx": 0.3,
+          "ry": 0.5,
+          "amp": 60,
+          "rot": 0
+        },
+        {
+          "name": "Red River hills",
+          "lon": -93.0,
+          "lat": 32.4,
+          "rx": 0.9,
+          "ry": 0.4,
+          "amp": 80,
+          "rot": 0
+        },
+        {
+          "name": "Coastal marsh flat",
+          "lon": -90.5,
+          "lat": 29.4,
+          "rx": 0.7,
+          "ry": 0.2,
+          "amp": -30,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i10-louisiana",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 10 corridor (generalized)",
+          "short": "I-10",
+          "depthM": 0,
+          "path": [
+            [-93.2173759, 30.2265949],
+            [-92.5, 30.4],
+            [-91.154551, 30.4507462],
+            [-90.6, 30.45],
+            [-90.075072, 29.9546482],
+            [-89.75, 30.27]
+          ],
+          "facts": [
+            "Generalized Interstate 10 corridor from the Texas border through Lake Charles, Baton Rouge, and New Orleans to the Mississippi line; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 10 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i20-louisiana",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 20 corridor (generalized)",
+          "short": "I-20",
+          "depthM": 0,
+          "path": [
+            [-93.7501789, 32.5251516],
+            [-92.8, 32.5],
+            [-92.1, 32.5],
+            [-91.2, 32.45],
+            [-90.5, 32.4]
+          ],
+          "facts": [
+            "Generalized Interstate 20 corridor from Shreveport through Ruston to Monroe and the Mississippi line; schematic polyline through a named anchor and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 20 routing); GNIS rows supply the named anchor"
+          ]
+        },
+        {
+          "id": "mississippi-river-louisiana",
+          "layer": "water",
+          "tier": "context",
+          "name": "Mississippi River Louisiana reach (generalized)",
+          "short": "Mississippi River",
+          "depthM": 0,
+          "path": [
+            [-91.3, 32.5],
+            [-91.1, 31.9],
+            [-91.4, 31.4],
+            [-91.2, 31.0],
+            [-91.0, 30.6],
+            [-91.154551, 30.4507462],
+            [-90.7, 30.3],
+            [-90.075072, 29.9546482],
+            [-90.0, 29.7],
+            [-89.5, 29.4],
+            [-89.2533842, 29.1510582]
+          ],
+          "facts": [
+            "Generalized Mississippi River reach accompanying the seeded Louisiana row, the first seeded Mississippi River row after the Iowa empty screen, the Missouri Mississippi River Hills name mismatch, and the Minnesota reservoir-only screen; the last vertex is the GNIS primary point. Schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1629903 for the Plaquemines primary point"
+          ]
+        },
+        {
+          "id": "red-river-louisiana",
+          "layer": "water",
+          "tier": "context",
+          "name": "Red River Louisiana reach (generalized)",
+          "short": "Red River",
+          "depthM": 0,
+          "path": [
+            [-93.75, 32.55],
+            [-93.4, 32.2],
+            [-93.1, 31.9],
+            [-93.0, 31.75],
+            [-92.6, 31.5],
+            [-92.3, 31.3],
+            [-91.9, 31.1],
+            [-91.7478975, 31.0193471],
+            [-91.8, 30.85],
+            [-91.9, 30.6]
+          ],
+          "facts": [
+            "Generalized Red River reach accompanying the seeded Louisiana row that closes the ND/OK-empty, TX-Brown-County, and MN-Canada-primary chain; the embedded vertex is the GNIS primary point. Schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 558728 for the West Feliciana primary point"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "new-orleans",
+          "name": "New Orleans",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -90.075072,
+          "lat": 29.9546482,
+          "depthM": 0,
+          "facts": [
+            "Mississippi delta anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row, not a levee or parish boundary."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1629985; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "baton-rouge",
+          "name": "Baton Rouge",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -91.154551,
+          "lat": 30.4507462,
+          "depthM": 0,
+          "facts": [
+            "State capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1629914; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "driskill-mountain",
+          "name": "Driskill Mountain",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -92.8969723,
+          "lat": 32.4250483,
+          "depthM": 0,
+          "facts": [
+            "Louisiana's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 542199; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "lake-pontchartrain",
+          "name": "Lake Pontchartrain",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -90.125542,
+          "lat": 30.184045,
+          "depthM": 0,
+          "facts": [
+            "Coastal lagoon anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1627974; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["New Orleans", "Populated Place", "pop.place", "Orleans", 29.9546482, -90.075072, null, "1629985", 1, "Rejected: the historical New Orleans Navigation Canal (FEATURE_ID 549902), the New Orleans Station Census Designated Place in Plaquemines Parish (FEATURE_ID 2804360), and the historical New Orleans Army Air Base (FEATURE_ID 2085459). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629985; exact official name and Cities & Populated Places type in Orleans Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Baton Rouge", "Populated Place", "pop.place", "East Baton Rouge", 30.4507462, -91.154551, null, "1629914", 1, "State capital. Rejected: Baton Rouge Terrace (FEATURE_ID 559362). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629914; exact official name and Cities & Populated Places type in East Baton Rouge Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Shreveport", "Populated Place", "pop.place", "Caddo", 32.5251516, -93.7501789, null, "1630015", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1630015; exact official name and Cities & Populated Places type in Caddo Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Lafayette", "Populated Place", "pop.place", "Lafayette", 30.2240897, -92.0198427, null, "1629965", 1, "Rejected: Lafayette Parish (FEATURE_ID 558059) and the historical Orleans Parish Lafayette record (FEATURE_ID 559614). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629965; exact official name and Cities & Populated Places type in Lafayette Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Lake Charles", "Populated Place", "pop.place", "Calcasieu", 30.2265949, -93.2173759, null, "1629966", 1, "Rejected: the same-name Lake Charles lake record (FEATURE_ID 553954, identity-safe but held to starter scope), the historical Lake Charles Air Force Station (FEATURE_ID 2087773), and the historical Lake Charles Army Air Field (FEATURE_ID 2085457). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629966; exact official name and Cities & Populated Places type in Calcasieu Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Natchitoches", "Populated Place", "pop.place", "Natchitoches", 31.7607195, -93.0862749, null, "1629983", 1, "Rejected: Natchitoches Parish (FEATURE_ID 558108), the Natchitoches State Designated Tribal Statistical Area (FEATURE_ID 2813264), and Natchitoches Island (FEATURE_ID 549598). USGS GNIS Geocoder (GNIS), FEATURE_ID=1629983; exact official name and Cities & Populated Places type in Natchitoches Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Driskill Mountain", "Summit", "phys.summit", "Bienville", 32.4250483, -92.8969723, null, "542199", 1, "Louisiana's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check showed the description Highest elevation in LA at 535 feet, Primary County Bienville Parish, Primary Map Bryceland, and coordinate sequence 1 marked High Point at the stored point; the coordinate matches the Geocoder exactly. USGS GNIS Geocoder (GNIS), FEATURE_ID=542199; exact official name and Summit type in Bienville Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Lake Pontchartrain", "Lake", "hydro.lake", "Saint Tammany", 30.184045, -90.125542, null, "1627974", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1627974; exact official name and Lakes & Reservoirs type in Saint Tammany Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Lake Maurepas", "Lake", "hydro.lake", "Livingston", 30.2522478, -90.5015554, null, "1627626", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1627626; exact official name and Lakes & Reservoirs type in Livingston Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Mississippi River", "Stream", "hydro.stream", "Plaquemines", 29.1510582, -89.2533842, null, "1629903", 1, "The first seeded Mississippi River row: the 2026-10-23 Iowa screen returned an empty array, the Missouri screen returned only the Mississippi River Hills Area record (FEATURE_ID 758109), and the Minnesota screen returned only the Mississippi River Reservoir lake (FEATURE_ID 1776673). This Plaquemines Parish sequence identifies the lower river. Rejected: the Mississippi River-Gulf Outlet Canal (FEATURE_ID 1627674) and the Mississippi River Delta Area record (FEATURE_ID 557096). The point is not a channel centerline and does not verify the upstream reaches. USGS GNIS Geocoder (GNIS), FEATURE_ID=1629903; exact official name and Streams & Canals type in Plaquemines Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Atchafalaya River", "Stream", "hydro.stream", "Saint Martin", 30.2846418, -91.6720574, null, "559801", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=559801; exact official name and Streams & Canals type in Saint Martin Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Red River", "Stream", "hydro.stream", "West Feliciana", 31.0193471, -91.7478975, null, "558728", 1, "Seeded the West Feliciana Parish stream record, closing the Red River chain: empty states=ND and states=OK screens, a Brown County Texas record rejected in round 24, and the Minnesota-registered Red River of the North whose returned primary point sits in Canada. Rejected: Red River Parish (FEATURE_ID 559472), Red River Landing (FEATURE_ID 543612), and the Red River Bay records (FEATURE_ID 538527, 555770). This is the southern Red River, distinct from FEATURE_ID 1035890 (Red River of the North). USGS GNIS Geocoder (GNIS), FEATURE_ID=558728; exact official name and Streams & Canals type in West Feliciana Parish cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
+    },
+    "mississippi": {
+      "title": "MISSISSIPPI SUBSURFACE 4Dwm",
+      "subtitle": "Mississippi Delta · Piney Woods · Gulf coast — statewide frame, Mississippi",
+      "gazTitle": "MISSISSIPPI USGS GNIS REGISTER",
+      "gazNote": "Round 27 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Woodall Mountain additionally carries a GNIS Domestic Names per-ID check. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "MS",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -91.7,
+        "lat0": 30.05,
+        "lon1": -88.2,
+        "lat1": 35.0
+      },
+      "center": {
+        "lon": -89.95,
+        "lat": 32.5
+      },
+      "baseElevationM": 110,
+      "roughnessM": 45,
+      "hasWater": true,
+      "coast": [
+        [-89.42, 30.08],
+        [-89.3, 30.25],
+        [-89.05, 30.33],
+        [-88.8, 30.37],
+        [-88.55, 30.42]
+      ],
+      "relief": [
+        {
+          "name": "Tishomingo hills",
+          "lon": -88.3,
+          "lat": 34.75,
+          "rx": 0.3,
+          "ry": 0.3,
+          "amp": 250,
+          "rot": 0
+        },
+        {
+          "name": "Tombigbee uplands",
+          "lon": -88.7,
+          "lat": 33.7,
+          "rx": 0.5,
+          "ry": 0.6,
+          "amp": 170,
+          "rot": 0
+        },
+        {
+          "name": "Yazoo bluff line",
+          "lon": -90.1,
+          "lat": 33.6,
+          "rx": 0.2,
+          "ry": 0.9,
+          "amp": 180,
+          "rot": 0
+        },
+        {
+          "name": "Jackson prairie",
+          "lon": -89.6,
+          "lat": 32.4,
+          "rx": 0.5,
+          "ry": 0.6,
+          "amp": 40,
+          "rot": 0
+        },
+        {
+          "name": "Mississippi delta plain",
+          "lon": -90.8,
+          "lat": 33.7,
+          "rx": 0.5,
+          "ry": 1.1,
+          "amp": -80,
+          "rot": 0
+        },
+        {
+          "name": "Pine belt",
+          "lon": -89.1,
+          "lat": 31.3,
+          "rx": 0.8,
+          "ry": 0.5,
+          "amp": 70,
+          "rot": 0
+        },
+        {
+          "name": "Gulf coastal flat",
+          "lon": -89.0,
+          "lat": 30.5,
+          "rx": 0.7,
+          "ry": 0.2,
+          "amp": -30,
+          "rot": 0
+        },
+        {
+          "name": "Mississippi loess bluffs",
+          "lon": -90.75,
+          "lat": 32.4,
+          "rx": 0.15,
+          "ry": 0.7,
+          "amp": 150,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i55-mississippi",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 55 corridor (generalized)",
+          "short": "I-55",
+          "depthM": 0,
+          "path": [
+            [-89.85, 34.9],
+            [-90.05, 34.3],
+            [-90.2, 33.6],
+            [-90.15, 33.0],
+            [-90.1848103, 32.2987573],
+            [-90.4, 31.6],
+            [-90.6, 31.0],
+            [-91.0, 30.5]
+          ],
+          "facts": [
+            "Generalized Interstate 55 corridor from the Tennessee border through Batesville, Grenada country, and Jackson to the Louisiana line; schematic polyline through a named anchor and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 55 routing); GNIS rows supply the named anchor"
+          ]
+        },
+        {
+          "id": "i20-mississippi",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 20 corridor (generalized)",
+          "short": "I-20",
+          "depthM": 0,
+          "path": [
+            [-90.8778821, 32.3526457],
+            [-90.4, 32.32],
+            [-90.1848103, 32.2987573],
+            [-89.6, 32.4],
+            [-89.0, 32.4],
+            [-88.4, 32.36]
+          ],
+          "facts": [
+            "Generalized Interstate 20 corridor from Vicksburg through Jackson to Meridian and the Alabama line; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 20 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i10-mississippi",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 10 corridor (generalized)",
+          "short": "I-10",
+          "depthM": 0,
+          "path": [
+            [-89.4, 30.35],
+            [-89.1, 30.36],
+            [-88.9, 30.39],
+            [-88.6, 30.42]
+          ],
+          "facts": [
+            "Generalized Interstate 10 corridor along the Gulf coast from the Louisiana line through Bay St. Louis, Gulfport, and Biloxi to the Alabama line; schematic polyline of generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 10 routing)"
+          ]
+        },
+        {
+          "id": "mississippi-river-mississippi",
+          "layer": "water",
+          "tier": "context",
+          "name": "Mississippi River Mississippi reach (generalized)",
+          "short": "Mississippi River",
+          "depthM": 0,
+          "path": [
+            [-90.0, 35.0],
+            [-90.4, 34.3],
+            [-90.9, 33.9],
+            [-90.85, 33.3],
+            [-90.9, 32.9],
+            [-90.88, 32.35],
+            [-91.0, 31.8],
+            [-91.2, 31.2],
+            [-91.3, 30.7],
+            [-91.35, 30.3]
+          ],
+          "facts": [
+            "No Mississippi River gazetteer row is seeded in the Mississippi frame: the 2026-10-23 states=MS Geocoder screen returned an empty array, repeating the Iowa empty screen after the Missouri name mismatch, the Minnesota reservoir-only mismatch, and the Louisiana Plaquemines seed. Generalized context reach along the western border, schematic, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder screening recorded in the round-27 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "jackson",
+          "name": "Jackson",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -90.1848103,
+          "lat": 32.2987573,
+          "depthM": 0,
+          "facts": [
+            "State capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 711543; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "woodall-mountain",
+          "name": "Woodall Mountain",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -88.2418656,
+          "lat": 34.7877049,
+          "depthM": 0,
+          "facts": [
+            "Mississippi's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 692362; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "vicksburg",
+          "name": "Vicksburg",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -90.8778821,
+          "lat": 32.3526457,
+          "depthM": 0,
+          "facts": [
+            "Mississippi River bluffs anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row, not a river boundary."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 679216; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "gulfport",
+          "name": "Gulfport",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -89.0928155,
+          "lat": 30.3674198,
+          "depthM": 0,
+          "facts": [
+            "Gulf coast anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 670771; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Jackson", "Populated Place", "pop.place", "Hinds", 32.2987573, -90.1848103, null, "711543", 1, "State capital. The screen led with Jackson County (FEATURE_ID 695753); rejected: Jackson County, Jackson Landing (FEATURE_ID 691962), Jackson Branch (FEATURE_ID 671768), Jackson Cut-Off (FEATURE_ID 671780), Jackson Creek in Copiah (FEATURE_ID 671775), DeSoto (FEATURE_ID 690309), and Hinds (FEATURE_ID 671776), plus Jackson Bayou in Humphreys (FEATURE_ID 671767, FEATURE_ID 671766). USGS GNIS Geocoder (GNIS), FEATURE_ID=711543; exact official name and Cities & Populated Places type in Hinds County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Gulfport", "Populated Place", "pop.place", "Harrison", 30.3674198, -89.0928155, null, "670771", 1, "Rejected: Gulfport Channel (FEATURE_ID 670772) and the historical Gulfport Army Air Field (FEATURE_ID 2085466). USGS GNIS Geocoder (GNIS), FEATURE_ID=670771; exact official name and Cities & Populated Places type in Harrison County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Biloxi", "Populated Place", "pop.place", "Harrison", 30.3960318, -88.8853078, null, "667173", 1, "Rejected: the Biloxi River stream record (FEATURE_ID 692619) and the Biloxi Bay record (FEATURE_ID 667174). USGS GNIS Geocoder (GNIS), FEATURE_ID=667173; exact official name and Cities & Populated Places type in Harrison County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Hattiesburg", "Populated Place", "pop.place", "Forrest", 31.3271189, -89.2903392, null, "691565", 1, "Rejected: the historical Hattiesburg Army Air Field (FEATURE_ID 2085467). USGS GNIS Geocoder (GNIS), FEATURE_ID=691565; exact official name and Cities & Populated Places type in Forrest County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Tupelo", "Populated Place", "pop.place", "Lee", 34.2576067, -88.7033859, null, "678931", 1, "Rejected: Tupelo Gum Lake (FEATURE_ID 678932) and Tupelo Gum Slough (FEATURE_ID 678933). USGS GNIS Geocoder (GNIS), FEATURE_ID=678931; exact official name and Cities & Populated Places type in Lee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Vicksburg", "Populated Place", "pop.place", "Warren", 32.3526457, -90.8778821, null, "679216", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=679216; exact official name and Cities & Populated Places type in Warren County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Woodall Mountain", "Summit", "phys.summit", "Tishomingo", 34.7877049, -88.2418656, null, "692362", 1, "Mississippi's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check showed the description Highest elevation in MS at 806 feet, Primary County Tishomingo County, Primary Map Iuka, and coordinate sequence 1 marked High Point at the stored point, matching the Geocoder exactly. The per-ID variant names Bear Mountain and Woodalls Mountain belong to this same record. USGS GNIS Geocoder (GNIS), FEATURE_ID=692362; exact official name and Summit type in Tishomingo County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Sardis Lake", "Lake", "hydro.lake", "Lafayette", 34.4723806, -89.6661782, null, "694715", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=694715; exact official name and Lakes & Reservoirs type in Lafayette County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Ross R Barnett Reservoir", "Lake", "hydro.lake", "Rankin", 32.5608125, -89.8838357, null, "676892", 1, "The screen term Ross R. Barnett Reservoir returned the official period-less name Ross R Barnett Reservoir; identity rests on the returned record. North of Jackson on the Pearl River. USGS GNIS Geocoder (GNIS), FEATURE_ID=676892; exact official name and Lakes & Reservoirs type in Rankin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Yazoo River", "Stream", "hydro.stream", "Warren", 32.3354241, -90.8973269, null, "695222", 1, "Rejected: the Yazoo River Cutoff record (FEATURE_ID 684996). The point is the Warren County sequence near the Mississippi confluence at Vicksburg, not the channel through the delta. USGS GNIS Geocoder (GNIS), FEATURE_ID=695222; exact official name and Streams & Canals type in Warren County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Big Black River", "Stream", "hydro.stream", "Claiborne", 32.0537665, -91.0581633, null, "690954", 1, "Rejected: the Big Black River Canal record (FEATURE_ID 667076), which the screen listed first. The point is the Claiborne County sequence near the mouth, not the channel from the Black Prairie. USGS GNIS Geocoder (GNIS), FEATURE_ID=690954; exact official name and Streams & Canals type in Claiborne County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Pascagoula River", "Stream", "hydro.stream", "Jackson", 30.3443666, -88.5675163, null, "694322", 1, "Rejected: the Pascagoula River Estates populated place (FEATURE_ID 690749), which the screen listed first. The point is the Jackson County sequence near the Gulf, not the channel. USGS GNIS Geocoder (GNIS), FEATURE_ID=694322; exact official name and Streams & Canals type in Jackson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
+    },
+    "alabama": {
+      "title": "ALABAMA SUBSURFACE 4Dwm",
+      "subtitle": "Appalachian foothills · Black Belt prairie · Mobile Bay — statewide frame, Alabama",
+      "gazTitle": "ALABAMA USGS GNIS REGISTER",
+      "gazNote": "Round 27 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Cheaha Mountain, Guntersville Lake, and Wheeler Lake additionally carry GNIS Domestic Names per-ID checks. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "AL",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -88.7,
+        "lat0": 30.1,
+        "lon1": -84.9,
+        "lat1": 35.05
+      },
+      "center": {
+        "lon": -86.8,
+        "lat": 32.6
+      },
+      "baseElevationM": 190,
+      "roughnessM": 70,
+      "hasWater": true,
+      "coast": [
+        [-88.55, 30.42],
+        [-88.3, 30.36],
+        [-88.1, 30.3],
+        [-88.06, 30.17],
+        [-87.95, 30.24],
+        [-87.7, 30.27],
+        [-87.5, 30.3],
+        [-87.4, 30.32]
+      ],
+      "relief": [
+        {
+          "name": "Cumberland plateau",
+          "lon": -87.2,
+          "lat": 34.4,
+          "rx": 0.6,
+          "ry": 0.6,
+          "amp": 350,
+          "rot": 0
+        },
+        {
+          "name": "Appalachian ridges",
+          "lon": -86.2,
+          "lat": 34.0,
+          "rx": 0.4,
+          "ry": 0.7,
+          "amp": 300,
+          "rot": 0
+        },
+        {
+          "name": "Talladega forest highlands",
+          "lon": -85.9,
+          "lat": 33.4,
+          "rx": 0.4,
+          "ry": 0.5,
+          "amp": 400,
+          "rot": 0
+        },
+        {
+          "name": "Black Warrior hills",
+          "lon": -87.4,
+          "lat": 33.3,
+          "rx": 0.5,
+          "ry": 0.5,
+          "amp": 180,
+          "rot": 0
+        },
+        {
+          "name": "Black Belt prairie",
+          "lon": -87.3,
+          "lat": 32.4,
+          "rx": 0.6,
+          "ry": 0.4,
+          "amp": 60,
+          "rot": 0
+        },
+        {
+          "name": "Coosa-Tallapoosa divide",
+          "lon": -86.0,
+          "lat": 32.7,
+          "rx": 0.5,
+          "ry": 0.5,
+          "amp": 150,
+          "rot": 0
+        },
+        {
+          "name": "Coastal plain",
+          "lon": -87.4,
+          "lat": 31.4,
+          "rx": 0.7,
+          "ry": 0.5,
+          "amp": 50,
+          "rot": 0
+        },
+        {
+          "name": "Mobile delta flat",
+          "lon": -87.9,
+          "lat": 30.7,
+          "rx": 0.4,
+          "ry": 0.3,
+          "amp": -30,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i65-alabama",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 65 corridor (generalized)",
+          "short": "I-65",
+          "depthM": 0,
+          "path": [
+            [-86.2999689, 32.3668052],
+            [-86.6, 32.9],
+            [-86.80249, 33.5206608],
+            [-86.7, 34.1],
+            [-86.5861037, 34.7303688],
+            [-86.6, 35.0]
+          ],
+          "facts": [
+            "Generalized Interstate 65 corridor from Montgomery through Birmingham and Decatur to Huntsville and the Tennessee line; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 65 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i20-alabama",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 20 corridor (generalized)",
+          "short": "I-20",
+          "depthM": 0,
+          "path": [
+            [-86.80249, 33.5206608],
+            [-86.3, 33.5],
+            [-85.7, 33.6],
+            [-85.0, 33.6]
+          ],
+          "facts": [
+            "Generalized Interstate 20 corridor from Birmingham through Talladega and Anniston to the Georgia line; schematic polyline through a named anchor and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 20 routing); GNIS rows supply the named anchor"
+          ]
+        },
+        {
+          "id": "i10-alabama",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 10 corridor (generalized)",
+          "short": "I-10",
+          "depthM": 0,
+          "path": [
+            [-88.45, 30.5],
+            [-88.05, 30.55],
+            [-87.8, 30.45],
+            [-87.5, 30.35],
+            [-87.35, 30.3]
+          ],
+          "facts": [
+            "Generalized Interstate 10 corridor from the Mississippi line through Mobile and Daphne to the Florida line; schematic polyline of generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 10 routing)"
+          ]
+        },
+        {
+          "id": "alabama-river-alabama",
+          "layer": "water",
+          "tier": "context",
+          "name": "Alabama River reach (generalized)",
+          "short": "Alabama River",
+          "depthM": 0,
+          "path": [
+            [-86.3, 32.38],
+            [-86.7, 32.1],
+            [-87.2, 31.8],
+            [-87.6, 31.5],
+            [-87.8, 31.3],
+            [-87.943331, 31.136009]
+          ],
+          "facts": [
+            "Generalized Alabama River reach from the Montgomery confluence to the returned Baldwin County sequence; the last vertex is the GNIS primary point of the seeded row. Schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 154961 for the Baldwin primary point"
+          ]
+        },
+        {
+          "id": "tombigbee-river-alabama",
+          "layer": "water",
+          "tier": "context",
+          "name": "Tombigbee River reach (generalized)",
+          "short": "Tombigbee River",
+          "depthM": 0,
+          "path": [
+            [-88.4, 33.4],
+            [-88.3, 32.8],
+            [-88.1, 32.2],
+            [-87.9, 31.7],
+            [-87.944164, 31.136287]
+          ],
+          "facts": [
+            "Generalized Tombigbee River reach accompanying the seeded Alabama row (the states=MS screen returned an empty array); the last vertex is the GNIS primary point at the Alabama River confluence. Schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 158094 for the Washington County primary point"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "montgomery",
+          "name": "Montgomery",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -86.2999689,
+          "lat": 32.3668052,
+          "depthM": 0,
+          "facts": [
+            "State capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 165344; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "birmingham",
+          "name": "Birmingham",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -86.80249,
+          "lat": 33.5206608,
+          "depthM": 0,
+          "facts": [
+            "Industrial-era anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 158174; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "cheaha-mountain",
+          "name": "Cheaha Mountain",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -85.8085996,
+          "lat": 33.485384,
+          "depthM": 0,
+          "facts": [
+            "Alabama's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 159374; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mobile",
+          "name": "Mobile",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -88.0430541,
+          "lat": 30.6943566,
+          "depthM": 0,
+          "facts": [
+            "Mobile Bay port anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row, not a shoreline or county boundary."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 155153; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Montgomery", "Populated Place", "pop.place", "Montgomery", 32.3668052, -86.2999689, null, "165344", 1, "State capital. The screen led with Montgomery County (FEATURE_ID 161577); rejected: Montgomery County, Montgomery Division (FEATURE_ID 165905), Montgomery Hill (FEATURE_ID 134636), Montgomery East (FEATURE_ID 142708), Montgomery Lakes in Tuscaloosa County (FEATURE_ID 1700463), Montgomery Creek (FEATURE_ID 160126), Montgomerys Lake (FEATURE_ID 130989), Montgomery Lake (FEATURE_ID 122966), and Montgomery Hunting Club Lake (FEATURE_ID 130120). USGS GNIS Geocoder (GNIS), FEATURE_ID=165344; exact official name and Cities & Populated Places type in Montgomery County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Birmingham", "Populated Place", "pop.place", "Jefferson", 33.5206608, -86.80249, null, "158174", 1, "The screen led with Birmingham Division (FEATURE_ID 161616); rejected: Birmingham Division, Birmingham Reservoir (FEATURE_ID 144014), Birmingham Airport (FEATURE_ID 2832645), the historical Birmingham Army Air Field (FEATURE_ID 2085455), and Birmingham Hollow (FEATURE_ID 114373). USGS GNIS Geocoder (GNIS), FEATURE_ID=158174; exact official name and Cities & Populated Places type in Jefferson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Mobile", "Populated Place", "pop.place", "Mobile", 30.6943566, -88.0430541, null, "155153", 1, "The screen led with Mobile County (FEATURE_ID 161575); rejected: Mobile County, Mobile Division (FEATURE_ID 161620), Mobile Junction (FEATURE_ID 156723), Mobile Heights (FEATURE_ID 142699), and the Mobile Channel (FEATURE_ID 143540), Mobile - Tensaw Cut-off Channel (FEATURE_ID 134635), Mobile Ship Channel (FEATURE_ID 152355), and Mobile Turning Basin (FEATURE_ID 163273) waterway records. The same-name Mobile River record (FEATURE_ID 163332) seeds separately below. USGS GNIS Geocoder (GNIS), FEATURE_ID=155153; exact official name and Cities & Populated Places type in Mobile County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Huntsville", "Populated Place", "pop.place", "Madison", 34.7303688, -86.5861037, null, "151827", 1, "The screen led with Huntsville Division (FEATURE_ID 161618); rejected: Huntsville Division, Huntsville Hills (FEATURE_ID 146994), Huntsville Park (FEATURE_ID 120562), Huntsville Spring Branch (FEATURE_ID 151829), and Huntsville Mountain (FEATURE_ID 120561). USGS GNIS Geocoder (GNIS), FEATURE_ID=151827; exact official name and Cities & Populated Places type in Madison County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Tuscaloosa", "Populated Place", "pop.place", "Tuscaloosa", 33.2098407, -87.5691735, null, "153742", 1, "The screen led with Tuscaloosa County (FEATURE_ID 161588); rejected: Tuscaloosa County, Tuscaloosa Division (FEATURE_ID 161624), and the historical Tuscaloosa Shoals bar record (FEATURE_ID 148668). USGS GNIS Geocoder (GNIS), FEATURE_ID=153742; exact official name and Cities & Populated Places type in Tuscaloosa County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Dothan", "Populated Place", "pop.place", "Houston", 31.2232313, -85.3904889, null, "117397", 1, "The screen led with Dothan Division (FEATURE_ID 161615); rejected: Dothan Division. USGS GNIS Geocoder (GNIS), FEATURE_ID=117397; exact official name and Cities & Populated Places type in Houston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Cheaha Mountain", "Summit", "phys.summit", "Cleburne", 33.485384, -85.8085996, null, "159374", 1, "Alabama's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check showed the description Highest elevation in AL at 2407 feet, Primary County Cleburne County, Primary Map Cheaha Mountain, the 1906 Board Decision making the name official, and coordinate sequence 1 marked High Point at the stored point, matching the Geocoder exactly. The per-ID variant names Blue Mountain, Che-aw-ha Mountain, Che-haw-haw Mountain, Chehaw Mountain, and Shinbone Mountain belong to this same record. USGS GNIS Geocoder (GNIS), FEATURE_ID=159374; exact official name and Summit type in Cleburne County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Guntersville Lake", "Lake", "hydro.lake", "Marshall", 34.4231468, -86.3922077, null, "119508", 1, "Seeded FEATURE_ID 119508 (Primary Map Guntersville Dam): the per-ID check shows Board decision card PDFs dated 1952 and 1954, the Guntersville Reservoir variant name, and 19 coordinate sequences along the Tennessee River chain with sequence 1 at the Guntersville Dam point matching this screen. The parallel Jackson County same-name record (FEATURE_ID 1286448, 20 sequences, its own 1952 decision row, no decision cards) duplicates the same impoundment and is not seeded as a second lake. The point is not a shoreline. USGS GNIS Geocoder (GNIS), FEATURE_ID=119508; exact official name and Lakes & Reservoirs type in Marshall County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Wheeler Lake", "Lake", "hydro.lake", "Limestone", 34.6694685, -87.0472474, null, "112837", 1, "Seeded FEATURE_ID 112837 (Primary Map Jones Crossroads): the per-ID check shows the 1954 Board decision card PDF and 17 coordinate sequences along the Tennessee River chain including the Wheeler Dam sequence, with sequence 1 matching this screen. The Chambers County same-name record (FEATURE_ID 131097, entered 2003 on the Lafayette quadrangle) is a separate lake on the Georgia border and is not the intended Tennessee River reservoir. The point is not a shoreline. USGS GNIS Geocoder (GNIS), FEATURE_ID=112837; exact official name and Lakes & Reservoirs type in Limestone County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Alabama River", "Stream", "hydro.stream", "Baldwin", 31.136009, -87.943331, null, "154961", 1, "Rejected: Alabama River Cutoff (FEATURE_ID 112960) and Alabama River Canal (FEATURE_ID 137133). The point is the Baldwin County lower sequence near the Mobile River confluence, not the channel through Montgomery. USGS GNIS Geocoder (GNIS), FEATURE_ID=154961; exact official name and Streams & Canals type in Baldwin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Tombigbee River", "Stream", "hydro.stream", "Washington", 31.136287, -87.944164, null, "158094", 1, "Single exact screen result; the states=MS Tombigbee screen returned an empty array, so only this Alabama frame carries the row. The point is the Washington County sequence at the Alabama River confluence, about a hundred metres from the Alabama River primary point; not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=158094; exact official name and Streams & Canals type in Washington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Mobile River", "Stream", "hydro.stream", "Mobile", 30.6560241, -88.0311088, null, "163332", 1, "Single exact screen result; the Mobile city screen also returned this record. The point is the Mobile County delta sequence feeding Mobile Bay, not a channel or shoreline. USGS GNIS Geocoder (GNIS), FEATURE_ID=163332; exact official name and Streams & Canals type in Mobile County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
     }
   }
 }

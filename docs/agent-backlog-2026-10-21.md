@@ -198,6 +198,100 @@ matches the round-18 Colorado empty screen. Salina is identity-safe but
 held to starter scope. Next in sequence: remaining plains/mountain states
 in dated per-row batches, then the country/planet thread.
 
+**Round 24 status (2026-10-23): partial.** Oklahoma and Texas shipped as
+configurations 25–26, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors (Texas
+adds a labelled generalized Gulf coast line), and no DEM. Provenance and
+identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json).
+Guadalupe Peak additionally carries a GNIS Domestic Names per-ID check:
+Class=Summit, Culberson County, High Point, “Highest elevation in TX at
+8749 feet”, with the El Capitan/Signal variants of the same record.
+Oklahoma's Black Mesa high point stays unseeded after two empty `states=OK`
+screens (Mount Scott notes it is not the high point); the Texas Red River
+stream record `1344947` was reviewed per-ID and rejected because both
+sequences sit in Brown County, far from the intended border reach, so
+Red River stays corridor-only in both frames; Arkansas River is empty for
+a third consecutive state after Colorado and Kansas. The Division piles
+reject the Oklahoma City/Tulsa/Lawton/Norman/Stillwater/Enid same-name
+records, the Texas metros reject their county/division/colonia/branch
+piles, Galveston Bay stores the returned Bay class, Palo Duro Canyon
+stores the returned Valley class, and Rio Grande seeds at the Cameron
+County Gulf mouth where New Mexico left it unseeded in round 18. Next in
+sequence: the West North Central remainder (Iowa, Missouri, Minnesota) or
+the Gulf/South Atlantic states, then the country/planet thread.
+
+**Round 25 status (2026-10-23): partial.** Iowa and Missouri shipped as
+configurations 27–28, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, and
+no DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json).
+Hawkeye Point and Taum Sauk Mountain additionally carry GNIS Domestic
+Names per-ID checks: both state high points keep their High Point
+coordinate markers and “highest elevation” descriptions (IA 1670 ft, MO
+1772 ft), with the Taum Sauk record's “Tom Sauk Mountain” variant
+rejected as the same record and its 1e-7-degree coordinate print
+difference disclosed. The St./Saint spelling gates (St. Louis and St. Joseph
+screens empty, Saint spelling returns the places), the Missouri River's
+first statewide row after six empty upstream screens, the Mississippi
+River Hills name/type mismatch, the Kansas City two-series disclosure,
+and Waterloo's starter-scope hold are all recorded; Current River and the
+Iowa-side Mississippi/Missouri rivers stay corridor-only. Next in
+sequence: Minnesota closes the West North Central division, then the
+Gulf/South Atlantic states, then the country/planet thread.
+
+**Round 26 status (2026-10-23): partial.** Minnesota and Louisiana shipped
+as configurations 29–30, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, and no
+DEM; Louisiana additionally carries a labelled generalized Gulf coast line.
+Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json).
+Eagle Mountain and Driskill Mountain carry GNIS Domestic Names per-ID
+checks (“Highest elevation in MN at 2301 feet” on FEATURE_ID 656081,
+disambiguated from two undesignated same-name summits the Geocoder listed
+first, and “Highest elevation in LA at 535 feet”); Lake of the Woods
+carries a Board-decision per-ID check (1911/1953, 18 sequences) rejecting
+the 2001 duplicate. The Mississippi River gets its first seeded statewide
+row in Louisiana (Plaquemines) after the Iowa empty screen, the Missouri
+name mismatch, and the Minnesota reservoir-only screen; the Red River
+chain closes at the West Feliciana record after ND/OK empties, the Texas
+Brown County rejection, and the Minnesota-registered Red River of the North
+whose returned primary sits in Canada (border corridor with disclosure).
+St. Paul and St. Cloud add the third and fourth St./Saint spelling gates;
+Monroe is held out as two indistinguishable populated places; Lake
+Superior, St. Croix River, and Toledo Bend Reservoir screened empty;
+Rainy Lake holds as a four-way ambiguity. Next in sequence: Gulf/South
+Atlantic states (Mississippi/Alabama/Georgia …), then the country/planet
+thread.
+
+**Round 27 status (2026-10-23): partial.** Mississippi and Alabama shipped
+as configurations 31–32, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, no DEM,
+and a labelled generalized Gulf coast line. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json).
+Woodall Mountain and Cheaha Mountain carry GNIS Domestic Names per-ID
+checks (“Highest elevation in MS at 806 feet” on FEATURE_ID 692362 with
+Bear/Woodalls Mountain variants, and “Highest elevation in AL at 2407 feet”
+on FEATURE_ID 159374 with the 1906 Board Decision and four historic
+variants) — both recalled elevations were wrong. Guntersville Lake selects
+FEATURE_ID 119508 over the suggestion-listed parallel Jackson County
+record 1286448 on decision-card evidence (a new register tie-break rule);
+Wheeler Lake separates its intended Limestone County reservoir 112837 from
+a same-name Chambers County lake 131097 entered on the Georgia border.
+The Mississippi main stem stays corridor-only in its own state after a
+**fifth empty/mismatched screen** (MS returned an empty array; Tombigbee
+is empty under MS but seeds in Alabama; the Alabama Tombigbee point sits
+~100 m from the Alabama River’s at their shared confluence, both as
+returned). Ross R Barnett Reservoir clears the round-24 punctuation gate
+(term carried periods, official name without); Lake Martin and Tennessee
+River screens returned empty; Pearl River returns only county/town/census
+records under states=MS. County/census-division-first suggestion traps
+pile across all six Alabama cities and Jackson MS — every rejected twin is
+named in the register. Final: cities 32 (17/17), Node 730, vitest 307,
+wiki 222, city XDCs 79 entries. Next in sequence: Georgia, then Florida,
+then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
