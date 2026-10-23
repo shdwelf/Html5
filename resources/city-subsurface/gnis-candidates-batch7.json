@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T23:30:09Z",
+ "retrieved": "2026-10-23T23:39:29Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -3099,6 +3099,301 @@
      "county": "Spartanburg",
      "lat": 34.9495672,
      "lon": -81.9320482
+    }
+   ]
+  },
+  "GA": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_GA_Text.zip",
+   "zipSha256": "75969d030fd58b1647605ba10b1c600bcd07ea52d1220a275871c1db2db4518a",
+   "candidatesRequested": [
+    "Atlanta",
+    "Augusta",
+    "Macon",
+    "Columbus",
+    "Savannah",
+    "Athens",
+    "Brasstown Bald",
+    "Hartwell Lake",
+    "Lake Sidney Lanier",
+    "Altamaha River",
+    "Chattahoochee River",
+    "Flint River",
+    "Lake Hartwell",
+    "Lake Lanier",
+    "Savannah River"
+   ],
+   "rows": [
+    {
+     "featureId": "354294",
+     "name": "Altamaha River",
+     "featureClass": "Stream",
+     "state": "Georgia",
+     "county": "McIntosh",
+     "lat": 31.3157843,
+     "lon": -81.2848169
+    },
+    {
+     "featureId": "354407",
+     "name": "Athens",
+     "featureClass": "Populated Place",
+     "state": "Georgia",
+     "county": "Clarke",
+     "lat": 33.960948,
+     "lon": -83.3779358
+    },
+    {
+     "featureId": "351615",
+     "name": "Atlanta",
+     "featureClass": "Populated Place",
+     "state": "Georgia",
+     "county": "Fulton",
+     "lat": 33.7489954,
+     "lon": -84.3879824
+    },
+    {
+     "featureId": "310670",
+     "name": "Augusta",
+     "featureClass": "Populated Place",
+     "state": "Georgia",
+     "county": "Richmond",
+     "lat": 33.4709702,
+     "lon": -81.9748379
+    },
+    {
+     "featureId": "354839",
+     "name": "Brasstown Bald",
+     "featureClass": "Summit",
+     "state": "Georgia",
+     "county": "Towns",
+     "lat": 34.8741923,
+     "lon": -83.8106479
+    },
+    {
+     "featureId": "354236",
+     "name": "Chattahoochee River",
+     "featureClass": "Stream",
+     "state": "Georgia",
+     "county": "Decatur",
+     "lat": 30.7088028,
+     "lon": -84.8638097
+    },
+    {
+     "featureId": "331443",
+     "name": "Columbus",
+     "featureClass": "Populated Place",
+     "state": "Georgia",
+     "county": "Muscogee",
+     "lat": 32.4609764,
+     "lon": -84.9877094
+    },
+    {
+     "featureId": "358207",
+     "name": "Flint River",
+     "featureClass": "Stream",
+     "state": "Georgia",
+     "county": "Decatur",
+     "lat": 30.7088028,
+     "lon": -84.8638097
+    },
+    {
+     "featureId": "356215",
+     "name": "Hartwell Lake",
+     "featureClass": "Reservoir",
+     "state": "Georgia",
+     "county": "Stephens",
+     "lat": 34.5252118,
+     "lon": -83.162421
+    },
+    {
+     "featureId": "322971",
+     "name": "Lake Sidney Lanier",
+     "featureClass": "Reservoir",
+     "state": "Georgia",
+     "county": "Forsyth",
+     "lat": 34.160377,
+     "lon": -84.0735221
+    },
+    {
+     "featureId": "332301",
+     "name": "Macon",
+     "featureClass": "Populated Place",
+     "state": "Georgia",
+     "county": "Bibb",
+     "lat": 32.8406946,
+     "lon": -83.6324022
+    },
+    {
+     "featureId": "322590",
+     "name": "Savannah",
+     "featureClass": "Populated Place",
+     "state": "Georgia",
+     "county": "Chatham",
+     "lat": 32.0835407,
+     "lon": -81.0998342
+    },
+    {
+     "featureId": "1253486",
+     "name": "Savannah River",
+     "featureClass": "Stream",
+     "state": "South Carolina",
+     "county": "Jasper",
+     "lat": 32.0377132,
+     "lon": -80.8501103
+    }
+   ]
+  },
+  "FL": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_FL_Text.zip",
+   "zipSha256": "6e37a77046e5e00d9999b8187c57fc7eef920af8bd4409d2c410d8b94d4d0adf",
+   "candidatesRequested": [
+    "Tallahassee",
+    "Jacksonville",
+    "Miami",
+    "Tampa",
+    "Orlando",
+    "Pensacola",
+    "Britton Hill",
+    "Lake Okeechobee",
+    "Lake George",
+    "Saint Johns River",
+    "Suwannee River",
+    "Apalachicola River"
+   ],
+   "rows": [
+    {
+     "featureId": "305219",
+     "name": "Apalachicola River",
+     "featureClass": "Stream",
+     "state": "Florida",
+     "county": "Franklin",
+     "lat": 29.7266008,
+     "lon": -84.9774101
+    },
+    {
+     "featureId": "1851954",
+     "name": "Britton Hill",
+     "featureClass": "Summit",
+     "state": "Florida",
+     "county": "Walton",
+     "lat": 30.9886961,
+     "lon": -86.282046
+    },
+    {
+     "featureId": "295003",
+     "name": "Jacksonville",
+     "featureClass": "Populated Place",
+     "state": "Florida",
+     "county": "Duval",
+     "lat": 30.3321838,
+     "lon": -81.655651
+    },
+    {
+     "featureId": "300329",
+     "name": "Lake George",
+     "featureClass": "Lake",
+     "state": "Florida",
+     "county": "Broward",
+     "lat": 26.0611861,
+     "lon": -80.2016164
+    },
+    {
+     "featureId": "300093",
+     "name": "Lake George",
+     "featureClass": "Lake",
+     "state": "Florida",
+     "county": "Hillsborough",
+     "lat": 28.0689146,
+     "lon": -82.4872758
+    },
+    {
+     "featureId": "283030",
+     "name": "Lake George",
+     "featureClass": "Lake",
+     "state": "Florida",
+     "county": "Polk",
+     "lat": 28.0766261,
+     "lon": -81.7453854
+    },
+    {
+     "featureId": "305722",
+     "name": "Lake George",
+     "featureClass": "Lake",
+     "state": "Florida",
+     "county": "Volusia",
+     "lat": 29.2857063,
+     "lon": -81.5959578
+    },
+    {
+     "featureId": "307550",
+     "name": "Lake Okeechobee",
+     "featureClass": "Lake",
+     "state": "Florida",
+     "county": "Palm Beach",
+     "lat": 26.9449541,
+     "lon": -80.8009908
+    },
+    {
+     "featureId": "295004",
+     "name": "Miami",
+     "featureClass": "Populated Place",
+     "state": "Florida",
+     "county": "Miami-Dade",
+     "lat": 25.7742658,
+     "lon": -80.1936589
+    },
+    {
+     "featureId": "288240",
+     "name": "Orlando",
+     "featureClass": "Populated Place",
+     "state": "Florida",
+     "county": "Orange",
+     "lat": 28.5383355,
+     "lon": -81.3792365
+    },
+    {
+     "featureId": "294117",
+     "name": "Pensacola",
+     "featureClass": "Populated Place",
+     "state": "Florida",
+     "county": "Escambia",
+     "lat": 30.421309,
+     "lon": -87.2169149
+    },
+    {
+     "featureId": "308105",
+     "name": "Saint Johns River",
+     "featureClass": "Stream",
+     "state": "Florida",
+     "county": "Duval",
+     "lat": 30.4013514,
+     "lon": -81.4009192
+    },
+    {
+     "featureId": "308455",
+     "name": "Suwannee River",
+     "featureClass": "Stream",
+     "state": "Florida",
+     "county": "Dixie",
+     "lat": 29.2882955,
+     "lon": -83.1659613
+    },
+    {
+     "featureId": "308416",
+     "name": "Tallahassee",
+     "featureClass": "Populated Place",
+     "state": "Florida",
+     "county": "Leon",
+     "lat": 30.4382559,
+     "lon": -84.2807329
+    },
+    {
+     "featureId": "292005",
+     "name": "Tampa",
+     "featureClass": "Populated Place",
+     "state": "Florida",
+     "county": "Hillsborough",
+     "lat": 27.9475216,
+     "lon": -82.4584279
     }
    ]
   }
