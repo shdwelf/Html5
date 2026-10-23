@@ -593,7 +593,8 @@
       "line": 168,
       "stream": "S8",
       "text": "SIM lock research (LexisNexis + alternatives, GitHub/GitLab); QEMU phone lab; xdc format conversions",
-      "status": "open"
+      "status": "partial",
+      "note": "SIM-lock research delivered 2026-10-23 (docs/sim-lock-research-2026-10-23.md) from free primary sources only: DMCA 1201 exemption timeline 2006-2024 (Pub. L. 113-144; 89 FR 85437 renewed 2024), CTIA six commitments, FCC 24-77 NPRM unadopted, DA 26-43 (2026) waiving Verizon 60-day rule; LexisNexis alternatives mapped (govinfo/eCFR/Federal Register/CourtListener; citator gap stated honestly); lawful-path only, no bypass tooling. xdc conversions discharged via the WAR line. Remaining: QEMU phone lab (qemu-system + device images via runner); user-mode qemu proven on this branch by the m68k build."
     },
     {
       "id": "T9.1",
