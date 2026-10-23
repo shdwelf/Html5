@@ -369,13 +369,15 @@
     {
       "id": "S13",
       "title": "Intelligence-archive research: bin Laden hard drive release",
-      "status": "open",
+      "status": "done",
       "tasks": [
         "T13.1"
       ],
-      "refs": [],
+      "refs": [
+        "docs/abbottabad-release-research-2026-10-23.md"
+      ],
       "next_actions": [
-        "Archival research pass over the publicly released (CIA/FOIA/archive.org) material only; produce a source-checked research note in house style"
+        "Closed 2026-10-23. If the corpus is ever mirrored locally: prefer the CIA 2017-11-09 repost, BagIt with per-file SHA-256, keep inert."
       ]
     },
     {
@@ -400,7 +402,8 @@
       "line": 2,
       "stream": "S1",
       "text": "Ghidra/encryption research over the Osama bin Laden hard-drive release (cia.gov, archive.org)",
-      "status": "open"
+      "status": "done",
+      "note": "Closed 2026-10-23 (docs/abbottabad-release-research-2026-10-23.md): no encrypted containers or runnable binaries in the public CIA/ODNI releases; executables defanged in the 2017-11-09 repost, malware withheld. Ghidra not applicable."
     },
     {
       "id": "T1.2",
@@ -603,7 +606,8 @@
       "line": 2,
       "stream": "S13",
       "text": "Archival research on the bin Laden hard-drive release (see T1.1; grouped for execution)",
-      "status": "open"
+      "status": "done",
+      "note": "Closed 2026-10-23: docs/abbottabad-release-research-2026-10-23.md (release timeline, withholding categories, preservation guidance)."
     },
     {
       "id": "T14.1",

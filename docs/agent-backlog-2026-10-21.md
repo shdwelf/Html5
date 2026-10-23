@@ -206,9 +206,15 @@ apply the Warrick web-archiving method to lost cicada3301 sites
 ([`geomate-gpx-preservation.md`](geomate-gpx-preservation.md),
 [`geomate-jr-firmware-research.md`](geomate-jr-firmware-research.md)).
 
-### S13 · Intelligence-archive research: bin Laden hard-drive release — *open*
+### S13 · Intelligence-archive research: bin Laden hard-drive release — *done*
 Publicly released CIA/FOIA/archive.org material only; deliverable is a source-checked
 research note in house style.
+*2026-10-23 round:* closed by
+[`abbottabad-release-research-2026-10-23.md`](abbottabad-release-research-2026-10-23.md)
+— release timeline (CTC 2012; ODNI Bookshelf 2015/2016/2017; CIA ~470,000
+files 2017-11-01, reposted 2017-11-09 minus 3,935 files with executables
+defanged), no encryption catalogued in the public material, Ghidra not
+applicable. Also closes T1.1 (T13.1 grouped execution).
 
 ### S14 · Changelly drainer script analysis — *done*
 See [`changelly-drainer-analysis.md`](changelly-drainer-analysis.md).
