@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T22:44:15Z",
+ "retrieved": "2026-10-23T22:45:22Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -1394,7 +1394,8 @@
     "Ohio River",
     "Scioto River",
     "Maumee River",
-    "Cuyahoga River"
+    "Cuyahoga River",
+    "Pymatuning Reservoir"
    ],
    "rows": [
     {
@@ -1582,7 +1583,8 @@
     "Delaware River",
     "Ohio River",
     "Allegheny River",
-    "Monongahela River"
+    "Monongahela River",
+    "Pymatuning Reservoir"
    ],
    "rows": [
     {
@@ -1728,6 +1730,24 @@
      "county": "Allegheny",
      "lat": 40.4406248,
      "lon": -79.9958864
+    },
+    {
+     "featureId": "1044806",
+     "name": "Pymatuning Reservoir",
+     "featureClass": "Reservoir",
+     "state": "Pennsylvania",
+     "county": "Crawford",
+     "lat": 41.4983867,
+     "lon": -80.4614582
+    },
+    {
+     "featureId": "1199940",
+     "name": "Pymatuning Reservoir",
+     "featureClass": "Reservoir",
+     "state": "Pennsylvania",
+     "county": "Crawford",
+     "lat": 41.5307683,
+     "lon": -80.4864282
     },
     {
      "featureId": "1193175",
