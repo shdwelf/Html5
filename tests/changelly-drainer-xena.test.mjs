@@ -25,8 +25,8 @@ const sha256 = (b) => createHash("sha256").update(b).digest("hex");
  * the instructions, is worse than no artifact.
  */
 
-function build() {
-  const r = execFileSync(process.execPath, [BUILDER, OUT], { cwd: root, encoding: "utf8" });
+function build(extraArgs = []) {
+  const r = execFileSync(process.execPath, [BUILDER, OUT, ...extraArgs], { cwd: root, encoding: "utf8" });
   return r;
 }
 
@@ -223,6 +223,29 @@ test("stage two serializes the bag and wraps it in a Xena binary record", () => 
   assert.ok(m, "Xena record should carry a binary-object payload");
   const wrapped = Buffer.from(m[1].replace(/\s+/g, ""), "base64");
   assert.deepEqual(wrapped, zipBytes, "decoding the Xena record should reproduce the serialized BagIt ZIP byte for byte");
+});
+
+test("a supplied second-stage CSV is bagged inert, hashed, and analysed — never executed", () => {
+  const fixture = path.join(root, "dist", "_stage2-fixture.csv");
+  writeFileSync(fixture, 'name,value\nnode,"NODE_PART_1, with comma"\npath,"PATH_PART_2"\n');
+  try {
+    const log = build(["--second-stage-csv", fixture]);
+    assert.match(log, /second-stage payload fetched: yes, as inert text/);
+    const payloadPath = path.join(OUT, "data", "original", "second-stage-payload.txt");
+    assert.ok(existsSync(payloadPath), "the assembled second stage should be bagged as .txt");
+    assert.equal(readFileSync(payloadPath, "utf8"), "NODE_PART_1, with commaPATH_PART_2");
+    const ioc = JSON.parse(readFileSync(path.join(OUT, "data/normalized/ioc.json"), "utf8"));
+    assert.equal(ioc.secondStage.retrieved, true);
+    assert.equal(ioc.executed, false);
+    const s2 = JSON.parse(readFileSync(path.join(OUT, "data/normalized/second-stage-iocs.json"), "utf8"));
+    assert.equal(s2.executed, false);
+    assert.equal(s2.ghidra.applicable, false);
+    const ev = JSON.parse(readFileSync(path.join(OUT, "metadata/preservation-event.json"), "utf8"));
+    assert.equal(ev.counts.secondStageRetrieved, true);
+  } finally {
+    rmSync(fixture, { force: true });
+    build(); // restore the default location-only bag for the remaining tests
+  }
 });
 
 test("the builder fails closed if a pin drifts", () => {

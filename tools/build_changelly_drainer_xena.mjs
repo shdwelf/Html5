@@ -16,25 +16,31 @@
  * was not produced by running NAA Xena, and the sidecar says so.
  *
  * WHAT THIS IS NOT
- * It does not execute, fetch, or reproduce the payload. The loader is stored
+ * It does not execute the payload or reproduce the lure. The loader is stored
  * with a .txt extension so no tooling in this repository or any browser will
- * ever treat it as script, and the second-stage payload — which lives in a
- * Google Sheet the attacker can rewrite at will — was never retrieved and is
- * recorded only as a location. The social-engineering instructions from the
- * cover PDF are deliberately NOT reproduced: redistributing the lure helps the
- * attacker, not the record.
+ * ever treat it as script. The second-stage payload — which lives in a
+ * Google Sheet the attacker can rewrite at will — is bagged only when a CSV
+ * export of that sheet is supplied out-of-band (--second-stage-csv); it is
+ * then preserved as inert text in the gitignored bag, hashed and analysed,
+ * and never committed. Without that flag it is recorded only as a location.
+ * The social-engineering instructions from the cover PDF are deliberately
+ * NOT reproduced: redistributing the lure helps the attacker, not the record.
  *
  * Static analysis only. Nothing here was run.
  */
 
 import { createHash } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { zipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const OUT = path.resolve(root, process.argv[2] || "dist/changelly-drainer-xena");
+const argv = process.argv.slice(2);
+const outArg = argv.find((a) => !a.startsWith("--"));
+const stage2Flag = argv.indexOf("--second-stage-csv");
+const STAGE2_CSV = stage2Flag >= 0 ? argv[stage2Flag + 1] : process.env.CHANGELLY_STAGE2_CSV;
+const OUT = path.resolve(root, outArg || "dist/changelly-drainer-xena");
 const ZIP_OUT = `${OUT}.zip`;
 const XENA_OUT = `${OUT}.xena`;
 const XENA_SIDECAR_OUT = `${OUT}.xena.json`;
@@ -63,6 +69,28 @@ export const PINS = {
   decodedUrlSha256: "39bf3818350c01835bd34b3bca57f5f54500c19ee9c3193368069e1b9f38afe9",
   decodedUrlLength: 164,
   spreadsheetId: "15ZXXqVaJrRoojcBDbApNfHP_n6z5sLlFLNhdLNJd5PM",
+};
+
+/**
+ * The reviewed second-stage sample, retrieved 2026-10-23 as a Google Drive
+ * CSV export of the "API" spreadsheet (75,850 bytes) and analysed statically
+ * (string-table rotation solved, fetch/DOM behaviour read, never executed).
+ * If a different sample is supplied, the builder still bags and hashes it,
+ * but marks it unreviewed instead of borrowing these conclusions.
+ */
+export const STAGE2_REVIEWED = {
+  csvSha256: "bc45bbb7eea15bee198d52b84332544cc127c8f7aa143b32770ca5cd88246810",
+  csvBytes: 75850,
+  nodeSha256: "80d784da3e40929fdfb346a704e91d41a65ab429391ed5b2c1f91080214c5ba6",
+  nodeChars: 46080,
+  pathSha256: "23adaf2e93c850de1e4ecb488e04476b8a9a43f6ba58e4ef60ca4adda881b05e",
+  pathChars: 29685,
+  payloadSha256: "1646bf13d4849d1f2b46f609f15bb8e95a3ac2ec04643a16705662bf02f82afb",
+  payloadBytes: 75791,
+  sheetModifiedTime: "2026-10-23T14:51:48.995Z",
+  boostFactor: 1.55,
+  thresholdUsd: 200,
+  currencies: ["btc", "sol", "eth", "ltc", "xmr"],
 };
 
 /** Decode and verify locally. Never fetches. */
@@ -194,13 +222,191 @@ browser profile.
 `;
 }
 
-function ioc(decoded) {
+/** Minimal RFC 4180 CSV parser (quoted cells may hold commas/newlines). */
+function parseCsv(text) {
+  const rows = [];
+  let row = [], cell = "", quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { cell += '"'; i++; } else quoted = false;
+      } else cell += c;
+    } else if (c === '"') quoted = true;
+    else if (c === ",") { row.push(cell); cell = ""; }
+    else if (c === "\n") { row.push(cell.replace(/\r$/, "")); rows.push(row); row = []; cell = ""; }
+    else cell += c;
+  }
+  if (cell.length || row.length) { row.push(cell.replace(/\r$/, "")); rows.push(row); }
+  return rows;
+}
+
+function byteEntropy(buf) {
+  const counts = new Array(256).fill(0);
+  for (const b of buf) counts[b]++;
+  let h = 0;
+  for (const c of counts) if (c) { const p = c / buf.length; h -= p * Math.log2(p); }
+  return Math.round(h * 10000) / 10000;
+}
+
+function extractStage2(buf) {
+  const text = buf.toString("utf8");
+  const cells = {};
+  for (const r of parseCsv(text)) {
+    if (r.length > 1 && (r[0] === "node" || r[0] === "path")) cells[r[0]] = r[1];
+  }
+  if (!cells.node || !cells.path) throw new Error("second-stage CSV lacks node/path cells");
+  const payloadText = cells.node + cells.path;
+  const payload = Buffer.from(payloadText);
+  const grab = (re) => [...new Set([...payloadText.matchAll(re)].map((m) => m[0]))].sort();
+  return {
+    csv: { bytes: buf.length, sha256: sha256(buf) },
+    node: { chars: cells.node.length, sha256: sha256(cells.node) },
+    path: { chars: cells.path.length, sha256: sha256(cells.path) },
+    payloadText,
+    payload: { bytes: payload.length, sha256: sha256(payload), entropy: byteEntropy(payload) },
+    wallets: {
+      btc: grab(/\bbc1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{20,}\b/g),
+      eth: grab(/\b0x[a-fA-F0-9]{40}\b/g),
+      xmr: grab(/\b48Sj[a-zA-Z0-9]{91}\b/g),
+      sol: grab(/['"]sol['"]:\[['"][1-9A-HJ-NP-Za-km-z]{32,44}['"]\]/g).map((x) => x.replace(/^['"]sol['"]:\[['"]|['"]\]$/g, "")),
+      ltc: grab(/['"]ltc['"]:\[['"]L[a-zA-Z0-9]{25,34}['"]\]/g).map((x) => x.replace(/^['"]ltc['"]:\[['"]|['"]\]$/g, "")),
+    },
+    endpoints: grab(/https?:\/\/[^\s'"\\<>]+/g),
+    keywordCensus: Object.fromEntries(
+      ["encrypt", "decrypt", "aes", "cryptojs", "subtlecrypto", "crypto.subtle", "atob", "btoa", "fromcharcode", "eval(", "fetch", "mutationobserver", "password", "payoutaddress"]
+        .map((k) => [k, payloadText.toLowerCase().split(k).length - 1])),
+    magic: {
+      mz: payload.indexOf("MZ"),
+      elf: payload.indexOf("\x7fELF"),
+      pe: payload.indexOf("PE\0\0"),
+      header: payloadText.slice(0, 16),
+    },
+  };
+}
+
+function stage2Analysis(stage2) {
+  const reviewed = stage2.payload.sha256 === STAGE2_REVIEWED.payloadSha256;
+  const w = stage2.wallets;
+  return `# Second-stage payload — static analysis
+
+Retrieved as a Google Drive CSV export of the attacker-controlled "API"
+spreadsheet and analysed **as text only. It was not executed, not loaded in a
+browser, and not contacted again.** This file supersedes the stage-7
+inference in \`attack-chain.json\`/\`deep-dive.md\` for the sample below.
+
+| Item | Value |
+| --- | --- |
+| CSV export | ${stage2.csv.bytes} bytes, SHA-256 \`${stage2.csv.sha256}\` |
+| \`node\` cell | ${stage2.node.chars} chars, SHA-256 \`${stage2.node.sha256}\` |
+| \`path\` cell | ${stage2.path.chars} chars, SHA-256 \`${stage2.path.sha256}\` |
+| Concatenated payload | ${stage2.payload.bytes} bytes, SHA-256 \`${stage2.payload.sha256}\` |
+| Byte entropy | ${stage2.payload.entropy} bits/byte (ordinary source text, not packed binary) |
+| Reviewed sample match | ${reviewed ? "yes — behaviour summary below applies to this exact hash" : "NO — unreviewed sample; hashes recorded, behaviour summary does not apply"} |
+
+## What it is
+
+The concatenated \`node\` + \`path\` text is one JavaScript program. It opens
+with an obfuscator decoder (\`_0x2791\`) over a 256-entry string array; solving
+the array rotation statically (221 rotations) recovers the plaintext strings
+without running the program. ${reviewed ? "On the reviewed sample:" : ""}
+
+- It builds a fake in-page "dev panel" overlay (\`#__changelly_mod_overlay\`)
+  offering node versions with **v3.27** marked loadable, gated by a password
+  field — the cover story's \`admin\` — before activating.
+- It saves the page's real \`fetch\` and replaces \`window.fetch\`. On a POST
+  to \`/v1/c2c/float/create-transaction\` it parses the JSON body and rewrites
+  \`payoutAddress\` to an attacker address chosen per source currency.
+- It intercepts estimate/transaction responses (\`/v1/c2c/fixed/estimate\`,
+  \`/v1/c2c/float/estimate\`, \`/v2/c2c/transactions/…\`) and multiplies the
+  displayed rate / you-get amount by **1.55**, only when the USD value —
+  priced via Binance/CoinGecko — is at least **$200**, matching the lure's
+  floor.
+- A MutationObserver plus a 30 ms interval continuously patch the DOM:
+  amount fields are boosted and locked read-only, real elements are hidden
+  (\`.__hidden-by-script\`), and the payment QR modal's address text and
+  \`data-address\`/\`data-copy\`/\`data-value\` attributes are replaced with
+  the attacker address (\`__qrPatchedShort\`).
+- The wallet map holds ${w.btc.length} BTC addresses and one each for ETH,
+  SOL, LTC and XMR; the BTC choice is randomised once per currency and then
+  cached, so one victim sees one consistent address. Full addresses are in
+  \`second-stage-iocs.json\`.
+
+In short: the first stage delivers it, the overlay talks the victim through
+"loading the old node", and the fetch/DOM patching makes the exchange appear
+to confirm a ~55%-better rate while the payout/deposit address is swapped.
+That is a drainer, observed end to end.
+
+## "Ghidra encryption" assessment
+
+Asked for explicitly, answered plainly:
+
+- **Ghidra does not apply to this payload.** It is JavaScript source text
+  (header \`${stage2.magic.header}…\`; MZ at ${stage2.magic.mz}, ELF at ${stage2.magic.elf},
+  PE at ${stage2.magic.pe}). Ghidra disassembles native/JVM machine code;
+  imported as raw bytes it could only dump strings. The correct tooling is
+  what was used: CSV/cell recovery, string-table de-rotation, and reading the
+  deobfuscated control flow (AST/Joern-style analysis).
+- **There is no cryptographic encryption in it.** Keyword census over the
+  payload: encrypt=${stage2.keywordCensus.encrypt}, decrypt=${stage2.keywordCensus.decrypt},
+  AES=${stage2.keywordCensus.aes}, CryptoJS=${stage2.keywordCensus.cryptojs},
+  SubtleCrypto=${stage2.keywordCensus.subtlecrypto}. What looks like
+  "encryption" is obfuscation: a rotated string array, \`\\x\` escapes, and
+  the payload split across two spreadsheet cells. Nothing needs decrypting;
+  it needs deobfuscating, which is done.
+- If a future cell revision ships WASM or a native blob instead, that sample
+  would be a Ghidra target (hash it, identify the format, run a crypto
+  constant inventory). This sample is not one.
+
+## Handling
+
+Stored as \`second-stage-payload.txt\` — inert text, no executable extension —
+inside this gitignored bag only. It is live attacker code: do not open it in
+a browser, do not paste it anywhere, and treat the wallet addresses and the
+spreadsheet as hostile indicators.
+`;
+}
+
+function stage2Iocs(stage2) {
+  return JSON.stringify({
+    schema: "changelly-drainer-second-stage-iocs/1",
+    retrieved: true,
+    retrievedAs: "Google Drive CSV export of spreadsheet 15ZXXqVaJrRoojcBDbApNfHP_n6z5sLlFLNhdLNJd5PM (sheet 'API')",
+    executed: false,
+    csv: stage2.csv,
+    cells: { node: stage2.node, path: stage2.path },
+    payload: stage2.payload,
+    reviewedSample: stage2.payload.sha256 === STAGE2_REVIEWED.payloadSha256,
+    behaviourOnReviewedSample: {
+      fakeOverlay: "#__changelly_mod_overlay, node version picker (v3.27 loadable), password gate",
+      fetchOverride: "window.fetch replaced; original retained and restored on cleanup",
+      payoutRewrite: "POST /v1/c2c/float/create-transaction body payoutAddress replaced per source currency",
+      rateBoostFactor: STAGE2_REVIEWED.boostFactor,
+      thresholdUsd: STAGE2_REVIEWED.thresholdUsd,
+      currencies: STAGE2_REVIEWED.currencies,
+      interceptedPaths: ["/v1/c2c/float/create-transaction", "/v1/c2c/fixed/estimate", "/v1/c2c/float/estimate", "/v2/c2c/transactions/<id>"],
+      domPatching: ["MutationObserver + 30 ms interval", "amount/rate text multiplied by boost factor", ".__hidden-by-script hides genuine elements", "payment QR modal address text and data-address/data-copy/data-value replaced"],
+      priceOracles: ["https://api.binance.com/api/v3/ticker/price?symbol=", "https://api.coingecko.com/api/v3/simple/price?ids="],
+    },
+    wallets: stage2.wallets,
+    endpoints: stage2.endpoints,
+    keywordCensus: stage2.keywordCensus,
+    ghidra: {
+      applicable: false,
+      reason: "payload is JavaScript source text, not native/JVM machine code; no MZ/ELF/PE magic",
+      encryptionFound: false,
+      obfuscation: "rotated string array (256 entries, 221 rotations to plaintext), hex escapes, payload split across two cells",
+    },
+  }, null, 2) + "\n";
+}
+
+function ioc(decoded, stage2 = null) {
   return JSON.stringify({
     generated: NOW,
     classification: "first-stage remote-code loader / cryptocurrency drainer delivery",
     confidence: "high",
     executed: false,
-    fetched: false,
+    fetched: Boolean(stage2),
     firstStage: {
       transport: "javascript: bookmarklet pasted into the address bar or console",
       base64Blob: BASE64_BLOB,
@@ -208,9 +414,26 @@ function ioc(decoded) {
       loaderSourceSha256: sha256(LOADER_SOURCE),
       loaderSourceBytes: Buffer.byteLength(LOADER_SOURCE),
     },
-    secondStage: {
+    secondStage: stage2 ? {
+      retrieved: true,
+      retrievedAs: "Google Drive CSV export of the 'API' spreadsheet; analysed as text, never executed",
+      url: decoded.url,
+      urlSha256: decoded.sha256,
+      host: decoded.host,
+      spreadsheetId: decoded.spreadsheetId,
+      sheet: decoded.sheet,
+      query: decoded.query,
+      payloadAssembly: "concatenate the cells named 'node' and 'path'",
+      execution: "appendChild of a <script> element, then removed from the DOM",
+      csv: stage2.csv,
+      cells: { node: stage2.node, path: stage2.path },
+      payload: stage2.payload,
+      reviewedSample: stage2.payload.sha256 === STAGE2_REVIEWED.payloadSha256,
+      preservedAs: "data/original/second-stage-payload.txt",
+      detail: "data/normalized/second-stage-analysis.md and second-stage-iocs.json",
+    } : {
       retrieved: false,
-      reason: "attacker-controlled and swappable; recorded as a location only",
+      reason: "attacker-controlled and swappable; recorded as a location only (rebuild with --second-stage-csv <export> to bag the sample)",
       url: decoded.url,
       urlSha256: decoded.sha256,
       host: decoded.host,
@@ -440,12 +663,12 @@ record; the sidecar JSON pins both artifacts by SHA-256.
 `;
 }
 
-function attackChain(decoded) {
+function attackChain(decoded, stage2 = null) {
   return JSON.stringify({
     schema: "changelly-drainer-attack-chain/1",
     generated: DEEP_DIVE_AT,
     sourceAnalysisDate: NOW,
-    observedSecondStage: false,
+    observedSecondStage: Boolean(stage2),
     stages: [
       {
         n: 1,
@@ -488,8 +711,10 @@ function attackChain(decoded) {
       {
         n: 7,
         name: "financial theft objective",
-        status: "inferred from lure; second-stage behaviour unobserved",
-        detail: "The cover story primes a swap/deposit. Specific wallet, API, or exfiltration behaviour cannot be evidenced without the second stage and is not claimed here.",
+        status: stage2 ? "observed in the retrieved second-stage sample" : "inferred from lure; second-stage behaviour unobserved",
+        detail: stage2
+          ? "The retrieved sample builds a fake dev-panel overlay, overrides window.fetch to rewrite payoutAddress, boosts displayed rates by 1.55x above a $200 threshold, and patches QR/address DOM nodes to attacker wallets. See second-stage-analysis.md."
+          : "The cover story primes a swap/deposit. Specific wallet, API, or exfiltration behaviour cannot be evidenced without the second stage and is not claimed here.",
       },
     ],
   }, null, 2) + "\n";
@@ -582,11 +807,11 @@ ${base64.split("\n").map((line) => `      ${line}`).join("\n")}
     </binary-object:binary-object>
   </content>
 </xena>
-<!-- Original format: ZIP serialization of a BagIt 1.0 (RFC 8493) bag; generated ${DEEP_DIVE_AT}; BagIt ZIP ${zipBytes.length} bytes, SHA-256 ${zipSha256}; static defensive preservation only: loader not executed, second-stage payload not fetched. -->
+<!-- Original format: ZIP serialization of a BagIt 1.0 (RFC 8493) bag; generated ${DEEP_DIVE_AT}; BagIt ZIP ${zipBytes.length} bytes, SHA-256 ${zipSha256}; static defensive preservation only: nothing executed; see bag preservation-event.json for exactly what was retrieved. -->
 `;
 }
 
-function preservationEvent(decoded) {
+function preservationEvent(decoded, stage2 = null) {
   return JSON.stringify({
     eventType: "normalization",
     tool: TOOL,
@@ -612,10 +837,11 @@ function preservationEvent(decoded) {
     ],
     exclusions: {
       executed: [],
-      fetched: [],
+      fetched: stage2 ? ["second-stage spreadsheet cells, retrieved as a Google Drive CSV text export for static analysis"] : [],
       reproduced: [],
-      reason:
-        "The second-stage payload lives in an attacker-controlled spreadsheet "
+      reason: stage2
+        ? "The second-stage sample was retrieved once, as text, through the Drive export path and preserved inert (.txt) in this gitignored bag only; it was never executed or opened in a browser, and it is not committed to the repository. It remains attacker-controlled and mutable, so its hashes — not its continued content — are the durable record. The cover PDF's social-engineering instructions are not reproduced."
+        : "The second-stage payload lives in an attacker-controlled spreadsheet "
         + "and can be rewritten at will, so it is recorded as a location rather "
         + "than retrieved. The cover PDF's social-engineering instructions are "
         + "not reproduced, because redistributing the lure helps the attacker.",
@@ -631,7 +857,7 @@ function preservationEvent(decoded) {
       iocs: 2,
       loaderSteps: LOADER_STEPS.length,
       deepDiveFiles: 3,
-      secondStageRetrieved: false,
+      secondStageRetrieved: Boolean(stage2),
     },
     pins: PINS,
     decodedUrlBytes: decoded.bytes,
@@ -661,15 +887,35 @@ async function main() {
     throw new Error("the preserved loader does not contain the pinned base64 blob");
   }
 
+  // Optional second stage: a Google Drive CSV export of the payload sheet,
+  // supplied out-of-band (--second-stage-csv or CHANGELLY_STAGE2_CSV). The
+  // sample is live attacker code, so it is only ever read as text, hashed,
+  // and written into this gitignored bag as .txt — never executed, and never
+  // committed (the builder carries hashes and findings, not the sample).
+  let stage2 = null;
+  if (STAGE2_CSV) {
+    stage2 = extractStage2(await readFile(path.resolve(root, STAGE2_CSV)));
+  }
+
   const payload = new Map();
   // .txt, never .js: nothing in this repository or any browser should ever
   // treat the preserved loader as executable.
   payload.set("data/original/loader-bookmarklet.txt", Buffer.from(LOADER_SOURCE + "\n"));
+  if (stage2) {
+    payload.set("data/original/second-stage-payload.txt", Buffer.from(stage2.payloadText));
+    payload.set("data/normalized/second-stage-analysis.md", Buffer.from(stage2Analysis(stage2)));
+    payload.set("data/normalized/second-stage-iocs.json", Buffer.from(stage2Iocs(stage2)));
+    payload.set("data/normalized/second-stage-cells.json", Buffer.from(JSON.stringify({
+      source: "Google Drive CSV export of spreadsheet 15ZXXqVaJrRoojcBDbApNfHP_n6z5sLlFLNhdLNJd5PM (sheet 'API')",
+      csv: stage2.csv, node: stage2.node, path: stage2.path, payload: stage2.payload,
+      reviewedSample: stage2.payload.sha256 === STAGE2_REVIEWED.payloadSha256,
+    }, null, 2) + "\n"));
+  }
   payload.set("data/normalized/loader-analysis.md", Buffer.from(analysis(decoded)));
   payload.set("data/normalized/deep-dive.md", Buffer.from(deepDive(decoded)));
-  payload.set("data/normalized/attack-chain.json", Buffer.from(attackChain(decoded)));
+  payload.set("data/normalized/attack-chain.json", Buffer.from(attackChain(decoded, stage2)));
   payload.set("data/normalized/detection-rules.txt", Buffer.from(detectionRules(decoded)));
-  payload.set("data/normalized/ioc.json", Buffer.from(ioc(decoded)));
+  payload.set("data/normalized/ioc.json", Buffer.from(ioc(decoded, stage2)));
   payload.set("data/normalized/loader-decoded.json", Buffer.from(JSON.stringify(decoded, null, 2) + "\n"));
 
   const payloadOxum = `${[...payload.values()].reduce((n, b) => n + b.length, 0)}.${payload.size}`;
@@ -679,9 +925,9 @@ async function main() {
       "Bag-Software-Agent: tools/build_changelly_drainer_xena.mjs\n"
       + `Bagging-Date: ${DEEP_DIVE_AT.slice(0, 10)}\n`
       + "Source-Organization: shdwelf/Html5 defensive preservation\n"
-      + "External-Description: Changelly Exploit first-stage drainer loader; static analysis only; second-stage payload recorded as a location and never fetched\n"
+      + `External-Description: Changelly Exploit first-stage drainer loader; static analysis only; second-stage payload ${stage2 ? "retrieved as inert text via Drive CSV export and bagged (gitignored dist only, never executed)" : "recorded as a location and never fetched"}\n`
       + `Payload-Oxum: ${payloadOxum}\n`)],
-    ["metadata/preservation-event.json", Buffer.from(preservationEvent(decoded))],
+    ["metadata/preservation-event.json", Buffer.from(preservationEvent(decoded, stage2))],
   ]);
   tags.set("manifest-sha256.txt",
     Buffer.from([...payload].map(([p, b]) => `${sha256(b)}  ${p}`).sort().join("\n") + "\n"));
@@ -689,6 +935,7 @@ async function main() {
     Buffer.from([...tags].map(([p, b]) => `${sha256(b)}  ${p}`).sort().join("\n") + "\n"));
 
   const bagFiles = new Map([...payload, ...tags]);
+  await rm(OUT, { recursive: true, force: true });
   for (const [rel, buf] of bagFiles) {
     const fp = path.join(OUT, rel);
     await mkdir(path.dirname(fp), { recursive: true });
@@ -716,8 +963,9 @@ async function main() {
     tool: TOOL,
     safety: {
       loaderExecuted: false,
-      secondStageFetched: false,
-      secondStageRecordedAs: "location only",
+      secondStageFetched: Boolean(stage2),
+      secondStageRecordedAs: stage2 ? "bagged inert (.txt) in gitignored dist only" : "location only",
+      secondStagePayload: stage2 ? { sha256: stage2.payload.sha256, bytes: stage2.payload.bytes, csvSha256: stage2.csv.sha256 } : null,
       loaderPreservedAs: "data/original/loader-bookmarklet.txt",
     },
     pins: PINS,
@@ -754,7 +1002,7 @@ async function main() {
   console.log(`Serialized BagIt ZIP: ${path.relative(root, ZIP_OUT)} (${zipBytes.length} bytes, sha256 ${sha256(zipBytes).slice(0, 16)}…)`);
   console.log(`Xena binary record: ${path.relative(root, XENA_OUT)} (${xenaBytes.length} bytes, sha256 ${sha256(xenaBytes).slice(0, 16)}…)`);
   console.log(`Xena sidecar: ${path.relative(root, XENA_SIDECAR_OUT)}`);
-  console.log(`  second-stage payload fetched: no`);
+  console.log(`  second-stage payload fetched: ${stage2 ? `yes, as inert text (${stage2.payload.bytes} bytes, sha256 ${stage2.payload.sha256.slice(0, 16)}…)` : "no"}`);
   console.log(`  loader executed: no`);
 }
 

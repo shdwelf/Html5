@@ -1,14 +1,22 @@
 # "Changelly Exploit" — deep dive on a first-stage drainer loader
 
 Analysis first recorded 2026-10-18; deep dive and two-stage preservation
-completed 2026-10-23. **Static analysis only. Nothing was executed and the
-second-stage payload was not fetched.**
+completed 2026-10-23. **Static analysis only. Nothing was executed. The
+second stage was retrieved once, as inert text, for the analysis below.**
 
 Build the preservation package with:
 
 ```sh
 npm run build:changelly-xena
 node --test tests/changelly-drainer-xena.test.mjs
+```
+
+To also bag the retrieved second-stage sample (a Google Drive CSV export of
+the payload spreadsheet, supplied out-of-band; the sample itself is never
+committed):
+
+```sh
+node tools/build_changelly_drainer_xena.mjs dist/changelly-drainer-xena --second-stage-csv <API-export.csv>
 ```
 
 That produces, under gitignored `dist/`:
@@ -202,6 +210,65 @@ The same chain is in the bag as `data/normalized/attack-chain.json`, with the
 evidence status carried per stage so a future reader cannot mistake stage 7
 for something this artifact proves.
 
+## Second stage: retrieved, deobfuscated, bagged
+
+At the user's request the second stage was retrieved once — as a Google
+Drive **CSV text export** of the `API` spreadsheet (75,850 bytes, SHA-256
+`bc45bbb7eea15bee198d52b84332544cc127c8f7aa143b32770ca5cd88246810`; sheet
+modified 2026-10-23T14:51:48Z) — and analysed as inert text. It was never
+executed or opened in a browser. The cells are `node` (46,080 chars,
+SHA-256 `80d784da…c5ba6`) and `path` (29,685 chars, SHA-256 `23adaf2e…05e`);
+concatenated they form one 75,791-byte JavaScript program (SHA-256
+`1646bf13d4849d1f2b46f609f15bb8e95a3ac2ec04643a16705662bf02f82afb`), bagged
+as `data/original/second-stage-payload.txt` in the gitignored bag only.
+
+The program is obfuscated with a rotated 256-entry string array. Solving the
+rotation statically (221 rotations) and substituting the decoder calls —
+pure text transformation, no execution — recovers the behaviour:
+
+- **Fake dev panel.** It injects `#__changelly_mod_overlay`, a version picker
+  (v3.27 marked loadable, the others "outdated" with invented known issues)
+  behind the cover story's `admin` password gate, with light/dark themes
+  matched to the host page.
+- **Fetch override.** It keeps the real `fetch`, replaces `window.fetch`,
+  and on POST `/v1/c2c/float/create-transaction` rewrites the JSON body's
+  `payoutAddress` to an attacker address for the source currency (chosen
+  randomly once per currency, then cached).
+- **Rate theatre.** Estimate and transaction responses
+  (`/v1/c2c/fixed/estimate`, `/v1/c2c/float/estimate`,
+  `/v2/c2c/transactions/…`) and the corresponding DOM amounts are multiplied
+  by **1.55** — the lure's ~50% "better rate", plus margin — but only when
+  the USD value, priced through Binance/CoinGecko, is at least **$200**:
+  the lure's floor, enforced in code. Displayed amounts are locked read-only
+  and genuine elements hidden (`.__hidden-by-script`).
+- **Address swap.** A MutationObserver and a 30 ms interval patch the
+  payment QR modal: address text and `data-address` / `data-copy` /
+  `data-value` attributes are replaced with the attacker address
+  (`__qrPatchedShort`), so what the victim copies or scans is the drainer's.
+- **Wallets (IOCs).** 20 BTC (`bc1q…`) addresses plus one each for ETH
+  (`0xDA2b…429E9`), SOL (`QtaUNRLz…qg4M`), LTC (`LgzywyD…2YWs5F`) and XMR
+  (`48SjcpC…Sv1mKCx`). The full list is in the bag's
+  `second-stage-iocs.json`.
+
+Stage 7 of the chain is therefore no longer an inference for this sample:
+the theft mechanism is the payout-address rewrite, dressed in a boosted rate.
+
+### "Ghidra encryption" — assessed, and not applicable
+
+- **Ghidra has no target here.** The payload is JavaScript source text
+  (starts `function _0x2791`; no MZ, ELF or PE magic; byte entropy ≈ 5.07).
+  Ghidra disassembles native/JVM machine code; fed this file it could only
+  list strings. The productive tooling is cell recovery, string-table
+  de-rotation and AST-level reading — Joern's JavaScript code-property-graph
+  support is the Ghidra-adjacent option if graph queries are ever needed.
+- **There is no encryption to break.** Census of the payload finds no AES,
+  CryptoJS, WebCrypto/SubtleCrypto, `atob`/`btoa` or `eval`. The apparent
+  cryptography is obfuscation — a rotated string array, `\x` escapes, and the
+  split across two cells — and obfuscation yields to deobfuscation, which is
+  what was done. If a future cell revision ships WASM or a native blob, that
+  sample becomes a Ghidra target (hash, format-ID, crypto-constant
+  inventory); this one is not.
+
 ## Detection
 
 Highest signal first:
@@ -242,6 +309,8 @@ tagmanifest-sha256.txt              SHA-256 for the tag files
 data/
   original/
     loader-bookmarklet.txt          the first-stage loader, inert (.txt)
+    second-stage-payload.txt        only with --second-stage-csv: the assembled
+                                    second stage, inert (.txt), gitignored bag only
   normalized/
     loader-analysis.md              the original 2026-10-18 analysis
     deep-dive.md                    this deep dive, condensed for the bag
@@ -249,6 +318,9 @@ data/
     detection-rules.txt             YARA + hunt queries
     ioc.json                        machine-readable indicators and pins
     loader-decoded.json             decoded locator, field by field
+    second-stage-analysis.md        with --second-stage-csv: behaviour + Ghidra verdict
+    second-stage-iocs.json          wallets, endpoints, crypto census
+    second-stage-cells.json         cell/payload hashes for the retrieved sample
 metadata/
   preservation-event.json           events, exclusions, and format honesty
 ```
@@ -287,10 +359,15 @@ exactly that.
 
 ## Scope limits, stated plainly
 
-- **The spreadsheet was not fetched.** Retrieving an attacker's live payload
-  serves no defensive purpose that static analysis does not already provide.
-- **The second-stage payload is not in the bag** and never was; it is recorded
-  as a location.
+- **The second stage was retrieved exactly once, as text**, through the
+  Google Drive CSV export path, at the user's explicit request, and is
+  preserved inert (`.txt`) inside the gitignored bag only. It was never
+  executed, never opened in a browser, and is **not committed** to this
+  repository — the builder carries its hashes and findings, not the sample.
+  Without `--second-stage-csv`, a rebuild records it as a location only.
+  It remains attacker-controlled and mutable: the hashes above are the
+  durable record of the analysed sample, not a promise about what the sheet
+  serves today.
 - **The cover document's lure instructions are not reproduced**, and a test
   fails the build if their distinctive phrases appear in the bag.
 - **The loader is stored as `.txt`.** No file in the bag carries an extension
