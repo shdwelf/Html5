@@ -302,11 +302,17 @@ route; “no JDK” is no longer the blanket blocker. S7 still needs the actual
 and a local Ghidra distribution still needs the CI/relay route. Do not invent
 substitutes for those missing artifacts.
 
-### S8 · Mobile & device lab: Android/QEMU, SIM, xdc ports, VoIP/iParty — *open*
+### S8 · Mobile & device lab: Android/QEMU, SIM, xdc ports, VoIP/iParty — *partial*
 QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock / number-porting caselaw),
 SIM-lock research, Eagle CAD unlock schematics, xdc → TI-calc / Android / F-Droid ports
 (socal-subsurface first), Hotline/KDX/FXP, Intel iParty + Creative Labs FCC schematics,
 VoIP Blaster, DUCK codecs, lossless comms room, Tetrinet.
+*2026-10-23 round (T8.4):* SIM-lock research delivered —
+[`sim-lock-research-2026-10-23.md`](sim-lock-research-2026-10-23.md):
+§1201 exemption timeline (2006→Pub. L. 113-144→89 FR 85437 in 2024), CTIA
+commitments, FCC 24-77 unadopted, DA 26-43 (2026) Verizon waiver — all from
+free primary sources, LexisNexis alternatives mapped. T8.4 now *partial*;
+QEMU phone lab remains.
 *2026-10-23 round:* the xdc-port family gained its Java-server path — all 55
 repo `.xdc` converted to deterministic Tomcat WARs (54 built, `greeran-book.xdc`
 skipped as not-a-ZIP) with an `xdc-viewer.war` catalogue/player; Struts/JSF
