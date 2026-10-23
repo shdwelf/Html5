@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T22:45:22Z",
+ "retrieved": "2026-10-23T22:56:33Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -1784,6 +1784,375 @@
      "county": "Cecil",
      "lat": 39.5403911,
      "lon": -76.0738386
+    }
+   ]
+  },
+  "MO": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_MO_Text.zip",
+   "zipSha256": "1fdd84cca4125c0e11690de57f5f18081f25dcbf948113701874f3fd46659106",
+   "candidatesRequested": [
+    "Jefferson City",
+    "Saint Louis",
+    "Kansas City",
+    "Springfield",
+    "Columbia",
+    "Saint Joseph",
+    "Taum Sauk Mountain",
+    "Lake of the Ozarks",
+    "Table Rock Lake",
+    "Missouri River",
+    "Osage River",
+    "Meramec River",
+    "Bull Shoals Lake",
+    "Current River",
+    "Mississippi River"
+   ],
+   "rows": [
+    {
+     "featureId": "83589",
+     "name": "Bull Shoals Lake",
+     "featureClass": "Reservoir",
+     "state": "Arkansas",
+     "county": "Boone",
+     "lat": 36.4949643,
+     "lon": -92.9674943
+    },
+    {
+     "featureId": "716133",
+     "name": "Columbia",
+     "featureClass": "Populated Place",
+     "state": "Missouri",
+     "county": "Boone",
+     "lat": 38.9517053,
+     "lon": -92.3340724
+    },
+    {
+     "featureId": "48270",
+     "name": "Current River",
+     "featureClass": "Stream",
+     "state": "Arkansas",
+     "county": "Randolph",
+     "lat": 36.2531221,
+     "lon": -90.9126199
+    },
+    {
+     "featureId": "758233",
+     "name": "Jefferson City",
+     "featureClass": "Populated Place",
+     "state": "Missouri",
+     "county": "Cole",
+     "lat": 38.5767017,
+     "lon": -92.1735164
+    },
+    {
+     "featureId": "748198",
+     "name": "Kansas City",
+     "featureClass": "Populated Place",
+     "state": "Missouri",
+     "county": "Jackson",
+     "lat": 39.0997266,
+     "lon": -94.5785667
+    },
+    {
+     "featureId": "478635",
+     "name": "Kansas City",
+     "featureClass": "Populated Place",
+     "state": "Kansas",
+     "county": "Wyandotte",
+     "lat": 39.1141708,
+     "lon": -94.627457
+    },
+    {
+     "featureId": "729600",
+     "name": "Lake of the Ozarks",
+     "featureClass": "Reservoir",
+     "state": "Missouri",
+     "county": "Camden",
+     "lat": 38.1671829,
+     "lon": -92.9654568
+    },
+    {
+     "featureId": "756378",
+     "name": "Meramec River",
+     "featureClass": "Stream",
+     "state": "Missouri",
+     "county": "Jefferson",
+     "lat": 38.3897761,
+     "lon": -90.3442847
+    },
+    {
+     "featureId": "1629903",
+     "name": "Mississippi River",
+     "featureClass": "Stream",
+     "state": "Louisiana",
+     "county": "Plaquemines",
+     "lat": 29.1510582,
+     "lon": -89.2533842
+    },
+    {
+     "featureId": "756398",
+     "name": "Missouri River",
+     "featureClass": "Stream",
+     "state": "Missouri",
+     "county": "St. Charles",
+     "lat": 38.8136597,
+     "lon": -90.1198297
+    },
+    {
+     "featureId": "756484",
+     "name": "Osage River",
+     "featureClass": "Stream",
+     "state": "Missouri",
+     "county": "Osage",
+     "lat": 38.5969851,
+     "lon": -91.945179
+    },
+    {
+     "featureId": "730205",
+     "name": "Saint Joseph",
+     "featureClass": "Populated Place",
+     "state": "Missouri",
+     "county": "Buchanan",
+     "lat": 39.7686055,
+     "lon": -94.8466322
+    },
+    {
+     "featureId": "765765",
+     "name": "Saint Louis",
+     "featureClass": "Populated Place",
+     "state": "Missouri",
+     "county": "St. Louis (city)",
+     "lat": 38.6272733,
+     "lon": -90.1978889
+    },
+    {
+     "featureId": "735864",
+     "name": "Springfield",
+     "featureClass": "Populated Place",
+     "state": "Missouri",
+     "county": "Greene",
+     "lat": 37.215326,
+     "lon": -93.2982436
+    },
+    {
+     "featureId": "752479",
+     "name": "Table Rock Lake",
+     "featureClass": "Reservoir",
+     "state": "Missouri",
+     "county": "Stone",
+     "lat": 36.5972388,
+     "lon": -93.4755559
+    },
+    {
+     "featureId": "752501",
+     "name": "Taum Sauk Mountain",
+     "featureClass": "Summit",
+     "state": "Missouri",
+     "county": "Iron",
+     "lat": 37.5712766,
+     "lon": -90.7291683
+    }
+   ]
+  },
+  "AR": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_AR_Text.zip",
+   "zipSha256": "b9035f99aef28a5f776d4c629011b0b3b884790736280bc4d6814136e4ffe1b9",
+   "candidatesRequested": [
+    "Little Rock",
+    "Fort Smith",
+    "Fayetteville",
+    "Springdale",
+    "Jonesboro",
+    "Magazine Mountain",
+    "Lake Ouachita",
+    "Beaver Lake",
+    "Greers Ferry Lake",
+    "Bull Shoals Lake",
+    "Arkansas River",
+    "White River",
+    "Mississippi River",
+    "Ouachita River"
+   ],
+   "rows": [
+    {
+     "featureId": "78956",
+     "name": "Arkansas River",
+     "featureClass": "Stream",
+     "state": "Arkansas",
+     "county": "Desha",
+     "lat": 33.7751096,
+     "lon": -91.0709427
+    },
+    {
+     "featureId": "75637",
+     "name": "Beaver Lake",
+     "featureClass": "Lake",
+     "state": "Arkansas",
+     "county": "Chicot",
+     "lat": 33.3131686,
+     "lon": -91.1487294
+    },
+    {
+     "featureId": "83067",
+     "name": "Beaver Lake",
+     "featureClass": "Lake",
+     "state": "Arkansas",
+     "county": "St. Francis",
+     "lat": 35.006953,
+     "lon": -90.580964
+    },
+    {
+     "featureId": "83068",
+     "name": "Beaver Lake",
+     "featureClass": "Lake",
+     "state": "Arkansas",
+     "county": "St. Francis",
+     "lat": 35.1317568,
+     "lon": -90.6120512
+    },
+    {
+     "featureId": "74649",
+     "name": "Beaver Lake",
+     "featureClass": "Lake",
+     "state": "Arkansas",
+     "county": "White",
+     "lat": 35.4086488,
+     "lon": -91.4156731
+    },
+    {
+     "featureId": "74648",
+     "name": "Beaver Lake",
+     "featureClass": "Lake",
+     "state": "Arkansas",
+     "county": "Woodruff",
+     "lat": 35.1743399,
+     "lon": -91.2736189
+    },
+    {
+     "featureId": "70305",
+     "name": "Beaver Lake",
+     "featureClass": "Reservoir",
+     "state": "Arkansas",
+     "county": "Washington",
+     "lat": 36.2354224,
+     "lon": -93.9428479
+    },
+    {
+     "featureId": "83589",
+     "name": "Bull Shoals Lake",
+     "featureClass": "Reservoir",
+     "state": "Arkansas",
+     "county": "Boone",
+     "lat": 36.4949643,
+     "lon": -92.9674943
+    },
+    {
+     "featureId": "76914",
+     "name": "Fayetteville",
+     "featureClass": "Populated Place",
+     "state": "Arkansas",
+     "county": "Washington",
+     "lat": 36.0625795,
+     "lon": -94.1574263
+    },
+    {
+     "featureId": "76952",
+     "name": "Fort Smith",
+     "featureClass": "Populated Place",
+     "state": "Arkansas",
+     "county": "Sebastian",
+     "lat": 35.3859242,
+     "lon": -94.3985475
+    },
+    {
+     "featureId": "75245",
+     "name": "Greers Ferry Lake",
+     "featureClass": "Reservoir",
+     "state": "Arkansas",
+     "county": "Cleburne",
+     "lat": 35.5324986,
+     "lon": -92.20436
+    },
+    {
+     "featureId": "77389",
+     "name": "Jonesboro",
+     "featureClass": "Populated Place",
+     "state": "Arkansas",
+     "county": "Craighead",
+     "lat": 35.8422967,
+     "lon": -90.7042791
+    },
+    {
+     "featureId": "75813",
+     "name": "Lake Ouachita",
+     "featureClass": "Reservoir",
+     "state": "Arkansas",
+     "county": "Garland",
+     "lat": 34.6064767,
+     "lon": -93.3478329
+    },
+    {
+     "featureId": "83350",
+     "name": "Little Rock",
+     "featureClass": "Populated Place",
+     "state": "Arkansas",
+     "county": "Pulaski",
+     "lat": 34.7464809,
+     "lon": -92.2895948
+    },
+    {
+     "featureId": "67051",
+     "name": "Magazine Mountain",
+     "featureClass": "Ridge",
+     "state": "Arkansas",
+     "county": "Logan",
+     "lat": 35.167277,
+     "lon": -93.6449649
+    },
+    {
+     "featureId": "1629903",
+     "name": "Mississippi River",
+     "featureClass": "Stream",
+     "state": "Louisiana",
+     "county": "Plaquemines",
+     "lat": 29.1510582,
+     "lon": -89.2533842
+    },
+    {
+     "featureId": "558280",
+     "name": "Ouachita River",
+     "featureClass": "Stream",
+     "state": "Louisiana",
+     "county": "Catahoula",
+     "lat": 31.6312814,
+     "lon": -91.8070714
+    },
+    {
+     "featureId": "78436",
+     "name": "Springdale",
+     "featureClass": "Populated Place",
+     "state": "Arkansas",
+     "county": "Washington",
+     "lat": 36.1867442,
+     "lon": -94.1288142
+    },
+    {
+     "featureId": "63825",
+     "name": "White River",
+     "featureClass": "Populated Place",
+     "state": "Arkansas",
+     "county": "Desha",
+     "lat": 33.8834409,
+     "lon": -91.068999
+    },
+    {
+     "featureId": "78762",
+     "name": "White River",
+     "featureClass": "Stream",
+     "state": "Arkansas",
+     "county": "Desha",
+     "lat": 33.951495,
+     "lon": -91.0814998
     }
    ]
   }
