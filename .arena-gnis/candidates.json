@@ -1,0 +1,19 @@
+{
+  "batch": 7,
+  "configurations": [25, 26],
+  "states": {
+    "MN": [
+      "Saint Paul", "Minneapolis", "Duluth", "Rochester", "Bloomington",
+      "Saint Cloud", "Mankato", "Eagle Mountain", "Lake of the Woods",
+      "Mille Lacs Lake", "Lake Minnetonka", "Lake Superior",
+      "Mississippi River", "Minnesota River", "Red River of the North",
+      "Saint Croix River", "Lake Vermilion", "Boundary Waters Canoe Area Wilderness"
+    ],
+    "IA": [
+      "Des Moines", "Cedar Rapids", "Davenport", "Sioux City", "Iowa City",
+      "Ames", "Waterloo", "Hawkeye Point", "West Okoboji Lake", "East Okoboji Lake",
+      "Clear Lake", "Spirit Lake", "Mississippi River", "Missouri River",
+      "Des Moines River", "Cedar River", "Lake Red Rock", "Saylorville Lake"
+    ]
+  }
+}
