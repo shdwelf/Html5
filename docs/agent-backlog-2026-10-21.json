@@ -423,7 +423,7 @@
       "stream": "S1",
       "text": "Universal decompressor recipes (ace rar arj uue zip 7z iso img peazip 7zip pkware) via GitHub + Ghidra",
       "status": "partial",
-      "note": "recipe/decompressor matrix + ARJ garble format notes (round 3); LHA/ARJ/ACE password cookbook notes + SFX identification recipe added (round 6, docs/arj-lha-ace-password-notes-2026-10-21.md); remaining: ZIP legacy garble/ZipCrypto note"
+      "note": "recipe/decompressor matrix + ARJ garble format notes (round 3); LHA/ARJ/ACE password cookbook notes + SFX identification recipe added (round 6, docs/arj-lha-ace-password-notes-2026-10-21.md); remaining: ZIP legacy garble/ZipCrypto note ZipCrypto half closed 2026-10-23: docs/zipcrypto-identification-notes-2026-10-23.md (identification only per F4: flag bits 0/3, 12-byte header, CRC-high vs DOS-time-high check byte with worked examples, WinZip AES method 99 / 0x9901 distinction, Biham-Kocher legacy context; companion op paranoidUnzip). Remaining: Ghidra-side universal decompressor work, blocked on a JVM in the sandbox."
     },
     {
       "id": "T1.3",
@@ -618,7 +618,7 @@
       "stream": "S12",
       "text": "Cicada 3301 QR + lat/long research -> US subsurface viewer; CyberChef/cipher-machine recipes; Hall of Fame lecture; Warrick recovery of lost sites; Geomate Jr firmware + geocaching points",
       "status": "partial",
-      "note": "2026-10-23: QR + lat/long half closed (docs/cicada-3301-qr-locations-2026-10-23.md; 14 coordinates of 2012-01-09 tabulated, 8 US sites seeded citation-only in resources/historical-network/cicada-3301-poster-seed-2026-10-23.json, validator-clean, no puzzle payloads). Remaining: Warrick-method application to lost Cicada sites and Hall-of-Fame lecture material."
+      "note": "2026-10-23: QR + lat/long half closed (docs/cicada-3301-qr-locations-2026-10-23.md; 14 coordinates of 2012-01-09 tabulated, 8 US sites seeded citation-only in resources/historical-network/cicada-3301-poster-seed-2026-10-23.json, validator-clean, no puzzle payloads). Remaining: Warrick-method application to lost Cicada sites and Hall-of-Fame lecture material. Warrick half closed 2026-10-23: method researched (McCown/Nelson, Memento/CDX discovery, seed-scope recursion, known limits), js/warrick-plan.js plan builder built + tested 4/4 (plan-only, refuses .onion/credentialed seeds, BagIt packaging), Cicada application specified in docs/warrick-cicada-recovery-2026-10-23.md (fetch leg is a runner job, not executed). Remaining: Hall-of-Fame lecture material (shared with T10.2)."
     },
     {
       "id": "T12.2",

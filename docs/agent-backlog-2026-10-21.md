@@ -54,6 +54,10 @@ PDF. Already on file: [`arj-garble-format-notes.md`](arj-garble-format-notes.md)
 [`exe-compressors-and-scumm.md`](exe-compressors-and-scumm.md),
 [`exe-protection-deep-dive.md`](exe-protection-deep-dive.md),
 [`software-protection-encyclopedia.md`](software-protection-encyclopedia.md).
+*2026-10-23 round (T1.2):* ZipCrypto identification notes added —
+[`zipcrypto-identification-notes-2026-10-23.md`](zipcrypto-identification-notes-2026-10-23.md)
+(identification only per F4; companion op `paranoidUnzip`). Ghidra-side decompressor
+work remains blocked on a sandbox JVM.
 
 ### S2 · Sneakers press kit: Ghidra, js-dos xdc, wiki — *partial*
 FindCrypt/native-Ghidra work is done ([`sneakers-original-ghidra-wasm-2026-10-18.md`](sneakers-original-ghidra-wasm-2026-10-18.md),
@@ -268,6 +272,10 @@ apply the Warrick web-archiving method to lost cicada3301 sites
 [`geomate-jr-firmware-research.md`](geomate-jr-firmware-research.md)).
 *2026-10-23 round:* Cicada QR + lat/long half researched in
 [`cicada-3301-qr-locations-2026-10-23.md`](cicada-3301-qr-locations-2026-10-23.md)
+*2026-10-23 round (T12.1):* Warrick half closed — planner `js/warrick-plan.js`
+(4/4 tests; plan-only, `.onion`/credentialed seeds refused, BagIt packaging) and
+[`warrick-cicada-recovery-2026-10-23.md`](warrick-cicada-recovery-2026-10-23.md);
+fetch leg is a runner job. Hall-of-Fame lecture remains.
 (all 14 coordinates of 2012-01-09 tabulated; the 8 US sites seeded as a
 citation-only historical-network pack,
 `resources/historical-network/cicada-3301-poster-seed-2026-10-23.json`,
