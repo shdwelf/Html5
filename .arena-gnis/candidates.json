@@ -265,6 +265,38 @@
       "Greenbrier River",
       "Ohio River",
       "Monongahela River"
+    ],
+    "NC": [
+      "Raleigh",
+      "Charlotte",
+      "Greensboro",
+      "Durham",
+      "Asheville",
+      "Mount Mitchell",
+      "Kuwohi",
+      "Lake Norman",
+      "B. Everett Jordan Lake",
+      "Cape Fear River",
+      "Roanoke River",
+      "Clingmans Dome",
+      "Jordan Lake",
+      "Kerr Lake"
+    ],
+    "SC": [
+      "Columbia",
+      "Charleston",
+      "Greenville",
+      "Spartanburg",
+      "Myrtle Beach",
+      "Sassafras Mountain",
+      "Lake Marion",
+      "Lake Moultrie",
+      "Lake Murray",
+      "Savannah River",
+      "Congaree River",
+      "Pee Dee River",
+      "Lake Hartwell",
+      "Lake Wylie"
     ]
   },
   "note": "Batch 7 = configurations 25 (Minnesota) + 26 (Iowa); rows screened from the runner extract gnis-candidates-batch7.json.",
