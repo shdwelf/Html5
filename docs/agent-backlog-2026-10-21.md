@@ -209,6 +209,25 @@ County Gulf mouth where New Mexico left it unseeded in round 18. Next in
 sequence: the West North Central remainder (Iowa, Missouri, Minnesota) or
 the Gulf/South Atlantic states, then the country/planet thread.
 
+**Round 25 status (2026-10-23): partial.** Iowa and Missouri shipped as
+configurations 27–28, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, and
+no DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json).
+Hawkeye Point and Taum Sauk Mountain additionally carry GNIS Domestic
+Names per-ID checks: both state high points keep their High Point
+coordinate markers and “highest elevation” descriptions (IA 1670 ft, MO
+1772 ft), with the Taum Sauk record's “Tom Sauk Mountain” variant
+rejected as the same record and its 1e-7-degree coordinate print
+difference disclosed. The St./Saint spelling gates (St. Louis and St. Joseph
+screens empty, Saint spelling returns the places), the Missouri River's
+first statewide row after six empty upstream screens, the Mississippi
+River Hills name/type mismatch, the Kansas City two-series disclosure,
+and Waterloo's starter-scope hold are all recorded; Current River and the
+Iowa-side Mississippi/Missouri rivers stay corridor-only. Next in
+sequence: Minnesota closes the West North Central division, then the
+Gulf/South Atlantic states, then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

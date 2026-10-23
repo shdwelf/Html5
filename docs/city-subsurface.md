@@ -64,10 +64,20 @@ Texas ships a labelled generalized Gulf coast line. Their machine-readable
 evidence is
 [`resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json).
 
+Round 25 update: **2026-10-23**. `iowa` and `missouri` join as the
+twenty-seventh and twenty-eighth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows; Hawkeye Point and Taum Sauk Mountain
+additionally carry GNIS Domestic Names per-ID detail checks (both state
+high points, “1670 feet” and “1772 feet”). Missouri carries the first
+statewide Missouri River row after six empty upstream state screens, and
+the St./Saint spelling gates for Saint Louis and Saint Joseph are recorded.
+Their machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has twenty-six configurations — five cities,
-seventeen statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has twenty-eight configurations — five cities,
+nineteen statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -98,6 +108,8 @@ its own offline Webxdc:
 | Kansas (statewide) | `kansas-subsurface.html` | `js/city-subsurface-data-kansas.js` | `js/city-gazetteer-data-kansas.js` | `kansas-subsurface.xdc` |
 | Oklahoma (statewide) | `oklahoma-subsurface.html` | `js/city-subsurface-data-oklahoma.js` | `js/city-gazetteer-data-oklahoma.js` | `oklahoma-subsurface.xdc` |
 | Texas (statewide) | `texas-subsurface.html` | `js/city-subsurface-data-texas.js` | `js/city-gazetteer-data-texas.js` | `texas-subsurface.xdc` |
+| Iowa (statewide) | `iowa-subsurface.html` | `js/city-subsurface-data-iowa.js` | `js/city-gazetteer-data-iowa.js` | `iowa-subsurface.xdc` |
+| Missouri (statewide) | `missouri-subsurface.html` | `js/city-subsurface-data-missouri.js` | `js/city-gazetteer-data-missouri.js` | `missouri-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
