@@ -39,10 +39,17 @@ nineteenth and twentieth configurations. Each starts with twelve all-GNIS
 Domestic Names per-ID detail checks. Their machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json).
 
+Round 22 update: **2026-10-23**. `northdakota` and `southdakota` join as
+the twenty-first and twenty-second configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows; White Butte and Black Elk Peak additionally
+carry GNIS Domestic Names per-ID detail checks. Their machine-readable
+evidence is
+[`resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has twenty configurations — five cities,
-eleven statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has twenty-two configurations — five cities,
+thirteen statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -67,6 +74,8 @@ its own offline Webxdc:
 | Idaho (statewide) | `idaho-subsurface.html` | `js/city-subsurface-data-idaho.js` | `js/city-gazetteer-data-idaho.js` | `idaho-subsurface.xdc` |
 | Montana (statewide) | `montana-subsurface.html` | `js/city-subsurface-data-montana.js` | `js/city-gazetteer-data-montana.js` | `montana-subsurface.xdc` |
 | Wyoming (statewide) | `wyoming-subsurface.html` | `js/city-subsurface-data-wyoming.js` | `js/city-gazetteer-data-wyoming.js` | `wyoming-subsurface.xdc` |
+| North Dakota (statewide) | `northdakota-subsurface.html` | `js/city-subsurface-data-northdakota.js` | `js/city-gazetteer-data-northdakota.js` | `northdakota-subsurface.xdc` |
+| South Dakota (statewide) | `southdakota-subsurface.html` | `js/city-subsurface-data-southdakota.js` | `js/city-gazetteer-data-southdakota.js` | `southdakota-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
@@ -527,6 +536,49 @@ only the Montana record is seeded.
 Neither frame bundles a DEM. Both are inland rectangles with labelled
 synthetic relief; all corridors remain generalized `context`—not river
 centerlines, highway alignments, state boundaries, or survey geometry.
+
+### North Dakota and South Dakota statewide frames (round 22, 2026-10-23)
+
+The fifth state batch applies the same strict recipe to the Dakotas.
+White Butte and Black Elk Peak additionally carry GNIS Domestic Names
+per-ID detail checks; the batch register reconstructs every generated row
+exactly.
+
+**North Dakota** spans lon −104.3…−96.5, lat 45.9…49.1. Its 12 rows are
+Bismarck (`1035849`), Fargo (`1028945`), Grand Forks (`1029197`), Minot
+(`1030249`), Williston (`1032815`), Dickinson (`1028683`), Devils Lake
+town (`1028672`) and Devils Lake (`1034194`) as separate classes with
+distinct returned points, Lake Sakakawea (`1033989`), White Butte
+(`1035239`), Sheyenne River (`1035146`), and Heart River (`1034918`).
+White Butte had four exact-name Summit candidates; the per-ID check
+confirms `Class=Summit`, Slope County, coordinate sequence 1 marked
+**High Point**, and the description "Highest elevation in ND at 3506
+feet", while the Hettinger, Morton, and Stark records are rejected. The
+Missouri River and the Red River—screened under both `Red River` and the
+official `Red River of the North` name—are context corridors only because
+all three `states=ND` screens returned empty arrays, and the North Dakota
+James River is not claimed because that screen was also empty; the unique
+South Dakota James River record is seeded only in South Dakota.
+
+**South Dakota** spans lon −104.3…−96.4, lat 42.45…46.0. Its 12 rows are
+Pierre (`1266887`), Sioux Falls (`1267670`, the populated place, not the
+waterfall `1258087`), Rapid City (`1265333`), Aberdeen (`1253581`),
+Mitchell (`1256500`, not the two same-name Mitchell Lakes), Yankton
+(`1259091`, not the county or reservation), Belle Fourche (`1265119`, the
+town; its same-hydronym river `1265120` and reservoir `1253838` stay out
+of the 12-row starter as separate identity-safe records), Black Elk Peak
+(`1261770`), Lake Oahe (`1266878`), Bad River (`1265114`), Cheyenne River
+(`1267017`, not the reservation `1267254`), and James River (`1261082`).
+Black Elk Peak's per-ID check confirms `Class=Summit`, Pennington County,
+sequence 1 marked **High Point**, and the Board on Geographic Names'
+2016 rename from Harney Peak—the former name returns no record under
+`states=SD`. Missouri River is a corridor only after an empty `states=SD`
+screen; Badlands National Park and Lake Sheridan exact-name screens also
+returned empty arrays and were not seeded.
+
+Neither frame bundles a DEM. Both are inland rectangles with labelled
+synthetic relief; all corridors remain generalized `context`—not river
+centerlines, highway alignments, state boundaries, or shoreline geometry.
 
 ## Geocache class and local GPX import
 

@@ -152,6 +152,22 @@ screens; Glacier National Park returned only Division records. Next in
 sequence: remaining states in dated per-row batches, then the
 country/planet thread.
 
+**Round 22 status (2026-10-23): partial.** North Dakota and South Dakota
+shipped as configurations 21–22, each with a 12/12 per-ID `VERIFIED=1`
+GNIS starter register, labelled synthetic relief, generalized context
+corridors, and no DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json).
+White Butte and Black Elk Peak additionally carry GNIS Domestic Names
+per-ID checks: four same-name Summit candidates collapse to Slope County
+`1035239` (High Point, "3506 feet"), and `1261770` is the 2016
+Harney→Black Elk rename in Pennington County. Devils Lake town and lake
+seed as separate classes with distinct points; Missouri River and both
+Red River spellings (ND) plus Missouri (SD), ND James River, Badlands
+National Park, and Lake Sheridan stay unseeded after empty screens; the
+South Dakota James River record is seeded only there. Next in sequence:
+Nebraska–Kansas, then the remaining plains/mountain states before the
+country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

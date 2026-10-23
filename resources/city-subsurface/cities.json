@@ -4576,6 +4576,522 @@
         ["Jackson Lake", "Reservoir", "hydro.reservoir", "Teton", 43.9005638, -110.6738972, null, "1609177", 1, "The Teton County record was selected after a GNIS Domestic Names per-ID check confirmed Class=Reservoir, Primary County=Teton County, and coordinate sequence 1 at the stored point; the same-name Natrona County lake record (FEATURE_ID 1590031) was rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=1609177; exact official name and Lakes & Reservoirs type in Teton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, dam structure, or reservoir-area centroid."],
         ["Shoshone River", "Stream", "hydro.stream", "Big Horn", 44.8621774, -108.2048332, null, "1594293", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1594293; exact official name and Streams & Canals type in Big Horn County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
       ]
+    },
+    "northdakota": {
+      "title": "NORTH DAKOTA SUBSURFACE 4Dwm",
+      "subtitle": "Red River Valley · Missouri Plateau · Missouri River and Lake Sakakawea — statewide frame, North Dakota",
+      "gazTitle": "NORTH DAKOTA USGS GNIS REGISTER",
+      "gazNote": "Round 22 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "ND",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -104.3,
+        "lat0": 45.9,
+        "lon1": -96.5,
+        "lat1": 49.1
+      },
+      "center": {
+        "lon": -100.4,
+        "lat": 47.5
+      },
+      "baseElevationM": 600,
+      "roughnessM": 60,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Red River Valley",
+          "lon": -97.1,
+          "lat": 47.3,
+          "rx": 0.4,
+          "ry": 1.4,
+          "amp": -120,
+          "rot": 0
+        },
+        {
+          "name": "Drift Prairie",
+          "lon": -99.3,
+          "lat": 47.8,
+          "rx": 0.9,
+          "ry": 0.7,
+          "amp": 60,
+          "rot": 0
+        },
+        {
+          "name": "Missouri Plateau",
+          "lon": -101.8,
+          "lat": 47.0,
+          "rx": 1.2,
+          "ry": 1.0,
+          "amp": 140,
+          "rot": 0
+        },
+        {
+          "name": "Turtle Mountains",
+          "lon": -100.15,
+          "lat": 48.9,
+          "rx": 0.5,
+          "ry": 0.25,
+          "amp": 180,
+          "rot": 0
+        },
+        {
+          "name": "Little Missouri breaks and badlands",
+          "lon": -103.4,
+          "lat": 47.4,
+          "rx": 0.7,
+          "ry": 0.9,
+          "amp": 220,
+          "rot": 0
+        },
+        {
+          "name": "Sheyenne River lowland",
+          "lon": -98.2,
+          "lat": 47.0,
+          "rx": 0.35,
+          "ry": 1.1,
+          "amp": -80,
+          "rot": 0
+        },
+        {
+          "name": "Cedar Hills",
+          "lon": -99.5,
+          "lat": 47.4,
+          "rx": 0.3,
+          "ry": 0.4,
+          "amp": 90,
+          "rot": 0
+        },
+        {
+          "name": "Pine Hills and shortgrass prairie margin",
+          "lon": -103.3,
+          "lat": 46.3,
+          "rx": 0.5,
+          "ry": 0.4,
+          "amp": 120,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i94-north-dakota",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 94 / southern North Dakota corridor (generalized)",
+          "short": "I-94",
+          "depthM": 0,
+          "path": [
+            [-102.7896242, 46.8791756],
+            [-100.7837392, 46.8083268],
+            [-96.7898034, 46.8771863]
+          ],
+          "facts": [
+            "Generalized Interstate 94 corridor across southern North Dakota through GNIS populated-place anchors; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 94 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i29-north-dakota",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 29 / Red River Valley corridor (generalized)",
+          "short": "I-29",
+          "depthM": 0,
+          "path": [
+            [-96.7898034, 46.8771863],
+            [-97.0328547, 47.9252568],
+            [-97.12, 49.0]
+          ],
+          "facts": [
+            "Generalized Interstate 29 corridor up the Red River Valley from Fargo through Grand Forks to the Canadian border; schematic polyline through named anchors and a generalized border point, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 29 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "missouri-river-north-dakota",
+          "layer": "water",
+          "tier": "context",
+          "name": "Missouri River North Dakota reach (generalized)",
+          "short": "Missouri River",
+          "depthM": 0,
+          "path": [
+            [-102.3295725, 47.7715919],
+            [-100.9, 47.0],
+            [-100.7837392, 46.8083268],
+            [-100.5, 45.95]
+          ],
+          "facts": [
+            "No Missouri River gazetteer row is seeded in the North Dakota frame: the 2026-10-23 states=ND Geocoder screen returned an empty array for the intended exact stream record. Generalized context reach through the Lake Sakakawea and Bismarck anchors; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-22 source register"
+          ]
+        },
+        {
+          "id": "red-river-north-dakota",
+          "layer": "water",
+          "tier": "context",
+          "name": "Red River of the North reach (generalized)",
+          "short": "Red River",
+          "depthM": 0,
+          "path": [
+            [-96.85, 46.55],
+            [-96.7898034, 46.8771863],
+            [-97.0328547, 47.9252568],
+            [-97.1, 49.0]
+          ],
+          "facts": [
+            "No Red River gazetteer row is seeded in the North Dakota frame: both the Red River and the official Red River of the North exact-name screens returned empty arrays under states=ND. Generalized context reach up the Red River Valley; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-22 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "bismarck",
+          "name": "Bismarck",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -100.7837392,
+          "lat": 46.8083268,
+          "depthM": 0,
+          "facts": [
+            "North Dakota state capital and Missouri River anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1035849; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "fargo",
+          "name": "Fargo",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -96.7898034,
+          "lat": 46.8771863,
+          "depthM": 0,
+          "facts": [
+            "Red River Valley anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1028945; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "white-butte",
+          "name": "White Butte",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -103.3025551,
+          "lat": 46.3870238,
+          "depthM": 0,
+          "facts": [
+            "North Dakota's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1035239; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "devils-lake",
+          "name": "Devils Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -98.9976006,
+          "lat": 48.0462688,
+          "depthM": 0,
+          "facts": [
+            "North-central lake anchor; node coordinate is the GNIS lake primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1034194; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Bismarck", "Populated Place", "pop.place", "Burleigh", 46.8083268, -100.7837392, null, "1035849", 1, "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=1035849; exact official name and Cities & Populated Places type in Burleigh County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Fargo", "Populated Place", "pop.place", "Cass", 46.8771863, -96.7898034, null, "1028945", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1028945; exact official name and Cities & Populated Places type in Cass County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Grand Forks", "Populated Place", "pop.place", "Grand Forks", 47.9252568, -97.0328547, null, "1029197", 1, "The populated-place record was selected rather than the Grand Forks County record (FEATURE_ID 1034218). USGS GNIS Geocoder (GNIS), FEATURE_ID=1029197; exact official name and Cities & Populated Places type in Grand Forks County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Minot", "Populated Place", "pop.place", "Ward", 48.2325095, -101.2962732, null, "1030249", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1030249; exact official name and Cities & Populated Places type in Ward County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Williston", "Populated Place", "pop.place", "Williams", 48.1469683, -103.6179745, null, "1032815", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1032815; exact official name and Cities & Populated Places type in Williams County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Dickinson", "Populated Place", "pop.place", "Stark", 46.8791756, -102.7896242, null, "1028683", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1028683; exact official name and Cities & Populated Places type in Stark County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Devils Lake", "Populated Place", "pop.place", "Ramsey", 48.1122482, -98.876031, null, "1028672", 1, "The populated-place record was seeded separately from the same-name Devils Lake record (FEATURE_ID 1034194); both are Ramsey County records with distinct classes and distinct points. USGS GNIS Geocoder (GNIS), FEATURE_ID=1028672; exact official name and Cities & Populated Places type in Ramsey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Devils Lake", "Lake", "hydro.lake", "Ramsey", 48.0462688, -98.9976006, null, "1034194", 1, "The lake record was seeded separately from the same-name Devils Lake populated place (FEATURE_ID 1028672); the lake point is not the town point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1034194; exact official name and Lakes & Reservoirs type in Ramsey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Lake Sakakawea", "Lake", "hydro.lake", "Dunn", 47.7715919, -102.3295725, null, "1033989", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1033989; exact official name and Lakes & Reservoirs type in Dunn County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["White Butte", "Summit", "phys.summit", "Slope", 46.3870238, -103.3025551, null, "1035239", 1, "North Dakota's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary County=Slope County, coordinate sequence 1 marked High Point at the stored point, and the description Highest elevation in ND at 3506 feet; same-name Summit records in Hettinger County (FEATURE_ID 1032775), Morton County (FEATURE_ID 2761541), and Stark County (FEATURE_ID 1032774) were rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=1035239; exact official name and Summit type in Slope County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Sheyenne River", "Stream", "hydro.stream", "Cass", 47.0235771, -96.825358, null, "1035146", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1035146; exact official name and Streams & Canals type in Cass County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Heart River", "Stream", "hydro.stream", "Morton", 46.7674942, -100.8420738, null, "1034918", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1034918; exact official name and Streams & Canals type in Morton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
+    },
+    "southdakota": {
+      "title": "SOUTH DAKOTA SUBSURFACE 4Dwm",
+      "subtitle": "Black Hills · Missouri River · James River lowland · Prairie Coteau — statewide frame, South Dakota",
+      "gazTitle": "SOUTH DAKOTA USGS GNIS REGISTER",
+      "gazNote": "Round 22 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "SD",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -104.3,
+        "lat0": 42.45,
+        "lon1": -96.4,
+        "lat1": 46.0
+      },
+      "center": {
+        "lon": -100.35,
+        "lat": 44.2
+      },
+      "baseElevationM": 650,
+      "roughnessM": 70,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Black Hills",
+          "lon": -103.65,
+          "lat": 43.9,
+          "rx": 0.35,
+          "ry": 0.5,
+          "amp": 700,
+          "rot": 0.25
+        },
+        {
+          "name": "White River badlands",
+          "lon": -102.6,
+          "lat": 43.75,
+          "rx": 0.4,
+          "ry": 0.3,
+          "amp": 350,
+          "rot": 0
+        },
+        {
+          "name": "Missouri Plateau",
+          "lon": -101.5,
+          "lat": 44.5,
+          "rx": 0.9,
+          "ry": 0.8,
+          "amp": 300,
+          "rot": 0
+        },
+        {
+          "name": "Coteau du Missouri",
+          "lon": -99.2,
+          "lat": 45.0,
+          "rx": 0.5,
+          "ry": 0.9,
+          "amp": 150,
+          "rot": 0
+        },
+        {
+          "name": "Prairie Coteau",
+          "lon": -96.9,
+          "lat": 44.5,
+          "rx": 0.3,
+          "ry": 0.5,
+          "amp": 120,
+          "rot": 0
+        },
+        {
+          "name": "James River lowland",
+          "lon": -98.5,
+          "lat": 44.8,
+          "rx": 0.3,
+          "ry": 1.1,
+          "amp": -100,
+          "rot": 0
+        },
+        {
+          "name": "Big Sioux lowland",
+          "lon": -96.7,
+          "lat": 43.5,
+          "rx": 0.3,
+          "ry": 0.9,
+          "amp": -80,
+          "rot": 0
+        },
+        {
+          "name": "White River valley",
+          "lon": -101.0,
+          "lat": 43.1,
+          "rx": 0.7,
+          "ry": 0.3,
+          "amp": -60,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i90-south-dakota",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 90 / southern South Dakota corridor (generalized)",
+          "short": "I-90",
+          "depthM": 0,
+          "path": [
+            [-96.700327, 43.5499749],
+            [-98.0297992, 43.7094283],
+            [-100.3509665, 44.3683156],
+            [-103.2310149, 44.0805434],
+            [-104.05, 44.06]
+          ],
+          "facts": [
+            "Generalized Interstate 90 corridor across southern South Dakota through GNIS populated-place anchors and a generalized Wyoming-border point; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 90 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i29-south-dakota",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 29 / eastern South Dakota corridor (generalized)",
+          "short": "I-29",
+          "depthM": 0,
+          "path": [
+            [-96.700327, 43.5499749],
+            [-98.4864829, 45.4646985],
+            [-97.14, 45.94]
+          ],
+          "facts": [
+            "Generalized Interstate 29 corridor from Sioux Falls through Aberdeen to the North Dakota border; schematic polyline through named anchors and a generalized border point, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 29 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "missouri-river-south-dakota",
+          "layer": "water",
+          "tier": "context",
+          "name": "Missouri River South Dakota reach (generalized)",
+          "short": "Missouri River",
+          "depthM": 0,
+          "path": [
+            [-100.4023574, 44.4510925],
+            [-100.3509665, 44.3683156],
+            [-98.0, 43.85],
+            [-97.3972813, 42.8711088]
+          ],
+          "facts": [
+            "No Missouri River gazetteer row is seeded in the South Dakota frame: the 2026-10-23 states=SD Geocoder screen returned an empty array for the intended exact stream record. Generalized context reach through the Lake Oahe, Pierre, and Yankton anchors; schematic, not a channel centerline or reservoir shoreline."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-22 source register"
+          ]
+        },
+        {
+          "id": "cheyenne-river-south-dakota",
+          "layer": "water",
+          "tier": "context",
+          "name": "Cheyenne River South Dakota reach (generalized)",
+          "short": "Cheyenne River",
+          "depthM": 0,
+          "path": [
+            [-103.8, 44.15],
+            [-102.5, 44.6],
+            [-101.06804, 44.74332],
+            [-100.4, 44.65]
+          ],
+          "facts": [
+            "Generalized Cheyenne River reach from the Black Hills headwaters through the GNIS primary point toward the Missouri confluence; schematic, not a channel centerline. The first vertex is a generalized Black Hills point, not a GNIS record."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1267017 for the named primary point"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "pierre",
+          "name": "Pierre",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -100.3509665,
+          "lat": 44.3683156,
+          "depthM": 0,
+          "facts": [
+            "South Dakota state capital and Missouri River anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1266887; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "sioux-falls",
+          "name": "Sioux Falls",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -96.700327,
+          "lat": 43.5499749,
+          "depthM": 0,
+          "facts": [
+            "Southeastern South Dakota anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row, not the waterfall record."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1267670; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "black-elk-peak",
+          "name": "Black Elk Peak",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -103.5312013,
+          "lat": 43.865991,
+          "depthM": 0,
+          "facts": [
+            "South Dakota's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1261770; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "lake-oahe",
+          "name": "Lake Oahe",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -100.4023574,
+          "lat": 44.4510925,
+          "depthM": 0,
+          "facts": [
+            "Missouri River reservoir anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline or dam."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1266878; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Pierre", "Populated Place", "pop.place", "Hughes", 44.3683156, -100.3509665, null, "1266887", 1, "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=1266887; exact official name and Cities & Populated Places type in Hughes County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Sioux Falls", "Populated Place", "pop.place", "Minnehaha", 43.5499749, -96.700327, null, "1267670", 1, "The populated-place record was selected rather than the same-name Sioux Falls waterfall record (FEATURE_ID 1258087) and Sioux Falls Junction (FEATURE_ID 1261066). USGS GNIS Geocoder (GNIS), FEATURE_ID=1267670; exact official name and Cities & Populated Places type in Minnehaha County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Rapid City", "Populated Place", "pop.place", "Pennington", 44.0805434, -103.2310149, null, "1265333", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1265333; exact official name and Cities & Populated Places type in Pennington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Aberdeen", "Populated Place", "pop.place", "Brown", 45.4646985, -98.4864829, null, "1253581", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1253581; exact official name and Cities & Populated Places type in Brown County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Mitchell", "Populated Place", "pop.place", "Davison", 43.7094283, -98.0297992, null, "1256500", 1, "The populated-place record was selected rather than same-name Mitchell Lake records in Hyde County (FEATURE_ID 1256502) and Pennington County (FEATURE_ID 1262938). USGS GNIS Geocoder (GNIS), FEATURE_ID=1256500; exact official name and Cities & Populated Places type in Davison County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Yankton", "Populated Place", "pop.place", "Yankton", 42.8711088, -97.3972813, null, "1259091", 1, "The populated-place record was selected rather than the Yankton County and Yankton Reservation records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1259091; exact official name and Cities & Populated Places type in Yankton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Belle Fourche", "Populated Place", "pop.place", "Butte", 44.6713733, -103.852148, null, "1265119", 1, "The populated-place record; the same hydronym appears separately as Belle Fourche River (FEATURE_ID 1265120) and Belle Fourche Reservoir (FEATURE_ID 1253838), which are different features not seeded in this 12-row starter. USGS GNIS Geocoder (GNIS), FEATURE_ID=1265119; exact official name and Cities & Populated Places type in Butte County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Black Elk Peak", "Summit", "phys.summit", "Pennington", 43.865991, -103.5312013, null, "1261770", 1, "South Dakota's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary County=Pennington County, coordinate sequence 1 marked High Point at the stored point, and the Board on Geographic Names' 2016 rename from Harney Peak (the former name returned no record under states=SD). USGS GNIS Geocoder (GNIS), FEATURE_ID=1261770; exact official name and Summit type in Pennington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Lake Oahe", "Lake", "hydro.lake", "Hughes", 44.4510925, -100.4023574, null, "1266878", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1266878; exact official name and Lakes & Reservoirs type in Hughes County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Bad River", "Stream", "hydro.stream", "Stanley", 44.3544267, -100.3679112, null, "1265114", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1265114; exact official name and Streams & Canals type in Stanley County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Cheyenne River", "Stream", "hydro.stream", "Dewey", 44.74332, -101.06804, null, "1267017", 1, "The stream record was selected rather than the Cheyenne River Reservation record (FEATURE_ID 1267254); it is a South Dakota stream, not a Wyoming feature. USGS GNIS Geocoder (GNIS), FEATURE_ID=1267017; exact official name and Streams & Canals type in Dewey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["James River", "Stream", "hydro.stream", "Yankton", 42.8713859, -97.2906104, null, "1261082", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1261082; exact official name and Streams & Canals type in Yankton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
     }
   }
 }
