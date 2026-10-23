@@ -9,7 +9,7 @@ import { unzipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const decoder = new TextDecoder();
-const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway", "utah", "colorado", "newmexico", "oregon", "washington", "idaho", "montana", "wyoming", "northdakota", "southdakota", "nebraska", "kansas"];
+const cities = ["lawrence", "atlanta", "kansascity", "buffalo", "toronto", "california", "nevada", "arizona", "guam", "americansamoa", "usvirginislands", "midway", "utah", "colorado", "newmexico", "oregon", "washington", "idaho", "montana", "wyoming", "northdakota", "southdakota", "nebraska", "kansas", "oklahoma", "texas"];
 
 function read(name) {
   return readFileSync(path.join(root, name), "utf8");
@@ -1290,6 +1290,163 @@ test("Nebraska and Kansas complete the Central Plains GNIS state batch", async (
   assert.ok(register.identityDecisions.some((d) => /Missouri River under states=NE and states=KS/.test(d.candidate)), "register must record the empty river screens");
   assert.ok(register.identityDecisions.some((d) => /Salina/.test(d.candidate) && /starter-scope/.test(d.decision)), "register must keep the starter-scope precedent for Salina");
   assert.ok(register.identityDecisions.some((d) => /Kansas River, FEATURE_ID 485184/.test(d.candidate) && /Multiple counties/.test(d.knownServiceDiscrepancy || "")), "register must record the Kansas River multipoint service discrepancy");
+
+  const engine = read("js/city-subsurface.js");
+  for (const frameId of Object.keys(expectations)) {
+    assert.match(engine, new RegExp(`city-subsurface-data-${frameId}\\.js`), `${frameId}: data loader`);
+    assert.match(engine, new RegExp(`city-gazetteer-data-${frameId}\\.js`), `${frameId}: gazetteer loader`);
+    assert.match(engine, new RegExp(`city-dem-grid-${frameId}\\.js`), `${frameId}: optional DEM loader`);
+  }
+});
+
+test("Oklahoma and Texas complete the Southern Plains GNIS state batch", async () => {
+  const register = JSON.parse(read("resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json"));
+  const { GAZ_CLASS_META } = await import("../js/city-gazetteer.js");
+  const expectations = {
+    oklahoma: {
+      state: "OK",
+      bbox: { lon0: -103.1, lat0: 33.5, lon1: -94.3, lat1: 37.05 },
+      coastLines: 0,
+      rows: new Map([
+        ["Oklahoma City|Populated Place", "1102140"],
+        ["Tulsa|Populated Place", "1100962"],
+        ["Lawton|Populated Place", "1094539"],
+        ["Norman|Populated Place", "1095903"],
+        ["Stillwater|Populated Place", "1098541"],
+        ["Enid|Populated Place", "1092626"],
+        ["Mount Scott|Summit", "1102047"],
+        ["Lake Texoma|Lake", "1102966"],
+        ["Grand Lake O' The Cherokees|Lake", "1102836"],
+        ["Tenkiller Ferry Lake|Lake", "1098801"],
+        ["Canadian River|Stream", "1101881"],
+        ["Illinois River|Stream", "1094043"],
+      ]),
+      anchor: ["Oklahoma City|Populated Place", 35.4675602, -97.5164276],
+    },
+    texas: {
+      state: "TX",
+      bbox: { lon0: -106.75, lat0: 25.75, lon1: -93.3, lat1: 36.65 },
+      coastLines: 1,
+      rows: new Map([
+        ["Austin|Populated Place", "1384879"],
+        ["Houston|Populated Place", "1380948"],
+        ["Dallas|Populated Place", "1380944"],
+        ["San Antonio|Populated Place", "1380951"],
+        ["El Paso|Populated Place", "1380946"],
+        ["Fort Worth|Populated Place", "1380947"],
+        ["Guadalupe Peak|Summit", "1358489"],
+        ["Brazos River|Stream", "1384148"],
+        ["Rio Grande|Stream", "1385432"],
+        ["Trinity River|Stream", "1348789"],
+        ["Galveston Bay|Bay", "1381144"],
+        ["Palo Duro Canyon|Valley", "1375340"],
+      ]),
+      anchor: ["Austin|Populated Place", 30.267153, -97.7430608],
+    },
+  };
+
+  for (const [frameId, expected] of Object.entries(expectations)) {
+    const data = await import(`../js/city-subsurface-data-${frameId}.js`);
+    const gaz = await import(`../js/city-gazetteer-data-${frameId}.js`);
+
+    assert.equal(data.CITY.id, frameId);
+    assert.equal(data.CITY.state, expected.state);
+    assert.equal(data.CITY.requiresDem, false, `${frameId}: statewide frame uses labelled synthetic relief, not a DEM`);
+    assert.deepEqual(data.BBOX, expected.bbox, `${frameId}: statewide frame bbox`);
+    const overview = data.VIEWS.find((v) => v.id === "overview");
+    assert.ok(overview.position[1] > 20 && overview.position[2] > 32, `${frameId}: overview must be scale-aware`);
+    const coastLines = data.COAST.length === 0 ? 0 : (Array.isArray(data.COAST[0]?.[0]) ? data.COAST.length : 1);
+    assert.equal(coastLines, expected.coastLines, `${frameId}: coast line count`);
+
+    assert.equal(gaz.GAZ_ROWS.length, expected.rows.size, `${frameId}: starter row count`);
+    assert.equal(gaz.GAZ_META.verified, expected.rows.size, `${frameId}: starter register is all-GNIS`);
+    assert.equal(gaz.GAZ_META.unverified, 0);
+    for (const row of gaz.GAZ_ROWS) {
+      const key = `${row[0]}|${row[1]}`;
+      assert.equal(row[8], 1, `${frameId}: ${key} must be VERIFIED=1`);
+      assert.equal(row[7], expected.rows.get(key), `${frameId}: ${key} FEATURE_ID`);
+      assert.ok(GAZ_CLASS_META[row[1]], `${frameId}: ${row[1]} needs gazetteer UI metadata`);
+      assert.match(row[9], /USGS GNIS Geocoder/, `${frameId}: ${key} must name the USGS service`);
+      assert.match(row[9], new RegExp(`FEATURE_ID=${row[7]}`), `${frameId}: ${key} note must name its FEATURE_ID`);
+      assert.match(row[9], /cross-checked 2026-10-23/, `${frameId}: ${key} note must date the cross-check`);
+      assert.match(row[9], /GNIS primary point/, `${frameId}: ${key} note must identify the point basis`);
+      assert.match(row[9], /not a .*?(?:boundary|geocode|polygon|centerline|outline)/, `${frameId}: ${key} note must state the point-geometry limit`);
+    }
+
+    const [anchorKey, anchorLat, anchorLon] = expected.anchor;
+    const anchor = gaz.GAZ_ROWS.find((r) => `${r[0]}|${r[1]}` === anchorKey);
+    assert.ok(Math.abs(anchor[4] - anchorLat) < 1e-10, `${frameId}: capital anchor latitude`);
+    assert.ok(Math.abs(anchor[5] - anchorLon) < 1e-10, `${frameId}: capital anchor longitude`);
+
+    const registerFrame = register.frames[frameId];
+    assert.equal(registerFrame.totalRows, gaz.GAZ_ROWS.length, `${frameId}: register row count`);
+    assert.deepEqual(registerFrame.bbox, data.BBOX, `${frameId}: register bbox`);
+    const registerRows = registerFrame.verifiedRows.map((r) => [r.name, r.featureClass, r.ftt, r.county, r.latitude, r.longitude, null, r.featureId, r.verified, r.sourceNote]);
+    assert.deepEqual(registerRows, gaz.GAZ_ROWS, `${frameId}: batch-7 source register must reproduce the generated rows exactly`);
+    for (const registerRow of registerFrame.verifiedRows) {
+      assert.ok(registerRow.geocoderType, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder type`);
+      assert.ok(registerRow.geocoderCounty, `${frameId}: ${registerRow.name} register must preserve the returned Geocoder county`);
+    }
+
+    assert.ok(data.CORRIDORS.length >= 4, `${frameId}: generalized context corridors are present`);
+    assert.ok(data.CORRIDORS.every((c) => c.tier === "context"), `${frameId}: corridors remain context tier`);
+    const rowPoint = new Set(gaz.GAZ_ROWS.map((r) => `${r[0]}|${r[5]}|${r[4]}`));
+    for (const node of data.NODES) {
+      assert.equal(node.tier, "official", `${frameId}: ${node.name} node tier`);
+      assert.ok(rowPoint.has(`${node.name}|${node.lon}|${node.lat}`), `${frameId}: ${node.name} node must reuse its gazetteer GNIS point`);
+    }
+  }
+
+  const okGaz = await import("../js/city-gazetteer-data-oklahoma.js");
+  const okData = await import("../js/city-subsurface-data-oklahoma.js");
+  const mountScott = okGaz.GAZ_ROWS.find((r) => r[0] === "Mount Scott");
+  assert.match(mountScott[9], /Black Mesa/, "Mount Scott note must record the empty high-point screens");
+  assert.match(mountScott[9], /empty arrays/, "Black Mesa screens must be recorded as empty");
+  assert.match(mountScott[9], /FEATURE_ID 1102048/, "Mount Scott note must reject Mount Scotts Boy");
+  assert.match(mountScott[9], /not Oklahoma's state high point/, "Mount Scott must not claim the state high point");
+  const okc = okGaz.GAZ_ROWS.find((r) => r[0] === "Oklahoma City");
+  assert.match(okc[9], /FEATURE_IDs? 2584398/, "Oklahoma City note must reject the Division records");
+  const tulsa = okGaz.GAZ_ROWS.find((r) => r[0] === "Tulsa");
+  assert.match(tulsa[9], /FEATURE_ID 1101859/, "Tulsa note must reject Tulsa County");
+  assert.match(tulsa[9], /2832946/, "Tulsa note must reject the airport record");
+  const grandLake = okGaz.GAZ_ROWS.find((r) => r[0] === "Grand Lake O' The Cherokees");
+  assert.match(grandLake[9], /apostrophe/, "Grand Lake note must record the official apostrophe spelling");
+  assert.ok(!okGaz.GAZ_ROWS.some((r) => ["Black Mesa", "Red River", "Arkansas River", "Gloss Mountains", "Quartz Mountain"].includes(r[0])), "empty-screen or out-of-scope Oklahoma records must not be seeded");
+  assert.ok(okData.CORRIDORS.some((c) => /Arkansas River/.test(c.name) && /empty array/.test(c.facts[0])));
+  assert.ok(okData.CORRIDORS.some((c) => /Red River/.test(c.name) && /Brown County/.test(c.facts[0])));
+  assert.ok(register.identityDecisions.some((d) => /Black Mesa/.test(d.candidate) && /empty arrays/.test(d.decision || "")), "register must record the Black Mesa empty screens");
+  assert.ok(register.identityDecisions.some((d) => /Red River:/.test(d.candidate) && /Brown County/.test(d.knownServiceDiscrepancy || "")), "register must record the Red River Brown County rejection");
+
+  const txGaz = await import("../js/city-gazetteer-data-texas.js");
+  const txData = await import("../js/city-subsurface-data-texas.js");
+  const guadalupe = txGaz.GAZ_ROWS.find((r) => r[0] === "Guadalupe Peak");
+  assert.match(guadalupe[9], /Domestic Names per-ID check/, "Guadalupe Peak note must cite the per-ID check");
+  assert.match(guadalupe[9], /High Point/, "Guadalupe Peak note must preserve the per-ID designation");
+  assert.match(guadalupe[9], /8749 feet/, "Guadalupe Peak note must preserve the per-ID elevation description");
+  assert.match(guadalupe[9], /El Capitan Peak/, "Guadalupe Peak note must record the rejected variant names");
+  const austin = txGaz.GAZ_ROWS.find((r) => r[0] === "Austin");
+  assert.match(austin[9], /FEATURE_ID 1383793/, "Austin note must reject Austin County");
+  const houston = txGaz.GAZ_ROWS.find((r) => r[0] === "Houston");
+  assert.match(houston[9], /FEATURE_ID 1383898/, "Houston note must reject Houston County");
+  const sanAntonio = txGaz.GAZ_ROWS.find((r) => r[0] === "San Antonio");
+  assert.match(sanAntonio[9], /2628567/, "San Antonio note must reject the Division records");
+  const rioGrande = txGaz.GAZ_ROWS.find((r) => r[0] === "Rio Grande");
+  assert.match(rioGrande[9], /FEATURE_ID 1388199/, "Rio Grande note must reject Rio Grande City");
+  const trinity = txGaz.GAZ_ROWS.find((r) => r[0] === "Trinity River");
+  assert.match(trinity[9], /FEATURE_ID 1384193/, "Trinity River note must reject the Lake Estates place");
+  const galveston = txGaz.GAZ_ROWS.find((r) => r[0] === "Galveston Bay");
+  assert.equal(galveston[1], "Bay", "Galveston Bay stores the returned Bay class");
+  assert.equal(galveston[2], "hydro.bay", "Galveston Bay uses the Bay ftt");
+  assert.match(galveston[9], /FEATURE_ID 1384774/, "Galveston Bay note must reject the entrance channel");
+  const paloDuro = txGaz.GAZ_ROWS.find((r) => r[0] === "Palo Duro Canyon");
+  assert.equal(paloDuro[1], "Valley", "Palo Duro Canyon stores the returned Valley class");
+  assert.equal(paloDuro[2], "phys.valley", "Palo Duro Canyon uses the Valley ftt");
+  assert.ok(!txGaz.GAZ_ROWS.some((r) => ["Red River", "Colorado River", "Padre Island"].includes(r[0])), "rejected or out-of-scope Texas records must not be seeded");
+  assert.equal(txData.COAST.length > 0, true, "Texas ships a labelled generalized Gulf coast line");
+  assert.ok(txData.CORRIDORS.some((c) => /Rio Grande/.test(c.name) && /not a channel centerline or border definition/.test(c.facts[0])));
+  assert.ok(register.identityDecisions.some((d) => /Guadalupe Peak/.test(d.candidate) && /8749 feet/.test(d.decision)), "register must record the Guadalupe Peak per-ID check");
+  assert.ok(register.identityDecisions.some((d) => /third consecutive empty screen/.test(d.reason || "")), "register must chain the Arkansas River empty screens");
+  assert.ok(register.identityDecisions.some((d) => /Colorado River \(TX\)/.test(d.candidate) && /starter-scope/.test(d.decision)), "register must keep the starter-scope precedent for the Texas alternates");
 
   const engine = read("js/city-subsurface.js");
   for (const frameId of Object.keys(expectations)) {

@@ -186,6 +186,29 @@ matches the round-18 Colorado empty screen. Salina is identity-safe but
 held to starter scope. Next in sequence: remaining plains/mountain states
 in dated per-row batches, then the country/planet thread.
 
+**Round 24 status (2026-10-23): partial.** Oklahoma and Texas shipped as
+configurations 25–26, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors (Texas
+adds a labelled generalized Gulf coast line), and no DEM. Provenance and
+identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json).
+Guadalupe Peak additionally carries a GNIS Domestic Names per-ID check:
+Class=Summit, Culberson County, High Point, “Highest elevation in TX at
+8749 feet”, with the El Capitan/Signal variants of the same record.
+Oklahoma's Black Mesa high point stays unseeded after two empty `states=OK`
+screens (Mount Scott notes it is not the high point); the Texas Red River
+stream record `1344947` was reviewed per-ID and rejected because both
+sequences sit in Brown County, far from the intended border reach, so
+Red River stays corridor-only in both frames; Arkansas River is empty for
+a third consecutive state after Colorado and Kansas. The Division piles
+reject the Oklahoma City/Tulsa/Lawton/Norman/Stillwater/Enid same-name
+records, the Texas metros reject their county/division/colonia/branch
+piles, Galveston Bay stores the returned Bay class, Palo Duro Canyon
+stores the returned Valley class, and Rio Grande seeds at the Cameron
+County Gulf mouth where New Mexico left it unseeded in round 18. Next in
+sequence: the West North Central remainder (Iowa, Missouri, Minnesota) or
+the Gulf/South Atlantic states, then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

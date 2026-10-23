@@ -54,10 +54,20 @@ with the per-ID “highest elevation” descriptions preserved in their
 notes). Their machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json).
 
+Round 24 update: **2026-10-23**. `oklahoma` and `texas` join as the
+twenty-fifth and twenty-sixth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows; Guadalupe Peak additionally carries a GNIS
+Domestic Names per-ID detail check (Texas high point, “8749 feet”), and
+the returned Red River record was reviewed per-ID and rejected because
+its Brown County sequences do not identify the intended border reach.
+Texas ships a labelled generalized Gulf coast line. Their machine-readable
+evidence is
+[`resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has twenty-four configurations — five cities,
-fifteen statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has twenty-six configurations — five cities,
+seventeen statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -86,6 +96,8 @@ its own offline Webxdc:
 | South Dakota (statewide) | `southdakota-subsurface.html` | `js/city-subsurface-data-southdakota.js` | `js/city-gazetteer-data-southdakota.js` | `southdakota-subsurface.xdc` |
 | Nebraska (statewide) | `nebraska-subsurface.html` | `js/city-subsurface-data-nebraska.js` | `js/city-gazetteer-data-nebraska.js` | `nebraska-subsurface.xdc` |
 | Kansas (statewide) | `kansas-subsurface.html` | `js/city-subsurface-data-kansas.js` | `js/city-gazetteer-data-kansas.js` | `kansas-subsurface.xdc` |
+| Oklahoma (statewide) | `oklahoma-subsurface.html` | `js/city-subsurface-data-oklahoma.js` | `js/city-gazetteer-data-oklahoma.js` | `oklahoma-subsurface.xdc` |
+| Texas (statewide) | `texas-subsurface.html` | `js/city-subsurface-data-texas.js` | `js/city-gazetteer-data-texas.js` | `texas-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
