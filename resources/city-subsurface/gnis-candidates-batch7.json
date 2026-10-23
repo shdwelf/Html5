@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T22:56:33Z",
+ "retrieved": "2026-10-23T23:07:15Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -2153,6 +2153,322 @@
      "county": "Desha",
      "lat": 33.951495,
      "lon": -91.0814998
+    }
+   ]
+  },
+  "KY": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_KY_Text.zip",
+   "zipSha256": "30f2ed24878d0aba5fa84163ee29e6cb7911fe37b4cef252e6500cb3af925990",
+   "candidatesRequested": [
+    "Frankfort",
+    "Louisville",
+    "Lexington",
+    "Bowling Green",
+    "Covington",
+    "Black Mountain",
+    "Lake Cumberland",
+    "Lake Barkley",
+    "Ohio River",
+    "Tennessee River",
+    "Cumberland River",
+    "Kentucky River",
+    "Kentucky Lake",
+    "Green River"
+   ],
+   "rows": [
+    {
+     "featureId": "487379",
+     "name": "Black Mountain",
+     "featureClass": "Populated Place",
+     "state": "Kentucky",
+     "county": "Harlan",
+     "lat": 36.8487007,
+     "lon": -83.1457276
+    },
+    {
+     "featureId": "510753",
+     "name": "Black Mountain",
+     "featureClass": "Summit",
+     "state": "Kentucky",
+     "county": "Harlan",
+     "lat": 36.914253,
+     "lon": -82.8937692
+    },
+    {
+     "featureId": "487744",
+     "name": "Bowling Green",
+     "featureClass": "Populated Place",
+     "state": "Kentucky",
+     "county": "Warren",
+     "lat": 36.9903199,
+     "lon": -86.4436018
+    },
+    {
+     "featureId": "490167",
+     "name": "Covington",
+     "featureClass": "Populated Place",
+     "state": "Kentucky",
+     "county": "Kenton",
+     "lat": 39.0836712,
+     "lon": -84.5085537
+    },
+    {
+     "featureId": "517018",
+     "name": "Cumberland River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Livingston",
+     "lat": 37.1433889,
+     "lon": -88.4075385
+    },
+    {
+     "featureId": "517517",
+     "name": "Frankfort",
+     "featureClass": "Populated Place",
+     "state": "Kentucky",
+     "county": "Franklin",
+     "lat": 38.2009055,
+     "lon": -84.8732836
+    },
+    {
+     "featureId": "493284",
+     "name": "Green River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Henderson",
+     "lat": 37.9025425,
+     "lon": -87.4997334
+    },
+    {
+     "featureId": "1269701",
+     "name": "Kentucky Lake",
+     "featureClass": "Reservoir",
+     "state": "Tennessee",
+     "county": "Hardin",
+     "lat": 35.4160445,
+     "lon": -88.0685807
+    },
+    {
+     "featureId": "513130",
+     "name": "Kentucky River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Carroll",
+     "lat": 38.6833957,
+     "lon": -85.188287
+    },
+    {
+     "featureId": "486356",
+     "name": "Lake Barkley",
+     "featureClass": "Reservoir",
+     "state": "Kentucky",
+     "county": "Trigg",
+     "lat": 36.8286815,
+     "lon": -87.9834689
+    },
+    {
+     "featureId": "490483",
+     "name": "Lake Cumberland",
+     "featureClass": "Reservoir",
+     "state": "Kentucky",
+     "county": "Pulaski",
+     "lat": 36.9664603,
+     "lon": -84.7330674
+    },
+    {
+     "featureId": "496343",
+     "name": "Lexington",
+     "featureClass": "Populated Place",
+     "state": "Kentucky",
+     "county": "Fayette",
+     "lat": 37.9886892,
+     "lon": -84.4777153
+    },
+    {
+     "featureId": "509453",
+     "name": "Louisville",
+     "featureClass": "Populated Place",
+     "state": "Kentucky",
+     "county": "Jefferson",
+     "lat": 38.2542376,
+     "lon": -85.759407
+    },
+    {
+     "featureId": "425264",
+     "name": "Ohio River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Ballard",
+     "lat": 36.986719,
+     "lon": -89.1306255
+    },
+    {
+     "featureId": "517033",
+     "name": "Tennessee River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Livingston",
+     "lat": 37.0672787,
+     "lon": -88.5647687
+    }
+   ]
+  },
+  "TN": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_TN_Text.zip",
+   "zipSha256": "2cb651b7e3364649ab03f8fff3230701ba8b8186e290a0a0603aada72e2e2f6d",
+   "candidatesRequested": [
+    "Nashville",
+    "Memphis",
+    "Knoxville",
+    "Chattanooga",
+    "Clarksville",
+    "Murfreesboro",
+    "Mount Le Conte",
+    "Kentucky Lake",
+    "Norris Lake",
+    "Douglas Lake",
+    "Cherokee Lake",
+    "Chickamauga Lake",
+    "Clingmans Dome",
+    "Tennessee River",
+    "Mississippi River",
+    "Cumberland River"
+   ],
+   "rows": [
+    {
+     "featureId": "1307240",
+     "name": "Chattanooga",
+     "featureClass": "Populated Place",
+     "state": "Tennessee",
+     "county": "Hamilton",
+     "lat": 35.0456297,
+     "lon": -85.3096801
+    },
+    {
+     "featureId": "1280322",
+     "name": "Cherokee Lake",
+     "featureClass": "Reservoir",
+     "state": "Tennessee",
+     "county": "Hawkins",
+     "lat": 36.3734257,
+     "lon": -83.0620424
+    },
+    {
+     "featureId": "1326920",
+     "name": "Chickamauga Lake",
+     "featureClass": "Reservoir",
+     "state": "Tennessee",
+     "county": "Meigs",
+     "lat": 35.4031487,
+     "lon": -84.9888498
+    },
+    {
+     "featureId": "1269467",
+     "name": "Clarksville",
+     "featureClass": "Populated Place",
+     "state": "Tennessee",
+     "county": "Montgomery",
+     "lat": 36.5297706,
+     "lon": -87.3594529
+    },
+    {
+     "featureId": "517018",
+     "name": "Cumberland River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Livingston",
+     "lat": 37.1433889,
+     "lon": -88.4075385
+    },
+    {
+     "featureId": "1282739",
+     "name": "Douglas Lake",
+     "featureClass": "Reservoir",
+     "state": "Tennessee",
+     "county": "Jefferson",
+     "lat": 35.9925809,
+     "lon": -83.3754275
+    },
+    {
+     "featureId": "1269701",
+     "name": "Kentucky Lake",
+     "featureClass": "Reservoir",
+     "state": "Tennessee",
+     "county": "Hardin",
+     "lat": 35.4160445,
+     "lon": -88.0685807
+    },
+    {
+     "featureId": "1648562",
+     "name": "Knoxville",
+     "featureClass": "Populated Place",
+     "state": "Tennessee",
+     "county": "Knox",
+     "lat": 35.9606384,
+     "lon": -83.9207392
+    },
+    {
+     "featureId": "1326388",
+     "name": "Memphis",
+     "featureClass": "Populated Place",
+     "state": "Tennessee",
+     "county": "Shelby",
+     "lat": 35.1495343,
+     "lon": -90.0489801
+    },
+    {
+     "featureId": "1629903",
+     "name": "Mississippi River",
+     "featureClass": "Stream",
+     "state": "Louisiana",
+     "county": "Plaquemines",
+     "lat": 29.1510582,
+     "lon": -89.2533842
+    },
+    {
+     "featureId": "1646824",
+     "name": "Mount Le Conte",
+     "featureClass": "Summit",
+     "state": "Tennessee",
+     "county": "Sevier",
+     "lat": 35.6543501,
+     "lon": -83.4367154
+    },
+    {
+     "featureId": "1295105",
+     "name": "Murfreesboro",
+     "featureClass": "Populated Place",
+     "state": "Tennessee",
+     "county": "Rutherford",
+     "lat": 35.8456213,
+     "lon": -86.39027
+    },
+    {
+     "featureId": "1652484",
+     "name": "Nashville",
+     "featureClass": "Populated Place",
+     "state": "Tennessee",
+     "county": "Davidson",
+     "lat": 36.1658899,
+     "lon": -86.7844432
+    },
+    {
+     "featureId": "1269832",
+     "name": "Norris Lake",
+     "featureClass": "Reservoir",
+     "state": "Tennessee",
+     "county": "Union",
+     "lat": 36.303527,
+     "lon": -83.8825297
+    },
+    {
+     "featureId": "517033",
+     "name": "Tennessee River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Livingston",
+     "lat": 37.0672787,
+     "lon": -88.5647687
     }
    ]
   }
