@@ -308,6 +308,9 @@ TI-calc strand scoped in [`ti-calc-port-status-2026-10-23.md`](ti-calc-port-stat
 the SITE-K calc engine re-verified green (`make -C calc test`), a full socal-subsurface
 port ruled out with numbers (863 KB WebGL app vs 24 KB RAM), and the honest follow-ons
 defined (SUBSURF sketch screens, sdcc via runner, F-Droid wrapper via runner).
+*Correction (2026-10-23, later pass):* the TI expression already exists — `socal-calc/`
+is a complete SOCAL SUBSURFACE calculator port; `make -C socal-calc test` re-verified
+green. Only device compilation (sdcc/tigcc via runner) and the F-Droid wrapper remain.
 TI-calc/F-Droid builds and the device-lab items remain open.
 
 ### S9 · Vault, stego & smartcard filesystems: shufflecake, haiku vault, boot-chain — *partial*

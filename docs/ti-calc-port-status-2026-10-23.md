@@ -64,3 +64,18 @@ fetch). socal-subsurface full port: **ruled out with numbers**. Defined
 follow-ons: (1) SUBSURF sketch screens in the SITE-K pattern, (2) sdcc
 toolchain via runner to cut real `.8xp` binaries, (3) F-Droid wrapper
 via runner. T8.2 stays open on those three.
+
+## Correction (same day, later pass) — the TI expression already exists
+The section above defined a "SUBSURF sketch" as a follow-on. That was
+written without noticing `socal-calc/`: this repository already contains
+the full SOCAL SUBSURFACE calculator port — one integer-only C core
+(`socal-calc/core`), five screens (map, section, layers, dossier, device),
+evidence tiers re-encoded as line styles, and a data pack converted from
+the live app objects by `socal-calc/tools/xdc2c.py` (8,584 bytes of data,
+35% of a TI-83's practical program budget). Re-verified today:
+`make -C socal-calc test` — host tests pass, C/JS differential identical
+on TI-83/89/92, TI package selftest green. The measurements in the first
+half of this note stand (the 863 KB WebGL app cannot be the thing that
+runs; a data-and-geometry port is), and that port is done. What remains
+for the TI strand is only device compilation with sdcc/tigcc — a
+toolchain-fetch (runner) job, skipped-never-faked per the Makefiles.
