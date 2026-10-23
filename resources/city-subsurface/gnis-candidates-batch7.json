@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T23:07:15Z",
+ "retrieved": "2026-10-23T23:15:49Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -2469,6 +2469,339 @@
      "county": "Livingston",
      "lat": 37.0672787,
      "lon": -88.5647687
+    }
+   ]
+  },
+  "VA": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_VA_Text.zip",
+   "zipSha256": "910de593f8c90882840b3571667e56e1d04d59e2ac6239270140f78cf2f8fdfe",
+   "candidatesRequested": [
+    "Richmond",
+    "Virginia Beach",
+    "Norfolk",
+    "Roanoke",
+    "Charlottesville",
+    "Chesapeake",
+    "Mount Rogers",
+    "Smith Mountain Lake",
+    "Lake Anna",
+    "Claytor Lake",
+    "James River",
+    "Rappahannock River",
+    "Shenandoah River",
+    "New River",
+    "Potomac River"
+   ],
+   "rows": [
+    {
+     "featureId": "1498463",
+     "name": "Charlottesville",
+     "featureClass": "Populated Place",
+     "state": "Virginia",
+     "county": "Charlottesville (city)",
+     "lat": 38.0293059,
+     "lon": -78.4766781
+    },
+    {
+     "featureId": "1496841",
+     "name": "Chesapeake",
+     "featureClass": "Populated Place",
+     "state": "Virginia",
+     "county": "Chesapeake (city)",
+     "lat": 36.8190369,
+     "lon": -76.2749399
+    },
+    {
+     "featureId": "1492751",
+     "name": "Chesapeake",
+     "featureClass": "Populated Place",
+     "state": "Virginia",
+     "county": "Northampton",
+     "lat": 37.3079157,
+     "lon": -75.9518758
+    },
+    {
+     "featureId": "1501983",
+     "name": "Claytor Lake",
+     "featureClass": "Reservoir",
+     "state": "Virginia",
+     "county": "Pulaski",
+     "lat": 37.0373452,
+     "lon": -80.6593262
+    },
+    {
+     "featureId": "1488853",
+     "name": "James River",
+     "featureClass": "Stream",
+     "state": "Virginia",
+     "county": "Isle of Wight",
+     "lat": 36.9415369,
+     "lon": -76.4435588
+    },
+    {
+     "featureId": "1501942",
+     "name": "Lake Anna",
+     "featureClass": "Reservoir",
+     "state": "Virginia",
+     "county": "Louisa",
+     "lat": 38.0611819,
+     "lon": -77.8344649
+    },
+    {
+     "featureId": "1485637",
+     "name": "Mount Rogers",
+     "featureClass": "Summit",
+     "state": "Virginia",
+     "county": "Smyth",
+     "lat": 36.6599778,
+     "lon": -81.544987
+    },
+    {
+     "featureId": "1499795",
+     "name": "New River",
+     "featureClass": "Populated Place",
+     "state": "Virginia",
+     "county": "Pulaski",
+     "lat": 37.1334586,
+     "lon": -80.5914486
+    },
+    {
+     "featureId": "1552301",
+     "name": "New River",
+     "featureClass": "Stream",
+     "state": "West Virginia",
+     "county": "Fayette",
+     "lat": 38.1617741,
+     "lon": -81.1964965
+    },
+    {
+     "featureId": "1497051",
+     "name": "Norfolk",
+     "featureClass": "Populated Place",
+     "state": "Virginia",
+     "county": "Norfolk (city)",
+     "lat": 36.8468146,
+     "lon": -76.2852183
+    },
+    {
+     "featureId": "1479404",
+     "name": "Rappahannock River",
+     "featureClass": "Stream",
+     "state": "Virginia",
+     "county": "Lancaster",
+     "lat": 37.5876333,
+     "lon": -76.2891091
+    },
+    {
+     "featureId": "1499957",
+     "name": "Richmond",
+     "featureClass": "Populated Place",
+     "state": "Virginia",
+     "county": "Richmond (city)",
+     "lat": 37.5537575,
+     "lon": -77.4602617
+    },
+    {
+     "featureId": "1499971",
+     "name": "Roanoke",
+     "featureClass": "Populated Place",
+     "state": "Virginia",
+     "county": "Roanoke (city)",
+     "lat": 37.2709704,
+     "lon": -79.9414267
+    },
+    {
+     "featureId": "1556740",
+     "name": "Shenandoah River",
+     "featureClass": "Stream",
+     "state": "West Virginia",
+     "county": "Jefferson",
+     "lat": 39.3226009,
+     "lon": -77.7277704
+    },
+    {
+     "featureId": "1502131",
+     "name": "Smith Mountain Lake",
+     "featureClass": "Reservoir",
+     "state": "Virginia",
+     "county": "Franklin",
+     "lat": 37.062907,
+     "lon": -79.7660301
+    },
+    {
+     "featureId": "1500261",
+     "name": "Virginia Beach",
+     "featureClass": "Populated Place",
+     "state": "Virginia",
+     "county": "Virginia Beach (city)",
+     "lat": 36.8529263,
+     "lon": -75.977985
+    }
+   ]
+  },
+  "WV": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_WV_Text.zip",
+   "zipSha256": "b1a176aa806560483bf91935ccf0e9f4a87b1934d3c5ab6ca29169d8fe8284a0",
+   "candidatesRequested": [
+    "Charleston",
+    "Huntington",
+    "Morgantown",
+    "Parkersburg",
+    "Wheeling",
+    "Spruce Knob",
+    "Summersville Lake",
+    "Cheat Lake",
+    "New River",
+    "Kanawha River",
+    "Shenandoah River",
+    "Greenbrier River",
+    "Ohio River",
+    "Monongahela River"
+   ],
+   "rows": [
+    {
+     "featureId": "1558347",
+     "name": "Charleston",
+     "featureClass": "Populated Place",
+     "state": "West Virginia",
+     "county": "Kanawha",
+     "lat": 38.3498195,
+     "lon": -81.6326235
+    },
+    {
+     "featureId": "1867648",
+     "name": "Cheat Lake",
+     "featureClass": "Populated Place",
+     "state": "West Virginia",
+     "county": "Monongalia",
+     "lat": 39.6720244,
+     "lon": -79.8533907
+    },
+    {
+     "featureId": "1537226",
+     "name": "Cheat Lake",
+     "featureClass": "Reservoir",
+     "state": "West Virginia",
+     "county": "Monongalia",
+     "lat": 39.6621562,
+     "lon": -79.8558398
+    },
+    {
+     "featureId": "1551294",
+     "name": "Greenbrier River",
+     "featureClass": "Stream",
+     "state": "West Virginia",
+     "county": "Summers",
+     "lat": 37.6537304,
+     "lon": -80.8848089
+    },
+    {
+     "featureId": "1540605",
+     "name": "Huntington",
+     "featureClass": "Populated Place",
+     "state": "West Virginia",
+     "county": "Cabell",
+     "lat": 38.4192496,
+     "lon": -82.445154
+    },
+    {
+     "featureId": "1551620",
+     "name": "Kanawha River",
+     "featureClass": "Stream",
+     "state": "West Virginia",
+     "county": "Fayette",
+     "lat": 38.8378586,
+     "lon": -82.1426447
+    },
+    {
+     "featureId": "1209053",
+     "name": "Monongahela River",
+     "featureClass": "Stream",
+     "state": "Pennsylvania",
+     "county": "Allegheny",
+     "lat": 40.4417359,
+     "lon": -80.0161647
+    },
+    {
+     "featureId": "1555161",
+     "name": "Morgantown",
+     "featureClass": "Populated Place",
+     "state": "West Virginia",
+     "county": "Monongalia",
+     "lat": 39.629526,
+     "lon": -79.9558968
+    },
+    {
+     "featureId": "1552301",
+     "name": "New River",
+     "featureClass": "Stream",
+     "state": "West Virginia",
+     "county": "Fayette",
+     "lat": 38.1617741,
+     "lon": -81.1964965
+    },
+    {
+     "featureId": "425264",
+     "name": "Ohio River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Ballard",
+     "lat": 36.986719,
+     "lon": -89.1306255
+    },
+    {
+     "featureId": "1544587",
+     "name": "Parkersburg",
+     "featureClass": "Populated Place",
+     "state": "West Virginia",
+     "county": "Wood",
+     "lat": 39.2667418,
+     "lon": -81.5615135
+    },
+    {
+     "featureId": "1556740",
+     "name": "Shenandoah River",
+     "featureClass": "Stream",
+     "state": "West Virginia",
+     "county": "Jefferson",
+     "lat": 39.3226009,
+     "lon": -77.7277704
+    },
+    {
+     "featureId": "1553014",
+     "name": "Spruce Knob",
+     "featureClass": "Summit",
+     "state": "West Virginia",
+     "county": "Pendleton",
+     "lat": 38.6998284,
+     "lon": -79.5328253
+    },
+    {
+     "featureId": "1555698",
+     "name": "Spruce Knob",
+     "featureClass": "Summit",
+     "state": "West Virginia",
+     "county": "Randolph",
+     "lat": 38.8662865,
+     "lon": -79.6977227
+    },
+    {
+     "featureId": "1553142",
+     "name": "Summersville Lake",
+     "featureClass": "Reservoir",
+     "state": "West Virginia",
+     "county": "Nicholas",
+     "lat": 38.2434058,
+     "lon": -80.85975
+    },
+    {
+     "featureId": "1548994",
+     "name": "Wheeling",
+     "featureClass": "Populated Place",
+     "state": "West Virginia",
+     "county": "Ohio",
+     "lat": 40.0639616,
+     "lon": -80.7209149
     }
    ]
   }
