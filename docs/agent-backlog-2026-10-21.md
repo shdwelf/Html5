@@ -198,6 +198,30 @@ matches the round-18 Colorado empty screen. Salina is identity-safe but
 held to starter scope. Next in sequence: remaining plains/mountain states
 in dated per-row batches, then the country/planet thread.
 
+**Round 24 status (2026-10-23): partial.** Minnesota and Iowa shipped as
+configurations 25–26, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, and no
+DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json).
+Every row was screened against the USGS GNIS Geocoder and cross-checked
+on a second USGS surface — the staged-products DomesticNames state text
+files, extracted in a GitHub Actions runner by `tools/gnis_extract.py`
+(`.github/workflows/arena-gnis-fetch.yml`). Eagle Mountain (2,301 ft) and
+Hawkeye Point (1,670 ft) keep their High Point designations with
+per-ID class/county/point reproductions. Eagle Mountain rejects the
+second Cook County summit and the Todd County summit; Lake of the Woods
+keeps one of two duplicate same-name lake records (`1930543` unseeded);
+Lake Itasca rejects its Anoka County lake and Clearwater County populated
+place; Vermilion Lake is seeded under the official name order; Clear Lake
+and Spirit Lake seed as lakes distinct from their same-name cities.
+Mississippi River (MN and IA), Missouri River (IA), Red River of the
+North (primary point at the Lake Winnipeg mouth in Manitoba), and Lake
+Superior (MN) remain corridors after empty or out-of-frame screens.
+Bloomington, Lake Minnetonka, Waterloo, East Okoboji Lake, Lake Red
+Rock, and Saylorville Lake are identity-safe but held to starter scope.
+Next in sequence: the remaining states in dated per-row batches, then the
+country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

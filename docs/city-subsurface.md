@@ -54,10 +54,22 @@ with the per-ID “highest elevation” descriptions preserved in their
 notes). Their machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json).
 
+Round 24 update: **2026-10-23**. `minnesota` and `iowa` join as the
+twenty-fifth and twenty-sixth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows cross-checked on two independent USGS surfaces
+(the GNIS Geocoder service and the staged-products DomesticNames state
+text files, extracted per state by `tools/gnis_extract.py`; candidates in
+`resources/city-subsurface/gnis-candidates-batch7.json`). Eagle Mountain
+(2,301 feet) and Hawkeye Point (1,670 feet) carry Domestic Names per-ID
+identity checks; the current text layout has no elevation columns, so
+those two elevations cite USGS-published state-highpoint values. The
+machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch7-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has twenty-four configurations — five cities,
-fifteen statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has twenty-six configurations — five cities,
+seventeen statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -86,6 +98,8 @@ its own offline Webxdc:
 | South Dakota (statewide) | `southdakota-subsurface.html` | `js/city-subsurface-data-southdakota.js` | `js/city-gazetteer-data-southdakota.js` | `southdakota-subsurface.xdc` |
 | Nebraska (statewide) | `nebraska-subsurface.html` | `js/city-subsurface-data-nebraska.js` | `js/city-gazetteer-data-nebraska.js` | `nebraska-subsurface.xdc` |
 | Kansas (statewide) | `kansas-subsurface.html` | `js/city-subsurface-data-kansas.js` | `js/city-gazetteer-data-kansas.js` | `kansas-subsurface.xdc` |
+| Minnesota (statewide) | `minnesota-subsurface.html` | `js/city-subsurface-data-minnesota.js` | `js/city-gazetteer-data-minnesota.js` | `minnesota-subsurface.xdc` |
+| Iowa (statewide) | `iowa-subsurface.html` | `js/city-subsurface-data-iowa.js` | `js/city-gazetteer-data-iowa.js` | `iowa-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

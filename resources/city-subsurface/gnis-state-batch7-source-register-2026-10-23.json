@@ -1,0 +1,474 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 24 Upper Midwest state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Minnesota and Iowa. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces: the USGS GNIS Geocoder service and the staged-products DomesticNames per-state text files (tools/gnis_extract.py; request .arena-gnis/candidates.json; extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Eagle Mountain and Hawkeye Point additionally carry Domestic Names per-ID identity checks.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<MN|IA>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Counties, precincts, reservations, resorts, canals, historical places, and same-name records of another class or county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_<MN|IA>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID (name, class, state, primary county, primary point) and per-ID identity checks for Eagle Mountain (656080) and Hawkeye Point (1851955), extracted in a GitHub Actions runner by tools/gnis_extract.py (.github/workflows/arena-gnis-fetch.yml). The current text layout lowercases the header, prefixes a UTF-8 BOM, and carries no elevation columns, so the two high-point elevations cite USGS-published state-highpoint values rather than the text file."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "minnesota": {
+      "title": "Minnesota statewide frame (Upper Midwest batch)",
+      "state": "MN",
+      "bbox": {
+        "lon0": -97.35,
+        "lat0": 43.45,
+        "lon1": -89.45,
+        "lat1": 49.4
+      },
+      "frameNote": "Upper Midwest batch: the Twin Cities pair is balanced with the per-ID Eagle Mountain high point, the Lake of the Woods / Mille Lacs / Vermilion / Itasca lake set, and the in-state Minnesota River mouth record. The Mississippi main stem, Red River of the North, and Lake Superior remain corridors after empty or out-of-frame states=MN screens.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Saint Paul",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Ramsey",
+          "latitude": 44.9444101,
+          "longitude": -93.0932742,
+          "featureId": "662851",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "R",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=662851; exact official name and Cities & Populated Places type in Ramsey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Minneapolis",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hennepin",
+          "latitude": 44.9799654,
+          "longitude": -93.2638361,
+          "featureId": "655030",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "H",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Largest city in the state and Twin Cities anchor on the Mississippi River west bank. USGS GNIS Geocoder (GNIS), FEATURE_ID=655030; exact official name and Cities & Populated Places type in Hennepin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Duluth",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "St. Louis",
+          "latitude": 46.7832731,
+          "longitude": -92.1065787,
+          "featureId": "661145",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "S",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Lake Superior port and the frame's northeastern gateway city. USGS GNIS Geocoder (GNIS), FEATURE_ID=661145; exact official name and Cities & Populated Places type in Saint Louis County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Rochester",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Olmsted",
+          "latitude": 44.0216306,
+          "longitude": -92.4698992,
+          "featureId": "650180",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "O",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Southeastern city; seat of Olmsted County and the Mayo Clinic. USGS GNIS Geocoder (GNIS), FEATURE_ID=650180; exact official name and Cities & Populated Places type in Olmsted County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Saint Cloud",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Stearns",
+          "latitude": 45.5607986,
+          "longitude": -94.1624895,
+          "featureId": "650559",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "S",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Central Minnesota city on the Mississippi River. USGS GNIS Geocoder (GNIS), FEATURE_ID=650559; exact official name and Cities & Populated Places type in Stearns County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Mankato",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Blue Earth",
+          "latitude": 44.1635775,
+          "longitude": -93.9993996,
+          "featureId": "647438",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "B",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "South-central city in the Minnesota River valley. USGS GNIS Geocoder (GNIS), FEATURE_ID=647438; exact official name and Cities & Populated Places type in Blue Earth County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Eagle Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Cook",
+          "latitude": 47.6641476,
+          "longitude": -90.7071766,
+          "featureId": "656080",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "C",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Minnesota High Point and state high point at 2,301 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_MN_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 656080 as a Summit in Cook County at this point; the second Cook County summit of the same name (FEATURE_ID 656081) and the Todd County summit (FEATURE_ID 643035) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=656080; exact official name and Summit type in Cook County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."
+        },
+        {
+          "name": "Lake of the Woods",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Lake of the Woods",
+          "latitude": 49.0519679,
+          "longitude": -94.9545392,
+          "featureId": "654378",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "L",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "International border lake shared with Manitoba and Ontario; the Geocoder returned two same-name lake records, and the multipoint duplicate FEATURE_ID 1930543 is recorded in the batch register rather than seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=654378; exact official name and Lakes & Reservoirs type in Lake of the Woods County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Mille Lacs Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Mille Lacs",
+          "latitude": 46.2425615,
+          "longitude": -93.6462512,
+          "featureId": "647859",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "M",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Large lake in east-central Minnesota; second-largest lake lying wholly within the state. USGS GNIS Geocoder (GNIS), FEATURE_ID=647859; exact official name and Lakes & Reservoirs type in Mille Lacs County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Vermilion Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "St. Louis",
+          "latitude": 47.8640503,
+          "longitude": -92.4191397,
+          "featureId": "662716",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "S",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Saint Louis County lake west of the Boundary Waters; the official name order is Vermilion Lake, and the reversed-name screen returned no lake record. USGS GNIS Geocoder (GNIS), FEATURE_ID=662716; exact official name and Lakes & Reservoirs type in Saint Louis County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Minnesota River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Dakota",
+          "latitude": 44.89691,
+          "longitude": -93.1491088,
+          "featureId": "659759",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "D",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Major tributary whose GNIS primary point is its in-state Mississippi confluence south of Saint Paul. USGS GNIS Geocoder (GNIS), FEATURE_ID=659759; exact official name and Streams & Canals type in Dakota County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Lake Itasca",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Clearwater",
+          "latitude": 47.2156405,
+          "longitude": -95.2006509,
+          "featureId": "645541",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "C",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Mississippi River headwater lake in Clearwater County; the same-name Anoka County lake (FEATURE_ID 645540) and Clearwater County populated place (FEATURE_ID 645542) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=645541; exact official name and Lakes & Reservoirs type in Clearwater County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        }
+      ]
+    },
+    "iowa": {
+      "title": "Iowa statewide frame (Upper Midwest batch)",
+      "state": "IA",
+      "bbox": {
+        "lon0": -96.65,
+        "lat0": 40.35,
+        "lon1": -89.95,
+        "lat1": 43.55
+      },
+      "frameNote": "Upper Midwest batch: the Des Moines capital anchor is balanced with the per-ID Hawkeye Point high point, the Iowa Great Lakes / Clear Lake set, and two in-state river-mouth records (Des Moines River, Cedar River). The Mississippi and Missouri main stems remain corridors after empty states=IA screens.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Des Moines",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Polk",
+          "latitude": 41.6005448,
+          "longitude": -93.6091064,
+          "featureId": "465961",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "P",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "State capital; the separate Des Moines County record (FEATURE_ID 465217) in southeastern Iowa is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=465961; exact official name and Cities & Populated Places type in Polk County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Cedar Rapids",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Linn",
+          "latitude": 42.0083328,
+          "longitude": -91.6440683,
+          "featureId": "465941",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "L",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Linn County city on the Cedar River. USGS GNIS Geocoder (GNIS), FEATURE_ID=465941; exact official name and Cities & Populated Places type in Linn County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Davenport",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Scott",
+          "latitude": 41.5236437,
+          "longitude": -90.5776367,
+          "featureId": "455799",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "S",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Scott County Mississippi River port and the frame's eastern anchor. USGS GNIS Geocoder (GNIS), FEATURE_ID=455799; exact official name and Cities & Populated Places type in Scott County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Sioux City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Woodbury",
+          "latitude": 42.4999942,
+          "longitude": -96.4003069,
+          "featureId": "461653",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "W",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Woodbury County city on the Missouri River border. USGS GNIS Geocoder (GNIS), FEATURE_ID=461653; exact official name and Cities & Populated Places type in Woodbury County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Iowa City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Johnson",
+          "latitude": 41.6611277,
+          "longitude": -91.5301683,
+          "featureId": "457827",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "J",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Johnson County city on the Iowa River; former territorial capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=457827; exact official name and Cities & Populated Places type in Johnson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Ames",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Story",
+          "latitude": 42.0347081,
+          "longitude": -93.6199402,
+          "featureId": "454167",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "S",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Story County city; seat of Iowa State University. USGS GNIS Geocoder (GNIS), FEATURE_ID=454167; exact official name and Cities & Populated Places type in Story County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Hawkeye Point",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Osceola",
+          "latitude": 43.4603174,
+          "longitude": -95.7087663,
+          "featureId": "1851955",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "O",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Iowa High Point and state high point at 1,670 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_IA_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1851955 as a Summit in Osceola County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1851955; exact official name and Summit type in Osceola County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."
+        },
+        {
+          "name": "West Okoboji Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Dickinson",
+          "latitude": 43.3844078,
+          "longitude": -95.1594407,
+          "featureId": "462893",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "D",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Deep glacial lake of the Iowa Great Lakes chain. USGS GNIS Geocoder (GNIS), FEATURE_ID=462893; exact official name and Lakes & Reservoirs type in Dickinson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Clear Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Cerro Gordo",
+          "latitude": 43.1244732,
+          "longitude": -93.4212106,
+          "featureId": "455462",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "C",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Cerro Gordo County lake; the same-name populated place (FEATURE_ID 455465) and the Pocahontas County lake (FEATURE_ID 455463) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=455462; exact official name and Lakes & Reservoirs type in Cerro Gordo County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Spirit Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Dickinson",
+          "latitude": 43.4776049,
+          "longitude": -95.0956467,
+          "featureId": "461850",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "D",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "Dickinson County lake, largest natural lake in the state; the same-name city record (FEATURE_ID 461851) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=461850; exact official name and Lakes & Reservoirs type in Dickinson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."
+        },
+        {
+          "name": "Des Moines River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Lee",
+          "latitude": 41.3811553,
+          "longitude": -91.4223753,
+          "featureId": "465582",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "L",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the in-state Mississippi confluence in Lee County. USGS GNIS Geocoder (GNIS), FEATURE_ID=465582; exact official name and Streams & Canals type in Lee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Cedar River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Louisa",
+          "latitude": 41.2830811,
+          "longitude": -91.3468217,
+          "featureId": "465058",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "L",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder and reproduced in the GNIS DomesticNames state text extract (tools/gnis_extract.py)",
+          "sourceNote": "GNIS primary point at the in-state Mississippi confluence in Louisa County. USGS GNIS Geocoder (GNIS), FEATURE_ID=465058; exact official name and Streams & Canals type in Louisa County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Eagle Mountain, FEATURE_ID 656081 (Cook County)",
+      "decision": "Rejected. The Geocoder returned two Summit records named Eagle Mountain in Cook County; the seeded record 656080 matches the published Minnesota high-point location in the Misquah Hills, and the DomesticNames_MN_Text extract reproduces both records at distinct points roughly 25 km apart. 656081 is a distinct same-name summit.",
+      "notClaimed": "Neither GNIS point is a surveyed summit outline; the seeded point is not the Boundary Waters trailhead."
+    },
+    {
+      "candidate": "Eagle Mountain, FEATURE_ID 643035 (Todd County)",
+      "decision": "Rejected. Same-name Summit in Todd County, central Minnesota; the Cook County record 656080 is the state high point.",
+      "notClaimed": "The Todd County record is not deleted or renamed; it is simply outside this starter register's high-point identity."
+    },
+    {
+      "candidate": "Lake of the Woods, FEATURE_ID 1930543 (Lake of the Woods County)",
+      "decision": "Not seeded. The Geocoder returned two Lakes & Reservoirs records for the same border lake in the same county (654378 and 1930543) and the DomesticNames_MN_Text extract contains both FEATURE_IDs at points about 7 km apart on the same lake. 654378 is seeded.",
+      "knownServiceDiscrepancy": "Two permanent FEATURE_IDs describe one intended lake (multipoint duplication); the register preserves the accepted sequence and names the unseeded duplicate.",
+      "notClaimed": "The seeded point is not a shoreline, lake polygon, or international boundary segment."
+    },
+    {
+      "candidate": "Lake Itasca, FEATURE_ID 645540 (Anoka County lake) and FEATURE_ID 645542 (Clearwater County populated place)",
+      "decision": "Rejected. The intended Mississippi headwater lake is the Clearwater County Lakes & Reservoirs record 645541; the Anoka County lake is a different same-name waterbody and 645542 is the lakeside community of the same name.",
+      "notClaimed": "The headwater-lake record does not verify the Mississippi River main-stem stream record, which screens out of frame at its Gulf mouth."
+    },
+    {
+      "candidate": "Lake Vermilion (reversed name order)",
+      "decision": "The states=MN screen for the reversed name returned no lake record; the official GNIS name is Vermilion Lake (FEATURE_ID 662716, Saint Louis County), seeded under the official order with the variant rejected explicitly.",
+      "notClaimed": "No name normalization is claimed for other GNIS orders; each future name must be screened in its official order."
+    },
+    {
+      "candidate": "Lake Superior under states=MN",
+      "decision": "Empty screen. The Geocoder returned an empty array; the lake's single GNIS record point lies outside the Minnesota state-filtered screen. No row is seeded; Duluth anchors the shore as a populated-place point.",
+      "notClaimed": "The Duluth point is not a Lake Superior shoreline or harbor polygon."
+    },
+    {
+      "candidate": "Mississippi River under states=MN",
+      "decision": "Not seeded. The states=MN screen returned no intended main-stem stream record (only Mississippi River Reservoir, FEATURE_ID 1776673, Stearns County); the single GNIS Mississippi River stream record's primary point is the Gulf of Mexico mouth, outside the frame. The river remains a generalized context corridor anchored on Lake Itasca, Saint Cloud, Minneapolis, and Saint Paul.",
+      "notClaimed": "The corridor is not a channel centerline, navigation reach, or state boundary."
+    },
+    {
+      "candidate": "Red River of the North, FEATURE_ID 1035890",
+      "decision": "Not seeded. The states=MN screen returned the exact Streams & Canals record, but its GNIS primary point (50.4002778, -96.8) is the Lake Winnipeg mouth in Manitoba, north of this frame. The river remains a generalized context corridor along the western border.",
+      "notClaimed": "The corridor is not a channel centerline or the Minnesota/Dakotas state boundary."
+    },
+    {
+      "candidate": "Bloomington and Lake Minnetonka (Minnesota)",
+      "decision": "Identity-safe candidates in the batch-7 extract, omitted under the same starter-scope treatment as Salina (round 23) and Rogue River (round 20); the 12-row starter keeps the Twin Cities pair plus statewide anchors.",
+      "notClaimed": "Starter-scope omission is not a claim about feature importance or identity."
+    },
+    {
+      "candidate": "Des Moines County, FEATURE_ID 465217",
+      "decision": "Rejected. The county record (seat Burlington) is not the Polk County capital city; the Cities & Populated Places record 465961 is seeded, following the county-record rejection precedent of Wichita County (round 23).",
+      "notClaimed": "The capital-city point is not a municipal boundary or county polygon."
+    },
+    {
+      "candidate": "Clear Lake, FEATURE_ID 455465 (Cerro Gordo County populated place) and FEATURE_ID 455463 (Pocahontas County lake)",
+      "decision": "Rejected. The seeded FEATURE_ID 455462 is the Cerro Gordo County lake west of its same-name city; the city record and the unrelated Pocahontas County lake are distinct records, following the town-versus-lake split precedent of Scottsbluff/Scotts Bluff (round 23).",
+      "notClaimed": "The lake point is not a shoreline and the city/lake split is asserted only at these primary points."
+    },
+    {
+      "candidate": "Spirit Lake, FEATURE_ID 461851 (Dickinson County populated place)",
+      "decision": "Rejected. The seeded FEATURE_ID 461850 is the lake; the adjacent-ID city record is the separate populated place on its southern shore.",
+      "notClaimed": "The lake point is not a shoreline and does not locate the city center."
+    },
+    {
+      "candidate": "Mississippi River under states=IA",
+      "decision": "Empty screen. The Geocoder returned an empty array for the intended main-stem stream record, whose GNIS primary point is the Gulf of Mexico mouth. No row is seeded; the river remains a generalized context corridor along the eastern border.",
+      "notClaimed": "The corridor is not a channel centerline or state boundary."
+    },
+    {
+      "candidate": "Missouri River under states=IA",
+      "decision": "Empty screen. The Geocoder returned an empty array for the intended main-stem stream record, whose GNIS primary point is the St. Louis confluence. No row is seeded; the river remains a generalized context corridor along the western border, matching the round-23 Nebraska/Kansas treatment.",
+      "notClaimed": "The corridor is not a channel centerline or state boundary."
+    },
+    {
+      "candidate": "Waterloo, East Okoboji Lake, Lake Red Rock, and Saylorville Lake (Iowa)",
+      "decision": "Identity-safe candidates in the batch-7 extract, omitted under the starter-scope treatment; the 12-row starter keeps the capital anchor plus statewide coverage.",
+      "notClaimed": "Starter-scope omission is not a claim about feature importance or identity."
+    }
+  ],
+  "knownLimitations": [
+    "Minnesota and Iowa are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point; the two sources agree to well under a metre at the stored precision, except for county-name styling (St. Louis vs Saint Louis County), which the register preserves verbatim in geocoderCounty.",
+    "The current DomesticNames text layout carries no elevation columns, so Eagle Mountain (2,301 feet) and Hawkeye Point (1,670 feet) elevations cite USGS-published state-highpoint values; GNIS identity for both rests on the per-ID class/county/point reproduction.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include small areas outside their state outlines (including, for Minnesota, a strip of Hudson Bay drainage); no boundary geometry is claimed."
+  ]
+}
