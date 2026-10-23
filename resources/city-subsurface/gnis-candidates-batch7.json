@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T22:28:08Z",
+ "retrieved": "2026-10-23T22:34:36Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -989,6 +989,322 @@
      "county": "Grand Traverse",
      "lat": 44.7630567,
      "lon": -85.6206317
+    }
+   ]
+  },
+  "IL": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_IL_Text.zip",
+   "zipSha256": "27a1c1932d5e64c3af7b1ba9f77eedc912adb510be4aa21f6e679d0b405386ed",
+   "candidatesRequested": [
+    "Springfield",
+    "Chicago",
+    "Aurora",
+    "Naperville",
+    "Rockford",
+    "Peoria",
+    "Joliet",
+    "Waukegan",
+    "Charles Mound",
+    "Rend Lake",
+    "Illinois River",
+    "Ohio River",
+    "Kaskaskia River",
+    "Mississippi River",
+    "Lake Michigan"
+   ],
+   "rows": [
+    {
+     "featureId": "403732",
+     "name": "Aurora",
+     "featureClass": "Populated Place",
+     "state": "Illinois",
+     "county": "Kane",
+     "lat": 41.7605849,
+     "lon": -88.3200715
+    },
+    {
+     "featureId": "423586",
+     "name": "Charles Mound",
+     "featureClass": "Summit",
+     "state": "Illinois",
+     "county": "Jo Daviess",
+     "lat": 42.5041312,
+     "lon": -90.2396757
+    },
+    {
+     "featureId": "423587",
+     "name": "Chicago",
+     "featureClass": "Populated Place",
+     "state": "Illinois",
+     "county": "Cook",
+     "lat": 41.850033,
+     "lon": -87.6500523
+    },
+    {
+     "featureId": "410769",
+     "name": "Illinois River",
+     "featureClass": "Stream",
+     "state": "Illinois",
+     "county": "Calhoun",
+     "lat": 38.9703262,
+     "lon": -90.4542829
+    },
+    {
+     "featureId": "411192",
+     "name": "Joliet",
+     "featureClass": "Populated Place",
+     "state": "Illinois",
+     "county": "Will",
+     "lat": 41.525031,
+     "lon": -88.0817252
+    },
+    {
+     "featureId": "426395",
+     "name": "Kaskaskia River",
+     "featureClass": "Stream",
+     "state": "Illinois",
+     "county": "Randolph",
+     "lat": 37.974942,
+     "lon": -89.937372
+    },
+    {
+     "featureId": "1623080",
+     "name": "Lake Michigan",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Mason",
+     "lat": 44.0078744,
+     "lon": -86.7564512
+    },
+    {
+     "featureId": "1629903",
+     "name": "Mississippi River",
+     "featureClass": "Stream",
+     "state": "Louisiana",
+     "county": "Plaquemines",
+     "lat": 29.1510582,
+     "lon": -89.2533842
+    },
+    {
+     "featureId": "421954",
+     "name": "Naperville",
+     "featureClass": "Populated Place",
+     "state": "Illinois",
+     "county": "DuPage",
+     "lat": 41.7858629,
+     "lon": -88.1472893
+    },
+    {
+     "featureId": "425264",
+     "name": "Ohio River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Ballard",
+     "lat": 36.986719,
+     "lon": -89.1306255
+    },
+    {
+     "featureId": "415536",
+     "name": "Peoria",
+     "featureClass": "Populated Place",
+     "state": "Illinois",
+     "county": "Peoria",
+     "lat": 40.6936488,
+     "lon": -89.5889864
+    },
+    {
+     "featureId": "416524",
+     "name": "Rend Lake",
+     "featureClass": "Reservoir",
+     "state": "Illinois",
+     "county": "Franklin",
+     "lat": 38.1096376,
+     "lon": -88.9626068
+    },
+    {
+     "featureId": "416843",
+     "name": "Rockford",
+     "featureClass": "Populated Place",
+     "state": "Illinois",
+     "county": "Winnebago",
+     "lat": 42.2711311,
+     "lon": -89.0939952
+    },
+    {
+     "featureId": "426595",
+     "name": "Springfield",
+     "featureClass": "Populated Place",
+     "state": "Illinois",
+     "county": "Sangamon",
+     "lat": 39.8017171,
+     "lon": -89.6437107
+    },
+    {
+     "featureId": "420650",
+     "name": "Waukegan",
+     "featureClass": "Populated Place",
+     "state": "Illinois",
+     "county": "Lake",
+     "lat": 42.3636331,
+     "lon": -87.8447938
+    }
+   ]
+  },
+  "IN": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_IN_Text.zip",
+   "zipSha256": "a739f275ddaf843db51fcad9861fad819e0a8d5ec368834d70fefe8c2dac6e99",
+   "candidatesRequested": [
+    "Indianapolis",
+    "Fort Wayne",
+    "Evansville",
+    "South Bend",
+    "Bloomington",
+    "Terre Haute",
+    "Gary",
+    "Hoosier Hill",
+    "Lake Monroe",
+    "Patoka Lake",
+    "Wabash River",
+    "White River",
+    "Ohio River",
+    "Lake Michigan",
+    "Lake Maxinkuckee"
+   ],
+   "rows": [
+    {
+     "featureId": "431207",
+     "name": "Bloomington",
+     "featureClass": "Populated Place",
+     "state": "Indiana",
+     "county": "Monroe",
+     "lat": 39.165325,
+     "lon": -86.5263857
+    },
+    {
+     "featureId": "434258",
+     "name": "Evansville",
+     "featureClass": "Populated Place",
+     "state": "Indiana",
+     "county": "Vanderburgh",
+     "lat": 37.9747644,
+     "lon": -87.5558482
+    },
+    {
+     "featureId": "434689",
+     "name": "Fort Wayne",
+     "featureClass": "Populated Place",
+     "state": "Indiana",
+     "county": "Allen",
+     "lat": 41.1306041,
+     "lon": -85.1288597
+    },
+    {
+     "featureId": "434979",
+     "name": "Gary",
+     "featureClass": "Populated Place",
+     "state": "Indiana",
+     "county": "Lake",
+     "lat": 41.5933696,
+     "lon": -87.3464271
+    },
+    {
+     "featureId": "1851956",
+     "name": "Hoosier Hill",
+     "featureClass": "Summit",
+     "state": "Indiana",
+     "county": "Wayne",
+     "lat": 40.0002603,
+     "lon": -84.8509693
+    },
+    {
+     "featureId": "452890",
+     "name": "Indianapolis",
+     "featureClass": "Populated Place",
+     "state": "Indiana",
+     "county": "Marion",
+     "lat": 39.7683765,
+     "lon": -86.1580423
+    },
+    {
+     "featureId": "438748",
+     "name": "Lake Maxinkuckee",
+     "featureClass": "Reservoir",
+     "state": "Indiana",
+     "county": "Marshall",
+     "lat": 41.2041957,
+     "lon": -86.4044435
+    },
+    {
+     "featureId": "1623080",
+     "name": "Lake Michigan",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Mason",
+     "lat": 44.0078744,
+     "lon": -86.7564512
+    },
+    {
+     "featureId": "425264",
+     "name": "Ohio River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Ballard",
+     "lat": 36.986719,
+     "lon": -89.1306255
+    },
+    {
+     "featureId": "451715",
+     "name": "Patoka Lake",
+     "featureClass": "Reservoir",
+     "state": "Indiana",
+     "county": "Orange",
+     "lat": 38.4108996,
+     "lon": -86.6373488
+    },
+    {
+     "featureId": "452796",
+     "name": "South Bend",
+     "featureClass": "Populated Place",
+     "state": "Indiana",
+     "county": "St. Joseph",
+     "lat": 41.6833813,
+     "lon": -86.2500066
+    },
+    {
+     "featureId": "444648",
+     "name": "Terre Haute",
+     "featureClass": "Populated Place",
+     "state": "Indiana",
+     "county": "Vigo",
+     "lat": 39.4667034,
+     "lon": -87.4139092
+    },
+    {
+     "featureId": "449850",
+     "name": "Wabash River",
+     "featureClass": "Stream",
+     "state": "Indiana",
+     "county": "Posey",
+     "lat": 37.7981003,
+     "lon": -88.0272534
+    },
+    {
+     "featureId": "445956",
+     "name": "White River",
+     "featureClass": "Populated Place",
+     "state": "Indiana",
+     "county": "Gibson",
+     "lat": 38.3942132,
+     "lon": -87.7530839
+    },
+    {
+     "featureId": "445955",
+     "name": "White River",
+     "featureClass": "Stream",
+     "state": "Indiana",
+     "county": "Knox",
+     "lat": 38.4142134,
+     "lon": -87.742528
     }
    ]
   }
