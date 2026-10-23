@@ -9467,6 +9467,862 @@
           "Tennessee River reservoir above Chattanooga; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1326920; exact official name and Lake type in Meigs County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
         ]
       ]
+    },
+    "virginia": {
+      "title": "Virginia SUBSURFACE 4Dwm",
+      "subtitle": "Virginia STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL",
+      "gazTitle": "VIRGINIA USGS GNIS REGISTER",
+      "gazNote": "Round 30 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "VA",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -83.7,
+        "lat0": 36.45,
+        "lon1": -75.0,
+        "lat1": 39.5
+      },
+      "center": {
+        "lon": -78.5,
+        "lat": 37.9
+      },
+      "baseElevationM": 290,
+      "roughnessM": 150,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Blue Ridge",
+          "lon": -79.3,
+          "lat": 37.7,
+          "rx": 0.9,
+          "ry": 0.35,
+          "amp": 300,
+          "rot": 0
+        },
+        {
+          "name": "Mount Rogers highlands",
+          "lon": -81.545,
+          "lat": 36.66,
+          "rx": 0.35,
+          "ry": 0.25,
+          "amp": 330,
+          "rot": 0
+        },
+        {
+          "name": "Valley and Ridge",
+          "lon": -79.6,
+          "lat": 38.3,
+          "rx": 0.8,
+          "ry": 0.4,
+          "amp": 190,
+          "rot": 0
+        },
+        {
+          "name": "Piedmont",
+          "lon": -78.3,
+          "lat": 37.6,
+          "rx": 0.9,
+          "ry": 0.5,
+          "amp": 70,
+          "rot": 0
+        },
+        {
+          "name": "Coastal Plain",
+          "lon": -76.3,
+          "lat": 37.4,
+          "rx": 0.6,
+          "ry": 0.7,
+          "amp": -60,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i81-Virginia",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 81 corridor (generalized)",
+          "short": "I-81",
+          "depthM": 0,
+          "path": [
+            [
+              -79.9414267,
+              37.2709704
+            ],
+            [
+              -78.6,
+              38.15
+            ],
+            [
+              -77.7277704,
+              39.3226009
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 81 corridor from Roanoke up the Shenandoah Valley toward Harpers Ferry; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i95-Virginia",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 95 corridor (generalized)",
+          "short": "I-95",
+          "depthM": 0,
+          "path": [
+            [
+              -77.4602617,
+              37.5537575
+            ],
+            [
+              -77.8344649,
+              38.0611819
+            ],
+            [
+              -77.4,
+              38.9
+            ]
+          ],
+          "facts": [
+            "Generalized Interstate 95 corridor from Richmond through the Lake Anna reach toward the Potomac; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "shenandoah-river-Virginia",
+          "layer": "water",
+          "tier": "context",
+          "name": "Shenandoah River corridor (generalized)",
+          "short": "Shenandoah River",
+          "depthM": 0,
+          "path": [
+            [
+              -78.85,
+              38.65
+            ],
+            [
+              -78.2,
+              38.95
+            ],
+            [
+              -77.7277704,
+              39.3226009
+            ]
+          ],
+          "facts": [
+            "The states=VA exact-name screen returned no stream record for the intended feature (only subdivision records); the Shenandoah's GNIS mouth record is West Virginia-associated and seeded in the West Virginia frame, so the river remains a context corridor in Virginia. Not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "new-river-Virginia",
+          "layer": "water",
+          "tier": "context",
+          "name": "New River corridor (generalized)",
+          "short": "New River",
+          "depthM": 0,
+          "path": [
+            [
+              -80.6593262,
+              37.0373452
+            ],
+            [
+              -80.75,
+              37.35
+            ],
+            [
+              -81.1964965,
+              38.1617741
+            ]
+          ],
+          "facts": [
+            "The states=VA exact-name screen returned no stream record for the intended feature (only a same-name populated place and CDP); the New River's GNIS record is West Virginia-associated and seeded in the West Virginia frame, so the river remains a context corridor in Virginia. Not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "Potomac-river-Virginia",
+          "layer": "water",
+          "tier": "context",
+          "name": "Potomac River corridor (generalized)",
+          "short": "Potomac River",
+          "depthM": 0,
+          "path": [
+            [
+              -77.7277704,
+              39.3226009
+            ],
+            [
+              -77.05,
+              38.35
+            ],
+            [
+              -76.35,
+              38.05
+            ]
+          ],
+          "facts": [
+            "The states=VA exact-name screen returned an empty array; the Potomac's GNIS record belongs to the Maryland/DC reach, so the river remains a context corridor in Virginia. Not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "Richmond",
+          "name": "Richmond",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -77.4602617,
+          "lat": 37.5537575,
+          "depthM": 0,
+          "facts": [
+            "Virginia state capital on the James River fall line. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1499957; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "Virginia-beach",
+          "name": "Virginia Beach",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -75.977985,
+          "lat": 36.8529263,
+          "depthM": 0,
+          "facts": [
+            "Atlantic shore anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1500261; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mount-rogers",
+          "name": "Mount Rogers",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -81.544987,
+          "lat": 36.6599778,
+          "depthM": 0,
+          "facts": [
+            "Virginia state high point (5,729 ft). node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1485637; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "smith-mountain-lake",
+          "name": "Smith Mountain Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -79.7660301,
+          "lat": 37.062907,
+          "depthM": 0,
+          "facts": [
+            "Roanoke River reservoir anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1502131; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Richmond",
+          "Populated Place",
+          "pop.place",
+          "City of Richmond",
+          37.5537575,
+          -77.4602617,
+          null,
+          "1499957",
+          1,
+          "Virginia capital anchor on the James River fall line; Richmond is an independent city, and the Geocoder returns the county field verbatim as City of Richmond while the DomesticNames text keys the record to Richmond (city); Richmond County and the Richmond Beach/Heights records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1499957; exact official name and Populated Place type in City of Richmond cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Virginia Beach",
+          "Populated Place",
+          "pop.place",
+          "City of Virginia Beach",
+          36.8529263,
+          -75.977985,
+          null,
+          "1500261",
+          1,
+          "Largest Virginia city and Atlantic shore anchor; an independent city, keyed in the text extract as Virginia Beach (city). USGS GNIS Geocoder (GNIS), FEATURE_ID=1500261; exact official name and Populated Place type in City of Virginia Beach cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Norfolk",
+          "Populated Place",
+          "pop.place",
+          "City of Norfolk",
+          36.8468146,
+          -76.2852183,
+          null,
+          "1497051",
+          1,
+          "Hampton Roads port anchor; an independent city, keyed in the text extract as Norfolk (city); Norfolk Highlands and the naval shipyard records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1497051; exact official name and Populated Place type in City of Norfolk cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Roanoke",
+          "Populated Place",
+          "pop.place",
+          "City of Roanoke",
+          37.2709704,
+          -79.9414267,
+          null,
+          "1499971",
+          1,
+          "Blue Ridge valley anchor; an independent city, keyed in the text extract as Roanoke (city); Roanoke County and the Roanoke Creek site lakes are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1499971; exact official name and Populated Place type in City of Roanoke cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Charlottesville",
+          "Populated Place",
+          "pop.place",
+          "City of Charlottesville",
+          38.0293059,
+          -78.4766781,
+          null,
+          "1498463",
+          1,
+          "Piedmont anchor; an independent city, keyed in the text extract as Charlottesville (city); the two Charlottesville Reservoir records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1498463; exact official name and Populated Place type in City of Charlottesville cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Chesapeake",
+          "Populated Place",
+          "pop.place",
+          "City of Chesapeake",
+          36.8190369,
+          -76.2749399,
+          null,
+          "1496841",
+          1,
+          "Hampton Roads anchor; an independent city, keyed in the text extract as Chesapeake (city); the same-name Northampton County community (1492751), Chesapeake Beach, and Chesapeake Heights are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1496841; exact official name and Populated Place type in City of Chesapeake cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Mount Rogers",
+          "Summit",
+          "phys.summit",
+          "Smyth",
+          36.6599778,
+          -81.544987,
+          null,
+          "1485637",
+          1,
+          "Virginia High Point and state high point at 5,729 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_VA_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1485637 as a Summit in Smyth County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1485637; exact official name and Summit type in Smyth County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Smith Mountain Lake",
+          "Lake",
+          "hydro.lake",
+          "Franklin",
+          37.062907,
+          -79.7660301,
+          null,
+          "1502131",
+          1,
+          "Roanoke River reservoir; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1502131; exact official name and Lake type in Franklin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Lake Anna",
+          "Lake",
+          "hydro.lake",
+          "Louisa",
+          38.0611819,
+          -77.8344649,
+          null,
+          "1501942",
+          1,
+          "North Anna reservoir; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1501942; exact official name and Lake type in Louisa County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Claytor Lake",
+          "Lake",
+          "hydro.lake",
+          "Pulaski",
+          37.0373452,
+          -80.6593262,
+          null,
+          "1501983",
+          1,
+          "New River reservoir; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1501983; exact official name and Lake type in Pulaski County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "James River",
+          "Stream",
+          "hydro.stream",
+          "Isle of Wight",
+          36.9415369,
+          -76.4435588,
+          null,
+          "1488853",
+          1,
+          "The James's GNIS primary point is its Hampton Roads mouth; James River Old Channel and the canal records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1488853; exact official name and Stream type in Isle of Wight County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Rappahannock River",
+          "Stream",
+          "hydro.stream",
+          "Lancaster",
+          37.5876333,
+          -76.2891091,
+          null,
+          "1479404",
+          1,
+          "River record at its Chesapeake mouth on the Northern Neck. USGS GNIS Geocoder (GNIS), FEATURE_ID=1479404; exact official name and Stream type in Lancaster County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ]
+      ]
+    },
+    "westvirginia": {
+      "title": "West Virginia SUBSURFACE 4Dwm",
+      "subtitle": "West Virginia STATEWIDE FRAME - SUBSURFACE + WATER + TIME ... 4D WINDOW MODEL",
+      "gazTitle": "WEST VIRGINIA USGS GNIS REGISTER",
+      "gazNote": "Round 30 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "WV",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -82.7,
+        "lat0": 37.15,
+        "lon1": -77.7,
+        "lat1": 40.7
+      },
+      "center": {
+        "lon": -80.6,
+        "lat": 38.9
+      },
+      "baseElevationM": 430,
+      "roughnessM": 170,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Allegheny Front / Spruce Knob",
+          "lon": -79.53,
+          "lat": 38.7,
+          "rx": 0.4,
+          "ry": 0.5,
+          "amp": 400,
+          "rot": 0
+        },
+        {
+          "name": "Allegheny Plateau",
+          "lon": -80.6,
+          "lat": 38.6,
+          "rx": 1.1,
+          "ry": 0.8,
+          "amp": 260,
+          "rot": 0
+        },
+        {
+          "name": "New River Gorge rim",
+          "lon": -81.1,
+          "lat": 38.05,
+          "rx": 0.5,
+          "ry": 0.35,
+          "amp": 220,
+          "rot": 0
+        },
+        {
+          "name": "Ohio valley lowland",
+          "lon": -82.1,
+          "lat": 38.6,
+          "rx": 0.5,
+          "ry": 0.9,
+          "amp": -80,
+          "rot": 0
+        },
+        {
+          "name": "Eastern panhandle valley",
+          "lon": -78.1,
+          "lat": 39.2,
+          "rx": 0.5,
+          "ry": 0.4,
+          "amp": 60,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i64-westVirginia",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 64/77 corridor (generalized)",
+          "short": "I-64/77",
+          "depthM": 0,
+          "path": [
+            [
+              -82.445154,
+              38.4192496
+            ],
+            [
+              -81.6326235,
+              38.3498195
+            ],
+            [
+              -80.9,
+              37.95
+            ]
+          ],
+          "facts": [
+            "Generalized interstate corridor from Huntington through Charleston; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "ohio-river-westVirginia",
+          "layer": "water",
+          "tier": "context",
+          "name": "Ohio River corridor (generalized)",
+          "short": "Ohio River",
+          "depthM": 0,
+          "path": [
+            [
+              -80.7209149,
+              40.0639616
+            ],
+            [
+              -81.5615135,
+              39.2667418
+            ],
+            [
+              -82.445154,
+              38.4192496
+            ],
+            [
+              -82.1426447,
+              38.8378586
+            ]
+          ],
+          "facts": [
+            "The states=WV exact-name screen returned an empty array; the Ohio main stem's GNIS record is Kentucky-associated (seeded at its mouth in the Kentucky frame), so the river remains a context corridor in West Virginia. Not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "Kanawha-new-river",
+          "layer": "water",
+          "tier": "context",
+          "name": "Kanawha-New River corridor (generalized)",
+          "short": "Kanawha / New",
+          "depthM": 0,
+          "path": [
+            [
+              -82.1426447,
+              38.8378586
+            ],
+            [
+              -81.6326235,
+              38.3498195
+            ],
+            [
+              -81.1964965,
+              38.1617741
+            ],
+            [
+              -80.8848089,
+              37.6537304
+            ]
+          ],
+          "facts": [
+            "Generalized corridor joining the seeded GNIS Kanawha mouth, Charleston, New River confluence, and Greenbrier mouth points; not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "Monongahela-westVirginia",
+          "layer": "water",
+          "tier": "context",
+          "name": "Monongahela River corridor (generalized)",
+          "short": "Monongahela River",
+          "depthM": 0,
+          "path": [
+            [
+              -80.15,
+              39.05
+            ],
+            [
+              -79.9558968,
+              39.629526
+            ],
+            [
+              -79.9,
+              39.72
+            ]
+          ],
+          "facts": [
+            "The states=WV exact-name screen returned an empty array; the Monongahela's GNIS record is Pennsylvania-associated (seeded at Pittsburgh in the Pennsylvania frame), so the river remains a context corridor in West Virginia. Not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "Potomac-panhandle",
+          "layer": "water",
+          "tier": "context",
+          "name": "Eastern panhandle rivers context (generalized)",
+          "short": "Potomac / Shenandoah",
+          "depthM": 0,
+          "path": [
+            [
+              -78.6,
+              39.55
+            ],
+            [
+              -77.7277704,
+              39.3226009
+            ],
+            [
+              -77.9,
+              38.8
+            ]
+          ],
+          "facts": [
+            "Generalized context line joining the seeded Shenandoah mouth point at Harpers Ferry toward the Potomac reach; not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public geography; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "charleston",
+          "name": "Charleston",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -81.6326235,
+          "lat": 38.3498195,
+          "depthM": 0,
+          "facts": [
+            "West Virginia state capital at the Elk-Kanawha confluence. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1558347; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "morgantown",
+          "name": "Morgantown",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -79.9558968,
+          "lat": 39.629526,
+          "depthM": 0,
+          "facts": [
+            "Northern anchor on the Monongahela. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1555161; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "spruce-knob",
+          "name": "Spruce Knob",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -79.5328253,
+          "lat": 38.6998284,
+          "depthM": 0,
+          "facts": [
+            "West Virginia state high point (4,863 ft). node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1553014; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "summersville-lake",
+          "name": "Summersville Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -80.85975,
+          "lat": 38.2434058,
+          "depthM": 0,
+          "facts": [
+            "Gauley River reservoir anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1553142; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        [
+          "Charleston",
+          "Populated Place",
+          "pop.place",
+          "Kanawha",
+          38.3498195,
+          -81.6326235,
+          null,
+          "1558347",
+          1,
+          "West Virginia capital anchor at the Elk-Kanawha confluence. USGS GNIS Geocoder (GNIS), FEATURE_ID=1558347; exact official name and Populated Place type in Kanawha County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Huntington",
+          "Populated Place",
+          "pop.place",
+          "Cabell",
+          38.4192496,
+          -82.445154,
+          null,
+          "1540605",
+          1,
+          "Ohio River port anchor in the tri-state corner. USGS GNIS Geocoder (GNIS), FEATURE_ID=1540605; exact official name and Populated Place type in Cabell County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Morgantown",
+          "Populated Place",
+          "pop.place",
+          "Monongalia",
+          39.629526,
+          -79.9558968,
+          null,
+          "1555161",
+          1,
+          "Northern anchor on the Monongahela; the Morgantown Pool and water-supply lake are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1555161; exact official name and Populated Place type in Monongalia County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Parkersburg",
+          "Populated Place",
+          "pop.place",
+          "Wood",
+          39.2667418,
+          -81.5615135,
+          null,
+          "1544587",
+          1,
+          "Mid-Ohio valley anchor at the Little Kanawha mouth; the Parkersburg District record (1928336) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1544587; exact official name and Populated Place type in Wood County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Wheeling",
+          "Populated Place",
+          "pop.place",
+          "Ohio",
+          40.0639616,
+          -80.7209149,
+          null,
+          "1548994",
+          1,
+          "Northern panhandle anchor on the Ohio River; Wheeling Heights, Wheeling Creek, and Wheeling Island are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1548994; exact official name and Populated Place type in Ohio County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Spruce Knob",
+          "Summit",
+          "phys.summit",
+          "Pendleton",
+          38.6998284,
+          -79.5328253,
+          null,
+          "1553014",
+          1,
+          "West Virginia High Point and state high point at 4,863 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_WV_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1553014 as a Summit in Pendleton County at this point; the same-name Randolph County summit (FEATURE_ID 1555698) and Spruce Knob Lake (FEATURE_ID 1553015) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1553014; exact official name and Summit type in Pendleton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Summersville Lake",
+          "Lake",
+          "hydro.lake",
+          "Nicholas",
+          38.2434058,
+          -80.85975,
+          null,
+          "1553142",
+          1,
+          "Gauley River reservoir, the state's largest lake; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=1553142; exact official name and Lake type in Nicholas County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Cheat Lake",
+          "Lake",
+          "hydro.lake",
+          "Monongalia",
+          39.6621562,
+          -79.8558398,
+          null,
+          "1537226",
+          1,
+          "Cheat River reservoir east of Morgantown; the same-name populated place (1867648) and CDP are not seeded; DomesticNames classifies the record as Reservoir. USGS GNIS Geocoder (GNIS), FEATURE_ID=1537226; exact official name and Lake type in Monongalia County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "New River",
+          "Stream",
+          "hydro.stream",
+          "Fayette",
+          38.1617741,
+          -81.1964965,
+          null,
+          "1552301",
+          1,
+          "The New River's GNIS primary point is its Gauley confluence (the Kanawha head); the New River District record and the Virginia populated place are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1552301; exact official name and Stream type in Fayette County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Kanawha River",
+          "Stream",
+          "hydro.stream",
+          "Fayette",
+          38.8378586,
+          -82.1426447,
+          null,
+          "1551620",
+          1,
+          "The Kanawha's GNIS primary point is its Ohio River mouth at Point Pleasant; both surfaces return the record's primary county as Fayette (the source-reach county), preserved verbatim rather than edited to the mouth county. USGS GNIS Geocoder (GNIS), FEATURE_ID=1551620; exact official name and Stream type in Fayette County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Shenandoah River",
+          "Stream",
+          "hydro.stream",
+          "Jefferson",
+          39.3226009,
+          -77.7277704,
+          null,
+          "1556740",
+          1,
+          "The Shenandoah's GNIS primary point is its Potomac mouth at Harpers Ferry; the record is West Virginia-associated, so the river is seeded here and remains a corridor in Virginia, where the screen returns only subdivision records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1556740; exact official name and Stream type in Jefferson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ],
+        [
+          "Greenbrier River",
+          "Stream",
+          "hydro.stream",
+          "Summers",
+          37.6537304,
+          -80.8848089,
+          null,
+          "1551294",
+          1,
+          "River record at its New River mouth at Hinton; the Greenbrier River District record (1928282) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1551294; exact official name and Stream type in Summers County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode."
+        ]
+      ]
     }
   }
 }

@@ -243,6 +243,22 @@ after an empty screen. Next in sequence: Illinois/Indiana/Ohio and the
 remaining states in dated per-row batches, then the country/planet
 thread.
 
+**Round 30 status (2026-10-23): partial.** Virginia and West Virginia
+shipped as configurations 37–38, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json).
+Mount Rogers (`1485637`, Smyth County, 5,729 ft) and Spruce Knob
+(`1553014`, Pendleton County, 4,863 ft; Randolph namesake rejected)
+keep their High Point designations. Six Virginia rows are independent
+cities (Geocoder `City of …` vs extract `… (city)`, normalized in
+verification). The Shenandoah and New River records are West
+Virginia-associated and seeded in West Virginia; the Ohio,
+Monongahela, and Potomac main stems remain corridors here. The
+Kanawha River row preserves its returned primary county (Fayette)
+verbatim at the Point Pleasant mouth point.
+
 **Round 29 status (2026-10-23): partial.** Kentucky and Tennessee
 shipped as configurations 35–36, each with a 12/12 per-ID
 `VERIFIED=1` GNIS starter register, labelled synthetic relief,

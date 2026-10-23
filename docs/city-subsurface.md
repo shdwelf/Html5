@@ -144,10 +144,25 @@ Tennessee GNIS record on either surface and appears only as a context
 marker. The machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json).
 
+Round 30 update: **2026-10-23**. `virginia` and `westvirginia` join as
+the thirty-seventh and thirty-eighth configurations. Each starts with
+twelve all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS
+surfaces (candidates in the cumulative extract). Mount Rogers (5,729
+feet, Virginia high point) and Spruce Knob (4,863 feet, West Virginia
+high point) carry Domestic Names per-ID identity checks. Six Virginia
+rows are independent cities whose county identities are spelled
+`City of …` by the Geocoder and `… (city)` by the text extract —
+normalized in verification, never edited. The Shenandoah and New
+River records are West Virginia-associated and seeded in West
+Virginia (Virginia screens return no stream records); the Potomac,
+Ohio, and Monongahela main stems remain corridors here. The
+machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has thirty-six configurations — five cities,
-twenty-seven statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has thirty-eight configurations — five cities,
+twenty-nine statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -188,6 +203,8 @@ its own offline Webxdc:
 | Arkansas (statewide) | `arkansas-subsurface.html` | `js/city-subsurface-data-arkansas.js` | `js/city-gazetteer-data-arkansas.js` | `arkansas-subsurface.xdc` |
 | Kentucky (statewide) | `Kentucky-subsurface.html` | `js/city-subsurface-data-Kentucky.js` | `js/city-gazetteer-data-Kentucky.js` | `Kentucky-subsurface.xdc` |
 | Tennessee (statewide) | `tennessee-subsurface.html` | `js/city-subsurface-data-tennessee.js` | `js/city-gazetteer-data-tennessee.js` | `tennessee-subsurface.xdc` |
+| Virginia (statewide) | `virginia-subsurface.html` | `js/city-subsurface-data-virginia.js` | `js/city-gazetteer-data-virginia.js` | `virginia-subsurface.xdc` |
+| West Virginia (statewide) | `westvirginia-subsurface.html` | `js/city-subsurface-data-westvirginia.js` | `js/city-gazetteer-data-westvirginia.js` | `westvirginia-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
