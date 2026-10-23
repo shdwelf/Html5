@@ -252,6 +252,34 @@ Rainy Lake holds as a four-way ambiguity. Next in sequence: Gulf/South
 Atlantic states (Mississippi/Alabama/Georgia …), then the country/planet
 thread.
 
+**Round 27 status (2026-10-23): partial.** Mississippi and Alabama shipped
+as configurations 31–32, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, no DEM,
+and a labelled generalized Gulf coast line. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json).
+Woodall Mountain and Cheaha Mountain carry GNIS Domestic Names per-ID
+checks (“Highest elevation in MS at 806 feet” on FEATURE_ID 692362 with
+Bear/Woodalls Mountain variants, and “Highest elevation in AL at 2407 feet”
+on FEATURE_ID 159374 with the 1906 Board Decision and four historic
+variants) — both recalled elevations were wrong. Guntersville Lake selects
+FEATURE_ID 119508 over the suggestion-listed parallel Jackson County
+record 1286448 on decision-card evidence (a new register tie-break rule);
+Wheeler Lake separates its intended Limestone County reservoir 112837 from
+a same-name Chambers County lake 131097 entered on the Georgia border.
+The Mississippi main stem stays corridor-only in its own state after a
+**fifth empty/mismatched screen** (MS returned an empty array; Tombigbee
+is empty under MS but seeds in Alabama; the Alabama Tombigbee point sits
+~100 m from the Alabama River’s at their shared confluence, both as
+returned). Ross R Barnett Reservoir clears the round-24 punctuation gate
+(term carried periods, official name without); Lake Martin and Tennessee
+River screens returned empty; Pearl River returns only county/town/census
+records under states=MS. County/census-division-first suggestion traps
+pile across all six Alabama cities and Jackson MS — every rejected twin is
+named in the register. Final: cities 32 (17/17), Node 730, vitest 307,
+wiki 222, city XDCs 79 entries. Next in sequence: Georgia, then Florida,
+then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

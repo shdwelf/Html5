@@ -87,10 +87,22 @@ record. Louisiana ships a labelled generalized Gulf coast line. Their
 machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json).
 
+Round 27 update: **2026-10-23**. `mississippi` and `alabama` join as the
+thirty-first and thirty-second configurations, opening the Gulf state pair
+east of Texas. Each starts with twelve all-GNIS `VERIFIED=1` rows;
+Woodall Mountain and Cheaha Mountain additionally carry GNIS Domestic
+Names per-ID detail checks (“806 feet” and “2407 feet”), Guntersville Lake
+and Wheeler Lake carry decision-card per-ID checks that resolve a parallel
+duplicate and a separate same-name lake, and both frames ship labelled
+generalized Gulf coast lines. The Mississippi main stem stays corridor-only
+in its own state after a fifth empty/mismatched screen, and Tombigbee
+seeds only in Alabama. Their machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has thirty configurations — five cities,
-twenty-one statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has thirty-two configurations — five cities,
+twenty-three statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -125,6 +137,8 @@ its own offline Webxdc:
 | Missouri (statewide) | `missouri-subsurface.html` | `js/city-subsurface-data-missouri.js` | `js/city-gazetteer-data-missouri.js` | `missouri-subsurface.xdc` |
 | Minnesota (statewide) | `minnesota-subsurface.html` | `js/city-subsurface-data-minnesota.js` | `js/city-gazetteer-data-minnesota.js` | `minnesota-subsurface.xdc` |
 | Louisiana (statewide) | `louisiana-subsurface.html` | `js/city-subsurface-data-louisiana.js` | `js/city-gazetteer-data-louisiana.js` | `louisiana-subsurface.xdc` |
+| Mississippi (statewide) | `mississippi-subsurface.html` | `js/city-subsurface-data-mississippi.js` | `js/city-gazetteer-data-mississippi.js` | `mississippi-subsurface.xdc` |
+| Alabama (statewide) | `alabama-subsurface.html` | `js/city-subsurface-data-alabama.js` | `js/city-gazetteer-data-alabama.js` | `alabama-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

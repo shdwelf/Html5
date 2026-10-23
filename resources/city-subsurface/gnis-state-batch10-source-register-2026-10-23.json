@@ -1,0 +1,463 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 27 Gulf state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Mississippi and Alabama. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned primary point. Woodall Mountain, Cheaha Mountain, Guntersville Lake, and Wheeler Lake additionally carry GNIS Domestic Names per-ID checks.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<MS|AL>&include=gnis&maxSuggestions=10",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Counties, divisions, landings, canals, cut-offs, creeks, bayous, reservoirs, channels, ship channels, basins, heights, junctions, parks, branches, mountains, bars, estates, air fields, and same-name records of another class or county were rejected explicitly where relevant. Abbreviation variants (Ross R. versus Ross R) were screened and recorded."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://edits.nationalmap.gov/apps/gaz-domestic/public/search/names/{featureId}",
+      "use": "Per-ID identity checks for Woodall Mountain (692362), confirming the Mississippi High Point description and variants; Cheaha Mountain (159374), confirming the Alabama High Point description, 1906 Board Decision, and variants; Guntersville Lake (119508 plus rejected parallel 1286448), confirming the decision cards; and Wheeler Lake (112837 plus rejected separate-feature 131097), confirming the 1954 decision card and dam-chain sequences."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, the state-filtered screen returns no intended feature record, the returned record does not match the intended name and type, or the returned primary point does not identify an in-frame reach of the intended feature, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "When two official same-name records describe one feature, the record carrying the Board decision cards and the namesake primary map is stored and the parallel record is disclosed as a duplicate; when two same-name records are separate features, only the record identified as the intended feature by its decision card and namesake sequences may be stored.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied. Both frames ship labelled generalized Gulf coast lines that are not shoreline surveys."
+  ],
+  "frames": {
+    "mississippi": {
+      "title": "Mississippi statewide frame",
+      "state": "MS",
+      "bbox": {
+        "lon0": -91.7,
+        "lat0": 30.05,
+        "lon1": -88.2,
+        "lat1": 35.0
+      },
+      "frameNote": "Gulf batch: the Jackson, Gulfport, Biloxi, Hattiesburg, Tupelo, and Vicksburg anchors are balanced with per-ID Woodall Mountain (806 feet), Sardis and Ross R Barnett reservoirs, and the Yazoo, Big Black, and Pascagoula river records. The Mississippi River stays corridor-only after an empty states=MS screen following the Louisiana seed; Tombigbee is empty under MS, Pearl River returns only county/town/CDP records, and Grenada Lake holds to starter scope. The Jackson ten-record trap pile is recorded.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Jackson",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hinds",
+          "latitude": 32.2987573,
+          "longitude": -90.1848103,
+          "featureId": "711543",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hinds County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The screen led with Jackson County (FEATURE_ID 695753); rejected: Jackson County, Jackson Landing (FEATURE_ID 691962), Jackson Branch (FEATURE_ID 671768), Jackson Cut-Off (FEATURE_ID 671780), Jackson Creek in Copiah (FEATURE_ID 671775), DeSoto (FEATURE_ID 690309), and Hinds (FEATURE_ID 671776), plus Jackson Bayou in Humphreys (FEATURE_ID 671767, FEATURE_ID 671766). USGS GNIS Geocoder (GNIS), FEATURE_ID=711543; exact official name and Cities & Populated Places type in Hinds County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Gulfport",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Harrison",
+          "latitude": 30.3674198,
+          "longitude": -89.0928155,
+          "featureId": "670771",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Harrison County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: Gulfport Channel (FEATURE_ID 670772) and the historical Gulfport Army Air Field (FEATURE_ID 2085466). USGS GNIS Geocoder (GNIS), FEATURE_ID=670771; exact official name and Cities & Populated Places type in Harrison County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Biloxi",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Harrison",
+          "latitude": 30.3960318,
+          "longitude": -88.8853078,
+          "featureId": "667173",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Harrison County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the Biloxi River stream record (FEATURE_ID 692619) and the Biloxi Bay record (FEATURE_ID 667174). USGS GNIS Geocoder (GNIS), FEATURE_ID=667173; exact official name and Cities & Populated Places type in Harrison County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Hattiesburg",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Forrest",
+          "latitude": 31.3271189,
+          "longitude": -89.2903392,
+          "featureId": "691565",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Forrest County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the historical Hattiesburg Army Air Field (FEATURE_ID 2085467). USGS GNIS Geocoder (GNIS), FEATURE_ID=691565; exact official name and Cities & Populated Places type in Forrest County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Tupelo",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Lee",
+          "latitude": 34.2576067,
+          "longitude": -88.7033859,
+          "featureId": "678931",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Lee County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: Tupelo Gum Lake (FEATURE_ID 678932) and Tupelo Gum Slough (FEATURE_ID 678933). USGS GNIS Geocoder (GNIS), FEATURE_ID=678931; exact official name and Cities & Populated Places type in Lee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Vicksburg",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Warren",
+          "latitude": 32.3526457,
+          "longitude": -90.8778821,
+          "featureId": "679216",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Warren County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=679216; exact official name and Cities & Populated Places type in Warren County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Woodall Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Tishomingo",
+          "latitude": 34.7877049,
+          "longitude": -88.2418656,
+          "featureId": "692362",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Tishomingo County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Mississippi's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check showed the description Highest elevation in MS at 806 feet, Primary County Tishomingo County, Primary Map Iuka, and coordinate sequence 1 marked High Point at the stored point, matching the Geocoder exactly. The per-ID variant names Bear Mountain and Woodalls Mountain belong to this same record. USGS GNIS Geocoder (GNIS), FEATURE_ID=692362; exact official name and Summit type in Tishomingo County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Sardis Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Lafayette",
+          "latitude": 34.4723806,
+          "longitude": -89.6661782,
+          "featureId": "694715",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Lafayette County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=694715; exact official name and Lakes & Reservoirs type in Lafayette County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Ross R Barnett Reservoir",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Rankin",
+          "latitude": 32.5608125,
+          "longitude": -89.8838357,
+          "featureId": "676892",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Rankin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The screen term Ross R. Barnett Reservoir returned the official period-less name Ross R Barnett Reservoir; identity rests on the returned record. North of Jackson on the Pearl River. USGS GNIS Geocoder (GNIS), FEATURE_ID=676892; exact official name and Lakes & Reservoirs type in Rankin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Yazoo River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Warren",
+          "latitude": 32.3354241,
+          "longitude": -90.8973269,
+          "featureId": "695222",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Warren County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the Yazoo River Cutoff record (FEATURE_ID 684996). The point is the Warren County sequence near the Mississippi confluence at Vicksburg, not the channel through the delta. USGS GNIS Geocoder (GNIS), FEATURE_ID=695222; exact official name and Streams & Canals type in Warren County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Big Black River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Claiborne",
+          "latitude": 32.0537665,
+          "longitude": -91.0581633,
+          "featureId": "690954",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Claiborne County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the Big Black River Canal record (FEATURE_ID 667076), which the screen listed first. The point is the Claiborne County sequence near the mouth, not the channel from the Black Prairie. USGS GNIS Geocoder (GNIS), FEATURE_ID=690954; exact official name and Streams & Canals type in Claiborne County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Pascagoula River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Jackson",
+          "latitude": 30.3443666,
+          "longitude": -88.5675163,
+          "featureId": "694322",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Jackson County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: the Pascagoula River Estates populated place (FEATURE_ID 690749), which the screen listed first. The point is the Jackson County sequence near the Gulf, not the channel. USGS GNIS Geocoder (GNIS), FEATURE_ID=694322; exact official name and Streams & Canals type in Jackson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    },
+    "alabama": {
+      "title": "Alabama statewide frame",
+      "state": "AL",
+      "bbox": {
+        "lon0": -88.7,
+        "lat0": 30.1,
+        "lon1": -84.9,
+        "lat1": 35.05
+      },
+      "frameNote": "Gulf batch: the Montgomery, Birmingham, Mobile, Huntsville, Tuscaloosa, and Dothan anchors are balanced with per-ID Cheaha Mountain (2407 feet), the decision-card Guntersville Lake and Wheeler Lake records, and the Alabama, Tombigbee, and Mobile river records. The county/division trap piles for all six cities, the Tennessee River and Lake Martin empty screens, the parallel Guntersville duplicate, and the separate Chambers County Wheeler Lake are recorded.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Montgomery",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Montgomery",
+          "latitude": 32.3668052,
+          "longitude": -86.2999689,
+          "featureId": "165344",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Montgomery County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The screen led with Montgomery County (FEATURE_ID 161577); rejected: Montgomery County, Montgomery Division (FEATURE_ID 165905), Montgomery Hill (FEATURE_ID 134636), Montgomery East (FEATURE_ID 142708), Montgomery Lakes in Tuscaloosa County (FEATURE_ID 1700463), Montgomery Creek (FEATURE_ID 160126), Montgomerys Lake (FEATURE_ID 130989), Montgomery Lake (FEATURE_ID 122966), and Montgomery Hunting Club Lake (FEATURE_ID 130120). USGS GNIS Geocoder (GNIS), FEATURE_ID=165344; exact official name and Cities & Populated Places type in Montgomery County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Birmingham",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Jefferson",
+          "latitude": 33.5206608,
+          "longitude": -86.80249,
+          "featureId": "158174",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Jefferson County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The screen led with Birmingham Division (FEATURE_ID 161616); rejected: Birmingham Division, Birmingham Reservoir (FEATURE_ID 144014), Birmingham Airport (FEATURE_ID 2832645), the historical Birmingham Army Air Field (FEATURE_ID 2085455), and Birmingham Hollow (FEATURE_ID 114373). USGS GNIS Geocoder (GNIS), FEATURE_ID=158174; exact official name and Cities & Populated Places type in Jefferson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Mobile",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Mobile",
+          "latitude": 30.6943566,
+          "longitude": -88.0430541,
+          "featureId": "155153",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Mobile County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The screen led with Mobile County (FEATURE_ID 161575); rejected: Mobile County, Mobile Division (FEATURE_ID 161620), Mobile Junction (FEATURE_ID 156723), Mobile Heights (FEATURE_ID 142699), and the Mobile Channel (FEATURE_ID 143540), Mobile - Tensaw Cut-off Channel (FEATURE_ID 134635), Mobile Ship Channel (FEATURE_ID 152355), and Mobile Turning Basin (FEATURE_ID 163273) waterway records. The same-name Mobile River record (FEATURE_ID 163332) seeds separately below. USGS GNIS Geocoder (GNIS), FEATURE_ID=155153; exact official name and Cities & Populated Places type in Mobile County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Huntsville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Madison",
+          "latitude": 34.7303688,
+          "longitude": -86.5861037,
+          "featureId": "151827",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Madison County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The screen led with Huntsville Division (FEATURE_ID 161618); rejected: Huntsville Division, Huntsville Hills (FEATURE_ID 146994), Huntsville Park (FEATURE_ID 120562), Huntsville Spring Branch (FEATURE_ID 151829), and Huntsville Mountain (FEATURE_ID 120561). USGS GNIS Geocoder (GNIS), FEATURE_ID=151827; exact official name and Cities & Populated Places type in Madison County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Tuscaloosa",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Tuscaloosa",
+          "latitude": 33.2098407,
+          "longitude": -87.5691735,
+          "featureId": "153742",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Tuscaloosa County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The screen led with Tuscaloosa County (FEATURE_ID 161588); rejected: Tuscaloosa County, Tuscaloosa Division (FEATURE_ID 161624), and the historical Tuscaloosa Shoals bar record (FEATURE_ID 148668). USGS GNIS Geocoder (GNIS), FEATURE_ID=153742; exact official name and Cities & Populated Places type in Tuscaloosa County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Dothan",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Houston",
+          "latitude": 31.2232313,
+          "longitude": -85.3904889,
+          "featureId": "117397",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Houston County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The screen led with Dothan Division (FEATURE_ID 161615); rejected: Dothan Division. USGS GNIS Geocoder (GNIS), FEATURE_ID=117397; exact official name and Cities & Populated Places type in Houston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Cheaha Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Cleburne",
+          "latitude": 33.485384,
+          "longitude": -85.8085996,
+          "featureId": "159374",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Cleburne County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Alabama's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check showed the description Highest elevation in AL at 2407 feet, Primary County Cleburne County, Primary Map Cheaha Mountain, the 1906 Board Decision making the name official, and coordinate sequence 1 marked High Point at the stored point, matching the Geocoder exactly. The per-ID variant names Blue Mountain, Che-aw-ha Mountain, Che-haw-haw Mountain, Chehaw Mountain, and Shinbone Mountain belong to this same record. USGS GNIS Geocoder (GNIS), FEATURE_ID=159374; exact official name and Summit type in Cleburne County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Guntersville Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Marshall",
+          "latitude": 34.4231468,
+          "longitude": -86.3922077,
+          "featureId": "119508",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Marshall County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Seeded FEATURE_ID 119508 (Primary Map Guntersville Dam): the per-ID check shows Board decision card PDFs dated 1952 and 1954, the Guntersville Reservoir variant name, and 19 coordinate sequences along the Tennessee River chain with sequence 1 at the Guntersville Dam point matching this screen. The parallel Jackson County same-name record (FEATURE_ID 1286448, 20 sequences, its own 1952 decision row, no decision cards) duplicates the same impoundment and is not seeded as a second lake. The point is not a shoreline. USGS GNIS Geocoder (GNIS), FEATURE_ID=119508; exact official name and Lakes & Reservoirs type in Marshall County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Wheeler Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Limestone",
+          "latitude": 34.6694685,
+          "longitude": -87.0472474,
+          "featureId": "112837",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Limestone County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Seeded FEATURE_ID 112837 (Primary Map Jones Crossroads): the per-ID check shows the 1954 Board decision card PDF and 17 coordinate sequences along the Tennessee River chain including the Wheeler Dam sequence, with sequence 1 matching this screen. The Chambers County same-name record (FEATURE_ID 131097, entered 2003 on the Lafayette quadrangle) is a separate lake on the Georgia border and is not the intended Tennessee River reservoir. The point is not a shoreline. USGS GNIS Geocoder (GNIS), FEATURE_ID=112837; exact official name and Lakes & Reservoirs type in Limestone County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Alabama River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Baldwin",
+          "latitude": 31.136009,
+          "longitude": -87.943331,
+          "featureId": "154961",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Baldwin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Rejected: Alabama River Cutoff (FEATURE_ID 112960) and Alabama River Canal (FEATURE_ID 137133). The point is the Baldwin County lower sequence near the Mobile River confluence, not the channel through Montgomery. USGS GNIS Geocoder (GNIS), FEATURE_ID=154961; exact official name and Streams & Canals type in Baldwin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Tombigbee River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Washington",
+          "latitude": 31.136287,
+          "longitude": -87.944164,
+          "featureId": "158094",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Washington County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Single exact screen result; the states=MS Tombigbee screen returned an empty array, so only this Alabama frame carries the row. The point is the Washington County sequence at the Alabama River confluence, about a hundred metres from the Alabama River primary point; not a channel centerline. USGS GNIS Geocoder (GNIS), FEATURE_ID=158094; exact official name and Streams & Canals type in Washington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Mobile River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Mobile",
+          "latitude": 30.6560241,
+          "longitude": -88.0311088,
+          "featureId": "163332",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Mobile County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Single exact screen result; the Mobile city screen also returned this record. The point is the Mobile County delta sequence feeding Mobile Bay, not a channel or shoreline. USGS GNIS Geocoder (GNIS), FEATURE_ID=163332; exact official name and Streams & Canals type in Mobile County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Woodall Mountain, FEATURE_ID 692362",
+      "decision": "Seeded after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Mississippi, Primary County=Tishomingo County, Primary Map Iuka, coordinate sequence 1 at the stored point marked High Point, and the description Highest elevation in MS at 806 feet; the Geocoder returned a single exact Summit record and the coordinate matches.",
+      "notClaimed": "The primary point is not a surveyed boundary of the high ground. The per-ID variant names Bear Mountain and Woodalls Mountain are variants of this record, not separate features."
+    },
+    {
+      "candidate": "Cheaha Mountain, FEATURE_ID 159374",
+      "decision": "Seeded after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Alabama, Primary County=Cleburne County, Primary Map Cheaha Mountain, the 1906 Board Decision making the name official, coordinate sequence 1 at the stored point marked High Point, and the description Highest elevation in AL at 2407 feet; the Geocoder returned a single exact Summit record and the coordinate matches.",
+      "notClaimed": "The primary point is not a surveyed boundary of the high ground. The per-ID variants Blue Mountain, Che-aw-ha Mountain, Che-haw-haw Mountain, Chehaw Mountain, and Shinbone Mountain are variants of this record."
+    },
+    {
+      "candidate": "Guntersville Lake, FEATURE_ID 119508 versus parallel 1286448",
+      "decision": "Seeded the Marshall County record 119508: its per-ID check shows the Board decision card PDFs (1952 and 1954), the Guntersville Reservoir variant name, Primary Map Guntersville Dam, and 19 sequences along the Tennessee River chain with sequence 1 at the dam matching this screen. The parallel Jackson County record 1286448 duplicates the same impoundment with 20 sequences and its own 1952 decision row but no decision cards; it is disclosed and not seeded as a second lake.",
+      "knownServiceDiscrepancy": "Two official same-name reservoir records describe one impoundment because the lake spans Jackson and Marshall counties; suggestion order listed 1286448 first. The decision-card rule picks 119508; neither record verifies the shoreline."
+    },
+    {
+      "candidate": "Wheeler Lake, FEATURE_ID 112837 versus 131097",
+      "decision": "Seeded the Limestone County record 112837: its per-ID check shows the 1954 Board decision card PDF and 17 sequences along the Tennessee River chain including the Wheeler Dam sequence, with sequence 1 matching this screen. The Chambers County record 131097 (entered 2003, Primary Map Lafayette, point 32.9222321/-85.3879005 on the Georgia border) is a separate same-name lake and is rejected as not the intended Tennessee River reservoir.",
+      "notClaimed": "The rejected Chambers County lake is not verified or dismissed as a feature; it is simply not the intended one, and the stored point is not a shoreline."
+    },
+    {
+      "candidate": "Mississippi River under states=MS (fifth state screen)",
+      "decision": "No row seeded; the 2026-10-23 states=MS screen returned an empty array. The western-border corridor carries the disclosure chain: Iowa empty, Missouri name mismatch (Mississippi River Hills 758109), Minnesota type mismatch (reservoir 1776673), Louisiana success (1629903 at Plaquemines), and this Mississippi empty.",
+      "reason": "Empty screens stay unseeded; the LA-registered record does not appear for states=MS."
+    },
+    {
+      "candidate": "Tombigbee River under states=MS versus states=AL; Pearl River under states=MS",
+      "decision": "Tombigbee seeds only in Alabama (158094, Washington County) after an empty states=MS screen. Pearl River is not seeded: the states=MS screen returned only Pearl River County 695777, the Pearl River populated place 675540 in Neshoba County, and its census record 2403401, with no stream record.",
+      "notClaimed": "No county, town, or census point verifies the river, and no corridor was drawn because the Mississippi frame already carries four context corridors."
+    },
+    {
+      "candidate": "Jackson, Mississippi, ten-record trap pile",
+      "decision": "Seeded the Hinds County capital 711543; the screen led with Jackson County 695753 and also returned Jackson Landing 691962, five Jackson stream records (671768, 671780, 671775, 690309, 671776), and two Jackson Bayou records (671767, 671766), all rejected.",
+      "notClaimed": "No county, landing, branch, cut-off, creek, or bayou point verifies the capital."
+    },
+    {
+      "candidate": "Alabama city county/division piles: Montgomery, Birmingham, Mobile, Huntsville, Tuscaloosa, Dothan",
+      "decision": "Every screen led with a county or census division record. Montgomery rejects county 161577, division 165905, Hill 134636, East 142708, Tuscaloosa-county lakes 1700463, creek 160126, and three same-name lakes 130989/122966/130120; Birmingham rejects division 161616, reservoir 144014, airport 2832645, air field 2085455, hollow 114373; Mobile rejects county 161575, division 161620, junction 156723, heights 142699, and four channel records; Huntsville rejects division 161618, hills 146994, park 120562, branch 151829, mountain 120561; Tuscaloosa rejects county 161588, division 161624, and the historical shoals bar 148668; Dothan rejects division 161615.",
+      "notClaimed": "No division, county, hill, junction, heights, channel, reservoir, airport, hollow, branch, mountain, or bar point verifies its namesake city."
+    },
+    {
+      "candidate": "Mobile city and Mobile River, FEATURE_ID 155153 and 163332",
+      "decision": "Both seed as distinct features: the populated place from the Mobile screen and the stream from a dedicated Mobile River screen (single exact result, Mobile County). The four channel records are rejected in the city note.",
+      "notClaimed": "The city point does not verify the river and the delta point does not verify the city or the shoreline."
+    },
+    {
+      "candidate": "Alabama River and Tombigbee River confluence points",
+      "decision": "Both seed: Alabama River 154961 (Baldwin, 31.136009/-87.943331) and Tombigbee River 158094 (Washington, 31.136287/-87.944164). The two primary points sit about a hundred metres apart at the shared confluence area, which the respective county sequences and notes disclose.",
+      "knownServiceDiscrepancy": "The Alabama River record is county-Baldwin while the confluence straddles Baldwin and Washington; both returned series are stored as returned."
+    },
+    {
+      "candidate": "Yazoo River, Big Black River, and Pascagoula River screen order traps",
+      "decision": "Each exact stream record was seeded behind a same-prefix reject: Yazoo River Cutoff 684996, Big Black River Canal 667076, and Pascagoula River Estates 690749 were each listed first by the screen and rejected by name or type.",
+      "notClaimed": "No cutoff, canal, or estate point verifies its river."
+    },
+    {
+      "candidate": "Ross R. Barnett Reservoir punctuation gate",
+      "decision": "The screen term Ross R. Barnett Reservoir returned the official period-less name Ross R Barnett Reservoir 676892 in Rankin County; the returned record is stored exactly and the punctuation difference is recorded, the same identity-gate treatment as the round-24 Grand Lake apostrophe.",
+      "notClaimed": "The stored point is not a shoreline or dam outline."
+    },
+    {
+      "candidate": "Lake Martin under states=AL; Grenada Lake under states=MS",
+      "decision": "Lake Martin returned an empty array and holds with the other unscreened alternatives; Grenada Lake (693366) is identity-safe but held to starter scope, the same treatment as Waterloo (round 25), Salina (round 23), and the Lake Charles lake (round 26).",
+      "notClaimed": "No exclusion on identity grounds for Grenada; the screen results are recorded so the omissions are visible."
+    }
+  ],
+  "knownLimitations": [
+    "Mississippi and Alabama are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence, and the returned county is primary-county provenance. Woodall Mountain, Cheaha Mountain, Guntersville Lake, and Wheeler Lake additionally carry per-ID Domestic Names detail checks.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines; the Gulf coast lines are generalized, not shoreline surveys.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include small areas outside their state outlines; no boundary geometry is claimed."
+  ]
+}
