@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T23:15:49Z",
+ "retrieved": "2026-10-23T23:25:51Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -2802,6 +2802,293 @@
      "county": "Ohio",
      "lat": 40.0639616,
      "lon": -80.7209149
+    }
+   ]
+  },
+  "NC": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_NC_Text.zip",
+   "zipSha256": "f7ca255647ebd1d213af3cf18c3871cbf66e892e35bb0074165b99b554854cae",
+   "candidatesRequested": [
+    "Raleigh",
+    "Charlotte",
+    "Greensboro",
+    "Durham",
+    "Asheville",
+    "Mount Mitchell",
+    "Kuwohi",
+    "Lake Norman",
+    "B. Everett Jordan Lake",
+    "Cape Fear River",
+    "Roanoke River",
+    "Clingmans Dome",
+    "Jordan Lake",
+    "Kerr Lake"
+   ],
+   "rows": [
+    {
+     "featureId": "1018864",
+     "name": "Asheville",
+     "featureClass": "Populated Place",
+     "state": "North Carolina",
+     "county": "Buncombe",
+     "lat": 35.6009452,
+     "lon": -82.554015
+    },
+    {
+     "featureId": "980401",
+     "name": "B. Everett Jordan Lake",
+     "featureClass": "Reservoir",
+     "state": "North Carolina",
+     "county": "Chatham",
+     "lat": 35.7080038,
+     "lon": -79.0346229
+    },
+    {
+     "featureId": "1023879",
+     "name": "Cape Fear River",
+     "featureClass": "Stream",
+     "state": "North Carolina",
+     "county": "Brunswick",
+     "lat": 33.8854525,
+     "lon": -78.0127673
+    },
+    {
+     "featureId": "1019610",
+     "name": "Charlotte",
+     "featureClass": "Populated Place",
+     "state": "North Carolina",
+     "county": "Mecklenburg",
+     "lat": 35.2270869,
+     "lon": -80.8431268
+    },
+    {
+     "featureId": "1020059",
+     "name": "Durham",
+     "featureClass": "Populated Place",
+     "state": "North Carolina",
+     "county": "Durham",
+     "lat": 35.9940329,
+     "lon": -78.898619
+    },
+    {
+     "featureId": "1020557",
+     "name": "Greensboro",
+     "featureClass": "Populated Place",
+     "state": "North Carolina",
+     "county": "Guilford",
+     "lat": 36.0726355,
+     "lon": -79.7919754
+    },
+    {
+     "featureId": "1326387",
+     "name": "Kuwohi",
+     "featureClass": "Summit",
+     "state": "North Carolina",
+     "county": "Swain",
+     "lat": 35.562778,
+     "lon": -83.498535
+    },
+    {
+     "featureId": "1852664",
+     "name": "Lake Norman",
+     "featureClass": "Populated Place",
+     "state": "North Carolina",
+     "county": "Catawba",
+     "lat": 35.5688,
+     "lon": -80.90244
+    },
+    {
+     "featureId": "991183",
+     "name": "Lake Norman",
+     "featureClass": "Reservoir",
+     "state": "North Carolina",
+     "county": "Iredell",
+     "lat": 35.5416974,
+     "lon": -80.9382056
+    },
+    {
+     "featureId": "990428",
+     "name": "Mount Mitchell",
+     "featureClass": "Populated Place",
+     "state": "North Carolina",
+     "county": "Cabarrus",
+     "lat": 35.4965284,
+     "lon": -80.5533986
+    },
+    {
+     "featureId": "1021549",
+     "name": "Mount Mitchell",
+     "featureClass": "Populated Place",
+     "state": "North Carolina",
+     "county": "Yancey",
+     "lat": 35.9123361,
+     "lon": -82.2912383
+    },
+    {
+     "featureId": "1013745",
+     "name": "Mount Mitchell",
+     "featureClass": "Summit",
+     "state": "North Carolina",
+     "county": "Yancey",
+     "lat": 35.7647624,
+     "lon": -82.2648609
+    },
+    {
+     "featureId": "1024242",
+     "name": "Raleigh",
+     "featureClass": "Populated Place",
+     "state": "North Carolina",
+     "county": "Wake",
+     "lat": 35.772096,
+     "lon": -78.6386145
+    },
+    {
+     "featureId": "1502110",
+     "name": "Roanoke River",
+     "featureClass": "Stream",
+     "state": "North Carolina",
+     "county": "Bertie",
+     "lat": 35.9423835,
+     "lon": -76.6949441
+    }
+   ]
+  },
+  "SC": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_SC_Text.zip",
+   "zipSha256": "54ccbadd2b67bbcfa998b1a99c583df256bf449deece55f901cffbc41b20bb61",
+   "candidatesRequested": [
+    "Columbia",
+    "Charleston",
+    "Greenville",
+    "Spartanburg",
+    "Myrtle Beach",
+    "Sassafras Mountain",
+    "Lake Marion",
+    "Lake Moultrie",
+    "Lake Murray",
+    "Savannah River",
+    "Congaree River",
+    "Pee Dee River",
+    "Lake Hartwell",
+    "Lake Wylie"
+   ],
+   "rows": [
+    {
+     "featureId": "1221516",
+     "name": "Charleston",
+     "featureClass": "Populated Place",
+     "state": "South Carolina",
+     "county": "Charleston",
+     "lat": 32.7765656,
+     "lon": -79.9309216
+    },
+    {
+     "featureId": "1245051",
+     "name": "Columbia",
+     "featureClass": "Populated Place",
+     "state": "South Carolina",
+     "county": "Richland",
+     "lat": 34.0007104,
+     "lon": -81.0348144
+    },
+    {
+     "featureId": "1249468",
+     "name": "Congaree River",
+     "featureClass": "Stream",
+     "state": "South Carolina",
+     "county": "Richland",
+     "lat": 33.7440461,
+     "lon": -80.6192539
+    },
+    {
+     "featureId": "1245842",
+     "name": "Greenville",
+     "featureClass": "Populated Place",
+     "state": "South Carolina",
+     "county": "Greenville",
+     "lat": 34.8526176,
+     "lon": -82.3940105
+    },
+    {
+     "featureId": "1224315",
+     "name": "Lake Marion",
+     "featureClass": "Lake",
+     "state": "South Carolina",
+     "county": "Clarendon",
+     "lat": 33.4611873,
+     "lon": -80.3848589
+    },
+    {
+     "featureId": "1230046",
+     "name": "Lake Moultrie",
+     "featureClass": "Reservoir",
+     "state": "South Carolina",
+     "county": "Berkeley",
+     "lat": 33.3105044,
+     "lon": -80.0535619
+    },
+    {
+     "featureId": "1224900",
+     "name": "Lake Murray",
+     "featureClass": "Reservoir",
+     "state": "South Carolina",
+     "county": "Lexington",
+     "lat": 34.0736677,
+     "lon": -81.3790225
+    },
+    {
+     "featureId": "1233775",
+     "name": "Lake Wylie",
+     "featureClass": "Populated Place",
+     "state": "South Carolina",
+     "county": "York",
+     "lat": 35.108476,
+     "lon": -81.0428538
+    },
+    {
+     "featureId": "1249770",
+     "name": "Myrtle Beach",
+     "featureClass": "Populated Place",
+     "state": "South Carolina",
+     "county": "Horry",
+     "lat": 33.6890603,
+     "lon": -78.8866943
+    },
+    {
+     "featureId": "1251573",
+     "name": "Pee Dee River",
+     "featureClass": "Stream",
+     "state": "South Carolina",
+     "county": "Chesterfield",
+     "lat": 34.7209897,
+     "lon": -79.8817302
+    },
+    {
+     "featureId": "1015279",
+     "name": "Sassafras Mountain",
+     "featureClass": "Summit",
+     "state": "South Carolina",
+     "county": "Pickens",
+     "lat": 35.065108,
+     "lon": -82.7776292
+    },
+    {
+     "featureId": "1253486",
+     "name": "Savannah River",
+     "featureClass": "Stream",
+     "state": "South Carolina",
+     "county": "Jasper",
+     "lat": 32.0377132,
+     "lon": -80.8501103
+    },
+    {
+     "featureId": "1250982",
+     "name": "Spartanburg",
+     "featureClass": "Populated Place",
+     "state": "South Carolina",
+     "county": "Spartanburg",
+     "lat": 34.9495672,
+     "lon": -81.9320482
     }
    ]
   }
