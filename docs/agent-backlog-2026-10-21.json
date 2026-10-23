@@ -217,7 +217,9 @@
         "historical-network-viewer.html",
         "js/historical-network.js",
         "resources/historical-network/keyhole-evidence-pack-2026-10-22.json",
-        "docs/historical-network-fidonet-adapter-2026-10-22.md"
+        "docs/historical-network-fidonet-adapter-2026-10-22.md",
+        "docs/fidonet-arpanet-map-layers-2026-10-23.md",
+        "resources/historical-network/comms-history-seed-2026-10-23.json"
       ],
       "next_actions": [
         "Round 18 (2026-10-22): FidoNet Phase 2 local adapter SHIPPED — js/historical-network.js now parses FTS-5000 nodelists into observations (branch context, zone:net/node, flags, Pvt/Hold/Down, -Unpublished-, header date/day/CRC metadata), applies edition-checked nodediffs and diff chains, detects TEXTFILES/nodelist/nodediff imports, and the viewer computes SHA-256 over original local file bytes or edited textarea UTF-8. No historical nodelist was bundled: checked prologues grant intra-FidoNet use/distribution and reserve other uses absent express written consent, so hashed local packs remain local-import-only and captureReady=false. No canonical FidoNet nodes/edges and no new Keyhole evidence were claimed. Remaining: lawfully obtain a redistributable complete snapshot + applied diff chain and design snapshot-diff/edge semantics; then dated ARPANET textual source and local payphone imports; forum archaeology + angel mapping remain open.",
@@ -289,7 +291,8 @@
         "docs/wiki-samples-vault-drive-map-2026-10-16.md",
         "docs/RESEARCH_SMARTCARD.md",
         "docs/wiki-javacard-validation-2026-10-15.md",
-        "docs/lecture-hall-research-2026-09-20.md"
+        "docs/lecture-hall-research-2026-09-20.md",
+        "docs/shufflecake-stego-cyberchef-2026-10-23.md"
       ],
       "next_actions": [
         "Catalog OCR haiku into haiku vault; verify enso generators + haiku randomizers against the standard vault format",
@@ -483,8 +486,8 @@
       "line": 6,
       "stream": "S6",
       "text": "FidoNet + ARPANET map layers; Mojave payphones, rest stops, ZIP codes",
-      "status": "open",
-      "note": "round 18: FTS-5000 parser, edition-checked nodediff chain engine, format detection, address/flag search+CSV, and local viewer nodelist import shipped with synthetic tests; status remains open because no bundled FidoNet/ARPANET/payphone dataset was seeded—historical nodelist rights remain local-import-only absent written consent and header CRC is parsed, not verified; round 17: observation schema, validator, one-system viewer, and local BBS-list adapter shipped, but no bundled FidoNet/ARPANET/payphone dataset was seeded because snapshots remain uncaptured/unhashed and rights-restricted; status remains open for the datasets themselves; round 16: consumer historical-network viewer scoped (docs/historical-network-viewer-scope-2026-10-22.md); datasets deliberately not seeded until source rights/captures and observation schema fixtures exist. Status remains open."
+      "status": "partial",
+      "note": "round 18: FTS-5000 parser, edition-checked nodediff chain engine, format detection, address/flag search+CSV, and local viewer nodelist import shipped with synthetic tests; status remains open because no bundled FidoNet/ARPANET/payphone dataset was seeded—historical nodelist rights remain local-import-only absent written consent and header CRC is parsed, not verified; round 17: observation schema, validator, one-system viewer, and local BBS-list adapter shipped, but no bundled FidoNet/ARPANET/payphone dataset was seeded because snapshots remain uncaptured/unhashed and rights-restricted; status remains open for the datasets themselves; round 16: consumer historical-network viewer scoped (docs/historical-network-viewer-scope-2026-10-22.md); datasets deliberately not seeded until source rights/captures and observation schema fixtures exist. Status remains open. Round 19 (2026-10-23): first bundled comms-history pack seeded in the historical-network schema (ARPANET IMP #1-4 1969 + first-message edge, FidoNet origin SF 1984, Mojave phone booth) from cited public facts — resources/historical-network/comms-history-seed-2026-10-23.json, docs/fidonet-arpanet-map-layers-2026-10-23.md. No nodelist/USBBS bulk data bundled (rights decision stands). Remaining: viewer rendering, ARPANET 1971/1977 slices, bulk layer only with a redistributable snapshot."
     },
     {
       "id": "T6.3",
@@ -540,7 +543,8 @@
       "line": 9,
       "stream": "S9",
       "text": "Shufflecake + steganography -> CyberChef; haiku vault + vault recipe; algorithms book; BasicCard/JavaCard virtualized reader; smartcard filesystem choice (4MB XPort Pro budget); boot-chain (GRUB/LILO/LUKS, liveboot, AES dongle/dock concept)",
-      "status": "open"
+      "status": "partial",
+      "note": "2026-10-23: Shufflecake + steganography halves closed (docs/shufflecake-stego-cyberchef-2026-10-23.md): Shufflecake documented not ported (kernel block layer); repo CyberChef stego ops audited, real-image LSB op named as follow-on. BasicCard/JavaCard virtual reader, smartcard filesystem choice, algorithms book, and boot-chain parts remain open."
     },
     {
       "id": "T9.2",

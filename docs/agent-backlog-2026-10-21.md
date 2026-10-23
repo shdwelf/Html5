@@ -138,6 +138,17 @@ Keyhole BBS listing, but it is the same publication lineage as #127—not the
 requested second independent listing. Next: source-rights decision, lawful
 F3 captures, and a one-snapshot Keyhole vertical slice before adapters.
 
+**Round 19 status (2026-10-23): T6.2 open → partial.** First bundled
+comms-history content pack seeded in the historical-network schema:
+ARPANET IMP #1–#4 (1969, with the UCLA→SRI first-message edge), FidoNet
+origin (San Francisco, 1984), and the Mojave phone booth (removed
+2000-05-17) — all cited public facts, no nodelist/USBBS bulk data
+(local-import-only rights decision stands).
+[`fidonet-arpanet-map-layers-2026-10-23.md`](fidonet-arpanet-map-layers-2026-10-23.md);
+seed `resources/historical-network/comms-history-seed-2026-10-23.json`.
+Remaining: viewer rendering of the pack, ARPANET 1971/1977 time slices,
+redistributable-nodelist bulk layer if rights ever clear.
+
 **Round 17 status (2026-10-22): partial.** Phase 0 shipped as a tested
 Keyhole evidence fixture, standalone
 [`historical-network-viewer.html`](../historical-network-viewer.html), shared
@@ -185,6 +196,14 @@ smartcard filesystem candidates within the 4MB XPort Pro / 2MB S.S.E. URL budget
 LUKS/GRUB/LILO boot-chain + AES pass-through dongle concept as a research note; quine → S.S.E.
 URL export with password + QR/data-matrix (Avery Label Pro) — and **draft the BagIt and
 haiku-vault RFC documents** (BagIt 1.0 / RFC 8493 is already the house preservation format).
+
+*2026-10-23 round:* T9.1's Shufflecake + steganography halves closed by
+[`shufflecake-stego-cyberchef-2026-10-23.md`](shufflecake-stego-cyberchef-2026-10-23.md)
+— Shufflecake (dm-sflc, CCS 2023) documented with its corruption-trap and
+multi-snapshot caveats, **not ported** (a kernel block layer has no honest
+browser expression); repo CyberChef stego ops audited (`stegoLSB` demo-grade,
+real-image pixel-ingesting LSB named as the follow-on build). BasicCard/
+JavaCard + algorithms-book parts of T9.1 remain open.
 
 ### S10 · CyberChef & recipe corpus, lecture hall, UCSB course readers — *partial*
 Comparative optimization of the whole recipe set (line 7), DTSearch + Granite Island TCSM
