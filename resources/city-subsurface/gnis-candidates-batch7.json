@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T23:25:51Z",
+ "retrieved": "2026-10-23T23:30:09Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -2814,6 +2814,7 @@
     "Greensboro",
     "Durham",
     "Asheville",
+    "Wilmington",
     "Mount Mitchell",
     "Kuwohi",
     "Lake Norman",
@@ -2950,6 +2951,15 @@
      "county": "Bertie",
      "lat": 35.9423835,
      "lon": -76.6949441
+    },
+    {
+     "featureId": "1023269",
+     "name": "Wilmington",
+     "featureClass": "Populated Place",
+     "state": "North Carolina",
+     "county": "New Hanover",
+     "lat": 34.2257256,
+     "lon": -77.9447102
     }
    ]
   },
