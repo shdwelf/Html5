@@ -1,0 +1,119 @@
+name: arena-m68k-crossbuild
+
+# Cross-builds tools/bbs/ftnpkt.c for m68k-linux-gnu and executes it under
+# qemu-m68k (T6.3 / T7.2: the ColdFire/uClinux conversion line). The sandbox
+# cannot install a cross toolchain (egress is allowlisted; zig's LLVM has no
+# m68k backend), so the runner is the toolchain — the same egress pattern as
+# the other arena-* workflows. Results are committed to .arena-m68k/result.md;
+# that path is deliberately NOT a trigger path, so the result commit cannot
+# retrigger the build.
+
+on:
+  push:
+    branches: ['arena/64fe18e2-html5']
+    paths:
+      - '.arena-m68k/requests.txt'
+      - '.github/workflows/arena-m68k-crossbuild.yml'
+      - 'tools/bbs/ftnpkt.c'
+      - 'tools/bbs/make_fixture.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  crossbuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install m68k cross toolchain + qemu user emulation
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gcc-m68k-linux-gnu qemu-user file binutils-m68k-linux-gnu > /tmp/apt.log 2>&1 || { tail -30 /tmp/apt.log; exit 1; }
+          m68k-linux-gnu-gcc --version | head -1
+          qemu-m68k --version | head -1
+          node --version
+
+      - name: Build host + m68k, run parity under qemu-m68k
+        id: build
+        run: |
+          set -euo pipefail
+          mkdir -p .arena-m68k build-m68k
+          FLAGS="-std=c99 -Wall -Wextra -Werror -O2"
+          cc $FLAGS -o build-m68k/ftnpkt-host tools/bbs/ftnpkt.c
+          # Static first so qemu-m68k needs no sysroot; fall back to dynamic + -L.
+          if m68k-linux-gnu-gcc $FLAGS -static -o build-m68k/ftnpkt-m68k tools/bbs/ftnpkt.c 2> build-m68k/static.err; then
+            LINKAGE="static"
+            QEMU="qemu-m68k"
+          else
+            echo "static link failed, retrying dynamic:"; cat build-m68k/static.err
+            m68k-linux-gnu-gcc $FLAGS -o build-m68k/ftnpkt-m68k tools/bbs/ftnpkt.c
+            LINKAGE="dynamic"
+            QEMU="qemu-m68k -L /usr/m68k-linux-gnu"
+          fi
+          echo "linkage=$LINKAGE" >> "$GITHUB_OUTPUT"
+          node tools/bbs/make_fixture.mjs build-m68k/fixture.pkt
+          ./build-m68k/ftnpkt-host build-m68k/fixture.pkt > build-m68k/host.dump
+          ./build-m68k/ftnpkt-host --news build-m68k/fixture.pkt > build-m68k/host.news
+          $QEMU ./build-m68k/ftnpkt-m68k build-m68k/fixture.pkt > build-m68k/m68k.dump
+          $QEMU ./build-m68k/ftnpkt-m68k --news build-m68k/fixture.pkt > build-m68k/m68k.news
+          diff -u build-m68k/host.dump build-m68k/m68k.dump && echo "DUMP PARITY OK"
+          diff -u build-m68k/host.news build-m68k/m68k.news && echo "NEWS PARITY OK"
+          file build-m68k/ftnpkt-m68k | tee build-m68k/file.txt
+          m68k-linux-gnu-readelf -h build-m68k/ftnpkt-m68k | grep -E "Class|Machine|Type" | tee build-m68k/elfheader.txt
+          sha256sum build-m68k/ftnpkt-m68k | tee build-m68k/sha256.txt
+
+      - name: Write result.md
+        if: always()
+        run: |
+          {
+            echo "# m68k cross-build result — ftnpkt.c (T6.3 / T7.2)"
+            echo
+            echo "- run: ${{ github.run_id }} / attempt ${{ github.run_attempt }} · $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "- compiler: $(m68k-linux-gnu-gcc --version | head -1)"
+            echo "- emulator: $(qemu-m68k --version | head -1)"
+            echo "- linkage: ${{ steps.build.outputs.linkage || 'build failed before link' }}"
+            echo "- binary: $(cat build-m68k/file.txt 2>/dev/null || echo 'not produced')"
+            sed 's/^/- elf: /' build-m68k/elfheader.txt 2>/dev/null || true
+            echo "- sha256: $(cat build-m68k/sha256.txt 2>/dev/null || echo 'not produced')"
+            echo
+            echo "## Parity (host gcc build vs m68k build under qemu-m68k, same fixture)"
+            echo
+            if diff -q build-m68k/host.dump build-m68k/m68k.dump > /dev/null 2>&1 && diff -q build-m68k/host.news build-m68k/m68k.news > /dev/null 2>&1; then
+              echo "IDENTICAL — dump and --news outputs byte-match across host and m68k builds."
+            else
+              echo "MISMATCH or build failure — see the run log; this file records the attempt, not a pass."
+            fi
+            echo
+            echo "## Host dump (the m68k dump is byte-identical when parity holds)"
+            echo
+            echo '```'
+            cat build-m68k/host.dump 2>/dev/null || echo '(no dump produced)'
+            echo '```'
+            echo
+            echo "Scope: this proves the C99 parser compiles -Werror-clean for"
+            echo "m68k-linux-gnu and executes correctly under user emulation. It is"
+            echo "not yet a uClinux bFLT binary and has not run on ColdFire iron;"
+            echo "live FidoNet peering still needs a real uplink."
+          } > .arena-m68k/result.md
+          cat .arena-m68k/result.md
+
+      - name: Upload m68k binary
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ftnpkt-m68k-${{ github.run_id }}
+          path: build-m68k/ftnpkt-m68k
+          retention-days: 30
+
+      - name: Commit result back to the branch
+        if: always()
+        run: |
+          git config user.name "arena-m68k-crossbuild"
+          git config user.email "actions@github.com"
+          git add .arena-m68k/result.md
+          if git diff --cached --quiet; then echo "no result change"; exit 0; fi
+          git commit -m "m68k cross-build result (run ${{ github.run_id }}) [skip ci]"
+          git push

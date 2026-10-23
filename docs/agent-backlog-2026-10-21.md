@@ -284,6 +284,14 @@ Remaining: the m68k-uclinux C port itself; no live FTN peering fabricated.
 *Conversion started:* `tools/bbs/ftnpkt.c` (C99 FTS-0001 parser + `--news`
 mapper) cross-checked against the JS implementation with a `-Werror` test
 harness — the first uClinux-shaped C artifact of the MBSE-subset plan.
+*2026-10-23 round (T6.3/T7.2):* the m68k cross-build now runs —
+`.github/workflows/arena-m68k-crossbuild.yml` (run 40027253569) compiled
+`ftnpkt.c` with `m68k-linux-gnu-gcc` 13.3 (`-Werror`-clean, static MC68000
+ELF, sha256 `efb8e6b83a81…`) and executed it under `qemu-m68k` 8.2.2:
+dump + `--news` output **byte-identical** to the host build on the fixture
+from `tools/bbs/make_fixture.mjs` (`.arena-m68k/result.md`). The sandbox
+zig route was ruled out (its LLVM ships no m68k backend). Remaining:
+uClinux bFLT target, a run on ColdFire iron, live peering.
 
 **Round 19 toolchain status (2026-10-23): still externally blocked, but the
 blocker is narrower.** The GitHub survey in
@@ -294,17 +302,36 @@ route; “no JDK” is no longer the blanket blocker. S7 still needs the actual
 and a local Ghidra distribution still needs the CI/relay route. Do not invent
 substitutes for those missing artifacts.
 
-### S8 · Mobile & device lab: Android/QEMU, SIM, xdc ports, VoIP/iParty — *open*
+### S8 · Mobile & device lab: Android/QEMU, SIM, xdc ports, VoIP/iParty — *partial*
 QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock / number-porting caselaw),
 SIM-lock research, Eagle CAD unlock schematics, xdc → TI-calc / Android / F-Droid ports
 (socal-subsurface first), Hotline/KDX/FXP, Intel iParty + Creative Labs FCC schematics,
 VoIP Blaster, DUCK codecs, lossless comms room, Tetrinet.
+*2026-10-23 round (T8.3):* iParty / VoIP Blaster / DUCK research delivered —
+[`iparty-voipblaster-duck-2026-10-23.md`](iparty-voipblaster-duck-2026-10-23.md):
+iParty is 1995 Intel software (no FCC filing; ACM-delegated codec), the VoIP
+Blaster is Part 15B wired (no FCC schematics exist), DUCK/TrueMotion lineage
+ends in WebM with FFmpeg decoders source-available. T8.3 now *partial*;
+lossless comms room + Tetrinet remain.
+*2026-10-23 round (T8.4):* SIM-lock research delivered —
+[`sim-lock-research-2026-10-23.md`](sim-lock-research-2026-10-23.md):
+§1201 exemption timeline (2006→Pub. L. 113-144→89 FR 85437 in 2024), CTIA
+commitments, FCC 24-77 unadopted, DA 26-43 (2026) Verizon waiver — all from
+free primary sources, LexisNexis alternatives mapped. T8.4 now *partial*;
+QEMU phone lab remains.
 *2026-10-23 round:* the xdc-port family gained its Java-server path — all 55
 repo `.xdc` converted to deterministic Tomcat WARs (54 built, `greeran-book.xdc`
 skipped as not-a-ZIP) with an `xdc-viewer.war` catalogue/player; Struts/JSF
 investigated and deliberately not adopted for static apps
 ([`apache-struts-jsf-tomcat-xdc-war-2026-10-23.md`](apache-struts-jsf-tomcat-xdc-war-2026-10-23.md)).
-TI-calc/F-Droid and the device-lab items remain open.
+TI-calc strand scoped in [`ti-calc-port-status-2026-10-23.md`](ti-calc-port-status-2026-10-23.md):
+the SITE-K calc engine re-verified green (`make -C calc test`), a full socal-subsurface
+port ruled out with numbers (863 KB WebGL app vs 24 KB RAM), and the honest follow-ons
+defined (SUBSURF sketch screens, sdcc via runner, F-Droid wrapper via runner).
+*Correction (2026-10-23, later pass):* the TI expression already exists — `socal-calc/`
+is a complete SOCAL SUBSURFACE calculator port; `make -C socal-calc test` re-verified
+green. Only device compilation (sdcc/tigcc via runner) and the F-Droid wrapper remain.
+TI-calc/F-Droid builds and the device-lab items remain open.
 
 ### S9 · Vault, stego & smartcard filesystems: shufflecake, haiku vault, boot-chain — *partial*
 Catalog the OCR haiku into the haiku vault and verify the enso generators + haiku randomizers
@@ -335,11 +362,47 @@ remains unproven. See
 [`feitian-javacard-toolchain.md`](feitian-javacard-toolchain.md) and
 [`github-jdk-runtime-research-2026-10-23.md`](github-jdk-runtime-research-2026-10-23.md).
 
+*2026-10-23 round (T9.4):* quine → S.S.E. URL shipped — `js/quine-sse.js` +
+`quine-sse.html` (execution-verified quines, password-sealed `quine-sse-v1.` fragments,
+Avery 5160 QR label sheet; `tests/quine-sse.test.mjs` 4/4). **T9.4 complete.**
+*2026-10-23 round (T9.1):* virtualized card reader built — `js/cardreader.js` (ISO 7816-4
+APDU codec, MF/DF/EF tree, PIN lockout, applet-AID routing; `tests/cardreader.test.mjs` 6/6).
+Smartcard-filesystem choice, algorithms book and boot-chain strands remain.
+*2026-10-23 round (T9.1, cont.):* filesystem choice + boot-chain closed by
+[`smartcard-filesystem-choice-2026-10-23.md`](smartcard-filesystem-choice-2026-10-23.md)
+(ISO/IEC 7816-4 MF/DF/EF) and
+[`boot-chain-dongle-note-2026-10-23.md`](boot-chain-dongle-note-2026-10-23.md)
+(key-release, not data-path). Algorithms-book strand closed by
+[`card-algorithms-book-2026-10-23.md`](card-algorithms-book-2026-10-23.md):
+`js/card-algorithms.js` binds seven canonical algorithms (CRC-16, Luhn,
+binary search, insertion sort, Euclid GCD, FNV-1a, uint16 modExp) as the
+ALGO-BOOK applet on the virtual reader; tests 3/3 on published known answers.
+T9.1 remaining: physical-card load + personalisation write path.
+*2026-10-23 round (T9.1, cont.):* personalisation write path built — CREATE FILE /
+DELETE FILE on `js/cardreader.js` (PIN-gated issuer provisioning; duplicate-FID and
+MF protections; `tests/cardreader-personalisation.test.mjs` 4/4, card suites 13/13).
+T9.1's sole remainder is now physical-card/GlobalPlatform load (hardware).
 ### S10 · CyberChef & recipe corpus, lecture hall, UCSB course readers — *partial*
 Comparative optimization of the whole recipe set (line 7), DTSearch + Granite Island TCSM
 sweep, cipher-machine / virtual-intelligence lecture-hall material, course-reader sourcing
 rounds ([`recipe-sourcing-round-5-2026-10-14.md`](recipe-sourcing-round-5-2026-10-14.md),
 [`ucsb-2001-first-quarter-research.md`](ucsb-2001-first-quarter-research.md)).
+*2026-10-23 round (T10.2):* the lecture item shared with T12.1 is discharged —
+Cicada 3301 Hall-of-Fame induction (hall 33 → 34; verifier green). DTSearch / Granite
+Island / cookbook strands remain.
+*2026-10-23 round (T10.2, cont.):* Granite Island strand closed (user confirmed the
+referent: Granite Island Group, TSCM = Technical Surveillance Countermeasures) —
+[`granite-island-tscm-2026-10-23.md`](granite-island-tscm-2026-10-23.md) +
+`resources/tscm/granite-island-inspection-2026-10-23.json` (10 threat levels,
+13-phase inspection sequence; defensive distillation only; tests 4/4).
+Remaining: Ghidra DTSearch (runner), cookbook recipes tail.
+*2026-10-23 round (T10.3):* course-reader sourcing round delivered —
+[`ucsb-course-readers-2026-10-23.md`](ucsb-course-readers-2026-10-23.md) (eleven UCSB CS
+texts sourced; CS 32's SBPrinter reader located; algorithms cross-check: Weiss/Sahni,
+not CLRS). **T10.3 complete.**
+*2026-10-23 round (T10.1):* final audit — `--spotlights` enumerator reports 515 ops,
+tour-only 0, orphans 0; guard suites green. Every enumerated sub-item is delivered;
+**T10.1 complete** (comparative tuning continues as a standing activity).
 
 ### S11 · Wallets, mnemonics, classified name generator, spy-book challenges — *partial*
 Wallet crypto-card + mnemonic work feeds the existing bip39-haiku workbench; the “classified
@@ -350,8 +413,13 @@ recipes.
 `codename.html`; seeded operation/cryptonym/project-word formats, repeat-free batches,
 honest ~11-bit entropy note; `tests/codename.test.mjs` 3/3). Spy-book challenges await
 the source book.
+*2026-10-23 round (T11.1, cont.):* wallet-card deltas closed —
+[`wallet-card-deltas-2026-10-23.md`](wallet-card-deltas-2026-10-23.md):
+`js/wallet-card.js` renders/parses strict-BIP-39 wallet cards (public
+verification data only; haiku input fails closed); `tests/wallet-card.test.mjs` 4/4.
+Only the spy-book challenges remain, blocked on the source book.
 
-### S12 · Web archaeology: Cicada 3301, Warrick recovery, Geomate Jr — *partial*
+### S12 · Web archaeology: Cicada 3301, Warrick recovery, Geomate Jr — *done (T12.1)*
 Cicada QR + lat/long hunt → US subsurface viewer and cipher-machine Hall-of-Fame lecture;
 apply the Warrick web-archiving method to lost cicada3301 sites
 ([`dss-casefiles-riddle-warrick.md`](dss-casefiles-riddle-warrick.md),
@@ -364,6 +432,11 @@ apply the Warrick web-archiving method to lost cicada3301 sites
 (4/4 tests; plan-only, `.onion`/credentialed seeds refused, BagIt packaging) and
 [`warrick-cicada-recovery-2026-10-23.md`](warrick-cicada-recovery-2026-10-23.md);
 fetch leg is a runner job. Hall-of-Fame lecture remains.
+*2026-10-23 round (T12.1):* Hall-of-Fame lecture delivered — `cicada-3301-hall-of-fame`
+induction record in the Cipher Machines Lecture Hall (33 → 34 records, raised-bar;
+`tools/patch_lecture_hall_cicada_hof.py`, `tools/verify_lecture_hall.mjs` all checks passed;
+[`cicada-3301-hall-of-fame-lecture-2026-10-23.md`](cicada-3301-hall-of-fame-lecture-2026-10-23.md)).
+**T12.1 complete.**
 (all 14 coordinates of 2012-01-09 tabulated; the 8 US sites seeded as a
 citation-only historical-network pack,
 `resources/historical-network/cicada-3301-poster-seed-2026-10-23.json`,

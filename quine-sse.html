@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quine → S.S.E. URL — verify, seal, print</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:system-ui,sans-serif;margin:2rem auto;max-width:56rem;padding:0 1rem;line-height:1.5}
+  textarea{width:100%;height:7rem;font-family:ui-monospace,monospace}
+  #url{word-break:break-all;background:#f6f6f6;padding:.6rem;border-radius:.4rem;font-family:ui-monospace,monospace;font-size:.85em}
+  #err{color:#b00;white-space:pre-wrap}
+  .ok{color:#176117}
+  button,input{font:inherit;padding:.3rem .6rem}
+  .sheet{display:grid;grid-template-columns:repeat(3,2.625in);gap:0.125in 0.125in;margin-top:1rem}
+  .label{width:2.625in;height:1in;border:1px dashed #bbb;display:flex;align-items:center;gap:.4rem;padding:.08in;box-sizing:border-box;overflow:hidden}
+  .label canvas{width:.82in;height:.82in}
+  .label div{font-size:7.5pt;font-family:ui-monospace,monospace;word-break:break-all}
+  @media print{ .noprint{display:none} .label{border:none} }
+</style>
+</head>
+<body>
+<h1>Quine → S.S.E. URL</h1>
+<p>A quine is a program that prints itself. This tool <strong>verifies</strong> that property
+(it runs the code — only verify quines you wrote or trust), seals the source under a
+password into a <span style="font-family:ui-monospace,monospace">quine-sse-v1.</span> URL
+fragment (fragments never reach a server), and prints the URL as QR labels
+(Avery 5160, 3×10). The envelope reuses the repository's vetted PBKDF2/AES-GCM
+parameters; it is <em>not</em> byte-compatible with Paranoia Works SSE v3 — that
+format lives in the SSE app.</p>
+
+<textarea id="src">!function $(){console.log("!"+$+"()")}()</textarea>
+<p class="noprint">
+  <button id="verify" type="button">Verify quine</button>
+  <label>Password <input id="pass" type="password" value="opensesame"></label>
+  <button id="pack" type="button">Pack as S.S.E. URL</button>
+  <button id="unpack" type="button">Unpack URL in view</button>
+  <span id="status"></span>
+</p>
+<div id="url" class="noprint"></div>
+<p id="assess" class="noprint"></p>
+<p class="noprint"><button id="labels" type="button">Render Avery 5160 label sheet</button></p>
+<div id="err"></div>
+<div id="sheet" class="sheet"></div>
+
+<script src="public/apps/cyberchef/vendor/bwip-js.min.js"></script>
+<script type="module">
+import { verifyQuine, packQuine, unpackQuine, buildQuineUrl, packedFromUrl, assessUrl } from "./js/quine-sse.js";
+const $ = (id) => document.getElementById(id);
+let packed = null;
+
+$("verify").addEventListener("click", () => {
+  const r = verifyQuine($("src").value);
+  $("status").innerHTML = r.ok ? '<span class="ok">✓ quine verified — ' + r.reason + "</span>" : "";
+  $("err").textContent = r.ok ? "" : "Not a quine: " + r.reason;
+});
+$("pack").addEventListener("click", async () => {
+  $("err").textContent = "";
+  try {
+    const v = verifyQuine($("src").value);
+    if (!v.ok) throw new Error("Refusing to pack — not a quine: " + v.reason);
+    packed = await packQuine($("src").value, $("pass").value);
+    const url = buildQuineUrl(location.href, packed);
+    $("url").textContent = url;
+    history.replaceState(null, "", "#" + "q=" + packed);
+    $("assess").textContent = assessUrl(url).verdict + ` (${new Blob([url]).size} bytes)`;
+  } catch (e) { $("err").textContent = e.message; }
+});
+$("unpack").addEventListener("click", async () => {
+  $("err").textContent = "";
+  try {
+    const source = await unpackQuine(packedFromUrl(location.href), $("pass").value);
+    $("src").value = source;
+    const v = verifyQuine(source);
+    $("status").innerHTML = v.ok ? '<span class="ok">✓ unsealed and re-verified as a quine</span>' : "";
+    if (!v.ok) $("err").textContent = "Unsealed, but it no longer verifies: " + v.reason;
+  } catch (e) { $("err").textContent = e.message; }
+});
+$("labels").addEventListener("click", () => {
+  $("err").textContent = "";
+  const url = $("url").textContent || location.href;
+  const verdict = assessUrl(url);
+  if (!verdict.fitsQr) { $("err").textContent = verdict.verdict; return; }
+  if (typeof bwipjs === "undefined") { $("err").textContent = "bwip-js failed to load — QR rendering unavailable offline."; return; }
+  const sheet = $("sheet");
+  sheet.innerHTML = "";
+  for (let i = 0; i < 30; i++) {
+    const label = document.createElement("div");
+    label.className = "label";
+    const canvas = document.createElement("canvas");
+    const cap = document.createElement("div");
+    cap.textContent = "quine-sse-v1 · scan, open, enter password";
+    label.append(canvas, cap);
+    sheet.appendChild(label);
+    try {
+      bwipjs.toCanvas(canvas, { bcid: "qrcode", text: url, scale: 2, includetext: false });
+    } catch (e) {
+      $("err").textContent = "QR render failed: " + e.message;
+      return;
+    }
+  }
+});
+</script>
+</body>
+</html>

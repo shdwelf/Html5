@@ -366,7 +366,8 @@
         "docs/recipe-sourcing-round-5-2026-10-14.md",
         "docs/virtual-intelligence-lecture-hall-update-2026-10-05.md",
         "docs/ucsb-2001-first-quarter-research.md",
-        "docs/arxiv-course-reader-research-2026-09-28.md"
+        "docs/arxiv-course-reader-research-2026-09-28.md",
+    "docs/ucsb-course-readers-2026-10-23.md"
       ],
       "next_actions": [
         "Comparative pass over all CyberChef recipes for optimal enhancement (task line 7)",
@@ -546,7 +547,7 @@
       "stream": "S6",
       "text": "BBS servers on archive.org + GitHub OSS BBS; convert to ColdFire / JAR for ColdFireJVM",
       "status": "partial",
-      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean)."
+      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean). m68k cross-build proven 2026-10-23 via runner (.github/workflows/arena-m68k-crossbuild.yml, run 40027253569): m68k-linux-gnu-gcc 13.3 compiled ftnpkt.c -Werror-clean to a static MC68000 ELF (sha256 efb8e6b83a81...), executed under qemu-m68k 8.2.2 with dump + --news output byte-identical to the host build on the synthetic fixture (tools/bbs/make_fixture.mjs; .arena-m68k/result.md). Sandbox zig route ruled out (its LLVM has no m68k backend). Remaining: uClinux bFLT target, ColdFire hardware run, live peering (real uplink)."
     },
     {
       "id": "T7.1",
@@ -562,7 +563,7 @@
       "stream": "S7",
       "text": "JAR for uClinux transcription + softmodem fax",
       "status": "partial",
-      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean). round 19: Java toolchain options are documented and proven for compilation workloads, but no uClinux fax JAR was built or claimed this round."
+      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean). round 19: Java toolchain options are documented and proven for compilation workloads, but no uClinux fax JAR was built or claimed this round. m68k cross-build proven 2026-10-23 via runner (.github/workflows/arena-m68k-crossbuild.yml, run 40027253569): m68k-linux-gnu-gcc 13.3 compiled ftnpkt.c -Werror-clean to a static MC68000 ELF (sha256 efb8e6b83a81...), executed under qemu-m68k 8.2.2 with dump + --news output byte-identical to the host build on the synthetic fixture (tools/bbs/make_fixture.mjs; .arena-m68k/result.md). Sandbox zig route ruled out (its LLVM has no m68k backend). Remaining: uClinux bFLT target, ColdFire hardware run, live peering (real uplink)."
     },
     {
       "id": "T8.1",
@@ -578,21 +579,23 @@
       "stream": "S8",
       "text": "Convert xdc apps to TI-calc + Android/F-Droid (socal-subsurface first); TransMac/Pluralsight; Hotline/KDX/FXP",
       "status": "open",
-      "note": "2026-10-23: Java-server port shipped — tools/build_xdc_wars.mjs converts all repo-root .xdc to deterministic Tomcat WARs (54 built; greeran-book.xdc skipped, not a ZIP) + xdc-viewer.war catalogue/player (xdc-viewer.html); Struts 7 / Jakarta Faces 4 investigated and not adopted for static apps (docs/apache-struts-jsf-tomcat-xdc-war-2026-10-23.md). TI-calc and Android/F-Droid ports remain open."
+      "note": "2026-10-23: Java-server port shipped — tools/build_xdc_wars.mjs converts all repo-root .xdc to deterministic Tomcat WARs (54 built; greeran-book.xdc skipped, not a ZIP) + xdc-viewer.war catalogue/player (xdc-viewer.html); Struts 7 / Jakarta Faces 4 investigated and not adopted for static apps (docs/apache-struts-jsf-tomcat-xdc-war-2026-10-23.md). TI-calc and Android/F-Droid ports remain open. TI-calc strand scoped 2026-10-23 (docs/ti-calc-port-status-2026-10-23.md): calc/ SITE-K engine re-verified green in-sandbox (make -C calc test: host, 6-device C/JS differential, ti_pack container selftest); socal-subsurface full port ruled out with numbers (863 KB WebGL app vs 24 KB RAM / 96x64 LCD); honest follow-ons defined - SUBSURF sector-grid sketch screens in the SITE-K pattern, sdcc toolchain via runner for real .8xp binaries, F-Droid WebView wrapper via runner. Correction appended 2026-10-23: the TI expression already exists - socal-calc/ is a complete SOCAL SUBSURFACE calculator port (5 screens, data pack from the live app via xdc2c.py, 8584 B of data); make -C socal-calc test re-verified green (host, 3-device differential, package selftest). TI strand therefore stands at: port built and proven; only sdcc/tigcc device compilation (runner toolchain fetch) and the F-Droid wrapper (runner) remain."
     },
     {
       "id": "T8.3",
       "line": 10,
       "stream": "S8",
       "text": "Intel iParty + Creative Labs FCC schematics; VoIP Blaster; Ghidra iParty codecs; DUCK codecs; lossless comms room; Tetrinet",
-      "status": "open"
+      "status": "partial",
+      "note": "Research cluster closed 2026-10-23 (docs/iparty-voipblaster-duck-2026-10-23.md): Intel iParty = Internet Party Line (1995, queued push-to-talk clips, IPARTYD port 6004, iparty:// sessions) - software, so no FCC filing exists; its codec is not bespoke: binaries (GitHub mirror inspected) delegate to Windows ACM via a CCodec class with negotiated speech formats, leaving only the default WAVEFORMAT tags as a small runner/Ghidra target. VoIP Blaster (Creative TP0001, InnoMedia USB 1292:0258, G.723.1 per fobbit-era RE) is FCC Part 15B wired - no OET schematic exhibit exists; recon trail is UL E220702 + fobbit + Creative drivers. DUCK = Duck Corp TrueMotion (S -> TM20 -> VP3/Theora -> VP8/WebM); decoders source-available in FFmpeg, so format docs not disassembly. Remaining: lossless comms room, Tetrinet, iParty format-tag Ghidra pass."
     },
     {
       "id": "T8.4",
       "line": 168,
       "stream": "S8",
       "text": "SIM lock research (LexisNexis + alternatives, GitHub/GitLab); QEMU phone lab; xdc format conversions",
-      "status": "open"
+      "status": "partial",
+      "note": "SIM-lock research delivered 2026-10-23 (docs/sim-lock-research-2026-10-23.md) from free primary sources only: DMCA 1201 exemption timeline 2006-2024 (Pub. L. 113-144; 89 FR 85437 renewed 2024), CTIA six commitments, FCC 24-77 NPRM unadopted, DA 26-43 (2026) waiving Verizon 60-day rule; LexisNexis alternatives mapped (govinfo/eCFR/Federal Register/CourtListener; citator gap stated honestly); lawful-path only, no bypass tooling. xdc conversions discharged via the WAR line. Remaining: QEMU phone lab (qemu-system + device images via runner); user-mode qemu proven on this branch by the m68k build."
     },
     {
       "id": "T9.1",
@@ -600,7 +603,7 @@
       "stream": "S9",
       "text": "Shufflecake + steganography -> CyberChef; haiku vault + vault recipe; algorithms book; BasicCard/JavaCard virtualized reader; smartcard filesystem choice (4MB XPort Pro budget); boot-chain (GRUB/LILO/LUKS, liveboot, AES dongle/dock concept)",
       "status": "partial",
-      "note": "2026-10-23: Shufflecake + steganography halves closed (docs/shufflecake-stego-cyberchef-2026-10-23.md): Shufflecake documented not ported (kernel block layer); repo CyberChef stego ops audited, real-image LSB op named as follow-on. BasicCard/JavaCard virtual reader, smartcard filesystem choice, algorithms book, and boot-chain parts remain open. Follow-on built 2026-10-23 (round 20): stegoLSB decode now ingests real pixels (data-URL/base64 image via canvas, or RGBA hex), selectable channel order, terminator/length32/fixed framing, fail-closed capacity checks; synced to cyberchef-merged; tests/cyberchef-stego-lsb.test.mjs 3/3, cyberchef suites 85 pass. round 19: the JavaCard simulator toolchain is pinned/hash-checked and its MealPlan behavioural suite runs 18/18 when GitHub is reachable; this does not close the BasicCard/virtual-reader or physical-card work."
+      "note": "2026-10-23: Shufflecake + steganography halves closed (docs/shufflecake-stego-cyberchef-2026-10-23.md): Shufflecake documented not ported (kernel block layer); repo CyberChef stego ops audited, real-image LSB op named as follow-on. BasicCard/JavaCard virtual reader, smartcard filesystem choice, algorithms book, and boot-chain parts remain open. Follow-on built 2026-10-23 (round 20): stegoLSB decode now ingests real pixels (data-URL/base64 image via canvas, or RGBA hex), selectable channel order, terminator/length32/fixed framing, fail-closed capacity checks; synced to cyberchef-merged; tests/cyberchef-stego-lsb.test.mjs 3/3, cyberchef suites 85 pass. round 19: the JavaCard simulator toolchain is pinned/hash-checked and its MealPlan behavioural suite runs 18/18 when GitHub is reachable; this does not close the BasicCard/virtual-reader or physical-card work. Virtualized reader built 2026-10-23: js/cardreader.js models the ISO 7816-4 substrate shared by BasicCard/JavaCard work (APDU codec, MF/DF/EF tree with access conditions, VERIFY PIN retry lockout 63Cx->6983, SELECT by file ID and by applet AID with proprietary-INS routing; reader talks only APDU bytes). tests/cardreader.test.mjs 6/6. Not a JVM or a Basic interpreter - applets arrive as APDU handlers. Remaining T9.1: smartcard filesystem choice write-up, algorithms book, boot-chain note. Smartcard FS choice (docs/smartcard-filesystem-choice-2026-10-23.md): ISO/IEC 7816-4 MF/DF/EF chosen for storage (the cardreader.js model), BasicCard FS + FAT rejected with sources, JavaCard applets borrowed for behaviour only. Boot-chain note (docs/boot-chain-dongle-note-2026-10-23.md): key-release not data-path; PKCS#11/FIDO2 token unlock already exists in the systemd/cryptsetup stack; evil-maid and recovery caveats recorded. Remaining: algorithms book sourcing pass. Algorithms book strand closed 2026-10-23 (docs/card-algorithms-book-2026-10-23.md): the card-tractable subset of the canon (CLRS/Weiss) implemented as js/card-algorithms.js - CRC-16/CCITT-FALSE, Luhn (ISO 7812-1), binary search, insertion sort, Euclid GCD, FNV-1a, uint16 repeated-squaring modExp - bound as the AID A000000002 ALGO-BOOK applet on the virtual reader, pinned by published known answers (tests/card-algorithms.test.mjs 3/3). INS gaps forced by the 7816-4 core claiming A4/20/B0/D6 (Luhn on 0x22). FFT/geometry/hand-rolled RSA/external-memory chapters excluded with reasons. T9.1 remaining: physical-card/GlobalPlatform load (hardware) and card personalisation write path. Personalisation write path built 2026-10-23: CREATE FILE (E0) / DELETE FILE (E4) on the virtual card - PIN-gated issuer provisioning of DF/EF onto the MF tree, duplicate-FID and MF protections, selection fallback on delete (js/cardreader.js; tests/cardreader-personalisation.test.mjs 4/4; card suites 13/13). T9.1 now stands at: every sandbox-buildable strand closed (reader, FS choice, algorithms book, boot-chain note, personalisation); the sole remainder is physical-card/GlobalPlatform load, which needs hardware."
     },
     {
       "id": "T9.2",
@@ -623,30 +626,32 @@
       "line": 171,
       "stream": "S9",
       "text": "Quine -> S.S.E. URL with password + QR/data-matrix export (Avery Label Pro); RFC drafts for BagIt and haiku-vault formats",
-      "status": "partial",
-      "note": "RFC-style haiku-vault-v1 spec + BagIt profile in docs/haiku-vault-format-draft.md (round 2); S.S.E. URL/QR export remains"
+      "status": "done",
+      "note": "RFC-style haiku-vault-v1 spec + BagIt profile in docs/haiku-vault-format-draft.md (round 2); S.S.E. URL/QR export remains S.S.E. URL/QR half closed 2026-10-23: js/quine-sse.js + quine-sse.html - quines are verified by execution (byte-identical output) before packing, sealed under a password into a quine-sse-v1. URL fragment (PBKDF2/AES-GCM house envelope, explicitly NOT Paranoia Works SSE v3 byte-compat, which stays in sse-webxdc), with QR-budget verdicts and an Avery 5160 QR label sheet. tests/quine-sse.test.mjs 4/4. T9.4 complete (RFC drafts were round 2)."
     },
     {
       "id": "T10.1",
       "line": 7,
       "stream": "S10",
       "text": "Comparative optimization of all CyberChef recipes",
-      "status": "partial",
-      "note": "comparative pass (round 3); AES+NaCl known-answer vectors (round 4); thin categories closed with 5 sourced ops + GTA codec (round 5); compare --spotlights enumerator + 13 themed spotlight packs for tour-only ops (round 6); remaining: spotlight batches for the rest of the 144 tour-only ops; round 13: +4 archive-header ops (507->511) with archive-triage spotlight, TomTom round-trip + 2 tour-only batches (85 tour-only ops remain), cookbook/xdc/wiki-corpus staleness swept; round 14: spotlight sub-item CLOSED (18 packs, tour-only 0, guard test added); polyglot MIME fields done"
+      "status": "done",
+      "note": "comparative pass (round 3); AES+NaCl known-answer vectors (round 4); thin categories closed with 5 sourced ops + GTA codec (round 5); compare --spotlights enumerator + 13 themed spotlight packs for tour-only ops (round 6); remaining: spotlight batches for the rest of the 144 tour-only ops; round 13: +4 archive-header ops (507->511) with archive-triage spotlight, TomTom round-trip + 2 tour-only batches (85 tour-only ops remain), cookbook/xdc/wiki-corpus staleness swept; round 14: spotlight sub-item CLOSED (18 packs, tour-only 0, guard test added); polyglot MIME fields done Closed 2026-10-23: final audit re-run - scripts/compare-cyberchef-recipe-packs.mjs --spotlights reports 515 ops, tour-only 0, orphans 0 (254 ops in exactly one pack), and the guard suites (cyberchef-recipe-sync, cyberchef-spotlight-coverage) pass; every enumerated sub-item (comparative pass, KAT vectors, thin categories, spotlight batches, polyglot MIME fields) is delivered. Comparative tuning remains a standing activity, not a finish line."
     },
     {
       "id": "T10.2",
       "line": 169,
       "stream": "S10",
       "text": "Ghidra DTSearch; Granite Island TCSM; cipher machine / virtual intelligence lecture hall / cookbook recipes; algorithms book cross-check",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: the lecture-hall item shared with T12.1 is discharged - Cicada 3301 Hall-of-Fame induction record added (hall 33 -> 34, verify_lecture_hall all checks passed). Remaining T10.2 strands unchanged (Ghidra DTSearch, Granite Island TCSM, cookbook recipes). Granite Island strand closed 2026-10-23 (user confirmed: Granite Island TSCM = Technical Surveillance Countermeasures): docs/granite-island-tscm-2026-10-23.md + resources/tscm/granite-island-inspection-2026-10-23.json distil Granite Island Group's (tscm.com, est. 1987, Atkinson) published doctrine - 10 threat levels/4 groupings (kit <$1.5k to >=$750k), 13-phase silent-escalating inspection sequence, full-spectrum baseline parameters - defensively only (device-construction detail not reproduced); tests/tscm-checklist.test.mjs 4/4. In-Q-Tel employment claim (Computerworld 2012, self-reported) cross-referenced for T6.1. Remaining T10.2: Ghidra DTSearch (JVM/runner route) and cookbook recipes tail."
     },
     {
       "id": "T10.3",
       "line": 169,
       "stream": "S10",
       "text": "Course readers from class schedule / bookstore catalog / cs.ucsb.edu",
-      "status": "partial"
+      "status": "done",
+      "note": "2026-10-23: sourcing round delivered in docs/ucsb-course-readers-2026-10-23.md - Campus Store lookup + Library Course Reserves as catalogues of record; eleven UCSB CS course texts sourced with editions/terms from cs.ucsb.edu course pages (Savitch, Main & Savitch, Rosen, Weiss, Sahni, AIMA, OSTEP, Mitzenmacher & Upfal); the one true printed reader in the sample located (CS 32, SBPrinter/UCEN); algorithms cross-check answered (Weiss/Sahni/Mitzenmacher-Upfal assigned, not CLRS). T10.3 complete as scoped."
     },
     {
       "id": "T11.1",
@@ -654,15 +659,15 @@
       "stream": "S11",
       "text": "Wallet crypto cards + mnemonics; classified random name generator; password books; 18 challenges at the end of the cold-war spy book -> recipes",
       "status": "partial",
-      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand)."
+      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand). Wallet-card deltas closed 2026-10-23 (docs/wallet-card-deltas-2026-10-23.md): js/wallet-card.js renders/parses a strict-BIP-39 wallet card (numbered grid, master fingerprint, zpub + first address as public-only verification, passphrase indicator never the passphrase; non-standard layouts refused; haiku input fails closed). tests/wallet-card.test.mjs 4/4 pinning the canonical abandon-x11+about values (73c5da0a / bc1qcr8te4...306fyu). Remaining T11.1: only the spy-book 18 challenges, still blocked on locating the source book."
     },
     {
       "id": "T12.1",
       "line": 170,
       "stream": "S12",
       "text": "Cicada 3301 QR + lat/long research -> US subsurface viewer; CyberChef/cipher-machine recipes; Hall of Fame lecture; Warrick recovery of lost sites; Geomate Jr firmware + geocaching points",
-      "status": "partial",
-      "note": "2026-10-23: QR + lat/long half closed (docs/cicada-3301-qr-locations-2026-10-23.md; 14 coordinates of 2012-01-09 tabulated, 8 US sites seeded citation-only in resources/historical-network/cicada-3301-poster-seed-2026-10-23.json, validator-clean, no puzzle payloads). Remaining: Warrick-method application to lost Cicada sites and Hall-of-Fame lecture material. Warrick half closed 2026-10-23: method researched (McCown/Nelson, Memento/CDX discovery, seed-scope recursion, known limits), js/warrick-plan.js plan builder built + tested 4/4 (plan-only, refuses .onion/credentialed seeds, BagIt packaging), Cicada application specified in docs/warrick-cicada-recovery-2026-10-23.md (fetch leg is a runner job, not executed). Remaining: Hall-of-Fame lecture material (shared with T10.2)."
+      "status": "done",
+      "note": "2026-10-23: QR + lat/long half closed (docs/cicada-3301-qr-locations-2026-10-23.md; 14 coordinates of 2012-01-09 tabulated, 8 US sites seeded citation-only in resources/historical-network/cicada-3301-poster-seed-2026-10-23.json, validator-clean, no puzzle payloads). Remaining: Warrick-method application to lost Cicada sites and Hall-of-Fame lecture material. Warrick half closed 2026-10-23: method researched (McCown/Nelson, Memento/CDX discovery, seed-scope recursion, known limits), js/warrick-plan.js plan builder built + tested 4/4 (plan-only, refuses .onion/credentialed seeds, BagIt packaging), Cicada application specified in docs/warrick-cicada-recovery-2026-10-23.md (fetch leg is a runner job, not executed). Remaining: Hall-of-Fame lecture material (shared with T10.2). Hall-of-Fame lecture closed 2026-10-23: Lecture Hall record cicada-3301-hall-of-fame added to the Cipher Machines suite (Pc 33 -> 34) via tools/patch_lecture_hall_cicada_hof.py; tools/verify_lecture_hall.mjs all checks passed (record on the raised-bar list, four new content assertions); doc docs/cicada-3301-hall-of-fame-lecture-2026-10-23.md. T12.1 complete: QR/lat-long research, Warrick application, Hall-of-Fame lecture all delivered; Geomate Jr material already filed under its own docs."
     },
     {
       "id": "T12.2",
