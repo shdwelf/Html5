@@ -58,7 +58,8 @@ ALIASES = {
 
 def resolve_columns(header):
     cols = {}
-    upper = [h.strip().upper() for h in header]
+    # Current publications lowercase the header and prefix a UTF-8 BOM.
+    upper = [h.strip().lstrip("\ufeff").upper() for h in header]
     for key, names in ALIASES.items():
         for name in names:
             if name in upper:
