@@ -348,6 +348,16 @@ Avery 5160 QR label sheet; `tests/quine-sse.test.mjs` 4/4). **T9.4 complete.**
 *2026-10-23 round (T9.1):* virtualized card reader built — `js/cardreader.js` (ISO 7816-4
 APDU codec, MF/DF/EF tree, PIN lockout, applet-AID routing; `tests/cardreader.test.mjs` 6/6).
 Smartcard-filesystem choice, algorithms book and boot-chain strands remain.
+*2026-10-23 round (T9.1, cont.):* filesystem choice + boot-chain closed by
+[`smartcard-filesystem-choice-2026-10-23.md`](smartcard-filesystem-choice-2026-10-23.md)
+(ISO/IEC 7816-4 MF/DF/EF) and
+[`boot-chain-dongle-note-2026-10-23.md`](boot-chain-dongle-note-2026-10-23.md)
+(key-release, not data-path). Algorithms-book strand closed by
+[`card-algorithms-book-2026-10-23.md`](card-algorithms-book-2026-10-23.md):
+`js/card-algorithms.js` binds seven canonical algorithms (CRC-16, Luhn,
+binary search, insertion sort, Euclid GCD, FNV-1a, uint16 modExp) as the
+ALGO-BOOK applet on the virtual reader; tests 3/3 on published known answers.
+T9.1 remaining: physical-card load + personalisation write path.
 ### S10 · CyberChef & recipe corpus, lecture hall, UCSB course readers — *partial*
 Comparative optimization of the whole recipe set (line 7), DTSearch + Granite Island TCSM
 sweep, cipher-machine / virtual-intelligence lecture-hall material, course-reader sourcing
