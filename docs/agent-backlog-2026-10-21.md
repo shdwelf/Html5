@@ -380,6 +380,12 @@ rounds ([`recipe-sourcing-round-5-2026-10-14.md`](recipe-sourcing-round-5-2026-1
 *2026-10-23 round (T10.2):* the lecture item shared with T12.1 is discharged —
 Cicada 3301 Hall-of-Fame induction (hall 33 → 34; verifier green). DTSearch / Granite
 Island / cookbook strands remain.
+*2026-10-23 round (T10.2, cont.):* Granite Island strand closed (user confirmed the
+referent: Granite Island Group, TSCM = Technical Surveillance Countermeasures) —
+[`granite-island-tscm-2026-10-23.md`](granite-island-tscm-2026-10-23.md) +
+`resources/tscm/granite-island-inspection-2026-10-23.json` (10 threat levels,
+13-phase inspection sequence; defensive distillation only; tests 4/4).
+Remaining: Ghidra DTSearch (runner), cookbook recipes tail.
 *2026-10-23 round (T10.3):* course-reader sourcing round delivered —
 [`ucsb-course-readers-2026-10-23.md`](ucsb-course-readers-2026-10-23.md) (eleven UCSB CS
 texts sourced; CS 32's SBPrinter reader located; algorithms cross-check: Weiss/Sahni,
