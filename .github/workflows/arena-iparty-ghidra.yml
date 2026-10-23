@@ -1,0 +1,133 @@
+name: arena-iparty-ghidra
+
+# Static Ghidra analysis of Intel Internet Party Line 1.2 (T8.3), on the
+# repo's pinned Temurin 21 + Ghidra runner toolchain. The sandbox has no
+# JVM, so the runner is the toolchain - the same pattern as the other
+# arena-*-ghidra workflows. The target binaries come from the public
+# GitHub mirror at a pinned commit and are hash-verified before analysis.
+# Nothing is executed or emulated; GenericProgramReport only reads the
+# program database. Results land in .arena-iparty/result.md, which is
+# deliberately NOT a trigger path, so the result commit cannot loop.
+
+on:
+  push:
+    branches: ['arena/64fe18e2-html5']
+    paths:
+      - '.arena-iparty/requests.txt'
+      - '.github/workflows/arena-iparty-ghidra.yml'
+      - 'tools/ghidra_scripts/GenericProgramReport.java'
+      - 'tools/summarize_iparty_ghidra.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  static-analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GHIDRA_VERSION: '12.1.4'
+      GHIDRA_DATE: '20260921'
+      GHIDRA_SHA256: 'ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db'
+      IPL_COMMIT: 'c9f022bea9087d7ce9fe8325de6da95e9fe2f996'
+      IPARTY_SHA256: 'e1eefe28dd1ac1f0c49424a8ad102beb46ad969975e634765d9a1622977e5eb4'
+      IPARTYD_SHA256: '162a34fb384bc7d139df8efad1fc31cdcd774946d6b9ae11c08d95c116d2f41c'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install the pinned official Ghidra release
+        shell: bash
+        run: |
+          set -euo pipefail
+          java -version 2>&1 | tee "$RUNNER_TEMP/java-version.txt"
+          archive="$RUNNER_TEMP/ghidra.zip"
+          url="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_build/ghidra_${GHIDRA_VERSION}_PUBLIC_${GHIDRA_DATE}.zip"
+          curl -fL --retry 6 --retry-all-errors --connect-timeout 30 "$url" -o "$archive"
+          echo "$GHIDRA_SHA256  $archive" | sha256sum --check --strict
+          unzip -q "$archive" -d "$RUNNER_TEMP"
+          ghidra_home="$RUNNER_TEMP/ghidra_${GHIDRA_VERSION}_PUBLIC"
+          test -x "$ghidra_home/support/analyzeHeadless"
+          printf 'GHIDRA_HOME=%s\n' "$ghidra_home" >> "$GITHUB_ENV"
+
+      - name: Fetch and verify the pinned IPL 1.2 binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          src="$RUNNER_TEMP/ipl"
+          git clone -q https://github.com/RSzkotnicki/IPARTY "$src"
+          git -C "$src" checkout -q --detach "$IPL_COMMIT"
+          test "$(git -C "$src" rev-parse HEAD)" = "$IPL_COMMIT"
+          mkdir -p "$RUNNER_TEMP/input"
+          cp "$src/IPARTY/IPARTY.EXE" "$src/IPARTYD/IPARTYD.EXE" "$RUNNER_TEMP/input/"
+          echo "$IPARTY_SHA256  $RUNNER_TEMP/input/IPARTY.EXE" | sha256sum --check --strict
+          echo "$IPARTYD_SHA256  $RUNNER_TEMP/input/IPARTYD.EXE" | sha256sum --check --strict
+          python3 - "$RUNNER_TEMP/input/IPARTY.EXE" "$RUNNER_TEMP/input/IPARTYD.EXE" <<'PY'
+          import sys
+          for p in sys.argv[1:]:
+              d = open(p, "rb").read()
+              assert d[:2] == b"MZ", p
+              off = int.from_bytes(d[0x3C:0x40], "little")
+              assert d[off:off+4] == b"PE\x00\x00", (p, d[off:off+4])
+              print(f"{p}: PE32, {len(d)} bytes, verified")
+          PY
+
+      - name: Ghidra headless analysis (GenericProgramReport)
+        shell: bash
+        run: |
+          set -euo pipefail
+          headless="$GHIDRA_HOME/support/analyzeHeadless"
+          reports="$RUNNER_TEMP/reports"
+          projects="$RUNNER_TEMP/projects"
+          mkdir -p "$reports" "$projects"
+          for name in IPARTY IPARTYD; do
+            log="$RUNNER_TEMP/${name}.log"
+            if ! timeout 25m "$headless" "$projects" "IParty_${name}" \
+              -import "$RUNNER_TEMP/input/${name}.EXE" \
+              -analysisTimeoutPerFile 600 -max-cpu 2 \
+              -scriptPath "$GITHUB_WORKSPACE/tools/ghidra_scripts" \
+              -postScript GenericProgramReport.java "$reports" \
+              -deleteProject > "$log" 2>&1; then
+              tail -n 120 "$log"
+              exit 1
+            fi
+            grep -m1 "GENERIC_REPORT" "$log" || true
+          done
+          ls -la "$reports"
+
+      - name: Summarize into .arena-iparty/result.md
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .arena-iparty
+          {
+            echo "<!-- run ${{ github.run_id }} attempt ${{ github.run_attempt }} · toolchain: Temurin 21 + Ghidra ${{ env.GHIDRA_VERSION }} (${{ env.GHIDRA_DATE }}) · IPL mirror commit ${{ env.IPL_COMMIT }} -->"
+            echo
+          } > .arena-iparty/result.md
+          python3 tools/summarize_iparty_ghidra.py "$RUNNER_TEMP/reports" "$RUNNER_TEMP/summary.md"
+          cat "$RUNNER_TEMP/summary.md" >> .arena-iparty/result.md
+          cat .arena-iparty/result.md
+
+      - name: Upload full Ghidra reports
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iparty-ghidra-reports-${{ github.run_id }}
+          path: ${{ runner.temp }}/reports
+          retention-days: 30
+
+      - name: Commit result back to the branch
+        if: always()
+        run: |
+          git config user.name "arena-iparty-ghidra"
+          git config user.email "actions@github.com"
+          git add .arena-iparty/result.md
+          if git diff --cached --quiet; then echo "no result change"; exit 0; fi
+          git commit -m "iParty Ghidra result (run ${{ github.run_id }}) [skip ci]"
+          git push
