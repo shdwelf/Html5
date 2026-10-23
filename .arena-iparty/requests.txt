@@ -1,0 +1,6 @@
+# iParty Ghidra requests (T8.3; toolchain pattern shared with T8.1)
+# Each run of arena-iparty-ghidra analyses the pinned Internet Party Line
+# 1.2 binaries (IPARTY.EXE / IPARTYD.EXE from the RSzkotnicki/IPARTY
+# mirror) with the pinned Temurin 21 + Ghidra toolchain and commits
+# .arena-iparty/result.md back to the branch. Static analysis only.
+identify the audio codec path (ACM imports, speech-format negotiation) in IPL 1.2
