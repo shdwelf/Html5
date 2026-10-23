@@ -340,6 +340,9 @@ Comparative optimization of the whole recipe set (line 7), DTSearch + Granite Is
 sweep, cipher-machine / virtual-intelligence lecture-hall material, course-reader sourcing
 rounds ([`recipe-sourcing-round-5-2026-10-14.md`](recipe-sourcing-round-5-2026-10-14.md),
 [`ucsb-2001-first-quarter-research.md`](ucsb-2001-first-quarter-research.md)).
+*2026-10-23 round (T10.2):* the lecture item shared with T12.1 is discharged —
+Cicada 3301 Hall-of-Fame induction (hall 33 → 34; verifier green). DTSearch / Granite
+Island / cookbook strands remain.
 
 ### S11 · Wallets, mnemonics, classified name generator, spy-book challenges — *partial*
 Wallet crypto-card + mnemonic work feeds the existing bip39-haiku workbench; the “classified
@@ -351,7 +354,7 @@ recipes.
 honest ~11-bit entropy note; `tests/codename.test.mjs` 3/3). Spy-book challenges await
 the source book.
 
-### S12 · Web archaeology: Cicada 3301, Warrick recovery, Geomate Jr — *partial*
+### S12 · Web archaeology: Cicada 3301, Warrick recovery, Geomate Jr — *done (T12.1)*
 Cicada QR + lat/long hunt → US subsurface viewer and cipher-machine Hall-of-Fame lecture;
 apply the Warrick web-archiving method to lost cicada3301 sites
 ([`dss-casefiles-riddle-warrick.md`](dss-casefiles-riddle-warrick.md),
@@ -364,6 +367,11 @@ apply the Warrick web-archiving method to lost cicada3301 sites
 (4/4 tests; plan-only, `.onion`/credentialed seeds refused, BagIt packaging) and
 [`warrick-cicada-recovery-2026-10-23.md`](warrick-cicada-recovery-2026-10-23.md);
 fetch leg is a runner job. Hall-of-Fame lecture remains.
+*2026-10-23 round (T12.1):* Hall-of-Fame lecture delivered — `cicada-3301-hall-of-fame`
+induction record in the Cipher Machines Lecture Hall (33 → 34 records, raised-bar;
+`tools/patch_lecture_hall_cicada_hof.py`, `tools/verify_lecture_hall.mjs` all checks passed;
+[`cicada-3301-hall-of-fame-lecture-2026-10-23.md`](cicada-3301-hall-of-fame-lecture-2026-10-23.md)).
+**T12.1 complete.**
 (all 14 coordinates of 2012-01-09 tabulated; the 8 US sites seeded as a
 citation-only historical-network pack,
 `resources/historical-network/cicada-3301-poster-seed-2026-10-23.json`,

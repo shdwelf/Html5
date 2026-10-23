@@ -639,7 +639,8 @@
       "line": 169,
       "stream": "S10",
       "text": "Ghidra DTSearch; Granite Island TCSM; cipher machine / virtual intelligence lecture hall / cookbook recipes; algorithms book cross-check",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: the lecture-hall item shared with T12.1 is discharged - Cicada 3301 Hall-of-Fame induction record added (hall 33 -> 34, verify_lecture_hall all checks passed). Remaining T10.2 strands unchanged (Ghidra DTSearch, Granite Island TCSM, cookbook recipes)."
     },
     {
       "id": "T10.3",
@@ -661,8 +662,8 @@
       "line": 170,
       "stream": "S12",
       "text": "Cicada 3301 QR + lat/long research -> US subsurface viewer; CyberChef/cipher-machine recipes; Hall of Fame lecture; Warrick recovery of lost sites; Geomate Jr firmware + geocaching points",
-      "status": "partial",
-      "note": "2026-10-23: QR + lat/long half closed (docs/cicada-3301-qr-locations-2026-10-23.md; 14 coordinates of 2012-01-09 tabulated, 8 US sites seeded citation-only in resources/historical-network/cicada-3301-poster-seed-2026-10-23.json, validator-clean, no puzzle payloads). Remaining: Warrick-method application to lost Cicada sites and Hall-of-Fame lecture material. Warrick half closed 2026-10-23: method researched (McCown/Nelson, Memento/CDX discovery, seed-scope recursion, known limits), js/warrick-plan.js plan builder built + tested 4/4 (plan-only, refuses .onion/credentialed seeds, BagIt packaging), Cicada application specified in docs/warrick-cicada-recovery-2026-10-23.md (fetch leg is a runner job, not executed). Remaining: Hall-of-Fame lecture material (shared with T10.2)."
+      "status": "done",
+      "note": "2026-10-23: QR + lat/long half closed (docs/cicada-3301-qr-locations-2026-10-23.md; 14 coordinates of 2012-01-09 tabulated, 8 US sites seeded citation-only in resources/historical-network/cicada-3301-poster-seed-2026-10-23.json, validator-clean, no puzzle payloads). Remaining: Warrick-method application to lost Cicada sites and Hall-of-Fame lecture material. Warrick half closed 2026-10-23: method researched (McCown/Nelson, Memento/CDX discovery, seed-scope recursion, known limits), js/warrick-plan.js plan builder built + tested 4/4 (plan-only, refuses .onion/credentialed seeds, BagIt packaging), Cicada application specified in docs/warrick-cicada-recovery-2026-10-23.md (fetch leg is a runner job, not executed). Remaining: Hall-of-Fame lecture material (shared with T10.2). Hall-of-Fame lecture closed 2026-10-23: Lecture Hall record cicada-3301-hall-of-fame added to the Cipher Machines suite (Pc 33 -> 34) via tools/patch_lecture_hall_cicada_hof.py; tools/verify_lecture_hall.mjs all checks passed (record on the raised-bar list, four new content assertions); doc docs/cicada-3301-hall-of-fame-lecture-2026-10-23.md. T12.1 complete: QR/lat-long research, Warrick application, Hall-of-Fame lecture all delivered; Geomate Jr material already filed under its own docs."
     },
     {
       "id": "T12.2",

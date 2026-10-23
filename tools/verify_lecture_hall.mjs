@@ -770,7 +770,7 @@ if (!existsSync(SUITE)) {
 
   const pc = literalAt(src, "Pc=[");
   const records = vm.runInNewContext(`(${pc.text})`, Object.create(null), { timeout: 2000 });
-  check(Array.isArray(records) && records.length === 33, `lecture hall holds ${records.length} records`);
+  check(Array.isArray(records) && records.length === 34, `lecture hall holds ${records.length} records`);
 
   const required = ["id", "title", "period", "location", "confidence", "summary", "facts", "sourceLinks", "caution"];
   const shapeOk = records.every((r) =>
@@ -783,7 +783,7 @@ if (!existsSync(SUITE)) {
 
   const RAISED = [
     "f5-blackhat-2016", "uscybercom-seal-md5", "fieldnotes-wheel", "f1eldn0tes-agents",
-    "cicada-3301", "f5-blackhat-2018", "kryptos-k4-smithsonian",
+    "cicada-3301", "f5-blackhat-2018", "kryptos-k4-smithsonian", "cicada-3301-hall-of-fame",
     "dos-packer-obfuscation",
     "kgb-museum-auction", "international-spy-museum-machines",
     "crows-cryptogram-secom", "kryptos-enigma-hypothesis",
@@ -919,6 +919,38 @@ if (!existsSync(SUITE)) {
   check(
     ["kryptos-k4-smithsonian"].every((id) => byId[id]),
     "the Kryptos K4 Smithsonian archive record added by the 2026-09-29 pass is in the hall",
+  );
+
+  check(
+    ["cicada-3301-hall-of-fame"].every((id) => byId[id]),
+    "the Cicada 3301 Hall-of-Fame induction record added by the 2026-10-23 pass is in the hall",
+  );
+
+  // Cicada Hall of Fame — the 2012 geographic layer as public record: dates,
+  // places and retrieval outcomes, with the gone-posters humility kept in.
+  check(
+    haystack("cicada-3301-hall-of-fame").includes("9 January 2012") &&
+      haystack("cicada-3301-hall-of-fame").includes("17:00 UTC") &&
+      haystack("cicada-3301-hall-of-fame").includes("fourteen"),
+    "Hall-of-Fame record carries the countdown facts: 9 Jan 2012, 17:00 UTC, fourteen coordinates",
+  );
+  check(
+    haystack("cicada-3301-hall-of-fame").includes("Warsaw") &&
+      haystack("cicada-3301-hall-of-fame").includes("Gangseo-gu") &&
+      haystack("cicada-3301-hall-of-fame").includes("Fayetteville") &&
+      haystack("cicada-3301-hall-of-fame").includes("Rue de la Plaine"),
+    "Hall-of-Fame record names the solver-attested FOUND sites (Warsaw, Paris, Fayetteville, Seoul)",
+  );
+  check(
+    /posters is gone|are all long gone|posters are gone/i.test(haystack("cicada-3301-hall-of-fame")) &&
+      /not\s+recovered|never confirmed/i.test(haystack("cicada-3301-hall-of-fame")) &&
+      /Liber Primus/.test(haystack("cicada-3301-hall-of-fame")),
+    "Hall-of-Fame record keeps the humility: posters gone, outcomes solver-attested, Liber Primus untouched",
+  );
+  check(
+    haystack("cicada-3301-hall-of-fame").includes("Warrick") &&
+      /unrecoverable by design/i.test(haystack("cicada-3301-hall-of-fame")),
+    "Hall-of-Fame record links the Warrick recovery plan and refuses onion-layer recovery",
   );
 
   // Kryptos K4 — the archive is walked as a checkable provenance chain, and
