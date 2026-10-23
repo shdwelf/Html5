@@ -6157,6 +6157,553 @@
         ["Des Moines River", "Stream", "hydro.stream", "Lee", 41.3811553, -91.4223753, null, "465582", 1, "GNIS primary point at the in-state Mississippi confluence in Lee County. USGS GNIS Geocoder (GNIS), FEATURE_ID=465582; exact official name and Streams & Canals type in Lee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
         ["Cedar River", "Stream", "hydro.stream", "Louisa", 41.2830811, -91.3468217, null, "465058", 1, "GNIS primary point at the in-state Mississippi confluence in Louisa County. USGS GNIS Geocoder (GNIS), FEATURE_ID=465058; exact official name and Streams & Canals type in Louisa County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
       ]
+    },
+    "wisconsin": {
+      "title": "WISCONSIN SUBSURFACE 4Dwm",
+      "subtitle": "Apostle Islands · Baraboo Range · Driftless · Lake Winnebago — statewide frame, Wisconsin",
+      "gazTitle": "WISCONSIN USGS GNIS REGISTER",
+      "gazNote": "Round 25 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "WI",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -92.95,
+        "lat0": 42.45,
+        "lon1": -86.75,
+        "lat1": 47.1
+      },
+      "center": {
+        "lon": -89.75,
+        "lat": 44.75
+      },
+      "baseElevationM": 320,
+      "roughnessM": 85,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Penokee-Gogebic Range",
+          "lon": -90.6,
+          "lat": 46.55,
+          "rx": 0.7,
+          "ry": 0.25,
+          "amp": 240,
+          "rot": 0
+        },
+        {
+          "name": "Northern Highland",
+          "lon": -89.6,
+          "lat": 46.05,
+          "rx": 0.8,
+          "ry": 0.4,
+          "amp": 190,
+          "rot": 0
+        },
+        {
+          "name": "Blue Hills",
+          "lon": -91.65,
+          "lat": 45.5,
+          "rx": 0.3,
+          "ry": 0.3,
+          "amp": 140,
+          "rot": 0
+        },
+        {
+          "name": "Baraboo Range",
+          "lon": -89.75,
+          "lat": 43.45,
+          "rx": 0.35,
+          "ry": 0.2,
+          "amp": 130,
+          "rot": 0
+        },
+        {
+          "name": "Driftless coulees",
+          "lon": -91.1,
+          "lat": 43.7,
+          "rx": 0.6,
+          "ry": 0.5,
+          "amp": 150,
+          "rot": 0
+        },
+        {
+          "name": "Kettle Moraine",
+          "lon": -88.3,
+          "lat": 43.55,
+          "rx": 0.3,
+          "ry": 0.5,
+          "amp": 110,
+          "rot": 0
+        },
+        {
+          "name": "Lake Superior lowland",
+          "lon": -91.3,
+          "lat": 46.75,
+          "rx": 0.6,
+          "ry": 0.2,
+          "amp": -60,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i94-wisconsin",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 94 / Wisconsin corridor (generalized)",
+          "short": "I-94",
+          "depthM": 0,
+          "path": [
+            [-87.9064736, 43.0389025],
+            [-89.4012302, 43.0730517],
+            [-90.75, 43.85],
+            [-91.4984941, 44.811349],
+            [-92.6, 44.95]
+          ],
+          "facts": [
+            "Generalized Interstate 94 corridor from Milwaukee through the Madison and Eau Claire anchors to the Minnesota border; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 94 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i43-wisconsin",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 43 / Lake Michigan shore corridor (generalized)",
+          "short": "I-43",
+          "depthM": 0,
+          "path": [
+            [-88.019826, 44.519159],
+            [-87.95, 43.85],
+            [-87.9064736, 43.0389025],
+            [-87.7828523, 42.7261309],
+            [-87.8211854, 42.5847425],
+            [-87.9, 42.5]
+          ],
+          "facts": [
+            "Generalized Interstate 43 and shore corridor from Green Bay through the Milwaukee, Racine, and Kenosha anchors to the Illinois border; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 43 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "mississippi-wisconsin",
+          "layer": "water",
+          "tier": "context",
+          "name": "Mississippi River Wisconsin border reach (generalized)",
+          "short": "Mississippi River",
+          "depthM": 0,
+          "path": [
+            [-92.35, 45.65],
+            [-92.0840583, 44.4091337],
+            [-91.9, 43.85],
+            [-91.1540184, 42.9894297],
+            [-91.15, 42.6]
+          ],
+          "facts": [
+            "No Mississippi River stream gazetteer row is seeded in the Wisconsin frame: the 2026-10-23 states=WI Geocoder screen returned an empty array for the intended main-stem stream record, whose GNIS primary point is the Gulf of Mexico mouth. Generalized context reach along the western border through the seeded Chippewa River and Wisconsin River mouth records; schematic, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-25 source register"
+          ]
+        },
+        {
+          "id": "saint-croix-wisconsin",
+          "layer": "water",
+          "tier": "context",
+          "name": "Saint Croix River Wisconsin border reach (generalized)",
+          "short": "Saint Croix River",
+          "depthM": 0,
+          "path": [
+            [-92.28, 46.35],
+            [-92.55, 45.6],
+            [-92.7, 44.9],
+            [-92.8027028, 44.7458009]
+          ],
+          "facts": [
+            "No Saint Croix River gazetteer row is seeded in the Wisconsin frame: the states=WI screen returned an empty array; the single GNIS record (FEATURE_ID 662324) returns under states=MN with a Washington County, Minnesota primary point at the Prescott confluence. Generalized context reach along the northwestern border to that confluence point; schematic, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; cross-state record recorded in the round-25 source register"
+          ]
+        },
+        {
+          "id": "wisconsin-river-corridor",
+          "layer": "water",
+          "tier": "context",
+          "name": "Wisconsin River valley reach (generalized)",
+          "short": "Wisconsin River",
+          "depthM": 0,
+          "path": [
+            [-89.55, 46.05],
+            [-89.55, 44.9],
+            [-89.85, 43.6],
+            [-91.1540184, 42.9894297]
+          ],
+          "facts": [
+            "Generalized Wisconsin River reach from the northern headwaters through the Wisconsin Dells area to the seeded mouth record in Crawford County; schematic polyline, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "madison",
+          "name": "Madison",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -89.4012302,
+          "lat": 43.0730517,
+          "depthM": 0,
+          "facts": [
+            "Wisconsin state capital on the isthmus between Lakes Mendota and Monona. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1581834; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "milwaukee",
+          "name": "Milwaukee",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -87.9064736,
+          "lat": 43.0389025,
+          "depthM": 0,
+          "facts": [
+            "Largest city in Wisconsin and Lake Michigan port anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1577901; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "timms-hill",
+          "name": "Timms Hill",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -90.1953351,
+          "lat": 45.4507963,
+          "depthM": 0,
+          "facts": [
+            "Wisconsin state high point in Price County. node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1575464; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "lake-winnebago",
+          "name": "Lake Winnebago",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -88.4095327,
+          "lat": 44.0169756,
+          "depthM": 0,
+          "facts": [
+            "Largest wholly-in-state lake and Fox River corridor anchor. node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1576879; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Madison", "Populated Place", "pop.place", "Dane", 43.0730517, -89.4012302, null, "1581834", 1, "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=1581834; exact official name and Cities & Populated Places type in Dane County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Milwaukee", "Populated Place", "pop.place", "Milwaukee", 43.0389025, -87.9064736, null, "1577901", 1, "Largest city in the state and Lake Michigan port; the same-name county record (FEATURE_ID 1581100) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1577901; exact official name and Cities & Populated Places type in Milwaukee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Green Bay", "Populated Place", "pop.place", "Brown", 44.519159, -88.019826, null, "1565801", 1, "City at the Fox River mouth; the Green Bay bay records (FEATURE_ID 1565800, Door County, and 1565799, Winnebago County) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1565801; exact official name and Cities & Populated Places type in Brown County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Kenosha", "Populated Place", "pop.place", "Kenosha", 42.5847425, -87.8211854, null, "1567416", 1, "Lake Michigan port city between Milwaukee and the Illinois line. USGS GNIS Geocoder (GNIS), FEATURE_ID=1567416; exact official name and Cities & Populated Places type in Kenosha County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Racine", "Populated Place", "pop.place", "Racine", 42.7261309, -87.7828523, null, "1572015", 1, "Lake Michigan port city at the Root River mouth; the Racine County record (FEATURE_ID 1581111) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1572015; exact official name and Cities & Populated Places type in Racine County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Eau Claire", "Populated Place", "pop.place", "Eau Claire", 44.811349, -91.4984941, null, "1564402", 1, "Chippewa Valley city at the Eau Claire River confluence; the Eau Claire County record (FEATURE_ID 1581077) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1564402; exact official name and Cities & Populated Places type in Eau Claire County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Timms Hill", "Summit", "phys.summit", "Price", 45.4507963, -90.1953351, null, "1575464", 1, "Wisconsin High Point and state high point at 1,951 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_WI_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1575464 as a Summit in Price County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1575464; exact official name and Summit type in Price County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."],
+        ["Lake Winnebago", "Lake", "hydro.lake", "Winnebago", 44.0169756, -88.4095327, null, "1576879", 1, "Largest lake lying wholly within the state; the two numbered flowage records of similar name (FEATURE_ID 1792792 and 1793101, 'Lake Winnebago 6124') are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1576879; exact official name and Lakes & Reservoirs type in Winnebago County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."],
+        ["Lake Mendota", "Lake", "hydro.lake", "Dane", 43.1049997, -89.4199365, null, "1569337", 1, "Largest of Madison's Four Lakes, on the Yahara River chain. USGS GNIS Geocoder (GNIS), FEATURE_ID=1569337; exact official name and Lakes & Reservoirs type in Dane County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."],
+        ["Devils Lake", "Lake", "hydro.lake", "Sauk", 43.4173523, -89.7316274, null, "1563937", 1, "Sauk County lake in the Baraboo Range (Devil's Lake State Park); eight same-name lakes in other counties (FEATURE_ID 1579123, 1563942, 1563938, 1579121, 1563939, 1563940, 1579122, 1563941) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1563937; exact official name and Lakes & Reservoirs type in Sauk County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."],
+        ["Wisconsin River", "Stream", "hydro.stream", "Crawford", 42.9894297, -91.1540184, null, "1580811", 1, "Longest river lying wholly in the state; GNIS primary point at the Mississippi confluence near Prairie du Chien. USGS GNIS Geocoder (GNIS), FEATURE_ID=1580811; exact official name and Streams & Canals type in Crawford County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Chippewa River", "Stream", "hydro.stream", "Pepin", 44.4091337, -92.0840583, null, "1578997", 1, "GNIS primary point at the Mississippi confluence in Pepin County (Lake Pepin reach). USGS GNIS Geocoder (GNIS), FEATURE_ID=1578997; exact official name and Streams & Canals type in Pepin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
+    },
+    "michigan": {
+      "title": "MICHIGAN SUBSURFACE 4Dwm",
+      "subtitle": "Huron Mountains · Keweenaw · Grand Traverse Bay · Saginaw Bay — statewide frame, Michigan",
+      "gazTitle": "MICHIGAN USGS GNIS REGISTER",
+      "gazNote": "Round 25 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point, and cross-checked between the USGS GNIS Geocoder and the GNIS DomesticNames state text extract. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "MI",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -90.45,
+        "lat0": 41.65,
+        "lon1": -82.1,
+        "lat1": 48.05
+      },
+      "center": {
+        "lon": -85.55,
+        "lat": 44.75
+      },
+      "baseElevationM": 270,
+      "roughnessM": 95,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Huron Mountains",
+          "lon": -88.0,
+          "lat": 46.75,
+          "rx": 0.5,
+          "ry": 0.3,
+          "amp": 260,
+          "rot": 0
+        },
+        {
+          "name": "Porcupine Mountains",
+          "lon": -89.7,
+          "lat": 46.8,
+          "rx": 0.45,
+          "ry": 0.25,
+          "amp": 240,
+          "rot": 0
+        },
+        {
+          "name": "Keweenaw ridge",
+          "lon": -88.1,
+          "lat": 47.25,
+          "rx": 0.5,
+          "ry": 0.2,
+          "amp": 170,
+          "rot": 0
+        },
+        {
+          "name": "Northern Lower highlands",
+          "lon": -84.7,
+          "lat": 44.85,
+          "rx": 0.7,
+          "ry": 0.5,
+          "amp": 170,
+          "rot": 0
+        },
+        {
+          "name": "Traverse Bay hills",
+          "lon": -85.75,
+          "lat": 44.85,
+          "rx": 0.4,
+          "ry": 0.4,
+          "amp": 120,
+          "rot": 0
+        },
+        {
+          "name": "Saginaw Bay lowland",
+          "lon": -83.85,
+          "lat": 43.75,
+          "rx": 0.5,
+          "ry": 0.5,
+          "amp": -40,
+          "rot": 0
+        },
+        {
+          "name": "Southeastern plain",
+          "lon": -83.7,
+          "lat": 42.35,
+          "rx": 0.5,
+          "ry": 0.3,
+          "amp": -30,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i75-michigan",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 75 / Michigan corridor (generalized)",
+          "short": "I-75",
+          "depthM": 0,
+          "path": [
+            [-83.0457538, 42.331427],
+            [-83.7, 43.02],
+            [-83.88, 43.62],
+            [-84.75, 44.9],
+            [-84.62, 45.85],
+            [-84.45, 46.5]
+          ],
+          "facts": [
+            "Generalized Interstate 75 corridor from Detroit through the Flint and Saginaw generalized points and the Mackinac crossing toward Sault Ste. Marie; schematic polyline through a named anchor and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 75 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i94-i69-michigan",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 94 / 69 Michigan corridor (generalized)",
+          "short": "I-94/I-69",
+          "depthM": 0,
+          "path": [
+            [-83.0457538, 42.331427],
+            [-83.7263294, 42.2708716],
+            [-84.42, 42.24],
+            [-84.5555347, 42.732535],
+            [-84.6, 43.35]
+          ],
+          "facts": [
+            "Generalized Interstate 94 and 69 corridor from Detroit through the Ann Arbor and Lansing anchors to the central Lower Peninsula; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 94/69 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "grand-river-michigan",
+          "layer": "water",
+          "tier": "context",
+          "name": "Grand River Michigan reach (generalized)",
+          "short": "Grand River",
+          "depthM": 0,
+          "path": [
+            [-84.42, 42.24],
+            [-84.5555347, 42.732535],
+            [-85.6680863, 42.9633599],
+            [-86.2508869, 43.0583508]
+          ],
+          "facts": [
+            "Generalized Grand River reach from the Jackson area through the Lansing and Grand Rapids anchors to the seeded mouth record at Grand Haven; schematic polyline, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "saginaw-bay-michigan",
+          "layer": "water",
+          "tier": "context",
+          "name": "Saginaw Bay reach (generalized)",
+          "short": "Saginaw Bay",
+          "depthM": 0,
+          "path": [
+            [-83.8505319, 43.6469667],
+            [-83.65, 44.0],
+            [-82.7562934, 44.5925841]
+          ],
+          "facts": [
+            "No Lake Huron gazetteer row is seeded in the Michigan frame: the states=MI screen returned the exact lake record (FEATURE_ID 1624619, Alcona County) with an in-frame primary point, and it is held to starter scope beside the seeded Lake Superior anchor. Generalized context reach from the seeded Saginaw River mouth record across Saginaw Bay to that Huron point; schematic, not a channel centerline or shoreline."
+          ],
+          "sources": [
+            "Generalized from public references; starter-scope decision recorded in the round-25 source register"
+          ]
+        },
+        {
+          "id": "lake-superior-shore",
+          "layer": "water",
+          "tier": "context",
+          "name": "Lake Superior Michigan shore reach (generalized)",
+          "short": "Lake Superior",
+          "depthM": 0,
+          "path": [
+            [-89.6, 46.95],
+            [-87.7600216, 47.5288158],
+            [-88.42, 47.16],
+            [-87.395417, 46.5435442],
+            [-86.3, 46.65]
+          ],
+          "facts": [
+            "Generalized Lake Superior south-shore reach from the western Upper Peninsula through the seeded GNIS primary-point record north of the Keweenaw Peninsula and the Marquette anchor; schematic, not a shoreline or navigation lane."
+          ],
+          "sources": [
+            "Generalized from public references; GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "lansing",
+          "name": "Lansing",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -84.5555347,
+          "lat": 42.732535,
+          "depthM": 0,
+          "facts": [
+            "Michigan state capital and Grand River corridor anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1625035; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "detroit",
+          "name": "Detroit",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -83.0457538,
+          "lat": 42.331427,
+          "depthM": 0,
+          "facts": [
+            "Largest city in Michigan and Detroit River port anchor. node coordinate is the GNIS populated place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1617959; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mount-arvon",
+          "name": "Mount Arvon",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -88.1552409,
+          "lat": 46.7557395,
+          "depthM": 0,
+          "facts": [
+            "Michigan state high point in the Huron Mountains. node coordinate is the GNIS summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1623751; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "houghton-lake",
+          "name": "Houghton Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -84.7216378,
+          "lat": 44.3369774,
+          "depthM": 0,
+          "facts": [
+            "Largest inland-lake anchor in the northern Lower Peninsula. node coordinate is the GNIS lake primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 628664; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Lansing", "Populated Place", "pop.place", "Ingham", 42.732535, -84.5555347, null, "1625035", 1, "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=1625035; exact official name and Cities & Populated Places type in Ingham County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Detroit", "Populated Place", "pop.place", "Wayne", 42.331427, -83.0457538, null, "1617959", 1, "Largest city in the state on the Detroit River. USGS GNIS Geocoder (GNIS), FEATURE_ID=1617959; exact official name and Cities & Populated Places type in Wayne County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Grand Rapids", "Populated Place", "pop.place", "Kent", 42.9633599, -85.6680863, null, "627105", 1, "Kent County city on the Grand River; the small Ontonagon County populated place of the same name (FEATURE_ID 1620055) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=627105; exact official name and Cities & Populated Places type in Kent County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Ann Arbor", "Populated Place", "pop.place", "Washtenaw", 42.2708716, -83.7263294, null, "620133", 1, "Washtenaw County city on the Huron River; seat of the University of Michigan. USGS GNIS Geocoder (GNIS), FEATURE_ID=620133; exact official name and Cities & Populated Places type in Washtenaw County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Traverse City", "Populated Place", "pop.place", "Grand Traverse", 44.7630567, -85.6206317, null, "1615042", 1, "Grand Traverse Bay port at the base of the Leelanau and Old Mission peninsulas. USGS GNIS Geocoder (GNIS), FEATURE_ID=1615042; exact official name and Cities & Populated Places type in Grand Traverse County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Marquette", "Populated Place", "pop.place", "Marquette", 46.5435442, -87.395417, null, "631600", 1, "Largest city in the Upper Peninsula and Lake Superior iron port; the Marquette County record (FEATURE_ID 1622994) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=631600; exact official name and Cities & Populated Places type in Marquette County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Mount Arvon", "Summit", "phys.summit", "Baraga", 46.7557395, -88.1552409, null, "1623751", 1, "Michigan High Point and state high point at 1,979 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_MI_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1623751 as a Summit in Baraga County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=1623751; exact official name and Summit type in Baraga County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a surveyed summit outline, boundary, or trailhead geocode."],
+        ["Houghton Lake", "Lake", "hydro.lake", "Roscommon", 44.3369774, -84.7216378, null, "628664", 1, "Largest inland lake in the state; the same-name populated place (FEATURE_ID 628665) on its shore is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=628664; exact official name and Lakes & Reservoirs type in Roscommon County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."],
+        ["Torch Lake", "Lake", "hydro.lake", "Antrim", 44.9674583, -85.3112611, null, "1614970", 1, "Deep Antrim County lake; the Houghton County lake of the same name (FEATURE_ID 1614969), the Antrim County populated place (FEATURE_ID 1614971), and the Houghton County stream (FEATURE_ID 1618747) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=1614970; exact official name and Lakes & Reservoirs type in Antrim County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."],
+        ["Lake Superior", "Lake", "hydro.lake", "Keweenaw", 47.5288158, -87.7600216, null, "1618946", 1, "The frame's Great Lakes anchor: the single GNIS record's primary point lies in Michigan waters north of the Keweenaw Peninsula (Keweenaw County). Lake Huron (FEATURE_ID 1624619) and Lake Michigan (FEATURE_ID 1623080) also returned in-frame Michigan-associated points but are held to starter scope; Lake Erie screened empty under states=MI. USGS GNIS Geocoder (GNIS), FEATURE_ID=1618946; exact official name and Lakes & Reservoirs type in Keweenaw County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline or lake polygon, depth sounding, or a municipal boundary."],
+        ["Grand River", "Stream", "hydro.stream", "Ottawa", 43.0583508, -86.2508869, null, "627109", 1, "Longest river in the state; GNIS primary point at the Lake Michigan mouth at Grand Haven. USGS GNIS Geocoder (GNIS), FEATURE_ID=627109; exact official name and Streams & Canals type in Ottawa County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Saginaw River", "Stream", "hydro.stream", "Bay", 43.6469667, -83.8505319, null, "636503", 1, "GNIS primary point at the Saginaw Bay mouth in Bay County. USGS GNIS Geocoder (GNIS), FEATURE_ID=636503; exact official name and Streams & Canals type in Bay County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
     }
   }
 }

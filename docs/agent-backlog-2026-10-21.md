@@ -222,6 +222,27 @@ Rock, and Saylorville Lake are identity-safe but held to starter scope.
 Next in sequence: the remaining states in dated per-row batches, then the
 country/planet thread.
 
+**Round 25 status (2026-10-23): partial.** Wisconsin and Michigan shipped
+as configurations 27–28, each with a 12/12 per-ID `VERIFIED=1` GNIS
+starter register, labelled synthetic relief, generalized context
+corridors, and no DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json).
+Every row was screened against the USGS GNIS Geocoder and cross-checked
+on the runner-extracted DomesticNames text (the candidate extract is now
+cumulative across batches). Timms Hill (1,951 ft) and Mount Arvon
+(1,979 ft) keep their High Point designations. Devils Lake seeds as the
+Baraboo Range lake against eight same-name lakes; the Saint Croix River
+record returns only under `states=MN` and stays a corridor in the
+Wisconsin frame; Torch Lake, Houghton Lake, and Grand Rapids split from
+their same-name neighbours. Michigan seeds Lake Superior (`1618946`,
+whose GNIS primary point lies in Michigan waters in-frame) as its Great
+Lakes anchor; Lake Huron and Lake Michigan returned in-frame points but
+are held to starter scope, Lake Erie screens empty, and Higgins Lake is
+also starter-held. Mississippi River under `states=WI` stays a corridor
+after an empty screen. Next in sequence: Illinois/Indiana/Ohio and the
+remaining states in dated per-row batches, then the country/planet
+thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
