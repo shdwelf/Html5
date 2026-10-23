@@ -240,11 +240,43 @@ test("a supplied second-stage CSV is bagged inert, hashed, and analysed — neve
     const s2 = JSON.parse(readFileSync(path.join(OUT, "data/normalized/second-stage-iocs.json"), "utf8"));
     assert.equal(s2.executed, false);
     assert.equal(s2.ghidra.applicable, false);
+    const panel = s2.behaviourOnReviewedSample.devPanel;
+    assert.equal(panel.accessKey, "admin");
+    assert.equal(panel.targetVersion, "3.27");
+    assert.equal(panel.versions.filter((v) => v.selectable).length, 1);
+    assert.equal(panel.versions.filter((v) => v.selectable)[0].version, "3.27");
+    assert.equal(panel.progressSequence.length, 6);
+    assert.equal(panel.teardownWiredToUi, false);
     const ev = JSON.parse(readFileSync(path.join(OUT, "metadata/preservation-event.json"), "utf8"));
     assert.equal(ev.counts.secondStageRetrieved, true);
   } finally {
     rmSync(fixture, { force: true });
     build(); // restore the default location-only bag for the remaining tests
+  }
+});
+
+test("--second-stage-csv before the out dir never treats the CSV as the output", () => {
+  // Regression (2026-10-23): the flag's value used to be picked up as the
+  // positional out dir, so `--second-stage-csv google_drive/API` deleted the
+  // CSV and wrote the bag over it.
+  const fixture = path.join(root, "dist", "_stage2-argv-fixture.csv");
+  const tmpOut = path.join(root, "dist", "_stage2-argv-out");
+  const csvText = 'name,value\nnode,"AAA"\npath,"BBB"\n';
+  writeFileSync(fixture, csvText);
+  try {
+    execFileSync(process.execPath, [BUILDER, "--second-stage-csv", fixture, tmpOut], {
+      cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
+    });
+    assert.equal(readFileSync(fixture, "utf8"), csvText, "the input CSV must survive the build");
+    assert.ok(existsSync(path.join(tmpOut, "bagit.txt")), "the bag should land in the explicit out dir");
+    assert.equal(
+      readFileSync(path.join(tmpOut, "data/original/second-stage-payload.txt"), "utf8"),
+      "AAABBB",
+    );
+  } finally {
+    rmSync(fixture, { force: true });
+    rmSync(tmpOut, { recursive: true, force: true });
+    for (const ext of [".zip", ".xena", ".xena.json"]) rmSync(`${tmpOut}${ext}`, { force: true });
   }
 });
 

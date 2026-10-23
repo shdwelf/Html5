@@ -212,6 +212,14 @@ research note in house style.
 
 ### S14 · Changelly drainer script analysis — *done*
 See [`changelly-drainer-analysis.md`](changelly-drainer-analysis.md).
+*2026-10-23 round:* second stage (`node`+`path`, 75,791 B) retrieved inert
+from the Sheet via Drive CSV export, de-rotated (256-entry string array,
+221 rotations), bagged (BagIt + Xena), Ghidra assessed not-applicable
+(JavaScript text, no MZ/ELF/PE, no crypto keywords); dev panel v3.27
+lifecycle and an independent campaign variant compared in
+[`changelly-dev-panel-v327-2026-10-23.md`](changelly-dev-panel-v327-2026-10-23.md).
+Tests: 12/12. T14.1 closed for this sample (KGK.ARJ / fna102b remain under
+F2/F4 standing decisions).
 
 ## 4 · Execution notes
 

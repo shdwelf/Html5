@@ -386,9 +386,12 @@
         "T14.1"
       ],
       "refs": [
-        "docs/changelly-drainer-analysis.md"
+        "docs/changelly-drainer-analysis.md",
+        "docs/changelly-dev-panel-v327-2026-10-23.md"
       ],
-      "next_actions": []
+      "next_actions": [
+        "Second stage, dev panel v3.27, and an independent campaign variant documented 2026-10-23; the campaign runs multiple Doc/Sheet dead drops, so track panel DOM/global fingerprints rather than per-instance hashes."
+      ]
     }
   ],
   "tasks": [
@@ -609,7 +612,7 @@
       "text": "BagIt + Xena + Ghidra the Google Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I with its Drive PDF; KGK.EXE from the two .OVL halves; ARJ decrypt/disassemble/decompile fna102b",
       "status": "partial",
       "flag": "F2",
-      "note": "Preservation path already built (docs/fna102b-xena-preservation.md); ungarble application is out of scope per standing decision"
+      "note": "Changelly half DONE 2026-10-23: Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I loader + Sheet second stage retrieved inert, BagIt + Xena preserved (dist/changelly-drainer-xena/, gitignored), Ghidra assessed not-applicable (JavaScript text; no MZ/ELF/PE, no crypto keywords). Dev panel v3.27: docs/changelly-dev-panel-v327-2026-10-23.md. KGK.ARJ/FNA102B parts remain out of scope per standing decisions F2/F4; ungarble application is out of scope per standing decision"
     },
     {
       "id": "T15.1",

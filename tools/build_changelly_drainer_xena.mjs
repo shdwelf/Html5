@@ -30,17 +30,26 @@
  */
 
 import { createHash } from "node:crypto";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { zipSync } from "../vendor/fflate/index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const argv = process.argv.slice(2);
-const outArg = argv.find((a) => !a.startsWith("--"));
 const stage2Flag = argv.indexOf("--second-stage-csv");
 const STAGE2_CSV = stage2Flag >= 0 ? argv[stage2Flag + 1] : process.env.CHANGELLY_STAGE2_CSV;
+// The CSV path is the flag's value, never the output directory — otherwise
+// `--second-stage-csv <file>` with no explicit out dir would take the input
+// file as OUT and delete it. (Regression: fixed 2026-10-23.)
+const positional = argv.filter(
+  (a, i) => !a.startsWith("--") && !(stage2Flag >= 0 && i === stage2Flag + 1),
+);
+const outArg = positional[0];
 const OUT = path.resolve(root, outArg || "dist/changelly-drainer-xena");
+if (STAGE2_CSV && path.resolve(root, STAGE2_CSV) === OUT) {
+  throw new Error("refusing to use the second-stage CSV as the output directory");
+}
 const ZIP_OUT = `${OUT}.zip`;
 const XENA_OUT = `${OUT}.xena`;
 const XENA_SIDECAR_OUT = `${OUT}.xena.json`;
@@ -337,7 +346,23 @@ In short: the first stage delivers it, the overlay talks the victim through
 to confirm a ~55%-better rate while the payout/deposit address is swapped.
 That is a drainer, observed end to end.
 
-## "Ghidra encryption" assessment
+${reviewed ? `## Dev panel lifecycle (v3.27)
+
+- Version rows: 3.28 \`loaded\` (Stable), **3.27 \`ready\` — the only selectable
+  row** ("Price errors during exchanges"), 3.26/3.25 \`outdated\` (click shakes).
+- Confirm gate, in order: already active → no selection → password ≠ \`admin\`
+  → selection ≠ \`3.27\`; each failure shows its own inline error.
+- On success: 6 progress messages at 420 ms ("Fetching node v3.27 manifest…"
+  … "Ready."), activation, overlay fades out. Nothing is downloaded.
+- Cancel/✕ before activation only removes the overlay (fetch not yet hooked).
+  The full teardown function is defined but never wired to any control, so
+  after activation the hijack persists until page reload.
+- Singleton: \`window.__changelly_mod_loader_instance\` short-circuits a second
+  run with "Dev panel is already loaded in this window."
+- Full investigation and variant comparison:
+  \`docs/changelly-dev-panel-v327-2026-10-23.md\`.
+
+` : ""}## "Ghidra encryption" assessment
 
 Asked for explicitly, answered plainly:
 
@@ -387,6 +412,26 @@ function stage2Iocs(stage2) {
       interceptedPaths: ["/v1/c2c/float/create-transaction", "/v1/c2c/fixed/estimate", "/v1/c2c/float/estimate", "/v2/c2c/transactions/<id>"],
       domPatching: ["MutationObserver + 30 ms interval", "amount/rate text multiplied by boost factor", ".__hidden-by-script hides genuine elements", "payment QR modal address text and data-address/data-copy/data-value replaced"],
       priceOracles: ["https://api.binance.com/api/v3/ticker/price?symbol=", "https://api.coingecko.com/api/v3/simple/price?ids="],
+      devPanel: {
+        overlayId: "#__changelly_mod_overlay",
+        title: "changelly-node-loader — dev mode",
+        footer: "changelly-node-loader v1.0.4 — internal use only",
+        accessKey: "admin",
+        targetVersion: "3.27",
+        currentVersion: "3.28",
+        versions: [
+          { version: "3.28", label: "v3.28 (Stable)", status: "loaded", selectable: false },
+          { version: "3.27", label: "v3.27", description: "Price errors during exchanges", status: "ready", selectable: true },
+          { version: "3.26", label: "v3.26", status: "outdated", selectable: false },
+          { version: "3.25", label: "v3.25", status: "outdated", selectable: false },
+        ],
+        gateCheckOrder: ["already active", "no version selected", "invalid access key", "version is not 3.27"],
+        progressSequence: ["Validating access key…", "Fetching node v3.27 manifest…", "Downloading modules…", "Applying patches…", "Booting exchange engine…", "Ready."],
+        progressStepMs: 420,
+        singletonGlobal: "__changelly_mod_loader_instance",
+        teardownWiredToUi: false,
+        notes: "Cancel/close before activation only removes the overlay; the fetch override installs after the progress sequence. A full teardown function exists in the code but is never wired to any control, so after activation the hijack persists until page reload. See docs/changelly-dev-panel-v327-2026-10-23.md.",
+      },
     },
     wallets: stage2.wallets,
     endpoints: stage2.endpoints,
@@ -935,6 +980,14 @@ async function main() {
     Buffer.from([...tags].map(([p, b]) => `${sha256(b)}  ${p}`).sort().join("\n") + "\n"));
 
   const bagFiles = new Map([...payload, ...tags]);
+  // Fail closed: never let the output path wipe an existing regular file
+  // (e.g. an input CSV passed by mistake). OUT must be a directory or absent.
+  try {
+    const st = await stat(OUT);
+    if (!st.isDirectory()) throw new Error(`refusing to replace non-directory output path: ${OUT}`);
+  } catch (err) {
+    if (err.code !== "ENOENT") throw err;
+  }
   await rm(OUT, { recursive: true, force: true });
   for (const [rel, buf] of bagFiles) {
     const fp = path.join(OUT, rel);

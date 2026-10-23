@@ -229,7 +229,10 @@ pure text transformation, no execution — recovers the behaviour:
 - **Fake dev panel.** It injects `#__changelly_mod_overlay`, a version picker
   (v3.27 marked loadable, the others "outdated" with invented known issues)
   behind the cover story's `admin` password gate, with light/dark themes
-  matched to the host page.
+  matched to the host page. The panel has its own investigation —
+  version-gate order, 2.5 s fake-progress sequence, singleton guard, teardown
+  defined but never wired to a control, and an independent second sample for
+  comparison: [`changelly-dev-panel-v327-2026-10-23.md`](changelly-dev-panel-v327-2026-10-23.md).
 - **Fetch override.** It keeps the real `fetch`, replaces `window.fetch`,
   and on POST `/v1/c2c/float/create-transaction` rewrites the JSON body's
   `payoutAddress` to an attacker address for the source currency (chosen
