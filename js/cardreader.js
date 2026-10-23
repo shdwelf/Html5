@@ -56,7 +56,9 @@ const SW = {
   WRONG_LENGTH: 0x6700,
   AUTH_BLOCKED: 0x6983,
   SECURITY_STATUS: 0x6982,
+  CONDITIONS: 0x6985,
   WRONG_OFFSET: 0x6B00,
+  WRONG_DATA: 0x6A80,
   FILE_NOT_FOUND: 0x6A82,
   APPLET_NOT_FOUND: 0x6A82,
   INS_NOT_SUPPORTED: 0x6D00,
@@ -101,6 +103,20 @@ export function createCard({ pin = "1234", files, applets = [] } = {}) {
     };
     if (idHex === "3F00") return { id: "3F00", node: mf, chain: ["3F00"] };
     return walk(mf, ["3F00"]);
+  }
+
+  function findWithParent(idHex) {
+    const walk = (node) => {
+      for (const [id, child] of Object.entries(node.children || {})) {
+        if (id === idHex) return { parent: node, id, node: child };
+        if (child.type === "DF" || child.type === "MF") {
+          const hit = walk(child);
+          if (hit) return hit;
+        }
+      }
+      return null;
+    };
+    return walk(mf);
   }
 
   const respond = (data, sw) => ({ data: Uint8Array.from(data || []), sw });
@@ -165,6 +181,44 @@ export function createCard({ pin = "1234", files, applets = [] } = {}) {
         if (offset + data.length > bytes.length) return respond([], SW.WRONG_OFFSET);
         bytes.set(data, offset);
         ef.node.data = bytes;
+        return respond([], SW.OK);
+      }
+      case 0xE0: { // CREATE FILE (personalisation): FID(2) type size(2) read write
+        // type: 0x01 = DF, 0x02 = EF. read/write: 0 = always/pin per flags below.
+        if (!state.pinVerified) return respond([], SW.SECURITY_STATUS);
+        if (data.length !== 7) return respond([], SW.WRONG_LENGTH);
+        const parent = state.currentFile;
+        if (!parent || (parent.node.type !== "MF" && parent.node.type !== "DF")) return respond([], SW.CONDITIONS);
+        const id = hex(data.subarray(0, 2)).replaceAll(" ", "");
+        if (id === "3F00" || findFile(id)) return respond([], SW.CONDITIONS); // FID already exists
+        const size = (data[3] << 8) | data[4];
+        if (data[2] === 0x01) {
+          parent.node.children = parent.node.children || {};
+          parent.node.children[id] = { type: "DF", children: {} };
+        } else if (data[2] === 0x02) {
+          parent.node.children = parent.node.children || {};
+          parent.node.children[id] = {
+            type: "EF",
+            read: data[5] === 0x01 ? "pin" : "always",
+            write: data[6] === 0x02 ? "never" : "pin",
+            data: new Uint8Array(size),
+          };
+        } else {
+          return respond([], SW.WRONG_DATA);
+        }
+        return respond([], SW.OK);
+      }
+      case 0xE4: { // DELETE FILE (personalisation)
+        if (!state.pinVerified) return respond([], SW.SECURITY_STATUS);
+        if (data.length !== 2) return respond([], SW.WRONG_LENGTH);
+        const id = hex(data).replaceAll(" ", "");
+        if (id === "3F00") return respond([], SW.CONDITIONS); // the MF is undeletable
+        const hit = findWithParent(id);
+        if (!hit) return respond([], SW.FILE_NOT_FOUND);
+        delete hit.parent.children[id];
+        if (state.currentFile && state.currentFile.id === id) {
+          state.currentFile = { id: "3F00", node: mf }; // selection falls back to the MF
+        }
         return respond([], SW.OK);
       }
       default: {

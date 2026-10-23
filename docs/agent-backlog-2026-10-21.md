@@ -378,6 +378,10 @@ Smartcard-filesystem choice, algorithms book and boot-chain strands remain.
 binary search, insertion sort, Euclid GCD, FNV-1a, uint16 modExp) as the
 ALGO-BOOK applet on the virtual reader; tests 3/3 on published known answers.
 T9.1 remaining: physical-card load + personalisation write path.
+*2026-10-23 round (T9.1, cont.):* personalisation write path built — CREATE FILE /
+DELETE FILE on `js/cardreader.js` (PIN-gated issuer provisioning; duplicate-FID and
+MF protections; `tests/cardreader-personalisation.test.mjs` 4/4, card suites 13/13).
+T9.1's sole remainder is now physical-card/GlobalPlatform load (hardware).
 ### S10 · CyberChef & recipe corpus, lecture hall, UCSB course readers — *partial*
 Comparative optimization of the whole recipe set (line 7), DTSearch + Granite Island TCSM
 sweep, cipher-machine / virtual-intelligence lecture-hall material, course-reader sourcing
