@@ -76,10 +76,13 @@ def extract_state(st, wanted_names, fetcher):
     digest = hashlib.sha256(raw).hexdigest()
     rows = []
     with zipfile.ZipFile(io.BytesIO(raw)) as zf:
+        # The archive may carry metadata .txt members beside the data file;
+        # the gazetteer is the largest text member.
         texts = [n for n in zf.namelist() if n.lower().endswith(".txt")]
         if not texts:
             raise ValueError(f"{st}: no .txt member in {zf.namelist()}")
-        with zf.open(texts[0]) as fh:
+        member = max(texts, key=lambda n: zf.getinfo(n).file_size)
+        with zf.open(member) as fh:
             text = io.TextIOWrapper(fh, encoding="utf-8", errors="replace")
             header = next(text).rstrip("\n").split("|")
             cols = resolve_columns(header)
