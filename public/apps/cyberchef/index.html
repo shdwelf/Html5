@@ -4383,6 +4383,43 @@ addOp('stegoSpace','Steganography: Whitespace','Steganography','Hide a secret in
     return out||'(no whitespace-hidden message found)';
   }
 });
+addOp('gameGenieNes','Game Genie: NES code','Encoding','Decode or encode NES Game Genie codes. 6 letters = address + replacement value; 8 letters adds a compare byte (mapper-bank guard). Letters APZLGITYEOXUKSVN are nibbles 0-F; the decoded address is $8000-based (top bit implicit). Bit formulas per tuxnes Game Genie notes / NESDev.',[
+  {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode code'],['encode','Encode code']]},
+  {key:'address',label:'Address (hex, encode)',type:'text',default:'91D9'},
+  {key:'value',label:'Value (hex, encode)',type:'text',default:'AD'},
+  {key:'compare',label:'Compare (hex, blank = 6-letter)',type:'text',default:''}
+],function(t,a){
+  const LETTERS='APZLGITYEOXUKSVN';
+  const hex2=(n)=>'$'+n.toString(16).toUpperCase().padStart(2,'0');
+  const hex4=(n)=>'$'+n.toString(16).toUpperCase().padStart(4,'0');
+  if(a.mode==='decode'){
+    const code=String(t).toUpperCase().replace(/[^A-Z]/g,'');
+    if(code.length!==6&&code.length!==8) return 'Enter a 6- or 8-letter NES Game Genie code (letters only: '+LETTERS+'). Got '+code.length+' usable letters.';
+    const n=[...code].map(ch=>{const i=LETTERS.indexOf(ch); if(i<0) throw new Error('letter '+ch+' is not in the Game Genie alphabet'); return i;});
+    const address=0x8000|((n[3]&7)<<12)|((n[5]&7)<<8)|((n[4]&8)<<8)|((n[2]&7)<<4)|((n[1]&8)<<4)|(n[4]&7)|(n[3]&8);
+    let value, compare=null;
+    if(code.length===6){ value=((n[1]&7)<<4)|((n[0]&8)<<4)|(n[0]&7)|(n[5]&8); }
+    else { value=((n[1]&7)<<4)|((n[0]&8)<<4)|(n[0]&7)|(n[7]&8); compare=((n[7]&7)<<4)|((n[6]&8)<<4)|(n[6]&7)|(n[5]&8); }
+    return 'NES Game Genie '+code+'\naddress: '+hex4(address)+'\nvalue:   '+hex2(value)+(compare===null?'\ncompare: (none - unconditional replacement)':'\ncompare: '+hex2(compare)+' (replace only when the ROM byte equals compare)')+'\nraw form: '+address.toString(16).toUpperCase().padStart(4,'0')+(compare===null?'': '?'+compare.toString(16).toUpperCase().padStart(2,'0'))+':'+value.toString(16).toUpperCase().padStart(2,'0');
+  }
+  const A=parseInt(String(a.address).replace(/[^0-9a-fA-F]/g,''),16);
+  const V=parseInt(String(a.value).replace(/[^0-9a-fA-F]/g,''),16);
+  const cmpRaw=String(a.compare).replace(/[^0-9a-fA-F]/g,'');
+  const C=cmpRaw===''?null:parseInt(cmpRaw,16);
+  if(!Number.isFinite(A)||A<0x8000||A>0xFFFF) return 'Address must be a hex ROM address in $8000-$FFFF (Game Genie addresses are $8000-based).';
+  if(!Number.isFinite(V)||V<0||V>0xFF) return 'Value must be a hex byte (00-FF).';
+  if(C!==null&&(!Number.isFinite(C)||C<0||C>0xFF)) return 'Compare must be a hex byte (00-FF) or blank.';
+  const nyb=new Array(8).fill(0);
+  nyb[0]=((V>>4)&8)|((V>>0)&7);
+  nyb[1]=((A>>4)&8)|((V>>4)&7);
+  nyb[2]=((A>>4)&7);
+  nyb[3]=((A>>0)&8)|((A>>12)&7);
+  nyb[4]=((A>>8)&8)|((A>>0)&7);
+  if(C===null){ nyb[5]=((V>>0)&8)|((A>>8)&7); }
+  else { nyb[5]=((C>>0)&8)|((A>>8)&7); nyb[6]=((C>>4)&8)|((C>>0)&7); nyb[7]=((V>>0)&8)|((C>>4)&7); }
+  const code=nyb.slice(0,C===null?6:8).map(i=>LETTERS[i]).join('');
+  return 'NES Game Genie '+code+'\naddress: '+hex4(A)+'\nvalue:   '+hex2(V)+(C===null?'\ncompare: (none)':'\ncompare: '+hex2(C))+'\n(note: in 6/8-letter codes the 3rd letter carries one unused bit, so a twin code with that bit flipped is equivalent.)';
+});
 addOp('stegoLSB','Steganography: Image LSB','Steganography','Least-significant-bit image steganography. Encode hides text in a generated image (red-channel LSBs, 0xFF terminator). Decode reads REAL pixels: paste an image as a data URL / base64, or an RGBA byte stream as hex with source=rgba-hex (pipeline-friendly, no canvas needed).',[
   {key:'secret',label:'Secret (encode)',type:'text',default:'SECRET'},
   {key:'mode',label:'Mode',type:'select',default:'encode',options:[['encode','Encode'],['decode','Decode']]},

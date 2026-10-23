@@ -62,10 +62,13 @@ wiki draft [`Sneakers-Archive-and-Ghidra`](github-wiki/Sneakers-Archive-and-Ghid
 Remaining: verify the `sneakers-press-kit.xdc` keyboard/mouse layout against the
 headline-harry pattern, DOSBox+Xvfb automation notes, wiki refresh + PR.
 
-### S3 · Retro gaming RE: Game Genie / Game Wizard / UHS / Sierra — *open*
+### S3 · Retro gaming RE: Game Genie / Game Wizard / UHS / Sierra — *partial*
 Format study and abandonware sweep (Easter eggs, walkthroughs, *Shadow President*), feeding
 the existing DOS disassembly line ([`dos-game-disassembly.md`](dos-game-disassembly.md),
-[`spycraft-research.md`](spycraft-research.md)).
+[`spycraft-research.md`](spycraft-research.md)). Game Genie (NES) decode/encode shipped
+in CyberChef as `gameGenieNes` (both builds; `SXIOPO → $91D9 ← $AD` known-answer +
+round-trip tests — `tests/cyberchef-game-genie.test.mjs`); Game Wizard/UHS/Sierra
+exploration remains.
 
 ### S4 · Subsurface viewers: California → 50 states → country → planet — *partial*
 The GIS mega-task (line 6). Existing base: `socal-subsurface.html` +
