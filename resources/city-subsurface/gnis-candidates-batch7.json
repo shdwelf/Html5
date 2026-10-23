@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T22:35:19Z",
+ "retrieved": "2026-10-23T22:44:15Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -1371,6 +1371,399 @@
      "county": "Knox",
      "lat": 38.4142134,
      "lon": -87.742528
+    }
+   ]
+  },
+  "OH": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_OH_Text.zip",
+   "zipSha256": "fdefb02b33cf046acaebe592de2dea986f091b18965869d35adad6d3da7553aa",
+   "candidatesRequested": [
+    "Columbus",
+    "Cleveland",
+    "Cincinnati",
+    "Toledo",
+    "Akron",
+    "Dayton",
+    "Youngstown",
+    "Canton",
+    "Campbell Hill",
+    "Lake Erie",
+    "Grand Lake",
+    "Indian Lake",
+    "Pymatuning Lake",
+    "Ohio River",
+    "Scioto River",
+    "Maumee River",
+    "Cuyahoga River"
+   ],
+   "rows": [
+    {
+     "featureId": "1064305",
+     "name": "Akron",
+     "featureClass": "Populated Place",
+     "state": "Ohio",
+     "county": "Summit",
+     "lat": 41.0814447,
+     "lon": -81.5190053
+    },
+    {
+     "featureId": "1079572",
+     "name": "Campbell Hill",
+     "featureClass": "Summit",
+     "state": "Ohio",
+     "county": "Logan",
+     "lat": 40.3702615,
+     "lon": -83.720086
+    },
+    {
+     "featureId": "1048578",
+     "name": "Campbell Hill",
+     "featureClass": "Summit",
+     "state": "Ohio",
+     "county": "Pike",
+     "lat": 39.1208079,
+     "lon": -83.2586975
+    },
+    {
+     "featureId": "1038781",
+     "name": "Campbell Hill",
+     "featureClass": "Summit",
+     "state": "Ohio",
+     "county": "Scioto",
+     "lat": 38.8733723,
+     "lon": -83.0309628
+    },
+    {
+     "featureId": "1048580",
+     "name": "Canton",
+     "featureClass": "Populated Place",
+     "state": "Ohio",
+     "county": "Stark",
+     "lat": 40.7989473,
+     "lon": -81.378447
+    },
+    {
+     "featureId": "1066650",
+     "name": "Cincinnati",
+     "featureClass": "Populated Place",
+     "state": "Ohio",
+     "county": "Hamilton",
+     "lat": 39.1034569,
+     "lon": -84.5152726
+    },
+    {
+     "featureId": "1066654",
+     "name": "Cleveland",
+     "featureClass": "Populated Place",
+     "state": "Ohio",
+     "county": "Cuyahoga",
+     "lat": 41.4994954,
+     "lon": -81.6954088
+    },
+    {
+     "featureId": "1080996",
+     "name": "Columbus",
+     "featureClass": "Populated Place",
+     "state": "Ohio",
+     "county": "Franklin",
+     "lat": 39.9611755,
+     "lon": -82.9987942
+    },
+    {
+     "featureId": "1072205",
+     "name": "Cuyahoga River",
+     "featureClass": "Stream",
+     "state": "Ohio",
+     "county": "Cuyahoga",
+     "lat": 41.5036617,
+     "lon": -81.712354
+    },
+    {
+     "featureId": "1064514",
+     "name": "Dayton",
+     "featureClass": "Populated Place",
+     "state": "Ohio",
+     "county": "Montgomery",
+     "lat": 39.7589478,
+     "lon": -84.1916069
+    },
+    {
+     "featureId": "1083992",
+     "name": "Grand Lake",
+     "featureClass": "Reservoir",
+     "state": "Ohio",
+     "county": "Mercer",
+     "lat": 40.5266733,
+     "lon": -84.5007189
+    },
+    {
+     "featureId": "1041943",
+     "name": "Indian Lake",
+     "featureClass": "Reservoir",
+     "state": "Ohio",
+     "county": "Logan",
+     "lat": 40.4675651,
+     "lon": -80.8753645
+    },
+    {
+     "featureId": "1075813",
+     "name": "Lake Erie",
+     "featureClass": "Lake",
+     "state": "Ohio",
+     "county": "Lake",
+     "lat": 42.149115,
+     "lon": -81.2410103
+    },
+    {
+     "featureId": "1084017",
+     "name": "Maumee River",
+     "featureClass": "Stream",
+     "state": "Ohio",
+     "county": "Lucas",
+     "lat": 41.6994922,
+     "lon": -83.4599325
+    },
+    {
+     "featureId": "425264",
+     "name": "Ohio River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Ballard",
+     "lat": 36.986719,
+     "lon": -89.1306255
+    },
+    {
+     "featureId": "1072258",
+     "name": "Scioto River",
+     "featureClass": "Stream",
+     "state": "Ohio",
+     "county": "Scioto",
+     "lat": 38.7306319,
+     "lon": -83.0126747
+    },
+    {
+     "featureId": "1067015",
+     "name": "Toledo",
+     "featureClass": "Populated Place",
+     "state": "Ohio",
+     "county": "Lucas",
+     "lat": 41.6639383,
+     "lon": -83.555212
+    },
+    {
+     "featureId": "1058156",
+     "name": "Youngstown",
+     "featureClass": "Populated Place",
+     "state": "Ohio",
+     "county": "Mahoning",
+     "lat": 41.0997803,
+     "lon": -80.6495194
+    }
+   ]
+  },
+  "PA": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_PA_Text.zip",
+   "zipSha256": "b006ae054e67c88876267c24caae2bccbccb9b530c9572710d17c640d9a9b2da",
+   "candidatesRequested": [
+    "Harrisburg",
+    "Philadelphia",
+    "Pittsburgh",
+    "Allentown",
+    "Erie",
+    "Scranton",
+    "Reading",
+    "Bethlehem",
+    "Mount Davis",
+    "Lake Erie",
+    "Pymatuning Lake",
+    "Raystown Lake",
+    "Lake Wallenpaupack",
+    "Susquehanna River",
+    "Delaware River",
+    "Ohio River",
+    "Allegheny River",
+    "Monongahela River"
+   ],
+   "rows": [
+    {
+     "featureId": "1209386",
+     "name": "Allegheny River",
+     "featureClass": "Stream",
+     "state": "Pennsylvania",
+     "county": "Allegheny",
+     "lat": 40.4434025,
+     "lon": -80.0150536
+    },
+    {
+     "featureId": "1202899",
+     "name": "Allentown",
+     "featureClass": "Populated Place",
+     "state": "Pennsylvania",
+     "county": "Allegheny",
+     "lat": 40.4275693,
+     "lon": -79.9939418
+    },
+    {
+     "featureId": "1213700",
+     "name": "Allentown",
+     "featureClass": "Populated Place",
+     "state": "Pennsylvania",
+     "county": "Lehigh",
+     "lat": 40.6084305,
+     "lon": -75.4901833
+    },
+    {
+     "featureId": "1169425",
+     "name": "Bethlehem",
+     "featureClass": "Populated Place",
+     "state": "Pennsylvania",
+     "county": "Clearfield",
+     "lat": 40.8617302,
+     "lon": -78.7303073
+    },
+    {
+     "featureId": "1169426",
+     "name": "Bethlehem",
+     "featureClass": "Populated Place",
+     "state": "Pennsylvania",
+     "county": "Northampton",
+     "lat": 40.6259316,
+     "lon": -75.3704579
+    },
+    {
+     "featureId": "217887",
+     "name": "Delaware River",
+     "featureClass": "Stream",
+     "state": "Delaware",
+     "county": "New Castle",
+     "lat": 39.4326121,
+     "lon": -75.528813
+    },
+    {
+     "featureId": "1174305",
+     "name": "Erie",
+     "featureClass": "Populated Place",
+     "state": "Pennsylvania",
+     "county": "Erie",
+     "lat": 42.1292241,
+     "lon": -80.085059
+    },
+    {
+     "featureId": "1213649",
+     "name": "Harrisburg",
+     "featureClass": "Populated Place",
+     "state": "Pennsylvania",
+     "county": "Dauphin",
+     "lat": 40.2737002,
+     "lon": -76.8844179
+    },
+    {
+     "featureId": "1213812",
+     "name": "Harrisburg",
+     "featureClass": "Populated Place",
+     "state": "Pennsylvania",
+     "county": "Philadelphia",
+     "lat": 40.0556669,
+     "lon": -75.025171
+    },
+    {
+     "featureId": "1075813",
+     "name": "Lake Erie",
+     "featureClass": "Lake",
+     "state": "Ohio",
+     "county": "Lake",
+     "lat": 42.149115,
+     "lon": -81.2410103
+    },
+    {
+     "featureId": "1199735",
+     "name": "Lake Wallenpaupack",
+     "featureClass": "Reservoir",
+     "state": "Pennsylvania",
+     "county": "Pike",
+     "lat": 41.4131347,
+     "lon": -75.2336679
+    },
+    {
+     "featureId": "1209053",
+     "name": "Monongahela River",
+     "featureClass": "Stream",
+     "state": "Pennsylvania",
+     "county": "Allegheny",
+     "lat": 40.4417359,
+     "lon": -80.0161647
+    },
+    {
+     "featureId": "1209050",
+     "name": "Mount Davis",
+     "featureClass": "Summit",
+     "state": "Pennsylvania",
+     "county": "Somerset",
+     "lat": 39.7858675,
+     "lon": -79.1766429
+    },
+    {
+     "featureId": "425264",
+     "name": "Ohio River",
+     "featureClass": "Stream",
+     "state": "Kentucky",
+     "county": "Ballard",
+     "lat": 36.986719,
+     "lon": -89.1306255
+    },
+    {
+     "featureId": "1209052",
+     "name": "Philadelphia",
+     "featureClass": "Populated Place",
+     "state": "Pennsylvania",
+     "county": "Philadelphia",
+     "lat": 39.952335,
+     "lon": -75.163789
+    },
+    {
+     "featureId": "1213644",
+     "name": "Pittsburgh",
+     "featureClass": "Populated Place",
+     "state": "Pennsylvania",
+     "county": "Allegheny",
+     "lat": 40.4406248,
+     "lon": -79.9958864
+    },
+    {
+     "featureId": "1193175",
+     "name": "Raystown Lake",
+     "featureClass": "Reservoir",
+     "state": "Pennsylvania",
+     "county": "Huntingdon",
+     "lat": 40.3639311,
+     "lon": -78.1022832
+    },
+    {
+     "featureId": "1184733",
+     "name": "Reading",
+     "featureClass": "Populated Place",
+     "state": "Pennsylvania",
+     "county": "Berks",
+     "lat": 40.3356483,
+     "lon": -75.9268747
+    },
+    {
+     "featureId": "1213652",
+     "name": "Scranton",
+     "featureClass": "Populated Place",
+     "state": "Pennsylvania",
+     "county": "Lackawanna",
+     "lat": 41.408969,
+     "lon": -75.6624122
+    },
+    {
+     "featureId": "591690",
+     "name": "Susquehanna River",
+     "featureClass": "Stream",
+     "state": "Maryland",
+     "county": "Cecil",
+     "lat": 39.5403911,
+     "lon": -76.0738386
     }
    ]
   }
