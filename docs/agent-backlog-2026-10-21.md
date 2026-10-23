@@ -72,8 +72,8 @@ round-trip tests — `tests/cyberchef-game-genie.test.mjs`); SNES Game Genie fol
 Game Boy/Game Gear and Genesis Game Genie followed (`gameGenieGb`, `gameGenieGenesis`;
 7/7 tests, published worked examples). Game Wizard / UHS / Sierra strands surveyed in
 [`game-wizard-uhs-sierra-status-2026-10-23.md`](game-wizard-uhs-sierra-status-2026-10-23.md):
-Game Wizard needs its shareware binary (fetch-runner), a UHS88a reader is the identified
-buildable next step, and the Sierra sweep is editorial.
+Game Wizard needs its shareware binary (fetch-runner); a UHS88a reader is built
+(`js/uhs.js` + `uhs-reader.html`, `tests/uhs.test.mjs` 3/3); the Sierra sweep is editorial.
 
 ### S4 · Subsurface viewers: California → 50 states → country → planet — *partial*
 The GIS mega-task (line 6). Existing base: `socal-subsurface.html` +

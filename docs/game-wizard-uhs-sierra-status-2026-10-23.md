@@ -38,11 +38,14 @@ to a published worked example). What remains in T3.1 is three unlike things:
   **OpenUHS** (Java, GPL, since 2006) covers all formats, and there is a
   pure-Python port (`Tormen/my-uhs`). The format spec used above is the
   long-standing public documentation (Stefan Wolff's UHS page).
-- Feasible local artifact: a small **UHS88a reader** (parser + progressive
-  reveal UI) is buildable from the published spec with synthetic fixtures,
-  mirroring the dual-shuffle pattern. 91a/96a should be read via OpenUHS
-  rather than re-implemented blind. Recorded as *researched; UHS88a reader
-  is the identified next build*.
+- Built: **`js/uhs.js` + `uhs-reader.html`** — a UHS88a parser (4-line
+  header, link-tree partitioning and hint grouping exactly per Wolff's
+  dissection) with the 88a cipher verified against his published worked
+  example (`gHrGtGs iqrGr` → "Opening Scene", `tests/uhs.test.mjs` 3/3,
+  synthetic fixtures only — no real .uhs files are bundled, per the
+  format distributors' no-republication note). The viewer reveals hints
+  one at a time, true to the UHS philosophy. 91a/95a/96a files are
+  detected and refused with a pointer to OpenUHS rather than misparsed.
 
 ## Sierra Easter eggs / walkthroughs — content work, sources identified
 - The Sierra Help Pages (sierrahelp.com) already curate cheat essentials,
@@ -55,6 +58,6 @@ to a published worked example). What remains in T3.1 is three unlike things:
 ## Bottom line for T3.1
 Encoded-cheat formats: **done** (four Game Genie ops, known-answer tested).
 Game Wizard: researched; next artifact needs the shareware binary via the
-fetch-runner channel. UHS: researched; UHS88a reader is buildable on demand.
-Sierra sweep: editorial, sources identified. T3.1 stays *partial* on those
-three strands only.
+fetch-runner channel. UHS: **UHS88a reader built** (91a+ deliberately
+referred to OpenUHS). Sierra sweep: editorial, sources identified. T3.1
+stays *partial* on the Game Wizard and Sierra strands only.
