@@ -307,6 +307,12 @@ QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock / number-porti
 SIM-lock research, Eagle CAD unlock schematics, xdc → TI-calc / Android / F-Droid ports
 (socal-subsurface first), Hotline/KDX/FXP, Intel iParty + Creative Labs FCC schematics,
 VoIP Blaster, DUCK codecs, lossless comms room, Tetrinet.
+*2026-10-23 round (T8.3):* iParty / VoIP Blaster / DUCK research delivered —
+[`iparty-voipblaster-duck-2026-10-23.md`](iparty-voipblaster-duck-2026-10-23.md):
+iParty is 1995 Intel software (no FCC filing; ACM-delegated codec), the VoIP
+Blaster is Part 15B wired (no FCC schematics exist), DUCK/TrueMotion lineage
+ends in WebM with FFmpeg decoders source-available. T8.3 now *partial*;
+lossless comms room + Tetrinet remain.
 *2026-10-23 round (T8.4):* SIM-lock research delivered —
 [`sim-lock-research-2026-10-23.md`](sim-lock-research-2026-10-23.md):
 §1201 exemption timeline (2006→Pub. L. 113-144→89 FR 85437 in 2024), CTIA
