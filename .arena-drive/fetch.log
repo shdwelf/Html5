@@ -22,7 +22,7 @@ You may still be able to access the file from the browser:
 
 but Gdown can't. Please check connections and permissions.
 
-FAIL  Html5-worktree-2026-09-27-12c463f.tar.gz  HTTP 404; HTTP 404; HTTP 404; HTTP 404; HTTP 404; gdown rc=1: ov-file#faq.
+FAIL  Html5-worktree-2026-09-27-12c463f.tar.gz  RATE-LIMITED (Drive download quota exceeded for this file); HTTP 404; HTTP 404; HTTP 404; HTTP 404; gdown rc=1: ov-file#faq.
 
 You may still be able to access the file from the browser:
 
