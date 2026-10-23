@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T22:34:36Z",
+ "retrieved": "2026-10-23T22:35:19Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -1010,7 +1010,9 @@
     "Ohio River",
     "Kaskaskia River",
     "Mississippi River",
-    "Lake Michigan"
+    "Lake Michigan",
+    "Rock River",
+    "Peoria Lake"
    ],
    "rows": [
     {
@@ -1113,6 +1115,15 @@
      "lon": -89.5889864
     },
     {
+     "featureId": "415539",
+     "name": "Peoria Lake",
+     "featureClass": "Lake",
+     "state": "Illinois",
+     "county": "Tazewell",
+     "lat": 40.7022598,
+     "lon": -89.5545403
+    },
+    {
      "featureId": "416524",
      "name": "Rend Lake",
      "featureClass": "Reservoir",
@@ -1120,6 +1131,51 @@
      "county": "Franklin",
      "lat": 38.1096376,
      "lon": -88.9626068
+    },
+    {
+     "featureId": "1692463",
+     "name": "Rock River",
+     "featureClass": "Reservoir",
+     "state": "Illinois",
+     "county": "Lee",
+     "lat": 41.8450323,
+     "lon": -89.4817704
+    },
+    {
+     "featureId": "1692265",
+     "name": "Rock River",
+     "featureClass": "Reservoir",
+     "state": "Illinois",
+     "county": "Ogle",
+     "lat": 42.0166957,
+     "lon": -89.3334391
+    },
+    {
+     "featureId": "1691024",
+     "name": "Rock River",
+     "featureClass": "Reservoir",
+     "state": "Illinois",
+     "county": "Winnebago",
+     "lat": 42.4566823,
+     "lon": -89.078443
+    },
+    {
+     "featureId": "1691026",
+     "name": "Rock River",
+     "featureClass": "Reservoir",
+     "state": "Illinois",
+     "county": "Winnebago",
+     "lat": 42.2650201,
+     "lon": -89.0951062
+    },
+    {
+     "featureId": "416824",
+     "name": "Rock River",
+     "featureClass": "Stream",
+     "state": "Illinois",
+     "county": "Rock Island",
+     "lat": 41.4825326,
+     "lon": -90.6162489
     },
     {
      "featureId": "416843",
@@ -1168,7 +1224,8 @@
     "White River",
     "Ohio River",
     "Lake Michigan",
-    "Lake Maxinkuckee"
+    "Lake Maxinkuckee",
+    "Monroe Lake"
    ],
    "rows": [
     {
@@ -1242,6 +1299,15 @@
      "county": "Mason",
      "lat": 44.0078744,
      "lon": -86.7564512
+    },
+    {
+     "featureId": "451234",
+     "name": "Monroe Lake",
+     "featureClass": "Reservoir",
+     "state": "Indiana",
+     "county": "Monroe",
+     "lat": 39.055508,
+     "lon": -86.4333117
     },
     {
      "featureId": "425264",
