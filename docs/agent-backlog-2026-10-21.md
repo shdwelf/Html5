@@ -284,6 +284,14 @@ Remaining: the m68k-uclinux C port itself; no live FTN peering fabricated.
 *Conversion started:* `tools/bbs/ftnpkt.c` (C99 FTS-0001 parser + `--news`
 mapper) cross-checked against the JS implementation with a `-Werror` test
 harness — the first uClinux-shaped C artifact of the MBSE-subset plan.
+*2026-10-23 round (T6.3/T7.2):* the m68k cross-build now runs —
+`.github/workflows/arena-m68k-crossbuild.yml` (run 40027253569) compiled
+`ftnpkt.c` with `m68k-linux-gnu-gcc` 13.3 (`-Werror`-clean, static MC68000
+ELF, sha256 `efb8e6b83a81…`) and executed it under `qemu-m68k` 8.2.2:
+dump + `--news` output **byte-identical** to the host build on the fixture
+from `tools/bbs/make_fixture.mjs` (`.arena-m68k/result.md`). The sandbox
+zig route was ruled out (its LLVM ships no m68k backend). Remaining:
+uClinux bFLT target, a run on ColdFire iron, live peering.
 
 **Round 19 toolchain status (2026-10-23): still externally blocked, but the
 blocker is narrower.** The GitHub survey in
