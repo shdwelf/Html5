@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T22:15:30Z",
+ "retrieved": "2026-10-23T22:25:37Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -459,6 +459,526 @@
      "county": "Dickinson",
      "lat": 43.3844078,
      "lon": -95.1594407
+    }
+   ]
+  },
+  "WI": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_WI_Text.zip",
+   "zipSha256": "6defeaac97fa227c074777291a33b5909ad6ff07335c9d69c0488325d563fe00",
+   "candidatesRequested": [
+    "Madison",
+    "Milwaukee",
+    "Green Bay",
+    "Kenosha",
+    "Racine",
+    "Eau Claire",
+    "Appleton",
+    "La Crosse",
+    "Superior",
+    "Timms Hill",
+    "Lake Winnebago",
+    "Lake Mendota",
+    "Devils Lake",
+    "Wisconsin River",
+    "Saint Croix River",
+    "Mississippi River",
+    "Lake Michigan",
+    "Lake Superior"
+   ],
+   "rows": [
+    {
+     "featureId": "1560914",
+     "name": "Appleton",
+     "featureClass": "Populated Place",
+     "state": "Wisconsin",
+     "county": "Outagamie",
+     "lat": 44.2619309,
+     "lon": -88.4153847
+    },
+    {
+     "featureId": "1579123",
+     "name": "Devils Lake",
+     "featureClass": "Lake",
+     "state": "Wisconsin",
+     "county": "Bayfield",
+     "lat": 46.2926887,
+     "lon": -91.4958771
+    },
+    {
+     "featureId": "1563942",
+     "name": "Devils Lake",
+     "featureClass": "Lake",
+     "state": "Wisconsin",
+     "county": "Burnett",
+     "lat": 45.9092792,
+     "lon": -92.3377692
+    },
+    {
+     "featureId": "1563938",
+     "name": "Devils Lake",
+     "featureClass": "Lake",
+     "state": "Wisconsin",
+     "county": "Fond du Lac",
+     "lat": 43.7440516,
+     "lon": -88.3924697
+    },
+    {
+     "featureId": "1579121",
+     "name": "Devils Lake",
+     "featureClass": "Lake",
+     "state": "Wisconsin",
+     "county": "Forest",
+     "lat": 45.5476454,
+     "lon": -88.8336419
+    },
+    {
+     "featureId": "1563939",
+     "name": "Devils Lake",
+     "featureClass": "Lake",
+     "state": "Wisconsin",
+     "county": "Marinette",
+     "lat": 45.208468,
+     "lon": -88.0650045
+    },
+    {
+     "featureId": "1563937",
+     "name": "Devils Lake",
+     "featureClass": "Lake",
+     "state": "Wisconsin",
+     "county": "Sauk",
+     "lat": 43.4173523,
+     "lon": -89.7316274
+    },
+    {
+     "featureId": "1563940",
+     "name": "Devils Lake",
+     "featureClass": "Lake",
+     "state": "Wisconsin",
+     "county": "Sawyer",
+     "lat": 45.8347589,
+     "lon": -91.3345138
+    },
+    {
+     "featureId": "1579122",
+     "name": "Devils Lake",
+     "featureClass": "Lake",
+     "state": "Wisconsin",
+     "county": "Vilas",
+     "lat": 46.1741355,
+     "lon": -89.5217419
+    },
+    {
+     "featureId": "1563941",
+     "name": "Devils Lake",
+     "featureClass": "Lake",
+     "state": "Wisconsin",
+     "county": "Washburn",
+     "lat": 45.9240334,
+     "lon": -91.5735774
+    },
+    {
+     "featureId": "1564402",
+     "name": "Eau Claire",
+     "featureClass": "Populated Place",
+     "state": "Wisconsin",
+     "county": "Eau Claire",
+     "lat": 44.811349,
+     "lon": -91.4984941
+    },
+    {
+     "featureId": "1565800",
+     "name": "Green Bay",
+     "featureClass": "Bay",
+     "state": "Wisconsin",
+     "county": "Door",
+     "lat": 45.0297122,
+     "lon": -87.4609382
+    },
+    {
+     "featureId": "1565799",
+     "name": "Green Bay",
+     "featureClass": "Bay",
+     "state": "Wisconsin",
+     "county": "Winnebago",
+     "lat": 43.9255381,
+     "lon": -88.7792775
+    },
+    {
+     "featureId": "1565801",
+     "name": "Green Bay",
+     "featureClass": "Populated Place",
+     "state": "Wisconsin",
+     "county": "Brown",
+     "lat": 44.519159,
+     "lon": -88.019826
+    },
+    {
+     "featureId": "1567416",
+     "name": "Kenosha",
+     "featureClass": "Populated Place",
+     "state": "Wisconsin",
+     "county": "Kenosha",
+     "lat": 42.5847425,
+     "lon": -87.8211854
+    },
+    {
+     "featureId": "1567672",
+     "name": "La Crosse",
+     "featureClass": "Populated Place",
+     "state": "Wisconsin",
+     "county": "La Crosse",
+     "lat": 43.8013556,
+     "lon": -91.2395807
+    },
+    {
+     "featureId": "1569337",
+     "name": "Lake Mendota",
+     "featureClass": "Lake",
+     "state": "Wisconsin",
+     "county": "Dane",
+     "lat": 43.1049997,
+     "lon": -89.4199365
+    },
+    {
+     "featureId": "1623080",
+     "name": "Lake Michigan",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Mason",
+     "lat": 44.0078744,
+     "lon": -86.7564512
+    },
+    {
+     "featureId": "1618946",
+     "name": "Lake Superior",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Keweenaw",
+     "lat": 47.5288158,
+     "lon": -87.7600216
+    },
+    {
+     "featureId": "1576879",
+     "name": "Lake Winnebago",
+     "featureClass": "Lake",
+     "state": "Wisconsin",
+     "county": "Winnebago",
+     "lat": 44.0169756,
+     "lon": -88.4095327
+    },
+    {
+     "featureId": "1581834",
+     "name": "Madison",
+     "featureClass": "Populated Place",
+     "state": "Wisconsin",
+     "county": "Dane",
+     "lat": 43.0730517,
+     "lon": -89.4012302
+    },
+    {
+     "featureId": "1577901",
+     "name": "Milwaukee",
+     "featureClass": "Populated Place",
+     "state": "Wisconsin",
+     "county": "Milwaukee",
+     "lat": 43.0389025,
+     "lon": -87.9064736
+    },
+    {
+     "featureId": "1629903",
+     "name": "Mississippi River",
+     "featureClass": "Stream",
+     "state": "Louisiana",
+     "county": "Plaquemines",
+     "lat": 29.1510582,
+     "lon": -89.2533842
+    },
+    {
+     "featureId": "1572015",
+     "name": "Racine",
+     "featureClass": "Populated Place",
+     "state": "Wisconsin",
+     "county": "Racine",
+     "lat": 42.7261309,
+     "lon": -87.7828523
+    },
+    {
+     "featureId": "662324",
+     "name": "Saint Croix River",
+     "featureClass": "Stream",
+     "state": "Minnesota",
+     "county": "Washington",
+     "lat": 44.7458009,
+     "lon": -92.8027028
+    },
+    {
+     "featureId": "1575125",
+     "name": "Superior",
+     "featureClass": "Populated Place",
+     "state": "Wisconsin",
+     "county": "Douglas",
+     "lat": 46.7207737,
+     "lon": -92.1040796
+    },
+    {
+     "featureId": "1575464",
+     "name": "Timms Hill",
+     "featureClass": "Summit",
+     "state": "Wisconsin",
+     "county": "Price",
+     "lat": 45.4507963,
+     "lon": -90.1953351
+    },
+    {
+     "featureId": "1580811",
+     "name": "Wisconsin River",
+     "featureClass": "Stream",
+     "state": "Wisconsin",
+     "county": "Crawford",
+     "lat": 42.9894297,
+     "lon": -91.1540184
+    }
+   ]
+  },
+  "MI": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_MI_Text.zip",
+   "zipSha256": "d1bcb7dcb46f151688c840e51f2588572f693f6d97ef2f5639911247fa1a2bef",
+   "candidatesRequested": [
+    "Lansing",
+    "Detroit",
+    "Grand Rapids",
+    "Ann Arbor",
+    "Traverse City",
+    "Marquette",
+    "Kalamazoo",
+    "Flint",
+    "Mount Arvon",
+    "Houghton Lake",
+    "Torch Lake",
+    "Higgins Lake",
+    "Grand River",
+    "Saginaw River",
+    "Lake Michigan",
+    "Lake Huron",
+    "Lake Erie",
+    "Lake Superior"
+   ],
+   "rows": [
+    {
+     "featureId": "620133",
+     "name": "Ann Arbor",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Washtenaw",
+     "lat": 42.2708716,
+     "lon": -83.7263294
+    },
+    {
+     "featureId": "1617959",
+     "name": "Detroit",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Wayne",
+     "lat": 42.331427,
+     "lon": -83.0457538
+    },
+    {
+     "featureId": "626170",
+     "name": "Flint",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Genesee",
+     "lat": 43.0125274,
+     "lon": -83.6874562
+    },
+    {
+     "featureId": "627105",
+     "name": "Grand Rapids",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Kent",
+     "lat": 42.9633599,
+     "lon": -85.6680863
+    },
+    {
+     "featureId": "1620055",
+     "name": "Grand Rapids",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Ontonagon",
+     "lat": 46.7657749,
+     "lon": -89.2756983
+    },
+    {
+     "featureId": "627109",
+     "name": "Grand River",
+     "featureClass": "Stream",
+     "state": "Michigan",
+     "county": "Ottawa",
+     "lat": 43.0583508,
+     "lon": -86.2508869
+    },
+    {
+     "featureId": "628219",
+     "name": "Higgins Lake",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Roscommon",
+     "lat": 44.4742732,
+     "lon": -84.7227283
+    },
+    {
+     "featureId": "628220",
+     "name": "Higgins Lake",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Roscommon",
+     "lat": 44.4836267,
+     "lon": -84.7797529
+    },
+    {
+     "featureId": "628664",
+     "name": "Houghton Lake",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Roscommon",
+     "lat": 44.3369774,
+     "lon": -84.7216378
+    },
+    {
+     "featureId": "628665",
+     "name": "Houghton Lake",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Roscommon",
+     "lat": 44.314739,
+     "lon": -84.7647496
+    },
+    {
+     "featureId": "629439",
+     "name": "Kalamazoo",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Kalamazoo",
+     "lat": 42.2917069,
+     "lon": -85.5872286
+    },
+    {
+     "featureId": "1075813",
+     "name": "Lake Erie",
+     "featureClass": "Lake",
+     "state": "Ohio",
+     "county": "Lake",
+     "lat": 42.149115,
+     "lon": -81.2410103
+    },
+    {
+     "featureId": "1624619",
+     "name": "Lake Huron",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Alcona",
+     "lat": 44.5925841,
+     "lon": -82.7562934
+    },
+    {
+     "featureId": "1623080",
+     "name": "Lake Michigan",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Mason",
+     "lat": 44.0078744,
+     "lon": -86.7564512
+    },
+    {
+     "featureId": "1618946",
+     "name": "Lake Superior",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Keweenaw",
+     "lat": 47.5288158,
+     "lon": -87.7600216
+    },
+    {
+     "featureId": "1625035",
+     "name": "Lansing",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Ingham",
+     "lat": 42.732535,
+     "lon": -84.5555347
+    },
+    {
+     "featureId": "631600",
+     "name": "Marquette",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Marquette",
+     "lat": 46.5435442,
+     "lon": -87.395417
+    },
+    {
+     "featureId": "1623751",
+     "name": "Mount Arvon",
+     "featureClass": "Summit",
+     "state": "Michigan",
+     "county": "Baraga",
+     "lat": 46.7557395,
+     "lon": -88.1552409
+    },
+    {
+     "featureId": "636503",
+     "name": "Saginaw River",
+     "featureClass": "Stream",
+     "state": "Michigan",
+     "county": "Bay",
+     "lat": 43.6469667,
+     "lon": -83.8505319
+    },
+    {
+     "featureId": "1618747",
+     "name": "Torch Lake",
+     "featureClass": "Canal",
+     "state": "Michigan",
+     "county": "Houghton",
+     "lat": 47.1449262,
+     "lon": -88.4090075
+    },
+    {
+     "featureId": "1614970",
+     "name": "Torch Lake",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Antrim",
+     "lat": 44.9674583,
+     "lon": -85.3112611
+    },
+    {
+     "featureId": "1614969",
+     "name": "Torch Lake",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Houghton",
+     "lat": 47.1633526,
+     "lon": -88.4228581
+    },
+    {
+     "featureId": "1614971",
+     "name": "Torch Lake",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Antrim",
+     "lat": 45.0752809,
+     "lon": -85.3586838
+    },
+    {
+     "featureId": "1615042",
+     "name": "Traverse City",
+     "featureClass": "Populated Place",
+     "state": "Michigan",
+     "county": "Grand Traverse",
+     "lat": 44.7630567,
+     "lon": -85.6206317
     }
    ]
   }
