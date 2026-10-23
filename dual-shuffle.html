@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dual-Shuffle Explorer — two decks, fair merges</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:system-ui,sans-serif;margin:2rem auto;max-width:56rem;padding:0 1rem;line-height:1.5}
+  textarea{width:100%;height:5.5rem;font-family:ui-monospace,monospace}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  ol{background:#f6f6f6;padding:1rem 2.2rem;border-radius:.5rem;min-height:6rem}
+  .mono{font-family:ui-monospace,monospace;white-space:pre-wrap}
+  button,select,input{font:inherit;padding:.3rem .6rem}
+  .bar{display:inline-block;background:#4a7;height:.8em;vertical-align:middle}
+</style>
+</head>
+<body>
+<h1>Dual-Shuffle Explorer</h1>
+<p>Two decks (two playlists, two people's queues, a CyTube-style A/B rotation), four ways to
+merge them, three shuffle algorithms — one of them famously biased. Seeded, so every result
+here is reproducible. The bias meter shuffles <span class="mono">[0..4]</span> 6,000 times and
+tracks where card 0 lands; a fair shuffle lands it everywhere equally.</p>
+
+<div class="row">
+  <label>Deck A (one title per line)<textarea id="deckA">Blue Monday
+Song 2
+Once in a Lifetime
+Enjoy the Silence
+Just Like Heaven</textarea></label>
+  <label>Deck B (one title per line)<textarea id="deckB">Kiss
+1999
+Little Red Corvette
+When Doves Cry
+Purple Rain</textarea></label>
+</div>
+
+<p>
+  <label>Merge
+    <select id="strategy">
+      <option value="interleave">Interleave (strict A,B,A,B…)</option>
+      <option value="riffle" selected>Riffle (weighted by cards left)</option>
+      <option value="blocks">Blocks (runs of 1–3, crossfade feel)</option>
+      <option value="concat-shuffle">Concat + shuffle all</option>
+    </select></label>
+  <label>Shuffle
+    <select id="shuffle">
+      <option value="permute-seen">Fisher–Yates (permute seen)</option>
+      <option value="sample-rest">Fisher–Yates (sample from rest)</option>
+      <option value="naive">Naive swap (biased!)</option>
+    </select></label>
+  <label>Seed <input id="seed" type="number" value="42" style="width:6rem"></label>
+  <label><input id="preserve" type="checkbox"> Keep deck order</label>
+  <button id="go" type="button">Shuffle the decks</button>
+</p>
+
+<h2>Merged queue</h2>
+<ol id="out"></ol>
+
+<h2>Bias meter (card 0 landing position, 6,000 shuffles of 5)</h2>
+<div id="bias" class="mono"></div>
+
+<script type="module">
+import { mulberry32, SHUFFLES, mergeDecks, positionBias, VERDICT, permutationBias, PERM_VERDICT } from "./js/dual-shuffle.js";
+const $ = (id) => document.getElementById(id);
+const lines = (id) => $(id).value.split("\n").map((s) => s.trim()).filter(Boolean);
+function run() {
+  const rand = mulberry32(Number($("seed").value) || 0);
+  const merged = mergeDecks(lines("deckA"), lines("deckB"), $("strategy").value, rand, {
+    shuffle: $("shuffle").value,
+    preserveOrder: $("preserve").checked,
+  });
+  $("out").innerHTML = merged.map((t) => `<li>${t.replace(/[<>&]/g, "")}</li>`).join("");
+  const fn = SHUFFLES[$("shuffle").value];
+  const { counts, chi2 } = positionBias(fn, { seed: Number($("seed").value) || 0 });
+  const max = Math.max(...counts);
+  const perm = permutationBias(fn, { seed: Number($("seed").value) || 0 });
+  $("bias").textContent =
+    counts.map((c, i) => `pos ${i}: ${String(c).padStart(4)} ` + "█".repeat(Math.round((c / max) * 40))).join("\n") +
+    `\nsingle-card χ² = ${chi2.toFixed(1)} → ${VERDICT(chi2, 5)}` +
+    `\npermutation χ² = ${perm.chi2.toFixed(1)} (df ${perm.df}) → ${PERM_VERDICT(perm.chi2, perm.df)}` +
+    `\n(the naive swap passes the single-card probe; only the permutation probe convicts it)`;
+}
+$("go").addEventListener("click", run);
+run();
+</script>
+</body>
+</html>

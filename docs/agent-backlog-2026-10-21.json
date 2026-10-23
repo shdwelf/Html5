@@ -619,6 +619,14 @@
       "note": "2026-10-23: QR + lat/long half closed (docs/cicada-3301-qr-locations-2026-10-23.md; 14 coordinates of 2012-01-09 tabulated, 8 US sites seeded citation-only in resources/historical-network/cicada-3301-poster-seed-2026-10-23.json, validator-clean, no puzzle payloads). Remaining: Warrick-method application to lost Cicada sites and Hall-of-Fame lecture material."
     },
     {
+      "id": "T12.2",
+      "line": 171,
+      "stream": "S12",
+      "text": "Dual-shuffle explorers on the modern net: CyTube and shuffle sites reviewed; two-deck merge fairness explored and built locally",
+      "status": "done",
+      "note": "2026-10-23: surveyed CyTube (calzoneman/sync, cytu.be) and successors (OpenTogetherTube, Watch2Gether, Metastream, Kosmi, SyncUp) - shared-queue rooms, no published two-queue fairness model. Built dual-shuffle.html + js/dual-shuffle.js: both Fisher-Yates duals, naive swap (convicted by permutation-distribution probe; its single-card marginals are uniform, verified), interleave/riffle/blocks/concat-shuffle merges, seeded RNG, dual bias meters. tests/dual-shuffle.test.mjs 4/4. Doc: docs/dual-shuffle-explorers-2026-10-23.md. No live CyTube room created (third-party service)."
+    },
+    {
       "id": "T13.1",
       "line": 2,
       "stream": "S13",

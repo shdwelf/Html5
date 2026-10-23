@@ -262,6 +262,7 @@ citation-only historical-network pack,
 validator-clean). No QR payloads or puzzle content recorded; posters are
 gone and every row says so.
 
+*2026-10-23 round (T12.2):* dual-shuffle explorers surveyed (CyTube + successors) and built locally — `dual-shuffle.html`/`js/dual-shuffle.js` with both Fisher–Yates duals, the naive swap convicted by a permutation-distribution probe, and four two-deck merge strategies; `tests/dual-shuffle.test.mjs` 4/4; [`dual-shuffle-explorers-2026-10-23.md`](dual-shuffle-explorers-2026-10-23.md).
 ### S13 · Intelligence-archive research: bin Laden hard-drive release — *done*
 Publicly released CIA/FOIA/archive.org material only; deliverable is a source-checked
 research note in house style.
