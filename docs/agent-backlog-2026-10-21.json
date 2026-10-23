@@ -578,7 +578,7 @@
       "stream": "S8",
       "text": "Convert xdc apps to TI-calc + Android/F-Droid (socal-subsurface first); TransMac/Pluralsight; Hotline/KDX/FXP",
       "status": "open",
-      "note": "2026-10-23: Java-server port shipped — tools/build_xdc_wars.mjs converts all repo-root .xdc to deterministic Tomcat WARs (54 built; greeran-book.xdc skipped, not a ZIP) + xdc-viewer.war catalogue/player (xdc-viewer.html); Struts 7 / Jakarta Faces 4 investigated and not adopted for static apps (docs/apache-struts-jsf-tomcat-xdc-war-2026-10-23.md). TI-calc and Android/F-Droid ports remain open."
+      "note": "2026-10-23: Java-server port shipped — tools/build_xdc_wars.mjs converts all repo-root .xdc to deterministic Tomcat WARs (54 built; greeran-book.xdc skipped, not a ZIP) + xdc-viewer.war catalogue/player (xdc-viewer.html); Struts 7 / Jakarta Faces 4 investigated and not adopted for static apps (docs/apache-struts-jsf-tomcat-xdc-war-2026-10-23.md). TI-calc and Android/F-Droid ports remain open. TI-calc strand scoped 2026-10-23 (docs/ti-calc-port-status-2026-10-23.md): calc/ SITE-K engine re-verified green in-sandbox (make -C calc test: host, 6-device C/JS differential, ti_pack container selftest); socal-subsurface full port ruled out with numbers (863 KB WebGL app vs 24 KB RAM / 96x64 LCD); honest follow-ons defined - SUBSURF sector-grid sketch screens in the SITE-K pattern, sdcc toolchain via runner for real .8xp binaries, F-Droid WebView wrapper via runner."
     },
     {
       "id": "T8.3",

@@ -304,7 +304,11 @@ repo `.xdc` converted to deterministic Tomcat WARs (54 built, `greeran-book.xdc`
 skipped as not-a-ZIP) with an `xdc-viewer.war` catalogue/player; Struts/JSF
 investigated and deliberately not adopted for static apps
 ([`apache-struts-jsf-tomcat-xdc-war-2026-10-23.md`](apache-struts-jsf-tomcat-xdc-war-2026-10-23.md)).
-TI-calc/F-Droid and the device-lab items remain open.
+TI-calc strand scoped in [`ti-calc-port-status-2026-10-23.md`](ti-calc-port-status-2026-10-23.md):
+the SITE-K calc engine re-verified green (`make -C calc test`), a full socal-subsurface
+port ruled out with numbers (863 KB WebGL app vs 24 KB RAM), and the honest follow-ons
+defined (SUBSURF sketch screens, sdcc via runner, F-Droid wrapper via runner).
+TI-calc/F-Droid builds and the device-lab items remain open.
 
 ### S9 · Vault, stego & smartcard filesystems: shufflecake, haiku vault, boot-chain — *partial*
 Catalog the OCR haiku into the haiku vault and verify the enso generators + haiku randomizers
