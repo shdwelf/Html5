@@ -74,10 +74,23 @@ the St./Saint spelling gates for Saint Louis and Saint Joseph are recorded.
 Their machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json).
 
+Round 26 update: **2026-10-23**. `minnesota` and `louisiana` join as the
+twenty-ninth and thirtieth configurations, closing the West North Central
+division and opening the Gulf thread. Each starts with twelve all-GNIS
+`VERIFIED=1` rows; Eagle Mountain and Driskill Mountain additionally carry
+GNIS Domestic Names per-ID detail checks (“2301 feet” disambiguated from
+two undesignated same-name summits, and “535 feet”), Lake of the Woods
+carries a Board-decision per-ID check, Louisiana seeds the **first
+statewide Mississippi River row** (Plaquemines) after three distinct state
+screen failures, and the Red River chain closes at the West Feliciana
+record. Louisiana ships a labelled generalized Gulf coast line. Their
+machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has twenty-eight configurations — five cities,
-nineteen statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has thirty configurations — five cities,
+twenty-one statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -110,6 +123,8 @@ its own offline Webxdc:
 | Texas (statewide) | `texas-subsurface.html` | `js/city-subsurface-data-texas.js` | `js/city-gazetteer-data-texas.js` | `texas-subsurface.xdc` |
 | Iowa (statewide) | `iowa-subsurface.html` | `js/city-subsurface-data-iowa.js` | `js/city-gazetteer-data-iowa.js` | `iowa-subsurface.xdc` |
 | Missouri (statewide) | `missouri-subsurface.html` | `js/city-subsurface-data-missouri.js` | `js/city-gazetteer-data-missouri.js` | `missouri-subsurface.xdc` |
+| Minnesota (statewide) | `minnesota-subsurface.html` | `js/city-subsurface-data-minnesota.js` | `js/city-gazetteer-data-minnesota.js` | `minnesota-subsurface.xdc` |
+| Louisiana (statewide) | `louisiana-subsurface.html` | `js/city-subsurface-data-louisiana.js` | `js/city-gazetteer-data-louisiana.js` | `louisiana-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

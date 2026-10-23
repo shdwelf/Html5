@@ -228,6 +228,30 @@ Iowa-side Mississippi/Missouri rivers stay corridor-only. Next in
 sequence: Minnesota closes the West North Central division, then the
 Gulf/South Atlantic states, then the country/planet thread.
 
+**Round 26 status (2026-10-23): partial.** Minnesota and Louisiana shipped
+as configurations 29–30, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, and no
+DEM; Louisiana additionally carries a labelled generalized Gulf coast line.
+Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json).
+Eagle Mountain and Driskill Mountain carry GNIS Domestic Names per-ID
+checks (“Highest elevation in MN at 2301 feet” on FEATURE_ID 656081,
+disambiguated from two undesignated same-name summits the Geocoder listed
+first, and “Highest elevation in LA at 535 feet”); Lake of the Woods
+carries a Board-decision per-ID check (1911/1953, 18 sequences) rejecting
+the 2001 duplicate. The Mississippi River gets its first seeded statewide
+row in Louisiana (Plaquemines) after the Iowa empty screen, the Missouri
+name mismatch, and the Minnesota reservoir-only screen; the Red River
+chain closes at the West Feliciana record after ND/OK empties, the Texas
+Brown County rejection, and the Minnesota-registered Red River of the North
+whose returned primary sits in Canada (border corridor with disclosure).
+St. Paul and St. Cloud add the third and fourth St./Saint spelling gates;
+Monroe is held out as two indistinguishable populated places; Lake
+Superior, St. Croix River, and Toledo Bend Reservoir screened empty;
+Rainy Lake holds as a four-way ambiguity. Next in sequence: Gulf/South
+Atlantic states (Mississippi/Alabama/Georgia …), then the country/planet
+thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

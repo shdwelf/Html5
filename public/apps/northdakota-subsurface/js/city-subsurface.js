@@ -61,6 +61,8 @@ const DATA_LOADERS = {
   texas: () => import("./city-subsurface-data-texas.js"),
   iowa: () => import("./city-subsurface-data-iowa.js"),
   missouri: () => import("./city-subsurface-data-missouri.js"),
+  minnesota: () => import("./city-subsurface-data-minnesota.js"),
+  louisiana: () => import("./city-subsurface-data-louisiana.js"),
 };
 const GAZ_LOADERS = {
   lawrence: () => import("./city-gazetteer-data-lawrence.js"),
@@ -91,6 +93,8 @@ const GAZ_LOADERS = {
   texas: () => import("./city-gazetteer-data-texas.js"),
   iowa: () => import("./city-gazetteer-data-iowa.js"),
   missouri: () => import("./city-gazetteer-data-missouri.js"),
+  minnesota: () => import("./city-gazetteer-data-minnesota.js"),
+  louisiana: () => import("./city-gazetteer-data-louisiana.js"),
 };
 // DEM packs are optional for every frame except a config marked
 // demRequired. Route them through a variable-specifier import so a missing
@@ -133,6 +137,8 @@ const DEM_LOADERS = {
   texas: () => importDem("./city-dem-grid-texas.js"),
   iowa: () => importDem("./city-dem-grid-iowa.js"),
   missouri: () => importDem("./city-dem-grid-missouri.js"),
+  minnesota: () => importDem("./city-dem-grid-minnesota.js"),
+  louisiana: () => importDem("./city-dem-grid-louisiana.js"),
 };
 
 if (!DATA_LOADERS[CITY_ID] || !GAZ_LOADERS[CITY_ID]) {
