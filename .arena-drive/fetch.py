@@ -96,8 +96,25 @@ def describe_block(body: bytes) -> str:
     return "HTML page returned instead of file bytes"
 
 
+BROWSER_UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
+
+
 def get(url: str):
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    # curl first: Dropbox shared-link downloads (dl=1/raw=1) rely on redirect
+    # chains + cookies that urllib handles poorly (both the dl.dropboxusercontent
+    # form and www dl=1 were rejected/404 while the link was valid). urllib is
+    # the fallback where curl is unavailable.
+    try:
+        r = subprocess.run(
+            ["curl", "-fSL", "--max-time", "280", "-A", BROWSER_UA,
+             "-c", "/tmp/arena-cookies.txt", "-b", "/tmp/arena-cookies.txt", url],
+            capture_output=True, timeout=300)
+        if r.returncode == 0 and r.stdout:
+            return r.stdout
+    except Exception:                           # noqa: BLE001
+        pass
+    req = urllib.request.Request(url, headers={"User-Agent": BROWSER_UA})
     with urllib.request.urlopen(req, timeout=300) as r:
         return r.read()
 
@@ -141,7 +158,8 @@ def main() -> int:
                 override = overrides.get(item["id"])
             except Exception:
                 override = None
-        urls = ([override] if override else []) + [tmpl.format(id=item["id"]) for tmpl in ENDPOINTS]
+        over_list = override if isinstance(override, list) else ([override] if override else [])
+        urls = list(over_list) + [tmpl.format(id=item["id"]) for tmpl in ENDPOINTS]
 
         body, err = None, None
         errs = []
