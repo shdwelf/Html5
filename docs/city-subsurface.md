@@ -33,10 +33,16 @@ all-GNIS `VERIFIED=1` rows in the same identity-safe starter-register form.
 Their machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json).
 
+Round 21 update: **2026-10-23**. `montana` and `wyoming` join as the
+nineteenth and twentieth configurations. Each starts with twelve all-GNIS
+`VERIFIED=1` rows; Granite Peak and Jackson Lake additionally carry GNIS
+Domestic Names per-ID detail checks. Their machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has eighteen configurations — five cities,
-nine statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has twenty configurations — five cities,
+eleven statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -59,6 +65,8 @@ its own offline Webxdc:
 | Oregon (statewide) | `oregon-subsurface.html` | `js/city-subsurface-data-oregon.js` | `js/city-gazetteer-data-oregon.js` | `oregon-subsurface.xdc` |
 | Washington (statewide) | `washington-subsurface.html` | `js/city-subsurface-data-washington.js` | `js/city-gazetteer-data-washington.js` | `washington-subsurface.xdc` |
 | Idaho (statewide) | `idaho-subsurface.html` | `js/city-subsurface-data-idaho.js` | `js/city-gazetteer-data-idaho.js` | `idaho-subsurface.xdc` |
+| Montana (statewide) | `montana-subsurface.html` | `js/city-subsurface-data-montana.js` | `js/city-gazetteer-data-montana.js` | `montana-subsurface.xdc` |
+| Wyoming (statewide) | `wyoming-subsurface.html` | `js/city-subsurface-data-wyoming.js` | `js/city-gazetteer-data-wyoming.js` | `wyoming-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
@@ -474,6 +482,51 @@ coast line and Washington uses two generalized outer-coast/Puget lines;
 Idaho has no coast. Terrain is labelled synthetic relief, and all corridors
 remain generalized `context`—not river centerlines, highway alignments,
 shoreline surveys, state boundaries, or navigation data.
+
+### Montana and Wyoming statewide frames (round 21, 2026-10-23)
+
+The fourth state batch applies the same strict recipe to the Northern
+Rockies. Every row is an exact-name Geocoder acceptance on compatible
+returned type, state, returned primary county, permanent FEATURE_ID, and
+returned primary point; Granite Peak and Jackson Lake additionally carry a
+GNIS Domestic Names per-ID detail check. The batch register preserves the
+Geocoder type/county for every row and reconstructs the generated gazetteer
+rows exactly.
+
+**Montana** spans lon −116.4…−104.0, lat 44.3…49.1. Its 12 rows are Helena
+(`802116`), Billings (`802034`), Missoula (`787504`), Great Falls
+(`802113`), Bozeman (`769173`), Butte (`780689`), Miles City (`774202`),
+Flathead Lake (`783514`), Fort Peck Lake (`771516`), Lake McDonald
+(`787038`, the Lake record, not the populated place `785919`), Bighorn
+River (`779903`), and Granite Peak (`784178`). Granite Peak had three
+exact-name Summit candidates; the per-ID detail check confirms
+`Class=Summit`, Primary County=Park County, and coordinate sequence 1
+marked **High Point** at the stored point, while the Madison County record
+(`784179`) and second Park County record (`784177`) are rejected. The
+Yellowstone and Missouri rivers are context corridors only because both
+`states=MT` exact-name screens returned empty arrays, and Glacier National
+Park was not seeded because the screen returned only Division records.
+
+**Wyoming** spans lon −111.4…−104.0, lat 40.95…45.1. Its 12 rows are
+Cheyenne (`1609077`), Casper (`1586424`), Laramie (`1590526`), Jackson
+(`1604404`), Rock Springs (`1593588`, the populated place, not the
+same-name springs `1593589`/`1593590`), Green River (`1589126`, the
+populated place; the screen's only exact-name Stream is a different feature
+in Weston County `1600086`), Gannett Peak (`1599903`), Grand Teton
+(`1609199`, the Summit record, not the canal `1589026`), Devils Tower
+(`1609083`, the Summit record, not the populated place `1604684`),
+Yellowstone Lake (`1609324`), Jackson Lake (`1609177`, stored as
+**Reservoir** after the per-ID check confirmed `Class=Reservoir` in Teton
+County against the same-name Natrona County lake `1590031`), and Shoshone
+River (`1594293`). North Platte River, Snake River, and the Green River
+main stem are corridors only: the state screens returned an empty array,
+only a mountain-range record, and town/canal/other-county records
+respectively. The Bighorn River screen also returned empty under Wyoming;
+only the Montana record is seeded.
+
+Neither frame bundles a DEM. Both are inland rectangles with labelled
+synthetic relief; all corridors remain generalized `context`—not river
+centerlines, highway alignments, state boundaries, or survey geometry.
 
 ## Geocache class and local GPX import
 

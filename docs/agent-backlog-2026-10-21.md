@@ -137,6 +137,21 @@ Washington only after the Idaho screen returned no exact stream; and Bear
 Lake left unseeded in Idaho. Next in sequence: remaining states in dated
 per-row batches, then the country/planet thread.
 
+**Round 21 status (2026-10-23): partial.** Montana and Wyoming shipped as
+configurations 19–20, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, and no
+DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json).
+Granite Peak and Jackson Lake additionally carry GNIS Domestic Names per-ID
+checks: Granite Peak's Park County Summit record (`784178`, High Point)
+beats two same-name Summit candidates, and Jackson Lake's Teton County
+record is stored as a Reservoir (`1609177`) against the same-name Natrona
+County lake. Yellowstone/Missouri rivers (MT) and North Platte/Snake/Green
+River main stem (WY) remain corridors after empty or mismatched state
+screens; Glacier National Park returned only Division records. Next in
+sequence: remaining states in dated per-row batches, then the
+country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

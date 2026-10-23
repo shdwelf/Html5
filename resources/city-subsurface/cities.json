@@ -4058,6 +4058,524 @@
         ["Salmon River", "Stream", "hydro.stream", "Nez Perce", 45.8562667, -116.7934792, null, "400069", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=400069; exact official name and Streams & Canals type in Nez Perce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
         ["Clearwater River", "Stream", "hydro.stream", "Nez Perce", 46.4248838, -117.0371024, null, "379406", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=379406; exact official name and Streams & Canals type in Nez Perce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
       ]
+    },
+    "montana": {
+      "title": "MONTANA SUBSURFACE 4Dwm",
+      "subtitle": "Rocky Mountain Front · Glacier high country · Great Plains · Missouri and Yellowstone headwaters — statewide frame, Montana",
+      "gazTitle": "MONTANA USGS GNIS REGISTER",
+      "gazNote": "Round 21 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "MT",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -116.4,
+        "lat0": 44.3,
+        "lon1": -104.0,
+        "lat1": 49.1
+      },
+      "center": {
+        "lon": -110.2,
+        "lat": 46.9
+      },
+      "baseElevationM": 1400,
+      "roughnessM": 190,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Bitterroot Range",
+          "lon": -114.6,
+          "lat": 46.3,
+          "rx": 0.5,
+          "ry": 1.0,
+          "amp": 1500,
+          "rot": 0.15
+        },
+        {
+          "name": "Rocky Mountain Front",
+          "lon": -113.1,
+          "lat": 47.2,
+          "rx": 0.4,
+          "ry": 1.2,
+          "amp": 1300,
+          "rot": 0.15
+        },
+        {
+          "name": "Glacier high country",
+          "lon": -113.7,
+          "lat": 48.65,
+          "rx": 0.6,
+          "ry": 0.35,
+          "amp": 1500,
+          "rot": 0
+        },
+        {
+          "name": "Absaroka-Beartooth ranges",
+          "lon": -109.9,
+          "lat": 45.35,
+          "rx": 0.7,
+          "ry": 0.4,
+          "amp": 1400,
+          "rot": 0
+        },
+        {
+          "name": "Big Snowy Mountains",
+          "lon": -109.4,
+          "lat": 46.4,
+          "rx": 0.3,
+          "ry": 0.35,
+          "amp": 900,
+          "rot": 0
+        },
+        {
+          "name": "Yellowstone plateau margin",
+          "lon": -110.7,
+          "lat": 45.0,
+          "rx": 0.5,
+          "ry": 0.25,
+          "amp": 900,
+          "rot": -0.1
+        },
+        {
+          "name": "Cabinet and Thompson mountains",
+          "lon": -115.5,
+          "lat": 47.9,
+          "rx": 0.4,
+          "ry": 0.6,
+          "amp": 1100,
+          "rot": 0
+        },
+        {
+          "name": "Eastern High Plains",
+          "lon": -106.8,
+          "lat": 47.0,
+          "rx": 1.0,
+          "ry": 1.0,
+          "amp": -350,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i90-montana",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 90 / southern Montana corridor (generalized)",
+          "short": "I-90",
+          "depthM": 0,
+          "path": [
+            [-108.5006904, 45.7832856],
+            [-111.0385582, 45.6796526],
+            [-112.5347447, 46.0038153],
+            [-113.9939982, 46.872146]
+          ],
+          "facts": [
+            "Generalized Interstate 90 corridor across southern Montana through GNIS populated-place anchors; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 90 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i15-montana",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 15 / Rocky Mountain Front corridor (generalized)",
+          "short": "I-15",
+          "depthM": 0,
+          "path": [
+            [-112.65, 44.9],
+            [-112.5347447, 46.0038153],
+            [-112.036109, 46.5927122],
+            [-111.3008083, 47.5002354],
+            [-111.35, 48.6]
+          ],
+          "facts": [
+            "Generalized Interstate 15 corridor from the southern border through Butte, Helena, and Great Falls toward the northern border; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 15 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "missouri-river-montana",
+          "layer": "water",
+          "tier": "context",
+          "name": "Missouri River Montana reach (generalized)",
+          "short": "Missouri River",
+          "depthM": 0,
+          "path": [
+            [-111.3008083, 47.5002354],
+            [-110.9, 47.6],
+            [-106.8626277, 47.7553683],
+            [-105.0, 48.1]
+          ],
+          "facts": [
+            "No Missouri River gazetteer row is seeded in the Montana frame: the 2026-10-23 states=MT Geocoder screen returned an empty array for the intended exact stream record. Generalized context reach through the Great Falls and Fort Peck anchors; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-21 source register"
+          ]
+        },
+        {
+          "id": "yellowstone-river-montana",
+          "layer": "water",
+          "tier": "context",
+          "name": "Yellowstone River Montana reach (generalized)",
+          "short": "Yellowstone River",
+          "depthM": 0,
+          "path": [
+            [-110.7, 45.1],
+            [-108.5006904, 45.7832856],
+            [-105.8405582, 46.4083362],
+            [-104.35, 46.4]
+          ],
+          "facts": [
+            "No Yellowstone River gazetteer row is seeded in the Montana frame: the 2026-10-23 states=MT Geocoder screen returned an empty array for the intended exact stream record. Generalized context reach through Billings and Miles City; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-21 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "helena",
+          "name": "Helena",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -112.036109,
+          "lat": 46.5927122,
+          "depthM": 0,
+          "facts": [
+            "Montana state capital and Rocky Mountain Front anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 802116; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "billings",
+          "name": "Billings",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -108.5006904,
+          "lat": 45.7832856,
+          "depthM": 0,
+          "facts": [
+            "Yellowstone valley anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 802034; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "granite-peak",
+          "name": "Granite Peak",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -110.3044365,
+          "lat": 46.0375523,
+          "depthM": 0,
+          "facts": [
+            "Montana's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 784178; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "flathead-lake",
+          "name": "Flathead Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -114.1315966,
+          "lat": 47.8868683,
+          "depthM": 0,
+          "facts": [
+            "Northwestern Montana lake anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 783514; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Helena", "Populated Place", "pop.place", "Lewis and Clark", 46.5927122, -112.036109, null, "802116", 1, "State capital. The populated-place record was selected rather than the Helena Division record (FEATURE_ID 1940643). USGS GNIS Geocoder (GNIS), FEATURE_ID=802116; exact official name and Cities & Populated Places type in Lewis and Clark County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Billings", "Populated Place", "pop.place", "Yellowstone", 45.7832856, -108.5006904, null, "802034", 1, "The populated-place record was selected rather than the Billings Division record (FEATURE_ID 1940572). USGS GNIS Geocoder (GNIS), FEATURE_ID=802034; exact official name and Cities & Populated Places type in Yellowstone County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Missoula", "Populated Place", "pop.place", "Missoula", 46.872146, -113.9939982, null, "787504", 1, "The populated-place record was selected rather than Missoula County and Missoula Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=787504; exact official name and Cities & Populated Places type in Missoula County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Great Falls", "Populated Place", "pop.place", "Cascade", 47.5002354, -111.3008083, null, "802113", 1, "The populated-place record was selected rather than the Great Falls and Great Falls North Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=802113; exact official name and Cities & Populated Places type in Cascade County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Bozeman", "Populated Place", "pop.place", "Gallatin", 45.6796526, -111.0385582, null, "769173", 1, "The populated-place record was selected rather than the Bozeman Division record (FEATURE_ID 1940577). USGS GNIS Geocoder (GNIS), FEATURE_ID=769173; exact official name and Cities & Populated Places type in Gallatin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Butte", "Populated Place", "pop.place", "Silver Bow", 46.0038153, -112.5347447, null, "780689", 1, "The Butte populated-place record was selected rather than the Butte Division, Butte-Silver Bow, and separate same-name Butte Creek historical populated-place records. USGS GNIS Geocoder (GNIS), FEATURE_ID=780689; exact official name and Cities & Populated Places type in Silver Bow County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Miles City", "Populated Place", "pop.place", "Custer", 46.4083362, -105.8405582, null, "774202", 1, "The populated-place record was selected rather than the Miles City Division record (FEATURE_ID 1940671). USGS GNIS Geocoder (GNIS), FEATURE_ID=774202; exact official name and Cities & Populated Places type in Custer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Flathead Lake", "Lake", "hydro.lake", "Lake", 47.8868683, -114.1315966, null, "783514", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=783514; exact official name and Lakes & Reservoirs type in Lake County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Fort Peck Lake", "Lake", "hydro.lake", "Valley", 47.7553683, -106.8626277, null, "771516", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=771516; exact official name and Lakes & Reservoirs type in Valley County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Lake McDonald", "Lake", "hydro.lake", "Flathead", 48.5834243, -113.9259346, null, "787038", 1, "The lake record was selected rather than the same-name Lake McDonald populated place (FEATURE_ID 785919). USGS GNIS Geocoder (GNIS), FEATURE_ID=787038; exact official name and Lakes & Reservoirs type in Flathead County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Bighorn River", "Stream", "hydro.stream", "Yellowstone", 46.1549867, -107.4745155, null, "779903", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=779903; exact official name and Streams & Canals type in Yellowstone County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Granite Peak", "Summit", "phys.summit", "Park", 46.0375523, -110.3044365, null, "784178", 1, "Montana's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary County=Park County, and coordinate sequence 1 marked High Point at the stored point; same-name Summit records in Madison County (FEATURE_ID 784179) and Park County (FEATURE_ID 784177) were rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=784178; exact official name and Summit type in Park County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."]
+      ]
+    },
+    "wyoming": {
+      "title": "WYOMING SUBSURFACE 4Dwm",
+      "subtitle": "Teton and Yellowstone high country · Wind River · Wyoming Range · High Plains — statewide frame, Wyoming",
+      "gazTitle": "WYOMING USGS GNIS REGISTER",
+      "gazNote": "Round 21 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, lake/reservoir polygons, or river centerlines.",
+      "state": "WY",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -111.4,
+        "lat0": 40.95,
+        "lon1": -104.0,
+        "lat1": 45.1
+      },
+      "center": {
+        "lon": -107.7,
+        "lat": 43.0
+      },
+      "baseElevationM": 2000,
+      "roughnessM": 200,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Teton Range",
+          "lon": -110.85,
+          "lat": 43.75,
+          "rx": 0.25,
+          "ry": 0.3,
+          "amp": 1600,
+          "rot": 0.1
+        },
+        {
+          "name": "Wind River Range",
+          "lon": -109.55,
+          "lat": 43.1,
+          "rx": 0.35,
+          "ry": 0.55,
+          "amp": 1700,
+          "rot": 0.3
+        },
+        {
+          "name": "Absaroka Range",
+          "lon": -109.9,
+          "lat": 44.5,
+          "rx": 0.6,
+          "ry": 0.35,
+          "amp": 1200,
+          "rot": 0
+        },
+        {
+          "name": "Bighorn Mountains",
+          "lon": -107.35,
+          "lat": 44.35,
+          "rx": 0.3,
+          "ry": 0.6,
+          "amp": 1400,
+          "rot": 0
+        },
+        {
+          "name": "Laramie Range and Medicine Bow",
+          "lon": -105.6,
+          "lat": 41.9,
+          "rx": 0.3,
+          "ry": 0.55,
+          "amp": 1100,
+          "rot": 0
+        },
+        {
+          "name": "Wyoming Range",
+          "lon": -110.35,
+          "lat": 42.65,
+          "rx": 0.4,
+          "ry": 0.35,
+          "amp": 1200,
+          "rot": 0
+        },
+        {
+          "name": "Black Hills margin",
+          "lon": -104.55,
+          "lat": 44.4,
+          "rx": 0.25,
+          "ry": 0.3,
+          "amp": 700,
+          "rot": 0
+        },
+        {
+          "name": "Great Divide and Red Desert basins",
+          "lon": -108.6,
+          "lat": 42.3,
+          "rx": 0.9,
+          "ry": 0.5,
+          "amp": -250,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i25-wyoming",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 25 / Wyoming Front Range corridor (generalized)",
+          "short": "I-25",
+          "depthM": 0,
+          "path": [
+            [-104.8202462, 41.1399814],
+            [-106.313081, 42.866632],
+            [-106.75, 44.3]
+          ],
+          "facts": [
+            "Generalized Interstate 25 corridor from the Colorado border through Cheyenne and Casper toward north-central Wyoming; schematic polyline through named anchors and a generalized point, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 25 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i80-wyoming",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 80 / southern Wyoming corridor (generalized)",
+          "short": "I-80",
+          "depthM": 0,
+          "path": [
+            [-104.8202462, 41.1399814],
+            [-105.5911007, 41.3113669],
+            [-109.2029043, 41.5874644],
+            [-111.0, 41.6]
+          ],
+          "facts": [
+            "Generalized Interstate 80 corridor across southern Wyoming through Cheyenne, Laramie, and Rock Springs; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 80 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "snake-river-teton",
+          "layer": "water",
+          "tier": "context",
+          "name": "Snake River Teton headwaters reach (generalized)",
+          "short": "Snake River",
+          "depthM": 0,
+          "path": [
+            [-110.7624282, 43.4799291],
+            [-110.75, 43.6],
+            [-110.9, 43.78],
+            [-111.03, 43.95]
+          ],
+          "facts": [
+            "No Snake River gazetteer row is seeded in the Wyoming frame: the 2026-10-23 states=WY Geocoder screen returned only the same-name Snake River Mountain Ranges record, not an exact stream record. Generalized context reach from Jackson toward the park headwaters; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-21 source register"
+          ]
+        },
+        {
+          "id": "north-platte-wyoming",
+          "layer": "water",
+          "tier": "context",
+          "name": "North Platte River Wyoming reach (generalized)",
+          "short": "North Platte River",
+          "depthM": 0,
+          "path": [
+            [-106.313081, 42.866632],
+            [-107.4, 42.4],
+            [-107.0, 41.7],
+            [-106.85, 41.1]
+          ],
+          "facts": [
+            "No North Platte River gazetteer row is seeded in the Wyoming frame: the 2026-10-23 states=WY Geocoder screen returned an empty array for the intended exact stream record. Generalized context reach south from Casper; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-21 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "cheyenne",
+          "name": "Cheyenne",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -104.8202462,
+          "lat": 41.1399814,
+          "depthM": 0,
+          "facts": [
+            "Wyoming state capital and southeast-corner anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1609077; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "jackson",
+          "name": "Jackson",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -110.7624282,
+          "lat": 43.4799291,
+          "depthM": 0,
+          "facts": [
+            "Teton valley anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1604404; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "gannett-peak",
+          "name": "Gannett Peak",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -109.6541217,
+          "lat": 43.1843012,
+          "depthM": 0,
+          "facts": [
+            "Wyoming's highest summit; node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1599903; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "yellowstone-lake",
+          "name": "Yellowstone Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -110.4858976,
+          "lat": 44.4475292,
+          "depthM": 0,
+          "facts": [
+            "Wyoming high-country lake anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1609324; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Cheyenne", "Populated Place", "pop.place", "Laramie", 41.1399814, -104.8202462, null, "1609077", 1, "State capital. The populated-place record was selected rather than the Cheyenne, Cheyenne East, and Cheyenne West Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1609077; exact official name and Cities & Populated Places type in Laramie County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Casper", "Populated Place", "pop.place", "Natrona", 42.866632, -106.313081, null, "1586424", 1, "The populated-place record was selected rather than the Casper Division records; it does not verify the separate Casper Mountain populated place (FEATURE_ID 1853199) or Casper Reservoir records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1586424; exact official name and Cities & Populated Places type in Natrona County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Laramie", "Populated Place", "pop.place", "Albany", 41.3113669, -105.5911007, null, "1590526", 1, "The populated-place record was selected rather than Laramie Division and Laramie County records; it does not verify the separate Laramie River, Laramie Mountains, Laramie Plains, or Laramie Peak records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1590526; exact official name and Cities & Populated Places type in Albany County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Jackson", "Populated Place", "pop.place", "Teton", 43.4799291, -110.7624282, null, "1604404", 1, "The populated-place record was selected rather than the Jackson Hole Division record (FEATURE_ID 1939716). USGS GNIS Geocoder (GNIS), FEATURE_ID=1604404; exact official name and Cities & Populated Places type in Teton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Rock Springs", "Populated Place", "pop.place", "Sweetwater", 41.5874644, -109.2029043, null, "1593588", 1, "The populated-place record was selected rather than the same-name Springs records in Carbon County (FEATURE_ID 1593589) and Hot Springs County (FEATURE_ID 1593590) and the north/south division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1593588; exact official name and Cities & Populated Places type in Sweetwater County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Green River", "Populated Place", "pop.place", "Sweetwater", 41.5285757, -109.4662461, null, "1589126", 1, "The populated-place record was selected rather than the Green River North and South Division records; the state screen returned only a different same-name Stream record in Weston County (FEATURE_ID 1600086), so no Green River stream row is claimed. USGS GNIS Geocoder (GNIS), FEATURE_ID=1589126; exact official name and Cities & Populated Places type in Sweetwater County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Gannett Peak", "Summit", "phys.summit", "Fremont", 43.1843012, -109.6541217, null, "1599903", 1, "Wyoming's highest summit. USGS GNIS Geocoder (GNIS), FEATURE_ID=1599903; exact official name and Summit type in Fremont County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Grand Teton", "Summit", "phys.summit", "Teton", 43.7411243, -110.8024781, null, "1609199", 1, "The Summit record was selected rather than the same-name Grand Teton Canal record (FEATURE_ID 1589026). USGS GNIS Geocoder (GNIS), FEATURE_ID=1609199; exact official name and Summit type in Teton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Devils Tower", "Summit", "phys.summit", "Crook", 44.59045, -104.7151657, null, "1609083", 1, "The Summit record was selected rather than the same-name Devils Tower populated place (FEATURE_ID 1604684). USGS GNIS Geocoder (GNIS), FEATURE_ID=1609083; exact official name and Summit type in Crook County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Yellowstone Lake", "Lake", "hydro.lake", "Teton", 44.4475292, -110.4858976, null, "1609324", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1609324; exact official name and Lakes & Reservoirs type in Teton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Jackson Lake", "Reservoir", "hydro.reservoir", "Teton", 43.9005638, -110.6738972, null, "1609177", 1, "The Teton County record was selected after a GNIS Domestic Names per-ID check confirmed Class=Reservoir, Primary County=Teton County, and coordinate sequence 1 at the stored point; the same-name Natrona County lake record (FEATURE_ID 1590031) was rejected. USGS GNIS Geocoder (GNIS), FEATURE_ID=1609177; exact official name and Lakes & Reservoirs type in Teton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon, dam structure, or reservoir-area centroid."],
+        ["Shoshone River", "Stream", "hydro.stream", "Big Horn", 44.8621774, -108.2048332, null, "1594293", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1594293; exact official name and Streams & Canals type in Big Horn County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
     }
   }
 }
