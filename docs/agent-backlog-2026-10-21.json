@@ -563,7 +563,8 @@
       "line": 171,
       "stream": "S9",
       "text": "Catalog OCR haiku into haiku vault; enso generators + haiku randomizers vs standard vault format; endpoints + filesystem persistence",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: generator/catalog half built - js/haiku-vault.js (seeded phrase-bank generator, 5-7-5 by construction with bank self-verification; OCR cataloger grouping triples with counted meter + leftover reporting; collection payload builder) seals/opens haiku-vault-v1 via WebCrypto, byte-identical to the format draft section 2 test vector (tests/haiku-vault-gen.test.mjs 6/6 incl. tamper/wrong-passphrase rejection); haiku-vault.html workbench adds localStorage persistence + .vault download. Remaining: live OCR capture endpoints against real scans."
     },
     {
       "id": "T9.3",

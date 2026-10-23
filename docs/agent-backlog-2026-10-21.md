@@ -240,6 +240,9 @@ browser expression); repo CyberChef stego ops audited (`stegoLSB` demo-grade,
 real-image pixel-ingesting LSB named as the follow-on build). BasicCard/
 JavaCard + algorithms-book parts of T9.1 remain open.
 
+*2026-10-23 round (T9.2):* haiku generator + catalog shipped — `js/haiku-vault.js` +
+`haiku-vault.html` (seeded 5-7-5 generator, OCR-triple cataloger, collection payloads
+sealed as haiku-vault-v1 byte-identical to the draft's §2 vector; `tests/haiku-vault-gen.test.mjs` 6/6).
 ### S10 · CyberChef & recipe corpus, lecture hall, UCSB course readers — *partial*
 Comparative optimization of the whole recipe set (line 7), DTSearch + Granite Island TCSM
 sweep, cipher-machine / virtual-intelligence lecture-hall material, course-reader sourcing
