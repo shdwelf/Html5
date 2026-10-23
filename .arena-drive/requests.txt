@@ -59,3 +59,4 @@
 # backlog round: manifest reconciliation + libapp.so Ghidra pass (sharing toggled by owner request, reverted after)
 # requeue: tarball fetch 404d on run 3 (quota/interstitial); endpoints widened
 # requeue: quota-window retry for worktree tarball
+# requeue: dropbox override switched to www dl=1 form
