@@ -472,8 +472,8 @@
       "line": 11,
       "stream": "S1",
       "text": "Elcomsoft / John the Ripper / rainbow tables / HaveIBeenPwned; ARJ & SFX password recipes for the cookbook",
-      "status": "partial",
-      "note": "line 82 duplicates line 11; regex-scan notes at lines 12-14 preserved here and in docs/ghidra evidence"
+      "status": "done",
+      "note": "line 82 duplicates line 11; regex-scan notes at lines 12-14 preserved here and in docs/ghidra evidence Closed 2026-10-23 (docs/password-ecosystem-notes-2026-10-23.md): survey strand delivered as notes-only per F4 (Elcomsoft/John at survey altitude, rainbow tables as the salting/slow-KDF obsolescence lesson, HIBP k-anonymity 5-char-prefix design, NIST SP 800-63B-4 defender distillation); the ARJ & SFX password-recipe strand is closed by standing decision F4 with its identification-only notes already in repo - no password-attack recipes will be built. Task done: every strand at a terminal state, delivered or decision-closed."
     },
     {
       "id": "T2.1",

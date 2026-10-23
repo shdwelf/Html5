@@ -58,6 +58,11 @@ PDF. Already on file: [`arj-garble-format-notes.md`](arj-garble-format-notes.md)
 [`zipcrypto-identification-notes-2026-10-23.md`](zipcrypto-identification-notes-2026-10-23.md)
 (identification only per F4; companion op `paranoidUnzip`). Ghidra-side decompressor
 work remains blocked on a sandbox JVM.
+*2026-10-23 round (T1.3):* **T1.3 complete** —
+[`password-ecosystem-notes-2026-10-23.md`](password-ecosystem-notes-2026-10-23.md):
+the Elcomsoft/John/rainbow-table/HIBP survey delivered as notes-only per F4
+(HIBP k-anonymity + NIST SP 800-63B-4 as the defensive distillation); the
+ARJ/SFX password-recipe strand closed by F4 with identification notes on file.
 
 ### S2 · Sneakers press kit: Ghidra, js-dos xdc, wiki — *partial*
 FindCrypt/native-Ghidra work is done ([`sneakers-original-ghidra-wasm-2026-10-18.md`](sneakers-original-ghidra-wasm-2026-10-18.md),
