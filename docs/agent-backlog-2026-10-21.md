@@ -116,6 +116,14 @@ Next in sequence: remaining states in dated per-row source-register batches;
 bulk California themes and archived-class features still require separate
 explicit source decisions before any new verified rows.
 
+**Round 19 packaging status (2026-10-23): partial.** SoCal Subsurface now has
+a finished inlined edition beside the canonical multi-file XDC:
+`socal-subsurface-inlined.html` and the six-entry
+`socal-subsurface-inlined.xdc`, built reproducibly by
+`scripts/build-socal-subsurface-inlined.mjs`. The geographic queue is
+unchanged: remaining states still need dated per-row source-register
+batches, and no DEM is claimed for the checked-in inlined build.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
@@ -171,6 +179,15 @@ master/grandmaster key hierarchy, per-unit CAD/BOM ([`tools/build_unit_cad.mjs`]
 transcription + softmodem fax JAR ([`hp-aio-xport-modem-adapter-feasibility.md`](hp-aio-xport-modem-adapter-feasibility.md),
 [`xport-nucleo-v92-eio-fax-card.md`](xport-nucleo-v92-eio-fax-card.md)).
 
+**Round 19 toolchain status (2026-10-23): still externally blocked, but the
+blocker is narrower.** The GitHub survey in
+[`github-jdk-runtime-research-2026-10-23.md`](github-jdk-runtime-research-2026-10-23.md)
+re-verified local Temurin OpenJDK 21 and a pinned/hash-checked Zulu OpenJDK 8
+route; “no JDK” is no longer the blanket blocker. S7 still needs the actual
+`gina.dll` binary, physical teardown data, or proprietary GoldKey drivers,
+and a local Ghidra distribution still needs the CI/relay route. Do not invent
+substitutes for those missing artifacts.
+
 ### S8 · Mobile & device lab: Android/QEMU, SIM, xdc ports, VoIP/iParty — *open*
 QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock / number-porting caselaw),
 SIM-lock research, Eagle CAD unlock schematics, xdc → TI-calc / Android / F-Droid ports
@@ -185,6 +202,14 @@ smartcard filesystem candidates within the 4MB XPort Pro / 2MB S.S.E. URL budget
 LUKS/GRUB/LILO boot-chain + AES pass-through dongle concept as a research note; quine → S.S.E.
 URL export with password + QR/data-matrix (Avery Label Pro) — and **draft the BagIt and
 haiku-vault RFC documents** (BagIt 1.0 / RFC 8493 is already the house preservation format).
+
+**Round 19 smartcard status (2026-10-23): partial.** The MealPlan Java Card
+toolchain now self-prepares from pinned GitHub inputs with SHA-256 checks,
+and the live simulator suite passes 18/18 when GitHub is reachable; offline,
+its card-backed cases skip explicitly. A physical-card/GlobalPlatform load
+remains unproven. See
+[`feitian-javacard-toolchain.md`](feitian-javacard-toolchain.md) and
+[`github-jdk-runtime-research-2026-10-23.md`](github-jdk-runtime-research-2026-10-23.md).
 
 ### S10 · CyberChef & recipe corpus, lecture hall, UCSB course readers — *partial*
 Comparative optimization of the whole recipe set (line 7), DTSearch + Granite Island TCSM

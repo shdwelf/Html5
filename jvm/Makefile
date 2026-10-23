@@ -42,11 +42,12 @@ $(BUILD)/cfjvm: cfjvm.c cfjvm_port.h | $(BUILD)
 
 # A stamp file, not the directory itself: a directory target is considered up
 # to date as soon as it exists, so a compile that failed after mkdir would never
-# be retried.
+# be retried. Compile as Java 8 (class-file 52) even when the reference
+# compiler is Temurin 21: cfjvm deliberately targets class files 45..52.
 $(BUILD)/classes.stamp: tests/Smoke.java | $(BUILD)
 	@rm -rf $(BUILD)/classes
 	@mkdir -p $(BUILD)/classes
-	$(JAVAC) -encoding UTF-8 -nowarn -d $(BUILD)/classes tests/Smoke.java
+	$(JAVAC) -encoding UTF-8 -nowarn -source 1.8 -target 1.8 -d $(BUILD)/classes tests/Smoke.java
 	@touch $@
 
 test: $(BUILD)/cfjvm $(BUILD)/classes.stamp

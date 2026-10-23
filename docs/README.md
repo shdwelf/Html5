@@ -53,6 +53,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [backlog-execution-round-16-2026-10-22.md](backlog-execution-round-16-2026-10-22.md) — backlog execution round 16 2026 10 22
 - [backlog-execution-round-17-2026-10-22.md](backlog-execution-round-17-2026-10-22.md) — backlog execution round 17 2026 10 22
 - [backlog-execution-round-18-2026-10-22.md](backlog-execution-round-18-2026-10-22.md) — backlog execution round 18 2026 10 22
+- [backlog-execution-round-19-2026-10-23.md](backlog-execution-round-19-2026-10-23.md) — backlog execution round 19 2026 10 23
 - [backlog-execution-round-2-2026-10-21.md](backlog-execution-round-2-2026-10-21.md) — backlog execution round 2 2026 10 21
 - [backlog-execution-round-3-2026-10-21.md](backlog-execution-round-3-2026-10-21.md) — backlog execution round 3 2026 10 21
 - [backlog-execution-round-4-2026-10-21.md](backlog-execution-round-4-2026-10-21.md) — backlog execution round 4 2026 10 21
@@ -181,6 +182,7 @@ IANA media types (RFC 6838 / BCP 13).
 - [geomate-jr-firmware-research.md](geomate-jr-firmware-research.md) — geomate jr firmware research
 - [geomate-sg7-firmware-analysis.md](geomate-sg7-firmware-analysis.md) — geomate sg7 firmware analysis
 - [geomate-viewermade-source-check-2026-10-07.md](geomate-viewermade-source-check-2026-10-07.md) — geomate viewermade source check 2026 10 07
+- [github-jdk-runtime-research-2026-10-23.md](github-jdk-runtime-research-2026-10-23.md) — github jdk runtime research 2026 10 23
 - [goldkey-parity-gina-and-units.md](goldkey-parity-gina-and-units.md) — goldkey parity gina and units
 - [greeran-book-ideas-backlog.md](greeran-book-ideas-backlog.md) — greeran book ideas backlog
 - [greeran-commencement-research-2026-10-16.md](greeran-commencement-research-2026-10-16.md) — greeran commencement research 2026 10 16

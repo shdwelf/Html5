@@ -25,11 +25,11 @@
  * which is why it is slower than the other suites: every test starts a JVM.
  */
 
-import test from 'node:test';
+import test, { before } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
-  RealCard, swName, deriveKey, mac, INS, SW, MAC_LEN, PIN_MAX_TRIES,
+  RealCard, ensureBuilt, swName, deriveKey, mac, INS, SW, MAC_LEN, PIN_MAX_TRIES,
 } from '../tools/run_mealplan_sim.mjs';
 
 const MASTER = Buffer.alloc(16, 0x11);
@@ -50,6 +50,29 @@ async function withCard(fn) {
   try { return await fn(card); } finally { await card.close(); }
 }
 
+let toolchainError = null;
+before(() => {
+  try {
+    ensureBuilt();
+  } catch (error) {
+    toolchainError = error;
+  }
+});
+
+/**
+ * Card-backed tests share one toolchain preparation step. If the pinned
+ * GitHub-hosted JDK/Java Card fetch is unavailable, report those cases as
+ * skipped rather than as 17 misleading `spawn .../bin/java ENOENT` failures;
+ * the static key-width test below still runs.
+ */
+const simTest = (name, body) => test(name, async (t) => {
+  if (toolchainError) {
+    t.skip(`MealPlan Java Card toolchain unavailable: ${String(toolchainError.message).split('\n')[0]}`);
+    return;
+  }
+  await body();
+});
+
 const be16 = (n) => { const b = Buffer.alloc(2); b.writeUInt16BE(n); return b; };
 const be32 = (n) => { const b = Buffer.alloc(4); b.writeUInt32BE(n); return b; };
 
@@ -64,7 +87,7 @@ test('derived keys are the width the applet personalises, not the tag width', ()
   assert.notEqual(MAC_LEN, 16, 'the tag width must differ from the key width');
 });
 
-test('a fresh card starts empty, unauthenticated, with a full PIN counter', () => withCard(async (c) => {
+simTest('a fresh card starts empty, unauthenticated, with a full PIN counter', () => withCard(async (c) => {
   const s = await c.status();
   assert.equal(s.balance, 0);
   assert.equal(s.atc, 0);
@@ -72,7 +95,7 @@ test('a fresh card starts empty, unauthenticated, with a full PIN counter', () =
   assert.equal(s.pinValidated, false);
 }));
 
-test('challenges come from the platform and are never repeated', () => withCard(async (c) => {
+simTest('challenges come from the platform and are never repeated', () => withCard(async (c) => {
   const a = await c.challenge();
   const b = await c.challenge();
   assert.equal(a.length, 8);
@@ -82,7 +105,7 @@ test('challenges come from the platform and are never repeated', () => withCard(
 
 /* ----------------------------------------------------------------- the purse */
 
-test('a load authenticated by the issuer moves value and bumps the counter', () => withCard(async (c) => {
+simTest('a load authenticated by the issuer moves value and bumps the counter', () => withCard(async (c) => {
   await c.challenge();
   const r = await c.load(2500);
   assert.equal(r.sw, SW.OK, `load rejected: ${swName(r.sw)}`);
@@ -97,7 +120,7 @@ test('a load authenticated by the issuer moves value and bumps the counter', () 
   assert.deepEqual(r.body.subarray(6, 6 + MAC_LEN), want, 'receipt MAC mismatch');
 }));
 
-test('a load with a forged MAC is refused', () => withCard(async (c) => {
+simTest('a load with a forged MAC is refused', () => withCard(async (c) => {
   const chal = await c.challenge();
   await c.sync();
   const amt = be32(2500);
@@ -108,7 +131,7 @@ test('a load with a forged MAC is refused', () => withCard(async (c) => {
   assert.equal((await c.status()).balance, 0, 'value moved on a forged load');
 }));
 
-test('a load with the issuer key over the wrong bytes is refused', () => withCard(async (c) => {
+simTest('a load with the issuer key over the wrong bytes is refused', () => withCard(async (c) => {
   const chal = await c.challenge();
   await c.sync();
   const amt = be32(2500);
@@ -120,7 +143,7 @@ test('a load with the issuer key over the wrong bytes is refused', () => withCar
   assert.equal(r.sw, SW.WRONG_DATA, 'MAC over misordered bytes was accepted');
 }));
 
-test('a challenge cannot be replayed, even with a valid MAC', () => withCard(async (c) => {
+simTest('a challenge cannot be replayed, even with a valid MAC', () => withCard(async (c) => {
   const chal = await c.challenge();
   await c.sync();
   const atc = c.model.atc;
@@ -135,7 +158,7 @@ test('a challenge cannot be replayed, even with a valid MAC', () => withCard(asy
   assert.equal((await c.status()).balance, 1000, 'replayed load moved value twice');
 }));
 
-test('a load above the ceiling is refused outright, not clamped', () => withCard(async (c) => {
+simTest('a load above the ceiling is refused outright, not clamped', () => withCard(async (c) => {
   await c.challenge();
   const r = await c.load(OPTS.maxBalance + 1);
   assert.equal(r.sw, SW.CONDITIONS_NOT_SATISFIED, `over-cap load accepted: ${swName(r.sw)}`);
@@ -146,7 +169,7 @@ test('a load above the ceiling is refused outright, not clamped', () => withCard
 
 /* -------------------------------------------------------------------- spend */
 
-test('a debit needs the PIN as well as the terminal MAC', () => withCard(async (c) => {
+simTest('a debit needs the PIN as well as the terminal MAC', () => withCard(async (c) => {
   await c.challenge();
   await c.load(5000);
   await c.setTerminalKey(Buffer.alloc(16, 0x55));
@@ -160,7 +183,7 @@ test('a debit needs the PIN as well as the terminal MAC', () => withCard(async (
   assert.equal((await c.status()).balance, 4500);
 }));
 
-test('a debit is refused before the terminal key is provisioned', () => withCard(async (c) => {
+simTest('a debit is refused before the terminal key is provisioned', () => withCard(async (c) => {
   await c.challenge();
   await c.load(5000);
   assert.equal((await c.verifyPin()).sw, SW.OK);
@@ -168,7 +191,7 @@ test('a debit is refused before the terminal key is provisioned', () => withCard
   assert.equal(r.sw, SW.CONDITIONS_NOT_SATISFIED, `unprovisioned debit: ${swName(r.sw)}`);
 }));
 
-test('a debit authorised by the wrong terminal is refused', () => withCard(async (c) => {
+simTest('a debit authorised by the wrong terminal is refused', () => withCard(async (c) => {
   await c.challenge();
   await c.load(5000);
   await c.setTerminalKey(Buffer.alloc(16, 0x55));
@@ -179,7 +202,7 @@ test('a debit authorised by the wrong terminal is refused', () => withCard(async
   assert.equal((await c.status()).balance, 5000);
 }));
 
-test('a debit above the per-transaction cap is refused', () => withCard(async (c) => {
+simTest('a debit above the per-transaction cap is refused', () => withCard(async (c) => {
   await c.challenge();
   await c.load(5000);
   await c.setTerminalKey(Buffer.alloc(16, 0x55));
@@ -188,7 +211,7 @@ test('a debit above the per-transaction cap is refused', () => withCard(async (c
   assert.equal(r.sw, SW.CONDITIONS_NOT_SATISFIED, `over-cap debit: ${swName(r.sw)}`);
 }));
 
-test('one authorisation buys one purchase', () => withCard(async (c) => {
+simTest('one authorisation buys one purchase', () => withCard(async (c) => {
   await c.challenge();
   await c.load(5000);
   await c.setTerminalKey(Buffer.alloc(16, 0x55));
@@ -199,7 +222,7 @@ test('one authorisation buys one purchase', () => withCard(async (c) => {
   assert.equal(second.sw, SW.SECURITY_NOT_SATISFIED, 'one PIN check bought two purchases');
 }));
 
-test('the PIN counter blocks after the configured number of failures', () => withCard(async (c) => {
+simTest('the PIN counter blocks after the configured number of failures', () => withCard(async (c) => {
   const wrong = Buffer.from('9999');
   for (let i = 0; i < PIN_MAX_TRIES; i++) {
     const r = await c.verifyPin(wrong);
@@ -213,7 +236,7 @@ test('the PIN counter blocks after the configured number of failures', () => wit
 
 /* ----------------------------------------------------------------- door pass */
 
-test('the pass is signed with the access key over nonce and counter', () => withCard(async (c) => {
+simTest('the pass is signed with the access key over nonce and counter', () => withCard(async (c) => {
   await c.challenge();
   await c.load(1000);                       // advances the ATC so it is not zero
   await c.sync();
@@ -231,7 +254,7 @@ test('the pass is signed with the access key over nonce and counter', () => with
     'the door credential is using the purse key');
 }));
 
-test('a captured pass response does not replay once the counter moves', () => withCard(async (c) => {
+simTest('a captured pass response does not replay once the counter moves', () => withCard(async (c) => {
   const nonce = Buffer.from('0a0b0c0d0e0f0011', 'hex');
   await c.sync();
   const first = (await c.pass(nonce)).body;
@@ -246,14 +269,14 @@ test('a captured pass response does not replay once the counter moves', () => wi
 
 /* ------------------------------------------------------------------ framing */
 
-test('an unknown instruction and a foreign class are both rejected', () => withCard(async (c) => {
+simTest('an unknown instruction and a foreign class are both rejected', () => withCard(async (c) => {
   assert.equal((await c.raw([0x80, 0x77, 0, 0, 0])).sw, SW.INS_NOT_SUPPORTED);
   assert.equal((await c.raw([0x00, INS.GET_STATUS, 0, 0, 0])).sw, SW.CLA_NOT_SUPPORTED);
 }));
 
 /* ------------------------------------------------- shim honesty: the caveat */
 
-test('the simulator is running JDK crypto under the BouncyCastle name', () => withCard(async (c) => {
+simTest('the simulator is running JDK crypto under the BouncyCastle name', () => withCard(async (c) => {
   // Recorded rather than buried: vjcre.jar's own Signature is an empty stub, so
   // the shim in tools/sim/simshim supplies HMAC. If this ever reports real
   // BouncyCastle, the MAC comparisons above are being computed by code this
