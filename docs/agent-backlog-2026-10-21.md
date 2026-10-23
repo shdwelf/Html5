@@ -168,6 +168,24 @@ South Dakota James River record is seeded only there. Next in sequence:
 Nebraska–Kansas, then the remaining plains/mountain states before the
 country/planet thread.
 
+**Round 23 status (2026-10-23): partial.** Nebraska and Kansas shipped as
+configurations 23–24, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, and no
+DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json).
+Panorama Point and Mount Sunflower additionally carry GNIS Domestic Names
+per-ID checks: both state high points keep their High Point coordinate
+markers and “highest elevation” descriptions (NE 5424 ft, KS 4039 ft).
+Lincoln rejects its precinct/county pile, Grand Island rejects the Buffalo
+County island, Scottsbluff town and Scotts Bluff Summit seed as distinct
+features, North Platte town and river seed as distinct features, and the
+Wyandotte County Kansas City record stays separate from the Missouri-side
+one. Missouri River (NE and KS), Republican River (NE), and Arkansas
+River (KS) remain corridors after empty screens — the Arkansas result
+matches the round-18 Colorado empty screen. Salina is identity-safe but
+held to starter scope. Next in sequence: remaining plains/mountain states
+in dated per-row batches, then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

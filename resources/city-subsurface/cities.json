@@ -5092,6 +5092,528 @@
         ["Cheyenne River", "Stream", "hydro.stream", "Dewey", 44.74332, -101.06804, null, "1267017", 1, "The stream record was selected rather than the Cheyenne River Reservation record (FEATURE_ID 1267254); it is a South Dakota stream, not a Wyoming feature. USGS GNIS Geocoder (GNIS), FEATURE_ID=1267017; exact official name and Streams & Canals type in Dewey County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
         ["James River", "Stream", "hydro.stream", "Yankton", 42.8713859, -97.2906104, null, "1261082", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1261082; exact official name and Streams & Canals type in Yankton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
       ]
+    },
+    "nebraska": {
+      "title": "NEBRASKA SUBSURFACE 4Dwm",
+      "subtitle": "Platte corridor · Sandhills · Pine Ridge · Missouri bluffs — statewide frame, Nebraska",
+      "gazTitle": "NEBRASKA USGS GNIS REGISTER",
+      "gazNote": "Round 23 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "NE",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -104.3,
+        "lat0": 39.95,
+        "lon1": -95.0,
+        "lat1": 43.05
+      },
+      "center": {
+        "lon": -99.6,
+        "lat": 41.5
+      },
+      "baseElevationM": 600,
+      "roughnessM": 55,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Western High Plains and Pine Ridge",
+          "lon": -103.3,
+          "lat": 42.6,
+          "rx": 0.7,
+          "ry": 0.5,
+          "amp": 180,
+          "rot": 0
+        },
+        {
+          "name": "Sandhills",
+          "lon": -100.7,
+          "lat": 42.3,
+          "rx": 1.0,
+          "ry": 0.7,
+          "amp": 140,
+          "rot": 0
+        },
+        {
+          "name": "Platte valley",
+          "lon": -98.8,
+          "lat": 41.05,
+          "rx": 1.6,
+          "ry": 0.15,
+          "amp": -90,
+          "rot": 0
+        },
+        {
+          "name": "Loess Hills",
+          "lon": -96.6,
+          "lat": 42.4,
+          "rx": 0.3,
+          "ry": 0.6,
+          "amp": 120,
+          "rot": 0
+        },
+        {
+          "name": "Republican and South Platte lowlands",
+          "lon": -100.5,
+          "lat": 40.4,
+          "rx": 1.2,
+          "ry": 0.4,
+          "amp": -60,
+          "rot": 0
+        },
+        {
+          "name": "Panhandle table and escarpment",
+          "lon": -103.8,
+          "lat": 41.6,
+          "rx": 0.3,
+          "ry": 0.5,
+          "amp": 200,
+          "rot": 0
+        },
+        {
+          "name": "Niobrara uplift",
+          "lon": -99.5,
+          "lat": 42.9,
+          "rx": 1.0,
+          "ry": 0.3,
+          "amp": 100,
+          "rot": 0
+        },
+        {
+          "name": "Missouri bluffs",
+          "lon": -96.2,
+          "lat": 40.6,
+          "rx": 0.4,
+          "ry": 0.4,
+          "amp": 90,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i80-nebraska",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 80 / Platte corridor (generalized)",
+          "short": "I-80",
+          "depthM": 0,
+          "path": [
+            [-95.937792, 41.2586096],
+            [-96.6669599, 40.8000011],
+            [-98.3420068, 40.9250123],
+            [-99.0814767, 40.699457],
+            [-100.7654232, 41.1238873],
+            [-104.0, 41.0]
+          ],
+          "facts": [
+            "Generalized Interstate 80 corridor along the Platte valley from Omaha through the central Nebraska cities to the Wyoming border; schematic polyline through GNIS anchors and a generalized border point, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 80 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "us30-nebraska",
+          "layer": "roads",
+          "tier": "context",
+          "name": "US 30 / Lincoln Highway corridor (generalized)",
+          "short": "US 30",
+          "depthM": 0,
+          "path": [
+            [-100.7654232, 41.1238873],
+            [-99.0814767, 40.699457],
+            [-98.3420068, 40.9250123],
+            [-97.5, 41.4],
+            [-95.937792, 41.2586096]
+          ],
+          "facts": [
+            "Generalized US 30 / historic Lincoln Highway corridor across the Platte valley to Omaha; schematic polyline through named anchors and a generalized point, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (U.S. Route 30 and Lincoln Highway routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "platte-river-nebraska",
+          "layer": "water",
+          "tier": "context",
+          "name": "Platte River system reach (generalized)",
+          "short": "Platte River",
+          "depthM": 0,
+          "path": [
+            [-100.6758333, 41.1138889],
+            [-99.3, 41.0],
+            [-98.2, 40.95],
+            [-95.8813986, 41.053888]
+          ],
+          "facts": [
+            "Generalized Platte River system reach from the North Platte River record through the central valley to the Platte River record near the Missouri; schematic, not a channel centerline. The first and last vertices are GNIS primary points used by gazetteer rows."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_IDs 204647 and 835915 for the endpoint primary points"
+          ]
+        },
+        {
+          "id": "missouri-river-nebraska",
+          "layer": "water",
+          "tier": "context",
+          "name": "Missouri River Nebraska reach (generalized)",
+          "short": "Missouri River",
+          "depthM": 0,
+          "path": [
+            [-95.937792, 41.2586096],
+            [-96.5, 42.3],
+            [-96.4, 42.9],
+            [-95.93, 42.72]
+          ],
+          "facts": [
+            "No Missouri River gazetteer row is seeded in the Nebraska frame: the 2026-10-23 states=NE Geocoder screen returned an empty array for the intended exact stream record. Generalized context reach along the eastern border from the Omaha anchor; schematic, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-23 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "lincoln",
+          "name": "Lincoln",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -96.6669599,
+          "lat": 40.8000011,
+          "depthM": 0,
+          "facts": [
+            "Nebraska state capital; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 837279; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "omaha",
+          "name": "Omaha",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -95.937792,
+          "lat": 41.2586096,
+          "depthM": 0,
+          "facts": [
+            "Missouri River eastern anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 835483; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "panorama-point",
+          "name": "Panorama Point",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -104.0314615,
+          "lat": 41.0077144,
+          "depthM": 0,
+          "facts": [
+            "Nebraska's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1851953; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "lake-mcconaughey",
+          "name": "Lake McConaughy",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -101.8097602,
+          "lat": 41.249318,
+          "depthM": 0,
+          "facts": [
+            "Western Sandhills reservoir anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 831115; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Lincoln", "Populated Place", "pop.place", "Lancaster", 40.8000011, -96.6669599, null, "837279", 1, "State capital. The populated-place record was selected rather than the many same-name Lincoln Election Precinct records across the state and the Lincoln County record (FEATURE_ID 835877). USGS GNIS Geocoder (GNIS), FEATURE_ID=837279; exact official name and Cities & Populated Places type in Lancaster County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Omaha", "Populated Place", "pop.place", "Douglas", 41.2586096, -95.937792, null, "835483", 1, "The populated-place record was selected rather than the Omaha Reservation record (FEATURE_ID 834985) and the Omaha Regency populated place (FEATURE_ID 1900411). USGS GNIS Geocoder (GNIS), FEATURE_ID=835483; exact official name and Cities & Populated Places type in Douglas County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Grand Island", "Populated Place", "pop.place", "Hall", 40.9250123, -98.3420068, null, "829622", 1, "The populated-place record was selected rather than the same-name Grand Island record classified as Islands in Buffalo County (FEATURE_ID 829621). USGS GNIS Geocoder (GNIS), FEATURE_ID=829622; exact official name and Cities & Populated Places type in Hall County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Kearney", "Populated Place", "pop.place", "Buffalo", 40.699457, -99.0814767, null, "830442", 1, "The populated-place record was selected rather than the Kearney County record (FEATURE_ID 835871) and the historical Kearney City record (FEATURE_ID 1873810). USGS GNIS Geocoder (GNIS), FEATURE_ID=830442; exact official name and Cities & Populated Places type in Buffalo County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Scottsbluff", "Populated Place", "pop.place", "Scotts Bluff", 41.8666341, -103.6671662, null, "833318", 1, "The populated-place record; the same-hydronym Scotts Bluff Summit (FEATURE_ID 835997) is a separate feature seeded below, and the Scotts Bluff County record (FEATURE_ID 835900) is not the town. USGS GNIS Geocoder (GNIS), FEATURE_ID=833318; exact official name and Cities & Populated Places type in Scotts Bluff County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["North Platte", "Populated Place", "pop.place", "Lincoln", 41.1238873, -100.7654232, null, "831719", 1, "The populated-place record was selected rather than the North Platte Election Precinct record (FEATURE_ID 1929109); it is distinct from the same-hydronym North Platte River record (FEATURE_ID 204647) seeded below. USGS GNIS Geocoder (GNIS), FEATURE_ID=831719; exact official name and Cities & Populated Places type in Lincoln County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Lake McConaughy", "Lake", "hydro.lake", "Keith", 41.249318, -101.8097602, null, "831115", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=831115; exact official name and Lakes & Reservoirs type in Keith County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Panorama Point", "Summit", "phys.summit", "Kimball", 41.0077144, -104.0314615, null, "1851953", 1, "Nebraska's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Nebraska, Primary County=Kimball County, coordinate sequence 1 marked High Point at the stored point, and the description Highest elevation in NE at 5424 feet; coordinate matches the Geocoder exactly. USGS GNIS Geocoder (GNIS), FEATURE_ID=1851953; exact official name and Summit type in Kimball County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Scotts Bluff", "Summit", "phys.summit", "Scotts Bluff", 41.8380329, -103.6989999, null, "835997", 1, "The Summit record; the same-hydronym Scottsbluff populated place (FEATURE_ID 833318) is a separate feature seeded above, and the Scotts Bluff County record (FEATURE_ID 835900) is not the landmark. USGS GNIS Geocoder (GNIS), FEATURE_ID=835997; exact official name and Summit type in Scotts Bluff County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Platte River", "Stream", "hydro.stream", "Cass", 41.053888, -95.8813986, null, "835915", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=835915; exact official name and Streams & Canals type in Cass County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Niobrara River", "Stream", "hydro.stream", "Knox", 42.7661116, -98.0472941, null, "835960", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=835960; exact official name and Streams & Canals type in Knox County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["North Platte River", "Stream", "hydro.stream", "Lincoln", 41.1138889, -100.6758333, null, "204647", 1, "The stream record; distinct from the same-hydronym North Platte populated place (FEATURE_ID 831719) and the North Platte Canal (FEATURE_ID 831720), and it does not verify the Wyoming reach of the same-named river (the states=WY screen was empty in round 21). USGS GNIS Geocoder (GNIS), FEATURE_ID=204647; exact official name and Streams & Canals type in Lincoln County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
+    },
+    "kansas": {
+      "title": "KANSAS SUBSURFACE 4Dwm",
+      "subtitle": "Flint Hills · Smoky Hills · High Plains · Kansas River corridor — statewide frame, Kansas",
+      "gazTitle": "KANSAS USGS GNIS REGISTER",
+      "gazNote": "Round 23 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "KS",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -102.3,
+        "lat0": 36.95,
+        "lon1": -94.5,
+        "lat1": 40.1
+      },
+      "center": {
+        "lon": -98.4,
+        "lat": 38.5
+      },
+      "baseElevationM": 600,
+      "roughnessM": 70,
+      "hasWater": false,
+      "coast": [],
+      "relief": [
+        {
+          "name": "High Plains",
+          "lon": -101.0,
+          "lat": 38.5,
+          "rx": 1.0,
+          "ry": 1.5,
+          "amp": 380,
+          "rot": 0
+        },
+        {
+          "name": "Smoky Hills",
+          "lon": -98.8,
+          "lat": 38.8,
+          "rx": 0.7,
+          "ry": 0.7,
+          "amp": 160,
+          "rot": 0
+        },
+        {
+          "name": "Flint Hills",
+          "lon": -96.5,
+          "lat": 38.5,
+          "rx": 0.4,
+          "ry": 1.0,
+          "amp": 150,
+          "rot": 0
+        },
+        {
+          "name": "Arkansas River valley",
+          "lon": -97.9,
+          "lat": 37.8,
+          "rx": 1.0,
+          "ry": 0.3,
+          "amp": -100,
+          "rot": 0
+        },
+        {
+          "name": "Missouri bluffs",
+          "lon": -96.2,
+          "lat": 39.9,
+          "rx": 0.5,
+          "ry": 0.3,
+          "amp": 120,
+          "rot": 0
+        },
+        {
+          "name": "Glaciated Plains",
+          "lon": -96.8,
+          "lat": 39.7,
+          "rx": 0.8,
+          "ry": 0.4,
+          "amp": 110,
+          "rot": 0
+        },
+        {
+          "name": "Sand sage prairies",
+          "lon": -100.5,
+          "lat": 37.4,
+          "rx": 0.9,
+          "ry": 0.5,
+          "amp": 120,
+          "rot": 0
+        },
+        {
+          "name": "Cherokee lowlands",
+          "lon": -94.8,
+          "lat": 37.2,
+          "rx": 0.4,
+          "ry": 0.3,
+          "amp": -60,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i70-kansas",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 70 / Kansas corridor (generalized)",
+          "short": "I-70",
+          "depthM": 0,
+          "path": [
+            [-94.627457, 39.1141708],
+            [-95.2352501, 38.9716689],
+            [-95.6780371, 39.0483336],
+            [-97.62, 38.84],
+            [-99.3267702, 38.8791783],
+            [-102.05, 39.02]
+          ],
+          "facts": [
+            "Generalized Interstate 70 corridor across Kansas from the Kansas City anchor through Lawrence, Topeka, and Hays to the Colorado border; schematic polyline through named anchors and generalized points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 70 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "i35-kansas",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 35 / eastern Kansas corridor (generalized)",
+          "short": "I-35",
+          "depthM": 0,
+          "path": [
+            [-94.627457, 39.1141708],
+            [-96.9, 38.9],
+            [-97.3375448, 37.6922361]
+          ],
+          "facts": [
+            "Generalized Interstate 35 corridor from Kansas City through the Flint Hills edge to Wichita; schematic polyline through a named anchor and a generalized point, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 35 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "missouri-river-kansas",
+          "layer": "water",
+          "tier": "context",
+          "name": "Missouri River Kansas reach (generalized)",
+          "short": "Missouri River",
+          "depthM": 0,
+          "path": [
+            [-94.8, 39.4],
+            [-94.627457, 39.1141708],
+            [-94.6, 40.0]
+          ],
+          "facts": [
+            "No Missouri River gazetteer row is seeded in the Kansas frame: the 2026-10-23 states=KS Geocoder screen returned an empty array for the intended exact stream record. Generalized context reach along the northeastern border from the Kansas City anchor; schematic, not a channel centerline or state boundary."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-23 source register"
+          ]
+        },
+        {
+          "id": "arkansas-river-kansas",
+          "layer": "water",
+          "tier": "context",
+          "name": "Arkansas River Kansas reach (generalized)",
+          "short": "Arkansas River",
+          "depthM": 0,
+          "path": [
+            [-102.0, 37.9],
+            [-100.0170787, 37.7527982],
+            [-97.6, 37.68],
+            [-95.9, 37.7],
+            [-94.6, 37.6]
+          ],
+          "facts": [
+            "No Arkansas River gazetteer row is seeded in the Kansas frame: the 2026-10-23 states=KS Geocoder screen returned an empty array, matching the round-18 Colorado empty screen for the same intended stream. Generalized context reach across southern Kansas; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; Geocoder exclusion recorded in the round-23 source register"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "topeka",
+          "name": "Topeka",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -95.6780371,
+          "lat": 39.0483336,
+          "depthM": 0,
+          "facts": [
+            "Kansas state capital and Kansas River corridor anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 485477; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "wichita",
+          "name": "Wichita",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -97.3375448,
+          "lat": 37.6922361,
+          "depthM": 0,
+          "facts": [
+            "Arkansas River south-central anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 473862; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mount-sunflower",
+          "name": "Mount Sunflower",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -102.0372428,
+          "lat": 39.0219757,
+          "depthM": 0,
+          "facts": [
+            "Kansas's highest summit; node coordinate is the GNIS Summit primary point confirmed by the Domestic Names per-ID check from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 484933; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "tuttle-creek-lake",
+          "name": "Tuttle Creek Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -96.6649992,
+          "lat": 39.3446836,
+          "depthM": 0,
+          "facts": [
+            "northeastern Kansas reservoir anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 472898; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Topeka", "Populated Place", "pop.place", "Shawnee", 39.0483336, -95.6780371, null, "485477", 1, "State capital. USGS GNIS Geocoder (GNIS), FEATURE_ID=485477; exact official name and Cities & Populated Places type in Shawnee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Wichita", "Populated Place", "pop.place", "Sedgwick", 37.6922361, -97.3375448, null, "473862", 1, "The populated-place record was selected rather than the Wichita County record (FEATURE_ID 485062) and the Wichita Heights populated place (FEATURE_ID 473847). USGS GNIS Geocoder (GNIS), FEATURE_ID=473862; exact official name and Cities & Populated Places type in Sedgwick County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Kansas City", "Populated Place", "pop.place", "Wyandotte", 39.1141708, -94.627457, null, "478635", 1, "The Kansas-side populated-place record in Wyandotte County; it is a different feature from the Missouri-side Kansas City record (FEATURE_ID 748198) used by the Kansas City city frame. USGS GNIS Geocoder (GNIS), FEATURE_ID=478635; exact official name and Cities & Populated Places type in Wyandotte County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Dodge City", "Populated Place", "pop.place", "Ford", 37.7527982, -100.0170787, null, "485363", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=485363; exact official name and Cities & Populated Places type in Ford County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Lawrence", "Populated Place", "pop.place", "Douglas", 38.9716689, -95.2352501, null, "479145", 1, "The Lawrence populated-place record is the same FEATURE_ID used by the Lawrence city frame; the same-name Lawrence Creek record (FEATURE_ID 472149) is a different feature in Smith County. USGS GNIS Geocoder (GNIS), FEATURE_ID=479145; exact official name and Cities & Populated Places type in Douglas County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Hays", "Populated Place", "pop.place", "Ellis", 38.8791783, -99.3267702, null, "475182", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=475182; exact official name and Cities & Populated Places type in Ellis County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Mount Sunflower", "Summit", "phys.summit", "Wallace", 39.0219757, -102.0372428, null, "484933", 1, "Kansas's highest summit. The Summit record was selected after a GNIS Domestic Names per-ID check confirmed Class=Summit, Primary State=Kansas, Primary County=Wallace County, coordinate sequence 1 marked High Point at the stored point, and the description Highest elevation in KS at 4039 feet; coordinate matches the Geocoder exactly. USGS GNIS Geocoder (GNIS), FEATURE_ID=484933; exact official name and Summit type in Wallace County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Tuttle Creek Lake", "Lake", "hydro.lake", "Pottawatomie", 39.3446836, -96.6649992, null, "472898", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=472898; exact official name and Lakes & Reservoirs type in Pottawatomie County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Milford Lake", "Lake", "hydro.lake", "Clay", 39.2008988, -96.9881697, null, "476180", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=476180; exact official name and Lakes & Reservoirs type in Clay County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Kansas River", "Stream", "hydro.stream", "Wyandotte", 39.1152819, -94.6105121, null, "485184", 1, "The stream record as returned by the states=KS screen (Wyandotte County confluence point); the same multipoint FEATURE_ID also appears in the Kansas City city frame with a different returned point, and the Kansas River Bend record (FEATURE_ID 2108836) is not the stream. USGS GNIS Geocoder (GNIS), FEATURE_ID=485184; exact official name and Streams & Canals type in Wyandotte County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Republican River", "Stream", "hydro.stream", "Geary", 39.0599979, -96.8013971, null, "485443", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=485443; exact official name and Streams & Canals type in Geary County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Smoky Hill River", "Stream", "hydro.stream", "Geary", 39.0599979, -96.8011193, null, "485314", 1, "The Smoky Hill record at the Geary County confluence area; distinct from the neighboring Republican River record (FEATURE_ID 485443), whose point is about 22 metres away, and it does not verify the Nebraska Republican River screen (empty under states=NE). USGS GNIS Geocoder (GNIS), FEATURE_ID=485314; exact official name and Streams & Canals type in Geary County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
     }
   }
 }

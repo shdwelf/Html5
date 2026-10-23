@@ -46,10 +46,18 @@ carry GNIS Domestic Names per-ID detail checks. Their machine-readable
 evidence is
 [`resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json).
 
+Round 23 update: **2026-10-23**. `nebraska` and `kansas` join as the
+twenty-third and twenty-fourth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows; Panorama Point and Mount Sunflower additionally
+carry GNIS Domestic Names per-ID detail checks (both state high points,
+with the per-ID “highest elevation” descriptions preserved in their
+notes). Their machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has twenty-two configurations — five cities,
-thirteen statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has twenty-four configurations — five cities,
+fifteen statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -76,6 +84,8 @@ its own offline Webxdc:
 | Wyoming (statewide) | `wyoming-subsurface.html` | `js/city-subsurface-data-wyoming.js` | `js/city-gazetteer-data-wyoming.js` | `wyoming-subsurface.xdc` |
 | North Dakota (statewide) | `northdakota-subsurface.html` | `js/city-subsurface-data-northdakota.js` | `js/city-gazetteer-data-northdakota.js` | `northdakota-subsurface.xdc` |
 | South Dakota (statewide) | `southdakota-subsurface.html` | `js/city-subsurface-data-southdakota.js` | `js/city-gazetteer-data-southdakota.js` | `southdakota-subsurface.xdc` |
+| Nebraska (statewide) | `nebraska-subsurface.html` | `js/city-subsurface-data-nebraska.js` | `js/city-gazetteer-data-nebraska.js` | `nebraska-subsurface.xdc` |
+| Kansas (statewide) | `kansas-subsurface.html` | `js/city-subsurface-data-kansas.js` | `js/city-gazetteer-data-kansas.js` | `kansas-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
