@@ -76,9 +76,8 @@ does to fragile desert sites.
 
 ## Next steps (named, not done)
 
-1. Teach `historical-network-viewer.html` / `js/historical-network.js` to
-   load this pack alongside the Keyhole fixture (pack picker + place
-   rendering for `site`-granularity places, which Phase 0 didn't need).
+1. ~~Teach the viewer to load this pack~~ — done round 20 (pack picker,
+   site-granularity scatter rendering, dynamic year bounds).
 2. Time-slice ARPANET: add 1971 and 1977 logical-map node sets from the
    published BBN maps as dated snapshots in this pack.
 3. FidoNet bulk layer only if a lawfully redistributable nodelist snapshot

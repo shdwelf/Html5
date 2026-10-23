@@ -149,6 +149,15 @@ seed `resources/historical-network/comms-history-seed-2026-10-23.json`.
 Remaining: viewer rendering of the pack, ARPANET 1971/1977 time slices,
 redistributable-nodelist bulk layer if rights ever clear.
 
+**Round 20 status (2026-10-23): viewer wiring DONE.** `historical-network-viewer.html`
+now offers all three bundled packs (Keyhole, comms-history, Cicada-3301 US
+posters) in a pack picker; `scripts/build-historical-network.mjs` generates
+all three data modules; coordinate-bearing places render as a schematic
+lon/lat scatter with logical edges, ungeocoded packs keep the uncertainty
+box; year filter bounds are per-pack. Tests: historical-network suites
+16/16. Remaining: ARPANET 1971/1977 time slices; bulk FidoNet layer only
+with a redistributable snapshot.
+
 **Round 17 status (2026-10-22): partial.** Phase 0 shipped as a tested
 Keyhole evidence fixture, standalone
 [`historical-network-viewer.html`](../historical-network-viewer.html), shared

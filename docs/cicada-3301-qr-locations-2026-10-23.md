@@ -49,8 +49,10 @@ The task asked for this research to feed the US subsurface/historical
 viewer. The eight US coordinates (rows 4–6, 9–13) are seeded as a
 historical-network pack in the same observation schema as the comms-history
 seed — `resources/historical-network/cicada-3301-poster-seed-2026-10-23.json`,
-`validateEvidencePack`-clean, `captureReady: false` (citation-only). Design
-notes:
+`validateEvidencePack`-clean, `captureReady: false` (citation-only), and —
+as of round 20 — rendered by `historical-network-viewer.html` alongside the
+Keyhole and comms-history packs (schematic scatter, Jan-2012 snapshot
+framing). Design notes:
 
 - **It is a history layer, not a treasure map.** The posters were paper in
   January 2012; nothing is there now, and every row says so. Rendering
