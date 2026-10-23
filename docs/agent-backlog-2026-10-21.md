@@ -124,6 +124,19 @@ a finished inlined edition beside the canonical multi-file XDC:
 unchanged: remaining states still need dated per-row source-register
 batches, and no DEM is claimed for the checked-in inlined build.
 
+**Round 20 status (2026-10-23): partial.** Oregon, Washington, and Idaho
+shipped as configurations 16–18, each with a 12/12 per-ID `VERIFIED=1`
+GNIS starter register, labelled synthetic relief, generalized context
+corridors, and no DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json).
+Guards include Mount Hood Summit versus populated place; Klamath County
+Crater Lake versus same-name lakes; Columbia River seeded under Oregon
+only after the Washington screen returned empty; Spokane River left
+unseeded for two exact stream candidates; Snake River seeded under
+Washington only after the Idaho screen returned no exact stream; and Bear
+Lake left unseeded in Idaho. Next in sequence: remaining states in dated
+per-row batches, then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

@@ -27,10 +27,16 @@ state set beside Arizona. Each starts with twelve all-GNIS `VERIFIED=1` rows.
 Their machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json).
 
+Round 20 update: **2026-10-23**. `oregon`, `washington`, and `idaho` join as
+the sixteenth through eighteenth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows in the same identity-safe starter-register form.
+Their machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has fifteen configurations — five cities,
-six statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has eighteen configurations — five cities,
+nine statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -50,6 +56,9 @@ its own offline Webxdc:
 | Utah (statewide) | `utah-subsurface.html` | `js/city-subsurface-data-utah.js` | `js/city-gazetteer-data-utah.js` | `utah-subsurface.xdc` |
 | Colorado (statewide) | `colorado-subsurface.html` | `js/city-subsurface-data-colorado.js` | `js/city-gazetteer-data-colorado.js` | `colorado-subsurface.xdc` |
 | New Mexico (statewide) | `newmexico-subsurface.html` | `js/city-subsurface-data-newmexico.js` | `js/city-gazetteer-data-newmexico.js` | `newmexico-subsurface.xdc` |
+| Oregon (statewide) | `oregon-subsurface.html` | `js/city-subsurface-data-oregon.js` | `js/city-gazetteer-data-oregon.js` | `oregon-subsurface.xdc` |
+| Washington (statewide) | `washington-subsurface.html` | `js/city-subsurface-data-washington.js` | `js/city-gazetteer-data-washington.js` | `washington-subsurface.xdc` |
+| Idaho (statewide) | `idaho-subsurface.html` | `js/city-subsurface-data-idaho.js` | `js/city-gazetteer-data-idaho.js` | `idaho-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
@@ -413,6 +422,58 @@ None of these frames bundles a DEM. As with California/Nevada/Arizona, the
 displayed terrain is a labelled synthetic gaussian field and the corridors
 are generalized context—not river centerlines, highway alignments,
 shorelines, or a state-boundary clipping mask.
+
+### Oregon, Washington, and Idaho statewide frames (round 20, 2026-10-23)
+
+The third state batch applies the same strict recipe to the Pacific
+Northwest: candidate discovery through the USGS GNIS Geocoder, acceptance
+only on an exact official name, compatible returned type, state, returned
+primary county, permanent FEATURE_ID, and returned primary point. The batch
+register preserves the Geocoder type/county for every row and reproduces the
+generated gazetteer rows exactly. The city test pins that synchronization,
+scene-node reuse of GNIS points, loader entries, generalized coast-line
+counts, and the exclusions below.
+
+**Oregon** spans lon −124.75…−116.45, lat 41.95…46.35. Its 12 rows are
+Salem (`1167861`), Portland (`1136645`), Eugene (`1120527`), Bend
+(`1137914`), Medford (`1124040`), Astoria (`1117076`), Mount Hood
+(`1143711`, the Summit record, not the populated place `1143710`), Mount
+Jefferson (`1144246`), Crater Lake (`1163669`, the Klamath County record,
+not same-name lakes `1140396` and `1119515`), Willamette River (`1158060`),
+Deschutes River (`1140916`), and Columbia River (`1140014`). Rogue River
+was not seeded in this starter composition because its exact-name screen
+returned two Stream records (Curry `1148698` and Polk `1148699`).
+
+**Washington** spans lon −124.85…−116.85, lat 45.50…49.08. Its 12 rows are
+Olympia (`1533353`), Seattle (`1512650`), Spokane (`1512683`), Tacoma
+(`1512713`), Vancouver (`1531916`), Yakima (`1509643`), Mount Rainier
+(`1533614`), Mount Saint Helens (`1525360`), Lake Chelan (`1530367`), Lake
+Washington (`1531534`), Snake River (`1533479`), and Skagit River
+(`1525850`). Columbia River is a context corridor in Washington because the
+`states=WA` screen returned an empty array while the intended exact record
+was returned and seeded under Oregon. Spokane River was also left unseeded:
+two exact Stream records (`1508606` and `391131`) have nearby mouth-area
+points, and the Geocoder screen alone does not safely distinguish the
+statewide starter record.
+
+**Idaho** spans lon −117.30…−110.95, lat 41.95…49.05. Its 12 rows are Boise
+(`400590`), Idaho Falls (`396684`), Pocatello (`397053`), Coeur d'Alene
+(`379485`), Twin Falls (`398273`, the populated place, not the waterfall
+`375624`), Lewiston (`396788`), Borah Peak (`378037`), Hyndman Peak
+(`383587`), Lake Pend Oreille (`398523`), Coeur d'Alene Lake (`397563`),
+Salmon River (`400069`), and Clearwater River (`379406`). Snake River is a
+context corridor in Idaho because the `states=ID` screen returned canals,
+plains, valley, and canyon records but not the intended exact stream record;
+that record was returned and seeded under Washington. Bear Lake remains
+unseeded: the Idaho screen returned several small same-name lakes but not an
+identity-safe returned record for the intended large Bear Lake County lake,
+consistent with Utah's round-18 omission.
+
+None of these frames bundles a DEM. Oregon uses one generalized Pacific
+coast line and Washington uses two generalized outer-coast/Puget lines;
+Idaho has no coast. Terrain is labelled synthetic relief, and all corridors
+remain generalized `context`—not river centerlines, highway alignments,
+shoreline surveys, state boundaries, or navigation data.
 
 ## Geocache class and local GPX import
 

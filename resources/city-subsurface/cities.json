@@ -3251,6 +3251,813 @@
         ["Animas River", "Stream", "hydro.stream", "San Juan", 36.7138917, -108.2217411, null, "900284", 1, "The San Juan County stream record was selected rather than the separate same-name Hidalgo County stream record (FEATURE_ID 900283). USGS GNIS Geocoder (GNIS), FEATURE_ID=900284; exact official name and Streams & Canals type in San Juan County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
         ["Conchas Lake", "Lake", "hydro.lake", "San Miguel", 35.3849418, -104.2179539, null, "897344", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=897344; exact official name and Lakes & Reservoirs type in San Miguel County cross-checked 2026-10-22. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."]
       ]
+    },
+    "oregon": {
+      "title": "OREGON SUBSURFACE 4Dwm",
+      "subtitle": "Willamette Valley · Cascades · Columbia River · high desert — statewide frame, Oregon",
+      "gazTitle": "OREGON USGS GNIS REGISTER",
+      "gazNote": "Round 20 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "OR",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -124.75,
+        "lat0": 41.95,
+        "lon1": -116.45,
+        "lat1": 46.35
+      },
+      "center": {
+        "lon": -120.6,
+        "lat": 44.15
+      },
+      "baseElevationM": 1000,
+      "roughnessM": 170,
+      "hasWater": true,
+      "coast": [
+        [-124.22, 42.0],
+        [-124.4, 42.75],
+        [-124.1, 43.35],
+        [-124.05, 44.0],
+        [-123.95, 44.65],
+        [-123.95, 45.4],
+        [-123.96, 46.0],
+        [-124.05, 46.27]
+      ],
+      "relief": [
+        {
+          "name": "Cascade Range",
+          "lon": -122.0,
+          "lat": 44.3,
+          "rx": 0.45,
+          "ry": 1.7,
+          "amp": 1400,
+          "rot": 0.05
+        },
+        {
+          "name": "Oregon Coast Range",
+          "lon": -123.6,
+          "lat": 44.3,
+          "rx": 0.45,
+          "ry": 1.5,
+          "amp": 700,
+          "rot": 0
+        },
+        {
+          "name": "Willamette Valley",
+          "lon": -123.0,
+          "lat": 44.8,
+          "rx": 0.45,
+          "ry": 1.2,
+          "amp": -650,
+          "rot": 0
+        },
+        {
+          "name": "Klamath and Siskiyou ranges",
+          "lon": -123.5,
+          "lat": 42.3,
+          "rx": 0.8,
+          "ry": 0.35,
+          "amp": 900,
+          "rot": 0
+        },
+        {
+          "name": "Wallowa Mountains",
+          "lon": -117.2,
+          "lat": 45.3,
+          "rx": 0.45,
+          "ry": 0.4,
+          "amp": 1200,
+          "rot": 0
+        },
+        {
+          "name": "Blue Mountains",
+          "lon": -118.2,
+          "lat": 44.8,
+          "rx": 0.8,
+          "ry": 0.5,
+          "amp": 900,
+          "rot": -0.2
+        },
+        {
+          "name": "Steens and Basin ranges",
+          "lon": -118.6,
+          "lat": 42.6,
+          "rx": 0.7,
+          "ry": 0.45,
+          "amp": 1000,
+          "rot": 0
+        },
+        {
+          "name": "Oregon high desert",
+          "lon": -119.5,
+          "lat": 43.4,
+          "rx": 1.1,
+          "ry": 0.7,
+          "amp": 250,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i5-willamette",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 5 / Willamette Valley corridor (generalized)",
+          "short": "I-5 · Willamette Valley",
+          "depthM": 0,
+          "path": [
+            [-122.6762071, 45.5234515],
+            [-123.0350963, 44.9428975],
+            [-123.0867536, 44.0520691],
+            [-122.8755949, 42.3265153],
+            [-122.7, 42.0]
+          ],
+          "facts": [
+            "Generalized north-south Willamette Valley and Interstate 5 corridor through GNIS populated-place anchors; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 5 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "columbia-river-oregon",
+          "layer": "water",
+          "tier": "context",
+          "name": "Columbia River Oregon reach (generalized)",
+          "short": "Columbia River",
+          "depthM": 0,
+          "path": [
+            [-124.0579299, 46.2442673],
+            [-123.8312534, 46.1878841],
+            [-122.6762071, 45.5234515],
+            [-121.5, 45.7],
+            [-121.18, 45.6],
+            [-119.0, 45.9],
+            [-117.0, 46.0]
+          ],
+          "facts": [
+            "Generalized Columbia River reach along the Oregon-Washington border; schematic, not a channel centerline or state boundary. The first vertex is the GNIS primary point used by the gazetteer row."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1140014 for the named primary point"
+          ]
+        },
+        {
+          "id": "willamette-river",
+          "layer": "water",
+          "tier": "context",
+          "name": "Willamette River (generalized reach)",
+          "short": "Willamette River",
+          "depthM": 0,
+          "path": [
+            [-123.0867536, 44.0520691],
+            [-123.0350963, 44.9428975],
+            [-122.6762071, 45.5234515],
+            [-122.7648218, 45.6528939]
+          ],
+          "facts": [
+            "Generalized Willamette River reach from Eugene through Salem and Portland to the GNIS primary point near the Columbia confluence; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1158060 for the named primary point"
+          ]
+        },
+        {
+          "id": "deschutes-river",
+          "layer": "water",
+          "tier": "context",
+          "name": "Deschutes River (generalized reach)",
+          "short": "Deschutes River",
+          "depthM": 0,
+          "path": [
+            [-121.5, 43.7],
+            [-121.3153096, 44.0581728],
+            [-121.2, 44.8],
+            [-120.9145096, 45.6354011]
+          ],
+          "facts": [
+            "Generalized Deschutes River reach from central Oregon toward the Columbia; schematic, not a channel centerline. The final vertex is the GNIS primary point used by the gazetteer row."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1140916 for the named primary point"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "salem",
+          "name": "Salem",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -123.0350963,
+          "lat": 44.9428975,
+          "depthM": 0,
+          "facts": [
+            "Oregon state capital and Willamette Valley anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1167861; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "portland",
+          "name": "Portland",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -122.6762071,
+          "lat": 45.5234515,
+          "depthM": 0,
+          "facts": [
+            "Willamette-Columbia confluence anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1136645; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mount-hood",
+          "name": "Mount Hood",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -121.6957784,
+          "lat": 45.3733674,
+          "depthM": 0,
+          "facts": [
+            "Oregon's highest summit; node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1143711; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "crater-lake",
+          "name": "Crater Lake",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -122.1063895,
+          "lat": 42.9420125,
+          "depthM": 0,
+          "facts": [
+            "Klamath County caldera-lake anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1163669; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Salem", "Populated Place", "pop.place", "Marion", 44.9428975, -123.0350963, null, "1167861", 1, "State capital. The populated-place record was selected rather than the Salem Division records in Marion and Polk counties (FEATURE_IDs 1938109 and 1938110). USGS GNIS Geocoder (GNIS), FEATURE_ID=1167861; exact official name and Cities & Populated Places type in Marion County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Portland", "Populated Place", "pop.place", "Multnomah", 45.5234515, -122.6762071, null, "1136645", 1, "The populated-place record was selected rather than the Portland East and Portland West Division records (FEATURE_IDs 2585638 and 2585640). USGS GNIS Geocoder (GNIS), FEATURE_ID=1136645; exact official name and Cities & Populated Places type in Multnomah County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Eugene", "Populated Place", "pop.place", "Lane", 44.0520691, -123.0867536, null, "1120527", 1, "The populated-place record was selected rather than the Eugene-Springfield Division record (FEATURE_ID 1938013). USGS GNIS Geocoder (GNIS), FEATURE_ID=1120527; exact official name and Cities & Populated Places type in Lane County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Bend", "Populated Place", "pop.place", "Deschutes", 44.0581728, -121.3153096, null, "1137914", 1, "The populated-place record was selected rather than the Bend Division record (FEATURE_ID 1937966). USGS GNIS Geocoder (GNIS), FEATURE_ID=1137914; exact official name and Cities & Populated Places type in Deschutes County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Medford", "Populated Place", "pop.place", "Jackson", 42.3265153, -122.8755949, null, "1124040", 1, "The populated-place record was selected rather than the Medford Division record (FEATURE_ID 1938056). USGS GNIS Geocoder (GNIS), FEATURE_ID=1124040; exact official name and Cities & Populated Places type in Jackson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Astoria", "Populated Place", "pop.place", "Clatsop", 46.1878841, -123.8312534, null, "1117076", 1, "The populated-place record was selected rather than the Astoria Division record (FEATURE_ID 1937957). USGS GNIS Geocoder (GNIS), FEATURE_ID=1117076; exact official name and Cities & Populated Places type in Clatsop County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Mount Hood", "Summit", "phys.summit", "Hood River", 45.3733674, -121.6957784, null, "1143711", 1, "Oregon's highest summit. The Summit record was selected rather than the same-name Mount Hood populated place (FEATURE_ID 1143710) and Mount Hood Division (FEATURE_ID 1938067). USGS GNIS Geocoder (GNIS), FEATURE_ID=1143711; exact official name and Summit type in Hood River County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Mount Jefferson", "Summit", "phys.summit", "Jefferson", 44.6742075, -121.7994686, null, "1144246", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1144246; exact official name and Summit type in Jefferson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Crater Lake", "Lake", "hydro.lake", "Klamath", 42.9420125, -122.1063895, null, "1163669", 1, "The Klamath County caldera lake was selected rather than same-name Crater Lake records in Baker County (FEATURE_ID 1140396) and Malheur County (FEATURE_ID 1119515). USGS GNIS Geocoder (GNIS), FEATURE_ID=1163669; exact official name and Lakes & Reservoirs type in Klamath County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Willamette River", "Stream", "hydro.stream", "Multnomah", 45.6528939, -122.7648218, null, "1158060", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1158060; exact official name and Streams & Canals type in Multnomah County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Deschutes River", "Stream", "hydro.stream", "Sherman", 45.6354011, -120.9145096, null, "1140916", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1140916; exact official name and Streams & Canals type in Sherman County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Columbia River", "Stream", "hydro.stream", "Clatsop", 46.2442673, -124.0579299, null, "1140014", 1, "The exact stream record returned under the Oregon state screen was seeded here; the same intended river was not returned by the Washington state screen, so Washington carries it only as a generalized corridor. USGS GNIS Geocoder (GNIS), FEATURE_ID=1140014; exact official name and Streams & Canals type in Clatsop County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
+    },
+    "washington": {
+      "title": "WASHINGTON SUBSURFACE 4Dwm",
+      "subtitle": "Puget Sound · Cascades · Columbia Basin · Spokane — statewide frame, Washington",
+      "gazTitle": "WASHINGTON USGS GNIS REGISTER",
+      "gazNote": "Round 20 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, sound/lake polygons, or river centerlines.",
+      "state": "WA",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -124.85,
+        "lat0": 45.5,
+        "lon1": -116.85,
+        "lat1": 49.08
+      },
+      "center": {
+        "lon": -120.85,
+        "lat": 47.3
+      },
+      "baseElevationM": 850,
+      "roughnessM": 180,
+      "hasWater": true,
+      "coast": [
+        [
+          [-124.1, 46.27],
+          [-124.05, 46.9],
+          [-124.7, 47.9],
+          [-124.73, 48.38]
+        ],
+        [
+          [-122.9, 47.0],
+          [-122.65, 47.25],
+          [-122.43, 47.6],
+          [-122.6, 48.0],
+          [-122.75, 48.4]
+        ]
+      ],
+      "relief": [
+        {
+          "name": "Olympic Mountains",
+          "lon": -123.7,
+          "lat": 47.7,
+          "rx": 0.55,
+          "ry": 0.45,
+          "amp": 1400,
+          "rot": 0
+        },
+        {
+          "name": "Cascade Range",
+          "lon": -121.2,
+          "lat": 47.3,
+          "rx": 0.6,
+          "ry": 1.5,
+          "amp": 1500,
+          "rot": 0.05
+        },
+        {
+          "name": "Puget Lowland",
+          "lon": -122.5,
+          "lat": 47.4,
+          "rx": 0.45,
+          "ry": 1.2,
+          "amp": -800,
+          "rot": 0
+        },
+        {
+          "name": "Columbia Basin",
+          "lon": -119.2,
+          "lat": 46.9,
+          "rx": 1.0,
+          "ry": 0.7,
+          "amp": -350,
+          "rot": 0
+        },
+        {
+          "name": "Okanogan Highlands",
+          "lon": -119.3,
+          "lat": 48.4,
+          "rx": 0.9,
+          "ry": 0.45,
+          "amp": 900,
+          "rot": 0
+        },
+        {
+          "name": "Selkirk Mountains",
+          "lon": -117.3,
+          "lat": 48.6,
+          "rx": 0.5,
+          "ry": 0.5,
+          "amp": 1000,
+          "rot": 0
+        },
+        {
+          "name": "Blue Mountains",
+          "lon": -117.7,
+          "lat": 46.1,
+          "rx": 0.5,
+          "ry": 0.35,
+          "amp": 800,
+          "rot": 0
+        },
+        {
+          "name": "Willapa Hills",
+          "lon": -123.5,
+          "lat": 46.6,
+          "rx": 0.5,
+          "ry": 0.4,
+          "amp": 500,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i5-puget",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 5 / Puget corridor (generalized)",
+          "short": "I-5 · Puget Sound",
+          "depthM": 0,
+          "path": [
+            [-122.6614861, 45.6387281],
+            [-122.9006951, 47.0378741],
+            [-122.4442906, 47.2528769],
+            [-122.3320708, 47.6062095],
+            [-122.3, 48.4]
+          ],
+          "facts": [
+            "Generalized Interstate 5 corridor through the Puget Lowland towns in the starter register; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 5 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "columbia-river-washington",
+          "layer": "water",
+          "tier": "context",
+          "name": "Columbia River Washington reach (generalized)",
+          "short": "Columbia River",
+          "depthM": 0,
+          "path": [
+            [-124.0579299, 46.2442673],
+            [-122.6614861, 45.6387281],
+            [-119.028618, 46.1862456],
+            [-119.5, 47.4],
+            [-119.9, 48.4]
+          ],
+          "facts": [
+            "No Columbia River gazetteer row is seeded in the Washington frame: the state-filtered Washington screen returned no exact stream record, while the intended record was returned under the Oregon screen and is seeded there. This is a generalized context reach only, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; Oregon GNIS FEATURE_ID 1140014 supplies the mouth-area anchor"
+          ]
+        },
+        {
+          "id": "snake-river-washington",
+          "layer": "water",
+          "tier": "context",
+          "name": "Snake River Washington reach (generalized)",
+          "short": "Snake River",
+          "depthM": 0,
+          "path": [
+            [-119.028618, 46.1862456],
+            [-118.0, 46.35],
+            [-117.0176569, 46.4165506]
+          ],
+          "facts": [
+            "Generalized lower Snake River reach from the GNIS primary point toward Lewiston; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 1533479 for the named primary point"
+          ]
+        },
+        {
+          "id": "i90-washington",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 90 / Cascade crossing corridor (generalized)",
+          "short": "I-90 · Cascades",
+          "depthM": 0,
+          "path": [
+            [-122.3320708, 47.6062095],
+            [-121.4, 47.4],
+            [-120.3, 47.0],
+            [-117.4260466, 47.6587803]
+          ],
+          "facts": [
+            "Generalized Interstate 90 corridor from Seattle across the Cascades to Spokane; schematic polyline through named anchors and generalized pass/basin points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstate 90 routing); GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "olympia",
+          "name": "Olympia",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -122.9006951,
+          "lat": 47.0378741,
+          "depthM": 0,
+          "facts": [
+            "Washington state capital and south Puget Sound anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1533353; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "seattle",
+          "name": "Seattle",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -122.3320708,
+          "lat": 47.6062095,
+          "depthM": 0,
+          "facts": [
+            "Central Puget Sound anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1512650; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "mount-rainier",
+          "name": "Mount Rainier",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -121.7604408,
+          "lat": 46.8528267,
+          "depthM": 0,
+          "facts": [
+            "Washington's highest summit; node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1533614; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "lake-chelan",
+          "name": "Lake Chelan",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -120.3551713,
+          "lat": 48.037622,
+          "depthM": 0,
+          "facts": [
+            "North Cascades lake anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 1530367; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Olympia", "Populated Place", "pop.place", "Thurston", 47.0378741, -122.9006951, null, "1533353", 1, "State capital. The populated-place record was selected rather than the Olympia, Olympia East, and Olympia West Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1533353; exact official name and Cities & Populated Places type in Thurston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Seattle", "Populated Place", "pop.place", "King", 47.6062095, -122.3320708, null, "1512650", 1, "The populated-place record was selected rather than the Seattle and Seattle East Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1512650; exact official name and Cities & Populated Places type in King County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Spokane", "Populated Place", "pop.place", "Spokane", 47.6587803, -117.4260466, null, "1512683", 1, "The populated-place record was selected rather than Spokane County, division, and reservation records; it does not verify a Spokane River stream record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1512683; exact official name and Cities & Populated Places type in Spokane County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Tacoma", "Populated Place", "pop.place", "Pierce", 47.2528769, -122.4442906, null, "1512713", 1, "The populated-place record was selected rather than the Tacoma Division record (FEATURE_ID 1939650). USGS GNIS Geocoder (GNIS), FEATURE_ID=1512713; exact official name and Cities & Populated Places type in Pierce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Vancouver", "Populated Place", "pop.place", "Clark", 45.6387281, -122.6614861, null, "1531916", 1, "The Washington populated-place record was selected rather than the Vancouver Division record (FEATURE_ID 1939664) and the separate Vancouver Lake record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1531916; exact official name and Cities & Populated Places type in Clark County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Yakima", "Populated Place", "pop.place", "Yakima", 46.6020711, -120.5058987, null, "1509643", 1, "The populated-place record was selected rather than Yakima County and Yakima Division records; it does not verify the separate Yakima River record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1509643; exact official name and Cities & Populated Places type in Yakima County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Mount Rainier", "Summit", "phys.summit", "Pierce", 46.8528267, -121.7604408, null, "1533614", 1, "Washington's highest summit. The Summit record was selected rather than the Mount Rainier Division record (FEATURE_ID 1939567). USGS GNIS Geocoder (GNIS), FEATURE_ID=1533614; exact official name and Summit type in Pierce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Mount Saint Helens", "Summit", "phys.summit", "Skamania", 46.1911944, -122.1943855, null, "1525360", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1525360; exact official name and Summit type in Skamania County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Lake Chelan", "Lake", "hydro.lake", "Chelan", 48.037622, -120.3551713, null, "1530367", 1, "The lake record was selected rather than the Lake Chelan Hills populated-place record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1530367; exact official name and Lakes & Reservoirs type in Chelan County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Lake Washington", "Lake", "hydro.lake", "King", 47.6195628, -122.2454424, null, "1531534", 1, "The lake record was selected rather than the separate Lake Washington Ship Canal record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1531534; exact official name and Lakes & Reservoirs type in King County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Snake River", "Stream", "hydro.stream", "Franklin", 46.1862456, -119.028618, null, "1533479", 1, "The exact stream record returned under the Washington state screen was seeded here; the Idaho state screen did not return that intended Snake River stream record, so Idaho carries it only as a generalized corridor. USGS GNIS Geocoder (GNIS), FEATURE_ID=1533479; exact official name and Streams & Canals type in Franklin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Skagit River", "Stream", "hydro.stream", "Skagit", 48.387326, -122.3668255, null, "1525850", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=1525850; exact official name and Streams & Canals type in Skagit County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
+    },
+    "idaho": {
+      "title": "IDAHO SUBSURFACE 4Dwm",
+      "subtitle": "Snake River Plain · Sawtooths · Clearwater · Panhandle lakes — statewide frame, Idaho",
+      "gazTitle": "IDAHO USGS GNIS REGISTER",
+      "gazNote": "Round 20 starter register (2026-10-23): all 12 rows are VERIFIED=1 USGS GNIS records screened by exact official name, feature type, state, primary county, FEATURE_ID, and GNIS primary point. Pins are not boundaries, shorelines, lake polygons, or river centerlines.",
+      "state": "ID",
+      "country": "United States",
+      "county": "Statewide",
+      "bbox": {
+        "lon0": -117.3,
+        "lat0": 41.95,
+        "lon1": -110.95,
+        "lat1": 49.05
+      },
+      "center": {
+        "lon": -114.5,
+        "lat": 45.5
+      },
+      "baseElevationM": 1550,
+      "roughnessM": 180,
+      "hasWater": true,
+      "coast": [],
+      "relief": [
+        {
+          "name": "Sawtooth Range",
+          "lon": -114.9,
+          "lat": 44.2,
+          "rx": 0.6,
+          "ry": 0.5,
+          "amp": 1400,
+          "rot": 0
+        },
+        {
+          "name": "Lost River Range",
+          "lon": -113.8,
+          "lat": 44.1,
+          "rx": 0.45,
+          "ry": 0.5,
+          "amp": 1500,
+          "rot": -0.3
+        },
+        {
+          "name": "Bitterroot Range",
+          "lon": -114.8,
+          "lat": 46.0,
+          "rx": 0.6,
+          "ry": 0.9,
+          "amp": 1200,
+          "rot": 0.3
+        },
+        {
+          "name": "Clearwater Mountains",
+          "lon": -115.9,
+          "lat": 46.5,
+          "rx": 0.7,
+          "ry": 0.6,
+          "amp": 900,
+          "rot": 0
+        },
+        {
+          "name": "Selkirk and Cabinet ranges",
+          "lon": -116.8,
+          "lat": 48.4,
+          "rx": 0.45,
+          "ry": 0.6,
+          "amp": 1000,
+          "rot": 0
+        },
+        {
+          "name": "Snake River Plain",
+          "lon": -114.0,
+          "lat": 43.2,
+          "rx": 1.6,
+          "ry": 0.45,
+          "amp": -450,
+          "rot": -0.05
+        },
+        {
+          "name": "Boise Front",
+          "lon": -116.1,
+          "lat": 43.8,
+          "rx": 0.5,
+          "ry": 0.4,
+          "amp": 700,
+          "rot": 0
+        },
+        {
+          "name": "Teton and Yellowstone margin",
+          "lon": -111.3,
+          "lat": 44.2,
+          "rx": 0.35,
+          "ry": 0.6,
+          "amp": 900,
+          "rot": 0
+        }
+      ],
+      "corridors": [
+        {
+          "id": "i84-snake-plain",
+          "layer": "roads",
+          "tier": "context",
+          "name": "Interstate 84 / Snake River Plain corridor (generalized)",
+          "short": "I-84 · Snake Plain",
+          "depthM": 0,
+          "path": [
+            [-116.2034505, 43.6135002],
+            [-114.4608711, 42.5629668],
+            [-112.4455344, 42.8713032],
+            [-112.0341374, 43.4665809]
+          ],
+          "facts": [
+            "Generalized southern Idaho Interstate 84/86 and Snake River Plain corridor through GNIS populated-place anchors; schematic polyline, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (Interstates 84/86 routing); GNIS rows supply the named anchors"
+          ]
+        },
+        {
+          "id": "snake-river-idaho",
+          "layer": "water",
+          "tier": "context",
+          "name": "Snake River Idaho reach (generalized)",
+          "short": "Snake River",
+          "depthM": 0,
+          "path": [
+            [-112.0341374, 43.4665809],
+            [-114.4608711, 42.5629668],
+            [-116.2034505, 43.6135002],
+            [-116.95, 44.2],
+            [-117.0176569, 46.4165506]
+          ],
+          "facts": [
+            "No Snake River gazetteer row is seeded in the Idaho frame: the Idaho state screen returned canals/plain/valley records but not the intended exact Snake River stream record, which was returned under the Washington screen and is seeded there. This is a generalized context reach only, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; Washington GNIS FEATURE_ID 1533479 is the seeded downstream record"
+          ]
+        },
+        {
+          "id": "salmon-river",
+          "layer": "water",
+          "tier": "context",
+          "name": "Salmon River (generalized reach)",
+          "short": "Salmon River",
+          "depthM": 0,
+          "path": [
+            [-114.9, 44.2],
+            [-114.23, 44.5],
+            [-115.5, 45.4],
+            [-116.7934792, 45.8562667]
+          ],
+          "facts": [
+            "Generalized Salmon River reach from the Sawtooth/central Idaho mountains to the GNIS primary point near the Snake confluence; schematic, not a channel centerline."
+          ],
+          "sources": [
+            "Generalized from public river references; GNIS FEATURE_ID 400069 for the named primary point"
+          ]
+        },
+        {
+          "id": "us95-idaho",
+          "layer": "roads",
+          "tier": "context",
+          "name": "U.S. Route 95 north-south corridor (generalized)",
+          "short": "US 95 · Idaho",
+          "depthM": 0,
+          "path": [
+            [-116.2034505, 43.6135002],
+            [-116.1, 44.9],
+            [-117.0176569, 46.4165506],
+            [-116.7804664, 47.6776832],
+            [-116.4401819, 48.1582727]
+          ],
+          "facts": [
+            "Generalized U.S. Route 95 corridor from southwestern Idaho through Lewiston and the Panhandle; schematic polyline through named anchors and generalized mountain points, not a highway alignment."
+          ],
+          "sources": [
+            "Generalized from public highway references (U.S. Route 95 routing); GNIS rows supply the named anchors"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "boise",
+          "name": "Boise",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -116.2034505,
+          "lat": 43.6135002,
+          "depthM": 0,
+          "facts": [
+            "Idaho state capital and Snake River Plain anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 400590; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "coeur-dalene",
+          "name": "Coeur d'Alene",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "building",
+          "lon": -116.7804664,
+          "lat": 47.6776832,
+          "depthM": 0,
+          "facts": [
+            "Panhandle lake-city anchor; node coordinate is the GNIS populated-place primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 379485; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "borah-peak",
+          "name": "Borah Peak",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "summit",
+          "lon": -113.7811392,
+          "lat": 44.1373404,
+          "depthM": 0,
+          "facts": [
+            "Idaho's highest summit; node coordinate is the GNIS Summit primary point from the gazetteer row."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 378037; coordinate per gazetteer row"
+          ]
+        },
+        {
+          "id": "lake-pend-oreille",
+          "name": "Lake Pend Oreille",
+          "layer": "sites",
+          "tier": "official",
+          "kind": "lake",
+          "lon": -116.4401819,
+          "lat": 48.1582727,
+          "depthM": 0,
+          "facts": [
+            "Panhandle lake anchor; node coordinate is the GNIS primary point from the gazetteer row, not a shoreline."
+          ],
+          "sources": [
+            "USGS GNIS FEATURE_ID 398523; coordinate per gazetteer row"
+          ]
+        }
+      ],
+      "gazetteerRows": [
+        ["Boise", "Populated Place", "pop.place", "Ada", 43.6135002, -116.2034505, null, "400590", 1, "State capital. The populated-place record was selected rather than Boise City Division and Boise County records; the returned official populated-place name is Boise. USGS GNIS Geocoder (GNIS), FEATURE_ID=400590; exact official name and Cities & Populated Places type in Ada County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Idaho Falls", "Populated Place", "pop.place", "Bonneville", 43.4665809, -112.0341374, null, "396684", 1, "The populated-place record was selected rather than the Idaho Falls and Idaho Falls West Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=396684; exact official name and Cities & Populated Places type in Bonneville County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Pocatello", "Populated Place", "pop.place", "Bannock", 42.8713032, -112.4455344, null, "397053", 1, "The populated-place record was selected rather than the Pocatello Division record (FEATURE_ID 1936790). USGS GNIS Geocoder (GNIS), FEATURE_ID=397053; exact official name and Cities & Populated Places type in Bannock County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Coeur d'Alene", "Populated Place", "pop.place", "Kootenai", 47.6776832, -116.7804664, null, "379485", 1, "The populated-place record was selected rather than division/reservation records; the same-name lake is seeded separately below and the river is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=379485; exact official name and Cities & Populated Places type in Kootenai County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Twin Falls", "Populated Place", "pop.place", "Twin Falls", 42.5629668, -114.4608711, null, "398273", 1, "The populated-place record was selected rather than Twin Falls County/Division records and the separate Twin Falls waterfall record (FEATURE_ID 375624). USGS GNIS Geocoder (GNIS), FEATURE_ID=398273; exact official name and Cities & Populated Places type in Twin Falls County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Lewiston", "Populated Place", "pop.place", "Nez Perce", 46.4165506, -117.0176569, null, "396788", 1, "The populated-place record was selected rather than the Lewiston Division record (FEATURE_ID 1936751). USGS GNIS Geocoder (GNIS), FEATURE_ID=396788; exact official name and Cities & Populated Places type in Nez Perce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."],
+        ["Borah Peak", "Summit", "phys.summit", "Custer", 44.1373404, -113.7811392, null, "378037", 1, "Idaho's highest summit. USGS GNIS Geocoder (GNIS), FEATURE_ID=378037; exact official name and Summit type in Custer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Hyndman Peak", "Summit", "phys.summit", "Blaine", 43.7490837, -114.131121, null, "383587", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=383587; exact official name and Summit type in Blaine County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."],
+        ["Lake Pend Oreille", "Lake", "hydro.lake", "Bonner", 48.1582727, -116.4401819, null, "398523", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=398523; exact official name and Lakes & Reservoirs type in Bonner County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Coeur d'Alene Lake", "Lake", "hydro.lake", "Kootenai", 47.5504509, -116.8022201, null, "397563", 1, "The lake record was selected as a feature distinct from the Coeur d'Alene populated place and Coeur d'Alene River records. USGS GNIS Geocoder (GNIS), FEATURE_ID=397563; exact official name and Lakes & Reservoirs type in Kootenai County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."],
+        ["Salmon River", "Stream", "hydro.stream", "Nez Perce", 45.8562667, -116.7934792, null, "400069", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=400069; exact official name and Streams & Canals type in Nez Perce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."],
+        ["Clearwater River", "Stream", "hydro.stream", "Nez Perce", 46.4248838, -117.0371024, null, "379406", 1, "USGS GNIS Geocoder (GNIS), FEATURE_ID=379406; exact official name and Streams & Canals type in Nez Perce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."]
+      ]
     }
   }
 }
