@@ -298,6 +298,37 @@
       "Pee Dee River",
       "Lake Hartwell",
       "Lake Wylie"
+    ],
+    "GA": [
+      "Atlanta",
+      "Augusta",
+      "Macon",
+      "Columbus",
+      "Savannah",
+      "Athens",
+      "Brasstown Bald",
+      "Hartwell Lake",
+      "Lake Sidney Lanier",
+      "Altamaha River",
+      "Chattahoochee River",
+      "Flint River",
+      "Lake Hartwell",
+      "Lake Lanier",
+      "Savannah River"
+    ],
+    "FL": [
+      "Tallahassee",
+      "Jacksonville",
+      "Miami",
+      "Tampa",
+      "Orlando",
+      "Pensacola",
+      "Britton Hill",
+      "Lake Okeechobee",
+      "Lake George",
+      "Saint Johns River",
+      "Suwannee River",
+      "Apalachicola River"
     ]
   },
   "note": "Batch 7 = configurations 25 (Minnesota) + 26 (Iowa); rows screened from the runner extract gnis-candidates-batch7.json.",
