@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T22:25:37Z",
+ "retrieved": "2026-10-23T22:28:08Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -483,7 +483,8 @@
     "Saint Croix River",
     "Mississippi River",
     "Lake Michigan",
-    "Lake Superior"
+    "Lake Superior",
+    "Chippewa River"
    ],
    "rows": [
     {
@@ -494,6 +495,15 @@
      "county": "Outagamie",
      "lat": 44.2619309,
      "lon": -88.4153847
+    },
+    {
+     "featureId": "1578997",
+     "name": "Chippewa River",
+     "featureClass": "Stream",
+     "state": "Wisconsin",
+     "county": "Pepin",
+     "lat": 44.4091337,
+     "lon": -92.0840583
     },
     {
      "featureId": "1579123",
