@@ -243,6 +243,31 @@ after an empty screen. Next in sequence: Illinois/Indiana/Ohio and the
 remaining states in dated per-row batches, then the country/planet
 thread.
 
+**Round 26 status (2026-10-23): partial.** Illinois and Indiana shipped
+as configurations 29–30, each with a 12/12 per-ID `VERIFIED=1` GNIS
+starter register, labelled synthetic relief, generalized context
+corridors, and no DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json).
+Every row was screened against the USGS GNIS Geocoder and cross-checked
+on the runner-extracted DomesticNames text (cumulative candidate
+extract). Charles Mound (1,235 ft) and Hoosier Hill (1,257 ft) keep
+their High Point designations; Hoosier Hill (`1851956`) sits adjacent
+to round 24's Hawkeye Point (`1851955`) in the same high-point record
+series. Monroe Lake is seeded under the official name order (the
+`Lake Monroe` screen is empty, following the round-24 Vermilion Lake
+precedent); Chicago splits from its Heights/Ridge/Loop namesakes; the
+Rock River stream record splits from four same-name lake/flowage
+records; the White River stream record splits from the Gibson County
+populated place. The Mississippi River, Ohio River, and Lake Michigan
+records screen empty under both states and remain corridors. Joliet,
+Waukegan, and Gary are identity-safe but held to starter scope. One
+round-24 defect was repaired in passing: the batch-7 register's
+`geocoderCounty` fields had been truncated to single letters by a
+builder bug (the test asserted only presence); the values are restored
+and batches 7–9 tests now assert the full county strings semantically.
+Next in sequence: Ohio eastward and the remaining states in dated
+per-row batches, then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

@@ -79,10 +79,23 @@ empty; Wisconsin's Great Lakes and main-stem screens are all empty. The
 machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch8-source-register-2026-10-23.json).
 
+Round 26 update: **2026-10-23**. `illinois` and `indiana` join as the
+twenty-ninth and thirtieth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
+(Geocoder + runner-extracted DomesticNames text; cumulative candidate
+extract). Charles Mound (1,235 feet) and Hoosier Hill (1,257 feet) carry
+Domestic Names per-ID identity checks; Hoosier Hill's FEATURE_ID sits
+adjacent to round 24's Hawkeye Point record in the same high-point
+series. Monroe Lake is seeded under the official name order (the
+reversed screen is empty). The Mississippi and Ohio main stems and Lake
+Michigan screen empty under both states and remain corridors. The
+machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has twenty-eight configurations — five cities,
-nineteen statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has thirty configurations — five cities,
+twenty-one statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -115,6 +128,8 @@ its own offline Webxdc:
 | Iowa (statewide) | `iowa-subsurface.html` | `js/city-subsurface-data-iowa.js` | `js/city-gazetteer-data-iowa.js` | `iowa-subsurface.xdc` |
 | Wisconsin (statewide) | `wisconsin-subsurface.html` | `js/city-subsurface-data-wisconsin.js` | `js/city-gazetteer-data-wisconsin.js` | `wisconsin-subsurface.xdc` |
 | Michigan (statewide) | `michigan-subsurface.html` | `js/city-subsurface-data-michigan.js` | `js/city-gazetteer-data-michigan.js` | `michigan-subsurface.xdc` |
+| Illinois (statewide) | `illinois-subsurface.html` | `js/city-subsurface-data-illinois.js` | `js/city-gazetteer-data-illinois.js` | `illinois-subsurface.xdc` |
+| Indiana (statewide) | `indiana-subsurface.html` | `js/city-subsurface-data-indiana.js` | `js/city-gazetteer-data-indiana.js` | `indiana-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
