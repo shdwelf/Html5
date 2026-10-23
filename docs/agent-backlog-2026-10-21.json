@@ -94,7 +94,9 @@
         "docs/ghidra/sneakers-original-native-ghidra-2026-10-18.md",
         "docs/github-wiki/Sneakers-Archive-and-Ghidra.md",
         "docs/headline-harry-jsdos-fix-2026-10-04.md",
-        "docs/jsdos-cdn-deep-dive-2026-10-04.md"
+        "docs/jsdos-cdn-deep-dive-2026-10-04.md",
+        "docs/github-jdk-runtime-research-2026-10-23.md",
+        "docs/backlog-execution-round-19-2026-10-23.md"
       ],
       "next_actions": [
         "Verify sneakers-press-kit.xdc keyboard/mouse side layout against headline-harry.xdc pattern and close the gap if any",
@@ -164,9 +166,14 @@
         "colorado-subsurface.xdc",
         "newmexico-subsurface.html",
         "newmexico-subsurface.xdc",
-        "resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json"
+        "resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json",
+        "socal-subsurface-inlined.html",
+        "socal-subsurface-inlined.xdc",
+        "scripts/build-socal-subsurface-inlined.mjs",
+        "docs/backlog-execution-round-19-2026-10-23.md"
       ],
       "next_actions": [
+        "Round 19 packaging (2026-10-23): finished the SoCal Subsurface inlined edition beside the canonical multi-file XDC — socal-subsurface-inlined.html (863,145 bytes) and six-entry socal-subsurface-inlined.xdc, reproducible via scripts/build-socal-subsurface-inlined.mjs with optional-DEM build-time handling (checked-in build uses the documented synthetic relief). Geographic status unchanged: remaining states still require dated per-row GNIS source-register batches; bulk California themes/archived classes still require explicit source decisions.",
         "Round 18 (2026-10-22): Four Corners batch SHIPPED — Utah, Colorado, and New Mexico are city-subsurface configurations 13-15, each with 12/12 VERIFIED=1 GNIS starter rows, synthetic relief, generalized context corridors, and no DEM. Provenance and identity decisions: resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json. Guards include Green River Stream vs town, Grand Lake lake vs town, South Platte River Domestic Names sequence-1/returned-Logan-County provenance, Sierra Blanca Peak vs range, San Juan County Animas River vs Hidalgo County same-name stream, and New Mexico Wheeler Peak vs Nevada Wheeler Peak. Bear Lake (UT), Arkansas/Rio Grande/Colorado rivers (CO), and Rio Grande/San Juan/Pecos rivers (NM) were not seeded where exact records were absent, out of frame, or ambiguous; they remain context corridors only where shown. Remaining: remaining states in dated per-row source-register batches; archived-class CA features and bulk CA layers require separate explicit source decisions/registers; country/PC Globe thread open.",
         "Round 17 (2026-10-22): territory sequence SHIPPED — Guam, American Samoa (Tutuila–Manuʻa frame only; Swains Island and Rose Atoll explicitly omitted), U.S. Virgin Islands, and Midway are city-subsurface configurations 9-12 with 12/12/12/6 VERIFIED=1 GNIS starter rows, generalized multi-polyline coasts, synthetic relief, and no DEM. Hagåtña is GNIS Civil 1389443 (not a populated place); Midway used bounded queries because State=null and states=UM returned no suggestions. Machine-readable provenance: resources/city-subsurface/gnis-territory-source-register-2026-10-22.json. Shared engine is now hemisphere-aware and accepts one or several coastline polylines. Remaining: remaining states next in dated per-row source-register batches; archived-class CA features only under a separate dated archival-GNIS treatment; bulk CA layers only with per-row registers; country/PC Globe thread open.",
         "Round 16 (2026-10-22): California per-ID GNIS extract SHIPPED — 27 rows total: 16 VERIFIED=1 (LA/SF/Sacramento/San Diego/Oakville/Manzanar locality, Whitney/Shasta/Death Valley, Sacramento/San Joaquin/Russian rivers, Lake Tahoe/Salton Sea/Morris Reservoir/Tule Lake Swamp) and the 11 round-15 cultural rows retained VERIFIED=0. Same-name guards are explicit: Manzanar locality does not verify the National Historic Site, Morris Reservoir does not verify Morris Dam, and Tule Lake Swamp does not verify the relocation center. Nevada + Arizona SHIPPED as the 7th/8th city-subsurface configurations, each with a 12/12 VERIFIED=1 GNIS starter register, generalized relief/corridors, and no DEM. Machine-readable provenance: resources/city-subsurface/gnis-state-source-register-2026-10-22.json. Remaining: archived-class CA features only under a separate dated archival-GNIS treatment; bulk CA layers only with per-row registers; territories next before remaining states; country/PC Globe thread open.",
@@ -249,9 +256,12 @@
         "docs/xport-nucleo-v92-eio-fax-card.md",
         "docs/lantronix-uclinux-deep-dive-2026-10-08.md",
         "docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md",
-        "js/fidonet-pkt.js"
+        "js/fidonet-pkt.js",
+        "docs/github-jdk-runtime-research-2026-10-23.md",
+        "docs/backlog-execution-round-19-2026-10-23.md"
       ],
       "next_actions": [
+        "Round 19 toolchain research (2026-10-23): GitHub OpenJDK/OpenJVM/OpenJRE/Sun/Oracle/Zulu/Temurin survey re-verified Temurin 21 locally and pinned/hash-checked the Zulu 8 JavaCard route, so “no JDK” is no longer the blanket blocker. S7 remains externally blocked on the actual gina.dll binary, physical teardown data, or proprietary GoldKey drivers; local Ghidra distribution still needs CI/relay. Do not invent substitutes.",
         "Round 15 (2026-10-22): re-audited during scoping — hierarchy write-up (goldkey doc §3) and escrow model already exist; CAD/gina checks green in round 14. Remainder is FULLY EXTERNALLY BLOCKED per docs/goldkey-parity-gina-and-units.md §7 (needs a gina.dll binary + JDK/Ghidra, a physical board teardown, or proprietary GoldKey drivers). No code this round by decision; do not invent substitutes.",
         "Round-14 audit (2026-10-22): check:unit-cad 54/54 + gina suite 29/29 green; one vendor spec conflict on record (nMU 2U dims). Remaining = hierarchy write-up + uClinux fax JAR (JDK-gated in sandbox).",
         "Finish master/grandmaster key hierarchy write-up and per-unit CAD/BOM completeness check",
@@ -273,7 +283,9 @@
         "docs/feitian-javacard-toolchain.md",
         "docs/apache-struts-jsf-tomcat-xdc-war-2026-10-23.md",
         "xdc-viewer.html",
-        "tools/build_xdc_wars.mjs"
+        "tools/build_xdc_wars.mjs",
+        "docs/github-jdk-runtime-research-2026-10-23.md",
+        "docs/backlog-execution-round-19-2026-10-23.md"
       ],
       "next_actions": [
         "QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock/number-porting caselaw notes via LexisNexis alternatives)",
@@ -299,9 +311,14 @@
         "docs/RESEARCH_SMARTCARD.md",
         "docs/wiki-javacard-validation-2026-10-15.md",
         "docs/lecture-hall-research-2026-09-20.md",
-        "docs/shufflecake-stego-cyberchef-2026-10-23.md"
+        "docs/shufflecake-stego-cyberchef-2026-10-23.md",
+        "docs/github-jdk-runtime-research-2026-10-23.md",
+        "tools/build_mealplan_applet.sh",
+        "tests/mealplan-applet-sim.test.mjs",
+        "docs/backlog-execution-round-19-2026-10-23.md"
       ],
       "next_actions": [
+        "Round 19 smartcard status (2026-10-23): MealPlan Java Card toolchain now self-prepares from pinned GitHub inputs with SHA-256 checks; live simulator suite passes 18/18 when GitHub is reachable and skips card-backed cases explicitly offline. Physical-card/GlobalPlatform load remains unproven.",
         "Catalog OCR haiku into haiku vault; verify enso generators + haiku randomizers against the standard vault format",
         "Shufflecake + steganographic algorithms -> CyberChef recipes; smartcard filesystem candidates (BasicCard et al., 4MB XPort Pro / 2MB S.S.E. URL budget)",
         "Boot-chain concept write-up (LUKS/GRUB/LILO/liveboot, AES pass-through dongle, dock-unlock) as research note",
@@ -438,7 +455,8 @@
       "line": 157,
       "stream": "S2",
       "text": "FindCrypt + Ghidra (Temurin JVM) over the Sneakers press kit; disassemble; update wiki",
-      "status": "partial"
+      "status": "partial",
+      "note": "round 19: JDK/Ghidra availability refreshed — Temurin 21 relay verified locally, official Temurin release bytes remain sandbox-blocked at the GitHub asset CDN, and Ghidra 12.2 should stay on the existing GitHub Actions/Temurin route until a distribution relay is staged; no new Sneakers disassembly was claimed."
     },
     {
       "id": "T2.2",
@@ -473,7 +491,7 @@
         "S5",
         "S6"
       ],
-      "note": "round 18: Utah/Colorado/New Mexico shipped as configurations 13-15 with 12/12/12 GNIS VERIFIED=1 starter rows, completing the Four Corners state set; batch-2 register at resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json records identity guards and unseeded Bear Lake/Arkansas/Rio Grande/Colorado/San Juan/Pecos candidates; remaining states and PC Globe threads remain open; round 17: Guam/American Samoa (Tutuila–Manuʻa only)/USVI/Midway frames shipped as configurations 9-12 with 12/12/12/6 GNIS VERIFIED=1 rows; hemisphere-aware formatting and disconnected coastlines are in the shared engine; territory register at resources/city-subsurface/gnis-territory-source-register-2026-10-22.json; remaining states and PC Globe threads remain open; round 16: CA now has 16 per-ID GNIS VERIFIED=1 rows + 11 curated VERIFIED=0 rows; Nevada/Arizona frames shipped with 12/12 GNIS rows each; source register at resources/city-subsurface/gnis-state-source-register-2026-10-22.json; S6 historical-network layers scoped separately, not absorbed into city-subsurface; round 15: California state viewer delivered via the shared city-subsurface system as a statewide frame with a sourced starter gazetteer (no GNIS ids claimed); Keyhole/In-Q-Tel context split to S6 doc (docs/keyhole-disambiguation-deep-dive-2026-10-22.md); FidoNet/ARPANET/payphone + political/evacuation/fire/transit layers, NV/AZ, 50-state and PC Globe threads remain open"
+      "note": "round 19: SoCal Subsurface gained a finished single-file edition and six-entry inlined XDC beside the canonical multi-file package; no new geographic/GNIS claims were added and the checked-in inlined build still uses synthetic relief. round 18: Utah/Colorado/New Mexico shipped as configurations 13-15 with 12/12/12 GNIS VERIFIED=1 starter rows, completing the Four Corners state set; batch-2 register at resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json records identity guards and unseeded Bear Lake/Arkansas/Rio Grande/Colorado/San Juan/Pecos candidates; remaining states and PC Globe threads remain open; round 17: Guam/American Samoa (Tutuila–Manuʻa only)/USVI/Midway frames shipped as configurations 9-12 with 12/12/12/6 GNIS VERIFIED=1 rows; hemisphere-aware formatting and disconnected coastlines are in the shared engine; territory register at resources/city-subsurface/gnis-territory-source-register-2026-10-22.json; remaining states and PC Globe threads remain open; round 16: CA now has 16 per-ID GNIS VERIFIED=1 rows + 11 curated VERIFIED=0 rows; Nevada/Arizona frames shipped with 12/12 GNIS rows each; source register at resources/city-subsurface/gnis-state-source-register-2026-10-22.json; S6 historical-network layers scoped separately, not absorbed into city-subsurface; round 15: California state viewer delivered via the shared city-subsurface system as a statewide frame with a sourced starter gazetteer (no GNIS ids claimed); Keyhole/In-Q-Tel context split to S6 doc (docs/keyhole-disambiguation-deep-dive-2026-10-22.md); FidoNet/ARPANET/payphone + political/evacuation/fire/transit layers, NV/AZ, 50-state and PC Globe threads remain open"
     },
     {
       "id": "T5.1",
@@ -511,7 +529,8 @@
       "line": 166,
       "stream": "S7",
       "text": "Parity backup system with gold key drivers; Ghidra Gina.dll (DriverGuide); master/grandmaster key hierarchy; CAD + BOM per unit; science.edu/earth vitamins research",
-      "status": "partial"
+      "status": "partial",
+      "note": "round 19: JDK availability narrowed but did not close this task — Temurin 21 and pinned Zulu 8 routes are proven, while the gina.dll binary/teardown/driver artifacts remain absent."
     },
     {
       "id": "T7.2",
@@ -519,14 +538,15 @@
       "stream": "S7",
       "text": "JAR for uClinux transcription + softmodem fax",
       "status": "partial",
-      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean)."
+      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean). round 19: Java toolchain options are documented and proven for compilation workloads, but no uClinux fax JAR was built or claimed this round."
     },
     {
       "id": "T8.1",
       "line": 10,
       "stream": "S8",
       "text": "Android virtualization lab (SDK, Ubuntu One, replacement OSes, model locks, number porting, unlocking caselaw, Eagle CAD schematics, ADB sideload); Ghidra whole toolchain on Temurin/Zulu",
-      "status": "open"
+      "status": "open",
+      "note": "round 19: Temurin/Zulu/Ghidra toolchain research refreshed in docs/github-jdk-runtime-research-2026-10-23.md; Android virtualization lab itself remains open and no Ghidra whole-toolchain claim was made."
     },
     {
       "id": "T8.2",
@@ -556,7 +576,7 @@
       "stream": "S9",
       "text": "Shufflecake + steganography -> CyberChef; haiku vault + vault recipe; algorithms book; BasicCard/JavaCard virtualized reader; smartcard filesystem choice (4MB XPort Pro budget); boot-chain (GRUB/LILO/LUKS, liveboot, AES dongle/dock concept)",
       "status": "partial",
-      "note": "2026-10-23: Shufflecake + steganography halves closed (docs/shufflecake-stego-cyberchef-2026-10-23.md): Shufflecake documented not ported (kernel block layer); repo CyberChef stego ops audited, real-image LSB op named as follow-on. BasicCard/JavaCard virtual reader, smartcard filesystem choice, algorithms book, and boot-chain parts remain open. Follow-on built 2026-10-23 (round 20): stegoLSB decode now ingests real pixels (data-URL/base64 image via canvas, or RGBA hex), selectable channel order, terminator/length32/fixed framing, fail-closed capacity checks; synced to cyberchef-merged; tests/cyberchef-stego-lsb.test.mjs 3/3, cyberchef suites 85 pass."
+      "note": "2026-10-23: Shufflecake + steganography halves closed (docs/shufflecake-stego-cyberchef-2026-10-23.md): Shufflecake documented not ported (kernel block layer); repo CyberChef stego ops audited, real-image LSB op named as follow-on. BasicCard/JavaCard virtual reader, smartcard filesystem choice, algorithms book, and boot-chain parts remain open. Follow-on built 2026-10-23 (round 20): stegoLSB decode now ingests real pixels (data-URL/base64 image via canvas, or RGBA hex), selectable channel order, terminator/length32/fixed framing, fail-closed capacity checks; synced to cyberchef-merged; tests/cyberchef-stego-lsb.test.mjs 3/3, cyberchef suites 85 pass. round 19: the JavaCard simulator toolchain is pinned/hash-checked and its MealPlan behavioural suite runs 18/18 when GitHub is reachable; this does not close the BasicCard/virtual-reader or physical-card work."
     },
     {
       "id": "T9.2",

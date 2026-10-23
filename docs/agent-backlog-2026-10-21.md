@@ -128,6 +128,14 @@ Next in sequence: remaining states in dated per-row source-register batches;
 bulk California themes and archived-class features still require separate
 explicit source decisions before any new verified rows.
 
+**Round 19 packaging status (2026-10-23): partial.** SoCal Subsurface now has
+a finished inlined edition beside the canonical multi-file XDC:
+`socal-subsurface-inlined.html` and the six-entry
+`socal-subsurface-inlined.xdc`, built reproducibly by
+`scripts/build-socal-subsurface-inlined.mjs`. The geographic queue is
+unchanged: remaining states still need dated per-row source-register
+batches, and no DEM is claimed for the checked-in inlined build.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
@@ -215,6 +223,15 @@ Remaining: the m68k-uclinux C port itself; no live FTN peering fabricated.
 mapper) cross-checked against the JS implementation with a `-Werror` test
 harness — the first uClinux-shaped C artifact of the MBSE-subset plan.
 
+**Round 19 toolchain status (2026-10-23): still externally blocked, but the
+blocker is narrower.** The GitHub survey in
+[`github-jdk-runtime-research-2026-10-23.md`](github-jdk-runtime-research-2026-10-23.md)
+re-verified local Temurin OpenJDK 21 and a pinned/hash-checked Zulu OpenJDK 8
+route; “no JDK” is no longer the blanket blocker. S7 still needs the actual
+`gina.dll` binary, physical teardown data, or proprietary GoldKey drivers,
+and a local Ghidra distribution still needs the CI/relay route. Do not invent
+substitutes for those missing artifacts.
+
 ### S8 · Mobile & device lab: Android/QEMU, SIM, xdc ports, VoIP/iParty — *open*
 QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock / number-porting caselaw),
 SIM-lock research, Eagle CAD unlock schematics, xdc → TI-calc / Android / F-Droid ports
@@ -247,6 +264,15 @@ JavaCard + algorithms-book parts of T9.1 remain open.
 *2026-10-23 round (T9.2):* haiku generator + catalog shipped — `js/haiku-vault.js` +
 `haiku-vault.html` (seeded 5-7-5 generator, OCR-triple cataloger, collection payloads
 sealed as haiku-vault-v1 byte-identical to the draft's §2 vector; `tests/haiku-vault-gen.test.mjs` 6/6).
+
+**Round 19 smartcard status (2026-10-23): partial.** The MealPlan Java Card
+toolchain now self-prepares from pinned GitHub inputs with SHA-256 checks,
+and the live simulator suite passes 18/18 when GitHub is reachable; offline,
+its card-backed cases skip explicitly. A physical-card/GlobalPlatform load
+remains unproven. See
+[`feitian-javacard-toolchain.md`](feitian-javacard-toolchain.md) and
+[`github-jdk-runtime-research-2026-10-23.md`](github-jdk-runtime-research-2026-10-23.md).
+
 ### S10 · CyberChef & recipe corpus, lecture hall, UCSB course readers — *partial*
 Comparative optimization of the whole recipe set (line 7), DTSearch + Granite Island TCSM
 sweep, cipher-machine / virtual-intelligence lecture-hall material, course-reader sourcing

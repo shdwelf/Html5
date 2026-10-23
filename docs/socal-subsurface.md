@@ -12,6 +12,9 @@ windows for HUD, layers, dossier and a plan-view minimap.
 - Styles: `css/socal-subsurface.css`
 - Webxdc build: `node scripts/build-socal-subsurface-xdc.mjs` → `socal-subsurface.xdc`
   (staged bundle in `public/apps/socal-subsurface/`)
+- Inlined edition: `node scripts/build-socal-subsurface-inlined.mjs` →
+  `socal-subsurface-inlined.html` and `socal-subsurface-inlined.xdc`
+  (staged archive in `public/apps/socal-subsurface-inlined/`)
 
 ## What is in the theater
 
@@ -115,3 +118,16 @@ replaces it at runtime), writes `manifest.toml`, and zips deterministically to
 broadcasts selections as status updates, so a chat can walk the same corridor
 together; outside a host it degrades to a plain offline page. No network calls,
 no external assets — Three.js is vendored.
+
+Round 19 adds the finished **inlined edition** beside that canonical
+multi-file package. `scripts/build-socal-subsurface-inlined.mjs` uses esbuild
+to resolve all 19 JavaScript inputs (the SoCal modules, GPX/BagIt helper,
+fflate, Three.js, and OrbitControls), inlines the stylesheet and one ESM
+bundle into `socal-subsurface-inlined.html`, and zips the same document as
+`socal-subsurface-inlined.xdc` with only `index.html`, `manifest.toml`,
+`icon.png`, the host-owned `webxdc.js`, and the two vendor license files. The
+standalone HTML embeds the simulator shim. If `js/socal-dem-grid.js` exists
+at build time it is bundled; in the checked-in build it is absent, so a null
+DEM stub is bundled and the synthetic relief field remains the documented
+terrain source. `npm run build:socal-subsurface` rebuilds both editions;
+`npm run check:socal-subsurface-inlined` verifies the inlined outputs.
