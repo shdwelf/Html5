@@ -1,0 +1,411 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 28 Missouri-Arkansas state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Missouri and Arkansas. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Taum Sauk Mountain and Magazine Mountain additionally carry Domestic Names per-ID identity checks. Magazine Mountain is the series' first Ridge-class row.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<MO|AR>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature and the point lay inside the intended state. County divisions, bends, levees, planning regions, historical places, and same-name records of another class or county were rejected explicitly where relevant."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames_<MO|AR>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID and per-ID identity checks for Taum Sauk Mountain (752501) and Magazine Mountain (67051), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so the two high-point elevations cite USGS-published state-highpoint values. The candidate extract file is cumulative across batches 7-11; this register is the frozen batch-11 evidence. Extract county spellings are preserved verbatim ('St. Charles', 'St. Louis (city)') and normalized in verification rather than edited."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "A row is additionally rejected when the agreed GNIS point itself is geographically impossible for the named feature (the round-27 Indian Lake lesson); two-surface agreement is necessary but not sufficient evidence.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes and reservoirs (the extract's text class for all six batch-11 lake rows is Reservoir), Streams & Canals to Stream, Summit to Summit, and Ridge to Ridge (Magazine Mountain; the gazetteer gained a Ridge class entry for this batch).",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit/ridge outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "missouri": {
+      "title": "Missouri statewide frame (Missouri-Arkansas batch)",
+      "state": "MO",
+      "bbox": {
+        "lon0": -95.65,
+        "lat0": 35.9,
+        "lon1": -89.0,
+        "lat1": 40.7
+      },
+      "frameNote": "Missouri-Arkansas batch: the Jefferson City capital anchor is balanced with the per-ID Taum Sauk Mountain high point, the Lake of the Ozarks and Table Rock reservoirs, and three in-state river-mouth records (Missouri, Osage, Meramec). The Mississippi main stem returns no Streams record under states=MO and remains a corridor, as does the Current River (its mouth record is Arkansas-associated).",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Jefferson City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Cole",
+          "latitude": 38.5767017,
+          "longitude": -92.1735164,
+          "featureId": "758233",
+          "verified": 1,
+          "sourceNote": "Missouri capital anchor on the Missouri River bluffs; the Jefferson City Reach bend (FEATURE_ID 2123475) is a river bend, not the city. USGS GNIS Geocoder (GNIS), FEATURE_ID=758233; exact official name and Populated Place type in Cole County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Cole County"
+        },
+        {
+          "name": "Saint Louis",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "City of Saint Louis",
+          "latitude": 38.6272733,
+          "longitude": -90.1978889,
+          "featureId": "765765",
+          "verified": 1,
+          "sourceNote": "Missouri anchor on the Mississippi; Saint Louis is an independent city, and the Geocoder returns the county field verbatim as City of Saint Louis while the DomesticNames text keys the same record to St. Louis (city); Saint Louis County (758549) and Saint Louis Place (2469207) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=765765; exact official name and Populated Place type in City of Saint Louis cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "City of Saint Louis"
+        },
+        {
+          "name": "Kansas City",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Jackson",
+          "latitude": 39.0997266,
+          "longitude": -94.5785667,
+          "featureId": "748198",
+          "verified": 1,
+          "sourceNote": "Largest Missouri city at the Kansas-Missouri confluence; the Kansas City Reach bend and the same-name Kansas record across the state line are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=748198; exact official name and Populated Place type in Jackson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Jackson County"
+        },
+        {
+          "name": "Springfield",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Greene",
+          "latitude": 37.215326,
+          "longitude": -93.2982436,
+          "featureId": "735864",
+          "verified": 1,
+          "sourceNote": "Ozarks anchor city; the Springfield Plain (758114) and Springfield Hollow (752327) are terrain features, not the city. USGS GNIS Geocoder (GNIS), FEATURE_ID=735864; exact official name and Populated Place type in Greene County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Greene County"
+        },
+        {
+          "name": "Columbia",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Boone",
+          "latitude": 38.9517053,
+          "longitude": -92.3340724,
+          "featureId": "716133",
+          "verified": 1,
+          "sourceNote": "Mid-Missouri anchor city; the Columbia Bottom bend (755913) is a floodplain feature, not the city. USGS GNIS Geocoder (GNIS), FEATURE_ID=716133; exact official name and Populated Place type in Boone County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Boone County"
+        },
+        {
+          "name": "Saint Joseph",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Buchanan",
+          "latitude": 39.7686055,
+          "longitude": -94.8466322,
+          "featureId": "730205",
+          "verified": 1,
+          "sourceNote": "Northwestern anchor on the Missouri River; Saint Joseph Lake (760517) and the historical air field (2095889) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=730205; exact official name and Populated Place type in Buchanan County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Buchanan County"
+        },
+        {
+          "name": "Taum Sauk Mountain",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Iron",
+          "latitude": 37.5712766,
+          "longitude": -90.7291683,
+          "featureId": "752501",
+          "verified": 1,
+          "sourceNote": "Missouri High Point and state high point at 1,772 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_MO_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 752501 as a Summit in Iron County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=752501; exact official name and Summit type in Iron County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Iron County"
+        },
+        {
+          "name": "Lake of the Ozarks",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Camden",
+          "latitude": 38.1671829,
+          "longitude": -92.9654568,
+          "featureId": "729600",
+          "verified": 1,
+          "sourceNote": "Osage River reservoir; the Lake of the Ozarks Planning Region (754105) is a planning division, not the reservoir; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=729600; exact official name and Lake type in Camden County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Camden County"
+        },
+        {
+          "name": "Table Rock Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Stone",
+          "latitude": 36.5972388,
+          "longitude": -93.4755559,
+          "featureId": "752479",
+          "verified": 1,
+          "sourceNote": "White River reservoir on the Arkansas line; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=752479; exact official name and Lake type in Stone County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Stone County"
+        },
+        {
+          "name": "Missouri River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Saint Charles",
+          "latitude": 38.8136597,
+          "longitude": -90.1198297,
+          "featureId": "756398",
+          "verified": 1,
+          "sourceNote": "The river's GNIS primary point is its Mississippi confluence mouth; the DomesticNames text spells the county St. Charles (extract abbreviation normalized in the batch-11 register). USGS GNIS Geocoder (GNIS), FEATURE_ID=756398; exact official name and Stream type in Saint Charles County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Saint Charles County"
+        },
+        {
+          "name": "Osage River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Osage",
+          "latitude": 38.5969851,
+          "longitude": -91.945179,
+          "featureId": "756484",
+          "verified": 1,
+          "sourceNote": "Largest Missouri tributary record, primary point at the Missouri River mouth. USGS GNIS Geocoder (GNIS), FEATURE_ID=756484; exact official name and Stream type in Osage County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Osage County"
+        },
+        {
+          "name": "Meramec River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Jefferson",
+          "latitude": 38.3897761,
+          "longitude": -90.3442847,
+          "featureId": "756378",
+          "verified": 1,
+          "sourceNote": "Ozark-border river record, primary point at the Mississippi mouth south of Saint Louis. USGS GNIS Geocoder (GNIS), FEATURE_ID=756378; exact official name and Stream type in Jefferson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Jefferson County"
+        }
+      ]
+    },
+    "arkansas": {
+      "title": "Arkansas statewide frame (Missouri-Arkansas batch)",
+      "state": "AR",
+      "bbox": {
+        "lon0": -94.65,
+        "lat0": 32.95,
+        "lon1": -90.0,
+        "lat1": 36.55
+      },
+      "frameNote": "Missouri-Arkansas batch: the Little Rock capital anchor is balanced with the per-ID Magazine Mountain Ridge record (the series' first Ridge-class row), the Ouachita/Beaver/Greers Ferry/Bull Shoals reservoir set, and the two Delta mouth records (Arkansas, White). Bull Shoals Lake is seeded on the Arkansas record after an empty states=MO screen. The Mississippi main stem remains a corridor after an empty states=AR screen.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Little Rock",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Pulaski",
+          "latitude": 34.7464809,
+          "longitude": -92.2895948,
+          "featureId": "83350",
+          "verified": 1,
+          "sourceNote": "Arkansas capital anchor on the Arkansas River; the Little Rock Gillett levees and Little Rock Air Force Base are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=83350; exact official name and Populated Place type in Pulaski County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Pulaski County"
+        },
+        {
+          "name": "Fort Smith",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Sebastian",
+          "latitude": 35.3859242,
+          "longitude": -94.3985475,
+          "featureId": "76952",
+          "verified": 1,
+          "sourceNote": "Western border anchor at the Arkansas-Oklahoma line; the historical fort record (1959731) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=76952; exact official name and Populated Place type in Sebastian County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Sebastian County"
+        },
+        {
+          "name": "Fayetteville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Washington",
+          "latitude": 36.0625795,
+          "longitude": -94.1574263,
+          "featureId": "76914",
+          "verified": 1,
+          "sourceNote": "Northwestern anchor city in the Boston Mountains foothills. USGS GNIS Geocoder (GNIS), FEATURE_ID=76914; exact official name and Populated Place type in Washington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Washington County"
+        },
+        {
+          "name": "Springdale",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Washington",
+          "latitude": 36.1867442,
+          "longitude": -94.1288142,
+          "featureId": "78436",
+          "verified": 1,
+          "sourceNote": "Northwestern anchor city paired with the Fayetteville and Beaver Lake records. USGS GNIS Geocoder (GNIS), FEATURE_ID=78436; exact official name and Populated Place type in Washington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Washington County"
+        },
+        {
+          "name": "Jonesboro",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Craighead",
+          "latitude": 35.8422967,
+          "longitude": -90.7042791,
+          "featureId": "77389",
+          "verified": 1,
+          "sourceNote": "Northeastern anchor on Crowley's Ridge; Jonesboro Junction (78935) is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=77389; exact official name and Populated Place type in Craighead County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Craighead County"
+        },
+        {
+          "name": "Magazine Mountain",
+          "featureClass": "Ridge",
+          "ftt": "phys.ridge",
+          "county": "Logan",
+          "latitude": 35.167277,
+          "longitude": -93.6449649,
+          "featureId": "67051",
+          "verified": 1,
+          "sourceNote": "Arkansas High Point and state high point at 2,753 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_AR_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 67051 as a Ridge in Logan County at this point (the GNIS class for the mesa is Ridge; the seeded point is the GNIS primary point, not a surveyed summit outline, boundary, or trailhead geocode). USGS GNIS Geocoder (GNIS), FEATURE_ID=67051; exact official name and Ridge type in Logan County cross-checked 2026-10-23.",
+          "geocoderType": "Ridge",
+          "geocoderCounty": "Logan County"
+        },
+        {
+          "name": "Lake Ouachita",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Garland",
+          "latitude": 34.6064767,
+          "longitude": -93.3478329,
+          "featureId": "75813",
+          "verified": 1,
+          "sourceNote": "Largest lake entirely in Arkansas, on the Ouachita River near Hot Springs; the Lake Ouachita Nursery Pond (80627) is not seeded; DomesticNames classifies the record as Reservoir. USGS GNIS Geocoder (GNIS), FEATURE_ID=75813; exact official name and Lake type in Garland County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Garland County"
+        },
+        {
+          "name": "Beaver Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Washington",
+          "latitude": 36.2354224,
+          "longitude": -93.9428479,
+          "featureId": "70305",
+          "verified": 1,
+          "sourceNote": "White River reservoir in the northwestern corner; five small same-name Arkansas lakes (Chicot, Saint Francis x2, White, Woodruff counties) are not seeded; DomesticNames classifies the record as Reservoir. USGS GNIS Geocoder (GNIS), FEATURE_ID=70305; exact official name and Lake type in Washington County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Washington County"
+        },
+        {
+          "name": "Greers Ferry Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Cleburne",
+          "latitude": 35.5324986,
+          "longitude": -92.20436,
+          "featureId": "75245",
+          "verified": 1,
+          "sourceNote": "Little Red River reservoir north of Little Rock; DomesticNames classifies the record as Reservoir. USGS GNIS Geocoder (GNIS), FEATURE_ID=75245; exact official name and Lake type in Cleburne County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Cleburne County"
+        },
+        {
+          "name": "Bull Shoals Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Boone",
+          "latitude": 36.4949643,
+          "longitude": -92.9674943,
+          "featureId": "83589",
+          "verified": 1,
+          "sourceNote": "White River impoundment on the Missouri line; the states=MO exact-name screen returned an empty array, so the border reservoir is seeded once here on the Arkansas record; DomesticNames classifies the record as Reservoir. USGS GNIS Geocoder (GNIS), FEATURE_ID=83589; exact official name and Lake type in Boone County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Boone County"
+        },
+        {
+          "name": "Arkansas River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Desha",
+          "latitude": 33.7751096,
+          "longitude": -91.0709427,
+          "featureId": "78956",
+          "verified": 1,
+          "sourceNote": "The river's GNIS primary point is its Mississippi confluence mouth below Little Rock. USGS GNIS Geocoder (GNIS), FEATURE_ID=78956; exact official name and Stream type in Desha County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Desha County"
+        },
+        {
+          "name": "White River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Desha",
+          "latitude": 33.951495,
+          "longitude": -91.0814998,
+          "featureId": "78762",
+          "verified": 1,
+          "sourceNote": "Stream record at the Mississippi mouth; the same-name Desha County populated place (63825) and the White River Landing Dikes (70293) are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=78762; exact official name and Stream type in Desha County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Desha County"
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Magazine Mountain, FEATURE_ID 67051 — GNIS class Ridge, not Summit",
+      "decision": "Seeded as the series' first Ridge-class row. Both USGS surfaces classify the Logan County mesa as Ridge (the state-highpoint summit is Signal Hill on its crest); the gazetteer gained a Ridge entry (js/city-gazetteer.js GAZ_CLASS_META, path phys.ridge) rather than misnaming the class Summit. The 2,753-foot elevation cites USGS-published state-highpoint values.",
+      "notClaimed": "The seeded point is not a surveyed summit outline, ridge line, or trailhead geocode."
+    },
+    {
+      "candidate": "Beaver Lake, FEATURE_IDs 75637 (Chicot), 83067/83068 (Saint Francis), 74649 (White), 74648 (Woodruff)",
+      "decision": "Rejected. Six Arkansas records share the name; the seeded Washington County record 70305 is the White River reservoir in the northwestern corner (point matches the Beaver/Rogers shore).",
+      "notClaimed": "The seeded point is not a shoreline."
+    },
+    {
+      "candidate": "Saint Louis county identity (independent city)",
+      "decision": "Seeded with county field 'City of Saint Louis', the Geocoder's verbatim county string; the DomesticNames text keys the same FEATURE_ID 765765 to 'St. Louis (city)'. Both surfaces denote the independent city; verification normalizes the two surface spellings rather than editing either. The surrounding Saint Louis County record (758549) is not seeded.",
+      "notClaimed": "The point is not a municipal boundary."
+    },
+    {
+      "candidate": "Extract county abbreviation 'St. Charles' vs stored 'Saint Charles'",
+      "decision": "The Missouri River row keeps the Geocoder's spelled-out 'Saint Charles County' identity; the DomesticNames text abbreviates it 'St. Charles'. The batch-11 test normalizes the abbreviation; no source string is edited.",
+      "notClaimed": "Normalization is a comparison rule, not a claim about official county naming."
+    },
+    {
+      "candidate": "Mississippi River under states=MO and states=AR; Current River under states=MO",
+      "decision": "Empty Streams screens (Missouri returned only Mississippi River Hills, an Area record; Current River returned an empty array). All three remain generalized context corridors, extending the established corridor rule to this pair of frames.",
+      "notClaimed": "The corridors are not channel centerlines or state boundaries."
+    },
+    {
+      "candidate": "Bull Shoals Lake under states=MO",
+      "decision": "Empty screen; the White River impoundment's GNIS record is Arkansas-associated (Boone County, seeded in the Arkansas frame). Not double-seeded across the border.",
+      "knownServiceDiscrepancy": "A border reservoir returns under only one of its two states at the primary-point level; seeded once, in Arkansas.",
+      "notClaimed": "The seeded point is not a shoreline or the state-line segment of the reservoir."
+    },
+    {
+      "candidate": "Branson and Hot Springs; Ouachita River row",
+      "decision": "Identity-safe candidates omitted under the starter-scope treatment (Hot Springs' resort-city identity is safe but the 12-row starter favors statewide coverage; the Ouachita River remains a corridor through the seeded Lake Ouachita point).",
+      "notClaimed": "Starter-scope omission is not a claim about feature importance or identity."
+    }
+  ],
+  "knownLimitations": [
+    "Missouri and Arkansas are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
+    "The current DomesticNames text layout carries no elevation columns, so Taum Sauk Mountain (1,772 feet) and Magazine Mountain (2,753 feet) elevations cite USGS-published state-highpoint values; GNIS identity rests on the per-ID class/county/point reproduction.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include areas outside their state outlines; no boundary geometry is claimed."
+  ]
+}

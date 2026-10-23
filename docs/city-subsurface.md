@@ -114,10 +114,23 @@ used the last copy, so behavior was unchanged) is deduplicated, and
 the Charles Mound note county is corrected to Wayne County, with
 semantic county asserts now guarding every batch test.
 
+Round 28 update: **2026-10-23**. `missouri` and `arkansas` join as the
+thirty-third and thirty-fourth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
+(candidates in the cumulative extract). Taum Sauk Mountain (1,772 feet)
+carries a Domestic Names per-ID check; Magazine Mountain (2,753 feet)
+is the series' first **Ridge-class** row — GNIS classifies the Arkansas
+high-point mesa as a Ridge, so the gazetteer gained a `Ridge` class
+(`phys.ridge`) rather than misnaming it a Summit. The Mississippi
+main stem screens empty under both states and the Current River under
+Missouri; Bull Shoals Lake is seeded once, on its Arkansas record.
+The machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has thirty-two configurations — five cities,
-twenty-three statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has thirty-four configurations — five cities,
+twenty-five statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -154,6 +167,8 @@ its own offline Webxdc:
 | Indiana (statewide) | `indiana-subsurface.html` | `js/city-subsurface-data-indiana.js` | `js/city-gazetteer-data-indiana.js` | `indiana-subsurface.xdc` |
 | Ohio (statewide) | `ohio-subsurface.html` | `js/city-subsurface-data-ohio.js` | `js/city-gazetteer-data-ohio.js` | `ohio-subsurface.xdc` |
 | Pennsylvania (statewide) | `pennsylvania-subsurface.html` | `js/city-subsurface-data-pennsylvania.js` | `js/city-gazetteer-data-pennsylvania.js` | `pennsylvania-subsurface.xdc` |
+| Missouri (statewide) | `missouri-subsurface.html` | `js/city-subsurface-data-missouri.js` | `js/city-gazetteer-data-missouri.js` | `missouri-subsurface.xdc` |
+| Arkansas (statewide) | `arkansas-subsurface.html` | `js/city-subsurface-data-arkansas.js` | `js/city-gazetteer-data-arkansas.js` | `arkansas-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

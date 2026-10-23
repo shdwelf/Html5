@@ -243,6 +243,23 @@ after an empty screen. Next in sequence: Illinois/Indiana/Ohio and the
 remaining states in dated per-row batches, then the country/planet
 thread.
 
+**Round 28 status (2026-10-23): partial.** Missouri and Arkansas
+shipped as configurations 33–34, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json).
+Taum Sauk Mountain (`752501`, Iron County, 1,772 ft) keeps its High
+Point designation. Magazine Mountain (`67051`, Logan County, 2,753 ft)
+is the series' first Ridge-class row — GNIS classifies the mesa as a
+Ridge, so `js/city-gazetteer.js` gained a Ridge class (`phys.ridge`)
+instead of misnaming it a Summit. Saint Louis keeps its independent-city
+county identity ('City of Saint Louis' vs the extract's
+'St. Louis (city)'), normalized in verification. The Mississippi main
+stem screened empty under both states and the Current River under
+Missouri — the corridor rule now covers most of the atlas; Bull Shoals
+Lake is seeded once, on its Arkansas record.
+
 **Round 27 status (2026-10-23): partial.** Ohio and Pennsylvania
 shipped as configurations 31–32, each with a 12/12 per-ID
 `VERIFIED=1` GNIS starter register, labelled synthetic relief,
