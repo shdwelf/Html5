@@ -159,10 +159,25 @@ Ohio, and Monongahela main stems remain corridors here. The
 machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch13-source-register-2026-10-23.json).
 
+Round 31 update: **2026-10-23**. `northcarolina` and `southcarolina`
+join as the thirty-ninth and fortieth configurations. Each starts with
+twelve all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS
+surfaces (candidates in the cumulative extract). North Carolina carries
+both Appalachian high points: Mount Mitchell (6,684 feet, highest east
+of the Mississippi) and **Kuwohi** (6,643 feet) — Tennessee's highest
+summit, seeded here on its North Carolina record under its restored
+2024 name, closing the batch-12 context decision (no Tennessee GNIS
+record exists for it on either surface). Sassafras Mountain (3,553
+feet, South Carolina high point) carries a per-ID check; the Savannah
+River is seeded on its SC-associated record and the Pee Dee keeps its
+returned Chesterfield County keying verbatim. The machine-readable
+evidence is
+[`resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has thirty-eight configurations — five cities,
-twenty-nine statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has forty configurations — five cities,
+thirty-one statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -205,6 +220,8 @@ its own offline Webxdc:
 | Tennessee (statewide) | `tennessee-subsurface.html` | `js/city-subsurface-data-tennessee.js` | `js/city-gazetteer-data-tennessee.js` | `tennessee-subsurface.xdc` |
 | Virginia (statewide) | `virginia-subsurface.html` | `js/city-subsurface-data-virginia.js` | `js/city-gazetteer-data-virginia.js` | `virginia-subsurface.xdc` |
 | West Virginia (statewide) | `westvirginia-subsurface.html` | `js/city-subsurface-data-westvirginia.js` | `js/city-gazetteer-data-westvirginia.js` | `westvirginia-subsurface.xdc` |
+| North Carolina (statewide) | `northcarolina-subsurface.html` | `js/city-subsurface-data-northcarolina.js` | `js/city-gazetteer-data-northcarolina.js` | `northcarolina-subsurface.xdc` |
+| South Carolina (statewide) | `southcarolina-subsurface.html` | `js/city-subsurface-data-southcarolina.js` | `js/city-gazetteer-data-southcarolina.js` | `southcarolina-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

@@ -243,6 +243,22 @@ after an empty screen. Next in sequence: Illinois/Indiana/Ohio and the
 remaining states in dated per-row batches, then the country/planet
 thread.
 
+**Round 31 status (2026-10-23): partial.** North Carolina and South
+Carolina shipped as configurations 39–40, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json).
+North Carolina carries both Appalachian high points: Mount Mitchell
+(`1013745`, Yancey County, 6,684 ft) and Kuwohi (`1326387`, Swain
+County, 6,643 ft) — Tennessee's highest summit seeded on its NC
+record under the restored 2024 name, closing batch 12's context
+decision. Sassafras Mountain (`1015279`, Pickens County, 3,553 ft)
+keeps the South Carolina high point. The Savannah River is seeded on
+its SC-associated record; the Pee Dee keeps its returned Chesterfield
+keying; B. Everett Jordan Lake is seeded under its official name
+order after the plain-name screen came back empty.
+
 **Round 30 status (2026-10-23): partial.** Virginia and West Virginia
 shipped as configurations 37–38, each with a 12/12 per-ID
 `VERIFIED=1` GNIS starter register, labelled synthetic relief,
