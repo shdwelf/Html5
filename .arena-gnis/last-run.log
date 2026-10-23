@@ -1,7 +1,7 @@
-run 40032285562 attempt 1 · 2026-10-23T22:14:27Z
-MN: 20 candidate rows from https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_MN_Text.zip sha256=8b9f8f77184105ae...
+run 40032399858 attempt 1 · 2026-10-23T22:15:30Z
+MN: 24 candidate rows from https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_MN_Text.zip sha256=8b9f8f77184105ae...
 IA: 21 candidate rows from https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_IA_Text.zip sha256=32f3fcb2ba578050...
 wrote resources/city-subsurface/gnis-candidates-batch7.json
 extract exit: 0
-MN 20 rows; zip sha256 8b9f8f77184105ae
+MN 24 rows; zip sha256 8b9f8f77184105ae
 IA 21 rows; zip sha256 32f3fcb2ba578050

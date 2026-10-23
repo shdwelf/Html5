@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-23T22:14:27Z",
+ "retrieved": "2026-10-23T22:15:30Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -24,7 +24,9 @@
     "Red River of the North",
     "Saint Croix River",
     "Lake Vermilion",
-    "Boundary Waters Canoe Area Wilderness"
+    "Boundary Waters Canoe Area Wilderness",
+    "Vermilion Lake",
+    "Lake Itasca"
    ],
    "rows": [
     {
@@ -71,6 +73,33 @@
      "county": "Todd",
      "lat": 45.8264893,
      "lon": -94.6795783
+    },
+    {
+     "featureId": "645540",
+     "name": "Lake Itasca",
+     "featureClass": "Lake",
+     "state": "Minnesota",
+     "county": "Anoka",
+     "lat": 45.2537329,
+     "lon": -93.4948069
+    },
+    {
+     "featureId": "645541",
+     "name": "Lake Itasca",
+     "featureClass": "Lake",
+     "state": "Minnesota",
+     "county": "Clearwater",
+     "lat": 47.2156405,
+     "lon": -95.2006509
+    },
+    {
+     "featureId": "645542",
+     "name": "Lake Itasca",
+     "featureClass": "Populated Place",
+     "state": "Minnesota",
+     "county": "Clearwater",
+     "lat": 47.2538462,
+     "lon": -95.2125186
     },
     {
      "featureId": "647954",
@@ -206,6 +235,15 @@
      "county": "Ramsey",
      "lat": 44.9444101,
      "lon": -93.0932742
+    },
+    {
+     "featureId": "662716",
+     "name": "Vermilion Lake",
+     "featureClass": "Lake",
+     "state": "Minnesota",
+     "county": "St. Louis",
+     "lat": 47.8640503,
+     "lon": -92.4191397
     }
    ]
   },
