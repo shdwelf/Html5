@@ -174,10 +174,24 @@ returned Chesterfield County keying verbatim. The machine-readable
 evidence is
 [`resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch14-source-register-2026-10-23.json).
 
+Round 32 update: **2026-10-23**. `Georgia` and `florida` join as the
+forty-first and forty-second configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
+(candidates in the cumulative extract). Brasstown Bald (4,784 feet,
+Georgia high point) and Britton Hill (345 feet — the **lowest** US
+state high point; its FEATURE_ID 1851954 immediately precedes Hawkeye
+Point's and Hoosier Hill's in the GNIS high-point series) carry
+Domestic Names per-ID identity checks. Georgia seeds the Chattahoochee
+and Flint Rivers at the *identical* GNIS confluence point both
+surfaces return — two distinct FEATURE_IDs stored unadjusted — while
+Hartwell Lake and Lake Sidney Lanier are seeded under their official
+GNIS name orders. The machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has forty configurations — five cities,
-thirty-one statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has forty-two configurations — five cities,
+thirty-three statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -222,6 +236,8 @@ its own offline Webxdc:
 | West Virginia (statewide) | `westvirginia-subsurface.html` | `js/city-subsurface-data-westvirginia.js` | `js/city-gazetteer-data-westvirginia.js` | `westvirginia-subsurface.xdc` |
 | North Carolina (statewide) | `northcarolina-subsurface.html` | `js/city-subsurface-data-northcarolina.js` | `js/city-gazetteer-data-northcarolina.js` | `northcarolina-subsurface.xdc` |
 | South Carolina (statewide) | `southcarolina-subsurface.html` | `js/city-subsurface-data-southcarolina.js` | `js/city-gazetteer-data-southcarolina.js` | `southcarolina-subsurface.xdc` |
+| Georgia (statewide) | `Georgia-subsurface.html` | `js/city-subsurface-data-Georgia.js` | `js/city-gazetteer-data-Georgia.js` | `Georgia-subsurface.xdc` |
+| Florida (statewide) | `florida-subsurface.html` | `js/city-subsurface-data-florida.js` | `js/city-gazetteer-data-florida.js` | `florida-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

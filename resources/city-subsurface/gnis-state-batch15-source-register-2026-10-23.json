@@ -1,0 +1,399 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 32 Georgia-Florida state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Georgia and Florida. Every seeded row reproduces one USGS GNIS record screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned GNIS primary point, and cross-checked on two independent USGS surfaces (USGS GNIS Geocoder; staged-products DomesticNames text via tools/gnis_extract.py; cumulative candidate extract resources/city-subsurface/gnis-candidates-batch7.json with per-state ZIP SHA-256 values). Brasstown Bald and Britton Hill additionally carry Domestic Names per-ID identity checks. The shared Chattahoochee/Flint confluence point and the Hartwell/Lanier official-name-order decisions are recorded below.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<GA|FL>&include=gnis&maxSuggestions=<10>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature and the point lay inside the intended state. County/census divisions, consolidated-government records, historical places, and same-name records of another class or county were rejected explicitly where relevant. Screens use the official GNIS name ('Hartwell Lake', 'Lake Sidney Lanier', 'Saint Johns River')."
+    },
+    "gnisDomesticNames": {
+      "endpointPattern": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames_<GA|FL>_Text.zip",
+      "use": "Second-surface cross-check of every seeded FEATURE_ID and per-ID identity checks for Brasstown Bald (354839) and Britton Hill (1851954), extracted in a GitHub Actions runner by tools/gnis_extract.py. The current text layout carries no elevation columns, so the two summit elevations cite USGS-published state-highpoint values. The candidate extract file is cumulative across batches 7-15; this register is the frozen batch-15 evidence."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service, reproduced identically on the second USGS surface.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes and reservoirs (text class Reservoir for Hartwell/Lanier; Lake for Okeechobee and Lake George), Streams & Canals to Stream, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline. Two distinct river records may share one GNIS primary point (the Chattahoochee/Flint confluence); both are stored at the returned point without adjustment.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "Georgia": {
+      "title": "Georgia statewide frame (Georgia-Florida batch)",
+      "state": "GA",
+      "bbox": {
+        "lon0": -85.65,
+        "lat0": 30.35,
+        "lon1": -80.75,
+        "lat1": 35.05
+      },
+      "frameNote": "Georgia-Florida batch: the Atlanta capital anchor (the existing atlanta city frame's city at statewide scale) is balanced with the per-ID Brasstown Bald high point (4,784 ft), the Hartwell and Lanier reservoirs seeded under their official GNIS name orders, and three river records: the Altamaha mouth plus the Chattahoochee and Flint, whose GNIS primary points coincide exactly at their Decatur County confluence. The Savannah River row lives in the South Carolina frame (batch 14, SC-associated mouth record) and is a corridor here.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Atlanta",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Fulton",
+          "latitude": 33.7489954,
+          "longitude": -84.3879824,
+          "featureId": "351615",
+          "verified": 1,
+          "sourceNote": "Georgia capital anchor (mirrors the existing atlanta city frame at statewide scale); the Atlanta Division records (1936089/1936090), Atlanta Junction, and utility reservoirs are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=351615; exact official name and Populated Place type in Fulton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Fulton County"
+        },
+        {
+          "name": "Augusta",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Richmond",
+          "latitude": 33.4709702,
+          "longitude": -81.9748379,
+          "featureId": "310670",
+          "verified": 1,
+          "sourceNote": "Fall-line anchor on the Savannah River; the Augusta Division, canal, and historical arsenal records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=310670; exact official name and Populated Place type in Richmond County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Richmond County"
+        },
+        {
+          "name": "Macon",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Bibb",
+          "latitude": 32.8406946,
+          "longitude": -83.6324022,
+          "featureId": "332301",
+          "verified": 1,
+          "sourceNote": "Central Georgia anchor on the Ocmulgee; the Macon-Bibb consolidated records and divisions are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=332301; exact official name and Populated Place type in Bibb County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Bibb County"
+        },
+        {
+          "name": "Columbus",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Muscogee",
+          "latitude": 32.4609764,
+          "longitude": -84.9877094,
+          "featureId": "331443",
+          "verified": 1,
+          "sourceNote": "Chattahoochee fall-line anchor; the Columbus division records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=331443; exact official name and Populated Place type in Muscogee County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Muscogee County"
+        },
+        {
+          "name": "Savannah",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Chatham",
+          "latitude": 32.0835407,
+          "longitude": -81.0998342,
+          "featureId": "322590",
+          "verified": 1,
+          "sourceNote": "Atlantic port anchor; Savannah Beach, Savannah Gardens, the canal, and division records are not seeded; the Savannah River row itself is seeded in South Carolina (batch 14). USGS GNIS Geocoder (GNIS), FEATURE_ID=322590; exact official name and Populated Place type in Chatham County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Chatham County"
+        },
+        {
+          "name": "Athens",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Clarke",
+          "latitude": 33.960948,
+          "longitude": -83.3779358,
+          "featureId": "354407",
+          "verified": 1,
+          "sourceNote": "Northeast Georgia anchor; the Athens Division and campus/club lake records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=354407; exact official name and Populated Place type in Clarke County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Clarke County"
+        },
+        {
+          "name": "Brasstown Bald",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Towns",
+          "latitude": 34.8741923,
+          "longitude": -83.8106479,
+          "featureId": "354839",
+          "verified": 1,
+          "sourceNote": "Georgia High Point and state high point at 4,784 feet (USGS-published elevation); Domestic Names per-ID check (DomesticNames_GA_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 354839 as a Summit in Towns County at this point. USGS GNIS Geocoder (GNIS), FEATURE_ID=354839; exact official name and Summit type in Towns County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Towns County"
+        },
+        {
+          "name": "Hartwell Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Stephens",
+          "latitude": 34.5252118,
+          "longitude": -83.162421,
+          "featureId": "356215",
+          "verified": 1,
+          "sourceNote": "Seeded under the official GNIS name order: the familiar 'Lake Hartwell' order screens empty in both Georgia and South Carolina. Savannah-system reservoir; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=356215; exact official name and Lake type in Stephens County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Stephens County"
+        },
+        {
+          "name": "Lake Sidney Lanier",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Forsyth",
+          "latitude": 34.160377,
+          "longitude": -84.0735221,
+          "featureId": "322971",
+          "verified": 1,
+          "sourceNote": "Seeded under the full official GNIS name: the short 'Lake Lanier' screen returns only a subdivision record. Chattahoochee reservoir; DomesticNames classifies the record as Reservoir, grouped here under Lakes & Reservoirs. USGS GNIS Geocoder (GNIS), FEATURE_ID=322971; exact official name and Lake type in Forsyth County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Forsyth County"
+        },
+        {
+          "name": "Altamaha River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "McIntosh",
+          "latitude": 31.3157843,
+          "longitude": -81.2848169,
+          "featureId": "354294",
+          "verified": 1,
+          "sourceNote": "River record at its Atlantic mouth; the Altamaha River Division record is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=354294; exact official name and Stream type in McIntosh County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "McIntosh County"
+        },
+        {
+          "name": "Chattahoochee River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Decatur",
+          "latitude": 30.7088028,
+          "longitude": -84.8638097,
+          "featureId": "354236",
+          "verified": 1,
+          "sourceNote": "The Chattahoochee's GNIS primary point is its confluence with the Flint at the Apalachicola head; both surfaces return this Decatur County point, which it shares exactly with the Flint River record (see the batch register). USGS GNIS Geocoder (GNIS), FEATURE_ID=354236; exact official name and Stream type in Decatur County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Decatur County"
+        },
+        {
+          "name": "Flint River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Decatur",
+          "latitude": 30.7088028,
+          "longitude": -84.8638097,
+          "featureId": "358207",
+          "verified": 1,
+          "sourceNote": "The Flint's GNIS primary point is the same Chattahoochee confluence point (30.7088028, -84.8638097): GNIS keys both Apalachicola formers to their shared junction, so the two seeded rows coincide — distinct FEATURE_IDs, both reproduced on both surfaces, neither coordinate adjusted. USGS GNIS Geocoder (GNIS), FEATURE_ID=358207; exact official name and Stream type in Decatur County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Decatur County"
+        }
+      ]
+    },
+    "florida": {
+      "title": "Florida statewide frame (Georgia-Florida batch)",
+      "state": "FL",
+      "bbox": {
+        "lon0": -87.7,
+        "lat0": 25.1,
+        "lon1": -79.9,
+        "lat1": 31.05
+      },
+      "frameNote": "Georgia-Florida batch: the Tallahassee capital anchor is balanced with the per-ID Britton Hill high point (345 ft — the lowest US state high point; FEATURE_ID 1851954 immediately precedes Hawkeye Point and Hoosier Hill in the GNIS high-point series), Lake Okeechobee and Lake George, and three river mouth records (Saint Johns, Suwannee, Apalachicola). Florida is the flattest frame in the atlas; its synthetic relief uses metre-scale amplitudes honestly at that scale.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Tallahassee",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Leon",
+          "latitude": 30.4382559,
+          "longitude": -84.2807329,
+          "featureId": "308416",
+          "verified": 1,
+          "sourceNote": "place anchor; the Tallahassee division records (1935944-1935950) and Tallahassee Creek are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=308416; exact official name and Populated Place type in Leon County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Leon County"
+        },
+        {
+          "name": "Jacksonville",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Duval",
+          "latitude": 30.3321838,
+          "longitude": -81.655651,
+          "featureId": "295003",
+          "verified": 1,
+          "sourceNote": "Atlantic anchor at the Saint Johns mouth; Jacksonville Beach/Heights, the division records, and airport records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=295003; exact official name and Populated Place type in Duval County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Duval County"
+        },
+        {
+          "name": "Miami",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Miami-Dade",
+          "latitude": 25.7742658,
+          "longitude": -80.1936589,
+          "featureId": "295004",
+          "verified": 1,
+          "sourceNote": "Southeast anchor; Miami Beach (286750), Miami Gardens, Miami Lakes, and the division records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=295004; exact official name and Populated Place type in Miami-Dade County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Miami-Dade County"
+        },
+        {
+          "name": "Tampa",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Hillsborough",
+          "latitude": 27.9475216,
+          "longitude": -82.4584279,
+          "featureId": "292005",
+          "verified": 1,
+          "sourceNote": "Gulf anchor on Tampa Bay; the Tampa subdivision records and division record are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=292005; exact official name and Populated Place type in Hillsborough County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Hillsborough County"
+        },
+        {
+          "name": "Orlando",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Orange",
+          "latitude": 28.5383355,
+          "longitude": -81.3792365,
+          "featureId": "288240",
+          "verified": 1,
+          "sourceNote": "Central Florida anchor; the Orlando Division and historical air base records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=288240; exact official name and Populated Place type in Orange County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Orange County"
+        },
+        {
+          "name": "Pensacola",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Escambia",
+          "latitude": 30.421309,
+          "longitude": -87.2169149,
+          "featureId": "294117",
+          "verified": 1,
+          "sourceNote": "Western panhandle anchor; Pensacola Beach, Pensacola Bay, and the division/CDP records are not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=294117; exact official name and Populated Place type in Escambia County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Escambia County"
+        },
+        {
+          "name": "Britton Hill",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Walton",
+          "latitude": 30.9886961,
+          "longitude": -86.282046,
+          "featureId": "1851954",
+          "verified": 1,
+          "sourceNote": "place High Point at 345 feet — the lowest state high point in the US (USGS-published elevation); Domestic Names per-ID check (DomesticNames_FL_Text extract via tools/gnis_extract.py) reproduces FEATURE_ID 1851954 as a Summit in Walton County at this point. Its FEATURE_ID sits immediately before Hawkeye Point's (1851955) and Hoosier Hill's (1851956) in the same GNIS high-point record series (batches 7 and 9). USGS GNIS Geocoder (GNIS), FEATURE_ID=1851954; exact official name and Summit type in Walton County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Summit",
+          "geocoderCounty": "Walton County"
+        },
+        {
+          "name": "Lake Okeechobee",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Palm Beach",
+          "latitude": 26.9449541,
+          "longitude": -80.8009908,
+          "featureId": "307550",
+          "verified": 1,
+          "sourceNote": "Largest lake in Florida; the DomesticNames text class for this record is Lake. The stored point is the GNIS primary point on the lake's eastern reach, not a shoreline or centroid. USGS GNIS Geocoder (GNIS), FEATURE_ID=307550; exact official name and Lake type in Palm Beach County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Palm Beach County"
+        },
+        {
+          "name": "Lake George",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Volusia",
+          "latitude": 29.2857063,
+          "longitude": -81.5959578,
+          "featureId": "305722",
+          "verified": 1,
+          "sourceNote": "The great Saint Johns River lake; three small same-name Florida lakes (Broward, Hillsborough, Polk counties) are not seeded; the DomesticNames text class for this record is Lake. USGS GNIS Geocoder (GNIS), FEATURE_ID=305722; exact official name and Lake type in Volusia County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Volusia County"
+        },
+        {
+          "name": "Saint Johns River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Duval",
+          "latitude": 30.4013514,
+          "longitude": -81.4009192,
+          "featureId": "308105",
+          "verified": 1,
+          "sourceNote": "River record at its Atlantic mouth (GNIS spells the name Saint Johns, without an apostrophe); the Saint Johns River Estates community is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=308105; exact official name and Stream type in Duval County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Duval County"
+        },
+        {
+          "name": "Suwannee River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Dixie",
+          "latitude": 29.2882955,
+          "longitude": -83.1659613,
+          "featureId": "308455",
+          "verified": 1,
+          "sourceNote": "River record at its Gulf mouth. USGS GNIS Geocoder (GNIS), FEATURE_ID=308455; exact official name and Stream type in Dixie County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Dixie County"
+        },
+        {
+          "name": "Apalachicola River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Franklin",
+          "latitude": 29.7266008,
+          "longitude": -84.9774101,
+          "featureId": "305219",
+          "verified": 1,
+          "sourceNote": "River record at its Gulf mouth below the Georgia-line confluence of the Chattahoochee and Flint (both seeded at that shared point in the Georgia frame). USGS GNIS Geocoder (GNIS), FEATURE_ID=305219; exact official name and Stream type in Franklin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a city/town boundary or address geocode.",
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Franklin County"
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Chattahoochee River 354236 and Flint River 358207 — identical GNIS primary point",
+      "decision": "Both seeded. The two distinct Apalachicola former rivers' GNIS records share exactly one primary point (30.7088028, -84.8638097, Decatur County) — their confluence — on both USGS surfaces. Both rows store the returned point unadjusted; the gazetteer therefore shows two pins at one location, which is the faithful representation of the source rather than an error. The Apalachicola's own record is seeded at its Gulf mouth in Florida.",
+      "notClaimed": "Neither point is a channel centerline; the coincidence is a source property, not a survey."
+    },
+    {
+      "candidate": "'Lake Hartwell' order under states=GA and states=SC; 'Lake Lanier' short form",
+      "decision": "Both seeded under the official GNIS name orders. 'Lake Hartwell' returned empty arrays in both states; 'Hartwell Lake' (356215, Stephens County GA) reproduces. 'Lake Lanier' returned only a subdivision; the reservoir is 'Lake Sidney Lanier' (322971, Forsyth). Continuing the Vermilion/Monroe/B-Everett-Jordan rule: seed the official order, never invent a short form.",
+      "notClaimed": "The seeded points are not shorelines."
+    },
+    {
+      "candidate": "Britton Hill FEATURE_ID adjacency (1851954/1851955/1851956)",
+      "decision": "Recorded for provenance colour: Britton Hill (FL), Hawkeye Point (IA, batch 7), and Hoosier Hill (IN, batch 9) hold consecutive FEATURE_IDs in the same GNIS high-point record series. No identity weight is placed on the adjacency beyond identification.",
+      "notClaimed": "Sequential IDs are not evidence of anything beyond a shared GNIS registration batch."
+    },
+    {
+      "candidate": "Savannah River under states=GA; West Point Lake; Albany and Valdosta",
+      "decision": "The Savannah's GNIS row was already seeded in South Carolina (batch 14) on its SC-associated mouth record; it remains a corridor in Georgia rather than being duplicated. Identity-safe candidates omitted under the starter-scope treatment.",
+      "notClaimed": "Starter-scope omission is not a claim about feature importance or identity."
+    },
+    {
+      "candidate": "Lake George same-name Florida lakes (Broward 300329, Hillsborough 300093, Polk 283030)",
+      "decision": "Rejected. The seeded Volusia County record 305722 is the Saint Johns River lake (point and county match the intended feature).",
+      "notClaimed": "The seeded point is not a shoreline or centroid."
+    }
+  ],
+  "knownLimitations": [
+    "Georgia and Florida are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by official name/type/state/county/FEATURE_ID is part of the evidence. Every seeded row was reproduced on the second USGS surface (staged-products DomesticNames text) at the same primary point.",
+    "The current DomesticNames text layout carries no elevation columns, so Brasstown Bald (4,784 feet) and Britton Hill (345 feet) elevations cite USGS-published state-highpoint values; GNIS identity rests on the per-ID class/county/point reproduction.",
+    "GNIS point data do not supply the displayed terrain or corridors. Both frames use explicitly synthetic relief gaussians and generalized context lines; Florida's amplitudes are metres-scale because the state is genuinely flat.",
+    "State frames are rectangles, not state-boundary clipping masks. Both rectangles include areas outside their state outlines (including Atlantic/Gulf waters and the Keys reach); no boundary geometry is claimed."
+  ]
+}

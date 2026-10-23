@@ -243,6 +243,21 @@ after an empty screen. Next in sequence: Illinois/Indiana/Ohio and the
 remaining states in dated per-row batches, then the country/planet
 thread.
 
+**Round 32 status (2026-10-23): partial.** Georgia and Florida
+shipped as configurations 41–42, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch15-source-register-2026-10-23.json).
+Brasstown Bald (`354839`, Towns County, 4,784 ft) and Britton Hill
+(`1851954`, Walton County, 345 ft — the lowest US state high point,
+its FEATURE_ID immediately preceding Hawkeye Point's and Hoosier
+Hill's) keep their per-ID checks. Georgia seeds the Chattahoochee and
+Flint at the identical GNIS confluence point both surfaces return
+(distinct FEATURE_IDs, unadjusted), and Hartwell Lake / Lake Sidney
+Lanier under their official GNIS name orders. Florida is the flattest
+frame in the atlas (metre-scale synthetic relief).
+
 **Round 31 status (2026-10-23): partial.** North Carolina and South
 Carolina shipped as configurations 39–40, each with a 12/12 per-ID
 `VERIFIED=1` GNIS starter register, labelled synthetic relief,
