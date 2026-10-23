@@ -190,6 +190,15 @@ master/grandmaster key hierarchy, per-unit CAD/BOM ([`tools/build_unit_cad.mjs`]
 [`tools/gina-driver-guide-check.mjs`](../tools/gina-driver-guide-check.mjs)), and the uClinux
 transcription + softmodem fax JAR ([`hp-aio-xport-modem-adapter-feasibility.md`](hp-aio-xport-modem-adapter-feasibility.md),
 [`xport-nucleo-v92-eio-fax-card.md`](xport-nucleo-v92-eio-fax-card.md)).
+*2026-10-23 round (with S6/T6.3):* SpiderMonkey investigated (upstream in
+`mozilla/gecko-dev`; the repo's live engine is Synchronet's vendored JS
+1.8.5) and ruled out for the ColdFire target; C-BBS survey chose an
+**MBSE-derived minimal FTN node** (pure C, `mbcico`/`mbfido news`/`mbnntp`)
+over Synchronet (hosted flagship) and WWIV (fallback); Wildcat excluded
+(closed source). FidoNet↔news substrate built: `js/fidonet-pkt.js`
+(FTS-0001 + MSGID→Message-ID mapping, 5/5 tests).
+[`spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md`](spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md).
+Remaining: the m68k-uclinux C port itself; no live FTN peering fabricated.
 
 ### S8 · Mobile & device lab: Android/QEMU, SIM, xdc ports, VoIP/iParty — *open*
 QEMU Android lab (SDK, ADB sideload, replacement OSes, model-lock / number-porting caselaw),

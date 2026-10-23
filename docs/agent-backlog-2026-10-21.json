@@ -219,7 +219,9 @@
         "resources/historical-network/keyhole-evidence-pack-2026-10-22.json",
         "docs/historical-network-fidonet-adapter-2026-10-22.md",
         "docs/fidonet-arpanet-map-layers-2026-10-23.md",
-        "resources/historical-network/comms-history-seed-2026-10-23.json"
+        "resources/historical-network/comms-history-seed-2026-10-23.json",
+        "docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md",
+        "js/fidonet-pkt.js"
       ],
       "next_actions": [
         "Round 20 (2026-10-23): viewer renders all three bundled packs (pack picker, schematic scatter, logical edges). Remaining: ARPANET 1971/1977 time-slice snapshots; lawfully redistributable FidoNet snapshot for a bulk layer (else local-import-only); forum archaeology + angel mapping remain open.",
@@ -245,7 +247,9 @@
         "tools/build_unit_cad.mjs",
         "docs/hp-aio-xport-modem-adapter-feasibility.md",
         "docs/xport-nucleo-v92-eio-fax-card.md",
-        "docs/lantronix-uclinux-deep-dive-2026-10-08.md"
+        "docs/lantronix-uclinux-deep-dive-2026-10-08.md",
+        "docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md",
+        "js/fidonet-pkt.js"
       ],
       "next_actions": [
         "Round 15 (2026-10-22): re-audited during scoping — hierarchy write-up (goldkey doc §3) and escrow model already exist; CAD/gina checks green in round 14. Remainder is FULLY EXTERNALLY BLOCKED per docs/goldkey-parity-gina-and-units.md §7 (needs a gina.dll binary + JDK/Ghidra, a physical board teardown, or proprietary GoldKey drivers). No code this round by decision; do not invent substitutes.",
@@ -499,7 +503,8 @@
       "line": 167,
       "stream": "S6",
       "text": "BBS servers on archive.org + GitHub OSS BBS; convert to ColdFire / JAR for ColdFireJVM",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink."
     },
     {
       "id": "T7.1",
@@ -513,7 +518,8 @@
       "line": 8,
       "stream": "S7",
       "text": "JAR for uClinux transcription + softmodem fax",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink."
     },
     {
       "id": "T8.1",
