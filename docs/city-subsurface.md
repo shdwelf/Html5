@@ -92,10 +92,32 @@ Michigan screen empty under both states and remain corridors. The
 machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch9-source-register-2026-10-23.json).
 
+Round 27 update: **2026-10-23**. `ohio` and `pennsylvania` join as the
+thirty-first and thirty-second configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
+(candidates in the cumulative extract). Campbell Hill (1,550 feet) and
+Mount Davis (3,213 feet) carry Domestic Names per-ID identity checks;
+Campbell Hill required choosing among three same-name Ohio summits.
+Lake Erie is seeded once, in the Ohio frame, after empty Pennsylvania
+screens. The Ohio main stem screens empty under a fourth consecutive
+state (IL, IN, OH, PA) and remains a corridor, as do the Susquehanna
+and Delaware. The batch also records the first **source-corrupted GNIS
+coordinate** in the series: Indian Lake (FEATURE_ID 1041943) carries a
+longitude in western Pennsylvania on *both* USGS surfaces, so the
+feature is excluded and documented in the register rather than
+hand-corrected — two-surface agreement is necessary, not sufficient.
+The machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json).
+Two maintenance fixes ride along: a duplicated `illinois`/`indiana`
+key pair (identical copies from a double builder run; JSON consumers
+used the last copy, so behavior was unchanged) is deduplicated, and
+the Charles Mound note county is corrected to Wayne County, with
+semantic county asserts now guarding every batch test.
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has thirty configurations — five cities,
-twenty-one statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has thirty-two configurations — five cities,
+twenty-three statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -130,6 +152,8 @@ its own offline Webxdc:
 | Michigan (statewide) | `michigan-subsurface.html` | `js/city-subsurface-data-michigan.js` | `js/city-gazetteer-data-michigan.js` | `michigan-subsurface.xdc` |
 | Illinois (statewide) | `illinois-subsurface.html` | `js/city-subsurface-data-illinois.js` | `js/city-gazetteer-data-illinois.js` | `illinois-subsurface.xdc` |
 | Indiana (statewide) | `indiana-subsurface.html` | `js/city-subsurface-data-indiana.js` | `js/city-gazetteer-data-indiana.js` | `indiana-subsurface.xdc` |
+| Ohio (statewide) | `ohio-subsurface.html` | `js/city-subsurface-data-ohio.js` | `js/city-gazetteer-data-ohio.js` | `ohio-subsurface.xdc` |
+| Pennsylvania (statewide) | `pennsylvania-subsurface.html` | `js/city-subsurface-data-pennsylvania.js` | `js/city-gazetteer-data-pennsylvania.js` | `pennsylvania-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

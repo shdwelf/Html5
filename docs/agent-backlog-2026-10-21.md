@@ -243,6 +243,31 @@ after an empty screen. Next in sequence: Illinois/Indiana/Ohio and the
 remaining states in dated per-row batches, then the country/planet
 thread.
 
+**Round 27 status (2026-10-23): partial.** Ohio and Pennsylvania
+shipped as configurations 31–32, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch10-source-register-2026-10-23.json).
+Every row was screened against the USGS GNIS Geocoder and cross-checked
+on the runner-extracted DomesticNames text (cumulative candidate
+extract). Campbell Hill (`1079572`, Logan County, 1,550 ft) was
+chosen among three same-name Ohio summits; Mount Davis (`1209050`,
+Wayne County, 3,213 ft) carries the Pennsylvania high point.
+Lake Erie is seeded once, in the Ohio frame, after empty Pennsylvania
+screens. The Ohio main stem screened empty under a fourth consecutive
+state (IL, IN, OH, PA) and remains a corridor, as do the Susquehanna
+and Delaware. The batch also records the series' first
+**source-corrupted GNIS coordinate**: Indian Lake (`1041943`) carries
+a western-Pennsylvania longitude on *both* USGS surfaces, so the
+feature is excluded and documented in the register rather than
+hand-corrected. Two maintenance fixes ride along: a duplicated
+`illinois`/`indiana` key pair (identical copies from a double builder
+run; JSON consumers used the last copy, so behavior was unchanged) is
+deduplicated, and the batch-9 Charles Mound note county is corrected
+to Wayne County; semantic county asserts now guard every batch
+test so hand-typed county slips fail loudly.
+
 **Round 26 status (2026-10-23): partial.** Illinois and Indiana shipped
 as configurations 29–30, each with a 12/12 per-ID `VERIFIED=1` GNIS
 starter register, labelled synthetic relief, generalized context
