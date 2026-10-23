@@ -361,7 +361,9 @@
         "docs/geomate-sg7-firmware-analysis.md",
         "docs/geomate-viewermade-source-check-2026-10-07.md",
         "research/warrick_geomate_audit",
-        "docs/lecture-hall-research-2026-09-29.md"
+        "docs/lecture-hall-research-2026-09-29.md",
+        "docs/cicada-3301-qr-locations-2026-10-23.md",
+        "resources/historical-network/cicada-3301-poster-seed-2026-10-23.json"
       ],
       "next_actions": [
         "Cicada 3301 QR + lat/long hunt; add finds to the US subsurface viewer and cipher-machine/Hall-of-Fame lecture",
@@ -603,7 +605,8 @@
       "line": 170,
       "stream": "S12",
       "text": "Cicada 3301 QR + lat/long research -> US subsurface viewer; CyberChef/cipher-machine recipes; Hall of Fame lecture; Warrick recovery of lost sites; Geomate Jr firmware + geocaching points",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: QR + lat/long half closed (docs/cicada-3301-qr-locations-2026-10-23.md; 14 coordinates of 2012-01-09 tabulated, 8 US sites seeded citation-only in resources/historical-network/cicada-3301-poster-seed-2026-10-23.json, validator-clean, no puzzle payloads). Remaining: Warrick-method application to lost Cicada sites and Hall-of-Fame lecture material."
     },
     {
       "id": "T13.1",

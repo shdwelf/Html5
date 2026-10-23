@@ -224,6 +224,13 @@ apply the Warrick web-archiving method to lost cicada3301 sites
 `research/warrick_geomate_audit`); Geomate Jr firmware + geocaching points
 ([`geomate-gpx-preservation.md`](geomate-gpx-preservation.md),
 [`geomate-jr-firmware-research.md`](geomate-jr-firmware-research.md)).
+*2026-10-23 round:* Cicada QR + lat/long half researched in
+[`cicada-3301-qr-locations-2026-10-23.md`](cicada-3301-qr-locations-2026-10-23.md)
+(all 14 coordinates of 2012-01-09 tabulated; the 8 US sites seeded as a
+citation-only historical-network pack,
+`resources/historical-network/cicada-3301-poster-seed-2026-10-23.json`,
+validator-clean). No QR payloads or puzzle content recorded; posters are
+gone and every row says so.
 
 ### S13 · Intelligence-archive research: bin Laden hard-drive release — *done*
 Publicly released CIA/FOIA/archive.org material only; deliverable is a source-checked
