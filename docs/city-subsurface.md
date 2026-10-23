@@ -127,10 +127,27 @@ Missouri; Bull Shoals Lake is seeded once, on its Arkansas record.
 The machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch11-source-register-2026-10-23.json).
 
+Round 29 update: **2026-10-23**. `Kentucky` and `tennessee` join as the
+thirty-fifth and thirty-sixth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows cross-checked on the same two USGS surfaces
+(candidates in the cumulative extract). Black Mountain (4,145 feet,
+Kentucky high point) and Mount Le Conte (6,593 feet) carry Domestic
+Names per-ID identity checks. This batch resolves the series' longest
+corridor question: after empty `states=OH/IN/IL/PA` screens, the Ohio
+River main stem's GNIS record proves **Kentucky-associated**
+(FEATURE_ID 425264, Ballard County mouth) and is seeded once in
+Kentucky; the Tennessee and Cumberland mouth records are likewise
+Kentucky-associated (both empty under TN) and seeded here, remaining
+corridors in Tennessee. Kentucky Lake is seeded once on its Tennessee
+record. Kuwohi/Clingmans Dome — Tennessee's highest summit — has no
+Tennessee GNIS record on either surface and appears only as a context
+marker. The machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has thirty-four configurations — five cities,
-twenty-five statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has thirty-six configurations — five cities,
+twenty-seven statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -169,6 +186,8 @@ its own offline Webxdc:
 | Pennsylvania (statewide) | `pennsylvania-subsurface.html` | `js/city-subsurface-data-pennsylvania.js` | `js/city-gazetteer-data-pennsylvania.js` | `pennsylvania-subsurface.xdc` |
 | Missouri (statewide) | `missouri-subsurface.html` | `js/city-subsurface-data-missouri.js` | `js/city-gazetteer-data-missouri.js` | `missouri-subsurface.xdc` |
 | Arkansas (statewide) | `arkansas-subsurface.html` | `js/city-subsurface-data-arkansas.js` | `js/city-gazetteer-data-arkansas.js` | `arkansas-subsurface.xdc` |
+| Kentucky (statewide) | `Kentucky-subsurface.html` | `js/city-subsurface-data-Kentucky.js` | `js/city-gazetteer-data-Kentucky.js` | `Kentucky-subsurface.xdc` |
+| Tennessee (statewide) | `tennessee-subsurface.html` | `js/city-subsurface-data-tennessee.js` | `js/city-gazetteer-data-tennessee.js` | `tennessee-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),

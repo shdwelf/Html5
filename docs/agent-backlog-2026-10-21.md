@@ -243,6 +243,24 @@ after an empty screen. Next in sequence: Illinois/Indiana/Ohio and the
 remaining states in dated per-row batches, then the country/planet
 thread.
 
+**Round 29 status (2026-10-23): partial.** Kentucky and Tennessee
+shipped as configurations 35–36, each with a 12/12 per-ID
+`VERIFIED=1` GNIS starter register, labelled synthetic relief,
+generalized context corridors, and no DEM. Provenance and identity
+decisions are in
+[`../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch12-source-register-2026-10-23.json).
+Black Mountain (`510753`, Harlan County, 4,145 ft, Kentucky high
+point) and Mount Le Conte (`1646824`, Sevier County, 6,593 ft) keep
+their per-ID checks. This batch resolves the Ohio River: after empty
+`states=OH/IN/IL/PA` screens its main-stem record proves
+Kentucky-associated (`425264`, Ballard County mouth) and is seeded
+once in Kentucky; the Tennessee (`517033`) and Cumberland (`517018`)
+mouth records are likewise Kentucky-associated and seeded here,
+remaining corridors in Tennessee. Kentucky Lake is seeded once on its
+Tennessee record. Kuwohi/Clingmans Dome (6,643 ft) has no Tennessee
+GNIS record on either surface and is a context marker only — Mount
+Le Conte is the seeded Tennessee summit.
+
 **Round 28 status (2026-10-23): partial.** Missouri and Arkansas
 shipped as configurations 33–34, each with a 12/12 per-ID
 `VERIFIED=1` GNIS starter register, labelled synthetic relief,
