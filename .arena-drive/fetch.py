@@ -36,6 +36,7 @@ the bytes are the right ones.
 """
 
 import hashlib
+import json
 import os
 import pathlib
 import subprocess
@@ -132,6 +133,14 @@ def main() -> int:
         # are quota-blocked): ARENA_FETCH_URL_<id with non-alnum -> '_'>.
         san = re.sub(r"[^A-Za-z0-9]", "_", item["id"])
         override = os.environ.get(f"ARENA_FETCH_URL_{san}")
+        if not override:
+            # File-based override (e.g. a revocable Dropbox shared link used
+            # when Drive's anonymous quota is exhausted). Removed after use.
+            try:
+                overrides = json.loads((ROOT / ".arena-drive" / "url-overrides.json").read_text())
+                override = overrides.get(item["id"])
+            except Exception:
+                override = None
         urls = ([override] if override else []) + [tmpl.format(id=item["id"]) for tmpl in ENDPOINTS]
 
         body, err = None, None
