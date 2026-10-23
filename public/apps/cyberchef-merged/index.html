@@ -4383,6 +4383,71 @@ addOp('stegoSpace','Steganography: Whitespace','Steganography','Hide a secret in
     return out||'(no whitespace-hidden message found)';
   }
 });
+addOp('gameGenieGenesis','Game Genie: Genesis / Mega Drive code','Encoding','Decode or encode Genesis/Mega Drive Game Genie codes (XXXX-XXXX). Each character is 5 bits from the alphabet ABCDEFGHJKLMNPRSTVWXYZ0123456789 (no I, O, Q or U); the 40-bit block goes through a bit transposition (code bits ijklmnop IJKLMNOP ABCDEFGH defghabc QRSTUVWX -> clear ABCDEFGH IJKLMNOP QRSTUVWX abcdefgh ijklmnop) yielding a 24-bit ROM address and a 16-bit replacement word. Scheme per GameHacking.org encryption notes (Merlyn LeRoy). Genesis codes patch a whole word, so addresses are normally even.',[
+  {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode code'],['encode','Encode code']]},
+  {key:'address',label:'ROM address (hex, encode)',type:'text',default:'BE47BD'},
+  {key:'value',label:'Value word (hex, encode)',type:'text',default:'1F00'}
+],function(t,a){
+  const ALPHA='ABCDEFGHJKLMNPRSTVWXYZ0123456789';
+  const CODE_BITS=[...'ijklmnop',...'IJKLMNOP',...'ABCDEFGH',...'defghabc',...'QRSTUVWX'];
+  const CLEAR_BITS=[...'ABCDEFGH',...'IJKLMNOP',...'QRSTUVWX',...'abcdefgh',...'ijklmnop'];
+  // 40-bit values exceed the JS 32-bit bitwise range; permute via BigInt.
+  const permute40=(v,from,to)=>{const bits=[];for(let s=39n;s>=0n;s--)bits.push(Number((v>>s)&1n)); const m={}; bits.forEach((b,i)=>m[from[i]]=b); let out=0n; for(const name of to) out=(out<<1n)|BigInt(m[name]); return out;};
+  const hex2=(n)=>'$'+n.toString(16).toUpperCase().padStart(2,'0');
+  const hex6=(n)=>'$'+n.toString(16).toUpperCase().padStart(6,'0');
+  if(a.mode==='decode'){
+    const code=String(t).toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(code.length!==8) return 'Enter an 8-character Genesis Game Genie code (XXXX-XXXX). Got '+code.length+' usable characters.';
+    let v=0n;
+    for(const ch of code){ const i=ALPHA.indexOf(ch); if(i<0) throw new Error('character '+ch+' is not in the Genesis Game Genie alphabet (no I, O, Q, U)'); v=(v<<5n)|BigInt(i); }
+    const clear=permute40(v,CODE_BITS,CLEAR_BITS);
+    const address=Number(clear>>16n), value=Number(clear&0xFFFFn);
+    return 'Genesis / Mega Drive Game Genie '+code.slice(0,4)+'-'+code.slice(4)+'\naddress: '+hex6(address)+'\nvalue:   $'+value.toString(16).toUpperCase().padStart(4,'0')+' (16-bit word)'+(address%2?'\nnote: odd address - Genesis Game Genie patches aligned words, so check the address':'')+'\nraw form: '+address.toString(16).toUpperCase().padStart(6,'0')+':'+value.toString(16).toUpperCase().padStart(4,'0');
+  }
+  const parseHex=(s)=>{const c=String(s).replace(/[^0-9a-fA-F]/g,''); return c===''?NaN:parseInt(c,16);};
+  const A=parseHex(a.address), V=parseHex(a.value);
+  if(!Number.isFinite(A)||A<0||A>0xFFFFFF) return 'Address must be a 24-bit hex ROM address (000000-FFFFFF).';
+  if(!Number.isFinite(V)||V<0||V>0xFFFF) return 'Value must be a 16-bit hex word (0000-FFFF) - the Genesis Game Genie replaces a whole word.';
+  const enc=permute40((BigInt(A)<<16n)|BigInt(V),CLEAR_BITS,CODE_BITS);
+  let code='';
+  for(let i=0;i<8;i++) code+=ALPHA[Number((enc>>(35n-BigInt(5*i)))&31n)];
+  return 'Genesis / Mega Drive Game Genie '+code.slice(0,4)+'-'+code.slice(4)+'\naddress: '+hex6(A)+'\nvalue:   $'+V.toString(16).toUpperCase().padStart(4,'0');
+});
+addOp('gameGenieGb','Game Genie: Game Boy / Game Gear code','Encoding','Decode or encode Game Boy / Game Gear Game Genie codes (XXX-XXX or XXX-XXX-XXX, plain hex characters). Value is stored plain; the address first digit is XORed with F; the optional check/compare byte hides in the 1st and 3rd digits of the last group (middle digit is ignored): compare = ROR2(those two digits as a byte) XOR BA. Scheme per GameHacking.org encryption notes (Nick Joslin). Banked ROMs only honour the code when the compare matches, if given.',[
+  {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode code'],['encode','Encode code']]},
+  {key:'address',label:'ROM address (hex, encode)',type:'text',default:'B123'},
+  {key:'value',label:'Value (hex, encode)',type:'text',default:'FF'},
+  {key:'compare',label:'Compare (hex, blank = none)',type:'text',default:''}
+],function(t,a){
+  const hex2=(n)=>'$'+n.toString(16).toUpperCase().padStart(2,'0');
+  const hex4=(n)=>'$'+n.toString(16).toUpperCase().padStart(4,'0');
+  const ror2=(b)=>((b>>2)|((b&3)<<6))&255;
+  const rol2=(b)=>(((b<<2)&255)|(b>>6))&255;
+  const parseHex=(s)=>{const c=String(s).replace(/[^0-9a-fA-F]/g,''); return c===''?NaN:parseInt(c,16);};
+  if(a.mode==='decode'){
+    const code=String(t).toUpperCase().replace(/[^0-9A-F]/g,'');
+    if(code.length!==6&&code.length!==9) return 'Enter a 6- or 9-character Game Boy/Game Gear Game Genie code (XXX-XXX[-XXX], hex characters). Got '+code.length+' usable characters.';
+    const n=[...code].map(ch=>parseInt(ch,16));
+    const value=(n[0]<<4)|n[1];
+    const address=((n[5]^15)<<12)|(n[2]<<8)|(n[3]<<4)|n[4];
+    let out='Game Boy / Game Gear Game Genie '+code.slice(0,3)+'-'+code.slice(3,6)+(code.length===9?'-'+code.slice(6):'')+'\naddress: '+hex4(address)+'\nvalue:   '+hex2(value);
+    if(code.length===9){ const cmp=ror2((n[6]<<4)|n[8])^0xBA; out+='\ncompare: '+hex2(cmp)+' (middle digit '+code[7]+' of the last group is ignored by the hardware)'; }
+    else out+='\ncompare: (none - unconditional replacement)';
+    out+='\nraw form: '+address.toString(16).toUpperCase().padStart(4,'0')+':'+value.toString(16).toUpperCase().padStart(2,'0');
+    return out;
+  }
+  const A=parseHex(a.address), V=parseHex(a.value);
+  const cmpRaw=String(a.compare).replace(/[^0-9a-fA-F]/g,'');
+  const C=cmpRaw===''?null:parseInt(cmpRaw,16);
+  if(!Number.isFinite(A)||A<0||A>0xFFFF) return 'Address must be a hex ROM address (0000-FFFF; switchable banks live at 4000-7FFF).';
+  if(!Number.isFinite(V)||V<0||V>0xFF) return 'Value must be a hex byte (00-FF).';
+  if(C!==null&&(!Number.isFinite(C)||C<0||C>0xFF)) return 'Compare must be a hex byte (00-FF) or blank.';
+  const d=[(A>>12)&15,(A>>8)&15,(A>>4)&15,A&15];
+  const nibbles=[(V>>4)&15,V&15,d[1],d[2],d[3],d[0]^15];
+  if(C!==null){ const x=rol2(C^0xBA); nibbles.push((x>>4)&15,0,x&15); }
+  const code=nibbles.map(i=>i.toString(16).toUpperCase()).join('');
+  return 'Game Boy / Game Gear Game Genie '+code.slice(0,3)+'-'+code.slice(3,6)+(code.length===9?'-'+code.slice(6):'')+'\naddress: '+hex4(A)+'\nvalue:   '+hex2(V)+(C===null?'\ncompare: (none)':'\ncompare: '+hex2(C)+' (ignored middle digit emitted as 0)');
+});
 addOp('gameGenieSnes','Game Genie: SNES code','Encoding','Decode or encode SNES Game Genie codes (XXXX-XXXX). The first two letters are the replacement value (plain after the letter substitution DF4709156BC8A23E = hex 0-F); the last six are the 24-bit CPU address run through the Game Genie bit transposition (code bits ijklqrst opabcduv wxefghmn -> clear abcdefgh ijklmnop qrstuvwx). CPU->ROM conversion depends on LoROM/HiROM mapping - see the SNES GG Handbook formulas quoted in the op output.',[
   {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode code'],['encode','Encode code']]},
   {key:'address',label:'CPU address (hex, encode)',type:'text',default:'C4A704'},

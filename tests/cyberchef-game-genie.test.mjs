@@ -92,3 +92,36 @@ test("SNES: LoROM conversion and bad input handling", async () => {
   assert.match(text(await opRun(dom, "gameGenieSnes", "ABCDEFF", decS)), /8-character/);
   await assert.rejects(opRun(dom, "gameGenieSnes", "ABCD-EFFZ", decS), /not in the SNES Game Genie alphabet/);
 });
+
+const encGb = { mode: "encode", address: "B123", value: "FF", compare: "7E" };
+const decGb = { mode: "decode", address: "B123", value: "FF", compare: "" };
+
+test("GB/GG: FF1-234-123 is $B123 <- $FF with compare $7E (source check-byte example)", async () => {
+  const dom = createDom();
+  const out = text(await opRun(dom, "gameGenieGb", "FF1-234-123", decGb));
+  assert.match(out, /address: \$B123/);
+  assert.match(out, /value:\s+\$FF/);
+  assert.match(out, /compare: \$7E/);
+  const back = text(await opRun(dom, "gameGenieGb", "", encGb));
+  assert.match(back, /Game Genie FF1-234-103/); // ignored middle digit emitted as 0
+  // ...and that twin decodes identically:
+  const twin = text(await opRun(dom, "gameGenieGb", back.match(/Game Genie (\S+)/)[1], decGb));
+  assert.match(twin, /address: \$B123/);
+  assert.match(twin, /compare: \$7E/);
+  const noCmp = text(await opRun(dom, "gameGenieGb", "", { ...encGb, compare: "" }));
+  assert.match(noCmp, /Game Genie FF1-234\n/);
+});
+
+const encGen = { mode: "encode", address: "BE47BD", value: "1F00" };
+const decGen = { mode: "decode", address: "BE47BD", value: "1F00" };
+
+test("Genesis: ABD5-78F7 is BE47BD:1F00 (published worked example) and round-trips", async () => {
+  const dom = createDom();
+  const out = text(await opRun(dom, "gameGenieGenesis", "ABD5-78F7", decGen));
+  assert.match(out, /address: \$BE47BD/);
+  assert.match(out, /value:\s+\$1F00/);
+  const back = text(await opRun(dom, "gameGenieGenesis", "", encGen));
+  assert.match(back, /Game Genie ABD5-78F7/);
+  await assert.rejects(opRun(dom, "gameGenieGenesis", "ABD5-78FI", decGen), /not in the Genesis Game Genie alphabet/);
+  assert.match(text(await opRun(dom, "gameGenieGenesis", "", { ...encGen, value: "1F000" })), /16-bit hex word/);
+});

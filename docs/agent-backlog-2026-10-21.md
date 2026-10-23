@@ -68,8 +68,12 @@ the existing DOS disassembly line ([`dos-game-disassembly.md`](dos-game-disassem
 [`spycraft-research.md`](spycraft-research.md)). Game Genie (NES) decode/encode shipped
 in CyberChef as `gameGenieNes` (both builds; `SXIOPO → $91D9 ← $AD` known-answer +
 round-trip tests — `tests/cyberchef-game-genie.test.mjs`); SNES Game Genie followed as
-`gameGenieSnes` (worked example `ABCD-EFFF` = $C4A704:$C9, LoROM/HiROM offset option);
-Game Wizard/UHS/Sierra exploration remains.
+`gameGenieSnes` (worked example `ABCD-EFFF` = $C4A704:$C9, LoROM/HiROM offset option).
+Game Boy/Game Gear and Genesis Game Genie followed (`gameGenieGb`, `gameGenieGenesis`;
+7/7 tests, published worked examples). Game Wizard / UHS / Sierra strands surveyed in
+[`game-wizard-uhs-sierra-status-2026-10-23.md`](game-wizard-uhs-sierra-status-2026-10-23.md):
+Game Wizard needs its shareware binary (fetch-runner), a UHS88a reader is the identified
+buildable next step, and the Sierra sweep is editorial.
 
 ### S4 · Subsurface viewers: California → 50 states → country → planet — *partial*
 The GIS mega-task (line 6). Existing base: `socal-subsurface.html` +
