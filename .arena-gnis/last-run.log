@@ -1,13 +1,7 @@
-run 40032099732 attempt 1 · 2026-10-23T22:12:44Z
-Traceback (most recent call last):
-  File "/home/runner/work/Html5/Html5/tools/gnis_extract.py", line 156, in <module>
-    main()
-  File "/home/runner/work/Html5/Html5/tools/gnis_extract.py", line 143, in main
-    url, digest, rows = extract_state(st, names, http_fetch)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/Html5/Html5/tools/gnis_extract.py", line 88, in extract_state
-    cols = resolve_columns(header)
-           ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/Html5/Html5/tools/gnis_extract.py", line 69, in resolve_columns
-    raise ValueError(f"GNIS header is missing required columns {missing}: {header}")
-ValueError: GNIS header is missing required columns ['feature_id']: ['\ufefffeature_id', 'feature_name', 'feature_class', 'state_name', 'state_numeric', 'county_name', 'county_numeric', 'map_name', 'date_created', 'date_edited', 'bgn_type', 'bgn_authority', 'bgn_date', 'prim_lat_dms', 'prim_long_dms', 'prim_lat_dec', 'prim_long_dec', 'source_lat_dms', 'source_long_dms', 'source_lat_dec', 'source_long_dec']
+run 40032285562 attempt 1 · 2026-10-23T22:14:27Z
+MN: 20 candidate rows from https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_MN_Text.zip sha256=8b9f8f77184105ae...
+IA: 21 candidate rows from https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_IA_Text.zip sha256=32f3fcb2ba578050...
+wrote resources/city-subsurface/gnis-candidates-batch7.json
+extract exit: 0
+MN 20 rows; zip sha256 8b9f8f77184105ae
+IA 21 rows; zip sha256 32f3fcb2ba578050

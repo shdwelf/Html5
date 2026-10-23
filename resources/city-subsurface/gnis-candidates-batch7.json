@@ -1,0 +1,428 @@
+{
+ "format": "gnis-candidates-v1",
+ "retrieved": "2026-10-23T22:14:27Z",
+ "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
+ "states": {
+  "MN": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_MN_Text.zip",
+   "zipSha256": "8b9f8f77184105ae62889d1957876cf7eb0bf157ba5c3a664584fcfffbce6af9",
+   "candidatesRequested": [
+    "Saint Paul",
+    "Minneapolis",
+    "Duluth",
+    "Rochester",
+    "Bloomington",
+    "Saint Cloud",
+    "Mankato",
+    "Eagle Mountain",
+    "Lake of the Woods",
+    "Mille Lacs Lake",
+    "Lake Minnetonka",
+    "Lake Superior",
+    "Mississippi River",
+    "Minnesota River",
+    "Red River of the North",
+    "Saint Croix River",
+    "Lake Vermilion",
+    "Boundary Waters Canoe Area Wilderness"
+   ],
+   "rows": [
+    {
+     "featureId": "640278",
+     "name": "Bloomington",
+     "featureClass": "Populated Place",
+     "state": "Minnesota",
+     "county": "Hennepin",
+     "lat": 44.840798,
+     "lon": -93.2982799
+    },
+    {
+     "featureId": "661145",
+     "name": "Duluth",
+     "featureClass": "Populated Place",
+     "state": "Minnesota",
+     "county": "St. Louis",
+     "lat": 46.7832731,
+     "lon": -92.1065787
+    },
+    {
+     "featureId": "656080",
+     "name": "Eagle Mountain",
+     "featureClass": "Summit",
+     "state": "Minnesota",
+     "county": "Cook",
+     "lat": 47.6641476,
+     "lon": -90.7071766
+    },
+    {
+     "featureId": "656081",
+     "name": "Eagle Mountain",
+     "featureClass": "Summit",
+     "state": "Minnesota",
+     "county": "Cook",
+     "lat": 47.8973467,
+     "lon": -90.5606387
+    },
+    {
+     "featureId": "643035",
+     "name": "Eagle Mountain",
+     "featureClass": "Summit",
+     "state": "Minnesota",
+     "county": "Todd",
+     "lat": 45.8264893,
+     "lon": -94.6795783
+    },
+    {
+     "featureId": "647954",
+     "name": "Lake Minnetonka",
+     "featureClass": "Lake",
+     "state": "Minnesota",
+     "county": "Hennepin",
+     "lat": 44.9416763,
+     "lon": -93.5502789
+    },
+    {
+     "featureId": "1618946",
+     "name": "Lake Superior",
+     "featureClass": "Lake",
+     "state": "Michigan",
+     "county": "Keweenaw",
+     "lat": 47.5288158,
+     "lon": -87.7600216
+    },
+    {
+     "featureId": "654378",
+     "name": "Lake of the Woods",
+     "featureClass": "Lake",
+     "state": "Minnesota",
+     "county": "Lake of the Woods",
+     "lat": 49.0519679,
+     "lon": -94.9545392
+    },
+    {
+     "featureId": "1930543",
+     "name": "Lake of the Woods",
+     "featureClass": "Lake",
+     "state": "Minnesota",
+     "county": "Lake of the Woods",
+     "lat": 49.083328,
+     "lon": -95.0013424
+    },
+    {
+     "featureId": "654379",
+     "name": "Lake of the Woods",
+     "featureClass": "Swamp",
+     "state": "Minnesota",
+     "county": "Sherburne",
+     "lat": 45.4038542,
+     "lon": -93.6296861
+    },
+    {
+     "featureId": "647438",
+     "name": "Mankato",
+     "featureClass": "Populated Place",
+     "state": "Minnesota",
+     "county": "Blue Earth",
+     "lat": 44.1635775,
+     "lon": -93.9993996
+    },
+    {
+     "featureId": "647859",
+     "name": "Mille Lacs Lake",
+     "featureClass": "Lake",
+     "state": "Minnesota",
+     "county": "Mille Lacs",
+     "lat": 46.2425615,
+     "lon": -93.6462512
+    },
+    {
+     "featureId": "655030",
+     "name": "Minneapolis",
+     "featureClass": "Populated Place",
+     "state": "Minnesota",
+     "county": "Hennepin",
+     "lat": 44.9799654,
+     "lon": -93.2638361
+    },
+    {
+     "featureId": "659759",
+     "name": "Minnesota River",
+     "featureClass": "Stream",
+     "state": "Minnesota",
+     "county": "Dakota",
+     "lat": 44.89691,
+     "lon": -93.1491088
+    },
+    {
+     "featureId": "1629903",
+     "name": "Mississippi River",
+     "featureClass": "Stream",
+     "state": "Louisiana",
+     "county": "Plaquemines",
+     "lat": 29.1510582,
+     "lon": -89.2533842
+    },
+    {
+     "featureId": "1035890",
+     "name": "Red River of the North",
+     "featureClass": "Stream",
+     "state": "Minnesota",
+     "county": "Kittson",
+     "lat": 50.4002778,
+     "lon": -96.8
+    },
+    {
+     "featureId": "650180",
+     "name": "Rochester",
+     "featureClass": "Populated Place",
+     "state": "Minnesota",
+     "county": "Olmsted",
+     "lat": 44.0216306,
+     "lon": -92.4698992
+    },
+    {
+     "featureId": "650559",
+     "name": "Saint Cloud",
+     "featureClass": "Populated Place",
+     "state": "Minnesota",
+     "county": "Stearns",
+     "lat": 45.5607986,
+     "lon": -94.1624895
+    },
+    {
+     "featureId": "662324",
+     "name": "Saint Croix River",
+     "featureClass": "Stream",
+     "state": "Minnesota",
+     "county": "Washington",
+     "lat": 44.7458009,
+     "lon": -92.8027028
+    },
+    {
+     "featureId": "662851",
+     "name": "Saint Paul",
+     "featureClass": "Populated Place",
+     "state": "Minnesota",
+     "county": "Ramsey",
+     "lat": 44.9444101,
+     "lon": -93.0932742
+    }
+   ]
+  },
+  "IA": {
+   "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/DomesticNames/DomesticNames_IA_Text.zip",
+   "zipSha256": "32f3fcb2ba57805098a493520f2580233971fdc962d9b149851ac6c406a2a808",
+   "candidatesRequested": [
+    "Des Moines",
+    "Cedar Rapids",
+    "Davenport",
+    "Sioux City",
+    "Iowa City",
+    "Ames",
+    "Waterloo",
+    "Hawkeye Point",
+    "West Okoboji Lake",
+    "East Okoboji Lake",
+    "Clear Lake",
+    "Spirit Lake",
+    "Mississippi River",
+    "Missouri River",
+    "Des Moines River",
+    "Cedar River",
+    "Lake Red Rock",
+    "Saylorville Lake"
+   ],
+   "rows": [
+    {
+     "featureId": "454167",
+     "name": "Ames",
+     "featureClass": "Populated Place",
+     "state": "Iowa",
+     "county": "Story",
+     "lat": 42.0347081,
+     "lon": -93.6199402
+    },
+    {
+     "featureId": "465941",
+     "name": "Cedar Rapids",
+     "featureClass": "Populated Place",
+     "state": "Iowa",
+     "county": "Linn",
+     "lat": 42.0083328,
+     "lon": -91.6440683
+    },
+    {
+     "featureId": "465058",
+     "name": "Cedar River",
+     "featureClass": "Stream",
+     "state": "Iowa",
+     "county": "Louisa",
+     "lat": 41.2830811,
+     "lon": -91.3468217
+    },
+    {
+     "featureId": "455462",
+     "name": "Clear Lake",
+     "featureClass": "Lake",
+     "state": "Iowa",
+     "county": "Cerro Gordo",
+     "lat": 43.1244732,
+     "lon": -93.4212106
+    },
+    {
+     "featureId": "455463",
+     "name": "Clear Lake",
+     "featureClass": "Lake",
+     "state": "Iowa",
+     "county": "Pocahontas",
+     "lat": 42.7325735,
+     "lon": -94.9001402
+    },
+    {
+     "featureId": "455465",
+     "name": "Clear Lake",
+     "featureClass": "Populated Place",
+     "state": "Iowa",
+     "county": "Cerro Gordo",
+     "lat": 43.1380151,
+     "lon": -93.3793725
+    },
+    {
+     "featureId": "455799",
+     "name": "Davenport",
+     "featureClass": "Populated Place",
+     "state": "Iowa",
+     "county": "Scott",
+     "lat": 41.5236437,
+     "lon": -90.5776367
+    },
+    {
+     "featureId": "465961",
+     "name": "Des Moines",
+     "featureClass": "Populated Place",
+     "state": "Iowa",
+     "county": "Polk",
+     "lat": 41.6005448,
+     "lon": -93.6091064
+    },
+    {
+     "featureId": "465582",
+     "name": "Des Moines River",
+     "featureClass": "Stream",
+     "state": "Iowa",
+     "county": "Lee",
+     "lat": 41.3811553,
+     "lon": -91.4223753
+    },
+    {
+     "featureId": "456182",
+     "name": "East Okoboji Lake",
+     "featureClass": "Lake",
+     "state": "Iowa",
+     "county": "Dickinson",
+     "lat": 43.404684,
+     "lon": -95.0752718
+    },
+    {
+     "featureId": "1851955",
+     "name": "Hawkeye Point",
+     "featureClass": "Summit",
+     "state": "Iowa",
+     "county": "Osceola",
+     "lat": 43.4603174,
+     "lon": -95.7087663
+    },
+    {
+     "featureId": "457827",
+     "name": "Iowa City",
+     "featureClass": "Populated Place",
+     "state": "Iowa",
+     "county": "Johnson",
+     "lat": 41.6611277,
+     "lon": -91.5301683
+    },
+    {
+     "featureId": "460560",
+     "name": "Lake Red Rock",
+     "featureClass": "Reservoir",
+     "state": "Iowa",
+     "county": "Marion",
+     "lat": 41.4009842,
+     "lon": -93.0583071
+    },
+    {
+     "featureId": "1629903",
+     "name": "Mississippi River",
+     "featureClass": "Stream",
+     "state": "Louisiana",
+     "county": "Plaquemines",
+     "lat": 29.1510582,
+     "lon": -89.2533842
+    },
+    {
+     "featureId": "756398",
+     "name": "Missouri River",
+     "featureClass": "Stream",
+     "state": "Missouri",
+     "county": "St. Charles",
+     "lat": 38.8136597,
+     "lon": -90.1198297
+    },
+    {
+     "featureId": "461452",
+     "name": "Saylorville Lake",
+     "featureClass": "Reservoir",
+     "state": "Iowa",
+     "county": "Polk",
+     "lat": 41.7552981,
+     "lon": -93.7321414
+    },
+    {
+     "featureId": "461653",
+     "name": "Sioux City",
+     "featureClass": "Populated Place",
+     "state": "Iowa",
+     "county": "Woodbury",
+     "lat": 42.4999942,
+     "lon": -96.4003069
+    },
+    {
+     "featureId": "461850",
+     "name": "Spirit Lake",
+     "featureClass": "Lake",
+     "state": "Iowa",
+     "county": "Dickinson",
+     "lat": 43.4776049,
+     "lon": -95.0956467
+    },
+    {
+     "featureId": "461851",
+     "name": "Spirit Lake",
+     "featureClass": "Populated Place",
+     "state": "Iowa",
+     "county": "Dickinson",
+     "lat": 43.4221843,
+     "lon": -95.1022169
+    },
+    {
+     "featureId": "462727",
+     "name": "Waterloo",
+     "featureClass": "Populated Place",
+     "state": "Iowa",
+     "county": "Black Hawk",
+     "lat": 42.4927641,
+     "lon": -92.3429631
+    },
+    {
+     "featureId": "462893",
+     "name": "West Okoboji Lake",
+     "featureClass": "Lake",
+     "state": "Iowa",
+     "county": "Dickinson",
+     "lat": 43.3844078,
+     "lon": -95.1594407
+    }
+   ]
+  }
+ }
+}
