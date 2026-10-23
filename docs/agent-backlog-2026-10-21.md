@@ -124,6 +124,68 @@ a finished inlined edition beside the canonical multi-file XDC:
 unchanged: remaining states still need dated per-row source-register
 batches, and no DEM is claimed for the checked-in inlined build.
 
+**Round 20 status (2026-10-23): partial.** Oregon, Washington, and Idaho
+shipped as configurations 16–18, each with a 12/12 per-ID `VERIFIED=1`
+GNIS starter register, labelled synthetic relief, generalized context
+corridors, and no DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json).
+Guards include Mount Hood Summit versus populated place; Klamath County
+Crater Lake versus same-name lakes; Columbia River seeded under Oregon
+only after the Washington screen returned empty; Spokane River left
+unseeded for two exact stream candidates; Snake River seeded under
+Washington only after the Idaho screen returned no exact stream; and Bear
+Lake left unseeded in Idaho. Next in sequence: remaining states in dated
+per-row batches, then the country/planet thread.
+
+**Round 21 status (2026-10-23): partial.** Montana and Wyoming shipped as
+configurations 19–20, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, and no
+DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json).
+Granite Peak and Jackson Lake additionally carry GNIS Domestic Names per-ID
+checks: Granite Peak's Park County Summit record (`784178`, High Point)
+beats two same-name Summit candidates, and Jackson Lake's Teton County
+record is stored as a Reservoir (`1609177`) against the same-name Natrona
+County lake. Yellowstone/Missouri rivers (MT) and North Platte/Snake/Green
+River main stem (WY) remain corridors after empty or mismatched state
+screens; Glacier National Park returned only Division records. Next in
+sequence: remaining states in dated per-row batches, then the
+country/planet thread.
+
+**Round 22 status (2026-10-23): partial.** North Dakota and South Dakota
+shipped as configurations 21–22, each with a 12/12 per-ID `VERIFIED=1`
+GNIS starter register, labelled synthetic relief, generalized context
+corridors, and no DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json).
+White Butte and Black Elk Peak additionally carry GNIS Domestic Names
+per-ID checks: four same-name Summit candidates collapse to Slope County
+`1035239` (High Point, "3506 feet"), and `1261770` is the 2016
+Harney→Black Elk rename in Pennington County. Devils Lake town and lake
+seed as separate classes with distinct points; Missouri River and both
+Red River spellings (ND) plus Missouri (SD), ND James River, Badlands
+National Park, and Lake Sheridan stay unseeded after empty screens; the
+South Dakota James River record is seeded only there. Next in sequence:
+Nebraska–Kansas, then the remaining plains/mountain states before the
+country/planet thread.
+
+**Round 23 status (2026-10-23): partial.** Nebraska and Kansas shipped as
+configurations 23–24, each with a 12/12 per-ID `VERIFIED=1` GNIS starter
+register, labelled synthetic relief, generalized context corridors, and no
+DEM. Provenance and identity decisions are in
+[`../resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json).
+Panorama Point and Mount Sunflower additionally carry GNIS Domestic Names
+per-ID checks: both state high points keep their High Point coordinate
+markers and “highest elevation” descriptions (NE 5424 ft, KS 4039 ft).
+Lincoln rejects its precinct/county pile, Grand Island rejects the Buffalo
+County island, Scottsbluff town and Scotts Bluff Summit seed as distinct
+features, North Platte town and river seed as distinct features, and the
+Wyandotte County Kansas City record stays separate from the Missouri-side
+one. Missouri River (NE and KS), Republican River (NE), and Arkansas
+River (KS) remain corridors after empty screens — the Arkansas result
+matches the round-18 Colorado empty screen. Salina is identity-safe but
+held to starter scope. Next in sequence: remaining plains/mountain states
+in dated per-row batches, then the country/planet thread.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

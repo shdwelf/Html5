@@ -27,10 +27,37 @@ state set beside Arizona. Each starts with twelve all-GNIS `VERIFIED=1` rows.
 Their machine-readable evidence is
 [`resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json`](../resources/city-subsurface/gnis-state-batch2-source-register-2026-10-22.json).
 
+Round 20 update: **2026-10-23**. `oregon`, `washington`, and `idaho` join as
+the sixteenth through eighteenth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows in the same identity-safe starter-register form.
+Their machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch3-source-register-2026-10-23.json).
+
+Round 21 update: **2026-10-23**. `montana` and `wyoming` join as the
+nineteenth and twentieth configurations. Each starts with twelve all-GNIS
+`VERIFIED=1` rows; Granite Peak and Jackson Lake additionally carry GNIS
+Domestic Names per-ID detail checks. Their machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch4-source-register-2026-10-23.json).
+
+Round 22 update: **2026-10-23**. `northdakota` and `southdakota` join as
+the twenty-first and twenty-second configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows; White Butte and Black Elk Peak additionally
+carry GNIS Domestic Names per-ID detail checks. Their machine-readable
+evidence is
+[`resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch5-source-register-2026-10-23.json).
+
+Round 23 update: **2026-10-23**. `nebraska` and `kansas` join as the
+twenty-third and twenty-fourth configurations. Each starts with twelve
+all-GNIS `VERIFIED=1` rows; Panorama Point and Mount Sunflower additionally
+carry GNIS Domestic Names per-ID detail checks (both state high points,
+with the per-ID “highest elevation” descriptions preserved in their
+notes). Their machine-readable evidence is
+[`resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json`](../resources/city-subsurface/gnis-state-batch6-source-register-2026-10-23.json).
+
 ## Shared app and build
 
-The SoCal Subsurface engine now has fifteen configurations — five cities,
-six statewide frames, and four territory/atoll frames — each packaged as
+The SoCal Subsurface engine now has twenty-four configurations — five cities,
+fifteen statewide frames, and four territory/atoll frames — each packaged as
 its own offline Webxdc:
 
 | City | Page | Data pack | Gazetteer pack | Webxdc |
@@ -50,6 +77,15 @@ its own offline Webxdc:
 | Utah (statewide) | `utah-subsurface.html` | `js/city-subsurface-data-utah.js` | `js/city-gazetteer-data-utah.js` | `utah-subsurface.xdc` |
 | Colorado (statewide) | `colorado-subsurface.html` | `js/city-subsurface-data-colorado.js` | `js/city-gazetteer-data-colorado.js` | `colorado-subsurface.xdc` |
 | New Mexico (statewide) | `newmexico-subsurface.html` | `js/city-subsurface-data-newmexico.js` | `js/city-gazetteer-data-newmexico.js` | `newmexico-subsurface.xdc` |
+| Oregon (statewide) | `oregon-subsurface.html` | `js/city-subsurface-data-oregon.js` | `js/city-gazetteer-data-oregon.js` | `oregon-subsurface.xdc` |
+| Washington (statewide) | `washington-subsurface.html` | `js/city-subsurface-data-washington.js` | `js/city-gazetteer-data-washington.js` | `washington-subsurface.xdc` |
+| Idaho (statewide) | `idaho-subsurface.html` | `js/city-subsurface-data-idaho.js` | `js/city-gazetteer-data-idaho.js` | `idaho-subsurface.xdc` |
+| Montana (statewide) | `montana-subsurface.html` | `js/city-subsurface-data-montana.js` | `js/city-gazetteer-data-montana.js` | `montana-subsurface.xdc` |
+| Wyoming (statewide) | `wyoming-subsurface.html` | `js/city-subsurface-data-wyoming.js` | `js/city-gazetteer-data-wyoming.js` | `wyoming-subsurface.xdc` |
+| North Dakota (statewide) | `northdakota-subsurface.html` | `js/city-subsurface-data-northdakota.js` | `js/city-gazetteer-data-northdakota.js` | `northdakota-subsurface.xdc` |
+| South Dakota (statewide) | `southdakota-subsurface.html` | `js/city-subsurface-data-southdakota.js` | `js/city-gazetteer-data-southdakota.js` | `southdakota-subsurface.xdc` |
+| Nebraska (statewide) | `nebraska-subsurface.html` | `js/city-subsurface-data-nebraska.js` | `js/city-gazetteer-data-nebraska.js` | `nebraska-subsurface.xdc` |
+| Kansas (statewide) | `kansas-subsurface.html` | `js/city-subsurface-data-kansas.js` | `js/city-gazetteer-data-kansas.js` | `kansas-subsurface.xdc` |
 
 There is one shared engine (`js/city-subsurface.js`), one offline Gazetteer
 engine (`js/city-gazetteer.js`), one shared GPX importer (`js/gpx-geocache.js`),
@@ -413,6 +449,146 @@ None of these frames bundles a DEM. As with California/Nevada/Arizona, the
 displayed terrain is a labelled synthetic gaussian field and the corridors
 are generalized context—not river centerlines, highway alignments,
 shorelines, or a state-boundary clipping mask.
+
+### Oregon, Washington, and Idaho statewide frames (round 20, 2026-10-23)
+
+The third state batch applies the same strict recipe to the Pacific
+Northwest: candidate discovery through the USGS GNIS Geocoder, acceptance
+only on an exact official name, compatible returned type, state, returned
+primary county, permanent FEATURE_ID, and returned primary point. The batch
+register preserves the Geocoder type/county for every row and reproduces the
+generated gazetteer rows exactly. The city test pins that synchronization,
+scene-node reuse of GNIS points, loader entries, generalized coast-line
+counts, and the exclusions below.
+
+**Oregon** spans lon −124.75…−116.45, lat 41.95…46.35. Its 12 rows are
+Salem (`1167861`), Portland (`1136645`), Eugene (`1120527`), Bend
+(`1137914`), Medford (`1124040`), Astoria (`1117076`), Mount Hood
+(`1143711`, the Summit record, not the populated place `1143710`), Mount
+Jefferson (`1144246`), Crater Lake (`1163669`, the Klamath County record,
+not same-name lakes `1140396` and `1119515`), Willamette River (`1158060`),
+Deschutes River (`1140916`), and Columbia River (`1140014`). Rogue River
+was not seeded in this starter composition because its exact-name screen
+returned two Stream records (Curry `1148698` and Polk `1148699`).
+
+**Washington** spans lon −124.85…−116.85, lat 45.50…49.08. Its 12 rows are
+Olympia (`1533353`), Seattle (`1512650`), Spokane (`1512683`), Tacoma
+(`1512713`), Vancouver (`1531916`), Yakima (`1509643`), Mount Rainier
+(`1533614`), Mount Saint Helens (`1525360`), Lake Chelan (`1530367`), Lake
+Washington (`1531534`), Snake River (`1533479`), and Skagit River
+(`1525850`). Columbia River is a context corridor in Washington because the
+`states=WA` screen returned an empty array while the intended exact record
+was returned and seeded under Oregon. Spokane River was also left unseeded:
+two exact Stream records (`1508606` and `391131`) have nearby mouth-area
+points, and the Geocoder screen alone does not safely distinguish the
+statewide starter record.
+
+**Idaho** spans lon −117.30…−110.95, lat 41.95…49.05. Its 12 rows are Boise
+(`400590`), Idaho Falls (`396684`), Pocatello (`397053`), Coeur d'Alene
+(`379485`), Twin Falls (`398273`, the populated place, not the waterfall
+`375624`), Lewiston (`396788`), Borah Peak (`378037`), Hyndman Peak
+(`383587`), Lake Pend Oreille (`398523`), Coeur d'Alene Lake (`397563`),
+Salmon River (`400069`), and Clearwater River (`379406`). Snake River is a
+context corridor in Idaho because the `states=ID` screen returned canals,
+plains, valley, and canyon records but not the intended exact stream record;
+that record was returned and seeded under Washington. Bear Lake remains
+unseeded: the Idaho screen returned several small same-name lakes but not an
+identity-safe returned record for the intended large Bear Lake County lake,
+consistent with Utah's round-18 omission.
+
+None of these frames bundles a DEM. Oregon uses one generalized Pacific
+coast line and Washington uses two generalized outer-coast/Puget lines;
+Idaho has no coast. Terrain is labelled synthetic relief, and all corridors
+remain generalized `context`—not river centerlines, highway alignments,
+shoreline surveys, state boundaries, or navigation data.
+
+### Montana and Wyoming statewide frames (round 21, 2026-10-23)
+
+The fourth state batch applies the same strict recipe to the Northern
+Rockies. Every row is an exact-name Geocoder acceptance on compatible
+returned type, state, returned primary county, permanent FEATURE_ID, and
+returned primary point; Granite Peak and Jackson Lake additionally carry a
+GNIS Domestic Names per-ID detail check. The batch register preserves the
+Geocoder type/county for every row and reconstructs the generated gazetteer
+rows exactly.
+
+**Montana** spans lon −116.4…−104.0, lat 44.3…49.1. Its 12 rows are Helena
+(`802116`), Billings (`802034`), Missoula (`787504`), Great Falls
+(`802113`), Bozeman (`769173`), Butte (`780689`), Miles City (`774202`),
+Flathead Lake (`783514`), Fort Peck Lake (`771516`), Lake McDonald
+(`787038`, the Lake record, not the populated place `785919`), Bighorn
+River (`779903`), and Granite Peak (`784178`). Granite Peak had three
+exact-name Summit candidates; the per-ID detail check confirms
+`Class=Summit`, Primary County=Park County, and coordinate sequence 1
+marked **High Point** at the stored point, while the Madison County record
+(`784179`) and second Park County record (`784177`) are rejected. The
+Yellowstone and Missouri rivers are context corridors only because both
+`states=MT` exact-name screens returned empty arrays, and Glacier National
+Park was not seeded because the screen returned only Division records.
+
+**Wyoming** spans lon −111.4…−104.0, lat 40.95…45.1. Its 12 rows are
+Cheyenne (`1609077`), Casper (`1586424`), Laramie (`1590526`), Jackson
+(`1604404`), Rock Springs (`1593588`, the populated place, not the
+same-name springs `1593589`/`1593590`), Green River (`1589126`, the
+populated place; the screen's only exact-name Stream is a different feature
+in Weston County `1600086`), Gannett Peak (`1599903`), Grand Teton
+(`1609199`, the Summit record, not the canal `1589026`), Devils Tower
+(`1609083`, the Summit record, not the populated place `1604684`),
+Yellowstone Lake (`1609324`), Jackson Lake (`1609177`, stored as
+**Reservoir** after the per-ID check confirmed `Class=Reservoir` in Teton
+County against the same-name Natrona County lake `1590031`), and Shoshone
+River (`1594293`). North Platte River, Snake River, and the Green River
+main stem are corridors only: the state screens returned an empty array,
+only a mountain-range record, and town/canal/other-county records
+respectively. The Bighorn River screen also returned empty under Wyoming;
+only the Montana record is seeded.
+
+Neither frame bundles a DEM. Both are inland rectangles with labelled
+synthetic relief; all corridors remain generalized `context`—not river
+centerlines, highway alignments, state boundaries, or survey geometry.
+
+### North Dakota and South Dakota statewide frames (round 22, 2026-10-23)
+
+The fifth state batch applies the same strict recipe to the Dakotas.
+White Butte and Black Elk Peak additionally carry GNIS Domestic Names
+per-ID detail checks; the batch register reconstructs every generated row
+exactly.
+
+**North Dakota** spans lon −104.3…−96.5, lat 45.9…49.1. Its 12 rows are
+Bismarck (`1035849`), Fargo (`1028945`), Grand Forks (`1029197`), Minot
+(`1030249`), Williston (`1032815`), Dickinson (`1028683`), Devils Lake
+town (`1028672`) and Devils Lake (`1034194`) as separate classes with
+distinct returned points, Lake Sakakawea (`1033989`), White Butte
+(`1035239`), Sheyenne River (`1035146`), and Heart River (`1034918`).
+White Butte had four exact-name Summit candidates; the per-ID check
+confirms `Class=Summit`, Slope County, coordinate sequence 1 marked
+**High Point**, and the description "Highest elevation in ND at 3506
+feet", while the Hettinger, Morton, and Stark records are rejected. The
+Missouri River and the Red River—screened under both `Red River` and the
+official `Red River of the North` name—are context corridors only because
+all three `states=ND` screens returned empty arrays, and the North Dakota
+James River is not claimed because that screen was also empty; the unique
+South Dakota James River record is seeded only in South Dakota.
+
+**South Dakota** spans lon −104.3…−96.4, lat 42.45…46.0. Its 12 rows are
+Pierre (`1266887`), Sioux Falls (`1267670`, the populated place, not the
+waterfall `1258087`), Rapid City (`1265333`), Aberdeen (`1253581`),
+Mitchell (`1256500`, not the two same-name Mitchell Lakes), Yankton
+(`1259091`, not the county or reservation), Belle Fourche (`1265119`, the
+town; its same-hydronym river `1265120` and reservoir `1253838` stay out
+of the 12-row starter as separate identity-safe records), Black Elk Peak
+(`1261770`), Lake Oahe (`1266878`), Bad River (`1265114`), Cheyenne River
+(`1267017`, not the reservation `1267254`), and James River (`1261082`).
+Black Elk Peak's per-ID check confirms `Class=Summit`, Pennington County,
+sequence 1 marked **High Point**, and the Board on Geographic Names'
+2016 rename from Harney Peak—the former name returns no record under
+`states=SD`. Missouri River is a corridor only after an empty `states=SD`
+screen; Badlands National Park and Lake Sheridan exact-name screens also
+returned empty arrays and were not seeded.
+
+Neither frame bundles a DEM. Both are inland rectangles with labelled
+synthetic relief; all corridors remain generalized `context`—not river
+centerlines, highway alignments, state boundaries, or shoreline geometry.
 
 ## Geocache class and local GPX import
 

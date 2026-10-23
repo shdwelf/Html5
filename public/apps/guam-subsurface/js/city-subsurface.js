@@ -48,6 +48,15 @@ const DATA_LOADERS = {
   utah: () => import("./city-subsurface-data-utah.js"),
   colorado: () => import("./city-subsurface-data-colorado.js"),
   newmexico: () => import("./city-subsurface-data-newmexico.js"),
+  oregon: () => import("./city-subsurface-data-oregon.js"),
+  washington: () => import("./city-subsurface-data-washington.js"),
+  idaho: () => import("./city-subsurface-data-idaho.js"),
+  montana: () => import("./city-subsurface-data-montana.js"),
+  wyoming: () => import("./city-subsurface-data-wyoming.js"),
+  northdakota: () => import("./city-subsurface-data-northdakota.js"),
+  southdakota: () => import("./city-subsurface-data-southdakota.js"),
+  nebraska: () => import("./city-subsurface-data-nebraska.js"),
+  kansas: () => import("./city-subsurface-data-kansas.js"),
 };
 const GAZ_LOADERS = {
   lawrence: () => import("./city-gazetteer-data-lawrence.js"),
@@ -65,6 +74,15 @@ const GAZ_LOADERS = {
   utah: () => import("./city-gazetteer-data-utah.js"),
   colorado: () => import("./city-gazetteer-data-colorado.js"),
   newmexico: () => import("./city-gazetteer-data-newmexico.js"),
+  oregon: () => import("./city-gazetteer-data-oregon.js"),
+  washington: () => import("./city-gazetteer-data-washington.js"),
+  idaho: () => import("./city-gazetteer-data-idaho.js"),
+  montana: () => import("./city-gazetteer-data-montana.js"),
+  wyoming: () => import("./city-gazetteer-data-wyoming.js"),
+  northdakota: () => import("./city-gazetteer-data-northdakota.js"),
+  southdakota: () => import("./city-gazetteer-data-southdakota.js"),
+  nebraska: () => import("./city-gazetteer-data-nebraska.js"),
+  kansas: () => import("./city-gazetteer-data-kansas.js"),
 };
 // DEM packs are optional for every frame except a config marked
 // demRequired. Route them through a variable-specifier import so a missing
@@ -94,6 +112,15 @@ const DEM_LOADERS = {
   utah: () => importDem("./city-dem-grid-utah.js"),
   colorado: () => importDem("./city-dem-grid-colorado.js"),
   newmexico: () => importDem("./city-dem-grid-newmexico.js"),
+  oregon: () => importDem("./city-dem-grid-oregon.js"),
+  washington: () => importDem("./city-dem-grid-washington.js"),
+  idaho: () => importDem("./city-dem-grid-idaho.js"),
+  montana: () => importDem("./city-dem-grid-montana.js"),
+  wyoming: () => importDem("./city-dem-grid-wyoming.js"),
+  northdakota: () => importDem("./city-dem-grid-northdakota.js"),
+  southdakota: () => importDem("./city-dem-grid-southdakota.js"),
+  nebraska: () => importDem("./city-dem-grid-nebraska.js"),
+  kansas: () => importDem("./city-dem-grid-kansas.js"),
 };
 
 if (!DATA_LOADERS[CITY_ID] || !GAZ_LOADERS[CITY_ID]) {

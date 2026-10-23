@@ -1,0 +1,625 @@
+{
+  "generated": "2026-10-23",
+  "title": "Round 20 Pacific Northwest state-frame USGS GNIS source register",
+  "scope": "All-GNIS starter registers for Oregon, Washington, and Idaho. Every seeded row reproduces one accepted USGS GNIS Geocoder candidate screened by exact official name, returned type/state/county, permanent FEATURE_ID, and returned primary point.",
+  "services": {
+    "usgsGeocoder": {
+      "endpoint": "https://dashboard.waterdata.usgs.gov/service/geocoder/get/location/1.0",
+      "parameters": "term=<official name>&states=<OR|WA|ID>&include=gnis&maxSuggestions=<10|20>",
+      "use": "Fuzzy candidate discovery only. A candidate was accepted only when Name, Type, State, County, GnisId, Latitude, and Longitude all matched the intended feature. Political divisions, counties, census places, canals, ranges, reservations, and same-name records of another class or county were rejected explicitly where relevant."
+    }
+  },
+  "selectionRules": [
+    "VERIFIED=1 is claimed only for an exact official name, compatible GNIS feature class/type, intended state and returned primary county, permanent FEATURE_ID, and an official point returned by a cited USGS service.",
+    "Grouped Geocoder Types map explicitly to stored row classes: Cities & Populated Places to Populated Place, Lakes & Reservoirs to Lake for the accepted named lakes, Streams & Canals to Stream for the accepted river records, and Summit to Summit.",
+    "A stored GNIS primary point is never described as a municipal boundary, street-address geocode, generic centroid, shoreline polygon, summit outline, or river centerline.",
+    "If exact-name candidates remain indistinguishable, or the state-filtered screen returns no intended feature record, the feature is omitted from that state gazetteer and may appear only as a generalized context corridor.",
+    "Statewide frames use explicitly synthetic relief gaussians and generalized corridors/coastlines; no bundled DEM or surveyed boundary is implied."
+  ],
+  "frames": {
+    "oregon": {
+      "title": "Oregon statewide frame",
+      "state": "OR",
+      "bbox": {
+        "lon0": -124.75,
+        "lat0": 41.95,
+        "lon1": -116.45,
+        "lat1": 46.35
+      },
+      "frameNote": "Pacific Northwest batch: Willamette Valley and Cascades anchors are balanced with the coast, Columbia/Willamette/Deschutes rivers, and Mount Jefferson/Crater Lake. Rogue River remains unseeded in this starter composition because its exact-name screen returned two Stream records (Curry and Polk counties).",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Salem",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Marion",
+          "latitude": 44.9428975,
+          "longitude": -123.0350963,
+          "featureId": "1167861",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Marion County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than the Salem Division records in Marion and Polk counties (FEATURE_IDs 1938109 and 1938110). USGS GNIS Geocoder (GNIS), FEATURE_ID=1167861; exact official name and Cities & Populated Places type in Marion County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Portland",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Multnomah",
+          "latitude": 45.5234515,
+          "longitude": -122.6762071,
+          "featureId": "1136645",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Multnomah County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Portland East and Portland West Division records (FEATURE_IDs 2585638 and 2585640). USGS GNIS Geocoder (GNIS), FEATURE_ID=1136645; exact official name and Cities & Populated Places type in Multnomah County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Eugene",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Lane",
+          "latitude": 44.0520691,
+          "longitude": -123.0867536,
+          "featureId": "1120527",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Lane County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Eugene-Springfield Division record (FEATURE_ID 1938013). USGS GNIS Geocoder (GNIS), FEATURE_ID=1120527; exact official name and Cities & Populated Places type in Lane County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Bend",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Deschutes",
+          "latitude": 44.0581728,
+          "longitude": -121.3153096,
+          "featureId": "1137914",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Deschutes County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Bend Division record (FEATURE_ID 1937966). USGS GNIS Geocoder (GNIS), FEATURE_ID=1137914; exact official name and Cities & Populated Places type in Deschutes County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Medford",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Jackson",
+          "latitude": 42.3265153,
+          "longitude": -122.8755949,
+          "featureId": "1124040",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Jackson County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Medford Division record (FEATURE_ID 1938056). USGS GNIS Geocoder (GNIS), FEATURE_ID=1124040; exact official name and Cities & Populated Places type in Jackson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Astoria",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Clatsop",
+          "latitude": 46.1878841,
+          "longitude": -123.8312534,
+          "featureId": "1117076",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Clatsop County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Astoria Division record (FEATURE_ID 1937957). USGS GNIS Geocoder (GNIS), FEATURE_ID=1117076; exact official name and Cities & Populated Places type in Clatsop County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Mount Hood",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Hood River",
+          "latitude": 45.3733674,
+          "longitude": -121.6957784,
+          "featureId": "1143711",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Hood River County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Oregon's highest summit. The Summit record was selected rather than the same-name Mount Hood populated place (FEATURE_ID 1143710) and Mount Hood Division (FEATURE_ID 1938067). USGS GNIS Geocoder (GNIS), FEATURE_ID=1143711; exact official name and Summit type in Hood River County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Mount Jefferson",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Jefferson",
+          "latitude": 44.6742075,
+          "longitude": -121.7994686,
+          "featureId": "1144246",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Jefferson County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1144246; exact official name and Summit type in Jefferson County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Crater Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Klamath",
+          "latitude": 42.9420125,
+          "longitude": -122.1063895,
+          "featureId": "1163669",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Klamath County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Klamath County caldera lake was selected rather than same-name Crater Lake records in Baker County (FEATURE_ID 1140396) and Malheur County (FEATURE_ID 1119515). USGS GNIS Geocoder (GNIS), FEATURE_ID=1163669; exact official name and Lakes & Reservoirs type in Klamath County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Willamette River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Multnomah",
+          "latitude": 45.6528939,
+          "longitude": -122.7648218,
+          "featureId": "1158060",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Multnomah County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1158060; exact official name and Streams & Canals type in Multnomah County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Deschutes River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Sherman",
+          "latitude": 45.6354011,
+          "longitude": -120.9145096,
+          "featureId": "1140916",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Sherman County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1140916; exact official name and Streams & Canals type in Sherman County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Columbia River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Clatsop",
+          "latitude": 46.2442673,
+          "longitude": -124.0579299,
+          "featureId": "1140014",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Clatsop County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The exact stream record returned under the Oregon state screen was seeded here; the same intended river was not returned by the Washington state screen, so Washington carries it only as a generalized corridor. USGS GNIS Geocoder (GNIS), FEATURE_ID=1140014; exact official name and Streams & Canals type in Clatsop County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    },
+    "washington": {
+      "title": "Washington statewide frame",
+      "state": "WA",
+      "bbox": {
+        "lon0": -124.85,
+        "lat0": 45.5,
+        "lon1": -116.85,
+        "lat1": 49.08
+      },
+      "frameNote": "Pacific Northwest batch: Puget Lowland anchors are balanced with Rainier, Saint Helens, Chelan, Snake River, and Skagit River. Columbia River and Spokane River remain corridor/context only for the state-screen reasons recorded below.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Olympia",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Thurston",
+          "latitude": 47.0378741,
+          "longitude": -122.9006951,
+          "featureId": "1533353",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Thurston County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than the Olympia, Olympia East, and Olympia West Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1533353; exact official name and Cities & Populated Places type in Thurston County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Seattle",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "King",
+          "latitude": 47.6062095,
+          "longitude": -122.3320708,
+          "featureId": "1512650",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "King County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Seattle and Seattle East Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=1512650; exact official name and Cities & Populated Places type in King County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Spokane",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Spokane",
+          "latitude": 47.6587803,
+          "longitude": -117.4260466,
+          "featureId": "1512683",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Spokane County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than Spokane County, division, and reservation records; it does not verify a Spokane River stream record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1512683; exact official name and Cities & Populated Places type in Spokane County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Tacoma",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Pierce",
+          "latitude": 47.2528769,
+          "longitude": -122.4442906,
+          "featureId": "1512713",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Pierce County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Tacoma Division record (FEATURE_ID 1939650). USGS GNIS Geocoder (GNIS), FEATURE_ID=1512713; exact official name and Cities & Populated Places type in Pierce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Vancouver",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Clark",
+          "latitude": 45.6387281,
+          "longitude": -122.6614861,
+          "featureId": "1531916",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Clark County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The Washington populated-place record was selected rather than the Vancouver Division record (FEATURE_ID 1939664) and the separate Vancouver Lake record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1531916; exact official name and Cities & Populated Places type in Clark County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Yakima",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Yakima",
+          "latitude": 46.6020711,
+          "longitude": -120.5058987,
+          "featureId": "1509643",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Yakima County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than Yakima County and Yakima Division records; it does not verify the separate Yakima River record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1509643; exact official name and Cities & Populated Places type in Yakima County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Mount Rainier",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Pierce",
+          "latitude": 46.8528267,
+          "longitude": -121.7604408,
+          "featureId": "1533614",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Pierce County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Washington's highest summit. The Summit record was selected rather than the Mount Rainier Division record (FEATURE_ID 1939567). USGS GNIS Geocoder (GNIS), FEATURE_ID=1533614; exact official name and Summit type in Pierce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Mount Saint Helens",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Skamania",
+          "latitude": 46.1911944,
+          "longitude": -122.1943855,
+          "featureId": "1525360",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Skamania County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1525360; exact official name and Summit type in Skamania County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Lake Chelan",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Chelan",
+          "latitude": 48.037622,
+          "longitude": -120.3551713,
+          "featureId": "1530367",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Chelan County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The lake record was selected rather than the Lake Chelan Hills populated-place record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1530367; exact official name and Lakes & Reservoirs type in Chelan County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Lake Washington",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "King",
+          "latitude": 47.6195628,
+          "longitude": -122.2454424,
+          "featureId": "1531534",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "King County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The lake record was selected rather than the separate Lake Washington Ship Canal record. USGS GNIS Geocoder (GNIS), FEATURE_ID=1531534; exact official name and Lakes & Reservoirs type in King County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Snake River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Franklin",
+          "latitude": 46.1862456,
+          "longitude": -119.028618,
+          "featureId": "1533479",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Franklin County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The exact stream record returned under the Washington state screen was seeded here; the Idaho state screen did not return that intended Snake River stream record, so Idaho carries it only as a generalized corridor. USGS GNIS Geocoder (GNIS), FEATURE_ID=1533479; exact official name and Streams & Canals type in Franklin County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Skagit River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Skagit",
+          "latitude": 48.387326,
+          "longitude": -122.3668255,
+          "featureId": "1525850",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Skagit County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=1525850; exact official name and Streams & Canals type in Skagit County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    },
+    "idaho": {
+      "title": "Idaho statewide frame",
+      "state": "ID",
+      "bbox": {
+        "lon0": -117.3,
+        "lat0": 41.95,
+        "lon1": -110.95,
+        "lat1": 49.05
+      },
+      "frameNote": "Pacific Northwest batch: Snake River Plain towns are balanced with Borah/Hyndman, Salmon/Clearwater rivers, and the two Panhandle lakes. Snake River and Bear Lake remain unseeded in Idaho for the state-screen reasons recorded below.",
+      "totalRows": 12,
+      "verifiedRows": [
+        {
+          "name": "Boise",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Ada",
+          "latitude": 43.6135002,
+          "longitude": -116.2034505,
+          "featureId": "400590",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Ada County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "State capital. The populated-place record was selected rather than Boise City Division and Boise County records; the returned official populated-place name is Boise. USGS GNIS Geocoder (GNIS), FEATURE_ID=400590; exact official name and Cities & Populated Places type in Ada County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Idaho Falls",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Bonneville",
+          "latitude": 43.4665809,
+          "longitude": -112.0341374,
+          "featureId": "396684",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Bonneville County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Idaho Falls and Idaho Falls West Division records. USGS GNIS Geocoder (GNIS), FEATURE_ID=396684; exact official name and Cities & Populated Places type in Bonneville County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Pocatello",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Bannock",
+          "latitude": 42.8713032,
+          "longitude": -112.4455344,
+          "featureId": "397053",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Bannock County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Pocatello Division record (FEATURE_ID 1936790). USGS GNIS Geocoder (GNIS), FEATURE_ID=397053; exact official name and Cities & Populated Places type in Bannock County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Coeur d'Alene",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Kootenai",
+          "latitude": 47.6776832,
+          "longitude": -116.7804664,
+          "featureId": "379485",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Kootenai County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than division/reservation records; the same-name lake is seeded separately below and the river is not seeded. USGS GNIS Geocoder (GNIS), FEATURE_ID=379485; exact official name and Cities & Populated Places type in Kootenai County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Twin Falls",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Twin Falls",
+          "latitude": 42.5629668,
+          "longitude": -114.4608711,
+          "featureId": "398273",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Twin Falls County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than Twin Falls County/Division records and the separate Twin Falls waterfall record (FEATURE_ID 375624). USGS GNIS Geocoder (GNIS), FEATURE_ID=398273; exact official name and Cities & Populated Places type in Twin Falls County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Lewiston",
+          "featureClass": "Populated Place",
+          "ftt": "pop.place",
+          "county": "Nez Perce",
+          "latitude": 46.4165506,
+          "longitude": -117.0176569,
+          "featureId": "396788",
+          "verified": 1,
+          "geocoderType": "Cities & Populated Places",
+          "geocoderCounty": "Nez Perce County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The populated-place record was selected rather than the Lewiston Division record (FEATURE_ID 1936751). USGS GNIS Geocoder (GNIS), FEATURE_ID=396788; exact official name and Cities & Populated Places type in Nez Perce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a municipal boundary, street-address geocode, or generic city centroid."
+        },
+        {
+          "name": "Borah Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Custer",
+          "latitude": 44.1373404,
+          "longitude": -113.7811392,
+          "featureId": "378037",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Custer County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "Idaho's highest summit. USGS GNIS Geocoder (GNIS), FEATURE_ID=378037; exact official name and Summit type in Custer County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Hyndman Peak",
+          "featureClass": "Summit",
+          "ftt": "phys.summit",
+          "county": "Blaine",
+          "latitude": 43.7490837,
+          "longitude": -114.131121,
+          "featureId": "383587",
+          "verified": 1,
+          "geocoderType": "Summit",
+          "geocoderCounty": "Blaine County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=383587; exact official name and Summit type in Blaine County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a peak-area polygon or surveyed summit boundary."
+        },
+        {
+          "name": "Lake Pend Oreille",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Bonner",
+          "latitude": 48.1582727,
+          "longitude": -116.4401819,
+          "featureId": "398523",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Bonner County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=398523; exact official name and Lakes & Reservoirs type in Bonner County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Coeur d'Alene Lake",
+          "featureClass": "Lake",
+          "ftt": "hydro.lake",
+          "county": "Kootenai",
+          "latitude": 47.5504509,
+          "longitude": -116.8022201,
+          "featureId": "397563",
+          "verified": 1,
+          "geocoderType": "Lakes & Reservoirs",
+          "geocoderCounty": "Kootenai County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "The lake record was selected as a feature distinct from the Coeur d'Alene populated place and Coeur d'Alene River records. USGS GNIS Geocoder (GNIS), FEATURE_ID=397563; exact official name and Lakes & Reservoirs type in Kootenai County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a shoreline polygon or lake-area centroid."
+        },
+        {
+          "name": "Salmon River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Nez Perce",
+          "latitude": 45.8562667,
+          "longitude": -116.7934792,
+          "featureId": "400069",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Nez Perce County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=400069; exact official name and Streams & Canals type in Nez Perce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        },
+        {
+          "name": "Clearwater River",
+          "featureClass": "Stream",
+          "ftt": "hydro.stream",
+          "county": "Nez Perce",
+          "latitude": 46.4248838,
+          "longitude": -117.0371024,
+          "featureId": "379406",
+          "verified": 1,
+          "geocoderType": "Streams & Canals",
+          "geocoderCounty": "Nez Perce County",
+          "pointBasis": "GNIS primary point returned by the USGS GNIS Geocoder",
+          "sourceNote": "USGS GNIS Geocoder (GNIS), FEATURE_ID=379406; exact official name and Streams & Canals type in Nez Perce County cross-checked 2026-10-23. Stored coordinate is the GNIS primary point; it is not a river centerline, channel polygon, or watershed boundary."
+        }
+      ]
+    }
+  },
+  "identityDecisions": [
+    {
+      "candidate": "Crater Lake, Oregon: Klamath County 1163669, Baker County 1140396, Malheur County 1119515",
+      "decision": "Seeded the Klamath County record only.",
+      "notClaimed": "The Klamath primary point does not verify the other same-name lakes or any shoreline."
+    },
+    {
+      "candidate": "Mount Hood: Summit 1143711, populated place 1143710, Division 1938067",
+      "decision": "Seeded the Summit record only.",
+      "notClaimed": "The summit primary point is not the settlement, division, or a peak-area polygon."
+    },
+    {
+      "candidate": "Rogue River, Oregon: Curry County Stream 1148698 and Polk County Stream 1148699",
+      "decision": "Omitted from the starter register.",
+      "reason": "Two exact-name Stream records were returned and the 12-row starter composition already carries identity-safe Willamette, Deschutes, and Columbia records; no same-name choice was needed."
+    },
+    {
+      "candidate": "Columbia River: returned under states=OR as Clatsop County Stream 1140014; states=WA screen returned an empty array",
+      "decision": "Seeded in Oregon only; Washington shows a generalized Columbia context corridor.",
+      "notClaimed": "The Oregon primary point is not a Washington gazetteer row, channel centerline, or state-boundary geometry."
+    },
+    {
+      "candidate": "Spokane River: Lincoln County Stream 1508606 and Spokane County Stream 391131",
+      "decision": "Omitted from the Washington gazetteer.",
+      "reason": "Two exact-name stream records with nearby mouth-area points were returned; choosing one from the Geocoder screen alone would not be identity-safe for this starter batch."
+    },
+    {
+      "candidate": "Snake River: returned under states=WA as Franklin County Stream 1533479; states=ID screen returned canal/plain/valley/canyon records but not the exact intended stream",
+      "decision": "Seeded in Washington only; Idaho shows a generalized Snake context corridor.",
+      "notClaimed": "The Washington primary point is not an Idaho gazetteer row or a river centerline."
+    },
+    {
+      "candidate": "Bear Lake under states=ID",
+      "decision": "Omitted from the Idaho gazetteer.",
+      "reason": "The Idaho screen returned Bear Lake County and several small same-name Lakes & Reservoirs records in Custer, Fremont, Idaho, and Valley counties, but not the intended large Bear Lake County lake as an identity-safe returned lake record; Utah also left Bear Lake unseeded in round 18."
+    },
+    {
+      "candidate": "Coeur d'Alene populated place 379485, Coeur d'Alene Lake 397563, Coeur d'Alene River 379488",
+      "decision": "Seeded the populated place and lake as separate classes; did not seed the river.",
+      "notClaimed": "Neither seeded point verifies the river, a shoreline, or a municipal boundary."
+    },
+    {
+      "candidate": "Twin Falls populated place 398273 versus Twin Falls waterfall 375624",
+      "decision": "Seeded the populated-place record only.",
+      "notClaimed": "The city point does not verify the waterfall."
+    },
+    {
+      "candidate": "Puget Sound: Kitsap County Bays & Harbors 1507653",
+      "decision": "Omitted from the 12-row starter gazetteer; Puget water is represented by generalized coast context.",
+      "reason": "The starter composition prioritizes two identity-safe named lakes and two rivers; adding a broad sound point would not supply shoreline geometry."
+    }
+  ],
+  "knownLimitations": [
+    "Oregon, Washington, and Idaho are starter registers, not statewide GNIS extracts. Each contains 12 deliberately selected identity-safe rows.",
+    "The USGS Geocoder is a suggestion service; exact-match screening by name/type/state/county/FEATURE_ID is part of the evidence, and the returned county is primary-county provenance.",
+    "GNIS point data do not supply the displayed terrain, coastlines, or corridors. All three frames use explicitly synthetic relief gaussians and generalized context lines.",
+    "State frames are rectangles, not state-boundary clipping masks. Oregon/Washington rectangles include border and offshore context; the Idaho rectangle spans the panhandle outline and includes small areas outside Idaho. No boundary geometry is claimed."
+  ]
+}
