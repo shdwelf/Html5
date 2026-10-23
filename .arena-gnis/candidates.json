@@ -46,5 +46,6 @@
       "Saylorville Lake"
     ]
   },
-  "note": "Batch 7 = configurations 25 (Minnesota) + 26 (Iowa); rows screened from the runner extract gnis-candidates-batch7.json."
+  "note": "Batch 7 = configurations 25 (Minnesota) + 26 (Iowa); rows screened from the runner extract gnis-candidates-batch7.json.",
+  "requestedBy": "arena-gnis-fetch staging, 2026-10-23"
 }
