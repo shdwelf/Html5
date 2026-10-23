@@ -31,6 +31,17 @@ git sparse-checkout set tool/software/zulu_jdks/zulu8.68.0.19-ca-jdk8.0.362-linu
 
 204 MB, about six seconds. `javac 1.8.0_362` runs.
 
+**Round 19 hardening (2026-10-23):** that repository is an unofficial copy,
+so `tools/build_mealplan_applet.sh` no longer trusts its moving branch. It
+fetches MR-Adopt commit `7e7d2a8649fbc6d7c590a7e1de8dfaf4289fc04c`, Feitian
+`AppletPlayground` commit `013b66f783de2947c45f92a779b332a2b7633a17`, and
+Objenesis commit `da5fd820038d2b4a3eaf78ff885f445d05adb7f1`; it also
+SHA-256-checks Zulu's `release`/`java`/`javac` and the Java Card API/tools
+and `vjcre.jar` before running them. The broader OpenJDK/Temurin/Zulu/Oracle
+survey and the case for replacing this old 8u362 copy with an official
+Temurin 8 relay are in
+[`github-jdk-runtime-research-2026-10-23.md`](github-jdk-runtime-research-2026-10-23.md).
+
 **JDK 8 is the right choice, not the newest.** The Java Card 3.0.3 converter
 rejects class file version 51 (`unsupported class file format of version 51.0`),
 so the applet must be compiled with `-target 1.6` — and JDK 17 and later have
@@ -137,19 +148,33 @@ locals.
 That cross-check earned its keep immediately: it caught `load()` passing a
 vestigial local instead of naming `INS_LOAD` the way `unload()` does.
 
+The behavioural suite now exists as well. `tests/mealplan-applet-sim.test.mjs`
+runs the converted applet in the simulator harness while
+`js/mealplan-model.js` plays issuer and terminal, so Node and JVM
+HMAC-SHA-256 implementations must agree on every authenticated command.
+Round 19 wired its existing `ensureBuilt()` preparation step into the test
+file: with GitHub reachable, the pinned toolchain is fetched/built once and
+the suite passes **18/18**; if that fetch is unavailable, the 17 card-backed
+cases skip with an explicit toolchain reason rather than failing as
+`bin/java ENOENT`.
+
 ```
 node --test tests/mealplan-applet.test.mjs      # 14 pass
 node --test tests/mealplan-model.test.mjs       # 17 pass
+node --test tests/mealplan-applet-sim.test.mjs  # 18 pass with the pinned JDK 8 toolchain
 ```
 
 ## What is not done
 
-- **The CAP has never been loaded on a card or in a simulator.** `lib/vjcre.jar`
-  is in the kit and the off-card verifier is available, but nothing here has run
-  the applet. "It converts" is not "it works".
-- **The Java and the JS model are checked against each other on constants, not
-  on behaviour.** They share no test vectors. A MAC computed over differently
-  ordered bytes would pass the cross-check and fail on a real card.
+- **The CAP has never been loaded on a physical card.** It has now been run in
+  the `vjcre` simulator harness, but that harness uses documented host-side
+  shims for the free simulator's unimplemented Signature/OwnerPIN/HMAC-key
+  surface. Simulator success is behavioural evidence, not card-vendor or
+  GlobalPlatform load evidence.
+- **The remaining model gap is physical/platform behaviour, not APDU/MAC
+  agreement.** The simulator suite now checks live command behaviour; it does
+  not prove card OS transaction atomicity, tear resistance, timing, or the
+  behaviour of a particular Java Card vendor's crypto implementation.
 - **Personalisation is described, not implemented.** The install-data layout is
   documented in the source; there is no issuer backend, no key diversification
   service, and no GlobalPlatform load script.

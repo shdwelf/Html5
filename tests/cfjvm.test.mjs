@@ -22,8 +22,12 @@ function findJavac() {
   if (process.env.JAVA_HOME && existsSync(path.join(process.env.JAVA_HOME, "bin", "javac"))) {
     return path.join(process.env.JAVA_HOME, "bin", "javac");
   }
-  const cache = path.join(root, ".cache", "jdk", "adopt", "tool", "software", "zulu_jdks");
-  if (existsSync(cache)) {
+  const caches = [
+    path.join(root, ".cache", "jdk", "adopt", "tool", "software", "zulu_jdks"),
+    path.join(root, ".cache", "applet-toolchain"),
+  ];
+  for (const cache of caches) {
+    if (!existsSync(cache)) continue;
     for (const d of readdirSync(cache).sort()) {
       const p = path.join(cache, d, "bin", "javac");
       if (existsSync(p)) return p;

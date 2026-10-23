@@ -46,15 +46,49 @@ APPLET_AID="0xA0:0x00:0x00:0x06:0x17:0x02:0x4D:0x50:0x01:0x01:0x00:0x00:0x00:0x0
 
 mkdir -p "$CACHE"
 
+# Pinned 2026-10-23, after the GitHub JDK/runtime survey in
+# docs/github-jdk-runtime-research-2026-10-23.md. The Zulu tree is an
+# unofficial Git-hosted copy, so a moving branch is not an acceptable input:
+# fetch exact commits and verify the executables/jars that will run here.
+MR_ADOPT_COMMIT="7e7d2a8649fbc6d7c590a7e1de8dfaf4289fc04c"
+FEITIAN_COMMIT="013b66f783de2947c45f92a779b332a2b7633a17"
+OBJENESIS_COMMIT="da5fd820038d2b4a3eaf78ff885f445d05adb7f1"
+ZULU8_RELEASE_SHA256="2d22f9cd0f6763ba1ffc1e9a72da7a08a6a76fc90358c521a53b418611e9f86b"
+ZULU8_JAVA_SHA256="2618e30a65f22f2739179de39b8e06027718e544860b5672e1d7470bbce66fe7"
+ZULU8_JAVAC_SHA256="828c2ff27e0a0d6e17abae963ec7e23a4db5b874177ddedac5415780423a83a2"
+JAVACARD_API_SHA256="60bfd9767a6ff3dae69e6b93b0cc99ae798d8f8239812efe6fc9df71acbceead"
+JAVACARD_TOOLS_SHA256="dffae8309e7dd785e9e12e2f2726533acb936ec26ad5d24f5b75859762a7cdfc"
+VJCRE_SHA256="520875d63650b3bfc010c8304d6f67b00599b853be4940f5360b6b1a6221f9ef"
+
+sha256_check() {
+  local expected="$1" file="$2"
+  printf '%s  %s\n' "$expected" "$file" | sha256sum -c - >/dev/null || {
+    echo "!! SHA-256 mismatch for $file" >&2
+    echo "!! expected $expected" >&2
+    exit 1
+  }
+}
+
+checkout_pinned() {
+  local repo="$1" commit="$2"
+  git -C "$repo" fetch --quiet --depth 1 origin "$commit"
+  git -C "$repo" checkout --quiet --detach FETCH_HEAD
+  test "$(git -C "$repo" rev-parse HEAD)" = "$commit" || {
+    echo "!! $repo is not at pinned commit $commit" >&2
+    exit 1
+  }
+}
+
 # ------------------------------------------------------------------ toolchain
 
 if [ ! -x "$JDK_DIR/bin/javac" ]; then
   echo ">> fetching Zulu OpenJDK 8u362 (sparse, blobless)"
   rm -rf "$CACHE/mradopt"
-  git clone --quiet --filter=blob:none --sparse --depth 1 \
+  git clone --quiet --filter=blob:none --sparse --no-checkout --depth 1 \
     https://github.com/MR-Adopt/MR-Adopt.github.io.git "$CACHE/mradopt"
   git -C "$CACHE/mradopt" sparse-checkout set \
     tool/software/zulu_jdks/zulu8.68.0.19-ca-jdk8.0.362-linux_x64
+  checkout_pinned "$CACHE/mradopt" "$MR_ADOPT_COMMIT"
   mv "$CACHE/mradopt/tool/software/zulu_jdks/zulu8.68.0.19-ca-jdk8.0.362-linux_x64" "$JDK_DIR"
   rm -rf "$CACHE/mradopt"
 fi
@@ -64,7 +98,15 @@ if [ ! -f "$KIT/lib/api_classic.jar" ]; then
   rm -rf "$APG_DIR"
   git clone --quiet --depth 1 \
     https://github.com/FeitianSmartcardReader/AppletPlayground.git "$APG_DIR"
+  checkout_pinned "$APG_DIR" "$FEITIAN_COMMIT"
 fi
+
+sha256_check "$ZULU8_RELEASE_SHA256" "$JDK_DIR/release"
+sha256_check "$ZULU8_JAVA_SHA256" "$JDK_DIR/bin/java"
+sha256_check "$ZULU8_JAVAC_SHA256" "$JDK_DIR/bin/javac"
+sha256_check "$JAVACARD_API_SHA256" "$KIT/lib/api_classic.jar"
+sha256_check "$JAVACARD_TOOLS_SHA256" "$KIT/lib/tools.jar"
+sha256_check "$VJCRE_SHA256" "$VJCRE"
 
 export PATH="$JDK_DIR/bin:$PATH"
 echo ">> $(javac -version 2>&1)  api_classic.jar from $(basename "$KIT")"
@@ -121,6 +163,7 @@ if [ ! -f "$CACHE/objenesis.jar" ]; then
   echo ">> fetching easymock/objenesis and compiling it"
   rm -rf "$CACHE/objenesis-src"
   git clone --quiet --depth 1 https://github.com/easymock/objenesis.git "$CACHE/objenesis-src"
+  checkout_pinned "$CACHE/objenesis-src" "$OBJENESIS_COMMIT"
   rm -rf "$CACHE/objenesis-classes"; mkdir -p "$CACHE/objenesis-classes"
   find "$CACHE/objenesis-src/main/src/main/java" -name '*.java' > "$CACHE/objenesis-src.txt"
   javac -nowarn -encoding UTF-8 -d "$CACHE/objenesis-classes" \

@@ -13,6 +13,8 @@ test("SoCal Subsurface boots and its view selector and draggable PIP bars work",
       for (const route of [
         "/socal-subsurface.html",
         "/public/apps/socal-subsurface/index.html",
+        "/socal-subsurface-inlined.html",
+        "/public/apps/socal-subsurface-inlined/index.html",
       ]) {
         const page = await browser.newPage();
         await page.setViewport({ width: 1365, height: 900 });
