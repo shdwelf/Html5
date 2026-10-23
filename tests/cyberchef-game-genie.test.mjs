@@ -1,4 +1,4 @@
-// NES Game Genie op (T3.1): known-answer tests.
+// Game Genie ops (T3.1): NES + SNES known-answer tests.
 // Vector anchor: SXIOPO is the widely published Super Mario Bros. infinite-
 // lives code; decoded here as $91D9 <- $AD, which the encode direction must
 // reproduce exactly. Formulas per tuxnes Game Genie notes / NESDev.
@@ -71,4 +71,24 @@ test("invalid codes and inputs are refused, not guessed", async () => {
   assert.match(text(await opRun(dom, "gameGenieNes", "SXIOP", dec)), /6- or 8-letter/);
   await assert.rejects(opRun(dom, "gameGenieNes", "SXIOPB", dec), /not in the Game Genie alphabet/);
   assert.match(text(await opRun(dom, "gameGenieNes", "", { ...enc, address: "1234" })), /\$8000-\$FFFF/);
+});
+
+const encS = { mode: "encode", address: "C4A704", value: "C9", map: "none" };
+const decS = { mode: "decode", address: "C4A704", value: "C9", map: "none" };
+
+test("SNES: ABCD-EFFF is C4A704:C9 (published worked example) and round-trips", async () => {
+  const dom = createDom();
+  const out = text(await opRun(dom, "gameGenieSnes", "ABCD-EFFF", decS));
+  assert.match(out, /address \(CPU\): \$C4A704/);
+  assert.match(out, /value:\s+\$C9/);
+  const back = text(await opRun(dom, "gameGenieSnes", "", encS));
+  assert.match(back, /SNES Game Genie ABCD-EFFF/);
+});
+
+test("SNES: LoROM conversion and bad input handling", async () => {
+  const dom = createDom();
+  const out = text(await opRun(dom, "gameGenieSnes", "ABCD-EFFF", { ...decS, map: "lorom" }));
+  assert.match(out, /LoROM file offset \(headerless\): \$622704/);
+  assert.match(text(await opRun(dom, "gameGenieSnes", "ABCDEFF", decS)), /8-character/);
+  await assert.rejects(opRun(dom, "gameGenieSnes", "ABCD-EFFZ", decS), /not in the SNES Game Genie alphabet/);
 });

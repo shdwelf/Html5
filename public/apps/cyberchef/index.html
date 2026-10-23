@@ -4383,6 +4383,42 @@ addOp('stegoSpace','Steganography: Whitespace','Steganography','Hide a secret in
     return out||'(no whitespace-hidden message found)';
   }
 });
+addOp('gameGenieSnes','Game Genie: SNES code','Encoding','Decode or encode SNES Game Genie codes (XXXX-XXXX). The first two letters are the replacement value (plain after the letter substitution DF4709156BC8A23E = hex 0-F); the last six are the 24-bit CPU address run through the Game Genie bit transposition (code bits ijklqrst opabcduv wxefghmn -> clear abcdefgh ijklmnop qrstuvwx). CPU->ROM conversion depends on LoROM/HiROM mapping - see the SNES GG Handbook formulas quoted in the op output.',[
+  {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode code'],['encode','Encode code']]},
+  {key:'address',label:'CPU address (hex, encode)',type:'text',default:'C4A704'},
+  {key:'value',label:'Value (hex, encode)',type:'text',default:'C9'},
+  {key:'map',label:'Also show ROM offset for',type:'select',default:'none',options:[['none','No ROM conversion'],['lorom','LoROM'],['hirom','HiROM']]}
+],function(t,a){
+  const LETTERS='DF4709156BC8A23E';
+  const CODE_BITS=['i','j','k','l','q','r','s','t','o','p','a','b','c','d','u','v','w','x','e','f','g','h','m','n'];
+  const CLEAR_BITS=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x'];
+  const bitsOf=(v)=>{const b=[];for(let s=23;s>=0;s--)b.push((v>>s)&1);return b;};
+  const permute=(v,from,to)=>{const m={};bitsOf(v).forEach((bit,i)=>m[from[i]]=bit);return to.reduce((acc,name)=> (acc<<1)|m[name],0);};
+  const hex2=(n)=>'$'+n.toString(16).toUpperCase().padStart(2,'0');
+  const hex6=(n)=>'$'+n.toString(16).toUpperCase().padStart(6,'0');
+  function romLine(addr,map){
+    if(map==='lorom'){ const rom=((addr&0x7FFF)|((addr&0xFF0000)>>1)); return '\nLoROM file offset (headerless): $'+rom.toString(16).toUpperCase().padStart(6,'0')+' (+$200 with copier header)'; }
+    if(map==='hirom'){ const rom=addr&0x3FFFFF; return '\nHiROM file offset (headerless): $'+rom.toString(16).toUpperCase().padStart(6,'0')+' (+$200 with copier header)'; }
+    return '';
+  }
+  if(a.mode==='decode'){
+    const code=String(t).toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(code.length!==8) return 'Enter an 8-character SNES Game Genie code (XXXX-XXXX). Got '+code.length+' usable characters.';
+    const n=[...code].map(ch=>{const i=LETTERS.indexOf(ch); if(i<0) throw new Error('character '+ch+' is not in the SNES Game Genie alphabet'); return i;});
+    const value=(n[0]<<4)|n[1];
+    const enc=n.slice(2).reduce((acc,x)=>(acc<<4)|x,0);
+    const addr=permute(enc,CODE_BITS,CLEAR_BITS);
+    return 'SNES Game Genie '+code.slice(0,4)+'-'+code.slice(4)+'\naddress (CPU): '+hex6(addr)+'\nvalue:         '+hex2(value)+'\nraw form: '+addr.toString(16).toUpperCase().padStart(6,'0')+':'+value.toString(16).toUpperCase().padStart(2,'0')+romLine(addr,a.map);
+  }
+  const A=parseInt(String(a.address).replace(/[^0-9a-fA-F]/g,''),16);
+  const V=parseInt(String(a.value).replace(/[^0-9a-fA-F]/g,''),16);
+  if(!Number.isFinite(A)||A<0||A>0xFFFFFF) return 'Address must be a 24-bit hex CPU address (000000-FFFFFF).';
+  if(!Number.isFinite(V)||V<0||V>0xFF) return 'Value must be a hex byte (00-FF).';
+  const enc=permute(A,CLEAR_BITS,CODE_BITS);
+  const nibbles=[(V>>4)&15,V&15,...[5,4,3,2,1,0].map(s=>(enc>>(s*4))&15)];
+  const code=nibbles.map(i=>LETTERS[i]).join('');
+  return 'SNES Game Genie '+code.slice(0,4)+'-'+code.slice(4)+'\naddress (CPU): '+hex6(A)+'\nvalue:         '+hex2(V)+romLine(A,a.map);
+});
 addOp('gameGenieNes','Game Genie: NES code','Encoding','Decode or encode NES Game Genie codes. 6 letters = address + replacement value; 8 letters adds a compare byte (mapper-bank guard). Letters APZLGITYEOXUKSVN are nibbles 0-F; the decoded address is $8000-based (top bit implicit). Bit formulas per tuxnes Game Genie notes / NESDev.',[
   {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode code'],['encode','Encode code']]},
   {key:'address',label:'Address (hex, encode)',type:'text',default:'91D9'},
