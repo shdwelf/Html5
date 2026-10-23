@@ -103,7 +103,9 @@
       "Ohio River",
       "Kaskaskia River",
       "Mississippi River",
-      "Lake Michigan"
+      "Lake Michigan",
+      "Rock River",
+      "Peoria Lake"
     ],
     "IN": [
       "Indianapolis",
@@ -120,7 +122,8 @@
       "White River",
       "Ohio River",
       "Lake Michigan",
-      "Lake Maxinkuckee"
+      "Lake Maxinkuckee",
+      "Monroe Lake"
     ]
   },
   "note": "Batch 7 = configurations 25 (Minnesota) + 26 (Iowa); rows screened from the runner extract gnis-candidates-batch7.json.",
