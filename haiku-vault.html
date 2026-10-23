@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Haiku Vault Workbench — generate, catalog, seal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:system-ui,sans-serif;margin:2rem auto;max-width:56rem;padding:0 1rem;line-height:1.5}
+  textarea{width:100%;height:6rem;font-family:ui-monospace,monospace}
+  .haiku{background:#f6f8f3;border-left:3px solid #7a9a5b;padding:.5rem .9rem;margin:.5rem 0;white-space:pre-line}
+  .off{border-left-color:#c96}
+  #vault{height:4rem}
+  #err{color:#b00;white-space:pre-wrap}
+  .meta{color:#555;font-size:.9em}
+  button,input{font:inherit;padding:.3rem .6rem}
+</style>
+</head>
+<body>
+<h1>Haiku Vault Workbench</h1>
+<p>Generate seeded 5-7-5 haiku (phrase-bank meter, verified), catalog found or OCR'd
+haiku text into entries, then seal the collection as a
+<span style="font-family:ui-monospace,monospace">haiku-vault-v1</span> file
+(PBKDF2-HMAC-SHA256 · AES-256-GCM, per <em>docs/haiku-vault-format-draft.md</em>).
+Everything runs locally; the collection also persists in this browser.</p>
+
+<p>
+  <label>Seed <input id="seed" type="number" value="42" style="width:7rem"></label>
+  <button id="gen" type="button">Generate haiku</button>
+  <button id="clear" type="button">Clear collection</button>
+  <span id="count" class="meta"></span>
+</p>
+<div id="list"></div>
+
+<h2>Catalog found / OCR text</h2>
+<textarea id="ocr" placeholder="Paste haiku text (three lines per haiku)…"></textarea>
+<p><button id="catalog" type="button">Catalog into collection</button> <span id="ocrnote" class="meta"></span></p>
+
+<h2>Seal / open a vault</h2>
+<p>
+  <label>Passphrase <input id="pass" type="password" value="correct horse battery staple"></label>
+  <button id="seal" type="button">Seal collection</button>
+  <button id="open" type="button">Open vault below</button>
+  <button id="dl" type="button">Download .vault</button>
+</p>
+<textarea id="vault" placeholder="haiku-vault-v1.…"></textarea>
+<div id="err"></div>
+
+<script type="module">
+import { generateHaiku, catalogHaikuText, buildCollectionPayload, sealVault, openVault } from "./js/haiku-vault.js";
+const $ = (id) => document.getElementById(id);
+const KEY = "haiku-vault-workbench-v1";
+let entries = [];
+try { entries = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch { entries = []; }
+
+function save() { localStorage.setItem(KEY, JSON.stringify(entries)); render(); }
+function render() {
+  $("count").textContent = entries.length ? `${entries.length} in collection` : "";
+  $("list").innerHTML = entries.map((e) =>
+    `<div class="haiku${e.meter === "5-7-5" ? "" : " off"}">${e.lines.map(escapeHtml).join("\n")}<div class="meta">${e.id} · ${e.syllables.join("-")} · ${e.meter} · ${escapeHtml(e.source)}</div></div>`).join("");
+}
+function escapeHtml(s) { return String(s).replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c])); }
+
+$("gen").addEventListener("click", () => { entries.push(generateHaiku(Number($("seed").value) || 0)); $("seed").value = (Number($("seed").value) || 0) + 1; save(); });
+$("clear").addEventListener("click", () => { entries = []; save(); });
+$("catalog").addEventListener("click", () => {
+  const { entries: found, leftoverLines } = catalogHaikuText($("ocr").value, { source: "pasted-ocr" });
+  entries.push(...found);
+  $("ocrnote").textContent = `cataloged ${found.length}` + (leftoverLines.length ? `, ${leftoverLines.length} leftover line(s) not in a triple` : "");
+  save();
+});
+$("seal").addEventListener("click", async () => {
+  $("err").textContent = "";
+  try { $("vault").value = await sealVault(buildCollectionPayload(entries, { title: "workbench collection" }), $("pass").value); }
+  catch (e) { $("err").textContent = e.message; }
+});
+$("open").addEventListener("click", async () => {
+  $("err").textContent = "";
+  try {
+    const payload = await openVault($("vault").value, $("pass").value);
+    entries = Array.isArray(payload.entries) ? payload.entries : [];
+    save();
+  } catch (e) { $("err").textContent = e.message; }
+});
+$("dl").addEventListener("click", () => {
+  const blob = new Blob([$("vault").value], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "collection.haiku-vault.txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+render();
+</script>
+</body>
+</html>

@@ -36,6 +36,7 @@ the bytes are the right ones.
 """
 
 import hashlib
+import json
 import os
 import pathlib
 import subprocess
@@ -85,18 +86,38 @@ def looks_like_html(body: bytes) -> bool:
 
 def describe_block(body: bytes) -> str:
     """Why Drive gave us a page instead of a file."""
-    text = body[:200_000].decode("utf-8", "replace").lower()
+    raw = body[:200_000].decode("utf-8", "replace")
+    m = re.search(r"<title[^>]*>(.*?)</title>", raw, re.I | re.S)
+    title = re.sub(r"\s+", " ", m.group(1)).strip()[:120] if m else ""
+    text = raw.lower()
     if "sign in" in text or "accounts.google.com" in text:
-        return "NOT-SHARED (Drive returned a sign-in page; the file is not link-readable)"
+        return f"NOT-SHARED sign-in page (title: {title!r})"
     if "quota" in text or "too many" in text:
-        return "RATE-LIMITED (Drive download quota exceeded for this file)"
+        return f"RATE-LIMITED page (title: {title!r})"
     if "can't scan" in text or "virus" in text:
         return "SCAN-INTERSTITIAL (confirm token not accepted)"
-    return "HTML page returned instead of file bytes"
+    return f"HTML page instead of file bytes (title: {title!r})" if title else "HTML page returned instead of file bytes"
+
+
+BROWSER_UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 
 
 def get(url: str):
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    # curl first: Dropbox shared-link downloads (dl=1/raw=1) rely on redirect
+    # chains + cookies that urllib handles poorly (both the dl.dropboxusercontent
+    # form and www dl=1 were rejected/404 while the link was valid). urllib is
+    # the fallback where curl is unavailable.
+    try:
+        r = subprocess.run(
+            ["curl", "-fSL", "--max-time", "280", "-A", BROWSER_UA,
+             "-c", "/tmp/arena-cookies.txt", "-b", "/tmp/arena-cookies.txt", url],
+            capture_output=True, timeout=300)
+        if r.returncode == 0 and r.stdout:
+            return r.stdout
+    except Exception:                           # noqa: BLE001
+        pass
+    req = urllib.request.Request(url, headers={"User-Agent": BROWSER_UA})
     with urllib.request.urlopen(req, timeout=300) as r:
         return r.read()
 
@@ -132,7 +153,16 @@ def main() -> int:
         # are quota-blocked): ARENA_FETCH_URL_<id with non-alnum -> '_'>.
         san = re.sub(r"[^A-Za-z0-9]", "_", item["id"])
         override = os.environ.get(f"ARENA_FETCH_URL_{san}")
-        urls = ([override] if override else []) + [tmpl.format(id=item["id"]) for tmpl in ENDPOINTS]
+        if not override:
+            # File-based override (e.g. a revocable Dropbox shared link used
+            # when Drive's anonymous quota is exhausted). Removed after use.
+            try:
+                overrides = json.loads((ROOT / ".arena-drive" / "url-overrides.json").read_text())
+                override = overrides.get(item["id"])
+            except Exception:
+                override = None
+        over_list = override if isinstance(override, list) else ([override] if override else [])
+        urls = list(over_list) + [tmpl.format(id=item["id"]) for tmpl in ENDPOINTS]
 
         body, err = None, None
         errs = []

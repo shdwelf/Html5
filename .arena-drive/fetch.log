@@ -1,4 +1,4 @@
-FAIL  Html5-file-manifest-2026-09-27-12c463f.sha256  NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); gdown rc=1: ov-file#faq.
+FAIL  Html5-file-manifest-2026-09-27-12c463f.sha256  NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); gdown rc=1: ov-file#faq.
 
 You may still be able to access the file from the browser:
 
@@ -6,7 +6,7 @@ You may still be able to access the file from the browser:
 
 but Gdown can't. Please check connections and permissions.
 
-FAIL  Html5-file-manifest-2026-09-29-6635490.sha256  NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); gdown rc=1: ov-file#faq.
+FAIL  Html5-file-manifest-2026-09-29-6635490.sha256  NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); gdown rc=1: ov-file#faq.
 
 You may still be able to access the file from the browser:
 
@@ -14,7 +14,7 @@ You may still be able to access the file from the browser:
 
 but Gdown can't. Please check connections and permissions.
 
-FAIL  Html5-file-manifest-2026-09-28-ee1ec85.sha256  NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); gdown rc=1: ov-file#faq.
+FAIL  Html5-file-manifest-2026-09-28-ee1ec85.sha256  NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); gdown rc=1: ov-file#faq.
 
 You may still be able to access the file from the browser:
 
@@ -22,7 +22,7 @@ You may still be able to access the file from the browser:
 
 but Gdown can't. Please check connections and permissions.
 
-FAIL  Html5-worktree-2026-09-27-12c463f.tar.gz  HTTP 404; HTTP 404; HTTP 404; HTTP 404; gdown rc=1: ov-file#faq.
+FAIL  Html5-worktree-2026-09-27-12c463f.tar.gz  RATE-LIMITED page (title: 'Dropbox - Error - Simplify your life'); RATE-LIMITED page (title: 'Dropbox - Error - Simplify your life'); HTTP 404; HTTP 404; HTTP 404; HTTP 404; HTTP 404; gdown rc=1: ov-file#faq.
 
 You may still be able to access the file from the browser:
 
@@ -30,7 +30,7 @@ You may still be able to access the file from the browser:
 
 but Gdown can't. Please check connections and permissions.
 
-FAIL  Z-Lib_1.11.4_APKPure.apk  NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); gdown rc=1: ov-file#faq.
+FAIL  Z-Lib_1.11.4_APKPure.apk  NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); gdown rc=1: ov-file#faq.
 
 You may still be able to access the file from the browser:
 
@@ -38,7 +38,7 @@ You may still be able to access the file from the browser:
 
 but Gdown can't. Please check connections and permissions.
 
-FAIL  z+Library_1.0.5_APKPure.apk  NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); NOT-SHARED (Drive returned a sign-in page; the file is not link-readable); gdown rc=1: ov-file#faq.
+FAIL  z+Library_1.0.5_APKPure.apk  NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); NOT-SHARED sign-in page (title: ''); gdown rc=1: ov-file#faq.
 
 You may still be able to access the file from the browser:
 

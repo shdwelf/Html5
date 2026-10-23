@@ -39,7 +39,7 @@
     .stat span { color: var(--muted); font-size: .86rem; }
     .notice { border-color: #66531e; background: #241d0d; }
     .notice strong { color: var(--warn); }
-    .controls { display: grid; grid-template-columns: 1.4fr .9fr .8fr auto auto; gap: 12px; align-items: end; margin: 18px 0; }
+    .controls { display: grid; grid-template-columns: 1fr 1.3fr .9fr .8fr auto auto; gap: 12px; align-items: end; margin: 18px 0; }
     label { display: grid; gap: 7px; color: var(--muted); font-size: .88rem; font-weight: 650; }
     input, select, textarea, button { border: 1px solid var(--line); border-radius: 10px; background: #081729; color: var(--ink); padding: 10px 12px; font: inherit; }
     button { cursor: pointer; background: #12365d; font-weight: 700; }
@@ -76,15 +76,15 @@
 </head>
 <body>
   <header>
-    <div class="eyebrow">S6 · Historical networks · Phase 0/1 vertical slice</div>
-    <h1>Keyhole BBS, as evidence—not as a pin.</h1>
-    <p class="lede">A one-system historical-network slice for the Denver dial-up board documented in 1994–1996. Every normalized claim resolves to a dated observation, a snapshot locator, a rights status, and an explicit statement of what the record does not prove.</p>
+    <div class="eyebrow">S6 · Historical networks · evidence packs</div>
+    <h1 id="packHeading">Keyhole BBS, as evidence—not as a pin.</h1>
+    <p class="lede" id="packLede">A one-system historical-network slice for the Denver dial-up board documented in 1994–1996. Every normalized claim resolves to a dated observation, a snapshot locator, a rights status, and an explicit statement of what the record does not prove.</p>
   </header>
 
   <main>
     <section class="card notice" aria-label="Safety and evidence notice">
       <strong>Historical record only.</strong>
-      The telephone number below belongs to dated 1990s listings; do not dial or probe it. Denver is a city-level place label with no plotted coordinate. USBBS remains citation-only in this repository, and the TEXTFILES record is a retrospective compilation whose per-record source is unresolved.
+      Any telephone number shown belongs to dated historical listings; do not dial or probe it. <span id="packNotice">Denver is a city-level place label with no plotted coordinate. USBBS remains citation-only in this repository, and the TEXTFILES record is a retrospective compilation whose per-record source is unresolved.</span>
     </section>
 
     <section class="stats" aria-label="Evidence pack summary">
@@ -95,6 +95,9 @@
     </section>
 
     <section class="card controls" aria-label="Record controls">
+      <label>Evidence pack
+        <select id="packSelect"></select>
+      </label>
       <label>Search observations
         <input id="searchInput" type="search" placeholder="Name, phone, sysop, locality…">
       </label>
@@ -112,20 +115,8 @@
       <div class="stack">
         <section class="card" aria-labelledby="placeHeading">
           <h2 id="placeHeading">Place / topology — schematic, not a map</h2>
-          <div class="svg-wrap">
-            <svg viewBox="0 0 520 250" width="100%" role="img" aria-labelledby="svgTitle svgDesc">
-              <title id="svgTitle">Denver city-level uncertainty box containing one Keyhole BBS node</title>
-              <desc id="svgDesc">The sources name Denver only. There is no exact site coordinate and no network edge.</desc>
-              <rect x="35" y="30" width="450" height="180" rx="24" fill="rgba(103,232,249,.07)" stroke="#67e8f9" stroke-dasharray="8 7"></rect>
-              <text x="55" y="62" font-size="18" font-weight="700">Denver, Colorado</text>
-              <text class="muted-text" x="55" y="86" font-size="13">city-level place · not geocoded · no exact pin</text>
-              <circle cx="260" cy="140" r="28" fill="#12365d" stroke="#67e8f9" stroke-width="2"></circle>
-              <text x="260" y="136" font-size="13" font-weight="700" text-anchor="middle">KEYHOLE</text>
-              <text class="muted-text" x="260" y="155" font-size="11" text-anchor="middle">BBS</text>
-              <text class="muted-text" x="260" y="192" font-size="12" text-anchor="middle">3 observations · 0 edges</text>
-            </svg>
-          </div>
-          <p class="small muted">No FidoNet address, mail route, physical cable, street address, or current telephone assignment is inferred. A negative NodelistDB search is recorded below, not converted into proof of absence.</p>
+          <div class="svg-wrap" id="schematic"></div>
+          <p class="small muted" id="schematicNote">No FidoNet address, mail route, physical cable, street address, or current telephone assignment is inferred. A negative NodelistDB search is recorded below, not converted into proof of absence.</p>
           <div id="validationSummary"></div>
         </section>
 
@@ -186,7 +177,7 @@
       <div id="importSummary" class="muted">No local import parsed yet.</div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Locator</th><th>Phone</th><th>System</th><th>Place / years</th><th>Sysop</th><th>Comparison with Denver fixture</th></tr></thead>
+          <thead><tr><th>Locator</th><th>Phone</th><th>System</th><th>Place / years</th><th>Sysop</th><th>Comparison with pack's first record</th></tr></thead>
           <tbody id="importRows"></tbody>
         </table>
       </div>
@@ -194,14 +185,19 @@
   </main>
 
   <footer>
-    Source fixture: <code>resources/historical-network/keyhole-evidence-pack-2026-10-22.json</code> ·
+    Source packs: <code>resources/historical-network/keyhole-evidence-pack-2026-10-22.json</code> ·
+    <code>resources/historical-network/comms-history-seed-2026-10-23.json</code> ·
+    <code>resources/historical-network/cicada-3301-poster-seed-2026-10-23.json</code> ·
     Scope: <a href="docs/historical-network-viewer-scope-2026-10-22.md">historical-network viewer scope</a> ·
-    Fixture notes: <a href="docs/historical-network-keyhole-fixture-2026-10-22.md">Round 17 Keyhole fixture</a> ·
+    Layer notes: <a href="docs/fidonet-arpanet-map-layers-2026-10-23.md">FidoNet/ARPANET layers</a> ·
+    <a href="docs/cicada-3301-qr-locations-2026-10-23.md">Cicada 3301 poster locations</a> ·
     FidoNet adapter: <a href="docs/historical-network-fidonet-adapter-2026-10-22.md">Round 18 local import and nodediff contract</a>
   </footer>
 
   <script type="module">
     import { KEYHOLE_EVIDENCE_PACK } from "./js/historical-network-keyhole-data.js";
+    import { COMMS_HISTORY_PACK } from "./js/historical-network-comms-data.js";
+    import { CICADA_3301_PACK } from "./js/historical-network-cicada-data.js";
     import {
       assessMergeCandidate,
       detectHistoricalImportFormat,
@@ -215,14 +211,63 @@
     } from "./js/historical-network.js";
 
     const $ = (id) => document.getElementById(id);
-    const pack = KEYHOLE_EVIDENCE_PACK;
-    const snapshots = new Map(pack.snapshots.map((snapshot) => [snapshot.id, snapshot]));
-    const validation = validateEvidencePack(pack);
-    const summary = summarizeEvidencePack(pack);
-    let selectedObservationId = pack.observations[0]?.id ?? null;
+
+    // Bundled evidence packs. Every pack is a citation-only, schemaVersion-1
+    // fixture generated from resources/historical-network/*.json; switching
+    // packs re-renders everything below and never loads anything remotely.
+    const PACKS = [
+      {
+        id: KEYHOLE_EVIDENCE_PACK.id,
+        label: "Keyhole BBS — Denver evidence slice (1994–1996)",
+        heading: "Keyhole BBS, as evidence—not as a pin.",
+        lede: "A one-system historical-network slice for the Denver dial-up board documented in 1994–1996. Every normalized claim resolves to a dated observation, a snapshot locator, a rights status, and an explicit statement of what the record does not prove.",
+        notice: "Denver is a city-level place label with no plotted coordinate. USBBS remains citation-only in this repository, and the TEXTFILES record is a retrospective compilation whose per-record source is unresolved.",
+        schematicNote: "No FidoNet address, mail route, physical cable, street address, or current telephone assignment is inferred. A negative NodelistDB search is recorded below, not converted into proof of absence.",
+        pack: KEYHOLE_EVIDENCE_PACK,
+      },
+      {
+        id: COMMS_HISTORY_PACK.id,
+        label: "Comms history — ARPANET · FidoNet origin · Mojave payphone",
+        heading: "ARPANET, FidoNet, and a desert payphone — as cited places.",
+        lede: "The first four ARPANET IMP sites (1969), FidoNet's San Francisco origin (1984), and the Mojave phone booth, as an observation-first layer. Coordinates are published approximations with context radii, not surveyed pins; edges are logical, never claimed cable routes.",
+        notice: "The Mojave booth was removed on 17 May 2000; nothing remains on site. No FidoNet nodelist data is bundled — nodelists remain local-import-only under the checked prologue rights; use the local import below with your own snapshot.",
+        schematicNote: "Schematic lon/lat scatter of published coordinates (context radii apply — see each record). The UCLA→SRI line marks the first host-to-host message of 29 Oct 1969 as a logical edge; the historical circuit route is not claimed.",
+        pack: COMMS_HISTORY_PACK,
+      },
+      {
+        id: CICADA_3301_PACK.id,
+        label: "Cicada 3301 (2012) — US QR poster sites",
+        heading: "Cicada 3301's 2012 poster sites — history, not a treasure map.",
+        lede: "Eight US coordinates published by Cicada 3301 on 9 January 2012, where solvers found QR-code posters. The posters were paper; they have been gone since 2012, and every record says so. No QR payloads or puzzle content are included.",
+        notice: "These are historical January-2012 locations. Do not visit expecting posters, and do not treat published coordinates as an invitation onto private property.",
+        schematicNote: "Schematic lon/lat scatter of the coordinates as published in 2012 (verbatim, including solver-transcribed precision), each with a 300 m context radius. They mark where a poster was reported, not anything present today.",
+        pack: CICADA_3301_PACK,
+      },
+    ];
+
+    let pack = PACKS[0].pack;
+    let snapshots = new Map();
+    let validation = null;
+    let summary = null;
+    let selectedObservationId = null;
     let localPack = null;
     let importByteBuffer = null;
     const MAX_IMPORT_BYTES = 5_000_000;
+
+    const nodeByObservation = () => {
+      const map = new Map();
+      for (const node of pack.nodes ?? []) {
+        for (const id of node.observationIds ?? []) map.set(id, node);
+      }
+      return map;
+    };
+    let observationNode = new Map();
+    const placeById = () => new Map((pack.places ?? []).map((place) => [place.id, place]));
+
+    function placeFor(observation) {
+      const node = observationNode.get(observation.id);
+      return node ? placeById().get(node.placeId) : null;
+    }
 
     const el = (tag, className = "", text = "") => {
       const node = document.createElement(tag);
@@ -242,9 +287,18 @@
       return [fields.locality, fields.state].filter(Boolean).join(", ") || "not stated";
     };
 
+    const placeLabelFor = (observation) => {
+      const place = placeFor(observation);
+      if (!place) return placeText(observation);
+      const coords = place.lat != null && place.lon != null
+        ? ` · ${place.lat}, ${place.lon}`
+        : " · not geocoded";
+      return `${place.label}${coords} (${place.granularity})`;
+    };
+
     function includesSelectedYear(observation) {
       const selected = Number($("yearInput").value);
-      if (selected <= 1993) return true;
+      if (selected <= Number($("yearInput").min)) return true;
       const start = Date.parse(observation.validFrom ?? observation.observedAt ?? "");
       const end = Date.parse(observation.validTo ?? observation.observedAt ?? observation.validFrom ?? "");
       const yearStart = Date.UTC(selected, 0, 1);
@@ -277,7 +331,7 @@
           dateSpan(observation),
           snapshot?.title ?? observation.snapshotId,
           `${observation.fields.name ?? "Unnamed"}\n${observation.fields.phone ?? ""}`,
-          placeText(observation),
+          placeLabelFor(observation),
           observation.evidenceTier,
         ];
         for (const value of cells) {
@@ -327,9 +381,14 @@
       appendDefinition(list, "Locator", observation.locator);
       appendDefinition(list, "Date / span", dateSpan(observation));
       appendDefinition(list, "Historical phone", fields.phone);
-      appendDefinition(list, "Place", `${placeText(observation)} (city-level; not geocoded)`);
+      appendDefinition(list, "Place", placeLabelFor(observation));
       appendDefinition(list, "Sysop", fields.sysop);
       appendDefinition(list, "Software", fields.software);
+      const knownFields = new Set(["name", "phone", "locality", "state", "sysop", "software", "years"]);
+      for (const [key, value] of Object.entries(fields)) {
+        if (knownFields.has(key) || value == null || value === "") continue;
+        appendDefinition(list, key, Array.isArray(value) ? value.join(", ") : String(value));
+      }
       appendDefinition(list, "Capture status", snapshot?.captureStatus);
       appendDefinition(list, "SHA-256", snapshot?.sha256 ?? "null — not locally captured");
       appendDefinition(list, "Citation URI", snapshot?.captureUri);
@@ -374,6 +433,9 @@
     function renderMerges() {
       const host = $("mergeList");
       host.textContent = "";
+      if (!(pack.mergeLog ?? []).length && !(pack.rejectedMatches ?? []).length) {
+        host.append(el("p", "muted", "No merges: every node in this pack rests on a single cited observation, so there was nothing to merge or reject."));
+      }
       for (const merge of pack.mergeLog) {
         const item = el("article");
         const title = el("h3", "", merge.id);
@@ -387,7 +449,7 @@
         );
         host.append(item);
       }
-      for (const rejected of pack.rejectedMatches) {
+      for (const rejected of pack.rejectedMatches ?? []) {
         const item = el("article");
         const meta = el("p");
         meta.append(el("span", "pill bad", "rejected"));
@@ -397,7 +459,10 @@
 
       const searches = $("negativeSearchList");
       searches.textContent = "";
-      for (const search of pack.negativeSearches) {
+      if (!(pack.negativeSearches ?? []).length) {
+        searches.append(el("p", "muted", "No negative searches recorded for this pack."));
+      }
+      for (const search of pack.negativeSearches ?? []) {
         const item = el("article");
         item.append(
           el("h3", "", search.source),
@@ -510,27 +575,140 @@
       }
     }
 
-    for (const snapshot of pack.snapshots) {
-      const option = document.createElement("option");
-      option.value = snapshot.id;
-      option.textContent = snapshot.title;
-      $("snapshotSelect").append(option);
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const svgEl = (tag, attrs = {}, text = "") => {
+      const node = document.createElementNS(SVG_NS, tag);
+      for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
+      if (text) node.textContent = text;
+      return node;
+    };
+
+    function renderSchematic() {
+      const host = $("schematic");
+      host.textContent = "";
+      const places = (pack.places ?? []).filter((place) => place.lat != null && place.lon != null);
+      const svg = svgEl("svg", { viewBox: "0 0 520 250", width: "100%", role: "img" });
+      svg.append(svgEl("title", {}, `${pack.title} — schematic place view`));
+      if (!places.length) {
+        // Ungocoded pack (e.g. Keyhole): an uncertainty box, never a pin.
+        const place = (pack.places ?? [])[0];
+        svg.append(svgEl("rect", { x: 35, y: 30, width: 450, height: 180, rx: 24, fill: "rgba(103,232,249,.07)", stroke: "#67e8f9", "stroke-dasharray": "8 7" }));
+        svg.append(svgEl("text", { x: 55, y: 62, "font-size": 18, "font-weight": 700 }, place?.label ?? "Place not geocoded"));
+        svg.append(svgEl("text", { x: 55, y: 86, "font-size": 13, class: "muted-text" }, `${place?.granularity ?? "city"}-level place · not geocoded · no exact pin`));
+        svg.append(svgEl("text", { x: 55, y: 120, "font-size": 13, class: "muted-text" }, `${pack.observations.length} observations · ${(pack.edges ?? []).length} edges · coordinates deliberately absent`));
+        host.append(svg);
+        return;
+      }
+      const lons = places.map((p) => p.lon);
+      const lats = places.map((p) => p.lat);
+      const pad = (values) => {
+        const min = Math.min(...values), max = Math.max(...values);
+        const span = Math.max(max - min, 1);
+        return [min - span * 0.12, max + span * 0.12];
+      };
+      const [lon0, lon1] = pad(lons);
+      const [lat0, lat1] = pad(lats);
+      const X = (lon) => 30 + ((lon - lon0) / (lon1 - lon0)) * 460;
+      const Y = (lat) => 220 - ((lat - lat0) / (lat1 - lat0)) * 190;
+      const placeOfNode = new Map((pack.nodes ?? []).map((node) => [node.id, placeById().get(node.placeId)]));
+      for (const edge of pack.edges ?? []) {
+        const a = placeOfNode.get(edge.fromNodeId);
+        const b = placeOfNode.get(edge.toNodeId);
+        if (a?.lat != null && b?.lat != null) {
+          svg.append(svgEl("line", { x1: X(a.lon), y1: Y(a.lat), x2: X(b.lon), y2: Y(b.lat), stroke: "#67e8f9", "stroke-width": 1.5, "stroke-dasharray": "5 4" }));
+        }
+      }
+      places.forEach((place, i) => {
+        const x = X(place.lon), y = Y(place.lat);
+        svg.append(svgEl("circle", { cx: x, cy: y, r: 6, fill: "#12365d", stroke: "#67e8f9", "stroke-width": 2 }));
+        const anchor = x > 380 ? "end" : "start";
+        const dx = anchor === "end" ? -10 : 10;
+        const label = place.label.split("—")[0].split("(")[0].trim();
+        svg.append(svgEl("text", { x: x + dx, y: y - 6 - (i % 2) * 10, "font-size": 10.5, "text-anchor": anchor }, label));
+        svg.append(svgEl("text", { x: x + dx, y: y + 10 - (i % 2) * 10, "font-size": 9, class: "muted-text", "text-anchor": anchor }, `${place.lat}, ${place.lon}`));
+      });
+      svg.append(svgEl("text", { x: 30, y: 242, "font-size": 10, class: "muted-text" }, "schematic scatter · context radii apply · not a survey map"));
+      host.append(svg);
     }
 
-    $("statObservations").textContent = String(summary.observationCount);
-    $("statSnapshots").textContent = String(summary.snapshotCount);
-    $("statSpan").textContent = `${summary.firstObserved?.slice(0, 4)}–${summary.lastObserved?.slice(0, 4)}`;
-    $("statReady").textContent = validation.captureReady ? "YES" : "NO";
+    function packYearBounds() {
+      const years = [];
+      for (const o of pack.observations) {
+        for (const value of [o.validFrom, o.validTo, o.observedAt]) {
+          const year = Number(String(value ?? "").slice(0, 4));
+          if (Number.isFinite(year) && year > 1000) years.push(year);
+        }
+      }
+      return years.length ? [Math.min(...years), Math.max(...years)] : [1993, 1997];
+    }
+
+    function setPack(entry) {
+      pack = entry.pack;
+      snapshots = new Map(pack.snapshots.map((snapshot) => [snapshot.id, snapshot]));
+      validation = validateEvidencePack(pack);
+      summary = summarizeEvidencePack(pack);
+      observationNode = nodeByObservation();
+      selectedObservationId = pack.observations[0]?.id ?? null;
+
+      $("packHeading").textContent = entry.heading;
+      $("packLede").textContent = entry.lede;
+      $("packNotice").textContent = entry.notice;
+      $("schematicNote").textContent = entry.schematicNote;
+
+      const snapshotSelect = $("snapshotSelect");
+      snapshotSelect.textContent = "";
+      const all = document.createElement("option");
+      all.value = "";
+      all.textContent = "All snapshots";
+      snapshotSelect.append(all);
+      for (const snapshot of pack.snapshots) {
+        const option = document.createElement("option");
+        option.value = snapshot.id;
+        option.textContent = snapshot.title;
+        snapshotSelect.append(option);
+      }
+
+      const [minYear, maxYear] = packYearBounds();
+      const yearInput = $("yearInput");
+      yearInput.min = String(minYear);
+      yearInput.max = String(Math.max(maxYear, minYear + 1));
+      yearInput.value = String(minYear);
+      $("yearOutput").textContent = "all years";
+
+      $("statObservations").textContent = String(summary.observationCount);
+      $("statSnapshots").textContent = String(summary.snapshotCount);
+      $("statSpan").textContent = summary.firstObserved && summary.lastObserved
+        ? `${summary.firstObserved.slice(0, 4)}–${summary.lastObserved.slice(0, 4)}`
+        : "—";
+      $("statReady").textContent = validation.captureReady ? "YES" : "NO";
+
+      renderSchematic();
+      renderValidation();
+      renderMerges();
+      renderRecords();
+      renderDetail();
+    }
+
+    for (const entry of PACKS) {
+      const option = document.createElement("option");
+      option.value = entry.id;
+      option.textContent = entry.label;
+      $("packSelect").append(option);
+    }
+    $("packSelect").addEventListener("change", () => {
+      const entry = PACKS.find((row) => row.id === $("packSelect").value) ?? PACKS[0];
+      setPack(entry);
+    });
 
     $("searchInput").addEventListener("input", renderRecords);
     $("snapshotSelect").addEventListener("change", renderRecords);
     $("yearInput").addEventListener("input", () => {
       const year = Number($("yearInput").value);
-      $("yearOutput").textContent = year <= 1993 ? "all years" : String(year);
+      $("yearOutput").textContent = year <= Number($("yearInput").min) ? "all years" : String(year);
       renderRecords();
     });
-    $("downloadJson").addEventListener("click", () => download("keyhole-evidence-pack.json", `${JSON.stringify(pack, null, 2)}\n`, "application/json"));
-    $("downloadCsv").addEventListener("click", () => download("keyhole-observations.csv", observationsToCsv(pack), "text/csv"));
+    $("downloadJson").addEventListener("click", () => download(`${pack.id}.json`, `${JSON.stringify(pack, null, 2)}\n`, "application/json"));
+    $("downloadCsv").addEventListener("click", () => download(`${pack.id}-observations.csv`, observationsToCsv(pack), "text/csv"));
     $("parseImport").addEventListener("click", () => { void renderLocalImport(); });
     $("downloadImport").addEventListener("click", () => {
       if (localPack) download("local-bbs-list-observations.json", `${JSON.stringify(localPack, null, 2)}\n`, "application/json");
@@ -552,10 +730,7 @@
       await renderLocalImport();
     });
 
-    renderValidation();
-    renderMerges();
-    renderRecords();
-    renderDetail();
+    setPack(PACKS[0]);
   </script>
 </body>
 </html>

@@ -114,7 +114,7 @@
 
 <header>
   <button id="btn-hamburger" title="Toggle operations panel">☰</button><div class="brand">Cyber<span>Chef</span></div>
-  <div class="sub">HTML5 · 511 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
+  <div class="sub">HTML5 · 515 recipes · safe-source encoding / cipher labs · Ghidra static preflight · offline virus encyclopedia</div>
   <div class="spacer"></div>
   <button class="btn" id="btn-clear">Clear Recipe</button>
   <button class="btn" id="btn-load-examples">Load Examples</button>
@@ -3180,6 +3180,7 @@ addOp('antiDebugScan','Anti-Debug / Anti-Disassembly Scan','EXE Protection',
    RECIPE PACKS (cipher suites)
 ============================================================ */
 const RECIPE_PACKS={
+ 'Spotlight — Retro gaming: Game Genie family (NES · SNES · Game Boy · Genesis)':[['gameGenieNes',{}],['gameGenieSnes',{}],['gameGenieGb',{}],['gameGenieGenesis',{}]],
  'MZ Header Preflight — static triage before a Ghidra import':[['mzTriage',{}]],
  'Legacy P2PKH Coin Addresses (BTC, DOGE, DASH, LTC)':[['btcLegacyP2PKH',{}],['dogeLegacyP2PKH',{}],['dashLegacyP2PKH',{}],['ltcLegacyP2PKH',{}]],
  'Modern Card & Coin Marketplaces (Cardano Shelley & Tickers)':[['cardanoShelley',{}],['coinTicker',{view:'card'}],['stockTicker',{view:'card'}]],
@@ -4383,29 +4384,234 @@ addOp('stegoSpace','Steganography: Whitespace','Steganography','Hide a secret in
     return out||'(no whitespace-hidden message found)';
   }
 });
-addOp('stegoLSB','Steganography: Image LSB','Steganography','Hide a message in the least-significant bits of an image. Renders an image with the secret embedded; extract by re-running. (Visual demo — encodes text into a generated image\'s pixel LSBs.)',[
-  {key:'secret',label:'Secret',type:'text',default:'SECRET'},
-  {key:'mode',label:'Mode',type:'select',default:'encode',options:[['encode','Encode'],['decode','Decode']]}
+addOp('gameGenieGenesis','Game Genie: Genesis / Mega Drive code','Encoding','Decode or encode Genesis/Mega Drive Game Genie codes (XXXX-XXXX). Each character is 5 bits from the alphabet ABCDEFGHJKLMNPRSTVWXYZ0123456789 (no I, O, Q or U); the 40-bit block goes through a bit transposition (code bits ijklmnop IJKLMNOP ABCDEFGH defghabc QRSTUVWX -> clear ABCDEFGH IJKLMNOP QRSTUVWX abcdefgh ijklmnop) yielding a 24-bit ROM address and a 16-bit replacement word. Scheme per GameHacking.org encryption notes (Merlyn LeRoy). Genesis codes patch a whole word, so addresses are normally even.',[
+  {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode code'],['encode','Encode code']]},
+  {key:'address',label:'ROM address (hex, encode)',type:'text',default:'BE47BD'},
+  {key:'value',label:'Value word (hex, encode)',type:'text',default:'1F00'}
 ],function(t,a){
+  const ALPHA='ABCDEFGHJKLMNPRSTVWXYZ0123456789';
+  const CODE_BITS=[...'ijklmnop',...'IJKLMNOP',...'ABCDEFGH',...'defghabc',...'QRSTUVWX'];
+  const CLEAR_BITS=[...'ABCDEFGH',...'IJKLMNOP',...'QRSTUVWX',...'abcdefgh',...'ijklmnop'];
+  // 40-bit values exceed the JS 32-bit bitwise range; permute via BigInt.
+  const permute40=(v,from,to)=>{const bits=[];for(let s=39n;s>=0n;s--)bits.push(Number((v>>s)&1n)); const m={}; bits.forEach((b,i)=>m[from[i]]=b); let out=0n; for(const name of to) out=(out<<1n)|BigInt(m[name]); return out;};
+  const hex2=(n)=>'$'+n.toString(16).toUpperCase().padStart(2,'0');
+  const hex6=(n)=>'$'+n.toString(16).toUpperCase().padStart(6,'0');
+  if(a.mode==='decode'){
+    const code=String(t).toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(code.length!==8) return 'Enter an 8-character Genesis Game Genie code (XXXX-XXXX). Got '+code.length+' usable characters.';
+    let v=0n;
+    for(const ch of code){ const i=ALPHA.indexOf(ch); if(i<0) throw new Error('character '+ch+' is not in the Genesis Game Genie alphabet (no I, O, Q, U)'); v=(v<<5n)|BigInt(i); }
+    const clear=permute40(v,CODE_BITS,CLEAR_BITS);
+    const address=Number(clear>>16n), value=Number(clear&0xFFFFn);
+    return 'Genesis / Mega Drive Game Genie '+code.slice(0,4)+'-'+code.slice(4)+'\naddress: '+hex6(address)+'\nvalue:   $'+value.toString(16).toUpperCase().padStart(4,'0')+' (16-bit word)'+(address%2?'\nnote: odd address - Genesis Game Genie patches aligned words, so check the address':'')+'\nraw form: '+address.toString(16).toUpperCase().padStart(6,'0')+':'+value.toString(16).toUpperCase().padStart(4,'0');
+  }
+  const parseHex=(s)=>{const c=String(s).replace(/[^0-9a-fA-F]/g,''); return c===''?NaN:parseInt(c,16);};
+  const A=parseHex(a.address), V=parseHex(a.value);
+  if(!Number.isFinite(A)||A<0||A>0xFFFFFF) return 'Address must be a 24-bit hex ROM address (000000-FFFFFF).';
+  if(!Number.isFinite(V)||V<0||V>0xFFFF) return 'Value must be a 16-bit hex word (0000-FFFF) - the Genesis Game Genie replaces a whole word.';
+  const enc=permute40((BigInt(A)<<16n)|BigInt(V),CLEAR_BITS,CODE_BITS);
+  let code='';
+  for(let i=0;i<8;i++) code+=ALPHA[Number((enc>>(35n-BigInt(5*i)))&31n)];
+  return 'Genesis / Mega Drive Game Genie '+code.slice(0,4)+'-'+code.slice(4)+'\naddress: '+hex6(A)+'\nvalue:   $'+V.toString(16).toUpperCase().padStart(4,'0');
+});
+addOp('gameGenieGb','Game Genie: Game Boy / Game Gear code','Encoding','Decode or encode Game Boy / Game Gear Game Genie codes (XXX-XXX or XXX-XXX-XXX, plain hex characters). Value is stored plain; the address first digit is XORed with F; the optional check/compare byte hides in the 1st and 3rd digits of the last group (middle digit is ignored): compare = ROR2(those two digits as a byte) XOR BA. Scheme per GameHacking.org encryption notes (Nick Joslin). Banked ROMs only honour the code when the compare matches, if given.',[
+  {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode code'],['encode','Encode code']]},
+  {key:'address',label:'ROM address (hex, encode)',type:'text',default:'B123'},
+  {key:'value',label:'Value (hex, encode)',type:'text',default:'FF'},
+  {key:'compare',label:'Compare (hex, blank = none)',type:'text',default:''}
+],function(t,a){
+  const hex2=(n)=>'$'+n.toString(16).toUpperCase().padStart(2,'0');
+  const hex4=(n)=>'$'+n.toString(16).toUpperCase().padStart(4,'0');
+  const ror2=(b)=>((b>>2)|((b&3)<<6))&255;
+  const rol2=(b)=>(((b<<2)&255)|(b>>6))&255;
+  const parseHex=(s)=>{const c=String(s).replace(/[^0-9a-fA-F]/g,''); return c===''?NaN:parseInt(c,16);};
+  if(a.mode==='decode'){
+    const code=String(t).toUpperCase().replace(/[^0-9A-F]/g,'');
+    if(code.length!==6&&code.length!==9) return 'Enter a 6- or 9-character Game Boy/Game Gear Game Genie code (XXX-XXX[-XXX], hex characters). Got '+code.length+' usable characters.';
+    const n=[...code].map(ch=>parseInt(ch,16));
+    const value=(n[0]<<4)|n[1];
+    const address=((n[5]^15)<<12)|(n[2]<<8)|(n[3]<<4)|n[4];
+    let out='Game Boy / Game Gear Game Genie '+code.slice(0,3)+'-'+code.slice(3,6)+(code.length===9?'-'+code.slice(6):'')+'\naddress: '+hex4(address)+'\nvalue:   '+hex2(value);
+    if(code.length===9){ const cmp=ror2((n[6]<<4)|n[8])^0xBA; out+='\ncompare: '+hex2(cmp)+' (middle digit '+code[7]+' of the last group is ignored by the hardware)'; }
+    else out+='\ncompare: (none - unconditional replacement)';
+    out+='\nraw form: '+address.toString(16).toUpperCase().padStart(4,'0')+':'+value.toString(16).toUpperCase().padStart(2,'0');
+    return out;
+  }
+  const A=parseHex(a.address), V=parseHex(a.value);
+  const cmpRaw=String(a.compare).replace(/[^0-9a-fA-F]/g,'');
+  const C=cmpRaw===''?null:parseInt(cmpRaw,16);
+  if(!Number.isFinite(A)||A<0||A>0xFFFF) return 'Address must be a hex ROM address (0000-FFFF; switchable banks live at 4000-7FFF).';
+  if(!Number.isFinite(V)||V<0||V>0xFF) return 'Value must be a hex byte (00-FF).';
+  if(C!==null&&(!Number.isFinite(C)||C<0||C>0xFF)) return 'Compare must be a hex byte (00-FF) or blank.';
+  const d=[(A>>12)&15,(A>>8)&15,(A>>4)&15,A&15];
+  const nibbles=[(V>>4)&15,V&15,d[1],d[2],d[3],d[0]^15];
+  if(C!==null){ const x=rol2(C^0xBA); nibbles.push((x>>4)&15,0,x&15); }
+  const code=nibbles.map(i=>i.toString(16).toUpperCase()).join('');
+  return 'Game Boy / Game Gear Game Genie '+code.slice(0,3)+'-'+code.slice(3,6)+(code.length===9?'-'+code.slice(6):'')+'\naddress: '+hex4(A)+'\nvalue:   '+hex2(V)+(C===null?'\ncompare: (none)':'\ncompare: '+hex2(C)+' (ignored middle digit emitted as 0)');
+});
+addOp('gameGenieSnes','Game Genie: SNES code','Encoding','Decode or encode SNES Game Genie codes (XXXX-XXXX). The first two letters are the replacement value (plain after the letter substitution DF4709156BC8A23E = hex 0-F); the last six are the 24-bit CPU address run through the Game Genie bit transposition (code bits ijklqrst opabcduv wxefghmn -> clear abcdefgh ijklmnop qrstuvwx). CPU->ROM conversion depends on LoROM/HiROM mapping - see the SNES GG Handbook formulas quoted in the op output.',[
+  {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode code'],['encode','Encode code']]},
+  {key:'address',label:'CPU address (hex, encode)',type:'text',default:'C4A704'},
+  {key:'value',label:'Value (hex, encode)',type:'text',default:'C9'},
+  {key:'map',label:'Also show ROM offset for',type:'select',default:'none',options:[['none','No ROM conversion'],['lorom','LoROM'],['hirom','HiROM']]}
+],function(t,a){
+  const LETTERS='DF4709156BC8A23E';
+  const CODE_BITS=['i','j','k','l','q','r','s','t','o','p','a','b','c','d','u','v','w','x','e','f','g','h','m','n'];
+  const CLEAR_BITS=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x'];
+  const bitsOf=(v)=>{const b=[];for(let s=23;s>=0;s--)b.push((v>>s)&1);return b;};
+  const permute=(v,from,to)=>{const m={};bitsOf(v).forEach((bit,i)=>m[from[i]]=bit);return to.reduce((acc,name)=> (acc<<1)|m[name],0);};
+  const hex2=(n)=>'$'+n.toString(16).toUpperCase().padStart(2,'0');
+  const hex6=(n)=>'$'+n.toString(16).toUpperCase().padStart(6,'0');
+  function romLine(addr,map){
+    if(map==='lorom'){ const rom=((addr&0x7FFF)|((addr&0xFF0000)>>1)); return '\nLoROM file offset (headerless): $'+rom.toString(16).toUpperCase().padStart(6,'0')+' (+$200 with copier header)'; }
+    if(map==='hirom'){ const rom=addr&0x3FFFFF; return '\nHiROM file offset (headerless): $'+rom.toString(16).toUpperCase().padStart(6,'0')+' (+$200 with copier header)'; }
+    return '';
+  }
+  if(a.mode==='decode'){
+    const code=String(t).toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(code.length!==8) return 'Enter an 8-character SNES Game Genie code (XXXX-XXXX). Got '+code.length+' usable characters.';
+    const n=[...code].map(ch=>{const i=LETTERS.indexOf(ch); if(i<0) throw new Error('character '+ch+' is not in the SNES Game Genie alphabet'); return i;});
+    const value=(n[0]<<4)|n[1];
+    const enc=n.slice(2).reduce((acc,x)=>(acc<<4)|x,0);
+    const addr=permute(enc,CODE_BITS,CLEAR_BITS);
+    return 'SNES Game Genie '+code.slice(0,4)+'-'+code.slice(4)+'\naddress (CPU): '+hex6(addr)+'\nvalue:         '+hex2(value)+'\nraw form: '+addr.toString(16).toUpperCase().padStart(6,'0')+':'+value.toString(16).toUpperCase().padStart(2,'0')+romLine(addr,a.map);
+  }
+  const A=parseInt(String(a.address).replace(/[^0-9a-fA-F]/g,''),16);
+  const V=parseInt(String(a.value).replace(/[^0-9a-fA-F]/g,''),16);
+  if(!Number.isFinite(A)||A<0||A>0xFFFFFF) return 'Address must be a 24-bit hex CPU address (000000-FFFFFF).';
+  if(!Number.isFinite(V)||V<0||V>0xFF) return 'Value must be a hex byte (00-FF).';
+  const enc=permute(A,CLEAR_BITS,CODE_BITS);
+  const nibbles=[(V>>4)&15,V&15,...[5,4,3,2,1,0].map(s=>(enc>>(s*4))&15)];
+  const code=nibbles.map(i=>LETTERS[i]).join('');
+  return 'SNES Game Genie '+code.slice(0,4)+'-'+code.slice(4)+'\naddress (CPU): '+hex6(A)+'\nvalue:         '+hex2(V)+romLine(A,a.map);
+});
+addOp('gameGenieNes','Game Genie: NES code','Encoding','Decode or encode NES Game Genie codes. 6 letters = address + replacement value; 8 letters adds a compare byte (mapper-bank guard). Letters APZLGITYEOXUKSVN are nibbles 0-F; the decoded address is $8000-based (top bit implicit). Bit formulas per tuxnes Game Genie notes / NESDev.',[
+  {key:'mode',label:'Mode',type:'select',default:'decode',options:[['decode','Decode code'],['encode','Encode code']]},
+  {key:'address',label:'Address (hex, encode)',type:'text',default:'91D9'},
+  {key:'value',label:'Value (hex, encode)',type:'text',default:'AD'},
+  {key:'compare',label:'Compare (hex, blank = 6-letter)',type:'text',default:''}
+],function(t,a){
+  const LETTERS='APZLGITYEOXUKSVN';
+  const hex2=(n)=>'$'+n.toString(16).toUpperCase().padStart(2,'0');
+  const hex4=(n)=>'$'+n.toString(16).toUpperCase().padStart(4,'0');
+  if(a.mode==='decode'){
+    const code=String(t).toUpperCase().replace(/[^A-Z]/g,'');
+    if(code.length!==6&&code.length!==8) return 'Enter a 6- or 8-letter NES Game Genie code (letters only: '+LETTERS+'). Got '+code.length+' usable letters.';
+    const n=[...code].map(ch=>{const i=LETTERS.indexOf(ch); if(i<0) throw new Error('letter '+ch+' is not in the Game Genie alphabet'); return i;});
+    const address=0x8000|((n[3]&7)<<12)|((n[5]&7)<<8)|((n[4]&8)<<8)|((n[2]&7)<<4)|((n[1]&8)<<4)|(n[4]&7)|(n[3]&8);
+    let value, compare=null;
+    if(code.length===6){ value=((n[1]&7)<<4)|((n[0]&8)<<4)|(n[0]&7)|(n[5]&8); }
+    else { value=((n[1]&7)<<4)|((n[0]&8)<<4)|(n[0]&7)|(n[7]&8); compare=((n[7]&7)<<4)|((n[6]&8)<<4)|(n[6]&7)|(n[5]&8); }
+    return 'NES Game Genie '+code+'\naddress: '+hex4(address)+'\nvalue:   '+hex2(value)+(compare===null?'\ncompare: (none - unconditional replacement)':'\ncompare: '+hex2(compare)+' (replace only when the ROM byte equals compare)')+'\nraw form: '+address.toString(16).toUpperCase().padStart(4,'0')+(compare===null?'': '?'+compare.toString(16).toUpperCase().padStart(2,'0'))+':'+value.toString(16).toUpperCase().padStart(2,'0');
+  }
+  const A=parseInt(String(a.address).replace(/[^0-9a-fA-F]/g,''),16);
+  const V=parseInt(String(a.value).replace(/[^0-9a-fA-F]/g,''),16);
+  const cmpRaw=String(a.compare).replace(/[^0-9a-fA-F]/g,'');
+  const C=cmpRaw===''?null:parseInt(cmpRaw,16);
+  if(!Number.isFinite(A)||A<0x8000||A>0xFFFF) return 'Address must be a hex ROM address in $8000-$FFFF (Game Genie addresses are $8000-based).';
+  if(!Number.isFinite(V)||V<0||V>0xFF) return 'Value must be a hex byte (00-FF).';
+  if(C!==null&&(!Number.isFinite(C)||C<0||C>0xFF)) return 'Compare must be a hex byte (00-FF) or blank.';
+  const nyb=new Array(8).fill(0);
+  nyb[0]=((V>>4)&8)|((V>>0)&7);
+  nyb[1]=((A>>4)&8)|((V>>4)&7);
+  nyb[2]=((A>>4)&7);
+  nyb[3]=((A>>0)&8)|((A>>12)&7);
+  nyb[4]=((A>>8)&8)|((A>>0)&7);
+  if(C===null){ nyb[5]=((V>>0)&8)|((A>>8)&7); }
+  else { nyb[5]=((C>>0)&8)|((A>>8)&7); nyb[6]=((C>>4)&8)|((C>>0)&7); nyb[7]=((V>>0)&8)|((C>>4)&7); }
+  const code=nyb.slice(0,C===null?6:8).map(i=>LETTERS[i]).join('');
+  return 'NES Game Genie '+code+'\naddress: '+hex4(A)+'\nvalue:   '+hex2(V)+(C===null?'\ncompare: (none)':'\ncompare: '+hex2(C))+'\n(note: in 6/8-letter codes the 3rd letter carries one unused bit, so a twin code with that bit flipped is equivalent.)';
+});
+addOp('stegoLSB','Steganography: Image LSB','Steganography','Least-significant-bit image steganography. Encode hides text in a generated image (red-channel LSBs, 0xFF terminator). Decode reads REAL pixels: paste an image as a data URL / base64, or an RGBA byte stream as hex with source=rgba-hex (pipeline-friendly, no canvas needed).',[
+  {key:'secret',label:'Secret (encode)',type:'text',default:'SECRET'},
+  {key:'mode',label:'Mode',type:'select',default:'encode',options:[['encode','Encode'],['decode','Decode']]},
+  {key:'source',label:'Decode source',type:'select',default:'image',options:[['image','Image data URL / base64'],['rgba-hex','RGBA bytes as hex']]},
+  {key:'channels',label:'Channel order',type:'text',default:'R'},
+  {key:'framing',label:'Framing',type:'select',default:'terminator',options:[['terminator','0xFF terminator (matches encoder)'],['length32','32-bit length prefix'],['fixed','Fixed byte count']]},
+  {key:'byteCount',label:'Fixed byte count',type:'number',default:64}
+],async function(t,a){
+  // Pure bit-walk over a channel byte stream (RGBA order). Kept free of DOM
+  // so it is known-answer testable without a canvas.
+  function lsbWalk(data, channels, framing, byteCount){
+    const idx = {R:0,G:1,B:2,A:3};
+    const order = String(channels || 'R').toUpperCase().split('').filter(c => c in idx);
+    if(!order.length) throw new Error('channels must name at least one of R, G, B, A');
+    const bits = [];
+    for(let px = 0; px < data.length; px += 4){
+      for(const c of order){ const v = data[px + idx[c]]; if(v === undefined) break; bits.push(v & 1); }
+    }
+    const bytes = [];
+    const take = (n) => { const out = []; for(let i = 0; i < n; i++){ let b = 0; for(let k = 0; k < 8; k++) b = (b << 1) | (bits[out.length * 8 + k] ?? 0); out.push(b); } return out; };
+    let limit = Math.floor(bits.length / 8);
+    let stopped = 'end of pixels';
+    if(framing === 'length32'){
+      if(limit < 4) throw new Error('not enough pixel bits for a 32-bit length prefix');
+      const lenBytes = take(4);
+      limit = ((lenBytes[0] << 24) | (lenBytes[1] << 16) | (lenBytes[2] << 8) | lenBytes[3]) >>> 0;
+      if(limit > Math.floor(bits.length / 8) - 4) throw new Error('length prefix (' + limit + ' bytes) exceeds pixel capacity');
+      return { bytes: take(limit + 4).slice(4), bitsUsed: (limit + 4) * 8, stopped: 'length prefix' };
+    }
+    if(framing === 'fixed'){ limit = Math.min(Math.max(0, byteCount | 0), limit); stopped = 'fixed count'; }
+    const all = take(limit);
+    if(framing === 'terminator'){
+      const at = all.indexOf(0xff);
+      if(at >= 0){ return { bytes: all.slice(0, at), bitsUsed: (at + 1) * 8, stopped: '0xFF terminator at byte ' + at }; }
+    }
+    return { bytes: all, bitsUsed: all.length * 8, stopped };
+  }
+  async function pixelsFromImageInput(input){
+    let url = String(input).trim();
+    if(!/^data:image\//i.test(url)){
+      const b64 = url.replace(/\s+/g, '');
+      if(!/^[A-Za-z0-9+/=]+$/.test(b64) || b64.length < 40) return null;
+      url = 'data:image/png;base64,' + b64;
+    }
+    const img = new Image();
+    await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = () => reject(new Error('image failed to load (unsupported or corrupt data)')); img.src = url; });
+    const cv = document.createElement('canvas');
+    cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+    const cx = cv.getContext('2d');
+    if(!cx) throw new Error('canvas 2d context unavailable in this environment; use source=rgba-hex with a raw RGBA dump instead');
+    cx.drawImage(img, 0, 0);
+    return { data: cx.getImageData(0, 0, cv.width, cv.height).data, width: cv.width, height: cv.height };
+  }
+  function report(res, meta){
+    const text = utf8Decode(new Uint8Array(res.bytes));
+    const printable = res.bytes.filter(b => (b >= 32 && b < 127) || b === 10 || b === 13 || b === 9).length;
+    return 'Image LSB decode (' + meta + ')\n' +
+      'channels=' + (a.channels || 'R') + ' framing=' + a.framing + ' stopped: ' + res.stopped + ' · bits used ' + res.bitsUsed + '\n' +
+      'bytes: ' + res.bytes.length + ' (' + (res.bytes.length ? Math.round(100 * printable / res.bytes.length) : 0) + '% printable)\n' +
+      'hex: ' + res.bytes.slice(0, 64).map(b => b.toString(16).padStart(2, '0')).join('') + (res.bytes.length > 64 ? '…' : '') + '\n\n' + text;
+  }
   if(a.mode==='encode'){
     const secret=a.secret!==''?a.secret:t;
     const W=320,H=180;
     const cv=document.createElement('canvas');cv.width=W;cv.height=H;
     const ctx=cv.getContext('2d');
-    // draw noise background
     ctx.fillStyle='#111';ctx.fillRect(0,0,W,H);
     const img=ctx.getImageData(0,0,W,H);
     const bytes=Array.from(utf8Encode(secret));
     const bitarr=[];for(const b of bytes)for(let i=7;i>=0;i--)bitarr.push((b>>i)&1);
-    const term=[1,1,1,1,1,1,1,1]; // terminator
+    const term=[1,1,1,1,1,1,1,1];
     const all=bitarr.concat(term);
     for(let i=0;i<all.length&&i<W*H;i++){const px=i*4;img.data[px]=(img.data[px]&0xfe)|all[i];}
     ctx.putImageData(img,0,0);
     const url=cv.toDataURL('image/png');
-    return {__visual:true,__html:'<img src="'+url+'" style="max-width:100%;background:#fff;border-radius:6px;"><div style="color:#9a9a9e;font-size:12px;margin-top:6px;">Image with '+secret.length+' bytes hidden in pixel LSBs. (This demo generates a synthetic image; to decode real files, the pipeline would read raw pixels.)</div>',__text:'LSB stego image: '+secret};
-  }else{
-    return 'Image LSB decode: in this demo the source is text, not a real image buffer.\n\nFor real images you would read the raw pixel LSBs. This recipe demonstrates the mechanism:\n\n1. For each pixel, take the LSB of the red channel.\n2. Collect bits 8 at a time into bytes.\n3. Stop at the terminator byte (0xFF) or end.\n\nThe hiding image above stores: '+(a.secret||'SECRET');
+    return {__visual:true,__html:'<img src="'+url+'" style="max-width:100%;background:#fff;border-radius:6px;"><div style="color:#9a9a9e;font-size:12px;margin-top:6px;">Image with '+secret.length+' bytes hidden in red-channel LSBs (0xFF terminator). To decode: copy the image as a data URL into this op with mode=Decode, or walk raw RGBA hex with source=rgba-hex.</div>',__text:'LSB stego image (data URL, decode with mode=Decode source=image):\n'+url};
   }
+  // decode
+  if(a.source==='rgba-hex'){
+    const hex = String(t).replace(/0x/gi, '').replace(/[^0-9a-fA-F]/g, '');
+    if(hex.length < 16 || hex.length % 2) return 'source=rgba-hex expects an even-length hex dump of RGBA bytes (4 bytes per pixel). Got ' + hex.length + ' hex digits.';
+    const data = new Uint8Array(hex.length / 2);
+    for(let i = 0; i < data.length; i++) data[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+    return report(lsbWalk(data, a.channels, a.framing, Number(a.byteCount) || 0), data.length / 4 + ' pixels from hex');
+  }
+  const pix = await pixelsFromImageInput(t).catch(e => { throw e; });
+  if(!pix){
+    return 'Image LSB decode needs an image: paste a data:image/...;base64 URL (or bare base64 of a PNG/JPEG), or switch source to rgba-hex and supply a raw RGBA hex dump.\n\nMechanism: for each pixel, take the LSB of the selected channel(s) in order, group bits MSB-first into bytes, and stop per the framing rule (default: 0xFF terminator, matching this op\'s encoder).';
+  }
+  return report(lsbWalk(pix.data, a.channels, a.framing, Number(a.byteCount) || 0), pix.width + 'x' + pix.height + ' image');
 });
 addOp('stegoAcro','Steganography: Acrostic','Steganography','Hide a secret in the first letters of words (an acrostic). Encode: secret letters are the first letters of cover words.',[
   {key:'secret',label:'Secret',type:'text',default:'HELLO'},

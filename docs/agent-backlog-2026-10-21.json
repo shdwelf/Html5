@@ -248,10 +248,14 @@
         "historical-network-viewer.html",
         "js/historical-network.js",
         "resources/historical-network/keyhole-evidence-pack-2026-10-22.json",
-        "docs/historical-network-fidonet-adapter-2026-10-22.md"
+        "docs/historical-network-fidonet-adapter-2026-10-22.md",
+        "docs/fidonet-arpanet-map-layers-2026-10-23.md",
+        "resources/historical-network/comms-history-seed-2026-10-23.json",
+        "docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md",
+        "js/fidonet-pkt.js"
       ],
       "next_actions": [
-        "Round 18 (2026-10-22): FidoNet Phase 2 local adapter SHIPPED — js/historical-network.js now parses FTS-5000 nodelists into observations (branch context, zone:net/node, flags, Pvt/Hold/Down, -Unpublished-, header date/day/CRC metadata), applies edition-checked nodediffs and diff chains, detects TEXTFILES/nodelist/nodediff imports, and the viewer computes SHA-256 over original local file bytes or edited textarea UTF-8. No historical nodelist was bundled: checked prologues grant intra-FidoNet use/distribution and reserve other uses absent express written consent, so hashed local packs remain local-import-only and captureReady=false. No canonical FidoNet nodes/edges and no new Keyhole evidence were claimed. Remaining: lawfully obtain a redistributable complete snapshot + applied diff chain and design snapshot-diff/edge semantics; then dated ARPANET textual source and local payphone imports; forum archaeology + angel mapping remain open.",
+        "Round 20 (2026-10-23): viewer renders all three bundled packs (pack picker, schematic scatter, logical edges). Remaining: ARPANET 1971/1977 time-slice snapshots; lawfully redistributable FidoNet snapshot for a bulk layer (else local-import-only); forum archaeology + angel mapping remain open.",
         "Round 17 (2026-10-22): S6 Phase 0 SHIPPED — observation-first Keyhole evidence fixture, standalone historical-network-viewer.html, shared js/historical-network.js validator/merge rules, deterministic generated data module, and a local TEXTFILES-style BBS-list importer (docs/historical-network-keyhole-fixture-2026-10-22.md). Rights decision: USBBS is citation-only in-repo and local-import-only for bulk data, so the fixture is structurally valid but captureReady=false (uncaptured snapshots, null SHA-256, restrictive rights). TEXTFILES.COM 303 historical list repeats Denver Keyhole BBS with a retrospective 1994-1996 span, but its per-record source is unstated, so independence from USBBS remains unresolved. Exact NodelistDB system/sysop searches found no Denver FidoNet match; the distinct 818 Keyhole BBS is a rejected same-name match. Remaining: lawfully capture and hash redistributable source snapshots under F3 before bundled datasets; then one complete FidoNet nodelist + applied diff, dated ARPANET textual snapshot, and local payphone imports; forum archaeology + angel mapping beyond IQT remain open.",
         "Round 16 (2026-10-22): consumer historical-network viewer SCOPED in docs/historical-network-viewer-scope-2026-10-22.md — a separate offline map/topology/records product with an observation-first schema, explicit place granularity, edge-geometry basis, snapshot diffs, source drawer, and acceptance gates. No ARPANET/FidoNet/payphone dataset was seeded. Keyhole BBS: a second dated listing was located in USBBS134.LST (Jul 1995), repeating 303-477-6337 / Denver / Linda McCraw / Keyhole BBS with first-listed code 123; this is temporal persistence in the same publication lineage, NOT a second independent listing. Indexed exact/FidoNet-oriented searches on 2026-10-22 found no Boardwatch/FidoNet listing. Remaining: USBBS rights decision (its header restricts modification/bundling), lawful F3 captures of Denver-area FidoNet nodelists/Boardwatch, Phase-1 Keyhole vertical slice, then FidoNet/ARPANET adapters and local payphone imports; forum archaeology + angel mapping beyond IQT remain open.",
         "Round 15 (2026-10-22): Keyhole disambiguation DEEP DIVE DONE (docs/keyhole-disambiguation-deep-dive-2026-10-22.md) — 'Keyhole BBS' is a documented Denver dial-up board (USBBS #127, Nov 1994, 303-477-6337, sysop Linda McCraw), unrelated to Keyhole Inc./EarthViewer; In-Q-Tel investment pinned from IQT's primary 2003-06-25 release (invested Feb 2003, first engagement for NIMA). Remaining: second independent listing for the Denver board (FidoNet nodelists/Boardwatch; F3 capture rules), angel-investor mapping beyond IQT, and FidoNet/ARPANET/payphone LAYER DATASETS — deferred to a round that builds a consumer historical-network viewer (the california frame deliberately does not absorb S6 layers).",
@@ -275,6 +279,8 @@
         "docs/hp-aio-xport-modem-adapter-feasibility.md",
         "docs/xport-nucleo-v92-eio-fax-card.md",
         "docs/lantronix-uclinux-deep-dive-2026-10-08.md",
+        "docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md",
+        "js/fidonet-pkt.js",
         "docs/github-jdk-runtime-research-2026-10-23.md",
         "docs/backlog-execution-round-19-2026-10-23.md"
       ],
@@ -299,6 +305,9 @@
       "refs": [
         "docs/RESEARCH_SMARTCARD.md",
         "docs/feitian-javacard-toolchain.md",
+        "docs/apache-struts-jsf-tomcat-xdc-war-2026-10-23.md",
+        "xdc-viewer.html",
+        "tools/build_xdc_wars.mjs",
         "docs/github-jdk-runtime-research-2026-10-23.md",
         "docs/backlog-execution-round-19-2026-10-23.md"
       ],
@@ -326,6 +335,7 @@
         "docs/RESEARCH_SMARTCARD.md",
         "docs/wiki-javacard-validation-2026-10-15.md",
         "docs/lecture-hall-research-2026-09-20.md",
+        "docs/shufflecake-stego-cyberchef-2026-10-23.md",
         "docs/github-jdk-runtime-research-2026-10-23.md",
         "tools/build_mealplan_applet.sh",
         "tests/mealplan-applet-sim.test.mjs",
@@ -399,7 +409,9 @@
         "docs/geomate-sg7-firmware-analysis.md",
         "docs/geomate-viewermade-source-check-2026-10-07.md",
         "research/warrick_geomate_audit",
-        "docs/lecture-hall-research-2026-09-29.md"
+        "docs/lecture-hall-research-2026-09-29.md",
+        "docs/cicada-3301-qr-locations-2026-10-23.md",
+        "resources/historical-network/cicada-3301-poster-seed-2026-10-23.json"
       ],
       "next_actions": [
         "Cicada 3301 QR + lat/long hunt; add finds to the US subsurface viewer and cipher-machine/Hall-of-Fame lecture",
@@ -410,13 +422,15 @@
     {
       "id": "S13",
       "title": "Intelligence-archive research: bin Laden hard drive release",
-      "status": "open",
+      "status": "done",
       "tasks": [
         "T13.1"
       ],
-      "refs": [],
+      "refs": [
+        "docs/abbottabad-release-research-2026-10-23.md"
+      ],
       "next_actions": [
-        "Archival research pass over the publicly released (CIA/FOIA/archive.org) material only; produce a source-checked research note in house style"
+        "Closed 2026-10-23. If the corpus is ever mirrored locally: prefer the CIA 2017-11-09 repost, BagIt with per-file SHA-256, keep inert."
       ]
     },
     {
@@ -427,9 +441,12 @@
         "T14.1"
       ],
       "refs": [
-        "docs/changelly-drainer-analysis.md"
+        "docs/changelly-drainer-analysis.md",
+        "docs/changelly-dev-panel-v327-2026-10-23.md"
       ],
-      "next_actions": []
+      "next_actions": [
+        "Second stage, dev panel v3.27, and an independent campaign variant documented 2026-10-23; the campaign runs multiple Doc/Sheet dead drops, so track panel DOM/global fingerprints rather than per-instance hashes."
+      ]
     }
   ],
   "tasks": [
@@ -438,7 +455,8 @@
       "line": 2,
       "stream": "S1",
       "text": "Ghidra/encryption research over the Osama bin Laden hard-drive release (cia.gov, archive.org)",
-      "status": "open"
+      "status": "done",
+      "note": "Closed 2026-10-23 (docs/abbottabad-release-research-2026-10-23.md): no encrypted containers or runnable binaries in the public CIA/ODNI releases; executables defanged in the 2017-11-09 repost, malware withheld. Ghidra not applicable."
     },
     {
       "id": "T1.2",
@@ -446,7 +464,7 @@
       "stream": "S1",
       "text": "Universal decompressor recipes (ace rar arj uue zip 7z iso img peazip 7zip pkware) via GitHub + Ghidra",
       "status": "partial",
-      "note": "recipe/decompressor matrix + ARJ garble format notes (round 3); LHA/ARJ/ACE password cookbook notes + SFX identification recipe added (round 6, docs/arj-lha-ace-password-notes-2026-10-21.md); remaining: ZIP legacy garble/ZipCrypto note"
+      "note": "recipe/decompressor matrix + ARJ garble format notes (round 3); LHA/ARJ/ACE password cookbook notes + SFX identification recipe added (round 6, docs/arj-lha-ace-password-notes-2026-10-21.md); remaining: ZIP legacy garble/ZipCrypto note ZipCrypto half closed 2026-10-23: docs/zipcrypto-identification-notes-2026-10-23.md (identification only per F4: flag bits 0/3, 12-byte header, CRC-high vs DOS-time-high check byte with worked examples, WinZip AES method 99 / 0x9901 distinction, Biham-Kocher legacy context; companion op paranoidUnzip). Remaining: Ghidra-side universal decompressor work, blocked on a JVM in the sandbox."
     },
     {
       "id": "T1.3",
@@ -484,7 +502,7 @@
       "stream": "S3",
       "text": "Game Genie / Game Wizard / Universal Hint System; Sierra abandonware Easter eggs & walkthroughs; Shadow President; Ghidra encryption",
       "status": "partial",
-      "note": "UHS + NES/SNES/Genesis/GB Game Genie recipe cards (rounds 2-3) + CyberChef-to-Game Boy ROM recipe (round 4) + Game Gear Game Genie format/vectors + Sierra/Shadow President/Game Wizard sweep (round 5); cross-title egg-string sweep implemented as tools/sierra_xgrep.mjs + Game Wizard 32 machine-binding entry in the protection encyclopedia (round 6, docs/backlog-execution-round-6-2026-10-21.md)"
+      "note": "UHS + NES/SNES/Genesis/GB Game Genie recipe cards (rounds 2-3) + CyberChef-to-Game Boy ROM recipe (round 4) + Game Gear Game Genie format/vectors + Sierra/Shadow President/Game Wizard sweep (round 5); cross-title egg-string sweep implemented as tools/sierra_xgrep.mjs + Game Wizard 32 machine-binding entry in the protection encyclopedia (round 6, docs/backlog-execution-round-6-2026-10-21.md) Game Genie (NES) decode/encode now shipped in CyberChef as gameGenieNes in both builds, with known-answer (SXIOPO -> $91D9 <- $AD) and round-trip tests in tests/cyberchef-game-genie.test.mjs (bit formulas per tuxnes/NESDev; QUUX: in 6/8-letter codes the 3rd letter carries one unused bit, so a twin code with that bit flipped is equivalent). SNES Game Genie also shipped as gameGenieSnes (letter substitution DF4709156BC8A23E, address bit transposition ijklqrst opabcduv wxefghmn -> abcdefgh ijklmnop qrstuvwx; worked example ABCD-EFFF = C4A704:C9; optional LoROM/HiROM file-offset conversion). Game Boy/Game Gear (gameGenieGb; FF1-234-123 anchors $B123/$FF/compare $7E per the source check-byte example) and Genesis (gameGenieGenesis; ABD5-78F7 = BE47BD:1F00 worked example, 5-bit alphabet + 40-bit transposition via BigInt) ops followed in both builds; suite now 7/7. Remaining strands researched in docs/game-wizard-uhs-sierra-status-2026-10-23.md: Game Wizard is a DOS live-memory TSR (archive.org shareware; DOSBox runs tables/search, state-save broken) needing the binary via fetch-runner; UHS formats documented (88a line format buildable, 91a/96a via OpenUHS); Sierra egg sweep is editorial over sierrahelp.com. T3.1 stays partial on those three strands. UHS88a reader then built (js/uhs.js + uhs-reader.html; cipher known-answer gHrGtGs iqrGr -> Opening Scene; tests/uhs.test.mjs 3/3; 91a/95a/96a detected and referred to OpenUHS; synthetic fixtures only). T3.1 now partial only on Game Wizard (needs binary via fetch-runner) and the editorial Sierra sweep."
     },
     {
       "id": "T4.1",
@@ -519,15 +537,16 @@
       "line": 6,
       "stream": "S6",
       "text": "FidoNet + ARPANET map layers; Mojave payphones, rest stops, ZIP codes",
-      "status": "open",
-      "note": "round 18: FTS-5000 parser, edition-checked nodediff chain engine, format detection, address/flag search+CSV, and local viewer nodelist import shipped with synthetic tests; status remains open because no bundled FidoNet/ARPANET/payphone dataset was seeded—historical nodelist rights remain local-import-only absent written consent and header CRC is parsed, not verified; round 17: observation schema, validator, one-system viewer, and local BBS-list adapter shipped, but no bundled FidoNet/ARPANET/payphone dataset was seeded because snapshots remain uncaptured/unhashed and rights-restricted; status remains open for the datasets themselves; round 16: consumer historical-network viewer scoped (docs/historical-network-viewer-scope-2026-10-22.md); datasets deliberately not seeded until source rights/captures and observation schema fixtures exist. Status remains open."
+      "status": "partial",
+      "note": "round 18: FTS-5000 parser, edition-checked nodediff chain engine, format detection, address/flag search+CSV, and local viewer nodelist import shipped with synthetic tests; status remains open because no bundled FidoNet/ARPANET/payphone dataset was seeded—historical nodelist rights remain local-import-only absent written consent and header CRC is parsed, not verified; round 17: observation schema, validator, one-system viewer, and local BBS-list adapter shipped, but no bundled FidoNet/ARPANET/payphone dataset was seeded because snapshots remain uncaptured/unhashed and rights-restricted; status remains open for the datasets themselves; round 16: consumer historical-network viewer scoped (docs/historical-network-viewer-scope-2026-10-22.md); datasets deliberately not seeded until source rights/captures and observation schema fixtures exist. Status remains open. Round 19 (2026-10-23): first bundled comms-history pack seeded in the historical-network schema (ARPANET IMP #1-4 1969 + first-message edge, FidoNet origin SF 1984, Mojave phone booth) from cited public facts — resources/historical-network/comms-history-seed-2026-10-23.json, docs/fidonet-arpanet-map-layers-2026-10-23.md. No nodelist/USBBS bulk data bundled (rights decision stands). Remaining: viewer rendering, ARPANET 1971/1977 slices, bulk layer only with a redistributable snapshot. Round 20 (2026-10-23): viewer wiring done — historical-network-viewer.html pack picker renders Keyhole + comms-history + Cicada packs (schematic scatter, per-pack year bounds); builder generalized to three data modules; tests 16/16. Remaining: ARPANET 1971/1977 slices; bulk layer only with redistributable snapshot."
     },
     {
       "id": "T6.3",
       "line": 167,
       "stream": "S6",
       "text": "BBS servers on archive.org + GitHub OSS BBS; convert to ColdFire / JAR for ColdFireJVM",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean)."
     },
     {
       "id": "T7.1",
@@ -543,7 +562,7 @@
       "stream": "S7",
       "text": "JAR for uClinux transcription + softmodem fax",
       "status": "partial",
-      "note": "round 19: Java toolchain options are documented and proven for compilation workloads, but no uClinux fax JAR was built or claimed this round."
+      "note": "2026-10-23: SpiderMonkey + C-BBS/uClinux/FidoNet-news investigation (docs/spidermonkey-bbs-uclinux-fidonet-news-2026-10-23.md). SpiderMonkey ruled out for ColdFire (modern SM not portable; vendored JS 1.8.5 is remove-first). Candidate: MBSE-derived minimal FTN node (pure C, mbcico/mbfido news/mbnntp); Synchronet stays hosted; Wildcat closed-source, excluded. News-sync substrate shipped: js/fidonet-pkt.js (5/5 tests). Remaining: m68k-uclinux C port; live peering needs a real uplink. C conversion started 2026-10-23: tools/bbs/ftnpkt.c (C99 FTS-0001 parser + --news mapper) cross-checked vs js/fidonet-pkt.js (tests/fidonet-pkt-c.test.mjs, -Werror clean). round 19: Java toolchain options are documented and proven for compilation workloads, but no uClinux fax JAR was built or claimed this round."
     },
     {
       "id": "T8.1",
@@ -558,7 +577,8 @@
       "line": 10,
       "stream": "S8",
       "text": "Convert xdc apps to TI-calc + Android/F-Droid (socal-subsurface first); TransMac/Pluralsight; Hotline/KDX/FXP",
-      "status": "open"
+      "status": "open",
+      "note": "2026-10-23: Java-server port shipped — tools/build_xdc_wars.mjs converts all repo-root .xdc to deterministic Tomcat WARs (54 built; greeran-book.xdc skipped, not a ZIP) + xdc-viewer.war catalogue/player (xdc-viewer.html); Struts 7 / Jakarta Faces 4 investigated and not adopted for static apps (docs/apache-struts-jsf-tomcat-xdc-war-2026-10-23.md). TI-calc and Android/F-Droid ports remain open."
     },
     {
       "id": "T8.3",
@@ -579,15 +599,16 @@
       "line": 9,
       "stream": "S9",
       "text": "Shufflecake + steganography -> CyberChef; haiku vault + vault recipe; algorithms book; BasicCard/JavaCard virtualized reader; smartcard filesystem choice (4MB XPort Pro budget); boot-chain (GRUB/LILO/LUKS, liveboot, AES dongle/dock concept)",
-      "status": "open",
-      "note": "round 19: the JavaCard simulator toolchain is pinned/hash-checked and its MealPlan behavioural suite runs 18/18 when GitHub is reachable; this does not close the BasicCard/virtual-reader or physical-card work."
+      "status": "partial",
+      "note": "2026-10-23: Shufflecake + steganography halves closed (docs/shufflecake-stego-cyberchef-2026-10-23.md): Shufflecake documented not ported (kernel block layer); repo CyberChef stego ops audited, real-image LSB op named as follow-on. BasicCard/JavaCard virtual reader, smartcard filesystem choice, algorithms book, and boot-chain parts remain open. Follow-on built 2026-10-23 (round 20): stegoLSB decode now ingests real pixels (data-URL/base64 image via canvas, or RGBA hex), selectable channel order, terminator/length32/fixed framing, fail-closed capacity checks; synced to cyberchef-merged; tests/cyberchef-stego-lsb.test.mjs 3/3, cyberchef suites 85 pass. round 19: the JavaCard simulator toolchain is pinned/hash-checked and its MealPlan behavioural suite runs 18/18 when GitHub is reachable; this does not close the BasicCard/virtual-reader or physical-card work."
     },
     {
       "id": "T9.2",
       "line": 171,
       "stream": "S9",
       "text": "Catalog OCR haiku into haiku vault; enso generators + haiku randomizers vs standard vault format; endpoints + filesystem persistence",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: generator/catalog half built - js/haiku-vault.js (seeded phrase-bank generator, 5-7-5 by construction with bank self-verification; OCR cataloger grouping triples with counted meter + leftover reporting; collection payload builder) seals/opens haiku-vault-v1 via WebCrypto, byte-identical to the format draft section 2 test vector (tests/haiku-vault-gen.test.mjs 6/6 incl. tamper/wrong-passphrase rejection); haiku-vault.html workbench adds localStorage persistence + .vault download. Remaining: live OCR capture endpoints against real scans."
     },
     {
       "id": "T9.3",
@@ -632,21 +653,32 @@
       "line": 5,
       "stream": "S11",
       "text": "Wallet crypto cards + mnemonics; classified random name generator; password books; 18 challenges at the end of the cold-war spy book -> recipes",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: classified random name generator built - js/codename.js + codename.html (operation ADJECTIVE+NOUN, CIA-style digraph cryptonyms, project words; seeded mulberry32, batch sampling without replacement, entropy reported honestly at ~11 bits - codenames, not passwords; tests/codename.test.mjs 3/3). Remaining: wallet crypto-card deltas vs the bip39-haiku workbench, and locating the cold-war spy book 18 challenges (source not yet in hand)."
     },
     {
       "id": "T12.1",
       "line": 170,
       "stream": "S12",
       "text": "Cicada 3301 QR + lat/long research -> US subsurface viewer; CyberChef/cipher-machine recipes; Hall of Fame lecture; Warrick recovery of lost sites; Geomate Jr firmware + geocaching points",
-      "status": "partial"
+      "status": "partial",
+      "note": "2026-10-23: QR + lat/long half closed (docs/cicada-3301-qr-locations-2026-10-23.md; 14 coordinates of 2012-01-09 tabulated, 8 US sites seeded citation-only in resources/historical-network/cicada-3301-poster-seed-2026-10-23.json, validator-clean, no puzzle payloads). Remaining: Warrick-method application to lost Cicada sites and Hall-of-Fame lecture material. Warrick half closed 2026-10-23: method researched (McCown/Nelson, Memento/CDX discovery, seed-scope recursion, known limits), js/warrick-plan.js plan builder built + tested 4/4 (plan-only, refuses .onion/credentialed seeds, BagIt packaging), Cicada application specified in docs/warrick-cicada-recovery-2026-10-23.md (fetch leg is a runner job, not executed). Remaining: Hall-of-Fame lecture material (shared with T10.2)."
+    },
+    {
+      "id": "T12.2",
+      "line": 171,
+      "stream": "S12",
+      "text": "Dual-shuffle explorers on the modern net: CyTube and shuffle sites reviewed; two-deck merge fairness explored and built locally",
+      "status": "done",
+      "note": "2026-10-23: surveyed CyTube (calzoneman/sync, cytu.be) and successors (OpenTogetherTube, Watch2Gether, Metastream, Kosmi, SyncUp) - shared-queue rooms, no published two-queue fairness model. Built dual-shuffle.html + js/dual-shuffle.js: both Fisher-Yates duals, naive swap (convicted by permutation-distribution probe; its single-card marginals are uniform, verified), interleave/riffle/blocks/concat-shuffle merges, seeded RNG, dual bias meters. tests/dual-shuffle.test.mjs 4/4. Doc: docs/dual-shuffle-explorers-2026-10-23.md. No live CyTube room created (third-party service)."
     },
     {
       "id": "T13.1",
       "line": 2,
       "stream": "S13",
       "text": "Archival research on the bin Laden hard-drive release (see T1.1; grouped for execution)",
-      "status": "open"
+      "status": "done",
+      "note": "Closed 2026-10-23: docs/abbottabad-release-research-2026-10-23.md (release timeline, withholding categories, preservation guidance)."
     },
     {
       "id": "T14.1",
@@ -655,7 +687,7 @@
       "text": "BagIt + Xena + Ghidra the Google Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I with its Drive PDF; KGK.EXE from the two .OVL halves; ARJ decrypt/disassemble/decompile fna102b",
       "status": "partial",
       "flag": "F2",
-      "note": "Preservation path already built (docs/fna102b-xena-preservation.md); ungarble application is out of scope per standing decision"
+      "note": "Changelly half DONE 2026-10-23: Doc 1luBwx1iBXdVbJu0AIvQabgWyz0NJ5dmJBtKoabJBr9I loader + Sheet second stage retrieved inert, BagIt + Xena preserved (dist/changelly-drainer-xena/, gitignored), Ghidra assessed not-applicable (JavaScript text; no MZ/ELF/PE, no crypto keywords). Dev panel v3.27: docs/changelly-dev-panel-v327-2026-10-23.md. KGK.ARJ/FNA102B parts remain out of scope per standing decisions F2/F4; ungarble application is out of scope per standing decision"
     },
     {
       "id": "T15.1",

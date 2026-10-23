@@ -70,6 +70,11 @@ const POST_MERGE_OPS = [
   "lhaHeader",
   "aceHeader",
   "paranoidUnzip",
+  // 2026-10-23 backlog T3.1 (Game Genie family; merged via PR #134).
+  "gameGenieNes",
+  "gameGenieSnes",
+  "gameGenieGb",
+  "gameGenieGenesis",
 ];
 
 test("merged CyberChef keeps both repositories' recipe sets", () => {
