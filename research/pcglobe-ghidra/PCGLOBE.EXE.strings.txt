@@ -1,0 +1,115 @@
+3000:2783	PCGLPATH
+3000:278e	PCNATION
+3000:2e84	 :DATABASE.DAT
+3000:2e94	 :COUNTRY1.DAT
+3000:2ea4	 :PARAMS.DAT
+3000:2eb2	 :WORLD.VEC
+3000:2ebe	 :MENUF.DAT
+3000:2eca	 :HELPF.DAT
+3000:2f47	%s%s %s
+3000:2f54	\n\nInsert diskette where parameters will be saved into drive %c:
+3000:2ff5	%s -- %s
+3000:2ffe	%s -- %s
+3000:3007	%s -- %s
+3000:304b	%d %s
+3000:3051	%ld%c%03ld %s
+3000:305f	%ld%c%ld %s
+3000:308c	FEATURES.VEC
+3000:30c5	%s%s - %s%c
+3000:314c	 %s: %s%%
+3000:3157	 %s: %d %s
+3000:3163	 %s: %s %s
+3000:31e9	 %s: %s%c000
+3000:31f7	 %s: %d%%
+3000:3202	 %s: %d%c%d%%
+3000:3253	 %s: %s%c000
+3000:3261	 %s: %d%%
+3000:326c	 %s: %d%c%d%%
+3000:330c	 %s: %s%%
+3000:3317	 %s: %s%s%s
+3000:3324	 %s: %s%%
+3000:341f	%s%-22s%c %c%s%c
+3000:3431	%s%-22s%c %c%-21s%c %3d%c%%%c
+3000:3450	%s%-22s%c %c%-21s%c %3d%c%%%c
+3000:35d3	 %s %s 
+3000:3604	%s%-22s%c %c%16s%c %c%-15s%c %c%-12s%c
+3000:362c	%s%-22s%c %c%16s%c %c%-15s%c %c%-12s%c
+3000:367c	%s%-30s%c%10s %c%16s%c %c%11s%c
+3000:36ce	%s%-22s%c %c%s%c
+3000:36e0	%s%-22s%c %c%s%c
+3000:36f2	%s%-22s%c %c%s%c
+3000:3713	 (%d): %s
+3000:371e	%s%-22s%c %c%s%c
+3000:3730	%s%-22s%c %c%s%c
+3000:374f	\n%s%-22s   %s (%d)
+3000:3762	\n%s%-22s%c  %s%s%c(%d)%c
+3000:379d	%s%-22s%c %c%s%c\n
+3000:37b0	%s%-22s%c %c%s%c
+3000:37c2	%s%-22s%c %c%s%c
+3000:37de	 %s (1986): %s
+3000:37ee	 %s (1986): %s
+3000:380b	 %s (1986): %s%s%s
+3000:384f	 (%s %d: 
+3000:387b	%s (%d - %d).
+3000:3889	%s -- %s.
+3000:3893	%s (%d - %d).
+3000:38d6	%s -- %s
+3000:38df	%s -- %s
+3000:3931	%s -- %s
+3000:393a	%s -- %s
+3000:3970	%s -- %s
+3000:3979	%s -- %s
+3000:39b5	%2d:%02d (%2d:%02d%s)
+3000:39d9	%s -- %s
+3000:39e4	%s %s
+3000:3a1e	PRINTER.DAT
+3000:3a2d	No flag or national anthem available.
+3000:3a53	Insert ^PC Nation DATA^ diskette into drive ^%c:^
+3000:3a89	PCGLANG
+3000:3a97	\nPlease insert diskette containing INSTALL1.DAT into drive %c:
+3000:3af8	PCGPPRIN.COM
+3000:3b13	PCGEGA.COM
+3000:3b2b	PCGHERC2.COM
+3000:3b51	INSTALL1.DAT
+3000:3b7d	@FILLCOLO.DAT
+3000:3b90	TEXTMENU.DAT
+3000:3ba2	NAMES.DAT
+3000:3bb1	TRANSLAT.DAT
+3000:3bf7	ANTHEMS.DAT
+3000:3dc0	 PCX Programmer's Toolkit 3.54 Copyright (c) Genus Microprogramming, Inc. 1988-89 All Rights Reserved. Christopher A. Howard 
+3000:3eae	EGA 320x200x16      
+3000:3fa6	VGA 320x200x256     
+3000:3fcf		Hercules 720x348x2  
+3000:3ff8	\nTseng 800x600x16    
+3000:4023	Tseng 640x350x256   
+3000:404d	Tseng 640x480x256   
+3000:4076	\rTseng 800x600x256   
+3000:40a1	Paradise 800x600x16 
+3000:40cb	Paradise 800x600x2  
+3000:40f2	Paradise 640x400x256
+3000:411c	Paradise 640x480x256
+3000:4146	Video7 800x600x16   
+3000:4170	Video7 640x400x256  
+3000:41c4	Video7 800x600x256  
+3000:451c	cotan
+3000:46ea	R6000\r\n- stack overflow\r\n
+3000:4706	R6003\r\n- integer divide by 0\r\n
+3000:4727	R6009\r\n- not enough space for environment\r\n
+3000:475a	run-time error 
+3000:476c	R6002\r\n- floating point not loaded\r\n
+3000:4793	R6001\r\n- null pointer assignment\r\n
+3000:47b8	: MATH\r\n- floating-point error: 
+3000:47db	invalid\r\n
+3000:47e7	denormal\r\n
+3000:47f4	divide by 0\r\n
+3000:4804	overflow\r\n
+3000:4811	underflow\r\n
+3000:481f	inexact\r\n
+3000:482b	unemulated\r\n
+3000:483a	square root\r\n
+3000:484f	stack overflow\r\n
+3000:4862	stack underflow\r\n
+3000:4876	explicitly generated\r\n
+3000:488f	DOMAIN error\r\n
+3000:48a0	SING error\r\n
+3000:48af	TLOSS error\r\n
