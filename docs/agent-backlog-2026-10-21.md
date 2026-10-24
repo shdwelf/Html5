@@ -491,6 +491,23 @@ test runs beside Alaska's (city suite 32/32). The round record is
 PR #145 is superseded and can be closed unmerged. Next: the
 country/planet thread.
 
+**Round 41 status (2026-10-24): country thread opened (batch C1).**
+With all 50 states framed, the S4 sequence moves to the country
+thread: a PC-Globe-style country viewer (`country-viewer.html`,
+`js/country-viewer.js`, `js/country-data.js`) over a pinned CIA World
+Factbook seed register of 25 countries. The register
+(`../resources/country-viewer/country-factbook-batch1-source-register-2026-10-24.json`,
+fetched by `tools/fetch_factbook_countries.py`) pins factbook/factbook.json
+at commit `144d6977b2b0` with a SHA-256 per country file; fields
+(capital + coordinates, reference point, area, population, languages,
+government type, anthem title/credit, location) are extracted verbatim
+from the CC0 mirror and deep-checked against the generated dataset by
+`tests/country-viewer.test.mjs`. The round record is
+[`backlog-execution-round-41-2026-10-24.md`](backlog-execution-round-41-2026-10-24.md).
+Remaining in the thread: expand country coverage in batches, package
+the viewer as a Webxdc, then the Ghidra PC Globe→Java experiment
+and the Red October planet viewer.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,
