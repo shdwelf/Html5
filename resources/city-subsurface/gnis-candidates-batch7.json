@@ -1,6 +1,6 @@
 {
  "format": "gnis-candidates-v1",
- "retrieved": "2026-10-24T07:37:08Z",
+ "retrieved": "2026-10-24T07:41:20Z",
  "sourceNote": "USGS GNIS DomesticNames per-state text files (pipe-delimited), extracted in the GitHub runner; see tools/gnis_extract.py. Rows are candidates for screening, not yet VERIFIED batch rows.",
  "states": {
   "MN": {
@@ -4654,7 +4654,8 @@
     "Mount Foraker",
     "Iliamna Lake",
     "Yukon River",
-    "Kuskokwim River"
+    "Kuskokwim River",
+    "Utqiag\u0307vik"
    ],
    "rows": [
     {
@@ -4764,6 +4765,15 @@
      "county": "Aleutians West (CA)",
      "lat": 53.8736111,
      "lon": -166.5366667
+    },
+    {
+     "featureId": "1398635",
+     "name": "Utqiag\u0307vik",
+     "featureClass": "Populated Place",
+     "state": "Alaska",
+     "county": "North Slope",
+     "lat": 71.2905556,
+     "lon": -156.7886111
     },
     {
      "featureId": "1416412",
