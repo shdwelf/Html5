@@ -552,6 +552,47 @@ record is
 Remaining in the thread: the Ghidra PC Globe→Java experiment and
 the Red October planet viewer.
 
+**Round 43 status (2026-10-24): PC Globe experiment stages 1–2 done.**
+The S4 "Ghidra PC Globe→Java experiment" is scoped in
+[`pcglobe-ghidra-java-scope-2026-10-24.md`](pcglobe-ghidra-java-scope-2026-10-24.md):
+the Internet Archive item `PC_Globe_for_DOS` (1990) was fetched by
+`arena-pcglobe-fetch.yml` with **every file MD5-verified against the
+Archive's own metadata** (32/32, `.xfer/pcglobe/`), then
+`arena-pcglobe-ghidra.yml` (pinned Ghidra 12.1.4) statically analyzed
+`PCGLOBE.EXE` (DOS MZ, `x86:LE:16:Real Mode`, entry `348d:0010`;
+Ghidra MD5 independently matches the Archive pin) and probed the DAT
+strings into `research/pcglobe-ghidra/`. Findings: NAMES.DAT holds an
+alphabetical country index at `0xbc7`; COUNTRY1/2.DAT geography
+strings carry a 1–2 byte prefix (clipped first letters); DATABASE.DAT
+holds the resource/statistic vocabulary. The round record is
+[`backlog-execution-round-43-2026-10-24.md`](backlog-execution-round-43-2026-10-24.md).
+Remaining: the Java country-database reader (stage 3, defined in the
+round record), then the Red October planet viewer.
+
+**Round 44 status (2026-10-24): S4 thread complete.** Stage 3 shipped:
+`tools/pcglobe/PcGlobeReader.java` (dependency-free, JDK-only) decodes
+the 1990 database — u32 offset tables with EOF sentinels (83 + 94
+COUNTRY records, 177 DATABASE records), COUNTRY label sections verified
+by their u8 token count on **all 177 records** (high-bit first-byte
+tokens, plain continuations: `North` + `Albanian Alps`), NAMES.DAT runs
+of 216 country / 1,268 place / 146 currency names after a reported
+3,015-byte undecoded prefix. `arena-pcglobe-java.yml` (Temurin 21)
+compiles and runs it against the SHA-256-re-verified media; the dump is
+committed at `research/pcglobe-java/` and pinned by
+`tests/pcglobe-java.test.mjs`, with undecoded payloads reported as byte
+counts, never guessed. The S4 tail also shipped: the planet viewer
+gained a **GLOBE plate** (`js/planet-globe.js`) reusing the Red October
+globe — orthographic projection imported from
+`apps/red-october-command-viewer/core.js`, the same bundled Natural
+Earth outlines (`vendor/world/countries.geo.json`), and the country
+viewer's 233 Factbook capitals as markers; PC Globe features are not
+plotted because their coordinates remain in the undecoded payload.
+The round record is
+[`backlog-execution-round-44-2026-10-24.md`](backlog-execution-round-44-2026-10-24.md).
+S4 sequence (California → 50 states → country → PC Globe → planet) is
+complete; this branch also carries round 43 verbatim and supersedes
+PR #151.
+
 ### S5 · Live incident, camera & sensor layers — *open*
 API inventory and adapters: cad.chp.ca.gov live incidents, CALTRANS + other state DOT cameras,
 WildCAD, interagency per-state incident lists, NIFC historical fires, WiFire, WREN cameras,

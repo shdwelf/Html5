@@ -1,0 +1,63 @@
+name: PC Globe — fetch archival media
+
+# Downloads the 1990 PC Globe (PC Globe, Inc.) installed files from the
+# Internet Archive item PC_Globe_for_DOS and verifies every file against
+# the MD5 the Archive itself publishes in the item metadata, then commits
+# the media + a SHA-256 manifest to .xfer/pcglobe/ for the Ghidra stage.
+# Sandbox egress cannot reach archive.org; this runner can (same pattern
+# as arena-headline-harry). Files are fetched only; nothing is executed.
+
+on:
+  push:
+    branches: ['arena/876f9abb-html5']
+    paths:
+      - '.arena-pcglobe/fetch.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Download and verify PC Globe files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .xfer/pcglobe .arena-pcglobe
+          python3 - <<'PY'
+          import hashlib, json, pathlib, urllib.request
+          item = "PC_Globe_for_DOS"
+          meta = json.load(urllib.request.urlopen(f"https://archive.org/metadata/{item}"))
+          by_name = {f["name"]: f for f in meta["files"]}
+          wanted = [l.strip() for l in open(".arena-pcglobe/files.txt") if l.strip()]
+          log = []
+          for name in wanted:
+              info = by_name[name]
+              url = f"https://archive.org/download/{item}/{name}"
+              blob = urllib.request.urlopen(url).read()
+              md5 = hashlib.md5(blob).hexdigest()
+              assert md5 == info["md5"], (name, md5, info["md5"])
+              assert len(blob) == int(info["size"]), (name, len(blob), info["size"])
+              pathlib.Path(f".xfer/pcglobe/{name}").write_bytes(blob)
+              sha = hashlib.sha256(blob).hexdigest()
+              log.append(f"OK {name} {len(blob)} md5={md5} sha256={sha}")
+              print(log[-1])
+          pathlib.Path(".xfer/pcglobe/SHA256SUMS").write_text(
+              "".join(f"{l.split(' sha256=')[1]}  {l.split(' ')[1]}\n" for l in log))
+          pathlib.Path(".arena-pcglobe/last-run.log").write_text(
+              f"item={item} files={len(log)} verified against archive.org metadata MD5s\n" + "\n".join(log) + "\n")
+          PY
+
+      - name: Commit media back to the branch
+        shell: bash
+        run: |
+          git config user.name "arena-pcglobe-fetch"
+          git config user.email "actions@github.com"
+          git add .xfer/pcglobe .arena-pcglobe/last-run.log
+          git commit -q -m "pcglobe: fetch PC_Globe_for_DOS media (md5-verified) [skip ci]" || exit 0
+          git push

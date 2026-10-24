@@ -1,0 +1,401 @@
+# DATABASE.DAT: 314718 bytes, 9609 printable runs >=4
+0000f5c3  iH2) 
+0000f5cb  hK7'
+0000f72d  Natural Gas
+0000f739  Crude Oil
+0000f743  Coal
+0000f748  Copper
+0000f74f  Talc
+0000f754  Barite
+0000f75b  Sulfur
+0000f762  Lead
+0000f767  Zinc
+0000f76c  Iron Ore
+0000f775  Salt
+0000f77a  Gems
+0000f77f  Wheat
+0000f785  Corn
+0000f78a  Barley
+0000f791  Rice
+0000f796  Cotton
+0000f79d  Fruits
+0000f7a4  Nuts
+0000f7a9  Karakul Pelts
+0000f7b7  Wool
+0000f7bc  Mutton
+0000f7c3  Textiles
+0000f7cc  Soap
+0000f7d1  Furniture
+0000f7db  Footwear
+0000f7e4  Fertilizers
+0000f7f0  Cement
+0000f7f7  Carpets
+0000f7ff  Oil Products
+0000f80c  Mining
+0000f816  Manufactured Goods
+0000f829  Vehicles
+0000f832  Sugar
+0000f838  Vegetable Oil
+0000f846  Wheat
+0000f84c  Carpets
+0000f854  Rugs
+0000f859  Fruits
+0000f860  Vegetables
+0000f86b  Natural Gas
+0000f877  Cotton
+0000f87e  Oilseeds
+0000f887  Karakul
+0000f891  Pashtu
+0000f898  Dari
+0000f89d  Turkish Languages
+0000f8af  Baluchi
+0000f8b7  Pashai
+0000f8bf  Pashtun
+0000f8c7  2Tajik
+0000f8cf  Uzbek
+0000f8d6  Hazara
+0000f8de  Other
+0000f8e6  Sunni Muslim
+0000f8f3  JShi'a Muslim
+0000f902  Other
+0000f90c  Communist
+0000f916  PRESIDENT NAJIBULLAH (1986)
+0000f932  People's Democratic Party of Afghanistan
+0000f95d   Principal Languages: Pashtu, Dari.  French common among the
+0000f99a    educated.  Little English spoken.
+0000f9bf   Visa: Required, but difficult to obtain.  Visitors usually
+0000f9fb    limited to Kabul.  Exit permit required.
+0000fa27   Health: Cholera, typhoid and smallpox inoculations recommended.
+0000fa68    No controls over safety of foods.  Travelers advised to boil
+0000faa7    water and dairy products.
+0000fac4   Sights: Kabul, silk route Bamiyan, Mazar-i-Sharif.
+0000faf9   Climate: Varies with elevation.  Conservative dress
+0000fb2e    recommended.
+0000fb79  * 8K
+0000fccf  Crude Oil
+0000fcd9  Natural Gas
+0000fce5  Coal
+0000fcea  Chromite
+0000fcf3  Copper
+0000fcfa  Iron Ore
+0000fd03  Nickel
+0000fd0a  Wheat
+0000fd10  Corn
+0000fd15  Potatoes
+0000fd1e  Sugar Beets
+0000fd2a  Cotton
+0000fd31  Tobacco
+0000fd39  Food Processing
+0000fd49  Wood Products
+0000fd57  Textiles
+0000fd60  Garments
+0000fd69  Mining
+0000fd70  Oil Products
+0000fd7d  Cement
+0000fd86  Rolled Steel
+0000fd93  Chemicals
+0000fd9d  Textiles
+0000fda6  Vehicles
+0000fdaf  Machinery
+0000fdb9  Electricity
+0000fdc5  Metal Ores
+0000fdd0  Copper
+0000fdd7  Petroleum
+0000fde1  Coal
+0000fde6  Tobacco
+0000fdee  Textiles
+0000fdf9  Albanian
+0000fe02  Greek
+0000fe09  Albanian
+0000fe12  `Greek & Other
+0000fe23  Muslim
+0000fe2a  FAlbanian Orthodox
+0000fe3e  Catholic
+0000fe4a  Communist
+0000fe54  CHAIRMAN Ramiz ALIA (1982)
+0000fe6f  PREMIER Adil CARCANI (1982)
+0000fe8b  Albanian Party of Labor
+0000fea5   Official Language: Albanian.  Commercial Languages: French
+0000fee1    and Italian.
+0000fef1   Visa: Required.  Obtainable from any Albanian Embassy outside
+0000ff30    the US, but usually only issued to businesspersons or groups
+0000ff6f    of 10 or more.
+0000ff81   Health: Medical services generally free.  Prescriptions must be
+0000ffc2    paid for.
+0000ffcf   Sights: Tirane, port of Durres, beaches at Vlore, Pogradec,
+0001000c    Shkoder, Apollonia, Berat, Korce, Kruja.
+00010038   Climate: Mediterranean.
+0001007d  |Q+ 
+00010085  xO1&
+000101e7  Crude Oil
+000101f1  Natural Gas
+000101fd  Iron Ore
+00010206  Phosphates
+00010211  Uranium
+00010219  Lead
+0001021e  Zinc
+00010223  Mercury
+0001022b  Wheat
+00010231  Barley
+00010238  Oats
+0001023d  Olives
+00010244  Dates
+0001024a  Citrus Fruits
+00010258  Livestock
+00010262  Oil Products
+0001026f  Petrochemicals
+0001027e  Iron & Steel
+0001028b  Home Appliances
+0001029b  Transport Equipment
+000102af  Food Processing
+000102c2  Wheat
+000102c8  Corn
+000102cd  Soybeans
+000102d6  Meat
+000102db  Eggs
+000102e0  Machinery
+000102ea  Vehicles
+000102f3  Aircraft
+000102fc  Capital Goods
+0001030a  Crude Oil
+00010314  Natural Gas
+00010320  Mercury
+00010328  Phosphates
+00010333  Wine
+00010339  Arabic
+00010340  French
+00010347  Berber
+0001034f  Arab Berber
+0001035b  cEuropean & Other
+0001036f  Sunni Muslim
+0001037c  cOther
+00010386  Republic
+0001038f  PRESIDENT Chadli BENDJEDID (1979)
+000103b1  PRIME MINISTER Mouloud HAMROUCHE (1989)
+000103d9  National Liberation Front
+000103f5   Official Language: Arabic.  Commercial Language: French.
+00010430   Visa: Required.  Businesspersons may be required to submit a
+0001046e    statement of purpose and names of contacts with application.
+000104ad    Void for passports containing Israeli or South African visas.
+000104ee   Health: No vaccinations required.  Typhoid, tetanus, polio,
+0001052b    cholera inoculations recommended.  Tapwater not potable.
+00010567   Sights: Algiers, Roman ruins of Tipasa, Constantine, Oran,
+000105a3    Tamanrasset, Tlecem, Atlas Mountains.
+000105cc   Climate: Coastal areas mild; hot summers, rainy winters.
+00010606    Winter clothing Nov-Apr.  Rainwear recommended.
+00010662  IPzb<1"
+0001066a  EH`M4/
+000107a9  Hydroelectric Power
+000107bd  Mineral Water
+000107cb  Timber
+000107d2  Iron Ore
+000107db  Lead
+000107e0  Tobacco
+000107e8  Sheep
+000107f2  Wheat
+000107f8  Barley
+000107ff  Oats
+00010804  Vegetables
+0001080f  Tourism
+00010817  Tobacco Processing
+0001082a  Wood Products
+0001083a  Foodstuffs
+00010845  Consumer Goods
+00010854  Machinery
+0001085e  Transport Equipment
+00010872  Consumer Goods
+00010883  Catalan
+0001088b  French
+00010892  Castilian Spanish
+000108a5  Spanish
+000108ad  =Andorran
+000108b8  French
+000108c0  Other
+000108c8  Catholic
+000108d1  cOther
+000108dc  Co-Principality
+000108ec  CO-PRINCE Francois MITTERRAND (1981)
+00010911  CO-PRINCE Juan MARTI y Alanis (1971)
+00010936  CHIEF EXECUTIVE Josep PINTAT SOLANS (1986)
+00010961  NONE
+00010967   Official Language: Catalan.  Castilian (Spanish) and French
+000109a4    widely spoken.
+000109b6   Tourism and duty-free shops the economic mainstay.
+000109eb   A mix of French and Spanish traditions prevail.
+00010a1d   Visa: Not required.
+00010a33   Health: No unusual risks.
+00010a4f   Sights: Andorra la Vella; Les Escaldes; major ski resorts at
+00010a8d    Soldeu, El Tarter, Pas de la Casa, Grau Roig, Pal, Arinsal and
+00010ace    Arcales; trout fishing; Romanesque churches and bridges.
+00010b0a   Climate: Alpine climate.  Warm clothing recommended.
+00010cc5  Crude Oil
+00010ccf  Diamonds
+00010cd8  Iron Ore
+00010ce1  Phosphates
+00010cec  Copper
+00010cf3  Feldspar
+00010cfc  Gold
+00010d01  Bauxite
+00010d09  Uranium
+00010d11  Cassava
+00010d19  Maize
+00010d1f  Plantains
+00010d29  Sweet Potatoes
+00010d38  Milk
+00010d3d  Millet
+00010d44  Citrus Fruits
+00010d52  Beans
+00010d58  Potatoes
+00010d61  Sugar
+00010d67  Beef
+00010d6c  Palm Oil
+00010d75  Sisal
+00010d7b  Coffee
+00010d82  Oil Products
+00010d8f  Mining
+00010d96  Food Processing
+00010da6  Brewing
+00010dae  Tires
+00010db4  Textiles
+00010dbd  Construction
+00010dcc  Foodstuffs
+00010dd7  Textiles
+00010de0  Machinery
+00010dea  Raw Materials
+00010df8  Consumer Goods
+00010e07  Tools
+00010e0d  Medical Supplies
+00010e1e  Chemicals
+00010e28  Petroleum
+00010e36  Coffee
+00010e3d  Diamonds
+00010e47  Portuguese
+00010e52  Bantu Languages
+00010e63  Ovimbundu
+00010e6d  &Kimbundu
+00010e78  Bakongo
+00010e81  Mestizo
+00010e8a  European & Other
+00010e9d  Catholic
+00010ea6  DProtestant
+00010eb3  Indigenous Beliefs
+00010eca  Marxist People's Republic
+00010ee4  PRESIDENT Jose Eduardo dos SANTOS (1979)
+00010f0d  MIN. OF STATE Kundi PAIAMA
+00010f28  Popular Movement for the Liberation of Angola
+00010f57   Official Language: Portuguese.  Bantu languages common.
+00010f91   Civil war against Soviet-backed government persists.
+00010fc8   Visa: Required.  Generally only issued to those with special
+00011006    permission.  No US representation.  Travel not advised.
+00011041   Health: Standard services available in major cities.  Shortage
+00011081    of medical personnel and sophisticated supplies.  Travelers
+000110bf    advised to drink only bottled beverages or boiled water.
+000110fb   Sights: Luanda.  Tourist facilities limited.
+0001112a   Climate: Climate hot and humid.  Safari suits typical business
+0001116a    attire.
+000112e9  Negligible
+000112f4  Cotton
+000112fb  Sugar
+00011301  Livestock
+0001130b  Vegetables
+00011316  Light Manufacturing
+0001132a  Tourism
+00011332  Construction
+00011342  Vehicles
+0001134b  Foodstuffs
+00011356  Paper
+0001135c  Textiles
+00011365  Machinery
+0001136f  Chemicals
+00011379  Beverages
+00011383  Textiles
+0001138c  Machinery
+00011396  Lobsters
+000113a1  English
+000113a9  Local Languages
+000113ba  African
+000113c2  `Other
+000113cb  Anglican
+000113d4  bOther
+000113de  Constitutional Monarchy
+000113f6  GOVERNOR GENERAL Wilfred Ebenezer JACOBS (1967)
+00011426  PRIME MINISTER Vere C. BIRD (1976)
+00011449  DEP. PRIME MINISTER Lester BIRD (1976)
+00011470  Antigua Labor Party
+00011484  Progressive Labor Party
+0001149c  Antigua Caribbean Liberation Movement
+000114c3   Official Language: English.  Local dialects also spoken.
+000114fe   Independence from Britain granted in 1981.
+0001152b   British culture predominates in urban centers.
+0001155c   Visa: Not required of US, Canadian or British citizens
+00011594    for stays of up to 6 months.  Proof of citizenship and return
+000115d4    ticket or proof of onward travel required.
+00011602   Health: No unusual risks.
+0001161e   Sights: Over 300 beaches, sailing and water sports.
+00011654   Climate: Tropical but tempered by ocean breezes.  Cottons and
+00011693    light attire recommended.
+000116da  oWLD5.!
+000116e2  lTJB50& 
+00011849  Lead
+0001184e  Zinc
+00011857  Copper
+0001185e  Iron Ore
+00011867  Manganese
+00011871  Crude Oil
+0001187b  Uranium
+00011883  Grains
+0001188a  Oilseeds
+00011893  Livestock
+0001189d  Food Processing
+000118ad  Vehicles
+000118b6  Consumer Goods
+000118c5  Textiles
+000118ce  Metallurgy
+000118d9  Chemicals
+000118e3  Petrochemicals
+000118f2  Printing
+000118fb  Steel
+00011904  Machinery
+0001190e  Fuels/Lubricating Oils
+00011925  Iron & Steel Products
+0001193b  Wood & Lumber
+00011949  Automobile Equipment
+0001195e  Chemicals
+00011968  Grains
+0001196f  Meat
+00011974  Oilseeds
+0001197f  Spanish
+00011987  English
+0001198f  Italian
+00011997  German
+0001199e  French
+000119a6  White
+000119ac  UNative Amer./Mestizo
+000119c4  Catholic
+000119cd  ZProtestant
+000119da  Jewish
+000119e2  Other
+000119ec  Republic
+000119f5  PRESIDENT Carlos Sa
+00011a09  l MENEM (1989)
+00011a18  VICE PRESIDENT Eduardo BUHALDE (1989)
+00011a3e  Radical Civic Union
+00011a52  Justicialista (Peronist)
+00011a6d   Official Language: Spanish.  English, German, Italian and
+00011aa8    French widely spoken in urban centers.
+00011ad2   Return to democratic rule brought about in 1983.
+00011b05   Visa: Required.  Valid 4 years from date of issue.
+00011b3a   Health: No inoculations required.  Good facilities in Buenos
+00011b78    Aires.  Tapwater safe.
+00011b92   Sights: Buenos Aires, Perito Moreno glacier, the Andes, the
+00011bcf    Pampas, the Iguazu Falls, Atlantic beaches.
+00011bfe   Climate: Varies depending on region.  Rainwear and warm
+00011c37    clothing best in south.  Seasons reversed from N. Hemisphere.
+00011ca2  OXVO72%
+00011caa  KUTL50)'
+00011e11  Bauxite
+00011e19  Coal
+00011e1e  Iron Ore
+00011e27  Copper
+00011e32  Silver
+00011e39  Uranium
