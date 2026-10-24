@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>COUNTRY VIEWER — PC-Globe style · CIA Factbook notes</title>
+  <meta name="description" content="Offline PC-Globe-style country viewer over a pinned CIA World Factbook seed register: capitals, reference points, population, area, languages, government, and national anthem titles." />
+  <style>
+    body { margin: 0; font-family: ui-monospace, Menlo, Consolas, monospace; background: #081018; color: #d7e6f5; }
+    header { padding: 12px 16px; border-bottom: 1px solid #1d3a52; }
+    header h1 { margin: 0; font-size: 20px; letter-spacing: 0.08em; }
+    header p { margin: 4px 0 0; color: #8fb4d4; font-size: 12px; }
+    main { display: grid; grid-template-columns: 300px 1fr; gap: 0; min-height: calc(100vh - 120px); }
+    aside { border-right: 1px solid #1d3a52; padding: 10px; overflow-y: auto; max-height: calc(100vh - 120px); }
+    #search { width: 100%; box-sizing: border-box; padding: 8px; background: #0e2033; color: inherit; border: 1px solid #2a4b6b; }
+    #countries { list-style: none; margin: 10px 0 0; padding: 0; }
+    #countries button { display: block; width: 100%; text-align: left; padding: 7px 8px; margin-bottom: 4px;
+      background: #0e2033; color: inherit; border: 1px solid #24455f; cursor: pointer; font: inherit; font-size: 12px; }
+    #countries button.active { background: #274a68; border-color: #ffd75e; }
+    section { padding: 12px 16px; }
+    canvas { width: 100%; height: auto; background: #0b1622; border: 1px solid #1d3a52; }
+    #detail table { border-collapse: collapse; margin-top: 8px; }
+    #detail th { text-align: left; color: #8fb4d4; padding: 4px 12px 4px 0; vertical-align: top; font-weight: normal; }
+    #detail td { padding: 4px 0; }
+    .loc { color: #a9c8e2; } .byline { color: #8fb4d4; font-size: 12px; }
+    .note, footer { color: #6f96b5; font-size: 11px; }
+    footer { padding: 10px 16px; border-top: 1px solid #1d3a52; }
+    @media (max-width: 760px) { main { grid-template-columns: 1fr; } aside { max-height: 40vh; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>COUNTRY VIEWER · PC-GLOBE STYLE</h1>
+    <p>CIA World Factbook notes — capitals, reference points, population, area, languages, government, national anthems. Offline seed register; not a survey product.</p>
+  </header>
+  <main>
+    <aside>
+      <input id="search" type="search" placeholder="Search country or capital…" aria-label="Search countries" />
+      <ul id="countries"></ul>
+    </aside>
+    <section>
+      <canvas id="world" width="960" height="480">This visualization needs a canvas-capable browser.</canvas>
+      <div id="detail"><p>Select a country.</p></div>
+    </section>
+  </main>
+  <footer id="sourcepin"></footer>
+  <script src="./webxdc.js"></script>
+  <script type="module" src="./js/country-viewer.js"></script>
+</body>
+</html>

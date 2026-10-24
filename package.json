@@ -59,7 +59,8 @@
     "build:xport-v92-linetestset": "node tools/build-wallplug-eagle.mjs --design xport-v92-linetestset",
     "build:unit-cad": "node tools/build_unit_cad.mjs --emit --out-dir cad/out",
     "check:unit-cad": "node tools/build_unit_cad.mjs --check",
-    "build:xdc-wars": "node tools/build_xdc_wars.mjs"
+    "build:xdc-wars": "node tools/build_xdc_wars.mjs",
+    "build:country-viewer": "node scripts/build-country-viewer-data.mjs && node scripts/build-country-viewer-xdc.mjs"
   },
   "dependencies": {
     "@noble/ciphers": "^2.4.0",
